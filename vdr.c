@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.158 2003/05/24 13:35:13 kls Exp $
+ * $Id: vdr.c 1.159 2003/05/24 15:17:38 kls Exp $
  */
 
 #include <getopt.h>
@@ -453,6 +453,7 @@ int main(int argc, char *argv[])
   cOsdObject *Menu = NULL;
   cOsdObject *Temp = NULL;
   int LastChannel = -1;
+  int LastTimerChannel = -1;
   int PreviousChannel = cDevice::CurrentChannel();
   time_t LastActivity = 0;
   int MaxLatencyTime = 0;
@@ -471,8 +472,12 @@ int main(int argc, char *argv[])
         if (!EITScanner.Active() && cDevice::PrimaryDevice()->HasDecoder() && !cDevice::PrimaryDevice()->HasProgramme()) {
            static time_t lastTime = 0;
            if (time(NULL) - lastTime > MINCHANNELWAIT) {
-              if (!Channels.SwitchTo(cDevice::CurrentChannel()))
+              if (!Channels.SwitchTo(cDevice::CurrentChannel()) // try to switch to the original channel...
+                  && !(LastTimerChannel > 0 && Channels.SwitchTo(LastTimerChannel)) // ...or the one used by the last timer...
+                  && !cDevice::SwitchChannel(1) // ...or the next higher available one...
+                  && !cDevice::SwitchChannel(-1)) // ...or the next lower available one
                  lastTime = time(NULL); // don't do this too often
+              LastTimerChannel = -1;
               }
            }
         // Restart the Watchdog timer:
@@ -499,6 +504,8 @@ int main(int argc, char *argv[])
            if (Timer) {
               if (!cRecordControls::Start(Timer))
                  Timer->SetPending(true);
+              else
+                 LastTimerChannel = Timer->Channel()->Number();
               }
            }
         // CAM control:

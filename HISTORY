@@ -2190,3 +2190,8 @@ Video Disk Recorder Revision History
   Wiesweg).
 - Fixed channel switching in the EPG scanner on single device systems.
 - Completed the Swedish OSD texts (thanks to Tomas Prybil).
+- Now switching to the channel used by the most recently started timer in case
+  the original current channel becomes unavailable due to a recording on a
+  different transponder. If this fails, a channel up/down switch is attempted as
+  a fallback solution (thanks to Lauri Tischler for reporting this one, and to
+  Hermann Gausterer for suggesting to switch to the recording channel).
