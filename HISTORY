@@ -1580,7 +1580,7 @@ Video Disk Recorder Revision History
 - Fixed a bug when pressing the "Blue" button in the main menu without having
   displayed it (thanks to Oliver Endriss for reporting this one).
 
-2002-10-12: Version 1.1.13
+2002-10-13: Version 1.1.13
 
 - Added cDevice::DeviceNumber() to get the number of a device, not counting any
   gaps that might be in the index count.
