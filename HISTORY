@@ -601,3 +601,5 @@ Video Disk Recorder Revision History
   several PW channels has been changed.
 - Changed the color of "Info" messages to "black on green" and that of the
   confirmation messages (like "Delete...") to "black on yellow".
+- Fixed display with DEBUG_OSD (it still crashes sometimes, esp. when replaying,
+  but I can't seem to find what causes this... any ideas anybody?).

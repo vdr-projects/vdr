@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.87 2001/07/28 14:03:39 kls Exp $
+ * $Id: menu.c 1.88 2001/07/28 16:17:28 kls Exp $
  */
 
 #include "menu.h"
@@ -2190,9 +2190,8 @@ void cReplayControl::Show(int Seconds)
      Interface->Open(Setup.OSDwidth, -3);
      needsFastResponse = visible = true;
      shown = ShowProgress(true);
-     if (Seconds > 0) {
+     if (Seconds > 0)
         timeoutShow = time(NULL) + Seconds;
-        }
      }
 }
 
@@ -2213,6 +2212,7 @@ bool cReplayControl::ShowProgress(bool Initial)
         Interface->Clear();
         if (title)
            Interface->Write(0, 0, title);
+        lastCurrent = lastTotal = -1;
         }
      if (Total != lastTotal) {
         Interface->Write(-7, 2, IndexToHMSF(Total));

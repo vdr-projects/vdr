@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbosd.h 1.7 2001/07/22 11:49:35 kls Exp $
+ * $Id: dvbosd.h 1.8 2001/07/28 16:22:32 kls Exp $
  */
 
 #ifndef __DVBOSD_H
@@ -20,16 +20,21 @@
 #define MAXNUMCOLORS 16
 
 enum eDvbColor {
-#ifndef DEBUG_OSD
-  clrTransparent = 0x00000000,
-#endif
-  clrBackground  = 0x7F000000, // 50% gray
 #ifdef DEBUG_OSD
+  clrBackground,
   clrTransparent = clrBackground,
   clrBlack = clrBackground,
+  clrRed,
+  clrGreen,
+  clrYellow,
+  clrBlue,
+  clrMagenta,
+  clrCyan,
+  clrWhite,
 #else
+  clrTransparent = 0x00000000,
+  clrBackground  = 0x7F000000, // 50% gray
   clrBlack       = 0xFF000000,
-#endif
   clrRed         = 0xFF1414FC,
   clrGreen       = 0xFF24FC24,
   clrYellow      = 0xFF24C0FC,
@@ -37,6 +42,7 @@ enum eDvbColor {
   clrBlue        = 0xFFFC0000,
   clrCyan        = 0xFFFCFC00,
   clrWhite       = 0xFFFCFCFC,
+#endif
   };
 
 class cPalette {
