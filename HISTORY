@@ -1111,3 +1111,6 @@ Video Disk Recorder Revision History
   is not available by default on some Linux distributions, whereas 'killall' is.
   Please check if your system provides 'killall' - if it doesn't, please change
   this back in 'runvdr' and report this (thanks to Achim Lange).
+- The "Commands" menu now automatically assigns number keys as hotkeys to the
+  commands. If you have preceeded your commands with digits you may want to
+  remove these from your 'commands.conf' file.

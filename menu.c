@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.168 2002/03/16 14:03:38 kls Exp $
+ * $Id: menu.c 1.169 2002/03/16 16:44:15 kls Exp $
  */
 
 #include "menu.h"
@@ -2210,7 +2210,7 @@ cMenuCommands::cMenuCommands(void)
   cCommand *command;
 
   while ((command = Commands.Get(i)) != NULL) {
-        Add(new cOsdItem(command->Title()));
+        Add(new cOsdItem(hk(command->Title())));
         i++;
         }
 }
