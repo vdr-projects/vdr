@@ -1893,3 +1893,4 @@ Video Disk Recorder Revision History
   cKbdRemote class into "raw mode", where all keyboard input will be made available
   through the new 'kKbd' key code and none of it will be processed as normal remote
   control functions (thanks to Jan Rieger for suggestions and testing).
+- Fixed deleting characters in string entry fields in 'insert' mode.

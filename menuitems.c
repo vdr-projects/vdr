@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.c 1.10 2002/12/15 10:58:00 kls Exp $
+ * $Id: menuitems.c 1.11 2002/12/15 11:05:19 kls Exp $
  */
 
 #include "menuitems.h"
@@ -262,7 +262,8 @@ eOSState cMenuEditStrItem::ProcessKey(eKeys Key)
     case kYellow: // Remove the character at current position; in insert mode it is the character to the right of cursor
                  if (pos >= 0) {
                     if (strlen(value) > 1) {
-                       memmove(value + pos, value + pos + 1, strlen(value) - pos);
+                       if (!insert || pos < int(strlen(value)) - 1)
+                          memmove(value + pos, value + pos + 1, strlen(value) - pos);
                        // reduce position, if we removed the last character
                        if (pos == int(strlen(value)))
                           pos--;
