@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.170 2002/04/07 09:35:51 kls Exp $
+ * $Id: dvbapi.c 1.171 2002/04/20 10:45:33 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -533,6 +533,8 @@ void cRecordBuffer::Input(void)
                   int w = Put(p, r);
                   p += w;
                   r -= w;
+                  if (r > 0)
+                     usleep(1); // this keeps the CPU load low
                   }
             t = time(NULL);
             }
