@@ -16,7 +16,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.c 1.23 2001/09/22 10:28:33 kls Exp $
+ * $Id: eit.c 1.24 2001/09/22 13:07:21 kls Exp $
  ***************************************************************************/
 
 #include "eit.h"
@@ -279,59 +279,19 @@ unsigned short cEventInfo::GetEventID() const
    return uEventID;
 }
 /**  */
-bool cEventInfo::SetTitle(const char *string)
+void cEventInfo::SetTitle(const char *string)
 {
-   if (string == NULL)
-      return false;
-
-   pTitle = strdup(string);
-   if (pTitle == NULL)
-      return false;
-
-   return true;
+   pTitle = strcpyrealloc(pTitle, string);
 }
 /**  */
-bool cEventInfo::SetSubtitle(const char *string)
+void cEventInfo::SetSubtitle(const char *string)
 {
-   if (string == NULL)
-      return false;
-
-   pSubtitle = strdup(string);
-   if (pSubtitle == NULL)
-      return false;
-
-   return true;
+   pSubtitle = strcpyrealloc(pSubtitle, string);
 }
 /**  */
-bool cEventInfo::AddExtendedDescription(const char *string)
+void cEventInfo::SetExtendedDescription(const char *string)
 {
-   int size = 0;
-   bool first = true;
-   char *p;
-
-   if (string == NULL)
-      return false;
-
-   if (pExtendedDescription)
-   {
-      first = false;
-      size += strlen(pExtendedDescription);
-   }
-
-   size += (strlen(string) + 1);
-
-   p = (char *)realloc(pExtendedDescription, size);
-   if (p == NULL)
-      return false;
-
-   if (first)
-      *p = 0;
-
-   strcat(p, string);
-
-   pExtendedDescription = p;
-
-   return true;
+   pExtendedDescription = strcpyrealloc(pExtendedDescription, string);
 }
 /**  */
 void cEventInfo::SetTime(time_t t)
@@ -783,28 +743,29 @@ int cEIT::ProcessEIT(unsigned char *buffer)
              }
           pEvent = (cEventInfo *)pSchedule->GetEvent((unsigned short)VdrProgramInfo->EventID);
           if (!pEvent) {
+             // If we don't have that event ID yet, we create a new one.
+             // Otherwise we copy the information into the existing event anyway, because the data might have changed.
              pSchedule->Events.Add(new cEventInfo(VdrProgramInfo->ServiceID, VdrProgramInfo->EventID));
              pEvent = (cEventInfo *)pSchedule->GetEvent((unsigned short)VdrProgramInfo->EventID);
              if (!pEvent)
                 break;
-             if (rEvent) {
-                pEvent->SetTitle(rEvent->GetTitle());
-                pEvent->SetSubtitle(rEvent->GetSubtitle());
-                pEvent->SetTime(VdrProgramInfo->StartTime);
-                pEvent->SetDuration(VdrProgramInfo->Duration);
-                pEvent->AddExtendedDescription(rEvent->GetExtendedDescription());
-                pEvent->FixEpgBugs();
-                }
-             else {
-                pEvent->SetTitle(VdrProgramInfo->ShortName);
-                pEvent->SetSubtitle(VdrProgramInfo->ShortText);
-                pEvent->SetTime(VdrProgramInfo->StartTime);
-                pEvent->SetDuration(VdrProgramInfo->Duration);
-                pEvent->AddExtendedDescription(VdrProgramInfo->ExtendedName);
-                pEvent->AddExtendedDescription(VdrProgramInfo->ExtendedText);
-                pEvent->FixEpgBugs();
-                }
              }
+          if (rEvent) {
+             pEvent->SetTitle(rEvent->GetTitle());
+             pEvent->SetSubtitle(rEvent->GetSubtitle());
+             pEvent->SetExtendedDescription(rEvent->GetExtendedDescription());
+             }
+          else {
+             pEvent->SetTitle(VdrProgramInfo->ShortName);
+             pEvent->SetSubtitle(VdrProgramInfo->ShortText);
+             pEvent->SetExtendedDescription(VdrProgramInfo->ExtendedName);
+             //XXX kls 2001-09-22:
+             //XXX apparently this never occurred, so I have simpified ExtendedDescription handling
+             //XXX pEvent->AddExtendedDescription(VdrProgramInfo->ExtendedText);
+             }
+          pEvent->SetTime(VdrProgramInfo->StartTime);
+          pEvent->SetDuration(VdrProgramInfo->Duration);
+          pEvent->FixEpgBugs();
           if (IsPresentFollowing()) {
              if ((GetRunningStatus(VdrProgramInfo->Status) == RUNNING_STATUS_PAUSING) || (GetRunningStatus(VdrProgramInfo->Status) == RUNNING_STATUS_RUNNING))
                 pSchedule->SetPresentEvent(pEvent);

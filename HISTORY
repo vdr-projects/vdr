@@ -773,3 +773,4 @@ Video Disk Recorder Revision History
 - Supplying the new frontend parameter 'Inversion' (currently it is always
   set to INVERSION_AUTO, which should work with all channels on Astra).
 - Removing unnecessary double quotes from EPG Subtitle in EPGBugfixLevel >=1.
+- EPG info is now updated if the contents changes but the ID remains the same.

@@ -16,7 +16,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.h 1.10 2001/08/15 15:47:31 kls Exp $
+ * $Id: eit.h 1.11 2001/09/22 11:43:21 kls Exp $
  ***************************************************************************/
 
 #ifndef __EIT_H
@@ -42,13 +42,13 @@ private:
 protected:
   void SetFollowing(bool foll);
   void SetPresent(bool pres);
-  bool SetTitle(const char *string);
+  void SetTitle(const char *string);
   void SetServiceID(unsigned short servid);
   void SetEventID(unsigned short evid);
   void SetDuration(long l);
   void SetTime(time_t t);
-  bool AddExtendedDescription(const char *string);
-  bool SetSubtitle(const char *string);
+  void SetExtendedDescription(const char *string);
+  void SetSubtitle(const char *string);
   cEventInfo(unsigned short serviceid, unsigned short eventid);
 public:
   ~cEventInfo();

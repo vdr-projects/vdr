@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.34 2001/09/15 15:22:57 kls Exp $
+ * $Id: tools.h 1.35 2001/09/22 12:12:55 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -44,6 +44,7 @@ ssize_t safe_read(int filedes, void *buffer, size_t size);
 ssize_t safe_write(int filedes, const void *buffer, size_t size);
 void writechar(int filedes, char c);
 char *readline(FILE *f);
+char *strcpyrealloc(char *dest, const char *src);
 char *strn0cpy(char *dest, const char *src, size_t n);
 char *strreplace(char *s, char c1, char c2);
 char *skipspace(const char *s);
