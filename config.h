@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.93 2002/02/03 15:16:21 kls Exp $
+ * $Id: config.h 1.94 2002/02/09 16:00:00 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -173,6 +173,8 @@ public:
   const char *Title(void) { return title; }
   const char *Execute(void);
   };
+
+typedef uint32_t in_addr_t; //XXX from /usr/include/netinet/in.h (apparently this is not defined on systems with glibc < 2.2)
 
 class cSVDRPhost : public cListObject {
 private:

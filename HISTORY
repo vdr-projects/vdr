@@ -981,3 +981,5 @@ Video Disk Recorder Revision History
 - Reverted to the previous way of searching for the EPG record of the current
   recording in case of a periodic timer (i.e. taking the one that is in the
   middle between start and end time).
+- Added a typedef for 'in_addr_t' to make it work with glibc < 2.2 (thanks to
+  Jürgen Schmidt).

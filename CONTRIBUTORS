@@ -193,3 +193,6 @@ Michael Paar <mpaar@uumail.de>
 
 Hannu Savolainen <hannu@opensound.com>
  for translating the OSD texts to the Finnish language
+
+Jürgen Schmidt <ju@ct.heise.de>
+ for fixing a problem with 'in_addr_t' on systems with glibc < 2.2.
