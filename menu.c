@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.325 2005/01/04 11:11:16 kls Exp $
+ * $Id: menu.c 1.326 2005/01/04 12:52:17 kls Exp $
  */
 
 #include "menu.h"
@@ -2871,6 +2871,11 @@ eOSState cDisplayTracks::ProcessKey(eKeys Key)
          if (++track >= numTracks)
             track = 0;
          timeout.Set(TRACKTIMEOUT);
+         break;
+    case kOk:
+         if (track != cDevice::PrimaryDevice()->GetCurrentAudioTrack())
+            oldTrack = -1; // make sure we explicitly switch to that track
+         timeout.Set();
          break;
     case kNone: break;
     default: return osEnd;
