@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.51 2002/02/10 15:41:23 kls Exp $
+ * $Id: recording.c 1.52 2002/02/15 22:09:44 kls Exp $
  */
 
 #include "recording.h"
@@ -203,7 +203,6 @@ static char *ExchangeChars(char *s, bool ToFileSystem)
 {
   char *p = s;
   while (*p) {
-#define VFAT 1
 #ifdef VFAT
         // The VFAT file system can't handle all characters, so we
         // have to take extra efforts to encode/decode them:
