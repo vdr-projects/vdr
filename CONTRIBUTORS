@@ -39,6 +39,7 @@ Martin Hammerschmid <martin@hammerschmid.com>
  for suggesting to display the direct channel select input on the OSD
  for suggesting to use the "Blue" button in the main menu to resume replay
  for implementing pege up/down with the "Left" and "Right" keys
+ for detecting a deadlock when switching channels via Schedule/Now|Next/Switch
 
 Bastian Guse <bastian@nocopy.de>
  for writing the FORMATS entry for timers.conf

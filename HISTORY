@@ -1047,3 +1047,9 @@ Video Disk Recorder Revision History
 
 - Fixed a crash in case there is no 'epg.data' at program start (thanks to
   Andreas Schultz).
+
+2002-03-01: Version 1.0.0pre3
+
+- Fixed parsing 'E' records in epg2html.pl.
+- Fixed a deadlock when switching channels via Schedule/Now|Next/Switch (reported
+  by Martin Hammerschmid).

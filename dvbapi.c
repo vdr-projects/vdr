@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.152 2002/02/24 12:53:51 kls Exp $
+ * $Id: dvbapi.c 1.153 2002/03/02 09:37:56 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -2238,9 +2238,6 @@ bool cDvbApi::SetPids(bool ForRecording)
 
 eSetChannelResult cDvbApi::SetChannel(int ChannelNumber, int Frequency, char Polarization, int Diseqc, int Srate, int Vpid, int Apid1, int Apid2, int Dpid1, int Dpid2, int Tpid, int Ca, int Pnr)
 {
-  // Make sure the siProcessor won't access the device while switching
-  cThreadLock ThreadLock(siProcessor);
-
   StopTransfer();
   StopReplay();
 
