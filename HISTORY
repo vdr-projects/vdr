@@ -1933,3 +1933,5 @@ Video Disk Recorder Revision History
   Rantanen for pinpointing the problem with the excessive memmove() calls.
 - Updated 'channels.conf' (thanks to Achim Lange).
 - Added/improved Swedish language texts (thanks to Jan Ekholm).
+- Fixed the description of the "Scroll pages" OSD setup parameter ('yes' and 'no'
+  were mixed up).

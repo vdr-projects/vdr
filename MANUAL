@@ -415,11 +415,11 @@ Video Disk Recorder User's Manual
                          always displayed when pressing the "Ok" button in
                          normal viewing mode.
 
-  Scroll pages = yes     yes = when pressing the "Down" ("Up") key while the cursor
+  Scroll pages = yes     no  = when pressing the "Down" ("Up") key while the cursor
                                is on the last (first) line of a list page, the
                                list is advanced by a full page and the cursor will
                                be at the top (bottom) of that page
-                         no  = dto., but the cursor remains at the bottom (top) of
+                         yes = dto., but the cursor remains at the bottom (top) of
                                the page (this mode allows for faster scrolling
                                through long lists).
 
