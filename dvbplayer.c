@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 1.23 2003/10/18 11:31:54 kls Exp $
+ * $Id: dvbplayer.c 1.24 2004/06/19 08:55:49 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -418,7 +418,7 @@ void cDvbPlayer::Action(void)
   int AudioTrack = 0; // -1 = any, 0 = none, >0 = audioTrack
 
   running = true;
-  while (running && (NextFile() || readIndex >= 0 || ringBuffer->Available())) {
+  while (running && (NextFile() || readIndex >= 0 || ringBuffer->Available() || !DeviceFlush(100))) {
         cPoller Poller;
         if (DevicePoll(Poller, 100)) {
 
@@ -438,6 +438,10 @@ void cDvbPlayer::Action(void)
                              continue;
                           }
                        else {
+                          // hit begin of recording: wait for device buffers to drain
+                          // before changing play mode:
+                          if (!DeviceFlush(100))
+                             continue;
                           // can't call Play() here, because those functions may only be
                           // called from the foreground thread - and we also don't need
                           // to empty the buffer here

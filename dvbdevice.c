@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.91 2004/06/12 14:50:23 kls Exp $
+ * $Id: dvbdevice.c 1.92 2004/06/19 08:52:24 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -1067,6 +1067,12 @@ bool cDvbDevice::Poll(cPoller &Poller, int TimeoutMs)
 {
   Poller.Add((playMode == pmAudioOnly || playMode == pmAudioOnlyBlack) ? fd_audio : fd_video, true);
   return Poller.Poll(TimeoutMs);
+}
+
+bool cDvbDevice::Flush(int TimeoutMs)
+{
+  //TODO actually this function should wait until all buffered data has been processed by the card, but how?
+  return true;
 }
 
 int cDvbDevice::PlayVideo(const uchar *Data, int Length)

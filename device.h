@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 1.43 2004/05/23 10:10:08 kls Exp $
+ * $Id: device.h 1.44 2004/06/19 08:50:37 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -373,6 +373,12 @@ public:
        ///< If TimeoutMs is not zero, the device will wait up to the given number
        ///< of milleseconds before returning in case there is no immediate
        ///< need for data.
+  virtual bool Flush(int TimeoutMs = 0);
+       ///< Returns true if the device's output buffers are empty, i. e. any
+       ///< data which was bufferd so far has been processed.
+       ///< If TimeoutMs is not zero, the device will wait up to the given
+       ///< number of milliseconds before returning in case there is still
+       ///< data in the buffers..
   virtual int PlayVideo(const uchar *Data, int Length);
        ///< Actually plays the given data block as video. The data must be
        ///< part of a PES (Packetized Elementary Stream) which can contain
