@@ -2251,3 +2251,5 @@ Video Disk Recorder Revision History
 - Initializing the current channel to '1' to avoid a crash in creating a new
   timer in case there is no device in the system that can actually receive any
   channel (thanks to Malcolm Caldwell for reporting this one).
+- Some corrections to the Finnish OSD texts (thanks to Niko Tarnanen and Rolf
+  Ahrenberg).

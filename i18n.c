@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.127 2003/06/09 09:45:37 kls Exp $
+ * $Id: i18n.c 1.128 2003/06/09 09:49:29 kls Exp $
  *
  * Translations provided by:
  *
@@ -932,7 +932,7 @@ const tI18nPhrase Phrases[] = {
     "Pressione qualquer tecla para cancelar",
     "Appuyez sur une touche pour annuler l'arrêt",
     "Trykk en tast for ikke å slå av",
-    "Peru sammutus painamalla jotain näppäintä",
+    "Peru sammutus painamalla mitä tahansa näppäintä",
     "Dowolny przycisk zatrzyma wylaczanie",
     "Pulse una tecla para interrumpir apagar",
     "Piese ena pliktro na akirothei o termatismos",
@@ -2742,7 +2742,7 @@ const tI18nPhrase Phrases[] = {
     "Pressione qualquer tecla do telecomando",
     "Appuyer sur une touche de la télécommande",
     "Trykk en av tastene på fjernkontrollen",
-    "Paina jotain kaukosäätimen näppäintä",
+    "Paina mitä tahansa kaukosäätimen näppäintä",
     "Nacisnac klawisz pilota",
     "Pulse una tecla en el telemando",
     "Piese ena pliktro sto tilexiristirio",
