@@ -312,10 +312,11 @@ Video Disk Recorder Revision History
   an early state and may still cause some problems, but it appears to work nice
   already.
 
-2000-11-26: Version 0.69
+2000-12-01: Version 0.69
 
 - The EPG data is now dumped into the file /video/epg.data every ten minutes.
   Use the Perl script 'epg2html.pl' to convert the raw EPG data into a simple
   HTML programme listing.
 - Fixed handling of channel switching with the "Blue" button in the "What's on
   now/next?" menus.
+- Fixed saving the MarginStop setup parameter.

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.34 2000/11/18 13:26:36 kls Exp $
+ * $Id: config.c 1.35 2000/12/01 16:53:48 kls Exp $
  */
 
 #include "config.h"
@@ -792,6 +792,7 @@ bool cSetup::Save(const char *FileName)
         fprintf(f, "LnbFrequHi         = %d\n", LnbFrequHi);
         fprintf(f, "SetSystemTime      = %d\n", SetSystemTime);
         fprintf(f, "MarginStart        = %d\n", MarginStart);
+        fprintf(f, "MarginStop         = %d\n", MarginStop);
         fprintf(f, "EPGScanTimeout     = %d\n", EPGScanTimeout);
         fclose(f);
         isyslog(LOG_INFO, "saved setup to %s", FileName);
