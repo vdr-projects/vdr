@@ -2048,3 +2048,5 @@ Video Disk Recorder Revision History
   firmware, version 2613 or higher; the -icam firmware is still limited to live
   encrypted channels only. Finally we have time shift for encrypted channels on
   single card systems!
+- Enhanced detection of pending user I/O from CAMs to avoid sluggish reaction
+  to remote control keypresses.

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.235 2003/04/12 09:40:48 kls Exp $
+ * $Id: menu.c 1.236 2003/04/20 09:21:36 kls Exp $
  */
 
 #include "menu.h"
@@ -1636,7 +1636,7 @@ cOsdObject *CamControl(void)
       cDevice *Device = cDevice::GetDevice(d);
       if (Device) {
          cCiHandler *CiHandler = Device->CiHandler();
-         if (CiHandler) {
+         if (CiHandler && CiHandler->HasUserIO()) {
             cCiMenu *CiMenu = CiHandler->GetMenu();
             if (CiMenu)
                return new cMenuCam(CiMenu);

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 1.13 2003/04/19 10:59:53 kls Exp $
+ * $Id: ci.c 1.14 2003/04/20 09:52:45 kls Exp $
  */
 
 /* XXX TODO
@@ -625,6 +625,7 @@ public:
   const cCiTransportConnection *Tc(void) { return tc; }
   int SessionId(void) { return sessionId; }
   int ResourceId(void) { return resourceId; }
+  virtual bool HasUserIO(void) { return false; }
   virtual bool Process(int Length = 0, const uint8_t *Data = NULL);
   };
 
@@ -1009,6 +1010,7 @@ public:
   cCiMMI(int SessionId, cCiTransportConnection *Tc);
   virtual ~cCiMMI();
   virtual bool Process(int Length = 0, const uint8_t *Data = NULL);
+  virtual bool HasUserIO(void) { return menu || enquiry; }
   cCiMenu *Menu(void);
   cCiEnquiry *Enquiry(void);
   bool SendMenuAnswer(uint8_t Selection);
@@ -1287,6 +1289,7 @@ cCiHandler::cCiHandler(int Fd, int NumSlots)
 {
   numSlots = NumSlots;
   newCaSupport = false;
+  hasUserIO = false;
   for (int i = 0; i < MAX_CI_SESSION; i++)
       sessions[i] = NULL;
   tpl = new cCiTransportLayer(Fd, numSlots);
@@ -1480,10 +1483,12 @@ bool cCiHandler::Process(void)
          tpl->NewConnection(Slot);
          }
       }
+  bool UserIO = false;
   for (int i = 0; i < MAX_CI_SESSION; i++) {
-      if (sessions[i])
-         sessions[i]->Process();
+      if (sessions[i] && sessions[i]->Process())
+         UserIO |= sessions[i]->HasUserIO();
       }
+  hasUserIO = UserIO;
   if (newCaSupport)
      newCaSupport = result = false; // triggers new SetCaPmt at caller!
   return result;
