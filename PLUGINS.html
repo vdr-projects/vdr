@@ -21,18 +21,18 @@ VDR program and present itself to the user.
 The <i>internal</i> interface provides the plugin code access to VDR's internal data
 structures and allows it to hook itself into specific areas to perform special actions.
 <p>
-<!--X1.1.15--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
-Important modifications introduced in version 1.1.15 are marked like this.
-<!--X1.1.15--></td></tr></table>
-<!--X1.1.17--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
+<!--X1.1.17--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 Important modifications introduced in version 1.1.17 are marked like this.
 <!--X1.1.17--></td></tr></table>
-<!--X1.1.27--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
+<!--X1.1.27--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
 Important modifications introduced in version 1.1.27 are marked like this.
 <!--X1.1.27--></td></tr></table>
-<!--X1.1.31--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+<!--X1.1.31--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
 Important modifications introduced in version 1.1.31 are marked like this.
 <!--X1.1.31--></td></tr></table>
+<!--X1.1.32--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+Important modifications introduced in version 1.1.32 are marked like this.
+<!--X1.1.32--></td></tr></table>
 
 <hr>
 <h1>Table Of Contents</h1>
@@ -284,7 +284,7 @@ The <b>constructor</b> shall initialize any member variables the plugin defines,
 <b>must not access any global structures of VDR</b>.
 It also must not create any threads or other large data structures. These things
 are done in the
-<!--X1.1.31--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+<!--X1.1.31--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
 <a href="#Getting started"><tt>Initialize()</tt></a> or
 <a href="#Getting started"><tt>Start()</tt></a>
 <!--X1.1.31--></td></tr></table>
@@ -460,18 +460,20 @@ thread of its own), or wants to make use of <a href="#Internationalization">inte
 it needs to implement one of the functions
 
 <p><table><tr><td bgcolor=#F0F0F0><pre><br>
-<!--X1.1.31--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%><pre>
+<!--X1.1.31--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%><pre>
 virtual bool Initialize(void);
 <!--X1.1.31--></pre></td></tr></table>
 virtual bool Start(void);
 </pre></td></tr></table><p>
 
 which are called once for each plugin at program startup.
-<!--X1.1.31--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+<!--X1.1.31--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
+<!--X1.1.32--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
 The difference between these two functions is that <tt>Initialize()</tt> is
-called early at program startup, while <tt>Start()</tt> is called after everything
-else has been set up, right before the main program loop is entered. Inside the
-<tt>Start()</tt> function of any plugin it is guaranteed that the <tt>Initialize()</tt>
+called early at program startup, while <tt>Start()</tt> is called after the primary
+device and user interface has been set up, but before the main program loop is entered.
+<!--X1.1.32--></td></tr></table>
+Inside the <tt>Start()</tt> function of any plugin it is guaranteed that the <tt>Initialize()</tt>
 functions of all plugins have  already been called. For many plugins it probably
 doesn't matter which of these functions they implement, but it may be of importance
 for, e.g., plugins that implement devices. Such plugins should create their cDevice
@@ -527,7 +529,7 @@ in the call to VDR.
 
 If the user selects the main menu entry of a plugin, VDR calls the function
 
-<!--X1.1.17--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
+<!--X1.1.17--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 <p><table><tr><td bgcolor=#F0F0F0><pre><br>
 virtual cOsdObject *MainMenuAction(void);
 </pre></td></tr></table><p>
@@ -1044,7 +1046,6 @@ virtual void SetAudioTrack(int Index);
 </pre></td></tr></table><p>
 
 <p>
-<!--X1.1.15--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 If there is an additional audio track that has to be replayed with external hardware,
 the player shall call its member function
 
@@ -1053,7 +1054,6 @@ void PlayAudio(const uchar *Data, int Length);
 </pre></td></tr></table><p>
 
 where <tt>Data</tt> points to a complete audio PES packet of <tt>Length</tt> bytes.
-<!--X1.1.15--></td></tr></table>
 <p>
 The second part needed here is a control object that receives user input from the main
 program loop and reacts on this by telling the player what to do:
@@ -1200,7 +1200,7 @@ a <tt>cDevice</tt>:
 <p><table><tr><td bgcolor=#F0F0F0><pre><br>
 cMyReceiver *Receiver = new cMyReceiver(123);
 
-<!--X1.1.31--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+<!--X1.1.31--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
 cDevice::ActualDevice()-&gt;AttachReceiver(Receiver);
 <!--X1.1.31--></td></tr></table>
 </pre></td></tr></table><p>
@@ -1372,7 +1372,7 @@ needed.
 <p>
 <b>Initializing new devices</b>
 <p>
-<!--X1.1.31--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+<!--X1.1.31--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
 A derived cDevice class shall implement a static function
 in which it determines whether the necessary hardware to run this sort of
 device is actually present in this machine (or whatever other prerequisites
@@ -1391,7 +1391,6 @@ shut down (delete) all devices when the program terminates. It is therefore
 important that the devices are created on the heap, using the <tt>new</tt>
 operator!
 
-<!--X1.1.15--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
 <a name="Dolby Digital"><hr><h2>Dolby Digital</h2>
 
 <center><i><b>"The stereo effect may only be experienced if stereo equipment is used!"</b></i></center><p>
@@ -1434,7 +1433,6 @@ will need to copy it for later processing in your thread.
 <p>
 The <tt>Mute()</tt> and <tt>Clear()</tt> functions will be called whenever the audio shall
 be muted, or any buffered data shall be cleared, respectively.
-<!--X1.1.15--></td></tr></table>
 
 <a name="Remote Control"><hr><h2>Remote Control</h2>
 
@@ -1502,7 +1500,7 @@ the incoming data (by calling your <tt>Action()</tt> function).
 In case you need to do any other setup steps, like opening a file or initializing
 member variables, you should do so before calling <tt>Start()</tt>.
 <p>
-<!--X1.1.27--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
+<!--X1.1.27--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
 If your remote control for some reason can't work (maybe because it was unable to
 open some file handle it requires) it can implement the virtual function
 

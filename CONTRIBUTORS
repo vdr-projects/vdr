@@ -467,6 +467,8 @@ Oliver Endriss <o.endriss@gmx.de>
  the Main menu
  for reporting a bug in setting the PCR-PID in case it is equal to one of the other
  PIDs
+ for reporting a problem with cPlugin::Start() being called after trying to learn
+ the remote control keys
 
 Reinhard Walter Buchner <rw.buchner@freenet.de>
  for adding some satellites to 'sources.conf'

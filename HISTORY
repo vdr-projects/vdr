@@ -2143,10 +2143,12 @@ Video Disk Recorder Revision History
 - Changed C++ style comments in libdtv into C style to avoid warnings in gcc 3.x
   (thanks to Andreas Schultz).
 
-2003-05-12: Version 1.1.32
+2003-05-16: Version 1.1.32
 
 - Removed a faulty parameter initialization in menu.c (thanks to Lauri Tischler for
   reporting this one).
 - Re-implemented the WaitForPut/WaitForGet stuff in cRingBuffer, since some plugins
   actually need this. By default the buffer does not wait; if a plugin needs the
   waiting functionality it can call the new SetTimeouts() function.
+- Moved the call to cPlugin::Start() further up in vdr.c, to make sure it gets
+  called before trying to learn the keys (problem reported by Oliver Endriss).
