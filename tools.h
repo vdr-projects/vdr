@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.50 2002/09/08 10:22:29 kls Exp $
+ * $Id: tools.h 1.51 2002/10/19 12:31:50 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -64,6 +64,7 @@ const char *strescape(const char *s, const char *chars); // returns a statically
 bool startswith(const char *s, const char *p);
 bool endswith(const char *s, const char *p);
 bool isempty(const char *s);
+int numdigits(int n);
 int time_ms(void);
 void delay_ms(int ms);
 bool isnumber(const char *s);

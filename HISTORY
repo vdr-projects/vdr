@@ -1610,3 +1610,63 @@ Video Disk Recorder Revision History
 - The new configuration file 'reccmds.conf' can be used to define commands that
   shall be executed from the "Recordings" menu; see MANUAL and 'man vdr(5)' for
   details (suggested by Gerhard Steiner).
+
+2002-10-27: Version 1.1.14
+
+- Fixed some faulty default parameter initializations (thanks to Robert Schiele).
+- Added further satellites to 'sources.conf' (thanks to Reinhard Walter Buchner
+  and Oliver Endriss).
+- Updated Finnish OSD texts (thanks to Jaakko Hyvätti).
+- Fixed a small glitch when switching channels (thanks to Dennis Noordsij for
+  reporting this one).
+- Fixed handling multiple 'CaCaps' entries in 'setup.conf'.
+- Group separators in 'channels.conf' may now be given like ':@201 My Channels',
+  where '@201' indicates the number to be given to the next channel. This can be
+  used to create 'gaps' in the channel numbering (see 'man 5 vdr'). BE CAREFUL
+  TO UPDATE YOUR 'timers.conf' ACCORDINGLY IF INSERTING THIS NEW FEATURE INTO YOUR
+  'channels.conf' FILE!
+- Timers now internally have a pointer to their channel (this is necessary to
+  handle gaps in channel numbers, and in preparation for unique channel ids).
+- Fixed slow reaction on SVDRP input (thanks to Guido Fiala for reporting this one).
+- Added KI.KA to channels.conf.cable (thanks to Robert Schiele).
+- Frequency values for cable and terrestrial channels in 'channels.conf' can
+  now be given either in MHz, kHz or Hz. The actual value given will be multiplied
+  by 1000 until it is larger than 1000000.
+- Fixed skipping unavailable channels when zapping downwards.
+- Fixed checking the Ca() status of a cDevice (thanks to Stefan Huelswitt).
+- Fixed switching audio tracks in 'Transfer Mode' on the primary DVB device
+  (thanks to Steffen Barszus and Stefan Huelswitt for reporting this one and
+  helping to fix it).
+- Fixed channel switching in case of an active 'Transfer Mode' on the primary
+  device ('Transfer Mode' is now launched with priority '-1').
+- Fixed a ternary expression in dvbspu.c.
+- Fixed handling 'Transfer Mode' on single device systems when recording an
+  encrypted channel (thanks to Stefan Huelswitt).
+- Fixed blocking replaying in case an encrypted channel is being recorded on
+  the primary device.
+- Now the name of the remote control is displayed when learning the keys.
+- Fixed learning remote control keys in case there is more than one remote
+  control (thanks to Oliver Endriss for reporting this one).
+- Implemented additional dedicated keys for "Play", "Pause", "Stop", "Record",
+  "FastFwd", "FastRew", "Channel+" and "Channel-". If your remote control supports
+  any of these keys you can delete your 'remote.conf' file and restart VDR to
+  go through the key learning procedure again in order to assign these new keys.
+  See MANUAL for more information.
+  Authors of player plugins should update their ProcessKey() functions so that
+  the new player keys have the same functionality as the "Up", "Down", "Left",
+  "Right" and "Blue" keys, respectively. Note that the existing functionality
+  of these keys should by all means be retained, since VDR (and any plugins)
+  shall be fully usable with just the basic set of keys. These new keys are only
+  for additional comfort in case the remote control in use supports them.
+- Implemented new keys to directly access the VDR main menu functions "Schedule",
+  "Channels", "Timers", "Recordings", "Setup" and "Commands". If your remote
+  control provides keys you want to assign these functions to, you can delete
+  your 'remote.cof' file and restart VDR to  go through the key learning procedure
+  again in order to assign these new keys. See MANUAL for more information.
+- The new configuration file 'keymacros.conf' can be used to assign macros to
+  the color buttons in normal viewing mode, as well as to up to 9 user defined
+  keys. See MANUAL and man vdr(5) for more information. The default 'keymacros.conf'
+  implements the functionality of the "color button patch".
+- Fixed a crash when learning the keys of several remote controls and pressing
+  buttons of those that have already been learned (thanks to Oliver Endriss for
+  reporting this one).

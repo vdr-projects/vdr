@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: eitscan.c 1.8 2002/10/05 13:44:35 kls Exp $
+ * $Id: eitscan.c 1.9 2002/10/19 11:48:02 kls Exp $
  */
 
 #include "eitscan.h"
@@ -63,7 +63,7 @@ void cEITScanner::Process(void)
                               ch = 1;
                               numTransponders = 0;
                               }
-                           cChannel *Channel = Channels.GetByNumber(ch);
+                           cChannel *Channel = Channels.GetByNumber(ch, 1);
                            if (Channel) {
                               if (!Device->ProvidesChannel(Channel))
                                  break;
@@ -75,7 +75,7 @@ void cEITScanner::Process(void)
                                  break;
                                  }
                               }
-                           ch++;
+                           ch = Channel->Number() + 1;
                            }
                      }
                   }

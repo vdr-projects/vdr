@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.96 2002/10/13 11:03:39 kls Exp $
+ * $Id: i18n.c 1.99 2002/10/27 14:24:00 kls Exp $
  *
  * Translations provided by:
  *
@@ -14,7 +14,7 @@
  * Portuguese  Paulo Lopes <pmml@netvita.pt>
  * French      Jean-Claude Repetto <jc@repetto.org>
  * Norwegian   Jørgen Tvedt <pjtvedt@online.no> and Truls Slevigen <truls@slevigen.no>
- * Finnish     Hannu Savolainen <hannu@opensound.com>
+ * Finnish     Hannu Savolainen <hannu@opensound.com> and Jaakko Hyvätti <jaakko@hyvatti.iki.fi>
  * Polish      Michael Rakowski <mrak@gmx.de>
  * Spanish     Ruben Nunez Francisco <ruben.nunez@tang-it.com>
  * Greek       Dimitrios Dimitrakos <mail@dimitrios.de>
@@ -207,7 +207,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Nauhoituskomennot",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -640,7 +640,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Lisää",
     "",// TODO
     "",// TODO
     "Isodos",
@@ -656,7 +656,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Korvaa",
     "",// TODO
     "",// TODO
     "Epanagrafi",
@@ -914,7 +914,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Lähde",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -1074,7 +1074,7 @@ const tI18nPhrase Phrases[] = {
     "Inversion",
     "Inversion",
     "Inversion",
-    "Inversion",
+    "Inversio",
     "Inversion",
     "Inversion",
     "Inversion",
@@ -1138,7 +1138,7 @@ const tI18nPhrase Phrases[] = {
     "Modulation",
     "Modulation",
     "Modulation",
-    "Modulation",
+    "Modulaatio",
     "Modulation",
     "Modulation",
     "Modulation",
@@ -1460,7 +1460,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Kanavaa ei voi katsoa nyt!",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -1701,7 +1701,7 @@ const tI18nPhrase Phrases[] = {
     "Plugins",
     "Plugins",
     "Plugins",
-    "Plugins",
+    "Laajennokset",
     "Plugins",
     "Plugins",
     "Plugins",
@@ -1717,7 +1717,7 @@ const tI18nPhrase Phrases[] = {
     "Plugin",
     "Plugin",
     "Plugin",
-    "Plugin",
+    "Laajennos",
     "Plugin",
     "Plugin",
     "Plugin",
@@ -2198,7 +2198,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Pikanauhoituksen pituus (min)",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -2359,7 +2359,7 @@ const tI18nPhrase Phrases[] = {
     "SegTerQuaQuiSexSabDom",
     "LunMarMerJeuVenSamDim",
     "ManTirOnsTorFreLørSøn",
-    "MaaTiiKesTorPerLauSun",
+    "Ma Ti Ke To Pe La Su ",
     "PonWtoSroCzwPiaSobNie",
     "LunMarMieJueVieSabDom",
     "DevTriTetPemParSavKir",
@@ -2376,7 +2376,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    " abcdefghijklmnopqrstuvxyzåäö0123456789-.#~",
     "",// TODO
     " aábcdeéfghiíjklmnñoópqrstuúvwxyz0123456789-.#~",
     "",// TODO
@@ -2385,21 +2385,21 @@ const tI18nPhrase Phrases[] = {
     " aábcdeéfghijklmnoóöpqrstuúüvwxyz0123456789-.,#~",
   },
   // Learning keys:
-  { "Learning Remote Control Keys",
-    "Fernbedienungs-Codes lernen",
-    "Ucim se kod upravljalca",
-    "Apprendimento tasti unita` remota",
-    "Leren toetsen afstandsbediening",
-    "Aprender as teclas do telecomando",
-    "Apprentissage des codes de télécommande",
-    "Lære fjernkontrolltaster",
-    "Kaukosäätimen näppäinten opettelu",
-    "Nauka kodu pilota",
-    "Aprendiendo teclas del telemando",
-    "Ekmathisi Remote Control",
-    "Inlärning av fjärrkontrollsknappar",
-    "Invatare taste telecomanda",
-    "Távirányító betanítása",
+  { "Learning Remote Control Keys (%s)",
+    "Fernbedienungs-Codes lernen (%s)",
+    "Ucim se kod upravljalca (%s)",
+    "Apprendimento tasti unita` remota (%s)",
+    "Leren toetsen afstandsbediening (%s)",
+    "Aprender as teclas do telecomando (%s)",
+    "Apprentissage des codes de télécommande (%s)",
+    "Lære fjernkontrolltaster (%s)",
+    "Kaukosäätimen näppäinten opettelu (%s)",
+    "Nauka kodu pilota (%s)",
+    "Aprendiendo teclas del telemando (%s)",
+    "Ekmathisi Remote Control (%s)",
+    "Inlärning av fjärrkontrollsknappar (%s)",
+    "Invatare taste telecomanda (%s)",
+    "Távirányító betanítása (%s)",
   },
   { "Phase 1: Detecting RC code type",
     "Phase 1: FB Code feststellen",
@@ -2569,7 +2569,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "(Paina 'Valikko' jos näppäintä ei ole)",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -2786,6 +2786,102 @@ const tI18nPhrase Phrases[] = {
     "Albastru",
     "Kék",
   },
+  { "Play",
+    "Wiedergabe",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+  },
+  { "Pause",
+    "Pause",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+  },
+  { "Stop",
+    "Stop",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+  },
+  { "Record",
+    "Aufnehmen",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+  },
+  { "FastFwd",
+    "Vorlauf",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+  },
+  { "FastRew",
+    "Rücklauf",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+  },
   { "Power",
     "Ausschalten",
     "Izklop",
@@ -2801,6 +2897,38 @@ const tI18nPhrase Phrases[] = {
     "På/Av",
     "Pornit",
     "Kikapcsolni",
+  },
+  { "Channel+",
+    "Kanal+",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+  },
+  { "Channel-",
+    "Kanal-",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
   },
   { "Volume+",
     "Lautstärke+",
@@ -3179,7 +3307,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Tällä laajennoksella ei ole asetuksia!",
     "",// TODO
     "",// TODO
     "",// TODO

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 1.3 2002/10/06 12:41:49 kls Exp $
+ * $Id: channels.c 1.5 2002/10/20 11:50:47 kls Exp $
  */
 
 #include "channels.h"
@@ -158,6 +158,7 @@ cChannel::cChannel(void)
   tpid         = 0;
   ca           = 0;
   sid          = 0;
+  number       = 0;
   groupSep     = false;
   //XXX
   polarization = 'v';
@@ -282,8 +283,12 @@ const char *cChannel::ToText(cChannel *Channel)
      strreplace(s, ':', '|');
      }
   free(buffer);
-  if (Channel->groupSep)
-     asprintf(&buffer, ":%s\n", s);
+  if (Channel->groupSep) {
+     if (Channel->number)
+        asprintf(&buffer, ":@%d %s\n", Channel->number, s);
+     else
+        asprintf(&buffer, ":%s\n", s);
+     }
   else {
      char apidbuf[32];
      char *q = apidbuf;
@@ -308,13 +313,17 @@ const char *cChannel::ToText(void)
 bool cChannel::Parse(const char *s)
 {
   if (*s == ':') {
-     if (*++s) {
-        strn0cpy(name, s, MaxChannelName);
-        groupSep = true;
-        number = 0;
+     groupSep = true;
+     if (*++s == '@' && *++s) {
+        char *p = NULL;
+        errno = 0;
+        int n = strtol(s, &p, 10);
+        if (!errno && p != s && n > 0) {
+           number = n;
+           s = p;
+           }
         }
-     else
-        return false;
+     strn0cpy(name, skipspace(s), MaxChannelName);
      }
   else {
      groupSep = false;
@@ -400,35 +409,39 @@ int cChannels::GetNextNormal(int Idx)
 
 void cChannels::ReNumber( void )
 {
-  int Number = 0;
-  cChannel *ch = (cChannel *)First();
-  while (ch) {
-        if (!ch->GroupSep())
-           ch->SetNumber(++Number);
-        ch = (cChannel *)ch->Next();
-        }
-  maxNumber = Number;
+  int Number = 1;
+  for (cChannel *channel = First(); channel; channel = Next(channel)) {
+      if (channel->GroupSep()) {
+         if (channel->Number() > Number)
+            Number = channel->Number();
+         }
+      else
+         channel->SetNumber(Number++);
+      }
+  maxNumber = Number - 1;
 }
 
-cChannel *cChannels::GetByNumber(int Number)
+cChannel *cChannels::GetByNumber(int Number, int SkipGap)
 {
-  cChannel *channel = (cChannel *)First();
-  while (channel) {
-        if (!channel->GroupSep() && channel->Number() == Number)
-           return channel;
-        channel = (cChannel *)channel->Next();
-        }
+  cChannel *previous = NULL;
+  for (cChannel *channel = First(); channel; channel = Next(channel)) {
+      if (!channel->GroupSep()) {
+         if (channel->Number() == Number)
+            return channel;
+         else if (SkipGap && channel->Number() > Number)
+            return SkipGap > 0 ? channel : previous;
+         previous = channel;
+         }
+      }
   return NULL;
 }
 
 cChannel *cChannels::GetByServiceID(unsigned short ServiceId)
 {
-  cChannel *channel = (cChannel *)First();
-  while (channel) {
-        if (!channel->GroupSep() && channel->Sid() == ServiceId)
-           return channel;
-        channel = (cChannel *)channel->Next();
-        }
+  for (cChannel *channel = First(); channel; channel = Next(channel)) {
+      if (!channel->GroupSep() && channel->Sid() == ServiceId)
+         return channel;
+      }
   return NULL;
 }
 
@@ -436,10 +449,4 @@ bool cChannels::SwitchTo(int Number)
 {
   cChannel *channel = GetByNumber(Number);
   return channel && cDevice::PrimaryDevice()->SwitchChannel(channel, true);
-}
-
-const char *cChannels::GetChannelNameByNumber(int Number)
-{
-  cChannel *channel = GetByNumber(Number);
-  return channel ? channel->Name() : NULL;
 }

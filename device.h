@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 1.23 2002/10/12 11:15:13 kls Exp $
+ * $Id: device.h 1.25 2002/10/26 11:33:42 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -278,6 +278,8 @@ private:
   cPlayer *player;
   bool playerDetached;
 protected:
+  virtual bool CanReplay(void) const;
+       // Returns true if this device can currently start a replay session.
   virtual bool SetPlayMode(ePlayMode PlayMode);
        // Sets the device into the given play mode.
        // Returns true if the operation was successful.
@@ -324,7 +326,6 @@ public:
 
 private:
   cReceiver *receiver[MAXRECEIVERS];
-  int ca;
   int CanShift(int Ca, int Priority, int UsedCards = 0) const;
 protected:
   int Priority(void) const;
@@ -344,8 +345,8 @@ protected:
       // false in case of a non recoverable error, otherwise it returns true,
       // even if Data is NULL.
 public:
-  int  Ca(void) const { return ca; }
-       // Returns the ca of the current receiving session.
+  int  Ca(void) const;
+       // Returns the ca of the current receiving session(s).
   bool Receiving(void) const;
        // Returns true if we are currently receiving.
   bool AttachReceiver(cReceiver *Receiver);

@@ -8,9 +8,9 @@
 .\" License as specified in the file COPYING that comes with the
 .\" vdr distribution.
 .\"
-.\" $Id: vdr.5 1.8 2002/10/13 12:14:49 kls Exp $
+.\" $Id: vdr.5 1.11 2002/10/27 15:36:44 kls Exp $
 .\"
-.TH vdr 5 "7 Sep 2002" "1.2.0" "Video Disk Recorder Files"
+.TH vdr 5 "7 Oct 2002" "1.2.0" "Video Disk Recorder Files"
 .SH NAME
 vdr file formats - the Video Disk Recorder Files
 .SH DESCRIPTION
@@ -26,12 +26,22 @@ character, followed by arbitrary text. Example:
 
 \fB:First group\fR
 
+Group delimiters may also be used to specify the number of the next channel.
+To do this, the character '@' and a number must immediately follow the ':',
+as in
+
+\fB:@201 First group\fR
+
+The given number must be larger than the number of any previous channel
+(otherwise it is silently ignored).
+
 A \fBchannel definition\fR is a line with channel data, where the fields
 are separated by ':' characters. Example:
 
 \fBRTL:12188:h:S19.2E:27500:163:104:105:0:12003\fR
 
-The line number of a channel definition (not counting group separators!)
+The line number of a channel definition (not counting group separators,
+and based on a possible previous '@...' parameter)
 defines the channel's number in OSD menus and the \fItimers.conf\fR file.
 
 The fields in a channel definition have the following meaning (from left
@@ -42,7 +52,9 @@ The channel's name (if the name originally contains a ':' character
 it has to be replaced by '|').
 .TP
 .B Frequency
-The transponder frequency in MHz for DVB-S and DVB-C, kHz for DVB-T (as an integer).
+The transponder frequency (as an integer). For DVB-S this value is in MHz. For DVB-C
+and DVB-T it can be given either in MHz, kHz or Hz (the actual value given will be
+multiplied by 1000 until it is larger than 1000000).
 .TP
 .B Parameters
 Various parameters, depending on whether this is a DVB-S, DVB-C or DVB-T channel.
@@ -311,6 +323,20 @@ PC keyboard, RCU for the home-built "Remote Control Unit", or LIRC for the
 "Linux Infrared Remote Control"), \fBkey\fR is the name of the key that is
 defined (like Up, Down, Menu etc.), and \fBcode\fR is a character string that
 this remote control delivers when the given key is pressed.
+.SS KEY MACROS
+The file \fIkeymacros.conf\fR contains user defined macros that will be executed
+whenever the given key is pressed. The format is
+
+\fBmacrokey  key1 key2 key3...\fR
+
+where \fBmacrokey\fR is the key that shall initiate execution of this macro
+and can be one of \fIRed\fR, \fIGreen\fR, \fIYellow\fR, \fIBlue\fR or
+\fIUser1\fR...\fIUser9\fR. The rest of the line consists of a set of
+keys, which will be executed just as if they had been pressed in the given
+sequence. Note that the color keys will only execute their macro function
+in "normal viewing" mode (i.e. when no other menu or player is active). The
+\fIUser1\fR...\fIUser9\fR keys will always execute their macro function.
+There may be up to 15 keys in such a key sequence.
 .SS COMMANDS
 The file \fIcommands.conf\fR contains the definitions of commands that can
 be executed from the \fBvdr\fR main menu's "Commands" option.

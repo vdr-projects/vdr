@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: keys.h 1.1 2002/09/29 09:55:52 kls Exp $
+ * $Id: keys.h 1.3 2002/10/27 15:18:21 kls Exp $
  */
 
 #ifndef __KEYS_H
@@ -26,10 +26,25 @@ enum eKeys { // "Up" and "Down" must be the first two keys!
              kYellow,
              kBlue,
              k0, k1, k2, k3, k4, k5, k6, k7, k8, k9,
+             kPlay,
+             kPause,
+             kStop,
+             kRecord,
+             kFastFwd,
+             kFastRew,
              kPower,
+             kChanUp,
+             kChanDn,
              kVolUp,
              kVolDn,
              kMute,
+             kSchedule,
+             kChannels,
+             kTimers,
+             kRecordings,
+             kSetup,
+             kCommands,
+             kUser1, kUser2, kUser3, kUser4, kUser5, kUser6, kUser7, kUser8, kUser9,
              kNone,
              k_Setup,
              // The following flags are OR'd with the above codes:
@@ -47,9 +62,10 @@ enum eKeys { // "Up" and "Down" must be the first two keys!
 #define kEditCut         k2
 #define kEditTest        k8
 
-#define RAWKEY(k)    (eKeys((k) & ~k_Flags))
-#define ISRAWKEY(k)  ((k) != kNone && ((k) & k_Flags) == 0)
-#define NORMALKEY(k) (eKeys((k) & ~k_Repeat))
+#define RAWKEY(k)        (eKeys((k) & ~k_Flags))
+#define ISRAWKEY(k)      ((k) != kNone && ((k) & k_Flags) == 0)
+#define NORMALKEY(k)     (eKeys((k) & ~k_Repeat))
+#define ISMODELESSKEY(k) (RAWKEY(k) > k9)
 
 struct tKey {
   eKeys type;
@@ -83,5 +99,23 @@ public:
   };
 
 extern cKeys Keys;
+
+#define MAXKEYSINMACRO 16
+
+class cKeyMacro : public cListObject {
+private:
+  eKeys macro[MAXKEYSINMACRO];
+public:
+  cKeyMacro(void);
+  bool Parse(char *s);
+  const eKeys *Macro(void) const { return macro; }
+  };
+
+class cKeyMacros : public cConfig<cKeyMacro> {
+public:
+  const cKeyMacro *Get(eKeys Key);
+  };
+
+extern cKeyMacros KeyMacros;
 
 #endif //__KEYS_H

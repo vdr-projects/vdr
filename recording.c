@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.69 2002/10/13 09:08:45 kls Exp $
+ * $Id: recording.c 1.70 2002/10/20 11:54:29 kls Exp $
  */
 
 #include "recording.h"
@@ -307,13 +307,13 @@ cRecording::cRecording(cTimer *Timer, const char *Title, const char *Subtitle, c
   name = NULL;
   // set up the actual name:
   if (isempty(Title))
-     Title = Channels.GetChannelNameByNumber(Timer->channel);
+     Title = Timer->Channel()->Name();
   if (isempty(Subtitle))
      Subtitle = " ";
-  char *macroTITLE   = strstr(Timer->file, TIMERMACRO_TITLE);
-  char *macroEPISODE = strstr(Timer->file, TIMERMACRO_EPISODE);
+  char *macroTITLE   = strstr(Timer->File(), TIMERMACRO_TITLE);
+  char *macroEPISODE = strstr(Timer->File(), TIMERMACRO_EPISODE);
   if (macroTITLE || macroEPISODE) {
-     name = strdup(Timer->file);
+     name = strdup(Timer->File());
      name = strreplace(name, TIMERMACRO_TITLE, Title);
      name = strreplace(name, TIMERMACRO_EPISODE, Subtitle);
      if (Timer->IsSingleEvent()) {
@@ -322,16 +322,16 @@ cRecording::cRecording(cTimer *Timer, const char *Title, const char *Subtitle, c
         }
      }
   else if (Timer->IsSingleEvent() || !Setup.UseSubtitle)
-     name = strdup(Timer->file);
+     name = strdup(Timer->File());
   else
-     asprintf(&name, "%s~%s", Timer->file, Subtitle);
+     asprintf(&name, "%s~%s", Timer->File(), Subtitle);
   // substitute characters that would cause problems in file names:
   strreplace(name, '\n', ' ');
   start = Timer->StartTime();
-  priority = Timer->priority;
-  lifetime = Timer->lifetime;
+  priority = Timer->Priority();
+  lifetime = Timer->Lifetime();
   // handle summary:
-  summary = !isempty(Timer->summary) ? strdup(Timer->summary) : NULL;
+  summary = !isempty(Timer->Summary()) ? strdup(Timer->Summary()) : NULL;
   if (!summary) {
      if (isempty(Subtitle))
         Subtitle = "";

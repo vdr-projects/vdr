@@ -21,18 +21,18 @@ VDR program and present itself to the user.
 The <i>inside</i> interface provides the plugin code access to VDR's internal data
 structures and allows it to hook itself into specific areas to perform special actions.
 <p>
-<!--X1.1.9--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
-Important modifications introduced in version 1.1.9 are marked like this.
-<!--X1.1.9--></td></tr></table>
-<!--X1.1.11--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
+<!--X1.1.11--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 Important modifications introduced in version 1.1.11 are marked like this.
 <!--X1.1.11--></td></tr></table>
-<!--X1.1.12--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
+<!--X1.1.12--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
 Important modifications introduced in version 1.1.12 are marked like this.
 <!--X1.1.12--></td></tr></table>
-<!--X1.1.13--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+<!--X1.1.13--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
 Important modifications introduced in version 1.1.13 are marked like this.
 <!--X1.1.13--></td></tr></table>
+<!--X1.1.14--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+Important modifications introduced in version 1.1.14 are marked like this.
+<!--X1.1.14--></td></tr></table>
 
 <a name="Part I - The Outside Interface"><hr><center><h1>Part I - The Outside Interface</h1></center>
 
@@ -964,7 +964,7 @@ bool DevicePoll(cPoller &amp;Poller, int TimeoutMs = 0);
 </pre></td></tr></table><p>
 
 to determine whether the device is ready for further data.
-<!--X1.1.13--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+<!--X1.1.13--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
 <p>
 If the player can provide more than a single audio track, it can implement the
 following functions to make them available:
@@ -1064,11 +1064,12 @@ consider here are
     <i>Play</i>, <i>Pause</i>, <i>Fast Rewind</i> and <i>Fast Forward</i>, respectively
     (provided that this particular player can implement these functions) if the player
     is not currently showing any menu. If there is a menu, they shall allow the user
-    to navigate in the menu.
+    to navigate in the menu. The dedicated <i>Play</i>, <i>Pause</i>, <i>FastRew</i>
+    and <i>FastFwd</i> keys shall always result in their specific functionality.
 <li>The <i>Green</i> and <i>Yellow</i> buttons shall skip back- and forward by an
     amount of time suitable for this player (provided that this particular player can
     implement these functions).
-<li>The <i>Blue</i> button shall immediately stop the replay session.
+<li>The <i>Blue</i> and <i>Stop</i> button shall immediately stop the replay session.
 </ul>
 Of course, these are only suggestions which should make it easier for VDR users to
 enjoy additional players, since they will be able to control them with actions
@@ -1194,9 +1195,8 @@ the <tt>cDvbDevice</tt>, which is used to access the DVB PCI cards.
 If the new device can receive, it most likely needs to provide a way of
 selecting which channel it shall tune to:
 
-<!--X1.1.9--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 <p><table><tr><td bgcolor=#F0F0F0><pre><br>
-<!--X1.1.12--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
+<!--X1.1.12--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
 virtual bool ProvidesSource(int Source) const;
 <!--X1.1.12--></td></tr></table>
 virtual bool ProvidesChannel(const cChannel *Channel, int Priority = -1, bool *NeedsDetachReceivers = NULL);
@@ -1206,8 +1206,7 @@ virtual bool SetChannelDevice(const cChannel *Channel, bool LiveView);
 These functions will be called with the desired source or channel and shall return whether
 this device can provide the requested source or channel and whether tuning to it was successful,
 repectively.
-<!--X1.1.9--></td></tr></table>
-<!--X1.1.13--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+<!--X1.1.13--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
 <p>
 <b>Audio selection</b>
 <p>
@@ -1230,9 +1229,7 @@ A device that can be used for recording must implement the functions
 virtual bool SetPid(cPidHandle *Handle, int Type, bool On);
 virtual bool OpenDvr(void);
 virtual void CloseDvr(void);
-<!--X1.1.9--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 virtual bool GetTSPacket(uchar *&amp;Data);
-<!--X1.1.9--></td></tr></table>
 </pre></td></tr></table><p>
 
 which allow VDR to set the PIDs that shall be recorded, set up the device for
@@ -1256,6 +1253,9 @@ The functions to implement replaying capabilites are
 
 <p><table><tr><td bgcolor=#F0F0F0><pre><br>
 virtual bool HasDecoder(void) const;
+<!--X1.1.14--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+virtual bool CanReplay(void) const;
+<!--X1.1.14--></td></tr></table>
 virtual bool SetPlayMode(ePlayMode PlayMode);
 virtual void TrickSpeed(int Speed);
 virtual void Clear(void);
@@ -1315,7 +1315,7 @@ shut down (delete) all devices when the program terminates. It is therefore
 important that the devices are created on the heap, using the <tt>new</tt>
 operator!
 
-<!--X1.1.11--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
+<!--X1.1.11--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 <hr><h2>Remote Control</h2>
 
 <center><i><b>The joy of zapping!</b></i></center><p>

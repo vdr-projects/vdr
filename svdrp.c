@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.45 2002/10/13 09:31:31 kls Exp $
+ * $Id: svdrp.c 1.48 2002/10/20 12:45:03 kls Exp $
  */
 
 #include "svdrp.h"
@@ -31,6 +31,7 @@
 #include "device.h"
 #include "keys.h"
 #include "remote.h"
+#include "timers.h"
 #include "tools.h"
 
 // --- cSocket ---------------------------------------------------------------
@@ -413,12 +414,12 @@ void cSVDRP::CmdCHAN(const char *Option)
      else {
         int i = 1;
         cChannel *channel;
-        while ((channel = Channels.GetByNumber(i)) != NULL) {
+        while ((channel = Channels.GetByNumber(i, 1)) != NULL) {
               if (strcasecmp(channel->Name(), Option) == 0) {
                  n = i;
                  break;
                  }
-              i++;
+              i = channel->Number() + 1;
               }
         }
      if (n < 0) {
@@ -487,7 +488,7 @@ void cSVDRP::CmdDELT(const char *Option)
      if (isnumber(Option)) {
         cTimer *timer = Timers.Get(strtol(Option, NULL, 10) - 1);
         if (timer) {
-           if (!timer->recording) {
+           if (!timer->Recording()) {
               Timers.Del(timer);
               Timers.Save();
               isyslog("timer %s deleted", Option);
@@ -640,7 +641,7 @@ void cSVDRP::CmdLSTC(const char *Option)
         int i = 1;
         cChannel *next = NULL;
         while (i <= Channels.MaxNumber()) {
-              cChannel *channel = Channels.GetByNumber(i);
+              cChannel *channel = Channels.GetByNumber(i, 1);
               if (channel) {
                  if (strcasestr(channel->Name(), Option)) {
                     if (next)
@@ -652,7 +653,7 @@ void cSVDRP::CmdLSTC(const char *Option)
                  Reply(501, "Channel \"%d\" not found", i);
                  return;
                  }
-              i++;
+              i = channel->Number() + 1;
               }
         if (next)
            Reply(250, "%d %s", next->Number(), next->ToText());
@@ -661,13 +662,15 @@ void cSVDRP::CmdLSTC(const char *Option)
         }
      }
   else if (Channels.MaxNumber() >= 1) {
-     for (int i = 1; i <= Channels.MaxNumber(); i++) {
-         cChannel *channel = Channels.GetByNumber(i);
-        if (channel)
-           Reply(i < Channels.MaxNumber() ? -250 : 250, "%d %s", channel->Number(), channel->ToText());
-        else
-           Reply(501, "Channel \"%d\" not found", i);
-         }
+     int i = 1;
+     while (i <= Channels.MaxNumber()) {
+           cChannel *channel = Channels.GetByNumber(i, 1);
+           if (channel)
+              Reply(channel->Number() < Channels.MaxNumber() ? -250 : 250, "%d %s", channel->Number(), channel->ToText());
+           else
+              Reply(501, "Channel \"%d\" not found", i);
+           i = channel->Number() + 1;
+           }
      }
   else
      Reply(550, "No channels defined");
@@ -804,16 +807,16 @@ void cSVDRP::CmdMODT(const char *Option)
         if (timer) {
            cTimer t = *timer;
            if (strcasecmp(tail, "ON") == 0)
-              t.active = 1;
+              t.SetActive(taActive);
            else if (strcasecmp(tail, "OFF") == 0)
-              t.active = 0;
+              t.SetActive(taInactive);
            else if (!t.Parse(tail)) {
               Reply(501, "Error in timer settings");
               return;
               }
            *timer = t;
            Timers.Save();
-           isyslog("timer %d modified (%s)", timer->Index() + 1, timer->active ? "active" : "inactive");
+           isyslog("timer %d modified (%s)", timer->Index() + 1, timer->Active() ? "active" : "inactive");
            Reply(250, "%d %s", timer->Index() + 1, timer->ToText());
            }
         else
@@ -1009,7 +1012,7 @@ void cSVDRP::Execute(char *Cmd)
   else                   Reply(500, "Command unrecognized: \"%s\"", Cmd);
 }
 
-void cSVDRP::Process(void)
+bool cSVDRP::Process(void)
 {
   bool NewConnection = !file.IsOpen();
   bool SendGreeting = NewConnection;
@@ -1070,7 +1073,9 @@ void cSVDRP::Process(void)
         isyslog("timeout on SVDRP connection");
         Close(true);
         }
+     return true;
      }
+  return false;
 }
 
 char *cSVDRP::GetMessage(void)

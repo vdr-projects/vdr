@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.27 2002/10/12 13:24:37 kls Exp $
+ * $Id: device.c 1.32 2002/10/26 11:43:52 kls Exp $
  */
 
 #include "device.h"
@@ -52,7 +52,6 @@ cDevice::cDevice(void)
 
   for (int i = 0; i < MAXRECEIVERS; i++)
       receiver[i] = NULL;
-  ca = -1;
 
   if (numDevices < MAXDEVICES) {
      device[numDevices++] = this;
@@ -322,13 +321,12 @@ bool cDevice::SwitchChannel(int Direction)
   if (Direction) {
      int n = CurrentChannel() + Direction;
      int first = n;
-     PrimaryDevice()->StopReplay(); // otherwise a running Transfer Mode would block channels
      cChannel *channel;
-     while ((channel = Channels.GetByNumber(n)) != NULL) {
+     while ((channel = Channels.GetByNumber(n, Direction)) != NULL) {
            // try only channels which are currently available
-           if (PrimaryDevice()->ProvidesChannel(channel, Setup.PrimaryLimit) || GetDevice(channel, 0))
+           if (PrimaryDevice()->ProvidesChannel(channel, Setup.PrimaryLimit) || PrimaryDevice()->CanReplay() && GetDevice(channel, 0))
               break;
-           n += Direction;
+           n = channel->Number() + Direction;
            }
      if (channel) {
         int d = n - first;
@@ -362,7 +360,7 @@ eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
 
   if (NeedsTransferMode) {
      cDevice *CaDevice = GetDevice(Channel, 0);
-     if (CaDevice) {
+     if (CaDevice && CanReplay()) {
         cStatus::MsgChannelSwitch(this, 0); // only report status if we are actually going to switch the channel
         if (CaDevice->SetChannel(Channel, false) == scrOk) // calling SetChannel() directly, not SwitchChannel()!
            cControl::Launch(new cTransferControl(CaDevice, Channel->Vpid(), Channel->Apid1(), Channel->Apid2(), Channel->Dpid1(), Channel->Dpid2()));//XXX+
@@ -448,6 +446,11 @@ void cDevice::SetAudioTrack(int Index)
      SetAudioTrackDevice(Index);
 }
 
+bool cDevice::CanReplay(void) const
+{
+  return HasDecoder();
+}
+
 bool cDevice::SetPlayMode(ePlayMode PlayMode)
 {
   return false;
@@ -484,7 +487,7 @@ bool cDevice::Replaying(void) const
 
 bool cDevice::AttachPlayer(cPlayer *Player)
 {
-  if (HasDecoder()) {
+  if (CanReplay()) {
      if (player)
         Detach(player);
      player = Player;
@@ -529,6 +532,16 @@ int cDevice::PlayVideo(const uchar *Data, int Length)
 int cDevice::PlayAudio(const uchar *Data, int Length)
 {
   return -1;
+}
+
+int cDevice::Ca(void) const
+{
+  int ca = 0;
+  for (int i = 0; i < MAXRECEIVERS; i++) {
+      if (receiver[i] && (ca = receiver[i]->ca) != 0)
+         break; // all receivers have the same ca
+      }
+  return ca;
 }
 
 int cDevice::Priority(void) const

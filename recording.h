@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 1.24 2002/06/22 10:09:27 kls Exp $
+ * $Id: recording.h 1.25 2002/10/19 15:48:52 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -12,6 +12,7 @@
 
 #include <time.h>
 #include "config.h"
+#include "timers.h"
 #include "tools.h"
 
 void RemoveDeletedRecordings(void);

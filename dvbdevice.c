@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.24 2002/10/12 11:15:45 kls Exp $
+ * $Id: dvbdevice.c 1.30 2002/10/26 11:37:03 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -428,6 +428,13 @@ bool cDvbDevice::ProvidesChannel(const cChannel *Channel, int Priority, bool *Ne
   return result;
 }
 
+static unsigned int FrequencyToHz(unsigned int f)
+{
+  while (f && f < 1000000)
+        f *= 1000;
+  return f;
+}
+
 bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
 {
 #if (DVB_DRIVER_VERSION < MIN_DVB_DRIVER_VERSION_FOR_TIMESHIFT)
@@ -435,24 +442,26 @@ bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
      LiveView = true;
 #endif
 
+  bool IsEncrypted = Channel->Ca() > CACONFBASE;
+
   bool DoTune = !IsTunedTo(Channel);
 
   bool TurnOffLivePIDs = HasDecoder()
                          && (DoTune
-                            || Channel->Ca() > CACONFBASE && pidHandles[ptVideo].pid != Channel->Vpid() // CA channels can only be decrypted in "live" mode
+                            || IsEncrypted && pidHandles[ptVideo].pid != Channel->Vpid() // CA channels can only be decrypted in "live" mode
                             || IsPrimaryDevice()
                                && (LiveView // for a new live view the old PIDs need to be turned off
                                   || pidHandles[ptVideo].pid == Channel->Vpid() // for recording the PIDs must be shifted from DMX_PES_AUDIO/VIDEO to DMX_PES_OTHER
                                   )
                             );
 
-  bool StartTransferMode = IsPrimaryDevice() && !DoTune
+  bool StartTransferMode = IsPrimaryDevice() && !IsEncrypted && !DoTune
                            && (LiveView && HasPid(Channel->Vpid()) && pidHandles[ptVideo].pid != Channel->Vpid() // the PID is already set as DMX_PES_OTHER
                               || !LiveView && pidHandles[ptVideo].pid == Channel->Vpid() // a recording is going to shift the PIDs from DMX_PES_AUDIO/VIDEO to DMX_PES_OTHER
                               );
 
   bool TurnOnLivePIDs = HasDecoder() && !StartTransferMode
-                        && (Channel->Ca() > CACONFBASE // CA channels can only be decrypted in "live" mode
+                        && (IsEncrypted // CA channels can only be decrypted in "live" mode
                            || LiveView
                            );
 
@@ -622,13 +631,13 @@ bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
             // Frequency and symbol rate:
 
 #ifdef NEWSTRUCT
-            Frontend.frequency = Channel->Frequency() * 1000000UL;
+            Frontend.frequency = FrequencyToHz(Channel->Frequency());
             Frontend.inversion = fe_spectral_inversion_t(Channel->Inversion());
             Frontend.u.qam.symbol_rate = Channel->Srate() * 1000UL;
             Frontend.u.qam.fec_inner = fe_code_rate_t(Channel->CoderateH());
             Frontend.u.qam.modulation = fe_modulation_t(Channel->Modulation());
 #else
-            Frontend.Frequency = Channel->Frequency() * 1000000UL;
+            Frontend.Frequency = FrequencyToHz(Channel->Frequency());
             Frontend.Inversion = SpectralInversion(Channel->Inversion());
             Frontend.u.qam.SymbolRate = Channel->Srate() * 1000UL;
             Frontend.u.qam.FEC_inner = CodeRate(Channel->CoderateH());
@@ -641,7 +650,7 @@ bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
             // Frequency and OFDM paramaters:
 
 #ifdef NEWSTRUCT
-            Frontend.frequency = Channel->Frequency() * 1000UL;
+            Frontend.frequency = FrequencyToHz(Channel->Frequency());
             Frontend.inversion = fe_spectral_inversion_t(Channel->Inversion());
             Frontend.u.ofdm.bandwidth = fe_bandwidth_t(Channel->Bandwidth());
             Frontend.u.ofdm.code_rate_HP = fe_code_rate_t(Channel->CoderateH());
@@ -651,7 +660,7 @@ bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
             Frontend.u.ofdm.guard_interval = fe_guard_interval_t(Channel->Guard());
             Frontend.u.ofdm.hierarchy_information = fe_hierarchy_t(Channel->Hierarchy());
 #else
-            Frontend.Frequency = Channel->Frequency() * 1000UL;
+            Frontend.Frequency = FrequencyToHz(Channel->Frequency());
             Frontend.Inversion = SpectralInversion(Channel->Inversion());
             Frontend.u.ofdm.bandWidth = BandWidth(Channel->Bandwidth());
             Frontend.u.ofdm.HP_CodeRate = CodeRate(Channel->CoderateH());
@@ -733,11 +742,9 @@ bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
      if (IsPrimaryDevice())
         AddPid(Channel->Tpid(), ptTeletext);
      CHECK(ioctl(fd_audio, AUDIO_SET_AV_SYNC, true));
-     CHECK(ioctl(fd_audio, AUDIO_SET_MUTE, false));
-     CHECK(ioctl(fd_video, VIDEO_SET_BLANK, false));
      }
   else if (StartTransferMode)
-     cControl::Launch(new cTransferControl(this, Channel->Vpid(), Channel->Apid1(), 0, 0, 0));
+     cControl::Launch(new cTransferControl(this, Channel->Vpid(), Channel->Apid1(), Channel->Apid2(), Channel->Dpid1(), Channel->Dpid2()));
 
   // Start setting system time:
 
@@ -765,13 +772,15 @@ int cDvbDevice::NumAudioTracksDevice(void) const
   int n = 0;
   if (aPid1)
      n++;
-  if (aPid2 && aPid1 != aPid2)
+  if (!Ca() && aPid2 && aPid1 != aPid2) // a Ca recording session blocks switching live audio tracks
      n++;
   return n;
 }
 
 const char **cDvbDevice::GetAudioTracksDevice(int *CurrentTrack) const
 {
+  if (Ca())
+     return NULL; // a Ca recording session blocks switching live audio tracks
   if (NumAudioTracks()) {
      if (CurrentTrack)
         *CurrentTrack = (pidHandles[ptAudio].pid == aPid1) ? 0 : 1;
@@ -785,9 +794,17 @@ const char **cDvbDevice::GetAudioTracksDevice(int *CurrentTrack) const
 void cDvbDevice::SetAudioTrackDevice(int Index)
 {
   if (0 <= Index && Index < NumAudioTracks()) {
+     int vpid = pidHandles[ptVideo].pid; // need to turn video PID off/on to restart demux
+     DelPid(vpid);
      DelPid(pidHandles[ptAudio].pid);
      AddPid(Index ? aPid2 : aPid1, ptAudio);
+     AddPid(vpid, ptVideo);
      }
+}
+
+bool cDvbDevice::CanReplay(void) const
+{
+  return cDevice::CanReplay() && !Ca(); // we can only replay if there is no Ca recording going on
 }
 
 bool cDvbDevice::SetPlayMode(ePlayMode PlayMode)

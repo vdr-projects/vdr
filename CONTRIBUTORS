@@ -31,6 +31,7 @@ Guido Fiala <gfiala@s.netic.de>
  (overlay capabilities have been removed again in VDR 0.98, since kvdr version 0.4
  now does these things itself)
  for making the replay progress display avoid unnecessary code execution
+ for reporting a problem with slow reaction on SVDRP input
 
 Robert Schneider <Robert.Schneider@de.ibm.com>
  for implementing EIT support for displaying the current/next info
@@ -153,6 +154,10 @@ Stefan Huelswitt <huels@iname.com>
  be switched or has actually been switched successfully
  for adding a missing StripAudioPackets() to cDvbPlayer::Action()
  for improving skipping channels that are (currently) not available
+ for fixing checking the Ca() status of a cDevice
+ for helping to fix switching audio tracks in 'Transfer Mode' on the primary DVB device
+ for fixing handling 'Transfer Mode' on single device systems when recording an
+ encrypted channel
 
 Ulrich Röder <roeder@efr-net.de>
  for pointing out that there are channels that have a symbol rate higher than
@@ -416,6 +421,11 @@ Oliver Endriss <o.endriss@gmx.de>
  for reporting a bug when pressing the "Blue" button in the main menu without
  having displayed it
  for helping to debug a crash when closing down with remote control plugins
+ for adding some satellites to 'sources.conf'
+ for reporting a bug in learning remote control keys in case there is more than
+ one remote control
+ for reporting a crash when learning the keys of several remote controls and
+ pressing buttons of those that have already been learned
 
 Reinhard Walter Buchner <rw.buchner@freenet.de>
  for adding some satellites to 'sources.conf'
@@ -428,9 +438,19 @@ Andy Carter <fruit@ukgateway.net>
 
 Robert Schiele <rschiele@uni-mannheim.de>
  for his help in keeping 'channels.conf.cable' up to date
+ for reporting some faulty default parameter initializations
 
 Gerhard Steiner <steiner@mail.austria.com>
  for suggesting that the SVDRP command PUTE shall trigger an immediate write of
  the 'epg.data' file
  for suggesting the new configuration file 'reccmds.conf' to define commands that
  shall be executed from the "Recordings" menu
+
+Jaakko Hyvätti <jaakko@hyvatti.iki.fi>
+ for translating OSD texts to the Finnish language
+
+Dennis Noordsij <dennis.noordsij@wiral.com>
+ for reporting a small glitch when switching channels
+
+Steffen Barszus <st_barszus@gmx.de>
+ for reporting a bug in switching audio tracks in 'Transfer Mode' on the primary DVB device

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.c 1.56 2002/09/30 15:32:10 kls Exp $
+ * $Id: interface.c 1.59 2002/10/27 15:54:05 kls Exp $
  */
 
 #include "interface.h"
@@ -58,7 +58,8 @@ eKeys cInterface::GetKey(bool Wait)
 {
   Flush();
   if (SVDRP) {
-     SVDRP->Process();
+     if (SVDRP->Process())
+        Wait = false;
      if (!open) {
         char *message = SVDRP->GetMessage();
         if (message) {
@@ -327,9 +328,6 @@ void cInterface::Help(const char *Red, const char *Green, const char *Yellow, co
 
 void cInterface::QueryKeys(cRemote *Remote)
 {
-  cRemote::Clear();
-  Clear();
-  WriteText(1, 1, tr("Learning Remote Control Keys"));//XXX Remote->name()!!!
   WriteText(1, 3, tr("Phase 1: Detecting RC code type"));
   WriteText(1, 5, tr("Press any key on the RC unit"));
   Flush();
@@ -354,12 +352,12 @@ void cInterface::QueryKeys(cRemote *Remote)
                char *NewCode = NULL;
                eKeys Key = cRemote::Get(100, &NewCode);
                switch (Key) {
-                 case kUp:   {
-                               NewKey = eKeys(NewKey - 1);
-                               cKey *last = Keys.Last();
-                               if (last && last->Key() == NewKey)
-                                  Keys.Del(last);
-                             }
+                 case kUp:   if (NewKey > kUp) {
+                                NewKey = eKeys(NewKey - 1);
+                                cKey *last = Keys.Last();
+                                if (last && last->Key() == NewKey)
+                                   Keys.Del(last);
+                                }
                              break;
                  case kDown: WriteText(1, 5, tr("Press 'Up' to confirm"));
                              WriteText(1, 6, tr("Press 'Down' to continue"));
@@ -415,28 +413,30 @@ void cInterface::LearnKeys(void)
       dsyslog("remote control %s - %s", Remote->Name(), known ? "keys known" : "learning keys");
       if (!known) {
          Open();
+         char Headline[Width()];
+         snprintf(Headline, sizeof(Headline), tr("Learning Remote Control Keys (%s)"), Remote->Name());
+         Clear();
+         cRemote::Clear();
+         WriteText(1, 1, Headline);
+         cRemote::SetLearning(true);
+         QueryKeys(Remote);
+         cRemote::SetLearning(false);
+         Clear();
+         WriteText(1, 1, Headline);
+         WriteText(1, 3, tr("Phase 3: Saving key codes"));
+         WriteText(1, 5, tr("Press 'Up' to save, 'Down' to cancel"));
          for (;;) {
-             Clear();
-             cRemote::SetLearning(true);
-             QueryKeys(Remote);
-             cRemote::SetLearning(false);
-             Clear();
-             WriteText(1, 1, tr("Learning Remote Control Keys"));//XXX Remote->name()!!!
-             WriteText(1, 3, tr("Phase 3: Saving key codes"));
-             WriteText(1, 5, tr("Press 'Up' to save, 'Down' to cancel"));
-             for (;;) {
-                 eKeys key = GetKey();
-                 if (key == kUp) {
-                    Keys.Save();
-                    Close();
-                    return;
-                    }
-                 else if (key == kDown) {
-                    Keys.Load();
-                    Close();
-                    return;
-                    }
-                 }
+             eKeys key = GetKey();
+             if (key == kUp) {
+                Keys.Save();
+                Close();
+                break;
+                }
+             else if (key == kDown) {
+                Keys.Load();
+                Close();
+                break;
+                }
              }
          }
       }

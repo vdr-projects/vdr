@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 1.14 2002/10/12 12:29:31 kls Exp $
+ * $Id: dvbplayer.c 1.15 2002/10/13 16:08:40 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -635,7 +635,7 @@ int cDvbPlayer::NumAudioTracks(void) const
   return canToggleAudioTrack ? 2 : 1;
 }
 
-const char **cDvbPlayer::GetAudioTracks(int *CurrentTrack = NULL) const
+const char **cDvbPlayer::GetAudioTracks(int *CurrentTrack) const
 {
   if (NumAudioTracks()) {
      if (CurrentTrack)
