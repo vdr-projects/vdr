@@ -946,9 +946,9 @@ struct Pid *siParsePMT (u_char *);
 struct LIST *siParseSDT (u_char *);
 struct LIST *siParseEIT (u_char *);
 time_t siParseTDT (u_char *);
-void siParseDescriptors (struct LIST *, u_char *, u_int, u_char);
+void siParseDescriptors (struct LIST *, u_char *, int, u_char);
 void siParseDescriptor (struct LIST *, u_char *);
-char *siGetDescriptorText (u_char *, u_int);
+char *siGetDescriptorText (u_char *, int);
 u_long crc32 (char *data, int len);
 
 /* si_debug_services.c */
