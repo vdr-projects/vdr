@@ -1916,3 +1916,8 @@ Video Disk Recorder Revision History
 - Since several channels put very long strings into the Subtitle part of their
   EPG data, that string is now limited in length when used in a recording's
   file name.
+
+2003-01-12: Version 1.1.22
+
+- Added 'Hrvatska radiotelevizija' and 'RTV Slovenija' to ca.conf (thanks to
+  Paul Gohn).
