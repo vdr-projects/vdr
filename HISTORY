@@ -2080,3 +2080,4 @@ Video Disk Recorder Revision History
 - Avoiding short display of the main menu if a plugin displays its own OSD and
   is started through a user defined key macro (thanks to Andreas Mair for reporting
   this one).
+- Reduced the time to wait for EPG data when starting a recording to 3 seconds.

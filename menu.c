@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.239 2003/04/26 13:51:19 kls Exp $
+ * $Id: menu.c 1.240 2003/04/27 12:50:31 kls Exp $
  */
 
 #include "menu.h"
@@ -28,7 +28,7 @@
 #include "videodir.h"
 
 #define MENUTIMEOUT     120 // seconds
-#define MAXWAIT4EPGINFO  10 // seconds
+#define MAXWAIT4EPGINFO   3 // seconds
 #define MODETIMEOUT       3 // seconds
 
 #define MAXRECORDCONTROLS (MAXDEVICES * MAXRECEIVERS)
