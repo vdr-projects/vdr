@@ -2263,3 +2263,6 @@ Video Disk Recorder Revision History
 - Fixed creating a new channel in the "Channels" menu in case the 'channels.conf'
   contains ':@nnn' lines with no text (thanks to Guy Roussin for reporting this
   one).
+- Changed the behaviour of the '0' key in normal viewing mode so that a channel
+  only qualifies as "previous" if it has been selected for at least 3 seconds
+  (suggested by Thomas Keil).
