@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.39 2002/08/11 12:01:28 kls Exp $
+ * $Id: svdrp.c 1.40 2002/08/25 10:40:46 kls Exp $
  */
 
 #include "svdrp.h"
@@ -174,6 +174,8 @@ const char *HelpPages[] = {
   "    Switch channel up, down or to the given channel number or name.\n"
   "    Without option (or after successfully switching to the channel)\n"
   "    it returns the current channel number and name.",
+  "CLRE\n"
+  "    Clear the entire EPG list.",
   "DELC <number>\n"
   "    Delete channel.",
   "DELR <number>\n"
@@ -436,6 +438,12 @@ void cSVDRP::CmdCHAN(const char *Option)
      Reply(250, "%d %s", channel->number, channel->name);
   else
      Reply(550, "Unable to find channel \"%d\"", cDevice::CurrentChannel());
+}
+
+void cSVDRP::CmdCLRE(const char *Option)
+{
+  cSIProcessor::Clear();
+  Reply(250, "EPG data cleared");
 }
 
 void cSVDRP::CmdDELC(const char *Option)
@@ -967,6 +975,7 @@ void cSVDRP::Execute(char *Cmd)
      *s++ = 0;
   s = skipspace(s);
   if      (CMD("CHAN"))  CmdCHAN(s);
+  else if (CMD("CLRE"))  CmdCLRE(s);
   else if (CMD("DELC"))  CmdDELC(s);
   else if (CMD("DELR"))  CmdDELR(s);
   else if (CMD("DELT"))  CmdDELT(s);

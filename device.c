@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.12 2002/08/16 09:50:43 kls Exp $
+ * $Id: device.c 1.13 2002/08/25 09:16:51 kls Exp $
  */
 
 #include "device.h"
@@ -109,6 +109,11 @@ bool cDevice::CanBeReUsed(int Frequency, int Vpid)
 bool cDevice::HasDecoder(void) const
 {
   return false;
+}
+
+cOsdBase *cDevice::NewOsd(int x, int y)
+{
+  return NULL;
 }
 
 cDevice *cDevice::GetDevice(int Ca, int Priority, int Frequency, int Vpid, bool *ReUse)

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osdbase.h 1.4 2002/07/13 14:45:55 kls Exp $
+ * $Id: osdbase.h 1.5 2002/08/25 10:01:00 kls Exp $
  */
 
 #ifndef __OSDBASE_H
@@ -56,7 +56,18 @@ public:
   cPalette(int Bpp);
   int Index(eDvbColor Color);
   void Reset(void);
-  const eDvbColor *Colors(int &FirstColor, int &LastColor);
+  const eDvbColor *NewColors(int &FirstColor, int &LastColor);
+        // With every call this function returns a consecutive range of
+        // color entries that have been added since the last call. The
+        // return value is the address of the first new color, and the
+        // index of the first and last new color are returned in the given
+        // int parameters. If there are no new color entries, NULL will
+        // be returned.
+  const eDvbColor *AllColors(int &NumColors);
+        // Returns a pointer to the complete color table and stores the
+        // number of valid entries in NumColors. If no colors have been
+        // stored yet, NumColors will be set to 0 and the function will
+        // return NULL.
   void Take(const cPalette &Palette, tIndexes *Indexes = NULL);
   };
 

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbosd.c 1.18 2002/08/04 10:13:21 kls Exp $
+ * $Id: dvbosd.c 1.19 2002/08/25 09:53:51 kls Exp $
  */
 
 #include "dvbosd.h"
@@ -92,7 +92,7 @@ void cDvbOsd::CommitWindow(cWindow *Window)
         // commit colors:
         int FirstColor = 0, LastColor = 0;
         const eDvbColor *pal;
-        while ((pal = Window->Colors(FirstColor, LastColor)) != NULL)
+        while ((pal = Window->NewColors(FirstColor, LastColor)) != NULL)
               Cmd(OSD_SetPalette, FirstColor, LastColor, 0, 0, 0, pal);
         // commit modified data:
         Cmd(OSD_SetBlock, Window->Width(), x1, y1, x2, y2, Window->Data(x1, y1));

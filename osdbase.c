@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osdbase.c 1.6 2002/08/11 11:47:21 kls Exp $
+ * $Id: osdbase.c 1.7 2002/08/25 10:02:36 kls Exp $
  */
 
 #include "osdbase.h"
@@ -74,7 +74,7 @@ void cPalette::Reset(void)
   full = false;
 }
 
-const eDvbColor *cPalette::Colors(int &FirstColor, int &LastColor)
+const eDvbColor *cPalette::NewColors(int &FirstColor, int &LastColor)
 {
   for (FirstColor = 0; FirstColor < numColors; FirstColor++) {
       if (!fetched[FirstColor]) {
@@ -85,6 +85,12 @@ const eDvbColor *cPalette::Colors(int &FirstColor, int &LastColor)
          }
       }
   return NULL;
+}
+
+const eDvbColor *cPalette::AllColors(int &NumColors)
+{
+  NumColors = numColors;
+  return numColors ? color : NULL;
 }
 
 void cPalette::Take(const cPalette &Palette, tIndexes *Indexes)

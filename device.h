@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 1.9 2002/08/16 08:52:27 kls Exp $
+ * $Id: device.h 1.10 2002/08/25 09:16:34 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -43,6 +43,7 @@ enum ePlayMode { pmNone,       // audio/video from decoder
                  // KNOWN TO YOUR PLAYER.
                };
 
+class cOsdBase;
 class cChannel;
 class cPlayer;
 class cReceiver;
@@ -128,6 +129,16 @@ public:
          // receiver with the given settings to be attached to it.
   virtual bool HasDecoder(void) const;
          // Tells whether this device has an MPEG decoder.
+
+// OSD facilities
+
+public:
+  virtual cOsdBase *NewOsd(int x, int y);
+         // Creates a new cOsdBase object that can be used by the cOsd class
+         // to display information on the screen, with the upper left corner
+         // of the OSD at the given coordinates. If a derived cDevice doesn't
+         // implement this function, NULL will be returned by default (which
+         // means the device has no OSD capabilities).
 
 // Channel facilities
 

@@ -16,7 +16,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.h 1.17 2002/08/04 11:30:24 kls Exp $
+ * $Id: eit.h 1.18 2002/08/25 10:38:34 kls Exp $
  ***************************************************************************/
 
 #ifndef __EIT_H
@@ -156,6 +156,7 @@ public:
          // time the returned cSchedules is accessed. Once the cSchedules is no
          // longer used, the cMutexLock must be destroyed.
   static bool Read(FILE *f = NULL);
+  static void Clear(void);
   void SetStatus(bool On);
   void SetCurrentTransponder(int CurrentTransponder);
   static bool SetCurrentServiceID(unsigned short servid);

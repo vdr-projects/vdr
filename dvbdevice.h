@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.h 1.5 2002/08/16 08:53:30 kls Exp $
+ * $Id: dvbdevice.h 1.6 2002/08/25 09:19:34 kls Exp $
  */
 
 #ifndef __DVBDEVICE_H
@@ -47,6 +47,11 @@ public:
   virtual ~cDvbDevice();
   virtual bool CanBeReUsed(int Frequency, int Vpid);
   virtual bool HasDecoder(void) const;
+
+// OSD facilities
+
+public:
+  cOsdBase *NewOsd(int x, int y);
 
 // Channel facilities
 

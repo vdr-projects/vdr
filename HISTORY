@@ -1415,3 +1415,18 @@ Video Disk Recorder Revision History
 - VDR no longer gives up if there is no DVB device. It continues to work if
   there is at least one device, either a DVB device found by the core VDR code
   itself, or a device implemented by a plugin.
+
+2002-08-25: Version 1.1.8
+
+- Fixed replaying the last few seconds of a recording.
+- Added some missing #includes to files in libdtv for gcc 3.2 (thanks to Jürgen
+  Zimmermann).
+- Added cDevice::NewOsd() to allow a derived cDevice class to implement its own
+  OSD capabilities (thanks to Andreas Schultz).
+- Added cPalette::AllColors() for plugins that need to get the color entries of
+  a cPalette (see osdbase.h).
+- The new SVDRP command CLRE can be used to clear the entire EPG data (suggested
+  by Matthias Schniedermeyer).
+- Fixed handling one-shot timers that were already recording and had their start
+  time changed into the future (thanks to Matthias Schniedermeyer for reporting
+  this one).

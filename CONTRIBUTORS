@@ -54,6 +54,9 @@ Matthias Schniedermeyer <ms@citd.de>
  for his "schnitt" tools
  for his "master-timer" tool
  for helping to debug the "move to last position in list" bug
+ for suggesting the SVDRP command CLRE
+ for reporting a bug in handling one-shot timers that were already recording
+ and had their start time changed into the future
 
 Miha Setina <mihasetina@softhome.net>
  for translating OSD texts to the Slovenian language
@@ -161,6 +164,8 @@ Andreas Schultz <aschultz@warp10.net>
  for adding direct access to the index data of cPalette (needed for displaying SPUs)
  for pointing out a possible race condition in the cDvbPlayer
  for making the use of malloc/free and new/delete consistent
+ for adding cDevice::NewOsd() to allow a derived cDevice class to implement its own
+ OSD capabilities
 
 Aaron Holtzman
  for writing 'ac3dec'
@@ -380,3 +385,6 @@ Joerg Riechardt <J.Riechardt@gmx.de>
 
 Holger Wächtler <holger@convergence.de>
  for some valuable advice during adapting to the NEWSTRUCT driver
+
+Jürgen Zimmermann <jnzimmer@informatik.uni-kl.de>
+ for adding some missing #includes to files in libdtv for gcc 3.2
