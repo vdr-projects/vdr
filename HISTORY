@@ -1460,8 +1460,9 @@ Video Disk Recorder Revision History
   Stefan Huelswitt for reporting this one).
 - Added play mode pmAudioOnlyBlack (thanks to Stefan Huelswitt).
 
-2002-09-14: Version 1.1.10
+2002-09-15: Version 1.1.10
 
 - Removed a superfluous error message from cLockFile::Unlock() (reported by
   Helmut Auer).
-- Fixed starting a recording of the current channel with only one DVB card.
+- Fixed starting a recording of the current channel with only one DVB card
+  (thanks to Stefan Huelswitt for his help).

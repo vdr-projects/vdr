@@ -147,6 +147,7 @@ Stefan Huelswitt <huels@iname.com>
  for improving cCondVar::Wait() and implementing cCondVar::TimedWait()
  for reporting a bug when entering an integer value outside the limit
  for adding play mode pmAudioOnlyBlack
+ for helping to fix starting a recording of the current channel with only one DVB card
 
 Ulrich Röder <roeder@efr-net.de>
  for pointing out that there are channels that have a symbol rate higher than

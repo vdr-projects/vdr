@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.16 2002/09/14 13:26:16 kls Exp $
+ * $Id: dvbdevice.c 1.17 2002/09/15 10:43:12 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -390,30 +390,52 @@ bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
      LiveView = true;
 #endif
 
-  // Avoid noise while switching:
+  bool DoTune = frequency != Channel->frequency; // TODO will be changed when DiSEqC handling is revised
 
-  if (HasDecoder()) {
-     CHECK(ioctl(fd_audio, AUDIO_SET_MUTE, true));
-     CHECK(ioctl(fd_video, VIDEO_SET_BLANK, true));
-     CHECK(ioctl(fd_audio, AUDIO_CLEAR_BUFFER));
-     CHECK(ioctl(fd_video, VIDEO_CLEAR_BUFFER));
-     }
+  bool TurnOffLivePIDs = HasDecoder()
+                         && (DoTune
+                            || Channel->ca > CACONFBASE // CA channels can only be decrypted in "live" mode
+                            || IsPrimaryDevice()
+                               && (LiveView // for a new live view the old PIDs need to be turned off
+                                  || pidHandles[ptVideo].pid == Channel->vpid // for recording the PIDs must be shifted from DMX_PES_AUDIO/VIDEO to DMX_PES_OTHER
+                                  )
+                            );
+
+  bool StartTransferMode = IsPrimaryDevice() && !DoTune
+                           && (LiveView && HasPid(Channel->vpid) && pidHandles[ptVideo].pid != Channel->vpid // the PID is already set as DMX_PES_OTHER
+                              || !LiveView && pidHandles[ptVideo].pid == Channel->vpid // a recording is going to shift the PIDs from DMX_PES_AUDIO/VIDEO to DMX_PES_OTHER
+                              );
+
+  bool TurnOnLivePIDs = HasDecoder() && !StartTransferMode
+                        && (Channel->ca > CACONFBASE // CA channels can only be decrypted in "live" mode
+                           || LiveView
+                           );
 
   // Stop setting system time:
 
   if (siProcessor)
      siProcessor->SetCurrentTransponder(0);
 
-  // Turn off current PIDs:
+  // Turn off live PIDs if necessary:
 
-  if (IsPrimaryDevice() && (LiveView || pidHandles[ptVideo].pid == Channel->vpid)) {
+  if (TurnOffLivePIDs) {
+
+     // Avoid noise while switching:
+
+     CHECK(ioctl(fd_audio, AUDIO_SET_MUTE, true));
+     CHECK(ioctl(fd_video, VIDEO_SET_BLANK, true));
+     CHECK(ioctl(fd_audio, AUDIO_CLEAR_BUFFER));
+     CHECK(ioctl(fd_video, VIDEO_CLEAR_BUFFER));
+
+     // Turn off live PIDs:
+
      DelPid(pidHandles[ptAudio].pid);
      DelPid(pidHandles[ptVideo].pid);
      DelPid(pidHandles[ptTeletext].pid);
      DelPid(pidHandles[ptDolby].pid);
      }
 
-  if (frequency != Channel->frequency || Channel->ca > CACONFBASE) { // CA channels can only be decrypted in "live" mode
+  if (DoTune) {
 
 #ifdef NEWSTRUCT
      dvb_frontend_parameters Frontend;
@@ -595,21 +617,19 @@ bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
 
   // PID settings:
 
-  if (HasDecoder() && (LiveView || !IsPrimaryDevice() || Channel->ca > CACONFBASE)) { // CA channels can only be decrypted in "live" mode
-     if (!HasPid(Channel->vpid) && (IsPrimaryDevice() || !pidHandles[ptVideo].used || Channel->ca > CACONFBASE)) {
-        if (!(AddPid(Channel->apid1, ptAudio) && AddPid(Channel->vpid, ptVideo))) {//XXX+ dolby dpid1!!! (if audio plugins are attached)
-           esyslog("ERROR: failed to set PIDs for channel %d", Channel->number);
-           return false;
-           }
-        if (IsPrimaryDevice())
-           AddPid(Channel->tpid, ptTeletext);
-        CHECK(ioctl(fd_audio, AUDIO_SET_AV_SYNC, true));
-        CHECK(ioctl(fd_audio, AUDIO_SET_MUTE, false));
-        CHECK(ioctl(fd_video, VIDEO_SET_BLANK, false));
+  if (TurnOnLivePIDs) {
+     if (!(AddPid(Channel->apid1, ptAudio) && AddPid(Channel->vpid, ptVideo))) {//XXX+ dolby dpid1!!! (if audio plugins are attached)
+        esyslog("ERROR: failed to set PIDs for channel %d on device %d", Channel->number, CardIndex() + 1);
+        return false;
         }
-     else if (LiveView)
-        cControl::Launch(new cTransferControl(this, Channel->vpid, Channel->apid1, 0, 0, 0));
+     if (IsPrimaryDevice())
+        AddPid(Channel->tpid, ptTeletext);
+     CHECK(ioctl(fd_audio, AUDIO_SET_AV_SYNC, true));
+     CHECK(ioctl(fd_audio, AUDIO_SET_MUTE, false));
+     CHECK(ioctl(fd_video, VIDEO_SET_BLANK, false));
      }
+  else if (StartTransferMode)
+     cControl::Launch(new cTransferControl(this, Channel->vpid, Channel->apid1, 0, 0, 0));
 
   // Start setting system time:
 
