@@ -2202,3 +2202,5 @@ Video Disk Recorder Revision History
   will be used for FTA recordings in case the CAM is connected to a non-primary
   device (thanks to Reinhard Walter Buchner for reporting this one).
 - The cCiHandler now closes its file handle when it gets destroyed.
+- Checking for duplicate recordings with the same file name and disabling the
+  second timer (thanks to Peter Bieringer for reporting this one).

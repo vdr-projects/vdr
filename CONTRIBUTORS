@@ -691,3 +691,6 @@ Ralf Klueber <ralf.klueber@vodafone.com>
 Hermann Gausterer <mrq1@gmx.net>
  for suggesting to switch to the recording channel in case the current channel
  becomes unavailable
+
+Peter Bieringer <pb@bieringer.de>
+ for reporting a problem with duplicate recordings with the same file name

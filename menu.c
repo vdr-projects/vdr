@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.246 2003/05/24 16:35:34 kls Exp $
+ * $Id: menu.c 1.247 2003/05/25 12:47:30 kls Exp $
  */
 
 #include "menu.h"
@@ -2938,6 +2938,23 @@ cRecordControl::cRecordControl(cDevice *Device, cTimer *Timer, bool Pause)
      }
   cRecording Recording(timer, Title, Subtitle, Summary);
   fileName = strdup(Recording.FileName());
+
+  // crude attempt to avoid duplicate recordings:
+  if (cRecordControls::GetRecordControl(fileName)) {
+     isyslog("already recording: '%s'", fileName);
+     if (Timer) {
+        timer->SetPending(false);
+        timer->SetRecording(false);
+        timer->OnOff();
+        }
+     else {
+        Timers.Del(timer);
+        Timers.Save();
+        }
+     timer = NULL;
+     return;
+     }
+
   cRecordingUserCommand::InvokeCommand(RUC_BEFORERECORDING, fileName);
   const cChannel *ch = timer->Channel();
   recorder = new cRecorder(fileName, ch->Ca(), timer->Priority(), ch->Vpid(), ch->Apid1(), ch->Apid2(), ch->Dpid1(), ch->Dpid2());
