@@ -1611,6 +1611,7 @@ Video Disk Recorder Revision History
   shall be executed from the "Recordings" menu; see MANUAL and 'man vdr(5)' for
   details (suggested by Gerhard Steiner).
 
-2002-10-13: Version 1.1.14
+2002-10-19: Version 1.1.14
 
 - Fixed some faulty default parameter initializations (thanks to Robert Schiele).
+- Added further satellites to 'sources.conf' (thanks to Reinhard Walter Buchner).
