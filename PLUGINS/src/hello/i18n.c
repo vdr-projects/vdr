@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: i18n.c 1.3 2002/06/23 13:05:59 kls Exp $
+ * $Id: i18n.c 1.4 2004/01/16 13:28:23 kls Exp $
  */
 
 #include "i18n.h"
@@ -24,6 +24,8 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
+    "",// TODO
+    "Привет!",
   },
   { "Hello world!",
     "Hallo Welt!",
@@ -40,6 +42,8 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
+    "",// TODO
+    "Здравствуй мир!",
   },
   { "Howdy folks!",
     "Tach zusammen!",
@@ -56,6 +60,8 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
+    "",// TODO
+    "Как поживаете?",
   },
   { "A friendly greeting",
     "Ein freundlicher Gruп",
@@ -72,6 +78,8 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
+    "",// TODO
+    "Дружеское приветствие",
   },
   { "Greeting time (s)",
     "Dauer des Gruпes (s)",
@@ -88,6 +96,8 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
+    "",// TODO
+    "Продолжительность приветствия",
   },
   { "Use alternate greeting",
     "Alternativen Gruп verwenden",
@@ -104,6 +114,8 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
+    "",// TODO
+    "Альтернативное приветствие",
   },
   { NULL }
   };

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: nit.h 1.1 2004/01/11 14:31:05 kls Exp $
+ * $Id: nit.h 1.2 2004/01/18 11:13:48 kls Exp $
  */
 
 #ifndef __NIT_H
@@ -12,9 +12,23 @@
 
 #include "filter.h"
 
+#define MAXNITS 16
+#define MAXNETWORKNAME 256
+
 class cNitFilter : public cFilter {
 private:
+
+  class cNit {
+  public:
+    u_short networkId;
+    char name[MAXNETWORKNAME];
+    bool hasTransponder;
+    };
+
   cSectionSyncer sectionSyncer;
+  cNit nits[MAXNITS];
+  u_short networkId;
+  int numNits;
 protected:
   virtual void Process(u_short Pid, u_char Tid, const u_char *Data, int Length);
 public:

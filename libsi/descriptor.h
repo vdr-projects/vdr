@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: descriptor.h 1.2 2003/12/13 10:42:08 kls Exp $
+ *   $Id: descriptor.h 1.3 2004/01/12 16:17:47 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -359,6 +359,19 @@ public:
    StructureLoop<Name> nameLoop;
 protected:
    virtual void Parse();
+};
+
+class LinkageDescriptor : public Descriptor {
+public:
+   int getTransportStreamId() const;
+   int getOriginalNetworkId() const;
+   int getServiceId() const;
+   LinkageType getLinkageType() const;
+   CharArray privateData;
+protected:
+   virtual void Parse();
+private:
+   const descr_linkage *s;
 };
 
 //a descriptor currently unimplemented in this library

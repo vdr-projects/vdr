@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.57 2003/12/28 10:09:30 kls Exp $
+ * $Id: svdrp.c 1.58 2004/01/17 13:47:39 kls Exp $
  */
 
 #include "svdrp.h"
@@ -29,6 +29,7 @@
 #include "channels.h"
 #include "config.h"
 #include "device.h"
+#include "eitscan.h"
 #include "keys.h"
 #include "remote.h"
 #include "timers.h"
@@ -251,6 +252,9 @@ const char *HelpPages[] = {
   "    format defined in vdr(5) for the 'epg.data' file.  A '.' on a line\n"
   "    by itself terminates the input and starts processing of the data (all\n"
   "    entered data is buffered until the terminating '.' is seen).",
+  "SCAN\n"
+  "    Forces an EPG scan. If this is a single DVB device system, the scan\n"
+  "    will be done on the primary device unless it is currently recording.",
   "STAT disk\n"
   "    Return information about disk usage (total, free, percent).",
   "UPDT <settings>\n"
@@ -954,6 +958,12 @@ void cSVDRP::CmdPUTE(const char *Option)
      DELETENULL(PUTEhandler);
 }
 
+void cSVDRP::CmdSCAN(const char *Option)
+{
+  EITScanner.ForceScan();
+  Reply(250, "EPG scan triggered");
+}
+
 void cSVDRP::CmdSTAT(const char *Option)
 {
   if (*Option) {
@@ -1062,6 +1072,7 @@ void cSVDRP::Execute(char *Cmd)
   else if (CMD("NEWT"))  CmdNEWT(s);
   else if (CMD("NEXT"))  CmdNEXT(s);
   else if (CMD("PUTE"))  CmdPUTE(s);
+  else if (CMD("SCAN"))  CmdSCAN(s);
   else if (CMD("STAT"))  CmdSTAT(s);
   else if (CMD("UPDT"))  CmdUPDT(s);
   else if (CMD("VOLU"))  CmdVOLU(s);

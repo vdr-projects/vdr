@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.279 2004/01/11 15:40:32 kls Exp $
+ * $Id: menu.c 1.281 2004/01/17 14:17:00 kls Exp $
  */
 
 #include "menu.h"
@@ -16,6 +16,7 @@
 #include "channels.h"
 #include "config.h"
 #include "cutter.h"
+#include "eitscan.h"
 #include "i18n.h"
 #include "menuitems.h"
 #include "plugin.h"
@@ -2044,6 +2045,7 @@ cMenuSetupEPG::cMenuSetupEPG(void)
       ;
   originalNumLanguages = numLanguages;
   SetSection(tr("EPG"));
+  SetHelp(tr("Scan"));
   Setup();
 }
 
@@ -2068,10 +2070,6 @@ void cMenuSetupEPG::Setup(void)
 
 eOSState cMenuSetupEPG::ProcessKey(eKeys Key)
 {
-  int oldnumLanguages = numLanguages;
-  int oldSetSystemTime = data.SetSystemTime;
-
-  eOSState state = cMenuSetupBase::ProcessKey(Key);
   if (Key == kOk) {
      bool Modified = numLanguages != originalNumLanguages;
      if (!Modified) {
@@ -2085,7 +2083,12 @@ eOSState cMenuSetupEPG::ProcessKey(eKeys Key)
      if (Modified)
         cSchedules::ResetVersions();
      }
-  else if (Key != kNone) {
+
+  int oldnumLanguages = numLanguages;
+  int oldSetSystemTime = data.SetSystemTime;
+
+  eOSState state = cMenuSetupBase::ProcessKey(Key);
+  if (Key != kNone) {
      if (numLanguages != oldnumLanguages || data.SetSystemTime != oldSetSystemTime) {
         for (int i = oldnumLanguages; i < numLanguages; i++) {
             data.EPGLanguages[i] = 0;
@@ -2103,6 +2106,10 @@ eOSState cMenuSetupEPG::ProcessKey(eKeys Key)
             }
         data.EPGLanguages[numLanguages] = -1;
         Setup();
+        }
+     if (Key == kRed) {
+        EITScanner.ForceScan();
+        return osEnd;
         }
      }
   return state;

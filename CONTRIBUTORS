@@ -641,6 +641,8 @@ Teemu Rantanen <tvr@iki.fi>
  for reporting a problem in calculation of channel ids for tv stations that use
  the undefined NID value 0
  for adding EPG preferred languages
+ for reporting and helping to debug resetting the EPG data versions after changing
+ the preferred languages
 
 Jan Ekholm <chakie@infa.abo.fi>
  for adding/improving some Swedish language OSD texts
@@ -654,6 +656,8 @@ Marcel Wiesweg <marcel.wiesweg@gmx.de>
  for fixing volume display in case a plugin has its own OSD open
  for providing 'libsi' and adapting the EIT mechanisms to it
  for fixing testing for matching section filters in case they are turned off
+ for adding 'libsi' include files to the 'include' directory, so that plugins can
+ use them
 
 Torsten Herz <torsten.herz@web.de>
  for fixing a possible deadlock when using the "Blue" button in the "Schedules" menu
@@ -902,3 +906,15 @@ Martin Holst <holstm@gmx.de>
 Robert Huitl <vdr@huitl.de>
  for fixing 'su' call in 'runvdr' to make it work on systems that require the
  user name to appear before the command option
+
+Vyacheslav Dikonov <sdiconov@mail.ru>
+ for translating OSD texts to the Russian language
+
+Stephan Epstein <s.epstein@vinzenz.com>
+ for reporting a wrong 'delta' value in the call to the shutdown script
+
+Christian Tramnitz <maillist@tramnitz.com>
+ for pointing out a problem with wrong parameter settings when scanning NITs
+ for terrestrial transponders
+ for his support in debugging a problem in setting the source type for newly
+ detected terrestrial transponders

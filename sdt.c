@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: sdt.c 1.4 2004/01/11 14:28:28 kls Exp $
+ * $Id: sdt.c 1.7 2004/01/17 17:27:49 kls Exp $
  */
 
 #include "sdt.h"
@@ -53,7 +53,7 @@ void cSdtFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                  SI::ServiceDescriptor *sd = (SI::ServiceDescriptor *)d;
                  switch (sd->getServiceType()) {
                    case 0x01: // digital television service
-                   //XXX TODO case 0x02: // digital radio sound service
+                   case 0x02: // digital radio sound service
                    //XXX TODO case 0x04: // NVOD reference service
                    //XXX TODO case 0x05: // NVOD time-shifted service
                         {
@@ -78,11 +78,13 @@ void cSdtFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                               }
                         *pn = *ps = 0;
                         pn = NameBuf;
-                        if (*NameBuf && *ShortNameBuf) {
+                        if (*NameBuf && *ShortNameBuf && strcmp(NameBuf, ShortNameBuf) != 0) {
                            *ps++ = ',';
                            strcpy(ps, NameBuf);
                            pn = ShortNameBuf;
                            }
+                        pn = compactspace(pn);
+                        ps = compactspace(ps);
                         if (channel) {
                            channel->SetId(sdt.getOriginalNetworkId(), sdt.getTransportStreamId(), SiSdtService.getServiceId());
                            if (Setup.UpdateChannels >= 1)
