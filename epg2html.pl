@@ -12,7 +12,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: epg2html.pl 1.2 2000/12/01 18:37:46 kls Exp $
+# $Id: epg2html.pl 1.3 2002/02/26 17:20:19 kls Exp $
 
 @Index = ();
 
@@ -45,7 +45,7 @@ while (<>) {
          push(@Index, qq{<a href="$Page">$Channel</a><br>\n});
          my %Events = ();
          while (<>) {
-               if (/^E (.*) (.*) (.*)/) {
+               if (/^E (.*?) (.*?) (.*?)/) {
                   (my $Time, $Duration) = ($2, $3);
                   my $Title = "", $Subtitle = "", $Description = "";
                   while (<>) {
