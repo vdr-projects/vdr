@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remote.h 1.6 2000/06/24 15:52:56 kls Exp $
+ * $Id: remote.h 1.7 2000/07/15 16:32:43 kls Exp $
  */
 
 #ifndef __REMOTE_H
@@ -75,9 +75,9 @@ public:
 
 class cRcIoLIRC : public cRcIoBase {
 private:
-  enum { LIRC_BUFFER_SIZE = 128 };
+  enum { LIRC_KEY_BUF = 8, LIRC_BUFFER_SIZE = 128 };
   int f;
-  char buf[LIRC_BUFFER_SIZE];
+  char keyName[LIRC_KEY_BUF];
   const char *ReceiveString(void);
 public:
   cRcIoLIRC(char *DeviceName);

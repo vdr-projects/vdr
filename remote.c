@@ -6,7 +6,7 @@
  *
  * Ported to LIRC by Carsten Koch <Carsten.Koch@icem.de>  2000-06-16.
  *
- * $Id: remote.c 1.9 2000/07/15 12:19:50 kls Exp $
+ * $Id: remote.c 1.10 2000/07/15 16:34:35 kls Exp $
  */
 
 #include "remote.h"
@@ -365,17 +365,20 @@ cRcIoLIRC::~cRcIoLIRC()
 
 const char *cRcIoLIRC::ReceiveString(void)
 {
+  char buf[LIRC_BUFFER_SIZE];
+
   while (InputAvailable(true)) {
         if (read(f, buf, sizeof(buf)) > 21) {
-           const int repeat = 10 * (buf[17] - '0') + (buf[18] - '0');
            const int now = time_ms();
+           int repeat;
+           sscanf(buf, "%*s %x %7s", &repeat, keyName); // '7' in '%7s' is LIRC_KEY_BUF-1!
            if (repeat == 0) {
               firstTime = lastTime = now;
-              return buf + 20;
+              return keyName;
               }
            else if ((now > firstTime + REPEATDELAY) && (now > lastTime + REPEATLIMIT)) {
               lastTime = now;
-              return buf + 20;
+              return keyName;
               }
            }
         }
@@ -384,6 +387,7 @@ const char *cRcIoLIRC::ReceiveString(void)
 
 void cRcIoLIRC::Flush(int WaitSeconds)
 {
+  char buf[LIRC_BUFFER_SIZE];
   time_t t0 = time(NULL);
 
   for (;;) {

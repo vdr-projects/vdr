@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.7 2000/06/24 13:42:32 kls Exp $
+ * $Id: config.h 1.8 2000/07/15 16:26:57 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -50,6 +50,7 @@ public:
   tKey *keys;
   cKeys(void);
   void Clear(void);
+  void SetDummyValues(void);
   bool Load(char *FileName = NULL);
   bool Save(void);
   unsigned int Encode(const char *Command);

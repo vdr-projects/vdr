@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.8 2000/07/15 12:39:20 kls Exp $
+ * $Id: config.c 1.9 2000/07/15 16:35:18 kls Exp $
  */
 
 #include "config.h"
@@ -52,6 +52,12 @@ void cKeys::Clear(void)
 {
   for (tKey *k = keys; k->type != kNone; k++)
       k->code = 0;
+}
+
+void cKeys::SetDummyValues(void)
+{
+  for (tKey *k = keys; k->type != kNone; k++)
+      k->code = k->type + 1; // '+1' to avoid 0
 }
 
 bool cKeys::Load(char *FileName)
@@ -150,7 +156,7 @@ unsigned int cKeys::Encode(const char *Command)
 {  
   if (Command != NULL) {
      const tKey *k = keys;
-     while ((k->type != kNone) && strncmp(k->name, Command, strlen(k->name)) != 0) // must use 'strncmp()' because LIRC delivers trailing characters!
+     while ((k->type != kNone) && strcmp(k->name, Command) != 0)
            k++;
      return k->code;
      }

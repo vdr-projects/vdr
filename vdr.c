@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.20 2000/07/15 11:45:05 kls Exp $
+ * $Id: vdr.c 1.21 2000/07/15 16:26:57 kls Exp $
  */
 
 #include <signal.h>
@@ -58,7 +58,9 @@ int main(int argc, char *argv[])
 
   Channels.Load("channels.conf");
   Timers.Load("timers.conf");
-#ifndef REMOTE_LIRC
+#ifdef REMOTE_LIRC
+  Keys.SetDummyValues();
+#else
   if (!Keys.Load(KEYS_CONF))
      Interface.LearnKeys();
 #endif
