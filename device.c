@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.87 2005/02/06 14:10:37 kls Exp $
+ * $Id: device.c 1.92 2005/02/13 09:51:48 kls Exp $
  */
 
 #include "device.h"
@@ -756,7 +756,8 @@ void cDevice::EnsureAudioTrack(bool Force)
      // Make sure we're set to an available audio track:
      const tTrackId *Track = GetTrack(GetCurrentAudioTrack());
      if (Force || !Track || !Track->id || PreferredTrack != GetCurrentAudioTrack()) {
-        dsyslog("setting audio track to %d", PreferredTrack);
+        if (!Force) // only log this for automatic changes
+           dsyslog("setting audio track to %d", PreferredTrack);
         SetCurrentAudioTrack(PreferredTrack);
         }
      }
@@ -882,8 +883,11 @@ int cDevice::PlayPesPacket(const uchar *Data, int Length, bool VideoOnly)
                break;
           case 0xC0 ... 0xDF: // audio
                SetAvailableTrack(ttAudio, c - 0xC0, c);
-               if (!VideoOnly && c == availableTracks[currentAudioTrack].id)
+               if (!VideoOnly && c == availableTracks[currentAudioTrack].id) {
                   w = PlayAudio(Start, d);
+                  if (FirstLoop)
+                     Audios.PlayAudio(Data, Length, c);
+                  }
                break;
           case 0xBD: { // private stream 1
                int PayloadOffset = Data[8] + 9;
@@ -892,6 +896,7 @@ int cDevice::PlayPesPacket(const uchar *Data, int Length, bool VideoOnly)
                uchar SubStreamIndex = SubStreamId & 0x1F;
 
                // Compatibility mode for old VDR recordings, where 0xBD was only AC3:
+pre_1_3_19_PrivateStreamDeteced:
                if (pre_1_3_19_PrivateStream) {
                   SubStreamId = c;
                   SubStreamType = 0x80;
@@ -907,15 +912,18 @@ int cDevice::PlayPesPacket(const uchar *Data, int Length, bool VideoOnly)
                          SetAvailableTrack(ttDolby, SubStreamIndex, SubStreamId);
                          if (!VideoOnly && SubStreamId == availableTracks[currentAudioTrack].id) {
                             w = PlayAudio(Start, d);
-                            if (FirstLoop && !(SubStreamId & 0x08)) // no DTS
-                               Audios.PlayAudio(Data, Length);
+                            if (FirstLoop)
+                               Audios.PlayAudio(Data, Length, SubStreamId);
                             }
                          }
                       break;
                  case 0xA0: // LPCM
                       SetAvailableTrack(ttAudio, SubStreamIndex, SubStreamId);
-                      if (!VideoOnly && SubStreamId == availableTracks[currentAudioTrack].id)
+                      if (!VideoOnly && SubStreamId == availableTracks[currentAudioTrack].id) {
                          w = PlayAudio(Start, d);
+                         if (FirstLoop)
+                            Audios.PlayAudio(Data, Length, SubStreamId);
+                         }
                       break;
                  default:
                       // Compatibility mode for old VDR recordings, where 0xBD was only AC3:
@@ -923,6 +931,7 @@ int cDevice::PlayPesPacket(const uchar *Data, int Length, bool VideoOnly)
                          dsyslog("switching to pre 1.3.19 Dolby Digital compatibility mode");
                          ClrAvailableTracks();
                          pre_1_3_19_PrivateStream = true;
+                         goto pre_1_3_19_PrivateStreamDeteced;
                          }
                  }
                }
@@ -984,7 +993,7 @@ int cDevice::PlayPes(const uchar *Data, int Length, bool VideoOnly)
            int w = PlayPesPacket(Data + i, l, VideoOnly);
            if (w > 0)
               i += l;
-           else if (w < 0)
+           else
               return i == 0 ? w : i;
            }
         else

@@ -192,6 +192,7 @@ Stefan Huelswitt <huels@iname.com>
  for fixing a possible race condition in cDevice::Action() and cTSBuffer::Action()
  for reporting several memory leaks that were introduced through the use of cString
  for adding MPEG1 replay capability to cPesAssembler
+ for fixing handling symbolic links in cRecordings::ScanVideoDir()
 
 Ulrich Röder <roeder@efr-net.de>
  for pointing out that there are channels that have a symbol rate higher than 27500
@@ -272,6 +273,7 @@ Werner Fink <werner@suse.de>
  recordings can be triggered in the default branch
  for pointing out that pesAssembler->Reset() needs to be called between subsequent
  Transfer Modes
+ for suggestions that led to the addition of the 'Id' parameter to cAudio::Play().
 
 Rolf Hakenes <hakenes@hippomi.de>
  for providing 'libdtv' and adapting the EIT mechanisms to it
@@ -789,10 +791,12 @@ Christoph Friederich <christoph.friederich@gmx.de>
  for reporting a bug in deleting the last recording in the "Recordings" menu, which
  started pausing live video
 
-Andreas Brachold <andy03@deltab.de>
+Andreas Brachold <vdr04@deltab.de>
  for his support in keeping 'channels.conf.terr' up to date
  for fixing 'newplugin' and libsi/Makefile to use the compiler defined in $(CXX)
  for generating file dependencies
+ for suggesting that the 'plugins-clean' target of the Makefile should only delete
+ the actual plugin library files from this version of VDR
 
 Manuel Hartl <icecep@gmx.net>
  for suggesting to extend the logging info when starting/stopping timers
@@ -805,6 +809,7 @@ Christian Jacobsen <christian.jacobsen@stageholding.de>
  for making the LIRC interface skip keys that come in too fast
  for reporting a problem in handling the '-E' options in version 1.3.18
  for reporting a problem in case a station defines all 32 audio PIDs
+ for suggestions and experiments regarding the buffer reserve in cTransfer
 
 Andreas Mair <Andreas.Mair@linogate.com>
  for reporting a short display of the main menu if a plugin displays its own OSD and
@@ -925,6 +930,9 @@ Reinhard Nissl <rnissl@gmx.de>
  for extending some buffer sizes to allow handling HDTV streams
  for adding substream handling to cDolbyRepacker
  for modifying cDolbyRepacker to make sure PES packets don't exceed the requested length
+ for fixing a possible freeze in pause mode in case a device's PlayPesPacket()
+ function permanently returns 0
+ for fixing a typo in detecting UTF-8
 
 Richard Robson <richard_robson@beeb.net>
  for reporting freezing replay if a timer starts while in Transfer Mode from the
@@ -1042,6 +1050,7 @@ Andreas Regel <andreas.regel@gmx.de>
  video directory is empty
  for pointing out a missing call to cStatus::MsgOsdtatusMessage(NULL) in
  cSkins::Message()
+ for reporting a problem in handling Transfer Mode for radio channels
 
 Thomas Bergwinkl <Thomas.Bergwinkl@t-online.de>
  for fixing the validity check for channel IDs, because some providers use TIDs
@@ -1131,6 +1140,13 @@ Marco Schlüßler <marco@lordzodiac.de>
  for pointing out that PlayPes(NULL, 0) needs to be called in cTransfer::Action()
  when clearing the transfer buffer to avoid overflows
  for adding CMD_SPU_CHG_COLCON to cDvbSpuDecoder::setTime()
+ for suggesting to force a new resync after a call to cRemux::Clear()
+ for suggestions that led to the addition of the 'Id' parameter to cAudio::Play().
+ for removing the "Cleared/PlayPes(NULL, 0)" handling from cTransfer::Action(), since
+ this is now done when attaching the player to the device
+ for adding DeviceClrAvailableTracks() and DeviceSetCurrentAudioTrack() to cPlayer
+ for reporting a missing 'resultSkipped = 0' in cRemux::Clear()
+ for reporting a missing reset of the 'repacker' in cTS2PES::Clear()
 
 Jürgen Schmitz <j.schmitz@web.de>
  for reporting a bug in displaying the current channel when switching via the SVDRP
@@ -1215,6 +1231,8 @@ Dino Ravnic <dino.ravnic@fer.hr>
 
 Olaf Titz <olaf@bigred.inka.de>
  for fixing some typos in the Makefile's 'font' target
+ for reporting a problem and some advice in fixing a possible freeze in pause mode
+ in case a device's PlayPesPacket() function permanently returns 0
 
 Darren Salt <linux@youmustbejoking.demon.co.uk>
  for pointing out that the '-' and 'ö' characters need to be escaped in the man
@@ -1250,3 +1268,6 @@ Rolf Groppe <rolf@groppe.de>
 Wolfgang Rohdewald <wolfgang@rohdewald.de>
  for pointing out that primaryDevice = NULL should be done before deleting the devices
  in cDevice::Shutdown()
+
+Chad Flynt <hoochster@sofnet.com>
+ for suggestions and experiments regarding the buffer reserve in cTransfer

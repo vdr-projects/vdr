@@ -3373,3 +3373,45 @@ Video Disk Recorder Revision History
   residual data in replay and Transfer Mode (thanks to Werner Fink for pointing this
   out).
 - Added MPEG1 replay capability to cPesAssembler (thanks to Stefan Huelswitt).
+
+2005-02-13: Version 1.3.21
+
+- Fixed cDvbDevice::SetAudioTrackDevice() to avoid a blank screen after switching
+  back to live mode if a recording is currently active on the primary device.
+- Fixed a possible freeze in pause mode in case a device's PlayPesPacket() function
+  permanently returns 0 (thanks to Reinhard Nissl and Olaf Titz).
+- Completed the Finnish OSD texts (thanks to Rolf Ahrenberg).
+- Restricted the "setting audio track" log message to automatic changes during replay.
+- Fixed handling Transfer Mode for radio channels (thanks to Andreas Regel for
+  reporting this one).
+- Fixed handling symbolic links in cRecordings::ScanVideoDir() (thanks to Stefan
+  Huelswitt).
+- Completed the Danish OSD texts (thanks to Mogens Elneff).
+- Forcing a new resync after a call to cRemux::Clear() (suggested by Marco Schlüßler).
+- The cAudio::Play() function now has an additional parameter 'uchar Id' which tells
+  the function the substream id of the given audio packet, so that a plugin can
+  take the right action for the various kinds if audio data - which now also includes
+  "normal" audio with ids 0xC0...0xDF (based on suggestions by Werner Fink and Macro
+  Schlüßler).
+- Removed the "Cleared/PlayPes(NULL, 0)" handling from cTransfer::Action(), since this
+  is now done when attaching the player to the device (thanks to Marco Schlüßler).
+- Making sure the buffer reserve in cTransfer::Action() is re-established after
+  clearing the buffer.
+- Added DeviceClrAvailableTracks() and DeviceSetCurrentAudioTrack() to cPlayer
+  (thanks to Marco Schlüßler).
+- Fixed a typo in detecting UTF-8 (thanks to Reinhard Nissl).
+- Now using twice the buffer reserve in cTransfer if the primary DVB card is an
+  unmodified version with only 2MB of SDRAM, to avoid audio stuttering when
+  playing Dolby Digital over the DVB card (thanks to Christian Jacobsen and Chad
+  Flynt for suggestions and experiments in that area).
+- Making sure the first audio packet is not dropped when switching to "pre 1.3.19
+  Dolby Digital compatibility mode".
+- The 'plugins-clean' target of the Makefile now only deletes the actual plugin
+  library files from this version of VDR (suggested by Andreas Brachold).
+- Added a missing 'resultSkipped = 0' to cRemux::Clear() (thanks to Marco Schlüßler
+  for reporting this one).
+- The new function cDvbDevice::SetTransferModeForDolbyDigital() can be used by
+  plugins that implement Dolby Digital output and thus want to prevent the cDvbDevice
+  from starting Transfer Mode in order to replay DD over the DVB device.
+- Added missing reset of the 'repacker' to cTS2PES::Clear() (thanks to Marco
+  Schlüßler for reporting this one).

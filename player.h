@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: player.h 1.15 2005/02/06 11:44:56 kls Exp $
+ * $Id: player.h 1.16 2005/02/12 14:45:29 kls Exp $
  */
 
 #ifndef __PLAYER_H
@@ -19,7 +19,9 @@ private:
   cDevice *device;
   ePlayMode playMode;
 protected:
+  void DeviceClrAvailableTracks(bool DescriptionsOnly = false) { if (device) device->ClrAvailableTracks(DescriptionsOnly); }
   bool DeviceSetAvailableTrack(eTrackType Type, int Index, uint16_t Id, const char *Language = NULL, const char *Description = NULL) { return device ? device->SetAvailableTrack(Type, Index, Id, Language, Description) : false; }
+  bool DeviceSetCurrentAudioTrack(eTrackType Type) { return device ? device->SetCurrentAudioTrack(Type) : false; }
   bool DevicePoll(cPoller &Poller, int TimeoutMs = 0) { return device ? device->Poll(Poller, TimeoutMs) : false; }
   bool DeviceFlush(int TimeoutMs = 0) { return device ? device->Flush(TimeoutMs) : true; }
   void DeviceTrickSpeed(int Speed) { if (device) device->TrickSpeed(Speed); }

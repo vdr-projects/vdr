@@ -268,7 +268,7 @@ name you use with '-v' is a clean and absolute path name (no '..' or
 multiple slashes).
 
 Note that the file system need not be 64-bit proof, since the 'vdr'
-program splits video files into chunks of about 1GB. You should use
+program splits video files into chunks of about 2GB. You should use
 a disk with several gigabytes of free space. One GB can store roughly
 half an hour of video data.
 
