@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.184 2002/04/16 16:11:40 kls Exp $
+ * $Id: menu.c 1.185 2002/04/19 15:46:14 kls Exp $
  */
 
 #include "menu.h"
@@ -554,39 +554,44 @@ void cMenuEditStrItem::SetHelpKeys(void)
 void cMenuEditStrItem::Set(void)
 {
   char buf[1000];
-  int max = 30; // this indicates, how many characters fit on the screen
-                // and has to be calculated on the fly (TODO)
   const char *fmt = insert && newchar ? "[]%c%s" : "[%c]%s";
 
   if (pos >= 0) {
      strncpy(buf, value, pos);
      snprintf(buf + pos, sizeof(buf) - pos - 2, fmt, *(value + pos), value + pos + 1);
-     if (int(strlen(buf)) <= max)
+     int width = Interface->Width() - Interface->GetCols()[0];
+     if (cDvbApi::PrimaryDvbApi->WidthInCells(buf) <= width) {
+        // the whole buffer fits on the screen
         SetValue(buf);
-     else if (pos + 4 <= max) {
-        buf[max - 1] = '>';
-        buf[max] = 0;
+        return;
+        }
+     width *= cDvbApi::PrimaryDvbApi->CellWidth();
+     width -= cDvbApi::PrimaryDvbApi->Width('>'); // assuming '<' and '>' have the same with
+     int w = 0;
+     int i = 0;
+     int l = strlen(buf);
+     while (i < l && w <= width)
+           w += cDvbApi::PrimaryDvbApi->Width(buf[i++]);
+     if (i >= pos + 4) {
+        // the cursor fits on the screen
+        buf[i - 1] = '>';
+        buf[i] = 0;
         SetValue(buf);
+        return;
         }
-     else if (buf[pos + 3]) {
-        buf[pos + 4 - max] = '<';
-        buf[pos + 3] = '>';
-        buf[pos + 4] = 0;
-        SetValue(buf + pos + 4 - max);
+     // the cursor doesn't fit on the screen
+     w = 0;
+     if (buf[i = pos + 3]) {
+        buf[i] = '>';
+        buf[i + 1] = 0;
         }
-     else {
-        buf[pos + 3 - max] = '<';
-        SetValue(buf + pos + 3 - max);
-        }
+     while (i >= 0 && w <= width)
+           w += cDvbApi::PrimaryDvbApi->Width(buf[i--]);
+     buf[++i] = '<';
+     SetValue(buf + i);
      }
-  else if (int(strlen(value)) <= max)
+  else
      SetValue(value);
-  else {
-     strncpy(buf, value, max - 1);
-     buf[max - 1] = '>';
-     buf[max] = 0;
-     SetValue(buf);
-     }
 }
 
 char cMenuEditStrItem::Inc(char c, bool Up)
