@@ -1168,3 +1168,5 @@ Video Disk Recorder Revision History
 - Changed the default 'Ok' key when using the PC keyboard from '5' (in the
   numeric block) to 'Enter', because the '5' key didn't work on keyboards with
   the F-keys on top.
+- Fixed a bug in the EPG bugfix mechanism if the extended description is shorter
+  than 3 characters (thanks to Andreas Schultz).

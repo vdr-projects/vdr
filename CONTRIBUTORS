@@ -130,6 +130,8 @@ Andreas Schultz <aschultz@warp10.net>
  dvdplayer-0.5 by Matjaz Thaler <matjaz.thaler@guest.arnes.si>)
  for adding PTS to the converted PCM audio when replaying a DVD
  for fixing a crash in case there is no 'epg.data' at program start
+ for fixing a bug in the EPG bugfix mechanism if the extended description is shorter
+ than 3 characters
 
 Aaron Holtzman
  for writing 'ac3dec'

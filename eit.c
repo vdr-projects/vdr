@@ -16,7 +16,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.c 1.41 2002/03/17 14:23:41 kls Exp $
+ * $Id: eit.c 1.42 2002/04/01 12:58:20 kls Exp $
  ***************************************************************************/
 
 #include "eit.h"
@@ -560,8 +560,8 @@ void cEventInfo::FixEpgBugs(void)
      pExtendedDescription = compactspace(pExtendedDescription);
      // Remove superfluous hyphens:
      if (pExtendedDescription) {
-        char *p = pExtendedDescription + 1;
-        while (*p) {
+        char *p = pExtendedDescription;
+        while (*p && *(p + 1) && *(p + 2)) {
               if (*p == '-' && *(p + 1) == ' ' && *(p + 2) && islower(*(p - 1)) && islower(*(p + 2))) {
                  if (!startswith(p + 2, "und ")) { // special case in German, as in "Lach- und Sachgeschichten"
                     memmove(p, p + 2, strlen(p + 2) + 1);
