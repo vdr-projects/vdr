@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 1.19 2002/01/20 11:13:22 kls Exp $
+ * $Id: osd.c 1.20 2002/01/26 11:09:58 kls Exp $
  */
 
 #include "osd.h"
@@ -127,9 +127,7 @@ void cOsdMenu::SetHelp(const char *Red, const char *Green, const char *Yellow, c
   helpYellow = Yellow;
   helpBlue   = Blue;
   if (visible)
-     Display();
-     //XXX Interface->Help(helpRed, helpGreen, helpYellow, helpBlue);
-     //XXX must clear unused button areas!
+     Interface->Help(helpRed, helpGreen, helpYellow, helpBlue);
 }
 
 void cOsdMenu::Del(int Index)

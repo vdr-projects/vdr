@@ -879,7 +879,7 @@ Video Disk Recorder Revision History
 - Fixed DVD audio sync problems (thanks to Andreas Schultz).
 - Fixed external AC3 replay for DVDs (thanks to Andreas Schultz).
 
-2002-01-20: Version 0.99pre2
+2002-01-26: Version 0.99pre2
 
 - Fixed setting the OSD size in the 'Confirm' interface call (thanks to
   Deti Fliegl).
@@ -903,3 +903,4 @@ Video Disk Recorder Revision History
 - Now using a call to the 'ftw()' library function instead of an external 'find'
   command to collect the recordings (thanks to Emil Naepflein for his hint about
   this function).
+- Improved speed of setting the Help button texts.
