@@ -2644,3 +2644,5 @@ Video Disk Recorder Revision History
   come later.
 - Fixed the validity check for channel IDs, because some providers use TIDs with
   value 0 (thanks to Thomas Bergwinkl).
+- Enabled switching to a channel even if it has no Vpid or Apid set, because these
+  might be automatically set when tuned to that transponder.
