@@ -156,6 +156,8 @@ Stefan Huelswitt <huels@iname.com>
  for improving skipping channels that are (currently) not available
  for fixing checking the Ca() status of a cDevice
  for helping to fix switching audio tracks in 'Transfer Mode' on the primary DVB device
+ for fixing handling 'Transfer Mode' on single device systems when recording an
+ encrypted channel
 
 Ulrich Röder <roeder@efr-net.de>
  for pointing out that there are channels that have a symbol rate higher than

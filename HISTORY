@@ -1611,7 +1611,7 @@ Video Disk Recorder Revision History
   shall be executed from the "Recordings" menu; see MANUAL and 'man vdr(5)' for
   details (suggested by Gerhard Steiner).
 
-2002-10-20: Version 1.1.14
+2002-10-26: Version 1.1.14
 
 - Fixed some faulty default parameter initializations (thanks to Robert Schiele).
 - Added further satellites to 'sources.conf' (thanks to Reinhard Walter Buchner
@@ -1640,3 +1640,5 @@ Video Disk Recorder Revision History
 - Fixed channel switching in case of an active 'Transfer Mode' on the primary
   device ('Transfer Mode' is now launched with priority '-1').
 - Fixed a ternary expression in dvbspu.c.
+- Fixed handling 'Transfer Mode' on single device systems when recording an
+  encrypted channel (thanks to Stefan Huelswitt).

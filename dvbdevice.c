@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.27 2002/10/26 09:44:49 kls Exp $
+ * $Id: dvbdevice.c 1.28 2002/10/26 10:53:20 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -442,24 +442,26 @@ bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
      LiveView = true;
 #endif
 
+  bool IsEncrypted = Channel->Ca() > CACONFBASE;
+
   bool DoTune = !IsTunedTo(Channel);
 
   bool TurnOffLivePIDs = HasDecoder()
                          && (DoTune
-                            || Channel->Ca() > CACONFBASE && pidHandles[ptVideo].pid != Channel->Vpid() // CA channels can only be decrypted in "live" mode
+                            || IsEncrypted && pidHandles[ptVideo].pid != Channel->Vpid() // CA channels can only be decrypted in "live" mode
                             || IsPrimaryDevice()
                                && (LiveView // for a new live view the old PIDs need to be turned off
                                   || pidHandles[ptVideo].pid == Channel->Vpid() // for recording the PIDs must be shifted from DMX_PES_AUDIO/VIDEO to DMX_PES_OTHER
                                   )
                             );
 
-  bool StartTransferMode = IsPrimaryDevice() && !DoTune
+  bool StartTransferMode = IsPrimaryDevice() && !IsEncrypted && !DoTune
                            && (LiveView && HasPid(Channel->Vpid()) && pidHandles[ptVideo].pid != Channel->Vpid() // the PID is already set as DMX_PES_OTHER
                               || !LiveView && pidHandles[ptVideo].pid == Channel->Vpid() // a recording is going to shift the PIDs from DMX_PES_AUDIO/VIDEO to DMX_PES_OTHER
                               );
 
   bool TurnOnLivePIDs = HasDecoder() && !StartTransferMode
-                        && (Channel->Ca() > CACONFBASE // CA channels can only be decrypted in "live" mode
+                        && (IsEncrypted // CA channels can only be decrypted in "live" mode
                            || LiveView
                            );
 
