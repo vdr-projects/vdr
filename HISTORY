@@ -266,7 +266,7 @@ Video Disk Recorder Revision History
   are programmed via the "Schedules" menu) are now replaced by suitable
   substitutes.
 
-2000-11-18: Version 0.68
+2000-11-19: Version 0.68
 
 - Date and time in the title of an event info page are now always right adjusted.
 - The 'current channel' is now handled device specific (in case there is more
@@ -307,3 +307,7 @@ Video Disk Recorder Revision History
   that don't send the EIT information correctly (like, e.g., 'VOX').
 - Implemented a 10 seconds latency when removing files.
 - Fixed unwanted reaction on the "Green" and "Yellow" button in the "Event" display.
+- Implemented 'Transfer Mode' to display video data from the DVB card that actually
+  can receive a certain channel on the primary interface. This is currently in
+  an early state and may still cause some problems, but it appears to work nice
+  already.

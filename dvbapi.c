@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.39 2000/11/18 15:30:57 kls Exp $
+ * $Id: dvbapi.c 1.40 2000/11/19 16:46:37 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -372,7 +372,9 @@ private:
   int *inFile, *outFile;
 protected:
   int Free(void) { return ((tail >= head) ? size + head - tail : head - tail) - 1; }
+public:
   int Available(void) { return (tail >= head) ? tail - head : size - head + tail; }
+protected:
   int Readable(void) { return (tail >= head) ? size - tail - (head ? 0 : 1) : head - tail - 1; } // keep a 1 byte gap!
   int Writeable(void) { return (tail >= head) ? tail - head : size - head; }
   int Byte(int Offset);
@@ -1079,6 +1081,63 @@ int cReplayBuffer::Write(int Max)
   return Written;
 }
 
+// --- cTransferBuffer -------------------------------------------------------
+
+class cTransferBuffer : public cThread {
+private:
+  bool active;
+  int fromDevice, toDevice;
+protected:
+  virtual void Action(void);
+public:
+  cTransferBuffer(int FromDevice, int ToDevice);
+  virtual ~cTransferBuffer();
+  };
+
+cTransferBuffer::cTransferBuffer(int FromDevice, int ToDevice)
+{
+  fromDevice = FromDevice;
+  toDevice = ToDevice;
+  active = true;
+  Start();
+}
+
+cTransferBuffer::~cTransferBuffer()
+{
+  {
+    LOCK_THREAD;
+    active = false;
+  }
+  for (time_t t0 = time(NULL); time(NULL) - t0 < 3; ) {
+      LOCK_THREAD;
+      if (active)
+         break;
+      }
+}
+
+void cTransferBuffer::Action(void)
+{
+  dsyslog(LOG_INFO, "data transfer thread started (pid=%d)", getpid());
+  //XXX hack to make the video device go into 'replaying' mode:
+  char *dummy = "AV"; // must be "AV" to make the driver go into AV_PES mode!
+  write(toDevice, dummy, strlen(dummy));
+  {
+    cRingBuffer Buffer(&fromDevice, &toDevice, VIDEOBUFSIZE, 0, 0);
+    while (active && Buffer.Available() < 100000) { // need to give the read buffer a head start
+          Buffer.Read(); // initializes fromDevice for reading
+          usleep(1); // this keeps the CPU load low
+          }
+    for (; active;) {
+        if (Buffer.Read() < 0 || Buffer.Write() < 0)
+           break;
+        usleep(1); // this keeps the CPU load low
+        }
+  }
+  dsyslog(LOG_INFO, "data transfer thread stopped (pid=%d)", getpid());
+  LOCK_THREAD;
+  active = true;
+}
+
 // --- cDvbApi ---------------------------------------------------------------
 
 int cDvbApi::NumDvbApis = 0;
@@ -1093,6 +1152,8 @@ cDvbApi::cDvbApi(const char *VideoFileName, const char *VbiFileName)
   fromReplay = toReplay = -1;
   ca = 0;
   priority = -1;
+  transferBuffer = NULL;
+  transferringFromDvbApi = NULL;
   videoDev = open(VideoFileName, O_RDWR | O_NONBLOCK);
   if (videoDev >= 0) {
      siProcessor = new cSIProcessor(VbiFileName);
@@ -1142,6 +1203,7 @@ cDvbApi::~cDvbApi()
      Close();
      Stop();
      StopRecord();
+     StopTransfer();
      OvlO(false); //Overlay off!
      //XXX the following call sometimes causes a segfault - driver problem?
      close(videoDev);
@@ -1717,6 +1779,12 @@ bool cDvbApi::ShowProgress(bool Initial)
 bool cDvbApi::SetChannel(int ChannelNumber, int FrequencyMHz, char Polarization, int Diseqc, int Srate, int Vpid, int Apid, int Ca, int Pnr)
 {
   if (videoDev >= 0) {
+     StopTransfer();
+     if (transferringFromDvbApi) {
+        transferringFromDvbApi->StopTransfer();
+        transferringFromDvbApi = NULL;
+        }
+     SetReplayMode(VID_PLAY_RESET);
      struct frontend front;
      ioctl(videoDev, VIDIOCGFRONTEND, &front);
      unsigned int freq = FrequencyMHz;
@@ -1740,11 +1808,43 @@ bool cDvbApi::SetChannel(int ChannelNumber, int FrequencyMHz, char Polarization,
         if (this == PrimaryDvbApi && siProcessor)
            siProcessor->SetCurrentServiceID(Pnr);
         currentChannel = ChannelNumber;
+        // If this DVB card can't receive this channel, let's see if we can
+        // use the card that actually can receive it and transfer data from there:
+        if (Ca && Ca != Index() + 1) {
+           cDvbApi *CaDvbApi = GetDvbApi(Ca, 0);
+           if (CaDvbApi) {
+              if (!CaDvbApi->Recording()) {
+                 if (CaDvbApi->SetChannel(ChannelNumber, FrequencyMHz, Polarization, Diseqc, Srate, Vpid, Apid, Ca, Pnr))
+                    transferringFromDvbApi = CaDvbApi->StartTransfer(videoDev);
+                 }
+              }
+           }
         return true;
         }
      esyslog(LOG_ERR, "ERROR: channel not sync'ed (front.sync=%X)!", front.sync);
      }
   return false;
+}
+
+bool cDvbApi::Transferring(void)
+{
+  return transferBuffer;
+}
+
+cDvbApi *cDvbApi::StartTransfer(int TransferToVideoDev)
+{
+  StopTransfer();
+  transferBuffer = new cTransferBuffer(videoDev, TransferToVideoDev);
+  return this;
+}
+
+void cDvbApi::StopTransfer(void)
+{
+  if (transferBuffer) {
+     delete transferBuffer;
+     transferBuffer = NULL;
+     SetReplayMode(VID_PLAY_RESET);
+     }
 }
 
 bool cDvbApi::Recording(void)
@@ -1768,6 +1868,8 @@ bool cDvbApi::StartRecord(const char *FileName, int Ca, int Priority)
      return false;
      }
   if (videoDev >= 0) {
+
+     StopTransfer();
 
      Stop(); // TODO: remove this if the driver is able to do record and replay at the same time
 
@@ -1896,6 +1998,7 @@ bool cDvbApi::StartReplay(const char *FileName, const char *Title)
      esyslog(LOG_ERR, "ERROR: StartReplay() called while recording - ignored!");
      return false;
      }
+  StopTransfer();
   Stop();
   if (videoDev >= 0) {
 
@@ -2144,7 +2247,7 @@ void cEITScanner::Process(void)
             cDvbApi *DvbApi = cDvbApi::GetDvbApi(i, 0);
             if (DvbApi) {
                if (DvbApi != cDvbApi::PrimaryDvbApi || (cDvbApi::NumDvbApis == 1 && Setup.EPGScanTimeout && now - lastActivity > Setup.EPGScanTimeout * 3600)) {
-                  if (!(DvbApi->Recording() || DvbApi->Replaying())) {
+                  if (!(DvbApi->Recording() || DvbApi->Replaying() || DvbApi->Transferring())) {
                      int oldCh = lastChannel;
                      int ch = oldCh + 1;
                      while (ch != oldCh) {

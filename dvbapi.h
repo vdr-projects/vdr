@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.h 1.25 2000/11/18 15:30:09 kls Exp $
+ * $Id: dvbapi.h 1.26 2000/11/19 14:09:41 kls Exp $
  */
 
 #ifndef __DVBAPI_H
@@ -41,6 +41,8 @@ public:
   int Read(void);
   bool Save(int Index);
   };
+
+class cTransferBuffer;
 
 class cDvbApi {
 private:
@@ -151,6 +153,20 @@ public:
   bool SetChannel(int ChannelNumber, int FrequencyMHz, char Polarization, int Diseqc, int Srate, int Vpid, int Apid, int Ca, int Pnr);
   static int CurrentChannel(void) { return PrimaryDvbApi ? PrimaryDvbApi->currentChannel : 0; }
   int Channel(void) { return currentChannel; }
+
+  // Transfer facilities
+
+private:
+  cTransferBuffer *transferBuffer;
+  cDvbApi *transferringFromDvbApi;
+public:
+  bool Transferring(void);
+       // Returns true if we are currently transferring video data.
+private:
+  cDvbApi *StartTransfer(int TransferToVideoDev);
+       // Starts transferring video data from this DVB device to TransferToVideoDev.
+  void StopTransfer(void);
+       // Stops transferring video data (in case a transfer is currently active).
 
   // Record/Replay facilities
 
