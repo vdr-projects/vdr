@@ -99,3 +99,8 @@ Video Disk Recorder Revision History
   pressing "Ok".  The summary field can only be filled in directly by editing
   the 'timers.conf' file with a text editor, or by defining/modifying the timer
   via the SVDRP interface.
+
+2000-07-26:
+
+- When scrolling through a list it now moves a full page up or down when the
+  cursor reaches the top or bottom of the menu (thanks to Heino Goldenstein!).
