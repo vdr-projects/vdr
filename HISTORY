@@ -2291,3 +2291,5 @@ Video Disk Recorder Revision History
   the "Channels" menu (thanks to Mirko Günther for reporting this one).
 - Made the plugin library directory configurable via Make.config (thanks to
   Ludwig Nussel).
+- Fixed scaling SPU bitmaps in Letterbox mode when playing NTSC material.
+  In order to do this, the cDevice was given a new member function GetVideoSystem().

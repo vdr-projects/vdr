@@ -8,7 +8,7 @@
  *
  * parts of this file are derived from the OMS program.
  *
- * $Id: dvbspu.c 1.3 2002/10/26 10:46:49 kls Exp $
+ * $Id: dvbspu.c 1.4 2003/08/15 13:04:39 kls Exp $
  */
 
 #include <assert.h>
@@ -301,8 +301,10 @@ void cDvbSpuDecoder::clearHighlight(void)
 
 int cDvbSpuDecoder::ScaleYcoord(int value)
 {
-    if (scaleMode == eSpuLetterBox)
-        return lround((value * 3.0) / 4.0 + 72.0);
+    if (scaleMode == eSpuLetterBox) {
+        int offset = cDevice::PrimaryDevice()->GetVideoSystem() == vsPAL ? 72 : 60;
+        return lround((value * 3.0) / 4.0) + offset;
+        }
     else
         return value;
 }

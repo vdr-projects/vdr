@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.46 2003/08/02 11:44:28 kls Exp $
+ * $Id: device.c 1.47 2003/08/15 12:34:36 kls Exp $
  */
 
 #include "device.h"
@@ -214,6 +214,11 @@ bool cDevice::GrabImage(const char *FileName, bool Jpeg, int Quality, int SizeX,
 
 void cDevice::SetVideoFormat(bool VideoFormat16_9)
 {
+}
+
+eVideoSystem cDevice::GetVideoSystem(void)
+{
+  return vsPAL;
 }
 
 //#define PRINTPIDS(s) { char b[500]; char *q = b; q += sprintf(q, "%d %s ", CardIndex(), s); for (int i = 0; i < MAXPIDHANDLES; i++) q += sprintf(q, " %s%4d %d", i == ptOther ? "* " : "", pidHandles[i].pid, pidHandles[i].used); dsyslog(b); }
