@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: cutter.c 1.4 2003/05/24 11:59:33 kls Exp $
+ * $Id: cutter.c 1.5 2003/08/17 09:04:04 kls Exp $
  */
 
 #include "cutter.h"
@@ -86,7 +86,7 @@ void cCuttingThread::Action(void)
 
            // Make sure there is enough disk space:
 
-           AssertFreeDiskSpace();
+           AssertFreeDiskSpace(-1);
 
            // Read one frame:
 
