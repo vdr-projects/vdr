@@ -1152,3 +1152,7 @@ Joachim Wilke <vdr@joachim-wilke.de>
 
 Sascha Klek <sklek@gmx.de>
   for reporting a problem with the '0' key in the "Day" item of the "Timers" menu
+
+Andreas Brugger <brougs78@gmx.net>
+  for reporting a possible crash when pausing live video and the recording was
+  unable to start, maybe because there was no lock on the device

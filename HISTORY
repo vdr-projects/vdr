@@ -3139,7 +3139,7 @@ Video Disk Recorder Revision History
   days ('1' is monday). Thanks to Sascha Klek for reporting a problem with the
   '0' key in the "Day" item of the "Timers" menu.
 
-2004-11-19: Version 1.3.17
+2004-11-20: Version 1.3.17
 
 - Fixed cRemux::ScanVideoPacket() to make sure it doesn't access memory beyond
   the end of the given buffer, which has caused some unjustified "unknown
@@ -3149,3 +3149,6 @@ Video Disk Recorder Revision History
   If you want to use the old DVB driver just revert this line to what it was in
   VDR version 1.3.16. The 'runvdr' script by default uses the "build-2.4"
   driver. If you want to use "build-2.6" just edit that file as necessary.
+- Fixed a possible crash when pausing live video and the recording was unable
+  to start, maybe because there was no lock on the device (thanks to Andreas
+  Brugger for reporting this one).
