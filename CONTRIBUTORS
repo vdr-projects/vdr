@@ -454,6 +454,8 @@ Andy Carter <fruit@ukgateway.net>
 Robert Schiele <rschiele@uni-mannheim.de>
  for his help in keeping 'channels.conf.cable' up to date
  for reporting some faulty default parameter initializations
+ for suggesting to only set the Makefile variables CXX and CXXFLAGS if they are not
+ yet defined
 
 Gerhard Steiner <steiner@mail.austria.com>
  for suggesting that the SVDRP command PUTE shall trigger an immediate write of

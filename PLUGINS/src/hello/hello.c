@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: hello.c 1.10 2002/11/16 13:20:26 kls Exp $
+ * $Id: hello.c 1.11 2002/12/13 15:01:43 kls Exp $
  */
 
 #include <getopt.h>
@@ -12,7 +12,7 @@
 #include <vdr/plugin.h>
 #include "i18n.h"
 
-static const char *VERSION        = "0.0.9";
+static const char *VERSION        = "0.1.0";
 static const char *DESCRIPTION    = "A friendly greeting";
 static const char *MAINMENUENTRY  = "Hello";
 

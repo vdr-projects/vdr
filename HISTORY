@@ -1869,3 +1869,15 @@ Video Disk Recorder Revision History
   and only creating the KBD remote control if VDR is running in the foreground.
 - Fixed taking an active SVDRP connection into account when doing shutdown (thanks
   to Gregoire Favre for reporting this one).
+- Changed setting of CXX and CXXFLAGS variables in Makefile, so that an externally
+  defined value will be taken if present (suggested by Robert Schiele).
+  Plugin authors should please change the lines
+
+  CXX      = g++
+  CXXFLAGS = -O2 -Wall -Woverloaded-virtual
+
+  in their Makefile to
+
+  CXX      ?= g++
+  CXXFLAGS ?= -O2 -Wall -Woverloaded-virtual
+

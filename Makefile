@@ -4,15 +4,15 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 1.53 2002/12/08 12:20:37 kls Exp $
+# $Id: Makefile 1.54 2002/12/13 14:49:12 kls Exp $
 
 .DELETE_ON_ERROR:
 
-CC       = gcc
-CFLAGS   = -O2
+CC       ?= gcc
+CFLAGS   ?= -O2
 
-CXX      = g++
-CXXFLAGS = -g -O2 -Wall -Woverloaded-virtual
+CXX      ?= g++
+CXXFLAGS ?= -g -O2 -Wall -Woverloaded-virtual
 
 DVBDIR   = ../DVB
 DTVDIR   = ./libdtv
