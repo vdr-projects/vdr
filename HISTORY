@@ -767,4 +767,5 @@ Video Disk Recorder Revision History
 - Several fixes to the replay mode display (thanks to Stefan Huelswitt):
   no more replay mode display when pressing the "Green" or "Yellow" button
   (Skip +/-60s); fixed timeout when pressing '0' to set an editing mark while
-  the progress display is not shown;
+  the progress display is not shown; mode display is shown after progress
+  display is closed;

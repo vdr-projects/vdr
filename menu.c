@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.122 2001/09/21 15:46:21 kls Exp $
+ * $Id: menu.c 1.123 2001/09/21 16:03:48 kls Exp $
  */
 
 #include "menu.h"
@@ -2396,7 +2396,11 @@ void cReplayControl::Hide(void)
 {
   if (visible) {
      Interface->Close();
-     needsFastResponse = visible = modeOnly = false;
+     needsFastResponse = visible = false;
+     if (!modeOnly)
+        ShowMode();
+     else
+        modeOnly = false;
      }
 }
 
