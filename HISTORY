@@ -1813,7 +1813,7 @@ Video Disk Recorder Revision History
   makes far jumps, so that a lock file might end up with a time stamp that lies
   in the distant future (thanks to Oliver Endriss).
 
-2002-11-29: Version 1.1.18
+2002-11-30: Version 1.1.18
 
 - Fixed missing initialization of 'number' in cChannel (thanks to Martin Hammerschmid
   for reporting this one).
@@ -1826,3 +1826,4 @@ Video Disk Recorder Revision History
   Clemens Kirchgatterer).
 - Removed transponders 10788, 11739 and 12266 from 'channels.conf' (apparently they
   are no longer active).
+- Deactivated some templates in tools.h in case some plugin needs to use the STL.

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.52 2002/11/09 15:32:36 kls Exp $
+ * $Id: tools.h 1.53 2002/11/30 12:51:45 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -45,10 +45,12 @@ extern int SysLogLevel;
 #define CHECK(s) { if ((s) < 0) LOG_ERROR; } // used for 'ioctl()' calls
 #define FATALERRNO (errno != EAGAIN && errno != EINTR)
 
+#ifndef __STL_CONFIG_H // in case some plugin needs to use the STL
 template<class T> inline T min(T a, T b) { return a <= b ? a : b; }
 template<class T> inline T max(T a, T b) { return a >= b ? a : b; }
 template<class T> inline int sgn(T a) { return a < 0 ? -1 : a > 0 ? 1 : 0; }
 template<class T> inline void swap(T &a, T &b) { T t = a; a = b; b = t; }
+#endif
 
 ssize_t safe_read(int filedes, void *buffer, size_t size);
 ssize_t safe_write(int filedes, const void *buffer, size_t size);
