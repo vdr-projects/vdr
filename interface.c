@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.c 1.14 2000/09/10 11:22:21 kls Exp $
+ * $Id: interface.c 1.15 2000/09/10 15:00:00 kls Exp $
  */
 
 #include "interface.h"
@@ -357,8 +357,9 @@ eKeys cInterface::DisplayChannel(int Number, const char *Name, bool WithInfo)
            snprintf(buffer, BufSize, "%.*s", w, NextTitle);       Write(t, l, buffer, clrCyan, clrBackground);
            l++;
            }
-        if (*NextSubtitle)
+        if (*NextSubtitle) {
            snprintf(buffer, BufSize, "%.*s", w, NextSubtitle);    Write(t, l, buffer, clrCyan, clrBackground);
+           }
         }
      eKeys Key = Wait(5, true);
      if (Key == kOk)
