@@ -1032,3 +1032,7 @@ Jouni Karvo <kex@netlab.hut.fi>
 
 Olaf Henkel <olafhenkel@t-online.de>
  for reporting a problem with long event texts in the "Classic VDR" skin
+
+Martin Dauskardt <md001@gmx.de>
+ for reporting a problem with switching channels while an encrypted channel is being
+ recorded
