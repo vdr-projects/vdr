@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.36 2001/09/02 15:09:28 kls Exp $
+ * $Id: recording.c 1.37 2001/09/23 13:43:29 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -513,3 +513,17 @@ cMark *cMarks::GetNext(int Position)
   return NULL;
 }
 
+// --- cRecordingUserCommand -------------------------------------------------
+
+const char *cRecordingUserCommand::command = NULL;
+
+void cRecordingUserCommand::InvokeCommand(const char *State, const char *RecordingFileName)
+{
+  if (command) {
+     char *cmd;
+     asprintf(&cmd, "%s %s '%s'", command, State, RecordingFileName);
+     isyslog(LOG_INFO, "executing '%s'", cmd);
+     system(cmd);
+     delete cmd;
+     }
+}

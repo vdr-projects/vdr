@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.126 2001/09/22 14:17:27 kls Exp $
+ * $Id: menu.c 1.127 2001/09/23 10:58:48 kls Exp $
  */
 
 #include "menu.h"
@@ -2104,12 +2104,11 @@ eOSState cDisplayChannel::ProcessKey(eKeys Key)
 
 // --- cRecordControl --------------------------------------------------------
 
-const char *cRecordControl::userCommand = NULL;
-
 cRecordControl::cRecordControl(cDvbApi *DvbApi, cTimer *Timer)
 {
   eventInfo = NULL;
   instantId = NULL;
+  fileName = NULL;
   dvbApi = DvbApi;
   if (!dvbApi) dvbApi = cDvbApi::PrimaryDvbApi;//XXX
   timer = Timer;
@@ -2130,8 +2129,9 @@ cRecordControl::cRecordControl(cDvbApi *DvbApi, cTimer *Timer)
         Summary = eventInfo->GetExtendedDescription();
         }
      cRecording Recording(timer, Subtitle, Summary);
-     InvokeUserCommand(true);
-     if (dvbApi->StartRecord(Recording.FileName(), Channels.GetByNumber(timer->channel)->ca, timer->priority))
+     fileName = strdup(Recording.FileName());
+     cRecordingUserCommand::InvokeCommand(RUC_BEFORERECORDING, fileName);
+     if (dvbApi->StartRecord(fileName, Channels.GetByNumber(timer->channel)->ca, timer->priority))
         Recording.WriteSummary();
      Interface->DisplayRecording(dvbApi->CardIndex(), true);
      }
@@ -2143,6 +2143,7 @@ cRecordControl::~cRecordControl()
 {
   Stop(true);
   delete instantId;
+  delete fileName;
 }
 
 bool cRecordControl::GetEventInfo(void)
@@ -2173,17 +2174,6 @@ bool cRecordControl::GetEventInfo(void)
   return false;
 }
 
-void cRecordControl::InvokeUserCommand(bool Before)
-{
-  if (userCommand) {
-     char *cmd;
-     asprintf(&cmd, "%s %d", userCommand, Before);
-     isyslog(LOG_INFO, "executing '%s'", cmd);
-     system(cmd);
-     delete cmd;
-     }
-}
-
 void cRecordControl::Stop(bool KeepInstant)
 {
   if (timer) {
@@ -2198,7 +2188,7 @@ void cRecordControl::Stop(bool KeepInstant)
         }
      timer = NULL;
      Interface->DisplayRecording(dvbApi->CardIndex(), false);
-     InvokeUserCommand(false);
+     cRecordingUserCommand::InvokeCommand(RUC_AFTERRECORDING, fileName);
      }
 }
 

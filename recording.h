@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 1.16 2001/09/02 11:35:56 kls Exp $
+ * $Id: recording.h 1.17 2001/09/23 13:43:58 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -81,6 +81,18 @@ public:
   cMark *Get(int Position);
   cMark *GetPrev(int Position);
   cMark *GetNext(int Position);
+  };
+
+#define RUC_BEFORERECORDING "before"
+#define RUC_AFTERRECORDING  "after"
+#define RUC_EDITEDRECORDING "edited"
+
+class cRecordingUserCommand {
+private:
+  static const char *command;
+public:
+  static void SetCommand(const char *Command) { command = Command; }
+  static void InvokeCommand(const char *State, const char *RecordingFileName);
   };
 
 #endif //__RECORDING_H

@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.77 2001/09/23 10:11:07 kls Exp $
+ * $Id: vdr.c 1.78 2001/09/23 10:59:29 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -182,7 +182,7 @@ int main(int argc, char *argv[])
                        return 2;
                        }
                     break;
-          case 'r': cRecordControl::SetUserCommand(optarg);
+          case 'r': cRecordingUserCommand::SetCommand(optarg);
                     break;
           case 's': Shutdown = optarg;
                     break;

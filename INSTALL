@@ -162,16 +162,44 @@ Executing commands before and after a recording:
 ------------------------------------------------
 
 You can use the '-r' option to define a program or script that gets called
-before and after a recording is performed.
+before and after a recording is performed, and after an editing process
+has finished.
 
-The program will be called with one integer parameter that is "1" if this
-is *before* the recording, and "0" if this is *after* the recording.
+The program will be called with two string parameters. The first parameter
+is one of
+
+  before      if this is *before* a recording starts
+  after       if this is *after* a recording has finished
+  edited      if this is after a recording has been *edited*
+
+and the second parameter contains the full name of the recording's
+directory (which may not yet exists at that moment in the "before" case).
+In the "edited" case it will be the name of the edited version.
 
 Within this program you can do anything you would like to do before and/or
-after a recording. However, the program must return as soon as possible,
-because otherwise it will block further execution of VDR. Be expecially careful
-to make sure the program returns before the watchdog timeout you may have set
-up with the '-w' option!
+after a recording or after an editing process. However, the program must return
+as soon as possible, because otherwise it will block further execution of VDR.
+Be especially careful to make sure the program returns before the watchdog
+timeout you may have set up with the '-w' option! If the operation you want to
+perform will take longer, you will have to run it as a background job.
+
+An example script for use with the '-r' option could look like this:
+
+#!/bin/sh
+case "$1" in
+     before)
+            echo "Before recording $2"
+            ;;
+     after)
+            echo "After recording $2"
+            ;;
+     edited)
+            echo "Edited recording $2"
+            ;;
+     *)
+            echo "ERROR: unknown state: $1"
+            ;;
+     esac
 
 Command line options:
 ---------------------
