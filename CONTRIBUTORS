@@ -475,6 +475,7 @@ Reinhard Walter Buchner <rw.buchner@freenet.de>
 
 Lauri Tischler <lauri.tischler@efore.fi>
  for helping to test and debug the new channel source and DiSEqC handling
+ for reporting a faulty parameter initialization in menu.c
 
 Andy Carter <fruit@ukgateway.net>
  for helping to test new DVB-T handling

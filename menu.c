@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.243 2003/05/11 13:58:13 kls Exp $
+ * $Id: menu.c 1.244 2003/05/11 16:06:05 kls Exp $
  */
 
 #include "menu.h"
@@ -2909,7 +2909,7 @@ eOSState cDisplayVolume::ProcessKey(eKeys Key)
 
 // --- cRecordControl --------------------------------------------------------
 
-cRecordControl::cRecordControl(cDevice *Device, cTimer *Timer, bool Pause = false)
+cRecordControl::cRecordControl(cDevice *Device, cTimer *Timer, bool Pause)
 {
   eventInfo = NULL;
   instantId = NULL;

@@ -2116,7 +2116,7 @@ Video Disk Recorder Revision History
   (suggested by Andreas Schultz). Plugin authors should please read the section
   about "Getting started" in PLUGINS.html and adapt their code if applicable.
 - Implemented the CableDeliverySystemDescriptor and TerrestrialDeliverySystemDescriptor
-  in libdtv (thanks to Sven Grothklags and Andreas Schultz)
+  in libdtv (thanks to Sven Grothklags and Andreas Schultz).
 - Fixed keeping live video active in case the primary device doesn't have an MPEG
   decoder (thanks to Wolfgang Goeller for reporting this one).
 - Implemented cDevice::ActualDevice(), which returns the actual receiving device in
@@ -2142,3 +2142,8 @@ Video Disk Recorder Revision History
   created when pausing live video (suggested by Alfred Zastrow).
 - Changed C++ style comments in libdtv into C style to avoid warnings in gcc 3.x
   (thanks to Andreas Schultz).
+
+2003-05-11: Version 1.1.32
+
+- Removed a faulty parameter initialization in menu.c (thanks to Lauri Tischler for
+  reporting this one).
