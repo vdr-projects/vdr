@@ -4,13 +4,15 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 1.3 2000/04/24 09:44:10 kls Exp $
+# $Id: Makefile 1.4 2000/06/24 15:09:30 kls Exp $
 
 OBJS = config.o dvbapi.o interface.o menu.o osd.o recording.o remote.o tools.o vdr.o
 
-ifdef DEBUG_REMOTE
-DEFINES += -DDEBUG_REMOTE
+ifndef REMOTE
+REMOTE = KBD
 endif
+
+DEFINES += -DREMOTE_$(REMOTE)
 
 ifdef DEBUG_OSD
 DEFINES += -DDEBUG_OSD

@@ -20,10 +20,16 @@ and type 'make'. This should produce an executable file
 named 'vdr', which can be run after the DVB driver has been
 installed.
 
-There are two macros you can use to customize the 'vdr' program
-at compile time. Adding "DEBUG_REMOTE=1" to the 'make' call 
-will use the PC's keyboard as input device instead of the "Remote
-Control Unit" (see http://www.cadsoft.de/people/kls/vdr/remote.htm).
+The 'vdr' program can be controlled via the PC keyboard or
+an infrared remote control unit. Define the REMOTE macro to one of the
+following values 'make' call to activate the respective control mode:
+
+  REMOTE=KBD    control via the PC keyboard (default)
+  REMOTE=RCU    control via the "Remote Control Unit" receiver
+                (see http://www.cadsoft.de/people/kls/vdr/remote.htm)
+  REMOTE=LIRC   control via the "Linux Infrared Remote Control"
+                (see http://fsinfo.cs.uni-sb.de/~columbus/lirc)
+
 Adding "DEBUG_OSD=1" will use the PC screen (or current window)
 to display texts instead of the DVB card's on-screen display
 interface. These modes are useful when testing new menus if you
@@ -65,7 +71,7 @@ Learning the remote control keys:
 ---------------------------------
 
 There is no default 'keys.conf' file, so if you compile the program
-without 'DEBUG_REMOTE=1' you will have to go through a "teach-in"
+with 'REMOTE=RCU' you will have to go through a "teach-in"
 session that allows the program to learn your remote control codes.
 It will first attempt to determine the basic data transfer mode and
 timing of your remote control unit, and then will ask you to press one
@@ -76,9 +82,9 @@ you define, the more you will be able to navigate through the menus and
 control recording/replaying. The program uses only a very small number
 of keys which have multiple meanings in the various modes (see MANUAL
 for a detailed description).
-If the program has been built with "DEBUG_REMOTE=1", it will use the
+If the program has been built with "REMOTE=KBD", it will use the
 key configuration file 'keys-pc.conf', so that you won't loose data
-when switching between normal and debug mode.
+when switching between remote control and keyboard mode.
 
 The default PC key assignments are:
 
@@ -89,6 +95,12 @@ The default PC key assignments are:
   Red, Green, Yellow, Blue  'F1'..'F4'
   0..9                      '0'..'9' in top row
 
-If you prefer different key assignments, simply delete the file
-'keys-pc.conf' and restart 'vdr' to get into learning mode.
+If you prefer different key assignments, or if the default doesn't work for
+your keyboard, simply delete the file 'keys-pc.conf' and restart 'vdr' to get
+into learning mode.
+
+If the program has been compiled with 'REMOTE=LIRC', no 'keys.conf' file
+will be used. Instead, the key names as listed in the source file 'config.c'
+must be used when setting up LIRC. See http://www2.arnes.si/~mthale1 for
+more about LIRC.
 

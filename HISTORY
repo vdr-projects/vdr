@@ -55,3 +55,12 @@ Video Disk Recorder Revision History
 - Reduced the number of remote control keys. Modified the key assignments for
   the PC keyboard to better resemble the "up-down-left-right-ok" layout on
   menu controlling remote control units.
+
+2000-07-15: Version 0.06
+
+- Added support for LIRC remote control (thanks to Carsten Koch!).
+  There are now three different remote control modes: KBD (PC-Keyboard), RCU
+  and LIRC. See the INSTALL file for information on how to enable either of
+  these modes. The default mode is now KBD, not RCU as before (to make it
+  work immediately even if there is no actual remote control).
+

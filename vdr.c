@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.19 2000/05/27 15:38:35 kls Exp $
+ * $Id: vdr.c 1.20 2000/07/15 11:45:05 kls Exp $
  */
 
 #include <signal.h>
@@ -33,7 +33,7 @@
 #include "recording.h"
 #include "tools.h"
 
-#ifdef DEBUG_REMOTE
+#ifdef REMOTE_KBD
 #define KEYS_CONF "keys-pc.conf"
 #else
 #define KEYS_CONF "keys.conf"
@@ -58,8 +58,10 @@ int main(int argc, char *argv[])
 
   Channels.Load("channels.conf");
   Timers.Load("timers.conf");
+#ifndef REMOTE_LIRC
   if (!Keys.Load(KEYS_CONF))
      Interface.LearnKeys();
+#endif
   Interface.Init();
 
   cChannel::SwitchTo(CurrentChannel);

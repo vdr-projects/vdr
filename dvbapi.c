@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.10 2000/05/27 14:07:17 kls Exp $
+ * $Id: dvbapi.c 1.11 2000/06/24 14:03:19 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -1054,7 +1054,7 @@ cDvbApi::cDvbApi(const char *FileName)
   if (videoDev < 0)
      LOG_ERROR;
   cols = rows = 0;
-#if defined(DEBUG_OSD) || defined(DEBUG_REMOTE)
+#if defined(DEBUG_OSD) || defined(REMOTE_KBD)
   initscr();
   keypad(stdscr, TRUE);
   nonl();
@@ -1080,7 +1080,7 @@ cDvbApi::~cDvbApi()
      StopRecord();
      close(videoDev);
      }
-#if defined(DEBUG_REMOTE) || defined(DEBUG_OSD)
+#if defined(DEBUG_OSD) || defined(REMOTE_KBD)
   endwin();
 #endif
   delete replayTitle;

@@ -4,15 +4,19 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.c 1.9 2000/05/07 09:28:39 kls Exp $
+ * $Id: interface.c 1.10 2000/07/15 12:39:20 kls Exp $
  */
 
 #include "interface.h"
 #include <unistd.h>
 #include "remote.h"
 
-#ifndef DEBUG_REMOTE
-cRcIo RcIo("/dev/ttyS1");
+#if defined(REMOTE_RCU)
+cRcIoRCU RcIo("/dev/ttyS1");
+#elif defined(REMOTE_LIRC)
+cRcIoLIRC RcIo("/dev/lircd");
+#else
+cRcIoKBD RcIo;
 #endif
 
 cInterface Interface;
@@ -26,9 +30,7 @@ cInterface::cInterface(void)
 
 void cInterface::Init(void)
 {
-#ifndef DEBUG_REMOTE
   RcIo.SetCode(Keys.code, Keys.address);
-#endif
 }
 
 void cInterface::Open(int NumCols, int NumLines)
@@ -47,21 +49,15 @@ void cInterface::Close(void)
 
 unsigned int cInterface::GetCh(bool Wait)
 {
-#ifdef DEBUG_REMOTE
-  timeout(Wait ? 1000 :10);
-  int c = getch();
-  return (c > 0) ? c : 0;
-#else
 #ifdef DEBUG_OSD
   timeout(0);
   getch(); // just to make 'ncurses' display the window:
 #endif
-  if (Wait || RcIo.InputAvailable()) {
+  if (RcIo.InputAvailable(Wait)) {
      unsigned int Command;
      return RcIo.GetCommand(&Command, NULL) ? Command : 0;
      }
   return 0;
-#endif
 }
 
 eKeys cInterface::GetKey(bool Wait)
@@ -215,12 +211,12 @@ void cInterface::QueryKeys(void)
   WriteText(1, 1, "Learning Remote Control Keys");
   WriteText(1, 3, "Phase 1: Detecting RC code type");
   WriteText(1, 5, "Press any key on the RC unit");
-#ifndef DEBUG_REMOTE
+#ifndef REMOTE_KBD
   unsigned char Code = 0;
   unsigned short Address;
 #endif
   for (;;) {
-#ifdef DEBUG_REMOTE
+#ifdef REMOTE_KBD
       if (GetCh())
          break;
 #else
@@ -318,9 +314,7 @@ void cInterface::LearnKeys(void)
 
 void cInterface::DisplayChannel(int Number, const char *Name)
 {
-#ifndef DEBUG_REMOTE
   RcIo.Number(Number);
-#endif
   if (Name && !Recording()) {
      Open(MenuColumns, 1);
      char buffer[MenuColumns + 1];
@@ -338,9 +332,7 @@ void cInterface::DisplayChannel(int Number, const char *Name)
 
 void cInterface::DisplayRecording(int Index, bool On)
 {
-#ifndef DEBUG_REMOTE
   RcIo.SetPoints(1 << Index, On);
-#endif
 }
 
 bool cInterface::Recording(void)

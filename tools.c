@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.7 2000/04/24 15:01:35 kls Exp $
+ * $Id: tools.c 1.8 2000/06/24 15:26:15 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -22,15 +22,18 @@
 
 int SysLogLevel = 3;
 
-bool DataAvailable(int filedes)
+bool DataAvailable(int filedes, bool wait)
 {
-  fd_set set;
-  FD_ZERO(&set);
-  FD_SET(filedes, &set);
-  struct timeval timeout;
-  timeout.tv_sec = 0;
-  timeout.tv_usec = 10000;
-  return select(FD_SETSIZE, &set, NULL, NULL, &timeout) > 0 && FD_ISSET(filedes, &set);
+  if (filedes >= 0) {
+     fd_set set;
+     FD_ZERO(&set);
+     FD_SET(filedes, &set);
+     struct timeval timeout;
+     timeout.tv_sec = wait ? 1 : 0;
+     timeout.tv_usec = wait ? 0 : 10000;
+     return select(FD_SETSIZE, &set, NULL, NULL, &timeout) > 0 && FD_ISSET(filedes, &set);
+     }
+  return false;
 }
 
 void writechar(int filedes, char c)

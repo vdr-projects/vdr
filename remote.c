@@ -4,7 +4,9 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remote.c 1.7 2000/05/07 09:28:18 kls Exp $
+ * Ported to LIRC by Carsten Koch <Carsten.Koch@icem.de>  2000-06-16.
+ *
+ * $Id: remote.c 1.9 2000/07/15 12:19:50 kls Exp $
  */
 
 #include "remote.h"
@@ -15,20 +17,82 @@
 #include <sys/time.h>
 #include <termios.h>
 #include <unistd.h>
+
+#if defined REMOTE_LIRC
+#include <sys/socket.h>
+#include <sys/stat.h>
+#include <sys/un.h>
+#endif
+
+#include "config.h"
 #include "tools.h"
 
 #define REPEATLIMIT 100 // ms
 #define REPEATDELAY 250 // ms
 
-cRcIo::cRcIo(char *DeviceName)
+// --- cRcIoBase -------------------------------------------------------------
+
+cRcIoBase::cRcIoBase(void)
+{
+  t = 0;
+  firstTime = lastTime = 0;
+  lastCommand = 0;
+}
+
+cRcIoBase::~cRcIoBase()
+{
+}
+
+// --- cRcIoKBD --------------------------------------------------------------
+
+#if defined REMOTE_KBD
+
+cRcIoKBD::cRcIoKBD(void)
+{
+}
+
+cRcIoKBD::~cRcIoKBD()
+{
+}
+
+void cRcIoKBD::Flush(int WaitSeconds)
+{
+  time_t t0 = time(NULL);
+
+  timeout(10);
+  for (;;) {
+      while (getch() > 0)
+            t0 = time(NULL);
+      if (time(NULL) - t0 >= WaitSeconds)
+         break;
+      }
+}
+
+bool cRcIoKBD::InputAvailable(bool Wait)
+{
+  timeout(Wait ? 1000 : 10);
+  return true;//XXX
+}
+
+bool cRcIoKBD::GetCommand(unsigned int *Command, unsigned short *)
+{
+  if (Command) {
+     *Command = getch();
+     return *Command > 0;
+     }
+  return false;
+}
+
+// --- cRcIoRCU --------------------------------------------------------------
+
+#elif defined REMOTE_RCU
+
+cRcIoRCU::cRcIoRCU(char *DeviceName)
 {
   dp = 0;
   mode = modeB;
   code = 0;
   address = 0xFFFF;
-  t = 0;
-  firstTime = lastTime = 0;
-  lastCommand = 0;
   lastNumber = 0;
   if ((f = open(DeviceName, O_RDWR | O_NONBLOCK)) >= 0) {
      struct termios t;
@@ -46,59 +110,50 @@ cRcIo::cRcIo(char *DeviceName)
   f = -1;
 }
 
-cRcIo::~cRcIo()
+cRcIoRCU::~cRcIoRCU()
 {
   if (f >= 0)
      close(f);
 }
 
-bool cRcIo::InputAvailable(bool Wait)
-{
-  if (f >= 0) {
-     fd_set set;
-     struct timeval timeout;
-     timeout.tv_sec = Wait ? 1 : 0;
-     timeout.tv_usec = Wait ? 0 : 10000;
-     FD_ZERO(&set);
-     FD_SET(f, &set);
-     if (select(FD_SETSIZE, &set, NULL, NULL, &timeout)  > 0)
-        return FD_ISSET(f, &set);
-     }
-  return false;
-}
-
-int cRcIo::ReceiveByte(bool Wait)
+int cRcIoRCU::ReceiveByte(bool Wait)
 {
   // Returns the byte if one was received within a timeout, -1 otherwise
   if (InputAvailable(Wait)) {
      unsigned char b;
      if (read(f, &b, 1) == 1)
         return b;
+     else
+        LOG_ERROR;
      }
   return -1;
 }
 
-bool cRcIo::SendByteHandshake(unsigned char c)
+bool cRcIoRCU::SendByteHandshake(unsigned char c)
 {
-  if (f >= 0 && write(f, &c, 1) == 1) {
-     for (int reply = ReceiveByte(); reply >= 0;) {
-         if (reply == c)
-            return true;
-         else if (reply == 'X') {
-            // skip any incoming RC code - it will come again
-            for (int i = 6; i--;) {
-                if (ReceiveByte(false) < 0)
-                   return false;
-                }
+  if (f >= 0) {
+     int w = write(f, &c, 1);
+     if (w == 1) {
+        for (int reply = ReceiveByte(); reply >= 0;) {
+            if (reply == c)
+               return true;
+            else if (reply == 'X') {
+               // skip any incoming RC code - it will come again
+               for (int i = 6; i--;) {
+                   if (ReceiveByte(false) < 0)
+                      return false;
+                   }
+               }
+            else
+               return false;
             }
-         else
-            return false;
-         }
+        }
+     LOG_ERROR;
      }
   return false;
 }
 
-bool cRcIo::SendByte(unsigned char c)
+bool cRcIoRCU::SendByte(unsigned char c)
 {
   for (int retry = 5; retry--;) {
       if (SendByteHandshake(c))
@@ -107,7 +162,20 @@ bool cRcIo::SendByte(unsigned char c)
   return false;
 }
 
-void cRcIo::Flush(int WaitSeconds)
+bool cRcIoRCU::SetCode(unsigned char Code, unsigned short Address)
+{
+  code = Code;
+  address = Address;
+  return SendCommand(code);
+}
+
+bool cRcIoRCU::SetMode(unsigned char Mode)
+{
+  mode = Mode;
+  return SendCommand(mode);
+}
+
+void cRcIoRCU::Flush(int WaitSeconds)
 {
   time_t t0 = time(NULL);
 
@@ -119,20 +187,12 @@ void cRcIo::Flush(int WaitSeconds)
       }
 }
 
-bool cRcIo::SetCode(unsigned char Code, unsigned short Address)
+bool cRcIoRCU::InputAvailable(bool Wait)
 {
-  code = Code;
-  address = Address;
-  return SendCommand(code);
+  return DataAvailable(f, Wait);
 }
 
-bool cRcIo::SetMode(unsigned char Mode)
-{
-  mode = Mode;
-  return SendCommand(mode);
-}
-
-bool cRcIo::GetCommand(unsigned int *Command, unsigned short *Address)
+bool cRcIoRCU::GetCommand(unsigned int *Command, unsigned short *Address)
 {
 #pragma pack(1)
   union {
@@ -185,17 +245,17 @@ bool cRcIo::GetCommand(unsigned int *Command, unsigned short *Address)
   return false;
 }
 
-bool cRcIo::SendCommand(unsigned char Cmd)
+bool cRcIoRCU::SendCommand(unsigned char Cmd)
 { 
   return SendByte(Cmd | 0x80);
 }
 
-bool cRcIo::Digit(int n, int v)
+bool cRcIoRCU::Digit(int n, int v)
 { 
   return SendByte(((n & 0x03) << 5) | (v & 0x0F) | (((dp >> n) & 0x01) << 4));
 }
 
-bool cRcIo::Number(int n, bool Hex)
+bool cRcIoRCU::Number(int n, bool Hex)
 {
   if (!Hex) {
      char buf[8];
@@ -216,7 +276,7 @@ bool cRcIo::Number(int n, bool Hex)
   return SendCommand(mode);
 }
 
-bool cRcIo::String(char *s)
+bool cRcIoRCU::String(char *s)
 {
   const char *chars = mode == modeH ? "0123456789ABCDEF" : "0123456789-EHLP ";
   int n = 0;
@@ -233,7 +293,7 @@ bool cRcIo::String(char *s)
   return Number(n, true);
 }
 
-void cRcIo::SetPoints(unsigned char Dp, bool On)
+void cRcIoRCU::SetPoints(unsigned char Dp, bool On)
 { 
   if (On)
      dp |= Dp;
@@ -242,7 +302,7 @@ void cRcIo::SetPoints(unsigned char Dp, bool On)
   Number(lastNumber, true);
 }
 
-bool cRcIo::DetectCode(unsigned char *Code, unsigned short *Address)
+bool cRcIoRCU::DetectCode(unsigned char *Code, unsigned short *Address)
 {
   // Caller should initialize 'Code' to 0 and call DetectCode()
   // until it returns true. Whenever DetectCode() returns false
@@ -275,4 +335,84 @@ bool cRcIo::DetectCode(unsigned char *Code, unsigned short *Address)
   *Code = 0;
   return false;
 }
+
+// --- cRcIoLIRC -------------------------------------------------------------
+
+#elif defined REMOTE_LIRC
+
+cRcIoLIRC::cRcIoLIRC(char *DeviceName)
+{
+  struct sockaddr_un addr;
+  addr.sun_family = AF_UNIX;
+  strcpy(addr.sun_path, DeviceName);
+  f = socket(AF_UNIX, SOCK_STREAM, 0);
+  if (f >= 0) {
+     if (connect(f, (struct sockaddr *)&addr, sizeof(addr)) >= 0)
+        return;
+     LOG_ERROR_STR(DeviceName);
+     close(f);
+     }
+  else
+     LOG_ERROR_STR(DeviceName);
+  f = -1;
+}
+
+cRcIoLIRC::~cRcIoLIRC()
+{
+  if (f >= 0)
+     close(f);
+}
+
+const char *cRcIoLIRC::ReceiveString(void)
+{
+  while (InputAvailable(true)) {
+        if (read(f, buf, sizeof(buf)) > 21) {
+           const int repeat = 10 * (buf[17] - '0') + (buf[18] - '0');
+           const int now = time_ms();
+           if (repeat == 0) {
+              firstTime = lastTime = now;
+              return buf + 20;
+              }
+           else if ((now > firstTime + REPEATDELAY) && (now > lastTime + REPEATLIMIT)) {
+              lastTime = now;
+              return buf + 20;
+              }
+           }
+        }
+  return NULL;
+}
+
+void cRcIoLIRC::Flush(int WaitSeconds)
+{
+  time_t t0 = time(NULL);
+
+  for (;;) {
+      while (InputAvailable(false)) {
+            read(f, buf, sizeof(buf));
+            t0 = time(NULL);
+            }
+      if (time(NULL) - t0 >= WaitSeconds)
+         break;
+      }
+}
+
+bool cRcIoLIRC::InputAvailable(bool Wait)
+{
+  return DataAvailable(f, Wait);
+}
+
+bool cRcIoLIRC::GetCommand(unsigned int *Command, unsigned short *)
+{
+  Flush();
+  if (Command) {
+     const char *cmd = ReceiveString();
+     if (cmd) {
+        *Command = Keys.Encode(cmd);
+        return true;
+        }
+     }
+  return false;
+}
+
+#endif
 

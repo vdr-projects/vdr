@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.7 2000/05/27 14:44:15 kls Exp $
+ * $Id: config.c 1.8 2000/06/24 13:43:14 kls Exp $
  */
 
 #include "config.h"
@@ -144,6 +144,17 @@ eKeys cKeys::Get(unsigned int Code)
      return k->type;
      }
   return kNone;
+}
+
+unsigned int cKeys::Encode(const char *Command)
+{  
+  if (Command != NULL) {
+     const tKey *k = keys;
+     while ((k->type != kNone) && strncmp(k->name, Command, strlen(k->name)) != 0) //XXX why 'strncmp()'???
+           k++;
+     return k->code;
+     }
+  return 0;
 }
 
 void cKeys::Set(eKeys Key, unsigned int Code)
