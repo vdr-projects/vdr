@@ -2336,3 +2336,6 @@ Video Disk Recorder Revision History
   to Lauri Tischler and Ragnar Sundblad).
 - Added channels for DVB-T Hannover (Germany) to channels.cont.terr (thanks to
   Peter Waechtler).
+- Fixed a hangup in SVDRP when the client disappears without sending QUIT (thanks
+  to Robert Bartl for reporting this one). The problem was introduced in version
+  1.2.2 through the fix for an occasional "Broken pipe" error in SVDRP connections.

@@ -777,3 +777,6 @@ Javier Marcet <lists@marcet.info>
 
 Peter Waechtler <pwaechtler@mac.com>
  for adding channels for DVB-T Hannover (Germany) to channels.cont.terr
+
+Robert Bartl <robert@bartl.priv.at>
+ for reporting a hangup in SVDRP when the client disappears without sending QUIT

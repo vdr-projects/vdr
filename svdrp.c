@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.53 2003/07/26 10:57:33 kls Exp $
+ * $Id: svdrp.c 1.54 2003/08/30 09:35:00 kls Exp $
  */
 
 #include "svdrp.h"
@@ -1104,6 +1104,8 @@ bool cSVDRP::Process(void)
               isyslog("lost connection to SVDRP client");
               Close();
               }
+           else
+              break;
            }
      if (Setup.SVDRPTimeout && time(NULL) - lastActivity > Setup.SVDRPTimeout) {
         isyslog("timeout on SVDRP connection");
