@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.31 2002/11/01 10:05:27 kls Exp $
+ * $Id: dvbdevice.c 1.32 2002/11/01 11:24:47 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -616,21 +616,19 @@ int cDvbDevice::NumAudioTracksDevice(void) const
 
 const char **cDvbDevice::GetAudioTracksDevice(int *CurrentTrack) const
 {
-  if (Ca())
-     return NULL; // a Ca recording session blocks switching live audio tracks
-  if (NumAudioTracks()) {
+  if (NumAudioTracksDevice()) {
      if (CurrentTrack)
         *CurrentTrack = (pidHandles[ptAudio].pid == aPid1) ? 0 : 1;
      static const char *audioTracks1[] = { "Audio 1", NULL };
      static const char *audioTracks2[] = { "Audio 1", "Audio 2", NULL };
-     return NumAudioTracks() > 1 ? audioTracks2 : audioTracks1;
+     return NumAudioTracksDevice() > 1 ? audioTracks2 : audioTracks1;
      }
   return NULL;
 }
 
 void cDvbDevice::SetAudioTrackDevice(int Index)
 {
-  if (0 <= Index && Index < NumAudioTracks()) {
+  if (0 <= Index && Index < NumAudioTracksDevice()) {
      int vpid = pidHandles[ptVideo].pid; // need to turn video PID off/on to restart demux
      DelPid(vpid);
      DelPid(pidHandles[ptAudio].pid);
