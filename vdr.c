@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.174 2004/01/17 16:56:57 kls Exp $
+ * $Id: vdr.c 1.175 2004/02/08 11:23:29 kls Exp $
  */
 
 #include <getopt.h>
@@ -518,7 +518,7 @@ int main(int argc, char *argv[])
               Channels.Save(); //XXX only after user changes???
               Timers.Save();
               for (cChannel *Channel = Channels.First(); Channel; Channel = Channels.Next(Channel)) {
-                  if (Channel && Channel->Modification(CHANNELMOD_RETUNE)) {
+                  if (Channel->Modification(CHANNELMOD_RETUNE)) {
                      cRecordControls::ChannelDataModified(Channel);
                      if (Channel->Number() == cDevice::CurrentChannel()) {
                         if (!cDevice::PrimaryDevice()->Replaying() || cTransferControl::ReceiverDevice()) {
