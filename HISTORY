@@ -2254,7 +2254,7 @@ Video Disk Recorder Revision History
 - Some corrections to the Finnish OSD texts (thanks to Niko Tarnanen and Rolf
   Ahrenberg).
 
-2003-07-13: Version 1.2.2
+2003-07-26: Version 1.2.2
 
 - Fixed a bug in channel switching after Left/Right has been pressed (thanks to
   Michael Walle for reporting this one).
@@ -2269,3 +2269,5 @@ Video Disk Recorder Revision History
 - Now clearing the channel info display when entering numeric keys to switch
   channels (suggested by Guy Roussin).
 - Added missing I18N entry for "Ppid" (thanks to Rolf Ahrenberg).
+- Fixed handling the color buttons in the "Edit channel" menu (thanks to Thomas
+  Keil for reporting this one).

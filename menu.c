@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.260 2003/06/19 10:09:29 kls Exp $
+ * $Id: menu.c 1.261 2003/07/26 10:05:20 kls Exp $
  */
 
 #include "menu.h"
@@ -713,6 +713,8 @@ void cMenuChannels::Propagate(void)
 
 eOSState cMenuChannels::Switch(void)
 {
+  if (HasSubMenu())
+     return osContinue;
   cChannel *ch = GetChannel(Current());
   if (ch)
      cDevice::PrimaryDevice()->SwitchChannel(ch, true);
@@ -738,7 +740,7 @@ eOSState cMenuChannels::New(void)
 
 eOSState cMenuChannels::Delete(void)
 {
-  if (Count() > 0) {
+  if (!HasSubMenu() && Count() > 0) {
      int Index = Current();
      cChannel *channel = GetChannel(Current());
      int DeletedChannel = channel->Number();
@@ -793,7 +795,9 @@ eOSState cMenuChannels::ProcessKey(eKeys Key)
               case kRed:    return Edit();
               case kGreen:  return New();
               case kYellow: return Delete();
-              case kBlue:   Mark(); break;
+              case kBlue:   if (!HasSubMenu())
+                               Mark();
+                            break;
               default: break;
               }
             }
