@@ -1092,7 +1092,7 @@ Video Disk Recorder Revision History
   activity, but this should be no problem for normal use).
 - Changed the MANUAL description of the "Conditional Access" setup parameters
   to reflect the actual "CICAM DVBn m" notation in the "Setup" menu.
-- The new Setup parameter TrustedTransponder can be used to define which
+- The new Setup parameter "Use time from transponder" can be used to define which
   transponder shall be used to set the system time (see MANUAL for details).
   If you have been using the SetSystemTime option previously, you now MUST
   select a channel that you trust to have a reliable time base.

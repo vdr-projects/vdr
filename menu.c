@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.171 2002/03/17 13:50:27 kls Exp $
+ * $Id: menu.c 1.172 2002/03/17 14:23:44 kls Exp $
  */
 
 #include "menu.h"
@@ -2015,7 +2015,7 @@ void cMenuSetupEPG::Set(void)
   Add(new cMenuEditIntItem( tr("Setup.EPG$EPG scan timeout"),          &data.EPGScanTimeout));
   Add(new cMenuEditIntItem( tr("Setup.EPG$EPG bugfix level"),          &data.EPGBugfixLevel, 0, MAXEPGBUGFIXLEVEL));
   Add(new cMenuEditBoolItem(tr("Setup.EPG$Set system time"),           &data.SetSystemTime));
-  Add(new cMenuEditTranItem(tr("Setup.EPG$Use time from transponder"), &data.TrustedTransponder));
+  Add(new cMenuEditTranItem(tr("Setup.EPG$Use time from transponder"), &data.TimeTransponder));
 }
 
 // --- cMenuSetupDVB ---------------------------------------------------------

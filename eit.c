@@ -16,7 +16,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.c 1.40 2002/03/10 12:45:38 kls Exp $
+ * $Id: eit.c 1.41 2002/03/17 14:23:41 kls Exp $
  ***************************************************************************/
 
 #include "eit.h"
@@ -1137,7 +1137,7 @@ void cSIProcessor::Action()
                         case 0x14:
                            if (buf[0] == 0x70)
                            {
-                              if (Setup.SetSystemTime && Setup.TrustedTransponder && ISTRANSPONDER(currentTransponder, Setup.TrustedTransponder))
+                              if (Setup.SetSystemTime && Setup.TimeTransponder && ISTRANSPONDER(currentTransponder, Setup.TimeTransponder))
                               {
                                  cTDT ctdt((tdt_t *)buf);
                                  ctdt.SetSystemTime();

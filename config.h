@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.104 2002/03/10 12:45:11 kls Exp $
+ * $Id: config.h 1.105 2002/03/17 14:24:11 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -342,7 +342,7 @@ public:
   int LnbFrequHi;
   int DiSEqC;
   int SetSystemTime;
-  int TrustedTransponder;
+  int TimeTransponder;
   int MarginStart, MarginStop;
   int EPGScanTimeout;
   int EPGBugfixLevel;
