@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.136 2003/10/24 12:58:24 kls Exp $
+ * $Id: i18n.c 1.137 2003/12/13 11:09:17 kls Exp $
  *
  * Translations provided by:
  *
@@ -51,9 +51,14 @@
  *    which means that it should be 'Italiano', not 'Italian').
  *    Note that only the characters defined in 'fontosd.c' will
  *    be available!
- * 4. Compile VDR and test the new language by switching to it
+ * 4. If your language requires a character set other than the default iso8859-1
+ *    you need to make the appropriate entry in the second phrase below, and
+ *    also create the necessary font files in case they are not yet part of
+ *    the VDR source (see how this is done for iso8859-7, for instance). Don't
+ *    forget to adjust the files font.h and font.c accordingly.
+ * 5. Compile VDR and test the new language by switching to it
  *    in the "Setup/OSD" menu.
- * 5. Send the modified 'i18n.c' file to <kls@cadsoft.de> to have
+ * 6. Send the modified files to <kls@cadsoft.de> to have
  *    it included in the next version of VDR.
  *
  * In case an English phrase is used in more than one context (and might need
