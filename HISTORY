@@ -794,3 +794,4 @@ Video Disk Recorder Revision History
 - The new setup parameter SplitEditedFiles can be used to control whether or
   not the result of an editing process shall be written into separate files.
 - Fixed handling repeat function when using LIRC (thanks to Matthias Weingart).
+- Fixed the "system time seen..." message in case of overlapping timers.
