@@ -833,6 +833,7 @@ Jens Groth <Jens_Groth@t-online.de>
 
 Andreas Trauer <vdr@trauers.homelinux.net>
  for fixing missing channel info after an incomplete channel group switch
+ for removing the unused 0x73 (TOT) filter in eit.c
 
 Markus Hardt <markus.hardt@gmx.net>
  for his help in keeping 'channels.conf.terr' up to date

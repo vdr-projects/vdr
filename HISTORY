@@ -2419,3 +2419,4 @@ Video Disk Recorder Revision History
 - Fixed initializing the highlight area in cDvbSpuDecoder (thanks to Sven Goethel).
 - Now trying to get a timer's channel without RID when loading 'timers.conf'
   (thanks to Thomas Rausch).
+- Removed the unused 0x73 (TOT) filter in eit.c (thanks to Andreas Trauer).
