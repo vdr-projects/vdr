@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.90 2001/08/03 14:18:08 kls Exp $
+ * $Id: menu.c 1.91 2001/08/04 08:08:44 kls Exp $
  */
 
 #include "menu.h"
@@ -2314,10 +2314,10 @@ bool cReplayControl::ShowProgress(bool Initial)
         }
      if (Total != lastTotal) {
         Interface->Write(-7, 2, IndexToHMSF(Total));
-        Interface->Flush();
-        lastTotal = Total;
+        if (!Initial)
+           Interface->Flush();
         }
-     if (Current != lastCurrent) {
+     if (Current != lastCurrent || Total != lastTotal) {
 #ifdef DEBUG_OSD
         int p = Width() * Current / Total;
         Interface->Fill(0, 1, p, 1, clrGreen);
@@ -2325,12 +2325,14 @@ bool cReplayControl::ShowProgress(bool Initial)
 #else
         cProgressBar ProgressBar(Width() * dvbApi->CellWidth(), dvbApi->LineHeight(), Current, Total, marks);
         Interface->SetBitmap(0, dvbApi->LineHeight(), ProgressBar);
-        Interface->Flush();
+        if (!Initial)
+           Interface->Flush();
 #endif
         Interface->Write(0, 2, IndexToHMSF(Current, displayFrames));
         Interface->Flush();
         lastCurrent = Current;
         }
+     lastTotal = Total;
      return true;
      }
   return false;

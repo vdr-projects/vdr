@@ -616,4 +616,5 @@ Video Disk Recorder Revision History
   for this suggestion).
 - Added support for replaying DVDs (thanks to Andreas Schultz). VDR now needs
   the 'libdvdread' library to be installed.
-  
+- Fixed replay progress display in case replay is paused while watching an
+  ongoing recording.
