@@ -836,7 +836,7 @@ Video Disk Recorder Revision History
 - Completed storing the current audio volume in the setup.conf file (thanks
   to Andy Grobb).
 - Fixed closing the progress display with the "Back" key when in trick mode
-  and Setup.ShowReplayMode is enabled.
+  and Setup.ShowReplayMode is enabled (thanks to Stefan Huelswitt).
 - New SVDRP commands LSTR and DELR to list and delete recordings (thanks to
   Thomas Heiligenmann).
 - Fixed a crash when pressing the '2' button while replaying a DVD.

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.134 2001/10/27 13:47:12 kls Exp $
+ * $Id: menu.c 1.135 2001/10/28 10:04:50 kls Exp $
  */
 
 #include "menu.h"
@@ -2369,8 +2369,6 @@ cReplayControl::cReplayControl(void)
 cReplayControl::~cReplayControl()
 {
   Hide();
-  if (Setup.ShowReplayMode)
-     Hide(); // the initial Hide() may have reopened the small mode display window
   dvbApi->StopReplay();
 }
 
@@ -2424,10 +2422,7 @@ void cReplayControl::Hide(void)
   if (visible) {
      Interface->Close();
      needsFastResponse = visible = false;
-     if (!modeOnly)
-        ShowMode();
-     else
-        modeOnly = false;
+     modeOnly = false;
      }
 }
 
@@ -2680,6 +2675,7 @@ void cReplayControl::EditCut(void)
         }
      else
         Interface->Error(tr("Editing process already active!"));
+     ShowMode();
      }
 }
 
@@ -2708,6 +2704,7 @@ eOSState cReplayControl::ProcessKey(eKeys Key)
   if (visible) {
      if (timeoutShow && time(NULL) > timeoutShow) {
         Hide();
+        ShowMode();
         timeoutShow = 0;
         }
      else if (!modeOnly)
@@ -2757,8 +2754,10 @@ eOSState cReplayControl::ProcessKey(eKeys Key)
           switch (Key) {
             // Menu control:
             case kMenu:    Hide(); return osMenu; // allow direct switching to menu
-            case kOk:      if (visible && !modeOnly)
+            case kOk:      if (visible && !modeOnly) {
                               Hide();
+                              DoShowMode = true;
+                              }
                            else
                               Show();
                            break;
