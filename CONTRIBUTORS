@@ -525,6 +525,8 @@ Jaakko Hyvätti <jaakko@hyvatti.iki.fi>
  for fixing recording overlapping timers on the same channel in case
  DO_REC_AND_PLAY_ON_PRIMARY_DEVICE and/or DO_MULTIPLE_RECORDINGS is not defined
  for fixing the minimum lifespan of deleted recordings
+ for suggesting to improve channel switching in case of numerical input by switching
+ as soon as the channel is unique
 
 Dennis Noordsij <dennis.noordsij@wiral.com>
  for reporting a small glitch when switching channels

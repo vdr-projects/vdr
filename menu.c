@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.257 2003/06/12 16:11:32 kls Exp $
+ * $Id: menu.c 1.258 2003/06/13 14:31:15 kls Exp $
  */
 
 #include "menu.h"
@@ -2742,6 +2742,24 @@ eOSState cDisplayChannel::ProcessKey(eKeys Key)
                cChannel *channel = Channels.GetByNumber(number);
                DisplayChannel(channel);
                lastTime = time_ms();
+               // Lets see if there can be any useful further input:
+               int n = channel ? number : 0;
+               while (channel && (channel = Channels.Next(channel)) != NULL) {
+                     if (!channel->GroupSep()) {
+                        if (channel->Number() > n)
+                           n *= 10;
+                        if (n <= channel->Number() && channel->Number() <= n + 9) {
+                           n = 0;
+                           break;
+                           }
+                        }
+                     }
+               if (n > 0) {
+                  // This channel is the only one that fits the input, so let's take it right away:
+                  Interface->Flush(); // makes sure the user sees his last input
+                  Channels.SwitchTo(number);
+                  return osEnd;
+                  }
                }
             }
          break;
