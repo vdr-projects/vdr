@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osdbase.c 1.11 2003/10/19 14:32:32 kls Exp $
+ * $Id: osdbase.c 1.12 2004/01/31 10:31:13 kls Exp $
  */
 
 #include "osdbase.h"
@@ -116,7 +116,7 @@ cBitmap::cBitmap(int Width, int Height, int Bpp, bool ClearWithBackground)
   fontType = fontOsd;
   font = NULL;
   if (width > 0 && height > 0) {
-     bitmap = MALLOC(char, width * height);
+     bitmap = MALLOC(u_char, width * height);
      if (bitmap) {
         Clean();
         memset(bitmap, 0x00, width * height);
@@ -186,7 +186,7 @@ void cBitmap::Clean(void)
   dirtyY2 = -1;
 }
 
-void cBitmap::SetIndex(int x, int y, char Index)
+void cBitmap::SetIndex(int x, int y, u_char Index)
 {
   if (bitmap) {
      if (0 <= x && x < width && 0 <= y && y < height) {
@@ -231,8 +231,8 @@ int cBitmap::Width(const char *s)
 void cBitmap::Text(int x, int y, const char *s, eDvbColor ColorFg, eDvbColor ColorBg)
 {
   if (bitmap) {
-     char fg = Index(ColorFg);
-     char bg = Index(ColorBg);
+     u_char fg = Index(ColorFg);
+     u_char bg = Index(ColorBg);
      int h = font->Height(s);
      while (s && *s) {
            const cFont::tCharData *CharData = font->CharData(*s++);
@@ -253,7 +253,7 @@ void cBitmap::Text(int x, int y, const char *s, eDvbColor ColorFg, eDvbColor Col
 void cBitmap::Fill(int x1, int y1, int x2, int y2, eDvbColor Color)
 {
   if (bitmap) {
-     char c = Index(Color);
+     u_char c = Index(Color);
      for (int y = y1; y <= y2; y++)
          for (int x = x1; x <= x2; x++)
              SetIndex(x, y, c);
@@ -267,7 +267,7 @@ void cBitmap::Clear(void)
      Fill(0, 0, width - 1, height - 1, clrBackground);
 }
 
-const char *cBitmap::Data(int x, int y)
+const u_char *cBitmap::Data(int x, int y)
 {
   return &bitmap[y * width + x];
 }
@@ -327,7 +327,7 @@ void cWindow::Text(int x, int y, const char *s, eDvbColor ColorFg, eDvbColor Col
   cBitmap::Text(x, y, s, ColorFg, ColorBg);
 }
 
-const char *cWindow::Data(int x, int y)
+const u_char *cWindow::Data(int x, int y)
 {
   return cBitmap::Data(x, y);
 }

@@ -925,3 +925,6 @@ Christian Tramnitz <maillist@tramnitz.com>
 Jens Rosenboom <me@jayr.de>
  for fixing the SVDRP command 'STAT DISK' to avoid a 'division by 0' in case
  the disk is full
+
+Andreas Regel <andreas.regel@gmx.de>
+ for fixing handling bitmap indexes for 256 color mode
