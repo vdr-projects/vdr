@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.h 1.27 2000/12/03 13:44:28 kls Exp $
+ * $Id: dvbapi.h 1.28 2000/12/09 10:54:09 kls Exp $
  */
 
 #ifndef __DVBAPI_H
@@ -42,6 +42,8 @@ public:
   bool Save(int Index);
   };
 
+const char *IndexToStr(int Index, bool WithFrame = false);
+      // Converts the given index to a string, optionally containing the frame number.
 class cRecordBuffer;
 class cReplayBuffer;
 class cTransferBuffer;
@@ -131,21 +133,15 @@ public:
   void Close(void);
   void Clear(void);
   void Fill(int x, int y, int w, int h, eDvbColor color = clrBackground);
+  void SetBitmap(int x, int y, const cBitmap &Bitmap);
   void ClrEol(int x, int y, eDvbColor color = clrBackground);
   int CellWidth(void);
+  int LineHeight(void);
   int Width(unsigned char c);
   int WidthInCells(const char *s);
   eDvbFont SetFont(eDvbFont Font);
   void Text(int x, int y, const char *s, eDvbColor colorFg = clrWhite, eDvbColor colorBg = clrBackground);
   void Flush(void);
-
-  // Progress Display facilities
-
-private:
-  int lastProgress, lastTotal;
-  char *replayTitle;
-public:
-  bool ShowProgress(bool Initial = false);
 
   // Channel facilities
 
@@ -201,11 +197,10 @@ public:
        // returned.
   void StopRecord(void);
        // Stops the current recording session (if any).
-  bool StartReplay(const char *FileName, const char *Title = NULL);
+  bool StartReplay(const char *FileName);
        // Starts replaying the given file.
        // If there is already a replay session active, it will be stopped
        // and the new file will be played back.
-       // If provided Title will be used in the progress display.
   void StopReplay(void);
        // Stops the current replay session (if any).
   void Pause(void);

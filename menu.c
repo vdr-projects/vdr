@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.54 2000/12/03 11:43:35 kls Exp $
+ * $Id: menu.c 1.55 2000/12/09 11:03:21 kls Exp $
  */
 
 #include "menu.h"
@@ -2000,10 +2000,10 @@ char *cReplayControl::title = NULL;
 
 cReplayControl::cReplayControl(void)
 {
-  dvbApi = cDvbApi::PrimaryDvbApi;//XXX
+  dvbApi = cDvbApi::PrimaryDvbApi;
   visible = shown = false;
   if (fileName)
-     dvbApi->StartReplay(fileName, title);
+     dvbApi->StartReplay(fileName);
 }
 
 cReplayControl::~cReplayControl()
@@ -2038,7 +2038,7 @@ void cReplayControl::Show(void)
   if (!visible) {
      Interface->Open(MenuColumns, -3);
      needsFastResponse = visible = true;
-     shown = dvbApi->ShowProgress(true);
+     shown = ShowProgress(true);
      }
 }
 
@@ -2050,12 +2050,47 @@ void cReplayControl::Hide(void)
      }
 }
 
+bool cReplayControl::ShowProgress(bool Initial)
+{
+  int Current, Total;
+
+  if (dvbApi->GetIndex(Current, Total)) {
+     if (Initial) {
+        Interface->Clear();
+        if (title)
+           Interface->Write(0, 0, title);
+        }
+     Interface->Write(-7, 2, IndexToStr(Total));
+     Interface->Flush();
+#ifdef DEBUG_OSD
+     int p = Width() * Current / Total;
+     Interface->Fill(0, 1, p, 1, clrGreen);
+     Interface->Fill(p, 1, Width() - p, 1, clrWhite);
+#else
+     int w = Width() * dvbApi->CellWidth();
+     int h = dvbApi->LineHeight();
+     int p = w * Current / Total;
+     cBitmap ProgressBar(w, h);
+
+     ProgressBar.Fill(0, 0, p, h - 1, clrGreen);
+     ProgressBar.Fill(p + 1, 0, w - 1, h - 1, clrWhite);
+     Interface->SetBitmap(0, dvbApi->LineHeight(), ProgressBar);
+
+     Interface->Flush();
+#endif
+     Interface->Write(0, 2, IndexToStr(Current));
+     Interface->Flush();
+     return true;
+     }
+  return false;
+}
+
 eOSState cReplayControl::ProcessKey(eKeys Key)
 {
   if (!dvbApi->Replaying())
      return osEnd;
   if (visible)
-     shown = dvbApi->ShowProgress(!shown) || shown;
+     shown = ShowProgress(!shown) || shown;
   switch (Key) {
     case kUp:      dvbApi->Play(); break;
     case kDown:    dvbApi->Pause(); break;

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.h 1.20 2000/11/18 15:27:59 kls Exp $
+ * $Id: interface.h 1.21 2000/12/09 10:48:41 kls Exp $
  */
 
 #ifndef __INTERFACE_H
@@ -41,6 +41,7 @@ public:
   void Clear(void);
   void ClearEol(int x, int y, eDvbColor Color = clrBackground);
   void Fill(int x, int y, int w, int h, eDvbColor color = clrBackground);
+  void SetBitmap(int x, int y, const cBitmap &Bitmap);
   void Flush(void);
   void SetCols(int *c);
   eDvbFont SetFont(eDvbFont Font);

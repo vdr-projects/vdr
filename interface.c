@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.c 1.32 2000/11/18 15:28:50 kls Exp $
+ * $Id: interface.c 1.33 2000/12/09 11:04:10 kls Exp $
  */
 
 #include "interface.h"
@@ -119,6 +119,12 @@ void cInterface::Fill(int x, int y, int w, int h, eDvbColor Color)
 {
   if (open)
      cDvbApi::PrimaryDvbApi->Fill(x, y, w, h, Color);
+}
+
+void cInterface::SetBitmap(int x, int y, const cBitmap &Bitmap)
+{
+  if (open)
+     cDvbApi::PrimaryDvbApi->SetBitmap(x, y, Bitmap);
 }
 
 void cInterface::Flush(void)

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 1.14 2000/11/12 12:33:00 kls Exp $
+ * $Id: menu.h 1.15 2000/12/09 10:40:13 kls Exp $
  */
 
 #ifndef _MENU_H
@@ -84,6 +84,7 @@ private:
   void Hide(void);
   static char *fileName;
   static char *title;
+  bool ShowProgress(bool Initial);
 public:
   cReplayControl(void);
   virtual ~cReplayControl();
