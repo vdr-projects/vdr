@@ -500,4 +500,4 @@ Video Disk Recorder Revision History
   "Green" button in the "Main" menu. The "Edit Channel" menu therefore now
   has two audio PID fields (Apid1 and Apid2). By default, Apid2 is 0, which
   means there is no alternate audio track.
-
+- Fixed removing recordings with Lifetime = 99.

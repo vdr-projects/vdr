@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.30 2001/06/02 10:07:01 kls Exp $
+ * $Id: recording.c 1.31 2001/06/12 15:31:32 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -94,16 +94,16 @@ void AssertFreeDiskSpace(int Priority)
            cRecording *r = Recordings.First();
            cRecording *r0 = NULL;
            while (r) {
-                 if (r->lifetime == MAXLIFETIME)
-                    continue; // recordings with MAXLIFETIME live forever
-                 if ((r->lifetime == 0 && Priority > r->priority) || // the recording has guaranteed lifetime and the new recording has higher priority
-                     (time(NULL) - r->start) / SECSINDAY > r->lifetime) { // the recording's guaranteed lifetime has expired
-                    if (r0) {
-                       if (r->priority < r0->priority || (r->priority == r0->priority && r->start < r0->start))
-                          r0 = r; // in any case we delete the one with the lowest priority (or the older one in case of equal priorities)
+                 if (r->lifetime < MAXLIFETIME) { // recordings with MAXLIFETIME live forever
+                    if ((r->lifetime == 0 && Priority > r->priority) || // the recording has guaranteed lifetime and the new recording has higher priority
+                        (time(NULL) - r->start) / SECSINDAY > r->lifetime) { // the recording's guaranteed lifetime has expired
+                       if (r0) {
+                          if (r->priority < r0->priority || (r->priority == r0->priority && r->start < r0->start))
+                             r0 = r; // in any case we delete the one with the lowest priority (or the older one in case of equal priorities)
+                          }
+                       else
+                          r0 = r;
                        }
-                    else
-                       r0 = r;
                     }
                  r = Recordings.Next(r);
                  }
