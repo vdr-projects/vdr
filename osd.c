@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 1.42 2003/05/03 14:46:38 kls Exp $
+ * $Id: osd.c 1.43 2003/06/04 16:13:00 kls Exp $
  */
 
 #include "osd.h"
@@ -99,6 +99,8 @@ void cOsd::Open(int w, int h)
   //XXX
   osd = OpenRaw(x, y);
   //XXX TODO this should be transferred to the places where the individual windows are requested (there's too much detailed knowledge here!)
+  if (!osd)
+     return;
   if (h / lineHeight == 5) { //XXX channel display
      osd->Create(0,              0, w, h, 4);
      }
@@ -145,7 +147,8 @@ void cOsd::Clear(void)
   Fill(0, 0, cols, rows, clrBackground);
   refresh();
 #else
-  osd->Clear();
+  if (osd)
+     osd->Clear();
 #endif
 }
 
@@ -161,14 +164,16 @@ void cOsd::Fill(int x, int y, int w, int h, eDvbColor color)
       }
   wsyncup(window); // shouldn't be necessary because of 'syncok()', but w/o it doesn't work
 #else
-  osd->Fill(x * charWidth, y * lineHeight, (x + w) * charWidth - 1, (y + h) * lineHeight - 1, color);
+  if (osd)
+     osd->Fill(x * charWidth, y * lineHeight, (x + w) * charWidth - 1, (y + h) * lineHeight - 1, color);
 #endif
 }
 
 void cOsd::SetBitmap(int x, int y, const cBitmap &Bitmap)
 {
 #ifndef DEBUG_OSD
-  osd->SetBitmap(x, y, Bitmap);
+  if (osd)
+     osd->SetBitmap(x, y, Bitmap);
 #endif
 }
 
@@ -200,7 +205,7 @@ int cOsd::Width(unsigned char c)
 #ifdef DEBUG_OSD
   return 1;
 #else
-  return osd->Width(c);
+  return osd ? osd->Width(c) : 1;
 #endif
 }
 
@@ -209,7 +214,7 @@ int cOsd::WidthInCells(const char *s)
 #ifdef DEBUG_OSD
   return strlen(s);
 #else
-  return (osd->Width(s) + charWidth - 1) / charWidth;
+  return osd ? (osd->Width(s) + charWidth - 1) / charWidth : strlen(s);
 #endif
 }
 
@@ -218,7 +223,7 @@ eDvbFont cOsd::SetFont(eDvbFont Font)
 #ifdef DEBUG_OSD
   return Font;
 #else
-  return osd->SetFont(Font);
+  return osd ? osd->SetFont(Font) : Font;
 #endif
 }
 
@@ -231,7 +236,8 @@ void cOsd::Text(int x, int y, const char *s, eDvbColor colorFg, eDvbColor colorB
   wmove(window, y, x); // ncurses wants 'y' before 'x'!
   waddnstr(window, s, cols - x);
 #else
-  osd->Text(x * charWidth, y * lineHeight, s, colorFg, colorBg);
+  if (osd)
+     osd->Text(x * charWidth, y * lineHeight, s, colorFg, colorBg);
 #endif
 }
 
