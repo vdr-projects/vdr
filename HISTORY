@@ -2241,3 +2241,5 @@ Video Disk Recorder Revision History
   Gruber for reporting this one).
 - Fixed editing channels ('timers.conf' was not written after a channel has
   been modified, which could result in errors upon the next start of VDR).
+- Fixed a crash when cancelling a newly created timer (thanks to Thomas Schmidt
+  for reporting this one).

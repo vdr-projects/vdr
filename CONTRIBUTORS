@@ -712,3 +712,6 @@ Karim Afifi <karim.afifi@free.fr>
 
 Jon Burgess <mplayer@jburgess.uklinux.net>
  for pointing out a problem with NPTL ("Native Posix Thread Library")
+
+Thomas Schmidt <thomas.schmidt@in.stud.tu-ilmenau.de>
+ for reporting a crash when cancelling a newly created timer
