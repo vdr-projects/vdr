@@ -1079,6 +1079,9 @@ Marco Schlüßler <marco@lordzodiac.de>
  for fixing the cDvbSpuDecoder
  for fixing a short glitch when starting a recording on the primary device while
  in replay or transfer mode
+ for fixing cRemux::ScanVideoPacket() to make sure it doesn't access memory beyond
+ the end of the given buffer, which has caused some unjustified "unknown picture
+ type errors"
 
 Jürgen Schmitz <j.schmitz@web.de>
  for reporting a bug in displaying the current channel when switching via the SVDRP

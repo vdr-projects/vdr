@@ -8,7 +8,7 @@
  * the Linux DVB driver's 'tuxplayer' example and were rewritten to suit
  * VDR's needs.
  *
- * $Id: remux.c 1.21 2004/10/24 09:25:33 kls Exp $
+ * $Id: remux.c 1.22 2004/11/16 16:49:03 kls Exp $
  */
 
 #include "remux.h"
@@ -451,7 +451,7 @@ int cRemux::ScanVideoPacket(const uchar *Data, int Count, int Offset, uchar &Pic
      if (Length >= 8) {
         int i = Offset + 8; // the minimum length of the video packet header
         i += Data[i] + 1;   // possible additional header bytes
-        for (; i < Offset + Length; i++) {
+        for (; i < Offset + Length - 5; i++) {
             if (Data[i] == 0 && Data[i + 1] == 0 && Data[i + 2] == 1) {
                switch (Data[i + 3]) {
                  case SC_PICTURE: PictureType = (Data[i + 5] >> 3) & 0x07;

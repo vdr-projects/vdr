@@ -3138,3 +3138,9 @@ Video Disk Recorder Revision History
   shot" and "repeating". The keys '1'...'7' can be used to toggle the individual
   days ('1' is monday). Thanks to Sascha Klek for reporting a problem with the
   '0' key in the "Day" item of the "Timers" menu.
+
+2004-11-16: Version 1.3.17
+
+- Fixed cRemux::ScanVideoPacket() to make sure it doesn't access memory beyond
+  the end of the given buffer, which has caused some unjustified "unknown
+  picture type errors" (thanks to Marco Schlüßler).
