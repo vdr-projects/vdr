@@ -2455,3 +2455,5 @@ Video Disk Recorder Revision History
 - Changed font handling to allow language specific character sets.
 - Adopted the small font character set from the "Elchi" patch (originally
   provided by Alessio Sangalli).
+- Greek language texts now use iso8859-7 character set (thanks to Dimitrios
+  Dimitrakos).
