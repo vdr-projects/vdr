@@ -3435,3 +3435,5 @@ Video Disk Recorder Revision History
 - Changed MAXDPIDS to 16 (8xAC3 + 8xDTS) (thanks to Werner Fink for pointing this out).
 - Completed Dutch language texts (thanks to Hans Dingemans).
 - Added 'smi' to the Finnish language codes (thanks to Rolf Ahrenberg).
+- Fixed ensuring there is a current audio track in case there is only one track
+  (thanks to Werner Fink for reporting this one).

@@ -275,6 +275,8 @@ Werner Fink <werner@suse.de>
  Transfer Modes
  for suggestions that led to the addition of the 'Id' parameter to cAudio::Play().
  for pointing out that MAXDPIDS needs to be to 16 (8xAC3 + 8xDTS)
+ for reporting a problem with ensuring there is a current audio track in case there
+ is only one track
 
 Rolf Hakenes <hakenes@hippomi.de>
  for providing 'libdtv' and adapting the EIT mechanisms to it
