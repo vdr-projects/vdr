@@ -2131,3 +2131,4 @@ Video Disk Recorder Revision History
   if the buffer runs full (thanks to Sascha Volkenandt for reporting this one).
 - Fixed handling EPG data where the "extended event descriptor" comes before the
   "short event" or a "time shifted event" (thanks to Jonan Santiago).
+- Disabled the "Received stuffing section in EIT" log message.
