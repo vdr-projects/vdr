@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 1.20 2003/04/27 09:55:53 kls Exp $
+ * $Id: dvbplayer.c 1.21 2003/05/19 15:23:19 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -477,8 +477,8 @@ void cDvbPlayer::Action(void)
                     }
                  int r = nonBlockingFileReader->Read(replayFile, b, Length);
                  if (r > 0) {
-                    if (AudioTrack >= 0)
-                       StripAudioPackets(b, r, AudioTrack);
+                    if (AudioTrack == 0)
+                       StripAudioPackets(b, r);
                     readFrame = new cFrame(b, -r, ftUnknown, readIndex); // hands over b to the ringBuffer
                     b = NULL;
                     }
@@ -514,9 +514,13 @@ void cDvbPlayer::Action(void)
               if (!p) {
                  p = playFrame->Data();
                  pc = playFrame->Count();
-                 if (firstPacket) {
-                    cRemux::SetBrokenLink(p, pc);
-                    firstPacket = false;
+                 if (p) {
+                    if (firstPacket) {
+                       cRemux::SetBrokenLink(p, pc);
+                       firstPacket = false;
+                       }
+                    if (AudioTrack > 0)
+                       StripAudioPackets(p, pc, AudioTrack);
                     }
                  }
               if (p) {

@@ -236,6 +236,8 @@ Werner Fink <werner@suse.de>
  for improving keyboard detection
  for adding some missing cAudio handling calls
  for replacing the 'for' loops in StripAudioPackets() with memset() calls
+ for modifying handling of audio packets in cDvbPlayer for better sync with external
+ AC3 replay
 
 Rolf Hakenes <hakenes@hippomi.de>
  for providing 'libdtv' and adapting the EIT mechanisms to it

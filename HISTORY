@@ -2172,3 +2172,8 @@ Video Disk Recorder Revision History
   to Lars Bläser for reporting this one).
 - No longer waiting inside cIndexFile::CatchUp() to avoid shortly blocking replay
   at the end of a recording.
+
+2003-05-24: Version 1.1.33
+
+- Modified handling of audio packets in cDvbPlayer for better sync with external
+  AC3 replay (thanks to Werner Fink).
