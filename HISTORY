@@ -1131,3 +1131,7 @@ Video Disk Recorder Revision History
 - Workaround for displaying still frames with the unpatched LinuxDVB driver
   (if anybody ever finds out why the unpatched driver doesn't display VDR's
   still frames, please let me know).
+- When executing a command from the "Commands" menu, the title of that command
+  is now immediately shown in the status line (followed by "...") to give the
+  user some feedback that the command is being executed, which is especially
+  important if this takes some time.
