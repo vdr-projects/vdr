@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.69 2001/06/03 13:07:20 kls Exp $
+ * $Id: dvbapi.c 1.70 2001/06/09 10:32:09 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -742,14 +742,16 @@ void cReplayBuffer::Output(void)
            while (r > 0 && Busy() && !blockOutput) {
                  cFile::FileReadyForWriting(videoDev, 100);
                  int w = write(videoDev, p, r);
-                 if (w < 0) {
+                 if (w > 0) {
+                    p += w;
+                    r -= w;
+                    fileOffset += w;
+                    }
+                 else if (w < 0 && errno != EAGAIN) {
                     LOG_ERROR;
                     Stop();
                     return;
                     }
-                 p += w;
-                 r -= w;
-                 fileOffset += w;
                  }
            }
         if (blockOutput > 1)
@@ -1109,13 +1111,15 @@ void cTransferBuffer::Output(void)
            uchar *p = b;
            while (r > 0 && Busy()) {
                  int w = write(toDevice, p, r);
-                 if (w < 0) {
+                 if (w > 0) {
+                    p += w;
+                    r -= w;
+                    }
+                 else if (w < 0 && errno != EAGAIN) {
                     LOG_ERROR;
                     Stop();
                     return;
                     }
-                 p += w;
-                 r -= w;
                  }
            }
         else
