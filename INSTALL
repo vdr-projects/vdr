@@ -16,7 +16,11 @@ you will have to change the definition of DVBDIR in the
 Makefile.
 
 This program requires the card driver version 0.05 or higher
-to work properly.
+to work properly. If you are using driver version 0.7 you need
+to load the dvb.o module with option outstream=0, so your insmod
+statement should read 'insmod dvb.o outstream=0'. This is currently
+necessary because 'vdr' works with AV_PES data and will change
+once it has been modified to work directly with MPEG2.
 
 After extracting the package, change into the VDR directory
 and type 'make'. This should produce an executable file
