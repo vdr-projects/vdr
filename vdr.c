@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.98 2002/03/03 14:56:03 kls Exp $
+ * $Id: vdr.c 1.99 2002/03/08 16:34:29 kls Exp $
  */
 
 #include <getopt.h>
@@ -85,6 +85,7 @@ int main(int argc, char *argv[])
   int SVDRPport = DEFAULTSVDRPPORT;
   const char *ConfigDirectory = NULL;
   bool DaemonMode = false;
+  bool MuteAudio = false;
   int WatchdogTimeout = DEFAULTWATCHDOG;
   const char *Terminal = NULL;
   const char *Shutdown = NULL;
@@ -97,6 +98,7 @@ int main(int argc, char *argv[])
       { "epgfile",  required_argument, NULL, 'E' },
       { "help",     no_argument,       NULL, 'h' },
       { "log",      required_argument, NULL, 'l' },
+      { "mute",     no_argument,       NULL, 'm' },
       { "port",     required_argument, NULL, 'p' },
       { "record",   required_argument, NULL, 'r' },
       { "shutdown", required_argument, NULL, 's' },
@@ -108,7 +110,7 @@ int main(int argc, char *argv[])
 
   int c;
   int option_index = 0;
-  while ((c = getopt_long(argc, argv, "a:c:dD:E:hl:p:r:s:t:v:w:", long_options, &option_index)) != -1) {
+  while ((c = getopt_long(argc, argv, "a:c:dD:E:hl:mp:r:s:t:v:w:", long_options, &option_index)) != -1) {
         switch (c) {
           case 'a': cDvbApi::SetAudioCommand(optarg);
                     break;
@@ -143,6 +145,7 @@ int main(int argc, char *argv[])
                            "  -l LEVEL, --log=LEVEL    set log level (default: 3)\n"
                            "                           0 = no logging, 1 = errors only,\n"
                            "                           2 = errors and info, 3 = errors, info and debug\n"
+                           "  -m,       --mute         mute audio of the primary DVB device at startup\n"
                            "  -p PORT,  --port=PORT    use PORT for SVDRP (default: %d)\n"
                            "                           0 turns off SVDRP\n"
                            "  -r CMD,   --record=CMD   call CMD before and after a recording\n"
@@ -169,6 +172,8 @@ int main(int argc, char *argv[])
                        }
                     fprintf(stderr, "vdr: invalid log level: %s\n", optarg);
                     return 2;
+                    break;
+          case 'm': MuteAudio = true;
                     break;
           case 'p': if (isnumber(optarg))
                        SVDRPport = atoi(optarg);
@@ -269,7 +274,10 @@ int main(int argc, char *argv[])
   cSIProcessor::Read();
 
   Channels.SwitchTo(Setup.CurrentChannel);
-  cDvbApi::PrimaryDvbApi->SetVolume(Setup.CurrentVolume, true);
+  if (MuteAudio)
+     cDvbApi::PrimaryDvbApi->ToggleMute();
+  else
+     cDvbApi::PrimaryDvbApi->SetVolume(Setup.CurrentVolume, true);
 
   cEITScanner EITScanner;
 

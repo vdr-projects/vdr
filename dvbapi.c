@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.157 2002/03/08 15:14:04 kls Exp $
+ * $Id: dvbapi.c 1.158 2002/03/08 16:31:23 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -1751,7 +1751,7 @@ cDvbApi::cDvbApi(int n)
 #endif
   currentChannel = 1;
   mute = false;
-  volume = MAXVOLUME;
+  volume = Setup.CurrentVolume;
 }
 
 cDvbApi::~cDvbApi()

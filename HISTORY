@@ -1076,3 +1076,5 @@ Video Disk Recorder Revision History
 - Fixed reacting on changes in CICAM settings (needed to restart VDR before).
 - The "Blue" button in the "Main" menu now works as "Stop" button if a recording
   is currently being replayed.
+- New command line option '-m' to mute audio of the primary DVB device at
+  startup (suggested by Mirko Günther).

@@ -220,3 +220,6 @@ Adrian Stabiszewski <as@nitegate.de>
 
 Bernd Schweikert <bernd.schweikert@dit-gmbh.de>
  for adding 'Ca' code 201 for 'Cryptoworks, GOD-DIGITAL' to 'ca.conf'
+
+Mirko Günther <mi.guenther@ib-helms.de>
+ for suggesting the -m command line option
