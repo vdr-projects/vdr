@@ -2598,3 +2598,4 @@ Video Disk Recorder Revision History
   scan on a single DVB card system (see MANUAL for details).
 - The new SVDRP command 'SCAN' can be used to force  an EPG scan on a single
   DVB card system (see MANUAL under Setup/EPG for details).
+- Fixed handling PID changes in 'Transfer Mode'.

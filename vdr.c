@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.173 2004/01/16 13:59:57 kls Exp $
+ * $Id: vdr.c 1.174 2004/01/17 16:56:57 kls Exp $
  */
 
 #include <getopt.h>
@@ -52,6 +52,7 @@
 #include "sources.h"
 #include "timers.h"
 #include "tools.h"
+#include "transfer.h"
 #include "videodir.h"
 
 #define MINCHANNELWAIT  10 // seconds to wait between failed channel switchings
@@ -520,7 +521,7 @@ int main(int argc, char *argv[])
                   if (Channel && Channel->Modification(CHANNELMOD_RETUNE)) {
                      cRecordControls::ChannelDataModified(Channel);
                      if (Channel->Number() == cDevice::CurrentChannel()) {
-                        if (!cDevice::PrimaryDevice()->Replaying()) {
+                        if (!cDevice::PrimaryDevice()->Replaying() || cTransferControl::ReceiverDevice()) {
                            isyslog("retuning due to modification of channel %d", Channel->Number());
                            Channels.SwitchTo(Channel->Number());
                            }
