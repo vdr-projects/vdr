@@ -1086,3 +1086,5 @@ Video Disk Recorder Revision History
 - Fixed closing a pipe (used for replaying Dolby Digital audio), which
   sometimes left 'zombie' processes behind (thanks to Werner Fink for helping
   to debug this one).
+- Now starting the Dolby Digital output thread only if the recording actually
+  contains Dolby Digital audio data (thanks to Werner Fink).

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.159 2002/03/09 10:14:07 kls Exp $
+ * $Id: dvbapi.c 1.160 2002/03/09 11:59:39 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -746,10 +746,6 @@ cPlayBuffer::cPlayBuffer(cDvbApi *DvbApi, int VideoDev, int AudioDev)
   canToggleAudioTrack = false;
   skipAC3bytes = false;
   audioTrack = 0xC0;
-  if (cDvbApi::AudioCommand()) {
-     if (!dolbyDev.Open(cDvbApi::AudioCommand(), "w"))
-        esyslog(LOG_ERR, "ERROR: can't open pipe to audio command '%s'", cDvbApi::AudioCommand());
-     }
 }
 
 cPlayBuffer::~cPlayBuffer()
@@ -758,7 +754,11 @@ cPlayBuffer::~cPlayBuffer()
 
 void cPlayBuffer::PlayExternalDolby(const uchar *b, int MaxLength)
 {
-  if (dolbyDev) {
+  if (cDvbApi::AudioCommand()) {
+     if (!dolbyDev && !dolbyDev.Open(cDvbApi::AudioCommand(), "w")) {
+        esyslog(LOG_ERR, "ERROR: can't open pipe to audio command '%s'", cDvbApi::AudioCommand());
+        return;
+        }
      if (b[0] == 0x00 && b[1] == 0x00 && b[2] == 0x01) {
         if (b[3] == 0xBD) { // dolby
            int l = b[4] * 256 + b[5] + 6;
@@ -1150,7 +1150,7 @@ void cReplayBuffer::StripAudioPackets(uchar *b, int Length, uchar Except)
             int l = b[i + 4] * 256 + b[i + 5] + 6;
             switch (c) {
               case 0xBD: // dolby
-                   if (Except && dolbyDev)
+                   if (Except)
                       PlayExternalDolby(&b[i], Length - i);
                    // continue with deleting the data - otherwise it disturbs DVB replay
               case 0xC0 ... 0xC1: // audio

@@ -147,6 +147,8 @@ Werner Fink <werner@suse.de>
  for making I/O more robust by handling EINTR
  for fixing closing all unused file descriptors when opening a pipe
  for helping to debug leftover 'zombie' processes when closing a pipe
+ for making the Dolby Digital thread start only if the recording actually
+ contains Dolby Digital data
 
 Rolf Hakenes <hakenes@hippomi.de>
  for providing 'libdtv' and adapting the EIT mechanisms to it
