@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.185 2002/04/19 15:46:14 kls Exp $
+ * $Id: menu.c 1.186 2002/04/20 09:06:51 kls Exp $
  */
 
 #include "menu.h"
@@ -585,6 +585,8 @@ void cMenuEditStrItem::Set(void)
         buf[i] = '>';
         buf[i + 1] = 0;
         }
+     else
+        i--;
      while (i >= 0 && w <= width)
            w += cDvbApi::PrimaryDvbApi->Width(buf[i--]);
      buf[++i] = '<';
