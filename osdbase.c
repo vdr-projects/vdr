@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osdbase.c 1.2 2002/05/13 16:30:59 kls Exp $
+ * $Id: osdbase.c 1.4 2002/05/18 12:39:16 kls Exp $
  */
 
 #include "osdbase.h"
@@ -316,22 +316,22 @@ const char *cWindow::Data(int x, int y)
   return cBitmap::Data(x, y);
 }
 
-// --- cOsd ------------------------------------------------------------------
+// --- cOsdBase --------------------------------------------------------------
 
-cOsd::cOsd(int x, int y)
+cOsdBase::cOsdBase(int x, int y)
 {
   numWindows = 0;
   x0 = x;
   y0 = y;
 }
 
-cOsd::~cOsd()
+cOsdBase::~cOsdBase()
 {
   for (int i = 0; i < numWindows; i++)
       delete window[i];
 }
 
-tWindowHandle cOsd::Create(int x, int y, int w, int h, int Bpp, bool ClearWithBackground, bool Tiled)
+tWindowHandle cOsdBase::Create(int x, int y, int w, int h, int Bpp, bool ClearWithBackground, bool Tiled)
 {
   if (numWindows < MAXNUMWINDOWS) {
      if (x >= 0 && y >= 0 && w > 0 && h > 0 && (Bpp == 1 || Bpp == 2 || Bpp == 4 || Bpp == 8)) {
@@ -356,7 +356,7 @@ tWindowHandle cOsd::Create(int x, int y, int w, int h, int Bpp, bool ClearWithBa
   return -1;
 }
 
-void cOsd::AddColor(eDvbColor Color, tWindowHandle Window)
+void cOsdBase::AddColor(eDvbColor Color, tWindowHandle Window)
 {
   cWindow *w = GetWindow(Window);
   if (w) {
@@ -365,7 +365,7 @@ void cOsd::AddColor(eDvbColor Color, tWindowHandle Window)
      }
 }
 
-cWindow *cOsd::GetWindow(int x, int y)
+cWindow *cOsdBase::GetWindow(int x, int y)
 {
   for (int i = 0; i < numWindows; i++) {
       if (window[i]->Tiled() && window[i]->Contains(x, y))
@@ -374,7 +374,7 @@ cWindow *cOsd::GetWindow(int x, int y)
   return NULL;
 }
 
-cWindow *cOsd::GetWindow(tWindowHandle Window)
+cWindow *cOsdBase::GetWindow(tWindowHandle Window)
 {
   if (0 <= Window && Window < numWindows)
      return window[Window];
@@ -383,7 +383,7 @@ cWindow *cOsd::GetWindow(tWindowHandle Window)
   return NULL;
 }
 
-void cOsd::Flush(void)
+void cOsdBase::Flush(void)
 {
   for (int i = 0; i < numWindows; i++) {
       CommitWindow(window[i]);
@@ -396,7 +396,7 @@ void cOsd::Flush(void)
       }
 }
 
-void cOsd::Clear(tWindowHandle Window)
+void cOsdBase::Clear(tWindowHandle Window)
 {
   if (Window == ALL_TILED_WINDOWS || Window == ALL_WINDOWS) {
      for (int i = 0; i < numWindows; i++)
@@ -410,31 +410,31 @@ void cOsd::Clear(tWindowHandle Window)
      }
 }
 
-void cOsd::Fill(int x1, int y1, int x2, int y2, eDvbColor Color, tWindowHandle Window)
+void cOsdBase::Fill(int x1, int y1, int x2, int y2, eDvbColor Color, tWindowHandle Window)
 {
   cWindow *w = (Window == ALL_TILED_WINDOWS) ? GetWindow(x1, y1) : GetWindow(Window);
   if (w)
      w->Fill(x1, y1, x2, y2, Color);
 }
 
-void cOsd::SetBitmap(int x, int y, const cBitmap &Bitmap, tWindowHandle Window)
+void cOsdBase::SetBitmap(int x, int y, const cBitmap &Bitmap, tWindowHandle Window)
 {
   cWindow *w = (Window == ALL_TILED_WINDOWS) ? GetWindow(x, y) : GetWindow(Window);
   if (w)
      w->SetBitmap(x, y, Bitmap);
 }
 
-int cOsd::Width(unsigned char c)
+int cOsdBase::Width(unsigned char c)
 {
   return numWindows ? window[0]->Width(c) : 0;
 }
 
-int cOsd::Width(const char *s)
+int cOsdBase::Width(const char *s)
 {
   return numWindows ? window[0]->Width(s) : 0;
 }
 
-eDvbFont cOsd::SetFont(eDvbFont Font)
+eDvbFont cOsdBase::SetFont(eDvbFont Font)
 {
   eDvbFont oldFont = Font;
   for (int i = 0; i < numWindows; i++)
@@ -442,14 +442,14 @@ eDvbFont cOsd::SetFont(eDvbFont Font)
   return oldFont;
 }
 
-void cOsd::Text(int x, int y, const char *s, eDvbColor ColorFg = clrWhite, eDvbColor ColorBg = clrBackground, tWindowHandle Window)
+void cOsdBase::Text(int x, int y, const char *s, eDvbColor ColorFg, eDvbColor ColorBg, tWindowHandle Window)
 {
   cWindow *w = (Window == ALL_TILED_WINDOWS) ? GetWindow(x, y) : GetWindow(Window);
   if (w)
      w->Text(x, y, s, ColorFg, ColorBg);
 }
 
-void cOsd::Relocate(tWindowHandle Window, int x, int y, int NewWidth, int NewHeight)
+void cOsdBase::Relocate(tWindowHandle Window, int x, int y, int NewWidth, int NewHeight)
 {
   cWindow *w = GetWindow(Window);
   if (w) {
@@ -471,12 +471,12 @@ void cOsd::Relocate(tWindowHandle Window, int x, int y, int NewWidth, int NewHei
      }
 }
 
-void cOsd::Hide(tWindowHandle Window)
+void cOsdBase::Hide(tWindowHandle Window)
 {
   HideWindow(GetWindow(Window), true);
 }
 
-void cOsd::Show(tWindowHandle Window)
+void cOsdBase::Show(tWindowHandle Window)
 {
   HideWindow(GetWindow(Window), false);
 }

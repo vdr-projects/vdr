@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.h 1.12 2002/02/23 13:53:38 kls Exp $
+ * $Id: thread.h 1.13 2002/06/01 14:55:31 kls Exp $
  */
 
 #ifndef __THREAD_H
@@ -54,9 +54,9 @@ private:
   static bool signalHandlerInstalled;
   static void SignalHandler(int signum);
   static void *StartThread(cThread *Thread);
+protected:
   void Lock(void) { mutex.Lock(); }
   void Unlock(void) { mutex.Unlock(); }
-protected:
   void WakeUp(void);
   virtual void Action(void) = 0;
   void Cancel(int WaitSeconds = 0);

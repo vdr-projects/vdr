@@ -4,13 +4,15 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.c 1.48 2002/05/13 16:30:22 kls Exp $
+ * $Id: interface.c 1.52 2002/06/16 13:23:40 kls Exp $
  */
 
 #include "interface.h"
 #include <ctype.h>
 #include <unistd.h>
 #include "i18n.h"
+#include "osd.h"
+#include "status.h"
 
 cInterface *Interface = NULL;
 
@@ -50,7 +52,7 @@ void cInterface::Open(int NumCols, int NumLines)
         NumCols = Setup.OSDwidth;
      if (NumLines == 0)
         NumLines = Setup.OSDheight;
-     cDvbApi::PrimaryDvbApi->Open(width = NumCols, height = NumLines);
+     cOsd::Open(width = NumCols, height = NumLines);
      }
 }
 
@@ -59,7 +61,7 @@ void cInterface::Close(void)
   if (open == 1)
      Clear();
   if (!--open) {
-     cDvbApi::PrimaryDvbApi->Close();
+     cOsd::Close();
      width = height = 0;
      }
 }
@@ -125,31 +127,32 @@ eKeys cInterface::Wait(int Seconds, bool KeepChar)
 void cInterface::Clear(void)
 {
   if (open)
-     cDvbApi::PrimaryDvbApi->Clear();
+     cOsd::Clear();
+  cStatus::MsgOsdClear();
 }
 
 void cInterface::ClearEol(int x, int y, eDvbColor Color)
 {
   if (open)
-     cDvbApi::PrimaryDvbApi->ClrEol(x, y, Color);
+     cOsd::ClrEol(x, y, Color);
 }
 
 void cInterface::Fill(int x, int y, int w, int h, eDvbColor Color)
 {
   if (open)
-     cDvbApi::PrimaryDvbApi->Fill(x, y, w, h, Color);
+     cOsd::Fill(x, y, w, h, Color);
 }
 
 void cInterface::SetBitmap(int x, int y, const cBitmap &Bitmap)
 {
   if (open)
-     cDvbApi::PrimaryDvbApi->SetBitmap(x, y, Bitmap);
+     cOsd::SetBitmap(x, y, Bitmap);
 }
 
 void cInterface::Flush(void)
 {
   if (open)
-     cDvbApi::PrimaryDvbApi->Flush();
+     cOsd::Flush();
 }
 
 void cInterface::SetCols(int *c)
@@ -163,7 +166,7 @@ void cInterface::SetCols(int *c)
 
 eDvbFont cInterface::SetFont(eDvbFont Font)
 {
-  return cDvbApi::PrimaryDvbApi->SetFont(Font);
+  return cOsd::SetFont(Font);
 }
 
 char *cInterface::WrapText(const char *Text, int Width, int *Height)
@@ -183,7 +186,7 @@ char *cInterface::WrapText(const char *Text, int Width, int *Height)
   char *Delim = NULL;
   int w = 0;
 
-  Width *= cDvbApi::PrimaryDvbApi->CellWidth();
+  Width *= cOsd::CellWidth();
 
   while (*t && t[strlen(t) - 1] == '\n')
         t[strlen(t) - 1] = 0; // skips trailing newlines
@@ -198,7 +201,7 @@ char *cInterface::WrapText(const char *Text, int Width, int *Height)
          }
       else if (isspace(*p))
          Blank = p;
-      int cw = cDvbApi::PrimaryDvbApi->Width(*p);
+      int cw = cOsd::Width(*p);
       if (w + cw > Width) {
          if (Blank) {
             *Blank = '\n';
@@ -237,7 +240,7 @@ char *cInterface::WrapText(const char *Text, int Width, int *Height)
 void cInterface::Write(int x, int y, const char *s, eDvbColor FgColor, eDvbColor BgColor)
 {
   if (open)
-     cDvbApi::PrimaryDvbApi->Text(x, y, s, FgColor, BgColor);
+     cOsd::Text(x, y, s, FgColor, BgColor);
 }
 
 void cInterface::WriteText(int x, int y, const char *s, eDvbColor FgColor, eDvbColor BgColor)
@@ -278,7 +281,7 @@ void cInterface::Title(const char *s)
      strn0cpy(buffer, s, n + 1);
      Write(1, 0, buffer, clrBlack, clrCyan);
      t++;
-     Write(-(cDvbApi::PrimaryDvbApi->WidthInCells(t) + 1), 0, t, clrBlack, clrCyan);
+     Write(-(cOsd::WidthInCells(t) + 1), 0, t, clrBlack, clrCyan);
      }
   else {
      int x = (Width() - strlen(s)) / 2;
@@ -286,6 +289,7 @@ void cInterface::Title(const char *s)
         x = 0;
      Write(x, 0, s, clrBlack, clrCyan);
      }
+  cStatus::MsgOsdTitle(s);
 }
 
 void cInterface::Status(const char *s, eDvbColor FgColor, eDvbColor BgColor)
@@ -298,6 +302,7 @@ void cInterface::Status(const char *s, eDvbColor FgColor, eDvbColor BgColor)
         x = 0;
      Write(x, Line, s, FgColor, BgColor);
      }
+  cStatus::MsgOsdStatusMessage(s);
 }
 
 void cInterface::Info(const char *s)
@@ -337,12 +342,12 @@ void cInterface::HelpButton(int Index, const char *Text, eDvbColor FgColor, eDvb
 {
   if (open) {
      const int w = Width() / 4;
-     cDvbApi::PrimaryDvbApi->Fill(Index * w, -1, w, 1, Text ? BgColor : clrBackground);
+     cOsd::Fill(Index * w, -1, w, 1, Text ? BgColor : clrBackground);
      if (Text) {
         int l = (w - int(strlen(Text))) / 2;
         if (l < 0)
            l = 0;
-        cDvbApi::PrimaryDvbApi->Text(Index * w + l, -1, Text, FgColor, BgColor);
+        cOsd::Text(Index * w + l, -1, Text, FgColor, BgColor);
         }
      }
 }
@@ -353,6 +358,7 @@ void cInterface::Help(const char *Red, const char *Green, const char *Yellow, co
   HelpButton(1, Green,  clrBlack, clrGreen);
   HelpButton(2, Yellow, clrBlack, clrYellow);
   HelpButton(3, Blue,   clrWhite, clrBlue);
+  cStatus::MsgOsdHelpKeys(Red, Green, Yellow, Blue);
 }
 
 void cInterface::QueryKeys(void)
@@ -478,6 +484,6 @@ void cInterface::DisplayRecording(int Index, bool On)
 
 bool cInterface::Recording(void)
 {
-  // This is located here because the Interface has to do with the "PrimaryDvbApi" anyway
-  return cDvbApi::PrimaryDvbApi->Recording();
+  // This is located here because the Interface has to do with the "PrimaryDevice" anyway
+  return cDevice::PrimaryDevice()->Receiving();
 }

@@ -1,10 +1,10 @@
 /*
- * ringbuffer.h: A threaded ring buffer
+ * ringbuffer.h: A ring buffer
  *
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ringbuffer.h 1.5 2001/11/03 10:41:33 kls Exp $
+ * $Id: ringbuffer.h 1.6 2002/06/16 11:30:07 kls Exp $
  */
 
 #ifndef __RINGBUFFER_H
@@ -12,24 +12,17 @@
 
 #include "thread.h"
 
-typedef unsigned char uchar;
-
-class cRingBufferInputThread;
-class cRingBufferOutputThread;
+typedef unsigned char uchar;//XXX+
 
 class cRingBuffer {
-  friend class cRingBufferInputThread;
-  friend class cRingBufferOutputThread;
 private:
-  cRingBufferInputThread *inputThread;
-  cRingBufferOutputThread *outputThread;
   cMutex mutex;
   cCondVar readyForPut, readyForGet;
   cMutex putMutex, getMutex;
   int size;
-  bool busy;
 protected:
   int maxFill;//XXX
+  int lastPercent;
   bool statistics;//XXX
   void WaitForPut(void);
   void WaitForGet(void);
@@ -41,26 +34,19 @@ protected:
   void Lock(void) { mutex.Lock(); }
   void Unlock(void) { mutex.Unlock(); }
   int Size(void) { return size; }
-  bool Busy(void) { return busy; }
-  virtual void Input(void) = 0;
-    // Runs as a separate thread and shall continuously read data from
-    // a source and call Put() to store the data in the ring buffer.
-  virtual void Output(void) = 0;
-    // Runs as a separate thread and shall continuously call Get() to
-    // retrieve data from the ring buffer and write it to a destination.
 public:
   cRingBuffer(int Size, bool Statistics = false);
   virtual ~cRingBuffer();
-  bool Start(void);
-  bool Active(void);
-  void Stop(void);
   };
 
 class cRingBufferLinear : public cRingBuffer {
 private:
   int head, tail;
   uchar *buffer;
-protected:
+  pid_t getThreadPid;
+public:
+  cRingBufferLinear(int Size, bool Statistics = false);
+  virtual ~cRingBufferLinear();
   virtual int Available(void);
   virtual void Clear(void);
     // Immediately clears the ring buffer.
@@ -70,9 +56,6 @@ protected:
   int Get(uchar *Data, int Count);
     // Gets at most Count bytes of Data from the ring buffer.
     // Returns the number of bytes actually retrieved.
-public:
-  cRingBufferLinear(int Size, bool Statistics = false);
-  virtual ~cRingBufferLinear();
   };
 
 enum eFrameType { ftUnknown, ftVideo, ftAudio, ftDolby };
@@ -99,21 +82,20 @@ private:
   cFrame *head;
   int currentFill;
   void Delete(const cFrame *Frame);
-protected:
+public:
+  cRingBufferFrame(int Size, bool Statistics = false);
+  virtual ~cRingBufferFrame();
   virtual int Available(void);
   virtual void Clear(void);
     // Immediately clears the ring buffer.
   bool Put(cFrame *Frame);
     // Puts the Frame into the ring buffer.
     // Returns true if this was possible.
-  const cFrame *Get(bool Wait = true);
+  const cFrame *Get(void);
     // Gets the next frame from the ring buffer.
     // The actual data still remains in the buffer until Drop() is called.
   void Drop(const cFrame *Frame);
     // Drops the Frame that has just been fetched with Get().
-public:
-  cRingBufferFrame(int Size, bool Statistics = false);
-  virtual ~cRingBufferFrame();
   };
 
 #endif // __RINGBUFFER_H

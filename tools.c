@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.66 2002/05/13 17:56:17 kls Exp $
+ * $Id: tools.c 1.67 2002/05/18 15:10:45 kls Exp $
  */
 
 #include "tools.h"
@@ -793,14 +793,15 @@ void cListBase::Ins(cListObject *Object, cListObject *Before)
      }
 }
 
-void cListBase::Del(cListObject *Object)
+void cListBase::Del(cListObject *Object, bool DeleteObject)
 {
   if (Object == objects)
      objects = Object->Next();
   if (Object == lastObject)
      lastObject = Object->Prev();
   Object->Unlink();
-  delete Object;
+  if (DeleteObject)
+     delete Object;
 }
 
 void cListBase::Move(int From, int To)

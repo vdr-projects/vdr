@@ -951,7 +951,7 @@ Video Disk Recorder Revision History
 - Changed the [dei]syslog macros in tools.h to use a variable number of args,
   thus making it safe to use them in nested 'if/else' statements.
 - Fixed error handling in establishing an SVDRP connection (thanks to Davide
-  Achilli) for pointing this out).
+  Achilli for pointing out this one).
 - The new configuration file 'svdrphosts.conf' is now used to define which
   hosts may access the SVDRP port (by default only 'localhost' has access).
   See FORMATS for details.
@@ -1144,7 +1144,7 @@ Video Disk Recorder Revision History
 - New command command line option '-V' to display the VDR version.
 - Adjusting column width for channel numbers in case there are more than 999
   channels.
-- Checking the return value of '...FileRady...' calls in dvbapi.c for better
+- Checking the return value of '...FileReady...' calls in dvbapi.c for better
   performance under heavy system load.
 - New 'make' target 'install', which copies the manual pages and executables
   to their appropriate system locations and creates the /video directory if
@@ -1188,7 +1188,7 @@ Video Disk Recorder Revision History
 - Now the EPG scan skips channels that have their 'Ca' parameter explicitly set
   to an other DVB card (suggested by Sergei Haller).
 - Fixed a possible hangup when reading a broken epg.data file (thanks to Henning
-  Holtschneider for pointing this one out).
+  Holtschneider for pointing out this one).
 - Fixed a bug in the editing process in case a previously edited file with the
   same name was manually deleted on a system with more than one video directory
   (thanks to Dirk Wiebel for reporting this one).
@@ -1261,7 +1261,8 @@ Video Disk Recorder Revision History
   interface. 'osdbase.c/.h' now implements the abstract OSD, while 'dvbosd.c/.h'
   is the actual implementation for the DVB hardware. This is in preparation for
   allowing additional kinds of OSD hardware implementations.
-- Fixed leftover references to the file FORMATS in MANUAL and svdrp.c.
+- Fixed leftover references to the file FORMATS in MANUAL and svdrp.c (thanks to
+  Onno Kreuzinger for reporting this one).
 - Avoiding ambiguities in the cList template class in case one defines a "list of
   lists" (thanks to Stefan Huelswitt).
 - Simplified the basic cMenuSetupPage class for easier use in plugins.
@@ -1284,3 +1285,65 @@ Video Disk Recorder Revision History
   See PLUGINS.html, section "Configuration files" for details.
 - Improved the [eid]syslog() macros, so that the LOG_... macros don't need to be
   given any more.
+
+2002-05-26: Version 1.0.3
+
+- Updated 'Premiere Sport 2' in channels.conf (thanks to Rudi Hofer).
+- Fixed some function headers to make them compile with gcc 3.x (thanks to
+  Gregoire Favre).
+- Fixed the cutting mechanism to make it re-sync in case a frame is larger than the
+  buffer (thanks to Sven Grothklags).
+- Added Swedish language texts (thanks to Tomas Prybil).
+
+2002-06-10: Version 1.0.4
+
+- Added Romanian language texts (thanks to Paul Lacatus).
+- Removed compiler option '-m486' to make it work on non-Intel platforms (thanks
+  to Alastair McKinstry for pointing this out).
+
+2002-06-16: Version 1.1.3
+
+- Improved the VDR Makefile to avoid a warning if the '.dependencies' file does
+  not exist, and also using $(MAKE) to call recursive makes.
+- Changed the name of the 'package' target in the plugin Makefiles to 'dist'
+  (following the suggestions in the "GNU Make" manual). If you already have started
+  a plugin project, you may want to change this in your Makefile accordingly.
+- Improved the plugin Makefile to avoid a warning if the '.dependencies' file does
+  not exist, and also using $(shell...) to get the version numbers. If you already have
+  started a plugin project, you may want to change this in your Makefile accordingly.
+- Fixed some function headers to make them compile with gcc 3.x (thanks to
+  Gregoire Favre).
+- Fixed the cutting mechanism to make it re-sync in case a frame is larger than the
+  buffer (thanks to Sven Grothklags).
+- Added an error message if the directory specified in the '-L' option can't be
+  accessed (suggested by Stefan Huelswitt).
+- Rearranged OSD class names to make 'cOsd' available for the main OSD interface.
+- Completely moved OSD handling out of the cDvbApi class, into the new cOsd.
+- Implemented cStatus to allow plugins to set up a status monitor.
+  See PLUGINS.html for details.
+- Moved the cEITScanner out of dvbapi.h/.c, into the new eitscan.h/.c.
+- Added Swedish language texts (thanks to Tomas Prybil).
+- Fixed parsing 'E' records in epg2html.pl (thanks to Matthias Fechner for pointing
+  out this one).
+- Removed compiler option '-m486' to make it work on non-Intel platforms. If you
+  have already started a plugin project, you may want to make sure you remove this
+  option from your existing Makefile.
+- Completely rearranged the recording and replay functions to make them available
+  to plugins.
+- Replay is now done in a single thread (no more syncing between input and output
+  thread necessary).
+- It is now possible to record several channels on the same transponder with "budget
+  cards". VDR automatically attaches a recording timer to a card that already
+  records on the appropriate transponder. How many parallel recordings can actually
+  be done depends on the computer's performance. Currently any number of recordings
+  gets attached to a card, so you should carefully plan your timers to not exceed
+  the limit. On a K6-II/450 it was possible to record three channels from transponder
+  12480 with a single WinTV NOVA-S.
+- Timers that record two successive shows on the same channel may now overlap and
+  will use the same DVB card. During the time where both timers record the data
+  is simply saved to both files.
+- The following limitations apply to this version:
+  + Transfer mode doesn't work yet.
+  + The '-a' option (for Dolby Digital audio) doesn't work yet.
+  + Switching between different language tracks doesn't work yet.
+  + Cutting doesn't work yet.

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.62 2002/05/13 16:31:21 kls Exp $
+ * $Id: recording.c 1.63 2002/06/16 11:29:27 kls Exp $
  */
 
 #include "recording.h"
@@ -16,6 +16,7 @@
 #include <unistd.h>
 #include "i18n.h"
 #include "interface.h"
+#include "remux.h" //XXX+ I_FRAME
 #include "tools.h"
 #include "videodir.h"
 
@@ -731,4 +732,351 @@ void cRecordingUserCommand::InvokeCommand(const char *State, const char *Recordi
      SystemExec(cmd);
      delete cmd;
      }
+}
+
+// --- XXX+
+
+//XXX+ somewhere else???
+// --- cIndexFile ------------------------------------------------------------
+
+#define INDEXFILESUFFIX     "/index.vdr"
+
+// The maximum time to wait before giving up while catching up on an index file:
+#define MAXINDEXCATCHUP   2 // seconds
+
+cIndexFile::cIndexFile(const char *FileName, bool Record)
+:resumeFile(FileName)
+{
+  f = -1;
+  fileName = NULL;
+  size = 0;
+  last = -1;
+  index = NULL;
+  if (FileName) {
+     fileName = new char[strlen(FileName) + strlen(INDEXFILESUFFIX) + 1];
+     if (fileName) {
+        strcpy(fileName, FileName);
+        char *pFileExt = fileName + strlen(fileName);
+        strcpy(pFileExt, INDEXFILESUFFIX);
+        int delta = 0;
+        if (access(fileName, R_OK) == 0) {
+           struct stat buf;
+           if (stat(fileName, &buf) == 0) {
+              delta = buf.st_size % sizeof(tIndex);
+              if (delta) {
+                 delta = sizeof(tIndex) - delta;
+                 esyslog("ERROR: invalid file size (%ld) in '%s'", buf.st_size, fileName);
+                 }
+              last = (buf.st_size + delta) / sizeof(tIndex) - 1;
+              if (!Record && last >= 0) {
+                 size = last + 1;
+                 index = new tIndex[size];
+                 if (index) {
+                    f = open(fileName, O_RDONLY);
+                    if (f >= 0) {
+                       if ((int)safe_read(f, index, buf.st_size) != buf.st_size) {
+                          esyslog("ERROR: can't read from file '%s'", fileName);
+                          delete index;
+                          index = NULL;
+                          close(f);
+                          f = -1;
+                          }
+                       // we don't close f here, see CatchUp()!
+                       }
+                    else
+                       LOG_ERROR_STR(fileName);
+                    }
+                 else
+                    esyslog("ERROR: can't allocate %d bytes for index '%s'", size * sizeof(tIndex), fileName);
+                 }
+              }
+           else
+              LOG_ERROR;
+           }
+        else if (!Record)
+           isyslog("missing index file %s", fileName);
+        if (Record) {
+           if ((f = open(fileName, O_WRONLY | O_CREAT | O_APPEND, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH)) >= 0) {
+              if (delta) {
+                 esyslog("ERROR: padding index file with %d '0' bytes", delta);
+                 while (delta--)
+                       writechar(f, 0);
+                 }
+              }
+           else
+              LOG_ERROR_STR(fileName);
+           }
+        }
+     else
+        esyslog("ERROR: can't copy file name '%s'", FileName);
+     }
+}
+
+cIndexFile::~cIndexFile()
+{
+  if (f >= 0)
+     close(f);
+  delete fileName;
+  delete index;
+}
+
+bool cIndexFile::CatchUp(int Index)
+{
+  if (index && f >= 0) {
+     for (int i = 0; i <= MAXINDEXCATCHUP && (Index < 0 || Index >= last); i++) {
+         struct stat buf;
+         if (fstat(f, &buf) == 0) {
+            int newLast = buf.st_size / sizeof(tIndex) - 1;
+            if (newLast > last) {
+               if (size <= newLast) {
+                  size *= 2;
+                  if (size <= newLast)
+                     size = newLast + 1;
+                  }
+               index = (tIndex *)realloc(index, size * sizeof(tIndex));
+               if (index) {
+                  int offset = (last + 1) * sizeof(tIndex);
+                  int delta = (newLast - last) * sizeof(tIndex);
+                  if (lseek(f, offset, SEEK_SET) == offset) {
+                     if (safe_read(f, &index[last + 1], delta) != delta) {
+                        esyslog("ERROR: can't read from index");
+                        delete index;
+                        index = NULL;
+                        close(f);
+                        f = -1;
+                        break;
+                        }
+                     last = newLast;
+                     }
+                  else
+                     LOG_ERROR_STR(fileName);
+                  }
+               else
+                  esyslog("ERROR: can't realloc() index");
+               }
+            }
+         else
+            LOG_ERROR_STR(fileName);
+         if (Index >= last)
+            sleep(1);
+         else
+            return true;
+         }
+     }
+  return false;
+}
+
+bool cIndexFile::Write(uchar PictureType, uchar FileNumber, int FileOffset)
+{
+  if (f >= 0) {
+     tIndex i = { FileOffset, PictureType, FileNumber, 0 };
+     if (safe_write(f, &i, sizeof(i)) < 0) {
+        LOG_ERROR_STR(fileName);
+        close(f);
+        f = -1;
+        return false;
+        }
+     last++;
+     }
+  return f >= 0;
+}
+
+bool cIndexFile::Get(int Index, uchar *FileNumber, int *FileOffset, uchar *PictureType, int *Length)
+{
+  if (index) {
+     CatchUp(Index);
+     if (Index >= 0 && Index <= last) {
+        *FileNumber = index[Index].number;
+        *FileOffset = index[Index].offset;
+        if (PictureType)
+           *PictureType = index[Index].type;
+        if (Length) {
+           int fn = index[Index + 1].number;
+           int fo = index[Index + 1].offset;
+           if (fn == *FileNumber)
+              *Length = fo - *FileOffset;
+           else
+              *Length = -1; // this means "everything up to EOF" (the buffer's Read function will act accordingly)
+           }
+        return true;
+        }
+     }
+  return false;
+}
+
+int cIndexFile::GetNextIFrame(int Index, bool Forward, uchar *FileNumber, int *FileOffset, int *Length, bool StayOffEnd)
+{
+  if (index) {
+     CatchUp();
+     int d = Forward ? 1 : -1;
+     for (;;) {
+         Index += d;
+         if (Index >= 0 && Index < last - ((Forward && StayOffEnd) ? 100 : 0)) {
+            if (index[Index].type == I_FRAME) {
+               if (FileNumber)
+                  *FileNumber = index[Index].number;
+               else
+                  FileNumber = &index[Index].number;
+               if (FileOffset)
+                  *FileOffset = index[Index].offset;
+               else
+                  FileOffset = &index[Index].offset;
+               if (Length) {
+                  // all recordings end with a non-I_FRAME, so the following should be safe:
+                  int fn = index[Index + 1].number;
+                  int fo = index[Index + 1].offset;
+                  if (fn == *FileNumber)
+                     *Length = fo - *FileOffset;
+                  else {
+                     esyslog("ERROR: 'I' frame at end of file #%d", *FileNumber);
+                     *Length = -1;
+                     }
+                  }
+               return Index;
+               }
+            }
+         else
+            break;
+         }
+     }
+  return -1;
+}
+
+int cIndexFile::Get(uchar FileNumber, int FileOffset)
+{
+  if (index) {
+     CatchUp();
+     //TODO implement binary search!
+     int i;
+     for (i = 0; i < last; i++) {
+         if (index[i].number > FileNumber || (index[i].number == FileNumber) && index[i].offset >= FileOffset)
+            break;
+         }
+     return i;
+     }
+  return -1;
+}
+
+// --- cFileName -------------------------------------------------------------
+
+#include <errno.h>
+#include <unistd.h>
+#include "videodir.h"
+
+#define MAXFILESPERRECORDING 255
+#define RECORDFILESUFFIX    "/%03d.vdr"
+#define RECORDFILESUFFIXLEN 20 // some additional bytes for safety...
+
+cFileName::cFileName(const char *FileName, bool Record, bool Blocking)
+{
+  file = -1;
+  fileNumber = 0;
+  record = Record;
+  blocking = Blocking;
+  // Prepare the file name:
+  fileName = new char[strlen(FileName) + RECORDFILESUFFIXLEN];
+  if (!fileName) {
+     esyslog("ERROR: can't copy file name '%s'", fileName);
+     return;
+     }
+  strcpy(fileName, FileName);
+  pFileNumber = fileName + strlen(fileName);
+  SetOffset(1);
+}
+
+cFileName::~cFileName()
+{
+  Close();
+  delete fileName;
+}
+
+int cFileName::Open(void)
+{
+  if (file < 0) {
+     int BlockingFlag = blocking ? 0 : O_NONBLOCK;
+     if (record) {
+        dsyslog("recording to '%s'", fileName);
+        file = OpenVideoFile(fileName, O_RDWR | O_CREAT | BlockingFlag);
+        if (file < 0)
+           LOG_ERROR_STR(fileName);
+        }
+     else {
+        if (access(fileName, R_OK) == 0) {
+           dsyslog("playing '%s'", fileName);
+           file = open(fileName, O_RDONLY | BlockingFlag);
+           if (file < 0)
+              LOG_ERROR_STR(fileName);
+           }
+        else if (errno != ENOENT)
+           LOG_ERROR_STR(fileName);
+        }
+     }
+  return file;
+}
+
+void cFileName::Close(void)
+{
+  if (file >= 0) {
+     if ((record && CloseVideoFile(file) < 0) || (!record && close(file) < 0))
+        LOG_ERROR_STR(fileName);
+     file = -1;
+     }
+}
+
+int cFileName::SetOffset(int Number, int Offset)
+{
+  if (fileNumber != Number)
+     Close();
+  if (0 < Number && Number <= MAXFILESPERRECORDING) {
+     fileNumber = Number;
+     sprintf(pFileNumber, RECORDFILESUFFIX, fileNumber);
+     if (record) {
+        if (access(fileName, F_OK) == 0) // file exists, let's try next suffix
+           return SetOffset(Number + 1);
+        else if (errno != ENOENT) { // something serious has happened
+           LOG_ERROR_STR(fileName);
+           return -1;
+           }
+        // found a non existing file suffix
+        }
+     if (Open() >= 0) {
+        if (!record && Offset >= 0 && lseek(file, Offset, SEEK_SET) != Offset) {
+           LOG_ERROR_STR(fileName);
+           return -1;
+           }
+        }
+     return file;
+     }
+  esyslog("ERROR: max number of files (%d) exceeded", MAXFILESPERRECORDING);
+  return -1;
+}
+
+int cFileName::NextFile(void)
+{
+  return SetOffset(fileNumber + 1);
+}
+
+const char *IndexToHMSF(int Index, bool WithFrame)
+{
+  static char buffer[16];
+  int f = (Index % FRAMESPERSEC) + 1;
+  int s = (Index / FRAMESPERSEC);
+  int m = s / 60 % 60;
+  int h = s / 3600;
+  s %= 60;
+  snprintf(buffer, sizeof(buffer), WithFrame ? "%d:%02d:%02d.%02d" : "%d:%02d:%02d", h, m, s, f);
+  return buffer;
+}
+
+int HMSFToIndex(const char *HMSF)
+{
+  int h, m, s, f = 0;
+  if (3 <= sscanf(HMSF, "%d:%d:%d.%d", &h, &m, &s, &f))
+     return (h * 3600 + m * 60 + s) * FRAMESPERSEC + f - 1;
+  return 0;
+}
+
+int SecondsToFrames(int Seconds)
+{
+  return Seconds * FRAMESPERSEC;
 }

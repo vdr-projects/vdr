@@ -1,0 +1,12 @@
+--- dmxdev.c	Mon Apr  1 10:59:46 2002
++++ dmxdev.c	Sun Jun 16 11:02:38 2002
+@@ -1048,6 +1048,9 @@
+ 		if (dmxdev->dvr_buffer.pread!=dmxdev->dvr_buffer.pwrite)
+ 			return (POLLIN | POLLRDNORM | POLLPRI);
+ 		
++                if (dmxdev->dvr_buffer.error)
++	                return (POLLIN | POLLRDNORM | POLLPRI | POLLERR);
++
+ 		return 0;
+ 	} else 
+ 	        return (POLLOUT | POLLWRNORM | POLLPRI);

@@ -137,6 +137,8 @@ Stefan Huelswitt <huels@iname.com>
  for suggesting to make 'package' target in the plugin's Makefile produce a package that
  expands to a directory with just the plugin name and version number
  for suggesting to make the config directory available to plugins
+ for suggesting to add an error message if the directory specified in the '-L'
+ option can't be accessed
 
 Ulrich Röder <roeder@efr-net.de>
  for pointing out that there are channels that have a symbol rate higher than
@@ -338,3 +340,25 @@ Oliver Lorei <oliverlorei@cityweb.de>
 
 Andreas Böttger <fboettger@t-online.de>
  for reporting a bug in skipping forward in time shift mode near the end of the recording
+
+Onno Kreuzinger <ok@solutas.net>
+ for reporting leftover references to the file FORMATS in MANUAL and svdrp.c
+
+Rudi Hofer (Rudi.Hofer@cadsoft.de)
+ for his help in keeping 'channels.conf' up to date
+
+Gregoire Favre <greg@ulima.unil.ch>
+ for fixing some function headers to make them compile with gcc 3.x
+
+Sven Grothklags <sven@uni-paderborn.de>
+ for fixing the cutting mechanism to make it re-sync in case a frame is larger
+ than the buffer
+
+Tomas Prybil <tomas.prybil@copper.se>
+ for translating OSD texts to the Swedish language
+
+Matthias Fechner <matthiasfechner@web.de>
+ for pointing out a bug in parsing 'E' records in epg2html.pl
+
+Paul Lacatus <paul@campina.iiruc.ro>
+ for translating OSD texts to the Romanian language

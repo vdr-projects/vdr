@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 1.35 2002/05/10 10:24:46 kls Exp $
+# $Id: Makefile 1.40 2002/06/10 16:31:34 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -21,9 +21,10 @@ INCLUDES = -I$(DVBDIR)/ost/include
 
 DTVLIB   = $(DTVDIR)/libdtv.a
 
-OBJS = config.o dvbapi.o dvbosd.o eit.o font.o i18n.o interface.o menu.o\
-       menuitems.o osdbase.o osd.o plugin.o recording.o remote.o remux.o ringbuffer.o\
-       svdrp.o thread.o tools.o vdr.o videodir.o
+OBJS = audio.o config.o device.o dvbplayer.o dvbosd.o eit.o eitscan.o font.o i18n.o\
+       interface.o menu.o menuitems.o osdbase.o osd.o player.o plugin.o receiver.o\
+       recorder.o recording.o remote.o remux.o ringbuffer.o status.o svdrp.o thread.o\
+       tools.o vdr.o videodir.o
 
 OSDFONT = -adobe-helvetica-medium-r-normal--23-*-100-100-p-*-iso8859-1
 FIXFONT = -adobe-courier-bold-r-normal--25-*-100-100-m-*-iso8859-1
@@ -57,7 +58,7 @@ font: genfontfile fontfix.c fontosd.c
 # Implicit rules:
 
 %.o: %.c
-	g++ -g -O2 -Wall -Woverloaded-virtual -m486 -c $(DEFINES) $(INCLUDES) $<
+	g++ -g -O2 -Wall -Woverloaded-virtual -c $(DEFINES) $(INCLUDES) $<
 
 # Dependencies:
 
@@ -66,7 +67,7 @@ DEPFILE = .dependencies
 $(DEPFILE): Makefile
 	@$(MAKEDEP) $(DEFINES) $(INCLUDES) $(OBJS:%.o=%.c) > $@
 
-include $(DEPFILE)
+-include $(DEPFILE)
 
 # The main program:
 
@@ -88,7 +89,7 @@ genfontfile: genfontfile.c
 # The libdtv library:
 
 $(DTVLIB) $(DTVDIR)/libdtv.h:
-	make -C $(DTVDIR) all
+	$(MAKE) -C $(DTVDIR) all
 
 # The 'include' directory (for plugins):
 
@@ -99,10 +100,10 @@ include-dir:
 # Plugins:
 
 plugins: include-dir
-	@for i in `ls $(PLUGINDIR)/SRC | grep -v '[^a-z0-9]'`; do make -C "$(PLUGINDIR)/SRC/$$i" all; done
+	@for i in `ls $(PLUGINDIR)/SRC | grep -v '[^a-z0-9]'`; do $(MAKE) -C "$(PLUGINDIR)/SRC/$$i" all; done
 
 plugins-clean:
-	@for i in `ls $(PLUGINDIR)/SRC | grep -v '[^a-z0-9]'`; do make -C "$(PLUGINDIR)/SRC/$$i" clean; done
+	@for i in `ls $(PLUGINDIR)/SRC | grep -v '[^a-z0-9]'`; do $(MAKE) -C "$(PLUGINDIR)/SRC/$$i" clean; done
 	@-rm -f $(PLUGINDIR)/lib/*
 
 # Install the files:
@@ -119,7 +120,7 @@ install:
 # Housekeeping:
 
 clean:
-	make -C $(DTVDIR) clean
+	$(MAKE) -C $(DTVDIR) clean
 	-rm -f $(OBJS) $(DEPFILE) vdr genfontfile genfontfile.o core* *~
 	-rm -rf include
 fontclean:

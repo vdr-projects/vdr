@@ -4,14 +4,19 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.h 1.29 2002/05/12 11:19:22 kls Exp $
+ * $Id: osd.h 1.31 2002/05/18 14:00:15 kls Exp $
  */
 
 #ifndef __OSD_H
 #define __OSD_H
 
+#if defined(DEBUG_OSD) || defined(REMOTE_KBD)
+#include <ncurses.h>
+#endif
 #include "config.h"
+#include "dvbosd.h"
 #include "interface.h"
+#include "osdbase.h"
 #include "tools.h"
 
 #define MAXOSDITEMS (Setup.OSDheight - 4)
@@ -47,6 +52,38 @@ enum eOSState { osUnknown,
                 osUser10,
               };
 
+class cOsd {
+private:
+  enum { charWidth  = 12, // average character width
+         lineHeight = 27  // smallest text height
+       };
+#ifdef DEBUG_OSD
+  static WINDOW *window;
+  enum { MaxColorPairs = 16 };
+  static int colorPairs[MaxColorPairs];
+  static void SetColor(eDvbColor colorFg, eDvbColor colorBg = clrBackground);
+#else
+  static cDvbOsd *osd;
+#endif
+  static int cols, rows;
+public:
+  static void Initialize(void);
+  static void Shutdown(void);
+  static void Open(int w, int h);
+  static void Close(void);
+  static void Clear(void);
+  static void Fill(int x, int y, int w, int h, eDvbColor color = clrBackground);
+  static void SetBitmap(int x, int y, const cBitmap &Bitmap);
+  static void ClrEol(int x, int y, eDvbColor color = clrBackground);
+  static int CellWidth(void);
+  static int LineHeight(void);
+  static int Width(unsigned char c);
+  static int WidthInCells(const char *s);
+  static eDvbFont SetFont(eDvbFont Font);
+  static void Text(int x, int y, const char *s, eDvbColor colorFg = clrWhite, eDvbColor colorBg = clrBackground);
+  static void Flush(void);
+  };
+
 class cOsdItem : public cListObject {
 private:
   const char *text;
@@ -69,19 +106,19 @@ public:
   virtual eOSState ProcessKey(eKeys Key);
 };
 
-class cOsdBase {
+class cOsdObject {
 protected:
   bool needsFastResponse;
 public:
-  cOsdBase(bool FastResponse = false) { needsFastResponse = FastResponse; }
-  virtual ~cOsdBase() {}
+  cOsdObject(bool FastResponse = false) { needsFastResponse = FastResponse; }
+  virtual ~cOsdObject() {}
   int Width(void) { return Interface->Width(); }
   int Height(void) { return Interface->Height(); }
   bool NeedsFastResponse(void) { return needsFastResponse; }
   virtual eOSState ProcessKey(eKeys Key) = 0;
 };
 
-class cOsdMenu : public cOsdBase, public cList<cOsdItem> {
+class cOsdMenu : public cOsdObject, public cList<cOsdItem> {
 private:
   char *title;
   int cols[cInterface::MaxCols];

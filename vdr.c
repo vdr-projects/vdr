@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.109 2002/05/13 16:32:49 kls Exp $
+ * $Id: vdr.c 1.114 2002/06/16 11:30:28 kls Exp $
  */
 
 #include <getopt.h>
@@ -31,11 +31,12 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include "config.h"
-#include "dvbapi.h"
-#include "eit.h"
+#include "device.h"
+#include "eitscan.h"
 #include "i18n.h"
 #include "interface.h"
 #include "menu.h"
+#include "osd.h"
 #include "plugin.h"
 #include "recording.h"
 #include "tools.h"
@@ -117,15 +118,17 @@ int main(int argc, char *argv[])
   int c;
   while ((c = getopt_long(argc, argv, "a:c:dD:E:hl:L:mp:P:r:s:t:v:Vw:", long_options, NULL)) != -1) {
         switch (c) {
-          case 'a': cDvbApi::SetAudioCommand(optarg);
+          /*XXX+
+          case 'a': cDevice::SetAudioCommand(optarg);
                     break;
+                    XXX*/
           case 'c': ConfigDirectory = optarg;
                     break;
           case 'd': DaemonMode = true; break;
           case 'D': if (isnumber(optarg)) {
                        int n = atoi(optarg);
-                       if (0 <= n && n < MAXDVBAPI) {
-                          cDvbApi::SetUseDvbApi(n);
+                       if (0 <= n && n < MAXDEVICES) {
+                          cDevice::SetUseDevice(n);
                           break;
                           }
                        }
@@ -146,7 +149,12 @@ int main(int argc, char *argv[])
                     fprintf(stderr, "vdr: invalid log level: %s\n", optarg);
                     return 2;
                     break;
-          case 'L': PluginManager.SetDirectory(optarg);
+          case 'L': if (access(optarg, R_OK | X_OK) == 0)
+                       PluginManager.SetDirectory(optarg);
+                    else {
+                       fprintf(stderr, "vdr: can't access plugin directory: %s\n", optarg);
+                       return 2;
+                       }
                     break;
           case 'm': MuteAudio = true;
                     break;
@@ -317,10 +325,10 @@ int main(int argc, char *argv[])
 
   // DVB interfaces:
 
-  if (!cDvbApi::Init())
+  if (!cDevice::Initialize())
      return 2;
 
-  cDvbApi::SetPrimaryDvbApi(Setup.PrimaryDVB);
+  cDevice::SetPrimaryDevice(Setup.PrimaryDVB);
 
   cSIProcessor::Read();
 
@@ -329,13 +337,17 @@ int main(int argc, char *argv[])
   if (!PluginManager.StartPlugins())
      return 2;
 
+  // OSD:
+
+  cOsd::Initialize();
+
   // Channel:
 
   Channels.SwitchTo(Setup.CurrentChannel);
   if (MuteAudio)
-     cDvbApi::PrimaryDvbApi->ToggleMute();
+     cDevice::PrimaryDevice()->ToggleMute();
   else
-     cDvbApi::PrimaryDvbApi->SetVolume(Setup.CurrentVolume, true);
+     cDevice::PrimaryDevice()->SetVolume(Setup.CurrentVolume, true);
 
   cEITScanner EITScanner;
 
@@ -358,10 +370,10 @@ int main(int argc, char *argv[])
 
   // Main program loop:
 
-  cOsdBase *Menu = NULL;
+  cOsdObject *Menu = NULL;
   cReplayControl *ReplayControl = NULL;
   int LastChannel = -1;
-  int PreviousChannel = cDvbApi::CurrentChannel();
+  int PreviousChannel = cDevice::CurrentChannel();
   time_t LastActivity = 0;
   int MaxLatencyTime = 0;
   bool ForceShutdown = false;
@@ -386,12 +398,12 @@ int main(int argc, char *argv[])
               }
            }
         // Channel display:
-        if (!EITScanner.Active() && cDvbApi::CurrentChannel() != LastChannel) {
+        if (!EITScanner.Active() && cDevice::CurrentChannel() != LastChannel) {
            if (!Menu)
-              Menu = new cDisplayChannel(cDvbApi::CurrentChannel(), LastChannel > 0);
+              Menu = new cDisplayChannel(cDevice::CurrentChannel(), LastChannel > 0);
            if (LastChannel > 0)
               PreviousChannel = LastChannel;
-           LastChannel = cDvbApi::CurrentChannel();
+           LastChannel = cDevice::CurrentChannel();
            }
         // Timers and Recordings:
         if (!Menu) {
@@ -404,7 +416,7 @@ int main(int argc, char *argv[])
               }
            }
         // User Input:
-        cOsdBase **Interact = Menu ? &Menu : (cOsdBase **)&ReplayControl;
+        cOsdObject **Interact = Menu ? &Menu : (cOsdObject **)&ReplayControl;
         eKeys key = Interface->GetKey(!*Interact || !(*Interact)->NeedsFastResponse());
         if (NORMALKEY(key) != kNone) {
            EITScanner.Activity();
@@ -419,11 +431,11 @@ int main(int argc, char *argv[])
           case kVolDn:
           case kMute:
                if (key == kMute) {
-                  if (!cDvbApi::PrimaryDvbApi->ToggleMute() && !Menu)
+                  if (!cDevice::PrimaryDevice()->ToggleMute() && !Menu)
                      break; // no need to display "mute off"
                   }
                else
-                  cDvbApi::PrimaryDvbApi->SetVolume(NORMALKEY(key) == kVolDn ? -VOLUMEDELTA : VOLUMEDELTA);
+                  cDevice::PrimaryDevice()->SetVolume(NORMALKEY(key) == kVolDn ? -VOLUMEDELTA : VOLUMEDELTA);
                if (!Menu && (!ReplayControl || !ReplayControl->Visible()))
                   Menu = cDisplayVolume::Create();
                cDisplayVolume::Process(key);
@@ -467,7 +479,7 @@ int main(int argc, char *argv[])
                  case osSwitchDvb:
                                 DELETENULL(*Interact);
                                 Interface->Info(tr("Switching primary DVB..."));
-                                cDvbApi::SetPrimaryDvbApi(Setup.PrimaryDVB);
+                                cDevice::SetPrimaryDevice(Setup.PrimaryDVB);
                                 break;
                  case osBack:
                  case osEnd:    DELETENULL(*Interact);
@@ -480,7 +492,7 @@ int main(int argc, char *argv[])
                switch (key) {
                  // Toggle channels:
                  case k0: {
-                      int CurrentChannel = cDvbApi::CurrentChannel();
+                      int CurrentChannel = cDevice::CurrentChannel();
                       Channels.SwitchTo(PreviousChannel);
                       PreviousChannel = CurrentChannel;
                       break;
@@ -501,7 +513,7 @@ int main(int argc, char *argv[])
                  case kUp:
                  case kDown|k_Repeat:
                  case kDown: {
-                      int n = cDvbApi::CurrentChannel() + (NORMALKEY(key) == kUp ? 1 : -1);
+                      int n = cDevice::CurrentChannel() + (NORMALKEY(key) == kUp ? 1 : -1);
                       cChannel *channel = Channels.GetByNumber(n);
                       if (channel)
                          channel->Switch();
@@ -517,14 +529,16 @@ int main(int argc, char *argv[])
           }
         if (!Menu) {
            EITScanner.Process();
+           /*XXX+
            if (!cVideoCutter::Active() && cVideoCutter::Ended()) {
               if (cVideoCutter::Error())
                  Interface->Error(tr("Editing process failed!"));
               else
                  Interface->Info(tr("Editing process finished"));
               }
+              XXX*/
            }
-        if (!*Interact && ((!cRecordControls::Active() && !cVideoCutter::Active()) || ForceShutdown)) {
+        if (!*Interact && ((!cRecordControls::Active() /*XXX+&& !cVideoCutter::Active()XXX*/) || ForceShutdown)) {
            time_t Now = time(NULL);
            if (Now - LastActivity > ACTIVITYTIMEOUT) {
               // Shutdown:
@@ -583,15 +597,17 @@ int main(int argc, char *argv[])
         }
   if (Interrupted)
      isyslog("caught signal %d", Interrupted);
-  cVideoCutter::Stop();
+  cRecordControls::Shutdown();
+  //XXX+cVideoCutter::Stop();
   delete Menu;
   delete ReplayControl;
   delete Interface;
+  cOsd::Shutdown();
   PluginManager.Shutdown(true);
-  Setup.CurrentChannel = cDvbApi::CurrentChannel();
-  Setup.CurrentVolume  = cDvbApi::CurrentVolume();
+  Setup.CurrentChannel = cDevice::CurrentChannel();
+  Setup.CurrentVolume  = cDevice::CurrentVolume();
   Setup.Save();
-  cDvbApi::Cleanup();
+  cDevice::Shutdown();
   if (WatchdogTimeout > 0)
      dsyslog("max. latency time %d seconds", MaxLatencyTime);
   isyslog("exiting");

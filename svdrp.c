@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.37 2002/05/13 16:32:05 kls Exp $
+ * $Id: svdrp.c 1.38 2002/06/09 15:56:54 kls Exp $
  */
 
 #include "svdrp.h"
@@ -27,7 +27,7 @@
 #include <sys/time.h>
 #include <unistd.h>
 #include "config.h"
-#include "dvbapi.h"
+#include "device.h"
 #include "interface.h"
 #include "tools.h"
 
@@ -390,12 +390,12 @@ void cSVDRP::CmdCHAN(const char *Option)
            n = o;
         }
      else if (strcmp(Option, "-") == 0) {
-        n = cDvbApi::CurrentChannel();
+        n = cDevice::CurrentChannel();
         if (n > 1)
            n--;
         }
      else if (strcmp(Option, "+") == 0) {
-        n = cDvbApi::CurrentChannel();
+        n = cDevice::CurrentChannel();
         if (n < Channels.MaxNumber())
            n++;
         }
@@ -430,11 +430,11 @@ void cSVDRP::CmdCHAN(const char *Option)
         return;
         }
      }
-  cChannel *channel = Channels.GetByNumber(cDvbApi::CurrentChannel());
+  cChannel *channel = Channels.GetByNumber(cDevice::CurrentChannel());
   if (channel)
      Reply(250, "%d %s", channel->number, channel->name);
   else
-     Reply(550, "Unable to find channel \"%d\"", cDvbApi::CurrentChannel());
+     Reply(550, "Unable to find channel \"%d\"", cDevice::CurrentChannel());
 }
 
 void cSVDRP::CmdDELC(const char *Option)
@@ -541,7 +541,7 @@ void cSVDRP::CmdGRAB(const char *Option)
         Reply(501, "Unexpected parameter \"%s\"", p);
         return;
         }
-     if (cDvbApi::PrimaryDvbApi->GrabImage(FileName, Jpeg, Quality, SizeX, SizeY))
+     if (cDevice::PrimaryDevice()->GrabImage(FileName, Jpeg, Quality, SizeX, SizeY))
         Reply(250, "Grabbed image %s", Option);
      else
         Reply(451, "Grab image failed");
@@ -926,22 +926,22 @@ void cSVDRP::CmdVOLU(const char *Option)
 {
   if (*Option) {
      if (isnumber(Option))
-        cDvbApi::PrimaryDvbApi->SetVolume(strtol(Option, NULL, 10), true);
+        cDevice::PrimaryDevice()->SetVolume(strtol(Option, NULL, 10), true);
      else if (strcmp(Option, "+") == 0)
-        cDvbApi::PrimaryDvbApi->SetVolume(VOLUMEDELTA);
+        cDevice::PrimaryDevice()->SetVolume(VOLUMEDELTA);
      else if (strcmp(Option, "-") == 0)
-        cDvbApi::PrimaryDvbApi->SetVolume(-VOLUMEDELTA);
+        cDevice::PrimaryDevice()->SetVolume(-VOLUMEDELTA);
      else if (strcasecmp(Option, "MUTE") == 0)
-        cDvbApi::PrimaryDvbApi->ToggleMute();
+        cDevice::PrimaryDevice()->ToggleMute();
      else {
         Reply(501, "Unknown option: \"%s\"", Option);
         return;
         }
      }
-  if (cDvbApi::PrimaryDvbApi->IsMute())
+  if (cDevice::PrimaryDevice()->IsMute())
      Reply(250, "Audio is mute");
   else
-     Reply(250, "Audio volume is %d", cDvbApi::CurrentVolume());
+     Reply(250, "Audio volume is %d", cDevice::CurrentVolume());
 }
 
 #define CMD(c) (strcasecmp(Cmd, c) == 0)

@@ -4,14 +4,16 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 1.42 2002/04/13 15:31:41 kls Exp $
+ * $Id: menu.h 1.44 2002/06/14 12:33:35 kls Exp $
  */
 
 #ifndef __MENU_H
 #define __MENU_H
 
-#include "dvbapi.h"
+#include "device.h"
 #include "osd.h"
+#include "dvbplayer.h"
+#include "recorder.h"
 #include "recording.h"
 
 class cMenuMain : public cOsdMenu {
@@ -24,7 +26,7 @@ public:
   virtual eOSState ProcessKey(eKeys Key);
   };
 
-class cDisplayChannel : public cOsdBase {
+class cDisplayChannel : public cOsdObject {
 private:
   int group;
   bool withInfo;
@@ -40,7 +42,7 @@ public:
   virtual eOSState ProcessKey(eKeys Key);
   };
 
-class cDisplayVolume : public cOsdBase {
+class cDisplayVolume : public cOsdObject {
 private:
   int timeout;
   static cDisplayVolume *displayVolume;
@@ -76,17 +78,18 @@ public:
 
 class cRecordControl {
 private:
-  cDvbApi *dvbApi;
+  cDevice *device;
   cTimer *timer;
+  cRecorder *recorder;
   const cEventInfo *eventInfo;
   char *instantId;
   char *fileName;
   bool GetEventInfo(void);
 public:
-  cRecordControl(cDvbApi *DvbApi, cTimer *Timer = NULL);
+  cRecordControl(cDevice *Device, cTimer *Timer = NULL);
   virtual ~cRecordControl();
   bool Process(time_t t);
-  bool Uses(cDvbApi *DvbApi) { return DvbApi == dvbApi; }
+  bool Uses(cDevice *Device) { return Device == device; }
   void Stop(bool KeepInstant = false);
   bool IsInstant(void) { return instantId; }
   const char *InstantId(void) { return instantId; }
@@ -96,21 +99,21 @@ public:
 
 class cRecordControls {
 private:
-  static cRecordControl *RecordControls[MAXDVBAPI];
+  static cRecordControl *RecordControls[];
 public:
   static bool Start(cTimer *Timer = NULL);
   static void Stop(const char *InstantId);
-  static void Stop(cDvbApi *DvbApi);
+  static void Stop(cDevice *Device);
   static bool StopPrimary(bool DoIt = false);
   static const char *GetInstantId(const char *LastInstantId);
   static cRecordControl *GetRecordControl(const char *FileName);
   static void Process(time_t t);
   static bool Active(void);
+  static void Shutdown(void);
   };
 
-class cReplayControl : public cOsdBase {
+class cReplayControl : public cDvbPlayerControl {
 private:
-  cDvbApi *dvbApi;
   cMarks marks;
   bool visible, modeOnly, shown, displayFrames;
   int lastCurrent, lastTotal;

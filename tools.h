@@ -4,19 +4,21 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.45 2002/05/13 16:21:55 kls Exp $
+ * $Id: tools.h 1.47 2002/06/09 11:09:10 kls Exp $
  */
 
 #ifndef __TOOLS_H
 #define __TOOLS_H
 
-//#include <errno.h>
+#include <errno.h>
 #include <fcntl.h>
 #include <stdio.h>
 #include <string.h>
 #include <syslog.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+
+typedef unsigned char uchar;
 
 extern int SysLogLevel;
 
@@ -35,6 +37,9 @@ extern int SysLogLevel;
 #define MAXPARSEBUFFER KILOBYTE(10)
 
 #define DELETENULL(p) (delete (p), p = NULL)
+
+#define CHECK(s) { if ((s) < 0) LOG_ERROR; } // used for 'ioctl()' calls
+#define FATALERRNO (errno != EAGAIN && errno != EINTR)
 
 template<class T> inline T min(T a, T b) { return a <= b ? a : b; }
 template<class T> inline T max(T a, T b) { return a >= b ? a : b; }
@@ -135,7 +140,7 @@ public:
   virtual ~cListBase();
   void Add(cListObject *Object, cListObject *After = NULL);
   void Ins(cListObject *Object, cListObject *Before = NULL);
-  void Del(cListObject *Object);
+  void Del(cListObject *Object, bool DeleteObject = true);
   virtual void Move(int From, int To);
   void Move(cListObject *From, cListObject *To);
   virtual void Clear(void);

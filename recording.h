@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 1.22 2002/02/03 11:59:49 kls Exp $
+ * $Id: recording.h 1.23 2002/06/16 11:29:47 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -103,5 +103,64 @@ public:
   static void SetCommand(const char *Command) { command = Command; }
   static void InvokeCommand(const char *State, const char *RecordingFileName);
   };
+
+//XXX+
+#define FRAMESPERSEC 25
+
+// The maximum file size is limited by the range that can be covered
+// with 'int'. 4GB might be possible (if the range is considered
+// 'unsigned'), 2GB should be possible (even if the range is considered
+// 'signed'), so let's use 2000MB for absolute safety (the actual file size
+// may be slightly higher because we stop recording only before the next
+// 'I' frame, to have a complete Group Of Pictures):
+#define MAXVIDEOFILESIZE 2000 // MB
+#define MINVIDEOFILESIZE  100 // MB
+
+class cIndexFile {
+private:
+  struct tIndex { int offset; uchar type; uchar number; short reserved; };
+  int f;
+  char *fileName;
+  int size, last;
+  tIndex *index;
+  cResumeFile resumeFile;
+  bool CatchUp(int Index = -1);
+public:
+  cIndexFile(const char *FileName, bool Record);
+  ~cIndexFile();
+  bool Ok(void) { return index != NULL; }
+  bool Write(uchar PictureType, uchar FileNumber, int FileOffset);
+  bool Get(int Index, uchar *FileNumber, int *FileOffset, uchar *PictureType = NULL, int *Length = NULL);
+  int GetNextIFrame(int Index, bool Forward, uchar *FileNumber = NULL, int *FileOffset = NULL, int *Length = NULL, bool StayOffEnd = false);
+  int Get(uchar FileNumber, int FileOffset);
+  int Last(void) { CatchUp(); return last; }
+  int GetResume(void) { return resumeFile.Read(); }
+  bool StoreResume(int Index) { return resumeFile.Save(Index); }
+  };
+
+class cFileName {
+private:
+  int file;
+  int fileNumber;
+  char *fileName, *pFileNumber;
+  bool record;
+  bool blocking;
+public:
+  cFileName(const char *FileName, bool Record, bool Blocking = false);
+  ~cFileName();
+  const char *Name(void) { return fileName; }
+  int Number(void) { return fileNumber; }
+  int Open(void);
+  void Close(void);
+  int SetOffset(int Number, int Offset = 0);
+  int NextFile(void);
+  };
+
+const char *IndexToHMSF(int Index, bool WithFrame = false);
+      // Converts the given index to a string, optionally containing the frame number.
+int HMSFToIndex(const char *HMSF);
+      // Converts the given string (format: "hh:mm:ss.ff") to an index.
+int SecondsToFrames(int Seconds); //XXX+ ->player???
+      // Returns the number of frames corresponding to the given number of seconds.
 
 #endif //__RECORDING_H

@@ -4,13 +4,14 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.c 1.2 2002/05/11 10:49:45 kls Exp $
+ * $Id: menuitems.c 1.6 2002/06/16 13:23:56 kls Exp $
  */
 
 #include "menuitems.h"
 #include <ctype.h>
 #include "i18n.h"
 #include "plugin.h"
+#include "status.h"
 
 // --- cMenuEditItem ---------------------------------------------------------
 
@@ -186,18 +187,18 @@ void cMenuEditStrItem::Set(void)
      strncpy(buf, value, pos);
      snprintf(buf + pos, sizeof(buf) - pos - 2, fmt, *(value + pos), value + pos + 1);
      int width = Interface->Width() - Interface->GetCols()[0];
-     if (cDvbApi::PrimaryDvbApi->WidthInCells(buf) <= width) {
+     if (cOsd::WidthInCells(buf) <= width) {
         // the whole buffer fits on the screen
         SetValue(buf);
         return;
         }
-     width *= cDvbApi::PrimaryDvbApi->CellWidth();
-     width -= cDvbApi::PrimaryDvbApi->Width('>'); // assuming '<' and '>' have the same with
+     width *= cOsd::CellWidth();
+     width -= cOsd::Width('>'); // assuming '<' and '>' have the same with
      int w = 0;
      int i = 0;
      int l = strlen(buf);
      while (i < l && w <= width)
-           w += cDvbApi::PrimaryDvbApi->Width(buf[i++]);
+           w += cOsd::Width(buf[i++]);
      if (i >= pos + 4) {
         // the cursor fits on the screen
         buf[i - 1] = '>';
@@ -214,7 +215,7 @@ void cMenuEditStrItem::Set(void)
      else
         i--;
      while (i >= 0 && w <= width)
-           w += cDvbApi::PrimaryDvbApi->Width(buf[i--]);
+           w += cOsd::Width(buf[i--]);
      buf[++i] = '<';
      SetValue(buf + i);
      }
@@ -397,6 +398,7 @@ void cMenuTextItem::Display(int Offset, eDvbColor FgColor, eDvbColor BgColor)
   // scroll indicators use inverted color scheme!
   if (CanScrollUp())   Interface->Write(x + w - 1, y,         "^", bgColor, fgColor);
   if (CanScrollDown()) Interface->Write(x + w - 1, y + h - 1, "v", bgColor, fgColor);
+  cStatus::MsgOsdTextItem(text);
 }
 
 void cMenuTextItem::ScrollUp(bool Page)
@@ -406,6 +408,7 @@ void cMenuTextItem::ScrollUp(bool Page)
      offset = max(offset - (Page ? h : 1), 0);
      Display();
      }
+  cStatus::MsgOsdTextItem(NULL, true);
 }
 
 void cMenuTextItem::ScrollDown(bool Page)
@@ -415,6 +418,7 @@ void cMenuTextItem::ScrollDown(bool Page)
      offset = min(offset + (Page ? h : 1), lines - h);
      Display();
      }
+  cStatus::MsgOsdTextItem(NULL, false);
 }
 
 eOSState cMenuTextItem::ProcessKey(eKeys Key)
@@ -471,7 +475,7 @@ void cMenuSetupPage::SetPlugin(cPlugin *Plugin)
   SetSection(buf);
 }
 
-void cMenuSetupPage::SetupStore(const char *Name, const char *Value = NULL)
+void cMenuSetupPage::SetupStore(const char *Name, const char *Value)
 {
   if (plugin)
      plugin->SetupStore(Name, Value);

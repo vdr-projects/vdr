@@ -1,5 +1,5 @@
 /*
- * ringbuffer.c: A threaded ring buffer
+ * ringbuffer.c: A ring buffer
  *
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
@@ -7,50 +7,25 @@
  * Parts of this file were inspired by the 'ringbuffy.c' from the
  * LinuxDVB driver (see linuxtv.org).
  *
- * $Id: ringbuffer.c 1.7 2002/05/13 16:31:46 kls Exp $
+ * $Id: ringbuffer.c 1.9 2002/06/16 11:24:40 kls Exp $
  */
 
 #include "ringbuffer.h"
+#include <unistd.h>
 #include "tools.h"
 
-// --- cRingBufferInputThread -------------------------------------------------
-
-class cRingBufferInputThread : public cThread {
-private:
-  cRingBuffer *ringBuffer;
-protected:
-  virtual void Action(void) { ringBuffer->Input(); }
-public:
-  cRingBufferInputThread(cRingBuffer *RingBuffer) { ringBuffer = RingBuffer; }
-  };
-
-// --- cRingBufferOutputThread ------------------------------------------------
-
-class cRingBufferOutputThread : public cThread {
-private:
-  cRingBuffer *ringBuffer;
-protected:
-  virtual void Action(void) { ringBuffer->Output(); }
-public:
-  cRingBufferOutputThread(cRingBuffer *RingBuffer) { ringBuffer = RingBuffer; }
-  };
-
-// --- cRingBuffer ------------------------------------------------------------
+// --- cRingBuffer -----------------------------------------------------------
 
 cRingBuffer::cRingBuffer(int Size, bool Statistics)
 {
   size = Size;
   statistics = Statistics;
-  inputThread = NULL;
-  outputThread = NULL;
-  busy = false;
   maxFill = 0;
+  lastPercent = 0;
 }
 
 cRingBuffer::~cRingBuffer()
 {
-  delete inputThread;
-  delete outputThread;
   if (statistics)
      dsyslog("buffer stats: %d (%d%%) used", maxFill, maxFill * 100 / (size - 1));
 }
@@ -79,45 +54,13 @@ void cRingBuffer::EnableGet(void)
   readyForGet.Broadcast();
 }
 
-bool cRingBuffer::Start(void)
-{
-  if (!busy) {
-     busy = true;
-     outputThread = new cRingBufferOutputThread(this);
-     if (!outputThread->Start())
-        DELETENULL(outputThread);
-     inputThread = new cRingBufferInputThread(this);
-     if (!inputThread->Start()) {
-        DELETENULL(inputThread);
-        DELETENULL(outputThread);
-        }
-     busy = outputThread && inputThread;
-     }
-  return busy;
-}
-
-bool cRingBuffer::Active(void)
-{
-  return outputThread && outputThread->Active() && inputThread && inputThread->Active();
-}
-
-void cRingBuffer::Stop(void)
-{
-  busy = false;
-  for (time_t t0 = time(NULL) + 3; time(NULL) < t0; ) {
-      if (!((outputThread && outputThread->Active()) || (inputThread && inputThread->Active())))
-         break;
-      }
-  DELETENULL(inputThread);
-  DELETENULL(outputThread);
-}
-
-// --- cRingBufferLinear ----------------------------------------------------
+// --- cRingBufferLinear -----------------------------------------------------
 
 cRingBufferLinear::cRingBufferLinear(int Size, bool Statistics)
 :cRingBuffer(Size, Statistics)
 {
   buffer = NULL;
+  getThreadPid = -1;
   if (Size > 1) { // 'Size - 1' must not be 0!
      buffer = new uchar[Size];
      if (!buffer)
@@ -146,6 +89,8 @@ void cRingBufferLinear::Clear(void)
   Lock();
   head = tail = 0;
   Unlock();
+  EnablePut();
+  EnableGet();
 }
 
 int cRingBufferLinear::Put(const uchar *Data, int Count)
@@ -159,11 +104,13 @@ int cRingBufferLinear::Put(const uchar *Data, int Count)
         int fill = Size() - free - 1 + Count;
         if (fill >= Size())
            fill = Size() - 1;
-        if (fill > maxFill) {
+        if (fill > maxFill)
            maxFill = fill;
-           int percent = maxFill * 100 / (Size() - 1);
+        int percent = maxFill * 100 / (Size() - 1) / 5 * 5;
+        if (abs(lastPercent - percent) >= 5) {
            if (percent > 75)
-              dsyslog("buffer usage: %d%%", percent);
+              dsyslog("buffer usage: %d%% (pid=%d)", percent, getThreadPid);
+           lastPercent = percent;
            }
         }
      if (free > 0) {
@@ -185,6 +132,7 @@ int cRingBufferLinear::Put(const uchar *Data, int Count)
      else
         Count = 0;
      Unlock();
+     EnableGet();
      }
   return Count;
 }
@@ -193,6 +141,8 @@ int cRingBufferLinear::Get(uchar *Data, int Count)
 {
   if (Count > 0) {
      Lock();
+     if (getThreadPid < 0)
+        getThreadPid = getpid();
      int rest = Size() - tail;
      int diff = head - tail;
      int cont = (diff >= 0) ? diff : Size() + diff;
@@ -213,6 +163,8 @@ int cRingBufferLinear::Get(uchar *Data, int Count)
      else
         Count = 0;
      Unlock();
+     if (Count == 0)
+        WaitForGet();
      }
   return Count;
 }
@@ -239,7 +191,7 @@ cFrame::~cFrame()
 
 // --- cRingBufferFrame ------------------------------------------------------
 
-cRingBufferFrame::cRingBufferFrame(int Size, bool Statistics = false)
+cRingBufferFrame::cRingBufferFrame(int Size, bool Statistics)
 :cRingBuffer(Size, Statistics)
 {
   head = NULL;
@@ -255,7 +207,7 @@ void cRingBufferFrame::Clear(void)
 {
   Lock();
   const cFrame *p;
-  while ((p = Get(false)) != NULL)
+  while ((p = Get()) != NULL)
         Drop(p);
   Unlock();
   EnablePut();
@@ -279,17 +231,14 @@ bool cRingBufferFrame::Put(cFrame *Frame)
      EnableGet();
      return true;
      }
-  WaitForPut();
   return false;
 }
 
-const cFrame *cRingBufferFrame::Get(bool Wait)
+const cFrame *cRingBufferFrame::Get(void)
 {
   Lock();
   cFrame *p = head ? head->next : NULL;
   Unlock();
-  if (!p && Wait)
-     WaitForGet();
   return p;
 }
 

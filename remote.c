@@ -6,7 +6,7 @@
  *
  * Ported to LIRC by Carsten Koch <Carsten.Koch@icem.de>  2000-06-16.
  *
- * $Id: remote.c 1.26 2002/05/13 16:31:27 kls Exp $
+ * $Id: remote.c 1.27 2002/05/18 12:55:39 kls Exp $
  */
 
 #include "remote.h"
@@ -22,6 +22,10 @@
 #include <sys/socket.h>
 #include <sys/stat.h>
 #include <sys/un.h>
+#endif
+
+#if defined REMOTE_KBD
+#include <ncurses.h>
 #endif
 
 #include "config.h"

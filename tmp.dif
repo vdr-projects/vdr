@@ -1,0 +1,118 @@
+--- dvb.c
++++ dvb.c	Wed May 29 17:41:53 2002
+@@ -444,6 +444,8 @@
+ 			break;
+                 if (!dvb->arm_ready)
+                         continue;
++		if (down_interruptible(&dvb->dcomlock))
++			continue;
+                 newloops=rdebi(dvb, DEBINOSWAP, STATUS_LOOPS, 0, 2);
+                 if (newloops==dvb->arm_loops) {
+                         printk("dvb%d: ARM crashed!\n", dvb->num);
+@@ -451,6 +453,7 @@
+                         newloops=rdebi(dvb, DEBINOSWAP, STATUS_LOOPS, 0, 2)-1;
+                 }
+                 dvb->arm_loops=newloops;
++		up(&dvb->dcomlock);
+ 	}
+ 	dvb->arm_thread = NULL;
+ 	return 0;
+@@ -1158,6 +1161,31 @@
+         return blen;
+ }
+ 
++/* Timer to avoid broken data transfer in gpioirq() */
++
++#define GPIO_RXTIME_FRAME	((32*HZ)/1000)
++
++static void gpio_receive_timeout(unsigned long data)
++{
++	struct dvb_struct *dvb = (struct dvb_struct *)data;
++	dvb->debitimer.expires = 0;
++}
++
++static void gpio_receive_timer(struct dvb_struct *dvb, unsigned long ticks)
++{
++	dvb_demux_filter_t *dvbdmxfilter = dvb->handle2filter[((dvb->debitype)>>8)&0x1f];
++
++	if (!dvbdmxfilter || dvbdmxfilter->type != DMX_TYPE_TS)
++		return;
++	mod_timer(&dvb->debitimer, jiffies + ticks);
++}
++
++static inline int gpio_rx_pending(struct dvb_struct *dvb)
++{
++	return !timer_pending(&dvb->debitimer) && \
++		dvb->debitimer.expires == 0;
++}
++
+ static void 
+ gpioirq(struct saa7146* saa, void *data)
+ {
+@@ -1313,6 +1341,7 @@
+                         iwdebi(dvb, DEBINOSWAP, RX_BUFF, 0, 2);
+                         break;
+                 }                  /* yes, fall through */
++		gpio_receive_timer(dvb, GPIO_RXTIME_FRAME);
+         case DATA_TS_RECORD:
+         case DATA_PES_RECORD:
+                 saa7146_write(dvb->saa_mem, IER, 
+@@ -1843,7 +1872,7 @@
+         bpp=dvb->osdbpp[dvb->osdwin]+1; 
+         bpl=((w*bpp+7)&~7)/8; 
+         size=h*bpl;
+-        lpb=(32*1024)/bpl; 
++        lpb=(16*1024)/bpl; 
+         bnum=size/(lpb*bpl);
+         brest=size-bnum*lpb*bpl;
+ 
+@@ -1851,6 +1880,10 @@
+                 LoadBitmap(dvb, bpp2bit[dvb->osdbpp[dvb->osdwin]], w, lpb, inc, data); 
+                 BlitBitmap(dvb, dvb->osdwin, x0, y0+i*lpb, 0);
+                 data+=lpb*inc; 
++		if (gpio_rx_pending(dvb)) {
++			set_current_state(TASK_INTERRUPTIBLE);
++			schedule_timeout(GPIO_RXTIME_FRAME);
++		}
+         }
+         if (brest) {
+                 LoadBitmap(dvb, bpp2bit[dvb->osdbpp[dvb->osdwin]], w, brest/bpl, inc, data); 
+@@ -3819,6 +3852,7 @@
+                 return TTBStop(dvb); 
+ 
+         if (dvbdmxfeed->type == DMX_TYPE_TS) {
++		del_timer(&dvb->debitimer);
+                 if (dvbdmxfeed->ts_type & TS_DECODER) {
+                         if (dvbdmxfeed->pes_type>=DMX_TS_PES_OTHER ||
+                             !dvbdmx->pesfilter[dvbdmxfeed->pes_type]) 
+@@ -5472,8 +5506,12 @@
+         spin_lock_init (&dvb->debilock);
+         sema_init(&dvb->dcomlock, 1);
+         init_waitqueue_head(&dvb->debiq);
++	init_timer(&dvb->debitimer);
+         dvb->debilock=SPIN_LOCK_UNLOCKED;
+         dvb->debitype=-1;
++	dvb->debitimer.function = gpio_receive_timeout;
++	dvb->debitimer.data = (unsigned long) dvb;
++	dvb->debitimer.expires = jiffies;
+ 
+         dvb->num=num;
+         dvb->i2cbus=adap;
+@@ -5741,6 +5779,7 @@
+ 
+ 	/* release the saa7146s */
+ 	for( i = 0; i < num_dvb; i++) {
++		del_timer_sync(&(dvbs[i].debitimer));
+ 		dvbs[i].arm_rmmod=1;
+ 		wake_up_interruptible(&dvbs[i].arm_wait);
+                 while (dvbs[i].arm_thread)
+--- dvb.h
++++ dvb.h	Wed May 29 17:41:08 2002
+@@ -566,6 +566,7 @@
+         spinlock_t              debilock;
+         struct semaphore        dcomlock;
+         WAIT_QUEUE              debiq;
++	struct timer_list	debitimer;
+         int                     debitype;
+         int                     debilen;
+         int                     debibuf;
