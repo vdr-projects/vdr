@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.c 1.17 2000/09/17 09:25:30 kls Exp $
+ * $Id: interface.c 1.18 2000/09/18 17:22:09 kls Exp $
  */
 
 #include "interface.h"
@@ -73,14 +73,9 @@ void cInterface::PutKey(eKeys Key)
 
 eKeys cInterface::Wait(int Seconds, bool KeepChar)
 {
-  int t0 = time_ms() + Seconds * 1000;
   eKeys Key = kNone;
-
-  while (time_ms() < t0) {
-        Key = GetKey();
-        if (Key != kNone || cFile::AnyFileReady())
-           break;
-        }
+  if (cFile::AnyFileReady(-1, Seconds * 1000))
+     Key = GetKey();
   if (KeepChar)
      keyFromWait = Key;
   return Key;
