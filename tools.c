@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.44 2001/09/14 14:35:37 kls Exp $
+ * $Id: tools.c 1.45 2001/09/15 15:41:16 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -554,13 +554,27 @@ bool cSafeFile::Open(void)
   return f != NULL;
 }
 
-void cSafeFile::Close(void)
+bool cSafeFile::Close(void)
 {
+  bool result = true;
   if (f) {
-     fclose(f);
+     if (ferror(f) != 0) {
+        LOG_ERROR_STR(tempName);
+        result = false;
+        }
+     if (fclose(f) < 0) {
+        LOG_ERROR_STR(tempName);
+        result = false;
+        }
      f = NULL;
-     rename(tempName, fileName);
+     if (result && rename(tempName, fileName) < 0) {
+        LOG_ERROR_STR(fileName);
+        result = false;
+        }
      }
+  else
+     result = false;
+  return result;
 }
 
 // --- cListObject -----------------------------------------------------------

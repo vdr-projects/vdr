@@ -750,3 +750,4 @@ Video Disk Recorder Revision History
 - Changed obsolete macro VIDEO_WINDOW_CHROMAKEY to VID_TYPE_CHROMAKEY (thanks
   to Guido Fiala).
 - New version of the "Master-Timer" tool (thanks to Matthias Schniedermeyer).
+- Better error handling when writing configuration files.

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.33 2001/09/14 14:35:40 kls Exp $
+ * $Id: tools.h 1.34 2001/09/15 15:22:57 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -93,7 +93,7 @@ public:
   ~cSafeFile();
   operator FILE* () { return f; }
   bool Open(void);
-  void Close(void);
+  bool Close(void);
   };
 
 class cListObject {

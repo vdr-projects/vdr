@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.70 2001/09/14 14:35:30 kls Exp $
+ * $Id: config.c 1.71 2001/09/16 08:57:58 kls Exp $
  */
 
 #include "config.h"
@@ -122,24 +122,14 @@ bool cKeys::Load(const char *FileName)
 
 bool cKeys::Save(void)
 {
-  bool result = true;
   cSafeFile f(fileName);
   if (f.Open()) {
-     if (fprintf(f, "Code\t%c\nAddress\t%04X\n", code, address) > 0) {
-        for (tKey *k = keys; k->type != kNone; k++) {
-            if (fprintf(f, "%s\t%08X\n", k->name, k->code) <= 0) {
-               result = false;
-               break;
-               }
-            }
-         }
-     else
-        result = false;
-     f.Close();
+     fprintf(f, "Code\t%c\nAddress\t%04X\n", code, address);
+     for (tKey *k = keys; k->type != kNone; k++)
+         fprintf(f, "%s\t%08X\n", k->name, k->code);
+     return f.Close();
      }
-  else
-     result = false;
-  return result;
+  return false;
 }
 
 eKeys cKeys::Get(unsigned int Code)
@@ -928,12 +918,11 @@ bool cSetup::Save(const char *FileName)
         fprintf(f, "MultiSpeedMode     = %d\n", MultiSpeedMode);
         fprintf(f, "ShowReplayMode     = %d\n", ShowReplayMode);
         fprintf(f, "CurrentChannel     = %d\n", CurrentChannel);
-        f.Close();
-        isyslog(LOG_INFO, "saved setup to %s", FileName);
-        return true;
+        if (f.Close()) {
+           isyslog(LOG_INFO, "saved setup to %s", FileName);
+           return true;
+           }
         }
-     else
-        LOG_ERROR_STR(FileName);
      }
   else
      esyslog(LOG_ERR, "attempt to save setup without file name");

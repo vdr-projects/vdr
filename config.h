@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.77 2001/09/14 14:35:32 kls Exp $
+ * $Id: config.h 1.78 2001/09/15 15:38:40 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -226,7 +226,8 @@ public:
                 }
              l = (T *)l->Next();
              }
-       f.Close();
+       if (!f.Close())
+          result = false;
        }
     else
        result = false;
