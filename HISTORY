@@ -2402,3 +2402,8 @@ Video Disk Recorder Revision History
 2003-09-17: Version 1.2.5
 
 - Updated 'channels.conf.cable' (thanks to Stefan Huﬂfeldt).
+
+2003-10-03: Version 1.3.0
+
+- Updated the required driver version in INSTALL (thanks to Jens Groth for
+  reporting this one).

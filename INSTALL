@@ -28,7 +28,7 @@ If you have the DVB driver source in a different location
 you will have to change the definition of DVBDIR in the
 Makefile (see the file Make.config.template).
 
-VDR requires the Linux-DVB card driver version dated 2003-05-24 or higher
+VDR requires the Linux-DVB card driver version dated 2003-08-23 or higher
 to work properly.
 
 After extracting the package, change into the VDR directory
