@@ -1199,3 +1199,8 @@ Video Disk Recorder Revision History
   and delete (thanks to Sergei Haller).
 - Fixed color palette handling on "big endian" systems (thanks to Jean Martin
   for pointing out this one).
+- Updated the "Blue Movie" channels to the new "Premiere Erotik" (thanks to
+  Thilo Wunderlich). NOTE: this adds a new channel to 'channels.conf', so that
+  any timers referencing a channel with a number higher than 102 should be
+  checked and adapted if necessary (this only applies if you are using the default
+  'channels.conf').
