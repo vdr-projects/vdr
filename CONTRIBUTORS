@@ -698,6 +698,7 @@ Sascha Volkenandt <sascha@akv-soft.de>
  for his support in debugging the the "Unknown picture type error"
  for reporting a crash when switching the skin and having selected a non-default
  theme that is not available for the newly selected skin
+ for suggesting to map the color name "None" to #00000000 when processing XPM data
 
 Malcolm Caldwell <malcolm.caldwell@ntu.edu.au>
  for modifying LOF handling to allow for C-band reception

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 1.46 2004/05/16 09:25:06 kls Exp $
+ * $Id: osd.c 1.47 2004/05/22 13:47:39 kls Exp $
  */
 
 #include "osd.h"
@@ -264,6 +264,8 @@ bool cBitmap::SetXpm(char *Xpm[])
          return false;
          }
       s = skipspace(s + 1);
+      if (strcasecmp(s, "none") == 0)
+         s = "#00000000";
       if (*s != '#') {
          esyslog("ERROR: unknown color code in XPM: '%c'", *s);
          return false;
