@@ -498,6 +498,11 @@ Version 1.2
   Video format = 4:3     The video format (or aspect ratio) of the tv set in use
                          (4:3 or 16:9).
 
+  Update channels = 3    Controls the automatic channel update function. '0' means
+                         no update, '1' will only update channel names, '2' will
+                         update channel names and PIDs, and '3' will perform all
+                         updates and also add newly found channels.
+
   LNB:
 
   SLOF               = 11700  The switching frequency (in MHz) between low and

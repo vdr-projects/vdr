@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.117 2003/10/17 14:11:27 kls Exp $
+ * $Id: config.c 1.118 2004/01/05 11:45:40 kls Exp $
  */
 
 #include "config.h"
@@ -272,6 +272,7 @@ cSetup::cSetup(void)
   UseSubtitle = 1;
   RecordingDirs = 1;
   VideoFormat = 0;
+  UpdateChannels = 3;
   RecordDolbyDigital = 1;
   ChannelInfoPos = 0;
   OSDwidth = 52;
@@ -424,6 +425,7 @@ bool cSetup::Parse(const char *Name, const char *Value)
   else if (!strcasecmp(Name, "UseSubtitle"))         UseSubtitle        = atoi(Value);
   else if (!strcasecmp(Name, "RecordingDirs"))       RecordingDirs      = atoi(Value);
   else if (!strcasecmp(Name, "VideoFormat"))         VideoFormat        = atoi(Value);
+  else if (!strcasecmp(Name, "UpdateChannels"))      UpdateChannels     = atoi(Value);
   else if (!strcasecmp(Name, "RecordDolbyDigital"))  RecordDolbyDigital = atoi(Value);
   else if (!strcasecmp(Name, "ChannelInfoPos"))      ChannelInfoPos     = atoi(Value);
   else if (!strcasecmp(Name, "OSDwidth"))            OSDwidth           = atoi(Value);
@@ -474,6 +476,7 @@ bool cSetup::Save(void)
   Store("UseSubtitle",        UseSubtitle);
   Store("RecordingDirs",      RecordingDirs);
   Store("VideoFormat",        VideoFormat);
+  Store("UpdateChannels",     UpdateChannels);
   Store("RecordDolbyDigital", RecordDolbyDigital);
   Store("ChannelInfoPos",     ChannelInfoPos);
   Store("OSDwidth",           OSDwidth);

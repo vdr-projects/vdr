@@ -2546,3 +2546,7 @@ Video Disk Recorder Revision History
   Lauri Tischler for reporting this one).
 - Fixed a warning about character comparison in libsi/si.c (thanks to Lauri
   Tischler for reporting this one).
+- The new parameter "Update channels" in the "Setup/DVB" menu can be used to
+  control if and how channels will be automatically updated (see MANUAL).
+  This has already been part of the 'autopid' patch by Andreas Schultz and has
+  now been adopted.

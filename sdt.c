@@ -4,11 +4,12 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: sdt.c 1.1 2004/01/04 11:54:42 kls Exp $
+ * $Id: sdt.c 1.2 2004/01/05 11:40:24 kls Exp $
  */
 
 #include "sdt.h"
 #include "channels.h"
+#include "config.h"
 #include "libsi/section.h"
 #include "libsi/descriptor.h"
 
@@ -80,14 +81,15 @@ cSDT::cSDT(int Source, int Transponder, uchar &lastSdtVersion, cPatFilter *PatFi
                            }
                         if (Channel) {
                            Channel->SetId(getOriginalNetworkId(), getTransportStreamId(), SiSdtService.getServiceId());
-                           Channel->SetName(pn);
+                           if (Setup.UpdateChannels >= 1)
+                              Channel->SetName(pn);
                            // Using SiSdtService.getFreeCaMode() is no good, because some
                            // tv stations set this flag even for non-encrypted channels :-(
                            // The special value 0xFFFF was supposed to mean "unknown encryption"
                            // and would have been overwritten with real CA values later:
                            // Channel->SetCa(SiSdtService.getFreeCaMode() ? 0xFFFF : 0);
                            }
-                        else if (*pn) {
+                        else if (*pn && Setup.UpdateChannels >= 3) {
                            Channel = Channels.NewChannel(Source, Transponder, pn, getOriginalNetworkId(), getTransportStreamId(), SiSdtService.getServiceId());
                            PatFilter->Trigger();
                            }
