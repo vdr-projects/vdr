@@ -2604,3 +2604,5 @@ Video Disk Recorder Revision History
   (thanks to Christian Tramnitz for pointing out this one).
 - Fixed some out of bounds parameter settings when scanning NITs for cable
   and satellite transponders.
+- Added 'libsi' include files to the 'include' directory, so that plugins can
+  use them (thanks to Marcel Wiesweg).

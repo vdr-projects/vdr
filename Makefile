@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 1.64 2004/01/16 13:16:17 kls Exp $
+# $Id: Makefile 1.65 2004/01/18 14:16:53 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -132,6 +132,8 @@ $(SILIB):
 include-dir:
 	@mkdir -p include/vdr
 	@(cd include/vdr; for i in ../../*.h; do ln -fs $$i .; done)
+	@mkdir -p include/libsi
+	@(cd include/libsi; for i in ../../libsi/*.h; do ln -fs $$i .; done)
 
 # Plugins:
 
