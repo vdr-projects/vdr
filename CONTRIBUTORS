@@ -1176,3 +1176,7 @@ Dino Ravnic <dino.ravnic@fer.hr>
 
 Olaf Titz <olaf@bigred.inka.de>
  for fixing some typos in the Makefile's 'font' target
+
+Darren Salt <linux@youmustbejoking.demon.co.uk>
+ for pointing out that the '-' and 'ö' characters need to be escaped in the man
+ pages
