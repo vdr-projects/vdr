@@ -2077,3 +2077,6 @@ Video Disk Recorder Revision History
 - Added a note regarding non-VDR files in the /videoX directories to INSTALL
   (suggested by Benjamin Harling).
 - Skipping keys that come in too fast from LIRC (thanks to Christian Jacobsen).
+- Avoiding short display of the main menu if a plugin displays its own OSD and
+  is started through a user defined key macro (thanks to Andreas Mair for reporting
+  this one).
