@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.h 1.53 2001/09/23 11:01:46 kls Exp $
+ * $Id: dvbapi.h 1.58 2001/11/04 11:39:42 kls Exp $
  */
 
 #ifndef __DVBAPI_H
@@ -33,12 +33,6 @@
 #endif //DVDSUPPORT
 #include "eit.h"
 #include "thread.h"
-
-// Overlay facilities
-#define MAXCLIPRECTS 100
-typedef struct CRect {
-  signed short x, y, width, height;
-  };
 
 #define FRAMESPERSEC 25
 
@@ -89,7 +83,7 @@ class cDvbApi {
 #endif //DVDSUPPORT
   friend class cTransferBuffer;
 private:
-  int videoDev;
+  FrontendType frontendType;
   int fd_osd, fd_frontend, fd_sec, fd_dvr, fd_audio, fd_video, fd_demuxa1, fd_demuxa2, fd_demuxd1, fd_demuxd2, fd_demuxv, fd_demuxt;
   int vPid, aPid1, aPid2, dPid1, dPid2;
   bool SetPid(int fd, dmxPesType_t PesType, int Pid, dmxOutput_t Output);
@@ -153,21 +147,6 @@ public:
   // Image Grab facilities
 
   bool GrabImage(const char *FileName, bool Jpeg = true, int Quality = -1, int SizeX = -1, int SizeY = -1);
-
-  // Overlay facilities
-
-private:
-  bool ovlStat, ovlGeoSet, ovlFbSet;
-  int ovlSizeX, ovlSizeY, ovlPosX, ovlPosY, ovlBpp, ovlPalette, ovlClips, ovlClipCount;
-  int ovlFbSizeX, ovlFbSizeY;
-  __u16 ovlBrightness, ovlColour, ovlHue, ovlContrast;
-  struct video_clip ovlClipRects[MAXCLIPRECTS];
-public:
-  bool OvlF(int SizeX, int SizeY, int FbAddr, int Bpp, int Palette);
-  bool OvlG(int SizeX, int SizeY, int PosX, int PosY);
-  bool OvlC(int ClipCount, CRect *Cr);
-  bool OvlP(__u16 Brightness, __u16 Color, __u16 Hue, __u16 Contrast);
-  bool OvlO(bool Value);
 
   // On Screen Display facilities
 
@@ -233,8 +212,6 @@ private:
   cPlayBuffer *replayBuffer;
   int ca;
   int priority;
-  int  Ca(void) { return ca; }
-       // Returns the ca of the current recording session (0..MAXDVBAPI).
   int  Priority(void) { return priority; }
        // Returns the priority of the current recording session (0..MAXPRIORITY),
        // or -1 if no recording is currently active.
@@ -243,6 +220,8 @@ private:
   void SetModeReplay(void);
   void SetModeNormal(bool FromRecording);
 public:
+  int  Ca(void) { return ca; }
+       // Returns the ca of the current recording session (0..MAXDVBAPI).
   int  SecondsToFrames(int Seconds);
        // Returns the number of frames corresponding to the given number of seconds.
   bool Recording(void);
@@ -330,6 +309,7 @@ public:
   void SetVolume(int Volume, bool Absolute = false);
        // Sets the volume to the given value, either absolutely or relative to
        // the current volume.
+  static int CurrentVolume(void) { return PrimaryDvbApi ? PrimaryDvbApi->volume : 0; }
   };
 
 class cEITScanner {

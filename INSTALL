@@ -25,7 +25,7 @@ directory ../DVD (seen from the VDR directory).  Adjust the definition
 of DVDDIR in the Makefile if necessary.
 You can find 'libdvdread' at
 
-  http://www.dtek.chalmers.se/groups/dvd/downloads.html
+  http://www.dtek.chalmers.se/groups/dvd/downloads.shtml
 
 If you want to replay CSS encrypted DVDs you also need to get the 'libdvdcss'
 library from
@@ -127,7 +127,7 @@ active, the user has been inactive for at least MinUserInactivity minutes
 and the next timer event is at least MinEventTimeout minutes in the future
 (see the Setup parameters in MANUAL).
 
-The command given in the '-s' option will be called with four parameters.
+The command given in the '-s' option will be called with five parameters.
 The first one is the time (in UTC) of the next timer event (as a time_t
 type number), and the second one is the number of seconds from the current
 time until the next timer event. Your program can choose which one to use
@@ -152,6 +152,12 @@ by the next timer (or 0 if no timer is present), and the fourth parameter
 contains the file name of the recording as defined in the timer (or an empty
 string if no timer is present). These can be used by the shutdown program to
 show that information on some display interface etc.
+
+The fifth parameter indicates the reason why the shutdown was requested.
+'0' means this is an automatic shutdown due to some timeout, while '1' means
+that this is a user requested shutdown (resulting from pressing the "Power"
+key). The shutdown program may use this information to decide whether or
+not to actually perform the system shutdown.
 
 If a timer is currently recording, the parameters will reflect the start
 time of that timer. This means that the first parameter will be a time in

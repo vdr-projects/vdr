@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.131 2001/10/21 14:28:14 kls Exp $
+ * $Id: menu.c 1.139 2001/11/04 10:37:18 kls Exp $
  */
 
 #include "menu.h"
@@ -1808,11 +1808,15 @@ eOSState cMenuCommands::ProcessKey(eKeys Key)
 // --- cMenuMain -------------------------------------------------------------
 
 #define STOP_RECORDING tr(" Stop recording ")
+#define ON_PRIMARY_INTERFACE tr("on primary interface")
 
 cMenuMain::cMenuMain(bool Replaying, eOSState State)
 :cOsdMenu(tr("Main"))
 {
   digit = 0;
+
+  // Basic menu items:
+
   Add(new cOsdItem(hk(tr("Schedule")),   osSchedule));
   Add(new cOsdItem(hk(tr("Channels")),   osChannels));
   Add(new cOsdItem(hk(tr("Timers")),     osTimers));
@@ -1824,8 +1828,20 @@ cMenuMain::cMenuMain(bool Replaying, eOSState State)
   Add(new cOsdItem(hk(tr("Setup")),      osSetup));
   if (Commands.Count())
      Add(new cOsdItem(hk(tr("Commands")),  osCommands));
+
+  // Replay control:
+
   if (Replaying)
      Add(new cOsdItem(tr(" Stop replaying"), osStopReplay));
+
+  // Record control:
+
+  if (cRecordControls::StopPrimary()) {
+     char *buffer = NULL;
+     asprintf(&buffer, "%s%s", STOP_RECORDING, ON_PRIMARY_INTERFACE);
+     Add(new cOsdItem(buffer, osStopRecord));
+     }
+
   const char *s = NULL;
   while ((s = cRecordControls::GetInstantId(s)) != NULL) {
         char *buffer = NULL;
@@ -1833,8 +1849,14 @@ cMenuMain::cMenuMain(bool Replaying, eOSState State)
         Add(new cOsdItem(buffer, osStopRecord));
         delete buffer;
         }
+
+  // Editing control:
+
   if (cVideoCutter::Active())
      Add(new cOsdItem(tr(" Cancel editing"), osCancelEdit));
+
+  // Color buttons:
+
   const char *DVDbutton =
 #ifdef DVDSUPPORT
                           cDVD::DiscOk() ? tr("Eject") : NULL;
@@ -1845,6 +1867,9 @@ cMenuMain::cMenuMain(bool Replaying, eOSState State)
   Display();
   lastActivity = time(NULL);
   SetHasHotkeys();
+
+  // Initial submenus:
+
   switch (State) {
     case osRecordings: AddSubMenu(new cMenuRecordings); break;
 #ifdef DVDSUPPORT
@@ -1882,7 +1907,11 @@ eOSState cMenuMain::ProcessKey(eKeys Key)
     case osStopRecord: if (Interface->Confirm(tr("Stop recording?"))) {
                           cOsdItem *item = Get(Current());
                           if (item) {
-                             cRecordControls::Stop(item->Text() + strlen(STOP_RECORDING));
+                             const char *s = item->Text() + strlen(STOP_RECORDING);
+                             if (strcmp(s, ON_PRIMARY_INTERFACE) == 0)
+                                cRecordControls::StopPrimary(true);
+                             else
+                                cRecordControls::Stop(item->Text() + strlen(STOP_RECORDING));
                              return osEnd;
                              }
                           }
@@ -1908,6 +1937,14 @@ eOSState cMenuMain::ProcessKey(eKeys Key)
 #ifdef DVDSUPPORT
                case kYellow: if (!HasSubMenu()) {
                                 if (cDVD::DiscOk()) {
+                                   // We need to stop replaying a DVD before ejecting,
+                                   // otherwise the replay thread crashes. Currently
+                                   // checking LastReplayed() is pretty much the only way
+                                   // of finding out whether we are currently replaying a DVD
+                                   // (i.e. if LastReplayed() returns non-NULL, we are either
+                                   // replaying a normal recording, or nothing at all):
+                                   if (!cReplayControl::LastReplayed())
+                                      cDvbApi::PrimaryDvbApi->StopReplay();
                                    cDVD::Eject();
                                    state = osEnd;
                                    }
@@ -2062,7 +2099,9 @@ eOSState cDisplayChannel::ProcessKey(eKeys Key)
                }
             }
          break;
+    case kLeft|k_Repeat:
     case kLeft:
+    case kRight|k_Repeat:
     case kRight:
          withInfo = false;
          if (group < 0) {
@@ -2072,7 +2111,7 @@ eOSState cDisplayChannel::ProcessKey(eKeys Key)
             }
          if (group >= 0) {
             int SaveGroup = group;
-            if (Key == kRight)
+            if (NORMALKEY(Key) == kRight)
                group = Channels.GetNextGroup(group) ;
             else
                group = Channels.GetPrevGroup(group < 1 ? 1 : group);
@@ -2101,8 +2140,10 @@ eOSState cDisplayChannel::ProcessKey(eKeys Key)
     case kOk:     if (group >= 0)
                      Channels.SwitchTo(Channels.Get(Channels.GetNextNormal(group))->number);
                   return osEnd;
-    default:      Interface->PutKey(Key);
-                  return osEnd;
+    default:      if (NORMALKEY(Key) == kUp || NORMALKEY(Key) == kDown || (Key & (k_Repeat | k_Release)) == 0) {
+                     Interface->PutKey(Key);
+                     return osEnd;
+                     }
     };
   if (time_ms() - lastTime < INFOTIMEOUT) {
      DisplayInfo();
@@ -2166,7 +2207,7 @@ bool cRecordControl::GetEventInfo(void)
         if (Schedules) {
            const cSchedule *Schedule = Schedules->GetSchedule(channel->pnr);
            if (Schedule) {
-              eventInfo = Schedule->GetEvent(Time);
+              eventInfo = Schedule->GetEventAround(Time);
               if (eventInfo) {
                  if (seconds > 0)
                     dsyslog(LOG_INFO, "got EPG info after %d seconds", seconds);
@@ -2258,6 +2299,19 @@ void cRecordControls::Stop(cDvbApi *DvbApi)
             }
          }
       }
+}
+
+bool cRecordControls::StopPrimary(bool DoIt)
+{
+  if (cDvbApi::PrimaryDvbApi->Recording()) {
+     cDvbApi *dvbApi = cDvbApi::GetDvbApi(cDvbApi::PrimaryDvbApi->Ca(), 0);
+     if (dvbApi) {
+        if (DoIt)
+           Stop(cDvbApi::PrimaryDvbApi);
+        return true;
+        }
+     }
+  return false;
 }
 
 const char *cRecordControls::GetInstantId(const char *LastInstantId)
@@ -2354,7 +2408,8 @@ cReplayControl::cReplayControl(void)
   timeSearchActive = false;
   if (fileName) {
      marks.Load(fileName);
-     dvbApi->StartReplay(fileName);
+     if (!dvbApi->StartReplay(fileName))
+        Interface->Error(tr("Channel locked (recording)!"));
      }
 #ifdef DVDSUPPORT
   else if (dvd)
@@ -2418,10 +2473,7 @@ void cReplayControl::Hide(void)
   if (visible) {
      Interface->Close();
      needsFastResponse = visible = false;
-     if (!modeOnly)
-        ShowMode();
-     else
-        modeOnly = false;
+     modeOnly = false;
      }
 }
 
@@ -2664,15 +2716,18 @@ void cReplayControl::MarkMove(bool Forward)
 
 void cReplayControl::EditCut(void)
 {
-  Hide();
-  if (!cVideoCutter::Active()) {
-     if (!cVideoCutter::Start(fileName))
-        Interface->Error(tr("Can't start editing process!"));
+  if (fileName) {
+     Hide();
+     if (!cVideoCutter::Active()) {
+        if (!cVideoCutter::Start(fileName))
+           Interface->Error(tr("Can't start editing process!"));
+        else
+           Interface->Info(tr("Editing process started"));
+        }
      else
-        Interface->Info(tr("Editing process started"));
+        Interface->Error(tr("Editing process already active!"));
+     ShowMode();
      }
-  else
-     Interface->Error(tr("Editing process already active!"));
 }
 
 void cReplayControl::EditTest(void)
@@ -2700,6 +2755,7 @@ eOSState cReplayControl::ProcessKey(eKeys Key)
   if (visible) {
      if (timeoutShow && time(NULL) > timeoutShow) {
         Hide();
+        ShowMode();
         timeoutShow = 0;
         }
      else if (!modeOnly)
@@ -2749,8 +2805,10 @@ eOSState cReplayControl::ProcessKey(eKeys Key)
           switch (Key) {
             // Menu control:
             case kMenu:    Hide(); return osMenu; // allow direct switching to menu
-            case kOk:      if (visible && !modeOnly)
+            case kOk:      if (visible && !modeOnly) {
                               Hide();
+                              DoShowMode = true;
+                              }
                            else
                               Show();
                            break;

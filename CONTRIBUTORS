@@ -23,6 +23,8 @@ Guido Fiala <gfiala@s.netic.de>
  for implementing the SVDRP command 'HITK'
  for implementing image grabbing
  for implementing overlay capabilities (see his 'kvdr' tool at http://www.s.netic.de/gfiala)
+ (overlay capabilities have been removed again in VDR 0.98, since kvdr version 0.4
+ now does these things itself)
  for making the replay progress display avoid unnecessary code execution
 
 Robert Schneider <Robert.Schneider@lotus.com>
@@ -109,12 +111,13 @@ Ulrich Röder <roeder@efr-net.de>
  27500
  for his support in keeping the Premiere World channels up to date in 'channels.conf'
 
-Helmut Schächner <schaechner@yahoo.com>
+Mel Schächner <schaechner@yahoo.com>
  for his support in keeping the Premiere World channels up to date in 'channels.conf'
 
 Andreas Schultz <aschultz@warp10.net>
  for adding support for replaying DVDs (much of this was derived from
  dvdplayer-0.5 by Matjaz Thaler <matjaz.thaler@guest.arnes.si>)
+ for adding PTS to the converted PCM audio when replaying a DVD
 
 Aaron Holtzman
  for writing 'ac3dec'
@@ -150,3 +153,12 @@ Andreas Share <a.share@t-online.de>
 
 Simon Bauschulte <SemiSchwabe@Brutzel.de>
  for his support in keeping the Premiere World channels up to date in 'channels.conf'
+
+Andy Grobb <Charly98@01019freenet.de>
+ for completing storing the current audio volume in the setup.conf file
+
+Thomas Heiligenmann <thomas@heiligenmann.de>
+ for implementing the SVDRP commands LSTR and DELR
+
+Norbert Schmidt <nschmidt-nrw@t-online.de>
+ for filling in some missing teletext PIDs

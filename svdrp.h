@@ -4,13 +4,13 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: svdrp.h 1.11 2001/09/14 14:35:34 kls Exp $
+ * $Id: svdrp.h 1.13 2001/11/04 11:20:46 kls Exp $
  */
 
 #ifndef __SVDRP_H
 #define __SVDRP_H
 
-#include "dvbapi.h"
+#include "recording.h"
 #include "tools.h"
 
 class cSocket {
@@ -30,7 +30,7 @@ class cSVDRP {
 private:
   cSocket socket;
   cFile file;
-  CRect ovlClipRects[MAXCLIPRECTS];
+  cRecordings Recordings;
   uint numChars;
   char cmdLine[MAXPARSEBUFFER];
   char *message;
@@ -40,12 +40,14 @@ private:
   void Reply(int Code, const char *fmt, ...);
   void CmdCHAN(const char *Option);
   void CmdDELC(const char *Option);
+  void CmdDELR(const char *Option);
   void CmdDELT(const char *Option);
   void CmdGRAB(const char *Option);
   void CmdHELP(const char *Option);
   void CmdHITK(const char *Option);
   void CmdLSTC(const char *Option);
   void CmdLSTE(const char *Option);
+  void CmdLSTR(const char *Option);
   void CmdLSTT(const char *Option);
   void CmdMESG(const char *Option);
   void CmdMODC(const char *Option);
@@ -55,11 +57,6 @@ private:
   void CmdNEWC(const char *Option);
   void CmdNEWT(const char *Option);
   void CmdNEXT(const char *Option);
-  void CmdOVLF(const char *Option);
-  void CmdOVLG(const char *Option);
-  void CmdOVLC(const char *Option);
-  void CmdOVLP(const char *Option);
-  void CmdOVLO(const char *Option);
   void CmdUPDT(const char *Option);
   void Execute(char *Cmd);
 public:

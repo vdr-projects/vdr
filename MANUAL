@@ -310,6 +310,20 @@ Video Disk Recorder User's Manual
   A timer can also be programmed by pressing the "Red" button on the "Schedule",
   "Now", "Next" or "Event" menus.
 
+* Stopping a recording on the primary DVB interface
+
+  If the primary DVB interface is currently recording, the user can't switch
+  the channel or replay another recording on that interface. However, if there
+  is an other DVB interface that is currently not recording and provides the
+  necessary conditional access facilities to continue the recording that is
+  currently being performed on the primary DVB interface, the Main menu will
+  contain an option that allows you to stop recording on the primary DVB
+  interface. Select that option to stop the ongoing recording and thus free the
+  primary DVB interface to allow channel switching or replaying. The interrupted
+  recording will be continued on an other free DVB interface. There may be a
+  short discontinuity at that point when replaying that recording later, so you
+  may want to place such an action for instance in a commercial break.
+
 * Parameters in the "Setup" menu
 
   Select "Setup" from the "Main" menu to enter the setup menu. From there you can

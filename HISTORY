@@ -595,7 +595,7 @@ Video Disk Recorder Revision History
 - When setting an editing mark while the progress display is not active, the
   display will now be turned on for a short while to indicate the successful
   setting of the mark.
-- Updated 'channels.conf' for Premiere World (thanks to Helmut Schächner).
+- Updated 'channels.conf' for Premiere World (thanks to Mel Schächner).
   Check your timers if you use this channels.conf file, since the sequence of
   several PW channels has been changed.
 - Changed the color of "Info" messages to "black on green" and that of the
@@ -825,8 +825,43 @@ Video Disk Recorder Revision History
 - The menu timeout now also works when pressing the "Back" button during replay
   to enter the "Recordings" menu.
 - Updated 'channels.conf' for the "Bundesliga" channels of Premiere World
-  (thanks to Helmut Schächner).
+  (thanks to Mel Schächner).
 - Fixed reading timers.conf and channels.conf that contain blanks after numeric
   values.
 - Fixed handling trick modes near the beginning and end of a recording.
 - Pressing the "Back" button while replaying a DVD now leads to the DVD menu.
+
+2001-11-04: Version 0.98
+
+- Completed storing the current audio volume in the setup.conf file (thanks
+  to Andy Grobb).
+- Fixed closing the progress display with the "Back" key when in trick mode
+  and Setup.ShowReplayMode is enabled (thanks to Stefan Huelswitt).
+- New SVDRP commands LSTR and DELR to list and delete recordings (thanks to
+  Thomas Heiligenmann).
+- Fixed a crash when pressing the '2' button while replaying a DVD.
+- Updated 'channels.conf' for the "Bundesliga" channels of Premiere World
+  (thanks to Mel Schächner).
+- Changed the tuning code to use FrontendInfo to detect the type of DVB card.
+- Removed the recursion stuff from cThread (cMutex already does this).
+- Fixed handling the repeat function in the channel display.
+- Avoiding multiple EPG entries for the same event (thanks to Rolf Hakenes
+  for some valuable information on how to do this).
+- A recording on the primary interface can now be stopped to make it continue
+  on an other free DVB card (if one is free at the moment). See MANUAL for
+  details.
+- Added some missing teletext PIDs (thanks to Norbert Schmidt).
+- Added PTS to the converted PCM audio when replaying a DVD (thanks to Andreas
+  Schultz). Now the audio and video of a DVD replayed over the DVB card's A/V
+  out should always be in sync.
+- Fixed handling the "Power" key in case Setup.MinUserInactivity is set to 0 to
+  disable automatic shutdown.
+- Added a fifth parameter to the 'shutdown' call that indicates the reason for
+  this shutdown request (see INSTALL).
+- Fixed releasing 'index' memory after recording or playback.
+- Fixed ejecting a DVD while it is being replayed.
+- Removed all video overlay stuff from cDvbApi and SVDRP. Guido Fiala's new
+  'kvdr' version 0.4 now does these things itself. As a consequence of this you
+  will now need to use kvdr 0.4 or later.
+- The device /dev/video is now opened only if necessary (to GRAB an image),
+  allowing other programs (like 'kvdr', for instance) to use that device.
