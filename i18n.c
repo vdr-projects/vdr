@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.183 2005/03/05 17:01:41 kls Exp $
+ * $Id: i18n.c 1.184 2005/03/06 11:44:46 kls Exp $
  *
  * Translations provided by:
  *
@@ -3110,7 +3110,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Широкоэкранное изображение",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -3131,7 +3131,7 @@ const tI18nPhrase Phrases[] = {
     "pan&scan",
     "pan&scan",
     "pan&scan",
-    "pan&scan",
+    "панорамировать",
     "pan&scan",
     "pan&scan",
     "pan&scan",
@@ -3152,7 +3152,7 @@ const tI18nPhrase Phrases[] = {
     "letterbox",
     "letterbox",
     "letterbox",
-    "letterbox",
+    "уменьшать",
     "letterbox",
     "letterbox",
     "letterbox",
@@ -3173,7 +3173,7 @@ const tI18nPhrase Phrases[] = {
     "center cut out",
     "center cut out",
     "center cut out",
-    "center cut out",
+    "обрезать сбоку",
     "center cut out",
     "center cut out",
     "center cut out",
