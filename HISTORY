@@ -2429,3 +2429,5 @@ Video Disk Recorder Revision History
   Oliver Endriss). Note that in an existing VDR installation the current
   value as set in 'setup.conf' will still be used - this change only affects
   new VDR installations.
+- Edited recordings will now never be deleted automatically if the disk runs
+  full (suggested by Emil Naepflein).
