@@ -109,3 +109,4 @@ Video Disk Recorder Revision History
 - There can now be more than one video directory (in case you have several
   disks).
 - Fixed learning key codes for PC keyboard.
+- New command line option '-l' to set the log level.

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.16 2000/07/29 14:49:46 kls Exp $
+ * $Id: dvbapi.c 1.17 2000/07/29 19:00:19 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -1158,10 +1158,12 @@ bool cDvbApi::Init(void)
          }
       }
   PrimaryDvbApi = dvbApi[0];
-  if (NumDvbApis > 0)
+  if (NumDvbApis > 0) {
      isyslog(LOG_INFO, "found %d video device%s", NumDvbApis, NumDvbApis > 1 ? "s" : "");
-  else
+     } // need braces because of isyslog-macro
+  else {
      esyslog(LOG_ERR, "ERROR: no video device found, giving up!");
+     }
   return NumDvbApis > 0;
 }
 

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.12 2000/07/29 14:02:41 kls Exp $
+ * $Id: tools.c 1.13 2000/07/29 18:41:45 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -245,7 +245,7 @@ bool RemoveFileOrDir(const char *FileName, bool FollowSymlinks)
                              LOG_ERROR_STR(l);
                           }
                        else
-                          esyslog(LOG_ERR, "symlink name length (%d) exceeded anticipated buffer size (%d)", n, size);
+                          esyslog(LOG_ERR, "ERROR: symlink name length (%d) exceeded anticipated buffer size (%d)", n, size);
                        delete l;
                        }
                     dsyslog(LOG_INFO, "removing %s", buffer);
