@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.122 2004/02/08 15:04:41 kls Exp $
+ * $Id: config.c 1.123 2004/02/09 16:57:59 kls Exp $
  */
 
 #include "config.h"
@@ -374,7 +374,9 @@ bool cSetup::ParseLanguages(const char *Value, int *Values)
 {
   int n = 0;
   while (Value && *Value && n < I18nNumLanguages) {
-        int i = I18nLanguageIndex(Value);
+        char buffer[4];
+        strn0cpy(buffer, Value, sizeof(buffer));
+        int i = I18nLanguageIndex(buffer);
         if (i >= 0)
            Values[n++] = i;
         if ((Value = strchr(Value, ' ')) != NULL)
