@@ -216,6 +216,8 @@ Andreas Schultz <aschultz@warp10.net>
  for implementing the TerrestrialDeliverySystemDescriptor in libdtv
  for fixing setting the locking pid after a timed wait
  for changing thread handling to make it work with NPTL ("Native Posix Thread Library")
+ for his 'autopid' patch which was helpful when implementing automatic
+ channel data gathering
 
 Aaron Holtzman
  for writing 'ac3dec'

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: sections.c 1.1 2003/12/22 11:17:38 kls Exp $
+ * $Id: sections.c 1.2 2004/01/03 12:54:01 kls Exp $
  */
 
 #include "sections.h"
@@ -108,23 +108,25 @@ void cSectionHandler::Detach(cFilter *Filter)
 
 void cSectionHandler::SetSource(int Source, int Transponder)
 {
+  Lock();
   source = Source;
   transponder = Transponder;
+  Unlock();
 }
 
 void cSectionHandler::SetStatus(bool On)
 {
+  Lock();
   if (on != On) {
-     Lock();
      statusCount++;
      for (cFilter *fi = filters.First(); fi; fi = filters.Next(fi)) {
          fi->SetStatus(false);
          if (On)
             fi->SetStatus(true);
          }
-     Unlock();
      on = On;
      }
+  Unlock();
 }
 
 void cSectionHandler::Action(void)
@@ -144,6 +146,9 @@ void cSectionHandler::Action(void)
         Unlock();
 
         if (poll(pfd, NumFilters, 1000) != 0) {
+           bool DeviceHasLock = device->HasLock();
+           if (!DeviceHasLock)
+              usleep(100000);
            for (int i = 0; i < NumFilters; i++) {
                if (pfd[i].revents & POLLIN) {
                   cFilterHandle *fh = NULL;
@@ -158,6 +163,8 @@ void cSectionHandler::Action(void)
                      // Read section data:
                      unsigned char buf[4096]; // max. allowed size for any EIT section
                      int r = safe_read(fh->handle, buf, sizeof(buf));
+                     if (!DeviceHasLock)
+                        continue; // we do the read anyway, to flush any data that might have come from a different transponder
                      if (r > 3) { // minimum number of bytes necessary to get section length
                         int len = (((buf[1] & 0x0F) << 8) | (buf[2] & 0xFF)) + 3;
                         if (len == r) {

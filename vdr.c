@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.171 2003/12/22 13:29:24 kls Exp $
+ * $Id: vdr.c 1.172 2004/01/04 11:12:05 kls Exp $
  */
 
 #include <getopt.h>
@@ -509,6 +509,25 @@ int main(int argc, char *argv[])
            if (LatencyTime > MaxLatencyTime) {
               MaxLatencyTime = LatencyTime;
               dsyslog("max. latency time %d seconds", MaxLatencyTime);
+              }
+           }
+        // Handle channel modifications:
+        if (!Channels.BeingEdited() && Channels.Modified()) {
+           if (Channels.Lock(false, 100)) {
+              Channels.Save(); //XXX only after user changes???
+              Timers.Save();
+              for (cChannel *Channel = Channels.First(); Channel; Channel = Channels.Next(Channel)) {
+                  if (Channel && Channel->Modification(CHANNELMOD_RETUNE)) {
+                     cRecordControls::ChannelDataModified(Channel);
+                     if (Channel->Number() == cDevice::CurrentChannel()) {
+                        if (!cDevice::PrimaryDevice()->Replaying()) {
+                           isyslog("retuning due to modification of channel %d", Channel->Number());
+                           Channels.SwitchTo(Channel->Number());
+                           }
+                        }
+                     }
+                  }
+              Channels.Unlock();
               }
            }
         // Channel display:

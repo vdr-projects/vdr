@@ -4,12 +4,8 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 1.20 2003/12/24 10:23:24 kls Exp $
+ * $Id: ci.c 1.21 2004/01/02 15:07:36 kls Exp $
  */
-
-/* XXX TODO
-- update CA descriptors in case they change
-XXX*/
 
 #include "ci.h"
 #include <asm/unaligned.h>
@@ -1568,6 +1564,23 @@ const unsigned short *cCiHandler::GetCaSystemIds(int Slot)
   cMutexLock MutexLock(&mutex);
   cCiConditionalAccessSupport *cas = (cCiConditionalAccessSupport *)GetSessionByResourceId(RI_CONDITIONAL_ACCESS_SUPPORT, Slot);
   return cas ? cas->GetCaSystemIds() : NULL;
+}
+
+bool cCiHandler::ProvidesCa(const unsigned short *CaSystemIds)
+{
+  cMutexLock MutexLock(&mutex);
+  for (int Slot = 0; Slot < numSlots; Slot++) {
+      cCiConditionalAccessSupport *cas = (cCiConditionalAccessSupport *)GetSessionByResourceId(RI_CONDITIONAL_ACCESS_SUPPORT, Slot);
+      if (cas) {
+         for (const unsigned short *ids = cas->GetCaSystemIds(); ids && *ids; ids++) {
+             for (const unsigned short *id = CaSystemIds; *id; id++) {
+                 if (*id == *ids)
+                    return true;
+                 }
+             }
+         }
+      }
+  return false;
 }
 
 bool cCiHandler::SetCaPmt(cCiCaPmt &CaPmt, int Slot)

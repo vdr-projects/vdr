@@ -8,7 +8,7 @@
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  * Adapted to 'libsi' for VDR 1.3.0 by Marcel Wiesweg <marcel.wiesweg@gmx.de>.
  *
- * $Id: eit.c 1.83 2003/12/25 12:48:47 kls Exp $
+ * $Id: eit.c 1.84 2004/01/02 22:27:29 kls Exp $
  */
 
 #include "eit.h"
@@ -29,12 +29,10 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data)
   if (!CheckCRCAndParse())
      return;
 
-  //XXX TODO use complete channel ID
-  cChannel *channel = Channels.GetByServiceID(Source, getServiceId());
+  tChannelID channelID(Source, getOriginalNetworkId(), getTransportStreamId(), getServiceId());
+  cChannel *channel = Channels.GetByChannelID(channelID, true);
   if (!channel)
      return; // only collect data for known channels
-  tChannelID channelID = channel->GetChannelID();
-  channelID.ClrRid();
 
   cEvent *rEvent = NULL;
 
@@ -82,7 +80,7 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data)
          // Unfortunately some stations (like, e.g. "Premiere") broadcast their EPG data on several transponders (like
          // the actual Premiere transponder and the Sat.1/Pro7 transponder), but use different version numbers on
          // each of them :-( So if one DVB card is tuned to the Premiere transponder, while an other one is tuned
-         // to the Sat.1/Pro7 transponder, events will keep toggling because ot the bogus version numbers.
+         // to the Sat.1/Pro7 transponder, events will keep toggling because of the bogus version numbers.
          if (Tid == pEvent->TableID() && pEvent->Version() == getVersionNumber())
             continue;
          }

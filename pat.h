@@ -4,25 +4,30 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: pat.h 1.2 2003/12/24 10:08:22 kls Exp $
+ * $Id: pat.h 1.3 2004/01/03 13:47:54 kls Exp $
  */
 
 #ifndef __PAT_H
 #define __PAT_H
 
 #include "filter.h"
-#include "thread.h"
+
+#define MAXPMTENTRIES 64
 
 class cPatFilter : public cFilter {
 private:
   time_t lastPmtScan;
   int pmtIndex;
   int pmtPid;
+  int pmtVersion[MAXPMTENTRIES];
+  int numPmtEntries;
+  bool PmtVersionChanged(int PmtPid, int Version);
 protected:
   virtual void Process(u_short Pid, u_char Tid, const u_char *Data, int Length);
 public:
   cPatFilter(void);
   virtual void SetStatus(bool On);
+  void Trigger(void);
   };
 
 int GetCaDescriptors(int Source, int Transponder, int ServiceId, const unsigned short *CaSystemIds, int BufSize, uchar *Data, bool &StreamFlag);

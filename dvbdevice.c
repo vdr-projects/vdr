@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.75 2003/12/24 09:57:29 kls Exp $
+ * $Id: dvbdevice.c 1.76 2004/01/04 12:28:00 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -86,7 +86,7 @@ public:
   virtual ~cDvbTuner();
   bool IsTunedTo(const cChannel *Channel) const;
   void Set(const cChannel *Channel, bool Tune, bool UseCa);
-  bool Locked(void) { return tunerStatus == tsLocked; }
+  bool Locked(void) { return tunerStatus >= tsLocked; }
   };
 
 cDvbTuner::cDvbTuner(int Fd_Frontend, int CardIndex, fe_type_t FrontendType, cCiHandler *CiHandler)
@@ -114,19 +114,18 @@ cDvbTuner::~cDvbTuner()
 
 bool cDvbTuner::IsTunedTo(const cChannel *Channel) const
 {
-  return tunerStatus != tsIdle && channel.Source() == Channel->Source() && channel.Frequency() == Channel->Frequency();
+  return tunerStatus != tsIdle && channel.Source() == Channel->Source() && channel.Transponder() == Channel->Transponder();
 }
 
 void cDvbTuner::Set(const cChannel *Channel, bool Tune, bool UseCa)
 {
   cMutexLock MutexLock(&mutex);
-  bool CaChange = !(Channel->GetChannelID() == channel.GetChannelID());
   if (Tune)
      tunerStatus = tsSet;
-  else if (tunerStatus == tsCam && CaChange)
+  else if (tunerStatus == tsCam)
      tunerStatus = tsTuned;
   useCa = UseCa;
-  if (Channel->Ca() && CaChange)
+  if (Channel->Ca() && tunerStatus != tsCam)
      startTime = time(NULL);
   channel = *Channel;
   newSet.Broadcast();
@@ -268,29 +267,27 @@ void cDvbTuner::Action(void)
                  continue;
                  }
               }
-           if (tunerStatus >= tsLocked) {
-              if (ciHandler) {
-                 if (ciHandler->Process() && useCa) {
-                    if (tunerStatus != tsCam) {//XXX TODO update in case the CA descriptors have changed
-                       for (int Slot = 0; Slot < ciHandler->NumSlots(); Slot++) {
-                           cCiCaPmt CaPmt(channel.Source(), channel.Frequency(), channel.Sid(), ciHandler->GetCaSystemIds(Slot));
-                           if (CaPmt.Valid()) {
-                              CaPmt.AddPid(channel.Vpid(), 2);
-                              CaPmt.AddPid(channel.Apid1(), 4);
-                              CaPmt.AddPid(channel.Apid2(), 4);
-                              CaPmt.AddPid(channel.Dpid1(), 0);
-                              if (ciHandler->SetCaPmt(CaPmt, Slot)) {
-                                 tunerStatus = tsCam;
-                                 startTime = 0;
-                                 }
-                              }
+           }
+        if (ciHandler) {
+           if (ciHandler->Process() && useCa) {
+              if (tunerStatus == tsLocked) {
+                 for (int Slot = 0; Slot < ciHandler->NumSlots(); Slot++) {
+                     cCiCaPmt CaPmt(channel.Source(), channel.Frequency(), channel.Sid(), ciHandler->GetCaSystemIds(Slot));
+                     if (CaPmt.Valid()) {
+                        CaPmt.AddPid(channel.Vpid(), 2);
+                        CaPmt.AddPid(channel.Apid1(), 4);
+                        CaPmt.AddPid(channel.Apid2(), 4);
+                        CaPmt.AddPid(channel.Dpid1(), 0);
+                        if (ciHandler->SetCaPmt(CaPmt, Slot)) {
+                           tunerStatus = tsCam;
+                           startTime = 0;
                            }
-                       }
-                    }
-                 else
-                    tunerStatus = tsLocked;
+                        }
+                     }
                  }
               }
+           else if (tunerStatus > tsLocked)
+              tunerStatus = tsLocked;
            }
         // in the beginning we loop more often to let the CAM connection start up fast
         newSet.TimedWait(mutex, (ciHandler && (time(NULL) - startTime < 20)) ? 100 : 1000);
@@ -434,6 +431,17 @@ void cDvbDevice::MakePrimaryDevice(bool On)
 bool cDvbDevice::HasDecoder(void) const
 {
   return fd_video >= 0 && fd_audio >= 0;
+}
+
+int cDvbDevice::ProvidesCa(const cChannel *Channel) const
+{
+  if (Channel->Ca() >= 0x0100 && ciHandler) {
+     unsigned short ids[MAXCAIDS + 1];
+     for (int i = 0; i <= MAXCAIDS; i++) // '<=' copies the terminating 0!
+         ids[i] = Channel->Ca(i);
+     return ciHandler->ProvidesCa(ids);
+     }
+  return cDevice::ProvidesCa(Channel);
 }
 
 cOsdBase *cDvbDevice::NewOsd(int x, int y)
@@ -661,13 +669,18 @@ bool cDvbDevice::ProvidesSource(int Source) const
   return true;
 }
 
+bool cDvbDevice::ProvidesTransponder(const cChannel *Channel) const
+{
+  return ProvidesSource(Channel->Source()) && ((Channel->Source() & cSource::st_Mask) != cSource::stSat || Diseqcs.Get(Channel->Source(), Channel->Frequency(), Channel->Polarization()));
+}
+
 bool cDvbDevice::ProvidesChannel(const cChannel *Channel, int Priority, bool *NeedsDetachReceivers) const
 {
   bool result = false;
   bool hasPriority = Priority < 0 || Priority > this->Priority();
   bool needsDetachReceivers = false;
 
-  if (ProvidesSource(Channel->Source()) && ProvidesCa(Channel->Ca())) {
+  if ((Channel->Vpid() || Channel->Apid1()) && ProvidesSource(Channel->Source()) && ProvidesCa(Channel)) {
      result = hasPriority;
      if (Priority >= 0 && Receiving()) {
         if (dvbTuner->IsTunedTo(Channel)) {
@@ -736,15 +749,14 @@ bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
   if (TurnOffLivePIDs)
      TurnOffLiveMode();
 
-  dvbTuner->Set(Channel, DoTune, !EITScanner.UsesDevice(this)); //XXX 1.3: this is an ugly hack - find a cleaner solution
+  dvbTuner->Set(Channel, DoTune, !EITScanner.UsesDevice(this)); //XXX 1.3: this is an ugly hack - find a cleaner solution//XXX
 
   // PID settings:
 
   if (TurnOnLivePIDs) {
      aPid1 = Channel->Apid1();
      aPid2 = Channel->Apid2();
-     int pPid = Channel->Ppid() ? Channel->Ppid() : Channel->Vpid();
-     if (!(AddPid(pPid, ptPcr) && AddPid(Channel->Apid1(), ptAudio) && AddPid(Channel->Vpid(), ptVideo))) {//XXX+ dolby dpid1!!! (if audio plugins are attached)
+     if (!(AddPid(Channel->Ppid(), ptPcr) && AddPid(Channel->Apid1(), ptAudio) && AddPid(Channel->Vpid(), ptVideo))) {//XXX+ dolby dpid1!!! (if audio plugins are attached)
         esyslog("ERROR: failed to set PIDs for channel %d on device %d", Channel->Number(), CardIndex() + 1);
         return false;
         }
@@ -756,6 +768,11 @@ bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
      cControl::Launch(new cTransferControl(this, Channel->Vpid(), Channel->Apid1(), Channel->Apid2(), Channel->Dpid1(), Channel->Dpid2()));
 
   return true;
+}
+
+bool cDvbDevice::HasLock(void)
+{
+  return dvbTuner->Locked();
 }
 
 void cDvbDevice::SetVolumeDevice(int Volume)

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.h 1.19 2003/12/21 15:44:31 kls Exp $
+ * $Id: thread.h 1.20 2004/01/03 16:58:50 kls Exp $
  */
 
 #ifndef __THREAD_H
@@ -28,12 +28,12 @@ public:
   //void Signal(void);
   };
 
-class cRWlock {
+class cRwLock {
 private:
   pthread_rwlock_t rwlock;
 public:
-  cRWlock(bool PreferWriter = false);
-  ~cRWlock();
+  cRwLock(bool PreferWriter = false);
+  ~cRwLock();
   bool Lock(bool Write, int TimeoutMs = 0);
   void Unlock(void);
   };

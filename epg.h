@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.h 1.2 2003/12/24 13:20:35 kls Exp $
+ * $Id: epg.h 1.3 2004/01/03 17:00:25 kls Exp $
  */
 
 #ifndef __EPG_H
@@ -110,7 +110,7 @@ class cSchedules : public cList<cSchedule> {
   friend class cSchedule;
   friend class cSchedulesLock;
 private:
-  cRWlock rwlock;
+  cRwLock rwlock;
   static cSchedules schedules;
   static const char *epgDataFileName;
   static time_t lastCleanup;

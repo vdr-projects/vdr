@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 1.58 2003/12/21 15:27:07 kls Exp $
+ * $Id: menu.h 1.59 2004/01/04 11:01:13 kls Exp $
  */
 
 #ifndef __MENU_H
@@ -143,6 +143,7 @@ public:
   static const char *GetInstantId(const char *LastInstantId);
   static cRecordControl *GetRecordControl(const char *FileName);
   static void Process(time_t t);
+  static void ChannelDataModified(cChannel *Channel);
   static bool Active(void);
   static void Shutdown(void);
   };

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 1.16 2003/10/17 15:42:40 kls Exp $
+ * $Id: channels.c 1.17 2004/01/04 12:28:49 kls Exp $
  */
 
 #include "channels.h"
@@ -159,6 +159,7 @@ char *cChannel::buffer = NULL;
 
 cChannel::cChannel(void)
 {
+  memset(&__BeginData__, 0, (char *)&__EndData__ - (char *)&__BeginData__);
   strcpy(name,   "Pro7");
   frequency    = 12480;
   source       = cSource::FromString("S19.2E");
@@ -170,7 +171,7 @@ cChannel::cChannel(void)
   dpid1        = 257;
   dpid2        = 0;
   tpid         = 32;
-  ca           = 0;
+  caids[0]     = 0;
   nid          = 0;
   tid          = 0;
   sid          = 888;
@@ -186,6 +187,28 @@ cChannel::cChannel(void)
   transmission = TRANSMISSION_MODE_AUTO;
   guard        = GUARD_INTERVAL_AUTO;
   hierarchy    = HIERARCHY_AUTO;
+  modification = CHANNELMOD_NONE;
+}
+
+cChannel::cChannel(const cChannel *Channel)
+{
+  *this = *Channel;
+  *name = 0;
+  vpid         = 0;
+  ppid         = 0;
+  apid1        = 0;
+  apid2        = 0;
+  dpid1        = 0;
+  dpid2        = 0;
+  tpid         = 0;
+  caids[0]     = 0;
+  nid          = 0;
+  tid          = 0;
+  sid          = 0;
+  rid          = 0;
+  number       = 0;
+  groupSep     = false;
+  modification = CHANNELMOD_NONE;
 }
 
 cChannel& cChannel::operator= (const cChannel &Channel)
@@ -194,16 +217,117 @@ cChannel& cChannel::operator= (const cChannel &Channel)
   return *this;
 }
 
-static int MHz(int frequency)
+int cChannel::Transponder(void) const
 {
-  while (frequency > 20000)
-        frequency /= 1000;
-  return frequency;
+  int tf = frequency;
+  while (tf > 20000)
+        tf /= 1000;
+  return tf;
 }
 
 tChannelID cChannel::GetChannelID(void) const
 {
-  return tChannelID(source, nid, nid ? tid : MHz(frequency), sid, rid);
+  return tChannelID(source, nid, nid ? tid : Transponder(), sid, rid);
+}
+
+int cChannel::Modification(int Mask)
+{
+  int Result = modification & Mask;
+  modification = CHANNELMOD_NONE;
+  return Result;
+}
+
+void cChannel::SetId(int Nid, int Tid, int Sid, int Rid, bool Log)
+{
+  if (nid != Nid || tid != Tid || sid != Sid || rid != Rid) {
+     if (Log)
+        dsyslog("changing id of channel %d from %d-%d-%d-%d to %d-%d-%d-%d", Number(), nid, tid, sid, rid, Nid, Tid, Sid, Rid);
+     nid = Nid;
+     tid = Tid;
+     sid = Sid;
+     rid = Rid;
+     modification |= CHANNELMOD_ID;
+     Channels.SetModified();
+     }
+}
+
+void cChannel::SetName(const char *Name, bool Log)
+{
+  if (!isempty(Name) && strcmp(name, Name) != 0) {
+     if (Log)
+        dsyslog("changing name of channel %d from '%s' to '%s'", Number(), name, Name);
+     strn0cpy(name, Name, MaxChannelName);
+     modification |= CHANNELMOD_NAME;
+     Channels.SetModified();
+     }
+}
+
+void cChannel::SetPids(int Vpid, int Ppid, int Apid1, int Apid2, int Dpid1, int Dpid2, int Tpid)
+{
+  //XXX if (vpid != Vpid || ppid != Ppid || apid1 != Apid1 || apid2 != Apid2 || dpid1 != Dpid1 || dpid2 != Dpid2 || tpid != Tpid) {
+  if (vpid != Vpid || ppid != Ppid || apid1 != Apid1 || (Apid2 && apid2 != Apid2) || dpid1 != Dpid1 || dpid2 != Dpid2 || tpid != Tpid) {
+     dsyslog("changing pids of channel %d from %d+%d:%d,%d;%d,%d:%d to %d+%d:%d,%d;%d,%d:%d", Number(), vpid, ppid, apid1, apid2, dpid1, dpid2, tpid, Vpid, Ppid, Apid1, Apid2, Dpid1, Dpid2, Tpid);
+     vpid = Vpid;
+     ppid = Ppid;
+     apid1 = Apid1;
+     if (Apid2)//XXX should we actually react here?
+     apid2 = Apid2;
+     dpid1 = Dpid1;
+     dpid2 = Dpid2;
+     tpid = Tpid;
+     modification |= CHANNELMOD_PIDS;
+     Channels.SetModified();
+     }
+}
+
+void cChannel::SetCaIds(const int *CaIds)
+{
+  if (caids[0] && caids[0] <= 0x00FF)
+     return; // special values will not be overwritten
+  bool modified = false;
+  for (int i = 0; i < MAXCAIDS; i++) {
+      if (caids[i] != CaIds[i]) {
+         modified = true;
+         break;
+         }
+      if (!caids[i] || !CaIds[i])
+         break;
+      }
+  if (modified) {
+     char OldCaIdsBuf[MAXCAIDS * 5 + 10]; // 5: 4 digits plus delimiting ',', 10: paranoia
+     char NewCaIdsBuf[MAXCAIDS * 5 + 10];
+     char *qo = OldCaIdsBuf;
+     char *qn = NewCaIdsBuf;
+     int i;
+     for (i = 0; i < MAXCAIDS; i++) {
+         if (i == 0 || caids[i])
+            qo += snprintf(qo, sizeof(OldCaIdsBuf), "%s%X", i > 0 ? "," : "", caids[i]);
+         if (!caids[i])
+            break;
+         }
+     for (i = 0; i < MAXCAIDS; i++) {
+         if (i == 0 || CaIds[i])
+            qn += snprintf(qn, sizeof(NewCaIdsBuf), "%s%X", i > 0 ? "," : "", CaIds[i]);
+         caids[i] = CaIds[i];
+         if (!CaIds[i])
+            break;
+         }
+     caids[i] = 0;
+     *qo = *qn = 0;
+     dsyslog("changing caids of channel %d from %s to %s", Number(), OldCaIdsBuf, NewCaIdsBuf);
+     modification |= CHANNELMOD_CA;
+     Channels.SetModified();
+     }
+}
+
+void cChannel::SetCaDescriptors(int Level)
+{
+  if (Level > 0) {
+     modification |= CHANNELMOD_CA;
+     Channels.SetModified();
+     if (Level > 1)
+        dsyslog("changing ca descriptors of channel %d", Number());
+     }
 }
 
 static int PrintParameter(char *p, char Name, int Value)
@@ -290,10 +414,10 @@ const char *cChannel::ToText(cChannel *Channel)
      char vpidbuf[32];
      char *q = vpidbuf;
      q += snprintf(q, sizeof(vpidbuf), "%d", Channel->vpid);
-     if (Channel->ppid)
+     if (Channel->ppid && Channel->ppid != Channel->vpid)
         q += snprintf(q, sizeof(vpidbuf) - (q - vpidbuf), "+%d", Channel->ppid);
      *q = 0;
-     char apidbuf[32];
+     char apidbuf[MAXAPIDS * 2 * 6 + 10]; // 2: Apids and Dpids, 6: 5 digits plus delimiting ',' or ';', 10: paranoia
      q = apidbuf;
      q += snprintf(q, sizeof(apidbuf), "%d", Channel->apid1);
      if (Channel->apid2)
@@ -303,7 +427,16 @@ const char *cChannel::ToText(cChannel *Channel)
      if (Channel->dpid2)
         q += snprintf(q, sizeof(apidbuf) - (q - apidbuf), ",%d", Channel->dpid2);
      *q = 0;
-     asprintf(&buffer, "%s:%d:%s:%s:%d:%s:%s:%d:%d:%d:%d:%d:%d\n", s, Channel->frequency, Channel->ParametersToString(), cSource::ToString(Channel->source), Channel->srate, vpidbuf, apidbuf, Channel->tpid, Channel->ca, Channel->sid, Channel->nid, Channel->tid, Channel->rid);
+     char caidbuf[MAXCAIDS * 5 + 10]; // 5: 4 digits plus delimiting ',', 10: paranoia
+     q = caidbuf;
+     for (int i = 0; i < MAXCAIDS; i++) {
+         if (i == 0 || Channel->caids[i])
+            q += snprintf(q, sizeof(caidbuf), "%s%X", i > 0 ? "," : "", Channel->caids[i]);
+         if (!Channel->caids[i])
+            break;
+         }
+     *q = 0;
+     asprintf(&buffer, "%s:%d:%s:%s:%d:%s:%s:%d:%s:%d:%d:%d:%d\n", s, Channel->frequency, Channel->ParametersToString(), cSource::ToString(Channel->source), Channel->srate, vpidbuf, apidbuf, Channel->tpid, caidbuf, Channel->sid, Channel->nid, Channel->tid, Channel->rid);
      }
   return buffer;
 }
@@ -336,12 +469,16 @@ bool cChannel::Parse(const char *s, bool AllowNonUniqueID)
      char *parambuf = NULL;
      char *vpidbuf = NULL;
      char *apidbuf = NULL;
-     int fields = sscanf(s, "%a[^:]:%d :%a[^:]:%a[^:] :%d :%a[^:]:%a[^:]:%d :%d :%d :%d :%d :%d ", &namebuf, &frequency, &parambuf, &sourcebuf, &srate, &vpidbuf, &apidbuf, &tpid, &ca, &sid, &nid, &tid, &rid);
+     char *caidbuf = NULL;
+     int fields = sscanf(s, "%a[^:]:%d :%a[^:]:%a[^:] :%d :%a[^:]:%a[^:]:%d :%a[^:]:%d :%d :%d :%d ", &namebuf, &frequency, &parambuf, &sourcebuf, &srate, &vpidbuf, &apidbuf, &tpid, &caidbuf, &sid, &nid, &tid, &rid);
      if (fields >= 9) {
         if (fields == 9) {
            // allow reading of old format
-           sid = ca;
-           ca = tpid;
+           sid = atoi(caidbuf);
+           delete caidbuf;
+           caidbuf = NULL;
+           caids[0] = tpid;
+           caids[1] = 0;
            tpid = 0;
            }
         vpid  = ppid  = 0;
@@ -350,24 +487,46 @@ bool cChannel::Parse(const char *s, bool AllowNonUniqueID)
         ok = false;
         if (parambuf && sourcebuf && vpidbuf && apidbuf) {
            ok = StringToParameters(parambuf) && (source = cSource::FromString(sourcebuf)) >= 0;
+
            char *p = strchr(vpidbuf, '+');
            if (p)
               *p++ = 0;
            sscanf(vpidbuf, "%d", &vpid);
            if (p)
               sscanf(p, "%d", &ppid);
+           else
+              ppid = vpid;
+
            p = strchr(apidbuf, ';');
            if (p)
               *p++ = 0;
            sscanf(apidbuf, "%d ,%d ", &apid1, &apid2);
            if (p)
               sscanf(p, "%d ,%d ", &dpid1, &dpid2);
+
+           if (caidbuf) {
+              char *p = caidbuf;
+              char *q;
+              int NumCaIds = 0;
+              while ((q = strtok(p, ",")) != NULL) {
+                    if (NumCaIds < MAXCAIDS) {
+                       caids[NumCaIds++] = strtol(q, NULL, 16) & 0xFFFF;
+                       if (NumCaIds == 1 && caids[0] <= 0x00FF)
+                          break;
+                       }
+                    else
+                       esyslog("ERROR: too many CA ids!"); // no need to set ok to 'false'
+                    p = NULL;
+                    }
+              caids[NumCaIds] = 0;
+              }
            }
         strn0cpy(name, namebuf, MaxChannelName);
         free(parambuf);
         free(sourcebuf);
         free(vpidbuf);
         free(apidbuf);
+        free(caidbuf);
         free(namebuf);
         if (!GetChannelID().Valid()) {
            esyslog("ERROR: channel data results in invalid ID!");
@@ -393,6 +552,12 @@ bool cChannel::Save(FILE *f)
 // -- cChannels --------------------------------------------------------------
 
 cChannels Channels;
+
+cChannels::cChannels(void)
+{
+  maxNumber = 0;
+  modified = false;
+}
 
 bool cChannels::Load(const char *FileName, bool AllowComments, bool MustExist)
 {
@@ -457,10 +622,10 @@ cChannel *cChannels::GetByNumber(int Number, int SkipGap)
   return NULL;
 }
 
-cChannel *cChannels::GetByServiceID(int Source, unsigned short ServiceID)
+cChannel *cChannels::GetByServiceID(int Source, int Transponder, unsigned short ServiceID)
 {
   for (cChannel *channel = First(); channel; channel = Next(channel)) {
-      if (!channel->GroupSep() && channel->Source() == Source && channel->Sid() == ServiceID)
+      if (!channel->GroupSep() && channel->Source() == Source && ISTRANSPONDER(channel->Transponder(), Transponder) && channel->Sid() == ServiceID)
          return channel;
       }
   return NULL;
@@ -496,4 +661,32 @@ bool cChannels::SwitchTo(int Number)
 {
   cChannel *channel = GetByNumber(Number);
   return channel && cDevice::PrimaryDevice()->SwitchChannel(channel, true);
+}
+
+void cChannels::SetModified(void)
+{
+  modified = true;
+}
+
+bool cChannels::Modified(void)
+{
+  bool Result = modified;
+  modified = false;
+  return Result;
+}
+
+cChannel *cChannels::NewChannel(int Source, int Transponder, const char *Name, int Nid, int Tid, int Sid, int Rid)
+{
+  dsyslog("creating new channel '%s' on %s transponder %d with id %d-%d-%d-%d", Name, cSource::ToString(Source), Transponder, Nid, Tid, Sid, Rid);
+  for (cChannel *channel = First(); channel; channel = Next(channel)) {
+      if (!channel->GroupSep() && channel->Source() == Source && ISTRANSPONDER(channel->Transponder(), Transponder)) {
+         cChannel *NewChannel = new cChannel(channel);
+         Add(NewChannel);
+         ReNumber();
+         NewChannel->SetId(Nid, Tid, Sid, Rid, false);
+         NewChannel->SetName(Name, false);
+         return NewChannel;
+         }
+      }
+  return NULL;
 }

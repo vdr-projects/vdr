@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.275 2003/12/22 10:05:14 kls Exp $
+ * $Id: menu.c 1.276 2004/01/04 11:12:43 kls Exp $
  */
 
 #include "menu.h"
@@ -581,7 +581,7 @@ void cMenuEditChannel::Setup(void)
   Add(new cMenuEditIntItem( tr("Dpid1"),        &data.dpid1, 0, 0x1FFF));
   Add(new cMenuEditIntItem( tr("Dpid2"),        &data.dpid2, 0, 0x1FFF));
   Add(new cMenuEditIntItem( tr("Tpid"),         &data.tpid,  0, 0x1FFF));
-  Add(new cMenuEditCaItem(  tr("CA"),           &data.ca, true));
+  Add(new cMenuEditCaItem(  tr("CA"),           &data.caids[0], true));//XXX
   Add(new cMenuEditIntItem( tr("Sid"),          &data.sid, 0));
   /* XXX not yet used
   Add(new cMenuEditIntItem( tr("Nid"),          &data.nid, 0));
@@ -615,7 +615,6 @@ eOSState cMenuEditChannel::ProcessKey(eKeys Key)
            if (channel) {
               *channel = data;
               isyslog("edited channel %d %s", channel->Number(), data.ToText());
-              Timers.Save();
               state = osBack;
               }
            else {
@@ -626,7 +625,7 @@ eOSState cMenuEditChannel::ProcessKey(eKeys Key)
               isyslog("added channel %d %s", channel->Number(), data.ToText());
               state = osUser1;
               }
-           Channels.Save();
+           Channels.SetModified();
            }
         else {
            Interface->Error(tr("Channel settings are not unique!"));
@@ -682,6 +681,7 @@ protected:
   virtual void Move(int From, int To);
 public:
   cMenuChannels(void);
+  ~cMenuChannels();
   virtual eOSState ProcessKey(eKeys Key);
   };
 
@@ -693,6 +693,12 @@ cMenuChannels::cMenuChannels(void)
          Add(new cMenuChannelItem(channel), channel->Number() == cDevice::CurrentChannel());
       }
   SetHelp(tr("Edit"), tr("New"), tr("Delete"), tr("Mark"));
+  Channels.IncBeingEdited();
+}
+
+cMenuChannels::~cMenuChannels()
+{
+  Channels.DecBeingEdited();
 }
 
 cChannel *cMenuChannels::GetChannel(int Index)
@@ -704,11 +710,10 @@ cChannel *cMenuChannels::GetChannel(int Index)
 void cMenuChannels::Propagate(void)
 {
   Channels.ReNumber();
-  Channels.Save();
   for (cMenuChannelItem *ci = (cMenuChannelItem *)First(); ci; ci = (cMenuChannelItem *)ci->Next())
       ci->Set();
-  Timers.Save(); // channel numbering has changed!
   Display();
+  Channels.SetModified();
 }
 
 eOSState cMenuChannels::Switch(void)
@@ -1380,22 +1385,24 @@ void cMenuSchedule::PrepareSchedule(cChannel *Channel)
   free(buffer);
   if (schedules) {
      const cSchedule *Schedule = schedules->GetSchedule(Channel->GetChannelID());
-     int num = Schedule->NumEvents();
-     const cEvent **pArray = MALLOC(const cEvent *, num);
-     if (pArray) {
-        time_t now = time(NULL);
-        int numreal = 0;
-        for (int a = 0; a < num; a++) {
-            const cEvent *Event = Schedule->GetEventNumber(a);
-            if (Event->StartTime() + Event->Duration() > now)
-               pArray[numreal++] = Event;
-            }
-
-        qsort(pArray, numreal, sizeof(cEvent *), CompareEventTime);
-
-        for (int a = 0; a < numreal; a++)
-            Add(new cMenuScheduleItem(pArray[a]));
-        free(pArray);
+     if (Schedule) {
+        int num = Schedule->NumEvents();
+        const cEvent **pArray = MALLOC(const cEvent *, num);
+        if (pArray) {
+           time_t now = time(NULL);
+           int numreal = 0;
+           for (int a = 0; a < num; a++) {
+               const cEvent *Event = Schedule->GetEventNumber(a);
+               if (Event->StartTime() + Event->Duration() > now)
+                  pArray[numreal++] = Event;
+               }
+   
+           qsort(pArray, numreal, sizeof(cEvent *), CompareEventTime);
+   
+           for (int a = 0; a < numreal; a++)
+               Add(new cMenuScheduleItem(pArray[a]));
+           free(pArray);
+           }
         }
      }
 }
@@ -3215,6 +3222,20 @@ void cRecordControls::Process(time_t t)
       if (RecordControls[i]) {
          if (!RecordControls[i]->Process(t))
             DELETENULL(RecordControls[i]);
+         }
+      }
+}
+
+void cRecordControls::ChannelDataModified(cChannel *Channel)
+{
+  for (int i = 0; i < MAXRECORDCONTROLS; i++) {
+      if (RecordControls[i]) {
+         if (RecordControls[i]->Timer() && RecordControls[i]->Timer()->Channel() == Channel) {
+            isyslog("stopping recording due to modification of channel %d", Channel->Number());
+            RecordControls[i]->Stop(true);
+            // This will restart the recording, maybe even from a different
+            // device in case conditional access has changed.
+            }
          }
       }
 }

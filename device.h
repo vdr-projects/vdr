@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 1.36 2003/12/22 10:52:39 kls Exp $
+ * $Id: device.h 1.37 2004/01/04 11:52:00 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -14,6 +14,7 @@
 #include "eit.h"
 #include "filter.h"
 #include "pat.h"
+#include "sdt.h"
 #include "sections.h"
 #include "thread.h"
 #include "tools.h"
@@ -131,7 +132,8 @@ public:
          ///< Returns the card index of this device (0 ... MAXDEVICES - 1).
   int DeviceNumber(void) const;
          ///< Returns the number of this device (0 ... MAXDEVICES - 1).
-  int ProvidesCa(int Ca) const;
+  virtual int ProvidesCa(const cChannel *Channel) const;//XXX PLUGINS.html!!!
+         //XXX describe changed functionality!!!
          ///< Checks whether this device provides the given value in its
          ///< caCaps. Returns 0 if the value is not provided, 1 if only this
          ///< value is provided, and > 1 if this and other values are provided.
@@ -161,6 +163,8 @@ protected:
 public:
   virtual bool ProvidesSource(int Source) const;
          ///< Returns true if this device can provide the given source.
+  virtual bool ProvidesTransponder(const cChannel *Channel) const;
+         ///< XXX -> PLUGINS.html!
   virtual bool ProvidesChannel(const cChannel *Channel, int Priority = -1, bool *NeedsDetachReceivers = NULL) const;
          ///< Returns true if this device can provide the given channel.
          ///< In case the device has cReceivers attached to it or it is the primary
@@ -192,6 +196,10 @@ protected:
 public:
   static int CurrentChannel(void) { return primaryDevice ? currentChannel : 0; }
          ///< Returns the number of the current channel on the primary device.
+  virtual bool HasLock(void);//XXX PLUGINS.html
+         ///< Returns true if the device has a lock on the requested transponder.
+         ///< Default is true, a specific device implementation may return false
+         ///< to indicate that it is not ready yet.
   virtual bool HasProgramme(void);
          ///< Returns true if the device is currently showing any programme to
          ///< the user, either through replaying or live.
@@ -232,6 +240,7 @@ private:
   cSectionHandler *sectionHandler;
   cEitFilter *eitFilter;
   cPatFilter *patFilter;
+  cSdtFilter *sdtFilter;
 protected:
   void StartSectionHandler(void);
        ///< A derived device that provides section data must call

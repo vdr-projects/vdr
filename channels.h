@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.h 1.9 2003/10/26 13:32:00 kls Exp $
+ * $Id: channels.h 1.10 2004/01/04 12:26:37 kls Exp $
  */
 
 #ifndef __CHANNELS_H
@@ -12,9 +12,21 @@
 
 #include "config.h"
 #include "sources.h"
+#include "thread.h"
 #include "tools.h"
 
 #define ISTRANSPONDER(f1, f2)  (abs((f1) - (f2)) < 4) //XXX
+
+#define CHANNELMOD_NONE     0x00
+#define CHANNELMOD_ALL      0xFF
+#define CHANNELMOD_NAME     0x01
+#define CHANNELMOD_PIDS     0x02
+#define CHANNELMOD_ID       0x04
+#define CHANNELMOD_CA       0x10
+#define CHANNELMOD_RETUNE   (CHANNELMOD_PIDS | CHANNELMOD_CA)
+
+#define MAXAPIDS  2
+#define MAXCAIDS  8
 
 struct tChannelParameterMap {
   int userValue;
@@ -46,7 +58,7 @@ public:
   tChannelID(void) { source = nid = tid = sid = rid = 0; }
   tChannelID(int Source, int Nid, int Tid, int Sid, int Rid = 0) { source = Source; nid = Nid; tid = Tid; sid = Sid; rid = Rid; }
   bool operator== (const tChannelID &arg) const;
-  bool Valid(void) { return tid && sid; } // nid and rid are optional and source may be 0
+  bool Valid(void) { return tid && sid; } // nid and rid are optional and source may be 0//XXX source may not be 0???
   tChannelID &ClrRid(void) { rid = 0; return *this; }
   static tChannelID FromString(const char *s);
   const char *ToString(void);
@@ -58,7 +70,7 @@ class cChannel : public cListObject {
 private:
   static char *buffer;
   static const char *ToText(cChannel *Channel);
-  enum { MaxChannelName = 32 }; // 31 chars + terminating 0!
+  enum { MaxChannelName = 64 }; // 63 chars + terminating 0!
   int __BeginData__;
   char name[MaxChannelName];
   int frequency; // MHz
@@ -69,7 +81,7 @@ private:
   int apid1, apid2;
   int dpid1, dpid2;
   int tpid;
-  int ca;
+  int caids[MAXCAIDS + 1]; // list is zero-terminated
   int nid;
   int tid;
   int sid;
@@ -86,16 +98,19 @@ private:
   int guard;
   int hierarchy;
   int __EndData__;
+  int modification;
   const char *ParametersToString(void);
   bool StringToParameters(const char *s);
 public:
   cChannel(void);
+  cChannel(const cChannel *Channel);
   cChannel& operator= (const cChannel &Channel);
   const char *ToText(void);
   bool Parse(const char *s, bool AllowNonUniqueID = false);
   bool Save(FILE *f);
   const char *Name(void) const { return name; }
-  int Frequency(void) const { return frequency; }
+  int Frequency(void) const { return frequency; } ///< Returns the actual frequency, as given in 'channels.conf'
+  int Transponder(void) const;                    ///< Returns the transponder frequency in MHz
   int Source(void) const { return source; }
   int Srate(void) const { return srate; }
   int Vpid(void) const { return vpid; }
@@ -105,8 +120,11 @@ public:
   int Dpid1(void) const { return dpid1; }
   int Dpid2(void) const { return dpid2; }
   int Tpid(void) const { return tpid; }
-  int Ca(void) const { return ca; }
+  int Ca(int Index = 0) const { return Index < MAXCAIDS ? caids[Index] : 0; }
+  int Nid(void) const { return nid; }
+  int Tid(void) const { return tid; }
   int Sid(void) const { return sid; }
+  int Rid(void) const { return rid; }
   int Number(void) const { return number; }
   void SetNumber(int Number) { number = Number; }
   bool GroupSep(void) const { return groupSep; }
@@ -123,24 +141,38 @@ public:
   bool IsSat(void) const { return (source & cSource::st_Mask) == cSource::stSat; }
   bool IsTerr(void) const { return (source & cSource::st_Mask) == cSource::stTerr; }
   tChannelID GetChannelID(void) const;
+  int Modification(int Mask = CHANNELMOD_ALL);
+  void SetId(int Nid, int Tid, int Sid, int Rid = 0, bool Log = true);
+  void SetName(const char *Name, bool Log = true);
+  void SetPids(int Vpid, int Ppid, int Apid1, int Apid2, int Dpid1, int Dpid2, int Tpid);
+  void SetCaIds(const int *CaIds); // list must be zero-terminated
+  void SetCaDescriptors(int Level);
   };
 
-class cChannels : public cConfig<cChannel> {
-protected:
+class cChannels : public cRwLock, public cConfig<cChannel> {
+private:
   int maxNumber;
+  bool modified;
+  int beingEdited;
 public:
-  cChannels(void) { maxNumber = 0; }
+  cChannels(void);
   virtual bool Load(const char *FileName, bool AllowComments = false, bool MustExist = false);
   int GetNextGroup(int Idx);   // Get next channel group
   int GetPrevGroup(int Idx);   // Get previous channel group
   int GetNextNormal(int Idx);  // Get next normal channel (not group)
   void ReNumber(void);         // Recalculate 'number' based on channel type
   cChannel *GetByNumber(int Number, int SkipGap = 0);
-  cChannel *GetByServiceID(int Source, unsigned short ServiceID);
+  cChannel *GetByServiceID(int Source, int Transponder, unsigned short ServiceID);
   cChannel *GetByChannelID(tChannelID ChannelID, bool TryWithoutRid = false);
+  int BeingEdited(void) { return beingEdited; }
+  void IncBeingEdited(void) { beingEdited++; }
+  void DecBeingEdited(void) { beingEdited--; }
   bool HasUniqueChannelID(cChannel *NewChannel, cChannel *OldChannel = NULL);
   bool SwitchTo(int Number);
   int MaxNumber(void) { return maxNumber; }
+  void SetModified(void);
+  bool Modified(void);
+  cChannel *NewChannel(int Source, int Transponder, const char *Name, int Nid, int Tid, int Sid, int Rid = 0);
   };
 
 extern cChannels Channels;
