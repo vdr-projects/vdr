@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.38 2003/03/30 12:39:29 kls Exp $
+ * $Id: device.c 1.39 2003/04/12 11:51:04 kls Exp $
  */
 
 #include "device.h"
@@ -106,19 +106,14 @@ bool cDevice::SetPrimaryDevice(int n)
 {
   n--;
   if (0 <= n && n < numDevices && device[n]) {
-     if (device[n]->HasDecoder()) {
-        isyslog("setting primary device to %d", n + 1);
-        if (primaryDevice)
-           primaryDevice->MakePrimaryDevice(false);
-        primaryDevice = device[n];
-        primaryDevice->MakePrimaryDevice(true);
-        return true;
-        }
-     else
-        esyslog("ERROR: device number %d has no MPEG decoder", n + 1);
+     isyslog("setting primary device to %d", n + 1);
+     if (primaryDevice)
+        primaryDevice->MakePrimaryDevice(false);
+     primaryDevice = device[n];
+     primaryDevice->MakePrimaryDevice(true);
+     return true;
      }
-  else
-     esyslog("ERROR: invalid primary device number: %d", n + 1);
+  esyslog("ERROR: invalid primary device number: %d", n + 1);
   return false;
 }
 

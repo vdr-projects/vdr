@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbosd.c 1.20 2003/03/09 09:59:13 kls Exp $
+ * $Id: dvbosd.c 1.21 2003/04/12 12:10:12 kls Exp $
  */
 
 #include "dvbosd.h"
@@ -19,7 +19,7 @@ cDvbOsd::cDvbOsd(int x, int y)
 :cOsdBase(x, y)
 {
   osdDev = dvbDevice ? dvbDevice->OsdDeviceHandle() : -1;
-  if (osdDev < 0)
+  if (dvbDevice && osdDev < 0)
      esyslog("ERROR: illegal OSD device handle (%d)!", osdDev);
 }
 

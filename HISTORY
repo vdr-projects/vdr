@@ -2022,3 +2022,5 @@ Video Disk Recorder Revision History
   the "Setup/Replay" menu (see MANUAL for details).
 - Now using 'libdtv' version 0.0.5 (thanks to Rolf Hakenes for the new version
   and Stefan Huelswitt for adapting VDR to it).
+- If no device with an MPEG decoder can be found at startup, the first device
+  is now used as primary device (just to have some device).
