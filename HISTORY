@@ -2273,3 +2273,5 @@ Video Disk Recorder Revision History
   Keil for reporting this one).
 - Fixed an occasional "Broken pipe" error in SVDRP connections (thanks to Gerhard
   Steiner for reporting this one).
+- Fixed checking CA capabilities with the dvb-kernel driver (thanks to Kenneth
+  Aafløy).
