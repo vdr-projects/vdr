@@ -3265,3 +3265,4 @@ Video Disk Recorder Revision History
   used to get notified when the audio track has been switched.
 - Skins need to implement the new cSkinDisplayTrack class to display the audio
   track menu.
+- Fixed reusing OSD in cDvbSpuDecoder (thanks to Reinhard Nissl).
