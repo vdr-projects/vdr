@@ -1535,3 +1535,8 @@ Video Disk Recorder Revision History
 - Fixed handling DVD subtitles in the SPU decoder (thanks to Andreas Schultz).
 - Avoiding restarts due to 'panic level' when switching channels on the primary
   device during EPG scan.
+
+2002-09-30: Version 1.1.12
+
+- Fixed a missing Flush() call in the remote control learning procedure (thanks
+  to Oliver Endriss).

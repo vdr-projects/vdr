@@ -400,7 +400,10 @@ Jürgen Zimmermann <jnzimmer@informatik.uni-kl.de>
  for adding some missing #includes to files in libdtv for gcc 3.2
 
 Helmut Auer <vdr@helmutauer.de>
- for reporting a superfluous error message in cLockFile.
+ for reporting a superfluous error message in cLockFile
 
 Jeremy Hall <jhall@UU.NET>
  for fixing an incomplete initialization of the filter parameters in eit.c
+
+Oliver Endriss <o.endriss@gmx.de>
+ for fixing a missing Flush() call in the remote control learning procedure
