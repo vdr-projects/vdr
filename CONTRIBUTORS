@@ -848,3 +848,6 @@ Markus Hardt <markus.hardt@gmx.net>
 
 Thomas Rausch <Thomas.Rausch@gmx.de>
  for making VDR try to get a timer's channel without RID when loading 'timers.conf'
+
+Emil Petersky <petersky@isr.uni-stuttgart.de>
+ for adding "Slovak Link" and "Czech Link" to 'ca.conf'
