@@ -1247,6 +1247,9 @@ cMyFilter Filter;
 cDevice::ActualDevice()-&gt;AttachFilter(Filter);
 </pre></td></tr></table><p>
 
+If the <tt>cFilter</tt> isn't needed any more, it may simply be <i>deleted</i>
+and will automatically detach itself from the <tt>cDevice</tt>.
+<p>
 See VDR/eit.c or VDR/pat.c to learn how to process filter data.
 <!--X1.3.0--></td></tr></table>
 
