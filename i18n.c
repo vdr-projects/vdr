@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.3 2000/11/18 13:28:19 kls Exp $
+ * $Id: i18n.c 1.4 2000/11/18 14:21:41 kls Exp $
  */
 
 /*
@@ -13,7 +13,7 @@
  * 1. Announce your translation action on the Linux-DVB mailing
  *    list to avoid duplicate work.
  * 2. Increase the value of 'NumLanguages'.
- * 3. Add a new line to every member of the 'Phrases[]' array,
+ * 3. Insert a new line in every member of the 'Phrases[]' array,
  *    containing the translated text for the new language.
  *    For example, assuming you want to add the Italian language,
  *
@@ -28,7 +28,10 @@
  *         "Italiano",
  *       },
  *
- *    and so on.
+ *    and so on. Insert your language so that all the entries
+ *    following 'English' will be sorted alphabetically, and write
+ *    the name of your language in your language (not in English,
+ *    which means that it should be 'Italiano', not 'Italian').
  *    Note that only the characters defined in 'fontosd.c' will
  *    be available!
  * 4. Compile VDR and test the new language by switching to it
@@ -357,8 +360,11 @@ const char *tr(const char *s)
 {
   if (Setup.OSDLanguage) {
      for (const tPhrase *p = Phrases; **p; p++) {
-         if (strcmp(s, **p) == 0)
-            return (*p)[Setup.OSDLanguage];
+         if (strcmp(s, **p) == 0) {
+            const char *t = (*p)[Setup.OSDLanguage];
+            if (t && *t)
+               return t;
+            }
          }
      esyslog(LOG_ERR, "no translation found for '%s' in language %d (%s)\n", s, Setup.OSDLanguage, Phrases[0][Setup.OSDLanguage]);
      }
