@@ -2232,3 +2232,4 @@ Video Disk Recorder Revision History
 - Completed Polish language texts (thanks to Michael Rakowski).
 - Added a note about NPTL ("Native Posix Thread Library") to the INSTALL file
   (thanks to Jon Burgess for pointing this out).
+- Some corrections to the Finnish OSD texts (thanks to Jaakko Hyvätti).

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.124 2003/05/31 09:32:29 kls Exp $
+ * $Id: i18n.c 1.125 2003/06/01 08:49:47 kls Exp $
  *
  * Translations provided by:
  *
@@ -1922,7 +1922,7 @@ const tI18nPhrase Phrases[] = {
     "Plugins",
     "Plugins",
     "Plugins",
-    "Laajennukset",
+    "Laajennokset",
     "Plugins",
     "Plugins",
     "Plugins",
@@ -1939,7 +1939,7 @@ const tI18nPhrase Phrases[] = {
     "Plugin",
     "Plugin",
     "Plugin",
-    "Laajennus",
+    "Laajennos",
     "Plugin",
     "Plugin",
     "Plugin",
@@ -3696,7 +3696,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "Ce plugin n'a pas de paramètres!",
     "",// TODO
-    "Tällä laajennuksella ei ole asetuksia!",
+    "Tällä laajennoksella ei ole asetuksia!",
     "Ten plugin niema parametrow!",
     "Este plugin no admite configuración",
     "Afto to plugin den exi parametrous",
