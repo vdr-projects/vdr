@@ -883,3 +883,4 @@ Video Disk Recorder Revision History
 
 - Fixed setting the OSD size in the 'Confirm' interface call (thanks to
   Deti Fliegl).
+- Removed the 'read incomplete section...' error message in the EIT processor.

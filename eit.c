@@ -16,7 +16,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.c 1.29 2001/10/28 13:51:22 kls Exp $
+ * $Id: eit.c 1.30 2001/12/01 14:33:04 kls Exp $
  ***************************************************************************/
 
 #include "eit.h"
@@ -1013,8 +1013,10 @@ void cSIProcessor::Action()
                            break;
                      }
                   }
+                  /*XXX this just fills up the log file - shouldn't we rather try to re-sync?
                   else
                      dsyslog(LOG_INFO, "read incomplete section - seclen = %d, n = %d", seclen, n);
+                  XXX*/
                }
             }
          }
