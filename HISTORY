@@ -2375,3 +2375,9 @@ Video Disk Recorder Revision History
 - The DVB devices no longer send CA descriptors to the CAM while the EPG scanner
   is active (sometimes the CAMs got irritated when the device tuned to channels
   they couldn't handle).
+
+2003-09-09: Version 1.2.5
+
+- Fixed dropping out of replay mode while viewing a recording that is still
+  going on (thanks to Oliver Endriss for reporting and helping to debug this
+  one).
