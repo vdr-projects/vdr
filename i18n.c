@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.184 2005/03/06 11:44:46 kls Exp $
+ * $Id: i18n.c 1.185 2005/03/12 10:43:16 kls Exp $
  *
  * Translations provided by:
  *
@@ -958,7 +958,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Skanna",
     "Cãutare canale",
     "",//TODO
     "",//TODO
@@ -1801,7 +1801,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "VPS",
     "VPS",
     "",// TODO
     "",// TODO
@@ -2301,12 +2301,12 @@ const tI18nPhrase Phrases[] = {
     "Geen audio beschikbaar!",
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Pas d'audio disponible!",
     "Äänen kieli ei ole valittavissa!",
     "",//TODO
     "",//TODO
     "",//TODO
-    "Pas d'audio disponible!",
+    "Ljud saknas!"
     "",//TODO
     "",//TODO
     "",//TODO
@@ -2581,7 +2581,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Skin",
     "Skin",
     "",// TODO
     "",// TODO
@@ -2602,7 +2602,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Tema",
     "Temã",
     "",// TODO
     "",// TODO
@@ -2623,7 +2623,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Vänster",
     "Stânga",
     "",// TODO
     "",// TODO
@@ -2644,7 +2644,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Övre",
     "Sus",
     "",// TODO
     "",// TODO
@@ -2728,7 +2728,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Använd liten font",
     "Utilizare fonturi mici",
     "",// TODO
     "",// TODO
@@ -2749,7 +2749,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "aldrig",
     "niciodatã",
     "",// TODO
     "",// TODO
@@ -2770,7 +2770,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "skin beroende",
     "dep. de skin",
     "",// TODO
     "",// TODO
@@ -2791,7 +2791,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "alltid",
     "întotdeauna",
     "",// TODO
     "",// TODO
@@ -2833,7 +2833,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Kanal information (s)",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -3043,7 +3043,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Önskade språk",
     "Limbi preferate",
     "",// TODO
     "",// TODO
@@ -3064,7 +3064,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Önskat språk",
     "Limba preferatã",
     "",// TODO
     "",// TODO
@@ -3106,7 +3106,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Format för Video display",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -3205,13 +3205,13 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "Dolby Digital gebruiken",
     "",//TODO
-    "",//TODO
+    "Utiliser le Dolby Digital",
     "",//TODO
     "Käytä Dolby Digital -ääntä",
     "",//TODO
     "",//TODO
     "",//TODO
-    "Utiliser le Dolby Digital",
+    "Använd Dolby Digital",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -3232,7 +3232,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Uppdatera kanaler",
     "Actualizare canale",
     "",// TODO
     "",// TODO
@@ -3253,7 +3253,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "bara namn",
     "doar numele",
     "",// TODO
     "",// TODO
@@ -3274,7 +3274,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "namn och PIDdar",
     "nume si PID-uri",
     "",// TODO
     "",// TODO
@@ -3295,7 +3295,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "lägg till nya kanaler",
     "adãugare canale noi",
     "",// TODO
     "",// TODO
@@ -3316,7 +3316,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "lägg till nya transponders",
     "adãugare transpondere noi",
     "",// TODO
     "",// TODO
@@ -3337,7 +3337,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Antal ljudspråk",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -3358,7 +3358,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Ljudspråk",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -3652,7 +3652,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Använd VPS",
     "Utilizeazã VPS",
     "",// TODO
     "",// TODO
@@ -3673,7 +3673,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "VPS marginal (s)",
     "Marjã de timp la utilizare VPS (s)",
     "",// TODO
     "",// TODO
@@ -3925,7 +3925,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "ÆÜðéíãê äéáêïðÞ (ä)",
-    "",// TODO
+    "Zap timeout(s)",
     "Interval zapping (s)",
     "",// TODO
     "",// TODO
@@ -4784,13 +4784,13 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "Audio",
     "",// TODO
-    "",// TODO
+    "Audio",
     "",// TODO
     "Ääni",
     "",// TODO
     "",// TODO
     "",// TODO
-    "Audio",
+    "Ljud",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -5274,7 +5274,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Klassisk VDR",
     "VDR clasic",
     "",// TODO
     "",// TODO
@@ -5295,7 +5295,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "ST:TNG konsol",
     "Cons. ST:TNG",
     "",// TODO
     "",// TODO

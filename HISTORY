@@ -3444,10 +3444,12 @@ Video Disk Recorder Revision History
 - Fixed handling repeated kAudio keys.
 - Improved displaying the the current audio track in the ST:TNG channel display.
 
-2005-03-05: Version 1.3.23
+2005-03-12: Version 1.3.23
 
 - The setup option "DVB/Video display format" is now only available if "Video format"
   is set to "4:3" (suggested by Mikko Salo).
 - Updated the Russian OSD texts (thanks to Vyacheslav Dikonov).
 - Dropped CA support for the old '-icam' firmware.
 - Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
+- Updated the Swedish OSD texts (thanks to Tomas Prybil).
+- Fixed a few French OSD texts that were in the wrong place.
