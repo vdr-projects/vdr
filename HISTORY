@@ -2812,3 +2812,4 @@ Video Disk Recorder Revision History
   for reporting this one).
 - Fixed some issues with gcc 3.4 (thanks to Prakash K. Cheemplavam and Marcel
   Wiesweg).
+- Added a hint to PLUGINS.html about how to name a plugin that implements a skin.
