@@ -916,3 +916,5 @@ Stephan Epstein <s.epstein@vinzenz.com>
 Christian Tramnitz <maillist@tramnitz.com>
  for pointing out a problem with wrong parameter settings when scanning NITs
  for terrestrial transponders
+ for his support in debugging a problem in setting the source type for newly
+ detected terrestrial transponders

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: nit.c 1.4 2004/01/18 16:31:08 kls Exp $
+ * $Id: nit.c 1.5 2004/01/18 16:32:45 kls Exp $
  */
 
 #include "nit.h"
@@ -167,7 +167,7 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                  break;
             case SI::TerrestrialDeliverySystemDescriptorTag: {
                  SI::TerrestrialDeliverySystemDescriptor *sd = (SI::TerrestrialDeliverySystemDescriptor *)d;
-                 int Source = cSource::FromData(cSource::stCable);
+                 int Source = cSource::FromData(cSource::stTerr);
                  int Frequency = sd->getFrequency() * 10;
                  static int Bandwidths[] = { BANDWIDTH_8_MHZ, BANDWIDTH_7_MHZ, BANDWIDTH_6_MHZ, BANDWIDTH_AUTO, BANDWIDTH_AUTO, BANDWIDTH_AUTO, BANDWIDTH_AUTO, BANDWIDTH_AUTO };
                  int Bandwidth = Bandwidths[sd->getBandwidth()];

@@ -2608,3 +2608,5 @@ Video Disk Recorder Revision History
   use them (thanks to Marcel Wiesweg).
 - Now only processing NITs that contain the transponder they are actually
   broadcast on.
+- Fixed setting the source type for newly detected terrestrial transponders
+  (thanks to Christian Tramnitz for his support in debugging this).
