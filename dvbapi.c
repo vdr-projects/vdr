@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.17 2000/07/29 19:00:19 kls Exp $
+ * $Id: dvbapi.c 1.18 2000/07/30 14:34:07 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -345,7 +345,7 @@ protected:
   int Free(void) { return ((tail >= head) ? size + head - tail : head - tail) - 1; }
   int Available(void) { return (tail >= head) ? tail - head : size - head + tail; }
   int Readable(void) { return (tail >= head) ? size - tail - (head ? 0 : 1) : head - tail - 1; } // keep a 1 byte gap!
-  int Writeable(void) { return (tail > head) ? tail - head : size - head; }
+  int Writeable(void) { return (tail >= head) ? tail - head : size - head; }
   int Byte(int Offset);
   bool WaitForOutFile(int Timeout);
 public:
@@ -803,7 +803,7 @@ int cRecordBuffer::WriteWithTimeout(bool EndIfEmpty)
 
 // --- cReplayBuffer ---------------------------------------------------------
 
-enum eReplayMode { rmPlay, rmFastForward, rmFastRewind };
+enum eReplayMode { rmPlay, rmFastForward, rmFastRewind, rmSlowRewind };
 
 class cReplayBuffer : public cFileBuffer {
 private:
@@ -812,6 +812,7 @@ private:
   eReplayMode mode;
   bool skipAudio;
   int lastIndex;
+  int brakeCounter;
   void SkipAudioBlocks(void);
   bool NextFile(uchar FileNumber = 0, int FileOffset = -1);
   void Close(void);
@@ -833,6 +834,7 @@ cReplayBuffer::cReplayBuffer(int *OutFile, const char *FileName)
   fileOffset = 0;
   replayFile = -1;
   mode = rmPlay;
+  brakeCounter = 0;
   skipAudio = false;
   lastIndex = -1;
   if (!fileName)
@@ -863,6 +865,7 @@ void cReplayBuffer::SetMode(eReplayMode Mode)
 {
   mode = Mode;
   skipAudio = Mode != rmPlay;
+  brakeCounter = 0;
   if (mode != rmPlay)
      Clear();
 }
@@ -996,6 +999,10 @@ int cReplayBuffer::Read(int Max = -1)
         if (Index >= 0) {
            uchar FileNumber;
            int FileOffset, Length;
+           if (mode == rmSlowRewind && (brakeCounter++ % 24) != 0) {
+              // show every I_FRAME 24 times in rmSlowRewind mode to achieve roughly the same speed as in slow forward mode
+              Index = index->GetNextIFrame(Index, true, &FileNumber, &FileOffset, &Length); //springe eine Frame vorwärts!
+              }
            Index = index->GetNextIFrame(Index, mode == rmFastForward, &FileNumber, &FileOffset, &Length);
            if (Index >= 0) {
               if (!NextFile(FileNumber, FileOffset))
@@ -1601,18 +1608,34 @@ bool cDvbApi::StartReplay(const char *FileName, const char *Title)
                                             Buffer->SetMode(rmPlay);
                                             break;
                        case dvbFastForward: SetReplayMode(VID_PLAY_CLEAR_BUFFER);
-                                            SetReplayMode(VID_PLAY_NORMAL);
-                                            FastForward = !FastForward;
-                                            FastRewind = Paused = false;
                                             Buffer->Clear();
-                                            Buffer->SetMode(FastForward ? rmFastForward : rmPlay);
+                                            FastForward = !FastForward;
+                                            FastRewind = false;
+                                            if (Paused) {
+                                               Buffer->SetMode(rmPlay);
+                                               Buffer->Read();
+                                               SetReplayMode(FastForward ? VID_PLAY_SLOW_MOTION : VID_PLAY_PAUSE);
+                                               Buffer->Write();
+                                               }
+                                            else {
+                                               SetReplayMode(VID_PLAY_NORMAL);
+                                               Buffer->SetMode(FastForward ? rmFastForward : rmPlay);
+                                               }
                                             break;
                        case dvbFastRewind:  SetReplayMode(VID_PLAY_CLEAR_BUFFER);
-                                            SetReplayMode(VID_PLAY_NORMAL);
-                                            FastRewind = !FastRewind;
-                                            FastForward = Paused = false;
                                             Buffer->Clear();
-                                            Buffer->SetMode(FastRewind ? rmFastRewind : rmPlay);
+                                            FastRewind = !FastRewind;
+                                            FastForward = false;
+                                            if (Paused) {
+                                               Buffer->SetMode(FastRewind ? rmSlowRewind : rmPlay);
+                                               Buffer->Read();
+                                               SetReplayMode(FastRewind ? VID_PLAY_NORMAL : VID_PLAY_PAUSE);
+                                               Buffer->Write();
+                                               }
+                                            else {
+                                               SetReplayMode(VID_PLAY_NORMAL);
+                                               Buffer->SetMode(FastRewind ? rmFastRewind : rmPlay);
+                                               }
                                             break;
                        case dvbSkip:        {
                                               int Seconds;

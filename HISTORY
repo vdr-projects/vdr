@@ -100,7 +100,7 @@ Video Disk Recorder Revision History
   the 'timers.conf' file with a text editor, or by defining/modifying the timer
   via the SVDRP interface.
 
-2000-07-29:
+2000-07-30:
 
 - When scrolling through a list it now moves a full page up or down when the
   cursor reaches the top or bottom of the menu (thanks to Heino Goldenstein!).
@@ -111,3 +111,4 @@ Video Disk Recorder Revision History
 - Fixed learning key codes for PC keyboard.
 - New command line option '-l' to set the log level.
 - Times in timers.conf are now always printed with 4 digits (leading '0').
+- Slow forward/back mode (thanks to Guido Fiala!).

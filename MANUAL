@@ -100,8 +100,9 @@ Video Disk Recorder User's Manual
   - Blue    Stops playback and stores the current position, so that
             playback can be resumed later at that point.
   - Left
-    Right   Runs playback forward or backward at a higher speed. Press
-            again to resume normal speed.
+    Right   Runs playback forward or backward at a higher speed; press
+            again to resume normal speed. If in Pause mode, runs forward or
+            backward at a slower speed; press again to return to pause mode.
   - Green
     Yellow  Skips about 60 seconds back or forward.
   - Ok      Brings up the replay progress display, which shows the date,
