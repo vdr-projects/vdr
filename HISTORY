@@ -551,3 +551,4 @@ Video Disk Recorder Revision History
 - Fixed handling the "Green" button in the "Schedules" menu for channels that
   have a second audio PID.
 - Fixed high system load when displaying a still picture in replay.
+- Fixed a hanging SVDRP connection if the client dies without issuing QUIT.
