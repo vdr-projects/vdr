@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: sections.c 1.6 2004/07/17 14:17:07 kls Exp $
+ * $Id: sections.c 1.7 2004/07/17 14:26:32 kls Exp $
  */
 
 #include "sections.h"
@@ -172,7 +172,7 @@ void cSectionHandler::Action(void)
         int oldStatusCount = statusCount;
         Unlock();
 
-        if (poll(pfd, NumFilters, 1000) != 0) {
+        if (poll(pfd, NumFilters, 1000) > 0) {
            bool DeviceHasLock = device->HasLock();
            if (!DeviceHasLock)
               usleep(100000);

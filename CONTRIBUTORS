@@ -1029,6 +1029,7 @@ Marco Schlüßler <marco@lordzodiac.de>
  for fixing missing audio after replaying a DVD
  for pointing out that it is unnecessary to add section filters to the list of
  filters if they can't be opened
+ for fixing handling error case '-1' when polling section filters
 
 Jürgen Schmitz <j.schmitz@web.de>
  for reporting a bug in displaying the current channel when switching via the SVDRP

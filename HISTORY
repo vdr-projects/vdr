@@ -2949,3 +2949,5 @@ Video Disk Recorder Revision History
   to Reinhard Nissl for reporting this one).
 - No longer adding section filters to the list of filters if they can't be opened
   (thanks to Marco Schlüßler for pointing this out).
+- Fixed handling error case '-1' when polling section filters (thanks to Marco
+  Schlüßler).
