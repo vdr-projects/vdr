@@ -7,10 +7,11 @@
  * Parts of this file were inspired by the 'ringbuffy.c' from the
  * LinuxDVB driver (see linuxtv.org).
  *
- * $Id: ringbuffer.c 1.9 2002/06/16 11:24:40 kls Exp $
+ * $Id: ringbuffer.c 1.10 2002/07/28 12:47:32 kls Exp $
  */
 
 #include "ringbuffer.h"
+#include <stdlib.h>
 #include <unistd.h>
 #include "tools.h"
 

@@ -44,6 +44,7 @@ Martin Hammerschmid <martin@hammerschmid.com>
  for suggesting to use the "Blue" button in the main menu to resume replay
  for implementing pege up/down with the "Left" and "Right" keys
  for detecting a deadlock when switching channels via Schedule/Now|Next/Switch
+ for adding a missing #include to ringbuffer.c
 
 Bastian Guse <bastian@nocopy.de>
  for writing the FORMATS entry for timers.conf
