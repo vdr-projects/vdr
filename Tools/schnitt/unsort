@@ -1,0 +1,25 @@
+#!/usr/bin/perl
+
+while (<>)
+{
+  $h{$_}=1;
+}
+
+foreach $key (sort shuffle keys %h)
+{
+  print $key;
+}
+
+sub shuffle {
+  $ran = rand(1);
+
+  if ($ran > 0.5)
+  {
+    return -1;
+  }
+  else
+  {
+    return 1;
+  }
+}
+

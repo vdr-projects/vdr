@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.39 2001/01/14 15:29:15 kls Exp $
+ * $Id: config.c 1.43 2001/02/24 13:20:18 kls Exp $
  */
 
 #include "config.h"
@@ -199,6 +199,7 @@ cChannel::cChannel(const cChannel *Channel)
   srate        = Channel ? Channel->srate        : 27500;
   vpid         = Channel ? Channel->vpid         : 255;
   apid         = Channel ? Channel->apid         : 256;
+  tpid         = Channel ? Channel->tpid         : 32;
   ca           = Channel ? Channel->ca           : 0;
   pnr          = Channel ? Channel->pnr          : 0;
   groupSep     = Channel ? Channel->groupSep     : false;
@@ -216,7 +217,7 @@ const char *cChannel::ToText(cChannel *Channel)
   if (Channel->groupSep)
      asprintf(&buffer, ":%s\n", s);
   else
-     asprintf(&buffer, "%s:%d:%c:%d:%d:%d:%d:%d:%d\n", s, Channel->frequency, Channel->polarization, Channel->diseqc, Channel->srate, Channel->vpid, Channel->apid, Channel->ca, Channel->pnr);
+     asprintf(&buffer, "%s:%d:%c:%d:%d:%d:%d:%d:%d:%d\n", s, Channel->frequency, Channel->polarization, Channel->diseqc, Channel->srate, Channel->vpid, Channel->apid, Channel->tpid, Channel->ca, Channel->pnr);
   return buffer;
 }
 
@@ -239,8 +240,15 @@ bool cChannel::Parse(const char *s)
      }
   else {
      groupSep = false;
-     int fields = sscanf(s, "%a[^:]:%d:%c:%d:%d:%d:%d:%d:%d", &buffer, &frequency, &polarization, &diseqc, &srate, &vpid, &apid, &ca, &pnr);
-     if (fields == 9) {
+     //XXX
+     int fields = sscanf(s, "%a[^:]:%d:%c:%d:%d:%d:%d:%d:%d:%d", &buffer, &frequency, &polarization, &diseqc, &srate, &vpid, &apid, &tpid, &ca, &pnr);
+     if (fields >= 9) {
+        if (fields == 9) {
+           // allow reading of old format
+           pnr = ca;
+           ca = tpid;
+           tpid = 0;
+           }
         strn0cpy(name, buffer, MaxChannelName);
         delete buffer;
         }
@@ -265,7 +273,7 @@ bool cChannel::Switch(cDvbApi *DvbApi, bool Log)
         isyslog(LOG_INFO, "switching to channel %d", number);
         }
      for (int i = 3; i--;) {
-         if (DvbApi->SetChannel(number, frequency, polarization, diseqc, srate, vpid, apid, ca, pnr))
+         if (DvbApi->SetChannel(number, frequency, polarization, diseqc, srate, vpid, apid, tpid, ca, pnr))
             return true;
          esyslog(LOG_ERR, "retrying");
          }
@@ -360,7 +368,11 @@ cTimer& cTimer::operator= (const cTimer &Timer)
 const char *cTimer::ToText(cTimer *Timer)
 {
   delete buffer;
+  strreplace(Timer->file, ':', '|');
+  strreplace(Timer->summary, '\n', '|');
   asprintf(&buffer, "%d:%d:%s:%04d:%04d:%d:%d:%s:%s\n", Timer->active, Timer->channel, PrintDay(Timer->day), Timer->start, Timer->stop, Timer->priority, Timer->lifetime, Timer->file, Timer->summary ? Timer->summary : "");
+  strreplace(Timer->summary, '|', '\n');
+  strreplace(Timer->file, '|', ':');
   return buffer;
 }
 
@@ -449,6 +461,8 @@ bool cTimer::Parse(const char *s)
      //TODO add more plausibility checks
      day = ParseDay(buffer1);
      strn0cpy(file, buffer2, MaxFileName);
+     strreplace(file, '|', ':');
+     strreplace(summary, '|', '\n');
      delete buffer1;
      delete buffer2;
      delete s2;
@@ -724,6 +738,8 @@ cSetup::cSetup(void)
   MarginStart = 2;
   MarginStop = 10;
   EPGScanTimeout = 5;
+  SVDRPTimeout = 300;
+  PrimaryLimit = 0;
   CurrentChannel = -1;
 }
 
@@ -744,6 +760,8 @@ bool cSetup::Parse(char *s)
      else if (!strcasecmp(Name, "MarginStart"))         MarginStart        = atoi(Value);
      else if (!strcasecmp(Name, "MarginStop"))          MarginStop         = atoi(Value);
      else if (!strcasecmp(Name, "EPGScanTimeout"))      EPGScanTimeout     = atoi(Value);
+     else if (!strcasecmp(Name, "SVDRPTimeout"))        SVDRPTimeout       = atoi(Value);
+     else if (!strcasecmp(Name, "PrimaryLimit"))        PrimaryLimit       = atoi(Value);
      else if (!strcasecmp(Name, "CurrentChannel"))      CurrentChannel     = atoi(Value);
      else
         return false;
@@ -797,6 +815,8 @@ bool cSetup::Save(const char *FileName)
         fprintf(f, "MarginStart        = %d\n", MarginStart);
         fprintf(f, "MarginStop         = %d\n", MarginStop);
         fprintf(f, "EPGScanTimeout     = %d\n", EPGScanTimeout);
+        fprintf(f, "SVDRPTimeout       = %d\n", SVDRPTimeout);
+        fprintf(f, "PrimaryLimit       = %d\n", PrimaryLimit);
         fprintf(f, "CurrentChannel     = %d\n", CurrentChannel);
         f.Close();
         isyslog(LOG_INFO, "saved setup to %s", FileName);

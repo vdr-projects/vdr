@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 1.16 2000/12/25 14:25:29 kls Exp $
+ * $Id: menu.h 1.18 2001/02/11 10:30:35 kls Exp $
  */
 
 #ifndef _MENU_H
@@ -43,6 +43,7 @@ class cMenuRecordings : public cOsdMenu {
 private:
   cRecordings Recordings;
   eOSState Play(void);
+  eOSState Rewind(void);
   eOSState Del(void);
   eOSState Summary(void);
 public:
@@ -74,6 +75,7 @@ public:
   static void Stop(cDvbApi *DvbApi);
   static const char *GetInstantId(const char *LastInstantId);
   static void Process(void);
+  static bool Active(void);
   };
 
 class cReplayControl : public cOsdBase {

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.50 2001/01/18 19:53:54 kls Exp $
+ * $Id: dvbapi.c 1.61 2001/02/24 13:13:19 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -67,7 +67,6 @@ extern "C" {
 #define DISKCHECKINTERVAL   100 // seconds
 
 #define INDEXFILESUFFIX     "/index.vdr"
-#define RESUMEFILESUFFIX    "/resume.vdr"
 #define RECORDFILESUFFIX    "/%03d.vdr"
 #define RECORDFILESUFFIXLEN 20 // some additional bytes for safety...
 
@@ -103,56 +102,6 @@ int HMSFToIndex(const char *HMSF)
   if (3 <= sscanf(HMSF, "%d:%d:%d.%d", &h, &m, &s, &f))
      return (h * 3600 + m * 60 + s) * FRAMESPERSEC + f - 1;
   return 0;
-}
-
-// --- cResumeFile ------------------------------------------------------------
-
-cResumeFile::cResumeFile(const char *FileName)
-{
-  fileName = new char[strlen(FileName) + strlen(RESUMEFILESUFFIX) + 1];
-  if (fileName) {
-     strcpy(fileName, FileName);
-     strcat(fileName, RESUMEFILESUFFIX);
-     }
-  else
-     esyslog(LOG_ERR, "ERROR: can't allocate memory for resume file name");
-}
-
-cResumeFile::~cResumeFile()
-{
-  delete fileName;
-}
-
-int cResumeFile::Read(void)
-{
-  int resume = -1;
-  if (fileName) {
-     int f = open(fileName, O_RDONLY);
-     if (f >= 0) {
-        if (read(f, &resume, sizeof(resume)) != sizeof(resume)) {
-           resume = -1;
-           LOG_ERROR_STR(fileName);
-           }
-        close(f);
-        }
-     else if (errno != ENOENT)
-        LOG_ERROR_STR(fileName);
-     }
-  return resume;
-}
-
-bool cResumeFile::Save(int Index)
-{
-  if (fileName) {
-     int f = open(fileName, O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR | S_IRGRP);
-     if (f >= 0) {
-        if (write(f, &Index, sizeof(Index)) != sizeof(Index))
-           LOG_ERROR_STR(fileName);
-        close(f);
-        return true;
-        }
-     }
-  return false;
 }
 
 // --- cIndexFile ------------------------------------------------------------
@@ -821,7 +770,9 @@ int cRecordBuffer::ScanVideoPacket(int *PictureType, int Offset)
 
   int Length = GetPacketLength(Offset);
   if (Length <= Available()) {
-     for (int i = Offset; i < Offset + Length; i++) {
+     int i = Offset + 8; // the minimum length of the video packet header
+     i += Byte(i) + 1;   // possible additional header bytes
+     for (; i < Offset + Length; i++) {
          if (Byte(i) == 0 && Byte(i + 1) == 0 && Byte(i + 2) == 1) {
             switch (Byte(i + 3)) {
               case SC_PICTURE: *PictureType = GetPictureType(i);
@@ -840,8 +791,6 @@ int cRecordBuffer::Synchronize(void)
   // Positions to the start of a data block (skipping everything up to
   // an I-frame if not synced) and returns the block length.
 
-  int LastPackHeader = -1;
-
   pictureType = NO_PICTURE;
 
   //XXX remove this once the buffer is handled with two separate threads:
@@ -853,8 +802,6 @@ int cRecordBuffer::Synchronize(void)
   for (int i = 0; Available() > MINVIDEODATA && i < MINVIDEODATA; i++) {
       if (Byte(i) == 0 && Byte(i + 1) == 0 && Byte(i + 2) == 1) {
          switch (Byte(i + 3)) {
-           case SC_PHEAD:   LastPackHeader = i;
-                            break;
            case SC_VIDEO:   {
                               int pt = NO_PICTURE;
                               int l = ScanVideoPacket(&pt, i);
@@ -862,21 +809,15 @@ int cRecordBuffer::Synchronize(void)
                                  return 0; // no useful data found, wait for more
                               if (pt != NO_PICTURE) {
                                  if (pt < I_FRAME || B_FRAME < pt) {
-                                   esyslog(LOG_ERR, "ERROR: unknown picture type '%d'", pt);
-                                   }
+                                    esyslog(LOG_ERR, "ERROR: unknown picture type '%d'", pt);
+                                    }
                                  else if (pictureType == NO_PICTURE) {
                                     if (!synced) {
-                                       if (LastPackHeader == 0) {
-                                          if (pt == I_FRAME)
-                                             synced = true;
+                                       if (pt == I_FRAME) {
+                                          Skip(i);
+                                          synced = true;
                                           }
-                                       else if (LastPackHeader > 0) {
-                                          Skip(LastPackHeader);
-                                          LastPackHeader = -1;
-                                          i = 0;
-                                          break;
-                                          }
-                                       else { // LastPackHeader < 0
+                                       else {
                                           Skip(i + l);
                                           i = 0;
                                           break;
@@ -885,13 +826,15 @@ int cRecordBuffer::Synchronize(void)
                                     if (synced)
                                        pictureType = pt;
                                     }
-                                 else if (LastPackHeader > 0)
-                                    return LastPackHeader;
                                  else
                                     return i;
                                  }
+                              else if (!synced) {
+                                 Skip(i + l);
+                                 i = 0;
+                                 break;
+                                 }
                               i += l - 1; // -1 to compensate for i++ in the loop!
-                              LastPackHeader = -1;
                             }
                             break;
            case SC_AUDIO:   i += GetPacketLength(i) - 1; // -1 to compensate for i++ in the loop!
@@ -1576,6 +1519,7 @@ bool cVideoCutter::Active(void)
 // --- cDvbApi ---------------------------------------------------------------
 
 int cDvbApi::NumDvbApis = 0;
+int cDvbApi::useDvbApi = 0;
 cDvbApi *cDvbApi::dvbApi[MAXDVBAPI] = { NULL };
 cDvbApi *cDvbApi::PrimaryDvbApi = NULL;
 
@@ -1645,6 +1589,12 @@ cDvbApi::~cDvbApi()
 #endif
 }
 
+void cDvbApi::SetUseDvbApi(int n)
+{
+  if (n < MAXDVBAPI)
+     useDvbApi |= (1 << n);
+}
+
 bool cDvbApi::SetPrimaryDvbApi(int n)
 {
   n--;
@@ -1659,7 +1609,7 @@ bool cDvbApi::SetPrimaryDvbApi(int n)
 
 cDvbApi *cDvbApi::GetDvbApi(int Ca, int Priority)
 {
-  cDvbApi *d = NULL;
+  cDvbApi *d = NULL, *dMinPriority = NULL;
   int index = Ca - 1;
   for (int i = MAXDVBAPI; --i >= 0; ) {
       if (dvbApi[i]) {
@@ -1669,13 +1619,25 @@ cDvbApi *cDvbApi::GetDvbApi(int Ca, int Priority)
             }
          else if (Ca == 0) { // means any device would be acceptable
             if (!d || !dvbApi[i]->Recording() || (d->Recording() && d->Priority() > dvbApi[i]->Priority()))
-               d = dvbApi[i];
+               d = dvbApi[i]; // this is one that is either not currently recording or has the lowest priority
             if (d && d != PrimaryDvbApi && !d->Recording()) // avoids the PrimaryDvbApi if possible
                break;
+            if (d && d->Recording() && d->Priority() < Setup.PrimaryLimit && (!dMinPriority || d->Priority() < dMinPriority->Priority()))
+               dMinPriority = d; // this is the one with the lowest priority below Setup.PrimaryLimit
             }
          }
       }
-  return (d && (!d->Recording() || d->Priority() < Priority || (!d->Ca() && Ca))) ? d : NULL;
+  if (d == PrimaryDvbApi) { // the PrimaryDvbApi was the only one that was free
+     if (Priority < Setup.PrimaryLimit)
+        return NULL;        // not enough priority to use the PrimaryDvbApi
+     if (dMinPriority)      // there's one that must not use the PrimaryDvbApi...
+        d = dMinPriority;   // ...so let's kick out that one
+     }
+  return (d                           // we found one...
+      && (!d->Recording()             // ...that's either not currently recording...
+          || d->Priority() < Priority // ...or has a lower priority...
+          || (!d->Ca() && Ca)))       // ...or doesn't need this card
+          ? d : NULL;
 }
 
 int cDvbApi::Index(void)
@@ -1691,32 +1653,33 @@ bool cDvbApi::Init(void)
 {
   NumDvbApis = 0;
   for (int i = 0; i < MAXDVBAPI; i++) {
-      char fileName[strlen(VIDEODEVICE) + 10];
-      sprintf(fileName, "%s%d", VIDEODEVICE, i);
-      if (access(fileName, F_OK | R_OK | W_OK) == 0) {
-         dsyslog(LOG_INFO, "probing %s", fileName);
-         int f = open(fileName, O_RDWR);
-         if (f >= 0) {
-            struct video_capability cap;
-            int r = ioctl(f, VIDIOCGCAP, &cap);
-            close(f);
-            if (r == 0 && (cap.type & VID_TYPE_DVB)) {
-               char vbiFileName[strlen(VBIDEVICE) + 10];
-               sprintf(vbiFileName, "%s%d", VBIDEVICE, i);
-               dvbApi[i] = new cDvbApi(fileName, vbiFileName);
-               NumDvbApis++;
+      if (useDvbApi == 0 || (useDvbApi & (1 << i)) != 0) {
+         char fileName[strlen(VIDEODEVICE) + 10];
+         sprintf(fileName, "%s%d", VIDEODEVICE, i);
+         if (access(fileName, F_OK | R_OK | W_OK) == 0) {
+            dsyslog(LOG_INFO, "probing %s", fileName);
+            int f = open(fileName, O_RDWR);
+            if (f >= 0) {
+               struct video_capability cap;
+               int r = ioctl(f, VIDIOCGCAP, &cap);
+               close(f);
+               if (r == 0 && (cap.type & VID_TYPE_DVB)) {
+                  char vbiFileName[strlen(VBIDEVICE) + 10];
+                  sprintf(vbiFileName, "%s%d", VBIDEVICE, i);
+                  dvbApi[NumDvbApis++] = new cDvbApi(fileName, vbiFileName);
+                  }
+               }
+            else {
+               if (errno != ENODEV)
+                  LOG_ERROR_STR(fileName);
+               break;
                }
             }
          else {
-            if (errno != ENODEV)
+            if (errno != ENOENT)
                LOG_ERROR_STR(fileName);
             break;
             }
-         }
-      else {
-         if (errno != ENOENT)
-            LOG_ERROR_STR(fileName);
-         break;
          }
       }
   PrimaryDvbApi = dvbApi[0];
@@ -2168,7 +2131,7 @@ void cDvbApi::Flush(void)
 #endif
 }
 
-bool cDvbApi::SetChannel(int ChannelNumber, int FrequencyMHz, char Polarization, int Diseqc, int Srate, int Vpid, int Apid, int Ca, int Pnr)
+bool cDvbApi::SetChannel(int ChannelNumber, int FrequencyMHz, char Polarization, int Diseqc, int Srate, int Vpid, int Apid, int Tpid, int Ca, int Pnr)
 {
   if (videoDev >= 0) {
      cThreadLock ThreadLock(siProcessor); // makes sure the siProcessor won't access the vbi-device while switching
@@ -2177,20 +2140,29 @@ bool cDvbApi::SetChannel(int ChannelNumber, int FrequencyMHz, char Polarization,
      struct frontend front;
      ioctl(videoDev, VIDIOCGFRONTEND, &front);
      unsigned int freq = FrequencyMHz;
-     front.ttk = (freq < 11700UL) ? 0 : 1;
-     if (freq < 11700UL)
-        freq -= Setup.LnbFrequLo;
-     else
-        freq -= Setup.LnbFrequHi;
-     front.pnr       = 0;
+     if (front.type == FRONT_DVBS) {
+        front.ttk = (freq < 11700UL) ? 0 : 1;
+        if (freq < 11700UL) {
+           freq -= Setup.LnbFrequLo;
+           front.ttk = 0;
+           }
+        else {
+           freq -= Setup.LnbFrequHi;
+           front.ttk = 1;
+           }
+        }
+     front.channel_flags = Ca ? DVB_CHANNEL_CA : DVB_CHANNEL_FTA;
+     front.pnr       = Pnr;
      front.freq      = freq * 1000000UL;
      front.diseqc    = Diseqc;
      front.srate     = Srate * 1000;
      front.volt      = (Polarization == 'v' || Polarization == 'V') ? 0 : 1;
      front.video_pid = Vpid;
      front.audio_pid = Apid;
+     front.tt_pid    = Tpid;
      front.fec       = 8;
      front.AFC       = 1;
+     front.qam       = 2;
      ioctl(videoDev, VIDIOCSFRONTEND, &front);
      if (front.sync & 0x1F == 0x1F) {
         if (this == PrimaryDvbApi && siProcessor)
@@ -2198,11 +2170,11 @@ bool cDvbApi::SetChannel(int ChannelNumber, int FrequencyMHz, char Polarization,
         currentChannel = ChannelNumber;
         // If this DVB card can't receive this channel, let's see if we can
         // use the card that actually can receive it and transfer data from there:
-        if (Ca && Ca != Index() + 1) {
+        if (this == PrimaryDvbApi && Ca && Ca != Index() + 1) {
            cDvbApi *CaDvbApi = GetDvbApi(Ca, 0);
            if (CaDvbApi) {
               if (!CaDvbApi->Recording()) {
-                 if (CaDvbApi->SetChannel(ChannelNumber, FrequencyMHz, Polarization, Diseqc, Srate, Vpid, Apid, Ca, Pnr))
+                 if (CaDvbApi->SetChannel(ChannelNumber, FrequencyMHz, Polarization, Diseqc, Srate, Vpid, Apid, Tpid, Ca, Pnr))
                     transferringFromDvbApi = CaDvbApi->StartTransfer(videoDev);
                  }
               }
@@ -2403,7 +2375,25 @@ cEITScanner::cEITScanner(void)
 {
   lastScan = lastActivity = time(NULL);
   currentChannel = 0;
-  lastChannel = 1;
+  lastChannel = 0;
+  numTransponders = 0;
+  transponders = NULL;
+}
+
+cEITScanner::~cEITScanner()
+{
+  delete transponders;
+}
+
+bool cEITScanner::TransponderScanned(cChannel *Channel)
+{
+  for (int i = 0; i < numTransponders; i++) {
+      if (transponders[i] == Channel->frequency)
+         return true;
+      }
+  transponders = (int *)realloc(transponders, ++numTransponders * sizeof(int));
+  transponders[numTransponders - 1] = Channel->frequency;
+  return false;
 }
 
 void cEITScanner::Activity(void)
@@ -2417,7 +2407,7 @@ void cEITScanner::Activity(void)
 
 void cEITScanner::Process(void)
 {
-  if (Channels.MaxNumber() > 1) {
+  if (Setup.EPGScanTimeout && Channels.MaxNumber() > 1) {
      time_t now = time(NULL);
      if (now - lastScan > ScanTimeout && now - lastActivity > ActivityTimeout) {
         for (int i = 0; i < cDvbApi::NumDvbApis; i++) {
@@ -2428,10 +2418,12 @@ void cEITScanner::Process(void)
                      int oldCh = lastChannel;
                      int ch = oldCh + 1;
                      while (ch != oldCh) {
-                           if (ch > Channels.MaxNumber())
+                           if (ch > Channels.MaxNumber()) {
                               ch = 1;
+                              numTransponders = 0;
+                              }
                            cChannel *Channel = Channels.GetByNumber(ch);
-                           if (Channel && Channel->pnr) {
+                           if (Channel && Channel->pnr && !TransponderScanned(Channel)) {
                               if (DvbApi == cDvbApi::PrimaryDvbApi && !currentChannel)
                                  currentChannel = DvbApi->Channel();
                               Channel->Switch(DvbApi, false);

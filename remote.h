@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remote.h 1.13 2000/10/08 12:11:34 kls Exp $
+ * $Id: remote.h 1.14 2001/02/02 14:49:10 kls Exp $
  */
 
 #ifndef __REMOTE_H
@@ -18,9 +18,9 @@
 class cRcIoBase {
 protected:
   time_t t;
-  cRcIoBase(void);
 public:
   enum { modeH = 'h', modeB = 'b', modeS = 's' };
+  cRcIoBase(void);
   virtual ~cRcIoBase();
   virtual bool SetCode(unsigned char Code, unsigned short Address) { return true; }
   virtual bool SetMode(unsigned char Mode) { return true; }
@@ -29,8 +29,8 @@ public:
   virtual bool String(char *s) { return true; }
   virtual bool DetectCode(unsigned char *Code, unsigned short *Address) { return true; }
   virtual void Flush(int WaitMs = 0) {}
-  virtual bool InputAvailable(void) = 0;
-  virtual bool GetCommand(unsigned int *Command = NULL, bool *Repeat = NULL, bool *Release = NULL) = 0;
+  virtual bool InputAvailable(void) { return false; }
+  virtual bool GetCommand(unsigned int *Command = NULL, bool *Repeat = NULL, bool *Release = NULL) { return false; }
   };
 
 #if defined REMOTE_KBD
@@ -93,7 +93,7 @@ public:
   virtual bool GetCommand(unsigned int *Command = NULL, bool *Repeat = NULL, bool *Release = NULL);
   };
 
-#else
+#elif !defined REMOTE_NONE
 
 #error Please define a remote control mode!
 

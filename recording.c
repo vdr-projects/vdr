@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.24 2001/01/13 12:17:15 kls Exp $
+ * $Id: recording.c 1.28 2001/02/18 16:14:05 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -15,16 +15,20 @@
 #include <string.h>
 #include <sys/stat.h>
 #include <unistd.h>
-#include "dvbapi.h"
 #include "interface.h"
 #include "tools.h"
 #include "videodir.h"
 
 #define RECEXT       ".rec"
 #define DELEXT       ".del"
+#ifdef VFAT
+#define DATAFORMAT   "%4d-%02d-%02d.%02d.%02d.%02d.%02d" RECEXT
+#else
 #define DATAFORMAT   "%4d-%02d-%02d.%02d:%02d.%02d.%02d" RECEXT
+#endif
 #define NAMEFORMAT   "%s/%s/" DATAFORMAT
 
+#define RESUMEFILESUFFIX  "/resume.vdr"
 #define SUMMARYFILESUFFIX "/summary.vdr"
 #define MARKSFILESUFFIX   "/marks.vdr"
 
@@ -32,8 +36,35 @@
 
 #define MINDISKSPACE 1024 // MB
 
-#define DISKCHECKDELTA 300 // seconds between checks for free disk space
-#define REMOVELATENCY   10 // seconds to wait until next check after removing a file 
+#define DELETEDLIFETIME     1 // hours after which a deleted recording will be actually removed
+#define REMOVECHECKDELTA 3600 // seconds between checks for removing deleted files
+#define DISKCHECKDELTA    300 // seconds between checks for free disk space
+#define REMOVELATENCY      10 // seconds to wait until next check after removing a file 
+
+void RemoveDeletedRecordings(void)
+{
+  static time_t LastRemoveCheck = 0;
+  if (time(NULL) - LastRemoveCheck > REMOVECHECKDELTA) {
+     // Remove the oldest file that has been "deleted":
+     cRecordings Recordings;
+     if (Recordings.Load(true)) {
+        cRecording *r = Recordings.First();
+        cRecording *r0 = r;
+        while (r) {
+              if (r->start < r0->start)
+                 r0 = r;
+              r = Recordings.Next(r);
+              }
+        if (r0 && time(NULL) - r0->start > DELETEDLIFETIME * 60) {
+           r0->Remove();
+           RemoveEmptyVideoDirectories();
+           LastRemoveCheck += REMOVELATENCY;
+           return;
+           }
+        }
+     LastRemoveCheck = time(NULL);
+     }
+}
 
 void AssertFreeDiskSpace(void)
 {
@@ -80,6 +111,64 @@ void AssertFreeDiskSpace(void)
         esyslog(LOG_ERR, "low disk space, but no recordings to delete");
         }
      LastFreeDiskCheck = time(NULL);
+     }
+}
+
+// --- cResumeFile ------------------------------------------------------------
+
+cResumeFile::cResumeFile(const char *FileName)
+{
+  fileName = new char[strlen(FileName) + strlen(RESUMEFILESUFFIX) + 1];
+  if (fileName) {
+     strcpy(fileName, FileName);
+     strcat(fileName, RESUMEFILESUFFIX);
+     }
+  else
+     esyslog(LOG_ERR, "ERROR: can't allocate memory for resume file name");
+}
+
+cResumeFile::~cResumeFile()
+{
+  delete fileName;
+}
+
+int cResumeFile::Read(void)
+{
+  int resume = -1;
+  if (fileName) {
+     int f = open(fileName, O_RDONLY);
+     if (f >= 0) {
+        if (read(f, &resume, sizeof(resume)) != sizeof(resume)) {
+           resume = -1;
+           LOG_ERROR_STR(fileName);
+           }
+        close(f);
+        }
+     else if (errno != ENOENT)
+        LOG_ERROR_STR(fileName);
+     }
+  return resume;
+}
+
+bool cResumeFile::Save(int Index)
+{
+  if (fileName) {
+     int f = open(fileName, O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR | S_IRGRP);
+     if (f >= 0) {
+        if (write(f, &Index, sizeof(Index)) != sizeof(Index))
+           LOG_ERROR_STR(fileName);
+        close(f);
+        return true;
+        }
+     }
+  return false;
+}
+
+void cResumeFile::Delete(void)
+{
+  if (fileName) {
+     if (remove(fileName) < 0 && errno != ENOENT)
+        LOG_ERROR_STR(fileName);
      }
 }
 

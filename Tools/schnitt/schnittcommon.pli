@@ -1,0 +1,64 @@
+sub nextI 
+  {
+    if (!$size)
+      {
+        $size = -s INDEX;
+      }
+    local ($a,$b,$c,$dummy);
+    $cond = 0;
+    seek (INDEX,$index * 8,0);
+
+    while ($cond == 0)
+      {
+	&readnext;
+	if ($frame == 1)
+	  {
+	    $cond = 1;
+	  }
+	else
+	  {
+	    $index++;
+            if ($index > ($size/8-1))
+              {
+                $index = $size/8-1;
+                &prevI;
+                print "$index\n";
+                exit 1;
+              }
+	  }
+      }
+  }
+
+sub readnext
+  {
+    read (INDEX,$a,4);
+    read (INDEX,$b,1);
+    read (INDEX,$c,1);
+    read (INDEX,$dummy,2);
+    $offset = unpack ("L",$a);
+    $frame = unpack ("C",$b);
+    $file = unpack ("C",$c);
+  }
+
+sub prevI 
+  {
+    local ($a,$b,$c,$dummy);
+    $cond = 0;
+    seek (INDEX,$index * 8,0);
+
+    while ($cond == 0)
+      {
+	&readnext;
+	if ($frame == 1)
+	  {
+	    $cond = 1;
+	  }
+	else
+	  {
+	    $index--;
+	    seek (INDEX,$index * 8,0);
+	  }
+      }
+  }
+
+1;

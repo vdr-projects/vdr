@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: svdrp.h 1.6 2000/09/17 13:22:04 kls Exp $
+ * $Id: svdrp.h 1.7 2001/02/18 13:36:47 kls Exp $
  */
 
 #ifndef __SVDRP_H
@@ -31,7 +31,9 @@ private:
   cSocket socket;
   cFile file;
   CRect ovlClipRects[MAXCLIPRECTS];
-  void Close(void);
+  char *message;
+  time_t lastActivity;
+  void Close(bool Timeout = false);
   bool Send(const char *s, int length = -1);
   void Reply(int Code, const char *fmt, ...);
   void CmdCHAN(const char *Option);
@@ -42,6 +44,7 @@ private:
   void CmdHITK(const char *Option);
   void CmdLSTC(const char *Option);
   void CmdLSTT(const char *Option);
+  void CmdMESG(const char *Option);
   void CmdMODC(const char *Option);
   void CmdMODT(const char *Option);
   void CmdMOVC(const char *Option);
@@ -59,6 +62,7 @@ public:
   cSVDRP(int Port);
   ~cSVDRP();
   void Process(void);
+  char *GetMessage(void);
   };
 
 #endif //__SVDRP_H

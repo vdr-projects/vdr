@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.38 2001/01/14 15:29:27 kls Exp $
+ * $Id: config.h 1.42 2001/02/24 13:19:39 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -19,7 +19,7 @@
 #include "eit.h"
 #include "tools.h"
 
-#define VDRVERSION "0.70"
+#define VDRVERSION "0.71"
 
 #define MaxBuffer 10000
 
@@ -93,6 +93,7 @@ public:
   int srate;
   int vpid;
   int apid;
+  int tpid;
   int ca;
   int pnr;
   int number;    // Sequence number assigned on load
@@ -268,6 +269,8 @@ public:
   int SetSystemTime;
   int MarginStart, MarginStop;
   int EPGScanTimeout;
+  int SVDRPTimeout;
+  int PrimaryLimit;
   int CurrentChannel;
   cSetup(void);
   bool Load(const char *FileName);

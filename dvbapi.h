@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.h 1.30 2001/01/07 15:56:10 kls Exp $
+ * $Id: dvbapi.h 1.35 2001/02/11 10:41:10 kls Exp $
  */
 
 #ifndef __DVBAPI_H
@@ -33,20 +33,12 @@ typedef struct CRect {
 #define MenuLines   15
 #define MenuColumns 40
 
-class cResumeFile {
-private:
-  char *fileName;
-public:
-  cResumeFile(const char *FileName);
-  ~cResumeFile();
-  int Read(void);
-  bool Save(int Index);
-  };
-
 const char *IndexToHMSF(int Index, bool WithFrame = false);
       // Converts the given index to a string, optionally containing the frame number.
 int HMSFToIndex(const char *HMSF);
       // Converts the given string (format: "hh:mm:ss.ff") to an index.
+
+class cChannel;
 
 class cRecordBuffer;
 class cReplayBuffer;
@@ -69,12 +61,17 @@ private:
 public:
   ~cDvbApi();
 
-#define MAXDVBAPI 2
+#define MAXDVBAPI 4
   static int NumDvbApis;
 private:
   static cDvbApi *dvbApi[MAXDVBAPI];
+  static int useDvbApi;
 public:
   static cDvbApi *PrimaryDvbApi;
+  static void SetUseDvbApi(int n);
+         // Sets the 'useDvbApi' flag of the given DVB device.
+         // If this function is not called before Init(), all DVB devices
+         // will be used.
   static bool SetPrimaryDvbApi(int n);
          // Sets the primary DVB device to 'n' (which must be in the range
          // 1...NumDvbApis) and returns true if this was possible.
@@ -162,7 +159,7 @@ public:
 private:
   int currentChannel;
 public:
-  bool SetChannel(int ChannelNumber, int FrequencyMHz, char Polarization, int Diseqc, int Srate, int Vpid, int Apid, int Ca, int Pnr);
+  bool SetChannel(int ChannelNumber, int FrequencyMHz, char Polarization, int Diseqc, int Srate, int Vpid, int Apid, int Tpid, int Ca, int Pnr);
   static int CurrentChannel(void) { return PrimaryDvbApi ? PrimaryDvbApi->currentChannel : 0; }
   int Channel(void) { return currentChannel; }
 
@@ -251,8 +248,11 @@ private:
        };
   time_t lastScan, lastActivity;
   int currentChannel, lastChannel;
+  int numTransponders, *transponders;
+  bool TransponderScanned(cChannel *Channel);
 public:
   cEITScanner(void);
+  ~cEITScanner();
   bool Active(void) { return currentChannel; }
   void Activity(void);
   void Process(void);

@@ -34,18 +34,29 @@ Niels de Carpentier <niels@casema.net>
 Martin Hammerschmid <martin@hammerschmid.com>
  for suggesting to display the direct channel select input on the OSD
  for suggesting to use the "Blue" button in the main menu to resume replay
+ for implementing pege up/down with the "Left" and "Right" keys
 
 Bastian Guse <bastian@nocopy.de>
  for writing the FORMATS entry for timers.conf
 
 Matthias Schniedermeyer <ms@citd.de>
- for implementing the 'MarkInstantRecord' setup option.
+ for implementing the 'MarkInstantRecord' setup option
+ for his "schnitt" tools
 
 Miha Setina <mihasetina@softhome.net>
- for translating the OSD texts to the Slovenian language.
+ for translating the OSD texts to the Slovenian language
 
 Alberto Carraro <bertocar@tin.it>
- for translating the OSD texts to the Italian language.
+ for translating the OSD texts to the Italian language
 
 Deti Fliegl <deti@fliegl.de>
- for implementing the 'CurrentChannel' setup parameter.
+ for implementing the 'CurrentChannel' setup parameter
+
+Dave Chapman <dave@dchapman.com>
+ for implementing support for the teletext PID
+
+Hans-Peter Raschke <Hans-Peter.Raschke@Wintermann-DatenService.de>
+ for his support in adapting VDR to DVB-C
+
+Peter Hofmann <software@pxh.de>
+ for his support in adapting VDR to DVB-C

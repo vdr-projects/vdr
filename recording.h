@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 1.11 2000/12/16 14:25:20 kls Exp $
+ * $Id: recording.h 1.13 2001/02/11 10:45:52 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -14,7 +14,19 @@
 #include "config.h"
 #include "tools.h"
 
+void RemoveDeletedRecordings(void);
 void AssertFreeDiskSpace(void);
+
+class cResumeFile {
+private:
+  char *fileName;
+public:
+  cResumeFile(const char *FileName);
+  ~cResumeFile();
+  int Read(void);
+  bool Save(int Index);
+  void Delete(void);
+  };
 
 class cRecording : public cListObject {
   friend class cRecordings;

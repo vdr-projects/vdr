@@ -1,0 +1,5 @@
+#!/bin/sh
+a=`echo $1 | cut -d / -f1-5`
+cd $a
+cutt
+mv cut cut.bak

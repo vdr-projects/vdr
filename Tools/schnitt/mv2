@@ -1,0 +1,23 @@
+#!/bin/sh
+
+DIR = /x1/video
+
+if [ ! "$UID" = 0 ]; then
+  if [ -d "$1" ]; then
+    cd $DIR
+    a=`echo "$1" | cut -d / -f4-`
+    mkdir -p "$a"
+    cd "$a"
+    (echo cd "$1"; echo mget \*)| ftp -i dvb
+    cd $DIR
+    ls -Ls $1 > /tmp/yele
+    ls -Ls $a > /tmp/x1
+    a=`echo "$1" | cut -d \/ -f3-`
+    diff -u /tmp/yele /tmp/x1 &> /dev/null && rm -rfv /yel?/$a
+    rm /tmp/yele
+    rm /tmp/x1
+    rmdir /yel?/video/*
+  fi
+else
+  echo Not as root
+fi

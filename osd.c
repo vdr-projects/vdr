@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 1.13 2000/11/12 15:29:25 kls Exp $
+ * $Id: osd.c 1.16 2001/02/24 16:26:11 kls Exp $
  */
 
 #include "osd.h"
@@ -77,6 +77,7 @@ eOSState cOsdItem::ProcessKey(eKeys Key)
 
 cOsdMenu::cOsdMenu(const char *Title, int c0, int c1, int c2, int c3, int c4)
 {
+  hasHotkeys = false;
   visible = false;
   title = strdup(Title);
   cols[0] = c0;
@@ -252,12 +253,52 @@ void cOsdMenu::CursorDown(void)
      }
 }
 
+void cOsdMenu::PageUp(void)
+{
+  if (Count() <= MAXOSDITEMS)
+     return;
+  current -= MAXOSDITEMS;
+  first -= MAXOSDITEMS;
+  if (first < 0)
+     first = current = 0;
+  Display();
+  DisplayCurrent(true);
+}
+
+void cOsdMenu::PageDown(void) 
+{
+  if (Count() <= MAXOSDITEMS)
+     return;
+  current += MAXOSDITEMS;
+  first += MAXOSDITEMS;
+  if (current > Count() - 1) {
+     current = Count() - 1;
+     first = Count() - MAXOSDITEMS;
+     }
+  Display();
+  DisplayCurrent(true);
+}
+
 void cOsdMenu::Mark(void)
 {
   if (Count() && marked < 0) {
      marked = current;
      SetStatus(tr("Up/Dn for new location - OK to move"));
      }
+}
+
+eOSState cOsdMenu::HotKey(eKeys Key)
+{
+  for (cOsdItem *item = First(); item; item = Next(item)) {
+      const char *s = item->Text();
+      if (s && (s = skipspace(s)) != NULL) {
+         if (*s == Key - k1 + '1') {
+            current = item->Index();
+            return ProcessKey(kOk);
+            }
+         }
+      }
+  return osContinue;
 }
 
 eOSState cOsdMenu::AddSubMenu(cOsdMenu *SubMenu)
@@ -289,10 +330,17 @@ eOSState cOsdMenu::ProcessKey(eKeys Key)
         return state;
      }
   switch (Key) {
+    case k1...k9: if (hasHotkeys)
+                     return HotKey(Key);
+                  break;
     case kUp|k_Repeat:
     case kUp:   CursorUp();   break;
     case kDown|k_Repeat:
     case kDown: CursorDown(); break;
+    case kLeft|k_Repeat:
+    case kLeft: PageUp(); break;
+    case kRight|k_Repeat:
+    case kRight: PageDown(); break;
     case kBack: return osBack;
     case kOk:   if (marked >= 0) {
                    SetStatus(NULL);

@@ -1,0 +1,85 @@
+#!/bin/sh
+
+DIRA=/x2/temp
+DIRB=/x1/temp
+
+if [ -f cut ]; then
+  name="`cut2`"
+  echo $name
+  count=`cat cut | wc -l`
+  let count=count-1
+  let test=count%2
+  if [ "$test" == "1" ]; then
+    echo Ungerade Anzahl von Markierungen
+    exit 1
+  fi
+
+  file=1
+
+  while [ "$count" != "0" ]
+  do
+    start=`cat cut | tail -n $count | head -n 1`
+    let count=count-1
+    end=`cat cut | tail -n $count | head -n 1`
+    let count=count-1
+    echo Cutting\&Demuxing from $start to $end
+    schnitt2.pl $start $end | pvademux $DIRA teil$file
+#    schnitt2.pl $start $end | pes2av_pes | pvademux $DIRA teil$file
+    let file=file+1
+  done
+else
+  echo Keine Beschreibungsdatei
+  exit 1
+fi
+
+# Ab hier mkimg
+
+sync
+
+lmplex $DIRA $DIRB `ls -la $DIRA/teil*.m2v | cut -b 30- | sort -n -r | cut -d / -f4`
+
+echo Multiplexing DONE
+
+rm -f $DIRA/teil*.m2v $DIRA/teil*.mp2
+
+sync
+
+if [ -f $DIRB/teil1.mpg ]; then
+  echo Splitting
+  cd $DIRA
+#  cat $DIRB/teil*.mpg | split -b 723517440
+  cat $DIRB/teil*.mpg | cut.pl
+  rm $DIRB/teil*
+fi
+
+sync
+
+cd $DIRA
+
+if [ -f part2 ]; then
+  count=1
+  cond=0
+
+  while [ "$cond" != "1" ]
+  do
+    mkdir a
+    mv "part$count" "a/${name} Teil $count"
+    echo mkisofs Teil $count
+    mkisofs -r -o $DIRB/image1.raw a
+    rm -rf a
+    mv -- $DIRB/image1.raw "$DIRB/${name} Teil $count"
+    sync
+
+    let count=count+1
+    if [ ! -f "part$count" ]; then
+      cond=1
+    fi
+  done
+else
+  mkdir a
+  mv part1 "a/${name}"
+  echo mkisofs
+  mkisofs -r -o $DIRB/image1.raw a
+  rm -rf a
+  mv -- $DIRB/image1.raw "$DIRB/${name}"
+fi

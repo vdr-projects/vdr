@@ -1,0 +1,2 @@
+#!/bin/sh
+cat cut | head -n 1 | tr -d [\\\\]

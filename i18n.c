@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.8 2001/01/06 16:17:39 kls Exp $
+ * $Id: i18n.c 1.14 2001/02/24 13:57:14 kls Exp $
  *
  * Slovenian translations provided by Miha Setina <mihasetina@softhome.net>
  * Italian   translations provided by Alberto Carraro <bertocar@tin.it>
@@ -161,6 +161,11 @@ const tPhrase Phrases[] = {
     "Predavajaj",
     "Riproduci",
   },
+  { "Rewind",
+    "Anfang",
+    "Zacetek",
+    "Da inizio",
+  },
   { "Resume",
     "Weiter",
     "Nadaljuj",
@@ -252,6 +257,11 @@ const tPhrase Phrases[] = {
     "Apid",
     "Apid",
     "Apid",
+  },
+  { "Tpid",
+    "Tpid",
+    "Tpid",
+    "Tpid",
   },
   { "CA",
     "CA",
@@ -405,6 +415,16 @@ const tPhrase Phrases[] = {
     "Zeit bis EPG Scan",
     "Cas do EPG pregleda",
     "Timeout EPG",
+  },
+  { "SVDRPTimeout",
+    "SVDRP Timeout",
+    "", // TODO
+    "Timeout SVDRP",
+  },
+  { "PrimaryLimit",
+    "Primär-Limit",
+    "", // TODO
+    "", // TODO
   },
   // The days of the week:
   { "MTWTFSS",

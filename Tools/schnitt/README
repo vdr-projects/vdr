@@ -1,0 +1,84 @@
+			Sammlung von "Hilfs"-Scripten
+
+Diese Sammlung an "Hilfs"-Scripten habe ich mir zum scheiden und anderen
+Zwecken zusammengeschrieben.
+
+Das ganze unterliegt natuerlich der GPL.
+
+Ich bin nicht sonderlich gut im "Dokumentieren". Also gilt die Devise
+"Hilf dir selbst".
+
+Ein paar Worte zu den "Hart"-Codierten Pfaden.
+
+/yele/video	(/video/video0)
+/yelg/video	(/video/video1)
+
+Sind die 2 Pfade auf meinem DVB-Rechner
+
+/x1/video
+
+Ist das Verzeichniss in das die Video zum schneiden verschoben werden.
+
+/x1/temp
+/x2/temp
+
+Sind die beim schneiden verwendeten Temporaer-Verzeichnisse
+
+
+Enthalten sind folgende Scripte:
+
+cutall			-> "Master"-Script zum starten des Scheide vorgangs.
+                           Ist ein "find" nach "cut" -Dateien
+cutt			-> Das "eigentliche" Schnitt-Script
+                           Scheidet die Stuecke aus, demultipext, remultipext,
+                           splitted die Dateien und macht am Ende ein 
+                           ISO-Image daraus
+index.php		-> PHP-Script zum finden der Schnitt-Punkte, mit 
+                           Testmoeglichkeit ob erfolgreich an diesem Punkt
+                           geschnitten werden kann
+mv2			-> Zum Moven der Aufnahmen von meinem DVB-Rechner 
+                           auf mein "Arbeitsrechner"
+schnitt.pl		-> Extraiert ein einzelnes Bild um es anzuzeigen
+                           (Fuer index.php)
+schnitt2.pl		-> Gibt alles zwischen 2 Schnittpunkten auf STDOUT aus
+schnitt3.pl		-> Testet ob erfolgreich geschnitten werden kann.
+schnitt3.pl.new		-> Version fuer PES-Datenstroeme
+schnitt4.pl		-> "Beschleunigtes" Schnitt-Programm fuer VIVA
+                           aufnahmen. 1 "VIDEO" pro Zeile erzeugt 
+                           "a", "b" ... Dateien
+schnitt5.pl		-> Gibt Datei-Nummern von einer Schnittmarke 
+                           +- 15000 Frames aus
+schnitt6.pl		-> Loescht alle Dateien die nicht von in einer von 
+                           schnitt5.pl abgedeckt ist. (Damit mv2 nicht so 
+                           lange braucht)
+show			-> Wird auf einem X-Display gestartet und zeigt das 
+                           aktuelle Bild von "schnitt.pl" an
+vdr-remote.pl		-> "Skeleton" um ueber SVDR-Kommandos zu schicken
+vdr2			-> Start-Script
+vmount			-> Mounten aller zusammengehoeriger ISO-Images zum 
+                           abspielen
+
+Hilsscripte:
+------------
+cut.pl			-> Entspricht weitestgehend "split" aber mit 
+                           "Nummer" anstatt Buchstaben
+cut2			-> Entfernt escapende Backslashes
+cutall2			-> Springt ins Schnitt-Verzeichniss und ruft das 
+                           "eigentliche" Schnitt-Script auf
+lmplex			-> Multiplexed Datenstrome unter Zurhilfename
+                           saemtlicher CPUs
+schnittcommon.pli	-> Das "Common" Script fuer schnitt?.pl
+getpreviframe.pl	-> Findet das vorherige I-Frame.
+unsort			-> Macht das Gegenteil von sort.
+
+
+Die ganze "Schnittloesung" ist leider etwas "unbrauchbar", weil ich aus
+Unachtsamkeit leider die gepatchten Sourcen von 2 wichtigen Programm
+geloescht habe. 
+
+dumpfrage		-> Extraiert das erste Frage in eine Datei zum
+			   anzeigen (gepatchtes dump aus "libmpeg3"
+pvademux		-> gepatcht um eine Pfad-Angabe
+
+Entweder macht jemand/ich patchen "nochmal" oder ich kann auch die
+Binaries zur Verfuegung stellen.

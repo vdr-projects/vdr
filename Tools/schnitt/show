@@ -1,0 +1,11 @@
+#!/bin/sh
+cd /x2/temp
+while true
+do
+  if [ -f newpic ]; then
+    killall xli
+    rm -f newpic
+    xli output.ppm &
+  fi
+sleep 24h
+done

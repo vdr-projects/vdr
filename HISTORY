@@ -349,3 +349,67 @@ Video Disk Recorder Revision History
 - The EIT scanning thread is now locked when switching channels to avoid problems.
 - Encrypted channels can now be selected even without knowing the PNR (however, it
   is still necessary for the EPG info).
+
+2001-02-24: Version 0.71
+
+- Fixed 'Transfer Mode' in cases where a non-primary interface was switched to
+  a channel that only the primary interface can receive (which could happen in
+  the EPG scanner).
+- The EPG scanner now starts with the first channel (it used to start with the
+  second channel).
+- Reacitvated setting the PNR.
+- Adapted the frame scanning to the new muxing of the driver.
+- The new compile time option REMOTE=NONE can be used to compile VDR without
+  any remote control support (for applications where it shall be controlled
+  exclusively via SVDRP).
+- The new command line option -D can be used to define which DVB interfaces
+  a certain instance of VDR shall use.
+- The "Left" and "Right" keys are now used to page up and down in lists (thanks
+  to Martin Hammerschmid). Since the "Timers" menu already uses these keys to
+  (de)activate timers, this functionality is not available there.
+- The "Main" and "Commands" menu now support "hotkeys", which means that if the
+  first non-blank character of a menu item is a digit in the range 1..9, that
+  item can be selected by pressing the respective numeric key on the remote
+  control.
+- The channel data in 'channels.conf' now contains the teletext PID (thanks to
+  Dave Chapman). Existing files will be read normally (and the teletext PID set
+  to 0), but once they are written back (due to some channel editing) the file
+  will have the new format.
+- The EPG scanner now scans each transponder only once per cycle.
+- Deleted recordings are now automatically removed from disk after a while (not
+  only when disk space is being needed for a new recording).
+- Fixed repeat function in LIRC remote control.
+- Changed the MAXDVBAPI macro in dvbapi.c to 4 in order to directly support the
+  maximum possible number of DVB cards.
+- The 'Ca' parameter in the default 'channels.conf' has been changed from '2'
+  to '3' because the VDR prototype now has 3 DVB cards (and currently the CAM
+  module only works if it is inserted into the last DVB card).
+- The "Now", "Next" and "Schedule" menus now remember the current channel and
+  restore the list when switching between them.
+- The "Green" button in the "Recordings" menu can now be used to rewind a
+  recording and play it from the very beginning.
+- Fixed handling ':' in timer filenames and '\n' in timer summaries (see FORMATS).
+- When removing recordings empty directories are now removed from the video
+  directory.
+- Added the "schnitt" tools from Matthias Schniedermeyer.
+- New SVDRP command MESG to display a short message on the OSD.
+- The Perl script 'svdrpsend.pl' can be used to send SVDRP commands to VDR.
+- SVDRP can now immediately reuse the same port if VDR is restarted.
+- SVDRP now has a timeout after which the connection is automatically closed
+  (default is 300 seconds, can be changed in "Setup").
+- The compile time switch VFAT can be used to make VDR avoid the ':' character
+  in file names (VFAT can't handle them). Do 'make VFAT=1' to enable this.
+- Support for DVB-C (thanks to Hans-Peter Raschke and Peter Hofmann).
+  See the INSTALL file for more information about the use of VDR with cable.
+- Fixed an occasional segfault in the EIT processor.
+- A value of '0' for the EPGScanTimeout setup parameter now completely turns off
+  scanning for EPG data on both single and multiple card systems.
+- New setup parameter "PrimaryLimit" that allows to prevent timers from using the
+  primary DVB interface in multi card systems. Default value is 0, which means
+  that every timer may use the primary interface.
+- The 'active' field of a timer will now be explicitly set to '1' if the user
+  modifies an active timer (see FORMATS for details).
+- The new command line option -w can be used to activate a watchdog that makes
+  VDR exit in case the main program loop does not respond for more than the
+  given number of seconds. This is mainly useful in combination with the new
+  'runvdr' script that restarts VDR in case is has exited.
