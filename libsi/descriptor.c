@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: descriptor.c 1.6 2004/02/22 11:11:36 kls Exp $
+ *   $Id: descriptor.c 1.7 2004/03/05 15:17:33 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -148,7 +148,7 @@ void TimeShiftedEventDescriptor::Parse() {
 
 void ContentDescriptor::Parse() {
    //this descriptor is only a header and a loop
-   nibbleLoop.setData(data+sizeof(SectionHeader), getLength()-sizeof(SectionHeader));
+   nibbleLoop.setData(data+sizeof(descr_content), getLength()-sizeof(descr_content));
 }
 
 int ContentDescriptor::Nibble::getContentNibbleLevel1() const {
@@ -173,7 +173,7 @@ void ContentDescriptor::Nibble::Parse() {
 
 void ParentalRatingDescriptor::Parse() {
    //this descriptor is only a header and a loop
-   ratingLoop.setData(data+sizeof(SectionHeader), getLength()-sizeof(SectionHeader));
+   ratingLoop.setData(data+sizeof(descr_parental_rating), getLength()-sizeof(descr_parental_rating));
 }
 
 int ParentalRatingDescriptor::Rating::getRating() const {
