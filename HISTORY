@@ -3055,3 +3055,4 @@ Video Disk Recorder Revision History
 - Taking the complete size of available data into account when deciding whether
   to clear the transfer buffer to avoid overflows (thanks to Reinhard Nissl).
 - Updated Romanian language texts and the iso8859-2 fonts (thanks to Lucian Muresan).
+- Now actually using the iso8859-15 fonts (thanks to Lucian Muresan).
