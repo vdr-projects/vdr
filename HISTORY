@@ -661,3 +661,5 @@ Video Disk Recorder Revision History
   "Setup" menu (see MANUAL for details, and cEventInfo::FixEpgBugs() in eit.c
   for the actual implementation).
 - Fixed broken recordings after a driver buffer overflow.
+- Fixed the chirping sound after Pause/Play of a DVD (thanks to Andreas
+  Schultz).

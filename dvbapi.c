@@ -7,7 +7,7 @@
  * DVD support initially written by Andreas Schultz <aschultz@warp10.net>
  * based on dvdplayer-0.5 by Matjaz Thaler <matjaz.thaler@guest.arnes.si>
  *
- * $Id: dvbapi.c 1.108 2001/08/19 14:36:38 kls Exp $
+ * $Id: dvbapi.c 1.109 2001/08/19 15:09:48 kls Exp $
  */
 
 //#define DVDDEBUG        1
@@ -756,7 +756,7 @@ void cPlayBuffer::Pause(void)
      Empty(true);
   fastForward = fastRewind = false;
   CHECK(ioctl(videoDev, paused ? VIDEO_FREEZE : VIDEO_CONTINUE));
-  CHECK(ioctl(audioDev, AUDIO_SET_MUTE, paused));
+  //CHECK(ioctl(audioDev, AUDIO_SET_MUTE, paused)); //XXX this caused chirping sound when playing a DVD
   still = false;
   if (empty)
      Empty(false);
@@ -771,7 +771,7 @@ void cPlayBuffer::Play(void)
      still = false;
      CHECK(ioctl(videoDev, paused ? VIDEO_CONTINUE : VIDEO_PLAY));
      CHECK(ioctl(audioDev, AUDIO_SET_AV_SYNC, true));
-     CHECK(ioctl(audioDev, AUDIO_SET_MUTE, false));
+     //CHECK(ioctl(audioDev, AUDIO_SET_MUTE, false)); //XXX this caused chirping sound when playing a DVD
      if (empty)
         Empty(false);
      fastForward = fastRewind = paused = false;
