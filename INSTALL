@@ -350,7 +350,7 @@ The default PC key assignments are:
 
   Up, Down, Left, Right     Crsr keys in numeric block
   Menu                      'Home' in numeric block
-  Ok                        '5' in numeric block
+  Ok                        'Enter'
   Back                      'End' in numeric block
   Red, Green, Yellow, Blue  'F1'..'F4'
   0..9                      '0'..'9' in top row
