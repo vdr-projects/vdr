@@ -1364,3 +1364,7 @@ Video Disk Recorder Revision History
 
 - Added direct access to the index data of cPalette (needed for displaying SPUs,
   thanks to Andreas Schultz).
+- The status monitor function cStatus::Replaying() now gets a 'cControl *' argument instead
+  of a 'cDvbPlayerControl *' in order to allow additional players to call this function.
+  cPlayer and cControl have been given the functions GetIndex() and GetReplayMode() to
+  allow access to the player's status.

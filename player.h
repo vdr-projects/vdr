@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: player.h 1.4 2002/06/23 12:56:38 kls Exp $
+ * $Id: player.h 1.5 2002/07/13 11:12:26 kls Exp $
  */
 
 #ifndef __PLAYER_H
@@ -41,6 +41,15 @@ public:
   cPlayer(void);
   virtual ~cPlayer();
   bool IsAttached(void) { return device != NULL; }
+  virtual bool GetIndex(int &Current, int &Total, bool SnapToIFrame = false) { return false; }
+       // Returns the current and total frame index, optionally snapped to the
+       // nearest I-frame.
+  virtual bool GetReplayMode(bool &Play, bool &Forward, int &Speed) { return false; }
+       // Returns the current replay mode (if applicable).
+       // 'Play' tells whether we are playing or pausing, 'Forward' tells whether
+       // we are going forward or backward and 'Speed' is -1 if this is normal
+       // play/pause mode, 0 if it is single speed fast/slow forward/back mode
+       // and >0 if this is multi speed mode.
   };
 
 class cControl : public cOsdObject {
@@ -54,6 +63,8 @@ public:
   cControl(cPlayer *Player, bool Hidden = false);
   virtual ~cControl();
   virtual void Hide(void) = 0;
+  bool GetIndex(int &Current, int &Total, bool SnapToIFrame = false) { return player->GetIndex(Current, Total, SnapToIFrame); }
+  bool GetReplayMode(bool &Play, bool &Forward, int &Speed) { return player->GetReplayMode(Play, Forward, Speed); }
   static void Launch(cControl *Control);
   static void Attach(void);
   static void Shutdown(void);
