@@ -3301,3 +3301,5 @@ Video Disk Recorder Revision History
 - Made cCondWait::SleepMs() sleep at least 3ms to avoid a possible busy wait.
 - Fixed canceling the LIRC thread (thanks to Marco Schlüßler for pointing out
   this one).
+- The "Green" button in the "Main" menu is now always "Audio", since the audio
+  channel might be changed even if there is only one actual audio PID.

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.335 2005/01/14 13:13:58 kls Exp $
+ * $Id: menu.c 1.336 2005/01/14 14:27:29 kls Exp $
  */
 
 #include "menu.h"
@@ -2452,7 +2452,7 @@ void cMenuMain::Set(const char *Plugin)
 
   // Color buttons:
 
-  SetHelp(!replaying ? tr("Record") : NULL, cDevice::PrimaryDevice()->NumAudioTracks() > 1 ? tr("Audio") : NULL, replaying ? NULL : tr("Pause"), replaying ? tr("Button$Stop") : cReplayControl::LastReplayed() ? tr("Resume") : NULL);
+  SetHelp(!replaying ? tr("Record") : NULL, tr("Audio"), replaying ? NULL : tr("Pause"), replaying ? tr("Button$Stop") : cReplayControl::LastReplayed() ? tr("Resume") : NULL);
   Display();
   lastActivity = time(NULL);
 }
