@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.17 2000/09/17 08:23:46 kls Exp $
+ * $Id: tools.c 1.18 2000/09/17 15:36:33 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -386,6 +386,8 @@ bool cFile::AnyFileReady(int FileDes, int TimeoutMs)
       }
   if (0 <= FileDes && FileDes < FD_SETSIZE && !files[FileDes])
      FD_SET(FileDes, &set); // in case we come in with an arbitrary descriptor
+  if (TimeoutMs == 0)
+     TimeoutMs = 10; // load gets too heavy with 0
   struct timeval timeout;
   timeout.tv_sec  = TimeoutMs / 1000;
   timeout.tv_usec = (TimeoutMs % 1000) * 1000;
