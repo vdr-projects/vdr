@@ -16,7 +16,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.c 1.72 2003/04/21 13:21:54 kls Exp $
+ * $Id: eit.c 1.73 2003/04/25 14:45:32 kls Exp $
  ***************************************************************************/
 
 #include "eit.h"
@@ -1444,18 +1444,21 @@ int cSIProcessor::GetCaDescriptors(int Source, int Transponder, int ServiceId, c
   if (BufSize > 0 && Data) {
      cMutexLock MutexLock(&caDescriptorsMutex);
      int length = 0;
-     do {
-        for (cCaDescriptor *d = caDescriptors.First(); d; d = caDescriptors.Next(d)) {
-            if (d->source == Source && d->transponder == Transponder && d->serviceId == ServiceId && d->caSystem == *CaSystemIds) {
-               if (length + d->Length() <= BufSize) {
-                  memcpy(Data + length, d->Data(), d->Length());
-                  length += d->Length();
+     for (cCaDescriptor *d = caDescriptors.First(); d; d = caDescriptors.Next(d)) {
+         if (d->source == Source && d->transponder == Transponder && d->serviceId == ServiceId) {
+            const unsigned short *caids = CaSystemIds;
+            do {
+               if (d->caSystem == *caids) {
+                  if (length + d->Length() <= BufSize) {
+                     memcpy(Data + length, d->Data(), d->Length());
+                     length += d->Length();
+                     }
+                  else
+                     return -1;
                   }
-               else
-                  return -1;
-               }
+               } while (*++caids);
             }
-        } while (*++CaSystemIds);
+         }
      return length;
      }
   return -1;

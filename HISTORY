@@ -2057,3 +2057,5 @@ Video Disk Recorder Revision History
 2003-04-25: Version 1.1.29
 
 - Fixed detecting broken connection to the LIRC daemon (thanks to Ludwig Nussel).
+- Now sending CA descriptors to the CAM in the same sequence as they were originally
+  received (thanks to Stefan Huelswitt).
