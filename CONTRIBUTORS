@@ -458,6 +458,7 @@ Robert Schiele <rschiele@uni-mannheim.de>
  for reporting some faulty default parameter initializations
  for suggesting to only set the Makefile variables CXX and CXXFLAGS if they are not
  yet defined
+ for fixing a problem with user defined CFLAGS in libdtv/libvdr/Makefile
 
 Gerhard Steiner <steiner@mail.austria.com>
  for suggesting that the SVDRP command PUTE shall trigger an immediate write of
@@ -503,6 +504,7 @@ Georg Hitsch <georg@hitsch.at>
 
 Clemens Kirchgatterer <clemens@thf.ath.cx>
  for suggesting to change source directory name for plugins from 'SRC' to 'src'
+ for reporting a problem with user defined CFLAGS in libdtv/libvdr/Makefile
 
 Emil Naepflein <Emil.Naepflein@philosys.de>
  for suggesting to take an active SVDRP connection into account when doing shutdown or
