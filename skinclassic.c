@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinclassic.c 1.3 2004/05/23 10:40:02 kls Exp $
+ * $Id: skinclassic.c 1.4 2004/05/29 09:18:21 kls Exp $
  */
 
 #include "skinclassic.h"
@@ -369,7 +369,7 @@ cSkinClassicDisplayReplay::~cSkinClassicDisplayReplay()
 
 void cSkinClassicDisplayReplay::SetTitle(const char *Title)
 {
-  osd->DrawText(x0, y0, Title, Theme.Color(clrReplayTitle), Theme.Color(clrBackground), cFont::GetFont(fontOsd));
+  osd->DrawText(x0, y0, Title, Theme.Color(clrReplayTitle), Theme.Color(clrBackground), cFont::GetFont(fontOsd), x1 - x0);
 }
 
 void cSkinClassicDisplayReplay::SetMode(bool Play, bool Forward, int Speed)

@@ -2848,3 +2848,6 @@ Video Disk Recorder Revision History
 - Updated 'channels.conf.terr' for Hannover (thanks to Peter Waechtler).
 - cBitmap::DrawBitmap() now also resets the palette if the entire bitmap area is
   covered (suggested by Sascha Volkenandt).
+- Fixed setting the title in the replay display of the "Classic VDR" skin in case
+  a shorter title is set after a longer one (thanks to Stefan Huelswitt for
+  reporting this one).
