@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.29 2000/09/10 10:42:32 kls Exp $
+ * $Id: vdr.c 1.30 2000/09/10 14:33:09 kls Exp $
  */
 
 #include <getopt.h>
@@ -44,21 +44,11 @@
 #define KEYS_CONF "keys.conf"
 #endif
 
-#define DIRECTCHANNELTIMEOUT 500 //ms
-
 static int Interrupted = 0;
 
 void SignalHandler(int signum)
 {
   Interrupted = signum;
-}
-
-static eKeys ShowChannel(int Number, bool Switched, bool Group = false)
-{
-  cChannel *channel = Group ? Channels.Get(Number) : Channels.GetByNumber(Number);
-  if (channel)
-     return Interface.DisplayChannel(channel->number, channel->name, !Switched || Setup.ShowInfoOnChSwitch);
-  return kNone;
 }
 
 int main(int argc, char *argv[])
@@ -188,23 +178,16 @@ int main(int argc, char *argv[])
   // Main program loop:
 
   cSVDRP *SVDRP = SVDRPport ? new cSVDRP(SVDRPport) : NULL;
-  cMenuMain *Menu = NULL;
+  cOsdBase *Menu = NULL;
   cReplayControl *ReplayControl = NULL;
-  int dcTime = 0, dcNumber = 0;
   int LastChannel = -1;
 
   while (!Interrupted) {
         // Channel display:
         if (CurrentChannel != LastChannel) {
            if (!Menu)
-              ShowChannel(CurrentChannel, LastChannel > 0);
+              Channels.ShowChannel(CurrentChannel, LastChannel > 0);
            LastChannel = CurrentChannel;
-           }
-        // Direct Channel Select (action):
-        if (dcNumber && time_ms() - dcTime > DIRECTCHANNELTIMEOUT) {
-           Channels.SwitchTo(dcNumber);
-           dcNumber = 0;
-           LastChannel = -1; // in case an invalid channel number was entered!
            }
         // Timers and Recordings:
         if (!Menu) {
@@ -217,7 +200,7 @@ int main(int argc, char *argv[])
            cRecordControls::Process();
            }
         // User Input:
-        cOsdBase **Interact = Menu ? (cOsdBase **)&Menu : (cOsdBase **)&ReplayControl;
+        cOsdBase **Interact = Menu ? &Menu : (cOsdBase **)&ReplayControl;
         eKeys key = Interface.GetKey(!*Interact || !(*Interact)->NeedsFastResponse());
         if (*Interact) {
            switch ((*Interact)->ProcessKey(key)) {
@@ -249,15 +232,10 @@ int main(int argc, char *argv[])
            }
         else {
            switch (key) {
-             // Direct Channel Select (input):
+             // Direct Channel Select:
              case k0: case k1: case k2: case k3: case k4: case k5: case k6: case k7: case k8: case k9:
-                  {
-                    if (!Interface.Recording()) {
-                       dcNumber = dcNumber * 10 + key - k0;
-                       dcTime = time_ms();
-                       Interface.DisplayChannel(dcNumber);
-                       }
-                  }
+                  if (!Interface.Recording())
+                     Menu = new cDirectChannelSelect(key);
                   break;
              // Left/Right rotates trough channel groups:
              case kLeft:
@@ -269,7 +247,7 @@ int main(int argc, char *argv[])
                                 CurrentGroup = Channels.GetPrevGroup(CurrentGroup < 1 ? 1 : CurrentGroup);
                              if (CurrentGroup < 0)
                                 CurrentGroup = SaveGroup;
-                             if (ShowChannel(CurrentGroup, false, true) == kOk)
+                             if (Channels.ShowChannel(CurrentGroup, false, true) == kOk)
                                 Channels.SwitchTo(Channels.Get(Channels.GetNextNormal(CurrentGroup))->number);
                              }
                           break;

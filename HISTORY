@@ -165,3 +165,7 @@ Video Disk Recorder Revision History
   be disabled via the "Setup" menu.
 - The "current/next" display now only shows those lines that actually contain
   information.
+- When directly selecting a channel by entering the channel number, the digits
+  entered so far together with the name of that channel are displayed on the
+  OSD (suggested by Martin Hammerschmid).
+  

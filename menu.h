@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 1.9 2000/05/01 15:16:23 kls Exp $
+ * $Id: menu.h 1.10 2000/09/10 14:42:20 kls Exp $
  */
 
 #ifndef _MENU_H
@@ -23,6 +23,17 @@ public:
   virtual eOSState ProcessKey(eKeys Key);
   };
   
+class cDirectChannelSelect : public cOsdBase {
+private:
+  int oldNumber;
+  int number;
+  int lastTime;
+public:
+  cDirectChannelSelect(eKeys FirstKey);
+  virtual ~cDirectChannelSelect();
+  virtual eOSState ProcessKey(eKeys Key);
+  };
+
 class cRecordControl {
 private:
   cDvbApi *dvbApi;

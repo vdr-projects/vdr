@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.24 2000/09/10 10:28:46 kls Exp $
+ * $Id: menu.c 1.25 2000/09/10 14:45:29 kls Exp $
  */
 
 #include "menu.h"
@@ -1161,6 +1161,60 @@ eOSState cMenuMain::ProcessKey(eKeys Key)
   else if (time(NULL) - lastActivity > MENUTIMEOUT)
      state = osEnd;
   return state;
+}
+
+// --- cDirectChannelSelect --------------------------------------------------
+
+#define DIRECTCHANNELTIMEOUT 500 //ms
+
+cDirectChannelSelect::cDirectChannelSelect(eKeys FirstKey)
+:cOsdBase(true)
+{
+  oldNumber = CurrentChannel;
+  number = 0;
+  lastTime = time_ms();
+  Interface.Open(MenuColumns, 1);
+  ProcessKey(FirstKey);
+}
+
+cDirectChannelSelect::~cDirectChannelSelect()
+{
+  if (number < 0)
+     Interface.DisplayChannel(oldNumber);
+  Interface.Close();
+}
+
+eOSState cDirectChannelSelect::ProcessKey(eKeys Key)
+{
+  switch (Key) {
+    case k0: case k1: case k2: case k3: case k4: case k5: case k6: case k7: case k8: case k9:
+         if (number >= 0) {
+            number = number * 10 + Key - k0;
+            cChannel *channel = Channels.GetByNumber(number);
+            char *Name = channel ? channel->name : "*** Invalid Channel ***";
+            int BufSize = MenuColumns + 1;
+            char buffer[BufSize];
+            snprintf(buffer, BufSize, "%d  %s", number, Name);
+            Interface.DisplayChannel(number);
+            Interface.Clear();
+            Interface.Write(0, 0, buffer);
+            lastTime = time_ms();
+            if (!channel) {
+               number = -1;
+               lastTime += 1000;
+               }
+            }
+         break;
+    case kNone:
+         if (time_ms() - lastTime > DIRECTCHANNELTIMEOUT) {
+            if (number > 0 && !Channels.SwitchTo(number))
+               number = -1;
+            }
+         else
+            break;
+    default: return osEnd;
+    };
+  return osContinue;
 }
 
 // --- cRecordControl --------------------------------------------------------
