@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.248 2003/05/25 13:53:53 kls Exp $
+ * $Id: menu.c 1.249 2003/05/25 14:06:17 kls Exp $
  */
 
 #include "menu.h"
@@ -1053,18 +1053,22 @@ eOSState cMenuTimers::Delete(void)
   // Check if this timer is active:
   cTimer *ti = CurrentTimer();
   if (ti) {
-     if (!ti->Recording()) {
-        if (Interface->Confirm(tr("Delete timer?"))) {
-           int Index = ti->Index();
-           Timers.Del(ti);
-           cOsdMenu::Del(Current());
-           Timers.Save();
-           Display();
-           isyslog("timer %d deleted", Index + 1);
+     if (Interface->Confirm(tr("Delete timer?"))) {
+        if (ti->Recording()) {
+           if (Interface->Confirm(tr("Timer still recording - really delete?"))) {
+              ti->Skip();
+              cRecordControls::Process(time(NULL));
+              }
+           else
+              return osContinue;
            }
+        int Index = ti->Index();
+        Timers.Del(ti);
+        cOsdMenu::Del(Current());
+        Timers.Save();
+        Display();
+        isyslog("timer %d deleted", Index + 1);
         }
-     else
-        Interface->Error(tr("Timer is recording!"));
      }
   return osContinue;
 }

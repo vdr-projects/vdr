@@ -2206,3 +2206,5 @@ Video Disk Recorder Revision History
   second timer (thanks to Peter Bieringer for reporting this one).
 - Fixed handling newly created timers in case they are not confirmed with "Ok"
   (thanks to Gerhard Steiner for reporting this one).
+- It is now possible to directly delete a timer that is currently recording
+  (thanks to Alexander Damhuis for reporting this one).

@@ -696,3 +696,6 @@ Hermann Gausterer <mrq1@gmx.net>
 
 Peter Bieringer <pb@bieringer.de>
  for reporting a problem with duplicate recordings with the same file name
+
+Alexander Damhuis <ad@phonedation.de>
+ for reporting problems when deleting a timer that is currently recording
