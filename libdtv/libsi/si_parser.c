@@ -4,8 +4,8 @@
 ///                                                        ///
 //////////////////////////////////////////////////////////////
 
-// $Revision: 1.2 $
-// $Date: 2001/06/25 19:39:00 $
+// $Revision: 1.4 $
+// $Date: 2001/10/07 10:24:46 $
 // $Author: hakenes $
 //
 //   (C) 2001 Rolf Hakenes <hakenes@hippomi.de>, under the GNU GPL.
@@ -725,6 +725,62 @@ void siParseDescriptor (struct LIST *Descriptors, u_char *Buffer)
                    Ptr + DESCR_LINKAGE_LEN);
       break;
 
+      case DESCR_TELETEXT:
+         CreateTeletextDescriptor (Descriptor);
+         Length = GetDescriptorLength (Buffer) - DESCR_TELETEXT_LEN;
+         Ptr += DESCR_TELETEXT_LEN;
+         while (Length > 0)
+         {
+            AddTeletextItem (Descriptor,
+                   CastTeletextItem(Ptr)->type,
+                   CastTeletextItem(Ptr)->magazine_number,
+                   CastTeletextItem(Ptr)->page_number,
+                   CastTeletextItem(Ptr)->lang_code1,
+                   CastTeletextItem(Ptr)->lang_code2,
+                   CastTeletextItem(Ptr)->lang_code3);
+            Length -= ITEM_TELETEXT_LEN;
+            Ptr += ITEM_TELETEXT_LEN;
+         }
+      break;
+
+      case DESCR_AC3:
+         CreateAc3Descriptor (Descriptor);
+         Length = GetDescriptorLength (Buffer);
+         if (CastAc3Descriptor(Buffer)->ac3_type_flag)
+          { Length -= 1; Ptr += 1; AddAc3FlagAndValue (Descriptor,
+            AC3_TYPE_FLAG, CastAc3Descriptor(Buffer)->ac3_type); }
+         if (CastAc3Descriptor(Buffer)->bsid_flag)
+          { Length -= 1; Ptr += 1; AddAc3FlagAndValue (Descriptor,
+            BS_ID_FLAG, CastAc3Descriptor(Buffer)->bsid); }
+         if (CastAc3Descriptor(Buffer)->mainid_flag)
+          { Length -= 1; Ptr += 1; AddAc3FlagAndValue (Descriptor,
+            MAIN_ID_FLAG, CastAc3Descriptor(Buffer)->mainid); }
+         if (CastAc3Descriptor(Buffer)->asvc_flag)
+          { Length -= 1; Ptr += 1; AddAc3FlagAndValue (Descriptor,
+            ASVC_FLAG, CastAc3Descriptor(Buffer)->asvc); }
+         Length -= DESCR_AC3_LEN;
+         Ptr += DESCR_AC3_LEN;
+         if (Length) AddAc3AdditionalData (Descriptor, Ptr, Length);
+      break;
+
+      case DESCR_SUBTITLING:
+         CreateSubtitlingDescriptor (Descriptor);
+         Length = GetDescriptorLength (Buffer) - DESCR_SUBTITLING_LEN;
+         Ptr += DESCR_SUBTITLING_LEN;
+         while (Length > 0)
+         {
+            AddSubtitlingItem (Descriptor,
+                   CastSubtitlingItem(Ptr)->subtitling_type,
+                   HILO (CastSubtitlingItem(Ptr)->composition_page_id),
+                   HILO (CastSubtitlingItem(Ptr)->ancillary_page_id),
+                   CastSubtitlingItem(Ptr)->lang_code1,
+                   CastSubtitlingItem(Ptr)->lang_code2,
+                   CastSubtitlingItem(Ptr)->lang_code3);
+            Length -= ITEM_SUBTITLING_LEN;
+            Ptr += ITEM_SUBTITLING_LEN;
+         }
+      break;
+
       case DESCR_VIDEO_STREAM:
       case DESCR_AUDIO_STREAM:
       case DESCR_HIERARCHY:
@@ -748,10 +804,8 @@ void siParseDescriptor (struct LIST *Descriptors, u_char *Buffer)
       case DESCR_VBI_DATA:
       case DESCR_VBI_TELETEXT:
       case DESCR_MOSAIC:
-      case DESCR_TELETEXT:
       case DESCR_TELEPHONE:
       case DESCR_LOCAL_TIME_OFF:
-      case DESCR_SUBTITLING:
       case DESCR_TERR_DEL_SYS:
       case DESCR_ML_NW_NAME:
       case DESCR_ML_BQ_NAME:
@@ -768,7 +822,6 @@ void siParseDescriptor (struct LIST *Descriptors, u_char *Buffer)
       case DESCR_TRANSPORT_STREAM:
       case DESCR_DSNG:
       case DESCR_PDC:
-      case DESCR_AC3:
       case DESCR_CELL_LIST:
       case DESCR_CELL_FREQ_LINK:
       case DESCR_ANNOUNCEMENT_SUPPORT:
@@ -799,8 +852,10 @@ char *siGetDescriptorText (u_char *Buffer, u_int Length)
          if (*Buffer == 0) break;
 
          if ((*Buffer >= ' ' && *Buffer <= '~') ||
-             (*Buffer >= 0xa0 && *Buffer <= 0xff)) *tmp++ = *Buffer++;
-         else Buffer++;
+             (*Buffer >= 0xa0 && *Buffer <= 0xff)) *tmp++ = *Buffer;
+         if (*Buffer == 0x8A) *tmp++ = '\n';
+         if (*Buffer == 0x86 || *Buffer == 0x87) *tmp++ = ' ';
+         Buffer++;
       }
       *tmp = '\0';
    }

@@ -4,8 +4,8 @@
 ###                                                        ###
 ##############################################################
 
-## $Revision: 1.2 $
-## $Date: 2001/06/25 19:39:00 $
+## $Revision: 1.3 $
+## $Date: 2001/10/06 15:33:46 $
 ## $Author: hakenes $
 ##
 ##   (C) 2001 Rolf Hakenes <hakenes@hippomi.de>, under the GNU GPL.

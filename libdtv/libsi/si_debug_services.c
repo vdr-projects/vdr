@@ -4,8 +4,8 @@
 ///                                                        ///
 //////////////////////////////////////////////////////////////
 
-// $Revision: 1.2 $
-// $Date: 2001/06/25 19:39:00 $
+// $Revision: 1.4 $
+// $Date: 2001/10/07 10:24:46 $
 // $Author: hakenes $
 //
 //   (C) 2001 Rolf Hakenes <hakenes@hippomi.de>, under the GNU GPL.
@@ -32,8 +32,6 @@
 #include "../liblx/liblx.h"
 #include "libsi.h"
 #include "si_debug_services.h"
-
-
 
 
 void siDebugServices (struct LIST *Services)
@@ -328,9 +326,9 @@ void siDebugDescriptors (char *Prepend, struct LIST *Descriptors)
                ((struct ExtendedEventDescriptor *)Descriptor)->LanguageCode);
             xForeach (((struct ExtendedEventDescriptor *)Descriptor)->Items, Item)
             {
-               printf ("%s   Item:\n");
-               printf ("%s      Description: %s\n", xName(Item));
-               printf ("%s      Text: %s\n", Item->Text);
+               printf ("%s   Item:\n", Prepend);
+               printf ("%s      Description: %s\n", Prepend, xName(Item));
+               printf ("%s      Text: %s\n", Prepend, Item->Text);
             }
          }
          break;
@@ -445,6 +443,52 @@ void siDebugDescriptors (char *Prepend, struct LIST *Descriptors)
             }
          break;
 
+         case DESCR_TELETEXT:
+         {
+            struct TeletextItem *Item;
+
+            printf ("%sDescriptor: Teletext\n", Prepend);
+            xForeach (((struct TeletextDescriptor *)Descriptor)->Items, Item)
+            {
+               printf ("%s   Item:\n");
+               printf ("%s      LanguageCode: %s\n", Prepend, Item->LanguageCode);
+               printf ("%s      Type: ", Prepend);
+               switch (Item->Type)
+               {
+                  case 0x01: printf ("initial Teletext page\n"); break;
+                  case 0x02: printf ("Teletext subtitle page\n"); break;
+                  case 0x03: printf ("additional information page\n"); break;
+                  case 0x04: printf ("programme schedule page\n"); break;
+                  case 0x05: printf ("Teletext subtitle page ");
+                             printf ("for hearing impaired people\n"); break;
+                  default: printf ("reserved for future use\n"); break;
+               }
+               printf ("%s      MagazineNumber: %x\n", Prepend, Item->MagazineNumber);
+               printf ("%s      PageNumber: %x\n", Prepend, Item->PageNumber);
+            }
+         }
+         break;
+
+         case DESCR_SUBTITLING:
+         {
+            struct SubtitlingItem *Item;
+
+            printf ("%sDescriptor: Subtitling\n", Prepend);
+            xForeach (((struct SubtitlingDescriptor *)Descriptor)->Items, Item)
+            {
+               printf ("%s   Item:\n");
+               printf ("%s      LanguageCode: %s\n", Prepend, Item->LanguageCode);
+               printf ("%s      Type: ", Prepend);
+               for (i = 0; i < COMPONENT_TYPE_NUMBER; i++)
+                  if ((0x03 == ComponentTypes[i].Content) &&
+                      (Item->Type == ComponentTypes[i].Type))
+                  { printf ("%s\n", ComponentTypes[i].Description); break; }
+               printf ("%s      CompositionPageId: %x\n", Prepend, Item->CompositionPageId);
+               printf ("%s      AncillaryPageId: %x\n", Prepend, Item->AncillaryPageId);
+            }
+         }
+         break;
+
          case DESCR_NW_NAME:
          case DESCR_SERVICE_LIST:
          case DESCR_STUFFING:
@@ -453,10 +497,8 @@ void siDebugDescriptors (char *Prepend, struct LIST *Descriptors)
          case DESCR_VBI_DATA:
          case DESCR_VBI_TELETEXT:
          case DESCR_MOSAIC:
-         case DESCR_TELETEXT:
          case DESCR_TELEPHONE:
          case DESCR_LOCAL_TIME_OFF:
-         case DESCR_SUBTITLING:
          case DESCR_TERR_DEL_SYS:
          case DESCR_ML_NW_NAME:
          case DESCR_ML_BQ_NAME:
