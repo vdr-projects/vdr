@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.88 2001/11/03 11:48:21 kls Exp $
+ * $Id: vdr.c 1.89 2001/11/03 12:23:45 kls Exp $
  */
 
 #include <getopt.h>
@@ -503,11 +503,12 @@ int main(int argc, char *argv[])
                        dsyslog(LOG_INFO, "next timer event at %s", ctime(&Next));
                     if (WatchdogTimeout > 0)
                        signal(SIGALRM, SIG_IGN);
-                    if (Interface->Confirm(tr("Press any key to cancel shutdown"), LastActivity == 1 ? 5 : SHUTDOWNWAIT, true)) {
+                    bool UserShutdown = key == kPower;
+                    if (Interface->Confirm(tr("Press any key to cancel shutdown"), UserShutdown ? 5 : SHUTDOWNWAIT, true)) {
                        int Channel = timer ? timer->channel : 0;
                        const char *File = timer ? timer->file : "";
                        char *cmd;
-                       asprintf(&cmd, "%s %ld %ld %d '%s'", Shutdown, Next, Delta, Channel, File);
+                       asprintf(&cmd, "%s %ld %ld %d '%s' %d", Shutdown, Next, Delta, Channel, File, UserShutdown);
                        isyslog(LOG_INFO, "executing '%s'", cmd);
                        SystemExec(cmd);
                        delete cmd;

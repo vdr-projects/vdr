@@ -856,3 +856,5 @@ Video Disk Recorder Revision History
   out should always be in sync.
 - Fixed handling the "Power" key in case Setup.MinUserInactivity is set to 0 to
   disable automatic shutdown.
+- Added a fifth parameter to the 'shutdown' call that indicates the reason for
+  this shutdown request (see INSTALL).
