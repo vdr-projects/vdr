@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.86 2002/02/24 11:53:12 kls Exp $
+ * $Id: config.c 1.87 2002/02/24 11:59:14 kls Exp $
  */
 
 #include "config.h"
@@ -994,7 +994,6 @@ bool cSetup::Load(const char *FileName)
               if (*buffer != '#' && !Parse(buffer)) {
                  esyslog(LOG_ERR, "error in %s, line %d\n", fileName, line);
                  result = false;
-                 break;
                  }
               }
            }

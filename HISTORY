@@ -1029,3 +1029,5 @@ Video Disk Recorder Revision History
 - The new Setup parameter RecordDolbyDigital can be used to generally turn off
   recording the Dolby Digital audio channels in case you want to save disk space
   or don't have the equipment to replay Dolby Digital audio.
+- Reading the 'setup.conf' file no longer terminates in case of an error, but
+  rather attempts to read the rest of the file.
