@@ -1576,4 +1576,4 @@ Video Disk Recorder Revision History
   Schultz for pointing this out).
 - Improved skipping channels that are (currently) not available (thanks to Stefan
   Huelswitt).
-- Updated channels.conf.terr (thanks to Uwe Scheffler).
+- Updated channels.conf.terr and channels.conf.cable (thanks to Uwe Scheffler).
