@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 1.11 2004/03/06 11:22:57 kls Exp $
+ * $Id: timers.c 1.12 2004/03/14 13:27:57 kls Exp $
  */
 
 #include "timers.h"
@@ -506,7 +506,7 @@ cTimer *cTimers::GetNextActiveTimer(void)
 
 void cTimers::SetEvents(void)
 {
-  cSchedulesLock SchedulesLock;
+  cSchedulesLock SchedulesLock(false, 100);
   const cSchedules *Schedules = cSchedules::Schedules(SchedulesLock);
   if (Schedules) {
      for (cTimer *ti = First(); ti; ti = Next(ti)) {
@@ -514,19 +514,17 @@ void cTimers::SetEvents(void)
          const cEvent *Event = NULL;
          if (Schedule) {
             //XXX what if the Schedule doesn't have any VPS???
-            const cEvent *e;
             int Match = tmNone;
-            int i = 0;
-            while ((e = Schedule->GetEventNumber(i++)) != NULL) {
-                  int m = ti->Matches(e);
-                  if (m > Match) {
-                     Match = m;
-                     Event = e;
-                     if (Match == tmFull)
-                        break;
-                        //XXX what if there's another event with the same VPS time???
-                     }
-                  }
+            for (const cEvent *e = Schedule->Events()->First(); e; e = Schedule->Events()->Next(e)) {
+                int m = ti->Matches(e);
+                if (m > Match) {
+                   Match = m;
+                   Event = e;
+                   if (Match == tmFull)
+                      break;
+                      //XXX what if there's another event with the same VPS time???
+                   }
+                }
             }
          ti->SetEvent(Event);
          }

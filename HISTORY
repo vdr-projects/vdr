@@ -2739,3 +2739,5 @@ Video Disk Recorder Revision History
 - Fixed detecting the running status in case an empty EPG event is broadcast (thanks
   to Michael Pennewiﬂ for pointing this out).
 - Improved performance when paging through very long menu lists.
+- Removed cSchedule::GetEventNumber() and cSchedule::NumEvents(). There is now
+  cSchedule::Events() that returns the list of events directly.

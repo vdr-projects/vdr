@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.h 1.14 2004/03/13 13:39:13 kls Exp $
+ * $Id: epg.h 1.15 2004/03/14 13:25:39 kls Exp $
  */
 
 #ifndef __EPG_H
@@ -90,12 +90,11 @@ public:
   void Cleanup(time_t Time);
   void Cleanup(void);
   cEvent *AddEvent(cEvent *Event);
+  const cList<cEvent> *Events(void) const { return &events; }
   const cEvent *GetPresentEvent(bool CheckRunningStatus = false) const;
   const cEvent *GetFollowingEvent(bool CheckRunningStatus = false) const;
   const cEvent *GetEvent(u_int16_t EventID, time_t StartTime = 0) const;
   const cEvent *GetEventAround(time_t Time) const;
-  const cEvent *GetEventNumber(int n) const { return events.Get(n); }
-  int NumEvents(void) const { return events.Count(); }
   void Dump(FILE *f, const char *Prefix = "", eDumpMode DumpMode = dmAll, time_t AtTime = 0) const;
   static bool Read(FILE *f, cSchedules *Schedules);
   };
