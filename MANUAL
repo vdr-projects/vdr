@@ -8,7 +8,7 @@ Video Disk Recorder User's Manual
   possible, several keys have different meanings in the various
   modes:
 
-  Key     Normal      Main       Channels   Timer      Edit/New      Recordings  Replay
+  Key     Normal      Main       Channels   Timers     Edit/New      Recordings  Replay
 
   Up      Ch up       Crsr up    Crsr up    Crsr up    Crsr up       Crsr up     Play
   Down    Ch down     Crsr down  Crsr down  Crsr down  Crsr down     Crsr down   Pause
@@ -20,8 +20,11 @@ Video Disk Recorder User's Manual
   Red     -           Record     Edit       Edit       -             Play        Jump
   Green   -           Language   New        New        -             Rewind      Skip -60s
   Yellow  -           Eject DVD  Delete     Delete     -             Delete      Skip +60s
-  Blue    -           Resume     Mark       Mark       -             Summary     Stop
+  Blue    -           Resume     Mark       Mark(1)    -             Summary     Stop
   0..9    Ch select   -          -          -          Numeric inp.  -           Editing
+
+  (1) The "Mark" button in the "Timers" menu only works if sorting the timers
+      has been disabled in the "Setup" menu.
 
 * Navigating through the On Screen Menus
 
@@ -34,7 +37,8 @@ Video Disk Recorder User's Manual
   any changes that might have been made in the current menu.
 
   In the "Timers" menu, the current timer can be enabled or disabled with
-  the "Right" or "Left" key, respectively (enabled timers are marked with ">").
+  the "Right" or "Left" key, respectively (enabled timers are marked with '>',
+  timers that are currently recording are marked with '#').
   "Ok" here opens the "Edit timer" menu.
 
   Textual options, like channel names or recording file names, can be edited
@@ -296,6 +300,12 @@ Video Disk Recorder User's Manual
   OSDLanguage = 0        Defines the language used to display the OSD texts.
                          0 = Englisch
                          1 = Deutsch
+                         2 = Slovenian
+                         3 = Italian
+                         4 = Dutch
+                         5 = Portugese
+                         6 = French
+                         7 = Norwegian
 
   PrimaryDVB = 1         Defines the primary DVB interface (i.e. the one that
                          will display the menus and will react on input through
@@ -373,6 +383,10 @@ Video Disk Recorder User's Manual
                          connection after which the connection is automatically
                          closed. Default is 300, a value of 0 means no timeout.
 
+  SortTimers = 1         Turns sorting the timers in the "Timers" menu on/off.
+                         Timers are sorted by ascending start times, with the
+                         first one being the next timer that will start.
+
   PrimaryLimit = 0       The minimum priority a timer must have to be allowed to
                          use the primary DVB interface, or to force another timer
                          with higher priority to use the primary DVB interface.
@@ -397,6 +411,11 @@ Video Disk Recorder User's Manual
 
   OSDwidth  = 52         The width and height of the OSD .
   OSDheight = 18         The valid ranges are width=40...56, height=12...21.
+
+  MaxVideoFileSize=2000  The maximum size of a single recorded video file in MB.
+                         The valid range is 100...2000. Default is 2000, but
+                         you may want to use smaller values if you are planning
+                         on archiving a recording to CD.
 
 * Executing system commands
 

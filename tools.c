@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.40 2001/08/17 12:45:42 kls Exp $
+ * $Id: tools.c 1.43 2001/08/26 15:45:41 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -17,7 +17,9 @@
 #endif
 #include <stdlib.h>
 #include <sys/time.h>
+#include <time.h>
 #include <unistd.h>
+#include "i18n.h"
 
 #define MaxBuffer 1000
 
@@ -395,6 +397,20 @@ bool SpinUpDisk(const char *FileName)
   return false;
 }
 
+const char *DayDateTime(time_t t)
+{
+  static char buffer[32];
+  if (t == 0)
+     time(&t);
+  tm *tm = localtime(&t);
+  int weekday = tm->tm_wday == 0 ? 6 : tm->tm_wday - 1; // we start with monday==0!
+  const char *day = tr("MonTueWedThuFriSatSun");
+  day += weekday * 3;
+  strncpy(buffer, day, 3);
+  snprintf(buffer + 3, sizeof(buffer) - 3, " %2d.%02d %02d:%02d", tm->tm_mday, tm->tm_mon + 1, tm->tm_hour, tm->tm_min);
+  return buffer;
+}
+
 // --- cFile -----------------------------------------------------------------
 
 bool cFile::files[FD_SETSIZE] = { false };
@@ -675,5 +691,21 @@ int cListBase::Count(void) const
         object = object->Next();
         }
   return n;
+}
+
+void cListBase::Sort(void)
+{
+  bool swapped;
+  do {
+     swapped = false;
+     cListObject *object = objects;
+     while (object) {
+           if (object->Next() && *object->Next() < *object) {
+              Move(object->Next(), object);
+              swapped = true;
+              }
+           object = object->Next();
+           }
+     } while (swapped);
 }
 

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.29 2001/08/17 12:44:39 kls Exp $
+ * $Id: tools.h 1.31 2001/08/26 12:52:49 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -55,6 +55,7 @@ bool RemoveFileOrDir(const char *FileName, bool FollowSymlinks = false);
 bool RemoveEmptyDirectories(const char *DirName, bool RemoveThis = false);
 char *ReadLink(const char *FileName);
 bool SpinUpDisk(const char *FileName);
+const char *DayDateTime(time_t t = 0);
 
 class cFile {
 private:
@@ -94,6 +95,7 @@ private:
 public:
   cListObject(void);
   virtual ~cListObject();
+  virtual bool operator< (const cListObject &ListObject) { return false; }
   void Append(cListObject *Object);
   void Unlink(void);
   int Index(void);
@@ -114,6 +116,7 @@ public:
   virtual void Clear(void);
   cListObject *Get(int Index) const;
   int Count(void) const;
+  void Sort(void);
   };
 
 template<class T> class cList : public cListBase {

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.61 2001/08/17 13:00:48 kls Exp $
+ * $Id: config.h 1.66 2001/08/26 14:46:53 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -19,7 +19,7 @@
 #include "eit.h"
 #include "tools.h"
 
-#define VDRVERSION "0.92"
+#define VDRVERSION "0.93"
 
 #define MaxBuffer 10000
 
@@ -137,18 +137,22 @@ public:
   cTimer(const cEventInfo *EventInfo);
   virtual ~cTimer();
   cTimer& operator= (const cTimer &Timer);
+  bool operator< (const cTimer &Timer);
   const char *ToText(void);
   bool Parse(const char *s);
   bool Save(FILE *f);
   bool IsSingleEvent(void);
+  int GetMDay(time_t t);
+  int GetWDay(time_t t);
+  bool DayMatches(time_t t);
+  time_t IncDay(time_t t, int Days);
+  time_t SetTime(time_t t, int SecondsFromMidnight);
   bool Matches(time_t t = 0);
   time_t StartTime(void);
   time_t StopTime(void);
   void SetRecording(bool Recording);
   void SetPending(bool Pending);
-  static cTimer *GetMatch(void);
   static int TimeToInt(int t);
-  static time_t Day(time_t t);
   static int ParseDay(const char *s);
   static const char *PrintDay(int d);
   };
@@ -251,6 +255,8 @@ public:
 class cTimers : public cConfig<cTimer> {
 public:
   cTimer *GetTimer(cTimer *Timer);
+  cTimer *GetMatch(void);
+  cTimer *GetNextActiveTimer(void);
   };
 
 class cCommands : public cConfig<cCommand> {};
@@ -282,11 +288,13 @@ public:
   int EPGScanTimeout;
   int EPGBugfixLevel;
   int SVDRPTimeout;
+  int SortTimers;
   int PrimaryLimit;
   int DefaultPriority, DefaultLifetime;
   int VideoFormat;
   int ChannelInfoPos;
   int OSDwidth, OSDheight;
+  int MaxVideoFileSize;
   int CurrentChannel;
   cSetup(void);
   bool Load(const char *FileName);

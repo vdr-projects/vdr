@@ -7,7 +7,7 @@
  * DVD support initially written by Andreas Schultz <aschultz@warp10.net>
  * based on dvdplayer-0.5 by Matjaz Thaler <matjaz.thaler@guest.arnes.si>
  *
- * $Id: dvbapi.c 1.109 2001/08/19 15:09:48 kls Exp $
+ * $Id: dvbapi.c 1.110 2001/08/25 13:52:38 kls Exp $
  */
 
 //#define DVDDEBUG        1
@@ -50,20 +50,16 @@ extern "C" {
 #define DEV_OST_VIDEO  "/dev/ost/video"
 #define DEV_OST_AUDIO  "/dev/ost/audio"
 
+#define KILOBYTE(n) ((n) * 1024)
+#define MEGABYTE(n) ((n) * 1024 * 1024)
+
 // The size of the array used to buffer video data:
 // (must be larger than MINVIDEODATA - see remux.h)
-#define VIDEOBUFSIZE    (1024*1024)
+#define VIDEOBUFSIZE  MEGABYTE(1)
 
 // The maximum size of a single frame:
-#define MAXFRAMESIZE (192*1024)
+#define MAXFRAMESIZE  KILOBYTE(192)
 
-// The maximum file size is limited by the range that can be covered
-// with 'int'. 4GB might be possible (if the range is considered
-// 'unsigned'), 2GB should be possible (even if the range is considered
-// 'signed'), so let's use 1GB for absolute safety (the actual file size
-// may be slightly higher because we stop recording only before the next
-// 'I' frame, to have a complete Group Of Pictures):
-#define MAXVIDEOFILESIZE (1024*1024*1024) // Byte
 #define MAXFILESPERRECORDING 255
 
 #define MINFREEDISKSPACE    (512) // MB
@@ -517,7 +513,7 @@ bool cRecordBuffer::RunningLowOnDiskSpace(void)
 bool cRecordBuffer::NextFile(void)
 {
   if (recordFile >= 0 && pictureType == I_FRAME) { // every file shall start with an I_FRAME
-     if (fileSize > MAXVIDEOFILESIZE || RunningLowOnDiskSpace()) {
+     if (fileSize > MEGABYTE(Setup.MaxVideoFileSize) || RunningLowOnDiskSpace()) {
         recordFile = fileName.NextFile();
         fileSize = 0;
         }
@@ -2217,7 +2213,7 @@ void cCuttingBuffer::Action(void)
            // Write one frame:
 
            if (PictureType == I_FRAME) { // every file shall start with an I_FRAME
-              if (FileSize > MAXVIDEOFILESIZE) {
+              if (FileSize > MEGABYTE(Setup.MaxVideoFileSize)) {
                  toFile = toFileName->NextFile();
                  if (toFile < 0)
                     break;

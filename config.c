@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.55 2001/08/17 13:02:01 kls Exp $
+ * $Id: config.c 1.59 2001/08/26 14:46:43 kls Exp $
  */
 
 #include "config.h"
@@ -394,6 +394,13 @@ cTimer& cTimer::operator= (const cTimer &Timer)
   return *this;
 }
 
+bool cTimer::operator< (const cTimer &Timer)
+{
+  time_t t1 = StartTime();
+  time_t t2 = (*(cTimer *)&Timer).StartTime();
+  return t1 < t2 || (t1 == t2 && priority > Timer.priority);
+}
+
 const char *cTimer::ToText(cTimer *Timer)
 {
   delete buffer;
@@ -413,13 +420,6 @@ const char *cTimer::ToText(void)
 int cTimer::TimeToInt(int t)
 {
   return (t / 100 * 60 + t % 100) * 60;
-}
-
-time_t cTimer::Day(time_t t)
-{
-  struct tm d = *localtime(&t);
-  d.tm_hour = d.tm_min = d.tm_sec = 0;
-  return mktime(&d);
 }
 
 int cTimer::ParseDay(const char *s)
@@ -511,43 +511,66 @@ bool cTimer::IsSingleEvent(void)
   return (day & 0x80000000) == 0;
 }
 
+int cTimer::GetMDay(time_t t)
+{
+  return localtime(&t)->tm_mday;
+}
+
+int cTimer::GetWDay(time_t t)
+{
+  int weekday = localtime(&t)->tm_wday;
+  return weekday == 0 ? 6 : weekday - 1; // we start with monday==0!
+}
+
+bool cTimer::DayMatches(time_t t)
+{
+  return IsSingleEvent() ? GetMDay(t) == day : (day & (1 << GetWDay(t))) != 0;
+}
+
+time_t cTimer::IncDay(time_t t, int Days)
+{
+  tm tm = *localtime(&t);
+  tm.tm_mday += Days; // now tm_mday may be out of its valid range
+  int h = tm.tm_hour; // save original hour to compensate for DST change
+  t = mktime(&tm);    // normalize all values
+  tm.tm_hour = h;     // compensate for DST change
+  return mktime(&tm); // calculate final result
+}
+
+time_t cTimer::SetTime(time_t t, int SecondsFromMidnight)
+{
+  tm tm = *localtime(&t);
+  tm.tm_hour = SecondsFromMidnight / 3600;
+  tm.tm_min = (SecondsFromMidnight % 3600) / 60;
+  tm.tm_sec =  SecondsFromMidnight % 60;
+  return mktime(&tm);
+}
+
 bool cTimer::Matches(time_t t)
 {
-  if (active) {
-     if (t == 0)
-        t = time(NULL);
-     struct tm now = *localtime(&t);
-     int weekday = now.tm_wday == 0 ? 6 : now.tm_wday - 1; // we start with monday==0!
-     int begin = TimeToInt(start);
-     int end   = TimeToInt(stop);
-     bool twoDays = (end < begin);
+  startTime = stopTime = 0;
+  if (t == 0)
+     t = time(NULL);
 
-     bool todayMatches = false, yesterdayMatches = false;
-     if ((day & 0x80000000) != 0) {
-        if ((day & (1 << weekday)) != 0)
-           todayMatches = true;
-        else if (twoDays) {
-           int yesterday = weekday == 0 ? 6 : weekday - 1;
-           if ((day & (1 << yesterday)) != 0)
-              yesterdayMatches = true;
-           }
-        }
-     else if (day == now.tm_mday)
-        todayMatches = true;
-     else if (twoDays) {
-        time_t ty = t - SECSINDAY;
-        if (day == localtime(&ty)->tm_mday)
-           yesterdayMatches = true;
-        }
-     if (todayMatches || (twoDays && yesterdayMatches)) {
-        startTime = Day(t - (yesterdayMatches ? SECSINDAY : 0)) + begin;
-        stopTime  = startTime + (twoDays ? SECSINDAY - begin + end : end - begin);
-        }
-     else
-        startTime = stopTime = 0;
-     return startTime <= t && t <= stopTime;
-     }
-  return false;
+  int begin  = TimeToInt(start); // seconds from midnight
+  int length = TimeToInt(stop) - begin;
+  if (length < 0)
+     length += SECSINDAY;
+
+  int DaysToCheck = IsSingleEvent() ? 31 : 7;
+  for (int i = -1; i <= DaysToCheck; i++) {
+      time_t t0 = IncDay(t, i);
+      if (DayMatches(t0)) {
+         time_t a = SetTime(t0, begin);
+         time_t b = a + length;
+         if (t <= b) {
+            startTime = a;
+            stopTime = b;
+            break;
+            }
+         }
+      }
+  return active && startTime <= t && t <= stopTime;
 }
 
 time_t cTimer::StartTime(void)
@@ -573,21 +596,6 @@ void cTimer::SetRecording(bool Recording)
 void cTimer::SetPending(bool Pending)
 {
   pending = Pending;
-}
-
-cTimer *cTimer::GetMatch(void)
-{
-  time_t t = time(NULL); // all timers must be checked against the exact same time to correctly handle Priority!
-  cTimer *t0 = NULL;
-  cTimer *ti = (cTimer *)Timers.First();
-  while (ti) {
-        if (!ti->recording && ti->Matches(t)) {
-           if (!t0 || ti->priority > t0->priority)
-              t0 = ti;
-           }
-        ti = (cTimer *)ti->Next();
-        }
-  return t0;
 }
 
 // --- cCommand -------------------------------------------------------------
@@ -753,6 +761,33 @@ cTimer *cTimers::GetTimer(cTimer *Timer)
   return NULL;
 }
 
+cTimer *cTimers::GetMatch(void)
+{
+  time_t t = time(NULL); // all timers must be checked against the exact same time to correctly handle Priority!
+  cTimer *t0 = NULL;
+  cTimer *ti = First();
+  while (ti) {
+        if (!ti->recording && ti->Matches(t)) {
+           if (!t0 || ti->priority > t0->priority)
+              t0 = ti;
+           }
+        ti = (cTimer *)ti->Next();
+        }
+  return t0;
+}
+
+cTimer *cTimers::GetNextActiveTimer(void)
+{
+  cTimer *t0 = NULL;
+  cTimer *ti = First();
+  while (ti) {
+        if (ti->active && (!t0 || *ti < *t0))
+           t0 = ti;
+        ti = (cTimer *)ti->Next();
+        }
+  return t0;
+}
+
 // -- cSetup -----------------------------------------------------------------
 
 cSetup Setup;
@@ -776,6 +811,7 @@ cSetup::cSetup(void)
   EPGScanTimeout = 5;
   EPGBugfixLevel = 2;
   SVDRPTimeout = 300;
+  SortTimers = 1;
   PrimaryLimit = 0;
   DefaultPriority = 50;
   DefaultLifetime = 50;
@@ -783,6 +819,7 @@ cSetup::cSetup(void)
   ChannelInfoPos = 0;
   OSDwidth = 52;
   OSDheight = 18;
+  MaxVideoFileSize = MAXVIDEOFILESIZE;
   CurrentChannel = -1;
 }
 
@@ -807,6 +844,7 @@ bool cSetup::Parse(char *s)
      else if (!strcasecmp(Name, "EPGScanTimeout"))      EPGScanTimeout     = atoi(Value);
      else if (!strcasecmp(Name, "EPGBugfixLevel"))      EPGBugfixLevel     = atoi(Value);
      else if (!strcasecmp(Name, "SVDRPTimeout"))        SVDRPTimeout       = atoi(Value);
+     else if (!strcasecmp(Name, "SortTimers"))          SortTimers         = atoi(Value);
      else if (!strcasecmp(Name, "PrimaryLimit"))        PrimaryLimit       = atoi(Value);
      else if (!strcasecmp(Name, "DefaultPriority"))     DefaultPriority    = atoi(Value);
      else if (!strcasecmp(Name, "DefaultLifetime"))     DefaultLifetime    = atoi(Value);
@@ -814,6 +852,7 @@ bool cSetup::Parse(char *s)
      else if (!strcasecmp(Name, "ChannelInfoPos"))      ChannelInfoPos     = atoi(Value);
      else if (!strcasecmp(Name, "OSDwidth"))            OSDwidth           = atoi(Value);
      else if (!strcasecmp(Name, "OSDheight"))           OSDheight          = atoi(Value);
+     else if (!strcasecmp(Name, "MaxVideoFileSize"))    MaxVideoFileSize   = atoi(Value);
      else if (!strcasecmp(Name, "CurrentChannel"))      CurrentChannel     = atoi(Value);
      else
         return false;
@@ -873,6 +912,7 @@ bool cSetup::Save(const char *FileName)
         fprintf(f, "EPGScanTimeout     = %d\n", EPGScanTimeout);
         fprintf(f, "EPGBugfixLevel     = %d\n", EPGBugfixLevel);
         fprintf(f, "SVDRPTimeout       = %d\n", SVDRPTimeout);
+        fprintf(f, "SortTimers         = %d\n", SortTimers);
         fprintf(f, "PrimaryLimit       = %d\n", PrimaryLimit);
         fprintf(f, "DefaultPriority    = %d\n", DefaultPriority);
         fprintf(f, "DefaultLifetime    = %d\n", DefaultLifetime);
@@ -880,6 +920,7 @@ bool cSetup::Save(const char *FileName)
         fprintf(f, "ChannelInfoPos     = %d\n", ChannelInfoPos);
         fprintf(f, "OSDwidth           = %d\n", OSDwidth);
         fprintf(f, "OSDheight          = %d\n", OSDheight);
+        fprintf(f, "MaxVideoFileSize   = %d\n", MaxVideoFileSize);
         fprintf(f, "CurrentChannel     = %d\n", CurrentChannel);
         f.Close();
         isyslog(LOG_INFO, "saved setup to %s", FileName);

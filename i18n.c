@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.32 2001/08/17 13:03:15 kls Exp $
+ * $Id: i18n.c 1.35 2001/08/26 13:45:10 kls Exp $
  *
  * Slovenian translations provided by Miha Setina <mihasetina@softhome.net>
  * Italian   translations provided by Alberto Carraro <bertocar@tin.it>
@@ -794,6 +794,15 @@ const tPhrase Phrases[] = {
     "Temps maxi SVDRP",
     "Ubrukt SVDRP-levetid",
   },
+  { "SortTimers",
+    "Timer sortieren",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+  },
   { "PrimaryLimit",
     "Primär-Limit",
     "", // TODO
@@ -857,6 +866,15 @@ const tPhrase Phrases[] = {
     "Hauteur affichage",
     "", // TODO
   },
+  { "MaxVideoFileSize",
+    "Max. Video Dateigröße",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+  },
   // The days of the week:
   { "MTWTFSS",
     "MDMDFSS",
@@ -866,6 +884,15 @@ const tPhrase Phrases[] = {
     "STQQSSD",
     "LMMJVSD",
     "MTOTFLS",
+  },
+  { "MonTueWedThuFriSatSun", // must all be 3 letters!
+    "MonDieMitDonFreSamSon",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
   },
   // Learning keys:
   { "Learning Remote Control Keys",

@@ -663,3 +663,16 @@ Video Disk Recorder Revision History
 - Fixed broken recordings after a driver buffer overflow.
 - Fixed the chirping sound after Pause/Play of a DVD (thanks to Andreas
   Schultz).
+
+2001-08-26: Version 0.93
+
+- The menus and the channel display now show the current date and time.
+- The new Setup parameter MaxVideoFileSize can be used to customize the
+  maximum size of the recorded video files.
+- Fixed a bug in handling repeating timers that record over midnight (the
+  calculation of matching timers has been completely rewritten).
+- Timers that are currently recording are now marked with '#' in the "Timers"
+  menu.
+- Timers are now sorted in the "Timers" menu, showing the sequence in which
+  they will be recording. This can be disabled in the "Setup" menu. Note
+  that the "Mark" button doesn't work if timers are displayed sorted.

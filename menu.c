@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.105 2001/08/19 14:45:31 kls Exp $
+ * $Id: menu.c 1.109 2001/08/26 14:03:27 kls Exp $
  */
 
 #include "menu.h"
@@ -957,25 +957,30 @@ eOSState cMenuEditTimer::ProcessKey(eKeys Key)
 
 class cMenuTimerItem : public cOsdItem {
 private:
-  int index;
   cTimer *timer;
 public:
-  cMenuTimerItem(int Index, cTimer *Timer);
+  cMenuTimerItem(cTimer *Timer);
+  virtual bool operator< (const cListObject &ListObject);
   virtual void Set(void);
+  cTimer *Timer(void) { return timer; }
   };
 
-cMenuTimerItem::cMenuTimerItem(int Index, cTimer *Timer)
+cMenuTimerItem::cMenuTimerItem(cTimer *Timer)
 {
-  index = Index;
   timer = Timer;
   Set();
+}
+
+bool cMenuTimerItem::operator< (const cListObject &ListObject)
+{
+  return *timer < *((cMenuTimerItem *)&ListObject)->timer;
 }
 
 void cMenuTimerItem::Set(void)
 {
   char *buffer = NULL;
   asprintf(&buffer, "%c\t%d\t%s\t%02d:%02d\t%02d:%02d\t%s",
-                    timer->active ? '>' : ' ',
+                    timer->active ? timer->recording ? '#' : '>' : ' ',
                     timer->channel,
                     timer->PrintDay(timer->day),
                     timer->start / 100,
@@ -996,6 +1001,7 @@ private:
   eOSState Del(void);
   virtual void Move(int From, int To);
   eOSState Summary(void);
+  cTimer *CurrentTimer(void);
 public:
   cMenuTimers(void);
   virtual eOSState ProcessKey(eKeys Key);
@@ -1008,15 +1014,23 @@ cMenuTimers::cMenuTimers(void)
   cTimer *timer;
 
   while ((timer = Timers.Get(i)) != NULL) {
-        Add(new cMenuTimerItem(i, timer));
+        Add(new cMenuTimerItem(timer));
         i++;
         }
-  SetHelp(tr("Edit"), tr("New"), tr("Delete"), tr("Mark"));
+  if (Setup.SortTimers)
+     Sort();
+  SetHelp(tr("Edit"), tr("New"), tr("Delete"), Setup.SortTimers ? NULL : tr("Mark"));
+}
+
+cTimer *cMenuTimers::CurrentTimer(void)
+{
+  cMenuTimerItem *item = (cMenuTimerItem *)Get(Current());
+  return item ? item->Timer() : NULL;
 }
 
 eOSState cMenuTimers::Activate(bool On)
 {
-  cTimer *timer = Timers.Get(Current());
+  cTimer *timer = CurrentTimer();
   if (timer && timer->active != On) {
      timer->active = On;
      RefreshCurrent();
@@ -1031,8 +1045,8 @@ eOSState cMenuTimers::Edit(void)
 {
   if (HasSubMenu() || Count() == 0)
      return osContinue;
-  isyslog(LOG_INFO, "editing timer %d", Current() + 1);
-  return AddSubMenu(new cMenuEditTimer(Current()));
+  isyslog(LOG_INFO, "editing timer %d", CurrentTimer()->Index() + 1);
+  return AddSubMenu(new cMenuEditTimer(CurrentTimer()->Index()));
 }
 
 eOSState cMenuTimers::New(void)
@@ -1041,22 +1055,22 @@ eOSState cMenuTimers::New(void)
      return osContinue;
   cTimer *timer = new cTimer;
   Timers.Add(timer);
-  Add(new cMenuTimerItem(timer->Index()/*XXX*/, timer), true);
+  Add(new cMenuTimerItem(timer), true);
   Timers.Save();
   isyslog(LOG_INFO, "timer %d added", timer->Index() + 1);
-  return AddSubMenu(new cMenuEditTimer(Current(), true));
+  return AddSubMenu(new cMenuEditTimer(timer->Index(), true));
 }
 
 eOSState cMenuTimers::Del(void)
 {
   // Check if this timer is active:
-  int Index = Current();
-  cTimer *ti = Timers.Get(Index);
+  cTimer *ti = CurrentTimer();
   if (ti) {
      if (!ti->recording) {
         if (Interface->Confirm(tr("Delete timer?"))) {
-           Timers.Del(Timers.Get(Index));
-           cOsdMenu::Del(Index);
+           int Index = ti->Index();
+           Timers.Del(ti);
+           cOsdMenu::Del(Current());
            Timers.Save();
            Display();
            isyslog(LOG_INFO, "timer %d deleted", Index + 1);
@@ -1081,7 +1095,7 @@ eOSState cMenuTimers::Summary(void)
 {
   if (HasSubMenu() || Count() == 0)
      return osContinue;
-  cTimer *ti = Timers.Get(Current());
+  cTimer *ti = CurrentTimer();
   if (ti && ti->summary && *ti->summary)
      return AddSubMenu(new cMenuText(tr("Summary"), ti->summary));
   return Edit(); // convenience for people not using the Summary feature ;-)
@@ -1109,7 +1123,9 @@ eOSState cMenuTimers::ProcessKey(eKeys Key)
        case kRed:    return Edit();
        case kGreen:  return New();
        case kYellow: return Del();
-       case kBlue:   Mark(); break;
+       case kBlue:   if (!Setup.SortTimers)
+                        Mark();
+                     break;
        default: break;
        }
      }
@@ -1137,6 +1153,7 @@ cMenuEvent::cMenuEvent(const cEventInfo *EventInfo, bool CanSwitch)
         char *buffer;
         asprintf(&buffer, "%-17.*s\t%.*s  %s - %s", 17, channel->name, 5, eventInfo->GetDate(), eventInfo->GetTimeString(), eventInfo->GetEndTimeString());
         SetTitle(buffer, false);
+        delete buffer;
         int Line = 2;
         cMenuTextItem *item;
         const char *Title = eventInfo->GetTitle();
@@ -1377,7 +1394,8 @@ void cMenuSchedule::PrepareSchedule(cChannel *Channel)
   Clear();
   char *buffer = NULL;
   asprintf(&buffer, tr("Schedule - %s"), Channel->name);
-  SetTitle(buffer, false);
+  SetTitle(buffer);
+  delete buffer;
   if (schedules) {
      const cSchedule *Schedule = Channel->pnr ? schedules->GetSchedule(Channel->pnr) : schedules->GetSchedule();
      int num = Schedule->NumEvents();
@@ -1704,6 +1722,7 @@ void cMenuSetup::Set(void)
   Add(new cMenuEditIntItem( tr("EPGScanTimeout"),     &data.EPGScanTimeout));
   Add(new cMenuEditIntItem( tr("EPGBugfixLevel"),     &data.EPGBugfixLevel, 0, 3));
   Add(new cMenuEditIntItem( tr("SVDRPTimeout"),       &data.SVDRPTimeout));
+  Add(new cMenuEditBoolItem(tr("SortTimers"),         &data.SortTimers));
   Add(new cMenuEditIntItem( tr("PrimaryLimit"),       &data.PrimaryLimit, 0, MAXPRIORITY));
   Add(new cMenuEditIntItem( tr("DefaultPriority"),    &data.DefaultPriority, 0, MAXPRIORITY));
   Add(new cMenuEditIntItem( tr("DefaultLifetime"),    &data.DefaultLifetime, 0, MAXLIFETIME));
@@ -1711,6 +1730,7 @@ void cMenuSetup::Set(void)
   Add(new cMenuEditBoolItem(tr("ChannelInfoPos"),     &data.ChannelInfoPos, tr("bottom"), tr("top")));
   Add(new cMenuEditIntItem( tr("OSDwidth"),           &data.OSDwidth, MINOSDWIDTH, MAXOSDWIDTH));
   Add(new cMenuEditIntItem( tr("OSDheight"),          &data.OSDheight, MINOSDHEIGHT, MAXOSDHEIGHT));
+  Add(new cMenuEditIntItem( tr("MaxVideoFileSize"),   &data.MaxVideoFileSize, MINVIDEOFILESIZE, MAXVIDEOFILESIZE));
 }
 
 eOSState cMenuSetup::ProcessKey(eKeys Key)
@@ -1951,10 +1971,8 @@ void cDisplayChannel::DisplayChannel(const cChannel *Channel)
      snprintf(buffer, BufSize, "%s", Channel ? Channel->name : tr("*** Invalid Channel ***"));
   Interface->Fill(0, 0, Setup.OSDwidth, 1, clrBackground);
   Interface->Write(0, 0, buffer);
-  time_t t = time(NULL);
-  struct tm *now = localtime(&t);
-  snprintf(buffer, BufSize, "%02d:%02d", now->tm_hour, now->tm_min);
-  Interface->Write(-5, 0, buffer);
+  const char *date = DayDateTime();
+  Interface->Write(-strlen(date), 0, date);
 }
 
 void cDisplayChannel::DisplayInfo(void)
