@@ -625,3 +625,4 @@ Video Disk Recorder Revision History
 2001-08-07: Version 0.91
 
 - Fixed displaying colored button texts that are too long.
+- Suppressing replay progress display when replaying a DVD.

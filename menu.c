@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.95 2001/08/05 16:09:41 kls Exp $
+ * $Id: menu.c 1.96 2001/08/07 16:36:37 kls Exp $
  */
 
 #include "menu.h"
@@ -2305,10 +2305,8 @@ void cReplayControl::ClearLastReplayed(const char *FileName)
 void cReplayControl::Show(int Seconds)
 {
   if (!visible) {
-     Interface->Open(Setup.OSDwidth, -3);
-     needsFastResponse = visible = true;
      shown = ShowProgress(true);
-     if (Seconds > 0)
+     if (shown && Seconds > 0)
         timeoutShow = time(NULL) + Seconds;
      }
 }
@@ -2326,6 +2324,10 @@ bool cReplayControl::ShowProgress(bool Initial)
   int Current, Total;
 
   if (dvbApi->GetIndex(Current, Total) && Total > 0) {
+     if (!visible) {
+        Interface->Open(Setup.OSDwidth, -3);
+        needsFastResponse = visible = true;
+        }
      if (Initial) {
         Interface->Clear();
         if (title)
