@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.286 2004/02/15 14:29:53 kls Exp $
+ * $Id: menu.c 1.287 2004/02/21 13:53:25 kls Exp $
  */
 
 #include "menu.h"
@@ -1195,15 +1195,16 @@ eOSState cMenuEvent::ProcessKey(eKeys Key)
 class cMenuWhatsOnItem : public cOsdItem {
 public:
   const cEvent *event;
-  cMenuWhatsOnItem(const cEvent *Event);
+  const cChannel *channel;
+  cMenuWhatsOnItem(const cEvent *Event, cChannel *Channel);
 };
 
-cMenuWhatsOnItem::cMenuWhatsOnItem(const cEvent *Event)
+cMenuWhatsOnItem::cMenuWhatsOnItem(const cEvent *Event, cChannel *Channel)
 {
   event = Event;
+  channel = Channel;
   char *buffer = NULL;
-  cChannel *channel = Channels.GetByNumber(event->ChannelNumber());
-  asprintf(&buffer, "%d\t%.*s\t%.*s\t%s", event->ChannelNumber(), 6, channel ? channel->Name() : "???", 5, event->GetTimeString(), event->Title());
+  asprintf(&buffer, "%d\t%.*s\t%.*s\t%s", channel->Number(), 6, channel->Name(), 5, event->GetTimeString(), event->Title());
   SetText(buffer, false);
 }
 
@@ -1226,39 +1227,18 @@ public:
 int cMenuWhatsOn::currentChannel = 0;
 const cEvent *cMenuWhatsOn::scheduleEvent = NULL;
 
-static int CompareEventChannel(const void *p1, const void *p2)
-{
-  return (int)( (*(const cEvent **)p1)->ChannelNumber() - (*(const cEvent **)p2)->ChannelNumber());
-}
-
 cMenuWhatsOn::cMenuWhatsOn(const cSchedules *Schedules, bool Now, int CurrentChannelNr)
 :cOsdMenu(Now ? tr("What's on now?") : tr("What's on next?"), CHNUMWIDTH, 7, 6)
 {
-  const cSchedule *Schedule = Schedules->First();
-  const cEvent **pArray = NULL;
-  int num = 0;
-
-  while (Schedule) {
-        pArray = (const cEvent **)realloc(pArray, (num + 1) * sizeof(cEvent *));
-
-        pArray[num] = Now ? Schedule->GetPresentEvent() : Schedule->GetFollowingEvent();
-        if (pArray[num]) {
-           cChannel *channel = Channels.GetByChannelID(pArray[num]->ChannelID(), true);
-           if (channel) {
-              pArray[num]->SetChannelNumber(channel->Number());
-              num++;
-              }
-           }
-        Schedule = (const cSchedule *)Schedules->Next(Schedule);
-        }
-
-  qsort(pArray, num, sizeof(cEvent *), CompareEventChannel);
-
-  for (int a = 0; a < num; a++)
-      Add(new cMenuWhatsOnItem(pArray[a]), pArray[a]->ChannelNumber() == CurrentChannelNr);
-
+  for (cChannel *Channel = Channels.First(); Channel; Channel = Channels.Next(Channel)) {
+      const cSchedule *Schedule = Schedules->GetSchedule(Channel->GetChannelID());
+      if (Schedule) {
+         const cEvent *Event = Now ? Schedule->GetPresentEvent() : Schedule->GetFollowingEvent();
+         if (Event)
+            Add(new cMenuWhatsOnItem(Event, Channel), Channel->Number() == CurrentChannelNr);
+         }
+      }
   currentChannel = CurrentChannelNr;
-  free(pArray);
   SetHelp(Count() ? tr("Record") : NULL, Now ? tr("Next") : tr("Now"), tr("Button$Schedule"), tr("Switch"));
 }
 
@@ -1310,7 +1290,7 @@ eOSState cMenuWhatsOn::ProcessKey(eKeys Key)
                        cMenuWhatsOnItem *mi = (cMenuWhatsOnItem *)Get(Current());
                        if (mi) {
                           scheduleEvent = mi->event;
-                          currentChannel = mi->event->ChannelNumber();
+                          currentChannel = mi->channel->Number();
                           }
                      }
                      break;
@@ -1376,11 +1356,6 @@ cMenuSchedule::~cMenuSchedule()
   cMenuWhatsOn::ScheduleEvent(); // makes sure any posted data is cleared
 }
 
-static int CompareEventTime(const void *p1, const void *p2)
-{
-  return (int)((*(cEvent **)p1)->StartTime() - (*(cEvent **)p2)->StartTime());
-}
-
 void cMenuSchedule::PrepareSchedule(cChannel *Channel)
 {
   Clear();
@@ -1392,22 +1367,12 @@ void cMenuSchedule::PrepareSchedule(cChannel *Channel)
      const cSchedule *Schedule = schedules->GetSchedule(Channel->GetChannelID());
      if (Schedule) {
         int num = Schedule->NumEvents();
-        const cEvent **pArray = MALLOC(const cEvent *, num);
-        if (pArray) {
-           time_t now = time(NULL);
-           int numreal = 0;
-           for (int a = 0; a < num; a++) {
-               const cEvent *Event = Schedule->GetEventNumber(a);
-               if (Event->StartTime() + Event->Duration() > now)
-                  pArray[numreal++] = Event;
-               }
-   
-           qsort(pArray, numreal, sizeof(cEvent *), CompareEventTime);
-   
-           for (int a = 0; a < numreal; a++)
-               Add(new cMenuScheduleItem(pArray[a]));
-           free(pArray);
-           }
+        time_t now = time(NULL);
+        for (int a = 0; a < num; a++) {
+            const cEvent *Event = Schedule->GetEventNumber(a);
+            if (Event->StartTime() + Event->Duration() > now)
+               Add(new cMenuScheduleItem(Event));
+            }
         }
      }
 }

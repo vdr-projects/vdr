@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.h 1.6 2004/02/21 12:31:43 kls Exp $
+ * $Id: epg.h 1.7 2004/02/21 13:46:18 kls Exp $
  */
 
 #ifndef __EPG_H
@@ -33,11 +33,10 @@ private:
   char *description;     // Description of this event
   time_t startTime;      // Start time of this event
   int duration;          // Duration of this event in seconds
-  //XXX find an other solution, avoiding channelNumber???
-  int channelNumber;     // the actual channel number from VDR's channel list (used in cMenuSchedule for sorting by channel number)
 public:
   cEvent(tChannelID ChannelID, u_int16_t EventID);
   ~cEvent();
+  virtual bool operator< (const cListObject &ListObject);
   tChannelID ChannelID(void) const { return channelID; }
   u_int16_t EventID(void) const { return eventID; }
   uchar TableID(void) const { return tableID; }
@@ -48,7 +47,6 @@ public:
   const char *Description(void) const { return description; }
   time_t StartTime(void) const { return startTime; }
   int Duration(void) const { return duration; }
-  int ChannelNumber(void) const { return channelNumber; }
   const char *GetDateString(void) const;
   const char *GetTimeString(void) const;
   const char *GetEndTimeString(void) const;
@@ -61,7 +59,6 @@ public:
   void SetDescription(const char *Description);
   void SetStartTime(time_t StartTime);
   void SetDuration(int Duration);
-  void SetChannelNumber(int ChannelNumber) const { ((cEvent *)this)->channelNumber = ChannelNumber; } // doesn't modify the EIT data, so it's ok to make it 'const' //XXX
   void Dump(FILE *f, const char *Prefix = "") const;
   static bool Read(FILE *f, cSchedule *Schedule);
   void FixEpgBugs(void);
@@ -78,6 +75,7 @@ public:
   tChannelID ChannelID(void) const { return channelID; }
   void SetRunningStatus(cEvent *Event, int RunningStatus);
   void ResetVersions(void);
+  void Sort(void);
   void Cleanup(time_t Time);
   void Cleanup(void);
   cEvent *AddEvent(cEvent *Event);

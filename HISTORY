@@ -2681,3 +2681,6 @@ Video Disk Recorder Revision History
   event randomly, making it impossible for a timer to be programmed on a ceartain
   event rather than a specific time. Well, let's see where this leads us...
 - Removed the obsolete 'present' and 'following' handling from the EPG data.
+- The EPG data is now always kept sorted chronologically in the internal data
+  structures. This also means that any EPG data retrieved through the SVRDP
+  command LSTE is guaranteed to be sorted by start time.

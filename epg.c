@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 1.7 2004/02/21 12:32:31 kls Exp $
+ * $Id: epg.c 1.8 2004/02/21 13:46:23 kls Exp $
  */
 
 #include "epg.h"
@@ -29,7 +29,6 @@ cEvent::cEvent(tChannelID ChannelID, u_int16_t EventID)
   description = NULL;
   startTime = 0;
   duration = 0;
-  channelNumber = 0;
 }
 
 cEvent::~cEvent()
@@ -37,6 +36,12 @@ cEvent::~cEvent()
   free(title);
   free(shortText);
   free(description);
+}
+
+bool cEvent::operator< (const cListObject &ListObject)
+{
+  cEvent *e = (cEvent *)&ListObject;
+  return startTime < e->startTime;
 }
 
 void cEvent::SetEventID(u_int16_t EventID)
@@ -500,6 +505,11 @@ void cSchedule::ResetVersions(void)
       p->SetVersion(0xFF);
 }
 
+void cSchedule::Sort(void)
+{
+  events.Sort();
+}
+
 void cSchedule::Cleanup(void)
 {
   Cleanup(time(NULL));
@@ -547,6 +557,7 @@ bool cSchedule::Read(FILE *f, cSchedules *Schedules)
                     if (p) {
                        if (!cEvent::Read(f, p))
                           return false;
+                       p->Sort();
                        }
                     }
                  else {

@@ -8,7 +8,7 @@
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  * Adapted to 'libsi' for VDR 1.3.0 by Marcel Wiesweg <marcel.wiesweg@gmx.de>.
  *
- * $Id: eit.c 1.87 2004/02/21 12:20:26 kls Exp $
+ * $Id: eit.c 1.88 2004/02/21 13:26:52 kls Exp $
  */
 
 #include "eit.h"
@@ -42,6 +42,8 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data)
      pSchedule = new cSchedule(channelID);
      Schedules->Add(pSchedule);
      }
+
+  bool Modified = false;
 
   SI::EIT::Event SiEitEvent;
   for (SI::Loop::Iterator it; eventLoop.hasNext(it); ) {
@@ -188,7 +190,10 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data)
 
       if (LinkChannels)
          channel->SetLinkChannels(LinkChannels);
+      Modified = true;
       }
+  if (Modified)
+     pSchedule->Sort();
 }
 
 // --- cTDT ------------------------------------------------------------------
