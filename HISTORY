@@ -996,3 +996,8 @@ Video Disk Recorder Revision History
   prompt telling the user that there is an upcoming timer event.
 - If a recording has no episode title, the trailing '~' is no longer shown in
   the progress display.
+
+2002-02-15: Version 1.0.0pre1
+
+- Added scanning for EPG data for another 4 days on channels that support this
+  (thanks to Oleg Assovski).

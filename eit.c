@@ -16,7 +16,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.c 1.34 2002/02/09 14:48:43 kls Exp $
+ * $Id: eit.c 1.35 2002/02/15 13:58:26 kls Exp $
  ***************************************************************************/
 
 #include "eit.h"
@@ -832,7 +832,7 @@ int cEIT::ProcessEIT(unsigned char *buffer)
              // We have found an existing event, either through its event ID or its start time.
              // If the new event comes from a table that belongs to an "other TS" and the existing
              // one comes from a "actual TS" table, lets skip it.
-             if ((tid == 0x4F || tid == 0x60) && (pEvent->GetTableID() == 0x4E || pEvent->GetTableID() == 0x50))
+             if ((tid == 0x4F || tid == 0x60 || tid == 0x61) && (pEvent->GetTableID() == 0x4E || pEvent->GetTableID() == 0x50 || pEvent->GetTableID() == 0x51))
                 continue;
              }
           if (rEvent) {
@@ -940,6 +940,8 @@ void cSIProcessor::SetStatus(bool On)
       AddFilter(0x12, 0x4f);  // event info, other TS, present/following
       AddFilter(0x12, 0x50);  // event info, actual TS, schedule
       AddFilter(0x12, 0x60);  // event info, other TS, schedule
+      AddFilter(0x12, 0x51);  // event info, actual TS, schedule for another 4 days
+      AddFilter(0x12, 0x61);  // event info, other TS, schedule for another 4 days
    }
    schedulesMutex.Unlock();
 }
