@@ -41,14 +41,14 @@ Video Disk Recorder Revision History
   of the channel, with a prepended '@' character.
 - Timers that are not given an explicit Name now use the channel name with
   a prepended '@' character.
-- If an instant recording is currently active, the Main menu now contains
+- If an instant recording is currently active, the "Main" menu now contains
   an option to stop that recording.
 - Timers are now only processed when the Menu is not active. So after editing
   a timer the effect will take place only after the menu has been closed.
   In order to avoid missing a timer event by inadvertently leaving the menu
   open, the menu will be closed automatically after about two minutes of
   inactivity.
-- If a recording is currently being replayed, the Main menu now contains an
+- If a recording is currently being replayed, the "Main" menu now contains an
   option to stop replaying.
 - Displaying the recording DVB interface status in the decimal points of the
   RCU display.
@@ -424,7 +424,7 @@ Video Disk Recorder Revision History
 - Fixed a memory leak in the EIT processor that happened when the system time
   was set.
 - Removed some redundant code from the cListBase destructor.
-- Fixed internationalization of some Main menu texts.
+- Fixed internationalization of some "Main" menu texts.
 - Updated 'channels.conf' after the recent changes of Premiere World (thanks
   to Axel Gruber).
 - Redesigned the ring buffer to make it work with two separate threads for
@@ -480,7 +480,7 @@ Video Disk Recorder Revision History
   items the amount of visible information remained the same as before, though.
   If your DVB card has even less memory (which would result in only the
   channel switching display and the replay progress display being visible, but
-  no Main menu), try reducing the constant 'MenuLines' in dvbapi.h (currently
+  no "Main" menu), try reducing the constant 'MenuLines' in dvbapi.h (currently
   '13') even further.
 - There are two new setup parameters to define the "Default Priority" and
   "Default Lifetime" when creating a new timer event.
@@ -1074,3 +1074,5 @@ Video Disk Recorder Revision History
 - Fixed avoiding the primary DVB interface in case Setup.PrimaryLimit is 0.
 - Fixed handling CICAM settings if the first one of a DVB card was FTA.
 - Fixed reacting on changes in CICAM settings (needed to restart VDR before).
+- The "Blue" button in the "Main" menu now works as "Stop" button if a recording
+  is currently being replayed.

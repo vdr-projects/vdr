@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.161 2002/03/08 15:18:20 kls Exp $
+ * $Id: menu.c 1.162 2002/03/08 16:06:11 kls Exp $
  */
 
 #include "menu.h"
@@ -1394,7 +1394,7 @@ cMenuWhatsOn::cMenuWhatsOn(const cSchedules *Schedules, bool Now, int CurrentCha
 
   currentChannel = CurrentChannelNr;
   delete pArray;
-  SetHelp(tr("Record"), Now ? tr("Next") : tr("Now"), tr("Schedule"), tr("Switch"));
+  SetHelp(tr("Record"), Now ? tr("Next") : tr("Now"), tr("Button$Schedule"), tr("Switch"));
 }
 
 const cEventInfo *cMenuWhatsOn::ScheduleEventInfo(void)
@@ -1909,7 +1909,7 @@ void cMenuSetup::Set(void)
   Add(new cMenuEditIntItem( tr("LnbSLOF"),            &data.LnbSLOF));
   Add(new cMenuEditIntItem( tr("LnbFrequLo"),         &data.LnbFrequLo));
   Add(new cMenuEditIntItem( tr("LnbFrequHi"),         &data.LnbFrequHi));
-  Add(new cMenuEditBoolItem(tr("DiSEqC"),             &data.DiSEqC));
+  Add(new cMenuEditBoolItem(tr("Setup$DiSEqC"),       &data.DiSEqC));
   Add(new cMenuEditBoolItem(tr("SetSystemTime"),      &data.SetSystemTime));
   Add(new cMenuEditIntItem( tr("MarginStart"),        &data.MarginStart));
   Add(new cMenuEditIntItem( tr("MarginStop"),         &data.MarginStop));
@@ -2026,6 +2026,7 @@ cMenuMain::cMenuMain(bool Replaying, eOSState State)
 :cOsdMenu(tr("Main"))
 {
   digit = 0;
+  replaying = Replaying;
 
   // Title with disk usage:
 
@@ -2052,7 +2053,7 @@ cMenuMain::cMenuMain(bool Replaying, eOSState State)
 
   // Replay control:
 
-  if (Replaying)
+  if (replaying)
      Add(new cOsdItem(tr(" Stop replaying"), osStopReplay));
 
   // Record control:
@@ -2078,7 +2079,7 @@ cMenuMain::cMenuMain(bool Replaying, eOSState State)
 
   // Color buttons:
 
-  SetHelp(tr("Record"), cDvbApi::PrimaryDvbApi->CanToggleAudioTrack() ? tr("Language") : NULL, NULL, cReplayControl::LastReplayed() ? tr("Resume") : NULL);
+  SetHelp(tr("Record"), cDvbApi::PrimaryDvbApi->CanToggleAudioTrack() ? tr("Language") : NULL, NULL, replaying ? tr("Button$Stop") : cReplayControl::LastReplayed() ? tr("Resume") : NULL);
   Display();
   lastActivity = time(NULL);
   SetHasHotkeys();
@@ -2144,7 +2145,7 @@ eOSState cMenuMain::ProcessKey(eKeys Key)
                                 }
                              break;
                case kBlue:   if (!HasSubMenu())
-                                state = osReplay;
+                                state = replaying ? osStopReplay : osReplay;
                              break;
                default:      break;
                }

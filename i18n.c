@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.59 2002/03/03 16:38:57 kls Exp $
+ * $Id: i18n.c 1.60 2002/03/08 16:11:34 kls Exp $
  *
  * Slovenian translations provided by Miha Setina <mihasetina@softhome.net>
  * Italian   translations provided by Alberto Carraro <bertocar@tin.it>
@@ -46,6 +46,14 @@
  *    in the "Setup" menu.
  * 5. Send the modified 'i18n.c' file to <kls@cadsoft.de> to have
  *    it included in the next version of VDR.
+ *
+ * In case an English phrase is used in more than one context (and might need
+ * different translations in other languages) it can be preceeded with an
+ * arbitrary string to describe its context, separated from the actual phrase
+ * by a '$' character (see for instance "Button$Stop" vs. "Stop").
+ * Of course this means that no English phrase may contain the '$' character!
+ * If this should ever become necessary, the existing '$' would have to be
+ * replaced with something different...
  */
 
 #include "i18n.h"
@@ -291,6 +299,16 @@ const tPhrase Phrases[] = {
     "Spol tilbake",
     "Takaisinkel.",
   },
+  { "Button$Stop",
+    "Beenden",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+  },
   { "Resume",
     "Weiter",
     "Nadaljuj",
@@ -351,7 +369,7 @@ const tPhrase Phrases[] = {
     "Neste",
     "Seuraava",
   },
-  { "Schedule",
+  { "Button$Schedule",
     "Programm",
     "Urnik",
     "Programma",
@@ -926,7 +944,7 @@ const tPhrase Phrases[] = {
     "LO-frekvens i høybåndet",
     "HI LNB taajuus",
   },
-  { "DiSEqC",
+  { "Setup$DiSEqC",
     "DiSEqC",
     "DiSEqC",
     "DiSEqC",
@@ -1645,7 +1663,8 @@ const char *tr(const char *s)
          }
      esyslog(LOG_ERR, "no translation found for '%s' in language %d (%s)\n", s, Setup.OSDLanguage, Phrases[0][Setup.OSDLanguage]);
      }
-  return s;
+  const char *p = strchr(s, '$');
+  return p ? p + 1 : s;
 }
 
 const char * const * Languages(void)

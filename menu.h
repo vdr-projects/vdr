@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 1.37 2002/02/24 12:40:37 kls Exp $
+ * $Id: menu.h 1.38 2002/03/08 15:46:36 kls Exp $
  */
 
 #ifndef _MENU_H
@@ -18,6 +18,7 @@ class cMenuMain : public cOsdMenu {
 private:
   time_t lastActivity;
   int digit;
+  bool replaying;
   const char *hk(const char *s);
 public:
   cMenuMain(bool Replaying, eOSState State = osUnknown);
