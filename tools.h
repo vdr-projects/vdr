@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.7 2000/04/24 15:01:49 kls Exp $
+ * $Id: tools.h 1.8 2000/06/24 15:25:00 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -30,7 +30,7 @@ extern int SysLogLevel;
 
 #define DELETENULL(p) (delete (p), p = NULL)
 
-bool DataAvailable(int filedes);
+bool DataAvailable(int filedes, bool wait = false);
 void writechar(int filedes, char c);
 void writeint(int filedes, int n);
 char readchar(int filedes);

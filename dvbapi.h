@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.h 1.10 2000/05/20 14:50:43 kls Exp $
+ * $Id: dvbapi.h 1.11 2000/06/24 14:03:57 kls Exp $
  */
 
 #ifndef __DVBAPI_H
@@ -15,7 +15,7 @@ typedef unsigned int __u32;
 typedef unsigned short __u16;
 typedef unsigned char __u8;
 
-#if defined(DEBUG_OSD) || defined(DEBUG_REMOTE)
+#if defined(DEBUG_OSD) || defined(REMOTE_KBD)
 #include <ncurses.h>
 #endif
 #include <stdio.h>
