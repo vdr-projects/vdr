@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.20 2002/09/28 12:21:42 kls Exp $
+ * $Id: dvbdevice.c 1.21 2002/09/29 13:53:26 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -593,7 +593,7 @@ bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
          }
      if (!(status & FE_HAS_LOCK)) {
         esyslog("ERROR: channel %d not locked on DVB card %d!", Channel->number, CardIndex() + 1);
-        if (IsPrimaryDevice())
+        if (LiveView && IsPrimaryDevice())
            cThread::RaisePanic();
         return false;
         }
@@ -603,7 +603,7 @@ bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
         if (ioctl(fd_frontend, FE_GET_EVENT, &event) >= 0) {
            if (event.type != FE_COMPLETION_EV) {
               esyslog("ERROR: channel %d not sync'ed on DVB card %d!", Channel->number, CardIndex() + 1);
-              if (IsPrimaryDevice())
+              if (LiveView && IsPrimaryDevice())
                  cThread::RaisePanic();
               return false;
               }

@@ -1533,3 +1533,5 @@ Video Disk Recorder Revision History
   key to skip the definition of keys that are not available on your particular
   RC unit.
 - Fixed handling DVD subtitles in the SPU decoder (thanks to Andreas Schultz).
+- Avoiding restarts due to 'panic level' when switching channels on the primary
+  device during EPG scan.
