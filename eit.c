@@ -13,7 +13,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.c 1.17 2001/08/11 09:31:54 kls Exp $
+ * $Id: eit.c 1.18 2001/08/11 14:51:28 kls Exp $
  ***************************************************************************/
 
 #include "eit.h"
@@ -1140,7 +1140,9 @@ void cSIProcessor::SetEpgDataFileName(const char *FileName)
 
 const char *cSIProcessor::GetEpgDataFileName(void)
 {
-  return epgDataFileName ? AddDirectory(VideoDirectory, epgDataFileName) : NULL;
+  if (epgDataFileName)
+     return *epgDataFileName == '/' ? epgDataFileName : AddDirectory(VideoDirectory, epgDataFileName);
+  return NULL;
 }
 
 void cSIProcessor::SetStatus(bool On)

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.37 2001/08/11 11:14:19 kls Exp $
+ * $Id: tools.c 1.38 2001/08/11 14:49:48 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -117,10 +117,7 @@ const char *AddDirectory(const char *DirName, const char *FileName)
 {
   static char *buf = NULL;
   delete buf;
-  if (*FileName != '/')
-     asprintf(&buf, "%s/%s", DirName && *DirName ? DirName : ".", FileName);
-  else
-     buf = strdup(FileName);
+  asprintf(&buf, "%s/%s", DirName && *DirName ? DirName : ".", FileName);
   return buf;
 }
 
