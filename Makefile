@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 1.33 2002/04/01 12:50:48 kls Exp $
+# $Id: Makefile 1.33.1.1 2002/06/10 16:04:46 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -55,7 +55,7 @@ font: genfontfile fontfix.c fontosd.c
 # Implicit rules:
 
 %.o: %.c
-	g++ -g -O2 -Wall -Woverloaded-virtual -m486 -c $(DEFINES) $(INCLUDES) $<
+	g++ -g -O2 -Wall -Woverloaded-virtual -c $(DEFINES) $(INCLUDES) $<
 
 # Dependencies:
 

@@ -345,3 +345,6 @@ Tomas Prybil <tomas.prybil@copper.se>
 
 Paul Lacatus <paul@campina.iiruc.ro>
  for translating OSD texts to the Romanian language
+
+Alastair McKinstry <mckinstry@computer.org>
+ for pointing out a problem with the '-m486' compiler option on non-Intel platforms

@@ -1255,3 +1255,5 @@ Video Disk Recorder Revision History
 2002-06-10: Version 1.0.4
 
 - Added Romanian language texts (thanks to Paul Lacatus).
+- Removed compiler option '-m486' to make it work on non-Intel platforms (thanks
+  to Alastair McKinstry for pointing this out).
