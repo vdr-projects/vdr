@@ -2864,3 +2864,5 @@ Video Disk Recorder Revision History
   CA ids to be added to the channel definitions (thanks to Wayne Keer for reporting
   this one, and Marcel Wiesweg for fixing it).
 - Fixed handling colors in cDvbSpuPalette::yuv2rgb() (thanks to Marco Schlüßler).
+- Made some functions of cFont virtual to allow implementing dummy fonts for the
+  'curses' skin.

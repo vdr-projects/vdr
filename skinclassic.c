@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinclassic.c 1.6 2004/05/29 13:29:00 kls Exp $
+ * $Id: skinclassic.c 1.7 2004/05/31 14:09:00 kls Exp $
  */
 
 #include "skinclassic.h"
@@ -71,7 +71,7 @@ THEME_CLR(Theme, clrReplayProgressCurrent,  clrRed);
 
 // --- cSkinClassicDisplayChannel --------------------------------------------
 
-class cSkinClassicDisplayChannel : public cSkinDisplayChannel{
+class cSkinClassicDisplayChannel : public cSkinDisplayChannel {
 private:
   cOsd *osd;
   int lineHeight;

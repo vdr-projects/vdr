@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: font.c 1.7 2004/05/16 10:50:59 kls Exp $
+ * $Id: font.c 1.8 2004/05/31 14:09:00 kls Exp $
  */
 
 #include "config.h"
@@ -54,9 +54,13 @@ cFont::cFont(void *Data)
 
 void cFont::SetData(void *Data)
 {
-  height = ((tCharData *)Data)->height;
-  for (int i = 0; i < NUMCHARS; i++)
-      data[i] = (tCharData *)&((tPixelData *)Data)[(i < 32 ? 0 : i - 32) * (height + 2)];
+  if (Data) {
+     height = ((tCharData *)Data)->height;
+     for (int i = 0; i < NUMCHARS; i++)
+         data[i] = (tCharData *)&((tPixelData *)Data)[(i < 32 ? 0 : i - 32) * (height + 2)];
+     }
+  else
+     height = 0;
 }
 
 int cFont::Width(const char *s) const

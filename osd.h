@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.h 1.42 2004/05/28 15:25:58 kls Exp $
+ * $Id: osd.h 1.43 2004/05/31 14:09:00 kls Exp $
  */
 
 #ifndef __OSD_H
@@ -290,7 +290,7 @@ public:
        ///< -1..-8  draws the inverted part of the given quadrant(s)
        ///< If Quadrants is not 0, the coordinates are those of the actual area, not
        ///< the full circle!
-  void DrawSlope(int x1, int y1, int x2, int y2, tColor Color, int Type);
+  virtual void DrawSlope(int x1, int y1, int x2, int y2, tColor Color, int Type);
        ///< Draws a "slope" into the rectangle defined by the upper left (x1, y1) and
        ///< lower right (x2, y2) corners with the given Color. Type controls the
        ///< direction of the slope and which side of it will be drawn:

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinsttng.c 1.4 2004/05/29 13:14:09 kls Exp $
+ * $Id: skinsttng.c 1.5 2004/05/31 14:09:00 kls Exp $
  */
 
 // Star Trek: The Next Generation® is a registered trademark of Paramount Pictures
@@ -116,7 +116,7 @@ THEME_CLR(Theme, clrReplayProgressCurrent,  clrRed);
 
 // --- cSkinSTTNGDisplayChannel ----------------------------------------------
 
-class cSkinSTTNGDisplayChannel : public cSkinDisplayChannel{
+class cSkinSTTNGDisplayChannel : public cSkinDisplayChannel {
 private:
   cOsd *osd;
   int x0, x1, x2, x3, x4, x5, x6, x7;
