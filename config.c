@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.109 2002/10/13 10:03:49 kls Exp $
+ * $Id: config.c 1.110 2002/10/19 11:34:01 kls Exp $
  */
 
 #include "config.h"
@@ -680,11 +680,11 @@ cSetupLine *cSetup::Get(const char *Name, const char *Plugin)
   return NULL;
 }
 
-void cSetup::Store(const char *Name, const char *Value, const char *Plugin)
+void cSetup::Store(const char *Name, const char *Value, const char *Plugin, bool AllowMultiple)
 {
   if (Name && *Name) {
      cSetupLine *l = Get(Name, Plugin);
-     if (l)
+     if (l && !AllowMultiple)
         Del(l);
      if (Value)
         Add(new cSetupLine(Name, Value, Plugin));
@@ -726,6 +726,9 @@ bool cSetup::Load(const char *FileName)
 
 void cSetup::StoreCaCaps(const char *Name)
 {
+  cSetupLine *l;
+  while ((l = Get(Name)) != NULL)
+        Del(l);
   for (int d = 0; d < MAXDEVICES; d++) {
       char buffer[MAXPARSEBUFFER];
       char *q = buffer;
@@ -738,7 +741,7 @@ void cSetup::StoreCaCaps(const char *Name)
              }
           }
       if (*buffer)
-         Store(Name, buffer);
+         Store(Name, buffer, NULL, true);
       }
 }
 

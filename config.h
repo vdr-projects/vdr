@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.135 2002/10/13 16:12:55 kls Exp $
+ * $Id: config.h 1.136 2002/10/19 11:29:46 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -252,7 +252,7 @@ private:
   bool ParseCaCaps(const char *Value);
   bool Parse(const char *Name, const char *Value);
   cSetupLine *Get(const char *Name, const char *Plugin = NULL);
-  void Store(const char *Name, const char *Value, const char *Plugin = NULL);
+  void Store(const char *Name, const char *Value, const char *Plugin = NULL, bool AllowMultiple = false);
   void Store(const char *Name, int Value, const char *Plugin = NULL);
 public:
   // Also adjust cMenuSetup (menu.c) when adding parameters here!

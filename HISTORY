@@ -1618,3 +1618,4 @@ Video Disk Recorder Revision History
 - Updated Finnish OSD texts (thanks to Jaakko Hyvätti).
 - Fixed a small glitch when switching channels (thanks to Dennis Noordsij for
   reporting this one).
+- Fixed handling multiple 'CaCaps' entries in 'setup.conf'.
