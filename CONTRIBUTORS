@@ -172,6 +172,7 @@ Stefan Huelswitt <huels@iname.com>
  for implementing setting the "broken link" flag for GOPs at the beginning of a new
  video sequence, which avoids artefacts when cutting
  for suggesting to add VDRVERSNUM to config.h
+ for fixing a memory leak in cNonBlockingFileReader
 
 Ulrich Röder <roeder@efr-net.de>
  for pointing out that there are channels that have a symbol rate higher than

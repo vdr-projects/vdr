@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 1.21 2003/05/19 15:23:19 kls Exp $
+ * $Id: dvbplayer.c 1.22 2003/05/24 09:04:26 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -114,6 +114,7 @@ void cNonBlockingFileReader::Clear(void)
 {
   cMutexLock MutexLock(&mutex);
   f = -1;
+  free(buffer);
   buffer = NULL;
   wanted = length = 0;
   hasData = false;

@@ -2177,3 +2177,4 @@ Video Disk Recorder Revision History
 
 - Modified handling of audio packets in cDvbPlayer for better sync with external
   AC3 replay (thanks to Werner Fink).
+- Fixed a memory leak in cNonBlockingFileReader (thanks to Stefan Huelswitt).
