@@ -3287,3 +3287,10 @@ Video Disk Recorder Revision History
 - Added support for circular polarization (thanks to Jonan Santiago).
 - Thanks to Werner Fink, Reinhard Nissl, Sascha Volkenandt and Bjørnar Nilsen for
   their support in testing and fine tuning this version.
+
+2005-01-14: Version 1.3.19
+
+- Making sure at least the default skin is available at program start in case a
+  plugin needs to issue an error message (thanks to Achim Tuffentshammer for
+  reporting a crash in such a case). Also checking if there is a current skin
+  in cSkins::Message().

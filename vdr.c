@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.198 2005/01/06 14:36:40 kls Exp $
+ * $Id: vdr.c 1.199 2005/01/09 16:35:36 kls Exp $
  */
 
 #include <getopt.h>
@@ -460,15 +460,20 @@ int main(int argc, char *argv[])
 
   Interface = new cInterface(SVDRPport);
 
+  // Default skins:
+
+  new cSkinClassic;
+  new cSkinSTTNG;
+  Skins.SetCurrent(Setup.OSDSkin);
+  cThemes::Load(Skins.Current()->Name(), Setup.OSDTheme, Skins.Current()->Theme());
+
   // Start plugins:
 
   if (!PluginManager.StartPlugins())
      EXIT(2);
 
-  // Skins:
+  // Set skin and theme in case they're implemented by a plugin:
 
-  new cSkinClassic;
-  new cSkinSTTNG;
   Skins.SetCurrent(Setup.OSDSkin);
   cThemes::Load(Skins.Current()->Name(), Setup.OSDTheme, Skins.Current()->Theme());
 

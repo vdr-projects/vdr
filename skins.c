@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skins.c 1.3 2004/11/07 09:46:46 kls Exp $
+ * $Id: skins.c 1.4 2005/01/14 13:07:19 kls Exp $
  */
 
 #include "skins.h"
@@ -130,6 +130,7 @@ cSkin::cSkin(const char *Name, cTheme *Theme)
   if (theme)
      cThemes::Save(name, theme);
   Skins.Add(this);
+  Skins.SetCurrent(Name);
 }
 
 cSkin::~cSkin()
@@ -172,6 +173,8 @@ eKeys cSkins::Message(eMessageType Type, const char *s, int Seconds)
     case mtError: esyslog("ERROR: %s", s); break;
     default: ;
     }
+  if (!Current())
+     return kNone;
   if (!cSkinDisplay::Current() && !displayMessage)
      displayMessage = Current()->DisplayMessage();
   cSkinDisplay::Current()->SetMessage(Type, s);
