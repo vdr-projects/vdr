@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 1.7 2000/09/10 08:24:50 kls Exp $
+ * $Id: osd.c 1.9 2000/10/08 12:20:34 kls Exp $
  */
 
 #include "osd.h"
@@ -64,7 +64,7 @@ void cOsdItem::Display(int Offset, eDvbColor FgColor, eDvbColor BgColor)
   if (Offset >= 0)
      offset = Offset;
   if (offset >= 0)
-     Interface.WriteText(0, offset + 2, text, userColor ? fgColor : FgColor, userColor ? bgColor : BgColor);
+     Interface->WriteText(0, offset + 2, text, userColor ? fgColor : FgColor, userColor ? bgColor : BgColor);
 }
 
 eOSState cOsdItem::ProcessKey(eKeys Key)
@@ -88,7 +88,7 @@ cOsdMenu::cOsdMenu(char *Title, int c0, int c1, int c2, int c3, int c4)
   subMenu = NULL;
   helpRed = helpGreen = helpYellow = helpBlue = NULL;
   status = NULL;
-  Interface.Open();
+  Interface->Open();
 }
 
 cOsdMenu::~cOsdMenu()
@@ -96,8 +96,8 @@ cOsdMenu::~cOsdMenu()
   delete title;
   delete subMenu;
   delete status;
-  Interface.Clear();
-  Interface.Close();
+  Interface->Clear();
+  Interface->Close();
 }
 
 void cOsdMenu::SetStatus(const char *s)
@@ -105,7 +105,7 @@ void cOsdMenu::SetStatus(const char *s)
   delete status;
   status = s ? strdup(s) : NULL;
   if (visible)
-     Interface.Status(status);
+     Interface->Status(status);
 }
 
 void cOsdMenu::SetHelp(const char *Red, const char *Green, const char *Yellow, const char *Blue)
@@ -117,7 +117,7 @@ void cOsdMenu::SetHelp(const char *Red, const char *Green, const char *Yellow, c
   helpBlue   = Blue;
   if (visible)
      Display();
-     //XXX Interface.Help(helpRed, helpGreen, helpYellow, helpBlue);
+     //XXX Interface->Help(helpRed, helpGreen, helpYellow, helpBlue);
      //XXX must clear unused button areas!
 }
 
@@ -140,10 +140,10 @@ void cOsdMenu::Add(cOsdItem *Item, bool Current)
 void cOsdMenu::Display(void)
 {
   visible = true;
-  Interface.Clear();
-  Interface.SetCols(cols);
-  Interface.Title(title);
-  Interface.Help(helpRed, helpGreen, helpYellow, helpBlue);
+  Interface->Clear();
+  Interface->SetCols(cols);
+  Interface->Title(title);
+  Interface->Help(helpRed, helpGreen, helpYellow, helpBlue);
   int count = Count();
   if (count > 0) {
      if (current < 0)
@@ -164,7 +164,7 @@ void cOsdMenu::Display(void)
             break;
          }
      }
-  Interface.Status(status);
+  Interface->Status(status);
 }
 
 void cOsdMenu::RefreshCurrent(void)
@@ -274,7 +274,9 @@ eOSState cOsdMenu::ProcessKey(eKeys Key)
         return state;
      }
   switch (Key) {
+    case kUp|k_Repeat:
     case kUp:   CursorUp();   break;
+    case kDown|k_Repeat:
     case kDown: CursorDown(); break;
     case kBack: return osBack;
     case kOk:   if (marked >= 0) {

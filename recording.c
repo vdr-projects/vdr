@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.18 2000/10/03 12:39:28 kls Exp $
+ * $Id: recording.c 1.19 2000/10/08 12:20:53 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -254,7 +254,7 @@ bool cRecordings::Load(bool Deleted)
      result = Count() > 0;
      }
   else
-     Interface.Error("Error while opening pipe!");
+     Interface->Error("Error while opening pipe!");
   delete cmd;
   return result;
 }

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.23 2000/09/17 09:11:59 kls Exp $
+ * $Id: config.c 1.26 2000/10/08 16:10:40 kls Exp $
  */
 
 #include "config.h"
@@ -275,7 +275,7 @@ bool cChannel::Switch(cDvbApi *DvbApi)
          }
      return false;
      }
-  Interface.Info(DvbApi->Recording() ? "Channel locked (recording)!" : name);
+  Interface->Info(DvbApi->Recording() ? "Channel locked (recording)!" : name);
   return false;
 }
 
@@ -303,7 +303,7 @@ cTimer::cTimer(bool Instant)
   *file = 0;
   summary = NULL;
   if (Instant && ch)
-     snprintf(file, sizeof(file), "@%s", ch->name);
+     snprintf(file, sizeof(file), "%s%s", Setup.MarkInstantRecord ? "@" : "", ch->name);
 }
 
 cTimer::~cTimer()
@@ -566,7 +566,7 @@ eKeys cChannels::ShowChannel(int Number, bool Switched, bool Group)
 {
   cChannel *channel = Group ? Get(Number) : GetByNumber(Number);
   if (channel)
-     return Interface.DisplayChannel(channel->number, channel->name, !Switched || Setup.ShowInfoOnChSwitch);
+     return Interface->DisplayChannel(channel->number, channel->name, !Switched || Setup.ShowInfoOnChSwitch);
   return kNone;
 }
 
@@ -596,6 +596,9 @@ cSetup::cSetup(void)
   PrimaryDVB = 1;
   ShowInfoOnChSwitch = 1;
   MenuScrollPage = 1;
+  MarkInstantRecord = 1;
+  LnbFrequLo =  9750;
+  LnbFrequHi = 10600;
 }
 
 bool cSetup::Parse(char *s)
@@ -607,6 +610,9 @@ bool cSetup::Parse(char *s)
      if      (!strcasecmp(Name, "PrimaryDVB"))          PrimaryDVB         = atoi(Value);
      else if (!strcasecmp(Name, "ShowInfoOnChSwitch"))  ShowInfoOnChSwitch = atoi(Value);
      else if (!strcasecmp(Name, "MenuScrollPage"))      MenuScrollPage     = atoi(Value);
+     else if (!strcasecmp(Name, "MarkInstantRecord"))   MarkInstantRecord  = atoi(Value);
+     else if (!strcasecmp(Name, "LnbFrequLo"))          LnbFrequLo         = atoi(Value);
+     else if (!strcasecmp(Name, "LnbFrequHi"))          LnbFrequHi         = atoi(Value);
      else
         return false;
      return true;
@@ -651,6 +657,9 @@ bool cSetup::Save(const char *FileName)
         fprintf(f, "PrimaryDVB         = %d\n", PrimaryDVB);
         fprintf(f, "ShowInfoOnChSwitch = %d\n", ShowInfoOnChSwitch);
         fprintf(f, "MenuScrollPage     = %d\n", MenuScrollPage);
+        fprintf(f, "MarkInstantRecord  = %d\n", MarkInstantRecord);
+        fprintf(f, "LnbFrequLo         = %d\n", LnbFrequLo);
+        fprintf(f, "LnbFrequHi         = %d\n", LnbFrequHi);
         fclose(f);
         isyslog(LOG_INFO, "saved setup to %s", FileName);
         return true;

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remote.h 1.10 2000/10/03 10:45:35 kls Exp $
+ * $Id: remote.h 1.13 2000/10/08 12:11:34 kls Exp $
  */
 
 #ifndef __REMOTE_H
@@ -12,26 +12,25 @@
 
 #include <stdio.h>
 #include <time.h>
+#include "thread.h"
 #include "tools.h"
 
 class cRcIoBase {
 protected:
   time_t t;
-  int firstTime, lastTime;
-  unsigned int lastCommand;
   cRcIoBase(void);
-  virtual ~cRcIoBase();
 public:
   enum { modeH = 'h', modeB = 'b', modeS = 's' };
+  virtual ~cRcIoBase();
   virtual bool SetCode(unsigned char Code, unsigned short Address) { return true; }
   virtual bool SetMode(unsigned char Mode) { return true; }
   virtual bool Number(int n, bool Hex = false) { return true; }
   virtual void SetPoints(unsigned char Dp, bool On) {}
   virtual bool String(char *s) { return true; }
   virtual bool DetectCode(unsigned char *Code, unsigned short *Address) { return true; }
-  virtual void Flush(int WaitMs = 0) = 0;
-  virtual bool InputAvailable(bool Wait = false) = 0;
-  virtual bool GetCommand(unsigned int *Command, unsigned short *Address = NULL) = 0;
+  virtual void Flush(int WaitMs = 0) {}
+  virtual bool InputAvailable(void) = 0;
+  virtual bool GetCommand(unsigned int *Command = NULL, bool *Repeat = NULL, bool *Release = NULL) = 0;
   };
 
 #if defined REMOTE_KBD
@@ -43,23 +42,27 @@ public:
   cRcIoKBD(void);
   virtual ~cRcIoKBD();
   virtual void Flush(int WaitMs = 0);
-  virtual bool InputAvailable(bool Wait = false);
-  virtual bool GetCommand(unsigned int *Command, unsigned short *Address = NULL);
+  virtual bool InputAvailable(void);
+  virtual bool GetCommand(unsigned int *Command = NULL, bool *Repeat = NULL, bool *Release = NULL);
   };
 
 #elif defined REMOTE_RCU
 
-class cRcIoRCU : public cRcIoBase {
+class cRcIoRCU : public cRcIoBase, private cThread {
 private:
-  cFile f;
+  int f;
   unsigned char dp, code, mode;
   unsigned short address;
+  unsigned short receivedAddress;
+  unsigned int receivedCommand;
+  bool receivedData, receivedRepeat, receivedRelease;
   int lastNumber;
   bool SendCommand(unsigned char Cmd);
-  int ReceiveByte(bool Wait = true);
+  int ReceiveByte(int TimeoutMs = 0);
   bool SendByteHandshake(unsigned char c);
   bool SendByte(unsigned char c);
   bool Digit(int n, int v);
+  virtual void Action(void);
 public:
   cRcIoRCU(char *DeviceName);
   virtual ~cRcIoRCU();
@@ -70,25 +73,24 @@ public:
   virtual bool String(char *s);
   virtual bool DetectCode(unsigned char *Code, unsigned short *Address);
   virtual void Flush(int WaitMs = 0);
-  virtual bool InputAvailable(bool Wait = false);
-  virtual bool GetCommand(unsigned int *Command, unsigned short *Address = NULL);
+  virtual bool InputAvailable(void) { return receivedData; }
+  virtual bool GetCommand(unsigned int *Command = NULL, bool *Repeat = NULL, bool *Release = NULL);
   };
 
 #elif defined REMOTE_LIRC
 
-class cRcIoLIRC : public cRcIoBase {
+class cRcIoLIRC : public cRcIoBase, private cThread {
 private:
   enum { LIRC_KEY_BUF = 8, LIRC_BUFFER_SIZE = 128 };
-  cFile f;
+  int f;
   char keyName[LIRC_KEY_BUF];
-  int repeat;
-  const char *ReceiveString(void);
+  bool receivedData, receivedRepeat, receivedRelease;
+  virtual void Action(void);
 public:
   cRcIoLIRC(char *DeviceName);
   virtual ~cRcIoLIRC();
-  virtual void Flush(int WaitMs = 0);
-  virtual bool InputAvailable(bool Wait = false);
-  virtual bool GetCommand(unsigned int *Command, unsigned short *Address = NULL);
+  virtual bool InputAvailable(void) { return receivedData; }
+  virtual bool GetCommand(unsigned int *Command = NULL, bool *Repeat = NULL, bool *Release = NULL);
   };
 
 #else

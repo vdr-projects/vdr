@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.36 2000/10/03 13:52:26 kls Exp $
+ * $Id: vdr.c 1.39 2000/10/08 14:49:25 kls Exp $
  */
 
 #include <getopt.h>
@@ -161,6 +161,10 @@ int main(int argc, char *argv[])
   if (!cDvbApi::Init())
      abort();
 
+  // User interface:
+
+  Interface = new cInterface(SVDRPport);
+
   // Configuration data:
 
   if (!ConfigDirectory)
@@ -173,9 +177,8 @@ int main(int argc, char *argv[])
   Keys.SetDummyValues();
 #else
   if (!Keys.Load(AddDirectory(ConfigDirectory, KEYS_CONF)))
-     Interface.LearnKeys();
+     Interface->LearnKeys();
 #endif
-  Interface.Init(SVDRPport);
 
   cDvbApi::SetPrimaryDvbApi(Setup.PrimaryDVB);
 
@@ -215,7 +218,7 @@ int main(int argc, char *argv[])
            }
         // User Input:
         cOsdBase **Interact = Menu ? &Menu : (cOsdBase **)&ReplayControl;
-        eKeys key = Interface.GetKey(!*Interact || !(*Interact)->NeedsFastResponse());
+        eKeys key = Interface->GetKey(!*Interact || !(*Interact)->NeedsFastResponse());
         if (*Interact) {
            switch ((*Interact)->ProcessKey(key)) {
              case osMenu:   DELETENULL(Menu);
@@ -223,7 +226,12 @@ int main(int argc, char *argv[])
                             break;
              case osRecord: DELETENULL(Menu);
                             if (!cRecordControls::Start())
-                               Interface.Error("No free DVB device to record!");
+                               Interface->Error("No free DVB device to record!");
+                            break;
+             case osRecordings:
+                            DELETENULL(Menu);
+                            DELETENULL(ReplayControl);
+                            Menu = new cMenuRecordings;
                             break;
              case osReplay: DELETENULL(Menu);
                             DELETENULL(ReplayControl);
@@ -235,7 +243,7 @@ int main(int argc, char *argv[])
                             break;
              case osSwitchDvb:
                             DELETENULL(*Interact);
-                            Interface.Info("Switching primary DVB...");
+                            Interface->Info("Switching primary DVB...");
                             cDvbApi::SetPrimaryDvbApi(Setup.PrimaryDVB);
                             break;
              case osBack:
@@ -253,14 +261,16 @@ int main(int argc, char *argv[])
                   break;
              // Direct Channel Select:
              case k1 ... k9:
-                  if (!Interface.Recording())
+                  if (!Interface->Recording())
                      Menu = new cDirectChannelSelect(key);
                   break;
              // Left/Right rotates trough channel groups:
+             case kLeft|k_Repeat:
              case kLeft:
-             case kRight: if (!Interface.Recording()) {
+             case kRight|k_Repeat:
+             case kRight: if (!Interface->Recording()) {
                              int SaveGroup = CurrentGroup;
-                             if (key == kRight)
+                             if (NORMALKEY(key) == kRight)
                                 CurrentGroup = Channels.GetNextGroup(CurrentGroup) ; 
                              else
                                 CurrentGroup = Channels.GetPrevGroup(CurrentGroup < 1 ? 1 : CurrentGroup);
@@ -271,9 +281,11 @@ int main(int argc, char *argv[])
                              }
                           break;
              // Up/Down Channel Select:
+             case kUp|k_Repeat:
              case kUp:
-             case kDown: if (!Interface.Recording()) {
-                            int n = CurrentChannel + (key == kUp ? 1 : -1);
+             case kDown|k_Repeat:
+             case kDown: if (!Interface->Recording()) {
+                            int n = CurrentChannel + (NORMALKEY(key) == kUp ? 1 : -1);
                             cChannel *channel = Channels.GetByNumber(n);
                             if (channel)
                                channel->Switch();
@@ -290,7 +302,7 @@ int main(int argc, char *argv[])
   isyslog(LOG_INFO, "caught signal %d", Interrupted);
   delete Menu;
   delete ReplayControl;
-  Interface.Cleanup();
+  delete Interface;
   cDvbApi::Cleanup();
   isyslog(LOG_INFO, "exiting");
   if (SysLogLevel > 0)

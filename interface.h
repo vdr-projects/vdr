@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.h 1.13 2000/09/18 22:29:31 kls Exp $
+ * $Id: interface.h 1.16 2000/10/08 12:15:49 kls Exp $
  */
 
 #ifndef __INTERFACE_H
@@ -12,6 +12,7 @@
 
 #include "config.h"
 #include "dvbapi.h"
+#include "remote.h"
 #include "svdrp.h"
 
 class cInterface {
@@ -22,14 +23,14 @@ private:
   int cols[MaxCols];
   eKeys keyFromWait;
   cSVDRP *SVDRP;
-  unsigned int GetCh(bool Wait = true);
+  cRcIoBase *rcIo;
+  unsigned int GetCh(bool Wait = true, bool *Repeat = NULL, bool *Release = NULL);
   void QueryKeys(void);
   void HelpButton(int Index, const char *Text, eDvbColor FgColor, eDvbColor BgColor);
   eKeys Wait(int Seconds = 1, bool KeepChar = false);
 public:
-  cInterface(void);
-  void Init(int SVDRPport = 0);
-  void Cleanup(void);
+  cInterface(int SVDRPport = 0);
+  ~cInterface();
   void Open(int NumCols = MenuColumns, int NumLines = MenuLines);
   void Close(void);
   eKeys GetKey(bool Wait = true);
@@ -38,7 +39,7 @@ public:
   void ClearEol(int x, int y, eDvbColor Color = clrBackground);
   void SetCols(int *c);
   void Write(int x, int y, const char *s, eDvbColor FgColor = clrWhite, eDvbColor BgColor = clrBackground);
-  void WriteText(int x, int y, const char *s, eDvbColor FgColor = clrWhite, eDvbColor BgColor = clrBlack);
+  void WriteText(int x, int y, const char *s, eDvbColor FgColor = clrWhite, eDvbColor BgColor = clrBackground);
   void Title(const char *s);
   void Status(const char *s, eDvbColor FgColor = clrBlack, eDvbColor BgColor = clrCyan);
   void Info(const char *s);
@@ -51,6 +52,6 @@ public:
   bool Recording(void);
   };
 
-extern cInterface Interface;
+extern cInterface *Interface;
 
 #endif //__INTERFACE_H

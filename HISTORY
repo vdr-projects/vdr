@@ -212,7 +212,7 @@ Video Disk Recorder Revision History
   against the version 0.71 DVB driver file 'dvb.c').
 - When switching channels the channel is now immediately displayed, and the
   current/next information is shown as soon as it becomes available.
-- No longer displaying the year in the 'Recordings' menu to saves space for the
+- No longer displaying the year in the 'Recordings' menu to save space for the
   title.
 - The 'Recordings' menu now displays a '*' to indicate new recordings.
 - Added the description of the timers.conf file to the FORMATS file (thanks to
@@ -221,3 +221,23 @@ Video Disk Recorder Revision History
   that would display only partially).
 - In normal viewing mode the '0' key now toggles between the current and the
   previous channel.
+
+2000-10-08: Version 0.66
+
+- Remote control data is now received in a separate thread, which makes things
+  a lot smoother.
+- Repeat and release of remote control keys is now explicitly distinguished.
+- In replay mode the search forward/back and skip functions now have two modes:
+  Pressing the key shortly and releasing it starts the function, and pressing it
+  again stops it. Pressing and holding down the key starts the function and
+  releasing the key stops it.
+- The '@' character that marks an "instant recording" can now be turned off
+  in the "Setup" menu (thanks to Matthias Schniedermeyer).
+- Pressing the "Back" button while replaying now stops replaying and brings up
+  the "Recordings" menu (suggested by Carsten Koch). This can be used to easily
+  delete a recording after watching it, or to switch to a different recording.
+- The "Recordings" menu now places the cursor on the last replayed recording, if
+  that file still exists.
+- The "Blue" button in the "Main" menu can now be used to "Resume" a previously
+  stopped replay session (suggested by Martin Hammerschmid).
+- The low and high LNB frequencies can now be changed in the "Setup" menu.

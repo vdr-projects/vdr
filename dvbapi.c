@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.30 2000/10/03 13:26:16 kls Exp $
+ * $Id: dvbapi.c 1.31 2000/10/08 16:14:45 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -19,7 +19,7 @@ extern "C" {
 #include <sys/stat.h>
 #include <sys/time.h>
 #include <unistd.h>
-#include "dvbapi.h"
+#include "config.h"
 #include "interface.h"
 #include "tools.h"
 #include "videodir.h"
@@ -1657,9 +1657,9 @@ bool cDvbApi::SetChannel(int FrequencyMHz, char Polarization, int Diseqc, int Sr
      unsigned int freq = FrequencyMHz;
      front.ttk = (freq < 11700UL) ? 0 : 1;
      if (freq < 11700UL)
-        freq -=  9750UL;
+        freq -= Setup.LnbFrequLo;
      else
-        freq -= 10600UL;
+        freq -= Setup.LnbFrequHi;
      front.channel_flags = Ca ? DVB_CHANNEL_CA : DVB_CHANNEL_FTA;
      front.pnr       = Pnr;
      front.freq      = freq * 1000000UL;

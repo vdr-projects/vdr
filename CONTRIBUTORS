@@ -7,6 +7,7 @@ Carsten Koch <Carsten.Koch@icem.de>
  for adding the 'epg2timers' tool (see Tools/epg2timers)
  for his idea of using multiple disks (and for testing this feature)
  for implementing the 'new recording' indicator
+ for suggesting that the "Back" button in replay mode should bring up the "Recordings" menu
 
 Plamen Ganev <pganev@com-it.net>
  for fixing the frequency offset for Hotbird channels
@@ -31,6 +32,10 @@ Niels de Carpentier <niels@casema.net>
 
 Martin Hammerschmid <martin@hammerschmid.com>
  for suggesting to display the direct channel select input on the OSD
+ for suggesting to use the "Blue" button in the main menu to resume replay
 
 Bastian Guse <bastian@nocopy.de>
  for writing the FORMATS entry for timers.conf
+
+Matthias Schniedermeyer <ms@citd.de>
+ for implementing the 'MarkInstantRecord' setup option.

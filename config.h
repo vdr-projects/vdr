@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.22 2000/10/01 14:14:18 kls Exp $
+ * $Id: config.h 1.27 2000/10/08 16:33:48 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -17,7 +17,7 @@
 #include "dvbapi.h"
 #include "tools.h"
 
-#define VDRVERSION "0.65"
+#define VDRVERSION "0.66"
 
 #define MaxBuffer 10000
 
@@ -34,8 +34,16 @@ enum eKeys { // "Up" and "Down" must be the first two keys!
              kYellow,
              kBlue,
              k0, k1, k2, k3, k4, k5, k6, k7, k8, k9,
-             kNone
+             kNone,
+             // The following flags are OR'd with the above codes:
+             k_Repeat  = 0x8000,
+             k_Release = 0x4000,
+             k_Flags   = k_Repeat | k_Release,
            };
+
+#define RAWKEY(k)    ((k) & ~k_Flags)
+#define ISRAWKEY(k)  ((k) != kNone && ((k) & k_Flags) == 0)
+#define NORMALKEY(k) ((k) & ~k_Repeat)
 
 struct tKey {
   eKeys type;
@@ -223,6 +231,9 @@ public:
   int PrimaryDVB;
   int ShowInfoOnChSwitch;
   int MenuScrollPage;
+  int MarkInstantRecord;
+  int LnbFrequLo;
+  int LnbFrequHi;
   cSetup(void);
   bool Load(const char *FileName);
   bool Save(const char *FileName = NULL);

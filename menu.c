@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.30 2000/10/03 14:06:44 kls Exp $
+ * $Id: menu.c 1.36 2000/10/08 16:11:22 kls Exp $
  */
 
 #include "menu.h"
@@ -13,7 +13,6 @@
 #include <stdio.h>
 #include <string.h>
 #include "config.h"
-#include "recording.h"
 
 #define MENUTIMEOUT 120 // seconds
 
@@ -94,11 +93,11 @@ eOSState cMenuEditIntItem::ProcessKey(eKeys Key)
            }
         newValue = *value  * 10 + (Key - k0);
         }
-     else if (Key == kLeft) { // TODO might want to increase the delta if repeated quickly?
+     else if (NORMALKEY(Key) == kLeft) { // TODO might want to increase the delta if repeated quickly?
         newValue = *value - 1;
         fresh = true;
         }
-     else if (Key == kRight) {
+     else if (NORMALKEY(Key) == kRight) {
         newValue = *value + 1;
         fresh = true;
         }
@@ -211,6 +210,7 @@ void cMenuEditDayItem::Set(void)
 eOSState cMenuEditDayItem::ProcessKey(eKeys Key)
 {
   switch (Key) {
+    case kLeft|k_Repeat:
     case kLeft:  if (d > 0)
                     *value = days[--d];
                  else if (d == 0) {
@@ -225,6 +225,7 @@ eOSState cMenuEditDayItem::ProcessKey(eKeys Key)
                     return cMenuEditIntItem::ProcessKey(Key);
                  Set();
                  break;
+    case kRight|k_Repeat:
     case kRight: if (d >= 0) {
                     *value = days[++d];
                     if (*value == 0) {
@@ -310,7 +311,7 @@ eOSState cMenuEditTimeItem::ProcessKey(eKeys Key)
                   break;
           }
         }
-     else if (Key == kLeft) { // TODO might want to increase the delta if repeated quickly?
+     else if (NORMALKEY(Key) == kLeft) { // TODO might want to increase the delta if repeated quickly?
         if (--mm < 0) {
            mm = 59;
            if (--hh < 0)
@@ -318,7 +319,7 @@ eOSState cMenuEditTimeItem::ProcessKey(eKeys Key)
            }
         fresh = true;
         }
-     else if (Key == kRight) {
+     else if (NORMALKEY(Key) == kRight) {
         if (++mm > 59) {
            mm = 0;
            if (++hh > 23)
@@ -377,11 +378,11 @@ eOSState cMenuEditChrItem::ProcessKey(eKeys Key)
   eOSState state = cMenuEditItem::ProcessKey(Key);
 
   if (state == osUnknown) {
-     if (Key == kLeft) {
+     if (NORMALKEY(Key) == kLeft) {
         if (current > allowed)
            current--;
         }
-     else if (Key == kRight) {
+     else if (NORMALKEY(Key) == kRight) {
         if (*(current + 1))
            current++;
         }
@@ -455,12 +456,14 @@ char cMenuEditStrItem::Inc(char c, bool Up)
 eOSState cMenuEditStrItem::ProcessKey(eKeys Key)
 {
   switch (Key) {
+    case kLeft|k_Repeat:
     case kLeft:  if (pos > 0) {
                     if (value[pos] == '^')
                        value[pos] = 0;
                     pos--;
                     }
                  break;
+    case kRight|k_Repeat:
     case kRight: if (pos < length && value[pos] != '^' && (pos < int(strlen(value) - 1) || value[pos] != ' ')) {
                     if (++pos >= int(strlen(value))) {
                        value[pos] = ' ';
@@ -468,9 +471,11 @@ eOSState cMenuEditStrItem::ProcessKey(eKeys Key)
                        }
                     }
                  break;
+    case kUp|k_Repeat:
     case kUp:
+    case kDown|k_Repeat:
     case kDown:  if (pos >= 0)
-                    value[pos] = Inc(value[pos], Key == kUp);
+                    value[pos] = Inc(value[pos], NORMALKEY(Key) == kUp);
                  else
                     return cMenuEditItem::ProcessKey(Key);
                  break;
@@ -635,11 +640,11 @@ eOSState cMenuChannels::Del(void)
      // Check if there is a timer using this channel:
      for (cTimer *ti = Timers.First(); ti; ti = (cTimer *)ti->Next()) {
          if (ti->channel == DeletedChannel) {
-            Interface.Error("Channel is being used by a timer!");
+            Interface->Error("Channel is being used by a timer!");
             return osContinue;
             }
          }
-     if (Interface.Confirm("Delete Channel?")) {
+     if (Interface->Confirm("Delete Channel?")) {
         // Move and renumber the channels:
         Channels.Del(channel);
         Channels.ReNumber();
@@ -916,7 +921,7 @@ eOSState cMenuTimers::Del(void)
   cTimer *ti = Timers.Get(Index);
   if (ti) {
      if (!ti->recording) {
-        if (Interface.Confirm("Delete Timer?")) {
+        if (Interface->Confirm("Delete Timer?")) {
            Timers.Del(Timers.Get(Index));
            cOsdMenu::Del(Index);
            Timers.Save();
@@ -925,7 +930,7 @@ eOSState cMenuTimers::Del(void)
            }
         }
      else
-        Interface.Error("Timer is recording!");
+        Interface->Error("Timer is recording!");
      }
   return osContinue;
 }
@@ -990,28 +995,19 @@ void cMenuRecordingItem::Set(void)
 
 // --- cMenuRecordings -------------------------------------------------------
 
-class cMenuRecordings : public cOsdMenu {
-private:
-  cRecordings Recordings;
-  eOSState Play(void);
-  eOSState Del(void);
-  eOSState Summary(void);
-public:
-  cMenuRecordings(void);
-  virtual eOSState ProcessKey(eKeys Key);
-  };
-
 cMenuRecordings::cMenuRecordings(void)
 :cOsdMenu("Recordings", 6, 6)
 {
   if (Recordings.Load()) {
+     const char *lastReplayed = cReplayControl::LastReplayed();
      cRecording *recording = Recordings.First();
      while (recording) {
-           Add(new cMenuRecordingItem(recording));
+           Add(new cMenuRecordingItem(recording), lastReplayed && strcmp(lastReplayed, recording->FileName()) == 0);
            recording = Recordings.Next(recording);
            }
      }
-  SetHelp("Play", NULL/*XXX"Resume"*/, "Delete", "Summary");
+  SetHelp("Play", NULL, "Delete", "Summary");
+  Display();
 }
 
 eOSState cMenuRecordings::Play(void)
@@ -1030,17 +1026,18 @@ eOSState cMenuRecordings::Del(void)
   if (ri) {
 //XXX what if this recording's file is currently in use???
 //XXX     if (!ti->recording) {
-        if (Interface.Confirm("Delete Recording?")) {
+        if (Interface->Confirm("Delete Recording?")) {
            if (ri->recording->Delete()) {
+              cReplayControl::ClearLastReplayed(ri->recording->FileName());
               cOsdMenu::Del(Current());
               Display();
               }
            else
-              Interface.Error("Error while deleting recording!");
+              Interface->Error("Error while deleting recording!");
            }
 //XXX        }
 //XXX     else
-//XXX        Interface.Error("Timer is recording!");
+//XXX        Interface->Error("Timer is recording!");
      }
   return osContinue;
 }
@@ -1065,6 +1062,7 @@ eOSState cMenuRecordings::ProcessKey(eKeys Key)
        case kRed:    return Play();
        case kYellow: return Del();
        case kBlue:   return Summary();
+       case kMenu:   return osEnd;
        default: break;
        }
      }
@@ -1088,6 +1086,9 @@ cMenuSetup::cMenuSetup(void)
   Add(new cMenuEditIntItem( "PrimaryDVB",         &data.PrimaryDVB, 1, cDvbApi::NumDvbApis));
   Add(new cMenuEditBoolItem("ShowInfoOnChSwitch", &data.ShowInfoOnChSwitch));
   Add(new cMenuEditBoolItem("MenuScrollPage",     &data.MenuScrollPage));
+  Add(new cMenuEditBoolItem("MarkInstantRecord",  &data.MarkInstantRecord));
+  Add(new cMenuEditIntItem( "LnbFrequLo",         &data.LnbFrequLo));
+  Add(new cMenuEditIntItem( "LnbFrequHi",         &data.LnbFrequHi));
 }
 
 eOSState cMenuSetup::ProcessKey(eKeys Key)
@@ -1126,7 +1127,7 @@ cMenuMain::cMenuMain(bool Replaying)
         Add(new cOsdItem(buffer, osStopRecord));
         delete buffer;
         }
-  SetHelp("Record");
+  SetHelp("Record", NULL, NULL, cReplayControl::LastReplayed() ? "Resume" : NULL);
   Display();
   lastActivity = time(NULL);
 }
@@ -1140,7 +1141,7 @@ eOSState cMenuMain::ProcessKey(eKeys Key)
     case osTimer:      return AddSubMenu(new cMenuTimers);
     case osRecordings: return AddSubMenu(new cMenuRecordings);
     case osSetup:      return AddSubMenu(new cMenuSetup);
-    case osStopRecord: if (Interface.Confirm("Stop Recording?")) {
+    case osStopRecord: if (Interface->Confirm("Stop Recording?")) {
                           cOsdItem *item = Get(Current());
                           if (item) {
                              cRecordControls::Stop(item->Text() + strlen(STOP_RECORDING));
@@ -1151,6 +1152,9 @@ eOSState cMenuMain::ProcessKey(eKeys Key)
                case kMenu: state = osEnd;    break;
                case kRed:  if (!HasSubMenu())
                               state = osRecord;
+                           break;
+               case kBlue: if (!HasSubMenu())
+                              state = osReplay;
                            break;
                default:    break;
                }
@@ -1172,15 +1176,15 @@ cDirectChannelSelect::cDirectChannelSelect(eKeys FirstKey)
   oldNumber = CurrentChannel;
   number = 0;
   lastTime = time_ms();
-  Interface.Open(MenuColumns, 1);
+  Interface->Open(MenuColumns, 1);
   ProcessKey(FirstKey);
 }
 
 cDirectChannelSelect::~cDirectChannelSelect()
 {
   if (number < 0)
-     Interface.DisplayChannel(oldNumber);
-  Interface.Close();
+     Interface->DisplayChannel(oldNumber);
+  Interface->Close();
 }
 
 eOSState cDirectChannelSelect::ProcessKey(eKeys Key)
@@ -1194,9 +1198,9 @@ eOSState cDirectChannelSelect::ProcessKey(eKeys Key)
             int BufSize = MenuColumns + 1;
             char buffer[BufSize];
             snprintf(buffer, BufSize, "%d  %s", number, Name);
-            Interface.DisplayChannel(number);
-            Interface.Clear();
-            Interface.Write(0, 0, buffer);
+            Interface->DisplayChannel(number);
+            Interface->Clear();
+            Interface->Write(0, 0, buffer);
             lastTime = time_ms();
             if (!channel) {
                number = -1;
@@ -1235,14 +1239,14 @@ cRecordControl::cRecordControl(cDvbApi *DvbApi, cTimer *Timer)
   cRecording Recording(timer);
   if (dvbApi->StartRecord(Recording.FileName()))
      Recording.WriteSummary();
-  Interface.DisplayRecording(dvbApi->Index(), true);
+  Interface->DisplayRecording(dvbApi->Index(), true);
 }
 
 cRecordControl::~cRecordControl()
 {
   Stop(true);
   delete instantId;
-  Interface.DisplayRecording(dvbApi->Index(), false);
+  Interface->DisplayRecording(dvbApi->Index(), false);
 }
 
 void cRecordControl::Stop(bool KeepInstant)
@@ -1357,10 +1361,23 @@ void cReplayControl::SetRecording(const char *FileName, const char *Title)
   title = Title ? strdup(Title) : NULL;
 }
 
+const char *cReplayControl::LastReplayed(void)
+{
+  return fileName;
+}
+
+void cReplayControl::ClearLastReplayed(const char *FileName)
+{
+  if (fileName && FileName && strcmp(fileName, FileName) == 0) {
+     delete fileName;
+     fileName = NULL;
+     }
+}
+
 void cReplayControl::Show(void)
 {
   if (!visible) {
-     Interface.Open(MenuColumns, -3);
+     Interface->Open(MenuColumns, -3);
      needsFastResponse = visible = true;
      shown = dvbApi->ShowProgress(true);
      }
@@ -1369,7 +1386,7 @@ void cReplayControl::Show(void)
 void cReplayControl::Hide(void)
 {
   if (visible) {
-     Interface.Close();
+     Interface->Close();
      needsFastResponse = visible = false;
      }
 }
@@ -1388,10 +1405,16 @@ eOSState cReplayControl::ProcessKey(eKeys Key)
                    return osEnd;
     case kLeft:    dvbApi->Backward(); break;
     case kRight:   dvbApi->Forward(); break;
+    case kLeft|k_Release:
+    case kRight|k_Release:
+                   dvbApi->Play(); break;
+    case kGreen|k_Repeat:
     case kGreen:   dvbApi->Skip(-60); break;
+    case kYellow|k_Repeat:
     case kYellow:  dvbApi->Skip(60); break;
     case kMenu:    Hide(); return osMenu; // allow direct switching to menu
     case kOk:      visible ? Hide() : Show(); break;
+    case kBack:    return osRecordings;
     default:       return osUnknown;
     }
   return osContinue;
