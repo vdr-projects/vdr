@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.25 2000/12/24 12:38:22 kls Exp $
+ * $Id: tools.c 1.26 2001/01/13 12:17:30 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -120,7 +120,7 @@ const char *AddDirectory(const char *DirName, const char *FileName)
   return buf;
 }
 
-#define DFCMD  "df -m %s"
+#define DFCMD  "df -m '%s'"
 
 uint FreeDiskSpaceMB(const char *Directory)
 {

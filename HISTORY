@@ -335,3 +335,5 @@ Video Disk Recorder Revision History
 - Fixed starting a replay session when the program is currently in "transfer
   mode".
 - Fixed setting/modifying timers via SVDRP with empty summary fields.
+- Fixed a problem with recordings that have a single quote character in their
+  name (this is now mapped to 0x01).

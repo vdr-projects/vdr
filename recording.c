@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.23 2001/01/01 14:48:03 kls Exp $
+ * $Id: recording.c 1.24 2001/01/13 12:17:15 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -126,6 +126,7 @@ cRecording::cRecording(const char *FileName)
         strncpy(name, FileName, p - FileName);
         name[p - FileName] = 0;
         strreplace(name, '_', ' ');
+        strreplace(name, '\x01', '\'');
         }
      // read an optional summary file:
      char *SummaryFileName = NULL;
@@ -176,8 +177,10 @@ const char *cRecording::FileName(void)
   if (!fileName) {
      struct tm *t = localtime(&start);
      asprintf(&fileName, NAMEFORMAT, VideoDirectory, name, t->tm_year + 1900, t->tm_mon + 1, t->tm_mday, t->tm_hour, t->tm_min, priority, lifetime);
-     if (fileName)
+     if (fileName) {
         strreplace(fileName, ' ', '_');
+        strreplace(fileName, '\'', '\x01');
+        }
      }
   return fileName;
 }
