@@ -2667,6 +2667,11 @@ Video Disk Recorder Revision History
   now initiates an "emergency exit" if the number of UPT errors during one
   recording exceeds 10 (suggested by Gregoire Favre). Since the UPT error doesn't
   happen on my system, this has not been explicitly tested.
+  The "preliminary fix" for the UPT error in VDR/dvbdevice.c has been disabled
+  by default, since it makes channel switching unpleasently slow. If you want
+  to have that workaround back, you can uncomment the line
+  //#define WAIT_FOR_LOCK_AFTER_TUNING 1
+  in VDR/dvbdevice.c.
 - Adapted the 'sky' plugin to use the actual channel IDs, and to fetch EPG data
   from www.bleb.org.
 - Limited automatic retuning to devices that actually provide the transponder
