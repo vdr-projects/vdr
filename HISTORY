@@ -2214,3 +2214,5 @@ Video Disk Recorder Revision History
 - Some corrections to the French OSD texts (thanks to Olivier Jacques).
 - Fixed some missing commas in i18n.c (thanks to Dimitrios Dimitrakos for
   reporting this problem).
+- Some corrections to the Finnish OSD texts (thanks to Niko Tarnanen and Rolf
+  Ahrenberg).
