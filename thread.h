@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.h 1.24 2004/10/24 11:00:32 kls Exp $
+ * $Id: thread.h 1.25 2004/11/26 13:33:26 kls Exp $
  */
 
 #ifndef __THREAD_H
@@ -74,6 +74,7 @@ class cThread {
   friend class cThreadLock;
 private:
   pthread_t parentTid, childTid;
+  cMutex childTidMutex;
   cMutex mutex;
   char *description;
   static bool emergencyExitRequested;

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 1.37 2004/11/20 16:21:14 kls Exp $
+ * $Id: thread.c 1.38 2004/11/26 13:50:37 kls Exp $
  */
 
 #include "thread.h"
@@ -221,19 +221,22 @@ void cThread::SetDescription(const char *Description, ...)
 
 void *cThread::StartThread(cThread *Thread)
 {
+  Thread->childTidMutex.Lock();
   Thread->childTid = pthread_self();
+  Thread->childTidMutex.Unlock();
   if (Thread->description)
      dsyslog("%s thread started (pid=%d, tid=%ld)", Thread->description, getpid(), Thread->childTid);
   Thread->Action();
   if (Thread->description)
      dsyslog("%s thread ended (pid=%d, tid=%ld)", Thread->description, getpid(), Thread->childTid);
+  Thread->childTidMutex.Lock();
   Thread->childTid = 0;
+  Thread->childTidMutex.Unlock();
   return NULL;
 }
 
 bool cThread::Start(void)
 {
-  Lock();
   if (!childTid) {
      parentTid = pthread_self();
      pthread_t Tid;
@@ -241,7 +244,6 @@ bool cThread::Start(void)
      pthread_detach(Tid); // auto-reap
      pthread_setschedparam(Tid, SCHED_RR, 0);
      }
-  Unlock();
   return true; //XXX return value of pthread_create()???
 }
 
@@ -257,6 +259,7 @@ bool cThread::Active(void)
      // As in kill(), if sig is zero, error checking is
      // performed but no signal is actually sent.
      //
+     cMutexLock MutexLock(&childTidMutex);
      int err;
      if ((err = pthread_kill(childTid, 0)) != 0) {
         if (err != ESRCH)
@@ -280,12 +283,12 @@ void cThread::Cancel(int WaitSeconds)
             }
         esyslog("ERROR: thread %ld won't end (waited %d seconds) - cancelling it...", childTid, WaitSeconds);
         }
-     Lock();
+     childTidMutex.Lock();
      if (childTid) {
         pthread_cancel(childTid);
         childTid = 0;
         }
-     Unlock();
+     childTidMutex.Unlock();
      }
 }
 
