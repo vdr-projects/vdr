@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.290 2004/02/22 13:32:07 kls Exp $
+ * $Id: menu.c 1.291 2004/02/22 13:43:55 kls Exp $
  */
 
 #include "menu.h"
@@ -1238,11 +1238,13 @@ cMenuWhatsOn::cMenuWhatsOn(const cSchedules *Schedules, bool Now, int CurrentCha
 :cOsdMenu(Now ? tr("What's on now?") : tr("What's on next?"), CHNUMWIDTH, 7, 6)
 {
   for (cChannel *Channel = Channels.First(); Channel; Channel = Channels.Next(Channel)) {
-      const cSchedule *Schedule = Schedules->GetSchedule(Channel->GetChannelID());
-      if (Schedule) {
-         const cEvent *Event = Now ? Schedule->GetPresentEvent() : Schedule->GetFollowingEvent();
-         if (Event)
-            Add(new cMenuWhatsOnItem(Event, Channel), Channel->Number() == CurrentChannelNr);
+      if (!Channel->GroupSep()) {
+         const cSchedule *Schedule = Schedules->GetSchedule(Channel->GetChannelID());
+         if (Schedule) {
+            const cEvent *Event = Now ? Schedule->GetPresentEvent() : Schedule->GetFollowingEvent();
+            if (Event)
+               Add(new cMenuWhatsOnItem(Event, Channel), Channel->Number() == CurrentChannelNr);
+            }
          }
       }
   currentChannel = CurrentChannelNr;
