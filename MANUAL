@@ -24,7 +24,7 @@ Version 1.2
   Green   -           Language     New        New        Ins/Ovr       Rewind            Skip -60s
   Yellow  -           Pause live   Delete     Delete     Delete        Delete            Skip +60s
   Blue    -           Stop/Resume  Mark       On/Off(1)  -             Summary           Stop
-  0..9    Ch select   -            -          -          Numeric inp.  Exec cmd(2)       Editing
+  0..9    Ch select   -            Sort(3)    -          Numeric inp.  Exec cmd(2)       Editing
 
   In a numerical input field (like the response to a CAM enquiry) the keys 0..9
   are used to enter the data, and the Left key can be used to delete the last
@@ -71,6 +71,8 @@ Version 1.2
       has been enabled in the "Setup" menu. Otherwise the Blue button is used
       to "mark" a timer for moving.
   (2) See "Processing Recordings" below.
+  (3) In the "Channels" menu the '0' key switches the sort mode through "by number",
+      "by name" and "by provider".
 
 * Navigating through the On Screen Menus
 

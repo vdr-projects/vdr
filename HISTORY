@@ -3109,3 +3109,7 @@ Video Disk Recorder Revision History
   cListObject::operator<() has been replaced with cListObject::Compare().
   Plugins that implement derived cListObject classes may need to adjust their
   code.
+- The "Channels" menu can now be sorted "by number" (default), "by name" and
+  "by provider". While in the "Channels" menu, pressing the '0' key switches
+  through these modes.
+

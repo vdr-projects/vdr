@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.318 2004/11/01 10:40:38 kls Exp $
+ * $Id: menu.c 1.319 2004/11/01 13:49:40 kls Exp $
  */
 
 #include "menu.h"
@@ -327,13 +327,22 @@ eOSState cMenuEditChannel::ProcessKey(eKeys Key)
 // --- cMenuChannelItem ------------------------------------------------------
 
 class cMenuChannelItem : public cOsdItem {
+public:
+  enum eChannelSortMode { csmNumber, csmName, csmProvider };
 private:
+  static eChannelSortMode sortMode;
   cChannel *channel;
 public:
   cMenuChannelItem(cChannel *Channel);
+  static void SetSortMode(eChannelSortMode SortMode) { sortMode = SortMode; }
+  static void IncSortMode(void) { sortMode = eChannelSortMode((sortMode == csmProvider) ? csmNumber : sortMode + 1); }
+  virtual int Compare(const cListObject &ListObject) const;
   virtual void Set(void);
   cChannel *Channel(void) { return channel; }
+  static eChannelSortMode SortMode(void) { return sortMode; }
   };
+
+cMenuChannelItem::eChannelSortMode cMenuChannelItem::sortMode = csmNumber;
 
 cMenuChannelItem::cMenuChannelItem(cChannel *Channel)
 {
@@ -343,11 +352,28 @@ cMenuChannelItem::cMenuChannelItem(cChannel *Channel)
   Set();
 }
 
+int cMenuChannelItem::Compare(const cListObject &ListObject) const
+{
+  cMenuChannelItem *p = (cMenuChannelItem *)&ListObject;
+  int r = -1;
+  if (sortMode == csmProvider)
+     r = strcoll(channel->Provider(), p->channel->Provider());
+  if (sortMode == csmName || r == 0)
+     r = strcoll(channel->Name(), p->channel->Name());
+  if (sortMode == csmNumber || r == 0)
+     r = channel->Number() - p->channel->Number();
+  return r;
+}
+
 void cMenuChannelItem::Set(void)
 {
   char *buffer = NULL;
-  if (!channel->GroupSep())
-     asprintf(&buffer, "%d\t%s", channel->Number(), channel->Name());
+  if (!channel->GroupSep()) {
+     if (sortMode == csmProvider)
+        asprintf(&buffer, "%d\t%s - %s", channel->Number(), channel->Provider(), channel->Name());
+     else
+        asprintf(&buffer, "%d\t%s", channel->Number(), channel->Name());
+     }
   else
      asprintf(&buffer, "---\t%s ----------------------------------------------------------------", channel->Name());
   SetText(buffer, false);
@@ -357,6 +383,7 @@ void cMenuChannelItem::Set(void)
 
 class cMenuChannels : public cOsdMenu {
 private:
+  void Setup(void);
   cChannel *GetChannel(int Index);
   void Propagate(void);
 protected:
@@ -374,17 +401,35 @@ public:
 cMenuChannels::cMenuChannels(void)
 :cOsdMenu(tr("Channels"), CHNUMWIDTH)
 {
-  for (cChannel *channel = Channels.First(); channel; channel = Channels.Next(channel)) {
-      if (!channel->GroupSep() || *channel->Name())
-         Add(new cMenuChannelItem(channel), channel->Number() == cDevice::CurrentChannel());
-      }
-  SetHelp(tr("Edit"), tr("New"), tr("Delete"), tr("Mark"));
+  Setup();
   Channels.IncBeingEdited();
 }
 
 cMenuChannels::~cMenuChannels()
 {
   Channels.DecBeingEdited();
+}
+
+void cMenuChannels::Setup(void)
+{
+  cChannel *currentChannel = GetChannel(Current());
+  if (!currentChannel)
+     currentChannel = Channels.GetByNumber(cDevice::CurrentChannel());
+  cMenuChannelItem *currentItem = NULL;
+  Clear();
+  for (cChannel *channel = Channels.First(); channel; channel = Channels.Next(channel)) {
+      if (!channel->GroupSep() || cMenuChannelItem::SortMode() == cMenuChannelItem::csmNumber && *channel->Name()) {
+         cMenuChannelItem *item = new cMenuChannelItem(channel);
+         Add(item);
+         if (channel == currentChannel)
+            currentItem = item;
+         }
+      }
+  if (cMenuChannelItem::SortMode() != cMenuChannelItem::csmNumber)
+     Sort();
+  SetCurrent(currentItem);
+  SetHelp(tr("Edit"), tr("New"), tr("Delete"), cMenuChannelItem::SortMode() == cMenuChannelItem::csmNumber ? tr("Mark") : NULL);
+  Display();
 }
 
 cChannel *cMenuChannels::GetChannel(int Index)
@@ -486,11 +531,14 @@ eOSState cMenuChannels::ProcessKey(eKeys Key)
     default:
          if (state == osUnknown) {
             switch (Key) {
+              case k0:      cMenuChannelItem::IncSortMode();
+                            Setup();
+                            break;
               case kOk:     return Switch();
               case kRed:    return Edit();
               case kGreen:  return New();
               case kYellow: return Delete();
-              case kBlue:   if (!HasSubMenu())
+              case kBlue:   if (!HasSubMenu() && cMenuChannelItem::SortMode() == cMenuChannelItem::csmNumber)
                                Mark();
                             break;
               default: break;
