@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.265 2003/08/09 10:14:44 kls Exp $
+ * $Id: menu.c 1.266 2003/08/16 10:17:49 kls Exp $
  */
 
 #include "menu.h"
@@ -3001,6 +3001,8 @@ cRecordControl::cRecordControl(cDevice *Device, cTimer *Timer, bool Pause)
      else {
         Timers.Del(timer);
         Timers.Save();
+        if (!cReplayControl::LastReplayed()) // an instant recording, maybe from cRecordControls::PauseLiveVideo()
+           cReplayControl::SetRecording(fileName, Recording.Name());
         }
      timer = NULL;
      return;

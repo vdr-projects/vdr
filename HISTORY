@@ -2302,3 +2302,5 @@ Video Disk Recorder Revision History
   mode (thanks to Rainer Zocholl for reporting this one).
 - VDR now stops with exit status 2 if one of the configuration files can't be
   read correctly at program startup (suggested by Rainer Zocholl).
+- Fixed a crash when starting "Pause live video" twice within the same minute on
+  the same channel.
