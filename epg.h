@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.h 1.1 2003/12/22 13:03:10 kls Exp $
+ * $Id: epg.h 1.2 2003/12/24 13:20:35 kls Exp $
  */
 
 #ifndef __EPG_H
@@ -26,6 +26,7 @@ private:
   tChannelID channelID;  // Channel ID of program for this event
   u_int16_t eventID;     // Event ID of this event
   uchar tableID;         // Table ID this event came from
+  uchar version;         // Version number of section this event came from
   //XXX present/following obsolete???
   bool isPresent;        // true if this is the present event running
   bool isFollowing;      // true if this is the next event on this channel
@@ -41,7 +42,8 @@ public:
   ~cEvent();
   tChannelID ChannelID(void) const { return channelID; }
   u_int16_t EventID(void) const { return eventID; }
-  const uchar TableID(void) const { return tableID; }
+  uchar TableID(void) const { return tableID; }
+  uchar Version(void) const { return version; }
   bool IsPresent(void) const { return isPresent; }
   bool IsFollowing(void) const { return isFollowing; }
   const char *Title(void) const { return title; }
@@ -53,7 +55,9 @@ public:
   const char *GetDateString(void) const;
   const char *GetTimeString(void) const;
   const char *GetEndTimeString(void) const;
+  void SetEventID(u_int16_t EventID);
   void SetTableID(uchar TableID);
+  void SetVersion(uchar Version);
   void SetIsPresent(bool IsPresent);
   void SetIsFollowing(bool IsFollowing);
   void SetTitle(const char *Title);

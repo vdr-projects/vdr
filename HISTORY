@@ -2511,3 +2511,4 @@ Video Disk Recorder Revision History
 - Now the CA descriptors are sent to the CAM in the 'program' or 'ES level'
   sections, depending on where they are found in the PMT (thanks to Hans-Peter
   Raschke for reporting this one). This should make SkyCrypt CAMs work.
+- Now using the 'version number' of EPG events to avoid unnecessary work.

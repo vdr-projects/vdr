@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 1.1 2003/12/22 13:07:32 kls Exp $
+ * $Id: epg.c 1.2 2003/12/25 12:47:26 kls Exp $
  */
 
 #include "epg.h"
@@ -21,6 +21,7 @@ cEvent::cEvent(tChannelID ChannelID, u_int16_t EventID)
   channelID = ChannelID;
   eventID = EventID;
   tableID = 0;
+  version = 0xFF; // actual version numbers are 0..31
   isPresent = isFollowing = false;
   title = NULL;
   shortText = NULL;
@@ -37,9 +38,19 @@ cEvent::~cEvent()
   free(description);
 }
 
+void cEvent::SetEventID(u_int16_t EventID)
+{
+  eventID = EventID;
+}
+
 void cEvent::SetTableID(uchar TableID)
 {
   tableID = TableID;
+}
+
+void cEvent::SetVersion(uchar Version)
+{
+  version = Version;
 }
 
 void cEvent::SetIsPresent(bool IsPresent)

@@ -8,7 +8,7 @@
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  * Adapted to 'libsi' for VDR 1.3.0 by Marcel Wiesweg <marcel.wiesweg@gmx.de>.
  *
- * $Id: eit.c 1.82 2003/12/22 10:57:09 kls Exp $
+ * $Id: eit.c 1.83 2003/12/25 12:48:47 kls Exp $
  */
 
 #include "eit.h"
@@ -64,10 +64,31 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data)
          if (pEvent->TableID() == 0x00)
             continue;
          // If the new event comes from a table that belongs to an "other TS" and the existing
-         // one comes from an "actual TS" table, lets skip it.
-         if ((!isActualTS()) && (pEvent->TableID() == 0x4E || pEvent->TableID() == 0x50 || pEvent->TableID() == 0x51))
+         // one comes from an "actual TS" table, let's skip it.
+         #define ISACTUALTS(tid) (tid == 0x4E || (tid & 0x50) == 0x50)
+         if (!ISACTUALTS(Tid) && ISACTUALTS(pEvent->TableID()))
+            continue;
+         // If the new event comes from a "schedule" table and the existing one comes from
+         // a "present/following" table, let's skip it (the p/f table usually contains more
+         // information, like e.g. a description).
+         if ((Tid & 0x50) == 0x50 && pEvent->TableID() == 0x4E || (Tid & 0x60) == 0x60 && pEvent->TableID() == 0x4F)
+            continue;
+         // If both events come from the same "schedule" table and the new event's table id is larger than the
+         // existing one's, let's skip it (higher tids mean "farther in the future" and usually have less information).
+         if (((Tid & 0x50) == 0x50 || (Tid & 0x60) == 0x60) && (pEvent->TableID() & 0xF0) == (Tid & 0xF0) && (Tid > pEvent->TableID()))
+            continue;
+         // If the new event comes from the same table and has the same version number
+         // as the existing one, let's skip it to avoid unnecessary work.
+         // Unfortunately some stations (like, e.g. "Premiere") broadcast their EPG data on several transponders (like
+         // the actual Premiere transponder and the Sat.1/Pro7 transponder), but use different version numbers on
+         // each of them :-( So if one DVB card is tuned to the Premiere transponder, while an other one is tuned
+         // to the Sat.1/Pro7 transponder, events will keep toggling because ot the bogus version numbers.
+         if (Tid == pEvent->TableID() && pEvent->Version() == getVersionNumber())
             continue;
          }
+      pEvent->SetVersion(getVersionNumber());
+      pEvent->SetTableID(Tid);
+      pEvent->SetEventID(SiEitEvent.getEventId()); // unfortunately some stations use different event ids for the same event in different tables :-(
 
       SI::Descriptor *d;
       SI::ExtendedEventDescriptors exGroup;
@@ -158,8 +179,8 @@ cTDT::cTDT(const u_char *Data)
 cEitFilter::cEitFilter(void)
 {
   Set(0x12, 0x4E, 0xFE);  // event info, actual(0x4E)/other(0x4F) TS, present/following
-  Set(0x12, 0x50, 0xFE);  // event info, actual TS, schedule(0x50)/schedule for another 4 days(0x51)
-  Set(0x12, 0x60, 0xFE);  // event info, other  TS, schedule(0x60)/schedule for another 4 days(0x61)
+  Set(0x12, 0x50, 0xF0);  // event info, actual TS, schedule(0x50)/schedule for future days(0x5X)
+  Set(0x12, 0x60, 0xF0);  // event info, other  TS, schedule(0x60)/schedule for future days(0x6X)
   Set(0x14, 0x70);        // TDT
 }
 
