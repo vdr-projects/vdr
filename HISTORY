@@ -451,3 +451,4 @@ Video Disk Recorder Revision History
   Windows 'telnet').
 - Empty lines in config files no longer cause error messages.
 - New SVDRP command LSTE to list the EPG data.
+- The SVDRP HELP command now prints the topics in several columns.

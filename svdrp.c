@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.17 2001/04/01 15:38:49 kls Exp $
+ * $Id: svdrp.c 1.18 2001/04/01 16:06:54 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -473,13 +473,24 @@ void cSVDRP::CmdHELP(const char *Option)
      Reply(-214, "This is VDR version %s", VDRVERSION);
      Reply(-214, "Topics:");
      const char **hp = HelpPages;
+     int NumPages = 0;
      while (*hp) {
-           //TODO multi-column???
-           const char *topic = GetHelpTopic(*hp);
-           if (topic)
-              Reply(-214, "    %s", topic);
+           NumPages++;
            hp++;
            }
+     const int TopicsPerLine = 5;
+     int x = 0;
+     for (int y = 0; (y * TopicsPerLine + x) < NumPages; y++) {
+         char buffer[TopicsPerLine * (MAXHELPTOPIC + 5)];
+         char *q = buffer;
+         for (x = 0; x < TopicsPerLine && (y * TopicsPerLine + x) < NumPages; x++) {
+             const char *topic = GetHelpTopic(HelpPages[(y * TopicsPerLine + x)]);
+             if (topic)
+                q += sprintf(q, "    %s", topic);
+             }
+         x = 0;
+         Reply(-214, buffer);
+         }
      Reply(-214, "To report bugs in the implementation send email to");
      Reply(-214, "    vdr-bugs@cadsoft.de");
      }
