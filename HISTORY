@@ -942,3 +942,7 @@ Video Disk Recorder Revision History
   recordings menu to the MANUAL.
 - Removed the EPG bugfix for "Title / Subtitle" cleanup. Apparently Pro-7 has
   finally stopped this nasty habit.
+- Added some EPG bugfix statistics (printed to the log file every time the EPG
+  data is cleaned up and when VDR is terminated). Maybe somebody in charge of
+  the EPG data at the listed channels will read this and take the necessary
+  actions to fix these things...

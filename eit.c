@@ -16,7 +16,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.c 1.32 2002/02/02 11:57:57 kls Exp $
+ * $Id: eit.c 1.33 2002/02/02 12:12:26 kls Exp $
  ***************************************************************************/
 
 #include "eit.h"
@@ -352,6 +352,64 @@ void cEventInfo::Dump(FILE *f, const char *Prefix) const
       }
 }
 
+#define MAXEPGBUGFIXSTATS 6
+#define MAXEPGBUGFIXCHANS 50
+struct tEpgBugFixStats {
+  int hits;
+  int n;
+  unsigned short serviceIDs[MAXEPGBUGFIXCHANS];
+  tEpgBugFixStats(void) { hits = n = 0; }
+  };
+
+tEpgBugFixStats EpgBugFixStats[MAXEPGBUGFIXSTATS];
+
+static void EpgBugFixStat(int Number, unsigned int ServiceID)
+{
+  if (0 <= Number && Number < MAXEPGBUGFIXSTATS) {
+     tEpgBugFixStats *p = &EpgBugFixStats[Number];
+     p->hits++;
+     int i = 0;
+     for (; i < p->n; i++) {
+         if (p->serviceIDs[i] == ServiceID)
+            break;
+         }
+     if (i == p->n && p->n < MAXEPGBUGFIXCHANS)
+        p->serviceIDs[p->n++] = ServiceID;
+     }
+}
+
+static void ReportEpgBugFixStats(bool Reset = false)
+{
+  if (Setup.EPGBugfixLevel > 0) {
+     dsyslog(LOG_INFO, "=====================");
+     dsyslog(LOG_INFO, "EPG bugfix statistics");
+     dsyslog(LOG_INFO, "=====================");
+     dsyslog(LOG_INFO, "IF SOMEBODY WHO IS IN CHARGE OF THE EPG DATA FOR ONE OF THE LISTED");
+     dsyslog(LOG_INFO, "CHANNELS READS THIS: PLEASE TAKE A LOOK AT THE FUNCTION cEventInfo::FixEpgBugs()");
+     dsyslog(LOG_INFO, "IN VDR/eit.c TO LEARN WHAT'S WRONG WITH YOUR DATA, AND FIX IT!");
+     dsyslog(LOG_INFO, "=====================");
+     dsyslog(LOG_INFO, "Fix\tHits\tChannels");
+     char buffer[1024];
+     for (int i = 0; i < MAXEPGBUGFIXSTATS; i++) {
+         const char *delim = "\t";
+         tEpgBugFixStats *p = &EpgBugFixStats[i];
+         char *q = buffer;
+         q += snprintf(q, sizeof(buffer) - (q - buffer), "%d\t%d", i, p->hits);
+         for (int c = 0; c < p->n; c++) {
+             cChannel *channel = Channels.GetByServiceID(p->serviceIDs[c]);
+             if (channel) {
+                q += snprintf(q, sizeof(buffer) - (q - buffer), "%s%s", delim, channel->name);
+                delim = ", ";
+                }
+             }
+         dsyslog(LOG_INFO, "%s", buffer);
+         if (Reset)
+            p->hits = p->n = 0;
+         }
+     dsyslog(LOG_INFO, "=====================");
+     }
+}
+
 void cEventInfo::FixEpgBugs(void)
 {
   // VDR can't usefully handle newline characters in the EPG data, so let's
@@ -386,6 +444,7 @@ void cEventInfo::FixEpgBugs(void)
               delete pExtendedDescription;
               pSubtitle = s;
               pExtendedDescription = d;
+              EpgBugFixStat(0, GetServiceID());
               }
            }
         }
@@ -402,6 +461,7 @@ void cEventInfo::FixEpgBugs(void)
            memmove(pSubtitle, pSubtitle + 1, strlen(pSubtitle));
            pExtendedDescription = pSubtitle;
            pSubtitle = NULL;
+           EpgBugFixStat(1, GetServiceID());
            }
         }
 
@@ -413,6 +473,7 @@ void cEventInfo::FixEpgBugs(void)
      if (pSubtitle && strcmp(pTitle, pSubtitle) == 0) {
         delete pSubtitle;
         pSubtitle = NULL;
+        EpgBugFixStat(2, GetServiceID());
         }
 
      // ZDF.info puts the Subtitle between double quotes, which is nothing
@@ -428,6 +489,7 @@ void cEventInfo::FixEpgBugs(void)
            char *p = strrchr(pSubtitle, '"');
            if (p)
               *p = 0;
+           EpgBugFixStat(3, GetServiceID());
            }
         }
 
@@ -446,8 +508,10 @@ void cEventInfo::FixEpgBugs(void)
         char *p = pExtendedDescription + 1;
         while (*p) {
               if (*p == '-' && *(p + 1) == ' ' && *(p + 2) && islower(*(p - 1)) && islower(*(p + 2))) {
-                 if (!startswith(p + 2, "und ")) // special case in German, as in "Lach- und Sachgeschichten"
+                 if (!startswith(p + 2, "und ")) { // special case in German, as in "Lach- und Sachgeschichten"
                     memmove(p, p + 2, strlen(p + 2) + 1);
+                    EpgBugFixStat(4, GetServiceID());
+                    }
                  }
               p++;
               }
@@ -831,6 +895,8 @@ cSIProcessor::cSIProcessor(const char *FileName)
 
 cSIProcessor::~cSIProcessor()
 {
+   if (masterSIProcessor)
+      ReportEpgBugFixStats();
    active = false;
    Cancel(3);
    ShutDownFilters();
@@ -899,6 +965,7 @@ void cSIProcessor::Action()
             schedules->Cleanup();
             schedulesMutex.Unlock();
             lastCleanup = now;
+            ReportEpgBugFixStats(true);
          }
          if (epgDataFileName && now - lastDump > 600)
          {
