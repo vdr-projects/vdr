@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.125 2001/09/21 16:22:15 kls Exp $
+ * $Id: menu.c 1.126 2001/09/22 14:17:27 kls Exp $
  */
 
 #include "menu.h"
@@ -2104,6 +2104,8 @@ eOSState cDisplayChannel::ProcessKey(eKeys Key)
 
 // --- cRecordControl --------------------------------------------------------
 
+const char *cRecordControl::userCommand = NULL;
+
 cRecordControl::cRecordControl(cDvbApi *DvbApi, cTimer *Timer)
 {
   eventInfo = NULL;
@@ -2128,6 +2130,7 @@ cRecordControl::cRecordControl(cDvbApi *DvbApi, cTimer *Timer)
         Summary = eventInfo->GetExtendedDescription();
         }
      cRecording Recording(timer, Subtitle, Summary);
+     InvokeUserCommand(true);
      if (dvbApi->StartRecord(Recording.FileName(), Channels.GetByNumber(timer->channel)->ca, timer->priority))
         Recording.WriteSummary();
      Interface->DisplayRecording(dvbApi->CardIndex(), true);
@@ -2170,6 +2173,17 @@ bool cRecordControl::GetEventInfo(void)
   return false;
 }
 
+void cRecordControl::InvokeUserCommand(bool Before)
+{
+  if (userCommand) {
+     char *cmd;
+     asprintf(&cmd, "%s %d", userCommand, Before);
+     isyslog(LOG_INFO, "executing '%s'", cmd);
+     system(cmd);
+     delete cmd;
+     }
+}
+
 void cRecordControl::Stop(bool KeepInstant)
 {
   if (timer) {
@@ -2184,6 +2198,7 @@ void cRecordControl::Stop(bool KeepInstant)
         }
      timer = NULL;
      Interface->DisplayRecording(dvbApi->CardIndex(), false);
+     InvokeUserCommand(false);
      }
 }
 

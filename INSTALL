@@ -158,6 +158,21 @@ particular hard- and software environment.
 If the '-s' option is present, the VDR machine can be turned off by pressing
 the "Power" key on the remote control.
 
+Executing commands before and after a recording:
+------------------------------------------------
+
+You can use the '-r' option to define a program or script that gets called
+before and after a recording is performed.
+
+The program will be called with one integer parameter that is "1" if this
+is *before* the recording, and "0" if this is *after* the recording.
+
+Within this program you can do anything you would like to do before and/or
+after a recording. However, the program must return as soon as possible,
+because otherwise it will block further execution of VDR. Be expecially careful
+to make sure the program returns before the watchdog timeout you may have set
+up with the '-w' option!
+
 Command line options:
 ---------------------
 

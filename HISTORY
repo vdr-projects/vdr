@@ -778,3 +778,5 @@ Video Disk Recorder Revision History
   word and the options.
 - The current volume setting is now saved to setup.conf and restored at the
   next program start.
+- New command line option '-r' to define a command that gets called before and
+  after each recording (see INSTALL for details).

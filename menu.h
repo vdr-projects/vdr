@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 1.28 2001/09/14 15:09:49 kls Exp $
+ * $Id: menu.h 1.29 2001/09/22 14:02:37 kls Exp $
  */
 
 #ifndef _MENU_H
@@ -71,14 +71,17 @@ public:
 
 class cRecordControl {
 private:
+  static const char *userCommand;
   cDvbApi *dvbApi;
   cTimer *timer;
   const cEventInfo *eventInfo;
   char *instantId;
   bool GetEventInfo(void);
+  void InvokeUserCommand(bool Before);
 public:
   cRecordControl(cDvbApi *DvbApi, cTimer *Timer = NULL);
   virtual ~cRecordControl();
+  static void SetUserCommand(const char *UserCommand) { userCommand = UserCommand; }
   bool Process(time_t t);
   bool Uses(cDvbApi *DvbApi) { return DvbApi == dvbApi; }
   void Stop(bool KeepInstant = false);

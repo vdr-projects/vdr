@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.74 2001/09/22 13:38:28 kls Exp $
+ * $Id: vdr.c 1.75 2001/09/22 14:05:40 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -96,6 +96,7 @@ int main(int argc, char *argv[])
       { "help",     no_argument,       NULL, 'h' },
       { "log",      required_argument, NULL, 'l' },
       { "port",     required_argument, NULL, 'p' },
+      { "record",   required_argument, NULL, 'r' },
       { "shutdown", required_argument, NULL, 's' },
       { "terminal", required_argument, NULL, 't' },
       { "video",    required_argument, NULL, 'v' },
@@ -106,7 +107,7 @@ int main(int argc, char *argv[])
 
   int c;
   int option_index = 0;
-  while ((c = getopt_long(argc, argv, "a:c:dD:E:hl:p:s:t:v:V:w:", long_options, &option_index)) != -1) {
+  while ((c = getopt_long(argc, argv, "a:c:dD:E:hl:p:r:s:t:v:V:w:", long_options, &option_index)) != -1) {
         switch (c) {
           case 'a': cDvbApi::SetAudioCommand(optarg);
                     break;
@@ -143,6 +144,7 @@ int main(int argc, char *argv[])
                            "                           2 = errors and info, 3 = errors, info and debug\n"
                            "  -p PORT,  --port=PORT    use PORT for SVDRP (default: %d)\n"
                            "                           0 turns off SVDRP\n"
+                           "  -r CMD,   --record=CMD   call CMD before and after a recording\n"
                            "  -s CMD,   --shutdown=CMD call CMD to shutdown the computer\n"
                            "  -t TTY,   --terminal=TTY controlling tty\n"
                            "  -v DIR,   --video=DIR    use DIR as video directory (default: %s)\n"
@@ -179,6 +181,8 @@ int main(int argc, char *argv[])
                        fprintf(stderr, "vdr: invalid port number: %s\n", optarg);
                        return 2;
                        }
+                    break;
+          case 'r': cRecordControl::SetUserCommand(optarg);
                     break;
           case 's': Shutdown = optarg;
                     break;
