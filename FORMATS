@@ -21,8 +21,8 @@ Video Disk Recorder File Formats
   - Name: the channel's name (if the name originally contains a ':' character
     it has to be replaced by '|')
   - Frequency in MHz (as an integer)
-  - Polarization (one of 'h', 'H', 'v', 'V')
-  - Diseqc number
+  - Polarization (one of 'h', 'H', 'v', 'V') **
+  - Diseqc number **
   - Symbol rate
   - Video PID
   - Audio PID
@@ -30,6 +30,9 @@ Video Disk Recorder File Formats
   - Conditional Access (0 = Free To Air, 1 = can be decrypted by the first
     DVB card, 2 = can be decrypted by the second DVB card)
   - Program Number
+
+  Fields marked with ** are only meaningful for DVB-S (satellite) receivers.
+  DVB-C receivers simply ignore these.
 
 * timers.conf
 

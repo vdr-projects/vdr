@@ -350,7 +350,7 @@ Video Disk Recorder Revision History
 - Encrypted channels can now be selected even without knowing the PNR (however, it
   is still necessary for the EPG info).
 
-2001-02-18: Version 0.71
+2001-02-19: Version 0.71
 
 - Fixed 'Transfer Mode' in cases where a non-primary interface was switched to
   a channel that only the primary interface can receive (which could happen in
@@ -399,3 +399,5 @@ Video Disk Recorder Revision History
   (default is 300 seconds, can be changed in "Setup").
 - The compile time switch VFAT can be used to make VDR avoid the ':' character
   in file names (VFAT can't handle them). Do 'make VFAT=1' to enable this.
+- Support for DVB-C (thanks to Hans-Peter Raschke and Peter Hofmann).
+  See the INSTALL file for more information about the use of VDR with cable.

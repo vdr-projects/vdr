@@ -310,7 +310,7 @@ Video Disk Recorder User's Manual
                          1 = instant recordings will be marked.
 
   LnbFrequLo = 9750      The low and high LNB frequencies (in MHz)
-  LnbFrequHi = 10600
+  LnbFrequHi = 10600     (these have no meaning for DVB-C receivers)
 
   SetSystemTime = 0      Defines whether the system time will be set according to
                          the time received from the DVB data stream.

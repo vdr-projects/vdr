@@ -144,6 +144,17 @@ As a starting point you can copy the 'channels.conf' file that comes with the
 VDR archive into your video directory (or into your config directory,
 respectively, in case you have redirected it with the -c option).
 
+Running VDR with DVB-C (cable):
+-------------------------------
+
+VDR automatically recognizes if the DVB card in use is a cable card.
+The only things that needs to be different when using digital cable
+is the 'channels.conf' file. The distribution archive contains a default
+'channels.conf.cable', which cable users can rename or copy to 'channels.conf'
+in order to receive cable channels. The format of this file is exactly the
+same as for satellite channels (the fields containing "Polarization" and
+"Diseqc" data are ignored in case of DVB-C).
+
 Learning the remote control keys:
 ---------------------------------
 
