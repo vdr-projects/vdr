@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: si.c 1.12 2004/10/16 09:54:05 kls Exp $
+ *   $Id: si.c 1.13 2004/10/16 15:12:57 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -251,6 +251,9 @@ void String::decodeText(char *buffer, int size) {
    }
    */
 
+   if (*from == 0x10)
+      from += 3; // skips code table info
+
    for (int i = 0; i < getLength(); i++) {
       if (*from == 0)
          break;
@@ -274,6 +277,9 @@ void String::decodeText(char *buffer, char *shortVersion, int sizeBuffer, int si
    char *to=buffer;
    char *toShort=shortVersion;
    int IsShortName=0;
+
+   if (*from == 0x10)
+      from += 3; // skips code table info
 
    for (int i = 0; i < getLength(); i++) {
       if (*from == 0)

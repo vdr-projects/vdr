@@ -3023,3 +3023,4 @@ Video Disk Recorder Revision History
 - Made the "Channel not available!" message and mtInfo instead of mtError (suggested
   by Wayne Keer).
 - Made volume control more linear (thanks to Emil Naepflein).
+- Now skipping code table info in SI data (suggested by Milos Kapoun).
