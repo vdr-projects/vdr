@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.22 2000/12/10 11:49:42 kls Exp $
+ * $Id: tools.h 1.23 2001/01/13 15:36:00 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -48,6 +48,7 @@ uint FreeDiskSpaceMB(const char *Directory);
 bool DirectoryOk(const char *DirName, bool LogErrors = false);
 bool MakeDirs(const char *FileName, bool IsDirectory = false);
 bool RemoveFileOrDir(const char *FileName, bool FollowSymlinks = false);
+char *ReadLink(const char *FileName);
 
 class cFile {
 private:
@@ -66,6 +67,19 @@ public:
   bool Ready(bool Wait = true);
   static bool AnyFileReady(int FileDes = -1, int TimeoutMs = 1000);
   static bool FileReady(int FileDes, int TimeoutMs = 1000);
+  };
+
+class cSafeFile {
+private:
+  FILE *f;
+  char *fileName;
+  char *tempName;
+public:
+  cSafeFile(const char *FileName);
+  ~cSafeFile();
+  operator FILE* () { return f; }
+  bool Open(void);
+  void Close(void);
   };
 
 class cListObject {

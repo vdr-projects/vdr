@@ -340,3 +340,5 @@ Video Disk Recorder Revision History
 - Changed the value for Diseqc to '0' in the default 'channels.conf'.
 - Fixed displaying channels and recording status in the RCU's LED display when
   a recording is interrupted due to higher priority.
+- Implemented safe writing of config files (first writes into a temporary file
+  and then renames it).

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.37 2001/01/13 12:36:32 kls Exp $
+ * $Id: config.c 1.38 2001/01/13 15:36:31 kls Exp $
  */
 
 #include "config.h"
@@ -119,10 +119,9 @@ bool cKeys::Load(const char *FileName)
 
 bool cKeys::Save(void)
 {
-  //TODO make backup copies???
   bool result = true;
-  FILE *f = fopen(fileName, "w");
-  if (f) {
+  cSafeFile f(fileName);
+  if (f.Open()) {
      if (fprintf(f, "Code\t%c\nAddress\t%04X\n", code, address) > 0) {
         for (tKey *k = keys; k->type != kNone; k++) {
             if (fprintf(f, "%s\t%08X\n", k->name, k->code) <= 0) {
@@ -133,7 +132,7 @@ bool cKeys::Save(void)
          }
      else
         result = false;
-     fclose(f);
+     f.Close();
      }
   else
      result = false;
@@ -782,8 +781,8 @@ bool cSetup::Save(const char *FileName)
   if (!FileName)
      FileName = fileName;
   if (FileName) {
-     FILE *f = fopen(FileName, "w");
-     if (f) {
+     cSafeFile f(FileName);
+     if (f.Open()) {
         fprintf(f, "# VDR Setup\n");
         fprintf(f, "OSDLanguage        = %d\n", OSDLanguage);
         fprintf(f, "PrimaryDVB         = %d\n", PrimaryDVB);
@@ -796,7 +795,7 @@ bool cSetup::Save(const char *FileName)
         fprintf(f, "MarginStart        = %d\n", MarginStart);
         fprintf(f, "MarginStop         = %d\n", MarginStop);
         fprintf(f, "EPGScanTimeout     = %d\n", EPGScanTimeout);
-        fclose(f);
+        f.Close();
         isyslog(LOG_INFO, "saved setup to %s", FileName);
         return true;
         }

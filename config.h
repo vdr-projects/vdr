@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.36 2000/12/25 14:20:09 kls Exp $
+ * $Id: config.h 1.37 2001/01/13 14:56:29 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -202,11 +202,10 @@ public:
   }
   bool Save(void)
   {
-  //TODO make backup copies???
     bool result = true;
     T *l = (T *)First();
-    FILE *f = fopen(fileName, "w");
-    if (f) {
+    cSafeFile f(fileName);
+    if (f.Open()) {
        while (l) {
              if (!l->Save(f)) {
                 result = false;
@@ -214,12 +213,10 @@ public:
                 }
              l = (T *)l->Next();
              }
-       fclose(f);
+       f.Close();
        }
-    else {
-       LOG_ERROR_STR(fileName);
+    else
        result = false;
-       }
     return result;
   }
   };

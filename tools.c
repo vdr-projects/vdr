@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.26 2001/01/13 12:17:30 kls Exp $
+ * $Id: tools.c 1.27 2001/01/13 15:35:02 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -247,6 +247,27 @@ bool RemoveFileOrDir(const char *FileName, bool FollowSymlinks)
   return true;
 }
 
+char *ReadLink(const char *FileName)
+{
+  char RealName[_POSIX_PATH_MAX];
+  const char *TargetName = NULL;
+  int n = readlink(FileName, RealName, sizeof(RealName) - 1);
+  if (n < 0) {
+     if (errno == ENOENT || errno == EINVAL) // file doesn't exist or is not a symlink
+        TargetName = FileName;
+     else { // some other error occurred
+        LOG_ERROR_STR(FileName);
+        }
+     }
+  else if (n < int(sizeof(RealName))) { // got it!
+     RealName[n] = 0;
+     TargetName = RealName;
+     }
+  else
+     esyslog(LOG_ERR, "ERROR: symlink's target name too long: %s", FileName);
+  return TargetName ? strdup(TargetName) : NULL;
+}
+
 // --- cFile -----------------------------------------------------------------
 
 bool cFile::files[FD_SETSIZE] = { false };
@@ -365,6 +386,45 @@ bool cFile::FileReady(int FileDes, int TimeoutMs)
   timeout.tv_sec  = 0;
   timeout.tv_usec = TimeoutMs * 1000;
   return select(FD_SETSIZE, &set, NULL, NULL, &timeout) > 0 && FD_ISSET(FileDes, &set);
+}
+
+// --- cSafeFile -------------------------------------------------------------
+
+cSafeFile::cSafeFile(const char *FileName)
+{
+  f = NULL;
+  fileName = ReadLink(FileName);
+  tempName = fileName ? new char[strlen(fileName) + 5] : NULL;
+  if (tempName)
+     strcat(strcpy(tempName, fileName), ".$$$");
+}
+
+cSafeFile::~cSafeFile()
+{
+  if (f)
+     fclose(f);
+  unlink(tempName);
+  delete fileName;
+  delete tempName;
+}
+
+bool cSafeFile::Open(void)
+{
+  if (!f && fileName && tempName) {
+     f = fopen(tempName, "w");
+     if (!f)
+        LOG_ERROR_STR(tempName);
+     }
+  return f != NULL;
+}
+
+void cSafeFile::Close(void)
+{
+  if (f) {
+     fclose(f);
+     f = NULL;
+     rename(tempName, fileName);
+     }
 }
 
 // --- cListObject -----------------------------------------------------------
