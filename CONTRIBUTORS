@@ -768,6 +768,7 @@ Thomas Koch <tom@harhar.net>
 
 Stefan Hußfeldt <vdr@marvin.on-luebeck.de>
  for his help in keeping 'channels.conf.cable' up to date
+ for adding 'channels.conf.terr' entries for Lübeck
 
 Christoph Friederich <christoph.friederich@gmx.de>
  for reporting a bug in deleting the last recording in the "Recordings" menu, which
