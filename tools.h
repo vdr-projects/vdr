@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.67 2005/02/12 10:17:14 kls Exp $
+ * $Id: tools.h 1.68 2005/03/20 14:44:24 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -202,7 +202,7 @@ public:
   void Append(cListObject *Object);
   void Insert(cListObject *Object);
   void Unlink(void);
-  int Index(void);
+  int Index(void) const;
   cListObject *Prev(void) const { return prev; }
   cListObject *Next(void) const { return next; }
   };

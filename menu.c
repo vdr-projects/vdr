@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.347 2005/03/20 11:26:00 kls Exp $
+ * $Id: menu.c 1.348 2005/03/20 15:14:51 kls Exp $
  */
 
 #include "menu.h"
@@ -690,7 +690,7 @@ eOSState cMenuEditTimer::ProcessKey(eKeys Key)
                              Timers.Add(timer);
                           timer->Matches();
                           Timers.SetModified();
-                          isyslog("timer %d %s (%s)", timer->Index() + 1, addIfConfirmed ? "added" : "modified", timer->HasFlags(tfActive) ? "active" : "inactive");
+                          isyslog("timer %s %s (%s)", *timer->ToDescr(), addIfConfirmed ? "added" : "modified", timer->HasFlags(tfActive) ? "active" : "inactive");
                           addIfConfirmed = false;
                           }
                      }
@@ -809,9 +809,9 @@ eOSState cMenuTimers::OnOff(void)
      RefreshCurrent();
      DisplayCurrent(true);
      if (timer->FirstDay())
-        isyslog("timer %d first day set to %s", timer->Index() + 1, *timer->PrintFirstDay());
+        isyslog("timer %s first day set to %s", *timer->ToDescr(), *timer->PrintFirstDay());
      else
-        isyslog("timer %d %sactivated", timer->Index() + 1, timer->HasFlags(tfActive) ? "" : "de");
+        isyslog("timer %s %sactivated", *timer->ToDescr(), timer->HasFlags(tfActive) ? "" : "de");
      Timers.SetModified();
      }
   return osContinue;
@@ -821,7 +821,7 @@ eOSState cMenuTimers::Edit(void)
 {
   if (HasSubMenu() || Count() == 0)
      return osContinue;
-  isyslog("editing timer %d", CurrentTimer()->Index() + 1);
+  isyslog("editing timer %s", *CurrentTimer()->ToDescr());
   return AddSubMenu(new cMenuEditTimer(CurrentTimer()));
 }
 
@@ -846,12 +846,11 @@ eOSState cMenuTimers::Delete(void)
            else
               return osContinue;
            }
-        int Index = ti->Index();
+        isyslog("deleting timer %s", *ti->ToDescr());
         Timers.Del(ti);
         cOsdMenu::Del(Current());
         Timers.SetModified();
         Display();
-        isyslog("timer %d deleted", Index + 1);
         }
      }
   return osContinue;
@@ -1617,9 +1616,8 @@ eOSState cMenuRecordings::Delete(void)
                  timer->Skip();
                  cRecordControls::Process(time(NULL));
                  if (timer->IsSingleEvent()) {
-                    int Index = timer->Index();
+                    isyslog("deleting timer %s", *timer->ToDescr());
                     Timers.Del(timer);
-                    isyslog("timer %d deleted", Index + 1);
                     }
                  Timers.SetModified();
                  }
@@ -3172,7 +3170,7 @@ void cRecordControls::Stop(const char *InstantId)
             cTimer *timer = RecordControls[i]->Timer();
             RecordControls[i]->Stop();
             if (timer) {
-               isyslog("deleting timer %d", timer->Index() + 1);
+               isyslog("deleting timer %s", *timer->ToDescr());
                Timers.Del(timer);
                Timers.SetModified();
                }

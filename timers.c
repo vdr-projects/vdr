@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 1.29 2005/03/20 14:18:04 kls Exp $
+ * $Id: timers.c 1.30 2005/03/20 14:50:37 kls Exp $
  */
 
 #include "timers.h"
@@ -115,6 +115,13 @@ cString cTimer::ToText(bool UseChannelID)
   return cString(buffer, true);
 }
 
+cString cTimer::ToDescr(void) const
+{
+  char *buffer;
+  asprintf(&buffer, "%d (%d %04d-%04d '%s')", Index() + 1, Channel()->Number(), start, stop, file);
+  return cString(buffer, true);
+}
+
 int cTimer::TimeToInt(int t)
 {
   return (t / 100 * 60 + t % 100) * 60;
@@ -203,7 +210,7 @@ cString cTimer::PrintDay(time_t Day, int WeekDays)
   return buffer;
 }
 
-cString cTimer::PrintFirstDay(void)
+cString cTimer::PrintFirstDay(void) const
 {
   if (weekdays) {
      cString s = PrintDay(day, weekdays);
@@ -367,7 +374,7 @@ bool cTimer::Matches(time_t t, bool Directly) const
 
 #define FULLMATCH 1000
 
-int cTimer::Matches(const cEvent *Event, int *Overlap)
+int cTimer::Matches(const cEvent *Event, int *Overlap) const
 {
   // Overlap is the percentage of the Event's duration that is covered by
   // this timer (based on FULLMATCH for finer granularity than just 100).
@@ -396,7 +403,7 @@ int cTimer::Matches(const cEvent *Event, int *Overlap)
 
 #define EXPIRELATENCY 60 // seconds (just in case there's a short glitch in the VPS signal)
 
-bool cTimer::Expired(void)
+bool cTimer::Expired(void) const
 {
   return IsSingleEvent() && !Recording() && StopTime() + EXPIRELATENCY <= time(NULL);
 }
@@ -422,10 +429,10 @@ void cTimer::SetEvent(const cSchedule *Schedule, const cEvent *Event)
         char vpsbuf[64] = "";
         if (Event->Vps())
            sprintf(vpsbuf, "(VPS: %s) ", *Event->GetVpsString());
-        isyslog("timer %d (%d %04d-%04d '%s') set to event %s %s-%s %s'%s'", Index() + 1, Channel()->Number(), start, stop, file, *Event->GetDateString(), *Event->GetTimeString(), *Event->GetEndTimeString(), vpsbuf, Event->Title());
+        isyslog("timer %s set to event %s %s-%s %s'%s'", *ToDescr(), *Event->GetDateString(), *Event->GetTimeString(), *Event->GetEndTimeString(), vpsbuf, Event->Title());
         }
      else
-        isyslog("timer %d (%d %04d-%04d '%s') set to no event", Index() + 1, Channel()->Number(), start, stop, file);
+        isyslog("timer %s set to no event", *ToDescr());
      schedule = Event ? Schedule : NULL;
      event = Event;
      }
@@ -434,7 +441,7 @@ void cTimer::SetEvent(const cSchedule *Schedule, const cEvent *Event)
 void cTimer::SetRecording(bool Recording)
 {
   recording = Recording;
-  isyslog("timer %d (%d %04d-%04d '%s') %s", Index() + 1, Channel()->Number(), start, stop, file, recording ? "start" : "stop");
+  isyslog("timer %s %s", *ToDescr(), recording ? "start" : "stop");
 }
 
 void cTimer::SetPending(bool Pending)
@@ -445,7 +452,7 @@ void cTimer::SetPending(bool Pending)
 void cTimer::SetInVpsMargin(bool InVpsMargin)
 {
   if (InVpsMargin && !inVpsMargin)
-     isyslog("timer %d (%d %04d-%04d '%s') entered VPS margin", Index() + 1, Channel()->Number(), start, stop, file);
+     isyslog("timer %s entered VPS margin", *ToDescr());
   inVpsMargin = InVpsMargin;
 }
 
@@ -627,7 +634,7 @@ void cTimers::DeleteExpired(void)
   while (ti) {
         cTimer *next = Next(ti);
         if (ti->Expired()) {
-           isyslog("deleting timer %d", ti->Index() + 1);
+           isyslog("deleting timer %s", *ti->ToDescr());
            Del(ti);
            SetModified();
            }

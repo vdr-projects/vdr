@@ -3472,3 +3472,4 @@ Video Disk Recorder Revision History
 - Improved falling back to normal recording if the VPS data hasn't been seen for more
   than 30 seconds.
 - Added a missing cMutexLock to cRemote::HasKeys() (thanks to Wolfgang Rohdewald).
+- All log entries regarding timers now contain a short description of the timer.
