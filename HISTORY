@@ -2407,3 +2407,5 @@ Video Disk Recorder Revision History
 
 - Updated the required driver version in INSTALL (thanks to Jens Groth for
   reporting this one).
+- Fixed missing channel info after an incomplete channel group switch (thanks
+  to Andreas Trauer).

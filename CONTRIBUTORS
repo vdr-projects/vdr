@@ -824,3 +824,6 @@ Marco Franceschetti <ordaz@quipo.it>
 
 Jens Groth <Jens_Groth@t-online.de>
  for reporting a an outdated driver version number in INSTALL
+
+Andreas Trauer <vdr@trauers.homelinux.net>
+ for fixing missing channel info after an incomplete channel group switch
