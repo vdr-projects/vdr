@@ -186,7 +186,7 @@ Aaron Holtzman
 Wolfgang Henselmann-Weiss <Wolfgang_Henselmann@betaresearch.de>
  for fixing calculating the timeout value in cFile::FileReady()
 
-Uwe Scheffler <UweScheffler@t-online.de>
+Uwe Scheffler <linux_dvb@uni.de>
  for his help in keeping 'channels.conf.cable' and 'channels.conf.terr' up to date
  for helping to test new DVB-T handling
 
