@@ -4,16 +4,17 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.14 2000/09/15 14:23:29 kls Exp $
+ * $Id: tools.h 1.15 2000/09/17 07:58:19 kls Exp $
  */
 
 #ifndef __TOOLS_H
 #define __TOOLS_H
 
 #include <errno.h>
+#include <fcntl.h>
 #include <stdio.h>
 #include <syslog.h>
-#include <sys/wait.h>
+#include <sys/stat.h>
 #include <sys/types.h>
 
 extern int SysLogLevel;
@@ -30,12 +31,10 @@ extern int SysLogLevel;
 
 #define DELETENULL(p) (delete (p), p = NULL)
 
-bool DataAvailable(int filedes, bool wait = false);
 void writechar(int filedes, char c);
 void writeint(int filedes, int n);
 char readchar(int filedes);
 bool readint(int filedes, int &n);
-int readstring(int filedes, char *buffer, int size, bool wait = false);
 void purge(int filedes);
 char *readline(FILE *f);
 char *strn0cpy(char *dest, const char *src, size_t n);
@@ -51,6 +50,24 @@ bool MakeDirs(const char *FileName, bool IsDirectory = false);
 bool RemoveFileOrDir(const char *FileName, bool FollowSymlinks = false);
 bool CheckProcess(pid_t pid);
 void KillProcess(pid_t pid, int Timeout = MAXPROCESSTIMEOUT);
+
+class cFile {
+private:
+  static bool files[];
+  static int maxFiles;
+  int f;
+public:
+  cFile(void);
+  ~cFile();
+  operator int () { return f; }
+  bool Open(const char *FileName, int Flags, mode_t Mode = S_IRUSR | S_IWUSR | S_IRGRP);
+  bool Open(int FileDes);
+  void Close(void);
+  bool IsOpen(void) { return f >= 0; }
+  int ReadString(char *Buffer, int Size);
+  bool Ready(bool Wait = true);
+  static bool AnyFileReady(int FileDes = -1, int TimeoutMs = 1000);
+  };
 
 class cListObject {
 private:

@@ -168,7 +168,7 @@ Video Disk Recorder Revision History
   entered so far together with the name of that channel are displayed on the
   OSD (suggested by Martin Hammerschmid).
 
-2000-09-15: Version 0.64
+2000-09-16: Version 0.64
 
 - Video files now have the 'group read' bit set.
 - Fixed handling errors in 'readstring()'.
@@ -178,4 +178,7 @@ Video Disk Recorder Revision History
   current '*.conf' files to your video directory ('/video' by default), or
   use "-c ." to get the old behaviour of loading the configuration files
   from the current directory.
-
+- Waiting for input is now handled by a common function, which improves
+  response time on user actions. As a consequence the EIT data may sometimes
+  not be displayed, but this will change later when cEIT runs as a separate
+  thread.

@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.6 2000/09/09 10:51:21 kls Exp $
+ * $Id: svdrp.c 1.7 2000/09/16 13:34:28 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -206,7 +206,6 @@ const char *GetHelpPage(const char *Cmd)
 cSVDRP::cSVDRP(int Port)
 :socket(Port)
 {
-  filedes = -1;
   isyslog(LOG_INFO, "SVDRP listening on port %d", Port);
 }
 
@@ -217,14 +216,13 @@ cSVDRP::~cSVDRP()
 
 void cSVDRP::Close(void)
 {
-  if (filedes >= 0) {
+  if (file.IsOpen()) {
      //TODO how can we get the *full* hostname?
      char buffer[MAXCMDBUFFER];
      gethostname(buffer, sizeof(buffer));
      Reply(221, "%s closing connection", buffer);
      isyslog(LOG_INFO, "closing connection"); //TODO store IP#???
-     close(filedes);
-     filedes = -1;
+     file.Close();
      }
 }
 
@@ -232,7 +230,7 @@ bool cSVDRP::Send(const char *s, int length)
 {
   if (length < 0)
      length = strlen(s);
-  int wbytes = write(filedes, s, length);
+  int wbytes = write(file, s, length);
   if (wbytes == length)
      return true;
   if (wbytes < 0)
@@ -244,7 +242,7 @@ bool cSVDRP::Send(const char *s, int length)
 
 void cSVDRP::Reply(int Code, const char *fmt, ...)
 {
-  if (filedes >= 0) {
+  if (file.IsOpen()) {
      if (Code != 0) {
         va_list ap;
         va_start(ap, fmt);
@@ -632,9 +630,9 @@ void cSVDRP::Execute(char *Cmd)
 
 void cSVDRP::Process(void)
 {
-  bool SendGreeting = filedes < 0;
+  bool SendGreeting = !file.IsOpen();
 
-  if (filedes >= 0 || (filedes = socket.Accept()) >= 0) {
+  if (file.IsOpen() || file.Open(socket.Accept())) {
      char buffer[MAXCMDBUFFER];
      if (SendGreeting) {
         //TODO how can we get the *full* hostname?
@@ -642,7 +640,7 @@ void cSVDRP::Process(void)
         time_t now = time(NULL);
         Reply(220, "%s SVDRP VideoDiskRecorder %s; %s", buffer, VDRVERSION, ctime(&now));
         }
-     int rbytes = readstring(filedes, buffer, sizeof(buffer) - 1);
+     int rbytes = file.ReadString(buffer, sizeof(buffer) - 1);
      if (rbytes > 0) {
         //XXX overflow check???
         // strip trailing whitespace:

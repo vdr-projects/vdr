@@ -4,11 +4,13 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: svdrp.h 1.2 2000/08/06 12:45:28 kls Exp $
+ * $Id: svdrp.h 1.3 2000/09/16 11:48:36 kls Exp $
  */
 
 #ifndef __SVDRP_H
 #define __SVDRP_H
+
+#include "tools.h"
 
 class cSocket {
 private:
@@ -26,7 +28,7 @@ public:
 class cSVDRP {
 private:
   cSocket socket;
-  int filedes;
+  cFile file;
   void Close(void);
   bool Send(const char *s, int length = -1);
   void Reply(int Code, const char *fmt, ...);

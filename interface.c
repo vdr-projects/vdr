@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.c 1.15 2000/09/10 15:00:00 kls Exp $
+ * $Id: interface.c 1.16 2000/09/17 08:21:45 kls Exp $
  */
 
 #include "interface.h"
@@ -52,10 +52,6 @@ void cInterface::Close(void)
 
 unsigned int cInterface::GetCh(bool Wait)
 {
-#ifdef DEBUG_OSD
-  timeout(0);
-  getch(); // just to make 'ncurses' display the window:
-#endif
   if (RcIo.InputAvailable(Wait)) {
      unsigned int Command;
      return RcIo.GetCommand(&Command, NULL) ? Command : 0;
@@ -77,7 +73,7 @@ eKeys cInterface::Wait(int Seconds, bool KeepChar)
 
   while (time_ms() < t0) {
         Key = GetKey();
-        if (Key != kNone)
+        if (Key != kNone || cFile::AnyFileReady())
            break;
         }
   if (KeepChar)
