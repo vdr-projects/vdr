@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.70 2001/06/09 10:32:09 kls Exp $
+ * $Id: dvbapi.c 1.71 2001/06/12 21:48:48 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -2046,6 +2046,12 @@ bool cDvbApi::SetChannel(int ChannelNumber, int FrequencyMHz, char Polarization,
      CHECK(ioctl(fd_audio, AUDIO_CLEAR_BUFFER));
      }
 
+  // Turn off current PIDs:
+
+  CHECK(ioctl(fd_demuxv, DMX_STOP));
+  CHECK(ioctl(fd_demuxa, DMX_STOP));
+  CHECK(ioctl(fd_demuxt, DMX_STOP));
+
   bool ChannelSynced = false;
 
   if (fd_qpskfe >= 0 && fd_sec >= 0) { // DVB-S
@@ -2095,14 +2101,16 @@ bool cDvbApi::SetChannel(int ChannelNumber, int FrequencyMHz, char Polarization,
 
      // Wait for channel sync:
 
-     qpskEvent event;
-     int res = ioctl(fd_qpskfe, QPSK_GET_EVENT, &event);
-     if (res == -EBUFFEROVERFLOW)
-        res = ioctl(fd_qpskfe, QPSK_GET_EVENT, &event);
-     if (res >= 0)
-        ChannelSynced = event.type == FE_COMPLETION_EV;
+     if (cFile::FileReady(fd_qpskfe, 5000)) {
+        qpskEvent event;
+        int res = ioctl(fd_qpskfe, QPSK_GET_EVENT, &event);
+        if (res >= 0)
+           ChannelSynced = event.type == FE_COMPLETION_EV;
+        else
+           esyslog(LOG_ERR, "ERROR %d in qpsk get event", res);
+        }
      else
-        esyslog(LOG_ERR, "ERROR in qpsk get event");
+        fprintf(stderr, "ERROR: timeout while tuning\n");
      }
   else if (fd_qamfe >= 0) { // DVB-C
 
@@ -2120,14 +2128,16 @@ bool cDvbApi::SetChannel(int ChannelNumber, int FrequencyMHz, char Polarization,
 
      // Wait for channel sync:
 
-     qamEvent event;
-     int res = ioctl(fd_qamfe, QAM_GET_EVENT, &event);
-     if (res == -EBUFFEROVERFLOW)
-        res = ioctl(fd_qamfe, QAM_GET_EVENT, &event);
-     if (res >= 0)
-        ChannelSynced = event.type == FE_COMPLETION_EV;
+     if (cFile::FileReady(fd_qamfe, 5000)) {
+        qamEvent event;
+        int res = ioctl(fd_qamfe, QAM_GET_EVENT, &event);
+        if (res >= 0)
+           ChannelSynced = event.type == FE_COMPLETION_EV;
+        else
+           esyslog(LOG_ERR, "ERROR %d in qam get event", res);
+        }
      else
-        esyslog(LOG_ERR, "ERROR in qam get event");
+        fprintf(stderr, "ERROR: timeout while tuning\n");
      }
   else {
      esyslog(LOG_ERR, "ERROR: attempt to set channel without DVB-S or DVB-C device");

@@ -491,7 +491,7 @@ Video Disk Recorder Revision History
 - Updated version of Matthias Schniedermeyer's 'schnitt' tools.
 - New 'master-timer' tool (thanks to Matthias Schniedermeyer).
 
-2001-06-03: Version 0.81
+2001-06-12: Version 0.81
 
 - Fixed handling the case where the driver reports EAGAIN during recording,
   but no data comes within 5 seconds.
@@ -504,3 +504,4 @@ Video Disk Recorder Revision History
 - Now 'runvdr' checks if the driver is already loaded (thanks to Henning
   Holtschneider).
 - Fixed removing recordings with Lifetime = 99.
+- Improved channel switching.
