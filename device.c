@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.86 2005/02/06 13:42:54 kls Exp $
+ * $Id: device.c 1.87 2005/02/06 14:10:37 kls Exp $
  */
 
 #include "device.h"
@@ -31,7 +31,8 @@ private:
 public:
   cPesAssembler(void);
   ~cPesAssembler();
-  int ExpectedLength(void) { return data[4] * 256 + data[5] + 6; }
+  int ExpectedLength(void) { return PacketSize(data); }
+  static int PacketSize(const uchar *data);
   int Length(void) { return length; }
   const uchar *Data(void) { return data; }
   void Reset(void);
@@ -98,6 +99,38 @@ void cPesAssembler::Put(const uchar *Data, int Length)
      memcpy(data + length, Data, Length);
      length += Length;
      }
+}
+
+int cPesAssembler::PacketSize(const uchar *data)
+{
+  // we need atleast 6 bytes of data here !!!
+  switch (data[3]) {
+    default:
+    case 0x00 ... 0xB8: // video stream start codes
+    case 0xB9: // Program end
+    case 0xBC: // Programm stream map
+    case 0xF0 ... 0xFF: // reserved
+         return 6;
+
+    case 0xBA: // Pack header
+         if ((data[4] & 0xC0) == 0x40) // MPEG2
+            return 14;
+         // to be absolutely correct we would have to add the stuffing bytes
+         // as well, but at this point we only may have 6 bytes of data avail-
+         // able. So it's up to the higher level to resync...
+         //return 14 + (data[13] & 0x07); // add stuffing bytes
+         else // MPEG1
+            return 12;
+
+    case 0xBB: // System header
+    case 0xBD: // Private stream1
+    case 0xBE: // Padding stream
+    case 0xBF: // Private stream2 (navigation data)
+    case 0xC0 ... 0xCF: // all the rest (the real packets)
+    case 0xD0 ... 0xDF:
+    case 0xE0 ... 0xEF:
+         return 6 + data[4] * 256 + data[5];
+    }
 }
 
 // --- cDevice ---------------------------------------------------------------
@@ -843,6 +876,7 @@ int cDevice::PlayPesPacket(const uchar *Data, int Length, bool VideoOnly)
         int d = End - Start;
         int w = d;
         switch (c) {
+          case 0xBE:          // padding stream, needed for MPEG1
           case 0xE0 ... 0xEF: // video
                w = PlayVideo(Start, d);
                break;
@@ -941,7 +975,7 @@ int cDevice::PlayPes(const uchar *Data, int Length, bool VideoOnly)
   int i = 0;
   while (i <= Length - 6) {
         if (Data[i] == 0x00 && Data[i + 1] == 0x00 && Data[i + 2] == 0x01) {
-           int l = Data[i + 4] * 256 + Data[i + 5] + 6;
+           int l = cPesAssembler::PacketSize(&Data[i]);
            if (i + l > Length) {
               // Store incomplete PES packet for later completion:
               pesAssembler->Put(Data + i, Length - i);

@@ -3372,3 +3372,4 @@ Video Disk Recorder Revision History
 - Calling pesAssembler->Reset() in cDevice::AttachPlayer() to avoid problems with
   residual data in replay and Transfer Mode (thanks to Werner Fink for pointing this
   out).
+- Added MPEG1 replay capability to cPesAssembler (thanks to Stefan Huelswitt).
