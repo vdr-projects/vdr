@@ -991,3 +991,6 @@ Video Disk Recorder Revision History
   longer shown (thanks to Andy Grobb).
 - If compiled with VFAT=1, characters that can't be handled by a VFAT system are
   now encoded to '#XX'.
+- When the user presses the "Power" button and there is a timer about to start
+  recording within Setup.MinEventTimeout minutes, there is now a confirmation
+  prompt telling the user that there is an upcoming timer event.

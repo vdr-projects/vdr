@@ -201,3 +201,7 @@ Jürgen Schmidt <ju@ct.heise.de>
 Uwe Freese <mail@uwe-freese.de>
  for suggesting to automatically close an empty recordings page after deleting
  an entry
+
+Rainer Zocholl <Usenet-372114@zocki.toppoint.de>
+ for suggesting a confirmation prompt when the user presses the "Power" button
+ and there is an upcoming timer event

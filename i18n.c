@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.52 2002/02/09 17:20:19 kls Exp $
+ * $Id: i18n.c 1.53 2002/02/10 15:07:46 kls Exp $
  *
  * Slovenian translations provided by Miha Setina <mihasetina@softhome.net>
  * Italian   translations provided by Alberto Carraro <bertocar@tin.it>
@@ -451,6 +451,16 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "Nauhoitus kesken - lopetetaanko se?",
+  },
+  { "Recording in %d minutes, shut down anyway?",
+    "Aufnahme in %d Minuten - trotzdem ausschalten?",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
   },
   { "Press any key to cancel shutdown",
     "Taste drücken um Shutdown abzubrechen",

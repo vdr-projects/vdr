@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.94 2002/02/02 15:59:18 kls Exp $
+ * $Id: vdr.c 1.95 2002/02/10 15:12:43 kls Exp $
  */
 
 #include <getopt.h>
@@ -494,13 +494,20 @@ int main(int argc, char *argv[])
                     else
                        LastActivity = 1;
                     }
+                 bool UserShutdown = key == kPower;
+                 if (UserShutdown && Next && Delta <= Setup.MinEventTimeout * 60 && !ForceShutdown) {
+                    char *buf;
+                    asprintf(&buf, tr("Recording in %d minutes, shut down anyway?"), Delta / 60);
+                    if (Interface->Confirm(buf))
+                       ForceShutdown = true;
+                    delete buf;
+                    }
                  if (!Next || Delta > Setup.MinEventTimeout * 60 || ForceShutdown) {
                     ForceShutdown = false;
                     if (timer)
                        dsyslog(LOG_INFO, "next timer event at %s", ctime(&Next));
                     if (WatchdogTimeout > 0)
                        signal(SIGALRM, SIG_IGN);
-                    bool UserShutdown = key == kPower;
                     if (Interface->Confirm(tr("Press any key to cancel shutdown"), UserShutdown ? 5 : SHUTDOWNWAIT, true)) {
                        int Channel = timer ? timer->channel : 0;
                        const char *File = timer ? timer->file : "";
