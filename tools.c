@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.54 2002/02/02 13:03:40 kls Exp $
+ * $Id: tools.c 1.55 2002/02/03 13:35:38 kls Exp $
  */
 
 #include "tools.h"
@@ -97,6 +97,23 @@ char *strreplace(char *s, char c1, char c2)
            *p = c2;
         p++;
         }
+  return s;
+}
+
+char *strreplace(char *s, const char *s1, const char *s2)
+{
+  char *p = strstr(s, s1);
+  if (p) {
+     int of = p - s;
+     int l  = strlen(s);
+     int l1 = strlen(s1);
+     int l2 = strlen(s2);
+     if (l2 > l1)
+        s = (char *)realloc(s, strlen(s) + l2 - l1 + 1);
+     if (l2 != l1)
+        memmove(s + of + l2, s + of + l1, l - of - l1 + 1);
+     strncpy(s + of, s2, l2);
+     }
   return s;
 }
 

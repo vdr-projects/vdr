@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 1.21 2002/01/26 15:28:41 kls Exp $
+ * $Id: recording.h 1.22 2002/02/03 11:59:49 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -43,7 +43,7 @@ public:
   time_t start;
   int priority;
   int lifetime;
-  cRecording(cTimer *Timer, const char *Subtitle, const char *Summary);
+  cRecording(cTimer *Timer, const char *Title, const char *Subtitle, const char *Summary);
   cRecording(const char *FileName);
   ~cRecording();
   virtual bool operator< (const cListObject &ListObject);

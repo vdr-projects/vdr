@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.40 2002/02/02 13:16:47 kls Exp $
+ * $Id: tools.h 1.41 2002/02/03 12:36:25 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -47,6 +47,7 @@ char *readline(FILE *f);
 char *strcpyrealloc(char *dest, const char *src);
 char *strn0cpy(char *dest, const char *src, size_t n);
 char *strreplace(char *s, char c1, char c2);
+char *strreplace(char *s, const char *s1, const char *s2); // re-allocates 's' and deletes the original string if necessary!
 char *skipspace(const char *s);
 char *stripspace(char *s);
 char *compactspace(char *s);

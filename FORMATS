@@ -72,6 +72,11 @@ Video Disk Recorder File Formats
     any ':' characters, these have to be replaced with '|'. If the name shall
     contain subdirectories, these have to be delimited by '~' (since the '/'
     character may be part of a regular programme name).
+    The special keywords TITLE and EPISODE, if present, will be replaced 
+    with the title and episode information from the EPG data at the time of
+    recording (if that data is available). If at the time of recording either
+    of these cannot be determined, TITLE will default to the channel name, and
+    EPISODE will default to a blank.
   - Summary (any newline characters in the summary have to be replaced with '|';
     the summary may contain ':' characters)
 

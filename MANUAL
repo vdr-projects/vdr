@@ -385,6 +385,14 @@ Video Disk Recorder User's Manual
                          0 = instant recordings will not be marked
                          1 = instant recordings will be marked.
 
+  NameInstantRecord = TITLE-EPISODE
+                         Defines how to name an instant recording. If the keywords
+                         TITLE and/or EPISODE are present, they will be replaced
+                         with the title and episode information from the EPG data
+                         at the time of recording (if that data is available).
+                         If this parameter is empty, the channel name will be used
+                         by default.
+
   LnbSLOF    = 11700     The switching frequency (in MHz) between low and high LOF
   LnbFrequLo = 9750      The LNB's low and high local oscillator frequencies (in MHz)
   LnbFrequHi = 10600     (these have no meaning for DVB-C receivers)

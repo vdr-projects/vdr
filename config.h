@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.92 2002/02/02 15:59:18 kls Exp $
+ * $Id: config.h 1.93 2002/02/03 15:16:21 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -19,7 +19,7 @@
 #include "eit.h"
 #include "tools.h"
 
-#define VDRVERSION "0.99pre4"
+#define VDRVERSION "0.99pre5"
 
 #define MAXPRIORITY 99
 #define MAXLIFETIME 99
@@ -65,6 +65,8 @@ enum eKeys { // "Up" and "Down" must be the first two keys!
 #define RAWKEY(k)    (eKeys((k) & ~k_Flags))
 #define ISRAWKEY(k)  ((k) != kNone && ((k) & k_Flags) == 0)
 #define NORMALKEY(k) (eKeys((k) & ~k_Repeat))
+
+#define MaxFileName 256
 
 struct tKey {
   eKeys type;
@@ -123,7 +125,6 @@ private:
   static char *buffer;
   static const char *ToText(cTimer *Timer);
 public:
-  enum { MaxFileName = 256 };
   bool recording, pending;
   int active;
   int channel;
@@ -149,6 +150,7 @@ public:
   bool DayMatches(time_t t);
   time_t IncDay(time_t t, int Days);
   time_t SetTime(time_t t, int SecondsFromMidnight);
+  char *SetFile(const char *File);
   bool Matches(time_t t = 0);
   time_t StartTime(void);
   time_t StopTime(void);
@@ -301,6 +303,7 @@ public:
   int ShowInfoOnChSwitch;
   int MenuScrollPage;
   int MarkInstantRecord;
+  char NameInstantRecord[MaxFileName];
   int LnbSLOF;
   int LnbFrequLo;
   int LnbFrequHi;
