@@ -2364,3 +2364,5 @@ Video Disk Recorder Revision History
 - Added a note about the driver version needed for the still picture fix from
   version 1.2.5pre1 to work properly (thanks to Oliver Endriss for pointing
   this out).
+- Fixed setting the primary device in case none of the devices provides an MPEG
+  decoder (thanks to Rene Bartsch for reporting this one).

@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.167 2003/09/05 13:01:00 kls Exp $
+ * $Id: vdr.c 1.168 2003/09/05 13:14:16 kls Exp $
  */
 
 #include <getopt.h>
@@ -387,7 +387,7 @@ int main(int argc, char *argv[])
         const char *msg = "no primary device found - using first device!";
         fprintf(stderr, "vdr: %s\n", msg);
         esyslog("ERROR: %s", msg);
-        if (!cDevice::SetPrimaryDevice(0))
+        if (!cDevice::SetPrimaryDevice(1))
            return 2;
         if (!cDevice::PrimaryDevice()) {
            const char *msg = "no primary device found - giving up!";

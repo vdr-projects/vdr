@@ -787,3 +787,7 @@ Robert Bartl <robert@bartl.priv.at>
 
 Sebastian Frei <sebastian@schnapsleichen.de>
  for his support in keeping 'channels.conf' up-to-date.
+
+Rene Bartsch <ml@bartschnet.de>
+ for reporting a bug in setting the primary device in case none of the devices
+ provides an MPEG decoder
