@@ -850,3 +850,4 @@ Video Disk Recorder Revision History
 - A recording on the primary interface can now be stopped to make it continue
   on an other free DVB card (if one is free at the moment). See MANUAL for
   details.
+- Added some missing teletext PIDs (thanks to Norbert Schmidt).
