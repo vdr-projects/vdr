@@ -2870,7 +2870,7 @@ Video Disk Recorder Revision History
   available by compiling VDR with DEBUG_OSD. Some things may not yet work as they
   should, but it's a starting point.
 
-2004-06-05: Version 1.3.10
+2004-06-06: Version 1.3.10
 
 - Fixed some default parameters in 'skincurses'.
 - Fixed cBitmap::DrawPixel(), which messed with other bitmaps' palettes in case
@@ -2883,3 +2883,5 @@ Video Disk Recorder Revision History
   some broken graphics tools write into XPM files (suggested by Sascha Volkenandt).
 - No longer setting lnb voltage if the frontend is not DVB-S (thanks to Marco
   Schlüßler).
+- Fixed displaying the current channel when switching via the SVDRP command CHAN
+  (thanks to Jürgen Schmitz for reporting this one).

@@ -1016,3 +1016,7 @@ Wayne Keer <syphir@syphir.sytes.net>
 Marco Schlüßler <marco@lordzodiac.de>
  for fixing handling colors in cDvbSpuPalette::yuv2rgb()
  for fixing setting lnb voltage if the frontend is not DVB-S
+
+Jürgen Schmitz <j.schmitz@web.de>
+ for reporting a bug in displaying the current channel when switching via the SVDRP
+ command CHAN
