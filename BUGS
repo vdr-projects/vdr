@@ -10,7 +10,3 @@ Video Disk Recorder - Known Bugs
   I assume this is a problem in the driver of firmware.
   There is no such problem in replay mode.
 
-* After a replay session the screen may go blank.
-  Haven't figured out yet how to ensure that it switches back to
-  the current channel.
-
