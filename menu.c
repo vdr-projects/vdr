@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.181 2002/04/02 20:53:52 kls Exp $
+ * $Id: menu.c 1.182 2002/04/06 09:41:59 kls Exp $
  */
 
 #include "menu.h"
@@ -694,7 +694,7 @@ public:
   };
 
 cMenuEditChannel::cMenuEditChannel(int Index)
-:cOsdMenu(tr("Edit Channel"), 14)
+:cOsdMenu(tr("Edit channel"), 14)
 {
   channel = Channels.Get(Index);
   if (channel) {
@@ -1070,7 +1070,7 @@ public:
   };
 
 cMenuEditTimer::cMenuEditTimer(int Index, bool New)
-:cOsdMenu(tr("Edit Timer"), 12)
+:cOsdMenu(tr("Edit timer"), 12)
 {
   firstday = NULL;
   timer = Timers.Get(Index);

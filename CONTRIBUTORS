@@ -252,6 +252,7 @@ Truls Slevigen <truls@slevigen.no>
 
 Ruben Nunez Francisco <ruben.nunez@tang-it.com>
  for implementing FreeDiskSpaceMB() without external 'df' command
+ for translating OSD texts to the Spanish language
 
 Mirko Dölle <mdoelle@linux-user.de>
   for reporting a bug when a timer records over midnight of a day that had a
