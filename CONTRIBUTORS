@@ -522,6 +522,7 @@ Lauri Tischler <lauri.tischler@efore.fi>
  for reporting a faulty parameter initialization in menu.c
  for reporting a problem in case the original current channel becomes
  unavailable due to a recording on a different transponder
+ for reporting a compiler warning about virtual cConfig::Load() functions
 
 Andy Carter <fruit@ukgateway.net>
  for helping to test new DVB-T handling

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.h 1.10 2004/01/04 12:26:37 kls Exp $
+ * $Id: channels.h 1.11 2004/01/05 10:06:15 kls Exp $
  */
 
 #ifndef __CHANNELS_H
@@ -156,7 +156,7 @@ private:
   int beingEdited;
 public:
   cChannels(void);
-  virtual bool Load(const char *FileName, bool AllowComments = false, bool MustExist = false);
+  bool Load(const char *FileName, bool AllowComments = false, bool MustExist = false);
   int GetNextGroup(int Idx);   // Get next channel group
   int GetPrevGroup(int Idx);   // Get previous channel group
   int GetNextNormal(int Idx);  // Get next normal channel (not group)

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.179 2004/01/05 09:56:54 kls Exp $
+ * $Id: config.h 1.180 2004/01/05 10:05:57 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -87,7 +87,7 @@ public:
   cConfig(void) { fileName = NULL; }
   virtual ~cConfig() { free(fileName); }
   const char *FileName(void) { return fileName; }
-  virtual bool Load(const char *FileName = NULL, bool AllowComments = false, bool MustExist = false)
+  bool Load(const char *FileName = NULL, bool AllowComments = false, bool MustExist = false)
   {
     Clear();
     if (FileName) {

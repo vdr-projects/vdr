@@ -2542,3 +2542,5 @@ Video Disk Recorder Revision History
 
 - Fixed a lockup in the EPG scanner when no non-primary device was available
   (thanks to Martin Holst for reporting this one).
+- Fixed a compiler warning about virtual cConfig::Load() functions (thanks to
+  Lauri Tischler for reporting this one).
