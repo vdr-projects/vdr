@@ -2395,3 +2395,5 @@ Video Disk Recorder Revision History
   Endriss).
 - Added 'repeat' function keys '7' and '9' ("jump to mark") in replay mode
   (suggested by Oliver Endriss).
+- Made cOsdMenu::Display() virtual, which allows plugins to do some additional
+  processing after calling the base class function (suggested by Jan Rieger).

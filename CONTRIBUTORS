@@ -601,6 +601,8 @@ Sven Goethel <sgoethel@jausoft.com>
 
 Jan Rieger <jan@ricomp.de>
  for suggestions and testing raw keyboard input
+ for suggesting to make cOsdMenu::Display() virtual, which allows plugins to do some
+ additional processing after calling the base class function
 
 Walter Stroebel <walter.stroebel@lifeline.nl>
  for introducing "Doxygen" to document the VDR source code
