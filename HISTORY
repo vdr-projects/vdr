@@ -3122,3 +3122,5 @@ Video Disk Recorder Revision History
 - Fixed cChannel::SetName() in case only the ShortName or Provider has changed
   (thanks to Sascha Volkenandt for reporting this one).
 - Added Danish language texts (thanks to Mogens Elneff).
+- Reactivated the NPTL check at startup because there appear to be still
+  unsolved problems when running on NPTL systems.
