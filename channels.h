@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.h 1.12 2004/01/11 15:20:18 kls Exp $
+ * $Id: channels.h 1.13 2004/01/25 15:31:16 kls Exp $
  */
 
 #ifndef __CHANNELS_H
@@ -26,7 +26,7 @@
 #define CHANNELMOD_TRANSP   0x20
 #define CHANNELMOD_RETUNE   (CHANNELMOD_PIDS | CHANNELMOD_CA | CHANNELMOD_TRANSP)
 
-#define MAXAPIDS  2
+#define MAXAPIDS 32
 #define MAXCAIDS  8
 
 struct tChannelParameterMap {
@@ -79,8 +79,10 @@ private:
   int srate;
   int vpid;
   int ppid;
-  int apid1, apid2;
-  int dpid1, dpid2;
+  int apids[MAXAPIDS + 1]; // list is zero-terminated
+  char alangs[MAXAPIDS][4];
+  int dpids[MAXAPIDS + 1]; // list is zero-terminated
+  char dlangs[MAXAPIDS][4];
   int tpid;
   int caids[MAXCAIDS + 1]; // list is zero-terminated
   int nid;
@@ -116,10 +118,10 @@ public:
   int Srate(void) const { return srate; }
   int Vpid(void) const { return vpid; }
   int Ppid(void) const { return ppid; }
-  int Apid1(void) const { return apid1; }
-  int Apid2(void) const { return apid2; }
-  int Dpid1(void) const { return dpid1; }
-  int Dpid2(void) const { return dpid2; }
+  int Apid1(void) const { return apids[0]; }
+  int Apid2(void) const { return apids[1]; }
+  int Dpid1(void) const { return dpids[0]; }
+  int Dpid2(void) const { return dpids[1]; }
   int Tpid(void) const { return tpid; }
   int Ca(int Index = 0) const { return Index < MAXCAIDS ? caids[Index] : 0; }
   int Nid(void) const { return nid; }
@@ -148,7 +150,7 @@ public:
   bool SetTerrTransponderData(int Source, int Frequency, int Bandwidth, int Modulation, int Hierarchy, int CodeRateH, int CodeRateL, int Guard, int Transmission, bool Log = true);
   void SetId(int Nid, int Tid, int Sid, int Rid = 0, bool Log = true);
   void SetName(const char *Name, bool Log = true);
-  void SetPids(int Vpid, int Ppid, int Apid1, int Apid2, int Dpid1, int Dpid2, int Tpid);
+  void SetPids(int Vpid, int Ppid, int *Apids, char ALangs[][4], int *Dpids, char DLangs[][4], int Tpid);
   void SetCaIds(const int *CaIds); // list must be zero-terminated
   void SetCaDescriptors(int Level);
   };

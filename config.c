@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.120 2004/01/11 15:38:11 kls Exp $
+ * $Id: config.c 1.121 2004/01/25 14:41:10 kls Exp $
  */
 
 #include "config.h"
@@ -403,7 +403,7 @@ void cSetup::StoreLanguages(const char *Name, int *Values)
   for (int i = 0; i < I18nNumLanguages; i++) {
       if (Values[i] < 0)
          break;
-      const char *s = I18nLanguageAbbreviation(Values[i]);
+      const char *s = I18nLanguageCode(Values[i]);
       if (s) {
          if (q > buffer)
             *q++ = ' ';

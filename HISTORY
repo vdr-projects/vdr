@@ -2620,3 +2620,7 @@ Video Disk Recorder Revision History
 - Fixed frequency handling when setting the CA descriptors in cDvbTuner::Action()
   (thanks to Jan Ekholm for reporting and helping to debug this one).
 - Now setting CA descriptors even if "Setup/DVB/Update channels" is less than 2.
+- There can now be up to 32 audio and Dolby PIDs (however, currently still only
+  the first two are used throughout the rest of the program).
+- The audio and Dolby PIDs in 'channels.conf' now can have an optional language
+  code (see man vdr(5)). Currently this is only stored and not yet used otherwise.

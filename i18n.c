@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.145 2004/01/24 14:58:08 kls Exp $
+ * $Id: i18n.c 1.146 2004/01/25 14:41:02 kls Exp $
  *
  * Translations provided by:
  *
@@ -4233,9 +4233,9 @@ const char * const * I18nCharSets(void)
   return &Phrases[1][0];
 }
 
-const char * I18nLanguageAbbreviation(int Index)
+const char * I18nLanguageCode(int Index)
 {
-  return Index < I18nNumLanguages ? Phrases[2][Index] : NULL;
+  return 0 <= Index && Index < I18nNumLanguages ? Phrases[2][Index] : NULL;
 }
 
 int I18nLanguageIndex(const char *Code)
@@ -4246,6 +4246,12 @@ int I18nLanguageIndex(const char *Code)
       }
   //dsyslog("unknown language code: '%s'", Code);
   return -1;
+}
+
+const char *I18nNormalizeLanguageCode(const char *Code)
+{
+  int n = I18nLanguageIndex(Code);
+  return n >= 0 ? I18nLanguageCode(n) : Code;
 }
 
 bool I18nIsPreferredLanguage(int *PreferredLanguages, int LanguageIndex, int &OldPreference)
