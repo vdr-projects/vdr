@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.h 1.12 2002/10/06 08:57:24 kls Exp $
+ * $Id: dvbdevice.h 1.13 2002/10/11 12:24:19 kls Exp $
  */
 
 #ifndef __DVBDEVICE_H
@@ -36,10 +36,11 @@ public:
          // Initializes the DVB devices.
          // Must be called before accessing any DVB functions.
 private:
-  FrontendType frontendType;
 #ifdef NEWSTRUCT
+  fe_type_t frontendType;
   int fd_osd, fd_frontend, fd_audio, fd_video, fd_dvr;
 #else
+  FrontendType frontendType;
   int fd_osd, fd_frontend, fd_sec, fd_audio, fd_video, fd_dvr;
 #endif
   int OsdDeviceHandle(void) const { return fd_osd; }

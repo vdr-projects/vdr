@@ -16,7 +16,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.c 1.55 2002/10/07 16:24:04 kls Exp $
+ * $Id: eit.c 1.56 2002/10/11 13:14:57 kls Exp $
  ***************************************************************************/
 
 #include "eit.h"
@@ -1196,7 +1196,11 @@ void cSIProcessor::Action()
 table identifer tid */
 bool cSIProcessor::AddFilter(u_char pid, u_char tid)
 {
+#ifdef NEWSTRUCT
+   dmx_sct_filter_params sctFilterParams;
+#else
    dmxSctFilterParams sctFilterParams;
+#endif
    memset(&sctFilterParams, 0, sizeof(sctFilterParams));
    sctFilterParams.pid = pid;
    sctFilterParams.timeout = 0;
