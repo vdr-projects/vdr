@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.16 2001/04/01 14:09:29 kls Exp $
+ * $Id: svdrp.c 1.17 2001/04/01 15:38:49 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -137,6 +137,8 @@ const char *HelpPages[] = {
   "    List channels. Without option, all channels are listed. Otherwise\n"
   "    only the given channel is listed. If a name is given, all channels\n"
   "    containing the given string as part of their name are listed.",
+  "LSTE\n"
+  "    List EPG data.",
   "LSTT [ <number> ]\n"
   "    List timers. Without option, all timers are listed. Otherwise\n"
   "    only the given timer is listed.",
@@ -187,6 +189,7 @@ const char *HelpPages[] = {
 /* SVDRP Reply Codes:
 
  214 Help message
+ 215 EPG data record
  220 VDR service ready
  221 VDR service closing transmission channel
  250 Requested VDR action okay, completed
@@ -548,6 +551,25 @@ void cSVDRP::CmdLSTC(const char *Option)
      Reply(550, "No channels defined");
 }
 
+void cSVDRP::CmdLSTE(const char *Option)
+{
+  cThreadLock ThreadLock;
+  const cSchedules *Schedules = cDvbApi::PrimaryDvbApi->Schedules(&ThreadLock);
+  if (Schedules) {
+     FILE *f = fdopen(file, "w");
+     if (f) {
+        Schedules->Dump(f, "215-");
+        fflush(f);
+        Reply(215, "End of EPG data");
+        // don't 'fclose(f)' here!
+        }
+     else
+        Reply(451, "Can't open file connection");
+     }
+  else
+     Reply(451, "Can't get EPG data");
+}
+
 void cSVDRP::CmdLSTT(const char *Option)
 {
   if (*Option) {
@@ -851,6 +873,7 @@ void cSVDRP::Execute(char *Cmd)
   else if (CMD("HELP"))  CmdHELP(s);
   else if (CMD("HITK"))  CmdHITK(s);
   else if (CMD("LSTC"))  CmdLSTC(s);
+  else if (CMD("LSTE"))  CmdLSTE(s);
   else if (CMD("LSTT"))  CmdLSTT(s);
   else if (CMD("MESG"))  CmdMESG(s);
   else if (CMD("MODC"))  CmdMODC(s);

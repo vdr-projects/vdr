@@ -450,3 +450,4 @@ Video Disk Recorder Revision History
 - SVDRP now also works with clients that don't do line buffering (like the
   Windows 'telnet').
 - Empty lines in config files no longer cause error messages.
+- New SVDRP command LSTE to list the EPG data.

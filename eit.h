@@ -13,7 +13,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.h 1.5 2001/03/31 12:42:52 kls Exp $
+ * $Id: eit.h 1.6 2001/04/01 15:14:12 kls Exp $
  ***************************************************************************/
 
 #ifndef __EIT_H
@@ -66,7 +66,7 @@ public:
   unsigned short GetServiceID(void) const;
   int GetChannelNumber(void) const { return nChannelNumber; }
   void SetChannelNumber(int ChannelNumber) const { ((cEventInfo *)this)->nChannelNumber = ChannelNumber; } // doesn't modify the EIT data, so it's ok to make it 'const'
-  void Dump(FILE *f) const;
+  void Dump(FILE *f, const char *Prefix = "") const;
   };
 
 class cSchedule : public cListObject  {
@@ -93,7 +93,7 @@ public:
   const cEventInfo *GetEvent(time_t tTime) const;
   const cEventInfo *GetEventNumber(int n) const { return Events.Get(n); }
   int NumEvents(void) const { return Events.Count(); }
-  void Dump(FILE *f) const;
+  void Dump(FILE *f, const char *Prefix = "") const;
   };
 
 class cSchedules : public cList<cSchedule> {
@@ -109,7 +109,7 @@ public:
   ~cSchedules();
   const cSchedule *GetSchedule(unsigned short servid) const;
   const cSchedule *GetSchedule(void) const;
-  void Dump(FILE *f) const;
+  void Dump(FILE *f, const char *Prefix = "") const;
 };
 
 typedef struct sip_filter {

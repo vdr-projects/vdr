@@ -13,7 +13,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.c 1.14 2001/03/31 15:03:16 kls Exp $
+ * $Id: eit.c 1.15 2001/04/01 15:36:09 kls Exp $
  ***************************************************************************/
 
 #include "eit.h"
@@ -395,17 +395,17 @@ unsigned short cEventInfo::GetServiceID() const
 }
 
 /**  */
-void cEventInfo::Dump(FILE *f) const
+void cEventInfo::Dump(FILE *f, const char *Prefix) const
 {
    if (tTime + lDuration >= time(NULL)) {
-      fprintf(f, "E %u %ld %ld\n", uEventID, tTime, lDuration);
+      fprintf(f, "%sE %u %ld %ld\n", Prefix, uEventID, tTime, lDuration);
       if (!isempty(pTitle))
-         fprintf(f, "T %s\n", pTitle);
+         fprintf(f, "%sT %s\n", Prefix, pTitle);
       if (!isempty(pSubtitle))
-         fprintf(f, "S %s\n", pSubtitle);
+         fprintf(f, "%sS %s\n", Prefix, pSubtitle);
       if (!isempty(pExtendedDescription))
-         fprintf(f, "D %s\n", pExtendedDescription);
-      fprintf(f, "e\n");
+         fprintf(f, "%sD %s\n", Prefix, pExtendedDescription);
+      fprintf(f, "%se\n", Prefix);
       }
 }
 
@@ -546,15 +546,15 @@ void cSchedule::Cleanup(time_t tTime)
 }
 
 /**  */
-void cSchedule::Dump(FILE *f) const
+void cSchedule::Dump(FILE *f, const char *Prefix) const
 {
    cChannel *channel = Channels.GetByServiceID(uServiceID);
    if (channel)
    {
-      fprintf(f, "C %u %s\n", uServiceID, channel->name);
+      fprintf(f, "%sC %u %s\n", Prefix, uServiceID, channel->name);
       for (cEventInfo *p = Events.First(); p; p = Events.Next(p))
-         p->Dump(f);
-      fprintf(f, "c\n");
+         p->Dump(f, Prefix);
+      fprintf(f, "%sc\n", Prefix);
    }
 }
 
@@ -620,10 +620,10 @@ void cSchedules::Cleanup()
 }
 
 /**  */
-void cSchedules::Dump(FILE *f) const
+void cSchedules::Dump(FILE *f, const char *Prefix) const
 {
    for (cSchedule *p = First(); p; p = Next(p))
-      p->Dump(f);
+      p->Dump(f, Prefix);
 }
 
 // --- cEIT ------------------------------------------------------------------
