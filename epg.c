@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 1.8 2004/02/21 13:46:23 kls Exp $
+ * $Id: epg.c 1.9 2004/02/21 14:33:11 kls Exp $
  */
 
 #include "epg.h"
@@ -443,22 +443,23 @@ cEvent *cSchedule::AddEvent(cEvent *Event)
 
 const cEvent *cSchedule::GetPresentEvent(void) const
 {
-  return GetEventAround(time(NULL));
+  const cEvent *pe = NULL;
+  time_t now = time(NULL);
+  for (cEvent *p = events.First(); p; p = events.Next(p)) {
+      if (p->StartTime() <= now && now < p->StartTime() + p->Duration())
+         pe = p;
+      if (p->RunningStatus() >= SI::RunningStatusPausing)
+         return p;
+      }
+  return pe;
 }
 
 const cEvent *cSchedule::GetFollowingEvent(void) const
 {
-  const cEvent *pe = NULL;
-  time_t now = time(NULL);
-  time_t delta = INT_MAX;
-  for (cEvent *p = events.First(); p; p = events.Next(p)) {
-      time_t dt = p->StartTime() - now;
-      if (dt > 0 && dt < delta) {
-         delta = dt;
-         pe = p;
-         }
-      }
-  return pe;
+  const cEvent *p = GetPresentEvent();
+  if (p)
+     p = events.Next(p);
+  return p;
 }
 
 const cEvent *cSchedule::GetEvent(u_int16_t EventID, time_t StartTime) const

@@ -2684,3 +2684,8 @@ Video Disk Recorder Revision History
 - The EPG data is now always kept sorted chronologically in the internal data
   structures. This also means that any EPG data retrieved through the SVRDP
   command LSTE is guaranteed to be sorted by start time.
+- Now using the 'running status' in the channel display, so that a programme
+  that has an end time that is before the current time, but is still running,
+  will still be shown in the display (provided the broadcasters handle the
+  'running status' flag correctly). This also applies to programmes that have
+  a start time that is in the future, but are already running.
