@@ -16,7 +16,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.c 1.21 2001/08/17 13:19:10 kls Exp $
+ * $Id: eit.c 1.22 2001/08/19 14:44:32 kls Exp $
  ***************************************************************************/
 
 #include "eit.h"
@@ -570,7 +570,7 @@ const cEventInfo * cSchedule::GetEvent(time_t tTime) const
    cEventInfo *pe = Events.First();
    while (pe != NULL)
    {
-      if (pe->GetTime() == tTime)
+      if (pe->GetTime() <= tTime && tTime <= pe->GetTime() + pe->GetDuration())
          return pe;
 
       pe = Events.Next(pe);
@@ -615,7 +615,7 @@ void cSchedule::Cleanup(time_t tTime)
       pEvent = Events.Get(a);
       if (pEvent == NULL)
          break;
-      if (pEvent->GetTime() + pEvent->GetDuration() < tTime)
+      if (pEvent->GetTime() + pEvent->GetDuration() + 3600 < tTime) // adding one hour for safety
       {
          Events.Del(pEvent);
          a--;
