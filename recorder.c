@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recorder.c 1.9 2004/03/07 14:39:25 kls Exp $
+ * $Id: recorder.c 1.10 2004/03/20 10:33:21 kls Exp $
  */
 
 #include <stdarg.h>
@@ -24,7 +24,7 @@
 #define DISKCHECKINTERVAL   100 // seconds
 
 cRecorder::cRecorder(const char *FileName, int Ca, int Priority, int VPid, int APid1, int APid2, int DPid1, int DPid2)
-:cReceiver(Ca, Priority, 5, VPid, APid1, APid2, DPid1, DPid2)
+:cReceiver(Ca, Priority, Setup.RecordDolbyDigital ? 5 : 3, VPid, APid1, APid2, DPid1, DPid2)
 ,cThread("recording")
 {
   ringBuffer = NULL;

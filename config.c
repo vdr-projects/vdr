@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.125 2004/02/28 11:12:20 kls Exp $
+ * $Id: config.c 1.127 2004/05/16 12:43:55 kls Exp $
  */
 
 #include "config.h"
@@ -245,6 +245,8 @@ cSetup Setup;
 cSetup::cSetup(void)
 {
   OSDLanguage = 0;
+  strcpy(OSDSkin, "sttng");
+  strcpy(OSDTheme, "default");
   PrimaryDVB = 1;
   ShowInfoOnChSwitch = 1;
   MenuScrollPage = 1;
@@ -256,6 +258,7 @@ cSetup::cSetup(void)
   LnbFrequHi = 10600;
   DiSEqC = 0;
   SetSystemTime = 0;
+  TimeSource = 0;
   TimeTransponder = 0;
   MarginStart = 2;
   MarginStop = 10;
@@ -279,9 +282,12 @@ cSetup::cSetup(void)
   UpdateChannels = 4;
   RecordDolbyDigital = 1;
   ChannelInfoPos = 0;
-  OSDwidth = 52;
-  OSDheight = 18;
+  OSDLeft = 54;
+  OSDTop = 45;
+  OSDWidth = 624;
+  OSDHeight = 486;
   OSDMessageTime = 1;
+  UseSmallFont = 1;
   MaxVideoFileSize = MAXVIDEOFILESIZE;
   SplitEditedFiles = 0;
   MinEventTimeout = 30;
@@ -392,6 +398,8 @@ bool cSetup::ParseLanguages(const char *Value, int *Values)
 bool cSetup::Parse(const char *Name, const char *Value)
 {
   if      (!strcasecmp(Name, "OSDLanguage"))         OSDLanguage        = atoi(Value);
+  else if (!strcasecmp(Name, "OSDSkin"))             strn0cpy(OSDSkin, Value, MaxSkinName);
+  else if (!strcasecmp(Name, "OSDTheme"))            strn0cpy(OSDTheme, Value, MaxThemeName);
   else if (!strcasecmp(Name, "PrimaryDVB"))          PrimaryDVB         = atoi(Value);
   else if (!strcasecmp(Name, "ShowInfoOnChSwitch"))  ShowInfoOnChSwitch = atoi(Value);
   else if (!strcasecmp(Name, "MenuScrollPage"))      MenuScrollPage     = atoi(Value);
@@ -403,6 +411,7 @@ bool cSetup::Parse(const char *Name, const char *Value)
   else if (!strcasecmp(Name, "LnbFrequHi"))          LnbFrequHi         = atoi(Value);
   else if (!strcasecmp(Name, "DiSEqC"))              DiSEqC             = atoi(Value);
   else if (!strcasecmp(Name, "SetSystemTime"))       SetSystemTime      = atoi(Value);
+  else if (!strcasecmp(Name, "TimeSource"))          TimeSource         = cSource::FromString(Value);
   else if (!strcasecmp(Name, "TimeTransponder"))     TimeTransponder    = atoi(Value);
   else if (!strcasecmp(Name, "MarginStart"))         MarginStart        = atoi(Value);
   else if (!strcasecmp(Name, "MarginStop"))          MarginStop         = atoi(Value);
@@ -426,9 +435,12 @@ bool cSetup::Parse(const char *Name, const char *Value)
   else if (!strcasecmp(Name, "UpdateChannels"))      UpdateChannels     = atoi(Value);
   else if (!strcasecmp(Name, "RecordDolbyDigital"))  RecordDolbyDigital = atoi(Value);
   else if (!strcasecmp(Name, "ChannelInfoPos"))      ChannelInfoPos     = atoi(Value);
-  else if (!strcasecmp(Name, "OSDwidth"))            OSDwidth           = atoi(Value);
-  else if (!strcasecmp(Name, "OSDheight"))           OSDheight          = atoi(Value);
+  else if (!strcasecmp(Name, "OSDLeft"))             OSDLeft            = atoi(Value);
+  else if (!strcasecmp(Name, "OSDTop"))              OSDTop             = atoi(Value);
+  else if (!strcasecmp(Name, "OSDWidth"))          { OSDWidth           = atoi(Value); if (OSDWidth  < 100) OSDWidth  *= 12; OSDWidth &= ~0x07; } // OSD width must be a multiple of 8
+  else if (!strcasecmp(Name, "OSDHeight"))         { OSDHeight          = atoi(Value); if (OSDHeight < 100) OSDHeight *= 27; }
   else if (!strcasecmp(Name, "OSDMessageTime"))      OSDMessageTime     = atoi(Value);
+  else if (!strcasecmp(Name, "UseSmallFont"))        UseSmallFont       = atoi(Value);
   else if (!strcasecmp(Name, "MaxVideoFileSize"))    MaxVideoFileSize   = atoi(Value);
   else if (!strcasecmp(Name, "SplitEditedFiles"))    SplitEditedFiles   = atoi(Value);
   else if (!strcasecmp(Name, "MinEventTimeout"))     MinEventTimeout    = atoi(Value);
@@ -446,6 +458,8 @@ bool cSetup::Parse(const char *Name, const char *Value)
 bool cSetup::Save(void)
 {
   Store("OSDLanguage",        OSDLanguage);
+  Store("OSDSkin",            OSDSkin);
+  Store("OSDTheme",           OSDTheme);
   Store("PrimaryDVB",         PrimaryDVB);
   Store("ShowInfoOnChSwitch", ShowInfoOnChSwitch);
   Store("MenuScrollPage",     MenuScrollPage);
@@ -457,6 +471,7 @@ bool cSetup::Save(void)
   Store("LnbFrequHi",         LnbFrequHi);
   Store("DiSEqC",             DiSEqC);
   Store("SetSystemTime",      SetSystemTime);
+  Store("TimeSource",         cSource::ToString(TimeSource));
   Store("TimeTransponder",    TimeTransponder);
   Store("MarginStart",        MarginStart);
   Store("MarginStop",         MarginStop);
@@ -480,9 +495,12 @@ bool cSetup::Save(void)
   Store("UpdateChannels",     UpdateChannels);
   Store("RecordDolbyDigital", RecordDolbyDigital);
   Store("ChannelInfoPos",     ChannelInfoPos);
-  Store("OSDwidth",           OSDwidth);
-  Store("OSDheight",          OSDheight);
+  Store("OSDLeft",            OSDLeft);
+  Store("OSDTop",             OSDTop);
+  Store("OSDWidth",           OSDWidth);
+  Store("OSDHeight",          OSDHeight);
   Store("OSDMessageTime",     OSDMessageTime);
+  Store("UseSmallFont",       UseSmallFont);
   Store("MaxVideoFileSize",   MaxVideoFileSize);
   Store("SplitEditedFiles",   SplitEditedFiles);
   Store("MinEventTimeout",    MinEventTimeout);

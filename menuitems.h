@@ -4,13 +4,13 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.h 1.6 2004/02/24 11:55:14 kls Exp $
+ * $Id: menuitems.h 1.9 2004/05/16 12:45:14 kls Exp $
  */
 
 #ifndef __MENUITEMS_H
 #define __MENUITEMS_H
 
-#include "osd.h"
+#include "osdbase.h"
 
 extern const char *FileNameChars;
 
@@ -100,22 +100,51 @@ public:
   cMenuEditStraItem(const char *Name, int *Value, int NumStrings, const char * const *Strings);
   };
 
-class cMenuTextItem : public cOsdItem {
-private:
-  char *text;
-  int x, y, w, h, lines, offset;
-  eDvbColor fgColor, bgColor;
-  eDvbFont font;
+class cMenuEditChanItem : public cMenuEditIntItem {
+protected:
+  virtual void Set(void);
 public:
-  cMenuTextItem(const char *Text, int X, int Y, int W, int H = -1, eDvbColor FgColor = clrWhite, eDvbColor BgColor = clrBackground, eDvbFont Font = fontOsd);
-  ~cMenuTextItem();
-  int Height(void) { return h; }
-  void Clear(void);
-  virtual void Display(int Offset = -1, eDvbColor FgColor = clrWhite, eDvbColor BgColor = clrBackground);
-  bool CanScrollUp(void) { return offset > 0; }
-  bool CanScrollDown(void) { return h + offset < lines; }
-  void ScrollUp(bool Page);
-  void ScrollDown(bool Page);
+  cMenuEditChanItem(const char *Name, int *Value);
+  virtual eOSState ProcessKey(eKeys Key);
+  };
+
+class cMenuEditTranItem : public cMenuEditChanItem {
+private:
+  int number;
+  int *source;
+  int transponder;
+public:
+  cMenuEditTranItem(const char *Name, int *Value, int *Source);
+  virtual eOSState ProcessKey(eKeys Key);
+  };
+
+class cMenuEditDayItem : public cMenuEditIntItem {
+protected:
+  static int days[];
+  int d;
+  virtual void Set(void);
+public:
+  cMenuEditDayItem(const char *Name, int *Value);
+  virtual eOSState ProcessKey(eKeys Key);
+  };
+
+class cMenuEditDateItem : public cMenuEditItem {
+protected:
+  time_t *value;
+  virtual void Set(void);
+public:
+  cMenuEditDateItem(const char *Name, time_t *Value);
+  virtual eOSState ProcessKey(eKeys Key);
+  };
+
+class cMenuEditTimeItem : public cMenuEditItem {
+protected:
+  int *value;
+  int hh, mm;
+  int pos;
+  virtual void Set(void);
+public:
+  cMenuEditTimeItem(const char *Name, int *Value);
   virtual eOSState ProcessKey(eKeys Key);
   };
 

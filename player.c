@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: player.c 1.6 2002/11/02 14:55:37 kls Exp $
+ * $Id: player.c 1.7 2004/04/16 13:34:11 kls Exp $
  */
 
 #include "player.h"
@@ -80,7 +80,7 @@ void cControl::Attach(void)
      if (cDevice::PrimaryDevice()->AttachPlayer(control->player))
         control->attached = true;
      else {
-        Interface->Error(tr("Channel locked (recording)!"));
+        Skins.Message(mtError, tr("Channel locked (recording)!"));
         Shutdown();
         }
      }

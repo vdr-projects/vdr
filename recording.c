@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.86 2003/11/08 15:25:35 kls Exp $
+ * $Id: recording.c 1.87 2004/05/07 14:24:18 kls Exp $
  */
 
 #include "recording.h"
@@ -18,6 +18,7 @@
 #include "i18n.h"
 #include "interface.h"
 #include "remux.h" //XXX+ I_FRAME
+#include "skins.h"
 #include "tools.h"
 #include "videodir.h"
 
@@ -461,7 +462,7 @@ char *cRecording::SortName(void)
   return sortBuffer;
 }
 
-int cRecording::GetResume(void)
+int cRecording::GetResume(void) const
 {
   if (resume == RESUME_NOT_INITIALIZED) {
      cResumeFile ResumeFile(FileName());
@@ -476,7 +477,7 @@ bool cRecording::operator< (const cListObject &ListObject)
   return strcasecmp(SortName(), r->SortName()) < 0;
 }
 
-const char *cRecording::FileName(void)
+const char *cRecording::FileName(void) const
 {
   if (!fileName) {
      struct tm tm_r;
@@ -488,7 +489,7 @@ const char *cRecording::FileName(void)
   return fileName;
 }
 
-const char *cRecording::Title(char Delimiter, bool NewIndicator, int Level)
+const char *cRecording::Title(char Delimiter, bool NewIndicator, int Level) const
 {
   char New = NewIndicator && IsNew() ? '*' : ' ';
   free(titleBuffer);
@@ -548,7 +549,7 @@ const char *cRecording::PrefixFileName(char Prefix)
   return NULL;
 }
 
-int cRecording::HierarchyLevels(void)
+int cRecording::HierarchyLevels(void) const
 {
   const char *s = name;
   int level = 0;
@@ -559,7 +560,7 @@ int cRecording::HierarchyLevels(void)
   return level;
 }
 
-bool cRecording::IsEdited(void)
+bool cRecording::IsEdited(void) const
 {
   const char *s = strrchr(name, '~');
   s = !s ? name : s + 1;
@@ -637,7 +638,7 @@ bool cRecordings::Load(bool Deleted)
      result = Count() > 0;
      }
   else
-     Interface->Error("Error while opening pipe!");
+     Skins.Message(mtError, "Error while opening pipe!");
   free(cmd);
   return result;
 }

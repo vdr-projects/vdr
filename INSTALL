@@ -40,11 +40,6 @@ following values in the 'make' call to activate the respective control mode:
 
 If you want to disable control via the PC keyboard, you can add NO_KBD=1
 to the 'make' call.
-Adding "DEBUG_OSD=1" will use the PC screen (or current window)
-to display texts instead of the DVB card's on-screen display
-interface. These modes are useful when testing new menus if you
-only have a remote connection to the VDR (which, in my case, is
-located in the living room and has neither a monitor nor a keyboard).
 
 If your video directory will be on a VFAT partition, add the compile
 time switch

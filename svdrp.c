@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.61 2004/02/24 12:24:43 kls Exp $
+ * $Id: svdrp.c 1.62 2004/03/25 17:00:23 kls Exp $
  */
 
 #include "svdrp.h"
@@ -207,10 +207,10 @@ const char *HelpPages[] = {
   "    containing the given string as part of their name are listed.",
   "LSTE [ <channel> ] [ now | next | at <time> ]\n"
   "    List EPG data. Without any parameters all data of all channels is\n"
-  "    listed. If a channel is given (either by number of by channel ID),\n",
+  "    listed. If a channel is given (either by number of by channel ID),\n"
   "    only data for that channel is listed. 'now', 'next', or 'at <time>'\n"
   "    restricts the returned data to present events, following events, or\n"
-  "    events at the given time (which must be in time_t form)."
+  "    events at the given time (which must be in time_t form).",
   "LSTR [ <number> ]\n"
   "    List recordings. Without option, all recordings are listed. Otherwise\n"
   "    the summary for the given recording is listed.",

@@ -12,7 +12,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: epg2html.pl 1.5 2004/02/22 13:18:27 kls Exp $
+# $Id: epg2html.pl 1.6 2004/03/28 11:15:01 kls Exp $
 
 @Index = ();
 
@@ -51,7 +51,7 @@ while (<>) {
                   while (<>) {
                         if    (/^T (.*)/) { $Title       = Tags($1); }
                         elsif (/^S (.*)/) { $Subtitle    = Tags($1); }
-                        elsif (/^D (.*)/) { $Description = Tags($1); }
+                        elsif (/^D (.*)/) { $Description = Tags($1); $Description =~ s/\|/<br>/g; }
                         elsif (/^V (.*)/) { $Vps         = $1; }
                         elsif (/^e/) {
                            $Events{$Time} = [($Duration, $Title, $Subtitle, $Description, $Vps)];

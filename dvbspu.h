@@ -8,7 +8,7 @@
  *
  * parts of this file are derived from the OMS program.
  *
- * $Id: dvbspu.h 1.2 2002/09/29 13:49:01 kls Exp $
+ * $Id: dvbspu.h 1.3 2004/04/30 13:44:41 kls Exp $
  */
 
 #ifndef __DVBSPU_H
@@ -16,7 +16,7 @@
 
 #include <inttypes.h>
 
-#include "osdbase.h"
+#include "osd.h"
 #include "spu.h"
 
 typedef struct sDvbSpuPalDescr {
@@ -91,7 +91,7 @@ class cDvbSpuBitmap {
 
 class cDvbSpuDecoder:public cSpuDecoder {
   private:
-    cOsdBase * osd;
+    cOsd * osd;
 
     // processing state
     uint8_t *spu;

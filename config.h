@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.190 2004/03/05 14:35:15 kls Exp $
+ * $Id: config.h 1.193 2004/05/16 12:41:43 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -20,18 +20,20 @@
 #include "i18n.h"
 #include "tools.h"
 
-#define VDRVERSION  "1.3.6"
-#define VDRVERSNUM   10306  // Version * 10000 + Major * 100 + Minor
+#define VDRVERSION  "1.3.7"
+#define VDRVERSNUM   10307  // Version * 10000 + Major * 100 + Minor
 
 #define MAXPRIORITY 99
 #define MAXLIFETIME 99
 
-#define MINOSDWIDTH  40
-#define MAXOSDWIDTH  56
-#define MINOSDHEIGHT 12
-#define MAXOSDHEIGHT 21
+#define MINOSDWIDTH  480
+#define MAXOSDWIDTH  672
+#define MINOSDHEIGHT 324
+#define MAXOSDHEIGHT 567
 
 #define MaxFileName 256
+#define MaxSkinName 16
+#define MaxThemeName 16
 
 class cCommand : public cListObject {
 private:
@@ -204,6 +206,8 @@ public:
   // Also adjust cMenuSetup (menu.c) when adding parameters here!
   int __BeginData__;
   int OSDLanguage;
+  char OSDSkin[MaxSkinName];
+  char OSDTheme[MaxThemeName];
   int PrimaryDVB;
   int ShowInfoOnChSwitch;
   int MenuScrollPage;
@@ -215,6 +219,7 @@ public:
   int LnbFrequHi;
   int DiSEqC;
   int SetSystemTime;
+  int TimeSource;
   int TimeTransponder;
   int MarginStart, MarginStop;
   int EPGLanguages[I18nNumLanguages + 1];
@@ -235,8 +240,9 @@ public:
   int UpdateChannels;
   int RecordDolbyDigital;
   int ChannelInfoPos;
-  int OSDwidth, OSDheight;
+  int OSDLeft, OSDTop, OSDWidth, OSDHeight;
   int OSDMessageTime;
+  int UseSmallFont;
   int MaxVideoFileSize;
   int SplitEditedFiles;
   int MinEventTimeout, MinUserInactivity;

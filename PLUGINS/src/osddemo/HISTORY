@@ -8,3 +8,7 @@ VDR Plugin 'osddemo' Revision History
 2002-12-13: Version 0.1.0
 
 - Changed setting of CXX and CXXFLAGS variables in Makefile.
+
+2004-04-30: Version 0.1.1
+
+- New OSD handling.

@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 1.65 2004/01/18 14:16:53 kls Exp $
+# $Id: Makefile 1.67 2004/05/16 10:51:44 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -36,15 +36,22 @@ SILIB    = $(LSIDIR)/libsi.a
 OBJS = audio.o channels.o ci.o config.o cutter.o device.o diseqc.o dvbdevice.o dvbosd.o\
        dvbplayer.o dvbspu.o eit.o eitscan.o epg.o filter.o font.o i18n.o interface.o keys.o\
        lirc.o menu.o menuitems.o nit.o osdbase.o osd.o pat.o player.o plugin.o rcu.o\
-       receiver.o recorder.o recording.o remote.o remux.o ringbuffer.o sdt.o sections.o sources.o\
-       spu.o status.o svdrp.o thread.o timers.o tools.o transfer.o vdr.o videodir.o
+       receiver.o recorder.o recording.o remote.o remux.o ringbuffer.o sdt.o sections.o\
+       skinclassic.o skins.o skinsttng.o sources.o spu.o status.o svdrp.o themes.o thread.o\
+       timers.o tools.o transfer.o vdr.o videodir.o
 
 FIXFONT_ISO8859_1 = -adobe-courier-bold-r-normal--25-*-100-100-m-*-iso8859-1
 OSDFONT_ISO8859_1 = -adobe-helvetica-medium-r-normal--23-*-100-100-p-*-iso8859-1
 SMLFONT_ISO8859_1 = -adobe-helvetica-medium-r-normal--18-*-100-100-p-*-iso8859-1
+
+FIXFONT_ISO8859_2 = -adobe-courier-bold-r-normal--25-*-100-100-m-*-iso8859-2
+OSDFONT_ISO8859_2 = -adobe-helvetica-medium-r-normal--24-*-75-75-p-*-iso8859-2
+SMLFONT_ISO8859_2 = -adobe-helvetica-medium-r-normal--18-*-75-75-p-*-iso8859-2
+
 FIXFONT_ISO8859_5 = -rfx-courier-bold-r-normal--24-*-75-75-m-*-iso8859-5
 OSDFONT_ISO8859_5 = -rfx-helvetica-medium-r-normal--24-*-75-75-p-*-iso8859-5
 SMLFONT_ISO8859_5 = -rfx-helvetica-medium-r-normal--18-*-75-75-p-*-iso8859-5
+
 FIXFONT_ISO8859_7 = --user-medium-r-normal--26-171-110-110-m-140-iso8859-7
 OSDFONT_ISO8859_7 = --user-medium-r-normal--23-179-85-85-m-120-iso8859-7
 SMLFONT_ISO8859_7 = --user-medium-r-normal--19-160-72-72-m-110-iso8859-7
@@ -60,11 +67,6 @@ DEFINES += -D_GNU_SOURCE
 DEFINES += -DVIDEODIR=\"$(VIDEODIR)\"
 DEFINES += -DPLUGINDIR=\"$(PLUGINLIBDIR)\"
 
-ifdef DEBUG_OSD
-DEFINES += -DDEBUG_OSD
-NCURSESLIB = -lncurses
-endif
-
 ifdef VFAT
 # for people who want their video directory on a VFAT partition
 DEFINES += -DVFAT
@@ -73,6 +75,7 @@ endif
 all: vdr
 font: genfontfile\
       fontfix.c fontosd.c fontsml.c\
+      fontfix-iso8859-2.c fontosd-iso8859-2.c fontsml-iso8859-2.c\
       fontfix_iso8859_5.c fontosd_iso8859_5.c fontsml_iso8859_5.c\
       fontfix_iso8859_7.c fontosd_iso8859_7.c fontsml_iso8859_7.c
 	@echo "font files created."
@@ -104,17 +107,26 @@ fontosd.c:
 	./genfontfile "cFont::tPixelData FontOsd_iso8859_1" "$(OSDFONT_ISO8859_1)" > $@
 fontsml.c:
 	./genfontfile "cFont::tPixelData FontSml_iso8859_1" "$(SMLFONT_ISO8859_1)" > $@
-fontfix_iso8859_5.c:
+
+fontfix-iso8859-2.c:
+	./genfontfile "cFont::tPixelData FontFix_iso8859_2" "$(FIXFONT_ISO8859_2)" > $@
+fontosd-iso8859-2.c:
+	./genfontfile "cFont::tPixelData FontOsd_iso8859_2" "$(OSDFONT_ISO8859_2)" > $@
+fontsml-iso8859-2.c:
+	./genfontfile "cFont::tPixelData FontSml_iso8859_2" "$(SMLFONT_ISO8859_2)" > $@
+
+fontfix-iso8859-5.c:
 	./genfontfile "cFont::tPixelData FontFix_iso8859_5" "$(FIXFONT_ISO8859_5)" > $@
-fontosd_iso8859_5.c:
+fontosd-iso8859-5.c:
 	./genfontfile "cFont::tPixelData FontOsd_iso8859_5" "$(OSDFONT_ISO8859_5)" > $@
-fontsml_iso8859_5.c:
+fontsml-iso8859-5.c:
 	./genfontfile "cFont::tPixelData FontSml_iso8859_5" "$(SMLFONT_ISO8859_5)" > $@
-fontfix_iso8859_7.c:
+
+fontfix-iso8859-7.c:
 	./genfontfile "cFont::tPixelData FontFix_iso8859_7" "$(FIXFONT_ISO8859_7)" > $@
-fontosd_iso8859_7.c:
+fontosd-iso8859-7.c:
 	./genfontfile "cFont::tPixelData FontOsd_iso8859_7" "$(OSDFONT_ISO8859_7)" > $@
-fontsml_iso8859_7.c:
+fontsml-iso8859-7.c:
 	./genfontfile "cFont::tPixelData FontSml_iso8859_7" "$(SMLFONT_ISO8859_7)" > $@
 
 # The font file generator:

@@ -4,14 +4,14 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: eitscan.c 1.21 2004/02/14 13:44:31 kls Exp $
+ * $Id: eitscan.c 1.22 2004/04/16 13:33:34 kls Exp $
  */
 
 #include "eitscan.h"
 #include <stdlib.h>
 #include "channels.h"
 #include "dvbdevice.h"
-#include "interface.h"
+#include "skins.h"
 
 // --- cScanData -------------------------------------------------------------
 
@@ -149,7 +149,7 @@ void cEITScanner::Process(void)
                                   if ((!Channel->Ca() || Channel->Ca() == Device->DeviceNumber() + 1 || Channel->Ca() >= 0x0100) && Device->ProvidesTransponder(Channel)) {
                                      if (Device == cDevice::PrimaryDevice() && !currentChannel) {
                                         currentChannel = Device->CurrentChannel();
-                                        Interface->Info("Starting EPG scan");
+                                        Skins.Message(mtInfo, "Starting EPG scan");
                                         }
                                      currentDevice = Device;//XXX see also dvbdevice.c!!!
                                      Device->SwitchChannel(Channel, false);

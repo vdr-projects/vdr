@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 1.28 2003/10/17 14:27:36 kls Exp $
+ * $Id: recording.h 1.29 2004/05/07 14:24:22 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -34,15 +34,15 @@ public:
 
 class cRecording : public cListObject {
 private:
-  int resume;
-  char *titleBuffer;
+  mutable int resume;
+  mutable char *titleBuffer;
   char *sortBuffer;
-  char *fileName;
-  char *name;
+  mutable char *fileName;
+  mutable char *name;
   char *summary;
   char *StripEpisodeName(char *s);
   char *SortName(void);
-  int GetResume(void);
+  int GetResume(void) const;
 public:
   time_t start;
   int priority;
@@ -51,14 +51,14 @@ public:
   cRecording(const char *FileName);
   ~cRecording();
   virtual bool operator< (const cListObject &ListObject);
-  const char *Name(void) { return name; }
-  const char *FileName(void);
-  const char *Title(char Delimiter = ' ', bool NewIndicator = false, int Level = -1);
-  const char *Summary(void) { return summary; }
+  const char *Name(void) const { return name; }
+  const char *FileName(void) const;
+  const char *Title(char Delimiter = ' ', bool NewIndicator = false, int Level = -1) const;
+  const char *Summary(void) const { return summary; }
   const char *PrefixFileName(char Prefix);
-  int HierarchyLevels(void);
-  bool IsNew(void) { return GetResume() <= 0; }
-  bool IsEdited(void);
+  int HierarchyLevels(void) const;
+  bool IsNew(void) const { return GetResume() <= 0; }
+  bool IsEdited(void) const;
   bool WriteSummary(void);
   bool Delete(void);
        // Changes the file name so that it will no longer be visible in the "Recordings" menu

@@ -2745,3 +2745,62 @@ Video Disk Recorder Revision History
   events to timers.
 - Now explicitly turning on the LNB power at startup, because newer drivers don't
   do this any more (thanks to Oliver Endriss for pointing this out).
+
+2004-05-16: Version 1.3.7
+
+- Fixed a memory leak in thread handling when using NPTL (thanks to Jon Burgess).
+- Fixed handling Setup.RecordDolbyDigital, which was broken since version 1.1.6.
+- Fixed handling text lengths for itemized EPG texts (thanks to Marcel Wiesweg).
+- Fixed the help for LSTE and LSTR (was broken in 1.3.6).
+- Improved iso8859-7 fonts (thanks to Dimitrios Dimitrakos).
+- Added some 3-letter language codes (thanks to Marcus Mönnig).
+- Added language code handling to the subtitling descriptor in 'libsi' (thanks to
+  Pekka Virtanen).
+- Moved several menu item classes from menu.c to menuitems.[hc] to make them
+  available for plugins.
+- The epg2html.pl script now handles '|' in description texts.
+- The new setup option "OSD/Use small font" can be used to control the use of
+  the small font (see MANUAL for details).
+- Swapped osd.[hc] and osdbase.[hc] to have the virtual OSD base class named cOsd.
+  Plugins may need to adjust their #include statements.
+- Colors are now given as AARRGGBB instead of AABBGGRR. The values are mapped to
+  the driver's (wrong) sequence in dvbosd.c (this should really be fixed in the
+  driver, together with the endian problem).
+- The new OSD setup parameters "Left" and "Top" can be used to define the top left
+  corner of the OSD.
+- The OSD size prameters are now in pixel (as opposed to formerly characters).
+  When reading a 'setup.conf' file from an older version of VDR, the OSDwidth
+  and OSDheight values will be converted to pixel automatically.
+- The OSD is now fully device independent. See the comments in VDR/osd.h and the
+  description in PLUGINS.html for information on how a plugin can implement an OSD
+  display on arbitrary hardware.
+- The OSD (actually its cBitmap class) can now handle XPM files. There are several
+  XPM files in the VDR/symbols directory which can be used by skins (some of these
+  have been taken from the "elchi" patch). See VDR/skinsttng.c for examples on how
+  to use these.
+- Due to the changes in the OSD handling the DEBUG_OSD option for a textual OSD
+  has been dropped. There will be a plugin that implements a skin with this
+  functionality later.
+- The entire OSD display can now be implemented via "skins". See VDR/skins.[hc],
+  VDR/skinclassic.[hc], VDR/skinsttng.[hc] and PLUGINS.html for information on how
+  a plugin can implement its own skin. By default VDR comes with a "Classic" skin
+  that implements the OSD display known from previous versions, and the new skin
+  named "ST:TNG Panels", which is also the default skin now. The actual skin can
+  be selected through "Setup/OSD/Skin".
+- The colors used in a skin can now be configured using "themes". See PLUGINS.html
+  for information on how a skin can make use of themes, and man vdr(5) for the
+  structure of a theme file. The actual theme to use can be selected through
+  "Setup/OSD/Theme".
+- Added Croatian language texts (thanks to Drazen Dupor).
+  NOTE: there is apparently a problem with the newly introduced iso8859-2 font,
+  because as soon as Setup/OSD/Language is set to Croatian (currently the last one
+  in the list) everything freezes and the vdr processes have to be killed with -9
+  and the driver needs to be reloaded. Maybe somebody else can find out what's
+  going wrong here...
+- Added missing NULL checks when accessing sectionHandler in device.c (thanks to
+  Pekka Virtanen).
+- Fixed setting the time from the DVB data stream (thanks to Helmut Auer for
+  pointing out a frequency/transponder handling mixup). This now also takes the
+  actual source (sat, cable etc.) into account. Please go into "Setup/EPG" and
+  set the "Set system time" and "Use time from transponder" parameters accordingly
+  (this is necessary even if you have already set them before!).

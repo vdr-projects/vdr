@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.53 2004/02/08 15:05:11 kls Exp $
+ * $Id: device.c 1.55 2004/05/16 12:14:47 kls Exp $
  */
 
 #include "device.h"
@@ -124,11 +124,6 @@ bool cDevice::SetPrimaryDevice(int n)
 bool cDevice::HasDecoder(void) const
 {
   return false;
-}
-
-cOsdBase *cDevice::NewOsd(int x, int y)
-{
-  return NULL;
 }
 
 cSpuDecoder *cDevice::GetSpuDecoder(void)
@@ -330,12 +325,14 @@ int cDevice::OpenFilter(u_short Pid, u_char Tid, u_char Mask)
 
 void cDevice::AttachFilter(cFilter *Filter)
 {
-  sectionHandler->Attach(Filter);
+  if (sectionHandler)
+     sectionHandler->Attach(Filter);
 }
 
 void cDevice::Detach(cFilter *Filter)
 {
-  sectionHandler->Detach(Filter);
+  if (sectionHandler)
+     sectionHandler->Detach(Filter);
 }
 
 bool cDevice::ProvidesSource(int Source) const
@@ -360,11 +357,9 @@ bool cDevice::SwitchChannel(const cChannel *Channel, bool LiveView)
   for (int i = 3; i--;) {
       switch (SetChannel(Channel, LiveView)) {
         case scrOk:           return true;
-        case scrNotAvailable: if (Interface)
-                                 Interface->Error(tr("Channel not available!"));
+        case scrNotAvailable: Skins.Message(mtError, tr("Channel not available!"));
                               return false;
-        case scrNoTransfer:   if (Interface)
-                                 Interface->Error(tr("Can't start Transfer Mode!"));
+        case scrNoTransfer:   Skins.Message(mtError, tr("Can't start Transfer Mode!"));
                               return false;
         case scrFailed:       break; // loop will retry
         }
@@ -396,8 +391,8 @@ bool cDevice::SwitchChannel(int Direction)
         if (PrimaryDevice()->SwitchChannel(channel, true))
            result = true;
         }
-     else if (n != first && Interface)
-        Interface->Error(tr("Channel not available!"));
+     else if (n != first)
+        Skins.Message(mtError, tr("Channel not available!"));
      }
   return result;
 }

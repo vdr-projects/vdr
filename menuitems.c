@@ -4,13 +4,15 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.c 1.15 2004/02/24 12:38:43 kls Exp $
+ * $Id: menuitems.c 1.18 2004/05/16 12:47:02 kls Exp $
  */
 
 #include "menuitems.h"
 #include <ctype.h>
 #include "i18n.h"
 #include "plugin.h"
+#include "remote.h"
+#include "skins.h"
 #include "status.h"
 
 const char *FileNameChars = " abcdefghijklmnopqrstuvwxyz0123456789-.#~";
@@ -36,7 +38,6 @@ void cMenuEditItem::SetValue(const char *Value)
   char *buffer = NULL;
   asprintf(&buffer, "%s:\t%s", name, value);
   SetText(buffer, false);
-  Display();
   cStatus::MsgOsdCurrentItem(buffer);
 }
 
@@ -253,9 +254,9 @@ cMenuEditStrItem::~cMenuEditStrItem()
 void cMenuEditStrItem::SetHelpKeys(void)
 {
   if (pos >= 0)
-     Interface->Help(tr("ABC/abc"), tr(insert ? "Overwrite" : "Insert"), tr("Delete"));
+     cSkinDisplay::Current()->SetButtons(tr("ABC/abc"), tr(insert ? "Overwrite" : "Insert"), tr("Delete"));
   else
-     Interface->Help(NULL);
+     cSkinDisplay::Current()->SetButtons(NULL);
 }
 
 void cMenuEditStrItem::Set(void)
@@ -264,21 +265,21 @@ void cMenuEditStrItem::Set(void)
   const char *fmt = insert && newchar ? "[]%c%s" : "[%c]%s";
 
   if (pos >= 0) {
+     const cFont *font = cFont::GetFont(fontOsd);
      strncpy(buf, value, pos);
      snprintf(buf + pos, sizeof(buf) - pos - 2, fmt, *(value + pos), value + pos + 1);
-     int width = Interface->Width() - Interface->GetCols()[0];
-     if (cOsd::WidthInCells(buf) <= width) {
+     int width = cSkinDisplay::Current()->EditableWidth();
+     if (font->Width(buf) <= width) {
         // the whole buffer fits on the screen
         SetValue(buf);
         return;
         }
-     width *= cOsd::CellWidth();
-     width -= cOsd::Width('>'); // assuming '<' and '>' have the same with
+     width -= font->Width('>'); // assuming '<' and '>' have the same with
      int w = 0;
      int i = 0;
      int l = strlen(buf);
      while (i < l && w <= width)
-           w += cOsd::Width(buf[i++]);
+           w += font->Width(buf[i++]);
      if (i >= pos + 4) {
         // the cursor fits on the screen
         buf[i - 1] = '>';
@@ -295,7 +296,7 @@ void cMenuEditStrItem::Set(void)
      else
         i--;
      while (i >= 0 && w <= width)
-           w += cOsd::Width(buf[i--]);
+           w += font->Width(buf[i--]);
      buf[++i] = '<';
      SetValue(buf + i);
      }
@@ -461,98 +462,284 @@ void cMenuEditStraItem::Set(void)
   SetValue(strings[*value]);
 }
 
-// --- cMenuTextItem ---------------------------------------------------------
+// --- cMenuEditChanItem -----------------------------------------------------
 
-cMenuTextItem::cMenuTextItem(const char *Text, int X, int Y, int W, int H, eDvbColor FgColor, eDvbColor BgColor, eDvbFont Font)
+cMenuEditChanItem::cMenuEditChanItem(const char *Name, int *Value)
+:cMenuEditIntItem(Name, Value, 1, Channels.MaxNumber())
 {
-  x = X;
-  y = Y;
-  w = W;
-  h = H;
-  fgColor = FgColor;
-  bgColor = BgColor;
-  font = Font;
-  offset = 0;
-  eDvbFont oldFont = Interface->SetFont(font);
-  text = Interface->WrapText(Text, w - 1, &lines);
-  Interface->SetFont(oldFont);
-  if (h < 0)
-     h = lines;
+  Set();
 }
 
-cMenuTextItem::~cMenuTextItem()
+void cMenuEditChanItem::Set(void)
 {
-  free(text);
+  char buf[255];
+  cChannel *channel = Channels.GetByNumber(*value);
+  snprintf(buf, sizeof(buf), "%d %s", *value, channel ? channel->Name() : "");
+  SetValue(buf);
 }
 
-void cMenuTextItem::Clear(void)
+eOSState cMenuEditChanItem::ProcessKey(eKeys Key)
 {
-  Interface->Fill(x, y, w, h, bgColor);
+  int delta = 1;
+
+  switch (Key) {
+    case kLeft|k_Repeat:
+    case kLeft:  delta = -1;
+    case kRight|k_Repeat:
+    case kRight:
+                 {
+                   cChannel *channel = Channels.GetByNumber(*value + delta, delta);
+                   if (channel) {
+                      *value = channel->Number();
+                      Set();
+                      }
+                 }
+                 break;
+    default : return cMenuEditIntItem::ProcessKey(Key);
+    }
+  return osContinue;
 }
 
-void cMenuTextItem::Display(int Offset, eDvbColor FgColor, eDvbColor BgColor)
+// --- cMenuEditTranItem -----------------------------------------------------
+
+cMenuEditTranItem::cMenuEditTranItem(const char *Name, int *Value, int *Source)
+:cMenuEditChanItem(Name, Value)
 {
-  int l = 0;
-  char *t = text;
-  eDvbFont oldFont = Interface->SetFont(font);
-  while (*t) {
-        char *n = strchr(t, '\n');
-        if (l >= offset) {
-           if (n)
-              *n = 0;
-           Interface->Write(x, y + l - offset, t, fgColor, bgColor);
-           if (n)
-              *n = '\n';
-           else
-              break;
+  number = 0;
+  source = Source;
+  transponder = *Value;
+  cChannel *channel = Channels.First();
+  while (channel) {
+        if (!channel->GroupSep() && *source == channel->Source() && ISTRANSPONDER(channel->Transponder(), *Value)) {
+           number = channel->Number();
+           break;
            }
-        if (!n)
-           break;
-        t = n + 1;
-        if (++l >= h + offset)
-           break;
+        channel = (cChannel *)channel->Next();
         }
-  Interface->SetFont(oldFont);
-  // scroll indicators use inverted color scheme!
-  if (CanScrollUp())   Interface->Write(x + w - 1, y,         "^", bgColor, fgColor);
-  if (CanScrollDown()) Interface->Write(x + w - 1, y + h - 1, "v", bgColor, fgColor);
-  cStatus::MsgOsdTextItem(text);
+  *Value = number;
+  Set();
+  *Value = transponder;
 }
 
-void cMenuTextItem::ScrollUp(bool Page)
+eOSState cMenuEditTranItem::ProcessKey(eKeys Key)
 {
-  if (CanScrollUp()) {
-     Clear();
-     offset = max(offset - (Page ? h : 1), 0);
-     Display();
+  *value = number;
+  eOSState state = cMenuEditChanItem::ProcessKey(Key);
+  number = *value;
+  cChannel *channel = Channels.GetByNumber(*value);
+  if (channel) {
+     *source = channel->Source();
+     transponder = channel->Transponder();
      }
-  cStatus::MsgOsdTextItem(NULL, true);
+  *value = transponder;
+  return state;
 }
 
-void cMenuTextItem::ScrollDown(bool Page)
+// --- cMenuEditDayItem ------------------------------------------------------
+
+int cMenuEditDayItem::days[] ={ cTimer::ParseDay("M------"),
+                                cTimer::ParseDay("-T-----"),
+                                cTimer::ParseDay("--W----"),
+                                cTimer::ParseDay("---T---"),
+                                cTimer::ParseDay("----F--"),
+                                cTimer::ParseDay("-----S-"),
+                                cTimer::ParseDay("------S"),
+                                cTimer::ParseDay("MTWTF--"),
+                                cTimer::ParseDay("MTWTFS-"),
+                                cTimer::ParseDay("MTWTFSS"),
+                                cTimer::ParseDay("-----SS"),
+                                0 };
+
+cMenuEditDayItem::cMenuEditDayItem(const char *Name, int *Value)
+:cMenuEditIntItem(Name, Value, -INT_MAX, 31)
 {
-  if (CanScrollDown()) {
-     Clear();
-     offset = min(offset + (Page ? h : 1), lines - h);
-     Display();
+  d = -1;
+  if (*value < 0) {
+     int n = 0;
+     while (days[n]) {
+           if (days[n] == *value) {
+              d = n;
+              break;
+              }
+           n++;
+           }
      }
-  cStatus::MsgOsdTextItem(NULL, false);
+  Set();
 }
 
-eOSState cMenuTextItem::ProcessKey(eKeys Key)
+void cMenuEditDayItem::Set(void)
+{
+  SetValue(cTimer::PrintDay(*value));
+}
+
+eOSState cMenuEditDayItem::ProcessKey(eKeys Key)
 {
   switch (Key) {
     case kLeft|k_Repeat:
-    case kLeft:
-    case kUp|k_Repeat:
-    case kUp:            ScrollUp(NORMALKEY(Key) == kLeft);    break;
+    case kLeft:  if (d > 0)
+                    *value = days[--d];
+                 else if (d == 0) {
+                    *value = 31;
+                    d = -1;
+                    }
+                 else if (*value == 1) {
+                    d = sizeof(days) / sizeof(int) - 2;
+                    *value = days[d];
+                    }
+                 else
+                    return cMenuEditIntItem::ProcessKey(Key);
+                 Set();
+                 break;
     case kRight|k_Repeat:
-    case kRight:
-    case kDown|k_Repeat:
-    case kDown:          ScrollDown(NORMALKEY(Key) == kRight); break;
-    default:             return osUnknown;
+    case kRight: if (d >= 0) {
+                    *value = days[++d];
+                    if (*value == 0) {
+                       *value = 1;
+                       d = -1;
+                       }
+                    }
+                 else if (*value == 31) {
+                    d = 0;
+                    *value = days[d];
+                    }
+                 else
+                    return cMenuEditIntItem::ProcessKey(Key);
+                 Set();
+                 break;
+    default : return cMenuEditIntItem::ProcessKey(Key);
     }
   return osContinue;
+}
+
+// --- cMenuEditDateItem -----------------------------------------------------
+
+cMenuEditDateItem::cMenuEditDateItem(const char *Name, time_t *Value)
+:cMenuEditItem(Name)
+{
+  value = Value;
+  Set();
+}
+
+void cMenuEditDateItem::Set(void)
+{
+#define DATEBUFFERSIZE 32
+  char buf[DATEBUFFERSIZE];
+  if (*value) {
+     struct tm tm_r;
+     localtime_r(value, &tm_r);
+     strftime(buf, DATEBUFFERSIZE, "%Y-%m-%d ", &tm_r);
+     strcat(buf, WeekDayName(tm_r.tm_wday));
+     }
+  else
+     *buf = 0;
+  SetValue(buf);
+}
+
+eOSState cMenuEditDateItem::ProcessKey(eKeys Key)
+{
+  eOSState state = cMenuEditItem::ProcessKey(Key);
+
+  if (state == osUnknown) {
+     if (NORMALKEY(Key) == kLeft) { // TODO might want to increase the delta if repeated quickly?
+        *value -= SECSINDAY;
+        if (*value < time(NULL))
+           *value = 0;
+        }
+     else if (NORMALKEY(Key) == kRight) {
+        if (!*value)
+           *value = cTimer::SetTime(time(NULL), 0);
+        *value += SECSINDAY;
+        }
+     else
+        return state;
+     Set();
+     state = osContinue;
+     }
+  return state;
+}
+
+// --- cMenuEditTimeItem -----------------------------------------------------
+
+cMenuEditTimeItem::cMenuEditTimeItem(const char *Name, int *Value)
+:cMenuEditItem(Name)
+{
+  value = Value;
+  hh = *value / 100;
+  mm = *value % 100;
+  pos = 0;
+  Set();
+}
+
+void cMenuEditTimeItem::Set(void)
+{
+  char buf[10];
+  switch (pos) {
+    case 1:  snprintf(buf, sizeof(buf), "%01d-:--", hh / 10); break;
+    case 2:  snprintf(buf, sizeof(buf), "%02d:--", hh); break;
+    case 3:  snprintf(buf, sizeof(buf), "%02d:%01d-", hh, mm / 10); break;
+    default: snprintf(buf, sizeof(buf), "%02d:%02d", hh, mm);
+    }
+  SetValue(buf);
+}
+
+eOSState cMenuEditTimeItem::ProcessKey(eKeys Key)
+{
+  eOSState state = cMenuEditItem::ProcessKey(Key);
+
+  if (state == osUnknown) {
+     if (k0 <= Key && Key <= k9) {
+        if (fresh || pos > 3) {
+           pos = 0;
+           fresh = false;
+           }
+        int n = Key - k0;
+        switch (pos) {
+          case 0: if (n <= 2) {
+                     hh = n * 10;
+                     mm = 0;
+                     pos++;
+                     }
+                  break;
+          case 1: if (hh + n <= 23) {
+                     hh += n;
+                     pos++;
+                     }
+                  break;
+          case 2: if (n <= 5) {
+                     mm += n * 10;
+                     pos++;
+                     }
+                  break;
+          case 3: if (mm + n <= 59) {
+                     mm += n;
+                     pos++;
+                     }
+                  break;
+          }
+        }
+     else if (NORMALKEY(Key) == kLeft) { // TODO might want to increase the delta if repeated quickly?
+        if (--mm < 0) {
+           mm = 59;
+           if (--hh < 0)
+              hh = 23;
+           }
+        fresh = true;
+        }
+     else if (NORMALKEY(Key) == kRight) {
+        if (++mm > 59) {
+           mm = 0;
+           if (++hh > 23)
+              hh = 0;
+           }
+        fresh = true;
+        }
+     else
+        return state;
+     *value = hh * 100 + mm;
+     Set();
+     state = osContinue;
+     }
+  return state;
 }
 
 // --- cMenuSetupPage --------------------------------------------------------

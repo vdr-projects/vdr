@@ -8,7 +8,7 @@
  *
  * parts of this file are derived from the OMS program.
  *
- * $Id: dvbspu.c 1.5 2003/10/12 09:43:18 kls Exp $
+ * $Id: dvbspu.c 1.6 2004/04/30 13:45:02 kls Exp $
  */
 
 #include <assert.h>
@@ -16,8 +16,6 @@
 #include <inttypes.h>
 #include <math.h>
 
-#include "osd.h"
-#include "osdbase.h"
 #include "device.h"
 #include "dvbspu.h"
 
@@ -105,13 +103,13 @@ cBitmap *cDvbSpuBitmap::getBitmap(const aDvbSpuPalDescr paldescr,
     if (w & 0x03)
         w += 4 - (w & 0x03);
 
-    cBitmap *ret = new cBitmap(w, h, 2, true);
+    cBitmap *ret = new cBitmap(w, h, 2);
 
     // set the palette
     for (int i = 0; i < 4; i++) {
         uint32_t color =
             pal.getColor(paldescr[i].index, paldescr[i].trans);
-        ret->SetColor(i, (eDvbColor) color);
+        ret->SetColor(i, (tColor) color);
     }
 
     // set the content
@@ -323,8 +321,9 @@ int cDvbSpuDecoder::ScaleYres(int value)
 
 void cDvbSpuDecoder::DrawBmp(sDvbSpuRect & size, cBitmap * bmp)
 {
-    osd->Create(size.x1, size.y1, size.width(), size.height(), 2, false);
-    osd->SetBitmap(size.x1, size.y1, *bmp);
+    tArea Area = { size.x1, size.y1, size.x2, size.y2, 2 };
+    osd->SetAreas(&Area, 1);
+    osd->DrawBitmap(size.x1, size.y1, *bmp);
     delete bmp;
 }
 
@@ -360,8 +359,8 @@ void cDvbSpuDecoder::Draw(void)
 
     if (bg || fg) {
         if (osd == NULL)
-            if ((osd = cOsd::OpenRaw(0, 0)) == NULL) {
-                dsyslog("OpenRaw failed\n");
+            if ((osd = cOsdProvider::NewOsd(0, 0)) == NULL) {
+                dsyslog("NewOsd failed\n");
                 return;
             }
 

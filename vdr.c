@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.180 2004/03/14 14:25:02 kls Exp $
+ * $Id: vdr.c 1.181 2004/05/16 10:12:43 kls Exp $
  */
 
 #include <getopt.h>
@@ -45,11 +45,14 @@
 #include "keys.h"
 #include "lirc.h"
 #include "menu.h"
-#include "osd.h"
+#include "osdbase.h"
 #include "plugin.h"
 #include "rcu.h"
 #include "recording.h"
+#include "skinclassic.h"
+#include "skinsttng.h"
 #include "sources.h"
+#include "themes.h"
 #include "timers.h"
 #include "tools.h"
 #include "transfer.h"
@@ -310,7 +313,6 @@ int main(int argc, char *argv[])
   // Daemon mode:
 
   if (DaemonMode) {
-#if !defined(DEBUG_OSD)
      pid_t pid = fork();
      if (pid < 0) {
         fprintf(stderr, "%m\n");
@@ -322,10 +324,6 @@ int main(int argc, char *argv[])
      fclose(stdin);
      fclose(stdout);
      fclose(stderr);
-#else
-     fprintf(stderr, "vdr: can't run in daemon mode with DEBUG_OSD on!\n");
-     return 2;
-#endif
      }
   else if (Terminal) {
      // Claim new controlling terminal
@@ -348,6 +346,7 @@ int main(int argc, char *argv[])
      ConfigDirectory = VideoDirectory;
 
   cPlugin::SetConfigDirectory(ConfigDirectory);
+  cThemes::SetThemesDirectory(AddDirectory(ConfigDirectory, "themes"));
 
   Setup.Load(AddDirectory(ConfigDirectory, "setup.conf"));
   if (!(Sources.Load(AddDirectory(ConfigDirectory, "sources.conf"), true, true) &&
@@ -416,10 +415,6 @@ int main(int argc, char *argv[])
         }
      }
 
-  // OSD:
-
-  cOsd::Initialize();
-
   // User interface:
 
   Interface = new cInterface(SVDRPport);
@@ -428,6 +423,13 @@ int main(int argc, char *argv[])
 
   if (!PluginManager.StartPlugins())
      return 2;
+
+  // Skins:
+
+  new cSkinClassic;
+  new cSkinSTTNG;
+  Skins.SetCurrent(Setup.OSDSkin);
+  cThemes::Load(Skins.Current()->Name(), Setup.OSDTheme, Skins.Current()->Theme());
 
   // Remote Controls:
 #if defined(REMOTE_RCU)
@@ -586,7 +588,7 @@ int main(int argc, char *argv[])
                }
            }
         // CAM control:
-        if (!Menu && !Interface->IsOpen())
+        if (!Menu && !cOsd::IsOpen())
            Menu = CamControl();
         // User Input:
         cOsdObject *Interact = Menu ? Menu : cControl::Control();
@@ -646,7 +648,7 @@ int main(int argc, char *argv[])
                   }
                else
                   cDevice::PrimaryDevice()->SetVolume(NORMALKEY(key) == kVolDn ? -VOLUMEDELTA : VOLUMEDELTA);
-               if (!Menu && !Interface->IsOpen())
+               if (!Menu && !cOsd::IsOpen())
                   Menu = Temp = cDisplayVolume::Create();
                cDisplayVolume::Process(key);
                key = kNone; // nobody else needs to see these keys
@@ -657,7 +659,7 @@ int main(int argc, char *argv[])
                   DELETENULL(Menu);
                   Temp = NULL;
                   if (!cRecordControls::PauseLiveVideo())
-                     Interface->Error(tr("No free DVB device to record!"));
+                     Skins.Message(mtError, tr("No free DVB device to record!"));
                   key = kNone; // nobody else needs to see this key
                   }
                break;
@@ -665,9 +667,9 @@ int main(int argc, char *argv[])
           case kRecord:
                if (!cControl::Control()) {
                   if (cRecordControls::Start())
-                     ;//XXX Interface->Info(tr("Recording"));
+                     ;//XXX Skins.Message(mtInfo, tr("Recording"));
                   else
-                     Interface->Error(tr("No free DVB device to record!"));
+                     Skins.Message(mtError, tr("No free DVB device to record!"));
                   key = kNone; // nobody else needs to see this key
                   }
                break;
@@ -677,7 +679,7 @@ int main(int argc, char *argv[])
                        cControl::Shutdown();
                        Temp = NULL;
                        if (!Shutdown) {
-                          Interface->Error(tr("Can't shutdown - option '-s' not given!"));
+                          Skins.Message(mtError, tr("Can't shutdown - option '-s' not given!"));
                           break;
                           }
                        if (cRecordControls::Active()) {
@@ -699,14 +701,14 @@ int main(int argc, char *argv[])
                             cControl::Shutdown(); // just in case
                             Temp = NULL;
                             if (!cRecordControls::PauseLiveVideo())
-                               Interface->Error(tr("No free DVB device to record!"));
+                               Skins.Message(mtError, tr("No free DVB device to record!"));
                             break;
              case osRecord: DELETENULL(Menu);
                             Temp = NULL;
                             if (cRecordControls::Start())
-                               ;//XXX Interface->Info(tr("Recording"));
+                               ;//XXX Skins.Message(mtInfo, tr("Recording"));
                             else
-                               Interface->Error(tr("No free DVB device to record!"));
+                               Skins.Message(mtError, tr("No free DVB device to record!"));
                             break;
              case osRecordings:
                             DELETENULL(Menu);
@@ -728,7 +730,7 @@ int main(int argc, char *argv[])
                             DELETENULL(Menu);
                             cControl::Shutdown();
                             Temp = NULL;
-                            Interface->Info(tr("Switching primary DVB..."));
+                            Skins.Message(mtInfo, tr("Switching primary DVB..."));
                             cDevice::SetPrimaryDevice(Setup.PrimaryDVB);
                             break;
              case osPlugin: DELETENULL(Menu);
@@ -789,9 +791,9 @@ int main(int argc, char *argv[])
               EITScanner.Process();
            if (!cCutter::Active() && cCutter::Ended()) {
               if (cCutter::Error())
-                 Interface->Error(tr("Editing process failed!"));
+                 Skins.Message(mtError, tr("Editing process failed!"));
               else
-                 Interface->Info(tr("Editing process finished"));
+                 Skins.Message(mtInfo, tr("Editing process finished"));
               }
            }
         if (!Interact && ((!cRecordControls::Active() && !cCutter::Active() && (!Interface->HasSVDRPConnection() || UserShutdown)) || ForceShutdown)) {
@@ -862,9 +864,10 @@ int main(int argc, char *argv[])
   delete Menu;
   cControl::Shutdown();
   delete Interface;
-  cOsd::Shutdown();
+  cOsdProvider::Shutdown();
   Remotes.Clear();
   Audios.Clear();
+  Skins.Clear();
   Setup.CurrentChannel = cDevice::CurrentChannel();
   Setup.CurrentVolume  = cDevice::CurrentVolume();
   Setup.Save();

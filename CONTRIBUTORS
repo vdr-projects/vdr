@@ -475,6 +475,8 @@ Jürgen Zimmermann <jnzimmer@informatik.uni-kl.de>
 Helmut Auer <vdr@helmutauer.de>
  for reporting a superfluous error message in cLockFile
  for suggesting to make the "Zap timeout" a setup variable
+ for fixing a frequency/transponder handling mixup when setting the time from the
+ DVB data stream
 
 Jeremy Hall <jhall@UU.NET>
  for fixing an incomplete initialization of the filter parameters in eit.c
@@ -797,6 +799,7 @@ Karim Afifi <karim.afifi@free.fr>
 Jon Burgess <mplayer@jburgess.uklinux.net>
  for pointing out a problem with NPTL ("Native Posix Thread Library")
  for changing thread handling to make it work with NPTL ("Native Posix Thread Library")
+ for fixing a memory leak in thread handling when using NPTL
 
 Thomas Schmidt <thomas.schmidt@in.stud.tu-ilmenau.de>
  for reporting a crash when cancelling a newly created timer
@@ -955,3 +958,17 @@ Marc Hoppe <MarcHoppe@gmx.de>
 
 Michael Pennewiß <M.Pennewiss@ARD-Digital.de>
  for pointing out that an empty EPG event means there is currently no running event
+
+Marcus Mönnig <minibbjd@gmx.de>
+ for adding some 3-letter language codes
+
+Pekka Virtanen <pekka.virtanen@sci.fi>
+ for adding language code handling to the subtitling descriptor in 'libsi'
+ for adding missing NULL checks when accessing sectionHandler in device.c
+
+John Kennedy <rkennedy@ix.netcom.com>
+ for publishing "A Fast Bresenham Algorithm For Drawing Ellipses" (found at
+ http://homepage.smc.edu/kennedy_john/BELIPSE.PDF)
+
+Drazen Dupor <drazen.dupor@dupor.com>
+ for translating OSD texts to the Croatian language

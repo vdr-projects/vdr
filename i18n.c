@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.152 2004/03/13 10:59:23 kls Exp $
+ * $Id: i18n.c 1.155 2004/05/16 11:53:45 kls Exp $
  *
  * Translations provided by:
  *
@@ -23,6 +23,7 @@
  * Hungarian   Istvan Koenigsberger <istvnko@hotmail.com> and Guido Josten <guido.josten@t-online.de>
  * Catalanian  Marc Rovira Vall <tm05462@salleURL.edu>, Ramon Roca <ramon.roca@xcombo.com> and Jordi Vilр <jvila@tinet.org>
  * Russian     Vyacheslav Dikonov <sdiconov@mail.ru>
+ * Croatian    Drazen Dupor <drazen.dupor@dupor.com>
  *
  */
 
@@ -94,6 +95,7 @@ const tI18nPhrase Phrases[] = {
     "Magyar",
     "Catalр",
     "Русский", // Russian
+    "Hrvatski",
   },
   // The character set needed for this language (this MUST be the second phrase!):
   { "iso8859-1",
@@ -113,13 +115,14 @@ const tI18nPhrase Phrases[] = {
     "iso8859-1",
     "iso8859-1",
     "iso8859-5",
+    "iso8859-2",
   },
   // The 3-letter names of the language (this MUST be the third phrase!):
-  { "eng",
+  { "eng,dos",
     "deu,ger",
     "slv",
     "ita",
-    "dut,nla",
+    "dut,nla,nld",
     "por",
     "fra,fre",
     "nor",
@@ -132,9 +135,11 @@ const tI18nPhrase Phrases[] = {
     "hun",
     "cat,cln",
     "rus",
+    "hrv",
   },
   // Menu titles:
   { "VDR",
+    "VDR",
     "VDR",
     "VDR",
     "VDR",
@@ -169,6 +174,7 @@ const tI18nPhrase Phrases[] = {
     "Program",
     "Guia de Programaciѓ",
     "Телегид",
+    "Raspored",
   },
   { "Channels",
     "Kanфle",
@@ -187,6 +193,7 @@ const tI18nPhrase Phrases[] = {
     "Csatornсk",
     "Canals",
     "Каналы",
+    "Programi",
   },
   { "Timers",
     "Timer",
@@ -205,6 +212,7 @@ const tI18nPhrase Phrases[] = {
     "Felvщtel beprogramozсsa",
     "Temporitzadors",
     "Таймеры",
+    "Termini",
   },
   { "Recordings",
     "Aufzeichnungen",
@@ -223,6 +231,7 @@ const tI18nPhrase Phrases[] = {
     "Felvett adсsok",
     "Veure programes gravats",
     "Записи",
+    "Snimke",
   },
   { "Setup",
     "Einstellungen",
@@ -241,6 +250,7 @@ const tI18nPhrase Phrases[] = {
     "Beсllэtсsok",
     "Configuraciѓ",
     "Настройка",
+    "Konfiguracija",
   },
   { "Commands",
     "Befehle",
@@ -259,6 +269,7 @@ const tI18nPhrase Phrases[] = {
     "Parancsok",
     "Ordres",
     "Команды",
+    "Naredbe",
   },
   { "Recording commands",
     "Befehle fќr Aufzeichnungen",
@@ -277,6 +288,7 @@ const tI18nPhrase Phrases[] = {
     "Parancsok a felvett filmekhez",
     "Ordres de gravaciѓ",
     "Команды записи",
+    "Naredbe za snimanje",
   },
   { "Edit channel",
     "Kanal editieren",
@@ -295,6 +307,7 @@ const tI18nPhrase Phrases[] = {
     "Csatornсk beсllэtсsa",
     "Editar canal",
     "Редактирование канала",
+    "Ure№ivanje programa",
   },
   { "Edit timer",
     "Timer editieren",
@@ -313,6 +326,7 @@ const tI18nPhrase Phrases[] = {
     "Felvщtel beprogramozсsсnak megvсltoztatсsa",
     "Editar temporitzador",
     "Установка таймера",
+    "Ure№ivanje termina",
   },
   { "Event",
     "Sendung",
@@ -331,6 +345,7 @@ const tI18nPhrase Phrases[] = {
     "Adсs",
     "Esdeveniment",
     "Передача",
+    "Emisija",
   },
   { "Summary",
     "Inhalt",
@@ -349,6 +364,7 @@ const tI18nPhrase Phrases[] = {
     "Tartalom",
     "Sinopsi",
     "Описание",
+    "SadrОaj",
   },
   { "Schedule - %s",
     "Programm - %s",
@@ -367,6 +383,7 @@ const tI18nPhrase Phrases[] = {
     "Program - %s",
     "Guia de Programaciѓ - %s",
     "Программа - %s",
+    "Raspored - %s",
   },
   { "What's on now?",
     "Was lфuft jetzt?",
@@ -385,6 +402,7 @@ const tI18nPhrase Phrases[] = {
     "Mi megy most?",
     "Quш fan ara?",
     "Сейчас в эфире:",
+    "Љto je trenutno na programu?",
   },
   { "What's on next?",
     "Was lфuft als nфchstes?",
@@ -403,6 +421,7 @@ const tI18nPhrase Phrases[] = {
     "Mi kіvetkezik?",
     "Quш fan desprщs?",
     "Далее в программе:",
+    "Љto slijedi?",
   },
   // Button texts (should not be more than 10 characters!):
   { "Edit",
@@ -422,6 +441,7 @@ const tI18nPhrase Phrases[] = {
     "Beсllэtani",
     "Editar",
     "Редактировать",
+    "Promjeni",
   },
   { "New",
     "Neu",
@@ -440,6 +460,7 @@ const tI18nPhrase Phrases[] = {
     "кj",
     "Nou",
     "Добавить",
+    "Novi",
   },
   { "Delete",
     "Lіschen",
@@ -458,6 +479,7 @@ const tI18nPhrase Phrases[] = {
     "Tіrіlni",
     "Esborrar",
     "Удалить",
+    "ObriЙi",
   },
   { "Mark",
     "Markieren",
@@ -476,6 +498,7 @@ const tI18nPhrase Phrases[] = {
     "Megjelіlni",
     "Marcar",
     "Переместить",
+    "Oznaшi",
   },
   { "On/Off",
     "Ein/Aus",
@@ -494,6 +517,7 @@ const tI18nPhrase Phrases[] = {
     "Be/Ki",
     "On/Off",
     "Вкл/Выкл",
+    "De-/Aktiviraj",
   },
   { "Record",
     "Aufnehmen",
@@ -512,6 +536,7 @@ const tI18nPhrase Phrases[] = {
     "Felvenni",
     "Gravar",
     "Запись",
+    "Snimi",
   },
   { "Play",
     "Wiedergabe",
@@ -530,6 +555,7 @@ const tI18nPhrase Phrases[] = {
     "Lejсtszani",
     "Reproduir",
     "Воспроизвести",
+    "Start",
   },
   { "Rewind",
     "Anfang",
@@ -548,6 +574,7 @@ const tI18nPhrase Phrases[] = {
     "Vissza az elejщre",
     "Enrera",
     "Назад",
+    "Na poшetak",
   },
   { "Button$Stop",
     "Beenden",
@@ -566,6 +593,7 @@ const tI18nPhrase Phrases[] = {
     "Stop",
     "Aturar",
     "Стоп",
+    "Stop",
   },
   { "Resume",
     "Weiter",
@@ -584,6 +612,7 @@ const tI18nPhrase Phrases[] = {
     "Tovсbb",
     "Continuar",
     "Продолжить",
+    "Nastavi",
   },
   { "Summary",
     "Inhalt",
@@ -602,6 +631,7 @@ const tI18nPhrase Phrases[] = {
     "Tartalom",
     "Resum",
     "Описание",
+    "SadrОaj",
   },
   { "Open",
     "жffnen",
@@ -620,6 +650,7 @@ const tI18nPhrase Phrases[] = {
     "Kinyitni",
     "Obrir",
     "Открыть",
+    "Otvori",
   },
   { "Switch",
     "Umschalten",
@@ -638,6 +669,7 @@ const tI18nPhrase Phrases[] = {
     "Сtkapcsolni",
     "Canviar",
     "Переключить",
+    "Prebaci",
   },
   { "Now",
     "Jetzt",
@@ -656,6 +688,7 @@ const tI18nPhrase Phrases[] = {
     "Most",
     "Ara",
     "Сейчас",
+    "Trenutno",
   },
   { "Next",
     "Nфchste",
@@ -674,6 +707,7 @@ const tI18nPhrase Phrases[] = {
     "Kіvetkezі",
     "Segќent",
     "Далее",
+    "Slijedi",
   },
   { "Button$Schedule",
     "Programm",
@@ -692,6 +726,7 @@ const tI18nPhrase Phrases[] = {
     "Program",
     "Programar",
     "Программа",
+    "Raspored",
   },
   { "Language",
     "Sprache",
@@ -710,6 +745,7 @@ const tI18nPhrase Phrases[] = {
     "Nyelv",
     "Idioma",
     "Язык",
+    "Jezik",
   },
   { "Eject",
     "Auswerfen",
@@ -728,6 +764,7 @@ const tI18nPhrase Phrases[] = {
     "Kidobni",
     "Expulsar",
     "Извлечь",
+    "Izbaci",
   },
   { "ABC/abc",
     "ABC/abc",
@@ -746,6 +783,7 @@ const tI18nPhrase Phrases[] = {
     "ABC/abc",
     "ABC/abc",
     "АБВ/абв",
+    "ABC/abc",
   },
   { "Insert",
     "Einfќgen",
@@ -764,6 +802,7 @@ const tI18nPhrase Phrases[] = {
     "Beilleszteni",
     "Inserir",
     "Вставка",
+    "Umetni",
   },
   { "Overwrite",
     "мberschreiben",
@@ -782,6 +821,7 @@ const tI18nPhrase Phrases[] = {
     "Сtэrni",
     "Sobrescriure",
     "Замена",
+    "PrepiЙi",
   },
   { "Menu",
     "Menќ",
@@ -800,6 +840,7 @@ const tI18nPhrase Phrases[] = {
     "Menќ",
     "Menњ",
     "Меню",
+    "Izbor",
   },
   { "Reset",
     "Reset",
@@ -818,6 +859,7 @@ const tI18nPhrase Phrases[] = {
     "Reset",
     "Reiniciar",
     "Сброс",
+    "Reset",
   },
   { "Scan",
     "Scan",
@@ -836,6 +878,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "Сканировать",
+    "PretraОi",
   },
   // Confirmations:
   { "Delete channel?",
@@ -855,6 +898,7 @@ const tI18nPhrase Phrases[] = {
     "Csatorna tіrlщse?",
     "Esborrar el canal?",
     "Удалить канал?",
+    "Obrisati program?",
   },
   { "Delete timer?",
     "Timer lіschen?",
@@ -873,6 +917,7 @@ const tI18nPhrase Phrases[] = {
     "Felvщtel beprogramozсsсnak tіrlщse?",
     "Esborrar el temporitzador?",
     "Удалить таймер?",
+    "Obrisati termin?",
   },
   { "Delete recording?",
     "Aufzeichnung lіschen?",
@@ -891,6 +936,7 @@ const tI18nPhrase Phrases[] = {
     "Felvщtel tіrlщse?",
     "Esborrar gravaciѓ?",
     "Стереть запись?",
+    "Obrisati snimku?",
   },
   { "Timer still recording - really delete?",
     "Timer zeichnet auf - trotzdem lіschen?",
@@ -909,6 +955,7 @@ const tI18nPhrase Phrases[] = {
     "Felvщtel folyamatban van - mщgis tіrіlni?",
     "Temporitzador activat - Esborrar de totes maneres?",
     "Идёт запись по таймеру - действительно удалить?",
+    "JoЙ snimam - zaista obrisati?",
   },
   { "Stop recording?",
     "Aufzeichnung beenden?",
@@ -927,6 +974,7 @@ const tI18nPhrase Phrases[] = {
     "Felvщtel befejezni?",
     "Aturar la gravaciѓ?",
     "Прекратить запись?",
+    "Zaustaviti snimanje?",
   },
   { "on primary interface",
     "auf dem primфren Interface",
@@ -945,6 +993,7 @@ const tI18nPhrase Phrases[] = {
     "az elsі kсrtyсn",
     "a la interfэcie primрria",
     "на основном устройстве",
+    "na primarnom ure№aju",
   },
   { "Cancel editing?",
     "Schneiden abbrechen?",
@@ -963,6 +1012,7 @@ const tI18nPhrase Phrases[] = {
     "Vсgсst befejezni?",
     "CancelЗlar l'ediciѓ?",
     "Прервать редактирование?",
+    "Otkazati ure№ivanje?",
   },
   { "Really restart?",
     "Wirklich neu starten?",
@@ -981,6 +1031,7 @@ const tI18nPhrase Phrases[] = {
     "Tщnyleg њjraindэtani?",
     "Segur que voleu reiniciar?",
     "Действительно перезапустить?",
+    "Zaista ponovo pokrenuti?",
   },
   { "Recording - restart anyway?",
     "Aufnahme lфuft - trotzdem neu starten?",
@@ -999,6 +1050,7 @@ const tI18nPhrase Phrases[] = {
     "Felvщtel folyamatban van - mщgis њjraindэtani?",
     "Gravant - Reiniciar de totes maneres?",
     "Идёт запись - действительно перезапустить?",
+    "Snimanje traje - svejedno restart sistema?",
   },
   { "Recording - shut down anyway?",
     "Aufnahme lфuft - trotzdem ausschalten?",
@@ -1017,6 +1069,7 @@ const tI18nPhrase Phrases[] = {
     "Felvщtel folyamatban van - mщgis kikapcsolni?",
     "Gravant - Apagar de totes maneres?",
     "Идёт запись - действительно выключить?",
+    "Snimanje traje - svejedno iskljuшiti?",
   },
   { "Recording in %d minutes, shut down anyway?",
     "Aufnahme in %d Minuten - trotzdem ausschalten?",
@@ -1035,6 +1088,7 @@ const tI18nPhrase Phrases[] = {
     "Felvщtel %d perc mulva kezdіdik - mщgis kikapcsolni?",
     "Hi ha una gravaciѓ en %d minuts - Apagar de totes maneres?",
     "Через %d минут начнётся запись - действительно выключить?",
+    "Snimanje za %d minuta - svejedno iskljuшiti?",
   },
   { "Press any key to cancel shutdown",
     "Taste drќcken um Shutdown abzubrechen",
@@ -1053,6 +1107,7 @@ const tI18nPhrase Phrases[] = {
     "Nyomj egy gombot a leсllсs megсllэtсsсhoz",
     "Prem qualsevol tecla per cancelЗlar l'aturada",
     "Нажмите любую кнопку чтобы отменить выключение.",
+    "Pritisnite tipku ako ne Оelite ugasiti sistem",
   },
   // Channel parameters:
   { "Name",
@@ -1072,6 +1127,7 @@ const tI18nPhrase Phrases[] = {
     "Nщv",
     "Nom",
     "Название",
+    "Naziv",
   },
   { "Frequency",
     "Frequenz",
@@ -1090,6 +1146,7 @@ const tI18nPhrase Phrases[] = {
     "Frekvencia",
     "Freqќшncia",
     "Частота",
+    "Frekvencija",
   },
   { "Polarization",
     "Polarisation",
@@ -1108,6 +1165,7 @@ const tI18nPhrase Phrases[] = {
     "Polarizсciѓ",
     "Polaritzaciѓ",
     "Поляризация",
+    "Polarizacija",
   },
   { "Source",
     "Quelle",
@@ -1126,6 +1184,7 @@ const tI18nPhrase Phrases[] = {
     "Forrсs",
     "Origen",
     "Источник",
+    "Izvor",
   },
   { "Srate",
     "Srate",
@@ -1144,6 +1203,7 @@ const tI18nPhrase Phrases[] = {
     "Srate",
     "Srate",
     "Симв. скорость",
+    "Srate", // hrv
   },
   { "Vpid",
     "Vpid",
@@ -1162,6 +1222,7 @@ const tI18nPhrase Phrases[] = {
     "Vpid",
     "PID Vэdeo",
     "Vpid (видео)",
+    "Vpid",
   },
   { "Ppid",
     "Ppid",
@@ -1172,6 +1233,7 @@ const tI18nPhrase Phrases[] = {
     "Ppid",
     "Ppid",
     "Aikatieto PID",
+    "Ppid",
     "Ppid",
     "Ppid",
     "Ppid",
@@ -1198,6 +1260,7 @@ const tI18nPhrase Phrases[] = {
     "Apid1",
     "PID Рudio (1)",
     "Apid1 (аудио 1)",
+    "Apid1", // hrv
   },
   { "Apid2",
     "Apid2",
@@ -1216,6 +1279,7 @@ const tI18nPhrase Phrases[] = {
     "Apid2",
     "PID Рudio (2)",
     "Apid2 (аудио 2)",
+    "Apid2", // hrv
   },
   { "Dpid1",
     "Dpid1",
@@ -1234,6 +1298,7 @@ const tI18nPhrase Phrases[] = {
     "Dpid1",
     "PID AC3 (1)",
     "Dpid1 (AC3 1)",
+    "Dpid1", // hrv
   },
   { "Dpid2",
     "Dpid2",
@@ -1252,6 +1317,7 @@ const tI18nPhrase Phrases[] = {
     "Dpid2",
     "PID AC3 (2)",
     "Dpid2 (AC3 2)",
+    "Dpid2", // hrv
   },
   { "Tpid",
     "Tpid",
@@ -1270,6 +1336,7 @@ const tI18nPhrase Phrases[] = {
     "Tpid",
     "PID Teletext",
     "Tpid (телетекст)",
+    "Tpid", // hrv
   },
   { "CA",
     "CA",
@@ -1288,6 +1355,7 @@ const tI18nPhrase Phrases[] = {
     "CA",
     "Accщs Condicional",
     "CA (декодер)",
+    "Kodiranje (CA)",
   },
   { "Sid",
     "Sid",
@@ -1306,6 +1374,7 @@ const tI18nPhrase Phrases[] = {
     "Sid",
     "Sid",
     "Sid",
+    "Sid", // hrv
   },
   { "Inversion",
     "Inversion",
@@ -1324,6 +1393,7 @@ const tI18nPhrase Phrases[] = {
     "Inversion",
     "Inversiѓ",
     "Инверсия",
+    "Inverzija",
   },
   { "Bandwidth",
     "Bandwidth",
@@ -1342,6 +1412,7 @@ const tI18nPhrase Phrases[] = {
     "Bandwidth",
     "Amplada de banda",
     "Диапазон",
+    "Bandwidth", // hrv "Pojasna Йirina",
   },
   { "CoderateH",
     "CoderateH",
@@ -1360,6 +1431,7 @@ const tI18nPhrase Phrases[] = {
     "CoderateH",
     "CoderateH",
     "CoderateH",
+    "CoderateH", // hrv
   },
   { "CoderateL",
     "CoderateL",
@@ -1378,6 +1450,7 @@ const tI18nPhrase Phrases[] = {
     "CoderateL",
     "CoderateL",
     "CoderateL",
+    "CoderateL", // hrv
   },
   { "Modulation",
     "Modulation",
@@ -1396,6 +1469,7 @@ const tI18nPhrase Phrases[] = {
     "Modulation",
     "Modulaciѓ",
     "Модуляция",
+    "Modulacija",
   },
   { "Transmission",
     "Transmission",
@@ -1414,6 +1488,7 @@ const tI18nPhrase Phrases[] = {
     "Transmission",
     "Transmissiѓ",
     "Передача",
+    "Prijenos",
   },
   { "Guard",
     "Guard",
@@ -1432,6 +1507,7 @@ const tI18nPhrase Phrases[] = {
     "Guard",
     "Protegir",
     "Защита",
+    "ZaЙtita",
   },
   { "Hierarchy",
     "Hierarchy",
@@ -1450,6 +1526,7 @@ const tI18nPhrase Phrases[] = {
     "Hierarchy",
     "Jerarquia",
     "Иерархия",
+    "Hijerarhija",
   },
   // Timer parameters:
   { "Active",
@@ -1469,6 +1546,7 @@ const tI18nPhrase Phrases[] = {
     "Aktiv",
     "Actiu",
     "Активирован",
+    "Aktivan",
   },
   { "Channel",
     "Kanal",
@@ -1487,6 +1565,7 @@ const tI18nPhrase Phrases[] = {
     "Csatorna",
     "Canal",
     "Канал",
+    "Program",
   },
   { "Day",
     "Tag",
@@ -1505,6 +1584,7 @@ const tI18nPhrase Phrases[] = {
     "Nap",
     "Dia",
     "День",
+    "Dan",
   },
   { "Start",
     "Anfang",
@@ -1523,6 +1603,7 @@ const tI18nPhrase Phrases[] = {
     "Kezdet",
     "Inici",
     "Начало",
+    "Poшetak",
   },
   { "Stop",
     "Ende",
@@ -1541,6 +1622,7 @@ const tI18nPhrase Phrases[] = {
     "Vщge",
     "Fi",
     "Конец",
+    "Kraj",
   },
   { "VPS",
     "VPS",
@@ -1559,6 +1641,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "VPS поправка",
+    "VPS", // hrv
   },
   { "Priority",
     "Prioritфt",
@@ -1577,6 +1660,7 @@ const tI18nPhrase Phrases[] = {
     "Prioritсs",
     "Prioritat",
     "Приоритет",
+    "Prioritet",
   },
   { "Lifetime",
     "Lebensdauer",
@@ -1595,6 +1679,7 @@ const tI18nPhrase Phrases[] = {
     "Щlettartam",
     "Durada",
     "Срок хранения",
+    "Trajanje",
   },
   { "File",
     "Datei",
@@ -1613,6 +1698,7 @@ const tI18nPhrase Phrases[] = {
     "File",
     "Arxiu",
     "Файл",
+    "Datoteka",
   },
   { "First day",
     "Erster Tag",
@@ -1631,6 +1717,7 @@ const tI18nPhrase Phrases[] = {
     "Elsі nap",
     "Primer dia",
     "Первый день",
+    "Prvi dan",
   },
   // Error messages:
   { "Channel is being used by a timer!",
@@ -1650,6 +1737,7 @@ const tI18nPhrase Phrases[] = {
     "Csatornсt mсs hasznсlja!",
     "Canal en њs per un temporitzador!",
     "Канал занят таймером!",
+    "Program je trenutno zauzet terminom za snimanje",
   },
   { "Can't switch channel!",
     "Kanal kann nicht umgeschaltet werden!",
@@ -1668,6 +1756,7 @@ const tI18nPhrase Phrases[] = {
     "Csatornсt nem lehet сtkapcsolni!",
     "No puc canviar de canal!",
     "Невозможно переключить канал!",
+    "Ne mogu prebaciti program!",
   },
   { "Timer is recording!",
     "Timer zeichnet gerade auf!",
@@ -1686,6 +1775,7 @@ const tI18nPhrase Phrases[] = {
     "Felvщtel folyamatban van!",
     "El temporitzador estр gravant!",
     "Идёт запись по таймеру!",
+    "Snimanje po definiranom terminu!",
   },
   { "Error while accessing recording!",
     "Fehler beim Ansprechen der Aufzeichnung!",
@@ -1704,6 +1794,7 @@ const tI18nPhrase Phrases[] = {
     "Hiba a felvщtel hozzсfщrщsщnщl",
     "Error a l'accedir a la gravaciѓ!",
     "Ошибка доступа к записи!",
+    "GreЙka pri pristupanju snimke!",
   },
   { "Error while deleting recording!",
     "Fehler beim Lіschen der Aufzeichnung!",
@@ -1722,6 +1813,7 @@ const tI18nPhrase Phrases[] = {
     "Hiba a felvщtel tіrlщsщnщl!",
     "Error a l'esborrar la gravaciѓ!",
     "Ошибка удаления записи!",
+    "GreЙka pri brisanju snimke!",
   },
   { "*** Invalid Channel ***",
     "*** Ungќltiger Kanal ***",
@@ -1740,6 +1832,7 @@ const tI18nPhrase Phrases[] = {
     "*** Щrvщnytelen csatorna ***",
     "*** Canal incorrecte ***",
     "*** Неправильный канал ***",
+    "*** Neispravan program ***",
   },
   { "No free DVB device to record!",
     "Keine freie DVB-Karte zum Aufnehmen!",
@@ -1758,6 +1851,7 @@ const tI18nPhrase Phrases[] = {
     "Nincs szabad DVB kсrtya a felvщtelhez!",
     "No hi ha cap dispositiu DVB lliure per gravar!",
     "Нет свободного DVB-устройства для записи!",
+    "Nema slobodnog DVB ure№aja za snimanje!",
   },
   { "Channel not available!",
     "Kanal nicht verfќgbar!",
@@ -1776,6 +1870,7 @@ const tI18nPhrase Phrases[] = {
     "A csatorna nem elщrhetі",
     "Canal no disponible!",
     "Канал недоступен!",
+    "Program nije dostupan!",
   },
   { "Channel settings are not unique!",
     "Kanaleinstellungen sind nicht eindeutig!",
@@ -1794,6 +1889,7 @@ const tI18nPhrase Phrases[] = {
     "A csatornabeсllэtсsok nem egyщrtelmќek",
     "Propietats del canal duplicades!",
     "Настройки канала не уникальны!",
+    "Parametri programa nisu jedinstveni!",
   },
   { "Channel locked (recording)!",
     "Kanal blockiert (zeichnet auf)!",
@@ -1812,6 +1908,7 @@ const tI18nPhrase Phrases[] = {
     "Csatorna hozzсfщrhetetlen (felvщtel)!",
     "Canal bloquejat (gravant)!",
     "Канал заблокирован (идёт запись)!",
+    "Program blokiran (snimanje)!",
   },
   { "Can't start Transfer Mode!",
     "Transfer-Mode kann nicht gestartet werden!",
@@ -1830,6 +1927,7 @@ const tI18nPhrase Phrases[] = {
     "Transfer-Mode nem indэthatѓ!",
     "No puc iniciar el mode de transferшncia!",
     "Невозможно включить режим пропуска!", // ???
+    "Ne mogu zapoшeti 'prijenosni' naшin!",
   },
   { "No editing marks defined!",
     "Keine Schnittmarken gesetzt!",
@@ -1848,6 +1946,7 @@ const tI18nPhrase Phrases[] = {
     "A vсgѓpont nincs kijelіlve",//TODO
     "No hi ha marques d'ediciѓ definides",
     "Не заданы метки для монтажа!",
+    "Nijedna prekidna toшka nije postavljena!",
   },
   { "Can't start editing process!",
     "Schnitt kann nicht gestartet werden!",
@@ -1866,6 +1965,7 @@ const tI18nPhrase Phrases[] = {
     "A vсgсs nem indэthatѓ!",
     "No puc iniciar el procщs d'ediciѓ!",
     "Невозможно начать монтаж записи!",
+    "Ne mogu zapoшeti ure№ivanje!",
   },
   { "Editing process already active!",
     "Schnitt bereits aktiv!",
@@ -1884,6 +1984,7 @@ const tI18nPhrase Phrases[] = {
     "A vсgсs mсr aktivсlt!",
     "Procщs d'ediciѓ iniciat anteriorment!",
     "Процесс видеомонтажа уже запущен!",
+    "Ure№ivanje je veц aktivirano!",
   },
   { "Can't shutdown - option '-s' not given!",
     "Shutdown unmіglich - Option '-s' fehlt!",
@@ -1902,6 +2003,7 @@ const tI18nPhrase Phrases[] = {
     "A leсllэtсs nem lehetsщges - Opciѓ '-s' hiсnyzik!",
     "No puc apagar, falta la opciѓ -s !",
     "Выключение невозможно - не задан параметр '-s'!",
+    "GaЙenje nemoguцe - nedostaje opcija '-s'!",
   },
   { "Low disk space!",
     "Platte beinahe voll!",
@@ -1920,6 +2022,7 @@ const tI18nPhrase Phrases[] = {
     "A merev lemez majdnem tele!",
     "Disc gairebщ ple!",
     "Недостаточно места на диске!",
+    "Nedovoljno prostora na disku",
   },
   { "Can't open CAM menu!",
     "CAM-Menќ kann nicht geіffnet werden!",
@@ -1938,6 +2041,7 @@ const tI18nPhrase Phrases[] = {
     "A CAM-Menќ nem nyithatѓ",
     "No puc obrir el menњ de la CAM!",
     "Меню CAM-модуля недоступно!",
+    "Ne mogu otvoriti CAM izbor!",
   },
   { "Can't reset CAM!",
     "CAM-Reset fehlgeschlagen!",
@@ -1956,6 +2060,7 @@ const tI18nPhrase Phrases[] = {
     "A CAM-Reset nem sikerќlt",
     "No puc reiniciar la CAM!",
     "Ошибка перезапуска CAM-модуля!",
+    "Ne mogu resetirati CAM",
   },
   { "CAM has been reset",
     "CAM wurde zurќckgesetzt!",
@@ -1974,6 +2079,7 @@ const tI18nPhrase Phrases[] = {
     "A CAM vissza lett сllэtva",
     "CAM reiniciada",
     "CAM-модуль перезапущен!",
+    "CAM je resetiran!",
   },
   // Setup pages:
   { "OSD",
@@ -1993,6 +2099,7 @@ const tI18nPhrase Phrases[] = {
     "OSD",
     "Informaciѓ en pantalla",
     "Меню",
+    "OSD",
   },
   { "EPG",
     "EPG",
@@ -2011,6 +2118,7 @@ const tI18nPhrase Phrases[] = {
     "EPG",
     "Guia de Programes",
     "Телегид",
+    "Pregled emisija (EPG)",
   },
   { "DVB",
     "DVB",
@@ -2028,6 +2136,7 @@ const tI18nPhrase Phrases[] = {
     "Placa DVB",
     "DVB",
     "Tarja DVB",
+    "DVB",
     "DVB",
   },
   { "LNB",
@@ -2047,6 +2156,7 @@ const tI18nPhrase Phrases[] = {
     "LNB",
     "Configuraciѓ de l'LNB",
     "Конвертер",
+    "LNB",
   },
   { "CICAM",
     "CICAM",
@@ -2065,6 +2175,7 @@ const tI18nPhrase Phrases[] = {
     "CICAM",
     "CI Accщs condicional",
     "Условный доступ",
+    "CICAM",
   },
   { "Recording",
     "Aufnahme",
@@ -2083,6 +2194,7 @@ const tI18nPhrase Phrases[] = {
     "Felvщtel",
     "Opcions de Gravaciѓ",
     "Запись",
+    "Snimanje",
   },
   { "Replay",
     "Wiedergabe",
@@ -2101,6 +2213,7 @@ const tI18nPhrase Phrases[] = {
     "Lejсtszсs",
     "Opcions de Reproducciѓ",
     "Воспроизведение",
+    "Reprodukcija",
   },
   { "Miscellaneous",
     "Sonstiges",
@@ -2119,6 +2232,7 @@ const tI18nPhrase Phrases[] = {
     "Egyщb",
     "MiscelЗlрnia",
     "Прочее",
+    "Ostalo",
   },
   { "Plugins",
     "Plugins",
@@ -2137,6 +2251,7 @@ const tI18nPhrase Phrases[] = {
     "Plugins",
     "Plugins",
     "Модули расширения",
+    "Dodaci (Plugins)",
   },
   { "Plugin",
     "Plugin",
@@ -2155,6 +2270,7 @@ const tI18nPhrase Phrases[] = {
     "Plugin",
     "Plugin",
     "Модуль",
+    "Plugin",
   },
   { "Restart",
     "Neustart",
@@ -2173,6 +2289,7 @@ const tI18nPhrase Phrases[] = {
     "йjraindэtсs",
     "Reiniciar",
     "Перезапустить",
+    "Restart sistema",
   },
   // Setup parameters:
   { "Setup.OSD$Language",
@@ -2192,6 +2309,83 @@ const tI18nPhrase Phrases[] = {
     "Nyelv",
     "Idioma",
     "Язык",
+    "Jezik",
+  },
+  { "Setup.OSD$Skin",
+    "Oberflфche",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+  },
+  { "Setup.OSD$Theme",
+    "Thema",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+  },
+  { "Setup.OSD$Left",
+    "Links",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+  },
+  { "Setup.OSD$Top",
+    "Oben",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
   },
   { "Setup.OSD$Width",
     "Breite",
@@ -2210,6 +2404,7 @@ const tI18nPhrase Phrases[] = {
     "Szщlessщg",
     "Amplada",
     "Ширина",
+    "Љirina",
   },
   { "Setup.OSD$Height",
     "Hіhe",
@@ -2228,6 +2423,7 @@ const tI18nPhrase Phrases[] = {
     "Magassсg",
     "Alчada",
     "Высота",
+    "Visina",
   },
   { "Setup.OSD$Message time (s)",
     "Anzeigedauer fќr Nachrichten (s)",
@@ -2246,6 +2442,83 @@ const tI18nPhrase Phrases[] = {
     "Informсciѓ feltќntetщsщnek idіtartama",
     "Durada dels missatges (s)",
     "Длительность показа сообщений (сек)",
+    "Vrijeme prikaza poruka (s)",
+  },
+  { "Setup.OSD$Use small font",
+    "Kleine Schrift benutzen",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+  },
+  { "never",
+    "nie",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+  },
+  { "skin dependent",
+    "je nach Oberflфche",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+  },
+  { "always",
+    "immer",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
   },
   { "Setup.OSD$Channel info position",
     "Kanal-Info Position",
@@ -2264,6 +2537,7 @@ const tI18nPhrase Phrases[] = {
     "Csatorna-Infѓ poziciѓja",
     "Posiciѓ de la informaciѓ del canal",
     "Положение окна информации о канале",
+    "Pozicija informacije o programu",
   },
   { "Setup.OSD$Info on channel switch",
     "Info beim Kanalwechsel",
@@ -2282,6 +2556,7 @@ const tI18nPhrase Phrases[] = {
     "Infѓ a csatorna vсltсsсnсl",
     "Informaciѓ del canvi de canal",
     "Показывать информацию о канале",
+    "Informacije kod promjene kanala",
   },
   { "Setup.OSD$Scroll pages",
     "Seitenweise scrollen",
@@ -2300,6 +2575,7 @@ const tI18nPhrase Phrases[] = {
     "Oldalankщnt lщptetmi",
     "Desplaчar pрgina sencera",
     "Прокрутка страниц меню",
+    "Listaj po stranicama",
   },
   { "Setup.OSD$Sort timers",
     "Timer sortieren",
@@ -2318,6 +2594,7 @@ const tI18nPhrase Phrases[] = {
     "A beprogramozott felvщtelek elrendezщse",
     "Ordenar gravacions programades",
     "Сортировка таймеров",
+    "Sortiraj termine",
   },
   { "Setup.OSD$Recording directories",
     "Aufnahmeverzeichnisse",
@@ -2336,6 +2613,7 @@ const tI18nPhrase Phrases[] = {
     "Felvщtelek listсja",
     "Gravacions en subcarpetes",
     "Каталоги хранения записей",
+    "Imenik za snimke",
   },
   { "Setup.EPG$EPG scan timeout (h)",
     "Zeit bis EPG Scan (h)",
@@ -2354,6 +2632,7 @@ const tI18nPhrase Phrases[] = {
     "Fennmaradt idі az EPG-g (h)",
     "Mрxim d'Hores a cercar per la Guia",
     "Задержка сканирования телегида (ч)",
+    "Vrijeme do EPG pregleda (h)",
   },
   { "Setup.EPG$EPG bugfix level",
     "EPG Fehlerbereinigung",
@@ -2372,6 +2651,7 @@ const tI18nPhrase Phrases[] = {
     "EPG hibaelhсrэtсs",
     "Nivell de correcciѓ de la Guia",
     "Уровень коррекции ошибок",
+    "Nivo popravka EPG greЙaka",
   },
   { "Setup.EPG$EPG linger time (min)",
     "Alte EPG-Daten anzeigen (min)",// TODO
@@ -2390,6 +2670,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "Хранение устаревших данных (мин)",
+    "PrikaОi stare EPG podatke (min)",// TODO
   },
   { "Setup.EPG$Set system time",
     "Systemzeit stellen",
@@ -2408,6 +2689,7 @@ const tI18nPhrase Phrases[] = {
     "Az idі beсllэtсsa",
     "Ajustar l'hora del sistema",
     "Установить системное время",
+    "Podesi vrijeme sistema",
   },
   { "Setup.EPG$Use time from transponder",
     "Transponder fќr Systemzeit",
@@ -2426,6 +2708,7 @@ const tI18nPhrase Phrases[] = {
     "Idіhіz tartozѓ Transponder",
     "Usar el temps del mњltiplex",
     "Использовать время транспондера",
+    "Transponder za podeЙavanje sata",
   },
   { "Setup.EPG$Preferred languages",
     "Bevorzugte Sprachen",
@@ -2444,6 +2727,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "Предпочитаемые языки",
+    "Preferirani jezik",
   },
   { "Setup.EPG$Preferred language",
     "Bevorzugte Sprache",
@@ -2462,6 +2746,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "Выбран",
+    "Preferirani jezik",
   },
   { "Setup.DVB$Primary DVB interface",
     "Primфres DVB Interface",
@@ -2480,6 +2765,7 @@ const tI18nPhrase Phrases[] = {
     "Elsі DVB interface",
     "Tarja DVB primрria",
     "Основное DVB-устройство",
+    "Primarni DVB ure№aj",
   },
   { "Setup.DVB$Video format",
     "Video Format",
@@ -2498,6 +2784,7 @@ const tI18nPhrase Phrases[] = {
     "Video formсtum",
     "Format del vэdeo",
     "Формат видео",
+    "Video format",
   },
   { "Setup.DVB$Update channels",
     "Kanфle aktualisieren",
@@ -2516,6 +2803,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "Обновлять настройки каналов",
+    "Aktualiziraj programe",
   },
   { "names only",
     "nur Namen",
@@ -2534,6 +2822,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "только названия",
+    "samo imena",
   },
   { "names and PIDs",
     "Namen und PIDs",
@@ -2552,6 +2841,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "названия и PIDы",
+    "imena i identifikatore (PIDs)",
   },
   { "add new channels",
     "neue Kanфle hinzufќgen",
@@ -2570,6 +2860,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "новые каналы",
+    "dodaj nove programe",
   },
   { "add new transponders",
     "neue Transponder hinzufќgen",
@@ -2588,6 +2879,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "нов. транспондеры",
+    "dodaj nove transpondere", // hrv TODO transponderi == odasiljaшi?
   },
   { "Setup.LNB$SLOF (MHz)",
     "SLOF (MHz)",
@@ -2606,6 +2898,7 @@ const tI18nPhrase Phrases[] = {
     "SLOF (MHz)",
     "SLOF (MHz)",
     "Частота переключения (SLOF) (МГц)",
+    "Frekv. preklopa SLOF (MHz)",
   },
   { "Setup.LNB$Low LNB frequency (MHz)",
     "Untere LNB-Frequenz (MHz)",
@@ -2624,6 +2917,7 @@ const tI18nPhrase Phrases[] = {
     "Alsѓ LNB-frekvencia (MHZ)",
     "Freqќшncia LNB baixa (MHz)",
     "Нижняя частота конвертера (МГц)",
+    "Donja LNB frekv. (MHz)",
   },
   { "Setup.LNB$High LNB frequency (MHz)",
     "Obere LNB-Frequenz (MHz)",
@@ -2642,6 +2936,7 @@ const tI18nPhrase Phrases[] = {
     "Felsі LNB-frekvencia (MHZ)",
     "Freqќшncia LNB alta (MHz)",
     "Верхняя частота конвертера (МГц)",
+    "Gornja LNB frekv. (MHz)",
   },
   { "Setup.LNB$Use DiSEqC",
     "DiSEqC benutzen",
@@ -2660,6 +2955,7 @@ const tI18nPhrase Phrases[] = {
     "DiSEqC hasznсlata",
     "Utilitzar DiSEqC",
     "Использовать DiSEqC",
+    "Koristi DiSEqC",
   },
   { "Setup.CICAM$CICAM DVB",
     "CICAM DVB",
@@ -2678,6 +2974,7 @@ const tI18nPhrase Phrases[] = {
     "CICAM DVB",
     "Accщs condicional CICAM",
     "CAM-модуль DVB",
+    "CICAM DVB",
   },
   { "Setup.Recording$Margin at start (min)",
     "Zeitpuffer bei Anfang (min)",
@@ -2696,6 +2993,7 @@ const tI18nPhrase Phrases[] = {
     "Idіeltolѓdсs a kezdщsnщl (min)",
     "Marge d'inici de gravaciѓ (min)",
     "Опережение начала записи (мин)",
+    "Rezerva na poшetku snimanja (min)",
   },
   { "Setup.Recording$Margin at stop (min)",
     "Zeitpuffer bei Ende (min)",
@@ -2714,6 +3012,7 @@ const tI18nPhrase Phrases[] = {
     "Idіeltolѓdсs a befejezщsnщl",
     "Marge de fi de gravaciѓ (min)",
     "Запаздывание остановки записи (мин)",
+    "Rezerva na kraju (min)",
   },
   { "Setup.Recording$Primary limit",
     "Primфr-Limit",
@@ -2732,6 +3031,7 @@ const tI18nPhrase Phrases[] = {
     "Primщr-hatсr",
     "Lэmit primari",
     "Мин. приоритет захвата осн. устройства",
+    "Standardno ograniшenje",
   },
   { "Setup.Recording$Default priority",
     "Default Prioritфt",
@@ -2750,6 +3050,7 @@ const tI18nPhrase Phrases[] = {
     "Default priority",
     "Prioritat per defecte",
     "Приоритет таймера по умолчанию",
+    "Standardni prioritet",
   },
   { "Setup.Recording$Default lifetime (d)",
     "Default Lebensdauer (d)",
@@ -2768,6 +3069,7 @@ const tI18nPhrase Phrases[] = {
     "Default щlettartam",
     "Durada predefinida",
     "Срок хранения записи по умолчанию (д)",
+    "Standardno trajanje (d)",
   },
   { "Setup.Recording$Pause priority",
     "Pause Prioritфt",
@@ -2786,6 +3088,7 @@ const tI18nPhrase Phrases[] = {
     "Szќnet prioritсs",
     "Prioritat de la pausa",
     "Приоритет отложенного просмотра",
+    "Prioritet pauze",
   },
   { "Setup.Recording$Pause lifetime (d)",
     "Pause Lebensdauer (d)",
@@ -2804,6 +3107,7 @@ const tI18nPhrase Phrases[] = {
     "Szќnet щlettartama",
     "Durada de la pausa (d)",
     "Хранение отложенного просмотра (д)",
+    "Trajanje pauze (d)",
   },
   { "Setup.Recording$Use episode name",
     "Episodenname verwenden",
@@ -2822,6 +3126,7 @@ const tI18nPhrase Phrases[] = {
     "Epizѓdnщv felhasznсlсsa",
     "Utilitzar el nom de l'episodi",
     "Группировать файлы по эпизодам",
+    "Koristi ime epizode",
   },
   { "Setup.Recording$Use VPS",
     "VPS benutzen",
@@ -2840,6 +3145,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "Использовать сигналы VPS",
+    "Koristi VPS",
   },
   { "Setup.Recording$VPS margin (s)",
     "Zeitpuffer bei VPS (s)",
@@ -2858,6 +3164,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "Буферное время VPS (сек)",
+    "Vremenska rezerva kod VPS (s)",
   },
   { "Setup.Recording$Mark instant recording",
     "Direktaufzeichnung markieren",
@@ -2876,6 +3183,7 @@ const tI18nPhrase Phrases[] = {
     "Direktfelvщtel megjelіlщse",
     "Marcar gravaciѓ instantрnia",
     "Отмечать сделанные вручную записи",
+    "Oznaшi direktno snimanje",
   },
   { "Setup.Recording$Name instant recording",
     "Direktaufzeichnung benennen",
@@ -2894,6 +3202,7 @@ const tI18nPhrase Phrases[] = {
     "Direktfelvщtel megnevezщse",
     "Anomenar gravacions instantрnies",
     "Схема именования ручных записей",
+    "Imenuj direktno snimanje",
   },
   { "Setup.Recording$Instant rec. time (min)",
     "Dauer der Direktaufzeichnung (min)",
@@ -2912,6 +3221,7 @@ const tI18nPhrase Phrases[] = {
     "Felvщtel idіtartama",
     "Temps de gravaciѓ instantрnia (min)",
     "Длительность ручной записи (мин)",
+    "Trajanje direktnog snimanja (min)",
   },
   { "Setup.Recording$Record Dolby Digital",
     "Dolby Digital Ton aufzeichnen",
@@ -2930,6 +3240,7 @@ const tI18nPhrase Phrases[] = {
     "Dolby Digitсl felvщtel",
     "Gravar el so en Dolby Digital",
     "Записывать звук Dolby Digital",
+    "Snimi 'Dolby digital' ton",
   },
   { "Setup.Recording$Max. video file size (MB)",
     "Max. Video Dateigrіпe (MB)",
@@ -2948,6 +3259,7 @@ const tI18nPhrase Phrases[] = {
     "Max. video File-terjedelem (MB)",
     "Mida mрxima de l'arxiu (MB)",
     "Макс. размер видеофайла (Мб)",
+    "Maksimalna veliшina datoteke (MB)",
   },
   { "Setup.Recording$Split edited files",
     "Editierte Dateien aufteilen",
@@ -2966,6 +3278,7 @@ const tI18nPhrase Phrases[] = {
     "Feldolgozott File-k felosztсsa",
     "Separar arxius",
     "Делить отредактированные файлы",
+    "Podijeli ure№ene datoteke",
   },
   { "Setup.Replay$Multi speed mode",
     "MultiSpeed Modus",
@@ -2984,6 +3297,7 @@ const tI18nPhrase Phrases[] = {
     "MultiSpeed funkciѓ",
     "Mode de multivelocitat",
     "Многоскоростной режим",
+    "MultiSpeed naшin",
   },
   { "Setup.Replay$Show replay mode",
     "Wiedergabestatus anzeigen",
@@ -3002,6 +3316,7 @@ const tI18nPhrase Phrases[] = {
     "Lejсtszсs feltќntetщse",
     "Mostrar mode de reproducciѓ",
     "Отображать режим воспроизведения", // ???
+    "PrikaОi naшin prikazivanja",
   },
   { "Setup.Replay$Resume ID",
     "Wiedergabe ID",
@@ -3020,6 +3335,7 @@ const tI18nPhrase Phrases[] = {
     "Lejсtszсs ID",
     "ID de Continuar",
     "ID воспроизведения", // ???
+    "ID nastavka",
   },
   { "Setup.Miscellaneous$Min. event timeout (min)",
     "Mindest Event Pause (min)",
@@ -3038,6 +3354,7 @@ const tI18nPhrase Phrases[] = {
     "Min. esemщny szќnet (min)",
     "Temps mэnim en pausa (min)",
     "Мин. время ожидания события (мин)",
+    "Najmanje vrijeme pauze",
   },
   { "Setup.Miscellaneous$Min. user inactivity (min)",
     "Mindest Benutzer-Inaktivitфt (min)",
@@ -3056,6 +3373,7 @@ const tI18nPhrase Phrases[] = {
     "Min. kezelщsi aktivitсs (min)",
     "Temps mэnim d'inactivitat (min)",
     "Мин. время ожидания ввода (мин)",
+    "Najmanje vrijeme neaktivnosti (min)",
   },
   { "Setup.Miscellaneous$SVDRP timeout (s)",
     "SVDRP Timeout (s)",
@@ -3074,6 +3392,7 @@ const tI18nPhrase Phrases[] = {
     "SVDRP Timeout (s)",
     "SVDRP Timeout (s)",
     "Задержка обрыва соед. SVDRP (сек)",
+    "SVDRP vrijeme neaktivnosti",
   },
   { "Setup.Miscellaneous$Zap timeout (s)",
     "Zap Timeout (s)",
@@ -3092,6 +3411,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "Задержка переключения канала (сек)",
+    "",// hrv TODO
   },
   // The days of the week:
   { "MTWTFSS",
@@ -3111,6 +3431,7 @@ const tI18nPhrase Phrases[] = {
     "HKSCPSV",
     "LMCJVSG",
     "ПВСЧПВС",
+    "PUSШPSN", // hrv
   },
   { "MonTueWedThuFriSatSun", // must all be 3 letters!
     "MonDieMitDonFreSamSon",
@@ -3129,6 +3450,7 @@ const tI18nPhrase Phrases[] = {
     "HщtKedSzeCsќPщnSzoVas",
     "Dl Dm Dc Dj Dv Ds Dg ",
     "ПонВтрСрдЧтвПтнСубВск",
+    "PonUtoSriШetPetSubNed", // hrv
   },
   // The allowed characters in strings:
   { " abcdefghijklmnopqrstuvwxyz0123456789-.#~",
@@ -3148,6 +3470,7 @@ const tI18nPhrase Phrases[] = {
     " aсbcdeщfghiэjklmnoѓіpqrstuњќvwxyz0123456789-.,#~",
     " aрbcчdeщшfghiэjklmnoђpqrstuњvwxyz0123456789-.,#~_З",
     " abcdefghijklmnopqrstuvwxyzабвгдеёжзийклмнопрстуфхцчшщъыьюя0123456789-.#~",
+    " abcшцd№efghijklmnopqrsЙtuvwxyzО0123456789-.#~", // hrv
   },
   // Learning keys:
   { "Learning Remote Control Keys (%s)",
@@ -3167,6 +3490,7 @@ const tI18nPhrase Phrases[] = {
     "Tсvirсnyэtѓ betanэtсsa (%s)",
     "Aprenent les tecles del comandament a distрncia (%s)",
     "Ввод кодов кнопок пульта (%s)",
+    "Uшenje kєda daljinskog upravljaшa (%s)",
   },
   { "Phase 1: Detecting RC code type",
     "Phase 1: FB Code feststellen",
@@ -3185,6 +3509,7 @@ const tI18nPhrase Phrases[] = {
     "Elsі lщpщs: tсvirсnyэtѓ kѓdjсnak meghatсrozсsa",
     "Fase 1: Detectant el tipus de receptor",
     "Шаг 1: Определение типа кода пульта",
+    "Faza 1: detektiranje kєda daljinskog upravljaшa.",
   },
   { "Press any key on the RC unit",
     "Eine Taste auf der FB drќcken",
@@ -3203,6 +3528,7 @@ const tI18nPhrase Phrases[] = {
     "Nyomjon meg egy gombot a tсvirсnyэtѓn",
     "Premeu qualsevol tecla del comandament",
     "Нажмите любую кнопку на пульте",
+    "Pritisnite tipku na daljinskom upravljaшu",
   },
   { "RC code detected!",
     "FB Code erkannt!",
@@ -3221,6 +3547,7 @@ const tI18nPhrase Phrases[] = {
     "Tсvirсnyэtѓ kѓdja felismerve!",
     "Codi detectat!",
     "Обнаружен код пульта!",
+    "Kєd daljinskog upravljaшa je prepoznat!",
   },
   { "Do not press any key...",
     "Keine Taste drќcken...",
@@ -3239,6 +3566,7 @@ const tI18nPhrase Phrases[] = {
     "Ne nyomjon meg gombot...",
     "No premeu cap tecla...",
     "Не нажимайте кнопки...",
+    "Ne pritiskajte tipku...",
   },
   { "Phase 2: Learning specific key codes",
     "Phase 2: Einzelne Tastencodes lernen",
@@ -3257,6 +3585,7 @@ const tI18nPhrase Phrases[] = {
     "Mсsodik lщpщs: az egyes gombok betanэtсsa",
     "Fase 2: Aprenentantge de les funcions",
     "Шаг 2: Задание кодов отдельных кнопок",
+    "Faza 2: Uшenje posebnih kєdova",
   },
   { "Press key for '%s'",
     "Taste fќr '%s' drќcken",
@@ -3275,6 +3604,7 @@ const tI18nPhrase Phrases[] = {
     "'%s' gomb megnyomсsa",
     "Premeu una tecla per '%s'",
     "Нажмите кнопку '%s'",
+    "Pritisnite tipku za '%s'",
   },
   { "Press 'Up' to confirm",
     "'Auf' drќcken zum Bestфtigen",
@@ -3293,6 +3623,7 @@ const tI18nPhrase Phrases[] = {
     "'Fel' megnyomсsa az elfogadсshoz",
     "Premeu 'Amunt' per confirmar",
     "Нажмите 'Вверх' чтобы подтвердить",
+    "Pritisnite 'Gore' za potvrdu",
   },
   { "Press 'Down' to continue",
     "'Ab' drќcken zum Weitermachen",
@@ -3311,6 +3642,7 @@ const tI18nPhrase Phrases[] = {
     "'Le' megnyomсsa a folytatсshoz",
     "Premeu 'Avall' per continuar",
     "Нажмите 'Вниз' чтобы продолжить",
+    "Pritisnite 'Dolje' za nastavak",
   },
   { "(press 'Up' to go back)",
     "('Auf' drќcken um zurќckzugehen)",
@@ -3329,6 +3661,7 @@ const tI18nPhrase Phrases[] = {
     "(ДFel' megnyomсsa a visszatщrщshez)",
     "(Premeu 'Amunt' per retornar)",
     "(Нажмите 'Вверх' чтобы вернуться)",
+    "(pritisnite 'Gore' za nazad)",
   },
   { "(press 'Down' to end key definition)",
     "('Ab' drќcken zum Beenden)",
@@ -3347,6 +3680,7 @@ const tI18nPhrase Phrases[] = {
     "('Le' megnyomсsa a befejezщshez)",
     "(Premeu 'Avall' per finalitzar l'aprenentatge)",
     "(Нажмите 'Вниз' чтобы закончить настройку пульта)",
+    "(pritisnite 'Dolje' za kraj)",
   },
   { "(press 'Menu' to skip this key)",
     "('Menќ' drќcken zum мberspringen)",
@@ -3365,6 +3699,7 @@ const tI18nPhrase Phrases[] = {
     "A Menќ gombot nyomni ennek a gombnak a kihagyсsсhoz",
     "Premeu 'Menњ' per obviar aquesta tecla",
     "(Нажмите 'Меню' чтобы пропустить кнопку)",
+    "pritisnite 'Izbor' da preskoшite ovu tipku",
   },
   { "Phase 3: Saving key codes",
     "Phase 3: Codes abspeichern",
@@ -3383,6 +3718,7 @@ const tI18nPhrase Phrases[] = {
     "Harmadik lщpщs: kѓd mentщse",
     "Fase 3: Guardant els codis de les tecles",
     "Шаг 3: Запоминание кодов кнопок",
+    "Faza 3: Spremanje kєdova tipki",
   },
   { "Press 'Up' to save, 'Down' to cancel",
     "'Auf' speichert, 'Ab' bricht ab",
@@ -3401,6 +3737,7 @@ const tI18nPhrase Phrases[] = {
     "'Fel' mentщs, 'LeД mщgse",
     "Premeu 'Amunt' per guardar, 'Avall' per anulЗlar",
     "Нажмите 'Вверх' чтобы запомнить, 'Вниз' чтобы отказаться",
+    "'Gore' za potvrdu, 'Dolje' za prekid",
   },
   // Key names:
   { "Up",
@@ -3420,6 +3757,7 @@ const tI18nPhrase Phrases[] = {
     "Fel",
     "Amunt",
     "Вверх",
+    "Gore",
   },
   { "Down",
     "Ab",
@@ -3438,6 +3776,7 @@ const tI18nPhrase Phrases[] = {
     "Le",
     "Avall",
     "Вниз",
+    "Dolje",
   },
   { "Menu",
     "Menќ",
@@ -3456,6 +3795,7 @@ const tI18nPhrase Phrases[] = {
     "Menќ",
     "Menњ",
     "Меню",
+    "Izbor",
   },
   { "Ok",
     "Ok",
@@ -3473,6 +3813,7 @@ const tI18nPhrase Phrases[] = {
     "Ok",
     "Ok",
     "D'acord",
+    "Ok",
     "Ok",
   },
   { "Back",
@@ -3492,6 +3833,7 @@ const tI18nPhrase Phrases[] = {
     "Vissza",
     "Retornar",
     "Назад",
+    "Nazad",
   },
   { "Left",
     "Links",
@@ -3510,6 +3852,7 @@ const tI18nPhrase Phrases[] = {
     "Balra",
     "Esquerra",
     "Налево",
+    "Lijevo",
   },
   { "Right",
     "Rechts",
@@ -3528,6 +3871,7 @@ const tI18nPhrase Phrases[] = {
     "Jobbra",
     "Dreta",
     "Направо",
+    "Desno",
   },
   { "Red",
     "Rot",
@@ -3546,6 +3890,7 @@ const tI18nPhrase Phrases[] = {
     "Piros",
     "Vermell",
     "Красный",
+    "Crveno",
   },
   { "Green",
     "Grќn",
@@ -3564,6 +3909,7 @@ const tI18nPhrase Phrases[] = {
     "Zіld",
     "Verd",
     "Зелёный",
+    "Zeleno",
   },
   { "Yellow",
     "Gelb",
@@ -3582,6 +3928,7 @@ const tI18nPhrase Phrases[] = {
     "Sсrga",
     "Groc",
     "Жёлтый",
+    "Ўuto",
   },
   { "Blue",
     "Blau",
@@ -3600,6 +3947,7 @@ const tI18nPhrase Phrases[] = {
     "Kщk",
     "Blau",
     "Синий",
+    "Plavo",
   },
   { "Play",
     "Wiedergabe",
@@ -3618,6 +3966,7 @@ const tI18nPhrase Phrases[] = {
     "Lejсtszсs",
     "Reproduir",
     "Воспроизведение",
+    "Start",
   },
   { "Pause",
     "Pause",
@@ -3636,6 +3985,7 @@ const tI18nPhrase Phrases[] = {
     "Szќnet",
     "Pausa",
     "Пауза",
+    "Pauza",
   },
   { "Stop",
     "Stop",
@@ -3654,6 +4004,7 @@ const tI18nPhrase Phrases[] = {
     "Stop",
     "Aturar",
     "Стоп",
+    "Stop",
   },
   { "Record",
     "Aufnehmen",
@@ -3672,6 +4023,7 @@ const tI18nPhrase Phrases[] = {
     "Felvenni",
     "Gravar",
     "Запись",
+    "Snimaj",
   },
   { "FastFwd",
     "Vorlauf",
@@ -3690,6 +4042,7 @@ const tI18nPhrase Phrases[] = {
     "Elіre pіrgetni",
     "Endavant rрpidament",
     "Вперёд",
+    "Naprijed",
   },
   { "FastRew",
     "Rќcklauf",
@@ -3708,6 +4061,7 @@ const tI18nPhrase Phrases[] = {
     "Vissza pіrgetni",
     "Enrera rрpidament",
     "Назад",
+    "Nazad",
   },
   { "Power",
     "Ausschalten",
@@ -3726,6 +4080,7 @@ const tI18nPhrase Phrases[] = {
     "Kikapcsolni",
     "Aturar",
     "Выключить",
+    "Iskljuшi",
   },
   { "Channel+",
     "Kanal+",
@@ -3744,6 +4099,7 @@ const tI18nPhrase Phrases[] = {
     "Csatorna+",
     "Canal +",
     "Канал +",
+    "Program +",
   },
   { "Channel-",
     "Kanal-",
@@ -3762,6 +4118,7 @@ const tI18nPhrase Phrases[] = {
     "Csatorna-",
     "Canal -",
     "Канал -",
+    "Program -",
   },
   { "Volume+",
     "Lautstфrke+",
@@ -3780,6 +4137,7 @@ const tI18nPhrase Phrases[] = {
     "Hangerі+",
     "Volum +",
     "Громкость +",
+    "Glasnije", // hrv "Glasnocca +"
   },
   { "Volume-",
     "Lautstфrke-",
@@ -3798,6 +4156,7 @@ const tI18nPhrase Phrases[] = {
     "Hangerі-",
     "Volum -",
     "Громкость -",
+    "TiЙe", // hrv Glasnocca -"
   },
   { "Mute",
     "Stumm",
@@ -3816,6 +4175,7 @@ const tI18nPhrase Phrases[] = {
     "Csend",
     "En silenci",
     "Выключить звук",
+    "Bez zvuka",
   },
   // Miscellaneous:
   { "yes",
@@ -3835,6 +4195,7 @@ const tI18nPhrase Phrases[] = {
     "igen",
     "sэ",
     "да",
+    "da",
   },
   { "no",
     "nein",
@@ -3853,6 +4214,7 @@ const tI18nPhrase Phrases[] = {
     "nem",
     "no",
     "нет",
+    "ne",
   },
   { "off",
     "aus",
@@ -3871,6 +4233,7 @@ const tI18nPhrase Phrases[] = {
     "ki",
     "off",
     "выкл",
+    "ugasi",
   },
   { "none",
     "keine",
@@ -3889,6 +4252,7 @@ const tI18nPhrase Phrases[] = {
     "semmi",
     "cap",
     "ничего",
+    "nijedan",
   },
   { "auto",
     "auto",
@@ -3907,6 +4271,7 @@ const tI18nPhrase Phrases[] = {
     "auto",
     "auto",
     "авто",
+    "automatski",
   },
   { "top",
     "oben",
@@ -3925,6 +4290,7 @@ const tI18nPhrase Phrases[] = {
     "Fent",
     "a dalt",
     "сверху",
+    "gore",
   },
   { "bottom",
     "unten",
@@ -3943,6 +4309,7 @@ const tI18nPhrase Phrases[] = {
     "lent",
     "a baix",
     "снизу",
+    "dolje",
   },
   { "Disk",
     "Disk",
@@ -3961,6 +4328,7 @@ const tI18nPhrase Phrases[] = {
     "Lemez",
     "Disc",
     "Диск",
+    "Disk",
   },
   { "free",
     "frei",
@@ -3979,6 +4347,7 @@ const tI18nPhrase Phrases[] = {
     "szabad",
     "lliure",
     "свободно",
+    "slobodno",
   },
   { "Jump: ", // note the trailing blank
     "Springen: ",
@@ -3997,6 +4366,7 @@ const tI18nPhrase Phrases[] = {
     "Ugrсs: ",
     "Salta a:",
     "Перейти: ",
+    "Skoшi: ",
   },
   { "Volume ", // note the trailing blank
     "Lautstфrke ",
@@ -4015,6 +4385,7 @@ const tI18nPhrase Phrases[] = {
     "Hangerі ",
     "Volum ",
     "Громкость ",
+    "Glasnoцa ",
   },
   { " Stop replaying", // note the leading blank!
     " Wiedergabe beenden",
@@ -4033,6 +4404,7 @@ const tI18nPhrase Phrases[] = {
     " Lejсtszсst befejzni",
     " Aturar la reproducciѓ",
     " Прекратить воспроизведение",
+    " Prekini reprodukciju",
   },
   { " Stop recording ", // note the leading and trailing blanks!
     " Aufzeichnung beenden ",
@@ -4051,6 +4423,7 @@ const tI18nPhrase Phrases[] = {
     " Felvщtelt befejezni ",
     " Aturar la gravaciѓ ",
     " Прекратить запись ",
+    " Prekini snimanje ",
   },
   { " Cancel editing", // note the leading blank!
     " Schneiden abbrechen",
@@ -4069,6 +4442,7 @@ const tI18nPhrase Phrases[] = {
     " Vсgсst megszakэtani",
     " CancelЗlar l'ediciѓ ",
     " Прервать монтаж записи",
+    " Prekini ure№ivanje",
   },
   { "Switching primary DVB...",
     "Primфres Interface wird umgeschaltet...",
@@ -4087,6 +4461,7 @@ const tI18nPhrase Phrases[] = {
     "Primщr Interface сtkapcsolva...",
     "Canviant a la interfэcie DVB primрria...",
     "Смена основного DVB-устройства...",
+    "Preklapanje primarnog DVB ure№aja...",
   },
   { "Up/Dn for new location - OK to move",
     "Auf/Ab fќr neue Position - dann OK",
@@ -4105,6 +4480,7 @@ const tI18nPhrase Phrases[] = {
     "Fel/Le egy uj opciѓщrt - aztсn OK",
     "Amunt/Avall per una nova localitzaciѓ - OK per moure",
     "Нажимайте \"Вверх\"/\"Вниз\" для выбора позиции, а затем \"OK\"",
+    "Gore/Dolje na novu poziciju - zatim OK",
   },
   { "Editing process started",
     "Schnitt gestartet",
@@ -4123,6 +4499,7 @@ const tI18nPhrase Phrases[] = {
     "Vсgсs elindэtva",
     "Procщs d'ediciѓ iniciat",
     "Начат монтаж записи",
+    "Rezanje je zapoшeto",
   },
   { "Editing process finished",
     "Schnitt beendet",
@@ -4141,6 +4518,7 @@ const tI18nPhrase Phrases[] = {
     "Vсgсs befejezve",
     "Procщs d'ediciѓ finalitzat",
     "Монтаж окончен",
+    "Rezanje zavrЙeno",
   },
   { "Editing process failed!",
     "Schnitt gescheitert!",
@@ -4159,6 +4537,7 @@ const tI18nPhrase Phrases[] = {
     "Vсgсs sikertelen!",
     "Procщs d'ediciѓ fallit!",
     "Ошибка во время монтажа записи!",
+    "Rezanje neuspjeЙno!",
   },
   { "scanning recordings...",
     "Aufzeichnungen werden durchsucht...",
@@ -4177,6 +4556,7 @@ const tI18nPhrase Phrases[] = {
     "Felvett adсsok bіngщszщse...",
     "cercant gravacions...",
     "Сканирование записей...",
+    "pretraОivanje snimljenog...",
   },
   { "Pausing live video...",
     "Live-Signal wird angehalten...",
@@ -4195,6 +4575,7 @@ const tI18nPhrase Phrases[] = {
     "Az щlі adсs megсllэtva...",
     "Pausa d'emissiѓ en directe...",
     "Режим отложенного просмотра...",
+    "Zaustavljanje Оivog signala...",
   },
   { "This plugin has no setup parameters!",
     "Dieses Plugin hat keine Setup-Parameter!",
@@ -4213,7 +4594,46 @@ const tI18nPhrase Phrases[] = {
     "Ennek a plugin-nak nincs setup-parametere!",
     "Aquest plugin no admet configuraciѓ!",
     "Модуль не имеет параметров настройки!",
-   },
+    "Ovaj dodatak (Plugin) nema parametara!",
+  },
+  { "Classic VDR",
+    "Klassischer VDR",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+  },
+  { "ST:TNG Panels",
+    "ST:TNG Konsolen",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+  },
   { NULL }
   };
 

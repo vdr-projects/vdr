@@ -425,12 +425,25 @@ Version 1.2
 
   Language = English     Defines the language used to display the OSD texts.
 
-  Width = 52             The width and height of the OSD .
-  Height = 18            The valid ranges are width=40...56, height=12...21.
+  Skin = ST:TNG Panels   Defines the "skin" used to display the OSD menus.
+
+  Theme = Default        Defines the "theme" to use with the current skin.
+
+  Left = 54              The top and left offset of the OSD.
+  Top = 45               The valid ranges are left=0...672, top=0...567.
+
+  Width = 624            The width and height of the OSD.
+  Height = 486           The valid ranges are width=480...672, height=324...567.
+                         The Width must be a multiple of 8.
 
   Message time = 1       The time (in seconds) how long an informational
                          message shall be displayed on the OSD. The valid range
                          is 1...60.
+
+  Use small font = 1     Defines whether the small font shall be used. 0 means never
+                         use the small font, 1 means use the small font wherever the
+                         current skin wants to, and 2 means always use the small
+                         font.
 
   Channel info position = bottom
                          The position of the channel info window in the OSD

@@ -4,651 +4,768 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 1.45 2004/03/14 10:33:20 kls Exp $
+ * $Id: osd.c 1.46 2004/05/16 09:25:06 kls Exp $
  */
 
 #include "osd.h"
-#include <string.h>
-#include "device.h"
-#include "i18n.h"
-#include "status.h"
+#include <math.h>
+#include <signal.h>
+#include <stdlib.h>
+#include <sys/ioctl.h>
+#include <sys/stat.h>
+#include <sys/unistd.h>
+#include "tools.h"
+
+// --- cPalette --------------------------------------------------------------
+
+cPalette::cPalette(int Bpp)
+{
+  SetBpp(Bpp);
+}
+
+void cPalette::Reset(void)
+{
+  numColors = 0;
+  modified = false;
+}
+
+int cPalette::Index(tColor Color)
+{
+  for (int i = 0; i < numColors; i++) {
+      if (color[i] == Color)
+         return i;
+      }
+  if (numColors < maxColors) {
+     color[numColors++] = Color;
+     modified = true;
+     return numColors - 1;
+     }
+  dsyslog("too many different colors used in palette");
+  //TODO: return the index of the "closest" color?
+  return 0;
+}
+
+void cPalette::SetBpp(int Bpp)
+{
+  bpp = Bpp;
+  maxColors = 1 << bpp;
+  Reset();
+}
+
+void cPalette::SetColor(int Index, tColor Color)
+{
+  if (Index < maxColors) {
+     if (numColors <= Index) {
+        numColors = Index + 1;
+        modified = true;
+        }
+     else
+        modified |= color[Index] != Color;
+     color[Index] = Color;
+     }
+}
+
+const tColor *cPalette::Colors(int &NumColors)
+{
+  NumColors = numColors;
+  return numColors ? color : NULL;
+}
+
+void cPalette::Take(const cPalette &Palette, tIndexes *Indexes, tColor ColorFg, tColor ColorBg)
+{
+  for (int i = 0; i < Palette.numColors; i++) {
+      tColor Color = Palette.color[i];
+      if (ColorFg || ColorBg) {
+         switch (i) {
+           case 0: Color = ColorBg; break;
+           case 1: Color = ColorFg; break;
+           }
+         }
+      int n = Index(Color);
+      if (Indexes)
+         (*Indexes)[i] = n;
+      }
+}
+
+// --- cBitmap ---------------------------------------------------------------
+
+cBitmap::cBitmap(int Width, int Height, int Bpp, int X0, int Y0)
+:cPalette(Bpp)
+{
+  bitmap = NULL;
+  x0 = X0;
+  y0 = Y0;
+  SetSize(Width, Height);
+}
+
+cBitmap::cBitmap(const char *FileName)
+{
+  bitmap = NULL;
+  x0 = 0;
+  y0 = 0;
+  LoadXpm(FileName);
+}
+
+cBitmap::cBitmap(char *Xpm[])
+{
+  bitmap = NULL;
+  x0 = 0;
+  y0 = 0;
+  SetXpm(Xpm);
+}
+
+cBitmap::~cBitmap()
+{
+  free(bitmap);
+}
+
+void cBitmap::SetSize(int Width, int Height)
+{
+  if (bitmap && Width == width && Height == height)
+     return;
+  width = Width;
+  height = Height;
+  free(bitmap);
+  bitmap = NULL;
+  dirtyX1 = 0;
+  dirtyY1 = 0;
+  dirtyX2 = width - 1;
+  dirtyY2 = height - 1;
+  if (width > 0 && height > 0) {
+     bitmap = MALLOC(tIndex, width * height);
+     if (bitmap)
+        memset(bitmap, 0x00, width * height);
+     else
+        esyslog("ERROR: can't allocate bitmap!");
+     }
+  else
+     esyslog("ERROR: illegal bitmap parameters (%d, %d)!", width, height);
+}
+
+bool cBitmap::Contains(int x, int y) const
+{
+  x -= x0;
+  y -= y0;
+  return 0 <= x && x < width && 0 <= y && y < height;
+}
+
+bool cBitmap::Intersects(int x1, int y1, int x2, int y2) const
+{
+  x1 -= x0;
+  y1 -= y0;
+  x2 -= x0;
+  y2 -= y0;
+  return !(x2 < 0 || x1 >= width || y2 < 0 || y1 >= height);
+}
+
+bool cBitmap::Dirty(int &x1, int &y1, int &x2, int &y2)
+{
+  if (dirtyX2 >= 0) {
+     x1 = dirtyX1;
+     y1 = dirtyY1;
+     x2 = dirtyX2;
+     y2 = dirtyY2;
+     return true;
+     }
+  return false;
+}
+
+void cBitmap::Clean(void)
+{
+  dirtyX1 = width;
+  dirtyY1 = height;
+  dirtyX2 = -1;
+  dirtyY2 = -1;
+}
+
+bool cBitmap::LoadXpm(const char *FileName)
+{
+  bool Result = false;
+  FILE *f = fopen(FileName, "r");
+  if (f) {
+     char **Xpm = NULL;
+     bool isXpm = false;
+     int lines = 0;
+     int index = 0;
+     char *s;
+     while ((s = readline(f)) != NULL) {
+           s = skipspace(s);
+           if (!isXpm) {
+              if (strcmp(s, "/* XPM */") != 0) {
+                 esyslog("ERROR: invalid header in XPM file '%s'", FileName);
+                 break;
+                 }
+              isXpm = true;
+              }
+           else if (*s++ == '"') {
+              if (!lines) {
+                 int w, h, n, c;
+                 if (4 != sscanf(s, "%d %d %d %d", &w, &h, &n, &c)) {
+                    esyslog("ERROR: faulty 'values' line in XPM file '%s'", FileName);
+                    break;
+                    }
+                 lines = h + n + 1;
+                 Xpm = MALLOC(char *, lines);
+                 }
+              char *q = strchr(s, '"');
+              if (!q) {
+                 esyslog("ERROR: missing quotes in XPM file '%s'", FileName);
+                 break;
+                 }
+              *q = 0;
+              if (index < lines)
+                 Xpm[index++] = strdup(s);
+              else {
+                 esyslog("ERROR: too many lines in XPM file '%s'", FileName);
+                 break;
+                 }
+              }
+           }
+     if (index == lines)
+        Result = SetXpm(Xpm);
+     else
+        esyslog("ERROR: too few lines in XPM file '%s'", FileName);
+     for (int i = 0; i < index; i++)
+         free(Xpm[i]);
+     free(Xpm);
+     fclose(f);
+     }
+  else
+     esyslog("ERROR: can't open XPM file '%s'", FileName);
+  return Result;
+}
+
+bool cBitmap::SetXpm(char *Xpm[])
+{
+  char **p = Xpm;
+  int w, h, n, c;
+  if (4 != sscanf(*p, "%d %d %d %d", &w, &h, &n, &c)) {
+     esyslog("ERROR: faulty 'values' line in XPM: '%s'", *p);
+     return false;
+     }
+  if (n > MAXNUMCOLORS) {
+     esyslog("ERROR: too many colors in XPM: %d", n);
+     return false;
+     }
+  int b = 0;
+  while (1 << (1 << b) < n)
+        b++;
+  SetBpp(1 << b);
+  SetSize(w, h);
+  for (int i = 0; i < n; i++) {
+      const char *s = *++p;
+      if (int(strlen(s)) < c) {
+         esyslog("ERROR: faulty 'colors' line in XPM: '%s'", s);
+         return false;
+         }
+      s = skipspace(s + c);
+      if (*s != 'c') {
+         esyslog("ERROR: unknown color key in XPM: '%c'", *s);
+         return false;
+         }
+      s = skipspace(s + 1);
+      if (*s != '#') {
+         esyslog("ERROR: unknown color code in XPM: '%c'", *s);
+         return false;
+         }
+      tColor color = strtoul(++s, NULL, 16) | 0xFF000000;
+      SetColor(i, color);
+      }
+  for (int y = 0; y < h; y++) {
+      const char *s = *++p;
+      if (int(strlen(s)) != w * c) {
+         esyslog("ERROR: faulty pixel line in XPM: %d '%s'", y, s);
+         return false;
+         }
+      for (int x = 0; x < w; x++) {
+          for (int i = 0; i <= n; i++) {
+              if (i == n) {
+                 esyslog("ERROR: undefined pixel color in XPM: %d %d '%s'", x, y, s);
+                 return false;
+                 }
+              if (strncmp(Xpm[i + 1], s, c) == 0) {
+                 SetIndex(x, y, i);
+                 break;
+                 }
+              }
+          s += c;
+          }
+      }
+  return true;
+}
+
+void cBitmap::SetIndex(int x, int y, tIndex Index)
+{
+  if (bitmap) {
+     if (0 <= x && x < width && 0 <= y && y < height) {
+        if (bitmap[width * y + x] != Index) {
+           bitmap[width * y + x] = Index;
+           if (dirtyX1 > x)  dirtyX1 = x;
+           if (dirtyY1 > y)  dirtyY1 = y;
+           if (dirtyX2 < x)  dirtyX2 = x;
+           if (dirtyY2 < y)  dirtyY2 = y;
+           }
+        }
+     }
+}
+
+void cBitmap::DrawPixel(int x, int y, tColor Color)
+{
+  x -= x0;
+  y -= y0;
+  SetIndex(x, y, Index(Color));
+}
+
+void cBitmap::DrawBitmap(int x, int y, const cBitmap &Bitmap, tColor ColorFg, tColor ColorBg)
+{
+  if (bitmap && Bitmap.bitmap && Intersects(x, y, x + Bitmap.Width() - 1, y + Bitmap.Height() - 1)) {
+     x -= x0;
+     y -= y0;
+     tIndexes Indexes;
+     if (ColorFg || ColorBg) {
+        }
+     Take(Bitmap, &Indexes, ColorFg, ColorBg);
+     for (int ix = 0; ix < Bitmap.width; ix++) {
+         for (int iy = 0; iy < Bitmap.height; iy++)
+             SetIndex(x + ix, y + iy, Indexes[int(Bitmap.bitmap[Bitmap.width * iy + ix])]);
+         }
+     }
+}
+
+void cBitmap::DrawText(int x, int y, const char *s, tColor ColorFg, tColor ColorBg, const cFont *Font, int Width, int Height, int Alignment)
+{
+  if (bitmap) {
+     int w = Font->Width(s);
+     int h = Font->Height();
+     int limit = 0;
+     if (Width || Height) {
+        int cw = Width ? Width : w;
+        int ch = Height ? Height : h;
+        if (!Intersects(x, y, x + cw - 1, y + ch - 1))
+           return;
+        DrawRectangle(x, y, x + cw - 1, y + ch - 1, ColorBg);
+        limit = x + cw - x0;
+        if (Width) {
+           if ((Alignment & taLeft) != 0)
+              ;
+           else if ((Alignment & taRight) != 0) {
+              if (w < Width)
+                 x += Width - w;
+              }
+           else { // taCentered
+              if (w < Width)
+                 x += (Width - w) / 2;
+              }
+           }
+        if (Height) {
+           if ((Alignment & taTop) != 0)
+              ;
+           else if ((Alignment & taBottom) != 0) {
+              if (h < Height)
+                 y += Height - h;
+              }
+           else { // taCentered
+              if (h < Height)
+                 y += (Height - h) / 2;
+              }
+           }
+        }
+     else if (!Intersects(x, y, x + w - 1, y + h - 1))
+        return;
+     x -= x0;
+     y -= y0;
+     tIndex fg = Index(ColorFg);
+     tIndex bg = Index(ColorBg);
+     while (s && *s) {
+           const cFont::tCharData *CharData = Font->CharData(*s++);
+           if (limit && int(x + CharData->width) > limit)
+              break; // we don't draw partial characters
+           if (int(x + CharData->width) > 0) {
+              for (int row = 0; row < h; row++) {
+                  cFont::tPixelData PixelData = CharData->lines[row];
+                  for (int col = CharData->width; col-- > 0; ) {
+                      SetIndex(x + col, y + row, (PixelData & 1) ? fg : bg);
+                      PixelData >>= 1;
+                      }
+                  }
+              }
+           x += CharData->width;
+           if (x > width - 1)
+              break;
+           }
+     }
+}
+
+void cBitmap::DrawRectangle(int x1, int y1, int x2, int y2, tColor Color)
+{
+  if (bitmap && Intersects(x1, y1, x2, y2)) {
+     x1 -= x0;
+     y1 -= y0;
+     x2 -= x0;
+     y2 -= y0;
+     x1 = max(x1, 0);
+     y1 = max(y1, 0);
+     x2 = min(x2, width - 1);
+     y2 = min(y2, height - 1);
+     if (x1 == 0 && y1 == 0 && x2 == width - 1 && y2 == height - 1)
+        Reset();
+     tIndex c = Index(Color);
+     for (int y = y1; y <= y2; y++)
+         for (int x = x1; x <= x2; x++)
+             SetIndex(x, y, c);
+     }
+}
+
+void cBitmap::DrawEllipse(int x1, int y1, int x2, int y2, tColor Color, int Quadrants)
+{
+  if (!Intersects(x1, y1, x2, y2))
+     return;
+  // Algorithm based on http://homepage.smc.edu/kennedy_john/BELIPSE.PDF
+  int rx = x2 - x1;
+  int ry = y2 - y1;
+  int cx = (x1 + x2) / 2;
+  int cy = (y1 + y2) / 2;
+  switch (abs(Quadrants)) {
+    case 0: rx /= 2; ry /= 2; break;
+    case 1: cx = x1; cy = y2; break;
+    case 2: cx = x2; cy = y2; break;
+    case 3: cx = x2; cy = y1; break;
+    case 4: cx = x1; cy = y1; break;
+    case 5: cx = x1;          ry /= 2; break;
+    case 6:          cy = y2; rx /= 2; break;
+    case 7: cx = x2;          ry /= 2; break;
+    case 8:          cy = y1; rx /= 2; break;
+    }
+  int TwoASquare = 2 * rx * rx;
+  int TwoBSquare = 2 * ry * ry;
+  int x = rx;
+  int y = 0;
+  int XChange = ry * ry * (1 - 2 * rx);
+  int YChange = rx * rx;
+  int EllipseError = 0;
+  int StoppingX = TwoBSquare * rx;
+  int StoppingY = 0;
+  while (StoppingX >= StoppingY) {
+        switch (Quadrants) {
+          case  5: DrawRectangle(cx,     cy + y, cx + x, cy + y, Color); // no break
+          case  1: DrawRectangle(cx,     cy - y, cx + x, cy - y, Color); break;
+          case  7: DrawRectangle(cx - x, cy + y, cx,     cy + y, Color); // no break
+          case  2: DrawRectangle(cx - x, cy - y, cx,     cy - y, Color); break;
+          case  3: DrawRectangle(cx - x, cy + y, cx,     cy + y, Color); break;
+          case  4: DrawRectangle(cx,     cy + y, cx + x, cy + y, Color); break;
+          case  0:
+          case  6: DrawRectangle(cx - x, cy - y, cx + x, cy - y, Color); if (Quadrants == 6) break;
+          case  8: DrawRectangle(cx - x, cy + y, cx + x, cy + y, Color); break;
+          case -1: DrawRectangle(cx + x, cy - y, x2,     cy - y, Color); break;
+          case -2: DrawRectangle(x1,     cy - y, cx - x, cy - y, Color); break;
+          case -3: DrawRectangle(x1,     cy + y, cx - x, cy + y, Color); break;
+          case -4: DrawRectangle(cx + x, cy + y, x2,     cy + y, Color); break;
+          }
+        y++;
+        StoppingY += TwoASquare;
+        EllipseError += YChange;
+        YChange += TwoASquare;
+        if (2 * EllipseError + XChange > 0) {
+           x--;
+           StoppingX -= TwoBSquare;
+           EllipseError += XChange;
+           XChange += TwoBSquare;
+           }
+        }
+  x = 0;
+  y = ry;
+  XChange = ry * ry;
+  YChange = rx * rx * (1 - 2 * ry);
+  EllipseError = 0;
+  StoppingX = 0;
+  StoppingY = TwoASquare * ry;
+  while (StoppingX <= StoppingY) {
+        switch (Quadrants) {
+          case  5: DrawRectangle(cx,     cy + y, cx + x, cy + y, Color); // no break
+          case  1: DrawRectangle(cx,     cy - y, cx + x, cy - y, Color); break;
+          case  7: DrawRectangle(cx - x, cy + y, cx,     cy + y, Color); // no break
+          case  2: DrawRectangle(cx - x, cy - y, cx,     cy - y, Color); break;
+          case  3: DrawRectangle(cx - x, cy + y, cx,     cy + y, Color); break;
+          case  4: DrawRectangle(cx,     cy + y, cx + x, cy + y, Color); break;
+          case  0:
+          case  6: DrawRectangle(cx - x, cy - y, cx + x, cy - y, Color); if (Quadrants == 6) break;
+          case  8: DrawRectangle(cx - x, cy + y, cx + x, cy + y, Color); break;
+          case -1: DrawRectangle(cx + x, cy - y, x2,     cy - y, Color); break;
+          case -2: DrawRectangle(x1,     cy - y, cx - x, cy - y, Color); break;
+          case -3: DrawRectangle(x1,     cy + y, cx - x, cy + y, Color); break;
+          case -4: DrawRectangle(cx + x, cy + y, x2,     cy + y, Color); break;
+          }
+        x++;
+        StoppingX += TwoBSquare;
+        EllipseError += XChange;
+        XChange += TwoBSquare;
+        if (2 * EllipseError + YChange > 0) {
+           y--;
+           StoppingY -= TwoASquare;
+           EllipseError += YChange;
+           YChange += TwoASquare;
+           }
+        }
+}
+
+void cBitmap::DrawSlope(int x1, int y1, int x2, int y2, tColor Color, int Type)
+{
+  // TODO This is just a quick and dirty implementation of a slope drawing
+  // machanism. If somebody can come up with a better solution, let's have it!
+  if (!Intersects(x1, y1, x2, y2))
+     return;
+  bool upper    = Type & 0x01;
+  bool falling  = Type & 0x02;
+  bool vertical = Type & 0x04;
+  if (vertical) {
+     for (int y = y1; y <= y2; y++) {
+         double c = cos((y - y1) * M_PI / (y2 - y1 + 1));
+         if (falling)
+            c = -c;
+         int x = int((x2 - x1 + 1) * c / 2);
+         if (upper && !falling || !upper && falling)
+            DrawRectangle(x1, y, (x1 + x2) / 2 + x, y, Color);
+         else
+            DrawRectangle((x1 + x2) / 2 + x, y, x2, y, Color);
+         }
+     }
+  else {
+     for (int x = x1; x <= x2; x++) {
+         double c = cos((x - x1) * M_PI / (x2 - x1 + 1));
+         if (falling)
+            c = -c;
+         int y = int((y2 - y1 + 1) * c / 2);
+         if (upper)
+            DrawRectangle(x, y1, x, (y1 + y2) / 2 + y, Color);
+         else
+            DrawRectangle(x, (y1 + y2) / 2 + y, x, y2, Color);
+         }
+     }
+}
+
+const tIndex *cBitmap::Data(int x, int y)
+{
+  return &bitmap[y * width + x];
+}
 
 // --- cOsd ------------------------------------------------------------------
 
-#ifdef DEBUG_OSD
-  WINDOW *cOsd::window = NULL;
-  int cOsd::colorPairs[MaxColorPairs] = { 0 };
-#else
-  cOsdBase *cOsd::osd = NULL;
-#endif
-  int cOsd::cols = 0;
-  int cOsd::rows = 0;
+bool cOsd::isOpen = false;
 
-void cOsd::Initialize(void)
+cOsd::cOsd(int Left, int Top)
 {
-#if defined(DEBUG_OSD)
-  initscr();
-  start_color();
-  leaveok(stdscr, true);
-#endif
+  if (isOpen)
+     esyslog("ERROR: OSD opened without closing previous OSD!");
+  savedRegion = NULL;
+  numBitmaps = 0;
+  left = Left;
+  top = Top;
+  width = height = 0;
+  isOpen = true;
 }
 
-void cOsd::Shutdown(void)
+cOsd::~cOsd()
 {
-  Close();
-#if defined(DEBUG_OSD)
-  endwin();
-#endif
+  for (int i = 0; i < numBitmaps; i++)
+      delete bitmaps[i];
+  delete savedRegion;
+  isOpen = false;
 }
 
-#ifdef DEBUG_OSD
-void cOsd::SetColor(eDvbColor colorFg, eDvbColor colorBg)
+cBitmap *cOsd::GetBitmap(int Area)
 {
-  int color = (colorBg << 16) | colorFg | 0x80000000;
-  for (int i = 0; i < MaxColorPairs; i++) {
-      if (!colorPairs[i]) {
-         colorPairs[i] = color;
-         init_pair(i + 1, colorFg, colorBg);
-         wattrset(window, COLOR_PAIR(i + 1));
-         break;
-         }
-      else if (color == colorPairs[i]) {
-         wattrset(window, COLOR_PAIR(i + 1));
-         break;
-         }
+  return Area < numBitmaps ? bitmaps[Area] : NULL;
+}
+
+eOsdError cOsd::CanHandleAreas(const tArea *Areas, int NumAreas)
+{
+  for (int i = 0; i < NumAreas; i++) {
+      for (int j = i + 1; j < NumAreas; j++) {
+          if (Areas[i].Intersects(Areas[j]))
+             return oeAreasOverlap;
+          if (Areas[i].x1 > Areas[i].x2 || Areas[i].y1 > Areas[i].y2 || Areas[i].x1 < 0 || Areas[i].y1 < 0)
+             return oeWrongAlignment;
+          }
       }
-}
-#endif
-
-cOsdBase *cOsd::OpenRaw(int x, int y)
-{
-#ifdef DEBUG_OSD
-  return NULL;
-#else
-  return osd ? NULL : cDevice::PrimaryDevice()->NewOsd(x, y);
-#endif
+  return oeOk;
 }
 
-void cOsd::Open(int w, int h)
+eOsdError cOsd::SetAreas(const tArea *Areas, int NumAreas)
 {
-  int d = (h < 0) ? Setup.OSDheight + h : 0;
-  h = abs(h);
-  cols = w;
-  rows = h;
-#ifdef DEBUG_OSD
-  window = subwin(stdscr, h, w, d, (Setup.OSDwidth - w) / 2);
-  syncok(window, true);
-  #define B2C(b) (((b) * 1000) / 255)
-  #define SETCOLOR(n, r, g, b, o) init_color(n, B2C(r), B2C(g), B2C(b))
-  //XXX
-  SETCOLOR(clrBackground,  0x00, 0x00, 0x00, 127); // background 50% gray
-  SETCOLOR(clrBlack,       0x00, 0x00, 0x00, 255);
-  SETCOLOR(clrRed,         0xFC, 0x14, 0x14, 255);
-  SETCOLOR(clrGreen,       0x24, 0xFC, 0x24, 255);
-  SETCOLOR(clrYellow,      0xFC, 0xC0, 0x24, 255);
-  SETCOLOR(clrBlue,        0x00, 0x00, 0xFC, 255);
-  SETCOLOR(clrCyan,        0x00, 0xFC, 0xFC, 255);
-  SETCOLOR(clrMagenta,     0xB0, 0x00, 0xFC, 255);
-  SETCOLOR(clrWhite,       0xFC, 0xFC, 0xFC, 255);
-#else
-  w *= charWidth;
-  h *= lineHeight;
-  d *= lineHeight;
-  int x = (720 - w + charWidth) / 2; //TODO PAL vs. NTSC???
-  int y = (576 - Setup.OSDheight * lineHeight) / 2 + d;
-  //XXX
-  osd = OpenRaw(x, y);
-  //XXX TODO this should be transferred to the places where the individual windows are requested (there's too much detailed knowledge here!)
-  if (!osd)
-     return;
-  if (h / lineHeight == 5) { //XXX channel display
-     osd->Create(0,              0, w, h, 4);
+  eOsdError Result = oeUnknown;
+  if (numBitmaps == 0) {
+     Result = CanHandleAreas(Areas, NumAreas);
+     if (Result == oeOk) {
+        width = height = 0;
+        for (int i = 0; i < NumAreas; i++) {
+            bitmaps[numBitmaps++] = new cBitmap(Areas[i].Width(), Areas[i].Height(), Areas[i].bpp, Areas[i].x1, Areas[i].y1);
+            width = max(width, Areas[i].x2);
+            height = max(height, Areas[i].y2);
+            }
+        }
      }
-  else if (h / lineHeight == 1) { //XXX info display
-     osd->Create(0,              0, w, h, 4);
+  if (Result != oeOk)
+     esyslog("ERROR: cOsd::SetAreas returned %d\n", Result);
+  return Result;
+}
+
+void cOsd::SaveRegion(int x1, int y1, int x2, int y2)
+{
+  delete savedRegion;
+  savedRegion = new cBitmap(x2 - x1 + 1, y2 - y1 + 1, 8, x1, y1);
+  for (int i = 0; i < numBitmaps; i++)
+      savedRegion->DrawBitmap(bitmaps[i]->X0(), bitmaps[i]->Y0(), *bitmaps[i]);
+}
+
+void cOsd::RestoreRegion(void)
+{
+  if (savedRegion) {
+     DrawBitmap(savedRegion->X0(), savedRegion->Y0(), *savedRegion);
+     delete savedRegion;
+     savedRegion = NULL;
      }
-  else if (d == 0) { //XXX full menu
-     osd->Create(0,                            0, w,                         lineHeight, 2);
-     osd->Create(0,                   lineHeight, w, (Setup.OSDheight - 3) * lineHeight, 2);
-     osd->AddColor(clrBackground);
-     osd->AddColor(clrCyan);
-     osd->AddColor(clrWhite);
-     osd->AddColor(clrBlack);
-     osd->Create(0, (Setup.OSDheight - 2) * lineHeight, w,               2 * lineHeight, 4);
-     }
-  else { //XXX progress display
-     /*XXX
-     osd->Create(0,              0, w, lineHeight, 1);
-     osd->Create(0,     lineHeight, w, lineHeight, 2, false);
-     osd->Create(0, 2 * lineHeight, w, lineHeight, 1);
-     XXX*///XXX some pixels are not drawn correctly with lower bpp values
-     osd->Create(0,              0, w, h, 4);
-     }
-#endif
 }
 
-void cOsd::Close(void)
+eOsdError cOsd::SetPalette(const cPalette &Palette, int Area)
 {
-#ifdef DEBUG_OSD
-  if (window) {
-     delwin(window);
-     window = 0;
-     }
-#else
-  delete osd;
-  osd = NULL;
-#endif
+  if (Area < numBitmaps)
+     bitmaps[Area]->Take(Palette);
+  return oeUnknown;
 }
 
-void cOsd::Clear(void)
+void cOsd::DrawPixel(int x, int y, tColor Color)
 {
-#ifdef DEBUG_OSD
-  SetColor(clrBackground, clrBackground);
-  Fill(0, 0, cols, rows, clrBackground);
-  refresh();
-#else
-  if (osd)
-     osd->Clear();
-#endif
+  for (int i = 0; i < numBitmaps; i++)
+      bitmaps[i]->DrawPixel(x, y, Color);
 }
 
-void cOsd::Fill(int x, int y, int w, int h, eDvbColor color)
+void cOsd::DrawBitmap(int x, int y, const cBitmap &Bitmap, tColor ColorFg, tColor ColorBg)
 {
-  if (x < 0) x = cols + x;
-  if (y < 0) y = rows + y;
-#ifdef DEBUG_OSD
-  SetColor(color, color);
-  for (int r = 0; r < h; r++) {
-      wmove(window, y + r, x); // ncurses wants 'y' before 'x'!
-      whline(window, ' ', w);
-      }
-  wsyncup(window); // shouldn't be necessary because of 'syncok()', but w/o it doesn't work
-#else
-  if (osd)
-     osd->Fill(x * charWidth, y * lineHeight, (x + w) * charWidth - 1, (y + h) * lineHeight - 1, color);
-#endif
+  for (int i = 0; i < numBitmaps; i++)
+      bitmaps[i]->DrawBitmap(x, y, Bitmap, ColorFg, ColorBg);
 }
 
-void cOsd::SetBitmap(int x, int y, const cBitmap &Bitmap)
+void cOsd::DrawText(int x, int y, const char *s, tColor ColorFg, tColor ColorBg, const cFont *Font, int Width, int Height, int Alignment)
 {
-#ifndef DEBUG_OSD
-  if (osd)
-     osd->SetBitmap(x, y, Bitmap);
-#endif
+  for (int i = 0; i < numBitmaps; i++)
+      bitmaps[i]->DrawText(x, y, s, ColorFg, ColorBg, Font, Width, Height, Alignment);
 }
 
-void cOsd::ClrEol(int x, int y, eDvbColor color)
+void cOsd::DrawRectangle(int x1, int y1, int x2, int y2, tColor Color)
 {
-  Fill(x, y, cols - x, 1, color);
+  for (int i = 0; i < numBitmaps; i++)
+      bitmaps[i]->DrawRectangle(x1, y1, x2, y2, Color);
 }
 
-int cOsd::CellWidth(void)
+void cOsd::DrawEllipse(int x1, int y1, int x2, int y2, tColor Color, int Quadrants)
 {
-#ifdef DEBUG_OSD
-  return 1;
-#else
-  return charWidth;
-#endif
+  for (int i = 0; i < numBitmaps; i++)
+      bitmaps[i]->DrawEllipse(x1, y1, x2, y2, Color, Quadrants);
 }
 
-int cOsd::LineHeight(void)
+void cOsd::DrawSlope(int x1, int y1, int x2, int y2, tColor Color, int Type)
 {
-#ifdef DEBUG_OSD
-  return 1;
-#else
-  return lineHeight;
-#endif
-}
-
-int cOsd::Width(unsigned char c)
-{
-#ifdef DEBUG_OSD
-  return 1;
-#else
-  return osd ? osd->Width(c) : 1;
-#endif
-}
-
-int cOsd::WidthInCells(const char *s)
-{
-#ifdef DEBUG_OSD
-  return strlen(s);
-#else
-  return osd ? (osd->Width(s) + charWidth - 1) / charWidth : strlen(s);
-#endif
-}
-
-eDvbFont cOsd::SetFont(eDvbFont Font)
-{
-#ifdef DEBUG_OSD
-  return Font;
-#else
-  return osd ? osd->SetFont(Font) : Font;
-#endif
-}
-
-void cOsd::Text(int x, int y, const char *s, eDvbColor colorFg, eDvbColor colorBg)
-{
-  if (x < 0) x = cols + x;
-  if (y < 0) y = rows + y;
-#ifdef DEBUG_OSD
-  SetColor(colorFg, colorBg);
-  wmove(window, y, x); // ncurses wants 'y' before 'x'!
-  waddnstr(window, s, cols - x);
-#else
-  if (osd)
-     osd->Text(x * charWidth, y * lineHeight, s, colorFg, colorBg);
-#endif
+  for (int i = 0; i < numBitmaps; i++)
+      bitmaps[i]->DrawSlope(x1, y1, x2, y2, Color, Type);
 }
 
 void cOsd::Flush(void)
 {
-#ifdef DEBUG_OSD
-  refresh();
-#else
-  if (osd)
-     osd->Flush();
-#endif
 }
 
-// --- cOsdItem --------------------------------------------------------------
+// --- cOsdProvider ----------------------------------------------------------
 
-cOsdItem::cOsdItem(eOSState State)
+cOsdProvider *cOsdProvider::osdProvider = NULL;
+
+cOsdProvider::cOsdProvider(void)
 {
-  text = NULL;
-  offset = -1;
-  state = State;
-  fresh = false;
-  userColor = false;
-  fgColor = clrWhite;
-  bgColor = clrBackground;
+  delete osdProvider;
+  osdProvider = this;
 }
 
-cOsdItem::cOsdItem(const char *Text, eOSState State)
+cOsdProvider::~cOsdProvider()
 {
-  text = NULL;
-  offset = -1;
-  state = State;
-  fresh = false;
-  userColor = false;
-  fgColor = clrWhite;
-  bgColor = clrBackground;
-  SetText(Text);
+  osdProvider = NULL;
 }
 
-cOsdItem::~cOsdItem()
+cOsd *cOsdProvider::NewOsd(int Left, int Top)
 {
-  free(text);
+  if (osdProvider)
+     return osdProvider->CreateOsd(Left, Top);
+  esyslog("ERROR: no OSD provider available - using dummy OSD!");
+  return new cOsd(Left, Top); // create a dummy cOsd, so that access won't result in a segfault
 }
 
-void cOsdItem::SetText(const char *Text, bool Copy)
+void cOsdProvider::Shutdown(void)
 {
-  free(text);
-  text = Copy ? strdup(Text) : (char *)Text; // text assumes ownership!
+  delete osdProvider;
+  osdProvider = NULL;
 }
 
-void cOsdItem::SetColor(eDvbColor FgColor, eDvbColor BgColor)
+// --- cTextScroller ---------------------------------------------------------
+
+cTextScroller::cTextScroller(void)
 {
-  userColor = true;
-  fgColor = FgColor; 
-  bgColor = BgColor; 
+  osd = NULL;
+  left = top = width = height = 0;
+  font = NULL;
+  colorFg = 0;
+  colorBg = 0;
+  offset = 0;
+  shown = 0;
 }
 
-void cOsdItem::Display(int Offset, eDvbColor FgColor, eDvbColor BgColor)
+cTextScroller::cTextScroller(cOsd *Osd, int Left, int Top, int Width, int Height, const char *Text, const cFont *Font, tColor ColorFg, tColor ColorBg)
 {
-  if (Offset < 0) {
-     FgColor = clrBlack;
-     BgColor = clrCyan;
+  Set(Osd, Left, Top, Width, Height, Text, Font, ColorFg, ColorBg);
+}
+
+void cTextScroller::Set(cOsd *Osd, int Left, int Top, int Width, int Height, const char *Text, const cFont *Font, tColor ColorFg, tColor ColorBg)
+{
+  osd = Osd;
+  left = Left;
+  top = Top;
+  width = Width;
+  height = Height;
+  font = Font;
+  colorFg = ColorFg;
+  colorBg = ColorBg;
+  offset = 0;
+  textWrapper.Set(Text, Font, Width);
+  shown = min(Total(), height / font->Height());
+  height = shown * font->Height(); // sets height to the actually used height, which may be less than Height
+  DrawText();
+}
+
+void cTextScroller::Reset(void)
+{
+  osd = NULL; // just makes sure it won't draw anything
+}
+
+void cTextScroller::DrawText(void)
+{
+  if (osd) {
+     for (int i = 0; i < shown; i++)
+          osd->DrawText(left, top + i * font->Height(), textWrapper.GetLine(offset + i), colorFg, colorBg, font, width);
      }
-  fresh |= Offset >= 0;
-  if (Offset >= 0)
-     offset = Offset;
-  if (offset >= 0)
-     Interface->WriteText(0, offset + 2, text, userColor ? fgColor : FgColor, userColor ? bgColor : BgColor);
 }
 
-eOSState cOsdItem::ProcessKey(eKeys Key)
+void cTextScroller::Scroll(bool Up, bool Page)
 {
-  return Key == kOk ? state : osUnknown;
-}
-
-// --- cOsdMenu --------------------------------------------------------------
-
-cOsdMenu::cOsdMenu(const char *Title, int c0, int c1, int c2, int c3, int c4)
-{
-  isMenu = true;
-  digit = 0;
-  hasHotkeys = false;
-  visible = false;
-  title = NULL;
-  SetTitle(Title);
-  cols[0] = c0;
-  cols[1] = c1;
-  cols[2] = c2;
-  cols[3] = c3;
-  cols[4] = c4;
-  first = 0;
-  current = marked = -1;
-  subMenu = NULL;
-  helpRed = helpGreen = helpYellow = helpBlue = NULL;
-  status = NULL;
-  Interface->Open();
-}
-
-cOsdMenu::~cOsdMenu()
-{
-  free(title);
-  delete subMenu;
-  free(status);
-  Interface->Clear();
-  Interface->Close();
-}
-
-const char *cOsdMenu::hk(const char *s)
-{
-  static char buffer[64];
-  if (s && hasHotkeys) {
-     if (digit == 0 && '1' <= *s && *s <= '9' && *(s + 1) == ' ')
-        digit = -1; // prevents automatic hotkeys - input already has them
-     if (digit >= 0) {
-        digit++;
-        snprintf(buffer, sizeof(buffer), " %c %s", (digit < 10) ? '0' + digit : ' ' , s);
-        s = buffer;
+  if (Up) {
+     if (CanScrollUp()) {
+        offset -= Page ? shown : 1;
+        if (offset < 0)
+           offset = 0;
+        DrawText();
         }
      }
-  return s;
-}
-
-void cOsdMenu::SetHasHotkeys(void)
-{
-  hasHotkeys = true;
-  digit = 0;
-}
-
-void cOsdMenu::SetStatus(const char *s)
-{
-  free(status);
-  status = s ? strdup(s) : NULL;
-  if (visible)
-     Interface->Status(status);
-}
-
-void cOsdMenu::SetTitle(const char *Title, bool ShowDate)
-{
-  free(title);
-  if (ShowDate)
-     asprintf(&title, "%s\t%s", Title, DayDateTime(time(NULL)));
-  else
-     title = strdup(Title);
-}
-
-void cOsdMenu::SetHelp(const char *Red, const char *Green, const char *Yellow, const char *Blue)
-{
-  // strings are NOT copied - must be constants!!!
-  helpRed    = Red;
-  helpGreen  = Green;
-  helpYellow = Yellow;
-  helpBlue   = Blue;
-  if (visible)
-     Interface->Help(helpRed, helpGreen, helpYellow, helpBlue);
-}
-
-void cOsdMenu::Del(int Index)
-{
-  cList<cOsdItem>::Del(Get(Index));
-  if (current == Count())
-     current--;
-  if (Index == first && first > 0)
-     first--;
-}
-
-void cOsdMenu::Add(cOsdItem *Item, bool Current, cOsdItem *After)
-{
-  cList<cOsdItem>::Add(Item, After);
-  if (Current)
-     current = Item->Index();
-}
-
-void cOsdMenu::Ins(cOsdItem *Item, bool Current, cOsdItem *Before)
-{
-  cList<cOsdItem>::Ins(Item, Before);
-  if (Current)
-     current = Item->Index();
-}
-
-void cOsdMenu::Display(void)
-{
-  if (subMenu) {
-     subMenu->Display();
-     return;
-     }
-  visible = true;
-  Interface->Clear();
-  Interface->SetCols(cols);
-  Interface->Title(title);
-  Interface->Help(helpRed, helpGreen, helpYellow, helpBlue);
-  int count = Count();
-  if (count > 0) {
-     int ni = 0;
-     for (cOsdItem *item = First(); item; item = Next(item))
-         cStatus::MsgOsdItem(item->Text(), ni++);
-     if (current < 0)
-        current = 0; // just for safety - there HAS to be a current item!
-     if (current - first >= MAXOSDITEMS || current < first) {
-        first = current - MAXOSDITEMS / 2;
-        if (first + MAXOSDITEMS > count)
-           first = count - MAXOSDITEMS;
-        if (first < 0)
-           first = 0;
+  else {
+     if (CanScrollDown()) {
+        offset += Page ? shown : 1;
+        if (offset + shown > Total())
+           offset = Total() - shown;
+        DrawText();
         }
-     int i = first;
-     int n = 0;
-     for (cOsdItem *item = Get(first); item; item = Next(item)) {
-         item->Display(i - first, i == current ? clrBlack : clrWhite, i == current ? clrCyan : clrBackground);
-         if (i == current)
-            cStatus::MsgOsdCurrentItem(item->Text());
-         if (++n == MAXOSDITEMS) //TODO get this from Interface!!!
-            break;
-         i++;
-         }
-     }
-  if (!isempty(status))
-     Interface->Status(status);
-}
-
-void cOsdMenu::SetCurrent(cOsdItem *Item)
-{
-  current = Item ? Item->Index() : -1;
-}
-
-void cOsdMenu::RefreshCurrent(void)
-{
-  cOsdItem *item = Get(current);
-  if (item)
-     item->Set();
-}
-
-void cOsdMenu::DisplayCurrent(bool Current)
-{
-  cOsdItem *item = Get(current);
-  if (item) {
-     item->Display(current - first, Current ? clrBlack : clrWhite, Current ? clrCyan : clrBackground);
-     if (Current)
-        cStatus::MsgOsdCurrentItem(item->Text());
      }
 }
-
-void cOsdMenu::Clear(void)
-{
-  first = 0;
-  current = marked = -1;
-  cList<cOsdItem>::Clear();
-}
-
-bool cOsdMenu::SpecialItem(int idx)
-{
-  cOsdItem *item = Get(idx);
-  return item && item->HasUserColor();
-}
-
-void cOsdMenu::CursorUp(void)
-{
-  if (current > 0) {
-     int tmpCurrent = current;
-     while (--tmpCurrent >= 0 && SpecialItem(tmpCurrent));
-     if (tmpCurrent < 0)
-        return;
-     if (tmpCurrent >= first)
-        DisplayCurrent(false);
-     current = tmpCurrent;
-     if (current < first) {
-        first = first > MAXOSDITEMS - 1 ? first - (MAXOSDITEMS - 1) : 0;
-        if (Setup.MenuScrollPage)
-           current = SpecialItem(first) ? first + 1 : first;
-        Display();
-        }
-     else
-        DisplayCurrent(true);
-     }
-}
-
-void cOsdMenu::CursorDown(void)
-{
-  int last = Count() - 1;
-  int lastOnScreen = first + MAXOSDITEMS - 1;
-
-  if (current < last) {
-     int tmpCurrent = current;
-     while (++tmpCurrent <= last && SpecialItem(tmpCurrent));
-     if (tmpCurrent > last)
-        return;
-     if (tmpCurrent <= lastOnScreen)
-        DisplayCurrent(false);
-     current = tmpCurrent;
-     if (current > lastOnScreen) {
-        first += MAXOSDITEMS - 1;
-        lastOnScreen = first + MAXOSDITEMS - 1;
-        if (lastOnScreen > last) {
-           first = last - (MAXOSDITEMS - 1);
-           lastOnScreen = last;
-           }
-        if (Setup.MenuScrollPage)
-           current = SpecialItem(lastOnScreen) ? lastOnScreen - 1 : lastOnScreen;
-        Display();
-        }
-     else
-        DisplayCurrent(true);
-     }
-}
-
-void cOsdMenu::PageUp(void)
-{
-  current -= MAXOSDITEMS;
-  first -= MAXOSDITEMS;
-  if (first < 0)
-     first = current = 0;
-  if (SpecialItem(current)) {
-     current -= (current > 0) ? 1 : -1;
-     first = min(first, current - 1);
-     }
-  Display();
-  DisplayCurrent(true);
-}
-
-void cOsdMenu::PageDown(void) 
-{
-  current += MAXOSDITEMS;
-  first += MAXOSDITEMS;
-  int count = Count();
-  if (current > count - 1) {
-     current = count - 1;
-     first = max(0, count - MAXOSDITEMS);
-     }
-  if (SpecialItem(current)) {
-     current += (current < count - 1) ? 1 : -1;
-     first = max(first, current - MAXOSDITEMS);
-     }
-  Display();
-  DisplayCurrent(true);
-}
-
-void cOsdMenu::Mark(void)
-{
-  if (Count() && marked < 0) {
-     marked = current;
-     SetStatus(tr("Up/Dn for new location - OK to move"));
-     }
-}
-
-eOSState cOsdMenu::HotKey(eKeys Key)
-{
-  for (cOsdItem *item = First(); item; item = Next(item)) {
-      const char *s = item->Text();
-      if (s && (s = skipspace(s)) != NULL) {
-         if (*s == Key - k1 + '1') {
-            current = item->Index();
-            cRemote::Put(kOk, true);
-            break;
-            }
-         }
-      }
-  return osContinue;
-}
-
-eOSState cOsdMenu::AddSubMenu(cOsdMenu *SubMenu)
-{
-  delete subMenu;
-  subMenu = SubMenu;
-  subMenu->Display();
-  return osContinue; // convenience return value
-}
-
-eOSState cOsdMenu::CloseSubMenu()
-{
-  delete subMenu;
-  subMenu = NULL;
-  RefreshCurrent();
-  Display();
-  return osContinue; // convenience return value
-}
-
-eOSState cOsdMenu::ProcessKey(eKeys Key)
-{
-  if (subMenu) {
-     eOSState state = subMenu->ProcessKey(Key);
-     if (state == osBack)
-        return CloseSubMenu();
-     return state;
-     }
-
-  cOsdItem *item = Get(current);
-  if (marked < 0 && item) {
-     eOSState state = item->ProcessKey(Key);
-     if (state != osUnknown)
-        return state;
-     }
-  switch (Key) {
-    case k1...k9: return hasHotkeys ? HotKey(Key) : osUnknown;
-    case kUp|k_Repeat:
-    case kUp:   CursorUp();   break;
-    case kDown|k_Repeat:
-    case kDown: CursorDown(); break;
-    case kLeft|k_Repeat:
-    case kLeft: PageUp(); break;
-    case kRight|k_Repeat:
-    case kRight: PageDown(); break;
-    case kBack: return osBack;
-    case kOk:   if (marked >= 0) {
-                   SetStatus(NULL);
-                   if (marked != current)
-                      Move(marked, current);
-                   marked = -1;
-                   break;
-                   }
-                // else run into default
-    default: if (marked < 0)
-                return osUnknown;
-    }
-  return osContinue;
-}
-
