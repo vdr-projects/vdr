@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.58 2002/03/03 16:12:00 kls Exp $
+ * $Id: i18n.c 1.59 2002/03/03 16:38:57 kls Exp $
  *
  * Slovenian translations provided by Miha Setina <mihasetina@softhome.net>
  * Italian   translations provided by Alberto Carraro <bertocar@tin.it>
@@ -257,7 +257,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Marche/Arr",
     "", // TODO
     "", // TODO
   },
@@ -317,7 +317,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Ouvrir",
     "", // TODO
     "Avaa",
   },
@@ -418,7 +418,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Enregistrement en cours - confirmez la suppression",
     "", // TODO
     "", // TODO
   },
@@ -438,7 +438,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "", // TODO
-    "", // TODO
+    "sur la carte principale",
     "", // TODO
     "päävastaanottimella",
   },
@@ -458,7 +458,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Enregistrement en cours - confirmez l'arrêt",
     "", // TODO
     "Nauhoitus kesken - lopetetaanko se?",
   },
@@ -468,7 +468,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Enregistrement dans %d minutes - confirmez l'arrêt", // TODO
     "", // TODO
     "", // TODO
   },
@@ -478,7 +478,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Appuyez sur une touche pour annuler l'arrêt",
     "", // TODO
     "Peruuta pysäytys painamalla jotakin näppäintä",
   },
@@ -700,7 +700,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Premier jour",
     "", // TODO
     "", // TODO
   },
@@ -741,7 +741,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Impossible d'accèder à l'enregistrement",
     "", // TODO
     "Nauhoituksen toistaminen epäonnistui!",
   },
@@ -791,7 +791,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Impossible d'utiliser le mode transfert!",
     "", // TODO
     "Käsittämättömiä teknisiä ongelmia!",
   },
@@ -821,7 +821,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Arrêt impossible - option '-s' absente!",
     "", // TODO
     "Ei voida sammuttaa '-s' parametria ei annettu!",
   },
@@ -831,7 +831,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Disque presque plein!",
     "", // TODO
     "Kovalevy lähes täynnä!",
   },
@@ -892,7 +892,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Noms enregistr. immédiats",
     "", // TODO
     "Nimeä välitön nauh.",
   },
@@ -982,7 +982,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Niveau de correction EPG",
     "", // TODO
     "EPGBugfixLevel",
   },
@@ -1002,7 +1002,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Trier les programmations",
     "", // TODO
     "Järjestä ajastimet",
   },
@@ -1042,7 +1042,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Utiliser les sous-titres",
     "", // TODO
     "Tekstitys käytössä",
   },
@@ -1052,7 +1052,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Dossiers d'enregistrements",
     "", // TODO
     "Nauhoitushakemistot",
   },
@@ -1072,7 +1072,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Enregistrer en Dolby Digital", 
     "", // TODO
     "", // TODO
   },
@@ -1112,7 +1112,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Durée affichage écran",
     "", // TODO
     "Ilmoitusten näkymisaika",
   },
@@ -1122,7 +1122,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Taille maxi des fichiers",
     "", // TODO
     "Maksimi tiedoston koko",
   },
@@ -1132,7 +1132,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Séparer les séquences",
     "", // TODO
     "Paloittele muokatut",
   },
@@ -1141,8 +1141,8 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "", // TODO
-    "", // TODO
-    "", // TODO
+        "", // TODO
+    "MinEventTimeout", // Too difficult to translate - read the manual!
     "", // TODO
     "Minimi tapahtuman odotus",
   },
@@ -1152,7 +1152,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Durée minimale d'inactivité",
     "", // TODO
     "Minimi käyttäjän odotus",
   },
@@ -1162,7 +1162,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Mode multi-vitesses",
     "", // TODO
     "Moninopeustila",
   },
@@ -1172,19 +1172,9 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Affichage mode de lecture",
     "", // TODO
     "Näytä toiston tila",
-  },
-  { "CICAM DVB",
-    "CICAM DVB",
-    "", // TODO
-    "", // TODO
-    "", // TODO
-    "", // TODO
-    "", // TODO
-    "", // TODO
-    "", // TODO
   },
   // The days of the week:
   { "MTWTFSS",
@@ -1203,7 +1193,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "", // TODO
-    "", // TODO
+    "LunMarMerJeuVenSamDim",
     "", // TODO
     "MaaTiiKesTorPerLauSun",
   },
@@ -1455,7 +1445,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Arrêt",
     "", // TODO
     "Virtakytkin",
   },
@@ -1465,7 +1455,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Volume+",
     "", // TODO
     "Äänenvoimakkuus+",
   },
@@ -1475,7 +1465,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Volume-",
     "", // TODO
     "Äänenvoimakkuus-",
   },
@@ -1485,7 +1475,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Coupure du son",
     "", // TODO
     "Äänen vaimennus",
   },
@@ -1536,7 +1526,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "", // TODO
-    "", // TODO
+    "restant",
     "", // TODO
     "vapaa",
   },
@@ -1546,9 +1536,9 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "", // TODO
+    "Accès direct: ",
     "", // TODO
-    "", // TODO
-    "Hyppää",
+    "Hyppää:",
   },
   { " Stop replaying", // note the leading blank!
     " Wiedergabe beenden",
@@ -1616,7 +1606,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Montage terminé",
     "", // TODO
     "Muokkaus lopetettu",
   },
@@ -1626,7 +1616,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Echec du montage",
     "", // TODO
     "Muokkaus epäonnistui",
   },
@@ -1636,7 +1626,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Recherche des enregistrements...",
     "", // TODO
     "haetaan nauhoituksia...",
   },

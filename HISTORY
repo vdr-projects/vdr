@@ -1065,3 +1065,4 @@ Video Disk Recorder Revision History
   DVB card, so any card can implement up to two different conditional access
   modes (besides the default "Free To Air" mode, which is always assumed to be
   available on any DVB card).
+- Updated French language texts (thanks to Jean-Claude Repetto).
