@@ -168,7 +168,7 @@ Video Disk Recorder Revision History
   entered so far together with the name of that channel are displayed on the
   OSD (suggested by Martin Hammerschmid).
 
-2000-09-17: Version 0.64
+2000-09-19: Version 0.64
 
 - NOTE: If you are using DVB driver version 0.7 you need to load the dvb.o
   module with option outstream=0, so your insmod statement should read
@@ -200,3 +200,4 @@ Video Disk Recorder Revision History
   now silently removed.
 - Fixed a buffer overflow in EIT parsing.
 - Added a security warning regarding SVDRP to the INSTALL file.
+- Fixed 'confirm' dialog.

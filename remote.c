@@ -6,7 +6,7 @@
  *
  * Ported to LIRC by Carsten Koch <Carsten.Koch@icem.de>  2000-06-16.
  *
- * $Id: remote.c 1.12 2000/09/16 16:42:30 kls Exp $
+ * $Id: remote.c 1.13 2000/09/19 17:40:52 kls Exp $
  */
 
 #include "remote.h"
@@ -56,15 +56,15 @@ cRcIoKBD::~cRcIoKBD()
 {
 }
 
-void cRcIoKBD::Flush(int WaitSeconds)
+void cRcIoKBD::Flush(int WaitMs)
 {
-  time_t t0 = time(NULL);
+  int t0 = time_ms();
 
   timeout(10);
   for (;;) {
       while (getch() > 0)
-            t0 = time(NULL);
-      if (time(NULL) - t0 >= WaitSeconds)
+            t0 = time_ms();
+      if (time_ms() - t0 >= WaitMs)
          break;
       }
 }
@@ -172,14 +172,14 @@ bool cRcIoRCU::SetMode(unsigned char Mode)
   return SendCommand(mode);
 }
 
-void cRcIoRCU::Flush(int WaitSeconds)
+void cRcIoRCU::Flush(int WaitMs)
 {
-  time_t t0 = time(NULL);
+  int t0 = time_ms();
 
   for (;;) {
       while (ReceiveByte(false) >= 0)
-            t0 = time(NULL);
-      if (time(NULL) - t0 >= WaitSeconds)
+            t0 = time_ms();
+      if (time_ms() - t0 >= WaitMs)
          break;
       }
 }
@@ -381,17 +381,17 @@ const char *cRcIoLIRC::ReceiveString(void)
   return NULL;
 }
 
-void cRcIoLIRC::Flush(int WaitSeconds)
+void cRcIoLIRC::Flush(int WaitMs)
 {
   char buf[LIRC_BUFFER_SIZE];
-  time_t t0 = time(NULL);
+  int t0 = time_ms();
 
   for (;;) {
       while (InputAvailable(false)) {
             read(f, buf, sizeof(buf));
-            t0 = time(NULL);
+            t0 = time_ms();
             }
-      if (time(NULL) - t0 >= WaitSeconds)
+      if (time_ms() - t0 >= WaitMs)
          break;
       }
 }

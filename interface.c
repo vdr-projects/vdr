@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.c 1.18 2000/09/18 17:22:09 kls Exp $
+ * $Id: interface.c 1.19 2000/09/19 17:41:23 kls Exp $
  */
 
 #include "interface.h"
@@ -29,11 +29,19 @@ cInterface::cInterface(void)
   open = 0;
   cols[0] = 0;
   keyFromWait = kNone;
+  SVDRP = NULL;
 }
 
-void cInterface::Init(void)
+void cInterface::Init(int SVDRPport)
 {
   RcIo.SetCode(Keys.code, Keys.address);
+  if (SVDRPport)
+     SVDRP = new cSVDRP(SVDRPport);
+}
+
+void cInterface::Cleanup(void)
+{
+  delete SVDRP;
 }
 
 void cInterface::Open(int NumCols, int NumLines)
@@ -61,6 +69,8 @@ unsigned int cInterface::GetCh(bool Wait)
 
 eKeys cInterface::GetKey(bool Wait)
 {
+  if (SVDRP)
+     SVDRP->Process();
   eKeys Key = keyFromWait != kNone ? keyFromWait : Keys.Get(GetCh(Wait));
   keyFromWait = kNone;
   return Key;
@@ -74,6 +84,7 @@ void cInterface::PutKey(eKeys Key)
 eKeys cInterface::Wait(int Seconds, bool KeepChar)
 {
   eKeys Key = kNone;
+  RcIo.Flush(500);
   if (cFile::AnyFileReady(-1, Seconds * 1000))
      Key = GetKey();
   if (KeepChar)
@@ -223,7 +234,7 @@ void cInterface::QueryKeys(void)
          Keys.address = Address;
          WriteText(1, 5, "RC code detected!");
          WriteText(1, 6, "Do not press any key...");
-         RcIo.Flush(3);
+         RcIo.Flush(3000);
          ClearEol(0, 5);
          ClearEol(0, 6);
          break;

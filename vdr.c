@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.33 2000/09/17 14:15:24 kls Exp $
+ * $Id: vdr.c 1.34 2000/09/18 22:29:56 kls Exp $
  */
 
 #include <getopt.h>
@@ -34,7 +34,6 @@
 #include "interface.h"
 #include "menu.h"
 #include "recording.h"
-#include "svdrp.h"
 #include "tools.h"
 #include "videodir.h"
 
@@ -176,7 +175,7 @@ int main(int argc, char *argv[])
   if (!Keys.Load(AddDirectory(ConfigDirectory, KEYS_CONF)))
      Interface.LearnKeys();
 #endif
-  Interface.Init();
+  Interface.Init(SVDRPport);
 
   cDvbApi::SetPrimaryDvbApi(Setup.PrimaryDVB);
 
@@ -191,7 +190,6 @@ int main(int argc, char *argv[])
 
   // Main program loop:
 
-  cSVDRP *SVDRP = SVDRPport ? new cSVDRP(SVDRPport) : NULL;
   cOsdBase *Menu = NULL;
   cReplayControl *ReplayControl = NULL;
   int LastChannel = -1;
@@ -281,13 +279,11 @@ int main(int argc, char *argv[])
              default:    break;
              }
            }
-        if (SVDRP)
-           SVDRP->Process();//TODO lock menu vs. SVDRP?
         }
   isyslog(LOG_INFO, "caught signal %d", Interrupted);
   delete Menu;
   delete ReplayControl;
-  delete SVDRP;
+  Interface.Cleanup();
   cDvbApi::Cleanup();
   isyslog(LOG_INFO, "exiting");
   if (SysLogLevel > 0)
