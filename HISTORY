@@ -879,7 +879,7 @@ Video Disk Recorder Revision History
 - Fixed DVD audio sync problems (thanks to Andreas Schultz).
 - Fixed external AC3 replay for DVDs (thanks to Andreas Schultz).
 
-2002-01-13: Version 0.99pre2
+2002-01-20: Version 0.99pre2
 
 - Fixed setting the OSD size in the 'Confirm' interface call (thanks to
   Deti Fliegl).
@@ -896,3 +896,7 @@ Video Disk Recorder Revision History
   Carsten Koch).
 - No longer requiring 'libncurses' if compiling without DEBUG_OSD=1 and
   REMOTE=KBD (thanks to Lauri Pesonen).
+- The "Recordings" menu now displays a hierarchical structure if there are
+  subdirectories for the recordings. This can be controlled through the
+  "RecordingDirs" parameter in the "Setup" menu.
+  See "MANUAL/Replaying a Recording" for details.

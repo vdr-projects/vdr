@@ -159,6 +159,13 @@ Video Disk Recorder User's Manual
   All recordings are listed in the "Recordings" menu. Browse through the
   list with the "Up" and "Down" button and press "Ok" (or the "Red" button)
   to start playback. New recordings are marked with an '*'.
+  If the Setup parameter RecordingDirs has been set and there are recordings
+  from periodic timers organized in a subdirectory structure, only the
+  directory is displayed and it can be opened by pressing "Ok" (or the "Red"
+  button). A directory entry displays the total number of recordings within
+  that directory (and any possible subdirectory thereof) as well as the total
+  number of new recordings (as opposed to a recording's entry, which displays
+  the date and time of the recording).
   Playback can be stopped via the "Main" menu by selecting "Stop replaying",
   or by pressing the "Blue" button outside the menu.
   A previously stopped playback session can be resumed by pressing the "Blue"
@@ -438,6 +445,9 @@ Video Disk Recorder User's Manual
                          control this.
                          0 = don't use the 'Subtitle'
                          1 = use it (and create subdirectories)
+
+  RecordingDirs = 1      Turns displaying the Recordings menu as a hierarchical
+                         directory structure on or off.
 
   VideoFormat = 0        The video format (or aspect ratio) of the tv set in use.
                          0 = 4:3

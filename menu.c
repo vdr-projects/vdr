@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.142 2002/01/13 16:18:40 kls Exp $
+ * $Id: menu.c 1.143 2002/01/20 14:01:40 kls Exp $
  */
 
 #include "menu.h"
@@ -1494,46 +1494,155 @@ eOSState cMenuSchedule::ProcessKey(eKeys Key)
 // --- cMenuRecordingItem ----------------------------------------------------
 
 class cMenuRecordingItem : public cOsdItem {
+private:
+  char *fileName;
+  char *name;
+  int totalEntries, newEntries;
 public:
-  cRecording *recording;
-  cMenuRecordingItem(cRecording *Recording);
-  virtual void Set(void);
+  cMenuRecordingItem(cRecording *Recording, int Level);
+  ~cMenuRecordingItem();
+  void IncrementCounter(bool New);
+  const char *Name(void) { return name; }
+  const char *FileName(void) { return fileName; }
+  bool IsDirectory(void) { return name != NULL; }
   };
 
-cMenuRecordingItem::cMenuRecordingItem(cRecording *Recording)
+cMenuRecordingItem::cMenuRecordingItem(cRecording *Recording, int Level)
 {
-  recording = Recording;
-  Set();
+  fileName = strdup(Recording->FileName());
+  name = NULL;
+  totalEntries = newEntries = 0;
+  SetText(Recording->Title('\t', true, Level));
+  if (*Text() == '\t')
+     name = strdup(Text() + 2); // 'Text() + 2' to skip the two '\t'
 }
 
-void cMenuRecordingItem::Set(void)
+cMenuRecordingItem::~cMenuRecordingItem()
 {
-  SetText(recording->Title('\t', true));
+  delete fileName;
+  delete name;
+}
+
+void cMenuRecordingItem::IncrementCounter(bool New)
+{
+  totalEntries++;
+  if (New)
+     newEntries++;
+  char *buffer = NULL;
+  asprintf(&buffer, "%d\t%d\t%s", totalEntries, newEntries, name);
+  SetText(buffer, false);
 }
 
 // --- cMenuRecordings -------------------------------------------------------
 
-cMenuRecordings::cMenuRecordings(void)
-:cOsdMenu(tr("Recordings"), 6, 6)
+cRecordings cMenuRecordings::Recordings;
+int cMenuRecordings::helpKeys = -1;
+
+cMenuRecordings::cMenuRecordings(const char *Base, int Level, bool OpenSubMenus)
+:cOsdMenu(Base ? Base : tr("Recordings"), 6, 6)
 {
-  if (Recordings.Load()) {
-     const char *lastReplayed = cReplayControl::LastReplayed();
-     cRecording *recording = Recordings.First();
-     while (recording) {
-           Add(new cMenuRecordingItem(recording), lastReplayed && strcmp(lastReplayed, recording->FileName()) == 0);
-           recording = Recordings.Next(recording);
-           }
+  base = Base ? strdup(Base) : NULL;
+  level = Setup.RecordingDirs ? Level : -1;
+  if (Base || Recordings.Load()) {
+     const char *LastReplayed = cReplayControl::LastReplayed();
+     cMenuRecordingItem *LastItem = NULL;
+     char *LastItemText = NULL;
+     for (cRecording *recording = Recordings.First(); recording; recording = Recordings.Next(recording)) {
+         if (!Base || strstr(recording->Name(), Base) == recording->Name()) {
+            cMenuRecordingItem *Item = new cMenuRecordingItem(recording, level);
+            if (*Item->Text() && (!LastItem || strcmp(Item->Text(), LastItemText) != 0)) {
+               Add(Item);
+               LastItem = Item;
+               delete LastItemText;
+               LastItemText = strdup(LastItem->Text()); // must use a copy because of the counters!
+               }
+            else
+               delete Item;
+            if (LastItem) {
+               if (LastReplayed && strcmp(LastReplayed, recording->FileName()) == 0)
+                  SetCurrent(LastItem);
+               if (LastItem->IsDirectory())
+                  LastItem->IncrementCounter(recording->IsNew());
+               }
+            }
+         }
+     delete LastItemText;
+     if (Current() < 0)
+        SetCurrent(First());
+     else if (OpenSubMenus && Open(true))
+        return;
      }
-  SetHelp(tr("Play"), tr("Rewind"), tr("Delete"), tr("Summary"));
-  Display();
+  SetHelpKeys();
+}
+
+cMenuRecordings::~cMenuRecordings()
+{
+  delete base;
+}
+
+void cMenuRecordings::SetHelpKeys(void)
+{
+  cMenuRecordingItem *ri = (cMenuRecordingItem *)Get(Current());
+  int NewHelpKeys = helpKeys;
+  if (ri) {
+     if (ri->IsDirectory())
+        NewHelpKeys = 1;
+     else {
+        NewHelpKeys = 2;
+        cRecording *recording = GetRecording(ri);
+        if (recording && recording->Summary())
+           NewHelpKeys = 3;
+        }
+     }
+  if (NewHelpKeys != helpKeys) {
+     switch (NewHelpKeys) {
+       case 0: SetHelp(NULL); break;
+       case 1: SetHelp(tr("Open")); break;
+       case 2:
+       case 3: SetHelp(tr("Play"), tr("Rewind"), tr("Delete"), NewHelpKeys == 3 ? tr("Summary") : NULL);
+       }
+     helpKeys = NewHelpKeys;
+     }
+}
+
+cRecording *cMenuRecordings::GetRecording(cMenuRecordingItem *Item)
+{
+  cRecording *recording = Recordings.GetByName(Item->FileName());
+  if (!recording)
+     Interface->Error(tr("Error while accessing recording!"));
+  return recording;
+}
+
+bool cMenuRecordings::Open(bool OpenSubMenus)
+{
+  cMenuRecordingItem *ri = (cMenuRecordingItem *)Get(Current());
+  if (ri && ri->IsDirectory()) {
+     const char *t = ri->Name();
+     char *buffer = NULL;
+     if (base) {
+        asprintf(&buffer, "%s~%s", base, t);
+        t = buffer;
+        }
+     AddSubMenu(new cMenuRecordings(t, level + 1, OpenSubMenus));
+     delete buffer;
+     return true;
+     }
+  return false;
 }
 
 eOSState cMenuRecordings::Play(void)
 {
   cMenuRecordingItem *ri = (cMenuRecordingItem *)Get(Current());
   if (ri) {
-     cReplayControl::SetRecording(ri->recording->FileName(), ri->recording->Title());
-     return osReplay;
+     if (ri->IsDirectory())
+        Open();
+     else {
+        cRecording *recording = GetRecording(ri);
+        if (recording) {
+           cReplayControl::SetRecording(recording->FileName(), recording->Title());
+           return osReplay;
+           }
+        }
      }
   return osContinue;
 }
@@ -1541,9 +1650,9 @@ eOSState cMenuRecordings::Play(void)
 eOSState cMenuRecordings::Rewind(void)
 {
   cMenuRecordingItem *ri = (cMenuRecordingItem *)Get(Current());
-  if (ri) {
+  if (ri && !ri->IsDirectory()) {
      cDvbApi::PrimaryDvbApi->StopReplay(); // must do this first to be able to rewind the currently replayed recording
-     cResumeFile ResumeFile(ri->recording->FileName());
+     cResumeFile ResumeFile(ri->FileName());
      ResumeFile.Delete();
      return Play();
      }
@@ -1553,17 +1662,21 @@ eOSState cMenuRecordings::Rewind(void)
 eOSState cMenuRecordings::Del(void)
 {
   cMenuRecordingItem *ri = (cMenuRecordingItem *)Get(Current());
-  if (ri) {
+  if (ri && !ri->IsDirectory()) {
 //XXX what if this recording's file is currently in use???
 //XXX     if (!ti->recording) {
         if (Interface->Confirm(tr("Delete recording?"))) {
-           if (ri->recording->Delete()) {
-              cReplayControl::ClearLastReplayed(ri->recording->FileName());
-              cOsdMenu::Del(Current());
-              Display();
+           cRecording *recording = GetRecording(ri);
+           if (recording) {
+              if (recording->Delete()) {
+                 cReplayControl::ClearLastReplayed(ri->FileName());
+                 cOsdMenu::Del(Current());
+                 Recordings.Del(recording);
+                 Display();
+                 }
+              else
+                 Interface->Error(tr("Error while deleting recording!"));
               }
-           else
-              Interface->Error(tr("Error while deleting recording!"));
            }
 //XXX        }
 //XXX     else
@@ -1577,8 +1690,11 @@ eOSState cMenuRecordings::Summary(void)
   if (HasSubMenu() || Count() == 0)
      return osContinue;
   cMenuRecordingItem *ri = (cMenuRecordingItem *)Get(Current());
-  if (ri && ri->recording->Summary() && *ri->recording->Summary())
-     return AddSubMenu(new cMenuText(tr("Summary"), ri->recording->Summary()));
+  if (ri && !ri->IsDirectory()) {
+     cRecording *recording = GetRecording(ri);
+     if (recording && recording->Summary() && *recording->Summary())
+        return AddSubMenu(new cMenuText(tr("Summary"), recording->Summary()));
+     }
   return osContinue;
 }
 
@@ -1597,6 +1713,8 @@ eOSState cMenuRecordings::ProcessKey(eKeys Key)
        default: break;
        }
      }
+  if (!HasSubMenu() && Key != kNone)
+     SetHelpKeys();
   return state;
 }
 
@@ -1719,6 +1837,7 @@ void cMenuSetup::Set(void)
   Add(new cMenuEditIntItem( tr("DefaultPriority"),    &data.DefaultPriority, 0, MAXPRIORITY));
   Add(new cMenuEditIntItem( tr("DefaultLifetime"),    &data.DefaultLifetime, 0, MAXLIFETIME));
   Add(new cMenuEditBoolItem(tr("UseSubtitle"),        &data.UseSubtitle));
+  Add(new cMenuEditBoolItem(tr("RecordingDirs"),      &data.RecordingDirs));
   Add(new cMenuEditBoolItem(tr("VideoFormat"),        &data.VideoFormat, "4:3", "16:9"));
   Add(new cMenuEditBoolItem(tr("ChannelInfoPos"),     &data.ChannelInfoPos, tr("bottom"), tr("top")));
   Add(new cMenuEditIntItem( tr("OSDwidth"),           &data.OSDwidth, MINOSDWIDTH, MAXOSDWIDTH));
@@ -1871,7 +1990,7 @@ cMenuMain::cMenuMain(bool Replaying, eOSState State)
   // Initial submenus:
 
   switch (State) {
-    case osRecordings: AddSubMenu(new cMenuRecordings); break;
+    case osRecordings: AddSubMenu(new cMenuRecordings(NULL, 0, true)); break;
 #ifdef DVDSUPPORT
     case osDVD:        AddSubMenu(new cMenuDVD); break;
 #endif //DVDSUPPORT

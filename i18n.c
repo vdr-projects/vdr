@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.45 2001/10/28 16:04:58 kls Exp $
+ * $Id: i18n.c 1.46 2002/01/19 16:25:33 kls Exp $
  *
  * Slovenian translations provided by Miha Setina <mihasetina@softhome.net>
  * Italian   translations provided by Alberto Carraro <bertocar@tin.it>
@@ -284,6 +284,15 @@ const tPhrase Phrases[] = {
     "Resumo",
     "Résumé",
     "Sammendrag",
+  },
+  { "Open",
+    "Öffnen",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
   },
   { "Switch",
     "Umschalten",
@@ -631,6 +640,15 @@ const tPhrase Phrases[] = {
     "Enregistrement en cours!",
     "Timer gjør opptak!",
   },
+  { "Error while accessing recording!",
+    "Fehler beim ansprechen der Aufzeichnung!",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+  },
   { "Error while deleting recording!",
     "Fehler beim Löschen der Aufzeichnung!",
     "Napaka pri odstranjevanju posnetka!",
@@ -877,6 +895,15 @@ const tPhrase Phrases[] = {
   },
   { "UseSubtitle",
     "Subtitle verwenden",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+  },
+  { "RecordingDirs",
+    "Aufn. Verzeichnisse",
     "", // TODO
     "", // TODO
     "", // TODO

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 1.18 2001/08/25 13:15:16 kls Exp $
+ * $Id: osd.c 1.19 2002/01/20 11:13:22 kls Exp $
  */
 
 #include "osd.h"
@@ -150,6 +150,10 @@ void cOsdMenu::Add(cOsdItem *Item, bool Current)
 
 void cOsdMenu::Display(void)
 {
+  if (subMenu) {
+     subMenu->Display();
+     return;
+     }
   visible = true;
   Interface->Clear();
   Interface->SetCols(cols);
@@ -177,6 +181,11 @@ void cOsdMenu::Display(void)
      }
   if (!isempty(status))
      Interface->Status(status);
+}
+
+void cOsdMenu::SetCurrent(cOsdItem *Item)
+{
+  current = Item ? Item->Index() : -1;
 }
 
 void cOsdMenu::RefreshCurrent(void)
