@@ -432,3 +432,5 @@ Video Disk Recorder Revision History
 - Fixed setting system time from transponders.
 - Fixed a segfault in the Schedule menu in case there is no EPG information.
 - The 'runvdr' script now kills any leftover vdr threads before restarting it.
+- Fixed a problem with Daylight Saving Time when displaying the times of
+  recordings.
