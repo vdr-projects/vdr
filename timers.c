@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 1.28 2005/03/20 13:13:02 kls Exp $
+ * $Id: timers.c 1.29 2005/03/20 14:18:04 kls Exp $
  */
 
 #include "timers.h"
@@ -610,6 +610,8 @@ void cTimers::SetEvents(void)
                          Event = e;
                          }
                       }
+                  if (Event && Event->EndTime() < now - EXPIRELATENCY && !Event->IsRunning())
+                     Event = NULL;
                   ti->SetEvent(Schedule, Event);
                   }
                }
