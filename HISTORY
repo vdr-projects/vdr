@@ -671,3 +671,5 @@ Video Disk Recorder Revision History
   maximum size of the recorded video files.
 - Fixed a bug in handling repeating timers that record over midnight (the
   calculation of matching timers has been completely rewritten).
+- Timers that are currently recording are now marked with '#' in the "Timers"
+  menu.

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.107 2001/08/25 13:37:27 kls Exp $
+ * $Id: menu.c 1.108 2001/08/26 12:13:24 kls Exp $
  */
 
 #include "menu.h"
@@ -975,7 +975,7 @@ void cMenuTimerItem::Set(void)
 {
   char *buffer = NULL;
   asprintf(&buffer, "%c\t%d\t%s\t%02d:%02d\t%02d:%02d\t%s",
-                    timer->active ? '>' : ' ',
+                    timer->active ? timer->recording ? '#' : '>' : ' ',
                     timer->channel,
                     timer->PrintDay(timer->day),
                     timer->start / 100,

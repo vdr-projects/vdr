@@ -34,7 +34,8 @@ Video Disk Recorder User's Manual
   any changes that might have been made in the current menu.
 
   In the "Timers" menu, the current timer can be enabled or disabled with
-  the "Right" or "Left" key, respectively (enabled timers are marked with ">").
+  the "Right" or "Left" key, respectively (enabled timers are marked with '>',
+  timers that are currently recording are marked with '#').
   "Ok" here opens the "Edit timer" menu.
 
   Textual options, like channel names or recording file names, can be edited
