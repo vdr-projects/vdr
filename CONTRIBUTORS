@@ -31,3 +31,6 @@ Niels de Carpentier <niels@casema.net>
 
 Martin Hammerschmid <martin@hammerschmid.com>
  for suggesting to display the direct channel select input on the OSD
+
+Bastian Guse <bastian@nocopy.de>
+ for writing the FORMATS entry for timers.conf
