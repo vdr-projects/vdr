@@ -2132,3 +2132,4 @@ Video Disk Recorder Revision History
 - Fixed handling EPG data where the "extended event descriptor" comes before the
   "short event" or a "time shifted event" (thanks to Jonan Santiago).
 - Disabled the "Received stuffing section in EIT" log message.
+- Updated 'channels.conf.terr' for Berlin (thanks to Juri Haberland).
