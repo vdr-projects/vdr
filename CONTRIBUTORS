@@ -1146,6 +1146,7 @@ Marco Schlüßler <marco@lordzodiac.de>
  this is now done when attaching the player to the device
  for adding DeviceClrAvailableTracks() and DeviceSetCurrentAudioTrack() to cPlayer
  for reporting a missing 'resultSkipped = 0' in cRemux::Clear()
+ for reporting a missing reset of the 'repacker' in cTS2PES::Clear()
 
 Jürgen Schmitz <j.schmitz@web.de>
  for reporting a bug in displaying the current channel when switching via the SVDRP

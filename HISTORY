@@ -3413,3 +3413,5 @@ Video Disk Recorder Revision History
 - The new function cDvbDevice::SetTransferModeForDolbyDigital() can be used by
   plugins that implement Dolby Digital output and thus want to prevent the cDvbDevice
   from starting Transfer Mode in order to replay DD over the DVB device.
+- Added missing reset of the 'repacker' to cTS2PES::Clear() (thanks to Marco
+  Schlüßler for reporting this one).

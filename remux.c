@@ -11,7 +11,7 @@
  * The cDolbyRepacker code was originally written by Reinhard Nissl <rnissl@gmx.de>,
  * and adapted to the VDR coding style by Klaus.Schmidinger@cadsoft.de.
  *
- * $Id: remux.c 1.30 2005/02/13 10:23:10 kls Exp $
+ * $Id: remux.c 1.31 2005/02/13 14:36:23 kls Exp $
  */
 
 #include "remux.h"
@@ -29,6 +29,7 @@ protected:
 public:
   cRepacker(void) { maxPacketSize = 6 + 65535; subStreamId = 0; }
   virtual ~cRepacker() {}
+  virtual void Reset(void) {}
   virtual int Put(cRingBufferLinear *ResultBuffer, const uchar *Data, int Count) = 0;
   virtual int BreakAt(const uchar *Data, int Count) = 0;
   void SetMaxPacketSize(int MaxPacketSize) { maxPacketSize = MaxPacketSize; }
@@ -56,13 +57,13 @@ private:
     get_length,
     output_packet
     } state;
-  void Reset(void);
   void ResetPesHeader(void);
   void AppendSubStreamID(void);
   bool FinishRemainder(cRingBufferLinear *ResultBuffer, const uchar *const Data, const int Todo, int &Done, int &Bite);
   bool StartNewPacket(cRingBufferLinear *ResultBuffer, const uchar *const Data, const int Todo, int &Done, int &Bite);
 public:
   cDolbyRepacker(void);
+  virtual void Reset(void);
   virtual int Put(cRingBufferLinear *ResultBuffer, const uchar *Data, int Count);
   virtual int BreakAt(const uchar *Data, int Count);
   };
@@ -474,6 +475,8 @@ cTS2PES::~cTS2PES()
 void cTS2PES::Clear(void)
 {
   reset_ipack();
+  if (repacker)
+     repacker->Reset();
 }
 
 void cTS2PES::store(uint8_t *Data, int Count)
