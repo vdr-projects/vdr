@@ -1002,3 +1002,4 @@ Video Disk Recorder Revision History
 - Added scanning for EPG data for another 4 days on channels that support this
   (thanks to Oleg Assovski).
 - Removed '#define VFAT 1' from recording.c (was a leftover from testing).
+- Fixed the "Low disk space!" message (thanks to Sergei Haller).

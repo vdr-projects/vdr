@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.52 2002/02/15 22:09:44 kls Exp $
+ * $Id: recording.c 1.53 2002/02/15 22:22:58 kls Exp $
  */
 
 #include "recording.h"
@@ -122,7 +122,7 @@ void AssertFreeDiskSpace(int Priority)
               return;
            }
         // Unable to free disk space, but there's nothing we can do about that...
-        Interface->Confirm(tr("Low disk space"), 30);
+        Interface->Confirm(tr("Low disk space!"), 30);
         }
      LastFreeDiskCheck = time(NULL);
      }
