@@ -2225,3 +2225,7 @@ Video Disk Recorder Revision History
 - Fixed an uninitialized variable in cDisplayChannel (thanks to Stefan Huelswitt).
 - Fixed a possible access of invalid file handles in cSIProcessor::Action()
   (thanks to Stefan Huelswitt).
+
+2003-06-01: Version 1.2.0
+
+- Completed Greek language texts (thanks to Dimitrios Dimitrakos).

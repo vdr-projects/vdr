@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.122 2003/05/29 10:38:51 kls Exp $
+ * $Id: i18n.c 1.123 2003/05/31 09:09:45 kls Exp $
  *
  * Translations provided by:
  *
@@ -219,7 +219,7 @@ const tI18nPhrase Phrases[] = {
     "Tallennuskomennot",
     "",// TODO
     "Órdenes de grabación",
-    "Entoles gia egrafes",// TODO
+    "Entoles gia egrafes",
     "Inspelningskommandon",
     "",// TODO
     "",// TODO
@@ -765,7 +765,7 @@ const tI18nPhrase Phrases[] = {
     "Poistetaanko ajastin?",
     "Usunac timer?",
     "¿Eliminar timer?",
-    "Diagrafi programmitismou?",
+    "Diagrafi programmatismou?",
     "Ta bort timern?",
     "Sterg timer-ul?",
     "Felvétel beprogramozásának törlése?",
@@ -850,7 +850,7 @@ const tI18nPhrase Phrases[] = {
     "Perutaanko muokkaus?",
     "Zakonczyc montaz?",
     "¿Cancelar modificación?",
-    "Akirosi kopsimatos?",
+    "Akirosi epexsergasias?",
     "Avbryta redigeringen?",
     "Opresc editarea?",
     "Vágást befejezni?",
@@ -1004,7 +1004,7 @@ const tI18nPhrase Phrases[] = {
     "Lähde",
     "",//TODO
     "",//TODO
-    "Pigi",//TODO
+    "Pigi",
     "Källa",
     "",//TODO
     "",//TODO
@@ -1601,7 +1601,7 @@ const tI18nPhrase Phrases[] = {
     "Kanava-asetukset eivät ole yksilölliset!",
     "",//TODO
     "!Propiedades de canal duplicadas!",
-    "Ta kanalia stin lista den ine monadika!",
+    "Oi rithmiseis tou kanaliou simpiptoun me allo!",
     "Kanalinställningarna är ej unika!",
     "",//TODO
     "",//TODO
@@ -1618,7 +1618,7 @@ const tI18nPhrase Phrases[] = {
     "Kanava lukittu (tallennus käynnissä)!",
     "Kanal zablokowany (nagrywanie w toku)!",
     "¡Canal bloqueado (grabando)!",
-    "To kanali ine klidomeno (Ginete egrafi)!",
+    "To kanali ine apasxolimeno (Ginete egrafi)!",
     "Kanalen är låst (inspelning pågår)!",
     "Canal blocat (inregistrare)!",
     "Csatorna hozzáférhetetlen (felvétel)!",
@@ -1652,7 +1652,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "Muokkausmerkinnät puuttuvat",
-    "",//TODO
+    "Den exoun oristei simeia gia epexsergasia",
     "Det finns inga redigeringsmärken",//TODO
     "",//TODO
     "",//TODO
