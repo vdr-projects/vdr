@@ -894,3 +894,5 @@ Video Disk Recorder Revision History
   broadcast the correct timestamps for EPG events between 0:00 and 6:00!
 - Fixed failing watchdog timer if program hangs in OSD activities (thanks to
   Carsten Koch).
+- No longer requiring 'libncurses' if compiling without DEBUG_OSD=1 and
+  REMOTE=KBD (thanks to Lauri Pesonen).

@@ -171,3 +171,7 @@ Thilo Wunderlich <tw@ubcom.net>
 
 Stephan Schreiber <stephan@sschreiber.de>
  for his support in keeping the Premiere World channels up to date in 'channels.conf.cable'
+
+Lauri Pesonen <lauri.pesonen@firsthop.com>
+ for avoiding linking in 'libncurses' if compiling without DEBUG_OSD=1 and
+ REMOTE=KBD

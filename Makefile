@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 1.28 2001/10/07 15:14:50 kls Exp $
+# $Id: Makefile 1.29 2002/01/13 16:57:27 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -37,12 +37,17 @@ ifndef REMOTE
 REMOTE = KBD
 endif
 
+ifeq ($(REMOTE), KBD)
+NCURSESLIB = -lncurses
+endif
+
 DEFINES += -DREMOTE_$(REMOTE)
 
 DEFINES += -D_GNU_SOURCE
 
 ifdef DEBUG_OSD
 DEFINES += -DDEBUG_OSD
+NCURSESLIB = -lncurses
 endif
 
 ifdef VFAT
@@ -71,7 +76,7 @@ include $(DEPFILE)
 # The main program:
 
 vdr: $(OBJS) $(AC3LIB) $(DTVLIB)
-	g++ -g -O2 $(OBJS) -lncurses -ljpeg -lpthread $(LIBDIRS) $(DVDLIB) $(AC3LIB) $(DTVLIB) -o vdr
+	g++ -g -O2 $(OBJS) $(NCURSESLIB) -ljpeg -lpthread $(LIBDIRS) $(DVDLIB) $(AC3LIB) $(DTVLIB) -o vdr
 
 # The font files:
 
