@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.55 2003/04/26 11:49:06 kls Exp $
+ * $Id: dvbdevice.c 1.56 2003/04/27 09:44:17 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -871,7 +871,6 @@ void cDvbDevice::Mute(void)
 
 void cDvbDevice::StillPicture(const uchar *Data, int Length)
 {
-  Mute();
 /* Using the VIDEO_STILLPICTURE ioctl call would be the
    correct way to display a still frame, but unfortunately this
    doesn't work with frames from VDR. So let's do pretty much the
@@ -883,7 +882,7 @@ void cDvbDevice::StillPicture(const uchar *Data, int Length)
 */
 //#define VIDEO_STILLPICTURE_WORKS_WITH_VDR_FRAMES
 #ifdef VIDEO_STILLPICTURE_WORKS_WITH_VDR_FRAMES
-  videoDisplayStillPicture sp = { (char *)Data, Length };
+  video_still_picture sp = { (char *)Data, Length };
   CHECK(ioctl(fd_video, VIDEO_STILLPICTURE, &sp));
 #else
 #define MIN_IFRAME 400000
