@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.h 1.23 2003/10/04 11:54:50 kls Exp $
+ * $Id: dvbdevice.h 1.23.1.1 2003/11/07 13:17:13 kls Exp $
  */
 
 #ifndef __DVBDEVICE_H
@@ -38,7 +38,7 @@ public:
          ///< \return True if any devices are available.
 private:
   fe_type_t frontendType;
-  int fd_osd, fd_audio, fd_video, fd_dvr;
+  int fd_osd, fd_audio, fd_video, fd_dvr, fd_stc;
   int OsdDeviceHandle(void) const { return fd_osd; }
 protected:
   virtual void MakePrimaryDevice(bool On);
@@ -107,6 +107,7 @@ protected:
   virtual bool CanReplay(void) const;
   virtual bool SetPlayMode(ePlayMode PlayMode);
 public:
+  virtual int64_t GetSTC(void);
   virtual void TrickSpeed(int Speed);
   virtual void Clear(void);
   virtual void Play(void);

@@ -2451,3 +2451,7 @@ Video Disk Recorder Revision History
   is being presented (thanks to Thomas v. Keller for reportign this one).
 - Added missing 'const' to some cChannel member functions (thanks to Torsten
   Herz).
+
+2003-11-07: Version 1.2.6pre5
+
+- Added cDevice::GetSTC() (suggested by Sven Goethel).

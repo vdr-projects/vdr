@@ -606,6 +606,7 @@ Thomas Sailer <sailer@scs.ch>
 Sven Goethel <sgoethel@jausoft.com>
  for making switching audio channels work without stopping/restarting the DMX
  for fixing initializing the highlight area in cDvbSpuDecoder
+ for suggesting to add cDevice::GetSTC()
 
 Jan Rieger <jan@ricomp.de>
  for suggestions and testing raw keyboard input
