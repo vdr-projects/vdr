@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.h 1.9 2000/05/01 12:46:25 kls Exp $
+ * $Id: dvbapi.h 1.10 2000/05/20 14:50:43 kls Exp $
  */
 
 #ifndef __DVBAPI_H
@@ -91,7 +91,7 @@ public:
   // Progress Display facilities
 
 private:
-  int lastProgress;
+  int lastProgress, lastTotal;
   char *replayTitle;
 public:
   bool ShowProgress(bool Initial = false);
