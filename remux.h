@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.h 1.12 2004/10/15 12:31:16 kls Exp $
+ * $Id: remux.h 1.13 2005/01/16 13:15:17 kls Exp $
  */
 
 #ifndef __REMUX_H
@@ -21,23 +21,31 @@
 #define P_FRAME    2
 #define B_FRAME    3
 
+#define MAXTRACKS 64
+
 class cTS2PES;
 
 class cRemux {
 private:
   bool exitOnFailure;
+  bool isRadio;
   int numUPTerrors;
   bool synced;
   int skipped;
-  int vPid, aPid1, aPid2, dPid1, dPid2;
-  cTS2PES *vTS2PES, *aTS2PES1, *aTS2PES2, *dTS2PES1, *dTS2PES2;
+  cTS2PES *ts2pes[MAXTRACKS];
+  int numTracks;
   cRingBufferLinear *resultBuffer;
   int resultSkipped;
   int GetPid(const uchar *Data);
   int GetPacketLength(const uchar *Data, int Count, int Offset);
   int ScanVideoPacket(const uchar *Data, int Count, int Offset, uchar &PictureType);
 public:
-  cRemux(int VPid, int APid1, int APid2, int DPid1, int DPid2, bool ExitOnFailure = false);
+  cRemux(int VPid, const int *APids, const int *DPids, const int *SPids, bool ExitOnFailure = false);
+       ///< Creates a new remuxer for the given PIDs. VPid is the video PID, while
+       ///< APids, DPids and SPids are pointers to zero terminated lists of audio,
+       ///< dolby and subtitle PIDs (the pointers may be NULL if there is no such
+       ///< PID). If ExitOnFailure is true, the remuxer will initiate an "emergency
+       ///< exit" in case of problems with the data stream.
   ~cRemux();
   int Put(const uchar *Data, int Count);
        ///< Puts at most Count bytes of Data into the remuxer.

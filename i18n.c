@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.169 2005/01/09 12:17:44 kls Exp $
+ * $Id: i18n.c 1.172 2005/01/22 10:38:44 kls Exp $
  *
  * Translations provided by:
  *
@@ -121,7 +121,7 @@ const tI18nPhrase Phrases[] = {
     "iso8859-1",
     "iso8859-5",
     "iso8859-2",
-    "iso8859-15", // or iso8859-1 as alternative
+    "iso8859-13",
     "iso8859-1",
   },
   // The 3-letter names of the language (this MUST be the third phrase!):
@@ -1029,7 +1029,7 @@ const tI18nPhrase Phrases[] = {
     "ÁâÕàÕâì ×ÐßØáì?",
     "Obrisati snimku?",
     "Kustutan salvestuse?",
-    "Slet optagelse",
+    "Slet optagelse?",
   },
   { "Timer still recording - really delete?",
     "Timer zeichnet auf - trotzdem löschen?",
@@ -2302,6 +2302,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
+    "Äänen kieli ei ole valittavissa!",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -2311,9 +2312,8 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
-    "",//TODO
-    "",//TODO
+    "Audio kättesaamatu!",
+    "Ingen lyd tilgængelig!",
   },
   // Setup pages:
   { "OSD",
@@ -3102,6 +3102,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
+    "Käytä Dolby Digital -ääntä",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -3111,9 +3112,8 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
-    "",//TODO
-    "",//TODO
+    "Dolby Digital kasutamine",
+    "Anvend Dolby Digital",
   },
   { "Setup.DVB$Update channels",
     "Kanäle aktualisieren",
@@ -3219,6 +3219,48 @@ const tI18nPhrase Phrases[] = {
     "dodaj nove transpondere", // hrv TODO transponderi == odasiljaèi?
     "lisa uued transponderid",
     "tilf. ny transp.",
+  },
+  { "Setup.DVB$Audio languages",  // note the plural
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "Äänen kielet",
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+  },
+  { "Setup.DVB$Audio language",  // note the singular
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "Äänen kieli",
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
   },
   { "Setup.LNB$SLOF (MHz)",
     "SLOF (MHz)",
@@ -4639,6 +4681,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
+    "Ääni",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -4648,9 +4691,8 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
-    "",// TODO
-    "",// TODO
+    "Audio",
+    "Audio",
   },
   // Miscellaneous:
   { "yes",

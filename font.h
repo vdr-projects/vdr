@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: font.h 1.9 2004/10/23 14:06:37 kls Exp $
+ * $Id: font.h 1.10 2005/01/14 13:25:35 kls Exp $
  */
 
 #ifndef __FONT_H
@@ -24,6 +24,7 @@ enum eDvbCode {
   code_iso8859_2,
   code_iso8859_5,
   code_iso8859_7,
+  code_iso8859_13,
   code_iso8859_15,
 #define eDvbCodeSize (code_iso8859_15 + 1)
   };

@@ -189,6 +189,7 @@ Stefan Huelswitt <huels@iname.com>
  skin in case a shorter title is set after a longer one
  for fixing handling of pmAudioOnlyBlack
  for pointing out possible race conditions in handling childTid in cThread
+ for fixing a possible race condition in cDevice::Action() and cTSBuffer::Action()
 
 Ulrich Röder <roeder@efr-net.de>
  for pointing out that there are channels that have a symbol rate higher than
@@ -791,6 +792,7 @@ Benjamin Harling <benjamin.harling@web.de>
 
 Christian Jacobsen <christian.jacobsen@stageholding.de>
  for making the LIRC interface skip keys that come in too fast
+ for reporting a problem in handling the '-E' options in version 1.3.18
 
 Andreas Mair <Andreas.Mair@linogate.com>
  for reporting a short display of the main menu if a plugin displays its own OSD and
@@ -835,8 +837,12 @@ Lars Bläser <LBlaeser@hofheim.de>
  for reporting a bug in EPG bugfix statistics which made log entires for undefined
  channels
 
-Niko Tarnanen <niko.tarnanen@hut.fi> and Rolf Ahrenberg <rahrenbe@cc.hut.fi>
+Niko Tarnanen <niko.tarnanen@hut.fi>
  for translating OSD texts to the Finnish language
+
+Rolf Ahrenberg <rahrenbe@cc.hut.fi>
+ for translating OSD texts to the Finnish language
+ for fixing internationalization of the text for "Setup/DVB/Audio language(s)"
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark
@@ -902,6 +908,9 @@ Reinhard Nissl <rnissl@gmx.de>
  for reporting a high CPU load in still picture mode after removing the usleep()
  call from cDvbPlayer::Action()
  for reporting a race condition in starting a thread
+ for implementing cDolbyRepacker for better handling of Dolby Digital PES packets
+ for extending some buffer sizes to allow handling HDTV streams
+ for adding substream handling to cDolbyRepacker
 
 Richard Robson <richard_robson@beeb.net>
  for reporting freezing replay if a timer starts while in Transfer Mode from the
@@ -1103,6 +1112,10 @@ Marco Schlüßler <marco@lordzodiac.de>
  type errors"
  for some improvements to cPoller
  for implementing displaying mandatory subtitles in the SPU decoder
+ for pointing out a problem with canceling the LIRC thread
+ for a patch that implements substream handling into cDevice::PlayPesPacket()
+ for pointing out that PlayPes(NULL, 0) needs to be called in cTransfer::Action()
+ when clearing the transfer buffer to avoid overflows
 
 Jürgen Schmitz <j.schmitz@web.de>
  for reporting a bug in displaying the current channel when switching via the SVDRP
@@ -1200,3 +1213,21 @@ Laurence Abbott <laz@club-burniston.co.uk>
 
 Patrick Gleichmann <patrick@feedface.com>
  for fixing the default quality value when grabbing a JPEG image
+
+Achim Tuffentsammer <a.tuffentsammer@web.de>
+ for reporting a crash in case a plugin needs to issue an error message before the
+ skin has been set up
+
+Michael Heyse <mhk@designassembly.de>
+ for his help in keeping 'channels.conf.terr' up to date
+
+Marco Kremer <vdr.hgm.bg@gmx.net>
+ for reporting a problem with playing files with PES packets longer than 2048 byte
+ through the full featured DVB card
+
+Walter Koch <koch@u32.de>
+ for adding channels for DVB-T Düsseldorf and Köln (Germany) to channels.cont.terr
+
+Rolf Groppe <rolf@groppe.de>
+ for suggesting to fall back to 'stereo' when switching channels in case the user
+ had switched to 'left' or 'right'

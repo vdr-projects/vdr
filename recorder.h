@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recorder.h 1.2 2004/10/10 11:22:38 kls Exp $
+ * $Id: recorder.h 1.3 2005/01/15 16:35:53 kls Exp $
  */
 
 #ifndef __RECORDER_H
@@ -29,7 +29,7 @@ protected:
   virtual void Receive(uchar *Data, int Length);
   virtual void Action(void);
 public:
-  cRecorder(const char *FileName, int Ca, int Priority, int VPid, int APid1, int APid2, int DPid1, int DPid2);
+  cRecorder(const char *FileName, int Ca, int Priority, int VPid, const int *APids, const int *DPids, const int *SPids);
                // Creates a new recorder that requires conditional access Ca, has
                // the given Priority and will record the given PIDs into the file FileName.
   virtual ~cRecorder();

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.334 2005/01/09 13:04:49 kls Exp $
+ * $Id: menu.c 1.337 2005/01/15 16:32:34 kls Exp $
  */
 
 #include "menu.h"
@@ -1947,7 +1947,7 @@ void cMenuSetupDVB::Setup(void)
   Add(new cMenuEditStraItem(tr("Setup.DVB$Update channels"),       &data.UpdateChannels, 5, updateChannelsTexts));
   Add(new cMenuEditIntItem( tr("Setup.DVB$Audio languages"),       &numAudioLanguages, 0, I18nNumLanguages));
   for (int i = 0; i < numAudioLanguages; i++)
-     Add(new cMenuEditStraItem(tr("Setup.EPG$Audio language"),     &data.AudioLanguages[i], I18nNumLanguages, I18nLanguages()));
+      Add(new cMenuEditStraItem(tr("Setup.DVB$Audio language"),    &data.AudioLanguages[i], I18nNumLanguages, I18nLanguages()));
 
   SetCurrent(Get(current));
   Display();
@@ -2452,7 +2452,7 @@ void cMenuMain::Set(const char *Plugin)
 
   // Color buttons:
 
-  SetHelp(!replaying ? tr("Record") : NULL, cDevice::PrimaryDevice()->NumAudioTracks() > 1 ? tr("Audio") : NULL, replaying ? NULL : tr("Pause"), replaying ? tr("Button$Stop") : cReplayControl::LastReplayed() ? tr("Resume") : NULL);
+  SetHelp(!replaying ? tr("Record") : NULL, tr("Audio"), replaying ? NULL : tr("Pause"), replaying ? tr("Button$Stop") : cReplayControl::LastReplayed() ? tr("Resume") : NULL);
   Display();
   lastActivity = time(NULL);
 }
@@ -3019,7 +3019,7 @@ cRecordControl::cRecordControl(cDevice *Device, cTimer *Timer, bool Pause)
   isyslog("record %s", fileName);
   if (MakeDirs(fileName, true)) {
      const cChannel *ch = timer->Channel();
-     recorder = new cRecorder(fileName, ch->Ca(), timer->Priority(), ch->Vpid(), ch->Apid(0), ch->Apid(1), ch->Dpid(0), ch->Dpid(1));
+     recorder = new cRecorder(fileName, ch->Ca(), timer->Priority(), ch->Vpid(), ch->Apids(), ch->Dpids(), ch->Spids());
      if (device->AttachReceiver(recorder)) {
         Recording.WriteSummary();
         cStatus::MsgRecording(device, Recording.Name());

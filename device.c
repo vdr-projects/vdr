@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.73 2005/01/09 12:36:48 kls Exp $
+ * $Id: device.c 1.78 2005/01/23 15:41:05 kls Exp $
  */
 
 #include "device.h"
@@ -512,7 +512,7 @@ eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
      if (CaDevice && CanReplay()) {
         cStatus::MsgChannelSwitch(this, 0); // only report status if we are actually going to switch the channel
         if (CaDevice->SetChannel(Channel, false) == scrOk) // calling SetChannel() directly, not SwitchChannel()!
-           cControl::Launch(new cTransferControl(CaDevice, Channel->Vpid(), Channel->Apid(0), Channel->Apid(1), Channel->Dpid(0), Channel->Dpid(1)));
+           cControl::Launch(new cTransferControl(CaDevice, Channel->Vpid(), Channel->Apids(), Channel->Dpids(), Channel->Spids()));
         else
            Result = scrNoTransfer;
         }
@@ -545,11 +545,12 @@ eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
         // Set the available audio tracks:
         ClrAvailableTracks();
         currentAudioTrack = ttAudioFirst;
-        for (int i = 0; i < MAXAPIDS; i++) {
+        for (int i = 0; i < MAXAPIDS; i++)
             SetAvailableTrack(ttAudio, i, Channel->Apid(i), Channel->Alang(i));
-            if (Setup.UseDolbyDigital)
+        if (Setup.UseDolbyDigital) {
+           for (int i = 0; i < MAXDPIDS; i++)
                SetAvailableTrack(ttDolby, i, Channel->Dpid(i), Channel->Dlang(i));
-            }
+           }
         // Select the preferred audio track:
         eTrackType PreferredTrack = ttAudioFirst;
         int LanguagePreference = -1;
@@ -568,6 +569,8 @@ eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
         const tTrackId *Track = GetTrack(GetCurrentAudioTrack());
         if (!Track || !Track->id || PreferredTrack != GetCurrentAudioTrack())
            SetCurrentAudioTrack(PreferredTrack);
+        // Fall back to stereo:
+        SetAudioChannel(0);
         }
      cStatus::MsgChannelSwitch(this, Channel->Number()); // only report status if channel switch successfull
      }
@@ -657,8 +660,10 @@ void cDevice::ClrAvailableTracks(bool DescriptionsOnly)
      for (int i = ttNone; i < ttMaxTrackTypes; i++)
          *availableTracks[i].description = 0;
      }
-  else
+  else {
      memset(availableTracks, 0, sizeof(availableTracks));
+     pre_1_3_19_PrivateStream = false;
+     }
 }
 
 bool cDevice::SetAvailableTrack(eTrackType Type, int Index, uint16_t Id, const char *Language, const char *Description, uint32_t Flags)
@@ -834,22 +839,49 @@ int cDevice::PlayPesPacket(const uchar *Data, int Length, bool VideoOnly)
                if (!VideoOnly && c == availableTracks[currentAudioTrack].id)
                   w = PlayAudio(Start, d);
                break;
-          case 0xBD: // dolby
-               if (Setup.UseDolbyDigital) {
-                  SetAvailableTrack(ttDolby, 0, c);
-                  if (!VideoOnly && c == availableTracks[currentAudioTrack].id) {
-                     w = PlayAudio(Start, d);
-                     if (FirstLoop)
-                        Audios.PlayAudio(Data, Length);
-                     }
+          case 0xBD: { // private stream 1
+               int PayloadOffset = Data[8] + 9;
+               uchar SubStreamId = Data[PayloadOffset];
+               uchar SubStreamType = SubStreamId & 0xE0;
+               uchar SubStreamIndex = SubStreamId & 0x1F;
+
+               // Compatibility mode for old VDR recordings, where 0xBD was only AC3:
+               //TODO apparently this doesn't work for old ORF Dolby Digital recordings
+               if (!pre_1_3_19_PrivateStream && (Data[6] & 4) && Data[PayloadOffset] == 0x0B && Data[PayloadOffset + 1] == 0x77)
+                  pre_1_3_19_PrivateStream = true;
+               if (pre_1_3_19_PrivateStream) {
+                  SubStreamId = c;
+                  SubStreamType = 0x80;
+                  SubStreamIndex = 0;
                   }
+
+               switch (SubStreamType) {
+                 case 0x20: // SPU
+                      break;
+                 case 0x80: // AC3 & DTS
+                      if (Setup.UseDolbyDigital) {
+                         SetAvailableTrack(ttDolby, SubStreamIndex, SubStreamId);
+                         if (!VideoOnly && SubStreamId == availableTracks[currentAudioTrack].id) {
+                            w = PlayAudio(Start, d);
+                            if (FirstLoop && !(SubStreamId & 0x08)) // no DTS
+                               Audios.PlayAudio(Data, Length);
+                            }
+                         }
+                      break;
+                 case 0xA0: // LPCM
+                      SetAvailableTrack(ttAudio, SubStreamIndex, SubStreamId);
+                      if (!VideoOnly && SubStreamId == availableTracks[currentAudioTrack].id)
+                         w = PlayAudio(Start, d);
+                      break;
+                 }
+               }
                break;
           default:
                ;//esyslog("ERROR: unexpected packet id %02X", c);
           }
         if (w > 0)
            Start += w;
-        else if (w <= 0) {
+        else {
            if (Start != Data)
               esyslog("ERROR: incomplete PES packet write!");
            return Start == Data ? w : Start - Data;
@@ -990,8 +1022,7 @@ bool cDevice::Receiving(bool CheckAny) const
 
 void cDevice::Action(void)
 {
-  active = true;
-  if (OpenDvr()) {
+  if (active && OpenDvr()) {
      for (; active;) {
          // Read data from the DVR device:
          uchar *b = NULL;
@@ -1041,7 +1072,7 @@ bool cDevice::AttachReceiver(cReceiver *Receiver)
   cMutexLock MutexLock(&mutexReceiver);
   for (int i = 0; i < MAXRECEIVERS; i++) {
       if (!receiver[i]) {
-         for (int n = 0; n < MAXRECEIVEPIDS; n++) {
+         for (int n = 0; n < Receiver->numPids; n++) {
              if (!AddPid(Receiver->pids[n])) {
                 for ( ; n-- > 0; )
                     DelPid(Receiver->pids[n]);
@@ -1053,7 +1084,10 @@ bool cDevice::AttachReceiver(cReceiver *Receiver)
          Receiver->device = this;
          receiver[i] = Receiver;
          Unlock();
-         Start();
+         if (!active) {
+            active = true;
+            Start();
+            }
          return true;
          }
       }
@@ -1074,7 +1108,7 @@ void cDevice::Detach(cReceiver *Receiver)
          receiver[i] = NULL;
          Receiver->device = NULL;
          Unlock();
-         for (int n = 0; n < MAXRECEIVEPIDS; n++)
+         for (int n = 0; n < Receiver->numPids; n++)
              DelPid(Receiver->pids[n]);
          }
       else if (receiver[i])
@@ -1093,10 +1127,10 @@ cTSBuffer::cTSBuffer(int File, int Size, int CardIndex)
   SetDescription("TS buffer on device %d", CardIndex);
   f = File;
   cardIndex = CardIndex;
-  active = false;
   delivered = false;
   ringBuffer = new cRingBufferLinear(Size, TS_SIZE, true, "TS");
   ringBuffer->SetTimeouts(100, 100);
+  active = true;
   Start();
 }
 
@@ -1112,7 +1146,6 @@ void cTSBuffer::Action(void)
   if (ringBuffer) {
      bool firstRead = true;
      cPoller Poller(f);
-     active = true;
      for (; active;) {
          if (firstRead || Poller.Poll(100)) {
             firstRead = false;

@@ -3287,3 +3287,48 @@ Video Disk Recorder Revision History
 - Added support for circular polarization (thanks to Jonan Santiago).
 - Thanks to Werner Fink, Reinhard Nissl, Sascha Volkenandt and Bjørnar Nilsen for
   their support in testing and fine tuning this version.
+
+2005-01-23: Version 1.3.19
+
+- Making sure at least the default skin is available at program start in case a
+  plugin needs to issue an error message (thanks to Achim Tuffentshammer for
+  reporting a crash in such a case). Also checking if there is a current skin
+  in cSkins::Message().
+- Completed the Finnish OSD texts and fixed internationalization of the text
+  for "Setup/DVB/Audio language(s)" (thanks to Rolf Ahrenberg).
+- Completed the Estonian OSD texts and switched to iso8859-13 character set
+  (thanks to Arthur Konovalov).
+- Made cCondWait::SleepMs() sleep at least 3ms to avoid a possible busy wait.
+- Fixed canceling the LIRC thread (thanks to Marco Schlüßler for pointing out
+  this one).
+- The "Green" button in the "Main" menu is now always "Audio", since the audio
+  channel might be changed even if there is only one actual audio PID.
+- Fixed handling the '-E' option which was broken in version 1.3.18 (thanks to
+  Christian Jacobsen for reporting this one).
+- Added 'channels.conf.terr' entries for Mainz (thanks to Michael Heyse).
+- Implemented cDolbyRepacker for better handling of Dolby Digital PES packets
+  (thanks to Reinhard Nissl).
+- Fixed playing files with PES packets longer than 2048 byte through the full
+  featured DVB card (thanks to Marco Kremer for reporting this one and providing
+  a test sample).
+- Recording and Transfer Mode now handle more than 2 audio PIDs. For this the
+  interfaces of the following functions have been changed:
+  cTransferControl::cTransferControl()
+  cTransfer::cTransfer()
+  cRecorder::cRecorder()
+  cReceiver::cReceiver()
+  cRemux::cRemux()
+- Fixed a possible race condition in cDevice::Action() and cTSBuffer::Action()
+  (thanks to Stefan Huelswitt).
+- Extended some buffer sizes to allow handling HDTV streams (thanks to Reinhard
+  Nissl).
+- Added 'channels.conf.terr' entries for Düsseldorf and Köln (thanks to Walter Koch).
+- Falling back to 'stereo' when switching channels in case the user had switched
+  to 'left' or 'right' (suggested by Rolf Groppe).
+- Completed the Danish OSD texts (thanks to Mogens Elneff).
+- Recording and Transfer Mode can now handle up to 8 Dolby Digital tracks (thanks
+  to Marco Schlüßler for a patch that implements substream handling into
+  cDevice::PlayPesPacket(), and Reinhard Nissl for adding substream handling to
+  cDolbyRepacker).
+- Added PlayPes(NULL, 0) to cTransfer::Action() when clearing the transfer buffer
+  to avoid overflows (thanks to Marco Schlüßler for pointing this out).

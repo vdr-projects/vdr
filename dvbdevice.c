@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.113 2005/01/09 13:04:20 kls Exp $
+ * $Id: dvbdevice.c 1.116 2005/01/16 12:05:13 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -813,7 +813,7 @@ bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
      CHECK(ioctl(fd_audio, AUDIO_SET_AV_SYNC, true));
      }
   else if (StartTransferMode)
-     cControl::Launch(new cTransferControl(this, Channel->Vpid(), Channel->Apid(0), Channel->Apid(1), Channel->Dpid(0), Channel->Dpid(1)));
+     cControl::Launch(new cTransferControl(this, Channel->Vpid(), Channel->Apids(), Channel->Dpids(), Channel->Spids()));
 
   return true;
 }
@@ -1111,7 +1111,7 @@ void cDvbDevice::StillPicture(const uchar *Data, int Length)
 #define MIN_IFRAME 400000
   for (int i = MIN_IFRAME / Length + 1; i > 0; i--) {
       safe_write(fd_video, Data, Length);
-      cCondWait::SleepMs(1); // allows the buffer to be displayed in case the progress display is active
+      cCondWait::SleepMs(3); // allows the buffer to be displayed in case the progress display is active
       }
 #endif
 }
@@ -1130,12 +1130,12 @@ bool cDvbDevice::Flush(int TimeoutMs)
 
 int cDvbDevice::PlayVideo(const uchar *Data, int Length)
 {
-  return write(fd_video, Data, Length);
+  return WriteAllOrNothing(fd_video, Data, Length, 1000, 10);
 }
 
 int cDvbDevice::PlayAudio(const uchar *Data, int Length)
 {
-  return write(fd_audio, Data, Length);
+  return WriteAllOrNothing(fd_audio, Data, Length, 1000, 10);
 }
 
 bool cDvbDevice::OpenDvr(void)

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 1.33 2004/12/26 12:34:52 kls Exp $
+ * $Id: channels.c 1.34 2005/01/16 13:49:30 kls Exp $
  */
 
 #include "channels.h"
@@ -193,6 +193,7 @@ cChannel::cChannel(const cChannel &Channel)
   ppid         = 0;
   apids[0]     = 0;
   dpids[0]     = 0;
+  spids[0]     = 0;
   tpid         = 0;
   caids[0]     = 0;
   nid          = 0;
@@ -421,8 +422,8 @@ void cChannel::SetPids(int Vpid, int Ppid, int *Apids, char ALangs[][4], int *Dp
   if (!modified)
      modified = IntArraysDiffer(apids, Apids, alangs, ALangs) || IntArraysDiffer(dpids, Dpids, dlangs, DLangs);
   if (modified) {
-     char OldApidsBuf[MAXAPIDS * 2 * 10 + 10]; // 2: Apids and Dpids, 10: 5 digits plus delimiting ',' or ';' plus optional '=cod', +10: paranoia
-     char NewApidsBuf[MAXAPIDS * 2 * 10 + 10];
+     char OldApidsBuf[(MAXAPIDS + MAXDPIDS) * 10 + 10]; // 10: 5 digits plus delimiting ',' or ';' plus optional '=cod', +10: paranoia
+     char NewApidsBuf[(MAXAPIDS + MAXDPIDS) * 10 + 10];
      char *q = OldApidsBuf;
      q += IntArrayToString(q, apids, 10, alangs);
      if (dpids[0]) {
@@ -443,6 +444,8 @@ void cChannel::SetPids(int Vpid, int Ppid, int *Apids, char ALangs[][4], int *Dp
      for (int i = 0; i <= MAXAPIDS; i++) { // <= to copy the terminating 0
          apids[i] = Apids[i];
          strn0cpy(alangs[i], ALangs[i], 4);
+         }
+     for (int i = 0; i <= MAXDPIDS; i++) { // <= to copy the terminating 0
          dpids[i] = Dpids[i];
          strn0cpy(dlangs[i], DLangs[i], 4);
          }
@@ -623,7 +626,7 @@ cString cChannel::ToText(const cChannel *Channel)
      if (Channel->ppid && Channel->ppid != Channel->vpid)
         q += snprintf(q, sizeof(vpidbuf) - (q - vpidbuf), "+%d", Channel->ppid);
      *q = 0;
-     char apidbuf[MAXAPIDS * 2 * 10 + 10]; // 2: Apids and Dpids, 10: 5 digits plus delimiting ',' or ';' plus optional '=cod', +10: paranoia
+     char apidbuf[(MAXAPIDS + MAXDPIDS) * 10 + 10]; // 10: 5 digits plus delimiting ',' or ';' plus optional '=cod', +10: paranoia
      q = apidbuf;
      q += IntArrayToString(q, Channel->apids, 10, Channel->alangs);
      if (Channel->dpids[0]) {
@@ -726,7 +729,7 @@ bool cChannel::Parse(const char *s, bool AllowNonUniqueID)
               int NumDpids = 0;
               char *strtok_next;
               while ((q = strtok_r(p, ",", &strtok_next)) != NULL) {
-                    if (NumDpids < MAXAPIDS) {
+                    if (NumDpids < MAXDPIDS) {
                        char *l = strchr(q, '=');
                        if (l) {
                           *l++ = 0;

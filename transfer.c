@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: transfer.c 1.22 2005/01/07 15:44:30 kls Exp $
+ * $Id: transfer.c 1.25 2005/01/23 14:27:40 kls Exp $
  */
 
 #include "transfer.h"
@@ -14,13 +14,13 @@
 
 // --- cTransfer -------------------------------------------------------------
 
-cTransfer::cTransfer(int VPid, int APid1, int APid2, int DPid1, int DPid2)
-:cReceiver(0, -1, 5, VPid, APid1, APid2, DPid1, DPid2)
+cTransfer::cTransfer(int VPid, const int *APids, const int *DPids, const int *SPids)
+:cReceiver(0, -1, VPid, APids, Setup.UseDolbyDigital ? DPids : NULL, SPids)
 ,cThread("transfer")
 {
   ringBuffer = new cRingBufferLinear(TRANSFERBUFSIZE, TS_SIZE * 2, true, "Transfer");
-  remux = new cRemux(VPid, APid1, APid2, DPid1, DPid2);
-  needsBufferReserve = VPid != 0 && DPid1 != 0;
+  remux = new cRemux(VPid, APids, Setup.UseDolbyDigital ? DPids : NULL, SPids);
+  needsBufferReserve = Setup.UseDolbyDigital && VPid != 0 && DPids && DPids[0] != 0;
   active = false;
 }
 
@@ -80,7 +80,7 @@ void cTransfer::Action(void)
            //XXX To resolve this, the remuxer or PlayPes() should synchronize
            //XXX audio with the video frames. 2004/09/09 Werner
            if (!GotBufferReserve) {
-              if (ringBuffer->Available() < 3 * MAXFRAMESIZE / 2) {
+              if (ringBuffer->Available() < 3 * KILOBYTE(192) / 2) { // used to be MAXFRAMESIZE, but the HDTV value of KILOBYTE(512) is way too much here
                  cCondWait::SleepMs(20); // allow the buffer to collect some reserve
                  continue;
                  }
@@ -100,6 +100,7 @@ void cTransfer::Action(void)
               dsyslog("clearing transfer buffer to avoid overflows");
               ringBuffer->Clear();
               remux->Clear();
+              PlayPes(NULL, 0);
               p = NULL;
               continue;
               }
@@ -143,8 +144,8 @@ void cTransfer::Action(void)
 
 cDevice *cTransferControl::receiverDevice = NULL;
 
-cTransferControl::cTransferControl(cDevice *ReceiverDevice, int VPid, int APid1, int APid2, int DPid1, int DPid2)
-:cControl(transfer = new cTransfer(VPid, APid1, APid2, DPid1, DPid2), true)
+cTransferControl::cTransferControl(cDevice *ReceiverDevice, int VPid, const int *APids, const int *DPids, const int *SPids)
+:cControl(transfer = new cTransfer(VPid, APids, DPids, SPids), true)
 {
   ReceiverDevice->AttachReceiver(transfer);
   receiverDevice = ReceiverDevice;
