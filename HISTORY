@@ -1850,7 +1850,7 @@ Video Disk Recorder Revision History
   This also makes "Motor-DiSEqC" work (thanks to Reinhard Walter Buchner for his help
   in testing this). Since switching channels now no longer explicitly waits for a
   channel lock in the foreground thread, the "panic level" mechanism is no longer
-  used (maybe we don't need it nay more, anyway).
+  used (maybe we don't need it any more, anyway).
 - The keyboard is now by default always active to control VDR. The 'make' option
   REMOTE=KBD is therefore obsolete. When compiling VDR with REMOTE=RCU or REMOTE=LIRC,
   the keyboard can thus now be active together with the remote control. If you want
