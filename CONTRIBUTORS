@@ -592,3 +592,7 @@ Thomas Koch <tom@harhar.net>
 
 Stefan Huﬂfeldt <vdr@marvin.on-luebeck.de>
  for his help in keeping 'channels.conf.cable' up to date
+
+Christoph Friederich <christoph.friederich@gmx.de>
+ for reporting a bug in deleting the last recording in the "Recordings" menu, which
+ started pausing live video

@@ -2065,3 +2065,5 @@ Video Disk Recorder Revision History
   with the audio PIDs, because this is not an alternate PID, but rather an
   additional, necessary PID. In order to use this feature you need a driver version
   dated 2003-04-27 or higher (setting the PCR PID didn't work in earlier versions).
+- Fixed deleting the last recording in the "Recordings" menu, which started pausing
+  live video (thanks to Christoph Friederich for reporting this one).

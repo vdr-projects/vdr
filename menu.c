@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.238 2003/04/26 11:50:14 kls Exp $
+ * $Id: menu.c 1.239 2003/04/26 13:51:19 kls Exp $
  */
 
 #include "menu.h"
@@ -2496,8 +2496,10 @@ void cMenuMain::Set(const char *Plugin)
 
 eOSState cMenuMain::ProcessKey(eKeys Key)
 {
+  bool HadSubMenu = HasSubMenu();
   int osdLanguage = Setup.OSDLanguage;
   eOSState state = cOsdMenu::ProcessKey(Key);
+  HadSubMenu |= HasSubMenu();
 
   switch (state) {
     case osSchedule:   return AddSubMenu(new cMenuSchedule);
@@ -2544,10 +2546,10 @@ eOSState cMenuMain::ProcessKey(eKeys Key)
                        break;
     default: switch (Key) {
                case kRecord:
-               case kRed:    if (!HasSubMenu())
+               case kRed:    if (!HadSubMenu)
                                 state = osRecord;
                              break;
-               case kGreen:  if (!HasSubMenu()) {
+               case kGreen:  if (!HadSubMenu) {
                                 int CurrentAudioTrack = -1;
                                 const char **AudioTracks = cDevice::PrimaryDevice()->GetAudioTracks(&CurrentAudioTrack);
                                 if (AudioTracks) {
@@ -2561,10 +2563,10 @@ eOSState cMenuMain::ProcessKey(eKeys Key)
                                    }
                                 }
                              break;
-               case kYellow: if (!HasSubMenu())
+               case kYellow: if (!HadSubMenu)
                                 state = osPause;
                              break;
-               case kBlue:   if (!HasSubMenu())
+               case kBlue:   if (!HadSubMenu)
                                 state = replaying ? osStopReplay : cReplayControl::LastReplayed() ? osReplay : osContinue;
                              break;
                default:      break;
