@@ -90,6 +90,24 @@ option to set the controlling terminal, as in
 
 vdr:123:respawn:/usr/local/bin/vdr --terminal=/dev/tty8 -w 60
 
+Locale
+------
+
+When presenting the list of recordings, VDR sorts the entries according to
+the current "locale" settings. This makes sure that special characters (like
+the German "umlauts") appear at the expected positions. In order to benefit
+from this you may have to set the locale environment variable, for instance
+
+  export LANG=de_DE
+
+for a German locale. If you don't want this to result in German error messages
+in the log file, it is sufficient to just set
+
+  export LC_COLLATE=de_DE
+
+which only influences the way strings are sorted and leaves error messages
+in English.
+
 Automatic restart in case of hangups:
 -------------------------------------
 

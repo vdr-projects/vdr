@@ -22,11 +22,12 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.81 2001/09/30 12:13:38 kls Exp $
+ * $Id: vdr.c 1.82 2001/10/07 10:28:32 kls Exp $
  */
 
 #define _GNU_SOURCE
 #include <getopt.h>
+#include <locale.h>
 #include <signal.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -75,6 +76,10 @@ static void Watchdog(int signum)
 
 int main(int argc, char *argv[])
 {
+  // Initiate locale:
+
+  setlocale(LC_ALL, "");
+
   // Command line options:
 
 #define DEFAULTSVDRPPORT 2001

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.38 2001/09/30 10:29:11 kls Exp $
+ * $Id: recording.c 1.39 2001/10/07 11:00:35 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -32,7 +32,7 @@
 #define SUMMARYFILESUFFIX "/summary.vdr"
 #define MARKSFILESUFFIX   "/marks.vdr"
 
-#define FINDCMD      "find %s -follow -type d -name '%s' 2> /dev/null | sort -df"
+#define FINDCMD      "find %s -follow -type d -name '%s' 2> /dev/null"
 
 #define MINDISKSPACE 1024 // MB
 
@@ -215,6 +215,7 @@ char *ExchangeChars(char *s, bool ToFileSystem)
 cRecording::cRecording(cTimer *Timer, const char *Subtitle, const char *Summary)
 {
   titleBuffer = NULL;
+  sortBuffer = NULL;
   fileName = NULL;
   if (Timer->IsSingleEvent() || !Setup.UseSubtitle)
      name = strdup(Timer->file);
@@ -243,6 +244,7 @@ cRecording::cRecording(cTimer *Timer, const char *Subtitle, const char *Summary)
 cRecording::cRecording(const char *FileName)
 {
   titleBuffer = NULL;
+  sortBuffer = NULL;
   fileName = strdup(FileName);
   FileName += strlen(VideoDirectory) + 1;
   char *p = strrchr(FileName, '/');
@@ -302,9 +304,48 @@ cRecording::cRecording(const char *FileName)
 cRecording::~cRecording()
 {
   delete titleBuffer;
+  delete sortBuffer;
   delete fileName;
   delete name;
   delete summary;
+}
+
+char *cRecording::StripEpisodeName(char *s)
+{
+  char *t = s, *s1 = NULL, *s2 = NULL;
+  while (*t) {
+        if (*t == '/') {
+           if (s1) {
+              if (s2)
+                 s1 = s2;
+              s2 = t;
+              }
+           else
+              s1 = t;
+           }
+        t++;
+        }
+  if (s1 && s2)
+     memmove(s1 + 1, s2, t - s2 + 1);
+  return s;
+}
+
+char *cRecording::SortName(void)
+{
+  if (!sortBuffer) {
+     char *s = StripEpisodeName(strdup(FileName() + strlen(VideoDirectory) + 1));
+     int l = strxfrm(NULL, s, 0);
+     sortBuffer = new char[l];
+     strxfrm(sortBuffer, s, l);
+     delete s;
+     }
+  return sortBuffer;
+}
+
+bool cRecording::operator< (const cListObject &ListObject)
+{
+  cRecording *r = (cRecording *)&ListObject;
+  return strcasecmp(SortName(), r->SortName()) < 0;
 }
 
 const char *cRecording::FileName(void)
@@ -409,6 +450,7 @@ bool cRecordings::Load(bool Deleted)
               delete r;
            }
      pclose(p);
+     Sort();
      result = Count() > 0;
      }
   else
