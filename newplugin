@@ -12,7 +12,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: newplugin 1.5 2002/05/14 21:22:59 kls Exp $
+# $Id: newplugin 1.6 2002/06/10 16:24:34 kls Exp $
 
 $PLUGIN_NAME = $ARGV[0] || die "Usage: newplugin <name>\n";
 
@@ -98,7 +98,7 @@ OBJS = \$(PLUGIN).o
 ### The C++ compiler and options:
 
 CXX      = g++
-CXXFLAGS = -O2 -Wall -Woverloaded-virtual -m486
+CXXFLAGS = -O2 -Wall -Woverloaded-virtual
 
 ### Implicit rules:
 
