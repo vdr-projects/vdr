@@ -8,7 +8,7 @@
  * the Linux DVB driver's 'tuxplayer' example and were rewritten to suit
  * VDR's needs.
  *
- * $Id: remux.c 1.14 2003/01/24 17:22:29 kls Exp $
+ * $Id: remux.c 1.15 2003/04/26 15:07:41 kls Exp $
  */
 
 /* The calling interface of the 'cRemux::Process()' function is defined
@@ -621,6 +621,7 @@ XXX*/
                         else if (!synced) {
                            if (pt == I_FRAME) {
                               resultDelivered = i; // will drop everything before this position
+                              SetBrokenLink(resultBuffer + i, l);
                               synced = true;
                               }
                            else {
@@ -667,3 +668,18 @@ XXX*/
   return NULL; // no useful data found, wait for more
 }
 
+void cRemux::SetBrokenLink(uchar *Data, int Length)
+{
+  if (Length > 9 && Data[0] == 0 && Data[1] == 0 && Data[2] == 1 && (Data[3] & VIDEO_STREAM_S) == VIDEO_STREAM_S) {
+     for (int i = Data[8] + 9; i < Length - 7; i++) { // +9 to skip video packet header
+         if (Data[i] == 0 && Data[i + 1] == 0 && Data[i + 2] == 1 && Data[i + 3] == 0xB8) {
+            if (!(Data[i + 7] & 0x40)) // set flag only if GOP is not closed
+               Data[i + 7] |= 0x20;
+            return;
+            }
+         }
+     dsyslog("SetBrokenLink: no GOP header found in video packet");
+     }
+  else
+     dsyslog("SetBrokenLink: no video packet in frame");
+}

@@ -169,6 +169,8 @@ Stefan Huelswitt <huels@iname.com>
  for adapting VDR to 'libdtv' version 0.0.5
  for reporting a bug in handling of Ca parameters with values <= MAXDEVICES, which
  don't indicate an actual encrypted channel
+ for implementing setting the "broken link" flag for GOPs at the beginning of a new
+ video sequence, which avoids artefacts when cutting
 
 Ulrich Röder <roeder@efr-net.de>
  for pointing out that there are channels that have a symbol rate higher than

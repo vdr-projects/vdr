@@ -2067,3 +2067,5 @@ Video Disk Recorder Revision History
   dated 2003-04-27 or higher (setting the PCR PID didn't work in earlier versions).
 - Fixed deleting the last recording in the "Recordings" menu, which started pausing
   live video (thanks to Christoph Friederich for reporting this one).
+- Now setting the "broken link" flag for GOPs at the beginning of a new video
+  sequence, which avoids artefacts when cutting (thanks to Stefan Huelswitt).
