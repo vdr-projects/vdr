@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.282 2004/01/25 14:40:00 kls Exp $
+ * $Id: menu.c 1.283 2004/02/08 14:12:23 kls Exp $
  */
 
 #include "menu.h"
@@ -723,7 +723,7 @@ eOSState cMenuChannels::Switch(void)
      return osContinue;
   cChannel *ch = GetChannel(Current());
   if (ch)
-     cDevice::PrimaryDevice()->SwitchChannel(ch, true);
+     return cDevice::PrimaryDevice()->SwitchChannel(ch, true) ? osEnd : osContinue;
   return osEnd;
 }
 

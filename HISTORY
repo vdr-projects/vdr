@@ -2646,3 +2646,5 @@ Video Disk Recorder Revision History
   value 0 (thanks to Thomas Bergwinkl).
 - Enabled switching to a channel even if it has no Vpid or Apid set, because these
   might be automatically set when tuned to that transponder.
+- No longer closing the Channels menu after trying to switch to a channel that
+  is currently not available.
