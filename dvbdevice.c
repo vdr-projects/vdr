@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.44 2003/02/09 12:41:14 kls Exp $
+ * $Id: dvbdevice.c 1.45 2003/02/16 10:58:59 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -65,7 +65,7 @@ static int DvbOpen(const char *Name, int n, int Mode, bool ReportError = false)
 
 class cDvbTuner : public cThread {
 private:
-  enum eTunerStatus { tsIdle, tsSet, tsTuned, tsLocked };
+  enum eTunerStatus { tsIdle, tsSet, tsTuned, tsLocked, tsCam };
   int fd_frontend;
   int cardIndex;
   fe_type_t frontendType;
@@ -74,7 +74,6 @@ private:
   const char *diseqcCommands;
   bool active;
   eTunerStatus tunerStatus;
-  bool caSet;
   cMutex mutex;
   cCondVar newSet;
   bool SetFrontend(void);
@@ -96,7 +95,6 @@ cDvbTuner::cDvbTuner(int Fd_Frontend, int CardIndex, fe_type_t FrontendType, cCi
   diseqcCommands = NULL;
   active = false;
   tunerStatus = tsIdle;
-  caSet = false;
   Start();
 }
 
@@ -119,7 +117,8 @@ void cDvbTuner::Set(const cChannel *Channel, bool Tune)
   channel = *Channel;
   if (Tune)
      tunerStatus = tsSet;
-  caSet = false;
+  else if (tunerStatus == tsCam)
+     tunerStatus = tsLocked;
   newSet.Broadcast();
 }
 
@@ -251,31 +250,39 @@ void cDvbTuner::Action(void)
            if (status & FE_HAS_LOCK)
               tunerStatus = tsLocked;
            }
-        dvb_frontend_event event;
-        if (ioctl(fd_frontend, FE_GET_EVENT, &event) == 0) {
-           if (tunerStatus != tsIdle && event.status & FE_REINIT) {
-              tunerStatus = tsSet;
-              esyslog("ERROR: frontend %d was reinitialized - re-tuning", cardIndex);
-              continue;
+        if (tunerStatus != tsIdle) {
+           dvb_frontend_event event;
+           if (ioctl(fd_frontend, FE_GET_EVENT, &event) == 0) {
+              if (event.status & FE_REINIT) {
+                 tunerStatus = tsSet;
+                 esyslog("ERROR: frontend %d was reinitialized - re-tuning", cardIndex);
+                 continue;
+                 }
               }
-           }
-        if (ciHandler) {
-           ciHandler->Process();
-           if (!caSet) {//XXX TODO update in case the CA descriptors have changed
-              uchar buffer[2048];
-              int length = cSIProcessor::GetCaDescriptors(channel.Source(), channel.Frequency(), channel.Sid(), sizeof(buffer), buffer);
-              if (length > 0) {
-                 cCiCaPmt CaPmt(channel.Sid());
-                 CaPmt.AddCaDescriptor(length, buffer);
-                 if (channel.Vpid())
-                    CaPmt.AddPid(channel.Vpid());
-                 if (channel.Apid1())
-                    CaPmt.AddPid(channel.Apid1());
-                 if (channel.Apid2())
-                    CaPmt.AddPid(channel.Apid2());
-                 if (channel.Dpid1())
-                    CaPmt.AddPid(channel.Dpid1());
-                 caSet = ciHandler->SetCaPmt(CaPmt);
+           if (tunerStatus >= tsLocked) {
+              if (ciHandler) {
+                 if (ciHandler->Process()) {
+                    if (tunerStatus != tsCam) {//XXX TODO update in case the CA descriptors have changed
+                       uchar buffer[2048];
+                       int length = cSIProcessor::GetCaDescriptors(channel.Source(), channel.Frequency(), channel.Sid(), sizeof(buffer), buffer);
+                       if (length > 0) {
+                          cCiCaPmt CaPmt(channel.Sid());
+                          CaPmt.AddCaDescriptor(length, buffer);
+                          if (channel.Vpid())
+                             CaPmt.AddPid(channel.Vpid());
+                          if (channel.Apid1())
+                             CaPmt.AddPid(channel.Apid1());
+                          if (channel.Apid2())
+                             CaPmt.AddPid(channel.Apid2());
+                          if (channel.Dpid1())
+                             CaPmt.AddPid(channel.Dpid1());
+                          if (ciHandler->SetCaPmt(CaPmt))
+                             tunerStatus = tsCam;
+                          }
+                       }
+                    }
+                 else
+                    tunerStatus = tsLocked;
                  }
               }
            }

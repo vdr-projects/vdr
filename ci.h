@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.h 1.2 2003/02/09 11:44:00 kls Exp $
+ * $Id: ci.h 1.3 2003/02/16 10:55:21 kls Exp $
  */
 
 #ifndef __CI_H
@@ -95,7 +95,7 @@ private:
 public:
   ~cCiHandler();
   static cCiHandler *CreateCiHandler(const char *FileName);
-  void Process(void);
+  bool Process(void);
   bool EnterMenu(int Slot);
   cCiMenu *GetMenu(void);
   cCiEnquiry *GetEnquiry(void);

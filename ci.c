@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 1.6 2003/02/15 14:14:57 kls Exp $
+ * $Id: ci.c 1.7 2003/02/16 11:20:55 kls Exp $
  */
 
 /* XXX TODO
@@ -1423,8 +1423,9 @@ int cCiHandler::CloseAllSessions(int Slot)
   return result;
 }
 
-void cCiHandler::Process(void)
+bool cCiHandler::Process(void)
 {
+  bool result = true;
   cMutexLock MutexLock(&mutex);
   for (int Slot = 0; Slot < numSlots; Slot++) {
       tc = tpl->Process(Slot);
@@ -1453,8 +1454,10 @@ void cCiHandler::Process(void)
               }
             }
          }
-      else if (CloseAllSessions(Slot))
+      else if (CloseAllSessions(Slot)) {
          tpl->ResetSlot(Slot);
+         result = false;
+         }
       else if (tpl->ModuleReady(Slot)) {
          dbgprotocol("Module ready in slot %d\n", Slot);
          tpl->NewConnection(Slot);
@@ -1464,6 +1467,7 @@ void cCiHandler::Process(void)
       if (sessions[i])
          sessions[i]->Process();
       }
+  return result;
 }
 
 bool cCiHandler::EnterMenu(int Slot)
