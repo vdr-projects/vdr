@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.h 1.16 2000/09/17 12:15:05 kls Exp $
+ * $Id: dvbapi.h 1.17 2000/10/01 14:28:49 kls Exp $
  */
 
 #ifndef __DVBAPI_H
@@ -20,6 +20,7 @@ typedef unsigned char __u8;
 #endif
 #include <stdio.h>
 #include <dvb.h>
+#include "dvbosd.h"
 
 // Overlay facilities
 #define MAXCLIPRECTS 100
@@ -30,22 +31,6 @@ typedef struct CRect {
 #define MenuLines   15
 #define MenuColumns 40
 
-enum eDvbColor { clrBackground,
-#ifndef DEBUG_OSD
-                 clrOBSOLETE, //FIXME apparently color '1' can't be used as FgColor with e.g. clrRed as BgColor???
-                 clrBlack,
-#else
-                 clrBlack = clrBackground,
-#endif
-                 clrRed,
-                 clrGreen,
-                 clrYellow,
-                 clrBlue,
-                 clrMagenta,
-                 clrCyan,
-                 clrWhite,
-               };
-                  
 class cDvbApi {
 private:
   int videoDev;
@@ -106,6 +91,8 @@ private:
   enum { MaxColorPairs = 16 };
   int colorPairs[MaxColorPairs];
   void SetColor(eDvbColor colorFg, eDvbColor colorBg = clrBackground);
+#else
+  cDvbOsd *osd;
 #endif
   int cols, rows;
   void Cmd(OSD_Command cmd, int color = 0, int x0 = 0, int y0 = 0, int x1 = 0, int y1 = 0, const void *data = NULL);
@@ -116,6 +103,7 @@ public:
   void Fill(int x, int y, int w, int h, eDvbColor color = clrBackground);
   void ClrEol(int x, int y, eDvbColor color = clrBackground);
   void Text(int x, int y, const char *s, eDvbColor colorFg = clrWhite, eDvbColor colorBg = clrBackground);
+  void Flush(void);
 
   // Progress Display facilities
 

@@ -13,7 +13,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.c 1.3 2000/09/17 15:23:05 kls Exp $
+ * $Id: eit.c 1.4 2000/10/01 14:09:05 kls Exp $
  ***************************************************************************/
 
 #include "eit.h"
@@ -424,9 +424,8 @@ int cEIT::SetProgramNumber(unsigned short pnr)
 		evtRunning.bIsValid = false;
 		evtNext.bIsValid = false;
 		uProgramNumber = pnr;
-		return GetEIT();
 	}
-	return (IsValid() ? 1 : -1);
+	return 1;
 }
 
 /** retrieves the string for the running title */
@@ -503,6 +502,7 @@ char * cEIT::GetNextTime()
 /**  */
 bool cEIT::IsValid()
 {
+	GetEIT();
 	return (evtRunning.bIsValid && evtNext.bIsValid);
 }
 

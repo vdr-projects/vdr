@@ -1,10 +1,10 @@
 /*
- * recording.h: Recording file handling
+ * recording.c: Recording file handling
  *
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.15 2000/07/29 14:08:17 kls Exp $
+ * $Id: recording.c 1.16 2000/10/03 10:33:40 kls Exp $
  */
 
 #define _GNU_SOURCE
