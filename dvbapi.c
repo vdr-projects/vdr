@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.13 2000/07/15 16:03:13 kls Exp $
+ * $Id: dvbapi.c 1.14 2000/07/16 15:28:50 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -1337,7 +1337,7 @@ bool cDvbApi::SetChannel(int FrequencyMHz, char Polarization, int Diseqc, int Sr
      front.freq      = freq * 1000000UL;
      front.diseqc    = Diseqc;
      front.srate     = Srate * 1000;
-     front.volt      = (Polarization == 'v') ? 0 : 1;
+     front.volt      = (Polarization == 'v' || Polarization == 'V') ? 0 : 1;
      front.video_pid = Vpid;
      front.audio_pid = Apid;
      front.fec       = 8;

@@ -80,3 +80,5 @@ Video Disk Recorder Revision History
 - Channel names and timer filenames can now contain blanks. To avoid problems
   with file names that contain blanks, all blanks in recording file names are
   converted to underscores.
+- The polarization can now be given in uppercase or lowercase characters in
+  channels.conf.
