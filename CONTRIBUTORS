@@ -242,3 +242,6 @@ Bernd Zierath <b.zierath@ebv.com>
 
 Truls Slevigen <truls@slevigen.no>
  for translating OSD texts to the Norwegian language
+
+Ruben Nunez Francisco <ruben.nunez@tang-it.com>
+ for implementing FreeDiskSpaceMB() without external 'df' command

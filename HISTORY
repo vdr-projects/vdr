@@ -1155,3 +1155,5 @@ Video Disk Recorder Revision History
 - Added units to Setup parameters.
 - Changed time entry in the 'Jump' command during replay, so that it is filled
   up from right to left.
+- Now using statfs() to determine the amount of free disk space, which avoids
+  the use of an external 'df' command (thanks to Ruben Nunez Francisco).
