@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: font.c 1.9 2004/10/23 14:06:01 kls Exp $
+ * $Id: font.c 1.10 2004/12/18 13:41:19 kls Exp $
  */
 
 #include "config.h"
@@ -12,9 +12,9 @@
 #include "font.h"
 #include "tools.h"
 
-#include "fontfix.c"
-#include "fontosd.c"
-#include "fontsml.c"
+#include "fontfix-iso8859-1.c"
+#include "fontosd-iso8859-1.c"
+#include "fontsml-iso8859-1.c"
 
 #include "fontfix-iso8859-2.c"
 #include "fontosd-iso8859-2.c"
