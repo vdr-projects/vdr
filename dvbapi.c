@@ -7,11 +7,10 @@
  * DVD support initially written by Andreas Schultz <aschultz@warp10.net>
  * based on dvdplayer-0.5 by Matjaz Thaler <matjaz.thaler@guest.arnes.si>
  *
- * $Id: dvbapi.c 1.100 2001/08/06 16:19:20 kls Exp $
+ * $Id: dvbapi.c 1.101 2001/08/06 16:24:13 kls Exp $
  */
 
 //#define DVDDEBUG        1
-//#define DVDDEBUG_BUFFER 1
 
 #include "dvbapi.h"
 #include <dirent.h>
@@ -1262,7 +1261,6 @@ unsigned int cDVDplayBuffer::getAudioStream(unsigned int StreamId)
      return 0;
   if (!(cur_pgc->audio_control[StreamId] & 0x8000))
      return 0;
-  //FIXME: maybe we can use the values directly???
   int track = (cur_pgc->audio_control[StreamId] >> 8) & 0x07;
   switch (vts_file->vtsi_mat->vts_audio_attr[track].audio_format) {
     case 0: // ac3
@@ -1285,7 +1283,7 @@ void cDVDplayBuffer::ToggleAudioTrack(void)
 {
   unsigned int newTrack;
 
-  if (CanToggleAudioTrack()) {
+  if (CanToggleAudioTrack() && maxAudioTrack != 0) {
      logAudioTrack = (logAudioTrack + 1) % maxAudioTrack;
      if ((newTrack = getAudioStream(logAudioTrack)) != 0)
         audioTrack = newTrack;
@@ -1407,6 +1405,7 @@ void cDVDplayBuffer::Input(void)
                      if (!(cur_pgc->audio_control[maxAudioTrack] & 0x8000))
                         break;
                      }
+                 canToggleAudioTrack = (maxAudioTrack > 0);
                  // init the AudioInformation
                  audioTrack = getAudioStream(logAudioTrack);
 #ifdef DVDDEBUG
