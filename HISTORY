@@ -434,3 +434,4 @@ Video Disk Recorder Revision History
 - The 'runvdr' script now kills any leftover vdr threads before restarting it.
 - Fixed a problem with Daylight Saving Time when displaying the times of
   recordings.
+- Added Dutch language texts (thanks to Arnold Niessen).
