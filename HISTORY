@@ -3273,8 +3273,7 @@ Video Disk Recorder Revision History
   the left and right stereo channels in case there are different audio tracks
   in these channels (see MANUAL for details).
   Currently there is no visual indicator of the audio channel, yet, and it
-  doesn't work with the selected audio languages. It also doesn't appear to
-  work with some DVB cards (esp. the Siemens DVB-S Rev 1.3).
+  doesn't work with the selected audio languages.
 - Fixed a possible race condition in cDevice::Action() (thanks to Mattias Grönlund).
 - Fixed the default quality value when grabbing a JPEG image (thanks to Patrick
   Gleichmann).
