@@ -12,7 +12,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: newplugin 1.3 2002/05/12 10:14:47 kls Exp $
+# $Id: newplugin 1.4 2002/05/12 15:02:13 kls Exp $
 
 $PLUGIN_NAME = $ARGV[0] || die "Usage: newplugin <name>\n";
 
@@ -82,7 +82,8 @@ VDRVERSION = `grep 'define VDRVERSION ' \$(VDRDIR)/config.h | awk '{ print \$\$3
 
 ### The name of the distribution archive:
 
-ARCHIVE = vdr-\$(PLUGIN)-\$(VERSION)
+ARCHIVE = \$(PLUGIN)-\$(VERSION)
+PACKAGE = vdr-\$(ARCHIVE)
 
 ### Includes and Defines (add further entries here):
 
@@ -125,9 +126,9 @@ package: clean
 	\@-rm -rf \$(TMPDIR)/\$(ARCHIVE)
 	\@mkdir \$(TMPDIR)/\$(ARCHIVE)
 	\@cp -a * \$(TMPDIR)/\$(ARCHIVE)
-	\@tar czf \$(ARCHIVE).tgz -C \$(TMPDIR) \$(ARCHIVE)
+	\@tar czf \$(PACKAGE).tgz -C \$(TMPDIR) \$(ARCHIVE)
 	\@-rm -rf \$(TMPDIR)/\$(ARCHIVE)
-	\@echo Distribution archive created as \$(ARCHIVE).tgz
+	\@echo Distribution package created as \$(PACKAGE).tgz
 
 clean:
 	\@-rm -f \$(OBJS) \$(DEPFILE) *.so *.tgz core* *~

@@ -117,21 +117,25 @@ from the web, it will typically have a name like
 <p>
 and will unpack into a directory named
 <p>
-<tt>vdr-hello-0.0.1</tt>
+<!--X1.1.2--><table width=100%><tr><td bgcolor=red>&nbsp;</td><td width=100%>
+<tt>hello-0.0.1</tt>
+<!--X1.1.2--></td></tr></table>
 <p>
 To use the <tt>plugins</tt> and <tt>plugins-clean</tt> targets from the VDR <tt>Makefile</tt>
 you need to unpack such an archive into the <tt>VDR/PLUGINS/src</tt> directory and
 create a symbolic link with the basic plugin name, as in
 
+<!--X1.1.2--><table width=100%><tr><td bgcolor=red>&nbsp;</td><td width=100%>
 <p><table><tr><td bgcolor=#F0F0F0><pre><br>
-ln -s vdr-hello-0.0.1 hello
+ln -s hello-0.0.1 hello
 </pre></td></tr></table><p>
 
 Since the VDR <tt>Makefile</tt> only searches for directories with names consisting
 of only lowercase characters and digits, it will only follow the symbolic links, which
 should lead to the current version of the plugin you want to use. This way you can
-have several different versions of a plugin source (like <tt>vdr-hello-0.0.1</tt> and
-<tt>vdr-hello-0.0.2</tt>) and define which one to actually use through the symbolic link.
+have several different versions of a plugin source (like <tt>hello-0.0.1</tt> and
+<tt>hello-0.0.2</tt>) and define which one to actually use through the symbolic link.
+<!--X1.1.2--></td></tr></table>
 
 <a name="Initializing a new plugin directory"><hr><h2>Initializing a new plugin directory</h2>
 

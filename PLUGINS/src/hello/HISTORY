@@ -13,3 +13,4 @@ VDR Plugin 'hello' Revision History
 
 - Changed return type of cPluginHello::Start().
 - Added cPluginHello::Housekeeping().
+- Modified package generation.
