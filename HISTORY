@@ -2139,3 +2139,5 @@ Video Disk Recorder Revision History
   written.
 - Implemented separate PausePriority and PauseLifetime parameters for the recordings
   created when pausing live video (suggested by Alfred Zastrow).
+- Changed C++ style comments in libdtv into C style to avoid warnings in gcc 3.x
+  (thanks to Andreas Schultz).

@@ -202,6 +202,7 @@ Andreas Schultz <aschultz@warp10.net>
  for making EIT filtering use masks to reduce the number of filters
  for suggesting to remove the Mute() call from cDvbDevice::StillPicture()
  for suggesting to separate the startup of a plugin into an "early" and a "late" phase
+ for changing C++ style comments in libdtv into C style to avoid warnings in gcc 3.x
 
 Aaron Holtzman
  for writing 'ac3dec'
