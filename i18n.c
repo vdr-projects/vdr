@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.103 2003/01/26 11:46:46 kls Exp $
+ * $Id: i18n.c 1.104 2003/03/30 10:04:56 kls Exp $
  *
  * Translations provided by:
  *
@@ -210,7 +210,7 @@ const tI18nPhrase Phrases[] = {
     "Nauhoituskomennot",
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Entoles gia egrafes",// TODO
     "Inspelningskommandon",
     "",// TODO
     "",// TODO
@@ -226,7 +226,7 @@ const tI18nPhrase Phrases[] = {
     "Muokkaa kanavaa",
     "Ustawienie kanalu",
     "Modificar canal",
-    "Prosarmoges kanaliou",
+    "Prosarmogi kanaliou",
     "Ändra kanal",
     "Editare canale",
     "Csatornák beállítása",
@@ -242,7 +242,7 @@ const tI18nPhrase Phrases[] = {
     "Muokkaa ajastusta",
     "Ustawienie timerow",
     "Modificar timer",
-    "Prosarmoges programmatismou",
+    "Prosarmogi Programmatismou",
     "Ändra timer",
     "Editare timere",
     "Felvétel beprogramozásának megváltoztatása",
@@ -306,7 +306,7 @@ const tI18nPhrase Phrases[] = {
     "Nykyinen ohjelma",
     "Program biezacy",
     "¿Qué hay ahora?",
-    "Ti pezi tora",
+    "Trexon Programma",
     "Vilket program sänds nu?",
     "Programul actual?",
     "Mi megy most?",
@@ -322,7 +322,7 @@ const tI18nPhrase Phrases[] = {
     "Seuraava ohjelma",
     "Program nastepny",
     "¿Qué hay proximo?",
-    "Ti tha peksi meta",
+    "Epomeno Programma",
     "Vilket är nästa program?",
     "Programul urmator?",
     "Mi következik?",
@@ -371,7 +371,7 @@ const tI18nPhrase Phrases[] = {
     "Poista",
     "Usunac",
     "Borrar",
-    "Swisimo",
+    "Diagrafi",
     "Ta bort",
     "Sterge",
     "Törölni",
@@ -387,7 +387,7 @@ const tI18nPhrase Phrases[] = {
     "Merkitse",
     "Zaznaczyc",
     "Marcar",
-    "Markarisma",
+    "Epilogi",
     "Märk",
     "Marcheaza",
     "Megjelölni",
@@ -403,7 +403,7 @@ const tI18nPhrase Phrases[] = {
     "Päällä/Pois",
     "Zal./ Wyl.",
     "On/Off",
-    "Energo/Klisto",
+    "Anoixto/Kleisto",
     "På/Av",
     "Pornit/Oprit",
     "Be/Ki",
@@ -435,7 +435,7 @@ const tI18nPhrase Phrases[] = {
     "Toista",
     "Odtwarzac",
     "Play",
-    "Anametadosi",
+    "Anaparagogi",
     "Spela upp",
     "Redare",
     "Lejátszani",
@@ -611,7 +611,7 @@ const tI18nPhrase Phrases[] = {
     "Avaa",
     "Wyrzucenie",
     "Eyectar",
-    "Apovoli",
+    "Exsagogi",
     "Mata ut",
     "Ejecteaza",
     "Kidobni",
@@ -691,7 +691,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Epanafora",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -708,7 +708,7 @@ const tI18nPhrase Phrases[] = {
     "Poistetaanko kanava?",
     "Usunac kanal?",
     "¿Eliminar canal?",
-    "Na sviso to kanali?",
+    "Diagrafi Kanaliou?",
     "Ta bort kanalen?",
     "Sterg canalul?",
     "Csatorna törlése?",
@@ -724,7 +724,7 @@ const tI18nPhrase Phrases[] = {
     "Poistetaanko ajastus?",
     "Usunac timer?",
     "¿Eliminar timer?",
-    "Svisimo tou programmitismou?",
+    "Diagrafi programmitismou?",
     "Ta bort timern?",
     "Sterg timer-ul?",
     "Felvétel beprogramozásának törlése?",
@@ -740,7 +740,7 @@ const tI18nPhrase Phrases[] = {
     "Poistetaanko nauhoitus?",
     "Usunac nagranie?",
     "¿Eliminar grabacion?",
-    "Svisimo tis egrafis?",
+    "Svisimo egrafis?",
     "Ta bort inspelningen?",
     "Sterg inregistrarea?",
     "Felvétel törlése?",
@@ -756,7 +756,7 @@ const tI18nPhrase Phrases[] = {
     "Ajastin nauhoittaa - poistetaanko silti?",
     "Nagrywanie w trakcie - napewno usunac?",
     "¿Timer activo - de verdad eliminarlo?",
-    "Ginete akoma programmatismeni egrafi - na svisti sigoura?",
+    "Programmatismos se exselixsi - Diagrafi sigoura?",
     "Timerstyrd inspelning pågår - Avbryta ändå?",
     "Timer-ul in inregistrare - sterg?",
     "Felvétel folyamatban van - mégis törölni?",
@@ -804,7 +804,7 @@ const tI18nPhrase Phrases[] = {
     "Peruutetaanko muokkaus?",
     "Zakonczyc montaz?",
     "¿Cancelar modificación?",
-    "Akirosi alagon?",
+    "Akirosi kopsimatos?",
     "Avbryta editeringen?",
     "Opresc editarea?",
     "Vágást befejezni?",
@@ -836,7 +836,7 @@ const tI18nPhrase Phrases[] = {
     "Nauhoitus käynnissä - aloitetaanko alusta?",
     "Nagrywanie w trakcie - rzeczywiscie nowy start?",
     "¿Grabando - reiniciar?",
-    "Ginete egrafi - na gini epanekinisi sigoura?",
+    "Ginete egrafi - Telika na ginei epanekinisi?",
     "Inspelning pågår, vill du starta om i alla fall?",
     "In inregistrare - repornesc?",
     "Felvétel folyamatban van - mégis újraindítani?",
@@ -852,7 +852,7 @@ const tI18nPhrase Phrases[] = {
     "Nauhoitus kesken - lopetetaanko se?",
     "Nagrywanie w trakcie - mimo to wylaczyc?",
     "¿Grabando - apagar?",
-    "Ginete egrafi - na stamatisi i litourgia sigoura?",
+    "Ginete egrafi - Telika na ginei termatismos?",
     "Inspelning pågår, vill du avbryta i alla fall?",
     "In inregistrare - opresc?",
     "Felvétel folyamatban van - mégis kikapcsolni?",
@@ -868,7 +868,7 @@ const tI18nPhrase Phrases[] = {
     "Nauhoitus alkaisi %d min. kuluttua - sammutetaanko silti?",
     "Nagrywanie za %d minut - mimo to wylaczyc?",
     "¿Grabando en %d minutos, de verdad cortar?",
-    "Anamenete egrafi se %d lepta - na stamatisi i litourgia sigoura?",
+    "Anamenete egrafi se %d lepta - Telika na termatistei?",
     "Inspelning startar om %d minuter, vill du avsluta?",
     "Inregistrez in %d minute, opresc?",
     "Felvétel %d perc mulva kezdödik - mégis kikapcsolni?",
@@ -884,7 +884,7 @@ const tI18nPhrase Phrases[] = {
     "Peruuta pysäytys painamalla jotakin näppäintä",
     "Dowolny przycisk zatrzyma wylaczanie",
     "Pulse una tecla para interrumpir corte",
-    "Piese ena pliktro na stamatisi to katevasma",
+    "Piese ena pliktro na akirothei o termatismos",
     "Tryck valfri knapp för att avbryta nedstängning",
     "Apasa orice tasta pentru a anula inchiderea",
     "Nyomj egy gombot a leállás megállításához",
@@ -949,7 +949,7 @@ const tI18nPhrase Phrases[] = {
     "Lähde",
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Pigi",//TODO
     "Källa",
     "",//TODO
     "",//TODO
@@ -1383,7 +1383,7 @@ const tI18nPhrase Phrases[] = {
     "Kanava on ajastimen käytössä!",
     "Kanal jest zajety przez timer nagran",
     "¡Canal está ocupado por un timer!",
-    "To kanali xrisimopiite apo programmatismeni thesi",
+    "To kanali xrisimopiite apo kapoion programmatismo!",
     "Kanalen används av en timer!",
     "Canalul este utilizat de un timer!",
     "Csatornát más használja!",
@@ -1399,7 +1399,7 @@ const tI18nPhrase Phrases[] = {
     "Kanavan vaihtaminen ei mahdollista!",
     "Kanal nie moze byc teraz przelaczony!",
     "¡No puedo cambiar canal!",
-    "Den mporo na pao sto kanali!",
+    "Adinati i allagi kanaliou!",
     "Omöjligt att byta kanal!",
     "Nu pot comuta canalul!",
     "Csatornát nem lehet átkapcsolni!",
@@ -1431,7 +1431,7 @@ const tI18nPhrase Phrases[] = {
     "Nauhoituksen toistaminen epäonnistui!",
     "Blad - brak dostepu do nagrania!",
     "¡Error al accesar la grabación!",
-    "Lathos stin evresi tis egrafis!",
+    "Provlima stin prospelasi egrafis!",
     "Det går inte att läsa inspelningen",
     "Eroare in timpul accesarii inregistrarii",
     "Hiba a felvétel hozzáférésénél",
@@ -1447,7 +1447,7 @@ const tI18nPhrase Phrases[] = {
     "Nauhoituksen poistaminen epäonnistui!",
     "Blad przy usuwaniu nagrania!",
     "¡Error al borrar la grabación!",
-    "Lathos stin prospathia na svisti i egrafi!",
+    "Provlima sto svisimo egrafis !",
     "Det går inte att ta bort inspelningen",
     "Eroare in timpul stergerii inregistrarii!",
     "Hiba a felvétel törlésénél!",
@@ -1463,7 +1463,7 @@ const tI18nPhrase Phrases[] = {
     "*** Virheellinen kanavavalinta! ***",
     "*** Niewazny kanal ***",
     "*** Canal inválido ***",
-    "*** Kanali akiro ***",
+    "*** Akiro Kanali ***",
     "*** Felaktig kanal ***",
     "*** Canal invalid ***",
     "*** Érvénytelen csatorna ***",
@@ -1479,7 +1479,7 @@ const tI18nPhrase Phrases[] = {
     "Ei vapaata vastaanotinta nauhoitusta varten!",
     "Brak wolnej karty DVB do nagrywania!",
     "¡No hay dispositivo DVB disponible para grabar!",
-    "Den iparxi elevteri DVB Karta gia egrafi!",
+    "Den periseuei DVB Karta gia egrafi!",
     "Det finns ingen ledig DVB enhet för inspelning!",
     "Nu mai sunt dispozitive DVB pentru inregistrare!",
     "Nincs szabad DVB kártya a felvételhez!",
@@ -1495,7 +1495,7 @@ const tI18nPhrase Phrases[] = {
     "Kanavaa ei voi katsoa nyt!",
     "",//TODO
     "",//TODO
-    "",//TODO
+    "To kanali den ine diathesimo",
     "Kanalen ej tillgänglig!",
     "",//TODO
     "",//TODO
@@ -1511,7 +1511,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Ta kanalia stin lista den ine monadika!",
     "Kanalinställningarna är ej unika!",
     "",//TODO
     "",//TODO
@@ -1527,7 +1527,7 @@ const tI18nPhrase Phrases[] = {
     "Kanava lukittu (nauhoitusta varten)!",
     "Kanal zablokowany (nagrywanie w toku)!",
     "¡Canal bloqueado (grabando)!",
-    "To kanali ine mplokarismeno (Ginete egrafi)!",
+    "To kanali ine klidomeno (Ginete egrafi)!",
     "Kanalen är låst (inspelning pågår)!",
     "Canal blocat (inregistrare)!",
     "Csatorna hozzáférhetetlen (felvétel)!",
@@ -1543,7 +1543,7 @@ const tI18nPhrase Phrases[] = {
     "Käsittämättömiä teknisiä ongelmia!",
     "Tryb transferowy jest niemozliwy!",
     "¡No puedo iniciar modo de transferencia!",
-    "Den mpori na arxisi to Transfer-Mode!",
+    "Adinamia ekinisis katastasis metaforas!",
     "Kan inte starta Transfer Mode!",
     "Nu pot porni Modul de Transfer!",
     "Transfer-Mode nem indítható!",
@@ -1559,7 +1559,7 @@ const tI18nPhrase Phrases[] = {
     "Muokkauksen aloittaminen ei onnistu!",
     "Uruchamianie montazu jest niemozliwe!",
     "¡No puedo iniciar proceso de modificación!",
-    "Den mpori na arxisi to kopsimo tis tenias!",
+    "Adinamia ekinisis tis epexsergasias!",
     "Kan inte starta editering!",
     "Nu pot porni procesul de editare!",
     "A vágás nem indítható!",
@@ -1575,7 +1575,7 @@ const tI18nPhrase Phrases[] = {
     "Muokkaus on jo käynnissä!",
     "Montaz w toku!",
     "¡Proceso de modificación ya fue iniciado!",
-    "To kopsimo ti tenias ini idi se litourgia!",
+    "Epexsergasia vriskete se exselixsi!",
     "Editering är redan aktiv!",
     "Procesul de editare este activ!",
     "A vágás már aktivált!",
@@ -1591,7 +1591,7 @@ const tI18nPhrase Phrases[] = {
     "Ei voida sammuttaa '-s' parametria ei annettu!",
     "Wylaczenie niemozliwe - brak opcji '-s'!",
     "¡No puedo cortar - opción '-s' absente!",
-    "Den mporo na kliso ton ipologisti. Lipi i parametros '-s'!",
+    "Adinaton na ginei termatismos. Aniparkti i parametros '-s'!",
     "Kan inte avsluta, måste använda flagga '-s'",
     "Nu pot opri calculatorul - vezi optiunea '-s'",
     "A leállítás nem lehetséges - Opció '-s' hiányzik!",
@@ -1623,7 +1623,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Den mpori na aniksi to CAM menou!",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -1639,7 +1639,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Adinato na gini epanafora sto CAM",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -1655,7 +1655,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Sto CAM egine apanafora",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -1945,7 +1945,7 @@ const tI18nPhrase Phrases[] = {
     "Valikkojen rullaus",
     "Przesuwac stronami",
     "Desplazar página entera",
-    "Scroll selidas",
+    "Kilisi selidas",
     "Bläddra sidor",
     "Deruleaza pagini",
     "Oldalanként léptetmi",
@@ -1977,7 +1977,7 @@ const tI18nPhrase Phrases[] = {
     "Nauhoitushakemistot",
     "Wykaz nagran",
     "Directorios para grabación",
-    "Fakeli egrafon",
+    "Fakeloi egrafon",
     "Kataloger för inspelningar",
     "Directoare inregistrari",
     "Felvételek listája",
@@ -1993,7 +1993,7 @@ const tI18nPhrase Phrases[] = {
     "Ohjelmatied. odotusaika (h)",
     "Czas do skanu EPG (h)",
     "Tiempo hasta exploración EPG (h)",
-    "Xronos mexri sarosi EPG se Ores",
+    "Xronos mexri eksetasi EPG se Ores",
     "EPG sökning timeout",
     "Timeout EPG",
     "Fennmaradt idö az EPG-g (h)",
@@ -2041,7 +2041,7 @@ const tI18nPhrase Phrases[] = {
     "Vastaanota kellonaika lähettimeltä",
     "Transponder do ustawiania czasu",
     "Transponder para reloj de sistema",
-    "Transponder gia sintonismo tis oras",
+    "Anametadotis gia sintonismo tis oras",
     "Använd klockan från transponder",
     "Preia ceasul din transponder",
     "Idöhöz tartozó Transponder",
@@ -2201,7 +2201,7 @@ const tI18nPhrase Phrases[] = {
     "PrimaryLimit",
     "Pierwotny limit",
     "L'mite primario",
-    "Protevon limit",
+    "Protevon orio",
     "Primär gräns",
     "Limita Primara",
     "Primér-határ",
@@ -2265,7 +2265,7 @@ const tI18nPhrase Phrases[] = {
     "Merkitse välitön nauh.",
     "Zaznaczyc natychm. nagranie",
     "Marcar grabaciones instantáneas",
-    "Markarisma apevthias egrafis",
+    "Epilogi trexon egrafis",
     "Märk direktinspelning",
     "Inregistrare imediata",
     "Direktfelvétel megjelölése",
@@ -2281,7 +2281,7 @@ const tI18nPhrase Phrases[] = {
     "Nimeä välitön nauh.",
     "Nazwac natychm. nagranie",
     "Nombrar grabaciones instantáneas",
-    "eponomasi apevthias egrafis",
+    "eponomasi trexon egrafis",
     "Namnge direktinspelning",
     "Nume inregistrare imediata",
     "Direktfelvétel megnevezése",
@@ -2297,7 +2297,7 @@ const tI18nPhrase Phrases[] = {
     "Pikanauhoituksen pituus (min)",
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Stigmiees egrafes xronos (lepta)",
     "Direktinspelning längd (min)",
     "Timpul de inregistarea imediata (min)",
     "Felvétel idötartama",
@@ -2345,7 +2345,7 @@ const tI18nPhrase Phrases[] = {
     "Paloittele muokatut",
     "Dzielic montowane pliki",
     "Quebrar ficheros",
-    "Diamelisma epeksergasm. arxeion",
+    "Diamelisma epeksergasmenon arxeion",
     "Dela upp editerade filer",
     "Separare fisiere editate",
     "Feldolgozott File-k felosztása",
@@ -2361,7 +2361,7 @@ const tI18nPhrase Phrases[] = {
     "Moninopeustila",
     "Tryb wielopredkosciowy",
     "Modo multi-velocidad",
-    "Multispeed modus",
+    "Multispeed mode",
     "Multispeed mode",
     "Mod multi-rata",
     "MultiSpeed funkció",
@@ -2377,7 +2377,7 @@ const tI18nPhrase Phrases[] = {
     "Näytä toiston tila",
     "Wyswietlac status odtwarzania",
     "Mostrar modo de replay",
-    "Endiksi  status anametadosis",
+    "Endiksi katastasis anametadosis",
     "Visa uppspelnings mode",
     "Afiseaza modul de redare",
     "Lejátszás feltüntetése",
@@ -2492,7 +2492,7 @@ const tI18nPhrase Phrases[] = {
     "Kaukosäätimen näppäinten opettelu (%s)",
     "Nauka kodu pilota (%s)",
     "Aprendiendo teclas del telemando (%s)",
-    "Ekmathisi Remote Control (%s)",
+    "Ekmathisi pliktron tilexirismou (%s)",
     "Inlärning av fjärrkontrollsknappar (%s)",
     "Invatare taste telecomanda (%s)",
     "Távirányító betanítása (%s)",
@@ -2508,7 +2508,7 @@ const tI18nPhrase Phrases[] = {
     "Vaihe 1: Lähetystavan selvittäminen",
     "Faza 1: Detekcja typu kodu",
     "Fase 1: Detectando tipo de receptor",
-    "Phasi 1: Dilosi RC Code",
+    "Phasi 1: Anixneusi kodika RC",
     "Steg1: identifiering av RC kod",
     "Faza 1: Detectie tip telecomanda",
     "Elsö lépés: távirányító kódjának meghatározása",
@@ -2524,7 +2524,7 @@ const tI18nPhrase Phrases[] = {
     "Paina mitä tahansa kaukosäätimen näppäintä",
     "Nacisnac klawisz pilota",
     "Pulse una tecla en el telemando",
-    "Pata ena pliktro sto RC",
+    "Piese ena pliktro sto tilexiristirio",
     "Tryck valfri tangent på fjärrkontrollen",
     "Apasati o tasta pe telecomanda",
     "Nyomjon meg egy gombot a távirányítón",
@@ -2540,7 +2540,7 @@ const tI18nPhrase Phrases[] = {
     "Näppäinpainallus vastaanotettu!",
     "Kod pilota zostal poznany!",
     "¡Código detectado!",
-    "Evresi RC Code!",
+    "Evrethike kodikas RC!",
     "RC koden detekterad!",
     "S-a detectat tipul telecomenzii!",
     "Távirányító kódja felismerve!",
@@ -2556,7 +2556,7 @@ const tI18nPhrase Phrases[] = {
     "Älä paina mitään näppäintä...",
     "Nie naciskac klawiszy...",
     "No pulse tecla...",
-    "Min patas Pliktra...",
+    "Min piezeis pliktra...",
     "Tryck inte på någon knapp...",
     "Nu apasati nicio tasta...",
     "Ne nyomjon meg gombot...",
@@ -2588,7 +2588,7 @@ const tI18nPhrase Phrases[] = {
     "Paina näppäintä toiminnolle '%s'",
     "Nacisnac klawisz dla '%s'",
     "Pulsar tecla para '%s'",
-    "Pata to pliktro gia '%s'",
+    "Piese to pliktro gia '%s'",
     "Tryck på knappen för '%s'",
     "Apasati tasta pentru '%s'",
     "'%s' gomb megnyomása",
@@ -2604,7 +2604,7 @@ const tI18nPhrase Phrases[] = {
     "Paina 'Ylös' hyväksyäksesi",
     "Nacisnac 'Gora' do potwierdzenia",
     "Pulse 'Arriba' para confirmar",
-    "Pata 'pano' gia apodoxi",
+    "Piese 'pano' gia apodoxi",
     "Tryck 'Upp' för att bekräfta",
     "Apsati 'Sus' pentru confirmare",
     "'Fel' megnyomása az elfogadáshoz",
@@ -2620,7 +2620,7 @@ const tI18nPhrase Phrases[] = {
     "Paina 'Alas' jatkaaksesi",
     "Nacisnac 'Dol' zeby kontynuowac",
     "Pulse 'Abajo' para confirmar",
-    "Pata 'kato' gia sinexia",
+    "Piese 'kato' gia sinexia",
     "Tryck 'Ner' för att bekräfta",
     "Apasati jos pentru continuare",
     "'Le' megnyomása a folytatáshoz",
@@ -2636,7 +2636,7 @@ const tI18nPhrase Phrases[] = {
     "(paina 'Ylös' palataksesi takaisin)",
     "(Nacisnac 'Gora' cofa)",
     "(Pulse 'Arriba' para retornar)",
-    "(Pata 'pano' gia na pas piso)",
+    "(Piese 'pano' gia epistrofi",
     "(Tryck 'Upp' för att backa)",
     "(Apsati 'Sus' pentru revenire)",
     "(´Fel' megnyomása a visszatéréshez)",
@@ -2652,7 +2652,7 @@ const tI18nPhrase Phrases[] = {
     "(paina 'Alas' lopettaaksesi näppäinten opettelun)",
     "(Nacisnac 'Dol' by zakonczyc)",
     "(Pulse 'Abajo' para terminar programación teclas)",
-    "(Pata 'Kato' gia termatismo)",
+    "(Piese 'Kato' gia termatismo diloseon plktron)",
     "(Tryck 'Ner' för att avsluta knapp definition)",
     "(Apasati 'Jos' pentru terminare)",
     "('Le' megnyomása a befejezéshez)",
@@ -2668,7 +2668,7 @@ const tI18nPhrase Phrases[] = {
     "(Paina 'Valikko' jos näppäintä ei ole)",
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Pata 'Menou' gia prosperasi aftou tou pliktrou",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -2700,7 +2700,7 @@ const tI18nPhrase Phrases[] = {
     "Paina 'Ylös' tallettaaksesi ja 'Alas' peruuttaaksesi",
     "'Gora' zapamietuje, 'Dol' przerywa",
     "Pulse 'Arriba' para guarder, 'Abajo' para anular",
-    "'Kato' apothikevsi, 'Pano' akirosi",
+    "'Pano' apothikevsi, 'Kato' akirosi",
     "Tryck 'Upp' för att spara, 'Ner' för att avsluta",
     "Apsati 'Sus' pentru salvare, 'Jos' pentru anulare",
     "'Fel' mentés, 'Le´ mégse",
@@ -2893,7 +2893,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Anametadosi",
     "Spela upp",
     "",// TODO
     "",// TODO
@@ -2909,7 +2909,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Dialima",
     "Pausa",
     "",// TODO
     "",// TODO
@@ -2925,7 +2925,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Terma",
     "Stoppa",
     "",// TODO
     "",// TODO
@@ -2941,7 +2941,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Egrafi",
     "Spela in",
     "",// TODO
     "",// TODO
@@ -2957,7 +2957,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Girisma mprosta",
     "Spola framåt",
     "",// TODO
     "",// TODO
@@ -2973,7 +2973,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Girisma piso",
     "Spola bakåt",
     "",// TODO
     "",// TODO
@@ -3005,7 +3005,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Kanali+",
     "Kanal+",
     "",// TODO
     "",// TODO
@@ -3021,7 +3021,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Kanali-",
     "Kanal-",
     "",// TODO
     "",// TODO
@@ -3069,7 +3069,7 @@ const tI18nPhrase Phrases[] = {
     "Äänen vaimennus",
     "Cisza",
     "Mudo",
-    "Mougko",
+    "Siopilo",
     "Ljud Av",
     "Mut(e)",
     "Csend",
@@ -3118,7 +3118,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "klisto",
     "av",
     "",// TODO
     "",// TODO
@@ -3134,7 +3134,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "kanena",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -3150,7 +3150,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "aftomato",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -3294,7 +3294,7 @@ const tI18nPhrase Phrases[] = {
     " Peruuta muokkaus",
     " Przerwac montaz",
     " Anular modificación",
-    " Diakopi kopsimatos",
+    " Akirosi epexsergasias",
     " Avbryt editering",
     " Opreste editare",
     " Vágást megszakítani",
@@ -3342,7 +3342,7 @@ const tI18nPhrase Phrases[] = {
     "Muokkaus aloitettu",
     "Uruchomiony proces montazu",
     "Proceso modificación iniciado",
-    "Arxi kopsimatos",
+    "Arxi epexsergasias",
     "Editering startad",
     "Procesul de editare a inceput",
     "Vágás elindítva",
@@ -3358,7 +3358,7 @@ const tI18nPhrase Phrases[] = {
     "Muokkaus lopetettu",
     "Proces montazu zakonczony",
     "Proceso modificacion terminado",
-    "To kopsimo termatistike",
+    "I epexsergasia teliose",
     "Editering avslutad",
     "Procesul de editare s-a terminat",
     "Vágás befejezve",
@@ -3374,7 +3374,7 @@ const tI18nPhrase Phrases[] = {
     "Muokkaus epäonnistui!",
     "Bledny proces montazu!",
     "Modificación ha fallado!",
-    "Kopsimo apetixe!",
+    "I epexsergasia apetixe!",
     "Editeringsprocessen misslyckades",
     "Proces de editare nereusit",
     "Vágás sikertelen!",
@@ -3390,7 +3390,7 @@ const tI18nPhrase Phrases[] = {
     "haetaan nauhoituksia...",
     "Skan nagran...",
     "buscando grabaciones...",
-    "Ginete sarosi egrafon...",
+    "Eksetasi egrafon...",
     "Söker igenom inspelningarna...",
     "Caut inregistrari...",
     "Felvett adások böngészése...",
@@ -3406,7 +3406,7 @@ const tI18nPhrase Phrases[] = {
     "Tällä laajennoksella ei ole asetuksia!",
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Afto to plugin den exi parametrous",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -3496,4 +3496,3 @@ const char * const * I18nLanguages(void)
 {
   return &Phrases[0][0];
 }
-
