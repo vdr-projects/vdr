@@ -1228,3 +1228,5 @@ Video Disk Recorder Revision History
 - Added Greek language texts (thanks to Dimitrios Dimitrakos).
 - Fixed the unit of the "SVDRP timeout" setup parameter (thanks to Marcus Kuba
   for reporting this one).
+- Fixed a crash on systems with disks that have a block size larger than 1MB
+  (thanks to Ulrich Petri for helping to debug this one).

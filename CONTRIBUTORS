@@ -317,3 +317,7 @@ Dimitrios Dimitrakos <mail@dimitrios.de>
 
 Marcus Kuba <marcus@kuba4u.de>
  for reporting a bug in the unit of the "SVDRP timeout" setup parameter
+
+Ulrich Petri <ulope@gmx.de>
+ for his help in debugging a crash on systems with disks that have a block size
+ larger than 1MB
