@@ -567,3 +567,5 @@ Video Disk Recorder Revision History
   available).
 - Increased the buffer for key names received from LIRC (thanks to Andre
   Valentin).
+- Fixed handling a channel group separator at the very beginning of the
+  'channels.conf' file.

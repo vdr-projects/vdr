@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.79 2001/07/22 13:46:07 kls Exp $
+ * $Id: menu.c 1.80 2001/07/22 15:16:58 kls Exp $
  */
 
 #include "menu.h"
@@ -1829,11 +1829,11 @@ cDisplayChannel::~cDisplayChannel()
 
 void cDisplayChannel::DisplayChannel(const cChannel *Channel)
 {
-  if (Channel && Channel->number)
+  if (Channel && Channel->number > 0)
      Interface->DisplayChannelNumber(Channel->number);
   int BufSize = Width() + 1;
   char buffer[BufSize];
-  if (Channel && Channel->number)
+  if (Channel && Channel->number > 0)
      snprintf(buffer, BufSize, "%d%s  %s", Channel->number, number ? "-" : "", Channel->name);
   else
      snprintf(buffer, BufSize, "%s", Channel ? Channel->name : tr("*** Invalid Channel ***"));
