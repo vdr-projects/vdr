@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.40 2001/09/08 11:43:28 kls Exp $
+ * $Id: i18n.c 1.41 2001/09/08 15:01:12 kls Exp $
  *
  * Slovenian translations provided by Miha Setina <mihasetina@softhome.net>
  * Italian   translations provided by Alberto Carraro <bertocar@tin.it>
@@ -940,6 +940,15 @@ const tPhrase Phrases[] = {
   },
   { "MinUserInactivity",
     "Mindest User Inaktivität",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+  },
+  { "MultiSpeedMode",
+    "MultiSpeed Modus",
     "", // TODO
     "", // TODO
     "", // TODO

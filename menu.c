@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.116 2001/09/08 14:39:09 kls Exp $
+ * $Id: menu.c 1.117 2001/09/08 15:05:16 kls Exp $
  */
 
 #include "menu.h"
@@ -1725,6 +1725,7 @@ void cMenuSetup::Set(void)
   Add(new cMenuEditIntItem( tr("MaxVideoFileSize"),   &data.MaxVideoFileSize, MINVIDEOFILESIZE, MAXVIDEOFILESIZE));
   Add(new cMenuEditIntItem( tr("MinEventTimeout"),    &data.MinEventTimeout));
   Add(new cMenuEditIntItem( tr("MinUserInactivity"),  &data.MinUserInactivity));
+  Add(new cMenuEditBoolItem(tr("MultiSpeedMode"),     &data.MultiSpeedMode));
 }
 
 eOSState cMenuSetup::ProcessKey(eKeys Key)
@@ -2637,8 +2638,10 @@ eOSState cReplayControl::ProcessKey(eKeys Key)
     case kUp:      dvbApi->Play(); break;
     case kDown:    dvbApi->Pause(); break;
     case kLeft|k_Release:
+                   if (Setup.MultiSpeedMode) break;
     case kLeft:    dvbApi->Backward(); break;
     case kRight|k_Release:
+                   if (Setup.MultiSpeedMode) break;
     case kRight:   dvbApi->Forward(); break;
     case kRed:     TimeSearch(); break;
     case kGreen|k_Repeat:

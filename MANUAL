@@ -177,6 +177,10 @@ Video Disk Recorder User's Manual
             backward at a slower speed; press again to return to pause mode.
             Pressing and holding down the button performs the function until
             the button is released again.
+            If "Multi Speed Mode" has been enabled in the "Setup" menu, the
+            function of these buttons changes in a way that gives you three
+            fast and slow speeds, through which you can switch by pressing
+            the respective button several times.
   - Red     Jump to a specific location. Enter the time you want to jump to
             and then press "Left" or "Right" to jump relative to the current
             position, "Up" to jump to an absolute position, and "Down" to
@@ -450,6 +454,13 @@ Video Disk Recorder User's Manual
                          to 0 disables the automatic shutdown, while still
                          retaining the possibility to manually shutdown the
                          computer.
+
+  MultiSpeedMode = 0     Defines the function of the "Left" and "Right" keys in
+                         replay mode. If set to 0, one speed will be used, while
+                         if set to 1 there will be three speeds for fast and slow
+                         search, respectively.
+                         0 = off
+                         1 = on
 
 * Executing system commands
 

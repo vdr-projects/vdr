@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.74 2001/09/08 14:12:30 kls Exp $
+ * $Id: config.h 1.75 2001/09/08 14:58:16 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -297,6 +297,7 @@ public:
   int OSDMessageTime;
   int MaxVideoFileSize;
   int MinEventTimeout, MinUserInactivity;
+  int MultiSpeedMode;
   int CurrentChannel;
   cSetup(void);
   bool Load(const char *FileName);

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.67 2001/09/08 14:12:43 kls Exp $
+ * $Id: config.c 1.68 2001/09/08 14:59:38 kls Exp $
  */
 
 #include "config.h"
@@ -812,6 +812,7 @@ cSetup::cSetup(void)
   MaxVideoFileSize = MAXVIDEOFILESIZE;
   MinEventTimeout = 30;
   MinUserInactivity = 120;
+  MultiSpeedMode = 0;
   CurrentChannel = -1;
 }
 
@@ -849,6 +850,7 @@ bool cSetup::Parse(char *s)
      else if (!strcasecmp(Name, "MaxVideoFileSize"))    MaxVideoFileSize   = atoi(Value);
      else if (!strcasecmp(Name, "MinEventTimeout"))     MinEventTimeout    = atoi(Value);
      else if (!strcasecmp(Name, "MinUserInactivity"))   MinUserInactivity  = atoi(Value);
+     else if (!strcasecmp(Name, "MultiSpeedMode"))      MultiSpeedMode     = atoi(Value);
      else if (!strcasecmp(Name, "CurrentChannel"))      CurrentChannel     = atoi(Value);
      else
         return false;
@@ -921,6 +923,7 @@ bool cSetup::Save(const char *FileName)
         fprintf(f, "MaxVideoFileSize   = %d\n", MaxVideoFileSize);
         fprintf(f, "MinEventTimeout    = %d\n", MinEventTimeout);
         fprintf(f, "MinUserInactivity  = %d\n", MinUserInactivity);
+        fprintf(f, "MultiSpeedMode     = %d\n", MultiSpeedMode);
         fprintf(f, "CurrentChannel     = %d\n", CurrentChannel);
         f.Close();
         isyslog(LOG_INFO, "saved setup to %s", FileName);

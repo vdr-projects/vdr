@@ -7,7 +7,7 @@
  * DVD support initially written by Andreas Schultz <aschultz@warp10.net>
  * based on dvdplayer-0.5 by Matjaz Thaler <matjaz.thaler@guest.arnes.si>
  *
- * $Id: dvbapi.c 1.112 2001/09/08 11:36:12 kls Exp $
+ * $Id: dvbapi.c 1.113 2001/09/09 12:52:41 kls Exp $
  */
 
 //#define DVDDEBUG        1
@@ -630,17 +630,25 @@ int ReadFrame(int f, uchar *b, int Length, int Max)
 
 // --- cPlayBuffer ---------------------------------------------------------
 
+#define MAX_VIDEO_SLOWMOTION 63 // max. arg to pass to VIDEO_SLOWMOTION // TODO is this value correct?
+
 class cPlayBuffer : public cRingBufferFrame {
 protected:
+  enum ePlayModes { pmPlay, pmPause, pmSlow, pmFast, pmStill };
+  enum ePlayDirs { pdForward, pdBackward };
+  static int Speeds[];
   cDvbApi *dvbApi;
   int videoDev, audioDev;
   FILE *dolbyDev;
   int blockInput, blockOutput;
-  bool still, paused, fastForward, fastRewind;
+  ePlayModes playMode;
+  ePlayDirs playDir;
+  int trickSpeed;
   int readIndex, writeIndex;
   bool canDoTrickMode;
   bool canToggleAudioTrack;
   uchar audioTrack;
+  void TrickSpeed(int Increment);
   virtual void Empty(bool Block = false);
   virtual void StripAudioPackets(uchar *b, int Length, uchar Except = 0x00) {}
   virtual void Output(void);
@@ -659,6 +667,11 @@ public:
   virtual void ToggleAudioTrack(void);
   };
 
+#define NORMAL_SPEED  4 // the index of the '1' entry in the following array
+#define MAX_SPEEDS    3 // the offset of the maximum speed from normal speed in either direction
+#define SPEED_MULT   12 // the speed multiplier
+int cPlayBuffer::Speeds[] = { 0, -2, -4, -8, 1, 2, 4, 12, 0 };
+
 cPlayBuffer::cPlayBuffer(cDvbApi *DvbApi, int VideoDev, int AudioDev)
 :cRingBufferFrame(VIDEOBUFSIZE)
 {
@@ -667,7 +680,9 @@ cPlayBuffer::cPlayBuffer(cDvbApi *DvbApi, int VideoDev, int AudioDev)
   audioDev = AudioDev;
   dolbyDev = NULL;
   blockInput = blockOutput = false;
-  still = paused = fastForward = fastRewind = false;
+  playMode = pmPlay;
+  playDir = pdForward;
+  trickSpeed = NORMAL_SPEED;
   readIndex = writeIndex = -1;
   canDoTrickMode = false;
   canToggleAudioTrack = false;
@@ -697,30 +712,48 @@ void cPlayBuffer::Output(void)
            }
         const cFrame *frame = Get();
         if (frame) {
-           StripAudioPackets((uchar *)frame->Data(), frame->Count(), (fastForward || fastRewind) ? 0x00 : audioTrack);//XXX
-           for (int i = 0; i < ((paused && fastRewind) ? 24 : 1); i++) { // show every I_FRAME 24 times in slow rewind mode to achieve roughly the same speed as in slow forward mode
-               const uchar *p = frame->Data();
-               int r = frame->Count();
-               while (r > 0 && Busy() && !blockOutput) {
-                     cFile::FileReadyForWriting(videoDev, 100);
-                     int w = write(videoDev, p, r);
-                     if (w > 0) {
-                        p += w;
-                        r -= w;
-                        }
-                     else if (w < 0 && FATALERRNO) {
-                        LOG_ERROR;
-                        Stop();
-                        return;
-                        }
-                     }
-               writeIndex = frame->Index();
-               }
+           StripAudioPackets((uchar *)frame->Data(), frame->Count(), (playMode == pmFast || playMode == pmSlow) ? 0x00 : audioTrack);//XXX
+           const uchar *p = frame->Data();
+           int r = frame->Count();
+           while (r > 0 && Busy() && !blockOutput) {
+                 cFile::FileReadyForWriting(videoDev, 100);
+                 int w = write(videoDev, p, r);
+                 if (w > 0) {
+                    p += w;
+                    r -= w;
+                    }
+                 else if (w < 0 && FATALERRNO) {
+                    LOG_ERROR;
+                    Stop();
+                    return;
+                    }
+                 }
+           writeIndex = frame->Index();
            Drop(frame);
            }
         }
 
   dsyslog(LOG_INFO, "output thread ended (pid=%d)", getpid());
+}
+
+void cPlayBuffer::TrickSpeed(int Increment)
+{
+  int nts = trickSpeed + Increment;
+  if (Speeds[nts] == 1) {
+     trickSpeed = nts;
+     if (playMode == pmFast)
+        Play();
+     else
+        Pause();
+     }
+  else if (Speeds[nts]) {
+     trickSpeed = nts;
+     int Mult = (playMode == pmSlow && playDir == pdForward) ? 1 : SPEED_MULT;
+     int sp = (Speeds[nts] > 0) ? Mult / Speeds[nts] : -Speeds[nts] * Mult;
+     if (sp > MAX_VIDEO_SLOWMOTION)
+        sp = MAX_VIDEO_SLOWMOTION;
+     CHECK(ioctl(videoDev, VIDEO_SLOWMOTION, sp));
+     }
 }
 
 void cPlayBuffer::Empty(bool Block)
@@ -746,67 +779,112 @@ void cPlayBuffer::Empty(bool Block)
 
 void cPlayBuffer::Pause(void)
 {
-  paused = !paused;
-  bool empty = fastForward || fastRewind;
-  if (empty)
-     Empty(true);
-  fastForward = fastRewind = false;
-  CHECK(ioctl(videoDev, paused ? VIDEO_FREEZE : VIDEO_CONTINUE));
-  //CHECK(ioctl(audioDev, AUDIO_SET_MUTE, paused)); //XXX this caused chirping sound when playing a DVD
-  still = false;
-  if (empty)
-     Empty(false);
+  if (playMode == pmPause || playMode == pmStill)
+     Play();
+  else {
+     bool empty = (playMode == pmFast || (playMode == pmSlow && playDir == pdBackward));
+     if (empty)
+        Empty(true);
+     CHECK(ioctl(audioDev, AUDIO_SET_AV_SYNC, false));
+     CHECK(ioctl(videoDev, VIDEO_FREEZE));
+     playMode = pmPause;
+     if (empty)
+        Empty(false);
+     }
 }
 
 void cPlayBuffer::Play(void)
 {
-  if (fastForward || fastRewind || paused) {
-     bool empty = !paused || fastRewind;
+  if (playMode != pmPlay) {
+     bool empty = (playMode == pmStill || playMode == pmFast || (playMode == pmSlow && playDir == pdBackward));
      if (empty)
         Empty(true);
-     still = false;
-     CHECK(ioctl(videoDev, paused ? VIDEO_CONTINUE : VIDEO_PLAY));
      CHECK(ioctl(audioDev, AUDIO_SET_AV_SYNC, true));
-     //CHECK(ioctl(audioDev, AUDIO_SET_MUTE, false)); //XXX this caused chirping sound when playing a DVD
+     CHECK(ioctl(videoDev, VIDEO_CONTINUE));
+     playMode = pmPlay;
+     playDir = pdForward;
      if (empty)
         Empty(false);
-     fastForward = fastRewind = paused = false;
-     }
+    }
 }
 
 void cPlayBuffer::Forward(void)
 {
-  if (canDoTrickMode || paused) {
-     bool empty = !paused || fastRewind;
-     if (empty) {
-        Empty(true);
-        if (fastForward)
-           readIndex -= 150; // this about compensates for the buffered data, so that we don't get too far ahead
-        }
-     still = false;
-     fastForward = !fastForward;
-     fastRewind = false;
-     if (paused)
-        CHECK(ioctl(videoDev, fastForward ? VIDEO_SLOWMOTION : VIDEO_FREEZE, 2));
-     CHECK(ioctl(audioDev, AUDIO_SET_AV_SYNC, !fastForward));
-     CHECK(ioctl(audioDev, AUDIO_SET_MUTE, fastForward || paused));
-     if (empty)
-        Empty(false);
-     }
+  if (canDoTrickMode) {
+     switch (playMode) {
+       case pmPlay:
+            Empty(true);
+            CHECK(ioctl(audioDev, AUDIO_SET_AV_SYNC, false));
+            playMode = pmFast;
+            playDir = pdForward;
+            trickSpeed = NORMAL_SPEED;
+            TrickSpeed(Setup.MultiSpeedMode ? 1 : MAX_SPEEDS);
+            Empty(false);
+            break;
+       case pmStill:
+       case pmPause:
+            CHECK(ioctl(audioDev, AUDIO_SET_AV_SYNC, false));
+            playMode = pmSlow;
+            playDir = pdForward;
+            trickSpeed = NORMAL_SPEED;
+            TrickSpeed(Setup.MultiSpeedMode ? -1 : -MAX_SPEEDS);
+            break;
+       case pmFast:
+            //XXX
+            if (playDir == pdForward)
+               readIndex -= 150; // this about compensates for the buffered data, so that we don't get too far ahead
+            //XXX
+            if (Setup.MultiSpeedMode)
+               TrickSpeed(playDir == pdForward ? 1 : -1);
+            else if (playDir == pdForward)
+               Play();
+            break;
+       case pmSlow:
+            if (Setup.MultiSpeedMode)
+               TrickSpeed(playDir == pdForward ? -1 : 1);
+            else if (playDir == pdForward)
+               Pause();
+            break;
+            }
+       }
 }
 
 void cPlayBuffer::Backward(void)
 {
   if (canDoTrickMode) {
-     Empty(true);
-     still = false;
-     fastRewind = !fastRewind;
-     fastForward = false;
-     if (paused)
-        CHECK(ioctl(videoDev, fastRewind ? VIDEO_CONTINUE : VIDEO_FREEZE));
-     CHECK(ioctl(audioDev, AUDIO_SET_AV_SYNC, !fastRewind));
-     CHECK(ioctl(audioDev, AUDIO_SET_MUTE, fastRewind || paused));
-     Empty(false);
+     switch (playMode) {
+       case pmPlay:
+            Empty(true);
+            CHECK(ioctl(audioDev, AUDIO_SET_AV_SYNC, false));
+            playMode = pmFast;
+            playDir = pdBackward;
+            trickSpeed = NORMAL_SPEED;
+            TrickSpeed(Setup.MultiSpeedMode ? 1 : MAX_SPEEDS);
+            Empty(false);
+            break;
+       case pmStill:
+       case pmPause:
+            Empty(true);
+            CHECK(ioctl(audioDev, AUDIO_SET_AV_SYNC, false));
+            playMode = pmSlow;
+            playDir = pdBackward;
+            trickSpeed = NORMAL_SPEED;
+            TrickSpeed(Setup.MultiSpeedMode ? -1 : -MAX_SPEEDS);
+            Empty(false);
+            break;
+       case pmFast:
+            if (Setup.MultiSpeedMode)
+               TrickSpeed(playDir == pdBackward ? 1 : -1);
+            else if (playDir == pdBackward)
+               Play();
+            break;
+       case pmSlow:
+            if (Setup.MultiSpeedMode)
+               TrickSpeed(playDir == pdBackward ? -1 : 1);
+            else if (playDir == pdBackward)
+               Pause();
+            break;
+       }
      }
 }
 
@@ -890,18 +968,17 @@ void cReplayBuffer::Input(void)
               blockInput = 1;
            continue;
            }
-        if (!still) {
+        if (playMode != pmStill) {
            int r = 0;
-           if (fastForward && !paused || fastRewind) {
+           if (playMode == pmFast || (playMode == pmSlow && playDir == pdBackward)) {
               uchar FileNumber;
               int FileOffset, Length;
-              int Index = index->GetNextIFrame(readIndex, fastForward, &FileNumber, &FileOffset, &Length);
+              int Index = index->GetNextIFrame(readIndex, playDir == pdForward, &FileNumber, &FileOffset, &Length);
               if (Index >= 0) {
                  if (!NextFile(FileNumber, FileOffset))
                     break;
                  }
               else {
-                 paused = fastForward = fastRewind = false;
                  Play();
                  continue;
                  }
@@ -1073,23 +1150,21 @@ void cReplayBuffer::Goto(int Index, bool Still)
 {
   if (index) {
      Empty(true);
-     if (paused)
-        CHECK(ioctl(videoDev, VIDEO_CONTINUE));
      if (++Index <= 0)
         Index = 1; // not '0', to allow GetNextIFrame() below to work!
      uchar FileNumber;
      int FileOffset, Length;
      Index = index->GetNextIFrame(Index, false, &FileNumber, &FileOffset, &Length);
      if (Index >= 0 && NextFile(FileNumber, FileOffset) && Still) {
-        still = true;
         uchar b[MAXFRAMESIZE];
         int r = ReadFrame(replayFile, b, Length, sizeof(b));
-        if (r > 0)
+        if (r > 0) {
+           if (playMode == pmPause)
+              CHECK(ioctl(videoDev, VIDEO_CONTINUE));
            DisplayFrame(b, r);
-        paused = true;
+           }
+        playMode = pmStill;
         }
-     else
-        still = false;
      readIndex = writeIndex = Index;
      Empty(false);
      }
@@ -1098,7 +1173,7 @@ void cReplayBuffer::Goto(int Index, bool Still)
 void cReplayBuffer::GetIndex(int &Current, int &Total, bool SnapToIFrame)
 {
   if (index) {
-     if (still)
+     if (playMode == pmStill)
         Current = readIndex;
      else {
         Current = writeIndex;
@@ -1180,7 +1255,7 @@ private:
   int is_nav_pack(unsigned char *buffer);
   void Close(void);
   virtual void Empty(bool Block = false);
-  int decode_packet(unsigned char *sector, int iframe);
+  int decode_packet(unsigned char *sector, bool trickmode);
   int ScanVideoPacket(const uchar *Data, int Count, uchar *PictureType);
   bool PacketStart(uchar **Data, int len);
   int GetPacketType(const uchar *Data);
@@ -1460,7 +1535,7 @@ void cDVDplayBuffer::Input(void)
                     }
 
                  // init settings for next state
-                 if (!fastRewind)
+                 if (playDir == pdForward)
                     cur_pack = cur_pgc->cell_playback[cur_cell].first_sector;
                  else
                     cur_pack = cur_pgc->cell_playback[cur_cell].last_vobu_start_sector;
@@ -1478,7 +1553,7 @@ void cDVDplayBuffer::Input(void)
                   * We loop until we're out of this cell.
                   */
 
-                 if (!fastRewind) {
+                 if (playDir == pdForward) {
                     if (cur_pack >= cur_pgc->cell_playback[cur_cell].last_sector) {
                        cur_cell = next_cell;
 #ifdef DVDDEBUG
@@ -1573,7 +1648,7 @@ void cDVDplayBuffer::Input(void)
 
           case cREADFRAME:
                {
-                 int trickMode = (fastForward && !paused || fastRewind);
+                 bool trickMode = (playMode != pmPlay);
 
                  /* FIXME:
                   *   the entire trickMode code relies on the assumtion
@@ -1582,7 +1657,7 @@ void cDVDplayBuffer::Input(void)
                   *   I have no clue wether that is correct or not !!!
                   */
                  if (trickMode && (skipCnt++ % 4 != 0)) {
-                    cur_pack = (!fastRewind) ? next_vobu : prev_vobu;
+                    cur_pack = (playDir == pdForward) ? next_vobu : prev_vobu;
                     NextState(cOUTPACK);
                     break;
                     }
@@ -1609,7 +1684,7 @@ void cDVDplayBuffer::Input(void)
 
           case cOUTFRAMES:
                {
-                 int trickMode = (fastForward && !paused || fastRewind);
+                 bool trickMode = (playMode != pmPlay);
 
                  /**
                   * Output cursize packs.
@@ -1624,7 +1699,7 @@ void cDVDplayBuffer::Input(void)
                  if (decode_packet(&data[pktcnt * DVD_VIDEO_LB_LEN], trickMode) != 1) {   //we've got a video packet
                     if (trickMode) {
                         //dsyslog(LOG_INFO, "DVD: did pack: %d", pktcnt);
-                        cur_pack = (!fastRewind) ? next_vobu : prev_vobu;
+                        cur_pack = (playDir == pdForward) ? next_vobu : prev_vobu;
                         NextState(cOUTPACK);
                         break;
                         }
@@ -1835,7 +1910,7 @@ void cDVDplayBuffer::putFrame(unsigned char *sector, int length)
         ;
 }
 
-int cDVDplayBuffer::decode_packet(unsigned char *sector, int trickMode)
+int cDVDplayBuffer::decode_packet(unsigned char *sector, bool trickMode)
 {
   uchar pt = 1;
 #if 0

@@ -716,7 +716,7 @@ Video Disk Recorder Revision History
   That way every recording will store the actual summary data at the time of
   the recording.
 
-2001-09-08: Version 0.95
+2001-09-09: Version 0.95
 
 - Fixed behaviour in case the shutdown didn't take place (there were many
   "next timer event at..." messages in that case).
@@ -734,3 +734,4 @@ Video Disk Recorder Revision History
   in case of a currently recording timer.
 - Switching through channel groups with the "Left" and "Right" keys now
   always starts at the group that contains the current channel.
+- Implemented "Multi Speed Mode" (thanks to Stefan Huelswitt).
