@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.70 2002/03/22 14:39:45 kls Exp $
+ * $Id: i18n.c 1.71 2002/03/22 15:37:52 kls Exp $
  *
  * Slovenian  translations provided by Miha Setina <mihasetina@softhome.net>
  * Italian    translations provided by Alberto Carraro <bertocar@tin.it>
@@ -999,7 +999,7 @@ const tPhrase Phrases[] = {
     "Anzeigedauer für Nachrichten",
     "", // TODO
     "", // TODO
-    "Nieuwstijd", // TODO (correct?)
+    "Weergave duur van berichten",
     "Mostrar contador",
     "Durée affichage écran",
     "", // TODO
@@ -1279,7 +1279,7 @@ const tPhrase Phrases[] = {
     "MultiSpeed Modus",
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Multi-speed mode",
     "Modo de multi-speed",
     "Mode multi-vitesses",
     "", // TODO
@@ -1299,7 +1299,7 @@ const tPhrase Phrases[] = {
     "Mindest Event Pause",
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Minimale event time-out",
     "Período mínimo de pausa",
     "MinEventTimeout", // Too difficult to translate - read the manual!
     "", // TODO
@@ -1309,7 +1309,7 @@ const tPhrase Phrases[] = {
     "Mindest Benutzer-Inaktivität",
     "", // TODO
     "", // TODO
-    "Minimum gebruikers activiteit", // TODO *in*activity!
+    "Minimum gebruikers inactiviteit",
     "Período mínimo de inactividade",
     "Durée minimale d'inactivité",
     "", // TODO
