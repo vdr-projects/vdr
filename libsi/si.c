@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: si.c 1.10 2004/05/29 17:06:23 kls Exp $
+ *   $Id: si.c 1.11 2004/06/06 14:43:56 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -206,33 +206,36 @@ bool DescriptorGroup::isComplete() {
 
 char *String::getText() {
    if (getLength() < 0 || getLength() >4095)
-      return "text error";
+      return strdup("text error"); // caller will delete it!
    char *data=new char(getLength()+1);
-   decodeText(data);
+   decodeText(data, getLength()+1);
    return data;
 }
 
-char *String::getText(char *buffer) {
-   if (getLength() < 0 || getLength() >4095) {
-      strncpy(buffer, "text error", getLength()+1);
+char *String::getText(char *buffer, int size) {
+   if (getLength() < 0 || getLength() >= size) {
+      strncpy(buffer, "text error", size);
+      buffer[size-1] = 0;
       return buffer;
    }
-   decodeText(buffer);
+   decodeText(buffer, size);
    return buffer;
 }
 
 //taken from VDR, Copyright Klaus Schmidinger <kls@cadsoft.de>
-char *String::getText(char *buffer, char *shortVersion) {
-   if (getLength() < 0 || getLength() >4095) {
-      strncpy(buffer, "text error", getLength()+1);
+char *String::getText(char *buffer, char *shortVersion, int sizeBuffer, int sizeShortVersion) {
+   if (getLength() < 0 || getLength() >= sizeBuffer) {
+      strncpy(buffer, "text error", sizeBuffer);
+      buffer[sizeBuffer-1] = 0;
+      *shortVersion = 0;
       return buffer;
    }
-   decodeText(buffer, shortVersion);
+   decodeText(buffer, shortVersion, sizeBuffer, sizeShortVersion);
    return buffer;
 }
 
 //taken from libdtv, Copyright Rolf Hakenes <hakenes@hippomi.de>
-void String::decodeText(char *buffer) {
+void String::decodeText(char *buffer, int size) {
    const unsigned char *from=data.getData(0);
    char *to=buffer;
 
@@ -254,11 +257,13 @@ void String::decodeText(char *buffer) {
       else if (*from == 0x8A)
          *to++ = '\n';
       from++;
+      if (to - buffer >= size - 1)
+         break;
    }
    *to = '\0';
 }
 
-void String::decodeText(char *buffer, char *shortVersion) {
+void String::decodeText(char *buffer, char *shortVersion, int sizeBuffer, int sizeShortVersion) {
    const unsigned char *from=data.getData(0);
    char *to=buffer;
    char *toShort=shortVersion;
@@ -283,6 +288,8 @@ void String::decodeText(char *buffer, char *shortVersion) {
       else if (*from == 0x87)
          IsShortName--;
       from++;
+      if (to - buffer >= sizeBuffer - 1 || toShort - shortVersion >= sizeShortVersion - 1)
+         break;
    }
    *to = '\0';
    *toShort = '\0';

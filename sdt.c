@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: sdt.c 1.8 2004/03/07 10:46:08 kls Exp $
+ * $Id: sdt.c 1.9 2004/06/06 14:25:22 kls Exp $
  */
 
 #include "sdt.h"
@@ -59,7 +59,7 @@ void cSdtFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                         {
                         char NameBuf[1024];
                         char ShortNameBuf[1024];
-                        sd->serviceName.getText(NameBuf, ShortNameBuf);
+                        sd->serviceName.getText(NameBuf, ShortNameBuf, sizeof(NameBuf), sizeof(ShortNameBuf));
                         char *pn = compactspace(NameBuf);
                         char *ps = compactspace(ShortNameBuf);
                         if (*NameBuf && *ShortNameBuf && strcmp(NameBuf, ShortNameBuf) != 0) {

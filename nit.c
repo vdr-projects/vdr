@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: nit.c 1.7 2004/05/22 15:46:21 kls Exp $
+ * $Id: nit.c 1.8 2004/06/06 14:24:49 kls Exp $
  */
 
 #include "nit.h"
@@ -71,7 +71,7 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                switch (d->getDescriptorTag()) {
                  case SI::NetworkNameDescriptorTag: {
                       SI::NetworkNameDescriptor *nnd = (SI::NetworkNameDescriptor *)d;
-                      nnd->name.getText(nits[numNits].name);
+                      nnd->name.getText(nits[numNits].name, MAXNETWORKNAME);
                       }
                       break;
                  default: ;

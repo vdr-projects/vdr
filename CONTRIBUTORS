@@ -1021,3 +1021,6 @@ Marco Schlüßler <marco@lordzodiac.de>
 Jürgen Schmitz <j.schmitz@web.de>
  for reporting a bug in displaying the current channel when switching via the SVDRP
  command CHAN
+
+Philip Lawatsch <philip@lawatsch.at>
+ for debugging a buffer overflow in eit.c

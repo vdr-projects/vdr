@@ -2889,3 +2889,6 @@ Video Disk Recorder Revision History
 - Added a note about the default assignment of the color keys to MANUAL.
 - Added a note about NPTL ("Native Posix Thread Library") to the INSTALL file
   (apparently the "fix" in version 1.3.0 didn't really fix this).
+- Modified 'libsi' to require callers to state the buffer sizes when getting
+  strings in order to avoid buffer overflows (thanks to Philip Lawatsch for
+  debugging a buffer overflow in eit.c).

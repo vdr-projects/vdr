@@ -8,7 +8,7 @@
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  * Adapted to 'libsi' for VDR 1.3.0 by Marcel Wiesweg <marcel.wiesweg@gmx.de>.
  *
- * $Id: eit.c 1.94 2004/03/20 10:53:23 kls Exp $
+ * $Id: eit.c 1.95 2004/06/06 14:49:45 kls Exp $
  */
 
 #include "eit.h"
@@ -193,12 +193,12 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data)
       if (!rEvent) {
          if (ShortEventDescriptor) {
             char buffer[256];
-            pEvent->SetTitle(ShortEventDescriptor->name.getText(buffer));
-            pEvent->SetShortText(ShortEventDescriptor->text.getText(buffer));
+            pEvent->SetTitle(ShortEventDescriptor->name.getText(buffer, sizeof(buffer)));
+            pEvent->SetShortText(ShortEventDescriptor->text.getText(buffer, sizeof(buffer)));
             }
          if (ExtendedEventDescriptors) {
-            char buffer[ExtendedEventDescriptors->getMaximumTextLength(": ")];
-            pEvent->SetDescription(ExtendedEventDescriptors->getText(buffer, ": "));
+            char buffer[ExtendedEventDescriptors->getMaximumTextLength(": ") + 1];
+            pEvent->SetDescription(ExtendedEventDescriptors->getText(buffer, sizeof(buffer), ": "));
             }
          }
       delete ExtendedEventDescriptors;
