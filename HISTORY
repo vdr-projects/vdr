@@ -1425,3 +1425,5 @@ Video Disk Recorder Revision History
   OSD capabilities (thanks to Andreas Schultz).
 - Added cPalette::AllColors() for plugins that need to get the color entries of
   a cPalette (see osdbase.h).
+- The new SVDRP command CLRE can be used to clear the entire EPG data (suggested
+  by Matthias Schniedermeyer).

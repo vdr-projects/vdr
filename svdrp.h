@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: svdrp.h 1.15 2002/03/08 16:40:23 kls Exp $
+ * $Id: svdrp.h 1.16 2002/08/25 10:35:25 kls Exp $
  */
 
 #ifndef __SVDRP_H
@@ -53,6 +53,7 @@ private:
   bool Send(const char *s, int length = -1);
   void Reply(int Code, const char *fmt, ...);
   void CmdCHAN(const char *Option);
+  void CmdCLRE(const char *Option);
   void CmdDELC(const char *Option);
   void CmdDELR(const char *Option);
   void CmdDELT(const char *Option);
