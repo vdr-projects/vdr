@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.12 2000/07/24 16:31:07 kls Exp $
+ * $Id: recording.c 1.13 2000/07/27 20:01:05 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -13,6 +13,7 @@
 #include <fcntl.h>
 #include <stdio.h>
 #include <string.h>
+#include <sys/stat.h>
 #include <unistd.h>
 #include "interface.h"
 #include "tools.h"
