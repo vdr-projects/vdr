@@ -7,7 +7,7 @@
  * DVD support initially written by Andreas Schultz <aschultz@warp10.net>
  * based on dvdplayer-0.5 by Matjaz Thaler <matjaz.thaler@guest.arnes.si>
  *
- * $Id: dvbapi.c 1.101 2001/08/06 16:24:13 kls Exp $
+ * $Id: dvbapi.c 1.102 2001/08/10 12:37:03 kls Exp $
  */
 
 //#define DVDDEBUG        1
@@ -53,7 +53,6 @@ extern "C" {
 // The size of the array used to buffer video data:
 // (must be larger than MINVIDEODATA - see remux.h)
 #define VIDEOBUFSIZE    (1024*1024)
-#define AC3_BUFFER_SIZE (6*1024*16)
 
 // The maximum size of a single frame:
 #define MAXFRAMESIZE (192*1024)
@@ -1172,7 +1171,6 @@ private:
   int logAudioTrack;
   int maxAudioTrack;
 
-  ac3_config_t ac3_config;
   enum { AC3_STOP, AC3_START, AC3_PLAY } ac3stat;
   uchar *ac3data;
   int ac3inp;
@@ -1231,10 +1229,7 @@ cDVDplayBuffer::cDVDplayBuffer(cDvbApi *DvbApi, int VideoDev, int AudioDev, cDVD
   skipCnt = 0;
   logAudioTrack = 0;
   canToggleAudioTrack = true;//XXX determine from cDVD!
-  ac3_config.num_output_ch = 2;
-  //    ac3_config.flags = /* mm_accel() | */ MM_ACCEL_MLIB;
-  ac3_config.flags = 0;
-  ac3_init(&ac3_config);
+  ac3dec_init();
   data = new uchar[1024 * DVD_VIDEO_LB_LEN];
   ac3data = new uchar[AC3_BUFFER_SIZE];
   ac3inp = ac3outp = 0;
@@ -1823,9 +1818,9 @@ void cDVDplayBuffer::handleAC3(unsigned char *sector, int length)
      }
   else {
      if (ac3stat == AC3_PLAY)
-        ac3_decode_data(sector, sector+length, 0, &ac3inp, &ac3outp, (char *)ac3data);
+        ac3dec_decode_data(sector, sector + length, 0, &ac3inp, &ac3outp, (char *)ac3data);
      else if (ac3stat == AC3_START) {
-        ac3_decode_data(sector, sector+length, 1, &ac3inp, &ac3outp, (char *)ac3data);
+        ac3dec_decode_data(sector, sector + length, 1, &ac3inp, &ac3outp, (char *)ac3data);
         ac3stat = AC3_PLAY;
         }
      }
