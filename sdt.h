@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: sdt.h 1.1 2004/01/03 13:49:55 kls Exp $
+ * $Id: sdt.h 1.2 2004/01/05 14:30:14 kls Exp $
  */
 
 #ifndef __SDT_H
@@ -15,7 +15,7 @@
 
 class cSdtFilter : public cFilter {
 private:
-  uchar lastSdtVersion;
+  cSectionSyncer sectionSyncer;
   cPatFilter *patFilter;
 protected:
   virtual void Process(u_short Pid, u_char Tid, const u_char *Data, int Length);

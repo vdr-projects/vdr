@@ -2554,3 +2554,4 @@ Video Disk Recorder Revision History
   Volkenandt for reporting this one).
 - Changed calculation of channel ids to make it work for tv stations that use
   the undefined NID value 0 (thanks to Teemu Rantanen for reporting this one).
+- Enhanced the SDT filter to handle multi part sections.

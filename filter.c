@@ -4,11 +4,38 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: filter.c 1.1 2003/12/21 15:26:16 kls Exp $
+ * $Id: filter.c 1.2 2004/01/05 14:30:00 kls Exp $
  */
 
 #include "filter.h"
 #include "sections.h"
+
+// --- cSectionSyncer --------------------------------------------------------
+
+cSectionSyncer::cSectionSyncer(void)
+{
+  Reset();
+}
+
+void cSectionSyncer::Reset(void)
+{
+  lastVersion = 0xFF;
+  synced = false;
+}
+
+bool cSectionSyncer::Sync(uchar Version, int Number, int LastNumber)
+{
+  if (Version == lastVersion)
+     return false;
+  if (!synced) {
+     if (Number != 0)
+        return false; // sync on first section
+     synced = true;
+     }
+  if (Number == LastNumber)
+     lastVersion = Version;
+  return synced;
+}
 
 // --- cFilterData -----------------------------------------------------------
 

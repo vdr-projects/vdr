@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: sdt.c 1.2 2004/01/05 11:40:24 kls Exp $
+ * $Id: sdt.c 1.3 2004/01/05 14:30:31 kls Exp $
  */
 
 #include "sdt.h"
@@ -13,34 +13,38 @@
 #include "libsi/section.h"
 #include "libsi/descriptor.h"
 
-// --- cSDT ------------------------------------------------------------------
+// --- cSdtFilter ------------------------------------------------------------
 
-class cSDT : public SI::SDT {
-public:
-  cSDT(int Source, int Transponder, uchar &lastSdtVersion, cPatFilter *PatFilter, const u_char *Data);
-  };
-
-cSDT::cSDT(int Source, int Transponder, uchar &lastSdtVersion, cPatFilter *PatFilter, const u_char *Data)
-:SI::SDT(Data, false)
+cSdtFilter::cSdtFilter(cPatFilter *PatFilter)
 {
-  if (!CheckCRCAndParse())
-     return;
+  patFilter = PatFilter;
+  Set(0x11, 0x42);  // SDT
+}
 
-  if (getVersionNumber() == lastSdtVersion)
-     return;
+void cSdtFilter::SetStatus(bool On)
+{
+  cFilter::SetStatus(On);
+  sectionSyncer.Reset();
+}
 
+void cSdtFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length)
+{
+  if (!(Source() && Transponder()))
+     return;
+  SI::SDT sdt(Data, false);
+  if (!sdt.CheckCRCAndParse())
+     return;
+  if (!sectionSyncer.Sync(sdt.getVersionNumber(), sdt.getSectionNumber(), sdt.getLastSectionNumber()))
+     return;
   if (!Channels.Lock(true, 10))
      return;
-
-  lastSdtVersion = getVersionNumber();
-
   SI::SDT::Service SiSdtService;
-  for (SI::Loop::Iterator it; serviceLoop.hasNext(it); ) {
-      SiSdtService = serviceLoop.getNext(it);
+  for (SI::Loop::Iterator it; sdt.serviceLoop.hasNext(it); ) {
+      SiSdtService = sdt.serviceLoop.getNext(it);
 
-      cChannel *Channel = Channels.GetByChannelID(tChannelID(Source, getOriginalNetworkId(), getTransportStreamId(), SiSdtService.getServiceId()));
+      cChannel *Channel = Channels.GetByChannelID(tChannelID(Source(), sdt.getOriginalNetworkId(), sdt.getTransportStreamId(), SiSdtService.getServiceId()));
       if (!Channel)
-         Channel = Channels.GetByChannelID(tChannelID(Source, 0, Transponder, SiSdtService.getServiceId()));
+         Channel = Channels.GetByChannelID(tChannelID(Source(), 0, Transponder(), SiSdtService.getServiceId()));
 
       SI::Descriptor *d;
       for (SI::Loop::Iterator it2; (d = SiSdtService.serviceDescriptors.getNext(it2)); ) {
@@ -80,7 +84,7 @@ cSDT::cSDT(int Source, int Transponder, uchar &lastSdtVersion, cPatFilter *PatFi
                            pn = ShortNameBuf;
                            }
                         if (Channel) {
-                           Channel->SetId(getOriginalNetworkId(), getTransportStreamId(), SiSdtService.getServiceId());
+                           Channel->SetId(sdt.getOriginalNetworkId(), sdt.getTransportStreamId(), SiSdtService.getServiceId());
                            if (Setup.UpdateChannels >= 1)
                               Channel->SetName(pn);
                            // Using SiSdtService.getFreeCaMode() is no good, because some
@@ -90,8 +94,8 @@ cSDT::cSDT(int Source, int Transponder, uchar &lastSdtVersion, cPatFilter *PatFi
                            // Channel->SetCa(SiSdtService.getFreeCaMode() ? 0xFFFF : 0);
                            }
                         else if (*pn && Setup.UpdateChannels >= 3) {
-                           Channel = Channels.NewChannel(Source, Transponder, pn, getOriginalNetworkId(), getTransportStreamId(), SiSdtService.getServiceId());
-                           PatFilter->Trigger();
+                           Channel = Channels.NewChannel(Source(), Transponder(), pn, sdt.getOriginalNetworkId(), sdt.getTransportStreamId(), SiSdtService.getServiceId());
+                           patFilter->Trigger();
                            }
                         }
                    }
@@ -123,26 +127,4 @@ cSDT::cSDT(int Source, int Transponder, uchar &lastSdtVersion, cPatFilter *PatFi
           }
       }
   Channels.Unlock();
-}
-
-
-// --- cSdtFilter ------------------------------------------------------------
-
-cSdtFilter::cSdtFilter(cPatFilter *PatFilter)
-{
-  lastSdtVersion = 0xFF;
-  patFilter = PatFilter;
-  Set(0x11, 0x42);  // SDT
-}
-
-void cSdtFilter::SetStatus(bool On)
-{
-  cFilter::SetStatus(On);
-  lastSdtVersion = 0xFF;
-}
-
-void cSdtFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length)
-{
-  if (Source() && Transponder())
-     cSDT SDT(Source(), Transponder(), lastSdtVersion, patFilter, Data);
 }

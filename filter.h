@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: filter.h 1.1 2003/12/22 11:41:40 kls Exp $
+ * $Id: filter.h 1.2 2004/01/05 14:29:49 kls Exp $
  */
 
 #ifndef __FILTER_H
@@ -12,6 +12,16 @@
 
 #include <sys/types.h>
 #include "tools.h"
+
+class cSectionSyncer {
+private:
+  int lastVersion;
+  bool synced;
+public:
+  cSectionSyncer(void);
+  void Reset(void);
+  bool Sync(uchar Version, int Number, int LastNumber);
+  };
 
 class cFilterData : public cListObject {
 public:
