@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.65 2001/03/31 10:46:17 kls Exp $
+ * $Id: dvbapi.c 1.66 2001/03/31 15:01:57 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -1488,7 +1488,7 @@ cDvbApi::~cDvbApi()
      StopTransfer();
      OvlO(false); //Overlay off!
      //XXX the following call sometimes causes a segfault - driver problem?
-     close(videoDev);
+     //XXX close(videoDev);
      }
 #if defined(DEBUG_OSD) || defined(REMOTE_KBD)
   endwin();

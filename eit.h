@@ -13,7 +13,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.h 1.4 2000/11/24 14:35:22 kls Exp $
+ * $Id: eit.h 1.5 2001/03/31 12:42:52 kls Exp $
  ***************************************************************************/
 
 #ifndef __EIT_H
@@ -49,7 +49,7 @@ protected:
   bool SetSubtitle(char *string);
   void IncreaseExtendedDescriptorNumber(void);
   cEventInfo(unsigned short serviceid, unsigned short eventid);
-public: 
+public:
   ~cEventInfo();
   const char *GetTimeString(void) const;
   const char *GetEndTimeString(void) const;
@@ -84,7 +84,7 @@ protected:
   void Cleanup(time_t tTime);
   void Cleanup(void);
   cSchedule(unsigned short servid = 0);
-public: 
+public:
   ~cSchedule();
   const cEventInfo *GetPresentEvent(void) const;
   const cEventInfo *GetFollowingEvent(void) const;
@@ -104,7 +104,7 @@ private:
 protected:
   bool SetCurrentServiceID(unsigned short servid);
   void Cleanup();
-public: 
+public:
   cSchedules(void);
   ~cSchedules();
   const cSchedule *GetSchedule(unsigned short servid) const;
@@ -130,9 +130,10 @@ private:
   bool useTStime;
   SIP_FILTER *filters;
   int fsvbi;
+  bool active;
   bool RefreshFilters(void);
   void Action(void);
-public: 
+public:
   cSIProcessor(const char *FileName);
   ~cSIProcessor();
   bool SetUseTSTime(bool use);
