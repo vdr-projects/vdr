@@ -2122,3 +2122,5 @@ Video Disk Recorder Revision History
   case of 'Transfer Mode', or the primary device otherwise. This may be useful for
   plugins that want to attach a cReceiver to the device where the current live video
   is actually coming from.
+- Added VDRVERSNUM to config.h, which can be used by the preprocessor to check the
+  actual VDR version (suggested by Stefan Huelswitt).
