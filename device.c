@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.61 2004/10/23 10:15:31 kls Exp $
+ * $Id: device.c 1.62 2004/10/30 14:53:38 kls Exp $
  */
 
 #include "device.h"
@@ -23,6 +23,7 @@
 
 // The default priority for non-primary devices:
 #define DEFAULTPRIORITY  -1
+#define TUNER_LOCK_TIMEOUT 5000 // ms
 
 int cDevice::numDevices = 0;
 int cDevice::useDevice = 0;
@@ -467,7 +468,7 @@ bool cDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
   return false;
 }
 
-bool cDevice::HasLock(void)
+bool cDevice::HasLock(int TimeoutMs)
 {
   return true;
 }
@@ -765,6 +766,10 @@ bool cDevice::AttachReceiver(cReceiver *Receiver)
      return false;
   if (Receiver->device == this)
      return true;
+  if (!HasLock(TUNER_LOCK_TIMEOUT)) {
+     esyslog("ERROR: device %d has no lock, can't attach receiver!", CardIndex() + 1);
+     return false;
+     }
   for (int i = 0; i < MAXRECEIVERS; i++) {
       if (!receiver[i]) {
          for (int n = 0; n < MAXRECEIVEPIDS; n++) {

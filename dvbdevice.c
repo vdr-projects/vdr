@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.101 2004/10/30 14:18:53 kls Exp $
+ * $Id: dvbdevice.c 1.102 2004/10/30 14:53:30 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -35,7 +35,6 @@ extern "C" {
 
 #define DO_REC_AND_PLAY_ON_PRIMARY_DEVICE 1
 #define DO_MULTIPLE_RECORDINGS 1
-#define TUNER_LOCK_TIMEOUT 5000 // ms
 
 #define DEV_VIDEO         "/dev/video"
 #define DEV_DVB_ADAPTER   "/dev/dvb/adapter"
@@ -795,13 +794,6 @@ bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
   if (EITScanner.UsesDevice(this))
      return true;
 
-  // Wait for a lock:
-
-  if (!dvbTuner->Locked(TUNER_LOCK_TIMEOUT)) {
-     esyslog("ERROR: no lock for channel %d on device %d", Channel->Number(), CardIndex() + 1);
-     return false;
-     }
-
   // PID settings:
 
   if (TurnOnLivePIDs) {
@@ -824,9 +816,9 @@ bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
   return true;
 }
 
-bool cDvbDevice::HasLock(void)
+bool cDvbDevice::HasLock(int TimeoutMs)
 {
-  return dvbTuner ? dvbTuner->Locked() : false;
+  return dvbTuner ? dvbTuner->Locked(TimeoutMs) : false;
 }
 
 void cDvbDevice::SetVolumeDevice(int Volume)

@@ -3083,3 +3083,6 @@ Video Disk Recorder Revision History
 - Fixed some typos in the Makefile's 'font' target (thanks to Uwe Hanke).
 - Added more checks and polling when getting frontend events (based on a patch
   from Werner Fink).
+- No longer explicitly waiting for a tuner lock when switching channels
+  (apparently setting "live" PIDs before the tuner is locked doesn't hurt).
+  Moved the wait into cDevice::AttachReceiver() instead.

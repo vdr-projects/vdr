@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 1.45 2004/09/24 14:07:22 kls Exp $
+ * $Id: device.h 1.46 2004/10/30 14:49:56 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -187,10 +187,12 @@ protected:
 public:
   static int CurrentChannel(void) { return primaryDevice ? currentChannel : 0; }
          ///< Returns the number of the current channel on the primary device.
-  virtual bool HasLock(void);//XXX PLUGINS.html
+  virtual bool HasLock(int TimeoutMs = 0);//XXX PLUGINS.html
          ///< Returns true if the device has a lock on the requested transponder.
          ///< Default is true, a specific device implementation may return false
          ///< to indicate that it is not ready yet.
+         ///< If TimeoutMs is not zero, waits for the given number of milliseconds
+         ///< before returning false.
   virtual bool HasProgramme(void);
          ///< Returns true if the device is currently showing any programme to
          ///< the user, either through replaying or live.
