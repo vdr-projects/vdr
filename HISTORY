@@ -2733,3 +2733,6 @@ Video Disk Recorder Revision History
 - Taking the Sid into account when detecting version changes in processing the
   PMT (thanks to Stéphane Esté-Gracias for pointing out this problem).
 - Completed the Russian OSD texts (thanks to Vyacheslav Dikonov).
+- Any newline characters in the 'description' of EPG events are now preserved
+  to allow texts to be displayed the way the tv stations have formatted them.
+  This was also necessary to better display itemized texts.

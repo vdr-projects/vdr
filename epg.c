@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 1.16 2004/03/06 14:33:22 kls Exp $
+ * $Id: epg.c 1.17 2004/03/13 12:41:24 kls Exp $
  */
 
 #include "epg.h"
@@ -151,8 +151,11 @@ void cEvent::Dump(FILE *f, const char *Prefix) const
         fprintf(f, "%sT %s\n", Prefix, title);
      if (!isempty(shortText))
         fprintf(f, "%sS %s\n", Prefix, shortText);
-     if (!isempty(description))
+     if (!isempty(description)) {
+        strreplace(description, '\n', '|');
         fprintf(f, "%sD %s\n", Prefix, description);
+        strreplace(description, '|', '\n');
+        }
      if (vps)
         fprintf(f, "%sV %ld\n", Prefix, vps);
      fprintf(f, "%se\n", Prefix);
@@ -191,8 +194,10 @@ bool cEvent::Read(FILE *f, cSchedule *Schedule)
              case 'S': if (Event)
                           Event->SetShortText(t);
                        break;
-             case 'D': if (Event)
+             case 'D': if (Event) {
+                          strreplace(t, '|', '\n');
                           Event->SetDescription(t);
+                          }
                        break;
              case 'V': if (Event)
                           Event->SetVps(atoi(t));
@@ -287,11 +292,10 @@ void ReportEpgBugFixStats(bool Reset)
 
 void cEvent::FixEpgBugs(void)
 {
-  // VDR can't usefully handle newline characters in the EPG data, so let's
-  // always convert them to blanks (independent of the setting of EPGBugfixLevel):
+  // VDR can't usefully handle newline characters in the title and shortText of EPG
+  // data, so let's always convert them to blanks (independent of the setting of EPGBugfixLevel):
   strreplace(title, '\n', ' ');
   strreplace(shortText, '\n', ' ');
-  strreplace(description, '\n', ' ');
   // Same for control characters:
   strreplace(title, '\x86', ' ');
   strreplace(title, '\x87', ' ');
