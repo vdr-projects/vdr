@@ -16,7 +16,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.c 1.56 2002/10/11 13:14:57 kls Exp $
+ * $Id: eit.c 1.57 2002/10/13 09:29:05 kls Exp $
  ***************************************************************************/
 
 #include "eit.h"
@@ -983,6 +983,7 @@ int cSIProcessor::numSIProcessors = 0;
 cSchedules *cSIProcessor::schedules = NULL;
 cMutex cSIProcessor::schedulesMutex;
 const char *cSIProcessor::epgDataFileName = EPGDATAFILENAME;
+time_t cSIProcessor::lastDump = time(NULL);
 
 /**  */
 cSIProcessor::cSIProcessor(const char *FileName)
@@ -1083,7 +1084,6 @@ void cSIProcessor::Action()
    dsyslog("EIT processing thread started (pid=%d)%s", getpid(), masterSIProcessor ? " - master" : "");
 
    time_t lastCleanup = time(NULL);
-   time_t lastDump = time(NULL);
 
    active = true;
 
@@ -1266,4 +1266,10 @@ bool cSIProcessor::SetCurrentServiceID(unsigned short servid)
 {
   cMutexLock MutexLock(&schedulesMutex);
   return schedules ? schedules->SetCurrentServiceID(servid) : false;
+}
+
+void cSIProcessor::TriggerDump(void)
+{
+  cMutexLock MutexLock(&schedulesMutex);
+  lastDump = 0;
 }

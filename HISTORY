@@ -1605,3 +1605,5 @@ Video Disk Recorder Revision History
 - Changed a few leftover 'new char[...]' to MALLOC(char, ...).
 - If a command executed from the "Commands" menu doesn't return any output, the
   OSD will now be closed automatically.
+- The SVDRP command PUTE now triggers an immediate write of the 'epg.data' file
+  (suggested by Gerhard Steiner).

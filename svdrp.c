@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.44 2002/10/05 13:45:05 kls Exp $
+ * $Id: svdrp.c 1.45 2002/10/13 09:31:31 kls Exp $
  */
 
 #include "svdrp.h"
@@ -153,6 +153,7 @@ bool cPUTEhandler::Process(const char *s)
      else {
         rewind(f);
         if (cSchedules::Read(f)) {
+           cSIProcessor::TriggerDump();
            status = 250;
            message = "EPG data processed";
            }

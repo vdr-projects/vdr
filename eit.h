@@ -16,7 +16,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.h 1.18 2002/08/25 10:38:34 kls Exp $
+ * $Id: eit.h 1.19 2002/10/13 09:28:06 kls Exp $
  ***************************************************************************/
 
 #ifndef __EIT_H
@@ -138,6 +138,7 @@ private:
   static cSchedules *schedules;
   static cMutex schedulesMutex;
   static const char *epgDataFileName;
+  static time_t lastDump;
   bool masterSIProcessor;
   int currentTransponder;
   SIP_FILTER *filters;
@@ -160,6 +161,7 @@ public:
   void SetStatus(bool On);
   void SetCurrentTransponder(int CurrentTransponder);
   static bool SetCurrentServiceID(unsigned short servid);
+  static void TriggerDump(void);
   };
 
 #endif
