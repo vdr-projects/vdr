@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 1.13 2002/09/08 08:56:46 kls Exp $
+ * $Id: device.h 1.14 2002/09/08 11:17:41 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -132,7 +132,7 @@ public:
 // Channel facilities
 
 protected:
-  int currentChannel;
+  static int currentChannel;
 public:
   virtual bool ProvidesChannel(const cChannel *Channel, int Priority = -1, bool *NeedsDetachReceivers = NULL);
          // Returns true if this device can provide the given channel.
@@ -152,6 +152,10 @@ public:
   bool SwitchChannel(const cChannel *Channel, bool LiveView);
          // Switches the device to the given Channel, initiating transfer mode
          // if necessary.
+  static bool SwitchChannel(int Direction);
+         // Switches the primary device to the next available channel in the given
+         // Direction (only the sign of Direction is evaluated, positive values
+         // switch to higher channel numbers).
 private:
   eSetChannelResult SetChannel(const cChannel *Channel, bool LiveView);
          // Sets the device to the given channel (general setup).
@@ -159,10 +163,8 @@ protected:
   virtual bool SetChannelDevice(const cChannel *Channel, bool LiveView);
          // Sets the device to the given channel (actual physical setup).
 public:
-  static int CurrentChannel(void) { return primaryDevice ? primaryDevice->currentChannel : 0; }
+  static int CurrentChannel(void) { return primaryDevice ? currentChannel : 0; }
          // Returns the number of the current channel on the primary device.
-  int Channel(void) { return currentChannel; }
-         // Returns the number of the current channel on this device.
 
 // PID handle facilities
 

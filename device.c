@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.17 2002/09/08 09:36:16 kls Exp $
+ * $Id: device.c 1.18 2002/09/08 11:46:53 kls Exp $
  */
 
 #include "device.h"
@@ -30,6 +30,7 @@
 int cDevice::numDevices = 0;
 int cDevice::useDevice = 0;
 int cDevice::nextCardIndex = 0;
+int cDevice::currentChannel = 0;
 cDevice *cDevice::device[MAXDEVICES] = { NULL };
 cDevice *cDevice::primaryDevice = NULL;
 
@@ -40,8 +41,6 @@ cDevice::cDevice(void)
   SetVideoFormat(Setup.VideoFormat);
 
   active = false;
-
-  currentChannel = 0;
 
   mute = false;
   volume = Setup.CurrentVolume;
@@ -285,16 +284,38 @@ bool cDevice::SwitchChannel(const cChannel *Channel, bool LiveView)
   return false;
 }
 
+bool cDevice::SwitchChannel(int Direction)
+{
+  bool result = false;
+  Direction = sgn(Direction);
+  if (Direction) {
+     int n = CurrentChannel() + Direction;
+     int first = n;
+     for (;;) {
+         cChannel *channel = Channels.GetByNumber(n);
+         if (!channel)
+            break;
+         if (PrimaryDevice()->SwitchChannel(channel, true)) {
+            result = true;
+            break;
+            }
+         n += Direction;
+         }
+     int d = n - first;
+     if (abs(d) == 1)
+        dsyslog("skipped channel %d", first);
+     else if (d)
+        dsyslog("skipped channels %d..%d", first, n - sgn(d));
+     }
+  return result;
+}
+
 eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
 {
   cStatus::MsgChannelSwitch(this, 0);
 
   if (LiveView)
      StopReplay();
-
-  // Must set this anyway to avoid getting stuck when switching through
-  // channels with 'Up' and 'Down' keys:
-  currentChannel = Channel->number;
 
   // If this card can't receive this channel, we must not actually switch
   // the channel here, because that would irritate the driver when we
@@ -320,8 +341,10 @@ eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
   else if (!SetChannelDevice(Channel, LiveView))
      Result = scrFailed;
 
-  if (IsPrimaryDevice())
+  if (Result == scrOk && LiveView && IsPrimaryDevice()) {
      cSIProcessor::SetCurrentServiceID(Channel->pnr);
+     currentChannel = Channel->number;
+     }
 
   cStatus::MsgChannelSwitch(this, Channel->number);
 

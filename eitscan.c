@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: eitscan.c 1.6 2002/09/04 13:32:38 kls Exp $
+ * $Id: eitscan.c 1.7 2002/09/08 11:08:52 kls Exp $
  */
 
 #include "eitscan.h"
@@ -68,7 +68,7 @@ void cEITScanner::Process(void)
                                  break;
                               if (Channel->pnr && !TransponderScanned(Channel)) {
                                  if (Device == cDevice::PrimaryDevice() && !currentChannel)
-                                    currentChannel = Device->Channel();
+                                    currentChannel = Device->CurrentChannel();
                                  Device->SwitchChannel(Channel, false);
                                  lastChannel = ch;
                                  break;

@@ -1450,3 +1450,8 @@ Video Disk Recorder Revision History
   cDevice classes.
 - Changed the interface if cDevice::GetTSPacket() to avoid unnecessary copying
   of data.
+- Removed cDevice::Channel(), since this makes no more sense with devices
+  receiving multiple channels.
+- Switching through channels with the 'Up' and 'Down' keys now skips channels
+  that are currently not available (for instance because all devices are
+  recording and these channels are on different transponders).
