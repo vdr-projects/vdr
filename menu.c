@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.306 2004/05/23 11:21:06 kls Exp $
+ * $Id: menu.c 1.307 2004/05/29 10:19:22 kls Exp $
  */
 
 #include "menu.h"
@@ -1421,9 +1421,10 @@ cMenuRecordings::cMenuRecordings(const char *Base, int Level, bool OpenSubMenus)
   Display(); // this keeps the higher level menus from showing up briefly when pressing 'Back' during replay
   if (!Base)
      Skins.Message(mtStatus, tr("scanning recordings..."));
-  if (Base || Recordings.Load()) {
-     if (!Base)
-        Skins.Message(mtStatus, NULL);
+  bool Loaded = Base || Recordings.Load();
+  if (!Base)
+     Skins.Message(mtStatus, NULL);
+  if (Loaded) {
      const char *LastReplayed = cReplayControl::LastReplayed();
      cMenuRecordingItem *LastItem = NULL;
      char *LastItemText = NULL;

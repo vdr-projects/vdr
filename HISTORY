@@ -2853,3 +2853,5 @@ Video Disk Recorder Revision History
   reporting this one).
 - Now using more separate areas in the "ST:TNG Panels" skin to allow a theme to
   use more independent clrMenu* colors.
+- Fixed removing the "scanning recordings..." message in case the video directory
+  is empty (thanks to Andreas Regel for reporting this one).

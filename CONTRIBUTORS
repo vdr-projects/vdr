@@ -957,6 +957,8 @@ Jens Rosenboom <me@jayr.de>
 
 Andreas Regel <andreas.regel@gmx.de>
  for fixing handling bitmap indexes for 256 color mode
+ for reporting a bug in removing the "scanning recordings..." message in case the
+ video directory is empty
 
 Thomas Bergwinkl <Thomas.Bergwinkl@t-online.de>
  for fixing the validity check for channel IDs, because some providers use TIDs
