@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: status.h 1.2 2002/06/16 12:09:55 kls Exp $
+ * $Id: status.h 1.3 2002/06/16 13:24:50 kls Exp $
  */
 
 #ifndef __STATUS_H
@@ -15,9 +15,9 @@
 #include "dvbplayer.h"
 #include "tools.h"
 
-class cStatusMonitor : public cListObject {
+class cStatus : public cListObject {
 private:
-  static cList<cStatusMonitor> statusMonitors;
+  static cList<cStatus> statusMonitors;
 protected:
   // These functions can be implemented by derived classes to receive status information:
   virtual void ChannelSwitch(const cDevice *Device, int ChannelNumber) {}
@@ -55,8 +55,8 @@ protected:
   virtual void OsdProgramme(time_t PresentTime, const char *PresentTitle, const char *PresentSubtitle, time_t FollowingTime, const char *FollowingTitle, const char *FollowingSubtitle) {}
                // The OSD displays the given programme information.
 public:
-  cStatusMonitor(void);
-  virtual ~cStatusMonitor();
+  cStatus(void);
+  virtual ~cStatus();
   // These functions are called whenever the related status information changes:
   static void MsgChannelSwitch(const cDevice *Device, int ChannelNumber);
   static void MsgRecording(const cDevice *Device, const char *Name);

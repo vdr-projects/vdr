@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 1.28 2002/06/10 16:30:00 kls Exp $
+ * $Id: osd.c 1.29 2002/06/16 13:24:00 kls Exp $
  */
 
 #include "osd.h"
@@ -434,7 +434,7 @@ void cOsdMenu::Display(void)
          if (item) {
             item->Display(i - first, i == current ? clrBlack : clrWhite, i == current ? clrCyan : clrBackground);
             if (i == current)
-               cStatusMonitor::MsgOsdCurrentItem(item->Text());
+               cStatus::MsgOsdCurrentItem(item->Text());
             }
          if (++n == MAXOSDITEMS) //TODO get this from Interface!!!
             break;
@@ -462,7 +462,7 @@ void cOsdMenu::DisplayCurrent(bool Current)
   if (item) {
      item->Display(current - first, Current ? clrBlack : clrWhite, Current ? clrCyan : clrBackground);
      if (Current)
-        cStatusMonitor::MsgOsdCurrentItem(item->Text());
+        cStatus::MsgOsdCurrentItem(item->Text());
      }
 }
 

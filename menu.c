@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.196 2002/06/16 12:11:02 kls Exp $
+ * $Id: menu.c 1.197 2002/06/16 13:23:51 kls Exp $
  */
 
 #include "menu.h"
@@ -2169,7 +2169,7 @@ void cDisplayChannel::DisplayChannel(const cChannel *Channel)
   Interface->Write(0, 0, buffer);
   const char *date = DayDateTime();
   Interface->Write(-strlen(date), 0, date);
-  cStatusMonitor::MsgOsdChannel(buffer);
+  cStatus::MsgOsdChannel(buffer);
 }
 
 void cDisplayChannel::DisplayInfo(void)
@@ -2223,7 +2223,7 @@ void cDisplayChannel::DisplayInfo(void)
               Interface->Flush();
               lines = Lines;
               lastTime = time_ms();
-              cStatusMonitor::MsgOsdProgramme(Present ? Present->GetTime() : 0, PresentTitle, PresentSubtitle, Following ? Following->GetTime() : 0, FollowingTitle, FollowingSubtitle);
+              cStatus::MsgOsdProgramme(Present ? Present->GetTime() : 0, PresentTitle, PresentSubtitle, Following ? Following->GetTime() : 0, FollowingTitle, FollowingSubtitle);
               }
            }
         }
@@ -2445,7 +2445,7 @@ cRecordControl::cRecordControl(cDevice *Device, cTimer *Timer)
   recorder = new cRecorder(fileName, ch->ca, timer->priority, ch->vpid, ch->apid1, ch->apid2, ch->dpid1, ch->dpid2);
   if (device->Attach(recorder)) {
      Recording.WriteSummary();
-     cStatusMonitor::MsgRecording(device, fileName);
+     cStatus::MsgRecording(device, fileName);
      Interface->DisplayRecording(device->CardIndex(), true);
      }
   else
@@ -2492,7 +2492,7 @@ bool cRecordControl::GetEventInfo(void)
 void cRecordControl::Stop(bool KeepInstant)
 {
   if (timer) {
-     cStatusMonitor::MsgRecording(device, NULL);
+     cStatus::MsgRecording(device, NULL);
      DELETENULL(recorder);
      timer->SetRecording(false);
      if ((IsInstant() && !KeepInstant) || (timer->IsSingleEvent() && !timer->Matches())) {
@@ -2694,14 +2694,14 @@ cReplayControl::cReplayControl(void)
      if (!Start(fileName))
         Interface->Error(tr("Channel locked (recording)!"));//XXX+
      else
-        cStatusMonitor::MsgReplaying(this, fileName);
+        cStatus::MsgReplaying(this, fileName);
      }
 }
 
 cReplayControl::~cReplayControl()
 {
   Hide();
-  cStatusMonitor::MsgReplaying(this, NULL);
+  cStatus::MsgReplaying(this, NULL);
   Stop();
 }
 

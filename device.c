@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.1 2002/06/16 12:29:09 kls Exp $
+ * $Id: device.c 1.2 2002/06/16 13:23:31 kls Exp $
  */
 
 #include "device.h"
@@ -459,7 +459,7 @@ eSetChannelResult cDevice::SetChannel(int ChannelNumber, int Frequency, char Pol
   //XXX+StopTransfer();
   //XXX+StopReplay();
 
-  cStatusMonitor::MsgChannelSwitch(this, 0);
+  cStatus::MsgChannelSwitch(this, 0);
 
   // Must set this anyway to avoid getting stuck when switching through
   // channels with 'Up' and 'Down' keys:
@@ -639,7 +639,7 @@ eSetChannelResult cDevice::SetChannel(int ChannelNumber, int Frequency, char Pol
   if (Result == scrOk && siProcessor)
      siProcessor->SetCurrentTransponder(Frequency);
 
-  cStatusMonitor::MsgChannelSwitch(this, ChannelNumber);
+  cStatus::MsgChannelSwitch(this, ChannelNumber);
 
   return Result;
 }
@@ -660,7 +660,7 @@ void cDevice::SetVolume(int Volume, bool Absolute)
      audioMixer_t am;
      am.volume_left = am.volume_right = volume;
      CHECK(ioctl(fd_audio, AUDIO_SET_MIXER, &am));
-     cStatusMonitor::MsgSetVolume(volume, Absolute);
+     cStatus::MsgSetVolume(volume, Absolute);
      if (volume > 0)
         mute = false;
      }
