@@ -3104,3 +3104,4 @@ Video Disk Recorder Revision History
   The sequence of 'name' and 'short name' in the channels.conf file has been
   swapped (see man vdr(5)).
 - Added the 'portal name' to cChannels (thanks to Marco Schlüßler).
+- Fixed handling key codes that start with 0x1B in the KBD remote control code.
