@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 1.31 2003/05/02 08:21:05 kls Exp $
+ * $Id: device.h 1.32 2003/05/03 13:35:55 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -181,6 +181,9 @@ protected:
 public:
   static int CurrentChannel(void) { return primaryDevice ? currentChannel : 0; }
          ///< Returns the number of the current channel on the primary device.
+  virtual bool HasProgramme(void);
+         ///< Returns true if the device is currently showing any programme to
+         ///< the user, either through replaying or live.
 
 // PID handle facilities
 
@@ -300,7 +303,6 @@ public:
 
 private:
   cPlayer *player;
-  bool playerDetached;
 protected:
   virtual bool CanReplay(void) const;
        ///< Returns true if this device can currently start a replay session.
@@ -349,8 +351,6 @@ public:
        ///< Attaches the given player to this device.
   void Detach(cPlayer *Player);
        ///< Detaches the given player from this device.
-  bool PlayerDetached(void);
-       ///< Returns true if a player has been detached and resets the 'playerDetached' flag.
 
 // Receiver facilities
 
