@@ -25,7 +25,7 @@ directory ../DVD (seen from the VDR directory).  Adjust the definition
 of DVDDIR in the Makefile if necessary.
 You can find 'libdvdread' at
 
-  http://www.dtek.chalmers.se/groups/dvd/downloads.html
+  http://www.dtek.chalmers.se/groups/dvd/downloads.shtml
 
 If you want to replay CSS encrypted DVDs you also need to get the 'libdvdcss'
 library from
