@@ -12,7 +12,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: newplugin 1.4 2002/05/12 15:02:13 kls Exp $
+# $Id: newplugin 1.5 2002/05/14 21:22:59 kls Exp $
 
 $PLUGIN_NAME = $ARGV[0] || die "Usage: newplugin <name>\n";
 
@@ -66,7 +66,7 @@ PLUGIN = $PLUGIN_NAME
 
 ### The version number of this plugin (taken from the main source file):
 
-VERSION = `grep 'static const char \\*VERSION *=' \$(PLUGIN).c | awk '{ print \$\$6 }' | sed -e 's/[";]//g'`
+VERSION = \$(shell grep 'static const char \\*VERSION *=' \$(PLUGIN).c | awk '{ print \$\$6 }' | sed -e 's/[";]//g')
 
 ### The directory environment:
 
@@ -78,7 +78,7 @@ TMPDIR = /tmp
 
 ### The version number of VDR (taken from VDR's "config.h"):
 
-VDRVERSION = `grep 'define VDRVERSION ' \$(VDRDIR)/config.h | awk '{ print \$\$3 }' | sed -e 's/"//g'`
+VDRVERSION = \$(shell grep 'define VDRVERSION ' \$(VDRDIR)/config.h | awk '{ print \$\$3 }' | sed -e 's/"//g')
 
 ### The name of the distribution archive:
 
@@ -112,7 +112,7 @@ DEPFILE = .dependencies
 \$(DEPFILE): Makefile
 	\@\$(MAKEDEP) \$(DEFINES) \$(INCLUDES) \$(OBJS:%.o=%.c) > \$\@
 
-include \$(DEPFILE)
+-include \$(DEPFILE)
 
 ### Targets:
 

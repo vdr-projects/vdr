@@ -16,12 +16,15 @@ This document describes the "outside" interface of the plugin system.
 It handles everything necessary for a plugin to get hooked into the core
 VDR program and present itself to the user.
 <p>
-<!--X1.1.1--><table width=100%><tr><td bgcolor=cyan>&nbsp;</td><td width=100%>
+<!--X1.1.1--><table width=100%><tr><td bgcolor=lime>&nbsp;</td><td width=100%>
 Important modifications introduced in version 1.1.1 are marked like this.
 <!--X1.1.1--></td></tr></table>
-<!--X1.1.2--><table width=100%><tr><td bgcolor=red>&nbsp;</td><td width=100%>
+<!--X1.1.2--><table width=100%><tr><td bgcolor=cyan>&nbsp;</td><td width=100%>
 Important modifications introduced in version 1.1.2 are marked like this.
 <!--X1.1.2--></td></tr></table>
+<!--X1.1.3--><table width=100%><tr><td bgcolor=red>&nbsp;</td><td width=100%>
+Important modifications introduced in version 1.1.3 are marked like this.
+<!--X1.1.3--></td></tr></table>
 <!--<p>TODO: Link to the document about VDR base classes to use when implementing actual functionality (yet to be written).-->
 
 <hr><h2>Quick start</h2>
@@ -117,7 +120,7 @@ from the web, it will typically have a name like
 <p>
 and will unpack into a directory named
 <p>
-<!--X1.1.2--><table width=100%><tr><td bgcolor=red>&nbsp;</td><td width=100%>
+<!--X1.1.2--><table width=100%><tr><td bgcolor=cyan>&nbsp;</td><td width=100%>
 <tt>hello-0.0.1</tt>
 <!--X1.1.2--></td></tr></table>
 <p>
@@ -125,7 +128,7 @@ To use the <tt>plugins</tt> and <tt>plugins-clean</tt> targets from the VDR <tt>
 you need to unpack such an archive into the <tt>VDR/PLUGINS/src</tt> directory and
 create a symbolic link with the basic plugin name, as in
 
-<!--X1.1.2--><table width=100%><tr><td bgcolor=red>&nbsp;</td><td width=100%>
+<!--X1.1.2--><table width=100%><tr><td bgcolor=cyan>&nbsp;</td><td width=100%>
 <p><table><tr><td bgcolor=#F0F0F0><pre><br>
 ln -s hello-0.0.1 hello
 </pre></td></tr></table><p>
@@ -191,7 +194,7 @@ its memory. You don't need to worry about the details behind all this.
 If your plugin requires additional source files, simply add them to your plugin's
 source directory and adjust the <tt>Makefile</tt> accordingly.
 <p>
-<!--X1.1.1--><table width=100%><tr><td bgcolor=cyan>&nbsp;</td><td width=100%>
+<!--X1.1.1--><table width=100%><tr><td bgcolor=lime>&nbsp;</td><td width=100%>
 Header files usually contain preprocessor statements that prevent the same
 file (or rather its contents, to be precise) from being included more than once, like
 
@@ -410,7 +413,7 @@ If a plugin implements a function that runs in the background (presumably in a
 thread of its own), or wants to make use of <a href="#Internationalization">internationalization</a>,
 it needs to implement the function
 
-<!--X1.1.2--><table width=100%><tr><td bgcolor=red>&nbsp;</td><td width=100%>
+<!--X1.1.2--><table width=100%><tr><td bgcolor=cyan>&nbsp;</td><td width=100%>
 <p><table><tr><td bgcolor=#F0F0F0><pre><br>
 virtual bool Start(void);
 </pre></td></tr></table><p>
@@ -422,7 +425,7 @@ its task. This may, for instance, be a thread that collects data from the DVB
 stream, which is later presented to the user via a function that is available
 from the main menu.
 <p>
-<!--X1.1.2--><table width=100%><tr><td bgcolor=red>&nbsp;</td><td width=100%>
+<!--X1.1.2--><table width=100%><tr><td bgcolor=cyan>&nbsp;</td><td width=100%>
 A return value of <i>false</i> indicates that something has gone wrong and the
 plugin will not be able to perform its task. In that case, the plugin should
 write a proper error message to the log file. The first plugin that returns
@@ -486,7 +489,7 @@ interaction is possible. If a specific action takes longer than a few seconds,
 the plugin should launch a separate thread to do this.
 </b>
 
-<!--X1.1.2--><table width=100%><tr><td bgcolor=red>&nbsp;</td><td width=100%>
+<!--X1.1.2--><table width=100%><tr><td bgcolor=cyan>&nbsp;</td><td width=100%>
 <hr><h2>Housekeeping</h2>
 
 <center><i><b>Chores, chores...</b></i></center><p>
@@ -533,7 +536,7 @@ previously stored in the global setup data (see below). It shall return
 <i>true</i> if the parameter was parsed correctly, <i>false</i> in case of
 an error. If <i>false</i> is returned, an error message will be written to
 the log file (and program execution will continue).
-<!--X1.1.1--><table width=100%><tr><td bgcolor=cyan>&nbsp;</td><td width=100%>
+<!--X1.1.1--><table width=100%><tr><td bgcolor=lime>&nbsp;</td><td width=100%>
 A possible implementation of <tt>SetupParse()</tt> could look like this:
 
 <p><table><tr><td bgcolor=#F0F0F0><pre><br>
@@ -588,7 +591,7 @@ needs setup parameters that are not directly user adjustable. It can use
 <tt>SetupStore()</tt> and <tt>SetupParse()</tt> without presenting these
 parameters to the user.
 
-<!--X1.1.1--><table width=100%><tr><td bgcolor=cyan>&nbsp;</td><td width=100%>
+<!--X1.1.1--><table width=100%><tr><td bgcolor=lime>&nbsp;</td><td width=100%>
 <a name="The Setup menu"><hr><h2>The Setup menu</h2>
 
 <center><i><b>Have it your way!</b></i></center><p>
@@ -648,7 +651,7 @@ your setup parameters and use that one to copy all parameters with one single st
 (like VDR does with its cSetup class).
 <!--X1.1.1--></td></tr></table>
 
-<!--X1.1.2--><table width=100%><tr><td bgcolor=red>&nbsp;</td><td width=100%>
+<!--X1.1.2--><table width=100%><tr><td bgcolor=cyan>&nbsp;</td><td width=100%>
 <hr><h2>Configuration files</h2>
 
 <center><i><b>I want my own stuff!</b></i></center><p>
@@ -815,16 +818,18 @@ and display their help and/or version information in addition to its own output.
 
 If you want to make your plugin available to other VDR users, you'll need to
 make a package that can be easily distributed.
+<!--X1.1.3--><table width=100%><tr><td bgcolor=red>&nbsp;</td><td width=100%>
 The <tt>Makefile</tt> that has been created by the call to
 <a href="#Initializing a new plugin directory"><tt>newplugin</tt></a>
-provides the target <tt>package</tt>, which does this for you.
+provides the target <tt>dist</tt>, which does this for you.
 <p>
-Simply change into your source directory and execute <tt>make package</tt>:
+Simply change into your source directory and execute <tt>make dist</tt>:
 
 <p><table><tr><td bgcolor=#F0F0F0><pre><br>
 cd VDR/PLUGINS/src/hello
-make package
+make dist
 </pre></td></tr></table><p>
+<!--X1.1.3--></td></tr></table>
 
 After this you should find a file named like
 

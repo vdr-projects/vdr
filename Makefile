@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 1.35 2002/05/10 10:24:46 kls Exp $
+# $Id: Makefile 1.36 2002/05/14 21:12:28 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -66,7 +66,7 @@ DEPFILE = .dependencies
 $(DEPFILE): Makefile
 	@$(MAKEDEP) $(DEFINES) $(INCLUDES) $(OBJS:%.o=%.c) > $@
 
-include $(DEPFILE)
+-include $(DEPFILE)
 
 # The main program:
 
@@ -88,7 +88,7 @@ genfontfile: genfontfile.c
 # The libdtv library:
 
 $(DTVLIB) $(DTVDIR)/libdtv.h:
-	make -C $(DTVDIR) all
+	$(MAKE) -C $(DTVDIR) all
 
 # The 'include' directory (for plugins):
 
@@ -99,10 +99,10 @@ include-dir:
 # Plugins:
 
 plugins: include-dir
-	@for i in `ls $(PLUGINDIR)/src | grep -v '[^a-z0-9]'`; do make -C "$(PLUGINDIR)/src/$$i" all; done
+	@for i in `ls $(PLUGINDIR)/src | grep -v '[^a-z0-9]'`; do $(MAKE) -C "$(PLUGINDIR)/src/$$i" all; done
 
 plugins-clean:
-	@for i in `ls $(PLUGINDIR)/src | grep -v '[^a-z0-9]'`; do make -C "$(PLUGINDIR)/src/$$i" clean; done
+	@for i in `ls $(PLUGINDIR)/src | grep -v '[^a-z0-9]'`; do $(MAKE) -C "$(PLUGINDIR)/src/$$i" clean; done
 	@-rm -f $(PLUGINDIR)/lib/*
 
 # Install the files:
@@ -119,7 +119,7 @@ install:
 # Housekeeping:
 
 clean:
-	make -C $(DTVDIR) clean
+	$(MAKE) -C $(DTVDIR) clean
 	-rm -f $(OBJS) $(DEPFILE) vdr genfontfile genfontfile.o core* *~
 	-rm -rf include
 fontclean:

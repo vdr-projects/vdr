@@ -1285,3 +1285,14 @@ Video Disk Recorder Revision History
   See PLUGINS.html, section "Configuration files" for details.
 - Improved the [eid]syslog() macros, so that the LOG_... macros don't need to be
   given any more.
+
+2002-05-17: Version 1.1.3
+
+- Improved the VDR Makefile to avoid a warning if the '.dependencies' file does
+  not exist, and also using $(MAKE) to call recursive makes.
+- Changed the name of the 'package' target in the plugin Makefiles to 'dist'
+  (following the suggestions in the "GNU Make" manual). If you already have started
+  a plugin project, you may want to change this in your Makefile accordingly.
+- Improved the plugin Makefile to avoid a warning if the '.dependencies' file does
+  not exist, and also using $(shell...) to get the version numbers. If you already have
+  started a plugin project, you may want to change this in your Makefile accordingly.
