@@ -3012,3 +3012,4 @@ Video Disk Recorder Revision History
 - cOsdProvider::NewOsd() now always returns a valid pointer, even if the OSD is
   currently in use (it will then return a dummy cOsd object and write a message to
   the log file).
+- Added Estonian language texts (thanks to Arthur Konovalov).
