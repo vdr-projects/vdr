@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.154 2002/03/03 15:43:24 kls Exp $
+ * $Id: dvbapi.c 1.155 2002/03/08 14:23:29 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -62,6 +62,9 @@ extern "C" {
 
 // The maximum time to wait before giving up while catching up on an index file:
 #define MAXINDEXCATCHUP   2 // seconds
+
+// The default priority for non-primary DVB cards:
+#define DEFAULTPRIORITY  -2
 
 #define CHECK(s) { if ((s) < 0) LOG_ERROR; } // used for 'ioctl()' calls
 
@@ -1685,7 +1688,7 @@ cDvbApi::cDvbApi(int n)
   transferBuffer = NULL;
   transferringFromDvbApi = NULL;
   ca = -1;
-  priority = -1;
+  priority = DEFAULTPRIORITY;
   cardIndex = n;
   SetCaCaps();
 
@@ -2567,7 +2570,7 @@ void cDvbApi::StopRecord(void)
      delete recordBuffer;
      recordBuffer = NULL;
      ca = -1;
-     priority = -1;
+     priority = DEFAULTPRIORITY;
      }
 }
 
