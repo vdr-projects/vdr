@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.52 2001/01/20 09:52:56 kls Exp $
+ * $Id: dvbapi.c 1.53 2001/01/27 11:04:55 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -821,7 +821,9 @@ int cRecordBuffer::ScanVideoPacket(int *PictureType, int Offset)
 
   int Length = GetPacketLength(Offset);
   if (Length <= Available()) {
-     for (int i = Offset; i < Offset + Length; i++) {
+     int i = Offset + 8; // the minimum length of the video packet header
+     i += Byte(i) + 1;   // possible additional header bytes
+     for (; i < Offset + Length; i++) {
          if (Byte(i) == 0 && Byte(i + 1) == 0 && Byte(i + 2) == 1) {
             switch (Byte(i + 3)) {
               case SC_PICTURE: *PictureType = GetPictureType(i);
@@ -840,8 +842,6 @@ int cRecordBuffer::Synchronize(void)
   // Positions to the start of a data block (skipping everything up to
   // an I-frame if not synced) and returns the block length.
 
-  int LastPackHeader = -1;
-
   pictureType = NO_PICTURE;
 
   //XXX remove this once the buffer is handled with two separate threads:
@@ -853,8 +853,6 @@ int cRecordBuffer::Synchronize(void)
   for (int i = 0; Available() > MINVIDEODATA && i < MINVIDEODATA; i++) {
       if (Byte(i) == 0 && Byte(i + 1) == 0 && Byte(i + 2) == 1) {
          switch (Byte(i + 3)) {
-           case SC_PHEAD:   LastPackHeader = i;
-                            break;
            case SC_VIDEO:   {
                               int pt = NO_PICTURE;
                               int l = ScanVideoPacket(&pt, i);
@@ -862,21 +860,13 @@ int cRecordBuffer::Synchronize(void)
                                  return 0; // no useful data found, wait for more
                               if (pt != NO_PICTURE) {
                                  if (pt < I_FRAME || B_FRAME < pt) {
-                                   esyslog(LOG_ERR, "ERROR: unknown picture type '%d'", pt);
-                                   }
+                                    esyslog(LOG_ERR, "ERROR: unknown picture type '%d'", pt);
+                                    }
                                  else if (pictureType == NO_PICTURE) {
                                     if (!synced) {
-                                       if (LastPackHeader == 0) {
-                                          if (pt == I_FRAME)
-                                             synced = true;
-                                          }
-                                       else if (LastPackHeader > 0) {
-                                          Skip(LastPackHeader);
-                                          LastPackHeader = -1;
-                                          i = 0;
-                                          break;
-                                          }
-                                       else { // LastPackHeader < 0
+                                       if (pt == I_FRAME)
+                                          synced = true;
+                                       else {
                                           Skip(i + l);
                                           i = 0;
                                           break;
@@ -885,13 +875,15 @@ int cRecordBuffer::Synchronize(void)
                                     if (synced)
                                        pictureType = pt;
                                     }
-                                 else if (LastPackHeader > 0)
-                                    return LastPackHeader;
                                  else
                                     return i;
                                  }
+                              else if (!synced) {
+                                 Skip(i + l);
+                                 i = 0;
+                                 break;
+                                 }
                               i += l - 1; // -1 to compensate for i++ in the loop!
-                              LastPackHeader = -1;
                             }
                             break;
            case SC_AUDIO:   i += GetPacketLength(i) - 1; // -1 to compensate for i++ in the loop!
@@ -2182,7 +2174,8 @@ bool cDvbApi::SetChannel(int ChannelNumber, int FrequencyMHz, char Polarization,
         freq -= Setup.LnbFrequLo;
      else
         freq -= Setup.LnbFrequHi;
-     front.pnr       = 0;
+     front.channel_flags = Ca ? DVB_CHANNEL_CA : DVB_CHANNEL_FTA;
+     front.pnr       = Pnr;
      front.freq      = freq * 1000000UL;
      front.diseqc    = Diseqc;
      front.srate     = Srate * 1000;

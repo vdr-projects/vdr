@@ -350,10 +350,12 @@ Video Disk Recorder Revision History
 - Encrypted channels can now be selected even without knowing the PNR (however, it
   is still necessary for the EPG info).
 
-2001-01-20: Version 0.71
+2001-01-27: Version 0.71
 
 - Fixed 'Transfer Mode' in cases where a non-primary interface was switched to
   a channel that only the primary interface can receive (which could happen in
   the EPG scanner).
 - The EPG scanner now starts with the first channel (it used to start with the
   second channel).
+- Reacitvated setting the PNR.
+- Adapted the frame scanning to the new muxing of the driver.
