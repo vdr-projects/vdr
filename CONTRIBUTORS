@@ -146,6 +146,7 @@ Stefan Huelswitt <huels@iname.com>
  for implementing several replay modes to allow players that play only audio
  for improving cCondVar::Wait() and implementing cCondVar::TimedWait()
  for reporting a bug when entering an integer value outside the limit
+ for adding play mode pmAudioOnlyBlack
 
 Ulrich Röder <roeder@efr-net.de>
  for pointing out that there are channels that have a symbol rate higher than

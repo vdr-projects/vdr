@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 1.15 2002/09/08 14:02:50 kls Exp $
+ * $Id: device.h 1.16 2002/09/08 14:56:21 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -26,9 +26,10 @@
 
 enum eSetChannelResult { scrOk, scrNotAvailable, scrNoTransfer, scrFailed };
 
-enum ePlayMode { pmNone,       // audio/video from decoder
-                 pmAudioVideo, // audio/video from player
-                 pmAudioOnly,  // audio only from player, video from decoder
+enum ePlayMode { pmNone,           // audio/video from decoder
+                 pmAudioVideo,     // audio/video from player
+                 pmAudioOnly,      // audio only from player, video from decoder
+                 pmAudioOnlyBlack, // audio only from player, no video (black screen)
                  pmExtern_THIS_SHOULD_BE_AVOIDED
                  // external player (e.g. MPlayer), release the device
                  // WARNING: USE THIS MODE ONLY AS A LAST RESORT, IF YOU

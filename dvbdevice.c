@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.12 2002/09/08 14:07:08 kls Exp $
+ * $Id: dvbdevice.c 1.13 2002/09/08 15:00:46 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -663,11 +663,12 @@ bool cDvbDevice::SetPlayMode(ePlayMode PlayMode)
             siProcessor->SetStatus(true);
          break;
     case pmAudioVideo:
+    case pmAudioOnlyBlack:
          if (siProcessor)
             siProcessor->SetStatus(false);
          CHECK(ioctl(fd_video, VIDEO_SET_BLANK, true));
          CHECK(ioctl(fd_audio, AUDIO_SELECT_SOURCE, AUDIO_SOURCE_MEMORY));
-         CHECK(ioctl(fd_audio, AUDIO_SET_AV_SYNC, true));
+         CHECK(ioctl(fd_audio, AUDIO_SET_AV_SYNC, PlayMode == pmAudioVideo));
          CHECK(ioctl(fd_audio, AUDIO_PLAY));
          CHECK(ioctl(fd_video, VIDEO_SELECT_SOURCE, VIDEO_SOURCE_MEMORY));
          CHECK(ioctl(fd_video, VIDEO_PLAY));
@@ -711,18 +712,30 @@ void cDvbDevice::Clear(void)
 
 void cDvbDevice::Play(void)
 {
-  if (fd_audio >= 0)
-     CHECK(ioctl(fd_audio, AUDIO_SET_AV_SYNC, true));
-  if (fd_video >= 0)
-     CHECK(ioctl(fd_video, VIDEO_CONTINUE));
+  if (playMode == pmAudioOnly || playMode == pmAudioOnlyBlack) {
+     if (fd_audio >= 0)
+        CHECK(ioctl(fd_audio, AUDIO_CONTINUE));
+     }
+  else {
+     if (fd_audio >= 0)
+        CHECK(ioctl(fd_audio, AUDIO_SET_AV_SYNC, true));
+     if (fd_video >= 0)
+        CHECK(ioctl(fd_video, VIDEO_CONTINUE));
+     }
 }
 
 void cDvbDevice::Freeze(void)
 {
-  if (fd_audio >= 0)
-     CHECK(ioctl(fd_audio, AUDIO_SET_AV_SYNC, false));
-  if (fd_video >= 0)
-     CHECK(ioctl(fd_video, VIDEO_FREEZE));
+  if (playMode == pmAudioOnly || playMode == pmAudioOnlyBlack) {
+     if (fd_audio >= 0)
+        CHECK(ioctl(fd_audio, AUDIO_PAUSE));
+     }
+  else {
+     if (fd_audio >= 0)
+        CHECK(ioctl(fd_audio, AUDIO_SET_AV_SYNC, false));
+     if (fd_video >= 0)
+        CHECK(ioctl(fd_video, VIDEO_FREEZE));
+     }
 }
 
 void cDvbDevice::Mute(void)
@@ -760,13 +773,13 @@ void cDvbDevice::StillPicture(const uchar *Data, int Length)
 
 bool cDvbDevice::Poll(cPoller &Poller, int TimeoutMs)
 {
-  Poller.Add(playMode == pmAudioOnly ? fd_audio : fd_video, true);
+  Poller.Add((playMode == pmAudioOnly || playMode == pmAudioOnlyBlack) ? fd_audio : fd_video, true);
   return Poller.Poll(TimeoutMs);
 }
 
 int cDvbDevice::PlayVideo(const uchar *Data, int Length)
 {
-  int fd = playMode == pmAudioOnly ? fd_audio : fd_video;
+  int fd = (playMode == pmAudioOnly || playMode == pmAudioOnlyBlack) ? fd_audio : fd_video;
   if (fd >= 0)
      return write(fd, Data, Length);
   return -1;

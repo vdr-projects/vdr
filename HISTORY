@@ -1458,3 +1458,4 @@ Video Disk Recorder Revision History
 - Implemented an SPU decoder (thanks to Andreas Schultz).
 - Fixed a crash when entering an integer value outside the limits (thanks to
   Stefan Huelswitt for reporting this one).
+- Added play mode pmAudioOnlyBlack (thanks to Stefan Huelswitt).
