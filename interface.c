@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.c 1.65 2003/10/05 09:48:13 kls Exp $
+ * $Id: interface.c 1.65.1.1 2003/10/24 15:48:00 kls Exp $
  */
 
 #include "interface.h"
@@ -433,7 +433,7 @@ void cInterface::LearnKeys(void)
          Clear();
          if (!rc) {
             Close();
-            return;
+            continue;
             }
          WriteText(1, 1, Headline);
          WriteText(1, 3, tr("Phase 3: Saving key codes"));
