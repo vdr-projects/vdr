@@ -217,6 +217,7 @@ Werner Fink <werner@suse.de>
  contains Dolby Digital data
  for improving thread locking in the ring buffer to avoid possible race conditions
  under heavy load
+ for improving keyboard detection
 
 Rolf Hakenes <hakenes@hippomi.de>
  for providing 'libdtv' and adapting the EIT mechanisms to it
