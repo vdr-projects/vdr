@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.157 2002/02/23 13:55:23 kls Exp $
+ * $Id: menu.c 1.158 2002/02/24 11:54:04 kls Exp $
  */
 
 #include "menu.h"
@@ -1944,6 +1944,7 @@ void cMenuSetup::Set(void)
   Add(new cMenuEditBoolItem(tr("UseSubtitle"),        &data.UseSubtitle));
   Add(new cMenuEditBoolItem(tr("RecordingDirs"),      &data.RecordingDirs));
   Add(new cMenuEditBoolItem(tr("VideoFormat"),        &data.VideoFormat, "4:3", "16:9"));
+  Add(new cMenuEditBoolItem(tr("RecordDolbyDigital"), &data.RecordDolbyDigital));
   Add(new cMenuEditBoolItem(tr("ChannelInfoPos"),     &data.ChannelInfoPos, tr("bottom"), tr("top")));
   Add(new cMenuEditIntItem( tr("OSDwidth"),           &data.OSDwidth, MINOSDWIDTH, MAXOSDWIDTH));
   Add(new cMenuEditIntItem( tr("OSDheight"),          &data.OSDheight, MINOSDHEIGHT, MAXOSDHEIGHT));

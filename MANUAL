@@ -478,6 +478,10 @@ Video Disk Recorder User's Manual
                          0 = 4:3
                          1 = 16:9
 
+  RecordDolbyDigital = 1 Turns recording of the Dolby Digital audio channels on
+                         or off. This may be useful if you don't have the equipment
+                         to replay Dolby Digital audio and want to save disk space.
+
   ChannelInfoPos = 0     The position of the channel info window in the OSD.
                          0 = bottom
                          1 = top

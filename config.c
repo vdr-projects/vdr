@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.85 2002/02/17 15:38:34 kls Exp $
+ * $Id: config.c 1.86 2002/02/24 11:53:12 kls Exp $
  */
 
 #include "config.h"
@@ -910,6 +910,7 @@ cSetup::cSetup(void)
   UseSubtitle = 1;
   RecordingDirs = 1;
   VideoFormat = VIDEO_FORMAT_4_3;
+  RecordDolbyDigital = 1;
   ChannelInfoPos = 0;
   OSDwidth = 52;
   OSDheight = 18;
@@ -955,6 +956,7 @@ bool cSetup::Parse(char *s)
         else if (!strcasecmp(Name, "UseSubtitle"))         UseSubtitle        = atoi(Value);
         else if (!strcasecmp(Name, "RecordingDirs"))       RecordingDirs      = atoi(Value);
         else if (!strcasecmp(Name, "VideoFormat"))         VideoFormat        = atoi(Value);
+        else if (!strcasecmp(Name, "RecordDolbyDigital"))  RecordDolbyDigital = atoi(Value);
         else if (!strcasecmp(Name, "ChannelInfoPos"))      ChannelInfoPos     = atoi(Value);
         else if (!strcasecmp(Name, "OSDwidth"))            OSDwidth           = atoi(Value);
         else if (!strcasecmp(Name, "OSDheight"))           OSDheight          = atoi(Value);
@@ -1035,6 +1037,7 @@ bool cSetup::Save(const char *FileName)
         fprintf(f, "UseSubtitle        = %d\n", UseSubtitle);
         fprintf(f, "RecordingDirs      = %d\n", RecordingDirs);
         fprintf(f, "VideoFormat        = %d\n", VideoFormat);
+        fprintf(f, "RecordDolbyDigital = %d\n", RecordDolbyDigital);
         fprintf(f, "ChannelInfoPos     = %d\n", ChannelInfoPos);
         fprintf(f, "OSDwidth           = %d\n", OSDwidth);
         fprintf(f, "OSDheight          = %d\n", OSDheight);

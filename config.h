@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.97 2002/02/17 15:41:44 kls Exp $
+ * $Id: config.h 1.98 2002/02/24 11:53:14 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -330,6 +330,7 @@ public:
   int UseSubtitle;
   int RecordingDirs;
   int VideoFormat;
+  int RecordDolbyDigital;
   int ChannelInfoPos;
   int OSDwidth, OSDheight;
   int OSDMessageTime;

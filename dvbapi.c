@@ -7,7 +7,7 @@
  * DVD support initially written by Andreas Schultz <aschultz@warp10.net>
  * based on dvdplayer-0.5 by Matjaz Thaler <matjaz.thaler@guest.arnes.si>
  *
- * $Id: dvbapi.c 1.150 2002/02/23 13:11:13 kls Exp $
+ * $Id: dvbapi.c 1.151 2002/02/24 11:53:17 kls Exp $
  */
 
 //#define DVDDEBUG        1
@@ -3102,9 +3102,9 @@ bool cDvbApi::SetPids(bool ForRecording)
 {
   return SetVpid(vPid,   ForRecording ? DMX_OUT_TS_TAP : DMX_OUT_DECODER) &&
          SetApid1(aPid1, ForRecording ? DMX_OUT_TS_TAP : DMX_OUT_DECODER) &&
-         SetApid2(ForRecording ? aPid2 : 0, DMX_OUT_TS_TAP) &&
+         SetApid2(ForRecording ? aPid2 : 0, DMX_OUT_TS_TAP) && (!Setup.RecordDolbyDigital ||
          SetDpid1(ForRecording ? dPid1 : 0, DMX_OUT_TS_TAP) &&
-         SetDpid2(ForRecording ? dPid2 : 0, DMX_OUT_TS_TAP);
+         SetDpid2(ForRecording ? dPid2 : 0, DMX_OUT_TS_TAP));
 }
 
 eSetChannelResult cDvbApi::SetChannel(int ChannelNumber, int Frequency, char Polarization, int Diseqc, int Srate, int Vpid, int Apid1, int Apid2, int Dpid1, int Dpid2, int Tpid, int Ca, int Pnr)

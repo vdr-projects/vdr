@@ -1026,3 +1026,6 @@ Video Disk Recorder Revision History
 - The new SVDRP command PUTE can be used to put EPG data into the EPG list.
   See FORMATS for details about the required data format.
 - Taking the German umlauts 'as is' when compiled with VFAT.
+- The new Setup parameter RecordDolbyDigital can be used to generally turn off
+  recording the Dolby Digital audio channels in case you want to save disk space
+  or don't have the equipment to replay Dolby Digital audio.
