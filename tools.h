@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.5 2000/04/24 09:46:05 kls Exp $
+ * $Id: tools.h 1.6 2000/04/24 13:09:20 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -13,6 +13,8 @@
 #include <errno.h>
 #include <stdio.h>
 #include <syslog.h>
+#include <sys/wait.h>
+#include <sys/types.h>
 
 extern int SysLogLevel;
 
@@ -24,6 +26,7 @@ extern int SysLogLevel;
 #define LOG_ERROR_STR(s)  esyslog(LOG_ERR, "ERROR: %s: %s", s, strerror(errno));
 
 #define SECSINDAY  86400
+#define MAXPROCESSTIMEOUT   3 // seconds
 
 #define DELETENULL(p) (delete (p), p = NULL)
 
@@ -36,6 +39,8 @@ int time_ms(void);
 void delay_ms(int ms);
 bool MakeDirs(const char *FileName, bool IsDirectory = false);
 bool RemoveFileOrDir(const char *FileName);
+bool CheckProcess(pid_t pid);
+void KillProcess(pid_t pid, int Timeout = MAXPROCESSTIMEOUT);
 
 class cListObject {
 private:

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.h 1.6 2000/04/24 09:44:21 kls Exp $
+ * $Id: dvbapi.h 1.7 2000/04/24 10:46:47 kls Exp $
  */
 
 #ifndef __DVBAPI_H
@@ -96,7 +96,6 @@ private:
   int fromRecord, toRecord;
   int fromReplay, toReplay;
   void SetReplayMode(int Mode);
-  void KillProcess(pid_t pid);
 public:
   bool Recording(void);
        // Returns true if we are currently recording.

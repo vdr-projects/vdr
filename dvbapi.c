@@ -4,18 +4,16 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.6 2000/04/24 09:44:19 kls Exp $
+ * $Id: dvbapi.c 1.7 2000/04/24 13:27:38 kls Exp $
  */
 
 #include "dvbapi.h"
 #include <errno.h>
 #include <fcntl.h>
-#include <signal.h>
 #include <stdlib.h>
 #include <sys/ioctl.h>
 #include <sys/stat.h>
 #include <sys/time.h>
-#include <sys/wait.h>
 #include <unistd.h>
 #include "interface.h"
 #include "tools.h"
@@ -59,7 +57,6 @@
 #define RESUMEFILESUFFIX    "/resume.vdr"
 #define RECORDFILESUFFIX    "/%03d.vdr"
 #define RECORDFILESUFFIXLEN 20 // some additional bytes for safety...
-#define MAXPROCESSTIMEOUT   3 // seconds
 
 // The number of frames to back up when resuming an interrupted replay session:
 #define RESUMEBACKUP (10 * FRAMESPERSEC)
@@ -554,7 +551,7 @@ private:
 public:
   cRecordBuffer(int *InFile, const char *FileName);
   virtual ~cRecordBuffer();
-  int WriteWithTimeout(void);
+  int WriteWithTimeout(bool EndIfEmpty = false);
   };
 
 cRecordBuffer::cRecordBuffer(int *InFile, const char *FileName)
@@ -720,13 +717,13 @@ int cRecordBuffer::Write(int Max)
   return 0;
 }
 
-int cRecordBuffer::WriteWithTimeout(void)
+int cRecordBuffer::WriteWithTimeout(bool EndIfEmpty)
 {
   int w, written = 0;
   int t0 = time_ms();
   while ((w = Write()) > 0 && time_ms() - t0 < MAXRECORDWRITETIME)
         written += w;
-  return w < 0 ? w : written;
+  return w < 0 ? w : (written == 0 && EndIfEmpty ? -1 : written);
 }
 
 // --- cReplayBuffer ---------------------------------------------------------
@@ -841,7 +838,7 @@ void cReplayBuffer::SkipSeconds(int Seconds)
            }
         Index += Seconds * FRAMESPERSEC;
         if (Index < 0)
-           Index = 1;
+           Index = 1; // not '0', to allow GetNextIFrame() below to work!
         uchar FileNumber;
         int FileOffset;
         if (index->GetNextIFrame(Index, false, &FileNumber, &FileOffset) >= 0)
@@ -1226,35 +1223,17 @@ bool cDvbApi::SetChannel(int FrequencyMHz, char Polarization, int Diseqc, int Sr
   return false;
 }
 
-void cDvbApi::KillProcess(pid_t pid)
-{
-  pid_t Pid2Wait4 = pid;
-  for (time_t t0 = time(NULL); time(NULL) - t0 < MAXPROCESSTIMEOUT; ) {
-      int status;
-      pid_t pid = waitpid(Pid2Wait4, &status, WNOHANG);
-      if (pid < 0) {
-         if (errno != ECHILD)
-            LOG_ERROR;
-         return;
-         }
-      if (pid == Pid2Wait4)
-         return;
-      }
-  esyslog(LOG_ERR, "ERROR: process %d won't end (waited %d seconds) - terminating it...", Pid2Wait4, MAXPROCESSTIMEOUT);
-  if (kill(Pid2Wait4, SIGTERM) < 0) {
-     esyslog(LOG_ERR, "ERROR: process %d won't terminate (%s) - killing it...", Pid2Wait4, strerror(errno));
-     if (kill(Pid2Wait4, SIGKILL) < 0)
-        esyslog(LOG_ERR, "ERROR: process %d won't die (%s) - giving up", Pid2Wait4, strerror(errno));
-     }
-}
-
 bool cDvbApi::Recording(void)
 {
+  if (pidRecord && !CheckProcess(pidRecord))
+     pidRecord = 0;
   return pidRecord;
 }
 
 bool cDvbApi::Replaying(void)
 {
+  if (pidReplay && !CheckProcess(pidReplay))
+     pidReplay = 0;
   return pidReplay;
 }
 
@@ -1305,6 +1284,7 @@ bool cDvbApi::StartRecord(const char *FileName)
 
         dsyslog(LOG_INFO, "start recording process (pid=%d)", getpid());
         isMainProcess = false;
+        bool DataStreamBroken = false;
         int fromMain = toRecordPipe[0];
         int toMain = fromRecordPipe[1];
         cRecordBuffer *Buffer = new cRecordBuffer(&videoDev, FileName);
@@ -1317,21 +1297,26 @@ bool cDvbApi::StartRecord(const char *FileName)
                struct timeval timeout;
                timeout.tv_sec = 1;
                timeout.tv_usec = 0;
+               bool ForceEnd = false;
                if (select(FD_SETSIZE, &set, NULL, NULL, &timeout) > 0) {
                   if (FD_ISSET(videoDev, &set)) {
                      if (Buffer->Read() < 0)
                         break;
+                     DataStreamBroken = false;
                      }
                   if (FD_ISSET(fromMain, &set)) {
                      switch (readchar(fromMain)) {
-                       case dvbStop:     Buffer->Stop(); break;
-                                         break;
+                       case dvbStop: Buffer->Stop();
+                                     ForceEnd = DataStreamBroken;
+                                     break;
                        }
                      }
                   }
-               else
+               else {
+                  DataStreamBroken = true;
                   esyslog(LOG_ERR, "ERROR: video data stream broken");
-               if (Buffer->WriteWithTimeout() < 0)
+                  }
+               if (Buffer->WriteWithTimeout(ForceEnd) < 0)
                   break;
                }
            delete Buffer;

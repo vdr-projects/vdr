@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.11 2000/04/24 10:33:38 kls Exp $
+ * $Id: vdr.c 1.12 2000/04/24 13:36:39 kls Exp $
  */
 
 #include <signal.h>
@@ -183,7 +183,6 @@ int main(int argc, char *argv[])
   isyslog(LOG_INFO, "caught signal %d", Interrupted);
   DvbApi.StopRecord();
   DvbApi.StopReplay();
-  //TODO kill any remaining sub-processes!
   isyslog(LOG_INFO, "exiting");
   closelog();
   return 0;

@@ -4,13 +4,14 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.5 2000/04/24 09:46:02 kls Exp $
+ * $Id: tools.c 1.6 2000/04/24 13:54:23 kls Exp $
  */
 
 #define _GNU_SOURCE
 #include "tools.h"
 #include <dirent.h>
 #include <errno.h>
+#include <signal.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
@@ -132,6 +133,41 @@ bool RemoveFileOrDir(const char *FileName)
   else
      esyslog(LOG_ERR, "ERROR: %s: %s", FileName, strerror(errno));
   return false;
+}
+
+bool CheckProcess(pid_t pid)
+{
+  pid_t Pid2Check = pid;
+  int status;
+  pid = waitpid(Pid2Check, &status, WNOHANG);
+  if (pid < 0) {
+     if (errno != ECHILD)
+        LOG_ERROR;
+     return false;
+     }
+  return true;
+}
+
+void KillProcess(pid_t pid, int Timeout)
+{
+  pid_t Pid2Wait4 = pid;
+  for (time_t t0 = time(NULL); time(NULL) - t0 < Timeout; ) {
+      int status;
+      pid_t pid = waitpid(Pid2Wait4, &status, WNOHANG);
+      if (pid < 0) {
+         if (errno != ECHILD)
+            LOG_ERROR;
+         return;
+         }
+      if (pid == Pid2Wait4)
+         return;
+      }
+  esyslog(LOG_ERR, "ERROR: process %d won't end (waited %d seconds) - terminating it...", Pid2Wait4, Timeout);
+  if (kill(Pid2Wait4, SIGTERM) < 0) {
+     esyslog(LOG_ERR, "ERROR: process %d won't terminate (%s) - killing it...", Pid2Wait4, strerror(errno));
+     if (kill(Pid2Wait4, SIGKILL) < 0)
+        esyslog(LOG_ERR, "ERROR: process %d won't die (%s) - giving up", Pid2Wait4, strerror(errno));
+     }
 }
 
 // --- cListObject -----------------------------------------------------------
