@@ -2630,7 +2630,7 @@ Video Disk Recorder Revision History
 2004-02-08: Version 1.3.4
 
 - Fixed handling language codes in case there is no audio or Dolby PID.
-- Fixed handling CA ids (was broken in 1.3.4).
+- Fixed handling CA ids (was broken in 1.3.3).
 - Fixed the SVDRP command 'STAT DISK' to avoid a 'division by 0' in case the
   disk is full (thanks to Jens Rosenboom).
 - Fixed handling bitmap indexes for 256 color mode (thanks to Andreas Regel).
