@@ -138,3 +138,23 @@ Video Disk Recorder Revision History
   done for some of the channels in the default 'channels.conf'. Some other
   parameters in the default 'channels.conf' have also been updated, so please
   make sure your timers still use the correct channels!
+
+2000-09-09: Version 0.63
+
+- Workaround for a driver timing problem in cDvbApi::Cmd(), which sometimes caused
+  the OSD to no longer be displayed (thanks to Niels de Carpentier).
+- Added the '-m486' option to the compiler call.
+- If a channel name contains a colon (':') it is now replaced with a '|' in
+  channels.conf.
+- Not everybody appears to like the "page scrolling" mechanism introduced by
+  Heino Goldenstein in version 0.61, so the Makefile now reacts on NO_PAGE_SCROLL=1
+  to suppress that.
+- The new 'dvbrc2vdr' tool (thanks to Plamen Ganev!) can be used to convert
+  'dvbrc' channel files into 'vdr' format.
+- Channels can now be "grouped" (thanks to Plamen Ganev!). See MANUAL for details.
+  There is currently no mechanism to define and maintain "Channel groups" via
+  the menu, so you'll have to insert "Channel group" control lines into your
+  'channels.conf' file manually (for example with a text editor).
+  XXX additional fields for 'preferred' etc???
+- Started a new file named FORMATS with a description of the various file
+  formats used by VDR.

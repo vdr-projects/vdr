@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.c 1.11 2000/09/03 10:17:21 kls Exp $
+ * $Id: interface.c 1.12 2000/09/09 14:17:48 kls Exp $
  */
 
 #include "interface.h"
@@ -72,10 +72,10 @@ eKeys cInterface::GetKey(bool Wait)
 
 eKeys cInterface::Wait(int Seconds, bool KeepChar)
 {
-  int t0 = time_ms();
+  int t0 = time_ms() + Seconds * 1000;
   eKeys Key = kNone;
 
-  while (time_ms() - t0 < Seconds * 1000) {
+  while (time_ms() < t0) {
         Key = GetKey();
         if (Key != kNone)
            break;
@@ -112,11 +112,9 @@ void cInterface::Write(int x, int y, const char *s, eDvbColor FgColor, eDvbColor
      cDvbApi::PrimaryDvbApi->Text(x, y, s, FgColor, BgColor);
 }
 
-void cInterface::WriteText(int x, int y, const char *s, bool Current)
+void cInterface::WriteText(int x, int y, const char *s, eDvbColor FgColor, eDvbColor BgColor)
 {
   if (open) {
-     eDvbColor FgColor = Current ? clrBlack : clrWhite;
-     eDvbColor BgColor = Current ? clrCyan : clrBackground;
      ClearEol(x, y, BgColor);
      int col = 0;
      for (;;) {
@@ -315,36 +313,42 @@ void cInterface::LearnKeys(void)
       }
 }
 
-void cInterface::DisplayChannel(int Number, const char *Name)
+eKeys cInterface::DisplayChannel(int Number, const char *Name)
 {
-  RcIo.Number(Number);
+  // Number = 0 is used for channel group display and no EIT
+  if (Number)
+     RcIo.Number(Number);
   if (Name && !Recording()) {
-     Open(MenuColumns, EIT.IsValid() ? 5 : 1);
-     char buffer[MenuColumns + 1];
-     snprintf(buffer, sizeof(buffer), "%d  %s", Number, Name ? Name : "");
+     //XXX Maybe show only those lines that have actual information???
+     Open(MenuColumns, Number && EIT.IsValid() ? 5 : 1);
+     int BufSize = MenuColumns + 1;
+     char buffer[BufSize];
+     if (Number)
+        snprintf(buffer, BufSize, "%d  %s", Number, Name ? Name : "");
+     else
+        snprintf(buffer, BufSize, "%s", Name ? Name : "");
      Write(0, 0, buffer);
      time_t t = time(NULL);
      struct tm *now = localtime(&t);
-     snprintf(buffer, sizeof(buffer), "%02d:%02d", now->tm_hour, now->tm_min);
+     snprintf(buffer, BufSize, "%02d:%02d", now->tm_hour, now->tm_min);
      Write(-5, 0, buffer);
-     if (EIT.IsValid()) { 
-        const int t = 7;
+     if (Number && EIT.IsValid()) { 
+        const int t = 6;
         int w = MenuColumns - t;
         Write(0, 1, EIT.GetRunningTime(), clrYellow, clrBackground); 
-        snprintf(buffer, sizeof(buffer), "%.*s", w, EIT.GetRunningTitle()); 
-        Write(t, 1, buffer, clrCyan, clrBackground); 
-        snprintf(buffer, sizeof(buffer), "%.*s", w, EIT.GetRunningSubtitle()); 
-        Write(t, 2, buffer, clrCyan, clrBackground); 
+        snprintf(buffer, BufSize, "%.*s", w, EIT.GetRunningTitle());    Write(t, 1, buffer, clrCyan, clrBackground); 
+        snprintf(buffer, BufSize, "%.*s", w, EIT.GetRunningSubtitle()); Write(t, 2, buffer, clrCyan, clrBackground); 
         Write(0, 3, EIT.GetNextTime(), clrYellow, clrBackground); 
-        snprintf(buffer, sizeof(buffer), "%.*s", w, EIT.GetNextTitle()); 
-        Write(t, 3, buffer, clrCyan, clrBackground); 
-        snprintf(buffer, sizeof(buffer), "%.*s", w, EIT.GetNextSubtitle()); 
-        Write(t, 4, buffer, clrCyan, clrBackground); 
+        snprintf(buffer, BufSize, "%.*s", w, EIT.GetNextTitle());       Write(t, 3, buffer, clrCyan, clrBackground); 
+        snprintf(buffer, BufSize, "%.*s", w, EIT.GetNextSubtitle());    Write(t, 4, buffer, clrCyan, clrBackground); 
         }
-     if (Wait(5, true) == kOk)
+     eKeys Key = Wait(5, true);
+     if (Key == kOk)
         GetKey();
      Close();
+     return Key;
      }
+  return kNone;
 }
 
 void cInterface::DisplayRecording(int Index, bool On)

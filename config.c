@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.18 2000/09/03 09:20:22 kls Exp $
+ * $Id: config.c 1.19 2000/09/09 14:50:58 kls Exp $
  */
 
 #include "config.h"
@@ -196,11 +196,23 @@ cChannel::cChannel(const cChannel *Channel)
   apid         = Channel ? Channel->apid         : 256;
   ca           = Channel ? Channel->ca           : 0;
   pnr          = Channel ? Channel->pnr          : 0;
+  preferred    = Channel ? Channel->preferred    : 0;
+  groupSep     = Channel ? Channel->groupSep     : false;
 }
 
 const char *cChannel::ToText(cChannel *Channel)
 {
-  asprintf(&buffer, "%s:%d:%c:%d:%d:%d:%d:%d:%d\n", Channel->name, Channel->frequency, Channel->polarization, Channel->diseqc, Channel->srate, Channel->vpid, Channel->apid, Channel->ca, Channel->pnr);
+  char buf[MaxChannelName * 2];
+  char *s = Channel->name;
+  if (strchr(s, ':')) {
+     s = strcpy(buf, s);
+     strreplace(s, ':', '|');
+     }
+  delete buffer;
+  if (Channel->groupSep)
+     asprintf(&buffer, ":%s\n", s);
+  else
+     asprintf(&buffer, "%s:%d:%c:%d:%d:%d:%d:%d:%d:%d\n", s, Channel->frequency, Channel->polarization, Channel->diseqc, Channel->srate, Channel->vpid, Channel->apid, Channel->ca, Channel->pnr, Channel->preferred);
   return buffer;
 }
 
@@ -212,13 +224,32 @@ const char *cChannel::ToText(void)
 bool cChannel::Parse(const char *s)
 {
   char *buffer = NULL;
-  if (9 == sscanf(s, "%a[^:]:%d:%c:%d:%d:%d:%d:%d:%d", &buffer, &frequency, &polarization, &diseqc, &srate, &vpid, &apid, &ca, &pnr)) {
-     strncpy(name, buffer, MaxChannelName - 1);
-     name[strlen(buffer)] = 0;
-     delete buffer;
-     return true;
+  if (*s == ':') {
+     if (*++s) {
+        strn0cpy(name, s, MaxChannelName);
+        name[strlen(name) - 1] = 0; // strip the '\n'
+        groupSep = true;
+        }
+     else
+        return false;
      }
-  return false;
+  else {
+     groupSep = false;
+     int fields = sscanf(s, "%a[^:]:%d:%c:%d:%d:%d:%d:%d:%d:%d", &buffer, &frequency, &polarization, &diseqc, &srate, &vpid, &apid, &ca, &pnr, &preferred);
+#define VER062_FIELDS 9
+#define VER063_FIELDS 10
+     if (fields == VER062_FIELDS || fields == VER063_FIELDS) {
+        strn0cpy(name, buffer, MaxChannelName);
+        delete buffer;
+        if (fields == VER062_FIELDS) {
+           preferred = 0;
+           }
+        }
+     else
+        return false;
+     }
+  strreplace(name, '|', ':');
+  return true;
 }
 
 bool cChannel::Save(FILE *f)
@@ -230,9 +261,9 @@ bool cChannel::Switch(cDvbApi *DvbApi)
 {
   if (!DvbApi)
      DvbApi = cDvbApi::PrimaryDvbApi;
-  if (!DvbApi->Recording()) {
-     isyslog(LOG_INFO, "switching to channel %d", Index() + 1);
-     CurrentChannel = Index();
+  if (!DvbApi->Recording() && !groupSep) {
+     isyslog(LOG_INFO, "switching to channel %d", number);
+     CurrentChannel = number;
      for (int i = 3; i--;) {
          if (DvbApi->SetChannel(frequency, polarization, diseqc, srate, vpid, apid, ca, pnr)) {
             EIT.SetProgramNumber(pnr);
@@ -242,20 +273,8 @@ bool cChannel::Switch(cDvbApi *DvbApi)
          }
      return false;
      }
-  Interface.Info("Channel locked (recording)!");
+  Interface.Info(DvbApi->Recording() ? "Channel locked (recording)!" : name);
   return false;
-}
-
-bool cChannel::SwitchTo(int i, cDvbApi *DvbApi)
-{
-  cChannel *channel = Channels.Get(i);
-  return channel && channel->Switch(DvbApi);
-}
-
-const char *cChannel::GetChannelName(int i)
-{
-  cChannel *channel = Channels.Get(i);
-  return channel ? channel->name : NULL;
 }
 
 // -- cTimer -----------------------------------------------------------------
@@ -267,7 +286,8 @@ cTimer::cTimer(bool Instant)
   startTime = stopTime = 0;
   recording = false;
   active = Instant;
-  channel = CurrentChannel + 1;
+  cChannel *ch = Channels.GetByNumber(CurrentChannel);
+  channel = ch ? ch->number : 0;
   time_t t = time(NULL);
   struct tm *now = localtime(&t);
   day = now->tm_mday;
@@ -280,8 +300,8 @@ cTimer::cTimer(bool Instant)
   lifetime = 99;
   *file = 0;
   summary = NULL;
-  if (Instant)
-     snprintf(file, sizeof(file), "@%s", cChannel::GetChannelName(CurrentChannel));
+  if (Instant && ch)
+     snprintf(file, sizeof(file), "@%s", ch->name);
 }
 
 cTimer::~cTimer()
@@ -299,6 +319,7 @@ cTimer& cTimer::operator= (const cTimer &Timer)
 
 const char *cTimer::ToText(cTimer *Timer)
 {
+  delete buffer;
   asprintf(&buffer, "%d:%d:%s:%04d:%04d:%d:%d:%s:%s\n", Timer->active, Timer->channel, PrintDay(Timer->day), Timer->start, Timer->stop, Timer->priority, Timer->lifetime, Timer->file, Timer->summary ? Timer->summary : "");
   return buffer;
 }
@@ -368,11 +389,7 @@ bool cTimer::Parse(const char *s)
   if (8 <= sscanf(s, "%d:%d:%a[^:]:%d:%d:%d:%d:%a[^:\n]:%a[^\n]", &active, &channel, &buffer1, &start, &stop, &priority, &lifetime, &buffer2, &summary)) {
      //TODO add more plausibility checks
      day = ParseDay(buffer1);
-     int l = strlen(buffer2);
-     if (l >= MaxFileName)
-        l = MaxFileName - 1;
-     strncpy(file, buffer2, l);
-     file[l] = 0;
+     strn0cpy(file, buffer2, MaxFileName);
      delete buffer1;
      delete buffer2;
      return day != 0;
@@ -470,9 +487,78 @@ cKeys Keys;
 
 // -- cChannels --------------------------------------------------------------
 
-int CurrentChannel = 0;
+int CurrentChannel = 1;
+int CurrentGroup = -1;
 
 cChannels Channels;
+
+bool cChannels::Load(const char *FileName)
+{
+  if (cConfig<cChannel>::Load(FileName)) {
+     ReNumber();
+     return true;
+     }
+  return false;
+}
+
+int cChannels::GetNextGroup(int Idx)
+{
+  cChannel *channel = Get(++Idx);
+  while (channel && !channel->groupSep)
+        channel = Get(++Idx);
+  return channel ? Idx : -1;
+}
+
+int cChannels::GetPrevGroup(int Idx)
+{
+  cChannel *channel = Get(--Idx);
+  while (channel && !channel->groupSep)
+        channel = Get(--Idx);
+  return channel ? Idx : -1;
+}
+
+int cChannels::GetNextNormal(int Idx)
+{
+  cChannel *channel = Get(++Idx);
+  while (channel && channel->groupSep)
+        channel = Get(++Idx);
+  return channel ? Idx : -1;
+}
+
+void cChannels::ReNumber( void )
+{
+  int Number = 0;
+  cChannel *ch = (cChannel *)First();
+  while (ch) {
+        if (!ch->groupSep)
+           ch->number = ++Number;
+        ch = (cChannel *)ch->Next();
+        }
+  maxNumber = Number;
+}
+
+cChannel *cChannels::GetByNumber(int Number)
+{
+  cChannel *channel = (cChannel *)First();
+  while (channel) {
+        if (channel->number == Number)
+           return channel;
+        channel = (cChannel *)channel->Next();
+        }
+  return NULL;
+}
+
+bool cChannels::SwitchTo(int Number, cDvbApi *DvbApi)
+{
+  cChannel *channel = GetByNumber(Number);
+  return channel && channel->Switch(DvbApi);
+}
+
+const char *cChannels::GetChannelNameByNumber(int Number)
+{
+  cChannel *channel = GetByNumber(Number);
+  return channel ? channel->name : NULL;
+}
 
 // -- cTimers ----------------------------------------------------------------
 

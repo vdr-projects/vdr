@@ -12,8 +12,8 @@ Video Disk Recorder User's Manual
 
   Up      Ch up       Crsr up    Crsr up    Crsr up    Crsr up       Crsr up     Play
   Down    Ch down     Crsr down  Crsr down  Crsr down  Crsr down     Crsr down   Pause
-  Left    -           -          -          Disable    Decrement     -           Search back
-  Right   -           -          -          Enable     Increment     -           Search forward
+  Left    Prev group  -          -          Disable    Decrement     -           Search back
+  Right   Next group  -          -          Enable     Increment     -           Search forward
   Ok      Ch display  Select     Switch     Edit       Accept        Play        Progress disp.
   Menu    Menu on     Menu off   Menu off   Menu off   Menu off      Menu off    Menu on
   Back    -           Menu off   Main menu  Main menu  Discard       Main menu   -
@@ -71,6 +71,18 @@ Video Disk Recorder User's Manual
   automatically goes away after about two seconds, or if any key is pressed.
   To bring up the channel display without switching channels you can press
   the "Ok" button.
+
+* Switching through channel groups
+
+  If the 'channels.conf' file contains "group separators" you can switch
+  through these groups by pressing the "Left" and "Right" key while no
+  menu is being displayed. The channel display will show the name of the
+  group, and if you press the "Ok" button while the group name is being
+  displayed, you will switch to the first channel of that group.
+
+  Channel groups can be whatever you decide them to be. You can either
+  group your channels by "Bouquet", by language, genre or whatever your
+  preferences may be.
 
 * Instant Recording
 

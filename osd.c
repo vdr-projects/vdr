@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 1.5 2000/07/26 17:35:09 kls Exp $
+ * $Id: osd.c 1.6 2000/09/09 14:28:57 kls Exp $
  */
 
 #include "osd.h"
@@ -19,6 +19,9 @@ cOsdItem::cOsdItem(eOSState State)
   offset = -1;
   state = State;
   fresh = false;
+  userColor = false;
+  fgColor = clrWhite;
+  bgColor = clrBackground;
 }
 
 cOsdItem::cOsdItem(char *Text, eOSState State)
@@ -27,6 +30,9 @@ cOsdItem::cOsdItem(char *Text, eOSState State)
   offset = -1;
   state = State;
   fresh = false;
+  userColor = false;
+  fgColor = clrWhite;
+  bgColor = clrBackground;
   SetText(Text);
 }
 
@@ -41,15 +47,24 @@ void cOsdItem::SetText(const char *Text, bool Copy)
   text = Copy ? strdup(Text) : Text;
 }
 
-void cOsdItem::Display(int Offset, bool Current)
+void cOsdItem::SetColor(eDvbColor FgColor, eDvbColor BgColor)
 {
+  userColor = true;
+  fgColor = FgColor; 
+  bgColor = BgColor; 
+}
+
+void cOsdItem::Display(int Offset, eDvbColor FgColor, eDvbColor BgColor)
+{
+  if (Offset < 0) {
+     FgColor = clrBlack;
+     BgColor = clrCyan;
+     }
   fresh |= Offset >= 0;
-  Current |= Offset < 0;
   if (Offset >= 0)
      offset = Offset;
-  //TODO current if Offset == -1 ???
   if (offset >= 0)
-     Interface.WriteText(0, offset + 2, text, Current);
+     Interface.WriteText(0, offset + 2, text, userColor ? fgColor : FgColor, userColor ? bgColor : BgColor);
 }
 
 eOSState cOsdItem::ProcessKey(eKeys Key)
@@ -100,6 +115,10 @@ void cOsdMenu::SetHelp(const char *Red, const char *Green, const char *Yellow, c
   helpGreen  = Green;
   helpYellow = Yellow;
   helpBlue   = Blue;
+  if (visible)
+     Display();
+     //XXX Interface.Help(helpRed, helpGreen, helpYellow, helpBlue);
+     //XXX must clear unused button areas!
 }
 
 void cOsdMenu::Del(int Index)
@@ -140,7 +159,7 @@ void cOsdMenu::Display(void)
      for (int i = first; i < count; i++) {
          cOsdItem *item = Get(i);
          if (item)
-            item->Display(i - first, i == current);
+            item->Display(i - first, i == current ? clrBlack : clrWhite, i == current ? clrCyan : clrBackground);
          if (++n == MAXOSDITEMS) //TODO get this from Interface!!!
             break;
          }
@@ -159,49 +178,64 @@ void cOsdMenu::DisplayCurrent(bool Current)
 {
   cOsdItem *item = Get(current);
   if (item)
-     item->Display(current - first, Current);
+     item->Display(current - first, Current ? clrBlack : clrWhite, Current ? clrCyan : clrBackground);
+}
+
+bool cOsdMenu::SpecialItem(int idx)
+{
+  cOsdItem *item = Get(idx);
+  return item && item->HasUserColor();
 }
 
 void cOsdMenu::CursorUp(void)
 {
   if (current > 0) {
-     DisplayCurrent(false);
-     if (current == first) {
-        first -= MAXOSDITEMS;
-        if (first < 0)
-           first = 0;
-        if (current - MAXOSDITEMS > 0)
-           current -= MAXOSDITEMS;
-        else
-           current--;
+     int tmpCurrent = current;
+     while (--tmpCurrent >= 0 && SpecialItem(tmpCurrent));
+     if (tmpCurrent < 0)
+        return;
+     if (tmpCurrent >= first)
+        DisplayCurrent(false);
+     current = tmpCurrent;
+     if (current < first) {
+        first = first > MAXOSDITEMS - 1 ? first - (MAXOSDITEMS - 1) : 0;
+#ifndef NO_PAGE_SCROLL
+        current = SpecialItem(first) ? first + 1 : first;
+#endif
         Display();
         }
-     else {
-        current--;
+     else
         DisplayCurrent(true);
-        }
      }
 }
 
 void cOsdMenu::CursorDown(void)
 {
-  int count = Count();
-  if (current < count - 1) {
-     DisplayCurrent(false);
-     if (current == first + MAXOSDITEMS - 1) {
-        first += MAXOSDITEMS;
-        if (first > count - MAXOSDITEMS)
-           first = count - MAXOSDITEMS;
-        if (current + MAXOSDITEMS < count)
-           current += MAXOSDITEMS;
-        else
-           current++;
+  int last = Count() - 1;
+  int lastOnScreen = first + MAXOSDITEMS - 1;
+
+  if (current < last) {
+     int tmpCurrent = current;
+     while (++tmpCurrent <= last && SpecialItem(tmpCurrent));
+     if (tmpCurrent > last)
+        return;
+     if (tmpCurrent <= lastOnScreen)
+        DisplayCurrent(false);
+     current = tmpCurrent;
+     if (current > lastOnScreen) {
+        first += MAXOSDITEMS - 1;
+        lastOnScreen = first + MAXOSDITEMS - 1;
+        if (lastOnScreen > last) {
+           first = last - (MAXOSDITEMS - 1);
+           lastOnScreen = last;
+           }
+#ifndef NO_PAGE_SCROLL
+        current = SpecialItem(lastOnScreen) ? lastOnScreen - 1 : lastOnScreen;
+#endif
         Display();
         }
-     else {
-        current++;
+     else
         DisplayCurrent(true);
-        }
      }
 }
 

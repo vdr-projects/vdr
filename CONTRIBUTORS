@@ -10,6 +10,8 @@ Carsten Koch <Carsten.Koch@icem.de>
 Plamen Ganev <pganev@com-it.net>
  for fixing the frequency offset for Hotbird channels
  for adding the 'xtvrc2vdr' tool (see Tools/xtvrc2vdr)
+ for adding the 'dvbrc2vdr' tool (see Tools/dvbrc2vdr)
+ for implementing "channel grouping"
 
 Heino Goldenstein <heino.goldenstein@microplex.de>
  for modifying scrolling through lists to make it page up and down
@@ -19,3 +21,6 @@ Guido Fiala <gfiala@s.netic.de>
 
 Robert Schneider <Robert.Schneider@lotus.com>
  for implementing EIT support for displaying the current/next info
+
+Niels de Carpentier <niels@casema.net>
+ for adding a workaround for a driver timing problem in cDvbApi::Cmd().

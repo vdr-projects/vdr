@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.13 2000/07/29 18:41:45 kls Exp $
+ * $Id: tools.c 1.14 2000/09/09 12:53:34 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -95,6 +95,14 @@ char *readline(FILE *f)
      return buffer;
      }
   return NULL;
+}
+
+char *strn0cpy(char *dest, const char *src, size_t n)
+{
+  char *s = dest;
+  for ( ; --n && (*dest = *src) != 0; dest++, src++) ;
+  *dest = 0;
+  return s;
 }
 
 char *strreplace(char *s, char c1, char c2)
@@ -418,6 +426,8 @@ void cListBase::Clear(void)
 
 cListObject *cListBase::Get(int Index)
 {
+  if (Index < 0)
+     return NULL;
   cListObject *object = objects;
   while (object && Index-- > 0)
         object = object->Next();

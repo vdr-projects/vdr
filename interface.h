@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.h 1.9 2000/05/06 15:39:23 kls Exp $
+ * $Id: interface.h 1.10 2000/09/03 14:34:24 kls Exp $
  */
 
 #ifndef __INTERFACE_H
@@ -34,7 +34,7 @@ public:
   void ClearEol(int x, int y, eDvbColor Color = clrBackground);
   void SetCols(int *c);
   void Write(int x, int y, const char *s, eDvbColor FgColor = clrWhite, eDvbColor BgColor = clrBackground);
-  void WriteText(int x, int y, const char *s, bool Current = false);
+  void WriteText(int x, int y, const char *s, eDvbColor FgColor = clrWhite, eDvbColor BgColor = clrBlack);
   void Title(const char *s);
   void Status(const char *s, eDvbColor FgColor = clrBlack, eDvbColor BgColor = clrCyan);
   void Info(const char *s);
@@ -42,7 +42,7 @@ public:
   bool Confirm(const char *s);
   void Help(const char *Red, const char *Green = NULL, const char *Yellow = NULL, const char *Blue = NULL);
   void LearnKeys(void);
-  void DisplayChannel(int Number, const char *Name = NULL);
+  eKeys DisplayChannel(int Number, const char *Name = NULL);
   void DisplayRecording(int Index, bool On);
   bool Recording(void);
   };

@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.27 2000/07/29 19:01:57 kls Exp $
+ * $Id: vdr.c 1.28 2000/09/09 14:18:25 kls Exp $
  */
 
 #include <getopt.h>
@@ -51,6 +51,14 @@ static int Interrupted = 0;
 void SignalHandler(int signum)
 {
   Interrupted = signum;
+}
+
+static eKeys ShowChannel(int Number, bool Group = false) 
+{
+  cChannel *channel = Group ? Channels.Get(Number) : Channels.GetByNumber(Number);
+  if (channel)
+     return Interface.DisplayChannel(channel->number, channel->name);
+  return kNone;
 }
 
 int main(int argc, char *argv[])
@@ -166,7 +174,7 @@ int main(int argc, char *argv[])
 #endif
   Interface.Init();
 
-  cChannel::SwitchTo(CurrentChannel);
+  Channels.SwitchTo(CurrentChannel);
 
   // Signal handlers:
 
@@ -185,16 +193,13 @@ int main(int argc, char *argv[])
   while (!Interrupted) {
         // Channel display:
         if (CurrentChannel != LastChannel) {
-           if (!Menu) {
-              cChannel *channel = Channels.Get(CurrentChannel);
-              if (channel)
-                 Interface.DisplayChannel(CurrentChannel + 1, channel->name);
-              }
+           if (!Menu)
+              ShowChannel(CurrentChannel);
            LastChannel = CurrentChannel;
            }
         // Direct Channel Select (action):
         if (dcNumber && time_ms() - dcTime > DIRECTCHANNELTIMEOUT) {
-           cChannel::SwitchTo(dcNumber - 1);
+           Channels.SwitchTo(dcNumber);
            dcNumber = 0;
            LastChannel = -1; // in case an invalid channel number was entered!
            }
@@ -246,11 +251,25 @@ int main(int argc, char *argv[])
                        }
                   }
                   break;
+             // Left/Right rotates trough channel groups:
+             case kLeft:
+             case kRight: if (!Interface.Recording()) {
+                             int SaveGroup = CurrentGroup;
+                             if (key == kRight)
+                                CurrentGroup = Channels.GetNextGroup(CurrentGroup) ; 
+                             else
+                                CurrentGroup = Channels.GetPrevGroup(CurrentGroup < 1 ? 1 : CurrentGroup);
+                             if (CurrentGroup < 0)
+                                CurrentGroup = SaveGroup;
+                             if (ShowChannel(CurrentGroup, true) == kOk)
+                                Channels.SwitchTo(Channels.Get(Channels.GetNextNormal(CurrentGroup))->number);
+                             }
+                          break;
              // Up/Down Channel Select:
              case kUp:
              case kDown: if (!Interface.Recording()) {
                             int n = CurrentChannel + (key == kUp ? 1 : -1);
-                            cChannel *channel = Channels.Get(n);
+                            cChannel *channel = Channels.GetByNumber(n);
                             if (channel)
                                channel->Switch();
                             }

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.22 2000/08/06 14:06:14 kls Exp $
+ * $Id: dvbapi.c 1.23 2000/09/09 12:13:55 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -1199,6 +1199,10 @@ void cDvbApi::Cmd(OSD_Command cmd, int color, int x0, int y0, int x1, int y1, co
      dc.y1    = y1;
      dc.data  = (void *)data;
      ioctl(videoDev, VIDIOCSOSDCOMMAND, &dc);
+     usleep(10); // XXX Workaround for a driver bug (cInterface::DisplayChannel() displayed texts at wrong places
+                 // XXX and sometimes the OSD was no longer displayed).
+                 // XXX Increase the value if the problem still persists on your particular system.
+                 // TODO Check if this is still necessary with driver versions after 0.6.
      }
 }
 #endif
