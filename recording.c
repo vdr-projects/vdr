@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.78 2003/05/18 15:17:45 kls Exp $
+ * $Id: recording.c 1.79 2003/05/24 11:22:34 kls Exp $
  */
 
 #include "recording.h"
@@ -169,6 +169,11 @@ int cResumeFile::Read(void)
 {
   int resume = -1;
   if (fileName) {
+     struct stat st;
+     if (stat(fileName, &st) == 0) {
+        if ((st.st_mode & S_IWUSR) == 0) // no write access, assume no resume
+           return -1;
+        }
      int f = open(fileName, O_RDONLY);
      if (f >= 0) {
         if (safe_read(f, &resume, sizeof(resume)) != sizeof(resume)) {

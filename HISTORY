@@ -2182,3 +2182,5 @@ Video Disk Recorder Revision History
 - Completed the Finnish OSD texts (thanks to Niko Tarnanen and Rolf Ahrenberg).
 - Fixed I/O handling in case an explicit controlling terminal is given (thanks
   to Oliver Endriss).
+- Fixed resume file handling in case the resume.vdr file can't be written
+  (thanks to Gerhard Steiner).

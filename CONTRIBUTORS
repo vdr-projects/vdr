@@ -506,6 +506,7 @@ Gerhard Steiner <steiner@mail.austria.com>
  records as a newline character
  for reporting a bug in displaying messages in the status line in case they exceed
  the OSD width
+ for fixing resume file handling in case the resume.vdr file can't be written
 
 Jaakko Hyvätti <jaakko@hyvatti.iki.fi>
  for translating OSD texts to the Finnish language
