@@ -1969,3 +1969,4 @@ Video Disk Recorder Revision History
 - Updated 'channels.conf.terr' (thanks to Andy Carter).
 - Fixed broken support for raw OSDs of plugins (thanks to Marcel Wiesweg for
   reporting this one).
+- Broken CAM connections are now restored automatically.
