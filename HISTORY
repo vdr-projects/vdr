@@ -1067,7 +1067,7 @@ Video Disk Recorder Revision History
   available on any DVB card).
 - Updated French language texts (thanks to Jean-Claude Repetto).
 
-2002-03-16: Version 1.0.0pre4
+2002-03-17: Version 1.0.0pre4
 
 - Added 'Ca' code 201 for 'Cryptoworks, GOD-DIGITAL' to 'ca.conf' (thanks to
   Bernd Schweikert).
@@ -1114,3 +1114,7 @@ Video Disk Recorder Revision History
 - The "Commands" menu now automatically assigns number keys as hotkeys to the
   commands. If you have preceeded your commands with digits you may want to
   remove these from your 'commands.conf' file.
+- The new Setup item "Restart" can be used to force a complete restart of VDR,
+  including reloading the driver. Note that this can only work if VDR and the
+  driver are wrapped into a mechanism that actually performs this action if VDR
+  exits. The 'runvdr' script can be used for this purpose.

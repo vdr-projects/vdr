@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.169 2002/03/16 16:44:15 kls Exp $
+ * $Id: menu.c 1.170 2002/03/17 12:01:08 kls Exp $
  */
 
 #include "menu.h"
@@ -2142,6 +2142,7 @@ void cMenuSetupMisc::Set(void)
 class cMenuSetup : public cOsdMenu {
 private:
   virtual void Set(void);
+  eOSState Restart(void);
 public:
   cMenuSetup(void);
   virtual eOSState ProcessKey(eKeys Key);
@@ -2166,6 +2167,16 @@ void cMenuSetup::Set(void)
   Add(new cOsdItem(hk(tr("Recording")),     osUser6));
   Add(new cOsdItem(hk(tr("Replay")),        osUser7));
   Add(new cOsdItem(hk(tr("Miscellaneous")), osUser8));
+  Add(new cOsdItem(hk(tr("Restart")),       osUser9));
+}
+
+eOSState cMenuSetup::Restart(void)
+{
+  if (Interface->Confirm(cRecordControls::Active() ? tr("Recording - restart anyway?") : tr("Really restart?"))) {
+     cThread::EmergencyExit(true);
+     return osEnd;
+     }
+  return osContinue;
 }
 
 eOSState cMenuSetup::ProcessKey(eKeys Key)
@@ -2182,6 +2193,7 @@ eOSState cMenuSetup::ProcessKey(eKeys Key)
     case osUser6: return AddSubMenu(new cMenuSetupRecord);
     case osUser7: return AddSubMenu(new cMenuSetupReplay);
     case osUser8: return AddSubMenu(new cMenuSetupMisc);
+    case osUser9: return Restart();
     default: ;
     }
   if (Setup.OSDLanguage != osdLanguage) {

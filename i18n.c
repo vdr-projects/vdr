@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.64 2002/03/16 10:04:23 kls Exp $
+ * $Id: i18n.c 1.65 2002/03/17 12:00:41 kls Exp $
  *
  * Slovenian translations provided by Miha Setina <mihasetina@softhome.net>
  * Italian   translations provided by Alberto Carraro <bertocar@tin.it>
@@ -470,6 +470,26 @@ const tPhrase Phrases[] = {
     "Avbryte redigering?",
     "Peruutetaanko muokkaus?",
   },
+  { "Really restart?",
+    "Wirklich neu starten?",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+  },
+  { "Recording - restart anyway?",
+    "Aufnahme läuft - trotzdem neu starten?",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+  },
   { "Recording - shut down anyway?",
     "Aufnahme läuft - trotzdem ausschalten?",
     "", // TODO
@@ -926,6 +946,16 @@ const tPhrase Phrases[] = {
   },
   { "Miscellaneous",
     "Sonstiges",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+  },
+  { "Restart",
+    "Neustart",
     "", // TODO
     "", // TODO
     "", // TODO
