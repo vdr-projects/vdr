@@ -6,7 +6,7 @@
  *
  * Ported to LIRC by Carsten Koch <Carsten.Koch@icem.de>  2000-06-16.
  *
- * $Id: remote.c 1.14 2000/09/21 16:57:56 kls Exp $
+ * $Id: remote.c 1.15 2000/10/03 10:49:58 kls Exp $
  */
 
 #include "remote.h"
@@ -339,6 +339,7 @@ bool cRcIoRCU::DetectCode(unsigned char *Code, unsigned short *Address)
 
 cRcIoLIRC::cRcIoLIRC(char *DeviceName)
 {
+  repeat = 1;
   struct sockaddr_un addr;
   addr.sun_family = AF_UNIX;
   strcpy(addr.sun_path, DeviceName);
@@ -361,33 +362,28 @@ cRcIoLIRC::~cRcIoLIRC()
 
 const char *cRcIoLIRC::ReceiveString(void)
 {
-  char buf[LIRC_BUFFER_SIZE];
-  int repeat = 1;
-  const int startTime = time_ms();
+  int oldrepeat = 1;
 
-  // Wait up to REPEATLIMIT ms for a new command, skip repetition of last command while waiting.
-  do {
-     if (InputAvailable(false) && (read(f, buf, sizeof(buf)) > 21)) {
-        sscanf(buf, "%*x %x %7s", &repeat, keyName); // '7' in '%7s' is LIRC_KEY_BUF-1!
-        if (repeat == 0) {
-           firstTime = time_ms();
-           return keyName;
-           }
+  if (repeat != 0) {
+     Flush();
+     if (repeat != 0) {
+        oldrepeat = repeat;
+        Flush(REPEATLIMIT);
         }
-     } while (time_ms() < startTime + REPEATLIMIT);
-
-  // No new command encountered while skipping old repetitions - wait for new command.
-  repeat = 1;
-  if (InputAvailable(true) && (read(f, buf, sizeof(buf)) > 21))
-     sscanf(buf, "%*x %x %7s", &repeat, keyName); // '7' in '%7s' is LIRC_KEY_BUF-1!
+     }
 
   if (repeat == 0) {
      firstTime = time_ms();
+     repeat = 1;
      return keyName;
      }
-  
-  // Always ignore first repeat, as it often comes in too early.
-  return (repeat == 1) || (time_ms() < firstTime + REPEATDELAY) ? NULL : keyName;
+
+  if ((repeat > 1) && (repeat != oldrepeat) && (time_ms() > firstTime + REPEATDELAY)) {
+     repeat = 1;
+     return keyName;
+     }
+
+  return NULL;
 }
 
 void cRcIoLIRC::Flush(int WaitMs)
@@ -395,14 +391,10 @@ void cRcIoLIRC::Flush(int WaitMs)
   char buf[LIRC_BUFFER_SIZE];
   int t0 = time_ms();
 
-  for (;;) {
-      while (InputAvailable(false)) {
-            read(f, buf, sizeof(buf));
-            t0 = time_ms();
-            }
-      if (time_ms() - t0 >= WaitMs)
-         break;
-      }
+  do {
+     if (InputAvailable(false) && (read(f, buf, sizeof(buf)) > 21))
+        sscanf(buf, "%*x %x %7s", &repeat, keyName); // '7' in '%7s' is LIRC_KEY_BUF-1!
+     } while ((repeat != 0) && (time_ms() < t0 + WaitMs));
 }
 
 bool cRcIoLIRC::InputAvailable(bool Wait)

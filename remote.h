@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remote.h 1.9 2000/09/19 17:39:36 kls Exp $
+ * $Id: remote.h 1.10 2000/10/03 10:45:35 kls Exp $
  */
 
 #ifndef __REMOTE_H
@@ -29,7 +29,7 @@ public:
   virtual void SetPoints(unsigned char Dp, bool On) {}
   virtual bool String(char *s) { return true; }
   virtual bool DetectCode(unsigned char *Code, unsigned short *Address) { return true; }
-  virtual void Flush(int WaitMs = 0) {}
+  virtual void Flush(int WaitMs = 0) = 0;
   virtual bool InputAvailable(bool Wait = false) = 0;
   virtual bool GetCommand(unsigned int *Command, unsigned short *Address = NULL) = 0;
   };
@@ -81,6 +81,7 @@ private:
   enum { LIRC_KEY_BUF = 8, LIRC_BUFFER_SIZE = 128 };
   cFile f;
   char keyName[LIRC_KEY_BUF];
+  int repeat;
   const char *ReceiveString(void);
 public:
   cRcIoLIRC(char *DeviceName);
