@@ -23,3 +23,7 @@ VDR Plugin 'status' Revision History
   The NEWSTRUCT compile time switch is now obsolete. The required driver is now
   the CVS HEAD version dated 2002-11-01 or later.
 - Introduced Make.config.
+
+2002-11-23: Version 0.0.6
+
+- Changed return type of MainMenuAction().
