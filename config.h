@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.54 2001/07/27 11:28:49 kls Exp $
+ * $Id: config.h 1.55 2001/07/27 13:32:53 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -275,6 +275,7 @@ public:
   int LnbSLOF;
   int LnbFrequLo;
   int LnbFrequHi;
+  int DiSEqC;
   int SetSystemTime;
   int MarginStart, MarginStop;
   int EPGScanTimeout;

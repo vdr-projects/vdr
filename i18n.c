@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.25 2001/07/27 11:30:02 kls Exp $
+ * $Id: i18n.c 1.26 2001/07/27 13:32:43 kls Exp $
  *
  * Slovenian translations provided by Miha Setina <mihasetina@softhome.net>
  * Italian   translations provided by Alberto Carraro <bertocar@tin.it>
@@ -712,6 +712,15 @@ const tPhrase Phrases[] = {
     "Freq HI LNB",
     "Fréquence haute LNB",
     "LO-frekvens i høybåndet",
+  },
+  { "DiSEqC",
+    "DiSEqC",
+    "DiSEqC",
+    "DiSEqC",
+    "DiSEqC",
+    "DiSEqC",
+    "DiSEqC",
+    "DiSEqC",
   },
   { "SetSystemTime",
     "Systemzeit stellen",

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.89 2001/07/27 11:43:16 kls Exp $
+ * $Id: dvbapi.c 1.90 2001/07/27 13:33:56 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -2170,7 +2170,7 @@ bool cDvbApi::SetChannel(int ChannelNumber, int FrequencyMHz, char Polarization,
      scmds.voltage = volt;
      scmds.miniCommand = SEC_MINI_NONE;
      scmds.continuousTone = tone;
-     scmds.numCommands = Diseqc ? 1 : 0;
+     scmds.numCommands = Setup.DiSEqC ? 1 : 0;
      scmds.commands = &scmd;
 
      CHECK(ioctl(fd_sec, SEC_SEND_SEQUENCE, &scmds));

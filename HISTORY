@@ -583,3 +583,6 @@ Video Disk Recorder Revision History
 - Made the position of the channel display configurable (thanks to Stefan
   Huelswitt).
 - Made the width and height of the OSD configurable (thanks to Stefan Huelswitt).
+- DiSEqC support can now be generally enabled/disabled in the Setup menu. This
+  may be necessary if your multiswitch gets irritated by the default DiSEqC
+  codes '0' (thanks to Markus Lang).

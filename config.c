@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.51 2001/07/27 11:27:27 kls Exp $
+ * $Id: config.c 1.52 2001/07/27 13:45:28 kls Exp $
  */
 
 #include "config.h"
@@ -764,6 +764,7 @@ cSetup::cSetup(void)
   LnbSLOF    = 11700;
   LnbFrequLo =  9750;
   LnbFrequHi = 10600;
+  DiSEqC = 1;
   SetSystemTime = 0;
   MarginStart = 2;
   MarginStop = 10;
@@ -793,6 +794,7 @@ bool cSetup::Parse(char *s)
      else if (!strcasecmp(Name, "LnbSLOF"))             LnbSLOF            = atoi(Value);
      else if (!strcasecmp(Name, "LnbFrequLo"))          LnbFrequLo         = atoi(Value);
      else if (!strcasecmp(Name, "LnbFrequHi"))          LnbFrequHi         = atoi(Value);
+     else if (!strcasecmp(Name, "DiSEqC"))              DiSEqC             = atoi(Value);
      else if (!strcasecmp(Name, "SetSystemTime"))       SetSystemTime      = atoi(Value);
      else if (!strcasecmp(Name, "MarginStart"))         MarginStart        = atoi(Value);
      else if (!strcasecmp(Name, "MarginStop"))          MarginStop         = atoi(Value);
@@ -857,6 +859,7 @@ bool cSetup::Save(const char *FileName)
         fprintf(f, "LnbSLOF            = %d\n", LnbSLOF);
         fprintf(f, "LnbFrequLo         = %d\n", LnbFrequLo);
         fprintf(f, "LnbFrequHi         = %d\n", LnbFrequHi);
+        fprintf(f, "DiSEqC             = %d\n", DiSEqC);
         fprintf(f, "SetSystemTime      = %d\n", SetSystemTime);
         fprintf(f, "MarginStart        = %d\n", MarginStart);
         fprintf(f, "MarginStop         = %d\n", MarginStop);

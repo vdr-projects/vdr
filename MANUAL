@@ -326,6 +326,10 @@ Video Disk Recorder User's Manual
   LnbFrequLo = 9750      The LNB's low and high local oscillator frequencies (in MHz)
   LnbFrequHi = 10600     (these have no meaning for DVB-C receivers)
 
+  DiSEqC = 1             Generally turns DiSEqC support on or off.
+                         0 = disabled
+                         1 = enabled
+
   SetSystemTime = 0      Defines whether the system time will be set according to
                          the time received from the DVB data stream.
                          0 = system time will not be set
