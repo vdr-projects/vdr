@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.69 2001/09/07 15:37:26 kls Exp $
+ * $Id: vdr.c 1.70 2001/09/08 12:15:05 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -329,7 +329,8 @@ int main(int argc, char *argv[])
         if (!EITScanner.Active() && cDvbApi::CurrentChannel() != LastChannel) {
            if (!Menu)
               Menu = new cDisplayChannel(cDvbApi::CurrentChannel(), LastChannel > 0);
-           PreviousChannel = LastChannel;
+           if (LastChannel > 0)
+              PreviousChannel = LastChannel;
            LastChannel = cDvbApi::CurrentChannel();
            }
         // Timers and Recordings:
@@ -391,10 +392,12 @@ int main(int argc, char *argv[])
         else {
            switch (key) {
              // Toggle channels:
-             case k0:
-                  if (PreviousChannel != cDvbApi::CurrentChannel())
-                     Channels.SwitchTo(PreviousChannel);
+             case k0: {
+                  int CurrentChannel = cDvbApi::CurrentChannel();
+                  Channels.SwitchTo(PreviousChannel);
+                  PreviousChannel = CurrentChannel;
                   break;
+                  }
              // Direct Channel Select:
              case k1 ... k9:
                   Menu = new cDisplayChannel(key);

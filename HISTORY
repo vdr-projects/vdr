@@ -725,3 +725,5 @@ Video Disk Recorder Revision History
 - An error message is now displayed in case the Transfer Mode can't be
   started because the necessary DVB card is currently recording (or there
   is no DVB card that can access this channel).
+- Fixed toggling channels with the '0' key in case the "Ok" button has been
+  pressed to display the current/next information.
