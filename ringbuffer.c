@@ -7,7 +7,7 @@
  * Parts of this file were inspired by the 'ringbuffy.c' from the
  * LinuxDVB driver (see linuxtv.org).
  *
- * $Id: ringbuffer.c 1.1 2001/03/18 16:47:00 kls Exp $
+ * $Id: ringbuffer.c 1.2 2001/05/20 11:58:08 kls Exp $
  */
 
 #include "ringbuffer.h"
@@ -37,9 +37,10 @@ public:
 
 // --- cRingBuffer ------------------------------------------------------------
 
-cRingBuffer::cRingBuffer(int Size)
+cRingBuffer::cRingBuffer(int Size, bool Statistics)
 {
   size = Size;
+  statistics = Statistics;
   buffer = NULL;
   inputThread = NULL;
   outputThread = NULL;
@@ -60,7 +61,17 @@ cRingBuffer::~cRingBuffer()
   delete inputThread;
   delete outputThread;
   delete buffer;
-  dsyslog(LOG_INFO, "buffer stats: %d (%d%%) used", maxFill, maxFill * 100 / (size - 1));
+  if (statistics)
+     dsyslog(LOG_INFO, "buffer stats: %d (%d%%) used", maxFill, maxFill * 100 / (size - 1));
+}
+
+int cRingBuffer::Available(void)
+{
+  mutex.Lock();
+  int diff = head - tail;
+  int cont = (diff >= 0) ? diff : size + diff;
+  mutex.Unlock();
+  return cont;
 }
 
 void cRingBuffer::Clear(void)
@@ -78,17 +89,17 @@ int cRingBuffer::Put(const uchar *Data, int Count)
      int diff = tail - head;
      mutex.Unlock();
      int free = (diff > 0) ? diff - 1 : size + diff - 1;
-     // Statistics:
-     int fill = size - free - 1 + Count;
-     if (fill >= size)
-        fill = size - 1;
-     if (fill > maxFill) {
-        maxFill = fill;
-        int percent = maxFill * 100 / (size - 1);
-        if (percent > 75)
-           dsyslog(LOG_INFO, "buffer usage: %d%%", percent);
+     if (statistics) {
+        int fill = size - free - 1 + Count;
+        if (fill >= size)
+           fill = size - 1;
+        if (fill > maxFill) {
+           maxFill = fill;
+           int percent = maxFill * 100 / (size - 1);
+           if (percent > 75)
+              dsyslog(LOG_INFO, "buffer usage: %d%%", percent);
+           }
         }
-     //
      if (free <= 0)
         return 0;
      if (free < Count)

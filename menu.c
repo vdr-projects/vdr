@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.70 2001/03/18 10:16:56 kls Exp $
+ * $Id: menu.c 1.71 2001/06/02 09:59:54 kls Exp $
  */
 
 #include "menu.h"
@@ -539,9 +539,9 @@ cMenuEditChannel::cMenuEditChannel(int Index)
      Add(new cMenuEditChrItem( tr("Polarization"), &data.polarization, "hv"));
      Add(new cMenuEditIntItem( tr("Diseqc"),       &data.diseqc, 0, 10)); //TODO exact limits???
      Add(new cMenuEditIntItem( tr("Srate"),        &data.srate, 22000, 27500)); //TODO exact limits - toggle???
-     Add(new cMenuEditIntItem( tr("Vpid"),         &data.vpid, 0, 10000)); //TODO exact limits???
-     Add(new cMenuEditIntItem( tr("Apid"),         &data.apid, 0, 10000)); //TODO exact limits???
-     Add(new cMenuEditIntItem( tr("Tpid"),         &data.tpid, 0, 10000)); //TODO exact limits???
+     Add(new cMenuEditIntItem( tr("Vpid"),         &data.vpid, 0, 0xFFFE));
+     Add(new cMenuEditIntItem( tr("Apid"),         &data.apid, 0, 0xFFFE));
+     Add(new cMenuEditIntItem( tr("Tpid"),         &data.tpid, 0, 0xFFFE));
      Add(new cMenuEditIntItem( tr("CA"),           &data.ca, 0, cDvbApi::NumDvbApis));
      Add(new cMenuEditIntItem( tr("Pnr"),          &data.pnr, 0));
      }
@@ -589,7 +589,7 @@ void cMenuChannelItem::Set(void)
   if (!channel->groupSep)
      asprintf(&buffer, "%d\t%s", channel->number, channel->name );
   else
-     asprintf(&buffer, "\t%s", channel->name); 
+     asprintf(&buffer, "\t%s", channel->name);
   SetText(buffer, false);
 }
 
@@ -904,13 +904,13 @@ cMenuEditTimer::cMenuEditTimer(int Index, bool New)
      if (New)
         data.active = 1;
      Add(new cMenuEditBoolItem(tr("Active"),       &data.active));
-     Add(new cMenuEditChanItem(tr("Channel"),      &data.channel)); 
-     Add(new cMenuEditDayItem( tr("Day"),          &data.day)); 
-     Add(new cMenuEditTimeItem(tr("Start"),        &data.start)); 
-     Add(new cMenuEditTimeItem(tr("Stop"),         &data.stop)); 
+     Add(new cMenuEditChanItem(tr("Channel"),      &data.channel));
+     Add(new cMenuEditDayItem( tr("Day"),          &data.day));
+     Add(new cMenuEditTimeItem(tr("Start"),        &data.start));
+     Add(new cMenuEditTimeItem(tr("Stop"),         &data.stop));
 //TODO VPS???
-     Add(new cMenuEditIntItem( tr("Priority"),     &data.priority, 0, 99));
-     Add(new cMenuEditIntItem( tr("Lifetime"),     &data.lifetime, 0, 99));
+     Add(new cMenuEditIntItem( tr("Priority"),     &data.priority, 0, MAXPRIORITY));
+     Add(new cMenuEditIntItem( tr("Lifetime"),     &data.lifetime, 0, MAXLIFETIME));
      Add(new cMenuEditStrItem( tr("File"),          data.file, sizeof(data.file), FileNameChars));
      }
 }
@@ -963,9 +963,9 @@ void cMenuTimerItem::Set(void)
 {
   char *buffer = NULL;
   asprintf(&buffer, "%c\t%d\t%s\t%02d:%02d\t%02d:%02d\t%s",
-                    timer->active ? '>' : ' ', 
-                    timer->channel, 
-                    timer->PrintDay(timer->day), 
+                    timer->active ? '>' : ' ',
+                    timer->channel,
+                    timer->PrintDay(timer->day),
                     timer->start / 100,
                     timer->start % 100,
                     timer->stop / 100,
@@ -1265,7 +1265,7 @@ eOSState cMenuWhatsOn::Switch(void)
 eOSState cMenuWhatsOn::Record(void)
 {
   cMenuWhatsOnItem *item = (cMenuWhatsOnItem *)Get(Current());
-  if (item) {      
+  if (item) {
      cTimer *timer = new cTimer(item->eventInfo);
      cTimer *t = Timers.GetTimer(timer);
      if (!t) {
@@ -1391,7 +1391,7 @@ void cMenuSchedule::PrepareSchedule(cChannel *Channel)
 eOSState cMenuSchedule::Record(void)
 {
   cMenuScheduleItem *item = (cMenuScheduleItem *)Get(Current());
-  if (item) {      
+  if (item) {
      cTimer *timer = new cTimer(item->eventInfo);
      cTimer *t = Timers.GetTimer(timer);
      if (!t) {
@@ -1608,6 +1608,7 @@ void cMenuSetup::Set(void)
   Add(new cMenuEditBoolItem(tr("ShowInfoOnChSwitch"), &data.ShowInfoOnChSwitch));
   Add(new cMenuEditBoolItem(tr("MenuScrollPage"),     &data.MenuScrollPage));
   Add(new cMenuEditBoolItem(tr("MarkInstantRecord"),  &data.MarkInstantRecord));
+  Add(new cMenuEditIntItem( tr("LnbSLOF"),            &data.LnbSLOF));
   Add(new cMenuEditIntItem( tr("LnbFrequLo"),         &data.LnbFrequLo));
   Add(new cMenuEditIntItem( tr("LnbFrequHi"),         &data.LnbFrequHi));
   Add(new cMenuEditBoolItem(tr("SetSystemTime"),      &data.SetSystemTime));
@@ -1615,7 +1616,9 @@ void cMenuSetup::Set(void)
   Add(new cMenuEditIntItem( tr("MarginStop"),         &data.MarginStop));
   Add(new cMenuEditIntItem( tr("EPGScanTimeout"),     &data.EPGScanTimeout));
   Add(new cMenuEditIntItem( tr("SVDRPTimeout"),       &data.SVDRPTimeout));
-  Add(new cMenuEditIntItem( tr("PrimaryLimit"),       &data.PrimaryLimit));
+  Add(new cMenuEditIntItem( tr("PrimaryLimit"),       &data.PrimaryLimit, 0, MAXPRIORITY));
+  Add(new cMenuEditIntItem( tr("DefaultPriority"),    &data.DefaultPriority, 0, MAXPRIORITY));
+  Add(new cMenuEditIntItem( tr("DefaultLifetime"),    &data.DefaultLifetime, 0, MAXLIFETIME));
 }
 
 eOSState cMenuSetup::ProcessKey(eKeys Key)
@@ -1945,11 +1948,14 @@ cRecordControl::cRecordControl(cDvbApi *DvbApi, cTimer *Timer)
      asprintf(&instantId, cDvbApi::NumDvbApis > 1 ? "%s - %d" : "%s", Channels.GetChannelNameByNumber(timer->channel), dvbApi->Index() + 1);
      }
   timer->SetRecording(true);
-  Channels.SwitchTo(timer->channel, dvbApi);
-  cRecording Recording(timer);
-  if (dvbApi->StartRecord(Recording.FileName(), Channels.GetByNumber(timer->channel)->ca, timer->priority))
-     Recording.WriteSummary();
-  Interface->DisplayRecording(dvbApi->Index(), true);
+  if (Channels.SwitchTo(timer->channel, dvbApi)) {
+     cRecording Recording(timer);
+     if (dvbApi->StartRecord(Recording.FileName(), Channels.GetByNumber(timer->channel)->ca, timer->priority))
+        Recording.WriteSummary();
+     Interface->DisplayRecording(dvbApi->Index(), true);
+     }
+  else
+     cThread::EmergencyExit(true);
 }
 
 cRecordControl::~cRecordControl()
@@ -1979,7 +1985,7 @@ bool cRecordControl::Process(void)
 {
   if (!timer || !timer->Matches())
      return false;
-  AssertFreeDiskSpace();
+  AssertFreeDiskSpace(timer->priority);
   return true;
 }
 
@@ -1993,7 +1999,7 @@ bool cRecordControls::Start(cTimer *Timer)
   cChannel *channel = Channels.GetByNumber(ch);
 
   if (channel) {
-     cDvbApi *dvbApi = cDvbApi::GetDvbApi(channel->ca, Timer ? Timer->priority : DEFAULTPRIORITY);
+     cDvbApi *dvbApi = cDvbApi::GetDvbApi(channel->ca, Timer ? Timer->priority : Setup.DefaultPriority);
      if (dvbApi) {
         Stop(dvbApi);
         for (int i = 0; i < MAXDVBAPI; i++) {

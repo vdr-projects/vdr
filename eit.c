@@ -13,17 +13,16 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.c 1.15 2001/04/01 15:36:09 kls Exp $
+ * $Id: eit.c 1.16 2001/05/26 10:58:01 kls Exp $
  ***************************************************************************/
 
 #include "eit.h"
 #include <ctype.h>
-#include <dvb_comcode.h>
-#include <dvb_v4l.h>
 #include <fcntl.h>
 #include <fstream.h>
 #include <iomanip.h>
 #include <iostream.h>
+#include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -1108,31 +1107,43 @@ cMutex cSIProcessor::schedulesMutex;
 /**  */
 cSIProcessor::cSIProcessor(const char *FileName)
 {
+   fileName = strdup(FileName);
    masterSIProcessor = numSIProcessors == 0; // the first one becomes the 'master'
    useTStime = false;
    filters = NULL;
-   if ((fsvbi = open(FileName, O_RDONLY)) >= 0)
-   {
-      if (!numSIProcessors++) // the first one creates it
-         schedules = new cSchedules;
-      filters = (SIP_FILTER *)calloc(MAX_FILTERS, sizeof(SIP_FILTER));
-   }
-   else
-      LOG_ERROR_STR(FileName);
+   if (!numSIProcessors++) // the first one creates it
+      schedules = new cSchedules;
+   filters = (SIP_FILTER *)calloc(MAX_FILTERS, sizeof(SIP_FILTER));
+   SetStatus(true);
+   Start();
 }
 
 cSIProcessor::~cSIProcessor()
 {
-   if (fsvbi >= 0)
+   active = false;
+   Cancel(3);
+   ShutDownFilters();
+   delete filters;
+   if (!--numSIProcessors) // the last one deletes it
+      delete schedules;
+   delete fileName;
+}
+
+void cSIProcessor::SetStatus(bool On)
+{
+   LOCK_THREAD;
+   schedulesMutex.Lock();
+   ShutDownFilters();
+   if (On)
    {
-      active = false;
-      Cancel(3);
-      ShutDownFilters();
-      delete filters;
-      if (!--numSIProcessors) // the last one deletes it
-         delete schedules;
-      close(fsvbi);
+      AddFilter(0x14, 0x70);  // TDT
+      AddFilter(0x14, 0x73);  // TOT
+      AddFilter(0x12, 0x4e);  // event info, actual TS, present/following
+      AddFilter(0x12, 0x4f);  // event info, other TS, present/following
+      AddFilter(0x12, 0x50);  // event info, actual TS, schedule
+      AddFilter(0x12, 0x60);  // event info, other TS, schedule
    }
+   schedulesMutex.Unlock();
 }
 
 /** use the vbi device to parse all relevant SI
@@ -1140,19 +1151,10 @@ information and let the classes corresponding
 to the tables write their information to the disk */
 void cSIProcessor::Action()
 {
-   if (fsvbi < 0) {
-      esyslog(LOG_ERR, "cSIProcessor::Action() called without open file - returning");
-      return;
-      }
-
    dsyslog(LOG_INFO, "EIT processing thread started (pid=%d)%s", getpid(), masterSIProcessor ? " - master" : "");
 
-   unsigned char buf[4096+1]; // max. allowed size for any EIT section (+1 for safety ;-)
-   unsigned int seclen;
-   unsigned int pid;
    time_t lastCleanup = time(NULL);
    time_t lastDump = time(NULL);
-   struct pollfd pfd;
 
    active = true;
 
@@ -1187,100 +1189,123 @@ void cSIProcessor::Action()
          }
       }
 
-      /* wait data become ready from the bitfilter */
-      pfd.fd = fsvbi;
-      pfd.events = POLLIN;
-      if(poll(&pfd, 1, 1000) != 0) /* timeout is 5 secs */
+      // set up pfd structures for all active filter
+      pollfd pfd[MAX_FILTERS];
+      int NumUsedFilters = 0;
+      for (int a = 0; a < MAX_FILTERS ; a++)
       {
-         // fprintf(stderr, "<data>\n");
-         /* read section */
-         read(fsvbi, buf, 8);
-         seclen = (buf[6] << 8) | buf[7];
-         pid = (buf[4] << 8) | buf[5];
-         read(fsvbi, buf, seclen);
-
-         //dsyslog(LOG_INFO, "Received pid 0x%02x with table ID 0x%02x and length of %04d\n", pid, buf[0], seclen);
-
-         switch (pid)
+         if (filters[a].inuse)
          {
-            case 0x14:
-               if (buf[0] == 0x70)
-               {
-                  if (useTStime)
-                  {
-                     cTDT ctdt((tdt_t *)buf);
-                     ctdt.SetSystemTime();
-                  }
-               }
-                  /*XXX this comes pretty often:
-               else
-                  dsyslog(LOG_INFO, "Time packet was not 0x70 but 0x%02x\n", (int)buf[0]);
-                  XXX*/
-               break;
-
-            case 0x12:
-               if (buf[0] != 0x72)
-               {
-                  LOCK_THREAD;
-
-                  schedulesMutex.Lock();
-                  cEIT ceit(buf, seclen, schedules);
-                  ceit.ProcessEIT();
-                  schedulesMutex.Unlock();
-               }
-               else
-                  dsyslog(LOG_INFO, "Received stuffing section in EIT\n");
-               break;
-
-            default:
-               break;
+            pfd[NumUsedFilters].fd = filters[a].handle;
+            pfd[NumUsedFilters].events = POLLIN;
+            NumUsedFilters++;
          }
       }
-      else
-      {
-         LOCK_THREAD;
 
-         //XXX this comes pretty often
-         //isyslog(LOG_INFO, "Received timeout from poll, refreshing filters\n");
-         RefreshFilters();
+      // wait until data becomes ready from the bitfilter
+      if (poll(pfd, NumUsedFilters, 1000) != 0)
+      {
+         for (int a = 0; a < NumUsedFilters ; a++)
+         {
+            if (pfd[a].revents & POLLIN)
+            {
+               /* read section */
+               unsigned char buf[4096+1]; // max. allowed size for any EIT section (+1 for safety ;-)
+               if (read(filters[a].handle, buf, 3) == 3)
+               {
+                  int seclen = ((buf[1] & 0x0F) << 8) | (buf[2] & 0xFF);
+                  int pid = filters[a].pid;
+                  int n = read(filters[a].handle, buf + 3, seclen);
+                  if (n == seclen)
+                  {
+                     seclen += 3;
+                     //dsyslog(LOG_INFO, "Received pid 0x%02x with table ID 0x%02x and length of %04d\n", pid, buf[0], seclen);
+                     switch (pid)
+                     {
+                        case 0x14:
+                           if (buf[0] == 0x70)
+                           {
+                              if (useTStime)
+                              {
+                                 cTDT ctdt((tdt_t *)buf);
+                                 ctdt.SetSystemTime();
+                              }
+                           }
+                              /*XXX this comes pretty often:
+                           else
+                              dsyslog(LOG_INFO, "Time packet was not 0x70 but 0x%02x\n", (int)buf[0]);
+                              XXX*/
+                           break;
+
+                        case 0x12:
+                           if (buf[0] != 0x72)
+                           {
+                              LOCK_THREAD;
+
+                              schedulesMutex.Lock();
+                              cEIT ceit(buf, seclen, schedules);
+                              ceit.ProcessEIT();
+                              schedulesMutex.Unlock();
+                           }
+                           else
+                              dsyslog(LOG_INFO, "Received stuffing section in EIT\n");
+                           break;
+
+                        default:
+                           break;
+                     }
+                  }
+                  else
+                     dsyslog(LOG_INFO, "read incomplete section - seclen = %d, n = %d", seclen, n);
+               }
+            }
+         }
       }
-//    WakeUp();
    }
+
+   dsyslog(LOG_INFO, "EIT processing thread ended (pid=%d)%s", getpid(), masterSIProcessor ? " - master" : "");
 }
 
 /** Add a filter with packet identifier pid and
 table identifer tid */
 bool cSIProcessor::AddFilter(u_char pid, u_char tid)
 {
-   if (fsvbi < 0)
-      return false;
-
-   int section = ((int)tid << 8) | 0x00ff;
-
-   struct bitfilter filt = {
-      pid,
-      { section, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000,
-        0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000},
-        SECTION_CONTINUOS, 0,
-        FILTER_MEM,
-        {},
-      };
-
-   if (ioctl(fsvbi, VIDIOCSBITFILTER, &filt) < 0)
-      return false;
+   dmxSctFilterParams sctFilterParams;
+   sctFilterParams.pid = pid;
+   memset(&sctFilterParams.filter.filter, 0, DMX_FILTER_SIZE);
+   memset(&sctFilterParams.filter.mask, 0, DMX_FILTER_SIZE);
+   sctFilterParams.timeout = 0;
+   sctFilterParams.flags = DMX_IMMEDIATE_START;
+   sctFilterParams.filter.filter[0] = tid;
+   sctFilterParams.filter.mask[0] = 0xFF;
 
    for (int a = 0; a < MAX_FILTERS; a++)
    {
-      if (filters[a].inuse == false)
+      if (!filters[a].inuse)
       {
          filters[a].pid = pid;
          filters[a].tid = tid;
-         filters[a].handle = filt.handle;
-         filters[a].inuse = true;
-         // dsyslog(LOG_INFO, "  Registered filter handle %04x, pid = %02d, tid = %02d", filters[a].handle, filters[a].pid, filters[a].tid);
+         if ((filters[a].handle = open(fileName, O_RDWR | O_NONBLOCK)) >= 0)
+         {
+            if (ioctl(filters[a].handle, DMX_SET_FILTER, &sctFilterParams) >= 0)
+               filters[a].inuse = true;
+            else
+            {
+               esyslog(LOG_ERR, "ERROR: can't set filter");
+               close(filters[a].handle);
+               return false;
+            }
+            // dsyslog(LOG_INFO, "  Registered filter handle %04x, pid = %02d, tid = %02d", filters[a].handle, filters[a].pid, filters[a].tid);
+         }
+         else
+         {
+            esyslog(LOG_ERR, "ERROR: can't open filter handle");
+            return false;
+         }
          return true;
       }
    }
+   esyslog(LOG_ERR, "ERROR: too many filters");
 
    return false;
 }
@@ -1294,27 +1319,19 @@ bool cSIProcessor::SetUseTSTime(bool use)
 }
 
 /**  */
-bool cSIProcessor::ShutDownFilters()
+bool cSIProcessor::ShutDownFilters(void)
 {
-   if (fsvbi < 0)
-      return false;
-
-   bool ret = true;
-
    for (int a = 0; a < MAX_FILTERS; a++)
    {
-      if (filters[a].inuse == true)
+      if (filters[a].inuse)
       {
-         if (ioctl(fsvbi, VIDIOCSSHUTDOWNFILTER, &filters[a].handle) < 0)
-            ret = false;
-
+         close(filters[a].handle);
          // dsyslog(LOG_INFO, "Deregistered filter handle %04x, pid = %02d, tid = %02d", filters[a].handle, filters[a].pid, filters[a].tid);
-
          filters[a].inuse = false;
       }
    }
 
-   return ret;
+   return true; // there's no real 'boolean' to return here...
 }
 
 /** */
@@ -1322,26 +1339,4 @@ bool cSIProcessor::SetCurrentServiceID(unsigned short servid)
 {
   LOCK_THREAD;
   return schedules ? schedules->SetCurrentServiceID(servid) : false;
-}
-
-/**  */
-bool cSIProcessor::RefreshFilters()
-{
-   if (fsvbi < 0)
-      return false;
-
-   bool ret = true;
-
-   ret = ShutDownFilters();
-
-   for (int a = 0; a < MAX_FILTERS; a++)
-   {
-      if (filters[a].inuse == false && filters[a].pid != 0 && filters[a].tid != 0)
-      {
-         if (!AddFilter(filters[a].pid, filters[a].tid))
-            ret = false;
-      }
-   }
-
-   return ret;
 }

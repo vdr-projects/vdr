@@ -290,7 +290,7 @@ Video Disk Recorder Revision History
   channel, if the timer currently occupying this DVB card doesn't need the
   CAM module (and thus can continue recording on a different DVB card).
 - The "Yellow" button in the "What's on now/next?" menus now displays the
-  schedule of the current channel from that menu. 
+  schedule of the current channel from that menu.
 - All DVB cards in a multi-card system now write their EIT information into the
   same data structure.
 - If there is more than one DVB card in the system, the non-primary cards are
@@ -332,8 +332,8 @@ Video Disk Recorder Revision History
 - Implemented "On Disk Editing".
 - There is no more default 'timers.conf' file.
 - Added Italian language texts (thanks to Alberto Carraro).
-- Fixed starting a replay session when the program is currently in "transfer
-  mode".
+- Fixed starting a replay session when the program is currently in 'Transfer
+  Mode'.
 - Fixed setting/modifying timers via SVDRP with empty summary fields.
 - Fixed a problem with recordings that have a single quote character in their
   name (this is now mapped to 0x01).
@@ -452,3 +452,41 @@ Video Disk Recorder Revision History
 - Empty lines in config files no longer cause error messages.
 - New SVDRP command LSTE to list the EPG data.
 - The SVDRP HELP command now prints the topics in several columns.
+
+2001-06-02: Version 0.80
+
+- VDR now requires driver version 0.9.0 or higher.
+- Switched to the "new API" (thanks to Dave Chapman for his great support in
+  this task).
+- New setup parameter "LnbSLOF" that defines the switching frequency of the LNB.
+- Fixed a bug in the EPG scanner with more than one DVB card.
+- Fixed checking for free disk space, so that it works with NFS mounted drives.
+- Files are now created with mode 644.
+- Fixed checking the exit status in the 'runvdr' script.
+- Activated loading the driver in 'runvdr'. Please read the comments in 'runvdr'
+  for details.
+- The new "emergency exit" feature automatically triggers a restart of VDR (if
+  used with 'runvdr', otherwise it simply exists) if
+  * tuning the channel for a recording fails
+  * no useful data is received within the first 1MB of a recording
+  * no data is received within a recording for more than 5 seconds
+  This should make sure that a recording is successfully restarted after any
+  problems.
+- Processing the EIT data is now disabled during replay and 'Transfer Mode' in
+  order to avoid video and audio glitches (there appears to be a bandwidth
+  problem somewhere in the driver/firmware/hardware).
+- Due to the reduced amount of OSD memory provided by the driver the number of
+  lines in the OSD had to be reduced by 2. By rearranging some of the display
+  items the amount of visible information remained the same as before, though.
+  If your DVB card has even less memory (which would result in only the
+  channel switching display and the replay progress display being visible, but
+  no Main menu), try reducing the constant 'MenuLines' in dvbapi.h (currently
+  '13') even further.
+- There are two new setup parameters to define the "Default Priority" and
+  "Default Lifetime" when creating a new timer event.
+- The meaning of the "Lifetime" parameter has been modified: a value of '99'
+  now means that the recording will live "forever", and a value of '0' means
+  that the recording has no guaranteed lifetime and will be deleted whenever
+  a new recording with higher priority needs disk space.
+- Updated version of Matthias Schniedermeyer's 'schnitt' tools.
+- New 'master-timer' tool (thanks to Matthias Schniedermeyer).

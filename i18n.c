@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.16 2001/03/31 09:58:14 kls Exp $
+ * $Id: i18n.c 1.17 2001/06/02 09:39:36 kls Exp $
  *
  * Slovenian translations provided by Miha Setina <mihasetina@softhome.net>
  * Italian   translations provided by Alberto Carraro <bertocar@tin.it>
@@ -452,6 +452,12 @@ const tPhrase Phrases[] = {
     "Marca la registrazione",
     "Direkte opnamen markeren",
   },
+  { "LnbSLOF",
+    "LnbSLOF",
+    "LnbSLOF",
+    "LnbSLOF",
+    "LnbSLOF",
+  },
   { "LnbFrequLo",
     "Untere LNB-Frequenz",
     "Spodnja LNB-frek.",
@@ -496,6 +502,18 @@ const tPhrase Phrases[] = {
   },
   { "PrimaryLimit",
     "Primär-Limit",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+  },
+  { "DefaultPriority",
+    "Default Priorität",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+  },
+  { "DefaultLifetime",
+    "Default Lebensdauer",
     "", // TODO
     "", // TODO
     "", // TODO

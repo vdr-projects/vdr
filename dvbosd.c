@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbosd.c 1.7 2000/12/09 11:13:00 kls Exp $
+ * $Id: dvbosd.c 1.8 2001/05/26 11:49:35 kls Exp $
  */
 
 #include "dvbosd.h"
@@ -157,7 +157,7 @@ cDvbOsd::~cDvbOsd()
 void cDvbOsd::Cmd(OSD_Command cmd, int color, int x0, int y0, int x1, int y1, const void *data)
 {
   if (videoDev >= 0) {
-     struct drawcmd dc;
+     osd_cmd_t dc;
      dc.cmd   = cmd;
      dc.color = color;
      dc.x0    = x0;
@@ -169,7 +169,7 @@ void cDvbOsd::Cmd(OSD_Command cmd, int color, int x0, int y0, int x1, int y1, co
      sigset_t set, oldset;
      sigfillset(&set);
      sigprocmask(SIG_BLOCK, &set, &oldset);
-     ioctl(videoDev, VIDIOCSOSDCOMMAND, &dc);
+     ioctl(videoDev, OSD_SEND_CMD, &dc);
      usleep(10); // XXX Workaround for a driver bug (cInterface::DisplayChannel() displayed texts at wrong places
                  // XXX and sometimes the OSD was no longer displayed).
                  // XXX Increase the value if the problem still persists on your particular system.

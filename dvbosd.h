@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbosd.h 1.5 2000/12/09 10:32:47 kls Exp $
+ * $Id: dvbosd.h 1.6 2001/05/01 14:41:42 kls Exp $
  */
 
 #ifndef __DVBOSD_H
@@ -18,11 +18,11 @@ typedef unsigned char __u8;
 #if defined(DEBUG_OSD) || defined(REMOTE_KBD)
 #include <ncurses.h>
 #endif
+#include <ost/osd.h>
 #include <stdio.h>
-#include <dvb.h>
 #include "font.h"
 
-enum eDvbColor { 
+enum eDvbColor {
 #ifndef DEBUG_OSD
   clrTransparent,
 #endif

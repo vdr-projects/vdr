@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.44 2001/04/01 14:32:22 kls Exp $
+ * $Id: config.c 1.45 2001/06/02 09:42:25 kls Exp $
  */
 
 #include "config.h"
@@ -155,7 +155,7 @@ eKeys cKeys::Get(unsigned int Code)
 }
 
 eKeys cKeys::Translate(const char *Command)
-{  
+{
   if (Command) {
      const tKey *k = keys;
      while ((k->type != kNone) && strcasecmp(k->name, Command) != 0)
@@ -166,7 +166,7 @@ eKeys cKeys::Translate(const char *Command)
 }
 
 unsigned int cKeys::Encode(const char *Command)
-{  
+{
   eKeys k = Translate(Command);
   if (k != kNone)
      return keys[k].code;
@@ -305,8 +305,8 @@ cTimer::cTimer(bool Instant)
   if (stop >= 2400)
      stop -= 2400;
 //TODO VPS???
-  priority = DEFAULTPRIORITY;
-  lifetime = DEFAULTLIFETIME;
+  priority = Setup.DefaultPriority;
+  lifetime = Setup.DefaultLifetime;
   *file = 0;
   summary = NULL;
   if (Instant && ch)
@@ -330,8 +330,8 @@ cTimer::cTimer(const cEventInfo *EventInfo)
   stop = time->tm_hour * 100 + time->tm_min;
   if (stop >= 2400)
      stop -= 2400;
-  priority = DEFAULTPRIORITY;
-  lifetime = DEFAULTLIFETIME;
+  priority = Setup.DefaultPriority;
+  lifetime = Setup.DefaultLifetime;
   *file = 0;
   const char *Title = EventInfo->GetTitle();
   if (!isempty(Title))
@@ -524,14 +524,14 @@ bool cTimer::Matches(time_t t)
 }
 
 time_t cTimer::StartTime(void)
-{ 
+{
   if (!startTime)
      Matches();
   return startTime;
 }
 
 time_t cTimer::StopTime(void)
-{ 
+{
   if (!stopTime)
      Matches();
   return stopTime;
@@ -734,6 +734,7 @@ cSetup::cSetup(void)
   ShowInfoOnChSwitch = 1;
   MenuScrollPage = 1;
   MarkInstantRecord = 1;
+  LnbSLOF    = 11700;
   LnbFrequLo =  9750;
   LnbFrequHi = 10600;
   SetSystemTime = 0;
@@ -742,6 +743,8 @@ cSetup::cSetup(void)
   EPGScanTimeout = 5;
   SVDRPTimeout = 300;
   PrimaryLimit = 0;
+  DefaultPriority = 50;
+  DefaultLifetime = 50;
   CurrentChannel = -1;
 }
 
@@ -756,6 +759,7 @@ bool cSetup::Parse(char *s)
      else if (!strcasecmp(Name, "ShowInfoOnChSwitch"))  ShowInfoOnChSwitch = atoi(Value);
      else if (!strcasecmp(Name, "MenuScrollPage"))      MenuScrollPage     = atoi(Value);
      else if (!strcasecmp(Name, "MarkInstantRecord"))   MarkInstantRecord  = atoi(Value);
+     else if (!strcasecmp(Name, "LnbSLOF"))             LnbSLOF            = atoi(Value);
      else if (!strcasecmp(Name, "LnbFrequLo"))          LnbFrequLo         = atoi(Value);
      else if (!strcasecmp(Name, "LnbFrequHi"))          LnbFrequHi         = atoi(Value);
      else if (!strcasecmp(Name, "SetSystemTime"))       SetSystemTime      = atoi(Value);
@@ -764,6 +768,8 @@ bool cSetup::Parse(char *s)
      else if (!strcasecmp(Name, "EPGScanTimeout"))      EPGScanTimeout     = atoi(Value);
      else if (!strcasecmp(Name, "SVDRPTimeout"))        SVDRPTimeout       = atoi(Value);
      else if (!strcasecmp(Name, "PrimaryLimit"))        PrimaryLimit       = atoi(Value);
+     else if (!strcasecmp(Name, "DefaultPriority"))     DefaultPriority    = atoi(Value);
+     else if (!strcasecmp(Name, "DefaultLifetime"))     DefaultLifetime    = atoi(Value);
      else if (!strcasecmp(Name, "CurrentChannel"))      CurrentChannel     = atoi(Value);
      else
         return false;
@@ -813,6 +819,7 @@ bool cSetup::Save(const char *FileName)
         fprintf(f, "ShowInfoOnChSwitch = %d\n", ShowInfoOnChSwitch);
         fprintf(f, "MenuScrollPage     = %d\n", MenuScrollPage);
         fprintf(f, "MarkInstantRecord  = %d\n", MarkInstantRecord);
+        fprintf(f, "LnbSLOF            = %d\n", LnbSLOF);
         fprintf(f, "LnbFrequLo         = %d\n", LnbFrequLo);
         fprintf(f, "LnbFrequHi         = %d\n", LnbFrequHi);
         fprintf(f, "SetSystemTime      = %d\n", SetSystemTime);
@@ -821,6 +828,8 @@ bool cSetup::Save(const char *FileName)
         fprintf(f, "EPGScanTimeout     = %d\n", EPGScanTimeout);
         fprintf(f, "SVDRPTimeout       = %d\n", SVDRPTimeout);
         fprintf(f, "PrimaryLimit       = %d\n", PrimaryLimit);
+        fprintf(f, "DefaultPriority    = %d\n", DefaultPriority);
+        fprintf(f, "DefaultLifetime    = %d\n", DefaultLifetime);
         fprintf(f, "CurrentChannel     = %d\n", CurrentChannel);
         f.Close();
         isyslog(LOG_INFO, "saved setup to %s", FileName);

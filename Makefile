@@ -4,11 +4,11 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 1.21 2001/03/18 16:47:00 kls Exp $
+# $Id: Makefile 1.22 2001/06/02 09:15:39 kls Exp $
 
 DVBDIR   = ../DVB
 
-INCLUDES = -I$(DVBDIR)/driver
+INCLUDES = -I$(DVBDIR)/ost/include
 OBJS = config.o dvbapi.o dvbosd.o eit.o font.o i18n.o interface.o menu.o osd.o\
        recording.o remote.o remux.o ringbuffer.o svdrp.o thread.o tools.o vdr.o\
        videodir.o
@@ -43,7 +43,7 @@ font: genfontfile fontfix.c fontosd.c
 # Dependencies:
 
 config.o    : config.c config.h dvbapi.h dvbosd.h eit.h font.h i18n.h interface.h remote.h svdrp.h thread.h tools.h
-dvbapi.o    : dvbapi.c config.h dvbapi.h dvbosd.h eit.h font.h interface.h recording.h remote.h remux.h ringbuffer.h svdrp.h thread.h tools.h videodir.h
+dvbapi.o    : dvbapi.c config.h dvbapi.h dvbosd.h eit.h font.h recording.h remux.h ringbuffer.h thread.h tools.h videodir.h
 dvbosd.o    : dvbosd.c dvbosd.h font.h tools.h
 eit.o       : eit.c config.h dvbapi.h dvbosd.h eit.h font.h thread.h tools.h videodir.h
 font.o      : font.c font.h fontfix.c fontosd.c tools.h
@@ -53,7 +53,7 @@ menu.o      : menu.c config.h dvbapi.h dvbosd.h eit.h font.h i18n.h interface.h 
 osd.o       : osd.c config.h dvbapi.h dvbosd.h eit.h font.h i18n.h interface.h osd.h remote.h svdrp.h thread.h tools.h
 recording.o : recording.c config.h dvbapi.h dvbosd.h eit.h font.h interface.h recording.h remote.h svdrp.h thread.h tools.h videodir.h
 remote.o    : remote.c config.h dvbapi.h dvbosd.h eit.h font.h remote.h thread.h tools.h
-remux.o     : remux.c remux.h tools.h
+remux.o     : remux.c remux.h thread.h tools.h
 ringbuffer.o: ringbuffer.c ringbuffer.h thread.h tools.h
 svdrp.o     : svdrp.c config.h dvbapi.h dvbosd.h eit.h font.h interface.h remote.h svdrp.h thread.h tools.h
 thread.o    : thread.c thread.h tools.h

@@ -4,13 +4,15 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.66 2001/03/31 15:01:57 kls Exp $
+ * $Id: dvbapi.c 1.67 2001/06/02 09:31:03 kls Exp $
  */
 
 #include "dvbapi.h"
+#include <dirent.h>
 #include <errno.h>
 #include <fcntl.h>
 extern "C" {
+#define HAVE_BOOLEAN
 #include <jpeglib.h>
 }
 #include <stdlib.h>
@@ -20,19 +22,28 @@ extern "C" {
 #include <sys/time.h>
 #include <unistd.h>
 #include "config.h"
-#include "interface.h"
 #include "recording.h"
 #include "remux.h"
 #include "ringbuffer.h"
 #include "tools.h"
 #include "videodir.h"
 
-#define VIDEODEVICE "/dev/video"
-#define VBIDEVICE   "/dev/vbi"
+#define DEV_VIDEO      "/dev/video"
+#define DEV_OST_OSD    "/dev/ost/osd"
+#define DEV_OST_QAMFE  "/dev/ost/qamfe"
+#define DEV_OST_QPSKFE "/dev/ost/qpskfe"
+#define DEV_OST_SEC    "/dev/ost/sec"
+#define DEV_OST_DVR    "/dev/ost/dvr"
+#define DEV_OST_DEMUX  "/dev/ost/demux"
+#define DEV_OST_VIDEO  "/dev/ost/video"
+#define DEV_OST_AUDIO  "/dev/ost/audio"
 
 // The size of the array used to buffer video data:
 // (must be larger than MINVIDEODATA - see remux.h)
 #define VIDEOBUFSIZE (1024*1024)
+
+// The maximum size of a single frame:
+#define MAXFRAMESIZE (128*1024)
 
 #define FRAMESPERSEC 25
 
@@ -55,16 +66,9 @@ extern "C" {
 // The number of frames to back up when resuming an interrupted replay session:
 #define RESUMEBACKUP (10 * FRAMESPERSEC)
 
-typedef unsigned char uchar;
+#define CHECK(s) { if ((s) < 0) LOG_ERROR; } // used for 'ioctl()' calls
 
-static void SetPlayMode(int VideoDev, int Mode)
-{
-  if (VideoDev >= 0) {
-     struct video_play_mode pmode;
-     pmode.mode = Mode;
-     ioctl(VideoDev, VIDIOCSPLAYMODE, &pmode);
-     }
-}
+typedef unsigned char uchar;
 
 const char *IndexToHMSF(int Index, bool WithFrame)
 {
@@ -100,6 +104,7 @@ private:
 public:
   cIndexFile(const char *FileName, bool Record);
   ~cIndexFile();
+  bool Ok(void) { return index != NULL; }
   void Write(uchar PictureType, uchar FileNumber, int FileOffset);
   bool Get(int Index, uchar *FileNumber, int *FileOffset, uchar *PictureType = NULL, int *Length = NULL);
   int GetNextIFrame(int Index, bool Forward, uchar *FileNumber = NULL, int *FileOffset = NULL, int *Length = NULL);
@@ -158,8 +163,10 @@ cIndexFile::cIndexFile(const char *FileName, bool Record)
            else
               LOG_ERROR;
            }
+        else if (!Record)
+           isyslog(LOG_INFO, "missing index file %s", fileName);
         if (Record) {
-           if ((f = open(fileName, O_WRONLY | O_CREAT | O_APPEND, S_IRUSR | S_IWUSR | S_IRGRP)) >= 0) {
+           if ((f = open(fileName, O_WRONLY | O_CREAT | O_APPEND, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH)) >= 0) {
               if (delta) {
                  esyslog(LOG_ERR, "ERROR: padding index file with %d '0' bytes", delta);
                  while (delta--)
@@ -315,236 +322,6 @@ int cIndexFile::Get(uchar FileNumber, int FileOffset)
   return -1;
 }
 
-// --- cRingBuffer_ -----------------------------------------------------------
-
-/* cRingBuffer reads data from an input file, stores it in a buffer and writes
-   it to an output file upon request. The Read() and Write() functions should
-   be called only when the associated file is ready to provide or receive data
-   (use the 'select()' function to determine that), and the files should be
-   opened in non-blocking mode.
-   The '...Limit' parameters define safety limits. If they are exceeded a log entry
-   will be made.
-*/
-
-class cRingBuffer_ {
-private:
-  uchar *buffer;
-  int size, head, tail, freeLimit, availLimit;
-  int countLimit, countOverflow;
-  int minFree;
-  bool eof;
-  int *inFile, *outFile;
-protected:
-  int Free(void) { return ((tail >= head) ? size + head - tail : head - tail) - 1; }
-public:
-  int Available(void) { return (tail >= head) ? tail - head : size - head + tail; }
-protected:
-  int Readable(void) { return (tail >= head) ? size - tail - (head ? 0 : 1) : head - tail - 1; } // keep a 1 byte gap!
-  int Writeable(void) { return (tail >= head) ? tail - head : size - head; }
-  int Byte(int Offset);
-  bool Set(int Offset, int Length, int Value);
-protected:
-  int GetStartCode(int Offset) { return (Byte(Offset) == 0x00 && Byte(Offset + 1) == 0x00 && Byte(Offset + 2) == 0x01) ? Byte(Offset + 3) : -1; }
-  int GetPictureType(int Offset) { return (Byte(Offset + 5) >> 3) & 0x07; }
-  int FindStartCode(uchar Code, int Offset = 0);
-  int GetPacketLength(int Offset = 0);
-public:
-  cRingBuffer_(int *InFile, int *OutFile, int Size, int FreeLimit = 0, int AvailLimit = 0);
-  virtual ~cRingBuffer_();
-  virtual int Read(int Max = -1);
-  virtual int Write(int Max = -1);
-  bool EndOfFile(void) { return eof; }
-  bool Empty(void) { return Available() == 0; }
-  void Clear(void) { head = tail = 0; }
-  void Skip(int n);
-  };
-
-cRingBuffer_::cRingBuffer_(int *InFile, int *OutFile, int Size, int FreeLimit, int AvailLimit)
-{
-  inFile = InFile;
-  outFile = OutFile;
-  size = Size;
-  Clear();
-  freeLimit = FreeLimit;
-  availLimit = AvailLimit;
-  eof = false;
-  countLimit = countOverflow = 0;
-  minFree = size - 1;
-  buffer = new uchar[size];
-  if (!buffer)
-     esyslog(LOG_ERR, "ERROR: can't allocate ring buffer (size=%d)", size);
-}
-
-cRingBuffer_::~cRingBuffer_()
-{
-  dsyslog(LOG_INFO, "buffer stats: %d free, %d overflows, limit exceeded %d times", minFree, countOverflow, countLimit);
-  delete buffer;
-}
-
-int cRingBuffer_::Byte(int Offset)
-{
-  if (buffer && Offset < Available()) {
-     Offset += head;
-     if (Offset >= size)
-        Offset -= size;
-     return buffer[Offset];
-     }
-  return -1;
-}
-
-bool cRingBuffer_::Set(int Offset, int Length, int Value)
-{
-  if (buffer && Offset + Length <= Available() ) {
-     Offset += head;
-     while (Length--) {
-           if (Offset >= size)
-              Offset -= size;
-           buffer[Offset] = Value;
-           Offset++;
-           }
-     return true;
-     }
-  return false;
-}
-
-void cRingBuffer_::Skip(int n)
-{
-  if (n > 0) {
-     if (head < tail) {
-        head += n;
-        if (head > tail)
-           head = tail;
-        }
-     else if (head > tail) {
-        head += n;
-        if (head >= size)
-           head -= size;
-        if (head > tail)
-           head = tail;
-        }
-     }
-}
-
-int cRingBuffer_::Read(int Max)
-{
-  if (buffer) {
-     eof = false;
-     int free = Free();
-     if (free < minFree)
-        minFree = free;
-     if (freeLimit) {
-        if (free == 0) {
-           esyslog(LOG_ERR, "ERROR: buffer overflow (size=%d)", size);
-           countOverflow++;
-           }
-        else if (free < freeLimit) {
-           dsyslog(LOG_INFO, "free buffer space dipped into limit (%d < %d)", free, freeLimit);
-           countLimit++;
-           }
-        }
-     if (free == 0)
-        return 0; // the buffer is full
-     int readin = 0;
-     for (int i = 0; i < 2; i++) {
-         // If we read in exactly as many bytes as are immediately
-         // "readable" we have to do it again, because that means we
-         // were at the very end of the physical buffer and possibly only
-         // read in very few bytes.
-         int immediate = Readable();
-         int n = immediate;
-         if (Max > 0 && n > Max)
-            n = Max;
-         if (n > 0) {
-            int r = read(*inFile, buffer + tail, n);
-            if (r > 0) {
-               readin += r;
-               tail += r;
-               if (tail > size)
-                  esyslog(LOG_ERR, "ERROR: ooops: buffer tail (%d) exceeds size (%d)", tail, size);
-               if (tail >= size)
-                  tail = 0;
-               }
-            else if (r < 0) {
-               if (errno != EAGAIN) {
-                  LOG_ERROR;
-                  return -1;
-                  }
-               }
-            else
-               eof = true;
-            if (r == immediate && Max != immediate && tail == 0)
-               Max -= immediate;
-            else
-               break;
-            }
-         }
-     return readin;
-     }
-  return -1;
-}
-
-int cRingBuffer_::Write(int Max)
-{
-  if (buffer) {
-     int avail = Available();
-     if (availLimit) {
-        //XXX stats???
-        if (avail == 0)
-           //XXX esyslog(LOG_ERR, "ERROR: buffer empty!");
-        {//XXX
-           esyslog(LOG_ERR, "ERROR: buffer empty! %d", Max);
-           return Max > 0 ? Max : 0;
-           }//XXX
-        else if (avail < availLimit)
-;//XXX           dsyslog(LOG_INFO, "available buffer data dipped into limit (%d < %d)", avail, availLimit);
-        }
-     if (avail == 0)
-        return 0; // the buffer is empty
-     int n = Writeable();
-     if (Max > 0 && n > Max)
-        n = Max;
-     int w = write(*outFile, buffer + head, n);
-     if (w > 0) {
-        head += w;
-        if (head > size)
-           esyslog(LOG_ERR, "ERROR: ooops: buffer head (%d) exceeds size (%d)", head, size);
-        if (head >= size)
-           head = 0;
-        }
-     else if (w < 0) {
-        if (errno != EAGAIN)
-           LOG_ERROR;
-        else
-           w = 0;
-        }
-     return w;
-     }
-  return -1;
-}
-
-int cRingBuffer_::FindStartCode(uchar Code, int Offset)
-{
-  // Searches for a start code (beginning at Offset) and returns the number
-  // of bytes from Offset to the start code.
-
-  int n = Available() - Offset;
-
-  for (int i = 0; i < n; i++) {
-      int c = GetStartCode(Offset + i);
-      if (c == Code) 
-         return i;
-      if (i > 0 && c == SC_PHEAD)
-         break; // found another block start while looking for a different code
-      }
-  return -1;
-}
-
-int cRingBuffer_::GetPacketLength(int Offset)
-{
-  // Returns the entire length of the packet starting at offset.
-  return (Byte(Offset + 4) << 8) + Byte(Offset + 5) + 6;
-}
-
 // --- cFileName -------------------------------------------------------------
 
 class cFileName {
@@ -553,8 +330,9 @@ private:
   int fileNumber;
   char *fileName, *pFileNumber;
   bool record;
+  bool blocking;
 public:
-  cFileName(const char *FileName, bool Record);
+  cFileName(const char *FileName, bool Record, bool Blocking = false);
   ~cFileName();
   const char *Name(void) { return fileName; }
   int Number(void) { return fileNumber; }
@@ -564,11 +342,12 @@ public:
   int NextFile(void);
   };
 
-cFileName::cFileName(const char *FileName, bool Record)
+cFileName::cFileName(const char *FileName, bool Record, bool Blocking)
 {
   file = -1;
   fileNumber = 0;
   record = Record;
+  blocking = Blocking;
   // Prepare the file name:
   fileName = new char[strlen(FileName) + RECORDFILESUFFIXLEN];
   if (!fileName) {
@@ -589,16 +368,17 @@ cFileName::~cFileName()
 int cFileName::Open(void)
 {
   if (file < 0) {
+     int BlockingFlag = blocking ? 0 : O_NONBLOCK;
      if (record) {
         dsyslog(LOG_INFO, "recording to '%s'", fileName);
-        file = OpenVideoFile(fileName, O_RDWR | O_CREAT | O_NONBLOCK);
+        file = OpenVideoFile(fileName, O_RDWR | O_CREAT | BlockingFlag);
         if (file < 0)
            LOG_ERROR_STR(fileName);
         }
      else {
         if (access(fileName, R_OK) == 0) {
            dsyslog(LOG_INFO, "playing '%s'", fileName);
-           file = open(fileName, O_RDONLY | O_NONBLOCK);
+           file = open(fileName, O_RDONLY | BlockingFlag);
            if (file < 0)
               LOG_ERROR_STR(fileName);
            }
@@ -655,6 +435,7 @@ int cFileName::NextFile(void)
 
 class cRecordBuffer : public cRingBuffer {
 private:
+  cDvbApi *dvbApi;
   cFileName fileName;
   cIndexFile *index;
   cRemux remux;
@@ -670,18 +451,19 @@ protected:
   virtual void Input(void);
   virtual void Output(void);
 public:
-  cRecordBuffer(int *InFile, const char *FileName);
+  cRecordBuffer(cDvbApi *DvbApi, const char *FileName, dvb_pid_t VPid, dvb_pid_t APid);
   virtual ~cRecordBuffer();
   };
 
-cRecordBuffer::cRecordBuffer(int *InFile, const char *FileName)
-:cRingBuffer(VIDEOBUFSIZE)
+cRecordBuffer::cRecordBuffer(cDvbApi *DvbApi, const char *FileName, dvb_pid_t VPid, dvb_pid_t APid)
+:cRingBuffer(VIDEOBUFSIZE, true)
 ,fileName(FileName, true)
+,remux(VPid, APid, true)
 {
+  dvbApi = DvbApi;
   index = NULL;
   pictureType = NO_PICTURE;
   fileSize = 0;
-  videoDev = *InFile;
   recordFile = fileName.Open();
   recording = false;
   lastDiskSpaceCheck = time(NULL);
@@ -692,12 +474,14 @@ cRecordBuffer::cRecordBuffer(int *InFile, const char *FileName)
   if (!index)
      esyslog(LOG_ERR, "ERROR: can't allocate index");
      // let's continue without index, so we'll at least have the recording
+  videoDev = dvbApi->SetModeRecord();
   Start();
 }
 
 cRecordBuffer::~cRecordBuffer()
 {
   Stop();
+  dvbApi->SetModeNormal(true);
   delete index;
 }
 
@@ -746,18 +530,18 @@ void cRecordBuffer::Input(void)
       else if (r < 0) {
          if (errno != EAGAIN) {
             LOG_ERROR;
-            break;
+            if (errno != EBUFFEROVERFLOW)
+               break;
             }
          }
       else if (time(NULL) - t > 5) {
          esyslog(LOG_ERR, "ERROR: video data stream broken");
-         t = time(NULL);
+         cThread::EmergencyExit(true);
          }
       cFile::FileReady(videoDev, 100);
       if (!recording)
          break;
       }
-  SetPlayMode(videoDev, VID_PLAY_RESET);
 
   dsyslog(LOG_INFO, "input thread ended (pid=%d)", getpid());
 }
@@ -766,15 +550,14 @@ void cRecordBuffer::Output(void)
 {
   dsyslog(LOG_INFO, "output thread started (pid=%d)", getpid());
 
-  uchar b[MINVIDEODATA * 2];
+  uchar b[MINVIDEODATA];
   int r = 0;
   for (;;) {
-      usleep(1); // this keeps the CPU load low
-      r += Get(b + r, sizeof(b) - r);
-      if (r > 0) {
-         //XXX buffer full???
+      int g = Get(b + r, sizeof(b) - r);
+      if (g > 0) {
+         r += g;
          int Count = r, Result;
-         const uchar *p = remux.Process(b, Count, Result, pictureType);
+         const uchar *p = remux.Process(b, Count, Result, &pictureType);
          if (p) {
             if (!Busy() && pictureType == I_FRAME) // finish the recording before the next 'I' frame
                break;
@@ -803,6 +586,8 @@ void cRecordBuffer::Output(void)
          if (!recording)
             break;
          }
+      else
+         usleep(1); // this keeps the CPU load low
       }
   recording = false;
 
@@ -811,158 +596,287 @@ void cRecordBuffer::Output(void)
 
 // --- cReplayBuffer ---------------------------------------------------------
 
-class cReplayBuffer : public cRingBuffer_, public cThread {
+class cReplayBuffer : public cRingBuffer {
 private:
-  enum eReplayCmd { rcNone, rcStill, rcPause, rcPlay, rcForward, rcBackward };
-  enum eReplayMode { rmStill, rmPlay, rmFastForward, rmFastRewind, rmSlowRewind };
+  cDvbApi *dvbApi;
   cIndexFile *index;
   cFileName fileName;
   int fileOffset;
-  int videoDev;
+  int videoDev, audioDev;
   int replayFile;
-  eReplayMode mode;
+  bool eof;
+  int blockInput, blockOutput;
+  bool paused, fastForward, fastRewind;
   int lastIndex, stillIndex;
-  int brakeCounter;
-  eReplayCmd command;
-  bool active;
   bool NextFile(uchar FileNumber = 0, int FileOffset = -1);
+  void Clear(bool Block = false);
   void Close(void);
-  void SetCmd(eReplayCmd Cmd) { LOCK_THREAD; command = Cmd; }
-  void SetTemporalReference(void);
-protected:
-  virtual void Action(void);
-public:
-  cReplayBuffer(int *OutFile, const char *FileName);
-  virtual ~cReplayBuffer();
-  virtual int Read(int Max = -1);
-  virtual int Write(int Max = -1);
-  void SetMode(eReplayMode Mode);
+  int ReadFrame(uchar *b, int Length, int Max);
+  void StripAudioPackets(uchar *b, int Length);
+  void DisplayFrame(uchar *b, int Length);
   int Resume(void);
   bool Save(void);
-  void Pause(void)    { SetCmd(rcPause); }
-  void Play(void)     { SetCmd(rcPlay); }
-  void Forward(void)  { SetCmd(rcForward); }
-  void Backward(void) { SetCmd(rcBackward); }
+protected:
+  virtual void Input(void);
+  virtual void Output(void);
+public:
+  cReplayBuffer(cDvbApi *DvbApi, int VideoDev, int AudioDev, const char *FileName);
+  virtual ~cReplayBuffer();
+  void Pause(void);
+  void Play(void);
+  void Forward(void);
+  void Backward(void);
   int SkipFrames(int Frames);
   void SkipSeconds(int Seconds);
   void Goto(int Position, bool Still = false);
   void GetIndex(int &Current, int &Total, bool SnapToIFrame = false);
   };
 
-cReplayBuffer::cReplayBuffer(int *OutFile, const char *FileName)
-:cRingBuffer_(&replayFile, OutFile, VIDEOBUFSIZE, 0, VIDEOBUFSIZE / 10)
+cReplayBuffer::cReplayBuffer(cDvbApi *DvbApi, int VideoDev, int AudioDev, const char *FileName)
+:cRingBuffer(VIDEOBUFSIZE)
 ,fileName(FileName, false)
 {
+  dvbApi = DvbApi;
   index = NULL;
   fileOffset = 0;
-  videoDev = *OutFile;
+  videoDev = VideoDev;
+  audioDev = AudioDev;
   replayFile = fileName.Open();
-  mode = rmPlay;
-  brakeCounter = 0;
-  command = rcNone;
+  eof = false;
+  blockInput = blockOutput = false;
+  paused = fastForward = fastRewind = false;
   lastIndex = stillIndex = -1;
-  active = false;
   if (!fileName.Name())
      return;
   // Create the index file:
   index = new cIndexFile(FileName, false);
-  if (!index)
+  if (!index) {
      esyslog(LOG_ERR, "ERROR: can't allocate index");
-     // let's continue without index, so we'll at least have the recording
+     }
+  else if (!index->Ok()) {
+     delete index;
+     index = NULL;
+     }
+  dvbApi->SetModeReplay();
   Start();
 }
 
 cReplayBuffer::~cReplayBuffer()
 {
-  active = false;
-  Cancel(3);
+  Stop();
+  Save();
   Close();
-  SetPlayMode(videoDev, VID_PLAY_CLEAR_BUFFER);
-  SetPlayMode(videoDev, VID_PLAY_RESET);
+  dvbApi->SetModeNormal(false);
   delete index;
 }
 
-void cReplayBuffer::Action(void)
+void cReplayBuffer::Input(void)
 {
-  dsyslog(LOG_INFO, "replay thread started (pid=%d)", getpid());
-
-  bool Paused = false;
-  bool FastForward = false;
-  bool FastRewind = false;
+  dsyslog(LOG_INFO, "input thread started (pid=%d)", getpid());
 
   int ResumeIndex = Resume();
   if (ResumeIndex >= 0)
      isyslog(LOG_INFO, "resuming replay at index %d (%s)", ResumeIndex, IndexToHMSF(ResumeIndex, true));
-  active = true;
-  while (active) {
-        usleep(1); // this keeps the CPU load low
 
-        LOCK_THREAD;
-
-        if (command != rcNone) {
-           switch (command) {
-             case rcStill:    SetPlayMode(videoDev, VID_PLAY_CLEAR_BUFFER);
-                              SetPlayMode(videoDev, VID_PLAY_NORMAL);
-                              SetMode(rmStill);
-                              Paused = FastForward = FastRewind = false;
-                              break;
-             case rcPause:    SetPlayMode(videoDev, Paused ? VID_PLAY_NORMAL : VID_PLAY_PAUSE);
-                              Paused = !Paused;
-                              if (FastForward || FastRewind) {
-                                 SetPlayMode(videoDev, VID_PLAY_CLEAR_BUFFER);
-                                 Clear();
-                                 }
-                              FastForward = FastRewind = false;
-                              SetMode(rmPlay);
-                              if (!Paused)
-                                 stillIndex = -1;
-                              break;
-             case rcPlay:     if (FastForward || FastRewind || Paused) {
-                                 SetPlayMode(videoDev, VID_PLAY_CLEAR_BUFFER);
-                                 SetPlayMode(videoDev, VID_PLAY_NORMAL);
-                                 FastForward = FastRewind = Paused = false;
-                                 SetMode(rmPlay);
-                                 }
-                              stillIndex = -1;
-                              break;
-             case rcForward:  SetPlayMode(videoDev, VID_PLAY_CLEAR_BUFFER);
-                              Clear();
-                              FastForward = !FastForward;
-                              FastRewind = false;
-                              if (Paused) {
-                                 SetMode(rmPlay);
-                                 SetPlayMode(videoDev, FastForward ? VID_PLAY_SLOW_MOTION : VID_PLAY_PAUSE);
-                                 }
-                              else {
-                                 SetPlayMode(videoDev, VID_PLAY_NORMAL);
-                                 SetMode(FastForward ? rmFastForward : rmPlay);
-                                 }
-                              stillIndex = -1;
-                              break;
-             case rcBackward: SetPlayMode(videoDev, VID_PLAY_CLEAR_BUFFER);
-                              Clear();
-                              FastRewind = !FastRewind;
-                              FastForward = false;
-                              if (Paused) {
-                                 SetMode(FastRewind ? rmSlowRewind : rmPlay);
-                                 SetPlayMode(videoDev, FastRewind ? VID_PLAY_NORMAL : VID_PLAY_PAUSE);
-                                 }
-                              else {
-                                 SetPlayMode(videoDev, VID_PLAY_NORMAL);
-                                 SetMode(FastRewind ? rmFastRewind : rmPlay);
-                                 }
-                              stillIndex = -1;
-                              break;
-             default:         break;
-             }
-           command = rcNone;
+  int lastIndex = -1;
+  int brakeCounter = 0;
+  uchar b[MAXFRAMESIZE];
+  while (Busy() && (blockInput || NextFile())) {
+        if (!blockInput && stillIndex < 0) {
+           int r = 0;
+           if (fastForward && !paused || fastRewind) {
+              int Index = (lastIndex >= 0) ? lastIndex : index->Get(fileName.Number(), fileOffset);
+              uchar FileNumber;
+              int FileOffset, Length;
+              if (!paused || (brakeCounter++ % 24) == 0) // show every I_FRAME 24 times in rmSlowRewind mode to achieve roughly the same speed as in slow forward mode
+                 Index = index->GetNextIFrame(Index, fastForward, &FileNumber, &FileOffset, &Length);
+              if (Index >= 0) {
+                 if (!NextFile(FileNumber, FileOffset))
+                    break;
+                 }
+              else {
+                 paused = fastForward = fastRewind = false;
+                 Play();
+                 continue;
+                 }
+              lastIndex = Index;
+              r = ReadFrame(b, Length, sizeof(b));
+              StripAudioPackets(b, Length);
+              }
+           else {
+              lastIndex = -1;
+              r = read(replayFile, b, sizeof(b));
+              }
+           if (r > 0) {
+              uchar *p = b;
+              while (r > 0 && Busy() && !blockInput) {
+                    int w = Put(p, r);
+                    p += w;
+                    r -= w;
+                    usleep(1); // this keeps the CPU load low
+                    }
+              }
+           else if (r ==0)
+              eof = true;
+           else if (r < 0 && errno != EAGAIN) {
+              LOG_ERROR;
+              break;
+              }
            }
-        if (Read() < 0 || Write() < 0)
-           break;
+        if (blockInput > 1)
+           blockInput = 1;
         }
-  Save();
 
-  dsyslog(LOG_INFO, "end replaying thread");
+  dsyslog(LOG_INFO, "input thread ended (pid=%d)", getpid());
+}
+
+void cReplayBuffer::Output(void)
+{
+  dsyslog(LOG_INFO, "output thread started (pid=%d)", getpid());
+
+  uchar b[MINVIDEODATA];
+  while (Busy()) {
+        int r = blockOutput ? 0 : Get(b, sizeof(b));
+        if (r > 0) {
+           uchar *p = b;
+           while (r > 0 && Busy() && !blockOutput) {
+                 cFile::FileReadyForWriting(videoDev, 100);
+                 int w = write(videoDev, p, r);
+                 if (w < 0) {
+                    LOG_ERROR;
+                    Stop();
+                    return;
+                    }
+                 p += w;
+                 r -= w;
+                 fileOffset += w;
+                 }
+           }
+        if (blockOutput > 1)
+           blockOutput = 1;
+        }
+
+  dsyslog(LOG_INFO, "output thread ended (pid=%d)", getpid());
+}
+
+int cReplayBuffer::ReadFrame(uchar *b, int Length, int Max)
+{
+  if (Length > Max) {
+     esyslog(LOG_ERR, "ERROR: frame larger than buffer (%d > %d)", Length, Max);
+     Length = Max;
+     }
+  int r = read(replayFile, b, Length);
+  if (r >= 0) {
+     if (r != Length)
+        esyslog(LOG_ERR, "ERROR: got %d byte while reading %d", r, Length);
+     return r;
+     }
+  LOG_ERROR;
+  return -1;
+}
+
+void cReplayBuffer::StripAudioPackets(uchar *b, int Length)
+{
+  for (int i = 0; i < Length - 6; i++) {
+      if (b[i] == 0x00 && b[i + 1] == 0x00 && b[i + 2] == 0x01) {
+         switch (b[i + 3]) {
+           case 0xC0 ... 0xDF: // audio
+                {
+                  int n = b[i + 4] * 256 + b[i + 5];
+                  for (int j = i; j < Length && n--; j++)
+                      b[j] = 0x00;
+                }
+                break;
+           case 0xE0 ... 0xEF: // video
+                i += b[i + 4] * 256 + b[i + 5];
+                break;
+           }
+         }
+      }
+}
+
+void cReplayBuffer::DisplayFrame(uchar *b, int Length)
+{
+  StripAudioPackets(b, Length);
+  videoDisplayStillPicture sp = { (char *)b, Length };
+  CHECK(ioctl(audioDev, AUDIO_SET_AV_SYNC, false));
+  CHECK(ioctl(audioDev, AUDIO_SET_MUTE, true));
+  CHECK(ioctl(videoDev, VIDEO_STILLPICTURE, &sp));
+}
+
+void cReplayBuffer::Clear(bool Block)
+{
+  if (!(blockInput || blockOutput)) {
+     blockInput = blockOutput = 2;
+     time_t t0 = time(NULL);
+     while ((blockInput > 1 || blockOutput > 1) && time(NULL) - t0 < 2)
+           usleep(1);
+     Lock();
+     cRingBuffer::Clear();
+     CHECK(ioctl(videoDev, VIDEO_FREEZE));
+     CHECK(ioctl(videoDev, VIDEO_CLEAR_BUFFER));
+     CHECK(ioctl(audioDev, AUDIO_CLEAR_BUFFER));
+     }
+  if (!Block) {
+     blockInput = blockOutput = 0;
+     Unlock();
+     }
+}
+
+void cReplayBuffer::Pause(void)
+{
+  paused = !paused;
+  CHECK(ioctl(videoDev, paused ? VIDEO_FREEZE : VIDEO_CONTINUE));
+  if (fastForward || fastRewind) {
+     if (paused)
+        Clear();
+     fastForward = fastRewind = false;
+     }
+  CHECK(ioctl(audioDev, AUDIO_SET_MUTE, paused));
+  stillIndex = -1;
+}
+
+void cReplayBuffer::Play(void)
+{
+  if (fastForward || fastRewind || paused) {
+     if (!paused)
+        Clear();
+     stillIndex = -1;
+     CHECK(ioctl(videoDev, paused ? VIDEO_CONTINUE : VIDEO_PLAY));
+     CHECK(ioctl(audioDev, AUDIO_SET_AV_SYNC, true));
+     CHECK(ioctl(audioDev, AUDIO_SET_MUTE, false));
+     fastForward = fastRewind = paused = false;
+     }
+}
+
+void cReplayBuffer::Forward(void)
+{
+  if (index || paused) {
+     if (!paused)
+        Clear(true);
+     stillIndex = -1;
+     fastForward = !fastForward;
+     fastRewind = false;
+     if (paused)
+        CHECK(ioctl(videoDev, fastForward ? VIDEO_SLOWMOTION : VIDEO_FREEZE, 2));
+     CHECK(ioctl(audioDev, AUDIO_SET_AV_SYNC, !fastForward));
+     CHECK(ioctl(audioDev, AUDIO_SET_MUTE, fastForward || paused));
+     if (!paused)
+        Clear(false);
+     }
+}
+
+void cReplayBuffer::Backward(void)
+{
+  if (index) {
+     Clear(true);
+     stillIndex = -1;
+     fastRewind = !fastRewind;
+     fastForward = false;
+     CHECK(ioctl(audioDev, AUDIO_SET_AV_SYNC, !fastRewind));
+     CHECK(ioctl(audioDev, AUDIO_SET_MUTE, fastRewind || paused));
+     Clear(false);
+     }
 }
 
 void cReplayBuffer::Close(void)
@@ -972,14 +886,6 @@ void cReplayBuffer::Close(void)
      replayFile = -1;
      fileOffset = 0;
      }
-}
-
-void cReplayBuffer::SetMode(eReplayMode Mode)
-{
-  mode = Mode;
-  brakeCounter = 0;
-  if (mode != rmPlay)
-     Clear();
 }
 
 int cReplayBuffer::Resume(void)
@@ -1016,9 +922,6 @@ bool cReplayBuffer::Save(void)
 int cReplayBuffer::SkipFrames(int Frames)
 {
   if (index && Frames) {
-
-     LOCK_THREAD;
-
      int Current, Total;
      GetIndex(Current, Total, true);
      int OldCurrent = Current;
@@ -1030,16 +933,8 @@ int cReplayBuffer::SkipFrames(int Frames)
 
 void cReplayBuffer::SkipSeconds(int Seconds)
 {
-  LOCK_THREAD;
-
-  SetPlayMode(videoDev, VID_PLAY_PAUSE);
-  SetPlayMode(videoDev, VID_PLAY_CLEAR_BUFFER);
-  SetPlayMode(videoDev, VID_PLAY_NORMAL);
-  command = rcPlay;
-  SetMode(rmPlay);
-  Clear();
-
   if (index && Seconds) {
+     Clear(true);
      int Index = index->Get(fileName.Number(), fileOffset);
      if (Index >= 0) {
         if (Seconds < 0) {
@@ -1055,31 +950,38 @@ void cReplayBuffer::SkipSeconds(int Seconds)
         if (index->GetNextIFrame(Index, false, &FileNumber, &FileOffset) >= 0)
            NextFile(FileNumber, FileOffset);
         }
+     Clear(false);
+     Play();
      }
 }
 
 void cReplayBuffer::Goto(int Index, bool Still)
 {
-  LOCK_THREAD;
-
-  if (Still)
-     command = rcStill;
-  if (++Index <= 0)
-     Index = 1; // not '0', to allow GetNextIFrame() below to work!
-  uchar FileNumber;
-  int FileOffset;
-  if ((stillIndex = index->GetNextIFrame(Index, false, &FileNumber, &FileOffset)) >= 0)
-     NextFile(FileNumber, FileOffset);
-  SetPlayMode(videoDev, VID_PLAY_CLEAR_BUFFER);
-  Clear();
+  if (index) {
+     Clear(true);
+     if (++Index <= 0)
+        Index = 1; // not '0', to allow GetNextIFrame() below to work!
+     uchar FileNumber;
+     int FileOffset, Length;
+     Index = index->GetNextIFrame(Index, false, &FileNumber, &FileOffset, &Length);
+     if (Index >= 0 && NextFile(FileNumber, FileOffset) && Still) {
+        stillIndex = Index;
+        uchar b[MAXFRAMESIZE];
+        int r = ReadFrame(b, Length, sizeof(b));
+        if (r > 0)
+           DisplayFrame(b, r);
+        fileOffset += Length;
+        paused = true;
+        }
+     else
+        stillIndex = -1;
+     Clear(false);
+     }
 }
 
 void cReplayBuffer::GetIndex(int &Current, int &Total, bool SnapToIFrame)
 {
   if (index) {
-
-     LOCK_THREAD;
-
      if (stillIndex >= 0)
         Current = stillIndex;
      else {
@@ -1099,178 +1001,122 @@ void cReplayBuffer::GetIndex(int &Current, int &Total, bool SnapToIFrame)
 bool cReplayBuffer::NextFile(uchar FileNumber, int FileOffset)
 {
   if (FileNumber > 0) {
-     Clear();
      fileOffset = FileOffset;
      replayFile = fileName.SetOffset(FileNumber, FileOffset);
      }
-  else if (replayFile >= 0 && EndOfFile()) {
+  else if (replayFile >= 0 && eof) {
      Close();
      replayFile = fileName.NextFile();
      }
+  eof = false;
   return replayFile >= 0;
-}
-
-void cReplayBuffer::SetTemporalReference(void)
-{
-  for (int i = 0; i < Available(); i++) {
-      if (Byte(i) == 0 && Byte(i + 1) == 0 && Byte(i + 2) == 1) {
-         switch (Byte(i + 3)) {
-           case SC_PICTURE: {
-                              unsigned short m = (Byte(i + 4) << 8) | Byte(i + 5);
-                              m &= 0x003F;
-                              Set(i + 4, 1, m >> 8);
-                              Set(i + 5, 1, m & 0xFF);
-                            }
-                            return;
-           }
-         }
-      }
-}
-
-int cReplayBuffer::Read(int Max = -1)
-{
-  if (mode != rmPlay) {
-     if (index) {
-        if (Available())
-           return 0; // write out the entire block
-        if (mode == rmStill) {
-           uchar FileNumber;
-           int FileOffset, Length;
-           if (index->GetNextIFrame(stillIndex + 1, false, &FileNumber, &FileOffset, &Length) >= 0) {
-              if (!NextFile(FileNumber, FileOffset))
-                 return -1;
-              Max = Length;
-              }
-           command = rcPause;
-           }
-        else {
-           int Index = (lastIndex >= 0) ? lastIndex : index->Get(fileName.Number(), fileOffset);
-           if (Index >= 0) {
-              if (mode == rmSlowRewind && (brakeCounter++ % 24) != 0) {
-                 // show every I_FRAME 24 times in rmSlowRewind mode to achieve roughly the same speed as in slow forward mode
-                 Index = index->GetNextIFrame(Index, true); // jump ahead one frame
-                 }
-              uchar FileNumber;
-              int FileOffset, Length;
-              Index = index->GetNextIFrame(Index, mode == rmFastForward, &FileNumber, &FileOffset, &Length);
-              if (Index >= 0) {
-                 if (!NextFile(FileNumber, FileOffset))
-                    return -1;
-                 Max = Length;
-                 }
-              lastIndex = Index;
-              }
-           if (Index < 0) {
-              // This results in normal replay after a fast rewind.
-              // After a fast forward it will stop.
-              // TODO Could we cause it to pause at the last frame?
-              SetMode(rmPlay);
-              return 0;
-              }
-           }
-        }
-     }
-  else
-     lastIndex = -1;
-  //XXX timeout as in recording???
-  if (NextFile()) {
-     int readin = 0;
-     do {
-        // If Max is > 0 here we need to make sure we read in the entire block!
-        int r = cRingBuffer_::Read(Max);
-        if (r >= 0)
-           readin += r;
-        else
-           return -1;
-        } while (readin < Max && Free() > 0);
-     if (mode != rmPlay) {
-        // delete the audio data in modes other than rmPlay:
-        int AudioOffset, StartOffset = 0;
-        while ((AudioOffset = FindStartCode(SC_AUDIO, StartOffset)) >= 0) {
-              if (!Set(StartOffset + AudioOffset, GetPacketLength(StartOffset + AudioOffset), 0))
-                 break; // to be able to replay old AV_PES recordings!
-              StartOffset += AudioOffset;
-              }
-        SetTemporalReference();
-        }
-     return readin;
-     }
-  if (Available() > 0)
-     return 0;
-  return -1;
-}
-
-int cReplayBuffer::Write(int Max)
-{
-  int Written = 0;
-  if (Max) {
-     int w;
-     do {
-        w = cRingBuffer_::Write(Max);
-        if (w >= 0) {
-           fileOffset += w;
-           Written += w;
-           if (Max < 0)
-              break;
-           Max -= w;
-           }
-        else
-           return w;
-        } while (Max > 0); // we MUST write this entire frame block
-     }
-  return Written;
 }
 
 // --- cTransferBuffer -------------------------------------------------------
 
-class cTransferBuffer : public cThread {
+class cTransferBuffer : public cRingBuffer {
 private:
-  bool active;
+  cDvbApi *dvbApi;
   int fromDevice, toDevice;
+  cRemux remux;
 protected:
-  virtual void Action(void);
+  virtual void Input(void);
+  virtual void Output(void);
 public:
-  cTransferBuffer(int FromDevice, int ToDevice);
+  cTransferBuffer(cDvbApi *DvbApi, int ToDevice, dvb_pid_t VPid, dvb_pid_t APid);
   virtual ~cTransferBuffer();
   };
 
-cTransferBuffer::cTransferBuffer(int FromDevice, int ToDevice)
+cTransferBuffer::cTransferBuffer(cDvbApi *DvbApi, int ToDevice, dvb_pid_t VPid, dvb_pid_t APid)
+:cRingBuffer(VIDEOBUFSIZE, true)
+,remux(VPid, APid)
 {
-  fromDevice = FromDevice;
+  dvbApi = DvbApi;
+  fromDevice = dvbApi->SetModeRecord();
   toDevice = ToDevice;
-  active = false;
   Start();
 }
 
 cTransferBuffer::~cTransferBuffer()
 {
-  active = false;
-  Cancel(3);
-  SetPlayMode(fromDevice, VID_PLAY_RESET);
-  SetPlayMode(toDevice, VID_PLAY_RESET);
+  Stop();
+  dvbApi->SetModeNormal(true);
 }
 
-void cTransferBuffer::Action(void)
+void cTransferBuffer::Input(void)
 {
-  dsyslog(LOG_INFO, "data transfer thread started (pid=%d)", getpid());
+  dsyslog(LOG_INFO, "input thread started (pid=%d)", getpid());
 
-  cRingBuffer_ Buffer(&fromDevice, &toDevice, VIDEOBUFSIZE, 0, 0);
-  active = true;
-  while (active && Buffer.Available() < 100000) { // need to give the read buffer a head start
-        Buffer.Read(); // initializes fromDevice for reading
-        usleep(1); // this keeps the CPU load low
+  uchar b[MINVIDEODATA];
+  int n = 0;
+  while (Busy()) {
+        cFile::FileReady(fromDevice, 100);
+        int r = read(fromDevice, b + n, sizeof(b) - n);
+        if (r > 0) {
+           n += r;
+           int Count = n, Result;
+           const uchar *p = remux.Process(b, Count, Result);
+           if (p) {
+              while (Result > 0 && Busy()) {
+                    int w = Put(p, Result);
+                    p += w;
+                    Result -= w;
+                    }
+              }
+           if (Count > 0) {
+              n -= Count;
+              memmove(b, b + Count, n);
+              }
+           }
+        else if (r < 0) {
+           if (errno != EAGAIN) {
+              LOG_ERROR;
+              if (errno != EBUFFEROVERFLOW)
+                 break;
+              }
+           }
         }
-  while (active) {
-        if (Buffer.Read() < 0 || Buffer.Write() < 0)
-           break;
-        usleep(1); // this keeps the CPU load low
+
+  dsyslog(LOG_INFO, "input thread ended (pid=%d)", getpid());
+}
+
+void cTransferBuffer::Output(void)
+{
+  dsyslog(LOG_INFO, "output thread started (pid=%d)", getpid());
+
+  bool GotBufferReserve = false;
+  uchar b[MINVIDEODATA];
+  while (Busy()) {
+        if (!GotBufferReserve) {
+           if (Available() < MAXFRAMESIZE)
+              usleep(100000); // allow the buffer to collect some reserve
+           else
+              GotBufferReserve = true;
+           }
+        int r = Get(b, sizeof(b));
+        if (r > 0) {
+           uchar *p = b;
+           while (r > 0 && Busy()) {
+                 int w = write(toDevice, p, r);
+                 if (w < 0) {
+                    LOG_ERROR;
+                    Stop();
+                    return;
+                    }
+                 p += w;
+                 r -= w;
+                 }
+           }
+        else
+           usleep(1); // this keeps the CPU load low
         }
-  dsyslog(LOG_INFO, "data transfer thread stopped (pid=%d)", getpid());
+
+  dsyslog(LOG_INFO, "output thread ended (pid=%d)", getpid());
 }
 
 // --- cCuttingBuffer --------------------------------------------------------
 
-class cCuttingBuffer : public cRingBuffer_, public cThread {
+class cCuttingBuffer : public cThread {
 private:
   bool active;
   int fromFile, toFile;
@@ -1285,15 +1131,14 @@ public:
   };
 
 cCuttingBuffer::cCuttingBuffer(const char *FromFileName, const char *ToFileName)
-:cRingBuffer_(&fromFile, &toFile, VIDEOBUFSIZE, 0, VIDEOBUFSIZE / 10)
 {
   active = false;
   fromFile = toFile = -1;
   fromFileName = toFileName = NULL;
   fromIndex = toIndex = NULL;
   if (fromMarks.Load(FromFileName) && fromMarks.Count()) {
-     fromFileName = new cFileName(FromFileName, false);
-     toFileName = new cFileName(ToFileName, true);
+     fromFileName = new cFileName(FromFileName, false, true);
+     toFileName = new cFileName(ToFileName, true, true);
      fromIndex = new cIndexFile(FromFileName, false);
      toIndex = new cIndexFile(ToFileName, true);
      toMarks.Load(ToFileName); // doesn't actually load marks, just sets the file name
@@ -1329,22 +1174,31 @@ void cCuttingBuffer::Action(void)
      int LastIFrame = 0;
      toMarks.Add(0);
      toMarks.Save();
+     uchar buffer[MAXFRAMESIZE];
      while (active) {
            uchar FileNumber;
            int FileOffset, Length;
            uchar PictureType;
-   
-           Clear(); // makes sure one frame is completely read and written
-   
+
            // Read one frame:
-   
+
            if (fromIndex->Get(Index++, &FileNumber, &FileOffset, &PictureType, &Length)) {
               if (FileNumber != CurrentFileNumber) {
                  fromFile = fromFileName->SetOffset(FileNumber, FileOffset);
                  CurrentFileNumber = FileNumber;
                  }
-              if (fromFile >= 0)
-                 Length = cRingBuffer_::Read(Length);
+              if (fromFile >= 0) {
+                 if (Length <= (int)sizeof(buffer)) {
+                    if (read(fromFile, buffer, Length) < 0) {
+                       LOG_ERROR;
+                       break;
+                       }
+                    }
+                 else {
+                    esyslog(LOG_ERR, "ERROR: frame larger than buffer (%d > %d)", Length, sizeof(buffer));
+                    break;
+                    }
+                 }
               else
                  break;
               }
@@ -1362,7 +1216,7 @@ void cCuttingBuffer::Action(void)
                  }
               LastIFrame = 0;
               }
-           cRingBuffer_::Write(Length);
+           write(toFile, buffer, Length);
            toIndex->Write(PictureType, toFileName->Number(), FileSize);
            FileSize += Length;
            if (!LastIFrame)
@@ -1424,13 +1278,31 @@ bool cVideoCutter::Active(void)
 
 // --- cDvbApi ---------------------------------------------------------------
 
+
+static const char *OstName(const char *Name, int n)
+{
+  static char buffer[_POSIX_PATH_MAX];
+  snprintf(buffer, sizeof(buffer), "%s%d", Name, n);
+  return buffer;
+}
+
+static int OstOpen(const char *Name, int n, int Mode, bool ReportError = false)
+{
+  const char *FileName = OstName(Name, n);
+  int fd = open(FileName, Mode);
+  if (fd < 0 && ReportError)
+     LOG_ERROR_STR(FileName);
+  return fd;
+}
+
 int cDvbApi::NumDvbApis = 0;
 int cDvbApi::useDvbApi = 0;
 cDvbApi *cDvbApi::dvbApi[MAXDVBAPI] = { NULL };
 cDvbApi *cDvbApi::PrimaryDvbApi = NULL;
 
-cDvbApi::cDvbApi(const char *VideoFileName, const char *VbiFileName)
+cDvbApi::cDvbApi(int n)
 {
+  vPid = aPid = 0;
   siProcessor = NULL;
   recordBuffer = NULL;
   replayBuffer = NULL;
@@ -1438,21 +1310,42 @@ cDvbApi::cDvbApi(const char *VideoFileName, const char *VbiFileName)
   transferringFromDvbApi = NULL;
   ca = 0;
   priority = -1;
-  videoDev = open(VideoFileName, O_RDWR | O_NONBLOCK);
-  if (videoDev >= 0) {
-     siProcessor = new cSIProcessor(VbiFileName);
+
+  // Devices that are only present on DVB-C or DVB-S cards:
+
+  fd_qamfe  = OstOpen(DEV_OST_QAMFE,  n, O_RDWR);
+  fd_qpskfe = OstOpen(DEV_OST_QPSKFE, n, O_RDWR);
+  fd_sec    = OstOpen(DEV_OST_SEC,    n, O_RDWR);
+
+  // Devices that all DVB cards must have:
+
+  fd_demuxv = OstOpen(DEV_OST_DEMUX,  n, O_RDWR | O_NONBLOCK, true);
+  fd_demuxa = OstOpen(DEV_OST_DEMUX,  n, O_RDWR | O_NONBLOCK, true);
+  fd_demuxt = OstOpen(DEV_OST_DEMUX,  n, O_RDWR | O_NONBLOCK, true);
+
+  // Devices not present on "budget" cards:
+
+  fd_osd    = OstOpen(DEV_OST_OSD,    n, O_RDWR);
+  fd_video  = OstOpen(DEV_OST_VIDEO,  n, O_RDWR | O_NONBLOCK);
+  fd_audio  = OstOpen(DEV_OST_AUDIO,  n, O_RDWR | O_NONBLOCK);
+
+  // Devices that may not be available, and are not necessary for normal operation:
+
+  videoDev  = OstOpen(DEV_VIDEO,      n, O_RDWR);
+
+  // Devices that will be dynamically opened and closed when necessary:
+
+  fd_dvr    = -1;
+
+  // We only check the devices that must be present - the others will be checked before accessing them:
+
+  if (((fd_qpskfe >= 0 && fd_sec >= 0) || fd_qamfe >= 0) && fd_demuxv >= 0 && fd_demuxa >= 0 && fd_demuxt >= 0) {
+     siProcessor = new cSIProcessor(OstName(DEV_OST_DEMUX, n));
      if (!dvbApi[0]) // only the first one shall set the system time
         siProcessor->SetUseTSTime(Setup.SetSystemTime);
-     siProcessor->AddFilter(0x14, 0x70);  // TDT
-     siProcessor->AddFilter(0x14, 0x73);  // TOT
-     siProcessor->AddFilter(0x12, 0x4e);  // event info, actual TS, present/following
-     siProcessor->AddFilter(0x12, 0x4f);  // event info, other TS, present/following
-     siProcessor->AddFilter(0x12, 0x50);  // event info, actual TS, schedule
-     siProcessor->AddFilter(0x12, 0x60);  // event info, other TS, schedule
-     siProcessor->Start();
      }
   else
-     LOG_ERROR_STR(VideoFileName);
+     esyslog(LOG_ERR, "ERROR: can't open video device %d", n);
   cols = rows = 0;
 
   ovlGeoSet = ovlStat = ovlFbSet = false;
@@ -1480,16 +1373,14 @@ cDvbApi::cDvbApi(const char *VideoFileName, const char *VbiFileName)
 
 cDvbApi::~cDvbApi()
 {
-  if (videoDev >= 0) {
-     delete siProcessor;
-     Close();
-     StopReplay();
-     StopRecord();
-     StopTransfer();
-     OvlO(false); //Overlay off!
-     //XXX the following call sometimes causes a segfault - driver problem?
-     //XXX close(videoDev);
-     }
+  delete siProcessor;
+  Close();
+  StopReplay();
+  StopRecord();
+  StopTransfer();
+  OvlO(false); //Overlay off!
+  // We're not explicitly closing any device files here, since this sometimes
+  // caused segfaults. Besides, the program is about to terminate anyway...
 #if defined(DEBUG_OSD) || defined(REMOTE_KBD)
   endwin();
 #endif
@@ -1555,37 +1446,32 @@ int cDvbApi::Index(void)
   return -1;
 }
 
+bool cDvbApi::Probe(const char *FileName)
+{
+  if (access(FileName, F_OK) == 0) {
+     dsyslog(LOG_INFO, "probing %s", FileName);
+     int f = open(FileName, O_RDONLY);
+     if (f >= 0) {
+        close(f);
+        return true;
+        }
+     else if (errno != ENODEV && errno != EINVAL)
+        LOG_ERROR_STR(FileName);
+     }
+  else if (errno != ENOENT)
+     LOG_ERROR_STR(FileName);
+  return false;
+}
+
 bool cDvbApi::Init(void)
 {
   NumDvbApis = 0;
   for (int i = 0; i < MAXDVBAPI; i++) {
       if (useDvbApi == 0 || (useDvbApi & (1 << i)) != 0) {
-         char fileName[strlen(VIDEODEVICE) + 10];
-         sprintf(fileName, "%s%d", VIDEODEVICE, i);
-         if (access(fileName, F_OK | R_OK | W_OK) == 0) {
-            dsyslog(LOG_INFO, "probing %s", fileName);
-            int f = open(fileName, O_RDWR);
-            if (f >= 0) {
-               struct video_capability cap;
-               int r = ioctl(f, VIDIOCGCAP, &cap);
-               close(f);
-               if (r == 0 && (cap.type & VID_TYPE_DVB)) {
-                  char vbiFileName[strlen(VBIDEVICE) + 10];
-                  sprintf(vbiFileName, "%s%d", VBIDEVICE, i);
-                  dvbApi[NumDvbApis++] = new cDvbApi(fileName, vbiFileName);
-                  }
-               }
-            else {
-               if (errno != ENODEV)
-                  LOG_ERROR_STR(fileName);
-               break;
-               }
-            }
-         else {
-            if (errno != ENOENT)
-               LOG_ERROR_STR(fileName);
+         if (Probe(OstName(DEV_OST_QPSKFE, i)) || Probe(OstName(DEV_OST_QAMFE, i)))
+            dvbApi[NumDvbApis++] = new cDvbApi(i);
+         else
             break;
-            }
          }
       }
   PrimaryDvbApi = dvbApi[0];
@@ -1616,6 +1502,8 @@ const cSchedules *cDvbApi::Schedules(cThreadLock *ThreadLock) const
 
 bool cDvbApi::GrabImage(const char *FileName, bool Jpeg, int Quality, int SizeX, int SizeY)
 {
+  if (videoDev < 0)
+     return false;
   int result = 0;
   // just do this once?
   struct video_mbuf mbuf;
@@ -1711,6 +1599,8 @@ bool cDvbApi::GrabImage(const char *FileName, bool Jpeg, int Quality, int SizeX,
 
 bool cDvbApi::OvlF(int SizeX, int SizeY, int FbAddr, int Bpp, int Palette)
 {
+  if (videoDev < 0)
+     return false;
   int result = 0;
   // get the actual X-Server settings???
   // plausibility-check problem: can't be verified w/o X-server!!!
@@ -1752,6 +1642,8 @@ bool cDvbApi::OvlF(int SizeX, int SizeY, int FbAddr, int Bpp, int Palette)
 
 bool cDvbApi::OvlG(int SizeX, int SizeY, int PosX, int PosY)
 {
+  if (videoDev < 0)
+     return false;
   int result = 0;
   // get the actual X-Server settings???
   struct video_capability vc;
@@ -1798,6 +1690,8 @@ bool cDvbApi::OvlG(int SizeX, int SizeY, int PosX, int PosY)
 
 bool cDvbApi::OvlC(int ClipCount, CRect *cr)
 {
+  if (videoDev < 0)
+     return false;
   if (ovlGeoSet && ovlFbSet) {
      for (int i = 0; i < ClipCount; i++) {
          ovlClipRects[i].x = cr[i].x;
@@ -1815,6 +1709,8 @@ bool cDvbApi::OvlC(int ClipCount, CRect *cr)
 
 bool cDvbApi::OvlP(__u16 Brightness, __u16 Colour, __u16 Hue, __u16 Contrast)
 {
+  if (videoDev < 0)
+     return false;
   int result = 0;
   ovlBrightness = Brightness;
   ovlColour = Colour;
@@ -1836,6 +1732,8 @@ bool cDvbApi::OvlP(__u16 Brightness, __u16 Colour, __u16 Hue, __u16 Contrast)
 
 bool cDvbApi::OvlO(bool Value)
 {
+  if (videoDev < 0)
+     return false;
   int result = 0;
   if (!ovlGeoSet && Value)
      return false;
@@ -1870,8 +1768,8 @@ void cDvbApi::SetColor(eDvbColor colorFg, eDvbColor colorBg)
 #else
 void cDvbApi::Cmd(OSD_Command cmd, int color, int x0, int y0, int x1, int y1, const void *data)
 {
-  if (videoDev >= 0) {
-     struct drawcmd dc;
+  if (fd_osd >= 0) {
+     osd_cmd_t dc;
      dc.cmd   = cmd;
      dc.color = color;
      dc.x0    = x0;
@@ -1879,7 +1777,7 @@ void cDvbApi::Cmd(OSD_Command cmd, int color, int x0, int y0, int x1, int y1, co
      dc.x1    = x1;
      dc.y1    = y1;
      dc.data  = (void *)data;
-     ioctl(videoDev, VIDIOCSOSDCOMMAND, &dc);
+     CHECK(ioctl(fd_osd, OSD_SEND_CMD, &dc));
      usleep(10); // XXX Workaround for a driver bug (cInterface::DisplayChannel() displayed texts at wrong places
                  // XXX and sometimes the OSD was no longer displayed).
                  // XXX Increase the value if the problem still persists on your particular system.
@@ -1905,7 +1803,7 @@ void cDvbApi::Open(int w, int h)
   d *= lineHeight;
   int x = (720 - MenuColumns * charWidth) / 2; //TODO PAL vs. NTSC???
   int y = (576 - MenuLines * lineHeight) / 2 + d;
-  osd = new cDvbOsd(videoDev, x, y, x + w - 1, y + h - 1, 4);
+  osd = new cDvbOsd(fd_osd, x, y, x + w - 1, y + h - 1, 4);
   #define SETCOLOR(n, r, g, b, o) Cmd(OSD_SetColor, n, r, g, b, o)
   SETCOLOR(clrTransparent, 0x00, 0x00, 0x00,   0);
 #endif
@@ -2037,60 +1935,230 @@ void cDvbApi::Flush(void)
 #endif
 }
 
+int cDvbApi::SetModeRecord(void)
+{
+  // Sets up the DVB device for recording
+
+  SetPids(true);
+  if (fd_dvr >= 0)
+     close(fd_dvr);
+  fd_dvr = OstOpen(DEV_OST_DVR, Index(), O_RDONLY | O_NONBLOCK);
+  if (fd_dvr < 0)
+     LOG_ERROR;
+  return fd_dvr;
+}
+
+void cDvbApi::SetModeReplay(void)
+{
+  // Sets up the DVB device for replay
+
+  if (fd_video >= 0 && fd_audio >= 0) {
+     if (siProcessor)
+        siProcessor->SetStatus(false);
+     CHECK(ioctl(fd_video, VIDEO_SET_BLANK, true));
+     CHECK(ioctl(fd_audio, AUDIO_SELECT_SOURCE, AUDIO_SOURCE_MEMORY));
+     CHECK(ioctl(fd_audio, AUDIO_SET_AV_SYNC, true));
+     CHECK(ioctl(fd_audio, AUDIO_PLAY));
+     CHECK(ioctl(fd_video, VIDEO_SELECT_SOURCE, VIDEO_SOURCE_MEMORY));
+     CHECK(ioctl(fd_video, VIDEO_PLAY));
+     }
+}
+
+void cDvbApi::SetModeNormal(bool FromRecording)
+{
+  // Puts the DVB device back into "normal" viewing mode (after replay or recording)
+
+  if (FromRecording) {
+     close(fd_dvr);
+     fd_dvr = -1;
+     SetPids(false);
+     }
+  else {
+     if (fd_video >= 0 && fd_audio >= 0) {
+        CHECK(ioctl(fd_video, VIDEO_STOP, true));
+        CHECK(ioctl(fd_audio, AUDIO_STOP, true));
+        CHECK(ioctl(fd_video, VIDEO_CLEAR_BUFFER));
+        CHECK(ioctl(fd_audio, AUDIO_CLEAR_BUFFER));
+        CHECK(ioctl(fd_video, VIDEO_SELECT_SOURCE, VIDEO_SOURCE_DEMUX));
+        CHECK(ioctl(fd_audio, AUDIO_SELECT_SOURCE, AUDIO_SOURCE_DEMUX));
+        CHECK(ioctl(fd_audio, AUDIO_SET_AV_SYNC, true));
+        CHECK(ioctl(fd_audio, AUDIO_SET_MUTE, false));
+        if (siProcessor)
+           siProcessor->SetStatus(true);
+        }
+     }
+}
+
+bool cDvbApi::SetPid(int fd, dmxPesType_t PesType, dvb_pid_t Pid, dmxOutput_t Output)
+{
+  dmxPesFilterParams pesFilterParams;
+  if (Pid == 0 || Pid == 0xFFFF) {
+     CHECK(ioctl(fd, DMX_STOP, Pid));
+     return true;
+     }
+  pesFilterParams.pid     = Pid;
+  pesFilterParams.input   = DMX_IN_FRONTEND;
+  pesFilterParams.output  = Output;
+  pesFilterParams.pesType = PesType;
+  pesFilterParams.flags   = DMX_IMMEDIATE_START;
+  if (ioctl(fd, DMX_SET_PES_FILTER, &pesFilterParams) < 0) {
+     LOG_ERROR;
+     return false;
+     }
+  return true;
+}
+
+bool cDvbApi::SetPids(bool ForRecording)
+{
+  return SetVpid(vPid, ForRecording ? DMX_OUT_TS_TAP : DMX_OUT_DECODER) &&
+         SetApid(aPid, ForRecording ? DMX_OUT_TS_TAP : DMX_OUT_DECODER);
+}
+
 bool cDvbApi::SetChannel(int ChannelNumber, int FrequencyMHz, char Polarization, int Diseqc, int Srate, int Vpid, int Apid, int Tpid, int Ca, int Pnr)
 {
-  if (videoDev >= 0) {
-     cThreadLock ThreadLock(siProcessor); // makes sure the siProcessor won't access the vbi-device while switching
-     StopTransfer();
-     StopReplay();
-     SetPlayMode(videoDev, VID_PLAY_RESET);
-     struct frontend front;
-     ioctl(videoDev, VIDIOCGFRONTEND, &front);
+  // Make sure the siProcessor won't access the device while switching
+  cThreadLock ThreadLock(siProcessor);
+
+  StopTransfer();
+  StopReplay();
+
+  // Avoid noise while switching:
+
+  if (fd_video >= 0 && fd_audio >= 0) {
+     CHECK(ioctl(fd_audio, AUDIO_SET_MUTE, true));
+     CHECK(ioctl(fd_video, VIDEO_SET_BLANK, true));
+     CHECK(ioctl(fd_video, VIDEO_CLEAR_BUFFER));
+     CHECK(ioctl(fd_audio, AUDIO_CLEAR_BUFFER));
+     }
+
+  bool ChannelSynced = false;
+
+  if (fd_qpskfe >= 0 && fd_sec >= 0) { // DVB-S
+
+     // Frequency offsets:
+
      unsigned int freq = FrequencyMHz;
-     if (front.type == FRONT_DVBS) {
-        front.ttk = (freq < 11700UL) ? 0 : 1;
-        if (freq < 11700UL) {
-           freq -= Setup.LnbFrequLo;
-           front.ttk = 0;
-           }
-        else {
-           freq -= Setup.LnbFrequHi;
-           front.ttk = 1;
-           }
+     int tone = SEC_TONE_OFF;
+
+     if (freq < (unsigned int)Setup.LnbSLOF) {
+        freq -= Setup.LnbFrequLo;
+        tone = SEC_TONE_OFF;
         }
-     front.channel_flags = Ca ? DVB_CHANNEL_CA : DVB_CHANNEL_FTA;
-     front.pnr       = Pnr;
-     front.freq      = freq * 1000000UL;
-     front.diseqc    = Diseqc;
-     front.srate     = Srate * 1000;
-     front.volt      = (Polarization == 'v' || Polarization == 'V') ? 0 : 1;
-     front.video_pid = Vpid;
-     front.audio_pid = Apid;
-     front.tt_pid    = Tpid;
-     front.fec       = 8;
-     front.AFC       = 1;
-     front.qam       = 2;
-     ioctl(videoDev, VIDIOCSFRONTEND, &front);
-     if (front.sync & 0x1F == 0x1F) {
-        if (this == PrimaryDvbApi && siProcessor)
-           siProcessor->SetCurrentServiceID(Pnr);
-        currentChannel = ChannelNumber;
-        // If this DVB card can't receive this channel, let's see if we can
-        // use the card that actually can receive it and transfer data from there:
-        if (this == PrimaryDvbApi && Ca && Ca != Index() + 1) {
-           cDvbApi *CaDvbApi = GetDvbApi(Ca, 0);
-           if (CaDvbApi) {
-              if (!CaDvbApi->Recording()) {
-                 if (CaDvbApi->SetChannel(ChannelNumber, FrequencyMHz, Polarization, Diseqc, Srate, Vpid, Apid, Tpid, Ca, Pnr))
-                    transferringFromDvbApi = CaDvbApi->StartTransfer(videoDev);
-                 }
+     else {
+        freq -= Setup.LnbFrequHi;
+        tone = SEC_TONE_ON;
+        }
+
+     qpskParameters qpsk;
+     qpsk.iFrequency = freq * 1000UL;
+     qpsk.SymbolRate = Srate * 1000UL;
+     qpsk.FEC_inner = FEC_AUTO;
+
+     int volt = (Polarization == 'v' || Polarization == 'V') ? SEC_VOLTAGE_13 : SEC_VOLTAGE_18;
+
+     // DiseqC:
+
+     secCommand scmd;
+     scmd.type = 0;
+     scmd.u.diseqc.addr = 0x10;
+     scmd.u.diseqc.cmd = 0x38;
+     scmd.u.diseqc.numParams = 1;
+     scmd.u.diseqc.params[0] = 0xF0 | ((Diseqc * 4) & 0x0F) | (tone == SEC_TONE_ON ? 1 : 0) | (volt == SEC_VOLTAGE_18 ? 2 : 0);
+
+     secCmdSequence scmds;
+     scmds.voltage = volt;
+     scmds.miniCommand = SEC_MINI_NONE;
+     scmds.continuousTone = tone;
+     scmds.numCommands = 1;
+     scmds.commands = &scmd;
+
+     CHECK(ioctl(fd_sec, SEC_SEND_SEQUENCE, &scmds));
+
+     // Tuning:
+
+     CHECK(ioctl(fd_qpskfe, QPSK_TUNE, &qpsk));
+
+     // Wait for channel sync:
+
+     qpskEvent event;
+     int res = ioctl(fd_qpskfe, QPSK_GET_EVENT, &event);
+     if (res == -EBUFFEROVERFLOW)
+        res = ioctl(fd_qpskfe, QPSK_GET_EVENT, &event);
+     if (res >= 0)
+        ChannelSynced = event.type == FE_COMPLETION_EV;
+     else
+        esyslog(LOG_ERR, "ERROR in qpsk get event");
+     }
+  else if (fd_qamfe >= 0) { // DVB-C
+
+     // Frequency and symbol rate:
+
+     qamParameters qam;
+     qam.Frequency = FrequencyMHz * 1000000UL;
+     qam.SymbolRate = Srate * 1000UL;
+     qam.FEC_inner = FEC_AUTO;
+     qam.QAM = QAM_64;
+
+     // Tuning:
+
+     CHECK(ioctl(fd_qamfe, QAM_TUNE, &qam));
+
+     // Wait for channel sync:
+
+     qamEvent event;
+     int res = ioctl(fd_qamfe, QAM_GET_EVENT, &event);
+     if (res == -EBUFFEROVERFLOW)
+        res = ioctl(fd_qamfe, QAM_GET_EVENT, &event);
+     if (res >= 0)
+        ChannelSynced = event.type == FE_COMPLETION_EV;
+     else
+        esyslog(LOG_ERR, "ERROR in qam get event");
+     }
+  else {
+     esyslog(LOG_ERR, "ERROR: attempt to set channel without DVB-S or DVB-C device");
+     return false;
+     }
+
+  if (!ChannelSynced) {
+     esyslog(LOG_ERR, "ERROR: channel %d not sync'ed!", ChannelNumber);
+     return false;
+     }
+
+  // PID settings:
+
+  vPid = Vpid;
+  aPid = Apid;
+  if (!SetPids(false)) {
+     esyslog(LOG_ERR, "ERROR: failed to set PIDs for channel %d", ChannelNumber);
+     return false;
+     }
+  SetTpid(Tpid, DMX_OUT_DECODER);
+  if (fd_audio >= 0)
+     CHECK(ioctl(fd_audio, AUDIO_SET_AV_SYNC, true));
+  if (this == PrimaryDvbApi && siProcessor)
+     siProcessor->SetCurrentServiceID(Pnr);
+  currentChannel = ChannelNumber;
+  
+  // If this DVB card can't receive this channel, let's see if we can
+  // use the card that actually can receive it and transfer data from there:
+
+  if (this == PrimaryDvbApi && Ca && Ca != Index() + 1) {
+     cDvbApi *CaDvbApi = GetDvbApi(Ca, 0);
+     if (CaDvbApi) {
+        if (!CaDvbApi->Recording()) {
+           if (CaDvbApi->SetChannel(ChannelNumber, FrequencyMHz, Polarization, Diseqc, Srate, Vpid, Apid, Tpid, Ca, Pnr)) {
+              SetModeReplay();
+              transferringFromDvbApi = CaDvbApi->StartTransfer(fd_video);
               }
            }
-        return true;
         }
-     esyslog(LOG_ERR, "ERROR: channel %d not sync'ed (front.sync=%X)!", ChannelNumber, front.sync);
      }
-  return false;
+  if (fd_video >= 0 && fd_audio >= 0) {
+     CHECK(ioctl(fd_audio, AUDIO_SET_MUTE, false));
+     CHECK(ioctl(fd_video, VIDEO_SET_BLANK, false));
+     }
+
+  return true;
 }
 
 bool cDvbApi::Transferring(void)
@@ -2101,7 +2169,7 @@ bool cDvbApi::Transferring(void)
 cDvbApi *cDvbApi::StartTransfer(int TransferToVideoDev)
 {
   StopTransfer();
-  transferBuffer = new cTransferBuffer(videoDev, TransferToVideoDev);
+  transferBuffer = new cTransferBuffer(this, TransferToVideoDev, vPid, aPid);
   return this;
 }
 
@@ -2110,7 +2178,6 @@ void cDvbApi::StopTransfer(void)
   if (transferBuffer) {
      delete transferBuffer;
      transferBuffer = NULL;
-     SetPlayMode(videoDev, VID_PLAY_RESET);
      }
   if (transferringFromDvbApi) {
      transferringFromDvbApi->StopTransfer();
@@ -2143,37 +2210,36 @@ bool cDvbApi::StartRecord(const char *FileName, int Ca, int Priority)
      esyslog(LOG_ERR, "ERROR: StartRecord() called while recording - ignored!");
      return false;
      }
-  if (videoDev >= 0) {
 
-     StopTransfer();
+  StopTransfer();
 
-     StopReplay(); // TODO: remove this if the driver is able to do record and replay at the same time
+  StopReplay(); // TODO: remove this if the driver is able to do record and replay at the same time
 
-     // Check FileName:
+  // Check FileName:
 
-     if (!FileName) {
-        esyslog(LOG_ERR, "ERROR: StartRecord: file name is (null)");
-        return false;
-        }
-     isyslog(LOG_INFO, "record %s", FileName);
-
-     // Create directories if necessary:
-
-     if (!MakeDirs(FileName, true))
-        return false;
-
-     // Create recording buffer:
-
-     recordBuffer = new cRecordBuffer(&videoDev, FileName);
-
-     if (recordBuffer) {
-        ca = Ca;
-        priority = Priority;
-        return true;
-        }
-     else
-        esyslog(LOG_ERR, "ERROR: can't allocate recording buffer");
+  if (!FileName) {
+     esyslog(LOG_ERR, "ERROR: StartRecord: file name is (null)");
+     return false;
      }
+  isyslog(LOG_INFO, "record %s", FileName);
+
+  // Create directories if necessary:
+
+  if (!MakeDirs(FileName, true))
+     return false;
+
+  // Create recording buffer:
+
+  recordBuffer = new cRecordBuffer(this, FileName, vPid, aPid);
+
+  if (recordBuffer) {
+     ca = Ca;
+     priority = Priority;
+     return true;
+     }
+  else
+     esyslog(LOG_ERR, "ERROR: can't allocate recording buffer");
+
   return false;
 }
 
@@ -2195,7 +2261,7 @@ bool cDvbApi::StartReplay(const char *FileName)
      }
   StopTransfer();
   StopReplay();
-  if (videoDev >= 0) {
+  if (fd_video >= 0 && fd_audio >= 0) {
 
      // Check FileName:
 
@@ -2207,7 +2273,7 @@ bool cDvbApi::StartReplay(const char *FileName)
 
      // Create replay buffer:
 
-     replayBuffer = new cReplayBuffer(&videoDev, FileName);
+     replayBuffer = new cReplayBuffer(this, fd_video, fd_audio, FileName);
      if (replayBuffer)
         return true;
      else
@@ -2318,7 +2384,7 @@ void cEITScanner::Process(void)
      time_t now = time(NULL);
      if (now - lastScan > ScanTimeout && now - lastActivity > ActivityTimeout) {
         for (int i = 0; i < cDvbApi::NumDvbApis; i++) {
-            cDvbApi *DvbApi = cDvbApi::GetDvbApi(i, 0);
+            cDvbApi *DvbApi = cDvbApi::GetDvbApi(i + 1, 0);
             if (DvbApi) {
                if (DvbApi != cDvbApi::PrimaryDvbApi || (cDvbApi::NumDvbApis == 1 && Setup.EPGScanTimeout && now - lastActivity > Setup.EPGScanTimeout * 3600)) {
                   if (!(DvbApi->Recording() || DvbApi->Replaying() || DvbApi->Transferring())) {

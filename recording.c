@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.29 2001/03/31 09:38:30 kls Exp $
+ * $Id: recording.c 1.30 2001/06/02 10:07:01 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -39,7 +39,7 @@
 #define DELETEDLIFETIME     1 // hours after which a deleted recording will be actually removed
 #define REMOVECHECKDELTA 3600 // seconds between checks for removing deleted files
 #define DISKCHECKDELTA    300 // seconds between checks for free disk space
-#define REMOVELATENCY      10 // seconds to wait until next check after removing a file 
+#define REMOVELATENCY      10 // seconds to wait until next check after removing a file
 
 void RemoveDeletedRecordings(void)
 {
@@ -66,7 +66,7 @@ void RemoveDeletedRecordings(void)
      }
 }
 
-void AssertFreeDiskSpace(void)
+void AssertFreeDiskSpace(int Priority)
 {
   // With every call to this function we try to actually remove
   // a file, or mark a file for removal ("delete" it), so that
@@ -94,10 +94,13 @@ void AssertFreeDiskSpace(void)
            cRecording *r = Recordings.First();
            cRecording *r0 = NULL;
            while (r) {
-                 if ((time(NULL) - r->start) / SECSINDAY > r->lifetime) {
+                 if (r->lifetime == MAXLIFETIME)
+                    continue; // recordings with MAXLIFETIME live forever
+                 if ((r->lifetime == 0 && Priority > r->priority) || // the recording has guaranteed lifetime and the new recording has higher priority
+                     (time(NULL) - r->start) / SECSINDAY > r->lifetime) { // the recording's guaranteed lifetime has expired
                     if (r0) {
-                       if (r->priority < r0->priority)
-                          r0 = r;
+                       if (r->priority < r0->priority || (r->priority == r0->priority && r->start < r0->start))
+                          r0 = r; // in any case we delete the one with the lowest priority (or the older one in case of equal priorities)
                        }
                     else
                        r0 = r;
@@ -153,7 +156,7 @@ int cResumeFile::Read(void)
 bool cResumeFile::Save(int Index)
 {
   if (fileName) {
-     int f = open(fileName, O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR | S_IRGRP);
+     int f = open(fileName, O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
      if (f >= 0) {
         if (write(f, &Index, sizeof(Index)) != sizeof(Index))
            LOG_ERROR_STR(fileName);
@@ -183,7 +186,7 @@ cRecording::cRecording(cTimer *Timer)
   for (char *p = name; *p; p++) {
       switch (*p) {
         case '\n': *p = ' '; break;
-        case '/':  *p = '-'; break; 
+        case '/':  *p = '-'; break;
         }
       }
   summary = Timer->summary ? strdup(Timer->summary) : NULL;
@@ -239,7 +242,7 @@ cRecording::cRecording(const char *FileName)
                  delete summary;
                  summary = NULL;
                  }
-              
+
               }
            else
               esyslog(LOG_ERR, "can't allocate %d byte of memory for summary file '%s'", size + 1, SummaryFileName);

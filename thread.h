@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.h 1.4 2000/12/03 11:18:37 kls Exp $
+ * $Id: thread.h 1.5 2001/05/25 09:36:27 kls Exp $
  */
 
 #ifndef __THREAD_H
@@ -16,11 +16,13 @@
 class cMutex {
 private:
   pthread_mutex_t mutex;
+  pid_t lockingPid;
+  int locked;
 public:
-  cMutex(void) { pthread_mutex_init(&mutex, NULL); }
-  ~cMutex() { pthread_mutex_destroy(&mutex); }
-  void Lock(void) { pthread_mutex_lock(&mutex); }
-  void Unlock(void) { pthread_mutex_unlock(&mutex); }
+  cMutex(void);
+  ~cMutex();
+  void Lock(void);
+  void Unlock(void);
   };
 
 class cThread {
@@ -31,6 +33,7 @@ private:
   pid_t parentPid, threadPid, lockingPid;
   int locked;
   bool running;
+  static bool emergencyExitRequested;
   static bool signalHandlerInstalled;
   static void SignalHandler(int signum);
   static void *StartThread(cThread *Thread);
@@ -45,6 +48,7 @@ public:
   virtual ~cThread();
   bool Start(void);
   bool Active(void);
+  static bool EmergencyExit(bool Request = false);
   };
 
 // cThreadLock can be used to easily set a lock in a thread and make absolutely

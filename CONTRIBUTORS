@@ -42,6 +42,7 @@ Bastian Guse <bastian@nocopy.de>
 Matthias Schniedermeyer <ms@citd.de>
  for implementing the 'MarkInstantRecord' setup option
  for his "schnitt" tools
+ for his "master-timer" tool
 
 Miha Setina <mihasetina@softhome.net>
  for translating the OSD texts to the Slovenian language
@@ -54,6 +55,7 @@ Deti Fliegl <deti@fliegl.de>
 
 Dave Chapman <dave@dchapman.com>
  for implementing support for the teletext PID
+ for his great support in switching to the NAPI
 
 Hans-Peter Raschke <Hans-Peter.Raschke@Wintermann-DatenService.de>
  for his support in adapting VDR to DVB-C
@@ -70,3 +72,6 @@ Arnold Niessen <niessen@iae.nl> <arnold.niessen@philips.com>
 
 Jürgen Sauer <jojo@automatix.de>
  for implementing the -t option to set the controlling terminal
+
+Benjamin Reichardt <reichard@math.uni-goettingen.de>
+ for his help in debugging the transition to the new API

@@ -13,7 +13,7 @@ Video Disk Recorder File Formats
 
   A "channel definition" is a line with channel data, where the fields
   are separated by ':' characters:
-  Example: "RTL:12188:h:1:27500:163:104:0:0:12003"
+  Example: "RTL:12188:h:1:27500:163:104:105:0:12003"
 
   The fields in a channel definition have the following meaning (from left
   to right):
@@ -60,8 +60,10 @@ Video Disk Recorder File Formats
     (1..31)
   - Start time (first two digits for the hour, second two digits for the minutes)
   - End time (first two digits for the hour, second two digits for the minutes)
-  - Priority (from 00 to 99, 00 = lowest prioity, 99 = highest priority)
-  - Guaranteed lifetime of recording (in days)
+  - Priority (from 0 to 99, 0 = lowest prioity, 99 = highest priority)
+  - Guaranteed lifetime of recording (in days); 0 means that this recording may
+    be automatically deleted by a new recording with higher priority, 99 means
+    that this recording will never be automatically deleted
   - Name of timer (will be used to name the recording); if the name contains
     any ':' characters, these have to be replaced with '|'
   - Summary (any newline characters in the summary have to be replaced with '|';

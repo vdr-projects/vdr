@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ringbuffer.h 1.1 2001/03/18 16:47:00 kls Exp $
+ * $Id: ringbuffer.h 1.2 2001/05/20 11:56:44 kls Exp $
  */
 
 #ifndef __RINGBUFFER_H
@@ -28,7 +28,11 @@ private:
   uchar *buffer;
   int maxFill;
   bool busy;
+  bool statistics;
 protected:
+  void Lock(void) { mutex.Lock(); }
+  void Unlock(void) { mutex.Unlock(); }
+  int Available(void);
   bool Busy(void) { return busy; }
   void Clear(void);
     // Immediately clears the ring buffer.
@@ -45,7 +49,7 @@ protected:
     // Runs as a separate thread and shall continuously call Get() to
     // retrieve data from the ring buffer and write it to a destination.
 public:
-  cRingBuffer(int Size);
+  cRingBuffer(int Size, bool Statistics = false);
   virtual ~cRingBuffer();
   bool Start(void);
   bool Active(void);

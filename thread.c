@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 1.7 2000/12/24 12:27:21 kls Exp $
+ * $Id: thread.c 1.8 2001/05/25 09:37:00 kls Exp $
  */
 
 #include "thread.h"
@@ -14,12 +14,41 @@
 #include <unistd.h>
 #include "tools.h"
 
+// --- cMutex ----------------------------------------------------------------
+
+cMutex::cMutex(void)
+{
+  lockingPid = 0;
+  locked = 0;
+  pthread_mutex_init(&mutex, NULL);
+}
+
+cMutex::~cMutex()
+{
+  pthread_mutex_destroy(&mutex);
+}
+
+void cMutex::Lock(void)
+{
+  if (getpid() != lockingPid || !locked)
+     pthread_mutex_lock(&mutex);
+  lockingPid = getpid();
+  locked++;
+}
+
+void cMutex::Unlock(void)
+{
+ if (!--locked)
+    pthread_mutex_unlock(&mutex);
+}
+
 // --- cThread ---------------------------------------------------------------
 
 // The signal handler is necessary to be able to use SIGIO to wake up any
 // pending 'select()' call.
 
 bool cThread::signalHandlerInstalled = false;
+bool cThread::emergencyExitRequested = false;
 
 cThread::cThread(void)
 {
@@ -108,6 +137,14 @@ void cThread::Unlock(void)
 void cThread::WakeUp(void)
 {
   kill(parentPid, SIGIO); // makes any waiting 'select()' call return immediately
+}
+
+bool cThread::EmergencyExit(bool Request)
+{
+  if (!Request)
+     return emergencyExitRequested;
+  esyslog(LOG_ERR, "initiating emergency exit");
+  return emergencyExitRequested = true; // yes, it's an assignment, not a comparison!
 }
 
 // --- cThreadLock -----------------------------------------------------------

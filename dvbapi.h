@@ -4,22 +4,28 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.h 1.35 2001/02/11 10:41:10 kls Exp $
+ * $Id: dvbapi.h 1.36 2001/06/02 09:44:00 kls Exp $
  */
 
 #ifndef __DVBAPI_H
 #define __DVBAPI_H
 
-// FIXME: these should be defined in ../DVB/driver/dvb.h!!!
-typedef unsigned int __u32;
-typedef unsigned short __u16;
-typedef unsigned char __u8;
-
 #if defined(DEBUG_OSD) || defined(REMOTE_KBD)
 #include <ncurses.h>
 #endif
+#include <stdlib.h> // FIXME: this is apparently necessary for the ost/... header files
+                    // FIXME: shouldn't every header file include ALL the other header
+                    // FIXME: files it depends on? The sequence in which header files
+                    // FIXME: are included here should not matter - and it should NOT
+                    // FIXME: be necessary to include <stdlib.h> here!
+#include <linux/videodev.h>
+#include <ost/dmx.h>
+#include <ost/sec.h>
+#include <ost/frontend.h>
+#include <ost/video.h>
+#include <ost/audio.h>
+#include <ost/osd.h>
 #include <stdio.h>
-#include <dvb.h>
 #include "dvbosd.h"
 #include "eit.h"
 #include "thread.h"
@@ -30,7 +36,7 @@ typedef struct CRect {
   signed short x, y, width, height;
   };
 
-#define MenuLines   15
+#define MenuLines   13 // XXX originally 15, but since driver version 2001-05-25 there is less OSD memory :-(
 #define MenuColumns 40
 
 const char *IndexToHMSF(int Index, bool WithFrame = false);
@@ -55,9 +61,19 @@ public:
   };
 
 class cDvbApi {
+  friend class cRecordBuffer;
+  friend class cReplayBuffer;
+  friend class cTransferBuffer;
 private:
   int videoDev;
-  cDvbApi(const char *VideoFileName, const char *VbiFileName);
+  int fd_osd, fd_qpskfe, fd_qamfe, fd_sec, fd_dvr, fd_audio, fd_video, fd_demuxa, fd_demuxv, fd_demuxt;
+  int vPid, aPid;
+  bool SetPid(int fd, dmxPesType_t PesType, dvb_pid_t Pid, dmxOutput_t Output);
+  bool SetVpid(int Vpid, dmxOutput_t Output) { return SetPid(fd_demuxv, DMX_PES_VIDEO,    Vpid, Output); }
+  bool SetApid(int Apid, dmxOutput_t Output) { return SetPid(fd_demuxa, DMX_PES_AUDIO,    Apid, Output); }
+  bool SetTpid(int Tpid, dmxOutput_t Output) { return SetPid(fd_demuxt, DMX_PES_TELETEXT, Tpid, Output); }
+  bool SetPids(bool ForRecording);
+  cDvbApi(int n);
 public:
   ~cDvbApi();
 
@@ -86,8 +102,10 @@ public:
          // recording and stop recording if necessary.
   int Index(void);
          // Returns the index of this DvbApi.
+  static bool Probe(const char *FileName);
+         // Probes for existing DVB devices.
   static bool Init(void);
-         // Initializes the DVB API and probes for existing DVB devices.
+         // Initializes the DVB API.
          // Must be called before accessing any DVB functions.
   static void Cleanup(void);
          // Closes down all DVB devices.
@@ -184,12 +202,15 @@ private:
   cReplayBuffer *replayBuffer;
   int ca;
   int priority;
-protected:
   int  Ca(void) { return ca; }
        // Returns the ca of the current recording session (0..MAXDVBAPI).
   int  Priority(void) { return priority; }
-       // Returns the priority of the current recording session (0..99),
+       // Returns the priority of the current recording session (0..MAXPRIORITY),
        // or -1 if no recording is currently active.
+  int  SetModeRecord(void);
+       // Initiates recording mode and returns the file handle to read from.
+  void SetModeReplay(void);
+  void SetModeNormal(bool FromRecording);
 public:
   int  SecondsToFrames(int Seconds);
        // Returns the number of frames corresponding to the given number of seconds.
@@ -238,7 +259,7 @@ public:
        // nearest I-frame.
   void Goto(int Index, bool Still = false);
        // Positions to the given index and displays that frame as a still picture
-       // if Still is true. 
+       // if Still is true.
   };
 
 class cEITScanner {

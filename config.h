@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.44 2001/04/01 14:44:40 kls Exp $
+ * $Id: config.h 1.45 2001/06/02 09:43:04 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -19,9 +19,12 @@
 #include "eit.h"
 #include "tools.h"
 
-#define VDRVERSION "0.72"
+#define VDRVERSION "0.80"
 
 #define MaxBuffer 10000
+
+#define MAXPRIORITY 99
+#define MAXLIFETIME 99
 
 enum eKeys { // "Up" and "Down" must be the first two keys!
              kUp,
@@ -105,9 +108,6 @@ public:
   bool Save(FILE *f);
   bool Switch(cDvbApi *DvbApi = NULL, bool Log = true);
   };
-
-#define DEFAULTPRIORITY 99
-#define DEFAULTLIFETIME 99
 
 class cTimer : public cListObject {
 private:
@@ -240,7 +240,7 @@ public:
   bool SwitchTo(int Number, cDvbApi *DvbApi = NULL);
   int MaxNumber(void) { return maxNumber; }
   };
- 
+
 class cTimers : public cConfig<cTimer> {
 public:
   cTimer *GetTimer(cTimer *Timer);
@@ -266,6 +266,7 @@ public:
   int ShowInfoOnChSwitch;
   int MenuScrollPage;
   int MarkInstantRecord;
+  int LnbSLOF;
   int LnbFrequLo;
   int LnbFrequHi;
   int SetSystemTime;
@@ -273,6 +274,7 @@ public:
   int EPGScanTimeout;
   int SVDRPTimeout;
   int PrimaryLimit;
+  int DefaultPriority, DefaultLifetime;
   int CurrentChannel;
   cSetup(void);
   bool Load(const char *FileName);

@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.56 2001/04/01 11:16:54 kls Exp $
+ * $Id: vdr.c 1.57 2001/05/25 09:31:09 kls Exp $
  */
 
 #include <getopt.h>
@@ -267,6 +267,11 @@ int main(int argc, char *argv[])
      }
 
   while (!Interrupted) {
+        // Handle emergency exits:
+        if (cThread::EmergencyExit()) {
+           esyslog(LOG_ERR, "emergency exit requested - shutting down");
+           break;
+           }
         // Restart the Watchdog timer:
         if (WatchdogTimeout > 0) {
            int LatencyTime = WatchdogTimeout - alarm(WatchdogTimeout);
@@ -388,7 +393,8 @@ int main(int argc, char *argv[])
         else
            LastActivity = time(NULL);
         }
-  isyslog(LOG_INFO, "caught signal %d", Interrupted);
+  if (Interrupted)
+     isyslog(LOG_INFO, "caught signal %d", Interrupted);
   Setup.CurrentChannel = cDvbApi::CurrentChannel();
   Setup.Save();
   cVideoCutter::Stop();
@@ -401,5 +407,9 @@ int main(int argc, char *argv[])
   isyslog(LOG_INFO, "exiting");
   if (SysLogLevel > 0)
      closelog();
+  if (cThread::EmergencyExit()) {
+     esyslog(LOG_ERR, "emergency exit!");
+     return 1;
+     }
   return 0;
 }
