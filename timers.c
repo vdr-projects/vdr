@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 1.27 2005/03/20 13:12:07 kls Exp $
+ * $Id: timers.c 1.28 2005/03/20 13:13:02 kls Exp $
  */
 
 #include "timers.h"
@@ -369,6 +369,11 @@ bool cTimer::Matches(time_t t, bool Directly) const
 
 int cTimer::Matches(const cEvent *Event, int *Overlap)
 {
+  // Overlap is the percentage of the Event's duration that is covered by
+  // this timer (based on FULLMATCH for finer granularity than just 100).
+  // To make sure a VPS timer can be distinguished from a plain 100% overlap,
+  // it gets an additional 100 added, and a VPS event that is actually running
+  // gets 200 added to the FULLMATCH.
   if (HasFlags(tfActive) && channel->GetChannelID() == Event->ChannelID()) {
      bool UseVps = HasFlags(tfVps) && Event->Vps();
      Matches(UseVps ? Event->Vps() : Event->StartTime(), true);
@@ -558,7 +563,8 @@ bool cTimers::Modified(void)
   return Result;
 }
 
-#define EPGLIMIT (12 * 3600) // time in seconds around now, within which EPG events will be taken into consideration
+#define EPGLIMITPAST   (2 * 3600) // time in seconds around now, within which EPG events will be taken into consideration
+#define EPGLIMITFUTURE (4 * 3600)
 
 void cTimers::SetEvents(void)
 {
@@ -579,9 +585,9 @@ void cTimers::SetEvents(void)
                   for (const cEvent *e = Schedule->Events()->First(); e; e = Schedule->Events()->Next(e)) {
                       if (cRemote::HasKeys())
                          return; // react immediately on user input
-                      if (e->EndTime() < now - EPGLIMIT)
+                      if (e->EndTime() < now - EPGLIMITPAST)
                          continue; // skip old events
-                      if (e->StartTime() > now + EPGLIMIT)
+                      if (e->StartTime() > now + EPGLIMITFUTURE)
                          break; // no need to process events too far in the future
                       int overlap = 0;
                       ti->Matches(e, &overlap);
