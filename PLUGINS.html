@@ -513,7 +513,7 @@ the plugin should launch a separate thread to do this.
 </b>
 <!--X1.1.2--></td></tr></table>
 
-<hr><h2>Setup parameters</h2>
+<a name="Setup parameters"><hr><h2>Setup parameters</h2>
 
 <center><i><b>Remember me...</b></i></center><p>
 
@@ -647,6 +647,63 @@ You can first assign the temporary values to the global variables and then do th
 your setup parameters and use that one to copy all parameters with one single statement
 (like VDR does with its cSetup class).
 <!--X1.1.1--></td></tr></table>
+
+<!--X1.1.2--><table width=100%><tr><td bgcolor=red>&nbsp;</td><td width=100%>
+<hr><h2>Configuration files</h2>
+
+<center><i><b>I want my own stuff!</b></i></center><p>
+
+There may be situations where a plugin requires configuration files of its own, maybe
+for data that can't be stored in the simple <a href="#Setup parameters">setup parameters</a>
+of VDR, or maybe because it needs to launch other programs that simply need a separate
+configuration file. While the plugin is free to store such files anywhere it
+sees fit, it might be a good idea to put them in a common place, preferably
+where other configuration data already exists. VDR provides the function
+
+<p><table><tr><td bgcolor=#F0F0F0><pre><br>
+const char *ConfigDirectory(const char *PluginName = NULL);
+</pre></td></tr></table><p>
+
+which returns a string containing the directory that VDR uses for its own configuration
+files (defined through the <tt><b>-c</b></tt> option in the call to VDR), extended by
+<tt>"/plugins"</tt>. So assuming the VDR configuration directory is <tt>/video</tt>
+(the default if no <tt><b>-c</b></tt> or <tt><b>-v</b></tt> option is given),
+a call to <tt>ConfigDirectory()</tt> will return <tt>/video/plugins</tt>. The first
+call to <tt>ConfigDirectory()</tt> will automatically make sure that the <tt>plugins</tt>
+subdirectory will exist. If, for some reason, this cannot be achieved, <tt>NULL</tt>
+will be returned.
+<p>
+The additional <tt>plugins</tt> directory is used to keep files from plugins apart
+from those of VDR itself, making sure there will be no name clashes. If a plugin
+needs only one extra configuration file, it is suggested that this file be named
+<tt>name.conf</tt>, where <i>name</i> shall be the name of the plugin.
+<p>
+If a plugin needs more than one such file, it is suggested that the plugin stores
+these in a subdirectory of its own, named after the plugin. To easily get such a name
+the <tt>ConfigDirectory()</tt> function can be given an additional string that will
+be appended to the returned directory name, as in
+
+<p><table><tr><td bgcolor=#F0F0F0><pre><br>
+const char *MyConfigDir = ConfigDirectory(Name());
+</pre></td></tr></table><p>
+
+where <tt>Name()</tt> is the member function of the plugin class that returns the
+plugin's name. Again, VDR will make sure that the requested directory will exist
+(or return <tt>NULL</tt> in case of an error).
+<p>
+<b>
+The returned string is statically allocated and will be overwritten by subsequent
+calls to ConfigDirectory()!
+</b>
+<p>
+The <tt>ConfigDirectory()</tt> function is a static member function of the <tt>cPlugin</tt>
+class. This allows it to be called even from outside any member function of the derived
+plugin class, by writing
+
+<p><table><tr><td bgcolor=#F0F0F0><pre><br>
+const char *MyConfigDir = cPlugin::ConfigDirectory();
+</pre></td></tr></table><p>
+<!--X1.1.2--></td></tr></table>
 
 <a name="Internationalization"><hr><h2>Internationalization</h2>
 

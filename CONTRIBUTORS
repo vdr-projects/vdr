@@ -136,6 +136,7 @@ Stefan Huelswitt <huels@iname.com>
  for suggesting to add 'insert' capabilities to cList
  for suggesting to make 'package' target in the plugin's Makefile produce a package that
  expands to a directory with just the plugin name and version number
+ for suggesting to make the config directory available to plugins
 
 Ulrich Röder <roeder@efr-net.de>
  for pointing out that there are channels that have a symbol rate higher than

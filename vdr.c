@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.107 2002/05/12 10:11:08 kls Exp $
+ * $Id: vdr.c 1.108 2002/05/13 16:09:06 kls Exp $
  */
 
 #include <getopt.h>
@@ -300,6 +300,8 @@ int main(int argc, char *argv[])
 
   if (!ConfigDirectory)
      ConfigDirectory = VideoDirectory;
+
+  cPlugin::SetConfigDirectory(ConfigDirectory);
 
   Setup.Load(AddDirectory(ConfigDirectory, "setup.conf"));
   Channels.Load(AddDirectory(ConfigDirectory, "channels.conf"));

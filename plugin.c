@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: plugin.c 1.3 2002/05/12 10:10:38 kls Exp $
+ * $Id: plugin.c 1.4 2002/05/13 16:08:22 kls Exp $
  */
 
 #include "plugin.h"
@@ -21,6 +21,8 @@
 #define HOUSEKEEPINGDELTA 10 // seconds
 
 // --- cPlugin ---------------------------------------------------------------
+
+char *cPlugin::configDirectory = NULL;
 
 cPlugin::cPlugin(void) 
 {
@@ -89,6 +91,19 @@ void cPlugin::SetupStore(const char *Name, int Value)
 void cPlugin::RegisterI18n(const tI18nPhrase * const Phrases)
 {
   I18nRegister(Phrases, Name());
+}
+
+void cPlugin::SetConfigDirectory(const char *Dir)
+{
+  configDirectory = strdup(Dir);
+}
+
+const char *cPlugin::ConfigDirectory(const char *PluginName)
+{
+  static char *buffer = NULL;
+  delete buffer;
+  asprintf(&buffer, "%s/plugins%s%s", configDirectory, PluginName ? "/" : "", PluginName ? PluginName : "");
+  return MakeDirs(buffer, true) ? buffer : NULL;
 }
 
 // --- cDll ------------------------------------------------------------------
