@@ -1,7 +1,9 @@
 Video Disk Recorder Revision History
 ------------------------------------
 
-2000-02-19: Version 0.01 (Initial revision).
+2000-02-19: Version 0.01
+
+- Initial revision.
 
 2000-03-11: Version 0.02
 
@@ -1190,3 +1192,65 @@ Video Disk Recorder Revision History
 - Fixed a bug in the editing process in case a previously edited file with the
   same name was manually deleted on a system with more than one video directory
   (thanks to Dirk Wiebel for reporting this one).
+
+2002-04-21: Version 1.0.1
+
+- Added some DVB-T channels for Berlin (Germany) to channels.conf.terr (thanks to
+  Andreas Roedl).
+- Implemented enhanced string editing with upper-/lowercase, insert/overwrite
+  and delete (thanks to Sergei Haller).
+- Fixed color palette handling on "big endian" systems (thanks to Jean Martin
+  for pointing out this one).
+- Updated the "Blue Movie" channels to the new "Premiere Erotik" (thanks to
+  Thilo Wunderlich). NOTE: this adds a new channel to 'channels.conf', so that
+  any timers referencing a channel with a number higher than 102 should be
+  checked and adapted if necessary (this only applies if you are using the default
+  'channels.conf').
+- Improved thread locking in the ring buffer to avoid possible race conditions
+  under heavy load (thanks to Werner Fink).
+- Fixed a crash when selecting the "Jump" function directly after setting an
+  editing mark (thanks to Steffen Koch for reporting and Stefan Huelswitt for
+  fixing this one).
+- Fixed some missing ',' in i18n.c (thanks to Matthias Hilbig).
+- Fixed a possible endless loop in shifting recordings between DVB cards (thanks
+  to Stefan Huelswitt for reporting this one).
+- Updated the Premiere World Formula 1 channels in 'channels.conf' (thanks to Mel
+  Schächner).
+- No longer setting PIDs 0x1FFF, which apparently fixes problems with CAMs and
+  AC3 sound only working the first time (thanks to Stefan Huelswitt).
+- Now encoding '.' at the end of a directory name in case of VFAT=1, since Windows
+  can't handle these (thanks to Simon Dean for reporting this one).
+
+2002-05-05: Version 1.0.2
+
+- Now taking an active video cutting process into account when doing shutdown or
+  housekeeping (thanks to Stefan Huelswitt).
+- The default duration of an instant recording has been increased to 3 hours and
+  is now configurable in the "Setup/Recording" menu.
+- Added Greek language texts (thanks to Dimitrios Dimitrakos).
+- Fixed the unit of the "SVDRP timeout" setup parameter (thanks to Marcus Kuba
+  for reporting this one).
+- Fixed a crash on systems with disks that have a block size larger than 1MB
+  (thanks to Ulrich Petri for helping to debug this one).
+- Updated 'channels.conf' for the new PW settings (thanks to Andreas Share,
+  Carsten Koch, Gerald Raaf and Mel Schächner). Note that all channels with numbers
+  over 50 may have moved, so you should carefully check any timers you have set!
+- Updated 'channels.conf.cable' for the new PW settings (thanks to Oliver Lorei
+  Stephan Schreiber and Uwe Scheffler). Note that all channels may have moved, so
+  you should carefully check any timers you have set!
+  For future updates of this file somebody with digital cable should take the role
+  of the "maintainer" and send me updated versions based on the file that comes
+  with the most recent version of VDR. I will then simply replace the entire file
+  'channels.conf.cable' whenever a new version is sent to me.
+- Fixed skipping forward in time shift mode near the end of the recording (thanks
+  to Andreas Böttger for reporting this one).
+
+2002-05-09: Version 1.1.0
+
+- Begin of the 1.1 development branch. THIS IS NOT A STABLE VERSION!
+  The current stable version for every day use is still the 1.0 branch.
+- First step towards a universal plugin interface. See the file PLUGINS.html
+  for a detailed description. The man page vdr(1) describes the new options '-L'
+  and '-P' used to load plugins. This first step implements the complete "outer"
+  shell for plugins. The "inner" access to VDR data structures will follow.
+- The VDR version number is now displayed in the title line of the "Setup" menu.

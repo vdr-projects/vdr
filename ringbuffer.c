@@ -7,7 +7,7 @@
  * Parts of this file were inspired by the 'ringbuffy.c' from the
  * LinuxDVB driver (see linuxtv.org).
  *
- * $Id: ringbuffer.c 1.5 2001/11/03 09:50:46 kls Exp $
+ * $Id: ringbuffer.c 1.6 2002/04/18 15:46:36 kls Exp $
  */
 
 #include "ringbuffer.h"
@@ -154,7 +154,6 @@ int cRingBufferLinear::Put(const uchar *Data, int Count)
      Lock();
      int rest = Size() - head;
      int diff = tail - head;
-     Unlock();
      int free = (diff > 0) ? diff - 1 : Size() + diff - 1;
      if (statistics) {
         int fill = Size() - free - 1 + Count;
@@ -167,22 +166,25 @@ int cRingBufferLinear::Put(const uchar *Data, int Count)
               dsyslog(LOG_INFO, "buffer usage: %d%%", percent);
            }
         }
-     if (free <= 0)
-        return 0;
-     if (free < Count)
-        Count = free;
-     if (Count > maxFill)
-        maxFill = Count;
-     if (Count >= rest) {
-        memcpy(buffer + head, Data, rest);
-        if (Count - rest)
-           memcpy(buffer, Data + rest, Count - rest);
-        head = Count - rest;
+     if (free > 0) {
+        if (free < Count)
+           Count = free;
+        if (Count > maxFill)
+           maxFill = Count;
+        if (Count >= rest) {
+           memcpy(buffer + head, Data, rest);
+           if (Count - rest)
+              memcpy(buffer, Data + rest, Count - rest);
+           head = Count - rest;
+           }
+        else {
+           memcpy(buffer + head, Data, Count);
+           head += Count;
+           }
         }
-     else {
-        memcpy(buffer + head, Data, Count);
-        head += Count;
-        }
+     else
+        Count = 0;
+     Unlock();
      }
   return Count;
 }
@@ -193,22 +195,24 @@ int cRingBufferLinear::Get(uchar *Data, int Count)
      Lock();
      int rest = Size() - tail;
      int diff = head - tail;
-     Unlock();
      int cont = (diff >= 0) ? diff : Size() + diff;
-     if (rest <= 0)
-        return 0;
-     if (cont < Count)
-        Count = cont;
-     if (Count >= rest) {
-        memcpy(Data, buffer + tail, rest);
-        if (Count - rest)
-           memcpy(Data + rest, buffer, Count - rest);
-        tail = Count - rest;
+     if (rest > 0) {
+        if (cont < Count)
+           Count = cont;
+        if (Count >= rest) {
+           memcpy(Data, buffer + tail, rest);
+           if (Count - rest)
+              memcpy(Data + rest, buffer, Count - rest);
+           tail = Count - rest;
+           }
+        else {
+           memcpy(Data, buffer + tail, Count);
+           tail += Count;
+           }
         }
-     else {
-        memcpy(Data, buffer + tail, Count);
-        tail += Count;
-        }
+     else
+        Count = 0;
+     Unlock();
      }
   return Count;
 }

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.60 2002/04/01 10:51:23 kls Exp $
+ * $Id: recording.c 1.61 2002/04/21 14:02:55 kls Exp $
  */
 
 #include "recording.h"
@@ -222,7 +222,6 @@ static char *ExchangeChars(char *s, bool ToFileSystem)
                   case '+':
                   case ',':
                   case '-':
-                  case '.':
                   case ';':
                   case '=':
                   case '0' ... '9':
@@ -237,7 +236,8 @@ static char *ExchangeChars(char *s, bool ToFileSystem)
                   case ' ': *p = '_'; break;
                   case '~': *p = '/'; break;
                   // characters that have to be encoded:
-                  default: {
+                  default:
+                    if (*p != '.' || !*(p + 1) || *(p + 1) == '~') { // Windows can't handle '.' at the end of directory names
                        int l = p - s;
                        s = (char *)realloc(s, strlen(s) + 10);
                        p = s + l;

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.62 2002/03/31 20:51:06 kls Exp $
+ * $Id: tools.c 1.63 2002/05/01 16:20:30 kls Exp $
  */
 
 #include "tools.h"
@@ -251,10 +251,10 @@ int FreeDiskSpaceMB(const char *Directory, int *UsedMB)
   int Free = 0;
   struct statfs statFs;
   if (statfs(Directory, &statFs) == 0) {
-     int blocksPerMeg = 1024 * 1024 / statFs.f_bsize;
+     double blocksPerMeg = 1024.0 * 1024.0 / statFs.f_bsize;
      if (UsedMB)
-        *UsedMB = (statFs.f_blocks - statFs.f_bfree) / blocksPerMeg;
-     Free = statFs.f_bavail / blocksPerMeg;
+        *UsedMB = int((statFs.f_blocks - statFs.f_bfree) / blocksPerMeg);
+     Free = int(statFs.f_bavail / blocksPerMeg);
      }
   else
      LOG_ERROR_STR(Directory);

@@ -1,4 +1,7 @@
-Thanks go to the following people for patches and contributions:
+Tons of suggestions, bugreports, patches and other contributions have been
+provided by the people on the 'linux-dvb' and 'vdr' mailing lists.
+Special thanks go to the following individuals (if your name is missing here,
+please send an email to kls@cadsoft.de):
 
 Carsten Koch <Carsten.Koch@icem.de>
  for adding LIRC support
@@ -9,6 +12,7 @@ Carsten Koch <Carsten.Koch@icem.de>
  for implementing the 'new recording' indicator
  for suggesting that the "Back" button in replay mode should bring up the "Recordings" menu
  for fixing the watchdog timer if the program hangs in OSD activities
+ for his support in keeping the Premiere World channels up to date in 'channels.conf'
 
 Plamen Ganev <pganev@com-it.net>
  for fixing the frequency offset for Hotbird channels
@@ -28,7 +32,7 @@ Guido Fiala <gfiala@s.netic.de>
  now does these things itself)
  for making the replay progress display avoid unnecessary code execution
 
-Robert Schneider <Robert.Schneider@lotus.com>
+Robert Schneider <Robert.Schneider@de.ibm.com>
  for implementing EIT support for displaying the current/next info
  for extending EIT support to implement a complete EPG
 
@@ -117,6 +121,13 @@ Stefan Huelswitt <huels@iname.com>
  for implementing backtracing for fast forward/rewind
  for implementing the replay mode display
  for fixing a crash when replaying with DEBUG_OSD=1
+ for fixing a crash when selecting the "Jump" function directly after setting
+ an editing mark
+ for reporting a possible endless loop in shifting recordings between DVB cards
+ for making it no longer setting PIDs 0x1FFF, which apparently fixes problems
+ with CAMs and AC3 sound only working the first time
+ for making the main loop take an active video cutting process into account when
+ doing shutdown or housekeeping
 
 Ulrich Röder <roeder@efr-net.de>
  for pointing out that there are channels that have a symbol rate higher than
@@ -157,6 +168,8 @@ Werner Fink <werner@suse.de>
  for helping to debug leftover 'zombie' processes when closing a pipe
  for making the Dolby Digital thread start only if the recording actually
  contains Dolby Digital data
+ for improving thread locking in the ring buffer to avoid possible race conditions
+ under heavy load
 
 Rolf Hakenes <hakenes@hippomi.de>
  for providing 'libdtv' and adapting the EIT mechanisms to it
@@ -185,7 +198,7 @@ Thomas Heiligenmann <thomas@heiligenmann.de>
 Norbert Schmidt <nschmidt-nrw@t-online.de>
  for filling in some missing teletext PIDs
 
-Thilo Wunderlich <tw@ubcom.net>
+Thilo Wunderlich <wunderlich@speedway.org>
  for his help in keeping 'channels.conf' up to date
  for reporting a problem with accessing the epg.data file before it is fully written
 
@@ -202,6 +215,8 @@ Sergei Haller <Sergei.Haller@math.uni-giessen.de>
  for adding the TPID to Hessen-3 in 'channels.conf'
  for suggesting that the EPG scan should skip channels with their 'Ca' parameter
  explicitly set to an other DVB card
+ for implementing enhanced string editing with upper-/lowercase, insert/overwrite
+ and delete
 
 Andreas Gebel <andreas@xcapenet.de>
  for his help in keeping 'channels.conf' up to date
@@ -280,3 +295,37 @@ Dirk Wiebel <dirk@wiebel.de>
 Gerald Raaf <graaf@attglobal.net>
  for helping to fix the still picture workaround in case the progress display
  is active
+ for his support in keeping the Premiere World channels up to date in 'channels.conf'
+
+Andreas Roedl <flood@flood-net.de>
+ for adding some DVB-T channels for Berlin (Germany) to channels.conf.terr
+
+Jean Martin <mac_j_fr@hotmail.com>
+ for pointing out a problem with OSD color palette handling on "big endian" systems
+
+Steffen Koch <Steffen.Koch@koch-enterprises.de>
+ for reporting a crash when selecting the "Jump" function directly after setting
+ an editing mark
+
+Matthias Hilbig <hilbig@upb.de>
+ for fixing some missing ',' in i18n.c
+
+Simon Dean <linux-dvb@sickhack.com>
+ for reporting a problem with '.' at the end of a directory name in case of VFAT=1
+ (Windows can't handle these)
+
+Dimitrios Dimitrakos <mail@dimitrios.de>
+ for translating OSD texts to the Greek language
+
+Marcus Kuba <marcus@kuba4u.de>
+ for reporting a bug in the unit of the "SVDRP timeout" setup parameter
+
+Ulrich Petri <ulope@gmx.de>
+ for his help in debugging a crash on systems with disks that have a block size
+ larger than 1MB
+
+Oliver Lorei <oliverlorei@cityweb.de>
+ for his support in keeping the Premiere World channels up to date in 'channels.conf.cable'
+
+Andreas Böttger <fboettger@t-online.de>
+ for reporting a bug in skipping forward in time shift mode near the end of the recording

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.h 1.68 2002/03/10 10:50:00 kls Exp $
+ * $Id: dvbapi.h 1.69 2002/04/21 09:49:22 kls Exp $
  */
 
 #ifndef __DVBAPI_H
@@ -104,7 +104,7 @@ private:
   static int useDvbApi;
   int cardIndex;
   int caCaps[MAXCACAPS];
-  int CanShift(int Ca, int Priority);
+  int CanShift(int Ca, int Priority, int UsedCards = 0);
 public:
   static cDvbApi *PrimaryDvbApi;
   static void SetUseDvbApi(int n);

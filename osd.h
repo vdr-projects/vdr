@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.h 1.27 2002/03/10 16:18:11 kls Exp $
+ * $Id: osd.h 1.28 2002/05/01 11:17:42 kls Exp $
  */
 
 #ifndef __OSD_H
@@ -23,6 +23,7 @@ enum eOSState { osUnknown,
                 osChannels,
                 osTimers,
                 osRecordings,
+                osPlugin,
                 osSetup,
                 osCommands,
                 osRecord,
@@ -43,6 +44,7 @@ enum eOSState { osUnknown,
                 osUser7,
                 osUser8,
                 osUser9,
+                osUser10,
               };
 
 class cOsdItem : public cListObject {

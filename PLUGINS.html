@@ -1,0 +1,620 @@
+<html>
+<head>
+<title>The VDR Plugin System</title>
+</head>
+<body bgcolor="white">
+
+<h1>The VDR Plugin System</h1>
+
+VDR provides an easy to use plugin interface that allows additional functionality
+to be added to the program by implementing a dynamically loadable library file.
+This interface allows programmers to develop additional functionality for VDR completely
+separate from the core VDR source, without the need of patching the original
+VDR code (and all the problems of correlating various patches).
+<p>
+This document describes the "outside" interface of the plugin system.
+It handles everything necessary for a plugin to get hooked into the core
+VDR program and present itself to the user.
+
+<!--<p>TODO: Link to the document about VDR base classes to use when implementing actual functionality (yet to be written).-->
+
+<hr><h2>Quick start</h2>
+
+<center><i><b>Can't wait, can't wait!</b></i></center><p>
+
+Actually you should read this entire document before starting to work with VDR plugins,
+but you probably want to see something happening right away <tt>;-)</tt>
+<p>
+So, for a quick demonstration of the plugin system, there is a demo plugin called
+"hello" that comes with the VDR source. To test drive this one, do the following:
+<ul>
+<li>change into the VDR source directory
+<li><b><tt>make</tt></b> the VDR program with your usual <tt>REMOTE=...</tt> (and maybe other) options
+<li>do <b><tt>make plugins</tt></b> to build the demo plugin
+<li>run VDR with <b><tt>vdr -V</tt></b> to see the version information
+<li>run VDR with <b><tt>vdr -h</tt></b> to see the command line options
+<li>run VDR with <b><tt>vdr -Phello</tt></b>
+<li>open VDR's main menu and select the <i>Hello</i> item
+<li>open the <i>Setup</i> menu from VDR's main menu and select <i>Plugins</i>
+</ul>
+If you enjoyed this brief glimpse into VDR plugin handling, read through the rest of
+this document and eventually write your own VDR plugin.
+
+<hr><h2>The name of the plugin</h2>
+
+<center><i><b>Give me some I.D.!</b></i></center><p>
+
+One of the first things to consider when writing a VDR plugin is giving the thing
+a proper name. This name will be used in the VDR command line in order to load
+the plugin, and will also be the name of the plugin's source directory, as well
+as part of the final library name.
+<p>
+The plugin's name should typically be as short as possible. Three letter
+abbreviations like <b><tt>dvd</tt></b> (for a DVD player) or <b><tt>mp3</tt></b>
+(for an MP3 player) would be good choices. It is also recommended that the name
+consists of only lowercase letters and digits.
+No other characters should be used here.
+<p>
+A plugin can access its name through the (non virtual) member function
+
+<p><table><tr><td bgcolor=#F0F0F0><pre><br>
+const char *Name(void);
+</pre></td></tr></table><p>
+
+The actual name is derived from the plugin's library file name, as defined in the
+next chapter.
+
+<a name="The plugin directory structure"><hr><h2>The plugin directory structure</h2>
+
+<center><i><b>Where is everybody?</b></i></center><p>
+
+By default plugins are located in a directory named <tt>PLUGINS</tt> below the
+VDR source directory. Inside this directory the following subdirectory structure
+is used:
+
+<p><table><tr><td bgcolor=#F0F0F0><pre><br>
+VDR/PLUGINS/SRC
+VDR/PLUGINS/SRC/demo
+VDR/PLUGINS/SRC/hello
+VDR/PLUGINS/lib
+VDR/PLUGINS/lib/libvdr-demo.so.1.1.0
+VDR/PLUGINS/lib/libvdr-hello.so.1.1.0
+</pre></td></tr></table><p>
+
+The <tt>SRC</tt> directory contains one subdirectory for each plugin, which carries
+the name of that plugin (in the above example that would be <tt>demo</tt> and
+<tt>hello</tt>, respectively). What's inside the individual source directory of a
+plugin is entirely up to the author of that plugin. The only prerequisites are
+that there is a <tt>Makefile</tt> that provides the targets <tt>all</tt> and
+<tt>clean</tt>, and that a call to <tt>make all</tt> actually produces a dynamically
+loadable library file for that plugin (we'll get to the details later).
+<p>
+The <tt>lib</tt> directory contains the dynamically loadable libraries of all
+available plugins. Note that the names of these files are created by concatenating
+<p>
+<table border=2>
+<tr><td align=center><b><tt>libvdr-</tt></b></td><td align=center><b><tt>demo</tt></b></td><td align=center><b><tt>.so.</tt></b></td><td align=center><b><tt>1.1.0</tt></b></td></tr>
+<tr><td align=center><font size=-1>VDR plugin<br>library prefix</font></td><td align=center><font size=-1>name of<br>the plugin</font></td><td align=center><font size=-1>shared object<br>indicator</font></td><td align=center><font size=-1>VDR version number<br>this plugin was<br>compiled for</font></td></tr>
+</table>
+<p>
+The plugin library files can be stored in any directory. If the default organization
+is not used, the path to the plugin directory has be be given to VDR through the
+<b><tt>-L</tt></b> option.
+<p>
+The VDR <tt>Makefile</tt> contains the target <tt>plugins</tt>, which calls
+<tt>make all</tt> in every directory found under <tt>VDR/PLUGINS/SRC</tt>,
+plus the target <tt>plugins-clean</tt>, which calls <tt>make clean</tt> in
+each of these directories.
+<p>
+If you download a plugin <a href="#Building the distribution package">package</a>
+from the web, it will typically have a name like
+<p>
+<tt>vdr-demo-0.0.1.tgz</tt>
+<p>
+and will unpack into a directory named
+<p>
+<tt>vdr-demo-0.0.1</tt>
+<p>
+To use the <tt>plugins</tt> and <tt>plugins-clean</tt> targets from the VDR <tt>Makefile</tt>
+you need to unpack such an archive into the <tt>VDR/PLUGINS/SRC</tt> directory and
+create a symbolic link with the basic plugin name, as in
+
+<p><table><tr><td bgcolor=#F0F0F0><pre><br>
+ln -s vdr-demo-0.0.1 demo
+</pre></td></tr></table><p>
+
+Since the VDR <tt>Makefile</tt> only searches for directories with names consisting
+of only lowercase characters and digits, it will only follow the symbolic links, which
+should lead to the current version of the plugin you want to use. This way you can
+have several different versions of a plugin source (like <tt>vdr-demo-0.0.1</tt> and
+<tt>vdr-demo-0.0.2</tt>) and define which one to actually use through the symbolic link.
+
+<a name="Initializing a new plugin directory"><hr><h2>Initializing a new plugin directory</h2>
+
+<center><i><b>A room with a view</b></i></center><p>
+
+Call the Perl script <tt>newplugin</tt> from the VDR source directory to create
+a new plugin directory with a <tt>Makefile</tt> and a main source file implementing
+the basic derived plugin class.
+You will also find a <tt>README</tt> file there with some inital text, where you
+should fill in actual information about your project.
+A <tt>HISTORY</tt> file is set up with an "Initial revision" entry. As your project
+evolves, you should add the changes here with date and version number.
+<p>
+<tt>newplugin</tt> also creates a copy of the GPL license file <tt>COPYING</tt>,
+assuming that you will release your work under that license. Change this if you
+have other plans.
+<p>
+Add further files and maybe subdirectories to your plugin source directory as
+necessary. Don't forget to adapt the <tt>Makefile</tt> appropriately.
+
+<hr><h2>The actual implementation</h2>
+
+<center><i><b>Use the source, Luke!</b></i></center><p>
+
+A newly initialized plugin doesn't really do very much yet.
+If you <a href="#Loading plugins into VDR">load it into VDR</a> you will find a new
+entry in the main menu, with the same name as your plugin (where the first character
+has been converted to uppercase). There will also be a new entry named "Plugins" in
+the "Setup" menu, which will bring up a list of all loaded plugins, through which you
+can access each plugin's own setup parameters (if it provides any).
+<p>
+To implement actual functionality into your plugin you need to edit the source file
+that was generated as <tt>PLUGINS/SRC/name.c</tt>. Read the comments in that file
+to see where you can bring in your own code. The following sections of this document
+will walk you through the individual member functions of the plugin class.
+<p>
+Depending on what your plugin shall do, you may or may not need all of the given
+member functions. Except for the <tt>MainMenuEntry()</tt> function they all by default
+return values that will result in no actual functionality. You can either completely
+delete unused functions from your source file, or just leave them as they are.
+If your plugin shall not be accessible through VDR's main menu, simply remove
+(or comment out) the line implementing the <tt>MainMenuEntry()</tt> function.
+<p>
+At the end of the plugin's source file you will find a line that looks like this:
+
+<p><table><tr><td bgcolor=#F0F0F0><pre><br>
+VDRPLUGINCREATOR(cPluginDemo);
+</pre></td></tr></table><p>
+
+This is the "magic" hook that allows VDR to actually load the plugin into
+its memory. You don't need to worry about the details behind all this.
+<p>
+If your plugin requires additional source files, simply add them to your plugin's
+source directory and adjust the <tt>Makefile</tt> accordingly.
+
+<hr><h2>Construction and Destruction</h2>
+
+<center><i><b>What goes up, must come down...</b></i></center><p>
+
+The constructor and destructor of a plugin are defined as
+
+<p><table><tr><td bgcolor=#F0F0F0><pre><br>
+cPlugin(void);
+virtual ~cPlugin();
+</pre></td></tr></table><p>
+
+The <b>constructor</b> shall initialize any member variables the plugin defines, but
+<b>must not access any global structures of VDR</b>.
+It also must not create any threads or other large data structures. These things
+are done in the <a href="#Getting started"><tt>Start()</tt></a> function later.
+Constructing a plugin object shall not have any side effects or produce any output,
+since VDR, for instance, has to create the plugin objects in order to get their
+command line help - and after that immediately destroys them again.
+<p>
+The <b>destructor</b> has to clean up any data created by the plugin, and has to
+take care that any threads the plugin may have created will be stopped.
+<p>
+Of course, if your plugin doesn't define any member variables that need to be
+initialized (and deleted), you don't need to implement either of these functions.
+
+<hr><h2>Version number</h2>
+
+<center><i><b>Which incarnation is this?</b></i></center><p>
+
+Every plugin must have a version number of its own, which does not necessarily
+have to be in any way related to the VDR version number.
+VDR requests a plugin's version number through a call to the function
+
+<p><table><tr><td bgcolor=#F0F0F0><pre><br>
+virtual const char *Version(void) = 0;
+</pre></td></tr></table><p>
+
+Since this is a "pure" virtual function, any derived plugin class <b>must</b>
+implement it. The returned string should identify this version of the plugin.
+Typically this would be something like "0.0.1", but it may also contain other
+information, like for instance "0.0.1pre2" or the like. The string should only
+be as long as really necessary, and shall not contain the plugin's name itself.
+Here's an example:
+
+<p><table><tr><td bgcolor=#F0F0F0><pre><br>
+static const char *VERSION = "0.0.1";
+
+...
+
+const char *cPluginDemo::Version(void)
+{
+  return VERSION;
+}
+</pre></td></tr></table><p>
+
+Note that the definition of the version number is expected to be located in the
+main source file, and must be written as
+<pre>
+static const char *VERSION = ...
+</pre>
+just like shown in the above example. This is a convention that allows the <tt>Makefile</tt>
+to extract the version number when generating the file name for the distribution archive.
+<p>
+A new plugin project should start with version number <tt>0.0.1</tt> and should reach
+version <tt>1.0.0</tt> once it is completely operative and well tested. Following the
+Linux kernel version numbering scheme, versions with <i>even</i> release numbers
+(like <tt>1.0.x</tt>, <tt>1.2.x</tt>, <tt>1.4.x</tt>...) should be stable releases,
+while those with <i>odd</i> release numbers (like <tt>1.1.x</tt>, <tt>1.3.x</tt>,
+<tt>1.5.x</tt>...) are usually considered "under development". The three parts of
+a version number are not limited to single digits, so a version number of <tt>1.2.15</tt>
+would be acceptable.
+
+<hr><h2>Description</h2>
+
+<center><i><b>What is it that you do?</b></i></center><p>
+
+In order to tell the user what exactly a plugin does, it must implement the function
+
+<p><table><tr><td bgcolor=#F0F0F0><pre><br>
+virtual const char *Description(void) = 0;
+</pre></td></tr></table><p>
+
+which returns a short, one line description of the plugin's purpose.
+
+<p><table><tr><td bgcolor=#F0F0F0><pre><br>
+virtual const char *Description(void)
+{
+  return "A simple demo plugin";
+}
+</pre></td></tr></table><p>
+
+<hr><h2>Command line arguments</h2>
+
+<center><i><b>Taking orders</b></i></center><p>
+
+A VDR plugin can have command line arguments just like any normal program.
+If a plugin wants to react on command line arguments, it needs to implement
+the function
+
+<p><table><tr><td bgcolor=#F0F0F0><pre><br>
+virtual bool ProcessArgs(int argc, char *argv[]);
+</pre></td></tr></table><p>
+
+The parameters <tt>argc</tt> and <tt>argv</tt> have exactly the same meaning
+as in a normal C program's <tt>main()</tt> function.
+<tt>argv[0]</tt> contains the name of the plugin (as given in the <b><tt>-P</tt></b>
+option of the <tt>vdr</tt> call).
+<p>
+Each plugin has its own set of command line options, which are totally independent
+from those of any other plugin or VDR itself.
+<p>
+You can use the <tt>getopt()</tt> or <tt>getopt_long()</tt> function to process
+these arguments. As with any normal C program, the strings pointed to by <tt>argv</tt>
+will survive the entire lifetime of the plugin, so it is safe to store pointers to
+these values inside the plugin. Here's an example:
+
+<p><table><tr><td bgcolor=#F0F0F0><pre><br>
+bool cPluginDemo::ProcessArgs(int argc, char *argv[])
+{
+  static struct option long_options[] = {
+      { "aaa",      required_argument, NULL, 'a' },
+      { "bbb",      no_argument,       NULL, 'b' },
+      { NULL }
+    };
+
+  int c;
+  while ((c = getopt_long(argc, argv, "a:b", long_options, NULL)) != -1) {
+        switch (c) {
+          case 'a': fprintf(stderr, "option -a = %s\n", optarg);
+                    break;
+          case 'b': fprintf(stderr, "option -b\n");
+                    break;
+          default:  return false;
+          }
+        }
+  return true;
+}
+</pre></td></tr></table><p>
+
+The return value must be <i>true</i> if all options have been processed
+correctly, or <i>false</i> in case of an error. The first plugin that returns
+<i>false</i> from a call to its <tt>ProcessArgs()</tt> function will cause VDR
+to exit.
+
+<hr><h2>Command line help</h2>
+
+<center><i><b>Tell me about it...</b></i></center><p>
+
+If a plugin accepts command line options, it should implement the function
+
+<p><table><tr><td bgcolor=#F0F0F0><pre><br>
+virtual const char *CommandLineHelp(void);
+</pre></td></tr></table><p>
+
+which will be called if the user enters the <b><tt>-h</tt></b> option when starting VDR.
+The returned string should contain the command line help for this plugin, formatted
+in the same way as done by VDR itself:
+
+<p><table><tr><td bgcolor=#F0F0F0><pre><br>
+const char *cPluginDemo::CommandLineHelp(void)
+{
+  return "  -a ABC,   --aaa=ABC      do something nice with ABC\n"
+         "  -b,       --bbb          activate 'plan B'\n";
+}
+</pre></td></tr></table><p>
+
+This command line help will be printed directly below VDR's help texts (separated
+by a line indicating the plugin's name, version and description), so if you use the
+same formatting as shown here it will line up nicely.
+Note that all lines should be terminated with a newline character, and should
+be shorter than 80 characters.
+
+<a name="Getting started"><hr><h2>Getting started</h2>
+
+<center><i><b>Let's get ready to rumble!</b></i></center><p>
+
+If a plugin implements a function that runs in the background (presumably in a
+thread of its own), or wants to make use of <a href="#Internationalization">internationalization</a>,
+it needs to implement the function
+
+<p><table><tr><td bgcolor=#F0F0F0><pre><br>
+virtual void Start(void);
+</pre></td></tr></table><p>
+
+which is called once for each plugin at program startup.
+Inside this function the plugin must set up everything necessary to perform
+its task. This may, for instance, be a thread that collects data from the DVB
+stream, which is later presented to the user via a function that is available
+from the main menu.
+<p>
+If the plugin doesn't implement any background functionality or internationalized
+texts, it doesn't need to implement this function.
+
+<hr><h2>Main menu entry</h2>
+
+<center><i><b>Today's special is...</b></i></center><p>
+
+If the plugin implements a feature that the user shall be able to access
+from VDR's main menu, it needs to implement the function
+
+<p><table><tr><td bgcolor=#F0F0F0><pre><br>
+virtual const char *MainMenuEntry(void);
+</pre></td></tr></table><p>
+
+The default implementation returns a <tt>NULL</tt> pointer, which means that
+this plugin will not have an item in the main menu. Here's an example of a
+plugin that will have a main menu item:
+
+<p><table><tr><td bgcolor=#F0F0F0><pre><br>
+const char *cPluginDemo::MainMenuEntry(void)
+{
+  return "Demo";
+}
+</pre></td></tr></table><p>
+
+The menu entries of all plugins will be inserted into VDR's main menu right
+after the <i>Recordings</i> item, in the same sequence as they were given
+in the call to VDR.
+
+<hr><h2>User interaction</h2>
+
+<center><i><b>It's showtime!</b></i></center><p>
+
+If the user selects the main menu entry of a plugin, VDR calls the function
+
+<p><table><tr><td bgcolor=#F0F0F0><pre><br>
+virtual cOsdMenu *MainMenuAction(void);
+</pre></td></tr></table><p>
+
+which can do one of two things:
+<ul>
+<li>Return a pointer to a <tt>cOsdMenu</tt> object which will be displayed
+    as a submenu of the main menu (just like the <i>Recordings</i> menu, for instance).
+    That menu can then implement further functionality and, for instance, could
+    eventually start a custom player to replay a file other than a VDR recording.
+<li>Perform a specific action and return <tt>NULL</tt>. In that case the main menu
+    will be closed after calling <tt>MainMenuAction()</tt>.
+</ul>
+<b>
+It is very important that a call to <tt>MainMenuAction()</tt> returns as soon
+as possible! As long as the program stays inside this function, no other user
+interaction is possible. If a specific action takes longer than a few seconds,
+the plugin should launch a separate thread to do this.
+</b>
+
+<hr><h2>Setup parameters</h2>
+
+<center><i><b>Remember me...</b></i></center><p>
+
+If a plugin requires its own setup parameters, it needs to implement the following
+functions to handle these parameters:
+
+<p><table><tr><td bgcolor=#F0F0F0><pre><br>
+virtual cMenuSetupPage *SetupMenu(void);
+virtual bool SetupParse(const char *Name, const char *Value);
+</pre></td></tr></table><p>
+
+The <tt>SetupMenu()</tt> function shall return the plugin's "Setup" menu
+page, where the user can adjust all the parameters known to this plugin.
+<p>
+<tt>SetupParse()</tt> will be called for each parameter the plugin has
+previously stored in the global setup data (see below). It shall return
+<i>true</i> if the parameter was parsed correctly, <i>false</i> in case of
+an error. If <i>false</i> is returned, an error message will be written to
+the log file (and program execution will continue).
+<p>
+The plugin's setup parameters are stored in the same file as VDR's parameters.
+In order to allow each plugin (and VDR itself) to have its own set of parameters,
+the <tt>Name</tt> of each parameter will be preceeded with the plugin's
+name, as in
+<p>
+<tt>demo.SomeParameter = 123</tt>
+<p>
+The prefix will be handled by the core VDR setup code, so the individual
+plugins need not worry about this.
+<p>
+To store its values in the global setup, a plugin has to call the function
+
+<p><table><tr><td bgcolor=#F0F0F0><pre><br>
+void SetupStore(const char *Name, <i>type</i> Value);
+</pre></td></tr></table><p>
+
+where <tt>Name</tt> is the name of the parameter (<tt>"SomeParameter"</tt> in the above
+example, without the prefix <tt>"demo."</tt>) and <tt>Value</tt> is a simple data type (like
+<tt>char&nbsp;*</tt>, <tt>int</tt> etc).
+Note that this is not a function that the individual plugin class needs to implement!
+<tt>SetupStore()</tt> is a non-virtual member function of the <tt>cPlugin</tt> class.
+<p>
+To remove a parameter from the setup data, call <tt>SetupStore()</tt> with the appropriate
+name and without any value, as in
+<p>
+<tt>SetupStore("SomeParameter");</tt>
+<p>
+The VDR menu "Setup/Plugins" will list all loaded plugins with their name,
+version number and description. Selecting an item in this list will bring up
+the plugin's "Setup" menu if that plugin has implemented the <tt>SetupMenu()</tt>
+function.
+<p>
+Finally, a plugin doesn't have to implement the <tt>SetupMenu()</tt> if it only
+needs setup parameters that are not directly user adjustable. It can use
+<tt>SetupStore()</tt> and <tt>SetupParse()</tt> without presenting these
+parameters to the user.
+
+<a name="Internationalization"><hr><h2>Internationalization</h2>
+
+<center><i><b>Welcome to Babylon!</b></i></center><p>
+
+If a plugin displays texts to the user, it should implement internationalized
+versions of these texts and call the function
+
+<p><table><tr><td bgcolor=#F0F0F0><pre><br>
+void RegisterI18n(const tI18nPhrase * const Phrases);
+</pre></td></tr></table><p>
+
+to register them with VDR's internationalization mechanism.
+<p>
+The call to this function must be done in the <a href="#Getting started"><tt>Start()</tt></a> function of the plugin:
+
+<p><table><tr><td bgcolor=#F0F0F0><pre><br>
+const tI18nPhrase Phrases[] = {
+  { "Hello world!",
+    "Hallo Welt!",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+  },
+  { NULL }
+  };
+
+void cPluginDemo::Start(void)
+{
+  RegisterI18n(Phrases);
+}
+</pre></td></tr></table><p>
+
+Each entry of type <tt>tI18nPhrase</tt> must have exactly as many members as defined
+by the constant <tt>I18nNumLanguages</tt> in the file <tt>VDR/i18n.h</tt>, and the
+sequence of the various languages must be the same as defined in <tt>VDR/i18n.c</tt>.<br>
+<b>It is very important that the array is terminated with a <tt>{&nbsp;NULL&nbsp;}</tt>
+entry!</b>.
+<p>
+Usually you won't be able to fill in all the different translations by yourself, so
+you may want to contact the maintainers of these languages (listed in the file
+<tt>VDR/i18n.c</tt>) and ask them to provide the additional translations.
+<p>
+The actual runtime selection of the texts corresponding to the selected language
+is done by wrapping each internationalized text with the <tt>tr()</tt> macro:
+
+<p><table><tr><td bgcolor=#F0F0F0><pre><br>
+const char *s = tr("Hello world!");
+</pre></td></tr></table><p>
+
+The text given here must be the first one defined in the related <i>Phrases</i>
+entry (which is the English version), and the returned pointer is either a translated
+version (if available) or the original string. In the latter case a message will be
+written to the log file, indicating that a translation is missing.
+Texts are first searched for in the <i>Phrases</i> registered for this plugin (if any)
+and then in the global VDR texts. So a plugin can make use of texts defined by the
+core VDR code.
+
+<a name="Loading plugins into VDR"><hr><h2>Loading plugins into VDR</h2>
+
+<center><i><b>Saddling up!</b></i></center><p>
+
+Plugins are loaded into VDR using the command line option <b><tt>-P</tt></b>, as in
+
+<p><table><tr><td bgcolor=#F0F0F0><pre><br>
+vdr -Pdemo
+</pre></td></tr></table><p>
+
+If the plugin accepts command line options, they are given as part of the argument
+to the <b><tt>-P</tt></b> option, which then has to be enclosed in quotes:
+
+<p><table><tr><td bgcolor=#F0F0F0><pre><br>
+vdr -P"demo -a abc -b"
+</pre></td></tr></table><p>
+
+Any number of plugins can be loaded this way, each with its own <b><tt>-P</tt></b> option:
+
+<p><table><tr><td bgcolor=#F0F0F0><pre><br>
+vdr -P"demo -a abc -b" -Pdvd -Pmp3
+</pre></td></tr></table><p>
+
+If you are not starting VDR from the VDR source directory (and thus your plugins
+cannot be found at their default location) you need to tell VDR the location of
+the plugins through the <b><tt>-L</tt></b> option:
+
+<p><table><tr><td bgcolor=#F0F0F0><pre><br>
+vdr -L/usr/lib/vdr -Pdemo
+</pre></td></tr></table><p>
+
+There can be any number of <b><tt>-L</tt></b> options, and each of them will apply to the
+<b><tt>-P</tt></b> options following it.
+<p>
+When started with the <b><tt>-h</tt></b> or <b><tt>-V</tt></b> option (for <i>help</i>
+or <i>version</i> information, respectively), VDR will automatically load all plugins
+in the default or given directory that match the VDR plugin
+<a href="#The plugin directory structure">naming convention</a>,
+and display their help and/or version information in addition to its own output.
+
+<a name="Building the distribution package"><hr><h2>Building the distribution package</h2>
+
+<center><i><b>Let's get this show on the road!</b></i></center><p>
+
+If you want to make your plugin available to other VDR users, you'll need to
+make a package that can be easily distributed.
+The <tt>Makefile</tt> that has been created by the call to
+<a href="#Initializing a new plugin directory"><tt>newplugin</tt></a>
+provides the target <tt>package</tt>, which does this for you.
+<p>
+Simply change into your source directory and execute <tt>make package</tt>:
+
+<p><table><tr><td bgcolor=#F0F0F0><pre><br>
+cd VDR/PLUGINS/SRC/demo
+make package
+</pre></td></tr></table><p>
+
+After this you should find a file named like
+
+<p><table><tr><td bgcolor=#F0F0F0><pre><br>
+vdr-demo-0.0.1.tgz
+</pre></td></tr></table><p>
+
+in your source directory, where <tt>demo</tt> will be replaced with your actual
+plugin's name, and <tt>0.0.1</tt> will be your plugin's current version number.
+
+</body>
+</html>

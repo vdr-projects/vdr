@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.102 2002/03/29 10:09:20 kls Exp $
+ * $Id: vdr.c 1.104 2002/05/05 10:34:31 kls Exp $
  */
 
 #include <getopt.h>
@@ -36,6 +36,7 @@
 #include "i18n.h"
 #include "interface.h"
 #include "menu.h"
+#include "plugin.h"
 #include "recording.h"
 #include "tools.h"
 #include "videodir.h"
@@ -79,14 +80,18 @@ int main(int argc, char *argv[])
 
 #define DEFAULTSVDRPPORT 2001
 #define DEFAULTWATCHDOG     0 // seconds
+#define DEFAULTPLUGINDIR "./PLUGINS/lib"
 
   int SVDRPport = DEFAULTSVDRPPORT;
   const char *ConfigDirectory = NULL;
+  bool DisplayHelp = false;
+  bool DisplayVersion = false;
   bool DaemonMode = false;
   bool MuteAudio = false;
   int WatchdogTimeout = DEFAULTWATCHDOG;
   const char *Terminal = NULL;
   const char *Shutdown = NULL;
+  cPluginManager PluginManager(DEFAULTPLUGINDIR);
 
   static struct option long_options[] = {
       { "audio",    required_argument, NULL, 'a' },
@@ -95,8 +100,10 @@ int main(int argc, char *argv[])
       { "device",   required_argument, NULL, 'D' },
       { "epgfile",  required_argument, NULL, 'E' },
       { "help",     no_argument,       NULL, 'h' },
+      { "lib",      required_argument, NULL, 'L' },
       { "log",      required_argument, NULL, 'l' },
       { "mute",     no_argument,       NULL, 'm' },
+      { "plugin",   required_argument, NULL, 'P' },
       { "port",     required_argument, NULL, 'p' },
       { "record",   required_argument, NULL, 'r' },
       { "shutdown", required_argument, NULL, 's' },
@@ -108,8 +115,7 @@ int main(int argc, char *argv[])
     };
 
   int c;
-  int option_index = 0;
-  while ((c = getopt_long(argc, argv, "a:c:dD:E:hl:mp:r:s:t:v:Vw:", long_options, &option_index)) != -1) {
+  while ((c = getopt_long(argc, argv, "a:c:dD:E:hl:L:mp:P:r:s:t:v:Vw:", long_options, NULL)) != -1) {
         switch (c) {
           case 'a': cDvbApi::SetAudioCommand(optarg);
                     break;
@@ -128,40 +134,7 @@ int main(int argc, char *argv[])
                     break;
           case 'E': cSIProcessor::SetEpgDataFileName(*optarg != '-' ? optarg : NULL);
                     break;
-          case 'h': printf("Usage: vdr [OPTION]\n\n"           // for easier orientation, this is column 80|
-                           "  -a CMD,   --audio=CMD    send Dolby Digital audio to stdin of command CMD\n"
-                           "  -c DIR,   --config=DIR   read config files from DIR (default is to read them\n"
-                           "                           from the video directory)\n"
-                           "  -d,       --daemon       run in daemon mode\n"
-                           "  -D NUM,   --device=NUM   use only the given DVB device (NUM = 0, 1, 2...)\n"
-                           "                           there may be several -D options (default: all DVB\n"
-                           "                           devices will be used)\n"
-                           "  -E FILE   --epgfile=FILE write the EPG data into the given FILE (default is\n"
-                           "                           %s); use '-E-' to disable this\n"
-                           "                           if FILE is a directory, the default EPG file will be\n"
-                           "                           created in that directory\n"
-                           "  -h,       --help         print this help and exit\n"
-                           "  -l LEVEL, --log=LEVEL    set log level (default: 3)\n"
-                           "                           0 = no logging, 1 = errors only,\n"
-                           "                           2 = errors and info, 3 = errors, info and debug\n"
-                           "  -m,       --mute         mute audio of the primary DVB device at startup\n"
-                           "  -p PORT,  --port=PORT    use PORT for SVDRP (default: %d)\n"
-                           "                           0 turns off SVDRP\n"
-                           "  -r CMD,   --record=CMD   call CMD before and after a recording\n"
-                           "  -s CMD,   --shutdown=CMD call CMD to shutdown the computer\n"
-                           "  -t TTY,   --terminal=TTY controlling tty\n"
-                           "  -V,       --version      print version information and exit\n"
-                           "  -v DIR,   --video=DIR    use DIR as video directory (default: %s)\n"
-                           "  -w SEC,   --watchdog=SEC activate the watchdog timer with a timeout of SEC\n"
-                           "                           seconds (default: %d); '0' disables the watchdog\n"
-                           "\n"
-                           "Report bugs to <vdr-bugs@cadsoft.de>\n",
-                           cSIProcessor::GetEpgDataFileName() ? cSIProcessor::GetEpgDataFileName() : "'-'",
-                           DEFAULTSVDRPPORT,
-                           VideoDirectory,
-                           DEFAULTWATCHDOG
-                           );
-                    return 0;
+          case 'h': DisplayHelp = true;
                     break;
           case 'l': if (isnumber(optarg)) {
                        int l = atoi(optarg);
@@ -173,6 +146,8 @@ int main(int argc, char *argv[])
                     fprintf(stderr, "vdr: invalid log level: %s\n", optarg);
                     return 2;
                     break;
+          case 'L': PluginManager.SetDirectory(optarg);
+                    break;
           case 'm': MuteAudio = true;
                     break;
           case 'p': if (isnumber(optarg))
@@ -182,14 +157,15 @@ int main(int argc, char *argv[])
                        return 2;
                        }
                     break;
+          case 'P': PluginManager.AddPlugin(optarg);
+                    break;
           case 'r': cRecordingUserCommand::SetCommand(optarg);
                     break;
           case 's': Shutdown = optarg;
                     break;
           case 't': Terminal = optarg;
                     break;
-          case 'V': printf("vdr, version %s\n", VDRVERSION);
-                    return 0;
+          case 'V': DisplayVersion = true;
                     break;
           case 'v': VideoDirectory = optarg;
                     while (optarg && *optarg && optarg[strlen(optarg) - 1] == '/')
@@ -208,6 +184,71 @@ int main(int argc, char *argv[])
           default:  return 2;
           }
         }
+
+  // Help and version info:
+
+  if (DisplayHelp || DisplayVersion) {
+     if (!PluginManager.HasPlugins())
+        PluginManager.AddPlugin("*"); // adds all available plugins
+     PluginManager.LoadPlugins();
+     if (DisplayHelp) {
+        printf("Usage: vdr [OPTIONS]\n\n"          // for easier orientation, this is column 80|
+               "  -a CMD,   --audio=CMD    send Dolby Digital audio to stdin of command CMD\n"
+               "  -c DIR,   --config=DIR   read config files from DIR (default is to read them\n"
+               "                           from the video directory)\n"
+               "  -d,       --daemon       run in daemon mode\n"
+               "  -D NUM,   --device=NUM   use only the given DVB device (NUM = 0, 1, 2...)\n"
+               "                           there may be several -D options (default: all DVB\n"
+               "                           devices will be used)\n"
+               "  -E FILE   --epgfile=FILE write the EPG data into the given FILE (default is\n"
+               "                           %s); use '-E-' to disable this\n"
+               "                           if FILE is a directory, the default EPG file will be\n"
+               "                           created in that directory\n"
+               "  -h,       --help         print this help and exit\n"
+               "  -l LEVEL, --log=LEVEL    set log level (default: 3)\n"
+               "                           0 = no logging, 1 = errors only,\n"
+               "                           2 = errors and info, 3 = errors, info and debug\n"
+               "  -L DIR,   --lib=DIR      search for plugins in DIR (default is %s)\n"
+               "  -m,       --mute         mute audio of the primary DVB device at startup\n"
+               "  -p PORT,  --port=PORT    use PORT for SVDRP (default: %d)\n"
+               "                           0 turns off SVDRP\n"
+               "  -P OPT,   --plugin=OPT   load a plugin defined by the given options\n"
+               "  -r CMD,   --record=CMD   call CMD before and after a recording\n"
+               "  -s CMD,   --shutdown=CMD call CMD to shutdown the computer\n"
+               "  -t TTY,   --terminal=TTY controlling tty\n"
+               "  -v DIR,   --video=DIR    use DIR as video directory (default: %s)\n"
+               "  -V,       --version      print version information and exit\n"
+               "  -w SEC,   --watchdog=SEC activate the watchdog timer with a timeout of SEC\n"
+               "                           seconds (default: %d); '0' disables the watchdog\n"
+               "\n",
+               cSIProcessor::GetEpgDataFileName() ? cSIProcessor::GetEpgDataFileName() : "'-'",
+               DEFAULTPLUGINDIR,
+               DEFAULTSVDRPPORT,
+               VideoDirectory,
+               DEFAULTWATCHDOG
+               );
+        }
+     if (DisplayVersion)
+        printf("vdr (%s) - The Video Disk Recorder\n", VDRVERSION);
+     if (PluginManager.HasPlugins()) {
+        if (DisplayHelp)
+           printf("Plugins: vdr -P\"name [OPTIONS]\"\n\n");
+        for (int i = 0; ; i++) {
+            cPlugin *p = PluginManager.GetPlugin(i);
+            if (p) {
+               const char *help = p->CommandLineHelp();
+               printf("%s (%s) - %s\n", p->Name(), p->Version(), p->Description());
+               if (DisplayHelp && help) {
+                  printf("\n");
+                  puts(help);
+                  }
+               }
+            else
+               break;
+            }
+        }
+     return 0;
+     }
 
   // Log file:
 
@@ -250,6 +291,11 @@ int main(int argc, char *argv[])
 
   isyslog(LOG_INFO, "VDR version %s started", VDRVERSION);
 
+  // Load plugins:
+
+  if (!PluginManager.LoadPlugins(true))
+     return 2;
+
   // Configuration data:
 
   if (!ConfigDirectory)
@@ -275,6 +321,12 @@ int main(int argc, char *argv[])
   cDvbApi::SetPrimaryDvbApi(Setup.PrimaryDVB);
 
   cSIProcessor::Read();
+
+  // Start plugins:
+
+  PluginManager.StartPlugins();
+
+  // Channel:
 
   Channels.SwitchTo(Setup.CurrentChannel);
   if (MuteAudio)
@@ -469,7 +521,7 @@ int main(int argc, char *argv[])
                  Interface->Info(tr("Editing process finished"));
               }
            }
-        if (!*Interact && (!cRecordControls::Active() || ForceShutdown)) {
+        if (!*Interact && ((!cRecordControls::Active() && !cVideoCutter::Active()) || ForceShutdown)) {
            time_t Now = time(NULL);
            if (Now - LastActivity > ACTIVITYTIMEOUT) {
               // Shutdown:
@@ -529,6 +581,7 @@ int main(int argc, char *argv[])
   Setup.CurrentChannel = cDvbApi::CurrentChannel();
   Setup.CurrentVolume  = cDvbApi::CurrentVolume();
   Setup.Save();
+  PluginManager.Shutdown(true);
   cVideoCutter::Stop();
   delete Menu;
   delete ReplayControl;

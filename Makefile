@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 1.33 2002/04/01 12:50:48 kls Exp $
+# $Id: Makefile 1.34 2002/05/09 09:35:05 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -13,15 +13,17 @@ DTVDIR   = ./libdtv
 MANDIR   = /usr/local/man
 BINDIR   = /usr/local/bin
 
+PLUGINDIR= ./PLUGINS
+
 VIDEODIR = /video
 
 INCLUDES = -I$(DVBDIR)/ost/include
 
 DTVLIB   = $(DTVDIR)/libdtv.a
 
-OBJS = config.o dvbapi.o dvbosd.o eit.o font.o i18n.o interface.o menu.o osd.o\
-       recording.o remote.o remux.o ringbuffer.o svdrp.o thread.o tools.o vdr.o\
-       videodir.o
+OBJS = config.o dvbapi.o dvbosd.o eit.o font.o i18n.o interface.o menu.o\
+       menuitems.o osd.o plugin.o recording.o remote.o remux.o ringbuffer.o\
+       svdrp.o thread.o tools.o vdr.o videodir.o
 
 OSDFONT = -adobe-helvetica-medium-r-normal--23-*-100-100-p-*-iso8859-1
 FIXFONT = -adobe-courier-bold-r-normal--25-*-100-100-m-*-iso8859-1
@@ -69,7 +71,7 @@ include $(DEPFILE)
 # The main program:
 
 vdr: $(OBJS) $(DTVLIB)
-	g++ -g -O2 $(OBJS) $(NCURSESLIB) -ljpeg -lpthread $(LIBDIRS) $(DTVLIB) -o vdr
+	g++ -g -O2 -rdynamic $(OBJS) $(NCURSESLIB) -ljpeg -lpthread -ldl $(LIBDIRS) $(DTVLIB) -o vdr
 
 # The font files:
 
@@ -88,6 +90,21 @@ genfontfile: genfontfile.c
 $(DTVLIB) $(DTVDIR)/libdtv.h:
 	make -C $(DTVDIR) all
 
+# The 'include' directory (for plugins):
+
+include-dir:
+	@mkdir -p include/vdr
+	@(cd include/vdr; for i in ../../*.h; do ln -fs $$i .; done)
+
+# Plugins:
+
+plugins: include-dir
+	@for i in `ls $(PLUGINDIR)/SRC | grep -v '[^a-z0-9]'`; do make -C "$(PLUGINDIR)/SRC/$$i" all; done
+
+plugins-clean:
+	@for i in `ls $(PLUGINDIR)/SRC | grep -v '[^a-z0-9]'`; do make -C "$(PLUGINDIR)/SRC/$$i" clean; done
+	@-rm -f $(PLUGINDIR)/lib/*
+
 # Install the files:
 
 install:
@@ -104,6 +121,7 @@ install:
 clean:
 	make -C $(DTVDIR) clean
 	-rm -f $(OBJS) $(DEPFILE) vdr genfontfile genfontfile.o core* *~
+	-rm -rf include
 fontclean:
 	-rm -f fontfix.c fontosd.c
 CLEAN: clean fontclean

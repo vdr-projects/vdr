@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.170 2002/04/07 09:35:51 kls Exp $
+ * $Id: dvbapi.c 1.174 2002/05/03 15:59:32 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -279,8 +279,7 @@ bool cIndexFile::Get(int Index, uchar *FileNumber, int *FileOffset, uchar *Pictu
 int cIndexFile::GetNextIFrame(int Index, bool Forward, uchar *FileNumber, int *FileOffset, int *Length, bool StayOffEnd)
 {
   if (index) {
-     if (Forward)
-        CatchUp();
+     CatchUp();
      int d = Forward ? 1 : -1;
      for (;;) {
          Index += d;
@@ -533,6 +532,8 @@ void cRecordBuffer::Input(void)
                   int w = Put(p, r);
                   p += w;
                   r -= w;
+                  if (r > 0)
+                     usleep(1); // this keeps the CPU load low
                   }
             t = time(NULL);
             }
@@ -1810,21 +1811,24 @@ bool cDvbApi::SetPrimaryDvbApi(int n)
   return false;
 }
 
-int cDvbApi::CanShift(int Ca, int Priority)
+int cDvbApi::CanShift(int Ca, int Priority, int UsedCards)
 {
   // Test whether a recording on this DVB device can be shifted to another one
   // in order to perform a new recording with the given Ca and Priority on this device:
   int ShiftLevel = -1; // default means this device can't be shifted
+  if (UsedCards & (1 << CardIndex()) != 0)
+     return ShiftLevel; // otherwise we would get into a loop
   if (Recording()) {
      if (ProvidesCa(Ca) // this device provides the requested Ca
         && (Ca != this->Ca() // the requested Ca is different from the one currently used...
            || Priority > this->Priority())) { // ...or the request comes from a higher priority
         cDvbApi *d = NULL;
         int Provides[MAXDVBAPI];
+        UsedCards |= (1 << CardIndex());
         for (int i = 0; i < NumDvbApis; i++) {
             if ((Provides[i] = dvbApi[i]->ProvidesCa(this->Ca())) != 0) { // this device is basicly able to do the job
                if (dvbApi[i] != this) { // it is not _this_ device
-                  int sl = dvbApi[i]->CanShift(this->Ca(), Priority); // this is the original Priority!
+                  int sl = dvbApi[i]->CanShift(this->Ca(), Priority, UsedCards); // this is the original Priority!
                   if (sl >= 0 && (ShiftLevel < 0 || sl < ShiftLevel)) {
                      d = dvbApi[i];
                      ShiftLevel = sl;
@@ -2301,16 +2305,17 @@ bool cDvbApi::SetPid(int fd, dmxPesType_t PesType, int Pid, dmxOutput_t Output)
 {
   if (Pid) {
      CHECK(ioctl(fd, DMX_STOP));
-     dmxPesFilterParams pesFilterParams;
-     pesFilterParams.pid     = Pid;
-     pesFilterParams.input   = DMX_IN_FRONTEND;
-     pesFilterParams.output  = Output;
-     pesFilterParams.pesType = PesType;
-     pesFilterParams.flags   = DMX_IMMEDIATE_START;
-     if (ioctl(fd, DMX_SET_PES_FILTER, &pesFilterParams) < 0) {
-        if (Pid != 0x1FFF)
+     if (Pid != 0x1FFF) {
+        dmxPesFilterParams pesFilterParams;
+        pesFilterParams.pid     = Pid;
+        pesFilterParams.input   = DMX_IN_FRONTEND;
+        pesFilterParams.output  = Output;
+        pesFilterParams.pesType = PesType;
+        pesFilterParams.flags   = DMX_IMMEDIATE_START;
+        if (ioctl(fd, DMX_SET_PES_FILTER, &pesFilterParams) < 0) {
            LOG_ERROR;
-        return false;
+           return false;
+           }
         }
      }
   return true;

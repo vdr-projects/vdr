@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 1.23 2002/03/29 16:34:03 kls Exp $
+ * $Id: osd.c 1.24 2002/05/01 11:53:24 kls Exp $
  */
 
 #include "osd.h"
@@ -105,12 +105,13 @@ cOsdMenu::~cOsdMenu()
 
 const char *cOsdMenu::hk(const char *s)
 {
-  static char buffer[32];
+  static char buffer[64];
   if (s && hasHotkeys) {
      if (digit == 0 && '1' <= *s && *s <= '9' && *(s + 1) == ' ')
-        digit = 10; // prevents automatic hotkeys - input already has them
-     if (digit < 9) {
-        snprintf(buffer, sizeof(buffer), " %d %s", ++digit, s);
+        digit = -1; // prevents automatic hotkeys - input already has them
+     if (digit >= 0) {
+        digit++;
+        snprintf(buffer, sizeof(buffer), " %c %s", (digit < 10) ? '0' + digit : ' ' , s);
         s = buffer;
         }
      }
