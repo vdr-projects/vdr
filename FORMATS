@@ -45,10 +45,14 @@ Video Disk Recorder File Formats
   The fields in a timer definition have the following meaning (from left
   to right):
 
-  - Timer active (0 = inactive, 1 = active)
-    Values larger than '1' can be used by external programs to mark active timers
+  - Timer active (0 = inactive, 1 = active, 3 = instant recording)
+    Values other than these can be used by external programs to mark active timers
     and recognize if the user has modified them. When a user modifes an active
-    timer the 'active' field will be explicitly set to '1'.
+    timer the 'active' field will be explicitly set to '1' (or '0', respectively,
+    if the user deactivates the timer).
+    Note: in order to allow future extensibility, external programs using the
+    'active' parameter should only use the upper 16 bit of this 32 bit parameter
+    and leave the lower 16 bit untouched.
   - Program number of the channel to record
   - Day of recording (in case of a repeating timer), either one or more of
       M------ = Monday

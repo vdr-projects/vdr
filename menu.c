@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.154 2002/02/17 14:00:54 kls Exp $
+ * $Id: menu.c 1.155 2002/02/17 16:03:49 kls Exp $
  */
 
 #include "menu.h"
@@ -2436,10 +2436,12 @@ cRecordControl::~cRecordControl()
   delete fileName;
 }
 
+#define INSTANT_REC_EPG_LOOKAHEAD 300 // seconds to look into the EPG data for an instant recording
+
 bool cRecordControl::GetEventInfo(void)
 {
   cChannel *channel = Channels.GetByNumber(timer->channel);
-  time_t Time = timer->IsSingleEvent() ? timer->StartTime() + ((Setup.MarginStart * 2) + 1) * 60 : timer->StartTime() + (timer->StopTime() - timer->StartTime()) / 2;
+  time_t Time = timer->active == taActInst ? timer->StartTime() + INSTANT_REC_EPG_LOOKAHEAD : timer->StartTime() + (timer->StopTime() - timer->StartTime()) / 2;
   for (int seconds = 0; seconds <= MAXWAIT4EPGINFO; seconds++) {
       {
         cThreadLock ThreadLock;

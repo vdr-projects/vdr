@@ -1014,3 +1014,7 @@ Video Disk Recorder Revision History
   will receive a "First day" setting that skips the timer for this day.
 - Fixed closing all unused file descriptors when opening a pipe (thanks to
   Werner Fink).
+- Instant recordings now take the EPG data from the point in time at 5 minutes
+  from the start time of the recording. In order for this to work the 'active'
+  parameter of a timer now uses the second bit to indicate that this is an
+  "instant" recording (see FORMATS for details).

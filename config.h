@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.96 2002/02/17 12:17:29 kls Exp $
+ * $Id: config.h 1.97 2002/02/17 15:41:44 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -118,6 +118,12 @@ public:
   bool Save(FILE *f);
   bool Switch(cDvbApi *DvbApi = NULL, bool Log = true);
   };
+
+enum eTimerActive { taInactive = 0,
+                    taActive   = 1,
+                    taInstant  = 2,
+                    taActInst  = (taActive | taInstant)
+                  };
 
 class cTimer : public cListObject {
 private:

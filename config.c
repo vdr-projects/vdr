@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.84 2002/02/17 11:37:05 kls Exp $
+ * $Id: config.c 1.85 2002/02/17 15:38:34 kls Exp $
  */
 
 #include "config.h"
@@ -323,7 +323,7 @@ cTimer::cTimer(bool Instant)
 {
   startTime = stopTime = 0;
   recording = pending = false;
-  active = Instant;
+  active = Instant ? taActInst : taInactive;
   cChannel *ch = Channels.GetByNumber(cDvbApi::CurrentChannel());
   channel = ch ? ch->number : 0;
   time_t t = time(NULL);
