@@ -108,6 +108,12 @@ The meaning of the data entries may still vary in future releases,
 so for the moment please look at the source code (config.c) to see
 the meaning of the various fields.
 
+The files that come with this package contain the author's selections,
+so please make sure you adapt these to your personal taste. Also make sure
+that the channels defined in 'channels.conf' are correct before attempting
+to record anything. Channel parameters may vary and not all of the channels
+listed in the default 'channels.conf' file have been verified by the author.
+
 Learning the remote control keys:
 ---------------------------------
 
