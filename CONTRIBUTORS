@@ -742,6 +742,8 @@ Ludwig Nussel <ludwig.nussel@web.de>
  for reporting a problem on systems that have UTF-8 enabled
  for pointing out a flaw in the the description of cRingBufferLinear
  for reporting a bug in cRingBufferLinear::Get() in case the buffer wraps around
+ for adding some checks when cancelling a thread and removing the usleep() in
+ cThread::Start()
 
 Thomas Koch <tom@harhar.net>
  for his support in keeping the Premiere World channels up to date in 'channels.conf'

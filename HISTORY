@@ -3065,3 +3065,7 @@ Video Disk Recorder Revision History
   small packet.
 - Removed the signal handler and WakeUp() call from cThread (it is no longer
   needed).
+- Added some checks when cancelling a thread and removed the usleep() in
+  cThread::Start() (suggested by Ludwig Nussel). Also removed 'running' from
+  cThread and using only childTid to indicate whether a thread is actually
+  running.
