@@ -757,3 +757,4 @@ Video Disk Recorder Revision History
   caused a mix between live video and replay).
 - Three new keys ("Volume+", Volume-" and "Mute") to control the DVB card's
   audio output volume.
+- New version of the 'epg2timers' tool (thanks to Carsten Koch).
