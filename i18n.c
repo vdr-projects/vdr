@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.42 2001/09/09 13:54:35 kls Exp $
+ * $Id: i18n.c 1.43 2001/09/16 14:43:05 kls Exp $
  *
  * Slovenian translations provided by Miha Setina <mihasetina@softhome.net>
  * Italian   translations provided by Alberto Carraro <bertocar@tin.it>
@@ -1204,6 +1204,33 @@ const tPhrase Phrases[] = {
   },
   { "Power",
     "Ausschalten",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+  },
+  { "Volume+",
+    "Lautstärke+",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+  },
+  { "Volume-",
+    "Lautstärke-",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+  },
+  { "Mute",
+    "Stumm",
     "", // TODO
     "", // TODO
     "", // TODO

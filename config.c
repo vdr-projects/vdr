@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.71 2001/09/16 08:57:58 kls Exp $
+ * $Id: config.c 1.72 2001/09/16 14:54:32 kls Exp $
  */
 
 #include "config.h"
@@ -39,6 +39,9 @@ tKey keyTable[] = { // "Up" and "Down" must be the first two keys!
                     { k8,             "8",             0 },
                     { k9,             "9",             0 },
                     { kPower,         "Power",         0 },
+                    { kVolUp,         "Volume+",       0 },
+                    { kVolDn,         "Volume-",       0 },
+                    { kMute,          "Mute",          0 },
                     { kNone,          "",              0 },
                   };
 

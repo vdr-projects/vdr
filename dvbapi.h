@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.h 1.50 2001/09/15 13:46:00 kls Exp $
+ * $Id: dvbapi.h 1.51 2001/09/16 13:54:23 kls Exp $
  */
 
 #ifndef __DVBAPI_H
@@ -315,6 +315,18 @@ private:
 public:
   static void SetAudioCommand(const char *Command);
   static const char *AudioCommand(void) { return audioCommand; }
+
+  // Volume facilities:
+
+private:
+  bool mute;
+  int volume;
+public:
+  void ToggleMute(void);
+       // Turns the volume off or on.
+  void SetVolume(int Volume, bool Absolute = false);
+       // Sets the volume to the given value, either absolutely or relative to
+       // the current volume.
   };
 
 class cEITScanner {

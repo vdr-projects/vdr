@@ -755,3 +755,5 @@ Video Disk Recorder Revision History
 - Fixed manipulating an editing mark at the very end of a recording.
 - Fixed starting a new replay immediately after stopping a previous one (had
   caused a mix between live video and replay).
+- Three new keys ("Volume+", Volume-" and "Mute") to control the DVB card's
+  audio output volume.

@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.72 2001/09/08 14:34:29 kls Exp $
+ * $Id: vdr.c 1.73 2001/09/16 14:54:45 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -51,6 +51,8 @@
 #define ACTIVITYTIMEOUT 60 // seconds before starting housekeeping
 #define SHUTDOWNWAIT   300 // seconds to wait in user prompt before automatic shutdown
 #define MANUALSTART    600 // seconds the next timer must be in the future to assume manual start
+
+#define VOLUMEDELTA      5 // used to increase/decrease the volume
 
 static int Interrupted = 0;
 
@@ -424,6 +426,16 @@ int main(int argc, char *argv[])
              case kMenu: Menu = new cMenuMain(ReplayControl); break;
              // Viewing Control:
              case kOk:   LastChannel = -1; break; // forces channel display
+             // Volume Control:
+             case kVolUp|k_Repeat:
+             case kVolUp:
+             case kVolDn|k_Repeat:
+             case kVolDn:
+                  cDvbApi::PrimaryDvbApi->SetVolume(NORMALKEY(key) == kVolDn ? -VOLUMEDELTA : VOLUMEDELTA);
+                  break;
+             case kMute:
+                  cDvbApi::PrimaryDvbApi->ToggleMute();
+                  break;
              // Power off:
              case kPower: isyslog(LOG_INFO, "Power button pressed");
                           DELETENULL(*Interact);

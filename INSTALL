@@ -294,6 +294,8 @@ The default PC key assignments are:
   Red, Green, Yellow, Blue  'F1'..'F4'
   0..9                      '0'..'9' in top row
   Power                     'P'
+  Volume+/-                 '+', '-'
+  Mute                      'm'
 
 If you prefer different key assignments, or if the default doesn't work for
 your keyboard, simply delete the file 'keys-pc.conf' and restart 'vdr' to get

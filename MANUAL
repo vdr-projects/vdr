@@ -8,7 +8,7 @@ Video Disk Recorder User's Manual
   possible, several keys have different meanings in the various
   modes:
 
-  Key     Normal      Main       Channels   Timers     Edit/New      Recordings  Replay
+  Key         Normal      Main       Channels   Timers     Edit/New      Recordings  Replay
 
   Up      Ch up       Crsr up    Crsr up    Crsr up    Crsr up       Crsr up     Play
   Down    Ch down     Crsr down  Crsr down  Crsr down  Crsr down     Crsr down   Pause
@@ -23,6 +23,9 @@ Video Disk Recorder User's Manual
   Blue    -           Resume     Mark       Mark(1)    -             Summary     Stop
   0..9    Ch select   -          -          -          Numeric inp.  -           Editing
   Power   Shutdown    -          -          -          -             -           -
+  Volume+ Volume up   -          -          -          -             -           -
+  Volume- Volume down -          -          -          -             -           -
+  Mute    Mute        -          -          -          -             -           -
 
   (1) The "Mark" button in the "Timers" menu only works if sorting the timers
       has been disabled in the "Setup" menu.
