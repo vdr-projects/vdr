@@ -4,13 +4,14 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.33 2002/11/01 11:08:57 kls Exp $
+ * $Id: device.c 1.34 2002/11/03 11:51:24 kls Exp $
  */
 
 #include "device.h"
 #include <errno.h>
 #include <sys/ioctl.h>
 #include <sys/mman.h>
+#include "audio.h"
 #include "channels.h"
 #include "eit.h"
 #include "i18n.h"
@@ -416,6 +417,7 @@ bool cDevice::ToggleMute(void)
   mute = !mute;
   SetVolume(0, mute);
   volume = OldVolume;
+  Audios.MuteAudio(mute);
   return mute;
 }
 
@@ -424,8 +426,10 @@ void cDevice::SetVolume(int Volume, bool Absolute)
   volume = min(max(Absolute ? Volume : volume + Volume, 0), MAXVOLUME);
   SetVolumeDevice(volume);
   cStatus::MsgSetVolume(volume, Absolute);
-  if (volume > 0)
+  if (volume > 0) {
      mute = false;
+     Audios.MuteAudio(mute);
+     }
 }
 
 int cDevice::NumAudioTracks(void) const
@@ -462,6 +466,7 @@ void cDevice::TrickSpeed(int Speed)
 
 void cDevice::Clear(void)
 {
+  Audios.ClearAudio();
 }
 
 void cDevice::Play(void)
@@ -474,6 +479,7 @@ void cDevice::Freeze(void)
 
 void cDevice::Mute(void)
 {
+  Audios.MuteAudio(true);
 }
 
 void cDevice::StillPicture(const uchar *Data, int Length)
@@ -529,9 +535,9 @@ int cDevice::PlayVideo(const uchar *Data, int Length)
   return -1;
 }
 
-int cDevice::PlayAudio(const uchar *Data, int Length)
+void cDevice::PlayAudio(const uchar *Data, int Length)
 {
-  return -1;
+  Audios.PlayAudio(Data, Length);
 }
 
 int cDevice::Ca(void) const

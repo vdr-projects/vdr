@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.32 2002/11/01 11:24:47 kls Exp $
+ * $Id: dvbdevice.c 1.33 2002/11/03 11:51:29 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -792,10 +792,10 @@ int cDvbDevice::PlayVideo(const uchar *Data, int Length)
   return -1;
 }
 
-int cDvbDevice::PlayAudio(const uchar *Data, int Length)
+void cDvbDevice::PlayAudio(const uchar *Data, int Length)
 {
-  //XXX+
-  return -1;
+  //XXX actually this function will only be needed to implement replaying AC3 over the DVB card's S/PDIF
+  cDevice::PlayAudio(Data, Length);
 }
 
 bool cDvbDevice::OpenDvr(void)

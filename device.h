@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 1.26 2002/11/01 11:03:56 kls Exp $
+ * $Id: device.h 1.27 2002/11/03 11:16:11 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -290,6 +290,8 @@ public:
        // times.
   virtual void Clear(void);
        // Clears all video and audio data from the device.
+       // A derived class must call the base class function to make sure
+       // all registered cAudio objects are notified.
   virtual void Play(void);
        // Sets the device into play mode (after a previous trick
        // mode).
@@ -297,6 +299,8 @@ public:
        // Puts the device into "freeze frame" mode.
   virtual void Mute(void);
        // Turns off audio while replaying.
+       // A derived class must call the base class function to make sure
+       // all registered cAudio objects are notified.
   virtual void StillPicture(const uchar *Data, int Length);
        // Displays the given I-frame as a still picture.
   virtual bool Poll(cPoller &Poller, int TimeoutMs = 0);
@@ -309,8 +313,10 @@ public:
        // Actually plays the given data block as video. The data must be
        // part of a PES (Packetized Elementary Stream) which can contain
        // one video and one audio strem.
-  virtual int PlayAudio(const uchar *Data, int Length);
+  virtual void PlayAudio(const uchar *Data, int Length);
        // Plays additional audio streams, like Dolby Digital.
+       // A derived class must call the base class function to make sure data
+       // is distributed to all registered cAudio objects.
   bool Replaying(void) const;
        // Returns true if we are currently replaying.
   void StopReplay(void);

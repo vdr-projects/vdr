@@ -1671,7 +1671,7 @@ Video Disk Recorder Revision History
   buttons of those that have already been learned (thanks to Oliver Endriss for
   reporting this one).
 
-2002-11-02: Version 1.1.15
+2002-11-03: Version 1.1.15
 
 - Completely switched to the new CVS HEAD version of the linux-dvb driver.
   The NEWSTRUCT compile time switch is now obsolete. The required driver is now
@@ -1697,3 +1697,22 @@ Video Disk Recorder Revision History
   your existing plugin directory - make a backup copy first!).
 - Fixed reading EPG data via the SVDRP command PUTE (it changed the current
   service ID).
+- Fixed closing all dup'ed file descriptors in cPipe.
+- Implemented a plugin interface for additional audio processing (see PLUGINS.html
+  under "Dolby Digital").
+  The functionality of the '-a' command line option has been reactivated.
+  Since the author doesn't have any Dolby Digital equipment this may or may not
+  work as expected. There may still be some places where a call to cAudios::Clear()
+  or cAudios::Mute() is necessary. Those with Dolby Digital equipment should please
+  take a look at this and maybe send patches.
+  Replaying Dolby Digital in ways other than through VDR's '-a' option will have to
+  be implemented as plugins. Those who have written patches for VDR version 1.0.x
+  should convert their work into the proper plugins for version 1.1.x.
+  Note to authors of cPlayer derived plugins: please read the modified comments
+  in device.h regarding the member functions cDevice::Clear(), cDevice::Mute() and
+  cDevice::PlayAudio(). Derived classes must call these base class member functions
+  to make sure all registered cAudio objects are properly handled. Also note that
+  the return type of cDevice::PlayAudio() has been changed to 'void', since this
+  function always has to accept the entire data block immediately and there is
+  nothing that could be reasonably done in case an error occurs in one of the
+  cAudio objects.

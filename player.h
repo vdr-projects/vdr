@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: player.h 1.9 2002/10/12 11:17:02 kls Exp $
+ * $Id: player.h 1.10 2002/11/03 11:27:30 kls Exp $
  */
 
 #ifndef __PLAYER_H
@@ -35,8 +35,8 @@ protected:
        // Sends the given Data to the video device and returns the number of
        // bytes that have actually been accepted by the video device (or a
        // negative value in case of an error).
-  int PlayAudio(const uchar *Data, int Length);
-               // XXX+ TODO
+  void PlayAudio(const uchar *Data, int Length);
+       // Plays additional audio streams, like Dolby Digital.
 public:
   cPlayer(ePlayMode PlayMode = pmAudioVideo);
   virtual ~cPlayer();
