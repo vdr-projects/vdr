@@ -4,26 +4,26 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.164 2004/11/20 11:23:58 kls Exp $
+ * $Id: i18n.c 1.165 2004/12/18 13:04:33 kls Exp $
  *
  * Translations provided by:
  *
- * Slovenian   Miha Setina <mihasetina@softhome.net> and Matjaz Thaler <matjaz.thaler@guest.arnes.si>
- * Italian     Alberto Carraro <bertocar@tin.it> and Antonio Ospite <ospite@studenti.unina.it>
- * Dutch       Arnold Niessen <niessen@iae.nl> <arnold.niessen@philips.com> and Hans Dingemans <hans.dingemans@tacticalops.nl>
+ * Slovenian   Miha Setina <mihasetina@softhome.net>, Matjaz Thaler <matjaz.thaler@guest.arnes.si>
+ * Italian     Alberto Carraro <bertocar@tin.it>, Antonio Ospite <ospite@studenti.unina.it>, Sean Carlos <seanc@libero.it>
+ * Dutch       Arnold Niessen <niessen@iae.nl> <arnold.niessen@philips.com>, Hans Dingemans <hans.dingemans@tacticalops.nl>
  * Portuguese  Paulo Lopes <pmml@netvita.pt>
- * French      Jean-Claude Repetto <jc@repetto.org>, Olivier Jacques <jacquesolivier@hotmail.com> and Gregoire Favre <greg@magma.unil.ch>
- * Norwegian   Jørgen Tvedt <pjtvedt@online.no> and Truls Slevigen <truls@slevigen.no>
- * Finnish     Hannu Savolainen <hannu@opensound.com>, Jaakko Hyvätti <jaakko@hyvatti.iki.fi>, Niko Tarnanen <niko.tarnanen@hut.fi> and Rolf Ahrenberg <rahrenbe@cc.hut.fi>
+ * French      Jean-Claude Repetto <jc@repetto.org>, Olivier Jacques <jacquesolivier@hotmail.com>, Gregoire Favre <greg@magma.unil.ch>
+ * Norwegian   Jørgen Tvedt <pjtvedt@online.no>, Truls Slevigen <truls@slevigen.no>
+ * Finnish     Hannu Savolainen <hannu@opensound.com>, Jaakko Hyvätti <jaakko@hyvatti.iki.fi>, Niko Tarnanen <niko.tarnanen@hut.fi>, Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  * Polish      Michael Rakowski <mrak@gmx.de>
  * Spanish     Ruben Nunez Francisco <ruben.nunez@tang-it.com>
  * Greek       Dimitrios Dimitrakos <mail@dimitrios.de>
- * Swedish     Tomas Prybil <tomas@prybil.se> and Jan Ekholm <chakie@infa.abo.fi>
+ * Swedish     Tomas Prybil <tomas@prybil.se>, Jan Ekholm <chakie@infa.abo.fi>
  * Romanian    Paul Lacatus <paul@campina.iiruc.ro>, Lucian Muresan <lucianm@users.sourceforge.net>
- * Hungarian   Istvan Koenigsberger <istvnko@hotmail.com> and Guido Josten <guido.josten@t-online.de>
- * Catalanian  Marc Rovira Vall <tm05462@salleURL.edu>, Ramon Roca <ramon.roca@xcombo.com> and Jordi Vilà <jvila@tinet.org>
+ * Hungarian   Istvan Koenigsberger <istvnko@hotmail.com>, Guido Josten <guido.josten@t-online.de>
+ * Catalanian  Marc Rovira Vall <tm05462@salleURL.edu>, Ramon Roca <ramon.roca@xcombo.com>, Jordi Vilà <jvila@tinet.org>
  * Russian     Vyacheslav Dikonov <sdiconov@mail.ru>
- * Croatian    Drazen Dupor <drazen.dupor@dupor.com> and Dino Ravnic <dino.ravnic@fer.hr>
+ * Croatian    Drazen Dupor <drazen.dupor@dupor.com>, Dino Ravnic <dino.ravnic@fer.hr>
  * Estonian    Arthur Konovalov <kasjas@hot.ee>
  * Danish      Mogens Elneff <mogens@elneff.dk>
  *
@@ -907,7 +907,7 @@ const tI18nPhrase Phrases[] = {
   { "Menu",
     "Menü",
     "Meni",
-    "Menu",
+    "Menù",
     "Menu",
     "Menu",
     "Menu",
@@ -949,7 +949,7 @@ const tI18nPhrase Phrases[] = {
   { "Scan",
     "Scan",
     "",//TODO
-    "",//TODO
+    "Scansione",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -1792,7 +1792,7 @@ const tI18nPhrase Phrases[] = {
   { "VPS",
     "VPS",
     "",// TODO
-    "",// TODO
+    "VPS",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -2319,7 +2319,7 @@ const tI18nPhrase Phrases[] = {
   { "EPG",
     "EPG",
     "Programski vodnik",
-    "EPG",
+    "Guida programmi EPG",
     "EPG",
     "EPG",
     "Guide des programmes",
@@ -2382,7 +2382,7 @@ const tI18nPhrase Phrases[] = {
   { "CICAM",
     "CICAM",
     "CICAM",
-    "CICAM",
+    "Accesso condizionato CICAM",
     "CICAM",
     "CICAM",
     "Accès conditionnel",
@@ -2551,7 +2551,7 @@ const tI18nPhrase Phrases[] = {
   { "Setup.OSD$Skin",
     "Oberfläche",
     "",// TODO
-    "",// TODO
+    "Superficie Skin",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -2572,7 +2572,7 @@ const tI18nPhrase Phrases[] = {
   { "Setup.OSD$Theme",
     "Thema",
     "",// TODO
-    "",// TODO
+    "Tema",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -2593,7 +2593,7 @@ const tI18nPhrase Phrases[] = {
   { "Setup.OSD$Left",
     "Links",
     "",// TODO
-    "",// TODO
+    "Sinistra",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -2614,7 +2614,7 @@ const tI18nPhrase Phrases[] = {
   { "Setup.OSD$Top",
     "Oben",
     "",// TODO
-    "",// TODO
+    "Cima",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -2698,7 +2698,7 @@ const tI18nPhrase Phrases[] = {
   { "Setup.OSD$Use small font",
     "Kleine Schrift benutzen",
     "",// TODO
-    "",// TODO
+    "Utilizzare caratteri piccoli",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -2719,7 +2719,7 @@ const tI18nPhrase Phrases[] = {
   { "never",
     "nie",
     "",// TODO
-    "",// TODO
+    "mai",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -2740,7 +2740,7 @@ const tI18nPhrase Phrases[] = {
   { "skin dependent",
     "je nach Oberfläche",
     "",// TODO
-    "",// TODO
+    "in base alla superficie",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -2761,7 +2761,7 @@ const tI18nPhrase Phrases[] = {
   { "always",
     "immer",
     "",// TODO
-    "",// TODO
+    "sempre",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -2887,7 +2887,7 @@ const tI18nPhrase Phrases[] = {
   { "Setup.EPG$EPG scan timeout (h)",
     "Zeit bis EPG Scan (h)",
     "Cas do EPG pregleda (h)",
-    "Timeout scansione EPG (h)",
+    "Timeout scansione aggiornamento EPG (ore)",
     "EPG-scan Timeout (h)",
     "Expirou o EPG (h)",
     "Inactivité avant rech. EPG (h)",
@@ -2929,7 +2929,7 @@ const tI18nPhrase Phrases[] = {
   { "Setup.EPG$EPG linger time (min)",
     "Alte EPG-Daten anzeigen (min)",// TODO
     "",// TODO
-    "",// TODO
+    "Visualizzazione dati vecchi (min)",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -2992,7 +2992,7 @@ const tI18nPhrase Phrases[] = {
   { "Setup.EPG$Preferred languages", // note the plural
     "Bevorzugte Sprachen",
     "",// TODO
-    "",// TODO
+    "Lingue preferite",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -3013,7 +3013,7 @@ const tI18nPhrase Phrases[] = {
   { "Setup.EPG$Preferred language", // note the singular
     "Bevorzugte Sprache",
     "",// TODO
-    "",// TODO
+    "Lingua preferita",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -3076,7 +3076,7 @@ const tI18nPhrase Phrases[] = {
   { "Setup.DVB$Update channels",
     "Kanäle aktualisieren",
     "",// TODO
-    "",// TODO
+    "Aggiornare i canali",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -3097,7 +3097,7 @@ const tI18nPhrase Phrases[] = {
   { "names only",
     "nur Namen",
     "",// TODO
-    "",// TODO
+    "solo nomi",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -3118,7 +3118,7 @@ const tI18nPhrase Phrases[] = {
   { "names and PIDs",
     "Namen und PIDs",
     "",// TODO
-    "",// TODO
+    "nomi e PIDs",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -3139,7 +3139,7 @@ const tI18nPhrase Phrases[] = {
   { "add new channels",
     "neue Kanäle hinzufügen",
     "",// TODO
-    "",// TODO
+    "aggiungere canali nuovi",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -3160,7 +3160,7 @@ const tI18nPhrase Phrases[] = {
   { "add new transponders",
     "neue Transponder hinzufügen",
     "",// TODO
-    "",// TODO
+    "aggiungere transponder nuovi",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -3454,7 +3454,7 @@ const tI18nPhrase Phrases[] = {
   { "Setup.Recording$Use VPS",
     "VPS benutzen",
     "",// TODO
-    "",// TODO
+    "Utilizzare VPS",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -3475,7 +3475,7 @@ const tI18nPhrase Phrases[] = {
   { "Setup.Recording$VPS margin (s)",
     "Zeitpuffer bei VPS (s)",
     "",// TODO
-    "",// TODO
+    "Margine VPS",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -3664,7 +3664,7 @@ const tI18nPhrase Phrases[] = {
   { "Setup.Replay$Resume ID",
     "Wiedergabe ID",
     "Predvajalni ID",
-    "Resume ID",// TODO
+    "ID Ripresa",
     "Hervattings ID",
     "Resume ID",// TODO
     "ID de reprise",
@@ -3685,7 +3685,7 @@ const tI18nPhrase Phrases[] = {
   { "Setup.Miscellaneous$Min. event timeout (min)",
     "Mindest Event Pause (min)",
     "Najmanjsi cas dogodka (min)",
-    "Tempo minimo di pausa (min)", // ??? i don't know...
+    "Spegnimento: controllo prossimo evento (m)",
     "Minimale event time-out (min)",
     "Período mínimo de pausa (min)",
     "MinEventTimeout (min)",
@@ -3706,7 +3706,7 @@ const tI18nPhrase Phrases[] = {
   { "Setup.Miscellaneous$Min. user inactivity (min)",
     "Mindest Benutzer-Inaktivität (min)",
     "Najmanjsi cas neaktivnosti (min)",
-    "Tempo minimo di inattivita' (min)",
+    "Spegnimento: tempo minimo di inattività (m)",
     "Minimum gebruikers inactiviteit (min)",
     "Período mínimo de inactividade (min)",
     "Durée minimale d'inact. (min)",
@@ -3748,7 +3748,7 @@ const tI18nPhrase Phrases[] = {
   { "Setup.Miscellaneous$Zap timeout (s)",
     "Zap Timeout (s)",
     "",// TODO
-    "",// TODO
+    "Timeout Zapping",
     "Zap timeout (s)",
     "",// TODO
     "",// TODO
@@ -4151,7 +4151,7 @@ const tI18nPhrase Phrases[] = {
   { "Down",
     "Ab",
     "Dol",
-    "Giu",
+    "Giù",
     "Omlaag",
     "Baixo",
     "Bas",
@@ -4172,7 +4172,7 @@ const tI18nPhrase Phrases[] = {
   { "Menu",
     "Menü",
     "Meni",
-    "Menu",
+    "Menù",
     "Menu",
     "Menu",
     "Menu",
@@ -4929,7 +4929,7 @@ const tI18nPhrase Phrases[] = {
   { "Up/Dn for new location - OK to move",
     "Auf/Ab für neue Position - dann OK",
     "Gor/Dol za novo poz. - Ok za premik",
-    "Su/Giu per nuova posizione - OK per muovere",
+    "Su/Giù per nuova posizione - OK per muovere",
     "Gebruik Omhoog/Omlaag - daarna Ok",
     "Cima/Baixo para nova localização - Ok para mover",
     "Haut/Bas -> nouvelle place - OK -> déplacer",
@@ -5076,7 +5076,7 @@ const tI18nPhrase Phrases[] = {
   { "Classic VDR",
     "Klassischer VDR",
     "",// TODO
-    "",// TODO
+    "VDR Classico",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -5097,7 +5097,7 @@ const tI18nPhrase Phrases[] = {
   { "ST:TNG Panels",
     "ST:TNG Konsolen",
     "",// TODO
-    "",// TODO
+    "Consolles ST:TNG",
     "",// TODO
     "",// TODO
     "",// TODO

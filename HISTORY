@@ -3195,3 +3195,4 @@ Video Disk Recorder Revision History
     allow access to all available PIDs.
 - Escaped the '-' and 'ö' characters in the man pages (thanks to Darren Salt for
   pointing this out).
+- Completed the Italian OSD texts (thanks to Sean Carlos).
