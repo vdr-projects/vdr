@@ -7,7 +7,7 @@
  * DVD support initially written by Andreas Schultz <aschultz@warp10.net>
  * based on dvdplayer-0.5 by Matjaz Thaler <matjaz.thaler@guest.arnes.si>
  *
- * $Id: dvbapi.c 1.142 2002/01/13 15:48:37 kls Exp $
+ * $Id: dvbapi.c 1.143 2002/01/13 16:21:48 kls Exp $
  */
 
 //#define DVDDEBUG        1
@@ -146,7 +146,7 @@ cIndexFile::cIndexFile(const char *FileName, bool Record)
               delta = buf.st_size % sizeof(tIndex);
               if (delta) {
                  delta = sizeof(tIndex) - delta;
-                 esyslog(LOG_ERR, "ERROR: invalid file size (%d) in '%s'", buf.st_size, fileName);
+                 esyslog(LOG_ERR, "ERROR: invalid file size (%ld) in '%s'", buf.st_size, fileName);
                  }
               last = (buf.st_size + delta) / sizeof(tIndex) - 1;
               if (!Record && last >= 0) {
