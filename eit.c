@@ -13,7 +13,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.c 1.11 2000/12/03 15:33:37 kls Exp $
+ * $Id: eit.c 1.12 2001/02/24 12:12:58 kls Exp $
  ***************************************************************************/
 
 #include "eit.h"
@@ -851,7 +851,8 @@ int cEIT::ProcessEIT()
 					break;
 	
 				case EIT_COMPONENT_DESCRIPTOR	:
-					strdvbcpy(tmp, &buffer[bufact + 8], buffer[bufact + 1] - 6);
+               if (buffer[bufact + 1] > 6) // kls 2001-02-24: otherwise strncpy() causes a segfault in strdvbcpy()
+					   strdvbcpy(tmp, &buffer[bufact + 8], buffer[bufact + 1] - 6);
 					//dsyslog(LOG_INFO, "Found EIT_COMPONENT_DESCRIPTOR %c%c%c 0x%02x/0x%02x/0x%02x '%s'\n", buffer[bufact + 5], buffer[bufact + 6], buffer[bufact + 7], buffer[2], buffer[3], buffer[4], tmp);
 					break;
 	
@@ -910,6 +911,14 @@ int cEIT::strdvbcpy(unsigned char *dst, unsigned char *src, int max)
 {
 	int a = 0;
 	
+   // kls 2001-02-24: if we come in with negative values, the caller must
+   // have done something wrong and the strncpy() below will cause a segfault
+   if (max <= 0)
+   {
+      *dst = 0;
+      return 0;
+   }
+
 	if (*src == 0x05 || (*src >= 0x20 && *src <= 0xff))
 	{
 		for (a = 0; a < max; a++)
