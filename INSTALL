@@ -4,8 +4,8 @@ Installation of the Video Disk Recorder
 Version 1.3
 -----------
 
-IMPORTANT NOTE:
----------------
+IMPORTANT NOTES:
+----------------
 
 VDR currently doesn't work with NPTL ("Native Posix Thread Library").
 Either don't use NPTL, or set the environment variable
@@ -13,6 +13,19 @@ Either don't use NPTL, or set the environment variable
   LD_ASSUME_KERNEL=2.4.1
   
 before running VDR.
+
+Also, please make sure your environment is NOT set to use UTF-8 or
+any other multibyte character representation. Check the value of your
+$LANG or $LC_CTYPE environment variable, and if it contains something
+like "de_DE.UTF-8", make sure you set it to something like "de_DE.iso8859-1"
+or whatever single byte character mode you want. If you run VDR with
+UTF-8 enabled, it may crash in case it encounters EPG or channel data
+that contains non-7-bit ASCII characters. Another problem may occur if
+you have mounted your video partition with "iocharset=utf8". In that case
+recordings that contain umlauts or other non-seven-bit ASCII characters
+may be displayed wrong, or not at all. Please make sure you mount your
+video partition with "iocharset=iso8859-1" or whatever single byte character
+mode you want.
 
 Compiling and running the program:
 ----------------------------------

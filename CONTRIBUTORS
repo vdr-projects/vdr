@@ -376,6 +376,7 @@ Ruben Nunez Francisco <ruben.nunez@tang-it.com>
 Mirko Dölle <mdoelle@linux-user.de>
  for reporting a bug when a timer records over midnight of a day that had a
  change in Daylight Saving Time
+ for suggesting to avoid the external 'find' command to scan the video directory
 
 Michael Rakowski <mrak@gmx.de>
  for translating OSD texts to the Polish language
@@ -639,6 +640,7 @@ Sven Goethel <sgoethel@jausoft.com>
  for making switching audio channels work without stopping/restarting the DMX
  for fixing initializing the highlight area in cDvbSpuDecoder
  for suggesting to add cDevice::GetSTC()
+ for making some changes to the SPU decoder interface
 
 Jan Rieger <jan@ricomp.de>
  for suggestions and testing raw keyboard input
@@ -718,6 +720,7 @@ Sascha Volkenandt <sascha@akv-soft.de>
  for suggesting to allow drawing "transparent" texts
  for suggesting to ignore unused "none" color entries in XPM files written by
  some broken graphics tools
+ for fixing a memory leak in theme description handling
 
 Malcolm Caldwell <malcolm.caldwell@ntu.edu.au>
  for modifying LOF handling to allow for C-band reception
@@ -730,6 +733,9 @@ Ludwig Nussel <ludwig.nussel@web.de>
  for reporting a problem with the LIRC remote control trying to learn keys even if it
  couldn't connect to the LIRC daemon
  for making the plugin library directory configurable via Make.config
+ for reporting a problem on systems that have UTF-8 enabled
+ for pointing out a flaw in the the description of cRingBufferLinear
+ for reporting a bug in cRingBufferLinear::Get() in case the buffer wraps around
 
 Thomas Koch <tom@harhar.net>
  for his support in keeping the Premiere World channels up to date in 'channels.conf'
@@ -850,6 +856,8 @@ Reinhard Nissl <rnissl@gmx.de>
  when using other libraries that also implement a function by that name
  for reporting a bug in handling ':' characters in channel names when reading
  channels.conf
+ for adding cDevice::Flush() to make sure that all data in the video card's buffers
+ has been processed
 
 Richard Robson <richard_robson@beeb.net>
  for reporting freezing replay if a timer starts while in Transfer Mode from the
@@ -1024,3 +1032,19 @@ Jürgen Schmitz <j.schmitz@web.de>
 
 Philip Lawatsch <philip@lawatsch.at>
  for debugging a buffer overflow in eit.c
+
+Jouni Karvo <kex@netlab.hut.fi>
+ for suggesting to make the cOsd constructor 'protected'
+
+Olaf Henkel <olafhenkel@t-online.de>
+ for reporting a problem with long event texts in the "Classic VDR" skin
+
+Martin Dauskardt <md001@gmx.de>
+ for reporting a problem with switching channels while an encrypted channel is being
+ recorded
+
+Maynard Cedric <maynard.cedric@wanadoo.fr>
+ for reporting a problem in handling the color button texts in cMenuEditStrItem
+
+Jörg Knitter <joerg.knitter@gmx.de>
+ for reporting a problem in case the video partition is mounted with "iocharset=utf8"

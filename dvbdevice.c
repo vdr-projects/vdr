@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.89 2004/06/06 11:28:28 kls Exp $
+ * $Id: dvbdevice.c 1.93 2004/06/19 09:33:42 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -682,9 +682,9 @@ bool cDvbDevice::ProvidesChannel(const cChannel *Channel, int Priority, bool *Ne
      result = hasPriority;
      if (Priority >= 0 && Receiving(true)) {
         if (dvbTuner->IsTunedTo(Channel)) {
-           if (!HasPid(Channel->Vpid())) {
+           if (Channel->Vpid() && !HasPid(Channel->Vpid()) || Channel->Apid1() && !HasPid(Channel->Apid1())) {
 #ifdef DO_MULTIPLE_RECORDINGS
-              if (Channel->Ca() > CACONFBASE)
+              if (Ca() > CACONFBASE || Channel->Ca() > CACONFBASE)
                  needsDetachReceivers = !ciHandler // only LL-firmware can do non-live CA channels
                                         || Ca() != Channel->Ca();
               else if (!IsPrimaryDevice())
@@ -766,9 +766,10 @@ bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
         }
      if (IsPrimaryDevice())
         AddPid(Channel->Tpid(), ptTeletext);
+     CHECK(ioctl(fd_audio, AUDIO_SET_MUTE, true)); // actually one would expect 'false' here, but according to Marco Schlüßler <marco@lordzodiac.de> this works
+                                                   // to avoid missing audio after replaying a DVD; with 'false' there is an audio disturbance when switching
+                                                   // between two channels on the same transponder on DVB-S
      CHECK(ioctl(fd_audio, AUDIO_SET_AV_SYNC, true));
-     CHECK(ioctl(fd_audio, AUDIO_SET_MUTE, false));
-     CHECK(ioctl(fd_video, VIDEO_SET_BLANK, false));
      }
   else if (StartTransferMode)
      cControl::Launch(new cTransferControl(this, Channel->Vpid(), Channel->Apid1(), Channel->Apid2(), Channel->Dpid1(), Channel->Dpid2()));
@@ -1066,6 +1067,12 @@ bool cDvbDevice::Poll(cPoller &Poller, int TimeoutMs)
 {
   Poller.Add((playMode == pmAudioOnly || playMode == pmAudioOnlyBlack) ? fd_audio : fd_video, true);
   return Poller.Poll(TimeoutMs);
+}
+
+bool cDvbDevice::Flush(int TimeoutMs)
+{
+  //TODO actually this function should wait until all buffered data has been processed by the card, but how?
+  return true;
 }
 
 int cDvbDevice::PlayVideo(const uchar *Data, int Length)

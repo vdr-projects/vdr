@@ -4,19 +4,33 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbosd.c 1.22 2004/05/01 15:10:44 kls Exp $
+ * $Id: dvbosd.c 1.23 2004/06/12 13:10:03 kls Exp $
  */
 
 #include "dvbosd.h"
+#include <linux/dvb/osd.h>
 #include <signal.h>
 #include <sys/ioctl.h>
 #include <sys/unistd.h>
+#include "dvbdevice.h"
 #include "tools.h"
 
 // --- cDvbOsd ---------------------------------------------------------------
 
 #define MAXNUMWINDOWS 7 // OSD windows are counted 1...7
 #define MAXOSDMEMORY  92000 // number of bytes available to the OSD (depends on firmware version, but there is no way of determining the actual value)
+
+class cDvbOsd : public cOsd {
+private:
+  int osdDev;
+  bool shown;
+  void Cmd(OSD_Command cmd, int color = 0, int x0 = 0, int y0 = 0, int x1 = 0, int y1 = 0, const void *data = NULL);
+public:
+  cDvbOsd(int Left, int Top, int OsdDev);
+  virtual ~cDvbOsd();
+  virtual eOsdError CanHandleAreas(const tArea *Areas, int NumAreas);
+  virtual void Flush(void);
+  };
 
 cDvbOsd::cDvbOsd(int Left, int Top, int OsdDev)
 :cOsd(Left, Top)

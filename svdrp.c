@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.62 2004/03/25 17:00:23 kls Exp $
+ * $Id: svdrp.c 1.63 2004/06/13 13:38:38 kls Exp $
  */
 
 #include "svdrp.h"
@@ -504,8 +504,10 @@ void cSVDRP::CmdDELR(const char *Option)
      if (isnumber(Option)) {
         cRecording *recording = Recordings.Get(strtol(Option, NULL, 10) - 1);
         if (recording) {
-           if (recording->Delete())
+           if (recording->Delete()) {
               Reply(250, "Recording \"%s\" deleted", Option);
+              ::Recordings.Load(); // must make sure the global recordings list is updated
+              }
            else
               Reply(554, "Error while deleting recording!");
            }

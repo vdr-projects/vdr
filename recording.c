@@ -4,10 +4,11 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.87 2004/05/07 14:24:18 kls Exp $
+ * $Id: recording.c 1.88 2004/06/13 20:25:19 kls Exp $
  */
 
 #include "recording.h"
+#include <dirent.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <stdio.h>
@@ -25,7 +26,7 @@
 #define RECEXT       ".rec"
 #define DELEXT       ".del"
 /* This was the original code, which works fine in a Linux only environment.
-   Unfortunately, because of windows and its brain dead file system, we have
+   Unfortunately, because of Windows and its brain dead file system, we have
    to use a more complicated approach, in order to allow users who have enabled
    the VFAT compile time option to see their recordings even if they forget to
    enable VFAT when compiling a new version of VDR... Gee, do I hate Windows.
@@ -46,8 +47,6 @@
 #define RESUMEFILESUFFIX  "/resume%s%s.vdr"
 #define SUMMARYFILESUFFIX "/summary.vdr"
 #define MARKSFILESUFFIX   "/marks.vdr"
-
-#define FINDCMD      "cd '%s' && find '%s' -follow -type d -name '%s' 2> /dev/null"
 
 #define MINDISKSPACE 1024 // MB
 
@@ -70,14 +69,14 @@ void RemoveDeletedRecordings(void)
      if (!LockFile.Lock())
         return;
      // Remove the oldest file that has been "deleted":
-     cRecordings Recordings;
-     if (Recordings.Load(true)) {
-        cRecording *r = Recordings.First();
+     cRecordings DeletedRecordings(true);
+     if (DeletedRecordings.Load()) {
+        cRecording *r = DeletedRecordings.First();
         cRecording *r0 = r;
         while (r) {
               if (r->start < r0->start)
                  r0 = r;
-              r = Recordings.Next(r);
+              r = DeletedRecordings.Next(r);
               }
         if (r0 && time(NULL) - r0->start > DELETEDLIFETIME * 3600) {
            r0->Remove();
@@ -105,14 +104,14 @@ void AssertFreeDiskSpace(int Priority)
            return;
         // Remove the oldest file that has been "deleted":
         isyslog("low disk space while recording, trying to remove a deleted recording...");
-        cRecordings Recordings;
-        if (Recordings.Load(true)) {
-           cRecording *r = Recordings.First();
+        cRecordings DeletedRecordings(true);
+        if (DeletedRecordings.Load()) {
+           cRecording *r = DeletedRecordings.First();
            cRecording *r0 = r;
            while (r) {
                  if (r->start < r0->start)
                     r0 = r;
-                 r = Recordings.Next(r);
+                 r = DeletedRecordings.Next(r);
                  }
            if (r0 && r0->Remove()) {
               LastFreeDiskCheck += REMOVELATENCY / Factor;
@@ -121,7 +120,7 @@ void AssertFreeDiskSpace(int Priority)
            }
         // No "deleted" files to remove, so let's see if we can delete a recording:
         isyslog("...no deleted recording found, trying to delete an old recording...");
-        if (Recordings.Load(false)) {
+        if (Recordings.Load()) {
            cRecording *r = Recordings.First();
            cRecording *r0 = NULL;
            while (r) {
@@ -138,8 +137,10 @@ void AssertFreeDiskSpace(int Priority)
                     }
                  r = Recordings.Next(r);
                  }
-           if (r0 && r0->Delete())
+           if (r0 && r0->Delete()) {
+              Recordings.Del(r0);
               return;
+              }
            }
         // Unable to free disk space, but there's nothing we can do about that...
         isyslog("...no old recording found, giving up");
@@ -617,30 +618,75 @@ bool cRecording::Remove(void)
 
 // --- cRecordings -----------------------------------------------------------
 
-bool cRecordings::Load(bool Deleted)
+cRecordings Recordings;
+
+cRecordings::cRecordings(bool Deleted)
 {
-  Clear();
-  bool result = false;
-  char *cmd = NULL;
-  asprintf(&cmd, FINDCMD, VideoDirectory, VideoDirectory, Deleted ? "*" DELEXT : "*" RECEXT);
-  FILE *p = popen(cmd, "r");
-  if (p) {
-     char *s;
-     while ((s = readline(p)) != NULL) {
-           cRecording *r = new cRecording(s);
-           if (r->Name())
-              Add(r);
-           else
-              delete r;
+  deleted = Deleted;
+  lastUpdate = 0;
+}
+
+bool cRecordings::ScanVideoDir(const char *DirName)
+{
+  DIR *d = opendir(DirName);
+  if (d) {
+     struct dirent *e;
+     while ((e = readdir(d)) != NULL) {
+           if (strcmp(e->d_name, ".") && strcmp(e->d_name, "..")) {
+              char *buffer;
+              asprintf(&buffer, "%s/%s", DirName, e->d_name);
+              struct stat st;
+              if (stat(buffer, &st) == 0) {
+                 if (S_ISLNK(st.st_mode)) {
+                    free(buffer);
+                    buffer = ReadLink(buffer);
+                    if (!buffer)
+                       return false;
+                    if (stat(buffer, &st) != 0) {
+                       LOG_ERROR_STR(DirName);
+                       return false;
+                       }
+                    }
+                 if (S_ISDIR(st.st_mode)) {
+                    if (endswith(buffer, deleted ? DELEXT : RECEXT)) {
+                       cRecording *r = new cRecording(buffer);
+                       if (r->Name())
+                          Add(r);
+                       else
+                          delete r;
+                       }
+                    else if (!ScanVideoDir(buffer))
+                       return false;
+                    }
+                 }
+              else {
+                 LOG_ERROR_STR(DirName);
+                 return false;
+                 }
+              free(buffer);
+              }
            }
-     pclose(p);
-     Sort();
-     result = Count() > 0;
+     closedir(d);
      }
-  else
-     Skins.Message(mtError, "Error while opening pipe!");
-  free(cmd);
-  return result;
+  else {
+     LOG_ERROR_STR(DirName);
+     return false;
+     }
+  return true;
+}
+
+bool cRecordings::NeedsUpdate(void)
+{
+  return lastUpdate <= LastModifiedTime(AddDirectory(VideoDirectory, ".update"));
+}
+
+bool cRecordings::Load(void)
+{
+  lastUpdate = time(NULL); // doing this first to make sure we don't miss anything
+  Clear();
+  ScanVideoDir(VideoDirectory);
+  Sort();
+  return Count() > 0;
 }
 
 cRecording *cRecordings::GetByName(const char *FileName)
@@ -650,6 +696,22 @@ cRecording *cRecordings::GetByName(const char *FileName)
          return recording;
       }
   return NULL;
+}
+
+void cRecordings::AddByName(const char *FileName)
+{
+  cRecording *recording = GetByName(FileName);
+  if (!recording) {
+     recording = new cRecording(FileName);
+     Add(recording);
+     }
+}
+
+void cRecordings::DelByName(const char *FileName)
+{
+  cRecording *recording = GetByName(FileName);
+  if (recording)
+     Del(recording);
 }
 
 // --- cMark -----------------------------------------------------------------

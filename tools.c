@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.79 2004/05/22 12:13:27 kls Exp $
+ * $Id: tools.c 1.80 2004/06/13 14:36:41 kls Exp $
  */
 
 #include "tools.h"
@@ -479,6 +479,14 @@ bool SpinUpDisk(const char *FileName)
       }
   esyslog("ERROR: SpinUpDisk failed");
   return false;
+}
+
+time_t LastModifiedTime(const char *FileName)
+{
+  struct stat fs;
+  if (stat(FileName, &fs) == 0)
+     return fs.st_mtime;
+  return 0;
 }
 
 const char *WeekDayName(int WeekDay)

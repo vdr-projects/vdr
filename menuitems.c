@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.c 1.18 2004/05/16 12:47:02 kls Exp $
+ * $Id: menuitems.c 1.19 2004/06/19 09:45:45 kls Exp $
  */
 
 #include "menuitems.h"
@@ -331,8 +331,8 @@ eOSState cMenuEditStrItem::ProcessKey(eKeys Key)
                  if (pos >= 0) {
                     insert = !insert;
                     newchar = true;
+                    SetHelpKeys();
                     }
-                 SetHelpKeys();
                  break;
     case kYellow|k_Repeat:
     case kYellow: // Remove the character at current position; in insert mode it is the character to the right of cursor

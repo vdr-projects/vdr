@@ -2892,3 +2892,46 @@ Video Disk Recorder Revision History
 - Modified 'libsi' to require callers to state the buffer sizes when getting
   strings in order to avoid buffer overflows (thanks to Philip Lawatsch for
   debugging a buffer overflow in eit.c).
+
+2004-06-19: Version 1.3.11
+
+- In order to avoid problems on NPTL systems, VDR now checks for the presence
+  of NPTL at program start, and if it is, exits and tells the user to do
+  'export LD_ASSUME_KERNEL=2.4.1' before starting VDR.
+- Revisited the "Fixed missing audio after replaying a DVD" change because it
+  introduced a sound disturbance when switching between channels on the same
+  transponder (thanks to Marco Schlüßler).
+- In order to avoid problems on UTF-8 systems, VDR now checks for the presence
+  of UTF-8 at program start, and if it is, exits and tells the user to turn off
+  UTF-8 before starting VDR (thanks to Ludwig Nussel for pointing out a problem
+  with systems that are set to use UTF-8). There are also problems in case the
+  video partition is mounted with "iocharset=utf8" (thanks to Jörg Knitter for
+  reporting this one).
+  Please also read the "IMPORTANT NOTES" section in the INSTALL file!
+- Some changes to the SPU decoder interface (thanks to Sven Goethel).
+- Some improvements in cOsd creation (thanks to some suggestions by Jouni Karvo).
+- Fixed calculating the OSD width and height (thanks to Olaf Henkel for reporting
+  a problem with long event texts in the "Classic VDR" skin).
+- Fixed switching channels while an encrypted channel is being recorded, because the
+  channel was switched if the new channel was on the same transponder and was
+  a radio channel or an unencrypted channel (thanks to Martin Dauskardt for reporting
+  this one).
+- No longer using the external 'find' command to scan the video directory for
+  recordings (based on a suggestion by Mirko Dölle).
+- The list of recordings is now kept statically in memory to avoid long delays
+  when opening the "Recordings" menu. As a side effect, external modifications to
+  the video directory are no longer immediately reflected in the "Recordings" menu.
+  If a plugin manipulates the video directory in any way, it can call the function
+  Recordings.TriggerUpdate() to trigger an update of the list of recordings.
+  If some external tool manipulates the video directory, it can touch the file
+  '.update' in the video directory to trigger an update of the list of recordings.
+- Fixed a memory leak in theme description handling (thanks to Sascha Volkenandt).
+- Added cDevice::Flush() to make sure that all data in the video card's buffers
+  has been processed (thanks to Reinhard Nissl). Currently this is not yet actually
+  implemented for FF DVB cards.
+- Fixed handling the color button texts in cMenuEditStrItem (thanks to Maynard
+  Cedric for reporting this one).
+- Fixed the description of cRingBufferLinear (thanks to Ludwig Nussel for pointing
+  out this one).
+- Fixed cRingBufferLinear::Get() in case the buffer wraps around (thanks to Ludwig
+  Nussel for reporting this one).

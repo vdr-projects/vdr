@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.h 1.45 2004/06/05 12:38:44 kls Exp $
+ * $Id: osd.h 1.46 2004/06/12 13:14:48 kls Exp $
  */
 
 #ifndef __OSD_H
@@ -208,13 +208,14 @@ struct tArea {
 #define MAXOSDAREAS 16
 
 class cOsd {
+  friend class cOsdProvider;
 private:
   static bool isOpen;
   cBitmap *savedRegion;
   cBitmap *bitmaps[MAXOSDAREAS];
   int numBitmaps;
   int left, top, width, height;
-public:
+protected:
   cOsd(int Left, int Top);
        ///< Initializes the OSD with the given coordinates.
        ///< By default it is assumed that the full area will be able to display
@@ -231,6 +232,7 @@ public:
        ///< and should require only the minimum necessary color depth. This is
        ///< because a derived cOsd class may or may not be able to handle more
        ///< than one area.
+public:
   virtual ~cOsd();
        ///< Shuts down the OSD.
   static bool IsOpen(void) { return isOpen; }

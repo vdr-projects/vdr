@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 1.52 2004/06/05 16:52:51 kls Exp $
+ * $Id: osd.c 1.55 2004/06/15 20:29:42 kls Exp $
  */
 
 #include "osd.h"
@@ -622,8 +622,8 @@ eOsdError cOsd::SetAreas(const tArea *Areas, int NumAreas)
         width = height = 0;
         for (int i = 0; i < NumAreas; i++) {
             bitmaps[numBitmaps++] = new cBitmap(Areas[i].Width(), Areas[i].Height(), Areas[i].bpp, Areas[i].x1, Areas[i].y1);
-            width = max(width, Areas[i].x2);
-            height = max(height, Areas[i].y2);
+            width = max(width, Areas[i].x2 + 1);
+            height = max(height, Areas[i].y2 + 1);
             }
         }
      }
@@ -713,6 +713,10 @@ cOsdProvider::~cOsdProvider()
 
 cOsd *cOsdProvider::NewOsd(int Left, int Top)
 {
+  if (cOsd::IsOpen()) {
+     esyslog("ERROR: attempt to open OSD while it is already open!");
+     return NULL;
+     }
   if (osdProvider)
      return osdProvider->CreateOsd(Left, Top);
   esyslog("ERROR: no OSD provider available - using dummy OSD!");
@@ -769,7 +773,7 @@ void cTextScroller::DrawText(void)
 {
   if (osd) {
      for (int i = 0; i < shown; i++)
-          osd->DrawText(left, top + i * font->Height(), textWrapper.GetLine(offset + i), colorFg, colorBg, font, width);
+         osd->DrawText(left, top + i * font->Height(), textWrapper.GetLine(offset + i), colorFg, colorBg, font, width);
      }
 }
 

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.308 2004/06/06 15:06:28 kls Exp $
+ * $Id: menu.c 1.309 2004/06/13 20:26:51 kls Exp $
  */
 
 #include "menu.h"
@@ -1410,7 +1410,6 @@ void cMenuRecordingItem::IncrementCounter(bool New)
 
 // --- cMenuRecordings -------------------------------------------------------
 
-cRecordings cMenuRecordings::Recordings;
 int cMenuRecordings::helpKeys = -1;
 
 cMenuRecordings::cMenuRecordings(const char *Base, int Level, bool OpenSubMenus)
@@ -1419,40 +1418,35 @@ cMenuRecordings::cMenuRecordings(const char *Base, int Level, bool OpenSubMenus)
   base = Base ? strdup(Base) : NULL;
   level = Setup.RecordingDirs ? Level : -1;
   Display(); // this keeps the higher level menus from showing up briefly when pressing 'Back' during replay
+  const char *LastReplayed = cReplayControl::LastReplayed();
+  cMenuRecordingItem *LastItem = NULL;
+  char *LastItemText = NULL;
   if (!Base)
-     Skins.Message(mtStatus, tr("scanning recordings..."));
-  bool Loaded = Base || Recordings.Load();
-  if (!Base)
-     Skins.Message(mtStatus, NULL);
-  if (Loaded) {
-     const char *LastReplayed = cReplayControl::LastReplayed();
-     cMenuRecordingItem *LastItem = NULL;
-     char *LastItemText = NULL;
-     for (cRecording *recording = Recordings.First(); recording; recording = Recordings.Next(recording)) {
-         if (!Base || (strstr(recording->Name(), Base) == recording->Name() && recording->Name()[strlen(Base)] == '~')) {
-            cMenuRecordingItem *Item = new cMenuRecordingItem(recording, level);
-            if (*Item->Text() && (!LastItem || strcmp(Item->Text(), LastItemText) != 0)) {
-               Add(Item);
-               LastItem = Item;
-               free(LastItemText);
-               LastItemText = strdup(LastItem->Text()); // must use a copy because of the counters!
-               }
-            else
-               delete Item;
-            if (LastItem) {
-               if (LastReplayed && strcmp(LastReplayed, recording->FileName()) == 0)
-                  SetCurrent(LastItem);
-               if (LastItem->IsDirectory())
-                  LastItem->IncrementCounter(recording->IsNew());
-               }
+     Recordings.Sort();
+  for (cRecording *recording = Recordings.First(); recording; recording = Recordings.Next(recording)) {
+      if (!Base || (strstr(recording->Name(), Base) == recording->Name() && recording->Name()[strlen(Base)] == '~')) {
+         cMenuRecordingItem *Item = new cMenuRecordingItem(recording, level);
+         if (*Item->Text() && (!LastItem || strcmp(Item->Text(), LastItemText) != 0)) {
+            Add(Item);
+            LastItem = Item;
+            free(LastItemText);
+            LastItemText = strdup(LastItem->Text()); // must use a copy because of the counters!
+            }
+         else
+            delete Item;
+         if (LastItem) {
+            if (LastReplayed && strcmp(LastReplayed, recording->FileName()) == 0)
+               SetCurrent(LastItem);
+            if (LastItem->IsDirectory())
+               LastItem->IncrementCounter(recording->IsNew());
             }
          }
-     free(LastItemText);
-     if (Current() < 0)
-        SetCurrent(First());
-     else if (OpenSubMenus && Open(true))
-        return;
-     }
+      }
+  free(LastItemText);
+  if (Current() < 0)
+     SetCurrent(First());
+  else if (OpenSubMenus && Open(true))
+     return;
   SetHelpKeys();
 }
 
@@ -2780,6 +2774,7 @@ cRecordControl::cRecordControl(cDevice *Device, cTimer *Timer, bool Pause)
         cStatus::MsgRecording(device, Recording.Name());
         if (!Timer && !cReplayControl::LastReplayed()) // an instant recording, maybe from cRecordControls::PauseLiveVideo()
            cReplayControl::SetRecording(fileName, Recording.Name());
+        Recordings.AddByName(fileName);
         }
      else
         DELETENULL(recorder);

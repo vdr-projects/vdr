@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ringbuffer.h 1.14 2004/03/07 13:40:45 kls Exp $
+ * $Id: ringbuffer.h 1.15 2004/06/19 10:32:15 kls Exp $
  */
 
 #ifndef __RINGBUFFER_H
@@ -54,7 +54,7 @@ private:
 public:
   cRingBufferLinear(int Size, int Margin = 0, bool Statistics = false);
     ///< Creates a linear ring buffer.
-    ///< The buffer will be able to hold at most Size bytes of data, and will
+    ///< The buffer will be able to hold at most Size-Margin-1 bytes of data, and will
     ///< be guaranteed to return at least Margin bytes in one consecutive block.
   virtual ~cRingBufferLinear();
   virtual int Available(void);

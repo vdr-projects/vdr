@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.55 2004/05/16 12:14:47 kls Exp $
+ * $Id: device.c 1.56 2004/06/19 08:51:05 kls Exp $
  */
 
 #include "device.h"
@@ -617,6 +617,11 @@ void cDevice::StopReplay(void)
 bool cDevice::Poll(cPoller &Poller, int TimeoutMs)
 {
   return false;
+}
+
+bool cDevice::Flush(int TimeoutMs)
+{
+  return true;
 }
 
 int cDevice::PlayVideo(const uchar *Data, int Length)

@@ -8,7 +8,7 @@
 .\" License as specified in the file COPYING that comes with the
 .\" vdr distribution.
 .\"
-.\" $Id: vdr.1 1.10 2004/05/16 12:10:52 kls Exp $
+.\" $Id: vdr.1 1.11 2004/06/13 14:48:03 kls Exp $
 .\"
 .TH vdr 1 "1 June 2003" "1.2.0" "Video Disk Recorder"
 .SH NAME
@@ -176,6 +176,10 @@ The actual data files of a recording.
 .I epg.data
 Contains all current EPG data. Can be used for external processing and will
 also be read at program startup to have the full EPG data available immediately.
+.TP
+.I .update
+If this file is present in the video directory, its last modification time will
+be used to trigger an update of the list of recordings in the "Recordings" menu.
 .SH SEE ALSO
 .BR vdr (5)
 .SH AUTHOR
