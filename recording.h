@@ -4,7 +4,7 @@
  * See the main source file 'osm.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 1.4 2000/04/23 09:50:40 kls Exp $
+ * $Id: recording.h 1.5 2000/04/24 09:33:58 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -20,8 +20,8 @@ class cRecording : public cListObject {
   friend class cRecordings;
 private:
   char *titleBuffer;
-  char *name;
   char *fileName;
+  char *name;
 public:
   time_t start;
   int priority;

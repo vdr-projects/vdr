@@ -4,7 +4,7 @@
  * See the main source file 'osm.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.4 2000/04/23 09:48:35 kls Exp $
+ * $Id: recording.c 1.5 2000/04/24 09:35:29 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -104,6 +104,7 @@ void AssertFreeDiskSpace(void)
 
 cRecording::cRecording(const char *Name, time_t Start, int Priority, int LifeTime)
 {
+  titleBuffer = NULL;
   fileName = NULL;
   name = strdup(Name);
   start = Start;
@@ -113,6 +114,7 @@ cRecording::cRecording(const char *Name, time_t Start, int Priority, int LifeTim
 
 cRecording::cRecording(cTimer *Timer)
 {
+  titleBuffer = NULL;
   fileName = NULL;
   name = strdup(Timer->file);
   start = Timer->StartTime();
@@ -122,6 +124,7 @@ cRecording::cRecording(cTimer *Timer)
 
 cRecording::cRecording(const char *FileName)
 {
+  titleBuffer = NULL;
   fileName = strdup(FileName);
   FileName += strlen(BaseDir) + 1;
   char *p = strrchr(FileName, '/');
@@ -140,14 +143,13 @@ cRecording::cRecording(const char *FileName)
         name[p - FileName] = 0;
         }
      }
-  titleBuffer = NULL;
 }
 
 cRecording::~cRecording()
 {
+  delete titleBuffer;
   delete fileName;
   delete name;
-  delete titleBuffer;
 }
 
 const char *cRecording::FileName(void)
