@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.151 2002/02/10 11:25:07 kls Exp $
+ * $Id: menu.c 1.152 2002/02/10 11:52:34 kls Exp $
  */
 
 #include "menu.h"
@@ -2124,10 +2124,11 @@ cDisplayChannel::cDisplayChannel(int Number, bool Switched)
 {
   group = -1;
   withInfo = !Switched || Setup.ShowInfoOnChSwitch;
+  int EpgLines = withInfo ? 5 : 1;
   lines = 0;
   oldNumber = number = 0;
   cChannel *channel = Channels.GetByNumber(Number);
-  Interface->Open(Setup.OSDwidth, Setup.ChannelInfoPos ? 5 : -5);
+  Interface->Open(Setup.OSDwidth, Setup.ChannelInfoPos ? EpgLines : -EpgLines);
   if (channel) {
      DisplayChannel(channel);
      DisplayInfo();
@@ -2142,7 +2143,8 @@ cDisplayChannel::cDisplayChannel(eKeys FirstKey)
   oldNumber = cDvbApi::CurrentChannel();
   number = 0;
   lastTime = time_ms();
-  Interface->Open(Setup.OSDwidth, Setup.ChannelInfoPos ? 5 : -5);
+  int EpgLines = Setup.ShowInfoOnChSwitch ? 5 : 1;
+  Interface->Open(Setup.OSDwidth, Setup.ChannelInfoPos ? EpgLines : -EpgLines);
   ProcessKey(FirstKey);
 }
 

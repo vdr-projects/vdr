@@ -162,6 +162,7 @@ Simon Bauschulte <SemiSchwabe@Brutzel.de>
 
 Andy Grobb <Charly98@01019freenet.de>
  for completing storing the current audio volume in the setup.conf file
+ for fixing the EPG display in case Setup.ShowInfoOnChSwitch is set to "no"
 
 Thomas Heiligenmann <thomas@heiligenmann.de>
  for implementing the SVDRP commands LSTR and DELR

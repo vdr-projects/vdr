@@ -987,3 +987,5 @@ Video Disk Recorder Revision History
   automatically closed (suggested by Uwe Freese).
 - Changed the default name for instant recordings to "TITLE EPISODE" (avoiding
   the '-').
+- If Setup.ShowInfoOnChSwitch is set to "no", the box for the EPG display is no
+  longer shown (thanks to Andy Grobb).
