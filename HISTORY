@@ -304,3 +304,4 @@ Video Disk Recorder Revision History
   currently recording or replaying.
 - Now shifting the 'Subtitle' info into the 'ExtendedDescription' on stations
   that don't send the EIT information correctly (like, e.g., 'VOX').
+- Implemented a 10 seconds latency when removing files.
