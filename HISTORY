@@ -3157,3 +3157,4 @@ Video Disk Recorder Revision History
 - Fixed a possible recursion in cControl::Shutdown() (thanks to Sascha Volkenandt).
 - Now setting the VPID before the APID in live mode to avoid unnecessary
   overhead in the firmware (thanks to Werner Fink).
+- Now checking available OSD memory at runtime (thanks to Oliver Endriss).

@@ -539,6 +539,7 @@ Oliver Endriss <o.endriss@gmx.de>
  for adding a sample setup for 'DisiCon-4 Single Cable Network' to 'diseqc.conf'
  for reporting a problem with the name of the remote control for which the keys are
  being learned overwriting the date/time in the 'classic' skin
+ for making cDvbOsd check available OSD memory at runtime
 
 Reinhard Walter Buchner <rw.buchner@freenet.de>
  for adding some satellites to 'sources.conf'

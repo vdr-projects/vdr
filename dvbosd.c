@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbosd.c 1.24 2004/07/18 10:20:05 kls Exp $
+ * $Id: dvbosd.c 1.25 2004/11/20 14:29:25 kls Exp $
  */
 
 #include "dvbosd.h"
@@ -18,11 +18,12 @@
 // --- cDvbOsd ---------------------------------------------------------------
 
 #define MAXNUMWINDOWS 7 // OSD windows are counted 1...7
-#define MAXOSDMEMORY  92000 // number of bytes available to the OSD (depends on firmware version, but there is no way of determining the actual value)
+#define MAXOSDMEMORY  92000 // number of bytes available to the OSD (for unmodified DVB cards)
 
 class cDvbOsd : public cOsd {
 private:
   int osdDev;
+  int osdMem;
   bool shown;
   void Cmd(OSD_Command cmd, int color = 0, int x0 = 0, int y0 = 0, int x1 = 0, int y1 = 0, const void *data = NULL);
 public:
@@ -40,6 +41,14 @@ cDvbOsd::cDvbOsd(int Left, int Top, int OsdDev)
   if (osdDev < 0)
      esyslog("ERROR: illegal OSD device handle (%d)!", osdDev);
   else {
+     osdMem = MAXOSDMEMORY;
+#ifdef OSD_CAP_MEMSIZE
+     // modified DVB cards may have more OSD memory:
+     osd_cap_t cap;
+     cap.cmd = OSD_CAP_MEMSIZE;
+     if (ioctl(osdDev, OSD_GET_CAPABILITY, &cap) == 0)
+        osdMem = cap.val;
+#endif
      // must clear all windows here to avoid flashing effects - doesn't work if done
      // in Flush() only for the windows that are actually used...
      for (int i = 0; i < MAXNUMWINDOWS; i++) {
@@ -74,7 +83,7 @@ eOsdError cDvbOsd::CanHandleAreas(const tArea *Areas, int NumAreas)
             return oeWrongAlignment;
          TotalMemory += Areas[i].Width() * Areas[i].Height() / (8 / Areas[i].bpp);
          }
-     if (TotalMemory > MAXOSDMEMORY)
+     if (TotalMemory > osdMem)
         return oeOutOfMemory;
      }
   return Result;
