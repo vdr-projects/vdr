@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.171 2002/04/20 10:45:33 kls Exp $
+ * $Id: dvbapi.c 1.172 2002/04/21 09:54:40 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -1812,21 +1812,24 @@ bool cDvbApi::SetPrimaryDvbApi(int n)
   return false;
 }
 
-int cDvbApi::CanShift(int Ca, int Priority)
+int cDvbApi::CanShift(int Ca, int Priority, int UsedCards)
 {
   // Test whether a recording on this DVB device can be shifted to another one
   // in order to perform a new recording with the given Ca and Priority on this device:
   int ShiftLevel = -1; // default means this device can't be shifted
+  if (UsedCards & (1 << CardIndex()) != 0)
+     return ShiftLevel; // otherwise we would get into a loop
   if (Recording()) {
      if (ProvidesCa(Ca) // this device provides the requested Ca
         && (Ca != this->Ca() // the requested Ca is different from the one currently used...
            || Priority > this->Priority())) { // ...or the request comes from a higher priority
         cDvbApi *d = NULL;
         int Provides[MAXDVBAPI];
+        UsedCards |= (1 << CardIndex());
         for (int i = 0; i < NumDvbApis; i++) {
             if ((Provides[i] = dvbApi[i]->ProvidesCa(this->Ca())) != 0) { // this device is basicly able to do the job
                if (dvbApi[i] != this) { // it is not _this_ device
-                  int sl = dvbApi[i]->CanShift(this->Ca(), Priority); // this is the original Priority!
+                  int sl = dvbApi[i]->CanShift(this->Ca(), Priority, UsedCards); // this is the original Priority!
                   if (sl >= 0 && (ShiftLevel < 0 || sl < ShiftLevel)) {
                      d = dvbApi[i];
                      ShiftLevel = sl;

@@ -122,6 +122,7 @@ Stefan Huelswitt <huels@iname.com>
  for fixing a crash when replaying with DEBUG_OSD=1
  for fixing a crash when selecting the "Jump" function directly after setting
  an editing mark
+ for reporting a possible endless loop in shifting recordings between DVB cards
 
 Ulrich Röder <roeder@efr-net.de>
  for pointing out that there are channels that have a symbol rate higher than
