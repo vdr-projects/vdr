@@ -60,7 +60,8 @@ Video Disk Recorder User's Manual
   "Left" and "Right", and changing the character with the "Up" and "Down"
   keys. "Ok" then confirms the changes. The "Red" key toggles between
   upper- and lowercase characters, while the "Green" key switches between
-  insert and overwrite mode. The "Yellow" key deletes the current character.
+  insert and overwrite mode. The "Yellow" key deletes the current character
+  (or the one to the right of the cursor in insert mode).
 
   The "Red", "Green", "Yellow" and "Blue" buttons have special meanings
   in various menus and are listed at the bottom of the on-screen-display.

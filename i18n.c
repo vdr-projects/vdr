@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.80 2002/04/13 10:42:48 kls Exp $
+ * $Id: i18n.c 1.81 2002/04/16 16:02:49 kls Exp $
  *
  * Slovenian  translations provided by Miha Setina <mihasetina@softhome.net> and Matjaz Thaler <matjaz.thaler@guest.arnes.si>
  * Italian    translations provided by Alberto Carraro <bertocar@tin.it>
@@ -1637,6 +1637,19 @@ const tPhrase Phrases[] = {
     "MaaTiiKesTorPerLauSun",
     "PonWtoSroCzwPiaSobNie",
     "LunMarMieJueVieSabDom",
+  },
+  // The allowed characters in strings:
+  { " abcdefghijklmnopqrstuvwxyz0123456789-.#~",
+    " aäbcdefghijklmnoöpqrstuüvwxyz0123456789-.#~",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    " aábcdeéfghiíjklmnñoópqrstuúvwxyz0123456789-.#~",
   },
   // Learning keys:
   { "Learning Remote Control Keys",

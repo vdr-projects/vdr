@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.183 2002/04/13 10:38:03 kls Exp $
+ * $Id: menu.c 1.184 2002/04/16 16:11:40 kls Exp $
  */
 
 #include "menu.h"
@@ -647,18 +647,19 @@ eOSState cMenuEditStrItem::ProcessKey(eKeys Key)
     case kRight|k_Repeat:
     case kRight: if (pos < length && pos < int(strlen(value)) ) {
                     if (++pos >= int(strlen(value))) {
-                       if (pos == 0 || value[pos - 1] != ' ') {
+                       if (pos >= 2 && value[pos - 1] == ' ' && value[pos - 2] == ' ')
+                          pos--; // allow only two blanks at the end
+                       else {
                           value[pos] = ' ';
                           value[pos + 1] = 0;
                           }
-                       else
-                          pos--; // allow only blank at the end
                        }
                     }
                  newchar = true;
                  if (!insert && isalpha(value[pos]))
                     uppercase = isupper(value[pos]);
-                 SetHelpKeys();
+                 if (pos == 0)
+                    SetHelpKeys();
                  break;
     case kUp|k_Repeat:
     case kUp:
@@ -671,7 +672,7 @@ eOSState cMenuEditStrItem::ProcessKey(eKeys Key)
                           value[pos] = ' ';
                           }
                        }
-                    if (uppercase) 
+                    if (uppercase)
                        value[pos] = toupper(Inc(tolower(value[pos]), NORMALKEY(Key) == kUp));
                     else
                        value[pos] =         Inc(        value[pos],  NORMALKEY(Key) == kUp);
@@ -788,7 +789,7 @@ cMenuEditChannel::cMenuEditChannel(int Index)
   channel = Channels.Get(Index);
   if (channel) {
      data = *channel;
-     Add(new cMenuEditStrItem( tr("Name"),          data.name, sizeof(data.name), FileNameChars));
+     Add(new cMenuEditStrItem( tr("Name"),          data.name, sizeof(data.name), tr(FileNameChars)));
      Add(new cMenuEditIntItem( tr("Frequency"),    &data.frequency));
      Add(new cMenuEditChrItem( tr("Polarization"), &data.polarization, "hv"));
      Add(new cMenuEditIntItem( tr("DiSEqC"),       &data.diseqc, 0, 10)); //TODO exact limits???
@@ -1175,7 +1176,7 @@ cMenuEditTimer::cMenuEditTimer(int Index, bool New)
 //TODO VPS???
      Add(new cMenuEditIntItem( tr("Priority"),     &data.priority, 0, MAXPRIORITY));
      Add(new cMenuEditIntItem( tr("Lifetime"),     &data.lifetime, 0, MAXLIFETIME));
-     Add(new cMenuEditStrItem( tr("File"),          data.file, sizeof(data.file), FileNameChars));
+     Add(new cMenuEditStrItem( tr("File"),          data.file, sizeof(data.file), tr(FileNameChars)));
      SetFirstDayItem();
      }
 }
@@ -2193,7 +2194,7 @@ void cMenuSetupRecord::Set(void)
   Add(new cMenuEditIntItem( tr("Setup.Recording$Default lifetime (d)"),      &data.DefaultLifetime, 0, MAXLIFETIME));
   Add(new cMenuEditBoolItem(tr("Setup.Recording$Use episode name"),          &data.UseSubtitle));
   Add(new cMenuEditBoolItem(tr("Setup.Recording$Mark instant recording"),    &data.MarkInstantRecord));
-  Add(new cMenuEditStrItem( tr("Setup.Recording$Name instant recording"),     data.NameInstantRecord, sizeof(data.NameInstantRecord), FileNameChars));
+  Add(new cMenuEditStrItem( tr("Setup.Recording$Name instant recording"),     data.NameInstantRecord, sizeof(data.NameInstantRecord), tr(FileNameChars)));
   Add(new cMenuEditBoolItem(tr("Setup.Recording$Record Dolby Digital"),      &data.RecordDolbyDigital));
   Add(new cMenuEditIntItem( tr("Setup.Recording$Max. video file size (MB)"), &data.MaxVideoFileSize, MINVIDEOFILESIZE, MAXVIDEOFILESIZE));
   Add(new cMenuEditBoolItem(tr("Setup.Recording$Split edited files"),        &data.SplitEditedFiles));
@@ -3376,7 +3377,7 @@ eOSState cReplayControl::ProcessKey(eKeys Key)
         }
      else if (modeOnly)
         ShowMode();
-     else 
+     else
         shown = ShowProgress(!shown) || shown;
      }
   bool DisplayedFrames = displayFrames;
