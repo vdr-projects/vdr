@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: osm.c 1.4 2000/04/16 13:54:10 kls Exp $
+ * $Id: osm.c 1.5 2000/04/16 15:50:21 kls Exp $
  */
 
 #include <signal.h>
@@ -37,6 +37,8 @@
 #else
 #define KEYS_CONF "keys.conf"
 #endif
+
+#define DIRECTCHANNELTIMEOUT 500 //ms
 
 static int Interrupted = 0;
 
@@ -64,38 +66,45 @@ int main(int argc, char *argv[])
 
   cMenuMain *Menu = NULL;
   cTimer *Timer = NULL;
-  cRecording *Recording = NULL;
+  int dcTime = 0, dcNumber = 0;
 
   while (!Interrupted) {
-        AssertFreeDiskSpace();
-        if (!Recording && !Timer && (Timer = cTimer::GetMatch()) != NULL) {
-           DELETENULL(Menu);
-           // make sure the timer won't be deleted:
-           Timer->SetRecording(true);
-           // switch to channel:
-           cChannel::SwitchTo(Timer->channel - 1);
-           // start recording:
-           Recording = new cRecording(Timer);
-           if (!Recording->Record())
-              DELETENULL(Recording);
-           }
-        if (Timer && !Timer->Matches()) {
-           // stop recording:
-           if (Recording) {
-              Recording->Stop();
-              DELETENULL(Recording);
+        // Direct Channel Select (action):
+        if (dcNumber) {
+           if (time_ms() - dcTime > DIRECTCHANNELTIMEOUT) {
+              cChannel::SwitchTo(dcNumber - 1);
+              dcNumber = 0;
               }
-           // release timer:
-           Timer->SetRecording(false);
-           // clear single event timer:
-           if (Timer->IsSingleEvent()) {
-              DELETENULL(Menu); // must make sure no menu uses it
-              isyslog(LOG_INFO, "deleting timer %d", Timer->Index() + 1);
-              Timers.Del(Timer);
-              Timers.Save();
-              }
-           Timer = NULL;
            }
+        // Timer Processing:
+        else {
+           AssertFreeDiskSpace();
+           if (!Timer && (Timer = cTimer::GetMatch()) != NULL) {
+              DELETENULL(Menu);
+              // make sure the timer won't be deleted:
+              Timer->SetRecording(true);
+              // switch to channel:
+              cChannel::SwitchTo(Timer->channel - 1);
+              // start recording:
+              cRecording Recording(Timer);
+              DvbApi.StartRecord(Recording.FileName());
+              }
+           if (Timer && !Timer->Matches()) {
+              // stop recording:
+              DvbApi.StopRecord();
+              // release timer:
+              Timer->SetRecording(false);
+              // clear single event timer:
+              if (Timer->IsSingleEvent()) {
+                 DELETENULL(Menu); // must make sure no menu uses it
+                 isyslog(LOG_INFO, "deleting timer %d", Timer->Index() + 1);
+                 Timers.Del(Timer);
+                 Timers.Save();
+                 }
+              Timer = NULL;
+              }
+           }
+        // User Input:
         eKeys key = Interface.GetKey();
         if (Menu) {
            switch (Menu->ProcessKey(key)) {
@@ -108,6 +117,12 @@ int main(int argc, char *argv[])
            }
         else {
            switch (key) {
+             // Direct Channel Select (input):
+             case k0: case k1: case k2: case k3: case k4: case k5: case k6: case k7: case k8: case k9:
+             {
+               dcNumber = dcNumber * 10 + key - k0;
+               dcTime = time_ms();
+             }
              // Record/Replay Control:
              case kBegin:         DvbApi.Skip(-INT_MAX); break;
              case kRecord:        if (!DvbApi.Recording()) {

@@ -4,7 +4,7 @@
  * See the main source file 'osm.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 1.2 2000/04/14 15:12:42 kls Exp $
+ * $Id: recording.h 1.3 2000/04/16 15:44:09 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -12,7 +12,6 @@
 
 #include <time.h>
 #include "config.h"
-#include "dvbapi.h"
 #include "tools.h"
 
 void AssertFreeDiskSpace(void);
@@ -35,12 +34,6 @@ public:
   bool Remove(void);
        // Actually removes the file from the disk
        // Returns false in case of error
-  bool Record(void);
-       // Starts recording of the file
-  bool Play(void);
-       // Starts playback of the file
-  void Stop(void);
-       // Stops recording or playback of the file
   };
 
 class cRecordings : public cList<cRecording> {

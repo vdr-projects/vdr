@@ -4,7 +4,7 @@
  * See the main source file 'osm.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.3 2000/04/15 15:07:36 kls Exp $
+ * $Id: menu.c 1.4 2000/04/16 15:45:44 kls Exp $
  */
 
 #include "menu.h"
@@ -957,7 +957,7 @@ eOSState cMenuRecordings::Play(void)
   cMenuRecordingItem *ri = (cMenuRecordingItem *)Get(Current());
   if (ri) {
 //XXX what if this recording's file is currently in use???
-     if (ri->recording->Play())
+     if (DvbApi.StartReplay(ri->recording->FileName()))
         return osEnd;
      }
   return osContinue;

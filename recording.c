@@ -4,7 +4,7 @@
  * See the main source file 'osm.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.2 2000/04/15 13:29:02 kls Exp $
+ * $Id: recording.c 1.3 2000/04/16 15:47:45 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -178,21 +178,6 @@ bool cRecording::Remove(void)
 {
   isyslog(LOG_INFO, "removing recording %s", FileName());
   return RemoveFileOrDir(FileName());
-}
-
-bool cRecording::Record(void)
-{
-  return DvbApi.StartRecord(FileName());
-}
-
-bool cRecording::Play(void)
-{
-  return DvbApi.StartReplay(FileName());
-}
-
-void cRecording::Stop(void)
-{
-  DvbApi.StopRecord();
 }
 
 // --- cRecordings -----------------------------------------------------------
