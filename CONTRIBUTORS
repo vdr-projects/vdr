@@ -480,3 +480,6 @@ Régis Bossut <rbossut@auchan.com>
 
 Andreas Kool <akool@akool.de>
   for pointing out problems with non-unique definitions in 'channels.conf.cable'
+
+Guy Roussin <guy.roussin@teledetection.fr>
+  for suggesting not to display channel group delimiters without text

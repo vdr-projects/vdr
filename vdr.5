@@ -8,7 +8,7 @@
 .\" License as specified in the file COPYING that comes with the
 .\" vdr distribution.
 .\"
-.\" $Id: vdr.5 1.14 2002/11/24 16:00:00 kls Exp $
+.\" $Id: vdr.5 1.15 2002/11/29 14:13:40 kls Exp $
 .\"
 .TH vdr 5 "24 Nov 2002" "1.2.0" "Video Disk Recorder Files"
 .SH NAME
@@ -34,6 +34,13 @@ as in
 
 The given number must be larger than the number of any previous channel
 (otherwise it is silently ignored).
+
+A group delimiter can also be used to just set the next channel's number,
+without an explicit delimiter text, as in
+
+\fB:@201\fR
+
+Such a delimiter will not appear in the Channels menu.
 
 A \fBchannel definition\fR is a line with channel data, where the fields
 are separated by ':' characters. Example:

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.226 2002/11/24 14:34:41 kls Exp $
+ * $Id: menu.c 1.227 2002/11/29 14:06:38 kls Exp $
  */
 
 #include "menu.h"
@@ -684,15 +684,10 @@ public:
 cMenuChannels::cMenuChannels(void)
 :cOsdMenu(tr("Channels"), CHNUMWIDTH)
 {
-  //TODO
-  int i = 0;
-  cChannel *channel;
-  int curr = ((channel = Channels.GetByNumber(cDevice::CurrentChannel())) != NULL) ? channel->Index() : -1;
-
-  while ((channel = Channels.Get(i)) != NULL) {
-        Add(new cMenuChannelItem(channel), i == curr);
-        i++;
-        }
+  for (cChannel *channel = Channels.First(); channel; channel = Channels.Next(channel)) {
+      if (!channel->GroupSep() || *channel->Name())
+         Add(new cMenuChannelItem(channel), channel->Number() == cDevice::CurrentChannel());
+      }
   SetHelp(tr("Edit"), tr("New"), tr("Delete"), tr("Mark"));
 }
 

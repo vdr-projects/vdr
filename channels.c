@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 1.10 2002/11/24 20:09:42 kls Exp $
+ * $Id: channels.c 1.11 2002/11/29 14:10:46 kls Exp $
  */
 
 #include "channels.h"
@@ -386,7 +386,7 @@ bool cChannels::Load(const char *FileName, bool AllowComments)
 int cChannels::GetNextGroup(int Idx)
 {
   cChannel *channel = Get(++Idx);
-  while (channel && !channel->GroupSep())
+  while (channel && !(channel->GroupSep() && *channel->Name()))
         channel = Get(++Idx);
   return channel ? Idx : -1;
 }
@@ -394,7 +394,7 @@ int cChannels::GetNextGroup(int Idx)
 int cChannels::GetPrevGroup(int Idx)
 {
   cChannel *channel = Get(--Idx);
-  while (channel && !channel->GroupSep())
+  while (channel && !(channel->GroupSep() && *channel->Name()))
         channel = Get(--Idx);
   return channel ? Idx : -1;
 }

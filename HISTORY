@@ -1813,9 +1813,11 @@ Video Disk Recorder Revision History
   makes far jumps, so that a lock file might end up with a time stamp that lies
   in the distant future (thanks to Oliver Endriss).
 
-2002-11-24: Version 1.1.18
+2002-11-29: Version 1.1.18
 
 - Fixed missing initialization of 'number' in cChannel (thanks to Martin Hammerschmid
   for reporting this one).
 - Fixed a misplaced ')' in the fix about the stale lock files (thanks again to
   Oliver Endriss for pointing this out - it was my fault).
+- Group delimiters in the 'channels.conf' file that have no text (like a simple ":"
+  or ":@201") no longer show up in the Channels menu (suggested by Guy Roussin).
