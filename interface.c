@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.c 1.43 2001/09/01 10:33:03 kls Exp $
+ * $Id: interface.c 1.44 2001/09/01 15:18:46 kls Exp $
  */
 
 #include "interface.h"
@@ -106,6 +106,8 @@ void cInterface::PutKey(eKeys Key)
 
 eKeys cInterface::Wait(int Seconds, bool KeepChar)
 {
+  if (Seconds == 0)
+     Seconds = Setup.OSDMessageTime;
   Flush();
   eKeys Key = kNone;
   time_t timeout = time(NULL) + Seconds;

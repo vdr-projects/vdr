@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.62 2001/09/01 15:04:14 kls Exp $
+ * $Id: config.c 1.63 2001/09/01 15:17:44 kls Exp $
  */
 
 #include "config.h"
@@ -819,6 +819,7 @@ cSetup::cSetup(void)
   ChannelInfoPos = 0;
   OSDwidth = 52;
   OSDheight = 18;
+  OSDMessageTime = 1;
   MaxVideoFileSize = MAXVIDEOFILESIZE;
   MinEventTimeout = 120;
   MinUserInactivity = 120;
@@ -854,6 +855,7 @@ bool cSetup::Parse(char *s)
      else if (!strcasecmp(Name, "ChannelInfoPos"))      ChannelInfoPos     = atoi(Value);
      else if (!strcasecmp(Name, "OSDwidth"))            OSDwidth           = atoi(Value);
      else if (!strcasecmp(Name, "OSDheight"))           OSDheight          = atoi(Value);
+     else if (!strcasecmp(Name, "OSDMessageTime"))      OSDMessageTime     = atoi(Value);
      else if (!strcasecmp(Name, "MaxVideoFileSize"))    MaxVideoFileSize   = atoi(Value);
      else if (!strcasecmp(Name, "MinEventTimeout"))     MinEventTimeout    = atoi(Value);
      else if (!strcasecmp(Name, "MinUserInactivity"))   MinUserInactivity  = atoi(Value);
@@ -924,6 +926,7 @@ bool cSetup::Save(const char *FileName)
         fprintf(f, "ChannelInfoPos     = %d\n", ChannelInfoPos);
         fprintf(f, "OSDwidth           = %d\n", OSDwidth);
         fprintf(f, "OSDheight          = %d\n", OSDheight);
+        fprintf(f, "OSDMessageTime     = %d\n", OSDMessageTime);
         fprintf(f, "MaxVideoFileSize   = %d\n", MaxVideoFileSize);
         fprintf(f, "MinEventTimeout    = %d\n", MinEventTimeout);
         fprintf(f, "MinUserInactivity  = %d\n", MinUserInactivity);

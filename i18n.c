@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.37 2001/09/01 10:52:35 kls Exp $
+ * $Id: i18n.c 1.38 2001/09/01 15:20:45 kls Exp $
  *
  * Slovenian translations provided by Miha Setina <mihasetina@softhome.net>
  * Italian   translations provided by Alberto Carraro <bertocar@tin.it>
@@ -891,6 +891,15 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "Hauteur affichage",
+    "", // TODO
+  },
+  { "OSDMessageTime",
+    "OSD Nachricht Dauer",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
     "", // TODO
   },
   { "MaxVideoFileSize",

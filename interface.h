@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.h 1.23 2001/09/01 07:29:24 kls Exp $
+ * $Id: interface.h 1.24 2001/09/01 15:14:50 kls Exp $
  */
 
 #ifndef __INTERFACE_H
@@ -29,7 +29,7 @@ private:
   unsigned int GetCh(bool Wait = true, bool *Repeat = NULL, bool *Release = NULL);
   void QueryKeys(void);
   void HelpButton(int Index, const char *Text, eDvbColor FgColor, eDvbColor BgColor);
-  eKeys Wait(int Seconds = 1, bool KeepChar = false);
+  eKeys Wait(int Seconds = 0, bool KeepChar = false);
 public:
   cInterface(int SVDRPport = 0);
   ~cInterface();

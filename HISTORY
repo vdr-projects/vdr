@@ -694,3 +694,5 @@ Video Disk Recorder Revision History
 - The main program loop now first checks whether any timer recordings are
   finished, before starting a new timer recording. This is important in case
   one timer ends at the same time another timer starts.
+- New setup parameter OSDMessageTime to define how long an OSD message shall
+  be displayed.
