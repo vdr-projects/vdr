@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.217 2002/10/13 12:10:54 kls Exp $
+ * $Id: menu.c 1.218 2002/10/19 15:33:37 kls Exp $
  */
 
 #include "menu.h"
@@ -33,7 +33,7 @@
 #define MAXRECORDCONTROLS (MAXDEVICES * MAXRECEIVERS)
 #define MAXINSTANTRECTIME (24 * 60 - 1) // 23:59 hours
 
-#define CHNUMWIDTH  (Channels.Count() > 999 ? 5 : 4) // there are people with more than 999 channels...
+#define CHNUMWIDTH  (numdigits(Channels.MaxNumber()) + 1)
 
 // --- cMenuEditChanItem -----------------------------------------------------
 
@@ -42,6 +42,7 @@ protected:
   virtual void Set(void);
 public:
   cMenuEditChanItem(const char *Name, int *Value);
+  virtual eOSState ProcessKey(eKeys Key);
   };
 
 cMenuEditChanItem::cMenuEditChanItem(const char *Name, int *Value)
@@ -54,11 +55,30 @@ void cMenuEditChanItem::Set(void)
 {
   char buf[255];
   cChannel *channel = Channels.GetByNumber(*value);
-  if (channel)
-     snprintf(buf, sizeof(buf), "%d %s", *value, channel->Name());
-  else
-     *buf = 0;
+  snprintf(buf, sizeof(buf), "%d %s", *value, channel ? channel->Name() : "");
   SetValue(buf);
+}
+
+eOSState cMenuEditChanItem::ProcessKey(eKeys Key)
+{
+  int delta = 1;
+
+  switch (Key) {
+    case kLeft|k_Repeat:
+    case kLeft:  delta = -1;
+    case kRight|k_Repeat:
+    case kRight: 
+                 {
+                   cChannel *channel = Channels.GetByNumber(*value + delta, delta);
+                   if (channel) {
+                      *value = channel->Number();
+                      Set();
+                      }
+                 }
+                 break;
+    default : return cMenuEditIntItem::ProcessKey(Key);
+    }
+  return osContinue;
 }
 
 // --- cMenuEditTranItem -----------------------------------------------------
@@ -2383,10 +2403,17 @@ void cDisplayChannel::DisplayChannel(const cChannel *Channel)
 {
   int BufSize = Width() + 1;
   char buffer[BufSize];
-  if (Channel && Channel->Number() > 0)
-     snprintf(buffer, BufSize, "%d%s  %s", Channel->Number(), number ? "-" : "", Channel->Name());
+  *buffer = 0;
+  if (Channel) {
+     if (Channel->Number() > 0)
+        snprintf(buffer, BufSize, "%d%s  %s", Channel->Number(), number ? "-" : "", Channel->Name());
+     else if (Channel->Name())
+        snprintf(buffer, BufSize, "%s", Channel->Name());
+     }
+  else if (number)
+     snprintf(buffer, BufSize, "%d-", number);
   else
-     snprintf(buffer, BufSize, "%s", Channel ? Channel->Name() : tr("*** Invalid Channel ***"));
+     snprintf(buffer, BufSize, "%s", tr("*** Invalid Channel ***"));
   Interface->Fill(0, 0, Setup.OSDwidth, 1, clrBackground);
   Interface->Write(0, 0, buffer);
   const char *date = DayDateTime();
@@ -2468,10 +2495,6 @@ eOSState cDisplayChannel::ProcessKey(eKeys Key)
                cChannel *channel = Channels.GetByNumber(number);
                DisplayChannel(channel);
                lastTime = time_ms();
-               if (!channel) {
-                  number = -1;
-                  lastTime += 1000;
-                  }
                }
             }
          break;
@@ -2505,8 +2528,14 @@ eOSState cDisplayChannel::ProcessKey(eKeys Key)
          break;
     case kNone:
          if (number && time_ms() - lastTime > DIRECTCHANNELTIMEOUT) {
-            if (number > 0 && !Channels.SwitchTo(number))
-               number = -1;
+            if (Channels.GetByNumber(number))
+               Channels.SwitchTo(number);
+            else {
+               number = 0;
+               DisplayChannel(NULL);
+               lastTime = time_ms();
+               return osContinue;
+               }
             return osEnd;
             }
          break;

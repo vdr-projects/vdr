@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.h 1.1 2002/10/05 13:53:15 kls Exp $
+ * $Id: channels.h 1.2 2002/10/19 11:48:02 kls Exp $
  */
 
 #ifndef __CHANNELS_H
@@ -112,7 +112,7 @@ public:
   int GetPrevGroup(int Idx);   // Get previous channel group
   int GetNextNormal(int Idx);  // Get next normal channel (not group)
   void ReNumber(void);         // Recalculate 'number' based on channel type
-  cChannel *GetByNumber(int Number);
+  cChannel *GetByNumber(int Number, int SkipGap = 0);
   cChannel *GetByServiceID(unsigned short ServiceId);
   const char *GetChannelNameByNumber(int Number);
   bool SwitchTo(int Number);

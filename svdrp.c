@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.45 2002/10/13 09:31:31 kls Exp $
+ * $Id: svdrp.c 1.46 2002/10/19 11:48:02 kls Exp $
  */
 
 #include "svdrp.h"
@@ -413,12 +413,12 @@ void cSVDRP::CmdCHAN(const char *Option)
      else {
         int i = 1;
         cChannel *channel;
-        while ((channel = Channels.GetByNumber(i)) != NULL) {
+        while ((channel = Channels.GetByNumber(i, 1)) != NULL) {
               if (strcasecmp(channel->Name(), Option) == 0) {
                  n = i;
                  break;
                  }
-              i++;
+              i = channel->Number() + 1;
               }
         }
      if (n < 0) {
@@ -640,7 +640,7 @@ void cSVDRP::CmdLSTC(const char *Option)
         int i = 1;
         cChannel *next = NULL;
         while (i <= Channels.MaxNumber()) {
-              cChannel *channel = Channels.GetByNumber(i);
+              cChannel *channel = Channels.GetByNumber(i, 1);
               if (channel) {
                  if (strcasestr(channel->Name(), Option)) {
                     if (next)
@@ -652,7 +652,7 @@ void cSVDRP::CmdLSTC(const char *Option)
                  Reply(501, "Channel \"%d\" not found", i);
                  return;
                  }
-              i++;
+              i = channel->Number() + 1;
               }
         if (next)
            Reply(250, "%d %s", next->Number(), next->ToText());
@@ -661,13 +661,15 @@ void cSVDRP::CmdLSTC(const char *Option)
         }
      }
   else if (Channels.MaxNumber() >= 1) {
-     for (int i = 1; i <= Channels.MaxNumber(); i++) {
-         cChannel *channel = Channels.GetByNumber(i);
-        if (channel)
-           Reply(i < Channels.MaxNumber() ? -250 : 250, "%d %s", channel->Number(), channel->ToText());
-        else
-           Reply(501, "Channel \"%d\" not found", i);
-         }
+     int i = 1;
+     while (i <= Channels.MaxNumber()) {
+           cChannel *channel = Channels.GetByNumber(i, 1);
+           if (channel)
+              Reply(channel->Number() < Channels.MaxNumber() ? -250 : 250, "%d %s", channel->Number(), channel->ToText());
+           else
+              Reply(501, "Channel \"%d\" not found", i);
+           i = channel->Number() + 1;
+           }
      }
   else
      Reply(550, "No channels defined");

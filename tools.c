@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.71 2002/09/09 21:35:49 kls Exp $
+ * $Id: tools.c 1.72 2002/10/19 12:32:53 kls Exp $
  */
 
 #include "tools.h"
@@ -205,6 +205,13 @@ bool endswith(const char *s, const char *p)
 bool isempty(const char *s)
 {
   return !(s && *skipspace(s));
+}
+
+int numdigits(int n)
+{
+  char buf[16];
+  snprintf(buf, sizeof(buf), "%d", n);
+  return strlen(buf);
 }
 
 int time_ms(void)

@@ -1619,3 +1619,8 @@ Video Disk Recorder Revision History
 - Fixed a small glitch when switching channels (thanks to Dennis Noordsij for
   reporting this one).
 - Fixed handling multiple 'CaCaps' entries in 'setup.conf'.
+- Group separators in 'channels.conf' may now be given like ':@201 My Channels',
+  where '@201' indicates the number to be given to the next channel. This can be
+  used to create 'gaps' in the channel numbering (see 'man 5 vdr'). BE CAREFUL
+  TO UPDATE YOUR 'timers.conf' ACCORDINGLY IF INSERTING THIS NEW FEATURE INTO YOUR
+  'channels.conf' FILE!
