@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.35 2001/08/26 13:45:10 kls Exp $
+ * $Id: i18n.c 1.36 2001/08/31 15:37:05 kls Exp $
  *
  * Slovenian translations provided by Miha Setina <mihasetina@softhome.net>
  * Italian   translations provided by Alberto Carraro <bertocar@tin.it>
@@ -384,6 +384,15 @@ const tPhrase Phrases[] = {
     "Cancelar Modificar?",
     "Annuler les modifications?",
     "Avbryte redigering",
+  },
+  { "Press any key to cancel shutdown",
+    "Taste drücken um Shutdown abzubrechen",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
   },
   // Channel parameters:
   { "Name",
@@ -868,6 +877,24 @@ const tPhrase Phrases[] = {
   },
   { "MaxVideoFileSize",
     "Max. Video Dateigröße",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+  },
+  { "MinEventTimeout",
+    "Mindest Event Pause",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+  },
+  { "MinUserInactivity",
+    "Mindest User Inaktivität",
     "", // TODO
     "", // TODO
     "", // TODO

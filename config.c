@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.59 2001/08/26 14:46:43 kls Exp $
+ * $Id: config.c 1.60 2001/08/31 13:46:26 kls Exp $
  */
 
 #include "config.h"
@@ -820,6 +820,8 @@ cSetup::cSetup(void)
   OSDwidth = 52;
   OSDheight = 18;
   MaxVideoFileSize = MAXVIDEOFILESIZE;
+  MinEventTimeout = 120;
+  MinUserInactivity = 120;
   CurrentChannel = -1;
 }
 
@@ -853,6 +855,8 @@ bool cSetup::Parse(char *s)
      else if (!strcasecmp(Name, "OSDwidth"))            OSDwidth           = atoi(Value);
      else if (!strcasecmp(Name, "OSDheight"))           OSDheight          = atoi(Value);
      else if (!strcasecmp(Name, "MaxVideoFileSize"))    MaxVideoFileSize   = atoi(Value);
+     else if (!strcasecmp(Name, "MinEventTimeout"))     MinEventTimeout    = atoi(Value);
+     else if (!strcasecmp(Name, "MinUserInactivity"))   MinUserInactivity  = atoi(Value);
      else if (!strcasecmp(Name, "CurrentChannel"))      CurrentChannel     = atoi(Value);
      else
         return false;
@@ -921,6 +925,8 @@ bool cSetup::Save(const char *FileName)
         fprintf(f, "OSDwidth           = %d\n", OSDwidth);
         fprintf(f, "OSDheight          = %d\n", OSDheight);
         fprintf(f, "MaxVideoFileSize   = %d\n", MaxVideoFileSize);
+        fprintf(f, "MinEventTimeout    = %d\n", MinEventTimeout);
+        fprintf(f, "MinUserInactivity  = %d\n", MinUserInactivity);
         fprintf(f, "CurrentChannel     = %d\n", CurrentChannel);
         f.Close();
         isyslog(LOG_INFO, "saved setup to %s", FileName);

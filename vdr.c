@@ -22,9 +22,10 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.64 2001/08/26 15:02:00 kls Exp $
+ * $Id: vdr.c 1.65 2001/09/01 08:57:11 kls Exp $
  */
 
+#define _GNU_SOURCE
 #include <getopt.h>
 #include <signal.h>
 #include <stdlib.h>
@@ -48,13 +49,16 @@
 #endif
 
 #define ACTIVITYTIMEOUT 60 // seconds before starting housekeeping
+#define SHUTDOWNWAIT   300 // seconds to wait in user prompt before automatic shutdown
 
 static int Interrupted = 0;
 
 static void SignalHandler(int signum)
 {
-  if (signum != SIGPIPE)
+  if (signum != SIGPIPE) {
      Interrupted = signum;
+     Interface->Interrupt();
+     }
   signal(signum, SignalHandler);
 }
 
@@ -77,7 +81,8 @@ int main(int argc, char *argv[])
   const char *ConfigDirectory = NULL;
   bool DaemonMode = false;
   int WatchdogTimeout = DEFAULTWATCHDOG;
-  char *Terminal = NULL;
+  const char *Terminal = NULL;
+  const char *Shutdown = NULL;
 
   static struct option long_options[] = {
       { "audio",    required_argument, NULL, 'a' },
@@ -88,16 +93,17 @@ int main(int argc, char *argv[])
       { "help",     no_argument,       NULL, 'h' },
       { "log",      required_argument, NULL, 'l' },
       { "port",     required_argument, NULL, 'p' },
+      { "shutdown", required_argument, NULL, 's' },
+      { "terminal", required_argument, NULL, 't' },
       { "video",    required_argument, NULL, 'v' },
       { "dvd",      required_argument, NULL, 'V' },
       { "watchdog", required_argument, NULL, 'w' },
-      { "terminal", required_argument, NULL, 't' },
       { NULL }
     };
 
   int c;
   int option_index = 0;
-  while ((c = getopt_long(argc, argv, "a:c:dD:E:hl:p:t:v:V:w:", long_options, &option_index)) != -1) {
+  while ((c = getopt_long(argc, argv, "a:c:dD:E:hl:p:s:t:v:V:w:", long_options, &option_index)) != -1) {
         switch (c) {
           case 'a': cDvbApi::SetAudioCommand(optarg);
                     break;
@@ -134,6 +140,7 @@ int main(int argc, char *argv[])
                            "                           2 = errors and info, 3 = errors, info and debug\n"
                            "  -p PORT,  --port=PORT    use PORT for SVDRP (default: %d)\n"
                            "                           0 turns off SVDRP\n"
+                           "  -s CMD,   --shutdown=CMD call CMD to shutdown the computer\n"
                            "  -t TTY,   --terminal=TTY controlling tty\n"
                            "  -v DIR,   --video=DIR    use DIR as video directory (default: %s)\n"
                            "  -V DEV,   --dvd=DEV      use DEV as the DVD device (default: %s)\n"
@@ -169,6 +176,8 @@ int main(int argc, char *argv[])
                        fprintf(stderr, "vdr: invalid port number: %s\n", optarg);
                        return 2;
                        }
+                    break;
+          case 's': Shutdown = optarg;
                     break;
           case 't': Terminal = optarg;
                     break;
@@ -292,7 +301,7 @@ int main(int argc, char *argv[])
   cReplayControl *ReplayControl = NULL;
   int LastChannel = -1;
   int PreviousChannel = cDvbApi::CurrentChannel();
-  time_t LastActivity = time(NULL);
+  time_t LastActivity = 0;
   int MaxLatencyTime = 0;
 
   if (WatchdogTimeout > 0) {
@@ -333,8 +342,10 @@ int main(int argc, char *argv[])
         // User Input:
         cOsdBase **Interact = Menu ? &Menu : (cOsdBase **)&ReplayControl;
         eKeys key = Interface->GetKey(!*Interact || !(*Interact)->NeedsFastResponse());
-        if (NORMALKEY(key) != kNone)
+        if (NORMALKEY(key) != kNone) {
            EITScanner.Activity();
+           LastActivity = time(NULL);
+           }
         if (*Interact) {
            switch ((*Interact)->ProcessKey(key)) {
              case osMenu:   DELETENULL(Menu);
@@ -424,13 +435,44 @@ int main(int argc, char *argv[])
            cVideoCutter::Active();
            }
         if (!*Interact && !cRecordControls::Active()) {
-           if (time(NULL) - LastActivity > ACTIVITYTIMEOUT) {
+           time_t Now = time(NULL);
+           if (Now - LastActivity > ACTIVITYTIMEOUT) {
+              // Shutdown:
+              if (Shutdown && Setup.MinUserInactivity && Now - LastActivity > Setup.MinUserInactivity * 60) {
+                 cTimer *timer = Timers.GetNextActiveTimer();
+                 if (timer) {
+                    time_t Next = timer->StartTime();
+                    time_t Delta = Next - Now;
+                    dsyslog(LOG_INFO, "next timer event at %s", ctime(&Next));
+                    if (Delta > Setup.MinEventTimeout * 60) {
+                       if (!LastActivity) {
+                          // Apparently the user started VDR manually
+                          dsyslog(LOG_INFO, "assuming manual start of VDR");
+                          LastActivity = Now;
+                          continue;
+                          }
+                       if (WatchdogTimeout > 0)
+                          signal(SIGALRM, SIG_IGN);
+                       if (Interface->Confirm(tr("Press any key to cancel shutdown"), SHUTDOWNWAIT, true)) {
+                          char *cmd;
+                          asprintf(&cmd, "%s %ld %ld", Shutdown, Next, Delta);
+                          isyslog(LOG_INFO, "executing '%s'", cmd);
+                          system(cmd);
+                          delete cmd;
+                          }
+                       else if (WatchdogTimeout > 0) {
+                          alarm(WatchdogTimeout);
+                          if (signal(SIGALRM, Watchdog) == SIG_IGN)
+                             signal(SIGALRM, SIG_IGN);
+                          }
+                       LastActivity = Now; // don't try again too soon
+                       }
+                    }
+                 }
+              // Disk housekeeping:
               RemoveDeletedRecordings();
-              LastActivity = time(NULL);
               }
            }
-        else
-           LastActivity = time(NULL);
         }
   if (Interrupted)
      isyslog(LOG_INFO, "caught signal %d", Interrupted);

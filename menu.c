@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.109 2001/08/26 14:03:27 kls Exp $
+ * $Id: menu.c 1.110 2001/08/31 13:47:28 kls Exp $
  */
 
 #include "menu.h"
@@ -1731,6 +1731,8 @@ void cMenuSetup::Set(void)
   Add(new cMenuEditIntItem( tr("OSDwidth"),           &data.OSDwidth, MINOSDWIDTH, MAXOSDWIDTH));
   Add(new cMenuEditIntItem( tr("OSDheight"),          &data.OSDheight, MINOSDHEIGHT, MAXOSDHEIGHT));
   Add(new cMenuEditIntItem( tr("MaxVideoFileSize"),   &data.MaxVideoFileSize, MINVIDEOFILESIZE, MAXVIDEOFILESIZE));
+  Add(new cMenuEditIntItem( tr("MinEventTimeout"),    &data.MinEventTimeout));
+  Add(new cMenuEditIntItem( tr("MinUserInactivity"),  &data.MinUserInactivity));
 }
 
 eOSState cMenuSetup::ProcessKey(eKeys Key)

@@ -676,3 +676,9 @@ Video Disk Recorder Revision History
 - Timers are now sorted in the "Timers" menu, showing the sequence in which
   they will be recording. This can be disabled in the "Setup" menu. Note
   that the "Mark" button doesn't work if timers are displayed sorted.
+
+2001-09-01: Version 0.9.4
+
+- Changed version number notation.
+- Implemented automatic shutdown (see INSTALL and MANUAL for details).
+

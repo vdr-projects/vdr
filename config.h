@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.66 2001/08/26 14:46:53 kls Exp $
+ * $Id: config.h 1.67 2001/09/01 07:15:26 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -19,7 +19,7 @@
 #include "eit.h"
 #include "tools.h"
 
-#define VDRVERSION "0.93"
+#define VDRVERSION "0.9.4"
 
 #define MaxBuffer 10000
 
@@ -295,6 +295,7 @@ public:
   int ChannelInfoPos;
   int OSDwidth, OSDheight;
   int MaxVideoFileSize;
+  int MinEventTimeout, MinUserInactivity;
   int CurrentChannel;
   cSetup(void);
   bool Load(const char *FileName);

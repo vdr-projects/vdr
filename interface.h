@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.h 1.22 2001/07/27 11:38:01 kls Exp $
+ * $Id: interface.h 1.23 2001/09/01 07:29:24 kls Exp $
  */
 
 #ifndef __INTERFACE_H
@@ -23,6 +23,7 @@ private:
   int open;
   int cols[MaxCols];
   eKeys keyFromWait;
+  bool interrupted;
   cSVDRP *SVDRP;
   cRcIoBase *rcIo;
   unsigned int GetCh(bool Wait = true, bool *Repeat = NULL, bool *Release = NULL);
@@ -34,6 +35,7 @@ public:
   ~cInterface();
   void Open(int NumCols = 0, int NumLines = 0);
   void Close(void);
+  void Interrupt(void) { interrupted = true; }
   int Width(void) { return width; }
   int Height(void) { return height; }
   eKeys GetKey(bool Wait = true);
@@ -52,7 +54,7 @@ public:
   void Status(const char *s, eDvbColor FgColor = clrBlack, eDvbColor BgColor = clrCyan);
   void Info(const char *s);
   void Error(const char *s);
-  bool Confirm(const char *s);
+  bool Confirm(const char *s, int Seconds = 10, bool WaitForTimeout = false);
   void Help(const char *Red, const char *Green = NULL, const char *Yellow = NULL, const char *Blue = NULL);
   void LearnKeys(void);
   void DisplayChannelNumber(int Number);
