@@ -154,6 +154,7 @@ Stefan Huelswitt <huels@iname.com>
  be switched or has actually been switched successfully
  for adding a missing StripAudioPackets() to cDvbPlayer::Action()
  for improving skipping channels that are (currently) not available
+ for fixing checking the Ca() status of a cDevice
 
 Ulrich Röder <roeder@efr-net.de>
  for pointing out that there are channels that have a symbol rate higher than

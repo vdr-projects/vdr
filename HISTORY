@@ -1633,3 +1633,4 @@ Video Disk Recorder Revision History
   now be given either in MHz, kHz or Hz. The actual value given will be multiplied
   by 1000 until it is larger than 1000000.
 - Fixed skipping unavailable channels when zapping downwards.
+- Fixed checking the Ca() status of a cDevice (thanks to Stefan Huelswitt).

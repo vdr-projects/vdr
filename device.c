@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.29 2002/10/20 16:05:51 kls Exp $
+ * $Id: device.c 1.30 2002/10/26 09:43:11 kls Exp $
  */
 
 #include "device.h"
@@ -52,7 +52,6 @@ cDevice::cDevice(void)
 
   for (int i = 0; i < MAXRECEIVERS; i++)
       receiver[i] = NULL;
-  ca = -1;
 
   if (numDevices < MAXDEVICES) {
      device[numDevices++] = this;
@@ -529,6 +528,16 @@ int cDevice::PlayVideo(const uchar *Data, int Length)
 int cDevice::PlayAudio(const uchar *Data, int Length)
 {
   return -1;
+}
+
+int cDevice::Ca(void) const
+{
+  int ca = 0;
+  for (int i = 0; i < MAXRECEIVERS; i++) {
+      if (receiver[i] && (ca = receiver[i]->ca) != 0)
+         break; // all receivers have the same ca
+      }
+  return ca;
 }
 
 int cDevice::Priority(void) const
