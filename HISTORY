@@ -2727,3 +2727,4 @@ Video Disk Recorder Revision History
   the running status).
 - Fixed handling "itemized" texts in EPG data (thanks to Stéphane Esté-Gracias
   for pointing out this problem, and Marcel Wiesweg for improving 'libsi').
+- Fixed handling VPS times at year boundaries.
