@@ -1275,3 +1275,4 @@ Video Disk Recorder Revision History
 - Changed the cPlugin::Start() function to return a boolean value that indicates
   if the plugin will not be able to perform its task (suggested by Stefan Huelswitt).
 - Added the cPlugin::Housekeeping() function (suggested by Stefan Huelswitt).
+- Updated channels.conf.cable (thanks to Uwe Scheffler).
