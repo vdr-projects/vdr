@@ -1886,3 +1886,4 @@ Video Disk Recorder Revision History
   (thanks to Jaakko Hyvätti).
 - No longer stopping/restarting the DMX when switching audio channels (thanks to
   Sven Goethel).
+- Fixed high CPU load in 'Transfer Mode' (thanks to Oliver Endriss).

@@ -439,6 +439,7 @@ Oliver Endriss <o.endriss@gmx.de>
  it kicked in
  for providing examples for 'diseqc.conf'
  for improving deleting stale lock files
+ for fixing high CPU load in 'Transfer Mode'
 
 Reinhard Walter Buchner <rw.buchner@freenet.de>
  for adding some satellites to 'sources.conf'

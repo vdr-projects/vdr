@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: transfer.c 1.7 2002/11/03 11:24:02 kls Exp $
+ * $Id: transfer.c 1.8 2002/12/14 13:14:53 kls Exp $
  */
 
 #include "transfer.h"
@@ -109,6 +109,8 @@ void cTransfer::Action(void)
                  memmove(b, b + Count, r);
               }
            }
+        else
+           usleep(1); // this keeps the CPU load low
         }
 
   dsyslog("transfer thread ended (pid=%d)", getpid());
