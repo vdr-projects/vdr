@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.55 2002/03/07 17:07:04 kls Exp $
+ * $Id: recording.c 1.56 2002/03/09 10:43:42 kls Exp $
  */
 
 #include "recording.h"
@@ -86,6 +86,7 @@ void AssertFreeDiskSpace(int Priority)
         if (!LockFile.Lock())
            return;
         // Remove the oldest file that has been "deleted":
+        isyslog(LOG_INFO, "low disk space while recording, trying to remove a deleted recording...");
         cRecordings Recordings;
         if (Recordings.Load(true)) {
            cRecording *r = Recordings.First();
@@ -101,6 +102,7 @@ void AssertFreeDiskSpace(int Priority)
               }
            }
         // No "deleted" files to remove, so let's see if we can delete a recording:
+        isyslog(LOG_INFO, "...no deleted recording found, trying to delete an old recording...");
         if (Recordings.Load(false)) {
            cRecording *r = Recordings.First();
            cRecording *r0 = NULL;
@@ -122,6 +124,7 @@ void AssertFreeDiskSpace(int Priority)
               return;
            }
         // Unable to free disk space, but there's nothing we can do about that...
+        isyslog(LOG_INFO, "...no old recording found, giving up");
         Interface->Confirm(tr("Low disk space!"), 30);
         }
      LastFreeDiskCheck = time(NULL);
