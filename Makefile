@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 1.70 2004/11/19 15:43:27 kls Exp $
+# $Id: Makefile 1.71 2004/11/20 14:38:29 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -80,9 +80,9 @@ all: vdr
 font: genfontfile\
       fontfix.c fontosd.c fontsml.c\
       fontfix-iso8859-2.c fontosd-iso8859-2.c fontsml-iso8859-2.c\
-      fontfix_iso8859-5.c fontosd_iso8859-5.c fontsml_iso8859-5.c\
-      fontfix_iso8859-7.c fontosd_iso8859-7.c fontsml_iso8859-7.c\
-      fontfix_iso8859-15.c fontosd_iso8859-15.c fontsml_iso8859-15.c
+      fontfix-iso8859-5.c fontosd-iso8859-5.c fontsml-iso8859-5.c\
+      fontfix-iso8859-7.c fontosd-iso8859-7.c fontsml-iso8859-7.c\
+      fontfix-iso8859-15.c fontosd-iso8859-15.c fontsml-iso8859-15.c
 	@echo "font files created."
 
 # Implicit rules:
