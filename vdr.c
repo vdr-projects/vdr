@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.100 2002/03/08 17:14:43 kls Exp $
+ * $Id: vdr.c 1.101 2002/03/09 17:10:16 kls Exp $
  */
 
 #include <getopt.h>
@@ -357,10 +357,16 @@ int main(int argc, char *argv[])
           case kVolUp:
           case kVolDn|k_Repeat:
           case kVolDn:
-               cDvbApi::PrimaryDvbApi->SetVolume(NORMALKEY(key) == kVolDn ? -VOLUMEDELTA : VOLUMEDELTA);
-               break;
           case kMute:
-               cDvbApi::PrimaryDvbApi->ToggleMute();
+               if (key == kMute) {
+                  if (!cDvbApi::PrimaryDvbApi->ToggleMute() && !Menu)
+                     break; // no need to display "mute off"
+                  }
+               else
+                  cDvbApi::PrimaryDvbApi->SetVolume(NORMALKEY(key) == kVolDn ? -VOLUMEDELTA : VOLUMEDELTA);
+               if (!Menu && (!ReplayControl || !ReplayControl->Visible()))
+                  Menu = cDisplayVolume::Create();
+               cDisplayVolume::Process(key);
                break;
           // Power off:
           case kPower: isyslog(LOG_INFO, "Power button pressed");

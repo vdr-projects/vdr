@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.h 1.66 2002/03/08 17:16:31 kls Exp $
+ * $Id: dvbapi.h 1.67 2002/03/09 14:18:10 kls Exp $
  */
 
 #ifndef __DVBAPI_H
@@ -309,8 +309,8 @@ private:
   int volume;
 public:
   bool IsMute(void) { return mute; }
-  void ToggleMute(void);
-       // Turns the volume off or on.
+  bool ToggleMute(void);
+       // Turns the volume off or on and returns the new mute state.
   void SetVolume(int Volume, bool Absolute = false);
        // Sets the volume to the given value, either absolutely or relative to
        // the current volume.

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.160 2002/03/09 11:59:39 kls Exp $
+ * $Id: dvbapi.c 1.161 2002/03/09 14:18:25 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -2702,12 +2702,13 @@ bool cDvbApi::ToggleAudioTrack(void)
   return false;
 }
 
-void cDvbApi::ToggleMute(void)
+bool cDvbApi::ToggleMute(void)
 {
   int OldVolume = volume;
   mute = !mute;
   SetVolume(0, mute);
   volume = OldVolume;
+  return mute;
 }
 
 void cDvbApi::SetVolume(int Volume, bool Absolute)

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 1.38 2002/03/08 15:46:36 kls Exp $
+ * $Id: menu.h 1.39 2002/03/09 15:54:24 kls Exp $
  */
 
 #ifndef _MENU_H
@@ -39,6 +39,19 @@ public:
   cDisplayChannel(eKeys FirstKey);
   virtual ~cDisplayChannel();
   virtual eOSState ProcessKey(eKeys Key);
+  };
+
+class cDisplayVolume : public cOsdBase {
+private:
+  int timeout;
+  static cDisplayVolume *displayVolume;
+  void Show(void);
+  cDisplayVolume(void);
+public:
+  virtual ~cDisplayVolume();
+  static cDisplayVolume *Create(void);
+  static void Process(eKeys Key);
+  eOSState ProcessKey(eKeys Key);
   };
 
 class cMenuRecordingItem;

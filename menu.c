@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.162 2002/03/08 16:06:11 kls Exp $
+ * $Id: menu.c 1.163 2002/03/09 16:57:34 kls Exp $
  */
 
 #include "menu.h"
@@ -2345,6 +2345,109 @@ eOSState cDisplayChannel::ProcessKey(eKeys Key)
      return osContinue;
      }
   return osEnd;
+}
+
+// --- cVolumeBar ------------------------------------------------------------
+
+class cVolumeBar : public cBitmap {
+public:
+  cVolumeBar(int Width, int Height, int Current, int Total, const char *Prompt = NULL);
+  };
+
+cVolumeBar::cVolumeBar(int Width, int Height, int Current, int Total, const char *Prompt)
+:cBitmap(Width, Height, 2)
+{
+  int l = Prompt ? cBitmap::Width(Prompt) : 0;
+  int p = (Width - l) * Current / Total;
+  Text(0, 0, Prompt, clrGreen);
+  Fill(l, 0, p, Height - 1, clrGreen);
+  Fill(l + p, 0, Width - 1, Height - 1, clrWhite);
+}
+
+// --- cDisplayVolume --------------------------------------------------------
+
+#define VOLUMETIMEOUT 1000 //ms
+#define MUTETIMEOUT   5000 //ms
+
+cDisplayVolume *cDisplayVolume::displayVolume = NULL;
+
+cDisplayVolume::cDisplayVolume(void)
+:cOsdBase(true)
+{
+  displayVolume = this;
+  timeout = time_ms() + (cDvbApi::PrimaryDvbApi->IsMute() ? MUTETIMEOUT : VOLUMETIMEOUT);
+  Interface->Open(Setup.OSDwidth, -1);
+  Show();
+}
+
+cDisplayVolume::~cDisplayVolume()
+{
+  Interface->Close();
+  displayVolume = NULL;
+}
+
+void cDisplayVolume::Show(void)
+{
+  cDvbApi *dvbApi = cDvbApi::PrimaryDvbApi;
+  if (dvbApi->IsMute()) {
+     Interface->Fill(0, 0, Width(), 1, clrTransparent);
+     Interface->Write(0, 0, tr("Mute"), clrGreen);
+     }
+  else {
+     int Current = cDvbApi::CurrentVolume();
+     int Total = MAXVOLUME;
+     const char *Prompt = tr("Volume ");
+#ifdef DEBUG_OSD
+     int l = strlen(Prompt);
+     int p = int(double(Width() - l) * Current / Total + 0.5);
+     Interface->Write(0, 0, Prompt, clrGreen);
+     Interface->Fill(l, 0, p, 1, clrGreen);
+     Interface->Fill(l + p, 0, Width() - l - p, 1, clrWhite);
+#else
+     cVolumeBar VolumeBar(Width() * dvbApi->CellWidth(), dvbApi->LineHeight(), Current, Total, Prompt);
+     Interface->SetBitmap(0, 0, VolumeBar);
+#endif
+     }
+}
+
+cDisplayVolume *cDisplayVolume::Create(void)
+{
+  if (!displayVolume)
+     new cDisplayVolume;
+  return displayVolume;
+}
+
+void cDisplayVolume::Process(eKeys Key)
+{
+  if (displayVolume)
+     displayVolume->ProcessKey(Key);
+}
+
+eOSState cDisplayVolume::ProcessKey(eKeys Key)
+{
+  switch (Key) {
+    case kVolUp|k_Repeat:
+    case kVolUp:
+    case kVolDn|k_Repeat:
+    case kVolDn:
+         Show();
+         timeout = time_ms() + VOLUMETIMEOUT;
+         break;
+    case kMute:
+         if (cDvbApi::PrimaryDvbApi->IsMute()) {
+            Show();
+            timeout = time_ms() + MUTETIMEOUT;
+            }
+         else
+            timeout = 0;
+         break;
+    case kNone: break;
+    default: if ((Key & k_Release) == 0) {
+                Interface->PutKey(Key);
+                return osEnd;
+                }
+    }
+  return time_ms() < timeout ? osContinue : osEnd;
 }
 
 // --- cRecordControl --------------------------------------------------------

@@ -1088,3 +1088,5 @@ Video Disk Recorder Revision History
   to debug this one).
 - Now starting the Dolby Digital output thread only if the recording actually
   contains Dolby Digital audio data (thanks to Werner Fink).
+- Implemented OSD for Volume and Mute (works only if there is no other OSD
+  activity, but this should be no problem for normal use).
