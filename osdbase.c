@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osdbase.c 1.9 2003/08/15 13:47:51 kls Exp $
+ * $Id: osdbase.c 1.10 2003/08/24 11:38:27 kls Exp $
  */
 
 #include "osdbase.h"
@@ -70,7 +70,7 @@ int cPalette::Index(eDvbColor Color)
 void cPalette::Reset(void)
 {
   for (int i = 0; i < numColors; i++)
-      used[i] = false;
+      used[i] = fetched[i] = false;
   full = false;
 }
 

@@ -2324,3 +2324,4 @@ Video Disk Recorder Revision History
 - Added a note about the config files of plugins to INSTALL (thanks to Thomas
   Keil).
 - VDR now continues to start up, even if there is an error in setup.conf.
+- Fixed a bug in resetting OSD color palettes (thanks to Torsten Herz).
