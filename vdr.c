@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.145 2003/02/16 10:34:24 kls Exp $
+ * $Id: vdr.c 1.146 2003/03/09 14:07:46 kls Exp $
  */
 
 #include <getopt.h>
@@ -364,6 +364,16 @@ int main(int argc, char *argv[])
   // Primary device:
 
   cDevice::SetPrimaryDevice(Setup.PrimaryDVB);
+  if (!cDevice::PrimaryDevice()) {
+     for (int i = 0; i < cDevice::NumDevices(); i++) {
+         cDevice *d = cDevice::GetDevice(i);
+         if (d && d->HasDecoder()) {
+            isyslog("trying device number %d instead", i + 1);
+            if (cDevice::SetPrimaryDevice(i + 1))
+               Setup.PrimaryDVB = i + 1;
+            }
+         }
+     }
   if (!cDevice::PrimaryDevice()) {
      const char *msg = "no primary device found - giving up!";
      fprintf(stderr, "vdr: %s\n", msg);

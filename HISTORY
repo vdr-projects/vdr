@@ -1975,3 +1975,8 @@ Video Disk Recorder Revision History
 
 - Removed signal handling and usleep(5000) from cDvbOsd::Cmd() (apparently this
   is no longer necessary with DVB driver 1.0.0pre2 or later).
+- If the primary device (as defined in setup.conf) doesn't have an MPEG decoder
+  (and thus can't be used as a primary device) VDR now scans all devices at
+  startup and uses the first one (if any) that actually has an MPEG decoder.
+  That way this will also work automatically if the primary device is implemented
+  by a plugin.
