@@ -2006,3 +2006,5 @@ Video Disk Recorder Revision History
 - Added some missing cAudio handling calls (thanks to Werner Fink).
 - Replaced the 'for' loops in StripAudioPackets() with memset() calls (thanks to
   Werner Fink).
+- Further increased the timeout until an index file is considerd no longer to be
+  written.
