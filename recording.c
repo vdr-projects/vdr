@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.46 2002/01/26 15:21:40 kls Exp $
+ * $Id: recording.c 1.47 2002/01/27 14:10:25 kls Exp $
  */
 
 #include "recording.h"
@@ -511,7 +511,7 @@ bool cRecordings::Load(bool Deleted)
   FilterSuffix = Deleted ? DELEXT : RECEXT;
   if (ftw(VideoDirectory, Filter, 10) < 0) {
      LOG_ERROR;
-     result = false;
+     result = errno != ESTALE; // apparently stale NFS file handles are not really a problem?
      }
   Sort();
   result = result && Count() > 0;
