@@ -2034,10 +2034,12 @@ Video Disk Recorder Revision History
 - Fixed handling of Ca parameters with values <= MAXDEVICES, which don't indicate
   an actual encrypted channel (thanks to Stefan Huelswitt for reporting this one).
 
-2003-04-18: Version 1.1.28
+2003-04-19: Version 1.1.28
 
 - Using masks in EIT filtering to reduce the number of filters (thanks to Andreas
   Schultz).
 - Fixed handling Ca descriptors (thanks to Stefan Huelswitt).
 - Now only those Ca descriptors are sent to a CAM that are actually understood
   by that CAM.
+- Re-enabled CAM communication during replay and on non-Ca channels. This requires
+  a DVB driver with firmware version 2613 or later.
