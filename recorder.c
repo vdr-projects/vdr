@@ -1,10 +1,10 @@
 /*
- * recorder.h: The actual DVB recorder
+ * recorder.c: The actual DVB recorder
  *
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recorder.c 1.3 2002/10/12 13:34:29 kls Exp $
+ * $Id: recorder.c 1.4 2002/12/22 11:33:08 kls Exp $
  */
 
 #include <stdarg.h>
