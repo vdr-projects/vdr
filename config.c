@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.128 2004/10/31 16:17:39 kls Exp $
+ * $Id: config.c 1.129 2005/01/04 13:48:49 kls Exp $
  */
 
 #include "config.h"
@@ -262,6 +262,7 @@ cSetup::cSetup(void)
   TimeTransponder = 0;
   MarginStart = 2;
   MarginStop = 10;
+  AudioLanguages[0] = -1;
   EPGLanguages[0] = -1;
   EPGScanTimeout = 5;
   EPGBugfixLevel = 2;
@@ -415,6 +416,7 @@ bool cSetup::Parse(const char *Name, const char *Value)
   else if (!strcasecmp(Name, "TimeTransponder"))     TimeTransponder    = atoi(Value);
   else if (!strcasecmp(Name, "MarginStart"))         MarginStart        = atoi(Value);
   else if (!strcasecmp(Name, "MarginStop"))          MarginStop         = atoi(Value);
+  else if (!strcasecmp(Name, "AudioLanguages"))      return ParseLanguages(Value, AudioLanguages);
   else if (!strcasecmp(Name, "EPGLanguages"))        return ParseLanguages(Value, EPGLanguages);
   else if (!strcasecmp(Name, "EPGScanTimeout"))      EPGScanTimeout     = atoi(Value);
   else if (!strcasecmp(Name, "EPGBugfixLevel"))      EPGBugfixLevel     = atoi(Value);
@@ -475,6 +477,7 @@ bool cSetup::Save(void)
   Store("TimeTransponder",    TimeTransponder);
   Store("MarginStart",        MarginStart);
   Store("MarginStop",         MarginStop);
+  StoreLanguages("AudioLanguages", AudioLanguages);
   StoreLanguages("EPGLanguages", EPGLanguages);
   Store("EPGScanTimeout",     EPGScanTimeout);
   Store("EPGBugfixLevel",     EPGBugfixLevel);

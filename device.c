@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.66 2005/01/04 13:13:24 kls Exp $
+ * $Id: device.c 1.67 2005/01/04 15:38:46 kls Exp $
  */
 
 #include "device.h"
@@ -541,11 +541,24 @@ eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
 
   if (Result == scrOk) {
      if (LiveView && IsPrimaryDevice()) {
+        // Set the available audio tracks:
         ClrAvailableTracks();
         for (int i = 0; i < MAXAPIDS; i++) {
             SetAvailableTrack(ttAudio, i, Channel->Apid(i), Channel->Alang(i));
             SetAvailableTrack(ttDolby, i, Channel->Dpid(i), Channel->Dlang(i));
             }
+        // Select the preferred audio track:
+        eTrackType PreferredTrack = ttAudioFirst;
+        int LanguagePreference = -1;
+        for (int i = ttAudioFirst; i <= ttDolbyLast; i++) {
+            const tTrackId *TrackId = GetTrack(eTrackType(i));
+            if (TrackId && TrackId->id && I18nIsPreferredLanguage(Setup.AudioLanguages, I18nLanguageIndex(TrackId->language), LanguagePreference))
+               PreferredTrack = eTrackType(i);
+            }
+        // Make sure we're set to an available audio track:
+        const tTrackId *Track = GetTrack(GetCurrentAudioTrack());
+        if (!Track || !Track->id || PreferredTrack != GetCurrentAudioTrack())
+           SetCurrentAudioTrack(PreferredTrack);
         currentChannel = Channel->Number();
         }
      cStatus::MsgChannelSwitch(this, Channel->Number()); // only report status if channel switch successfull

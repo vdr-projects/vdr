@@ -580,6 +580,15 @@ Version 1.2
                          updates and also add newly found channels, and '4' will
                          also add newly found transponders.
 
+  Audio languages = 0    Some tv stations broadcast various audio tracks in different
+                         languages. This option allows you to define which language(s)
+                         you prefer in such cases. By default, or if none of the
+                         preferred languages is broadcast, the first audio track will
+                         be selected when switching to such a channel. If this option
+                         is set to a non-zero value, the menu page will contain that
+                         many "Audio language" options which allow you to select the
+                         individual preferred languages.
+
   LNB:
 
   SLOF               = 11700  The switching frequency (in MHz) between low and

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.327 2005/01/04 13:40:38 kls Exp $
+ * $Id: menu.c 1.328 2005/01/05 10:26:59 kls Exp $
  */
 
 #include "menu.h"
@@ -1911,6 +1911,9 @@ eOSState cMenuSetupEPG::ProcessKey(eKeys Key)
 
 class cMenuSetupDVB : public cMenuSetupBase {
 private:
+  int originalNumAudioLanguages;
+  int numAudioLanguages;
+  void Setup(void);
   const char *updateChannelsTexts[5];
 public:
   cMenuSetupDVB(void);
@@ -1919,6 +1922,9 @@ public:
 
 cMenuSetupDVB::cMenuSetupDVB(void)
 {
+  for (numAudioLanguages = 0; numAudioLanguages < I18nNumLanguages && data.AudioLanguages[numAudioLanguages] >= 0; numAudioLanguages++)
+      ;
+  originalNumAudioLanguages = numAudioLanguages;
   updateChannelsTexts[0] = tr("no");
   updateChannelsTexts[1] = tr("names only");
   updateChannelsTexts[2] = tr("names and PIDs");
@@ -1926,22 +1932,58 @@ cMenuSetupDVB::cMenuSetupDVB(void)
   updateChannelsTexts[4] = tr("add new transponders");
 
   SetSection(tr("DVB"));
+  Setup();
+}
+
+void cMenuSetupDVB::Setup(void)
+{
+  int current = Current();
+
+  Clear();
+
   Add(new cMenuEditIntItem( tr("Setup.DVB$Primary DVB interface"), &data.PrimaryDVB, 1, cDevice::NumDevices()));
   Add(new cMenuEditBoolItem(tr("Setup.DVB$Video format"),          &data.VideoFormat, "4:3", "16:9"));
   Add(new cMenuEditStraItem(tr("Setup.DVB$Update channels"),       &data.UpdateChannels, 5, updateChannelsTexts));
+  Add(new cMenuEditIntItem( tr("Setup.DVB$Audio languages"),       &numAudioLanguages, 0, I18nNumLanguages));
+  for (int i = 0; i < numAudioLanguages; i++)
+     Add(new cMenuEditStraItem(tr("Setup.EPG$Audio language"),     &data.AudioLanguages[i], I18nNumLanguages, I18nLanguages()));
+
+  SetCurrent(Get(current));
+  Display();
 }
 
 eOSState cMenuSetupDVB::ProcessKey(eKeys Key)
 {
-  int oldPrimaryDVB = Setup.PrimaryDVB;
-  bool oldVideoFormat = Setup.VideoFormat;
+  int oldPrimaryDVB = ::Setup.PrimaryDVB;
+  bool oldVideoFormat = ::Setup.VideoFormat;
+  int oldnumAudioLanguages = numAudioLanguages;
   eOSState state = cMenuSetupBase::ProcessKey(Key);
 
+  if (Key != kNone) {
+     if (numAudioLanguages != oldnumAudioLanguages) {
+        for (int i = oldnumAudioLanguages; i < numAudioLanguages; i++) {
+            data.AudioLanguages[i] = 0;
+            for (int l = 0; l < I18nNumLanguages; l++) {
+                int k;
+                for (k = 0; k < oldnumAudioLanguages; k++) {
+                    if (data.AudioLanguages[k] == l)
+                       break;
+                    }
+                if (k >= oldnumAudioLanguages) {
+                   data.AudioLanguages[i] = l;
+                   break;
+                   }
+                }
+            }
+        data.AudioLanguages[numAudioLanguages] = -1;
+        Setup();
+        }
+     }
   if (state == osBack && Key == kOk) {
-     if (Setup.PrimaryDVB != oldPrimaryDVB)
+     if (::Setup.PrimaryDVB != oldPrimaryDVB)
         state = osSwitchDvb;
-     if (Setup.VideoFormat != oldVideoFormat)
-        cDevice::PrimaryDevice()->SetVideoFormat(Setup.VideoFormat);
+     if (::Setup.VideoFormat != oldVideoFormat)
+        cDevice::PrimaryDevice()->SetVideoFormat(::Setup.VideoFormat);
      }
   return state;
 }

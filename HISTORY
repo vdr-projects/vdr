@@ -3266,3 +3266,6 @@ Video Disk Recorder Revision History
 - Skins need to implement the new cSkinDisplayTrack class to display the audio
   track menu.
 - Fixed reusing OSD in cDvbSpuDecoder (thanks to Reinhard Nissl).
+- The new setup option "DVB/Audio languages" can be used to control which audio
+  language shall be selected in case a channel broadcasts in different languages
+  (see MANUAL for details). 
