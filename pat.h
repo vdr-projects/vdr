@@ -4,13 +4,14 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: pat.h 1.3 2004/01/03 13:47:54 kls Exp $
+ * $Id: pat.h 1.4 2004/03/07 16:22:01 kls Exp $
  */
 
 #ifndef __PAT_H
 #define __PAT_H
 
 #include "filter.h"
+#include <stdint.h>
 
 #define MAXPMTENTRIES 64
 
@@ -19,9 +20,9 @@ private:
   time_t lastPmtScan;
   int pmtIndex;
   int pmtPid;
-  int pmtVersion[MAXPMTENTRIES];
+  uint64_t pmtVersion[MAXPMTENTRIES];
   int numPmtEntries;
-  bool PmtVersionChanged(int PmtPid, int Version);
+  bool PmtVersionChanged(int PmtPid, int Sid, int Version);
 protected:
   virtual void Process(u_short Pid, u_char Tid, const u_char *Data, int Length);
 public:
