@@ -675,6 +675,7 @@ Marcel Wiesweg <marcel.wiesweg@gmx.de>
  for his help in fixing some issues with gcc 3.4
  for fixing a memory leak in NIT processing
  for adding a few missing initializations
+ for adding play mode pmVideoOnly
 
 Torsten Herz <torsten.herz@web.de>
  for fixing a possible deadlock when using the "Blue" button in the "Schedules" menu
