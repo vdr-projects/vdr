@@ -100,9 +100,12 @@ Video Disk Recorder Revision History
   the 'timers.conf' file with a text editor, or by defining/modifying the timer
   via the SVDRP interface.
 
-2000-07-28:
+2000-07-29:
 
 - When scrolling through a list it now moves a full page up or down when the
   cursor reaches the top or bottom of the menu (thanks to Heino Goldenstein!).
 - Added missing '#include <sys/stat.h>' to recording.c.
 - The video directory can now be defined with the command line option -v.
+- There can now be more than one video directory (in case you have several
+  disks).
+- Fixed learning key codes for PC keyboard.

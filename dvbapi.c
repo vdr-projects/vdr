@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.15 2000/07/21 13:18:02 kls Exp $
+ * $Id: dvbapi.c 1.16 2000/07/29 14:49:46 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -17,6 +17,7 @@
 #include <unistd.h>
 #include "interface.h"
 #include "tools.h"
+#include "videodir.h"
 
 #define VIDEODEVICE "/dev/video"
 
@@ -50,8 +51,11 @@
 // 'signed'), so let's use 1GB for absolute safety (the actual file size
 // may be slightly higher because we stop recording only before the next
 // 'I' frame, to have a complete Group Of Pictures):
-#define MAXVIDEOFILESIZE (1024*1024*1024)
+#define MAXVIDEOFILESIZE (1024*1024*1024) // Byte
 #define MAXFILESPERRECORDING 255
+
+#define MINFREEDISKSPACE    (512) // MB
+#define DISKCHECKINTERVAL   100 // seconds
 
 #define INDEXFILESUFFIX     "/index.vdr"
 #define RESUMEFILESUFFIX    "/resume.vdr"
@@ -598,6 +602,8 @@ private:
   int recordFile;
   uchar tagAudio, tagVideo;
   bool ok, synced;
+  time_t lastDiskSpaceCheck;
+  bool RunningLowOnDiskSpace(void);
   int Synchronize(void);
   bool NextFile(void);
   virtual int Write(int Max = -1);
@@ -615,6 +621,7 @@ cRecordBuffer::cRecordBuffer(int *InFile, const char *FileName)
   recordFile = -1;
   tagAudio = tagVideo = 0;
   ok = synced = false;
+  lastDiskSpaceCheck = time(NULL);
   if (!fileName)
      return;//XXX find a better way???
   // Find the highest existing file suffix:
@@ -636,7 +643,20 @@ cRecordBuffer::cRecordBuffer(int *InFile, const char *FileName)
 cRecordBuffer::~cRecordBuffer()
 {
   if (recordFile >= 0)
-     close(recordFile);
+     CloseVideoFile(recordFile);
+}
+
+bool cRecordBuffer::RunningLowOnDiskSpace(void)
+{
+  if (time(NULL) > lastDiskSpaceCheck + DISKCHECKINTERVAL) {
+     uint Free = FreeDiskSpaceMB(fileName);
+     lastDiskSpaceCheck = time(NULL);
+     if (Free < MINFREEDISKSPACE) {
+        dsyslog(LOG_INFO, "low disk space (%d MB, limit is %d MB)", Free, MINFREEDISKSPACE);
+        return true;
+        }
+     }
+  return false;
 }
 
 int cRecordBuffer::Synchronize(void)
@@ -714,20 +734,22 @@ int cRecordBuffer::Synchronize(void)
 
 bool cRecordBuffer::NextFile(void)
 {
-  if (recordFile >= 0 && fileSize > MAXVIDEOFILESIZE && pictureType == I_FRAME) {
-     if (close(recordFile) < 0)
-        LOG_ERROR;
-        // don't return 'false', maybe we can still record into the next file
-     recordFile = -1;
-     fileNumber++;
-     if (fileNumber == 0)
-        esyslog(LOG_ERR, "ERROR: max number of files (%d) exceeded", MAXFILESPERRECORDING);
-     fileSize = 0;
+  if (recordFile >= 0 && pictureType == I_FRAME) { // every file shall start with an I_FRAME
+     if (fileSize > MAXVIDEOFILESIZE || RunningLowOnDiskSpace()) {
+        if (CloseVideoFile(recordFile) < 0)
+           LOG_ERROR;
+           // don't return 'false', maybe we can still record into the next file
+        recordFile = -1;
+        fileNumber++;
+        if (fileNumber == 0)
+           esyslog(LOG_ERR, "ERROR: max number of files (%d) exceeded", MAXFILESPERRECORDING);
+        fileSize = 0;
+        }
      }
   if (recordFile < 0) {
      sprintf(pFileNumber, RECORDFILESUFFIX, fileNumber);
      dsyslog(LOG_INFO, "recording to '%s'", fileName);
-     recordFile = open(fileName, O_RDWR | O_CREAT | O_NONBLOCK, S_IRUSR | S_IWUSR);
+     recordFile = OpenVideoFile(fileName, O_RDWR | O_CREAT | O_NONBLOCK);
      if (recordFile < 0) {
         LOG_ERROR;
         return false;

@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.24 2000/07/28 13:14:19 kls Exp $
+ * $Id: vdr.c 1.25 2000/07/28 15:55:31 kls Exp $
  */
 
 #include <getopt.h>
@@ -36,6 +36,7 @@
 #include "recording.h"
 #include "svdrp.h"
 #include "tools.h"
+#include "videodir.h"
 
 #ifdef REMOTE_KBD
 #define KEYS_CONF "keys-pc.conf"
@@ -105,7 +106,7 @@ int main(int argc, char *argv[])
 
   // Check the video directory:
 
-  if (!DirectoryOk(VideoDirectory)) {
+  if (!DirectoryOk(VideoDirectory, true)) {
      fprintf(stderr, "vdr: can't access video directory %s\n", VideoDirectory);
      abort();
      }

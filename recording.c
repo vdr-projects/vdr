@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.14 2000/07/28 12:47:54 kls Exp $
+ * $Id: recording.c 1.15 2000/07/29 14:08:17 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -17,6 +17,7 @@
 #include <unistd.h>
 #include "interface.h"
 #include "tools.h"
+#include "videodir.h"
 
 #define RECEXT       ".rec"
 #define DELEXT       ".del"
@@ -25,39 +26,11 @@
 
 #define SUMMARYFILESUFFIX "/summary.vdr"
 
-#define FINDCMD      "find %s -type d -name '%s' | sort -df"
+#define FINDCMD      "find %s -follow -type d -name '%s' 2> /dev/null | sort -df"
 
-#define DFCMD        "df -m %s"
 #define MINDISKSPACE 1024 // MB
 
 #define DISKCHECKDELTA 300 // seconds between checks for free disk space
-
-const char *VideoDirectory = "/video";
-
-static bool LowDiskSpace(void)
-{
-  //TODO Find a simpler way to determine the amount of free disk space!
-  bool result = true;
-  char *cmd = NULL;
-  asprintf(&cmd, DFCMD, VideoDirectory);
-  FILE *p = popen(cmd, "r");
-  if (p) {
-     char *s;
-     while ((s = readline(p)) != NULL) {
-           if (*s == '/') {
-              int available;
-              sscanf(s, "%*s %*d %*d %d", &available);
-              result = available < MINDISKSPACE;
-              break;
-              }
-           }
-     pclose(p);
-     }
-  else
-     esyslog(LOG_ERR, "ERROR: can't open pipe for cmd '%s'", cmd);
-  delete cmd;
-  return result;
-}
 
 void AssertFreeDiskSpace(void)
 {
@@ -66,7 +39,7 @@ void AssertFreeDiskSpace(void)
   // it will get removed during the next call.
   static time_t LastFreeDiskCheck = 0;
   if (time(NULL) - LastFreeDiskCheck > DISKCHECKDELTA) {
-     if (LowDiskSpace()) {
+     if (!VideoFileSpaceAvailable(MINDISKSPACE)) {
         // Remove the oldest file that has been "deleted":
         cRecordings Recordings;
         if (Recordings.Load(true)) {
@@ -240,10 +213,7 @@ bool cRecording::Delete(void)
   if (strcmp(ext, RECEXT) == 0) {
      strncpy(ext, DELEXT, strlen(ext));
      isyslog(LOG_INFO, "deleting recording %s", FileName());
-     if (rename(FileName(), NewName) == -1) {
-        esyslog(LOG_ERR, "ERROR: %s: %s", FileName(), strerror(errno));
-        result = false;
-        }
+     result = RenameVideoFile(FileName(), NewName);
      }
   delete NewName;
   return result;
@@ -252,7 +222,7 @@ bool cRecording::Delete(void)
 bool cRecording::Remove(void)
 {
   isyslog(LOG_INFO, "removing recording %s", FileName());
-  return RemoveFileOrDir(FileName());
+  return RemoveVideoFile(FileName());
 }
 
 // --- cRecordings -----------------------------------------------------------
