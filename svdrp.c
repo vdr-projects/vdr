@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.14 2001/02/18 14:18:13 kls Exp $
+ * $Id: svdrp.c 1.15 2001/03/02 22:59:37 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -535,7 +535,7 @@ void cSVDRP::CmdLSTC(const char *Option)
            Reply(250, "%d %s", next->number, next->ToText());
         }
      }
-  else {
+  else if (Channels.MaxNumber() >= 1) {
      for (int i = 1; i <= Channels.MaxNumber(); i++) {
          cChannel *channel = Channels.GetByNumber(i);
         if (channel)
@@ -544,6 +544,8 @@ void cSVDRP::CmdLSTC(const char *Option)
            Reply(501, "Channel \"%d\" not found", i);
          }
      }
+  else
+     Reply(550, "No channels defined");
 }
 
 void cSVDRP::CmdLSTT(const char *Option)
@@ -559,7 +561,7 @@ void cSVDRP::CmdLSTT(const char *Option)
      else
         Reply(501, "Error in timer number \"%s\"", Option);
      }
-  else {
+  else if (Timers.Count()) {
      for (int i = 0; i < Timers.Count(); i++) {
          cTimer *timer = Timers.Get(i);
         if (timer)
@@ -568,6 +570,8 @@ void cSVDRP::CmdLSTT(const char *Option)
            Reply(501, "Timer \"%d\" not found", i + 1);
          }
      }
+  else
+     Reply(550, "No timers defined");
 }
 
 void cSVDRP::CmdMESG(const char *Option)

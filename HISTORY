@@ -413,3 +413,9 @@ Video Disk Recorder Revision History
   VDR exit in case the main program loop does not respond for more than the
   given number of seconds. This is mainly useful in combination with the new
   'runvdr' script that restarts VDR in case is has exited.
+
+2001-03-02: Version 0.72
+
+- Fixed SVDRP commands LSTC and LSTT to make them return an error message if
+  no channels or timers are defined.
+
