@@ -1304,3 +1304,5 @@ Video Disk Recorder Revision History
   started a plugin project, you may want to change this in your Makefile accordingly.
 - Fixed some function headers to make them compile with gcc 3.x (thanks to
   Gregoire Favre).
+- Fixed the cutting mechanism to make it re-sync in case a frame is larger than the
+  buffer (thanks to Sven Grothklags).

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.175 2002/05/13 16:29:17 kls Exp $
+ * $Id: dvbapi.c 1.176 2002/05/18 09:21:39 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -1527,11 +1527,14 @@ void cCuttingBuffer::Action(void)
                  CurrentFileNumber = FileNumber;
                  }
               if (fromFile >= 0) {
-                 Length = ReadFrame(fromFile, buffer,  Length, sizeof(buffer));
-                 if (Length < 0) {
+                 int len = ReadFrame(fromFile, buffer,  Length, sizeof(buffer));
+                 if (len < 0) {
                     error = "ReadFrame";
                     break;
                     }
+                 if (len != Length)
+                    CurrentFileNumber = 0; // this re-syncs in case the frame was larger than the buffer
+                 Length = len;
                  }
               else {
                  error = "fromFile";
