@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.59 2002/02/17 12:57:23 kls Exp $
+ * $Id: tools.c 1.60 2002/03/22 15:18:58 kls Exp $
  */
 
 #include "tools.h"
@@ -33,14 +33,21 @@ ssize_t safe_read(int filedes, void *buffer, size_t size)
 
 ssize_t safe_write(int filedes, const void *buffer, size_t size)
 {
-  for (;;) {
-      ssize_t p = write(filedes, buffer, size);
-      if (p < 0 && errno == EINTR) {
-         dsyslog(LOG_INFO, "EINTR while writing to file handle %d - retrying", filedes);
-         continue;
-         }
-      return p;
-      }
+  ssize_t p = -1;
+  const unsigned char *ptr = (const unsigned char *)buffer;
+  while (size > 0) {
+        p = write(filedes, ptr, size);
+        if (p < 0) {
+           if (errno == EINTR) {
+              dsyslog(LOG_INFO, "EINTR while writing to file handle %d - retrying", filedes);
+              continue;
+              }
+           break;
+           }
+        ptr  += p;
+        size -= p;
+        }
+  return p;
 }
 
 void writechar(int filedes, char c)
