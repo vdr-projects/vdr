@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.90 2002/01/13 16:00:47 kls Exp $
+ * $Id: vdr.c 1.91 2002/01/26 11:53:11 kls Exp $
  */
 
 #include <getopt.h>
@@ -499,7 +499,7 @@ int main(int argc, char *argv[])
                        int Channel = timer ? timer->channel : 0;
                        const char *File = timer ? timer->file : "";
                        char *cmd;
-                       asprintf(&cmd, "%s %ld %ld %d '%s' %d", Shutdown, Next, Delta, Channel, File, UserShutdown);
+                       asprintf(&cmd, "%s %ld %ld %d \"%s\" %d", Shutdown, Next, Delta, Channel, strescape(File, "\"$"), UserShutdown);
                        isyslog(LOG_INFO, "executing '%s'", cmd);
                        SystemExec(cmd);
                        delete cmd;

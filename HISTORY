@@ -904,3 +904,6 @@ Video Disk Recorder Revision History
   command to collect the recordings (thanks to Emil Naepflein for his hint about
   this function).
 - Improved speed of setting the Help button texts.
+- Fixed handling file names that contain single quotes (') or dollar signs ($)
+  in the call to the shutdown command (option '-s') and the recording command
+  (option '-r').

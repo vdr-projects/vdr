@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.44 2002/01/20 16:47:09 kls Exp $
+ * $Id: recording.c 1.45 2002/01/26 11:57:56 kls Exp $
  */
 
 #include "recording.h"
@@ -640,7 +640,7 @@ void cRecordingUserCommand::InvokeCommand(const char *State, const char *Recordi
 {
   if (command) {
      char *cmd;
-     asprintf(&cmd, "%s %s '%s'", command, State, RecordingFileName);
+     asprintf(&cmd, "%s %s \"%s\"", command, State, strescape(RecordingFileName, "\"$"));
      isyslog(LOG_INFO, "executing '%s'", cmd);
      SystemExec(cmd);
      delete cmd;

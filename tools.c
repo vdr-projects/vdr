@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.51 2002/01/20 15:43:35 kls Exp $
+ * $Id: tools.c 1.52 2002/01/26 12:04:32 kls Exp $
  */
 
 #include "tools.h"
@@ -133,6 +133,29 @@ char *compactspace(char *s)
      if (t != s)
         memmove(s, t, strlen(t) + 1);
      }
+  return s;
+}
+
+const char *strescape(const char *s, const char *chars)
+{
+  static char *buffer = NULL;
+  const char *p = s;
+  char *t = NULL;
+  while (*p) {
+        if (strchr(chars, *p)) {
+           if (!t) {
+              buffer = (char *)realloc(buffer, 2 * strlen(s) + 1);
+              t = buffer + (p - s);
+              s = strcpy(buffer, s);
+              }
+           *t++ = '\\';
+           }
+        if (t)
+           *t++ = *p;
+        p++;
+        }
+  if (t)
+     *t = 0;
   return s;
 }
 
