@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.34 2000/09/18 22:29:56 kls Exp $
+ * $Id: vdr.c 1.35 2000/09/20 16:45:01 kls Exp $
  */
 
 #include <getopt.h>
@@ -137,7 +137,7 @@ int main(int argc, char *argv[])
   // Daemon mode:
 
   if (DaemonMode) {
-#ifndef DEBUG_OSD
+#if !defined(DEBUG_OSD) && !defined(REMOTE_KBD)
      pid_t pid = fork();
      if (pid < 0) {
         fprintf(stderr, "%s\n", strerror(errno));
@@ -150,7 +150,7 @@ int main(int argc, char *argv[])
      fclose(stdout);
      fclose(stderr);
 #else
-     fprintf(stderr, "vdr: can't run in daemon mode with DEBUG_OSD on!\n");
+     fprintf(stderr, "vdr: can't run in daemon mode with DEBUG_OSD or REMOTE_KBD on!\n");
      abort();
 #endif
      }
