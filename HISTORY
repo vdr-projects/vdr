@@ -2943,3 +2943,5 @@ Video Disk Recorder Revision History
   broken links etc.
 - The function cTimers::SetEvents() now immediately returns if there is some user
   input.
+- Fixed handling menu status messages when the list contents is scrolled (thanks
+  Alfred Zastrow for reporting this one).
