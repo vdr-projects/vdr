@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.h 1.63 2002/02/24 12:38:08 kls Exp $
+ * $Id: dvbapi.h 1.64 2002/03/03 14:51:20 kls Exp $
  */
 
 #ifndef __DVBAPI_H
@@ -94,12 +94,16 @@ private:
 public:
   ~cDvbApi();
 
-#define MAXDVBAPI 4
+#define MAXDVBAPI  4 // the maximum number of DVB cards in the system
+#define MAXCACAPS 16 // the maximum number of different CA values per DVB card
+
   static int NumDvbApis;
 private:
   static cDvbApi *dvbApi[MAXDVBAPI];
   static int useDvbApi;
   int cardIndex;
+  int caCaps[MAXCACAPS];
+  int CanShift(int Ca, int Priority);
 public:
   static cDvbApi *PrimaryDvbApi;
   static void SetUseDvbApi(int n);
@@ -110,9 +114,10 @@ public:
          // Sets the primary DVB device to 'n' (which must be in the range
          // 1...NumDvbApis) and returns true if this was possible.
   static cDvbApi *GetDvbApi(int Ca, int Priority);
-         // Selects a free DVB device, starting with the highest device number
-         // (but avoiding, if possible, the PrimaryDvbApi).
-         // If Ca is not 0, the device with the given number will be returned.
+         // Selects a free DVB device, avoiding the PrimaryDvbApi if possible.
+         // If Ca is not 0, the device with the given number will be returned
+         // in case Ca is <= MAXDVBAPI, or the device that provides the given
+         // value in its caCaps.
          // If all DVB devices are currently recording, the one recording the
          // lowest priority timer (if any) that is lower than the given Priority
          // will be returned.
@@ -120,6 +125,15 @@ public:
          // recording and stop recording if necessary.
   int CardIndex(void) { return cardIndex; }
          // Returns the card index of this DvbApi (0 ... MAXDVBAPI - 1).
+  void SetCaCaps(void);
+         // Sets the CaCaps of this DVB device according to the Setup data.
+  int ProvidesCa(int Ca);
+         // Checks whether this DVB device provides the given value in its
+         // caCaps. Returns 0 if the value is not provided, 1 if only this
+         // value is provided, and > 1 if this and other values are provided.
+         // If the given value is equal to the number of this DVB device,
+         // 1 is returned. If it is 0 (FTA), 1 plus the number of other values
+         // in caCaps is returned.
   static bool Probe(const char *FileName);
          // Probes for existing DVB devices.
   static bool Init(void);
@@ -204,16 +218,17 @@ private:
   cPlayBuffer *replayBuffer;
   int ca;
   int priority;
-  int  Priority(void) { return priority; }
+  int  Priority(void);
        // Returns the priority of the current recording session (0..MAXPRIORITY),
-       // or -1 if no recording is currently active.
+       // or -1 if no recording is currently active. The primary DVB device will
+       // always return at least Setup.PrimaryLimit-1.
   int  SetModeRecord(void);
        // Initiates recording mode and returns the file handle to read from.
   void SetModeReplay(void);
   void SetModeNormal(bool FromRecording);
 public:
   int  Ca(void) { return ca; }
-       // Returns the ca of the current recording session (0..MAXDVBAPI).
+       // Returns the ca of the current recording session.
   int  SecondsToFrames(int Seconds);
        // Returns the number of frames corresponding to the given number of seconds.
   bool Recording(void);

@@ -1047,3 +1047,22 @@ Video Disk Recorder Revision History
 
 - Fixed a crash in case there is no 'epg.data' at program start (thanks to
   Andreas Schultz).
+
+2002-03-03: Version 1.0.0pre3
+
+- Fixed parsing 'E' records in epg2html.pl.
+- Fixed a deadlock when switching channels via Schedule/Now|Next/Switch (reported
+  by Martin Hammerschmid).
+- Changed the meaning of the 'Ca' parameter in 'channels.conf'. Each channel can
+  now define which decryption method it needs in order to be accessed. The new
+  configuration file 'ca.conf' contains the defined values, and the default
+  'channels.conf' has been modifed to contain the new values for 'Premiere World'
+  and 'ORF'. If you use the default 'channels.conf' and have the conditional
+  access hardware to receive encrypted channels, please make sure you copy the
+  file 'ca.conf' into your /video directory (or wherever your configuration files
+  are located) and go into the "Setup" menu and set the CICAM values according
+  to your hardware setup. Currently there are two possible CICAM entries per
+  DVB card, so any card can implement up to two different conditional access
+  modes (besides the default "Free To Air" mode, which is always assumed to be
+  available on any DVB card).
+- Updated French language texts (thanks to Jean-Claude Repetto).

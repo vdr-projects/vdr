@@ -29,14 +29,29 @@ Video Disk Recorder File Formats
     If this channel also carries Dolby Digital sound, the Dolby PIDs follow
     the audio PIDs, separated by a semicolon, as in "...:101,102;103,104:..."
   - Teletext PID
-  - Conditional Access (0 = Free To Air, 1 = can be decrypted by the first
-    DVB card, 2 = can be decrypted by the second DVB card)
+  - Conditional Access (0 = Free To Air, 1..4 = explicitly requires the DVB card
+    with the given number, >=100 = requires a specific decryption method defined
+    in 'ca.conf').
   - Program Number
 
   Fields marked with ** are only meaningful for DVB-S receivers.
   DVB-C and DVB-T receivers simply ignore these.
   Fields marked with *** are only meaningful for DVB-S and DVB-C receivers.
   DVB-T receivers simply ignore these.
+
+* ca.conf
+
+  This file contains the definitions of the various conditional access code
+  numbers. Anything after (and including) a '#' character is comment.
+  Value lines consist of an integer number, followed by a text describing
+  this decryption method (typically the name of the pay tv service using this
+  decryption method).
+  The special value 0 means "Free To Air", i.e. can be used for channels that
+  don't require additional decryption hardware.
+  The values 1..4 can be used for channels that for some reason explicitly
+  need a given DVB card (for backward compatibility).
+  The values defined in this file are the ones used in the 'Ca' parameter of
+  'channels.conf'.
 
 * timers.conf
 

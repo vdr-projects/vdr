@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.87 2002/02/24 11:59:14 kls Exp $
+ * $Id: config.c 1.88 2002/03/03 16:04:21 kls Exp $
  */
 
 #include "config.h"
@@ -732,6 +732,24 @@ bool cSVDRPhost::Accepts(in_addr_t Address)
   return (Address & mask) == addr.s_addr;
 }
 
+// -- cCaDefinition ----------------------------------------------------------
+
+cCaDefinition::cCaDefinition(void)
+{
+  number = 0;
+  description = NULL;
+}
+
+cCaDefinition::~cCaDefinition()
+{
+  delete description;
+}
+
+bool cCaDefinition::Parse(const char *s)
+{
+  return 2 == sscanf(s, "%d %a[^\n]", &number, &description) && description && *description;
+}
+
 // -- cKeys ------------------------------------------------------------------
 
 cKeys Keys;
@@ -879,6 +897,21 @@ bool cSVDRPhosts::Acceptable(in_addr_t Address)
   return false;
 }
 
+// -- cCaDefinitions ---------------------------------------------------------
+
+cCaDefinitions CaDefinitions;
+
+const cCaDefinition *cCaDefinitions::Get(int Number)
+{
+  cCaDefinition *p = First();
+  while (p) {
+        if (p->Number() == Number)
+           return p;
+        p = (cCaDefinition *)p->Next();
+        }
+  return NULL;
+}
+
 // -- cSetup -----------------------------------------------------------------
 
 cSetup Setup;
@@ -921,8 +954,44 @@ cSetup::cSetup(void)
   MinUserInactivity = 120;
   MultiSpeedMode = 0;
   ShowReplayMode = 0;
+  memset(CaCaps, sizeof(CaCaps), 0);
   CurrentChannel = -1;
   CurrentVolume = MAXVOLUME;
+}
+
+void cSetup::PrintCaCaps(FILE *f, const char *Name)
+{
+  for (int d = 0; d < MAXDVBAPI; d++) {
+      if (CaCaps[d][0]) {
+         fprintf(f, "CaCaps             = %d", d + 1);
+         for (int i = 0; i < MAXCACAPS && CaCaps[d][i]; i++)
+             fprintf(f, " %d", CaCaps[d][i]);
+         fprintf(f, "\n");
+         }
+      }
+}
+
+bool cSetup::ParseCaCaps(const char *Value)
+{
+  char *p;
+  int d = strtol(Value, &p, 10);
+  if (d > 0 && d < MAXDVBAPI) {
+     d--;
+     int i = 0;
+     while (p != Value && p && *p) {
+           if (i < MAXCACAPS) {
+              int c = strtol(p, &p, 10);
+              if (c > 0)
+                 CaCaps[d][i++] = c;
+              else
+                 return false;
+              }
+           else
+              return false;
+           }
+     return true;
+     }
+  return false;
 }
 
 bool cSetup::Parse(char *s)
@@ -967,6 +1036,7 @@ bool cSetup::Parse(char *s)
         else if (!strcasecmp(Name, "MinUserInactivity"))   MinUserInactivity  = atoi(Value);
         else if (!strcasecmp(Name, "MultiSpeedMode"))      MultiSpeedMode     = atoi(Value);
         else if (!strcasecmp(Name, "ShowReplayMode"))      ShowReplayMode     = atoi(Value);
+        else if (!strcasecmp(Name, "CaCaps"))              return ParseCaCaps(Value);
         else if (!strcasecmp(Name, "CurrentChannel"))      CurrentChannel     = atoi(Value);
         else if (!strcasecmp(Name, "CurrentVolume"))       CurrentVolume      = atoi(Value);
         else
@@ -1047,6 +1117,7 @@ bool cSetup::Save(const char *FileName)
         fprintf(f, "MinUserInactivity  = %d\n", MinUserInactivity);
         fprintf(f, "MultiSpeedMode     = %d\n", MultiSpeedMode);
         fprintf(f, "ShowReplayMode     = %d\n", ShowReplayMode);
+        PrintCaCaps(f, "CaCaps");
         fprintf(f, "CurrentChannel     = %d\n", CurrentChannel);
         fprintf(f, "CurrentVolume      = %d\n", CurrentVolume);
         if (f.Close()) {

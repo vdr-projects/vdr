@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.159 2002/02/24 12:55:49 kls Exp $
+ * $Id: menu.c 1.160 2002/03/03 16:12:29 kls Exp $
  */
 
 #include "menu.h"
@@ -585,6 +585,60 @@ void cMenuEditStraItem::Set(void)
   SetValue(strings[*value]);
 }
 
+// --- cMenuEditCaItem -------------------------------------------------------
+
+class cMenuEditCaItem : public cMenuEditIntItem {
+private:
+  const cCaDefinition *ca;
+  bool allowCardNr;
+protected:
+  virtual void Set(void);
+public:
+  cMenuEditCaItem(const char *Name, int *Value, bool AllowCardNr = false);
+  eOSState ProcessKey(eKeys Key);
+  };
+
+cMenuEditCaItem::cMenuEditCaItem(const char *Name, int *Value, bool AllowCardNr)
+:cMenuEditIntItem(Name, Value, 0)
+{
+  ca = CaDefinitions.Get(*Value);
+  allowCardNr = AllowCardNr;
+  Set();
+}
+
+void cMenuEditCaItem::Set(void)
+{
+  if (ca)
+     SetValue(ca->Description());
+  else
+     cMenuEditIntItem::Set();
+}
+
+eOSState cMenuEditCaItem::ProcessKey(eKeys Key)
+{
+  eOSState state = cMenuEditItem::ProcessKey(Key);
+
+  if (state == osUnknown) {
+     if (NORMALKEY(Key) == kLeft) { // TODO might want to increase the delta if repeated quickly?
+        if (ca && ca->Prev()) {
+           ca = (cCaDefinition *)ca->Prev();
+           *value = ca->Number();
+           }
+        }
+     else if (NORMALKEY(Key) == kRight) {
+        if (ca && ca->Next() && (allowCardNr || ((cCaDefinition *)ca->Next())->Number() > MAXDVBAPI)) {
+           ca = (cCaDefinition *)ca->Next();
+           *value = ca->Number();
+           }
+        }
+     else
+        return cMenuEditIntItem::ProcessKey(Key);
+     Set();
+     state = osContinue;
+     }
+  return state;
+}
+
 // --- cMenuEditChannel ------------------------------------------------------
 
 class cMenuEditChannel : public cOsdMenu {
@@ -613,7 +667,7 @@ cMenuEditChannel::cMenuEditChannel(int Index)
      Add(new cMenuEditIntItem( tr("Dpid1"),        &data.dpid1, 0, 0x1FFF));
      Add(new cMenuEditIntItem( tr("Dpid2"),        &data.dpid2, 0, 0x1FFF));
      Add(new cMenuEditIntItem( tr("Tpid"),         &data.tpid,  0, 0x1FFF));
-     Add(new cMenuEditIntItem( tr("CA"),           &data.ca, 0, cDvbApi::NumDvbApis));
+     Add(new cMenuEditCaItem(  tr("CA"),           &data.ca, true));
      Add(new cMenuEditIntItem( tr("Pnr"),          &data.pnr, 0));
      }
 }
@@ -1880,6 +1934,13 @@ void cMenuSetup::Set(void)
   Add(new cMenuEditIntItem( tr("MinUserInactivity"),  &data.MinUserInactivity));
   Add(new cMenuEditBoolItem(tr("MultiSpeedMode"),     &data.MultiSpeedMode));
   Add(new cMenuEditBoolItem(tr("ShowReplayMode"),     &data.ShowReplayMode));
+  for (int d = 0; d < cDvbApi::NumDvbApis; d++) {
+      for (int i = 0; i < 2; i++) {
+          char buffer[32];
+          snprintf(buffer, sizeof(buffer), "%s%d %d", tr("CICAM DVB"), d + 1, i + 1);
+          Add(new cMenuEditCaItem(buffer, &data.CaCaps[d][i]));
+          }
+      }
 }
 
 eOSState cMenuSetup::ProcessKey(eKeys Key)

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.152 2002/02/24 12:53:51 kls Exp $
+ * $Id: dvbapi.c 1.154 2002/03/03 15:43:24 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -1684,9 +1684,10 @@ cDvbApi::cDvbApi(int n)
   replayBuffer = NULL;
   transferBuffer = NULL;
   transferringFromDvbApi = NULL;
-  ca = 0;
+  ca = -1;
   priority = -1;
   cardIndex = n;
+  SetCaCaps();
 
   // Devices that are only present on DVB-C or DVB-S cards:
 
@@ -1783,37 +1784,93 @@ bool cDvbApi::SetPrimaryDvbApi(int n)
   return false;
 }
 
+int cDvbApi::CanShift(int Ca, int Priority)
+{
+  // Test whether a recording on this DVB device can be shifted to another one
+  // in order to perform a new recording with the given Ca and Priority on this device:
+  int ShiftLevel = -1; // default means this device can't be shifted
+  if (Recording()) {
+     if (ProvidesCa(Ca) // this device provides the requested Ca
+        && (Ca != this->Ca() // the requested Ca is different from the one currently used...
+           || Priority > this->Priority())) { // ...or the request comes from a higher priority
+        cDvbApi *d = NULL;
+        int Provides[MAXDVBAPI];
+        for (int i = 0; i < NumDvbApis; i++) {
+            if ((Provides[i] = dvbApi[i]->ProvidesCa(this->Ca())) != 0) { // this device is basicly able to do the job
+               if (dvbApi[i] != this) { // it is not _this_ device
+                  int sl = dvbApi[i]->CanShift(this->Ca(), Priority); // this is the original Priority!
+                  if (sl >= 0 && (ShiftLevel < 0 || sl < ShiftLevel)) {
+                     d = dvbApi[i];
+                     ShiftLevel = sl;
+                     }
+                  }
+               }
+            }
+        if (ShiftLevel >= 0)
+           ShiftLevel++; // adds the device's own shift
+        }
+     }
+  else if (Priority > this->Priority())
+     ShiftLevel = 0; // no shifting necessary, this device can do the job
+  return ShiftLevel;
+}
+
 cDvbApi *cDvbApi::GetDvbApi(int Ca, int Priority)
 {
-  cDvbApi *d = NULL, *dMinPriority = NULL;
-  int index = Ca - 1;
-  for (int i = 0; i < MAXDVBAPI; i++) {
-      if (dvbApi[i]) {
-         if (dvbApi[i]->CardIndex() == index) { // means we need exactly _this_ device
+  cDvbApi *d = NULL;
+  int Provides[MAXDVBAPI];
+  // Check which devices provide Ca:
+  for (int i = 0; i < NumDvbApis; i++) {
+      if ((Provides[i] = dvbApi[i]->ProvidesCa(Ca)) != 0) { // this device is basicly able to do the job
+         if (Priority > dvbApi[i]->Priority() // Priority is high enough to use this device
+            && (!d // we don't have a device yet, or...
+               || dvbApi[i]->Priority() < d->Priority() // ...this one has an even lower Priority
+               || (dvbApi[i]->Priority() == d->Priority() // ...same Priority...
+                  && Provides[i] < Provides[d->CardIndex()]))) // ...but this one provides fewer Ca values
             d = dvbApi[i];
-            break;
-            }
-         else if (Ca == 0) { // means any device would be acceptable
-            if (!d || !dvbApi[i]->Recording() || (d->Recording() && d->Priority() > dvbApi[i]->Priority()))
-               d = dvbApi[i]; // this is one that is either not currently recording or has the lowest priority
-            if (d && d != PrimaryDvbApi && !d->Recording()) // avoids the PrimaryDvbApi if possible
-               break;
-            if (d && d->Recording() && d->Priority() < Setup.PrimaryLimit && (!dMinPriority || d->Priority() < dMinPriority->Priority()))
-               dMinPriority = d; // this is the one with the lowest priority below Setup.PrimaryLimit
-            }
          }
       }
-  if (d == PrimaryDvbApi) { // the PrimaryDvbApi was the only one that was free
-     if (Priority < Setup.PrimaryLimit)
-        return NULL;        // not enough priority to use the PrimaryDvbApi
-     if (dMinPriority)      // there's one that must not use the PrimaryDvbApi...
-        d = dMinPriority;   // ...so let's kick out that one
+  if (!d && Ca > MAXDVBAPI) {
+     // We didn't find one the easy way, so now we have to try harder:
+     int ShiftLevel = -1;
+     for (int i = 0; i < NumDvbApis; i++) {
+         if (Provides[i]) { // this device is basicly able to do the job, but for some reason we didn't get it above
+            int sl = dvbApi[i]->CanShift(Ca, Priority); // asks this device to shift its job to another device
+            if (sl >= 0 && (ShiftLevel < 0 || sl < ShiftLevel)) {
+               d = dvbApi[i]; // found one that can be shifted with the fewest number of subsequent shifts
+               ShiftLevel = sl;
+               }
+            }
+         }
      }
-  return (d                           // we found one...
-      && (!d->Recording()             // ...that's either not currently recording...
-          || d->Priority() < Priority // ...or has a lower priority...
-          || (!d->Ca() && Ca)))       // ...or doesn't need this card
-          ? d : NULL;
+  return d;
+}
+
+void cDvbApi::SetCaCaps(void)
+{
+  for (int i = 0; i < MAXCACAPS; i++)
+      caCaps[i] = Setup.CaCaps[CardIndex()][i];
+}
+
+int cDvbApi::ProvidesCa(int Ca)
+{
+  if (Ca == CardIndex() + 1)
+     return 1; // exactly _this_ card was requested
+  if (Ca && Ca <= MAXDVBAPI)
+     return 0; // a specific card was requested, but not _this_ one
+  int result = Ca ? 0 : 1; // by default every card can provide FTA
+  int others = Ca ? 1 : 0;
+  for (int i = 0; i < MAXCACAPS; i++) {
+      if (caCaps[i]) {
+         if (caCaps[i] == Ca)
+            result = 1;
+         else
+            others++;
+         }
+      else
+         break;
+      }
+  return result ? result + others : 0;
 }
 
 bool cDvbApi::Probe(const char *FileName)
@@ -1854,7 +1911,7 @@ bool cDvbApi::Init(void)
 
 void cDvbApi::Cleanup(void)
 {
-  for (int i = 0; i < MAXDVBAPI; i++) {
+  for (int i = 0; i < NumDvbApis; i++) {
       delete dvbApi[i];
       dvbApi[i] = NULL;
       }
@@ -2148,6 +2205,11 @@ void cDvbApi::Flush(void)
 #endif
 }
 
+int cDvbApi::Priority(void)
+{
+  return (this == PrimaryDvbApi && !Recording()) ? Setup.PrimaryLimit - 1 : priority;
+}
+
 int cDvbApi::SetModeRecord(void)
 {
   // Sets up the DVB device for recording
@@ -2238,9 +2300,6 @@ bool cDvbApi::SetPids(bool ForRecording)
 
 eSetChannelResult cDvbApi::SetChannel(int ChannelNumber, int Frequency, char Polarization, int Diseqc, int Srate, int Vpid, int Apid1, int Apid2, int Dpid1, int Dpid2, int Tpid, int Ca, int Pnr)
 {
-  // Make sure the siProcessor won't access the device while switching
-  cThreadLock ThreadLock(siProcessor);
-
   StopTransfer();
   StopReplay();
 
@@ -2265,7 +2324,7 @@ eSetChannelResult cDvbApi::SetChannel(int ChannelNumber, int Frequency, char Pol
   // If this card can't receive this channel, we must not actually switch
   // the channel here, because that would irritate the driver when we
   // start replaying in Transfer Mode immediately after switching the channel:
-  bool NeedsTransferMode = (this == PrimaryDvbApi && Ca && Ca != CardIndex() + 1);
+  bool NeedsTransferMode = (this == PrimaryDvbApi && !ProvidesCa(Ca));
 
   if (!NeedsTransferMode) {
 
@@ -2507,7 +2566,7 @@ void cDvbApi::StopRecord(void)
   if (recordBuffer) {
      delete recordBuffer;
      recordBuffer = NULL;
-     ca = 0;
+     ca = -1;
      priority = -1;
      }
 }
@@ -2706,7 +2765,7 @@ void cEITScanner::Process(void)
      time_t now = time(NULL);
      if (now - lastScan > ScanTimeout && now - lastActivity > ActivityTimeout) {
         for (int i = 0; i < MAXDVBAPI; i++) {
-            cDvbApi *DvbApi = cDvbApi::GetDvbApi(i + 1, MAXPRIORITY);
+            cDvbApi *DvbApi = cDvbApi::GetDvbApi(i + 1, MAXPRIORITY + 1);
             if (DvbApi) {
                if (DvbApi != cDvbApi::PrimaryDvbApi || (cDvbApi::NumDvbApis == 1 && Setup.EPGScanTimeout && now - lastActivity > Setup.EPGScanTimeout * 3600)) {
                   if (!(DvbApi->Recording() || DvbApi->Replaying() || DvbApi->Transferring())) {

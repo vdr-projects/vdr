@@ -16,7 +16,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.c 1.38 2002/02/25 16:30:42 kls Exp $
+ * $Id: eit.c 1.39 2002/03/01 16:32:11 kls Exp $
  ***************************************************************************/
 
 #include "eit.h"
@@ -1047,8 +1047,6 @@ const char *cSIProcessor::GetEpgDataFileName(void)
 
 void cSIProcessor::SetStatus(bool On)
 {
-   LOCK_THREAD;
-   schedulesMutex.Lock();
    ShutDownFilters();
    if (On)
    {
@@ -1061,7 +1059,6 @@ void cSIProcessor::SetStatus(bool On)
       AddFilter(0x12, 0x51);  // event info, actual TS, schedule for another 4 days
       AddFilter(0x12, 0x61);  // event info, other TS, schedule for another 4 days
    }
-   schedulesMutex.Unlock();
 }
 
 /** use the vbi device to parse all relevant SI
@@ -1085,20 +1082,15 @@ void cSIProcessor::Action()
          struct tm *ptm = localtime_r(&now, &tm_r);
          if (now - lastCleanup > 3600 && ptm->tm_hour == 5)
          {
-            LOCK_THREAD;
-
-            schedulesMutex.Lock();
+            cMutexLock MutexLock(&schedulesMutex);
             isyslog(LOG_INFO, "cleaning up schedules data");
             schedules->Cleanup();
-            schedulesMutex.Unlock();
             lastCleanup = now;
             ReportEpgBugFixStats(true);
          }
          if (epgDataFileName && now - lastDump > 600)
          {
-            LOCK_THREAD;
-
-            schedulesMutex.Lock();
+            cMutexLock MutexLock(&schedulesMutex);
             FILE *f = fopen(GetEpgDataFileName(), "w");
             if (f) {
                schedules->Dump(f);
@@ -1107,7 +1099,6 @@ void cSIProcessor::Action()
             else
                LOG_ERROR;
             lastDump = now;
-            schedulesMutex.Unlock();
          }
       }
 
@@ -1162,12 +1153,9 @@ void cSIProcessor::Action()
                         case 0x12:
                            if (buf[0] != 0x72)
                            {
-                              LOCK_THREAD;
-
-                              schedulesMutex.Lock();
+                              cMutexLock MutexLock(&schedulesMutex);
                               cEIT ceit(buf, seclen, schedules);
                               ceit.ProcessEIT(buf);
-                              schedulesMutex.Unlock();
                            }
                            else
                               dsyslog(LOG_INFO, "Received stuffing section in EIT\n");
@@ -1261,6 +1249,6 @@ bool cSIProcessor::ShutDownFilters(void)
 /** */
 bool cSIProcessor::SetCurrentServiceID(unsigned short servid)
 {
-  LOCK_THREAD;
+  cMutexLock MutexLock(&schedulesMutex);
   return schedules ? schedules->SetCurrentServiceID(servid) : false;
 }
