@@ -4,10 +4,9 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.39 2001/10/07 11:00:35 kls Exp $
+ * $Id: recording.c 1.40 2001/10/07 15:13:34 kls Exp $
  */
 
-#define _GNU_SOURCE
 #include "recording.h"
 #include <errno.h>
 #include <fcntl.h>

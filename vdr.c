@@ -22,10 +22,9 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.82 2001/10/07 10:28:32 kls Exp $
+ * $Id: vdr.c 1.83 2001/10/07 15:13:48 kls Exp $
  */
 
-#define _GNU_SOURCE
 #include <getopt.h>
 #include <locale.h>
 #include <signal.h>

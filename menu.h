@@ -4,13 +4,11 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 1.30 2001/09/23 10:57:33 kls Exp $
+ * $Id: menu.h 1.31 2001/10/07 15:13:26 kls Exp $
  */
 
 #ifndef _MENU_H
 #define _MENU_H
-
-#define _GNU_SOURCE
 
 #include "dvbapi.h"
 #ifdef DVDSUPPORT
