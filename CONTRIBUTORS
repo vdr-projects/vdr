@@ -1090,3 +1090,4 @@ Arthur Konovalov <kasjas@hot.ee>
 
 Milos Kapoun <m.kapoun@cra.cz>
  for suggesting to skip code table info in SI data
+ for adding missing Czech characters to fontosd-iso8859-2.c

@@ -3024,3 +3024,4 @@ Video Disk Recorder Revision History
   by Wayne Keer).
 - Made volume control more linear (thanks to Emil Naepflein).
 - Now skipping code table info in SI data (suggested by Milos Kapoun).
+- Added missing Czech characters to fontosd-iso8859-2.c (thanks to Milos Kapoun).
