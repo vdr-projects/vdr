@@ -548,3 +548,5 @@ Video Disk Recorder Revision History
   on the remote control, the channel number displayed is now followed by the
   '-' character to indicate that additional digits can be entered.
 - Increased the timeout for numeric channel switching from 500ms to 1s.
+- Fixed handling the "Green" button in the "Schedules" menu for channels that
+  have a second audio PID.

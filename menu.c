@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.76 2001/07/12 14:16:43 kls Exp $
+ * $Id: menu.c 1.77 2001/07/12 14:56:18 kls Exp $
  */
 
 #include "menu.h"
@@ -1768,10 +1768,12 @@ eOSState cMenuMain::ProcessKey(eKeys Key)
                case kRed:   if (!HasSubMenu())
                                state = osRecord;
                             break;
-               case kGreen: if (cDvbApi::PrimaryDvbApi->CanToggleAudioTrack()) {
-                               Interface->Clear();
-                               cDvbApi::PrimaryDvbApi->ToggleAudioTrack();
-                               state = osEnd;
+               case kGreen: if (!HasSubMenu()) {
+                               if (cDvbApi::PrimaryDvbApi->CanToggleAudioTrack()) {
+                                  Interface->Clear();
+                                  cDvbApi::PrimaryDvbApi->ToggleAudioTrack();
+                                  state = osEnd;
+                                  }
                                }
                             break;
                case kBlue:  if (!HasSubMenu())
