@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.h 1.44 2001/08/05 15:57:45 kls Exp $
+ * $Id: dvbapi.h 1.45 2001/08/10 14:56:40 kls Exp $
  */
 
 #ifndef __DVBAPI_H
@@ -93,6 +93,7 @@ public:
 private:
   static cDvbApi *dvbApi[MAXDVBAPI];
   static int useDvbApi;
+  int cardIndex;
 public:
   static cDvbApi *PrimaryDvbApi;
   static void SetUseDvbApi(int n);
@@ -111,8 +112,8 @@ public:
          // will be returned.
          // The caller must check whether the returned DVB device is actually
          // recording and stop recording if necessary.
-  int Index(void);
-         // Returns the index of this DvbApi.
+  int CardIndex(void) { return cardIndex; }
+         // Returns the card index of this DvbApi (0 ... MAXDVBAPI - 1).
   static bool Probe(const char *FileName);
          // Probes for existing DVB devices.
   static bool Init(void);

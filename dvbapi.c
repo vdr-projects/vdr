@@ -7,7 +7,7 @@
  * DVD support initially written by Andreas Schultz <aschultz@warp10.net>
  * based on dvdplayer-0.5 by Matjaz Thaler <matjaz.thaler@guest.arnes.si>
  *
- * $Id: dvbapi.c 1.102 2001/08/10 12:37:03 kls Exp $
+ * $Id: dvbapi.c 1.103 2001/08/10 14:54:21 kls Exp $
  */
 
 //#define DVDDEBUG        1
@@ -2311,6 +2311,7 @@ cDvbApi::cDvbApi(int n)
   transferringFromDvbApi = NULL;
   ca = 0;
   priority = -1;
+  cardIndex = n;
 
   // Devices that are only present on DVB-C or DVB-S cards:
 
@@ -2418,7 +2419,7 @@ cDvbApi *cDvbApi::GetDvbApi(int Ca, int Priority)
   int index = Ca - 1;
   for (int i = 0; i < MAXDVBAPI; i++) {
       if (dvbApi[i]) {
-         if (i == index) { // means we need exactly _this_ device
+         if (dvbApi[i]->CardIndex() == index) { // means we need exactly _this_ device
             d = dvbApi[i];
             break;
             }
@@ -2443,15 +2444,6 @@ cDvbApi *cDvbApi::GetDvbApi(int Ca, int Priority)
           || d->Priority() < Priority // ...or has a lower priority...
           || (!d->Ca() && Ca)))       // ...or doesn't need this card
           ? d : NULL;
-}
-
-int cDvbApi::Index(void)
-{
-  for (int i = 0; i < MAXDVBAPI; i++) {
-      if (dvbApi[i] == this)
-         return i;
-      }
-  return -1;
 }
 
 bool cDvbApi::Probe(const char *FileName)
@@ -2951,7 +2943,7 @@ int cDvbApi::SetModeRecord(void)
   SetPids(true);
   if (fd_dvr >= 0)
      close(fd_dvr);
-  fd_dvr = OstOpen(DEV_OST_DVR, Index(), O_RDONLY | O_NONBLOCK);
+  fd_dvr = OstOpen(DEV_OST_DVR, CardIndex(), O_RDONLY | O_NONBLOCK);
   if (fd_dvr < 0)
      LOG_ERROR;
   return fd_dvr;
@@ -3061,7 +3053,7 @@ bool cDvbApi::SetChannel(int ChannelNumber, int FrequencyMHz, char Polarization,
   // If this card can't receive this channel, we must not actually switch
   // the channel here, because that would irritate the driver when we
   // start replaying in Transfer Mode immediately after switching the channel:
-  bool NeedsTransferMode = (this == PrimaryDvbApi && Ca && Ca != Index() + 1);
+  bool NeedsTransferMode = (this == PrimaryDvbApi && Ca && Ca != CardIndex() + 1);
 
   if (!NeedsTransferMode) {
 
@@ -3500,7 +3492,7 @@ void cEITScanner::Process(void)
   if (Setup.EPGScanTimeout && Channels.MaxNumber() > 1) {
      time_t now = time(NULL);
      if (now - lastScan > ScanTimeout && now - lastActivity > ActivityTimeout) {
-        for (int i = 0; i < cDvbApi::NumDvbApis; i++) {
+        for (int i = 0; i < MAXDVBAPI; i++) {
             cDvbApi *DvbApi = cDvbApi::GetDvbApi(i + 1, MAXPRIORITY);
             if (DvbApi) {
                if (DvbApi != cDvbApi::PrimaryDvbApi || (cDvbApi::NumDvbApis == 1 && Setup.EPGScanTimeout && now - lastActivity > Setup.EPGScanTimeout * 3600)) {

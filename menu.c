@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.96 2001/08/07 16:36:37 kls Exp $
+ * $Id: menu.c 1.97 2001/08/10 14:57:17 kls Exp $
  */
 
 #include "menu.h"
@@ -2070,14 +2070,14 @@ cRecordControl::cRecordControl(cDvbApi *DvbApi, cTimer *Timer)
      timer = new cTimer(true);
      Timers.Add(timer);
      Timers.Save();
-     asprintf(&instantId, cDvbApi::NumDvbApis > 1 ? "%s - %d" : "%s", Channels.GetChannelNameByNumber(timer->channel), dvbApi->Index() + 1);
+     asprintf(&instantId, cDvbApi::NumDvbApis > 1 ? "%s - %d" : "%s", Channels.GetChannelNameByNumber(timer->channel), dvbApi->CardIndex() + 1);
      }
   timer->SetRecording(true);
   if (Channels.SwitchTo(timer->channel, dvbApi)) {
      cRecording Recording(timer);
      if (dvbApi->StartRecord(Recording.FileName(), Channels.GetByNumber(timer->channel)->ca, timer->priority))
         Recording.WriteSummary();
-     Interface->DisplayRecording(dvbApi->Index(), true);
+     Interface->DisplayRecording(dvbApi->CardIndex(), true);
      }
   else
      cThread::EmergencyExit(true);
@@ -2102,7 +2102,7 @@ void cRecordControl::Stop(bool KeepInstant)
         Timers.Save();
         }
      timer = NULL;
-     Interface->DisplayRecording(dvbApi->Index(), false);
+     Interface->DisplayRecording(dvbApi->CardIndex(), false);
      }
 }
 
@@ -2158,7 +2158,7 @@ void cRecordControls::Stop(cDvbApi *DvbApi)
   for (int i = 0; i < MAXDVBAPI; i++) {
       if (RecordControls[i]) {
          if (RecordControls[i]->Uses(DvbApi)) {
-            isyslog(LOG_INFO, "stopping recording on DVB device %d due to higher priority", DvbApi->Index() + 1);
+            isyslog(LOG_INFO, "stopping recording on DVB device %d due to higher priority", DvbApi->CardIndex() + 1);
             RecordControls[i]->Stop(true);
             }
          }
