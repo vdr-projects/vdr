@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.10 2000/07/23 13:16:54 kls Exp $
+ * $Id: tools.c 1.11 2000/07/28 13:22:10 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -143,6 +143,24 @@ bool isnumber(const char *s)
         s++;
         }
   return true;
+}
+
+bool DirectoryOk(const char *DirName)
+{
+  struct stat ds;
+  if (stat(DirName, &ds) == 0) {
+     if (S_ISDIR(ds.st_mode)) {
+        if (access(DirName, R_OK | W_OK | X_OK) == 0)
+           return true;
+        else
+           esyslog(LOG_ERR, "ERROR: can't access %s", DirName);
+        }
+     else
+        esyslog(LOG_ERR, "ERROR: %s is not a directory", DirName);
+     }
+  else
+     LOG_ERROR_STR(DirName);
+  return false;
 }
 
 bool MakeDirs(const char *FileName, bool IsDirectory)

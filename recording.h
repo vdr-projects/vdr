@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 1.7 2000/07/23 19:06:14 kls Exp $
+ * $Id: recording.h 1.8 2000/07/28 12:48:06 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -13,6 +13,8 @@
 #include <time.h>
 #include "config.h"
 #include "tools.h"
+
+extern const char *VideoDirectory;
 
 void AssertFreeDiskSpace(void);
 

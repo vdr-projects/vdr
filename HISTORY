@@ -105,3 +105,4 @@ Video Disk Recorder Revision History
 - When scrolling through a list it now moves a full page up or down when the
   cursor reaches the top or bottom of the menu (thanks to Heino Goldenstein!).
 - Added missing '#include <sys/stat.h>' to recording.c.
+- The video directory can now be defined with the command line option -v.

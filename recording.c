@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.13 2000/07/27 20:01:05 kls Exp $
+ * $Id: recording.c 1.14 2000/07/28 12:47:54 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -32,14 +32,14 @@
 
 #define DISKCHECKDELTA 300 // seconds between checks for free disk space
 
-const char *BaseDir = "/video";
+const char *VideoDirectory = "/video";
 
 static bool LowDiskSpace(void)
 {
   //TODO Find a simpler way to determine the amount of free disk space!
   bool result = true;
   char *cmd = NULL;
-  asprintf(&cmd, DFCMD, BaseDir);
+  asprintf(&cmd, DFCMD, VideoDirectory);
   FILE *p = popen(cmd, "r");
   if (p) {
      char *s;
@@ -124,7 +124,7 @@ cRecording::cRecording(const char *FileName)
 {
   titleBuffer = NULL;
   fileName = strdup(FileName);
-  FileName += strlen(BaseDir) + 1;
+  FileName += strlen(VideoDirectory) + 1;
   char *p = strrchr(FileName, '/');
 
   name = NULL;
@@ -190,7 +190,7 @@ const char *cRecording::FileName(void)
 {
   if (!fileName) {
      struct tm *t = localtime(&start);
-     asprintf(&fileName, NAMEFORMAT, BaseDir, name, t->tm_year + 1900, t->tm_mon + 1, t->tm_mday, t->tm_hour, t->tm_min, priority, lifetime);
+     asprintf(&fileName, NAMEFORMAT, VideoDirectory, name, t->tm_year + 1900, t->tm_mon + 1, t->tm_mday, t->tm_hour, t->tm_min, priority, lifetime);
      if (fileName)
         strreplace(fileName, ' ', '_');
      }
@@ -262,7 +262,7 @@ bool cRecordings::Load(bool Deleted)
   Clear();
   bool result = false;
   char *cmd = NULL;
-  asprintf(&cmd, FINDCMD, BaseDir, Deleted ? "*" DELEXT : "*" RECEXT);
+  asprintf(&cmd, FINDCMD, VideoDirectory, Deleted ? "*" DELEXT : "*" RECEXT);
   FILE *p = popen(cmd, "r");
   if (p) {
      char *s;

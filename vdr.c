@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.23 2000/07/23 15:36:43 kls Exp $
+ * $Id: vdr.c 1.24 2000/07/28 13:14:19 kls Exp $
  */
 
 #include <getopt.h>
@@ -65,20 +65,24 @@ int main(int argc, char *argv[])
       { "daemon", no_argument,       NULL, 'd' },
       { "help",   no_argument,       NULL, 'h' },
       { "port",   required_argument, NULL, 'p' },
+      { "video",  required_argument, NULL, 'v' },
       { 0 }
     };
   
   int c;
   int option_index = 0;
-  while ((c = getopt_long(argc, argv, "dhp:", long_options, &option_index)) != -1) {
+  while ((c = getopt_long(argc, argv, "dhp:v:", long_options, &option_index)) != -1) {
         switch (c) {
           case 'd': DaemonMode = true; break;
           case 'h': printf("Usage: vdr [OPTION]\n\n"
                            "  -h,      --help        display this help and exit\n"
                            "  -d,      --daemon      run in daemon mode\n"
-                           "  -p PORT, --port=PORT   use PORT for SVDRP ('0' turns off SVDRP)\n"
+                           "  -p PORT, --port=PORT   use PORT for SVDRP (default: %d, '0' turns off SVDRP)\n"
+                           "  -v DIR,  --video=DIR   use DIR as video directory (default is %s)\n"
                            "\n"
-                           "Report bugs to <vdr-bugs@cadsoft.de>\n"
+                           "Report bugs to <vdr-bugs@cadsoft.de>\n",
+                           DEFAULTSVDRPPORT,
+                           VideoDirectory
                            );
                     return 0;
                     break;
@@ -86,8 +90,10 @@ int main(int argc, char *argv[])
                        SVDRPport = strtol(optarg, NULL, 10);
                     else {
                        fprintf(stderr, "vdr: invalid port number: %s\n", optarg);
-                       return 1;
+                       abort();
                        }
+                    break;
+          case 'v': VideoDirectory = optarg;
                     break;
           default:  abort();
           }
@@ -97,6 +103,13 @@ int main(int argc, char *argv[])
   
   openlog("vdr", LOG_PID | LOG_CONS, LOG_USER);
 
+  // Check the video directory:
+
+  if (!DirectoryOk(VideoDirectory)) {
+     fprintf(stderr, "vdr: can't access video directory %s\n", VideoDirectory);
+     abort();
+     }
+
   // Daemon mode:
 
   if (DaemonMode) {
@@ -105,7 +118,7 @@ int main(int argc, char *argv[])
      if (pid < 0) {
         fprintf(stderr, "%s\n", strerror(errno));
         esyslog(LOG_ERR, strerror(errno));
-        return 1;
+        abort();
         }
      if (pid != 0)
         return 0; // initial program immediately returns
@@ -122,7 +135,7 @@ int main(int argc, char *argv[])
   // DVB interfaces:
 
   if (!cDvbApi::Init())
-     return 1;
+     abort();
 
   // Configuration data:
 
