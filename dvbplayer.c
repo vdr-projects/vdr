@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 1.4 2002/06/23 10:52:51 kls Exp $
+ * $Id: dvbplayer.c 1.7 2002/07/14 14:30:36 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -116,8 +116,8 @@ public:
   int SkipFrames(int Frames);
   void SkipSeconds(int Seconds);
   void Goto(int Position, bool Still = false);
-  void GetIndex(int &Current, int &Total, bool SnapToIFrame = false);
-  bool GetReplayMode(bool &Play, bool &Forward, int &Speed);
+  virtual bool GetIndex(int &Current, int &Total, bool SnapToIFrame = false);
+  virtual bool GetReplayMode(bool &Play, bool &Forward, int &Speed);
   };
 
 #define MAX_VIDEO_SLOWMOTION 63 // max. arg to pass to VIDEO_SLOWMOTION // TODO is this value correct?
@@ -132,7 +132,7 @@ cDvbPlayer::cDvbPlayer(const char *FileName)
   backTrace = NULL;
   index = NULL;
   eof = false;
-  active = false;
+  active = true;
   playMode = pmPlay;
   playDir = pdForward;
   trickSpeed = NORMAL_SPEED;
@@ -292,7 +292,6 @@ void cDvbPlayer::Activate(bool On)
 
 void cDvbPlayer::Action(void)
 {
-  active = true;
   dsyslog("dvbplayer thread started (pid=%d)", getpid());
 
   uchar b[MAXFRAMESIZE];
@@ -310,6 +309,7 @@ void cDvbPlayer::Action(void)
      isyslog("resuming replay at index %d (%s)", readIndex, IndexToHMSF(readIndex, true));
 
   while (active && NextFile()) {
+        pfd[1].fd = replayFile; // NextFile() may have returned a new file handle!
         {
           LOCK_THREAD;
 
@@ -593,7 +593,7 @@ void cDvbPlayer::Goto(int Index, bool Still)
      }
 }
 
-void cDvbPlayer::GetIndex(int &Current, int &Total, bool SnapToIFrame)
+bool cDvbPlayer::GetIndex(int &Current, int &Total, bool SnapToIFrame)
 {
   if (index) {
      if (playMode == pmStill)
@@ -607,9 +607,10 @@ void cDvbPlayer::GetIndex(int &Current, int &Total, bool SnapToIFrame)
            }
         }
      Total = index->Last();
+     return true;
      }
-  else
-     Current = Total = -1;
+  Current = Total = -1;
+  return false;
 }
 
 bool cDvbPlayer::GetReplayMode(bool &Play, bool &Forward, int &Speed)

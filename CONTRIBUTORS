@@ -155,6 +155,8 @@ Andreas Schultz <aschultz@warp10.net>
  for fixing a crash in case there is no 'epg.data' at program start
  for fixing a bug in the EPG bugfix mechanism if the extended description is shorter
  than 3 characters
+ for adding direct access to the index data of cPalette (needed for displaying SPUs)
+ for pointing out a possible race condition in the cDvbPlayer
 
 Aaron Holtzman
  for writing 'ac3dec'

@@ -12,7 +12,7 @@ This interface allows programmers to develop additional functionality for VDR co
 separate from the core VDR source, without the need of patching the original
 VDR code (and all the problems of correlating various patches).
 <p>
-<!--X1.1.3--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
+<!--X1.1.3--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
 This document is divided into two parts, the first one describing the
 <a href="#Part I - The Outside Interface"><i>outside</i> interface</a>
 of the plugin system, and the second one describing the
@@ -23,18 +23,18 @@ The <i>inside</i> interface provides the plugin code access to VDR's internal da
 structures and allows it to hook itself into specific areas to perform special actions.
 <!--X1.1.3--></td></tr></table>
 <p>
-<!--X1.1.1--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
-Important modifications introduced in version 1.1.1 are marked like this.
-<!--X1.1.1--></td></tr></table>
-<!--X1.1.2--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
+<!--X1.1.2--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 Important modifications introduced in version 1.1.2 are marked like this.
 <!--X1.1.2--></td></tr></table>
-<!--X1.1.3--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
+<!--X1.1.3--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
 Important modifications introduced in version 1.1.3 are marked like this.
 <!--X1.1.3--></td></tr></table>
-<!--X1.1.4--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+<!--X1.1.4--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
 Important modifications introduced in version 1.1.4 are marked like this.
 <!--X1.1.4--></td></tr></table>
+<!--X1.1.5--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+Important modifications introduced in version 1.1.5 are marked like this.
+<!--X1.1.5--></td></tr></table>
 
 <a name="Part I - The Outside Interface"><hr><center><h1>Part I - The Outside Interface</h1></center>
 
@@ -131,7 +131,7 @@ from the web, it will typically have a name like
 <p>
 and will unpack into a directory named
 <p>
-<!--X1.1.2--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
+<!--X1.1.2--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 <tt>hello-0.0.1</tt>
 <!--X1.1.2--></td></tr></table>
 <p>
@@ -139,7 +139,7 @@ To use the <tt>plugins</tt> and <tt>plugins-clean</tt> targets from the VDR <tt>
 you need to unpack such an archive into the <tt>VDR/PLUGINS/SRC</tt> directory and
 create a symbolic link with the basic plugin name, as in
 
-<!--X1.1.2--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
+<!--X1.1.2--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 <p><table><tr><td bgcolor=#F0F0F0><pre><br>
 ln -s hello-0.0.1 hello
 </pre></td></tr></table><p>
@@ -205,7 +205,6 @@ its memory. You don't need to worry about the details behind all this.
 If your plugin requires additional source files, simply add them to your plugin's
 source directory and adjust the <tt>Makefile</tt> accordingly.
 <p>
-<!--X1.1.1--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 Header files usually contain preprocessor statements that prevent the same
 file (or rather its contents, to be precise) from being included more than once, like
 
@@ -237,7 +236,6 @@ The 'hello' example that comes with VDR makes use of <a href="#Internationalizat
 and implements a file named <tt>i18n.h</tt>. To make sure it won't clash with VDR's
 <tt>i18n.h</tt> it uses the macro <tt>_I18N__H</tt> (one underline at the beginning
 and two replacing the dot).
-<!--X1.1.1--></td></tr></table>
 
 <hr><h2>Construction and Destruction</h2>
 
@@ -424,7 +422,7 @@ If a plugin implements a function that runs in the background (presumably in a
 thread of its own), or wants to make use of <a href="#Internationalization">internationalization</a>,
 it needs to implement the function
 
-<!--X1.1.2--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
+<!--X1.1.2--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 <p><table><tr><td bgcolor=#F0F0F0><pre><br>
 virtual bool Start(void);
 </pre></td></tr></table><p>
@@ -436,7 +434,7 @@ its task. This may, for instance, be a thread that collects data from the DVB
 stream, which is later presented to the user via a function that is available
 from the main menu.
 <p>
-<!--X1.1.2--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
+<!--X1.1.2--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 A return value of <i>false</i> indicates that something has gone wrong and the
 plugin will not be able to perform its task. In that case, the plugin should
 write a proper error message to the log file. The first plugin that returns
@@ -500,7 +498,7 @@ interaction is possible. If a specific action takes longer than a few seconds,
 the plugin should launch a separate thread to do this.
 </b>
 
-<!--X1.1.2--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
+<!--X1.1.2--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 <hr><h2>Housekeeping</h2>
 
 <center><i><b>Chores, chores...</b></i></center><p>
@@ -547,7 +545,6 @@ previously stored in the global setup data (see below). It shall return
 <i>true</i> if the parameter was parsed correctly, <i>false</i> in case of
 an error. If <i>false</i> is returned, an error message will be written to
 the log file (and program execution will continue).
-<!--X1.1.1--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 A possible implementation of <tt>SetupParse()</tt> could look like this:
 
 <p><table><tr><td bgcolor=#F0F0F0><pre><br>
@@ -563,7 +560,6 @@ bool cPluginHello::SetupParse(const char *Name, const char *Value)
 
 It is important to make sure that the parameter names are exactly the same as
 used in the <a href="#The Setup menu"><i>Setup</i> menu</a>'s <tt>Store()</tt> function.
-<!--X1.1.1--></td></tr></table>
 <p>
 The plugin's setup parameters are stored in the same file as VDR's parameters.
 In order to allow each plugin (and VDR itself) to have its own set of parameters,
@@ -602,7 +598,6 @@ needs setup parameters that are not directly user adjustable. It can use
 <tt>SetupStore()</tt> and <tt>SetupParse()</tt> without presenting these
 parameters to the user.
 
-<!--X1.1.1--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 <a name="The Setup menu"><hr><h2>The Setup menu</h2>
 
 <center><i><b>Have it your way!</b></i></center><p>
@@ -660,9 +655,8 @@ You can first assign the temporary values to the global variables and then do th
 <tt>SetupStore()</tt> calls, or you can define a class or struct that contains all
 your setup parameters and use that one to copy all parameters with one single statement
 (like VDR does with its cSetup class).
-<!--X1.1.1--></td></tr></table>
 
-<!--X1.1.2--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
+<!--X1.1.2--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 <hr><h2>Configuration files</h2>
 
 <center><i><b>I want my own stuff!</b></i></center><p>
@@ -832,7 +826,7 @@ and display their help and/or version information in addition to its own output.
 
 If you want to make your plugin available to other VDR users, you'll need to
 make a package that can be easily distributed.
-<!--X1.1.3--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
+<!--X1.1.3--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
 The <tt>Makefile</tt> that has been created by the call to
 <a href="#Initializing a new plugin directory"><tt>newplugin</tt></a>
 provides the target <tt>dist</tt>, which does this for you.
@@ -854,7 +848,7 @@ vdr-hello-0.0.1.tgz
 in your source directory, where <tt>hello</tt> will be replaced with your actual
 plugin's name, and <tt>0.0.1</tt> will be your plugin's current version number.
 
-<!--X1.1.3--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
+<!--X1.1.3--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
 <a name="Part II - The Inside Interface"><hr><center><h1>Part II - The Inside Interface</h1></center>
 
 <hr><h2>Status monitor</h2>
@@ -931,7 +925,7 @@ member functions are available in <tt>cStatus</tt>. You only need to implement
 the functions you actually want to use.
 <!--X1.1.3--></td></tr></table>
 
-<!--X1.1.4--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+<!--X1.1.4--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
 <hr><h2>Players</h2>
 
 <center><i><b>Play it again, Sam!</b></i></center><p>
@@ -1081,6 +1075,38 @@ enjoy additional players, since they will be able to control them with actions
 that they already know. If you absolutely want to do things differently, just go
 ahead - it's your show...
 <!--X1.1.4--></td></tr></table>
+
+<!--X1.1.5--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+<hr><h2>The On Screen Display</h2>
+
+<center><i><b>Express yourself</b></i></center><p>
+
+Most of the time a plugin should be able to access the OSD through the
+standard mechanisms also used by VDR itself. However, these set up the OSD in
+a manner of textual rows and columns, and automatically set the various
+windows and color depths.
+<p>
+If a plugin needs to have total control over the OSD, it can call the
+static function
+
+<p><table><tr><td bgcolor=#F0F0F0><pre><br>
+#include &lt;vdr/osd.h&gt;
+
+cOsdBase *MyOsd = cOsd::OpenRaw(x, y);
+</pre></td></tr></table><p>
+
+where <tt>x</tt> and <tt>y</tt> are the coordinates of the upper left corner
+of the OSD area on the screen. Such a "raw" OSD doesn't display anything
+yet, so you need to at least call the function
+
+<p><table><tr><td bgcolor=#F0F0F0><pre><br>
+MyOsd-&gt;Create(...);
+</pre></td></tr></table><p>
+
+to define an actual OSD drawing area (see VDR/osdbase.h for the declarations
+of these functions, and VDR/osd.c to see how VDR opens the OSD and sets up
+its windows and color depths).
+<!--X1.1.5--></td></tr></table>
 
 </body>
 </html>

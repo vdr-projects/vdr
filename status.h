@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: status.h 1.3 2002/06/16 13:24:50 kls Exp $
+ * $Id: status.h 1.5 2002/07/14 10:54:39 kls Exp $
  */
 
 #ifndef __STATUS_H
@@ -12,7 +12,7 @@
 
 #include "config.h"
 #include "device.h"
-#include "dvbplayer.h"
+#include "player.h"
 #include "tools.h"
 
 class cStatus : public cListObject {
@@ -25,11 +25,14 @@ protected:
                // If ChannelNumber is 0, this is before the channel is being switched,
                // otherwise ChannelNumber is the number of the channel that has been switched to.
   virtual void Recording(const cDevice *Device, const char *Name) {}
-               // The given DVB device has started recording Name. Name is the full directory
-               // name of the recording. If Name is NULL, the recording has ended. 
-  virtual void Replaying(const cDvbPlayerControl *DvbPlayerControl, const char *Name) {}
-               // The given player control has started replaying Name. Name is the full directory
-               // name of the recording. If Name is NULL, the replay has ended. 
+               // The given DVB device has started recording Name. Name is the name of the
+               // recording, without any directory path.
+               // If Name is NULL, the recording has ended. 
+  virtual void Replaying(const cControl *Control, const char *Name) {}
+               // The given player control has started replaying Name. Name is the name of the
+               // recording, without any directory path. In case of a player that can't provide
+               // a name, Name can be a string that identifies the player type (like, e.g., "DVD").
+               // If Name is NULL, the replay has ended. 
   virtual void SetVolume(int Volume, bool Absolute) {}
                // The volume has been set to the given value, either
                // absolutely or relative to the current volume.
@@ -60,7 +63,7 @@ public:
   // These functions are called whenever the related status information changes:
   static void MsgChannelSwitch(const cDevice *Device, int ChannelNumber);
   static void MsgRecording(const cDevice *Device, const char *Name);
-  static void MsgReplaying(const cDvbPlayerControl *DvbPlayerControl, const char *Name);
+  static void MsgReplaying(const cControl *Control, const char *Name);
   static void MsgSetVolume(int Volume, bool Absolute);
   static void MsgOsdClear(void);
   static void MsgOsdTitle(const char *Title);

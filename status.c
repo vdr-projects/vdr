@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: status.c 1.3 2002/06/16 13:24:36 kls Exp $
+ * $Id: status.c 1.4 2002/07/13 10:49:34 kls Exp $
  */
 
 #include "status.h"
@@ -35,10 +35,10 @@ void cStatus::MsgRecording(const cDevice *Device, const char *Name)
       sm->Recording(Device, Name);
 }
 
-void cStatus::MsgReplaying(const cDvbPlayerControl *DvbPlayerControl, const char *Name)
+void cStatus::MsgReplaying(const cControl *Control, const char *Name)
 {
   for (cStatus *sm = statusMonitors.First(); sm; sm = statusMonitors.Next(sm))
-      sm->Replaying(DvbPlayerControl, Name);
+      sm->Replaying(Control, Name);
 }
 
 void cStatus::MsgSetVolume(int Volume, bool Absolute)

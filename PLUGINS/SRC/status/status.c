@@ -3,13 +3,13 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id$
+ * $Id: status.c 1.2 2002/07/13 10:55:55 kls Exp $
  */
 
 #include <vdr/plugin.h>
 #include <vdr/status.h>
 
-static const char *VERSION        = "0.0.1";
+static const char *VERSION        = "0.0.2";
 static const char *DESCRIPTION    = "Status monitor test";
 static const char *MAINMENUENTRY  = NULL;
 
@@ -19,7 +19,7 @@ class cStatusTest : public cStatus {
 protected:
   virtual void ChannelSwitch(const cDevice *Device, int ChannelNumber);
   virtual void Recording(const cDevice *Device, const char *Name);
-  virtual void Replaying(const cDvbPlayerControl *DvbPlayerControl, const char *Name);
+  virtual void Replaying(const cControl *Control, const char *Name);
   virtual void SetVolume(int Volume, bool Absolute);
   virtual void OsdClear(void);
   virtual void OsdTitle(const char *Title);
@@ -41,7 +41,7 @@ void cStatusTest::Recording(const cDevice *Device, const char *Name)
   dsyslog("status: cStatusTest::Recording  %d %s", Device->CardIndex(), Name);
 }
 
-void cStatusTest::Replaying(const cDvbPlayerControl *DvbPlayerControl, const char *Name)
+void cStatusTest::Replaying(const cControl *Control, const char *Name)
 {
   dsyslog("status: cStatusTest::Replaying  %s", Name);
 }

@@ -4,12 +4,13 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 1.29 2002/06/16 13:24:00 kls Exp $
+ * $Id: osd.c 1.31 2002/07/14 10:57:45 kls Exp $
  */
 
 #include "osd.h"
 #include <string.h>
 #include "device.h"
+#include "dvbosd.h"
 #include "i18n.h"
 #include "status.h"
 
@@ -19,7 +20,7 @@
   WINDOW *cOsd::window = NULL;
   int cOsd::colorPairs[MaxColorPairs] = { 0 };
 #else
-  cDvbOsd *cOsd::osd = NULL;
+  cOsdBase *cOsd::osd = NULL;
 #endif
   int cOsd::cols = 0;
   int cOsd::rows = 0;
@@ -67,6 +68,15 @@ void cOsd::SetColor(eDvbColor colorFg, eDvbColor colorBg)
 }
 #endif
 
+cOsdBase *cOsd::OpenRaw(int x, int y)
+{
+#ifdef DEBUG_OSD
+  return NULL;
+#else
+  return osd ? NULL : new cDvbOsd(cDevice::PrimaryDevice()->OsdDeviceHandle(), x, y);
+#endif
+}
+
 void cOsd::Open(int w, int h)
 {
   int d = (h < 0) ? Setup.OSDheight + h : 0;
@@ -95,7 +105,7 @@ void cOsd::Open(int w, int h)
   int x = (720 - w + charWidth) / 2; //TODO PAL vs. NTSC???
   int y = (576 - Setup.OSDheight * lineHeight) / 2 + d;
   //XXX
-  osd = new cDvbOsd(cDevice::PrimaryDevice()->OsdDeviceHandle(), x, y);
+  osd = OpenRaw(x, y);
   //XXX TODO this should be transferred to the places where the individual windows are requested (there's too much detailed knowledge here!)
   if (h / lineHeight == 5) { //XXX channel display
      osd->Create(0,              0, w, h, 4);

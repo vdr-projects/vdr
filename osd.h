@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.h 1.32 2002/06/23 09:13:17 kls Exp $
+ * $Id: osd.h 1.33 2002/07/13 12:47:06 kls Exp $
  */
 
 #ifndef __OSD_H
@@ -14,7 +14,7 @@
 #include <ncurses.h>
 #endif
 #include "config.h"
-#include "dvbosd.h"
+#include "osdbase.h"
 #include "interface.h"
 #include "osdbase.h"
 #include "tools.h"
@@ -62,12 +62,16 @@ private:
   static int colorPairs[MaxColorPairs];
   static void SetColor(eDvbColor colorFg, eDvbColor colorBg = clrBackground);
 #else
-  static cDvbOsd *osd;
+  static cOsdBase *osd;
 #endif
   static int cols, rows;
 public:
   static void Initialize(void);
   static void Shutdown(void);
+  static cOsdBase *OpenRaw(int x, int y);
+       // Returns a raw OSD without any predefined windows or colors.
+       // If the "normal" OSD is currently in use, NULL will be returned.
+       // The caller must delete this object before the "normal" OSD is used again!
   static void Open(int w, int h);
   static void Close(void);
   static void Clear(void);

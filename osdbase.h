@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osdbase.h 1.2 2002/05/18 12:38:17 kls Exp $
+ * $Id: osdbase.h 1.4 2002/07/13 14:45:55 kls Exp $
  */
 
 #ifndef __OSDBASE_H
@@ -50,6 +50,8 @@ private:
   bool full;
 protected:
   typedef unsigned char tIndexes[MAXNUMCOLORS];
+  void SetColor(int Index, eDvbColor Color);
+  eDvbColor GetColor(int Index) { return color[Index]; }
 public:
   cPalette(int Bpp);
   int Index(eDvbColor Color);
@@ -62,7 +64,6 @@ class cBitmap : public cPalette {
 private:
   cFont *font;
   eDvbFont fontType;
-  void SetIndex(int x, int y, char Index);
   char *bitmap;
   bool clearWithBackground;
 protected:
@@ -74,6 +75,7 @@ public:
   bool ClearWithBackground(void) { return clearWithBackground; }
   eDvbFont SetFont(eDvbFont Font);
   bool Dirty(int &x1, int &y1, int &x2, int &y2);
+  void SetIndex(int x, int y, char Index);
   void SetPixel(int x, int y, eDvbColor Color);
   void SetBitmap(int x, int y, const cBitmap &Bitmap);
   int Width(void) { return width; }
