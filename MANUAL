@@ -12,8 +12,8 @@ Video Disk Recorder User's Manual
 
   Up      Ch up       Crsr up    Crsr up    Crsr up    Crsr up       Crsr up     Play
   Down    Ch down     Crsr down  Crsr down  Crsr down  Crsr down     Crsr down   Pause
-  Left    -           -          -          Disable    Decrement     -           Search back
-  Right   -           -          -          Enable     Increment     -           Search forward
+  Left    Prev group  -          -          Disable    Decrement     -           Search back
+  Right   Next group  -          -          Enable     Increment     -           Search forward
   Ok      Ch display  Select     Switch     Edit       Accept        Play        Progress disp.
   Menu    Menu on     Menu off   Menu off   Menu off   Menu off      Menu off    Menu on
   Back    -           Menu off   Main menu  Main menu  Discard       Main menu   -
@@ -71,6 +71,18 @@ Video Disk Recorder User's Manual
   automatically goes away after about two seconds, or if any key is pressed.
   To bring up the channel display without switching channels you can press
   the "Ok" button.
+
+* Switching through channel groups
+
+  If the 'channels.conf' file contains "group separators" you can switch
+  through these groups by pressing the "Left" and "Right" key while no
+  menu is being displayed. The channel display will show the name of the
+  group, and if you press the "Ok" button while the group name is being
+  displayed, you will switch to the first channel of that group.
+
+  Channel groups can be whatever you decide them to be. You can either
+  group your channels by "Bouquet", by language, genre or whatever your
+  preferences may be.
 
 * Instant Recording
 
@@ -153,3 +165,32 @@ Video Disk Recorder User's Manual
              their date and time).
              If this field is left blank, the channel name will be used to form
              the name of the recording.
+
+* Parameters in the "Setup" menu
+
+  Select "Setup" from the main menu to enter the setup menu. From there you can
+  modify the following system parameters (note that "boolean" values will be
+  displayed as "no" and "yes" in the "Setup" menu, while in the setup file they
+  are stored as '0' and '1', respectively):
+
+  PrimaryDVB = 1         Defines the primary DVB interface (i.e. the one that
+                         will display the menus and will react on input through
+                         the remote control). Valid values range from '1' to the
+                         number of installed DVB cards. If more than one DVB card
+                         is installed and a recording is to be started, the
+                         program will try to use a free DVB card that is different
+                         from the primary DVB interface, so that the viewer will
+                         be disturbed as little as possible.
+
+  ShowInfoOnChSwitch = 1 Turns the display of the current/next information on
+                         or off when switching the channel. The information is
+                         always displayed when pressing the "Ok" button in
+                         normal viewing mode.
+
+  MenuScrollPage = 1     0 = when pressing the "Down" ("Up") key while the cursor
+                             is on the last (first) line of a list page, the
+                             list is advanced by a full page and the cursor will
+                             be at the top (bottom) of that page
+                         1 = dto., but the cursor remains at the bottom (top) of
+                             the page (this mode allows for faster scrolling
+                             through long lists).

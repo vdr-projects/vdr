@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.h 1.13 2000/09/03 09:25:53 kls Exp $
+ * $Id: dvbapi.h 1.14 2000/09/10 10:03:29 kls Exp $
  */
 
 #ifndef __DVBAPI_H
@@ -53,9 +53,13 @@ private:
   static cDvbApi *dvbApi[MAXDVBAPI];
 public:
   static cDvbApi *PrimaryDvbApi;
+  static bool SetPrimaryDvbApi(int n);
+         // Sets the primary DVB device to 'n' (which must be in the range
+         // 1...NumDvbApis) and returns true if this was possible.
   static cDvbApi *GetDvbApi(int Ca = 0);
-         // Selects a free DVB device, starting with the highest device number.
-         // If Ca is nor 0, the device with the given number will be returned
+         // Selects a free DVB device, starting with the highest device number
+         // (but avoiding, if possible, the PrimaryDvbApi).
+         // If Ca is not 0, the device with the given number will be returned
          // if it is not currently recording.
   int Index(void);
          // Returns the index of this DvbApi.

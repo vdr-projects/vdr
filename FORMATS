@@ -1,0 +1,35 @@
+Video Disk Recorder File Formats
+--------------------------------
+
+* channels.conf
+
+  This file contains the channel setup.
+  It consists of two types of lines: "group delimiters" and "channel
+  definitions".
+
+  A "group delimiter" is a line starting with a ':' as the very first
+  character, followed by arbitrary text.
+  Example: ":First group"
+
+  A "channel definition" is a line with channel data, where the fields
+  are separated by ':' characters:
+  Example: "RTL:12188:h:1:27500:163:104:0:12003"
+
+  The fields in a channel definition have the following meaning (from left
+  to right):
+
+  - Name: the channel's name (if the name originally contains a ':' character
+    it has to be replaced by '|')
+  - Frequency in MHz (as an integer)
+  - Polarization (one of 'h', 'H', 'v', 'V')
+  - Diseqc number
+  - Symbol rate
+  - Video PID
+  - Audio PID
+  - Conditional Access (0 = Free To Air, 1 = can be decrypted by the first
+    DVB card, 2 = can be decrypted by the second DVB card)
+  - Program Number
+
+* timers.conf
+
+  TODO

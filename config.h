@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.15 2000/09/03 09:37:30 kls Exp $
+ * $Id: config.h 1.19 2000/09/10 15:05:08 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -17,7 +17,7 @@
 #include "dvbapi.h"
 #include "tools.h"
 
-#define VDRVERSION "0.62"
+#define VDRVERSION "0.63"
 
 #define MaxBuffer 10000
 
@@ -75,14 +75,14 @@ public:
   int apid;
   int ca;
   int pnr;
+  int number;    // Sequence number assigned on load
+  bool groupSep;
   cChannel(void);
   cChannel(const cChannel *Channel);
   const char *ToText(void);
   bool Parse(const char *s);
   bool Save(FILE *f);
   bool Switch(cDvbApi *DvbApi = NULL);
-  static bool SwitchTo(int i, cDvbApi *DvbApi = NULL);
-  static const char *GetChannelName(int i);
   };
 
 class cTimer : public cListObject {
@@ -130,7 +130,7 @@ private:
     cList<T>::Clear();
   }
 public:
-  bool Load(const char *FileName)
+  virtual bool Load(const char *FileName)
   {
     isyslog(LOG_INFO, "loading %s", FileName);
     bool result = true;
@@ -155,7 +155,7 @@ public:
        fclose(f);
        }
     else {
-       esyslog(LOG_ERR, "can't open '%s'\n", fileName);
+       LOG_ERROR_STR(fileName);
        result = false;
        }
     return result;
@@ -176,23 +176,57 @@ public:
              }
        fclose(f);
        }
-    else
+    else {
+       LOG_ERROR_STR(fileName);
        result = false;
+       }
     return result;
   }
   };
 
-class cChannels : public cConfig<cChannel> {};
-
+class cChannels : public cConfig<cChannel> {
+protected:
+  int maxNumber;
+public:
+  cChannels(void) { maxNumber = 0; }
+  virtual bool Load(const char *FileName);
+  int GetNextGroup(int Idx);   // Get next channel group
+  int GetPrevGroup(int Idx);   // Get previous channel group
+  int GetNextNormal(int Idx);  // Get next normal channel (not group)
+  void ReNumber(void);         // Recalculate 'number' based on channel type
+  cChannel *GetByNumber(int Number);
+  const char *GetChannelNameByNumber(int Number);
+  bool SwitchTo(int Number, cDvbApi *DvbApi = NULL);
+  int MaxNumber(void) { return maxNumber; }
+  eKeys ShowChannel(int Number, bool Switched, bool Group = false);
+  };
+ 
 class cTimers : public cConfig<cTimer> {
 public:
   cTimer *GetTimer(cTimer *Timer);
   };
 
 extern int CurrentChannel;
+extern int CurrentGroup;
 
 extern cChannels Channels;
 extern cTimers Timers;
 extern cKeys Keys;
+
+class cSetup {
+private:
+  static char *fileName;
+  bool Parse(char *s);
+public:
+  // Also adjust cMenuSetup (menu.c) when adding parameters here!
+  int PrimaryDVB;
+  int ShowInfoOnChSwitch;
+  int MenuScrollPage;
+  cSetup(void);
+  bool Load(const char *FileName);
+  bool Save(const char *FileName = NULL);
+  };
+
+extern cSetup Setup;
 
 #endif //__CONFIG_H

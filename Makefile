@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 1.7 2000/09/03 09:26:24 kls Exp $
+# $Id: Makefile 1.9 2000/09/10 08:55:45 kls Exp $
 
 DVBDIR   = ../DVB
 
@@ -22,7 +22,7 @@ DEFINES += -DDEBUG_OSD
 endif
 
 %.o: %.c
-	g++ -g -O2 -Wall -c $(DEFINES) $(INCLUDES) $<
+	g++ -g -O2 -Wall -m486 -c $(DEFINES) $(INCLUDES) $<
 
 all: vdr
 

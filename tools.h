@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.12 2000/07/29 10:56:00 kls Exp $
+ * $Id: tools.h 1.13 2000/09/09 12:53:10 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -38,6 +38,7 @@ bool readint(int filedes, int &n);
 int readstring(int filedes, char *buffer, int size, bool wait = false);
 void purge(int filedes);
 char *readline(FILE *f);
+char *strn0cpy(char *dest, const char *src, size_t n);
 char *strreplace(char *s, char c1, char c2);
 char *skipspace(char *s);
 int time_ms(void);

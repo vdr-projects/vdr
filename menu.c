@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.22 2000/08/06 07:02:52 kls Exp $
+ * $Id: menu.c 1.26 2000/09/10 15:06:15 kls Exp $
  */
 
 #include "menu.h"
@@ -145,7 +145,7 @@ public:
   };
 
 cMenuEditChanItem::cMenuEditChanItem(const char *Name, int *Value)
-:cMenuEditIntItem(Name, Value, 1, Channels.Count())
+:cMenuEditIntItem(Name, Value, 1, Channels.MaxNumber())
 {
   Set();
 }
@@ -153,7 +153,7 @@ cMenuEditChanItem::cMenuEditChanItem(const char *Name, int *Value)
 void cMenuEditChanItem::Set(void)
 {
   char buf[255];
-  cChannel *channel = Channels.Get(*value - 1);
+  cChannel *channel = Channels.GetByNumber(*value);
   if (channel)
      snprintf(buf, sizeof(buf), "%d %s", *value, channel->name);
   else
@@ -547,13 +547,18 @@ cMenuChannelItem::cMenuChannelItem(int Index, cChannel *Channel)
 {
   index = Index;
   channel = Channel;
+  if (channel->groupSep)
+     SetColor(clrWhite, clrBlue);
   Set();
 }
 
 void cMenuChannelItem::Set(void)
 {
   char *buffer = NULL;
-  asprintf(&buffer, "%d\t%s", index + 1, channel->name); // user visible channel numbers start with '1'
+  if (!channel->groupSep)
+     asprintf(&buffer, "%d\t%s", channel->number, channel->name );
+  else
+     asprintf(&buffer, "\t%s", channel->name); 
   SetText(buffer, false);
 }
 
@@ -583,9 +588,10 @@ cMenuChannels::cMenuChannels(void)
   //TODO
   int i = 0;
   cChannel *channel;
+  int curr = ((channel = Channels.GetByNumber(CurrentChannel)) != NULL) ? channel->Index() : -1;
 
   while ((channel = Channels.Get(i)) != NULL) {
-        Add(new cMenuChannelItem(i, channel), i == CurrentChannel);
+        Add(new cMenuChannelItem(i, channel), i == curr);
         i++;
         }
   SetHelp("Edit", "New", "Delete", "Mark");
@@ -613,9 +619,10 @@ eOSState cMenuChannels::New(void)
      return osContinue;
   cChannel *channel = new cChannel(Channels.Get(Current()));
   Channels.Add(channel);
+  Channels.ReNumber();
   Add(new cMenuChannelItem(channel->Index()/*XXX*/, channel), true);
   Channels.Save();
-  isyslog(LOG_INFO, "channel %d added", channel->Index() + 1);
+  isyslog(LOG_INFO, "channel %d added", channel->number);
   return AddSubMenu(new cMenuEditChannel(Current()));
 }
 
@@ -623,28 +630,30 @@ eOSState cMenuChannels::Del(void)
 {
   if (Count() > 0) {
      int Index = Current();
+     cChannel *channel = Channels.Get(Index);
+     int DeletedChannel = channel->number;
      // Check if there is a timer using this channel:
      for (cTimer *ti = Timers.First(); ti; ti = (cTimer *)ti->Next()) {
-         if (ti->channel == Index + 1) {
+         if (ti->channel == DeletedChannel) {
             Interface.Error("Channel is being used by a timer!");
             return osContinue;
             }
          }
      if (Interface.Confirm("Delete Channel?")) {
         // Move and renumber the channels:
-        Channels.Del(Channels.Get(Index));
+        Channels.Del(channel);
+        Channels.ReNumber();
         cOsdMenu::Del(Index);
         int i = 0;
         for (cMenuChannelItem *ci = (cMenuChannelItem *)First(); ci; ci = (cMenuChannelItem *)ci->Next())
             ci->SetIndex(i++);
         Channels.Save();
-        isyslog(LOG_INFO, "channel %d deleted", Index + 1);
+        isyslog(LOG_INFO, "channel %d deleted", DeletedChannel);
         // Fix the timers:
         bool TimersModified = false;
-        Index++; // user visible channel numbers start with '1'
         for (cTimer *ti = Timers.First(); ti; ti = (cTimer *)ti->Next()) {
             int OldChannel = ti->channel;
-            if (ti->channel > Index)
+            if (ti->channel > DeletedChannel)
                ti->channel--;
             if (ti->channel != OldChannel) {
                TimersModified = true;
@@ -661,25 +670,28 @@ eOSState cMenuChannels::Del(void)
 
 void cMenuChannels::Move(int From, int To)
 {
+  int FromNumber = Channels.Get(From)->number;
+  int ToNumber = Channels.Get(To)->number;
   // Move and renumber the channels:
   Channels.Move(From, To);
+  Channels.ReNumber();
   cOsdMenu::Move(From, To);
   int i = 0;
   for (cMenuChannelItem *ci = (cMenuChannelItem *)First(); ci; ci = (cMenuChannelItem *)ci->Next())
       ci->SetIndex(i++);
   Channels.Save();
-  isyslog(LOG_INFO, "channel %d moved to %d", From + 1, To + 1);
+  isyslog(LOG_INFO, "channel %d moved to %d", FromNumber, ToNumber);
   // Fix the timers:
   bool TimersModified = false;
   From++; // user visible channel numbers start with '1'
   To++;
   for (cTimer *ti = Timers.First(); ti; ti = (cTimer *)ti->Next()) {
       int OldChannel = ti->channel;
-      if (ti->channel == From)
-         ti->channel = To;
-      else if (ti->channel > From && ti->channel <= To)
+      if (ti->channel == FromNumber)
+         ti->channel = ToNumber;
+      else if (ti->channel > FromNumber && ti->channel <= ToNumber)
          ti->channel--;
-      else if (ti->channel < From && ti->channel >= To)
+      else if (ti->channel < FromNumber && ti->channel >= ToNumber)
          ti->channel++;
       if (ti->channel != OldChannel) {
          TimersModified = true;
@@ -791,7 +803,7 @@ eOSState cMenuEditTimer::ProcessKey(eKeys Key)
   if (state == osUnknown) {
      if (Key == kOk) {
         if (!*data.file)
-           strcpy(data.file, cChannel::GetChannelName(data.channel - 1));
+           strcpy(data.file, Channels.GetChannelNameByNumber(data.channel));
         if (timer && memcmp(timer, &data, sizeof(data)) != 0) {
            *timer = data;
            Timers.Save();
@@ -1059,6 +1071,41 @@ eOSState cMenuRecordings::ProcessKey(eKeys Key)
   return state;
 }
 
+// --- cMenuSetup ------------------------------------------------------------
+
+class cMenuSetup : public cOsdMenu {
+private:
+  cSetup data;
+public:
+  cMenuSetup(void);
+  virtual eOSState ProcessKey(eKeys Key);
+  };
+
+cMenuSetup::cMenuSetup(void)
+:cOsdMenu("Setup", 20)
+{
+  data = Setup;
+  Add(new cMenuEditIntItem( "PrimaryDVB",         &data.PrimaryDVB, 1, cDvbApi::NumDvbApis));
+  Add(new cMenuEditBoolItem("ShowInfoOnChSwitch", &data.ShowInfoOnChSwitch));
+  Add(new cMenuEditBoolItem("MenuScrollPage",     &data.MenuScrollPage));
+}
+
+eOSState cMenuSetup::ProcessKey(eKeys Key)
+{
+  eOSState state = cOsdMenu::ProcessKey(Key);
+
+  if (state == osUnknown) {
+     switch (Key) {
+       case kOk: state = (Setup.PrimaryDVB != data.PrimaryDVB) ? osSwitchDvb : osBack;
+                 Setup = data;
+                 Setup.Save();
+                 break;
+       default: break;
+       }
+     }
+  return state;
+}
+
 // --- cMenuMain -------------------------------------------------------------
 
 #define STOP_RECORDING "Stop recording "
@@ -1069,6 +1116,7 @@ cMenuMain::cMenuMain(bool Replaying)
   Add(new cOsdItem("Channels",   osChannels));
   Add(new cOsdItem("Timer",      osTimer));
   Add(new cOsdItem("Recordings", osRecordings));
+  Add(new cOsdItem("Setup",      osSetup));
   if (Replaying)
      Add(new cOsdItem("Stop replaying", osStopReplay));
   const char *s = NULL;
@@ -1091,6 +1139,7 @@ eOSState cMenuMain::ProcessKey(eKeys Key)
     case osChannels:   return AddSubMenu(new cMenuChannels);
     case osTimer:      return AddSubMenu(new cMenuTimers);
     case osRecordings: return AddSubMenu(new cMenuRecordings);
+    case osSetup:      return AddSubMenu(new cMenuSetup);
     case osStopRecord: if (Interface.Confirm("Stop Recording?")) {
                           cOsdItem *item = Get(Current());
                           if (item) {
@@ -1113,6 +1162,60 @@ eOSState cMenuMain::ProcessKey(eKeys Key)
   return state;
 }
 
+// --- cDirectChannelSelect --------------------------------------------------
+
+#define DIRECTCHANNELTIMEOUT 500 //ms
+
+cDirectChannelSelect::cDirectChannelSelect(eKeys FirstKey)
+:cOsdBase(true)
+{
+  oldNumber = CurrentChannel;
+  number = 0;
+  lastTime = time_ms();
+  Interface.Open(MenuColumns, 1);
+  ProcessKey(FirstKey);
+}
+
+cDirectChannelSelect::~cDirectChannelSelect()
+{
+  if (number < 0)
+     Interface.DisplayChannel(oldNumber);
+  Interface.Close();
+}
+
+eOSState cDirectChannelSelect::ProcessKey(eKeys Key)
+{
+  switch (Key) {
+    case k0: case k1: case k2: case k3: case k4: case k5: case k6: case k7: case k8: case k9:
+         if (number >= 0) {
+            number = number * 10 + Key - k0;
+            cChannel *channel = Channels.GetByNumber(number);
+            char *Name = channel ? channel->name : "*** Invalid Channel ***";
+            int BufSize = MenuColumns + 1;
+            char buffer[BufSize];
+            snprintf(buffer, BufSize, "%d  %s", number, Name);
+            Interface.DisplayChannel(number);
+            Interface.Clear();
+            Interface.Write(0, 0, buffer);
+            lastTime = time_ms();
+            if (!channel) {
+               number = -1;
+               lastTime += 1000;
+               }
+            }
+         break;
+    case kNone:
+         if (time_ms() - lastTime > DIRECTCHANNELTIMEOUT) {
+            if (number > 0 && !Channels.SwitchTo(number))
+               number = -1;
+            }
+         else
+            break;
+    default: return osEnd;
+    };
+  return osContinue;
+}
+
 // --- cRecordControl --------------------------------------------------------
 
 cRecordControl::cRecordControl(cDvbApi *DvbApi, cTimer *Timer)
@@ -1125,10 +1228,10 @@ cRecordControl::cRecordControl(cDvbApi *DvbApi, cTimer *Timer)
      timer = new cTimer(true);
      Timers.Add(timer);
      Timers.Save();
-     asprintf(&instantId, cDvbApi::NumDvbApis > 1 ? "%s on %d" : "%s", cChannel::GetChannelName(timer->channel - 1), dvbApi->Index() + 1);
+     asprintf(&instantId, cDvbApi::NumDvbApis > 1 ? "%s on %d" : "%s", Channels.GetChannelNameByNumber(timer->channel), dvbApi->Index() + 1);
      }
   timer->SetRecording(true);
-  cChannel::SwitchTo(timer->channel - 1, dvbApi);
+  Channels.SwitchTo(timer->channel, dvbApi);
   cRecording Recording(timer);
   if (dvbApi->StartRecord(Recording.FileName()))
      Recording.WriteSummary();
@@ -1172,8 +1275,8 @@ cRecordControl *cRecordControls::RecordControls[MAXDVBAPI] = { NULL };
 
 bool cRecordControls::Start(cTimer *Timer)
 {
-  int ch = Timer ? Timer->channel - 1 : CurrentChannel;
-  cChannel *channel = Channels.Get(ch);
+  int ch = Timer ? Timer->channel : CurrentChannel;
+  cChannel *channel = Channels.GetByNumber(ch);
 
   if (channel) {
      cDvbApi *dvbApi = cDvbApi::GetDvbApi(channel->ca);
@@ -1186,10 +1289,10 @@ bool cRecordControls::Start(cTimer *Timer)
             }
         }
      else
-        esyslog(LOG_ERR, "ERROR: no free DVB device to record channel %d!", ch + 1);
+        esyslog(LOG_ERR, "ERROR: no free DVB device to record channel %d!", ch);
      }
   else
-     esyslog(LOG_ERR, "ERROR: channel %d not defined!", ch + 1);
+     esyslog(LOG_ERR, "ERROR: channel %d not defined!", ch);
   return false;
 }
 

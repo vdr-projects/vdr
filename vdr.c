@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.27 2000/07/29 19:01:57 kls Exp $
+ * $Id: vdr.c 1.30 2000/09/10 14:33:09 kls Exp $
  */
 
 #include <getopt.h>
@@ -43,8 +43,6 @@
 #else
 #define KEYS_CONF "keys.conf"
 #endif
-
-#define DIRECTCHANNELTIMEOUT 500 //ms
 
 static int Interrupted = 0;
 
@@ -156,6 +154,7 @@ int main(int argc, char *argv[])
 
   // Configuration data:
 
+  Setup.Load("setup.conf");
   Channels.Load("channels.conf");
   Timers.Load("timers.conf");
 #ifdef REMOTE_LIRC
@@ -166,7 +165,9 @@ int main(int argc, char *argv[])
 #endif
   Interface.Init();
 
-  cChannel::SwitchTo(CurrentChannel);
+  cDvbApi::SetPrimaryDvbApi(Setup.PrimaryDVB);
+
+  Channels.SwitchTo(CurrentChannel);
 
   // Signal handlers:
 
@@ -177,26 +178,16 @@ int main(int argc, char *argv[])
   // Main program loop:
 
   cSVDRP *SVDRP = SVDRPport ? new cSVDRP(SVDRPport) : NULL;
-  cMenuMain *Menu = NULL;
+  cOsdBase *Menu = NULL;
   cReplayControl *ReplayControl = NULL;
-  int dcTime = 0, dcNumber = 0;
   int LastChannel = -1;
 
   while (!Interrupted) {
         // Channel display:
         if (CurrentChannel != LastChannel) {
-           if (!Menu) {
-              cChannel *channel = Channels.Get(CurrentChannel);
-              if (channel)
-                 Interface.DisplayChannel(CurrentChannel + 1, channel->name);
-              }
+           if (!Menu)
+              Channels.ShowChannel(CurrentChannel, LastChannel > 0);
            LastChannel = CurrentChannel;
-           }
-        // Direct Channel Select (action):
-        if (dcNumber && time_ms() - dcTime > DIRECTCHANNELTIMEOUT) {
-           cChannel::SwitchTo(dcNumber - 1);
-           dcNumber = 0;
-           LastChannel = -1; // in case an invalid channel number was entered!
            }
         // Timers and Recordings:
         if (!Menu) {
@@ -209,7 +200,7 @@ int main(int argc, char *argv[])
            cRecordControls::Process();
            }
         // User Input:
-        cOsdBase **Interact = Menu ? (cOsdBase **)&Menu : (cOsdBase **)&ReplayControl;
+        cOsdBase **Interact = Menu ? &Menu : (cOsdBase **)&ReplayControl;
         eKeys key = Interface.GetKey(!*Interact || !(*Interact)->NeedsFastResponse());
         if (*Interact) {
            switch ((*Interact)->ProcessKey(key)) {
@@ -228,6 +219,11 @@ int main(int argc, char *argv[])
                             DELETENULL(*Interact);
                             DELETENULL(ReplayControl);
                             break;
+             case osSwitchDvb:
+                            DELETENULL(*Interact);
+                            Interface.Info("Switching primary DVB...");
+                            cDvbApi::SetPrimaryDvbApi(Setup.PrimaryDVB);
+                            break;
              case osBack:
              case osEnd:    DELETENULL(*Interact);
                             break;
@@ -236,21 +232,30 @@ int main(int argc, char *argv[])
            }
         else {
            switch (key) {
-             // Direct Channel Select (input):
+             // Direct Channel Select:
              case k0: case k1: case k2: case k3: case k4: case k5: case k6: case k7: case k8: case k9:
-                  {
-                    if (!Interface.Recording()) {
-                       dcNumber = dcNumber * 10 + key - k0;
-                       dcTime = time_ms();
-                       Interface.DisplayChannel(dcNumber);
-                       }
-                  }
+                  if (!Interface.Recording())
+                     Menu = new cDirectChannelSelect(key);
                   break;
+             // Left/Right rotates trough channel groups:
+             case kLeft:
+             case kRight: if (!Interface.Recording()) {
+                             int SaveGroup = CurrentGroup;
+                             if (key == kRight)
+                                CurrentGroup = Channels.GetNextGroup(CurrentGroup) ; 
+                             else
+                                CurrentGroup = Channels.GetPrevGroup(CurrentGroup < 1 ? 1 : CurrentGroup);
+                             if (CurrentGroup < 0)
+                                CurrentGroup = SaveGroup;
+                             if (Channels.ShowChannel(CurrentGroup, false, true) == kOk)
+                                Channels.SwitchTo(Channels.Get(Channels.GetNextNormal(CurrentGroup))->number);
+                             }
+                          break;
              // Up/Down Channel Select:
              case kUp:
              case kDown: if (!Interface.Recording()) {
                             int n = CurrentChannel + (key == kUp ? 1 : -1);
-                            cChannel *channel = Channels.Get(n);
+                            cChannel *channel = Channels.GetByNumber(n);
                             if (channel)
                                channel->Switch();
                             }
