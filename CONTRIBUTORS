@@ -760,6 +760,7 @@ Ludwig Nussel <ludwig.nussel@web.de>
  for reporting a bug in cRingBufferLinear::Get() in case the buffer wraps around
  for adding some checks when canceling a thread and removing the usleep() in
  cThread::Start()
+ for removing the LOCK_THREAD from the LIRC thread
 
 Thomas Koch <tom@harhar.net>
  for his support in keeping the Premiere World channels up to date in 'channels.conf'

@@ -3198,3 +3198,4 @@ Video Disk Recorder Revision History
 - Completed the Italian OSD texts (thanks to Sean Carlos).
 - Fixed setting 'synced' in cRemux when recording radio channels (thanks to
   Laurence Abbott).
+- Removed the LOCK_THREAD from the LIRC thread (thanks to Ludwig Nussel).

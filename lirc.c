@@ -6,7 +6,7 @@
  *
  * LIRC support added by Carsten Koch <Carsten.Koch@icem.de>  2000-06-16.
  *
- * $Id: lirc.c 1.7 2003/10/18 11:34:02 kls Exp $
+ * $Id: lirc.c 1.8 2004/12/18 13:25:11 kls Exp $
  */
 
 #include "lirc.h"
@@ -41,6 +41,8 @@ cLircRemote::cLircRemote(char *DeviceName)
 cLircRemote::~cLircRemote()
 {
   Cancel();
+  if (f >= 0)
+     close(f);
 }
 
 bool cLircRemote::Ready(void)
@@ -58,8 +60,6 @@ void cLircRemote::Action(void)
   int timeout = -1;
 
   for (; f >= 0;) {
-
-      LOCK_THREAD;
 
       bool ready = cFile::FileReady(f, timeout);
       int ret = ready ? safe_read(f, buf, sizeof(buf)) : -1;
