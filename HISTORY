@@ -1808,3 +1808,7 @@ Video Disk Recorder Revision History
 - Made some channels unique in 'channels.conf.terr' using the new RID.
 - Extended the '-l' option to allow logging to LOG_LOCALn (n=0..7) by writing, for
   instance, '-l 3.7' (suggested by Jürgen Schmidt).
+- Now deleting stale lock files if they have a time stamp that is outside the window
+  'now +/- LOCKFILESTALETIME'. This improves things in cases where the system time
+  makes far jumps, so that a lock file might end up with a time stamp that lies
+  in the distant future (thanks to Oliver Endriss).

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.74 2002/11/24 15:47:02 kls Exp $
+ * $Id: tools.c 1.75 2002/11/24 16:04:57 kls Exp $
  */
 
 #include "tools.h"
@@ -722,7 +722,7 @@ bool cLockFile::Lock(int WaitSeconds)
            if (errno == EEXIST) {
               struct stat fs;
               if (stat(fileName, &fs) == 0) {
-                 if (time(NULL) - fs.st_mtime > LOCKFILESTALETIME) {
+                 if (abs(time(NULL)) - fs.st_mtime > LOCKFILESTALETIME) {
                     esyslog("ERROR: removing stale lock file '%s'", fileName);
                     if (remove(fileName) < 0) {
                        LOG_ERROR_STR(fileName);
