@@ -3022,7 +3022,7 @@ Video Disk Recorder Revision History
 - Avoiding unnecessary section filter start/stops (thanks to Marco Schlüßler).
 - Made the "Channel not available!" message and mtInfo instead of mtError (suggested
   by Wayne Keer).
-- Made volume control more linear (thanks to Emil Naepflein).
+- Made volume control more linear (thanks to Emil Naepflein and Udo Richter).
 - Now skipping code table info in SI data (suggested by Milos Kapoun).
 - Added missing Czech characters to fontosd-iso8859-2.c (thanks to Milos Kapoun).
 - Fixed a crash in the time search mechanism (reported by Reinhard Nissl).
