@@ -16,7 +16,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.c 1.77 2003/05/18 13:13:31 kls Exp $
+ * $Id: eit.c 1.78 2003/05/18 14:10:25 kls Exp $
  ***************************************************************************/
 
 #include "eit.h"
@@ -434,27 +434,33 @@ static void ReportEpgBugFixStats(bool Reset = false)
          const char *delim = "\t";
          tEpgBugFixStats *p = &EpgBugFixStats[i];
          if (p->hits) {
-            if (!GotHits) {
-               dsyslog("=====================");
-               dsyslog("EPG bugfix statistics");
-               dsyslog("=====================");
-               dsyslog("IF SOMEBODY WHO IS IN CHARGE OF THE EPG DATA FOR ONE OF THE LISTED");
-               dsyslog("CHANNELS READS THIS: PLEASE TAKE A LOOK AT THE FUNCTION cEventInfo::FixEpgBugs()");
-               dsyslog("IN VDR/eit.c TO LEARN WHAT'S WRONG WITH YOUR DATA, AND FIX IT!");
-               dsyslog("=====================");
-               dsyslog("Fix\tHits\tChannels");
-               GotHits = true;
-               }
+            bool PrintedStats = false;
             char *q = buffer;
-            q += snprintf(q, sizeof(buffer) - (q - buffer), "%d\t%d", i, p->hits);
+            *buffer = 0;
             for (int c = 0; c < p->n; c++) {
                 cChannel *channel = Channels.GetByChannelID(p->channelIDs[c], true);
                 if (channel) {
+                   if (!GotHits) {
+                      dsyslog("=====================");
+                      dsyslog("EPG bugfix statistics");
+                      dsyslog("=====================");
+                      dsyslog("IF SOMEBODY WHO IS IN CHARGE OF THE EPG DATA FOR ONE OF THE LISTED");
+                      dsyslog("CHANNELS READS THIS: PLEASE TAKE A LOOK AT THE FUNCTION cEventInfo::FixEpgBugs()");
+                      dsyslog("IN VDR/eit.c TO LEARN WHAT'S WRONG WITH YOUR DATA, AND FIX IT!");
+                      dsyslog("=====================");
+                      dsyslog("Fix\tHits\tChannels");
+                      GotHits = true;
+                      }
+                   if (!PrintedStats) {
+                      q += snprintf(q, sizeof(buffer) - (q - buffer), "%d\t%d", i, p->hits);
+                      PrintedStats = true;
+                      }
                    q += snprintf(q, sizeof(buffer) - (q - buffer), "%s%s", delim, channel->Name());
                    delim = ", ";
                    }
                 }
-            dsyslog("%s", buffer);
+            if (*buffer)
+               dsyslog("%s", buffer);
             }
          if (Reset)
             p->hits = p->n = 0;

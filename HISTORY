@@ -2168,3 +2168,5 @@ Video Disk Recorder Revision History
 - Updated 'channels.conf.cable' (thanks to Stefan Huﬂfeldt).
 - Fixed reading 'epg.data' for channels with non-zero RID (thanks to Oliver
   Endriss for reporting this one).
+- Fixed EPG bugfix statistics to avoid log entires for undefined channels (thanks
+  to Lars Bl‰ser for reporting this one).
