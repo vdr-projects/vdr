@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remote.c 1.7 2000/05/07 09:28:18 kls Exp $
+ * $Id: remote.c 1.8 2000/06/17 17:43:05 kls Exp $
  */
 
 #include "remote.h"
@@ -61,7 +61,7 @@ bool cRcIo::InputAvailable(bool Wait)
      timeout.tv_usec = Wait ? 0 : 10000;
      FD_ZERO(&set);
      FD_SET(f, &set);
-     if (select(FD_SETSIZE, &set, NULL, NULL, &timeout)  > 0)
+     if (select(FD_SETSIZE, &set, NULL, NULL, &timeout) > 0)
         return FD_ISSET(f, &set);
      }
   return false;
@@ -74,26 +74,32 @@ int cRcIo::ReceiveByte(bool Wait)
      unsigned char b;
      if (read(f, &b, 1) == 1)
         return b;
+     else
+        LOG_ERROR;
      }
   return -1;
 }
 
 bool cRcIo::SendByteHandshake(unsigned char c)
 {
-  if (f >= 0 && write(f, &c, 1) == 1) {
-     for (int reply = ReceiveByte(); reply >= 0;) {
-         if (reply == c)
-            return true;
-         else if (reply == 'X') {
-            // skip any incoming RC code - it will come again
-            for (int i = 6; i--;) {
-                if (ReceiveByte(false) < 0)
-                   return false;
-                }
+  if (f >= 0) {
+     int w = write(f, &c, 1);
+     if (w == 1) {
+        for (int reply = ReceiveByte(); reply >= 0;) {
+            if (reply == c)
+               return true;
+            else if (reply == 'X') {
+               // skip any incoming RC code - it will come again
+               for (int i = 6; i--;) {
+                   if (ReceiveByte(false) < 0)
+                      return false;
+                   }
+               }
+            else
+               return false;
             }
-         else
-            return false;
-         }
+        }
+     LOG_ERROR;
      }
   return false;
 }
