@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.123 2001/09/21 16:03:48 kls Exp $
+ * $Id: menu.c 1.124 2001/09/21 16:16:47 kls Exp $
  */
 
 #include "menu.h"
@@ -2386,6 +2386,8 @@ void cReplayControl::ClearLastReplayed(const char *FileName)
 
 void cReplayControl::Show(int Seconds)
 {
+  if (modeOnly)
+     Hide();
   if (!visible) {
      shown = ShowProgress(true);
      timeoutShow = (shown && Seconds > 0) ? time(NULL) + Seconds : 0;
@@ -2725,7 +2727,11 @@ eOSState cReplayControl::ProcessKey(eKeys Key)
           switch (Key) {
             // Menu control:
             case kMenu:    Hide(); return osMenu; // allow direct switching to menu
-            case kOk:      visible ? Hide() : Show(); break;
+            case kOk:      if (visible && !modeOnly)
+                              Hide();
+                           else
+                              Show();
+                           break;
             case kBack:    return osRecordings;
             default:       return osUnknown;
             }
