@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.h 1.15 2004/02/08 12:20:22 kls Exp $
+ * $Id: channels.h 1.16 2004/02/13 15:16:36 kls Exp $
  */
 
 #ifndef __CHANNELS_H
@@ -61,6 +61,7 @@ public:
   bool operator== (const tChannelID &arg) const;
   bool Valid(void) { return (nid || tid) && sid; } // rid is optional and source may be 0//XXX source may not be 0???
   tChannelID &ClrRid(void) { rid = 0; return *this; }
+  tChannelID &ClrPolarization(void);
   static tChannelID FromString(const char *s);
   const char *ToString(void);
   static const tChannelID InvalidID;
@@ -129,7 +130,8 @@ public:
   bool Save(FILE *f);
   const char *Name(void) const { return name; }
   int Frequency(void) const { return frequency; } ///< Returns the actual frequency, as given in 'channels.conf'
-  int Transponder(void) const;                    ///< Returns the transponder frequency in MHz
+  int Transponder(void) const;                    ///< Returns the transponder frequency in MHz, plus the polarization in case of sat
+  static int Transponder(int Frequency, char Polarization); ///< builds the transponder from the given Frequency and Polarization
   int Source(void) const { return source; }
   int Srate(void) const { return srate; }
   int Vpid(void) const { return vpid; }
@@ -187,7 +189,7 @@ public:
   void ReNumber(void);         // Recalculate 'number' based on channel type
   cChannel *GetByNumber(int Number, int SkipGap = 0);
   cChannel *GetByServiceID(int Source, int Transponder, unsigned short ServiceID);
-  cChannel *GetByChannelID(tChannelID ChannelID, bool TryWithoutRid = false);
+  cChannel *GetByChannelID(tChannelID ChannelID, bool TryWithoutRid = false, bool TryWithoutPolarization = false);
   int BeingEdited(void) { return beingEdited; }
   void IncBeingEdited(void) { beingEdited++; }
   void DecBeingEdited(void) { beingEdited--; }

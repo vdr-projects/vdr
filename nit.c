@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: nit.c 1.5 2004/01/18 16:32:45 kls Exp $
+ * $Id: nit.c 1.6 2004/02/13 14:41:36 kls Exp $
  */
 
 #include "nit.h"
@@ -106,7 +106,7 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                  int CodeRate = CodeRates[sd->getFecInner()];
                  int SymbolRate = BCD2INT(sd->getSymbolRate()) / 10;
                  if (ThisNIT >= 0) {
-                    if (ISTRANSPONDER(Frequency, Transponder())) {
+                    if (ISTRANSPONDER(cChannel::Transponder(Frequency, Polarization), Transponder())) {
                        nits[ThisNIT].hasTransponder = true;
                        //printf("has transponder %d\n", Transponder());
                        }

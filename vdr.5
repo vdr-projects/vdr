@@ -8,7 +8,7 @@
 .\" License as specified in the file COPYING that comes with the
 .\" vdr distribution.
 .\"
-.\" $Id: vdr.5 1.23 2004/01/25 14:44:59 kls Exp $
+.\" $Id: vdr.5 1.24 2004/02/13 14:55:09 kls Exp $
 .\"
 .TH vdr 5 "1 Jun 2003" "1.2.0" "Video Disk Recorder Files"
 .SH NAME
@@ -178,6 +178,13 @@ so the above example could also be written as S19.2E-1-1089-12003).
 .br
 The \fBchannel\ ID\fR is used in the \fItimers.conf\fR and \fIepg.data\fR
 files to properly identify the channels.
+
+If a channel has both \fBNID\fR and \fBTID\fR set to 0, the \fBchannel\ ID\fR
+will use the \fBFrequency\fR instead of the \fBTID\fR. For satellite channels
+an additional offset of 100000, 200000, 300000 or 400000 is added to that
+number, depending on the \fBPolarization\fR (\fBH\fR, \fBV\fR, \fBL\fR or \fBR\fR,
+respectively). This is necessary because on some satellites the same frequency is
+used for two different transponders, with opposite polarization.
 .SS TIMERS
 The file \fItimers.conf\fR contains the timer setup.
 Each line contains one timer definition, with individual fields

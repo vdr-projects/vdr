@@ -933,3 +933,5 @@ Andreas Regel <andreas.regel@gmx.de>
 Thomas Bergwinkl <Thomas.Bergwinkl@t-online.de>
  for fixing the validity check for channel IDs, because some providers use TIDs
  with value 0
+ for pointing out that transponder handling didn't work with satellites that provide
+ two transponders on the same frequency, with different polarization

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 1.8 2003/12/27 13:10:04 kls Exp $
+ * $Id: timers.c 1.9 2004/02/13 15:37:49 kls Exp $
  */
 
 #include "timers.h"
@@ -219,7 +219,7 @@ bool cTimer::Parse(const char *s)
      if (isnumber(channelbuffer))
         channel = Channels.GetByNumber(atoi(channelbuffer));
      else
-        channel = Channels.GetByChannelID(tChannelID::FromString(channelbuffer), true);
+        channel = Channels.GetByChannelID(tChannelID::FromString(channelbuffer), true, true);
      if (!channel) {
         esyslog("ERROR: channel %s not defined", channelbuffer);
         result = false;

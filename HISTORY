@@ -2659,3 +2659,7 @@ Video Disk Recorder Revision History
   a video nor an audio PID.
 - Fixed editing channels (SID now range checked) and creating new channels (NID,
   TID and RID are now set to 0).
+- Fixed transponder handling to make it work with satellites that provide two
+  transponders on the same frequency, with different polarization, like Hispasat
+  at S30.0W (thanks to Thomas Bergwinkl for pointing this out). See man vdr(5)
+  for details about the enhanced channel ID format.
