@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: descriptor.c 1.8 2004/03/07 11:07:57 kls Exp $
+ *   $Id: descriptor.c 1.9 2004/03/13 11:07:02 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -83,7 +83,7 @@ int ExtendedEventDescriptors::getMaximumTextLength() {
 }
 
 char *ExtendedEventDescriptors::getText(const char *separation1, const char *separation2) {
-   char *text=new char[getMaximumTextLength()];
+   char *text=new char[getMaximumTextLength()+strlen(separation1)+strlen(separation2)];
    return getText(text, separation1, separation2);
 }
 
@@ -148,7 +148,7 @@ int ExtendedEventDescriptors::getMaximumTextPlainLength() {
 
 char *ExtendedEventDescriptors::getTextPlain() {
    char *text=new char[getMaximumTextPlainLength()];
-   return getText(text);
+   return getTextPlain(text);
 }
 
 char *ExtendedEventDescriptors::getTextPlain(char *buffer) {
@@ -182,8 +182,8 @@ int ExtendedEventDescriptors::getMaximumTextItemizedLength() {
 }
 
 char *ExtendedEventDescriptors::getTextItemized(const char *separation1, const char *separation2) {
-   char *text=new char[getMaximumTextItemizedLength()];
-   return getText(text, separation1, separation2);
+   char *text=new char[getMaximumTextItemizedLength()+strlen(separation1)+strlen(separation2)];
+   return getTextItemized(text, separation1, separation2);
 }
 
 char *ExtendedEventDescriptors::getTextItemized(char *buffer, const char *separation1, const char *separation2) {
@@ -243,6 +243,7 @@ bool ExtendedEventDescriptors::getTextItemized(Loop::Iterator &it, bool &valid, 
          item.item.getText(itemDescription);
          item.itemDescription.getText(itemText);
          valid=true;
+         break;
       } else {
          it.reset();
          continue;
