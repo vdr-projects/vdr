@@ -88,6 +88,7 @@ Benjamin Reichardt <reichard@math.uni-goettingen.de>
 Henning Holtschneider <hh@holtschneider.com>
  for patching 'runvdr' to check whether the driver is already loaded
  for reporting a bug in parsing group separators in channels.conf
+ for pointing out a possible hangup when reading a broken epg.data file
 
 Paulo Lopes <pmml@netvita.pt>
  for translating OSD texts to the Portugese language
@@ -186,6 +187,7 @@ Norbert Schmidt <nschmidt-nrw@t-online.de>
 
 Thilo Wunderlich <tw@ubcom.net>
  for his help in keeping 'channels.conf' up to date
+ for reporting a problem with accessing the epg.data file before it is fully written
 
 Stephan Schreiber <stephan@sschreiber.de>
  for his support in keeping the Premiere World channels up to date in 'channels.conf.cable'
@@ -198,6 +200,8 @@ Sergei Haller <Sergei.Haller@math.uni-giessen.de>
  for fixing the LastActivity timestamp after a shutdown prompt
  for fixing the "Low disk space!" message
  for adding the TPID to Hessen-3 in 'channels.conf'
+ for suggesting that the EPG scan should skip channels with their 'Ca' parameter
+ explicitly set to an other DVB card
 
 Andreas Gebel <andreas@xcapenet.de>
  for his help in keeping 'channels.conf' up to date
@@ -252,6 +256,27 @@ Truls Slevigen <truls@slevigen.no>
 
 Ruben Nunez Francisco <ruben.nunez@tang-it.com>
  for implementing FreeDiskSpaceMB() without external 'df' command
+ for translating OSD texts to the Spanish language
+
+Mirko Dölle <mdoelle@linux-user.de>
+  for reporting a bug when a timer records over midnight of a day that had a
+  change in Daylight Saving Time
 
 Michael Rakowski <mrak@gmx.de>
  for translating OSD texts to the Polish language
+
+Michael Moster <dvb@juelich-gmbh.de>
+ for initally reporting the problem with wrong EPG data in the Schedules menu
+ (somehow I had misplaced his message...)
+
+Tobias Kerner <tobschle@gmx.de>
+ for helping to debug a problem with wrong EPG data in the Schedules menu
+
+Dirk Wiebel <dirk@wiebel.de>
+ for reporting a bug in the editing process in case a previously edited file
+ with the same name was manually deleted on a system with more than one video
+ directory
+
+Gerald Raaf <graaf@attglobal.net>
+ for helping to fix the still picture workaround in case the progress display
+ is active

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.180 2002/03/31 21:17:42 kls Exp $
+ * $Id: menu.c 1.182 2002/04/06 09:41:59 kls Exp $
  */
 
 #include "menu.h"
@@ -694,7 +694,7 @@ public:
   };
 
 cMenuEditChannel::cMenuEditChannel(int Index)
-:cOsdMenu(tr("Edit Channel"), 14)
+:cOsdMenu(tr("Edit channel"), 14)
 {
   channel = Channels.Get(Index);
   if (channel) {
@@ -1070,7 +1070,7 @@ public:
   };
 
 cMenuEditTimer::cMenuEditTimer(int Index, bool New)
-:cOsdMenu(tr("Edit Timer"), 12)
+:cOsdMenu(tr("Edit timer"), 12)
 {
   firstday = NULL;
   timer = Timers.Get(Index);
@@ -1539,6 +1539,7 @@ private:
   void PrepareSchedule(cChannel *Channel);
 public:
   cMenuSchedule(void);
+  virtual ~cMenuSchedule();
   virtual eOSState ProcessKey(eKeys Key);
   };
 
@@ -1554,6 +1555,11 @@ cMenuSchedule::cMenuSchedule(void)
      PrepareSchedule(channel);
      SetHelp(tr("Record"), tr("Now"), tr("Next"));
      }
+}
+
+cMenuSchedule::~cMenuSchedule()
+{
+  cMenuWhatsOn::ScheduleEventInfo(); // makes sure any posted data is cleared
 }
 
 static int CompareEventTime(const void *p1, const void *p2)

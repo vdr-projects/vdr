@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.166 2002/03/29 11:32:47 kls Exp $
+ * $Id: dvbapi.c 1.170 2002/04/07 09:35:51 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -1194,8 +1194,10 @@ void cReplayBuffer::DisplayFrame(uchar *b, int Length)
   CHECK(ioctl(videoDev, VIDEO_STILLPICTURE, &sp));
 #else
 #define MIN_IFRAME 400000
-  for (int i = MIN_IFRAME / Length + 1; i > 0; i--)
+  for (int i = MIN_IFRAME / Length + 1; i > 0; i--) {
       safe_write(videoDev, b, Length);
+      usleep(1); // allows the buffer to be displayed in case the progress display is active
+      }
 #endif
 }
 
@@ -1612,6 +1614,18 @@ bool cVideoCutter::Start(const char *FileName)
      cRecording Recording(FileName);
      const char *evn = Recording.PrefixFileName('%');
      if (evn && RemoveVideoFile(evn) && MakeDirs(evn, true)) {
+        // XXX this can be removed once RenameVideoFile() follows symlinks (see videodir.c)
+        // remove a possible deleted recording with the same name to avoid symlink mixups:
+        char *s = strdup(evn);
+        char *e = strrchr(s, '.');
+        if (e) {
+           if (strcmp(e, ".rec") == 0) {
+              strcpy(e, ".del");
+              RemoveVideoFile(s);
+              }
+           }
+        delete s;
+        // XXX
         editedVersionName = strdup(evn);
         Recording.WriteSummary();
         cuttingBuffer = new cCuttingBuffer(FileName, editedVersionName);
@@ -2803,12 +2817,16 @@ void cEITScanner::Process(void)
                               numTransponders = 0;
                               }
                            cChannel *Channel = Channels.GetByNumber(ch);
-                           if (Channel && Channel->pnr && !TransponderScanned(Channel)) {
-                              if (DvbApi == cDvbApi::PrimaryDvbApi && !currentChannel)
-                                 currentChannel = DvbApi->Channel();
-                              Channel->Switch(DvbApi, false);
-                              lastChannel = ch;
-                              break;
+                           if (Channel) {
+                              if (Channel->ca <= MAXDVBAPI && !DvbApi->ProvidesCa(Channel->ca))
+                                 break; // the channel says it explicitly needs a different card
+                              if (Channel->pnr && !TransponderScanned(Channel)) {
+                                 if (DvbApi == cDvbApi::PrimaryDvbApi && !currentChannel)
+                                    currentChannel = DvbApi->Channel();
+                                 Channel->Switch(DvbApi, false);
+                                 lastChannel = ch;
+                                 break;
+                                 }
                               }
                            ch++;
                            }

@@ -16,7 +16,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.c 1.42 2002/04/01 12:58:20 kls Exp $
+ * $Id: eit.c 1.44 2002/04/06 13:58:59 kls Exp $
  ***************************************************************************/
 
 #include "eit.h"
@@ -390,12 +390,12 @@ bool cEventInfo::Read(FILE *f, cSchedule *Schedule)
              case 'e': pEvent = NULL;
                        break;
              case 'c': // to keep things simple we react on 'c' here
-                       return false;
+                       return true;
              default:  esyslog(LOG_ERR, "ERROR: unexpected tag while reading EPG data: %s", s);
                        return false;
              }
            }
-     return true;
+     esyslog(LOG_ERR, "ERROR: unexpected end of file while reading EPG data");
      }
   return false;
 }
@@ -754,8 +754,8 @@ bool cSchedule::Read(FILE *f, cSchedules *Schedules)
               if (1 == sscanf(s + 1, "%u", &uServiceID)) {
                  cSchedule *p = (cSchedule *)Schedules->SetCurrentServiceID(uServiceID);
                  if (p) {
-                    while (cEventInfo::Read(f, p))
-                          ; // loop stops after having read the closing 'c'
+                    if (!cEventInfo::Read(f, p))
+                       return false;
                     }
                  }
               }
@@ -1090,10 +1090,10 @@ void cSIProcessor::Action()
          if (epgDataFileName && now - lastDump > 600)
          {
             cMutexLock MutexLock(&schedulesMutex);
-            FILE *f = fopen(GetEpgDataFileName(), "w");
-            if (f) {
+            cSafeFile f(GetEpgDataFileName());
+            if (f.Open()) {
                schedules->Dump(f);
-               fclose(f);
+               f.Close();
                }
             else
                LOG_ERROR;

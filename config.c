@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.96 2002/04/01 11:54:05 kls Exp $
+ * $Id: config.c 1.97 2002/04/02 21:56:51 kls Exp $
  */
 
 #include "config.h"
@@ -606,14 +606,14 @@ bool cTimer::Matches(time_t t)
          if ((!firstday || a >= firstday) && t <= b) {
             startTime = a;
             stopTime = b;
-            if (t >= firstday + SECSINDAY)
-               firstday = 0;
             break;
             }
          }
       }
   if (!startTime)
      startTime = firstday; // just to have something that's more than a week in the future
+  else if (t > startTime || t > firstday + SECSINDAY + 3600) // +3600 in case of DST change
+     firstday = 0;
   return active && startTime <= t && t < stopTime; // must stop *before* stopTime to allow adjacent timers
 }
 
