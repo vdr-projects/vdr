@@ -2092,3 +2092,5 @@ Video Disk Recorder Revision History
 - Fixed paging through lists with repeated Left/Right keys.
 - Fixed setting the PCR-PID in case it is equal to one of the other PIDs (thanks
   to Oliver Endriss for reporting this one).
+- Fixed double call to MainMenuAction() of a plugin if invoked via a hotkey (thanks
+  to Kai Moeller for reporting this one).
