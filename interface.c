@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.c 1.30 2000/11/10 17:03:02 kls Exp $
+ * $Id: interface.c 1.31 2000/11/11 12:13:35 kls Exp $
  */
 
 #include "interface.h"
@@ -58,8 +58,7 @@ void cInterface::Close(void)
 
 unsigned int cInterface::GetCh(bool Wait, bool *Repeat, bool *Release)
 {
-  if (open)
-     cDvbApi::PrimaryDvbApi->Flush();
+  Flush();
   if (!rcIo->InputAvailable())
      cFile::AnyFileReady(-1, Wait ? 1000 : 0);
   unsigned int Command;
@@ -68,6 +67,7 @@ unsigned int cInterface::GetCh(bool Wait, bool *Repeat, bool *Release)
 
 eKeys cInterface::GetKey(bool Wait)
 {
+  Flush();
   if (SVDRP)
      SVDRP->Process();
   eKeys Key = keyFromWait;
@@ -90,8 +90,7 @@ void cInterface::PutKey(eKeys Key)
 
 eKeys cInterface::Wait(int Seconds, bool KeepChar)
 {
-  if (open)
-     cDvbApi::PrimaryDvbApi->Flush();
+  Flush();
   eKeys Key = kNone;
   time_t timeout = time(NULL) + Seconds;
   for (;;) {
@@ -325,7 +324,7 @@ void cInterface::QueryKeys(void)
   WriteText(1, 1, tr("Learning Remote Control Keys"));
   WriteText(1, 3, tr("Phase 1: Detecting RC code type"));
   WriteText(1, 5, tr("Press any key on the RC unit"));
-  cDvbApi::PrimaryDvbApi->Flush();
+  Flush();
 #ifndef REMOTE_KBD
   unsigned char Code = 0;
   unsigned short Address;
@@ -341,11 +340,11 @@ void cInterface::QueryKeys(void)
          Keys.address = Address;
          WriteText(1, 5, tr("RC code detected!"));
          WriteText(1, 6, tr("Do not press any key..."));
-         cDvbApi::PrimaryDvbApi->Flush();
+         Flush();
          rcIo->Flush(3000);
          ClearEol(0, 5);
          ClearEol(0, 6);
-         cDvbApi::PrimaryDvbApi->Flush();
+         Flush();
          break;
          }
 #endif
