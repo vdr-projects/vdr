@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.30 2001/02/11 14:44:22 kls Exp $
+ * $Id: tools.c 1.31 2001/03/03 13:25:00 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -519,11 +519,6 @@ cListBase::cListBase(void)
 cListBase::~cListBase()
 {
   Clear();
-  while (objects) {
-        cListObject *object = objects->Next();
-        delete objects;
-        objects = object;
-        }
 }
 
 void cListBase::Add(cListObject *Object) 
