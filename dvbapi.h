@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.h 1.31 2001/02/02 15:21:30 kls Exp $
+ * $Id: dvbapi.h 1.32 2001/02/03 15:59:35 kls Exp $
  */
 
 #ifndef __DVBAPI_H
@@ -167,7 +167,7 @@ public:
 private:
   int currentChannel;
 public:
-  bool SetChannel(int ChannelNumber, int FrequencyMHz, char Polarization, int Diseqc, int Srate, int Vpid, int Apid, int Ca, int Pnr);
+  bool SetChannel(int ChannelNumber, int FrequencyMHz, char Polarization, int Diseqc, int Srate, int Vpid, int Apid, int Tpid, int Ca, int Pnr);
   static int CurrentChannel(void) { return PrimaryDvbApi ? PrimaryDvbApi->currentChannel : 0; }
   int Channel(void) { return currentChannel; }
 

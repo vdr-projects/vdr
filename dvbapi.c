@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.55 2001/02/02 15:35:44 kls Exp $
+ * $Id: dvbapi.c 1.56 2001/02/03 16:00:23 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -2170,7 +2170,7 @@ void cDvbApi::Flush(void)
 #endif
 }
 
-bool cDvbApi::SetChannel(int ChannelNumber, int FrequencyMHz, char Polarization, int Diseqc, int Srate, int Vpid, int Apid, int Ca, int Pnr)
+bool cDvbApi::SetChannel(int ChannelNumber, int FrequencyMHz, char Polarization, int Diseqc, int Srate, int Vpid, int Apid, int Tpid, int Ca, int Pnr)
 {
   if (videoDev >= 0) {
      cThreadLock ThreadLock(siProcessor); // makes sure the siProcessor won't access the vbi-device while switching
@@ -2192,6 +2192,7 @@ bool cDvbApi::SetChannel(int ChannelNumber, int FrequencyMHz, char Polarization,
      front.volt      = (Polarization == 'v' || Polarization == 'V') ? 0 : 1;
      front.video_pid = Vpid;
      front.audio_pid = Apid;
+     front.tt_pid    = Tpid;
      front.fec       = 8;
      front.AFC       = 1;
      ioctl(videoDev, VIDIOCSFRONTEND, &front);
@@ -2205,7 +2206,7 @@ bool cDvbApi::SetChannel(int ChannelNumber, int FrequencyMHz, char Polarization,
            cDvbApi *CaDvbApi = GetDvbApi(Ca, 0);
            if (CaDvbApi) {
               if (!CaDvbApi->Recording()) {
-                 if (CaDvbApi->SetChannel(ChannelNumber, FrequencyMHz, Polarization, Diseqc, Srate, Vpid, Apid, Ca, Pnr))
+                 if (CaDvbApi->SetChannel(ChannelNumber, FrequencyMHz, Polarization, Diseqc, Srate, Vpid, Apid, Tpid, Ca, Pnr))
                     transferringFromDvbApi = CaDvbApi->StartTransfer(videoDev);
                  }
               }

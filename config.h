@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.39 2001/02/02 15:22:47 kls Exp $
+ * $Id: config.h 1.40 2001/02/03 15:55:45 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -93,6 +93,7 @@ public:
   int srate;
   int vpid;
   int apid;
+  int tpid;
   int ca;
   int pnr;
   int number;    // Sequence number assigned on load

@@ -371,3 +371,7 @@ Video Disk Recorder Revision History
   first non-blank character of a menu item is a digit in the range 1..9, that
   item can be selected by pressing the respective numeric key on the remote
   control.
+- The channel data in 'channels.conf' now contains the teletext PID (thanks to
+  Dave Chapman). Existing files will be read normally (and the teletext PID set
+  to 0), but once they are written back (due to some channel editing) the file
+  will have the new format.

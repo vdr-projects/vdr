@@ -40,13 +40,16 @@ Bastian Guse <bastian@nocopy.de>
  for writing the FORMATS entry for timers.conf
 
 Matthias Schniedermeyer <ms@citd.de>
- for implementing the 'MarkInstantRecord' setup option.
+ for implementing the 'MarkInstantRecord' setup option
 
 Miha Setina <mihasetina@softhome.net>
- for translating the OSD texts to the Slovenian language.
+ for translating the OSD texts to the Slovenian language
 
 Alberto Carraro <bertocar@tin.it>
- for translating the OSD texts to the Italian language.
+ for translating the OSD texts to the Italian language
 
 Deti Fliegl <deti@fliegl.de>
- for implementing the 'CurrentChannel' setup parameter.
+ for implementing the 'CurrentChannel' setup parameter
+
+Dave Chapman <dave@dchapman.com>
+ for implementing support for the teletext PID
