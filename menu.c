@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.271 2003/09/06 10:26:45 kls Exp $
+ * $Id: menu.c 1.272 2003/09/14 10:49:28 kls Exp $
  */
 
 #include "menu.h"
@@ -3664,7 +3664,9 @@ eOSState cReplayControl::ProcessKey(eKeys Key)
       switch (Key) {
         // Editing:
         case kMarkToggle:      MarkToggle(); break;
+        case kMarkJumpBack|k_Repeat:
         case kMarkJumpBack:    MarkJump(false); break;
+        case kMarkJumpForward|k_Repeat:
         case kMarkJumpForward: MarkJump(true); break;
         case kMarkMoveBack|k_Repeat:
         case kMarkMoveBack:    MarkMove(false); break;

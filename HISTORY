@@ -2393,3 +2393,5 @@ Video Disk Recorder Revision History
   not loaded (suggested by Alexander Wetzel).
 - Fixed checking for VIDEO_STREAM_S in cRemux::SetBrokenLink() (thanks to Oliver
   Endriss).
+- Added 'repeat' function keys '7' and '9' ("jump to mark") in replay mode
+  (suggested by Oliver Endriss).
