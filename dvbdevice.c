@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.53 2003/04/19 10:29:09 kls Exp $
+ * $Id: dvbdevice.c 1.54 2003/04/19 14:24:25 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -116,13 +116,14 @@ bool cDvbTuner::IsTunedTo(const cChannel *Channel) const
 void cDvbTuner::Set(const cChannel *Channel, bool Tune)
 {
   cMutexLock MutexLock(&mutex);
-  channel = *Channel;
+  bool CaChange = !(Channel->GetChannelID() == channel.GetChannelID());
   if (Tune)
      tunerStatus = tsSet;
-  else if (tunerStatus == tsCam)
+  else if (tunerStatus == tsCam && CaChange)
      tunerStatus = tsTuned;
-  if (Channel->Ca())
+  if (Channel->Ca() && CaChange)
      startTime = time(NULL);
+  channel = *Channel;
   newSet.Broadcast();
 }
 
@@ -590,7 +591,8 @@ bool cDvbDevice::ProvidesChannel(const cChannel *Channel, int Priority, bool *Ne
            if (!HasPid(Channel->Vpid())) {
 #ifdef DO_MULTIPLE_RECORDINGS
               if (Channel->Ca() > CACONFBASE)
-                 needsDetachReceivers = true;
+                 needsDetachReceivers = !ciHandler // only LL-firmware can do non-live CA channels
+                                        || Ca() != Channel->Ca();
               else if (!IsPrimaryDevice())
                  result = true;
 #ifdef DO_REC_AND_PLAY_ON_PRIMARY_DEVICE
@@ -611,7 +613,7 @@ bool cDvbDevice::ProvidesChannel(const cChannel *Channel, int Priority, bool *Ne
 
 bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
 {
-  bool IsEncrypted = Channel->Ca() > CACONFBASE;
+  bool IsEncrypted = Channel->Ca() > CACONFBASE && !ciHandler; // only LL-firmware can do non-live CA channels
 
   bool DoTune = !dvbTuner->IsTunedTo(Channel);
 
@@ -716,7 +718,7 @@ int cDvbDevice::NumAudioTracksDevice(void) const
   int n = 0;
   if (aPid1)
      n++;
-  if (Ca() <= MAXDEVICES && aPid2 && aPid1 != aPid2) // a Ca recording session blocks switching live audio tracks
+  if (Ca() <= MAXDEVICES && aPid2 && aPid1 != aPid2) // a CA recording session blocks switching live audio tracks
      n++;
   return n;
 }
@@ -748,7 +750,7 @@ bool cDvbDevice::CanReplay(void) const
   if (Receiving())
      return false;
 #endif
-  return cDevice::CanReplay() && Ca() <= MAXDEVICES; // we can only replay if there is no Ca recording going on
+  return cDevice::CanReplay() && (Ca() <= MAXDEVICES || ciHandler); // with non-LL-firmware we can only replay if there is no CA recording going on
 }
 
 bool cDvbDevice::SetPlayMode(ePlayMode PlayMode)

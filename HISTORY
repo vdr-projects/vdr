@@ -2043,3 +2043,8 @@ Video Disk Recorder Revision History
   by that CAM.
 - Re-enabled CAM communication during replay and on non-Ca channels. This requires
   a DVB driver with firmware version 2613 or later.
+- It is now possible to do simultaneous recording and replay with a single DVB
+  card, even with encrypted channels. This requires the use of the Link Layer
+  firmware, version 2613 or higher; the -icam firmware is still limited to live
+  encrypted channels only. Finally we have time shift for encrypted channels on
+  single card systems!
