@@ -977,3 +977,4 @@ Video Disk Recorder Revision History
 - Changed the estimated data rate for calculating the remaining disk capacity
   to 25.75 MB/min.
 - Only reporting the 'EPG bugfix statistics' if there really were any fixes.
+- Added Finnish language texts (thanks to Hannu Savolainen).
