@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.87 2001/07/22 12:18:29 kls Exp $
+ * $Id: dvbapi.c 1.88 2001/07/27 10:49:51 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -1875,16 +1875,16 @@ void cDvbApi::Open(int w, int h)
   //XXX
   osd = new cDvbOsd(fd_osd, x, y);
   //XXX TODO this should be transferred to the places where the individual windows are requested (there's too much detailed knowledge here!)
-  if (d == 0) { //XXX full menu
-     osd->Create(0,                            0, w,                   lineHeight, 2);
-     osd->Create(0,                   lineHeight, w, (MenuLines - 3) * lineHeight, 2, true, clrBackground, clrCyan, clrWhite, clrBlack);
-     osd->Create(0, (MenuLines - 2) * lineHeight, w,               2 * lineHeight, 4);
-     }
-  else if (h / lineHeight == 5) { //XXX channel display
+  if (h / lineHeight == 5) { //XXX channel display
      osd->Create(0,              0, w, h, 4);
      }
   else if (h / lineHeight == 1) { //XXX info display
      osd->Create(0,              0, w, h, 4);
+     }
+  else if (d == 0) { //XXX full menu
+     osd->Create(0,                            0, w,                   lineHeight, 2);
+     osd->Create(0,                   lineHeight, w, (MenuLines - 3) * lineHeight, 2, true, clrBackground, clrCyan, clrWhite, clrBlack);
+     osd->Create(0, (MenuLines - 2) * lineHeight, w,               2 * lineHeight, 4);
      }
   else { //XXX progress display
      /*XXX

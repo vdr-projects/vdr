@@ -97,6 +97,7 @@ Jørgen Tvedt <pjtvedt@online.no>
 
 Stefan Huelswitt <huels@iname.com>
  for fixing the repeat function with LIRC
+ for making the position of the channel display configurable
 
 Ulrich Röder <dynamite@efr-net.de>
  for pointing out that there are channels that have a symbol rate higher than

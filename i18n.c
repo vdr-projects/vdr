@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.23 2001/07/24 16:00:54 kls Exp $
+ * $Id: i18n.c 1.24 2001/07/27 10:55:52 kls Exp $
  *
  * Slovenian translations provided by Miha Setina <mihasetina@softhome.net>
  * Italian   translations provided by Alberto Carraro <bertocar@tin.it>
@@ -794,6 +794,14 @@ const tPhrase Phrases[] = {
     "Format vidéo",
     "TV Format",
   },
+  { "ChannelInfoPos",
+    "Kanal Info Position",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+  },
   // The days of the week:
   { "MTWTFSS",
     "MDMDFSS",
@@ -1040,6 +1048,22 @@ const tPhrase Phrases[] = {
     "nao",
     "non",
     "nei",
+  },
+  { "top",
+    "oben",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+  },
+  { "bottom",
+    "unten",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
   },
   { " Stop replaying", // note the leading blank!
     " Wiedergabe beenden",

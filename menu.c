@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.81 2001/07/27 10:26:22 kls Exp $
+ * $Id: menu.c 1.82 2001/07/27 10:54:21 kls Exp $
  */
 
 #include "menu.h"
@@ -1626,6 +1626,7 @@ void cMenuSetup::Set(void)
   Add(new cMenuEditIntItem( tr("DefaultPriority"),    &data.DefaultPriority, 0, MAXPRIORITY));
   Add(new cMenuEditIntItem( tr("DefaultLifetime"),    &data.DefaultLifetime, 0, MAXLIFETIME));
   Add(new cMenuEditBoolItem(tr("VideoFormat"),        &data.VideoFormat, "4:3", "16:9"));
+  Add(new cMenuEditBoolItem(tr("ChannelInfoPos"),     &data.ChannelInfoPos, tr("bottom"), tr("top")));
 }
 
 eOSState cMenuSetup::ProcessKey(eKeys Key)
@@ -1802,7 +1803,7 @@ cDisplayChannel::cDisplayChannel(int Number, bool Switched, bool Group)
   lines = 0;
   oldNumber = number = 0;
   cChannel *channel = Group ? Channels.Get(Number) : Channels.GetByNumber(Number);
-  Interface->Open(MenuColumns, -5);
+  Interface->Open(MenuColumns, Setup.ChannelInfoPos ? 5 : -5);
   if (channel) {
      DisplayChannel(channel);
      DisplayInfo();
@@ -1816,7 +1817,7 @@ cDisplayChannel::cDisplayChannel(eKeys FirstKey)
   oldNumber = cDvbApi::CurrentChannel();
   number = 0;
   lastTime = time_ms();
-  Interface->Open(MenuColumns, -5);
+  Interface->Open(MenuColumns, Setup.ChannelInfoPos ? 5 : -5);
   ProcessKey(FirstKey);
 }
 

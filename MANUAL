@@ -365,6 +365,10 @@ Video Disk Recorder User's Manual
                          0 = 4:3
                          1 = 16:9
 
+  ChannelInfoPos = 0     The position of the channel info window in the OSD.
+                         0 = bottom
+                         1 = top
+
 * Executing system commands
 
   The "Main" menu option "Commands" allows you to execute any system commands
