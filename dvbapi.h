@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.h 1.51 2001/09/16 13:54:23 kls Exp $
+ * $Id: dvbapi.h 1.53 2001/09/23 11:01:46 kls Exp $
  */
 
 #ifndef __DVBAPI_H
@@ -51,6 +51,8 @@ typedef struct CRect {
 #define MAXVIDEOFILESIZE 2000 // MB
 #define MINVIDEOFILESIZE  100 // MB
 
+#define MAXVOLUME 255
+
 const char *IndexToHMSF(int Index, bool WithFrame = false);
       // Converts the given index to a string, optionally containing the frame number.
 int HMSFToIndex(const char *HMSF);
@@ -71,6 +73,7 @@ class cCuttingBuffer;
 
 class cVideoCutter {
 private:
+  static char *editedVersionName;
   static cCuttingBuffer *cuttingBuffer;
 public:
   static bool Start(const char *FileName);

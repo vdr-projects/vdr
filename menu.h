@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 1.28 2001/09/14 15:09:49 kls Exp $
+ * $Id: menu.h 1.30 2001/09/23 10:57:33 kls Exp $
  */
 
 #ifndef _MENU_H
@@ -75,6 +75,7 @@ private:
   cTimer *timer;
   const cEventInfo *eventInfo;
   char *instantId;
+  char *fileName;
   bool GetEventInfo(void);
 public:
   cRecordControl(cDvbApi *DvbApi, cTimer *Timer = NULL);

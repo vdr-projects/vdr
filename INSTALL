@@ -27,7 +27,12 @@ You can find 'libdvdread' at
 
   http://www.dtek.chalmers.se/groups/dvd/downloads.html
 
-VDR requires the card driver version dated 2001-09-14 or higher
+If you want to replay CSS encrypted DVDs you also need to get the 'libdvdcss'
+library from
+
+  http://www.videolan.org/libdvdcss/download.html
+
+VDR requires the Linux-DVB card driver version dated 2001-09-14 or higher
 to work properly.
 
 After extracting the package, change into the VDR directory
@@ -112,10 +117,11 @@ for programming some sort of hardware device that makes sure the computer
 will be restarted in time before the next timer event. Your program must
 also initiate the actual shutdown procedure of the computer. After this
 your program should return to VDR. VDR will not automatically exit after
-calling the shutdown program, but will rather continue normally untit it
+calling the shutdown program, but will rather continue normally until it
 receives a SIGTERM when the computer is actually shut down. So in case
 the shutdown fails, or the shutdown program for some reason decides not to
-perform a shutdown, VDR will stay up and running.
+perform a shutdown, VDR will stay up and running and will call the shutdown
+program again after another MinUserInactivity minutes.
 
 If there are currently no timers active, both parameters will be '0'.
 In that case the program shall not set the hardware for automatic restart
@@ -152,6 +158,49 @@ particular hard- and software environment.
 If the '-s' option is present, the VDR machine can be turned off by pressing
 the "Power" key on the remote control.
 
+Executing commands before and after a recording:
+------------------------------------------------
+
+You can use the '-r' option to define a program or script that gets called
+before and after a recording is performed, and after an editing process
+has finished.
+
+The program will be called with two string parameters. The first parameter
+is one of
+
+  before      if this is *before* a recording starts
+  after       if this is *after* a recording has finished
+  edited      if this is after a recording has been *edited*
+
+and the second parameter contains the full name of the recording's
+directory (which may not yet exists at that moment in the "before" case).
+In the "edited" case it will be the name of the edited version.
+
+Within this program you can do anything you would like to do before and/or
+after a recording or after an editing process. However, the program must return
+as soon as possible, because otherwise it will block further execution of VDR.
+Be especially careful to make sure the program returns before the watchdog
+timeout you may have set up with the '-w' option! If the operation you want to
+perform will take longer, you will have to run it as a background job.
+
+An example script for use with the '-r' option could look like this:
+
+#!/bin/sh
+case "$1" in
+     before)
+            echo "Before recording $2"
+            ;;
+     after)
+            echo "After recording $2"
+            ;;
+     edited)
+            echo "Edited recording $2"
+            ;;
+     *)
+            echo "ERROR: unknown state: $1"
+            ;;
+     esac
+
 Command line options:
 ---------------------
 
@@ -177,7 +226,7 @@ You can use the '-V' option to overwrite this, as in
 
 Note that the user id under which VDR runs needs to have write access to
 the DVD device in order to replay CSS protected DVDs (which also requires
-the presence of the 'libcss' library).
+the presence of the 'libdvdcss' library).
 
 The video data directory:
 -------------------------

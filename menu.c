@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.120 2001/09/15 10:36:31 kls Exp $
+ * $Id: menu.c 1.127 2001/09/23 10:58:48 kls Exp $
  */
 
 #include "menu.h"
@@ -2108,6 +2108,7 @@ cRecordControl::cRecordControl(cDvbApi *DvbApi, cTimer *Timer)
 {
   eventInfo = NULL;
   instantId = NULL;
+  fileName = NULL;
   dvbApi = DvbApi;
   if (!dvbApi) dvbApi = cDvbApi::PrimaryDvbApi;//XXX
   timer = Timer;
@@ -2128,7 +2129,9 @@ cRecordControl::cRecordControl(cDvbApi *DvbApi, cTimer *Timer)
         Summary = eventInfo->GetExtendedDescription();
         }
      cRecording Recording(timer, Subtitle, Summary);
-     if (dvbApi->StartRecord(Recording.FileName(), Channels.GetByNumber(timer->channel)->ca, timer->priority))
+     fileName = strdup(Recording.FileName());
+     cRecordingUserCommand::InvokeCommand(RUC_BEFORERECORDING, fileName);
+     if (dvbApi->StartRecord(fileName, Channels.GetByNumber(timer->channel)->ca, timer->priority))
         Recording.WriteSummary();
      Interface->DisplayRecording(dvbApi->CardIndex(), true);
      }
@@ -2140,6 +2143,7 @@ cRecordControl::~cRecordControl()
 {
   Stop(true);
   delete instantId;
+  delete fileName;
 }
 
 bool cRecordControl::GetEventInfo(void)
@@ -2184,6 +2188,7 @@ void cRecordControl::Stop(bool KeepInstant)
         }
      timer = NULL;
      Interface->DisplayRecording(dvbApi->CardIndex(), false);
+     cRecordingUserCommand::InvokeCommand(RUC_AFTERRECORDING, fileName);
      }
 }
 
@@ -2386,10 +2391,11 @@ void cReplayControl::ClearLastReplayed(const char *FileName)
 
 void cReplayControl::Show(int Seconds)
 {
+  if (modeOnly)
+     Hide();
   if (!visible) {
      shown = ShowProgress(true);
-     if (shown && Seconds > 0)
-        timeoutShow = time(NULL) + Seconds;
+     timeoutShow = (shown && Seconds > 0) ? time(NULL) + Seconds : 0;
      }
 }
 
@@ -2397,7 +2403,11 @@ void cReplayControl::Hide(void)
 {
   if (visible) {
      Interface->Close();
-     needsFastResponse = visible = modeOnly = false;
+     needsFastResponse = visible = false;
+     if (!modeOnly)
+        ShowMode();
+     else
+        modeOnly = false;
      }
 }
 
@@ -2419,15 +2429,19 @@ void cReplayControl::ShowMode(void)
      bool Play, Forward;
      int Speed;
      if (dvbApi->GetReplayMode(Play, Forward, Speed)) {
+        bool NormalPlay = (Play && Speed == -1);
 
         if (!visible) {
+           if (NormalPlay)
+              return; // no need to do indicate ">" unless there was a different mode displayed before
            // open small display
            Interface->Open(9, -1);
            Interface->Clear();
            visible = modeOnly = true;
            }
 
-        timeoutShow = (modeOnly && !timeoutShow && Speed == -1 && Play) ? time(NULL) + MODETIMEOUT : 0;
+        if (modeOnly && !timeoutShow && NormalPlay)
+           timeoutShow = time(NULL) + MODETIMEOUT;
         const char *Mode;
         if (Speed == -1) Mode = Play    ? "  >  " : " ||  ";
         else if (Play)   Mode = Forward ? " X>> " : " <<X ";
@@ -2696,9 +2710,9 @@ eOSState cReplayControl::ProcessKey(eKeys Key)
     case kRight:   dvbApi->Forward(); break;
     case kRed:     TimeSearch(); break;
     case kGreen|k_Repeat:
-    case kGreen:   dvbApi->SkipSeconds(-60); break;
+    case kGreen:   dvbApi->SkipSeconds(-60); DoShowMode = false; break;
     case kYellow|k_Repeat:
-    case kYellow:  dvbApi->SkipSeconds(60); break;
+    case kYellow:  dvbApi->SkipSeconds( 60); DoShowMode = false; break;
     case kBlue:    Hide();
                    dvbApi->StopReplay();
                    return osEnd;
@@ -2721,7 +2735,11 @@ eOSState cReplayControl::ProcessKey(eKeys Key)
           switch (Key) {
             // Menu control:
             case kMenu:    Hide(); return osMenu; // allow direct switching to menu
-            case kOk:      visible ? Hide() : Show(); break;
+            case kOk:      if (visible && !modeOnly)
+                              Hide();
+                           else
+                              Show();
+                           break;
             case kBack:    return osRecordings;
             default:       return osUnknown;
             }

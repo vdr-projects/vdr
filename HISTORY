@@ -758,3 +758,31 @@ Video Disk Recorder Revision History
 - Three new keys ("Volume+", Volume-" and "Mute") to control the DVB card's
   audio output volume.
 - New version of the 'epg2timers' tool (thanks to Carsten Koch).
+
+2001-09-23: Version 0.96
+
+- Made VDR compile with libdvdread-0.9.1 (thanks to Andreas Schultz).
+  Note that you now _need_ version 0.9.1 of libdvdread to compile VDR with
+  DVD support!
+- Several fixes to the replay mode display (thanks to Stefan Huelswitt):
+  no more replay mode display when pressing the "Green" or "Yellow" button
+  (Skip +/-60s); fixed timeout when pressing '0' to set an editing mark while
+  the progress display is not shown; mode display is shown after progress
+  display is closed; pressing "Ok" while the mode display is on brings up
+  the progress display; no more unnecessary display of "normal play mode".
+- Supplying the new frontend parameter 'Inversion' (currently it is always
+  set to INVERSION_AUTO, which should work with all channels on Astra).
+- Removing unnecessary double quotes from EPG Subtitle in EPGBugfixLevel >=1.
+- EPG info is now updated if the contents changes but the ID remains the same.
+- Fixed handling SVDRP commands whith more than one blank between the command
+  word and the options.
+- The current volume setting is now saved to setup.conf and restored at the
+  next program start.
+- New command line option '-r' to define a command that gets called before and
+  after each recording (see INSTALL for details).
+- Implemented a check to see whether the system time is running linearly.
+- Writing the current time (as seen by VDR) into the log file when starting
+  a timer recording (this may help debugging cases where timers don't start
+  at the expected time).
+- Made the volume, mute and power keys work when a menu is active, too (thanks
+  to Matthias Weingart).

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.45 2001/09/15 15:41:16 kls Exp $
+ * $Id: tools.c 1.46 2001/09/22 12:13:40 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -62,6 +62,19 @@ char *readline(FILE *f)
      return buffer;
      }
   return NULL;
+}
+
+char *strcpyrealloc(char *dest, const char *src)
+{
+  if (src) {
+     int l = max(dest ? strlen(dest) : 0, strlen(src)) + 1; // don't let the block get smaller!
+     dest = (char *)realloc(dest, l);
+     if (dest)
+        strcpy(dest, src);
+     else
+        esyslog(LOG_ERR, "ERROR: out of memory");
+     }
+  return dest;
 }
 
 char *strn0cpy(char *dest, const char *src, size_t n)

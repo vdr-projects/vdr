@@ -7,7 +7,7 @@
  * DVD support initially written by Andreas Schultz <aschultz@warp10.net>
  * based on dvdplayer-0.5 by Matjaz Thaler <matjaz.thaler@guest.arnes.si>
  *
- * $Id: dvbapi.c 1.125 2001/09/16 13:55:03 kls Exp $
+ * $Id: dvbapi.c 1.129 2001/09/23 13:44:27 kls Exp $
  */
 
 //#define DVDDEBUG        1
@@ -1670,7 +1670,7 @@ void cDVDplayBuffer::Input(void)
                  /**
                   * Parse the contained dsi packet.
                   */
-                 navRead_DSI(&dsi_pack, &(data[DSI_START_BYTE]), sizeof(dsi_t));
+                 navRead_DSI(&dsi_pack, &(data[DSI_START_BYTE]));
                  if (cur_pack != dsi_pack.dsi_gi.nv_pck_lbn) {
                     esyslog(LOG_ERR, "ERROR: cur_pack != dsi_pack.dsi_gi.nv_pck_lbn");
                     return;
@@ -1748,7 +1748,7 @@ void cDVDplayBuffer::Input(void)
                  dsyslog(LOG_INFO, "DVD: read pack: %d", cur_pack);
 #endif
                  int len = DVDReadBlocks(title, cur_pack, cur_output_size, data);
-                 if (len != (int)cur_output_size * DVD_VIDEO_LB_LEN) {
+                 if (len != (int)cur_output_size) {
                     esyslog(LOG_ERR, "ERROR: read failed for %d blocks at %d", cur_output_size, cur_pack);
                     doplay = false;
                     break;
@@ -2406,16 +2406,18 @@ void cCuttingBuffer::Action(void)
 
 // --- cVideoCutter ----------------------------------------------------------
 
+char *cVideoCutter::editedVersionName = NULL;
 cCuttingBuffer *cVideoCutter::cuttingBuffer = NULL;
 
 bool cVideoCutter::Start(const char *FileName)
 {
   if (!cuttingBuffer) {
      cRecording Recording(FileName);
-     const char *EditedVersionName = Recording.PrefixFileName('%');
-     if (EditedVersionName && RemoveVideoFile(EditedVersionName) && MakeDirs(EditedVersionName, true)) {
+     const char *evn = Recording.PrefixFileName('%');
+     if (evn && RemoveVideoFile(evn) && MakeDirs(evn, true)) {
+        editedVersionName = strdup(evn);
         Recording.WriteSummary();
-        cuttingBuffer = new cCuttingBuffer(FileName, EditedVersionName);
+        cuttingBuffer = new cCuttingBuffer(FileName, editedVersionName);
         return true;
         }
      }
@@ -2434,6 +2436,9 @@ bool cVideoCutter::Active(void)
      if (cuttingBuffer->Active())
         return true;
      Stop();
+     cRecordingUserCommand::InvokeCommand(RUC_EDITEDRECORDING, editedVersionName);
+     delete editedVersionName;
+     editedVersionName = NULL;
      }
   return false;
 }
@@ -2540,7 +2545,7 @@ cDvbApi::cDvbApi(int n)
 #endif
   currentChannel = 1;
   mute = false;
-  volume = 255;
+  volume = MAXVOLUME;
 }
 
 cDvbApi::~cDvbApi()
@@ -3252,6 +3257,7 @@ eSetChannelResult cDvbApi::SetChannel(int ChannelNumber, int FrequencyMHz, char 
 
         FrontendParameters Frontend;
         Frontend.Frequency = freq * 1000UL;
+        Frontend.Inversion = INVERSION_AUTO;
         Frontend.u.qpsk.SymbolRate = Srate * 1000UL;
         Frontend.u.qpsk.FEC_inner = FEC_AUTO;
 
@@ -3298,6 +3304,7 @@ eSetChannelResult cDvbApi::SetChannel(int ChannelNumber, int FrequencyMHz, char 
 
         FrontendParameters Frontend;
         Frontend.Frequency = FrequencyMHz * 1000000UL;
+        Frontend.Inversion = INVERSION_AUTO;
         Frontend.u.qam.SymbolRate = Srate * 1000UL;
         Frontend.u.qam.FEC_inner = FEC_AUTO;
         Frontend.u.qam.QAM = QAM_64;
@@ -3635,7 +3642,7 @@ void cDvbApi::ToggleMute(void)
 void cDvbApi::SetVolume(int Volume, bool Absolute)
 {
   if (fd_audio >= 0) {
-     volume = min(max(Absolute ? Volume : volume + Volume, 0), 255);
+     volume = min(max(Absolute ? Volume : volume + Volume, 0), MAXVOLUME);
      audioMixer_t am;
      am.volume_left = am.volume_right = volume;
      CHECK(ioctl(fd_audio, AUDIO_SET_MIXER, &am));

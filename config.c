@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.72 2001/09/16 14:54:32 kls Exp $
+ * $Id: config.c 1.73 2001/09/22 13:36:59 kls Exp $
  */
 
 #include "config.h"
@@ -808,6 +808,7 @@ cSetup::cSetup(void)
   MultiSpeedMode = 0;
   ShowReplayMode = 0;
   CurrentChannel = -1;
+  CurrentVolume = MAXVOLUME;
 }
 
 bool cSetup::Parse(char *s)
@@ -847,6 +848,7 @@ bool cSetup::Parse(char *s)
      else if (!strcasecmp(Name, "MultiSpeedMode"))      MultiSpeedMode     = atoi(Value);
      else if (!strcasecmp(Name, "ShowReplayMode"))      ShowReplayMode     = atoi(Value);
      else if (!strcasecmp(Name, "CurrentChannel"))      CurrentChannel     = atoi(Value);
+     else if (!strcasecmp(Name, "CurrentVolume"))       CurrentVolume      = atoi(Value);
      else
         return false;
      return true;
@@ -921,6 +923,7 @@ bool cSetup::Save(const char *FileName)
         fprintf(f, "MultiSpeedMode     = %d\n", MultiSpeedMode);
         fprintf(f, "ShowReplayMode     = %d\n", ShowReplayMode);
         fprintf(f, "CurrentChannel     = %d\n", CurrentChannel);
+        fprintf(f, "CurrentVolume      = %d\n", CurrentVolume);
         if (f.Close()) {
            isyslog(LOG_INFO, "saved setup to %s", FileName);
            return true;
