@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.149 2003/04/12 13:57:45 kls Exp $
+ * $Id: vdr.c 1.150 2003/04/21 14:41:41 kls Exp $
  */
 
 #include <getopt.h>
@@ -553,6 +553,26 @@ int main(int argc, char *argv[])
                cDisplayVolume::Process(key);
                key = kNone; // nobody else needs to see these keys
                break;
+          // Pausing live video:
+          case kPause:
+               if (!cControl::Control()) {
+                  DELETENULL(Menu);
+                  Temp = NULL;
+                  if (!cRecordControls::PauseLiveVideo())
+                     Interface->Error(tr("No free DVB device to record!"));
+                  key = kNone; // nobody else needs to see this key
+                  }
+               break;
+          // Instant recording:
+          case kRecord:
+               if (!cControl::Control()) {
+                  if (cRecordControls::Start())
+                     ;//XXX Interface->Info(tr("Recording"));
+                  else
+                     Interface->Error(tr("No free DVB device to record!"));
+                  key = kNone; // nobody else needs to see this key
+                  }
+               break;
           // Power off:
           case kPower: isyslog("Power button pressed");
                        DELETENULL(Menu);
@@ -577,6 +597,12 @@ int main(int argc, char *argv[])
            if (state == osUnknown && ISMODELESSKEY(key) && cControl::Control() && Interact != cControl::Control())
               state = cControl::Control()->ProcessKey(key);
            switch (state) {
+             case osPause:  DELETENULL(Menu);
+                            cControl::Shutdown(); // just in case
+                            Temp = NULL;
+                            if (!cRecordControls::PauseLiveVideo())
+                               Interface->Error(tr("No free DVB device to record!"));
+                            break;
              case osRecord: DELETENULL(Menu);
                             Temp = NULL;
                             if (cRecordControls::Start())
@@ -652,13 +678,6 @@ int main(int argc, char *argv[])
                   break;
              // Viewing Control:
              case kOk:   LastChannel = -1; break; // forces channel display
-             // Instant recording:
-             case kRecord:
-                  if (cRecordControls::Start())
-                     ;//XXX Interface->Info(tr("Recording"));
-                  else
-                     Interface->Error(tr("No free DVB device to record!"));
-                  break;
              // Key macros:
              case kRed:
              case kGreen:

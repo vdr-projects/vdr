@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.105 2003/04/12 09:39:35 kls Exp $
+ * $Id: i18n.c 1.106 2003/04/21 14:05:17 kls Exp $
  *
  * Translations provided by:
  *
@@ -3410,6 +3410,22 @@ const tI18nPhrase Phrases[] = {
     "Söker igenom inspelningarna...",
     "Caut inregistrari...",
     "Felvett adások böngészése...",
+  },
+  { "Pausing live video...",
+    "Live-Signal wird angehalten...",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
   },
   { "This plugin has no setup parameters!",
     "Dieses Plugin hat keine Setup-Parameter!",

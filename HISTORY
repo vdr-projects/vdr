@@ -2034,7 +2034,7 @@ Video Disk Recorder Revision History
 - Fixed handling of Ca parameters with values <= MAXDEVICES, which don't indicate
   an actual encrypted channel (thanks to Stefan Huelswitt for reporting this one).
 
-2003-04-19: Version 1.1.28
+2003-04-21: Version 1.1.28
 
 - Using masks in EIT filtering to reduce the number of filters (thanks to Andreas
   Schultz).
@@ -2050,3 +2050,6 @@ Video Disk Recorder Revision History
   single card systems!
 - Enhanced detection of pending user I/O from CAMs to avoid sluggish reaction
   to remote control keypresses.
+- Implemented "pause live video". You can now press "Menu/Yellow" or "Pause" on
+  your remote control while watching live video to start an instant recording
+  of the current programme and immediately start replaying that recording.

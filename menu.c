@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.236 2003/04/20 09:21:36 kls Exp $
+ * $Id: menu.c 1.237 2003/04/21 14:57:13 kls Exp $
  */
 
 #include "menu.h"
@@ -2488,7 +2488,7 @@ void cMenuMain::Set(const char *Plugin)
 
   // Color buttons:
 
-  SetHelp(tr("Record"), cDevice::PrimaryDevice()->NumAudioTracks() > 1 ? tr("Language") : NULL, NULL, replaying ? tr("Button$Stop") : cReplayControl::LastReplayed() ? tr("Resume") : NULL);
+  SetHelp(tr("Record"), cDevice::PrimaryDevice()->NumAudioTracks() > 1 ? tr("Language") : NULL, replaying ? NULL : tr("Pause"), replaying ? tr("Button$Stop") : cReplayControl::LastReplayed() ? tr("Resume") : NULL);
   Display();
   lastActivity = time(NULL);
 }
@@ -2559,6 +2559,9 @@ eOSState cMenuMain::ProcessKey(eKeys Key)
                                    state = osEnd;
                                    }
                                 }
+                             break;
+               case kYellow: if (!HasSubMenu())
+                                state = osPause;
                              break;
                case kBlue:   if (!HasSubMenu())
                                 state = replaying ? osStopReplay : cReplayControl::LastReplayed() ? osReplay : osContinue;
@@ -2936,6 +2939,8 @@ cRecordControl::cRecordControl(cDevice *Device, cTimer *Timer)
   if (device->AttachReceiver(recorder)) {
      Recording.WriteSummary();
      cStatus::MsgRecording(device, Recording.Name());
+     if (!Timer && !cReplayControl::LastReplayed()) // an instant recording, maybe from cRecordControls::PauseLiveVideo()
+        cReplayControl::SetRecording(fileName, Recording.Name());
      }
   else
      DELETENULL(recorder);
@@ -3070,6 +3075,26 @@ bool cRecordControls::StopPrimary(bool DoIt)
         return true;
         }
      }
+  return false;
+}
+
+bool cRecordControls::PauseLiveVideo(void)
+{
+  Interface->Open(Setup.OSDwidth, -1);
+  Interface->Status(tr("Pausing live video..."));
+  Interface->Flush();
+  cReplayControl::SetRecording(NULL, NULL); // make sure the new cRecordControl will set cReplayControl::LastReplayed()
+  if (Start()) {
+     sleep(2); // allow recorded file to fill up enough to start replaying
+     cReplayControl *rc = new cReplayControl;
+     cControl::Launch(rc);
+     cControl::Attach();
+     sleep(1); // allow device to replay some frames, so we have a picture
+     Interface->Close();
+     rc->ProcessKey(kPause); // pause, allowing replay mode display
+     return true;
+     }
+  Interface->Close();
   return false;
 }
 
