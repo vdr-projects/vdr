@@ -4,13 +4,14 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: svdrp.h 1.11 2001/09/14 14:35:34 kls Exp $
+ * $Id: svdrp.h 1.12 2001/10/27 11:36:49 kls Exp $
  */
 
 #ifndef __SVDRP_H
 #define __SVDRP_H
 
 #include "dvbapi.h"
+#include "recording.h"
 #include "tools.h"
 
 class cSocket {
@@ -31,6 +32,7 @@ private:
   cSocket socket;
   cFile file;
   CRect ovlClipRects[MAXCLIPRECTS];
+  cRecordings Recordings;
   uint numChars;
   char cmdLine[MAXPARSEBUFFER];
   char *message;
@@ -40,12 +42,14 @@ private:
   void Reply(int Code, const char *fmt, ...);
   void CmdCHAN(const char *Option);
   void CmdDELC(const char *Option);
+  void CmdDELR(const char *Option);
   void CmdDELT(const char *Option);
   void CmdGRAB(const char *Option);
   void CmdHELP(const char *Option);
   void CmdHITK(const char *Option);
   void CmdLSTC(const char *Option);
   void CmdLSTE(const char *Option);
+  void CmdLSTR(const char *Option);
   void CmdLSTT(const char *Option);
   void CmdMESG(const char *Option);
   void CmdMODC(const char *Option);

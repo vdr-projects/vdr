@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.25 2001/10/07 15:13:42 kls Exp $
+ * $Id: svdrp.c 1.26 2001/10/27 11:35:38 kls Exp $
  */
 
 #include "svdrp.h"
@@ -120,6 +120,12 @@ const char *HelpPages[] = {
   "    it returns the current channel number and name.",
   "DELC <number>\n"
   "    Delete channel.",
+  "DELR <number>\n"
+  "    Delete the recording with the given number. Before a recording can be\n"
+  "    deleted, an LSTR command must have been executed in order to retrieve\n"
+  "    the recording numbers. The numbers don't change during subsequent DELR\n"
+  "    commands. CAUTION: THERE IS NO CONFIRMATION PROMPT WHEN DELETING A\n"
+  "    RECORDING - BE SURE YOU KNOW WHAT YOU ARE DOING!",
   "DELT <number>\n"
   "    Delete timer.",
   "GRAB <filename> [ jpeg | pnm [ <quality> [ <sizex> <sizey> ] ] ]\n"
@@ -137,6 +143,9 @@ const char *HelpPages[] = {
   "    containing the given string as part of their name are listed.",
   "LSTE\n"
   "    List EPG data.",
+  "LSTR [ <number> ]\n"
+  "    List recordings. Without option, all recordings are listed. Otherwise\n"
+  "    the summary for the given recording is listed.",
   "LSTT [ <number> ]\n"
   "    List timers. Without option, all timers are listed. Otherwise\n"
   "    only the given timer is listed.",
@@ -380,6 +389,27 @@ void cSVDRP::CmdDELC(const char *Option)
   Reply(502, "DELC not yet implemented");
 }
 
+void cSVDRP::CmdDELR(const char *Option)
+{
+  if (*Option) {
+     if (isnumber(Option)) {
+        cRecording *recording = Recordings.Get(strtol(Option, NULL, 10) - 1);
+        if (recording) {
+           if (recording->Delete())
+              Reply(250, "Recording \"%s\" deleted", Option);
+           else
+              Reply(554, "Error while deleting recording!");
+           }
+        else
+           Reply(550, "Recording \"%s\" not found%s", Option, Recordings.Count() ? "" : " (use LSTR before deleting)");
+        }
+     else
+        Reply(501, "Error in recording number \"%s\"", Option);
+     }
+  else
+     Reply(501, "Missing recording number");
+}
+
 void cSVDRP::CmdDELT(const char *Option)
 {
   if (*Option) {
@@ -587,6 +617,38 @@ void cSVDRP::CmdLSTE(const char *Option)
      }
   else
      Reply(451, "Can't get EPG data");
+}
+
+void cSVDRP::CmdLSTR(const char *Option)
+{
+  bool recordings = Recordings.Load();
+  if (*Option) {
+     if (isnumber(Option)) {
+        cRecording *recording = Recordings.Get(strtol(Option, NULL, 10) - 1);
+        if (recording) {
+           if (recording->Summary()) {
+              char *summary = strdup(recording->Summary());
+              Reply(250, "%s", strreplace(summary,'\n','|'));
+              delete summary;
+              }
+           else
+              Reply(550, "No summary availabe");
+           }
+        else
+           Reply(550, "Recording \"%s\" not found", Option);
+        }
+     else
+        Reply(501, "Error in recording number \"%s\"", Option);
+     }
+  else if (recordings) {
+     cRecording *recording = Recordings.First();
+     while (recording) {
+           Reply(recording == Recordings.Last() ? 250 : -250, "%d %s", recording->Index() + 1, recording->Title(' ', true));
+           recording = Recordings.Next(recording);
+           }
+     }
+  else
+     Reply(550, "No recordings available");
 }
 
 void cSVDRP::CmdLSTT(const char *Option)
@@ -910,12 +972,14 @@ void cSVDRP::Execute(char *Cmd)
   s = skipspace(s);
   if      (CMD("CHAN"))  CmdCHAN(s);
   else if (CMD("DELC"))  CmdDELC(s);
+  else if (CMD("DELR"))  CmdDELR(s);
   else if (CMD("DELT"))  CmdDELT(s);
   else if (CMD("GRAB"))  CmdGRAB(s);
   else if (CMD("HELP"))  CmdHELP(s);
   else if (CMD("HITK"))  CmdHITK(s);
   else if (CMD("LSTC"))  CmdLSTC(s);
   else if (CMD("LSTE"))  CmdLSTE(s);
+  else if (CMD("LSTR"))  CmdLSTR(s);
   else if (CMD("LSTT"))  CmdLSTT(s);
   else if (CMD("MESG"))  CmdMESG(s);
   else if (CMD("MODC"))  CmdMODC(s);

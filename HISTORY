@@ -837,3 +837,5 @@ Video Disk Recorder Revision History
   to Andy Grobb).
 - Fixed closing the progress display with the "Back" key when in trick mode
   and Setup.ShowReplayMode is enabled.
+- New SVDRP commands LSTR and DELR to list and delete recordings (thanks to
+  Thomas Heiligenmann).
