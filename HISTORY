@@ -1644,3 +1644,6 @@ Video Disk Recorder Revision History
   encrypted channel (thanks to Stefan Huelswitt).
 - Fixed blocking replaying in case an encrypted channel is being recorded on
   the primary device.
+- Now the name of the remote control is displayed when learning the keys.
+- Fixed learning remote control keys in case there is more than one remote
+  control (thanks to Oliver Endriss for reporting this one).

@@ -422,6 +422,8 @@ Oliver Endriss <o.endriss@gmx.de>
  having displayed it
  for helping to debug a crash when closing down with remote control plugins
  for adding some satellites to 'sources.conf'
+ for reporting a bug in learning remote control keys in case there is more than
+ one remote control
 
 Reinhard Walter Buchner <rw.buchner@freenet.de>
  for adding some satellites to 'sources.conf'

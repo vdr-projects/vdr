@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.97 2002/10/19 09:36:51 kls Exp $
+ * $Id: i18n.c 1.98 2002/10/26 12:04:20 kls Exp $
  *
  * Translations provided by:
  *
@@ -2385,21 +2385,21 @@ const tI18nPhrase Phrases[] = {
     " aábcdeéfghijklmnoóöpqrstuúüvwxyz0123456789-.,#~",
   },
   // Learning keys:
-  { "Learning Remote Control Keys",
-    "Fernbedienungs-Codes lernen",
-    "Ucim se kod upravljalca",
-    "Apprendimento tasti unita` remota",
-    "Leren toetsen afstandsbediening",
-    "Aprender as teclas do telecomando",
-    "Apprentissage des codes de télécommande",
-    "Lære fjernkontrolltaster",
-    "Kaukosäätimen näppäinten opettelu",
-    "Nauka kodu pilota",
-    "Aprendiendo teclas del telemando",
-    "Ekmathisi Remote Control",
-    "Inlärning av fjärrkontrollsknappar",
-    "Invatare taste telecomanda",
-    "Távirányító betanítása",
+  { "Learning Remote Control Keys (%s)",
+    "Fernbedienungs-Codes lernen (%s)",
+    "Ucim se kod upravljalca (%s)",
+    "Apprendimento tasti unita` remota (%s)",
+    "Leren toetsen afstandsbediening (%s)",
+    "Aprender as teclas do telecomando (%s)",
+    "Apprentissage des codes de télécommande (%s)",
+    "Lære fjernkontrolltaster (%s)",
+    "Kaukosäätimen näppäinten opettelu (%s)",
+    "Nauka kodu pilota (%s)",
+    "Aprendiendo teclas del telemando (%s)",
+    "Ekmathisi Remote Control (%s)",
+    "Inlärning av fjärrkontrollsknappar (%s)",
+    "Invatare taste telecomanda (%s)",
+    "Távirányító betanítása (%s)",
   },
   { "Phase 1: Detecting RC code type",
     "Phase 1: FB Code feststellen",
