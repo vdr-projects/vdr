@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.34 2001/09/01 13:05:56 kls Exp $
+ * $Id: recording.c 1.35 2001/09/02 10:25:12 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -179,6 +179,7 @@ void cResumeFile::Delete(void)
 
 struct tCharExchange { char a; char b; };
 tCharExchange CharExchange[] = {
+  { '~',  '/'    },
   { ' ',  '_'    },
   { '\'', '\x01' },
   { '/',  '\x02' },
@@ -190,8 +191,16 @@ tCharExchange CharExchange[] = {
 
 char *ExchangeChars(char *s, bool ToFileSystem)
 {
-  for (struct tCharExchange *ce = CharExchange; ce->a && ce->b; ce++)
-      strreplace(s, ToFileSystem ? ce->a : ce->b, ToFileSystem ? ce->b : ce->a);
+  char *p = s;
+  while (*p) {
+        for (struct tCharExchange *ce = CharExchange; ce->a && ce->b; ce++) {
+            if (*p == (ToFileSystem ? ce->a : ce->b)) {
+               *p = ToFileSystem ? ce->b : ce->a;
+               break;
+               }
+            }
+        p++;
+        }
   return s;
 }
 

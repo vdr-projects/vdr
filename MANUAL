@@ -285,6 +285,12 @@ Video Disk Recorder User's Manual
              time, so it is possible to have a "repeating timer" store all its
              recordings under the same name; they will be distinguishable by
              their date and time).
+             If the file name contains the special character '~', the recording
+             will be stored in a hierarchical directory structure. For instance,
+             a file name of "Sci-Fi~Star Trek~Voyager" will result in a directory
+             structure "/video/Sci-Fi/Star_Trek/Voyager". The '~' character has
+             been chosen for this since the file system's directory delimiter '/'
+             may be part of a regular programme name.
              If this field is left blank, the channel name will be used to form
              the name of the recording.
 

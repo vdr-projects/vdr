@@ -67,7 +67,9 @@ Video Disk Recorder File Formats
     be automatically deleted by a new recording with higher priority, 99 means
     that this recording will never be automatically deleted
   - Name of timer (will be used to name the recording); if the name contains
-    any ':' characters, these have to be replaced with '|'
+    any ':' characters, these have to be replaced with '|'. If the name shall
+    contain subdirectories, these have to be delimited by '~' (since the '/'
+    character may be part of a regular programme name).
   - Summary (any newline characters in the summary have to be replaced with '|';
     the summary may contain ':' characters)
 

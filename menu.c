@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.112 2001/09/01 15:18:23 kls Exp $
+ * $Id: menu.c 1.113 2001/09/02 10:00:40 kls Exp $
  */
 
 #include "menu.h"
@@ -19,7 +19,7 @@
 #define MENUTIMEOUT 120 // seconds
 #define MAXWAIT4EPGINFO 10 // seconds
 
-const char *FileNameChars = " aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ0123456789-.#^";
+const char *FileNameChars = " aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ0123456789-.#~^";
 
 // --- cMenuEditItem ---------------------------------------------------------
 
@@ -494,6 +494,7 @@ eOSState cMenuEditStrItem::ProcessKey(eKeys Key)
                     if (value[pos] == '^')
                        value[pos] = 0;
                     pos = -1;
+                    stripspace(value);
                     break;
                     }
                  // run into default

@@ -677,7 +677,7 @@ Video Disk Recorder Revision History
   they will be recording. This can be disabled in the "Setup" menu. Note
   that the "Mark" button doesn't work if timers are displayed sorted.
 
-2001-09-01: Version 0.9.4
+2001-09-02: Version 0.9.4
 
 - Changed version number notation.
 - Implemented automatic shutdown (see INSTALL and MANUAL for details).
@@ -696,3 +696,8 @@ Video Disk Recorder Revision History
   one timer ends at the same time another timer starts.
 - New setup parameter OSDMessageTime to define how long an OSD message shall
   be displayed.
+- The "File" parameter of a timer can now contain the '~' character to store
+  the recording in a hierarchical directory structure. The '~' character has
+  been chosen since the file system's directory delimiter '/' may be part of
+  a regular programme name (showing the directory hierarchy in the "Recordings"
+  menu will follow later).
