@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.91 2004/10/31 16:22:33 kls Exp $
+ * $Id: recording.c 1.92 2004/11/01 14:04:47 kls Exp $
  */
 
 #include "recording.h"
@@ -455,7 +455,7 @@ char *cRecording::SortName(void) const
 {
   if (!sortBuffer) {
      char *s = StripEpisodeName(strdup(FileName() + strlen(VideoDirectory) + 1));
-     int l = strxfrm(NULL, s, 0);
+     int l = strxfrm(NULL, s, 0) + 1;
      sortBuffer = MALLOC(char, l);
      strxfrm(sortBuffer, s, l);
      free(s);

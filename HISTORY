@@ -3112,4 +3112,4 @@ Video Disk Recorder Revision History
 - The "Channels" menu can now be sorted "by number" (default), "by name" and
   "by provider". While in the "Channels" menu, pressing the '0' key switches
   through these modes.
-
+- Fixed the buffer size in cRecording::SortName().
