@@ -2745,3 +2745,7 @@ Video Disk Recorder Revision History
   events to timers.
 - Now explicitly turning on the LNB power at startup, because newer drivers don't
   do this any more (thanks to Oliver Endriss for pointing this out).
+
+2004-03-14: Version 1.3.7
+
+- Fixed a memory leak in thread handling when using NPTL (thanks to Jon Burgess).
