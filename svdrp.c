@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.27 2001/11/04 11:25:05 kls Exp $
+ * $Id: svdrp.c 1.28 2002/01/13 16:07:42 kls Exp $
  */
 
 #include "svdrp.h"
@@ -899,49 +899,49 @@ void cSVDRP::Process(void)
         }
      if (NewConnection)
         lastActivity = time(NULL);
-     if (file.Ready(false)) {
-        unsigned char c;
-        int r = safe_read(file, &c, 1);
-        if (r > 0) {
-           if (c == '\n' || c == 0x00) {
-              // strip trailing whitespace:
-              while (numChars > 0 && strchr(" \t\r\n", cmdLine[numChars - 1]))
-                    cmdLine[--numChars] = 0;
-              // make sure the string is terminated:
-              cmdLine[numChars] = 0;
-              // showtime!
-              Execute(cmdLine);
-              numChars = 0;
+     while (file.Ready(false)) {
+           unsigned char c;
+           int r = safe_read(file, &c, 1);
+           if (r > 0) {
+              if (c == '\n' || c == 0x00) {
+                 // strip trailing whitespace:
+                 while (numChars > 0 && strchr(" \t\r\n", cmdLine[numChars - 1]))
+                       cmdLine[--numChars] = 0;
+                 // make sure the string is terminated:
+                 cmdLine[numChars] = 0;
+                 // showtime!
+                 Execute(cmdLine);
+                 numChars = 0;
+                 }
+              else if (c == 0x04 && numChars == 0) {
+                 // end of file (only at beginning of line)
+                 Close();
+                 }
+              else if (c == 0x08 || c == 0x7F) {
+                 // backspace or delete (last character)
+                 if (numChars > 0)
+                    numChars--;
+                 }
+              else if (c <= 0x03 || c == 0x0D) {
+                 // ignore control characters
+                 }
+              else if (numChars < sizeof(cmdLine) - 1) {
+                 cmdLine[numChars++] = c;
+                 cmdLine[numChars] = 0;
+                 }
+              else {
+                 Reply(501, "Command line too long");
+                 esyslog(LOG_ERR, "SVDRP: command line too long: '%s'", cmdLine);
+                 numChars = 0;
+                 }
+              lastActivity = time(NULL);
               }
-           else if (c == 0x04 && numChars == 0) {
-              // end of file (only at beginning of line)
+           else if (r <= 0) {
+              isyslog(LOG_INFO, "lost connection to SVDRP client");
               Close();
               }
-           else if (c == 0x08 || c == 0x7F) {
-              // backspace or delete (last character)
-              if (numChars > 0)
-                 numChars--;
-              }
-           else if (c <= 0x03 || c == 0x0D) {
-              // ignore control characters
-              }
-           else if (numChars < sizeof(cmdLine) - 1) {
-              cmdLine[numChars++] = c;
-              cmdLine[numChars] = 0;
-              }
-           else {
-              Reply(501, "Command line too long");
-              esyslog(LOG_ERR, "SVDRP: command line too long: '%s'", cmdLine);
-              numChars = 0;
-              }
-           lastActivity = time(NULL);
            }
-        else if (r <= 0) {
-           isyslog(LOG_INFO, "lost connection to SVDRP client");
-           Close();
-           }
-        }
-     else if (Setup.SVDRPTimeout && time(NULL) - lastActivity > Setup.SVDRPTimeout) {
+     if (Setup.SVDRPTimeout && time(NULL) - lastActivity > Setup.SVDRPTimeout) {
         isyslog(LOG_INFO, "timeout on SVDRP connection");
         Close(true);
         }

@@ -889,3 +889,4 @@ Video Disk Recorder Revision History
   Schreiber).
 - Prepared the OSD functions for multiple overlapping windows.
 - Removed the check to see whether the system time is running linearly.
+- Improved performance of SVDRP command entry.
