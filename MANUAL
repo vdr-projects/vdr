@@ -12,23 +12,25 @@ Video Disk Recorder User's Manual
 
   Up      Ch up       Crsr up    Crsr up    Crsr up    Crsr up       Crsr up     Play
   Down    Ch down     Crsr down  Crsr down  Crsr down  Crsr down     Crsr down   Pause
-  Left    Prev group  -          Page up    Disable    Decrement     Page up     Search back
-  Right   Next group  -          Page down  Enable     Increment     Page down   Search forward
+  Left    Prev group  -          Page up    Page up    Decrement     Page up     Search back
+  Right   Next group  -          Page down  Page down  Increment     Page down   Search forward
   Ok      Ch display  Select     Switch     Edit       Accept        Play        Progress disp.
   Menu    Menu on     Menu off   Menu off   Menu off   Menu off      Menu off    Menu on
   Back    -           Menu off   Main menu  Main menu  Discard       Main menu   Recordings menu
   Red     -           Record     Edit       Edit       -             Play        Jump
   Green   -           Language   New        New        -             Rewind      Skip -60s
   Yellow  -           Eject DVD  Delete     Delete     -             Delete      Skip +60s
-  Blue    -           Resume     Mark       Mark(1)    -             Summary     Stop
+  Blue    -           Resume     Mark       On/Off(1)  -             Summary     Stop
   0..9    Ch select   -          -          -          Numeric inp.  -           Editing
-  Power   Shutdown    -          -          -          -             -           -
-  Volume+ Volume up   -          -          -          -             -           -
-  Volume- Volume down -          -          -          -             -           -
-  Mute    Mute        -          -          -          -             -           -
 
-  (1) The "Mark" button in the "Timers" menu only works if sorting the timers
-      has been disabled in the "Setup" menu.
+  Power   Shutdown
+  Volume+ Volume up
+  Volume- Volume down
+  Mute    Mute
+
+  (1) The "On/Off" button in the "Timers" menu only works if sorting the timers
+      has been enabled in the "Setup" menu. Otherwise the Blue button is used
+      to "mark" a timer for moving.
 
 * Navigating through the On Screen Menus
 
