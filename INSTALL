@@ -27,7 +27,12 @@ You can find 'libdvdread' at
 
   http://www.dtek.chalmers.se/groups/dvd/downloads.html
 
-VDR requires the card driver version dated 2001-09-14 or higher
+If you want to replay CSS encrypted DVDs you also need to get the 'libdvdcss'
+library from
+
+  http://www.videolan.org/libdvdcss/download.html
+
+VDR requires the Linux-DVB card driver version dated 2001-09-14 or higher
 to work properly.
 
 After extracting the package, change into the VDR directory
@@ -177,7 +182,7 @@ You can use the '-V' option to overwrite this, as in
 
 Note that the user id under which VDR runs needs to have write access to
 the DVD device in order to replay CSS protected DVDs (which also requires
-the presence of the 'libcss' library).
+the presence of the 'libdvdcss' library).
 
 The video data directory:
 -------------------------

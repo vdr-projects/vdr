@@ -7,7 +7,7 @@
  * DVD support initially written by Andreas Schultz <aschultz@warp10.net>
  * based on dvdplayer-0.5 by Matjaz Thaler <matjaz.thaler@guest.arnes.si>
  *
- * $Id: dvbapi.c 1.125 2001/09/16 13:55:03 kls Exp $
+ * $Id: dvbapi.c 1.126 2001/09/21 14:14:28 kls Exp $
  */
 
 //#define DVDDEBUG        1
@@ -1670,7 +1670,7 @@ void cDVDplayBuffer::Input(void)
                  /**
                   * Parse the contained dsi packet.
                   */
-                 navRead_DSI(&dsi_pack, &(data[DSI_START_BYTE]), sizeof(dsi_t));
+                 navRead_DSI(&dsi_pack, &(data[DSI_START_BYTE]));
                  if (cur_pack != dsi_pack.dsi_gi.nv_pck_lbn) {
                     esyslog(LOG_ERR, "ERROR: cur_pack != dsi_pack.dsi_gi.nv_pck_lbn");
                     return;
@@ -1748,7 +1748,7 @@ void cDVDplayBuffer::Input(void)
                  dsyslog(LOG_INFO, "DVD: read pack: %d", cur_pack);
 #endif
                  int len = DVDReadBlocks(title, cur_pack, cur_output_size, data);
-                 if (len != (int)cur_output_size * DVD_VIDEO_LB_LEN) {
+                 if (len != (int)cur_output_size) {
                     esyslog(LOG_ERR, "ERROR: read failed for %d blocks at %d", cur_output_size, cur_pack);
                     doplay = false;
                     break;
