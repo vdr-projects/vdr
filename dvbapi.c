@@ -7,7 +7,7 @@
  * DVD support initially written by Andreas Schultz <aschultz@warp10.net>
  * based on dvdplayer-0.5 by Matjaz Thaler <matjaz.thaler@guest.arnes.si>
  *
- * $Id: dvbapi.c 1.123 2001/09/16 09:52:57 kls Exp $
+ * $Id: dvbapi.c 1.124 2001/09/16 10:10:28 kls Exp $
  */
 
 //#define DVDDEBUG        1
@@ -3531,8 +3531,10 @@ void cDvbApi::StopReplay(void)
      if (this == PrimaryDvbApi) {
         // let's explicitly switch the channel back in case it was in Transfer Mode:
         cChannel *Channel = Channels.GetByNumber(currentChannel);
-        if (Channel)
+        if (Channel) {
            Channel->Switch(this, false);
+           usleep(100000); // allow driver to sync in case a new replay will start immediately
+           }
         }
      }
 }

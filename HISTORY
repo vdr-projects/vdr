@@ -753,3 +753,5 @@ Video Disk Recorder Revision History
 - Better error handling when writing configuration files.
 - Fixed putting the final editing mark into the edited version's marks file.
 - Fixed manipulating an editing mark at the very end of a recording.
+- Fixed starting a new replay immediately after stopping a previous one (had
+  caused a mix between live video and replay).
