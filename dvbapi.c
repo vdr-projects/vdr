@@ -7,7 +7,7 @@
  * DVD support initially written by Andreas Schultz <aschultz@warp10.net>
  * based on dvdplayer-0.5 by Matjaz Thaler <matjaz.thaler@guest.arnes.si>
  *
- * $Id: dvbapi.c 1.147 2002/02/02 13:04:00 kls Exp $
+ * $Id: dvbapi.c 1.148 2002/02/16 12:55:33 kls Exp $
  */
 
 //#define DVDDEBUG        1
@@ -3017,7 +3017,9 @@ void cDvbApi::Text(int x, int y, const char *s, eDvbColor colorFg, eDvbColor col
 
 void cDvbApi::Flush(void)
 {
-#ifndef DEBUG_OSD
+#ifdef DEBUG_OSD
+  refresh();
+#else
   if (osd)
      osd->Flush();
 #endif

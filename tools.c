@@ -4,17 +4,13 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.57 2002/02/05 18:16:52 kls Exp $
+ * $Id: tools.c 1.58 2002/02/16 12:41:44 kls Exp $
  */
 
 #include "tools.h"
 #include <ctype.h>
 #include <dirent.h>
 #include <errno.h>
-#if defined(DEBUG_OSD)
-#include <ncurses.h>
-#undef ERR //XXX ncurses defines this - but this clashes with newer system header files
-#endif
 #include <stdlib.h>
 #include <sys/time.h>
 #include <time.h>
@@ -545,9 +541,6 @@ bool cFile::Ready(bool Wait)
 
 bool cFile::AnyFileReady(int FileDes, int TimeoutMs)
 {
-#ifdef DEBUG_OSD
-  refresh();
-#endif
   fd_set set;
   FD_ZERO(&set);
   for (int i = 0; i < maxFiles; i++) {
@@ -566,9 +559,6 @@ bool cFile::AnyFileReady(int FileDes, int TimeoutMs)
 
 bool cFile::FileReady(int FileDes, int TimeoutMs)
 {
-#ifdef DEBUG_OSD
-  refresh();
-#endif
   fd_set set;
   struct timeval timeout;
   FD_ZERO(&set);
@@ -582,9 +572,6 @@ bool cFile::FileReady(int FileDes, int TimeoutMs)
 
 bool cFile::FileReadyForWriting(int FileDes, int TimeoutMs)
 {
-#ifdef DEBUG_OSD
-  refresh();
-#endif
   fd_set set;
   struct timeval timeout;
   FD_ZERO(&set);

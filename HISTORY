@@ -997,10 +997,11 @@ Video Disk Recorder Revision History
 - If a recording has no episode title, the trailing '~' is no longer shown in
   the progress display.
 
-2002-02-15: Version 1.0.0pre1
+2002-02-16: Version 1.0.0pre1
 
 - Added scanning for EPG data for another 4 days on channels that support this
   (thanks to Oleg Assovski).
 - Removed '#define VFAT 1' from recording.c (was a leftover from testing).
 - Fixed the "Low disk space!" message (thanks to Sergei Haller).
 - Added the TPID to Hessen-3 in 'channels.conf' (thanks to Sergei Haller).
+- Fixed a crash when replaying with DEBUG_OSD=1 (thanks to Stefan Huelswitt).
