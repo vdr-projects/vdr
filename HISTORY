@@ -1516,3 +1516,4 @@ Video Disk Recorder Revision History
   This is the diff for the 'setup' example that comes with VDR, so your line
   numbers may be different.
 - Added a missing 'public' keyword in device.h (thanks to Martin Hammerschmid).
+- Fixed a race condition when starting 'Transfer Mode'.
