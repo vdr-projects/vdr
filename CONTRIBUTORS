@@ -391,3 +391,6 @@ Holger Wächtler <holger@convergence.de>
 
 Jürgen Zimmermann <jnzimmer@informatik.uni-kl.de>
  for adding some missing #includes to files in libdtv for gcc 3.2
+
+Helmut Auer <vdr@helmutauer.de>
+ for reporting a superfluous error message in cLockFile.
