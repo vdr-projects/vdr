@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.44 2000/12/25 15:18:02 kls Exp $
+ * $Id: dvbapi.c 1.45 2001/01/07 17:00:50 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -45,8 +45,10 @@ extern "C" {
 #define B_FRAME    3
 
 // Start codes:
-#define SC_PICTURE 0x00
-#define SC_BLOCK   0xBA
+#define SC_PICTURE 0x00  // "picture header"
+#define SC_SEQU    0xB3  // "sequence header"
+#define SC_PHEAD   0xBA  // "pack header"
+#define SC_SHEAD   0xBB  // "system header"
 #define SC_AUDIO   0xC0
 #define SC_VIDEO   0xE0
 
@@ -409,12 +411,12 @@ protected:
   int Readable(void) { return (tail >= head) ? size - tail - (head ? 0 : 1) : head - tail - 1; } // keep a 1 byte gap!
   int Writeable(void) { return (tail >= head) ? tail - head : size - head; }
   int Byte(int Offset);
-  void Set(int Offset, int Length, int Value);
+  bool Set(int Offset, int Length, int Value);
 protected:
   int GetStartCode(int Offset) { return (Byte(Offset) == 0x00 && Byte(Offset + 1) == 0x00 && Byte(Offset + 2) == 0x01) ? Byte(Offset + 3) : -1; }
   int GetPictureType(int Offset) { return (Byte(Offset + 5) >> 3) & 0x07; }
   int FindStartCode(uchar Code, int Offset = 0);
-  int GetAudioPacketLength(int Offset = 0);
+  int GetPacketLength(int Offset = 0);
 public:
   cRingBuffer(int *InFile, int *OutFile, int Size, int FreeLimit = 0, int AvailLimit = 0);
   virtual ~cRingBuffer();
@@ -459,7 +461,7 @@ int cRingBuffer::Byte(int Offset)
   return -1;
 }
 
-void cRingBuffer::Set(int Offset, int Length, int Value)
+bool cRingBuffer::Set(int Offset, int Length, int Value)
 {
   if (buffer && Offset + Length <= Available() ) {
      Offset += head;
@@ -469,7 +471,9 @@ void cRingBuffer::Set(int Offset, int Length, int Value)
            buffer[Offset] = Value;
            Offset++;
            }
+     return true;
      }
+  return false;
 }
 
 void cRingBuffer::Skip(int n)
@@ -598,15 +602,15 @@ int cRingBuffer::FindStartCode(uchar Code, int Offset)
       int c = GetStartCode(Offset + i);
       if (c == Code) 
          return i;
-      if (i > 0 && c == SC_BLOCK)
+      if (i > 0 && c == SC_PHEAD)
          break; // found another block start while looking for a different code
       }
   return -1;
 }
 
-int cRingBuffer::GetAudioPacketLength(int Offset)
+int cRingBuffer::GetPacketLength(int Offset)
 {
-  // Returns the entire length of the audio packet starting at offset.
+  // Returns the entire length of the packet starting at offset.
   return (Byte(Offset + 4) << 8) + Byte(Offset + 5) + 6;
 }
 
@@ -729,6 +733,7 @@ private:
   bool ok, synced, stop;
   time_t lastDiskSpaceCheck;
   bool RunningLowOnDiskSpace(void);
+  int ScanVideoPacket(int *PictureType, int Offset);
   int Synchronize(void);
   bool NextFile(void);
   virtual int Write(int Max = -1);
@@ -807,40 +812,81 @@ bool cRecordBuffer::RunningLowOnDiskSpace(void)
   return false;
 }
 
+int cRecordBuffer::ScanVideoPacket(int *PictureType, int Offset)
+{
+  // Scans the video packet starting at Offset and returns its length.
+  // If the return value is -1 the packet was not completely in the buffer.
+
+  int Length = GetPacketLength(Offset);
+  if (Length <= Available()) {
+     for (int i = Offset; i < Offset + Length; i++) {
+         if (Byte(i) == 0 && Byte(i + 1) == 0 && Byte(i + 2) == 1) {
+            switch (Byte(i + 3)) {
+              case SC_PICTURE: *PictureType = GetPictureType(i);
+                               return Length;
+              }
+            }
+         }
+     *PictureType = NO_PICTURE;
+     return Length;
+     }
+  return -1;
+}
+
 int cRecordBuffer::Synchronize(void)
 {
   // Positions to the start of a data block (skipping everything up to
   // an I-frame if not synced) and returns the block length.
 
+  int LastPackHeader = -1;
+
   pictureType = NO_PICTURE;
-  bool Block = false;
+
   for (int i = 0; Available() > MINVIDEODATA && i < MINVIDEODATA; i++) {
       if (Byte(i) == 0 && Byte(i + 1) == 0 && Byte(i + 2) == 1) {
          switch (Byte(i + 3)) {
-           case SC_BLOCK:   if (Block && synced)
-                               return i; // found a block, so return its length
-                            if (i) {
-                               Skip(i);
-                               if (synced)
-                                  esyslog(LOG_ERR, "ERROR: skipped %d bytes", i);
-                               i = 0;
-                               }
-                            Block = true;
+           case SC_PHEAD:   LastPackHeader = i;
                             break;
-           case SC_PICTURE: if (Block) {
-                               pictureType = GetPictureType(i);
-                               switch (pictureType) {
-                                 case I_FRAME: synced = true;
-                                 case P_FRAME:
-                                 case B_FRAME: break;
-                                 default: esyslog(LOG_ERR, "ERROR: unknown picture type '%d'", pictureType);
-                                          pictureType = NO_PICTURE;
+           case SC_VIDEO:   {
+                              int pt = NO_PICTURE;
+                              int l = ScanVideoPacket(&pt, i);
+                              if (l < 0)
+                                 return 0; // no useful data found, wait for more
+                              if (pt != NO_PICTURE) {
+                                 if (pt < I_FRAME || B_FRAME < pt) {
+                                   esyslog(LOG_ERR, "ERROR: unknown picture type '%d'", pt);
+                                   }
+                                 else if (pictureType == NO_PICTURE) {
+                                    if (!synced) {
+                                       if (LastPackHeader == 0) {
+                                          if (pt == I_FRAME)
+                                             synced = true;
+                                          }
+                                       else if (LastPackHeader > 0) {
+                                          Skip(LastPackHeader);
+                                          LastPackHeader = -1;
+                                          i = 0;
+                                          break;
+                                          }
+                                       else { // LastPackHeader < 0
+                                          Skip(i + l);
+                                          i = 0;
+                                          break;
+                                          }
+                                       }
+                                    if (synced)
+                                       pictureType = pt;
+                                    }
+                                 else if (LastPackHeader > 0)
+                                    return LastPackHeader;
+                                 else
+                                    return i;
                                  }
-                               }
-                            else
-                               esyslog(LOG_ERR, "ERROR: picture header outside of block");
+                              i += l - 1; // -1 to compensate for i++ in the loop!
+                              LastPackHeader = -1;
+                            }
                             break;
-           case SC_AUDIO:   i += GetAudioPacketLength(i) - 1; // -1 to compensate for i++ in the loop!
+           case SC_AUDIO:   i += GetPacketLength(i) - 1; // -1 to compensate for i++ in the loop!
                             break;
            }
          }
@@ -919,12 +965,13 @@ private:
   int replayFile;
   eReplayMode mode;
   int lastIndex, stillIndex;
-  int brakeCounter, stillCounter;
+  int brakeCounter;
   eReplayCmd command;
   bool active;
   bool NextFile(uchar FileNumber = 0, int FileOffset = -1);
   void Close(void);
   void SetCmd(eReplayCmd Cmd) { LOCK_THREAD; command = Cmd; }
+  void SetTemporalReference(void);
 protected:
   virtual void Action(void);
 public:
@@ -941,7 +988,7 @@ public:
   void Backward(void) { SetCmd(rcBackward); }
   int SkipFrames(int Frames);
   void SkipSeconds(int Seconds);
-  void Goto(int Position);
+  void Goto(int Position, bool Still = false);
   void GetIndex(int &Current, int &Total, bool SnapToIFrame = false);
   };
 
@@ -954,7 +1001,7 @@ cReplayBuffer::cReplayBuffer(int *OutFile, const char *FileName)
   videoDev = *OutFile;
   replayFile = fileName.Open();
   mode = rmPlay;
-  brakeCounter = stillCounter = 0;
+  brakeCounter = 0;
   command = rcNone;
   lastIndex = stillIndex = -1;
   active = false;
@@ -1154,18 +1201,18 @@ void cReplayBuffer::SkipSeconds(int Seconds)
      }
 }
 
-void cReplayBuffer::Goto(int Index)
+void cReplayBuffer::Goto(int Index, bool Still)
 {
   LOCK_THREAD;
 
-  command = rcStill;
+  if (Still)
+     command = rcStill;
   if (++Index <= 0)
      Index = 1; // not '0', to allow GetNextIFrame() below to work!
   uchar FileNumber;
   int FileOffset;
   if ((stillIndex = index->GetNextIFrame(Index, false, &FileNumber, &FileOffset)) >= 0)
      NextFile(FileNumber, FileOffset);
-  stillCounter = 20; // apparently we need to repeat the still frame several times to flush all buffers?!
   SetPlayMode(videoDev, VID_PLAY_CLEAR_BUFFER);
   Clear();
 }
@@ -1206,6 +1253,23 @@ bool cReplayBuffer::NextFile(uchar FileNumber, int FileOffset)
   return replayFile >= 0;
 }
 
+void cReplayBuffer::SetTemporalReference(void)
+{
+  for (int i = 0; i < Available(); i++) {
+      if (Byte(i) == 0 && Byte(i + 1) == 0 && Byte(i + 2) == 1) {
+         switch (Byte(i + 3)) {
+           case SC_PICTURE: {
+                              unsigned short m = (Byte(i + 4) << 8) | Byte(i + 5);
+                              m &= 0x003F;
+                              Set(i + 4, 1, m >> 8);
+                              Set(i + 5, 1, m & 0xFF);
+                            }
+                            return;
+           }
+         }
+      }
+}
+
 int cReplayBuffer::Read(int Max = -1)
 {
   if (mode != rmPlay) {
@@ -1213,18 +1277,14 @@ int cReplayBuffer::Read(int Max = -1)
         if (Available())
            return 0; // write out the entire block
         if (mode == rmStill) {
-           if (stillCounter > 0) {
-              stillCounter--;
-              uchar FileNumber;
-              int FileOffset, Length;
-              if (index->GetNextIFrame(stillIndex + 1, false, &FileNumber, &FileOffset, &Length) >= 0) {
-                 if (!NextFile(FileNumber, FileOffset))
-                    return -1;
-                 Max = Length;
-                 }
+           uchar FileNumber;
+           int FileOffset, Length;
+           if (index->GetNextIFrame(stillIndex + 1, false, &FileNumber, &FileOffset, &Length) >= 0) {
+              if (!NextFile(FileNumber, FileOffset))
+                 return -1;
+              Max = Length;
               }
-           else
-              command = rcPause;
+           command = rcPause;
            }
         else {
            int Index = (lastIndex >= 0) ? lastIndex : index->Get(fileName.Number(), fileOffset);
@@ -1268,9 +1328,13 @@ int cReplayBuffer::Read(int Max = -1)
         } while (readin < Max && Free() > 0);
      if (mode != rmPlay) {
         // delete the audio data in modes other than rmPlay:
-        int AudioOffset = FindStartCode(SC_AUDIO);
-        if (AudioOffset >= 0)
-           Set(AudioOffset, GetAudioPacketLength(AudioOffset), 0);
+        int AudioOffset, StartOffset = 0;
+        while ((AudioOffset = FindStartCode(SC_AUDIO, StartOffset)) >= 0) {
+              if (!Set(StartOffset + AudioOffset, GetPacketLength(StartOffset + AudioOffset), 0))
+                 break; // to be able to replay old AV_PES recordings!
+              StartOffset += AudioOffset;
+              }
+        SetTemporalReference();
         }
      return readin;
      }
@@ -2319,10 +2383,10 @@ bool cDvbApi::GetIndex(int &Current, int &Total, bool SnapToIFrame)
   return false;
 }
 
-void cDvbApi::Goto(int Position)
+void cDvbApi::Goto(int Position, bool Still)
 {
   if (replayBuffer)
-     replayBuffer->Goto(Position);
+     replayBuffer->Goto(Position, Still);
 }
 
 // --- cEITScanner -----------------------------------------------------------

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.h 1.29 2000/12/25 15:17:03 kls Exp $
+ * $Id: dvbapi.h 1.30 2001/01/07 15:56:10 kls Exp $
  */
 
 #ifndef __DVBAPI_H
@@ -239,8 +239,9 @@ public:
   bool GetIndex(int &Current, int &Total, bool SnapToIFrame = false);
        // Returns the current and total frame index, optionally snapped to the
        // nearest I-frame.
-  void Goto(int Index);
-       // Positions to the given index and displays that frame as a still picture. 
+  void Goto(int Index, bool Still = false);
+       // Positions to the given index and displays that frame as a still picture
+       // if Still is true. 
   };
 
 class cEITScanner {

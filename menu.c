@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.56 2000/12/25 15:18:32 kls Exp $
+ * $Id: menu.c 1.57 2001/01/07 15:59:56 kls Exp $
  */
 
 #include "menu.h"
@@ -2155,7 +2155,7 @@ void cReplayControl::MarkJump(bool Forward)
   if (dvbApi->GetIndex(Current, Total)) {
      cMark *m = Forward ? marks.GetNext(Current) : marks.GetPrev(Current);
      if (m)
-        dvbApi->Goto(m->position);
+        dvbApi->Goto(m->position, true);
      }
 }
 
@@ -2175,7 +2175,7 @@ void cReplayControl::MarkMove(bool Forward)
            if ((m2 = marks.Prev(m)) != NULL && m2->position >= p)
               return;
            }
-        dvbApi->Goto(m->position = p);
+        dvbApi->Goto(m->position = p, true);
         marks.Save();
         }
      }

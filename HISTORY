@@ -320,7 +320,8 @@ Video Disk Recorder Revision History
   the DVB/driver directory.
   Old recordings (in AV_PES mode) can still be replayed (as long as the driver
   still supports replaying AV_PES files). The only limitation with this is that
-  in fast forward/back mode the picture may be slightly distorted.
+  in fast forward/back mode the picture may be slightly distorted and there may
+  be sound fragments.
 - The EPG data is now dumped into the file /video/epg.data every ten minutes.
   Use the Perl script 'epg2html.pl' to convert the raw EPG data into a simple
   HTML programme listing.
