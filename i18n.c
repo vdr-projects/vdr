@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.26 2001/07/27 13:32:43 kls Exp $
+ * $Id: i18n.c 1.27 2001/08/02 14:40:16 kls Exp $
  *
  * Slovenian translations provided by Miha Setina <mihasetina@softhome.net>
  * Italian   translations provided by Alberto Carraro <bertocar@tin.it>
@@ -113,6 +113,15 @@ const tPhrase Phrases[] = {
     "Enregistrements",
     "Opptak",
   },
+  { "DVD",
+    "DVD",
+    "DVD",
+    "DVD",
+    "DVD",
+    "DVD",
+    "DVD",
+    "DVD",
+  },
   { "Setup",
     "Einstellungen",
     "Nastavitve",
@@ -194,7 +203,7 @@ const tPhrase Phrases[] = {
     "Prochains programmes",
     "Hvilket program er neste?",
   },
-  // Button texts (must not be more than 10 characters!):
+  // Button texts (should not be more than 10 characters!):
   { "Edit",
     "Editieren",
     "Uredi",
@@ -320,6 +329,15 @@ const tPhrase Phrases[] = {
     "", // TODO
     "Langue",
     "Språk",
+  },
+  { "Eject DVD",
+    "DVD auswerfen",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
   },
   // Confirmations:
   { "Delete channel?",

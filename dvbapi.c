@@ -4,8 +4,13 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.96 2001/07/29 10:32:50 kls Exp $
+ * DVD support initially written by Andreas Schultz <aschultz@warp10.net>
+ * based on dvdplayer-0.5 by Matjaz Thaler <matjaz.thaler@guest.arnes.si>
+ *
+ * $Id: dvbapi.c 1.101 2001/08/06 16:24:13 kls Exp $
  */
+
+//#define DVDDEBUG        1
 
 #include "dvbapi.h"
 #include <dirent.h>
@@ -21,6 +26,13 @@ extern "C" {
 #include <sys/stat.h>
 #include <sys/time.h>
 #include <unistd.h>
+
+#ifdef DVDSUPPORT
+extern "C" {
+#include "ac3dec/ac3.h"
+}
+#endif //DVDSUPPORT
+
 #include "config.h"
 #include "recording.h"
 #include "remux.h"
@@ -40,7 +52,8 @@ extern "C" {
 
 // The size of the array used to buffer video data:
 // (must be larger than MINVIDEODATA - see remux.h)
-#define VIDEOBUFSIZE (1024*1024)
+#define VIDEOBUFSIZE    (1024*1024)
+#define AC3_BUFFER_SIZE (6*1024*16)
 
 // The maximum size of a single frame:
 #define MAXFRAMESIZE (192*1024)
@@ -437,7 +450,7 @@ int cFileName::NextFile(void)
 
 // --- cRecordBuffer ---------------------------------------------------------
 
-class cRecordBuffer : public cRingBuffer {
+class cRecordBuffer : public cRingBufferLinear {
 private:
   cDvbApi *dvbApi;
   cFileName fileName;
@@ -460,7 +473,7 @@ public:
   };
 
 cRecordBuffer::cRecordBuffer(cDvbApi *DvbApi, const char *FileName, int VPid, int APid1, int APid2, int DPid1, int DPid2)
-:cRingBuffer(VIDEOBUFSIZE, true)
+:cRingBufferLinear(VIDEOBUFSIZE, true)
 ,fileName(FileName, true)
 ,remux(VPid, APid1, APid2, DPid1, DPid2, true)
 {
@@ -615,70 +628,228 @@ int ReadFrame(int f, uchar *b, int Length, int Max)
   return r;
 }
 
-// --- cReplayBuffer ---------------------------------------------------------
+// --- cPlayBuffer ---------------------------------------------------------
 
-class cReplayBuffer : public cRingBuffer {
-private:
+class cPlayBuffer : public cRingBufferFrame {
+protected:
   cDvbApi *dvbApi;
-  cIndexFile *index;
-  cFileName fileName;
-  int fileOffset;
   int videoDev, audioDev;
   FILE *dolbyDev;
-  int replayFile;
-  bool eof;
   int blockInput, blockOutput;
-  bool paused, fastForward, fastRewind;
-  int lastIndex, stillIndex, playIndex;
+  bool still, paused, fastForward, fastRewind;
+  int readIndex, writeIndex;
+  bool canDoTrickMode;
   bool canToggleAudioTrack;
   uchar audioTrack;
-  bool NextFile(uchar FileNumber = 0, int FileOffset = -1);
-  void Clear(bool Block = false);
-  void Close(void);
-  void StripAudioPackets(uchar *b, int Length, uchar Except = 0x00);
-  void DisplayFrame(uchar *b, int Length);
-  int Resume(void);
-  bool Save(void);
-protected:
-  virtual void Input(void);
+  virtual void Empty(bool Block = false);
+  virtual void StripAudioPackets(uchar *b, int Length, uchar Except = 0x00) {}
   virtual void Output(void);
 public:
-  cReplayBuffer(cDvbApi *DvbApi, int VideoDev, int AudioDev, const char *FileName);
-  virtual ~cReplayBuffer();
-  void Pause(void);
-  void Play(void);
-  void Forward(void);
-  void Backward(void);
-  int SkipFrames(int Frames);
-  void SkipSeconds(int Seconds);
-  void Goto(int Position, bool Still = false);
-  void GetIndex(int &Current, int &Total, bool SnapToIFrame = false);
-  bool CanToggleAudioTrack(void) { return canToggleAudioTrack; }
-  void ToggleAudioTrack(void);
+  cPlayBuffer(cDvbApi *DvbApi, int VideoDev, int AudioDev);
+  virtual ~cPlayBuffer();
+  virtual void Pause(void);
+  virtual void Play(void);
+  virtual void Forward(void);
+  virtual void Backward(void);
+  virtual int SkipFrames(int Frames) { return -1; }
+  virtual void SkipSeconds(int Seconds) {}
+  virtual void Goto(int Position, bool Still = false) {}
+  virtual void GetIndex(int &Current, int &Total, bool SnapToIFrame = false) { Current = Total = -1; }
+  bool CanToggleAudioTrack(void) { return canToggleAudioTrack; };
+  virtual void ToggleAudioTrack(void);
   };
 
-cReplayBuffer::cReplayBuffer(cDvbApi *DvbApi, int VideoDev, int AudioDev, const char *FileName)
-:cRingBuffer(VIDEOBUFSIZE)
-,fileName(FileName, false)
+cPlayBuffer::cPlayBuffer(cDvbApi *DvbApi, int VideoDev, int AudioDev)
+:cRingBufferFrame(VIDEOBUFSIZE)
 {
   dvbApi = DvbApi;
-  index = NULL;
-  fileOffset = 0;
   videoDev = VideoDev;
   audioDev = AudioDev;
   dolbyDev = NULL;
+  blockInput = blockOutput = false;
+  still = paused = fastForward = fastRewind = false;
+  readIndex = writeIndex = -1;
+  canDoTrickMode = false;
+  canToggleAudioTrack = false;
+  audioTrack = 0xC0;
   if (cDvbApi::AudioCommand()) {
      dolbyDev = popen(cDvbApi::AudioCommand(), "w");
      if (!dolbyDev)
         esyslog(LOG_ERR, "ERROR: can't open pipe to audio command '%s'", cDvbApi::AudioCommand());
      }
+}
+
+cPlayBuffer::~cPlayBuffer()
+{
+  if (dolbyDev)
+     pclose(dolbyDev);
+}
+
+void cPlayBuffer::Output(void)
+{
+  dsyslog(LOG_INFO, "output thread started (pid=%d)", getpid());
+
+  while (Busy()) {
+        if (blockOutput) {
+           if (blockOutput > 1)
+              blockOutput = 1;
+           continue;
+           }
+        const cFrame *frame = Get();
+        if (frame) {
+           StripAudioPackets((uchar *)frame->Data(), frame->Count(), (fastForward || fastRewind) ? 0x00 : audioTrack);//XXX
+           for (int i = 0; i < ((paused && fastRewind) ? 24 : 1); i++) { // show every I_FRAME 24 times in slow rewind mode to achieve roughly the same speed as in slow forward mode
+               const uchar *p = frame->Data();
+               int r = frame->Count();
+               while (r > 0 && Busy() && !blockOutput) {
+                     cFile::FileReadyForWriting(videoDev, 100);
+                     int w = write(videoDev, p, r);
+                     if (w > 0) {
+                        p += w;
+                        r -= w;
+                        }
+                     else if (w < 0 && errno != EAGAIN) {
+                        LOG_ERROR;
+                        Stop();
+                        return;
+                        }
+                     }
+               writeIndex = frame->Index();
+               }
+           Drop(frame);
+           }
+        }
+
+  dsyslog(LOG_INFO, "output thread ended (pid=%d)", getpid());
+}
+
+void cPlayBuffer::Empty(bool Block)
+{
+  if (!(blockInput || blockOutput)) {
+     blockInput = blockOutput = 2;
+     EnablePut();
+     EnableGet();
+     time_t t0 = time(NULL);
+     while ((blockInput > 1 || blockOutput > 1) && time(NULL) - t0 < 2)
+           usleep(1);
+     Lock();
+     readIndex = writeIndex;
+     cRingBufferFrame::Clear();
+     CHECK(ioctl(videoDev, VIDEO_CLEAR_BUFFER));
+     CHECK(ioctl(audioDev, AUDIO_CLEAR_BUFFER));
+     }
+  if (!Block) {
+     blockInput = blockOutput = 0;
+     Unlock();
+     }
+}
+
+void cPlayBuffer::Pause(void)
+{
+  paused = !paused;
+  bool empty = fastForward || fastRewind;
+  if (empty)
+     Empty(true);
+  fastForward = fastRewind = false;
+  CHECK(ioctl(videoDev, paused ? VIDEO_FREEZE : VIDEO_CONTINUE));
+  CHECK(ioctl(audioDev, AUDIO_SET_MUTE, paused));
+  still = false;
+  if (empty)
+     Empty(false);
+}
+
+void cPlayBuffer::Play(void)
+{
+  if (fastForward || fastRewind || paused) {
+     bool empty = !paused || fastRewind;
+     if (empty)
+        Empty(true);
+     still = false;
+     CHECK(ioctl(videoDev, paused ? VIDEO_CONTINUE : VIDEO_PLAY));
+     CHECK(ioctl(audioDev, AUDIO_SET_AV_SYNC, true));
+     CHECK(ioctl(audioDev, AUDIO_SET_MUTE, false));
+     if (empty)
+        Empty(false);
+     fastForward = fastRewind = paused = false;
+     }
+}
+
+void cPlayBuffer::Forward(void)
+{
+  if (canDoTrickMode || paused) {
+     bool empty = !paused || fastRewind;
+     if (empty) {
+        Empty(true);
+        if (fastForward)
+           readIndex -= 150; // this about compensates for the buffered data, so that we don't get too far ahead
+        }
+     still = false;
+     fastForward = !fastForward;
+     fastRewind = false;
+     if (paused)
+        CHECK(ioctl(videoDev, fastForward ? VIDEO_SLOWMOTION : VIDEO_FREEZE, 2));
+     CHECK(ioctl(audioDev, AUDIO_SET_AV_SYNC, !fastForward));
+     CHECK(ioctl(audioDev, AUDIO_SET_MUTE, fastForward || paused));
+     if (empty)
+        Empty(false);
+     }
+}
+
+void cPlayBuffer::Backward(void)
+{
+  if (canDoTrickMode) {
+     Empty(true);
+     still = false;
+     fastRewind = !fastRewind;
+     fastForward = false;
+     if (paused)
+        CHECK(ioctl(videoDev, fastRewind ? VIDEO_CONTINUE : VIDEO_FREEZE));
+     CHECK(ioctl(audioDev, AUDIO_SET_AV_SYNC, !fastRewind));
+     CHECK(ioctl(audioDev, AUDIO_SET_MUTE, fastRewind || paused));
+     Empty(false);
+     }
+}
+
+void cPlayBuffer::ToggleAudioTrack(void)
+{
+  if (CanToggleAudioTrack()) {
+     audioTrack = (audioTrack == 0xC0) ? 0xC1 : 0xC0;
+     Empty();
+     }
+}
+
+// --- cReplayBuffer ---------------------------------------------------------
+
+class cReplayBuffer : public cPlayBuffer {
+private:
+  cIndexFile *index;
+  cFileName fileName;
+  int replayFile;
+  bool eof;
+  bool NextFile(uchar FileNumber = 0, int FileOffset = -1);
+  void Close(void);
+  virtual void StripAudioPackets(uchar *b, int Length, uchar Except = 0x00);
+  void DisplayFrame(uchar *b, int Length);
+  int Resume(void);
+  bool Save(void);
+protected:
+  virtual void Input(void);
+public:
+  cReplayBuffer(cDvbApi *DvbApi, int VideoDev, int AudioDev, const char *FileName);
+  virtual ~cReplayBuffer();
+  virtual int SkipFrames(int Frames);
+  virtual void SkipSeconds(int Seconds);
+  virtual void Goto(int Position, bool Still = false);
+  virtual void GetIndex(int &Current, int &Total, bool SnapToIFrame = false);
+  };
+
+cReplayBuffer::cReplayBuffer(cDvbApi *DvbApi, int VideoDev, int AudioDev, const char *FileName)
+:cPlayBuffer(DvbApi, VideoDev, AudioDev)
+,fileName(FileName, false)
+{
+  index = NULL;
   replayFile = fileName.Open();
   eof = false;
-  blockInput = blockOutput = false;
-  paused = fastForward = fastRewind = false;
-  lastIndex = stillIndex = playIndex = -1;
-  canToggleAudioTrack = false;
-  audioTrack = 0xC0;
   if (!fileName.Name())
      return;
   // Create the index file:
@@ -690,6 +861,7 @@ cReplayBuffer::cReplayBuffer(cDvbApi *DvbApi, int VideoDev, int AudioDev, const 
      delete index;
      index = NULL;
      }
+  canDoTrickMode = index != NULL;
   dvbApi->SetModeReplay();
   Start();
 }
@@ -699,8 +871,6 @@ cReplayBuffer::~cReplayBuffer()
   Stop();
   Save();
   Close();
-  if (dolbyDev)
-     pclose(dolbyDev);
   dvbApi->SetModeNormal(false);
   delete index;
 }
@@ -709,22 +879,23 @@ void cReplayBuffer::Input(void)
 {
   dsyslog(LOG_INFO, "input thread started (pid=%d)", getpid());
 
-  int ResumeIndex = Resume();
-  if (ResumeIndex >= 0)
-     isyslog(LOG_INFO, "resuming replay at index %d (%s)", ResumeIndex, IndexToHMSF(ResumeIndex, true));
+  readIndex = Resume();
+  if (readIndex >= 0)
+     isyslog(LOG_INFO, "resuming replay at index %d (%s)", readIndex, IndexToHMSF(readIndex, true));
 
-  int lastIndex = -1;
-  int brakeCounter = 0;
   uchar b[MAXFRAMESIZE];
   while (Busy() && (blockInput || NextFile())) {
-        if (!blockInput && stillIndex < 0) {
+        if (blockInput) {
+           if (blockInput > 1)
+              blockInput = 1;
+           continue;
+           }
+        if (!still) {
            int r = 0;
            if (fastForward && !paused || fastRewind) {
-              int Index = (lastIndex >= 0) ? lastIndex : index->Get(fileName.Number(), fileOffset);
               uchar FileNumber;
               int FileOffset, Length;
-              if (!paused || (brakeCounter++ % 24) == 0) // show every I_FRAME 24 times in rmSlowRewind mode to achieve roughly the same speed as in slow forward mode
-                 Index = index->GetNextIFrame(Index, fastForward, &FileNumber, &FileOffset, &Length);
+              int Index = index->GetNextIFrame(readIndex, fastForward, &FileNumber, &FileOffset, &Length);
               if (Index >= 0) {
                  if (!NextFile(FileNumber, FileOffset))
                     break;
@@ -734,126 +905,85 @@ void cReplayBuffer::Input(void)
                  Play();
                  continue;
                  }
-              lastIndex = Index;
-              playIndex = -1;
+              readIndex = Index;
               r = ReadFrame(replayFile, b, Length, sizeof(b));
-              StripAudioPackets(b, r);
               }
            else if (index) {
-              lastIndex = -1;
-              playIndex = (playIndex >= 0) ? playIndex + 1 : index->Get(fileName.Number(), fileOffset);
               uchar FileNumber;
               int FileOffset, Length;
-              if (!(index->Get(playIndex, &FileNumber, &FileOffset, NULL, &Length) && NextFile(FileNumber, FileOffset)))
+              readIndex++;
+              if (!(index->Get(readIndex, &FileNumber, &FileOffset, NULL, &Length) && NextFile(FileNumber, FileOffset)))
                  break;
               r = ReadFrame(replayFile, b, Length, sizeof(b));
-              StripAudioPackets(b, r, audioTrack);
               }
            else // allows replay even if the index file is missing
               r = read(replayFile, b, sizeof(b));
            if (r > 0) {
-              uchar *p = b;
-              while (r > 0 && Busy() && !blockInput) {
-                    int w = Put(p, r);
-                    p += w;
-                    r -= w;
-                    usleep(1); // this keeps the CPU load low
-                    }
+              cFrame *frame = new cFrame(b, r, readIndex);
+              while (Busy() && !blockInput && !Put(frame))
+                    ;
               }
-           else if (r ==0)
+           else if (r == 0)
               eof = true;
            else if (r < 0 && errno != EAGAIN) {
               LOG_ERROR;
               break;
               }
            }
-        else
+        else//XXX
            usleep(1); // this keeps the CPU load low
-        if (blockInput > 1)
-           blockInput = 1;
         }
 
   dsyslog(LOG_INFO, "input thread ended (pid=%d)", getpid());
 }
 
-void cReplayBuffer::Output(void)
-{
-  dsyslog(LOG_INFO, "output thread started (pid=%d)", getpid());
-
-  uchar b[MINVIDEODATA];
-  while (Busy()) {
-        int r = blockOutput ? 0 : Get(b, sizeof(b));
-        if (r > 0) {
-           uchar *p = b;
-           while (r > 0 && Busy() && !blockOutput) {
-                 cFile::FileReadyForWriting(videoDev, 100);
-                 int w = write(videoDev, p, r);
-                 if (w > 0) {
-                    p += w;
-                    r -= w;
-                    fileOffset += w;
-                    }
-                 else if (w < 0 && errno != EAGAIN) {
-                    LOG_ERROR;
-                    Stop();
-                    return;
-                    }
-                 }
-           }
-        else
-           usleep(1); // this keeps the CPU load low
-        if (blockOutput > 1)
-           blockOutput = 1;
-        }
-
-  dsyslog(LOG_INFO, "output thread ended (pid=%d)", getpid());
-}
-
 void cReplayBuffer::StripAudioPackets(uchar *b, int Length, uchar Except)
 {
-  for (int i = 0; i < Length - 6; i++) {
-      if (b[i] == 0x00 && b[i + 1] == 0x00 && b[i + 2] == 0x01) {
-         uchar c = b[i + 3];
-         int l = b[i + 4] * 256 + b[i + 5] + 6;
-         switch (c) {
-           case 0xBD: // dolby
-                if (Except && dolbyDev) {
-                   int written = b[i + 8] + 9; // skips the PES header
-                   int n = l - written;
-                   while (n > 0) {
-                         int w = fwrite(&b[i + written], 1, n, dolbyDev);
-                         if (w < 0) {
-                            LOG_ERROR;
-                            break;
+  if (canDoTrickMode) {
+     for (int i = 0; i < Length - 6; i++) {
+         if (b[i] == 0x00 && b[i + 1] == 0x00 && b[i + 2] == 0x01) {
+            uchar c = b[i + 3];
+            int l = b[i + 4] * 256 + b[i + 5] + 6;
+            switch (c) {
+              case 0xBD: // dolby
+                   if (Except && dolbyDev) {
+                      int written = b[i + 8] + 9; // skips the PES header
+                      int n = l - written;
+                      while (n > 0) {
+                            int w = fwrite(&b[i + written], 1, n, dolbyDev);
+                            if (w < 0) {
+                               LOG_ERROR;
+                               break;
+                               }
+                            n -= w;
+                            written += w;
                             }
-                         n -= w;
-                         written += w;
-                         }
-                   }
-                // continue with deleting the data - otherwise it disturbs DVB replay
-           case 0xC0 ... 0xC1: // audio
-                if (c == 0xC1)
-                   canToggleAudioTrack = true;
-                if (!Except || c != Except) {
-                   int n = l;
-                   for (int j = i; j < Length && n--; j++)
-                       b[j] = 0x00;
-                   }
-                break;
-           case 0xE0 ... 0xEF: // video
-                break;
-           default:
-                //esyslog(LOG_ERR, "ERROR: unexpected packet id %02X", c);
-                l = 0;
-           }
-         if (l)
-            i += l - 1; // the loop increments, too!
+                      }
+                   // continue with deleting the data - otherwise it disturbs DVB replay
+              case 0xC0 ... 0xC1: // audio
+                   if (c == 0xC1)
+                      canToggleAudioTrack = true;
+                   if (!Except || c != Except) {
+                      int n = l;
+                      for (int j = i; j < Length && n--; j++)
+                          b[j] = 0x00;
+                      }
+                   break;
+              case 0xE0 ... 0xEF: // video
+                   break;
+              default:
+                   //esyslog(LOG_ERR, "ERROR: unexpected packet id %02X", c);
+                   l = 0;
+              }
+            if (l)
+               i += l - 1; // the loop increments, too!
+            }
+         /*XXX
+         else
+            esyslog(LOG_ERR, "ERROR: broken packet header");
+            XXX*/
          }
-      /*XXX
-      else
-         esyslog(LOG_ERR, "ERROR: broken packet header");
-         XXX*/
-      }
+     }
 }
 
 void cReplayBuffer::DisplayFrame(uchar *b, int Length)
@@ -865,87 +995,11 @@ void cReplayBuffer::DisplayFrame(uchar *b, int Length)
   CHECK(ioctl(videoDev, VIDEO_STILLPICTURE, &sp));
 }
 
-void cReplayBuffer::Clear(bool Block)
-{
-  if (!(blockInput || blockOutput)) {
-     blockInput = blockOutput = 2;
-     time_t t0 = time(NULL);
-     while ((blockInput > 1 || blockOutput > 1) && time(NULL) - t0 < 2)
-           usleep(1);
-     Lock();
-     cRingBuffer::Clear();
-     playIndex = -1;
-     CHECK(ioctl(videoDev, VIDEO_CLEAR_BUFFER));
-     CHECK(ioctl(audioDev, AUDIO_CLEAR_BUFFER));
-     }
-  if (!Block) {
-     blockInput = blockOutput = 0;
-     Unlock();
-     }
-}
-
-void cReplayBuffer::Pause(void)
-{
-  paused = !paused;
-  CHECK(ioctl(videoDev, paused ? VIDEO_FREEZE : VIDEO_CONTINUE));
-  if (fastForward || fastRewind) {
-     if (paused)
-        Clear();
-     fastForward = fastRewind = false;
-     }
-  CHECK(ioctl(audioDev, AUDIO_SET_MUTE, paused));
-  stillIndex = -1;
-}
-
-void cReplayBuffer::Play(void)
-{
-  if (fastForward || fastRewind || paused) {
-     if (!paused)
-        Clear();
-     stillIndex = -1;
-     CHECK(ioctl(videoDev, paused ? VIDEO_CONTINUE : VIDEO_PLAY));
-     CHECK(ioctl(audioDev, AUDIO_SET_AV_SYNC, true));
-     CHECK(ioctl(audioDev, AUDIO_SET_MUTE, false));
-     fastForward = fastRewind = paused = false;
-     }
-}
-
-void cReplayBuffer::Forward(void)
-{
-  if (index || paused) {
-     if (!paused)
-        Clear(true);
-     stillIndex = -1;
-     fastForward = !fastForward;
-     fastRewind = false;
-     if (paused)
-        CHECK(ioctl(videoDev, fastForward ? VIDEO_SLOWMOTION : VIDEO_FREEZE, 2));
-     CHECK(ioctl(audioDev, AUDIO_SET_AV_SYNC, !fastForward));
-     CHECK(ioctl(audioDev, AUDIO_SET_MUTE, fastForward || paused));
-     if (!paused)
-        Clear(false);
-     }
-}
-
-void cReplayBuffer::Backward(void)
-{
-  if (index) {
-     Clear(true);
-     stillIndex = -1;
-     fastRewind = !fastRewind;
-     fastForward = false;
-     CHECK(ioctl(audioDev, AUDIO_SET_AV_SYNC, !fastRewind));
-     CHECK(ioctl(audioDev, AUDIO_SET_MUTE, fastRewind || paused));
-     Clear(false);
-     }
-}
-
 void cReplayBuffer::Close(void)
 {
   if (replayFile >= 0) {
      fileName.Close();
      replayFile = -1;
-     fileOffset = 0;
      }
 }
 
@@ -966,7 +1020,7 @@ int cReplayBuffer::Resume(void)
 bool cReplayBuffer::Save(void)
 {
   if (index) {
-     int Index = index->Get(fileName.Number(), fileOffset);
+     int Index = writeIndex;
      if (Index >= 0) {
         Index -= RESUMEBACKUP;
         if (Index > 0)
@@ -995,8 +1049,8 @@ int cReplayBuffer::SkipFrames(int Frames)
 void cReplayBuffer::SkipSeconds(int Seconds)
 {
   if (index && Seconds) {
-     Clear(true);
-     int Index = index->Get(fileName.Number(), fileOffset);
+     Empty(true);
+     int Index = writeIndex;
      if (Index >= 0) {
         if (Seconds < 0) {
            int sec = index->Last() / FRAMESPERSEC;
@@ -1008,10 +1062,9 @@ void cReplayBuffer::SkipSeconds(int Seconds)
            Index = 1; // not '0', to allow GetNextIFrame() below to work!
         uchar FileNumber;
         int FileOffset;
-        if (index->GetNextIFrame(Index, false, &FileNumber, &FileOffset) >= 0)
-           NextFile(FileNumber, FileOffset);
+        readIndex = writeIndex = index->GetNextIFrame(Index, false, &FileNumber, &FileOffset) - 1; // Input() will first increment it!
         }
-     Clear(false);
+     Empty(false);
      Play();
      }
 }
@@ -1019,7 +1072,7 @@ void cReplayBuffer::SkipSeconds(int Seconds)
 void cReplayBuffer::Goto(int Index, bool Still)
 {
   if (index) {
-     Clear(true);
+     Empty(true);
      if (paused)
         CHECK(ioctl(videoDev, VIDEO_CONTINUE));
      if (++Index <= 0)
@@ -1028,28 +1081,27 @@ void cReplayBuffer::Goto(int Index, bool Still)
      int FileOffset, Length;
      Index = index->GetNextIFrame(Index, false, &FileNumber, &FileOffset, &Length);
      if (Index >= 0 && NextFile(FileNumber, FileOffset) && Still) {
-        stillIndex = Index;
-        playIndex = -1;
+        still = true;
         uchar b[MAXFRAMESIZE];
         int r = ReadFrame(replayFile, b, Length, sizeof(b));
         if (r > 0)
            DisplayFrame(b, r);
-        fileOffset += Length;
         paused = true;
         }
      else
-        stillIndex = playIndex = -1;
-     Clear(false);
+        still = false;
+     readIndex = writeIndex = Index;
+     Empty(false);
      }
 }
 
 void cReplayBuffer::GetIndex(int &Current, int &Total, bool SnapToIFrame)
 {
   if (index) {
-     if (stillIndex >= 0)
-        Current = stillIndex;
+     if (still)
+        Current = readIndex;
      else {
-        Current = index->Get(fileName.Number(), fileOffset);
+        Current = writeIndex;
         if (SnapToIFrame) {
            int i1 = index->GetNextIFrame(Current + 1, false);
            int i2 = index->GetNextIFrame(Current, true);
@@ -1064,10 +1116,8 @@ void cReplayBuffer::GetIndex(int &Current, int &Total, bool SnapToIFrame)
 
 bool cReplayBuffer::NextFile(uchar FileNumber, int FileOffset)
 {
-  if (FileNumber > 0) {
-     fileOffset = FileOffset;
+  if (FileNumber > 0)
      replayFile = fileName.SetOffset(FileNumber, FileOffset);
-     }
   else if (replayFile >= 0 && eof) {
      Close();
      replayFile = fileName.NextFile();
@@ -1076,17 +1126,892 @@ bool cReplayBuffer::NextFile(uchar FileNumber, int FileOffset)
   return replayFile >= 0;
 }
 
-void cReplayBuffer::ToggleAudioTrack(void)
+#ifdef DVDSUPPORT
+// --- cDVDplayBuffer --------------------------------------------------------
+
+class cDVDplayBuffer : public cPlayBuffer {
+private:
+  uchar audioTrack;
+
+  cDVD *dvd;//XXX necessary???
+
+  int titleid;
+  int chapid;
+  int angle;
+  dvd_file_t *title;
+  ifo_handle_t *vmg_file;
+  ifo_handle_t *vts_file;
+
+  int doplay;
+  int cyclestate;
+  int prevcycle;
+  int brakeCounter;
+  int skipCnt;
+
+  tt_srpt_t *tt_srpt;
+  vts_ptt_srpt_t *vts_ptt_srpt;
+  pgc_t *cur_pgc;
+  dsi_t dsi_pack;
+  unsigned int next_vobu;
+  unsigned int prev_vobu;
+  unsigned int next_ilvu_start;
+  unsigned int cur_output_size;
+  unsigned int min_output_size;
+  unsigned int pktcnt;
+  int pgc_id;
+  int start_cell;
+  int next_cell;
+  int prev_cell;
+  int cur_cell;
+  unsigned int cur_pack;
+  int ttn;
+  int pgn;
+
+  uchar *data;
+
+  int logAudioTrack;
+  int maxAudioTrack;
+
+  ac3_config_t ac3_config;
+  enum { AC3_STOP, AC3_START, AC3_PLAY } ac3stat;
+  uchar *ac3data;
+  int ac3inp;
+  int ac3outp;
+  int lpcm_count;
+  int is_nav_pack(unsigned char *buffer);
+  void Close(void);
+  virtual void Empty(bool Block = false);
+  int decode_packet(unsigned char *sector, int iframe);
+  int ScanVideoPacket(const uchar *Data, int Count, uchar *PictureType);
+  bool PacketStart(uchar **Data, int len);
+  int GetPacketType(const uchar *Data);
+  int GetStuffingLen(const uchar *Data);
+  int GetPacketLength(const uchar *Data);
+  int GetPESHeaderLength(const uchar *Data);
+  int SendPCM(int size);
+  void playDecodedAC3(void);
+  void handleAC3(unsigned char *sector, int length);
+  void putFrame(unsigned char *sector, int length);
+  unsigned int getAudioStream(unsigned int StreamId);
+  void setChapid(void);
+  void NextState(int State) { prevcycle = cyclestate; cyclestate = State; }
+protected:
+  virtual void Input(void);
+public:
+  cDVDplayBuffer(cDvbApi *DvbApi, int VideoDev, int AudioDev, cDVD *DvD, int title);
+  virtual ~cDVDplayBuffer();
+  virtual int SkipFrames(int Frames);
+  virtual void SkipSeconds(int Seconds);
+  virtual void Goto(int Position, bool Still = false);
+  virtual void GetIndex(int &Current, int &Total, bool SnapToIFrame = false);
+  virtual void ToggleAudioTrack(void);
+  };
+
+#define cOPENDVD         0
+#define cOPENTITLE       1
+#define cOPENCHAPTER     2
+#define cOUTCELL         3
+#define cREADFRAME       4
+#define cOUTPACK         5
+#define cOUTFRAMES       6
+
+#define aAC3          0x80
+#define aLPCM         0xA0
+
+cDVDplayBuffer::cDVDplayBuffer(cDvbApi *DvbApi, int VideoDev, int AudioDev, cDVD *DvD, int title)
+:cPlayBuffer(DvbApi, VideoDev, AudioDev)
 {
-  if (CanToggleAudioTrack()) {
-     audioTrack = (audioTrack == 0xC0) ? 0xC1 : 0xC0;
-     Clear();
+  dvd = DvD;
+  titleid = title;
+  chapid = 0;
+  angle = 0;
+  cyclestate = cOPENDVD;
+  prevcycle = 0;
+  brakeCounter = 0;
+  skipCnt = 0;
+  logAudioTrack = 0;
+  canToggleAudioTrack = true;//XXX determine from cDVD!
+  ac3_config.num_output_ch = 2;
+  //    ac3_config.flags = /* mm_accel() | */ MM_ACCEL_MLIB;
+  ac3_config.flags = 0;
+  ac3_init(&ac3_config);
+  data = new uchar[1024 * DVD_VIDEO_LB_LEN];
+  ac3data = new uchar[AC3_BUFFER_SIZE];
+  ac3inp = ac3outp = 0;
+  ac3stat = AC3_START;
+  canDoTrickMode = true;
+  dvbApi->SetModeReplay();
+  Start();
+}
+
+cDVDplayBuffer::~cDVDplayBuffer()
+{
+  Stop();
+  Close();
+  dvbApi->SetModeNormal(false);
+  delete ac3data;
+  delete data;
+}
+
+unsigned int cDVDplayBuffer::getAudioStream(unsigned int StreamId)
+{
+  unsigned int trackID;
+
+  if ((cyclestate < cOPENCHAPTER) || (StreamId > 7))
+     return 0;
+  if (!(cur_pgc->audio_control[StreamId] & 0x8000))
+     return 0;
+  int track = (cur_pgc->audio_control[StreamId] >> 8) & 0x07;
+  switch (vts_file->vtsi_mat->vts_audio_attr[track].audio_format) {
+    case 0: // ac3
+            trackID = aAC3;
+            break;
+    case 2: // mpeg1
+    case 3: // mpeg2ext
+    case 4: // lpcm
+    case 6: // dts
+            trackID = aLPCM;
+            break;
+    default: esyslog(LOG_ERR, "ERROR: unknown Audio stream info");
+             return 0;
+    }
+  trackID |= track;
+  return trackID;
+}
+
+void cDVDplayBuffer::ToggleAudioTrack(void)
+{
+  unsigned int newTrack;
+
+  if (CanToggleAudioTrack() && maxAudioTrack != 0) {
+     logAudioTrack = (logAudioTrack + 1) % maxAudioTrack;
+     if ((newTrack = getAudioStream(logAudioTrack)) != 0)
+        audioTrack = newTrack;
+#ifdef DVDDEBUG
+     dsyslog(LOG_INFO, "DVB: Audio Stream ID changed to: %x", audioTrack);
+#endif
+     ac3stat = AC3_START;
+     ac3outp = ac3inp;
      }
 }
 
+/**
+ * Returns true if the pack is a NAV pack.  This check is clearly insufficient,
+ * and sometimes we incorrectly think that valid other packs are NAV packs.  I
+ * need to make this stronger.
+ */
+inline int cDVDplayBuffer::is_nav_pack(unsigned char *buffer)
+{
+  return buffer[41] == 0xbf && buffer[1027] == 0xbf;
+}
+
+void cDVDplayBuffer::Input(void)
+{
+  dsyslog(LOG_INFO, "input thread started (pid=%d)", getpid());
+
+  doplay = true;
+  while (Busy() && doplay) {
+        if (blockInput) {
+           if (blockInput > 1)
+              blockInput = 1;
+           continue;
+           }
+
+        //BEGIN: ripped from play_title
+
+        /**
+         * Playback by cell in this pgc, starting at the cell for our chapter.
+         */
+
+        //dsyslog(LOG_INFO, "DVD: cyclestate: %d", cyclestate);
+        switch (cyclestate) {
+
+          case cOPENDVD: // open the DVD and get all the basic information
+               {
+                 if (!dvd->isValid()) {
+                    doplay = false;
+                    break;
+                    }
+
+                 /**
+                  * Load the video manager to find out the information about the titles on
+                  * this disc.
+                  */
+                 vmg_file = dvd->openVMG();
+                 if (!vmg_file) {
+                    esyslog(LOG_ERR, "ERROR: can't open VMG info");
+                    doplay = false;
+                    break;
+                    }
+                 tt_srpt = vmg_file->tt_srpt;
+
+                 NextState(cOPENTITLE);
+                 break;
+               }
+
+          case cOPENTITLE: // open the selected title
+               {
+                 /**
+                  * Make sure our title number is valid.
+                  */
+                 isyslog(LOG_INFO, "DVD: there are %d titles on this DVD", tt_srpt->nr_of_srpts);
+                 if (titleid < 0 || titleid >= tt_srpt->nr_of_srpts) {
+                    esyslog(LOG_ERR, "ERROR: invalid title %d", titleid + 1);
+                    doplay = false;
+                    break;
+                    }
+
+                 /**
+                  * Load the VTS information for the title set our title is in.
+                  */
+                 vts_file = dvd->openVTS(tt_srpt->title[titleid].title_set_nr);
+                 if (!vts_file) {
+                    esyslog(LOG_ERR, "ERROR: can't open the title %d info file", tt_srpt->title[titleid].title_set_nr);
+                    doplay = false;
+                    break;
+                    }
+
+                 NextState(cOPENCHAPTER);
+                 break;
+               }
+
+          case cOPENCHAPTER:
+               {
+                 /**
+                  * Make sure the chapter number is valid for this title.
+                  */
+                 isyslog(LOG_INFO, "DVD: there are %d chapters in this title", tt_srpt->title[titleid].nr_of_ptts);
+                 if (chapid < 0 || chapid >= tt_srpt->title[titleid].nr_of_ptts) {
+                    esyslog(LOG_ERR, "ERROR: invalid chapter %d", chapid + 1);
+                    doplay = false;
+                    break;
+                    }
+
+                 /**
+                  * Determine which program chain we want to watch.  This is based on the
+                  * chapter number.
+                  */
+                 ttn = tt_srpt->title[titleid].vts_ttn;
+                 vts_ptt_srpt = vts_file->vts_ptt_srpt;
+                 pgc_id = vts_ptt_srpt->title[ttn - 1].ptt[chapid].pgcn;
+                 pgn = vts_ptt_srpt->title[ttn - 1].ptt[chapid].pgn;
+                 cur_pgc = vts_file->vts_pgcit->pgci_srp[pgc_id - 1].pgc;
+                 start_cell = cur_pgc->program_map[pgn - 1] - 1;
+
+                 /**
+                  * setup Audio information
+                  **/
+                 for (maxAudioTrack = 0; maxAudioTrack < 8; maxAudioTrack++) {
+                     if (!(cur_pgc->audio_control[maxAudioTrack] & 0x8000))
+                        break;
+                     }
+                 canToggleAudioTrack = (maxAudioTrack > 0);
+                 // init the AudioInformation
+                 audioTrack = getAudioStream(logAudioTrack);
+#ifdef DVDDEBUG
+                 dsyslog(LOG_INFO, "DVD: max: %d, track: %x", maxAudioTrack, audioTrack);
+#endif
+
+                 /**
+                  * We've got enough info, time to open the title set data.
+                  */
+                 title = dvd->openTitle(tt_srpt->title[titleid].title_set_nr, DVD_READ_TITLE_VOBS);
+                 if (!title) {
+                    esyslog(LOG_ERR, "ERROR: can't open title VOBS (VTS_%02d_1.VOB).", tt_srpt->title[titleid].title_set_nr);
+                    doplay = false;
+                    break;
+                    }
+
+                 /**
+                  * Playback by cell in this pgc, starting at the cell for our chapter.
+                  */
+                 next_cell = start_cell;
+                 prev_cell = start_cell;
+                 cur_cell  = start_cell;
+
+                 NextState(cOUTCELL);
+                 break;
+               }
+
+          case cOUTCELL:
+               {
+#ifdef DVDDEBUG
+                 dsyslog(LOG_INFO, "DVD: new cell: %d", cur_cell);
+                 dsyslog(LOG_INFO, "DVD: vob_id: %x, cell_nr: %x", cur_pgc->cell_position[cur_cell].vob_id_nr, cur_pgc->cell_position[cur_cell].cell_nr);
+#endif
+
+                 if (cur_cell < 0) {
+                    cur_cell = 0;
+                    Backward();
+                    }
+                 doplay = (cur_cell < cur_pgc->nr_of_cells);
+                 if (!doplay)
+                    break;
+
+                 /* Check if we're entering an angle block. */
+                 if (cur_pgc->cell_playback[cur_cell].block_type == BLOCK_TYPE_ANGLE_BLOCK) {
+                    cur_cell += angle;
+                    for (int i = 0; ; ++i) {
+                        if (cur_pgc->cell_playback[cur_cell + i].block_mode == BLOCK_MODE_LAST_CELL) {
+                           next_cell = cur_cell + i + 1;
+                           break;
+                           }
+                        }
+                    }
+                 else {
+                    next_cell = cur_cell + 1;
+                    prev_cell = cur_cell - 1;
+                    }
+
+                 // init settings for next state
+                 if (!fastRewind)
+                    cur_pack = cur_pgc->cell_playback[cur_cell].first_sector;
+                 else
+                    cur_pack = cur_pgc->cell_playback[cur_cell].last_vobu_start_sector;
+
+                 NextState(cOUTPACK);
+                 break;
+               }
+
+          case cOUTPACK:
+               {
+#ifdef DVDDEBUG
+                 dsyslog(LOG_INFO, "DVD: new pack: %d", cur_pack);
+#endif
+                 /**
+                  * We loop until we're out of this cell.
+                  */
+
+                 if (!fastRewind) {
+                    if (cur_pack >= cur_pgc->cell_playback[cur_cell].last_sector) {
+                       cur_cell = next_cell;
+#ifdef DVDDEBUG
+                       dsyslog(LOG_INFO, "DVD: end of pack");
+#endif
+                       NextState(cOUTCELL);
+                       break;
+                       }
+                    }
+                 else {
+#ifdef DVDDEBUG
+                    dsyslog(LOG_INFO, "DVD: prev: %d, curr: %x, next: %x, prev: %x", prevcycle, cur_pack, next_vobu, prev_vobu);
+#endif
+                    if ((cur_pack & 0x80000000) != 0) {
+                       cur_cell = prev_cell;
+#ifdef DVDDEBUG
+                       dsyslog(LOG_INFO, "DVD: start of pack");
+#endif
+                       NextState(cOUTCELL);
+                       break;
+                       }
+                    }
+
+                 /**
+                  * Read NAV packet.
+                  */
+                 int len = DVDReadBlocks(title, cur_pack, 1, data);
+                 if (len == 0) {
+                    esyslog(LOG_ERR, "ERROR: read failed for block %d", cur_pack);
+                    doplay = false;
+                    break;
+                    }
+                 if (!is_nav_pack(data)) {
+                    esyslog(LOG_ERR, "ERROR: no nav_pack");
+                    return;
+                    }
+
+                 /**
+                  * Parse the contained dsi packet.
+                  */
+                 navRead_DSI(&dsi_pack, &(data[DSI_START_BYTE]), sizeof(dsi_t));
+                 if (cur_pack != dsi_pack.dsi_gi.nv_pck_lbn) {
+                    esyslog(LOG_ERR, "ERROR: cur_pack != dsi_pack.dsi_gi.nv_pck_lbn");
+                    return;
+                    }
+                 // navPrint_DSI(&dsi_pack);
+
+                 /**
+                  * Determine where we go next.  These values are the ones we mostly
+                  * care about.
+                  */
+                 next_ilvu_start = cur_pack + dsi_pack.sml_agli.data[angle].address;
+                 cur_output_size = dsi_pack.dsi_gi.vobu_ea;
+                 min_output_size = dsi_pack.dsi_gi.vobu_1stref_ea;
+
+                 /**
+                  * If we're not at the end of this cell, we can determine the next
+                  * VOBU to display using the VOBU_SRI information section of the
+                  * DSI.  Using this value correctly follows the current angle,
+                  * avoiding the doubled scenes in The Matrix, and makes our life
+                  * really happy.
+                  *
+                  * Otherwise, we set our next address past the end of this cell to
+                  * force the code above to go to the next cell in the program.
+                  */
+                 if (dsi_pack.vobu_sri.next_vobu != SRI_END_OF_CELL)
+                    next_vobu = cur_pack + (dsi_pack.vobu_sri.next_vobu & 0x7fffffff);
+                 else
+                    next_vobu = cur_pack + cur_output_size + 1;
+
+                 if (dsi_pack.vobu_sri.prev_vobu != SRI_END_OF_CELL)
+                    prev_vobu = cur_pack - (dsi_pack.vobu_sri.prev_vobu & 0x7fffffff);
+                 else {
+#ifdef DVDDEBUG
+                    dsyslog(LOG_INFO, "DVD: cur: %x, prev: %x", cur_pack, dsi_pack.vobu_sri.prev_vobu);
+#endif
+                    prev_vobu =  0x80000000;
+                    }
+
+#ifdef DVDDEBUG
+                 dsyslog(LOG_INFO, "DVD: curr: %x, next: %x, prev: %x", cur_pack, next_vobu, prev_vobu);
+#endif
+                 if (cur_output_size >= 1024) {
+                    esyslog(LOG_ERR, "ERROR: cur_output_size >= 1024");
+                    return;
+                    }
+                 cur_pack++;
+
+                 NextState(cREADFRAME);
+                 break;
+               }
+
+          case cREADFRAME:
+               {
+                 int trickMode = (fastForward && !paused || fastRewind);
+
+                 /* FIXME:
+                  *   the entire trickMode code relies on the assumtion
+                  *   that there is only one I-FRAME per PACK
+                  *
+                  *   I have no clue wether that is correct or not !!!
+                  */
+                 if (trickMode && (skipCnt++ % 4 != 0)) {
+                    cur_pack = (!fastRewind) ? next_vobu : prev_vobu;
+                    NextState(cOUTPACK);
+                    break;
+                    }
+
+                 if (trickMode)
+                    cur_output_size = min_output_size;
+
+                 /**
+                  * Read in cursize packs.
+                  */
+#ifdef DVDDEBUG
+                 dsyslog(LOG_INFO, "DVD: read pack: %d", cur_pack);
+#endif
+                 int len = DVDReadBlocks(title, cur_pack, cur_output_size, data);
+                 if (len != (int)cur_output_size * DVD_VIDEO_LB_LEN) {
+                    esyslog(LOG_ERR, "ERROR: read failed for %d blocks at %d", cur_output_size, cur_pack);
+                    doplay = false;
+                    break;
+                    }
+                 pktcnt = 0;
+                 NextState(cOUTFRAMES);
+                 break;
+               }
+
+          case cOUTFRAMES:
+               {
+                 int trickMode = (fastForward && !paused || fastRewind);
+
+                 /**
+                  * Output cursize packs.
+                  */
+                 if (pktcnt >= cur_output_size) {
+                    cur_pack = next_vobu;
+                    NextState(cOUTPACK);
+                    break;
+                    }
+                 //dsyslog(LOG_INFO, "DVD: pack: %d, frame: %d", cur_pack, pktcnt);
+
+                 if (decode_packet(&data[pktcnt * DVD_VIDEO_LB_LEN], trickMode) != 1) {   //we've got a video packet
+                    if (trickMode) {
+                        //dsyslog(LOG_INFO, "DVD: did pack: %d", pktcnt);
+                        cur_pack = (!fastRewind) ? next_vobu : prev_vobu;
+                        NextState(cOUTPACK);
+                        break;
+                        }
+                    }
+
+                 pktcnt++;
+
+                 if (pktcnt >= cur_output_size) {
+                    cur_pack = next_vobu;
+                    NextState(cOUTPACK);
+                    break;
+                    }
+                 break;
+               }
+
+        default:
+               {
+                 esyslog(LOG_ERR, "ERROR: cyclestate %d not known", cyclestate);
+                 return;
+               }
+        }
+
+        // dsyslog(LOG_INF, "DVD: new cyclestate: %d, pktcnt: %d, cur: %d", cyclestate, pktcnt, cur_output_size);
+        }
+
+  dsyslog(LOG_INFO, "input thread ended (pid=%d)", getpid());
+}
+
+#define NO_PICTURE 0
+#define SC_PICTURE 0x00
+
+inline bool cDVDplayBuffer::PacketStart(uchar **Data, int len)
+{
+  while (len > 6 && !((*Data)[0] == 0x00 && (*Data)[1] == 0x00 && (*Data)[2] == 0x01))
+        (*Data)++;
+  return ((*Data)[0] == 0x00 && (*Data)[1] == 0x00 && (*Data)[2] == 0x01);
+}
+
+inline int cDVDplayBuffer::GetPacketType(const uchar *Data)
+{
+  return Data[3];
+}
+
+inline int cDVDplayBuffer::GetStuffingLen(const uchar *Data)
+{
+  return Data[13] & 0x07;
+}
+
+inline int cDVDplayBuffer::GetPacketLength(const uchar *Data)
+{
+  return (Data[4] << 8) + Data[5] + 6;
+}
+
+inline int cDVDplayBuffer::GetPESHeaderLength(const uchar *Data)
+{
+  return (Data[8]);
+}
+
+int cDVDplayBuffer::ScanVideoPacket(const uchar *Data, int Count, uchar *PictureType)
+{
+  // Scans the video packet starting at Offset and returns its length.
+  // If the return value is -1 the packet was not completely in the buffer.
+
+  int Length = GetPacketLength(Data);
+  if (Length > 0 && Length <= Count) {
+     int i = 8; // the minimum length of the video packet header
+     i += Data[i] + 1;   // possible additional header bytes
+     for (; i < Length; i++) {
+         if (Data[i] == 0 && Data[i + 1] == 0 && Data[i + 2] == 1) {
+            switch (Data[i + 3]) {
+              case SC_PICTURE: *PictureType = (uchar)(Data[i + 5] >> 3) & 0x07;
+                               return Length;
+              }
+            }
+         }
+     PictureType = NO_PICTURE;
+     return Length;
+     }
+  return -1;
+}
+
+#define SYSTEM_HEADER    0xBB
+#define PROG_STREAM_MAP  0xBC
+#ifndef PRIVATE_STREAM1
+#define PRIVATE_STREAM1  0xBD
+#endif
+#define PADDING_STREAM   0xBE
+#ifndef PRIVATE_STREAM2
+#define PRIVATE_STREAM2  0xBF
+#endif
+#define AUDIO_STREAM_S   0xC0
+#define AUDIO_STREAM_E   0xDF
+#define VIDEO_STREAM_S   0xE0
+#define VIDEO_STREAM_E   0xEF
+#define ECM_STREAM       0xF0
+#define EMM_STREAM       0xF1
+#define DSM_CC_STREAM    0xF2
+#define ISO13522_STREAM  0xF3
+#define PROG_STREAM_DIR  0xFF
+
+// data=PCM samples, 16 bit, LSB first, 48kHz, stereo
+int cDVDplayBuffer::SendPCM(int size)
+{
+
+#define MAXSIZE 2032
+
+  uchar buffer[MAXSIZE + 16];
+  int length = 0;
+  int p_size;
+
+  if (ac3inp == ac3outp)
+     return 1;
+
+  while (size > 0) {
+        if (size >= MAXSIZE)
+           p_size = MAXSIZE;
+        else
+           p_size = size;
+        length = 10;
+
+        while (p_size) {
+             if (ac3outp != ac3inp) { // data in the buffer
+                buffer[(length + 6) ^ 1] = ac3data[ac3outp]; // swab because ac3dec delivers wrong byteorder
+                                                             // XXX there is no 'swab' here??? (kls)
+                p_size--;
+                length++;
+                ac3outp = (ac3outp + 1) % AC3_BUFFER_SIZE;
+                }
+             else
+                break;
+             }
+
+        buffer[0] = 0x00;
+        buffer[1] = 0x00;
+        buffer[2] = 0x01;
+        buffer[3] = PRIVATE_STREAM1;
+
+        buffer[4] = (length >> 8) & 0xff;
+        buffer[5] = length & 0xff;
+
+        buffer[6] = 0x80;
+        buffer[7] = 0x00;
+        buffer[8] = 0x00;
+
+        buffer[9]  = aLPCM; // substream ID
+        buffer[10] = 0x00;  // other stuff (see DVD specs), ignored by driver
+        buffer[11] = 0x00;
+        buffer[12] = 0x00;
+        buffer[13] = 0x00;
+        buffer[14] = 0x00;
+        buffer[15] = 0x00;
+
+        length += 6;
+
+        putFrame(buffer, length);
+        size -= MAXSIZE;
+        }
+  return 0;
+}
+
+void cDVDplayBuffer::playDecodedAC3(void)
+{
+  int ac3_datasize = (AC3_BUFFER_SIZE + ac3inp - ac3outp) % AC3_BUFFER_SIZE;
+
+  if (ac3_datasize) {
+     if (ac3_datasize > 1024 * 48)
+        SendPCM(3096);
+     else if (ac3_datasize > 1024 * 32)
+        SendPCM(1536);
+     else if (ac3_datasize > 1024 * 16 && !(lpcm_count % 2))
+        SendPCM(1536);
+     else if (ac3_datasize && !(lpcm_count % 4))
+        SendPCM(1536);
+     lpcm_count++;
+     }
+  else
+     lpcm_count=0;
+}
+
+void cDVDplayBuffer::handleAC3(unsigned char *sector, int length)
+{
+  if (dolbyDev) {
+     while (length > 0) {
+           int w = fwrite(sector, 1, length , dolbyDev);
+           if (w < 0) {
+              LOG_ERROR;
+              break;
+              }
+           length -= w;
+           sector += w;
+           }
+     }
+  else {
+     if (ac3stat == AC3_PLAY)
+        ac3_decode_data(sector, sector+length, 0, &ac3inp, &ac3outp, (char *)ac3data);
+     else if (ac3stat == AC3_START) {
+        ac3_decode_data(sector, sector+length, 1, &ac3inp, &ac3outp, (char *)ac3data);
+        ac3stat = AC3_PLAY;
+        }
+     }
+  //playDecodedAC3();
+}
+
+void cDVDplayBuffer::putFrame(unsigned char *sector, int length)
+{
+  cFrame *frame = new cFrame(sector, length);
+  while (Busy() && !blockInput && !Put(frame))
+        ;
+}
+
+int cDVDplayBuffer::decode_packet(unsigned char *sector, int trickMode)
+{
+  uchar pt = 1;
+#if 0
+  uchar *osect = sector;
+#endif
+
+  //make sure we got a PS packet header
+  if (!PacketStart(&sector, DVD_VIDEO_LB_LEN) && GetPacketType(sector) != 0xBA) {
+     esyslog(LOG_ERR, "ERROR: got unexpected packet: %x %x %x %x", sector[0], sector[1], sector[2], sector[3]);
+     return -1;
+     }
+
+  int offset = 14 + GetStuffingLen(sector);
+  sector += offset;
+  int r = DVD_VIDEO_LB_LEN - offset;
+  int datalen = r;
+
+  sector[6] &= 0x8f;
+  uchar *data = sector;
+
+  switch (GetPacketType(sector)) {
+    case VIDEO_STREAM_S ... VIDEO_STREAM_E:
+         {
+           ScanVideoPacket(sector, r, &pt);
+           if (trickMode && pt != 1)
+              return pt;
+           break;
+         }
+    case AUDIO_STREAM_S ... AUDIO_STREAM_E: {
+         // no sound in trick mode
+         if (trickMode)
+            return 1;
+         if (audioTrack != GetPacketType(sector))
+            return 5;
+         break;
+         }
+    case PRIVATE_STREAM1:
+         {
+           datalen = GetPacketLength(sector);
+           //skip optional Header bytes
+           datalen -= GetPESHeaderLength(sector);
+           data += GetPESHeaderLength(sector);
+           //skip mandatory header bytes
+           data += 3;
+           //fallthrough is intended
+         }
+    case PRIVATE_STREAM2:
+         {
+           //FIXME: Stream1 + Stream2 is ok, but is Stream2 alone also?
+
+           // no sound in trick mode
+           if (trickMode)
+              return 1;
+
+           // skip PS header bytes
+           data += 6;
+           // data now points to the beginning of the payload
+
+           if (audioTrack == *data) {
+              switch (audioTrack & 0xF8) {
+                case aAC3:
+                     data += 4;
+                     // correct a3 data lenght - FIXME: why 13 ???
+                     datalen -= 13;
+                     handleAC3(data, datalen);
+                     break;
+                case aLPCM:
+                     // write(audio, sector+14 , sector[19]+(sector[18]<<8)+6);
+                     putFrame(sector, GetPacketLength(sector));
+                     break;
+                default:
+                     break;
+                }
+              }
+           return pt;
+         }
+    default:
+    case SYSTEM_HEADER:
+    case PROG_STREAM_MAP:
+         {
+           esyslog(LOG_ERR, "ERROR: don't know what to do - packetType: %x", GetPacketType(sector));
+           // just skip them for now,l but try to debug it
+           dsyslog(LOG_INFO, "DVD: curr cell: %8x, Nr of cells: %8x", cur_cell, cur_pgc->nr_of_cells);
+           dsyslog(LOG_INFO, "DVD: curr pack: %8x, last sector: %8x", cur_pack, cur_pgc->cell_playback[cur_cell].last_sector);
+           dsyslog(LOG_INFO, "DVD: curr pkt:  %8x, output size: %8x", pktcnt, cur_output_size);
+#if 0
+           // looks like my DVD is/was brocken .......
+           for (int n = 0; n <= 255; n++) {
+               dsyslog(LOG_INFO, "%4x   %2x %2x %2x %2x  %2x %2x %2x %2x", n * 8,
+                        osect[n * 8 + 0], osect[n * 8 + 1], osect[n * 8 + 2], osect[n * 8 + 3],
+                        osect[n * 8 + 4], osect[n * 8 + 5], osect[n * 8 + 6], osect[n * 8 + 7]);
+               }
+           return 0;
+#endif
+           return pt;
+         }
+    }
+  putFrame(sector, r);
+  if ((audioTrack & 0xF8) == aAC3)
+     playDecodedAC3();
+  return pt;
+}
+
+void cDVDplayBuffer::Empty(bool Block)
+{
+  if (!(blockInput || blockOutput)) {
+     cPlayBuffer::Empty(true);
+     ac3stat = AC3_START;
+     ac3outp = ac3inp;
+     }
+  if (!Block)
+     cPlayBuffer::Empty(false);
+}
+
+void cDVDplayBuffer::Close(void)
+{
+  dvd->Close();
+}
+
+int cDVDplayBuffer::SkipFrames(int Frames)
+{
+  return -1;
+}
+
+/* Figure out the correct pgN from the cell and update state. */
+void cDVDplayBuffer::setChapid(void)
+{
+  int new_pgN = 0;
+
+  while (new_pgN < cur_pgc->nr_of_programs && cur_cell >= cur_pgc->program_map[new_pgN])
+        new_pgN++;
+
+  if (new_pgN == cur_pgc->nr_of_programs) { /* We are at the last program */
+     if (cur_cell > cur_pgc->nr_of_cells)
+        chapid = 1; /* We are past the last cell */
+     }
+
+  chapid = new_pgN;
+}
+
+void cDVDplayBuffer::SkipSeconds(int Seconds)
+{
+  if (Seconds) {
+     setChapid();
+     int newchapid = Seconds > 0 ? chapid + 1 : chapid - 1;
+
+     if (newchapid >= 0 && newchapid < tt_srpt->title[titleid].nr_of_ptts) {
+        Empty(true);
+        chapid = newchapid;
+        NextState(cOPENCHAPTER);
+        if (ac3stat != AC3_STOP)
+           ac3stat = AC3_START;
+        ac3outp = ac3inp;
+        Empty(false);
+        Play();
+        }
+     }
+}
+
+void cDVDplayBuffer::Goto(int Index, bool Still)
+{
+}
+
+void cDVDplayBuffer::GetIndex(int &Current, int &Total, bool SnapToIFrame)
+{
+  Current = Total = -1;
+}
+#endif //DVDSUPPORT
+
 // --- cTransferBuffer -------------------------------------------------------
 
-class cTransferBuffer : public cRingBuffer {
+class cTransferBuffer : public cRingBufferLinear {
 private:
   cDvbApi *dvbApi;
   int fromDevice, toDevice;
@@ -1102,7 +2027,7 @@ public:
   };
 
 cTransferBuffer::cTransferBuffer(cDvbApi *DvbApi, int ToDevice, int VPid, int APid)
-:cRingBuffer(VIDEOBUFSIZE, true)
+:cRingBufferLinear(VIDEOBUFSIZE, true)
 ,remux(VPid, APid, 0, 0, 0)
 {
   dvbApi = DvbApi;
@@ -2212,7 +3137,7 @@ bool cDvbApi::SetChannel(int ChannelNumber, int FrequencyMHz, char Polarization,
               esyslog(LOG_ERR, "ERROR %d in qpsk get event", res);
            }
         else
-           esyslog(LOG_ERR, "ERROR: timeout while tuning\n");
+           esyslog(LOG_ERR, "ERROR: timeout while tuning");
         }
      else if (fd_qamfe >= 0) { // DVB-C
 
@@ -2239,7 +3164,7 @@ bool cDvbApi::SetChannel(int ChannelNumber, int FrequencyMHz, char Polarization,
               esyslog(LOG_ERR, "ERROR %d in qam get event", res);
            }
         else
-           esyslog(LOG_ERR, "ERROR: timeout while tuning\n");
+           esyslog(LOG_ERR, "ERROR: timeout while tuning");
         }
      else {
         esyslog(LOG_ERR, "ERROR: attempt to set channel without DVB-S or DVB-C device");
@@ -2410,6 +3335,36 @@ bool cDvbApi::StartReplay(const char *FileName)
      }
   return false;
 }
+
+#ifdef DVDSUPPORT
+bool cDvbApi::StartDVDplay(cDVD *dvd, int TitleID)
+{
+  if (Recording()) {
+     esyslog(LOG_ERR, "ERROR: StartDVDplay() called while recording - ignored!");
+     return false;
+     }
+  StopTransfer();
+  StopReplay();
+  if (fd_video >= 0 && fd_audio >= 0) {
+
+     // Check DeviceName:
+
+     if (!dvd) {
+        esyslog(LOG_ERR, "ERROR: StartDVDplay: DVD device is (null)");
+        return false;
+        }
+
+     // Create replay buffer:
+
+     replayBuffer = new cDVDplayBuffer(this, fd_video, fd_audio, dvd, TitleID);
+     if (replayBuffer)
+        return true;
+     else
+        esyslog(LOG_ERR, "ERROR: can't allocate replaying buffer");
+     }
+  return false;
+}
+#endif //DVDSUPPORT
 
 void cDvbApi::StopReplay(void)
 {

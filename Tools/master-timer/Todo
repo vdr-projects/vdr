@@ -1,0 +1,10 @@
+
+- "Intelligenter" Kanal-Scanner (z.B. nur 1 Kanal fuer ein
+  Sender-"Gruppe")
+- Filtern nach Serie/Film
+- "Komfortable" Anzeige, mit Black & Whitelisten, fuer Genres/Titeln usw.
+- Unterstueztung von 1xVDR pro Karte
+- Abspielen (mit automatischen "killen" des "Frontend"-VDRs) von
+  Aufzeichnungen
+- "View"-Timer d.h. Timer der nicht Aufnimmt sondern nur den Kanal aendert
+- "unwichtige" Timer "verdraengen" wenn andere Aufnahmen anstehen.

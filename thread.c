@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 1.9 2001/06/27 11:34:41 kls Exp $
+ * $Id: thread.c 1.11 2001/08/05 10:36:52 kls Exp $
  */
 
 #include "thread.h"
@@ -13,6 +13,42 @@
 #include <sys/wait.h>
 #include <unistd.h>
 #include "tools.h"
+
+// --- cCondVar --------------------------------------------------------------
+
+cCondVar::cCondVar(void)
+{
+  pthread_cond_init(&cond, 0);
+}
+
+cCondVar::~cCondVar()
+{
+  pthread_cond_destroy(&cond);
+}
+
+bool cCondVar::Wait(cMutex &Mutex)
+{
+  return pthread_cond_wait(&cond, &Mutex.mutex);
+}
+
+/*
+bool cCondVar::TimedWait(cMutex &Mutex, unsigned long tmout)
+{
+  return pthread_cond_timedwait(&cond, &Mutex.mutex, tmout);
+}
+*/
+
+void cCondVar::Broadcast(void)
+{
+  pthread_cond_broadcast(&cond);
+}
+
+/*
+void cCondVar::Signal(void)
+{
+  pthread_cond_signal(&cond);
+}
+*/
 
 // --- cMutex ----------------------------------------------------------------
 
@@ -85,6 +121,7 @@ bool cThread::Start(void)
      running = true;
      parentPid = getpid();
      pthread_create(&thread, NULL, (void *(*) (void *))&StartThread, (void *)this);
+     pthread_setschedparam(thread, SCHED_RR, 0);
      usleep(10000); // otherwise calling Active() immediately after Start() causes a "pure virtual method called" error
      }
   return true; //XXX return value of pthread_create()???

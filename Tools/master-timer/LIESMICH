@@ -1,0 +1,106 @@
+		Master-Timer
+		============
+
+
+1. Einleitung
+-------------
+
+Master-Timer ist ein System zum automatischen Aufnehmen von Serien und Filmen.
+
+2. Voraussetzungen
+------------------
+
+VDR liefert die "epg.data".
+
+3. Konfigurationsdateien
+------------------------
+
+Alle Konfigurationsdateien liegen unter "<HOME>.master-timer"
+
+config: Eine Ansammlung von Key-Value Paaren. Alle sind "optional" und 
+        erhalten dann die angegebenen Default-Werte
+
+(# = Kommentarzeilen)
+marginstart	(Default 600)
+  Anzahl der "Sicherheits" Sekunden die ein Timer frueher beginnen soll
+
+marginstop	(Default 600)
+  Anzahl der "Sicherheits" Sekunden die ein Timer laenger dauern soll
+
+defaultprio	(Default 50)
+  Die Prioritaet die fuer Timer verwendet wird wo keine Prioritaet 
+  angegeben ist
+
+DVBCards	(Default 1)
+  Anzahl der vorhandenen DVB-Karten (Derzeit nicht verwendet)
+
+Dest-Host 	(Default "localhost")
+  Host-name oder IP des Rechners auf dem VDR laeuft
+
+Dest-Port 	(Default "2001")
+  Port der VDR verwendet
+
+jointimers	(Default 0)
+  Sollen aufeinanderfolgende Timer auf den gleichen Kanal zusammengefasst 
+  werden (0 = "Nein", alles andere "Ja")
+
+debug		(Default 0)
+  Debug-Level, die einzelnen Debug-Werte muessen aus folgenden Werten 
+  zusammengezaehlt werden
+    1     : Dump "torecord"
+    2     : Dump all timers
+    4     : Show when a timer will be deleted
+    8     : Dump the "Done" REs
+    16    : Verbose Config-Reading
+
+deepblack: Eine Liste von Titeln die man NIEMALS NIMMER sehen will
+           Jede Zeile = 1 Titel
+
+subtitle-movies: Eine Liste der "Subtitel" die ein Zeichen fuer einen Film sind
+                 (Soweit die von den Sendern richtig ausgefuellt sind.)
+                 Jede Zeile = 1 Subtitel
+
+torecord: Die Sachen die man Aufnehmen will
+          Jede Zeile = 1 Timer
+# Format: (Every field is "optional".
+# [Title RE|Subtitle RE|Description RE|Channel-Name|Timeframe|Prio|Timer-Title]
+#
+# To record something at least one of the "Title", "Subtitle" or "Description" 
+# Fields has to be provided. This 3 fields are "include" and the rest are 
+# "exclude" fields!
+#
+# More than one channel definition can be provided. The delimiter is ";"
+# Additionaly you can make a "blacklist" of Channels when you prepent a "!" to the first Channel Definition
+# The "!" is only tested for the FIRST Channel definition.
+# You can only have a white or a blacklist (Mixing doesn't make sense!)
+#
+# ex. Record the series "Deep Space Nine" on Sci-Fantasy in the timeframe 09:00 - 14:00
+# Deep Space Nine|||Sci-Fantasy|0900-1400|99|DS9
+#
+# Record all "Actionfilm"s with "Schwarzenegger"
+# |Actionfilm|Schwarzenegger
+#
+
+
+done: 	The titles/subtitles which are already recorded/should not be recorded
+        (Programmed Timers which got inserted into "done" will be deleted 
+         automaticaly)
+
+4. Notices
+----------
+
+- Recordings "overlapping" on the same channel, will be joined into one Timer
+- Title/Subtitle/Descriptions are "fixed" for Channel that don't fill them 
+  out "correctly" (Currently the "Bugs" from Pro-7/VOX/VIVA)
+  Pro7: Remove the Title from the Subtitle  '<Title> / <Subtitle>'
+  VOX/VIVA: Subtitle is enclosed into "" and after ". " is the description
+  VIVA: When the Subtitle beginns with space the subtitle is moved to
+        description
+  All (except the second VIVA one) fixes are tried onto ALL Subtitles.
+
+5. Known-Bugs
+-------------
+
+- It isn't checked if there are enough DVB-Cards
+- Overlapping Timers, on the same channel, are always joined
+- JOINed timers which are "done" don't get deleted automaticaly

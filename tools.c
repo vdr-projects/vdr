@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.34 2001/05/20 08:30:54 kls Exp $
+ * $Id: tools.c 1.35 2001/08/05 12:38:06 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -406,8 +406,8 @@ bool cFile::FileReady(int FileDes, int TimeoutMs)
   FD_SET(FileDes, &set);
   if (TimeoutMs < 100)
      TimeoutMs = 100;
-  timeout.tv_sec  = 0;
-  timeout.tv_usec = TimeoutMs * 1000;
+  timeout.tv_sec  = TimeoutMs / 1000;
+  timeout.tv_usec = (TimeoutMs % 1000) * 1000;
   return select(FD_SETSIZE, &set, NULL, NULL, &timeout) > 0 && FD_ISSET(FileDes, &set);
 }
 

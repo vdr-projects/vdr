@@ -4,11 +4,10 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 1.16 2001/02/24 16:26:11 kls Exp $
+ * $Id: osd.c 1.17 2001/08/02 14:18:17 kls Exp $
  */
 
 #include "osd.h"
-#include <assert.h>
 #include <string.h>
 #include "i18n.h"
 

@@ -2,27 +2,27 @@
  * vdr.c: Video Disk Recorder main program
  *
  * Copyright (C) 2000 Klaus Schmidinger
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  * Or, point your browser to http://www.gnu.org/copyleft/gpl.html
- * 
+ *
  * The author can be reached at kls@cadsoft.de
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.58 2001/06/23 12:29:41 kls Exp $
+ * $Id: vdr.c 1.61 2001/08/05 16:15:51 kls Exp $
  */
 
 #include <getopt.h>
@@ -31,6 +31,9 @@
 #include <unistd.h>
 #include "config.h"
 #include "dvbapi.h"
+#ifdef DVDSUPPORT
+#include "dvd.h"
+#endif //DVDSUPPORT
 #include "i18n.h"
 #include "interface.h"
 #include "menu.h"
@@ -85,14 +88,15 @@ int main(int argc, char *argv[])
       { "log",      required_argument, NULL, 'l' },
       { "port",     required_argument, NULL, 'p' },
       { "video",    required_argument, NULL, 'v' },
+      { "dvd",      required_argument, NULL, 'V' },
       { "watchdog", required_argument, NULL, 'w' },
       { "terminal", required_argument, NULL, 't' },
       { 0 }
     };
-  
+
   int c;
   int option_index = 0;
-  while ((c = getopt_long(argc, argv, "a:c:dD:hl:p:v:w:t:", long_options, &option_index)) != -1) {
+  while ((c = getopt_long(argc, argv, "a:c:dD:hl:p:v:V:w:t:", long_options, &option_index)) != -1) {
         switch (c) {
           case 'a': cDvbApi::SetAudioCommand(optarg);
                     break;
@@ -124,6 +128,7 @@ int main(int argc, char *argv[])
                            "  -p PORT,  --port=PORT    use PORT for SVDRP (default: %d)\n"
                            "                           0 turns off SVDRP\n"
                            "  -v DIR,   --video=DIR    use DIR as video directory (default: %s)\n"
+                           "  -V DEV,   --dvd=DEV      use DEV as the DVD device (default: %s)\n"
                            "  -w SEC,   --watchdog=SEC activate the watchdog timer with a timeout of SEC\n"
                            "                           seconds (default: %d); '0' disables the watchdog\n"
                            "  -t TTY,   --terminal=TTY controlling tty\n"
@@ -131,6 +136,11 @@ int main(int argc, char *argv[])
                            "Report bugs to <vdr-bugs@cadsoft.de>\n",
                            DEFAULTSVDRPPORT,
                            VideoDirectory,
+#ifdef DVDSUPPORT
+                           cDVD::DeviceName(),
+#else
+                           "no DVD support",
+#endif //DVDSUPPORT
                            DEFAULTWATCHDOG
                            );
                     return 0;
@@ -158,6 +168,18 @@ int main(int argc, char *argv[])
                     while (optarg && *optarg && optarg[strlen(optarg) - 1] == '/')
                           optarg[strlen(optarg) - 1] = 0;
                     break;
+          case 'V': 
+#ifdef DVDSUPPORT
+                    cDVD::SetDeviceName(optarg);
+                    if (!cDVD::DriveExists()) {
+                       fprintf(stderr, "vdr: DVD drive not found: %s\n", optarg);
+                       return 2;
+                       }
+#else
+                    fprintf(stderr, "vdr: DVD support has not been compiled in!");
+                    return 2;
+#endif //DVDSUPPORT
+                    break;
           case 'w': if (isnumber(optarg)) {
                        int t = atoi(optarg);
                        if (t >= 0) {
@@ -173,7 +195,7 @@ int main(int argc, char *argv[])
         }
 
   // Log file:
-  
+
   if (SysLogLevel > 0)
      openlog("vdr", LOG_PID | LOG_CONS, LOG_USER);
 
@@ -324,6 +346,12 @@ int main(int argc, char *argv[])
                             DELETENULL(ReplayControl);
                             ReplayControl = new cReplayControl;
                             break;
+#ifdef DVDSUPPORT
+             case osDVD:    DELETENULL(Menu);
+                            DELETENULL(ReplayControl);
+                            Menu = new cMenuDVD;
+                            break;
+#endif //DVDSUPPORT
              case osStopReplay:
                             DELETENULL(*Interact);
                             DELETENULL(ReplayControl);
@@ -358,7 +386,7 @@ int main(int argc, char *argv[])
              case kRight: if (!Interface->Recording()) {
                              int SaveGroup = CurrentGroup;
                              if (NORMALKEY(key) == kRight)
-                                CurrentGroup = Channels.GetNextGroup(CurrentGroup) ; 
+                                CurrentGroup = Channels.GetNextGroup(CurrentGroup) ;
                              else
                                 CurrentGroup = Channels.GetPrevGroup(CurrentGroup < 1 ? 1 : CurrentGroup);
                              if (CurrentGroup < 0)

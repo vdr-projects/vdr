@@ -1,0 +1,10 @@
+#!/bin/sh
+if [ "$1" != "" ]; then
+  vmount "$1"
+fi
+ssh dvb2 /usr/local/bin/my/novdr
+sleep 1s
+cat /mnt/*/* | buffer -b 1000 -S 1024 | ssh dvb2 play2
+ssh dvb2 rm /tmp/novdr
+umount /mnt/*
+

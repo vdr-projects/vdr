@@ -1,0 +1,14 @@
+# How Many Seconds "too early" should the timer begin
+marginstart	= 600
+# How Many Seocnds "too long" should the timer end
+marginstop	= 600
+# When the Prio isn't provied in the config-File use this value
+defaultprio	= 50
+# How many DVB-Cards are installed in the Computer (Not used yet)
+DVBCards	= 3
+# IP/Hostname:Port of the Destinations (Space is used for delimiter)
+Dest-Host 	= localhost:2001
+# Should Timers on the same channels be joined when they overlapp (0 = off)
+jointimers	= 1
+# Debug-Level
+debug		= 0
