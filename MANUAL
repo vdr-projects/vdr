@@ -536,7 +536,7 @@ Version 1.2
                          with a priority below PrimaryLimit will never execute.
 
   Default priority = 50  The default Priority and Lifetime values used when
-  Default lifetime = 50  creating a new timer event. A Lifetime value of 99
+  Default lifetime = 99  creating a new timer event. A Lifetime value of 99
                          means that this recording will never be deleted
                          automatically.
 

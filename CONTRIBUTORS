@@ -498,6 +498,7 @@ Oliver Endriss <o.endriss@gmx.de>
  for fixing checking for VIDEO_STREAM_S in cRemux::SetBrokenLink()
  for suggesting to add 'repeat' function keys '7' and '9'
  for fixing handling rc key learning in case cRemote::Initialize() returns 'false'
+ for suggesting to change the default "Lifetime" to 99
 
 Reinhard Walter Buchner <rw.buchner@freenet.de>
  for adding some satellites to 'sources.conf'

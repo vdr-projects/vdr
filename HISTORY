@@ -2424,3 +2424,8 @@ Video Disk Recorder Revision History
   Huelswitt).
 - Added MPEG1 handling to cDvbDevice::StillPicture() (thanks to Thomas
   Heiligenmann).
+- Changed the default "Lifetime" to 99, which means that recordings will
+  never be deleted automatically in case the disk runs full (suggested by
+  Oliver Endriss). Note that in an existing VDR installation the current
+  value as set in 'setup.conf' will still be used - this change only affects
+  new VDR installations.
