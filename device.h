@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 1.44 2004/06/19 08:50:37 kls Exp $
+ * $Id: device.h 1.45 2004/09/24 14:07:22 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -15,6 +15,7 @@
 #include "filter.h"
 #include "nit.h"
 #include "pat.h"
+#include "ringbuffer.h"
 #include "sdt.h"
 #include "sections.h"
 #include "thread.h"
@@ -437,20 +438,17 @@ public:
 /// sure the returned data points to a TS packet and automatically
 /// re-synchronizes after broken packets.
 
-class cTSBuffer {
+class cTSBuffer : public cThread {
 private:
   int f;
-  int size;
   int cardIndex;
-  int tsRead;
-  int tsWrite;
-  uchar *buf;
-  bool firstRead;
-  int Used(void) { return tsRead <= tsWrite ? tsWrite - tsRead : size - tsRead + tsWrite; }
+  bool active;
+  bool delivered;
+  cRingBufferLinear *ringBuffer;
+  virtual void Action(void);
 public:
   cTSBuffer(int File, int Size, int CardIndex);
   ~cTSBuffer();
-  int Read(void);
   uchar *Get(void);
   };
 

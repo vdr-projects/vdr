@@ -271,6 +271,8 @@ Matthias Weingart <matthias@pentax.boerde.de>
 
 Andreas Share <a.share@t-online.de>
  for his support in keeping the Premiere World channels up to date in 'channels.conf'
+ for pointing out that section filters should only be set if the device actually has
+ a lock
 
 Simon Bauschulte <SemiSchwabe@Brutzel.de>
  for his support in keeping the Premiere World channels up to date in 'channels.conf'
@@ -628,6 +630,7 @@ Emil Naepflein <Emil.Naepflein@philosys.de>
  for fixing selecting the device, because sometimes an FTA recording terminated a
  CA recording
  for suggesting to never delete edited recordings automatically if the disk runs full
+ for making volume control more linear
 
 Gerald Berwolf <genka@genka.de>
  for suggesting to deactivate some templates in tools.h in case some plugin needs to
@@ -685,6 +688,7 @@ Marcel Wiesweg <marcel.wiesweg@gmx.de>
  for fixing a memory leak in NIT processing
  for adding a few missing initializations
  for adding play mode pmVideoOnly
+ for fixing a possible crash with inconsistent SI data
 
 Torsten Herz <torsten.herz@web.de>
  for fixing a possible deadlock when using the "Blue" button in the "Schedules" menu
@@ -721,6 +725,7 @@ Sascha Volkenandt <sascha@akv-soft.de>
  for suggesting to ignore unused "none" color entries in XPM files written by
  some broken graphics tools
  for fixing a memory leak in theme description handling
+ for pointing out a "near miss" condition in cCondVar
 
 Malcolm Caldwell <malcolm.caldwell@ntu.edu.au>
  for modifying LOF handling to allow for C-band reception
@@ -750,6 +755,8 @@ Christoph Friederich <christoph.friederich@gmx.de>
 
 Andreas Brachold <andy03@deltab.de>
  for his support in keeping 'channels.conf.terr' up to date
+ for fixing 'newplugin' and libsi/Makefile to use the compiler defined in $(CXX)
+ for generating file dependencies
 
 Manuel Hartl <icecep@gmx.net>
  for suggesting to extend the logging info when starting/stopping timers
@@ -862,6 +869,7 @@ Reinhard Nissl <rnissl@gmx.de>
  for reporting a bug in checking the last area for misalignment in cOsd::CanHandleAreas()
  for suggesting to make sure the OSD reports oeWrongAlignment errors before any
  oeAreasOverlap error
+ for reporting a a crash in the time search mechanism
 
 Richard Robson <richard_robson@beeb.net>
  for reporting freezing replay if a timer starts while in Transfer Mode from the
@@ -1024,6 +1032,10 @@ Michal Dobrzynski <michal_dobrzynski@mac.com>
 Wayne Keer <syphir@syphir.sytes.net>
  for reporting a bug in handling descriptor loops in 'libsi', which had sometimes
  caused invalid CA ids to be added to the channel definitions
+ for pointing out a problem with the initialization of aPid1 and aPid2 in
+ cDvbDevice::cDvbDevice() in case a patch references them
+ for suggesting to make the "Channel not available!" message and mtInfo instead of
+ mtError
 
 Marco Schlüßler <marco@lordzodiac.de>
  for fixing handling colors in cDvbSpuPalette::yuv2rgb()
@@ -1034,6 +1046,13 @@ Marco Schlüßler <marco@lordzodiac.de>
  for fixing handling error case '-1' when polling section filters
  for suggesting to avoiding flashing effects in the OSD of full featured DVB cards
  by explicitly clearing the OSD windows before opening them
+ for fixing a possible NULL pointer assignment in cMenuText::SetText()
+ for doing some testing regarding buffer performance and giving me some hints that
+ finally lead to finding out that the basic problem causing buffer overflows was in
+ EnableGet()/EnablePut() being called too often
+ for avoiding unnecessary section filter start/stops
+ for pointing out that if one PID can't be added, the whole cDevice::AttachReceiver()
+ should fail and all PIDs added so far should be deleted
 
 Jürgen Schmitz <j.schmitz@web.de>
  for reporting a bug in displaying the current channel when switching via the SVDRP
@@ -1044,6 +1063,7 @@ Philip Lawatsch <philip@lawatsch.at>
 
 Jouni Karvo <kex@netlab.hut.fi>
  for suggesting to make the cOsd constructor 'protected'
+ for fixing checking for the presence of NPTL
 
 Olaf Henkel <olafhenkel@t-online.de>
  for reporting a problem with long event texts in the "Classic VDR" skin
@@ -1060,3 +1080,23 @@ Jörg Knitter <joerg.knitter@gmx.de>
 
 Mike parker <vdr@msatt.freeserve.co.uk>
  for helping to test support for NVOD channels
+
+Dick Streefland <Dick.Streefland@xs4all.nl>
+ for fixing a crash in case the last line in channels.conf is a group separator and
+ that group is selected in the channel display
+
+Kimmo Tykkala <tykkala@iki.fi>
+ for pointing out a problem in showing the replay mode if the OSD is currently in use
+
+Arthur Konovalov <kasjas@hot.ee>
+ for translating OSD texts to the Estonian language
+
+Milos Kapoun <m.kapoun@cra.cz>
+ for suggesting to skip code table info in SI data
+ for adding missing Czech characters to fontosd-iso8859-2.c
+
+Udo Richter <udo_richter@gmx.de>
+ for refining the formula for making volume control more linear
+
+Sven Kreiensen <svenk@kammer.uni-hannover.de>
+ for his help in keeping 'channels.conf.terr' up to date

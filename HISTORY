@@ -2966,3 +2966,73 @@ Video Disk Recorder Revision History
   of the various parts of the channel name is yet to come.
 - The 'radio' channel icon is now only displayed in the ST:TNG skin if the channel
   actually has an APID.
+
+2004-10-17: Version 1.3.13
+
+- Fixed checking for the presence of NPTL (thanks to Jouni Karvo).
+- Making sure section filters are only set if the device actually has a lock
+  (thanks to Andreas Share for pointing this out).
+- Fixed a possible NULL pointer assignment in cMenuText::SetText() (thanks to
+  Marco Schlüssler).
+- Fixed a crash in case the last line in channels.conf is a group separator and
+  that group is selected in the channel display (thanks to Dick Streefland).
+- Added cRingBufferLinear::Read() to read directly from a file handle into the
+  ring buffer.
+- Using timeouts in ring buffers to avoid 'usleep()'.
+- Clearing the 'Transfer Mode' ring buffer after clearing the device to avoid
+  an "almost full" ring buffer.
+- Removed locking from cRingBufferLinear for better performance under high load.
+- Using a cRingBufferLinear in cRemux to avoid unnecessary copying of data.
+- Using a cRingBufferLinear in cTSBuffer and filling it in a separate thread
+  to avoid buffer overflows. Plugins using cTSBuffer will need to remove the
+  call to the now obsolete Read() function (see cDvbDevice::GetTSPacket() for
+  the new usage of cTSBuffer).
+- cRemux::Process() has been split into Put(), Get() and Del() to allow for a
+  better decoupling of the remuxing and disk writing process. Plugins using
+  cRemux will need to be modified accordingly.
+- The actual disk writing in recordings is now done in a separate thread to
+  improve the overall throughput.
+- Changed cRemux so that it returns the maximum available amount of data with
+  each call, not just 2048 byte.
+- Added a visual display of all cRingBufferLinear buffers for debugging. To
+  activate it, define DEBUGRINGBUFFERS in ringbuffer.h.
+- Instead of cCondVar now using the new cCondWait (which also avoids a possible
+  "near miss" condition; thanks to Sascha Volkenandt for pointing out this one).
+  cCondVar is still present for plugins that use it (and VDR itself also still
+  uses it in cRemote).
+- The cRingBuffer now does EnableGet()/EnablePut() only if the buffer is more than
+  one third full or empty, respectively. This dramatically improves recording
+  performance and reduces system load (thanks to Marco Schlüßler for doing some
+  testing regarding buffer performance and giving me some hints that finally lead
+  to finding out that this was the basic problem causing buffer overflows).
+- Improved Transfer Mode (thanks to Marco Schlüßler for suggestions and testing).
+- Fixed a possible crash with inconsistent SI data (thanks to Marcel Wiesweg).
+- Fixed showing the replay mode if the OSD is currently in use (thanks to Kimmo
+  Tykkala for pointing out this problem).
+- cOsdProvider::NewOsd() now always returns a valid pointer, even if the OSD is
+  currently in use (it will then return a dummy cOsd object and write a message to
+  the log file).
+- Added Estonian language texts (thanks to Arthur Konovalov).
+- Fixed 'newplugin' and libsi/Makefile to use the compiler defined in $(CXX) for
+  generating file dependencies (thanks to Andreas Brachold).
+- Moved the initialization of aPid1 and aPid2 to the beginning of cDvbDevice::cDvbDevice()
+  to have them set in case a patch references them (thanks to Wayne Keer for pointing
+  this out).
+- Completed the Russian OSD texts (thanks to Vyacheslav Dikonov).
+- Avoiding unnecessary section filter start/stops (thanks to Marco Schlüßler).
+- Made the "Channel not available!" message and mtInfo instead of mtError (suggested
+  by Wayne Keer).
+- Made volume control more linear (thanks to Emil Naepflein and Udo Richter).
+- Now skipping code table info in SI data (suggested by Milos Kapoun).
+- Added missing Czech characters to fontosd-iso8859-2.c (thanks to Milos Kapoun).
+- Fixed a crash in the time search mechanism (reported by Reinhard Nissl).
+- If one PID can't be added, the whole cDevice::AttachReceiver() will now fail
+  and all PIDs added so far will be deleted (thanks to Marco Schlüßler for
+  pointing out this one).
+- Now only saving channels.conf after a modification made by the user (avoids
+  lots of disk access due to automatic channel updates). Automatic channel
+  modifications will be saved every 10 minutes if no recording is currently
+  active.
+- Removed the 'Log' parameter from the cChannel::Set... functions. Instead
+  checking if the channel has a non-zero number.
+- Updated 'channels.conf.terr' for Hannover (thanks to Sven Kreiensen).

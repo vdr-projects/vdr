@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: sdt.c 1.11 2004/07/18 11:14:42 kls Exp $
+ * $Id: sdt.c 1.12 2004/10/16 10:02:23 kls Exp $
  */
 
 #include "sdt.h"
@@ -39,9 +39,7 @@ void cSdtFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
   if (!Channels.Lock(true, 10))
      return;
   SI::SDT::Service SiSdtService;
-  for (SI::Loop::Iterator it; sdt.serviceLoop.hasNext(it); ) {
-      SiSdtService = sdt.serviceLoop.getNext(it);
-
+  for (SI::Loop::Iterator it; sdt.serviceLoop.getNext(SiSdtService, it); ) {
       cChannel *channel = Channels.GetByChannelID(tChannelID(Source(), sdt.getOriginalNetworkId(), sdt.getTransportStreamId(), SiSdtService.getServiceId()));
       if (!channel)
          channel = Channels.GetByChannelID(tChannelID(Source(), 0, Transponder(), SiSdtService.getServiceId()));
@@ -110,8 +108,8 @@ void cSdtFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
             */
             case SI::NVODReferenceDescriptorTag: {
                  SI::NVODReferenceDescriptor *nrd = (SI::NVODReferenceDescriptor *)d;
-                 for (SI::Loop::Iterator it; nrd->serviceLoop.hasNext(it); ) {
-                     SI::NVODReferenceDescriptor::Service Service = nrd->serviceLoop.getNext(it);
+                 SI::NVODReferenceDescriptor::Service Service;
+                 for (SI::Loop::Iterator it; nrd->serviceLoop.getNext(Service, it); ) {
                      cChannel *link = Channels.GetByChannelID(tChannelID(Source(), Service.getOriginalNetworkId(), Service.getTransportStream(), Service.getServiceId()));
                      if (!link && Setup.UpdateChannels >= 3) {
                         link = Channels.NewChannel(Channel(), "NVOD", Service.getOriginalNetworkId(), Service.getTransportStream(), Service.getServiceId());

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: transfer.h 1.4 2003/05/11 08:48:36 kls Exp $
+ * $Id: transfer.h 1.5 2004/10/15 12:39:54 kls Exp $
  */
 
 #ifndef __TRANSFER_H
@@ -22,7 +22,6 @@ private:
   cRemux *remux;
   bool canToggleAudioTrack;
   uchar audioTrack;
-  bool gotBufferReserve;
   bool active;
   void StripAudioPackets(uchar *b, int Length, uchar Except = 0x00);
 protected:

@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: si.c 1.11 2004/06/06 14:43:56 kls Exp $
+ *   $Id: si.c 1.13 2004/10/16 15:12:57 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -30,6 +30,10 @@ void Object::setData(CharArray &d) {
    data=d;
 }
 
+bool Object::checkSize(unsigned int offset) {
+   return data.checkSize(offset);
+}
+
 Section::Section(const unsigned char *data, bool doCopy) {
    setData(data, getLength(data), doCopy);
 }
@@ -50,15 +54,15 @@ int Section::getLength(const unsigned char *d) {
    return HILO(((const SectionHeader *)d)->section_length)+sizeof(SectionHeader);
 }
 
-bool CRCSection::isValid() {
+bool CRCSection::isCRCValid() {
    return CRC32::isValid((const char *)data.getData(), getLength()/*, data.FourBytes(getLength()-4)*/);
 }
 
 bool CRCSection::CheckCRCAndParse() {
-   if (!isValid())
+   if (!isCRCValid())
       return false;
    CheckParse();
-   return true;
+   return isValid();
 }
 
 int NumberedSection::getTableIdExtension() const {
@@ -102,7 +106,7 @@ DescriptorTag Descriptor::getDescriptorTag(const unsigned char *d) {
 }
 
 Descriptor *DescriptorLoop::getNext(Iterator &it) {
-   if (it.i<getLength()) {
+   if (isValid() && it.i<getLength()) {
       return createDescriptor(it.i, true);
    }
    return 0;
@@ -110,7 +114,7 @@ Descriptor *DescriptorLoop::getNext(Iterator &it) {
 
 Descriptor *DescriptorLoop::getNext(Iterator &it, DescriptorTag tag, bool returnUnimplemetedDescriptor) {
    Descriptor *d=0;
-   if (it.i<getLength()) {
+   if (isValid() && it.i<getLength()) {
       const unsigned char *p=data.getData(it.i);
       const unsigned char *end=p+getLength()-it.i;
       while (p < end) {
@@ -128,7 +132,7 @@ Descriptor *DescriptorLoop::getNext(Iterator &it, DescriptorTag tag, bool return
 
 Descriptor *DescriptorLoop::getNext(Iterator &it, DescriptorTag *tags, int arrayLength, bool returnUnimplementedDescriptor) {
    Descriptor *d=0;
-   if (it.i<getLength()) {
+   if (isValid() && it.i<getLength()) {
       const unsigned char *p=data.getData(it.i);
       const unsigned char *end=p+getLength()-it.i;
       while (p < end) {
@@ -147,6 +151,8 @@ Descriptor *DescriptorLoop::getNext(Iterator &it, DescriptorTag *tags, int array
 }
 
 Descriptor *DescriptorLoop::createDescriptor(int &i, bool returnUnimplemetedDescriptor) {
+   if (!checkSize(Descriptor::getLength(data.getData(i))))
+      return 0;
    Descriptor *d=Descriptor::getDescriptor(data+i, domain, returnUnimplemetedDescriptor);
    if (!d)
       return 0;
@@ -245,6 +251,9 @@ void String::decodeText(char *buffer, int size) {
    }
    */
 
+   if (*from == 0x10)
+      from += 3; // skips code table info
+
    for (int i = 0; i < getLength(); i++) {
       if (*from == 0)
          break;
@@ -268,6 +277,9 @@ void String::decodeText(char *buffer, char *shortVersion, int sizeBuffer, int si
    char *to=buffer;
    char *toShort=shortVersion;
    int IsShortName=0;
+
+   if (*from == 0x10)
+      from += 3; // skips code table info
 
    for (int i = 0; i < getLength(); i++) {
       if (*from == 0)

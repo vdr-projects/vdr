@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: descriptor.c 1.13 2004/06/06 14:47:30 kls Exp $
+ *   $Id: descriptor.c 1.14 2004/10/16 09:51:05 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -110,9 +110,7 @@ char *ExtendedEventDescriptors::getText(char *buffer, int size, const char *sepa
          continue;
 
       ExtendedEventDescriptor::Item item;
-      for (Loop::Iterator it; d->itemLoop.hasNext(it);   ) {
-         item=d->itemLoop.getNext(it);
-
+      for (Loop::Iterator it; d->itemLoop.getNext(item, it);   ) {
          if (!separated && size > sepLen2) {
             strcpy(buffer+index, separation2); // let's have a separator between the long text and the items
             index += sepLen2;
@@ -207,9 +205,7 @@ char *ExtendedEventDescriptors::getTextItemized(char *buffer, int size, const ch
          continue;
 
       ExtendedEventDescriptor::Item item;
-      for (Loop::Iterator it; d->itemLoop.hasNext(it);   ) {
-         item=d->itemLoop.getNext(it);
-
+      for (Loop::Iterator it; d->itemLoop.getNext(item, it);   ) {
          item.itemDescription.getText(buffer+index, size);
          len = strlen(buffer+index);
          index += len;
@@ -251,9 +247,7 @@ bool ExtendedEventDescriptors::getTextItemized(Loop::Iterator &it, bool &valid, 
          continue;
 
       ExtendedEventDescriptor::Item item;
-      if (d->itemLoop.hasNext(it)) {
-         item=d->itemLoop.getNext(it);
-
+      if (d->itemLoop.getNext(item, it)) {
          item.item.getText(itemDescription, sizeItemDescription);
          item.itemDescription.getText(itemText, sizeItemText);
          valid=true;

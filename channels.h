@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.h 1.17 2004/04/03 13:40:47 kls Exp $
+ * $Id: channels.h 1.19 2004/10/17 11:52:07 kls Exp $
  */
 
 #ifndef __CHANNELS_H
@@ -25,6 +25,10 @@
 #define CHANNELMOD_CA       0x10
 #define CHANNELMOD_TRANSP   0x20
 #define CHANNELMOD_RETUNE   (CHANNELMOD_PIDS | CHANNELMOD_CA | CHANNELMOD_TRANSP)
+
+#define CHANNELSMOD_NONE    0
+#define CHANNELSMOD_AUTO    1
+#define CHANNELSMOD_USER    2
 
 #define MAXAPIDS 32
 #define MAXCAIDS  8
@@ -163,11 +167,11 @@ public:
   bool IsTerr(void) const { return (source & cSource::st_Mask) == cSource::stTerr; }
   tChannelID GetChannelID(void) const;
   int Modification(int Mask = CHANNELMOD_ALL);
-  bool SetSatTransponderData(int Source, int Frequency, char Polarization, int Srate, int CoderateH, bool Log = true);
-  bool SetCableTransponderData(int Source, int Frequency, int Modulation, int Srate, int CoderateH, bool Log = true);
-  bool SetTerrTransponderData(int Source, int Frequency, int Bandwidth, int Modulation, int Hierarchy, int CodeRateH, int CodeRateL, int Guard, int Transmission, bool Log = true);
-  void SetId(int Nid, int Tid, int Sid, int Rid = 0, bool Log = true);
-  void SetName(const char *Name, bool Log = true);
+  bool SetSatTransponderData(int Source, int Frequency, char Polarization, int Srate, int CoderateH);
+  bool SetCableTransponderData(int Source, int Frequency, int Modulation, int Srate, int CoderateH);
+  bool SetTerrTransponderData(int Source, int Frequency, int Bandwidth, int Modulation, int Hierarchy, int CodeRateH, int CodeRateL, int Guard, int Transmission);
+  void SetId(int Nid, int Tid, int Sid, int Rid = 0);
+  void SetName(const char *Name);
   void SetPids(int Vpid, int Ppid, int *Apids, char ALangs[][4], int *Dpids, char DLangs[][4], int Tpid);
   void SetCaIds(const int *CaIds); // list must be zero-terminated
   void SetCaDescriptors(int Level);
@@ -178,7 +182,7 @@ public:
 class cChannels : public cRwLock, public cConfig<cChannel> {
 private:
   int maxNumber;
-  bool modified;
+  int modified;
   int beingEdited;
 public:
   cChannels(void);
@@ -196,8 +200,11 @@ public:
   bool HasUniqueChannelID(cChannel *NewChannel, cChannel *OldChannel = NULL);
   bool SwitchTo(int Number);
   int MaxNumber(void) { return maxNumber; }
-  void SetModified(void);
-  bool Modified(void);
+  void SetModified(bool ByUser = false);
+  int Modified(void);
+      ///< Returns 0 if no channels have been modified, 1 if an automatic
+      ///< modification has been made, and 2 if the user has made a modification.
+      ///< Calling this function resets the 'modified' flag to 0.
   cChannel *NewChannel(const cChannel *Transponder, const char *Name, int Nid, int Tid, int Sid, int Rid = 0);
   };
 

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.h 1.46 2004/06/12 13:14:48 kls Exp $
+ * $Id: osd.h 1.47 2004/10/16 10:33:44 kls Exp $
  */
 
 #ifndef __OSD_H
@@ -330,7 +330,9 @@ public:
   static cOsd *NewOsd(int Left, int Top);
       ///< Returns a pointer to a newly created cOsd object, which will be located
       ///< at the given coordinates. When the cOsd object is no longer needed, the
-      ///< caller must delete it.
+      ///< caller must delete it. If the OSD is already in use, or there is no OSD
+      ///< provider, a dummy OSD is returned so that the caller may always use the
+      ///< returned pointer without having to check it every time it is accessed.
   static void Shutdown(void);
       ///< Shuts down the OSD provider facility by deleting the current OSD provider.
   };

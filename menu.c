@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.309 2004/06/13 20:26:51 kls Exp $
+ * $Id: menu.c 1.314 2004/10/17 10:28:27 kls Exp $
  */
 
 #include "menu.h"
@@ -308,7 +308,7 @@ eOSState cMenuEditChannel::ProcessKey(eKeys Key)
               isyslog("added channel %d %s", channel->Number(), data.ToText());
               state = osUser1;
               }
-           Channels.SetModified();
+           Channels.SetModified(true);
            }
         else {
            Skins.Message(mtError, tr("Channel settings are not unique!"));
@@ -396,7 +396,7 @@ void cMenuChannels::Propagate(void)
   for (cMenuChannelItem *ci = (cMenuChannelItem *)First(); ci; ci = (cMenuChannelItem *)ci->Next())
       ci->Set();
   Display();
-  Channels.SetModified();
+  Channels.SetModified(true);
 }
 
 eOSState cMenuChannels::Switch(void)
@@ -514,7 +514,7 @@ cMenuText::~cMenuText()
 void cMenuText::SetText(const char *Text)
 {
   free(text);
-  text = strdup(Text);
+  text = Text ? strdup(Text) : NULL;
 }
 
 void cMenuText::Display(void)
@@ -2628,8 +2628,11 @@ eOSState cDisplayChannel::ProcessKey(eKeys Key)
     //TODO
     //XXX case kGreen:  return osEventNow;
     //XXX case kYellow: return osEventNext;
-    case kOk:     if (group >= 0)
-                     Channels.SwitchTo(Channels.Get(Channels.GetNextNormal(group))->Number());
+    case kOk:     if (group >= 0) {
+                     cChannel *channel = Channels.Get(Channels.GetNextNormal(group));
+                     if (channel)
+                        Channels.SwitchTo(channel->Number());
+                     }
                   return osEnd;
     default:      if ((Key & (k_Repeat | k_Release)) == 0) {
                      cRemote::Put(Key);
@@ -3073,12 +3076,13 @@ void cReplayControl::Hide(void)
      modeOnly = false;
      lastPlay = lastForward = false;
      lastSpeed = -1;
+     timeSearchActive = false;
      }
 }
 
 void cReplayControl::ShowMode(void)
 {
-  if (visible || Setup.ShowReplayMode) {
+  if (visible || Setup.ShowReplayMode && !cOsd::IsOpen()) {
      bool Play, Forward;
      int Speed;
      if (GetReplayMode(Play, Forward, Speed) && (!visible || Play != lastPlay || Forward != lastForward || Speed != lastSpeed)) {

@@ -4,15 +4,12 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: transfer.c 1.16 2004/03/07 14:40:15 kls Exp $
+ * $Id: transfer.c 1.17 2004/10/16 09:22:58 kls Exp $
  */
 
 #include "transfer.h"
 
-//XXX+ also used in recorder.c - find a better place???
-// The size of the array used to buffer video data:
-// (must be larger than MINVIDEODATA - see remux.h)
-#define VIDEOBUFSIZE  MEGABYTE(1)
+#define TRANSFERBUFSIZE  MEGABYTE(2)
 #define POLLTIMEOUTS_BEFORE_DEVICECLEAR 3
 
 // --- cTransfer -------------------------------------------------------------
@@ -21,11 +18,10 @@ cTransfer::cTransfer(int VPid, int APid1, int APid2, int DPid1, int DPid2)
 :cReceiver(0, -1, 5, VPid, APid1, APid2, DPid1, DPid2)
 ,cThread("transfer")
 {
-  ringBuffer = new cRingBufferLinear(VIDEOBUFSIZE, TS_SIZE * 2, true);
+  ringBuffer = new cRingBufferLinear(TRANSFERBUFSIZE, TS_SIZE * 2, true, "Transfer");
   remux = new cRemux(VPid, APid1, APid2, DPid1, DPid2);
   canToggleAudioTrack = false;
   audioTrack = 0xC0;
-  gotBufferReserve = false;
   active = false;
 }
 
@@ -51,79 +47,69 @@ void cTransfer::Activate(bool On)
 
 void cTransfer::Receive(uchar *Data, int Length)
 {
-  if (IsAttached()) {
-     int i = 0;
-     while (active && Length > 0) {
-           if (i++ > 10) {
-              ringBuffer->ReportOverflow(Length);
-              break;
-              }
-           int p = ringBuffer->Put(Data, Length);
-           Length -= p;
-           Data += p;
-           }
+  if (IsAttached() && active) {
+     int p = ringBuffer->Put(Data, Length);
+     if (p != Length && active)
+        ringBuffer->ReportOverflow(Length - p);
+     return;
      }
 }
 
 void cTransfer::Action(void)
 {
   int PollTimeouts = 0;
+  uchar *p = NULL;
+  int Result = 0;
   active = true;
   while (active) {
-
-        //XXX+ Maybe we need this to avoid buffer underruns in driver.
-        //XXX+ But then again, it appears to play just fine without this...
-        /*
-        if (!gotBufferReserve) {
-           if (ringBuffer->Available() < 4 * MAXFRAMESIZE) {
-              usleep(100000); // allow the buffer to collect some reserve
+        int Count;
+        uchar *b = ringBuffer->Get(Count);
+        if (b) {
+           if (Count > TRANSFERBUFSIZE * 2 / 3) {
+              // If the buffer runs full, we have no chance of ever catching up
+              // since the data comes in at the same rate as it goes out (it's "live").
+              // So let's clear the buffer instead of suffering from permanent
+              // overflows.
+              dsyslog("clearing transfer buffer to avoid overflows");
+              ringBuffer->Clear();
+              remux->Clear();
+              p = NULL;
               continue;
               }
-           else
-              gotBufferReserve = true;
+           Count = remux->Put(b, Count);
+           if (Count)
+              ringBuffer->Del(Count);
            }
-           */
-
-        // Get data from the buffer:
-
-        int r;
-        const uchar *b = ringBuffer->Get(r);
-
-        // Play the data:
-
-        if (b) {
-           int Count = r, Result;
-           uchar *p = remux->Process(b, Count, Result);
-           ringBuffer->Del(Count);
-           if (p) {
-              StripAudioPackets(p, Result, audioTrack);
-              while (Result > 0 && active) {
-                    cPoller Poller;
-                    if (DevicePoll(Poller, 100)) {
-                       PollTimeouts = 0;
-                       int w = PlayVideo(p, Result);
-                       if (w > 0) {
-                          p += w;
-                          Result -= w;
-                          }
-                       else if (w < 0 && FATALERRNO) {
-                          LOG_ERROR;
-                          break;
-                          }
-                       }
-                    else {
-                       PollTimeouts++;
-                       if (PollTimeouts == POLLTIMEOUTS_BEFORE_DEVICECLEAR) {
-                          dsyslog("clearing device because of consecutive poll timeouts");
-                          DeviceClear();
-                          }
-                       }
-                    }
+        if (!p && (p = remux->Get(Result)) != NULL)
+           StripAudioPackets(p, Result, audioTrack);
+        if (p) {
+           cPoller Poller;
+           if (DevicePoll(Poller, 100)) {
+              PollTimeouts = 0;
+              int w = PlayVideo(p, Result);
+              if (w > 0) {
+                 p += w;
+                 Result -= w;
+                 remux->Del(w);
+                 if (Result <= 0)
+                    p = NULL;
+                 }
+              else if (w < 0 && FATALERRNO)
+                 LOG_ERROR;
+              }
+           else {
+              PollTimeouts++;
+              if (PollTimeouts == POLLTIMEOUTS_BEFORE_DEVICECLEAR) {
+                 dsyslog("clearing device because of consecutive poll timeouts");
+                 DeviceClear();
+                 ringBuffer->Clear();
+                 remux->Clear();
+                 p = NULL;
+                 }
               }
            }
-        else
-           usleep(1); // this keeps the CPU load low
         }
+  active = false;
 }
 
 void cTransfer::StripAudioPackets(uchar *b, int Length, uchar Except)

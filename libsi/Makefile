@@ -1,7 +1,7 @@
 #
 # Makefile for a libsi
 #
-# $Id: Makefile 1.2 2003/12/13 10:41:39 kls Exp $
+# $Id: Makefile 1.3 2004/10/16 13:31:50 kls Exp $
 
 ### The C++ compiler and options:
 
@@ -30,7 +30,7 @@ OBJS = util.o si.o section.o descriptor.o
 
 # Dependencies:
 
-MAKEDEP = g++ -MM -MG
+MAKEDEP = $(CXX) -MM -MG
 DEPFILE = .dependencies
 $(DEPFILE): Makefile
 	@$(MAKEDEP) $(DEFINES) $(INCLUDES) $(OBJS:%.o=%.c) > $@

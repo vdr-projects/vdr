@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: si.h 1.10 2004/06/06 13:35:21 kls Exp $
+ *   $Id: si.h 1.11 2004/10/16 09:58:10 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -180,12 +180,17 @@ public:
    //can only be called once since data is immutable
    void setData(const unsigned char*data, unsigned int size, bool doCopy=true);
    CharArray getData() { return data; }
+   //returns the valid flag which indicates if data is all right or errors have been encountered
+   bool isValid() { return data.isValid(); }
    virtual int getLength() = 0;
 protected:
    CharArray data;
    //is protected - not used for sections
    template <class T> friend class StructureLoop;
    void setData(CharArray &d);
+   //returns whether the given offset fits within the limits of the actual data
+   //The valid flag will be set accordingly
+   bool checkSize(unsigned int offset);
 };
 
 class Section : public Object {
@@ -205,7 +210,7 @@ public:
    //convenience: sets data and parses if doParse
    CRCSection(const unsigned char *data, bool doCopy=true) : Section(data, doCopy) {}
    CRCSection() {}
-   bool isValid();
+   bool isCRCValid();
    //convenience: isValid+CheckParse
    bool CheckCRCAndParse();
 };
@@ -229,9 +234,9 @@ public:
 class VariableLengthPart : public Object {
 public:
    //never forget to call this
-   void setData(CharArray d, int l) { Object::setData(d); length=l; }
+   void setData(CharArray d, int l) { Object::setData(d); checkSize(l); length=l; }
    //convenience method
-   void setDataAndOffset(CharArray d, int l, unsigned int &offset) { Object::setData(d); length=l; offset+=l; }
+   void setDataAndOffset(CharArray d, int l, unsigned int &offset) { Object::setData(d); checkSize(l); length=l; offset+=l; }
    virtual int getLength() { return length; }
 private:
    int length;
@@ -281,29 +286,36 @@ template <class T> class StructureLoop : public Loop {
 public:
    //currently you must use a while-loop testing for hasNext()
    //i must be 0 to get the first descriptor (with the first call)
-   T getNext(Iterator &it)
+   bool getNext(T &obj, Iterator &it)
       {
+         if (!isValid() || it.i >= getLength())
+            return false;
          CharArray d=data;
          d.addOffset(it.i);
          T ret;
          ret.setData(d);
          ret.CheckParse();
+         if (!checkSize(ret.getLength()))
+            return false;
          it.i+=ret.getLength();
-         return ret;
+         obj=ret;
+         return true;
       }
    T* getNextAsPointer(Iterator &it)
       {
-         if (getLength() <= it.i)
+         if (!isValid() || it.i >= getLength())
             return 0;
          CharArray d=data;
          d.addOffset(it.i);
          T *ret=new T();
          ret->setData(d);
          ret->CheckParse();
+         if (!checkSize(ret->getLength()))
+            return 0;
          it.i+=ret->getLength();
          return ret;
       }
-   bool hasNext(Iterator &it) { return getLength() > it.i; }
+   //bool hasNext(Iterator &it) { return getLength() > it.i; }
 };
 
 //contains descriptors of different types
@@ -385,7 +397,7 @@ public:
          it.i+=sizeof(T);
          return ret;
       }
-   bool hasNext(Iterator &it) { return getLength() > it.i; }
+   bool hasNext(Iterator &it) { return isValid() && (getLength() > it.i); }
 };
 
 class MHP_DescriptorLoop : public DescriptorLoop {

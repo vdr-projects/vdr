@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: sections.c 1.7 2004/07/17 14:26:32 kls Exp $
+ * $Id: sections.c 1.9 2004/10/16 13:45:02 kls Exp $
  */
 
 #include "sections.h"
@@ -46,6 +46,7 @@ cSectionHandler::cSectionHandler(cDevice *Device)
   active = false;
   statusCount = 0;
   on = false;
+  waitForLock = false;
   lastIncompleteSection = 0;
   Start();
 }
@@ -120,7 +121,8 @@ void cSectionHandler::Attach(cFilter *Filter)
   statusCount++;
   filters.Add(Filter);
   Filter->sectionHandler = this;
-  Filter->SetStatus(true);
+  if (on)
+     Filter->SetStatus(true);
   Unlock();
 }
 
@@ -145,13 +147,18 @@ void cSectionHandler::SetStatus(bool On)
 {
   Lock();
   if (on != On) {
-     statusCount++;
-     for (cFilter *fi = filters.First(); fi; fi = filters.Next(fi)) {
-         fi->SetStatus(false);
-         if (On)
-            fi->SetStatus(true);
-         }
-     on = On;
+     if (!On || device->HasLock()) {
+        statusCount++;
+        for (cFilter *fi = filters.First(); fi; fi = filters.Next(fi)) {
+            fi->SetStatus(false);
+            if (On)
+               fi->SetStatus(true);
+            }
+        on = On;
+        waitForLock = false;
+        }
+     else
+        waitForLock = On;
      }
   Unlock();
 }
@@ -162,12 +169,15 @@ void cSectionHandler::Action(void)
   while (active) {
 
         Lock();
+        if (waitForLock)
+           SetStatus(true);
         int NumFilters = filterHandles.Count();
         pollfd pfd[NumFilters];
         for (cFilterHandle *fh = filterHandles.First(); fh; fh = filterHandles.Next(fh)) {
             int i = fh->Index();
             pfd[i].fd = fh->handle;
             pfd[i].events = POLLIN;
+            pfd[i].revents = 0;
             }
         int oldStatusCount = statusCount;
         Unlock();

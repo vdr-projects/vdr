@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 1.24 2004/06/19 08:55:49 kls Exp $
+ * $Id: dvbplayer.c 1.25 2004/10/15 13:07:55 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -80,8 +80,7 @@ private:
   int length;
   bool hasData;
   bool active;
-  cMutex mutex; 
-  cCondVar newSet;
+  cCondWait newSet;
 protected:
   void Action(void);
 public:
@@ -106,20 +105,21 @@ cNonBlockingFileReader::cNonBlockingFileReader(void)
 cNonBlockingFileReader::~cNonBlockingFileReader()
 {
   active = false;
-  newSet.Broadcast();
+  newSet.Signal();
   Cancel(3);
   free(buffer);
 }
 
 void cNonBlockingFileReader::Clear(void)
 {
-  cMutexLock MutexLock(&mutex);
+  Lock();
   f = -1;
   free(buffer);
   buffer = NULL;
   wanted = length = 0;
   hasData = false;
-  newSet.Broadcast();
+  Unlock();
+  newSet.Signal();
 }
 
 int cNonBlockingFileReader::Read(int FileHandle, uchar *Buffer, int Length)
@@ -139,7 +139,7 @@ int cNonBlockingFileReader::Read(int FileHandle, uchar *Buffer, int Length)
      wanted = Length;
      length = 0;
      hasData = false;
-     newSet.Broadcast();
+     newSet.Signal();
      }
   errno = EAGAIN;
   return -1;
@@ -149,7 +149,7 @@ void cNonBlockingFileReader::Action(void)
 {
   active = true;
   while (active) {
-        cMutexLock MutexLock(&mutex);
+        Lock();
         if (!hasData && f >= 0 && buffer) {
            int r = safe_read(f, buffer + length, wanted - length);
            if (r >= 0) {
@@ -163,16 +163,14 @@ void cNonBlockingFileReader::Action(void)
               hasData = true;
               }
            }
-        newSet.TimedWait(mutex, 1000);
+        Unlock();
+        newSet.Wait(1000);
         }
 }
 
 // --- cDvbPlayer ------------------------------------------------------------
 
-//XXX+ also used in recorder.c - find a better place???
-// The size of the array used to buffer video data:
-// (must be larger than MINVIDEODATA - see remux.h)
-#define VIDEOBUFSIZE  MEGABYTE(1)
+#define PLAYERBUFSIZE  MEGABYTE(1)
 
 // The number of frames to back up when resuming an interrupted replay session:
 #define RESUMEBACKUP (10 * FRAMESPERSEC)
@@ -257,7 +255,7 @@ cDvbPlayer::cDvbPlayer(const char *FileName)
   replayFile = fileName->Open();
   if (replayFile < 0)
      return;
-  ringBuffer = new cRingBufferFrame(VIDEOBUFSIZE);
+  ringBuffer = new cRingBufferFrame(PLAYERBUFSIZE);
   // Create the index file:
   index = new cIndexFile(FileName, false);
   if (!index)

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.56 2004/06/19 08:51:05 kls Exp $
+ * $Id: device.c 1.60 2004/10/17 09:39:10 kls Exp $
  */
 
 #include "device.h"
@@ -248,7 +248,11 @@ bool cDevice::AddPid(int Pid, ePidType PidType)
         if (++pidHandles[n].used == 2 && n <= ptTeletext) {
            // It's a special PID that may have to be switched into "tap" mode
            PRINTPIDS("A");
-           return SetPid(&pidHandles[n], n, true);
+           if (!SetPid(&pidHandles[n], n, true)) {
+              esyslog("ERROR: can't set PID %d on device %d", Pid, CardIndex() + 1);
+              DelPid(Pid, PidType);
+              return false;
+              }
            }
         PRINTPIDS("a");
         return true;
@@ -261,13 +265,19 @@ bool cDevice::AddPid(int Pid, ePidType PidType)
         // The Pid is not yet in use and we have a free slot
         n = a;
         }
-     else
-        esyslog("ERROR: no free slot for PID %d", Pid);
+     else {
+        esyslog("ERROR: no free slot for PID %d on device %d", Pid, CardIndex() + 1);
+        return false;
+        }
      if (n >= 0) {
         pidHandles[n].pid = Pid;
         pidHandles[n].used = 1;
         PRINTPIDS("C");
-        return SetPid(&pidHandles[n], n, true);
+        if (!SetPid(&pidHandles[n], n, true)) {
+           esyslog("ERROR: can't set PID %d on device %d", Pid, CardIndex() + 1);
+           DelPid(Pid, PidType);
+           return false;
+           }
         }
      }
   return true;
@@ -314,7 +324,6 @@ void cDevice::StartSectionHandler(void)
      AttachFilter(patFilter = new cPatFilter);
      AttachFilter(sdtFilter = new cSdtFilter(patFilter));
      AttachFilter(nitFilter = new cNitFilter);
-     sectionHandler->SetStatus(true);
      }
 }
 
@@ -357,7 +366,7 @@ bool cDevice::SwitchChannel(const cChannel *Channel, bool LiveView)
   for (int i = 3; i--;) {
       switch (SetChannel(Channel, LiveView)) {
         case scrOk:           return true;
-        case scrNotAvailable: Skins.Message(mtError, tr("Channel not available!"));
+        case scrNotAvailable: Skins.Message(mtInfo, tr("Channel not available!"));
                               return false;
         case scrNoTransfer:   Skins.Message(mtError, tr("Can't start Transfer Mode!"));
                               return false;
@@ -758,8 +767,13 @@ bool cDevice::AttachReceiver(cReceiver *Receiver)
      return true;
   for (int i = 0; i < MAXRECEIVERS; i++) {
       if (!receiver[i]) {
-         for (int n = 0; n < MAXRECEIVEPIDS; n++)
-             AddPid(Receiver->pids[n]);//XXX+ retval!
+         for (int n = 0; n < MAXRECEIVEPIDS; n++) {
+             if (!AddPid(Receiver->pids[n])) {
+                for ( ; n-- > 0; )
+                    DelPid(Receiver->pids[n]);
+                return false;
+                }
+             }
          Receiver->Activate(true);
          Lock();
          Receiver->device = this;
@@ -801,79 +815,67 @@ void cDevice::Detach(cReceiver *Receiver)
 
 cTSBuffer::cTSBuffer(int File, int Size, int CardIndex)
 {
+  SetDescription("TS buffer on device %d", CardIndex);
   f = File;
-  size = Size / TS_SIZE * TS_SIZE;
   cardIndex = CardIndex;
-  tsRead = tsWrite = 0;
-  buf = (f >= 0 && size >= TS_SIZE) ? MALLOC(uchar, size + TS_SIZE) : NULL;
-  // the '+ TS_SIZE' allocates some extra space for handling packets that got split by a buffer roll-over
-  firstRead = true;
+  active = false;
+  delivered = false;
+  ringBuffer = new cRingBufferLinear(Size, TS_SIZE, true, "TS");
+  ringBuffer->SetTimeouts(100, 100);
+  Start();
 }
 
 cTSBuffer::~cTSBuffer()
 {
-  free(buf);
+  active = false;
+  Cancel(3);
+  delete ringBuffer;
 }
 
-int cTSBuffer::Read(void)
+void cTSBuffer::Action(void)
 {
-  if (buf) {
-     cPoller Poller(f, false);
-     bool repeat;
-     int total = 0;
-     do {
-        repeat = false;
-        if (firstRead || Used() > TS_SIZE || Poller.Poll(100)) { // only wait if there's not enough data in the buffer
-           firstRead = false;
-           if (tsRead == tsWrite)
-              tsRead = tsWrite = 0; // keep the maximum buffer space available
-           if (tsWrite >= size && tsRead > 0)
-              tsWrite = 0;
-           int free = tsRead <= tsWrite ? size - tsWrite : tsRead - tsWrite - 1;
-           if (free > 0) {
-              int r = read(f, buf + tsWrite, free);
-              if (r > 0) {
-                 total += r;
-                 tsWrite += r;
-                 if (tsWrite >= size && tsRead > 0) {
-                    tsWrite = 0;
-                    repeat = true; // read again after a boundary roll-over
-                    }
-                 }
-              }
-           }
-        } while (repeat);
-     return total;
+  if (ringBuffer) {
+     bool firstRead = true;
+     cPoller Poller(f);
+     active = true;
+     for (; active;) {
+         if (firstRead || Poller.Poll(100)) {
+            firstRead = false;
+            int r = ringBuffer->Read(f);
+            if (r < 0 && FATALERRNO) {
+               if (errno == EOVERFLOW)
+                  esyslog("ERROR: driver buffer overflow on device %d", cardIndex);
+               else {
+                  LOG_ERROR;
+                  break;
+                  }
+               }
+            }
+         }
      }
-  return -1;
 }
 
 uchar *cTSBuffer::Get(void)
 {
-  if (Used() >= TS_SIZE) {
-     uchar *p = buf + tsRead;
+  int Count = 0;
+  if (delivered) {
+     ringBuffer->Del(TS_SIZE);
+     delivered = false;
+     }
+  uchar *p = ringBuffer->Get(Count);
+  if (p && Count >= TS_SIZE) {
      if (*p != TS_SYNC_BYTE) {
-        esyslog("ERROR: not sync'ed to TS packet on device %d", cardIndex);
-        int tsMax = tsRead < tsWrite ? tsWrite : size;
-        for (int i = tsRead; i < tsMax; i++) {
-            if (buf[i] == TS_SYNC_BYTE) {
-               esyslog("ERROR: skipped %d bytes to sync on TS packet on device %d", i - tsRead, cardIndex);
-               tsRead = i;
-               return NULL;
+        for (int i = 1; i < Count; i++) {
+            if (p[i] == TS_SYNC_BYTE) {
+               Count = i;
+               break;
                }
             }
-        if ((tsRead = tsMax) >= size)
-           tsRead = 0;
+        ringBuffer->Del(Count);
+        esyslog("ERROR: skipped %d bytes to sync on TS packet on device %d", Count, cardIndex);
         return NULL;
         }
-     if (tsRead + TS_SIZE > size) {
-        // the packet rolled over the buffer boundary, so let's fetch the rest from the beginning (which MUST be there, since Used() >= TS_SIZE)
-        int rest = TS_SIZE - (size - tsRead);
-        memcpy(buf + size, buf, rest);
-        tsRead = rest;
-        }
-     else if ((tsRead += TS_SIZE) >= size)
-        tsRead = 0;
+     delivered = true;
      return p;
      }
   return NULL;

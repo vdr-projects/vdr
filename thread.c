@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 1.31 2004/03/14 16:48:30 kls Exp $
+ * $Id: thread.c 1.32 2004/10/15 13:15:02 kls Exp $
  */
 
 #include "thread.h"
@@ -17,6 +17,58 @@
 #include <sys/wait.h>
 #include <unistd.h>
 #include "tools.h"
+
+// --- cCondWait -------------------------------------------------------------
+
+cCondWait::cCondWait(void)
+{
+  signaled = false;
+  pthread_mutex_init(&mutex, NULL);
+  pthread_cond_init(&cond, NULL);
+}
+
+cCondWait::~cCondWait()
+{
+  pthread_cond_destroy(&cond);
+  pthread_mutex_destroy(&mutex);
+}
+
+bool cCondWait::Wait(int TimeoutMs)
+{
+  pthread_mutex_lock(&mutex);
+  if (!signaled) {
+     if (TimeoutMs) {
+        struct timeval now;
+        if (gettimeofday(&now, NULL) == 0) {  // get current time
+           now.tv_usec += TimeoutMs * 1000;   // add the timeout
+           int sec = now.tv_usec / 1000000;
+           now.tv_sec += sec;
+           now.tv_usec -= sec * 1000000;
+           struct timespec abstime;              // build timespec for timedwait
+           abstime.tv_sec = now.tv_sec;          // seconds
+           abstime.tv_nsec = now.tv_usec * 1000; // nano seconds
+           while (!signaled) {
+                 if (pthread_cond_timedwait(&cond, &mutex, &abstime) == ETIMEDOUT)
+                    break;
+                 }
+           }
+        }
+     else
+        pthread_cond_wait(&cond, &mutex);
+     }
+  bool r = signaled;
+  signaled = false;
+  pthread_mutex_unlock(&mutex);
+  return r;
+}
+
+void cCondWait::Signal(void)
+{
+  pthread_mutex_lock(&mutex);
+  signaled = true;
+  pthread_cond_signal(&cond);
+  pthread_mutex_unlock(&mutex);
+}
 
 // --- cCondVar --------------------------------------------------------------
 
@@ -72,13 +124,6 @@ void cCondVar::Broadcast(void)
 {
   pthread_cond_broadcast(&cond);
 }
-
-/*
-void cCondVar::Signal(void)
-{
-  pthread_cond_signal(&cond);
-}
-*/
 
 // --- cRwLock ---------------------------------------------------------------
 
