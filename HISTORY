@@ -3333,7 +3333,7 @@ Video Disk Recorder Revision History
 - Added PlayPes(NULL, 0) to cTransfer::Action() when clearing the transfer buffer
   to avoid overflows (thanks to Marco Schlüßler for pointing this out).
 
-2005-01-30: Version 1.3.20
+2005-02-06: Version 1.3.20
 
 - Fixed displaying the "Audio" menu with the "Green" button from the "Main" menu
   in case there is only one audio track (thanks to Sascha Volkenandt for reporting
@@ -3364,3 +3364,4 @@ Video Disk Recorder Revision History
   (thanks to Reinhard Nissl).
 - Fixed several memory leaks that were introduced through the use of cString (thanks
   to Stefan Huelswitt for reporting these).
+- Added CMD_SPU_CHG_COLCON to cDvbSpuDecoder::setTime() (thanks to Marco Schlüßler).

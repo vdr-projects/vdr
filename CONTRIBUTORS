@@ -1125,6 +1125,7 @@ Marco Schlüßler <marco@lordzodiac.de>
  for a patch that implements substream handling into cDevice::PlayPesPacket()
  for pointing out that PlayPes(NULL, 0) needs to be called in cTransfer::Action()
  when clearing the transfer buffer to avoid overflows
+ for adding CMD_SPU_CHG_COLCON to cDvbSpuDecoder::setTime()
 
 Jürgen Schmitz <j.schmitz@web.de>
  for reporting a bug in displaying the current channel when switching via the SVDRP
