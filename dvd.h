@@ -6,7 +6,7 @@
  *
  * Initially written by Andreas Schultz <aschultz@warp10.net>
  *
- * $Id: dvd.h 1.3 2001/08/05 16:00:57 kls Exp $
+ * $Id: dvd.h 1.4 2001/11/10 13:38:25 kls Exp $
  */
 
 #ifndef __DVD_H
@@ -20,6 +20,11 @@
 #include <dvdread/dvd_udf.h>
 #include <dvdread/nav_read.h>
 #include <dvdread/nav_print.h>
+
+#define aAC3   0x80
+#define aDTS   0x88
+#define aLPCM  0xA0
+#define aMPEG  0xC0
 
 class cDVD {
 private:
@@ -44,8 +49,12 @@ public:
   bool isValid(void) { return (dvd != NULL); }
   ifo_handle_t *openVMG(void);
   ifo_handle_t *openVTS(int TitleSet);
+  ifo_handle_t *getVTS() { return vts_file; }
   dvd_file_t *openTitle(int Title, dvd_read_domain_t domain);
   static cDVD *getDVD(void);
+  int getAudioNrOfTracks() { return getVTS() ? getVTS()->vtsi_mat->nr_of_vts_audio_streams : 0; }
+  int getAudioLanguage(int stream) { return getVTS() ? getVTS()->vtsi_mat->vts_audio_attr[stream].lang_code : 0; }
+  int getAudioTrack(int stream);
   };
 
 #endif //DVDSUPPORT

@@ -871,3 +871,4 @@ Video Disk Recorder Revision History
 - Changed version numbering scheme.
 - Fixed several channel definitions in 'channels.conf' (thanks to Thilo
   Wunderlich).
+- Added MPEG audio support for DVD (thanks to Andreas Schultz).

@@ -7,7 +7,7 @@
  * DVD support initially written by Andreas Schultz <aschultz@warp10.net>
  * based on dvdplayer-0.5 by Matjaz Thaler <matjaz.thaler@guest.arnes.si>
  *
- * $Id: dvbapi.c 1.137 2001/11/04 12:05:36 kls Exp $
+ * $Id: dvbapi.c 1.138 2001/11/10 13:35:22 kls Exp $
  */
 
 //#define DVDDEBUG        1
@@ -1348,9 +1348,6 @@ bool cReplayBuffer::NextFile(uchar FileNumber, int FileOffset)
 #define cOUTPACK         5
 #define cOUTFRAMES       6
 
-#define aAC3          0x80
-#define aLPCM         0xA0
-
 // --- cAC3toPCM -------------------------------------------------------------
 
 class cAC3toPCM {
@@ -1574,28 +1571,12 @@ cDVDplayBuffer::~cDVDplayBuffer()
 
 unsigned int cDVDplayBuffer::getAudioStream(unsigned int StreamId)
 {
-  unsigned int trackID;
-
-  if ((cyclestate < cOPENCHAPTER) || (StreamId > 7))
+  if (cyclestate < cOPENCHAPTER || StreamId > 7)
      return 0;
   if (!(cur_pgc->audio_control[StreamId] & 0x8000))
      return 0;
   int track = (cur_pgc->audio_control[StreamId] >> 8) & 0x07;
-  switch (vts_file->vtsi_mat->vts_audio_attr[track].audio_format) {
-    case 0: // ac3
-            trackID = aAC3;
-            break;
-    case 2: // mpeg1
-    case 3: // mpeg2ext
-    case 4: // lpcm
-    case 6: // dts
-            trackID = aLPCM;
-            break;
-    default: esyslog(LOG_ERR, "ERROR: unknown Audio stream info");
-             return 0;
-    }
-  trackID |= track;
-  return trackID;
+  return dvd->getAudioTrack(track) | track;
 }
 
 void cDVDplayBuffer::ToggleAudioTrack(void)
