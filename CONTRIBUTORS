@@ -637,6 +637,8 @@ Teemu Rantanen <tvr@iki.fi>
  for adding TS error checking to remux.c
  for pinpointing a problem with excessive memmove() calls in 'Transfer Mode'
  for fixing faulty calculation of section length in eit.c
+ for reporting a problem in calculation of channel ids for tv stations that use
+ the undefined NID value 0
 
 Jan Ekholm <chakie@infa.abo.fi>
  for adding/improving some Swedish language OSD texts

@@ -2552,3 +2552,5 @@ Video Disk Recorder Revision History
   now been adopted.
 - Fixed a crash in case there is no DVB hardware present (thanks to Sascha
   Volkenandt for reporting this one).
+- Changed calculation of channel ids to make it work for tv stations that use
+  the undefined NID value 0 (thanks to Teemu Rantanen for reporting this one).
