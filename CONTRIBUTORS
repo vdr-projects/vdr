@@ -1068,6 +1068,7 @@ Marco Schlüßler <marco@lordzodiac.de>
  errors don't occur any more
  for reporting a problem with initialization of the main program loop variables
  with older compiler versions
+ for adding the 'portal name' to cChannels
 
 Jürgen Schmitz <j.schmitz@web.de>
  for reporting a bug in displaying the current channel when switching via the SVDRP

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.h 1.21 2004/10/31 12:41:38 kls Exp $
+ * $Id: channels.h 1.22 2004/10/31 12:54:26 kls Exp $
  */
 
 #ifndef __CHANNELS_H
@@ -92,6 +92,7 @@ private:
   char *name;
   char *shortName;
   char *provider;
+  char *portalName;
   int __BeginData__;
   int frequency; // MHz
   int source;
@@ -136,6 +137,7 @@ public:
   const char *Name(void) const { return name; }
   const char *ShortName(bool OrName = false) const { return (OrName && isempty(shortName)) ? name : shortName; }
   const char *Provider(void) const { return provider; }
+  const char *PortalName(void) const { return portalName; }
   int Frequency(void) const { return frequency; } ///< Returns the actual frequency, as given in 'channels.conf'
   int Transponder(void) const;                    ///< Returns the transponder frequency in MHz, plus the polarization in case of sat
   static int Transponder(int Frequency, char Polarization); ///< builds the transponder from the given Frequency and Polarization
@@ -175,6 +177,7 @@ public:
   bool SetTerrTransponderData(int Source, int Frequency, int Bandwidth, int Modulation, int Hierarchy, int CodeRateH, int CodeRateL, int Guard, int Transmission);
   void SetId(int Nid, int Tid, int Sid, int Rid = 0);
   void SetName(const char *Name, const char *ShortName, const char *Provider);
+  void SetPortalName(const char *PortalName);
   void SetPids(int Vpid, int Ppid, int *Apids, char ALangs[][4], int *Dpids, char DLangs[][4], int Tpid);
   void SetCaIds(const int *CaIds); // list must be zero-terminated
   void SetCaDescriptors(int Level);

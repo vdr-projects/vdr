@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 1.29 2004/10/31 12:52:50 kls Exp $
+ * $Id: channels.c 1.30 2004/10/31 12:54:06 kls Exp $
  */
 
 #include "channels.h"
@@ -169,6 +169,7 @@ cChannel::cChannel(void)
   name = strdup("");
   shortName = strdup("");
   provider = strdup("");
+  portalName = strdup("");
   memset(&__BeginData__, 0, (char *)&__EndData__ - (char *)&__BeginData__);
   inversion    = INVERSION_AUTO;
   bandwidth    = BANDWIDTH_AUTO;
@@ -188,6 +189,7 @@ cChannel::cChannel(const cChannel &Channel)
   name = strdup("");
   shortName = strdup("");
   provider = strdup("");
+  portalName = strdup("");
   *this = Channel;
   vpid         = 0;
   ppid         = 0;
@@ -227,6 +229,7 @@ cChannel::~cChannel()
   free(name);
   free(shortName);
   free(provider);
+  free(portalName);
 }
 
 cChannel& cChannel::operator= (const cChannel &Channel)
@@ -234,6 +237,7 @@ cChannel& cChannel::operator= (const cChannel &Channel)
   name = strcpyrealloc(name, Channel.name);
   shortName = strcpyrealloc(shortName, Channel.shortName);
   provider = strcpyrealloc(provider, Channel.provider);
+  portalName = strcpyrealloc(portalName, Channel.portalName);
   memcpy(&__BeginData__, &Channel.__BeginData__, (char *)&Channel.__EndData__ - (char *)&Channel.__BeginData__);
   return *this;
 }
@@ -363,6 +367,18 @@ void cChannel::SetName(const char *Name, const char *ShortName, const char *Prov
      name = strcpyrealloc(name, Name);
      shortName = strcpyrealloc(shortName, ShortName);
      provider = strcpyrealloc(provider, Provider);
+     }
+}
+
+void cChannel::SetPortalName(const char *PortalName)
+{
+  if (!isempty(PortalName) && strcmp(portalName, PortalName) != 0) {
+     if (Number()) {
+        dsyslog("changing portal name of channel %d from '%s' to '%s'", Number(), portalName, PortalName);
+        modification |= CHANNELMOD_NAME;
+        Channels.SetModified();
+        }
+     portalName = strcpyrealloc(portalName, PortalName);
      }
 }
 

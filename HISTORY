@@ -3103,3 +3103,4 @@ Video Disk Recorder Revision History
   true to make it return the name, if no short name is available.
   The sequence of 'name' and 'short name' in the channels.conf file has been
   swapped (see man vdr(5)).
+- Added the 'portal name' to cChannels (thanks to Marco Schlüßler).
