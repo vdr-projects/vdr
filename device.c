@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.77 2005/01/23 14:10:15 kls Exp $
+ * $Id: device.c 1.78 2005/01/23 14:15:00 kls Exp $
  */
 
 #include "device.h"
@@ -863,7 +863,7 @@ int cDevice::PlayPesPacket(const uchar *Data, int Length, bool VideoOnly)
                          SetAvailableTrack(ttDolby, SubStreamIndex, SubStreamId);
                          if (!VideoOnly && SubStreamId == availableTracks[currentAudioTrack].id) {
                             w = PlayAudio(Start, d);
-                            if (FirstLoop && !(SubStreamId & 0x80)) // no DTS
+                            if (FirstLoop && !(SubStreamId & 0x08)) // no DTS
                                Audios.PlayAudio(Data, Length);
                             }
                          }
