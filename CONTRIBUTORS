@@ -750,6 +750,9 @@ Sascha Volkenandt <sascha@akv-soft.de>
  for fixing a possible recursion in cControl::Shutdown()
  for reporting that the "Audio" menu is not displayed with the "Green" button from
  the "Main" menu in case there is only one audio track
+ for reporting a problem when starting replay of a recording that has no Dolby
+ Digital audio after switching to a channel that has DD and selecting the DD audio
+ track
 
 Malcolm Caldwell <malcolm.caldwell@ntu.edu.au>
  for modifying LOF handling to allow for C-band reception

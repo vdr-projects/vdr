@@ -3351,3 +3351,7 @@ Video Disk Recorder Revision History
   down.
 - Moved the call to SetAudioChannel(0) into cDevice::ClrAvailableTracks() to have it
   executed also when starting a replay.
+- Making sure the current audio track is actually one of the ones available in a
+  recording (thanks to Sascha Volkenandt for reporting a problem when starting
+  replay of a recording that has no Dolby Digital audio after switching to a channel
+  that has DD and selecting the DD audio track).
