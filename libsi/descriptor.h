@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: descriptor.h 1.8 2004/03/20 10:52:22 kls Exp $
+ *   $Id: descriptor.h 1.9 2004/03/26 15:26:03 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -285,6 +285,7 @@ class SubtitlingDescriptor : public Descriptor {
 public:
    class Subtitling : public Descriptor {
    public:
+      char languageCode[4];
       int getSubtitlingType() const;
       int getCompositionPageId() const;
       int getAncillaryPageId() const;

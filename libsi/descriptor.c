@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: descriptor.c 1.11 2004/03/20 10:51:49 kls Exp $
+ *   $Id: descriptor.c 1.12 2004/03/26 15:25:28 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -549,6 +549,10 @@ int SubtitlingDescriptor::Subtitling::getAncillaryPageId() const {
 
 void SubtitlingDescriptor::Subtitling::Parse() {
    s=data.getData<const item_subtitling>();
+   languageCode[0]=s->lang_code1;
+   languageCode[1]=s->lang_code2;
+   languageCode[2]=s->lang_code3;
+   languageCode[3]=0;
 }
 
 int ServiceMoveDescriptor::getNewOriginalNetworkId() const {
