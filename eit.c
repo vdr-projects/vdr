@@ -13,7 +13,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.c 1.10 2000/11/25 12:51:06 kls Exp $
+ * $Id: eit.c 1.11 2000/12/03 15:33:37 kls Exp $
  ***************************************************************************/
 
 #include "eit.h"
@@ -131,7 +131,7 @@ bool cMJD::SetSystemTime()
 		isyslog(LOG_INFO, "System Time = %s (%ld)\n", ctime(&loctim), loctim);
 		isyslog(LOG_INFO, "Local Time  = %s (%ld)\n", ctime(&mjdtime), mjdtime);
 		if (stime(&mjdtime) < 0)
-         esyslog(LOG_ERR, "ERROR while setting system time: %s", strerror(errno));
+         esyslog(LOG_ERR, "ERROR while setting system time: %m");
 		return true;
 	}
 	
@@ -1117,7 +1117,7 @@ cSIProcessor::~cSIProcessor()
 {
    if (fsvbi >= 0)
    {
-      Stop();
+      Cancel();
    	ShutDownFilters();
       delete filters;
       if (!--numSIProcessors) // the last one deletes it

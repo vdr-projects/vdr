@@ -15,13 +15,11 @@ If you have the DVB driver source in a different location
 you will have to change the definition of DVBDIR in the
 Makefile.
 
-This program requires the card driver version 0.71 or higher
-to work properly. Currently you need to load the dvb.o module with
-option outstream=0, so your insmod statement should read
-'insmod dvb.o outstream=0'. This is necessary because 'vdr' works
-with AV_PES data and will change once it has been modified to work
-directly with MPEG2. You also need to apply the patch 'dvb.c.071.diff'
-for the On Screen Display to work properly.
+This program requires the card driver version 0.80 or higher
+to work properly. You need to load the dvb.o module *without* option
+'outstream=0' (previous versions of VDR required this option to have
+the driver supply the data in AV_PES format; as of version 0.70 VDR
+works with PES format).
 
 After extracting the package, change into the VDR directory
 and type 'make'. This should produce an executable file

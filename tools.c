@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.23 2000/11/11 15:17:12 kls Exp $
+ * $Id: tools.c 1.24 2000/12/03 15:39:11 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -15,10 +15,7 @@
 #if defined(DEBUG_OSD)
 #include <ncurses.h>
 #endif
-#include <signal.h>
-#include <stdlib.h>
 #include <sys/time.h>
-#include <sys/wait.h>
 #include <unistd.h>
 
 #define MaxBuffer 1000
@@ -28,29 +25,6 @@ int SysLogLevel = 3;
 void writechar(int filedes, char c)
 {
   write(filedes, &c, sizeof(c));
-}
-
-void writeint(int filedes, int n)
-{
-  write(filedes, &n, sizeof(n));
-}
-
-char readchar(int filedes)
-{
-  char c;
-  read(filedes, &c, 1);
-  return c;
-}
-
-bool readint(int filedes, int &n)
-{
-  return cFile::AnyFileReady(filedes, 0) && read(filedes, &n, sizeof(n)) == sizeof(n);
-}
-
-void purge(int filedes)
-{
-  while (cFile::AnyFileReady(filedes, 0))
-        readchar(filedes);
 }
 
 char *readline(FILE *f)
@@ -205,7 +179,7 @@ bool MakeDirs(const char *FileName, bool IsDirectory)
         if (stat(s, &fs) != 0 || !S_ISDIR(fs.st_mode)) {
            dsyslog(LOG_INFO, "creating directory %s", s);
            if (mkdir(s, S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH) == -1) {
-              esyslog(LOG_ERR, "ERROR: %s: %s", s, strerror(errno));
+              LOG_ERROR_STR(s);
               result = false;
               break;
               }
@@ -269,41 +243,6 @@ bool RemoveFileOrDir(const char *FileName, bool FollowSymlinks)
   else
      LOG_ERROR_STR(FileName);
   return false;
-}
-
-bool CheckProcess(pid_t pid)
-{
-  pid_t Pid2Check = pid;
-  int status;
-  pid = waitpid(Pid2Check, &status, WNOHANG);
-  if (pid < 0) {
-     if (errno != ECHILD)
-        LOG_ERROR;
-     return false;
-     }
-  return true;
-}
-
-void KillProcess(pid_t pid, int Timeout)
-{
-  pid_t Pid2Wait4 = pid;
-  for (time_t t0 = time(NULL); time(NULL) - t0 < Timeout; ) {
-      int status;
-      pid_t pid = waitpid(Pid2Wait4, &status, WNOHANG);
-      if (pid < 0) {
-         if (errno != ECHILD)
-            LOG_ERROR;
-         return;
-         }
-      if (pid == Pid2Wait4)
-         return;
-      }
-  esyslog(LOG_ERR, "ERROR: process %d won't end (waited %d seconds) - terminating it...", Pid2Wait4, Timeout);
-  if (kill(Pid2Wait4, SIGTERM) < 0) {
-     esyslog(LOG_ERR, "ERROR: process %d won't terminate (%s) - killing it...", Pid2Wait4, strerror(errno));
-     if (kill(Pid2Wait4, SIGKILL) < 0)
-        esyslog(LOG_ERR, "ERROR: process %d won't die (%s) - giving up", Pid2Wait4, strerror(errno));
-     }
 }
 
 // --- cFile -----------------------------------------------------------------

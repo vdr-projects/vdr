@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.53 2000/11/26 16:15:30 kls Exp $
+ * $Id: menu.c 1.54 2000/12/03 11:43:35 kls Exp $
  */
 
 #include "menu.h"
@@ -2009,7 +2009,7 @@ cReplayControl::cReplayControl(void)
 cReplayControl::~cReplayControl()
 {
   Hide();
-  dvbApi->Stop();
+  dvbApi->StopReplay();
 }
 
 void cReplayControl::SetRecording(const char *FileName, const char *Title)
@@ -2060,7 +2060,7 @@ eOSState cReplayControl::ProcessKey(eKeys Key)
     case kUp:      dvbApi->Play(); break;
     case kDown:    dvbApi->Pause(); break;
     case kBlue:    Hide();
-                   dvbApi->Stop();
+                   dvbApi->StopReplay();
                    return osEnd;
     case kLeft:    dvbApi->Backward(); break;
     case kRight:   dvbApi->Forward(); break;

@@ -4,12 +4,15 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 1.5 2000/11/22 17:11:04 kls Exp $
+ * $Id: thread.c 1.6 2000/12/03 15:35:02 kls Exp $
  */
 
 #include "thread.h"
+#include <errno.h>
 #include <signal.h>
+#include <sys/wait.h>
 #include <unistd.h>
+#include "tools.h"
 
 // --- cThread ---------------------------------------------------------------
 
@@ -25,7 +28,7 @@ cThread::cThread(void)
      signalHandlerInstalled = true;
      }
   running = false;
-  parentPid = lockingPid = 0;
+  parentPid = threadPid = lockingPid = 0;
   locked = 0;
 }
 
@@ -40,6 +43,7 @@ void cThread::SignalHandler(int signum)
 
 void *cThread::StartThread(cThread *Thread)
 {
+  Thread->threadPid = getpid();
   Thread->Action();
   return NULL;
 }
@@ -54,8 +58,31 @@ bool cThread::Start(void)
   return true; //XXX return value of pthread_create()???
 }
 
-void cThread::Stop(void)
+bool cThread::Active(void)
 {
+  if (threadPid) {
+     if (kill(threadPid, SIGIO) < 0) { // couldn't find another way of checking whether the thread is still running - any ideas?
+        if (errno == ESRCH)
+           threadPid = 0;
+        else
+           LOG_ERROR;
+        }
+     else
+        return true;
+     }
+  return false;
+}
+
+void cThread::Cancel(int WaitSeconds)
+{
+  if (WaitSeconds > 0) {
+     for (time_t t0 = time(NULL) + WaitSeconds; time(NULL) < t0; ) {
+         if (!Active())
+            return;
+         usleep(10000);
+         }
+     esyslog(LOG_ERR, "ERROR: thread %d won't end (waited %d seconds) - cancelling it...", threadPid, WaitSeconds);
+     }
   pthread_cancel(thread);
 }
 

@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.46 2000/11/18 13:46:56 kls Exp $
+ * $Id: vdr.c 1.47 2000/12/03 15:36:46 kls Exp $
  */
 
 #include <getopt.h>
@@ -141,8 +141,8 @@ int main(int argc, char *argv[])
 #if !defined(DEBUG_OSD) && !defined(REMOTE_KBD)
      pid_t pid = fork();
      if (pid < 0) {
-        fprintf(stderr, "%s\n", strerror(errno));
-        esyslog(LOG_ERR, "ERROR: %s", strerror(errno));
+        fprintf(stderr, "%m\n");
+        esyslog(LOG_ERR, "ERROR: %m");
         abort();
         }
      if (pid != 0)

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.h 1.26 2000/11/19 14:09:41 kls Exp $
+ * $Id: dvbapi.h 1.27 2000/12/03 13:44:28 kls Exp $
  */
 
 #ifndef __DVBAPI_H
@@ -42,6 +42,8 @@ public:
   bool Save(int Index);
   };
 
+class cRecordBuffer;
+class cReplayBuffer;
 class cTransferBuffer;
 
 class cDvbApi {
@@ -171,20 +173,10 @@ private:
   // Record/Replay facilities
 
 private:
-  enum { dvbStop = 1, // let's not have 0 as a command
-         dvbPause,
-         dvbPlay,
-         dvbForward,
-         dvbBackward,
-         dvbSkip,
-         dvbGetIndex,
-       };
-  pid_t pidRecord, pidReplay;
-  int fromRecord, toRecord;
-  int fromReplay, toReplay;
+  cRecordBuffer *recordBuffer;
+  cReplayBuffer *replayBuffer;
   int ca;
   int priority;
-  void SetReplayMode(int Mode);
 protected:
   int  Ca(void) { return ca; }
        // Returns the ca of the current recording session (0..MAXDVBAPI).
@@ -214,7 +206,7 @@ public:
        // If there is already a replay session active, it will be stopped
        // and the new file will be played back.
        // If provided Title will be used in the progress display.
-  void Stop(void);
+  void StopReplay(void);
        // Stops the current replay session (if any).
   void Pause(void);
        // Pauses the current replay session, or resumes a paused session.
@@ -229,7 +221,7 @@ public:
        // The sign of 'Seconds' determines the direction in which to skip.
        // Use a very large negative value to go all the way back to the
        // beginning of the recording.
-  bool GetIndex(int *Current, int *Total = NULL);
+  bool GetIndex(int &Current, int &Total);
   };
 
 class cEITScanner {

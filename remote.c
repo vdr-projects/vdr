@@ -6,7 +6,7 @@
  *
  * Ported to LIRC by Carsten Koch <Carsten.Koch@icem.de>  2000-06-16.
  *
- * $Id: remote.c 1.19 2000/11/11 11:22:22 kls Exp $
+ * $Id: remote.c 1.20 2000/12/03 11:55:06 kls Exp $
  */
 
 #include "remote.h"
@@ -115,7 +115,7 @@ cRcIoRCU::cRcIoRCU(char *DeviceName)
 
 cRcIoRCU::~cRcIoRCU()
 {
-  Stop();
+  Cancel();
 }
 
 void cRcIoRCU::Action(void)
@@ -420,7 +420,7 @@ cRcIoLIRC::cRcIoLIRC(char *DeviceName)
 
 cRcIoLIRC::~cRcIoLIRC()
 {
-  Stop();
+  Cancel();
 }
 
 void cRcIoLIRC::Action(void)

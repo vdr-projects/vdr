@@ -312,8 +312,15 @@ Video Disk Recorder Revision History
   an early state and may still cause some problems, but it appears to work nice
   already.
 
-2000-12-01: Version 0.69
+2000-12-08: Version 0.70
 
+- VDR now requires driver version 0.80 or higher.
+- Recordings are now saved in PES mode. Note that you now need to install the
+  driver *WITHOUT* 'outstream=0'! This is the default when you 'make insmod' in
+  the DVB/driver directory.
+  Old recordings (in AV_PES mode) can still be replayed (as long as the driver
+  still supports replaying AV_PES files). The only limitation with this is that
+  in fast forward/back mode the picture may be slightly distorted.
 - The EPG data is now dumped into the file /video/epg.data every ten minutes.
   Use the Perl script 'epg2html.pl' to convert the raw EPG data into a simple
   HTML programme listing.
