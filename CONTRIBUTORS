@@ -708,3 +708,6 @@ Antonio Ospite <ospite@studenti.unina.it>
 Karim Afifi <karim.afifi@free.fr>
  for reporting a problem with breaking off replay in case the user presses "Play"
  or "Pause" too soon after going into "Pause live video" mode
+
+Jon Burgess <mplayer@jburgess.uklinux.net>
+ for pointing out a problem with NPTL ("Native Posix Thread Library")

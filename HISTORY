@@ -2225,3 +2225,12 @@ Video Disk Recorder Revision History
 - Fixed an uninitialized variable in cDisplayChannel (thanks to Stefan Huelswitt).
 - Fixed a possible access of invalid file handles in cSIProcessor::Action()
   (thanks to Stefan Huelswitt).
+
+2003-06-01: Version 1.2.0
+
+- Completed Greek language texts (thanks to Dimitrios Dimitrakos).
+- Completed Polish language texts (thanks to Michael Rakowski).
+- Added a note about NPTL ("Native Posix Thread Library") to the INSTALL file
+  (thanks to Jon Burgess for pointing this out).
+- Some corrections to the Finnish OSD texts (thanks to Jaakko Hyvätti).
+- Officially released as version 1.2.0.
