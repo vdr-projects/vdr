@@ -854,3 +854,5 @@ Video Disk Recorder Revision History
 - Added PTS to the converted PCM audio when replaying a DVD (thanks to Andreas
   Schultz). Now the audio and video of a DVD replayed over the DVB card's A/V
   out should always be in sync.
+- Fixed handling the "Power" key in case Setup.MinUserInactivity is set to 0 to
+  disable automatic shutdown.

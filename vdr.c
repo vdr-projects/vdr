@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.87 2001/10/27 09:47:02 kls Exp $
+ * $Id: vdr.c 1.88 2001/11/03 11:48:21 kls Exp $
  */
 
 #include <getopt.h>
@@ -483,7 +483,7 @@ int main(int argc, char *argv[])
            time_t Now = time(NULL);
            if (Now - LastActivity > ACTIVITYTIMEOUT) {
               // Shutdown:
-              if (Shutdown && Setup.MinUserInactivity && Now - LastActivity > Setup.MinUserInactivity * 60) {
+              if (Shutdown && (Setup.MinUserInactivity || LastActivity == 1) && Now - LastActivity > Setup.MinUserInactivity * 60) {
                  cTimer *timer = Timers.GetNextActiveTimer();
                  time_t Next  = timer ? timer->StartTime() : 0;
                  time_t Delta = timer ? Next - Now : 0;
