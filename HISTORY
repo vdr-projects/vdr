@@ -3457,3 +3457,4 @@ Video Disk Recorder Revision History
   with the same VPS time.
 - Fixed cDolbyRepacker to allow recording ProSieben HD broadcasts (thanks to Reinhard
   Nissl).
+- Fixed cDvbDevice::SetVideoDisplayFormat() in case of 16:9 (thanks to Marco Schlüßler).
