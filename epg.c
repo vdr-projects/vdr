@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 1.20 2004/10/24 15:01:50 kls Exp $
+ * $Id: epg.c 1.21 2004/10/31 16:12:36 kls Exp $
  */
 
 #include "epg.h"
@@ -40,10 +40,10 @@ cEvent::~cEvent()
   free(description);
 }
 
-bool cEvent::operator< (const cListObject &ListObject)
+int cEvent::Compare(const cListObject &ListObject) const
 {
   cEvent *e = (cEvent *)&ListObject;
-  return startTime < e->startTime;
+  return startTime - e->startTime;
 }
 
 void cEvent::SetEventID(u_int16_t EventID)

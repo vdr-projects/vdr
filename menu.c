@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.317 2004/10/31 12:53:00 kls Exp $
+ * $Id: menu.c 1.318 2004/11/01 10:40:38 kls Exp $
  */
 
 #include "menu.h"
@@ -667,7 +667,7 @@ private:
   cTimer *timer;
 public:
   cMenuTimerItem(cTimer *Timer);
-  virtual bool operator< (const cListObject &ListObject);
+  virtual int Compare(const cListObject &ListObject) const;
   virtual void Set(void);
   cTimer *Timer(void) { return timer; }
   };
@@ -678,9 +678,9 @@ cMenuTimerItem::cMenuTimerItem(cTimer *Timer)
   Set();
 }
 
-bool cMenuTimerItem::operator< (const cListObject &ListObject)
+int cMenuTimerItem::Compare(const cListObject &ListObject) const
 {
-  return *timer < *((cMenuTimerItem *)&ListObject)->timer;
+  return timer->Compare(*((cMenuTimerItem *)&ListObject)->timer);
 }
 
 void cMenuTimerItem::Set(void)

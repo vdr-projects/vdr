@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 1.15 2004/10/31 10:07:43 kls Exp $
+ * $Id: timers.c 1.16 2004/10/31 16:41:30 kls Exp $
  */
 
 #include "timers.h"
@@ -95,12 +95,15 @@ cTimer& cTimer::operator= (const cTimer &Timer)
   return *this;
 }
 
-bool cTimer::operator< (const cListObject &ListObject)
+int cTimer::Compare(const cListObject &ListObject) const
 {
   cTimer *ti = (cTimer *)&ListObject;
   time_t t1 = StartTime();
   time_t t2 = ti->StartTime();
-  return t1 < t2 || (t1 == t2 && priority > ti->priority);
+  int r = t1 - t2;
+  if (r == 0)
+     r = ti->priority - priority;
+  return r;
 }
 
 const char *cTimer::ToText(bool UseChannelID)
@@ -248,25 +251,25 @@ bool cTimer::Save(FILE *f)
   return fprintf(f, ToText(true)) > 0;
 }
 
-bool cTimer::IsSingleEvent(void)
+bool cTimer::IsSingleEvent(void) const
 {
   return (day & 0x80000000) == 0;
 }
 
-int cTimer::GetMDay(time_t t)
+int cTimer::GetMDay(time_t t) const
 {
   struct tm tm_r;
   return localtime_r(&t, &tm_r)->tm_mday;
 }
 
-int cTimer::GetWDay(time_t t)
+int cTimer::GetWDay(time_t t) const
 {
   struct tm tm_r;
   int weekday = localtime_r(&t, &tm_r)->tm_wday;
   return weekday == 0 ? 6 : weekday - 1; // we start with monday==0!
 }
 
-bool cTimer::DayMatches(time_t t)
+bool cTimer::DayMatches(time_t t) const
 {
   return IsSingleEvent() ? GetMDay(t) == day : (day & (1 << GetWDay(t))) != 0;
 }
@@ -301,7 +304,7 @@ char *cTimer::SetFile(const char *File)
   return file;
 }
 
-bool cTimer::Matches(time_t t, bool Directly)
+bool cTimer::Matches(time_t t, bool Directly) const
 {
   startTime = stopTime = 0;
   if (t == 0)
@@ -363,14 +366,14 @@ int cTimer::Matches(const cEvent *Event)
   return tmNone;
 }
 
-time_t cTimer::StartTime(void)
+time_t cTimer::StartTime(void) const
 {
   if (!startTime)
      Matches();
   return startTime;
 }
 
-time_t cTimer::StopTime(void)
+time_t cTimer::StopTime(void) const
 {
   if (!stopTime)
      Matches();
@@ -425,7 +428,7 @@ void cTimer::InvFlags(int Flags)
   flags ^= Flags;
 }
 
-bool cTimer::HasFlags(int Flags)
+bool cTimer::HasFlags(int Flags) const
 {
   return (flags & Flags) == Flags;
 }
@@ -506,7 +509,7 @@ cTimer *cTimers::GetNextActiveTimer(void)
 {
   cTimer *t0 = NULL;
   for (cTimer *ti = First(); ti; ti = Next(ti)) {
-      if ((ti->HasFlags(tfActive)) && (!t0 || *ti < *t0))
+      if ((ti->HasFlags(tfActive)) && (!t0 || ti->Compare(*t0) < 0))
          t0 = ti;
       }
   return t0;

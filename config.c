@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.127 2004/05/16 12:43:55 kls Exp $
+ * $Id: config.c 1.128 2004/10/31 16:17:39 kls Exp $
  */
 
 #include "config.h"
@@ -193,19 +193,19 @@ cSetupLine::~cSetupLine()
   free(value);
 }
 
-bool cSetupLine::operator< (const cListObject &ListObject)
+int cSetupLine::Compare(const cListObject &ListObject) const
 {
   const cSetupLine *sl = (cSetupLine *)&ListObject;
   if (!plugin && !sl->plugin)
-     return strcasecmp(name, sl->name) < 0;
+     return strcasecmp(name, sl->name);
   if (!plugin)
-     return true;
+     return -1;
   if (!sl->plugin)
-     return false;
+     return 1;
   int result = strcasecmp(plugin, sl->plugin);
   if (result == 0)
      result = strcasecmp(name, sl->name);
-  return result < 0;
+  return result;
 }
 
 bool cSetupLine::Parse(char *s)

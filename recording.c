@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.90 2004/10/31 10:09:36 kls Exp $
+ * $Id: recording.c 1.91 2004/10/31 16:22:33 kls Exp $
  */
 
 #include "recording.h"
@@ -451,7 +451,7 @@ char *cRecording::StripEpisodeName(char *s)
   return s;
 }
 
-char *cRecording::SortName(void)
+char *cRecording::SortName(void) const
 {
   if (!sortBuffer) {
      char *s = StripEpisodeName(strdup(FileName() + strlen(VideoDirectory) + 1));
@@ -472,10 +472,10 @@ int cRecording::GetResume(void) const
   return resume;
 }
 
-bool cRecording::operator< (const cListObject &ListObject)
+int cRecording::Compare(const cListObject &ListObject) const
 {
   cRecording *r = (cRecording *)&ListObject;
-  return strcasecmp(SortName(), r->SortName()) < 0;
+  return strcasecmp(SortName(), r->SortName());
 }
 
 const char *cRecording::FileName(void) const

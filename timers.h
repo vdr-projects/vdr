@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.h 1.9 2004/10/31 10:06:54 kls Exp $
+ * $Id: timers.h 1.10 2004/10/31 16:41:17 kls Exp $
  */
 
 #ifndef __TIMERS_H
@@ -26,7 +26,7 @@ enum eTimerMatch { tmNone, tmPartial, tmFull };
 class cTimer : public cListObject {
   friend class cMenuEditTimer;
 private:
-  time_t startTime, stopTime;
+  mutable time_t startTime, stopTime;
   static char *buffer;
   bool recording, pending, inVpsMargin;
   int flags;
@@ -37,7 +37,7 @@ private:
   int priority;
   int lifetime;
   char file[MaxFileName];
-  time_t firstday;
+  mutable time_t firstday;
   char *summary;
   const cEvent *event;
 public:
@@ -45,7 +45,7 @@ public:
   cTimer(const cEvent *Event);
   virtual ~cTimer();
   cTimer& operator= (const cTimer &Timer);
-  virtual bool operator< (const cListObject &ListObject);
+  virtual int Compare(const cListObject &ListObject) const;
   bool Recording(void) { return recording; }
   bool Pending(void) { return pending; }
   bool InVpsMargin(void) { return inVpsMargin; }
@@ -63,17 +63,17 @@ public:
   const cEvent *Event(void) { return event; }
   bool Parse(const char *s);
   bool Save(FILE *f);
-  bool IsSingleEvent(void);
-  int GetMDay(time_t t);
-  int GetWDay(time_t t);
-  bool DayMatches(time_t t);
+  bool IsSingleEvent(void) const;
+  int GetMDay(time_t t) const;
+  int GetWDay(time_t t) const;
+  bool DayMatches(time_t t) const;
   static time_t IncDay(time_t t, int Days);
   static time_t SetTime(time_t t, int SecondsFromMidnight);
   char *SetFile(const char *File);
-  bool Matches(time_t t = 0, bool Directly = false);
+  bool Matches(time_t t = 0, bool Directly = false) const;
   int Matches(const cEvent *Event);
-  time_t StartTime(void);
-  time_t StopTime(void);
+  time_t StartTime(void) const;
+  time_t StopTime(void) const;
   void SetEvent(const cEvent *Event);
   void SetRecording(bool Recording);
   void SetPending(bool Pending);
@@ -81,7 +81,7 @@ public:
   void SetFlags(int Flags);
   void ClrFlags(int Flags);
   void InvFlags(int Flags);
-  bool HasFlags(int Flags);
+  bool HasFlags(int Flags) const;
   void Skip(void);
   void OnOff(void);
   const char *PrintFirstDay(void);

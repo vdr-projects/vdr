@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.57 2004/06/13 14:13:26 kls Exp $
+ * $Id: tools.h 1.58 2004/10/31 16:16:37 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -148,7 +148,9 @@ private:
 public:
   cListObject(void);
   virtual ~cListObject();
-  virtual bool operator< (const cListObject &ListObject) { return false; }
+  virtual int Compare(const cListObject &ListObject) const { return 0; }
+      ///< Must return 0 if this object is equal to ListObject, a positive value
+      ///< if it is "greater", and a negative value if it is "smaller".
   void Append(cListObject *Object);
   void Insert(cListObject *Object);
   void Unlink(void);

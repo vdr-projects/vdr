@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 1.31 2004/07/17 11:09:49 kls Exp $
+ * $Id: recording.h 1.32 2004/10/31 16:24:38 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -36,12 +36,12 @@ class cRecording : public cListObject {
 private:
   mutable int resume;
   mutable char *titleBuffer;
-  char *sortBuffer;
+  mutable char *sortBuffer;
   mutable char *fileName;
   mutable char *name;
   char *summary;
-  char *StripEpisodeName(char *s);
-  char *SortName(void);
+  static char *StripEpisodeName(char *s);
+  char *SortName(void) const;
   int GetResume(void) const;
 public:
   time_t start;
@@ -50,7 +50,7 @@ public:
   cRecording(cTimer *Timer, const char *Title, const char *Subtitle, const char *Summary);
   cRecording(const char *FileName);
   ~cRecording();
-  virtual bool operator< (const cListObject &ListObject);
+  virtual int Compare(const cListObject &ListObject) const;
   const char *Name(void) const { return name; }
   const char *FileName(void) const;
   const char *Title(char Delimiter = ' ', bool NewIndicator = false, int Level = -1) const;

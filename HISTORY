@@ -3078,7 +3078,7 @@ Video Disk Recorder Revision History
   This avoids shortly seeing the wrong events in the channel display when
   switching to a channel that hasn't been tuned to in a while.
 
-2004-10-31: Version 1.3.15
+2004-11-01: Version 1.3.15
 
 - Fixed some typos in the Makefile's 'font' target (thanks to Uwe Hanke).
 - Added more checks and polling when getting frontend events (based on a patch
@@ -3105,3 +3105,7 @@ Video Disk Recorder Revision History
   swapped (see man vdr(5)).
 - Added the 'portal name' to cChannels (thanks to Marco Schlüßler).
 - Fixed handling key codes that start with 0x1B in the KBD remote control code.
+- Now using qsort() to sort cListBase lists. For this, the virtual function
+  cListObject::operator<() has been replaced with cListObject::Compare().
+  Plugins that implement derived cListObject classes may need to adjust their
+  code.

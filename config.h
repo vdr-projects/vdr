@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.202 2004/10/30 11:52:41 kls Exp $
+ * $Id: config.h 1.203 2004/10/31 16:17:02 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -185,7 +185,7 @@ public:
   cSetupLine(void);
   cSetupLine(const char *Name, const char *Value, const char *Plugin = NULL);
   virtual ~cSetupLine();
-  virtual bool operator< (const cListObject &ListObject);
+  virtual int Compare(const cListObject &ListObject) const;
   const char *Plugin(void) { return plugin; }
   const char *Name(void) { return name; }
   const char *Value(void) { return value; }
