@@ -1101,6 +1101,7 @@ Marco Schlüßler <marco@lordzodiac.de>
  the end of the given buffer, which has caused some unjustified "unknown picture
  type errors"
  for some improvements to cPoller
+ for implementing displaying mandatory subtitles in the SPU decoder
 
 Jürgen Schmitz <j.schmitz@web.de>
  for reporting a bug in displaying the current channel when switching via the SVDRP

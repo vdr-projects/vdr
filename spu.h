@@ -6,7 +6,7 @@
  * This code is distributed under the terms and conditions of the
  * GNU GENERAL PUBLIC LICENSE. See the file COPYING for details.
  *
- * $Id: spu.h 1.2 2004/06/12 12:56:27 kls Exp $
+ * $Id: spu.h 1.3 2005/01/08 09:58:35 kls Exp $
  */
 
 #ifndef __SPU_VDR_H
@@ -35,7 +35,7 @@ class cSpuDecoder {
     virtual void Hide(void) = 0;
     virtual void Draw(void) = 0;
     virtual bool IsVisible(void) = 0;
-    virtual void processSPU(uint32_t pts, uint8_t * buf) = 0;
+    virtual void processSPU(uint32_t pts, uint8_t * buf, bool AllowedShow = true) = 0;
 };
 
 #endif                          // __SPU_VDR_H

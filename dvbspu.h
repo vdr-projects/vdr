@@ -8,7 +8,7 @@
  *
  * parts of this file are derived from the OMS program.
  *
- * $Id: dvbspu.h 1.6 2004/11/06 11:42:37 kls Exp $
+ * $Id: dvbspu.h 1.7 2005/01/08 09:59:44 kls Exp $
  */
 
 #ifndef __DVBSPU_H
@@ -120,6 +120,7 @@ class cDvbSpuDecoder:public cSpuDecoder {
     uint16_t prev_DCSQ_offset;
 
     cDvbSpuBitmap *spubmp;
+    bool allowedShow;
   private:
     int cmdOffs(void) {
         return ((spu[2] << 8) | spu[3]);
@@ -147,7 +148,7 @@ class cDvbSpuDecoder:public cSpuDecoder {
     void Hide(void);
     void Draw(void);
     bool IsVisible(void) { return osd != NULL; }
-    void processSPU(uint32_t pts, uint8_t * buf);
+    void processSPU(uint32_t pts, uint8_t * buf, bool AllowedShow);
 };
 
 // --- cDvbSpuPalette -------------------------------------------

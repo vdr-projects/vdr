@@ -8,7 +8,7 @@
  *
  * parts of this file are derived from the OMS program.
  *
- * $Id: dvbspu.c 1.10 2005/01/08 09:53:44 kls Exp $
+ * $Id: dvbspu.c 1.11 2005/01/08 09:57:03 kls Exp $
  */
 
 #include <assert.h>
@@ -227,6 +227,7 @@ cDvbSpuDecoder::cDvbSpuDecoder()
     spu = NULL;
     osd = NULL;
     spubmp = NULL;
+    allowedShow = false;
 }
 
 cDvbSpuDecoder::~cDvbSpuDecoder()
@@ -236,7 +237,7 @@ cDvbSpuDecoder::~cDvbSpuDecoder()
     delete osd;
 }
 
-void cDvbSpuDecoder::processSPU(uint32_t pts, uint8_t * buf)
+void cDvbSpuDecoder::processSPU(uint32_t pts, uint8_t * buf, bool AllowedShow)
 {
     setTime(pts);
 
@@ -252,6 +253,7 @@ void cDvbSpuDecoder::processSPU(uint32_t pts, uint8_t * buf)
     prev_DCSQ_offset = 0;
 
     clean = true;
+    allowedShow = AllowedShow;
 }
 
 void cDvbSpuDecoder::setScaleMode(cSpuDecoder::eScaleMode ScaleMode)
@@ -530,7 +532,7 @@ int cDvbSpuDecoder::setTime(uint32_t pts)
         } else if (!clean)
             state = spSHOW;
 
-        if (state == spSHOW || state == spMENU)
+        if ((state == spSHOW && allowedShow) || state == spMENU)
             Draw();
 
         if (state == spHIDE)
