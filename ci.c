@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 1.22 2004/02/08 15:02:04 kls Exp $
+ * $Id: ci.c 1.23 2004/07/17 14:30:17 kls Exp $
  */
 
 #include "ci.h"
@@ -327,7 +327,7 @@ int cCiTransportConnection::RecvTPDU(void)
   pfd[0].fd = fd;
   pfd[0].events = POLLIN;
   lastResponse = ERROR;
-  if (poll(pfd, 1, CAM_READ_TIMEOUT) && (pfd[0].revents & POLLIN) && tpdu->Read(fd) == OK && tpdu->Tcid() == tcid) {
+  if (poll(pfd, 1, CAM_READ_TIMEOUT) > 0 && (pfd[0].revents & POLLIN) && tpdu->Read(fd) == OK && tpdu->Tcid() == tcid) {
      switch (state) {
        case stIDLE:     break;
        case stCREATION: if (tpdu->Tag() == T_CTC_REPLY) {

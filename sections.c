@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: sections.c 1.5 2004/02/07 15:51:57 kls Exp $
+ * $Id: sections.c 1.7 2004/07/17 14:26:32 kls Exp $
  */
 
 #include "sections.h"
@@ -85,11 +85,15 @@ void cSectionHandler::Add(const cFilterData *FilterData)
          break;
       }
   if (!fh) {
-     fh = new cFilterHandle(*FilterData);
-     filterHandles.Add(fh);
-     fh->handle = device->OpenFilter(FilterData->pid, FilterData->tid, FilterData->mask);
+     int handle = device->OpenFilter(FilterData->pid, FilterData->tid, FilterData->mask);
+     if (handle >= 0) {
+        fh = new cFilterHandle(*FilterData);
+        fh->handle = handle;
+        filterHandles.Add(fh);
+        }
      }
-  fh->used++;
+  if (fh)
+     fh->used++;
   Unlock();
 }
 
@@ -168,7 +172,7 @@ void cSectionHandler::Action(void)
         int oldStatusCount = statusCount;
         Unlock();
 
-        if (poll(pfd, NumFilters, 1000) != 0) {
+        if (poll(pfd, NumFilters, 1000) > 0) {
            bool DeviceHasLock = device->HasLock();
            if (!DeviceHasLock)
               usleep(100000);

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osdbase.c 1.13 2004/05/01 10:51:43 kls Exp $
+ * $Id: osdbase.c 1.14 2004/07/17 13:29:13 kls Exp $
  */
 
 #include "osdbase.h"
@@ -175,6 +175,7 @@ void cOsdMenu::Display(void)
      subMenu->Display();
      return;
      }
+  displayMenu->SetMessage(mtStatus, NULL);
   displayMenu->Clear();
   cStatus::MsgOsdClear();
   displayMenu->SetTabs(cols[0], cols[1], cols[2], cols[3], cols[4]);//XXX

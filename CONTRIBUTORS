@@ -789,6 +789,7 @@ Alfred Zastrow <vdr@zastrow4u.de>
  for suggesting to implement separate PausePriority and PauseLifetime parameters for
  the recordings created when pausing live video
  for reporting two warnings when compiling with gcc 3.3.1
+ for reporting a bug in handling menu status messages when the list contents is scrolled
 
 Matthias Raus <matthias-raus@web.de>
  for reporting a problem with starting the editing process if no marks have been set
@@ -858,6 +859,9 @@ Reinhard Nissl <rnissl@gmx.de>
  channels.conf
  for adding cDevice::Flush() to make sure that all data in the video card's buffers
  has been processed
+ for reporting a bug in checking the last area for misalignment in cOsd::CanHandleAreas()
+ for suggesting to make sure the OSD reports oeWrongAlignment errors before any
+ oeAreasOverlap error
 
 Richard Robson <richard_robson@beeb.net>
  for reporting freezing replay if a timer starts while in Transfer Mode from the
@@ -1025,6 +1029,11 @@ Marco Schlüßler <marco@lordzodiac.de>
  for fixing handling colors in cDvbSpuPalette::yuv2rgb()
  for fixing setting lnb voltage if the frontend is not DVB-S
  for fixing missing audio after replaying a DVD
+ for pointing out that it is unnecessary to add section filters to the list of
+ filters if they can't be opened
+ for fixing handling error case '-1' when polling section filters
+ for suggesting to avoiding flashing effects in the OSD of full featured DVB cards
+ by explicitly clearing the OSD windows before opening them
 
 Jürgen Schmitz <j.schmitz@web.de>
  for reporting a bug in displaying the current channel when switching via the SVDRP
@@ -1048,3 +1057,6 @@ Maynard Cedric <maynard.cedric@wanadoo.fr>
 
 Jörg Knitter <joerg.knitter@gmx.de>
  for reporting a problem in case the video partition is mounted with "iocharset=utf8"
+
+Mike parker <vdr@msatt.freeserve.co.uk>
+ for helping to test support for NVOD channels

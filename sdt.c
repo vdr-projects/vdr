@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: sdt.c 1.9 2004/06/06 14:25:22 kls Exp $
+ * $Id: sdt.c 1.11 2004/07/18 11:14:42 kls Exp $
  */
 
 #include "sdt.h"
@@ -46,6 +46,7 @@ void cSdtFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
       if (!channel)
          channel = Channels.GetByChannelID(tChannelID(Source(), 0, Transponder(), SiSdtService.getServiceId()));
 
+      cLinkChannels *LinkChannels = NULL;
       SI::Descriptor *d;
       for (SI::Loop::Iterator it2; (d = SiSdtService.serviceDescriptors.getNext(it2)); ) {
           switch (d->getDescriptorTag()) {
@@ -54,8 +55,8 @@ void cSdtFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                  switch (sd->getServiceType()) {
                    case 0x01: // digital television service
                    case 0x02: // digital radio sound service
-                   //XXX TODO case 0x04: // NVOD reference service
-                   //XXX TODO case 0x05: // NVOD time-shifted service
+                   case 0x04: // NVOD reference service
+                   case 0x05: // NVOD time-shifted service
                         {
                         char NameBuf[1024];
                         char ShortNameBuf[1024];
@@ -67,6 +68,15 @@ void cSdtFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                            *ps++ = ',';
                            strcpy(ps, NameBuf);
                            pn = ShortNameBuf;
+                           }
+                        if (*pn) {
+                           char ProviderNameBuf[1024];
+                           sd->providerName.getText(ProviderNameBuf, sizeof(ProviderNameBuf));
+                           if (*ProviderNameBuf) {
+                              char *p = pn + strlen(pn);
+                              *p++ = ';';
+                              strcpy(p, ProviderNameBuf);
+                              }
                            }
                         if (channel) {
                            channel->SetId(sdt.getOriginalNetworkId(), sdt.getTransportStreamId(), SiSdtService.getServiceId());
@@ -102,7 +112,16 @@ void cSdtFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                  SI::NVODReferenceDescriptor *nrd = (SI::NVODReferenceDescriptor *)d;
                  for (SI::Loop::Iterator it; nrd->serviceLoop.hasNext(it); ) {
                      SI::NVODReferenceDescriptor::Service Service = nrd->serviceLoop.getNext(it);
-                     //printf(" %04X-%04X-%04X\n", Service.getOriginalNetworkId(), Service.getTransportStream(), Service.getServiceId());//XXX TODO
+                     cChannel *link = Channels.GetByChannelID(tChannelID(Source(), Service.getOriginalNetworkId(), Service.getTransportStream(), Service.getServiceId()));
+                     if (!link && Setup.UpdateChannels >= 3) {
+                        link = Channels.NewChannel(Channel(), "NVOD", Service.getOriginalNetworkId(), Service.getTransportStream(), Service.getServiceId());
+                        patFilter->Trigger();
+                        }
+                     if (link) {
+                        if (!LinkChannels)
+                           LinkChannels = new cLinkChannels;
+                        LinkChannels->Add(new cLinkChannel(link));
+                        }
                      }
                  }
                  break;
@@ -110,6 +129,12 @@ void cSdtFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
             }
           delete d;
           }
+      if (LinkChannels) {
+         if (channel)
+            channel->SetLinkChannels(LinkChannels);
+         else
+            delete LinkChannels;
+         }
       }
   Channels.Unlock();
 }

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.88 2004/06/13 20:25:19 kls Exp $
+ * $Id: recording.c 1.89 2004/07/17 11:22:29 kls Exp $
  */
 
 #include "recording.h"
@@ -626,7 +626,7 @@ cRecordings::cRecordings(bool Deleted)
   lastUpdate = 0;
 }
 
-bool cRecordings::ScanVideoDir(const char *DirName)
+void cRecordings::ScanVideoDir(const char *DirName)
 {
   DIR *d = opendir(DirName);
   if (d) {
@@ -641,10 +641,10 @@ bool cRecordings::ScanVideoDir(const char *DirName)
                     free(buffer);
                     buffer = ReadLink(buffer);
                     if (!buffer)
-                       return false;
+                       continue;
                     if (stat(buffer, &st) != 0) {
-                       LOG_ERROR_STR(DirName);
-                       return false;
+                       free(buffer);
+                       continue;
                        }
                     }
                  if (S_ISDIR(st.st_mode)) {
@@ -655,24 +655,15 @@ bool cRecordings::ScanVideoDir(const char *DirName)
                        else
                           delete r;
                        }
-                    else if (!ScanVideoDir(buffer))
-                       return false;
+                    else
+                       ScanVideoDir(buffer);
                     }
-                 }
-              else {
-                 LOG_ERROR_STR(DirName);
-                 return false;
                  }
               free(buffer);
               }
            }
      closedir(d);
      }
-  else {
-     LOG_ERROR_STR(DirName);
-     return false;
-     }
-  return true;
 }
 
 bool cRecordings::NeedsUpdate(void)

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbosd.c 1.23 2004/06/12 13:10:03 kls Exp $
+ * $Id: dvbosd.c 1.24 2004/07/18 13:51:42 kls Exp $
  */
 
 #include "dvbosd.h"
@@ -39,6 +39,14 @@ cDvbOsd::cDvbOsd(int Left, int Top, int OsdDev)
   shown = false;
   if (osdDev < 0)
      esyslog("ERROR: illegal OSD device handle (%d)!", osdDev);
+  else {
+     // must clear all windows here to avoid flashing effects - doesn't work if done
+     // in Flush() only for the windows that are actually used...
+     for (int i = 0; i < MAXNUMWINDOWS; i++) {
+         Cmd(OSD_SetWindow, 0, i + 1);
+         Cmd(OSD_Clear);
+         }
+     }
 }
 
 cDvbOsd::~cDvbOsd()

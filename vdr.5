@@ -8,7 +8,7 @@
 .\" License as specified in the file COPYING that comes with the
 .\" vdr distribution.
 .\"
-.\" $Id: vdr.5 1.27 2004/05/15 09:24:57 kls Exp $
+.\" $Id: vdr.5 1.28 2004/07/18 11:06:54 kls Exp $
 .\"
 .TH vdr 5 "1 Jun 2003" "1.2.0" "Video Disk Recorder Files"
 .SH NAME
@@ -64,6 +64,11 @@ for this channel, it preceeds the full name and is delimited by a comma,
 as in
 
 \fBRTL,RTL Television:...\fR
+
+If present, the name of the service provider or "bouquet" is appended
+to the channel name, separated by a semicolon, as in
+
+\fBRTL,RTL Television;RTL World:...\fR
 .TP
 .B Frequency
 The transponder frequency (as an integer). For DVB-S this value is in MHz. For DVB-C
