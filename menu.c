@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.176 2002/03/29 10:49:22 kls Exp $
+ * $Id: menu.c 1.177 2002/03/31 10:46:24 kls Exp $
  */
 
 #include "menu.h"
@@ -3296,7 +3296,9 @@ eOSState cReplayControl::ProcessKey(eKeys Key)
         ShowMode();
         timeoutShow = 0;
         }
-     else if (!modeOnly)
+     else if (modeOnly)
+        ShowMode();
+     else 
         shown = ShowProgress(!shown) || shown;
      }
   bool DisplayedFrames = displayFrames;

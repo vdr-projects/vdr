@@ -1147,3 +1147,5 @@ Video Disk Recorder Revision History
   to their appropriate system locations.
 - Automatic hotkey assignment is now suppressed if the first entry in
   commands.conf starts with a digit in the range '1'...'9', followed by a blank.
+- Fixed a bug in switching back the replay mode display in time shift mode
+  (thanks to Achim Lange for reporting this one).
