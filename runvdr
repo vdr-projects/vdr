@@ -9,7 +9,8 @@ KILLPROC="/sbin/killproc -TERM"
 while (true) do
 #      (cd $DVBDIR; make reload)
 #      sleep 3
-      if $VDRCMD; then exit; fi
+      $VDRCMD
+      if test $? != 1; then exit; fi
       date
       echo "restarting VDR"
       $KILLPROC $VDRPRG

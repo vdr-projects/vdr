@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.55 2001/03/31 10:18:25 kls Exp $
+ * $Id: vdr.c 1.56 2001/04/01 11:16:54 kls Exp $
  */
 
 #include <getopt.h>
@@ -104,7 +104,7 @@ int main(int argc, char *argv[])
                           }
                        }
                     fprintf(stderr, "vdr: invalid DVB device number: %s\n", optarg);
-                    abort();
+                    return 2;
                     break;
           case 'h': printf("Usage: vdr [OPTION]\n\n"           // for easier orientation, this is column 80|
                            "  -c DIR,   --config=DIR   read config files from DIR (default is to read them\n"
@@ -139,13 +139,13 @@ int main(int argc, char *argv[])
                           }
                        }
                     fprintf(stderr, "vdr: invalid log level: %s\n", optarg);
-                    abort();
+                    return 2;
                     break;
           case 'p': if (isnumber(optarg))
                        SVDRPport = atoi(optarg);
                     else {
                        fprintf(stderr, "vdr: invalid port number: %s\n", optarg);
-                       abort();
+                       return 2;
                        }
                     break;
           case 't': Terminal = optarg;
@@ -162,9 +162,9 @@ int main(int argc, char *argv[])
                           }
                        }
                     fprintf(stderr, "vdr: invalid watchdog timeout: %s\n", optarg);
-                    abort();
+                    return 2;
                     break;
-          default:  abort();
+          default:  return 2;
           }
         }
 
@@ -177,7 +177,7 @@ int main(int argc, char *argv[])
 
   if (!DirectoryOk(VideoDirectory, true)) {
      fprintf(stderr, "vdr: can't access video directory %s\n", VideoDirectory);
-     abort();
+     return 2;
      }
 
   // Daemon mode:
@@ -188,7 +188,7 @@ int main(int argc, char *argv[])
      if (pid < 0) {
         fprintf(stderr, "%m\n");
         esyslog(LOG_ERR, "ERROR: %m");
-        abort();
+        return 2;
         }
      if (pid != 0)
         return 0; // initial program immediately returns
@@ -197,7 +197,7 @@ int main(int argc, char *argv[])
      fclose(stderr);
 #else
      fprintf(stderr, "vdr: can't run in daemon mode with DEBUG_OSD or REMOTE_KBD on!\n");
-     abort();
+     return 2;
 #endif
      }
   else if (Terminal) {
@@ -227,7 +227,7 @@ int main(int argc, char *argv[])
   // DVB interfaces:
 
   if (!cDvbApi::Init())
-     abort();
+     return 2;
 
   cDvbApi::SetPrimaryDvbApi(Setup.PrimaryDVB);
 

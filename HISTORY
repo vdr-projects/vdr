@@ -445,3 +445,5 @@ Video Disk Recorder Revision History
   systems with three or more DVB cards.
 - Added the "statdvb2vdr" tool from Hans-Peter Raschke.
 - Fixed a segfault that sometimes happened when killing VDR.
+- VDR now returns an exit status of '2' in case of an error at startup, instead
+  of terminating with 'abort()' (which caused a core dump).
