@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.230 2003/01/06 13:35:38 kls Exp $
+ * $Id: menu.c 1.231 2003/01/06 16:13:53 kls Exp $
  */
 
 #include "menu.h"
@@ -1551,9 +1551,8 @@ eOSState cMenuCam::Select(void)
   if (ciMenu->Selectable()) {
      ciMenu->Select(Current());
      selected = true;
-     return osEnd;
      }
-  return osContinue;
+  return osEnd;
 }
 
 eOSState cMenuCam::ProcessKey(eKeys Key)
