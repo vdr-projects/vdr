@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.67 2003/10/17 15:36:13 kls Exp $
+ * $Id: dvbdevice.c 1.67.1.1 2003/10/19 11:41:07 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -957,10 +957,14 @@ void cDvbDevice::StillPicture(const uchar *Data, int Length)
                  // skip header extension
                  if ((Data[i + 6] & 0xC0) == 0x80) {
                     // MPEG-2 PES header
+                    if (Data[i + 8] >= Length)
+                       break;
                     offs += 3;
                     offs += Data[i + 8];
                     len -= 3;
                     len -= Data[i + 8];
+                    if (len < 0 || offs + len >= Length)
+                       break;
                     }
                  else {
                     // MPEG-1 PES header
@@ -968,19 +972,19 @@ void cDvbDevice::StillPicture(const uchar *Data, int Length)
                           offs++;
                           len--;
                           }
-                    if ((Data[offs] & 0xC0) == 0x40) {
+                    if (offs <= Length - 2 && len >= 2 && (Data[offs] & 0xC0) == 0x40) {
                        offs += 2;
                        len -= 2;
                        }
-                    if ((Data[offs] & 0xF0) == 0x20) {
+                    if (offs <= Length - 5 && len >= 5 && (Data[offs] & 0xF0) == 0x20) {
                        offs += 5;
                        len -= 5;
                        }
-                    else if ((Data[offs] & 0xF0) == 0x30) {
+                    else if (offs <= Length - 10 && len >= 10 && (Data[offs] & 0xF0) == 0x30) {
                        offs += 10;
                        len -= 10;
                        }
-                    else if (Data[offs] == 0x0F) {
+                    else if (offs < Length && len > 0) {
                        offs++;
                        len--;
                        }
