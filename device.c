@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.59 2004/10/16 13:49:35 kls Exp $
+ * $Id: device.c 1.60 2004/10/17 09:39:10 kls Exp $
  */
 
 #include "device.h"
@@ -248,7 +248,11 @@ bool cDevice::AddPid(int Pid, ePidType PidType)
         if (++pidHandles[n].used == 2 && n <= ptTeletext) {
            // It's a special PID that may have to be switched into "tap" mode
            PRINTPIDS("A");
-           return SetPid(&pidHandles[n], n, true);
+           if (!SetPid(&pidHandles[n], n, true)) {
+              esyslog("ERROR: can't set PID %d on device %d", Pid, CardIndex() + 1);
+              DelPid(Pid, PidType);
+              return false;
+              }
            }
         PRINTPIDS("a");
         return true;
@@ -261,13 +265,19 @@ bool cDevice::AddPid(int Pid, ePidType PidType)
         // The Pid is not yet in use and we have a free slot
         n = a;
         }
-     else
-        esyslog("ERROR: no free slot for PID %d", Pid);
+     else {
+        esyslog("ERROR: no free slot for PID %d on device %d", Pid, CardIndex() + 1);
+        return false;
+        }
      if (n >= 0) {
         pidHandles[n].pid = Pid;
         pidHandles[n].used = 1;
         PRINTPIDS("C");
-        return SetPid(&pidHandles[n], n, true);
+        if (!SetPid(&pidHandles[n], n, true)) {
+           esyslog("ERROR: can't set PID %d on device %d", Pid, CardIndex() + 1);
+           DelPid(Pid, PidType);
+           return false;
+           }
         }
      }
   return true;
@@ -757,8 +767,13 @@ bool cDevice::AttachReceiver(cReceiver *Receiver)
      return true;
   for (int i = 0; i < MAXRECEIVERS; i++) {
       if (!receiver[i]) {
-         for (int n = 0; n < MAXRECEIVEPIDS; n++)
-             AddPid(Receiver->pids[n]);//XXX+ retval!
+         for (int n = 0; n < MAXRECEIVEPIDS; n++) {
+             if (!AddPid(Receiver->pids[n])) {
+                for ( ; n-- > 0; )
+                    DelPid(Receiver->pids[n]);
+                return false;
+                }
+             }
          Receiver->Activate(true);
          Lock();
          Receiver->device = this;
