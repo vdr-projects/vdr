@@ -47,8 +47,11 @@ Video Disk Recorder File Formats
       ----F-- = Friday
       -----S- = Saturday
       ------S = Sunday
-    (any combination is possible, for example MTWTF--) or the "day of month" (1..31)
-  - Star time (first two digits for the hour, second two digits for the minutes)
+    (any combination is possible, for example MTWTF--, and the days may be
+    indicated by any characters except '-', so for example ABC---- would set
+    a timer that records on monday, tuesday and wednesday) or the "day of month"
+    (1..31)
+  - Start time (first two digits for the hour, second two digits for the minutes)
   - End time (first two digits for the hour, second two digits for the minutes)
   - Priority (from 00 to 99, 00 = lowest prioity, 99 = highest priority)
   - Guaranteed lifetime of recording (in days)

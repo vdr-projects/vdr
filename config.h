@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.30 2000/11/05 13:17:03 kls Exp $
+ * $Id: config.h 1.31 2000/11/11 10:39:00 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -18,7 +18,7 @@
 #include "eit.h"
 #include "tools.h"
 
-#define VDRVERSION "0.67"
+#define VDRVERSION "0.68"
 
 #define MaxBuffer 10000
 
@@ -229,6 +229,7 @@ private:
   bool Parse(char *s);
 public:
   // Also adjust cMenuSetup (menu.c) when adding parameters here!
+  int OSDLanguage;
   int PrimaryDVB;
   int ShowInfoOnChSwitch;
   int MenuScrollPage;

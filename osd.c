@@ -4,12 +4,13 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 1.11 2000/11/01 11:21:51 kls Exp $
+ * $Id: osd.c 1.12 2000/11/10 16:18:38 kls Exp $
  */
 
 #include "osd.h"
 #include <assert.h>
 #include <string.h>
+#include "i18n.h"
 
 // --- cOsdItem --------------------------------------------------------------
 
@@ -248,7 +249,7 @@ void cOsdMenu::Mark(void)
 {
   if (Count() && marked < 0) {
      marked = current;
-     SetStatus("Up/Dn for new location - OK to move");
+     SetStatus(tr("Up/Dn for new location - OK to move"));
      }
 }
 

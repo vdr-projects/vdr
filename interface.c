@@ -4,12 +4,13 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.c 1.29 2000/11/05 12:50:44 kls Exp $
+ * $Id: interface.c 1.30 2000/11/10 17:03:02 kls Exp $
  */
 
 #include "interface.h"
 #include <ctype.h>
 #include <unistd.h>
+#include "i18n.h"
 
 cInterface *Interface = NULL;
 
@@ -321,9 +322,9 @@ void cInterface::QueryKeys(void)
 {
   Keys.Clear();
   Clear();
-  WriteText(1, 1, "Learning Remote Control Keys");
-  WriteText(1, 3, "Phase 1: Detecting RC code type");
-  WriteText(1, 5, "Press any key on the RC unit");
+  WriteText(1, 1, tr("Learning Remote Control Keys"));
+  WriteText(1, 3, tr("Phase 1: Detecting RC code type"));
+  WriteText(1, 5, tr("Press any key on the RC unit"));
   cDvbApi::PrimaryDvbApi->Flush();
 #ifndef REMOTE_KBD
   unsigned char Code = 0;
@@ -338,8 +339,8 @@ void cInterface::QueryKeys(void)
       if (rcIo->DetectCode(&Code, &Address)) {
          Keys.code = Code;
          Keys.address = Address;
-         WriteText(1, 5, "RC code detected!");
-         WriteText(1, 6, "Do not press any key...");
+         WriteText(1, 5, tr("RC code detected!"));
+         WriteText(1, 6, tr("Do not press any key..."));
          cDvbApi::PrimaryDvbApi->Flush();
          rcIo->Flush(3000);
          ClearEol(0, 5);
@@ -349,11 +350,11 @@ void cInterface::QueryKeys(void)
          }
 #endif
       }
-  WriteText(1, 3, "Phase 2: Learning specific key codes");
+  WriteText(1, 3, tr("Phase 2: Learning specific key codes"));
   tKey *k = Keys.keys;
   while (k->type != kNone) {
         char *Prompt;
-        asprintf(&Prompt, "Press key for '%s'", k->name);
+        asprintf(&Prompt, tr("Press key for '%s'"), tr(k->name));
         WriteText(1, 5, Prompt);
         delete Prompt;
         for (;;) {
@@ -365,8 +366,8 @@ void cInterface::QueryKeys(void)
                                 break;
                                 }
                  case kDown: if (k > Keys.keys + 1) {
-                                WriteText(1, 5, "Press 'Up' to confirm");
-                                WriteText(1, 6, "Press 'Down' to continue");
+                                WriteText(1, 5, tr("Press 'Up' to confirm"));
+                                WriteText(1, 6, tr("Press 'Down' to continue"));
                                 ClearEol(0, 7);
                                 ClearEol(0, 8);
                                 for (;;) {
@@ -391,11 +392,11 @@ void cInterface::QueryKeys(void)
                }
             }
         if (k > Keys.keys)
-           WriteText(1, 7, "(press 'Up' to go back)");
+           WriteText(1, 7, tr("(press 'Up' to go back)"));
         else
            ClearEol(0, 7);
         if (k > Keys.keys + 1)
-           WriteText(1, 8, "(press 'Down' to end key definition)");
+           WriteText(1, 8, tr("(press 'Down' to end key definition)"));
         else
            ClearEol(0, 8);
         }
@@ -409,9 +410,9 @@ void cInterface::LearnKeys(void)
       Clear();
       QueryKeys();
       Clear();
-      WriteText(1, 1, "Learning Remote Control Keys");
-      WriteText(1, 3, "Phase 3: Saving key codes");
-      WriteText(1, 5, "Press 'Up' to save, 'Down' to cancel");
+      WriteText(1, 1, tr("Learning Remote Control Keys"));
+      WriteText(1, 3, tr("Phase 3: Saving key codes"));
+      WriteText(1, 5, tr("Press 'Up' to save, 'Down' to cancel"));
       for (;;) {
           eKeys key = GetKey();
           if (key == kUp) {

@@ -4,13 +4,14 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.30 2000/11/05 18:18:30 kls Exp $
+ * $Id: config.c 1.31 2000/11/11 09:56:01 kls Exp $
  */
 
 #include "config.h"
 #include <ctype.h>
 #include <stdlib.h>
 #include "dvbapi.h"
+#include "i18n.h"
 #include "interface.h"
 
 // -- cKeys ------------------------------------------------------------------
@@ -270,7 +271,7 @@ bool cChannel::Switch(cDvbApi *DvbApi)
      return false;
      }
   if (DvbApi->Recording())
-     Interface->Info("Channel locked (recording)!");
+     Interface->Info(tr("Channel locked (recording)!"));
   return false;
 }
 
@@ -405,7 +406,7 @@ const char *cTimer::PrintDay(int d)
   static char buffer[8];
   if ((d & 0x80000000) != 0) {
      char *b = buffer;
-     char *w = "MTWTFSS";
+     const char *w = tr("MTWTFSS");
      *b = 0;
      while (*w) {
            *b++ = (d & 1) ? *w : '-';
@@ -650,6 +651,7 @@ char *cSetup::fileName = NULL;
 
 cSetup::cSetup(void)
 {
+  OSDLanguage = 0;
   PrimaryDVB = 1;
   ShowInfoOnChSwitch = 1;
   MenuScrollPage = 1;
@@ -667,7 +669,8 @@ bool cSetup::Parse(char *s)
   char *Name  = strtok(s, Delimiters);
   char *Value = strtok(NULL, Delimiters);
   if (Name && Value) {
-     if      (!strcasecmp(Name, "PrimaryDVB"))          PrimaryDVB         = atoi(Value);
+     if      (!strcasecmp(Name, "OSDLanguage"))         OSDLanguage        = atoi(Value);
+     else if (!strcasecmp(Name, "PrimaryDVB"))          PrimaryDVB         = atoi(Value);
      else if (!strcasecmp(Name, "ShowInfoOnChSwitch"))  ShowInfoOnChSwitch = atoi(Value);
      else if (!strcasecmp(Name, "MenuScrollPage"))      MenuScrollPage     = atoi(Value);
      else if (!strcasecmp(Name, "MarkInstantRecord"))   MarkInstantRecord  = atoi(Value);
@@ -717,6 +720,7 @@ bool cSetup::Save(const char *FileName)
      FILE *f = fopen(FileName, "w");
      if (f) {
         fprintf(f, "# VDR Setup\n");
+        fprintf(f, "OSDLanguage        = %d\n", OSDLanguage);
         fprintf(f, "PrimaryDVB         = %d\n", PrimaryDVB);
         fprintf(f, "ShowInfoOnChSwitch = %d\n", ShowInfoOnChSwitch);
         fprintf(f, "MenuScrollPage     = %d\n", MenuScrollPage);

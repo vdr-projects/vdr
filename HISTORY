@@ -266,9 +266,11 @@ Video Disk Recorder Revision History
   are programmed via the "Schedules" menu) are now replaced by suitable
   substitutes.
 
-2000-11-05: Version 0.68
+2000-11-11: Version 0.68
 
 - Date and time in the title of an event info page are now always right adjusted.
 - The 'current channel' is now handled device specific (in case there is more
   than one DVB card).
 - The 'SetSystemTime' option in the "Setup" menu is now shown as "yes/no".
+- Implemented "internationalization" (see 'i18n.c' for information on how to
+  add new languages).

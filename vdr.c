@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.43 2000/11/05 18:39:17 kls Exp $
+ * $Id: vdr.c 1.44 2000/11/10 16:13:27 kls Exp $
  */
 
 #include <getopt.h>
@@ -31,6 +31,7 @@
 #include <unistd.h>
 #include "config.h"
 #include "dvbapi.h"
+#include "i18n.h"
 #include "interface.h"
 #include "menu.h"
 #include "recording.h"
@@ -229,7 +230,7 @@ int main(int argc, char *argv[])
                             break;
              case osRecord: DELETENULL(Menu);
                             if (!cRecordControls::Start())
-                               Interface->Error("No free DVB device to record!");
+                               Interface->Error(tr("No free DVB device to record!"));
                             break;
              case osRecordings:
                             DELETENULL(Menu);
@@ -246,7 +247,7 @@ int main(int argc, char *argv[])
                             break;
              case osSwitchDvb:
                             DELETENULL(*Interact);
-                            Interface->Info("Switching primary DVB...");
+                            Interface->Info(tr("Switching primary DVB..."));
                             cDvbApi::SetPrimaryDvbApi(Setup.PrimaryDVB);
                             break;
              case osBack:

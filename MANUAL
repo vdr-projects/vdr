@@ -228,6 +228,10 @@ Video Disk Recorder User's Manual
   displayed as "no" and "yes" in the "Setup" menu, while in the setup file they
   are stored as '0' and '1', respectively):
 
+  OSDLanguage = 0        Defines the language used to display the OSD texts.
+                         0 = Englisch
+                         1 = Deutsch
+
   PrimaryDVB = 1         Defines the primary DVB interface (i.e. the one that
                          will display the menus and will react on input through
                          the remote control). Valid values range from '1' to the
