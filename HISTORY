@@ -2642,3 +2642,5 @@ Video Disk Recorder Revision History
   Volkenandt for his support in debugging this one). This may slow down switching
   between channels on different transponders for now, but a better solution will
   come later.
+- Fixed the validity check for channel IDs, because some providers use TIDs with
+  value 0 (thanks to Thomas Bergwinkl).
