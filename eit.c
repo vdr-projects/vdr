@@ -13,7 +13,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.c 1.12 2001/02/24 12:12:58 kls Exp $
+ * $Id: eit.c 1.13 2001/03/03 13:23:00 kls Exp $
  ***************************************************************************/
 
 #include "eit.h"
@@ -181,16 +181,15 @@ protected: // Protected attributes
   /**  */
   tdt_t tdt;
   /**  */
-  cMJD * mjd;
+  cMJD mjd; // kls 2001-03-02: made this a member instead of a pointer (it wasn't deleted in the destructor!)
 };
 
 cTDT::cTDT(tdt_t *ptdt)
+:tdt(*ptdt)
+,mjd(tdt.utc_date_hi, tdt.utc_date_lo, tdt.utc_hour_ten * 10 + tdt.utc_hour,
+                                       tdt.utc_min_ten  * 10 + tdt.utc_min,
+                                       tdt.utc_sec_ten  * 10 + tdt.utc_sec)
 {
-	tdt = *ptdt;
-	mjd = new cMJD(tdt.utc_date_hi, tdt.utc_date_lo,
-						tdt.utc_hour_ten * 10 + tdt.utc_hour,
-						tdt.utc_min_ten * 10 + tdt.utc_min,
-						tdt.utc_sec_ten * 10 + tdt.utc_sec);
 }
 
 cTDT::~cTDT()
@@ -199,7 +198,7 @@ cTDT::~cTDT()
 /**  */
 bool cTDT::SetSystemTime()
 {
-	return mjd->SetSystemTime();
+	return mjd.SetSystemTime();
 }
 
 // --- cEventInfo ------------------------------------------------------------

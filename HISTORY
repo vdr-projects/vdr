@@ -421,3 +421,5 @@ Video Disk Recorder Revision History
 - Enhanced 'channels.conf.cable' (thanks to Hans-Peter Raschke).
 - Fixed switching to another channel via the EPG while a recording is being
   replayed.
+- Fixed a memory leak in the EIT processor that happened when the system time
+  was set.
