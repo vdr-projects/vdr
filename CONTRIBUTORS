@@ -279,6 +279,8 @@ Andy Grobb <Charly98@01019freenet.de>
 Thomas Heiligenmann <thomas@heiligenmann.de>
  for implementing the SVDRP commands LSTR and DELR
  for adding MPEG1 handling to cDvbDevice::StillPicture()
+ for extending the SVDRP command LSTE to allow limiting the listed data to a given
+ channel, the present or following events, or events at a given time
 
 Norbert Schmidt <nschmidt-nrw@t-online.de>
  for filling in some missing teletext PIDs
@@ -438,6 +440,8 @@ Gregoire Favre <greg@ulima.unil.ch>
  for fixing some function headers to make them compile with gcc 3.x
  for reporting a bug in taking an active SVDRP connection into account when doing shutdown
  for translating OSD texts to the French language
+ for suggesting to initiate an "emergency exit" if there are UPT errors during a
+ recording
 
 Sven Grothklags <sven@uni-paderborn.de>
  for fixing the cutting mechanism to make it re-sync in case a frame is larger
@@ -559,6 +563,7 @@ Jaakko Hyvätti <jaakko@hyvatti.iki.fi>
  for fixing the minimum lifespan of deleted recordings
  for suggesting to improve channel switching in case of numerical input by switching
  as soon as the channel is unique
+ for implementing an "EPG linger time"
 
 Dennis Noordsij <dennis.noordsij@wiral.com>
  for reporting a small glitch when switching channels
@@ -933,3 +938,8 @@ Andreas Regel <andreas.regel@gmx.de>
 Thomas Bergwinkl <Thomas.Bergwinkl@t-online.de>
  for fixing the validity check for channel IDs, because some providers use TIDs
  with value 0
+ for pointing out that transponder handling didn't work with satellites that provide
+ two transponders on the same frequency, with different polarization
+
+Stéphane Esté-Gracias <sestegra@free.fr>
+ for fixing a typo in libsi/si.h

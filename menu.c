@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.284 2004/02/08 15:06:42 kls Exp $
+ * $Id: menu.c 1.292 2004/02/22 14:14:55 kls Exp kls $
  */
 
 #include "menu.h"
@@ -18,6 +18,7 @@
 #include "cutter.h"
 #include "eitscan.h"
 #include "i18n.h"
+#include "libsi/si.h"
 #include "menuitems.h"
 #include "plugin.h"
 #include "recording.h"
@@ -557,8 +558,12 @@ cMenuEditChannel::cMenuEditChannel(cChannel *Channel, bool New)
   channel = Channel;
   if (channel) {
      data = *channel;
-     if (New)
+     if (New) {
         channel = NULL;
+        data.nid = 0;
+        data.tid = 0;
+        data.rid = 0;
+        }
      Setup();
      }
 }
@@ -583,7 +588,7 @@ void cMenuEditChannel::Setup(void)
   Add(new cMenuEditIntItem( tr("Dpid2"),        &data.dpids[1], 0, 0x1FFF));
   Add(new cMenuEditIntItem( tr("Tpid"),         &data.tpid,  0, 0x1FFF));
   Add(new cMenuEditCaItem(  tr("CA"),           &data.caids[0], true));//XXX
-  Add(new cMenuEditIntItem( tr("Sid"),          &data.sid, 0));
+  Add(new cMenuEditIntItem( tr("Sid"),          &data.sid, 1, 0xFFFF));
   /* XXX not yet used
   Add(new cMenuEditIntItem( tr("Nid"),          &data.nid, 0));
   Add(new cMenuEditIntItem( tr("Tid"),          &data.tid, 0));
@@ -867,13 +872,14 @@ cMenuEditTimer::cMenuEditTimer(cTimer *Timer, bool New)
   if (timer) {
      data = *timer;
      if (New)
-        data.active = 1;
+        data.SetFlags(tfActive);
      channel = data.Channel()->Number();
-     Add(new cMenuEditBoolItem(tr("Active"),       &data.active));
+     Add(new cMenuEditBitItem( tr("Active"),       &data.flags, tfActive));
      Add(new cMenuEditChanItem(tr("Channel"),      &channel));
      Add(new cMenuEditDayItem( tr("Day"),          &data.day));
      Add(new cMenuEditTimeItem(tr("Start"),        &data.start));
      Add(new cMenuEditTimeItem(tr("Stop"),         &data.stop));
+     Add(new cMenuEditBitItem( tr("VPS"),          &data.flags, tfVps));
      Add(new cMenuEditIntItem( tr("Priority"),     &data.priority, 0, MAXPRIORITY));
      Add(new cMenuEditIntItem( tr("Lifetime"),     &data.lifetime, 0, MAXLIFETIME));
      Add(new cMenuEditStrItem( tr("File"),          data.file, sizeof(data.file), tr(FileNameChars)));
@@ -922,13 +928,13 @@ eOSState cMenuEditTimer::ProcessKey(eKeys Key)
                        if (timer) {
                           if (memcmp(timer, &data, sizeof(data)) != 0) {
                              *timer = data;
-                             if (timer->active)
-                                timer->active = 1; // allows external programs to mark active timers with values > 1 and recognize if the user has modified them
+                             if (timer->HasFlags(tfActive))
+                                timer->ClrFlags(~tfAll); // allows external programs to mark active timers with values > 0xFFFF and recognize if the user has modified them
                              }
                           if (addIfConfirmed)
                              Timers.Add(timer);
                           Timers.Save();
-                          isyslog("timer %d %s (%s)", timer->Index() + 1, addIfConfirmed ? "added" : "modified", timer->active ? "active" : "inactive");
+                          isyslog("timer %d %s (%s)", timer->Index() + 1, addIfConfirmed ? "added" : "modified", timer->HasFlags(tfActive) ? "active" : "inactive");
                           addIfConfirmed = false;
                           }
                      }
@@ -972,7 +978,7 @@ void cMenuTimerItem::Set(void)
 {
   char *buffer = NULL;
   asprintf(&buffer, "%c\t%d\t%s\t%02d:%02d\t%02d:%02d\t%s",
-                    !timer->Active() ? ' ' : timer->FirstDay() ? '!' : timer->Recording() ? '#' : '>',
+                    !(timer->HasFlags(tfActive)) ? ' ' : timer->FirstDay() ? '!' : timer->Recording() ? '#' : '>',
                     timer->Channel()->Number(),
                     timer->PrintDay(timer->Day()),
                     timer->Start() / 100,
@@ -1037,7 +1043,7 @@ eOSState cMenuTimers::OnOff(void)
      if (timer->FirstDay())
         isyslog("timer %d first day set to %s", timer->Index() + 1, timer->PrintFirstDay());
      else
-        isyslog("timer %d %sactivated", timer->Index() + 1, timer->Active() ? "" : "de");
+        isyslog("timer %d %sactivated", timer->Index() + 1, timer->HasFlags(tfActive) ? "" : "de");
      Timers.Save();
      }
   return osContinue;
@@ -1164,6 +1170,13 @@ cMenuEvent::cMenuEvent(const cEvent *Event, bool CanSwitch)
            Add(item = new cMenuTextItem(Subtitle, 1, Line, Setup.OSDwidth - 2, -1, clrYellow));
            Line += item->Height() + 1;
            }
+        if (Event->Vps() && Event->Vps() != Event->StartTime()) {
+           char *buffer;
+           asprintf(&buffer, "VPS: %s", Event->GetVpsString());
+           Add(item = new cMenuTextItem(buffer, 1, Line, Setup.OSDwidth - 2, -1, clrYellow));
+           free(buffer);
+           Line += item->Height() + 1;
+           }
         if (!isempty(ExtendedDescription))
            Add(new cMenuTextItem(ExtendedDescription, 1, Line, Setup.OSDwidth - 2, Height() - Line - 2, clrCyan), true);
         SetHelp(tr("Record"), NULL, NULL, CanSwitch ? tr("Switch") : NULL);
@@ -1191,15 +1204,20 @@ eOSState cMenuEvent::ProcessKey(eKeys Key)
 class cMenuWhatsOnItem : public cOsdItem {
 public:
   const cEvent *event;
-  cMenuWhatsOnItem(const cEvent *Event);
+  const cChannel *channel;
+  cMenuWhatsOnItem(const cEvent *Event, cChannel *Channel);
 };
 
-cMenuWhatsOnItem::cMenuWhatsOnItem(const cEvent *Event)
+cMenuWhatsOnItem::cMenuWhatsOnItem(const cEvent *Event, cChannel *Channel)
 {
   event = Event;
+  channel = Channel;
   char *buffer = NULL;
-  cChannel *channel = Channels.GetByNumber(event->ChannelNumber());
-  asprintf(&buffer, "%d\t%.*s\t%.*s\t%s", event->ChannelNumber(), 6, channel ? channel->Name() : "???", 5, event->GetTimeString(), event->Title());
+  int TimerMatch;
+  char t = Timers.GetMatch(Event, &TimerMatch) ? (TimerMatch == tmFull) ? 'T' : 't' : ' ';
+  char v = event->Vps() && (event->Vps() - event->StartTime()) ? 'V' : ' ';
+  char r = event->RunningStatus() > SI::RunningStatusNotRunning ? '*' : ' ';
+  asprintf(&buffer, "%d\t%.*s\t%.*s\t%c%c%c\t%s", channel->Number(), 6, channel->Name(), 5, event->GetTimeString(), t, v, r, event->Title());
   SetText(buffer, false);
 }
 
@@ -1222,39 +1240,20 @@ public:
 int cMenuWhatsOn::currentChannel = 0;
 const cEvent *cMenuWhatsOn::scheduleEvent = NULL;
 
-static int CompareEventChannel(const void *p1, const void *p2)
-{
-  return (int)( (*(const cEvent **)p1)->ChannelNumber() - (*(const cEvent **)p2)->ChannelNumber());
-}
-
 cMenuWhatsOn::cMenuWhatsOn(const cSchedules *Schedules, bool Now, int CurrentChannelNr)
-:cOsdMenu(Now ? tr("What's on now?") : tr("What's on next?"), CHNUMWIDTH, 7, 6)
+:cOsdMenu(Now ? tr("What's on now?") : tr("What's on next?"), CHNUMWIDTH, 7, 6, 4)
 {
-  const cSchedule *Schedule = Schedules->First();
-  const cEvent **pArray = NULL;
-  int num = 0;
-
-  while (Schedule) {
-        pArray = (const cEvent **)realloc(pArray, (num + 1) * sizeof(cEvent *));
-
-        pArray[num] = Now ? Schedule->GetPresentEvent() : Schedule->GetFollowingEvent();
-        if (pArray[num]) {
-           cChannel *channel = Channels.GetByChannelID(pArray[num]->ChannelID(), true);
-           if (channel) {
-              pArray[num]->SetChannelNumber(channel->Number());
-              num++;
-              }
-           }
-        Schedule = (const cSchedule *)Schedules->Next(Schedule);
-        }
-
-  qsort(pArray, num, sizeof(cEvent *), CompareEventChannel);
-
-  for (int a = 0; a < num; a++)
-      Add(new cMenuWhatsOnItem(pArray[a]), pArray[a]->ChannelNumber() == CurrentChannelNr);
-
+  for (cChannel *Channel = Channels.First(); Channel; Channel = Channels.Next(Channel)) {
+      if (!Channel->GroupSep()) {
+         const cSchedule *Schedule = Schedules->GetSchedule(Channel->GetChannelID());
+         if (Schedule) {
+            const cEvent *Event = Now ? Schedule->GetPresentEvent() : Schedule->GetFollowingEvent();
+            if (Event)
+               Add(new cMenuWhatsOnItem(Event, Channel), Channel->Number() == CurrentChannelNr);
+            }
+         }
+      }
   currentChannel = CurrentChannelNr;
-  free(pArray);
   SetHelp(Count() ? tr("Record") : NULL, Now ? tr("Next") : tr("Now"), tr("Button$Schedule"), tr("Switch"));
 }
 
@@ -1306,7 +1305,7 @@ eOSState cMenuWhatsOn::ProcessKey(eKeys Key)
                        cMenuWhatsOnItem *mi = (cMenuWhatsOnItem *)Get(Current());
                        if (mi) {
                           scheduleEvent = mi->event;
-                          currentChannel = mi->event->ChannelNumber();
+                          currentChannel = mi->channel->Number();
                           }
                      }
                      break;
@@ -1332,7 +1331,11 @@ cMenuScheduleItem::cMenuScheduleItem(const cEvent *Event)
 {
   event = Event;
   char *buffer = NULL;
-  asprintf(&buffer, "%.*s\t%.*s\t%s", 5, event->GetDateString(), 5, event->GetTimeString(), event->Title());
+  int TimerMatch;
+  char t = Timers.GetMatch(Event, &TimerMatch) ? (TimerMatch == tmFull) ? 'T' : 't' : ' ';
+  char v = event->Vps() && (event->Vps() - event->StartTime()) ? 'V' : ' ';
+  char r = event->RunningStatus() > SI::RunningStatusNotRunning ? '*' : ' ';
+  asprintf(&buffer, "%.*s\t%.*s\t%c%c%c\t%s", 5, event->GetDateString(), 5, event->GetTimeString(), t, v, r, event->Title());
   SetText(buffer, false);
 }
 
@@ -1354,7 +1357,7 @@ public:
   };
 
 cMenuSchedule::cMenuSchedule(void)
-:cOsdMenu("", 6, 6)
+:cOsdMenu("", 6, 6, 4)
 {
   now = next = false;
   otherChannel = 0;
@@ -1372,11 +1375,6 @@ cMenuSchedule::~cMenuSchedule()
   cMenuWhatsOn::ScheduleEvent(); // makes sure any posted data is cleared
 }
 
-static int CompareEventTime(const void *p1, const void *p2)
-{
-  return (int)((*(cEvent **)p1)->StartTime() - (*(cEvent **)p2)->StartTime());
-}
-
 void cMenuSchedule::PrepareSchedule(cChannel *Channel)
 {
   Clear();
@@ -1387,23 +1385,14 @@ void cMenuSchedule::PrepareSchedule(cChannel *Channel)
   if (schedules) {
      const cSchedule *Schedule = schedules->GetSchedule(Channel->GetChannelID());
      if (Schedule) {
+        const cEvent *PresentEvent = Schedule->GetPresentEvent(Channel->Number() == cDevice::CurrentChannel());
         int num = Schedule->NumEvents();
-        const cEvent **pArray = MALLOC(const cEvent *, num);
-        if (pArray) {
-           time_t now = time(NULL);
-           int numreal = 0;
-           for (int a = 0; a < num; a++) {
-               const cEvent *Event = Schedule->GetEventNumber(a);
-               if (Event->StartTime() + Event->Duration() > now)
-                  pArray[numreal++] = Event;
-               }
-   
-           qsort(pArray, numreal, sizeof(cEvent *), CompareEventTime);
-   
-           for (int a = 0; a < numreal; a++)
-               Add(new cMenuScheduleItem(pArray[a]));
-           free(pArray);
-           }
+        time_t now = time(NULL) - Setup.EPGLinger * 60;
+        for (int a = 0; a < num; a++) {
+            const cEvent *Event = Schedule->GetEventNumber(a);
+            if (Event->StartTime() + Event->Duration() > now || Event == PresentEvent)
+               Add(new cMenuScheduleItem(Event), Event == PresentEvent);
+            }
         }
      }
 }
@@ -2057,6 +2046,7 @@ void cMenuSetupEPG::Setup(void)
 
   Add(new cMenuEditIntItem( tr("Setup.EPG$EPG scan timeout (h)"),      &data.EPGScanTimeout));
   Add(new cMenuEditIntItem( tr("Setup.EPG$EPG bugfix level"),          &data.EPGBugfixLevel, 0, MAXEPGBUGFIXLEVEL));
+  Add(new cMenuEditIntItem( tr("Setup.EPG$EPG linger time (min)"),     &data.EPGLinger, 0));
   Add(new cMenuEditBoolItem(tr("Setup.EPG$Set system time"),           &data.SetSystemTime));
   if (data.SetSystemTime)
      Add(new cMenuEditTranItem(tr("Setup.EPG$Use time from transponder"), &data.TimeTransponder));
@@ -2314,6 +2304,8 @@ cMenuSetupRecord::cMenuSetupRecord(void)
   Add(new cMenuEditIntItem( tr("Setup.Recording$Pause priority"),            &data.PausePriority, 0, MAXPRIORITY));
   Add(new cMenuEditIntItem( tr("Setup.Recording$Pause lifetime (d)"),        &data.PauseLifetime, 0, MAXLIFETIME));
   Add(new cMenuEditBoolItem(tr("Setup.Recording$Use episode name"),          &data.UseSubtitle));
+  Add(new cMenuEditBoolItem(tr("Setup.Recording$Use VPS"),                   &data.UseVps));
+  Add(new cMenuEditIntItem( tr("Setup.Recording$VPS margin (s)"),            &data.VpsMargin, 0));
   Add(new cMenuEditBoolItem(tr("Setup.Recording$Mark instant recording"),    &data.MarkInstantRecord));
   Add(new cMenuEditStrItem( tr("Setup.Recording$Name instant recording"),     data.NameInstantRecord, sizeof(data.NameInstantRecord), tr(FileNameChars)));
   Add(new cMenuEditIntItem( tr("Setup.Recording$Instant rec. time (min)"),   &data.InstantRecordTime, 1, MAXINSTANTRECTIME));
@@ -2784,7 +2776,7 @@ void cDisplayChannel::DisplayInfo(void)
         if (Schedule) {
            const char *PresentTitle = NULL, *PresentSubtitle = NULL, *FollowingTitle = NULL, *FollowingSubtitle = NULL;
            int Lines = 0;
-           if ((Present = Schedule->GetPresentEvent()) != NULL) {
+           if ((Present = Schedule->GetPresentEvent(true)) != NULL) {
               PresentTitle = Present->Title();
               if (!isempty(PresentTitle))
                  Lines++;
@@ -2792,7 +2784,7 @@ void cDisplayChannel::DisplayInfo(void)
               if (!isempty(PresentSubtitle))
                  Lines++;
               }
-           if ((Following = Schedule->GetFollowingEvent()) != NULL) {
+           if ((Following = Schedule->GetFollowingEvent(true)) != NULL) {
               FollowingTitle = Following->Title();
               if (!isempty(FollowingTitle))
                  Lines++;
@@ -3076,11 +3068,12 @@ cRecordControl::cRecordControl(cDevice *Device, cTimer *Timer, bool Pause)
      }
   timer->SetPending(true);
   timer->SetRecording(true);
+  event = timer->Event();
 
   const char *Title = NULL;
   const char *Subtitle = NULL;
   const char *Summary = NULL;
-  if (GetEvent()) {
+  if (event || GetEvent()) {
      Title = event->Title();
      Subtitle = event->ShortText();
      Summary = event->Description();
@@ -3135,7 +3128,7 @@ cRecordControl::~cRecordControl()
 bool cRecordControl::GetEvent(void)
 {
   const cChannel *channel = timer->Channel();
-  time_t Time = timer->Active() == taActInst ? timer->StartTime() + INSTANT_REC_EPG_LOOKAHEAD : timer->StartTime() + (timer->StopTime() - timer->StartTime()) / 2;
+  time_t Time = timer->HasFlags(tfInstant) ? timer->StartTime() + INSTANT_REC_EPG_LOOKAHEAD : timer->StartTime() + (timer->StopTime() - timer->StartTime()) / 2;
   for (int seconds = 0; seconds <= MAXWAIT4EPGINFO; seconds++) {
       {
         cSchedulesLock SchedulesLock;
@@ -3207,12 +3200,14 @@ bool cRecordControls::Start(cTimer *Timer, bool Pause)
            cThread::EmergencyExit(true);
            return false;
            }
-        for (int i = 0; i < MAXRECORDCONTROLS; i++) {
-            if (!RecordControls[i]) {
-               RecordControls[i] = new cRecordControl(device, Timer, Pause);
-               return true;
+        if (!Timer || Timer->Matches()) {
+           for (int i = 0; i < MAXRECORDCONTROLS; i++) {
+               if (!RecordControls[i]) {
+                  RecordControls[i] = new cRecordControl(device, Timer, Pause);
+                  return true;
+                  }
                }
-            }
+           }
         }
      else if (!Timer || (Timer->Priority() >= Setup.PrimaryLimit && !Timer->Pending()))
         isyslog("no free DVB device to record channel %d!", ch);
@@ -3237,7 +3232,7 @@ void cRecordControls::Stop(cDevice *Device)
 {
   for (int i = 0; i < MAXRECORDCONTROLS; i++) {
       if (RecordControls[i]) {
-         if (RecordControls[i]->Uses(Device)) {
+         if (RecordControls[i]->Device() == Device) {
             isyslog("stopping recording on DVB device %d due to higher priority", Device->CardIndex() + 1);
             RecordControls[i]->Stop(true);
             }
@@ -3316,10 +3311,12 @@ void cRecordControls::ChannelDataModified(cChannel *Channel)
   for (int i = 0; i < MAXRECORDCONTROLS; i++) {
       if (RecordControls[i]) {
          if (RecordControls[i]->Timer() && RecordControls[i]->Timer()->Channel() == Channel) {
-            isyslog("stopping recording due to modification of channel %d", Channel->Number());
-            RecordControls[i]->Stop(true);
-            // This will restart the recording, maybe even from a different
-            // device in case conditional access has changed.
+            if (RecordControls[i]->Device()->ProvidesTransponder(Channel)) { // avoids retune on devices that don't really access the transponder
+               isyslog("stopping recording due to modification of channel %d", Channel->Number());
+               RecordControls[i]->Stop(true);
+               // This will restart the recording, maybe even from a different
+               // device in case conditional access has changed.
+               }
             }
          }
       }

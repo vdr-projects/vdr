@@ -7,10 +7,12 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 1.4 2004/01/09 15:22:18 kls Exp $
+ * $Id: epg.c 1.13 2004/02/22 14:41:37 kls Exp kls $
  */
 
 #include "epg.h"
+#include "libsi/si.h"
+#include "timers.h"
 #include <ctype.h>
 #include <time.h>
 
@@ -22,13 +24,13 @@ cEvent::cEvent(tChannelID ChannelID, u_int16_t EventID)
   eventID = EventID;
   tableID = 0;
   version = 0xFF; // actual version numbers are 0..31
-  isPresent = isFollowing = false;
+  runningStatus = 0;
   title = NULL;
   shortText = NULL;
   description = NULL;
   startTime = 0;
   duration = 0;
-  channelNumber = 0;
+  vps = 0;
 }
 
 cEvent::~cEvent()
@@ -36,6 +38,12 @@ cEvent::~cEvent()
   free(title);
   free(shortText);
   free(description);
+}
+
+bool cEvent::operator< (const cListObject &ListObject)
+{
+  cEvent *e = (cEvent *)&ListObject;
+  return startTime < e->startTime;
 }
 
 void cEvent::SetEventID(u_int16_t EventID)
@@ -53,14 +61,9 @@ void cEvent::SetVersion(uchar Version)
   version = Version;
 }
 
-void cEvent::SetIsPresent(bool IsPresent)
+void cEvent::SetRunningStatus(int RunningStatus)
 {
-  isPresent = IsPresent;
-}
-
-void cEvent::SetIsFollowing(bool IsFollowing)
-{
-  isFollowing = IsFollowing;
+  runningStatus = RunningStatus;
 }
 
 void cEvent::SetTitle(const char *Title)
@@ -88,6 +91,20 @@ void cEvent::SetDuration(int Duration)
   duration = Duration;
 }
 
+void cEvent::SetVps(time_t Vps)
+{
+  vps = Vps;
+}
+
+bool cEvent::HasTimer(void) const
+{
+  for (cTimer *t = Timers.First(); t; t = Timers.Next(t)) {
+      if (t->Event() == this)
+         return true;
+      }
+  return false;
+}
+
 const char *cEvent::GetDateString(void) const
 {
   static char buf[25];
@@ -113,6 +130,14 @@ const char *cEvent::GetEndTimeString(void) const
   return buf;
 }
 
+const char *cEvent::GetVpsString(void) const
+{
+  static char buf[25];
+  struct tm tm_r;
+  strftime(buf, sizeof(buf), "%d.%m %R", localtime_r(&vps, &tm_r));
+  return buf;
+}
+
 void cEvent::Dump(FILE *f, const char *Prefix) const
 {
   if (startTime + duration >= time(NULL)) {
@@ -123,6 +148,8 @@ void cEvent::Dump(FILE *f, const char *Prefix) const
         fprintf(f, "%sS %s\n", Prefix, shortText);
      if (!isempty(description))
         fprintf(f, "%sD %s\n", Prefix, description);
+     if (vps)
+        fprintf(f, "%sV %ld\n", Prefix, vps);
      fprintf(f, "%se\n", Prefix);
      }
 }
@@ -162,6 +189,9 @@ bool cEvent::Read(FILE *f, cSchedule *Schedule)
              case 'D': if (Event)
                           Event->SetDescription(t);
                        break;
+             case 'V': if (Event)
+                          Event->SetVps(atoi(t));
+                       break;
              case 'e': Event = NULL;
                        break;
              case 'c': // to keep things simple we react on 'c' here
@@ -175,7 +205,7 @@ bool cEvent::Read(FILE *f, cSchedule *Schedule)
   return false;
 }
 
-#define MAXEPGBUGFIXSTATS 7
+#define MAXEPGBUGFIXSTATS 8
 #define MAXEPGBUGFIXCHANS 100
 struct tEpgBugFixStats {
   int hits;
@@ -257,6 +287,13 @@ void cEvent::FixEpgBugs(void)
   strreplace(title, '\n', ' ');
   strreplace(shortText, '\n', ' ');
   strreplace(description, '\n', ' ');
+  // Same for control characters:
+  strreplace(title, '\x86', ' ');
+  strreplace(title, '\x87', ' ');
+  strreplace(shortText, '\x86', ' ');
+  strreplace(shortText, '\x87', ' ');
+  strreplace(description, '\x86', ' ');
+  strreplace(description, '\x87', ' ');
 
   if (Setup.EPGBugfixLevel == 0)
      return;
@@ -397,6 +434,20 @@ void cEvent::FixEpgBugs(void)
            }
         }
 
+     // Some channels put the same information into ShortText and Description.
+     // In that case we delete one of them:
+     if (shortText && description && strcmp(shortText, description) == 0) {
+        if (strlen(shortText) > MAX_USEFUL_EPISODE_LENGTH) {
+           free(shortText);
+           shortText = NULL;
+           }
+        else {
+           free(description);
+           description = NULL;
+           }
+        EpgBugFixStat(7, ChannelID());
+        }
+
      // Some channels use the ` ("backtick") character, where a ' (single quote)
      // would be normally used. Actually, "backticks" in normal text don't make
      // much sense, so let's replace them:
@@ -411,7 +462,6 @@ void cEvent::FixEpgBugs(void)
 cSchedule::cSchedule(tChannelID ChannelID)
 {
   channelID = ChannelID;
-  present = following = NULL;
 }
 
 cEvent *cSchedule::AddEvent(cEvent *Event)
@@ -420,24 +470,28 @@ cEvent *cSchedule::AddEvent(cEvent *Event)
   return Event;
 }
 
-const cEvent *cSchedule::GetPresentEvent(void) const
-{
-  return GetEventAround(time(NULL));
-}
-
-const cEvent *cSchedule::GetFollowingEvent(void) const
+const cEvent *cSchedule::GetPresentEvent(bool CheckRunningStatus) const
 {
   const cEvent *pe = NULL;
   time_t now = time(NULL);
-  time_t delta = INT_MAX;
   for (cEvent *p = events.First(); p; p = events.Next(p)) {
-      time_t dt = p->StartTime() - now;
-      if (dt > 0 && dt < delta) {
-         delta = dt;
+      if (p->StartTime() <= now && now < p->StartTime() + p->Duration()) {
          pe = p;
+         if (!CheckRunningStatus)
+            break;
          }
+      if (CheckRunningStatus && p->RunningStatus() >= SI::RunningStatusPausing)
+         return p;
       }
   return pe;
+}
+
+const cEvent *cSchedule::GetFollowingEvent(bool CheckRunningStatus) const
+{
+  const cEvent *p = GetPresentEvent(CheckRunningStatus);
+  if (p)
+     p = events.Next(p);
+  return p;
 }
 
 const cEvent *cSchedule::GetEvent(u_int16_t EventID, time_t StartTime) const
@@ -468,28 +522,25 @@ const cEvent *cSchedule::GetEventAround(time_t Time) const
   return pe;
 }
 
-bool cSchedule::SetPresentEvent(cEvent *Event)
+void cSchedule::SetRunningStatus(cEvent *Event, int RunningStatus)
 {
-  if (present)
-     present->SetIsPresent(false);
-  present = Event;
-  present->SetIsPresent(true);
-  return true;
-}
-
-bool cSchedule::SetFollowingEvent(cEvent *Event)
-{
-  if (following)
-     following->SetIsFollowing(false);
-  following = Event;
-  following->SetIsFollowing(true);
-  return true;
+  for (cEvent *p = events.First(); p; p = events.Next(p)) {
+      if (p == Event)
+         p->SetRunningStatus(RunningStatus);
+      else if (RunningStatus >= SI::RunningStatusPausing && p->RunningStatus() > SI::RunningStatusNotRunning)
+         p->SetRunningStatus(SI::RunningStatusNotRunning);
+      }
 }
 
 void cSchedule::ResetVersions(void)
 {
   for (cEvent *p = events.First(); p; p = events.Next(p))
       p->SetVersion(0xFF);
+}
+
+void cSchedule::Sort(void)
+{
+  events.Sort();
 }
 
 void cSchedule::Cleanup(void)
@@ -504,20 +555,41 @@ void cSchedule::Cleanup(time_t Time)
       Event = events.Get(a);
       if (!Event)
          break;
-      if (Event->StartTime() + Event->Duration() + 3600 < Time) { // adding one hour for safety
+      if (!Event->HasTimer() && Event->StartTime() + Event->Duration() + Setup.EPGLinger * 60 + 3600 < Time) { // adding one hour for safety
          events.Del(Event);
          a--;
          }
       }
 }
 
-void cSchedule::Dump(FILE *f, const char *Prefix) const
+void cSchedule::Dump(FILE *f, const char *Prefix, eDumpMode DumpMode, time_t AtTime) const
 {
   cChannel *channel = Channels.GetByChannelID(channelID, true);
   if (channel) {
      fprintf(f, "%sC %s %s\n", Prefix, channel->GetChannelID().ToString(), channel->Name());
-     for (cEvent *p = events.First(); p; p = events.Next(p))
-        p->Dump(f, Prefix);
+     const cEvent *p;
+     switch (DumpMode) {
+       case dmAll: {
+            for (p = events.First(); p; p = events.Next(p))
+                p->Dump(f, Prefix);
+            }
+            break;
+       case dmPresent: {
+            if ((p = GetPresentEvent()) != NULL)
+               p->Dump(f, Prefix);
+            }
+            break;
+       case dmFollowing: {
+            if ((p = GetFollowingEvent()) != NULL)
+               p->Dump(f, Prefix);
+            }
+            break;
+       case dmAtTime: {
+            if ((p = GetEventAround(AtTime)) != NULL)
+               p->Dump(f, Prefix);
+            }
+            break;
+       }
      fprintf(f, "%sc\n", Prefix);
      }
 }
@@ -539,6 +611,7 @@ bool cSchedule::Read(FILE *f, cSchedules *Schedules)
                     if (p) {
                        if (!cEvent::Read(f, p))
                           return false;
+                       p->Sort();
                        }
                     }
                  else {
@@ -640,13 +713,13 @@ bool cSchedules::ClearAll(void)
   return false;
 }
 
-bool cSchedules::Dump(FILE *f, const char *Prefix)
+bool cSchedules::Dump(FILE *f, const char *Prefix, eDumpMode DumpMode, time_t AtTime)
 {
   cSchedulesLock SchedulesLock;
   cSchedules *s = (cSchedules *)Schedules(SchedulesLock);
   if (s) {
      for (cSchedule *p = s->First(); p; p = s->Next(p))
-         p->Dump(f, Prefix);
+         p->Dump(f, Prefix, DumpMode, AtTime);
      return true;
      }
   return false;

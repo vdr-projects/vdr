@@ -1,14 +1,14 @@
 #!/usr/bin/perl
 
-# getskyepg.pl: Get EPG data from Sky's web pages
+# getskyepg.pl: Get EPG data for Sky channels from the Internet
 #
 # Connects to a running VDR instance via SVDRP, gets the channel data
-# for the Sky channels and connects to Sky's web pages to extract the
+# for the Sky channels and connects to Internet web pages to extract the
 # EPG data for these channels. The result is sent to VDR via SVDRP.
 #
 # See the README file for copyright information and how to reach the author.
 #
-# $Id: getskyepg.pl 1.2 2003/04/02 16:21:47 kls Exp $
+# $Id: getskyepg.pl 1.3 2004/02/15 13:35:52 kls Exp $
 
 use Getopt::Std;
 use Time::Local;
@@ -16,31 +16,33 @@ use Time::Local;
 $Usage = qq{
 Usage: $0 [options]
 
-Options: -d hostname        destination hostname (default: localhost)
+Options: -c filename        channel config file name (default: channels.conf.sky)
+         -d hostname        destination hostname (default: localhost)
          -p port            SVDRP port number (default: 2001)
          -S source          channel source (default: S28.2E)
          -D days            days to get EPG for (1..7, default: 2)
 };
 
-die $Usage if (!getopts("d:D:hp:S:") || $opt_h);
+die $Usage if (!getopts("c:d:D:hp:S:") || $opt_h);
 
+$Conf   = $opt_c || "channels.conf.sky";
 $Dest   = $opt_d || "localhost";
 $Port   = $opt_p || 2001;
 $Source = $opt_S || "S28.2E";
 $Days   = $opt_D || 2;
 
-$SkyWebPage = "www.ananova.com/tv/frontpage.html";
+$SkyWebPage = "www.bleb.org/tv/data/listings";
 $WGET = "/usr/bin/wget -q -O-";
 $LOGGER = "/usr/bin/logger -t SKYEPG";
 
-$DST = -3600; ##XXX TODO find out whether DST is active!
+$DST = -3600; # Daylight Saving Time offset
 $SecsInDay = 86400;
 
-$MaxFrequency = 1000;
-$idxName = 0;
-$idxFrequency = 1;
-$idxSource = 3;
-$idxSid = 9;
+@Channels = ();
+
+$idxSource = 0;
+$idxNumber = 1;
+$idxName = 2;
 
 Error("days out of range: $Days") unless (1 <= $Days && $Days <= 7);
 
@@ -57,34 +59,52 @@ sub Error
 
 sub GetChannels
 {
-  SVDRPsend("LSTC");
-  my @channels = ();
-  for (SVDRPreceive(250)) {
-      my @a = split(':', substr($_, 4));
-      if ($a[$idxSource] eq $Source && $a[$idxFrequency] < $MaxFrequency) {
-         push(@channels, [@a]);
-         }
-      }
-  return @channels;
+  open(CHANNELS, $Conf) || Error("$Conf: $!");
+  while (<CHANNELS>) {
+        chomp;
+        next if (/^#/);
+        my @a = split(":");
+        push(@Channels, [@a]) unless ($a[$idxName] eq "x");
+        }
+  close(CHANNELS);
 }
+
+GetChannels();
 
 sub GetPage
 {
   my $channel = shift;
   my $day = shift;
-  my $url = "$SkyWebPage?c=$channel&day=day$day";
+  $day--;
+  my $url = "$SkyWebPage/$day/$channel.xml";
   Log("reading $url");
   my @page = split("\n", `$WGET '$url'`);
   Log("received " . ($#page + 1) . " lines");
   return @page;
 }
 
+sub StripWhitespace
+{
+  my $s = shift;
+  $s =~ s/\s*(.*)\s*/$1/;
+  $s =~ s/\s+/ /g;
+  return $s;
+}
+
+sub Extract
+{
+  my $s = shift;
+  my $t = shift;
+  $s =~ /<$t>([^<]*)<\/$t>/;
+  return StripWhitespace($1);
+}
+
 # In order to get the duration we need to buffer the last event:
 $Id = "";
 $Time = 0;
 $Title = "";
-$Episode = "";
-$Descr = "";
+$Subtitle = "";
+$Desc = "";
 
 sub GetEpgData
 {
@@ -94,40 +114,64 @@ sub GetEpgData
   $Time = 0;
   for $day (1 .. $Days) {
       my $dt = 0;
-      my $ap = "";
       my @page = GetPage($channel, $day);
+      my $data = "";
       for $line (@page) {
-          if ($line =~ /^<\/tr><tr /) {
-             # extract information:
-             my ($time, $title, $episode, $descr) = ($line =~ /^.*?<b>(.*?)<\/b>.*?<b>(.*?)<\/b> *(<i>.*?<\/i>)? *(.*?) *<\/small>/);
-             my ($h, $m, $a) = ($time =~ /([0-9]+)\.([0-9]+)(.)m/);
-             # handle am/pm:
-             $dt = $SecsInDay if ($ap eq "p" && $a eq "a");
-             $ap = $a;
-             $h += 12 if ($a eq "p" && $h < 12);
-             $h -= 12 if ($a eq "a" && $h == 12);
+          chomp($line);
+          if ($line =~ /<programme>/) {
+             $data = "";
+             }
+          elsif ($line =~ /<\/programme>/) {
+             my $title = Extract($data, "title");
+             my $subtitle = Extract($data, "subtitle");
+             my $desc = Extract($data, "desc");
+             my $start = Extract($data, "start");
+             # 'end' is useless, because it is sometimes missing :-(
+             # my $end = Extract($data, "end");
+             if (!$subtitle) {
+                # They sometimes write all info into the description, as in
+                # Episode: some description.
+                # Why don't they just fill in the data correctly?
+                my ($s, $d) = ($desc =~ /([^:]*)[:](.*)/);
+                if ($s && $d) {
+                   $subtitle = $s;
+                   $desc = $d;
+                   }
+                }
+             # 'start' and 'end' as time of day isn't of much use here, since
+             # the page for one day contains data that actually belongs to the
+             # next day (after midnight). Oh well, lets reconstruct the missing
+             # information:
+             $start = "0" . $start if (length($start) < 4);
+             my ($h, $m) = ($start =~ /(..)(..)/);
+             $dt = $SecsInDay if ($h > 12);
              # convert to time_t:
              my @gmt = gmtime;
              $gmt[0] = 0;  # seconds
              $gmt[1] = $m; # minutes
              $gmt[2] = $h; # hours
-             $time = timegm(@gmt) + ($day - 1) * $SecsInDay + $dt + $DST;
+             $time = timegm(@gmt) + ($day - 1) * $SecsInDay + ($h < 12 ? $dt : 0);
+             # comensate for DST:
+             $time += $DST if (localtime($time))[8];
              # create EPG data:
              if ($Time) {
                 $duration = $time - $Time;
                 SVDRPsend("E $Id $Time $duration");
                 SVDRPsend("T $Title");
-                SVDRPsend("S $Episode");
-                SVDRPsend("D $Descr");
+                SVDRPsend("S $Subtitle");
+                SVDRPsend("D $Desc");
                 SVDRPsend("e");
                 $numEvents++;
                 }
              # buffer the last event:
              $Id = $time / 60 % 0xFFFF; # this gives us unique ids for every minute of over 6 weeks
              $Time = $time;
-             ($Title = $title)     =~ s/<[^>]+>//g;
-             ($Episode = $episode) =~ s/<[^>]+>//g;
-             ($Descr = $descr)     =~ s/<[^>]+>//g;
+             $Title = $title;
+             $Subtitle = $subtitle;
+             $Desc = $desc;
+             }
+          else {
+             $data .= $line;
              }
           }
       }
@@ -137,14 +181,10 @@ sub GetEpgData
 
 sub ProcessEpg
 {
-  Log("getting Sky channel definitions");
-  my @channels = GetChannels();
-  Error("no Sky channels found") unless @channels;
-  Log("found " . ($#channels + 1) . " channels");
-  for (@channels) {
-      my $channel = @$_[$idxSid];
-      my $channelID = "@$_[$idxSource]-0-@$_[$idxFrequency]-$channel";
-      Log("processing channel @$_[0]");
+  for (@Channels) {
+      my $channel = @$_[$idxName];
+      my $channelID = @$_[$idxSource];
+      Log("processing channel $channel - $channelID");
       SVDRPsend("PUTE");
       SVDRPreceive(354);
       GetEpgData($channel, $channelID);

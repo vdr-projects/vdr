@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.c 1.14 2004/01/25 15:40:55 kls Exp $
+ * $Id: menuitems.c 1.14 2004/01/25 15:40:55 kls Exp kls $
  */
 
 #include "menuitems.h"
@@ -111,6 +111,23 @@ void cMenuEditBoolItem::Set(void)
   char buf[16];
   snprintf(buf, sizeof(buf), "%s", *value ? trueString : falseString);
   SetValue(buf);
+}
+
+// --- cMenuEditBitItem ------------------------------------------------------
+
+cMenuEditBitItem::cMenuEditBitItem(const char *Name, int *Value, int Mask, const char *FalseString, const char *TrueString)
+:cMenuEditBoolItem(Name, &bit, FalseString, TrueString)
+{
+  value = Value;
+  bit = (*value & Mask) != 0;
+  mask = Mask;
+  Set();
+}
+
+void cMenuEditBitItem::Set(void)
+{
+  *value = bit ? *value | mask : *value & ~mask;
+  cMenuEditBoolItem::Set();
 }
 
 // --- cMenuEditNumItem ------------------------------------------------------

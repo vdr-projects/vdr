@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: si.c 1.6 2004/01/23 14:27:45 kls Exp $
+ *   $Id: si.c 1.8 2004/02/22 10:14:12 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -59,6 +59,14 @@ bool CRCSection::CheckCRCAndParse() {
       return false;
    CheckParse();
    return true;
+}
+
+int NumberedSection::getTableIdExtension() const {
+   return getTableIdExtension(data.getData());
+}
+
+int NumberedSection::getTableIdExtension(const unsigned char *d) {
+   return HILO(((const ExtendedSectionHeader *)d)->table_id_extension);
 }
 
 bool NumberedSection::getCurrentNextIndicator() const {
@@ -326,6 +334,9 @@ Descriptor *Descriptor::getDescriptor(CharArray da, DescriptorTagDomain domain) 
          case ISO639LanguageDescriptorTag:
             d=new ISO639LanguageDescriptor();
             break;
+         case PDCDescriptorTag:
+            d=new PDCDescriptor();
+            break;
 
          //note that it is no problem to implement one
          //of the unimplemented descriptors.
@@ -367,7 +378,6 @@ Descriptor *Descriptor::getDescriptor(CharArray da, DescriptorTagDomain domain) 
          case CaSystemDescriptorTag:
          case AC3DescriptorTag:
          case DSNGDescriptorTag:
-         case PDCDescriptorTag:
          case AncillaryDataDescriptorTag:
          case AnnouncementSupportDescriptorTag:
          case AdaptationFieldDataDescriptorTag:

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.146 2004/01/25 14:41:02 kls Exp $
+ * $Id: i18n.c 1.148 2004/02/21 15:14:36 kls Exp kls $
  *
  * Translations provided by:
  *
@@ -835,7 +835,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Сканировать",
   },
   // Confirmations:
   { "Delete channel?",
@@ -1541,6 +1541,24 @@ const tI18nPhrase Phrases[] = {
     "Vщge",
     "Fi",
     "Конец",
+  },
+  { "VPS",
+    "VPS",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
   },
   { "Priority",
     "Prioritфt",
@@ -2355,6 +2373,24 @@ const tI18nPhrase Phrases[] = {
     "Nivell de correcciѓ de la Guia",
     "Уровень коррекции ошибок",
   },
+  { "Setup.EPG$EPG linger time (min)",
+    "Alte EPG-Daten anzeigen (min)",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "Vanha tieto nфkyy (min)",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "Visa gammal info (min)",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+  },
   { "Setup.EPG$Set system time",
     "Systemzeit stellen",
     "Nastavi sistemski cas",
@@ -2786,6 +2822,42 @@ const tI18nPhrase Phrases[] = {
     "Epizѓdnщv felhasznсlсsa",
     "Utilitzar el nom de l'episodi",
     "Группировать файлы по эпизодам",
+  },
+  { "Setup.Recording$Use VPS",
+    "VPS benutzen",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+  },
+  { "Setup.Recording$VPS margin (s)",
+    "Zeitpuffer bei VPS (s)",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
   },
   { "Setup.Recording$Mark instant recording",
     "Direktaufzeichnung markieren",
@@ -4140,7 +4212,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "Ennek a plugin-nak nincs setup-parametere!",
     "Aquest plugin no admet configuraciѓ!",
-    "Модуль расширения не имеет параметров настройки!",
+    "Модуль не имеет параметров настройки!",
    },
   { NULL }
   };

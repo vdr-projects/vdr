@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.122 2004/02/08 15:04:41 kls Exp $
+ * $Id: config.c 1.124 2004/02/21 15:05:40 kls Exp kls $
  */
 
 #include "config.h"
@@ -262,6 +262,7 @@ cSetup::cSetup(void)
   EPGLanguages[0] = -1;
   EPGScanTimeout = 5;
   EPGBugfixLevel = 2;
+  EPGLinger = 0;
   SVDRPTimeout = 300;
   ZapTimeout = 3;
   SortTimers = 1;
@@ -271,6 +272,8 @@ cSetup::cSetup(void)
   PausePriority = 10;
   PauseLifetime = 1;
   UseSubtitle = 1;
+  UseVps = 0;
+  VpsMargin = 120;
   RecordingDirs = 1;
   VideoFormat = 0;
   UpdateChannels = 4;
@@ -374,7 +377,9 @@ bool cSetup::ParseLanguages(const char *Value, int *Values)
 {
   int n = 0;
   while (Value && *Value && n < I18nNumLanguages) {
-        int i = I18nLanguageIndex(Value);
+        char buffer[4];
+        strn0cpy(buffer, Value, sizeof(buffer));
+        int i = I18nLanguageIndex(buffer);
         if (i >= 0)
            Values[n++] = i;
         if ((Value = strchr(Value, ' ')) != NULL)
@@ -404,6 +409,7 @@ bool cSetup::Parse(const char *Name, const char *Value)
   else if (!strcasecmp(Name, "EPGLanguages"))        return ParseLanguages(Value, EPGLanguages);
   else if (!strcasecmp(Name, "EPGScanTimeout"))      EPGScanTimeout     = atoi(Value);
   else if (!strcasecmp(Name, "EPGBugfixLevel"))      EPGBugfixLevel     = atoi(Value);
+  else if (!strcasecmp(Name, "EPGLinger"))           EPGLinger          = atoi(Value);
   else if (!strcasecmp(Name, "SVDRPTimeout"))        SVDRPTimeout       = atoi(Value);
   else if (!strcasecmp(Name, "ZapTimeout"))          ZapTimeout         = atoi(Value);
   else if (!strcasecmp(Name, "SortTimers"))          SortTimers         = atoi(Value);
@@ -413,6 +419,8 @@ bool cSetup::Parse(const char *Name, const char *Value)
   else if (!strcasecmp(Name, "PausePriority"))       PausePriority      = atoi(Value);
   else if (!strcasecmp(Name, "PauseLifetime"))       PauseLifetime      = atoi(Value);
   else if (!strcasecmp(Name, "UseSubtitle"))         UseSubtitle        = atoi(Value);
+  else if (!strcasecmp(Name, "UseVps"))              UseVps             = atoi(Value);
+  else if (!strcasecmp(Name, "VpsMargin"))           VpsMargin          = atoi(Value);
   else if (!strcasecmp(Name, "RecordingDirs"))       RecordingDirs      = atoi(Value);
   else if (!strcasecmp(Name, "VideoFormat"))         VideoFormat        = atoi(Value);
   else if (!strcasecmp(Name, "UpdateChannels"))      UpdateChannels     = atoi(Value);
@@ -455,6 +463,7 @@ bool cSetup::Save(void)
   StoreLanguages("EPGLanguages", EPGLanguages);
   Store("EPGScanTimeout",     EPGScanTimeout);
   Store("EPGBugfixLevel",     EPGBugfixLevel);
+  Store("EPGLinger",          EPGLinger);
   Store("SVDRPTimeout",       SVDRPTimeout);
   Store("ZapTimeout",         ZapTimeout);
   Store("SortTimers",         SortTimers);
@@ -464,6 +473,8 @@ bool cSetup::Save(void)
   Store("PausePriority",      PausePriority);
   Store("PauseLifetime",      PauseLifetime);
   Store("UseSubtitle",        UseSubtitle);
+  Store("UseVps",             UseVps);
+  Store("VpsMargin",          VpsMargin);
   Store("RecordingDirs",      RecordingDirs);
   Store("VideoFormat",        VideoFormat);
   Store("UpdateChannels",     UpdateChannels);

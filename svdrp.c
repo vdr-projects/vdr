@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.59 2004/01/31 10:13:50 kls Exp $
+ * $Id: svdrp.c 1.60 2004/02/22 15:31:23 kls Exp kls $
  */
 
 #include "svdrp.h"
@@ -205,8 +205,12 @@ const char *HelpPages[] = {
   "    List channels. Without option, all channels are listed. Otherwise\n"
   "    only the given channel is listed. If a name is given, all channels\n"
   "    containing the given string as part of their name are listed.",
-  "LSTE\n"
-  "    List EPG data.",
+  "LSTE [ <channel> ] [ now | next | at <time> ]\n"
+  "    List EPG data. Without any parameters all data of all channels is\n"
+  "    listed. If a channel is given (either by number of by channel ID),\n",
+  "    only data for that channel is listed. 'now', 'next', or 'at <time>'\n"
+  "    restricts the returned data to present events, following events, or\n"
+  "    events at the given time (which must be in time_t form)."
   "LSTR [ <number> ]\n"
   "    List recordings. Without option, all recordings are listed. Otherwise\n"
   "    the summary for the given recording is listed.",
@@ -714,9 +718,65 @@ void cSVDRP::CmdLSTE(const char *Option)
   cSchedulesLock SchedulesLock;
   const cSchedules *Schedules = cSchedules::Schedules(SchedulesLock);
   if (Schedules) {
+     const cSchedule* Schedule = NULL;
+     eDumpMode DumpMode = dmAll;
+     time_t AtTime = 0;
+     if (*Option) {
+        char buf[strlen(Option) + 1];
+        strcpy(buf, Option);
+        const char *delim = " \t";
+        char *p = strtok(buf, delim);
+        while (p && DumpMode == dmAll) {
+              if (strcasecmp(p, "NOW") == 0)
+                 DumpMode = dmPresent;
+              else if (strcasecmp(p, "NEXT") == 0)
+                 DumpMode = dmFollowing;
+              else if (strcasecmp(p, "AT") == 0) {
+                 DumpMode = dmAtTime;
+                 if ((p = strtok(NULL, delim)) != NULL) {
+                    if (isnumber(p))
+                       AtTime = strtol(p, NULL, 10);
+                    else {
+                       Reply(501, "Invalid time");
+                       return;
+                       }
+                    }
+                 else {
+                    Reply(501, "Missing time");
+                    return;
+                    }
+                 }
+              else if (!Schedule) {
+                 cChannel* Channel = NULL;
+                 if (isnumber(p))
+                    Channel = Channels.GetByNumber(strtol(Option, NULL, 10));
+                 else
+                    Channel = Channels.GetByChannelID(tChannelID::FromString(Option));
+                 if (Channel) {
+                    Schedule = Schedules->GetSchedule(Channel->GetChannelID());
+                    if (!Schedule) {
+                       Reply(550, "No schedule found");
+                       return;
+                       }
+                    }
+                 else {
+                    Reply(550, "Channel \"%s\" not defined", p);
+                    return;
+                    }
+                 }
+              else {
+                 Reply(501, "Unknown option: \"%s\"", p);
+                 return;
+                 }
+              p = strtok(NULL, delim);
+              }
+        }
      FILE *f = fdopen(file, "w");
      if (f) {
-        Schedules->Dump(f, "215-");
+        if (Schedule)
+           Schedule->Dump(f, "215-", DumpMode, AtTime);
+        else
+           Schedules->Dump(f, "215-", DumpMode, AtTime);
         fflush(f);
         Reply(215, "End of EPG data");
         // don't 'fclose(f)' here!
@@ -741,7 +801,7 @@ void cSVDRP::CmdLSTR(const char *Option)
               free(summary);
               }
            else
-              Reply(550, "No summary availabe");
+              Reply(550, "No summary available");
            }
         else
            Reply(550, "Recording \"%s\" not found", Option);
@@ -845,16 +905,16 @@ void cSVDRP::CmdMODT(const char *Option)
         if (timer) {
            cTimer t = *timer;
            if (strcasecmp(tail, "ON") == 0)
-              t.SetActive(taActive);
+              t.SetFlags(tfActive);
            else if (strcasecmp(tail, "OFF") == 0)
-              t.SetActive(taInactive);
+              t.ClrFlags(tfActive);
            else if (!t.Parse(tail)) {
               Reply(501, "Error in timer settings");
               return;
               }
            *timer = t;
            Timers.Save();
-           isyslog("timer %d modified (%s)", timer->Index() + 1, timer->Active() ? "active" : "inactive");
+           isyslog("timer %d modified (%s)", timer->Index() + 1, timer->HasFlags(tfActive) ? "active" : "inactive");
            Reply(250, "%d %s", timer->Index() + 1, timer->ToText());
            }
         else

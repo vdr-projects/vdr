@@ -10,7 +10,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: headers.h 1.2 2003/12/13 10:43:26 kls Exp $
+ *   $Id: headers.h 1.4 2004/02/22 11:12:46 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -257,7 +257,48 @@ struct pmt_info {
 
 /*
  *
- *    4) Network Information Table (NIT):
+ *    4) Transport Stream Description Table (TSDT):
+ *
+ *       - The TSDT carries a loop of descriptors that apply to
+ *         the whole transport stream. The syntax and semantics
+ *         of the TSDT are defined in newer versions of ISO/IEC 13818-1.
+ *
+ */
+
+#define TSDT_LEN 8
+
+struct tsdt {
+   u_char table_id                               :8;
+#if BYTE_ORDER == BIG_ENDIAN
+   u_char section_syntax_indicator               :1;
+   u_char dummy                                  :1; // has to be 0
+   u_char                                        :2;
+   u_char section_length_hi                      :4;
+#else
+   u_char section_length_hi                      :4;
+   u_char                                        :2;
+   u_char dummy                                  :1; // has to be 0
+   u_char section_syntax_indicator               :1;
+#endif
+   u_char section_length_lo                      :8;
+   u_char                                        :8;
+   u_char                                        :8;
+#if BYTE_ORDER == BIG_ENDIAN
+   u_char                                        :2;
+   u_char version_number                         :5;
+   u_char current_next_indicator                 :1;
+#else
+   u_char current_next_indicator                 :1;
+   u_char version_number                         :5;
+   u_char                                        :2;
+#endif
+   u_char section_number                         :8;
+   u_char last_section_number                    :8;
+};
+
+/*
+ *
+ *    5) Network Information Table (NIT):
  *
  *       - the NIT is intended to provide information about the physical
  *         network. The syntax and semantics of the NIT are defined in
@@ -468,7 +509,7 @@ struct eit {
    u_char original_network_id_hi                 :8;
    u_char original_network_id_lo                 :8;
    u_char segment_last_section_number            :8;
-   u_char segment_last_table_id                  :8;
+   u_char last_table_id                          :8;
 };
 
 #define EIT_EVENT_LEN 12
@@ -1416,11 +1457,19 @@ struct descr_dsng {
 
 /* 0x69 pdc_descriptor */
 
-#define DESCR_PDC_LEN XX
+#define DESCR_PDC_LEN 5
 struct descr_pdc {
    u_char descriptor_tag                         :8;
    u_char descriptor_length                      :8;
-   /* TBD */
+#if BYTE_ORDER == BIG_ENDIAN
+   u_char pil2                                   :8;
+   u_char pil1                                   :8;
+   u_char pil0                                   :8;
+#else
+   u_char pil0                                   :8;
+   u_char pil1                                   :8;
+   u_char pil2                                   :8;
+#endif
 };
 
 /* 0x6A ac3_descriptor */

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.186 2004/02/08 15:04:52 kls Exp $
+ * $Id: config.h 1.188 2004/02/21 15:04:53 kls Exp kls $
  */
 
 #ifndef __CONFIG_H
@@ -20,8 +20,8 @@
 #include "i18n.h"
 #include "tools.h"
 
-#define VDRVERSION  "1.3.4"
-#define VDRVERSNUM   10304  // Version * 10000 + Major * 100 + Minor
+#define VDRVERSION  "1.3.5"
+#define VDRVERSNUM   10305  // Version * 10000 + Major * 100 + Minor
 
 #define MAXPRIORITY 99
 #define MAXLIFETIME 99
@@ -220,6 +220,7 @@ public:
   int EPGLanguages[I18nNumLanguages + 1];
   int EPGScanTimeout;
   int EPGBugfixLevel;
+  int EPGLinger;
   int SVDRPTimeout;
   int ZapTimeout;
   int SortTimers;
@@ -227,6 +228,8 @@ public:
   int DefaultPriority, DefaultLifetime;
   int PausePriority, PauseLifetime;
   int UseSubtitle;
+  int UseVps;
+  int VpsMargin;
   int RecordingDirs;
   int VideoFormat;
   int UpdateChannels;

@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: descriptor.c 1.5 2004/01/24 14:52:41 kls Exp $
+ *   $Id: descriptor.c 1.6 2004/02/22 11:11:36 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -527,6 +527,27 @@ void ISO639LanguageDescriptor::Parse() {
    languageCode[1]=s->lang_code2;
    languageCode[2]=s->lang_code3;
    languageCode[3]=0;
+}
+
+void PDCDescriptor::Parse() {
+   unsigned int offset=0;
+   data.setPointerAndOffset<const descr_pdc>(s, offset);
+}
+
+int PDCDescriptor::getDay() const {
+   return ((s->pil0 & 0x0F) << 1) | ((s->pil1 & 0x80) >> 7);
+}
+
+int PDCDescriptor::getMonth() const {
+   return (s->pil1 >> 3) & 0x0F;
+}
+
+int PDCDescriptor::getHour() const {
+   return ((s->pil1 & 0x07) << 2) | ((s->pil2 & 0xC0) >> 6);
+}
+
+int PDCDescriptor::getMinute() const {
+   return s->pil2 & 0x3F;
 }
 
 void ApplicationSignallingDescriptor::Parse() {

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 1.23 2004/02/08 11:05:22 kls Exp $
+ * $Id: channels.c 1.24 2004/02/13 15:37:42 kls Exp $
  */
 
 #include "channels.h"
@@ -153,6 +153,13 @@ const char *tChannelID::ToString(void)
   return buffer;
 }
 
+tChannelID &tChannelID::ClrPolarization(void)
+{
+  while (tid > 100000)
+        tid -= 100000;
+  return *this;
+}
+
 // -- cChannel ---------------------------------------------------------------
 
 char *cChannel::buffer = NULL;
@@ -220,11 +227,25 @@ cChannel& cChannel::operator= (const cChannel &Channel)
   return *this;
 }
 
+int cChannel::Transponder(int Frequency, char Polarization)
+{
+  // some satellites have transponders at the same frequency, just with different polarization:
+  switch (tolower(Polarization)) {
+    case 'h': Frequency += 100000; break;
+    case 'v': Frequency += 200000; break;
+    case 'l': Frequency += 300000; break;
+    case 'r': Frequency += 400000; break;
+    }
+  return Frequency;
+}
+
 int cChannel::Transponder(void) const
 {
   int tf = frequency;
   while (tf > 20000)
         tf /= 1000;
+  if (IsSat())
+     tf = Transponder(tf, polarization);
   return tf;
 }
 
@@ -803,7 +824,7 @@ cChannel *cChannels::GetByServiceID(int Source, int Transponder, unsigned short 
   return NULL;
 }
 
-cChannel *cChannels::GetByChannelID(tChannelID ChannelID, bool TryWithoutRid)
+cChannel *cChannels::GetByChannelID(tChannelID ChannelID, bool TryWithoutRid, bool TryWithoutPolarization)
 {
   for (cChannel *channel = First(); channel; channel = Next(channel)) {
       if (!channel->GroupSep() && channel->GetChannelID() == ChannelID)
@@ -813,6 +834,13 @@ cChannel *cChannels::GetByChannelID(tChannelID ChannelID, bool TryWithoutRid)
      ChannelID.ClrRid();
      for (cChannel *channel = First(); channel; channel = Next(channel)) {
          if (!channel->GroupSep() && channel->GetChannelID().ClrRid() == ChannelID)
+            return channel;
+         }
+     }
+  if (TryWithoutPolarization) {
+     ChannelID.ClrPolarization();
+     for (cChannel *channel = First(); channel; channel = Next(channel)) {
+         if (!channel->GroupSep() && channel->GetChannelID().ClrPolarization() == ChannelID)
             return channel;
          }
      }
