@@ -2124,3 +2124,8 @@ Video Disk Recorder Revision History
   is actually coming from.
 - Added VDRVERSNUM to config.h, which can be used by the preprocessor to check the
   actual VDR version (suggested by Stefan Huelswitt).
+- Removed the WaitForPut/WaitForGet stuff from cRingBuffer, since it appears to
+  no longer be necessary due to the implementation of cNonBlockingFileReader in
+  dvbplayer.c. Also, the long timeout in WaitForPut caused problems with cReceivers
+  that use a ring buffer and didn't immediately return from their Receive() function
+  if the buffer runs full (thanks to Sascha Volkenandt for reporting this one).
