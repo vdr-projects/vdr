@@ -4,7 +4,7 @@
  * See the main source file 'osm.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remote.c 1.2 2000/04/15 16:00:51 kls Exp $
+ * $Id: remote.c 1.3 2000/04/16 13:54:16 kls Exp $
  */
 
 #include "remote.h"
@@ -17,6 +17,9 @@
 #include <unistd.h>
 #include "tools.h"
 
+#define REPEATLIMIT 100 // ms
+#define REPEATDELAY 250 // ms
+
 cRcIo::cRcIo(char *DeviceName)
 {
   dp = 0;
@@ -25,7 +28,6 @@ cRcIo::cRcIo(char *DeviceName)
   address = 0xFFFF;
   t = 0;
   firstTime = lastTime = 0;
-  minDelta = 0;
   lastCommand = 0;
   if ((f = open(DeviceName, O_RDWR | O_NONBLOCK)) >= 0) {
      struct termios t;
@@ -35,8 +37,11 @@ cRcIo::cRcIo(char *DeviceName)
         if (tcsetattr(f, TCSAFLUSH, &t) == 0)
            return;
         }
+     LOG_ERROR_STR(DeviceName);
      close(f);
      }
+  else
+     LOG_ERROR_STR(DeviceName);
   f = -1;
 }
 
@@ -48,7 +53,7 @@ cRcIo::~cRcIo()
 
 int cRcIo::ReceiveByte(bool Wait)
 {
-  // Returns the byte if one was received within 1 second, -1 otherwise
+  // Returns the byte if one was received within a timeout, -1 otherwise
   if (f >= 0) {
      fd_set set;
      struct timeval timeout;
@@ -112,7 +117,6 @@ bool cRcIo::SetCode(unsigned char Code, unsigned short Address)
 {
   code = Code;
   address = Address;
-  minDelta = 200;
   return SendCommand(code);
 }
 
@@ -157,12 +161,10 @@ bool cRcIo::GetCommand(unsigned int *Command, unsigned short *Address)
         // let's have a timeout to avoid getting overrun by commands
         int now = time_ms();
         int delta = now - lastTime;
-        if (delta < minDelta)
-           minDelta = delta; // dynamically adjust to the smallest delta
         lastTime = now;
-        if (delta < minDelta * 1.3) { // if commands come in rapidly...
-           if (now - firstTime < 250)
-              return false; // ...repeat function kicks in after 250ms
+        if (delta < REPEATLIMIT) { // if commands come in rapidly...
+           if (now - firstTime < REPEATDELAY)
+              return false; // ...repeat function kicks in after a short delay
            return true;
            }
         }

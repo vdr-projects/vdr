@@ -4,12 +4,13 @@
  * See the main source file 'osm.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.3 2000/04/15 15:09:47 kls Exp $
+ * $Id: tools.h 1.4 2000/04/16 13:54:04 kls Exp $
  */
 
 #ifndef __TOOLS_H
 #define __TOOLS_H
 
+#include <errno.h>
 #include <stdio.h>
 #include <syslog.h>
 

@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: osm.c 1.3 2000/04/15 14:04:21 kls Exp $
+ * $Id: osm.c 1.4 2000/04/16 13:54:10 kls Exp $
  */
 
 #include <signal.h>
@@ -144,7 +144,7 @@ int main(int argc, char *argv[])
   DvbApi.StopRecord();
   DvbApi.StopReplay();
   //TODO kill any remaining sub-processes!
-  isyslog(LOG_INFO, "exiting", Interrupted);
+  isyslog(LOG_INFO, "exiting");
   closelog();
   return 0;
 }

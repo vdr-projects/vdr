@@ -4,7 +4,7 @@
  * See the main source file 'osm.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remote.h 1.1 2000/02/19 13:36:48 kls Exp $
+ * $Id: remote.h 1.2 2000/04/16 13:53:50 kls Exp $
  */
 
 #ifndef __REMOTE_H
@@ -19,7 +19,7 @@ private:
   unsigned char dp, code, mode;
   unsigned short address;
   time_t t;
-  int firstTime, lastTime, minDelta;
+  int firstTime, lastTime;
   unsigned int lastCommand;
   bool SendCommand(unsigned char Cmd);
   int ReceiveByte(bool Wait = true);
