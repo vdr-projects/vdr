@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.c 1.12 2003/01/18 13:34:40 kls Exp $
+ * $Id: menuitems.c 1.13 2003/04/12 09:21:33 kls Exp $
  */
 
 #include "menuitems.h"
@@ -62,27 +62,30 @@ eOSState cMenuEditIntItem::ProcessKey(eKeys Key)
   eOSState state = cMenuEditItem::ProcessKey(Key);
 
   if (state == osUnknown) {
-     int newValue;
-     if (k0 <= Key && Key <= k9) {
-        if (fresh) {
-           *value = 0;
-           fresh = false;
-           }
-        newValue = *value * 10 + (Key - k0);
-        }
-     else if (NORMALKEY(Key) == kLeft) { // TODO might want to increase the delta if repeated quickly?
-        newValue = *value - 1;
-        fresh = true;
-        }
-     else if (NORMALKEY(Key) == kRight) {
-        newValue = *value + 1;
-        fresh = true;
-        }
-     else {
-        if (*value < min) { *value = min; Set(); }
-        if (*value > max) { *value = max; Set(); }
-        return state;
-        }
+     int newValue = *value;
+     Key = NORMALKEY(Key);
+     switch (Key) {
+       case kNone: break;
+       case k0 ... k9:
+            if (fresh) {
+               *value = 0;
+               fresh = false;
+               }
+            newValue = *value * 10 + (Key - k0);
+            break;
+       case kLeft: // TODO might want to increase the delta if repeated quickly?
+            newValue = *value - 1;
+            fresh = true;
+            break;
+       case kRight:
+            newValue = *value + 1;
+            fresh = true;
+            break;
+       default:
+            if (*value < min) { *value = min; Set(); }
+            if (*value > max) { *value = max; Set(); }
+            return state;
+       }
      if ((!fresh || min <= newValue) && newValue <= max) {
         *value = newValue;
         Set();

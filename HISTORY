@@ -1988,7 +1988,7 @@ Video Disk Recorder Revision History
   reporting this one).
 - Fixed support for Viaccess CAMs (thanks to Axel Gruber for helping to debug this).
 
-2003-04-06: Version 1.1.27
+2003-04-12: Version 1.1.27
 
 - The CAM is now accessed only if the current channel actually has a non-zero Ca
   value, and CAM access is completely suppressed during replay, which avoids
@@ -2015,3 +2015,5 @@ Video Disk Recorder Revision History
 - Avoiding high CPU load in case the connection to LIRC gets lost (thanks to
   Ludwig Nussel).
 - Fixed handling repeat function with LIRC (thanks to Ludwig Nussel).
+- Fixed handling min/max borders when entering integer values (thanks to Andy
+  Grobb for reporting this one).
