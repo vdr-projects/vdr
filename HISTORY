@@ -3207,3 +3207,5 @@ Video Disk Recorder Revision History
 - Switched the character set to iso8859-15 for English, German and Finnish (thanks
   to Andreas Brugger for reporting the missing Euro sign in iso8859-1).
 - Added 'channels.conf.terr' entries for Lübeck (thanks to Stefan Hußfeldt).
+- Fixed a race condition in starting a thread (thanks to Reinhard Nissl for
+  reporting this one).
