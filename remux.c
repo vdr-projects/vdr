@@ -11,7 +11,7 @@
  * The cDolbyRepacker code was originally written by Reinhard Nissl <rnissl@gmx.de>,
  * and adapted to the VDR coding style by Klaus.Schmidinger@cadsoft.de.
  *
- * $Id: remux.c 1.27 2005/01/23 12:56:39 kls Exp $
+ * $Id: remux.c 1.28 2005/02/05 11:56:42 kls Exp $
  */
 
 #include "remux.h"
@@ -24,12 +24,14 @@
 
 class cRepacker {
 protected:
+  int maxPacketSize;
   uint8_t subStreamId;
 public:
-  cRepacker(void) { subStreamId = 0; }
+  cRepacker(void) { maxPacketSize = 6 + 65535; subStreamId = 0; }
   virtual ~cRepacker() {}
   virtual int Put(cRingBufferLinear *ResultBuffer, const uchar *Data, int Count) = 0;
   virtual int BreakAt(const uchar *Data, int Count) = 0;
+  void SetMaxPacketSize(int MaxPacketSize) { maxPacketSize = MaxPacketSize; }
   void SetSubStreamId(uint8_t SubStreamId) { subStreamId = SubStreamId; }
   };
 
@@ -40,6 +42,7 @@ private:
   static int frameSizes[];
   uchar fragmentData[6 + 65535];
   int fragmentLen;
+  int fragmentTodo;
   uchar pesHeader[6 + 3 + 255 + 4 + 4];
   int pesHeaderLen;
   uchar chk1;
@@ -50,15 +53,21 @@ private:
     find_77,
     store_chk1,
     store_chk2,
-    get_length
+    get_length,
+    output_packet
     } state;
   void Reset(void);
+  void ResetPesHeader(void);
+  void AppendSubStreamID(void);
+  bool FinishRemainder(cRingBufferLinear *ResultBuffer, const uchar *const Data, const int Todo, int &Done, int &Bite);
+  bool StartNewPacket(cRingBufferLinear *ResultBuffer, const uchar *const Data, const int Todo, int &Done, int &Bite);
 public:
   cDolbyRepacker(void);
   virtual int Put(cRingBufferLinear *ResultBuffer, const uchar *Data, int Count);
   virtual int BreakAt(const uchar *Data, int Count);
   };
 
+// frameSizes are in words, i. e. multiply them by 2 to get bytes
 int cDolbyRepacker::frameSizes[] = {
   // fs = 48 kHz
     64,   64,   80,   80,   96,   96,  112,  112,  128,  128,  160,  160,  192,  192,  224,  224,
@@ -93,17 +102,124 @@ cDolbyRepacker::cDolbyRepacker(void)
   Reset();
 }
 
-void cDolbyRepacker::Reset()
+void cDolbyRepacker::AppendSubStreamID(void)
 {
-  state = find_0b;
+  if (subStreamId) {
+     pesHeader[pesHeaderLen++] = subStreamId;
+     pesHeader[pesHeaderLen++] = 0x00;
+     pesHeader[pesHeaderLen++] = 0x00;
+     pesHeader[pesHeaderLen++] = 0x00;
+     }
+}
+
+void cDolbyRepacker::ResetPesHeader(void)
+{
   pesHeader[6] = 0x80;
   pesHeader[7] = 0x00;
   pesHeader[8] = 0x00;
   pesHeaderLen = 9;
+  AppendSubStreamID();
+}
+
+void cDolbyRepacker::Reset(void)
+{
+  ResetPesHeader();
+  state = find_0b;
   ac3todo = 0;
   chk1 = 0;
   chk2 = 0;
   fragmentLen = 0;
+  fragmentTodo = 0;
+}
+
+bool cDolbyRepacker::FinishRemainder(cRingBufferLinear *ResultBuffer, const uchar *const Data, const int Todo, int &Done, int &Bite)
+{
+  // enough data available to put PES packet into buffer?
+  if (fragmentTodo <= Todo) {
+     // output a previous fragment first
+     if (fragmentLen > 0) {
+        Bite = fragmentLen;
+        int n = ResultBuffer->Put(fragmentData, Bite);
+        if (Bite != n) {
+           Reset();
+           return false;
+           }
+        fragmentLen = 0;
+        }
+     Bite = fragmentTodo;
+     int n = ResultBuffer->Put(Data, Bite);
+     if (Bite != n) {
+        Reset();
+        Done += n;
+        return false;
+        }
+     fragmentTodo = 0;
+     // ac3 frame completely processed?
+     if (Bite >= ac3todo)
+        state = find_0b; // go on with finding start of next packet
+     }
+  else {
+     // copy the fragment into separate buffer for later processing
+     Bite = Todo;
+     if (fragmentLen + Bite > (int)sizeof(fragmentData)) {
+        Reset();
+        return false;
+        }
+     memcpy(fragmentData + fragmentLen, Data, Bite);
+     fragmentLen += Bite;
+     fragmentTodo -= Bite;
+     }
+  return true;
+}
+
+bool cDolbyRepacker::StartNewPacket(cRingBufferLinear *ResultBuffer, const uchar *const Data, const int Todo, int &Done, int &Bite)
+{
+  int packetLen = pesHeaderLen + ac3todo;
+  // limit packet to maximum size
+  if (packetLen > maxPacketSize)
+     packetLen = maxPacketSize;
+  pesHeader[4] = (packetLen - 6) >> 8;
+  pesHeader[5] = (packetLen - 6) & 0xFF;
+  Bite = pesHeaderLen;
+  // enough data available to put PES packet into buffer?
+  if (packetLen - pesHeaderLen <= Todo) {
+     int n = ResultBuffer->Put(pesHeader, Bite);
+     if (Bite != n) {
+        Reset();
+        return false;
+        }
+     Bite = packetLen - pesHeaderLen;
+     n = ResultBuffer->Put(Data, Bite);
+     if (Bite != n) {
+        Reset();
+        Done += n;
+        return false;
+        }
+     // ac3 frame completely processed?
+     if (Bite >= ac3todo)
+        state = find_0b; // go on with finding start of next packet
+     }
+  else {
+     fragmentTodo = packetLen;
+     // copy the pesheader into separate buffer for later processing
+     if (fragmentLen + Bite > (int)sizeof(fragmentData)) {
+        Reset();
+        return false;
+        }
+     memcpy(fragmentData + fragmentLen, pesHeader, Bite);
+     fragmentLen += Bite;
+     fragmentTodo -= Bite;
+     // copy the fragment into separate buffer for later processing
+     Bite = Todo;
+     if (fragmentLen + Bite > (int)sizeof(fragmentData)) {
+        Reset();
+        return false;
+        }
+     memcpy(fragmentData + fragmentLen, Data, Bite);
+     fragmentLen += Bite;
+     fragmentTodo -= Bite;
+     }
+  return true;
 }
 
 int cDolbyRepacker::Put(cRingBufferLinear *ResultBuffer, const uchar *Data, int Count)
@@ -111,60 +227,27 @@ int cDolbyRepacker::Put(cRingBufferLinear *ResultBuffer, const uchar *Data, int 
   // check for MPEG 2
   if ((Data[6] & 0xC0) != 0x80)
      return 0;
-  // copy header information for later use
-  if (Data[6] != 0x80 || Data[7] != 0x00 || Data[8] != 0x00) {
-     pesHeaderLen = Data[8] + 6 + 3;
-     memcpy(pesHeader, Data, pesHeaderLen);
-     }
 
-  const uchar *data = Data + pesHeaderLen;
-  int done = pesHeaderLen;
+  // skip PES header
+  int done = 6 + 3 + Data[8];
   int todo = Count - done;
-
-  // finish remainder of ac3 frame
-  if (ac3todo > 0) {
-     int bite;
-     // enough data available to put PES packet into buffer?
-     if (ac3todo <= todo) {
-        // output a previous fragment first
-        if (fragmentLen > 0) {
-           bite = fragmentLen;
-           int n = ResultBuffer->Put(fragmentData, bite);
-           if (bite != n) {
-              Reset();
-              return done;
-              }
-           fragmentLen = 0;
-           }
-        bite = ac3todo;
-        int n = ResultBuffer->Put(data, bite);
-        if (bite != n) {
-           Reset();
-           return done + n;
-           }
-        }
-     else {
-        // copy the fragment into separate buffer for later processing
-        bite = todo;
-        if (fragmentLen + bite > (int)sizeof(fragmentData)) {
-           Reset();
-           return done;
-           }
-        memcpy(fragmentData + fragmentLen, data, bite);
-        fragmentLen += bite;
-        }
-     data += bite;
-     done += bite;
-     todo -= bite;
-     ac3todo -= bite;
-     }
-
+  const uchar *data = Data + done;
+  bool headerCopied = false;
+  
   // look for 0x0B 0x77 <chk1> <chk2> <frameSize>
   while (todo > 0) {
         switch (state) {
           case find_0b:
-               if (*data == 0x0B)
+               if (*data == 0x0B) {
                   ++(int &)state;
+                  // copy header information once for later use
+                  if (!headerCopied) {
+                     headerCopied = true;
+                     pesHeaderLen = 6 + 3 + Data[8];
+                     memcpy(pesHeader, Data, pesHeaderLen);
+                     AppendSubStreamID();
+                     }
+                  }
                data++;
                done++;
                todo--;
@@ -191,10 +274,13 @@ int cDolbyRepacker::Put(cRingBufferLinear *ResultBuffer, const uchar *Data, int 
                todo--;
                ++(int &)state;
                continue;
-          case get_length: {
+          case get_length:
                ac3todo = 2 * frameSizes[*data];
                // frameSizeCode was invalid => restart searching
                if (ac3todo <= 0) {
+                  // reset PES header instead of using/copying a wrong one
+                  ResetPesHeader();
+                  headerCopied = true;
                   if (chk1 == 0x0B) {
                      if (chk2 == 0x77) {
                         state = store_chk1;
@@ -214,62 +300,32 @@ int cDolbyRepacker::Put(cRingBufferLinear *ResultBuffer, const uchar *Data, int 
                   state = find_0b;
                   continue;
                   }
-               // adjust PES packet length and output packet
-               if (subStreamId) {
-                  pesHeader[pesHeaderLen++] = subStreamId;
-                  pesHeader[pesHeaderLen++] = 0x00;
-                  pesHeader[pesHeaderLen++] = 0x00;
-                  pesHeader[pesHeaderLen++] = 0x00;
-                  }
-               int packetLen = pesHeaderLen - 6 + ac3todo;
-               pesHeader[4] = packetLen >> 8;
-               pesHeader[5] = packetLen & 0xFF;
-               pesHeader[pesHeaderLen + 0] = 0x0B;
-               pesHeader[pesHeaderLen + 1] = 0x77;
-               pesHeader[pesHeaderLen + 2] = chk1;
-               pesHeader[pesHeaderLen + 3] = chk2;
+               // append read data to header for common output processing
+               pesHeader[pesHeaderLen++] = 0x0B;
+               pesHeader[pesHeaderLen++] = 0x77;
+               pesHeader[pesHeaderLen++] = chk1;
+               pesHeader[pesHeaderLen++] = chk2;
                ac3todo -= 4;
-               int bite = pesHeaderLen + 4;
-               // enough data available to put PES packet into buffer?
-               if (ac3todo <= todo) {
-                  int n = ResultBuffer->Put(pesHeader, bite);
-                  if (bite != n) {
-                     Reset();
+               ++(int &)state;
+               // fall through to output
+          case output_packet: {
+               int bite = 0;
+               // finish remainder of ac3 frame?
+               if (fragmentTodo > 0) {
+                  if (!FinishRemainder(ResultBuffer, data, todo, done, bite))
                      return done;
-                     }
-                  bite = ac3todo;
-                  n = ResultBuffer->Put(data, bite);
-                  if (bite != n) {
-                     Reset();
-                     return done + n;
-                     }
                   }
                else {
-                  // copy the fragment into separate buffer for later processing
-                  if (fragmentLen + bite > (int)sizeof(fragmentData)) {
-                     Reset();
+                  // start a new packet
+                  if (!StartNewPacket(ResultBuffer, data, todo, done, bite))
                      return done;
-                     }
-                  memcpy(fragmentData + fragmentLen, pesHeader, bite);
-                  fragmentLen += bite;
-                  bite = todo;
-                  if (fragmentLen + bite > (int)sizeof(fragmentData)) {
-                     Reset();
-                     return done;
-                     }
-                  memcpy(fragmentData + fragmentLen, data, bite);
-                  fragmentLen += bite;
+                  // prepare for next packet
+                  ResetPesHeader();
                   }
                data += bite;
                done += bite;
                todo -= bite;
                ac3todo -= bite;
-               // prepare for next packet
-               pesHeader[6] = 0x80;
-               pesHeader[7] = 0x00;
-               pesHeader[8] = 0x00;
-               pesHeaderLen = 9;
-               state = find_0b;
                }
           }
         }
@@ -294,7 +350,7 @@ int cDolbyRepacker::BreakAt(const uchar *Data, int Count)
   const uchar *data = Data + headerLen;
   // break after ac3 frame?
   if (data[0] == 0x0B && data[1] == 0x77 && frameSizes[data[4]] > 0)
-     return headerLen + frameSizes[data[4]];
+     return headerLen + 2 * frameSizes[data[4]];
   return -1;
 }
 
@@ -392,8 +448,10 @@ cTS2PES::cTS2PES(int Pid, cRingBufferLinear *ResultBuffer, int Size, uint8_t Aud
   audioCid = AudioCid;
   subStreamId = SubStreamId;
   repacker = Repacker;
-  if (repacker)
+  if (repacker) {
+     repacker->SetMaxPacketSize(size);
      repacker->SetSubStreamId(subStreamId);
+     }
 
   tsErrors = 0;
   ccErrors = 0;

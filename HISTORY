@@ -3362,3 +3362,5 @@ Video Disk Recorder Revision History
 - The new setup option "OSD/Channel info time" can be used to define the time after
   which the channel display is removed if no key has been pressed (thanks to
   Olivier Jacques).
+- Modified cDolbyRepacker to make sure PES packets don't exceed the requested length
+  (thanks to Reinhard Nissl).
