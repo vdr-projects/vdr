@@ -10,7 +10,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: headers.h 1.3 2004/02/20 13:49:16 kls Exp $
+ *   $Id: headers.h 1.4 2004/02/22 11:12:46 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -1457,11 +1457,19 @@ struct descr_dsng {
 
 /* 0x69 pdc_descriptor */
 
-#define DESCR_PDC_LEN XX
+#define DESCR_PDC_LEN 5
 struct descr_pdc {
    u_char descriptor_tag                         :8;
    u_char descriptor_length                      :8;
-   /* TBD */
+#if BYTE_ORDER == BIG_ENDIAN
+   u_char pil2                                   :8;
+   u_char pil1                                   :8;
+   u_char pil0                                   :8;
+#else
+   u_char pil0                                   :8;
+   u_char pil1                                   :8;
+   u_char pil2                                   :8;
+#endif
 };
 
 /* 0x6A ac3_descriptor */

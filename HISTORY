@@ -2652,7 +2652,7 @@ Video Disk Recorder Revision History
   actual CAM type as reported by the CAM. The 'ca.conf' file has been stripped
   down to the values 0..4.
 
-2004-02-21: Version 1.3.5
+2004-02-22: Version 1.3.5
 
 - Fixed reading the EPG preferred language parameter from 'setup.conf'.
 - Fixed switching to a visible programme in case the current channel has neither
@@ -2672,7 +2672,7 @@ Video Disk Recorder Revision History
 - Limited automatic retuning to devices that actually provide the transponder
   (necessary for the 'sky' plugin).
 - Fixed handling receivers in the 'sky' plugin, so that a recording on the same
-  channel won't interrupt an ongoing Transfer mode.
+  channel won't interrupt an ongoing Transfer Mode.
 - Added subtable ID and TSDT handling to 'libsi' (thanks to Marcel Wiesweg).
 - Fixed some Russian OSD texts (thanks to Vyacheslav Dikonov).
 - Added the 'running status' to the EPG events. This might lead to a VPS like
@@ -2691,3 +2691,4 @@ Video Disk Recorder Revision History
   a start time that is in the future, but are already running.
 - Implemented an "EPG linger time", which can be set to have older EPG information
   still displayed in the "Schedule" menu (thanks to Jaakko Hyvätti).
+- Added PDCDescriptor handling to 'libsi'.
