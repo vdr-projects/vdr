@@ -13,7 +13,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.c 1.5 2000/10/29 10:58:31 kls Exp $
+ * $Id: eit.c 1.6 2000/11/01 15:51:00 kls Exp $
  ***************************************************************************/
 
 #include "eit.h"
@@ -219,10 +219,9 @@ cEventInfo::cEventInfo(unsigned short serviceid, unsigned short eventid)
 
 cEventInfo::~cEventInfo()
 {
-   //XXX why not just use 'delete'???
-   if (pTitle != NULL) free(pTitle);
-   if (pSubtitle != NULL) free(pSubtitle);
-   if (pExtendedDescription != NULL) free(pExtendedDescription);
+   delete pTitle;
+   delete pSubtitle;
+   delete pExtendedDescription;
 }
 
 /**  */
@@ -1074,7 +1073,7 @@ void cSIProcessor::Action()
       struct tm *ptm = localtime(&now);
       if (dayofdelete != ptm->tm_yday && ptm->tm_hour == 0 && ptm->tm_min < 5)
       {
-         dsyslog(LOG_INFO, "Now cleaning up things");
+         isyslog(LOG_INFO, "Now cleaning up things");
 
          LOCK_THREAD;
 
@@ -1103,10 +1102,8 @@ void cSIProcessor::Action()
 					{
 						if (useTStime)
                   {
-                     //XXX wouldn't it be ok to have ctdt on the stack???
-                     cTDT *ctdt = new cTDT((tdt_t *)buf);
-							ctdt->SetSystemTime();
-		   				delete ctdt;
+                     cTDT ctdt((tdt_t *)buf);
+							ctdt.SetSystemTime();
                   }
 					}
                   /*XXX this comes pretty often:
@@ -1120,10 +1117,8 @@ void cSIProcessor::Action()
 					{
                   LOCK_THREAD;
 
-                  //XXX wouldn't it be ok to have ceit on the stack???
-	               cEIT *ceit = new cEIT(buf, seclen, schedules);
-						ceit->ProcessEIT();
-						delete ceit;
+	               cEIT ceit(buf, seclen, schedules);
+						ceit.ProcessEIT();
 					}
 					else
 						dsyslog(LOG_INFO, "Received stuffing section in EIT\n");
