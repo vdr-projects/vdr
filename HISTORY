@@ -3318,3 +3318,5 @@ Video Disk Recorder Revision History
   cRecorder::cRecorder()
   cReceiver::cReceiver()
   cRemux::cRemux()
+- Fixed a possible race condition in cDevice::Action() and cTSBuffer::Action()
+  (thanks to Stefan Huelswitt).

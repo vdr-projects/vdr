@@ -189,6 +189,7 @@ Stefan Huelswitt <huels@iname.com>
  skin in case a shorter title is set after a longer one
  for fixing handling of pmAudioOnlyBlack
  for pointing out possible race conditions in handling childTid in cThread
+ for fixing a possible race condition in cDevice::Action() and cTSBuffer::Action()
 
 Ulrich Röder <roeder@efr-net.de>
  for pointing out that there are channels that have a symbol rate higher than
