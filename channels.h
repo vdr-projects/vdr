@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.h 1.19 2004/10/17 11:52:07 kls Exp $
+ * $Id: channels.h 1.20 2004/10/22 14:09:47 kls Exp $
  */
 
 #ifndef __CHANNELS_H
@@ -88,7 +88,7 @@ class cChannel : public cListObject {
   friend class cMenuEditChannel;
 private:
   static char *buffer;
-  static const char *ToText(cChannel *Channel);
+  static const char *ToText(const cChannel *Channel);
   enum { MaxChannelName = 64 }; // 63 chars + terminating 0!
   int __BeginData__;
   char name[MaxChannelName];
@@ -122,14 +122,14 @@ private:
   int modification;
   cLinkChannels *linkChannels;
   cChannel *refChannel;
-  const char *ParametersToString(void);
+  const char *ParametersToString(void) const;
   bool StringToParameters(const char *s);
 public:
   cChannel(void);
   cChannel(const cChannel &Channel);
   ~cChannel();
   cChannel& operator= (const cChannel &Channel);
-  const char *ToText(void);
+  const char *ToText(void) const;
   bool Parse(const char *s, bool AllowNonUniqueID = false);
   bool Save(FILE *f);
   const char *Name(void) const { return name; }

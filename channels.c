@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 1.27 2004/10/17 12:20:56 kls Exp $
+ * $Id: channels.c 1.28 2004/10/22 14:11:07 kls Exp $
  */
 
 #include "channels.h"
@@ -503,7 +503,7 @@ static int PrintParameter(char *p, char Name, int Value)
   return Value >= 0 && Value != 999 ? sprintf(p, "%c%d", Name, Value) : 0;
 }
 
-const char *cChannel::ParametersToString(void)
+const char *cChannel::ParametersToString(void) const
 {
   char type = *cSource::ToString(source);
   if (isdigit(type))
@@ -563,14 +563,12 @@ bool cChannel::StringToParameters(const char *s)
   return true;
 }
 
-const char *cChannel::ToText(cChannel *Channel)
+const char *cChannel::ToText(const cChannel *Channel)
 {
   char buf[MaxChannelName * 2];
-  char *s = Channel->name;
-  if (strchr(s, ':')) {
-     s = strcpy(buf, s);
-     strreplace(s, ':', '|');
-     }
+  const char *s = Channel->name;
+  if (strchr(s, ':'))
+     s = strreplace(strcpy(buf, s), ':', '|');
   free(buffer);
   if (Channel->groupSep) {
      if (Channel->number)
@@ -602,7 +600,7 @@ const char *cChannel::ToText(cChannel *Channel)
   return buffer;
 }
 
-const char *cChannel::ToText(void)
+const char *cChannel::ToText(void) const
 {
   return ToText(this);
 }

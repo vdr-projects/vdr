@@ -1100,3 +1100,6 @@ Udo Richter <udo_richter@gmx.de>
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date
+
+Stefan Meyknecht <stefan@meyknecht.org>
+ for a patch that fixed detecting transponder lock in cDvbTuner

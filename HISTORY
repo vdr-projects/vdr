@@ -3036,3 +3036,11 @@ Video Disk Recorder Revision History
 - Removed the 'Log' parameter from the cChannel::Set... functions. Instead
   checking if the channel has a non-zero number.
 - Updated 'channels.conf.terr' for Hannover (thanks to Sven Kreiensen).
+
+2004-10-23: Version 1.3.14
+
+- Fixed detecting transponder lock in cDvbTuner (based on a patch from Stefan
+  Meyknecht).
+- What was previously marked with WAIT_FOR_LOCK_AFTER_TUNING is now permanently
+  active and uses a cCondVar to signal when a transponder is locked.
+- Added some missing 'const' to cChannel.
