@@ -11,20 +11,20 @@ Version 1.2
   possible, several keys have different meanings in the various
   modes:
 
-  Key     Normal      VDR          Channels   Timers     Edit/New      Recordings        Replay
+  Key     Normal      VDR          Channels   Timers     Edit/New      Recordings        Replay           Audio
 
-  Up      Ch up       Crsr up      Crsr up    Crsr up    Crsr up       Crsr up           Play
-  Down    Ch down     Crsr down    Crsr down  Crsr down  Crsr down     Crsr down         Pause
-  Left    Prev group  -            Page up    Page up    Decrement     Page up           Search back
-  Right   Next group  -            Page down  Page down  Increment     Page down         Search forward
-  Ok      Ch display  Select       Switch     Edit       Accept        Play              Progress disp.
-  Menu    Menu on     Menu off     Menu off   Menu off   Menu off      Menu off          Menu on
-  Back    -           Menu off     VDR menu   VDR menu   Discard       VDR menu          Recordings menu
-  Red     -           Record       Edit       Edit       ABC/abc       Play/Commands(2)  Jump
-  Green   -           Audio        New        New        Ins/Ovr       Rewind            Skip -60s
-  Yellow  -           Pause live   Delete     Delete     Delete        Delete            Skip +60s
-  Blue    -           Stop/Resume  Mark       On/Off(1)  -             Summary           Stop
-  0..9    Ch select   -            Sort(3)    Day(4)     Numeric inp.  Exec cmd(2)       Editing
+  Up      Ch up       Crsr up      Crsr up    Crsr up    Crsr up       Crsr up           Play             Sel. track
+  Down    Ch down     Crsr down    Crsr down  Crsr down  Crsr down     Crsr down         Pause            Sel. track
+  Left    Prev group  -            Page up    Page up    Decrement     Page up           Search back      Sel. channel
+  Right   Next group  -            Page down  Page down  Increment     Page down         Search forward   Sel. channel
+  Ok      Ch display  Select       Switch     Edit       Accept        Play              Progress disp.   Switch & Close
+  Menu    Menu on     Menu off     Menu off   Menu off   Menu off      Menu off          Menu on          Menu on
+  Back    -           Menu off     VDR menu   VDR menu   Discard       VDR menu          Recordings menu  Close
+  Red     -           Record       Edit       Edit       ABC/abc       Play/Commands(2)  Jump             -
+  Green   -           Audio        New        New        Ins/Ovr       Rewind            Skip -60s        -
+  Yellow  -           Pause live   Delete     Delete     Delete        Delete            Skip +60s        -
+  Blue    -           Stop/Resume  Mark       On/Off(1)  -             Summary           Stop             -
+  0..9    Ch select   -            Sort(3)    Day(4)     Numeric inp.  Exec cmd(2)       Editing          -
 
   In a numerical input field (like the response to a CAM enquiry) the keys 0..9
   are used to enter the data, and the Left key can be used to delete the last
@@ -197,6 +197,14 @@ Version 1.2
   keys can be used to switch between the audio tracks. If your remote control has
   a dedicated "Audio" button, the first press of that button brings up the "Audio"
   menu, and every further press switches to the next available audio track.
+
+  The "Left" and "Right" keys can be used to switch between "mono left", "stereo"
+  and "mono right" for channels that broadcast different audio tracks in the
+  left and right stereo channels (as was often done in the old analog days).
+
+  The "Ok" key explicitly switches to the selected track (in case the device
+  for some reason doesn't play it) and closes the "Audio" menu.
+
   The "Audio" menu will automatically disappear after 5 seconds of user inactivity,
   or if any key other than the ones described above is pressed.
 

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 1.49 2005/01/02 14:08:36 kls Exp $
+ * $Id: device.h 1.50 2005/01/06 13:27:42 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -345,15 +345,26 @@ private:
   bool mute;
   int volume;
 protected:
+  virtual int GetAudioChannelDevice(void);
+       ///< Gets the current audio channel, which is stereo (0), mono left (1) or
+       ///< mono right (2).
+  virtual void SetAudioChannelDevice(int AudioChannel);
+       ///< Sets the audio channel to stereo (0), mono left (1) or mono right (2).
   virtual void SetVolumeDevice(int Volume);
        ///< Sets the audio volume on this device (Volume = 0...255).
-  virtual void SetDigitalAudioDevice(bool On) {}
+  virtual void SetDigitalAudioDevice(bool On);
        ///< Tells the actual device that digital audio output shall be switched
        ///< on or off.
 public:
   bool IsMute(void) const { return mute; }
   bool ToggleMute(void);
        ///< Turns the volume off or on and returns the new mute state.
+  int GetAudioChannel(void);
+       ///< Gets the current audio channel, which is stereo (0), mono left (1) or
+       ///< mono right (2).
+  void SetAudioChannel(int AudioChannel);
+       ///< Sets the audio channel to stereo (0), mono left (1) or mono right (2).
+       ///< Any other values will be silently ignored.
   void SetVolume(int Volume, bool Absolute = false);
        ///< Sets the volume to the given value, either absolutely or relative to
        ///< the current volume.

@@ -3254,7 +3254,7 @@ Video Disk Recorder Revision History
 - The new remote control button "Audio" can be used to switch between different
   audio tracks. The "Green" button in the "Main" menu has been changed from "Language"
   to "Audio", since it now also controls switching between normal and Dolby Digital
-  audio tracks.
+  audio tracks (see MANUAL for details).
 - The description of the audio tracks is now taken from the "component descriptors"
   that are broadcast in the EPG data. However (as no big surprise), not all channels
   actually provide useful data here, so there are now some additional EPG bugfixes,
@@ -3269,3 +3269,9 @@ Video Disk Recorder Revision History
 - The new setup option "DVB/Audio languages" can be used to control which audio
   language shall be selected in case a channel broadcasts in different languages
   (see MANUAL for details). 
+- The "Left" and "Right" keys in the "Audio" menu can be used to switch between
+  the left and right stereo channels in case there are different audio tracks
+  in these channels (see MANUAL for details).
+  Currently there is no visual indicator of the audio channel, yet, and it
+  doesn't work with the selected audio languages. It also doesn't appear to
+  work with some DVB cards (esp. the Siemens DVB-S Rev 1.3).

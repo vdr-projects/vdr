@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.328 2005/01/05 10:26:59 kls Exp $
+ * $Id: menu.c 1.329 2005/01/06 13:27:00 kls Exp $
  */
 
 #include "menu.h"
@@ -2913,6 +2913,20 @@ eOSState cDisplayTracks::ProcessKey(eKeys Key)
             track++;
          timeout.Set(TRACKTIMEOUT);
          break;
+    case kLeft|k_Repeat:
+    case kLeft:
+    case kRight|k_Repeat:
+    case kRight: {
+         static int ac[] = { 1, 0, 2 };
+         int AudioChannel = ac[cDevice::PrimaryDevice()->GetAudioChannel()];
+         if (NORMALKEY(Key) == kLeft && AudioChannel > 0)
+            AudioChannel--;
+         else if (NORMALKEY(Key) == kRight && AudioChannel < 2)
+            AudioChannel++;
+         cDevice::PrimaryDevice()->SetAudioChannel(ac[AudioChannel]);
+         timeout.Set(TRACKTIMEOUT);
+         }
+         break;
     case kAudio:
          if (++track >= numTracks)
             track = 0;
@@ -2924,7 +2938,8 @@ eOSState cDisplayTracks::ProcessKey(eKeys Key)
          timeout.Set();
          break;
     case kNone: break;
-    default: return osEnd;
+    default: if ((Key & k_Release) == 0)
+                return osEnd;
     }
   if (track != oldTrack) {
      Show();

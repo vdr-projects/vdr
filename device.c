@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.67 2005/01/04 15:38:46 kls Exp $
+ * $Id: device.c 1.68 2005/01/06 13:30:30 kls Exp $
  */
 
 #include "device.h"
@@ -582,7 +582,20 @@ bool cDevice::HasProgramme(void)
   return Replaying() || pidHandles[ptAudio].pid || pidHandles[ptVideo].pid;
 }
 
+int cDevice::GetAudioChannelDevice(void)
+{
+  return 0;
+}
+
+void cDevice::SetAudioChannelDevice(int AudioChannel)
+{
+}
+
 void cDevice::SetVolumeDevice(int Volume)
+{
+}
+
+void cDevice::SetDigitalAudioDevice(bool On)
 {
 }
 
@@ -605,6 +618,18 @@ bool cDevice::ToggleMute(void)
      }
   volume = OldVolume;
   return mute;
+}
+
+int cDevice::GetAudioChannel(void)
+{
+  int c = GetAudioChannelDevice();
+  return (0 <= c && c <= 2) ? c : 0;
+}
+
+void cDevice::SetAudioChannel(int AudioChannel)
+{
+  if (0 <= AudioChannel && AudioChannel <= 2)
+     SetAudioChannelDevice(AudioChannel);
 }
 
 void cDevice::SetVolume(int Volume, bool Absolute)
