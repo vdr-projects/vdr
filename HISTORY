@@ -3416,7 +3416,7 @@ Video Disk Recorder Revision History
 - Added missing reset of the 'repacker' to cTS2PES::Clear() (thanks to Marco
   Schlüßler for reporting this one).
 
-2005-02-20: Version 1.3.22
+2005-02-26: Version 1.3.22
 
 - Removed some unneeded code and fixed access to unallocated memory in
   cEvent::FixEpgBugs() (thanks to Wolfgang Rohdewald).
@@ -3433,3 +3433,4 @@ Video Disk Recorder Revision History
 - The new setup option "DVB/Video display format" can be used to define which display
   format to use for playing wide screen video on a 4:3 tv set.
 - Changed MAXDPIDS to 16 (8xAC3 + 8xDTS) (thanks to Werner Fink for pointing this out).
+- Completed Dutch language texts (thanks to Hans Dingemans).

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.178 2005/02/20 13:39:33 kls Exp $
+ * $Id: i18n.c 1.179 2005/02/26 10:27:08 kls Exp $
  *
  * Translations provided by:
  *
@@ -950,7 +950,7 @@ const tI18nPhrase Phrases[] = {
     "Scan",
     "",//TODO
     "Scansione",
-    "",//TODO
+    "Scan",
     "",//TODO
     "Scan",
     "",//TODO
@@ -1793,7 +1793,7 @@ const tI18nPhrase Phrases[] = {
     "VPS",
     "",// TODO
     "VPS",
-    "",// TODO
+    "VPS",
     "",// TODO
     "VPS",
     "",// TODO
@@ -2298,7 +2298,7 @@ const tI18nPhrase Phrases[] = {
     "Kein Audio verfügbar!",
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Geen audio beschikbaar!",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -2573,7 +2573,7 @@ const tI18nPhrase Phrases[] = {
     "Oberfläche",
     "",// TODO
     "Superficie Skin",
-    "",// TODO
+    "Skin",
     "",// TODO
     "Skin",
     "",// TODO
@@ -2594,7 +2594,7 @@ const tI18nPhrase Phrases[] = {
     "Thema",
     "",// TODO
     "Tema",
-    "",// TODO
+    "Thema",
     "",// TODO
     "Thème",
     "",// TODO
@@ -2615,7 +2615,7 @@ const tI18nPhrase Phrases[] = {
     "Links",
     "",// TODO
     "Sinistra",
-    "",// TODO
+    "Links",
     "",// TODO
     "Gauche",
     "",// TODO
@@ -2636,7 +2636,7 @@ const tI18nPhrase Phrases[] = {
     "Oben",
     "",// TODO
     "Cima",
-    "",// TODO
+    "Boven",
     "",// TODO
     "Haut",
     "",// TODO
@@ -2720,7 +2720,7 @@ const tI18nPhrase Phrases[] = {
     "Kleine Schrift benutzen",
     "",// TODO
     "Utilizzare caratteri piccoli",
-    "",// TODO
+    "Klein lettertype gebruiken",
     "",// TODO
     "Utiliser les petits caractères",
     "",// TODO
@@ -2741,7 +2741,7 @@ const tI18nPhrase Phrases[] = {
     "nie",
     "",// TODO
     "mai",
-    "",// TODO
+    "nooit",
     "",// TODO
     "jamais",
     "",// TODO
@@ -2762,7 +2762,7 @@ const tI18nPhrase Phrases[] = {
     "je nach Oberfläche",
     "",// TODO
     "in base alla superficie",
-    "",// TODO
+    "skin afhankelijk",
     "",// TODO
     "Dépend du skin",
     "",// TODO
@@ -2783,7 +2783,7 @@ const tI18nPhrase Phrases[] = {
     "immer",
     "",// TODO
     "sempre",
-    "",// TODO
+    "altijd",
     "",// TODO
     "toujours",
     "",// TODO
@@ -2825,7 +2825,7 @@ const tI18nPhrase Phrases[] = {
     "Anzeigedauer für Kanal-Info (s)",
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Duur tonen kanaal-informatie (s)",
     "",// TODO
     "Durée affichage infos chaînes (s)",
     "",// TODO
@@ -2972,7 +2972,7 @@ const tI18nPhrase Phrases[] = {
     "Alte EPG-Daten anzeigen (min)",// TODO
     "",// TODO
     "Visualizzazione dati vecchi (min)",
-    "",// TODO
+    "Oude EPG data tonen (min)",
     "",// TODO
     "Montrer l'EPG plus vieux de m min",
     "",// TODO
@@ -3035,7 +3035,7 @@ const tI18nPhrase Phrases[] = {
     "Bevorzugte Sprachen",
     "",// TODO
     "Lingue preferite",
-    "",// TODO
+    "Voorkeurstalen",
     "",// TODO
     "Langues préférées",
     "",// TODO
@@ -3056,7 +3056,7 @@ const tI18nPhrase Phrases[] = {
     "Bevorzugte Sprache",
     "",// TODO
     "Lingua preferita",
-    "",// TODO
+    "Voorkeurstaal",
     "",// TODO
     "Langue préférée",
     "",// TODO
@@ -3203,7 +3203,7 @@ const tI18nPhrase Phrases[] = {
     "Dolby Digital Ton benutzen",
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Dolby Digital gebruiken",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -3224,7 +3224,7 @@ const tI18nPhrase Phrases[] = {
     "Kanäle aktualisieren",
     "",// TODO
     "Aggiornare i canali",
-    "",// TODO
+    "Kanalen actualiseren",
     "",// TODO
     "Mettre à jour les chaînes",
     "",// TODO
@@ -3245,7 +3245,7 @@ const tI18nPhrase Phrases[] = {
     "nur Namen",
     "",// TODO
     "solo nomi",
-    "",// TODO
+    "alleen namen",
     "",// TODO
     "Seulement les noms",
     "",// TODO
@@ -3266,7 +3266,7 @@ const tI18nPhrase Phrases[] = {
     "Namen und PIDs",
     "",// TODO
     "nomi e PIDs",
-    "",// TODO
+    "namen en PIDs",
     "",// TODO
     "Noms et PIDs",
     "",// TODO
@@ -3287,7 +3287,7 @@ const tI18nPhrase Phrases[] = {
     "neue Kanäle hinzufügen",
     "",// TODO
     "aggiungere canali nuovi",
-    "",// TODO
+    "nieuwe kanalen toevoegen",
     "",// TODO
     "Ajouter les nouvelles chaînes",
     "",// TODO
@@ -3308,7 +3308,7 @@ const tI18nPhrase Phrases[] = {
     "neue Transponder hinzufügen",
     "",// TODO
     "aggiungere transponder nuovi",
-    "",// TODO
+    "nieuwe transponders toevoegen",
     "",// TODO
     "Ajouter les nouveaux transpondeurs",
     "",// TODO
@@ -3329,7 +3329,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Audio talen",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -3350,7 +3350,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Audio taal",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -3644,7 +3644,7 @@ const tI18nPhrase Phrases[] = {
     "VPS benutzen",
     "",// TODO
     "Utilizzare VPS",
-    "",// TODO
+    "VPS gebruiken",
     "",// TODO
     "Utiliser le VPS",
     "",// TODO
@@ -3665,7 +3665,7 @@ const tI18nPhrase Phrases[] = {
     "Zeitpuffer bei VPS (s)",
     "",// TODO
     "Margine VPS",
-    "",// TODO
+    "Marge VPS (s)",
     "",// TODO
     "Marge VPS",
     "",// TODO
@@ -3982,7 +3982,7 @@ const tI18nPhrase Phrases[] = {
     " aäbcdefghijklmnoöpqrstuüvwxyz0123456789-.#~",
     " abcdefghijklmnopqrstuvwxyz0123456789-.#~",
     " aàbcdeéèfghiîjklmnopqrstuùvwxyz0123456789-.#~",
-    "",// TODO
+    " aáàäbcdefghiïjklmnoóòöpqrstuúùüvwxyz0123456789-.#~",
     "",// TODO
     " aàbcçdeéèêfghiîjklmnoôpqrstuùûvwxyz0123456789-.#~",
     "",// TODO
@@ -4782,7 +4782,7 @@ const tI18nPhrase Phrases[] = {
     "Audio",
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Audio",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -5266,7 +5266,7 @@ const tI18nPhrase Phrases[] = {
     "Klassischer VDR",
     "",// TODO
     "VDR Classico",
-    "",// TODO
+    "VDR Klassiek",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -5287,7 +5287,7 @@ const tI18nPhrase Phrases[] = {
     "ST:TNG Konsolen",
     "",// TODO
     "Consolles ST:TNG",
-    "",// TODO
+    "ST:TNG Consoles",
     "",// TODO
     "",// TODO
     "",// TODO
