@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.9 2000/07/15 16:35:18 kls Exp $
+ * $Id: config.c 1.10 2000/07/16 11:47:30 kls Exp $
  */
 
 #include "config.h"
@@ -339,10 +339,11 @@ bool cTimer::IsSingleEvent(void)
   return (day & 0x80000000) == 0;
 }
 
-bool cTimer::Matches(void)
+bool cTimer::Matches(time_t t)
 {
   if (active) {
-     time_t t = time(NULL);
+     if (t == 0)
+        t = time(NULL);
      struct tm now = *localtime(&t);
      int weekday = now.tm_wday == 0 ? 6 : now.tm_wday - 1; // we start with monday==0!
      int begin = TimeToInt(start);
@@ -399,13 +400,17 @@ void cTimer::SetRecording(bool Recording)
 
 cTimer *cTimer::GetMatch(void)
 {
-  cTimer *t = (cTimer *)Timers.First();
-  while (t) {
-        if (!t->recording && t->Matches())
-           return t;
-        t = (cTimer *)t->Next();
+  time_t t = time(NULL); // all timers must be checked against the exact same time to correctly handle Priority!
+  cTimer *t0 = NULL;
+  cTimer *ti = (cTimer *)Timers.First();
+  while (ti) {
+        if (!ti->recording && ti->Matches(t)) {
+           if (!t0 || ti->priority > t0->priority)
+              t0 = ti;
+           }
+        ti = (cTimer *)ti->Next();
         }
-  return NULL;
+  return t0;
 }
 
 // -- cKeys ------------------------------------------------------------------

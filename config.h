@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.8 2000/07/15 16:26:57 kls Exp $
+ * $Id: config.h 1.9 2000/07/16 11:41:51 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -98,7 +98,7 @@ public:
   bool Parse(char *s);
   bool Save(FILE *f);
   bool IsSingleEvent(void);
-  bool Matches(void);
+  bool Matches(time_t t = 0);
   time_t StartTime(void);
   time_t StopTime(void);
   void SetRecording(bool Recording);

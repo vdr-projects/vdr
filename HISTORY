@@ -70,3 +70,7 @@ Video Disk Recorder Revision History
 - The 'Recordings' menu is now listed alphabetically (thanks to Carsten Koch!).
 - The new 'xtvrc2vdr' tool (thanks to Plamen Ganev!) can be used to convert
   'xtvrc' channel files into 'vdr' format.
+- When more than one timer matches at the same time, the first one in the list
+  with the highest 'Priority' is selected.
+- The MANUAL section on "Programming the Timer" has been filled in.
+
