@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 1.24 2002/05/05 12:00:00 kls Exp $
+ * $Id: osd.c 1.25 2002/05/12 11:38:39 kls Exp $
  */
 
 #include "osd.h"
@@ -161,9 +161,16 @@ void cOsdMenu::Del(int Index)
      first--;
 }
 
-void cOsdMenu::Add(cOsdItem *Item, bool Current)
+void cOsdMenu::Add(cOsdItem *Item, bool Current, cOsdItem *After)
 {
-  cList<cOsdItem>::Add(Item);
+  cList<cOsdItem>::Add(Item, After);
+  if (Current)
+     current = Item->Index();
+}
+
+void cOsdMenu::Ins(cOsdItem *Item, bool Current, cOsdItem *Before)
+{
+  cList<cOsdItem>::Ins(Item, Before);
   if (Current)
      current = Item->Index();
 }

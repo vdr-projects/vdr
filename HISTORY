@@ -1276,3 +1276,4 @@ Video Disk Recorder Revision History
   if the plugin will not be able to perform its task (suggested by Stefan Huelswitt).
 - Added the cPlugin::Housekeeping() function (suggested by Stefan Huelswitt).
 - Updated channels.conf.cable (thanks to Uwe Scheffler).
+- Added 'insert' capabilities to cList (suggested by Stefan Huelswitt).

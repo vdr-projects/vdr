@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.63 2002/05/01 16:20:30 kls Exp $
+ * $Id: tools.c 1.64 2002/05/12 11:37:24 kls Exp $
  */
 
 #include "tools.h"
@@ -724,6 +724,12 @@ void cListObject::Append(cListObject *Object)
   Object->prev = this;
 }
 
+void cListObject::Insert(cListObject *Object)
+{
+  prev = Object;
+  Object->next = this;
+}
+
 void cListObject::Unlink(void)
 {
   if (next)
@@ -757,13 +763,35 @@ cListBase::~cListBase()
   Clear();
 }
 
-void cListBase::Add(cListObject *Object) 
+void cListBase::Add(cListObject *Object, cListObject *After)
 { 
-  if (lastObject)
-     lastObject->Append(Object);
-  else
-     objects = Object;
-  lastObject = Object;
+  if (After && After != lastObject) {
+     After->Next()->Insert(Object);
+     After->Append(Object);
+     }
+  else {
+     if (lastObject)
+        lastObject->Append(Object);
+     else
+        objects = Object;
+     lastObject = Object;
+     }
+}
+
+void cListBase::Ins(cListObject *Object, cListObject *Before)
+{ 
+  if (Before && Before != objects) {
+     Before->Prev()->Append(Object);
+     Before->Insert(Object);
+     }
+  else {
+     if (objects)
+        objects->Insert(Object);
+     else
+        objects = Object;
+     if (!lastObject)
+        lastObject = Object;
+     }
 }
 
 void cListBase::Del(cListObject *Object)
