@@ -22,12 +22,13 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.22 2000/07/23 14:53:22 kls Exp $
+ * $Id: vdr.c 1.23 2000/07/23 15:36:43 kls Exp $
  */
 
 #include <getopt.h>
 #include <signal.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include "config.h"
 #include "dvbapi.h"
 #include "interface.h"
@@ -58,19 +59,23 @@ int main(int argc, char *argv[])
 #define DEFAULTSVDRPPORT 2001
 
   int SVDRPport = DEFAULTSVDRPPORT;
+  bool DaemonMode = false;
 
   static struct option long_options[] = {
-      { "help", no_argument,       NULL, 'h' },
-      { "port", required_argument, NULL, 'p' },
+      { "daemon", no_argument,       NULL, 'd' },
+      { "help",   no_argument,       NULL, 'h' },
+      { "port",   required_argument, NULL, 'p' },
       { 0 }
     };
   
   int c;
   int option_index = 0;
-  while ((c = getopt_long(argc, argv, "hp:", long_options, &option_index)) != -1) {
+  while ((c = getopt_long(argc, argv, "dhp:", long_options, &option_index)) != -1) {
         switch (c) {
+          case 'd': DaemonMode = true; break;
           case 'h': printf("Usage: vdr [OPTION]\n\n"
                            "  -h,      --help        display this help and exit\n"
+                           "  -d,      --daemon      run in daemon mode\n"
                            "  -p PORT, --port=PORT   use PORT for SVDRP ('0' turns off SVDRP)\n"
                            "\n"
                            "Report bugs to <vdr-bugs@cadsoft.de>\n"
@@ -91,6 +96,27 @@ int main(int argc, char *argv[])
   // Log file:
   
   openlog("vdr", LOG_PID | LOG_CONS, LOG_USER);
+
+  // Daemon mode:
+
+  if (DaemonMode) {
+#ifndef DEBUG_OSD
+     pid_t pid = fork();
+     if (pid < 0) {
+        fprintf(stderr, "%s\n", strerror(errno));
+        esyslog(LOG_ERR, strerror(errno));
+        return 1;
+        }
+     if (pid != 0)
+        return 0; // initial program immediately returns
+     fclose(stdin);
+     fclose(stdout);
+     fclose(stderr);
+#else
+     fprintf(stderr, "vdr: can't run in daemon mode with DEBUG_OSD on!\n");
+     abort();
+#endif
+     }
   isyslog(LOG_INFO, "started");
 
   // DVB interfaces:

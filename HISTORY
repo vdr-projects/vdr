@@ -86,3 +86,4 @@ Video Disk Recorder Revision History
 - Implemented the "Simple Video Disk Recorder Protocol" (SVDRP) to control
   the VDR over a network connection.
 - Implemented command line option handling.
+- The program can now run in full background mode by using the --daemon option.
