@@ -21,18 +21,18 @@ VDR program and present itself to the user.
 The <i>inside</i> interface provides the plugin code access to VDR's internal data
 structures and allows it to hook itself into specific areas to perform special actions.
 <p>
-<!--X1.1.6--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
-Important modifications introduced in version 1.1.6 are marked like this.
-<!--X1.1.6--></td></tr></table>
-<!--X1.1.7--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
+<!--X1.1.7--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 Important modifications introduced in version 1.1.7 are marked like this.
 <!--X1.1.7--></td></tr></table>
-<!--X1.1.8--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
+<!--X1.1.8--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
 Important modifications introduced in version 1.1.8 are marked like this.
 <!--X1.1.8--></td></tr></table>
-<!--X1.1.9--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+<!--X1.1.9--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
 Important modifications introduced in version 1.1.9 are marked like this.
 <!--X1.1.9--></td></tr></table>
+<!--X1.1.11--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+Important modifications introduced in version 1.1.11 are marked like this.
+<!--X1.1.11--></td></tr></table>
 
 <a name="Part I - The Outside Interface"><hr><center><h1>Part I - The Outside Interface</h1></center>
 
@@ -957,7 +957,7 @@ stream. There are no prerequisites regarding the length or alignment of an
 individual block of data. The sum of all blocks must simply result in the
 desired video data stream, and it must be delivered fast enough so that the
 DVB device doesn't run out of data.
-<!--X1.1.7--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
+<!--X1.1.7--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 To avoid busy loops the player should call its member function
 
 <p><table><tr><td bgcolor=#F0F0F0><pre><br>
@@ -1065,7 +1065,6 @@ enjoy additional players, since they will be able to control them with actions
 that they already know. If you absolutely want to do things differently, just go
 ahead - it's your show...
 
-<!--X1.1.6--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 <hr><h2>Receivers</h2>
 
 <center><i><b>Tapping into the stream...</b></i></center><p>
@@ -1119,7 +1118,6 @@ cDevice::PrimaryDevice()-&gt;AttachReceiver(Receiver);
 
 If the <tt>cReceiver</tt> isn't needed any more, it may simply be <i>deleted</i>
 and will automatically detach itself from the <tt>cDevice</tt>.
-<!--X1.1.6--></td></tr></table>
 
 <hr><h2>The On Screen Display</h2>
 
@@ -1151,7 +1149,6 @@ to define an actual OSD drawing area (see VDR/osdbase.h for the declarations
 of these functions, and VDR/osd.c to see how VDR opens the OSD and sets up
 its windows and color depths).
 
-<!--X1.1.6--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 <hr><h2>Devices</h2>
 
 <center><i><b>Expanding the possibilities</b></i></center><p>
@@ -1187,7 +1184,7 @@ the <tt>cDvbDevice</tt>, which is used to access the DVB PCI cards.
 If the new device can receive, it most likely needs to provide a way of
 selecting which channel it shall tune to:
 
-<!--X1.1.9--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+<!--X1.1.9--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
 <p><table><tr><td bgcolor=#F0F0F0><pre><br>
 virtual bool ProvidesChannel(const cChannel *Channel, int Priority = -1, bool *NeedsDetachReceivers = NULL);
 virtual bool SetChannelDevice(const cChannel *Channel, bool LiveView);
@@ -1206,7 +1203,7 @@ A device that can be used for recording must implement the functions
 virtual bool SetPid(cPidHandle *Handle, int Type, bool On);
 virtual bool OpenDvr(void);
 virtual void CloseDvr(void);
-<!--X1.1.9--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+<!--X1.1.9--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
 virtual bool GetTSPacket(uchar *&amp;Data);
 <!--X1.1.9--></td></tr></table>
 </pre></td></tr></table><p>
@@ -1230,7 +1227,7 @@ to indicate this to VDR.
 <p>
 The functions to implement replaying capabilites are
 
-<!--X1.1.7--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
+<!--X1.1.7--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 <p><table><tr><td bgcolor=#F0F0F0><pre><br>
 virtual bool HasDecoder(void) const;
 virtual bool SetPlayMode(ePlayMode PlayMode);
@@ -1254,7 +1251,7 @@ virtual void SetVideoFormat(bool VideoFormat16_9);
 virtual void SetVolumeDevice(int Volume);
 </pre></td></tr></table><p>
 
-<!--X1.1.8--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
+<!--X1.1.8--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
 <p>
 <b>On Screen Display</b>
 <p>
@@ -1294,7 +1291,120 @@ Nothing needs to be done to shut down the devices. VDR will automatically
 shut down (delete) all devices when the program terminates. It is therefore
 important that the devices are created on the heap, using the <tt>new</tt>
 operator!
-<!--X1.1.6--></td></tr></table>
+
+<!--X1.1.11--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+<hr><h2>Remote Control</h2>
+
+<center><i><b>The joy of zapping!</b></i></center><p>
+
+There are several ways to control the operation of VDR. The builtin methods
+are using the PC keyboard, a homebuilt RCU unit or the LIRC interface.
+Of course there may be many more ways you might think of to implement a
+remote control, so a plugin can use the <tt>cRemote</tt> class to do that.
+<p>
+The simplest method for a plugin to issue commands to VDR is to call the
+static function <tt>cRemote::Put(eKeys Key)</tt>, as in
+
+<p><table><tr><td bgcolor=#F0F0F0><pre><br>
+cRemote::Put(kUp);
+</pre></td></tr></table><p>
+
+In this case the plugin must do the mapping of whatever incoming signal or code
+it processes to the <tt>eKeys</tt> values itself. This makes sense if the incoming
+codes are well known and won't ever change.
+<p>
+In cases where the incoming codes are not known, or not all available keys may
+be supported by the actual remote control in use, you may want to derive your
+own remote control class from <tt>cRemote</tt>, as in
+
+<p><table><tr><td bgcolor=#F0F0F0><pre><br>
+#include &lt;vdr/remote.h&gt;
+#include &lt;vdr/thread.h&gt;
+
+class cMyRemote : public cRemote, private cThread {
+private:
+  virtual void Action(void);
+public:
+  cMyRemote(const char *Name);
+  virtual bool Initialize(void);
+  };
+</pre></td></tr></table><p>
+
+Note that deriving from <tt>cThread</tt> is not required for a remote control
+class to work, but typically you may want to have a separate thread running that
+collects the input and delivers it to the <tt>cRemote</tt> base class.
+<p>
+You should create your derived remote control object in the
+<a href="#Getting started"><tt>Start()</tt></a> function of your plugin.
+Note that the object has to be created on the heap (using <tt>new</tt>),
+and you shall not delete it at any point (it will be deleted automatically
+when the program ends).
+<p>
+The constructor of your remote control class should look like this
+
+<p><table><tr><td bgcolor=#F0F0F0><pre><br>
+cMyRemote::cMyRemote(const char *Name)
+:cRemote(Name)
+{
+  Start();
+}
+</pre></td></tr></table><p>
+
+The <tt>Name</tt> is important in order for the <tt>cRemote</tt> base class
+to be able to distinguish the codes for the various remote controls.
+When creating your <tt>cMyRemote</tt> object you should use the value returned
+by the <tt>Name()</tt> member function of the plugin class, which returns the
+plugin's name. Calling <tt>Start()</tt> will start the thread that collects
+the incoming data (by calling your <tt>Action()</tt> function).
+In case you need to do any other setup steps, like opening a file or initializing
+member variables, you should do so before calling <tt>Start()</tt>.
+<p>
+VDR will handle everything necessary to learn the key mappings of your remote
+control. In order to do so, it will first call the virtual function <tt>Initialize()</tt>,
+in which you should take all necessary steps to make sure your remote control
+can be accessed. This may, for instance, include trying various communications
+protocols. <tt>Initialize()</tt>, if implemented, shall only return after it has
+made sure data can be received from the remote control. Before calling this
+function, VDR will prompt the user on the OSD to press any key on the remote control.
+As soon as your derived <tt>cRemote</tt> class has detected useful incoming data,
+<tt>Initialize()</tt> should return <i>true</i>. If any fatal error occurs, <i>false</i>
+should be returned.
+<p>
+If your remote control class needs some setup data that shall be
+readily available next time VDR starts (without having to go through the initialization
+procedure again) it can use the <tt>cRemote</tt> member functions
+
+<p><table><tr><td bgcolor=#F0F0F0><pre><br>
+void PutSetup(const char *Setup);
+const char *GetSetup(void);
+</pre></td></tr></table><p>
+
+to store and retrieve a character string containing whatever data is needed.
+Note that the <tt>Initialize()</tt> function will only be called if there are
+no key mappings known for this remote control. Once the key mappings have been
+learned, <tt>Initialize()</tt> will never be called again.
+<p>
+The <tt>cRemote</tt> class assumes that any incoming remote control code can be
+expressed as a character string. So whatever data your remote control provides
+needs to be given to the base class by calling
+
+<p><table><tr><td bgcolor=#F0F0F0><pre><br>
+Put(const char *Code, bool Repeat = false, bool Release = false);
+</pre></td></tr></table><p>
+
+where <tt>Code</tt> is the string representation of the remote control's
+incoming data. <tt>Repeat</tt> and <tt>Release</tt> are boolean flags that
+indicate whether this is a repeated keypress, or the key has been released.
+Since a common case for remote control data is to be given as a numerical
+value, there is another <tt>Put()</tt> function available for your convenience,
+which takes a 64 bit unsigned integer value instead of a character string:
+
+<p><table><tr><td bgcolor=#F0F0F0><pre><br>
+Put(uint64 Code, bool Repeat = false, bool Release = false);
+</pre></td></tr></table><p>
+
+The other parameters have the same meaning as in the first version of this function.
+<!--X1.1.11--></td></tr></table>
 
 </body>
 </html>

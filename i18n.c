@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.92 2002/06/22 09:26:36 kls Exp $
+ * $Id: i18n.c 1.93 2002/09/29 12:32:46 kls Exp $
  *
  * Translations provided by:
  *
@@ -2400,6 +2400,22 @@ const tI18nPhrase Phrases[] = {
     "(Tryck 'Ner' för att avsluta knapp definition)",
     "(Apasati 'Jos' pentru terminare)",
     "('Le' megnyomása a befejezéshez)",
+  },
+  { "(press 'Menu' to skip this key)",
+    "('Menü' drücken zum Überspringen)",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
   },
   { "Phase 3: Saving key codes",
     "Phase 3: Codes abspeichern",

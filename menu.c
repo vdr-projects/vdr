@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.208 2002/09/06 14:07:58 kls Exp $
+ * $Id: menu.c 1.209 2002/09/29 12:50:47 kls Exp $
  */
 
 #include "menu.h"
@@ -20,6 +20,7 @@
 #include "menuitems.h"
 #include "plugin.h"
 #include "recording.h"
+#include "remote.h"
 #include "status.h"
 #include "videodir.h"
 
@@ -2121,7 +2122,7 @@ cDisplayChannel::cDisplayChannel(int Number, bool Switched)
   withInfo = !Switched || Setup.ShowInfoOnChSwitch;
   int EpgLines = withInfo ? 5 : 1;
   lines = 0;
-  oldNumber = number = 0;
+  number = 0;
   cChannel *channel = Channels.GetByNumber(Number);
   Interface->Open(Setup.OSDwidth, Setup.ChannelInfoPos ? EpgLines : -EpgLines);
   if (channel) {
@@ -2135,7 +2136,6 @@ cDisplayChannel::cDisplayChannel(eKeys FirstKey)
 :cOsdObject(true)
 {
   group = -1;
-  oldNumber = cDevice::CurrentChannel();
   number = 0;
   lastTime = time_ms();
   int EpgLines = Setup.ShowInfoOnChSwitch ? 5 : 1;
@@ -2145,15 +2145,11 @@ cDisplayChannel::cDisplayChannel(eKeys FirstKey)
 
 cDisplayChannel::~cDisplayChannel()
 {
-  if (number < 0)
-     Interface->DisplayChannelNumber(oldNumber);
   Interface->Close();
 }
 
 void cDisplayChannel::DisplayChannel(const cChannel *Channel)
 {
-  if (Channel && Channel->number > 0)
-     Interface->DisplayChannelNumber(Channel->number);
   int BufSize = Width() + 1;
   char buffer[BufSize];
   if (Channel && Channel->number > 0)
@@ -2231,7 +2227,7 @@ eOSState cDisplayChannel::ProcessKey(eKeys Key)
     case k0:
          if (number == 0) {
             // keep the "Toggle channels" function working
-            Interface->PutKey(Key);
+            cRemote::Put(Key);
             return osEnd;
             }
     case k1 ... k9:
@@ -2290,7 +2286,7 @@ eOSState cDisplayChannel::ProcessKey(eKeys Key)
                      Channels.SwitchTo(Channels.Get(Channels.GetNextNormal(group))->number);
                   return osEnd;
     default:      if (NORMALKEY(Key) == kUp || NORMALKEY(Key) == kDown || (Key & (k_Repeat | k_Release)) == 0) {
-                     Interface->PutKey(Key);
+                     cRemote::Put(Key);
                      return osEnd;
                      }
     };
@@ -2397,7 +2393,7 @@ eOSState cDisplayVolume::ProcessKey(eKeys Key)
          break;
     case kNone: break;
     default: if ((Key & k_Release) == 0) {
-                Interface->PutKey(Key);
+                cRemote::Put(Key);
                 return osEnd;
                 }
     }
@@ -2441,7 +2437,6 @@ cRecordControl::cRecordControl(cDevice *Device, cTimer *Timer)
   if (device->AttachReceiver(recorder)) {
      Recording.WriteSummary();
      cStatus::MsgRecording(device, Recording.Name());
-     Interface->DisplayRecording(device->CardIndex(), true);
      }
   else
      DELETENULL(recorder);
@@ -2487,7 +2482,6 @@ bool cRecordControl::GetEventInfo(void)
 void cRecordControl::Stop(bool KeepInstant)
 {
   if (timer) {
-     cStatus::MsgRecording(device, NULL);
      DELETENULL(recorder);
      timer->SetRecording(false);
      if ((IsInstant() && !KeepInstant) || (timer->IsSingleEvent() && timer->StopTime() <= time(NULL))) {
@@ -2496,7 +2490,7 @@ void cRecordControl::Stop(bool KeepInstant)
         Timers.Save();
         }
      timer = NULL;
-     Interface->DisplayRecording(device->CardIndex(), false);
+     cStatus::MsgRecording(device, NULL);
      cRecordingUserCommand::InvokeCommand(RUC_AFTERRECORDING, fileName);
      }
 }

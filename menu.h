@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 1.45 2002/06/22 14:49:15 kls Exp $
+ * $Id: menu.h 1.46 2002/09/29 08:16:31 kls Exp $
  */
 
 #ifndef __MENU_H
@@ -32,7 +32,7 @@ private:
   bool withInfo;
   int lines;
   int lastTime;
-  int oldNumber, number;
+  int number;
   void DisplayChannel(const cChannel *Channel);
   void DisplayInfo(void);
 public:

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 1.19 2002/09/21 09:14:08 kls Exp $
+ * $Id: device.h 1.20 2002/09/28 12:20:34 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -111,7 +111,7 @@ public:
   bool IsPrimaryDevice(void) const { return this == primaryDevice; }
   int CardIndex(void) const { return cardIndex; }
          // Returns the card index of this device (0 ... MAXDEVICES - 1).
-  int ProvidesCa(int Ca);
+  int ProvidesCa(int Ca) const;
          // Checks whether this device provides the given value in its
          // caCaps. Returns 0 if the value is not provided, 1 if only this
          // value is provided, and > 1 if this and other values are provided.
@@ -139,7 +139,7 @@ public:
 protected:
   static int currentChannel;
 public:
-  virtual bool ProvidesChannel(const cChannel *Channel, int Priority = -1, bool *NeedsDetachReceivers = NULL);
+  virtual bool ProvidesChannel(const cChannel *Channel, int Priority = -1, bool *NeedsDetachReceivers = NULL) const;
          // Returns true if this device can provide the given channel.
          // In case the device has cReceivers attached to it or it is the primary
          // device, Priority is used to decide whether the caller's request can
@@ -186,7 +186,7 @@ protected:
     cPidHandle(void) { pid = used = 0; handle = -1; }
     };
   cPidHandle pidHandles[MAXPIDHANDLES];
-  bool HasPid(int Pid);
+  bool HasPid(int Pid) const;
          // Returns true if this device is currently receiving the given PID.
   bool AddPid(int Pid, ePidType PidType = ptOther);
          // Adds a PID to the set of PIDs this device shall receive.
@@ -224,7 +224,7 @@ protected:
   virtual void SetVolumeDevice(int Volume);
        // Sets the audio volume on this device (Volume = 0...255).
 public:
-  bool IsMute(void) { return mute; }
+  bool IsMute(void) const { return mute; }
   bool ToggleMute(void);
        // Turns the volume off or on and returns the new mute state.
   void SetVolume(int Volume, bool Absolute = false);
@@ -269,7 +269,7 @@ public:
        // one video and one audio strem.
   virtual int PlayAudio(const uchar *Data, int Length);
        // Plays additional audio streams, like Dolby Digital.
-  bool Replaying(void);
+  bool Replaying(void) const;
        // Returns true if we are currently replaying.
   void StopReplay(void);
        // Stops the current replay session (if any).
@@ -285,9 +285,9 @@ public:
 private:
   cReceiver *receiver[MAXRECEIVERS];
   int ca;
-  int CanShift(int Ca, int Priority, int UsedCards = 0);
+  int CanShift(int Ca, int Priority, int UsedCards = 0) const;
 protected:
-  int Priority(void);
+  int Priority(void) const;
       // Returns the priority of the current receiving session (0..MAXPRIORITY),
       // or -1 if no receiver is currently active. The primary device will
       // always return at least Setup.PrimaryLimit-1.
@@ -304,9 +304,9 @@ protected:
       // false in case of a non recoverable error, otherwise it returns true,
       // even if Data is NULL.
 public:
-  int  Ca(void) { return ca; }
+  int  Ca(void) const { return ca; }
        // Returns the ca of the current receiving session.
-  bool Receiving(void);
+  bool Receiving(void) const;
        // Returns true if we are currently receiving.
   bool AttachReceiver(cReceiver *Receiver);
        // Attaches the given receiver to this device.

@@ -1479,7 +1479,7 @@ Video Disk Recorder Revision History
   Stefan Huelswitt).
 - Added an EPG bugfix for the latest VOX EPG data format.
 
-2002-09-21: Version 1.1.11
+2002-09-29: Version 1.1.11
 
 - Fixed an incomplete initialization of the filter parameters in eit.c (thanks
   to Jeremy Hall).
@@ -1517,3 +1517,18 @@ Video Disk Recorder Revision History
   numbers may be different.
 - Added a missing 'public' keyword in device.h (thanks to Martin Hammerschmid).
 - Fixed a race condition when starting 'Transfer Mode'.
+- Rearranged the remote control key handling to allow plugins to implement
+  additional types of remote controls (see PLUGINS.html, section "Remote Control").
+  The previously used files 'keys.conf' and 'keys-pc.conf' have been replaced
+  by the file 'remote.conf', which holds the key definitions of all remote controls.
+- The LIRC remote control keys are now handled just like the keyboard and RCU keys.
+  This means that you can use the lircd.conf file as is for your remote control,
+  without the need of editing it to make the key names the same as used in VDR.
+  When first starting VDR it will go into the "Learning keys" mode and ask you
+  to press the various keys. The resulting key assignment will be stored in
+  the file 'remote.conf'.
+  Since I have no way of testing the LIRC support, I hope I didn't break it in
+  the process...
+- While learning the remote control keys it is now possible to press the 'Menu'
+  key to skip the definition of keys that are not available on your particular
+  RC unit.

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.128 2002/09/21 08:34:25 kls Exp $
+ * $Id: config.h 1.129 2002/09/29 10:42:17 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -30,68 +30,7 @@
 #define MINOSDHEIGHT 12
 #define MAXOSDHEIGHT 21
 
-enum eKeys { // "Up" and "Down" must be the first two keys!
-             kUp,
-             kDown,
-             kMenu,
-             kOk,
-             kBack,
-             kLeft,
-             kRight,
-             kRed,
-             kGreen,
-             kYellow,
-             kBlue,
-             k0, k1, k2, k3, k4, k5, k6, k7, k8, k9,
-             kPower,
-             kVolUp,
-             kVolDn,
-             kMute,
-             kNone,
-             // The following flags are OR'd with the above codes:
-             k_Repeat  = 0x8000,
-             k_Release = 0x4000,
-             k_Flags   = k_Repeat | k_Release,
-           };
-
-// This is in preparation for having more key codes:
-#define kMarkToggle      k0
-#define kMarkMoveBack    k4
-#define kMarkMoveForward k6
-#define kMarkJumpBack    k7
-#define kMarkJumpForward k9
-#define kEditCut         k2
-#define kEditTest        k8
-
-#define RAWKEY(k)    (eKeys((k) & ~k_Flags))
-#define ISRAWKEY(k)  ((k) != kNone && ((k) & k_Flags) == 0)
-#define NORMALKEY(k) (eKeys((k) & ~k_Repeat))
-
 #define MaxFileName 256
-
-struct tKey {
-  eKeys type;
-  char *name;
-  unsigned int code;
-  };
-
-class cKeys {
-private:
-  char *fileName;
-public:
-  unsigned char code;
-  unsigned short address;
-  tKey *keys;
-  cKeys(void);
-  void Clear(void);
-  void SetDummyValues(void);
-  bool Load(const char *FileName = NULL);
-  bool Save(void);
-  eKeys Translate(const char *Command);
-  unsigned int Encode(const char *Command);
-  eKeys Get(unsigned int Code);
-  void Set(eKeys Key, unsigned int Code);
-  };
 
 #define ISTRANSPONDER(f1, f2)  (abs((f1) - (f2)) < 4)
 
@@ -214,6 +153,7 @@ public:
 template<class T> class cConfig : public cList<T> {
 private:
   char *fileName;
+  bool allowComments;
   void Clear(void)
   {
     free(fileName);
@@ -224,13 +164,17 @@ public:
   cConfig(void) { fileName = NULL; }
   virtual ~cConfig() { free(fileName); }
   const char *FileName(void) { return fileName; }
-  bool Load(const char *FileName, bool AllowComments = false)
+  bool Load(const char *FileName = NULL, bool AllowComments = false)
   {
     Clear();
-    fileName = strdup(FileName);
+    if (FileName) {
+       free(fileName);
+       fileName = strdup(FileName);
+       allowComments = AllowComments;
+       }
     bool result = false;
-    if (access(FileName, F_OK) == 0) {
-       isyslog("loading %s", FileName);
+    if (fileName && access(fileName, F_OK) == 0) {
+       isyslog("loading %s", fileName);
        FILE *f = fopen(fileName, "r");
        if (f) {
           int line = 0;
@@ -238,11 +182,12 @@ public:
           result = true;
           while (fgets(buffer, sizeof(buffer), f) > 0) {
                 line++;
-                if (AllowComments) {
+                if (allowComments) {
                    char *p = strchr(buffer, '#');
                    if (p)
                       *p = 0;
                    }
+                stripspace(buffer);
                 if (!isempty(buffer)) {
                    T *l = new T;
                    if (l->Parse(buffer))
@@ -322,7 +267,6 @@ public:
 
 extern cChannels Channels;
 extern cTimers Timers;
-extern cKeys Keys;
 extern cCommands Commands;
 extern cSVDRPhosts SVDRPhosts;
 extern cCaDefinitions CaDefinitions;

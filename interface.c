@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.c 1.54 2002/08/11 11:46:47 kls Exp $
+ * $Id: interface.c 1.55 2002/09/29 12:50:22 kls Exp $
  */
 
 #include "interface.h"
@@ -22,27 +22,14 @@ cInterface::cInterface(int SVDRPport)
   open = 0;
   cols[0] = 0;
   width = height = 0;
-  keyFromWait = kNone;
   interrupted = false;
-  rcIo = NULL;
   SVDRP = NULL;
-#if defined(REMOTE_RCU)
-  rcIo = new cRcIoRCU("/dev/ttyS1");
-#elif defined(REMOTE_LIRC)
-  rcIo = new cRcIoLIRC("/dev/lircd");
-#elif defined(REMOTE_KBD)
-  rcIo = new cRcIoKBD;
-#else
-  rcIo = new cRcIoBase; // acts as a dummy device
-#endif
-  rcIo->SetCode(Keys.code, Keys.address);
   if (SVDRPport)
      SVDRP = new cSVDRP(SVDRPport);
 }
 
 cInterface::~cInterface()
 {
-  delete rcIo;
   delete SVDRP;
 }
 
@@ -67,15 +54,6 @@ void cInterface::Close(void)
      }
 }
 
-unsigned int cInterface::GetCh(bool Wait, bool *Repeat, bool *Release)
-{
-  Flush();
-  if (!rcIo->InputAvailable())
-     cFile::AnyFileReady(-1, Wait ? 1000 : 0);
-  unsigned int Command;
-  return rcIo->GetCommand(&Command, Repeat, Release) ? Command : 0;
-}
-
 eKeys cInterface::GetKey(bool Wait)
 {
   Flush();
@@ -89,22 +67,7 @@ eKeys cInterface::GetKey(bool Wait)
            }
         }
      }
-  eKeys Key = keyFromWait;
-  if (Key == kNone) {
-     bool Repeat = false, Release = false;
-     Key = Keys.Get(GetCh(Wait, &Repeat, &Release));
-     if (Repeat)
-        Key = eKeys(Key | k_Repeat);
-     if (Release)
-        Key = eKeys(Key | k_Release);
-     }
-  keyFromWait = kNone;
-  return Key;
-}
-
-void cInterface::PutKey(eKeys Key)
-{
-  keyFromWait = Key;
+  return cRemote::Get(Wait ? 1000 : 10);
 }
 
 eKeys cInterface::Wait(int Seconds, bool KeepChar)
@@ -120,7 +83,7 @@ eKeys cInterface::Wait(int Seconds, bool KeepChar)
          break;
       }
   if (KeepChar && ISRAWKEY(Key))
-     keyFromWait = Key;
+     cRemote::Put(Key);
   interrupted = false;
   return Key;
 }
@@ -362,129 +325,118 @@ void cInterface::Help(const char *Red, const char *Green, const char *Yellow, co
   cStatus::MsgOsdHelpKeys(Red, Green, Yellow, Blue);
 }
 
-void cInterface::QueryKeys(void)
+void cInterface::QueryKeys(cRemote *Remote)
 {
-  Keys.Clear();
+  cRemote::Clear();
   Clear();
-  WriteText(1, 1, tr("Learning Remote Control Keys"));
+  WriteText(1, 1, tr("Learning Remote Control Keys"));//XXX Remote->name()!!!
   WriteText(1, 3, tr("Phase 1: Detecting RC code type"));
   WriteText(1, 5, tr("Press any key on the RC unit"));
   Flush();
-#ifndef REMOTE_KBD
-  unsigned char Code = '0';
-  unsigned short Address;
-#endif
-  for (;;) {
-#ifdef REMOTE_KBD
-      if (GetCh())
-         break;
-#else
-      //TODO on screen display...
-      if (rcIo->DetectCode(&Code, &Address)) {
-         Keys.code = Code;
-         Keys.address = Address;
-         WriteText(1, 5, tr("RC code detected!"));
-         WriteText(1, 6, tr("Do not press any key..."));
-         Flush();
-         rcIo->Flush(3000);
-         ClearEol(0, 5);
-         ClearEol(0, 6);
-         Flush();
-         break;
-         }
-#endif
-      }
-  WriteText(1, 3, tr("Phase 2: Learning specific key codes"));
-  tKey *k = Keys.keys;
-  while (k->type != kNone) {
-        char *Prompt;
-        asprintf(&Prompt, tr("Press key for '%s'"), tr(k->name));
-        WriteText(1, 5, Prompt);
-        free(Prompt);
-        for (;;) {
-            unsigned int ch = GetCh();
-            if (ch != 0) {
-               switch (Keys.Get(ch)) {
-                 case kUp:   if (k > Keys.keys) {
-                                k--;
-                                break;
-                                }
-                 case kDown: if (k > Keys.keys + 1) {
-                                WriteText(1, 5, tr("Press 'Up' to confirm"));
-                                WriteText(1, 6, tr("Press 'Down' to continue"));
-                                ClearEol(0, 7);
-                                ClearEol(0, 8);
-                                for (;;) {
-                                    eKeys key = GetKey();
-                                    if (key == kUp) {
-                                       Clear();
-                                       return;
-                                       }
-                                    else if (key == kDown) {
-                                       ClearEol(0, 6);
-                                       break;
-                                       }
+  if (Remote->Initialize()) {
+     WriteText(1, 5, tr("RC code detected!"));
+     WriteText(1, 6, tr("Do not press any key..."));
+     Flush();
+     sleep(3);
+     ClearEol(0, 5);
+     ClearEol(0, 6);
+
+     WriteText(1, 3, tr("Phase 2: Learning specific key codes"));
+     eKeys NewKey = kUp;
+     while (NewKey != kNone) {
+           char *Prompt;
+           asprintf(&Prompt, tr("Press key for '%s'"), tr(cKey::ToString(NewKey)));
+           WriteText(1, 5, Prompt);
+           free(Prompt);
+           cRemote::Clear();
+           Flush();
+           for (eKeys k = NewKey; k == NewKey; ) {
+               char *NewCode = NULL;
+               eKeys Key = cRemote::Get(100, &NewCode);
+               switch (Key) {
+                 case kUp:   {
+                               NewKey = eKeys(NewKey - 1);
+                               cKey *last = Keys.Last();
+                               if (last && last->Key() == NewKey)
+                                  Keys.Del(last);
+                             }
+                             break;
+                 case kDown: WriteText(1, 5, tr("Press 'Up' to confirm"));
+                             WriteText(1, 6, tr("Press 'Down' to continue"));
+                             ClearEol(0, 7);
+                             ClearEol(0, 8);
+                             ClearEol(0, 9);
+                             for (;;) {
+                                 Key = cRemote::Get(100);
+                                 if (Key == kUp) {
+                                    Clear();
+                                    return;
                                     }
-                                break;
+                                 else if (Key == kDown) {
+                                    ClearEol(0, 6);
+                                    k = kNone; // breaks the outer for() loop
+                                    break;
+                                    }
+                                 }
+                             break;
+                 case kMenu: NewKey = eKeys(NewKey + 1);
+                             break;
+                 case kNone: if (NewCode) {
+                                dsyslog("new %s code: %s = %s", Remote->Name(), NewCode, cKey::ToString(NewKey));
+                                Keys.Add(new cKey(Remote->Name(), NewCode, NewKey));
+                                NewKey = eKeys(NewKey + 1);
+                                free(NewCode);
                                 }
-                 case kNone: k->code = ch;
-                             k++;
                              break;
                  default:    break;
                  }
-               break;
                }
-            }
-        if (k > Keys.keys)
-           WriteText(1, 7, tr("(press 'Up' to go back)"));
-        else
-           ClearEol(0, 7);
-        if (k > Keys.keys + 1)
-           WriteText(1, 8, tr("(press 'Down' to end key definition)"));
-        else
-           ClearEol(0, 8);
-        }
+           if (NewKey > kUp)
+              WriteText(1, 7, tr("(press 'Up' to go back)"));
+           else
+              ClearEol(0, 7);
+           if (NewKey > kDown)
+              WriteText(1, 8, tr("(press 'Down' to end key definition)"));
+           else
+              ClearEol(0, 8);
+           if (NewKey > kMenu)
+              WriteText(1, 9, tr("(press 'Menu' to skip this key)"));
+           else
+              ClearEol(0, 9);
+           }
+     }
 }
 
 void cInterface::LearnKeys(void)
 {
-  isyslog("learning keys");
-  Open();
-  for (;;) {
-      Clear();
-      QueryKeys();
-      Clear();
-      WriteText(1, 1, tr("Learning Remote Control Keys"));
-      WriteText(1, 3, tr("Phase 3: Saving key codes"));
-      WriteText(1, 5, tr("Press 'Up' to save, 'Down' to cancel"));
-      for (;;) {
-          eKeys key = GetKey();
-          if (key == kUp) {
-             Keys.Save();
-             Close();
-             return;
+  for (cRemote *Remote = Remotes.First(); Remote; Remote = Remotes.Next(Remote)) {
+      bool known = Keys.KnowsRemote(Remote->Name());
+      dsyslog("remote control %s - %s", Remote->Name(), known ? "keys known" : "learning keys");
+      if (!known) {
+         Open();
+         for (;;) {
+             Clear();
+             cRemote::SetLearning(true);
+             QueryKeys(Remote);
+             cRemote::SetLearning(false);
+             Clear();
+             WriteText(1, 1, tr("Learning Remote Control Keys"));//XXX Remote->name()!!!
+             WriteText(1, 3, tr("Phase 3: Saving key codes"));
+             WriteText(1, 5, tr("Press 'Up' to save, 'Down' to cancel"));
+             for (;;) {
+                 eKeys key = GetKey();
+                 if (key == kUp) {
+                    Keys.Save();
+                    Close();
+                    return;
+                    }
+                 else if (key == kDown) {
+                    Keys.Load();
+                    Close();
+                    return;
+                    }
+                 }
              }
-          else if (key == kDown) {
-             Keys.Load();
-             Close();
-             return;
-             }
-          }
+         }
       }
-}
-
-void cInterface::DisplayChannelNumber(int Number)
-{
-  rcIo->Number(Number);
-}
-
-void cInterface::DisplayRecording(int Index, bool On)
-{
-  rcIo->SetPoints(1 << Index, On);
-}
-
-bool cInterface::Recording(void)
-{
-  // This is located here because the Interface has to do with the "PrimaryDevice" anyway
-  return cDevice::PrimaryDevice()->Receiving();
 }

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.19 2002/09/15 13:12:25 kls Exp $
+ * $Id: dvbdevice.c 1.20 2002/09/28 12:21:42 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -344,7 +344,7 @@ bool cDvbDevice::SetPid(cPidHandle *Handle, int Type, bool On)
   return true;
 }
 
-bool cDvbDevice::ProvidesChannel(const cChannel *Channel, int Priority, bool *NeedsDetachReceivers)
+bool cDvbDevice::ProvidesChannel(const cChannel *Channel, int Priority, bool *NeedsDetachReceivers) const
 {
   bool result = false;
   bool hasPriority = Priority < 0 || Priority > this->Priority();

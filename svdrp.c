@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.42 2002/09/08 11:22:57 kls Exp $
+ * $Id: svdrp.c 1.43 2002/09/28 15:50:19 kls Exp $
  */
 
 #include "svdrp.h"
@@ -28,7 +28,8 @@
 #include <unistd.h>
 #include "config.h"
 #include "device.h"
-#include "interface.h"
+#include "keys.h"
+#include "remote.h"
 #include "tools.h"
 
 // --- cSocket ---------------------------------------------------------------
@@ -606,9 +607,9 @@ void cSVDRP::CmdHELP(const char *Option)
 void cSVDRP::CmdHITK(const char *Option)
 {
   if (*Option) {
-     eKeys k = Keys.Translate(Option);
+     eKeys k = cKey::FromString(Option);
      if (k != kNone) {
-        Interface->PutKey(k);
+        cRemote::Put(k);
         Reply(250, "Key \"%s\" accepted", Option);
         }
      else
@@ -617,7 +618,7 @@ void cSVDRP::CmdHITK(const char *Option)
   else {
      Reply(-214, "Valid <key> names for the HITK command:");
      for (int i = 0; i < kNone; i++) {
-         Reply(-214, "    %s", Keys.keys[i].name);
+         Reply(-214, "    %s", cKey::ToString(eKeys(i)));
          }
      Reply(214, "End of key list");
      }
