@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.69 2001/03/04 11:37:22 kls Exp $
+ * $Id: menu.c 1.70 2001/03/18 10:16:56 kls Exp $
  */
 
 #include "menu.h"
@@ -1425,23 +1425,27 @@ eOSState cMenuSchedule::ProcessKey(eKeys Key)
   if (state == osUnknown) {
      switch (Key) {
        case kRed:    return Record();
-       case kGreen:  {
-                       if (!now && !next) {
-                          int ChannelNr = 0;
-                          if (Count()) {
-                             cChannel *channel = Channels.GetByServiceID(((cMenuScheduleItem *)Get(Current()))->eventInfo->GetServiceID());
-                             if (channel)
-                                ChannelNr = channel->number;
-                             }
-                          now = true;
-                          return AddSubMenu(new cMenuWhatsOn(schedules, true, ChannelNr));
-                          }
-                       now = !now;
-                       next = !next;
-                       return AddSubMenu(new cMenuWhatsOn(schedules, now, cMenuWhatsOn::CurrentChannel()));
-                     }
-       case kYellow: return AddSubMenu(new cMenuWhatsOn(schedules, false, cMenuWhatsOn::CurrentChannel()));
-       case kBlue:   return Switch();
+       case kGreen:  if (schedules) {
+                        if (!now && !next) {
+                           int ChannelNr = 0;
+                           if (Count()) {
+                              cChannel *channel = Channels.GetByServiceID(((cMenuScheduleItem *)Get(Current()))->eventInfo->GetServiceID());
+                              if (channel)
+                                 ChannelNr = channel->number;
+                              }
+                           now = true;
+                           return AddSubMenu(new cMenuWhatsOn(schedules, true, ChannelNr));
+                           }
+                        now = !now;
+                        next = !next;
+                        return AddSubMenu(new cMenuWhatsOn(schedules, now, cMenuWhatsOn::CurrentChannel()));
+                        }
+       case kYellow: if (schedules)
+                        return AddSubMenu(new cMenuWhatsOn(schedules, false, cMenuWhatsOn::CurrentChannel()));
+                     break;
+       case kBlue:   if (Count())
+                        return Switch();
+                     break;
        case kOk:     if (Count())
                         return AddSubMenu(new cMenuEvent(((cMenuScheduleItem *)Get(Current()))->eventInfo, otherChannel));
                      break;
