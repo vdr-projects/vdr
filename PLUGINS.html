@@ -14,18 +14,18 @@ Copyright &copy; 2004 Klaus Schmidinger<br>
 <a href="http://www.cadsoft.de/vdr">www.cadsoft.de/vdr</a>
 </center>
 <p>
-<!--X1.3.0--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
-Important modifications introduced in version 1.3.0 are marked like this.
-<!--X1.3.0--></td></tr></table>
-<!--X1.3.7--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
+<!--X1.3.7--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 Important modifications introduced in version 1.3.7 are marked like this.
 <!--X1.3.7--></td></tr></table>
-<!--X1.3.8--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
+<!--X1.3.8--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
 Important modifications introduced in version 1.3.8 are marked like this.
 <!--X1.3.8--></td></tr></table>
-<!--X1.3.18--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+<!--X1.3.18--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
 Important modifications introduced in version 1.3.18 are marked like this.
 <!--X1.3.18--></td></tr></table>
+<!--X1.3.19--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+Important modifications introduced in version 1.3.19 are marked like this.
+<!--X1.3.19--></td></tr></table>
 <p>
 VDR provides an easy to use plugin interface that allows additional functionality
 to be added to the program by implementing a dynamically loadable library file.
@@ -73,11 +73,9 @@ structures and allows it to hook itself into specific areas to perform special a
 <li><a href="#Status monitor">Status monitor</a>
 <li><a href="#Players">Players</a>
 <li><a href="#Receivers">Receivers</a>
-<!--X1.3.0--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 <li><a href="#Filters">Filters</a>
-<!--X1.3.0--></td></tr></table>
 <li><a href="#The On Screen Display">The On Screen Display</a>
-<!--X1.3.7--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
+<!--X1.3.7--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 <li><a href="#Skins">Skins</a>
 <li><a href="#Themes">Themes</a>
 <!--X1.3.7--></td></tr></table>
@@ -1023,7 +1021,7 @@ public:
 Take a look at the files <tt>player.h</tt> and <tt>dvbplayer.c</tt> to see how VDR implements
 its own player for the VDR recordings.
 <p>
-<!--X1.3.18--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+<!--X1.3.18--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
 To play the actual data, the player needs to call its member function
 
 <p><table><tr><td bgcolor=#F0F0F0><pre>
@@ -1046,7 +1044,7 @@ bool DevicePoll(cPoller &amp;Poller, int TimeoutMs = 0);
 
 to determine whether the device is ready for further data.
 <p>
-<!--X1.3.18--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+<!--X1.3.18--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
 By default all audio track handling is done by the device a player is
 attached to.
 If the player can provide more than a single audio track, and has special
@@ -1183,7 +1181,9 @@ public:
   };
 
 cMyReceiver::cMyReceiver(int Pid)
-:cReceiver(0, -1, 1, Pid)
+<!--X1.3.19--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+:cReceiver(0, -1, Pid)
+<!--X1.3.19--></td></tr></table>
 {
 }
 
@@ -1223,7 +1223,6 @@ Mode</i>).
 If the <tt>cReceiver</tt> isn't needed any more, it may simply be <i>deleted</i>
 and will automatically detach itself from the <tt>cDevice</tt>.
 
-<!--X1.3.0--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 <a name="Filters"><hr><h2>Filters</h2>
 
 <center><i><b>A Fistful of Datas</b></i></center><p>
@@ -1267,9 +1266,8 @@ If the <tt>cFilter</tt> isn't needed any more, it may simply be <i>deleted</i>
 and will automatically detach itself from the <tt>cDevice</tt>.
 <p>
 See VDR/eit.c or VDR/pat.c to learn how to process filter data.
-<!--X1.3.0--></td></tr></table>
 
-<!--X1.3.7--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
+<!--X1.3.7--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 <a name="The On Screen Display"><hr><h2>The On Screen Display</h2>
 
 <center><i><b>Window to the world</b></i></center><p>
@@ -1362,7 +1360,7 @@ public:
   virtual cSkinDisplayMenu *DisplayMenu(void);
   virtual cSkinDisplayReplay *DisplayReplay(bool ModeOnly);
   virtual cSkinDisplayVolume *DisplayVolume(void);
-<!--X1.3.18--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+<!--X1.3.18--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
   virtual cSkinDisplayMessage *DisplayTrack(int NumTracks, const char * const *Tracks);
 <!--X1.3.18--></td></tr></table>
   virtual cSkinDisplayMessage *DisplayMessage(void);
@@ -1384,7 +1382,7 @@ new cMySkin;
 in the <a href="#Getting started"><tt>Start()</tt></a> function of your plugin.
 Do not delete this object, it will be automatically deleted when the program ends.
 <p>
-<!--X1.3.8--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
+<!--X1.3.8--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
 In order to be able to easily identify plugins that implement a skin it is recommended
 that the name of such a plugin should be
 
@@ -1495,7 +1493,7 @@ repectively.
 If the device can provide more than a single audio track, it can implement the
 following function to make them available:
 
-<!--X1.3.18--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+<!--X1.3.18--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
 <p><table><tr><td bgcolor=#F0F0F0><pre>
 virtual void SetAudioTrackDevice(eTrackType Type);
 virtual int GetAudioChannelDevice(void);
@@ -1558,7 +1556,6 @@ virtual void SetVideoFormat(bool VideoFormat16_9);
 virtual void SetVolumeDevice(int Volume);
 </pre></td></tr></table><p>
 
-<!--X1.3.0--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 <p>
 <b>Section Filtering</b>
 <p>
@@ -1583,12 +1580,11 @@ from its constructor.
 <p>
 See <a href="#Filters">Filters</a> on how to set up actual filters that can
 handle section data.
-<!--X1.3.0--></td></tr></table>
 
 <p>
 <b>On Screen Display</b>
 <p>
-<!--X1.3.7--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
+<!--X1.3.7--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 If your device provides On Screen Display (OSD) capabilities (which every device
 that is supposed to be used as a primary device should do), it shall implement
 an "OSD provider" class, derived from <tt>cOsdProvider</tt>, which, when its <tt>CreateOsd()</tt>

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.h 1.24 2004/12/26 12:15:52 kls Exp $
+ * $Id: channels.h 1.25 2005/01/16 13:46:41 kls Exp $
  */
 
 #ifndef __CHANNELS_H
@@ -30,8 +30,10 @@
 #define CHANNELSMOD_AUTO    1
 #define CHANNELSMOD_USER    2
 
-#define MAXAPIDS 32
-#define MAXCAIDS  8
+#define MAXAPIDS 32 // audio
+#define MAXDPIDS  8 // dolby
+#define MAXSPIDS  8 // subtitles
+#define MAXCAIDS  8 // conditional access
 
 struct tChannelParameterMap {
   int userValue;
@@ -100,8 +102,10 @@ private:
   int ppid;
   int apids[MAXAPIDS + 1]; // list is zero-terminated
   char alangs[MAXAPIDS][4];
-  int dpids[MAXAPIDS + 1]; // list is zero-terminated
-  char dlangs[MAXAPIDS][4];
+  int dpids[MAXDPIDS + 1]; // list is zero-terminated
+  char dlangs[MAXDPIDS][4];
+  int spids[MAXSPIDS + 1]; // list is zero-terminated
+  char slangs[MAXSPIDS][4];
   int tpid;
   int caids[MAXCAIDS + 1]; // list is zero-terminated
   int nid;
@@ -144,10 +148,15 @@ public:
   int Srate(void) const { return srate; }
   int Vpid(void) const { return vpid; }
   int Ppid(void) const { return ppid; }
+  const int *Apids(void) const { return apids; }
+  const int *Dpids(void) const { return dpids; }
+  const int *Spids(void) const { return spids; }
   int Apid(int i) const { return (0 <= i && i < MAXAPIDS) ? apids[i] : 0; }
-  int Dpid(int i) const { return (0 <= i && i < MAXAPIDS) ? dpids[i] : 0; }
+  int Dpid(int i) const { return (0 <= i && i < MAXDPIDS) ? dpids[i] : 0; }
+  int Spid(int i) const { return (0 <= i && i < MAXSPIDS) ? spids[i] : 0; }
   const char *Alang(int i) const { return (0 <= i && i < MAXAPIDS) ? alangs[i] : ""; }
-  const char *Dlang(int i) const { return (0 <= i && i < MAXAPIDS) ? dlangs[i] : ""; }
+  const char *Dlang(int i) const { return (0 <= i && i < MAXDPIDS) ? dlangs[i] : ""; }
+  const char *Slang(int i) const { return (0 <= i && i < MAXSPIDS) ? slangs[i] : ""; }
   int Tpid(void) const { return tpid; }
   int Ca(int Index = 0) const { return Index < MAXCAIDS ? caids[Index] : 0; }
   int Nid(void) const { return nid; }

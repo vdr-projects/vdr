@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.73 2005/01/09 12:36:48 kls Exp $
+ * $Id: device.c 1.74 2005/01/16 14:05:37 kls Exp $
  */
 
 #include "device.h"
@@ -512,7 +512,7 @@ eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
      if (CaDevice && CanReplay()) {
         cStatus::MsgChannelSwitch(this, 0); // only report status if we are actually going to switch the channel
         if (CaDevice->SetChannel(Channel, false) == scrOk) // calling SetChannel() directly, not SwitchChannel()!
-           cControl::Launch(new cTransferControl(CaDevice, Channel->Vpid(), Channel->Apid(0), Channel->Apid(1), Channel->Dpid(0), Channel->Dpid(1)));
+           cControl::Launch(new cTransferControl(CaDevice, Channel->Vpid(), Channel->Apids(), Channel->Dpids(), Channel->Spids()));
         else
            Result = scrNoTransfer;
         }
@@ -545,11 +545,12 @@ eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
         // Set the available audio tracks:
         ClrAvailableTracks();
         currentAudioTrack = ttAudioFirst;
-        for (int i = 0; i < MAXAPIDS; i++) {
+        for (int i = 0; i < MAXAPIDS; i++)
             SetAvailableTrack(ttAudio, i, Channel->Apid(i), Channel->Alang(i));
-            if (Setup.UseDolbyDigital)
+        if (Setup.UseDolbyDigital) {
+           for (int i = 0; i < MAXDPIDS; i++)
                SetAvailableTrack(ttDolby, i, Channel->Dpid(i), Channel->Dlang(i));
-            }
+           }
         // Select the preferred audio track:
         eTrackType PreferredTrack = ttAudioFirst;
         int LanguagePreference = -1;
@@ -849,7 +850,7 @@ int cDevice::PlayPesPacket(const uchar *Data, int Length, bool VideoOnly)
           }
         if (w > 0)
            Start += w;
-        else if (w <= 0) {
+        else {
            if (Start != Data)
               esyslog("ERROR: incomplete PES packet write!");
            return Start == Data ? w : Start - Data;
@@ -1041,7 +1042,7 @@ bool cDevice::AttachReceiver(cReceiver *Receiver)
   cMutexLock MutexLock(&mutexReceiver);
   for (int i = 0; i < MAXRECEIVERS; i++) {
       if (!receiver[i]) {
-         for (int n = 0; n < MAXRECEIVEPIDS; n++) {
+         for (int n = 0; n < Receiver->numPids; n++) {
              if (!AddPid(Receiver->pids[n])) {
                 for ( ; n-- > 0; )
                     DelPid(Receiver->pids[n]);
@@ -1074,7 +1075,7 @@ void cDevice::Detach(cReceiver *Receiver)
          receiver[i] = NULL;
          Receiver->device = NULL;
          Unlock();
-         for (int n = 0; n < MAXRECEIVEPIDS; n++)
+         for (int n = 0; n < Receiver->numPids; n++)
              DelPid(Receiver->pids[n]);
          }
       else if (receiver[i])

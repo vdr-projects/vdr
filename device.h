@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 1.51 2005/01/08 10:15:00 kls Exp $
+ * $Id: device.h 1.52 2005/01/16 14:26:16 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -22,7 +22,7 @@
 #include "tools.h"
 
 #define MAXDEVICES         16 // the maximum number of devices in the system
-#define MAXPIDHANDLES      16 // the maximum number of different PIDs per device
+#define MAXPIDHANDLES      64 // the maximum number of different PIDs per device
 #define MAXRECEIVERS       16 // the maximum number of receivers per device
 #define MAXVOLUME         255
 #define VOLUMEDELTA         5 // used to increase/decrease the volume
@@ -59,14 +59,14 @@ enum eVideoSystem { vsPAL,
 enum eTrackType { ttNone,
                   ttAudio,
                   ttAudioFirst = ttAudio,
-                  ttAudioLast  = ttAudioFirst + 31/*XXX MAXAPIDS - 1*/,
+                  ttAudioLast  = ttAudioFirst + 31, // MAXAPIDS - 1
                   ttDolby,
                   ttDolbyFirst = ttDolby,
-                  ttDolbyLast  = ttDolbyFirst + 31/*XXX MAXAPIDS - 1*/,
+                  ttDolbyLast  = ttDolbyFirst + 8, // MAXDPIDS - 1
                   /* future...
                   ttSubtitle,
                   ttSubtitleFirst = ttSubtitle,
-                  ttSubtitleLast  = ttSubtitleFirst + 31,
+                  ttSubtitleLast  = ttSubtitleFirst + 8, // MAXSPIDS - 1
                   */
                   ttMaxTrackTypes
                 };

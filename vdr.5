@@ -8,7 +8,7 @@
 .\" License as specified in the file COPYING that comes with the
 .\" vdr distribution.
 .\"
-.\" $Id: vdr.5 1.32 2005/01/09 13:16:40 kls Exp $
+.\" $Id: vdr.5 1.33 2005/01/16 13:45:57 kls Exp $
 .\"
 .TH vdr 5 "19 Dec 2004" "1.3.18" "Video Disk Recorder Files"
 .SH NAME
@@ -559,7 +559,8 @@ The files \fI001.vdr\fR...\fI255.vdr\fR are the actual recorded MPEG data
 files. In order to keep the size of an individual file below a given limit,
 a recording is split into several files. The contents of these files is
 \fBPacketized Elementary Stream\fR (PES) and contains ES packets with ids
-0xE0 for video, 0xC0 for audio 1 and 0xC1 for audio 2 (if available).
+0xE0...0xEF for video (only one of these may actually occur in a file),
+0xC0...0xDF for audio 1...32 (up to 32 audio tracks may occur).
 Dolby Digital data is stored in packets with ids 0xBD.
 .SS INDEX
 The file \fIindex.vdr\fR (if present in a recording directory) contains

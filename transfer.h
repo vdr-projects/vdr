@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: transfer.h 1.8 2005/01/07 15:44:32 kls Exp $
+ * $Id: transfer.h 1.9 2005/01/16 12:05:13 kls Exp $
  */
 
 #ifndef __TRANSFER_H
@@ -27,7 +27,7 @@ protected:
   virtual void Receive(uchar *Data, int Length);
   virtual void Action(void);
 public:
-  cTransfer(int VPid, int APid1, int APid2, int DPid1, int DPid2);
+  cTransfer(int VPid, const int *APids, const int *DPids, const int *SPids);
   virtual ~cTransfer();
   };
 
@@ -36,7 +36,7 @@ private:
   cTransfer *transfer;
   static cDevice *receiverDevice;
 public:
-  cTransferControl(cDevice *ReceiverDevice, int VPid, int APid1, int APid2, int DPid1, int DPid2);
+  cTransferControl(cDevice *ReceiverDevice, int VPid, const int *APids, const int *DPids, const int *SPids);
   ~cTransferControl();
   virtual void Hide(void) {}
   static cDevice *ReceiverDevice(void) { return receiverDevice; }

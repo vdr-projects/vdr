@@ -3311,3 +3311,10 @@ Video Disk Recorder Revision History
 - Fixed playing files with PES packets longer than 2048 byte through the full
   featured DVB card (thanks to Marco Kremer for reporting this one and providing
   a test sample).
+- Recording and Transfer Mode now handle more than 2 audio PIDs. For this the
+  interfaces of the following functions have been changed:
+  cTransferControl::cTransferControl()
+  cTransfer::cTransfer()
+  cRecorder::cRecorder()
+  cReceiver::cReceiver()
+  cRemux::cRemux()

@@ -11,11 +11,12 @@
  * The cDolbyRepacker code was originally written by Reinhard Nissl <rnissl@gmx.de>,
  * and adapted to the VDR coding style by Klaus.Schmidinger@cadsoft.de.
  *
- * $Id: remux.c 1.24 2005/01/15 12:07:43 kls Exp $
+ * $Id: remux.c 1.25 2005/01/16 14:34:25 kls Exp $
  */
 
 #include "remux.h"
 #include <stdlib.h>
+#include "channels.h"
 #include "thread.h"
 #include "tools.h"
 
@@ -335,6 +336,7 @@ int cDolbyRepacker::BreakAt(const uchar *Data, int Count)
 
 class cTS2PES {
 private:
+  int pid;
   int size;
   int found;
   int count;
@@ -362,16 +364,18 @@ private:
   void write_ipack(const uint8_t *Data, int Count);
   void instant_repack(const uint8_t *Buf, int Count);
 public:
-  cTS2PES(cRingBufferLinear *ResultBuffer, int Size, uint8_t AudioCid = 0x00, cRepacker *Repacker = NULL);
+  cTS2PES(int Pid, cRingBufferLinear *ResultBuffer, int Size, uint8_t AudioCid = 0x00, cRepacker *Repacker = NULL);
   ~cTS2PES();
+  int Pid(void) { return pid; }
   void ts_to_pes(const uint8_t *Buf); // don't need count (=188)
   void Clear(void);
   };
 
 uint8_t cTS2PES::headr[] = { 0x00, 0x00, 0x01 };
 
-cTS2PES::cTS2PES(cRingBufferLinear *ResultBuffer, int Size, uint8_t AudioCid, cRepacker *Repacker)
+cTS2PES::cTS2PES(int Pid, cRingBufferLinear *ResultBuffer, int Size, uint8_t AudioCid, cRepacker *Repacker)
 {
+  pid = Pid;
   resultBuffer = ResultBuffer;
   size = Size;
   audioCid = AudioCid;
@@ -700,35 +704,44 @@ void cTS2PES::ts_to_pes(const uint8_t *Buf) // don't need count (=188)
 
 #define RESULTBUFFERSIZE KILOBYTE(256)
 
-cRemux::cRemux(int VPid, int APid1, int APid2, int DPid1, int DPid2, bool ExitOnFailure)
+cRemux::cRemux(int VPid, const int *APids, const int *DPids, const int *SPids, bool ExitOnFailure)
 {
-  vPid = VPid;
-  aPid1 = APid1;
-  aPid2 = APid2;
-  dPid1 = DPid1;
-  dPid2 = DPid2;
   exitOnFailure = ExitOnFailure;
+  isRadio = VPid == 0 || VPid == 1 || VPid == 0x1FFF;
   numUPTerrors = 0;
   synced = false;
   skipped = 0;
+  numTracks = 0;
   resultSkipped = 0;
   resultBuffer = new cRingBufferLinear(RESULTBUFFERSIZE, IPACKS, false, "Result");
   resultBuffer->SetTimeouts(0, 100);
-  vTS2PES  =         new cTS2PES(resultBuffer, IPACKS);
-  aTS2PES1 =         new cTS2PES(resultBuffer, IPACKS, 0xC0);
-  aTS2PES2 = aPid2 ? new cTS2PES(resultBuffer, IPACKS, 0xC1) : NULL;
-  dTS2PES1 = dPid1 ? new cTS2PES(resultBuffer, IPACKS, 0x00, new cDolbyRepacker) : NULL;
-  //XXX don't yet know how to tell apart primary and secondary DD data...
-  dTS2PES2 = /*XXX dPid2 ? new cTS2PES(resultBuffer, IPACKS, 0x00, new cDolbyRepacker) : XXX*/ NULL;
+  if (VPid)
+     ts2pes[numTracks++] = new cTS2PES(VPid, resultBuffer, IPACKS);
+  if (APids) {
+     int n = 0;
+     while (*APids && numTracks < MAXTRACKS && n < MAXAPIDS)
+           ts2pes[numTracks++] = new cTS2PES(*APids++, resultBuffer, IPACKS, 0xC0 + n++);
+     }
+  if (DPids) {
+     int n = 0;
+     while (*DPids && numTracks < MAXTRACKS && n < MAXDPIDS) {
+           ts2pes[numTracks++] = new cTS2PES(*DPids++, resultBuffer, IPACKS, 0x00, new cDolbyRepacker); //XXX substream id(n++)???
+           break; //XXX until we can handle substream ids we can only handle a single Dolby track
+           }
+     }
+  /* future...
+  if (SPids) {
+     int n = 0;
+     while (*SPids && numTracks < MAXTRACKS && n < MAXSPIDS)
+           ts2pes[numTracks++] = new cTS2PES(*SPids++, resultBuffer, IPACKS); //XXX substream id(n++)???
+     }
+  */
 }
 
 cRemux::~cRemux()
 {
-  delete vTS2PES;
-  delete aTS2PES1;
-  delete aTS2PES2;
-  delete dTS2PES1;
-  delete dTS2PES2;
+  for (int t = 0; t < numTracks; t++)
+      delete ts2pes[t];
   delete resultBuffer;
 }
 
@@ -800,11 +813,12 @@ int cRemux::Put(const uchar *Data, int Count)
          break; // A cTS2PES might write one full packet and also a small rest
       int pid = GetPid(Data + i + 1);
       if (Data[i + 3] & 0x10) { // got payload
-         if      (pid == vPid)              vTS2PES->ts_to_pes(Data + i);
-         else if (pid == aPid1)             aTS2PES1->ts_to_pes(Data + i);
-         else if (pid == aPid2 && aTS2PES2) aTS2PES2->ts_to_pes(Data + i);
-         else if (pid == dPid1 && dTS2PES1) dTS2PES1->ts_to_pes(Data + i);
-         else if (pid == dPid2 && dTS2PES2) dTS2PES2->ts_to_pes(Data + i);
+         for (int t = 0; t < numTracks; t++) {
+             if (ts2pes[t]->Pid() == pid) {
+                ts2pes[t]->ts_to_pes(Data + i);
+                break;
+                }
+             }
          }
       used += TS_SIZE;
       }
@@ -842,7 +856,7 @@ uchar *cRemux::Get(int &Count, uchar *PictureType)
 
   // Special VPID case to enable recording radio channels:
 
-  if (vPid == 0 || vPid == 1 || vPid == 0x1FFF) {
+  if (isRadio) {
      // XXX actually '0' should be enough, but '1' must be used with encrypted channels (driver bug?)
      // XXX also allowing 0x1FFF to not break Michael Paar's original patch,
      // XXX but it would probably be best to only use '0'
@@ -920,11 +934,8 @@ void cRemux::Del(int Count)
 
 void cRemux::Clear(void)
 {
-  if (vTS2PES)  vTS2PES->Clear();
-  if (aTS2PES1) aTS2PES1->Clear();
-  if (aTS2PES2) aTS2PES2->Clear();
-  if (dTS2PES1) dTS2PES1->Clear();
-  if (dTS2PES2) dTS2PES2->Clear();
+  for (int t = 0; t < numTracks; t++)
+      ts2pes[t]->Clear();
   resultBuffer->Clear();
 }
 

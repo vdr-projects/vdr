@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recorder.c 1.12 2005/01/09 12:16:36 kls Exp $
+ * $Id: recorder.c 1.13 2005/01/16 12:53:17 kls Exp $
  */
 
 #include <stdarg.h>
@@ -127,8 +127,8 @@ void cFileWriter::Action(void)
   active = false;
 }
 
-cRecorder::cRecorder(const char *FileName, int Ca, int Priority, int VPid, int APid1, int APid2, int DPid1, int DPid2)
-:cReceiver(Ca, Priority, Setup.UseDolbyDigital ? 5 : 3, VPid, APid1, APid2, DPid1, DPid2)
+cRecorder::cRecorder(const char *FileName, int Ca, int Priority, int VPid, const int *APids, const int *DPids, const int *SPids)
+:cReceiver(Ca, Priority, VPid, APids, Setup.UseDolbyDigital ? DPids : NULL, SPids)
 ,cThread("recording")
 {
   active = false;
@@ -139,7 +139,7 @@ cRecorder::cRecorder(const char *FileName, int Ca, int Priority, int VPid, int A
 
   ringBuffer = new cRingBufferLinear(RECORDERBUFSIZE, TS_SIZE * 2, true, "Recorder");
   ringBuffer->SetTimeouts(0, 100);
-  remux = new cRemux(VPid, APid1, APid2, DPid1, DPid2, true);
+  remux = new cRemux(VPid, APids, Setup.UseDolbyDigital ? DPids : NULL, SPids, true);
   writer = new cFileWriter(FileName, remux);
 }
 

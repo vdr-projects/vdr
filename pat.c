@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: pat.c 1.10 2004/10/16 10:01:12 kls Exp $
+ * $Id: pat.c 1.11 2005/01/16 13:54:34 kls Exp $
  */
 
 #include "pat.h"
@@ -325,9 +325,9 @@ void cPatFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
         int Vpid = 0;
         int Ppid = pmt.getPCRPid();
         int Apids[MAXAPIDS] = { 0 };
-        int Dpids[MAXAPIDS] = { 0 };
+        int Dpids[MAXDPIDS] = { 0 };
         char ALangs[MAXAPIDS][4] = { "" };
-        char DLangs[MAXAPIDS][4] = { "" };
+        char DLangs[MAXDPIDS][4] = { "" };
         int Tpid = 0;
         int NumApids = 0;
         int NumDpids = 0;
@@ -386,7 +386,7 @@ void cPatFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                           delete d;
                           }
                       if (dpid) {
-                         if (NumDpids < MAXAPIDS) {
+                         if (NumDpids < MAXDPIDS) {
                             Dpids[NumDpids] = dpid;
                             strn0cpy(DLangs[NumDpids], lang, 4);
                             NumDpids++;
