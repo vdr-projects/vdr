@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.124 2001/09/21 16:16:47 kls Exp $
+ * $Id: menu.c 1.125 2001/09/21 16:22:15 kls Exp $
  */
 
 #include "menu.h"
@@ -2424,15 +2424,18 @@ void cReplayControl::ShowMode(void)
      bool Play, Forward;
      int Speed;
      if (dvbApi->GetReplayMode(Play, Forward, Speed)) {
+        bool NormalPlay = (Play && Speed == -1);
 
         if (!visible) {
+           if (NormalPlay)
+              return; // no need to do indicate ">" unless there was a different mode displayed before
            // open small display
            Interface->Open(9, -1);
            Interface->Clear();
            visible = modeOnly = true;
            }
 
-        if (modeOnly && !timeoutShow && Speed == -1 && Play)
+        if (modeOnly && !timeoutShow && NormalPlay)
            timeoutShow = time(NULL) + MODETIMEOUT;
         const char *Mode;
         if (Speed == -1) Mode = Play    ? "  >  " : " ||  ";

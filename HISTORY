@@ -769,4 +769,4 @@ Video Disk Recorder Revision History
   (Skip +/-60s); fixed timeout when pressing '0' to set an editing mark while
   the progress display is not shown; mode display is shown after progress
   display is closed; pressing "Ok" while the mode display is on brings up
-  the progress display;
+  the progress display; no more unnecessary display of "normal play mode".
