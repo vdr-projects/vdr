@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.c 1.11 2002/12/15 11:05:19 kls Exp $
+ * $Id: menuitems.c 1.12 2003/01/18 13:34:40 kls Exp $
  */
 
 #include "menuitems.h"
@@ -107,6 +107,60 @@ void cMenuEditBoolItem::Set(void)
   char buf[16];
   snprintf(buf, sizeof(buf), "%s", *value ? trueString : falseString);
   SetValue(buf);
+}
+
+// --- cMenuEditNumItem ------------------------------------------------------
+
+cMenuEditNumItem::cMenuEditNumItem(const char *Name, char *Value, int Length, bool Blind)
+:cMenuEditItem(Name)
+{
+  value = Value;
+  length = Length;
+  blind = Blind;
+  Set();
+}
+
+void cMenuEditNumItem::Set(void)
+{
+  if (blind) {
+     char buf[length + 1];
+     int i;
+     for (i = 0; i < length && value[i]; i++)
+         buf[i] = '*';
+     buf[i] = 0;
+     SetValue(buf);
+     }
+  else
+     SetValue(value);
+}
+
+eOSState cMenuEditNumItem::ProcessKey(eKeys Key)
+{
+  eOSState state = cMenuEditItem::ProcessKey(Key);
+
+  if (state == osUnknown) {
+     Key = NORMALKEY(Key);
+     switch (Key) {
+       case kLeft: {
+            int l = strlen(value);
+            if (l > 0)
+               value[l - 1] = 0;
+            }
+            break;
+       case k0 ... k9: {
+            int l = strlen(value);
+            if (l < length) {
+               value[l] = Key - k0 + '0';
+               value[l + 1] = 0;
+               }
+            }
+            break;
+       default: return state;
+       }
+     Set();
+     state = osContinue;
+     }
+  return state;
 }
 
 // --- cMenuEditChrItem ------------------------------------------------------

@@ -7,7 +7,7 @@
  * Parts of this file were inspired by the 'ringbuffy.c' from the
  * LinuxDVB driver (see linuxtv.org).
  *
- * $Id: ringbuffer.c 1.10 2002/07/28 12:47:32 kls Exp $
+ * $Id: ringbuffer.c 1.12 2003/01/26 09:39:24 kls Exp $
  */
 
 #include "ringbuffer.h"
@@ -57,13 +57,14 @@ void cRingBuffer::EnableGet(void)
 
 // --- cRingBufferLinear -----------------------------------------------------
 
-cRingBufferLinear::cRingBufferLinear(int Size, bool Statistics)
+cRingBufferLinear::cRingBufferLinear(int Size, int Margin, bool Statistics)
 :cRingBuffer(Size, Statistics)
 {
+  margin = Margin;
   buffer = NULL;
   getThreadPid = -1;
   if (Size > 1) { // 'Size - 1' must not be 0!
-     buffer = new uchar[Size];
+     buffer = MALLOC(uchar, Size);
      if (!buffer)
         esyslog("ERROR: can't allocate ring buffer (size=%d)", Size);
      Clear();
@@ -74,7 +75,7 @@ cRingBufferLinear::cRingBufferLinear(int Size, bool Statistics)
 
 cRingBufferLinear::~cRingBufferLinear()
 {
-  delete buffer;
+  free(buffer);
 }
 
 int cRingBufferLinear::Available(void)
@@ -82,13 +83,14 @@ int cRingBufferLinear::Available(void)
   Lock();
   int diff = head - tail;
   Unlock();
-  return (diff >= 0) ? diff : Size() + diff;
+  return (diff >= 0) ? diff : Size() + diff - margin;
 }
 
 void cRingBufferLinear::Clear(void)
 {
   Lock();
-  head = tail = 0;
+  head = tail = margin;
+  lastGet = -1;
   Unlock();
   EnablePut();
   EnableGet();
@@ -100,7 +102,7 @@ int cRingBufferLinear::Put(const uchar *Data, int Count)
      Lock();
      int rest = Size() - head;
      int diff = tail - head;
-     int free = (diff > 0) ? diff - 1 : Size() + diff - 1;
+     int free = (diff > 0) ? diff - 1 : Size() + diff - (tail < margin ? -(margin - tail) : margin) - 1;
      if (statistics) {
         int fill = Size() - free - 1 + Count;
         if (fill >= Size())
@@ -122,8 +124,8 @@ int cRingBufferLinear::Put(const uchar *Data, int Count)
         if (Count >= rest) {
            memcpy(buffer + head, Data, rest);
            if (Count - rest)
-              memcpy(buffer, Data + rest, Count - rest);
-           head = Count - rest;
+              memcpy(buffer + margin, Data + rest, Count - rest);
+           head = margin + Count - rest;
            }
         else {
            memcpy(buffer + head, Data, Count);
@@ -138,50 +140,60 @@ int cRingBufferLinear::Put(const uchar *Data, int Count)
   return Count;
 }
 
-int cRingBufferLinear::Get(uchar *Data, int Count)
+const uchar *cRingBufferLinear::Get(int &Count)
 {
-  if (Count > 0) {
-     Lock();
-     if (getThreadPid < 0)
-        getThreadPid = getpid();
-     int rest = Size() - tail;
-     int diff = head - tail;
-     int cont = (diff >= 0) ? diff : Size() + diff;
-     if (rest > 0) {
-        if (cont < Count)
-           Count = cont;
-        if (Count >= rest) {
-           memcpy(Data, buffer + tail, rest);
-           if (Count - rest)
-              memcpy(Data + rest, buffer, Count - rest);
-           tail = Count - rest;
-           }
-        else {
-           memcpy(Data, buffer + tail, Count);
-           tail += Count;
-           }
-        }
-     else
-        Count = 0;
-     Unlock();
-     if (Count == 0)
-        WaitForGet();
+  const uchar *p = NULL;
+  Lock();
+  if (getThreadPid < 0)
+     getThreadPid = getpid();
+  int rest = Size() - tail;
+  if (tail > Size() - margin && head < tail) {
+     int t = margin - rest;
+     memcpy(buffer + t, buffer + tail, rest);
+     tail = t;
      }
-  return Count;
+  int diff = head - tail;
+  int cont = (diff >= 0) ? diff : Size() + diff - margin;
+  if (cont > rest)
+     cont = rest;
+  if (cont >= margin) {
+     p = buffer + tail;
+     Count = lastGet = cont;
+     }
+  Unlock();
+  if (!p)
+     WaitForGet();
+  return p;
+}
+
+void cRingBufferLinear::Del(int Count)
+{
+  if (Count > 0 && Count <= lastGet) {
+     tail += Count;
+     lastGet -= Count;
+     if (tail >= Size())
+        tail = margin;
+     }
+  else
+     esyslog("ERROR: invalid Count in cRingBufferLinear::Del: %d", Count);
 }
 
 // --- cFrame ----------------------------------------------------------------
 
 cFrame::cFrame(const uchar *Data, int Count, eFrameType Type, int Index)
 {
-  count = Count;
+  count = abs(Count);
   type = Type;
   index = Index;
-  data = new uchar[count];
-  if (data)
-     memcpy(data, Data, count);
-  else
-     esyslog("ERROR: can't allocate frame buffer (count=%d)", count);
+  if (Count < 0)
+     data = (uchar *)Data;
+  else {
+     data = new uchar[count];
+     if (data)
+        memcpy(data, Data, count);
+     else
+        esyslog("ERROR: can't allocate frame buffer (count=%d)", count);
+     }
   next = NULL;
 }
 

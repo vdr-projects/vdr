@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.231 2003/01/06 16:13:53 kls Exp $
+ * $Id: menu.c 1.232 2003/01/19 14:59:46 kls Exp $
  */
 
 #include "menu.h"
@@ -1572,11 +1572,15 @@ eOSState cMenuCam::ProcessKey(eKeys Key)
 
 //XXX this is just quick and dirty - make this a separate display object
 cMenuCamEnquiry::cMenuCamEnquiry(cCiEnquiry *CiEnquiry)
-:cOsdMenu("")
+:cOsdMenu("", 10)
 {
   ciEnquiry = CiEnquiry;
+  int Length = ciEnquiry->ExpectedLength();
+  input = MALLOC(char, Length + 1);
+  *input = 0;
   replied = false;
   SetTitle(ciEnquiry->Text() ? ciEnquiry->Text() : "CAM");
+  Add(new cMenuEditNumItem("Input", input, Length, ciEnquiry->Blind()));
   Display();
 }
 
@@ -1584,12 +1588,14 @@ cMenuCamEnquiry::~cMenuCamEnquiry()
 {
   if (!replied)
      ciEnquiry->Cancel();
+  free(input);
   delete ciEnquiry;
 }
 
 eOSState cMenuCamEnquiry::Reply(void)
 {
-  ciEnquiry->Reply("1234");//XXX implement actual user input
+  //XXX check length???
+  ciEnquiry->Reply(input);
   replied = true;
   return osEnd;
 }

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 1.1 2003/01/06 13:56:17 kls Exp $
+ * $Id: ci.c 1.2 2003/01/11 11:15:19 kls Exp $
  */
 
 /* XXX TODO
@@ -331,6 +331,7 @@ int cCiTransportConnection::RecvTPDU(void)
   struct pollfd pfd[1];
   pfd[0].fd = fd;
   pfd[0].events = POLLIN;
+  lastResponse = ERROR;
   if (poll(pfd, 1, 3500/*XXX*/) && (pfd[0].revents & POLLIN))//XXX
   if (tpdu->Read(fd) == OK && tpdu->Tcid() == tcid) {
      switch (state) {
@@ -338,7 +339,7 @@ int cCiTransportConnection::RecvTPDU(void)
        case stCREATION: if (tpdu->Tag() == T_CTC_REPLY) {
                            dataAvailable = tpdu->Status() & DATA_INDICATOR;
                            state = stACTIVE;
-                           return tpdu->Tag();
+                           lastResponse = tpdu->Tag();
                            }
                         break;
        case stACTIVE:   switch (tpdu->Tag()) {
@@ -353,17 +354,17 @@ int cCiTransportConnection::RecvTPDU(void)
                           default: return ERROR;
                           }
                         dataAvailable = tpdu->Status() & DATA_INDICATOR;
-                        return tpdu->Tag();
+                        lastResponse = tpdu->Tag();
                         break;
        case stDELETION: if (tpdu->Tag() == T_DTC_REPLY) {
                            Init(fd, slot, tcid);
                            //XXX Status()???
-                           return tpdu->Tag();
+                           lastResponse = tpdu->Tag();
                            }
                         break;
        }
      }
-  return ERROR;
+  return lastResponse;
 }
 
 int cCiTransportConnection::SendData(int Length, const uint8_t *Data)
@@ -413,7 +414,7 @@ int cCiTransportConnection::Poll(void)
 {
   if (state == stACTIVE) {
      if (SendTPDU(T_DATA_LAST) == OK) {
-        return lastResponse = RecvTPDU();
+        return RecvTPDU();
         }
      }
   return ERROR;
@@ -644,7 +645,7 @@ int cCiSession::SendData(int Tag, int Length, const uint8_t *Data)
   *p++ = (Tag >>  8) & 0xFF;
   *p++ =  Tag        & 0xFF;
   p = SetLength(p, Length);
-  if (p - buffer + Length < sizeof(buffer)) {
+  if (p - buffer + Length < int(sizeof(buffer))) {
      memcpy(p, Data, Length);
      p += Length;
      return tc->SendData(p - buffer, buffer);

@@ -29,8 +29,9 @@
 #
 CC ?= gcc
 CFLAGS ?= -O2 -g -Wmissing-prototypes -Wstrict-prototypes \
-         -Wimplicit -D__USE_FIXED_PROTOTYPES__ -I../include # -DDEBUG
+         -Wimplicit -D__USE_FIXED_PROTOTYPES__ # -DDEBUG
 
+CFLAGS += -I../include
 
 AR = ar
 ARFLAGS = r

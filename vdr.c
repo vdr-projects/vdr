@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.140 2003/01/06 11:14:50 kls Exp $
+ * $Id: vdr.c 1.141 2003/01/26 11:56:31 kls Exp $
  */
 
 #include <getopt.h>
@@ -160,7 +160,7 @@ int main(int argc, char *argv[])
                             if (!p)
                                break;
                             if (isnumber(p + 1)) {
-                               int l = atoi(optarg);
+                               int l = atoi(p + 1);
                                if (0 <= l && l <= 7) {
                                   int targets[] = { LOG_LOCAL0, LOG_LOCAL1, LOG_LOCAL2, LOG_LOCAL3, LOG_LOCAL4, LOG_LOCAL5, LOG_LOCAL6, LOG_LOCAL7 };
                                   SysLogTarget = targets[l];

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: transfer.c 1.8 2002/12/14 13:14:53 kls Exp $
+ * $Id: transfer.c 1.9 2003/01/26 09:59:35 kls Exp $
  */
 
 #include "transfer.h"
@@ -19,7 +19,7 @@
 cTransfer::cTransfer(int VPid, int APid1, int APid2, int DPid1, int DPid2)
 :cReceiver(0, -1, 5, VPid, APid1, APid2, DPid1, DPid2)
 {
-  ringBuffer = new cRingBufferLinear(VIDEOBUFSIZE, true);
+  ringBuffer = new cRingBufferLinear(VIDEOBUFSIZE, TS_SIZE * 2, true);
   remux = new cRemux(VPid, APid1, APid2, DPid1, DPid2);
   canToggleAudioTrack = false;
   audioTrack = 0xC0;
@@ -60,8 +60,6 @@ void cTransfer::Action(void)
 {
   dsyslog("transfer thread started (pid=%d)", getpid());
 
-  uchar b[MINVIDEODATA];
-  int r = 0;
   active = true;
   while (active) {
 
@@ -80,15 +78,15 @@ void cTransfer::Action(void)
 
         // Get data from the buffer:
 
-        int g = ringBuffer->Get(b + r, sizeof(b) - r);
-        if (g > 0)
-           r += g;
+        int r;
+        const uchar *b = ringBuffer->Get(r);
 
         // Play the data:
 
-        if (r > 0) {
+        if (b) {
            int Count = r, Result;
            uchar *p = remux->Process(b, Count, Result);
+           ringBuffer->Del(Count);
            if (p) {
               StripAudioPackets(p, Result, audioTrack);
               while (Result > 0 && active) {
@@ -102,11 +100,6 @@ void cTransfer::Action(void)
                        break;
                        }
                     }
-              }
-           if (Count > 0) {
-              r -= Count;
-              if (r > 0)
-                 memmove(b, b + Count, r);
               }
            }
         else

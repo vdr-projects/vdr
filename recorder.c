@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recorder.c 1.4 2002/12/22 11:33:08 kls Exp $
+ * $Id: recorder.c 1.5 2003/01/25 16:23:36 kls Exp $
  */
 
 #include <stdarg.h>
@@ -41,7 +41,7 @@ cRecorder::cRecorder(const char *FileName, int Ca, int Priority, int VPid, int A
 
   SpinUpDisk(FileName);
 
-  ringBuffer = new cRingBufferLinear(VIDEOBUFSIZE, true);
+  ringBuffer = new cRingBufferLinear(VIDEOBUFSIZE, TS_SIZE * 2, true);
   remux = new cRemux(VPid, APid1, APid2, DPid1, DPid2, true);
   fileName = new cFileName(FileName, true);
   recordFile = fileName->Open();
@@ -110,16 +110,14 @@ void cRecorder::Action(void)
 {
   dsyslog("recording thread started (pid=%d)", getpid());
 
-  uchar b[MINVIDEODATA];
-  int r = 0;
   active = true;
   while (active) {
-        int g = ringBuffer->Get(b + r, sizeof(b) - r);
-        if (g > 0)
-           r += g;
-        if (r > 0) {
+        int r;
+        const uchar *b = ringBuffer->Get(r);
+        if (b) {
            int Count = r, Result;
            uchar *p = remux->Process(b, Count, Result, &pictureType);
+           ringBuffer->Del(Count);
            if (p) {
               //XXX+ active??? see old version (Busy)
               if (!active && pictureType == I_FRAME) // finish the recording before the next 'I' frame
@@ -135,10 +133,6 @@ void cRecorder::Action(void)
                  }
               else
                  break;
-              }
-           if (Count > 0) {
-              r -= Count;
-              memmove(b, b + Count, r);
               }
            }
         else

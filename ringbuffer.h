@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ringbuffer.h 1.7 2002/08/04 10:27:30 kls Exp $
+ * $Id: ringbuffer.h 1.9 2003/01/26 09:47:39 kls Exp $
  */
 
 #ifndef __RINGBUFFER_H
@@ -40,21 +40,31 @@ public:
 
 class cRingBufferLinear : public cRingBuffer {
 private:
-  int head, tail;
+  int margin, head, tail;
+  int lastGet;
   uchar *buffer;
   pid_t getThreadPid;
 public:
-  cRingBufferLinear(int Size, bool Statistics = false);
+  cRingBufferLinear(int Size, int Margin = 0, bool Statistics = false);
+    ///< Creates a linear ring buffer.
+    ///< The buffer will be able to hold at most Size bytes of data, and will
+    ///< be guaranteed to return at least Margin bytes in one consecutive block.
   virtual ~cRingBufferLinear();
   virtual int Available(void);
   virtual void Clear(void);
-    // Immediately clears the ring buffer.
+    ///< Immediately clears the ring buffer.
   int Put(const uchar *Data, int Count);
-    // Puts at most Count bytes of Data into the ring buffer.
-    // Returns the number of bytes actually stored.
-  int Get(uchar *Data, int Count);
-    // Gets at most Count bytes of Data from the ring buffer.
-    // Returns the number of bytes actually retrieved.
+    ///< Puts at most Count bytes of Data into the ring buffer.
+    ///< \return Returns the number of bytes actually stored.
+  const uchar *Get(int &Count);
+    ///< Gets data from the ring buffer.
+    ///< The data will remain in the buffer until a call to Del() deletes it.
+    ///< \return Returns a pointer to the data, and stores the number of bytes
+    ///< actually retrieved in Count. If the returned pointer is NULL, Count has no meaning.
+  void Del(int Count);
+    ///< Deletes at most Count bytes from the ring buffer.
+    ///< Count must be less or equal to the number that was returned by a previous
+    ///< call to Get().
   };
 
 enum eFrameType { ftUnknown, ftVideo, ftAudio, ftDolby };
@@ -69,6 +79,9 @@ private:
   int index;
 public:
   cFrame(const uchar *Data, int Count, eFrameType = ftUnknown, int Index = -1);
+    ///< Creates a new cFrame object.
+    ///< If Count is negative, the cFrame object will take ownership of the given
+    ///< Data. Otherwise it will allocate Count bytes of memory and copy Data.
   ~cFrame();
   const uchar *Data(void) const { return data; }
   int Count(void) const { return count; }

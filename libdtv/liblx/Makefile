@@ -27,8 +27,8 @@
 #
 #
 #
-CC = gcc
-CFLAGS = -O2 -g -pedantic -Wmissing-prototypes -Wstrict-prototypes \
+CC ?= gcc
+CFLAGS ?= -O2 -g -pedantic -Wmissing-prototypes -Wstrict-prototypes \
          -Wimplicit -D__USE_FIXED_PROTOTYPES__ # -DDEBUG
 
 

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 1.52 2003/01/06 10:04:05 kls Exp $
+ * $Id: menu.h 1.53 2003/01/12 14:54:05 kls Exp $
  */
 
 #ifndef __MENU_H
@@ -73,6 +73,7 @@ public:
 class cMenuCamEnquiry : public cOsdMenu {
 private:
   cCiEnquiry *ciEnquiry;
+  char *input;
   bool replied;
   eOSState Reply(void);
 public:

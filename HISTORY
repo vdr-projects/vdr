@@ -1916,3 +1916,28 @@ Video Disk Recorder Revision History
 - Since several channels put very long strings into the Subtitle part of their
   EPG data, that string is now limited in length when used in a recording's
   file name.
+
+2003-01-26: Version 1.1.22
+
+- Added 'Hrvatska radiotelevizija' and 'RTV Slovenija' to ca.conf (thanks to
+  Paul Gohn).
+- Implemented actual user input for CAM enquiry menus.
+- Since disk file systems apparently don't honor the O_NONBLOCK flag to read from
+  a file in non-blocking mode the cDvbPlayer now uses a non blocking file reader
+  class to make sure replay remains smooth even under heavy system load.
+- Increased the maximum possible packet size in remux.c to avoid corrupted streams
+  with broadcasters that send extremely large PES packets (thanks to Teemu Rantanen).
+- Added TS error checking to remux.c (thanks to Teemu Rantanen).
+- Modified cRingBufferLinear to avoid excessive memmove() calls in 'Transfer Mode'
+  and during recordings, which dramatically reduces CPU load. Thanks to Teemu
+  Rantanen for pinpointing the problem with the excessive memmove() calls.
+- Updated 'channels.conf' (thanks to Achim Lange).
+- Added/improved Swedish language texts (thanks to Jan Ekholm).
+- Fixed the description of the "Scroll pages" OSD setup parameter ('yes' and 'no'
+  were mixed up).
+- Fixed handling the LOG_LOCALn parameters in the -l option (thanks to Dimitrios
+  Dimitrakos).
+- Changed EIT processing to always read a full section.
+- Fixed handling user defined CFLAGS in libdtv/libvdr/Makefile (thanks to Clemens
+  Kirchgatterer and Robert Schiele).
+- Fixed skipping unavailable channels in the EPG scanner.

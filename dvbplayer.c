@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 1.16 2002/11/03 11:23:47 kls Exp $
+ * $Id: dvbplayer.c 1.17 2003/01/19 15:43:58 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -69,6 +69,103 @@ int cBackTrace::Get(bool Forward)
   return i;
 }
 
+// --- cNonBlockingFileReader ------------------------------------------------
+
+class cNonBlockingFileReader : public cThread {
+private:
+  int f;
+  uchar *buffer;
+  int wanted;
+  int length;
+  bool hasData;
+  bool active;
+  cMutex mutex; 
+  cCondVar newSet;
+protected:
+  void Action(void);
+public:
+  cNonBlockingFileReader(void);
+  ~cNonBlockingFileReader();
+  void Clear(void);
+  int Read(int FileHandle, uchar *Buffer, int Length);
+  bool Reading(void) { return buffer; }
+  };
+
+cNonBlockingFileReader::cNonBlockingFileReader(void)
+{
+  f = -1;
+  buffer = NULL;
+  wanted = length = 0;
+  hasData = false;
+  active = false;
+  Start();
+}
+
+cNonBlockingFileReader::~cNonBlockingFileReader()
+{
+  active = false;
+  newSet.Broadcast();
+  Cancel(3);
+  free(buffer);
+}
+
+void cNonBlockingFileReader::Clear(void)
+{
+  cMutexLock MutexLock(&mutex);
+  f = -1;
+  buffer = NULL;
+  wanted = length = 0;
+  hasData = false;
+  newSet.Broadcast();
+}
+
+int cNonBlockingFileReader::Read(int FileHandle, uchar *Buffer, int Length)
+{
+  if (hasData && buffer) {
+     if (buffer != Buffer) {
+        esyslog("ERROR: cNonBlockingFileReader::Read() called with different buffer!");
+        errno = EINVAL;
+        return -1;
+        }
+     buffer = NULL;
+     return length;
+     }
+  if (!buffer) {
+     f = FileHandle;
+     buffer = Buffer;
+     wanted = Length;
+     length = 0;
+     hasData = false;
+     newSet.Broadcast();
+     }
+  errno = EAGAIN;
+  return -1;
+}
+
+void cNonBlockingFileReader::Action(void)
+{
+  dsyslog("non blocking file reader thread started (pid=%d)", getpid());
+  active = true;
+  while (active) {
+        cMutexLock MutexLock(&mutex);
+        if (!hasData && f >= 0 && buffer) {
+           int r = safe_read(f, buffer + length, wanted - length);
+           if (r >= 0) {
+              length += r;
+              if (!r || length == wanted) // r == 0 means EOF
+                 hasData = true;
+              }
+           else if (r < 0 && FATALERRNO) {
+              LOG_ERROR;
+              length = r; // this will forward the error status to the caller
+              hasData = true;
+              }
+           }
+        newSet.TimedWait(mutex, 1000);
+        }
+  dsyslog("non blocking file reader thread ended (pid=%d)", getpid());
+}
+
 // --- cDvbPlayer ------------------------------------------------------------
 
 //XXX+ also used in recorder.c - find a better place???
@@ -84,6 +181,7 @@ private:
   enum ePlayModes { pmPlay, pmPause, pmSlow, pmFast, pmStill };
   enum ePlayDirs { pdForward, pdBackward };
   static int Speeds[];
+  cNonBlockingFileReader *nonBlockingFileReader;
   cRingBufferFrame *ringBuffer;
   cBackTrace *backTrace;
   cFileName *fileName;
@@ -135,6 +233,7 @@ int cDvbPlayer::Speeds[] = { 0, -2, -4, -8, 1, 2, 4, 12, 0 };
 
 cDvbPlayer::cDvbPlayer(const char *FileName)
 {
+  nonBlockingFileReader = NULL;
   ringBuffer = NULL;
   backTrace = NULL;
   index = NULL;
@@ -198,7 +297,9 @@ void cDvbPlayer::TrickSpeed(int Increment)
 
 void cDvbPlayer::Empty(void)
 {
-  Lock();
+  LOCK_THREAD;
+  if (nonBlockingFileReader)
+     nonBlockingFileReader->Clear();
   if ((readIndex = backTrace->Get(playDir == pdForward)) < 0)
      readIndex = writeIndex;
   readFrame = NULL;
@@ -206,7 +307,6 @@ void cDvbPlayer::Empty(void)
   ringBuffer->Clear();
   backTrace->Clear();
   DeviceClear();
-  Unlock();
 }
 
 void cDvbPlayer::StripAudioPackets(uchar *b, int Length, uchar Except)
@@ -305,13 +405,17 @@ void cDvbPlayer::Action(void)
 {
   dsyslog("dvbplayer thread started (pid=%d)", getpid());
 
-  uchar b[MAXFRAMESIZE];
+  uchar *b = NULL;
   const uchar *p = NULL;
   int pc = 0;
 
   readIndex = Resume();
   if (readIndex >= 0)
      isyslog("resuming replay at index %d (%s)", readIndex, IndexToHMSF(readIndex, true));
+
+  nonBlockingFileReader = new cNonBlockingFileReader;
+  int Length = 0;
+  int AudioTrack = 0; // -1 = any, 0 = none, >0 = audioTrack
 
   running = true;
   while (running && (NextFile() || readIndex >= 0 || ringBuffer->Available())) {
@@ -326,46 +430,59 @@ void cDvbPlayer::Action(void)
 
            if (!readFrame && (replayFile >= 0 || readIndex >= 0)) {
               if (playMode != pmStill) {
-                 int r = 0;
-                 if (playMode == pmFast || (playMode == pmSlow && playDir == pdBackward)) {
-                    uchar FileNumber;
-                    int FileOffset, Length;
-                    int Index = index->GetNextIFrame(readIndex, playDir == pdForward, &FileNumber, &FileOffset, &Length, true);
-                    if (Index >= 0) {
-                       if (!NextFile(FileNumber, FileOffset))
+                 if (!nonBlockingFileReader->Reading()) {
+                    if (playMode == pmFast || (playMode == pmSlow && playDir == pdBackward)) {
+                       uchar FileNumber;
+                       int FileOffset;
+                       int Index = index->GetNextIFrame(readIndex, playDir == pdForward, &FileNumber, &FileOffset, &Length, true);
+                       if (Index >= 0) {
+                          if (!NextFile(FileNumber, FileOffset))
+                             continue;
+                          }
+                       else {
+                          // can't call Play() here, because those functions may only be
+                          // called from the foreground thread - and we also don't need
+                          // to empty the buffer here
+                          DevicePlay();
+                          playMode = pmPlay;
+                          playDir = pdForward;
                           continue;
+                          }
+                       readIndex = Index;
+                       AudioTrack = 0;
+                       // must clear all audio packets because the buffer is not emptied
+                       // when falling back from "fast forward" to "play" (see above)
                        }
-                    else {
-                       // can't call Play() here, because those functions may only be
-                       // called from the foreground thread - and we also don't need
-                       // to empty the buffer here
-                       DevicePlay();
-                       playMode = pmPlay;
-                       playDir = pdForward;
-                       continue;
+                    else if (index) {
+                       uchar FileNumber;
+                       int FileOffset;
+                       readIndex++;
+                       if (!(index->Get(readIndex, &FileNumber, &FileOffset, NULL, &Length) && NextFile(FileNumber, FileOffset))) {
+                          readIndex = -1;
+                          eof = true;
+                          continue;
+                          }
+                       AudioTrack = audioTrack;
                        }
-                    readIndex = Index;
-                    r = ReadFrame(replayFile, b, Length, sizeof(b));
-                    // must call StripAudioPackets() here because the buffer is not emptied
-                    // when falling back from "fast forward" to "play" (see above)
-                    StripAudioPackets(b, r);
+                    else { // allows replay even if the index file is missing
+                       Length = MAXFRAMESIZE;
+                       AudioTrack = -1;
+                       }
+                    if (Length == -1)
+                       Length = MAXFRAMESIZE; // this means we read up to EOF (see cIndex)
+                    else if (Length > MAXFRAMESIZE) {
+                       esyslog("ERROR: frame larger than buffer (%d > %d)", Length, MAXFRAMESIZE);
+                       Length = MAXFRAMESIZE;
+                       }
+                    b = MALLOC(uchar, Length);
                     }
-                 else if (index) {
-                    uchar FileNumber;
-                    int FileOffset, Length;
-                    readIndex++;
-                    if (!(index->Get(readIndex, &FileNumber, &FileOffset, NULL, &Length) && NextFile(FileNumber, FileOffset))) {
-                       readIndex = -1;
-                       eof = true;
-                       continue;
-                       }
-                    r = ReadFrame(replayFile, b, Length, sizeof(b));
-                    StripAudioPackets(b, r, audioTrack);
+                 int r = nonBlockingFileReader->Read(replayFile, b, Length);
+                 if (r > 0) {
+                    if (AudioTrack >= 0)
+                       StripAudioPackets(b, r, AudioTrack);
+                    readFrame = new cFrame(b, -r, ftUnknown, readIndex); // hands over b to the ringBuffer
+                    b = NULL;
                     }
-                 else // allows replay even if the index file is missing
-                    r = read(replayFile, b, sizeof(b));
-                 if (r > 0)
-                    readFrame = new cFrame(b, r, ftUnknown, readIndex);
                  else if (r == 0)
                     eof = true;
                  else if (r < 0 && FATALERRNO) {
@@ -421,6 +538,10 @@ void cDvbPlayer::Action(void)
            }
         }
   active = running = false;
+
+  cNonBlockingFileReader *nbfr = nonBlockingFileReader;
+  nonBlockingFileReader = NULL;
+  delete nbfr;
 
   dsyslog("dvbplayer thread ended (pid=%d)", getpid());
 }

@@ -8,7 +8,7 @@
  * the Linux DVB driver's 'tuxplayer' example and were rewritten to suit
  * VDR's needs.
  *
- * $Id: remux.c 1.12 2002/10/12 13:33:54 kls Exp $
+ * $Id: remux.c 1.14 2003/01/24 17:22:29 kls Exp $
  */
 
 /* The calling interface of the 'cRemux::Process()' function is defined
@@ -97,14 +97,16 @@
 #define PTS_ONLY         0x80
 
 #define TS_SIZE        188
-#define PAY_START      0x40
 #define PID_MASK_HI    0x1F
-//flags
-#define ADAPT_FIELD    0x20
-//XXX TODO
+#define CONT_CNT_MASK  0x0F
 
-#define MAX_PLENGTH 0xFFFF
-#define MMAX_PLENGTH (4*MAX_PLENGTH)
+// Flags:
+#define PAY_START      0x40
+#define TS_ERROR       0x80
+#define ADAPT_FIELD    0x20
+
+#define MAX_PLENGTH  0xFFFF          // the maximum PES packet length (theoretically)
+#define MMAX_PLENGTH (8*MAX_PLENGTH) // some stations send PES packets that are extremely large, e.g. DVB-T in Finland
 
 #define IPACKS 2048
 
@@ -132,6 +134,9 @@ private:
   bool done;
   uint8_t *resultBuffer;
   int *resultCount;
+  int tsErrors;
+  int ccErrors;
+  int ccCounter;
   static uint8_t headr[];
   void store(uint8_t *Data, int Count);
   void reset_ipack(void);
@@ -154,6 +159,10 @@ cTS2PES::cTS2PES(uint8_t *ResultBuffer, int *ResultCount, int Size, uint8_t Audi
   size = Size;
   audioCid = AudioCid;
 
+  tsErrors = 0;
+  ccErrors = 0;
+  ccCounter = -1;
+
   if (!(buf = MALLOC(uint8_t, size)))
      esyslog("Not enough memory for ts_transform");
 
@@ -162,6 +171,8 @@ cTS2PES::cTS2PES(uint8_t *ResultBuffer, int *ResultCount, int Size, uint8_t Audi
 
 cTS2PES::~cTS2PES()
 {
+  if (tsErrors || ccErrors)
+     dsyslog("cTS2PES got %d TS errors, %d TS continuity errors", tsErrors, ccErrors);
   free(buf);
 }
 
@@ -384,6 +395,8 @@ void cTS2PES::instant_repack(const uint8_t *Buf, int Count)
         }
 
      if (plength && found == plength + 6) {
+        if (plength == MMAX_PLENGTH - 6)
+           esyslog("ERROR: PES packet length overflow in remuxer (stream corruption)");
         send_ipack();
         reset_ipack();
         if (c < Count)
@@ -397,6 +410,22 @@ void cTS2PES::ts_to_pes(const uint8_t *Buf) // don't need count (=188)
 {
   if (!Buf)
      return;
+
+  if (Buf[1] & TS_ERROR)
+     tsErrors++;
+  if ((Buf[3] ^ ccCounter) & CONT_CNT_MASK) {
+     // This should check duplicates and packets which do not increase the counter.
+     // But as the errors usually come in bursts this should be enough to
+     // show you there is something wrong with signal quality.
+     if (ccCounter != -1 && ((Buf[3] ^ (ccCounter + 1)) & CONT_CNT_MASK)) {
+        ccErrors++;
+        // Enable this if you are having problems with signal quality.
+        // These are the errors I used to get with Nova-T when antenna
+        // was not positioned correcly (not transport errors). //tvr
+        //dsyslog("TS continuity error (%d)", ccCounter);
+        }
+     ccCounter = Buf[3] & CONT_CNT_MASK;
+     }
 
   if (Buf[1] & PAY_START) {
      if (plength == MMAX_PLENGTH - 6 && found > 6) {
