@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osdbase.h 1.3 2002/07/13 10:16:18 kls Exp $
+ * $Id: osdbase.h 1.4 2002/07/13 14:45:55 kls Exp $
  */
 
 #ifndef __OSDBASE_H
@@ -50,9 +50,10 @@ private:
   bool full;
 protected:
   typedef unsigned char tIndexes[MAXNUMCOLORS];
+  void SetColor(int Index, eDvbColor Color);
+  eDvbColor GetColor(int Index) { return color[Index]; }
 public:
   cPalette(int Bpp);
-  void SetColor(int Index, eDvbColor Color);
   int Index(eDvbColor Color);
   void Reset(void);
   const eDvbColor *Colors(int &FirstColor, int &LastColor);

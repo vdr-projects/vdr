@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osdbase.c 1.4 2002/05/18 12:39:16 kls Exp $
+ * $Id: osdbase.c 1.5 2002/07/13 14:42:47 kls Exp $
  */
 
 #include "osdbase.h"
@@ -21,6 +21,17 @@ cPalette::cPalette(int Bpp)
   maxColors = 1 << Bpp;
   numColors = 0;
   full = false;
+}
+
+void cPalette::SetColor(int Index, eDvbColor Color)
+{
+  if (Index < maxColors) {
+     if (numColors < Index)
+        numColors = Index + 1;
+     used[Index] = true;
+     color[Index] = Color;
+     fetched[Index] = false;
+     }
 }
 
 int cPalette::Index(eDvbColor Color)
