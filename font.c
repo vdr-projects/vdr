@@ -4,9 +4,11 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: font.c 1.5 2004/01/16 13:17:57 kls Exp $
+ * $Id: font.c 1.6 2004/04/24 15:25:48 kls Exp $
  */
 
+#include "config.h"
+#include <ctype.h>
 #include "font.h"
 #include "tools.h"
 
@@ -21,6 +23,8 @@
 #include "fontfix-iso8859-7.c"
 #include "fontosd-iso8859-7.c"
 #include "fontsml-iso8859-7.c"
+
+// --- cFont -----------------------------------------------------------------
 
 static void *FontData[eDvbCodeSize][eDvbFontSize] = {
   { FontOsd_iso8859_1, FontFix_iso8859_1, FontSml_iso8859_1 },
@@ -44,9 +48,9 @@ cFont::cFont(void *Data)
 
 void cFont::SetData(void *Data)
 {
-  int h = ((tCharData *)Data)->height;
+  height = ((tCharData *)Data)->height;
   for (int i = 0; i < NUMCHARS; i++)
-      data[i] = (tCharData *)&((tPixelData *)Data)[(i < 32 ? 0 : i - 32) * (h + 2)];
+      data[i] = (tCharData *)&((tPixelData *)Data)[(i < 32 ? 0 : i - 32) * (height + 2)];
 }
 
 int cFont::Width(const char *s) const
@@ -61,7 +65,7 @@ int cFont::Height(const char *s) const
 {
   int h = 0;
   if (s && *s)
-     h = Height(*s); // all characters have the same height!
+     h = height; // all characters have the same height!
   return h;
 }
 
@@ -95,7 +99,131 @@ void cFont::SetFont(eDvbFont Font, void *Data)
 
 const cFont *cFont::GetFont(eDvbFont Font)
 {
+  if (Setup.UseSmallFont == 0 && Font == fontSml)
+     Font = fontOsd;
+  else if (Setup.UseSmallFont == 2 && Font == fontOsd)
+     Font = fontSml;
   if (!fonts[Font])
      SetFont(Font);
   return fonts[Font];
+}
+
+// --- cTextWrapper ----------------------------------------------------------
+
+cTextWrapper::cTextWrapper(void)
+{
+  text = eol = NULL;
+  lines = 0;
+  lastLine = -1;
+}
+
+cTextWrapper::cTextWrapper(const char *Text, const cFont *Font, int Width)
+{
+  text = NULL;
+  Set(Text, Font, Width);
+}
+
+cTextWrapper::~cTextWrapper()
+{
+  free(text);
+}
+
+void cTextWrapper::Set(const char *Text, const cFont *Font, int Width)
+{
+  free(text);
+  text = Text ? strdup(Text) : NULL;
+  eol = NULL;
+  lines = 0;
+  lastLine = -1;
+  if (!text)
+     return;
+  lines = 1;
+  if (Width <= 0)
+     return;
+
+  char *Blank = NULL;
+  char *Delim = NULL;
+  int w = 0;
+
+  stripspace(text); // strips trailing newlines
+
+  for (char *p = text; *p; ) {
+      if (*p == '\n') {
+         lines++;
+         w = 0;
+         Blank = Delim = NULL;
+         p++;
+         continue;
+         }
+      else if (isspace(*p))
+         Blank = p;
+      int cw = Font->Width(*p);
+      if (w + cw > Width) {
+         if (Blank) {
+            *Blank = '\n';
+            p = Blank;
+            continue;
+            }
+         else {
+            // Here's the ugly part, where we don't have any whitespace to
+            // punch in a newline, so we need to make room for it:
+            if (Delim)
+               p = Delim + 1; // let's fall back to the most recent delimiter
+            char *s = MALLOC(char, strlen(text) + 2); // The additional '\n' plus the terminating '\0'
+            int l = p - text;
+            strncpy(s, text, l);
+            s[l] = '\n';
+            strcpy(s + l + 1, p);
+            free(text);
+            text = s;
+            p = text + l;
+            continue;
+            }
+         }
+      else
+         w += cw;
+      if (strchr("-.,:;!?_", *p)) {
+         Delim = p;
+         Blank = NULL;
+         }
+      p++;
+      }
+}
+
+const char *cTextWrapper::Text(void)
+{
+  if (eol) {
+     *eol = '\n';
+     eol = NULL;
+     }
+  return text;
+}
+
+const char *cTextWrapper::GetLine(int Line)
+{
+  char *s = NULL;
+  if (Line < lines) {
+     if (eol) {
+        *eol = '\n';
+        if (Line == lastLine + 1)
+           s = eol + 1;
+        eol = NULL;
+        }
+     if (!s) {
+        s = text;
+        for (int i = 0; i < Line; i++) {
+            s = strchr(s, '\n');
+            if (s)
+               s++;
+            else
+               break;
+            }
+        }
+     if (s) {
+        if ((eol = strchr(s, '\n')) != NULL)
+           *eol = 0;
+        }
+     lastLine = Line;
+     }
+  return s;
 }

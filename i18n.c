@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.153 2004/03/26 15:02:59 kls Exp $
+ * $Id: i18n.c 1.154 2004/05/08 09:25:02 kls Exp $
  *
  * Translations provided by:
  *
@@ -2193,6 +2193,78 @@ const tI18nPhrase Phrases[] = {
     "Idioma",
     "œ◊Î⁄",
   },
+  { "Setup.OSD$Skin",
+    "Oberfl‰che",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+  },
+  { "Setup.OSD$Theme",
+    "Thema",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+  },
+  { "Setup.OSD$Left",
+    "Links",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+  },
+  { "Setup.OSD$Top",
+    "Oben",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+  },
   { "Setup.OSD$Width",
     "Breite",
     "Sirina",
@@ -2246,6 +2318,78 @@ const tI18nPhrase Phrases[] = {
     "Inform·ciÛ felt¸ntetÈsÈnek idˆtartama",
     "Durada dels missatges (s)",
     "¥€ÿ‚’€Ï›ﬁ·‚Ï ﬂﬁ⁄–◊– ·ﬁﬁ—È’›ÿŸ (·’⁄)",
+  },
+  { "Setup.OSD$Use small font",
+    "Kleine Schrift benutzen",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+  },
+  { "never",
+    "nie",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+  },
+  { "skin dependent",
+    "je nach Oberfl‰che",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+  },
+  { "always",
+    "immer",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
   },
   { "Setup.OSD$Channel info position",
     "Kanal-Info Position",
@@ -4214,6 +4358,42 @@ const tI18nPhrase Phrases[] = {
     "Aquest plugin no admet configuraciÛ!",
     "ºﬁ‘„€Ï ›’ ÿ‹’’‚ ﬂ–‡–‹’‚‡ﬁ“ ›–·‚‡ﬁŸ⁄ÿ!",
    },
+  { "Classic VDR",
+    "Klassischer VDR",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+  },
+  { "ST:TNG Panels",
+    "ST:TNG Konsolen",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+  },
   { NULL }
   };
 

@@ -4,13 +4,13 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.h 1.7 2004/03/28 09:16:24 kls Exp $
+ * $Id: menuitems.h 1.8 2004/04/30 13:45:28 kls Exp $
  */
 
 #ifndef __MENUITEMS_H
 #define __MENUITEMS_H
 
-#include "osd.h"
+#include "osdbase.h"
 
 extern const char *FileNameChars;
 
@@ -98,25 +98,6 @@ protected:
   virtual void Set(void);
 public:
   cMenuEditStraItem(const char *Name, int *Value, int NumStrings, const char * const *Strings);
-  };
-
-class cMenuTextItem : public cOsdItem {
-private:
-  char *text;
-  int x, y, w, h, lines, offset;
-  eDvbColor fgColor, bgColor;
-  eDvbFont font;
-public:
-  cMenuTextItem(const char *Text, int X, int Y, int W, int H = -1, eDvbColor FgColor = clrWhite, eDvbColor BgColor = clrBackground, eDvbFont Font = fontOsd);
-  ~cMenuTextItem();
-  int Height(void) { return h; }
-  void Clear(void);
-  virtual void Display(int Offset = -1, eDvbColor FgColor = clrWhite, eDvbColor BgColor = clrBackground);
-  bool CanScrollUp(void) { return offset > 0; }
-  bool CanScrollDown(void) { return h + offset < lines; }
-  void ScrollUp(bool Page);
-  void ScrollDown(bool Page);
-  virtual eOSState ProcessKey(eKeys Key);
   };
 
 class cMenuEditChanItem : public cMenuEditIntItem {

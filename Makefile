@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 1.65 2004/01/18 14:16:53 kls Exp $
+# $Id: Makefile 1.66 2004/05/08 09:15:00 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -36,8 +36,9 @@ SILIB    = $(LSIDIR)/libsi.a
 OBJS = audio.o channels.o ci.o config.o cutter.o device.o diseqc.o dvbdevice.o dvbosd.o\
        dvbplayer.o dvbspu.o eit.o eitscan.o epg.o filter.o font.o i18n.o interface.o keys.o\
        lirc.o menu.o menuitems.o nit.o osdbase.o osd.o pat.o player.o plugin.o rcu.o\
-       receiver.o recorder.o recording.o remote.o remux.o ringbuffer.o sdt.o sections.o sources.o\
-       spu.o status.o svdrp.o thread.o timers.o tools.o transfer.o vdr.o videodir.o
+       receiver.o recorder.o recording.o remote.o remux.o ringbuffer.o sdt.o sections.o\
+       skinclassic.o skins.o skinsttng.o sources.o spu.o status.o svdrp.o themes.o thread.o\
+       timers.o tools.o transfer.o vdr.o videodir.o
 
 FIXFONT_ISO8859_1 = -adobe-courier-bold-r-normal--25-*-100-100-m-*-iso8859-1
 OSDFONT_ISO8859_1 = -adobe-helvetica-medium-r-normal--23-*-100-100-p-*-iso8859-1
@@ -59,11 +60,6 @@ DEFINES += -D_GNU_SOURCE
 
 DEFINES += -DVIDEODIR=\"$(VIDEODIR)\"
 DEFINES += -DPLUGINDIR=\"$(PLUGINLIBDIR)\"
-
-ifdef DEBUG_OSD
-DEFINES += -DDEBUG_OSD
-NCURSESLIB = -lncurses
-endif
 
 ifdef VFAT
 # for people who want their video directory on a VFAT partition

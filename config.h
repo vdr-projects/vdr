@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.191 2004/03/14 16:51:13 kls Exp $
+ * $Id: config.h 1.192 2004/05/08 09:18:36 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -26,12 +26,14 @@
 #define MAXPRIORITY 99
 #define MAXLIFETIME 99
 
-#define MINOSDWIDTH  40
-#define MAXOSDWIDTH  56
-#define MINOSDHEIGHT 12
-#define MAXOSDHEIGHT 21
+#define MINOSDWIDTH  480
+#define MAXOSDWIDTH  672
+#define MINOSDHEIGHT 324
+#define MAXOSDHEIGHT 567
 
 #define MaxFileName 256
+#define MaxSkinName 16
+#define MaxThemeName 16
 
 class cCommand : public cListObject {
 private:
@@ -204,6 +206,8 @@ public:
   // Also adjust cMenuSetup (menu.c) when adding parameters here!
   int __BeginData__;
   int OSDLanguage;
+  char OSDSkin[MaxSkinName];
+  char OSDTheme[MaxThemeName];
   int PrimaryDVB;
   int ShowInfoOnChSwitch;
   int MenuScrollPage;
@@ -235,8 +239,9 @@ public:
   int UpdateChannels;
   int RecordDolbyDigital;
   int ChannelInfoPos;
-  int OSDwidth, OSDheight;
+  int OSDLeft, OSDTop, OSDWidth, OSDHeight;
   int OSDMessageTime;
+  int UseSmallFont;
   int MaxVideoFileSize;
   int SplitEditedFiles;
   int MinEventTimeout, MinUserInactivity;

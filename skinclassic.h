@@ -1,0 +1,26 @@
+/*
+ * skinclassic.h: The 'classic' VDR skin
+ *
+ * See the main source file 'vdr.c' for copyright information and
+ * how to reach the author.
+ *
+ * $Id: skinclassic.h 1.1 2004/04/18 09:38:02 kls Exp $
+ */
+
+#ifndef __SKINCLASSIC_H
+#define __SKINCLASSIC_H
+
+#include "skins.h"
+
+class cSkinClassic : public cSkin {
+public:
+  cSkinClassic(void);
+  virtual const char *Description(void);
+  virtual cSkinDisplayChannel *DisplayChannel(bool WithInfo);
+  virtual cSkinDisplayMenu *DisplayMenu(void);
+  virtual cSkinDisplayReplay *DisplayReplay(bool ModeOnly);
+  virtual cSkinDisplayVolume *DisplayVolume(void);
+  virtual cSkinDisplayMessage *DisplayMessage(void);
+  };
+
+#endif //__SKINCLASSIC_H

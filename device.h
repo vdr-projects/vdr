@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 1.41 2004/03/14 10:47:01 kls Exp $
+ * $Id: device.h 1.42 2004/04/17 10:15:25 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -54,7 +54,6 @@ enum eVideoSystem { vsPAL,
                     vsNTSC
                   };
 
-class cOsdBase;
 class cChannel;
 class cPlayer;
 class cReceiver;
@@ -139,15 +138,9 @@ public:
   virtual bool HasDecoder(void) const;
          ///< Tells whether this device has an MPEG decoder.
 
-// OSD facilities
+// SPU facilities
 
 public:
-  virtual cOsdBase *NewOsd(int x, int y);
-         ///< Creates a new cOsdBase object that can be used by the cOsd class
-         ///< to display information on the screen, with the upper left corner
-         ///< of the OSD at the given coordinates. If a derived cDevice doesn't
-         ///< implement this function, NULL will be returned by default (which
-         ///< means the device has no OSD capabilities).
   virtual cSpuDecoder *GetSpuDecoder(void);
          ///< Returns a pointer to the device's SPU decoder (or NULL, if this
          ///< device doesn't have an SPU decoder).

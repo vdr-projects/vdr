@@ -4,14 +4,14 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: player.h 1.10 2002/11/03 11:27:30 kls Exp $
+ * $Id: player.h 1.11 2004/04/30 13:45:59 kls Exp $
  */
 
 #ifndef __PLAYER_H
 #define __PLAYER_H
 
 #include "device.h"
-#include "osd.h"
+#include "osdbase.h"
 
 class cPlayer {
   friend class cDevice;

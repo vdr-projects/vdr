@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 1.24 2004/02/13 15:37:42 kls Exp $
+ * $Id: channels.c 1.25 2004/04/03 13:42:06 kls Exp $
  */
 
 #include "channels.h"
@@ -887,4 +887,20 @@ cChannel *cChannels::NewChannel(const cChannel *Transponder, const char *Name, i
      return NewChannel;
      }
   return NULL;
+}
+
+const char *ChannelString(const cChannel *Channel, int Number)
+{
+  static char buffer[256];
+  if (Channel) {
+     if (Channel->GroupSep())
+        snprintf(buffer, sizeof(buffer), "%s", Channel->Name());
+     else
+        snprintf(buffer, sizeof(buffer), "%d%s  %s", Channel->Number(), Number ? "-" : "", Channel->Name());
+     }
+  else if (Number)
+     snprintf(buffer, sizeof(buffer), "%d-", Number);
+  else
+     snprintf(buffer, sizeof(buffer), "%s", tr("*** Invalid Channel ***"));
+  return buffer;
 }

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 1.60 2004/02/15 14:11:28 kls Exp $
+ * $Id: menu.h 1.61 2004/04/30 13:45:19 kls Exp $
  */
 
 #ifndef __MENU_H
@@ -13,10 +13,11 @@
 #include "ci.h"
 #include "device.h"
 #include "epg.h"
-#include "osd.h"
+#include "osdbase.h"
 #include "dvbplayer.h"
 #include "recorder.h"
 #include "recording.h"
+#include "skins.h"
 
 class cMenuMain : public cOsdMenu {
 private:
@@ -32,12 +33,14 @@ public:
 
 class cDisplayChannel : public cOsdObject {
 private:
+  cSkinDisplayChannel *displayChannel;
   int group;
   bool withInfo;
-  int lines;
   int lastTime;
   int number;
   cChannel *channel;
+  const cEvent *lastPresent;
+  const cEvent *lastFollowing;
   void DisplayChannel(void);
   void DisplayInfo(void);
   void Refresh(void);
@@ -50,8 +53,9 @@ public:
 
 class cDisplayVolume : public cOsdObject {
 private:
+  cSkinDisplayVolume *displayVolume;
   int timeout;
-  static cDisplayVolume *displayVolume;
+  static cDisplayVolume *currentDisplayVolume;
   virtual void Show(void);
   cDisplayVolume(void);
 public:
@@ -150,9 +154,12 @@ public:
 
 class cReplayControl : public cDvbPlayerControl {
 private:
+  cSkinDisplayReplay *displayReplay;
   cMarks marks;
   bool visible, modeOnly, shown, displayFrames;
   int lastCurrent, lastTotal;
+  bool lastPlay, lastForward;
+  int lastSpeed;
   time_t timeoutShow;
   bool timeSearchActive, timeSearchHide;
   int timeSearchTime, timeSearchPos;
@@ -162,7 +169,6 @@ private:
   void ShowTimed(int Seconds = 0);
   static char *fileName;
   static char *title;
-  void DisplayAtBottom(const char *s = NULL);
   void ShowMode(void);
   bool ShowProgress(bool Initial);
   void MarkToggle(void);

@@ -962,3 +962,7 @@ Marcus Mönnig <minibbjd@gmx.de>
 
 Pekka Virtanen <pekka.virtanen@sci.fi>
  for adding language code handling to the subtitling descriptor in 'libsi'
+
+John Kennedy <rkennedy@ix.netcom.com>
+ for publishing "A Fast Bresenham Algorithm For Drawing Ellipses" (found at
+ http://homepage.smc.edu/kennedy_john/BELIPSE.PDF)

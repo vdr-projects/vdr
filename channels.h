@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.h 1.16 2004/02/13 15:16:36 kls Exp $
+ * $Id: channels.h 1.17 2004/04/03 13:40:47 kls Exp $
  */
 
 #ifndef __CHANNELS_H
@@ -202,5 +202,7 @@ public:
   };
 
 extern cChannels Channels;
+
+const char *ChannelString(const cChannel *Channel, int Number);
 
 #endif //__CHANNELS_H

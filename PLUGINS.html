@@ -9,17 +9,20 @@
 <center><b>Version 1.3</b></center>
 <p>
 <center>
-Copyright &copy; 2003 Klaus Schmidinger<br>
+Copyright &copy; 2004 Klaus Schmidinger<br>
 <a href="mailto:kls@cadsoft.de">kls@cadsoft.de</a><br>
 <a href="http://www.cadsoft.de/vdr">www.cadsoft.de/vdr</a>
 </center>
 <p>
-<!--X1.2.6--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
+<!--X1.2.6--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
 Important modifications introduced in version 1.2.6 are marked like this.
 <!--X1.2.6--></td></tr></table>
-<!--X1.3.0--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+<!--X1.3.0--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
 Important modifications introduced in version 1.3.0 are marked like this.
 <!--X1.3.0--></td></tr></table>
+<!--X1.3.7--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+Important modifications introduced in version 1.3.7 are marked like this.
+<!--X1.3.7--></td></tr></table>
 <p>
 VDR provides an easy to use plugin interface that allows additional functionality
 to be added to the program by implementing a dynamically loadable library file.
@@ -67,10 +70,14 @@ structures and allows it to hook itself into specific areas to perform special a
 <li><a href="#Status monitor">Status monitor</a>
 <li><a href="#Players">Players</a>
 <li><a href="#Receivers">Receivers</a>
-<!--X1.3.0--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+<!--X1.3.0--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
 <li><a href="#Filters">Filters</a>
 <!--X1.3.0--></td></tr></table>
 <li><a href="#The On Screen Display">The On Screen Display</a>
+<!--X1.3.7--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+<li><a href="#Skins">Skins</a>
+<li><a href="#Themes">Themes</a>
+<!--X1.3.7--></td></tr></table>
 <li><a href="#Devices">Devices</a>
 <li><a href="#Dolby Digital">Dolby Digital</a>
 <li><a href="#Remote Control">Remote Control</a>
@@ -1207,7 +1214,7 @@ Mode</i>).
 If the <tt>cReceiver</tt> isn't needed any more, it may simply be <i>deleted</i>
 and will automatically detach itself from the <tt>cDevice</tt>.
 
-<!--X1.3.0--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+<!--X1.3.0--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
 <a name="Filters"><hr><h2>Filters</h2>
 
 <center><i><b>A Fistful of Datas</b></i></center><p>
@@ -1253,35 +1260,166 @@ and will automatically detach itself from the <tt>cDevice</tt>.
 See VDR/eit.c or VDR/pat.c to learn how to process filter data.
 <!--X1.3.0--></td></tr></table>
 
+<!--X1.3.7--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
 <a name="The On Screen Display"><hr><h2>The On Screen Display</h2>
 
-<center><i><b>Express yourself</b></i></center><p>
+<center><i><b>Window to the world</b></i></center><p>
 
-Most of the time a plugin should be able to access the OSD through the
-standard mechanisms also used by VDR itself. However, these set up the OSD in
-a manner of textual rows and columns, and automatically set the various
-windows and color depths.
-<p>
 If a plugin needs to have total control over the OSD, it can call the
 static function
 
 <p><table><tr><td bgcolor=#F0F0F0><pre>
 #include &lt;vdr/osd.h&gt;
 
-cOsdBase *MyOsd = cOsd::OpenRaw(x, y);
+cOsd *MyOsd = cOsdProvider::NewOsd(x, y);
 </pre></td></tr></table><p>
 
 where <tt>x</tt> and <tt>y</tt> are the coordinates of the upper left corner
-of the OSD area on the screen. Such a "raw" OSD doesn't display anything
+of the OSD area on the screen. Such an OSD doesn't display anything
 yet, so you need to at least call the function
 
 <p><table><tr><td bgcolor=#F0F0F0><pre>
-MyOsd-&gt;Create(...);
+tArea Area = { 0, 0, 100, 100, 4 };
+MyOsd-&gt;SetAreas(Area, 1);
 </pre></td></tr></table><p>
 
-to define an actual OSD drawing area (see VDR/osdbase.h for the declarations
-of these functions, and VDR/osd.c to see how VDR opens the OSD and sets up
+to define an actual OSD drawing area (see VDR/osd.h for the declarations
+of these functions, and VDR/skinsttng.c to see how VDR opens the OSD and sets up
 its windows and color depths).
+<p>
+Theoretically the OSD supports a full screen drawing area, with 32 bit color
+depth. However, the actual OSD device in use may not be able to provide the
+full area or color depth, maybe because of lack of OSD memory or other restrictions.
+A plugin that uses the OSD should therefore test whether the OSD is able to
+provide the requested functionality, and should offer alternate color depths
+to allow a less powerfull OSD implementation to still work reasonably.
+Since it is often not really necessary to have hundreds or thousands of colors
+all over the OSD area, a plugin can divide the total drawing area into several
+sub-areas with different color depths and separate color palettes, as in
+
+<p><table><tr><td bgcolor=#F0F0F0><pre>
+tArea Area = { 0, 0, 99, 99, 4 };
+if (osd-&gt;CanHandleAreas(Area, 1) == oeOk)
+   osd-&gt;SetAreas(Area, 1);
+else {
+   tArea Areas[] = { { 0,  0, 99, 19, 2 },
+                     { 0, 20, 99, 79, 2 },
+                     { 0, 80, 99, 99, 4 }
+                   };
+   osd-&gt;SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
+   }
+</pre></td></tr></table><p>
+
+In this example an OSD with 100 by 100 pixel and 4 bit color depth shall
+be opened, so at first a single area with the full required resolution
+is set up and <tt>CanHandleAreas()</tt> is called with it. If the result indicates
+that the OSD will be able to handle this drawing area, a call to <tt>SetAreas()</tt>
+actually sets it. If a single area with that resolution can't be handled,
+a second attempt is made in which the total drawing area is divided into
+three horizontal stripes, two of which use only 2 bit color depth (because
+the objects drawn in there can be displayed with 4 colors) while the third
+one still requests 4 bit color depth.
+<p>
+Note that a plugin should always at first request a single drawing area
+with the full required resolution. Only if this fails shall it use alternate
+areas. Drawing areas are always rectangular and may not overlap (but do not need
+to be adjacent).
+
+<a name="Skins"><hr><h2>Skins</h2>
+
+<center><i><b>The emperor's new clothes</b></i></center><p>
+
+The way VDR displays its menus to the user is implemented through <i>skins</i>.
+A particular skin provides several functions that return objects to be used
+for displaying a specific part of the OSD, like a menu, the channel display
+or the volume bar.
+<p>
+By default VDR offers the <i>Classic</i> and the <i>ST:TNG Panels</i> skins,
+which can be selected through Setup/OSD/Skin. A plugin can implement an
+arbitrary skin of its own by doing something similar to what's done in
+<tt>VDR/skinclassic.c</tt>.
+<p>
+The first step in implementing a new skin is to derive a class from <tt>cSkin</tt>
+that provides the handling objects necessary to do the actual work:
+
+<p><table><tr><td bgcolor=#F0F0F0><pre>
+#include "skins.h"
+
+class cMySkin : public cSkin {
+public:
+  cMySkin(void);
+  virtual const char *Description(void);
+  virtual cSkinDisplayChannel *DisplayChannel(bool WithInfo);
+  virtual cSkinDisplayMenu *DisplayMenu(void);
+  virtual cSkinDisplayReplay *DisplayReplay(bool ModeOnly);
+  virtual cSkinDisplayVolume *DisplayVolume(void);
+  virtual cSkinDisplayMessage *DisplayMessage(void);
+  };
+</pre></td></tr></table><p>
+
+See the comments in <tt>VDR/skins.h</tt> for details. <tt>VDR/skinclassic.[hc]</tt>
+can be used as an example for how to implement all the necessary classes and
+functions to compose a complete skin. See also the chapter about <a href="#Themes">themes</a>
+if you want to make the colors used by your skin configurable.
+<p>
+To add your new skin to the list of skins available to the user in Setup/OSD/Skin,
+all you need to do is create a new object of your skin class, as in
+
+<p><table><tr><td bgcolor=#F0F0F0><pre>
+new cMySkin;
+</pre></td></tr></table><p>
+
+in the <a href="#Getting started"><tt>Start()</tt></a> function of your plugin.
+Do not delete this object, it will be automatically deleted when the program ends.
+
+<a name="Themes"><hr><h2>Themes</h2>
+
+<center><i><b>Eye of the beholder...</b></i></center><p>
+
+A <i>theme</i> is a collection of colors that can be used by a <a href="#Skins">skin</a>.
+Since every skin most likely has its own idea about what parts of it can be
+<i>themed</i>, and different skins may have completely different numbers of
+"themeable" parts, a particular theme can only be used with the skin it was designed
+for. A particular skin, however, can have any number of themes. Which theme
+will be actually used can be defined in Setup/OSD/Theme.
+<p>
+In order to make a skin "themeable" is shall create an object of type cTheme, as in
+
+<p><table><tr><td bgcolor=#F0F0F0><pre>
+static cTheme Theme;
+</pre></td></tr></table><p>
+
+The next step is to define the colors that shall be provided by this theme, as in
+
+<p><table><tr><td bgcolor=#F0F0F0><pre>
+THEME_CLR(Theme, clrTitle,        0xFFBC8024);
+THEME_CLR(Theme, clrButtonRedFg,  clrWhite);
+THEME_CLR(Theme, clrButtonRedBg,  clrRed);
+</pre></td></tr></table><p>
+
+<tt>THEME_CLR()</tt> is a helper macro that adds the given color name
+and its default color value to the theme.
+<p>
+Any color names can be used, but they should always start with <tt>clr...</tt> and
+if a given color has a foreground and a background value, the two names shall be
+distinguished by appending <tt>...Fg</tt> and <tt>...Bg</tt>, respectively.
+<p>
+Color values can be either 32 bit hexadecimal numbers in the form 0xAARRGGBB
+(where the individual bytes represent Alpha (transparency), Red, Green
+and Blue component, respectively), or one of the predefined color names from
+<tt>VDR/osd.h</tt>.
+<p>
+In the actual drawing code of a skin, the color names defined with the <tt>THEME_CLR()</tt>
+macros can be used to fetch the actual color values from the theme, as in
+
+<p><table><tr><td bgcolor=#F0F0F0><pre>
+osd-&gt;DrawText(x, y, s, Theme.Color(clrButtonRedFg), Theme.Color(clrButtonRedBg), font);
+</pre></td></tr></table><p>
+
+By default this will use the colors that have been defined in the respective
+<tt>THEME_CLR()</tt> line, but may be overwritten through user supplied theme
+files (see <tt>man vdr(5)</tt> for information about the format of a theme file).
+<!--X1.3.7--></td></tr></table>
 
 <a name="Devices"><hr><h2>Devices</h2>
 
@@ -1297,7 +1435,7 @@ into a VDR system; or an analog TV receiver card, which does the MPEG encoding
 "on the fly" - assuming your machine is fast enough), or just a software program that takes an MPEG data
 stream and displays it, for instance, on an existing graphics adapter.
 <p>
-To implement an additional device, a plugin must derive a class from cDevice:
+To implement an additional device, a plugin must derive a class from <tt>cDevice</tt>:
 
 <p><table><tr><td bgcolor=#F0F0F0><pre>
 #include &lt;vdr/device.h&gt;
@@ -1374,7 +1512,7 @@ The functions to implement replaying capabilites are
 virtual bool HasDecoder(void) const;
 virtual bool CanReplay(void) const;
 virtual bool SetPlayMode(ePlayMode PlayMode);
-<!--X1.2.6--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
+<!--X1.2.6--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
 virtual int64_t GetSTC(void);
 <!--X1.2.6--></td></tr></table>
 virtual void TrickSpeed(int Speed);
@@ -1396,7 +1534,7 @@ virtual void SetVideoFormat(bool VideoFormat16_9);
 virtual void SetVolumeDevice(int Volume);
 </pre></td></tr></table><p>
 
-<!--X1.3.0--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+<!--X1.3.0--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
 <p>
 <b>Section Filtering</b>
 <p>
@@ -1426,23 +1564,46 @@ handle section data.
 <p>
 <b>On Screen Display</b>
 <p>
+<!--X1.3.7--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
 If your device provides On Screen Display (OSD) capabilities (which every device
-that is supposed to be used as a primary device should do), it can implement
-the function
+that is supposed to be used as a primary device should do), it shall implement
+an "OSD provider" class, derived from <tt>cOsdProvider</tt>, which, when its <tt>CreateOsd()</tt>
+function is called, returns an object derived from <tt>cOsd</tt>, which can be used to
+access the device's OSD:
 
 <p><table><tr><td bgcolor=#F0F0F0><pre>
-virtual cOsdBase *NewOsd(int x, int y);
+class cMyOsdProvider : public cOsdProvider {
+public:
+  cMyOsdProvider(void);
+  virtual cOsd *CreateOsd(int Left, int Top);
+  };
 </pre></td></tr></table><p>
 
-which must return a newly created object of a derived cOsdBase class that
-implements the functions necessary to display OSD information on your device.
-The caller of this function will delete the object as soon as it is no longer
-needed.
+In its <tt>MakePrimaryDevice()</tt> function the device shall create an object
+of this class, as in
+
+<p><table><tr><td bgcolor=#F0F0F0><pre>
+void cMyDevice::MakePrimaryDevice(bool On)
+{
+  new cMyOsdProvider;
+}
+</pre></td></tr></table><p>
+
+The OSD provider object is allocated on the heap and shall not be deleted
+(it will be deleted automatically in case a different device sets up an OSD
+provider, or when the program ends).
+
+Note that an OSD implementation need not be physically linked to the device
+in any way. All it needs to make sure is that the OSD will be visible to the
+user - whether this goes through OSD facilities of the physical device (like
+a "full featured" DVB card) or through a graphics adapter that overlays its
+output with the video signal, doesn't matter.
+<!--X1.3.7--></td></tr></table>
 
 <p>
 <b>Initializing new devices</b>
 <p>
-A derived cDevice class shall implement a static function
+A derived <tt>cDevice</tt> class shall implement a static function
 in which it determines whether the necessary hardware to run this sort of
 device is actually present in this machine (or whatever other prerequisites
 might be important), and then creates as many device objects as necessary.

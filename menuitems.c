@@ -4,13 +4,15 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.c 1.16 2004/03/28 09:17:51 kls Exp $
+ * $Id: menuitems.c 1.17 2004/05/02 10:37:34 kls Exp $
  */
 
 #include "menuitems.h"
 #include <ctype.h>
 #include "i18n.h"
 #include "plugin.h"
+#include "remote.h"
+#include "skins.h"
 #include "status.h"
 
 const char *FileNameChars = " abcdefghijklmnopqrstuvwxyz0123456789-.#~";
@@ -36,7 +38,6 @@ void cMenuEditItem::SetValue(const char *Value)
   char *buffer = NULL;
   asprintf(&buffer, "%s:\t%s", name, value);
   SetText(buffer, false);
-  Display();
   cStatus::MsgOsdCurrentItem(buffer);
 }
 
@@ -253,9 +254,9 @@ cMenuEditStrItem::~cMenuEditStrItem()
 void cMenuEditStrItem::SetHelpKeys(void)
 {
   if (pos >= 0)
-     Interface->Help(tr("ABC/abc"), tr(insert ? "Overwrite" : "Insert"), tr("Delete"));
+     cSkinDisplay::Current()->SetButtons(tr("ABC/abc"), tr(insert ? "Overwrite" : "Insert"), tr("Delete"));
   else
-     Interface->Help(NULL);
+     cSkinDisplay::Current()->SetButtons(NULL);
 }
 
 void cMenuEditStrItem::Set(void)
@@ -264,21 +265,21 @@ void cMenuEditStrItem::Set(void)
   const char *fmt = insert && newchar ? "[]%c%s" : "[%c]%s";
 
   if (pos >= 0) {
+     const cFont *font = cFont::GetFont(fontOsd);
      strncpy(buf, value, pos);
      snprintf(buf + pos, sizeof(buf) - pos - 2, fmt, *(value + pos), value + pos + 1);
-     int width = Interface->Width() - Interface->GetCols()[0];
-     if (cOsd::WidthInCells(buf) <= width) {
+     int width = cSkinDisplay::Current()->EditableWidth();
+     if (font->Width(buf) <= width) {
         // the whole buffer fits on the screen
         SetValue(buf);
         return;
         }
-     width *= cOsd::CellWidth();
-     width -= cOsd::Width('>'); // assuming '<' and '>' have the same with
+     width -= font->Width('>'); // assuming '<' and '>' have the same with
      int w = 0;
      int i = 0;
      int l = strlen(buf);
      while (i < l && w <= width)
-           w += cOsd::Width(buf[i++]);
+           w += font->Width(buf[i++]);
      if (i >= pos + 4) {
         // the cursor fits on the screen
         buf[i - 1] = '>';
@@ -295,7 +296,7 @@ void cMenuEditStrItem::Set(void)
      else
         i--;
      while (i >= 0 && w <= width)
-           w += cOsd::Width(buf[i--]);
+           w += font->Width(buf[i--]);
      buf[++i] = '<';
      SetValue(buf + i);
      }
@@ -459,100 +460,6 @@ cMenuEditStraItem::cMenuEditStraItem(const char *Name, int *Value, int NumString
 void cMenuEditStraItem::Set(void)
 {
   SetValue(strings[*value]);
-}
-
-// --- cMenuTextItem ---------------------------------------------------------
-
-cMenuTextItem::cMenuTextItem(const char *Text, int X, int Y, int W, int H, eDvbColor FgColor, eDvbColor BgColor, eDvbFont Font)
-{
-  x = X;
-  y = Y;
-  w = W;
-  h = H;
-  fgColor = FgColor;
-  bgColor = BgColor;
-  font = Font;
-  offset = 0;
-  eDvbFont oldFont = Interface->SetFont(font);
-  text = Interface->WrapText(Text, w - 1, &lines);
-  Interface->SetFont(oldFont);
-  if (h < 0)
-     h = lines;
-}
-
-cMenuTextItem::~cMenuTextItem()
-{
-  free(text);
-}
-
-void cMenuTextItem::Clear(void)
-{
-  Interface->Fill(x, y, w, h, bgColor);
-}
-
-void cMenuTextItem::Display(int Offset, eDvbColor FgColor, eDvbColor BgColor)
-{
-  int l = 0;
-  char *t = text;
-  eDvbFont oldFont = Interface->SetFont(font);
-  while (*t) {
-        char *n = strchr(t, '\n');
-        if (l >= offset) {
-           if (n)
-              *n = 0;
-           Interface->Write(x, y + l - offset, t, fgColor, bgColor);
-           if (n)
-              *n = '\n';
-           else
-              break;
-           }
-        if (!n)
-           break;
-        t = n + 1;
-        if (++l >= h + offset)
-           break;
-        }
-  Interface->SetFont(oldFont);
-  // scroll indicators use inverted color scheme!
-  if (CanScrollUp())   Interface->Write(x + w - 1, y,         "^", bgColor, fgColor);
-  if (CanScrollDown()) Interface->Write(x + w - 1, y + h - 1, "v", bgColor, fgColor);
-  cStatus::MsgOsdTextItem(text);
-}
-
-void cMenuTextItem::ScrollUp(bool Page)
-{
-  if (CanScrollUp()) {
-     Clear();
-     offset = max(offset - (Page ? h : 1), 0);
-     Display();
-     }
-  cStatus::MsgOsdTextItem(NULL, true);
-}
-
-void cMenuTextItem::ScrollDown(bool Page)
-{
-  if (CanScrollDown()) {
-     Clear();
-     offset = min(offset + (Page ? h : 1), lines - h);
-     Display();
-     }
-  cStatus::MsgOsdTextItem(NULL, false);
-}
-
-eOSState cMenuTextItem::ProcessKey(eKeys Key)
-{
-  switch (Key) {
-    case kLeft|k_Repeat:
-    case kLeft:
-    case kUp|k_Repeat:
-    case kUp:            ScrollUp(NORMALKEY(Key) == kLeft);    break;
-    case kRight|k_Repeat:
-    case kRight:
-    case kDown|k_Repeat:
-    case kDown:          ScrollDown(NORMALKEY(Key) == kRight); break;
-    default:             return osUnknown;
-    }
-  return osContinue;
 }
 
 // --- cMenuEditChanItem -----------------------------------------------------

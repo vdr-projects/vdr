@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: plugin.h 1.6 2003/05/09 14:57:55 kls Exp $
+ * $Id: plugin.h 1.7 2004/04/30 13:46:21 kls Exp $
  */
 
 #ifndef __PLUGIN_H
@@ -12,7 +12,7 @@
 
 #include "i18n.h"
 #include "menuitems.h"
-#include "osd.h"
+#include "osdbase.h"
 #include "tools.h"
 
 #define VDRPLUGINCREATOR(PluginClass) extern "C" void *VDRPluginCreator(void) { return new PluginClass; }

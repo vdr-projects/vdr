@@ -8,7 +8,7 @@
 .\" License as specified in the file COPYING that comes with the
 .\" vdr distribution.
 .\"
-.\" $Id: vdr.5 1.26 2004/02/24 12:36:35 kls Exp $
+.\" $Id: vdr.5 1.27 2004/05/15 09:24:57 kls Exp $
 .\"
 .TH vdr 5 "1 Jun 2003" "1.2.0" "Video Disk Recorder Files"
 .SH NAME
@@ -505,6 +505,48 @@ Examples:
 The file \fIsetup.conf\fR contains the basic configuration options for \fBvdr\fR.
 Each line contains one option in the format "Name = Value".
 See the MANUAL file for a description of the available options.
+.SS THEMES
+The files \fIthemes/<skin>-<theme>.theme\fR in the config directory contain the
+color theme definitions for the various skins. In the actual file names \fI<skin>\fR
+will be replaced by the name if the skin this theme belongs to, and \fI<theme>\fR
+will be the name of this theme.
+Each line in a theme file contains one option in the format "Name = Value".
+Anything after (and including) a '#' character is comment.
+
+The definitions in a theme file are either \fBcolors\fR or a \fBdescription\fR.
+.br
+\fBColors\fR are in the form
+
+\fBclrTitle = FF123456\fR
+
+where the name (clrTitle) is one of the names defined in the source code of
+the \fBskin\fR that uses this theme, through the \fBTHEME_CLR()\fR macro.
+The value (FF123456) is an eight digit hex number that consist of four bytes,
+representing alpha (transparency), red, green and blue component of the color.
+An alpha value of 00 means the color will be completely transparent, while FF
+means it will be opaque. An RGB value of 000000 results in black, while FFFFFF
+is white.
+
+A \fBdescription\fR can be given as
+
+\fBDescription = Shades of blue\fR
+
+and will be used in the Setup/OSD menu to select a theme for a given skin.
+The description should give the user an idea what this theme will be like
+(for instance, in the given example it would use various shades of blue),
+and shouldn't be too long to make sure it fits on the Setup screen.
+The default description always should be given in English. If you want,
+you can provide language specific descriptions as
+
+\fBDescription.eng = Shades of blue\fR
+.br
+\fBDescription.ger = Blautöne\fR
+
+where the language code (as defined in VDR/i18n.c) is added to the keyword
+"Description", separated by a dot. You can enter as many language specific
+descriptions as there are languages defined in VDR/i18n.h.
+If a theme file doesn't contain a Description, the name of the theme (as
+given in the theme's file name) will be used.
 .SS AUDIO/VIDEO DATA
 The files \fI001.vdr\fR...\fI255.vdr\fR are the actual recorded MPEG data
 files. In order to keep the size of an individual file below a given limit,

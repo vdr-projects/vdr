@@ -4,169 +4,349 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.h 1.40 2003/09/14 10:59:22 kls Exp $
+ * $Id: osd.h 1.41 2004/05/15 14:54:37 kls Exp $
  */
 
 #ifndef __OSD_H
 #define __OSD_H
 
-#if defined(DEBUG_OSD)
-#include <ncurses.h>
-#endif
-#include "config.h"
-#include "osdbase.h"
-#include "interface.h"
-#include "osdbase.h"
-#include "tools.h"
+#include <stdio.h>
+#include <stdint.h>
+#include "font.h"
 
-#define MAXOSDITEMS (Setup.OSDheight - 4)
+#define MAXNUMCOLORS 256
 
-enum eOSState { osUnknown,
-                osContinue,
-                osSchedule,
-                osChannels,
-                osTimers,
-                osRecordings,
-                osPlugin,
-                osSetup,
-                osCommands,
-                osPause,
-                osRecord,
-                osReplay,
-                osStopRecord,
-                osStopReplay,
-                osCancelEdit,
-                osSwitchDvb,
-                osBack,
-                osEnd,
-                os_User, // the following values can be used locally
-                osUser1,
-                osUser2,
-                osUser3,
-                osUser4,
-                osUser5,
-                osUser6,
-                osUser7,
-                osUser8,
-                osUser9,
-                osUser10,
-              };
+enum {
+                   //AARRGGBB
+  clrTransparent = 0x00000000,
+  clrGray50      = 0x7F000000, // 50% gray
+  clrBlack       = 0xFF000000,
+  clrRed         = 0xFFFC1414,
+  clrGreen       = 0xFF24FC24,
+  clrYellow      = 0xFFFCC024,
+  clrMagenta     = 0xFFB000FC,
+  clrBlue        = 0xFF0000FC,
+  clrCyan        = 0xFF00FCFC,
+  clrWhite       = 0xFFFCFCFC,
+  };
+
+enum eOsdError { oeOk,
+                 oeTooManyAreas,
+                 oeTooManyColors,
+                 oeBppNotSupported,
+                 oeAreasOverlap,
+                 oeWrongAlignment,
+                 oeOutOfMemory,
+                 oeUnknown,
+               };
+
+typedef uint32_t tColor;
+typedef uint8_t tIndex;
+
+class cPalette {
+private:
+  tColor color[MAXNUMCOLORS];
+  int bpp;
+  int maxColors, numColors;
+  bool modified;
+protected:
+  typedef tIndex tIndexes[MAXNUMCOLORS];
+public:
+  cPalette(int Bpp = 8);
+        ///< Initializes the palette with the given color depth.
+  int Bpp(void) { return bpp; }
+  void Reset(void);
+        ///< Resets the palette, making it contain no colors.
+  int Index(tColor Color);
+        ///< Returns the index of the given Color (the first color has index 0).
+        ///< If Color is not yet contained in this palette, it will be added if
+        ///< there is a free slot. If the color can't be added to this palette,
+        ///< 0 will be returned.
+  tColor Color(int Index) { return Index < maxColors ? color[Index] : 0; }
+        ///< Returns the color at the given Index. If Index is outside the valid
+        ///< range, 0 will be returned.
+  void SetBpp(int Bpp);
+        ///< Sets the color depth of this palette to the given value.
+        ///< The palette contents will be reset, so that it contains no colors.
+  void SetColor(int Index, tColor Color);
+        ///< Sets the palette entry at Index to Color. If Index is larger than
+        ///< the number of currently used entries in this palette, the entries
+        ///< in between will have undefined values.
+  const tColor *Colors(int &NumColors);
+        ///< Returns a pointer to the complete color table and stores the
+        ///< number of valid entries in NumColors. If no colors have been
+        ///< stored yet, NumColors will be set to 0 and the function will
+        ///< return NULL.
+  void Take(const cPalette &Palette, tIndexes *Indexes = NULL, tColor ColorFg = 0, tColor ColorBg = 0);
+        ///< Takes the colors from the given Palette and adds them to this palette,
+        ///< using existing entries if possible. If Indexes is given, it will be
+        ///< filled with the index values that each color of Palette has in this
+        ///< palette. If either of ColorFg or ColorBg is not zero, the first color
+        ///< in Palette will be taken as ColorBg, and the second color will become
+        ///< ColorFg.
+  };
+
+enum eTextAlignment { taCenter  = 0x00,
+                      taLeft    = 0x01,
+                      taRight   = 0x02,
+                      taTop     = 0x04,
+                      taBottom  = 0x08,
+                      taDefault = taTop | taLeft
+                    };
+
+class cBitmap : public cPalette {
+private:
+  tIndex *bitmap;
+  int x0, y0;
+  int width, height;
+  int dirtyX1, dirtyY1, dirtyX2, dirtyY2;
+public:
+  cBitmap(int Width, int Height, int Bpp, int X0 = 0, int Y0 = 0);
+       ///< Creates a bitmap with the given Width, Height and color depth (Bpp).
+       ///< X0 and Y0 define the offset at which this bitmap will be located on the OSD.
+       ///< All coordinates given in the other functions will be relative to
+       ///< this offset (unless specified otherwise).
+  cBitmap(const char *FileName);
+       ///< Creates a bitmap and loads an XPM image from the given file.
+  cBitmap(char *Xpm[]);
+       ///< Creates a bitmap from the given XPM data.
+  virtual ~cBitmap();
+  int X0(void) const { return x0; }
+  int Y0(void) const { return y0; }
+  int Width(void) const { return width; }
+  int Height(void) const { return height; }
+  void SetSize(int Width, int Height);
+       ///< Sets the size of this bitmap to the given values. Any previous
+       ///< contents of the bitmap will be lost. If Width and Height are the same
+       ///< as the current values, nothing will happen and the bitmap remains
+       ///< unchanged.
+  bool Contains(int x, int y) const;
+       ///< Returns true if this bitmap contains the point (x, y).
+  bool Intersects(int x1, int y1, int x2, int y2) const;
+       ///< Returns true if this bitmap intersects with the rectangle
+       ///< defined by the given coordinates.
+  bool Dirty(int &x1, int &y1, int &x2, int &y2);
+       ///< Tells whether there is a dirty area and returns the bounding
+       ///< rectangle of that area (relative to the bitmaps origin).
+  void Clean(void);
+       ///< Marks the dirty area as clean.
+  bool LoadXpm(const char *FileName);
+       ///< Calls SetXpm() with the data from the file FileName.
+       ///< Returns true if the operation was successful.
+  bool SetXpm(char *Xpm[]);
+       ///< Sets this bitmap to the given XPM data. Any previous bitmap or
+       ///< palette data will be overwritten with the new data.
+       ///< Returns true if the operation was successful.
+  void SetIndex(int x, int y, tIndex Index);
+       ///< Sets the index at the given coordinates to Index.
+       ///< Coordinates are relative to the bitmap's origin.
+  void DrawPixel(int x, int y, tColor Color);
+       ///< Sets the pixel at the given coordinates to the given Color, which is
+       ///< a full 32 bit ARGB value.
+       ///< If the coordinates are outside the bitmap area, no pixel will be set.
+  void DrawBitmap(int x, int y, const cBitmap &Bitmap, tColor ColorFg = 0, tColor ColorBg = 0);
+       ///< Sets the pixels in this bitmap with the data from the given
+       ///< Bitmap, putting the upper left corner of the Bitmap at (x, y).
+       ///< If ColorFg or ColorBg is given, the first palette entry of the Bitmap
+       ///< will be mapped to ColorBg and the second palette entry will be mapped to
+       ///< ColorFg (palette indexes are defined so that 0 is the background and
+       ///< 1 is the foreground color).
+  void DrawText(int x, int y, const char *s, tColor ColorFg, tColor ColorBg, const cFont *Font, int Width = 0, int Height = 0, int Alignment = taDefault);
+       ///< Draws the given string at coordinates (x, y) with the given foreground
+       ///< and background color and font. If Width and Height are given, the text
+       ///< will be drawn into a rectangle with the given size and the given
+       ///< Alignment (default is top-left).
+  void DrawRectangle(int x1, int y1, int x2, int y2, tColor Color);
+       ///< Draws a filled rectangle defined by the upper left (x1, y1) and lower right
+       ///< (x2, y2) corners with the given Color. If the rectangle covers the entire
+       ///< bitmap area, the color palette will be reset, so that new colors can be
+       ///< used for drawing.
+  void DrawEllipse(int x1, int y1, int x2, int y2, tColor Color, int Quadrants = 0);
+       ///< Draws a filled ellipse defined by the upper left (x1, y1) and lower right
+       ///< (x2, y2) corners with the given Color. Quadrants controls which parts of
+       ///< the ellipse are actually drawn:
+       ///< 0       draws the entire ellipse
+       ///< 1..4    draws only the first, second, third or fourth quadrant, respectively
+       ///< 5..8    draws the right, top, left or bottom half, respectively
+       ///< -1..-8  draws the inverted part of the given quadrant(s)
+       ///< If Quadrants is not 0, the coordinates are those of the actual area, not
+       ///< the full circle!
+  void DrawSlope(int x1, int y1, int x2, int y2, tColor Color, int Type);
+       ///< Draws a "slope" into the rectangle defined by the upper left (x1, y1) and
+       ///< lower right (x2, y2) corners with the given Color. Type controls the
+       ///< direction of the slope and which side of it will be drawn:
+       ///< 0: horizontal, rising,  lower
+       ///< 1: horizontal, rising,  upper
+       ///< 2: horizontal, falling, lower
+       ///< 3: horizontal, falling, upper
+       ///< 4: vertical,   rising,  lower
+       ///< 5: vertical,   rising,  upper
+       ///< 6: vertical,   falling, lower
+       ///< 7: vertical,   falling, upper
+  const tIndex *Data(int x, int y);
+       ///< Returns the address of the index byte at the given coordinates.
+  };
+
+struct tArea {
+  int x1, y1, x2, y2;
+  int bpp;
+  int Width(void) const { return x2 - x1 + 1; }
+  int Height(void) const { return y2 - y1 + 1; }
+  bool Intersects(const tArea &Area) const { return !(x2 < Area.x1 || x1 > Area.x2 || y2 < Area.y1 || y1 > Area.y2); }
+  };
+
+#define MAXOSDAREAS 16
 
 class cOsd {
 private:
-  enum { charWidth  = 12, // average character width
-         lineHeight = 27  // smallest text height
-       };
-#ifdef DEBUG_OSD
-  static WINDOW *window;
-  enum { MaxColorPairs = 16 };
-  static int colorPairs[MaxColorPairs];
-  static void SetColor(eDvbColor colorFg, eDvbColor colorBg = clrBackground);
-#else
-  static cOsdBase *osd;
-#endif
-  static int cols, rows;
+  static bool isOpen;
+  cBitmap *savedRegion;
+  cBitmap *bitmaps[MAXOSDAREAS];
+  int numBitmaps;
+  int left, top, width, height;
 public:
-  static void Initialize(void);
+  cOsd(int Left, int Top);
+       ///< Initializes the OSD with the given coordinates.
+       ///< By default it is assumed that the full area will be able to display
+       ///< full 32 bit graphics (ARGB with eight bit for each color and the alpha
+       ///< value, repectively). However, the actual hardware in use may not be
+       ///< able to display such a high resolution OSD, so there is an option to
+       ///< divide the full OSD area into several sub-areas with lower color depths
+       ///< and individual palettes. The sub-areas need not necessarily cover the
+       ///< entire OSD area, but only the OSD area actually covered by sub-areas
+       ///< will be available for drawing.
+       ///< At least one area must be defined in order to set the actual width and
+       ///< height of the OSD. Also, the caller must first try to use an area that
+       ///< consists of only one sub-area that covers the entire drawing space,
+       ///< and should require only the minimum necessary color depth. This is
+       ///< because a derived cOsd class may or may not be able to handle more
+       ///< than one area.
+  virtual ~cOsd();
+       ///< Shuts down the OSD.
+  static bool IsOpen(void) { return isOpen; }
+  int Left(void) { return left; }
+  int Top(void) { return top; }
+  int Width(void) { return width; }
+  int Height(void) { return height; }
+  cBitmap *GetBitmap(int Area);
+       ///< Returns a pointer to the bitmap for the given Area, or NULL if no
+       ///< such bitmap exists.
+  virtual eOsdError CanHandleAreas(const tArea *Areas, int NumAreas);
+       ///< Checks whether the OSD can display the given set of sub-areas.
+       ///< The return value indicates whether a call to SetAreas() with this
+       ///< set of areas will succeed. CanHandleAreas() may be called with an
+       ///< OSD that is already in use with other areas and will not interfere
+       ///< with the current operation of the OSD.
+       ///< A derived class must first call the base class CanHandleAreas()
+       ///< to check the basic conditions, like not overlapping etc.
+  virtual eOsdError SetAreas(const tArea *Areas, int NumAreas);
+       ///< Sets the sub-areas to the given areas.
+       ///< The return value indicates whether the operation was successful.
+       ///< If an error is reported, nothing will have changed and the previous
+       ///< OSD (if any) will still be displayed as before.
+       ///< If the OSD has been divided into several sub-areas, all areas that
+       ///< are part of the rectangle that surrounds a given drawing operation
+       ///< will be drawn into, with the proper offsets.
+  virtual void SaveRegion(int x1, int y1, int x2, int y2);
+       ///< Saves the region defined by the given coordinates for later restoration
+       ///< through RestoreRegion(). Only one saved region can be active at any
+       ///< given time.
+  virtual void RestoreRegion(void);
+       ///< Restores the region previously saved by a call to SaveRegion().
+       ///< If SaveRegion() has not been called before, nothing will happen.
+  virtual eOsdError SetPalette(const cPalette &Palette, int Area);
+       ///< Sets the Palette for the given Area (the first area is numbered 0).
+  virtual void DrawPixel(int x, int y, tColor Color);
+       ///< Sets the pixel at the given coordinates to the given Color, which is
+       ///< a full 32 bit ARGB value.
+       ///< If the OSD area has been divided into separate sub-areas, and the
+       ///< given coordinates don't fall into any of these sub-areas, no pixel will
+       ///< be set.
+  virtual void DrawBitmap(int x, int y, const cBitmap &Bitmap, tColor ColorFg = 0, tColor ColorBg = 0);
+       ///< Sets the pixels in the OSD with the data from the given
+       ///< Bitmap, putting the upper left corner of the Bitmap at (x, y).
+       ///< If ColorFg or ColorBg is given, the first palette entry of the Bitmap
+       ///< will be mapped to ColorBg and the second palette entry will be mapped to
+       ///< ColorFg (palette indexes are defined so that 0 is the background and
+       ///< 1 is the foreground color).
+  virtual void DrawText(int x, int y, const char *s, tColor ColorFg, tColor ColorBg, const cFont *Font, int Width = 0, int Height = 0, int Alignment = taDefault);
+       ///< Draws the given string at coordinates (x, y) with the given foreground
+       ///< and background color and font. If Width and Height are given, the text
+       ///< will be drawn into a rectangle with the given size and the given
+       ///< Alignment (default is top-left).
+  virtual void DrawRectangle(int x1, int y1, int x2, int y2, tColor Color);
+       ///< Draws a filled rectangle defined by the upper left (x1, y1) and lower right
+       ///< (x2, y2) corners with the given Color.
+  virtual void DrawEllipse(int x1, int y1, int x2, int y2, tColor Color, int Quadrants = 0);
+       ///< Draws a filled ellipse defined by the upper left (x1, y1) and lower right
+       ///< (x2, y2) corners with the given Color. Quadrants controls which parts of
+       ///< the ellipse are actually drawn:
+       ///< 0       draws the entire ellipse
+       ///< 1..4    draws only the first, second, third or fourth quadrant, respectively
+       ///< 5..8    draws the right, top, left or bottom half, respectively
+       ///< -1..-8  draws the inverted part of the given quadrant(s)
+       ///< If Quadrants is not 0, the coordinates are those of the actual area, not
+       ///< the full circle!
+  void DrawSlope(int x1, int y1, int x2, int y2, tColor Color, int Type);
+       ///< Draws a "slope" into the rectangle defined by the upper left (x1, y1) and
+       ///< lower right (x2, y2) corners with the given Color. Type controls the
+       ///< direction of the slope and which side of it will be drawn:
+       ///< 0: horizontal, rising,  lower
+       ///< 1: horizontal, rising,  upper
+       ///< 2: horizontal, falling, lower
+       ///< 3: horizontal, falling, upper
+       ///< 4: vertical,   rising,  lower
+       ///< 5: vertical,   rising,  upper
+       ///< 6: vertical,   falling, lower
+       ///< 7: vertical,   falling, upper
+  virtual void Flush(void);
+       ///< Actually commits all data to the OSD hardware.
+  };
+
+class cOsdProvider {
+private:
+  static cOsdProvider *osdProvider;
+protected:
+  virtual cOsd *CreateOsd(int Left, int Top) = 0;
+      ///< Returns a pointer to a newly created cOsd object, which will be located
+      ///< at the given coordinates.
+public:
+  cOsdProvider(void);
+      //XXX maybe parameter to make this one "sticky"??? (frame-buffer etc.)
+  virtual ~cOsdProvider();
+  static cOsd *NewOsd(int Left, int Top);
+      ///< Returns a pointer to a newly created cOsd object, which will be located
+      ///< at the given coordinates. When the cOsd object is no longer needed, the
+      ///< caller must delete it.
   static void Shutdown(void);
-  static cOsdBase *OpenRaw(int x, int y);
-       // Returns a raw OSD without any predefined windows or colors.
-       // If the "normal" OSD is currently in use, NULL will be returned.
-       // The caller must delete this object before the "normal" OSD is used again!
-  static void Open(int w, int h);
-  static void Close(void);
-  static void Clear(void);
-  static void Fill(int x, int y, int w, int h, eDvbColor color = clrBackground);
-  static void SetBitmap(int x, int y, const cBitmap &Bitmap);
-  static void ClrEol(int x, int y, eDvbColor color = clrBackground);
-  static int CellWidth(void);
-  static int LineHeight(void);
-  static int Width(unsigned char c);
-  static int WidthInCells(const char *s);
-  static eDvbFont SetFont(eDvbFont Font);
-  static void Text(int x, int y, const char *s, eDvbColor colorFg = clrWhite, eDvbColor colorBg = clrBackground);
-  static void Flush(void);
+      ///< Shuts down the OSD provider facility by deleting the current OSD provider.
   };
 
-class cOsdItem : public cListObject {
+class cTextScroller {
 private:
-  char *text;
-  int offset;
-  eOSState state;
-protected:
-  bool fresh;
-  bool userColor;
-  eDvbColor fgColor, bgColor;
+  cOsd *osd;
+  int left, top, width, height;
+  const cFont *font;
+  tColor colorFg, colorBg;
+  int offset, shown;
+  cTextWrapper textWrapper;
+  void DrawText(void);
 public:
-  cOsdItem(eOSState State = osUnknown);
-  cOsdItem(const char *Text, eOSState State = osUnknown);
-  virtual ~cOsdItem();
-  bool HasUserColor(void) { return userColor; }
-  void SetText(const char *Text, bool Copy = true);
-  void SetColor(eDvbColor FgColor, eDvbColor BgColor = clrBackground);
-  const char *Text(void) { return text; }
-  virtual void Display(int Offset = -1, eDvbColor FgColor = clrWhite, eDvbColor BgColor = clrBackground);
-  virtual void Set(void) {}
-  virtual eOSState ProcessKey(eKeys Key);
-  };
-
-class cOsdObject {
-  friend class cOsdMenu;
-private:
-  bool isMenu;
-protected:
-  bool needsFastResponse;
-public:
-  cOsdObject(bool FastResponse = false) { isMenu = false; needsFastResponse = FastResponse; }
-  virtual ~cOsdObject() {}
-  int Width(void) { return Interface->Width(); }
-  int Height(void) { return Interface->Height(); }
-  bool NeedsFastResponse(void) { return needsFastResponse; }
-  bool IsMenu(void) { return isMenu; }
-  virtual void Show(void) {}
-  virtual eOSState ProcessKey(eKeys Key) { return osUnknown; }
-  };
-
-class cOsdMenu : public cOsdObject, public cList<cOsdItem> {
-private:
-  char *title;
-  int cols[cInterface::MaxCols];
-  int first, current, marked;
-  cOsdMenu *subMenu;
-  const char *helpRed, *helpGreen, *helpYellow, *helpBlue;
-  char *status;
-  int digit;
-  bool hasHotkeys;
-protected:
-  bool visible;
-  const char *hk(const char *s);
-  void SetHasHotkeys(void);
-  virtual void Clear(void);
-  bool SpecialItem(int idx);
-  void SetCurrent(cOsdItem *Item);
-  void RefreshCurrent(void);
-  void DisplayCurrent(bool Current);
-  void CursorUp(void);
-  void CursorDown(void);
-  void PageUp(void);
-  void PageDown(void);
-  void Mark(void);
-  eOSState HotKey(eKeys Key);
-  eOSState AddSubMenu(cOsdMenu *SubMenu);
-  eOSState CloseSubMenu();
-  bool HasSubMenu(void) { return subMenu; }
-  void SetStatus(const char *s);
-  void SetTitle(const char *Title, bool ShowDate = true);
-  void SetHelp(const char *Red, const char *Green = NULL, const char *Yellow = NULL, const char *Blue = NULL);
-  virtual void Del(int Index);
-public:
-  cOsdMenu(const char *Title, int c0 = 0, int c1 = 0, int c2 = 0, int c3 = 0, int c4 = 0);
-  virtual ~cOsdMenu();
-  int Current(void) { return current; }
-  void Add(cOsdItem *Item, bool Current = false, cOsdItem *After = NULL);
-  void Ins(cOsdItem *Item, bool Current = false, cOsdItem *Before = NULL);
-  virtual void Display(void);
-  virtual eOSState ProcessKey(eKeys Key);
+  cTextScroller(void);
+  cTextScroller(cOsd *Osd, int Left, int Top, int Width, int Height, const char *Text, const cFont *Font, tColor ColorFg, tColor ColorBg);
+  void Set(cOsd *Osd, int Left, int Top, int Width, int Height, const char *Text, const cFont *Font, tColor ColorFg, tColor ColorBg);
+  void Reset(void);
+  int Left(void) { return left; }
+  int Top(void) { return top; }
+  int Width(void) { return width; }
+  int Height(void) { return height; }
+  int Total(void) { return textWrapper.Lines(); }
+  int Offset(void) { return offset; }
+  int Shown(void) { return shown; }
+  bool CanScroll(void) { return CanScrollUp() || CanScrollDown(); }
+  bool CanScrollUp(void) { return offset > 0; }
+  bool CanScrollDown(void) { return offset + shown < Total(); }
+  void Scroll(bool Up, bool Page);
   };
 
 #endif //__OSD_H

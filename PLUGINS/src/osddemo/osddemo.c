@@ -3,12 +3,12 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: osddemo.c 1.2 2002/12/13 15:02:01 kls Exp $
+ * $Id: osddemo.c 1.3 2004/05/16 09:28:51 kls Exp $
  */
 
 #include <vdr/plugin.h>
 
-static const char *VERSION        = "0.1.0";
+static const char *VERSION        = "0.1.1";
 static const char *DESCRIPTION    = "Demo of arbitrary OSD setup";
 static const char *MAINMENUENTRY  = "Osd Demo";
 
@@ -16,10 +16,10 @@ static const char *MAINMENUENTRY  = "Osd Demo";
 
 class cLineGame : public cOsdObject {
 private:
-  cOsdBase *osd;
+  cOsd *osd;
   int x;
   int y;
-  eDvbColor color;
+  tColor color;
 public:
   cLineGame(void);
   ~cLineGame();
@@ -41,15 +41,11 @@ cLineGame::~cLineGame()
 
 void cLineGame::Show(void)
 {
-  osd = cOsd::OpenRaw(100, 50);
+  osd = cOsdProvider::NewOsd(100, 50);
   if (osd) {
-     osd->Create(0, 0, 100, 200, 4);
-     osd->AddColor(clrBackground);
-     osd->AddColor(clrRed);
-     osd->AddColor(clrGreen);
-     osd->AddColor(clrYellow);
-     osd->AddColor(clrBlue);
-     osd->Clear();
+     tArea Area = { 0, 0, 99, 199,  4 };
+     osd->SetAreas(&Area, 1);
+     osd->DrawRectangle(0, 0, 99, 199, clrGray50);
      osd->Flush();
      }
 }
@@ -70,7 +66,7 @@ eOSState cLineGame::ProcessKey(eKeys Key)
        case kOk:     return osEnd;
        default: return state;
        }
-     osd->Fill(x, y, x + 3, y + 3, color);
+     osd->DrawRectangle(x, y, x + 3, y + 3, color);
      osd->Flush();
      state = osContinue;
      }
