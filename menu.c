@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.294 2004/03/06 10:13:15 kls Exp $
+ * $Id: menu.c 1.295 2004/03/07 09:40:34 kls Exp $
  */
 
 #include "menu.h"
@@ -3195,6 +3195,7 @@ bool cRecordControls::Start(cTimer *Timer, bool Pause)
            if (device == cTransferControl::ReceiverDevice())
               cControl::Shutdown(); // in case this device was used for Transfer Mode
            }
+        dsyslog("switching device %d to channel %d", device->DeviceNumber() + 1, channel->Number());
         if (!device->SwitchChannel(channel, false)) {
            cThread::EmergencyExit(true);
            return false;

@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.178 2004/02/29 14:21:22 kls Exp $
+ * $Id: vdr.c 1.179 2004/03/07 09:39:54 kls Exp $
  */
 
 #include <getopt.h>
@@ -571,7 +571,6 @@ int main(int argc, char *argv[])
                if (Timer->HasFlags(tfActive | tfVps) && !Timer->Recording() && !Timer->Pending() && Timer->Matches(Now + Setup.VpsMargin, true)) {
                   if (!Timer->InVpsMargin()) {
                      Timer->SetInVpsMargin(true);
-                     TimerInVpsMargin = true;
                      //XXX if not primary device has TP???
                      LastTimerChannel = Timer->Channel()->Number();
                      cRecordControls::Start(Timer); // will only switch the device
@@ -579,6 +578,8 @@ int main(int argc, char *argv[])
                   }
                else
                   Timer->SetInVpsMargin(false);
+               if (Timer->InVpsMargin())
+                  TimerInVpsMargin = true;
                }
            }
         // CAM control:

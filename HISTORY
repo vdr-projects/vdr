@@ -2714,7 +2714,7 @@ Video Disk Recorder Revision History
   whether an event is currently running (see MANUAL under "The "Schedule" Menu"
   for details).
 
-2004-03-05: Version 1.3.6
+2004-03-07: Version 1.3.6
 
 - Completed the Finnish OSD texts (thanks to Rolf Ahrenberg).
 - Fixed some descriptor handling in 'libsi' (thanks to Stéphane Esté-Gracias).
@@ -2722,3 +2722,6 @@ Video Disk Recorder Revision History
 - Fixed assigning events to timers (they no longer get "stuck").
 - Added log entries whenever the running status of an event changes (currently
   only logging the first 30 channels).
+- Fixed handling timers in VPS margin if the EPG scan is turned on (the EPG scan
+  switched the device away from the channel, so it wouldn't see the change of
+  the running status).
