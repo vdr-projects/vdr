@@ -506,7 +506,7 @@ Video Disk Recorder Revision History
 - Fixed removing recordings with Lifetime = 99.
 - Improved channel switching.
 
-2001-06-14: Version 0.82
+2001-06-15: Version 0.82
 
 - Increased timeout until reporting "broken video data stream" when recording.
 - Modified method of turning off PIDs when switching channel.
@@ -526,4 +526,5 @@ Video Disk Recorder Revision History
 
   This will create packets for the second audio track that are small enough
   to multiplex smoothly with the video data.
-
+- Fixed a bug in the editing mechanism (didn't work with recordings that
+  consist of more than one data file).

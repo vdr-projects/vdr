@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.73 2001/06/14 15:10:16 kls Exp $
+ * $Id: dvbapi.c 1.74 2001/06/15 14:11:21 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -595,6 +595,22 @@ void cRecordBuffer::Output(void)
   dsyslog(LOG_INFO, "output thread ended (pid=%d)", getpid());
 }
 
+// --- ReadFrame -------------------------------------------------------------
+
+int ReadFrame(int f, uchar *b, int Length, int Max)
+{
+  if (Length == -1)
+     Length = Max; // this means we read up to EOF (see cIndex)
+  else if (Length > Max) {
+     esyslog(LOG_ERR, "ERROR: frame larger than buffer (%d > %d)", Length, Max);
+     Length = Max;
+     }
+  int r = read(f, b, Length);
+  if (r < 0)
+     LOG_ERROR;
+  return r;
+}
+
 // --- cReplayBuffer ---------------------------------------------------------
 
 class cReplayBuffer : public cRingBuffer {
@@ -614,7 +630,6 @@ private:
   bool NextFile(uchar FileNumber = 0, int FileOffset = -1);
   void Clear(bool Block = false);
   void Close(void);
-  int ReadFrame(uchar *b, int Length, int Max);
   void StripAudioPackets(uchar *b, int Length, uchar Except = 0x00);
   void DisplayFrame(uchar *b, int Length);
   int Resume(void);
@@ -708,7 +723,7 @@ void cReplayBuffer::Input(void)
                  }
               lastIndex = Index;
               playIndex = -1;
-              r = ReadFrame(b, Length, sizeof(b));
+              r = ReadFrame(replayFile, b, Length, sizeof(b));
               StripAudioPackets(b, r);
               }
            else {
@@ -718,7 +733,7 @@ void cReplayBuffer::Input(void)
               int FileOffset, Length;
               if (!(index->Get(playIndex, &FileNumber, &FileOffset, NULL, &Length) && NextFile(FileNumber, FileOffset)))
                  break;
-              r = ReadFrame(b, Length, sizeof(b));
+              r = ReadFrame(replayFile, b, Length, sizeof(b));
               StripAudioPackets(b, r, audioTrack);
               }
            if (r > 0) {
@@ -773,22 +788,6 @@ void cReplayBuffer::Output(void)
         }
 
   dsyslog(LOG_INFO, "output thread ended (pid=%d)", getpid());
-}
-
-int cReplayBuffer::ReadFrame(uchar *b, int Length, int Max)
-{
-  if (Length > Max) {
-     esyslog(LOG_ERR, "ERROR: frame larger than buffer (%d > %d)", Length, Max);
-     Length = Max;
-     }
-  int r = read(replayFile, b, Length);
-  if (r >= 0) {
-     if (r != Length)
-        esyslog(LOG_ERR, "ERROR: got %d byte while reading %d", r, Length);
-     return r;
-     }
-  LOG_ERROR;
-  return -1;
 }
 
 void cReplayBuffer::StripAudioPackets(uchar *b, int Length, uchar Except)
@@ -988,7 +987,7 @@ void cReplayBuffer::Goto(int Index, bool Still)
         stillIndex = Index;
         playIndex = -1;
         uchar b[MAXFRAMESIZE];
-        int r = ReadFrame(b, Length, sizeof(b));
+        int r = ReadFrame(replayFile, b, Length, sizeof(b));
         if (r > 0)
            DisplayFrame(b, r);
         fileOffset += Length;
@@ -1230,16 +1229,9 @@ void cCuttingBuffer::Action(void)
                  CurrentFileNumber = FileNumber;
                  }
               if (fromFile >= 0) {
-                 if (Length <= (int)sizeof(buffer)) {
-                    if (read(fromFile, buffer, Length) < 0) {
-                       LOG_ERROR;
-                       break;
-                       }
-                    }
-                 else {
-                    esyslog(LOG_ERR, "ERROR: frame larger than buffer (%d > %d)", Length, sizeof(buffer));
+                 Length = ReadFrame(fromFile, buffer,  Length, sizeof(buffer));
+                 if (Length < 0)
                     break;
-                    }
                  }
               else
                  break;
