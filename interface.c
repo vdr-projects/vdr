@@ -4,7 +4,7 @@
  * See the main source file 'osm.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.c 1.2 2000/03/06 19:45:03 kls Exp $
+ * $Id: interface.c 1.3 2000/04/15 17:38:11 kls Exp $
  */
 
 #include "interface.h"
@@ -15,10 +15,10 @@
 #define MenuColumns 40
 
 #ifndef DEBUG_REMOTE
-cRcIo RcIo("/dev/ttyS1");//XXX
+cRcIo RcIo("/dev/ttyS1");
 #endif
 
-cDvbOsd DvbOsd; //XXX member of cInterface???
+cDvbApi DvbApi; //XXX member of cInterface???
 
 cInterface Interface;
 
@@ -38,19 +38,22 @@ void cInterface::Init(void)
 void cInterface::Open(void)
 {
   if (!open++)
-     DvbOsd.Open(MenuColumns, MenuLines);
+     DvbApi.Open(MenuColumns, MenuLines);
 }
 
 void cInterface::Close(void)
 {
+  if (open == 1)
+     Clear();
   if (!--open)
-     DvbOsd.Close();
+     DvbApi.Close();
 }
 
 unsigned int cInterface::GetCh(void)
 {
 #ifdef DEBUG_REMOTE
-  return getch();
+  int c = getch();
+  return (c > 0) ? c : 0;
 #else
 //XXX #ifdef DEBUG_OSD
 //XXX   wrefresh(window);//XXX
@@ -80,13 +83,13 @@ eKeys cInterface::Wait(int Seconds)
 void cInterface::Clear(void)
 {
   if (open)
-     DvbOsd.Clear();
+     DvbApi.Clear();
 }
 
 void cInterface::ClearEol(int x, int y, eDvbColor Color)
 {
   if (open)
-     DvbOsd.ClrEol(x, y, Color);
+     DvbApi.ClrEol(x, y, Color);
 }
 
 void cInterface::SetCols(int *c)
@@ -101,7 +104,7 @@ void cInterface::SetCols(int *c)
 void cInterface::Write(int x, int y, const char *s, eDvbColor FgColor, eDvbColor BgColor)
 {
   if (open)
-     DvbOsd.Text(x, y, s, FgColor, BgColor);
+     DvbApi.Text(x, y, s, FgColor, BgColor);
 }
 
 void cInterface::WriteText(int x, int y, const char *s, bool Current)
@@ -187,8 +190,8 @@ void cInterface::HelpButton(int Index, const char *Text, eDvbColor FgColor, eDvb
      int l = (w - strlen(Text)) / 2;
      if (l < 0)
         l = 0;
-     DvbOsd.Fill(Index * w, -1, w, 1, BgColor);
-     DvbOsd.Text(Index * w + l, -1, Text, FgColor, BgColor);
+     DvbApi.Fill(Index * w, -1, w, 1, BgColor);
+     DvbApi.Text(Index * w + l, -1, Text, FgColor, BgColor);
      }
 }
 

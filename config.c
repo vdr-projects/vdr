@@ -4,7 +4,7 @@
  * See the main source file 'osm.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.2 2000/03/05 16:14:27 kls Exp $
+ * $Id: config.c 1.3 2000/04/15 12:48:00 kls Exp $
  */
 
 #include "config.h"
@@ -16,28 +16,36 @@
 // -- cKeys ------------------------------------------------------------------
 
 tKey keyTable[] = { // "Up" and "Down" must be the first two keys!
-                    { kUp,     "Up",     0 },
-                    { kDown,   "Down",   0 },
-                    { kMenu,   "Menu",   0 },
-                    { kOk,     "Ok",     0 },
-                    { kBack,   "Back",   0 },
-                    { kLeft,   "Left",   0 },
-                    { kRight,  "Right",  0 },
-                    { k0,      "0",      0 },
-                    { k1,      "1",      0 },
-                    { k2,      "2",      0 },
-                    { k3,      "3",      0 },
-                    { k4,      "4",      0 },
-                    { k5,      "5",      0 },
-                    { k6,      "6",      0 },
-                    { k7,      "7",      0 },
-                    { k8,      "8",      0 },
-                    { k9,      "9",      0 },
-                    { kRed,    "Red",    0 },
-                    { kGreen,  "Green",  0 },
-                    { kYellow, "Yellow", 0 },
-                    { kBlue,   "Blue",   0 },
-                    { kNone,   "",       0 },
+                    { kUp,            "Up",            0 },
+                    { kDown,          "Down",          0 },
+                    { kMenu,          "Menu",          0 },
+                    { kOk,            "Ok",            0 },
+                    { kBack,          "Back",          0 },
+                    { kLeft,          "Left",          0 },
+                    { kRight,         "Right",         0 },
+                    { k0,             "0",             0 },
+                    { k1,             "1",             0 },
+                    { k2,             "2",             0 },
+                    { k3,             "3",             0 },
+                    { k4,             "4",             0 },
+                    { k5,             "5",             0 },
+                    { k6,             "6",             0 },
+                    { k7,             "7",             0 },
+                    { k8,             "8",             0 },
+                    { k9,             "9",             0 },
+                    { kRed,           "Red",           0 },
+                    { kGreen,         "Green",         0 },
+                    { kYellow,        "Yellow",        0 },
+                    { kBlue,          "Blue",          0 },
+                    { kRecord,        "Record",        0 },
+                    { kPause,         "Pause",         0 },
+                    { kStop,          "Stop",          0 },
+                    { kBegin,         "Begin",         0 },
+                    { kSearchForward, "SearchForward", 0 },
+                    { kSearchBack,    "SearchBack",    0 },
+                    { kSkipForward,   "SkipForward",   0 },
+                    { kSkipBack,      "SkipBack",      0 },
+                    { kNone,          "",              0 },
                   };
 
 cKeys::cKeys(void)
@@ -88,7 +96,7 @@ bool cKeys::Load(char *FileName)
                               }
                            }
                         if (Name) {
-                           fprintf(stderr, "unknown key in %s, line %d\n", fileName, line);
+                           esyslog(LOG_ERR, "unknown key in %s, line %d\n", fileName, line);
                            result = false;
                            break;
                            }
@@ -96,17 +104,17 @@ bool cKeys::Load(char *FileName)
                     }
                  continue;
                  }
-              fprintf(stderr, "error in %s, line %d\n", fileName, line);
+              esyslog(LOG_ERR, "error in %s, line %d\n", fileName, line);
               result = false;
               break;
               }
         fclose(f);
         }
      else
-        fprintf(stderr, "can't open '%s'\n", fileName);
+        esyslog(LOG_ERR, "can't open '%s'\n", fileName);
      }
   else
-     fprintf(stderr, "no key configuration file name supplied!\n");
+     esyslog(LOG_ERR, "no key configuration file name supplied!\n");
   return result;
 }
 
@@ -172,12 +180,14 @@ cChannel::cChannel(const cChannel *Channel)
   srate        = Channel ? Channel->srate        : 27500;
   vpid         = Channel ? Channel->vpid         : 255;
   apid         = Channel ? Channel->apid         : 256;
+  ca           = Channel ? Channel->ca           : 0;
+  pnr          = Channel ? Channel->pnr          : 0;
 }
 
 bool cChannel::Parse(char *s)
 {
   char *buffer = NULL;
-  if (7 == sscanf(s, "%a[^:]:%d:%c:%d:%d:%d:%d", &buffer, &frequency, &polarization, &diseqc, &srate, &vpid, &apid)) {
+  if (9 == sscanf(s, "%a[^:]:%d:%c:%d:%d:%d:%d:%d:%d", &buffer, &frequency, &polarization, &diseqc, &srate, &vpid, &apid, &ca, &pnr)) {
      strncpy(name, buffer, MaxChannelName - 1);
      name[strlen(buffer)] = 0;
      delete buffer;
@@ -188,20 +198,21 @@ bool cChannel::Parse(char *s)
 
 bool cChannel::Save(FILE *f)
 {
-  return fprintf(f, "%s:%d:%c:%d:%d:%d:%d\n", name, frequency, polarization, diseqc, srate, vpid, apid) > 0;
+  return fprintf(f, "%s:%d:%c:%d:%d:%d:%d:%d:%d\n", name, frequency, polarization, diseqc, srate, vpid, apid, ca, pnr) > 0;
 }
 
 bool cChannel::Switch(void)
 {
-  if (!ChannelLocked) {
+  if (!DvbApi.Recording()) {
      isyslog(LOG_INFO, "switching to channel %d", Index() + 1);
      CurrentChannel = Index();
      Interface.DisplayChannel(CurrentChannel + 1, name);
      for (int i = 3; --i;) {
-         if (DvbSetChannel(frequency, polarization, diseqc, srate, vpid, apid))
+         if (DvbApi.SetChannel(frequency, polarization, diseqc, srate, vpid, apid, ca, pnr))
             return true;
          esyslog(LOG_ERR, "retrying");
          }
+     return false;
      }
   Interface.Info("Channel locked (recording)!");
   return false;
@@ -215,20 +226,23 @@ bool cChannel::SwitchTo(int i)
 
 // -- cTimer -----------------------------------------------------------------
 
-cTimer::cTimer(void)
+cTimer::cTimer(bool Instant)
 {
   startTime = stopTime = 0;
   recording = false;
-  active = 1;
+  active = Instant;
   channel = CurrentChannel + 1;
-  day = 1; //XXX today!
-  start = 0; //XXX now!
-  stop = 0; //XXX now + 2h!
+  time_t t = time(NULL);
+  struct tm *now = localtime(&t);
+  day = now->tm_mday;
+  start = now->tm_hour * 100 + now->tm_min;
+  stop = start + 200; // "instant recording" records 2 hours by default
+  if (stop >= 2400)
+     stop -= 2400;
 //TODO VPS???
-  quality = 'H';
   priority = 99;
   lifetime = 99;
-  *file = 0;
+  strcpy(file, Instant ? "instant" : "");
 }
 
 int cTimer::TimeToInt(int t)
@@ -286,7 +300,7 @@ bool cTimer::Parse(char *s)
 {
   char *buffer1 = NULL;
   char *buffer2 = NULL;
-  if (9 == sscanf(s, "%d:%d:%a[^:]:%d:%d:%c:%d:%d:%as", &active, &channel, &buffer1, &start, &stop, &quality, &priority, &lifetime, &buffer2)) {
+  if (8 == sscanf(s, "%d:%d:%a[^:]:%d:%d:%d:%d:%as", &active, &channel, &buffer1, &start, &stop, &priority, &lifetime, &buffer2)) {
      day = ParseDay(buffer1);
      strncpy(file, buffer2, MaxFileName - 1);
      file[strlen(buffer2)] = 0;
@@ -299,7 +313,7 @@ bool cTimer::Parse(char *s)
 
 bool cTimer::Save(FILE *f)
 {
-  return fprintf(f, "%d:%d:%s:%d:%d:%c:%d:%d:%s\n", active, channel, PrintDay(day), start, stop, quality, priority, lifetime, file) > 0;
+  return fprintf(f, "%d:%d:%s:%d:%d:%d:%d:%s\n", active, channel, PrintDay(day), start, stop, priority, lifetime, file) > 0;
 }
 
 bool cTimer::IsSingleEvent(void)
@@ -383,7 +397,6 @@ cKeys Keys;
 // -- cChannels --------------------------------------------------------------
 
 int CurrentChannel = 0;
-bool ChannelLocked = false;
 
 cChannels Channels;
 

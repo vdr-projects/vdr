@@ -22,9 +22,10 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: osm.c 1.2 2000/03/05 17:18:15 kls Exp $
+ * $Id: osm.c 1.3 2000/04/15 14:04:21 kls Exp $
  */
 
+#include <signal.h>
 #include "config.h"
 #include "interface.h"
 #include "menu.h"
@@ -36,6 +37,13 @@
 #else
 #define KEYS_CONF "keys.conf"
 #endif
+
+static int Interrupted = 0;
+
+void SignalHandler(int signum)
+{
+  Interrupted = signum;
+}
 
 int main(int argc, char *argv[])
 {
@@ -50,69 +58,93 @@ int main(int argc, char *argv[])
 
   cChannel::SwitchTo(CurrentChannel);
 
+  if (signal(SIGHUP,  SignalHandler) == SIG_IGN) signal(SIGHUP,  SIG_IGN);
+  if (signal(SIGINT,  SignalHandler) == SIG_IGN) signal(SIGINT,  SIG_IGN);
+  if (signal(SIGTERM, SignalHandler) == SIG_IGN) signal(SIGTERM, SIG_IGN);
+
   cMenuMain *Menu = NULL;
   cTimer *Timer = NULL;
   cRecording *Recording = NULL;
 
-  for (;;) {
-      AssertFreeDiskSpace();
-      if (!Recording && !Timer && (Timer = cTimer::GetMatch()) != NULL) {
-         DELETENULL(Menu);
-         // make sure the timer won't be deleted:
-         Timer->SetRecording(true);
-         // switch to channel:
-         cChannel::SwitchTo(Timer->channel - 1);
-         ChannelLocked = true;
-         // start recording:
-         Recording = new cRecording(Timer);
-         if (!Recording->Record())
-            DELETENULL(Recording);
-         }
-      if (Timer && !Timer->Matches()) {
-         // stop recording:
-         if (Recording) {
-            Recording->Stop();
-            DELETENULL(Recording);
-            }
-         // release channel and timer:
-         ChannelLocked = false;
-         Timer->SetRecording(false);
-         // clear single event timer:
-         if (Timer->IsSingleEvent()) {
-            DELETENULL(Menu); // must make sure no menu uses it
-            isyslog(LOG_INFO, "deleting timer %d", Timer->Index() + 1);
-            Timers.Del(Timer);
-            Timers.Save();
-            }
-         Timer = NULL;
-         }
-      eKeys key = Interface.GetKey();
-      if (Menu) {
-         switch (Menu->ProcessKey(key)) {
-           default: if (key != kMenu)
-                       break;
-           case osBack:
-           case osEnd: DELETENULL(Menu);
-                       break;
+  while (!Interrupted) {
+        AssertFreeDiskSpace();
+        if (!Recording && !Timer && (Timer = cTimer::GetMatch()) != NULL) {
+           DELETENULL(Menu);
+           // make sure the timer won't be deleted:
+           Timer->SetRecording(true);
+           // switch to channel:
+           cChannel::SwitchTo(Timer->channel - 1);
+           // start recording:
+           Recording = new cRecording(Timer);
+           if (!Recording->Record())
+              DELETENULL(Recording);
            }
-         }
-      else {
-         switch (key) {
-           case kMenu: Menu = new cMenuMain;
-                       Menu->Display();
-                       break;
-           case kUp:
-           case kDown: {
-                         int n = CurrentChannel + (key == kUp ? 1 : -1);
-                         cChannel *channel = Channels.Get(n);
-                         if (channel)
-                            channel->Switch();
-                       }
-                       break;
-           default:    break;
+        if (Timer && !Timer->Matches()) {
+           // stop recording:
+           if (Recording) {
+              Recording->Stop();
+              DELETENULL(Recording);
+              }
+           // release timer:
+           Timer->SetRecording(false);
+           // clear single event timer:
+           if (Timer->IsSingleEvent()) {
+              DELETENULL(Menu); // must make sure no menu uses it
+              isyslog(LOG_INFO, "deleting timer %d", Timer->Index() + 1);
+              Timers.Del(Timer);
+              Timers.Save();
+              }
+           Timer = NULL;
            }
-         }
-      }
+        eKeys key = Interface.GetKey();
+        if (Menu) {
+           switch (Menu->ProcessKey(key)) {
+             default: if (key != kMenu)
+                         break;
+             case osBack:
+             case osEnd: DELETENULL(Menu);
+                         break;
+             }
+           }
+        else {
+           switch (key) {
+             // Record/Replay Control:
+             case kBegin:         DvbApi.Skip(-INT_MAX); break;
+             case kRecord:        if (!DvbApi.Recording()) {
+                                     cTimer *timer = new cTimer(true);
+                                     Timers.Add(timer);
+                                     Timers.Save();
+                                     }
+                                  else
+                                     Interface.Error("Already recording!");
+                                  break;
+             case kPause:         DvbApi.PauseReplay(); break;
+             case kStop:          DvbApi.StopReplay(); break;
+             case kSearchBack:    DvbApi.FastRewind(); break;
+             case kSearchForward: DvbApi.FastForward(); break;
+             case kSkipBack:      DvbApi.Skip(-60); break;
+             case kSkipForward:   DvbApi.Skip(60); break;
+             // Menu Control:
+             case kMenu: Menu = new cMenuMain;
+                         Menu->Display();
+                         break;
+             case kUp:
+             case kDown: {
+                           int n = CurrentChannel + (key == kUp ? 1 : -1);
+                           cChannel *channel = Channels.Get(n);
+                           if (channel)
+                              channel->Switch();
+                         }
+                         break;
+             default:    break;
+             }
+           }
+        }
+  isyslog(LOG_INFO, "caught signal %d", Interrupted);
+  DvbApi.StopRecord();
+  DvbApi.StopReplay();
+  //TODO kill any remaining sub-processes!
+  isyslog(LOG_INFO, "exiting", Interrupted);
   closelog();
-  return 1;
+  return 0;
 }

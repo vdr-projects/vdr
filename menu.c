@@ -4,7 +4,7 @@
  * See the main source file 'osm.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.2 2000/03/05 15:37:31 kls Exp $
+ * $Id: menu.c 1.3 2000/04/15 15:07:36 kls Exp $
  */
 
 #include "menu.h"
@@ -502,13 +502,15 @@ cMenuEditChannel::cMenuEditChannel(int Index)
   channel = Channels.Get(Index);
   if (channel) {
      data = *channel;
-     Add(new cMenuEditStrItem("Name",          data.name, sizeof(data.name), FileNameChars));
-     Add(new cMenuEditIntItem("Frequency",    &data.frequency, 10000, 13000)); //TODO exact limits???
-     Add(new cMenuEditChrItem("Polarization", &data.polarization, "hv"));
-     Add(new cMenuEditIntItem("Diseqc",       &data.diseqc, 0, 10)); //TODO exact limits???
-     Add(new cMenuEditIntItem("Srate",        &data.srate, 22000, 27500)); //TODO exact limits - toggle???
-     Add(new cMenuEditIntItem("Vpid",         &data.vpid, 0, 10000)); //TODO exact limits???
-     Add(new cMenuEditIntItem("Apid",         &data.apid, 0, 10000)); //TODO exact limits???
+     Add(new cMenuEditStrItem( "Name",          data.name, sizeof(data.name), FileNameChars));
+     Add(new cMenuEditIntItem( "Frequency",    &data.frequency, 10000, 13000)); //TODO exact limits???
+     Add(new cMenuEditChrItem( "Polarization", &data.polarization, "hv"));
+     Add(new cMenuEditIntItem( "Diseqc",       &data.diseqc, 0, 10)); //TODO exact limits???
+     Add(new cMenuEditIntItem( "Srate",        &data.srate, 22000, 27500)); //TODO exact limits - toggle???
+     Add(new cMenuEditIntItem( "Vpid",         &data.vpid, 0, 10000)); //TODO exact limits???
+     Add(new cMenuEditIntItem( "Apid",         &data.apid, 0, 10000)); //TODO exact limits???
+     Add(new cMenuEditBoolItem("CA",           &data.ca));
+     Add(new cMenuEditIntItem( "Pnr",          &data.pnr, 0, 10000)); //TODO exact limits???
      }
 }
 
@@ -599,7 +601,7 @@ eOSState cMenuChannels::Edit(void)
 {
   if (HasSubMenu() || Count() == 0)
      return osContinue;
-  isyslog(LOG_INFO, "editing timer %d", Current() + 1);
+  isyslog(LOG_INFO, "editing channel %d", Current() + 1);
   return AddSubMenu(new cMenuEditChannel(Current()));
 }
 
@@ -711,23 +713,24 @@ private:
   cTimer *timer;
   cTimer data;
 public:
-  cMenuEditTimer(int Index);
+  cMenuEditTimer(int Index, bool New = false);
   virtual eOSState ProcessKey(eKeys Key);
   };
 
-cMenuEditTimer::cMenuEditTimer(int Index)
+cMenuEditTimer::cMenuEditTimer(int Index, bool New)
 :cOsdMenu("Edit Timer", 10)
 {
   timer = Timers.Get(Index);
   if (timer) {
      data = *timer;
+     if (New)
+        data.active = 1;
      Add(new cMenuEditBoolItem("Active",       &data.active));
      Add(new cMenuEditChanItem("Channel",      &data.channel)); 
      Add(new cMenuEditDayItem( "Day",          &data.day)); 
      Add(new cMenuEditTimeItem("Start",        &data.start)); 
      Add(new cMenuEditTimeItem("Stop",         &data.stop)); 
 //TODO VPS???
-     Add(new cMenuEditChrItem( "Quality",      &data.quality, DvbQuality));
      Add(new cMenuEditIntItem( "Priority",     &data.priority, 0, 99));
      Add(new cMenuEditIntItem( "Lifetime",     &data.lifetime, 0, 99));
      Add(new cMenuEditStrItem( "File",          data.file, sizeof(data.file), FileNameChars));
@@ -843,7 +846,7 @@ eOSState cMenuTimers::New(void)
   Add(new cMenuTimerItem(timer->Index()/*XXX*/, timer), true);
   Timers.Save();
   isyslog(LOG_INFO, "timer %d added", timer->Index() + 1);
-  return AddSubMenu(new cMenuEditTimer(Current()));
+  return AddSubMenu(new cMenuEditTimer(Current(), true));
 }
 
 eOSState cMenuTimers::Del(void)

@@ -4,7 +4,7 @@
  * See the main source file 'osm.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.2 2000/03/05 16:14:05 kls Exp $
+ * $Id: tools.h 1.3 2000/04/15 15:09:47 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -13,18 +13,28 @@
 #include <stdio.h>
 #include <syslog.h>
 
-//TODO
-#define dsyslog syslog
-#define esyslog syslog
-#define isyslog syslog
+extern int SysLogLevel;
+
+#define esyslog if (SysLogLevel > 0) syslog
+#define isyslog if (SysLogLevel > 1) syslog
+#define dsyslog if (SysLogLevel > 2) syslog
+
+#define LOG_ERROR         esyslog(LOG_ERR, "ERROR (%s,%d): %s", __FILE__, __LINE__, strerror(errno))
+#define LOG_ERROR_STR(s)  esyslog(LOG_ERR, "ERROR: %s: %s", s, strerror(errno));
 
 #define SECSINDAY  86400
 
 #define DELETENULL(p) (delete (p), p = NULL)
 
+void writechar(int filedes, char c);
+void writeint(int filedes, int n);
+char readchar(int filedes);
+bool readint(int filedes, int &n);
 char *readline(FILE *f);
 int time_ms(void);
-bool MakeDirs(const char *FileName);
+void delay_ms(int ms);
+bool MakeDirs(const char *FileName, bool IsDirectory = false);
+bool RemoveFileOrDir(const char *FileName);
 
 class cListObject {
 private:
@@ -47,7 +57,7 @@ public:
   virtual ~cListBase();
   void Add(cListObject *Object);
   void Del(cListObject *Object);
-  void Move(int From, int To);
+  virtual void Move(int From, int To);
   void Move(cListObject *From, cListObject *To);
   void Clear(void);
   cListObject *Get(int Index);

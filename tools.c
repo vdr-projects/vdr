@@ -4,17 +4,45 @@
  * See the main source file 'osm.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.2 2000/03/05 14:33:58 kls Exp $
+ * $Id: tools.c 1.3 2000/04/15 15:10:05 kls Exp $
  */
 
+#define _GNU_SOURCE
 #include "tools.h"
+#include <dirent.h>
 #include <errno.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
 #include <sys/time.h>
+#include <unistd.h>
 
 #define MaxBuffer 1000
+
+int SysLogLevel = 3;
+
+void writechar(int filedes, char c)
+{
+  write(filedes, &c, sizeof(c));
+}
+
+void writeint(int filedes, int n)
+{
+  write(filedes, &n, sizeof(n));
+}
+
+char readchar(int filedes)
+{
+  char c;
+  read(filedes, &c, 1);
+  return c;
+}
+
+bool readint(int filedes, int &n)
+{
+  //XXX timeout!!
+  return read(filedes, &n, sizeof(n));
+}
 
 char *readline(FILE *f)
 {
@@ -30,34 +58,81 @@ char *readline(FILE *f)
 
 int time_ms(void)
 {
+  static time_t t0 = 0;
   struct timeval t;
-  if (gettimeofday(&t, NULL) == 0)
-     return t.tv_sec * 1000 + t.tv_usec / 1000;
+  if (gettimeofday(&t, NULL) == 0) {
+     if (t0 == 0)
+        t0 = t.tv_sec; // this avoids an overflow (we only work with deltas)
+     return (t.tv_sec - t0) * 1000 + t.tv_usec / 1000;
+     }
   return 0;
 }
 
-bool MakeDirs(const char *FileName)
+void delay_ms(int ms)
+{
+  int t0 = time_ms();
+  while (time_ms() - t0 < ms)
+        ;
+}
+
+bool MakeDirs(const char *FileName, bool IsDirectory)
 {
   bool result = true;
   char *s = strdup(FileName);
   char *p = s;
   if (*p == '/')
      p++;
-  while ((p = strchr(p, '/')) != NULL) {
-        *p = 0;
+  while ((p = strchr(p, '/')) != NULL || IsDirectory) {
+        if (p)
+           *p = 0;
         struct stat fs;
         if (stat(s, &fs) != 0 || !S_ISDIR(fs.st_mode)) {
            isyslog(LOG_INFO, "creating directory %s", s);
            if (mkdir(s, S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH) == -1) {
-              esyslog(LOG_ERR, "ERROR while creating directory %s: %s", s, strerror(errno));
+              esyslog(LOG_ERR, "ERROR: %s: %s", s, strerror(errno));
               result = false;
               break;
               }
            }
-        *p++ = '/';
+        if (p)
+           *p++ = '/';
+        else
+           break;
         }
   delete s;
   return result;
+}
+
+bool RemoveFileOrDir(const char *FileName)
+{
+  struct stat st;
+  if (stat(FileName, &st) == 0) {
+     if (S_ISDIR(st.st_mode)) {
+        DIR *d = opendir(FileName);
+        if (d) {
+           struct dirent *e;
+           while ((e = readdir(d)) != NULL) {
+                 if (strcmp(e->d_name, ".") && strcmp(e->d_name, "..")) {
+                    char *buffer;
+                    asprintf(&buffer, "%s/%s", FileName, e->d_name);
+                    if (remove(buffer) < 0)
+                       esyslog(LOG_ERR, "ERROR: %s: %s", buffer, strerror(errno));
+                    delete buffer;
+                    }
+                 }
+           closedir(d);
+           }
+        else {
+           esyslog(LOG_ERR, "ERROR: %s: %s", FileName, strerror(errno));
+           return false;
+           }
+        }
+     if (remove(FileName) == 0)
+        return true;
+     }
+  else
+     esyslog(LOG_ERR, "ERROR: %s: %s", FileName, strerror(errno));
+  return false;
 }
 
 // --- cListObject -----------------------------------------------------------

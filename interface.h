@@ -4,7 +4,7 @@
  * See the main source file 'osm.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.h 1.2 2000/02/27 14:54:02 kls Exp $
+ * $Id: interface.h 1.3 2000/03/19 14:03:28 kls Exp $
  */
 
 #ifndef __INTERFACE_H
@@ -45,5 +45,6 @@ public:
   };
 
 extern cInterface Interface;
+extern cDvbApi DvbApi; //XXX member of cInterface???
 
 #endif //__INTERFACE_H

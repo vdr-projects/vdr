@@ -36,34 +36,13 @@ about that driver). For example, if the DVB driver was
 extracted into the directory /home/kls/vdr/DVB, then this
 package should be extracted into /home/kls/vdr/OSM.
 
-In order for the menu colors to work correctly you may want
-to replace the function RGB2YUV() in DVB/driver/dvb.c with
-
-static u32 RGB2YUV(u16 R, u16 G, u16 B)
-{
-        u16 y, u, v;
-        u16 Y, Cr, Cb;
-
-        y = R * 77 + G * 150 + B * 29;  // Luma=0.299R+0.587G+0.114B 0..65535
-        u = 2048+B * 8 -(y>>5);    // Cr 0..4095
-        v = 2048+R * 8 -(y>>5);    // Cb 0..4095
-
-        Y = y >> 8;
-        Cb= u >> 4;
-        Cr= v >> 4;
-
-        return Cr|(Cb<<16)|(Y<<8);
-}
-
-(this may no longer be necessary with driver versions after 0.03c).
+This program requires the card driver version 0.04 or higher
+to work properly.
 
 After extracting the package, change into the OSM directory
 and type 'make'. This should produce an executable file
 named 'osm', which can be run after the DVB driver has been
-installed. There may be several warnings about "implicit declaration
-of function `int asprintf(...)'" during the compilation, which I was
-unable to avoid (anybody know how to avoid them?). Just ignore them,
-the program will work, anyway.
+installed.
 
 There are two macros you can use to customize the 'osm' program
 at compile time. Adding "DEBUG_REMOTE=1" to the 'make' call
@@ -88,27 +67,42 @@ The meaning of the data entries may still vary in future releases,
 so for the moment please look at the source code (config.c) to see
 the meaning of the various fields.
 
-There is no way of adding or deleting channels or timers yet, this
-will be implemented later.
-
 Learning the remote control keys:
 ---------------------------------
 
-The remote control configuration file 'keys.conf' that comes with
-this package contains the codes for the "d-box" remote control unit.
-If you want to use a different remote control unit, simply delete
-the file 'keys.conf' and restart the 'osm' program. The program will
-then start a key learning session in which it first attempts to determine
-the basic data transfer mode and timing of your remote control unit,
-and then will ask you to press one key after the other so that it can
-learn the various key codes. You will at least need to provide an "Up"
-and a "Down" key, so that you can switch channels. The rest of the key
-definitions is optional, but the more keys you define, the more you
-will be able to navigate through the menus.
-
+There is no default 'keys.conf' file, so if you compile the program
+without 'DEBUG_REMOTE=1' you will have to go through a "teach-in"
+session that allows the program to learn your remote control codes.
+It will first attempt to determine the basic data transfer mode and
+timing of your remote control unit, and then will ask you to press one
+key after the other so that it can learn the various key codes. You will
+at least need to provide an "Up" and a "Down" key, so that you can switch
+channels. The rest of the key definitions is optional, but the more keys
+you define, the more you will be able to navigate through the menus and
+control recording/replaying.
 If the program has been built with "DEBUG_REMOTE=1", it will use the
 key configuration file 'keys-pc.conf', so that you won't loose data
 when switching between normal and debug mode.
+
+The default PC key assignments are:
+             
+  Up, Down, Left, Right     Crsr keys in numeric block
+  Menu                      '5' in numeric block
+  Ok                        Enter
+  Back                      Backspace
+  0..9                      '0'..'9' in top row
+  Red, Green, Yellow, Blue  'F1'..'F4'
+  Record                    'r'
+  Pause                     'p'
+  Stop                      's'
+  Begin                     'B'
+  SearchForward             'f'
+  SearchBack                'b'
+  SkipForward               'PgDn' in numeric block
+  SkipBack                  'PgUp' in numeric block
+
+If you prefer different key assignments, simply delete the file
+'keys-pc.conf' and restart 'osm' to get into learning mode.
 
 Navigating through the On Screen Menus:
 ---------------------------------------

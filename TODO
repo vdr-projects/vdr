@@ -1,7 +1,7 @@
 TODO list for the Video Disk Recorder project
 ---------------------------------------------
 
-* Implement recording to disk and playback from disk.
+* Channel select via numeric keys.
 * Make it work with two DVB-S PCI cards to allow simultaneous
   recording of one programme, while replaying another programme
   (or maybe the same one, but time delayed).
@@ -10,3 +10,7 @@ TODO list for the Video Disk Recorder project
 * Implement "on-disk editing" to allow "cutting out" of certain
   scenes in order to archive them (or, reversely, cut out
   commercial breaks).
+* Implement on-screen display of replay progress (progress bar
+  and/or time index).
+* Implement channel scanning.
+* Better support for encrypted channels.
