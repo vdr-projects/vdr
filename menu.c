@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.237 2003/04/21 14:57:13 kls Exp $
+ * $Id: menu.c 1.240 2003/04/27 12:50:31 kls Exp $
  */
 
 #include "menu.h"
@@ -28,7 +28,7 @@
 #include "videodir.h"
 
 #define MENUTIMEOUT     120 // seconds
-#define MAXWAIT4EPGINFO  10 // seconds
+#define MAXWAIT4EPGINFO   3 // seconds
 #define MODETIMEOUT       3 // seconds
 
 #define MAXRECORDCONTROLS (MAXDEVICES * MAXRECEIVERS)
@@ -575,6 +575,7 @@ void cMenuEditChannel::Setup(void)
   Add(new cMenuEditSrcItem( tr("Source"),       &data.source));
   Add(new cMenuEditIntItem( tr("Frequency"),    &data.frequency));
   Add(new cMenuEditIntItem( tr("Vpid"),         &data.vpid,  0, 0x1FFF));
+  Add(new cMenuEditIntItem( tr("Ppid"),         &data.ppid,  0, 0x1FFF));
   Add(new cMenuEditIntItem( tr("Apid1"),        &data.apid1, 0, 0x1FFF));
   Add(new cMenuEditIntItem( tr("Apid2"),        &data.apid2, 0, 0x1FFF));
   Add(new cMenuEditIntItem( tr("Dpid1"),        &data.dpid1, 0, 0x1FFF));
@@ -2495,8 +2496,10 @@ void cMenuMain::Set(const char *Plugin)
 
 eOSState cMenuMain::ProcessKey(eKeys Key)
 {
+  bool HadSubMenu = HasSubMenu();
   int osdLanguage = Setup.OSDLanguage;
   eOSState state = cOsdMenu::ProcessKey(Key);
+  HadSubMenu |= HasSubMenu();
 
   switch (state) {
     case osSchedule:   return AddSubMenu(new cMenuSchedule);
@@ -2543,10 +2546,10 @@ eOSState cMenuMain::ProcessKey(eKeys Key)
                        break;
     default: switch (Key) {
                case kRecord:
-               case kRed:    if (!HasSubMenu())
+               case kRed:    if (!HadSubMenu)
                                 state = osRecord;
                              break;
-               case kGreen:  if (!HasSubMenu()) {
+               case kGreen:  if (!HadSubMenu) {
                                 int CurrentAudioTrack = -1;
                                 const char **AudioTracks = cDevice::PrimaryDevice()->GetAudioTracks(&CurrentAudioTrack);
                                 if (AudioTracks) {
@@ -2560,10 +2563,10 @@ eOSState cMenuMain::ProcessKey(eKeys Key)
                                    }
                                 }
                              break;
-               case kYellow: if (!HasSubMenu())
+               case kYellow: if (!HadSubMenu)
                                 state = osPause;
                              break;
-               case kBlue:   if (!HasSubMenu())
+               case kBlue:   if (!HadSubMenu)
                                 state = replaying ? osStopReplay : cReplayControl::LastReplayed() ? osReplay : osContinue;
                              break;
                default:      break;

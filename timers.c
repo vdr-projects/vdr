@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 1.3 2002/11/24 14:29:21 kls Exp $
+ * $Id: timers.c 1.4 2003/04/27 11:11:45 kls Exp $
  */
 
 #include "timers.h"
@@ -336,7 +336,7 @@ time_t cTimer::StopTime(void)
 void cTimer::SetRecording(bool Recording)
 {
   recording = Recording;
-  isyslog("timer %d %s", Index() + 1, recording ? "start" : "stop");
+  isyslog("timer %d (%d %04d-%04d '%s') %s", Index() + 1, Channel()->Number(), start, stop, file, recording ? "start" : "stop");
 }
 
 void cTimer::SetPending(bool Pending)

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 1.11 2002/11/29 14:10:46 kls Exp $
+ * $Id: channels.c 1.12 2003/04/26 09:57:48 kls Exp $
  */
 
 #include "channels.h"
@@ -164,6 +164,7 @@ cChannel::cChannel(void)
   source       = cSource::FromString("S19.2E");
   srate        = 27500;
   vpid         = 255;
+  ppid         = 0;
   apid1        = 256;
   apid2        = 0;
   dpid1        = 257;
@@ -286,8 +287,14 @@ const char *cChannel::ToText(cChannel *Channel)
         asprintf(&buffer, ":%s\n", s);
      }
   else {
+     char vpidbuf[32];
+     char *q = vpidbuf;
+     q += snprintf(q, sizeof(vpidbuf), "%d", Channel->vpid);
+     if (Channel->ppid)
+        q += snprintf(q, sizeof(vpidbuf) - (q - vpidbuf), "+%d", Channel->ppid);
+     *q = 0;
      char apidbuf[32];
-     char *q = apidbuf;
+     q = apidbuf;
      q += snprintf(q, sizeof(apidbuf), "%d", Channel->apid1);
      if (Channel->apid2)
         q += snprintf(q, sizeof(apidbuf) - (q - apidbuf), ",%d", Channel->apid2);
@@ -296,7 +303,7 @@ const char *cChannel::ToText(cChannel *Channel)
      if (Channel->dpid2)
         q += snprintf(q, sizeof(apidbuf) - (q - apidbuf), ",%d", Channel->dpid2);
      *q = 0;
-     asprintf(&buffer, "%s:%d:%s:%s:%d:%d:%s:%d:%d:%d:%d:%d:%d\n", s, Channel->frequency, Channel->ParametersToString(), cSource::ToString(Channel->source), Channel->srate, Channel->vpid, apidbuf, Channel->tpid, Channel->ca, Channel->sid, Channel->nid, Channel->tid, Channel->rid);
+     asprintf(&buffer, "%s:%d:%s:%s:%d:%s:%s:%d:%d:%d:%d:%d:%d\n", s, Channel->frequency, Channel->ParametersToString(), cSource::ToString(Channel->source), Channel->srate, vpidbuf, apidbuf, Channel->tpid, Channel->ca, Channel->sid, Channel->nid, Channel->tid, Channel->rid);
      }
   return buffer;
 }
@@ -326,8 +333,9 @@ bool cChannel::Parse(const char *s, bool AllowNonUniqueID)
      char *namebuf = NULL;
      char *sourcebuf = NULL;
      char *parambuf = NULL;
+     char *vpidbuf = NULL;
      char *apidbuf = NULL;
-     int fields = sscanf(s, "%a[^:]:%d :%a[^:]:%a[^:] :%d :%d :%a[^:]:%d :%d :%d :%d :%d :%d ", &namebuf, &frequency, &parambuf, &sourcebuf, &srate, &vpid, &apidbuf, &tpid, &ca, &sid, &nid, &tid, &rid);
+     int fields = sscanf(s, "%a[^:]:%d :%a[^:]:%a[^:] :%d :%a[^:]:%a[^:]:%d :%d :%d :%d :%d :%d ", &namebuf, &frequency, &parambuf, &sourcebuf, &srate, &vpidbuf, &apidbuf, &tpid, &ca, &sid, &nid, &tid, &rid);
      if (fields >= 9) {
         if (fields == 9) {
            // allow reading of old format
@@ -335,12 +343,19 @@ bool cChannel::Parse(const char *s, bool AllowNonUniqueID)
            ca = tpid;
            tpid = 0;
            }
+        vpid  = ppid  = 0;
         apid1 = apid2 = 0;
         dpid1 = dpid2 = 0;
         bool ok = false;
-        if (parambuf && sourcebuf && apidbuf) {
+        if (parambuf && sourcebuf && vpidbuf && apidbuf) {
            ok = StringToParameters(parambuf) && (source = cSource::FromString(sourcebuf)) >= 0;
-           char *p = strchr(apidbuf, ';');
+           char *p = strchr(vpidbuf, '+');
+           if (p)
+              *p++ = 0;
+           sscanf(vpidbuf, "%d", &vpid);
+           if (p)
+              sscanf(p, "%d", &ppid);
+           p = strchr(apidbuf, ';');
            if (p)
               *p++ = 0;
            sscanf(apidbuf, "%d ,%d ", &apid1, &apid2);
@@ -350,6 +365,7 @@ bool cChannel::Parse(const char *s, bool AllowNonUniqueID)
         strn0cpy(name, namebuf, MaxChannelName);
         free(parambuf);
         free(sourcebuf);
+        free(vpidbuf);
         free(apidbuf);
         free(namebuf);
         if (!AllowNonUniqueID && Channels.GetByChannelID(GetChannelID())) {

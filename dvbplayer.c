@@ -4,12 +4,13 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 1.19 2003/03/30 12:51:51 kls Exp $
+ * $Id: dvbplayer.c 1.20 2003/04/27 09:55:53 kls Exp $
  */
 
 #include "dvbplayer.h"
 #include <stdlib.h>
 #include "recording.h"
+#include "remux.h"
 #include "ringbuffer.h"
 #include "thread.h"
 #include "tools.h"
@@ -190,6 +191,7 @@ private:
   bool eof;
   bool active;
   bool running;
+  bool firstPacket;
   ePlayModes playMode;
   ePlayDirs playDir;
   int trickSpeed;
@@ -197,7 +199,7 @@ private:
   bool canToggleAudioTrack;
   uchar audioTrack;
   cFrame *readFrame;
-  const cFrame *playFrame;
+  cFrame *playFrame;
   void TrickSpeed(int Increment);
   void Empty(void);
   void StripAudioPackets(uchar *b, int Length, uchar Except = 0x00);
@@ -240,6 +242,7 @@ cDvbPlayer::cDvbPlayer(const char *FileName)
   eof = false;
   active = true;
   running = false;
+  firstPacket = true;
   playMode = pmPlay;
   playDir = pdForward;
   trickSpeed = NORMAL_SPEED;
@@ -307,6 +310,7 @@ void cDvbPlayer::Empty(void)
   ringBuffer->Clear();
   backTrace->Clear();
   DeviceClear();
+  firstPacket = true;
 }
 
 void cDvbPlayer::StripAudioPackets(uchar *b, int Length, uchar Except)
@@ -403,7 +407,7 @@ void cDvbPlayer::Action(void)
   dsyslog("dvbplayer thread started (pid=%d)", getpid());
 
   uchar *b = NULL;
-  const uchar *p = NULL;
+  uchar *p = NULL;
   int pc = 0;
 
   readIndex = Resume();
@@ -510,6 +514,10 @@ void cDvbPlayer::Action(void)
               if (!p) {
                  p = playFrame->Data();
                  pc = playFrame->Count();
+                 if (firstPacket) {
+                    cRemux::SetBrokenLink(p, pc);
+                    firstPacket = false;
+                    }
                  }
               if (p) {
                  int w = PlayVideo(p, pc);

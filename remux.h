@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.h 1.9 2002/11/01 10:06:46 kls Exp $
+ * $Id: remux.h 1.10 2003/04/26 14:13:11 kls Exp $
  */
 
 #ifndef __REMUX_H
@@ -44,6 +44,7 @@ public:
   cRemux(int VPid, int APid1, int APid2, int DPid1, int DPid2, bool ExitOnFailure = false);
   ~cRemux();
   uchar *Process(const uchar *Data, int &Count, int &Result, uchar *PictureType = NULL);
+  static void SetBrokenLink(uchar *Data, int Length);
   };
 
 #endif // __REMUX_H

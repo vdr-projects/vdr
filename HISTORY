@@ -2053,3 +2053,34 @@ Video Disk Recorder Revision History
 - Implemented "pause live video". You can now press "Menu/Yellow" or "Pause" on
   your remote control while watching live video to start an instant recording
   of the current programme and immediately start replaying that recording.
+
+2003-04-27: Version 1.1.29
+
+- Fixed detecting broken connection to the LIRC daemon (thanks to Ludwig Nussel).
+- Now sending CA descriptors to the CAM in the same sequence as they were originally
+  received (thanks to Stefan Huelswitt).
+- The PCR PID can now be set separately from the video PID. The syntax in the
+  'channels.conf' file is, for example, ...:164+17:..., where 164 is the video PID
+  and 17 is the PCR PID. The separator is a '+' sign, not a comma or semicolon as
+  with the audio PIDs, because this is not an alternate PID, but rather an
+  additional, necessary PID. In order to use this feature you need a driver version
+  dated 2003-04-27 or higher (setting the PCR PID didn't work in earlier versions).
+- Fixed deleting the last recording in the "Recordings" menu, which started pausing
+  live video (thanks to Christoph Friederich for reporting this one).
+- Now setting the "broken link" flag for GOPs at the beginning of a new video
+  sequence, which avoids artefacts when cutting (thanks to Stefan Huelswitt).
+- Removed the Mute() call from cDvbDevice::StillPicture() (suggested by Andreas
+  Schultz).
+- Updated 'channels.conf.terr' for Berlin (thanks to Andreas Brachold).
+- Extended logging info when starting/stopping timers to show the channel number,
+  start/stop time and the file name (suggested by Manuel Hartl).
+- Added a note regarding non-VDR files in the /videoX directories to INSTALL
+  (suggested by Benjamin Harling).
+- Skipping keys that come in too fast from LIRC (thanks to Christian Jacobsen).
+- Avoiding short display of the main menu if a plugin displays its own OSD and
+  is started through a user defined key macro (thanks to Andreas Mair for reporting
+  this one).
+- Reduced the time to wait for EPG data when starting a recording to 3 seconds.
+- The new SVDRP command STAT can be used to request information about the disk
+  usage (thanks to Thomas Koch).
+- Fixed faulty calculation of section length in eit.c (thanks to Teemu Rantanen).

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: cutter.c 1.2 2002/08/11 11:09:23 kls Exp $
+ * $Id: cutter.c 1.3 2003/04/26 15:11:17 kls Exp $
  */
 
 #include "cutter.h"
@@ -77,6 +77,7 @@ void cCuttingThread::Action(void)
      toMarks.Add(0);
      toMarks.Save();
      uchar buffer[MAXFRAMESIZE];
+     bool cutIn = true;
      while (active) {
            uchar FileNumber;
            int FileOffset, Length;
@@ -126,6 +127,11 @@ void cCuttingThread::Action(void)
                  FileSize = 0;
                  }
               LastIFrame = 0;
+
+              if (cutIn) {
+                 cRemux::SetBrokenLink(buffer, Length);
+                 cutIn = false;
+                 }
               }
            if (safe_write(toFile, buffer, Length) < 0) {
               error = "safe_write";
@@ -151,6 +157,7 @@ void cCuttingThread::Action(void)
                  Index = Mark->position;
                  Mark = fromMarks.Next(Mark);
                  CurrentFileNumber = 0; // triggers SetOffset before reading next frame
+                 cutIn = true;
                  if (Setup.SplitEditedFiles) {
                     toFile = toFileName->NextFile();
                     if (toFile < 0) {

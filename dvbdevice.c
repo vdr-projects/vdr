@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.54 2003/04/19 14:24:25 kls Exp $
+ * $Id: dvbdevice.c 1.56 2003/04/27 09:44:17 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -524,8 +524,8 @@ void cDvbDevice::SetVideoFormat(bool VideoFormat16_9)
      CHECK(ioctl(fd_video, VIDEO_SET_FORMAT, VideoFormat16_9 ? VIDEO_FORMAT_16_9 : VIDEO_FORMAT_4_3));
 }
 
-//                          ptAudio        ptVideo        ptTeletext        ptDolby        ptOther
-dmx_pes_type_t PesTypes[] = { DMX_PES_AUDIO, DMX_PES_VIDEO, DMX_PES_TELETEXT, DMX_PES_OTHER, DMX_PES_OTHER };
+//                            ptAudio        ptVideo        ptPcr        ptTeletext        ptDolby        ptOther
+dmx_pes_type_t PesTypes[] = { DMX_PES_AUDIO, DMX_PES_VIDEO, DMX_PES_PCR, DMX_PES_TELETEXT, DMX_PES_OTHER, DMX_PES_OTHER };
 
 bool cDvbDevice::SetPid(cPidHandle *Handle, int Type, bool On)
 {
@@ -662,6 +662,7 @@ bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
 
      DelPid(pidHandles[ptAudio].pid);
      DelPid(pidHandles[ptVideo].pid);
+     DelPid(pidHandles[ptPcr].pid);
      DelPid(pidHandles[ptTeletext].pid);
      DelPid(pidHandles[ptDolby].pid);
      }
@@ -683,7 +684,7 @@ bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
   if (TurnOnLivePIDs) {
      aPid1 = Channel->Apid1();
      aPid2 = Channel->Apid2();
-     if (!(AddPid(Channel->Apid1(), ptAudio) && AddPid(Channel->Vpid(), ptVideo))) {//XXX+ dolby dpid1!!! (if audio plugins are attached)
+     if (!(AddPid(Channel->Ppid(), ptPcr) && AddPid(Channel->Apid1(), ptAudio) && AddPid(Channel->Vpid(), ptVideo))) {//XXX+ dolby dpid1!!! (if audio plugins are attached)
         esyslog("ERROR: failed to set PIDs for channel %d on device %d", Channel->Number(), CardIndex() + 1);
         return false;
         }
@@ -870,7 +871,6 @@ void cDvbDevice::Mute(void)
 
 void cDvbDevice::StillPicture(const uchar *Data, int Length)
 {
-  Mute();
 /* Using the VIDEO_STILLPICTURE ioctl call would be the
    correct way to display a still frame, but unfortunately this
    doesn't work with frames from VDR. So let's do pretty much the
@@ -882,7 +882,7 @@ void cDvbDevice::StillPicture(const uchar *Data, int Length)
 */
 //#define VIDEO_STILLPICTURE_WORKS_WITH_VDR_FRAMES
 #ifdef VIDEO_STILLPICTURE_WORKS_WITH_VDR_FRAMES
-  videoDisplayStillPicture sp = { (char *)Data, Length };
+  video_still_picture sp = { (char *)Data, Length };
   CHECK(ioctl(fd_video, VIDEO_STILLPICTURE, &sp));
 #else
 #define MIN_IFRAME 400000

@@ -169,6 +169,8 @@ Stefan Huelswitt <huels@iname.com>
  for adapting VDR to 'libdtv' version 0.0.5
  for reporting a bug in handling of Ca parameters with values <= MAXDEVICES, which
  don't indicate an actual encrypted channel
+ for implementing setting the "broken link" flag for GOPs at the beginning of a new
+ video sequence, which avoids artefacts when cutting
 
 Ulrich Rˆder <roeder@efr-net.de>
  for pointing out that there are channels that have a symbol rate higher than
@@ -197,6 +199,7 @@ Andreas Schultz <aschultz@warp10.net>
  cMenuRecordings::Del(), which caused warnings with gcc-3.2
  for suggesting a Make.config file
  for making EIT filtering use masks to reduce the number of filters
+ for suggesting to remove the Mute() call from cDvbDevice::StillPicture()
 
 Aaron Holtzman
  for writing 'ac3dec'
@@ -548,11 +551,12 @@ Walter Stroebel <walter.stroebel@lifeline.nl>
 Paul Gohn <pgohn@nexgo.de>
  for adding 'Hrvatska radiotelevizija' and 'RTV Slovenija' to ca.conf
 
-Teemu Rantanen <tvr@iki.fi>
+Teemu Rantanen <teemu.rantanen@tekla.com>
  for increased the maximum possible packet size in remux.c to avoid corrupted streams
  with broadcasters that send extremely large PES packets
  for adding TS error checking to remux.c
  for pinpointing a problem with excessive memmove() calls in 'Transfer Mode'
+ for fixing faulty calculation of section length in eit.c
 
 Jan Ekholm <chakie@infa.abo.fi>
  for adding/improving some Swedish language OSD texts
@@ -589,6 +593,28 @@ Ludwig Nussel <ludwig.nussel@web.de>
 
 Thomas Koch <tom@harhar.net>
  for his support in keeping the Premiere World channels up to date in 'channels.conf'
+ for implementing the SVDRP command STAT
 
 Stefan Huﬂfeldt <vdr@marvin.on-luebeck.de>
  for his help in keeping 'channels.conf.cable' up to date
+
+Christoph Friederich <christoph.friederich@gmx.de>
+ for reporting a bug in deleting the last recording in the "Recordings" menu, which
+ started pausing live video
+
+Andreas Brachold <andy03@deltab.de>
+ for his support in keeping 'channels.conf.terr' up to date
+
+Manuel Hartl <icecep@gmx.net>
+ for suggesting to extend the logging info when starting/stopping timers
+
+Benjamin Harling <benjamin.harling@web.de>
+ for suggesting to add a note regarding non-VDR files in the /videoX directories to
+ INSTALL
+
+Christian Jacobsen <christian.jacobsen@stageholding.de>
+ for making the LIRC interface skip keys that come in too fast
+
+Andreas Mair <Andreas.Mair@linogate.com>
+ for reporting a short display of the main menu if a plugin displays its own OSD and
+ is started through a user defined key macro
