@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: sections.c 1.4 2004/01/11 13:22:13 kls Exp $
+ * $Id: sections.c 1.5 2004/02/07 15:51:57 kls Exp $
  */
 
 #include "sections.h"
@@ -133,7 +133,7 @@ void cSectionHandler::Detach(cFilter *Filter)
 void cSectionHandler::SetChannel(const cChannel *Channel)
 {
   Lock();
-  shp->channel = Channel? *Channel : cChannel();
+  shp->channel = Channel ? *Channel : cChannel();
   Unlock();
 }
 
