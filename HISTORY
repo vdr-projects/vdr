@@ -2596,3 +2596,5 @@ Video Disk Recorder Revision History
   ones.
 - The "Red" button in the "Setup/EPG" menu can now be used to force an EPG
   scan on a single DVB card system (see MANUAL for details).
+- The new SVDRP command 'SCAN' can be used to force  an EPG scan on a single
+  DVB card system (see MANUAL under Setup/EPG for details).
