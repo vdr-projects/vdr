@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: hello.c 1.2 2002/05/11 14:17:20 kls Exp $
+ * $Id: hello.c 1.3 2002/05/12 09:24:08 kls Exp $
  */
 
 #include <getopt.h>
@@ -11,7 +11,7 @@
 #include <vdr/plugin.h>
 #include "i18n.h"
 
-static const char *VERSION        = "0.0.2";
+static const char *VERSION        = "0.0.3";
 static const char *DESCRIPTION    = "A friendly greeting";
 static const char *MAINMENUENTRY  = "Hello";
 
@@ -27,7 +27,7 @@ public:
   virtual const char *Description(void) { return tr(DESCRIPTION); }
   virtual const char *CommandLineHelp(void);
   virtual bool ProcessArgs(int argc, char *argv[]);
-  virtual void Start(void);
+  virtual bool Start(void);
   virtual const char *MainMenuEntry(void) { return tr(MAINMENUENTRY); }
   virtual cOsdMenu *MainMenuAction(void);
   virtual cMenuSetupPage *SetupMenu(void);
@@ -110,10 +110,11 @@ bool cPluginHello::ProcessArgs(int argc, char *argv[])
   return true;
 }
 
-void cPluginHello::Start(void)
+bool cPluginHello::Start(void)
 {
   // Start any background activities the plugin shall perform.
   RegisterI18n(Phrases);
+  return true;
 }
 
 cOsdMenu *cPluginHello::MainMenuAction(void)

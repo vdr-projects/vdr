@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: plugin.c 1.1 2002/05/09 16:26:56 kls Exp $
+ * $Id: plugin.c 1.2 2002/05/12 09:04:51 kls Exp $
  */
 
 #include "plugin.h"
@@ -45,8 +45,9 @@ bool cPlugin::ProcessArgs(int argc, char *argv[])
   return true;
 }
 
-void cPlugin::Start(void)
+bool cPlugin::Start(void)
 {
+  return true;
 }
 
 const char *cPlugin::MainMenuEntry(void)
@@ -268,7 +269,7 @@ bool cPluginManager::LoadPlugins(bool Log)
   return true;
 }
 
-void cPluginManager::StartPlugins(void)
+bool cPluginManager::StartPlugins(void)
 {
   for (cDll *dll = dlls.First(); dll; dll = dlls.Next(dll)) {
       cPlugin *p = dll->Plugin();
@@ -277,9 +278,11 @@ void cPluginManager::StartPlugins(void)
          Setup.OSDLanguage = 0; // the i18n texts are only available _after_ Start()
          isyslog(LOG_INFO, "starting plugin: %s (%s): %s", p->Name(), p->Version(), p->Description());
          Setup.OSDLanguage = Language;
-         dll->Plugin()->Start();
+         if (!dll->Plugin()->Start())
+            return false;
          }
       }
+  return true;
 }
 
 bool cPluginManager::HasPlugins(void)

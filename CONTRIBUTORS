@@ -130,6 +130,8 @@ Stefan Huelswitt <huels@iname.com>
  doing shutdown or housekeeping
  for making the cList template class avoid ambiguities in case one defines a "list of
  lists"
+ for suggesting to make the cPlugin::Start() function return a boolean value that
+ indicates if the plugin will not be able to perform its task
 
 Ulrich Röder <roeder@efr-net.de>
  for pointing out that there are channels that have a symbol rate higher than

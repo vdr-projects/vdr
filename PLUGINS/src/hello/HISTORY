@@ -8,3 +8,7 @@ VDR Plugin 'hello' Revision History
 2002-05-11: Version 0.0.2
 
 - Added setup parameters and a Setup menu to adjust them.
+
+2002-05-12: Version 0.0.3
+
+- Changed return type of cPluginHello::Start().

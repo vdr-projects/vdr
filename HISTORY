@@ -1269,3 +1269,8 @@ Video Disk Recorder Revision History
 - Fixed logging error message for unknown config parameters in plugins.
 - Rearranged cleanup sequence at the end of the main program.
 - Adapted PLUGINS.html to use the actual code examples from the 'hello' plugin.
+
+2002-05-12: Version 1.1.2
+
+- Changed the cPlugin::Start() function to return a boolean value that indicates
+  if the plugin will not be able to perform its task (suggested by Stefan Huelswitt).

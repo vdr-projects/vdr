@@ -16,9 +16,12 @@ This document describes the "outside" interface of the plugin system.
 It handles everything necessary for a plugin to get hooked into the core
 VDR program and present itself to the user.
 <p>
-<!--X1.1.1--><table width=100%><tr><td bgcolor=red>&nbsp;</td><td width=100%>
+<!--X1.1.1--><table width=100%><tr><td bgcolor=cyan>&nbsp;</td><td width=100%>
 Important modifications introduced in version 1.1.1 are marked like this.
 <!--X1.1.1--></td></tr></table>
+<!--X1.1.2--><table width=100%><tr><td bgcolor=red>&nbsp;</td><td width=100%>
+Important modifications introduced in version 1.1.2 are marked like this.
+<!--X1.1.2--></td></tr></table>
 <!--<p>TODO: Link to the document about VDR base classes to use when implementing actual functionality (yet to be written).-->
 
 <hr><h2>Quick start</h2>
@@ -184,7 +187,7 @@ its memory. You don't need to worry about the details behind all this.
 If your plugin requires additional source files, simply add them to your plugin's
 source directory and adjust the <tt>Makefile</tt> accordingly.
 <p>
-<!--X1.1.1--><table width=100%><tr><td bgcolor=red>&nbsp;</td><td width=100%>
+<!--X1.1.1--><table width=100%><tr><td bgcolor=cyan>&nbsp;</td><td width=100%>
 Header files usually contain preprocessor statements that prevent the same
 file (or rather its contents, to be precise) from being included more than once, like
 
@@ -403,15 +406,24 @@ If a plugin implements a function that runs in the background (presumably in a
 thread of its own), or wants to make use of <a href="#Internationalization">internationalization</a>,
 it needs to implement the function
 
+<!--X1.1.2--><table width=100%><tr><td bgcolor=red>&nbsp;</td><td width=100%>
 <p><table><tr><td bgcolor=#F0F0F0><pre><br>
-virtual void Start(void);
+virtual bool Start(void);
 </pre></td></tr></table><p>
+<!--X1.1.2--></td></tr></table>
 
 which is called once for each plugin at program startup.
 Inside this function the plugin must set up everything necessary to perform
 its task. This may, for instance, be a thread that collects data from the DVB
 stream, which is later presented to the user via a function that is available
 from the main menu.
+<p>
+<!--X1.1.2--><table width=100%><tr><td bgcolor=red>&nbsp;</td><td width=100%>
+A return value of <i>false</i> indicates that something has gone wrong and the
+plugin will not be able to perform its task. In that case, the plugin should
+write a proper error message to the log file. The first plugin that returns
+<i>false</i> from its <tt>Start()</tt> function will cause VDR to exit.
+<!--X1.1.2--></td></tr></table>
 <p>
 If the plugin doesn't implement any background functionality or internationalized
 texts, it doesn't need to implement this function.
@@ -490,7 +502,7 @@ previously stored in the global setup data (see below). It shall return
 <i>true</i> if the parameter was parsed correctly, <i>false</i> in case of
 an error. If <i>false</i> is returned, an error message will be written to
 the log file (and program execution will continue).
-<!--X1.1.1--><table width=100%><tr><td bgcolor=red>&nbsp;</td><td width=100%>
+<!--X1.1.1--><table width=100%><tr><td bgcolor=cyan>&nbsp;</td><td width=100%>
 A possible implementation of <tt>SetupParse()</tt> could look like this:
 
 <p><table><tr><td bgcolor=#F0F0F0><pre><br>
@@ -545,7 +557,7 @@ needs setup parameters that are not directly user adjustable. It can use
 <tt>SetupStore()</tt> and <tt>SetupParse()</tt> without presenting these
 parameters to the user.
 
-<!--X1.1.1--><table width=100%><tr><td bgcolor=red>&nbsp;</td><td width=100%>
+<!--X1.1.1--><table width=100%><tr><td bgcolor=cyan>&nbsp;</td><td width=100%>
 <a name="The Setup menu"><hr><h2>The Setup menu</h2>
 
 <center><i><b>Have it your way!</b></i></center><p>

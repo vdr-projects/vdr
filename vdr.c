@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.105 2002/05/11 11:46:40 kls Exp $
+ * $Id: vdr.c 1.106 2002/05/12 09:05:37 kls Exp $
  */
 
 #include <getopt.h>
@@ -324,7 +324,8 @@ int main(int argc, char *argv[])
 
   // Start plugins:
 
-  PluginManager.StartPlugins();
+  if (!PluginManager.StartPlugins())
+     return 2;
 
   // Channel:
 
