@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.79 2002/02/02 12:45:30 kls Exp $
+ * $Id: config.c 1.80 2002/02/02 15:57:48 kls Exp $
  */
 
 #include "config.h"
@@ -658,9 +658,9 @@ cCommands Commands;
 
 cChannels Channels;
 
-bool cChannels::Load(const char *FileName)
+bool cChannels::Load(const char *FileName, bool AllowComments)
 {
-  if (cConfig<cChannel>::Load(FileName)) {
+  if (cConfig<cChannel>::Load(FileName, AllowComments)) {
      ReNumber();
      return true;
      }

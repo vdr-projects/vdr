@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.90 2002/01/30 18:30:03 kls Exp $
+ * $Id: config.h 1.91 2002/02/02 15:57:48 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -182,7 +182,7 @@ private:
 public:
   cConfig(void) { fileName = NULL; }
   virtual ~cConfig() { delete fileName; }
-  virtual bool Load(const char *FileName)
+  virtual bool Load(const char *FileName, bool AllowComments = false)
   {
     Clear();
     fileName = strdup(FileName);
@@ -196,6 +196,11 @@ public:
           result = true;
           while (fgets(buffer, sizeof(buffer), f) > 0) {
                 line++;
+                if (AllowComments) {
+                   char *p = strchr(buffer, '#');
+                   if (p)
+                      *p = 0;
+                   }
                 if (!isempty(buffer)) {
                    T *l = new T;
                    if (l->Parse(buffer))
@@ -242,7 +247,7 @@ protected:
   int maxNumber;
 public:
   cChannels(void) { maxNumber = 0; }
-  virtual bool Load(const char *FileName);
+  virtual bool Load(const char *FileName, bool AllowComments = false);
   int GetNextGroup(int Idx);   // Get next channel group
   int GetPrevGroup(int Idx);   // Get previous channel group
   int GetNextNormal(int Idx);  // Get next normal channel (not group)
