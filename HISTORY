@@ -2589,3 +2589,4 @@ Video Disk Recorder Revision History
 - Activated detection of radio channels (to avoid reports about "channels not
   being detected that used to be detected with the 'scan' utility or the
   original 'autopid' patch ;-).
+- Channels with a zero VPID no longer write a PPID into channels.conf.
