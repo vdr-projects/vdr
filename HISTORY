@@ -2756,3 +2756,5 @@ Video Disk Recorder Revision History
 - Added some 3-letter language codes (thanks to Marcus Mönnig).
 - Added language code handling to the subtitling descriptor in 'libsi' (thanks to
   Pekka Virtanen).
+- Moved several menu item classes from menu.c to menuitems.[hc] to make them
+  available for plugins.

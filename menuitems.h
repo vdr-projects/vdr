@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.h 1.6 2004/02/24 11:55:14 kls Exp $
+ * $Id: menuitems.h 1.7 2004/03/28 09:16:24 kls Exp $
  */
 
 #ifndef __MENUITEMS_H
@@ -116,6 +116,53 @@ public:
   bool CanScrollDown(void) { return h + offset < lines; }
   void ScrollUp(bool Page);
   void ScrollDown(bool Page);
+  virtual eOSState ProcessKey(eKeys Key);
+  };
+
+class cMenuEditChanItem : public cMenuEditIntItem {
+protected:
+  virtual void Set(void);
+public:
+  cMenuEditChanItem(const char *Name, int *Value);
+  virtual eOSState ProcessKey(eKeys Key);
+  };
+
+class cMenuEditTranItem : public cMenuEditChanItem {
+private:
+  int number;
+  int transponder;
+public:
+  cMenuEditTranItem(const char *Name, int *Value);
+  virtual eOSState ProcessKey(eKeys Key);
+  };
+
+class cMenuEditDayItem : public cMenuEditIntItem {
+protected:
+  static int days[];
+  int d;
+  virtual void Set(void);
+public:
+  cMenuEditDayItem(const char *Name, int *Value);
+  virtual eOSState ProcessKey(eKeys Key);
+  };
+
+class cMenuEditDateItem : public cMenuEditItem {
+protected:
+  time_t *value;
+  virtual void Set(void);
+public:
+  cMenuEditDateItem(const char *Name, time_t *Value);
+  virtual eOSState ProcessKey(eKeys Key);
+  };
+
+class cMenuEditTimeItem : public cMenuEditItem {
+protected:
+  int *value;
+  int hh, mm;
+  int pos;
+  virtual void Set(void);
+public:
+  cMenuEditTimeItem(const char *Name, int *Value);
   virtual eOSState ProcessKey(eKeys Key);
   };
 
