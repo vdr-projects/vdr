@@ -2433,3 +2433,7 @@ Video Disk Recorder Revision History
   full (suggested by Emil Naepflein).
 - Channel IDs are now checked when reading 'channels.conf' to avoid later
   problems with timers.
+
+2003-10-19: Version 1.2.6pre2
+
+- Improved cDvbDevice::StillPicture() (thanks to Thomas Heiligenmann).
