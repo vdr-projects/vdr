@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.46 2001/01/07 17:02:38 kls Exp $
+ * $Id: dvbapi.c 1.47 2001/01/07 17:10:02 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -2201,7 +2201,7 @@ bool cDvbApi::SetChannel(int ChannelNumber, int FrequencyMHz, char Polarization,
            }
         return true;
         }
-     esyslog(LOG_ERR, "ERROR: channel not sync'ed (front.sync=%X)!", front.sync);
+     esyslog(LOG_ERR, "ERROR: channel %d not sync'ed (front.sync=%X)!", ChannelNumber, front.sync);
      }
   return false;
 }
