@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remote.c 1.41 2004/10/31 14:05:12 kls Exp $
+ * $Id: remote.c 1.42 2005/03/20 13:25:31 kls Exp $
  */
 
 #include "remote.h"
@@ -145,6 +145,7 @@ bool cRemote::Put(const char *Code, bool Repeat, bool Release)
 
 bool cRemote::HasKeys(void)
 {
+  cMutexLock MutexLock(&mutex);
   return in != out && !(keys[out] & k_Repeat);
 }
 

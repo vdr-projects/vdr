@@ -1281,6 +1281,7 @@ Wolfgang Rohdewald <wolfgang@rohdewald.de>
  in cDevice::Shutdown()
  for removing some unneeded code and fixing access to unallocated memory in
  cEvent::FixEpgBugs()
+ for adding a missing cMutexLock to cRemote::HasKeys()
 
 Chad Flynt <hoochster@sofnet.com>
  for suggestions and experiments regarding the buffer reserve in cTransfer

@@ -3471,3 +3471,4 @@ Video Disk Recorder Revision History
   menu entry is a directory (thanks to Steffen Beyer).
 - Improved falling back to normal recording if the VPS data hasn't been seen for more
   than 30 seconds.
+- Added a missing cMutexLock to cRemote::HasKeys() (thanks to Wolfgang Rohdewald).
