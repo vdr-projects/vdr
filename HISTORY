@@ -934,3 +934,5 @@ Video Disk Recorder Revision History
 2002-02-01: Version 0.99pre5
 
 - Updated channel settings for 'N24' (thanks to Andreas Gebel).
+- Fixed handling hierarchical recordings menu in case of directories starting
+  with the same sequence of characters.
