@@ -2275,3 +2275,5 @@ Video Disk Recorder Revision History
   Steiner for reporting this one).
 - Fixed checking CA capabilities with the dvb-kernel driver (thanks to Kenneth
   Aafløy).
+- Fixed selecting the device, because sometimes an FTA recording terminated a
+  CA recording (thanks to Emil Naepflein).

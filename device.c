@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.45 2003/06/08 09:19:59 kls Exp $
+ * $Id: device.c 1.46 2003/08/02 11:44:28 kls Exp $
  */
 
 #include "device.h"
@@ -142,23 +142,34 @@ cDevice *cDevice::GetDevice(int Index)
 cDevice *cDevice::GetDevice(const cChannel *Channel, int Priority, bool *NeedsDetachReceivers)
 {
   cDevice *d = NULL;
+  int select = 7, pri;
+
   for (int i = 0; i < numDevices; i++) {
       bool ndr;
-      if (device[i]->ProvidesChannel(Channel, Priority, &ndr) // this device is basicly able to do the job
-         && (!d // we don't have a device yet, or...
-            || (device[i]->Receiving() && !ndr) // ...this one is already receiving and allows additional receivers, or...
-            || !d->Receiving() // ...the one we have is not receiving...
-               && (device[i]->Priority() < d->Priority() // ...this one has an even lower Priority, or...
-                  || device[i]->Priority() == d->Priority() // ...same Priority...
-                     && device[i]->ProvidesCa(Channel->Ca()) < d->ProvidesCa(Channel->Ca()) // ...but this one provides fewer Ca values
-                  )
-            )
-         ) {
-         d = device[i];
-         if (NeedsDetachReceivers)
-            *NeedsDetachReceivers = ndr;
+      if (device[i]->ProvidesChannel(Channel, Priority, &ndr)) { // this device is basicly able to do the job
+         if (device[i]->Receiving() && !ndr)
+            pri = 0; // receiving and allows additional receivers
+         else if (d && !device[i]->Receiving() && device[i]->ProvidesCa(Channel->Ca()) < d->ProvidesCa(Channel->Ca()))
+            pri = 1; // free and fewer Ca's
+         else if (!device[i]->Receiving() && !device[i]->IsPrimaryDevice())
+            pri = 2; // free and not the primary device
+         else if (!device[i]->Receiving())
+            pri = 3; // free
+         else if (d && device[i]->Priority() < d->Priority())
+            pri = 4; // receiving but priority is lower
+         else if (d && device[i]->Priority() == d->Priority() && device[i]->ProvidesCa(Channel->Ca()) < d->ProvidesCa(Channel->Ca()))
+            pri = 5; // receiving with same priority but fewer Ca's
+         else
+            pri = 6; // all others
+         if (pri < select) {
+            select = pri;
+            d = device[i];
+            if (NeedsDetachReceivers)
+               *NeedsDetachReceivers = ndr;
+            }
          }
       }
+
   /*XXX+ too complex with multiple recordings per device
   if (!d && Ca > MAXDEVICES) {
      // We didn't find one the easy way, so now we have to try harder:

@@ -566,6 +566,8 @@ Clemens Kirchgatterer <clemens@thf.ath.cx>
 Emil Naepflein <Emil.Naepflein@philosys.de>
  for suggesting to take an active SVDRP connection into account when doing shutdown or
  housekeeping
+ for fixing selecting the device, because sometimes an FTA recording terminated a
+ CA recording
 
 Gerald Berwolf <genka@genka.de>
  for suggesting to deactivate some templates in tools.h in case some plugin needs to
