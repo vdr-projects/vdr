@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.42 2001/10/20 10:28:28 kls Exp $
+ * $Id: recording.c 1.48 2002/01/27 15:14:45 kls Exp $
  */
 
 #include "recording.h"
@@ -14,6 +14,7 @@
 #include <string.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include "i18n.h"
 #include "interface.h"
 #include "tools.h"
 #include "videodir.h"
@@ -37,7 +38,7 @@
 
 #define DELETEDLIFETIME     1 // hours after which a deleted recording will be actually removed
 #define REMOVECHECKDELTA 3600 // seconds between checks for removing deleted files
-#define DISKCHECKDELTA    300 // seconds between checks for free disk space
+#define DISKCHECKDELTA    100 // seconds between checks for free disk space
 #define REMOVELATENCY      10 // seconds to wait until next check after removing a file
 
 void RemoveDeletedRecordings(void)
@@ -118,7 +119,7 @@ void AssertFreeDiskSpace(int Priority)
               return;
            }
         // Unable to free disk space, but there's nothing we can do about that...
-        esyslog(LOG_ERR, "low disk space, but no recordings to delete");
+        Interface->Confirm(tr("Low disk space"), 30);
         }
      LastFreeDiskCheck = time(NULL);
      }
@@ -184,6 +185,8 @@ void cResumeFile::Delete(void)
 
 // --- cRecording ------------------------------------------------------------
 
+#define RESUME_NOT_INITIALIZED (-2)
+
 struct tCharExchange { char a; char b; };
 tCharExchange CharExchange[] = {
   { '~',  '/'    },
@@ -213,6 +216,7 @@ char *ExchangeChars(char *s, bool ToFileSystem)
 
 cRecording::cRecording(cTimer *Timer, const char *Subtitle, const char *Summary)
 {
+  resume = RESUME_NOT_INITIALIZED;
   titleBuffer = NULL;
   sortBuffer = NULL;
   fileName = NULL;
@@ -242,6 +246,7 @@ cRecording::cRecording(cTimer *Timer, const char *Subtitle, const char *Summary)
 
 cRecording::cRecording(const char *FileName)
 {
+  resume = RESUME_NOT_INITIALIZED;
   titleBuffer = NULL;
   sortBuffer = NULL;
   fileName = strdup(FileName);
@@ -342,6 +347,15 @@ char *cRecording::SortName(void)
   return sortBuffer;
 }
 
+int cRecording::GetResume(void)
+{
+  if (resume == RESUME_NOT_INITIALIZED) {
+     cResumeFile ResumeFile(FileName());
+     resume = ResumeFile.Read();
+     }
+  return resume;
+}
+
 bool cRecording::operator< (const cListObject &ListObject)
 {
   cRecording *r = (cRecording *)&ListObject;
@@ -360,27 +374,47 @@ const char *cRecording::FileName(void)
   return fileName;
 }
 
-const char *cRecording::Title(char Delimiter, bool NewIndicator)
+const char *cRecording::Title(char Delimiter, bool NewIndicator, int Level)
 {
-  char New = ' ';
-  if (NewIndicator) {
-     cResumeFile ResumeFile(FileName());
-     if (ResumeFile.Read() <= 0)
-        New = '*';
-     }
+  char New = NewIndicator && IsNew() ? '*' : ' ';
   delete titleBuffer;
   titleBuffer = NULL;
-  struct tm tm_r;
-  struct tm *t = localtime_r(&start, &tm_r);
-  asprintf(&titleBuffer, "%02d.%02d%c%02d:%02d%c%c%s",
-                         t->tm_mday,
-                         t->tm_mon + 1,
-                         Delimiter,
-                         t->tm_hour,
-                         t->tm_min,
-                         New,
-                         Delimiter,
-                         name);
+  if (Level < 0 || Level == HierarchyLevels()) {
+     struct tm tm_r;
+     struct tm *t = localtime_r(&start, &tm_r);
+     const char *s;
+     if (Level > 0 && (s = strrchr(name, '~')) != NULL)
+        s++;
+     else
+        s = name;
+     asprintf(&titleBuffer, "%02d.%02d%c%02d:%02d%c%c%s",
+                            t->tm_mday,
+                            t->tm_mon + 1,
+                            Delimiter,
+                            t->tm_hour,
+                            t->tm_min,
+                            New,
+                            Delimiter,
+                            s);
+     }
+  else if (Level < HierarchyLevels()) {
+     const char *s = name;
+     const char *p = s;
+     while (*++s) {
+           if (*s == '~') {
+              if (Level--)
+                 p = s + 1;
+              else
+                 break;
+              }
+           }
+     titleBuffer = new char[s - p + 3];
+     *titleBuffer = Delimiter;
+     *(titleBuffer + 1) = Delimiter;
+     strn0cpy(titleBuffer + 2, p, s - p + 1);
+     }
+  else
+     return "";
   return titleBuffer;
 }
 
@@ -393,6 +427,17 @@ const char *cRecording::PrefixFileName(char Prefix)
      return fileName;
      }
   return NULL;
+}
+
+int cRecording::HierarchyLevels(void)
+{
+  const char *s = name;
+  int level = 0;
+  while (*++s) {
+        if (*s == '~')
+           level++;
+        }
+  return level;
 }
 
 bool cRecording::WriteSummary(void)
@@ -429,6 +474,11 @@ bool cRecording::Delete(void)
 
 bool cRecording::Remove(void)
 {
+  // let's do a final safety check here:
+  if (!endswith(FileName(), DELEXT)) {
+     esyslog(LOG_ERR, "attempt to remove recording %s", FileName());
+     return false;
+     }
   isyslog(LOG_INFO, "removing recording %s", FileName());
   return RemoveVideoFile(FileName());
 }
@@ -446,7 +496,7 @@ bool cRecordings::Load(bool Deleted)
      char *s;
      while ((s = readline(p)) != NULL) {
            cRecording *r = new cRecording(s);
-           if (r->name)
+           if (r->Name())
               Add(r);
            else
               delete r;
@@ -459,6 +509,15 @@ bool cRecordings::Load(bool Deleted)
      Interface->Error("Error while opening pipe!");
   delete cmd;
   return result;
+}
+
+cRecording *cRecordings::GetByName(const char *FileName)
+{
+  for (cRecording *recording = First(); recording; recording = Next(recording)) {
+      if (strcmp(recording->FileName(), FileName) == 0)
+         return recording;
+      }
+  return NULL;
 }
 
 // --- cMark -----------------------------------------------------------------
@@ -573,7 +632,7 @@ void cRecordingUserCommand::InvokeCommand(const char *State, const char *Recordi
 {
   if (command) {
      char *cmd;
-     asprintf(&cmd, "%s %s '%s'", command, State, RecordingFileName);
+     asprintf(&cmd, "%s %s \"%s\"", command, State, strescape(RecordingFileName, "\"$"));
      isyslog(LOG_INFO, "executing '%s'", cmd);
      SystemExec(cmd);
      delete cmd;

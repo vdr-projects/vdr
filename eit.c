@@ -16,7 +16,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.c 1.29 2001/10/28 13:51:22 kls Exp $
+ * $Id: eit.c 1.31 2002/01/13 16:14:31 kls Exp $
  ***************************************************************************/
 
 #include "eit.h"
@@ -473,22 +473,6 @@ void cEventInfo::FixEpgBugs(void)
      strreplace(pTitle, '`', '\'');
      strreplace(pSubtitle, '`', '\'');
      strreplace(pExtendedDescription, '`', '\'');
-
-     if (Setup.EPGBugfixLevel <= 2)
-        return;
-
-     // Pro7 and Kabel1 apparently are unable to use a calendar/clock,
-     // because all events between 00:00 and 06:00 have the date of the
-     // day before (sometimes even this correction doesn't help).
-     // Channels are recognized by their ServiceID, which may only work
-     // correctly on the ASTRA satellite system.
-     if (uServiceID == 898    // Pro-7
-      || uServiceID == 899) { // Kabel 1
-        struct tm tm_r;
-        tm *t = localtime_r(&tTime, &tm_r);
-        if (t->tm_hour * 3600 + t->tm_min * 60 + t->tm_sec <= 6 * 3600)
-           tTime += 24 * 3600;
-        }
      }
 }
 
@@ -1013,8 +997,10 @@ void cSIProcessor::Action()
                            break;
                      }
                   }
+                  /*XXX this just fills up the log file - shouldn't we rather try to re-sync?
                   else
                      dsyslog(LOG_INFO, "read incomplete section - seclen = %d, n = %d", seclen, n);
+                  XXX*/
                }
             }
          }

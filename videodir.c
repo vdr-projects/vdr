@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: videodir.c 1.6 2001/09/02 14:55:15 kls Exp $
+ * $Id: videodir.c 1.7 2002/01/27 12:37:26 kls Exp $
  */
 
 #include "videodir.h"
@@ -27,7 +27,7 @@ private:
 public:
   cVideoDirectory(void);
   ~cVideoDirectory();
-  uint FreeMB(void);
+  int FreeMB(int *UsedMB = NULL);
   const char *Name(void) { return name ? name : VideoDirectory; }
   const char *Stored(void) { return stored; }
   int Length(void) { return length; }
@@ -53,9 +53,9 @@ cVideoDirectory::~cVideoDirectory()
   delete adjusted;
 }
 
-uint cVideoDirectory::FreeMB(void)
+int cVideoDirectory::FreeMB(int *UsedMB)
 {
-  return FreeDiskSpaceMB(name ? name : VideoDirectory);
+  return FreeDiskSpaceMB(name ? name : VideoDirectory, UsedMB);
 }
 
 bool cVideoDirectory::Next(void)
@@ -117,9 +117,9 @@ int OpenVideoFile(const char *FileName, int Flags)
      cVideoDirectory Dir;
      if (Dir.IsDistributed()) {
         // Find the directory with the most free space:
-        uint MaxFree = Dir.FreeMB();
+        int MaxFree = Dir.FreeMB();
         while (Dir.Next()) {
-              uint Free = FreeDiskSpaceMB(Dir.Name());
+              int Free = FreeDiskSpaceMB(Dir.Name());
               if (Free > MaxFree) {
                  Dir.Store();
                  MaxFree = Free;
@@ -166,7 +166,7 @@ bool RemoveVideoFile(const char *FileName)
   return RemoveFileOrDir(FileName, true);
 }
 
-bool VideoFileSpaceAvailable(unsigned int SizeMB)
+bool VideoFileSpaceAvailable(int SizeMB)
 {
   cVideoDirectory Dir;
   if (Dir.IsDistributed()) {
@@ -179,6 +179,22 @@ bool VideoFileSpaceAvailable(unsigned int SizeMB)
      return false;
      }
   return Dir.FreeMB() >= SizeMB;
+}
+
+int VideoDiskSpace(int *FreeMB, int *UsedMB)
+{
+  int free = 0, used = 0;
+  cVideoDirectory Dir;
+  do {
+     int u;
+     free += Dir.FreeMB(&u);
+     used += u;
+     } while (Dir.Next());
+  if (FreeMB)
+     *FreeMB = free;
+  if (UsedMB)
+     *UsedMB = used;
+  return (free + used) ? used * 100 / (free + used) : 0;
 }
 
 const char *PrefixVideoFileName(const char *FileName, char Prefix)

@@ -1,2 +1,0 @@
-#!/bin/sh
-find /x1/video/ -name "cut" -exec cutall2 {} \;

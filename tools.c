@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.50 2001/10/19 13:12:45 kls Exp $
+ * $Id: tools.c 1.53 2002/01/27 12:36:23 kls Exp $
  */
 
 #include "tools.h"
@@ -136,10 +136,44 @@ char *compactspace(char *s)
   return s;
 }
 
+const char *strescape(const char *s, const char *chars)
+{
+  static char *buffer = NULL;
+  const char *p = s;
+  char *t = NULL;
+  while (*p) {
+        if (strchr(chars, *p)) {
+           if (!t) {
+              buffer = (char *)realloc(buffer, 2 * strlen(s) + 1);
+              t = buffer + (p - s);
+              s = strcpy(buffer, s);
+              }
+           *t++ = '\\';
+           }
+        if (t)
+           *t++ = *p;
+        p++;
+        }
+  if (t)
+     *t = 0;
+  return s;
+}
+
 bool startswith(const char *s, const char *p)
 {
   while (*p) {
         if (*p++ != *s++)
+           return false;
+        }
+  return true;
+}
+
+bool endswith(const char *s, const char *p)
+{
+  const char *se = s + strlen(s) - 1;
+  const char *pe = p + strlen(p) - 1;
+  while (pe >= p) {
+        if (*pe-- != *se-- || (se < s && pe >= p))
            return false;
         }
   return true;
@@ -189,10 +223,12 @@ const char *AddDirectory(const char *DirName, const char *FileName)
 
 #define DFCMD  "df -m -P '%s'"
 
-uint FreeDiskSpaceMB(const char *Directory)
+int FreeDiskSpaceMB(const char *Directory, int *UsedMB)
 {
   //TODO Find a simpler way to determine the amount of free disk space!
-  uint Free = 0;
+  if (UsedMB)
+     *UsedMB = 0;
+  int Free = 0;
   char *cmd = NULL;
   asprintf(&cmd, DFCMD, Directory);
   FILE *p = popen(cmd, "r");
@@ -200,8 +236,10 @@ uint FreeDiskSpaceMB(const char *Directory)
      char *s;
      while ((s = readline(p)) != NULL) {
            if (strchr(s, '/')) {
-              uint available;
-              sscanf(s, "%*s %*d %*d %u", &available);
+              int used, available;
+              sscanf(s, "%*s %*d %d %d", &used, &available);
+              if (UsedMB)
+                 *UsedMB = used;
               Free = available;
               break;
               }

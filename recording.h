@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 1.18 2001/10/07 10:38:56 kls Exp $
+ * $Id: recording.h 1.21 2002/01/26 15:18:16 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -15,7 +15,7 @@
 #include "tools.h"
 
 void RemoveDeletedRecordings(void);
-void AssertFreeDiskSpace(int Priority);
+void AssertFreeDiskSpace(int Priority = 0);
 
 class cResumeFile {
 private:
@@ -29,8 +29,8 @@ public:
   };
 
 class cRecording : public cListObject {
-  friend class cRecordings;
 private:
+  int resume;
   char *titleBuffer;
   char *sortBuffer;
   char *fileName;
@@ -38,6 +38,7 @@ private:
   char *summary;
   char *StripEpisodeName(char *s);
   char *SortName(void);
+  int GetResume(void);
 public:
   time_t start;
   int priority;
@@ -46,10 +47,13 @@ public:
   cRecording(const char *FileName);
   ~cRecording();
   virtual bool operator< (const cListObject &ListObject);
+  const char *Name(void) { return name; }
   const char *FileName(void);
-  const char *Title(char Delimiter = ' ', bool NewIndicator = false);
+  const char *Title(char Delimiter = ' ', bool NewIndicator = false, int Level = -1);
   const char *Summary(void) { return summary; }
   const char *PrefixFileName(char Prefix);
+  int HierarchyLevels(void);
+  bool IsNew(void) { return GetResume() <= 0; }
   bool WriteSummary(void);
   bool Delete(void);
        // Changes the file name so that it will no longer be visible in the "Recordings" menu
@@ -62,6 +66,7 @@ public:
 class cRecordings : public cList<cRecording> {
 public:
   bool Load(bool Deleted = false);
+  cRecording *GetByName(const char *FileName);
   };
 
 class cMark : public cListObject {

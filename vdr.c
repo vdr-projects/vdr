@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.89 2001/11/03 12:23:45 kls Exp $
+ * $Id: vdr.c 1.93 2002/01/26 14:07:01 kls Exp $
  */
 
 #include <getopt.h>
@@ -314,7 +314,6 @@ int main(int argc, char *argv[])
   int LastChannel = -1;
   int PreviousChannel = cDvbApi::CurrentChannel();
   time_t LastActivity = 0;
-  time_t LinearTime = time(NULL);
   int MaxLatencyTime = 0;
   bool ForceShutdown = false;
 
@@ -324,14 +323,6 @@ int main(int argc, char *argv[])
      }
 
   while (!Interrupted) {
-        // Test if we are running in the Einstein continuum:
-        time_t Now = time(NULL);
-        time_t LinearDelta = Now - LinearTime;
-        if (LinearDelta) {
-           if (LinearDelta < 0 || LinearDelta > 300) // assuming nothing will block for more than 5 minutes
-              esyslog(LOG_ERR, "ERROR: time warp detected (%d seconds)", LinearDelta);
-           LinearTime = Now;
-           }
         // Handle emergency exits:
         if (cThread::EmergencyExit()) {
            esyslog(LOG_ERR, "emergency exit requested - shutting down");
@@ -477,7 +468,12 @@ int main(int argc, char *argv[])
           }
         if (!Menu) {
            EITScanner.Process();
-           cVideoCutter::Active();
+           if (!cVideoCutter::Active() && cVideoCutter::Ended()) {
+              if (cVideoCutter::Error())
+                 Interface->Error(tr("Editing process failed!"));
+              else
+                 Interface->Info(tr("Editing process finished"));
+              }
            }
         if (!*Interact && (!cRecordControls::Active() || ForceShutdown)) {
            time_t Now = time(NULL);
@@ -508,7 +504,7 @@ int main(int argc, char *argv[])
                        int Channel = timer ? timer->channel : 0;
                        const char *File = timer ? timer->file : "";
                        char *cmd;
-                       asprintf(&cmd, "%s %ld %ld %d '%s' %d", Shutdown, Next, Delta, Channel, File, UserShutdown);
+                       asprintf(&cmd, "%s %ld %ld %d \"%s\" %d", Shutdown, Next, Delta, Channel, strescape(File, "\"$"), UserShutdown);
                        isyslog(LOG_INFO, "executing '%s'", cmd);
                        SystemExec(cmd);
                        delete cmd;
@@ -518,7 +514,7 @@ int main(int argc, char *argv[])
                        if (signal(SIGALRM, Watchdog) == SIG_IGN)
                           signal(SIGALRM, SIG_IGN);
                        }
-                    LastActivity = Now; // don't try again too soon
+                    LastActivity = time(NULL); // don't try again too soon
                     continue; // skip the rest of the housekeeping for now
                     }
                  }

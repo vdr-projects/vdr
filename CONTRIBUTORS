@@ -8,6 +8,7 @@ Carsten Koch <Carsten.Koch@icem.de>
  for his idea of using multiple disks (and for testing this feature)
  for implementing the 'new recording' indicator
  for suggesting that the "Back" button in replay mode should bring up the "Recordings" menu
+ for fixing the watchdog timer if the program hangs in OSD activities
 
 Plamen Ganev <pganev@com-it.net>
  for fixing the frequency offset for Hotbird channels
@@ -55,6 +56,7 @@ Alberto Carraro <bertocar@tin.it>
 
 Deti Fliegl <deti@fliegl.de>
  for implementing the 'CurrentChannel' setup parameter
+ for fixing setting the OSD size in the 'Confirm' interface call
 
 Dave Chapman <dave@dchapman.com>
  for implementing support for the teletext PID
@@ -166,3 +168,13 @@ Norbert Schmidt <nschmidt-nrw@t-online.de>
 
 Thilo Wunderlich <tw@ubcom.net>
  for his help in keeping 'channels.conf' up to date
+
+Stephan Schreiber <stephan@sschreiber.de>
+ for his support in keeping the Premiere World channels up to date in 'channels.conf.cable'
+
+Lauri Pesonen <lauri.pesonen@firsthop.com>
+ for avoiding linking in 'libncurses' if compiling without DEBUG_OSD=1 and
+ REMOTE=KBD
+
+Sergei Haller <Sergei.Haller@math.uni-giessen.de>
+ for fixing the LastActivity timestamp after a shutdown prompt

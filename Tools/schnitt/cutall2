@@ -1,5 +1,0 @@
-#!/bin/sh
-a=`echo $1 | cut -d / -f1-5`
-cd $a
-cutall3.pl
-mv cut cut.bak

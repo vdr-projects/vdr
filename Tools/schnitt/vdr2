@@ -1,2 +1,0 @@
-#!/bin/sh
-irpty ~/.lircrc-vdr -- vdr -c /home/ms/.vdr -v /video/video0

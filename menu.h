@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 1.34 2001/10/28 15:21:04 kls Exp $
+ * $Id: menu.h 1.35 2002/01/20 13:38:34 kls Exp $
  */
 
 #ifndef _MENU_H
@@ -55,15 +55,24 @@ public:
   };
 #endif //DVDSUPPORT
 
+class cMenuRecordingItem;
+
 class cMenuRecordings : public cOsdMenu {
 private:
-  cRecordings Recordings;
+  static cRecordings Recordings;
+  char *base;
+  int level;
+  static int helpKeys;
+  void SetHelpKeys(void);
+  cRecording *GetRecording(cMenuRecordingItem *Item);
+  bool Open(bool OpenSubMenus = false);
   eOSState Play(void);
   eOSState Rewind(void);
   eOSState Del(void);
   eOSState Summary(void);
 public:
-  cMenuRecordings(void);
+  cMenuRecordings(const char *Base = NULL, int Level = 0, bool OpenSubMenus = false);
+  ~cMenuRecordings();
   virtual eOSState ProcessKey(eKeys Key);
   };
 

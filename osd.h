@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.h 1.24 2001/08/25 12:56:46 kls Exp $
+ * $Id: osd.h 1.25 2002/01/20 10:42:14 kls Exp $
  */
 
 #ifndef __OSD_H
@@ -83,6 +83,7 @@ protected:
   bool visible;
   virtual void Clear(void);
   bool SpecialItem(int idx);
+  void SetCurrent(cOsdItem *Item);
   void RefreshCurrent(void);
   void DisplayCurrent(bool Current);
   void CursorUp(void);

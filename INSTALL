@@ -349,7 +349,7 @@ the "Frequency" is in kHz in case of DVB-T).
 
 You can even use a mixture of DVB-S, DVB-C and DVB-T cards in the same system.
 All you need to do is to put all the channel definitions into one big
-'channel.conf' file and set the 'Ca' parameter of each channel to the number
+'channels.conf' file and set the 'Ca' parameter of each channel to the number
 of the card that can receive it.
 
 Learning the remote control keys:

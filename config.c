@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.76 2001/10/20 13:09:38 kls Exp $
+ * $Id: config.c 1.77 2002/01/19 16:06:42 kls Exp $
  */
 
 #include "config.h"
@@ -807,6 +807,7 @@ cSetup::cSetup(void)
   DefaultPriority = 50;
   DefaultLifetime = 50;
   UseSubtitle = 1;
+  RecordingDirs = 1;
   VideoFormat = VIDEO_FORMAT_4_3;
   ChannelInfoPos = 0;
   OSDwidth = 52;
@@ -848,6 +849,7 @@ bool cSetup::Parse(char *s)
      else if (!strcasecmp(Name, "DefaultPriority"))     DefaultPriority    = atoi(Value);
      else if (!strcasecmp(Name, "DefaultLifetime"))     DefaultLifetime    = atoi(Value);
      else if (!strcasecmp(Name, "UseSubtitle"))         UseSubtitle        = atoi(Value);
+     else if (!strcasecmp(Name, "RecordingDirs"))       RecordingDirs      = atoi(Value);
      else if (!strcasecmp(Name, "VideoFormat"))         VideoFormat        = atoi(Value);
      else if (!strcasecmp(Name, "ChannelInfoPos"))      ChannelInfoPos     = atoi(Value);
      else if (!strcasecmp(Name, "OSDwidth"))            OSDwidth           = atoi(Value);
@@ -924,6 +926,7 @@ bool cSetup::Save(const char *FileName)
         fprintf(f, "DefaultPriority    = %d\n", DefaultPriority);
         fprintf(f, "DefaultLifetime    = %d\n", DefaultLifetime);
         fprintf(f, "UseSubtitle        = %d\n", UseSubtitle);
+        fprintf(f, "RecordingDirs      = %d\n", RecordingDirs);
         fprintf(f, "VideoFormat        = %d\n", VideoFormat);
         fprintf(f, "ChannelInfoPos     = %d\n", ChannelInfoPos);
         fprintf(f, "OSDwidth           = %d\n", OSDwidth);

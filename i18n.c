@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.45 2001/10/28 16:04:58 kls Exp $
+ * $Id: i18n.c 1.50 2002/01/27 15:52:32 kls Exp $
  *
  * Slovenian translations provided by Miha Setina <mihasetina@softhome.net>
  * Italian   translations provided by Alberto Carraro <bertocar@tin.it>
@@ -284,6 +284,15 @@ const tPhrase Phrases[] = {
     "Resumo",
     "Résumé",
     "Sammendrag",
+  },
+  { "Open",
+    "Öffnen",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
   },
   { "Switch",
     "Umschalten",
@@ -631,6 +640,15 @@ const tPhrase Phrases[] = {
     "Enregistrement en cours!",
     "Timer gjør opptak!",
   },
+  { "Error while accessing recording!",
+    "Fehler beim ansprechen der Aufzeichnung!",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+  },
   { "Error while deleting recording!",
     "Fehler beim Löschen der Aufzeichnung!",
     "Napaka pri odstranjevanju posnetka!",
@@ -696,6 +714,15 @@ const tPhrase Phrases[] = {
   },
   { "Can't shutdown - option '-s' not given!",
     "Shutdown unmöglich - Option '-s' fehlt!",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+  },
+  { "Low disk space!",
+    "Platte beinahe voll!",
     "", // TODO
     "", // TODO
     "", // TODO
@@ -877,6 +904,15 @@ const tPhrase Phrases[] = {
   },
   { "UseSubtitle",
     "Subtitle verwenden",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+  },
+  { "RecordingDirs",
+    "Aufn. Verzeichnisse",
     "", // TODO
     "", // TODO
     "", // TODO
@@ -1293,6 +1329,14 @@ const tPhrase Phrases[] = {
     "bas",
     "", // TODO
   },
+  { "free",
+    "frei",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+  },
   { "Jump: ", // note the trailing blank
     "Springen: ",
     "", // TODO
@@ -1354,6 +1398,30 @@ const tPhrase Phrases[] = {
     "Processo de modificacao iniciado",
     "Opération de montage lancée",
     "Redigeringsprosess startet",
+  },
+  { "Editing process finished",
+    "Schnitt beendet",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+  },
+  { "Editing process failed!",
+    "Schnitt gescheitert!",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+  },
+  { "scanning recordings...",
+    "Aufzeichnungen werden durchsucht...",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
   },
   { NULL }
   };

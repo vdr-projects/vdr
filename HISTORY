@@ -866,7 +866,7 @@ Video Disk Recorder Revision History
 - The device /dev/video is now opened only if necessary (to GRAB an image),
   allowing other programs (like 'kvdr', for instance) to use that device.
 
-2001-11-25: Version 0.99
+2001-11-25: Version 0.99pre1
 
 - Fixed several channel definitions in 'channels.conf' (thanks to Thilo
   Wunderlich).
@@ -878,3 +878,46 @@ Video Disk Recorder Revision History
 - Changed the maximum value for PIDs in channels.conf from 0xFFFE to 0x1FFF.
 - Fixed DVD audio sync problems (thanks to Andreas Schultz).
 - Fixed external AC3 replay for DVDs (thanks to Andreas Schultz).
+
+2002-01-27: Version 0.99pre2
+
+- Fixed setting the OSD size in the 'Confirm' interface call (thanks to
+  Deti Fliegl).
+- Removed the 'read incomplete section...' error message in the EIT processor.
+- Fixed channel data for "DW TV" (thanks to Axel Gruber).
+- Added DPID to "PREMIERE MOVIE 1" in channels.conf.cable (thanks to Stephan
+  Schreiber).
+- Prepared the OSD functions for multiple overlapping windows.
+- Removed the check to see whether the system time is running linearly.
+- Improved performance of SVDRP command entry.
+- Removed EPGBugfixLevel '3' - after more than a year Pro-7 finally managed to
+  broadcast the correct timestamps for EPG events between 0:00 and 6:00!
+- Fixed failing watchdog timer if program hangs in OSD activities (thanks to
+  Carsten Koch).
+- No longer requiring 'libncurses' if compiling without DEBUG_OSD=1 and
+  REMOTE=KBD (thanks to Lauri Pesonen).
+- The "Recordings" menu now displays a hierarchical structure if there are
+  subdirectories for the recordings. This can be controlled through the
+  "RecordingDirs" parameter in the "Setup" menu.
+  See "MANUAL/Replaying a Recording" for details.
+- Improved speed of setting the Help button texts.
+- Fixed handling file names that contain single quotes (') or dollar signs ($)
+  in the call to the shutdown command (option '-s') and the recording command
+  (option '-r').
+- Improved error handling in the editing process; the resulting file will be
+  deleted if an error occured.
+- A message is now prompted at the end of the editing process, indicating
+  whether the process succeeded or failed.
+- Fixed setting the LastActivity timestamp after a shutdown prompt (thanks to
+  Sergei Haller).
+- A message is now prompted if free disk space becomes low during recording.
+- The editing process now calls AssertFreeDiskSpace() to remove deleted
+  recordings if the disk becomes full.
+- The "Main" menu now displays in its title the used disk space (in percent)
+  and the estimated free disk space (in hh:mm), assuming a data rate of 30 MB
+  per minute.
+- Activating the "Recordings" menu now displays "scanning recordings..." to
+  give the user some feedback in case this takes longer.
+- Status messages are now displayed centered.
+- Removed the 'Tools' subdirectory from the VDR archive. All contributed tools
+  can now be found at ftp://ftp.cadsoft.de/pub/people/kls/vdr/Tools.

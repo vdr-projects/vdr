@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.c 1.44 2001/09/01 15:18:46 kls Exp $
+ * $Id: interface.c 1.47 2002/01/27 15:48:46 kls Exp $
  */
 
 #include "interface.h"
@@ -292,8 +292,12 @@ void cInterface::Status(const char *s, eDvbColor FgColor, eDvbColor BgColor)
 {
   int Line = (abs(height) == 1) ? 0 : -2;
   ClearEol(0, Line, s ? BgColor : clrBackground);
-  if (s)
-     Write(0, Line, s, FgColor, BgColor);
+  if (s) {
+     int x = (Width() - strlen(s)) / 2;
+     if (x < 0)
+        x = 0;
+     Write(x, Line, s, FgColor, BgColor);
+     }
 }
 
 void cInterface::Info(const char *s)
@@ -318,7 +322,7 @@ void cInterface::Error(const char *s)
 
 bool cInterface::Confirm(const char *s, int Seconds, bool WaitForTimeout)
 {
-  Open();
+  Open(Setup.OSDwidth, -1);
   isyslog(LOG_INFO, "confirm: %s", s);
   Status(s, clrBlack, clrYellow);
   eKeys k = Wait(Seconds);
@@ -331,13 +335,15 @@ bool cInterface::Confirm(const char *s, int Seconds, bool WaitForTimeout)
 
 void cInterface::HelpButton(int Index, const char *Text, eDvbColor FgColor, eDvbColor BgColor)
 {
-  if (open && Text) {
+  if (open) {
      const int w = Width() / 4;
-     int l = (w - int(strlen(Text))) / 2;
-     if (l < 0)
-        l = 0;
-     cDvbApi::PrimaryDvbApi->Fill(Index * w, -1, w, 1, BgColor);
-     cDvbApi::PrimaryDvbApi->Text(Index * w + l, -1, Text, FgColor, BgColor);
+     cDvbApi::PrimaryDvbApi->Fill(Index * w, -1, w, 1, Text ? BgColor : clrBackground);
+     if (Text) {
+        int l = (w - int(strlen(Text))) / 2;
+        if (l < 0)
+           l = 0;
+        cDvbApi::PrimaryDvbApi->Text(Index * w + l, -1, Text, FgColor, BgColor);
+        }
      }
 }
 

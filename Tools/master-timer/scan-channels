@@ -1,8 +1,0 @@
-#!/bin/sh
-old=`svdrpsend.pl chan | grep 250 | cut -d " " -f2`
-for dat in `cat $HOME/.master-timer/channels-to-scan`
-do
-  svdrpsend.pl "chan $dat"
-  sleep 30s
-done
-svdrpsend.pl "chan $old"

@@ -16,7 +16,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.h 1.12 2001/10/28 12:33:10 kls Exp $
+ * $Id: eit.h 1.13 2002/01/13 16:18:23 kls Exp $
  ***************************************************************************/
 
 #ifndef __EIT_H
@@ -24,6 +24,8 @@
 
 #include "thread.h"
 #include "tools.h"
+
+#define MAXEPGBUGFIXLEVEL 2
 
 class cEventInfo : public cListObject {
   friend class cSchedule;

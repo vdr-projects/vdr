@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.36 2001/09/30 10:20:59 kls Exp $
+ * $Id: tools.h 1.39 2002/01/26 15:38:10 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -50,20 +50,22 @@ char *strreplace(char *s, char c1, char c2);
 char *skipspace(const char *s);
 char *stripspace(char *s);
 char *compactspace(char *s);
+const char *strescape(const char *s, const char *chars); // returns a statically allocated string!
 bool startswith(const char *s, const char *p);
+bool endswith(const char *s, const char *p);
 bool isempty(const char *s);
 int time_ms(void);
 void delay_ms(int ms);
 bool isnumber(const char *s);
-const char *AddDirectory(const char *DirName, const char *FileName);
-uint FreeDiskSpaceMB(const char *Directory);
+const char *AddDirectory(const char *DirName, const char *FileName); // returns a statically allocated string!
+int FreeDiskSpaceMB(const char *Directory, int *UsedMB = NULL);
 bool DirectoryOk(const char *DirName, bool LogErrors = false);
 bool MakeDirs(const char *FileName, bool IsDirectory = false);
 bool RemoveFileOrDir(const char *FileName, bool FollowSymlinks = false);
 bool RemoveEmptyDirectories(const char *DirName, bool RemoveThis = false);
 char *ReadLink(const char *FileName);
 bool SpinUpDisk(const char *FileName);
-const char *DayDateTime(time_t t = 0);
+const char *DayDateTime(time_t t = 0); // returns a statically allocated string!
 
 class cFile {
 private:
