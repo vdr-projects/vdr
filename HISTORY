@@ -589,3 +589,5 @@ Video Disk Recorder Revision History
 - Avoiding audio/video distortions in 'Transfer Mode'.
 - Fixed replaying in case there is no index file.
 - Fixed jumping to an editing mark when replay has been paused.
+- Avoiding unnecessary code execution in the replay progress display (thanks
+  to Guido Fiala).

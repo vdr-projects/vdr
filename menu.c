@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.84 2001/07/27 13:35:03 kls Exp $
+ * $Id: menu.c 1.85 2001/07/28 13:07:30 kls Exp $
  */
 
 #include "menu.h"
@@ -2144,6 +2144,7 @@ cReplayControl::cReplayControl(void)
 {
   dvbApi = cDvbApi::PrimaryDvbApi;
   visible = shown = displayFrames = false;
+  lastCurrent = lastTotal = -1;
   if (fileName) {
      marks.Load(fileName);
      dvbApi->StartReplay(fileName);
@@ -2204,19 +2205,25 @@ bool cReplayControl::ShowProgress(bool Initial)
         if (title)
            Interface->Write(0, 0, title);
         }
-     Interface->Write(-7, 2, IndexToHMSF(Total));
-     Interface->Flush();
+     if (Total != lastTotal) {
+        Interface->Write(-7, 2, IndexToHMSF(Total));
+        Interface->Flush();
+        lastTotal = Total;
+        }
+     if (Current != lastCurrent) {
 #ifdef DEBUG_OSD
-     int p = Width() * Current / Total;
-     Interface->Fill(0, 1, p, 1, clrGreen);
-     Interface->Fill(p, 1, Width() - p, 1, clrWhite);
+        int p = Width() * Current / Total;
+        Interface->Fill(0, 1, p, 1, clrGreen);
+        Interface->Fill(p, 1, Width() - p, 1, clrWhite);
 #else
-     cProgressBar ProgressBar(Width() * dvbApi->CellWidth(), dvbApi->LineHeight(), Current, Total, marks);
-     Interface->SetBitmap(0, dvbApi->LineHeight(), ProgressBar);
-     Interface->Flush();
+        cProgressBar ProgressBar(Width() * dvbApi->CellWidth(), dvbApi->LineHeight(), Current, Total, marks);
+        Interface->SetBitmap(0, dvbApi->LineHeight(), ProgressBar);
+        Interface->Flush();
 #endif
-     Interface->Write(0, 2, IndexToHMSF(Current, displayFrames));
-     Interface->Flush();
+        Interface->Write(0, 2, IndexToHMSF(Current, displayFrames));
+        Interface->Flush();
+        lastCurrent = Current;
+        }
      return true;
      }
   return false;

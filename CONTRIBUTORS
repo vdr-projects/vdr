@@ -23,6 +23,7 @@ Guido Fiala <gfiala@s.netic.de>
  for implementing the SVDRP command 'HITK'
  for implementing image grabbing
  for implementing overlay capabilities (see his 'kvdr' tool at http://www.s.netic.de/gfiala)
+ for making the replay progress display avoid unnecessary code execution
 
 Robert Schneider <Robert.Schneider@lotus.com>
  for implementing EIT support for displaying the current/next info
