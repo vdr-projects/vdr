@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.85 2001/07/22 09:33:01 kls Exp $
+ * $Id: dvbapi.c 1.86 2001/07/22 09:34:55 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -869,7 +869,6 @@ void cReplayBuffer::Clear(bool Block)
      Lock();
      cRingBuffer::Clear();
      playIndex = -1;
-     CHECK(ioctl(videoDev, VIDEO_FREEZE));
      CHECK(ioctl(videoDev, VIDEO_CLEAR_BUFFER));
      CHECK(ioctl(audioDev, AUDIO_CLEAR_BUFFER));
      }
