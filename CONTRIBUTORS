@@ -632,3 +632,7 @@ Kai Moeller <moeller.ki@gmx.de>
 
 Carsten Siebholz <c.siebholz@t-online.de>
  for adding cStatus::OsdItem() to provide the entire list of menu items to a plugin
+
+Wolfgang Goeller <wgoeller@heraklit.ch>
+ for reporting a bug in keeping live video active in case the primary device doesn't
+ have an MPEG decoder

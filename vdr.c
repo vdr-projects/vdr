@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.153 2003/05/09 14:14:13 kls Exp $
+ * $Id: vdr.c 1.154 2003/05/11 08:39:09 kls Exp $
  */
 
 #include <getopt.h>
@@ -469,7 +469,7 @@ int main(int argc, char *argv[])
         // Attach launched player control:
         cControl::Attach();
         // Make sure we have a visible programme in case device usage has changed:
-        if (!cDevice::PrimaryDevice()->HasProgramme()) {
+        if (cDevice::PrimaryDevice()->HasDecoder() && !cDevice::PrimaryDevice()->HasProgramme()) {
            static time_t lastTime = 0;
            if (time(NULL) - lastTime > MINCHANNELWAIT) {
               if (!Channels.SwitchTo(cDevice::CurrentChannel()))
