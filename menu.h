@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 1.27 2001/09/14 13:42:08 kls Exp $
+ * $Id: menu.h 1.28 2001/09/14 15:09:49 kls Exp $
  */
 
 #ifndef _MENU_H
@@ -118,7 +118,8 @@ private:
   static int titleid;//XXX
 #endif //DVDSUPPORT
   static char *title;
-  bool ShowMode(void);
+  void DisplayAtBottom(const char *s = NULL);
+  void ShowMode(void);
   bool ShowProgress(bool Initial);
   void MarkToggle(void);
   void MarkJump(bool Forward);

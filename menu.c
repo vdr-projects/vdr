@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.118 2001/09/14 14:01:21 kls Exp $
+ * $Id: menu.c 1.119 2001/09/14 15:10:12 kls Exp $
  */
 
 #include "menu.h"
@@ -2401,9 +2401,21 @@ void cReplayControl::Hide(void)
      }
 }
 
-bool cReplayControl::ShowMode(void)
+void cReplayControl::DisplayAtBottom(const char *s)
 {
-  if (Setup.ShowReplayMode) {
+  if (s) {
+     int w = dvbApi->WidthInCells(s);
+     int d = max(Width() - w, 0) / 2;
+     Interface->Write(d, -1, s);
+     Interface->Flush();
+     }
+  else
+     Interface->Fill(12, 2, Width() - 22, 1, clrBackground);
+}
+
+void cReplayControl::ShowMode(void)
+{
+  if (Setup.ShowReplayMode && !timeSearchActive) {
      bool Play, Forward;
      int Speed;
      if (dvbApi->GetReplayMode(Play, Forward, Speed)) {
@@ -2427,15 +2439,10 @@ bool cReplayControl::ShowMode(void)
            *p = Speed > 0 ? '1' + Speed - 1 : ' ';
 
         eDvbFont OldFont = Interface->SetFont(fontFix);
-        int w = dvbApi->WidthInCells(buf);
-        int d = max(Width() - w, 0) / 2;
-        Interface->Write(d, -1, buf);
-        Interface->Flush();
+        DisplayAtBottom(buf);
         Interface->SetFont(OldFont);
-        return true;
         }
      }
-  return false;
 }
 
 bool cReplayControl::ShowProgress(bool Initial)
@@ -2496,7 +2503,7 @@ void cReplayControl::TimeSearchDisplay(void)
     default: sprintf(buf + len, "--:--"); break;
     }
 
-  Interface->Write(12, 2, buf);
+  DisplayAtBottom(buf);
 }
 
 void cReplayControl::TimeSearchProcess(eKeys Key)
@@ -2553,7 +2560,7 @@ void cReplayControl::TimeSearchProcess(eKeys Key)
      if (timeSearchHide)
         Hide();
      else
-        Interface->Fill(12, 2, Width() - 22, 1, clrBackground);
+        DisplayAtBottom();
      ShowMode();
      }
 }
