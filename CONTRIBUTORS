@@ -359,3 +359,6 @@ Tomas Prybil <tomas.prybil@copper.se>
 
 Matthias Fechner <matthiasfechner@web.de>
  for pointing out a bug in parsing 'E' records in epg2html.pl
+
+Paul Lacatus <paul@campina.iiruc.ro>
+ for translating OSD texts to the Romanian language

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.h 1.3 2002/05/26 09:43:17 kls Exp $
+ * $Id: i18n.h 1.4 2002/06/10 16:14:02 kls Exp $
  */
 
 #ifndef __I18N_H
@@ -12,7 +12,7 @@
 
 #include <stdio.h>
 
-const int I18nNumLanguages = 13;
+const int I18nNumLanguages = 14;
 
 typedef const char *tI18nPhrase[I18nNumLanguages];
 

@@ -1295,6 +1295,10 @@ Video Disk Recorder Revision History
   buffer (thanks to Sven Grothklags).
 - Added Swedish language texts (thanks to Tomas Prybil).
 
+2002-06-10: Version 1.0.4
+
+- Added Romanian language texts (thanks to Paul Lacatus).
+
 2002-05-26: Version 1.1.3
 
 - Improved the VDR Makefile to avoid a warning if the '.dependencies' file does
