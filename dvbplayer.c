@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 1.29 2004/12/26 11:45:34 kls Exp $
+ * $Id: dvbplayer.c 1.30 2005/01/14 14:00:56 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -439,7 +439,7 @@ void cDvbPlayer::Action(void)
                     }
                  }
               else
-                 cCondWait::SleepMs(1); // this keeps the CPU load low
+                 cCondWait::SleepMs(3); // this keeps the CPU load low
               }
 
            // Store the frame in the buffer:
