@@ -1773,3 +1773,4 @@ Video Disk Recorder Revision History
 - Added new entries to 'ca.conf'.
 - Fixed closing unused PID handles (thanks to Stefan Schluenss for reporting this
   one).
+- Added more examples to 'diseqc.conf' (thanks to Oliver Endriss).
