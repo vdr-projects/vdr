@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.78 2005/01/23 14:15:00 kls Exp $
+ * $Id: device.c 1.79 2005/01/25 18:19:30 kls Exp $
  */
 
 #include "device.h"
@@ -281,11 +281,11 @@ cDevice *cDevice::GetDevice(const cChannel *Channel, int Priority, bool *NeedsDe
 
 void cDevice::Shutdown(void)
 {
+  primaryDevice = NULL;
   for (int i = 0; i < numDevices; i++) {
       delete device[i];
       device[i] = NULL;
       }
-  primaryDevice = NULL;
 }
 
 bool cDevice::GrabImage(const char *FileName, bool Jpeg, int Quality, int SizeX, int SizeY)
