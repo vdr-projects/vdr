@@ -1,10 +1,10 @@
 /*
  * dvbapi.c: Interface to the DVB driver
  *
- * See the main source file 'osm.c' for copyright information and
+ * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.5 2000/04/23 15:32:00 kls Exp $
+ * $Id: dvbapi.c 1.6 2000/04/24 09:44:19 kls Exp $
  */
 
 #include "dvbapi.h"

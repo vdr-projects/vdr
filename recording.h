@@ -1,10 +1,10 @@
 /*
  * recording.h: Recording file handling
  *
- * See the main source file 'osm.c' for copyright information and
+ * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 1.5 2000/04/24 09:33:58 kls Exp $
+ * $Id: recording.h 1.6 2000/04/24 09:45:49 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -33,7 +33,7 @@ public:
   const char *FileName(void);
   const char *Title(char Delimiter = ' ');
   bool Delete(void);
-       // Changes the file name so that it will no longer be visible in the OSM
+       // Changes the file name so that it will no longer be visible in the "Recordings" menu
        // Returns false in case of error
   bool Remove(void);
        // Actually removes the file from the disk

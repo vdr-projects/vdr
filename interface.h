@@ -1,10 +1,10 @@
 /*
  * interface.h: Abstract user interface layer
  *
- * See the main source file 'osm.c' for copyright information and
+ * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.h 1.6 2000/04/23 14:57:13 kls Exp $
+ * $Id: interface.h 1.7 2000/04/24 09:44:25 kls Exp $
  */
 
 #ifndef __INTERFACE_H

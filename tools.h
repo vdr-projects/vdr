@@ -1,10 +1,10 @@
 /*
  * tools.h: Various tools
  *
- * See the main source file 'osm.c' for copyright information and
+ * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.4 2000/04/16 13:54:04 kls Exp $
+ * $Id: tools.h 1.5 2000/04/24 09:46:05 kls Exp $
  */
 
 #ifndef __TOOLS_H

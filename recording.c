@@ -1,10 +1,10 @@
 /*
  * recording.h: Recording file handling
  *
- * See the main source file 'osm.c' for copyright information and
+ * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.5 2000/04/24 09:35:29 kls Exp $
+ * $Id: recording.c 1.6 2000/04/24 09:45:13 kls Exp $
  */
 
 #define _GNU_SOURCE

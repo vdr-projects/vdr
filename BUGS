@@ -15,7 +15,7 @@ Video Disk Recorder - Known Bugs
   the current channel.
 
 * Every now and then the on-screen display shows nothing but
-  "noise". If that occurs, I have to stop the 'osm' program
+  "noise". If that occurs, I have to stop the 'vdr' program
   and do a 'make reload' for the card driver. After that it
   works fine again.
   Presumably this is a problem in the card driver or firmware?

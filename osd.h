@@ -1,10 +1,10 @@
 /*
  * osd.h: Abstract On Screen Display layer
  *
- * See the main source file 'osm.c' for copyright information and
+ * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.h 1.3 2000/04/23 09:53:19 kls Exp $
+ * $Id: osd.h 1.4 2000/04/24 09:44:32 kls Exp $
  */
 
 #ifndef __OSD_H

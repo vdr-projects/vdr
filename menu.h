@@ -1,10 +1,10 @@
 /*
  * menu.h: The actual menu implementations
  *
- * See the main source file 'osm.c' for copyright information and
+ * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 1.3 2000/04/23 09:25:33 kls Exp $
+ * $Id: menu.h 1.4 2000/04/24 09:44:29 kls Exp $
  */
 
 #ifndef _MENU_H

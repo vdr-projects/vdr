@@ -1,10 +1,10 @@
 /*
  * tools.c: Various tools
  *
- * See the main source file 'osm.c' for copyright information and
+ * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.4 2000/04/23 15:30:17 kls Exp $
+ * $Id: tools.c 1.5 2000/04/24 09:46:02 kls Exp $
  */
 
 #define _GNU_SOURCE

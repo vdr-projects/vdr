@@ -1,5 +1,5 @@
 /*
- * osm.c: On Screen Menu for the Video Disk Recorder
+ * vdr.c: Video Disk Recorder main program
  *
  * Copyright (C) 2000 Klaus Schmidinger
  * 
@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: osm.c 1.9 2000/04/23 15:56:16 kls Exp $
+ * $Id: vdr.c 1.10 2000/04/24 09:45:03 kls Exp $
  */
 
 #include <signal.h>

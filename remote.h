@@ -1,10 +1,10 @@
 /*
  * remote.h: Interface to the Remote Control Unit
  *
- * See the main source file 'osm.c' for copyright information and
+ * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remote.h 1.3 2000/04/23 14:40:16 kls Exp $
+ * $Id: remote.h 1.4 2000/04/24 09:46:00 kls Exp $
  */
 
 #ifndef __REMOTE_H

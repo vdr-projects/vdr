@@ -34,17 +34,17 @@ driver source for the Siemens DVB-S PCI card (refer to
 http://linuxtv.org/dvb/siemens_dvb.html for more information
 about that driver). For example, if the DVB driver was
 extracted into the directory /home/kls/vdr/DVB, then this
-package should be extracted into /home/kls/vdr/OSM.
+package should be extracted into /home/kls/vdr/VDR.
 
 This program requires the card driver version 0.04 or higher
 to work properly.
 
-After extracting the package, change into the OSM directory
+After extracting the package, change into the VDR directory
 and type 'make'. This should produce an executable file
-named 'osm', which can be run after the DVB driver has been
+named 'vdr', which can be run after the DVB driver has been
 installed.
 
-There are two macros you can use to customize the 'osm' program
+There are two macros you can use to customize the 'vdr' program
 at compile time. Adding "DEBUG_REMOTE=1" to the 'make' call
 will use the PC's keyboard as input device instead of the "Remote
 Control Unit" (see http://www.cadsoft.de/people/kls/vdr/remote.htm).
@@ -59,10 +59,10 @@ Configuration files:
 
 There are three configuration files that hold information about
 channels, remote control keys and timers. These files are currrently
-assumed to be located in the directory from which the 'osm' program
+assumed to be located in the directory from which the 'vdr' program
 was started (this will become configurable later). The configuration
 files can be edited with any text editor, or will be written by the
-'osm' program if any changes are made inside the on-screen menus.
+'vdr' program if any changes are made inside the on-screen menus.
 The meaning of the data entries may still vary in future releases,
 so for the moment please look at the source code (config.c) to see
 the meaning of the various fields.
@@ -102,7 +102,7 @@ The default PC key assignments are:
   SkipBack                  'PgUp' in numeric block
 
 If you prefer different key assignments, simply delete the file
-'keys-pc.conf' and restart 'osm' to get into learning mode.
+'keys-pc.conf' and restart 'vdr' to get into learning mode.
 
 Navigating through the On Screen Menus:
 ---------------------------------------

@@ -1,10 +1,10 @@
 /*
  * config.h: Configuration file handling
  *
- * See the main source file 'osm.c' for copyright information and
+ * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.3 2000/04/15 12:44:23 kls Exp $
+ * $Id: config.h 1.4 2000/04/24 09:44:17 kls Exp $
  */
 
 #ifndef __CONFIG_H
