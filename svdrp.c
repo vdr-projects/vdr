@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.43 2002/09/28 15:50:19 kls Exp $
+ * $Id: svdrp.c 1.44 2002/10/05 13:45:05 kls Exp $
  */
 
 #include "svdrp.h"
@@ -26,6 +26,7 @@
 #include <sys/socket.h>
 #include <sys/time.h>
 #include <unistd.h>
+#include "channels.h"
 #include "config.h"
 #include "device.h"
 #include "keys.h"
@@ -412,7 +413,7 @@ void cSVDRP::CmdCHAN(const char *Option)
         int i = 1;
         cChannel *channel;
         while ((channel = Channels.GetByNumber(i)) != NULL) {
-              if (strcasecmp(channel->name, Option) == 0) {
+              if (strcasecmp(channel->Name(), Option) == 0) {
                  n = i;
                  break;
                  }
@@ -427,7 +428,7 @@ void cSVDRP::CmdCHAN(const char *Option)
         cChannel *channel = Channels.GetByNumber(n);
         if (channel) {
            if (!cDevice::PrimaryDevice()->SwitchChannel(channel, true)) {
-              Reply(554, "Error switching to channel \"%d\"", channel->number);
+              Reply(554, "Error switching to channel \"%d\"", channel->Number());
               return;
               }
            }
@@ -441,7 +442,7 @@ void cSVDRP::CmdCHAN(const char *Option)
      }
   cChannel *channel = Channels.GetByNumber(cDevice::CurrentChannel());
   if (channel)
-     Reply(250, "%d %s", channel->number, channel->name);
+     Reply(250, "%d %s", channel->Number(), channel->Name());
   else
      Reply(550, "Unable to find channel \"%d\"", cDevice::CurrentChannel());
 }
@@ -630,7 +631,7 @@ void cSVDRP::CmdLSTC(const char *Option)
      if (isnumber(Option)) {
         cChannel *channel = Channels.GetByNumber(strtol(Option, NULL, 10));
         if (channel)
-           Reply(250, "%d %s", channel->number, channel->ToText());
+           Reply(250, "%d %s", channel->Number(), channel->ToText());
         else
            Reply(501, "Channel \"%s\" not defined", Option);
         }
@@ -640,9 +641,9 @@ void cSVDRP::CmdLSTC(const char *Option)
         while (i <= Channels.MaxNumber()) {
               cChannel *channel = Channels.GetByNumber(i);
               if (channel) {
-                 if (strcasestr(channel->name, Option)) {
+                 if (strcasestr(channel->Name(), Option)) {
                     if (next)
-                       Reply(-250, "%d %s", next->number, next->ToText());
+                       Reply(-250, "%d %s", next->Number(), next->ToText());
                     next = channel;
                     }
                  }
@@ -653,7 +654,7 @@ void cSVDRP::CmdLSTC(const char *Option)
               i++;
               }
         if (next)
-           Reply(250, "%d %s", next->number, next->ToText());
+           Reply(250, "%d %s", next->Number(), next->ToText());
         else
            Reply(501, "Channel \"%s\" not defined", Option);
         }
@@ -662,7 +663,7 @@ void cSVDRP::CmdLSTC(const char *Option)
      for (int i = 1; i <= Channels.MaxNumber(); i++) {
          cChannel *channel = Channels.GetByNumber(i);
         if (channel)
-           Reply(i < Channels.MaxNumber() ? -250 : 250, "%d %s", channel->number, channel->ToText());
+           Reply(i < Channels.MaxNumber() ? -250 : 250, "%d %s", channel->Number(), channel->ToText());
         else
            Reply(501, "Channel \"%d\" not found", i);
          }
@@ -778,8 +779,8 @@ void cSVDRP::CmdMODC(const char *Option)
               }
            *channel = c;
            Channels.Save();
-           isyslog("channel %d modified", channel->number);
-           Reply(250, "%d %s", channel->number, channel->ToText());
+           isyslog("channel %d modified", channel->Number());
+           Reply(250, "%d %s", channel->Number(), channel->ToText());
            }
         else
            Reply(501, "Channel \"%d\" not defined", n);
@@ -844,8 +845,8 @@ void cSVDRP::CmdNEWC(const char *Option)
         Channels.Add(channel);
         Channels.ReNumber();
         Channels.Save();
-        isyslog("channel %d added", channel->number);
-        Reply(250, "%d %s", channel->number, channel->ToText());
+        isyslog("channel %d added", channel->Number());
+        Reply(250, "%d %s", channel->Number(), channel->ToText());
         }
      else
         Reply(501, "Error in channel settings");

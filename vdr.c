@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.124 2002/09/29 12:55:03 kls Exp $
+ * $Id: vdr.c 1.125 2002/10/06 10:25:04 kls Exp $
  */
 
 #include <getopt.h>
@@ -30,9 +30,11 @@
 #include <signal.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include "channels.h"
 #include "config.h"
 #include "cutter.h"
 #include "device.h"
+#include "diseqc.h"
 #include "dvbdevice.h"
 #include "eitscan.h"
 #include "i18n.h"
@@ -44,6 +46,7 @@
 #include "plugin.h"
 #include "rcu.h"
 #include "recording.h"
+#include "sources.h"
 #include "tools.h"
 #include "videodir.h"
 
@@ -311,9 +314,11 @@ int main(int argc, char *argv[])
   cPlugin::SetConfigDirectory(ConfigDirectory);
 
   Setup.Load(AddDirectory(ConfigDirectory, "setup.conf"));
+  Sources.Load(AddDirectory(ConfigDirectory, "sources.conf"), true);
+  Diseqcs.Load(AddDirectory(ConfigDirectory, "diseqc.conf"), true);
   Channels.Load(AddDirectory(ConfigDirectory, "channels.conf"));
   Timers.Load(AddDirectory(ConfigDirectory, "timers.conf"));
-  Commands.Load(AddDirectory(ConfigDirectory, "commands.conf"));
+  Commands.Load(AddDirectory(ConfigDirectory, "commands.conf"), true);
   SVDRPhosts.Load(AddDirectory(ConfigDirectory, "svdrphosts.conf"), true);
   CaDefinitions.Load(AddDirectory(ConfigDirectory, "ca.conf"), true);
   Keys.Load(AddDirectory(ConfigDirectory, "remote.conf"));

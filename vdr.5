@@ -8,7 +8,7 @@
 .\" License as specified in the file COPYING that comes with the
 .\" vdr distribution.
 .\"
-.\" $Id: vdr.5 1.5 2002/09/29 13:06:40 kls Exp $
+.\" $Id: vdr.5 1.6 2002/10/06 08:56:01 kls Exp $
 .\"
 .TH vdr 5 "7 Sep 2002" "1.2.0" "Video Disk Recorder Files"
 .SH NAME
@@ -29,7 +29,7 @@ character, followed by arbitrary text. Example:
 A \fBchannel definition\fR is a line with channel data, where the fields
 are separated by ':' characters. Example:
 
-\fBRTL:12188:h:1:27500:163:104:105:0:12003\fR
+\fBRTL:12188:h:S19.2E:27500:163:104:105:0:12003\fR
 
 The line number of a channel definition (not counting group separators!)
 defines the channel's number in OSD menus and the \fItimers.conf\fR file.
@@ -44,16 +44,44 @@ it has to be replaced by '|').
 .B Frequency
 The transponder frequency in MHz for DVB-S and DVB-C, kHz for DVB-T (as an integer).
 .TP
-.B Polarization
-The polarization of the satellite signal. 'h' or 'H' for horizontal, 'v' or 'V'
-for vertical (DVB-S only).
+.B Parameters
+Various parameters, depending on whether this is a DVB-S, DVB-C or DVB-T channel.
+Each parameter consist of a key character, followed by an integer number that
+represents the actual setting of that parameter. The valid key characters, their
+meaning (and allowed values) are
+.TS
+tab (@);
+l l.
+\fBB\fR@Bandwidth (6, 7, 8)
+\fBC\fR@Code rate high priority (0, 12, 23, 34, 45, 56, 67, 78, 89)
+\fBD\fR@Code rate low priority (0, 12, 23, 34, 45, 56, 67, 78, 89)
+\fBG\fR@Guard interval (4, 8, 16, 32)
+\fBH\fR@Horizontal polarization
+\fBI\fR@Inversion (0, 1)
+\fBM\fR@Modulation (0, 16, 32, 64, 128, 256)
+\fBT\fR@Transmission mode (2, 8)
+\fBV\fR@Vertical polarization
+\fBY\fR@Hierarchy (0, 1, 2, 4)
+.TE
+The polarization parameters have no integer numbers following them. This is for
+compatibility with files from older versions and also to keep the DVB-S entries
+as simple as possible.
+
+The special value \fB999\fR is used for "automatic", which means the driver
+will automatically determine the proper value (if possible).
+
+An example of a parameter field for a DVB-T channel might look like this:
+
+\fBB8C23D12M64T2G32Y0\fR
 .TP
-.B
-DiSEqC
-The DiSEqC code to use for this channel (integer, DVB-S only).
+.B Source
+The signal source of this channel, as defined in the file \fIsources.conf\fR.
+For compatibility with files from older versions numeric values will be accepted
+and also written back correctly, but they will have no meaning for the \fBDiSEqC\fR
+settings. You should replace the numerical values with the proper source identifiers
+defined in \fIsources.conf\fR.
 .TP
-.B
-Srate
+.B Srate
 The symbol rate of this channel (DVB-S and DVB-C only).
 .TP
 .B VPID
@@ -78,8 +106,8 @@ l l.
 \fB>=100\fR@requires a specific decryption method defined in \fIca.conf\fR
 .TE
 .TP
-.B PNR
-The program number (aka service ID) of this channel.
+.B SID
+The service ID of this channel.
 .SS TIMERS
 The file \fItimers.conf\fR contains the timer setup.
 Each line contains one timer definition, with individual fields
@@ -191,6 +219,69 @@ Arbitrary text that describes the recording made by this timer.
 Any newline characters in the summary have to be replaced by '|', and
 the summary may contain ':' characters. If this field is not empty, its
 contents will be written into the \fIsummary.vdr\fR file of the recording.
+.SS SOURCES
+The file \fIsources.conf\fR defines the codes to be used in the \fBSource\fR field
+of channels in \fIchannels.conf\fR and assigns descriptive texts to them.
+Example:
+
+\fBS19.2E  Astra 1\fR
+
+Anything after (and including) a '#' character is comment.
+
+The first character of the \fBcode\fR must be one of
+.TS
+tab (@);
+l l.
+\fBS\fR@Satellite
+\fBC\fR@Cable
+\fBT\fR@Terrestrial
+.TE
+and is followed by further data pertaining to that particular source. In case of
+\fBS\fRatellite this is the orbital position in degrees, followed by \fBE\fR for
+east or \fBW\fR for west.
+.SS DISEQC
+The file \fIdiseqc.conf\fR defines the \fBDiSEqC\fR control sequences to be sent
+to the DVB-S card in order to access a given satellite position and/or band.
+Example:
+
+\fBS19.2E  11700 V  9750  t v W15 [E0 10 38 F0] W15 A W15 t\fR
+
+Anything after (and including) a '#' character is comment.
+
+The first word in a parameter line must be one of the codes defined in the
+file \fIsources.conf\fR and tells which satellite this line applies to.
+
+Following is the "switch frequency" of the LNB (slof), which is the transponder
+frequency up to which this entry shall be used; the first entry with an slof greater
+than the actual transponder frequency will be used. Typically there is only one slof
+per LNB, but the syntax allows any number of frequency ranges to be defined.
+Note that there should be a last entry with the value \fB99999\fR for each satellite,
+which covers the upper frequency range.
+
+The third parameter defines the polarization to which this entry applies. It can
+be either \fBH\fR for horizontal or \fBV\fR for vertical.
+
+The fourth parameter specifies the "local oscillator frequency" (lof) of the LNB
+to use for the given frequency range. This number will be subtracted from the
+actual transponder frequency when tuning to the channel.
+
+The rest of the line holds the actual sequence of DiSEqC actions to be taken.
+The code letters used here are
+.TS
+tab (@);
+l l.
+\fBt\fR@22kHz tone off
+\fBT\fR@22kHz tone on
+\fBv\fR@voltage low (13V)
+\fBV\fR@voltage high (18V)
+\fBA\fR@mini A
+\fBB\fR@mini B
+\fBWnn\fR@wait nn milliseconds (nn may be any positive integer number)
+\fB[xx ...]\fR@hex code sequence (max. 6)
+.TE
+There can be any number of actions in a line, including none at all - in which case
+the entry would be used only to set the LOF to use for the given frequency range
+and polarization.
 .SS CONDITIONAL ACCESS
 The file \fIca.conf\fR defines the numbers to be used in the \fBConditional access\fR
 field of channels in \fIchannels.conf\fR and assigns descriptive texts to them.

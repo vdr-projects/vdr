@@ -4,13 +4,14 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.22 2002/09/28 12:20:22 kls Exp $
+ * $Id: device.c 1.23 2002/10/05 15:18:39 kls Exp $
  */
 
 #include "device.h"
 #include <errno.h>
 #include <sys/ioctl.h>
 #include <sys/mman.h>
+#include "channels.h"
 #include "eit.h"
 #include "i18n.h"
 #include "player.h"
@@ -143,7 +144,7 @@ cDevice *cDevice::GetDevice(const cChannel *Channel, int Priority, bool *NeedsDe
             || !d->Receiving() // ...the one we have is not receiving...
                && (device[i]->Priority() < d->Priority() // ...this one has an even lower Priority, or...
                   || device[i]->Priority() == d->Priority() // ...same Priority...
-                     && device[i]->ProvidesCa(Channel->ca) < d->ProvidesCa(Channel->ca) // ...but this one provides fewer Ca values
+                     && device[i]->ProvidesCa(Channel->Ca()) < d->ProvidesCa(Channel->Ca()) // ...but this one provides fewer Ca values
                   )
             )
          ) {
@@ -275,6 +276,11 @@ bool cDevice::SetPid(cPidHandle *Handle, int Type, bool On)
   return false;
 }
 
+bool cDevice::ProvidesSource(int Source) const
+{
+  return false;
+}
+
 bool cDevice::ProvidesChannel(const cChannel *Channel, int Priority, bool *NeedsDetachReceivers) const
 {
   return false;
@@ -283,7 +289,7 @@ bool cDevice::ProvidesChannel(const cChannel *Channel, int Priority, bool *Needs
 bool cDevice::SwitchChannel(const cChannel *Channel, bool LiveView)
 {
   if (LiveView)
-     isyslog("switching to channel %d", Channel->number);
+     isyslog("switching to channel %d", Channel->Number());
   for (int i = 3; i--;) {
       switch (SetChannel(Channel, LiveView)) {
         case scrOk:           return true;
@@ -344,7 +350,7 @@ eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
      if (CaDevice) {
         cStatus::MsgChannelSwitch(this, 0); // only report status if we are actually going to switch the channel
         if (CaDevice->SetChannel(Channel, false) == scrOk) // calling SetChannel() directly, not SwitchChannel()!
-           cControl::Launch(new cTransferControl(CaDevice, Channel->vpid, Channel->apid1, 0, 0, 0));//XXX+
+           cControl::Launch(new cTransferControl(CaDevice, Channel->Vpid(), Channel->Apid1(), 0, 0, 0));//XXX+
         else
            Result = scrNoTransfer;
         }
@@ -359,10 +365,10 @@ eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
 
   if (Result == scrOk) {
      if (LiveView && IsPrimaryDevice()) {
-        cSIProcessor::SetCurrentServiceID(Channel->pnr);
-        currentChannel = Channel->number;
+        cSIProcessor::SetCurrentServiceID(Channel->Sid());
+        currentChannel = Channel->Number();
         }
-     cStatus::MsgChannelSwitch(this, Channel->number); // only report status if channel switch successfull
+     cStatus::MsgChannelSwitch(this, Channel->Number()); // only report status if channel switch successfull
      }
 
   return Result;

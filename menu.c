@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.209 2002/09/29 12:50:47 kls Exp $
+ * $Id: menu.c 1.210 2002/10/06 09:52:52 kls Exp $
  */
 
 #include "menu.h"
@@ -13,6 +13,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "channels.h"
 #include "config.h"
 #include "cutter.h"
 #include "eit.h"
@@ -21,6 +22,7 @@
 #include "plugin.h"
 #include "recording.h"
 #include "remote.h"
+#include "sources.h"
 #include "status.h"
 #include "videodir.h"
 
@@ -53,7 +55,7 @@ void cMenuEditChanItem::Set(void)
   char buf[255];
   cChannel *channel = Channels.GetByNumber(*value);
   if (channel)
-     snprintf(buf, sizeof(buf), "%d %s", *value, channel->name);
+     snprintf(buf, sizeof(buf), "%d %s", *value, channel->Name());
   else
      *buf = 0;
   SetValue(buf);
@@ -77,8 +79,8 @@ cMenuEditTranItem::cMenuEditTranItem(const char *Name, int *Value)
   transponder = *Value;
   cChannel *channel = Channels.First();
   while (channel) {
-        if (!channel->groupSep && ISTRANSPONDER(channel->frequency, *Value)) {
-           number = channel->number;
+        if (!channel->GroupSep() && ISTRANSPONDER(channel->Frequency(), *Value)) {
+           number = channel->Number();
            break;
            }
         channel = (cChannel *)channel->Next();
@@ -95,7 +97,7 @@ eOSState cMenuEditTranItem::ProcessKey(eKeys Key)
   number = *value;
   cChannel *channel = Channels.GetByNumber(*value);
   if (channel)
-     transponder = channel->frequency;
+     transponder = channel->Frequency();
   *value = transponder;
   return state;
 }
@@ -391,12 +393,137 @@ eOSState cMenuEditCaItem::ProcessKey(eKeys Key)
   return state;
 }
 
+// --- cMenuEditSrcItem ------------------------------------------------------
+
+class cMenuEditSrcItem : public cMenuEditIntItem {
+private:
+  const cSource *source;
+protected:
+  virtual void Set(void);
+public:
+  cMenuEditSrcItem(const char *Name, int *Value);
+  eOSState ProcessKey(eKeys Key);
+  };
+
+cMenuEditSrcItem::cMenuEditSrcItem(const char *Name, int *Value)
+:cMenuEditIntItem(Name, Value, 0)
+{
+  source = Sources.Get(*Value);
+  Set();
+}
+
+void cMenuEditSrcItem::Set(void)
+{
+  if (source) {
+     char *buffer = NULL;
+     asprintf(&buffer, "%s - %s", cSource::ToString(source->Code()), source->Description());
+     SetValue(buffer);
+     free(buffer);
+     }
+  else
+     cMenuEditIntItem::Set();
+}
+
+eOSState cMenuEditSrcItem::ProcessKey(eKeys Key)
+{
+  eOSState state = cMenuEditItem::ProcessKey(Key);
+
+  if (state == osUnknown) {
+     if (NORMALKEY(Key) == kLeft) { // TODO might want to increase the delta if repeated quickly?
+        if (source && source->Prev()) {
+           source = (cSource *)source->Prev();
+           *value = source->Code();
+           }
+        }
+     else if (NORMALKEY(Key) == kRight) {
+        if (source) { 
+           if (source->Next())
+              source = (cSource *)source->Next();
+           }
+        else
+           source = Sources.First();
+        if (source)
+           *value = source->Code();
+        }
+     else
+        return state; // we don't call cMenuEditIntItem::ProcessKey(Key) here since we don't accept numerical input
+     Set();
+     state = osContinue;
+     }
+  return state;
+}
+
+// --- cMenuEditMapItem ------------------------------------------------------
+
+class cMenuEditMapItem : public cMenuEditItem {
+protected:
+  int *value;
+  const tChannelParameterMap *map;
+  const char *zeroString;
+  virtual void Set(void);
+public:
+  cMenuEditMapItem(const char *Name, int *Value, const tChannelParameterMap *Map, const char *ZeroString = NULL);
+  virtual eOSState ProcessKey(eKeys Key);
+  };
+
+cMenuEditMapItem::cMenuEditMapItem(const char *Name, int *Value, const tChannelParameterMap *Map, const char *ZeroString)
+:cMenuEditItem(Name)
+{
+  value = Value;
+  map = Map;
+  zeroString = ZeroString;
+  Set();
+}
+
+void cMenuEditMapItem::Set(void)
+{
+  int n = MapToUser(*value, map);
+  if (n == 999)
+     SetValue(tr("auto"));
+  else if (n == 0 && zeroString)
+     SetValue(zeroString);
+  else if (n >= 0) {
+     char buf[16];
+     snprintf(buf, sizeof(buf), "%d", n);
+     SetValue(buf);
+     }
+  else
+     SetValue("???");
+}
+
+eOSState cMenuEditMapItem::ProcessKey(eKeys Key)
+{
+  eOSState state = cMenuEditItem::ProcessKey(Key);
+
+  if (state == osUnknown) {
+     int newValue = *value;
+     int n = DriverIndex(*value, map);
+     if (NORMALKEY(Key) == kLeft) { // TODO might want to increase the delta if repeated quickly?
+        if (n-- > 0)
+           newValue = map[n].driverValue;
+        }
+     else if (NORMALKEY(Key) == kRight) {
+        if (map[++n].userValue >= 0)
+           newValue = map[n].driverValue;
+        }
+     else
+        return state;
+     if (newValue != *value) {
+        *value = newValue;
+        Set();
+        }
+     state = osContinue;
+     }
+  return state;
+}
+
 // --- cMenuEditChannel ------------------------------------------------------
 
 class cMenuEditChannel : public cOsdMenu {
 private:
   cChannel *channel;
   cChannel data;
+  void Setup(void);
 public:
   cMenuEditChannel(int Index);
   virtual eOSState ProcessKey(eKeys Key);
@@ -408,24 +535,49 @@ cMenuEditChannel::cMenuEditChannel(int Index)
   channel = Channels.Get(Index);
   if (channel) {
      data = *channel;
-     Add(new cMenuEditStrItem( tr("Name"),          data.name, sizeof(data.name), tr(FileNameChars)));
-     Add(new cMenuEditIntItem( tr("Frequency"),    &data.frequency));
-     Add(new cMenuEditChrItem( tr("Polarization"), &data.polarization, "hv"));
-     Add(new cMenuEditIntItem( tr("DiSEqC"),       &data.diseqc, 0, 10)); //TODO exact limits???
-     Add(new cMenuEditIntItem( tr("Srate"),        &data.srate));
-     Add(new cMenuEditIntItem( tr("Vpid"),         &data.vpid,  0, 0x1FFF));
-     Add(new cMenuEditIntItem( tr("Apid1"),        &data.apid1, 0, 0x1FFF));
-     Add(new cMenuEditIntItem( tr("Apid2"),        &data.apid2, 0, 0x1FFF));
-     Add(new cMenuEditIntItem( tr("Dpid1"),        &data.dpid1, 0, 0x1FFF));
-     Add(new cMenuEditIntItem( tr("Dpid2"),        &data.dpid2, 0, 0x1FFF));
-     Add(new cMenuEditIntItem( tr("Tpid"),         &data.tpid,  0, 0x1FFF));
-     Add(new cMenuEditCaItem(  tr("CA"),           &data.ca, true));
-     Add(new cMenuEditIntItem( tr("Pnr"),          &data.pnr, 0));
+     Setup();
      }
+}
+
+void cMenuEditChannel::Setup(void)
+{
+  int current = Current();
+  char type = *cSource::ToString(data.source);
+#define ST(s) if (strchr(s, type))
+
+  Clear();
+
+  // Parameters for all types of sources:
+  Add(new cMenuEditStrItem( tr("Name"),          data.name, sizeof(data.name), tr(FileNameChars)));
+  Add(new cMenuEditSrcItem( tr("Source"),       &data.source));
+  Add(new cMenuEditIntItem( tr("Frequency"),    &data.frequency));
+  Add(new cMenuEditIntItem( tr("Vpid"),         &data.vpid,  0, 0x1FFF));
+  Add(new cMenuEditIntItem( tr("Apid1"),        &data.apid1, 0, 0x1FFF));
+  Add(new cMenuEditIntItem( tr("Apid2"),        &data.apid2, 0, 0x1FFF));
+  Add(new cMenuEditIntItem( tr("Dpid1"),        &data.dpid1, 0, 0x1FFF));
+  Add(new cMenuEditIntItem( tr("Dpid2"),        &data.dpid2, 0, 0x1FFF));
+  Add(new cMenuEditIntItem( tr("Tpid"),         &data.tpid,  0, 0x1FFF));
+  Add(new cMenuEditCaItem(  tr("CA"),           &data.ca, true));
+  Add(new cMenuEditIntItem( tr("Sid"),          &data.sid, 0));
+  // Parameters for specific types of sources:
+  ST(" S ")  Add(new cMenuEditChrItem( tr("Polarization"), &data.polarization, "hv"));
+  ST("CS ")  Add(new cMenuEditIntItem( tr("Srate"),        &data.srate));
+  ST("CST")  Add(new cMenuEditMapItem( tr("Inversion"),    &data.inversion,    InversionValues, tr("off")));
+  ST("CST")  Add(new cMenuEditMapItem( tr("CoderateH"),    &data.coderateH,    CoderateValues, tr("none")));
+  ST("  T")  Add(new cMenuEditMapItem( tr("CoderateL"),    &data.coderateL,    CoderateValues, tr("none")));
+  ST("C T")  Add(new cMenuEditMapItem( tr("Modulation"),   &data.modulation,   ModulationValues, "QPSK"));
+  ST("  T")  Add(new cMenuEditMapItem( tr("Bandwidth"),    &data.bandwidth,    BandwidthValues));
+  ST("  T")  Add(new cMenuEditMapItem( tr("Transmission"), &data.transmission, TransmissionValues));
+  ST("  T")  Add(new cMenuEditMapItem( tr("Guard"),        &data.guard,        GuardValues));
+  ST("  T")  Add(new cMenuEditMapItem( tr("Hierarchy"),    &data.hierarchy,    HierarchyValues, tr("none")));
+
+  SetCurrent(Get(current));
+  Display();
 }
 
 eOSState cMenuEditChannel::ProcessKey(eKeys Key)
 {
+  int oldSource = data.source;
   eOSState state = cOsdMenu::ProcessKey(Key);
 
   if (state == osUnknown) {
@@ -436,6 +588,8 @@ eOSState cMenuEditChannel::ProcessKey(eKeys Key)
         state = osBack;
         }
      }
+  if (Key != kNone && (data.source & cSource::st_Mask) != (oldSource & cSource::st_Mask))
+     Setup();
   return state;
 }
 
@@ -455,7 +609,7 @@ cMenuChannelItem::cMenuChannelItem(int Index, cChannel *Channel)
 {
   index = Index;
   channel = Channel;
-  if (channel->groupSep)
+  if (channel->GroupSep())
      SetColor(clrCyan, clrBackground);
   Set();
 }
@@ -463,10 +617,10 @@ cMenuChannelItem::cMenuChannelItem(int Index, cChannel *Channel)
 void cMenuChannelItem::Set(void)
 {
   char *buffer = NULL;
-  if (!channel->groupSep)
-     asprintf(&buffer, "%d\t%s", channel->number, channel->name );
+  if (!channel->GroupSep())
+     asprintf(&buffer, "%d\t%s", channel->Number(), channel->Name());
   else
-     asprintf(&buffer, "---\t%s ----------------------------------------------------------------", channel->name);
+     asprintf(&buffer, "---\t%s ----------------------------------------------------------------", channel->Name());
   SetText(buffer, false);
 }
 
@@ -530,7 +684,7 @@ eOSState cMenuChannels::New(void)
   Channels.ReNumber();
   Add(new cMenuChannelItem(channel->Index()/*XXX*/, channel), true);
   Channels.Save();
-  isyslog("channel %d added", channel->number);
+  isyslog("channel %d added", channel->Number());
   return AddSubMenu(new cMenuEditChannel(Current()));
 }
 
@@ -539,7 +693,7 @@ eOSState cMenuChannels::Del(void)
   if (Count() > 0) {
      int Index = Current();
      cChannel *channel = Channels.Get(Index);
-     int DeletedChannel = channel->number;
+     int DeletedChannel = channel->Number();
      // Check if there is a timer using this channel:
      for (cTimer *ti = Timers.First(); ti; ti = (cTimer *)ti->Next()) {
          if (ti->channel == DeletedChannel) {
@@ -578,8 +732,8 @@ eOSState cMenuChannels::Del(void)
 
 void cMenuChannels::Move(int From, int To)
 {
-  int FromNumber = Channels.Get(From)->number;
-  int ToNumber = Channels.Get(To)->number;
+  int FromNumber = Channels.Get(From)->Number();
+  int ToNumber = Channels.Get(To)->Number();
   // Move and renumber the channels:
   Channels.Move(From, To);
   Channels.ReNumber();
@@ -933,7 +1087,7 @@ cMenuEvent::cMenuEvent(const cEventInfo *EventInfo, bool CanSwitch)
      cChannel *channel = Channels.GetByServiceID(eventInfo->GetServiceID());
      if (channel) {
         char *buffer;
-        asprintf(&buffer, "%-17.*s\t%.*s  %s - %s", 17, channel->name, 5, eventInfo->GetDate(), eventInfo->GetTimeString(), eventInfo->GetEndTimeString());
+        asprintf(&buffer, "%-17.*s\t%.*s  %s - %s", 17, channel->Name(), 5, eventInfo->GetDate(), eventInfo->GetTimeString(), eventInfo->GetEndTimeString());
         SetTitle(buffer, false);
         free(buffer);
         int Line = 2;
@@ -984,7 +1138,7 @@ cMenuWhatsOnItem::cMenuWhatsOnItem(const cEventInfo *EventInfo)
   eventInfo = EventInfo;
   char *buffer = NULL;
   cChannel *channel = Channels.GetByNumber(eventInfo->GetChannelNumber());
-  asprintf(&buffer, "%d\t%.*s\t%.*s\t%s", eventInfo->GetChannelNumber(), 6, channel ? channel->name : "???", 5, eventInfo->GetTimeString(), eventInfo->GetTitle());
+  asprintf(&buffer, "%d\t%.*s\t%.*s\t%s", eventInfo->GetChannelNumber(), 6, channel ? channel->Name() : "???", 5, eventInfo->GetTimeString(), eventInfo->GetTitle());
   SetText(buffer, false);
 }
 
@@ -1026,7 +1180,7 @@ cMenuWhatsOn::cMenuWhatsOn(const cSchedules *Schedules, bool Now, int CurrentCha
         if (pArray[num]) {
            cChannel *channel = Channels.GetByServiceID(pArray[num]->GetServiceID());
            if (channel) {
-              pArray[num]->SetChannelNumber(channel->number);
+              pArray[num]->SetChannelNumber(channel->Number());
               num++;
               }
            }
@@ -1149,7 +1303,7 @@ cMenuSchedule::cMenuSchedule(void)
   otherChannel = 0;
   cChannel *channel = Channels.GetByNumber(cDevice::CurrentChannel());
   if (channel) {
-     cMenuWhatsOn::SetCurrentChannel(channel->number);
+     cMenuWhatsOn::SetCurrentChannel(channel->Number());
      schedules = cSIProcessor::Schedules(mutexLock);
      PrepareSchedule(channel);
      SetHelp(tr("Record"), tr("Now"), tr("Next"));
@@ -1170,11 +1324,11 @@ void cMenuSchedule::PrepareSchedule(cChannel *Channel)
 {
   Clear();
   char *buffer = NULL;
-  asprintf(&buffer, tr("Schedule - %s"), Channel->name);
+  asprintf(&buffer, tr("Schedule - %s"), Channel->Name());
   SetTitle(buffer);
   free(buffer);
   if (schedules) {
-     const cSchedule *Schedule = Channel->pnr ? schedules->GetSchedule(Channel->pnr) : schedules->GetSchedule();
+     const cSchedule *Schedule = Channel->Sid() ? schedules->GetSchedule(Channel->Sid()) : schedules->GetSchedule();
      int num = Schedule->NumEvents();
      const cEventInfo **pArray = MALLOC(const cEventInfo *, num);
      if (pArray) {
@@ -1238,7 +1392,7 @@ eOSState cMenuSchedule::ProcessKey(eKeys Key)
                            if (Count()) {
                               cChannel *channel = Channels.GetByServiceID(((cMenuScheduleItem *)Get(Current()))->eventInfo->GetServiceID());
                               if (channel)
-                                 ChannelNr = channel->number;
+                                 ChannelNr = channel->Number();
                               }
                            now = true;
                            return AddSubMenu(new cMenuWhatsOn(schedules, true, ChannelNr));
@@ -1266,8 +1420,8 @@ eOSState cMenuSchedule::ProcessKey(eKeys Key)
         cChannel *channel = Channels.GetByServiceID(ei->GetServiceID());
         if (channel) {
            PrepareSchedule(channel);
-           if (channel->number != cDevice::CurrentChannel()) {
-              otherChannel = channel->number;
+           if (channel->Number() != cDevice::CurrentChannel()) {
+              otherChannel = channel->Number();
               SetHelp(tr("Record"), tr("Now"), tr("Next"), tr("Switch"));
               }
            Display();
@@ -1636,17 +1790,44 @@ eOSState cMenuSetupDVB::ProcessKey(eKeys Key)
 // --- cMenuSetupLNB ---------------------------------------------------------
 
 class cMenuSetupLNB : public cMenuSetupBase {
+private:
+  void Setup(void);
 public:
   cMenuSetupLNB(void);
+  virtual eOSState ProcessKey(eKeys Key);
   };
 
 cMenuSetupLNB::cMenuSetupLNB(void)
 {
   SetSection(tr("LNB"));
-  Add(new cMenuEditIntItem( tr("Setup.LNB$SLOF (MHz)"),               &data.LnbSLOF));
-  Add(new cMenuEditIntItem( tr("Setup.LNB$Low LNB frequency (MHz)"),  &data.LnbFrequLo));
-  Add(new cMenuEditIntItem( tr("Setup.LNB$High LNB frequency (MHz)"), &data.LnbFrequHi));
+  Setup();
+}
+
+void cMenuSetupLNB::Setup(void)
+{
+  int current = Current();
+
+  Clear();
+
   Add(new cMenuEditBoolItem(tr("Setup.LNB$Use DiSEqC"),               &data.DiSEqC));
+  if (!data.DiSEqC) {
+     Add(new cMenuEditIntItem( tr("Setup.LNB$SLOF (MHz)"),               &data.LnbSLOF));
+     Add(new cMenuEditIntItem( tr("Setup.LNB$Low LNB frequency (MHz)"),  &data.LnbFrequLo));
+     Add(new cMenuEditIntItem( tr("Setup.LNB$High LNB frequency (MHz)"), &data.LnbFrequHi));
+     }
+
+  SetCurrent(Get(current));
+  Display();
+}
+
+eOSState cMenuSetupLNB::ProcessKey(eKeys Key)
+{
+  int oldDiSEqC = data.DiSEqC;
+  eOSState state = cMenuSetupBase::ProcessKey(Key);
+
+  if (Key != kNone && data.DiSEqC != oldDiSEqC)
+     Setup();
+  return state;
 }
 
 // --- cMenuSetupCICAM -------------------------------------------------------
@@ -2152,10 +2333,10 @@ void cDisplayChannel::DisplayChannel(const cChannel *Channel)
 {
   int BufSize = Width() + 1;
   char buffer[BufSize];
-  if (Channel && Channel->number > 0)
-     snprintf(buffer, BufSize, "%d%s  %s", Channel->number, number ? "-" : "", Channel->name);
+  if (Channel && Channel->Number() > 0)
+     snprintf(buffer, BufSize, "%d%s  %s", Channel->Number(), number ? "-" : "", Channel->Name());
   else
-     snprintf(buffer, BufSize, "%s", Channel ? Channel->name : tr("*** Invalid Channel ***"));
+     snprintf(buffer, BufSize, "%s", Channel ? Channel->Name() : tr("*** Invalid Channel ***"));
   Interface->Fill(0, 0, Setup.OSDwidth, 1, clrBackground);
   Interface->Write(0, 0, buffer);
   const char *date = DayDateTime();
@@ -2266,7 +2447,7 @@ eOSState cDisplayChannel::ProcessKey(eKeys Key)
             if (channel) {
                Interface->Clear();
                DisplayChannel(channel);
-               if (!channel->groupSep)
+               if (!channel->GroupSep())
                   group = -1;
                }
             }
@@ -2283,7 +2464,7 @@ eOSState cDisplayChannel::ProcessKey(eKeys Key)
     //XXX case kGreen:  return osEventNow;
     //XXX case kYellow: return osEventNext;
     case kOk:     if (group >= 0)
-                     Channels.SwitchTo(Channels.Get(Channels.GetNextNormal(group))->number);
+                     Channels.SwitchTo(Channels.Get(Channels.GetNextNormal(group))->Number());
                   return osEnd;
     default:      if (NORMALKEY(Key) == kUp || NORMALKEY(Key) == kDown || (Key & (k_Repeat | k_Release)) == 0) {
                      cRemote::Put(Key);
@@ -2433,7 +2614,7 @@ cRecordControl::cRecordControl(cDevice *Device, cTimer *Timer)
   fileName = strdup(Recording.FileName());
   cRecordingUserCommand::InvokeCommand(RUC_BEFORERECORDING, fileName);
   cChannel *ch = Channels.GetByNumber(timer->channel);
-  recorder = new cRecorder(fileName, ch->ca, timer->priority, ch->vpid, ch->apid1, ch->apid2, ch->dpid1, ch->dpid2);
+  recorder = new cRecorder(fileName, ch->Ca(), timer->priority, ch->Vpid(), ch->Apid1(), ch->Apid2(), ch->Dpid1(), ch->Dpid2());
   if (device->AttachReceiver(recorder)) {
      Recording.WriteSummary();
      cStatus::MsgRecording(device, Recording.Name());
@@ -2460,7 +2641,7 @@ bool cRecordControl::GetEventInfo(void)
         cMutexLock MutexLock;
         const cSchedules *Schedules = cSIProcessor::Schedules(MutexLock);
         if (Schedules) {
-           const cSchedule *Schedule = Schedules->GetSchedule(channel->pnr);
+           const cSchedule *Schedule = Schedules->GetSchedule(channel->Sid());
            if (Schedule) {
               eventInfo = Schedule->GetEventAround(Time);
               if (eventInfo) {

@@ -185,6 +185,7 @@ Wolfgang Henselmann-Weiss <Wolfgang_Henselmann@betaresearch.de>
 
 Uwe Scheffler <UweScheffler@t-online.de>
  for his help in keeping 'channels.conf.cable' up to date
+ for helping to test new DVB-T handling
 
 Matjaz Thaler <matjaz.thaler@guest.arnes.si>
  for improving AC3 decoding when replaying DVDs
@@ -407,3 +408,10 @@ Jeremy Hall <jhall@UU.NET>
 
 Oliver Endriss <o.endriss@gmx.de>
  for fixing a missing Flush() call in the remote control learning procedure
+ for helping to test and debug the new channel source and DiSEqC handling
+
+Reinhard Walter Buchner <rw.buchner@freenet.de>
+ for adding some satellites to 'sources.conf'
+
+Lauri Tischler <lauri.tischler@efore.fi>
+ for helping to test and debug the new channel source and DiSEqC handling

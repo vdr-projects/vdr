@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.h 1.11 2002/09/28 12:21:36 kls Exp $
+ * $Id: dvbdevice.h 1.12 2002/10/06 08:57:24 kls Exp $
  */
 
 #ifndef __DVBDEVICE_H
@@ -61,8 +61,12 @@ public:
 // Channel facilities
 
 private:
+  int source;
   int frequency;
+  const char *diseqcCommands;
+  bool IsTunedTo(const cChannel *Channel) const;
 public:
+  virtual bool ProvidesSource(int Source) const;
   virtual bool ProvidesChannel(const cChannel *Channel, int Priority = -1, bool *NeedsDetachReceivers = NULL) const;
 protected:
   virtual bool SetChannelDevice(const cChannel *Channel, bool LiveView);

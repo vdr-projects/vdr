@@ -4,11 +4,12 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: eitscan.c 1.7 2002/09/08 11:08:52 kls Exp $
+ * $Id: eitscan.c 1.8 2002/10/05 13:44:35 kls Exp $
  */
 
 #include "eitscan.h"
 #include <stdlib.h>
+#include "channels.h"
 #include "dvbdevice.h"
 
 cEITScanner::cEITScanner(void)
@@ -28,11 +29,11 @@ cEITScanner::~cEITScanner()
 bool cEITScanner::TransponderScanned(cChannel *Channel)
 {
   for (int i = 0; i < numTransponders; i++) {
-      if (transponders[i] == Channel->frequency)
+      if (transponders[i] == Channel->Frequency())
          return true;
       }
   transponders = (int *)realloc(transponders, ++numTransponders * sizeof(int));
-  transponders[numTransponders - 1] = Channel->frequency;
+  transponders[numTransponders - 1] = Channel->Frequency();
   return false;
 }
 
@@ -66,7 +67,7 @@ void cEITScanner::Process(void)
                            if (Channel) {
                               if (!Device->ProvidesChannel(Channel))
                                  break;
-                              if (Channel->pnr && !TransponderScanned(Channel)) {
+                              if (Channel->Sid() && !TransponderScanned(Channel)) {
                                  if (Device == cDevice::PrimaryDevice() && !currentChannel)
                                     currentChannel = Device->CurrentChannel();
                                  Device->SwitchChannel(Channel, false);

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.67 2002/08/24 14:09:49 kls Exp $
+ * $Id: recording.c 1.68 2002/10/05 13:44:56 kls Exp $
  */
 
 #include "recording.h"
@@ -14,6 +14,7 @@
 #include <string.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include "channels.h"
 #include "i18n.h"
 #include "interface.h"
 #include "remux.h" //XXX+ I_FRAME

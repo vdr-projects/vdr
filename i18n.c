@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.93 2002/09/29 12:32:46 kls Exp $
+ * $Id: i18n.c 1.94 2002/10/06 09:55:08 kls Exp $
  *
  * Translations provided by:
  *
@@ -890,21 +890,21 @@ const tI18nPhrase Phrases[] = {
     "Polarizare",
     "Polarizáció",
   },
-  { "DiSEqC",
-    "DiSEqC",
-    "DiSEqC",
-    "DiSEqC",
-    "DiSEqC",
-    "DiSEqC",
-    "DiSEqC",
-    "DiSEqC",
-    "DiSEqC",
-    "DiSEqC",
-    "DiSEqC",
-    "DiSEqC",
-    "DiSEqC",
-    "DiSEqC",
-    "DiSEqC",
+  { "Source",
+    "Quelle",
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
   },
   { "Srate",
     "Srate",
@@ -1034,21 +1034,149 @@ const tI18nPhrase Phrases[] = {
     "Criptare",
     "CA",
   },
-  { "Pnr",
-    "Pnr",
-    "Pnr",
-    "Pnr",
-    "Pnr",
-    "Núm. Progr.",
-    "Num. Progr.",
-    "Program Id",
-    "Ohjelmatunnus",
-    "Pnr",
-    "Pnr",
-    "Pnr",
-    "Pnr",
-    "Nr. Prog.",
-    "Pnr",
+  { "Sid",
+    "Sid",
+    "Sid",
+    "Sid",
+    "Sid",
+    "Sid",
+    "Sid",
+    "Sid",
+    "Sid",
+    "Sid",
+    "Sid",
+    "Sid",
+    "Sid",
+    "Sid",
+    "Sid",
+  },
+  { "Inversion",
+    "Inversion",
+    "Inversion",
+    "Inversion",
+    "Inversion",
+    "Inversion",
+    "Inversion",
+    "Inversion",
+    "Inversion",
+    "Inversion",
+    "Inversion",
+    "Inversion",
+    "Inversion",
+    "Inversion",
+    "Inversion",
+  },
+  { "Bandwidth",
+    "Bandwidth",
+    "Bandwidth",
+    "Bandwidth",
+    "Bandwidth",
+    "Bandwidth",
+    "Bandwidth",
+    "Bandwidth",
+    "Bandwidth",
+    "Bandwidth",
+    "Bandwidth",
+    "Bandwidth",
+    "Bandwidth",
+    "Bandwidth",
+    "Bandwidth",
+  },
+  { "CoderateH",
+    "CoderateH",
+    "CoderateH",
+    "CoderateH",
+    "CoderateH",
+    "CoderateH",
+    "CoderateH",
+    "CoderateH",
+    "CoderateH",
+    "CoderateH",
+    "CoderateH",
+    "CoderateH",
+    "CoderateH",
+    "CoderateH",
+    "CoderateH",
+  },
+  { "CoderateL",
+    "CoderateL",
+    "CoderateL",
+    "CoderateL",
+    "CoderateL",
+    "CoderateL",
+    "CoderateL",
+    "CoderateL",
+    "CoderateL",
+    "CoderateL",
+    "CoderateL",
+    "CoderateL",
+    "CoderateL",
+    "CoderateL",
+    "CoderateL",
+  },
+  { "Modulation",
+    "Modulation",
+    "Modulation",
+    "Modulation",
+    "Modulation",
+    "Modulation",
+    "Modulation",
+    "Modulation",
+    "Modulation",
+    "Modulation",
+    "Modulation",
+    "Modulation",
+    "Modulation",
+    "Modulation",
+    "Modulation",
+  },
+  { "Transmission",
+    "Transmission",
+    "Transmission",
+    "Transmission",
+    "Transmission",
+    "Transmission",
+    "Transmission",
+    "Transmission",
+    "Transmission",
+    "Transmission",
+    "Transmission",
+    "Transmission",
+    "Transmission",
+    "Transmission",
+    "Transmission",
+  },
+  { "Guard",
+    "Guard",
+    "Guard",
+    "Guard",
+    "Guard",
+    "Guard",
+    "Guard",
+    "Guard",
+    "Guard",
+    "Guard",
+    "Guard",
+    "Guard",
+    "Guard",
+    "Guard",
+    "Guard",
+  },
+  { "Hierarchy",
+    "Hierarchy",
+    "Hierarchy",
+    "Hierarchy",
+    "Hierarchy",
+    "Hierarchy",
+    "Hierarchy",
+    "Hierarchy",
+    "Hierarchy",
+    "Hierarchy",
+    "Hierarchy",
+    "Hierarchy",
+    "Hierarchy",
+    "Hierarchy",
+    "Hierarchy",
   },
   // Timer parameters:
   { "Active",
@@ -2722,6 +2850,54 @@ const tI18nPhrase Phrases[] = {
     "nej",
     "nu",
     "nem",
+  },
+  { "off",
+    "aus",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+  },
+  { "none",
+    "keine",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+  },
+  { "auto",
+    "auto",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
   },
   { "top",
     "oben",

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.130 2002/09/30 15:57:23 kls Exp $
+ * $Id: config.h 1.131 2002/10/05 09:58:58 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -31,34 +31,6 @@
 #define MAXOSDHEIGHT 21
 
 #define MaxFileName 256
-
-#define ISTRANSPONDER(f1, f2)  (abs((f1) - (f2)) < 4)
-
-class cChannel : public cListObject {
-private:
-  static char *buffer;
-  static const char *ToText(cChannel *Channel);
-public:
-  enum { MaxChannelName = 32 }; // 31 chars + terminating 0!
-  char name[MaxChannelName];
-  int frequency; // MHz
-  char polarization;
-  int diseqc;
-  int srate;
-  int vpid;
-  int apid1, apid2;
-  int dpid1, dpid2;
-  int tpid;
-  int ca;
-  int pnr;
-  int number;    // Sequence number assigned on load
-  bool groupSep;
-  cChannel(void);
-  cChannel(const cChannel *Channel);
-  const char *ToText(void);
-  bool Parse(const char *s);
-  bool Save(FILE *f);
-  };
 
 enum eTimerActive { taInactive = 0,
                     taActive   = 1,
@@ -193,7 +165,7 @@ public:
                    if (l->Parse(buffer))
                       Add(l);
                    else {
-                      esyslog("error in %s, line %d\n", fileName, line);
+                      esyslog("ERROR: error in %s, line %d\n", fileName, line);
                       delete l;
                       result = false;
                       break;
@@ -229,23 +201,6 @@ public:
   }
   };
 
-class cChannels : public cConfig<cChannel> {
-protected:
-  int maxNumber;
-public:
-  cChannels(void) { maxNumber = 0; }
-  virtual bool Load(const char *FileName, bool AllowComments = false);
-  int GetNextGroup(int Idx);   // Get next channel group
-  int GetPrevGroup(int Idx);   // Get previous channel group
-  int GetNextNormal(int Idx);  // Get next normal channel (not group)
-  void ReNumber(void);         // Recalculate 'number' based on channel type
-  cChannel *GetByNumber(int Number);
-  cChannel *GetByServiceID(unsigned short ServiceId);
-  const char *GetChannelNameByNumber(int Number);
-  bool SwitchTo(int Number);
-  int MaxNumber(void) { return maxNumber; }
-  };
-
 class cTimers : public cConfig<cTimer> {
 public:
   cTimer *GetTimer(cTimer *Timer);
@@ -265,7 +220,6 @@ public:
   const cCaDefinition *Get(int Number);
   };
 
-extern cChannels Channels;
 extern cTimers Timers;
 extern cCommands Commands;
 extern cSVDRPhosts SVDRPhosts;
