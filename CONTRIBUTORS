@@ -479,6 +479,7 @@ Helmut Auer <vdr@helmutauer.de>
  for suggesting to make the "Zap timeout" a setup variable
  for fixing a frequency/transponder handling mixup when setting the time from the
  DVB data stream
+ for implementing a default cRemote::Initialize()
 
 Jeremy Hall <jhall@UU.NET>
  for fixing an incomplete initialization of the filter parameters in eit.c
