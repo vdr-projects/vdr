@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.64 2001/03/18 16:47:16 kls Exp $
+ * $Id: dvbapi.c 1.65 2001/03/31 10:46:17 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -1517,7 +1517,7 @@ cDvbApi *cDvbApi::GetDvbApi(int Ca, int Priority)
 {
   cDvbApi *d = NULL, *dMinPriority = NULL;
   int index = Ca - 1;
-  for (int i = MAXDVBAPI; --i >= 0; ) {
+  for (int i = 0; i < MAXDVBAPI; i++) {
       if (dvbApi[i]) {
          if (i == index) { // means we need exactly _this_ device
             d = dvbApi[i];

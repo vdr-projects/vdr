@@ -438,3 +438,8 @@ Video Disk Recorder Revision History
 - The new command line option -t can be used to set the controlling terminal
   (thanks to Jürgen Sauer). This is especially useful when starting VDR through
   an entry in /etc/inittab (see INSTALL).
+- Since the CAM module only works if it is installed in the "highest" DVB card,
+  recordings now search for a free DVB card from lowest to highest index (as
+  opposed to the previous "highest to lowest" search) in order to not use the
+  CAM card for FTA recordings unless necessary. This is only important for
+  systems with three or more DVB cards.
