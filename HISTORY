@@ -2444,3 +2444,8 @@ Video Disk Recorder Revision History
 - Continuing learning remote control keys in case one rc fails (thanks to
   Oliver Endriss).
 - Fixed handling comments in editing marks.
+
+2003-10-26: Version 1.2.6pre4
+
+- Fixed handling CAM menus in case the CAM connection fails while the menu
+  is being presented (thanks to Thomas v. Keller for reportign this one).

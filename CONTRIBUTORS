@@ -844,3 +844,7 @@ Markus Hardt <markus.hardt@gmx.net>
 
 Thomas Rausch <Thomas.Rausch@gmx.de>
  for making VDR try to get a timer's channel without RID when loading 'timers.conf'
+
+Thomas v. Keller <v.keller@neckarufer.de>
+ for reporting a crash in case the CAM connection fails while a CAM menu
+ is being presented
