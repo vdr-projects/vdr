@@ -2025,3 +2025,4 @@ Video Disk Recorder Revision History
 - If no device with an MPEG decoder can be found at startup, the first device
   is now used as primary device (just to have some device).
 - Adjusted some Premiere channels in 'channels.conf' (thanks to Thomas Koch).
+- Updated 'channels.conf.cable' (thanks to Stefan Huﬂfeldt).
