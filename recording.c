@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.27 2001/02/11 14:53:44 kls Exp $
+ * $Id: recording.c 1.28 2001/02/18 16:14:05 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -21,7 +21,11 @@
 
 #define RECEXT       ".rec"
 #define DELEXT       ".del"
+#ifdef VFAT
+#define DATAFORMAT   "%4d-%02d-%02d.%02d.%02d.%02d.%02d" RECEXT
+#else
 #define DATAFORMAT   "%4d-%02d-%02d.%02d:%02d.%02d.%02d" RECEXT
+#endif
 #define NAMEFORMAT   "%s/%s/" DATAFORMAT
 
 #define RESUMEFILESUFFIX  "/resume.vdr"

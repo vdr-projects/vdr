@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 1.18 2001/01/13 12:26:43 kls Exp $
+# $Id: Makefile 1.19 2001/02/18 16:12:14 kls Exp $
 
 DVBDIR   = ../DVB
 
@@ -23,6 +23,11 @@ DEFINES += -DREMOTE_$(REMOTE)
 
 ifdef DEBUG_OSD
 DEFINES += -DDEBUG_OSD
+endif
+
+ifdef VFAT
+# for people who want their video directory on a VFAT partition
+DEFINES += -DVFAT
 endif
 
 all: vdr

@@ -397,3 +397,5 @@ Video Disk Recorder Revision History
 - SVDRP can now immediately reuse the same port if VDR is restarted.
 - SVDRP now has a timeout after which the connection is automatically closed
   (default is 300 seconds, can be changed in "Setup").
+- The compile time switch VFAT can be used to make VDR avoid the ':' character
+  in file names (VFAT can't handle them). Do 'make VFAT=1' to enable this.

@@ -46,6 +46,13 @@ interface. These modes are useful when testing new menus if you
 only have a remote connection to the VDR (which, in my case, is
 located in the living room and has neither a monitor nor a keyboard).
 
+If your video directory will be on a VFAT partition, add the compile
+time switch
+
+  VFAT=1
+
+to the 'make' command.
+
 When running, the 'vdr' program writes status information into the
 system log file (/var/log/messages). You may want to watch these
 messages (tail -f /var/log/mesages) to see if there are any problems.
