@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 1.19 2001/02/18 16:12:14 kls Exp $
+# $Id: Makefile 1.20 2001/02/24 15:52:58 kls Exp $
 
 DVBDIR   = ../DVB
 
@@ -80,6 +80,6 @@ genfontfile: genfontfile.o
 # Housekeeping:
 
 clean:
-	-rm -f $(OBJS) vdr genfontfile genfontfile.o
+	-rm -f $(OBJS) vdr genfontfile genfontfile.o core
 CLEAN: clean
 	-rm -f fontfix.c fontosd.c
