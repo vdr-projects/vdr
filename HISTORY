@@ -863,3 +863,5 @@ Video Disk Recorder Revision History
 - Removed all video overlay stuff from cDvbApi and SVDRP. Guido Fiala's new
   'kvdr' version 0.4 now does these things itself. As a consequence of this you
   will now need to use kvdr 0.4 or later.
+- The device /dev/video is now opened only if necessary (to GRAB an image),
+  allowing other programs (like 'kvdr', for instance) to use that device.

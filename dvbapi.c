@@ -7,7 +7,7 @@
  * DVD support initially written by Andreas Schultz <aschultz@warp10.net>
  * based on dvdplayer-0.5 by Matjaz Thaler <matjaz.thaler@guest.arnes.si>
  *
- * $Id: dvbapi.c 1.136 2001/11/04 11:30:00 kls Exp $
+ * $Id: dvbapi.c 1.137 2001/11/04 12:05:36 kls Exp $
  */
 
 //#define DVDDEBUG        1
@@ -2557,10 +2557,6 @@ cDvbApi::cDvbApi(int n)
   fd_video   = OstOpen(DEV_OST_VIDEO,  n, O_RDWR | O_NONBLOCK);
   fd_audio   = OstOpen(DEV_OST_AUDIO,  n, O_RDWR | O_NONBLOCK);
 
-  // Devices that may not be available, and are not necessary for normal operation:
-
-  videoDev   = OstOpen(DEV_VIDEO,      n, O_RDWR);
-
   // Devices that will be dynamically opened and closed when necessary:
 
   fd_dvr     = -1;
@@ -2725,91 +2721,93 @@ const cSchedules *cDvbApi::Schedules(cThreadLock *ThreadLock) const
 
 bool cDvbApi::GrabImage(const char *FileName, bool Jpeg, int Quality, int SizeX, int SizeY)
 {
-  if (videoDev < 0)
-     return false;
   int result = 0;
-  // just do this once?
-  struct video_mbuf mbuf;
-  result |= ioctl(videoDev, VIDIOCGMBUF, &mbuf);
-  int msize = mbuf.size;
-  // gf: this needs to be a protected member of cDvbApi! //XXX kls: WHY???
-  unsigned char *mem = (unsigned char *)mmap(0, msize, PROT_READ | PROT_WRITE, MAP_SHARED, videoDev, 0);
-  if (!mem || mem == (unsigned char *)-1)
-     return false;
-  // set up the size and RGB
-  struct video_capability vc;
-  result |= ioctl(videoDev, VIDIOCGCAP, &vc);
-  struct video_mmap vm;
-  vm.frame = 0;
-  if ((SizeX > 0) && (SizeX <= vc.maxwidth) &&
-      (SizeY > 0) && (SizeY <= vc.maxheight)) {
-     vm.width = SizeX;
-     vm.height = SizeY;
-     }
-  else {
-     vm.width = vc.maxwidth;
-     vm.height = vc.maxheight;
-     }
-  vm.format = VIDEO_PALETTE_RGB24;
-  // this needs to be done every time:
-  result |= ioctl(videoDev, VIDIOCMCAPTURE, &vm);
-  result |= ioctl(videoDev, VIDIOCSYNC, &vm.frame);
-  // make RGB out of BGR:
-  int memsize = vm.width * vm.height;
-  unsigned char *mem1 = mem;
-  for (int i = 0; i < memsize; i++) {
-      unsigned char tmp = mem1[2];
-      mem1[2] = mem1[0];
-      mem1[0] = tmp;
-      mem1 += 3;
-      }
-
-  if (Quality < 0)
-     Quality = 255; //XXX is this 'best'???
-
-  isyslog(LOG_INFO, "grabbing to %s (%s %d %d %d)", FileName, Jpeg ? "JPEG" : "PNM", Quality, vm.width, vm.height);
-  FILE *f = fopen(FileName, "wb");
-  if (f) {
-     if (Jpeg) {
-        // write JPEG file:
-        struct jpeg_compress_struct cinfo;
-        struct jpeg_error_mgr jerr;
-        cinfo.err = jpeg_std_error(&jerr);
-        jpeg_create_compress(&cinfo);
-        jpeg_stdio_dest(&cinfo, f);
-        cinfo.image_width = vm.width;
-        cinfo.image_height = vm.height;
-        cinfo.input_components = 3;
-        cinfo.in_color_space = JCS_RGB;
-
-        jpeg_set_defaults(&cinfo);
-        jpeg_set_quality(&cinfo, Quality, true);
-        jpeg_start_compress(&cinfo, true);
-
-        int rs = vm.width * 3;
-        JSAMPROW rp[vm.height];
-        for (int k = 0; k < vm.height; k++)
-            rp[k] = &mem[rs * k];
-        jpeg_write_scanlines(&cinfo, rp, vm.height);
-        jpeg_finish_compress(&cinfo);
-        jpeg_destroy_compress(&cinfo);
-        }
-     else {
-        // write PNM file:
-        if (fprintf(f, "P6\n%d\n%d\n255\n", vm.width, vm.height) < 0 ||
-            fwrite(mem, vm.width * vm.height * 3, 1, f) < 0) {
-           LOG_ERROR_STR(FileName);
-           result |= 1;
+  int videoDev = OstOpen(DEV_VIDEO, CardIndex(), O_RDWR);
+  if (videoDev >= 0) {
+     struct video_mbuf mbuf;
+     result |= ioctl(videoDev, VIDIOCGMBUF, &mbuf);
+     if (result == 0) {
+        int msize = mbuf.size;
+        unsigned char *mem = (unsigned char *)mmap(0, msize, PROT_READ | PROT_WRITE, MAP_SHARED, videoDev, 0);
+        if (mem && mem != (unsigned char *)-1) {
+           // set up the size and RGB
+           struct video_capability vc;
+           result |= ioctl(videoDev, VIDIOCGCAP, &vc);
+           struct video_mmap vm;
+           vm.frame = 0;
+           if ((SizeX > 0) && (SizeX <= vc.maxwidth) &&
+               (SizeY > 0) && (SizeY <= vc.maxheight)) {
+              vm.width = SizeX;
+              vm.height = SizeY;
+              }
+           else {
+              vm.width = vc.maxwidth;
+              vm.height = vc.maxheight;
+              }
+           vm.format = VIDEO_PALETTE_RGB24;
+           result |= ioctl(videoDev, VIDIOCMCAPTURE, &vm);
+           result |= ioctl(videoDev, VIDIOCSYNC, &vm.frame);
+           // make RGB out of BGR:
+           int memsize = vm.width * vm.height;
+           unsigned char *mem1 = mem;
+           for (int i = 0; i < memsize; i++) {
+               unsigned char tmp = mem1[2];
+               mem1[2] = mem1[0];
+               mem1[0] = tmp;
+               mem1 += 3;
+               }
+         
+           if (Quality < 0)
+              Quality = 255; //XXX is this 'best'???
+         
+           isyslog(LOG_INFO, "grabbing to %s (%s %d %d %d)", FileName, Jpeg ? "JPEG" : "PNM", Quality, vm.width, vm.height);
+           FILE *f = fopen(FileName, "wb");
+           if (f) {
+              if (Jpeg) {
+                 // write JPEG file:
+                 struct jpeg_compress_struct cinfo;
+                 struct jpeg_error_mgr jerr;
+                 cinfo.err = jpeg_std_error(&jerr);
+                 jpeg_create_compress(&cinfo);
+                 jpeg_stdio_dest(&cinfo, f);
+                 cinfo.image_width = vm.width;
+                 cinfo.image_height = vm.height;
+                 cinfo.input_components = 3;
+                 cinfo.in_color_space = JCS_RGB;
+         
+                 jpeg_set_defaults(&cinfo);
+                 jpeg_set_quality(&cinfo, Quality, true);
+                 jpeg_start_compress(&cinfo, true);
+         
+                 int rs = vm.width * 3;
+                 JSAMPROW rp[vm.height];
+                 for (int k = 0; k < vm.height; k++)
+                     rp[k] = &mem[rs * k];
+                 jpeg_write_scanlines(&cinfo, rp, vm.height);
+                 jpeg_finish_compress(&cinfo);
+                 jpeg_destroy_compress(&cinfo);
+                 }
+              else {
+                 // write PNM file:
+                 if (fprintf(f, "P6\n%d\n%d\n255\n", vm.width, vm.height) < 0 ||
+                     fwrite(mem, vm.width * vm.height * 3, 1, f) < 0) {
+                    LOG_ERROR_STR(FileName);
+                    result |= 1;
+                    }
+                 }
+              fclose(f);
+              }
+           else {
+              LOG_ERROR_STR(FileName);
+              result |= 1;
+              }
+           munmap(mem, msize);
            }
+        else
+           result |= 1;
         }
-     fclose(f);
+     close(videoDev);
      }
-  else {
-     LOG_ERROR_STR(FileName);
-     result |= 1;
-     }
-
-  munmap(mem, msize);
   return result == 0;
 }
 
