@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.78 2001/06/16 14:38:07 kls Exp $
+ * $Id: dvbapi.c 1.79 2001/06/17 15:18:11 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -2048,7 +2048,7 @@ bool cDvbApi::SetPid(int fd, dmxPesType_t PesType, dvb_pid_t Pid, dmxOutput_t Ou
   pesFilterParams.pesType = PesType;
   pesFilterParams.flags   = DMX_IMMEDIATE_START;
   if (ioctl(fd, DMX_SET_PES_FILTER, &pesFilterParams) < 0) {
-     if (Pid != 0x1FFF)
+     if (Pid != 0 && Pid != 0x1FFF)
         LOG_ERROR;
      return false;
      }
