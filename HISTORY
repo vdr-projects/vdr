@@ -875,3 +875,4 @@ Video Disk Recorder Revision History
 - Implemented DVB-T support (thanks to Dave Chapman).
 - Removed the range limits for the Frequency and Srate parameters of channel
   definitions.
+- Changed the maximum value for PIDs in channels.conf from 0xFFFE to 0x1FFF.
