@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.92 2001/08/05 10:33:54 kls Exp $
+ * $Id: menu.c 1.93 2001/08/05 12:47:14 kls Exp $
  */
 
 #include "menu.h"
@@ -1799,12 +1799,12 @@ cMenuMain::cMenuMain(bool Replaying)
   if (Commands.Count())
      Add(new cOsdItem(hk(tr("Commands")),  osCommands));
   if (Replaying)
-     Add(new cOsdItem(hk(tr(" Stop replaying")), osStopReplay));
+     Add(new cOsdItem(tr(" Stop replaying"), osStopReplay));
   const char *s = NULL;
   while ((s = cRecordControls::GetInstantId(s)) != NULL) {
         char *buffer = NULL;
         asprintf(&buffer, "%s%s", STOP_RECORDING, s);
-        Add(new cOsdItem(hk(buffer), osStopRecord));
+        Add(new cOsdItem(buffer, osStopRecord));
         delete buffer;
         }
   if (cVideoCutter::Active())
