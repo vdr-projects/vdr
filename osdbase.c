@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osdbase.c 1.8 2003/03/23 15:53:29 kls Exp $
+ * $Id: osdbase.c 1.9 2003/08/15 13:47:51 kls Exp $
  */
 
 #include "osdbase.h"
@@ -215,7 +215,7 @@ void cBitmap::SetBitmap(int x, int y, const cBitmap &Bitmap)
      Take(Bitmap, &Indexes);
      for (int ix = 0; ix < Bitmap.width; ix++) {
          for (int iy = 0; iy < Bitmap.height; iy++)
-             SetIndex(x + ix, y + iy, Indexes[Bitmap.bitmap[Bitmap.width * iy + ix]]);
+             SetIndex(x + ix, y + iy, Indexes[int(Bitmap.bitmap[Bitmap.width * iy + ix])]);
          }
      }
 }

@@ -2293,3 +2293,5 @@ Video Disk Recorder Revision History
   Ludwig Nussel).
 - Fixed scaling SPU bitmaps in Letterbox mode when playing NTSC material.
   In order to do this, the cDevice was given a new member function GetVideoSystem().
+- Fixed two warnings when compiling with gcc 3.3.1 (thanks to Alfred Zastrow for
+  reporting this).

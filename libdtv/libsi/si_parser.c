@@ -1240,7 +1240,7 @@ char *siGetDescriptorTextHandler (u_char *Buffer, int Length, int type)
          if (*Buffer == 0) break;
 
          if ((*Buffer >= ' ' && *Buffer <= '~') || (*Buffer == '\n') ||
-             (*Buffer >= 0xa0 && *Buffer <= 0xff)) *tmp++ = *Buffer;
+             (*Buffer >= 0xa0)) *tmp++ = *Buffer;
          if (*Buffer == 0x8A) *tmp++ = '\n';
          if ((*Buffer == 0x86 || *Buffer == 0x87) && !(GDT_NAME_DESCRIPTOR & type)) *tmp++ = ' ';
          Buffer++;

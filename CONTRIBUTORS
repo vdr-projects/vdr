@@ -693,6 +693,7 @@ Juri Haberland <juri@koschikode.com>
 Alfred Zastrow <vdr@zastrow4u.de>
  for suggesting to implement separate PausePriority and PauseLifetime parameters for
  the recordings created when pausing live video
+ for reporting two warnings when compiling with gcc 3.3.1
 
 Matthias Raus <matthias-raus@web.de>
  for reporting a problem with starting the editing process if no marks have been set
