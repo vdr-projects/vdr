@@ -1216,3 +1216,5 @@ Video Disk Recorder Revision History
   Schächner).
 - No longer setting PIDs 0x1FFF, which apparently fixes problems with CAMs and
   AC3 sound only working the first time (thanks to Stefan Huelswitt).
+- Now encoding '.' at the end of a directory name in case of VFAT=1, since Windows
+  can't handle these (thanks to Simon Dean for reporting this one).
