@@ -12,7 +12,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: newplugin 1.1 2002/05/09 15:12:26 kls Exp $
+# $Id: newplugin 1.4 2002/05/12 15:02:13 kls Exp $
 
 $PLUGIN_NAME = $ARGV[0] || die "Usage: newplugin <name>\n";
 
@@ -82,7 +82,8 @@ VDRVERSION = `grep 'define VDRVERSION ' \$(VDRDIR)/config.h | awk '{ print \$\$3
 
 ### The name of the distribution archive:
 
-ARCHIVE = vdr-\$(PLUGIN)-\$(VERSION)
+ARCHIVE = \$(PLUGIN)-\$(VERSION)
+PACKAGE = vdr-\$(ARCHIVE)
 
 ### Includes and Defines (add further entries here):
 
@@ -125,9 +126,9 @@ package: clean
 	\@-rm -rf \$(TMPDIR)/\$(ARCHIVE)
 	\@mkdir \$(TMPDIR)/\$(ARCHIVE)
 	\@cp -a * \$(TMPDIR)/\$(ARCHIVE)
-	\@tar czf \$(ARCHIVE).tgz -C \$(TMPDIR) \$(ARCHIVE)
+	\@tar czf \$(PACKAGE).tgz -C \$(TMPDIR) \$(ARCHIVE)
 	\@-rm -rf \$(TMPDIR)/\$(ARCHIVE)
-	\@echo Distribution archive created as \$(ARCHIVE).tgz
+	\@echo Distribution package created as \$(PACKAGE).tgz
 
 clean:
 	\@-rm -f \$(OBJS) \$(DEPFILE) *.so *.tgz core* *~
@@ -158,7 +159,8 @@ public:
   virtual const char *Description(void) { return DESCRIPTION; }
   virtual const char *CommandLineHelp(void);
   virtual bool ProcessArgs(int argc, char *argv[]);
-  virtual void Start(void);
+  virtual bool Start(void);
+  virtual void Housekeeping(void);
   virtual const char *MainMenuEntry(void) { return MAINMENUENTRY; }
   virtual cOsdMenu *MainMenuAction(void);
   virtual cMenuSetupPage *SetupMenu(void);
@@ -189,9 +191,15 @@ bool cPlugin${PLUGIN_CLASS}::ProcessArgs(int argc, char *argv[])
   return true;
 }
 
-void cPlugin${PLUGIN_CLASS}::Start(void)
+bool cPlugin${PLUGIN_CLASS}::Start(void)
 {
   // Start any background activities the plugin shall perform.
+  return true;
+}
+
+void cPlugin${PLUGIN_CLASS}::Housekeeping(void)
+{
+  // Perform any cleanup or other regular tasks.
 }
 
 cOsdMenu *cPlugin${PLUGIN_CLASS}::MainMenuAction(void)

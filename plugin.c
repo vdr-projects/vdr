@@ -4,21 +4,25 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: plugin.c 1.1 2002/05/09 16:26:56 kls Exp $
+ * $Id: plugin.c 1.5 2002/05/13 16:31:09 kls Exp $
  */
 
 #include "plugin.h"
 #include <ctype.h>
 #include <dirent.h>
 #include <dlfcn.h>
+#include <time.h>
 #include "config.h"
 
 #define LIBVDR_PREFIX  "libvdr-"
 #define SO_INDICATOR   ".so."
 
 #define MAXPLUGINARGS  1024
+#define HOUSEKEEPINGDELTA 10 // seconds
 
 // --- cPlugin ---------------------------------------------------------------
+
+char *cPlugin::configDirectory = NULL;
 
 cPlugin::cPlugin(void) 
 {
@@ -45,7 +49,12 @@ bool cPlugin::ProcessArgs(int argc, char *argv[])
   return true;
 }
 
-void cPlugin::Start(void)
+bool cPlugin::Start(void)
+{
+  return true;
+}
+
+void cPlugin::Housekeeping(void)
 {
 }
 
@@ -84,6 +93,19 @@ void cPlugin::RegisterI18n(const tI18nPhrase * const Phrases)
   I18nRegister(Phrases, Name());
 }
 
+void cPlugin::SetConfigDirectory(const char *Dir)
+{
+  configDirectory = strdup(Dir);
+}
+
+const char *cPlugin::ConfigDirectory(const char *PluginName)
+{
+  static char *buffer = NULL;
+  delete buffer;
+  asprintf(&buffer, "%s/plugins%s%s", configDirectory, PluginName ? "/" : "", PluginName ? PluginName : "");
+  return MakeDirs(buffer, true) ? buffer : NULL;
+}
+
 // --- cDll ------------------------------------------------------------------
 
 cDll::cDll(const char *FileName, const char *Args)
@@ -117,7 +139,7 @@ static char *SkipQuote(char *s)
      strcpy(s, s + 1);
      return s;
      }
-  esyslog(LOG_ERR, "ERROR: missing closing %c", c);
+  esyslog("ERROR: missing closing %c", c);
   fprintf(stderr, "vdr: missing closing %c\n", c);
   return NULL;
 }
@@ -125,9 +147,9 @@ static char *SkipQuote(char *s)
 bool cDll::Load(bool Log)
 {
   if (Log)
-     isyslog(LOG_INFO, "loading plugin: %s", fileName);
+     isyslog("loading plugin: %s", fileName);
   if (handle) {
-     esyslog(LOG_ERR, "attempt to load plugin '%s' twice!", fileName);
+     esyslog("attempt to load plugin '%s' twice!", fileName);
      return false;
      }
   handle = dlopen(fileName, RTLD_NOW);
@@ -153,7 +175,7 @@ bool cDll::Load(bool Log)
                            if (*p)
                               p++;
                            else {
-                              esyslog(LOG_ERR, "ERROR: missing character after \\");
+                              esyslog("ERROR: missing character after \\");
                               fprintf(stderr, "vdr: missing character after \\\n");
                               return false;
                               }
@@ -169,7 +191,7 @@ bool cDll::Load(bool Log)
                                if (argc < MAXPLUGINARGS - 1)
                                   argv[argc++] = q;
                                else {
-                                  esyslog(LOG_ERR, "ERROR: plugin argument list too long");
+                                  esyslog("ERROR: plugin argument list too long");
                                   fprintf(stderr, "vdr: plugin argument list too long\n");
                                   return false;
                                   }
@@ -188,7 +210,7 @@ bool cDll::Load(bool Log)
         }
      }
   else {
-     esyslog(LOG_ERR, "ERROR: %s", error);
+     esyslog("ERROR: %s", error);
      fprintf(stderr, "vdr: %s\n", error);
      }
   return !error && plugin;
@@ -201,6 +223,8 @@ cPluginManager *cPluginManager::pluginManager = NULL;
 cPluginManager::cPluginManager(const char *Directory)
 {
   directory = NULL;
+  lastHousekeeping = time(NULL);
+  nextHousekeeping = -1;
   if (pluginManager) {
      fprintf(stderr, "vdr: attempt to create more than one plugin manager - exiting!\n");
      exit(2);
@@ -268,18 +292,36 @@ bool cPluginManager::LoadPlugins(bool Log)
   return true;
 }
 
-void cPluginManager::StartPlugins(void)
+bool cPluginManager::StartPlugins(void)
 {
   for (cDll *dll = dlls.First(); dll; dll = dlls.Next(dll)) {
       cPlugin *p = dll->Plugin();
       if (p) {
          int Language = Setup.OSDLanguage;
          Setup.OSDLanguage = 0; // the i18n texts are only available _after_ Start()
-         isyslog(LOG_INFO, "starting plugin: %s (%s): %s", p->Name(), p->Version(), p->Description());
+         isyslog("starting plugin: %s (%s): %s", p->Name(), p->Version(), p->Description());
          Setup.OSDLanguage = Language;
-         dll->Plugin()->Start();
+         if (!p->Start())
+            return false;
          }
       }
+  return true;
+}
+
+void cPluginManager::Housekeeping(void)
+{
+  if (time(NULL) - lastHousekeeping > HOUSEKEEPINGDELTA) {
+     if (++nextHousekeeping >= dlls.Count())
+        nextHousekeeping = 0;
+     cDll *dll = dlls.Get(nextHousekeeping);
+     if (dll) {
+        cPlugin *p = dll->Plugin();
+        if (p) {
+           p->Housekeeping();
+           }
+        }
+     lastHousekeeping = time(NULL);
+     }
 }
 
 bool cPluginManager::HasPlugins(void)
@@ -312,7 +354,7 @@ void cPluginManager::Shutdown(bool Log)
         if (Log) {
            cPlugin *p = dll->Plugin();
            if (p)
-              isyslog(LOG_INFO, "stopping plugin: %s", p->Name());
+              isyslog("stopping plugin: %s", p->Name());
            }
         dlls.Del(dll);
         }

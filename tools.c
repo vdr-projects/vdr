@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.63 2002/05/01 16:20:30 kls Exp $
+ * $Id: tools.c 1.66 2002/05/13 17:56:17 kls Exp $
  */
 
 #include "tools.h"
@@ -25,7 +25,7 @@ ssize_t safe_read(int filedes, void *buffer, size_t size)
   for (;;) {
       ssize_t p = read(filedes, buffer, size);
       if (p < 0 && errno == EINTR) {
-         dsyslog(LOG_INFO, "EINTR while reading from file handle %d - retrying", filedes);
+         dsyslog("EINTR while reading from file handle %d - retrying", filedes);
          continue;
          }
       return p;
@@ -41,7 +41,7 @@ ssize_t safe_write(int filedes, const void *buffer, size_t size)
         p = write(filedes, ptr, size);
         if (p < 0) {
            if (errno == EINTR) {
-              dsyslog(LOG_INFO, "EINTR while writing to file handle %d - retrying", filedes);
+              dsyslog("EINTR while writing to file handle %d - retrying", filedes);
               continue;
               }
            break;
@@ -77,7 +77,7 @@ char *strcpyrealloc(char *dest, const char *src)
      if (dest)
         strcpy(dest, src);
      else
-        esyslog(LOG_ERR, "ERROR: out of memory");
+        esyslog("ERROR: out of memory");
      }
   else {
      delete dest;
@@ -269,10 +269,10 @@ bool DirectoryOk(const char *DirName, bool LogErrors)
         if (access(DirName, R_OK | W_OK | X_OK) == 0)
            return true;
         else if (LogErrors)
-           esyslog(LOG_ERR, "ERROR: can't access %s", DirName);
+           esyslog("ERROR: can't access %s", DirName);
         }
      else if (LogErrors)
-        esyslog(LOG_ERR, "ERROR: %s is not a directory", DirName);
+        esyslog("ERROR: %s is not a directory", DirName);
      }
   else if (LogErrors)
      LOG_ERROR_STR(DirName);
@@ -291,7 +291,7 @@ bool MakeDirs(const char *FileName, bool IsDirectory)
            *p = 0;
         struct stat fs;
         if (stat(s, &fs) != 0 || !S_ISDIR(fs.st_mode)) {
-           dsyslog(LOG_INFO, "creating directory %s", s);
+           dsyslog("creating directory %s", s);
            if (mkdir(s, S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH) == -1) {
               LOG_ERROR_STR(s);
               result = false;
@@ -329,15 +329,15 @@ bool RemoveFileOrDir(const char *FileName, bool FollowSymlinks)
                           }
                        else if (n < size) {
                           l[n] = 0;
-                          dsyslog(LOG_INFO, "removing %s", l);
+                          dsyslog("removing %s", l);
                           if (remove(l) < 0)
                              LOG_ERROR_STR(l);
                           }
                        else
-                          esyslog(LOG_ERR, "ERROR: symlink name length (%d) exceeded anticipated buffer size (%d)", n, size);
+                          esyslog("ERROR: symlink name length (%d) exceeded anticipated buffer size (%d)", n, size);
                        delete l;
                        }
-                    dsyslog(LOG_INFO, "removing %s", buffer);
+                    dsyslog("removing %s", buffer);
                     if (remove(buffer) < 0)
                        LOG_ERROR_STR(buffer);
                     delete buffer;
@@ -350,7 +350,7 @@ bool RemoveFileOrDir(const char *FileName, bool FollowSymlinks)
            return false;
            }
         }
-     dsyslog(LOG_INFO, "removing %s", FileName);
+     dsyslog("removing %s", FileName);
      if (remove(FileName) < 0) {
         LOG_ERROR_STR(FileName);
         return false;
@@ -392,7 +392,7 @@ bool RemoveEmptyDirectories(const char *DirName, bool RemoveThis)
            }
      closedir(d);
      if (RemoveThis && empty) {
-        dsyslog(LOG_INFO, "removing %s", DirName);
+        dsyslog("removing %s", DirName);
         if (remove(DirName) < 0) {
            LOG_ERROR_STR(DirName);
            return false;
@@ -421,7 +421,7 @@ char *ReadLink(const char *FileName)
      TargetName = RealName;
      }
   else
-     esyslog(LOG_ERR, "ERROR: symlink's target name too long: %s", FileName);
+     esyslog("ERROR: symlink's target name too long: %s", FileName);
   return TargetName ? strdup(TargetName) : NULL;
 }
 
@@ -446,14 +446,14 @@ bool SpinUpDisk(const char *FileName)
             gettimeofday(&tp2, NULL);
             double seconds = (((long long)tp2.tv_sec * 1000000 + tp2.tv_usec) - ((long long)tp1.tv_sec * 1000000 + tp1.tv_usec)) / 1000000.0;
             if (seconds > 0.5)
-               dsyslog(LOG_INFO, "SpinUpDisk took %.2f seconds\n", seconds);
+               dsyslog("SpinUpDisk took %.2f seconds\n", seconds);
             return true;
             }
          else
             LOG_ERROR_STR(buf);
          }
       }
-  esyslog(LOG_ERR, "ERROR: SpinUpDisk failed");
+  esyslog("ERROR: SpinUpDisk failed");
   return false;
 }
 
@@ -501,7 +501,7 @@ bool cFile::Open(const char *FileName, int Flags, mode_t Mode)
 {
   if (!IsOpen())
      return Open(open(FileName, Flags, Mode));
-  esyslog(LOG_ERR, "ERROR: attempt to re-open %s", FileName);
+  esyslog("ERROR: attempt to re-open %s", FileName);
   return false;
 }
 
@@ -517,15 +517,15 @@ bool cFile::Open(int FileDes)
               if (!files[f])
                  files[f] = true;
               else
-                 esyslog(LOG_ERR, "ERROR: file descriptor %d already in files[]", f);
+                 esyslog("ERROR: file descriptor %d already in files[]", f);
               return true;
               }
            else
-              esyslog(LOG_ERR, "ERROR: file descriptor %d is larger than FD_SETSIZE (%d)", f, FD_SETSIZE);
+              esyslog("ERROR: file descriptor %d is larger than FD_SETSIZE (%d)", f, FD_SETSIZE);
            }
         }
      else
-        esyslog(LOG_ERR, "ERROR: attempt to re-open file descriptor %d", FileDes);
+        esyslog("ERROR: attempt to re-open file descriptor %d", FileDes);
      }
   return false;
 }
@@ -671,7 +671,7 @@ bool cLockFile::Lock(int WaitSeconds)
               struct stat fs;
               if (stat(fileName, &fs) == 0) {
                  if (time(NULL) - fs.st_mtime > LOCKFILESTALETIME) {
-                    esyslog(LOG_ERR, "ERROR: removing stale lock file '%s'", fileName);
+                    esyslog("ERROR: removing stale lock file '%s'", fileName);
                     if (remove(fileName) < 0) {
                        LOG_ERROR_STR(fileName);
                        break;
@@ -704,7 +704,7 @@ void cLockFile::Unlock(void)
      f = -1;
      }
   else
-     esyslog(LOG_ERR, "ERROR: attempt to unlock %s without holding a lock!", fileName);
+     esyslog("ERROR: attempt to unlock %s without holding a lock!", fileName);
 }
 
 // --- cListObject -----------------------------------------------------------
@@ -722,6 +722,12 @@ void cListObject::Append(cListObject *Object)
 {
   next = Object;
   Object->prev = this;
+}
+
+void cListObject::Insert(cListObject *Object)
+{
+  prev = Object;
+  Object->next = this;
 }
 
 void cListObject::Unlink(void)
@@ -757,13 +763,34 @@ cListBase::~cListBase()
   Clear();
 }
 
-void cListBase::Add(cListObject *Object) 
+void cListBase::Add(cListObject *Object, cListObject *After)
 { 
-  if (lastObject)
-     lastObject->Append(Object);
-  else
+  if (After && After != lastObject) {
+     After->Next()->Insert(Object);
+     After->Append(Object);
+     }
+  else {
+     if (lastObject)
+        lastObject->Append(Object);
+     else
+        objects = Object;
+     lastObject = Object;
+     }
+}
+
+void cListBase::Ins(cListObject *Object, cListObject *Before)
+{ 
+  if (Before && Before != objects) {
+     Before->Prev()->Append(Object);
+     Before->Insert(Object);
+     }
+  else {
+     if (objects)
+        objects->Insert(Object);
+     else
+        lastObject = Object;
      objects = Object;
-  lastObject = Object;
+     }
 }
 
 void cListBase::Del(cListObject *Object)

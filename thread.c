@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 1.19 2002/03/09 12:05:44 kls Exp $
+ * $Id: thread.c 1.20 2002/05/13 16:32:09 kls Exp $
  */
 
 #include "thread.h"
@@ -153,7 +153,7 @@ void cThread::Cancel(int WaitSeconds)
             return;
          usleep(10000);
          }
-     esyslog(LOG_ERR, "ERROR: thread %d won't end (waited %d seconds) - cancelling it...", threadPid, WaitSeconds);
+     esyslog("ERROR: thread %d won't end (waited %d seconds) - cancelling it...", threadPid, WaitSeconds);
      }
   pthread_cancel(thread);
 }
@@ -175,18 +175,18 @@ void cThread::RaisePanic(void)
      }
   lastPanic = time(NULL);
   if (panicLevel > MAXPANICLEVEL) {
-     esyslog(LOG_ERR, "ERROR: max. panic level exceeded");
+     esyslog("ERROR: max. panic level exceeded");
      EmergencyExit(true);
      }
   else
-     dsyslog(LOG_INFO, "panic level: %d", panicLevel);
+     dsyslog("panic level: %d", panicLevel);
 }
 
 bool cThread::EmergencyExit(bool Request)
 {
   if (!Request)
      return emergencyExitRequested;
-  esyslog(LOG_ERR, "initiating emergency exit");
+  esyslog("initiating emergency exit");
   return emergencyExitRequested = true; // yes, it's an assignment, not a comparison!
 }
 

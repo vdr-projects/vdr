@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.c 1.47 2002/01/27 15:48:46 kls Exp $
+ * $Id: interface.c 1.48 2002/05/13 16:30:22 kls Exp $
  */
 
 #include "interface.h"
@@ -303,7 +303,7 @@ void cInterface::Status(const char *s, eDvbColor FgColor, eDvbColor BgColor)
 void cInterface::Info(const char *s)
 {
   Open(Setup.OSDwidth, -1);
-  isyslog(LOG_INFO, "info: %s", s);
+  isyslog("info: %s", s);
   Status(s, clrBlack, clrGreen);
   Wait();
   Status(NULL);
@@ -313,7 +313,7 @@ void cInterface::Info(const char *s)
 void cInterface::Error(const char *s)
 {
   Open(Setup.OSDwidth, -1);
-  esyslog(LOG_ERR, "ERROR: %s", s);
+  esyslog("ERROR: %s", s);
   Status(s, clrWhite, clrRed);
   Wait();
   Status(NULL);
@@ -323,13 +323,13 @@ void cInterface::Error(const char *s)
 bool cInterface::Confirm(const char *s, int Seconds, bool WaitForTimeout)
 {
   Open(Setup.OSDwidth, -1);
-  isyslog(LOG_INFO, "confirm: %s", s);
+  isyslog("confirm: %s", s);
   Status(s, clrBlack, clrYellow);
   eKeys k = Wait(Seconds);
   bool result = WaitForTimeout ? k == kNone : k == kOk;
   Status(NULL);
   Close();
-  isyslog(LOG_INFO, "%sconfirmed", result ? "" : "not ");
+  isyslog("%sconfirmed", result ? "" : "not ");
   return result;
 }
 
@@ -441,7 +441,7 @@ void cInterface::QueryKeys(void)
 
 void cInterface::LearnKeys(void)
 {
-  isyslog(LOG_INFO, "learning keys");
+  isyslog("learning keys");
   Open();
   for (;;) {
       Clear();

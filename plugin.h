@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: plugin.h 1.1 2002/05/09 10:16:09 kls Exp $
+ * $Id: plugin.h 1.4 2002/05/13 15:32:14 kls Exp $
  */
 
 #ifndef __PLUGIN_H
@@ -20,6 +20,7 @@
 class cPlugin {
   friend class cDll;
 private:
+  static char *configDirectory;
   const char *name;
   void SetName(const char *s);
 public:
@@ -32,7 +33,8 @@ public:
   virtual const char *CommandLineHelp(void);
 
   virtual bool ProcessArgs(int argc, char *argv[]);
-  virtual void Start(void);
+  virtual bool Start(void);
+  virtual void Housekeeping(void);
 
   virtual const char *MainMenuEntry(void);
   virtual cOsdMenu *MainMenuAction(void);
@@ -43,6 +45,9 @@ public:
   void SetupStore(const char *Name, int Value);
 
   void RegisterI18n(const tI18nPhrase * const Phrases);
+
+  static void SetConfigDirectory(const char *Dir);
+  static const char *ConfigDirectory(const char *PluginName = NULL);
   };
 
 class cDll : public cListObject {
@@ -64,6 +69,8 @@ class cPluginManager {
 private:
   static cPluginManager *pluginManager;
   char *directory;
+  time_t lastHousekeeping;
+  int nextHousekeeping;
   cDlls dlls;
 public:
   cPluginManager(const char *Directory);
@@ -71,7 +78,8 @@ public:
   void SetDirectory(const char *Directory);
   void AddPlugin(const char *Args);
   bool LoadPlugins(bool Log = false);
-  void StartPlugins(void);
+  bool StartPlugins(void);
+  void Housekeeping(void);
   static bool HasPlugins(void);
   static cPlugin *GetPlugin(int Index);
   static cPlugin *GetPlugin(const char *Name);

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.43 2002/05/11 08:35:47 kls Exp $
+ * $Id: tools.h 1.45 2002/05/13 16:21:55 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -20,12 +20,12 @@
 
 extern int SysLogLevel;
 
-#define esyslog(a...) void( (SysLogLevel > 0) ? syslog(a) : void() )
-#define isyslog(a...) void( (SysLogLevel > 1) ? syslog(a) : void() )
-#define dsyslog(a...) void( (SysLogLevel > 2) ? syslog(a) : void() )
+#define esyslog(a...) void( (SysLogLevel > 0) ? syslog(LOG_ERR,   a) : void() )
+#define isyslog(a...) void( (SysLogLevel > 1) ? syslog(LOG_INFO,  a) : void() )
+#define dsyslog(a...) void( (SysLogLevel > 2) ? syslog(LOG_DEBUG, a) : void() )
 
-#define LOG_ERROR         esyslog(LOG_ERR, "ERROR (%s,%d): %m", __FILE__, __LINE__)
-#define LOG_ERROR_STR(s)  esyslog(LOG_ERR, "ERROR: %s: %m", s)
+#define LOG_ERROR         esyslog("ERROR (%s,%d): %m", __FILE__, __LINE__)
+#define LOG_ERROR_STR(s)  esyslog("ERROR: %s: %m", s)
 
 #define SECSINDAY  86400
 
@@ -120,6 +120,7 @@ public:
   virtual ~cListObject();
   virtual bool operator< (const cListObject &ListObject) { return false; }
   void Append(cListObject *Object);
+  void Insert(cListObject *Object);
   void Unlink(void);
   int Index(void);
   cListObject *Prev(void) const { return prev; }
@@ -132,7 +133,8 @@ protected:
   cListBase(void);
 public:
   virtual ~cListBase();
-  void Add(cListObject *Object);
+  void Add(cListObject *Object, cListObject *After = NULL);
+  void Ins(cListObject *Object, cListObject *Before = NULL);
   void Del(cListObject *Object);
   virtual void Move(int From, int To);
   void Move(cListObject *From, cListObject *To);

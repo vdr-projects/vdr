@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbosd.c 1.14 2002/05/10 14:22:04 kls Exp $
+ * $Id: dvbosd.c 1.15 2002/05/13 16:29:20 kls Exp $
  */
 
 #include "dvbosd.h"
@@ -18,7 +18,7 @@ cDvbOsd::cDvbOsd(int VideoDev, int x, int y)
 {
   videoDev = VideoDev;
   if (videoDev < 0)
-     esyslog(LOG_ERR, "ERROR: illegal video device handle (%d)!", videoDev);
+     esyslog("ERROR: illegal video device handle (%d)!", videoDev);
 }
 
 cDvbOsd::~cDvbOsd()
@@ -37,7 +37,7 @@ bool cDvbOsd::SetWindow(cWindow *Window)
         Cmd(OSD_SetWindow, 0, Handle + 1);
         return true;
         }
-     esyslog(LOG_ERR, "ERROR: illegal window handle: %d", Handle);
+     esyslog("ERROR: illegal window handle: %d", Handle);
      }
   return false;
 }

@@ -1,7 +1,7 @@
 #
 # Makefile for a Video Disk Recorder plugin
 #
-# $Id: Makefile 1.1 2002/05/09 15:17:44 kls Exp $
+# $Id: Makefile 1.2 2002/05/12 15:09:07 kls Exp $
 
 # The official name of this plugin.
 # This name will be used in the '-P...' option of VDR to load the plugin.
@@ -27,7 +27,8 @@ VDRVERSION = `grep 'define VDRVERSION ' $(VDRDIR)/config.h | awk '{ print $$3 }'
 
 ### The name of the distribution archive:
 
-ARCHIVE = vdr-$(PLUGIN)-$(VERSION)
+ARCHIVE = $(PLUGIN)-$(VERSION)
+PACKAGE = vdr-$(ARCHIVE)
 
 ### Includes and Defines (add further entries here):
 
@@ -70,9 +71,9 @@ package: clean
 	@-rm -rf $(TMPDIR)/$(ARCHIVE)
 	@mkdir $(TMPDIR)/$(ARCHIVE)
 	@cp -a * $(TMPDIR)/$(ARCHIVE)
-	@tar czf $(ARCHIVE).tgz -C $(TMPDIR) $(ARCHIVE)
+	@tar czf $(PACKAGE).tgz -C $(TMPDIR) $(ARCHIVE)
 	@-rm -rf $(TMPDIR)/$(ARCHIVE)
-	@echo Distribution archive created as $(ARCHIVE).tgz
+	@echo Distribution package created as $(PACKAGE).tgz
 
 clean:
 	@-rm -f $(OBJS) $(DEPFILE) *.so *.tgz core* *~

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.191 2002/05/11 11:16:32 kls Exp $
+ * $Id: menu.c 1.192 2002/05/13 16:30:50 kls Exp $
  */
 
 #include "menu.h"
@@ -514,7 +514,7 @@ eOSState cMenuChannels::Edit(void)
 {
   if (HasSubMenu() || Count() == 0)
      return osContinue;
-  isyslog(LOG_INFO, "editing channel %d", Current() + 1);
+  isyslog("editing channel %d", Current() + 1);
   return AddSubMenu(new cMenuEditChannel(Current()));
 }
 
@@ -527,7 +527,7 @@ eOSState cMenuChannels::New(void)
   Channels.ReNumber();
   Add(new cMenuChannelItem(channel->Index()/*XXX*/, channel), true);
   Channels.Save();
-  isyslog(LOG_INFO, "channel %d added", channel->number);
+  isyslog("channel %d added", channel->number);
   return AddSubMenu(new cMenuEditChannel(Current()));
 }
 
@@ -553,7 +553,7 @@ eOSState cMenuChannels::Del(void)
         for (cMenuChannelItem *ci = (cMenuChannelItem *)First(); ci; ci = (cMenuChannelItem *)ci->Next())
             ci->SetIndex(i++);
         Channels.Save();
-        isyslog(LOG_INFO, "channel %d deleted", DeletedChannel);
+        isyslog("channel %d deleted", DeletedChannel);
         // Fix the timers:
         bool TimersModified = false;
         for (cTimer *ti = Timers.First(); ti; ti = (cTimer *)ti->Next()) {
@@ -562,7 +562,7 @@ eOSState cMenuChannels::Del(void)
                ti->channel--;
             if (ti->channel != OldChannel) {
                TimersModified = true;
-               isyslog(LOG_INFO, "timer %d: channel changed from %d to %d", ti->Index() + 1, OldChannel, ti->channel);
+               isyslog("timer %d: channel changed from %d to %d", ti->Index() + 1, OldChannel, ti->channel);
                }
             }
         if (TimersModified)
@@ -585,7 +585,7 @@ void cMenuChannels::Move(int From, int To)
   for (cMenuChannelItem *ci = (cMenuChannelItem *)First(); ci; ci = (cMenuChannelItem *)ci->Next())
       ci->SetIndex(i++);
   Channels.Save();
-  isyslog(LOG_INFO, "channel %d moved to %d", FromNumber, ToNumber);
+  isyslog("channel %d moved to %d", FromNumber, ToNumber);
   // Fix the timers:
   bool TimersModified = false;
   From++; // user visible channel numbers start with '1'
@@ -600,7 +600,7 @@ void cMenuChannels::Move(int From, int To)
          ti->channel++;
       if (ti->channel != OldChannel) {
          TimersModified = true;
-         isyslog(LOG_INFO, "timer %d: channel changed from %d to %d", ti->Index() + 1, OldChannel, ti->channel);
+         isyslog("timer %d: channel changed from %d to %d", ti->Index() + 1, OldChannel, ti->channel);
          }
       }
   if (TimersModified)
@@ -714,7 +714,7 @@ eOSState cMenuEditTimer::ProcessKey(eKeys Key)
                         if (timer->active)
                            timer->active = 1; // allows external programs to mark active timers with values > 1 and recognize if the user has modified them
                         Timers.Save();
-                        isyslog(LOG_INFO, "timer %d modified (%s)", timer->Index() + 1, timer->active ? "active" : "inactive");
+                        isyslog("timer %d modified (%s)", timer->Index() + 1, timer->active ? "active" : "inactive");
                         }
                      return osBack;
        case kRed:
@@ -822,9 +822,9 @@ eOSState cMenuTimers::OnOff(void)
      RefreshCurrent();
      DisplayCurrent(true);
      if (timer->firstday)
-        isyslog(LOG_INFO, "timer %d first day set to %s", timer->Index() + 1, timer->PrintFirstDay());
+        isyslog("timer %d first day set to %s", timer->Index() + 1, timer->PrintFirstDay());
      else
-        isyslog(LOG_INFO, "timer %d %sactivated", timer->Index() + 1, timer->active ? "" : "de");
+        isyslog("timer %d %sactivated", timer->Index() + 1, timer->active ? "" : "de");
      Timers.Save();
      }
   return osContinue;
@@ -834,7 +834,7 @@ eOSState cMenuTimers::Edit(void)
 {
   if (HasSubMenu() || Count() == 0)
      return osContinue;
-  isyslog(LOG_INFO, "editing timer %d", CurrentTimer()->Index() + 1);
+  isyslog("editing timer %d", CurrentTimer()->Index() + 1);
   return AddSubMenu(new cMenuEditTimer(CurrentTimer()->Index()));
 }
 
@@ -846,7 +846,7 @@ eOSState cMenuTimers::New(void)
   Timers.Add(timer);
   Add(new cMenuTimerItem(timer), true);
   Timers.Save();
-  isyslog(LOG_INFO, "timer %d added", timer->Index() + 1);
+  isyslog("timer %d added", timer->Index() + 1);
   return AddSubMenu(new cMenuEditTimer(timer->Index(), true));
 }
 
@@ -862,7 +862,7 @@ eOSState cMenuTimers::Del(void)
            cOsdMenu::Del(Current());
            Timers.Save();
            Display();
-           isyslog(LOG_INFO, "timer %d deleted", Index + 1);
+           isyslog("timer %d deleted", Index + 1);
            }
         }
      else
@@ -877,7 +877,7 @@ void cMenuTimers::Move(int From, int To)
   cOsdMenu::Move(From, To);
   Timers.Save();
   Display();
-  isyslog(LOG_INFO, "timer %d moved to %d", From + 1, To + 1);
+  isyslog("timer %d moved to %d", From + 1, To + 1);
 }
 
 eOSState cMenuTimers::Summary(void)
@@ -1068,7 +1068,7 @@ eOSState cMenuWhatsOn::Record(void)
      if (!t) {
         Timers.Add(timer);
         Timers.Save();
-        isyslog(LOG_INFO, "timer %d added", timer->Index() + 1);
+        isyslog("timer %d added", timer->Index() + 1);
         }
      else {
         delete timer;
@@ -1201,7 +1201,7 @@ eOSState cMenuSchedule::Record(void)
      if (!t) {
         Timers.Add(timer);
         Timers.Save();
-        isyslog(LOG_INFO, "timer %d added", timer->Index() + 1);
+        isyslog("timer %d added", timer->Index() + 1);
         }
      else {
         delete timer;
@@ -2426,7 +2426,7 @@ cRecordControl::cRecordControl(cDvbApi *DvbApi, cTimer *Timer)
         Title = eventInfo->GetTitle();
         Subtitle = eventInfo->GetSubtitle();
         Summary = eventInfo->GetExtendedDescription();
-        dsyslog(LOG_INFO, "Title: '%s' Subtitle: '%s'", Title, Subtitle);
+        dsyslog("Title: '%s' Subtitle: '%s'", Title, Subtitle);
         }
      cRecording Recording(timer, Title, Subtitle, Summary);
      fileName = strdup(Recording.FileName());
@@ -2462,17 +2462,17 @@ bool cRecordControl::GetEventInfo(void)
               eventInfo = Schedule->GetEventAround(Time);
               if (eventInfo) {
                  if (seconds > 0)
-                    dsyslog(LOG_INFO, "got EPG info after %d seconds", seconds);
+                    dsyslog("got EPG info after %d seconds", seconds);
                  return true;
                  }
               }
            }
       }
       if (seconds == 0)
-         dsyslog(LOG_INFO, "waiting for EPG info...");
+         dsyslog("waiting for EPG info...");
       sleep(1);
       }
-  dsyslog(LOG_INFO, "no EPG info available");
+  dsyslog("no EPG info available");
   return false;
 }
 
@@ -2484,7 +2484,7 @@ void cRecordControl::Stop(bool KeepInstant)
      if ((IsInstant() && !KeepInstant) || (timer->IsSingleEvent() && !timer->Matches())) {
         // checking timer->Matches() to make sure we don't delete the timer
         // if the program was cancelled before the timer's stop time!
-        isyslog(LOG_INFO, "deleting timer %d", timer->Index() + 1);
+        isyslog("deleting timer %d", timer->Index() + 1);
         Timers.Del(timer);
         Timers.Save();
         }
@@ -2523,10 +2523,10 @@ bool cRecordControls::Start(cTimer *Timer)
             }
         }
      else if (!Timer || (Timer->priority >= Setup.PrimaryLimit && !Timer->pending))
-        isyslog(LOG_ERR, "no free DVB device to record channel %d!", ch);
+        isyslog("no free DVB device to record channel %d!", ch);
      }
   else
-     esyslog(LOG_ERR, "ERROR: channel %d not defined!", ch);
+     esyslog("ERROR: channel %d not defined!", ch);
   return false;
 }
 
@@ -2546,7 +2546,7 @@ void cRecordControls::Stop(cDvbApi *DvbApi)
   for (int i = 0; i < MAXDVBAPI; i++) {
       if (RecordControls[i]) {
          if (RecordControls[i]->Uses(DvbApi)) {
-            isyslog(LOG_INFO, "stopping recording on DVB device %d due to higher priority", DvbApi->CardIndex() + 1);
+            isyslog("stopping recording on DVB device %d due to higher priority", DvbApi->CardIndex() + 1);
             RecordControls[i]->Stop(true);
             }
          }

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.h 1.28 2002/05/01 11:17:42 kls Exp $
+ * $Id: osd.h 1.29 2002/05/12 11:19:22 kls Exp $
  */
 
 #ifndef __OSD_H
@@ -116,7 +116,8 @@ public:
   cOsdMenu(const char *Title, int c0 = 0, int c1 = 0, int c2 = 0, int c3 = 0, int c4 = 0);
   virtual ~cOsdMenu();
   int Current(void) { return current; }
-  void Add(cOsdItem *Item, bool Current = false);
+  void Add(cOsdItem *Item, bool Current = false, cOsdItem *After = NULL);
+  void Ins(cOsdItem *Item, bool Current = false, cOsdItem *Before = NULL);
   void Display(void);
   virtual eOSState ProcessKey(eKeys Key);
   };
