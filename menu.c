@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.49 2000/11/18 13:42:52 kls Exp $
+ * $Id: menu.c 1.50 2000/11/18 14:10:10 kls Exp $
  */
 
 #include "menu.h"
@@ -1103,22 +1103,35 @@ cMenuEvent::cMenuEvent(const cEventInfo *EventInfo, bool CanSwitch)
   if (eventInfo) {
      cChannel *channel = Channels.GetByServiceID(eventInfo->GetServiceID());
      if (channel) {
-        const char *p;
         char *buffer;
         asprintf(&buffer, "%-17.*s\t%.*s  %s - %s", 17, channel->name, 5, eventInfo->GetDate(), eventInfo->GetTimeString(), eventInfo->GetEndTimeString());
         SetTitle(buffer, false);
         int Line = 2;
         cMenuTextItem *item;
-        if (!isempty(p = eventInfo->GetTitle())) {
-           Add(item = new cMenuTextItem(p, 1, Line, MenuColumns - 2, -1, clrCyan));
+        const char *Title = eventInfo->GetTitle();
+        const char *Subtitle = eventInfo->GetSubtitle();
+        const char *ExtendedDescription = eventInfo->GetExtendedDescription();
+        // Some channels send a 'Subtitle' that should actually be the 'ExtendedDescription'
+        // (their 'ExtendedDescription' is then empty). In order to handle this correctly
+        // we silently shift that text to where it belongs.
+        // The German TV station 'VOX' is notorious for this - why can't they do it correctly
+        // like all the others? Well, at least like those who actually send the full range
+        // of information (like, e.g., 'Sat.1'). Some stations (like 'RTL') don't even
+        // bother sending anything but the 'Title'...
+        if (isempty(ExtendedDescription) && !isempty(Subtitle) && strlen(Subtitle) > 2 * MenuColumns) {
+           ExtendedDescription = Subtitle;
+           Subtitle = NULL;
+           }
+        if (!isempty(Title)) {
+           Add(item = new cMenuTextItem(Title, 1, Line, MenuColumns - 2, -1, clrCyan));
            Line += item->Height() + 1;
            }
-        if (!isempty(p = eventInfo->GetSubtitle())) {
-           Add(item = new cMenuTextItem(p, 1, Line, MenuColumns - 2, -1, clrYellow));
+        if (!isempty(Subtitle)) {
+           Add(item = new cMenuTextItem(Subtitle, 1, Line, MenuColumns - 2, -1, clrYellow));
            Line += item->Height() + 1;
            }
-        if (!isempty(p = eventInfo->GetExtendedDescription()))
-           Add(new cMenuTextItem(p, 1, Line, MenuColumns - 2, Height() - Line - 2, clrCyan), true);
+        if (!isempty(ExtendedDescription))
+           Add(new cMenuTextItem(ExtendedDescription, 1, Line, MenuColumns - 2, Height() - Line - 2, clrCyan), true);
         SetHelp(tr("Record"), NULL, NULL, CanSwitch ? tr("Switch") : NULL);
         }
      }

@@ -301,3 +301,5 @@ Video Disk Recorder Revision History
   and will switch back to the channel it originally displayed at the first sign of
   user activity. Any scanning will only occur if that particular card is not
   currently recording or replaying.
+- Now shifting the 'Subtitle' info into the 'ExtendedDescription' on stations
+  that don't send the EIT information correctly (like, e.g., 'VOX').
