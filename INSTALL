@@ -120,7 +120,8 @@ your program should return to VDR. VDR will not automatically exit after
 calling the shutdown program, but will rather continue normally until it
 receives a SIGTERM when the computer is actually shut down. So in case
 the shutdown fails, or the shutdown program for some reason decides not to
-perform a shutdown, VDR will stay up and running.
+perform a shutdown, VDR will stay up and running and will call the shutdown
+program again after another MinUserInactivity minutes.
 
 If there are currently no timers active, both parameters will be '0'.
 In that case the program shall not set the hardware for automatic restart
