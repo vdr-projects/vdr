@@ -1057,3 +1057,6 @@ Maynard Cedric <maynard.cedric@wanadoo.fr>
 
 Jörg Knitter <joerg.knitter@gmx.de>
  for reporting a problem in case the video partition is mounted with "iocharset=utf8"
+
+Mike parker <vdr@msatt.freeserve.co.uk>
+ for helping to test support for NVOD channels

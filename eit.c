@@ -8,7 +8,7 @@
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  * Adapted to 'libsi' for VDR 1.3.0 by Marcel Wiesweg <marcel.wiesweg@gmx.de>.
  *
- * $Id: eit.c 1.95 2004/06/06 14:49:45 kls Exp $
+ * $Id: eit.c 1.96 2004/07/18 10:52:58 kls Exp $
  */
 
 #include "eit.h"
@@ -144,7 +144,7 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data)
                  break;
             case SI::TimeShiftedEventDescriptorTag: {
                  SI::TimeShiftedEventDescriptor *tsed = (SI::TimeShiftedEventDescriptor *)d;
-                 cSchedule *rSchedule = (cSchedule *)Schedules->GetSchedule(tChannelID(Source, 0, 0, tsed->getReferenceServiceId()));
+                 cSchedule *rSchedule = (cSchedule *)Schedules->GetSchedule(tChannelID(Source, channel->Nid(), channel->Tid(), tsed->getReferenceServiceId()));
                  if (!rSchedule)
                     break;
                  rEvent = (cEvent *)rSchedule->GetEvent(tsed->getReferenceEventId());

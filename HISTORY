@@ -2936,14 +2936,14 @@ Video Disk Recorder Revision History
 - Fixed cRingBufferLinear::Get() in case the buffer wraps around (thanks to Ludwig
   Nussel for reporting this one).
 
-2004-07-17: Version 1.3.12
+2004-07-18: Version 1.3.12
 
 - Removed all error messages from cRecordings::ScanVideoDir() and just skipping
   entries that cause errors in order to avoid failure in case of things like
   broken links etc.
 - The function cTimers::SetEvents() now immediately returns if there is some user
   input.
-- Fixed handling menu status messages when the list contents is scrolled (thanks
+- Fixed handling menu status messages when the list contents is scrolled (thanks to
   Alfred Zastrow for reporting this one).
 - Fixed checking the last area for misalignment in cOsd::CanHandleAreas() (thanks
   to Reinhard Nissl for reporting this one).
@@ -2956,3 +2956,8 @@ Video Disk Recorder Revision History
   error (suggested by Reinhard Nissl).
 - Avoiding flashing effects in the OSD of full featured DVB cards by explicitly
   clearing the OSD windows before opening them (suggested by Marco Schlüßler).
+- Experimental support for NVOD channels. Currently these channels are detected
+  and linked to their "base" channels using the same mechanisms as for the
+  "linked services" (let's see if this is useful). Thanks to Mike parker for
+  helping to test this. Also used some input from the 'autopid' patch by Andreas
+  Schultz).
