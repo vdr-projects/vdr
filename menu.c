@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.305 2004/05/23 10:35:04 kls Exp $
+ * $Id: menu.c 1.306 2004/05/23 11:21:06 kls Exp $
  */
 
 #include "menu.h"
@@ -521,6 +521,7 @@ void cMenuText::Display(void)
 {
   cOsdMenu::Display();
   DisplayMenu()->SetText(text, true);//XXX define control character in text to choose the font???
+  cStatus::MsgOsdTextItem(text);
 }
 
 eOSState cMenuText::ProcessKey(eKeys Key)
@@ -535,6 +536,7 @@ eOSState cMenuText::ProcessKey(eKeys Key)
     case kRight|k_Repeat:
     case kRight:
                   DisplayMenu()->Scroll(NORMALKEY(Key) == kUp || NORMALKEY(Key) == kLeft, NORMALKEY(Key) == kLeft || NORMALKEY(Key) == kRight);
+                  cStatus::MsgOsdTextItem(NULL, NORMALKEY(Key) == kUp);
                   return osContinue;
     default: break;
     }
@@ -865,6 +867,7 @@ void cMenuEvent::Display(void)
 {
   cOsdMenu::Display();
   DisplayMenu()->SetEvent(event);
+  cStatus::MsgOsdTextItem(event->Description());
 }
 
 eOSState cMenuEvent::ProcessKey(eKeys Key)
@@ -879,6 +882,7 @@ eOSState cMenuEvent::ProcessKey(eKeys Key)
     case kRight|k_Repeat:
     case kRight:
                   DisplayMenu()->Scroll(NORMALKEY(Key) == kUp || NORMALKEY(Key) == kLeft, NORMALKEY(Key) == kLeft || NORMALKEY(Key) == kRight);
+                  cStatus::MsgOsdTextItem(NULL, NORMALKEY(Key) == kUp);
                   return osContinue;
     default: break;
     }
