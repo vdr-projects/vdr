@@ -3439,3 +3439,5 @@ Video Disk Recorder Revision History
 - Fixed ensuring there is a current audio track in case there is only one track
   (thanks to Werner Fink for reporting this one).
 - Improved automatic audio track selection.
+- Keeping the track language codes and descriptions in Transfer Mode (thanks to
+  Luca Olivetti).
