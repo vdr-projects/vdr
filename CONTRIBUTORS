@@ -102,6 +102,7 @@ Stefan Huelswitt <huels@iname.com>
  for implementing the "Jump" function in replay mode
  for implementing "Multi Speed Mode"
  for implementing backtracing for fast forward/rewind
+ for implementing the replay mode display
 
 Ulrich Röder <dynamite@efr-net.de>
  for pointing out that there are channels that have a symbol rate higher than

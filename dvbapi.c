@@ -7,7 +7,7 @@
  * DVD support initially written by Andreas Schultz <aschultz@warp10.net>
  * based on dvdplayer-0.5 by Matjaz Thaler <matjaz.thaler@guest.arnes.si>
  *
- * $Id: dvbapi.c 1.114 2001/09/09 13:34:41 kls Exp $
+ * $Id: dvbapi.c 1.115 2001/09/14 13:23:21 kls Exp $
  */
 
 //#define DVDDEBUG        1
@@ -720,6 +720,7 @@ public:
   virtual void SkipSeconds(int Seconds) {}
   virtual void Goto(int Position, bool Still = false) {}
   virtual void GetIndex(int &Current, int &Total, bool SnapToIFrame = false) { Current = Total = -1; }
+  bool GetReplayMode(bool &Play, bool &Forward, int &Speed);
   bool CanToggleAudioTrack(void) { return canToggleAudioTrack; };
   virtual void ToggleAudioTrack(void);
   };
@@ -942,6 +943,17 @@ void cPlayBuffer::Backward(void)
             break;
        }
      }
+}
+
+bool cPlayBuffer::GetReplayMode(bool &Play, bool &Forward, int &Speed)
+{
+  Play = (playMode == pmPlay || playMode == pmFast);
+  Forward = (playDir == pdForward);
+  if (playMode == pmFast || playMode == pmSlow)
+     Speed = Setup.MultiSpeedMode ? abs(trickSpeed - NORMAL_SPEED) : 0;
+  else
+     Speed = -1;
+  return true;
 }
 
 void cPlayBuffer::ToggleAudioTrack(void)
@@ -2912,7 +2924,7 @@ void cDvbApi::Open(int w, int h)
   cols = w;
   rows = h;
 #ifdef DEBUG_OSD
-  window = subwin(stdscr, h, w, d, 0);
+  window = subwin(stdscr, h, w, d, (Setup.OSDwidth - w) / 2);
   syncok(window, true);
   #define B2C(b) (((b) * 1000) / 255)
   #define SETCOLOR(n, r, g, b, o) init_color(n, B2C(r), B2C(g), B2C(b))
@@ -2930,7 +2942,7 @@ void cDvbApi::Open(int w, int h)
   w *= charWidth;
   h *= lineHeight;
   d *= lineHeight;
-  int x = (720 - (Setup.OSDwidth - 1) * charWidth) / 2; //TODO PAL vs. NTSC???
+  int x = (720 - w + charWidth) / 2; //TODO PAL vs. NTSC???
   int y = (576 - Setup.OSDheight * lineHeight) / 2 + d;
   //XXX
   osd = new cDvbOsd(fd_osd, x, y);
@@ -3555,6 +3567,11 @@ bool cDvbApi::GetIndex(int &Current, int &Total, bool SnapToIFrame)
      return true;
      }
   return false;
+}
+
+bool cDvbApi::GetReplayMode(bool &Play, bool &Forward, int &Speed)
+{
+  return replayBuffer && replayBuffer->GetReplayMode(Play, Forward, Speed);
 }
 
 void cDvbApi::Goto(int Position, bool Still)

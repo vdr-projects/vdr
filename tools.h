@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.31 2001/08/26 12:52:49 kls Exp $
+ * $Id: tools.h 1.32 2001/09/14 13:40:35 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -31,7 +31,9 @@ extern int SysLogLevel;
 
 #define DELETENULL(p) (delete (p), p = NULL)
 
-template<class T> inline void swap(T &a, T &b) { T t = a; a = b; b = t; };
+template<class T> inline T min(T a, T b) { return a <= b ? a : b; }
+template<class T> inline T max(T a, T b) { return a >= b ? a : b; }
+template<class T> inline void swap(T &a, T &b) { T t = a; a = b; b = t; }
 
 ssize_t safe_read(int filedes, void *buffer, size_t size);
 ssize_t safe_write(int filedes, const void *buffer, size_t size);

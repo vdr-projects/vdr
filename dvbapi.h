@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.h 1.48 2001/09/08 11:35:25 kls Exp $
+ * $Id: dvbapi.h 1.49 2001/09/09 14:37:18 kls Exp $
  */
 
 #ifndef __DVBAPI_H
@@ -289,6 +289,12 @@ public:
   bool GetIndex(int &Current, int &Total, bool SnapToIFrame = false);
        // Returns the current and total frame index, optionally snapped to the
        // nearest I-frame.
+  bool GetReplayMode(bool &Play, bool &Forward, int &Speed);
+       // Returns the current replay mode (if applicable).
+       // 'Play' tells whether we are playing or pausing, 'Forward' tells whether
+       // we are going forward or backward and 'Speed' is -1 if this is normal
+       // play/pause mode, 0 if it is single speed fast/slow forward/back mode
+       // and >0 if this is multi speed mode.
   void Goto(int Index, bool Still = false);
        // Positions to the given index and displays that frame as a still picture
        // if Still is true.

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.41 2001/09/08 15:01:12 kls Exp $
+ * $Id: i18n.c 1.42 2001/09/09 13:54:35 kls Exp $
  *
  * Slovenian translations provided by Miha Setina <mihasetina@softhome.net>
  * Italian   translations provided by Alberto Carraro <bertocar@tin.it>
@@ -949,6 +949,15 @@ const tPhrase Phrases[] = {
   },
   { "MultiSpeedMode",
     "MultiSpeed Modus",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+  },
+  { "ShowReplayMode",
+    "Wiedergabe Status",
     "", // TODO
     "", // TODO
     "", // TODO

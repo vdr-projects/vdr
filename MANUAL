@@ -462,6 +462,10 @@ Video Disk Recorder User's Manual
                          0 = off
                          1 = on
 
+  ShowReplayMode = 0     Turns displaying the current replay mode on or off.
+                         0 = off
+                         1 = on
+
 * Executing system commands
 
   The "Main" menu option "Commands" allows you to execute any system commands

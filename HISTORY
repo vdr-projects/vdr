@@ -716,7 +716,7 @@ Video Disk Recorder Revision History
   That way every recording will store the actual summary data at the time of
   the recording.
 
-2001-09-09: Version 0.95
+2001-09-14: Version 0.95
 
 - Fixed behaviour in case the shutdown didn't take place (there were many
   "next timer event at..." messages in that case).
@@ -737,3 +737,5 @@ Video Disk Recorder Revision History
 - Implemented "Multi Speed Mode" (thanks to Stefan Huelswitt).
 - Implemented backtracing to hit the right spot after fast forward/rewind
   (thanks to Stefan Huelswitt).
+- Implemented replay mode display (thanks to Stefan Huelswitt, with a few
+  rewrites by kls).

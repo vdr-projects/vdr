@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.117 2001/09/08 15:05:16 kls Exp $
+ * $Id: menu.c 1.118 2001/09/14 14:01:21 kls Exp $
  */
 
 #include "menu.h"
@@ -16,8 +16,9 @@
 #include "eit.h"
 #include "i18n.h"
 
-#define MENUTIMEOUT 120 // seconds
-#define MAXWAIT4EPGINFO 10 // seconds
+#define MENUTIMEOUT     120 // seconds
+#define MAXWAIT4EPGINFO  10 // seconds
+#define MODETIMEOUT       3 // seconds
 
 const char *FileNameChars = " aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ0123456789-.#~^";
 
@@ -1726,6 +1727,7 @@ void cMenuSetup::Set(void)
   Add(new cMenuEditIntItem( tr("MinEventTimeout"),    &data.MinEventTimeout));
   Add(new cMenuEditIntItem( tr("MinUserInactivity"),  &data.MinUserInactivity));
   Add(new cMenuEditBoolItem(tr("MultiSpeedMode"),     &data.MultiSpeedMode));
+  Add(new cMenuEditBoolItem(tr("ShowReplayMode"),     &data.ShowReplayMode));
 }
 
 eOSState cMenuSetup::ProcessKey(eKeys Key)
@@ -2332,7 +2334,7 @@ int  cReplayControl::titleid = 0;//XXX
 cReplayControl::cReplayControl(void)
 {
   dvbApi = cDvbApi::PrimaryDvbApi;
-  visible = shown = displayFrames = false;
+  visible = modeOnly = shown = displayFrames = false;
   lastCurrent = lastTotal = -1;
   timeoutShow = 0;
   timeSearchActive = false;
@@ -2395,8 +2397,45 @@ void cReplayControl::Hide(void)
 {
   if (visible) {
      Interface->Close();
-     needsFastResponse = visible = false;
+     needsFastResponse = visible = modeOnly = false;
      }
+}
+
+bool cReplayControl::ShowMode(void)
+{
+  if (Setup.ShowReplayMode) {
+     bool Play, Forward;
+     int Speed;
+     if (dvbApi->GetReplayMode(Play, Forward, Speed)) {
+
+        if (!visible) {
+           // open small display
+           Interface->Open(9, -1);
+           Interface->Clear();
+           visible = modeOnly = true;
+           }
+
+        timeoutShow = (modeOnly && !timeoutShow && Speed == -1 && Play) ? time(NULL) + MODETIMEOUT : 0;
+        const char *Mode;
+        if (Speed == -1) Mode = Play    ? "  >  " : " ||  ";
+        else if (Play)   Mode = Forward ? " X>> " : " <<X ";
+        else             Mode = Forward ? " X|> " : " <|X ";
+        char buf[16];
+        strn0cpy(buf, Mode, sizeof(buf));
+        char *p = strchr(buf, 'X');
+        if (p)
+           *p = Speed > 0 ? '1' + Speed - 1 : ' ';
+
+        eDvbFont OldFont = Interface->SetFont(fontFix);
+        int w = dvbApi->WidthInCells(buf);
+        int d = max(Width() - w, 0) / 2;
+        Interface->Write(d, -1, buf);
+        Interface->Flush();
+        Interface->SetFont(OldFont);
+        return true;
+        }
+     }
+  return false;
 }
 
 bool cReplayControl::ShowProgress(bool Initial)
@@ -2435,6 +2474,7 @@ bool cReplayControl::ShowProgress(bool Initial)
         lastCurrent = Current;
         }
      lastTotal = Total;
+     ShowMode();
      return true;
      }
   return false;
@@ -2514,6 +2554,7 @@ void cReplayControl::TimeSearchProcess(eKeys Key)
         Hide();
      else
         Interface->Fill(12, 2, Width() - 22, 1, clrBackground);
+     ShowMode();
      }
 }
 
@@ -2624,7 +2665,7 @@ eOSState cReplayControl::ProcessKey(eKeys Key)
         Hide();
         timeoutShow = 0;
         }
-     else
+     else if (!modeOnly)
         shown = ShowProgress(!shown) || shown;
      }
   bool DisplayedFrames = displayFrames;
@@ -2633,6 +2674,7 @@ eOSState cReplayControl::ProcessKey(eKeys Key)
      TimeSearchProcess(Key);
      return osContinue;
      }
+  bool DoShowMode = true;
   switch (Key) {
     // Positioning:
     case kUp:      dvbApi->Play(); break;
@@ -2652,6 +2694,7 @@ eOSState cReplayControl::ProcessKey(eKeys Key)
                    dvbApi->StopReplay();
                    return osEnd;
     default: {
+      DoShowMode = false;
       switch (Key) {
         // Editing:
         //XXX should we do this only when the ProgressDisplay is on???
@@ -2677,6 +2720,8 @@ eOSState cReplayControl::ProcessKey(eKeys Key)
         }
       }
     }
+  if (DoShowMode)
+     ShowMode();
   if (DisplayedFrames && !displayFrames)
      Interface->Fill(0, 2, 11, 1, clrBackground);
   return osContinue;
