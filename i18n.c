@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.29 2001/08/10 15:37:46 kls Exp $
+ * $Id: i18n.c 1.30 2001/08/11 08:43:51 kls Exp $
  *
  * Slovenian translations provided by Miha Setina <mihasetina@softhome.net>
  * Italian   translations provided by Alberto Carraro <bertocar@tin.it>
@@ -413,14 +413,14 @@ const tPhrase Phrases[] = {
     "Polarisation",
     "Polaritet",
   },
-  { "Diseqc",
-    "Diseqc",
-    "Diseqc",
-    "Diseqc",
-    "Diseqc",
-    "Diseqc",
-    "Diseqc",
-    "Diseqc",
+  { "DiSEqC",
+    "DiSEqC",
+    "DiSEqC",
+    "DiSEqC",
+    "DiSEqC",
+    "DiSEqC",
+    "DiSEqC",
+    "DiSEqC",
   },
   { "Srate",
     "Srate",

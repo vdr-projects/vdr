@@ -634,3 +634,4 @@ Video Disk Recorder Revision History
 - Changed the 'Eject DVD' button text to a simple 'Eject' (the German text
   was too long...).
 - Made the font file generation more stable (thanks to Artur Skawina).
+- Changed the default value for the "DiSEqC" setup parameter to "off".

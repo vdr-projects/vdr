@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.52 2001/07/27 13:45:28 kls Exp $
+ * $Id: config.c 1.53 2001/08/11 08:38:11 kls Exp $
  */
 
 #include "config.h"
@@ -764,7 +764,7 @@ cSetup::cSetup(void)
   LnbSLOF    = 11700;
   LnbFrequLo =  9750;
   LnbFrequHi = 10600;
-  DiSEqC = 1;
+  DiSEqC = 0;
   SetSystemTime = 0;
   MarginStart = 2;
   MarginStop = 10;
