@@ -3355,3 +3355,5 @@ Video Disk Recorder Revision History
   recording (thanks to Sascha Volkenandt for reporting a problem when starting
   replay of a recording that has no Dolby Digital audio after switching to a channel
   that has DD and selecting the DD audio track).
+- Fixed a memory leak in AddDirectory() and strescape() (thanks to Stefan Huelswitt
+  for reporting these).

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.88 2005/01/16 11:47:44 kls Exp $
+ * $Id: tools.c 1.89 2005/02/05 10:10:30 kls Exp $
  */
 
 #include "tools.h"
@@ -199,7 +199,7 @@ cString strescape(const char *s, const char *chars)
         }
   if (t)
      *t = 0;
-  return s;
+  return cString(s, t != NULL);
 }
 
 bool startswith(const char *s, const char *p)
@@ -250,7 +250,7 @@ cString AddDirectory(const char *DirName, const char *FileName)
 {
   char *buf;
   asprintf(&buf, "%s/%s", DirName && *DirName ? DirName : ".", FileName);
-  return buf;
+  return cString(buf, true);
 }
 
 cString itoa(int n)
@@ -513,9 +513,9 @@ uint64 cTimeMs::Elapsed(void)
 
 // --- cString ---------------------------------------------------------------
 
-cString::cString(const char *S)
+cString::cString(const char *S, bool TakePointer)
 {
-  s = S ? strdup(S) : NULL;
+  s = TakePointer ? (char *)S : S ? strdup(S) : NULL;
 }
 
 cString::~cString()
