@@ -3320,3 +3320,5 @@ Video Disk Recorder Revision History
   cRemux::cRemux()
 - Fixed a possible race condition in cDevice::Action() and cTSBuffer::Action()
   (thanks to Stefan Huelswitt).
+- Extended some buffer sizes to allow handling HDTV streams (thanks to Reinhard
+  Nissl).

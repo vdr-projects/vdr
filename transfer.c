@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: transfer.c 1.23 2005/01/16 13:26:38 kls Exp $
+ * $Id: transfer.c 1.24 2005/01/16 15:12:58 kls Exp $
  */
 
 #include "transfer.h"
@@ -80,7 +80,7 @@ void cTransfer::Action(void)
            //XXX To resolve this, the remuxer or PlayPes() should synchronize
            //XXX audio with the video frames. 2004/09/09 Werner
            if (!GotBufferReserve) {
-              if (ringBuffer->Available() < 3 * MAXFRAMESIZE / 2) {
+              if (ringBuffer->Available() < 3 * KILOBYTE(192) / 2) { // used to be MAXFRAMESIZE, but the HDTV value of KILOBYTE(512) is way too much here
                  cCondWait::SleepMs(20); // allow the buffer to collect some reserve
                  continue;
                  }

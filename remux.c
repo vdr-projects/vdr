@@ -11,7 +11,7 @@
  * The cDolbyRepacker code was originally written by Reinhard Nissl <rnissl@gmx.de>,
  * and adapted to the VDR coding style by Klaus.Schmidinger@cadsoft.de.
  *
- * $Id: remux.c 1.25 2005/01/16 14:34:25 kls Exp $
+ * $Id: remux.c 1.26 2005/01/16 15:22:16 kls Exp $
  */
 
 #include "remux.h"
@@ -324,7 +324,7 @@ int cDolbyRepacker::BreakAt(const uchar *Data, int Count)
 #define ADAPT_FIELD    0x20
 
 #define MAX_PLENGTH  0xFFFF          // the maximum PES packet length (theoretically)
-#define MMAX_PLENGTH (8*MAX_PLENGTH) // some stations send PES packets that are extremely large, e.g. DVB-T in Finland
+#define MMAX_PLENGTH (64*MAX_PLENGTH) // some stations send PES packets that are extremely large, e.g. DVB-T in Finland or HDTV 1920x1080
 
 #define IPACKS 2048
 
