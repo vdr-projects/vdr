@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbosd.c 1.11 2002/01/13 15:49:28 kls Exp $
+ * $Id: dvbosd.c 1.12 2002/01/13 16:25:18 kls Exp $
  */
 
 #include "dvbosd.h"
@@ -391,6 +391,7 @@ void cDvbOsd::Cmd(OSD_Command cmd, int color, int x0, int y0, int x1, int y1, co
      // must block all signals, otherwise the command might not be fully executed
      sigset_t set, oldset;
      sigfillset(&set);
+     sigdelset(&set, SIGALRM);
      sigprocmask(SIG_BLOCK, &set, &oldset);
      ioctl(videoDev, OSD_SEND_CMD, &dc);
      if (cmd == OSD_SetBlock) // XXX this is the only command that takes longer

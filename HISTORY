@@ -892,3 +892,5 @@ Video Disk Recorder Revision History
 - Improved performance of SVDRP command entry.
 - Removed EPGBugfixLevel '3' - after more than a year Pro-7 finally managed to
   broadcast the correct timestamps for EPG events between 0:00 and 6:00!
+- Fixed failing watchdog timer if program hangs in OSD activities (thanks to
+  Carsten Koch).
