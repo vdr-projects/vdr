@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.75 2003/04/12 09:51:44 kls Exp $
+ * $Id: recording.c 1.76 2003/04/27 15:52:17 kls Exp $
  */
 
 #include "recording.h"
@@ -78,7 +78,7 @@ void RemoveDeletedRecordings(void)
                  r0 = r;
               r = Recordings.Next(r);
               }
-        if (r0 && time(NULL) - r0->start > DELETEDLIFETIME * 60) {
+        if (r0 && time(NULL) - r0->start > DELETEDLIFETIME * 3600) {
            r0->Remove();
            RemoveEmptyVideoDirectories();
            LastRemoveCheck += REMOVELATENCY;

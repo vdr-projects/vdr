@@ -2084,3 +2084,7 @@ Video Disk Recorder Revision History
 - The new SVDRP command STAT can be used to request information about the disk
   usage (thanks to Thomas Koch).
 - Fixed faulty calculation of section length in eit.c (thanks to Teemu Rantanen).
+
+2003-04-27: Version 1.1.30
+
+- Fixed minimum lifespan of deleted recordings (thanks to Jaakko Hyvätti).
