@@ -100,7 +100,7 @@ Video Disk Recorder Revision History
   the 'timers.conf' file with a text editor, or by defining/modifying the timer
   via the SVDRP interface.
 
-2000-07-30:
+2000-08-06:
 
 - When scrolling through a list it now moves a full page up or down when the
   cursor reaches the top or bottom of the menu (thanks to Heino Goldenstein!).
@@ -117,3 +117,4 @@ Video Disk Recorder Revision History
   operation. Use the "Skip -60s" function repeatedly to go back to the beginning
   of the recording.
 - Improved reaction on user input in fast/slow forward/back modes.
+- No more upper limit for the value of 'Pnr'.
