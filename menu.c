@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.232 2003/01/19 14:59:46 kls Exp $
+ * $Id: menu.c 1.233 2003/02/09 10:46:25 kls Exp $
  */
 
 #include "menu.h"
@@ -1537,6 +1537,7 @@ cMenuCam::cMenuCam(cCiMenu *CiMenu)
   Add(new cOsdItem(ciMenu->SubTitleText()));
   Add(new cOsdItem(ciMenu->BottomText()));
   Display();
+  dsyslog("CAM: Menu - %s", ciMenu->TitleText());
 }
 
 cMenuCam::~cMenuCam()
@@ -1622,7 +1623,6 @@ cOsdObject *CamControl(void)
       if (Device) {
          cCiHandler *CiHandler = Device->CiHandler();
          if (CiHandler) {
-            CiHandler->Process();
             cCiMenu *CiMenu = CiHandler->GetMenu();
             if (CiMenu)
                return new cMenuCam(CiMenu);
@@ -2069,7 +2069,7 @@ class cMenuSetupCICAM : public cMenuSetupBase {
 private:
   int helpKeys;
   void SetHelpKeys(void);
-  cCiHandler *GetCurrentCiHandler(void);
+  cCiHandler *GetCurrentCiHandler(int *Slot = NULL);
   eOSState Menu(void);
   eOSState Reset(void);
 public:
@@ -2091,9 +2091,11 @@ cMenuSetupCICAM::cMenuSetupCICAM(void)
   SetHelpKeys();
 }
 
-cCiHandler *cMenuSetupCICAM::GetCurrentCiHandler(void)
+cCiHandler *cMenuSetupCICAM::GetCurrentCiHandler(int *Slot)
 {
   cDevice *Device = cDevice::GetDevice(Current() / 2);
+  if (Slot)
+     *Slot = Current() % 2;
   return Device ? Device->CiHandler() : NULL;
 }
 
@@ -2112,8 +2114,9 @@ void cMenuSetupCICAM::SetHelpKeys(void)
 
 eOSState cMenuSetupCICAM::Menu(void)
 {
-  cCiHandler *CiHandler = GetCurrentCiHandler();
-  if (CiHandler && CiHandler->EnterMenu())
+  int Slot = 0;
+  cCiHandler *CiHandler = GetCurrentCiHandler(&Slot);
+  if (CiHandler && CiHandler->EnterMenu(Slot))
      return osEnd; // the CAM menu will be executed explicitly from the main loop
   else
      Interface->Error(tr("Can't open CAM menu!"));
@@ -2122,9 +2125,12 @@ eOSState cMenuSetupCICAM::Menu(void)
 
 eOSState cMenuSetupCICAM::Reset(void)
 {
-  cCiHandler *CiHandler = GetCurrentCiHandler();
-  if (CiHandler && CiHandler->Reset())
+  int Slot = 0;
+  cCiHandler *CiHandler = GetCurrentCiHandler(&Slot);
+  if (CiHandler && CiHandler->Reset(Slot)) {
      Interface->Info(tr("CAM has been reset"));
+     return osEnd;
+     }
   else
      Interface->Error(tr("Can't reset CAM!"));
   return osContinue;

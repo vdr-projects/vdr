@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.141 2003/01/26 11:56:31 kls Exp $
+ * $Id: vdr.c 1.142 2003/02/09 11:25:38 kls Exp $
  */
 
 #include <getopt.h>
@@ -469,7 +469,7 @@ int main(int argc, char *argv[])
               }
            }
         // CAM control:
-        if (!Menu)
+        if (!Interface->IsOpen())
            Menu = CamControl();
         // User Input:
         cOsdObject *Interact = Menu ? Menu : cControl::Control();

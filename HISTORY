@@ -1947,3 +1947,9 @@ Video Disk Recorder Revision History
 - Fixed a new/delete malloc/free mismatch in ringbuffer.c (thanks to Stefan
   Huelswitt for reporting this one).
 - Improved CAM handling.
+
+2003-02-09: Version 1.1.24
+
+- Improved CAM handling (thanks to Reinhard Walter Buchner for a great deal of help
+  in debugging this). It is now possible to insert the CAM in any of the two slots,
+  to insert and remove it while VDR is running and even to have two CAMs inserted.
