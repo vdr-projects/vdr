@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 1.69 2004/10/30 11:51:09 kls Exp $
+# $Id: Makefile 1.70 2004/11/19 15:43:27 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -29,7 +29,7 @@ DOXYFILE = Doxyfile
 
 -include Make.config
 
-INCLUDES = -I$(DVBDIR)/include
+INCLUDES = -I$(DVBDIR)/linux/include
 
 SILIB    = $(LSIDIR)/libsi.a
 
