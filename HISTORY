@@ -3125,6 +3125,7 @@ Video Disk Recorder Revision History
 - Reactivated the NPTL check at startup because there appear to be still
   unsolved problems when running on NPTL systems.
 - Added missing calls to cStatus::MsgOsdClear() in cSkins::Message() (thanks
-  to Joachim Wilke for reporting this one).
+  to Joachim Wilke for reporting this one, and Andreas Regel for additional
+  input).
 - Fixed the cDvbSpuDecoder (thanks to Marco Schlüßler).
 - Fixed handling of pmAudioOnlyBlack (thanks to Stefan Huelswitt).

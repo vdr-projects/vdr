@@ -1000,6 +1000,8 @@ Andreas Regel <andreas.regel@gmx.de>
  for fixing handling bitmap indexes for 256 color mode
  for reporting a bug in removing the "scanning recordings..." message in case the
  video directory is empty
+ for pointing out a missing call to cStatus::MsgOsdtatusMessage(NULL) in
+ cSkins::Message()
 
 Thomas Bergwinkl <Thomas.Bergwinkl@t-online.de>
  for fixing the validity check for channel IDs, because some providers use TIDs
