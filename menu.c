@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.139 2001/11/04 10:37:18 kls Exp $
+ * $Id: menu.c 1.141 2001/11/24 13:20:37 kls Exp $
  */
 
 #include "menu.h"
@@ -546,16 +546,16 @@ cMenuEditChannel::cMenuEditChannel(int Index)
   if (channel) {
      data = *channel;
      Add(new cMenuEditStrItem( tr("Name"),          data.name, sizeof(data.name), FileNameChars));
-     Add(new cMenuEditIntItem( tr("Frequency"),    &data.frequency, 10000, 13000)); //TODO exact limits???
+     Add(new cMenuEditIntItem( tr("Frequency"),    &data.frequency));
      Add(new cMenuEditChrItem( tr("Polarization"), &data.polarization, "hv"));
      Add(new cMenuEditIntItem( tr("DiSEqC"),       &data.diseqc, 0, 10)); //TODO exact limits???
-     Add(new cMenuEditIntItem( tr("Srate"),        &data.srate, 22000, 30000)); //TODO exact limits - toggle???
-     Add(new cMenuEditIntItem( tr("Vpid"),         &data.vpid, 0, 0xFFFE));
-     Add(new cMenuEditIntItem( tr("Apid1"),        &data.apid1, 0, 0xFFFE));
-     Add(new cMenuEditIntItem( tr("Apid2"),        &data.apid2, 0, 0xFFFE));
-     Add(new cMenuEditIntItem( tr("Dpid1"),        &data.dpid1, 0, 0xFFFE));
-     Add(new cMenuEditIntItem( tr("Dpid2"),        &data.dpid2, 0, 0xFFFE));
-     Add(new cMenuEditIntItem( tr("Tpid"),         &data.tpid, 0, 0xFFFE));
+     Add(new cMenuEditIntItem( tr("Srate"),        &data.srate));
+     Add(new cMenuEditIntItem( tr("Vpid"),         &data.vpid,  0, 0x1FFF));
+     Add(new cMenuEditIntItem( tr("Apid1"),        &data.apid1, 0, 0x1FFF));
+     Add(new cMenuEditIntItem( tr("Apid2"),        &data.apid2, 0, 0x1FFF));
+     Add(new cMenuEditIntItem( tr("Dpid1"),        &data.dpid1, 0, 0x1FFF));
+     Add(new cMenuEditIntItem( tr("Dpid2"),        &data.dpid2, 0, 0x1FFF));
+     Add(new cMenuEditIntItem( tr("Tpid"),         &data.tpid,  0, 0x1FFF));
      Add(new cMenuEditIntItem( tr("CA"),           &data.ca, 0, cDvbApi::NumDvbApis));
      Add(new cMenuEditIntItem( tr("Pnr"),          &data.pnr, 0));
      }

@@ -7,7 +7,7 @@
  * DVD support initially written by Andreas Schultz <aschultz@warp10.net>
  * based on dvdplayer-0.5 by Matjaz Thaler <matjaz.thaler@guest.arnes.si>
  *
- * $Id: dvbapi.c 1.137 2001/11/04 12:05:36 kls Exp $
+ * $Id: dvbapi.c 1.141 2001/11/25 16:38:09 kls Exp $
  */
 
 //#define DVDDEBUG        1
@@ -710,6 +710,7 @@ protected:
   int readIndex, writeIndex;
   bool canDoTrickMode;
   bool canToggleAudioTrack;
+  bool skipAC3bytes;
   uchar audioTrack;
   void TrickSpeed(int Increment);
   virtual void Empty(bool Block = false);
@@ -752,6 +753,7 @@ cPlayBuffer::cPlayBuffer(cDvbApi *DvbApi, int VideoDev, int AudioDev)
   readIndex = writeIndex = -1;
   canDoTrickMode = false;
   canToggleAudioTrack = false;
+  skipAC3bytes = false;
   audioTrack = 0xC0;
   if (cDvbApi::AudioCommand()) {
      if (!dolbyDev.Open(cDvbApi::AudioCommand(), "w"))
@@ -769,7 +771,7 @@ void cPlayBuffer::PlayExternalDolby(const uchar *b, int MaxLength)
      if (b[0] == 0x00 && b[1] == 0x00 && b[2] == 0x01) {
         if (b[3] == 0xBD) { // dolby
            int l = b[4] * 256 + b[5] + 6;
-           int written = b[8] + 9; // skips the PES header
+           int written = b[8] + (skipAC3bytes ? 13 : 9); // skips the PES header
            int n = min(l - written, MaxLength);
            while (n > 0) {
                  int w = fwrite(&b[written], 1, n, dolbyDev);
@@ -1348,9 +1350,6 @@ bool cReplayBuffer::NextFile(uchar FileNumber, int FileOffset)
 #define cOUTPACK         5
 #define cOUTFRAMES       6
 
-#define aAC3          0x80
-#define aLPCM         0xA0
-
 // --- cAC3toPCM -------------------------------------------------------------
 
 class cAC3toPCM {
@@ -1406,22 +1405,16 @@ cFrame *cAC3toPCM::Get(int size, uchar PTSflags, uchar *PTSdata)
      int p_size = (size > MAXSIZE) ? MAXSIZE : size;
      int length = 10;      // default header bytes
      int header = 0;
-     int stuffb = 0;
 
      switch (PTSflags) {
        case 2:  header = 5;    // additional header bytes
-                stuffb = 1;
                 break;
        case 3:  header = 10;
                 break;
        default: header = 0;
        }
 
-     //      header = 0; //XXX ???
-     stuffb = 0; //XXX ???
-
      length += header;
-     length += stuffb;
 
      buffer[0] = 0x00;
      buffer[1] = 0x00;
@@ -1430,19 +1423,13 @@ cFrame *cAC3toPCM::Get(int size, uchar PTSflags, uchar *PTSdata)
 
      buffer[6] = 0x80;
      buffer[7] = PTSflags << 6;
-     buffer[8] = header + stuffb;
+     buffer[8] = header;
 
      if (header)
         memcpy(&buffer[9], (void *)PTSdata, header);
 
-     // add stuffing
-     data = buffer + 9 + header;
-     for (int cnt = 0; cnt < stuffb; cnt++)
-         data[cnt] = 0xff;
-     length += stuffb;
-
      // add data
-     data = buffer + 9 + header + stuffb + 7;
+     data = buffer + 9 + header + 7;
      int cnt = 0;
      while (p_size) {
            if (ac3outp != ac3inp) { // data in the buffer
@@ -1456,7 +1443,7 @@ cFrame *cAC3toPCM::Get(int size, uchar PTSflags, uchar *PTSdata)
               break;
            }
 
-     data = buffer + 9 + header + stuffb;
+     data = buffer + 9 + header;
      data[0] = aLPCM; // substream ID
      data[1] = 0x00;  // other stuff (see DVB specs), ignored by driver
      data[2] = 0x00;
@@ -1560,6 +1547,7 @@ cDVDplayBuffer::cDVDplayBuffer(cDvbApi *DvbApi, int VideoDev, int AudioDev, cDVD
   canToggleAudioTrack = true;//XXX determine from cDVD!
   data = new uchar[1024 * DVD_VIDEO_LB_LEN];
   canDoTrickMode = true;
+  skipAC3bytes = true;
   dvbApi->SetModeReplay();
   Start();
 }
@@ -1574,28 +1562,12 @@ cDVDplayBuffer::~cDVDplayBuffer()
 
 unsigned int cDVDplayBuffer::getAudioStream(unsigned int StreamId)
 {
-  unsigned int trackID;
-
-  if ((cyclestate < cOPENCHAPTER) || (StreamId > 7))
+  if (cyclestate < cOPENCHAPTER || StreamId > 7)
      return 0;
   if (!(cur_pgc->audio_control[StreamId] & 0x8000))
      return 0;
   int track = (cur_pgc->audio_control[StreamId] >> 8) & 0x07;
-  switch (vts_file->vtsi_mat->vts_audio_attr[track].audio_format) {
-    case 0: // ac3
-            trackID = aAC3;
-            break;
-    case 2: // mpeg1
-    case 3: // mpeg2ext
-    case 4: // lpcm
-    case 6: // dts
-            trackID = aLPCM;
-            break;
-    default: esyslog(LOG_ERR, "ERROR: unknown Audio stream info");
-             return 0;
-    }
-  trackID |= track;
-  return trackID;
+  return dvd->getAudioTrack(track) | track;
 }
 
 void cDVDplayBuffer::ToggleAudioTrack(void)
@@ -2033,8 +2005,10 @@ void cDVDplayBuffer::handleAC3(unsigned char *sector, int length, uchar PTSflags
 #define PCM_FRAME_SIZE 1536
   AC3toPCM.Put(sector, length);
   cFrame *frame;
-  if ((frame = AC3toPCM.Get(PCM_FRAME_SIZE, PTSflags, PTSdata)) != NULL)
-     putFrame(frame);
+  if (ac3_buffersize() <= 100) {
+     if ((frame = AC3toPCM.Get(PCM_FRAME_SIZE, PTSflags, PTSdata)) != NULL)
+        putFrame(frame);
+     }
   while ((frame = AC3toPCM.Get(PCM_FRAME_SIZE)) != NULL)
         putFrame(frame);
 }
@@ -3087,7 +3061,7 @@ bool cDvbApi::SetPids(bool ForRecording)
          SetDpid2(ForRecording ? dPid2 : 0, DMX_OUT_TS_TAP);
 }
 
-eSetChannelResult cDvbApi::SetChannel(int ChannelNumber, int FrequencyMHz, char Polarization, int Diseqc, int Srate, int Vpid, int Apid1, int Apid2, int Dpid1, int Dpid2, int Tpid, int Ca, int Pnr)
+eSetChannelResult cDvbApi::SetChannel(int ChannelNumber, int Frequency, char Polarization, int Diseqc, int Srate, int Vpid, int Apid1, int Apid2, int Dpid1, int Dpid2, int Tpid, int Ca, int Pnr)
 {
   // Make sure the siProcessor won't access the device while switching
   cThreadLock ThreadLock(siProcessor);
@@ -3129,14 +3103,14 @@ eSetChannelResult cDvbApi::SetChannel(int ChannelNumber, int FrequencyMHz, char 
      SetDpid2(0x1FFF, DMX_OUT_DECODER);
      SetTpid( 0x1FFF, DMX_OUT_DECODER);
 
-     bool ChannelSynced = false;
+     FrontendParameters Frontend;
 
      switch (frontendType) {
        case FE_QPSK: { // DVB-S
 
             // Frequency offsets:
 
-            unsigned int freq = FrequencyMHz;
+            unsigned int freq = Frequency;
             int tone = SEC_TONE_OFF;
 
             if (freq < (unsigned int)Setup.LnbSLOF) {
@@ -3148,7 +3122,6 @@ eSetChannelResult cDvbApi::SetChannel(int ChannelNumber, int FrequencyMHz, char 
                tone = SEC_TONE_ON;
                }
 
-            FrontendParameters Frontend;
             Frontend.Frequency = freq * 1000UL;
             Frontend.Inversion = INVERSION_AUTO;
             Frontend.u.qpsk.SymbolRate = Srate * 1000UL;
@@ -3173,58 +3146,32 @@ eSetChannelResult cDvbApi::SetChannel(int ChannelNumber, int FrequencyMHz, char 
             scmds.commands = &scmd;
 
             CHECK(ioctl(fd_sec, SEC_SEND_SEQUENCE, &scmds));
-
-            // Tuning:
-
-            CHECK(ioctl(fd_frontend, FE_SET_FRONTEND, &Frontend));
-
-            // Wait for channel sync:
-
-            if (cFile::FileReady(fd_frontend, 5000)) {
-               FrontendEvent event;
-               int res = ioctl(fd_frontend, FE_GET_EVENT, &event);
-               if (res >= 0)
-                  ChannelSynced = event.type == FE_COMPLETION_EV;
-               else
-                  esyslog(LOG_ERR, "ERROR %d in frontend get event", res);
-               }
-            else
-               esyslog(LOG_ERR, "ERROR: timeout while tuning");
             }
             break;
        case FE_QAM: { // DVB-C
 
             // Frequency and symbol rate:
 
-            FrontendParameters Frontend;
-            Frontend.Frequency = FrequencyMHz * 1000000UL;
+            Frontend.Frequency = Frequency * 1000000UL;
             Frontend.Inversion = INVERSION_AUTO;
             Frontend.u.qam.SymbolRate = Srate * 1000UL;
             Frontend.u.qam.FEC_inner = FEC_AUTO;
             Frontend.u.qam.QAM = QAM_64;
-
-            // Tuning:
-
-            CHECK(ioctl(fd_frontend, FE_SET_FRONTEND, &Frontend));
-
-            // Wait for channel sync:
-
-            if (cFile::FileReady(fd_frontend, 5000)) {
-               FrontendEvent event;
-               int res = ioctl(fd_frontend, FE_GET_EVENT, &event);
-               if (res >= 0)
-                  ChannelSynced = event.type == FE_COMPLETION_EV;
-               else
-                  esyslog(LOG_ERR, "ERROR %d in frontend get event", res);
-               }
-            else
-               esyslog(LOG_ERR, "ERROR: timeout while tuning");
             }
             break;
        case FE_OFDM: { // DVB-T
-            //XXX TODO: implement DVB-T tuning (anybody with a DVB-T card out there?)
-            esyslog(LOG_ERR, "ERROR: DVB-T tuning support not yet implemented");
-            return scrFailed;
+
+            // Frequency and OFDM paramaters:
+
+            Frontend.Frequency = Frequency * 1000UL;
+            Frontend.Inversion = INVERSION_AUTO;
+            Frontend.u.ofdm.bandWidth=BANDWIDTH_8_MHZ;
+            Frontend.u.ofdm.HP_CodeRate=FEC_2_3;
+            Frontend.u.ofdm.LP_CodeRate=FEC_1_2;
+            Frontend.u.ofdm.Constellation=QAM_64;
+            Frontend.u.ofdm.TransmissionMode=TRANSMISSION_MODE_2K;
+            Frontend.u.ofdm.guardInterval=GUARD_INTERVAL_1_32;
+            Frontend.u.ofdm.HierarchyInformation=HIERARCHY_NONE;
             }
             break;
        default:
@@ -3232,12 +3179,28 @@ eSetChannelResult cDvbApi::SetChannel(int ChannelNumber, int FrequencyMHz, char 
             return scrFailed;
        }
 
-     if (!ChannelSynced) {
-        esyslog(LOG_ERR, "ERROR: channel %d not sync'ed on DVB card %d!", ChannelNumber, CardIndex() + 1);
-        if (this == PrimaryDvbApi)
-           cThread::RaisePanic();
-        return scrFailed;
+     // Tuning:
+
+     CHECK(ioctl(fd_frontend, FE_SET_FRONTEND, &Frontend));
+
+     // Wait for channel sync:
+
+     if (cFile::FileReady(fd_frontend, 5000)) {
+        FrontendEvent event;
+        int res = ioctl(fd_frontend, FE_GET_EVENT, &event);
+        if (res >= 0) {
+           if (event.type != FE_COMPLETION_EV) {
+              esyslog(LOG_ERR, "ERROR: channel %d not sync'ed on DVB card %d!", ChannelNumber, CardIndex() + 1);
+              if (this == PrimaryDvbApi)
+                 cThread::RaisePanic();
+              return scrFailed;
+              }
+           }
+        else
+           esyslog(LOG_ERR, "ERROR %d in frontend get event", res);
         }
+     else
+        esyslog(LOG_ERR, "ERROR: timeout while tuning");
 
      // PID settings:
 
@@ -3261,7 +3224,7 @@ eSetChannelResult cDvbApi::SetChannel(int ChannelNumber, int FrequencyMHz, char 
   if (NeedsTransferMode) {
      cDvbApi *CaDvbApi = GetDvbApi(Ca, 0);
      if (CaDvbApi && !CaDvbApi->Recording()) {
-        if ((Result = CaDvbApi->SetChannel(ChannelNumber, FrequencyMHz, Polarization, Diseqc, Srate, Vpid, Apid1, Apid2, Dpid1, Dpid2, Tpid, Ca, Pnr)) == scrOk) {
+        if ((Result = CaDvbApi->SetChannel(ChannelNumber, Frequency, Polarization, Diseqc, Srate, Vpid, Apid1, Apid2, Dpid1, Dpid2, Tpid, Ca, Pnr)) == scrOk) {
            SetModeReplay();
            transferringFromDvbApi = CaDvbApi->StartTransfer(fd_video);
            }

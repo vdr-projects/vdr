@@ -865,3 +865,16 @@ Video Disk Recorder Revision History
   will now need to use kvdr 0.4 or later.
 - The device /dev/video is now opened only if necessary (to GRAB an image),
   allowing other programs (like 'kvdr', for instance) to use that device.
+
+2001-11-25: Version 0.99
+
+- Fixed several channel definitions in 'channels.conf' (thanks to Thilo
+  Wunderlich).
+- Added MPEG audio support for DVD (thanks to Andreas Schultz).
+- Implemented DVB-T support (thanks to Dave Chapman).
+  This currently works only for UK channels.
+- Removed the range limits for the Frequency and Srate parameters of channel
+  definitions.
+- Changed the maximum value for PIDs in channels.conf from 0xFFFE to 0x1FFF.
+- Fixed DVD audio sync problems (thanks to Andreas Schultz).
+- Fixed external AC3 replay for DVDs (thanks to Andreas Schultz).

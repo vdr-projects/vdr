@@ -19,7 +19,11 @@
  *  along with GNU Make; see the file COPYING.  If not, write to
  *  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA. 
  *
+ *------------------------------------------------------------
  *
+ * 24 Nov 2001
+ *      Andreas Schultz <aschultz@cs.uni-magdeburg.de>
+ *      Added ac3_buffersize()
  */
 
 #define AC3_BUFFER_SIZE (6*1024*16)
@@ -54,5 +58,7 @@ size_t ac3dec_decode_data (plugin_output_audio_t *output, uint8_t *data_start, u
 #else
 size_t ac3dec_decode_data (uint8_t *data_start ,uint8_t *data_end, int ac3reset, int *input_pointer, int *output_pointer, char *ac3_data);
 #endif
+
+uint32_t ac3_buffersize();
 
 #endif

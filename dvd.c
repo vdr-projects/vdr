@@ -6,7 +6,7 @@
  *
  * Initially written by Andreas Schultz <aschultz@warp10.net>
  *
- * $Id: dvd.c 1.3 2001/08/06 16:07:44 kls Exp $
+ * $Id: dvd.c 1.4 2001/11/10 13:38:50 kls Exp $
  */
 
 #ifdef DVDSUPPORT
@@ -21,6 +21,7 @@
 #include <unistd.h>
 
 #include "dvd.h"
+#include "tools.h"
 
 // --- cDVD ----------------------------------------------------------------------------
 
@@ -143,6 +144,26 @@ dvd_file_t *cDVD::openTitle(int Title, dvd_read_domain_t domain)
      DVDCloseFile(title);
   title = DVDOpenFile(dvd, Title, domain);
   return title;
+}
+
+int cDVD::getAudioTrack(int stream)
+{
+  if (getVTS()) {
+     switch (getVTS()->vtsi_mat->vts_audio_attr[stream].audio_format) {
+       case 0: // ac3
+               return aAC3;
+       case 2: // mpeg1
+       case 3: // mpeg2ext
+               return aMPEG;
+       case 4: // lpcm
+               return aLPCM;
+       case 6: // dts
+               return aDTS;
+       default:
+               esyslog(LOG_ERR, "ERROR: unknown Audio stream info");
+       }
+     }
+  return 0;
 }
 
 #endif //DVDSUPPORT

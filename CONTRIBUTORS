@@ -59,6 +59,7 @@ Deti Fliegl <deti@fliegl.de>
 Dave Chapman <dave@dchapman.com>
  for implementing support for the teletext PID
  for his great support in switching to the NAPI
+ for implementing DVB-T support
 
 Hans-Peter Raschke <Hans-Peter.Raschke@Wintermann-DatenService.de>
  for his support in adapting VDR to DVB-C
@@ -162,3 +163,6 @@ Thomas Heiligenmann <thomas@heiligenmann.de>
 
 Norbert Schmidt <nschmidt-nrw@t-online.de>
  for filling in some missing teletext PIDs
+
+Thilo Wunderlich <tw@ubcom.net>
+ for his help in keeping 'channels.conf' up to date
