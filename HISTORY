@@ -1378,3 +1378,17 @@ Video Disk Recorder Revision History
 - Fixed a possible race condition in the cDvbPlayer (thanks to Andreas Schultz
   for pointing out this one).
 - Disabled channels on Transponder 12070 in 'channels.conf', which apparently no longer transmits.
+
+2002-08-04: Version 1.1.6
+
+- Re-visited the race condition fix in the cDvbPlayer (thanks again to Andreas
+  Schultz).
+- Changed the VFAT handling to allow users who normally use it but have forgotten
+  to set it when compiling a new version of VDR to at least see their recordings
+  made with VFAT enabled (thanks to Christian Rienecker).
+- Added some missing teletext PIDs (thanks to Joerg Riechardt).
+- Fixed PID handling for cReceiver.
+- Added a missing #include to ringbuffer.c (thanks to Martin Hammerschmid).
+- Now using CC, CFLAGS, CXX and CXXFLAGS in Makefile.
+- Changed the cDevice class to allow plugins to implement their own devices (see
+  PLUGINS.html for details).

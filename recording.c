@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.64 2002/06/22 10:11:49 kls Exp $
+ * $Id: recording.c 1.65 2002/07/27 12:55:14 kls Exp $
  */
 
 #include "recording.h"
@@ -22,12 +22,24 @@
 
 #define RECEXT       ".rec"
 #define DELEXT       ".del"
-#ifdef VFAT
-#define DATAFORMAT   "%4d-%02d-%02d.%02d.%02d.%02d.%02d" RECEXT
-#else
+/* This was the original code, which works fine in a Linux only environment.
+   Unfortunately, because of windows and its brain dead file system, we have
+   to use a more complicated approach, in order to allow users who have enabled
+   the VFAT compile time option to see their recordings even if they forget to
+   enable VFAT when compiling a new version of VDR... Gee, do I hate Windows.
+   (kls 2002-07-27)
 #define DATAFORMAT   "%4d-%02d-%02d.%02d:%02d.%02d.%02d" RECEXT
-#endif
 #define NAMEFORMAT   "%s/%s/" DATAFORMAT
+*/
+// start of implementation for brain dead systems
+#define DATAFORMAT   "%4d-%02d-%02d.%02d%*c%02d.%02d.%02d" RECEXT
+#ifdef VFAT
+#define nameFORMAT   "%4d-%02d-%02d.%02d.%02d.%02d.%02d" RECEXT
+#else
+#define nameFORMAT   "%4d-%02d-%02d.%02d:%02d.%02d.%02d" RECEXT
+#endif
+#define NAMEFORMAT   "%s/%s/" nameFORMAT
+// end of implementation for brain dead systems
 
 #define RESUMEFILESUFFIX  "/resume.vdr"
 #define SUMMARYFILESUFFIX "/summary.vdr"

@@ -4,9 +4,15 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 1.42 2002/06/22 10:21:56 kls Exp $
+# $Id: Makefile 1.44 2002/07/28 15:20:47 kls Exp $
 
 .DELETE_ON_ERROR:
+
+CC       = gcc
+CFLAGS   = -O2
+
+CXX      = g++
+CXXFLAGS = -g -O2 -Wall -Woverloaded-virtual
 
 DVBDIR   = ../DVB
 DTVDIR   = ./libdtv
@@ -21,7 +27,7 @@ INCLUDES = -I$(DVBDIR)/ost/include
 
 DTVLIB   = $(DTVDIR)/libdtv.a
 
-OBJS = audio.o config.o cutter.o device.o dvbplayer.o dvbosd.o eit.o eitscan.o font.o i18n.o\
+OBJS = audio.o config.o cutter.o device.o dvbdevice.o dvbosd.o dvbplayer.o eit.o eitscan.o font.o i18n.o\
        interface.o menu.o menuitems.o osdbase.o osd.o player.o plugin.o receiver.o\
        recorder.o recording.o remote.o remux.o ringbuffer.o status.o svdrp.o thread.o\
        tools.o transfer.o vdr.o videodir.o
@@ -58,11 +64,11 @@ font: genfontfile fontfix.c fontosd.c
 # Implicit rules:
 
 %.o: %.c
-	g++ -g -O2 -Wall -Woverloaded-virtual -c $(DEFINES) $(INCLUDES) $<
+	$(CXX) $(CXXFLAGS) -c $(DEFINES) $(INCLUDES) $<
 
 # Dependencies:
 
-MAKEDEP = g++ -MM -MG
+MAKEDEP = $(CXX) -MM -MG
 DEPFILE = .dependencies
 $(DEPFILE): Makefile
 	@$(MAKEDEP) $(DEFINES) $(INCLUDES) $(OBJS:%.o=%.c) > $@
@@ -72,7 +78,7 @@ $(DEPFILE): Makefile
 # The main program:
 
 vdr: $(OBJS) $(DTVLIB)
-	g++ -g -O2 -rdynamic $(OBJS) $(NCURSESLIB) -ljpeg -lpthread -ldl $(LIBDIRS) $(DTVLIB) -o vdr
+	$(CXX) $(CXXFLAGS) -rdynamic $(OBJS) $(NCURSESLIB) -ljpeg -lpthread -ldl $(LIBDIRS) $(DTVLIB) -o vdr
 
 # The font files:
 
@@ -84,7 +90,7 @@ fontosd.c:
 # The font file generator:
 
 genfontfile: genfontfile.c
-	gcc -o $@ -O2 -L/usr/X11R6/lib $< -lX11
+	$(CC) $(CFLAGS) -o $@ -L/usr/X11R6/lib $< -lX11
 
 # The libdtv library:
 

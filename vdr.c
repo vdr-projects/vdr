@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.117 2002/06/23 11:23:34 kls Exp $
+ * $Id: vdr.c 1.118 2002/08/04 09:56:30 kls Exp $
  */
 
 #include <getopt.h>
@@ -33,6 +33,7 @@
 #include "config.h"
 #include "cutter.h"
 #include "device.h"
+#include "dvbdevice.h"
 #include "eitscan.h"
 #include "i18n.h"
 #include "interface.h"
@@ -326,10 +327,8 @@ int main(int argc, char *argv[])
 
   // DVB interfaces:
 
-  if (!cDevice::Initialize())
+  if (!cDvbDevice::Initialize())
      return 2;
-
-  cDevice::SetPrimaryDevice(Setup.PrimaryDVB);
 
   cSIProcessor::Read();
 
@@ -337,6 +336,10 @@ int main(int argc, char *argv[])
 
   if (!PluginManager.StartPlugins())
      return 2;
+
+  // Primary device:
+
+  cDevice::SetPrimaryDevice(Setup.PrimaryDVB);
 
   // OSD:
 

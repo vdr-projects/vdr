@@ -4,18 +4,21 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: receiver.c 1.1 2002/06/08 09:58:29 kls Exp $
+ * $Id: receiver.c 1.3 2002/07/28 15:14:49 kls Exp $
  */
 
 #include <stdarg.h>
 #include <stdio.h>
 #include "receiver.h"
+#include "tools.h"
 
 cReceiver::cReceiver(int Ca, int Priority, int NumPids, ...)
 {
   device = NULL;
   ca = Ca;
   priority = Priority;
+  for (int i = 0; i < MAXRECEIVEPIDS; i++)
+      pids[i] = 0;
   if (NumPids) {
      va_list ap;
      va_start(ap, NumPids);

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbosd.c 1.17 2002/05/18 13:39:02 kls Exp $
+ * $Id: dvbosd.c 1.18 2002/08/04 10:13:21 kls Exp $
  */
 
 #include "dvbosd.h"
@@ -13,10 +13,12 @@
 #include <sys/unistd.h>
 #include "tools.h"
 
-cDvbOsd::cDvbOsd(int OsdDev, int x, int y)
+const cDvbDevice *cDvbOsd::dvbDevice = NULL;
+
+cDvbOsd::cDvbOsd(int x, int y)
 :cOsdBase(x, y)
 {
-  osdDev = OsdDev;
+  osdDev = dvbDevice ? dvbDevice->OsdDeviceHandle() : -1;
   if (osdDev < 0)
      esyslog("ERROR: illegal OSD device handle (%d)!", osdDev);
 }
@@ -25,6 +27,11 @@ cDvbOsd::~cDvbOsd()
 {
   for (int i = 0; i < NumWindows(); i++)
       CloseWindow(GetWindowNr(i));
+}
+
+void cDvbOsd::SetDvbDevice(const cDvbDevice *DvbDevice)
+{
+  dvbDevice = DvbDevice;
 }
 
 bool cDvbOsd::SetWindow(cWindow *Window)

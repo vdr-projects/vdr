@@ -16,7 +16,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.h 1.16 2002/03/10 10:56:57 kls Exp $
+ * $Id: eit.h 1.17 2002/08/04 11:30:24 kls Exp $
  ***************************************************************************/
 
 #ifndef __EIT_H
@@ -158,7 +158,7 @@ public:
   static bool Read(FILE *f = NULL);
   void SetStatus(bool On);
   void SetCurrentTransponder(int CurrentTransponder);
-  bool SetCurrentServiceID(unsigned short servid);
+  static bool SetCurrentServiceID(unsigned short servid);
   };
 
 #endif

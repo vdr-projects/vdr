@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: receiver.h 1.1 2002/06/08 15:32:51 kls Exp $
+ * $Id: receiver.h 1.2 2002/07/28 11:22:01 kls Exp $
  */
 
 #ifndef __RECEIVER_H
@@ -42,6 +42,9 @@ public:
                // the given Priority. NumPids defines the number of PIDs that follow
                // this parameter. If any of these PIDs are 0, they will be silently ignored.
                // The total number of non-zero PIDs must not exceed MAXRECEIVEPIDS.
+               // Priority may be any value in the range 0..99. Negative values indicate
+               // that this cReceiver may be detached at any time (without blocking the
+               // cDevice it is attached to).
   virtual ~cReceiver();
   };
 

@@ -44,6 +44,7 @@ Martin Hammerschmid <martin@hammerschmid.com>
  for suggesting to use the "Blue" button in the main menu to resume replay
  for implementing pege up/down with the "Left" and "Right" keys
  for detecting a deadlock when switching channels via Schedule/Now|Next/Switch
+ for adding a missing #include to ringbuffer.c
 
 Bastian Guse <bastian@nocopy.de>
  for writing the FORMATS entry for timers.conf
@@ -367,3 +368,9 @@ Paul Lacatus <paul@campina.iiruc.ro>
 
 Istvan Koenigsberger <istvnko@hotmail.com> and Guido Josten <guido.josten@t-online.de>
  for translating OSD texts to the Hungarian language
+
+Christian Rienecker <C.Rienecker@deutschepost.de>
+ for making the VFAT handling more tolerant for users who forget to turn it on
+
+Joerg Riechardt <J.Riechardt@gmx.de>
+ for filling in some missing teletext PIDs

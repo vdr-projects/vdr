@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.67 2002/05/18 15:10:45 kls Exp $
+ * $Id: tools.c 1.68 2002/08/03 15:44:53 kls Exp $
  */
 
 #include "tools.h"
@@ -407,7 +407,7 @@ bool RemoveEmptyDirectories(const char *DirName, bool RemoveThis)
 
 char *ReadLink(const char *FileName)
 {
-  char RealName[_POSIX_PATH_MAX];
+  char RealName[PATH_MAX];
   const char *TargetName = NULL;
   int n = readlink(FileName, RealName, sizeof(RealName) - 1);
   if (n < 0) {
