@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.36 2001/01/13 11:30:08 kls Exp $
+ * $Id: config.c 1.37 2001/01/13 12:36:32 kls Exp $
  */
 
 #include "config.h"
@@ -196,7 +196,7 @@ cChannel::cChannel(const cChannel *Channel)
   strcpy(name,   Channel ? Channel->name         : "Pro7");
   frequency    = Channel ? Channel->frequency    : 12480;
   polarization = Channel ? Channel->polarization : 'v';
-  diseqc       = Channel ? Channel->diseqc       : 1;
+  diseqc       = Channel ? Channel->diseqc       : 0;
   srate        = Channel ? Channel->srate        : 27500;
   vpid         = Channel ? Channel->vpid         : 255;
   apid         = Channel ? Channel->apid         : 256;
