@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.99 2001/08/11 08:43:31 kls Exp $
+ * $Id: menu.c 1.100 2001/08/11 14:30:21 kls Exp $
  */
 
 #include "menu.h"
@@ -2256,6 +2256,7 @@ cReplayControl::cReplayControl(void)
   visible = shown = displayFrames = false;
   lastCurrent = lastTotal = -1;
   timeoutShow = 0;
+  timeSearchActive = false;
   if (fileName) {
      marks.Load(fileName);
      dvbApi->StartReplay(fileName);
@@ -2360,6 +2361,98 @@ bool cReplayControl::ShowProgress(bool Initial)
   return false;
 }
 
+void cReplayControl::TimeSearchDisplay(void)
+{
+  char buf[64];
+  int len;
+  
+  strcpy(buf, tr("Jump: "));
+  len = strlen(buf);
+  
+  switch (timeSearchPos) {
+    case 1:  sprintf(buf + len, "%01d-:--", timeSearchHH / 10); break;
+    case 2:  sprintf(buf + len, "%02d:--", timeSearchHH); break;
+    case 3:  sprintf(buf + len, "%02d:%01d-", timeSearchHH, timeSearchMM / 10); break;
+    case 4:  sprintf(buf + len, "%02d:%02d", timeSearchHH, timeSearchMM); break;
+    default: sprintf(buf + len, "--:--"); break;
+    }
+
+  Interface->Write(12, 2, buf);
+}
+
+void cReplayControl::TimeSearchProcess(eKeys Key)
+{
+  int Seconds = timeSearchHH * 3600 + timeSearchMM * 60;
+  switch (Key) {
+    case k0 ... k9:
+         {
+           int n = Key - k0;
+           int s = (lastTotal / FRAMESPERSEC);
+           int m = s / 60 % 60;
+           int h = s / 3600;
+           switch (timeSearchPos) {
+             case 0: if (n * 10 <= h) {
+                        timeSearchHH = n * 10;
+                        timeSearchPos++;
+                        }
+                     break;
+             case 1: if (timeSearchHH + n <= h) {
+                        timeSearchHH += n;
+                        timeSearchPos++;
+                        }
+                     break;
+             case 2: if (n <= 5 && timeSearchHH * 60 + n * 10 <= h * 60 + m) {
+                        timeSearchMM += n * 10;
+                        timeSearchPos++;
+                        }
+                     break;
+             case 3: if (timeSearchHH * 60 + timeSearchMM + n <= h * 60 + m) {
+                        timeSearchMM += n;
+                        timeSearchPos++;
+                        }
+                     break;
+             }
+           TimeSearchDisplay();
+         }
+         break;
+    case kLeft:
+    case kRight:
+         dvbApi->SkipSeconds(Seconds * (Key == kRight ? 1 : -1));
+         timeSearchActive = false;
+         break;
+    case kUp:
+    case kDown:
+         dvbApi->Goto(Seconds * FRAMESPERSEC, Key == kDown);
+         timeSearchActive = false;
+         break;
+    default:
+         timeSearchActive = false;
+         break;
+    }
+
+  if (!timeSearchActive) {
+     if (timeSearchHide)
+        Hide();
+     else
+        Interface->Fill(12, 2, Width() - 22, 1, clrBackground);
+     }
+}
+
+void cReplayControl::TimeSearch(void)
+{
+  timeSearchHH = timeSearchMM = timeSearchPos = 0;
+  timeSearchHide = false;
+  if (!visible) {
+     Show();
+     if (visible)
+        timeSearchHide = true;
+     else
+        return;
+     }
+  TimeSearchDisplay();
+  timeSearchActive = true;
+}
+
 void cReplayControl::MarkToggle(void)
 {
   int Current, Total;
@@ -2456,6 +2549,10 @@ eOSState cReplayControl::ProcessKey(eKeys Key)
      }
   bool DisplayedFrames = displayFrames;
   displayFrames = false;
+  if (timeSearchActive && Key != kNone) {
+     TimeSearchProcess(Key);
+     return osContinue;
+     }
   switch (Key) {
     // Positioning:
     case kUp:      dvbApi->Play(); break;
@@ -2464,6 +2561,7 @@ eOSState cReplayControl::ProcessKey(eKeys Key)
     case kLeft:    dvbApi->Backward(); break;
     case kRight|k_Release:
     case kRight:   dvbApi->Forward(); break;
+    case kRed:     TimeSearch(); break;
     case kGreen|k_Repeat:
     case kGreen:   dvbApi->SkipSeconds(-60); break;
     case kYellow|k_Repeat:

@@ -17,7 +17,7 @@ Video Disk Recorder User's Manual
   Ok      Ch display  Select     Switch     Edit       Accept        Play        Progress disp.
   Menu    Menu on     Menu off   Menu off   Menu off   Menu off      Menu off    Menu on
   Back    -           Menu off   Main menu  Main menu  Discard       Main menu   Recordings menu
-  Red     -           Record     Edit       Edit       -             Play        -
+  Red     -           Record     Edit       Edit       -             Play        Jump
   Green   -           Language   New        New        -             Rewind      Skip -60s
   Yellow  -           Eject DVD  Delete     Delete     -             Delete      Skip +60s
   Blue    -           Resume     Mark       Mark       -             Summary     Stop
@@ -172,6 +172,10 @@ Video Disk Recorder User's Manual
             backward at a slower speed; press again to return to pause mode.
             Pressing and holding down the button performs the function until
             the button is released again.
+  - Red     Jump to a specific location. Enter the time you want to jump to
+            and then press "Left" or "Right" to jump relative to the current
+            position, "Up" to jump to an absolute position, and "Down" to
+            jump and pause at an absolute position.
   - Green
     Yellow  Skips about 60 seconds back or forward.
             Pressing and holding down the button performs the function until

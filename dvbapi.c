@@ -7,7 +7,7 @@
  * DVD support initially written by Andreas Schultz <aschultz@warp10.net>
  * based on dvdplayer-0.5 by Matjaz Thaler <matjaz.thaler@guest.arnes.si>
  *
- * $Id: dvbapi.c 1.104 2001/08/11 10:17:26 kls Exp $
+ * $Id: dvbapi.c 1.105 2001/08/11 12:21:49 kls Exp $
  */
 
 //#define DVDDEBUG        1
@@ -56,8 +56,6 @@ extern "C" {
 
 // The maximum size of a single frame:
 #define MAXFRAMESIZE (192*1024)
-
-#define FRAMESPERSEC 25
 
 // The maximum file size is limited by the range that can be covered
 // with 'int'. 4GB might be possible (if the range is considered

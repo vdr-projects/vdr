@@ -642,3 +642,6 @@ Video Disk Recorder Revision History
   See 'vdr --help' for details.
 - Making sure the disk is up and running before starting recording (this
   is important for systems that turn off the video disk when it is not used).
+- Added the "Jump" function in replay mode (thanks to Stefan Huelswitt).
+  See the description of the "Red" key in MANUAL under "Replay Control" for
+  details.
