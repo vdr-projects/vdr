@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: descriptor.c 1.9 2004/03/13 11:07:02 kls Exp $
+ *   $Id: descriptor.c 1.10 2004/03/13 15:08:12 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -107,6 +107,8 @@ char *ExtendedEventDescriptors::getText(char *buffer, const char *separation1, c
       if (!d)
          continue;
 
+      strcpy(buffer+index, separation2); // let's have a separator between the long text and the items
+      index += strlen(separation2);
       ExtendedEventDescriptor::Item item;
       for (Loop::Iterator it; d->itemLoop.hasNext(it);   ) {
          item=d->itemLoop.getNext(it);
