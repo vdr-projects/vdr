@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 1.30 2002/07/13 12:46:30 kls Exp $
+ * $Id: osd.c 1.31 2002/07/14 11:05:30 kls Exp $
  */
 
 #include "osd.h"
@@ -70,7 +70,11 @@ void cOsd::SetColor(eDvbColor colorFg, eDvbColor colorBg)
 
 cOsdBase *cOsd::OpenRaw(int x, int y)
 {
+#ifdef DEBUG_OSD
+  return NULL;
+#else
   return osd ? NULL : new cDvbOsd(cDevice::PrimaryDevice()->OsdDeviceHandle(), x, y);
+#endif
 }
 
 void cOsd::Open(int w, int h)
