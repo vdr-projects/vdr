@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.113 2003/05/24 11:01:58 kls Exp $
+ * $Id: i18n.c 1.114 2003/05/24 12:51:02 kls Exp $
  *
  * Translations provided by:
  *
@@ -3370,7 +3370,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO French: still missing
+    "off",
     "",// TODO
     "",// TODO
     "pois",
