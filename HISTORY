@@ -1841,3 +1841,4 @@ Video Disk Recorder Revision History
 
 - The character '|' in description texts of EPG records is now interpreted as a
   newline character (suggested by Gerhard Steiner).
+- Updated 'channels.conf.cable' (thanks to Andreas Kool).

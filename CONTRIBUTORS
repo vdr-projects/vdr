@@ -322,8 +322,8 @@ Ruben Nunez Francisco <ruben.nunez@tang-it.com>
  for translating OSD texts to the Spanish language
 
 Mirko Dölle <mdoelle@linux-user.de>
-  for reporting a bug when a timer records over midnight of a day that had a
-  change in Daylight Saving Time
+ for reporting a bug when a timer records over midnight of a day that had a
+ change in Daylight Saving Time
 
 Michael Rakowski <mrak@gmx.de>
  for translating OSD texts to the Polish language
@@ -478,14 +478,14 @@ Stefan Schluenss <dxr3_osd@schluenss.de>
  for reporting a bug where PID handles were not closed correctly
 
 Régis Bossut <rbossut@auchan.com>
-  for pointing out that with some providers the channels can only be distinguished
-  through the RID
+ for pointing out that with some providers the channels can only be distinguished
+ through the RID
 
 Andreas Kool <akool@akool.de>
-  for pointing out problems with non-unique definitions in 'channels.conf.cable'
+ for his help in keeping 'channels.conf.cable' up to date
 
 Guy Roussin <guy.roussin@teledetection.fr>
-  for suggesting not to display channel group delimiters without text
+ for suggesting not to display channel group delimiters without text
 
 Georg Hitsch <georg@hitsch.at>
  for his help in keeping 'channels.conf' up to date
