@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.c 1.20 2004/11/14 16:16:21 kls Exp $
+ * $Id: menuitems.c 1.21 2004/11/21 13:24:10 kls Exp $
  */
 
 #include "menuitems.h"
@@ -554,6 +554,7 @@ cMenuEditDayItem::cMenuEditDayItem(const char *Name, int *Value)
 :cMenuEditIntItem(Name, Value, -INT_MAX, 31)
 {
   d = -1;
+  md = 0;
   if (*value < 0) {
      int n = 0;
      while (days[n]) {
@@ -621,12 +622,14 @@ eOSState cMenuEditDayItem::ProcessKey(eKeys Key)
                eOSState result = cMenuEditIntItem::ProcessKey(Key);
                if (result == osContinue && Key == k0) {
                   if (d >= 0) {
-                     *value = cTimer::GetMDay(time(NULL));
+                     *value = md ? md : cTimer::GetMDay(time(NULL));
+                     md = 0;
                      d = -1;
                      Set();
                      }
                   else if (*value == 0 || *value == v) {
-                     d = cTimer::GetWDay(time(NULL));
+                     md = v;
+                     d = cTimer::GetWDayFromMDay(v);
                      *value = days[d];
                      Set();
                      }

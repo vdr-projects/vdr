@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.h 1.9 2004/05/16 12:45:14 kls Exp $
+ * $Id: menuitems.h 1.10 2004/11/21 13:23:00 kls Exp $
  */
 
 #ifndef __MENUITEMS_H
@@ -119,9 +119,11 @@ public:
   };
 
 class cMenuEditDayItem : public cMenuEditIntItem {
-protected:
+private:
   static int days[];
   int d;
+  int md;
+protected:
   virtual void Set(void);
 public:
   cMenuEditDayItem(const char *Name, int *Value);

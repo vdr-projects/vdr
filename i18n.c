@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.163 2004/11/14 14:28:29 kls Exp $
+ * $Id: i18n.c 1.164 2004/11/20 11:23:58 kls Exp $
  *
  * Translations provided by:
  *
@@ -23,7 +23,7 @@
  * Hungarian   Istvan Koenigsberger <istvnko@hotmail.com> and Guido Josten <guido.josten@t-online.de>
  * Catalanian  Marc Rovira Vall <tm05462@salleURL.edu>, Ramon Roca <ramon.roca@xcombo.com> and Jordi Vil‡ <jvila@tinet.org>
  * Russian     Vyacheslav Dikonov <sdiconov@mail.ru>
- * Croatian    Drazen Dupor <drazen.dupor@dupor.com>
+ * Croatian    Drazen Dupor <drazen.dupor@dupor.com> and Dino Ravnic <dino.ravnic@fer.hr>
  * Estonian    Arthur Konovalov <kasjas@hot.ee>
  * Danish      Mogens Elneff <mogens@elneff.dk>
  *
@@ -480,7 +480,7 @@ const tI18nPhrase Phrases[] = {
     "Be·llÌtani",
     "Editar",
     "¿’‘–⁄‚ÿ‡ﬁ“–‚Ï",
-    "Promjeni",
+    "Promijeni",
     "Muuda",
     "Rediger",
   },
@@ -5090,7 +5090,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "∫€–··ÿÁ’·⁄ÿŸ",
-    "KlasiËcni VDR",
+    "KlasiËni VDR",
     "Klassikaline VDR",
     "Klassisk VDR",
   },

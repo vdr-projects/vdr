@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 1.17 2004/11/14 16:02:42 kls Exp $
+ * $Id: timers.c 1.18 2004/11/21 13:15:33 kls Exp $
  */
 
 #include "timers.h"
@@ -267,6 +267,18 @@ int cTimer::GetWDay(time_t t)
   struct tm tm_r;
   int weekday = localtime_r(&t, &tm_r)->tm_wday;
   return weekday == 0 ? 6 : weekday - 1; // we start with monday==0!
+}
+
+int cTimer::GetWDayFromMDay(int MDay)
+{
+  time_t now =  time(NULL);
+  int md = GetMDay(now);
+  for (int i = -1; i <= 28; i++) { // looking 4 weeks into the future should be enough
+      time_t t0 = IncDay(now, i);
+      if (GetMDay(t0) == MDay)
+         return GetWDay(t0);
+      }
+  return GetWDay(now); // just to return something
 }
 
 bool cTimer::DayMatches(time_t t) const

@@ -3138,3 +3138,24 @@ Video Disk Recorder Revision History
   shot" and "repeating". The keys '1'...'7' can be used to toggle the individual
   days ('1' is monday). Thanks to Sascha Klek for reporting a problem with the
   '0' key in the "Day" item of the "Timers" menu.
+
+2004-11-21: Version 1.3.17
+
+- Fixed cRemux::ScanVideoPacket() to make sure it doesn't access memory beyond
+  the end of the given buffer, which has caused some unjustified "unknown
+  picture type errors" (thanks to Marco Schlüßler).
+- Fixed a possible crash when pausing live video and the recording was unable
+  to start, maybe because there was no lock on the device (thanks to Andreas
+  Brugger for reporting this one).
+- Fixed some characters in the iso8859-2 font file (thanks to Dino Ravnic).
+- Fixed some errors in the Croatian language texts (thanks to Dino Ravnic).
+- Fixed a possible recursion in cControl::Shutdown() (thanks to Sascha Volkenandt).
+- Now setting the VPID before the APID in live mode to avoid unnecessary
+  overhead in the firmware (thanks to Werner Fink).
+- Now checking available OSD memory at runtime (thanks to Oliver Endriss).
+- Fixed some typos in the Makefile's 'font' target (thanks to Olaf Titz).
+- Fixed handling childTid in cThread to avoid possible race conditions (thanks
+  to Stefan Huelswitt for pointing this out).
+- Fixed toggling the "Day" item in the "Timers" menu, so that it selects the
+  right day of week for timers in the future.
+- Some improvements to cPoller (thanks to Marco Schlüßler).

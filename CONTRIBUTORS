@@ -188,6 +188,7 @@ Stefan Huelswitt <huels@iname.com>
  for reporting a bug in setting the title in the replay display of the "Classic VDR"
  skin in case a shorter title is set after a longer one
  for fixing handling of pmAudioOnlyBlack
+ for pointing out possible race conditions in handling childTid in cThread
 
 Ulrich Röder <roeder@efr-net.de>
  for pointing out that there are channels that have a symbol rate higher than
@@ -260,6 +261,8 @@ Werner Fink <werner@suse.de>
  for changing thread handling to make it work with NPTL ("Native Posix Thread Library")
  for suggesting to replace usleep() calls with a pthread_cond_timedwait() based wait
  for suggesting to add more checks and polling when getting frontend events
+ for setting the VPID before the APID in live mode to avoid unnecessary
+ overhead in the firmware
 
 Rolf Hakenes <hakenes@hippomi.de>
  for providing 'libdtv' and adapting the EIT mechanisms to it
@@ -537,6 +540,7 @@ Oliver Endriss <o.endriss@gmx.de>
  for adding a sample setup for 'DisiCon-4 Single Cable Network' to 'diseqc.conf'
  for reporting a problem with the name of the remote control for which the keys are
  being learned overwriting the date/time in the 'classic' skin
+ for making cDvbOsd check available OSD memory at runtime
 
 Reinhard Walter Buchner <rw.buchner@freenet.de>
  for adding some satellites to 'sources.conf'
@@ -735,6 +739,7 @@ Sascha Volkenandt <sascha@akv-soft.de>
  for pointing out a "near miss" condition in cCondVar
  for reporting a bug in cChannel::SetName() in case only the ShortName or Provider
  has changed
+ for fixing a possible recursion in cControl::Shutdown()
 
 Malcolm Caldwell <malcolm.caldwell@ntu.edu.au>
  for modifying LOF handling to allow for C-band reception
@@ -1079,6 +1084,10 @@ Marco Schlüßler <marco@lordzodiac.de>
  for fixing the cDvbSpuDecoder
  for fixing a short glitch when starting a recording on the primary device while
  in replay or transfer mode
+ for fixing cRemux::ScanVideoPacket() to make sure it doesn't access memory beyond
+ the end of the given buffer, which has caused some unjustified "unknown picture
+ type errors"
+ for some improvements to cPoller
 
 Jürgen Schmitz <j.schmitz@web.de>
  for reporting a bug in displaying the current channel when switching via the SVDRP
@@ -1149,3 +1158,14 @@ Joachim Wilke <vdr@joachim-wilke.de>
 
 Sascha Klek <sklek@gmx.de>
   for reporting a problem with the '0' key in the "Day" item of the "Timers" menu
+
+Andreas Brugger <brougs78@gmx.net>
+  for reporting a possible crash when pausing live video and the recording was
+  unable to start, maybe because there was no lock on the device
+
+Dino Ravnic <dino.ravnic@fer.hr>
+ for fixing some characters in the iso8859-2 font file
+ for fixing some errors in the Croatian language texts
+
+Olaf Titz <olaf@bigred.inka.de>
+ for fixing some typos in the Makefile's 'font' target
