@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.94 2005/02/20 11:41:03 kls Exp $
+ * $Id: device.c 1.95 2005/02/20 13:35:38 kls Exp $
  */
 
 #include "device.h"
@@ -859,7 +859,7 @@ void cDevice::Detach(cPlayer *Player)
      player->device = NULL;
      player = NULL;
      SetPlayMode(pmNone);
-     SetVideoDisplayFormat(vdfLetterBox);
+     SetVideoDisplayFormat(eVideoDisplayFormat(Setup.VideoDisplayFormat));
      Audios.ClearAudio();
      }
 }

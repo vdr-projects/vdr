@@ -3430,3 +3430,5 @@ Video Disk Recorder Revision History
   with the larger buffer reserve (thanks to Marco Schlüßler).
 - Fixed the call to SetVideoFormat() in cDvbDevice::cDvbDevice() (parameter is _bool_).
 - Added support for setting the video display mode (thanks to Marco Schlüßler).
+- The new setup option "DVB/Video display format" can be used to define which display
+  format to use for playing wide screen video on a 4:3 tv set.

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.123 2005/02/20 11:31:39 kls Exp $
+ * $Id: dvbdevice.c 1.124 2005/02/20 13:35:28 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -626,7 +626,7 @@ void cDvbDevice::SetVideoFormat(bool VideoFormat16_9)
 {
   if (HasDecoder()) {
      CHECK(ioctl(fd_video, VIDEO_SET_FORMAT, VideoFormat16_9 ? VIDEO_FORMAT_16_9 : VIDEO_FORMAT_4_3));
-     SetVideoDisplayFormat(vdfLetterBox);
+     SetVideoDisplayFormat(eVideoDisplayFormat(Setup.VideoDisplayFormat));
      }
 }
 

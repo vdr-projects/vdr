@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.177 2005/02/12 10:26:51 kls Exp $
+ * $Id: i18n.c 1.178 2005/02/20 13:39:33 kls Exp $
  *
  * Translations provided by:
  *
@@ -3093,6 +3093,90 @@ const tI18nPhrase Phrases[] = {
     "Primarni DVB ureðaj",
     "Esmane DVB seade",
     "Primær DVB enhed",
+  },
+  { "Setup.DVB$Video display format",
+    "Video Anzeige-Format",
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+  },
+  { "pan&scan",
+    "pan&scan",
+    "pan&scan",
+    "pan&scan",
+    "pan&scan",
+    "pan&scan",
+    "pan&scan",
+    "pan&scan",
+    "pan&scan",
+    "pan&scan",
+    "pan&scan",
+    "pan&scan",
+    "pan&scan",
+    "pan&scan",
+    "pan&scan",
+    "pan&scan",
+    "pan&scan",
+    "pan&scan",
+    "pan&scan",
+    "pan&scan",
+  },
+  { "letterbox",
+    "letterbox",
+    "letterbox",
+    "letterbox",
+    "letterbox",
+    "letterbox",
+    "letterbox",
+    "letterbox",
+    "letterbox",
+    "letterbox",
+    "letterbox",
+    "letterbox",
+    "letterbox",
+    "letterbox",
+    "letterbox",
+    "letterbox",
+    "letterbox",
+    "letterbox",
+    "letterbox",
+    "letterbox",
+  },
+  { "center cut out",
+    "center cut out",
+    "center cut out",
+    "center cut out",
+    "center cut out",
+    "center cut out",
+    "center cut out",
+    "center cut out",
+    "center cut out",
+    "center cut out",
+    "center cut out",
+    "center cut out",
+    "center cut out",
+    "center cut out",
+    "center cut out",
+    "center cut out",
+    "center cut out",
+    "center cut out",
+    "center cut out",
+    "center cut out",
   },
   { "Setup.DVB$Video format",
     "Video Format",
