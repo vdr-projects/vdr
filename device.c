@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.68 2005/01/06 13:30:30 kls Exp $
+ * $Id: device.c 1.69 2005/01/06 14:56:08 kls Exp $
  */
 
 #include "device.h"
@@ -543,6 +543,7 @@ eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
      if (LiveView && IsPrimaryDevice()) {
         // Set the available audio tracks:
         ClrAvailableTracks();
+        currentAudioTrack = ttAudioFirst;
         for (int i = 0; i < MAXAPIDS; i++) {
             SetAvailableTrack(ttAudio, i, Channel->Apid(i), Channel->Alang(i));
             SetAvailableTrack(ttDolby, i, Channel->Dpid(i), Channel->Dlang(i));
