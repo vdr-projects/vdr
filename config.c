@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.105 2002/09/04 13:45:56 kls Exp $
+ * $Id: config.c 1.106 2002/09/28 09:43:41 kls Exp $
  */
 
 #include "config.h"
@@ -18,169 +18,6 @@
 // IMPORTANT NOTE: in the 'sscanf()' calls there is a blank after the '%d'
 // format characters in order to allow any number of blanks after a numeric
 // value!
-
-// -- cKeys ------------------------------------------------------------------
-
-tKey keyTable[] = { // "Up" and "Down" must be the first two keys!
-                    { kUp,            "Up",            0 },
-                    { kDown,          "Down",          0 },
-                    { kMenu,          "Menu",          0 },
-                    { kOk,            "Ok",            0 },
-                    { kBack,          "Back",          0 },
-                    { kLeft,          "Left",          0 },
-                    { kRight,         "Right",         0 },
-                    { kRed,           "Red",           0 },
-                    { kGreen,         "Green",         0 },
-                    { kYellow,        "Yellow",        0 },
-                    { kBlue,          "Blue",          0 },
-                    { k0,             "0",             0 },
-                    { k1,             "1",             0 },
-                    { k2,             "2",             0 },
-                    { k3,             "3",             0 },
-                    { k4,             "4",             0 },
-                    { k5,             "5",             0 },
-                    { k6,             "6",             0 },
-                    { k7,             "7",             0 },
-                    { k8,             "8",             0 },
-                    { k9,             "9",             0 },
-                    { kPower,         "Power",         0 },
-                    { kVolUp,         "Volume+",       0 },
-                    { kVolDn,         "Volume-",       0 },
-                    { kMute,          "Mute",          0 },
-                    { kNone,          "",              0 },
-                  };
-
-cKeys::cKeys(void)
-{
-  fileName = NULL;
-  code = 0;
-  address = 0;
-  keys = keyTable;
-}
-
-void cKeys::Clear(void)
-{
-  for (tKey *k = keys; k->type != kNone; k++)
-      k->code = 0;
-}
-
-void cKeys::SetDummyValues(void)
-{
-  for (tKey *k = keys; k->type != kNone; k++)
-      k->code = k->type + 1; // '+1' to avoid 0
-}
-
-bool cKeys::Load(const char *FileName)
-{
-  isyslog("loading %s", FileName);
-  bool result = false;
-  if (FileName)
-     fileName = strdup(FileName);
-  if (fileName) {
-     FILE *f = fopen(fileName, "r");
-     if (f) {
-        int line = 0;
-        char buffer[MAXPARSEBUFFER];
-        result = true;
-        while (fgets(buffer, sizeof(buffer), f) > 0) {
-              line++;
-              if (!isempty(buffer)) {
-                 char *Name = buffer;
-                 char *p = strpbrk(Name, " \t");
-                 if (p) {
-                    *p = 0; // terminates 'Name'
-                    while (*++p && isspace(*p))
-                          ;
-                    if (*p) {
-                       if (strcasecmp(Name, "Code") == 0)
-                          code = *p;
-                       else if (strcasecmp(Name, "Address") == 0)
-                          address = strtol(p, NULL, 16);
-                       else {
-                          for (tKey *k = keys; k->type != kNone; k++) {
-                              if (strcasecmp(Name, k->name) == 0) {
-                                 k->code = strtol(p, NULL, 16);
-                                 Name = NULL; // to indicate that we found it
-                                 break;
-                                 }
-                              }
-                           if (Name) {
-                              esyslog("unknown key in %s, line %d\n", fileName, line);
-                              result = false;
-                              break;
-                              }
-                           }
-                       }
-                    continue;
-                    }
-                 esyslog("error in %s, line %d\n", fileName, line);
-                 result = false;
-                 break;
-                 }
-              }
-        fclose(f);
-        }
-     else
-        esyslog("can't open '%s'\n", fileName);
-     }
-  else
-     esyslog("no key configuration file name supplied!\n");
-  return result;
-}
-
-bool cKeys::Save(void)
-{
-  cSafeFile f(fileName);
-  if (f.Open()) {
-     fprintf(f, "Code\t%c\nAddress\t%04X\n", code, address);
-     for (tKey *k = keys; k->type != kNone; k++)
-         fprintf(f, "%s\t%08X\n", k->name, k->code);
-     return f.Close();
-     }
-  return false;
-}
-
-eKeys cKeys::Get(unsigned int Code)
-{
-  if (Code != 0) {
-     tKey *k;
-     for (k = keys; k->type != kNone; k++) {
-         if (k->code == Code)
-            break;
-         }
-     return k->type;
-     }
-  return kNone;
-}
-
-eKeys cKeys::Translate(const char *Command)
-{
-  if (Command) {
-     const tKey *k = keys;
-     while ((k->type != kNone) && strcasecmp(k->name, Command) != 0)
-           k++;
-     return k->type;
-     }
-  return kNone;
-}
-
-unsigned int cKeys::Encode(const char *Command)
-{
-  eKeys k = Translate(Command);
-  if (k != kNone)
-     return keys[k].code;
-  return 0;
-}
-
-void cKeys::Set(eKeys Key, unsigned int Code)
-{
-  for (tKey *k = keys; k->type != kNone; k++) {
-      if (k->type == Key) {
-         k->code = Code;
-         break;
-         }
-      }
-}
 
 // -- cChannel ---------------------------------------------------------------
 
@@ -247,7 +84,6 @@ bool cChannel::Parse(const char *s)
   if (*s == ':') {
      if (*++s) {
         strn0cpy(name, s, MaxChannelName);
-        name[strlen(name) - 1] = 0; // strip the '\n'
         groupSep = true;
         number = 0;
         }
@@ -696,7 +532,7 @@ bool cSVDRPhost::Parse(const char *s)
   if (p) {
      char *error = NULL;
      int m = strtoul(p + 1, &error, 10);
-     if (error && !isspace(*error) || m > 32)
+     if (error && *error && !isspace(*error) || m > 32)
         return false;
      *(char *)p = 0; // yes, we know it's 'const' - will be restored!
      if (m == 0)
@@ -732,10 +568,6 @@ bool cCaDefinition::Parse(const char *s)
 {
   return 2 == sscanf(s, "%d %a[^\n]", &number, &description) && description && *description;
 }
-
-// -- cKeys ------------------------------------------------------------------
-
-cKeys Keys;
 
 // -- cCommands --------------------------------------------------------------
 

@@ -8,9 +8,9 @@
 .\" License as specified in the file COPYING that comes with the
 .\" vdr distribution.
 .\"
-.\" $Id: vdr.5 1.4 2002/04/07 13:12:04 kls Exp $
+.\" $Id: vdr.5 1.5 2002/09/29 13:06:40 kls Exp $
 .\"
-.TH vdr 5 "7 Apr 2002" "1.0.0" "Video Disk Recorder Files"
+.TH vdr 5 "7 Sep 2002" "1.2.0" "Video Disk Recorder Files"
 .SH NAME
 vdr file formats - the Video Disk Recorder Files
 .SH DESCRIPTION
@@ -209,12 +209,18 @@ channels that don't require additional decryption hardware.
 
 The values \fB1...4\fR can be used for channels that for some reason explicitly
 need a given DVB card (for backward compatibility).
-.SS KEYS
-The file \fIkeys.conf\fR contains the key assignments for the remote control
-unit (RCU). If \fBvdr\fR has been built with REMOTE=KBD, the file \fIkeys-pc.conf\fR
-will be used instead. If you are using \fBvdr\fR together with \fBLIRC\fR, no
-such file will be used. In that case you need to consult the \fBLIRC\fR
-documentation to see how to set up the remote control key assignments there.
+.SS REMOTE CONTROL KEYS
+The file \fIremote.conf\fR contains the key assignments for all remote control
+units. Each line consists of one key assignment in the following format:
+
+\fBname.key  code\fR
+
+where \fBname\fR is the name of the remote control (for instance KBD for the
+PC keyboard, RCU for the home-built "Remote Control Unit", or LIRC for the
+"Linux Infrared Remote Control"), \fBkey\fR is the name of the key that is
+defined (like Up, Down, Menu etc.), and \fBcode\fR is a character string that
+this remote control delivers when the given key is pressed.
+
 .SS COMMANDS
 The file \fIcommands.conf\fR contains the definitions of commands that can
 be executed from the \fBvdr\fR main menu's "Commands" option.

@@ -8,7 +8,7 @@
  *
  * parts of this file are derived from the OMS program.
  *
- * $Id: dvbspu.c 1.1 2002/09/08 14:17:35 kls Exp $
+ * $Id: dvbspu.c 1.2 2002/09/29 13:48:39 kls Exp $
  */
 
 #include <assert.h>
@@ -138,8 +138,8 @@ bool cDvbSpuBitmap::getMinSize(const aDvbSpuPalDescr paldescr,
                 setMin(size.y1, minsize[i].y1);
                 setMax(size.x2, minsize[i].x2);
                 setMax(size.y2, minsize[i].y2);
-                ret = true;
             }
+            ret = true;
         }
     }
     if (ret)
@@ -248,6 +248,7 @@ void cDvbSpuDecoder::processSPU(uint32_t pts, uint8_t * buf)
     spubmp = NULL;
     delete[]spu;
     spu = buf;
+    spupts = pts;
 
     DCSQ_offset = cmdOffs();
     prev_DCSQ_offset = 0;
@@ -402,7 +403,7 @@ int cDvbSpuDecoder::setTime(uint32_t pts)
         int i = DCSQ_offset;
         state = spNONE;
 
-        uint32_t exec_time = pts + spuU32(i) * 1024;
+        uint32_t exec_time = spupts + spuU32(i) * 1024;
         if ((pts != 0) && (exec_time > pts))
             return 0;
         DEBUG("offs = %d, rel = %d, time = %d, pts = %d, diff = %d\n",
@@ -416,7 +417,8 @@ int cDvbSpuDecoder::setTime(uint32_t pts)
 
             prev_DCSQ_offset = DCSQ_offset;
             DCSQ_offset = spuU32(i);
-            DEBUG("offs = %d, DCSQ = %d\n", i, DCSQ_offset);
+            DEBUG("offs = %d, DCSQ = %d, prev_DCSQ = %d\n", 
+                           i, DCSQ_offset, prev_DCSQ_offset);
             i += 2;
 
             while (spu[i] != CMD_SPU_EOF) {     // Command Sequence

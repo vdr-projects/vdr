@@ -330,8 +330,7 @@ of the card that can receive it.
 Learning the remote control keys:
 ---------------------------------
 
-There is no default 'keys.conf' file, so if you compile the program
-with 'REMOTE=RCU' you will have to go through a "teach-in"
+There is no default 'remote.conf' file, so you will have to go through a "teach-in"
 session that allows the program to learn your remote control codes.
 It will first attempt to determine the basic data transfer mode and
 timing of your remote control unit, and then will ask you to press one
@@ -342,11 +341,8 @@ you define, the more you will be able to navigate through the menus and
 control recording/replaying. The program uses only a very small number
 of keys which have multiple meanings in the various modes (see MANUAL
 for a detailed description).
-If the program has been built with "REMOTE=KBD", it will use the
-key configuration file 'keys-pc.conf', so that you won't loose data
-when switching between remote control and keyboard mode.
 
-The default PC key assignments are:
+The recommended PC key assignments are:
 
   Up, Down, Left, Right     Crsr keys in numeric block
   Menu                      'Home' in numeric block
@@ -359,10 +355,6 @@ The default PC key assignments are:
   Mute                      'm'
 
 If you prefer different key assignments, or if the default doesn't work for
-your keyboard, simply delete the file 'keys-pc.conf' and restart 'vdr' to get
+your keyboard, simply delete the file 'remote.conf' and restart 'vdr' to get
 into learning mode.
-
-If the program has been compiled with 'REMOTE=LIRC', no 'keys.conf' file
-will be used. Instead, the key names as listed in the source file 'config.c'
-must be used when setting up LIRC. See http://www.lirc.org for more about LIRC.
 

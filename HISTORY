@@ -1478,3 +1478,60 @@ Video Disk Recorder Revision History
 - Added a missing StripAudioPackets() to cDvbPlayer::Action() (thanks to
   Stefan Huelswitt).
 - Added an EPG bugfix for the latest VOX EPG data format.
+
+2002-09-29: Version 1.1.11
+
+- Fixed an incomplete initialization of the filter parameters in eit.c (thanks
+  to Jeremy Hall).
+- Fixed the 'newplugin' script for use with the NEWSTRUCT driver (thanks to
+  Andreas Schultz for reporting this one). If you have already created a plugin
+  directory and Makefile with 'newplugin', please apply the following patch to it:
+
+  -------------------------------------------------------
+  --- Makefile    2002/06/10 16:24:06     1.4
+  +++ Makefile    2002/09/17 15:36:36     1.5
+  @@ -15,7 +15,12 @@
+ 
+   ### The directory environment:
+ 
+  +ifdef NEWSTRUCT
+  +DVBDIR = ../../../../DVB/include
+  +DEFINES += -DNEWSTRUCT
+  +else
+   DVBDIR = ../../../../DVB/ost/include
+  +endif
+   VDRDIR = ../../..
+   VDRINC = $(VDRDIR)/include
+   LIBDIR = ../../lib
+  @@ -34,7 +39,7 @@
+ 
+   INCLUDES = -I$(VDRINC) -I$(DVBDIR)
+ 
+  -DEFINES = -DPLUGIN_NAME_I18N='"$(PLUGIN)"'
+  +DEFINES += -DPLUGIN_NAME_I18N='"$(PLUGIN)"'
+ 
+   ### The object files (add further files here):
+  -------------------------------------------------------
+
+  This is the diff for the 'setup' example that comes with VDR, so your line
+  numbers may be different.
+- Added a missing 'public' keyword in device.h (thanks to Martin Hammerschmid).
+- Fixed a race condition when starting 'Transfer Mode'.
+- Rearranged the remote control key handling to allow plugins to implement
+  additional types of remote controls (see PLUGINS.html, section "Remote Control").
+  The previously used files 'keys.conf' and 'keys-pc.conf' have been replaced
+  by the file 'remote.conf', which holds the key definitions of all remote controls.
+- The LIRC remote control keys are now handled just like the keyboard and RCU keys.
+  This means that you can use the lircd.conf file as is for your remote control,
+  without the need of editing it to make the key names the same as used in VDR.
+  When first starting VDR it will go into the "Learning keys" mode and ask you
+  to press the various keys. The resulting key assignment will be stored in
+  the file 'remote.conf'.
+  Since I have no way of testing the LIRC support, I hope I didn't break it in
+  the process...
+- While learning the remote control keys it is now possible to press the 'Menu'
+  key to skip the definition of keys that are not available on your particular
+  RC unit.
+- Fixed handling DVD subtitles in the SPU decoder (thanks to Andreas Schultz).
+- Avoiding restarts due to 'panic level' when switching channels on the primary
+  device during EPG scan.

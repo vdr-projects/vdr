@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.21 2002/09/15 11:50:19 kls Exp $
+ * $Id: device.c 1.22 2002/09/28 12:20:22 kls Exp $
  */
 
 #include "device.h"
@@ -201,7 +201,7 @@ void cDevice::SetVideoFormat(bool VideoFormat16_9)
 //#define PRINTPIDS(s) { char b[500]; char *q = b; q += sprintf(q, "%d %s ", CardIndex(), s); for (int i = 0; i < MAXPIDHANDLES; i++) q += sprintf(q, " %s%4d %d", i == ptOther ? "* " : "", pidHandles[i].pid, pidHandles[i].used); dsyslog(b); }
 #define PRINTPIDS(s)
 
-bool cDevice::HasPid(int Pid)
+bool cDevice::HasPid(int Pid) const
 {
   for (int i = 0; i < MAXPIDHANDLES; i++) {
       if (pidHandles[i].pid == Pid)
@@ -275,7 +275,7 @@ bool cDevice::SetPid(cPidHandle *Handle, int Type, bool On)
   return false;
 }
 
-bool cDevice::ProvidesChannel(const cChannel *Channel, int Priority, bool *NeedsDetachReceivers)
+bool cDevice::ProvidesChannel(const cChannel *Channel, int Priority, bool *NeedsDetachReceivers) const
 {
   return false;
 }
@@ -424,7 +424,7 @@ void cDevice::StillPicture(const uchar *Data, int Length)
 {
 }
 
-bool cDevice::Replaying(void)
+bool cDevice::Replaying(void) const
 {
   return player != NULL;
 }
@@ -478,7 +478,7 @@ int cDevice::PlayAudio(const uchar *Data, int Length)
   return -1;
 }
 
-int cDevice::Priority(void)
+int cDevice::Priority(void) const
 {
   int priority = IsPrimaryDevice() ? Setup.PrimaryLimit - 1 : DEFAULTPRIORITY;
   for (int i = 0; i < MAXRECEIVERS; i++) {
@@ -488,7 +488,7 @@ int cDevice::Priority(void)
   return priority;
 }
 
-int cDevice::CanShift(int Ca, int Priority, int UsedCards)
+int cDevice::CanShift(int Ca, int Priority, int UsedCards) const
 {
   return -1;//XXX+ too complex with multiple recordings per device
   // Test whether a receiver on this device can be shifted to another one
@@ -523,7 +523,7 @@ int cDevice::CanShift(int Ca, int Priority, int UsedCards)
   return ShiftLevel;
 }
 
-int cDevice::ProvidesCa(int Ca)
+int cDevice::ProvidesCa(int Ca) const
 {
   if (Ca == CardIndex() + 1)
      return 1; // exactly _this_ card was requested
@@ -542,7 +542,7 @@ int cDevice::ProvidesCa(int Ca)
   return result ? result + others : 0;
 }
 
-bool cDevice::Receiving(void)
+bool cDevice::Receiving(void) const
 {
   for (int i = 0; i < MAXRECEIVERS; i++) {
       if (receiver[i] && receiver[i]->priority >= 0) // cReceiver with priority < 0 doesn't count

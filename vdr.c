@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.123 2002/09/15 11:08:35 kls Exp $
+ * $Id: vdr.c 1.124 2002/09/29 12:55:03 kls Exp $
  */
 
 #include <getopt.h>
@@ -37,18 +37,15 @@
 #include "eitscan.h"
 #include "i18n.h"
 #include "interface.h"
+#include "keys.h"
+#include "lirc.h"
 #include "menu.h"
 #include "osd.h"
 #include "plugin.h"
+#include "rcu.h"
 #include "recording.h"
 #include "tools.h"
 #include "videodir.h"
-
-#ifdef REMOTE_KBD
-#define KEYS_CONF "keys-pc.conf"
-#else
-#define KEYS_CONF "keys.conf"
-#endif
 
 #define ACTIVITYTIMEOUT 60 // seconds before starting housekeeping
 #define SHUTDOWNWAIT   300 // seconds to wait in user prompt before automatic shutdown
@@ -319,11 +316,7 @@ int main(int argc, char *argv[])
   Commands.Load(AddDirectory(ConfigDirectory, "commands.conf"));
   SVDRPhosts.Load(AddDirectory(ConfigDirectory, "svdrphosts.conf"), true);
   CaDefinitions.Load(AddDirectory(ConfigDirectory, "ca.conf"), true);
-#if defined(REMOTE_LIRC)
-  Keys.SetDummyValues();
-#elif !defined(REMOTE_NONE)
-  bool KeysLoaded = Keys.Load(AddDirectory(ConfigDirectory, KEYS_CONF));
-#endif
+  Keys.Load(AddDirectory(ConfigDirectory, "remote.conf"));
 
   // DVB interfaces:
 
@@ -350,6 +343,20 @@ int main(int argc, char *argv[])
 
   cOsd::Initialize();
 
+  // User interface:
+
+  Interface = new cInterface(SVDRPport);
+
+  // Remote Controls:
+#if defined(REMOTE_RCU)
+  new cRcuRemote("/dev/ttyS1");
+#elif defined(REMOTE_LIRC)
+  new cLircRemote("/dev/lircd");
+#elif defined(REMOTE_KBD)
+  new cKbdRemote;
+#endif
+  Interface->LearnKeys();
+
   // Channel:
 
   Channels.SwitchTo(Setup.CurrentChannel);
@@ -359,14 +366,6 @@ int main(int argc, char *argv[])
      cDevice::PrimaryDevice()->SetVolume(Setup.CurrentVolume, true);
 
   cEITScanner EITScanner;
-
-  // User interface:
-
-  Interface = new cInterface(SVDRPport);
-#if !defined(REMOTE_LIRC) && !defined(REMOTE_NONE)
-  if (!KeysLoaded)
-     Interface->LearnKeys();
-#endif
 
   // Signal handlers:
 

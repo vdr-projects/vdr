@@ -45,6 +45,7 @@ Martin Hammerschmid <martin@hammerschmid.com>
  for implementing pege up/down with the "Left" and "Right" keys
  for detecting a deadlock when switching channels via Schedule/Now|Next/Switch
  for adding a missing #include to ringbuffer.c
+ for adding a missing 'public' keyword in device.h
 
 Bastian Guse <bastian@nocopy.de>
  for writing the FORMATS entry for timers.conf
@@ -174,6 +175,7 @@ Andreas Schultz <aschultz@warp10.net>
  OSD capabilities
  for implementing an SPU decoder
  for fixing opening /dev/video in cDvbDevice::GrabImage() in case of NEWSTRUCT driver
+ for reporting a problem with plugin Makefiles and the NEWSTRUCT driver
 
 Aaron Holtzman
  for writing 'ac3dec'
@@ -399,3 +401,6 @@ Jürgen Zimmermann <jnzimmer@informatik.uni-kl.de>
 
 Helmut Auer <vdr@helmutauer.de>
  for reporting a superfluous error message in cLockFile.
+
+Jeremy Hall <jhall@UU.NET>
+ for fixing an incomplete initialization of the filter parameters in eit.c

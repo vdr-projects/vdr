@@ -8,3 +8,7 @@ VDR Plugin 'status' Revision History
 2002-07-13: Version 0.0.2
 
 - Changed the interface of cStatus::Replaying().
+
+2002-09-21: Version 0.0.3
+
+- Fixed Makefile for NEWSTRUCT driver.

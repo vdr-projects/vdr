@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.h 1.27 2002/06/22 14:39:48 kls Exp $
+ * $Id: interface.h 1.28 2002/09/29 10:46:50 kls Exp $
  */
 
 #ifndef __INTERFACE_H
@@ -22,12 +22,9 @@ private:
   int width, height;
   int open;
   int cols[MaxCols];
-  eKeys keyFromWait;
   bool interrupted;
   cSVDRP *SVDRP;
-  cRcIoBase *rcIo;
-  unsigned int GetCh(bool Wait = true, bool *Repeat = NULL, bool *Release = NULL);
-  void QueryKeys(void);
+  void QueryKeys(cRemote *Remote);
   void HelpButton(int Index, const char *Text, eDvbColor FgColor, eDvbColor BgColor);
   eKeys Wait(int Seconds = 0, bool KeepChar = false);
 public:
@@ -40,7 +37,6 @@ public:
   int Width(void) { return width; }
   int Height(void) { return height; }
   eKeys GetKey(bool Wait = true);
-  void PutKey(eKeys Key);
   void Clear(void);
   void ClearEol(int x, int y, eDvbColor Color = clrBackground);
   void Fill(int x, int y, int w, int h, eDvbColor color = clrBackground);
@@ -59,9 +55,6 @@ public:
   bool Confirm(const char *s, int Seconds = 10, bool WaitForTimeout = false);
   void Help(const char *Red, const char *Green = NULL, const char *Yellow = NULL, const char *Blue = NULL);
   void LearnKeys(void);
-  void DisplayChannelNumber(int Number);
-  void DisplayRecording(int Index, bool On);
-  bool Recording(void);
   };
 
 extern cInterface *Interface;
