@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.15 2001/03/02 22:59:37 kls Exp $
+ * $Id: svdrp.c 1.16 2001/04/01 14:09:29 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -113,7 +113,6 @@ int cSocket::Accept(void)
 
 // --- cSVDRP ----------------------------------------------------------------
 
-#define MAXCMDBUFFER 10000
 #define MAXHELPTOPIC 10
 
 const char *HelpPages[] = {
@@ -234,6 +233,7 @@ const char *GetHelpPage(const char *Cmd)
 cSVDRP::cSVDRP(int Port)
 :socket(Port)
 {
+  numChars = 0;
   message = NULL;
   lastActivity = 0;
   isyslog(LOG_INFO, "SVDRP listening on port %d", Port);
@@ -842,7 +842,8 @@ void cSVDRP::Execute(char *Cmd)
   char *s = Cmd;
   while (*s && !isspace(*s))
         s++;
-  *s++ = 0;
+  if (*s)
+     *s++ = 0;
   if      (CMD("CHAN"))  CmdCHAN(s);
   else if (CMD("DELC"))  CmdDELC(s);
   else if (CMD("DELT"))  CmdDELT(s);
@@ -864,8 +865,7 @@ void cSVDRP::Execute(char *Cmd)
   else if (CMD("OVLP"))  CmdOVLP(s);
   else if (CMD("OVLO"))  CmdOVLO(s);
   else if (CMD("UPDT"))  CmdUPDT(s);
-  else if (CMD("QUIT")
-       ||  CMD("\x04"))  Close();
+  else if (CMD("QUIT"))  Close();
   else                   Reply(500, "Command unrecognized: \"%s\"", Cmd);
 }
 
@@ -875,29 +875,55 @@ void cSVDRP::Process(void)
   bool SendGreeting = NewConnection;
 
   if (file.IsOpen() || file.Open(socket.Accept())) {
-     char buffer[MAXCMDBUFFER];
      if (SendGreeting) {
         //TODO how can we get the *full* hostname?
+        char buffer[MAXCMDBUFFER];
         gethostname(buffer, sizeof(buffer));
         time_t now = time(NULL);
         Reply(220, "%s SVDRP VideoDiskRecorder %s; %s", buffer, VDRVERSION, ctime(&now));
         }
      if (NewConnection)
         lastActivity = time(NULL);
-     int rbytes = file.ReadString(buffer, sizeof(buffer) - 1);
-     if (rbytes > 0) {
-        //XXX overflow check???
-        // strip trailing whitespace:
-        while (rbytes > 0 && strchr(" \t\r\n", buffer[rbytes - 1]))
-              buffer[--rbytes] = 0;
-        // make sure the string is terminated:
-        buffer[rbytes] = 0;
-        // showtime!
-        Execute(buffer);
-        lastActivity = time(NULL);
+     if (file.Ready(false)) {
+        unsigned char c;
+        int r = read(file, &c, 1);
+        if (r > 0) {
+           if (c == '\n' || c == 0x00) {
+              // strip trailing whitespace:
+              while (numChars > 0 && strchr(" \t\r\n", cmdLine[numChars - 1]))
+                    cmdLine[--numChars] = 0;
+              // make sure the string is terminated:
+              cmdLine[numChars] = 0;
+              // showtime!
+              Execute(cmdLine);
+              numChars = 0;
+              }
+           else if (c == 0x04 && numChars == 0) {
+              // end of file (only at beginning of line)
+              Close();
+              }
+           else if (c == 0x08 || c == 0x7F) {
+              // backspace or delete (last character)
+              if (numChars > 0)
+                 numChars--;
+              }
+           else if (c <= 0x03 || c == 0x0D || 0xF0 <= c) {
+              // ignore control characters
+              }
+           else if (numChars < sizeof(cmdLine) - 1) {
+              cmdLine[numChars++] = c;
+              cmdLine[numChars] = 0;
+              }
+           else {
+              Reply(501, "Command line too long");
+              esyslog(LOG_ERR, "SVDRP: command line too long: '%s'", cmdLine);
+              numChars = 0;
+              }
+           lastActivity = time(NULL);
+           }
+        else if (r < 0)
+           Close();
         }
-     else if (rbytes < 0)
-        Close();
      else if (Setup.SVDRPTimeout && time(NULL) - lastActivity > Setup.SVDRPTimeout) {
         isyslog(LOG_INFO, "timeout on SVDRP connection");
         Close(true);

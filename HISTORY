@@ -447,3 +447,6 @@ Video Disk Recorder Revision History
 - Fixed a segfault that sometimes happened when killing VDR.
 - VDR now returns an exit status of '2' in case of an error at startup, instead
   of terminating with 'abort()' (which caused a core dump).
+- SVDRP now also works with clients that don't do line buffering (like the
+  Windows 'telnet').
+  
