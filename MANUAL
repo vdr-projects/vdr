@@ -18,10 +18,10 @@ Video Disk Recorder User's Manual
   Menu    Menu on     Menu off   Menu off   Menu off   Menu off      Menu off    Menu on
   Back    -           Menu off   Main menu  Main menu  Discard       Main menu   Recordings menu
   Red     -           Record     Edit       Edit       -             Play        -
-  Green   -           -          New        New        -             -           Skip -60s
+  Green   -           -          New        New        -             Rewind      Skip -60s
   Yellow  -           -          Delete     Delete     -             Delete      Skip +60s
-  Blue    -           Resume     Mark       Mark       -             -           Stop
-  0..9    Ch select   -          -          -          Numeric inp.  -           -
+  Blue    -           Resume     Mark       Mark       -             Summary     Stop
+  0..9    Ch select   -          -          -          Numeric inp.  -           Editing
 
 * Navigating through the On Screen Menus
 

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.64 2001/02/10 15:34:35 kls Exp $
+ * $Id: menu.c 1.65 2001/02/11 11:01:47 kls Exp $
  */
 
 #include "menu.h"
@@ -1497,7 +1497,7 @@ cMenuRecordings::cMenuRecordings(void)
            recording = Recordings.Next(recording);
            }
      }
-  SetHelp(tr("Play"), NULL, tr("Delete"), tr("Summary"));
+  SetHelp(tr("Play"), tr("Rewind"), tr("Delete"), tr("Summary"));
   Display();
 }
 
@@ -1507,6 +1507,18 @@ eOSState cMenuRecordings::Play(void)
   if (ri) {
      cReplayControl::SetRecording(ri->recording->FileName(), ri->recording->Title());
      return osReplay;
+     }
+  return osContinue;
+}
+
+eOSState cMenuRecordings::Rewind(void)
+{
+  cMenuRecordingItem *ri = (cMenuRecordingItem *)Get(Current());
+  if (ri) {
+     cDvbApi::PrimaryDvbApi->StopReplay(); // must do this first to be able to rewind the currently replayed recording
+     cResumeFile ResumeFile(ri->recording->FileName());
+     ResumeFile.Delete();
+     return Play();
      }
   return osContinue;
 }
@@ -1551,6 +1563,7 @@ eOSState cMenuRecordings::ProcessKey(eKeys Key)
      switch (Key) {
        case kOk:
        case kRed:    return Play();
+       case kGreen:  return Rewind();
        case kYellow: return Del();
        case kBlue:   return Summary();
        case kMenu:   return osEnd;

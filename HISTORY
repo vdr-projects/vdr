@@ -350,7 +350,7 @@ Video Disk Recorder Revision History
 - Encrypted channels can now be selected even without knowing the PNR (however, it
   is still necessary for the EPG info).
 
-2001-02-10: Version 0.71
+2001-02-11: Version 0.71
 
 - Fixed 'Transfer Mode' in cases where a non-primary interface was switched to
   a channel that only the primary interface can receive (which could happen in
@@ -386,3 +386,5 @@ Video Disk Recorder Revision History
   module only works if it is inserted into the last DVB card).
 - The "Now", "Next" and "Schedule" menus now remember the current channel and
   restore the list when switching between them.
+- The "Green" button in the "Recordings" menu can now be used to rewind a
+  recording and play it from the very beginning.

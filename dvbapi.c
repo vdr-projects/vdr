@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.57 2001/02/03 17:43:21 kls Exp $
+ * $Id: dvbapi.c 1.58 2001/02/11 11:04:41 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -67,7 +67,6 @@ extern "C" {
 #define DISKCHECKINTERVAL   100 // seconds
 
 #define INDEXFILESUFFIX     "/index.vdr"
-#define RESUMEFILESUFFIX    "/resume.vdr"
 #define RECORDFILESUFFIX    "/%03d.vdr"
 #define RECORDFILESUFFIXLEN 20 // some additional bytes for safety...
 
@@ -103,56 +102,6 @@ int HMSFToIndex(const char *HMSF)
   if (3 <= sscanf(HMSF, "%d:%d:%d.%d", &h, &m, &s, &f))
      return (h * 3600 + m * 60 + s) * FRAMESPERSEC + f - 1;
   return 0;
-}
-
-// --- cResumeFile ------------------------------------------------------------
-
-cResumeFile::cResumeFile(const char *FileName)
-{
-  fileName = new char[strlen(FileName) + strlen(RESUMEFILESUFFIX) + 1];
-  if (fileName) {
-     strcpy(fileName, FileName);
-     strcat(fileName, RESUMEFILESUFFIX);
-     }
-  else
-     esyslog(LOG_ERR, "ERROR: can't allocate memory for resume file name");
-}
-
-cResumeFile::~cResumeFile()
-{
-  delete fileName;
-}
-
-int cResumeFile::Read(void)
-{
-  int resume = -1;
-  if (fileName) {
-     int f = open(fileName, O_RDONLY);
-     if (f >= 0) {
-        if (read(f, &resume, sizeof(resume)) != sizeof(resume)) {
-           resume = -1;
-           LOG_ERROR_STR(fileName);
-           }
-        close(f);
-        }
-     else if (errno != ENOENT)
-        LOG_ERROR_STR(fileName);
-     }
-  return resume;
-}
-
-bool cResumeFile::Save(int Index)
-{
-  if (fileName) {
-     int f = open(fileName, O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR | S_IRGRP);
-     if (f >= 0) {
-        if (write(f, &Index, sizeof(Index)) != sizeof(Index))
-           LOG_ERROR_STR(fileName);
-        close(f);
-        return true;
-        }
-     }
-  return false;
 }
 
 // --- cIndexFile ------------------------------------------------------------
