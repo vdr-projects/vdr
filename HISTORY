@@ -3134,3 +3134,7 @@ Video Disk Recorder Revision History
 - Added missing initialization of cEvent::seen.
 - Checking PID language codes for ISO 639 compliance to avoid problems with
   funny characters. Invalid language codes will be stored as "???".
+- The '0' key now toggles the "Day" item in the "Timers" menu between "single
+  shot" and "repeating". The keys '1'...'7' can be used to toggle the individual
+  days ('1' is monday). Thanks to Sascha Klek for reporting a problem with the
+  '0' key in the "Day" item of the "Timers" menu.

@@ -24,7 +24,7 @@ Version 1.2
   Green   -           Language     New        New        Ins/Ovr       Rewind            Skip -60s
   Yellow  -           Pause live   Delete     Delete     Delete        Delete            Skip +60s
   Blue    -           Stop/Resume  Mark       On/Off(1)  -             Summary           Stop
-  0..9    Ch select   -            Sort(3)    -          Numeric inp.  Exec cmd(2)       Editing
+  0..9    Ch select   -            Sort(3)    Day(4)     Numeric inp.  Exec cmd(2)       Editing
 
   In a numerical input field (like the response to a CAM enquiry) the keys 0..9
   are used to enter the data, and the Left key can be used to delete the last
@@ -73,6 +73,9 @@ Version 1.2
   (2) See "Processing Recordings" below.
   (3) In the "Channels" menu the '0' key switches the sort mode through "by number",
       "by name" and "by provider".
+  (4) In the "Timers" menu, when on the "Day" item, the '0' key toggles between
+      a single shot and a repeating timer. If "Day" indicates a repeating timer,
+      the keys '1'...'7' can be used to toggle the individual days ('1' is monday).
 
 * Navigating through the On Screen Menus
 
@@ -369,6 +372,9 @@ Version 1.2
              by listing the days of the week on which they shall record.
              For example, a timer that shall record every monday and wednesday
              would have a Day setting of "M-W----".
+             The '0' key toggles between a single shot and a repeating timer.
+             If "Day" indicates a repeating timer, the keys '1'...'7' can be
+             used to toggle the individual days ('1' is monday).
   Start:     The start time of the timer in hh:mm as 24 hour ("military") time.
   Stop:      The stop time of the timer.
   VPS:       Defines whether the timer shall use VPS (if available). If this

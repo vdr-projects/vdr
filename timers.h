@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.h 1.10 2004/10/31 16:41:17 kls Exp $
+ * $Id: timers.h 1.11 2004/11/14 16:02:28 kls Exp $
  */
 
 #ifndef __TIMERS_H
@@ -64,8 +64,8 @@ public:
   bool Parse(const char *s);
   bool Save(FILE *f);
   bool IsSingleEvent(void) const;
-  int GetMDay(time_t t) const;
-  int GetWDay(time_t t) const;
+  static int GetMDay(time_t t);
+  static int GetWDay(time_t t);
   bool DayMatches(time_t t) const;
   static time_t IncDay(time_t t, int Days);
   static time_t SetTime(time_t t, int SecondsFromMidnight);

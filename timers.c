@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 1.16 2004/10/31 16:41:30 kls Exp $
+ * $Id: timers.c 1.17 2004/11/14 16:02:42 kls Exp $
  */
 
 #include "timers.h"
@@ -256,13 +256,13 @@ bool cTimer::IsSingleEvent(void) const
   return (day & 0x80000000) == 0;
 }
 
-int cTimer::GetMDay(time_t t) const
+int cTimer::GetMDay(time_t t)
 {
   struct tm tm_r;
   return localtime_r(&t, &tm_r)->tm_mday;
 }
 
-int cTimer::GetWDay(time_t t) const
+int cTimer::GetWDay(time_t t)
 {
   struct tm tm_r;
   int weekday = localtime_r(&t, &tm_r)->tm_wday;
