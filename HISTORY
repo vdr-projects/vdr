@@ -1150,7 +1150,7 @@ Video Disk Recorder Revision History
   to their appropriate system locations and creates the /video directory if
   it doesn't exist yet.
 - Automatic hotkey assignment is now suppressed if the first entry in
-  commands.conf starts with a digit in the range '1'...'9', followed by a blank.
+  'commands.conf' starts with a digit in the range '1'...'9', followed by a blank.
 - Fixed a bug in switching back the replay mode display in time shift mode
   (thanks to Achim Lange for reporting this one).
 - Fixed a bug in the "First day" timer parameter for timers that record over
@@ -1599,3 +1599,6 @@ Video Disk Recorder Revision History
 - Reactivated full handling of second audio PID (even in 'Transfer Mode').
 - Fixed a crash when closing down with remote control plugins (thanks to Oliver
   Endriss helping to debug this one).
+- Commands in the file 'commands.conf' can now have a '?' at the end of their
+  title, which will result in a confirmation prompt before executing the
+  command.

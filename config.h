@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.132 2002/10/06 16:03:01 kls Exp $
+ * $Id: config.h 1.133 2002/10/13 08:35:49 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -87,12 +87,14 @@ class cCommand : public cListObject {
 private:
   char *title;
   char *command;
+  bool confirm;
   static char *result;
 public:
   cCommand(void);
   virtual ~cCommand();
   bool Parse(const char *s);
   const char *Title(void) { return title; }
+  bool Confirm(void) { return confirm; }
   const char *Execute(void);
   };
 

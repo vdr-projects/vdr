@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.107 2002/10/03 10:06:55 kls Exp $
+ * $Id: config.c 1.108 2002/10/13 08:52:25 kls Exp $
  */
 
 #include "config.h"
@@ -360,6 +360,7 @@ char *cCommand::result = NULL;
 cCommand::cCommand(void)
 {
   title = command = NULL;
+  confirm = false;
 }
 
 cCommand::~cCommand()
@@ -374,9 +375,14 @@ bool cCommand::Parse(const char *s)
   if (p) {
      int l = p - s;
      if (l > 0) {
-        title = new char[l + 1];
-        strn0cpy(title, s, l + 1);
+        title = MALLOC(char, l + 1);
+        stripspace(strn0cpy(title, s, l + 1));
         if (!isempty(title)) {
+           int l = strlen(title);
+           if (l > 1 && title[l - 1] == '?') {
+              confirm = true;
+              title[l - 1] = 0;
+              }
            command = stripspace(strdup(skipspace(p + 1)));
            return !isempty(command);
            }

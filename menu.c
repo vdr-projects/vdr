@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.214 2002/10/12 13:34:56 kls Exp $
+ * $Id: menu.c 1.215 2002/10/13 08:44:33 kls Exp $
  */
 
 #include "menu.h"
@@ -2079,13 +2079,21 @@ eOSState cMenuCommands::Execute(void)
   cCommand *command = Commands.Get(Current());
   if (command) {
      char *buffer = NULL;
-     asprintf(&buffer, "%s...", command->Title());
-     Interface->Status(buffer);
-     Interface->Flush();
-     free(buffer);
-     const char *Result = command->Execute();
-     if (Result)
-        return AddSubMenu(new cMenuText(command->Title(), Result, fontFix));
+     bool confirmed = true;
+     if (command->Confirm()) {
+        asprintf(&buffer, "%s?", command->Title());
+        confirmed = Interface->Confirm(buffer);
+        free(buffer);
+        }
+     if (confirmed) {
+        asprintf(&buffer, "%s...", command->Title());
+        Interface->Status(buffer);
+        Interface->Flush();
+        free(buffer);
+        const char *Result = command->Execute();
+        if (Result)
+           return AddSubMenu(new cMenuText(command->Title(), Result, fontFix));
+        }
      }
   return osContinue;
 }
