@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.36 2000/10/03 13:52:26 kls Exp $
+ * $Id: vdr.c 1.37 2000/10/08 10:32:44 kls Exp $
  */
 
 #include <getopt.h>
@@ -257,10 +257,12 @@ int main(int argc, char *argv[])
                      Menu = new cDirectChannelSelect(key);
                   break;
              // Left/Right rotates trough channel groups:
+             case kLeft|k_Repeat:
              case kLeft:
+             case kRight|k_Repeat:
              case kRight: if (!Interface.Recording()) {
                              int SaveGroup = CurrentGroup;
-                             if (key == kRight)
+                             if (NORMALKEY(key) == kRight)
                                 CurrentGroup = Channels.GetNextGroup(CurrentGroup) ; 
                              else
                                 CurrentGroup = Channels.GetPrevGroup(CurrentGroup < 1 ? 1 : CurrentGroup);
@@ -271,9 +273,11 @@ int main(int argc, char *argv[])
                              }
                           break;
              // Up/Down Channel Select:
+             case kUp|k_Repeat:
              case kUp:
+             case kDown|k_Repeat:
              case kDown: if (!Interface.Recording()) {
-                            int n = CurrentChannel + (key == kUp ? 1 : -1);
+                            int n = CurrentChannel + (NORMALKEY(key) == kUp ? 1 : -1);
                             cChannel *channel = Channels.GetByNumber(n);
                             if (channel)
                                channel->Switch();

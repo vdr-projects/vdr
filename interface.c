@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.c 1.22 2000/10/07 16:42:37 kls Exp $
+ * $Id: interface.c 1.23 2000/10/08 11:17:11 kls Exp $
  */
 
 #include "interface.h"
@@ -58,21 +58,29 @@ void cInterface::Close(void)
      cDvbApi::PrimaryDvbApi->Close();
 }
 
-unsigned int cInterface::GetCh(bool Wait)
+unsigned int cInterface::GetCh(bool Wait, bool *Repeat, bool *Release)
 {
   if (open)
      cDvbApi::PrimaryDvbApi->Flush();
   if (!RcIo.InputAvailable())
      cFile::AnyFileReady(-1, Wait ? 1000 : 0);
   unsigned int Command;
-  return RcIo.GetCommand(&Command) ? Command : 0;
+  return RcIo.GetCommand(&Command, Repeat, Release) ? Command : 0;
 }
 
 eKeys cInterface::GetKey(bool Wait)
 {
   if (SVDRP)
      SVDRP->Process();
-  eKeys Key = keyFromWait != kNone ? keyFromWait : Keys.Get(GetCh(Wait));
+  eKeys Key = keyFromWait;
+  if (Key == kNone) {
+     bool Repeat = false, Release = false;
+     Key = Keys.Get(GetCh(Wait, &Repeat, &Release));
+     if (Repeat)
+        Key = eKeys(Key | k_Repeat);
+     if (Release)
+        Key = eKeys(Key | k_Release);
+     }
   keyFromWait = kNone;
   return Key;
 }
@@ -90,10 +98,10 @@ eKeys cInterface::Wait(int Seconds, bool KeepChar)
   time_t timeout = time(NULL) + Seconds;
   for (;;) {
       Key = GetKey();
-      if (Key != kNone || time(NULL) > timeout)
+      if ((Key != kNone && (NORMALKEY(Key) != kOk || NORMALKEY(Key) == Key)) || time(NULL) > timeout)
          break;
       }
-  if (KeepChar)
+  if (KeepChar && ISNORMALKEY(Key))
      keyFromWait = Key;
   return Key;
 }

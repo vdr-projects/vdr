@@ -221,3 +221,13 @@ Video Disk Recorder Revision History
   that would display only partially).
 - In normal viewing mode the '0' key now toggles between the current and the
   previous channel.
+
+2000-10-08: Version 0.66
+
+- Remote control data is now received in a separate thread, which makes things
+  a lot smoother.
+- Repeat and release of remote control keys is now explicitly distinguished.
+- In replay mode the search forward/back and skip functions now have two modes:
+  Pressing the key shortly and releasing it starts the function, and pressing it
+  again stops it. Pressing and holding down the key starts the function and
+  releasing the key stops it.

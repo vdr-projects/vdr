@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.23 2000/10/07 17:34:23 kls Exp $
+ * $Id: config.h 1.24 2000/10/08 10:38:17 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -34,8 +34,15 @@ enum eKeys { // "Up" and "Down" must be the first two keys!
              kYellow,
              kBlue,
              k0, k1, k2, k3, k4, k5, k6, k7, k8, k9,
-             kNone
+             kNone,
+             // The following flags are OR'd with the above codes:
+             k_Repeat  = 0x8000,
+             k_Release = 0x4000,
+             k_Flags   = k_Repeat | k_Release,
            };
+
+#define ISNORMALKEY(k) ((k) != kNone && ((k) & k_Flags) == 0)
+#define NORMALKEY(k)   ((k) & ~k_Flags)
 
 struct tKey {
   eKeys type;

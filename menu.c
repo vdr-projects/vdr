@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.30 2000/10/03 14:06:44 kls Exp $
+ * $Id: menu.c 1.31 2000/10/08 10:47:17 kls Exp $
  */
 
 #include "menu.h"
@@ -94,11 +94,11 @@ eOSState cMenuEditIntItem::ProcessKey(eKeys Key)
            }
         newValue = *value  * 10 + (Key - k0);
         }
-     else if (Key == kLeft) { // TODO might want to increase the delta if repeated quickly?
+     else if (NORMALKEY(Key) == kLeft) { // TODO might want to increase the delta if repeated quickly?
         newValue = *value - 1;
         fresh = true;
         }
-     else if (Key == kRight) {
+     else if (NORMALKEY(Key) == kRight) {
         newValue = *value + 1;
         fresh = true;
         }
@@ -211,6 +211,7 @@ void cMenuEditDayItem::Set(void)
 eOSState cMenuEditDayItem::ProcessKey(eKeys Key)
 {
   switch (Key) {
+    case kLeft|k_Repeat:
     case kLeft:  if (d > 0)
                     *value = days[--d];
                  else if (d == 0) {
@@ -225,6 +226,7 @@ eOSState cMenuEditDayItem::ProcessKey(eKeys Key)
                     return cMenuEditIntItem::ProcessKey(Key);
                  Set();
                  break;
+    case kRight|k_Repeat:
     case kRight: if (d >= 0) {
                     *value = days[++d];
                     if (*value == 0) {
@@ -310,7 +312,7 @@ eOSState cMenuEditTimeItem::ProcessKey(eKeys Key)
                   break;
           }
         }
-     else if (Key == kLeft) { // TODO might want to increase the delta if repeated quickly?
+     else if (NORMALKEY(Key) == kLeft) { // TODO might want to increase the delta if repeated quickly?
         if (--mm < 0) {
            mm = 59;
            if (--hh < 0)
@@ -318,7 +320,7 @@ eOSState cMenuEditTimeItem::ProcessKey(eKeys Key)
            }
         fresh = true;
         }
-     else if (Key == kRight) {
+     else if (NORMALKEY(Key) == kRight) {
         if (++mm > 59) {
            mm = 0;
            if (++hh > 23)
@@ -377,11 +379,11 @@ eOSState cMenuEditChrItem::ProcessKey(eKeys Key)
   eOSState state = cMenuEditItem::ProcessKey(Key);
 
   if (state == osUnknown) {
-     if (Key == kLeft) {
+     if (NORMALKEY(Key) == kLeft) {
         if (current > allowed)
            current--;
         }
-     else if (Key == kRight) {
+     else if (NORMALKEY(Key) == kRight) {
         if (*(current + 1))
            current++;
         }
@@ -455,12 +457,14 @@ char cMenuEditStrItem::Inc(char c, bool Up)
 eOSState cMenuEditStrItem::ProcessKey(eKeys Key)
 {
   switch (Key) {
+    case kLeft|k_Repeat:
     case kLeft:  if (pos > 0) {
                     if (value[pos] == '^')
                        value[pos] = 0;
                     pos--;
                     }
                  break;
+    case kRight|k_Repeat:
     case kRight: if (pos < length && value[pos] != '^' && (pos < int(strlen(value) - 1) || value[pos] != ' ')) {
                     if (++pos >= int(strlen(value))) {
                        value[pos] = ' ';
@@ -468,9 +472,11 @@ eOSState cMenuEditStrItem::ProcessKey(eKeys Key)
                        }
                     }
                  break;
+    case kUp|k_Repeat:
     case kUp:
+    case kDown|k_Repeat:
     case kDown:  if (pos >= 0)
-                    value[pos] = Inc(value[pos], Key == kUp);
+                    value[pos] = Inc(value[pos], NORMALKEY(Key) == kUp);
                  else
                     return cMenuEditItem::ProcessKey(Key);
                  break;
@@ -1388,7 +1394,12 @@ eOSState cReplayControl::ProcessKey(eKeys Key)
                    return osEnd;
     case kLeft:    dvbApi->Backward(); break;
     case kRight:   dvbApi->Forward(); break;
+    case kLeft|k_Release:
+    case kRight|k_Release:
+                   dvbApi->Play(); break;
+    case kGreen|k_Repeat:
     case kGreen:   dvbApi->Skip(-60); break;
+    case kYellow|k_Repeat:
     case kYellow:  dvbApi->Skip(60); break;
     case kMenu:    Hide(); return osMenu; // allow direct switching to menu
     case kOk:      visible ? Hide() : Show(); break;

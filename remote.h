@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remote.h 1.11 2000/10/07 18:50:51 kls Exp $
+ * $Id: remote.h 1.12 2000/10/08 11:19:17 kls Exp $
  */
 
 #ifndef __REMOTE_H
@@ -30,7 +30,7 @@ public:
   virtual bool DetectCode(unsigned char *Code, unsigned short *Address) { return true; }
   virtual void Flush(int WaitMs = 0) {}
   virtual bool InputAvailable(void) = 0;
-  virtual bool GetCommand(unsigned int *Command = NULL) = 0;
+  virtual bool GetCommand(unsigned int *Command = NULL, bool *Repeat = NULL, bool *Release = NULL) = 0;
   };
 
 #if defined REMOTE_KBD
@@ -43,7 +43,7 @@ public:
   virtual ~cRcIoKBD();
   virtual void Flush(int WaitMs = 0);
   virtual bool InputAvailable(void);
-  virtual bool GetCommand(unsigned int *Command = NULL);
+  virtual bool GetCommand(unsigned int *Command = NULL, bool *Repeat = NULL, bool *Release = NULL);
   };
 
 #elif defined REMOTE_RCU
@@ -55,7 +55,7 @@ private:
   unsigned short address;
   unsigned short receivedAddress;
   unsigned int receivedCommand;
-  bool receivedData, receivedRepeat;
+  bool receivedData, receivedRepeat, receivedRelease;
   int lastNumber;
   bool SendCommand(unsigned char Cmd);
   int ReceiveByte(int TimeoutMs = 0);
@@ -74,7 +74,7 @@ public:
   virtual bool DetectCode(unsigned char *Code, unsigned short *Address);
   virtual void Flush(int WaitMs = 0);
   virtual bool InputAvailable(void) { return receivedData; }
-  virtual bool GetCommand(unsigned int *Command = NULL);
+  virtual bool GetCommand(unsigned int *Command = NULL, bool *Repeat = NULL, bool *Release = NULL);
   };
 
 #elif defined REMOTE_LIRC
@@ -84,13 +84,13 @@ private:
   enum { LIRC_KEY_BUF = 8, LIRC_BUFFER_SIZE = 128 };
   int f;
   char keyName[LIRC_KEY_BUF];
-  bool receivedData, receivedRepeat;
+  bool receivedData, receivedRepeat, receivedRelease;
   virtual void Action(void);
 public:
   cRcIoLIRC(char *DeviceName);
   virtual ~cRcIoLIRC();
   virtual bool InputAvailable(void) { return receivedData; }
-  virtual bool GetCommand(unsigned int *Command = NULL);
+  virtual bool GetCommand(unsigned int *Command = NULL, bool *Repeat = NULL, bool *Release = NULL);
   };
 
 #else

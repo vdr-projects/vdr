@@ -118,8 +118,12 @@ Video Disk Recorder User's Manual
     Right   Runs playback forward or backward at a higher speed; press
             again to resume normal speed. If in Pause mode, runs forward or
             backward at a slower speed; press again to return to pause mode.
+            Pressing and holding down the button performs the function until
+            the button is released again.
   - Green
     Yellow  Skips about 60 seconds back or forward.
+            Pressing and holding down the button performs the function until
+            the button is released again.
   - Ok      Brings up the replay progress display, which shows the date,
             time and title of the recording, a progress bar and the
             current and total time of the recording.

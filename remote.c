@@ -6,7 +6,7 @@
  *
  * Ported to LIRC by Carsten Koch <Carsten.Koch@icem.de>  2000-06-16.
  *
- * $Id: remote.c 1.16 2000/10/08 09:25:20 kls Exp $
+ * $Id: remote.c 1.17 2000/10/08 11:39:11 kls Exp $
  */
 
 #include "remote.h"
@@ -69,7 +69,7 @@ bool cRcIoKBD::InputAvailable(void)
   return f.Ready(false);
 }
 
-bool cRcIoKBD::GetCommand(unsigned int *Command)
+bool cRcIoKBD::GetCommand(unsigned int *Command, bool *Repeat, bool *Release)
 {
   if (Command) {
      *Command = getch();
@@ -93,7 +93,7 @@ cRcIoRCU::cRcIoRCU(char *DeviceName)
   address = 0xFFFF;
   receivedAddress = 0;
   receivedCommand = 0;
-  receivedData = receivedRepeat = false;
+  receivedData = receivedRepeat = receivedRelease = false;
   lastNumber = 0;
   if ((f = open(DeviceName, O_RDWR | O_NONBLOCK)) >= 0) {
      struct termios t;
@@ -131,8 +131,8 @@ void cRcIoRCU::Action(void)
 
   dsyslog(LOG_INFO, "RCU remote control thread started (pid=%d)", getpid());
 
-  unsigned int LastCommand = 0;
   int FirstTime = 0;
+  unsigned int LastCommand = 0;
 
   for (; f >= 0;) {
 
@@ -151,20 +151,23 @@ void cRcIoRCU::Action(void)
                       // This remote control sends the above command before and after
                       // each keypress - let's just drop this:
                       break;
-                   int Now = time_ms();
-                   if (Command != LastCommand) {
-                      receivedAddress = Address;
-                      receivedCommand = Command;
-                      receivedData = true;
-                      FirstTime = Now;
+                   if (!receivedData) { // only accept new data the previous data has been fetched
+                      int Now = time_ms();
+                      if (Command != LastCommand) {
+                         receivedAddress = Address;
+                         receivedCommand = Command;
+                         receivedData = true;
+                         receivedRepeat = receivedRelease = false;
+                         FirstTime = Now;
+                         }
+                      else {
+                         if (Now - FirstTime < REPEATDELAY)
+                            break; // repeat function kicks in after a short delay
+                         receivedData = receivedRepeat = true;
+                         }
+                      LastCommand = Command;
+                      WakeUp();
                       }
-                   else {
-                      if (Now - FirstTime < REPEATDELAY)
-                         break; // repeat function kicks in after a short delay
-                      receivedData = receivedRepeat = true;
-                      }
-                   LastCommand = Command;
-                   WakeUp();
                    }
                 }
              else
@@ -172,16 +175,15 @@ void cRcIoRCU::Action(void)
              }
          }
       else if (receivedData) { // the last data before releasing the key hasn't been fetched yet
-         if (receivedRepeat) { // it was a repeat, so let's drop it
-            //XXX replace it with "released"???
-            receivedData = receivedRepeat = false;
+         if (receivedRepeat) { // it was a repeat, so let's make it a release
+            receivedRepeat = false;
+            receivedRelease = true;
             LastCommand = 0;
-            //XXX WakeUp();
+            WakeUp();
             }
          }
-      else if (receivedRepeat) { // all data has already been fetched, but the last one was a repeat
-         //XXX replace it with "released"???
-         //XXX receivedData = true;
+      else if (receivedRepeat) { // all data has already been fetched, but the last one was a repeat, so let's generate a release
+         receivedData = receivedRelease = true;
          receivedRepeat = false;
          LastCommand = 0;
          WakeUp();
@@ -266,7 +268,7 @@ void cRcIoRCU::Flush(int WaitMs)
   receivedData = receivedRepeat = false;
 }
 
-bool cRcIoRCU::GetCommand(unsigned int *Command)
+bool cRcIoRCU::GetCommand(unsigned int *Command, bool *Repeat, bool *Release)
 {
   if (receivedData) { // first we check the boolean flag without a lock, to avoid delays
 
@@ -275,7 +277,10 @@ bool cRcIoRCU::GetCommand(unsigned int *Command)
      if (receivedData) { // need to check again, since the status might have changed while waiting for the lock
         if (Command)
            *Command = receivedCommand;
-        //XXX repeat!!!
+        if (Repeat)
+           *Repeat = receivedRepeat;
+        if (Release)
+           *Release = receivedRelease;
         receivedData = false;
         return true;
         }
@@ -422,47 +427,47 @@ void cRcIoLIRC::Action(void)
 
   int FirstTime = 0;
   char buf[LIRC_BUFFER_SIZE];
+  char LastKeyName[LIRC_KEY_BUF];
 
   for (; f >= 0;) {
 
       LOCK_THREAD;
 
       if (cFile::FileReady(f, REPEATLIMIT) && read(f, buf, sizeof(buf)) > 21) {
-         int count;
-         sscanf(buf, "%*x %x %7s", &count, keyName); // '7' in '%7s' is LIRC_KEY_BUF-1!
-         int Now = time_ms();
-         if (count == 0) {
-            receivedData = true;
-            FirstTime = Now;
+         if (!receivedData) { // only accept new data the previous data has been fetched
+            int count;
+            sscanf(buf, "%*x %x %7s", &count, LastKeyName); // '7' in '%7s' is LIRC_KEY_BUF-1!
+            int Now = time_ms();
+            if (count == 0) {
+               strcpy(keyName, LastKeyName);
+               receivedData = true;
+               receivedRepeat = receivedRelease = false;
+               FirstTime = Now;
+               }
+            else {
+               if (Now - FirstTime < REPEATDELAY)
+                  continue; // repeat function kicks in after a short delay
+               receivedData = receivedRepeat = true;
+               }
+            WakeUp();
             }
-         else {
-            if (Now - FirstTime < REPEATDELAY)
-               continue; // repeat function kicks in after a short delay
-            receivedData = receivedRepeat = true;
-            }
-         WakeUp();
          }
       else if (receivedData) { // the last data before releasing the key hasn't been fetched yet
-         if (receivedRepeat) { // it was a repeat, so let's drop it
-            //XXX replace it with "released"???
-            receivedData = receivedRepeat = false;
-            *keyName = 0;
-            //XXX WakeUp();
+         if (receivedRepeat) { // it was a repeat, so let's make it a release
+            receivedRepeat = false;
+            receivedRelease = true;
+            WakeUp();
             }
          }
-      else if (receivedRepeat) { // all data has already been fetched, but the last one was a repeat
-         //XXX replace it with "released"???
-         //XXX receivedData = true;
+      else if (receivedRepeat) { // all data has already been fetched, but the last one was a repeat, so let's generate a release
+         receivedData = receivedRelease = true;
          receivedRepeat = false;
-         *keyName = 0;
          WakeUp();
          }
-      else
-         *keyName = 0;
       }
 }
 
-bool cRcIoLIRC::GetCommand(unsigned int *Command)
+bool cRcIoLIRC::GetCommand(unsigned int *Command, bool *Repeat, bool *Release)
 {
   if (receivedData) { // first we check the boolean flag without a lock, to avoid delays
 
@@ -471,7 +476,10 @@ bool cRcIoLIRC::GetCommand(unsigned int *Command)
      if (receivedData) { // need to check again, since the status might have changed while waiting for the lock
         if (Command)
            *Command = Keys.Encode(keyName);
-        //XXX repeat!!!
+        if (Repeat)
+           *Repeat = receivedRepeat;
+        if (Release)
+           *Release = receivedRelease;
         receivedData = false;
         return true;
         }
