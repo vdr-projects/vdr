@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.h 1.17 2000/10/01 14:28:49 kls Exp $
+ * $Id: dvbapi.h 1.18 2000/10/03 11:26:10 kls Exp $
  */
 
 #ifndef __DVBAPI_H
@@ -30,6 +30,16 @@ typedef struct CRect {
 
 #define MenuLines   15
 #define MenuColumns 40
+
+class cResumeFile {
+private:
+  char *fileName;
+public:
+  cResumeFile(const char *FileName);
+  ~cResumeFile();
+  int Read(void);
+  bool Save(int Index);
+  };
 
 class cDvbApi {
 private:

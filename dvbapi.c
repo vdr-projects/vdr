@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.28 2000/10/03 10:13:51 kls Exp $
+ * $Id: dvbapi.c 1.29 2000/10/03 11:25:57 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -72,6 +72,56 @@ extern "C" {
 
 typedef unsigned char uchar;
 
+// --- cResumeFile ------------------------------------------------------------
+
+cResumeFile::cResumeFile(const char *FileName)
+{
+  fileName = new char[strlen(FileName) + strlen(RESUMEFILESUFFIX) + 1];
+  if (fileName) {
+     strcpy(fileName, FileName);
+     strcat(fileName, RESUMEFILESUFFIX);
+     }
+  else
+     esyslog(LOG_ERR, "ERROR: can't allocate memory for resume file name");
+}
+
+cResumeFile::~cResumeFile()
+{
+  delete fileName;
+}
+
+int cResumeFile::Read(void)
+{
+  int resume = -1;
+  if (fileName) {
+     int f = open(fileName, O_RDONLY);
+     if (f >= 0) {
+        if (read(f, &resume, sizeof(resume)) != sizeof(resume)) {
+           resume = -1;
+           LOG_ERROR_STR(fileName);
+           }
+        close(f);
+        }
+     else if (errno != ENOENT)
+        LOG_ERROR_STR(fileName);
+     }
+  return resume;
+}
+
+bool cResumeFile::Save(int Index)
+{
+  if (fileName) {
+     int f = open(fileName, O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR | S_IRGRP);
+     if (f >= 0) {
+        if (write(f, &Index, sizeof(Index)) != sizeof(Index))
+           LOG_ERROR_STR(fileName);
+        close(f);
+        return true;
+        }
+     }
+  return false;
+}
+
 // --- cIndexFile ------------------------------------------------------------
 
 class cIndexFile {
@@ -79,8 +129,9 @@ private:
   struct tIndex { int offset; uchar type; uchar number; short reserved; };
   int f;
   char *fileName, *pFileExt;
-  int size, last, resume;
+  int size, last;
   tIndex *index;
+  cResumeFile resumeFile;
   bool CatchUp(void);
 public:
   cIndexFile(const char *FileName, bool Record = false);
@@ -90,21 +141,22 @@ public:
   int GetNextIFrame(int Index, bool Forward, uchar *FileNumber, int *FileOffset, int *Length = NULL);
   int Get(uchar FileNumber, int FileOffset);
   int Last(void) { return last; }
-  int GetResume(void) { return resume; }
-  bool StoreResume(int Index);
+  int GetResume(void) { return resumeFile.Read(); }
+  bool StoreResume(int Index) { return resumeFile.Save(Index); }
   static char *Str(int Index, bool WithFrame = false);
   };
 
 cIndexFile::cIndexFile(const char *FileName, bool Record)
+:resumeFile(FileName)
 {
   f = -1;
   fileName = pFileExt = NULL;
   size = 0;
-  last = resume = -1;
+  last = -1;
   index = NULL;
   if (FileName) {
-     fileName = new char[strlen(FileName) + strlen(INDEXFILESUFFIX) + strlen(RESUMEFILESUFFIX) + 1];
-     if (fileName) {                        // no max() function at hand...
+     fileName = new char[strlen(FileName) + strlen(INDEXFILESUFFIX) + 1];
+     if (fileName) {
         strcpy(fileName, FileName);
         pFileExt = fileName + strlen(fileName);
         strcpy(pFileExt, INDEXFILESUFFIX);
@@ -155,19 +207,6 @@ cIndexFile::cIndexFile(const char *FileName, bool Record)
               LOG_ERROR_STR(fileName);
            delete fileName;
            fileName = pFileExt = NULL;
-           }
-        else {
-           strcpy(pFileExt, RESUMEFILESUFFIX);
-           int resumeFile = open(fileName, O_RDONLY);
-           if (resumeFile >= 0) {
-              if (read(resumeFile, &resume, sizeof(resume)) != sizeof(resume)) {
-                 resume = -1;
-                 LOG_ERROR_STR(fileName);
-                 }
-              close(resumeFile);
-              }
-           else if (errno != ENOENT)
-              LOG_ERROR_STR(fileName);
            }
         }
      else
@@ -297,22 +336,6 @@ int cIndexFile::Get(uchar FileNumber, int FileOffset)
      return i;
      }
   return -1;
-}
-
-bool cIndexFile::StoreResume(int Index)
-{
-  if (fileName) {
-     int resumeFile = open(fileName, O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR | S_IRGRP);
-     if (resumeFile >= 0) {
-        if (write(resumeFile, &Index, sizeof(Index)) != sizeof(Index))
-           LOG_ERROR_STR(fileName);
-        close(resumeFile);
-        return true;
-        }
-     else if (errno != ENOENT)
-        LOG_ERROR_STR(fileName);
-     }
-  return false;
 }
 
 char *cIndexFile::Str(int Index, bool WithFrame)
