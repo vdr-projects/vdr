@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 1.24 2003/05/03 14:03:32 kls Exp $
+ * $Id: thread.c 1.25 2003/05/18 12:45:13 kls Exp $
  */
 
 #include "thread.h"
@@ -61,6 +61,7 @@ bool cCondVar::TimedWait(cMutex &Mutex, int TimeoutMs)
         if (pthread_cond_timedwait(&cond, &Mutex.mutex, &abstime) == ETIMEDOUT)
            r = false;
         Mutex.locked = locked;
+        Mutex.lockingPid = getpid();
         }
      }
   return r;

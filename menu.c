@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.243 2003/05/11 13:58:13 kls Exp $
+ * $Id: menu.c 1.245 2003/05/16 12:40:12 kls Exp $
  */
 
 #include "menu.h"
@@ -2909,7 +2909,7 @@ eOSState cDisplayVolume::ProcessKey(eKeys Key)
 
 // --- cRecordControl --------------------------------------------------------
 
-cRecordControl::cRecordControl(cDevice *Device, cTimer *Timer, bool Pause = false)
+cRecordControl::cRecordControl(cDevice *Device, cTimer *Timer, bool Pause)
 {
   eventInfo = NULL;
   instantId = NULL;
@@ -3494,7 +3494,9 @@ void cReplayControl::EditCut(void)
   if (fileName) {
      Hide();
      if (!cCutter::Active()) {
-        if (!cCutter::Start(fileName))
+        if (!marks.Count())
+           Interface->Error(tr("No editing marks defined!"));
+        else if (!cCutter::Start(fileName))
            Interface->Error(tr("Can't start editing process!"));
         else
            Interface->Info(tr("Editing process started"));

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.77 2003/05/11 13:09:08 kls Exp $
+ * $Id: recording.c 1.78 2003/05/18 15:17:45 kls Exp $
  */
 
 #include "recording.h"
@@ -764,9 +764,6 @@ void cRecordingUserCommand::InvokeCommand(const char *State, const char *Recordi
 
 #define INDEXFILESUFFIX     "/index.vdr"
 
-// The maximum time to wait before giving up while catching up on an index file:
-#define MAXINDEXCATCHUP   2 // seconds
-
 // The minimum age of an index file for considering it no longer to be written:
 #define MININDEXAGE    3600 // seconds
 
@@ -850,50 +847,47 @@ bool cIndexFile::CatchUp(int Index)
 {
   // returns true unless something really goes wrong, so that 'index' becomes NULL
   if (index && f >= 0) {
-     for (int i = 0; i <= MAXINDEXCATCHUP && (Index < 0 || Index >= last); i++) {
-         struct stat buf;
-         if (fstat(f, &buf) == 0) {
-            if (time(NULL) - buf.st_mtime > MININDEXAGE) {
-               // apparently the index file is not being written any more
-               close(f);
-               f = -1;
-               break;
-               }
-            int newLast = buf.st_size / sizeof(tIndex) - 1;
-            if (newLast > last) {
-               if (size <= newLast) {
-                  size *= 2;
-                  if (size <= newLast)
-                     size = newLast + 1;
-                  }
-               index = (tIndex *)realloc(index, size * sizeof(tIndex));
-               if (index) {
-                  int offset = (last + 1) * sizeof(tIndex);
-                  int delta = (newLast - last) * sizeof(tIndex);
-                  if (lseek(f, offset, SEEK_SET) == offset) {
-                     if (safe_read(f, &index[last + 1], delta) != delta) {
-                        esyslog("ERROR: can't read from index");
-                        free(index);
-                        index = NULL;
-                        close(f);
-                        f = -1;
-                        break;
-                        }
-                     last = newLast;
-                     }
-                  else
-                     LOG_ERROR_STR(fileName);
-                  }
-               else
-                  esyslog("ERROR: can't realloc() index");
-               }
-            }
-         else
-            LOG_ERROR_STR(fileName);
-         if (Index < last)
-            break;
-         sleep(1);
-         }
+     if (Index < 0 || Index >= last) {
+        struct stat buf;
+        if (fstat(f, &buf) == 0) {
+           if (time(NULL) - buf.st_mtime > MININDEXAGE) {
+              // apparently the index file is not being written any more
+              close(f);
+              f = -1;
+              return true;
+              }
+           int newLast = buf.st_size / sizeof(tIndex) - 1;
+           if (newLast > last) {
+              if (size <= newLast) {
+                 size *= 2;
+                 if (size <= newLast)
+                    size = newLast + 1;
+                 }
+              index = (tIndex *)realloc(index, size * sizeof(tIndex));
+              if (index) {
+                 int offset = (last + 1) * sizeof(tIndex);
+                 int delta = (newLast - last) * sizeof(tIndex);
+                 if (lseek(f, offset, SEEK_SET) == offset) {
+                    if (safe_read(f, &index[last + 1], delta) != delta) {
+                       esyslog("ERROR: can't read from index");
+                       free(index);
+                       index = NULL;
+                       close(f);
+                       f = -1;
+                       return true;
+                       }
+                    last = newLast;
+                    }
+                 else
+                    LOG_ERROR_STR(fileName);
+                 }
+              else
+                 esyslog("ERROR: can't realloc() index");
+              }
+           }
+        else
+           LOG_ERROR_STR(fileName);
+        }
      }
   return index != NULL;
 }

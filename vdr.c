@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.154 2003/05/11 08:39:09 kls Exp $
+ * $Id: vdr.c 1.155 2003/05/16 12:11:45 kls Exp $
  */
 
 #include <getopt.h>
@@ -399,6 +399,11 @@ int main(int argc, char *argv[])
 
   Interface = new cInterface(SVDRPport);
 
+  // Start plugins:
+
+  if (!PluginManager.StartPlugins())
+     return 2;
+
   // Remote Controls:
 #if defined(REMOTE_RCU)
   new cRcuRemote("/dev/ttyS1");
@@ -443,11 +448,6 @@ int main(int argc, char *argv[])
      dsyslog("setting watchdog timer to %d seconds", WatchdogTimeout);
      alarm(WatchdogTimeout); // Initial watchdog timer start
      }
-
-  // Start plugins:
-
-  if (!PluginManager.StartPlugins())
-     return 2;
 
   // Main program loop:
 

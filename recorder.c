@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recorder.c 1.5 2003/01/25 16:23:36 kls Exp $
+ * $Id: recorder.c 1.6 2003/05/16 13:33:04 kls Exp $
  */
 
 #include <stdarg.h>
@@ -15,6 +15,10 @@
 // The size of the array used to buffer video data:
 // (must be larger than MINVIDEODATA - see remux.h)
 #define VIDEOBUFSIZE  MEGABYTE(5)
+
+// The maximum time we wait before assuming that a recorded video data stream
+// is broken:
+#define MAXBROKENTIMEOUT 30 // seconds
 
 #define MINFREEDISKSPACE    (512) // MB
 #define DISKCHECKINTERVAL   100 // seconds
@@ -110,6 +114,7 @@ void cRecorder::Action(void)
 {
   dsyslog("recording thread started (pid=%d)", getpid());
 
+  time_t t = time(NULL);
   active = true;
   while (active) {
         int r;
@@ -134,6 +139,12 @@ void cRecorder::Action(void)
               else
                  break;
               }
+           t = time(NULL);
+           }
+        else if (time(NULL) - t > MAXBROKENTIMEOUT) {
+           esyslog("ERROR: video data stream broken");
+           cThread::EmergencyExit(true);
+           t = time(NULL);
            }
         else
            usleep(1); // this keeps the CPU load low

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.42 2003/05/11 08:53:09 kls Exp $
+ * $Id: device.c 1.43 2003/05/16 13:26:43 kls Exp $
  */
 
 #include "device.h"
@@ -24,10 +24,6 @@
 
 // The default priority for non-primary devices:
 #define DEFAULTPRIORITY  -2
-
-// The maximum time we wait before assuming that a recorded video data stream
-// is broken:
-#define MAXBROKENTIMEOUT 30 // seconds
 
 int cDevice::numDevices = 0;
 int cDevice::useDevice = 0;
@@ -656,7 +652,6 @@ void cDevice::Action(void)
   dsyslog("receiver thread started on device %d (pid=%d)", CardIndex() + 1, getpid());
 
   if (OpenDvr()) {
-     time_t t = time(NULL);
      active = true;
      for (; active;) {
          // Read data from the DVR device:
@@ -671,18 +666,10 @@ void cDevice::Action(void)
                       receiver[i]->Receive(b, TS_SIZE);
                    }
                Unlock();
-               t = time(NULL);
                }
             }
          else
             break;
-
-         //XXX+ put this into the recorder??? or give the receiver a flag whether it wants this?
-         if (time(NULL) - t > MAXBROKENTIMEOUT) {
-            esyslog("ERROR: video data stream broken on device %d", CardIndex() + 1);
-            cThread::EmergencyExit(true);
-            t = time(NULL);
-            }
          }
      CloseDvr();
      }

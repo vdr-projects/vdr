@@ -16,7 +16,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.h 1.28 2003/04/21 13:22:06 kls Exp $
+ * $Id: eit.h 1.29 2003/05/17 09:15:56 kls Exp $
  ***************************************************************************/
 
 #ifndef __EIT_H
@@ -148,6 +148,7 @@ private:
   bool masterSIProcessor;
   int currentSource;
   int currentTransponder;
+  int statusCount;
   int pmtIndex;
   int pmtPid;
   SIP_FILTER *filters;

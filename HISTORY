@@ -2116,7 +2116,7 @@ Video Disk Recorder Revision History
   (suggested by Andreas Schultz). Plugin authors should please read the section
   about "Getting started" in PLUGINS.html and adapt their code if applicable.
 - Implemented the CableDeliverySystemDescriptor and TerrestrialDeliverySystemDescriptor
-  in libdtv (thanks to Sven Grothklags and Andreas Schultz)
+  in libdtv (thanks to Sven Grothklags and Andreas Schultz).
 - Fixed keeping live video active in case the primary device doesn't have an MPEG
   decoder (thanks to Wolfgang Goeller for reporting this one).
 - Implemented cDevice::ActualDevice(), which returns the actual receiving device in
@@ -2142,3 +2142,33 @@ Video Disk Recorder Revision History
   created when pausing live video (suggested by Alfred Zastrow).
 - Changed C++ style comments in libdtv into C style to avoid warnings in gcc 3.x
   (thanks to Andreas Schultz).
+
+2003-05-18: Version 1.1.32
+
+- Removed a faulty parameter initialization in menu.c (thanks to Lauri Tischler for
+  reporting this one).
+- Re-implemented the WaitForPut/WaitForGet stuff in cRingBuffer, since some plugins
+  actually need this. By default the buffer does not wait; if a plugin needs the
+  waiting functionality it can call the new SetTimeouts() function.
+- Moved the call to cPlugin::Start() further up in vdr.c, to make sure it gets
+  called before trying to learn the keys (problem reported by Oliver Endriss).
+- No longer starting the editing process if no marks have been set (thanks to
+  Matthias Raus for reporting this one).
+- Added Catalanian language texts (thanks to Marc Rovira Vall and Ramon Roca).
+  Plugin authors may want to add the new entries to their I18N texts and contact
+  the translators to have their texts translated. Note that there are now 16
+  different OSD languages, so please make sure you have 16 versions for each of
+  your texts.
+- Moved the detection of a broken video data stream from the cDevice into the
+  cRecorder to avoid problems with cReceivers that want to receive from PIDs
+  that are currently not transmitting (thanks to Marcel Wiesweg for reporting
+  this one).
+- Fixed setting the locking pid after a timed wait (thanks to Andreas Schultz).
+- Avoiding spurious section filter settings after a channel switch.
+- Updated 'channels.conf.cable' (thanks to Stefan Huﬂfeldt).
+- Fixed reading 'epg.data' for channels with non-zero RID (thanks to Oliver
+  Endriss for reporting this one).
+- Fixed EPG bugfix statistics to avoid log entires for undefined channels (thanks
+  to Lars Bl‰ser for reporting this one).
+- No longer waiting inside cIndexFile::CatchUp() to avoid shortly blocking replay
+  at the end of a recording.

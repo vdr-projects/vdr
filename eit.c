@@ -16,7 +16,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.c 1.75 2003/05/11 11:25:04 kls Exp $
+ * $Id: eit.c 1.78 2003/05/18 14:10:25 kls Exp $
  ***************************************************************************/
 
 #include "eit.h"
@@ -434,27 +434,33 @@ static void ReportEpgBugFixStats(bool Reset = false)
          const char *delim = "\t";
          tEpgBugFixStats *p = &EpgBugFixStats[i];
          if (p->hits) {
-            if (!GotHits) {
-               dsyslog("=====================");
-               dsyslog("EPG bugfix statistics");
-               dsyslog("=====================");
-               dsyslog("IF SOMEBODY WHO IS IN CHARGE OF THE EPG DATA FOR ONE OF THE LISTED");
-               dsyslog("CHANNELS READS THIS: PLEASE TAKE A LOOK AT THE FUNCTION cEventInfo::FixEpgBugs()");
-               dsyslog("IN VDR/eit.c TO LEARN WHAT'S WRONG WITH YOUR DATA, AND FIX IT!");
-               dsyslog("=====================");
-               dsyslog("Fix\tHits\tChannels");
-               GotHits = true;
-               }
+            bool PrintedStats = false;
             char *q = buffer;
-            q += snprintf(q, sizeof(buffer) - (q - buffer), "%d\t%d", i, p->hits);
+            *buffer = 0;
             for (int c = 0; c < p->n; c++) {
                 cChannel *channel = Channels.GetByChannelID(p->channelIDs[c], true);
                 if (channel) {
+                   if (!GotHits) {
+                      dsyslog("=====================");
+                      dsyslog("EPG bugfix statistics");
+                      dsyslog("=====================");
+                      dsyslog("IF SOMEBODY WHO IS IN CHARGE OF THE EPG DATA FOR ONE OF THE LISTED");
+                      dsyslog("CHANNELS READS THIS: PLEASE TAKE A LOOK AT THE FUNCTION cEventInfo::FixEpgBugs()");
+                      dsyslog("IN VDR/eit.c TO LEARN WHAT'S WRONG WITH YOUR DATA, AND FIX IT!");
+                      dsyslog("=====================");
+                      dsyslog("Fix\tHits\tChannels");
+                      GotHits = true;
+                      }
+                   if (!PrintedStats) {
+                      q += snprintf(q, sizeof(buffer) - (q - buffer), "%d\t%d", i, p->hits);
+                      PrintedStats = true;
+                      }
                    q += snprintf(q, sizeof(buffer) - (q - buffer), "%s%s", delim, channel->Name());
                    delim = ", ";
                    }
                 }
-            dsyslog("%s", buffer);
+            if (*buffer)
+               dsyslog("%s", buffer);
             }
          if (Reset)
             p->hits = p->n = 0;
@@ -807,6 +813,7 @@ cSchedules::~cSchedules()
 /**  */
 const cSchedule *cSchedules::AddChannelID(tChannelID channelid)
 {
+  channelid.ClrRid();
   const cSchedule *p = GetSchedule(channelid);
   if (!p) {
      Add(new cSchedule(channelid));
@@ -1073,6 +1080,7 @@ cSIProcessor::cSIProcessor(const char *FileName)
    masterSIProcessor = numSIProcessors == 0; // the first one becomes the 'master'
    currentSource = 0;
    currentTransponder = 0;
+   statusCount = 0;
    pmtIndex = 0;
    pmtPid = 0;
    filters = NULL;
@@ -1150,6 +1158,7 @@ const char *cSIProcessor::GetEpgDataFileName(void)
 void cSIProcessor::SetStatus(bool On)
 {
    LOCK_THREAD;
+   statusCount++;
    ShutDownFilters();
    pmtIndex = 0;
    pmtPid = 0;
@@ -1176,6 +1185,7 @@ void cSIProcessor::Action()
    time_t lastCleanup = time(NULL);
    time_t lastPmtScan = time(NULL);
 
+   int oldStatusCount = 0;
    active = true;
 
    while(active)
@@ -1208,6 +1218,7 @@ void cSIProcessor::Action()
       }
 
       // set up pfd structures for all active filter
+      Lock();
       pollfd pfd[MAX_FILTERS];
       int NumUsedFilters = 0;
       for (int a = 0; a < MAX_FILTERS ; a++)
@@ -1219,6 +1230,8 @@ void cSIProcessor::Action()
             NumUsedFilters++;
          }
       }
+      oldStatusCount = statusCount;
+      Unlock();
 
       // wait until data becomes ready from the bitfilter
       if (poll(pfd, NumUsedFilters, 1000) != 0)
@@ -1239,6 +1252,8 @@ void cSIProcessor::Action()
                      //dsyslog("Received pid 0x%04X with table ID 0x%02X and length of %4d\n", pid, buf[0], seclen);
                      cMutexLock MutexLock(&schedulesMutex); // since the xMem... stuff is not thread safe, we need to use a "global" mutex
                      LOCK_THREAD;
+                     if (statusCount != oldStatusCount)
+                        break;
                      switch (pid)
                      {
                         case 0x00:

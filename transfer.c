@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: transfer.c 1.12 2003/05/11 08:48:05 kls Exp $
+ * $Id: transfer.c 1.13 2003/05/18 15:22:09 kls Exp $
  */
 
 #include "transfer.h"
@@ -70,7 +70,7 @@ void cTransfer::Action(void)
   active = true;
   while (active) {
 
-        //XXX+ Maybe we need this to avoid "buffer empty" log messages from the driver.
+        //XXX+ Maybe we need this to avoid buffer underruns in driver.
         //XXX+ But then again, it appears to play just fine without this...
         /*
         if (!gotBufferReserve) {

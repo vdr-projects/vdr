@@ -204,6 +204,7 @@ Andreas Schultz <aschultz@warp10.net>
  for suggesting to separate the startup of a plugin into an "early" and a "late" phase
  for changing C++ style comments in libdtv into C style to avoid warnings in gcc 3.x
  for implementing the TerrestrialDeliverySystemDescriptor in libdtv
+ for fixing setting the locking pid after a timed wait
 
 Aaron Holtzman
  for writing 'ac3dec'
@@ -467,6 +468,9 @@ Oliver Endriss <o.endriss@gmx.de>
  the Main menu
  for reporting a bug in setting the PCR-PID in case it is equal to one of the other
  PIDs
+ for reporting a problem with cPlugin::Start() being called after trying to learn
+ the remote control keys
+ for reporting a bug in reading 'epg.data' for channels with non-zero RID
 
 Reinhard Walter Buchner <rw.buchner@freenet.de>
  for adding some satellites to 'sources.conf'
@@ -475,6 +479,7 @@ Reinhard Walter Buchner <rw.buchner@freenet.de>
 
 Lauri Tischler <lauri.tischler@efore.fi>
  for helping to test and debug the new channel source and DiSEqC handling
+ for reporting a faulty parameter initialization in menu.c
 
 Andy Carter <fruit@ukgateway.net>
  for helping to test new DVB-T handling
@@ -572,6 +577,8 @@ Jan Ekholm <chakie@infa.abo.fi>
 Marcel Wiesweg <marcel.wiesweg@gmx.de>
  for pointing out a problem with high CPU load during replay
  for reporting broken support for raw OSDs of plugins
+ for reporting a problem with cReceivers that want to receive from PIDs that are
+ currently not transmitting
 
 Torsten Herz <torsten.herz@web.de>
  for fixing a possible deadlock when using the "Blue" button in the "Schedules" menu
@@ -652,3 +659,13 @@ Juri Haberland <juri@koschikode.com>
 Alfred Zastrow <vdr@zastrow4u.de>
  for suggesting to implement separate PausePriority and PauseLifetime parameters for
  the recordings created when pausing live video
+
+Matthias Raus <matthias-raus@web.de>
+ for reporting a problem with starting the editing process if no marks have been set
+
+Marc Rovira Vall <tm05462@salleURL.edu> and Ramon Roca <ramon.roca@xcombo.com>
+ for translating OSD texts to the Catalanian language
+
+Lars Bläser <LBlaeser@hofheim.de>
+ for reporting a bug in EPG bugfix statistics which made log entires for undefined
+ channels
