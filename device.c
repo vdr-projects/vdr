@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.7 2002/08/04 12:32:49 kls Exp $
+ * $Id: device.c 1.8 2002/08/04 15:18:05 kls Exp $
  */
 
 #include "device.h"
@@ -478,7 +478,7 @@ int cDevice::ProvidesCa(int Ca)
 bool cDevice::Receiving(void)
 {
   for (int i = 0; i < MAXRECEIVERS; i++) {
-      if (receiver[i] && receiver[i]->priority > 0) // cReceiver with priority < 0 doesn't count
+      if (receiver[i] && receiver[i]->priority >= 0) // cReceiver with priority < 0 doesn't count
          return true;
       }
   return false;
