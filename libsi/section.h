@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: section.h 1.2 2003/12/13 10:42:15 kls Exp $
+ *   $Id: section.h 1.3 2004/02/20 13:45:45 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -75,6 +75,17 @@ protected:
    virtual void Parse();
 private:
    const pmt *s;
+};
+
+class TSDT : public NumberedSection {
+public:
+   TSDT(const unsigned char *data, bool doCopy=true) : NumberedSection(data, doCopy) {}
+   TSDT() {}
+   DescriptorLoop transportStreamDescriptors;
+protected:
+   virtual void Parse();
+private:
+   const tsdt *s;
 };
 
 class NIT : public NumberedSection {
@@ -166,6 +177,8 @@ public:
    int getServiceId() const;
    int getTransportStreamId() const;
    int getOriginalNetworkId() const;
+   int getSegmentLastSectionNumber() const;
+   int getLastTableId() const;
    StructureLoop<Event> eventLoop;
 
    //true if table conveys present/following information, false if it conveys schedule information

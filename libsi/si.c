@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: si.c 1.6 2004/01/24 14:49:00 kls Exp $
+ *   $Id: si.c 1.7 2004/02/20 13:46:12 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -59,6 +59,14 @@ bool CRCSection::CheckCRCAndParse() {
       return false;
    CheckParse();
    return true;
+}
+
+int NumberedSection::getTableIdExtension() const {
+   return getTableIdExtension(data.getData());
+}
+
+int NumberedSection::getTableIdExtension(const unsigned char *d) {
+   return HILO(((const ExtendedSectionHeader *)d)->table_id_extension);
 }
 
 bool NumberedSection::getCurrentNextIndicator() const {

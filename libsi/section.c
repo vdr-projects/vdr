@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: section.c 1.2 2003/12/13 10:42:14 kls Exp $
+ *   $Id: section.c 1.3 2004/02/20 13:44:59 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -74,6 +74,14 @@ void PMT::Stream::Parse() {
    unsigned int offset=0;
    data.setPointerAndOffset<const pmt_info>(s, offset);
    streamDescriptors.setData(data+offset, HILO(s->ES_info_length));
+}
+
+/*********************** TSDT ***********************/
+
+void TSDT::Parse() {
+   unsigned int offset=0;
+   data.setPointerAndOffset<const tsdt>(s, offset);
+   transportStreamDescriptors.setDataAndOffset(data+offset, getLength()-offset-4, offset);
 }
 
 /*********************** NIT ***********************/
@@ -159,6 +167,14 @@ int EIT::getTransportStreamId() const {
 
 int EIT::getOriginalNetworkId() const {
    return HILO(s->original_network_id);
+}
+
+int EIT::getSegmentLastSectionNumber() const {
+   return s->segment_last_section_number;
+}
+
+int EIT::getLastTableId() const {
+   return s->last_table_id;
 }
 
 bool EIT::isPresentFollowing() const {

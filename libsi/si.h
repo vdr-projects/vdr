@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: si.h 1.6 2004/01/12 16:19:11 kls Exp $
+ *   $Id: si.h 1.7 2004/02/20 13:47:09 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -216,11 +216,14 @@ class NumberedSection : public CRCSection {
 public:
    NumberedSection(const unsigned char *data, bool doCopy=true) : CRCSection(data, doCopy) {}
    NumberedSection() {}
+   int getTableIdExtension() const;
    bool getCurrentNextIndicator() const;
    int getVersionNumber() const;
    int getSectionNumber() const;
    int getLastSectionNumber() const;
    bool moreThanOneSection()  const { return getLastSectionNumber()>0; }
+
+   static int getTableIdExtension(const unsigned char *d);
 };
 
 class VariableLengthPart : public Object {
