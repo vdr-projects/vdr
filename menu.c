@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.130 2001/10/20 11:16:56 kls Exp $
+ * $Id: menu.c 1.131 2001/10/21 14:28:14 kls Exp $
  */
 
 #include "menu.h"
@@ -1636,11 +1636,12 @@ cMenuDVD::cMenuDVD(void)
      dvd->Open();
      ifo_handle_t *vmg = dvd->openVMG();
      if (vmg) {
+        int lastTitleID = cReplayControl::LastTitleID();
         dsyslog(LOG_INFO, "DVD: vmg: %p", vmg);//XXX
         tt_srpt_t *tt_srpt = vmg->tt_srpt;
         dsyslog(LOG_INFO, "DVD: tt_srpt: %p", tt_srpt);//XXX
         for (int i = 0; i < tt_srpt->nr_of_srpts; i++)
-            Add(new cMenuDVDItem(i, tt_srpt->title[i].nr_of_ptts));
+            Add(new cMenuDVDItem(i, tt_srpt->title[i].nr_of_ptts), i == lastTitleID);
         }
      }
   SetHelp(tr("Play"), NULL, NULL, NULL);
@@ -2382,6 +2383,11 @@ void cReplayControl::SetDVD(cDVD *DVD, int Title)//XXX
   dvd = DVD;
   titleid = Title;
 }
+
+int cReplayControl::LastTitleID(void)
+{
+  return titleid;
+}
 #endif //DVDSUPPORT
 
 const char *cReplayControl::LastReplayed(void)
@@ -2748,7 +2754,7 @@ eOSState cReplayControl::ProcessKey(eKeys Key)
                            else
                               Show();
                            break;
-            case kBack:    return osRecordings;
+            case kBack:    return fileName ? osRecordings : osDVD;
             default:       return osUnknown;
             }
           }

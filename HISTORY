@@ -829,3 +829,4 @@ Video Disk Recorder Revision History
 - Fixed reading timers.conf and channels.conf that contain blanks after numeric
   values.
 - Fixed handling trick modes near the beginning and end of a recording.
+- Pressing the "Back" button while replaying a DVD now leads to the DVD menu.

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 1.32 2001/10/20 11:15:26 kls Exp $
+ * $Id: menu.h 1.33 2001/10/21 14:26:01 kls Exp $
  */
 
 #ifndef _MENU_H
@@ -133,6 +133,7 @@ public:
   static void SetRecording(const char *FileName, const char *Title);
 #ifdef DVDSUPPORT
   static void SetDVD(cDVD *DVD, int Title);//XXX
+  static int LastTitleID(void);
 #endif //DVDSUPPORT
   static const char *LastReplayed(void);
   static void ClearLastReplayed(const char *FileName);
