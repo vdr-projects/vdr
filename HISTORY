@@ -1291,6 +1291,8 @@ Video Disk Recorder Revision History
 - Updated 'Premiere Sport 2' in channels.conf (thanks to Rudi Hofer).
 - Fixed some function headers to make them compile with gcc 3.x (thanks to
   Gregoire Favre).
+- Fixed the cutting mechanism to make it re-sync in case a frame is larger than the
+  buffer (thanks to Sven Grothklags).
 
 2002-05-18: Version 1.1.3
 
