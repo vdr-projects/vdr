@@ -2696,3 +2696,6 @@ Video Disk Recorder Revision History
   in preparation for full VPS support for timers (provided the tv stations
   actually broadcast this information). Currently these are just displayed in
   the event page if they exist and are different than the event's start time.
+- Extended the SVDRP command LSTE to allow limiting the listed data to a given
+  channel, the present or following events, or events at a given time (thanks to
+  Thomas Heiligenmann).

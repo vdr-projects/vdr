@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.h 1.9 2004/02/22 13:52:46 kls Exp $
+ * $Id: epg.h 1.10 2004/02/22 14:34:04 kls Exp $
  */
 
 #ifndef __EPG_H
@@ -18,6 +18,8 @@
 #include "tools.h"
 
 #define MAXEPGBUGFIXLEVEL 2
+
+enum eDumpMode { dmAll, dmPresent, dmFollowing, dmAtTime };
 
 class cSchedule;
 
@@ -89,7 +91,7 @@ public:
   const cEvent *GetEventAround(time_t Time) const;
   const cEvent *GetEventNumber(int n) const { return events.Get(n); }
   int NumEvents(void) const { return events.Count(); }
-  void Dump(FILE *f, const char *Prefix = "") const;
+  void Dump(FILE *f, const char *Prefix = "", eDumpMode DumpMode = dmAll, time_t AtTime = 0) const;
   static bool Read(FILE *f, cSchedules *Schedules);
   };
 
@@ -120,7 +122,7 @@ public:
   static void Cleanup(bool Force = false);
   static void ResetVersions(void);
   static bool ClearAll(void);
-  static bool Dump(FILE *f, const char *Prefix = "");
+  static bool Dump(FILE *f, const char *Prefix = "", eDumpMode DumpMode = dmAll, time_t AtTime = 0);
   static bool Read(FILE *f = NULL);
   cSchedule *AddSchedule(tChannelID ChannelID);
   const cSchedule *GetSchedule(tChannelID ChannelID) const;

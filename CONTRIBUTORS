@@ -279,6 +279,8 @@ Andy Grobb <Charly98@01019freenet.de>
 Thomas Heiligenmann <thomas@heiligenmann.de>
  for implementing the SVDRP commands LSTR and DELR
  for adding MPEG1 handling to cDvbDevice::StillPicture()
+ for extending the SVDRP command LSTE to allow limiting the listed data to a given
+ channel, the present or following events, or events at a given time
 
 Norbert Schmidt <nschmidt-nrw@t-online.de>
  for filling in some missing teletext PIDs

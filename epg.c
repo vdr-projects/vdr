@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 1.12 2004/02/22 13:55:12 kls Exp $
+ * $Id: epg.c 1.13 2004/02/22 14:41:37 kls Exp $
  */
 
 #include "epg.h"
@@ -552,13 +552,34 @@ void cSchedule::Cleanup(time_t Time)
       }
 }
 
-void cSchedule::Dump(FILE *f, const char *Prefix) const
+void cSchedule::Dump(FILE *f, const char *Prefix, eDumpMode DumpMode, time_t AtTime) const
 {
   cChannel *channel = Channels.GetByChannelID(channelID, true);
   if (channel) {
      fprintf(f, "%sC %s %s\n", Prefix, channel->GetChannelID().ToString(), channel->Name());
-     for (cEvent *p = events.First(); p; p = events.Next(p))
-        p->Dump(f, Prefix);
+     const cEvent *p;
+     switch (DumpMode) {
+       case dmAll: {
+            for (p = events.First(); p; p = events.Next(p))
+                p->Dump(f, Prefix);
+            }
+            break;
+       case dmPresent: {
+            if ((p = GetPresentEvent()) != NULL)
+               p->Dump(f, Prefix);
+            }
+            break;
+       case dmFollowing: {
+            if ((p = GetFollowingEvent()) != NULL)
+               p->Dump(f, Prefix);
+            }
+            break;
+       case dmAtTime: {
+            if ((p = GetEventAround(AtTime)) != NULL)
+               p->Dump(f, Prefix);
+            }
+            break;
+       }
      fprintf(f, "%sc\n", Prefix);
      }
 }
@@ -682,13 +703,13 @@ bool cSchedules::ClearAll(void)
   return false;
 }
 
-bool cSchedules::Dump(FILE *f, const char *Prefix)
+bool cSchedules::Dump(FILE *f, const char *Prefix, eDumpMode DumpMode, time_t AtTime)
 {
   cSchedulesLock SchedulesLock;
   cSchedules *s = (cSchedules *)Schedules(SchedulesLock);
   if (s) {
      for (cSchedule *p = s->First(); p; p = s->Next(p))
-         p->Dump(f, Prefix);
+         p->Dump(f, Prefix, DumpMode, AtTime);
      return true;
      }
   return false;
