@@ -16,7 +16,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.c 1.62 2003/01/06 14:10:37 kls Exp $
+ * $Id: eit.c 1.63 2003/01/06 15:05:46 kls Exp $
  ***************************************************************************/
 
 #include "eit.h"
@@ -399,8 +399,8 @@ bool cEventInfo::Read(FILE *f, cSchedule *Schedule)
   return false;
 }
 
-#define MAXEPGBUGFIXSTATS 6
-#define MAXEPGBUGFIXCHANS 50
+#define MAXEPGBUGFIXSTATS 7
+#define MAXEPGBUGFIXCHANS 100
 struct tEpgBugFixStats {
   int hits;
   int n;
@@ -595,6 +595,20 @@ void cEventInfo::FixEpgBugs(void)
                  }
               p++;
               }
+        }
+
+#define MAX_USEFUL_SUBTITLE_LENGTH 40
+     // Some channels put a whole lot of information in the Subtitle and leave
+     // the Extended Description totally empty. So if the Subtitle length exceeds
+     // MAX_USEFUL_SUBTITLE_LENGTH, let's put this into the Extended Description
+     // instead:
+     if (!isempty(pSubtitle) && isempty(pExtendedDescription)) {
+        if (strlen(pSubtitle) > MAX_USEFUL_SUBTITLE_LENGTH) {
+           free(pExtendedDescription);
+           pExtendedDescription = pSubtitle;
+           pSubtitle = NULL;
+           EpgBugFixStat(5, GetChannelID());
+           }
         }
 
      // Some channels use the ` ("backtick") character, where a ' (single quote)

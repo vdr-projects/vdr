@@ -1911,3 +1911,5 @@ Video Disk Recorder Revision History
 - Implemented "Link Layer" based CAM support, which hopefully will solve the
   problems with CAMs we had in the past. To use this you need the driver version
   2002-01-06 or higher (with the new firmware supporting the "Link Layer" protocol).
+- Added an EPG bugfix that moves the Subtitle data to the Extended Description in
+  case the latter is empty and the Subtitle exceeds some useful length.
