@@ -3022,3 +3022,4 @@ Video Disk Recorder Revision History
 - Avoiding unnecessary section filter start/stops (thanks to Marco Schlüßler).
 - Made the "Channel not available!" message and mtInfo instead of mtError (suggested
   by Wayne Keer).
+- Made volume control more linear (thanks to Emil Naepflein).

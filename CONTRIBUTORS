@@ -630,6 +630,7 @@ Emil Naepflein <Emil.Naepflein@philosys.de>
  for fixing selecting the device, because sometimes an FTA recording terminated a
  CA recording
  for suggesting to never delete edited recordings automatically if the disk runs full
+ for making volume control more linear
 
 Gerald Berwolf <genka@genka.de>
  for suggesting to deactivate some templates in tools.h in case some plugin needs to
