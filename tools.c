@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.53 2002/01/27 12:36:23 kls Exp $
+ * $Id: tools.c 1.54 2002/02/02 13:03:40 kls Exp $
  */
 
 #include "tools.h"
@@ -404,9 +404,8 @@ char *ReadLink(const char *FileName)
   if (n < 0) {
      if (errno == ENOENT || errno == EINVAL) // file doesn't exist or is not a symlink
         TargetName = FileName;
-     else { // some other error occurred
+     else // some other error occurred
         LOG_ERROR_STR(FileName);
-        }
      }
   else if (n < int(sizeof(RealName))) { // got it!
      RealName[n] = 0;

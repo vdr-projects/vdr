@@ -8,7 +8,7 @@
  * the Linux DVB driver's 'tuxplayer' example and were rewritten to suit
  * VDR's needs.
  *
- * $Id: remux.c 1.6 2001/08/19 11:52:05 kls Exp $
+ * $Id: remux.c 1.7 2002/02/02 12:54:30 kls Exp $
  */
 
 /* The calling interface of the 'cRemux::Process()' function is defined
@@ -583,9 +583,8 @@ XXX*/
                      if (l < 0)
                         return NULL; // no useful data found, wait for more
                      if (pt != NO_PICTURE) {
-                        if (pt < I_FRAME || B_FRAME < pt) {
+                        if (pt < I_FRAME || B_FRAME < pt)
                            esyslog(LOG_ERR, "ERROR: unknown picture type '%d'", pt);
-                           }
                         else if (!synced) {
                            if (pt == I_FRAME) {
                               resultDelivered = i; // will drop everything before this position

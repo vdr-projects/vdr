@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.28 2002/01/13 16:07:42 kls Exp $
+ * $Id: svdrp.c 1.29 2002/02/02 13:33:57 kls Exp $
  */
 
 #include "svdrp.h"
@@ -103,7 +103,7 @@ int cSocket::Accept(void)
      int newsock = accept(sock, (struct sockaddr *)&clientname, &size);
      if (newsock > 0)
         isyslog(LOG_INFO, "connect from %s, port %hd", inet_ntoa(clientname.sin_addr), ntohs(clientname.sin_port));
-     else if (errno != EINTR)
+     else if (errno != EINTR && errno != EAGAIN)
         LOG_ERROR;
      return newsock;
      }

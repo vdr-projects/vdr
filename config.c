@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.78 2002/02/01 15:35:23 kls Exp $
+ * $Id: config.c 1.79 2002/02/02 12:45:30 kls Exp $
  */
 
 #include "config.h"
@@ -296,9 +296,8 @@ bool cChannel::Switch(cDvbApi *DvbApi, bool Log)
   if (!DvbApi)
      DvbApi = cDvbApi::PrimaryDvbApi;
   if (!DvbApi->Recording() && !groupSep) {
-     if (Log) {
+     if (Log)
         isyslog(LOG_INFO, "switching to channel %d", number);
-        }
      for (int i = 3; i--;) {
          switch (DvbApi->SetChannel(number, frequency, polarization, diseqc, srate, vpid, apid1, apid2, dpid1, dpid2, tpid, ca, pnr)) {
            case scrOk:         return true;

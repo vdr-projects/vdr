@@ -946,3 +946,7 @@ Video Disk Recorder Revision History
   data is cleaned up and when VDR is terminated). Maybe somebody in charge of
   the EPG data at the listed channels will read this and take the necessary
   actions to fix these things...
+- Changed the [dei]syslog macros in tools.h to use a variable number of args,
+  thus making it safe to use them in nested 'if/else' statements.
+- Fixed error handling in establishing an SVDRP connection (thanks to Davide
+  Achilli) for pointing this out).

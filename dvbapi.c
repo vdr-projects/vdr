@@ -7,7 +7,7 @@
  * DVD support initially written by Andreas Schultz <aschultz@warp10.net>
  * based on dvdplayer-0.5 by Matjaz Thaler <matjaz.thaler@guest.arnes.si>
  *
- * $Id: dvbapi.c 1.146 2002/01/26 15:39:48 kls Exp $
+ * $Id: dvbapi.c 1.147 2002/02/02 13:04:00 kls Exp $
  */
 
 //#define DVDDEBUG        1
@@ -548,9 +548,8 @@ void cRecordBuffer::Input(void)
          }
       else if (r < 0) {
          if (FATALERRNO) {
-            if (errno == EBUFFEROVERFLOW) { // this error code is not defined in the library
+            if (errno == EBUFFEROVERFLOW) // this error code is not defined in the library
                esyslog(LOG_ERR, "ERROR (%s,%d): DVB driver buffer overflow", __FILE__, __LINE__);
-               }
             else {
                LOG_ERROR;
                break;
@@ -1064,9 +1063,8 @@ cReplayBuffer::cReplayBuffer(cDvbApi *DvbApi, int VideoDev, int AudioDev, const 
      return;
   // Create the index file:
   index = new cIndexFile(FileName, false);
-  if (!index) {
+  if (!index)
      esyslog(LOG_ERR, "ERROR: can't allocate index");
-     }
   else if (!index->Ok()) {
      delete index;
      index = NULL;
@@ -2251,9 +2249,8 @@ void cTransferBuffer::Input(void)
            }
         else if (r < 0) {
            if (FATALERRNO) {
-              if (errno == EBUFFEROVERFLOW) { // this error code is not defined in the library
+              if (errno == EBUFFEROVERFLOW) // this error code is not defined in the library
                  esyslog(LOG_ERR, "ERROR (%s,%d): DVB driver buffer overflow", __FILE__, __LINE__);
-                 }
               else {
                  LOG_ERROR;
                  break;
@@ -2719,12 +2716,10 @@ bool cDvbApi::Init(void)
          }
       }
   PrimaryDvbApi = dvbApi[0];
-  if (NumDvbApis > 0) {
+  if (NumDvbApis > 0)
      isyslog(LOG_INFO, "found %d video device%s", NumDvbApis, NumDvbApis > 1 ? "s" : "");
-     } // need braces because of isyslog-macro
-  else {
+  else
      esyslog(LOG_ERR, "ERROR: no video device found, giving up!");
-     }
   return NumDvbApis > 0;
 }
 
