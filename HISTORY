@@ -65,4 +65,5 @@ Video Disk Recorder Revision History
   work immediately even if there is no actual remote control).
 - Fixed small bug in dvbapi.c that was causing some channels (many on hotbird)
   not to be correctly tuned (thanks to Plamen Ganev!).
-
+- Now clearing the replay buffer in search forward/back, which results in
+  faster reaction.

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.12 2000/07/15 13:33:04 kls Exp $
+ * $Id: dvbapi.c 1.13 2000/07/15 16:03:13 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -1569,17 +1569,25 @@ bool cDvbApi::StartReplay(const char *FileName, const char *Title)
                                             Buffer->Stop(); break;
                        case dvbPauseReplay: SetReplayMode(Paused ? VID_PLAY_NORMAL : VID_PLAY_PAUSE);
                                             Paused = !Paused;
+                                            if (FastForward || FastRewind) {
+                                               SetReplayMode(VID_PLAY_CLEAR_BUFFER);
+                                               Buffer->Clear();
+                                               }
                                             FastForward = FastRewind = false;
                                             Buffer->SetMode(rmPlay);
                                             break;
-                       case dvbFastForward: SetReplayMode(VID_PLAY_NORMAL);
+                       case dvbFastForward: SetReplayMode(VID_PLAY_CLEAR_BUFFER);
+                                            SetReplayMode(VID_PLAY_NORMAL);
                                             FastForward = !FastForward;
                                             FastRewind = Paused = false;
+                                            Buffer->Clear();
                                             Buffer->SetMode(FastForward ? rmFastForward : rmPlay);
                                             break;
-                       case dvbFastRewind:  SetReplayMode(VID_PLAY_NORMAL);
+                       case dvbFastRewind:  SetReplayMode(VID_PLAY_CLEAR_BUFFER);
+                                            SetReplayMode(VID_PLAY_NORMAL);
                                             FastRewind = !FastRewind;
                                             FastForward = Paused = false;
+                                            Buffer->Clear();
                                             Buffer->SetMode(FastRewind ? rmFastRewind : rmPlay);
                                             break;
                        case dvbSkip:        {
@@ -1592,6 +1600,7 @@ bool cDvbApi::StartReplay(const char *FileName, const char *Title)
                                                  Buffer->SkipSeconds(Seconds);
                                                  }
                                             }
+                                            break;
                        case dvbGetIndex:    {
                                               int Current, Total;
                                               Buffer->GetIndex(Current, Total);
