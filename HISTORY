@@ -199,3 +199,4 @@ Video Disk Recorder Revision History
   slashes, the recording file names have been damaged. Trailing slashes are
   now silently removed.
 - Fixed a buffer overflow in EIT parsing.
+- Added a security warning regarding SVDRP to the INSTALL file.
