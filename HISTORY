@@ -1961,3 +1961,4 @@ Video Disk Recorder Revision History
 
 - Fixed high CPU load during replay (thanks Marcel Wiesweg for pointing out this
   one).
+- Fixed margin handling in cRingBufferLinear.
