@@ -2295,3 +2295,6 @@ Video Disk Recorder Revision History
   In order to do this, the cDevice was given a new member function GetVideoSystem().
 - Fixed two warnings when compiling with gcc 3.3.1 (thanks to Alfred Zastrow for
   reporting this).
+- Made crc32() a static function in libdtv/libsi/si_parser.c to avoid a name clash
+  when using other libraries that also implement a function by that name (thanks
+  to Reinhard Nissl for reporting this one).

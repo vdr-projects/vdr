@@ -749,3 +749,7 @@ Kenneth Aafløy <ke-aa@frisurf.no>
 Ernst Fürst <ernstfuerst@swissonline.ch>
  for reporting a crash in case a VFAT file system is used without compiling VDR
  with VFAT=1
+
+Reinhard Nissl <rnissl@gmx.de>
+ for reporting a name clash because of function crc32() in libdtv/libsi/si_parser.c
+ when using other libraries that also implement a function by that name
