@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 1.6 2004/02/21 12:21:18 kls Exp $
+ * $Id: epg.c 1.7 2004/02/21 12:32:31 kls Exp $
  */
 
 #include "epg.h"
@@ -24,7 +24,6 @@ cEvent::cEvent(tChannelID ChannelID, u_int16_t EventID)
   tableID = 0;
   version = 0xFF; // actual version numbers are 0..31
   runningStatus = 0;
-  isPresent = isFollowing = false;
   title = NULL;
   shortText = NULL;
   description = NULL;
@@ -58,16 +57,6 @@ void cEvent::SetVersion(uchar Version)
 void cEvent::SetRunningStatus(int RunningStatus)
 {
   runningStatus = RunningStatus;
-}
-
-void cEvent::SetIsPresent(bool IsPresent)
-{
-  isPresent = IsPresent;
-}
-
-void cEvent::SetIsFollowing(bool IsFollowing)
-{
-  isFollowing = IsFollowing;
 }
 
 void cEvent::SetTitle(const char *Title)
@@ -439,7 +428,6 @@ void cEvent::FixEpgBugs(void)
 cSchedule::cSchedule(tChannelID ChannelID)
 {
   channelID = ChannelID;
-  present = following = NULL;
 }
 
 cEvent *cSchedule::AddEvent(cEvent *Event)
@@ -504,24 +492,6 @@ void cSchedule::SetRunningStatus(cEvent *Event, int RunningStatus)
       else if (RunningStatus >= SI::RunningStatusPausing && p->RunningStatus() > SI::RunningStatusNotRunning)
          p->SetRunningStatus(SI::RunningStatusNotRunning);
       }
-}
-
-bool cSchedule::SetPresentEvent(cEvent *Event)
-{
-  if (present)
-     present->SetIsPresent(false);
-  present = Event;
-  present->SetIsPresent(true);
-  return true;
-}
-
-bool cSchedule::SetFollowingEvent(cEvent *Event)
-{
-  if (following)
-     following->SetIsFollowing(false);
-  following = Event;
-  following->SetIsFollowing(true);
-  return true;
 }
 
 void cSchedule::ResetVersions(void)

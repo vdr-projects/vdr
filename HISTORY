@@ -2680,3 +2680,4 @@ Video Disk Recorder Revision History
   correctly  - and some (like RTL, for instance) even change the ID of the same
   event randomly, making it impossible for a timer to be programmed on a ceartain
   event rather than a specific time. Well, let's see where this leads us...
+- Removed the obsolete 'present' and 'following' handling from the EPG data.
