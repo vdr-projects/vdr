@@ -12,8 +12,8 @@ Video Disk Recorder User's Manual
 
   Up      Ch up       Crsr up    Crsr up    Crsr up    Crsr up       Crsr up     Play
   Down    Ch down     Crsr down  Crsr down  Crsr down  Crsr down     Crsr down   Pause
-  Left    Prev group  -          -          Disable    Decrement     -           Search back
-  Right   Next group  -          -          Enable     Increment     -           Search forward
+  Left    Prev group  -          Page up    Disable    Decrement     Page up     Search back
+  Right   Next group  -          Page down  Enable     Increment     Page down   Search forward
   Ok      Ch display  Select     Switch     Edit       Accept        Play        Progress disp.
   Menu    Menu on     Menu off   Menu off   Menu off   Menu off      Menu off    Menu on
   Back    -           Menu off   Main menu  Main menu  Discard       Main menu   Recordings menu

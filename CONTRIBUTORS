@@ -34,6 +34,7 @@ Niels de Carpentier <niels@casema.net>
 Martin Hammerschmid <martin@hammerschmid.com>
  for suggesting to display the direct channel select input on the OSD
  for suggesting to use the "Blue" button in the main menu to resume replay
+ for implementing pege up/down with the "Left" and "Right" keys
 
 Bastian Guse <bastian@nocopy.de>
  for writing the FORMATS entry for timers.conf

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 1.13 2000/11/12 15:29:25 kls Exp $
+ * $Id: osd.c 1.14 2001/02/03 14:26:18 kls Exp $
  */
 
 #include "osd.h"
@@ -252,6 +252,36 @@ void cOsdMenu::CursorDown(void)
      }
 }
 
+void cOsdMenu::PageUp(void)
+{
+  if (Count() <= MAXOSDITEMS)
+     return;
+  int relpos = current - first;
+  current -= MAXOSDITEMS;
+  first -= MAXOSDITEMS;
+  if (first < 0) {
+     first = Count() - MAXOSDITEMS;
+     current = first + relpos; 
+     }
+  Display();
+  DisplayCurrent(true);
+}
+
+void cOsdMenu::PageDown(void) 
+{
+  if (Count() <= MAXOSDITEMS)
+     return;
+  int relpos = current - first;
+  current += MAXOSDITEMS;
+  first += MAXOSDITEMS;
+  if (current > Count() - 1) {
+     first = 0;
+     current = first + relpos;
+     }
+  Display();
+  DisplayCurrent(true);
+}
+
 void cOsdMenu::Mark(void)
 {
   if (Count() && marked < 0) {
@@ -293,6 +323,10 @@ eOSState cOsdMenu::ProcessKey(eKeys Key)
     case kUp:   CursorUp();   break;
     case kDown|k_Repeat:
     case kDown: CursorDown(); break;
+    case kLeft|k_Repeat:
+    case kLeft: PageUp(); break;
+    case kRight|k_Repeat:
+    case kRight: PageDown(); break;
     case kBack: return osBack;
     case kOk:   if (marked >= 0) {
                    SetStatus(NULL);

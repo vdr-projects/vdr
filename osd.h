@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.h 1.18 2000/12/24 10:16:52 kls Exp $
+ * $Id: osd.h 1.19 2001/02/03 14:14:23 kls Exp $
  */
 
 #ifndef __OSD_H
@@ -85,6 +85,8 @@ protected:
   void DisplayCurrent(bool Current);
   void CursorUp(void);
   void CursorDown(void);
+  void PageUp(void);
+  void PageDown(void);
   void Mark(void);
   eOSState AddSubMenu(cOsdMenu *SubMenu);
   bool HasSubMenu(void) { return subMenu; }

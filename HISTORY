@@ -350,7 +350,7 @@ Video Disk Recorder Revision History
 - Encrypted channels can now be selected even without knowing the PNR (however, it
   is still necessary for the EPG info).
 
-2001-02-02: Version 0.71
+2001-02-03: Version 0.71
 
 - Fixed 'Transfer Mode' in cases where a non-primary interface was switched to
   a channel that only the primary interface can receive (which could happen in
@@ -364,3 +364,6 @@ Video Disk Recorder Revision History
   exclusively via SVDRP).
 - The new command line option -D can be used to define which DVB interfaces
   a certain instance of VDR shall use.
+- The "Left" and "Right" keys are now used to page up and down in lists (thanks
+  to Martin Hammerschmid). Since the "Timers" menu already uses these keys to
+  (de)activate timers, this functionality is not available here.
