@@ -859,6 +859,7 @@ Reinhard Nissl <rnissl@gmx.de>
  channels.conf
  for adding cDevice::Flush() to make sure that all data in the video card's buffers
  has been processed
+ for reporting a bug in checking the last area for misalignment in cOsd::CanHandleAreas()
 
 Richard Robson <richard_robson@beeb.net>
  for reporting freezing replay if a timer starts while in Transfer Mode from the

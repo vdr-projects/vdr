@@ -2945,3 +2945,5 @@ Video Disk Recorder Revision History
   input.
 - Fixed handling menu status messages when the list contents is scrolled (thanks
   Alfred Zastrow for reporting this one).
+- Fixed checking the last area for misalignment in cOsd::CanHandleAreas() (thanks
+  to Reinhard Nissl for reporting this one).
