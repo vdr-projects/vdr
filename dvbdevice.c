@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.121 2005/02/19 11:52:44 kls Exp $
+ * $Id: dvbdevice.c 1.122 2005/02/20 11:05:50 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -402,7 +402,7 @@ cDvbDevice::cDvbDevice(int n)
 
   // Video format:
 
-  SetVideoFormat(Setup.VideoFormat ? VIDEO_FORMAT_16_9 : VIDEO_FORMAT_4_3);
+  SetVideoFormat(Setup.VideoFormat);
 
   // We only check the devices that must be present - the others will be checked before accessing them://XXX
 

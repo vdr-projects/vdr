@@ -3416,7 +3416,7 @@ Video Disk Recorder Revision History
 - Added missing reset of the 'repacker' to cTS2PES::Clear() (thanks to Marco
   Schlüßler for reporting this one).
 
-2005-02-19: Version 1.3.22
+2005-02-20: Version 1.3.22
 
 - Removed some unneeded code and fixed access to unallocated memory in
   cEvent::FixEpgBugs() (thanks to Wolfgang Rohdewald).
@@ -3428,3 +3428,4 @@ Video Disk Recorder Revision History
   problems on NPTL systems (thanks to Chris Warren for pointing this out).
 - Increased POLLTIMEOUTS_BEFORE_DEVICECLEAR in transfer.c to 6 to avoid problems
   with the larger buffer reserve (thanks to Marco Schlüßler).
+- Fixed the call to SetVideoFormat() in cDvbDevice::cDvbDevice() (parameter is _bool_).
