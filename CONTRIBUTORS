@@ -370,3 +370,6 @@ Istvan Koenigsberger <istvnko@hotmail.com> and Guido Josten <guido.josten@t-onli
 
 Christian Rienecker <C.Rienecker@deutschepost.de>
  for making the VFAT handling more tolerant for users who forget to turn it on
+
+Joerg Riechardt <J.Riechardt@gmx.de>
+ for filling in some missing teletext PIDs

@@ -1386,3 +1386,4 @@ Video Disk Recorder Revision History
 - Changed the VFAT handling to allow users who normally use it but have forgotten
   to set it when compiling a new version of VDR to at least see their recordings
   made with VFAT enabled (thanks to Christian Rienecker).
+- Added some missing teletext PIDs (thanks to Joerg Riechardt).
