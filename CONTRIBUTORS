@@ -128,6 +128,8 @@ Stefan Huelswitt <huels@iname.com>
  with CAMs and AC3 sound only working the first time
  for making the main loop take an active video cutting process into account when
  doing shutdown or housekeeping
+ for making the cList template class avoid ambiguities in case one defines a "list of
+ lists"
 
 Ulrich Röder <roeder@efr-net.de>
  for pointing out that there are channels that have a symbol rate higher than

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.42 2002/02/17 12:57:44 kls Exp $
+ * $Id: tools.h 1.43 2002/05/11 08:35:47 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -147,8 +147,8 @@ public:
   T *Get(int Index) const { return (T *)cListBase::Get(Index); }
   T *First(void) const { return (T *)objects; }
   T *Last(void) const { return (T *)lastObject; }
-  T *Prev(const T *object) const { return (T *)object->Prev(); }
-  T *Next(const T *object) const { return (T *)object->Next(); }
+  T *Prev(const T *object) const { return (T *)object->cListObject::Prev(); } // need to call cListObject's members to
+  T *Next(const T *object) const { return (T *)object->cListObject::Next(); } // avoid ambiguities in case of a "list of lists"
   };
 
 #endif //__TOOLS_H
