@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.66 2003/10/17 13:31:06 kls Exp $
+ * $Id: dvbdevice.c 1.67 2003/10/17 15:36:13 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -320,6 +320,7 @@ cDvbDevice::cDvbDevice(int n)
   // Devices that are present on all card types:
 
   int fd_frontend = DvbOpen(DEV_DVB_FRONTEND, n, O_RDWR | O_NONBLOCK); 
+
   // Devices that are only present on cards with decoders:
 
   fd_osd      = DvbOpen(DEV_DVB_OSD,    n, O_RDWR);
