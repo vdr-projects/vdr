@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.111 2002/10/19 15:49:51 kls Exp $
+ * $Id: config.c 1.112 2002/11/02 13:13:49 kls Exp $
  */
 
 #include "config.h"
@@ -210,7 +210,6 @@ bool cSetupLine::operator< (const cListObject &ListObject)
 
 bool cSetupLine::Parse(char *s)
 {
-  //dsyslog("cSetupLine::Parse '%s'", s);//XXX-
   char *p = strchr(s, '=');
   if (p) {
      *p = 0;
@@ -228,7 +227,6 @@ bool cSetupLine::Parse(char *s)
            }
         name = strdup(Name);
         value = strdup(Value);
-        //dsyslog("cSetupLine::Parse '%s' = '%s'", name, value);//XXX-
         return true;
         }
      }
@@ -237,7 +235,6 @@ bool cSetupLine::Parse(char *s)
 
 bool cSetupLine::Save(FILE *f)
 {
-  //dsyslog("cSetupLine::Save '%s' = '%s'", name, value);//XXX-
   return fprintf(f, "%s%s%s = %s\n", plugin ? plugin : "", plugin ? "." : "", name, value) > 0;
 }
 
