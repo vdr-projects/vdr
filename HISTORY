@@ -56,7 +56,7 @@ Video Disk Recorder Revision History
   the PC keyboard to better resemble the "up-down-left-right-ok" layout on
   menu controlling remote control units.
 
-2000-07-24: Version 0.6
+2000-07-25: Version 0.6
 
 - Added support for LIRC remote control (thanks to Carsten Koch!).
   There are now three different remote control modes: KBD (PC-Keyboard), RCU
@@ -68,6 +68,8 @@ Video Disk Recorder Revision History
 - Now clearing the replay buffer in search forward/back, which results in
   faster reaction.
 - The 'Recordings' menu is now listed alphabetically (thanks to Carsten Koch!).
+- The new 'epg2timers' tool (thanks to Carsten Koch!) can be used to convert
+  an EPG "merkliste" page (http://www.tvtv.de) to vdr timer entries.
 - The new 'xtvrc2vdr' tool (thanks to Plamen Ganev!) can be used to convert
   'xtvrc' channel files into 'vdr' format.
 - When more than one timer matches at the same time, the first one in the list
