@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.47 2003/03/23 15:18:40 kls Exp $
+ * $Id: dvbdevice.c 1.48 2003/03/30 11:43:14 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -196,6 +196,7 @@ bool cDvbTuner::SetFrontend(void)
             CHECK(ioctl(fd_frontend, FE_SET_TONE, tone));
             }
 
+         frequency = abs(frequency); // Allow for C-band, where the frequency is less than the LOF
          Frontend.frequency = frequency * 1000UL;
          Frontend.inversion = fe_spectral_inversion_t(channel.Inversion());
          Frontend.u.qpsk.symbol_rate = channel.Srate() * 1000UL;

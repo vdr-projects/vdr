@@ -2002,3 +2002,4 @@ Video Disk Recorder Revision History
 - Fixed faulty behaviour of the "Mute" key in case the channel display is visible
   (thanks to Florian Bartels for reporting this one and Sascha Volkenandt for
   helping to fix it).
+- Modified LOF handling to allow for C-band reception (thanks to Malcolm Caldwell).
