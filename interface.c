@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.c 1.38 2001/07/27 11:39:53 kls Exp $
+ * $Id: interface.c 1.39 2001/07/28 14:57:52 kls Exp $
  */
 
 #include "interface.h"
@@ -296,7 +296,7 @@ void cInterface::Info(const char *s)
 {
   Open(Setup.OSDwidth, -1);
   isyslog(LOG_INFO, "info: %s", s);
-  Status(s, clrWhite, clrGreen);
+  Status(s, clrBlack, clrGreen);
   Wait();
   Status(NULL);
   Close();
@@ -316,7 +316,7 @@ bool cInterface::Confirm(const char *s)
 {
   Open();
   isyslog(LOG_INFO, "confirm: %s", s);
-  Status(s, clrBlack, clrGreen);
+  Status(s, clrBlack, clrYellow);
   bool result = Wait(10) == kOk;
   Status(NULL);
   Close();

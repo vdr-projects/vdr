@@ -599,3 +599,5 @@ Video Disk Recorder Revision History
 - Updated 'channels.conf' for Premiere World (thanks to Helmut Schächner).
   Check your timers if you use this channels.conf file, since the sequence of
   several PW channels has been changed.
+- Changed the color of "Info" messages to "black on green" and that of the
+  confirmation messages (like "Delete...") to "black on yellow".
