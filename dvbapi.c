@@ -7,7 +7,7 @@
  * DVD support initially written by Andreas Schultz <aschultz@warp10.net>
  * based on dvdplayer-0.5 by Matjaz Thaler <matjaz.thaler@guest.arnes.si>
  *
- * $Id: dvbapi.c 1.143 2002/01/13 16:21:48 kls Exp $
+ * $Id: dvbapi.c 1.144 2002/01/26 13:42:15 kls Exp $
  */
 
 //#define DVDDEBUG        1
@@ -116,7 +116,7 @@ public:
   cIndexFile(const char *FileName, bool Record);
   ~cIndexFile();
   bool Ok(void) { return index != NULL; }
-  void Write(uchar PictureType, uchar FileNumber, int FileOffset);
+  bool Write(uchar PictureType, uchar FileNumber, int FileOffset);
   bool Get(int Index, uchar *FileNumber, int *FileOffset, uchar *PictureType = NULL, int *Length = NULL);
   int GetNextIFrame(int Index, bool Forward, uchar *FileNumber = NULL, int *FileOffset = NULL, int *Length = NULL, bool StayOffEnd = false);
   int Get(uchar FileNumber, int FileOffset);
@@ -249,7 +249,7 @@ bool cIndexFile::CatchUp(int Index)
   return false;
 }
 
-void cIndexFile::Write(uchar PictureType, uchar FileNumber, int FileOffset)
+bool cIndexFile::Write(uchar PictureType, uchar FileNumber, int FileOffset)
 {
   if (f >= 0) {
      tIndex i = { FileOffset, PictureType, FileNumber, 0 };
@@ -257,10 +257,11 @@ void cIndexFile::Write(uchar PictureType, uchar FileNumber, int FileOffset)
         esyslog(LOG_ERR, "ERROR: can't write to index file");
         close(f);
         f = -1;
-        return;
+        return false;
         }
      last++;
      }
+  return f >= 0;
 }
 
 bool cIndexFile::Get(int Index, uchar *FileNumber, int *FileOffset, uchar *PictureType, int *Length)
@@ -2305,6 +2306,7 @@ void cTransferBuffer::Output(void)
 
 class cCuttingBuffer : public cThread {
 private:
+  const char *error;
   bool active;
   int fromFile, toFile;
   cFileName *fromFileName, *toFileName;
@@ -2315,10 +2317,12 @@ protected:
 public:
   cCuttingBuffer(const char *FromFileName, const char *ToFileName);
   virtual ~cCuttingBuffer();
+  const char *Error(void) { return error; }
   };
 
 cCuttingBuffer::cCuttingBuffer(const char *FromFileName, const char *ToFileName)
 {
+  error = NULL;
   active = false;
   fromFile = toFile = -1;
   fromFileName = toFileName = NULL;
@@ -2376,11 +2380,15 @@ void cCuttingBuffer::Action(void)
                  }
               if (fromFile >= 0) {
                  Length = ReadFrame(fromFile, buffer,  Length, sizeof(buffer));
-                 if (Length < 0)
+                 if (Length < 0) {
+                    error = "ReadFrame";
                     break;
+                    }
                  }
-              else
+              else {
+                 error = "fromFile";
                  break;
+                 }
               }
            else
               break;
@@ -2392,14 +2400,22 @@ void cCuttingBuffer::Action(void)
                  break;
               if (FileSize > MEGABYTE(Setup.MaxVideoFileSize)) {
                  toFile = toFileName->NextFile();
-                 if (toFile < 0)
+                 if (toFile < 0) {
+                    error = "toFile 1";
                     break;
+                    }
                  FileSize = 0;
                  }
               LastIFrame = 0;
               }
-           safe_write(toFile, buffer, Length);
-           toIndex->Write(PictureType, toFileName->Number(), FileSize);
+           if (safe_write(toFile, buffer, Length) != Length) {
+              error = "safe_write";
+              break;
+              }
+           if (!toIndex->Write(PictureType, toFileName->Number(), FileSize)) {
+              error = "toIndex";
+              break;
+              }
            FileSize += Length;
            if (!LastIFrame)
               LastIFrame = toIndex->Last();
@@ -2418,8 +2434,10 @@ void cCuttingBuffer::Action(void)
                  CurrentFileNumber = 0; // triggers SetOffset before reading next frame
                  if (Setup.SplitEditedFiles) {
                     toFile = toFileName->NextFile();
-                    if (toFile < 0)
+                    if (toFile < 0) {
+                       error = "toFile 2";
                        break;
+                       }
                     FileSize = 0;
                     }
                  }
@@ -2438,10 +2456,14 @@ void cCuttingBuffer::Action(void)
 
 char *cVideoCutter::editedVersionName = NULL;
 cCuttingBuffer *cVideoCutter::cuttingBuffer = NULL;
+bool cVideoCutter::error = false;
+bool cVideoCutter::ended = false;
 
 bool cVideoCutter::Start(const char *FileName)
 {
   if (!cuttingBuffer) {
+     error = false;
+     ended = false;
      cRecording Recording(FileName);
      const char *evn = Recording.PrefixFileName('%');
      if (evn && RemoveVideoFile(evn) && MakeDirs(evn, true)) {
@@ -2456,8 +2478,17 @@ bool cVideoCutter::Start(const char *FileName)
 
 void cVideoCutter::Stop(void)
 {
+  bool Interrupted = cuttingBuffer && cuttingBuffer->Active();
+  const char *Error = cuttingBuffer ? cuttingBuffer->Error() : NULL;
   delete cuttingBuffer;
   cuttingBuffer = NULL;
+  if ((Interrupted || Error) && editedVersionName) {
+     if (Interrupted)
+        isyslog(LOG_INFO, "editing process has been interrupted");
+     if (Error)
+        esyslog(LOG_ERR, "ERROR: '%s' during editing process", Error);
+     RemoveVideoFile(editedVersionName); //XXX what if this file is currently being replayed?
+     }
 }
 
 bool cVideoCutter::Active(void)
@@ -2465,16 +2496,32 @@ bool cVideoCutter::Active(void)
   if (cuttingBuffer) {
      if (cuttingBuffer->Active())
         return true;
+     error = cuttingBuffer->Error();
      Stop();
-     cRecordingUserCommand::InvokeCommand(RUC_EDITEDRECORDING, editedVersionName);
+     if (!error)
+        cRecordingUserCommand::InvokeCommand(RUC_EDITEDRECORDING, editedVersionName);
      delete editedVersionName;
      editedVersionName = NULL;
+     ended = true;
      }
   return false;
 }
 
-// --- cDvbApi ---------------------------------------------------------------
+bool cVideoCutter::Error(void)
+{
+  bool result = error;
+  error = false;
+  return result;
+}
 
+bool cVideoCutter::Ended(void)
+{
+  bool result = ended;
+  ended = false;
+  return result;
+}
+
+// --- cDvbApi ---------------------------------------------------------------
 
 static const char *OstName(const char *Name, int n)
 {

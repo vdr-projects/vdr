@@ -907,3 +907,7 @@ Video Disk Recorder Revision History
 - Fixed handling file names that contain single quotes (') or dollar signs ($)
   in the call to the shutdown command (option '-s') and the recording command
   (option '-r').
+- Improved error handling in the editing process; the resulting file will be
+  deleted if an error occured.
+- A message is now prompted at the end of the editing process, indicating
+  whether the process succeeded or failed.

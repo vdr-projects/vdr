@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.h 1.59 2001/11/24 11:03:16 kls Exp $
+ * $Id: dvbapi.h 1.60 2002/01/26 13:01:16 kls Exp $
  */
 
 #ifndef __DVBAPI_H
@@ -69,10 +69,14 @@ class cVideoCutter {
 private:
   static char *editedVersionName;
   static cCuttingBuffer *cuttingBuffer;
+  static bool error;
+  static bool ended;
 public:
   static bool Start(const char *FileName);
   static void Stop(void);
   static bool Active(void);
+  static bool Error(void);
+  static bool Ended(void);
   };
 
 class cDvbApi {

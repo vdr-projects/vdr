@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.91 2002/01/26 11:53:11 kls Exp $
+ * $Id: vdr.c 1.92 2002/01/26 13:35:05 kls Exp $
  */
 
 #include <getopt.h>
@@ -468,7 +468,12 @@ int main(int argc, char *argv[])
           }
         if (!Menu) {
            EITScanner.Process();
-           cVideoCutter::Active();
+           if (!cVideoCutter::Active() && cVideoCutter::Ended()) {
+              if (cVideoCutter::Error())
+                 Interface->Error(tr("Editing process failed!"));
+              else
+                 Interface->Info(tr("Editing process finished"));
+              }
            }
         if (!*Interact && (!cRecordControls::Active() || ForceShutdown)) {
            time_t Now = time(NULL);
