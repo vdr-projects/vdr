@@ -518,6 +518,7 @@ Gerhard Steiner <steiner@mail.austria.com>
  for fixing resume file handling in case the resume.vdr file can't be written
  for reporting a problem with newly created timers in case they are not confirmed
  with "Ok"
+ for reporting an occasional "Broken pipe" error in SVDRP connections
 
 Jaakko Hyvätti <jaakko@hyvatti.iki.fi>
  for translating OSD texts to the Finnish language

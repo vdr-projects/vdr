@@ -2271,3 +2271,5 @@ Video Disk Recorder Revision History
 - Added missing I18N entry for "Ppid" (thanks to Rolf Ahrenberg).
 - Fixed handling the color buttons in the "Edit channel" menu (thanks to Thomas
   Keil for reporting this one).
+- Fixed an occasional "Broken pipe" error in SVDRP connections (thanks to Gerhard
+  Steiner for reporting this one).
