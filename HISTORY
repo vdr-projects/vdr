@@ -3013,3 +3013,5 @@ Video Disk Recorder Revision History
   currently in use (it will then return a dummy cOsd object and write a message to
   the log file).
 - Added Estonian language texts (thanks to Arthur Konovalov).
+- Fixed 'newplugin' to use the compiler defined in $(CXX) for generating file
+  dependencies (thanks to Andreas Brachold).

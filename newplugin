@@ -12,7 +12,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: newplugin 1.16 2003/12/21 15:45:18 kls Exp $
+# $Id: newplugin 1.17 2004/10/16 12:12:43 kls Exp $
 
 $PLUGIN_NAME = $ARGV[0] || die "Usage: newplugin <name>\n";
 
@@ -110,7 +110,7 @@ OBJS = \$(PLUGIN).o
 
 # Dependencies:
 
-MAKEDEP = g++ -MM -MG
+MAKEDEP = \$(CXX) -MM -MG
 DEPFILE = .dependencies
 \$(DEPFILE): Makefile
 	\@\$(MAKEDEP) \$(DEFINES) \$(INCLUDES) \$(OBJS:%.o=%.c) > \$\@
