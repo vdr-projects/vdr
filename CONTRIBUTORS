@@ -83,6 +83,8 @@ Dave Chapman <dave@dchapman.com>
 Hans-Peter Raschke <Hans-Peter.Raschke@Wintermann-DatenService.de>
  for his support in adapting VDR to DVB-C
  for adding the 'statdvb2vdr' tool (see Tools/statdvb2vdr)
+ for reporting that the CA descriptors need to be sent to the CAM in the 'program'
+ or 'ES level' sections to make SkyCrypt CAMs work
 
 Peter Hofmann <software@pxh.de>
  for his support in adapting VDR to DVB-C

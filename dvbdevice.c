@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.74 2003/12/23 10:23:16 kls Exp $
+ * $Id: dvbdevice.c 1.75 2003/12/24 09:57:29 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -273,19 +273,12 @@ void cDvbTuner::Action(void)
                  if (ciHandler->Process() && useCa) {
                     if (tunerStatus != tsCam) {//XXX TODO update in case the CA descriptors have changed
                        for (int Slot = 0; Slot < ciHandler->NumSlots(); Slot++) {
-                           uchar buffer[2048];
-                           int length = GetCaDescriptors(channel.Source(), channel.Frequency(), channel.Sid(), ciHandler->GetCaSystemIds(Slot), sizeof(buffer), buffer);
-                           if (length > 0) {
-                              cCiCaPmt CaPmt(channel.Sid());
-                              CaPmt.AddCaDescriptor(length, buffer);
-                              if (channel.Vpid())
-                                 CaPmt.AddPid(channel.Vpid(), 2);
-                              if (channel.Apid1())
-                                 CaPmt.AddPid(channel.Apid1(), 4);
-                              if (channel.Apid2())
-                                 CaPmt.AddPid(channel.Apid2(), 4);
-                              if (channel.Dpid1())
-                                 CaPmt.AddPid(channel.Dpid1(), 0);
+                           cCiCaPmt CaPmt(channel.Source(), channel.Frequency(), channel.Sid(), ciHandler->GetCaSystemIds(Slot));
+                           if (CaPmt.Valid()) {
+                              CaPmt.AddPid(channel.Vpid(), 2);
+                              CaPmt.AddPid(channel.Apid1(), 4);
+                              CaPmt.AddPid(channel.Apid2(), 4);
+                              CaPmt.AddPid(channel.Dpid1(), 0);
                               if (ciHandler->SetCaPmt(CaPmt, Slot)) {
                                  tunerStatus = tsCam;
                                  startTime = 0;

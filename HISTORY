@@ -2508,3 +2508,6 @@ Video Disk Recorder Revision History
   Miguel Sequeira de Justo Teixeira for reporting this one).
 - Added 'StreamType' setting to CAM communication, which is important for
   Aston/SECA CAMs (thanks to Antonino Sergi).
+- Now the CA descriptors are sent to the CAM in the 'program' or 'ES level'
+  sections, depending on where they are found in the PMT (thanks to Hans-Peter
+  Raschke for reporting this one). This should make SkyCrypt CAMs work.

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 1.19 2003/12/23 10:19:56 kls Exp $
+ * $Id: ci.c 1.20 2003/12/24 10:23:24 kls Exp $
  */
 
 /* XXX TODO
@@ -22,6 +22,7 @@ XXX*/
 #include <sys/ioctl.h>
 #include <time.h>
 #include <unistd.h>
+#include "pat.h"
 #include "tools.h"
 
 /* these might come in handy in case you want to use this code without VDR's other files:
@@ -1266,8 +1267,9 @@ bool cCiEnquiry::Cancel(void)
 #define CPCI_QUERY            0x03
 #define CPCI_NOT_SELECTED     0x04
 
-cCiCaPmt::cCiCaPmt(int ProgramNumber)
+cCiCaPmt::cCiCaPmt(int Source, int Transponder, int ProgramNumber, const unsigned short *CaSystemIds)
 {
+  caDescriptorsLength = GetCaDescriptors(Source, Transponder, ProgramNumber, CaSystemIds, sizeof(caDescriptors), caDescriptors, streamFlag);
   length = 0;
   capmt[length++] = CPLM_ONLY;
   capmt[length++] = (ProgramNumber >> 8) & 0xFF;
@@ -1276,20 +1278,31 @@ cCiCaPmt::cCiCaPmt(int ProgramNumber)
   esInfoLengthPos = length;
   capmt[length++] = 0x00; // program_info_length H (at program level)
   capmt[length++] = 0x00; // program_info_length L
+  if (!streamFlag)
+     AddCaDescriptors(caDescriptorsLength, caDescriptors);
+}
+
+bool cCiCaPmt::Valid(void)
+{
+  return caDescriptorsLength > 0;
 }
 
 void cCiCaPmt::AddPid(int Pid, uint8_t StreamType)
 {
-  //XXX buffer overflow check???
-  capmt[length++] = StreamType;
-  capmt[length++] = (Pid >> 8) & 0xFF;
-  capmt[length++] =  Pid       & 0xFF;
-  esInfoLengthPos = length;
-  capmt[length++] = 0x00; // ES_info_length H (at ES level)
-  capmt[length++] = 0x00; // ES_info_length L
+  if (Pid) {
+     //XXX buffer overflow check???
+     capmt[length++] = StreamType;
+     capmt[length++] = (Pid >> 8) & 0xFF;
+     capmt[length++] =  Pid       & 0xFF;
+     esInfoLengthPos = length;
+     capmt[length++] = 0x00; // ES_info_length H (at ES level)
+     capmt[length++] = 0x00; // ES_info_length L
+     if (streamFlag)
+        AddCaDescriptors(caDescriptorsLength, caDescriptors);
+     }
 }
 
-void cCiCaPmt::AddCaDescriptor(int Length, uint8_t *Data)
+void cCiCaPmt::AddCaDescriptors(int Length, const uint8_t *Data)
 {
   if (esInfoLengthPos) {
      if (length + Length < int(sizeof(capmt))) {
