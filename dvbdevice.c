@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.54 2003/04/19 14:24:25 kls Exp $
+ * $Id: dvbdevice.c 1.55 2003/04/26 11:49:06 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -524,8 +524,8 @@ void cDvbDevice::SetVideoFormat(bool VideoFormat16_9)
      CHECK(ioctl(fd_video, VIDEO_SET_FORMAT, VideoFormat16_9 ? VIDEO_FORMAT_16_9 : VIDEO_FORMAT_4_3));
 }
 
-//                          ptAudio        ptVideo        ptTeletext        ptDolby        ptOther
-dmx_pes_type_t PesTypes[] = { DMX_PES_AUDIO, DMX_PES_VIDEO, DMX_PES_TELETEXT, DMX_PES_OTHER, DMX_PES_OTHER };
+//                            ptAudio        ptVideo        ptPcr        ptTeletext        ptDolby        ptOther
+dmx_pes_type_t PesTypes[] = { DMX_PES_AUDIO, DMX_PES_VIDEO, DMX_PES_PCR, DMX_PES_TELETEXT, DMX_PES_OTHER, DMX_PES_OTHER };
 
 bool cDvbDevice::SetPid(cPidHandle *Handle, int Type, bool On)
 {
@@ -662,6 +662,7 @@ bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
 
      DelPid(pidHandles[ptAudio].pid);
      DelPid(pidHandles[ptVideo].pid);
+     DelPid(pidHandles[ptPcr].pid);
      DelPid(pidHandles[ptTeletext].pid);
      DelPid(pidHandles[ptDolby].pid);
      }
@@ -683,7 +684,7 @@ bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
   if (TurnOnLivePIDs) {
      aPid1 = Channel->Apid1();
      aPid2 = Channel->Apid2();
-     if (!(AddPid(Channel->Apid1(), ptAudio) && AddPid(Channel->Vpid(), ptVideo))) {//XXX+ dolby dpid1!!! (if audio plugins are attached)
+     if (!(AddPid(Channel->Ppid(), ptPcr) && AddPid(Channel->Apid1(), ptAudio) && AddPid(Channel->Vpid(), ptVideo))) {//XXX+ dolby dpid1!!! (if audio plugins are attached)
         esyslog("ERROR: failed to set PIDs for channel %d on device %d", Channel->Number(), CardIndex() + 1);
         return false;
         }

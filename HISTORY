@@ -2054,8 +2054,14 @@ Video Disk Recorder Revision History
   your remote control while watching live video to start an instant recording
   of the current programme and immediately start replaying that recording.
 
-2003-04-25: Version 1.1.29
+2003-04-26: Version 1.1.29
 
 - Fixed detecting broken connection to the LIRC daemon (thanks to Ludwig Nussel).
 - Now sending CA descriptors to the CAM in the same sequence as they were originally
   received (thanks to Stefan Huelswitt).
+- The PCR PID can now be set separately from the video PID. The syntax in the
+  'channels.conf' file is, for example, ...:164+17:..., where 164 is the video PID
+  and 17 is the PCR PID. The separator is a '+' sign, not a comma or semicolon as
+  with the audio PIDs, because this is not an alternate PID, but rather an
+  additional, necessary PID. In order to use this feature you need a driver version
+  dated 2003-04-27 or higher (setting the PCR PID didn't work in earlier versions).

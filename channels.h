@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.h 1.6 2002/11/30 12:59:05 kls Exp $
+ * $Id: channels.h 1.7 2003/04/26 09:15:40 kls Exp $
  */
 
 #ifndef __CHANNELS_H
@@ -65,6 +65,7 @@ private:
   int source;
   int srate;
   int vpid;
+  int ppid;
   int apid1, apid2;
   int dpid1, dpid2;
   int tpid;
@@ -98,6 +99,7 @@ public:
   int Source(void) const { return source; }
   int Srate(void) const { return srate; }
   int Vpid(void) const { return vpid; }
+  int Ppid(void) const { return ppid; }
   int Apid1(void) const { return apid1; }
   int Apid2(void) const { return apid2; }
   int Dpid1(void) const { return dpid1; }
