@@ -342,3 +342,5 @@ Video Disk Recorder Revision History
   a recording is interrupted due to higher priority.
 - Implemented safe writing of config files (first writes into a temporary file
   and then renames it).
+- In case the video data stream is broken the log message will come only every
+  5 seconds.
