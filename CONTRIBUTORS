@@ -861,6 +861,9 @@ Thomas v. Keller <v.keller@neckarufer.de>
 Richard Scobie <r.scobie@clear.net.nz>
  for adding Asia-Pacific satellites to 'sources.conf'
 
+Luke Jenkins <a@xmission.com>
+ for adding North American satellites to 'sources.conf'
+
 Emil Petersky <petersky@isr.uni-stuttgart.de>
  for adding "Slovak Link" and "Czech Link" to 'ca.conf'
 
