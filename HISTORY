@@ -2652,7 +2652,7 @@ Video Disk Recorder Revision History
   actual CAM type as reported by the CAM. The 'ca.conf' file has been stripped
   down to the values 0..4.
 
-2004-02-22: Version 1.3.5
+2004-02-23: Version 1.3.5
 
 - Fixed reading the EPG preferred language parameter from 'setup.conf'.
 - Fixed switching to a visible programme in case the current channel has neither
@@ -2699,3 +2699,4 @@ Video Disk Recorder Revision History
 - Extended the SVDRP command LSTE to allow limiting the listed data to a given
   channel, the present or following events, or events at a given time (thanks to
   Thomas Heiligenmann).
+- Fixed a typo in libsi/si.h (thanks to Stéphane Esté-Gracias).

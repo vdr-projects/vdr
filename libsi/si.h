@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: si.h 1.7 2004/02/20 13:47:09 kls Exp $
+ *   $Id: si.h 1.8 2004/02/23 17:02:33 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -36,7 +36,7 @@ enum TableId { TableIdPAT = 0x00, //program association section
                TableIdEIT_schedule_last = 0x5F,
                //range from 0x60 to 0x6F
                TableIdEIT_schedule_Other_first = 0x60,
-               TableIdEIT_schedule_Other_fast = 0x6F,
+               TableIdEIT_schedule_Other_last = 0x6F,
                TableIdTDT = 0x70, //time date section
                TableIdRST = 0x71, //running status section
                TableIdST  = 0x72, //stuffing section

@@ -940,3 +940,6 @@ Thomas Bergwinkl <Thomas.Bergwinkl@t-online.de>
  with value 0
  for pointing out that transponder handling didn't work with satellites that provide
  two transponders on the same frequency, with different polarization
+
+Stéphane Esté-Gracias <sestegra@free.fr>
+ for fixing a typo in libsi/si.h
