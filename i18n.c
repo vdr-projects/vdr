@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.152 2004/03/13 10:59:23 kls Exp $
+ * $Id: i18n.c 1.153 2004/03/26 15:02:59 kls Exp $
  *
  * Translations provided by:
  *
@@ -115,11 +115,11 @@ const tI18nPhrase Phrases[] = {
     "iso8859-5",
   },
   // The 3-letter names of the language (this MUST be the third phrase!):
-  { "eng",
+  { "eng,dos",
     "deu,ger",
     "slv",
     "ita",
-    "dut,nla",
+    "dut,nla,nld",
     "por",
     "fra,fre",
     "nor",
