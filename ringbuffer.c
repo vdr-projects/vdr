@@ -7,7 +7,7 @@
  * Parts of this file were inspired by the 'ringbuffy.c' from the
  * LinuxDVB driver (see linuxtv.org).
  *
- * $Id: ringbuffer.c 1.10 2002/07/28 12:47:32 kls Exp $
+ * $Id: ringbuffer.c 1.11 2003/01/19 15:03:00 kls Exp $
  */
 
 #include "ringbuffer.h"
@@ -174,14 +174,18 @@ int cRingBufferLinear::Get(uchar *Data, int Count)
 
 cFrame::cFrame(const uchar *Data, int Count, eFrameType Type, int Index)
 {
-  count = Count;
+  count = abs(Count);
   type = Type;
   index = Index;
-  data = new uchar[count];
-  if (data)
-     memcpy(data, Data, count);
-  else
-     esyslog("ERROR: can't allocate frame buffer (count=%d)", count);
+  if (Count < 0)
+     data = (uchar *)Data;
+  else {
+     data = new uchar[count];
+     if (data)
+        memcpy(data, Data, count);
+     else
+        esyslog("ERROR: can't allocate frame buffer (count=%d)", count);
+     }
   next = NULL;
 }
 

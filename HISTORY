@@ -1922,3 +1922,6 @@ Video Disk Recorder Revision History
 - Added 'Hrvatska radiotelevizija' and 'RTV Slovenija' to ca.conf (thanks to
   Paul Gohn).
 - Implemented actual user input for CAM enquiry menus.
+- Since disk file systems apparently don't honor the O_NONBLOCK flag to read from
+  a file in non-blocking mode the cDvbPlayer now uses a non blocking file reader
+  class to make sure replay remains smooth even under heavy system load.
