@@ -1962,3 +1962,5 @@ Video Disk Recorder Revision History
 - Fixed high CPU load during replay (thanks Marcel Wiesweg for pointing out this
   one).
 - Fixed margin handling in cRingBufferLinear.
+- Now polling the output device in 'Transfer Mode' and retrying to put packets
+  into the ring buffer.

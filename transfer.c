@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: transfer.c 1.9 2003/01/26 09:59:35 kls Exp $
+ * $Id: transfer.c 1.10 2003/02/15 14:12:41 kls Exp $
  */
 
 #include "transfer.h"
@@ -50,9 +50,16 @@ void cTransfer::Activate(bool On)
 void cTransfer::Receive(uchar *Data, int Length)
 {
   if (IsAttached()) {
-     int p = ringBuffer->Put(Data, Length);
-     if (p != Length && active)
-        esyslog("ERROR: ring buffer overflow (%d bytes dropped)", Length - p);
+     int i = 0;
+     while (active && Length > 0) {
+           if (i++ > 10) {
+              esyslog("ERROR: ring buffer overflow (%d bytes dropped)", Length);
+              break;
+              }
+           int p = ringBuffer->Put(Data, Length);
+           Length -= p;
+           Data += p;
+           }
      }
 }
 
@@ -90,14 +97,17 @@ void cTransfer::Action(void)
            if (p) {
               StripAudioPackets(p, Result, audioTrack);
               while (Result > 0 && active) {
-                    int w = PlayVideo(p, Result);
-                    if (w > 0) {
-                       p += w;
-                       Result -= w;
-                       }
-                    else if (w < 0 && FATALERRNO) {
-                       LOG_ERROR;
-                       break;
+                    cPoller Poller;
+                    if (DevicePoll(Poller, 100)) {
+                       int w = PlayVideo(p, Result);
+                       if (w > 0) {
+                          p += w;
+                          Result -= w;
+                          }
+                       else if (w < 0 && FATALERRNO) {
+                          LOG_ERROR;
+                          break;
+                          }
                        }
                     }
               }
