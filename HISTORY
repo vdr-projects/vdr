@@ -565,3 +565,5 @@ Video Disk Recorder Revision History
 - Fixed a possible crash in parsing incorrect lines in 'channels.conf'.
 - New channel settings for Premiere World (Dolby Digital PIDs not yet
   available).
+- Increased the buffer for key names received from LIRC (thanks to Andre
+  Valentin).

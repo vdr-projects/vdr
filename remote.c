@@ -6,7 +6,7 @@
  *
  * Ported to LIRC by Carsten Koch <Carsten.Koch@icem.de>  2000-06-16.
  *
- * $Id: remote.c 1.21 2001/02/04 19:17:59 kls Exp $
+ * $Id: remote.c 1.22 2001/07/22 14:43:45 kls Exp $
  */
 
 #include "remote.h"
@@ -439,7 +439,7 @@ void cRcIoLIRC::Action(void)
       if (cFile::FileReady(f, REPEATLIMIT) && read(f, buf, sizeof(buf)) > 21) {
          if (!receivedData) { // only accept new data the previous data has been fetched
             int count;
-            sscanf(buf, "%*x %x %7s", &count, LastKeyName); // '7' in '%7s' is LIRC_KEY_BUF-1!
+            sscanf(buf, "%*x %x %29s", &count, LastKeyName); // '29' in '%29s' is LIRC_KEY_BUF-1!
             int Now = time_ms();
             if (count == 0) {
                strcpy(keyName, LastKeyName);
