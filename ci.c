@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 1.10 2003/04/18 12:48:49 kls Exp $
+ * $Id: ci.c 1.11 2003/04/18 13:48:47 kls Exp $
  */
 
 /* XXX TODO
@@ -1313,9 +1313,10 @@ cCiHandler *cCiHandler::CreateCiHandler(const char *FileName)
            if (Caps.slot_type == CA_CI_LINK)
               return new cCiHandler(fd_ca, NumSlots);
            else
-              esyslog("ERROR: CAM doesn't support link layer interface");
+              isyslog("CAM doesn't support link layer interface");
            }
-        esyslog("ERROR: no CAM slots found");
+        else
+           esyslog("ERROR: no CAM slots found");
         }
      else
         LOG_ERROR_STR(FileName);
