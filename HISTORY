@@ -534,3 +534,7 @@ Video Disk Recorder Revision History
 - No longer getting stuck when a channel doesn't sync while switching
   with the 'Up' and 'Down' keys.
 
+2001-06-27: Version 0.84
+
+- Fixed video packet scanning to make it recognize the whole range of
+  allowed video packet ids.

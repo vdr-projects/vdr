@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.80 2001/06/24 17:42:19 kls Exp $
+ * $Id: dvbapi.c 1.81 2001/06/27 08:32:32 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -830,7 +830,7 @@ void cReplayBuffer::StripAudioPackets(uchar *b, int Length, uchar Except)
                        b[j] = 0x00;
                    }
                 break;
-           case 0xE0: // video
+           case 0xE0 ... 0xEF: // video
                 break;
            default:
                 //esyslog(LOG_ERR, "ERROR: unexpected packet id %02X", c);
