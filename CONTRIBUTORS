@@ -907,3 +907,6 @@ Robert Huitl <vdr@huitl.de>
 
 Vyacheslav Dikonov <sdiconov@mail.ru>
  for translating OSD texts to the Russian language
+
+Stephan Epstein <s.epstein@vinzenz.com>
+ for reporting a wrong 'delta' value in the call to the shutdown script

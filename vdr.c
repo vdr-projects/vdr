@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.172 2004/01/04 11:12:05 kls Exp $
+ * $Id: vdr.c 1.173 2004/01/16 13:59:57 kls Exp $
  */
 
 #include <getopt.h>
@@ -795,6 +795,7 @@ int main(int argc, char *argv[])
                     if (Interface->Confirm(tr("Press any key to cancel shutdown"), UserShutdown ? 5 : SHUTDOWNWAIT, true)) {
                        int Channel = timer ? timer->Channel()->Number() : 0;
                        const char *File = timer ? timer->File() : "";
+                       Delta = Next - time(NULL); // compensates for Confirm() timeout
                        char *cmd;
                        asprintf(&cmd, "%s %ld %ld %d \"%s\" %d", Shutdown, Next, Delta, Channel, strescape(File, "\"$"), UserShutdown);
                        isyslog("executing '%s'", cmd);

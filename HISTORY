@@ -2584,3 +2584,5 @@ Video Disk Recorder Revision History
   your texts.
 - Some corrections and additions to the Finnish OSD texts (thanks to Rolf
   Ahrenberg and Niko Tarnanen).
+- Fixed a wrong 'delta' value in the call to the shutdown script (thanks to
+  Stephan Epstein for reporting this one).
