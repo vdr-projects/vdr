@@ -329,3 +329,6 @@ Oliver Lorei <oliverlorei@cityweb.de>
 
 Andreas Böttger <fboettger@t-online.de>
  for reporting a bug in skipping forward in time shift mode near the end of the recording
+
+Rudi Hofer (Rudi.Hofer@cadsoft.de)
+ for his help in keeping 'channels.conf' up to date

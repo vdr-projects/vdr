@@ -1242,3 +1242,7 @@ Video Disk Recorder Revision History
   'channels.conf.cable' whenever a new version is sent to me.
 - Fixed skipping forward in time shift mode near the end of the recording (thanks
   to Andreas Böttger for reporting this one).
+
+2002-05-18: Version 1.0.3
+
+- Updated 'Premiere Sport 2' in channels.conf (thanks to Rudi Hofer).
