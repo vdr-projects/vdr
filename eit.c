@@ -16,7 +16,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.c 1.73 2003/04/25 14:45:32 kls Exp $
+ * $Id: eit.c 1.74 2003/04/27 14:41:36 kls Exp $
  ***************************************************************************/
 
 #include "eit.h"
@@ -1232,7 +1232,7 @@ void cSIProcessor::Action()
                int r = safe_read(filters[a].handle, buf, sizeof(buf));
                if (r > 3) // minimum number of bytes necessary to get section length
                {
-                  int seclen = ((buf[1] & 0x0F) << 8) | (buf[2] & 0xFF) + 3;
+                  int seclen = (((buf[1] & 0x0F) << 8) | (buf[2] & 0xFF)) + 3;
                   int pid = filters[a].pid;
                   if (seclen == r)
                   {
