@@ -188,6 +188,7 @@ Stefan Huelswitt <huels@iname.com>
  for reporting a bug in setting the title in the replay display of the "Classic VDR"
  skin in case a shorter title is set after a longer one
  for fixing handling of pmAudioOnlyBlack
+ for pointing out possible race conditions in handling childTid in cThread
 
 Ulrich Röder <roeder@efr-net.de>
  for pointing out that there are channels that have a symbol rate higher than

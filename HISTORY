@@ -3159,3 +3159,5 @@ Video Disk Recorder Revision History
   overhead in the firmware (thanks to Werner Fink).
 - Now checking available OSD memory at runtime (thanks to Oliver Endriss).
 - Fixed some typos in the Makefile's 'font' target (thanks to Olaf Titz).
+- Fixed handling childTid in cThread to avoid possible race conditions (thanks
+  to Stefan Huelswitt for pointing this out).

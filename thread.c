@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 1.36 2004/10/31 09:54:02 kls Exp $
+ * $Id: thread.c 1.37 2004/11/20 16:21:14 kls Exp $
  */
 
 #include "thread.h"
@@ -233,12 +233,15 @@ void *cThread::StartThread(cThread *Thread)
 
 bool cThread::Start(void)
 {
+  Lock();
   if (!childTid) {
      parentTid = pthread_self();
-     pthread_create(&childTid, NULL, (void *(*) (void *))&StartThread, (void *)this);
-     pthread_detach(childTid); // auto-reap
-     pthread_setschedparam(childTid, SCHED_RR, 0);
+     pthread_t Tid;
+     pthread_create(&Tid, NULL, (void *(*) (void *))&StartThread, (void *)this);
+     pthread_detach(Tid); // auto-reap
+     pthread_setschedparam(Tid, SCHED_RR, 0);
      }
+  Unlock();
   return true; //XXX return value of pthread_create()???
 }
 
@@ -277,10 +280,12 @@ void cThread::Cancel(int WaitSeconds)
             }
         esyslog("ERROR: thread %ld won't end (waited %d seconds) - cancelling it...", childTid, WaitSeconds);
         }
+     Lock();
      if (childTid) {
         pthread_cancel(childTid);
         childTid = 0;
         }
+     Unlock();
      }
 }
 
