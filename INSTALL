@@ -133,6 +133,10 @@ that the channels defined in 'channels.conf' are correct before attempting
 to record anything. Channel parameters may vary and not all of the channels
 listed in the default 'channels.conf' file have been verified by the author.
 
+As a starting point you can copy the 'channels.conf' file that comes with the
+VDR archive into your video directory (or into your config directory,
+respectively, in case you have redirected it with the -c option).
+
 Learning the remote control keys:
 ---------------------------------
 
