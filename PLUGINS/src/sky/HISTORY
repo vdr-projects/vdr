@@ -16,3 +16,9 @@ VDR Plugin 'sky' Revision History
 2004-01-04: Version 0.2.0
 
 - Implemented automatic PID switching and channel detection
+
+2004-02-15: Version 0.3.0
+
+- Now using the actual channel IDs a derived from the data stream.
+- Switched EPG data retrieval to http://www.bleb.org.
+- Added automatic DST detection to getskyepg.pl.

@@ -2652,7 +2652,7 @@ Video Disk Recorder Revision History
   actual CAM type as reported by the CAM. The 'ca.conf' file has been stripped
   down to the values 0..4.
 
-2004-02-14: Version 1.3.5
+2004-02-15: Version 1.3.5
 
 - Fixed reading the EPG preferred language parameter from 'setup.conf'.
 - Fixed switching to a visible programme in case the current channel has neither
@@ -2667,3 +2667,5 @@ Video Disk Recorder Revision History
   now initiates an "emergency exit" if the number of UPT errors during one
   recording exceeds 10 (suggested by Gregoire Favre). Since the UPT error doesn't
   happen on my system, this has not been explicitly tested.
+- Adapted the 'sky' plugin to use the actual channel IDs, and to fetch EPG data
+  from www.bleb.org.

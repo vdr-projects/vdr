@@ -28,23 +28,18 @@ control the Digibox.
 
 In order to access the Sky channels VDR needs to know the channel number
 under which each channel is stored in the Sky Digibox. These numbers are
-used as 'frequency' parameters in the channels.conf definitions of the Sky
-channels (see the file 'channels.conf.sky'). Since these numbers are always
-less than 1000, they can be easily distinguished from normal satellite
-transponder frequencies. The VPID is 160 and the APID is 80 for all Sky
-channels. These are just fake PIDs, since the Kfir card always uses these
-fixed PIDs. The 'Ca' parameter of the Sky channels is set to 301, which
-is defined as "Videoguard, Sky Digital" in VDR's 'ca.conf' file. Again, please
-note that VDR doesn't do any decrypting here, this is just to mark these
-channels as "conditionally accessible" and have a way of setting the CICAM
-value for the Kfir device in VDR's Setup menu.
+stored in the file 'channels.conf.sky', together with the channel IDs as
+derived from the actual channel data and the names under which the EPG
+data for each channel can be found (see below). Copy this file to your
+plugins config directory, in a subdirectory named 'sky', as in
 
-The Sky EPG is available on the Internet at http://www.ananova.com.
+/video/plugins/sky/channels.conf.sky
+
+The Sky EPG is available on the Internet at http://www.bleb.org.
 The Perl script getskyepg.pl extracts the EPG data from these pages
-and sends it to VDR via an SVDRP connection. The channel numbers Sky
-uses to generate the EPG pages are stored as the 'sid' parameter in
-the channels.conf definitions of the Sky channels. You can keep your
-EPG data up-to-date by entering a call to getskyepg.pl into your
-/etc/crontab. Call 'getskyepg.pl -h' for a list of options.
+and sends it to VDR via an SVDRP connection. The channel names as
+used on the bleb.org pages are defined in the channels.conf.sky file.
+You can keep your EPG data up-to-date by entering a call to getskyepg.pl
+into your /etc/crontab. Call 'getskyepg.pl -h' for a list of options.
 The getskyepg.pl script requires the programs /usr/bin/wget and /usr/bin/logger
 to be installed on your system.

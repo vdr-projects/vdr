@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: eitscan.c 1.20 2004/01/17 15:38:11 kls Exp $
+ * $Id: eitscan.c 1.21 2004/02/14 13:44:31 kls Exp $
  */
 
 #include "eitscan.h"
@@ -146,8 +146,7 @@ void cEITScanner::Process(void)
                             if (!(Device->Receiving(true) || Device->Replaying())) {
                                const cChannel *Channel = ScanData->GetChannel();
                                if (Channel) {
-                                  //XXX if (Device->ProvidesTransponder(Channel)) {
-                                  if ((!Channel->Ca() || Channel->Ca() == Device->DeviceNumber() + 1 || Channel->Ca() >= 0x0100) && Device->ProvidesTransponder(Channel)) { //XXX temporary for the 'sky' plugin
+                                  if ((!Channel->Ca() || Channel->Ca() == Device->DeviceNumber() + 1 || Channel->Ca() >= 0x0100) && Device->ProvidesTransponder(Channel)) {
                                      if (Device == cDevice::PrimaryDevice() && !currentChannel) {
                                         currentChannel = Device->CurrentChannel();
                                         Interface->Info("Starting EPG scan");

@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: sky.c 1.4 2004/01/04 12:30:00 kls Exp $
+ * $Id: sky.c 1.5 2004/02/15 12:40:22 kls Exp $
  */
 
 #include <sys/socket.h>
@@ -14,16 +14,53 @@
 #include <vdr/plugin.h>
 #include <vdr/sources.h>
 
-static const char *VERSION        = "0.2.0";
+static const char *VERSION        = "0.3.0";
 static const char *DESCRIPTION    = "Sky Digibox interface";
 
 // --- cDigiboxDevice --------------------------------------------------------
+
+#define DUMMYAPID  80
+#define DUMMYVPID 160
+
+class cSkyChannel : public cListObject {
+public:
+  tChannelID channelID;
+  int digiboxChannelNumber;
+  bool Parse(const char *s);
+  };
+
+bool cSkyChannel::Parse(const char *s)
+{
+  char *id = NULL;
+  if (2 == sscanf(s, "%a[^:]:%d", &id, &digiboxChannelNumber))
+     channelID = tChannelID::FromString(id);
+  free(id);
+  return digiboxChannelNumber && channelID.Valid();
+}
+
+class cSkyChannels : public cConfig<cSkyChannel> {
+public:
+  cSkyChannel *GetSkyChannel(const cChannel *Channel);
+  };
+
+cSkyChannel *cSkyChannels::GetSkyChannel(const cChannel *Channel)
+{
+  tChannelID ChannelID = Channel->GetChannelID();
+  for (cSkyChannel *sc = First(); sc; sc = Next(sc)) {
+      if (ChannelID == sc->channelID)
+         return sc;
+      }
+  return NULL;
+}
+
+cSkyChannels SkyChannels;
 
 class cDigiboxDevice : public cDevice {
 private:
   int source;
   int digiboxChannelNumber;
   int fd_dvr;
+  int apid, vpid;
   cTSBuffer *tsBuffer;
   int fd_lirc;
   void LircSend(const char *s);
@@ -47,6 +84,7 @@ cDigiboxDevice::cDigiboxDevice(void)
   source = cSource::FromString("S28.2E");//XXX parameter???
   digiboxChannelNumber = 0;
   fd_dvr = -1;
+  apid = vpid = 0;
   struct sockaddr_un addr;
   addr.sun_family = AF_UNIX;
   strn0cpy(addr.sun_path, "/dev/lircd", sizeof(addr.sun_path));//XXX parameter???
@@ -93,7 +131,7 @@ void cDigiboxDevice::LircSend(int n)
 
 bool cDigiboxDevice::SetPid(cPidHandle *Handle, int Type, bool On)
 {
-  dsyslog("SetPid %d %d", Handle->pid, On);
+  //dsyslog("SetPid %d %d", Handle->pid, On);
   return true;
 }
 
@@ -122,6 +160,16 @@ bool cDigiboxDevice::GetTSPacket(uchar *&Data)
      int r = tsBuffer->Read();
      if (r >= 0) {
         Data = tsBuffer->Get();
+        if (Data) {
+           // insert the actual PIDs:
+           int Pid = (((uint16_t)Data[1] & PID_MASK_HI) << 8) | Data[2];
+           if (Pid == DUMMYAPID)
+              Pid = apid;
+           else if (Pid == DUMMYVPID)
+              Pid = vpid;
+           Data[1] = ((Pid >> 8) & 0xFF) | (Data[1] & ~PID_MASK_HI);
+           Data[2] = Pid & 0xFF;
+           }
         return true;
         }
      else if (FATALERRNO) {
@@ -149,9 +197,10 @@ bool cDigiboxDevice::ProvidesChannel(const cChannel *Channel, int Priority, bool
   bool hasPriority = Priority < 0 || Priority > this->Priority();
   bool needsDetachReceivers = true;
 
-  if (ProvidesSource(Channel->Source()) && Channel->Ca() == 0x30) {//XXX
+  cSkyChannel *SkyChannel = SkyChannels.GetSkyChannel(Channel);
+  if (SkyChannel) {
      if (Receiving()) {
-        if (digiboxChannelNumber == Channel->Frequency()) {
+        if (digiboxChannelNumber == SkyChannel->digiboxChannelNumber) {
            needsDetachReceivers = false;
            result = true;
            }
@@ -169,15 +218,20 @@ bool cDigiboxDevice::ProvidesChannel(const cChannel *Channel, int Priority, bool
 bool cDigiboxDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
 {
   if (fd_lirc >= 0 && !Receiving()) { // if we are receiving the channel is already set!
-     digiboxChannelNumber = Channel->Frequency();
-     //XXX only when recording??? -> faster channel switching!
-     LircSend("SKY"); // makes sure the Digibox is "on"
-     //XXX lircprint(fd_lirc, "BACKUP");
-     //XXX lircprint(fd_lirc, "BACKUP");
-     //XXX lircprint(fd_lirc, "BACKUP");
-     LircSend(digiboxChannelNumber);
+     cSkyChannel *SkyChannel = SkyChannels.GetSkyChannel(Channel);
+     if (SkyChannel) {
+        digiboxChannelNumber = SkyChannel->digiboxChannelNumber;
+        apid = Channel->Apid1();
+        vpid = Channel->Vpid();
+        //XXX only when recording??? -> faster channel switching!
+        LircSend("SKY"); // makes sure the Digibox is "on"
+        //XXX lircprint(fd_lirc, "BACKUP");
+        //XXX lircprint(fd_lirc, "BACKUP");
+        //XXX lircprint(fd_lirc, "BACKUP");
+        LircSend(digiboxChannelNumber);
+        }
      }
-return true;
+  return true;
 }
 
 // --- cPluginSky ------------------------------------------------------------
@@ -225,8 +279,16 @@ bool cPluginSky::ProcessArgs(int argc, char *argv[])
 bool cPluginSky::Initialize(void)
 {
   // Initialize any background activities the plugin shall perform.
-  new cDigiboxDevice;
-  return true;
+  const char *ConfigDir = ConfigDirectory(Name());
+  if (ConfigDir) {
+     if (SkyChannels.Load(AddDirectory(ConfigDir, "channels.conf.sky"), true)) {
+        new cDigiboxDevice;
+        return true;
+        }
+     }
+  else
+     esyslog("ERROR: can't get config directory");
+  return false;
 }
 
 void cPluginSky::Housekeeping(void)
