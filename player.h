@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: player.h 1.2 2002/06/22 14:47:25 kls Exp $
+ * $Id: player.h 1.3 2002/06/23 11:20:23 kls Exp $
  */
 
 #ifndef __PLAYER_H
@@ -40,13 +40,23 @@ protected:
 public:
   cPlayer(void);
   virtual ~cPlayer();
+  bool IsAttached(void) { return device != NULL; }
   };
 
 class cControl : public cOsdObject {
+private:
+  static cControl *control;
+  bool attached;
+protected:
+  cPlayer *player;
 public:
-  cControl(void);
+  cControl(cPlayer *Player);
   virtual ~cControl();
   virtual void Hide(void) = 0;
+  static void Launch(cControl *Control);
+  static void Attach(void);
+  static void Shutdown(void);
+  static cControl *Control(void) { return control; }
   };
 
 #endif //__PLAYER_H

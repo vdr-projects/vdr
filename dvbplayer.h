@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.h 1.1 2002/06/16 10:59:14 kls Exp $
+ * $Id: dvbplayer.h 1.2 2002/06/23 10:13:51 kls Exp $
  */
 
 #ifndef __DVBPLAYER_H
@@ -19,11 +19,10 @@ class cDvbPlayerControl : public cControl {
 private:
   cDvbPlayer *player;
 public:
-  cDvbPlayerControl(void);
+  cDvbPlayerControl(const char *FileName);
+       // Sets up a player for the given file.
   virtual ~cDvbPlayerControl();
   bool Active(void);
-  bool Start(const char *FileName);
-       // Starts replaying the given file.
   void Stop(void);
        // Stops the current replay session (if any).
   void Pause(void);

@@ -4,10 +4,11 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: player.c 1.1 2002/06/16 10:34:50 kls Exp $
+ * $Id: player.c 1.2 2002/06/23 11:23:17 kls Exp $
  */
 
 #include "player.h"
+#include "i18n.h"
 
 // --- cPlayer ---------------------------------------------------------------
 
@@ -46,10 +47,40 @@ void cPlayer::Detach(void)
 
 // --- cControl --------------------------------------------------------------
 
-cControl::cControl(void)
+cControl *cControl::control = NULL;
+
+cControl::cControl(cPlayer *Player)
 {
+  attached = false;
+  player = Player;
 }
 
 cControl::~cControl()
 {
+  if (this == control)
+     control = NULL;
+}
+
+void cControl::Launch(cControl *Control)
+{
+  delete control;
+  control = Control;
+}
+
+void cControl::Attach(void)
+{
+  if (control && !control->attached && control->player && !control->player->IsAttached()) {
+     if (cDevice::PrimaryDevice()->AttachPlayer(control->player))
+        control->attached = true;
+     else {
+        Interface->Error(tr("Channel locked (recording)!"));
+        Shutdown();
+        }
+     }
+}
+
+void cControl::Shutdown(void)
+{
+  delete control;
+  control = NULL;
 }

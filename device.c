@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.3 2002/06/22 13:45:53 kls Exp $
+ * $Id: device.c 1.4 2002/06/23 11:16:21 kls Exp $
  */
 
 #include "device.h"
@@ -460,7 +460,7 @@ bool cDevice::SetPid(int fd, dmxPesType_t PesType, int Pid, dmxOutput_t Output)
 eSetChannelResult cDevice::SetChannel(int ChannelNumber, int Frequency, char Polarization, int Diseqc, int Srate, int Vpid, int Apid, int Tpid, int Ca, int Pnr)
 {
   DELETENULL(transfer);
-  //XXX+StopReplay();
+  StopReplay();
 
   cStatus::MsgChannelSwitch(this, 0);
 
@@ -735,11 +735,6 @@ void cDevice::StillPicture(const uchar *Data, int Length)
 
 bool cDevice::Replaying(void)
 {
-  /*XXX+
-  if (replayBuffer && !replayBuffer->Active())
-     StopReplay();
-  return replayBuffer != NULL;
-  XXX*/
   return player != NULL;
 }
 

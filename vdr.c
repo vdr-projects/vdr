@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.116 2002/06/23 09:35:08 kls Exp $
+ * $Id: vdr.c 1.117 2002/06/23 11:23:34 kls Exp $
  */
 
 #include <getopt.h>
@@ -373,7 +373,6 @@ int main(int argc, char *argv[])
 
   cOsdObject *Menu = NULL;
   cOsdObject *Temp = NULL;
-  cReplayControl *ReplayControl = NULL;
   int LastChannel = -1;
   int PreviousChannel = cDevice::CurrentChannel();
   time_t LastActivity = 0;
@@ -391,6 +390,8 @@ int main(int argc, char *argv[])
            esyslog("emergency exit requested - shutting down");
            break;
            }
+        // Attach launched player control:
+        cControl::Attach();
         // Restart the Watchdog timer:
         if (WatchdogTimeout > 0) {
            int LatencyTime = WatchdogTimeout - alarm(WatchdogTimeout);
@@ -418,8 +419,8 @@ int main(int argc, char *argv[])
               }
            }
         // User Input:
-        cOsdObject **Interact = Menu ? &Menu : (cOsdObject **)&ReplayControl;
-        eKeys key = Interface->GetKey(!*Interact || !(*Interact)->NeedsFastResponse());
+        cOsdObject *Interact = Menu ? Menu : cControl::Control();
+        eKeys key = Interface->GetKey(!Interact || !Interact->NeedsFastResponse());
         if (NORMALKEY(key) != kNone) {
            EITScanner.Activity();
            LastActivity = time(NULL);
@@ -433,9 +434,9 @@ int main(int argc, char *argv[])
                   if (!Temp)
                      break;
                   }
-               if (ReplayControl)
-                  ReplayControl->Hide();
-               Menu = new cMenuMain(ReplayControl);
+               if (cControl::Control())
+                  cControl::Control()->Hide();
+               Menu = new cMenuMain(cControl::Control());
                Temp = NULL;
                break;
           // Volume Control:
@@ -456,7 +457,8 @@ int main(int argc, char *argv[])
                break;
           // Power off:
           case kPower: isyslog("Power button pressed");
-                       DELETENULL(*Interact);
+                       DELETENULL(Menu);
+                       cControl::Shutdown();
                        Temp = NULL;
                        if (!Shutdown) {
                           Interface->Error(tr("Can't shutdown - option '-s' not given!"));
@@ -469,8 +471,8 @@ int main(int argc, char *argv[])
                        LastActivity = 1; // not 0, see below!
                        break;
           default:
-            if (*Interact) {
-               switch ((*Interact)->ProcessKey(key)) {
+            if (Interact) {
+               switch (Interact->ProcessKey(key)) {
                  case osRecord: DELETENULL(Menu);
                                 Temp = NULL;
                                 if (!cRecordControls::Start())
@@ -478,28 +480,32 @@ int main(int argc, char *argv[])
                                 break;
                  case osRecordings:
                                 DELETENULL(Menu);
-                                DELETENULL(ReplayControl);
+                                cControl::Shutdown();
                                 Temp = NULL;
-                                Menu = new cMenuMain(ReplayControl, osRecordings);
+                                Menu = new cMenuMain(false, osRecordings);
                                 break;
                  case osReplay: DELETENULL(Menu);
-                                DELETENULL(ReplayControl);
+                                cControl::Shutdown();
                                 Temp = NULL;
-                                ReplayControl = new cReplayControl;
+                                cControl::Launch(new cReplayControl);
                                 break;
                  case osStopReplay:
-                                DELETENULL(*Interact);
-                                DELETENULL(ReplayControl);
+                                DELETENULL(Menu);
+                                cControl::Shutdown();
                                 Temp = NULL;
                                 break;
                  case osSwitchDvb:
-                                DELETENULL(*Interact);
+                                DELETENULL(Menu);
+                                cControl::Shutdown();
                                 Temp = NULL;
                                 Interface->Info(tr("Switching primary DVB..."));
                                 cDevice::SetPrimaryDevice(Setup.PrimaryDVB);
                                 break;
                  case osBack:
-                 case osEnd:    DELETENULL(*Interact);
+                 case osEnd:    if (Interact == Menu)
+                                   DELETENULL(Menu);
+                                else
+                                   cControl::Shutdown();
                                 Temp = NULL;
                                 break;
                  default:       ;
@@ -552,7 +558,7 @@ int main(int argc, char *argv[])
                  Interface->Info(tr("Editing process finished"));
               }
            }
-        if (!*Interact && ((!cRecordControls::Active() && !cCutter::Active()) || ForceShutdown)) {
+        if (!Interact && ((!cRecordControls::Active() && !cCutter::Active()) || ForceShutdown)) {
            time_t Now = time(NULL);
            if (Now - LastActivity > ACTIVITYTIMEOUT) {
               // Shutdown:
@@ -614,7 +620,7 @@ int main(int argc, char *argv[])
   cRecordControls::Shutdown();
   cCutter::Stop();
   delete Menu;
-  delete ReplayControl;
+  cControl::Shutdown();
   delete Interface;
   cOsd::Shutdown();
   PluginManager.Shutdown(true);

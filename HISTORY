@@ -1354,3 +1354,4 @@ Video Disk Recorder Revision History
 - Activated cutting.
 - Activated transfer mode.
 - Moved handling of the Menu key entirely into vdr.c.
+- Switched VDR's own player to the new cPlayer/cControl structures.

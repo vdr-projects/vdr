@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.200 2002/06/23 09:09:11 kls Exp $
+ * $Id: menu.c 1.201 2002/06/23 11:07:19 kls Exp $
  */
 
 #include "menu.h"
@@ -2681,18 +2681,14 @@ char *cReplayControl::fileName = NULL;
 char *cReplayControl::title = NULL;
 
 cReplayControl::cReplayControl(void)
+:cDvbPlayerControl(fileName)
 {
   visible = modeOnly = shown = displayFrames = false;
   lastCurrent = lastTotal = -1;
   timeoutShow = 0;
   timeSearchActive = false;
-  if (fileName) {
-     marks.Load(fileName);
-     if (!Start(fileName))
-        Interface->Error(tr("Channel locked (recording)!"));//XXX+
-     else
-        cStatus::MsgReplaying(this, fileName);
-     }
+  marks.Load(fileName);
+  cStatus::MsgReplaying(this, fileName);
 }
 
 cReplayControl::~cReplayControl()
