@@ -2323,3 +2323,4 @@ Video Disk Recorder Revision History
   Kool for reporting this one).
 - Added a note about the config files of plugins to INSTALL (thanks to Thomas
   Keil).
+- VDR now continues to start up, even if there is an error in setup.conf.
