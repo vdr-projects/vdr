@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.27 2000/09/11 21:13:46 kls Exp $
+ * $Id: menu.c 1.28 2000/10/03 11:32:41 kls Exp $
  */
 
 #include "menu.h"
@@ -1002,7 +1002,7 @@ public:
   };
 
 cMenuRecordings::cMenuRecordings(void)
-:cOsdMenu("Recordings", 9, 6)
+:cOsdMenu("Recordings", 6, 6)
 {
   if (Recordings.Load()) {
      cRecording *recording = Recordings.First();

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.16 2000/10/03 10:33:40 kls Exp $
+ * $Id: recording.c 1.17 2000/10/03 11:32:03 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -175,10 +175,9 @@ const char *cRecording::Title(char Delimiter)
   delete titleBuffer;
   titleBuffer = NULL;
   struct tm *t = localtime(&start);
-  asprintf(&titleBuffer, "%02d.%02d.%02d%c%02d:%02d%c%s",
+  asprintf(&titleBuffer, "%02d.%02d%c%02d:%02d%c%s",
                          t->tm_mday,
                          t->tm_mon + 1,
-                         t->tm_year % 100,
                          Delimiter,
                          t->tm_hour,
                          t->tm_min,
