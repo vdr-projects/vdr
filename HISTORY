@@ -1837,8 +1837,9 @@ Video Disk Recorder Revision History
 - The new plugin 'sky' can be used to integrate a Sky Digibox into the VDR system,
   using a Kfir MPEG2 encoder card (see PLUGINS/src/sky/README for details).
 
-2002-12-06: Version 1.1.19
+2002-12-07: Version 1.1.19
 
 - The character '|' in description texts of EPG records is now interpreted as a
   newline character (suggested by Gerhard Steiner).
 - Updated 'channels.conf.cable' (thanks to Andreas Kool).
+- Improved handling of repeated remote keys.
