@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recorder.c 1.6 2003/05/16 13:33:04 kls Exp $
+ * $Id: recorder.c 1.7 2003/08/02 13:01:19 kls Exp $
  */
 
 #include <stdarg.h>
@@ -34,12 +34,6 @@ cRecorder::cRecorder(const char *FileName, int Ca, int Priority, int VPid, int A
   fileSize = 0;
   active = false;
   lastDiskSpaceCheck = time(NULL);
-  isyslog("record %s", FileName);
-
-  // Create directories if necessary:
-
-  if (!MakeDirs(FileName, true))
-     return;
 
   // Make sure the disk is up and running:
 

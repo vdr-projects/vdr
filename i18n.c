@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.128 2003/06/09 09:49:29 kls Exp $
+ * $Id: i18n.c 1.129 2003/07/13 15:03:07 kls Exp $
  *
  * Translations provided by:
  *
@@ -1043,6 +1043,23 @@ const tI18nPhrase Phrases[] = {
     "PID Video",
     "Vpid",
     "PID Vídeo",
+  },
+  { "Ppid",
+    "Ppid",
+    "Ppid",
+    "Ppid",
+    "Ppid",
+    "Ppid",
+    "Ppid",
+    "Ppid",
+    "Aikatieto PID",
+    "Ppid",
+    "Ppid",
+    "Ppid",
+    "Ppid",
+    "Ppid",
+    "Ppid",
+    "Ppid",
   },
   { "Apid1",
     "Apid1",

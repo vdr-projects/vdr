@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.256 2003/06/07 12:31:57 kls Exp $
+ * $Id: menu.c 1.264 2003/08/03 09:38:37 kls Exp $
  */
 
 #include "menu.h"
@@ -713,6 +713,8 @@ void cMenuChannels::Propagate(void)
 
 eOSState cMenuChannels::Switch(void)
 {
+  if (HasSubMenu())
+     return osContinue;
   cChannel *ch = GetChannel(Current());
   if (ch)
      cDevice::PrimaryDevice()->SwitchChannel(ch, true);
@@ -733,12 +735,12 @@ eOSState cMenuChannels::New(void)
 {
   if (HasSubMenu())
      return osContinue;
-  return AddSubMenu(new cMenuEditChannel(Channels.Get(Current()), true));
+  return AddSubMenu(new cMenuEditChannel(GetChannel(Current()), true));
 }
 
 eOSState cMenuChannels::Delete(void)
 {
-  if (Count() > 0) {
+  if (!HasSubMenu() && Count() > 0) {
      int Index = Current();
      cChannel *channel = GetChannel(Current());
      int DeletedChannel = channel->Number();
@@ -793,7 +795,9 @@ eOSState cMenuChannels::ProcessKey(eKeys Key)
               case kRed:    return Edit();
               case kGreen:  return New();
               case kYellow: return Delete();
-              case kBlue:   Mark(); break;
+              case kBlue:   if (!HasSubMenu())
+                               Mark();
+                            break;
               default: break;
               }
             }
@@ -1558,6 +1562,7 @@ cMenuCam::cMenuCam(cCiMenu *CiMenu)
   Add(new cOsdItem(ciMenu->BottomText()));
   Display();
   dsyslog("CAM: Menu - %s", ciMenu->TitleText());
+  lastActivity = time(NULL);
 }
 
 cMenuCam::~cMenuCam()
@@ -1586,6 +1591,10 @@ eOSState cMenuCam::ProcessKey(eKeys Key)
        default: break;
        }
      }
+  if (Key != kNone)
+     lastActivity = time(NULL);
+  else if (time(NULL) - lastActivity > MENUTIMEOUT)
+     state = osEnd;
   return state;
 }
 
@@ -1603,6 +1612,7 @@ cMenuCamEnquiry::cMenuCamEnquiry(cCiEnquiry *CiEnquiry)
   SetTitle(ciEnquiry->Text() ? ciEnquiry->Text() : "CAM");
   Add(new cMenuEditNumItem("Input", input, Length, ciEnquiry->Blind()));
   Display();
+  lastActivity = time(NULL);
 }
 
 cMenuCamEnquiry::~cMenuCamEnquiry()
@@ -1631,6 +1641,10 @@ eOSState cMenuCamEnquiry::ProcessKey(eKeys Key)
        default: break;
        }
      }
+  if (Key != kNone)
+     lastActivity = time(NULL);
+  else if (time(NULL) - lastActivity > MENUTIMEOUT)
+     state = osEnd;
   return state;
 }
 
@@ -2740,8 +2754,28 @@ eOSState cDisplayChannel::ProcessKey(eKeys Key)
             number = number * 10 + Key - k0;
             if (number > 0) {
                cChannel *channel = Channels.GetByNumber(number);
+               Interface->Clear();
+               withInfo = false;
                DisplayChannel(channel);
                lastTime = time_ms();
+               // Lets see if there can be any useful further input:
+               int n = channel ? number * 10 : 0;
+               while (channel && (channel = Channels.Next(channel)) != NULL) {
+                     if (!channel->GroupSep()) {
+                        if (n <= channel->Number() && channel->Number() <= n + 9) {
+                           n = 0;
+                           break;
+                           }
+                        if (channel->Number() > n)
+                           n *= 10;
+                        }
+                     }
+               if (n > 0) {
+                  // This channel is the only one that fits the input, so let's take it right away:
+                  Interface->Flush(); // makes sure the user sees his last input
+                  Channels.SwitchTo(number);
+                  return osEnd;
+                  }
                }
             }
          break;
@@ -2783,6 +2817,7 @@ eOSState cDisplayChannel::ProcessKey(eKeys Key)
     case kChanUp:
     case kChanDn|k_Repeat:
     case kChanDn:
+         group = -1;
          Refresh();
          break;
     case kNone:
@@ -2968,16 +3003,19 @@ cRecordControl::cRecordControl(cDevice *Device, cTimer *Timer, bool Pause)
      }
 
   cRecordingUserCommand::InvokeCommand(RUC_BEFORERECORDING, fileName);
-  const cChannel *ch = timer->Channel();
-  recorder = new cRecorder(fileName, ch->Ca(), timer->Priority(), ch->Vpid(), ch->Apid1(), ch->Apid2(), ch->Dpid1(), ch->Dpid2());
-  if (device->AttachReceiver(recorder)) {
-     Recording.WriteSummary();
-     cStatus::MsgRecording(device, Recording.Name());
-     if (!Timer && !cReplayControl::LastReplayed()) // an instant recording, maybe from cRecordControls::PauseLiveVideo()
-        cReplayControl::SetRecording(fileName, Recording.Name());
+  isyslog("record %s", fileName);
+  if (MakeDirs(fileName, true)) {
+     const cChannel *ch = timer->Channel();
+     recorder = new cRecorder(fileName, ch->Ca(), timer->Priority(), ch->Vpid(), ch->Apid1(), ch->Apid2(), ch->Dpid1(), ch->Dpid2());
+     if (device->AttachReceiver(recorder)) {
+        Recording.WriteSummary();
+        cStatus::MsgRecording(device, Recording.Name());
+        if (!Timer && !cReplayControl::LastReplayed()) // an instant recording, maybe from cRecordControls::PauseLiveVideo()
+           cReplayControl::SetRecording(fileName, Recording.Name());
+        }
+     else
+        DELETENULL(recorder);
      }
-  else
-     DELETENULL(recorder);
 }
 
 cRecordControl::~cRecordControl()

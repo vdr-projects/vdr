@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: videodir.c 1.9 2002/08/11 13:31:02 kls Exp $
+ * $Id: videodir.c 1.10 2003/08/02 13:43:28 kls Exp $
  */
 
 #include "videodir.h"
@@ -18,7 +18,7 @@
 #include <unistd.h>
 #include "tools.h"
 
-const char *VideoDirectory = "/video";
+const char *VideoDirectory = VIDEODIR;
 
 class cVideoDirectory {
 private:

@@ -2253,3 +2253,32 @@ Video Disk Recorder Revision History
   channel (thanks to Malcolm Caldwell for reporting this one).
 - Some corrections to the Finnish OSD texts (thanks to Niko Tarnanen and Rolf
   Ahrenberg).
+
+2003-08-03: Version 1.2.2
+
+- Fixed a bug in channel switching after Left/Right has been pressed (thanks to
+  Michael Walle for reporting this one).
+- Improved channel switching in case of numerical input by switching as soon as
+  the channel is unique (suggested by Jaakko Hyvätti).
+- Fixed creating a new channel in the "Channels" menu in case the 'channels.conf'
+  contains ':@nnn' lines with no text (thanks to Guy Roussin for reporting this
+  one).
+- Changed the behaviour of the '0' key in normal viewing mode so that a channel
+  only qualifies as "previous" if it has been selected for at least 3 seconds
+  (suggested by Thomas Keil).
+- Now clearing the channel info display when entering numeric keys to switch
+  channels (suggested by Guy Roussin).
+- Added missing I18N entry for "Ppid" (thanks to Rolf Ahrenberg).
+- Fixed handling the color buttons in the "Edit channel" menu (thanks to Thomas
+  Keil for reporting this one).
+- Fixed an occasional "Broken pipe" error in SVDRP connections (thanks to Gerhard
+  Steiner for reporting this one).
+- Fixed checking CA capabilities with the dvb-kernel driver (thanks to Kenneth
+  Aafløy).
+- Fixed selecting the device, because sometimes an FTA recording terminated a
+  CA recording (thanks to Emil Naepflein).
+- Fixed a possible crash in case a VFAT file system is used without compiling VDR
+  with VFAT=1 (thanks to Ernst Fürst for reporting this one).
+- Now the program uses the values of VIDEODIR and PLUGINDIR defined in Makefile
+  or Makefile.config as defaults (thanks to Steffen Barszus).
+- Added the usual menu timeout to the CAM menus.

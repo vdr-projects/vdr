@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.160 2003/05/29 12:27:26 kls Exp $
+ * $Id: vdr.c 1.162 2003/08/02 14:01:32 kls Exp $
  */
 
 #include <getopt.h>
@@ -57,6 +57,7 @@
 #define ACTIVITYTIMEOUT 60 // seconds before starting housekeeping
 #define SHUTDOWNWAIT   300 // seconds to wait in user prompt before automatic shutdown
 #define MANUALSTART    600 // seconds the next timer must be in the future to assume manual start
+#define ZAPTIMEOUT       3 // seconds until a channel counts as "previous" for switching with '0'
 
 static int Interrupted = 0;
 
@@ -92,7 +93,7 @@ int main(int argc, char *argv[])
 
 #define DEFAULTSVDRPPORT 2001
 #define DEFAULTWATCHDOG     0 // seconds
-#define DEFAULTPLUGINDIR "./PLUGINS/lib"
+#define DEFAULTPLUGINDIR PLUGINDIR
 
   int SVDRPport = DEFAULTSVDRPPORT;
   const char *AudioCommand = NULL;
@@ -455,6 +456,8 @@ int main(int argc, char *argv[])
   int LastChannel = -1;
   int LastTimerChannel = -1;
   int PreviousChannel = cDevice::CurrentChannel();
+  int LastLastChannel = PreviousChannel;
+  time_t LastChannelChanged = time(NULL);
   time_t LastActivity = 0;
   int MaxLatencyTime = 0;
   bool ForceShutdown = false;
@@ -492,9 +495,12 @@ int main(int argc, char *argv[])
         if (!EITScanner.Active() && cDevice::CurrentChannel() != LastChannel) {
            if (!Menu)
               Menu = Temp = new cDisplayChannel(cDevice::CurrentChannel(), LastChannel > 0);
-           if (LastChannel > 0)
-              PreviousChannel = LastChannel;
            LastChannel = cDevice::CurrentChannel();
+           LastChannelChanged = time(NULL);
+           }
+        if (LastLastChannel != LastChannel && time(NULL) - LastChannelChanged >= ZAPTIMEOUT) {
+           PreviousChannel = LastLastChannel;
+           LastLastChannel = LastChannel;
            }
         // Timers and Recordings:
         if (!Timers.BeingEdited()) {

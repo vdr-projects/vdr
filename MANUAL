@@ -154,7 +154,8 @@ Version 1.2
      menu) by pressing the "Blue" button.
 
   Pressing the '0' key in normal viewing mode toggles between the current and
-  the previous channel.
+  the previous channel. A channel is considered "previous" if it has been
+  selected for at least 3 seconds.
 
   After switching to a different channel the channel number and name, as well
   as the current time are displayed at the top of the screen. If available, the

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 1.15 2003/05/25 11:45:11 kls Exp $
+ * $Id: ci.c 1.16 2003/08/02 10:00:01 kls Exp $
  */
 
 /* XXX TODO
@@ -1314,7 +1314,7 @@ cCiHandler *cCiHandler::CreateCiHandler(const char *FileName)
         int NumSlots = Caps.slot_num;
         if (NumSlots > 0) {
            //XXX dsyslog("CAM: found %d CAM slots", NumSlots); // TODO let's do this only once we can be sure that there _really_ is a CAM adapter!
-           if (Caps.slot_type == CA_CI_LINK)
+           if ((Caps.slot_type & CA_CI_LINK) != 0)
               return new cCiHandler(fd_ca, NumSlots);
            else
               isyslog("CAM doesn't support link layer interface");

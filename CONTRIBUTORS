@@ -518,6 +518,7 @@ Gerhard Steiner <steiner@mail.austria.com>
  for fixing resume file handling in case the resume.vdr file can't be written
  for reporting a problem with newly created timers in case they are not confirmed
  with "Ok"
+ for reporting an occasional "Broken pipe" error in SVDRP connections
 
 Jaakko Hyvätti <jaakko@hyvatti.iki.fi>
  for translating OSD texts to the Finnish language
@@ -525,12 +526,16 @@ Jaakko Hyvätti <jaakko@hyvatti.iki.fi>
  for fixing recording overlapping timers on the same channel in case
  DO_REC_AND_PLAY_ON_PRIMARY_DEVICE and/or DO_MULTIPLE_RECORDINGS is not defined
  for fixing the minimum lifespan of deleted recordings
+ for suggesting to improve channel switching in case of numerical input by switching
+ as soon as the channel is unique
 
 Dennis Noordsij <dennis.noordsij@wiral.com>
  for reporting a small glitch when switching channels
 
 Steffen Barszus <st_barszus@gmx.de>
  for reporting a bug in switching audio tracks in 'Transfer Mode' on the primary DVB device
+ for making the program use the values of VIDEODIR and PLUGINDIR defined in Makefile
+ or Makefile.config as defaults
 
 Peter Seyringer <e9425234@student.tuwien.ac.at>
  for reporting a bug in saving the polarization parameter of channels that have a
@@ -550,6 +555,8 @@ Guy Roussin <guy.roussin@teledetection.fr>
  for suggesting not to display channel group delimiters without text
  for reporting a bug in handling channels in the "Channels" menu in case there are
  ':@nnn' group separators without names
+ for suggesting to clear the channel info display when entering numeric keys to
+ switch channels
 
 Georg Hitsch <georg@hitsch.at>
  for his help in keeping 'channels.conf' up to date
@@ -561,6 +568,8 @@ Clemens Kirchgatterer <clemens@thf.ath.cx>
 Emil Naepflein <Emil.Naepflein@philosys.de>
  for suggesting to take an active SVDRP connection into account when doing shutdown or
  housekeeping
+ for fixing selecting the device, because sometimes an FTA recording terminated a
+ CA recording
 
 Gerald Berwolf <genka@genka.de>
  for suggesting to deactivate some templates in tools.h in case some plugin needs to
@@ -719,3 +728,19 @@ Jon Burgess <mplayer@jburgess.uklinux.net>
 
 Thomas Schmidt <thomas.schmidt@in.stud.tu-ilmenau.de>
  for reporting a crash when cancelling a newly created timer
+
+Michael Walle <michael.walle@web.de>
+ for reporting a bug in channel switching after Left/Right has been pressed
+
+Thomas Keil <tk@commedia-group.com>
+ for suggesting to change the behaviour of the '0' key in normal viewing mode so
+ that a channel only qualifies as "previous" if it has been selected for at least
+ 3 seconds
+ for reporting a bug in handling the color buttons in the "Edit channel" menu
+
+Kenneth Aafløy <ke-aa@frisurf.no>
+ for fixing checking CA capabilities with the dvb-kernel driver
+
+Ernst Fürst <ernstfuerst@swissonline.ch>
+ for reporting a crash in case a VFAT file system is used without compiling VDR
+ with VFAT=1
