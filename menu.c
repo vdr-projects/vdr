@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.311 2004/08/08 14:29:14 kls Exp $
+ * $Id: menu.c 1.312 2004/10/16 10:24:11 kls Exp $
  */
 
 #include "menu.h"
@@ -3081,7 +3081,7 @@ void cReplayControl::Hide(void)
 
 void cReplayControl::ShowMode(void)
 {
-  if (visible || Setup.ShowReplayMode) {
+  if (visible || Setup.ShowReplayMode && !cOsd::IsOpen()) {
      bool Play, Forward;
      int Speed;
      if (GetReplayMode(Play, Forward, Speed) && (!visible || Play != lastPlay || Forward != lastForward || Speed != lastSpeed)) {

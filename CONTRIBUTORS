@@ -1073,3 +1073,6 @@ Mike parker <vdr@msatt.freeserve.co.uk>
 Dick Streefland <Dick.Streefland@xs4all.nl>
  for fixing a crash in case the last line in channels.conf is a group separator and
  that group is selected in the channel display
+
+Kimmo Tykkala <tykkala@iki.fi>
+ for pointing out a problem in showing the replay mode if the OSD is currently in use
