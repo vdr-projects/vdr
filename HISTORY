@@ -56,7 +56,7 @@ Video Disk Recorder Revision History
   the PC keyboard to better resemble the "up-down-left-right-ok" layout on
   menu controlling remote control units.
 
-2000-07-23: Version 0.06
+2000-07-24: Version 0.6
 
 - Added support for LIRC remote control (thanks to Carsten Koch!).
   There are now three different remote control modes: KBD (PC-Keyboard), RCU
@@ -87,3 +87,13 @@ Video Disk Recorder Revision History
   the VDR over a network connection.
 - Implemented command line option handling.
 - The program can now run in full background mode by using the --daemon option.
+- Added a "summary" field to the timers (thanks to Carsten Koch!).
+  This field can contain a descriptive text of the programme and will be
+  displayed when the "Blue" key is pressed on a recording that was created by
+  this timer. If the text contains the special character '|', a newline will
+  be inserted at that place.  When pressing "Ok" on a timer that contains a
+  summary field, the summary will be displayed. To edit such a timer the "Red"
+  key must be pressed. Timers without a summary still go into Edit mode when
+  pressing "Ok".  The summary field can only be filled in directly by editing
+  the 'timers.conf' file with a text editor, or by defining/modifying the timer
+  via the SVDRP interface.

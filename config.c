@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.13 2000/07/23 11:56:06 kls Exp $
+ * $Id: config.c 1.14 2000/07/23 17:22:08 kls Exp $
  */
 
 #include "config.h"
@@ -274,13 +274,27 @@ cTimer::cTimer(bool Instant)
   priority = 99;
   lifetime = 99;
   *file = 0;
+  summary = NULL;
   if (Instant)
      snprintf(file, sizeof(file), "@%s", cChannel::GetChannelName(CurrentChannel));
 }
 
+cTimer::~cTimer()
+{
+  delete summary;
+}
+
+cTimer& cTimer::operator= (const cTimer &Timer)
+{
+  memcpy(this, &Timer, sizeof(*this));
+  if (summary)
+     summary = strdup(summary);
+  return *this;
+}
+
 const char *cTimer::ToText(cTimer *Timer)
 {
-  asprintf(&buffer, "%d:%d:%s:%d:%d:%d:%d:%s\n", Timer->active, Timer->channel, PrintDay(Timer->day), Timer->start, Timer->stop, Timer->priority, Timer->lifetime, Timer->file);
+  asprintf(&buffer, "%d:%d:%s:%d:%d:%d:%d:%s:%s\n", Timer->active, Timer->channel, PrintDay(Timer->day), Timer->start, Timer->stop, Timer->priority, Timer->lifetime, Timer->file, Timer->summary ? Timer->summary : "");
   return buffer;
 }
 
@@ -344,7 +358,9 @@ bool cTimer::Parse(const char *s)
 {
   char *buffer1 = NULL;
   char *buffer2 = NULL;
-  if (8 == sscanf(s, "%d:%d:%a[^:]:%d:%d:%d:%d:%a[^:\n]", &active, &channel, &buffer1, &start, &stop, &priority, &lifetime, &buffer2)) {
+  delete summary;
+  summary = NULL;
+  if (8 <= sscanf(s, "%d:%d:%a[^:]:%d:%d:%d:%d:%a[^:\n]:%a[^\n]", &active, &channel, &buffer1, &start, &stop, &priority, &lifetime, &buffer2, &summary)) {
      //TODO add more plausibility checks
      day = ParseDay(buffer1);
      strncpy(file, buffer2, MaxFileName - 1);

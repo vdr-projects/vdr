@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.10 2000/07/23 11:54:53 kls Exp $
+ * $Id: config.h 1.11 2000/07/23 17:17:10 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -17,7 +17,7 @@
 #include "dvbapi.h"
 #include "tools.h"
 
-#define MaxBuffer 1000
+#define MaxBuffer 10000
 
 enum eKeys { // "Up" and "Down" must be the first two keys!
              kUp,
@@ -100,7 +100,10 @@ public:
   int priority;
   int lifetime;
   char file[MaxFileName];
+  char *summary;
   cTimer(bool Instant = false);
+  ~cTimer();
+  cTimer& operator= (const cTimer &Timer);
   const char *ToText(void);
   bool Parse(const char *s);
   bool Save(FILE *f);
