@@ -8,13 +8,284 @@
  * the Linux DVB driver's 'tuxplayer' example and were rewritten to suit
  * VDR's needs.
  *
- * $Id: remux.c 1.23 2004/12/18 13:15:02 kls Exp $
+ * The cDolbyRepacker code was originally written by Reinhard Nissl <rnissl@gmx.de>,
+ * and adapted to the VDR coding style by Klaus.Schmidinger@cadsoft.de.
+ *
+ * $Id: remux.c 1.24 2005/01/15 12:07:43 kls Exp $
  */
 
 #include "remux.h"
 #include <stdlib.h>
 #include "thread.h"
 #include "tools.h"
+
+// --- cRepacker -------------------------------------------------------------
+
+class cRepacker {
+public:
+  virtual ~cRepacker() {}
+  virtual int Put(cRingBufferLinear *ResultBuffer, const uchar *Data, int Count) = 0;
+  virtual int BreakAt(const uchar *Data, int Count) = 0;
+  };
+
+// --- cDolbyRepacker --------------------------------------------------------
+
+class cDolbyRepacker : public cRepacker {
+private:
+  static int frameSizes[];
+  uchar fragmentData[6 + 65535];
+  int fragmentLen;
+  uchar pesHeader[6 + 3 + 255 + 4];
+  int pesHeaderLen;
+  uchar chk1;
+  uchar chk2;
+  int ac3todo;
+  enum {
+    find_0b,
+    find_77,
+    store_chk1,
+    store_chk2,
+    get_length
+    } state;
+  void Reset(void);
+public:
+  cDolbyRepacker(void);
+  virtual int Put(cRingBufferLinear *ResultBuffer, const uchar *Data, int Count);
+  virtual int BreakAt(const uchar *Data, int Count);
+  };
+
+int cDolbyRepacker::frameSizes[] = {
+  // fs = 48 kHz
+    64,   64,   80,   80,   96,   96,  112,  112,  128,  128,  160,  160,  192,  192,  224,  224,
+   256,  256,  320,  320,  384,  384,  448,  448,  512,  512,  640,  640,  768,  768,  896,  896,
+  1024, 1024, 1152, 1152, 1280, 1280,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+  // fs = 44.1 kHz
+    69,   70,   87,   88,  104,  105,  121,  122,  139,  140,  174,  175,  208,  209,  243,  244,
+   278,  279,  348,  349,  417,  418,  487,  488,  557,  558,  696,  697,  835,  836,  975,  976,
+  1114, 1115, 1253, 1254, 1393, 1394,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+  // fs = 32 kHz
+    96,   96,  120,  120,  144,  144,  168,  168,  192,  192,  240,  240,  288,  288,  336,  336,
+   384,  384,  480,  480,  576,  576,  672,  672,  768,  768,  960,  960, 1152, 1152, 1344, 1344,
+  1536, 1536, 1728, 1728, 1920, 1920,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+  //
+     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+  };
+
+cDolbyRepacker::cDolbyRepacker(void)
+{
+  pesHeader[0] = 0x00;
+  pesHeader[1] = 0x00;
+  pesHeader[2] = 0x01;
+  pesHeader[3] = 0xBD;
+  pesHeader[4] = 0x00;
+  pesHeader[5] = 0x00;
+  Reset();
+}
+
+void cDolbyRepacker::Reset()
+{
+  state = find_0b;
+  pesHeader[6] = 0x80;
+  pesHeader[7] = 0x00;
+  pesHeader[8] = 0x00;
+  pesHeaderLen = 9;
+  ac3todo = 0;
+  chk1 = 0;
+  chk2 = 0;
+  fragmentLen = 0;
+}
+
+int cDolbyRepacker::Put(cRingBufferLinear *ResultBuffer, const uchar *Data, int Count)
+{
+  // check for MPEG 2
+  if ((Data[6] & 0xC0) != 0x80)
+     return 0;
+  // copy header information for later use
+  if (Data[6] != 0x80 || Data[7] != 0x00 || Data[8] != 0x00) {
+     pesHeaderLen = Data[8] + 6 + 3;
+     memcpy(pesHeader, Data, pesHeaderLen);
+     }
+
+  const uchar *data = Data + pesHeaderLen;
+  int done = pesHeaderLen;
+  int todo = Count - done;
+
+  // finish remainder of ac3 frame
+  if (ac3todo > 0) {
+     int bite;
+     // enough data available to put PES packet into buffer?
+     if (ac3todo <= todo) {
+        // output a previous fragment first
+        if (fragmentLen > 0) {
+           bite = fragmentLen;
+           int n = ResultBuffer->Put(fragmentData, bite);
+           if (bite != n) {
+              Reset();
+              return done;
+              }
+           fragmentLen = 0;
+           }
+        bite = ac3todo;
+        int n = ResultBuffer->Put(data, bite);
+        if (bite != n) {
+           Reset();
+           return done + n;
+           }
+        }
+     else {
+        // copy the fragment into separate buffer for later processing
+        bite = todo;
+        if (fragmentLen + bite > (int)sizeof(fragmentData)) {
+           Reset();
+           return done;
+           }
+        memcpy(fragmentData + fragmentLen, data, bite);
+        fragmentLen += bite;
+        }
+     data += bite;
+     done += bite;
+     todo -= bite;
+     ac3todo -= bite;
+     }
+
+  // look for 0x0B 0x77 <chk1> <chk2> <frameSize>
+  while (todo > 0) {
+        switch (state) {
+          case find_0b:
+               if (*data == 0x0B)
+                  ++(int &)state;
+               data++;
+               done++;
+               todo--;
+               continue;
+          case find_77:
+               if (*data != 0x77) {
+                  state = find_0b;
+                  continue;
+                  }
+               data++;
+               done++;
+               todo--;
+               ++(int &)state;
+               continue;
+          case store_chk1:
+               chk1 = *data++;
+               done++;
+               todo--;
+               ++(int &)state;
+               continue;
+          case store_chk2:
+               chk2 = *data++;
+               done++;
+               todo--;
+               ++(int &)state;
+               continue;
+          case get_length: {
+               ac3todo = 2 * frameSizes[*data];
+               // frameSizeCode was invalid => restart searching
+               if (ac3todo <= 0) {
+                  if (chk1 == 0x0B) {
+                     if (chk2 == 0x77) {
+                        state = store_chk1;
+                        continue;
+                        }
+                     if (chk2 == 0x0B) {
+                        state = find_77;
+                        continue;
+                        }
+                     state = find_0b;
+                     continue;
+                     }
+                  if (chk2 == 0x0B) {
+                     state = find_77;
+                     continue;
+                     }
+                  state = find_0b;
+                  continue;
+                  }
+               // adjust PES packet length and output packet
+               int packetLen = pesHeaderLen - 6 + ac3todo;
+               pesHeader[4] = packetLen >> 8;
+               pesHeader[5] = packetLen & 0xFF;
+               pesHeader[pesHeaderLen + 0] = 0x0B;
+               pesHeader[pesHeaderLen + 1] = 0x77;
+               pesHeader[pesHeaderLen + 2] = chk1;
+               pesHeader[pesHeaderLen + 3] = chk2;
+               ac3todo -= 4;
+               int bite = pesHeaderLen + 4;
+               // enough data available to put PES packet into buffer?
+               if (ac3todo <= todo) {
+                  int n = ResultBuffer->Put(pesHeader, bite);
+                  if (bite != n) {
+                     Reset();
+                     return done;
+                     }
+                  bite = ac3todo;
+                  n = ResultBuffer->Put(data, bite);
+                  if (bite != n) {
+                     Reset();
+                     return done + n;
+                     }
+                  }
+               else {
+                  // copy the fragment into separate buffer for later processing
+                  if (fragmentLen + bite > (int)sizeof(fragmentData)) {
+                     Reset();
+                     return done;
+                     }
+                  memcpy(fragmentData + fragmentLen, pesHeader, bite);
+                  fragmentLen += bite;
+                  bite = todo;
+                  if (fragmentLen + bite > (int)sizeof(fragmentData)) {
+                     Reset();
+                     return done;
+                     }
+                  memcpy(fragmentData + fragmentLen, data, bite);
+                  fragmentLen += bite;
+                  }
+               data += bite;
+               done += bite;
+               todo -= bite;
+               ac3todo -= bite;
+               // prepare for next packet
+               pesHeader[6] = 0x80;
+               pesHeader[7] = 0x00;
+               pesHeader[8] = 0x00;
+               pesHeaderLen = 9;
+               state = find_0b;
+               }
+          }
+        }
+  return Count;
+}
+
+int cDolbyRepacker::BreakAt(const uchar *Data, int Count)
+{
+  // enough data for test?
+  if (Count < 6 + 3)
+     return -1;
+  // check for MPEG 2
+  if ((Data[6] & 0xC0) != 0x80)
+     return -1;
+  int headerLen = Data[8] + 6 + 3;
+  // break after fragment tail?
+  if (ac3todo > 0)
+     return headerLen + ac3todo;
+  // enough data for test?
+  if (Count < headerLen + 5)
+     return -1;
+  const uchar *data = Data + headerLen;
+  // break after ac3 frame?
+  if (data[0] == 0x0B && data[1] == 0x77 && frameSizes[data[4]] > 0)
+     return headerLen + frameSizes[data[4]];
+  return -1;
+}
 
 // --- cTS2PES ---------------------------------------------------------------
 
@@ -83,6 +354,7 @@ private:
   int tsErrors;
   int ccErrors;
   int ccCounter;
+  cRepacker *repacker;
   static uint8_t headr[];
   void store(uint8_t *Data, int Count);
   void reset_ipack(void);
@@ -90,7 +362,7 @@ private:
   void write_ipack(const uint8_t *Data, int Count);
   void instant_repack(const uint8_t *Buf, int Count);
 public:
-  cTS2PES(cRingBufferLinear *ResultBuffer, int Size, uint8_t AudioCid = 0x00);
+  cTS2PES(cRingBufferLinear *ResultBuffer, int Size, uint8_t AudioCid = 0x00, cRepacker *Repacker = NULL);
   ~cTS2PES();
   void ts_to_pes(const uint8_t *Buf); // don't need count (=188)
   void Clear(void);
@@ -98,11 +370,12 @@ public:
 
 uint8_t cTS2PES::headr[] = { 0x00, 0x00, 0x01 };
 
-cTS2PES::cTS2PES(cRingBufferLinear *ResultBuffer, int Size, uint8_t AudioCid)
+cTS2PES::cTS2PES(cRingBufferLinear *ResultBuffer, int Size, uint8_t AudioCid, cRepacker *Repacker)
 {
   resultBuffer = ResultBuffer;
   size = Size;
   audioCid = AudioCid;
+  repacker = Repacker;
 
   tsErrors = 0;
   ccErrors = 0;
@@ -119,6 +392,7 @@ cTS2PES::~cTS2PES()
   if (tsErrors || ccErrors)
      dsyslog("cTS2PES got %d TS errors, %d TS continuity errors", tsErrors, ccErrors);
   free(buf);
+  delete repacker;
 }
 
 void cTS2PES::Clear(void)
@@ -128,7 +402,7 @@ void cTS2PES::Clear(void)
 
 void cTS2PES::store(uint8_t *Data, int Count)
 {
-  int n = resultBuffer->Put(Data, Count);
+  int n = repacker ? repacker->Put(resultBuffer, Data, Count) : resultBuffer->Put(Data, Count);
   if (n != Count)
      esyslog("ERROR: result buffer overflow, dropped %d out of %d byte", Count - n, Count);
 }
@@ -178,17 +452,48 @@ void cTS2PES::write_ipack(const uint8_t *Data, int Count)
      count = 6;
      }
 
-  if (count + Count < size) {
-     memcpy(buf + count, Data, Count);
-     count += Count;
+  // determine amount of data to process
+  int bite = Count;
+  if (count + bite > size)
+     bite = size - count;
+  if (repacker) {
+     int breakAt = repacker->BreakAt(buf, count);
+     // avoid memcpy of data after break location
+     if (0 <= breakAt && breakAt < count + bite) {
+        bite = breakAt - count;
+        if (bite < 0) // should never happen
+           bite = 0;
+        }
      }
-  else {
-     int rest = size - count;
-     memcpy(buf + count, Data, rest);
-     count += rest;
+
+  memcpy(buf + count, Data, bite);
+  count += bite;
+
+  if (repacker) {
+     // determine break location
+     int breakAt = repacker->BreakAt(buf, count);
+     if (breakAt > size) // won't fit into packet?
+        breakAt = -1;
+     if (breakAt > count) // not enough data?
+        breakAt = -1;
+     // push out data before break location
+     if (breakAt > 0) {
+        // adjust bite if above memcpy was to large
+        bite -= count - breakAt;
+        count = breakAt;
+        send_ipack();
+        // recurse for data after break location
+        if (Count - bite > 0)
+           write_ipack(Data + bite, Count - bite);
+        }
+     }
+
+  // push out data when buffer is full
+  if (count >= size) {
      send_ipack();
-     if (Count - rest > 0)
-        write_ipack(Data + rest, Count - rest);
+     // recurse for remaining data
+     if (Count - bite > 0)
+        write_ipack(Data + bite, Count - bite);
      }
 }
 
@@ -412,9 +717,9 @@ cRemux::cRemux(int VPid, int APid1, int APid2, int DPid1, int DPid2, bool ExitOn
   vTS2PES  =         new cTS2PES(resultBuffer, IPACKS);
   aTS2PES1 =         new cTS2PES(resultBuffer, IPACKS, 0xC0);
   aTS2PES2 = aPid2 ? new cTS2PES(resultBuffer, IPACKS, 0xC1) : NULL;
-  dTS2PES1 = dPid1 ? new cTS2PES(resultBuffer, IPACKS)       : NULL;
+  dTS2PES1 = dPid1 ? new cTS2PES(resultBuffer, IPACKS, 0x00, new cDolbyRepacker) : NULL;
   //XXX don't yet know how to tell apart primary and secondary DD data...
-  dTS2PES2 = /*XXX dPid2 ? new cTS2PES(resultBuffer, IPACKS) : XXX*/ NULL;
+  dTS2PES2 = /*XXX dPid2 ? new cTS2PES(resultBuffer, IPACKS, 0x00, new cDolbyRepacker) : XXX*/ NULL;
 }
 
 cRemux::~cRemux()
