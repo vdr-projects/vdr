@@ -7,7 +7,7 @@
  * DVD support initially written by Andreas Schultz <aschultz@warp10.net>
  * based on dvdplayer-0.5 by Matjaz Thaler <matjaz.thaler@guest.arnes.si>
  *
- * $Id: dvbapi.c 1.132 2001/10/21 13:36:27 kls Exp $
+ * $Id: dvbapi.c 1.133 2001/10/27 13:00:29 kls Exp $
  */
 
 //#define DVDDEBUG        1
@@ -2488,6 +2488,7 @@ char *cDvbApi::audioCommand = NULL;
 
 cDvbApi::cDvbApi(int n)
 {
+  frontendType = FrontendType(-1); // don't know how else to initialize this - there is no FE_UNKNOWN
   vPid = aPid1 = aPid2 = dPid1 = dPid2 = 0;
   siProcessor = NULL;
   recordBuffer = NULL;
@@ -2536,6 +2537,9 @@ cDvbApi::cDvbApi(int n)
      siProcessor = new cSIProcessor(OstName(DEV_OST_DEMUX, n));
      if (!dvbApi[0]) // only the first one shall set the system time
         siProcessor->SetUseTSTime(Setup.SetSystemTime);
+     FrontendInfo feinfo;
+     CHECK(ioctl(fd_frontend, FE_GET_INFO, &feinfo));
+     frontendType = feinfo.type;
      }
   else
      esyslog(LOG_ERR, "ERROR: can't open video device %d", n);
@@ -3257,97 +3261,106 @@ eSetChannelResult cDvbApi::SetChannel(int ChannelNumber, int FrequencyMHz, char 
 
      bool ChannelSynced = false;
 
-     if (fd_sec >= 0) { // DVB-S
+     switch (frontendType) {
+       case FE_QPSK: { // DVB-S
 
-        // Frequency offsets:
+            // Frequency offsets:
 
-        unsigned int freq = FrequencyMHz;
-        int tone = SEC_TONE_OFF;
+            unsigned int freq = FrequencyMHz;
+            int tone = SEC_TONE_OFF;
 
-        if (freq < (unsigned int)Setup.LnbSLOF) {
-           freq -= Setup.LnbFrequLo;
-           tone = SEC_TONE_OFF;
-           }
-        else {
-           freq -= Setup.LnbFrequHi;
-           tone = SEC_TONE_ON;
-           }
+            if (freq < (unsigned int)Setup.LnbSLOF) {
+               freq -= Setup.LnbFrequLo;
+               tone = SEC_TONE_OFF;
+               }
+            else {
+               freq -= Setup.LnbFrequHi;
+               tone = SEC_TONE_ON;
+               }
 
-        FrontendParameters Frontend;
-        Frontend.Frequency = freq * 1000UL;
-        Frontend.Inversion = INVERSION_AUTO;
-        Frontend.u.qpsk.SymbolRate = Srate * 1000UL;
-        Frontend.u.qpsk.FEC_inner = FEC_AUTO;
+            FrontendParameters Frontend;
+            Frontend.Frequency = freq * 1000UL;
+            Frontend.Inversion = INVERSION_AUTO;
+            Frontend.u.qpsk.SymbolRate = Srate * 1000UL;
+            Frontend.u.qpsk.FEC_inner = FEC_AUTO;
 
-        int volt = (Polarization == 'v' || Polarization == 'V') ? SEC_VOLTAGE_13 : SEC_VOLTAGE_18;
+            int volt = (Polarization == 'v' || Polarization == 'V') ? SEC_VOLTAGE_13 : SEC_VOLTAGE_18;
 
-        // DiseqC:
+            // DiseqC:
 
-        secCommand scmd;
-        scmd.type = 0;
-        scmd.u.diseqc.addr = 0x10;
-        scmd.u.diseqc.cmd = 0x38;
-        scmd.u.diseqc.numParams = 1;
-        scmd.u.diseqc.params[0] = 0xF0 | ((Diseqc * 4) & 0x0F) | (tone == SEC_TONE_ON ? 1 : 0) | (volt == SEC_VOLTAGE_18 ? 2 : 0);
+            secCommand scmd;
+            scmd.type = 0;
+            scmd.u.diseqc.addr = 0x10;
+            scmd.u.diseqc.cmd = 0x38;
+            scmd.u.diseqc.numParams = 1;
+            scmd.u.diseqc.params[0] = 0xF0 | ((Diseqc * 4) & 0x0F) | (tone == SEC_TONE_ON ? 1 : 0) | (volt == SEC_VOLTAGE_18 ? 2 : 0);
 
-        secCmdSequence scmds;
-        scmds.voltage = volt;
-        scmds.miniCommand = SEC_MINI_NONE;
-        scmds.continuousTone = tone;
-        scmds.numCommands = Setup.DiSEqC ? 1 : 0;
-        scmds.commands = &scmd;
+            secCmdSequence scmds;
+            scmds.voltage = volt;
+            scmds.miniCommand = SEC_MINI_NONE;
+            scmds.continuousTone = tone;
+            scmds.numCommands = Setup.DiSEqC ? 1 : 0;
+            scmds.commands = &scmd;
 
-        CHECK(ioctl(fd_sec, SEC_SEND_SEQUENCE, &scmds));
+            CHECK(ioctl(fd_sec, SEC_SEND_SEQUENCE, &scmds));
 
-        // Tuning:
+            // Tuning:
 
-        CHECK(ioctl(fd_frontend, FE_SET_FRONTEND, &Frontend));
+            CHECK(ioctl(fd_frontend, FE_SET_FRONTEND, &Frontend));
 
-        // Wait for channel sync:
+            // Wait for channel sync:
 
-        if (cFile::FileReady(fd_frontend, 5000)) {
-           FrontendEvent event;
-           int res = ioctl(fd_frontend, FE_GET_EVENT, &event);
-           if (res >= 0)
-              ChannelSynced = event.type == FE_COMPLETION_EV;
-           else
-              esyslog(LOG_ERR, "ERROR %d in frontend get event", res);
-           }
-        else
-           esyslog(LOG_ERR, "ERROR: timeout while tuning");
-        }
-     else if (fd_frontend >= 0) { // DVB-C
+            if (cFile::FileReady(fd_frontend, 5000)) {
+               FrontendEvent event;
+               int res = ioctl(fd_frontend, FE_GET_EVENT, &event);
+               if (res >= 0)
+                  ChannelSynced = event.type == FE_COMPLETION_EV;
+               else
+                  esyslog(LOG_ERR, "ERROR %d in frontend get event", res);
+               }
+            else
+               esyslog(LOG_ERR, "ERROR: timeout while tuning");
+            }
+            break;
+       case FE_QAM: { // DVB-C
 
-        // Frequency and symbol rate:
+            // Frequency and symbol rate:
 
-        FrontendParameters Frontend;
-        Frontend.Frequency = FrequencyMHz * 1000000UL;
-        Frontend.Inversion = INVERSION_AUTO;
-        Frontend.u.qam.SymbolRate = Srate * 1000UL;
-        Frontend.u.qam.FEC_inner = FEC_AUTO;
-        Frontend.u.qam.QAM = QAM_64;
+            FrontendParameters Frontend;
+            Frontend.Frequency = FrequencyMHz * 1000000UL;
+            Frontend.Inversion = INVERSION_AUTO;
+            Frontend.u.qam.SymbolRate = Srate * 1000UL;
+            Frontend.u.qam.FEC_inner = FEC_AUTO;
+            Frontend.u.qam.QAM = QAM_64;
 
-        // Tuning:
+            // Tuning:
 
-        CHECK(ioctl(fd_frontend, FE_SET_FRONTEND, &Frontend));
+            CHECK(ioctl(fd_frontend, FE_SET_FRONTEND, &Frontend));
 
-        // Wait for channel sync:
+            // Wait for channel sync:
 
-        if (cFile::FileReady(fd_frontend, 5000)) {
-           FrontendEvent event;
-           int res = ioctl(fd_frontend, FE_GET_EVENT, &event);
-           if (res >= 0)
-              ChannelSynced = event.type == FE_COMPLETION_EV;
-           else
-              esyslog(LOG_ERR, "ERROR %d in frontend get event", res);
-           }
-        else
-           esyslog(LOG_ERR, "ERROR: timeout while tuning");
-        }
-     else {
-        esyslog(LOG_ERR, "ERROR: attempt to set channel without DVB-S or DVB-C device");
-        return scrFailed;
-        }
+            if (cFile::FileReady(fd_frontend, 5000)) {
+               FrontendEvent event;
+               int res = ioctl(fd_frontend, FE_GET_EVENT, &event);
+               if (res >= 0)
+                  ChannelSynced = event.type == FE_COMPLETION_EV;
+               else
+                  esyslog(LOG_ERR, "ERROR %d in frontend get event", res);
+               }
+            else
+               esyslog(LOG_ERR, "ERROR: timeout while tuning");
+            }
+            break;
+       case FE_OFDM: { // DVB-T
+            //XXX TODO: implement DVB-T tuning (anybody with a DVB-T card out there?)
+            esyslog(LOG_ERR, "ERROR: DVB-T tuning support not yet implemented");
+            return scrFailed;
+            }
+            break;
+       default:
+            esyslog(LOG_ERR, "ERROR: attempt to set channel with unknown DVB frontend type");
+            return scrFailed;
+       }
 
      if (!ChannelSynced) {
         esyslog(LOG_ERR, "ERROR: channel %d not sync'ed on DVB card %d!", ChannelNumber, CardIndex() + 1);
