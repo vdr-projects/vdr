@@ -2451,3 +2451,11 @@ Video Disk Recorder Revision History
   is being presented (thanks to Thomas v. Keller for reportign this one).
 - Added missing 'const' to some cChannel member functions (thanks to Torsten
   Herz).
+
+2003-11-08: Version 1.2.6pre5
+
+- Added cDevice::GetSTC() (suggested by Sven Goethel).
+- Added Asia-Pacific satellites to 'sources.conf' (thanks to Richard Scobie).
+- Added North American satellites to 'sources.conf' (thanks to Luke Jenkins).
+- Fixed getting the list of recordings in case VDR is started from a directory
+  where it doesn't have access to (thanks to Dirk Mueller).

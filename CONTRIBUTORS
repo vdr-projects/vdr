@@ -606,6 +606,7 @@ Thomas Sailer <sailer@scs.ch>
 Sven Goethel <sgoethel@jausoft.com>
  for making switching audio channels work without stopping/restarting the DMX
  for fixing initializing the highlight area in cDvbSpuDecoder
+ for suggesting to add cDevice::GetSTC()
 
 Jan Rieger <jan@ricomp.de>
  for suggestions and testing raw keyboard input
@@ -849,3 +850,13 @@ Thomas Rausch <Thomas.Rausch@gmx.de>
 Thomas v. Keller <v.keller@neckarufer.de>
  for reporting a crash in case the CAM connection fails while a CAM menu
  is being presented
+
+Richard Scobie <r.scobie@clear.net.nz>
+ for adding Asia-Pacific satellites to 'sources.conf'
+
+Luke Jenkins <a@xmission.com>
+ for adding North American satellites to 'sources.conf'
+
+Dirk Mueller <dmuell@gmx.net>
+ for fixing getting the list of recordings in case VDR is started from a directory
+ where it doesn't have access to

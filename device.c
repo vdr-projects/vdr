@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.47 2003/08/15 12:34:36 kls Exp $
+ * $Id: device.c 1.47.1.1 2003/11/07 13:16:12 kls Exp $
  */
 
 #include "device.h"
@@ -496,6 +496,11 @@ bool cDevice::CanReplay(void) const
 bool cDevice::SetPlayMode(ePlayMode PlayMode)
 {
   return false;
+}
+
+int64_t cDevice::GetSTC(void)
+{
+  return -1;
 }
 
 void cDevice::TrickSpeed(int Speed)

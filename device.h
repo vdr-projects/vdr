@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 1.34 2003/08/15 13:05:50 kls Exp $
+ * $Id: device.h 1.35 2003/11/07 13:15:45 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -320,6 +320,10 @@ protected:
        ///< Sets the device into the given play mode.
        ///< \return true if the operation was successful.
 public:
+  virtual int64_t GetSTC(void);
+       ///< Gets the current System Time Counter, which can be used to
+       ///< synchronize audio and video. If this device is unable to
+       ///< provide the STC, -1 will be returned.
   virtual void TrickSpeed(int Speed);
        ///< Sets the device into a mode where replay is done slower.
        ///< Every single frame shall then be displayed the given number of
