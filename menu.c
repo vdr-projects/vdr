@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.179 2002/03/31 15:20:47 kls Exp $
+ * $Id: menu.c 1.180 2002/03/31 21:17:42 kls Exp $
  */
 
 #include "menu.h"
@@ -1219,7 +1219,7 @@ eOSState cMenuTimers::OnOff(void)
         timer->active = false;
         }
      else if (timer->active)
-        timer->SkipToday();
+        timer->Skip();
      else
         timer->active = true;
      timer->Matches(); // refresh start and end time
@@ -1856,7 +1856,7 @@ eOSState cMenuRecordings::Del(void)
            if (Interface->Confirm(tr("Timer still recording - really delete?"))) {
               cTimer *timer = rc->Timer();
               if (timer) {
-                 timer->SkipToday();
+                 timer->Skip();
                  cRecordControls::Process(time(NULL));
                  Timers.Save();
                  }

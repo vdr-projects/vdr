@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.106 2002/03/24 14:31:07 kls Exp $
+ * $Id: config.h 1.107 2002/03/31 21:17:30 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -165,7 +165,7 @@ public:
   time_t StopTime(void);
   void SetRecording(bool Recording);
   void SetPending(bool Pending);
-  void SkipToday(void);
+  void Skip(void);
   const char *PrintFirstDay(void);
   static int TimeToInt(int t);
   static int ParseDay(const char *s, time_t *FirstDay = NULL);

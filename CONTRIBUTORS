@@ -215,9 +215,10 @@ Uwe Freese <mail@uwe-freese.de>
  for suggesting to automatically close an empty recordings page after deleting
  an entry
 
-Rainer Zocholl <Usenet-372114@zocki.toppoint.de>
+Rainer Zocholl <Usenet-372203@zocki.toppoint.de>
  for suggesting a confirmation prompt when the user presses the "Power" button
  and there is an upcoming timer event
+ for reporting a bug in skipping the next hit of a repeating timer
 
 Oleg Assovski <assen@bitcom.msk.ru>
  for adding EPG scanning for another 4 days

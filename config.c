@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.93 2002/03/31 11:57:07 kls Exp $
+ * $Id: config.c 1.94 2002/03/31 21:17:24 kls Exp $
  */
 
 #include "config.h"
@@ -638,9 +638,9 @@ void cTimer::SetPending(bool Pending)
   pending = Pending;
 }
 
-void cTimer::SkipToday(void)
+void cTimer::Skip(void)
 {
-  firstday = IncDay(SetTime(recording ? StartTime() : time(NULL), 0), 1);
+  firstday = IncDay(SetTime(StartTime(), 0), 1);
 }
 
 // --- cCommand -------------------------------------------------------------

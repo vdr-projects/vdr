@@ -1157,3 +1157,5 @@ Video Disk Recorder Revision History
   up from right to left.
 - Now using statfs() to determine the amount of free disk space, which avoids
   the use of an external 'df' command (thanks to Ruben Nunez Francisco).
+- Fixed skipping the next hit of a repeating timer (thanks to Rainer Zocholl
+  for reporting this one).
