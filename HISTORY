@@ -607,3 +607,5 @@ Video Disk Recorder Revision History
   Apparently the driver gets irritated when the channel is switched and a
   replay session is started immediately after that.
 - Increased timeout until reporting "video data stream broken" when recording.
+- Explicitly switching back to the previously active channel after ending a
+  replay session (to have it shown correctly in case it was in 'Transfer Mode').

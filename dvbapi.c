@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.95 2001/07/29 09:49:33 kls Exp $
+ * $Id: dvbapi.c 1.96 2001/07/29 10:32:50 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -2416,6 +2416,12 @@ void cDvbApi::StopReplay(void)
   if (replayBuffer) {
      delete replayBuffer;
      replayBuffer = NULL;
+     if (this == PrimaryDvbApi) {
+        // let's explicitly switch the channel back in case it was in Transfer Mode:
+        cChannel *Channel = Channels.GetByNumber(currentChannel);
+        if (Channel)
+           Channel->Switch(this, false);
+        }
      }
 }
 
