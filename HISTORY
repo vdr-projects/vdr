@@ -561,3 +561,4 @@ Video Disk Recorder Revision History
 - Moved the channel display to the bottom of the screen.
 - Displaying the frame counter in the replay progress display only when editing
   a mark.
+- Fixed handling characters above 0xEF in SVDRP.

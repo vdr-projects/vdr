@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.19 2001/07/14 09:45:55 kls Exp $
+ * $Id: svdrp.c 1.20 2001/07/22 13:58:48 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -941,7 +941,7 @@ void cSVDRP::Process(void)
               if (numChars > 0)
                  numChars--;
               }
-           else if (c <= 0x03 || c == 0x0D || 0xF0 <= c) {
+           else if (c <= 0x03 || c == 0x0D) {
               // ignore control characters
               }
            else if (numChars < sizeof(cmdLine) - 1) {
