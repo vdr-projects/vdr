@@ -407,3 +407,5 @@ Video Disk Recorder Revision History
 - New setup parameter "PrimaryLimit" that allows to prevent timers from using the
   primary DVB interface in multi card systems. Default value is 0, which means
   that every timer may use the primary interface.
+- The 'active' field of a timer will now be explicitly set to '1' if the user
+  modifies an active timer (see FORMATS for details).
