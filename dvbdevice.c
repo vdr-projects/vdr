@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.25 2002/10/19 10:12:12 kls Exp $
+ * $Id: dvbdevice.c 1.26 2002/10/20 14:10:49 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -428,6 +428,13 @@ bool cDvbDevice::ProvidesChannel(const cChannel *Channel, int Priority, bool *Ne
   return result;
 }
 
+static unsigned int FrequencyToHz(unsigned int f)
+{
+  while (f && f < 1000000)
+        f *= 1000;
+  return f;
+}
+
 bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
 {
 #if (DVB_DRIVER_VERSION < MIN_DVB_DRIVER_VERSION_FOR_TIMESHIFT)
@@ -622,13 +629,13 @@ bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
             // Frequency and symbol rate:
 
 #ifdef NEWSTRUCT
-            Frontend.frequency = Channel->Frequency() * 1000000UL;
+            Frontend.frequency = FrequencyToHz(Channel->Frequency());
             Frontend.inversion = fe_spectral_inversion_t(Channel->Inversion());
             Frontend.u.qam.symbol_rate = Channel->Srate() * 1000UL;
             Frontend.u.qam.fec_inner = fe_code_rate_t(Channel->CoderateH());
             Frontend.u.qam.modulation = fe_modulation_t(Channel->Modulation());
 #else
-            Frontend.Frequency = Channel->Frequency() * 1000000UL;
+            Frontend.Frequency = FrequencyToHz(Channel->Frequency());
             Frontend.Inversion = SpectralInversion(Channel->Inversion());
             Frontend.u.qam.SymbolRate = Channel->Srate() * 1000UL;
             Frontend.u.qam.FEC_inner = CodeRate(Channel->CoderateH());
@@ -641,7 +648,7 @@ bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
             // Frequency and OFDM paramaters:
 
 #ifdef NEWSTRUCT
-            Frontend.frequency = Channel->Frequency() * 1000UL;
+            Frontend.frequency = FrequencyToHz(Channel->Frequency());
             Frontend.inversion = fe_spectral_inversion_t(Channel->Inversion());
             Frontend.u.ofdm.bandwidth = fe_bandwidth_t(Channel->Bandwidth());
             Frontend.u.ofdm.code_rate_HP = fe_code_rate_t(Channel->CoderateH());
@@ -651,7 +658,7 @@ bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
             Frontend.u.ofdm.guard_interval = fe_guard_interval_t(Channel->Guard());
             Frontend.u.ofdm.hierarchy_information = fe_hierarchy_t(Channel->Hierarchy());
 #else
-            Frontend.Frequency = Channel->Frequency() * 1000UL;
+            Frontend.Frequency = FrequencyToHz(Channel->Frequency());
             Frontend.Inversion = SpectralInversion(Channel->Inversion());
             Frontend.u.ofdm.bandWidth = BandWidth(Channel->Bandwidth());
             Frontend.u.ofdm.HP_CodeRate = CodeRate(Channel->CoderateH());

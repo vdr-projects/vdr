@@ -1629,3 +1629,6 @@ Video Disk Recorder Revision History
   handle gaps in channel numbers, and in preparation for unique channel ids).
 - Fixed slow reaction on SVDRP input (thanks to Guido Fiala for reporting this one).
 - Added KI.KA to channels.conf.cable (thanks to Robert Schiele).
+- Frequency values for cable and terrestrial channels in 'channels.conf' can
+  now be given either in MHz, kHz or Hz. The actual value given will be multiplied
+  by 1000 until it is larger than 1000000.

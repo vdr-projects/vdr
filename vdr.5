@@ -8,7 +8,7 @@
 .\" License as specified in the file COPYING that comes with the
 .\" vdr distribution.
 .\"
-.\" $Id: vdr.5 1.9 2002/10/19 12:45:23 kls Exp $
+.\" $Id: vdr.5 1.10 2002/10/20 14:15:40 kls Exp $
 .\"
 .TH vdr 5 "7 Oct 2002" "1.2.0" "Video Disk Recorder Files"
 .SH NAME
@@ -52,7 +52,9 @@ The channel's name (if the name originally contains a ':' character
 it has to be replaced by '|').
 .TP
 .B Frequency
-The transponder frequency in MHz for DVB-S and DVB-C, kHz for DVB-T (as an integer).
+The transponder frequency (as an integer). For DVB-S this value is in MHz. For DVB-C
+and DVB-T it can be given either in MHz, kHz or Hz (the actual value given will be
+multiplied by 1000 until it is larger than 1000000).
 .TP
 .B Parameters
 Various parameters, depending on whether this is a DVB-S, DVB-C or DVB-T channel.
