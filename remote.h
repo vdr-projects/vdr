@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remote.h 1.14 2001/02/02 14:49:10 kls Exp $
+ * $Id: remote.h 1.15 2001/07/22 14:42:59 kls Exp $
  */
 
 #ifndef __REMOTE_H
@@ -81,7 +81,7 @@ public:
 
 class cRcIoLIRC : public cRcIoBase, private cThread {
 private:
-  enum { LIRC_KEY_BUF = 8, LIRC_BUFFER_SIZE = 128 };
+  enum { LIRC_KEY_BUF = 30, LIRC_BUFFER_SIZE = 128 };
   int f;
   char keyName[LIRC_KEY_BUF];
   bool receivedData, receivedRepeat, receivedRelease;

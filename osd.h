@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.h 1.20 2001/02/03 15:13:59 kls Exp $
+ * $Id: osd.h 1.22 2001/07/27 11:33:30 kls Exp $
  */
 
 #ifndef __OSD_H
@@ -14,7 +14,7 @@
 #include "interface.h"
 #include "tools.h"
 
-#define MAXOSDITEMS 9
+#define MAXOSDITEMS (Setup.OSDheight - 4)
 
 enum eOSState { osUnknown,
                 osMenu,

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.44 2001/04/01 14:44:40 kls Exp $
+ * $Id: config.h 1.55 2001/07/27 13:32:53 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -19,9 +19,17 @@
 #include "eit.h"
 #include "tools.h"
 
-#define VDRVERSION "0.72"
+#define VDRVERSION "0.85"
 
 #define MaxBuffer 10000
+
+#define MAXPRIORITY 99
+#define MAXLIFETIME 99
+
+#define MINOSDWIDTH  40
+#define MAXOSDWIDTH  56
+#define MINOSDHEIGHT 12
+#define MAXOSDHEIGHT 21
 
 enum eKeys { // "Up" and "Down" must be the first two keys!
              kUp,
@@ -92,7 +100,8 @@ public:
   int diseqc;
   int srate;
   int vpid;
-  int apid;
+  int apid1, apid2;
+  int dpid1, dpid2;
   int tpid;
   int ca;
   int pnr;
@@ -105,9 +114,6 @@ public:
   bool Save(FILE *f);
   bool Switch(cDvbApi *DvbApi = NULL, bool Log = true);
   };
-
-#define DEFAULTPRIORITY 99
-#define DEFAULTLIFETIME 99
 
 class cTimer : public cListObject {
 private:
@@ -240,7 +246,7 @@ public:
   bool SwitchTo(int Number, cDvbApi *DvbApi = NULL);
   int MaxNumber(void) { return maxNumber; }
   };
- 
+
 class cTimers : public cConfig<cTimer> {
 public:
   cTimer *GetTimer(cTimer *Timer);
@@ -266,13 +272,19 @@ public:
   int ShowInfoOnChSwitch;
   int MenuScrollPage;
   int MarkInstantRecord;
+  int LnbSLOF;
   int LnbFrequLo;
   int LnbFrequHi;
+  int DiSEqC;
   int SetSystemTime;
   int MarginStart, MarginStop;
   int EPGScanTimeout;
   int SVDRPTimeout;
   int PrimaryLimit;
+  int DefaultPriority, DefaultLifetime;
+  int VideoFormat;
+  int ChannelInfoPos;
+  int OSDwidth, OSDheight;
   int CurrentChannel;
   cSetup(void);
   bool Load(const char *FileName);

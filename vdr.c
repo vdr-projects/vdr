@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.56 2001/04/01 11:16:54 kls Exp $
+ * $Id: vdr.c 1.58 2001/06/23 12:29:41 kls Exp $
  */
 
 #include <getopt.h>
@@ -77,6 +77,7 @@ int main(int argc, char *argv[])
   char *Terminal = NULL;
 
   static struct option long_options[] = {
+      { "audio",    required_argument, NULL, 'a' },
       { "config",   required_argument, NULL, 'c' },
       { "daemon",   no_argument,       NULL, 'd' },
       { "device",   required_argument, NULL, 'D' },
@@ -91,8 +92,10 @@ int main(int argc, char *argv[])
   
   int c;
   int option_index = 0;
-  while ((c = getopt_long(argc, argv, "c:dD:hl:p:v:w:t:", long_options, &option_index)) != -1) {
+  while ((c = getopt_long(argc, argv, "a:c:dD:hl:p:v:w:t:", long_options, &option_index)) != -1) {
         switch (c) {
+          case 'a': cDvbApi::SetAudioCommand(optarg);
+                    break;
           case 'c': ConfigDirectory = optarg;
                     break;
           case 'd': DaemonMode = true; break;
@@ -107,6 +110,7 @@ int main(int argc, char *argv[])
                     return 2;
                     break;
           case 'h': printf("Usage: vdr [OPTION]\n\n"           // for easier orientation, this is column 80|
+                           "  -a CMD,   --audio=CMD    send Dolby Digital audio to stdin of command CMD\n"
                            "  -c DIR,   --config=DIR   read config files from DIR (default is to read them\n"
                            "                           from the video directory)\n"
                            "  -h,       --help         display this help and exit\n"
@@ -267,6 +271,11 @@ int main(int argc, char *argv[])
      }
 
   while (!Interrupted) {
+        // Handle emergency exits:
+        if (cThread::EmergencyExit()) {
+           esyslog(LOG_ERR, "emergency exit requested - shutting down");
+           break;
+           }
         // Restart the Watchdog timer:
         if (WatchdogTimeout > 0) {
            int LatencyTime = WatchdogTimeout - alarm(WatchdogTimeout);
@@ -388,7 +397,8 @@ int main(int argc, char *argv[])
         else
            LastActivity = time(NULL);
         }
-  isyslog(LOG_INFO, "caught signal %d", Interrupted);
+  if (Interrupted)
+     isyslog(LOG_INFO, "caught signal %d", Interrupted);
   Setup.CurrentChannel = cDvbApi::CurrentChannel();
   Setup.Save();
   cVideoCutter::Stop();
@@ -401,5 +411,9 @@ int main(int argc, char *argv[])
   isyslog(LOG_INFO, "exiting");
   if (SysLogLevel > 0)
      closelog();
+  if (cThread::EmergencyExit()) {
+     esyslog(LOG_ERR, "emergency exit!");
+     return 1;
+     }
   return 0;
 }

@@ -23,6 +23,7 @@ Guido Fiala <gfiala@s.netic.de>
  for implementing the SVDRP command 'HITK'
  for implementing image grabbing
  for implementing overlay capabilities (see his 'kvdr' tool at http://www.s.netic.de/gfiala)
+ for making the replay progress display avoid unnecessary code execution
 
 Robert Schneider <Robert.Schneider@lotus.com>
  for implementing EIT support for displaying the current/next info
@@ -42,6 +43,7 @@ Bastian Guse <bastian@nocopy.de>
 Matthias Schniedermeyer <ms@citd.de>
  for implementing the 'MarkInstantRecord' setup option
  for his "schnitt" tools
+ for his "master-timer" tool
 
 Miha Setina <mihasetina@softhome.net>
  for translating the OSD texts to the Slovenian language
@@ -54,6 +56,7 @@ Deti Fliegl <deti@fliegl.de>
 
 Dave Chapman <dave@dchapman.com>
  for implementing support for the teletext PID
+ for his great support in switching to the NAPI
 
 Hans-Peter Raschke <Hans-Peter.Raschke@Wintermann-DatenService.de>
  for his support in adapting VDR to DVB-C
@@ -70,3 +73,36 @@ Arnold Niessen <niessen@iae.nl> <arnold.niessen@philips.com>
 
 Jürgen Sauer <jojo@automatix.de>
  for implementing the -t option to set the controlling terminal
+
+Benjamin Reichardt <reichard@math.uni-goettingen.de>
+ for his help in debugging the transition to the new API
+
+Henning Holtschneider <hh@holtschneider.com>
+ for patching 'runvdr' to check whether the driver is already loaded
+
+Paulo Manuel Martins Lopes <pmml@netvita.pt>
+ for translating the OSD texts to the Portugese language
+
+Markus Lang <markus.lang@nissan-db.de> and Ulrich Röder <dynamite@efr-net.de>
+ for making DiSEqC support configurable
+
+Jean-Claude Repetto <jc@repetto.org>
+ for translating the OSD texts to the French language
+
+Andre Valentin <av2000@topmail.de>
+ for increasing the key name buffer size for LIRC
+
+Jørgen Tvedt <pjtvedt@online.no>
+ for translating the OSD texts to the Norwegian language
+
+Stefan Huelswitt <huels@iname.com>
+ for fixing the repeat function with LIRC
+ for making the position of the channel display configurable
+ for making the width and height of the OSD configurable
+
+Ulrich Röder <dynamite@efr-net.de>
+ for pointing out that there are channels that have a symbol rate higher than
+ 27500.
+
+Helmut Schächner <schaechner@yahoo.com>
+ for his support in keeping the Premiere World channels up to date in 'channels.conf'

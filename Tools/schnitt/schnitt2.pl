@@ -10,10 +10,12 @@ if (!open (INDEX,"index.vdr"))
 
 $index = $ARGV[0];
 &nextI;
+#&readnext;
 $file1 = $file;
 $offset1 = $offset;
 $index = $ARGV[1];
 &nextI;
+#&readnext;
 $file2 = $file;
 $offset2 = $offset;
 

@@ -13,7 +13,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.h 1.6 2001/04/01 15:14:12 kls Exp $
+ * $Id: eit.h 1.7 2001/05/25 12:56:53 kls Exp $
  ***************************************************************************/
 
 #ifndef __EIT_H
@@ -129,16 +129,16 @@ private:
   bool masterSIProcessor;
   bool useTStime;
   SIP_FILTER *filters;
-  int fsvbi;
+  char *fileName;
   bool active;
-  bool RefreshFilters(void);
   void Action(void);
+  bool AddFilter(u_char pid, u_char tid);
+  bool ShutDownFilters(void);
 public:
   cSIProcessor(const char *FileName);
   ~cSIProcessor();
+  void SetStatus(bool On);
   bool SetUseTSTime(bool use);
-  bool AddFilter(u_char pid, u_char tid);
-  bool ShutDownFilters(void);
   bool SetCurrentServiceID(unsigned short servid);
   const cSchedules *Schedules(void) { return schedules; }
   };

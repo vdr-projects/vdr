@@ -5,7 +5,7 @@ do
   if [ -f newpic ]; then
     killall xli
     rm -f newpic
-    xli output.ppm &
+    xli output000.ppm &
   fi
 sleep 24h
 done

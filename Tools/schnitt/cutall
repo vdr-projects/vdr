@@ -1,4 +1,2 @@
 #!/bin/sh
-cutdir=/x1/video/
-
-find $cutdir -name "cut" -exec cutall2 {} \;
+find /x1/video/ -name "cut" -exec cutall2 {} \;

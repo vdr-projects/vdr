@@ -1,23 +1,30 @@
 #!/bin/sh
+#
+# Move files from DVB-Computer(s) to localmachine into $LOCALDIR
+#
 
-DIR = /x1/video
+LOCALDIR=/x1/video
 
 if [ ! "$UID" = 0 ]; then
   if [ -d "$1" ]; then
-    cd $DIR
-    a=`echo "$1" | cut -d / -f4-`
-    mkdir -p "$a"
-    cd "$a"
-    (echo cd "$1"; echo mget \*)| ftp -i dvb
-    cd $DIR
-    ls -Ls $1 > /tmp/yele
-    ls -Ls $a > /tmp/x1
-    a=`echo "$1" | cut -d \/ -f3-`
-    diff -u /tmp/yele /tmp/x1 &> /dev/null && rm -rfv /yel?/$a
-    rm /tmp/yele
-    rm /tmp/x1
-    rmdir /yel?/video/*
+    if [ -f "$1/index.vdr" ]; then
+      cd $LOCALDIR
+      recdir=`echo "$1" | cut -d / -f4-`
+      mkdir -p "$recdir"
+      cd "$recdir"
+      dvbcomp=`echo "$1" | cut -d / -f2`
+      (echo cd "/video/video0/$recdir"; echo mget \*)| ftp -i $dvbcomp
+      cd $LOCALDIR
+      ssh $dvbcomp ls -Ls /video/video0/$recdir > /tmp/dvb
+      ls -Ls $recdir > /tmp/local
+      diff -u /tmp/dvb /tmp/local &> /dev/null && rm -rfv /$dvbcomp/video?/$recdir
+      rm /tmp/dvb
+      rm /tmp/local
+      rmdir --ignore-fail-on-non-empty `find /$dvbcomp/video?/ -type d -mindepth 1 | cut -d \/ -f-4 | grep -v temp | sort | uniq`
+    fi
   fi
 else
   echo Not as root
 fi
+
+/usr/local/bin/my/process_summary.pl

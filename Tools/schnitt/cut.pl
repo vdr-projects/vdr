@@ -1,30 +1,25 @@
-#!/usr/bin/perl -w
+#!/usr/bin/perl
 
-use strict;
+chdir ($ARGV[0]) if ($ARGV[0]);
 
-my $maxsize = 660 * 1024 * 1024;
+$read = $size = 1024*1024;
 
-my $read = 1024*1024;
-my $size = 1024*1024;
-
-my $filenum = "1";
-my $count = 0;
-
-my ($fi,$data);
+$filenum = "1";
+$count = 0;
 
 $fi = sprintf ("part%d",$filenum);
 open (FI,">$fi");
 
 while ($read == $size)
   {
-    if ($count < $maxsize)
+    if ($count < 660*1024*1024)
       {
 	$read = read (STDIN,$data,$size);
 	print FI $data;
 	$count += $size;
 	$a = $count /1024/1024;
 	if ($a % 10 == 0) {
-          print STDERR "File: $filenum Size: ${a}MB\n";
+          print stderr "File: $filenum Size: ${a}MB\n";
         }
       }
     else

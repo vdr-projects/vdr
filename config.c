@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.44 2001/04/01 14:32:22 kls Exp $
+ * $Id: config.c 1.52 2001/07/27 13:45:28 kls Exp $
  */
 
 #include "config.h"
@@ -155,7 +155,7 @@ eKeys cKeys::Get(unsigned int Code)
 }
 
 eKeys cKeys::Translate(const char *Command)
-{  
+{
   if (Command) {
      const tKey *k = keys;
      while ((k->type != kNone) && strcasecmp(k->name, Command) != 0)
@@ -166,7 +166,7 @@ eKeys cKeys::Translate(const char *Command)
 }
 
 unsigned int cKeys::Encode(const char *Command)
-{  
+{
   eKeys k = Translate(Command);
   if (k != kNone)
      return keys[k].code;
@@ -200,7 +200,10 @@ cChannel::cChannel(const cChannel *Channel)
   diseqc       = Channel ? Channel->diseqc       : 0;
   srate        = Channel ? Channel->srate        : 27500;
   vpid         = Channel ? Channel->vpid         : 255;
-  apid         = Channel ? Channel->apid         : 256;
+  apid1        = Channel ? Channel->apid1        : 256;
+  apid2        = Channel ? Channel->apid2        : 0;
+  dpid1        = Channel ? Channel->dpid1        : 257;
+  dpid2        = Channel ? Channel->dpid2        : 0;
   tpid         = Channel ? Channel->tpid         : 32;
   ca           = Channel ? Channel->ca           : 0;
   pnr          = Channel ? Channel->pnr          : 0;
@@ -218,8 +221,19 @@ const char *cChannel::ToText(cChannel *Channel)
   delete buffer;
   if (Channel->groupSep)
      asprintf(&buffer, ":%s\n", s);
-  else
-     asprintf(&buffer, "%s:%d:%c:%d:%d:%d:%d:%d:%d:%d\n", s, Channel->frequency, Channel->polarization, Channel->diseqc, Channel->srate, Channel->vpid, Channel->apid, Channel->tpid, Channel->ca, Channel->pnr);
+  else {
+     char apidbuf[32];
+     char *q = apidbuf;
+     q += snprintf(q, sizeof(apidbuf), "%d", Channel->apid1);
+     if (Channel->apid2)
+        q += snprintf(q, sizeof(apidbuf) - (q - apidbuf), ",%d", Channel->apid2);
+     if (Channel->dpid1 || Channel->dpid2)
+        q += snprintf(q, sizeof(apidbuf) - (q - apidbuf), ";%d", Channel->dpid1);
+     if (Channel->dpid2)
+        q += snprintf(q, sizeof(apidbuf) - (q - apidbuf), ",%d", Channel->dpid2);
+     *q = 0;
+     asprintf(&buffer, "%s:%d:%c:%d:%d:%d:%s:%d:%d:%d\n", s, Channel->frequency, Channel->polarization, Channel->diseqc, Channel->srate, Channel->vpid, apidbuf, Channel->tpid, Channel->ca, Channel->pnr);
+     }
   return buffer;
 }
 
@@ -242,8 +256,21 @@ bool cChannel::Parse(const char *s)
      }
   else {
      groupSep = false;
-     //XXX
-     int fields = sscanf(s, "%a[^:]:%d:%c:%d:%d:%d:%d:%d:%d:%d", &buffer, &frequency, &polarization, &diseqc, &srate, &vpid, &apid, &tpid, &ca, &pnr);
+     char *apidbuf = NULL;
+     int fields = sscanf(s, "%a[^:]:%d:%c:%d:%d:%d:%a[^:]:%d:%d:%d", &buffer, &frequency, &polarization, &diseqc, &srate, &vpid, &apidbuf, &tpid, &ca, &pnr);
+     apid1 = apid2 = 0;
+     dpid1 = dpid2 = 0;
+     if (apidbuf) {
+        char *p = strchr(apidbuf, ';');
+        if (p)
+           *p++ = 0;
+        sscanf(apidbuf, "%d,%d", &apid1, &apid2);
+        if (p)
+           sscanf(p, "%d,%d", &dpid1, &dpid2);
+        delete apidbuf;
+        }
+     else
+        return false;
      if (fields >= 9) {
         if (fields == 9) {
            // allow reading of old format
@@ -275,7 +302,7 @@ bool cChannel::Switch(cDvbApi *DvbApi, bool Log)
         isyslog(LOG_INFO, "switching to channel %d", number);
         }
      for (int i = 3; i--;) {
-         if (DvbApi->SetChannel(number, frequency, polarization, diseqc, srate, vpid, apid, tpid, ca, pnr))
+         if (DvbApi->SetChannel(number, frequency, polarization, diseqc, srate, vpid, apid1, apid2, dpid1, dpid2, tpid, ca, pnr))
             return true;
          esyslog(LOG_ERR, "retrying");
          }
@@ -305,8 +332,8 @@ cTimer::cTimer(bool Instant)
   if (stop >= 2400)
      stop -= 2400;
 //TODO VPS???
-  priority = DEFAULTPRIORITY;
-  lifetime = DEFAULTLIFETIME;
+  priority = Setup.DefaultPriority;
+  lifetime = Setup.DefaultLifetime;
   *file = 0;
   summary = NULL;
   if (Instant && ch)
@@ -330,8 +357,8 @@ cTimer::cTimer(const cEventInfo *EventInfo)
   stop = time->tm_hour * 100 + time->tm_min;
   if (stop >= 2400)
      stop -= 2400;
-  priority = DEFAULTPRIORITY;
-  lifetime = DEFAULTLIFETIME;
+  priority = Setup.DefaultPriority;
+  lifetime = Setup.DefaultLifetime;
   *file = 0;
   const char *Title = EventInfo->GetTitle();
   if (!isempty(Title))
@@ -524,14 +551,14 @@ bool cTimer::Matches(time_t t)
 }
 
 time_t cTimer::StartTime(void)
-{ 
+{
   if (!startTime)
      Matches();
   return startTime;
 }
 
 time_t cTimer::StopTime(void)
-{ 
+{
   if (!stopTime)
      Matches();
   return stopTime;
@@ -734,14 +761,22 @@ cSetup::cSetup(void)
   ShowInfoOnChSwitch = 1;
   MenuScrollPage = 1;
   MarkInstantRecord = 1;
+  LnbSLOF    = 11700;
   LnbFrequLo =  9750;
   LnbFrequHi = 10600;
+  DiSEqC = 1;
   SetSystemTime = 0;
   MarginStart = 2;
   MarginStop = 10;
   EPGScanTimeout = 5;
   SVDRPTimeout = 300;
   PrimaryLimit = 0;
+  DefaultPriority = 50;
+  DefaultLifetime = 50;
+  VideoFormat = VIDEO_FORMAT_4_3;
+  ChannelInfoPos = 0;
+  OSDwidth = 52;
+  OSDheight = 18;
   CurrentChannel = -1;
 }
 
@@ -756,14 +791,22 @@ bool cSetup::Parse(char *s)
      else if (!strcasecmp(Name, "ShowInfoOnChSwitch"))  ShowInfoOnChSwitch = atoi(Value);
      else if (!strcasecmp(Name, "MenuScrollPage"))      MenuScrollPage     = atoi(Value);
      else if (!strcasecmp(Name, "MarkInstantRecord"))   MarkInstantRecord  = atoi(Value);
+     else if (!strcasecmp(Name, "LnbSLOF"))             LnbSLOF            = atoi(Value);
      else if (!strcasecmp(Name, "LnbFrequLo"))          LnbFrequLo         = atoi(Value);
      else if (!strcasecmp(Name, "LnbFrequHi"))          LnbFrequHi         = atoi(Value);
+     else if (!strcasecmp(Name, "DiSEqC"))              DiSEqC             = atoi(Value);
      else if (!strcasecmp(Name, "SetSystemTime"))       SetSystemTime      = atoi(Value);
      else if (!strcasecmp(Name, "MarginStart"))         MarginStart        = atoi(Value);
      else if (!strcasecmp(Name, "MarginStop"))          MarginStop         = atoi(Value);
      else if (!strcasecmp(Name, "EPGScanTimeout"))      EPGScanTimeout     = atoi(Value);
      else if (!strcasecmp(Name, "SVDRPTimeout"))        SVDRPTimeout       = atoi(Value);
      else if (!strcasecmp(Name, "PrimaryLimit"))        PrimaryLimit       = atoi(Value);
+     else if (!strcasecmp(Name, "DefaultPriority"))     DefaultPriority    = atoi(Value);
+     else if (!strcasecmp(Name, "DefaultLifetime"))     DefaultLifetime    = atoi(Value);
+     else if (!strcasecmp(Name, "VideoFormat"))         VideoFormat        = atoi(Value);
+     else if (!strcasecmp(Name, "ChannelInfoPos"))      ChannelInfoPos     = atoi(Value);
+     else if (!strcasecmp(Name, "OSDwidth"))            OSDwidth           = atoi(Value);
+     else if (!strcasecmp(Name, "OSDheight"))           OSDheight          = atoi(Value);
      else if (!strcasecmp(Name, "CurrentChannel"))      CurrentChannel     = atoi(Value);
      else
         return false;
@@ -813,14 +856,22 @@ bool cSetup::Save(const char *FileName)
         fprintf(f, "ShowInfoOnChSwitch = %d\n", ShowInfoOnChSwitch);
         fprintf(f, "MenuScrollPage     = %d\n", MenuScrollPage);
         fprintf(f, "MarkInstantRecord  = %d\n", MarkInstantRecord);
+        fprintf(f, "LnbSLOF            = %d\n", LnbSLOF);
         fprintf(f, "LnbFrequLo         = %d\n", LnbFrequLo);
         fprintf(f, "LnbFrequHi         = %d\n", LnbFrequHi);
+        fprintf(f, "DiSEqC             = %d\n", DiSEqC);
         fprintf(f, "SetSystemTime      = %d\n", SetSystemTime);
         fprintf(f, "MarginStart        = %d\n", MarginStart);
         fprintf(f, "MarginStop         = %d\n", MarginStop);
         fprintf(f, "EPGScanTimeout     = %d\n", EPGScanTimeout);
         fprintf(f, "SVDRPTimeout       = %d\n", SVDRPTimeout);
         fprintf(f, "PrimaryLimit       = %d\n", PrimaryLimit);
+        fprintf(f, "DefaultPriority    = %d\n", DefaultPriority);
+        fprintf(f, "DefaultLifetime    = %d\n", DefaultLifetime);
+        fprintf(f, "VideoFormat        = %d\n", VideoFormat);
+        fprintf(f, "ChannelInfoPos     = %d\n", ChannelInfoPos);
+        fprintf(f, "OSDwidth           = %d\n", OSDwidth);
+        fprintf(f, "OSDheight          = %d\n", OSDheight);
         fprintf(f, "CurrentChannel     = %d\n", CurrentChannel);
         f.Close();
         isyslog(LOG_INFO, "saved setup to %s", FileName);

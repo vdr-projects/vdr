@@ -1,18 +1,44 @@
 #!/bin/sh
 
+# runvdr: Loads the DVB driver and runs VDR
+#
+# If VDR exits abnormally, the driver will be reloaded
+# and VDR restarted.
+#
+# Set the environment variable VDRUSR to the user id you
+# want VDR to run with. If VDRUSR is not set, VDR will run
+# as 'root', which is not necessarily advisable.
+#
+# Since this script loads the DVB driver, it must be started
+# as user 'root'.
+#
+# Any command line parameters will be passed on to the
+# actual 'vdr' program.
+#
+# See the main source file 'vdr.c' for copyright information and
+# how to reach the author.
+#
+# $Id: runvdr 1.8 2001/07/27 07:35:19 kls Exp $
+
 DVBDIR="../DVB/driver"
 VDRPRG="./vdr"
-VDRCMD="$VDRPRG -w 60"
+VDRCMD="$VDRPRG -w 60 $*"
 
+LSMOD="`/sbin/lsmod | grep -w '^dvb' | wc -l`"
 KILLPROC="/sbin/killproc -TERM"
 
+# Load driver if it hasn't been loaded already:
+if [ $LSMOD -eq 0 ] ; then
+   (cd $DVBDIR; make insmod)
+   fi
+
 while (true) do
-#      (cd $DVBDIR; make reload)
-#      sleep 3
-      $VDRCMD
-      if test $? -ne 1; then exit; fi
+      su -c "$VDRCMD" $VDRUSR
+      if test $? -eq 0; then exit; fi
       date
       echo "restarting VDR"
       $KILLPROC $VDRPRG
       sleep 10
+      (cd $DVBDIR; make rmmod; make insmod)
+      date
       done

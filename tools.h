@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.25 2001/04/01 14:13:42 kls Exp $
+ * $Id: tools.h 1.26 2001/05/20 08:29:45 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -67,6 +67,7 @@ public:
   bool Ready(bool Wait = true);
   static bool AnyFileReady(int FileDes = -1, int TimeoutMs = 1000);
   static bool FileReady(int FileDes, int TimeoutMs = 1000);
+  static bool FileReadyForWriting(int FileDes, int TimeoutMs = 1000);
   };
 
 class cSafeFile {

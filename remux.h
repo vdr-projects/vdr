@@ -4,16 +4,14 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.h 1.1 2001/03/31 08:42:27 kls Exp $
+ * $Id: remux.h 1.5 2001/06/23 14:06:59 kls Exp $
  */
 
 #ifndef __REMUX_H
 #define __REMUX_H
 
-// There are various experiments with different types of remultiplexers
-// going on at the moment. Select the remultiplexer here:
-#define REMUX_NONE 1
-//#define REMUX_TEST 1
+#include <time.h> //XXX FIXME: DVB/ost/include/ost/dmx.h should include <time.h> itself!!!
+#include <ost/dmx.h>
 
 // Picture types:
 #define NO_PICTURE 0
@@ -21,31 +19,32 @@
 #define P_FRAME    2
 #define B_FRAME    3
 
-// Start codes:
-#define SC_PICTURE 0x00  // "picture header"
-#define SC_SEQU    0xB3  // "sequence header"
-#define SC_PHEAD   0xBA  // "pack header"
-#define SC_SHEAD   0xBB  // "system header"
-#define SC_AUDIO   0xC0
-#define SC_VIDEO   0xE0
-
 // The minimum amount of video data necessary to identify frames:
-#define MINVIDEODATA (256*1024) // just a safe guess (max. size of any frame block, plus some safety)
+#define MINVIDEODATA (16*1024) // just a safe guess (max. size of any frame block, plus some safety)
+
+#define RESULTBUFFERSIZE (MINVIDEODATA * 4)
 
 typedef unsigned char uchar;
+class cTS2PES;
 
 class cRemux {
 private:
-#if defined(REMUX_NONE)
+  bool exitOnFailure;
   bool synced;
+  int skipped;
+  int vPid, aPid1, aPid2, dPid1, dPid2;
+  cTS2PES *vTS2PES, *aTS2PES1, *aTS2PES2, *dTS2PES1, *dTS2PES2;
+  uchar resultBuffer[RESULTBUFFERSIZE];
+  int resultCount;
+  int resultDelivered;
+  int GetPid(const uchar *Data);
   int GetPacketLength(const uchar *Data, int Count, int Offset);
   int ScanVideoPacket(const uchar *Data, int Count, int Offset, uchar &PictureType);
-#elif defined(REMUX_TEST)
-#endif
 public:
-  cRemux(void);
+  cRemux(int VPid, int APid1, int APid2, int DPid1, int DPid2, bool ExitOnFailure = false);
   ~cRemux();
-  const uchar *Process(const uchar *Data, int &Count, int &Result, uchar &PictureType);
+  void SetAudioPid(int APid);
+  const uchar *Process(const uchar *Data, int &Count, int &Result, uchar *PictureType = NULL);
   };
 
 #endif // __REMUX_H

@@ -1,2 +1,2 @@
 #!/bin/sh
-cat cut | head -n 1 | tr -d [\\\\]
+cat cut2 | head -n 1 | tr -d [\\\\]

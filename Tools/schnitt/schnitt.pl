@@ -21,6 +21,7 @@ syswrite (FO,$temp,200000);
 close (FI);
 close (FO);
 
-`/usr/local/bin/pvademux.old /x2/temp bild`;
+`cat bild | /usr/local/bin/avpes2mpeg > avpes`;
+`/usr/local/bin/my/dumpframe avpes 1`;
 #`/usr/local/bin/pes2av_pes bild | /usr/local/bin/pvademux /x2/temp bild`;
 print "$index\n";

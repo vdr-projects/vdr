@@ -3,10 +3,13 @@
 DIRA=/x2/temp
 DIRB=/x1/temp
 
-if [ -f cut ]; then
+if [ ! -f cut2 ]; then
+  echo Keine Beschreibungsdatei
+  exit 1
+else
   name="`cut2`"
   echo $name
-  count=`cat cut | wc -l`
+  count=`cat cut2 | wc -l`
   let count=count-1
   let test=count%2
   if [ "$test" == "1" ]; then
@@ -16,70 +19,88 @@ if [ -f cut ]; then
 
   file=1
 
-  while [ "$count" != "0" ]
-  do
-    start=`cat cut | tail -n $count | head -n 1`
+  if [ "$count" == "2" ]; then
+    start=`cat cut2 | tail -n $count | head -n 1`
     let count=count-1
-    end=`cat cut | tail -n $count | head -n 1`
-    let count=count-1
-    echo Cutting\&Demuxing from $start to $end
-    schnitt2.pl $start $end | pvademux $DIRA teil$file
-#    schnitt2.pl $start $end | pes2av_pes | pvademux $DIRA teil$file
-    let file=file+1
-  done
-else
-  echo Keine Beschreibungsdatei
-  exit 1
+    end=`cat cut2 | tail -n $count | head -n 1`
+    schnitt2.pl $start $end | avpes2mpeg | cut.pl $DIRA
+    secondway=2
+  else
+    while [ "$count" != "0" ]
+    do
+      start=`cat cut2 | tail -n $count | head -n 1`
+      let count=count-1
+      end=`cat cut2 | tail -n $count | head -n 1`
+      let count=count-1
+      echo Cutting \& Converting from $start to $end
+      schnitt2.pl $start $end | avpes2mpeg > $DIRA/teil$file.mpg
+#      schnitt2.pl $start $end | pvademux $DIRA teil$file
+      let file=file+1
+    done
+  fi
 fi
 
 # Ab hier mkimg
 
-sync
-
-lmplex $DIRA $DIRB `ls -la $DIRA/teil*.m2v | cut -b 30- | sort -n -r | cut -d / -f4`
-
-echo Multiplexing DONE
-
-rm -f $DIRA/teil*.m2v $DIRA/teil*.mp2
+rm cut2
 
 sync
 
-if [ -f $DIRB/teil1.mpg ]; then
-  echo Splitting
+if [ "$secondway" != "2" ]; then
   cd $DIRA
-#  cat $DIRB/teil*.mpg | split -b 723517440
-  cat $DIRB/teil*.mpg | cut.pl
-  rm $DIRB/teil*
-fi
+  cut2.pl "$name"
+  if [ -d 2 ]; then
+    count=1
+    cond=0
 
-sync
+    while [ "$cond" != "1" ]
+    do
+      echo mkisofs Teil $count
+      mkisofs -r -o $DIRB/image1.raw $count
+      rm -rf $count
+      mv -- $DIRB/image1.raw "$DIRB/${name} CD $count"
+      sync
+      let count=count+1
+      if [ ! -d $count ]; then
+        cond=1
+      fi
+    done
+  else
+    echo mkisofs
+    mkisofs -r -o $DIRB/image1.raw $count
+    rm -rf $count
+    mv -- $DIRB/image1.raw "$DIRB/${name}"
+  fi
+else
 
-cd $DIRA
+  cd $DIRA
 
-if [ -f part2 ]; then
-  count=1
-  cond=0
+  if [ -f part2 ]; then
+    count=1
+    cond=0
 
-  while [ "$cond" != "1" ]
-  do
+    while [ "$cond" != "1" ]
+    do
+      mkdir a
+      mv "part$count" "a/${name} CD $count.mpg"
+      echo mkisofs Teil $count
+      mkisofs -r -o $DIRB/image1.raw a
+      rm -rf a
+      mv -- $DIRB/image1.raw "$DIRB/${name} CD $count"
+      sync
+
+      let count=count+1
+      if [ ! -f "part$count" ]; then
+        cond=1
+      fi
+    done
+  else
     mkdir a
-    mv "part$count" "a/${name} Teil $count"
-    echo mkisofs Teil $count
+    mv part1 "a/${name}.mpg"
+    echo mkisofs
     mkisofs -r -o $DIRB/image1.raw a
     rm -rf a
-    mv -- $DIRB/image1.raw "$DIRB/${name} Teil $count"
-    sync
-
-    let count=count+1
-    if [ ! -f "part$count" ]; then
-      cond=1
-    fi
-  done
-else
-  mkdir a
-  mv part1 "a/${name}"
-  echo mkisofs
-  mkisofs -r -o $DIRB/image1.raw a
-  rm -rf a
-  mv -- $DIRB/image1.raw "$DIRB/${name}"
+    mv -- $DIRB/image1.raw "$DIRB/${name}"
+  fi
 fi
+

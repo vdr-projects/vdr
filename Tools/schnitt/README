@@ -1,4 +1,6 @@
 			Sammlung von "Hilfs"-Scripten
+                         von Matthias Schniedermeyer
+                                 ms@citd.de
 
 Diese Sammlung an "Hilfs"-Scripten habe ich mir zum scheiden und anderen
 Zwecken zusammengeschrieben.
@@ -10,10 +12,10 @@ Ich bin nicht sonderlich gut im "Dokumentieren". Also gilt die Devise
 
 Ein paar Worte zu den "Hart"-Codierten Pfaden.
 
-/yele/video	(/video/video0)
-/yelg/video	(/video/video1)
+/dvb/video
+/dvb2/video
 
-Sind die 2 Pfade auf meinem DVB-Rechner
+Sind die 2 DVB-Rechner.
 
 /x1/video
 
@@ -30,14 +32,23 @@ Enthalten sind folgende Scripte:
 cutall			-> "Master"-Script zum starten des Scheide vorgangs.
                            Ist ein "find" nach "cut" -Dateien
 cutt			-> Das "eigentliche" Schnitt-Script
-                           Scheidet die Stuecke aus, demultipext, remultipext,
-                           splitted die Dateien und macht am Ende ein 
-                           ISO-Image daraus
+			   Bei einem einzelnen Block wird diese direkt
+                           gesplitet und dann zu einem ISO-Image verarbeitet
+			   Wenn mehrere Teile (=War mit Werbung) vorhanden
+			   sind, dann werden zuerst die einzelnen Teile,
+			   legt nummerierte Verzeichniss ein und kopiert bzw
+                           splitet die einzelnen Dateien in die Verzeichniss
+                           und macht dann daraus die ISO-Images
+			   (Leider funktioniert das aus irgendwelche Gruenden
+			   (noch) nicht mit Serien die nur eine CD gross sind
+			   aber das wird noch)
 index.php		-> PHP-Script zum finden der Schnitt-Punkte, mit 
                            Testmoeglichkeit ob erfolgreich an diesem Punkt
                            geschnitten werden kann
-mv2			-> Zum Moven der Aufnahmen von meinem DVB-Rechner 
+mv2			-> Zum Moven der Aufnahmen von meinen DVB-Rechnern
                            auf mein "Arbeitsrechner"
+play			-> Zum Abspielen einer Aufnahme von meinem Recher auf 
+			   dem "Frontend" DVB-Rechner
 schnitt.pl		-> Extraiert ein einzelnes Bild um es anzuzeigen
                            (Fuer index.php)
 schnitt2.pl		-> Gibt alles zwischen 2 Schnittpunkten auf STDOUT aus
@@ -58,27 +69,43 @@ vdr2			-> Start-Script
 vmount			-> Mounten aller zusammengehoeriger ISO-Images zum 
                            abspielen
 
-Hilsscripte:
+Hilfsscripte:
 ------------
 cut.pl			-> Entspricht weitestgehend "split" aber mit 
                            "Nummer" anstatt Buchstaben
 cut2			-> Entfernt escapende Backslashes
+cut2.pl/cut3.pl		-> Fuer Aufnehmen die aus mehreren Bloecken bestehen 
+                           (=Mit Werbung)
 cutall2			-> Springt ins Schnitt-Verzeichniss und ruft das 
                            "eigentliche" Schnitt-Script auf
-lmplex			-> Multiplexed Datenstrome unter Zurhilfename
-                           saemtlicher CPUs
+cutall3.pl		-> Wenn in einem Verzeichniss mehrere Aufnahmen sind
+                           splitet dies Programm diese und ruft fuer jede
+                           Aufnahme das "cutt"-Script auf
 schnittcommon.pli	-> Das "Common" Script fuer schnitt?.pl
 getpreviframe.pl	-> Findet das vorherige I-Frame.
 unsort			-> Macht das Gegenteil von sort.
 
+dump.c			-> Muss in der "libmpeg3"-Verzeichniss des 
+			   "mpeg2-movie"-Packets kopiert werden und dann mit 
+			   "make" compilieren
+			   Dieses C-Programm ist dafuer da um fuer das
+			   PHP-Script das Bild anzuzeigen wo man gerade ist.
+			   Da mir der "urspruengliche" Source-Code dafuer
+			   abhanden gekommen ist und ich den Patch neumachen
+			   musste (Wie immer mit "Verbesserungen") ist index.php
+			   nocht nicht auf die neue Version angepasst. Die
+			   Anpassung besteht aber nur darin eine "1" an die
+			   Kommandozeile anzuhaengen.
 
-Die ganze "Schnittloesung" ist leider etwas "unbrauchbar", weil ich aus
-Unachtsamkeit leider die gepatchten Sourcen von 2 wichtigen Programm
-geloescht habe. 
 
-dumpfrage		-> Extraiert das erste Frage in eine Datei zum
-			   anzeigen (gepatchtes dump aus "libmpeg3"
-pvademux		-> gepatcht um eine Pfad-Angabe
+Im Gegensatz zur "alten"-Version ist diese Version "vollstaendig"
+einsatzfaehig!
 
-Entweder macht jemand/ich patchen "nochmal" oder ich kann auch die
-Binaries zur Verfuegung stellen.
+
+Wenn jemand Fragen zum Einsatz hat dann "loechern Sie mich"
+
+ms@citd.de
+
+
+Ich kann auch gerne die Einrichtung per "Fernwartung" (=ssh) uebernehmen.
+(Wenn noetig compiliere ich auch auch apache mit PHP usw.)

@@ -290,7 +290,7 @@ Video Disk Recorder Revision History
   channel, if the timer currently occupying this DVB card doesn't need the
   CAM module (and thus can continue recording on a different DVB card).
 - The "Yellow" button in the "What's on now/next?" menus now displays the
-  schedule of the current channel from that menu. 
+  schedule of the current channel from that menu.
 - All DVB cards in a multi-card system now write their EIT information into the
   same data structure.
 - If there is more than one DVB card in the system, the non-primary cards are
@@ -332,8 +332,8 @@ Video Disk Recorder Revision History
 - Implemented "On Disk Editing".
 - There is no more default 'timers.conf' file.
 - Added Italian language texts (thanks to Alberto Carraro).
-- Fixed starting a replay session when the program is currently in "transfer
-  mode".
+- Fixed starting a replay session when the program is currently in 'Transfer
+  Mode'.
 - Fixed setting/modifying timers via SVDRP with empty summary fields.
 - Fixed a problem with recordings that have a single quote character in their
   name (this is now mapped to 0x01).
@@ -452,3 +452,160 @@ Video Disk Recorder Revision History
 - Empty lines in config files no longer cause error messages.
 - New SVDRP command LSTE to list the EPG data.
 - The SVDRP HELP command now prints the topics in several columns.
+
+2001-06-02: Version 0.80
+
+- VDR now requires driver version 0.9.0 or higher.
+- Switched to the "new API" (thanks to Dave Chapman for his great support in
+  this task).
+- New setup parameter "LnbSLOF" that defines the switching frequency of the LNB.
+- Fixed a bug in the EPG scanner with more than one DVB card.
+- Fixed checking for free disk space, so that it works with NFS mounted drives.
+- Files are now created with mode 644.
+- Fixed checking the exit status in the 'runvdr' script.
+- Activated loading the driver in 'runvdr'. Please read the comments in 'runvdr'
+  for details.
+- The new "emergency exit" feature automatically triggers a restart of VDR (if
+  used with 'runvdr', otherwise it simply exists) if
+  * tuning the channel for a recording fails
+  * no useful data is received within the first 1MB of a recording
+  * no data is received within a recording for more than 5 seconds
+  This should make sure that a recording is successfully restarted after any
+  problems.
+- Processing the EIT data is now disabled during replay and 'Transfer Mode' in
+  order to avoid video and audio glitches (there appears to be a bandwidth
+  problem somewhere in the driver/firmware/hardware).
+- Due to the reduced amount of OSD memory provided by the driver the number of
+  lines in the OSD had to be reduced by 2. By rearranging some of the display
+  items the amount of visible information remained the same as before, though.
+  If your DVB card has even less memory (which would result in only the
+  channel switching display and the replay progress display being visible, but
+  no Main menu), try reducing the constant 'MenuLines' in dvbapi.h (currently
+  '13') even further.
+- There are two new setup parameters to define the "Default Priority" and
+  "Default Lifetime" when creating a new timer event.
+- The meaning of the "Lifetime" parameter has been modified: a value of '99'
+  now means that the recording will live "forever", and a value of '0' means
+  that the recording has no guaranteed lifetime and will be deleted whenever
+  a new recording with higher priority needs disk space.
+- Updated version of Matthias Schniedermeyer's 'schnitt' tools.
+- New 'master-timer' tool (thanks to Matthias Schniedermeyer).
+
+2001-06-12: Version 0.81
+
+- Fixed handling the case where the driver reports EAGAIN during recording,
+  but no data comes within 5 seconds.
+- Fixed EPG scanning on single DVB card systems.
+- There can now be two audio PIDs per channel, which can be toggled via the
+  "Green" button in the "Main" menu. The "Edit Channel" menu therefore now
+  has two audio PID fields (Apid1 and Apid2). By default, Apid2 is 0, which
+  means there is no alternate audio track.
+- Fixed replaying in case the driver reports EAGAIN.
+- Now 'runvdr' checks if the driver is already loaded (thanks to Henning
+  Holtschneider).
+- Fixed removing recordings with Lifetime = 99.
+- Improved channel switching.
+
+2001-06-16: Version 0.82
+
+- Increased timeout until reporting "broken video data stream" when recording.
+- Increased amount of non-useful data received by cRemux before assuming the
+  recording will fail.
+- If there are two audio PIDs defined for a channel, both audio tracks will
+  now be recorded and can be selectively replayed later. See the FORMATS file
+  for details on how these different audio tracks are stored in the recorded
+  files. In order for this to work properly you need to use a driver version
+  dated 2001-06-16 or later, where the default PES filter buffer size has been
+  reduced. This will create packets for the second audio track that are small
+  enough to multiplex smoothly with the video data.
+- Fixed a bug in the editing mechanism (didn't work with recordings that
+  consist of more than one data file).
+- The compile time switch VFAT has been fixed to recognize the ':' character
+  in recording names, too.
+- Setting all PIDs to 0x1FFF before switching channel.
+- New setup parameter "VideoFormat" to define the aspect ratio of the tv set
+  in use (4:3 or 16:9).
+
+2001-06-26: Version 0.83
+
+- Avoiding "Device or resource busy" error message when setting PIDs.
+- Added Portugese language texts (thanks to Paulo Manuel Martins Lopes).
+- Recording and replaying Dolby Digital (AC3) sound.
+- No longer getting stuck when a channel doesn't sync while switching
+  with the 'Up' and 'Down' keys.
+
+2001-07-22: Version 0.84
+
+- Fixed video packet scanning to make it recognize the whole range of
+  allowed video packet ids.
+- Added an additional "emergency exit" in case channel switching doesn't
+  work several times in a row (when will the driver finally become stable
+  enough to allow rock solid channel switching??).
+- No longer sending a Diseqc command if the Diseqc value for a given channel
+  is '0'. Previously this caused problems with some multi-switches (thanks to
+  Markus Lang and Ulrich Röder).
+- When switching channels by entering the channel number via the numeric keys
+  on the remote control, the channel number displayed is now followed by the
+  '-' character to indicate that additional digits can be entered.
+- Increased the timeout for numeric channel switching from 500ms to 1s.
+- Fixed handling the "Green" button in the "Schedules" menu for channels that
+  have a second audio PID.
+- Fixed high system load when displaying a still picture in replay.
+- Fixed a hanging SVDRP connection if the client dies without issuing QUIT.
+- Increased the frame buffer size to 192KB.
+- Removed a superfluous VIDEO_FREEZE call in the replay buffer.
+- Added French language texts (thanks to Jean-Claude Repetto).
+- Modified OSD to use 2bpp windows (4 colors) in order to work with less
+  memory, allow a larger OSD window and be faster. The group separators in the
+  "Channels" menu had to be given a different color.
+- Moved the channel display to the bottom of the screen.
+- Displaying the frame counter in the replay progress display only when editing
+  a mark.
+- Fixed handling characters above 0xEF in SVDRP.
+- Fixed a possible crash in parsing incorrect lines in 'channels.conf'.
+- New channel settings for Premiere World (Dolby Digital PIDs not yet
+  available).
+- Increased the buffer for key names received from LIRC (thanks to Andre
+  Valentin).
+- Fixed handling a channel group separator at the very beginning of the
+  'channels.conf' file.
+
+2001-07-29: Version 0.85
+
+- Added Norwegian language texts (thanks to Jørgen Tvedt).
+- Increased the usleep value in cDvbOsd::Cmd() to 5000 in order to work on
+  systems with the KURT/utime-patch (thanks to Guido Fiala).
+- Changed the check whether the driver is loaded in runvdr to check for the
+  'dvb' module (the last one loaded).
+- Fixed repeat function with LIRC (thanks to Stefan Huelswitt).
+- Increased the upper limit for the symbol rate to 30000 (thanks to Ulrich
+  Röder).
+- Made the position of the channel display configurable (thanks to Stefan
+  Huelswitt).
+- Made the width and height of the OSD configurable (thanks to Stefan Huelswitt).
+- DiSEqC support can now be generally enabled/disabled in the Setup menu. This
+  may be necessary if your multiswitch gets irritated by the default DiSEqC
+  codes '0' (thanks to Markus Lang).
+- Fixed replaying in case there is no index file.
+- Fixed jumping to an editing mark when replay has been paused.
+- Avoiding unnecessary code execution in the replay progress display (thanks
+  to Guido Fiala).
+- When entering time values the digits that still have to be entered are now
+  shown as '-' (as in "1-:--").
+- When setting an editing mark while the progress display is not active, the
+  display will now be turned on for a short while to indicate the successful
+  setting of the mark.
+- Updated 'channels.conf' for Premiere World (thanks to Helmut Schächner).
+  Check your timers if you use this channels.conf file, since the sequence of
+  several PW channels has been changed.
+- Changed the color of "Info" messages to "black on green" and that of the
+  confirmation messages (like "Delete...") to "black on yellow".
+- Fixed display with DEBUG_OSD (it still crashes sometimes, esp. when replaying,
+  but I can't seem to find what causes this... any ideas anybody?).
+- Avoiding audio/video distortions in 'Transfer Mode' by no longer actually
+  tuning the primary interface (which can't receive this channel, anyway).
+  Apparently the driver gets irritated when the channel is switched and a
+  replay session is started immediately after that.
+- Increased timeout until reporting "video data stream broken" when recording.
+- Explicitly switching back to the previously active channel after ending a
+  replay session (to have it shown correctly in case it was in 'Transfer Mode').

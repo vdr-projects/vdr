@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.29 2001/03/31 09:38:30 kls Exp $
+ * $Id: recording.c 1.32 2001/06/16 10:33:20 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -39,7 +39,7 @@
 #define DELETEDLIFETIME     1 // hours after which a deleted recording will be actually removed
 #define REMOVECHECKDELTA 3600 // seconds between checks for removing deleted files
 #define DISKCHECKDELTA    300 // seconds between checks for free disk space
-#define REMOVELATENCY      10 // seconds to wait until next check after removing a file 
+#define REMOVELATENCY      10 // seconds to wait until next check after removing a file
 
 void RemoveDeletedRecordings(void)
 {
@@ -66,7 +66,7 @@ void RemoveDeletedRecordings(void)
      }
 }
 
-void AssertFreeDiskSpace(void)
+void AssertFreeDiskSpace(int Priority)
 {
   // With every call to this function we try to actually remove
   // a file, or mark a file for removal ("delete" it), so that
@@ -94,13 +94,16 @@ void AssertFreeDiskSpace(void)
            cRecording *r = Recordings.First();
            cRecording *r0 = NULL;
            while (r) {
-                 if ((time(NULL) - r->start) / SECSINDAY > r->lifetime) {
-                    if (r0) {
-                       if (r->priority < r0->priority)
+                 if (r->lifetime < MAXLIFETIME) { // recordings with MAXLIFETIME live forever
+                    if ((r->lifetime == 0 && Priority > r->priority) || // the recording has guaranteed lifetime and the new recording has higher priority
+                        (time(NULL) - r->start) / SECSINDAY > r->lifetime) { // the recording's guaranteed lifetime has expired
+                       if (r0) {
+                          if (r->priority < r0->priority || (r->priority == r0->priority && r->start < r0->start))
+                             r0 = r; // in any case we delete the one with the lowest priority (or the older one in case of equal priorities)
+                          }
+                       else
                           r0 = r;
                        }
-                    else
-                       r0 = r;
                     }
                  r = Recordings.Next(r);
                  }
@@ -153,7 +156,7 @@ int cResumeFile::Read(void)
 bool cResumeFile::Save(int Index)
 {
   if (fileName) {
-     int f = open(fileName, O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR | S_IRGRP);
+     int f = open(fileName, O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
      if (f >= 0) {
         if (write(f, &Index, sizeof(Index)) != sizeof(Index))
            LOG_ERROR_STR(fileName);
@@ -174,18 +177,31 @@ void cResumeFile::Delete(void)
 
 // --- cRecording ------------------------------------------------------------
 
+struct tCharExchange { char a; char b; };
+tCharExchange CharExchange[] = {
+  { ' ',  '_'    },
+  { '\'', '\x01' },
+  { '/',  '\x02' },
+#ifdef VFAT
+  { ':',  '\x03' },
+#endif
+  { 0, 0 }
+  };
+
+char *ExchangeChars(char *s, bool ToFileSystem)
+{
+  for (struct tCharExchange *ce = CharExchange; ce->a && ce->b; ce++)
+      strreplace(s, ToFileSystem ? ce->a : ce->b, ToFileSystem ? ce->b : ce->a);
+  return s;
+}
+
 cRecording::cRecording(cTimer *Timer)
 {
   titleBuffer = NULL;
   fileName = NULL;
   name = strdup(Timer->file);
   // substitute characters that would cause problems in file names:
-  for (char *p = name; *p; p++) {
-      switch (*p) {
-        case '\n': *p = ' '; break;
-        case '/':  *p = '-'; break; 
-        }
-      }
+  strreplace(name, '\n', ' ');
   summary = Timer->summary ? strdup(Timer->summary) : NULL;
   if (summary)
      strreplace(summary, '|', '\n');
@@ -215,8 +231,7 @@ cRecording::cRecording(const char *FileName)
         name = new char[p - FileName + 1];
         strncpy(name, FileName, p - FileName);
         name[p - FileName] = 0;
-        strreplace(name, '_', ' ');
-        strreplace(name, '\x01', '\'');
+        ExchangeChars(name, false);
         }
      // read an optional summary file:
      char *SummaryFileName = NULL;
@@ -239,7 +254,7 @@ cRecording::cRecording(const char *FileName)
                  delete summary;
                  summary = NULL;
                  }
-              
+
               }
            else
               esyslog(LOG_ERR, "can't allocate %d byte of memory for summary file '%s'", size + 1, SummaryFileName);
@@ -266,11 +281,9 @@ const char *cRecording::FileName(void)
 {
   if (!fileName) {
      struct tm *t = localtime(&start);
+     ExchangeChars(name, true);
      asprintf(&fileName, NAMEFORMAT, VideoDirectory, name, t->tm_year + 1900, t->tm_mon + 1, t->tm_mday, t->tm_hour, t->tm_min, priority, lifetime);
-     if (fileName) {
-        strreplace(fileName, ' ', '_');
-        strreplace(fileName, '\'', '\x01');
-        }
+     ExchangeChars(name, false);
      }
   return fileName;
 }

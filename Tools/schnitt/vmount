@@ -4,7 +4,7 @@ cond=0
 
 if [ -f "$1" ]; then
   mount "$1" /mnt/1 -o loop
-  $cond = 1
+  cond=1
 else
   while [ "$cond" != "1" ]
   do

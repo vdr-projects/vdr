@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.32 2001/04/01 14:13:36 kls Exp $
+ * $Id: tools.c 1.34 2001/05/20 08:30:54 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -120,7 +120,7 @@ const char *AddDirectory(const char *DirName, const char *FileName)
   return buf;
 }
 
-#define DFCMD  "df -m '%s'"
+#define DFCMD  "df -m -P '%s'"
 
 uint FreeDiskSpaceMB(const char *Directory)
 {
@@ -132,7 +132,7 @@ uint FreeDiskSpaceMB(const char *Directory)
   if (p) {
      char *s;
      while ((s = readline(p)) != NULL) {
-           if (*s == '/') {
+           if (strchr(s, '/')) {
               uint available;
               sscanf(s, "%*s %*d %*d %u", &available);
               Free = available;
@@ -409,6 +409,22 @@ bool cFile::FileReady(int FileDes, int TimeoutMs)
   timeout.tv_sec  = 0;
   timeout.tv_usec = TimeoutMs * 1000;
   return select(FD_SETSIZE, &set, NULL, NULL, &timeout) > 0 && FD_ISSET(FileDes, &set);
+}
+
+bool cFile::FileReadyForWriting(int FileDes, int TimeoutMs)
+{
+#ifdef DEBUG_OSD
+  refresh();
+#endif
+  fd_set set;
+  struct timeval timeout;
+  FD_ZERO(&set);
+  FD_SET(FileDes, &set);
+  if (TimeoutMs < 100)
+     TimeoutMs = 100;
+  timeout.tv_sec  = 0;
+  timeout.tv_usec = TimeoutMs * 1000;
+  return select(FD_SETSIZE, NULL, &set, NULL, &timeout) > 0 && FD_ISSET(FileDes, &set);
 }
 
 // --- cSafeFile -------------------------------------------------------------
