@@ -2821,3 +2821,5 @@ Video Disk Recorder Revision History
   can be called with a time_t value to get the day of week for that time.
 - When processing XPM data, the color name "None" is no mapped to #00000000, which
   is "fully transparent" (suggested by Sascha Volkenandt).
+- Fixed the OSD alignment in the SPU decoder (thanks to Miko Wohlgemuth for reporting
+  this one and helping to test the fix).

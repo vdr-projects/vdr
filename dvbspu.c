@@ -8,7 +8,7 @@
  *
  * parts of this file are derived from the OMS program.
  *
- * $Id: dvbspu.c 1.6 2004/04/30 13:45:02 kls Exp $
+ * $Id: dvbspu.c 1.7 2004/05/22 14:02:32 kls Exp $
  */
 
 #include <assert.h>
@@ -321,8 +321,13 @@ int cDvbSpuDecoder::ScaleYres(int value)
 
 void cDvbSpuDecoder::DrawBmp(sDvbSpuRect & size, cBitmap * bmp)
 {
-    tArea Area = { size.x1, size.y1, size.x2, size.y2, 2 };
+    int x2 = size.x2;
+    while ((x2 - size.x1 + 1) & 0x03)
+          x2++;
+    tArea Area = { size.x1, size.y1, x2, size.y2, 2 };
     osd->SetAreas(&Area, 1);
+    if (x2 > size.x2)
+       osd->DrawRectangle(size.x2 + 1, size.y1, x2, size.y2, clrTransparent);
     osd->DrawBitmap(size.x1, size.y1, *bmp);
     delete bmp;
 }
