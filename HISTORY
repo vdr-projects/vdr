@@ -3078,7 +3078,7 @@ Video Disk Recorder Revision History
   This avoids shortly seeing the wrong events in the channel display when
   switching to a channel that hasn't been tuned to in a while.
 
-2004-10-30: Version 1.3.15
+2004-10-31: Version 1.3.15
 
 - Fixed some typos in the Makefile's 'font' target (thanks to Uwe Hanke).
 - Added more checks and polling when getting frontend events (based on a patch
@@ -3087,3 +3087,5 @@ Video Disk Recorder Revision History
   (apparently setting "live" PIDs before the tuner is locked doesn't hurt).
   Moved the wait into cDevice::AttachReceiver() instead.
 - Immediately displaying the new channel info when switching channel groups.
+- Moved the main program loop variables further up to allow compilation with
+  older compiler versions (thanks to Marco Schlüßler for reporting this one).
