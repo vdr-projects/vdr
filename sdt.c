@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: sdt.c 1.10 2004/07/18 10:58:01 kls Exp $
+ * $Id: sdt.c 1.11 2004/07/18 11:14:42 kls Exp $
  */
 
 #include "sdt.h"
@@ -68,6 +68,15 @@ void cSdtFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                            *ps++ = ',';
                            strcpy(ps, NameBuf);
                            pn = ShortNameBuf;
+                           }
+                        if (*pn) {
+                           char ProviderNameBuf[1024];
+                           sd->providerName.getText(ProviderNameBuf, sizeof(ProviderNameBuf));
+                           if (*ProviderNameBuf) {
+                              char *p = pn + strlen(pn);
+                              *p++ = ';';
+                              strcpy(p, ProviderNameBuf);
+                              }
                            }
                         if (channel) {
                            channel->SetId(sdt.getOriginalNetworkId(), sdt.getTransportStreamId(), SiSdtService.getServiceId());
