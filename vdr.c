@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.176 2004/02/13 13:13:13 kls Exp $
+ * $Id: vdr.c 1.177 2004/02/15 14:29:30 kls Exp $
  */
 
 #include <getopt.h>
@@ -526,8 +526,10 @@ int main(int argc, char *argv[])
                      cRecordControls::ChannelDataModified(Channel);
                      if (Channel->Number() == cDevice::CurrentChannel()) {
                         if (!cDevice::PrimaryDevice()->Replaying() || cTransferControl::ReceiverDevice()) {
-                           isyslog("retuning due to modification of channel %d", Channel->Number());
-                           Channels.SwitchTo(Channel->Number());
+                           if (cDevice::ActualDevice()->ProvidesTransponder(Channel)) { // avoids retune on devices that don't really access the transponder
+                              isyslog("retuning due to modification of channel %d", Channel->Number());
+                              Channels.SwitchTo(Channel->Number());
+                              }
                            }
                         }
                      }

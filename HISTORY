@@ -2669,3 +2669,5 @@ Video Disk Recorder Revision History
   happen on my system, this has not been explicitly tested.
 - Adapted the 'sky' plugin to use the actual channel IDs, and to fetch EPG data
   from www.bleb.org.
+- Limited automatic retuning to devices that actually provide the transponder
+  (necessary for the 'sky' plugin).

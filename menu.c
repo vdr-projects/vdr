@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.285 2004/02/13 13:23:07 kls Exp $
+ * $Id: menu.c 1.286 2004/02/15 14:29:53 kls Exp $
  */
 
 #include "menu.h"
@@ -3241,7 +3241,7 @@ void cRecordControls::Stop(cDevice *Device)
 {
   for (int i = 0; i < MAXRECORDCONTROLS; i++) {
       if (RecordControls[i]) {
-         if (RecordControls[i]->Uses(Device)) {
+         if (RecordControls[i]->Device() == Device) {
             isyslog("stopping recording on DVB device %d due to higher priority", Device->CardIndex() + 1);
             RecordControls[i]->Stop(true);
             }
@@ -3320,10 +3320,12 @@ void cRecordControls::ChannelDataModified(cChannel *Channel)
   for (int i = 0; i < MAXRECORDCONTROLS; i++) {
       if (RecordControls[i]) {
          if (RecordControls[i]->Timer() && RecordControls[i]->Timer()->Channel() == Channel) {
-            isyslog("stopping recording due to modification of channel %d", Channel->Number());
-            RecordControls[i]->Stop(true);
-            // This will restart the recording, maybe even from a different
-            // device in case conditional access has changed.
+            if (RecordControls[i]->Device()->ProvidesTransponder(Channel)) { // avoids retune on devices that don't really access the transponder
+               isyslog("stopping recording due to modification of channel %d", Channel->Number());
+               RecordControls[i]->Stop(true);
+               // This will restart the recording, maybe even from a different
+               // device in case conditional access has changed.
+               }
             }
          }
       }
