@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.24 2002/10/12 11:15:45 kls Exp $
+ * $Id: dvbdevice.c 1.25 2002/10/19 10:12:12 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -733,8 +733,6 @@ bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
      if (IsPrimaryDevice())
         AddPid(Channel->Tpid(), ptTeletext);
      CHECK(ioctl(fd_audio, AUDIO_SET_AV_SYNC, true));
-     CHECK(ioctl(fd_audio, AUDIO_SET_MUTE, false));
-     CHECK(ioctl(fd_video, VIDEO_SET_BLANK, false));
      }
   else if (StartTransferMode)
      cControl::Launch(new cTransferControl(this, Channel->Vpid(), Channel->Apid1(), 0, 0, 0));
