@@ -1255,7 +1255,7 @@ Video Disk Recorder Revision History
   shell for plugins. The "inner" access to VDR data structures will follow.
 - The VDR version number is now displayed in the title line of the "Setup" menu.
 
-2002-05-10: Version 1.1.1
+2002-05-11: Version 1.1.1
 
 - Separated the actual DVB hardware OSD implementation from the abstract OSD
   interface. 'osdbase.c/.h' now implements the abstract OSD, while 'dvbosd.c/.h'
@@ -1264,3 +1264,8 @@ Video Disk Recorder Revision History
 - Fixed leftover references to the file FORMATS in MANUAL and svdrp.c.
 - Avoiding ambiguities in the cList template class in case one defines a "list of
   lists" (thanks to Stefan Huelswitt).
+- Simplified the basic cMenuSetupPage class for easier use in plugins.
+- Added setup parameters and a Setup menu to the 'hello' plugin example.
+- Fixed logging error message for unknown config parameters in plugins.
+- Rearranged cleanup sequence at the end of the main program.
+- Adapted PLUGINS.html to use the actual code examples from the 'hello' plugin.
