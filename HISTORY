@@ -2325,3 +2325,5 @@ Video Disk Recorder Revision History
   Keil).
 - VDR now continues to start up, even if there is an error in setup.conf.
 - Fixed a bug in resetting OSD color palettes (thanks to Torsten Herz).
+- Fixed starting a recording on the primary device if there is a replay session
+  active (thanks to Javier Marcet for reporting this one).

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.268 2003/08/17 08:52:07 kls Exp $
+ * $Id: menu.c 1.269 2003/08/24 14:28:44 kls Exp $
  */
 
 #include "menu.h"
@@ -25,6 +25,7 @@
 #include "sources.h"
 #include "status.h"
 #include "timers.h"
+#include "transfer.h"
 #include "videodir.h"
 
 #define MENUTIMEOUT     120 // seconds
@@ -3102,7 +3103,7 @@ bool cRecordControls::Start(cTimer *Timer, bool Pause)
      if (device) {
         if (NeedsDetachReceivers) {
            Stop(device);
-           if (device == cDevice::ActualDevice())
+           if (device == cTransferControl::ReceiverDevice())
               cControl::Shutdown(); // in case this device was used for Transfer Mode
            }
         if (!device->SwitchChannel(channel, false)) {
