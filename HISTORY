@@ -1632,3 +1632,4 @@ Video Disk Recorder Revision History
 - Frequency values for cable and terrestrial channels in 'channels.conf' can
   now be given either in MHz, kHz or Hz. The actual value given will be multiplied
   by 1000 until it is larger than 1000000.
+- Fixed skipping unavailable channels when zapping downwards.

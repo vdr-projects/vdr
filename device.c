@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.28 2002/10/19 11:48:02 kls Exp $
+ * $Id: device.c 1.29 2002/10/20 16:05:51 kls Exp $
  */
 
 #include "device.h"
@@ -328,7 +328,7 @@ bool cDevice::SwitchChannel(int Direction)
            // try only channels which are currently available
            if (PrimaryDevice()->ProvidesChannel(channel, Setup.PrimaryLimit) || GetDevice(channel, 0))
               break;
-           n = channel->Number() + 1;
+           n = channel->Number() + Direction;
            }
      if (channel) {
         int d = n - first;
