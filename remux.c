@@ -8,7 +8,7 @@
  * the Linux DVB driver's 'tuxplayer' example and were rewritten to suit
  * VDR's needs.
  *
- * $Id: remux.c 1.12 2002/10/12 13:33:54 kls Exp $
+ * $Id: remux.c 1.13 2003/01/24 14:21:17 kls Exp $
  */
 
 /* The calling interface of the 'cRemux::Process()' function is defined
@@ -103,8 +103,8 @@
 #define ADAPT_FIELD    0x20
 //XXX TODO
 
-#define MAX_PLENGTH 0xFFFF
-#define MMAX_PLENGTH (4*MAX_PLENGTH)
+#define MAX_PLENGTH  0xFFFF          // the maximum PES packet length (theoretically)
+#define MMAX_PLENGTH (8*MAX_PLENGTH) // some stations send PES packets that are extremely large, e.g. DVB-T in Finland
 
 #define IPACKS 2048
 
@@ -384,6 +384,8 @@ void cTS2PES::instant_repack(const uint8_t *Buf, int Count)
         }
 
      if (plength && found == plength + 6) {
+        if (plength == MMAX_PLENGTH - 6)
+           esyslog("ERROR: PES packet length overflow in remuxer (stream corruption)");
         send_ipack();
         reset_ipack();
         if (c < Count)

@@ -525,3 +525,7 @@ Walter Stroebel <walter.stroebel@lifeline.nl>
 
 Paul Gohn <pgohn@nexgo.de>
  for adding 'Hrvatska radiotelevizija' and 'RTV Slovenija' to ca.conf
+
+Teemu Rantanen <tvr@iki.fi>
+ for increased the maximum possible packet size in remux.c to avoid corrupted streams
+ with broadcasters that send extremely large PES packets
