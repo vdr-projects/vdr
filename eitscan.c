@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: eitscan.c 1.1 2002/05/20 10:58:10 kls Exp $
+ * $Id: eitscan.c 1.2 2002/06/10 16:30:00 kls Exp $
  */
 
 #include "eitscan.h"
@@ -48,11 +48,11 @@ void cEITScanner::Process(void)
   if (Setup.EPGScanTimeout && Channels.MaxNumber() > 1) {
      time_t now = time(NULL);
      if (now - lastScan > ScanTimeout && now - lastActivity > ActivityTimeout) {
-        for (int i = 0; i < MAXDVBAPI; i++) {
-            cDvbApi *DvbApi = cDvbApi::GetDvbApi(i + 1, MAXPRIORITY + 1);
-            if (DvbApi) {
-               if (DvbApi != cDvbApi::PrimaryDvbApi || (cDvbApi::NumDvbApis == 1 && Setup.EPGScanTimeout && now - lastActivity > Setup.EPGScanTimeout * 3600)) {
-                  if (!(DvbApi->Recording() || DvbApi->Replaying() || DvbApi->Transferring())) {
+        for (int i = 0; i < MAXDEVICES; i++) {
+            cDevice *Device = cDevice::GetDevice(i + 1, MAXPRIORITY + 1);
+            if (Device) {
+               if (Device != cDevice::PrimaryDevice() || (cDevice::NumDevices() == 1 && Setup.EPGScanTimeout && now - lastActivity > Setup.EPGScanTimeout * 3600)) {
+                  if (!(Device->Receiving() || Device->Replaying()/*XXX+ || Device->Transferring()XXX*/)) {
                      int oldCh = lastChannel;
                      int ch = oldCh + 1;
                      while (ch != oldCh) {
@@ -62,12 +62,12 @@ void cEITScanner::Process(void)
                               }
                            cChannel *Channel = Channels.GetByNumber(ch);
                            if (Channel) {
-                              if (Channel->ca <= MAXDVBAPI && !DvbApi->ProvidesCa(Channel->ca))
+                              if (Channel->ca <= MAXDEVICES && !Device->ProvidesCa(Channel->ca))
                                  break; // the channel says it explicitly needs a different card
                               if (Channel->pnr && !TransponderScanned(Channel)) {
-                                 if (DvbApi == cDvbApi::PrimaryDvbApi && !currentChannel)
-                                    currentChannel = DvbApi->Channel();
-                                 Channel->Switch(DvbApi, false);
+                                 if (Device == cDevice::PrimaryDevice() && !currentChannel)
+                                    currentChannel = Device->Channel();
+                                 Channel->Switch(Device, false);
                                  lastChannel = ch;
                                  break;
                                  }

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 1.20 2002/05/13 16:32:09 kls Exp $
+ * $Id: thread.c 1.21 2002/06/10 16:30:00 kls Exp $
  */
 
 #include "thread.h"
@@ -147,6 +147,7 @@ bool cThread::Active(void)
 
 void cThread::Cancel(int WaitSeconds)
 {
+  running = false;
   if (WaitSeconds > 0) {
      for (time_t t0 = time(NULL) + WaitSeconds; time(NULL) < t0; ) {
          if (!Active())

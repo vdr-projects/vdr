@@ -4,16 +4,16 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.101 2002/05/13 16:28:12 kls Exp $
+ * $Id: config.c 1.102 2002/06/16 12:57:31 kls Exp $
  */
 
 #include "config.h"
 #include <ctype.h>
 #include <stdlib.h>
-#include "dvbapi.h"
 #include "i18n.h"
 #include "interface.h"
 #include "plugin.h"
+#include "recording.h"
 
 // IMPORTANT NOTE: in the 'sscanf()' calls there is a blank after the '%d'
 // format characters in order to allow any number of blanks after a numeric
@@ -293,15 +293,15 @@ bool cChannel::Save(FILE *f)
   return fprintf(f, ToText()) > 0;
 }
 
-bool cChannel::Switch(cDvbApi *DvbApi, bool Log)
+bool cChannel::Switch(cDevice *Device, bool Log)
 {
-  if (!DvbApi)
-     DvbApi = cDvbApi::PrimaryDvbApi;
-  if (!DvbApi->Recording() && !groupSep) {
+  if (!Device)
+     Device = cDevice::PrimaryDevice();
+  if (!(Device->IsPrimaryDevice() && Device->Receiving()) && !groupSep) {
      if (Log)
         isyslog("switching to channel %d", number);
      for (int i = 3; i--;) {
-         switch (DvbApi->SetChannel(number, frequency, polarization, diseqc, srate, vpid, apid1, apid2, dpid1, dpid2, tpid, ca, pnr)) {
+         switch (Device->SetChannel(number, frequency, polarization, diseqc, srate, vpid, apid1, tpid, ca, pnr)) {
            case scrOk:         return true;
            case scrNoTransfer: if (Interface)
                                   Interface->Error(tr("Can't start Transfer Mode!"));
@@ -312,7 +312,7 @@ bool cChannel::Switch(cDvbApi *DvbApi, bool Log)
          }
      return false;
      }
-  if (DvbApi->Recording())
+  if (Device->IsPrimaryDevice() && Device->Receiving())
      Interface->Error(tr("Channel locked (recording)!"));
   return false;
 }
@@ -326,7 +326,7 @@ cTimer::cTimer(bool Instant)
   startTime = stopTime = 0;
   recording = pending = false;
   active = Instant ? taActInst : taInactive;
-  cChannel *ch = Channels.GetByNumber(cDvbApi::CurrentChannel());
+  cChannel *ch = Channels.GetByNumber(cDevice::CurrentChannel());
   channel = ch ? ch->number : 0;
   time_t t = time(NULL);
   struct tm tm_r;
@@ -836,10 +836,10 @@ cChannel *cChannels::GetByServiceID(unsigned short ServiceId)
   return NULL;
 }
 
-bool cChannels::SwitchTo(int Number, cDvbApi *DvbApi)
+bool cChannels::SwitchTo(int Number, cDevice *Device)
 {
   cChannel *channel = GetByNumber(Number);
-  return channel && channel->Switch(DvbApi);
+  return channel && channel->Switch(Device);
 }
 
 const char *cChannels::GetChannelNameByNumber(int Number)
@@ -957,6 +957,7 @@ bool cSetupLine::operator< (const cListObject &ListObject)
 
 bool cSetupLine::Parse(char *s)
 {
+  //dsyslog("cSetupLine::Parse '%s'", s);//XXX-
   char *p = strchr(s, '=');
   if (p) {
      *p = 0;
@@ -974,6 +975,7 @@ bool cSetupLine::Parse(char *s)
            }
         name = strdup(Name);
         value = strdup(Value);
+        //dsyslog("cSetupLine::Parse '%s' = '%s'", name, value);//XXX-
         return true;
         }
      }
@@ -982,6 +984,7 @@ bool cSetupLine::Parse(char *s)
 
 bool cSetupLine::Save(FILE *f)
 {
+  //dsyslog("cSetupLine::Save '%s' = '%s'", name, value);//XXX-
   return fprintf(f, "%s%s%s = %s\n", plugin ? plugin : "", plugin ? "." : "", name, value) > 0;
 }
 
@@ -1095,7 +1098,7 @@ bool cSetup::Load(const char *FileName)
 
 void cSetup::StoreCaCaps(const char *Name)
 {
-  for (int d = 0; d < MAXDVBAPI; d++) {
+  for (int d = 0; d < MAXDEVICES; d++) {
       char buffer[MAXPARSEBUFFER];
       char *q = buffer;
       *buffer = 0;
@@ -1115,7 +1118,7 @@ bool cSetup::ParseCaCaps(const char *Value)
 {
   char *p;
   int d = strtol(Value, &p, 10);
-  if (d > 0 && d <= MAXDVBAPI) {
+  if (d > 0 && d <= MAXDEVICES) {
      d--;
      int i = 0;
      while (p != Value && p && *p) {

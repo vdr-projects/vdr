@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.c 1.50 2002/05/19 12:02:57 kls Exp $
+ * $Id: interface.c 1.51 2002/06/10 16:30:00 kls Exp $
  */
 
 #include "interface.h"
@@ -484,6 +484,6 @@ void cInterface::DisplayRecording(int Index, bool On)
 
 bool cInterface::Recording(void)
 {
-  // This is located here because the Interface has to do with the "PrimaryDvbApi" anyway
-  return cDvbApi::PrimaryDvbApi->Recording();
+  // This is located here because the Interface has to do with the "PrimaryDevice" anyway
+  return cDevice::PrimaryDevice()->Receiving();
 }

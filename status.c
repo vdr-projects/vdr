@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: status.c 1.1 2002/05/19 14:54:30 kls Exp $
+ * $Id: status.c 1.2 2002/06/16 12:10:44 kls Exp $
  */
 
 #include "status.h"
@@ -23,22 +23,22 @@ cStatusMonitor::~cStatusMonitor()
   statusMonitors.Del(this, false);
 }
 
-void cStatusMonitor::MsgChannelSwitch(const cDvbApi *DvbApi, int ChannelNumber)
+void cStatusMonitor::MsgChannelSwitch(const cDevice *Device, int ChannelNumber)
 {
   for (cStatusMonitor *sm = statusMonitors.First(); sm; sm = statusMonitors.Next(sm))
-      sm->ChannelSwitch(DvbApi, ChannelNumber);
+      sm->ChannelSwitch(Device, ChannelNumber);
 }
 
-void cStatusMonitor::MsgRecording(const cDvbApi *DvbApi, const char *Name)
+void cStatusMonitor::MsgRecording(const cDevice *Device, const char *Name)
 {
   for (cStatusMonitor *sm = statusMonitors.First(); sm; sm = statusMonitors.Next(sm))
-      sm->Recording(DvbApi, Name);
+      sm->Recording(Device, Name);
 }
 
-void cStatusMonitor::MsgReplaying(const cDvbApi *DvbApi, const char *Name)
+void cStatusMonitor::MsgReplaying(const cDvbPlayerControl *DvbPlayerControl, const char *Name)
 {
   for (cStatusMonitor *sm = statusMonitors.First(); sm; sm = statusMonitors.Next(sm))
-      sm->Replaying(DvbApi, Name);
+      sm->Replaying(DvbPlayerControl, Name);
 }
 
 void cStatusMonitor::MsgSetVolume(int Volume, bool Absolute)

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.117 2002/05/14 21:21:53 kls Exp $
+ * $Id: config.h 1.118 2002/06/10 16:30:00 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -15,7 +15,7 @@
 #include <string.h>
 #include <time.h>
 #include <unistd.h>
-#include "dvbapi.h"
+#include "device.h"
 #include "eit.h"
 #include "tools.h"
 
@@ -118,7 +118,7 @@ public:
   const char *ToText(void);
   bool Parse(const char *s);
   bool Save(FILE *f);
-  bool Switch(cDvbApi *DvbApi = NULL, bool Log = true);
+  bool Switch(cDevice *Device = NULL, bool Log = true);
   };
 
 enum eTimerActive { taInactive = 0,
@@ -294,7 +294,7 @@ public:
   cChannel *GetByNumber(int Number);
   cChannel *GetByServiceID(unsigned short ServiceId);
   const char *GetChannelNameByNumber(int Number);
-  bool SwitchTo(int Number, cDvbApi *DvbApi = NULL);
+  bool SwitchTo(int Number, cDevice *Device = NULL);
   int MaxNumber(void) { return maxNumber; }
   };
 
@@ -385,7 +385,7 @@ public:
   int MinEventTimeout, MinUserInactivity;
   int MultiSpeedMode;
   int ShowReplayMode;
-  int CaCaps[MAXDVBAPI][MAXCACAPS];
+  int CaCaps[MAXDEVICES][MAXCACAPS];
   int CurrentChannel;
   int CurrentVolume;
   int __EndData__;

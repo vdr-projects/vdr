@@ -1301,7 +1301,7 @@ Video Disk Recorder Revision History
 - Removed compiler option '-m486' to make it work on non-Intel platforms (thanks
   to Alastair McKinstry for pointing this out).
 
-2002-05-26: Version 1.1.3
+2002-06-16: Version 1.1.3
 
 - Improved the VDR Makefile to avoid a warning if the '.dependencies' file does
   not exist, and also using $(MAKE) to call recursive makes.
@@ -1328,3 +1328,22 @@ Video Disk Recorder Revision History
 - Removed compiler option '-m486' to make it work on non-Intel platforms. If you
   have already started a plugin project, you may want to make sure you remove this
   option from your existing Makefile.
+- Completely rearranged the recording and replay functions to make them available
+  to plugins.
+- Replay is now done in a single thread (no more syncing between input and output
+  thread necessary).
+- It is now possible to record several channels on the same transponder with "budget
+  cards". VDR automatically attaches a recording timer to a card that already
+  records on the appropriate transponder. How many parallel recordings can actually
+  be done depends on the computer's performance. Currently any number of recordings
+  gets attached to a card, so you should carefully plan your timers to not exceed
+  the limit. On a K6-II/450 it was possible to record three channels from transponder
+  12480 with a single WinTV NOVA-S.
+- Timers that record two successive shows on the same channel may now overlap and
+  will use the same DVB card. During the time where both timers record the data
+  is simply saved to both files.
+- The following limitations apply to this version:
+  + Transfer mode doesn't work yet.
+  + The '-a' option (for Dolby Digital audio) doesn't work yet.
+  + Switching between different language tracks doesn't work yet.
+  + Cutting doesn't work yet.

@@ -4,14 +4,15 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: status.h 1.1 2002/05/19 14:54:15 kls Exp $
+ * $Id: status.h 1.2 2002/06/16 12:09:55 kls Exp $
  */
 
 #ifndef __STATUS_H
 #define __STATUS_H
 
 #include "config.h"
-#include "dvbapi.h"
+#include "device.h"
+#include "dvbplayer.h"
 #include "tools.h"
 
 class cStatusMonitor : public cListObject {
@@ -19,15 +20,15 @@ private:
   static cList<cStatusMonitor> statusMonitors;
 protected:
   // These functions can be implemented by derived classes to receive status information:
-  virtual void ChannelSwitch(const cDvbApi *DvbApi, int ChannelNumber) {}
-               // Indicates a channel switch on DVB device DvbApi.
+  virtual void ChannelSwitch(const cDevice *Device, int ChannelNumber) {}
+               // Indicates a channel switch on the given DVB device.
                // If ChannelNumber is 0, this is before the channel is being switched,
                // otherwise ChannelNumber is the number of the channel that has been switched to.
-  virtual void Recording(const cDvbApi *DvbApi, const char *Name) {}
-               // DVB device DvbApi has started recording Name. Name is the full directory
+  virtual void Recording(const cDevice *Device, const char *Name) {}
+               // The given DVB device has started recording Name. Name is the full directory
                // name of the recording. If Name is NULL, the recording has ended. 
-  virtual void Replaying(const cDvbApi *DvbApi, const char *Name) {}
-               // DVB device DvbApi has started replaying Name. Name is the full directory
+  virtual void Replaying(const cDvbPlayerControl *DvbPlayerControl, const char *Name) {}
+               // The given player control has started replaying Name. Name is the full directory
                // name of the recording. If Name is NULL, the replay has ended. 
   virtual void SetVolume(int Volume, bool Absolute) {}
                // The volume has been set to the given value, either
@@ -57,9 +58,9 @@ public:
   cStatusMonitor(void);
   virtual ~cStatusMonitor();
   // These functions are called whenever the related status information changes:
-  static void MsgChannelSwitch(const cDvbApi *DvbApi, int ChannelNumber);
-  static void MsgRecording(const cDvbApi *DvbApi, const char *Name);
-  static void MsgReplaying(const cDvbApi *DvbApi, const char *Name);
+  static void MsgChannelSwitch(const cDevice *Device, int ChannelNumber);
+  static void MsgRecording(const cDevice *Device, const char *Name);
+  static void MsgReplaying(const cDvbPlayerControl *DvbPlayerControl, const char *Name);
   static void MsgSetVolume(int Volume, bool Absolute);
   static void MsgOsdClear(void);
   static void MsgOsdTitle(const char *Title);

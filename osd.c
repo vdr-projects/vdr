@@ -4,12 +4,12 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 1.27 2002/05/19 12:56:57 kls Exp $
+ * $Id: osd.c 1.28 2002/06/10 16:30:00 kls Exp $
  */
 
 #include "osd.h"
 #include <string.h>
-#include "dvbapi.h"
+#include "device.h"
 #include "i18n.h"
 #include "status.h"
 
@@ -95,7 +95,7 @@ void cOsd::Open(int w, int h)
   int x = (720 - w + charWidth) / 2; //TODO PAL vs. NTSC???
   int y = (576 - Setup.OSDheight * lineHeight) / 2 + d;
   //XXX
-  osd = new cDvbOsd(cDvbApi::PrimaryDvbApi->OsdDeviceHandle(), x, y);
+  osd = new cDvbOsd(cDevice::PrimaryDevice()->OsdDeviceHandle(), x, y);
   //XXX TODO this should be transferred to the places where the individual windows are requested (there's too much detailed knowledge here!)
   if (h / lineHeight == 5) { //XXX channel display
      osd->Create(0,              0, w, h, 4);

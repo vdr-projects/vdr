@@ -16,7 +16,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.c 1.45 2002/05/13 16:35:49 kls Exp $
+ * $Id: eit.c 1.46 2002/06/10 16:30:00 kls Exp $
  ***************************************************************************/
 
 #include "eit.h"
@@ -26,6 +26,7 @@
 #include <iomanip.h>
 #include <iostream.h>
 #include <limits.h>
+#include <ost/dmx.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
