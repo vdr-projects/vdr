@@ -22,6 +22,7 @@ Video Disk Recorder User's Manual
   Yellow  -           Eject DVD  Delete     Delete     -             Delete      Skip +60s
   Blue    -           Resume     Mark       Mark(1)    -             Summary     Stop
   0..9    Ch select   -          -          -          Numeric inp.  -           Editing
+  Power   Shutdown    -          -          -          -             -           -
 
   (1) The "Mark" button in the "Timers" menu only works if sorting the timers
       has been disabled in the "Setup" menu.
@@ -284,6 +285,18 @@ Video Disk Recorder User's Manual
              time, so it is possible to have a "repeating timer" store all its
              recordings under the same name; they will be distinguishable by
              their date and time).
+             If the file name contains the special character '~', the recording
+             will be stored in a hierarchical directory structure. For instance,
+             a file name of "Sci-Fi~Star Trek~Voyager" will result in a directory
+             structure "/video/Sci-Fi/Star_Trek/Voyager". The '~' character has
+             been chosen for this since the file system's directory delimiter '/'
+             may be part of a regular programme name.
+             Repeating timers create recordings that contain the 'Subtitle'
+             information from the EPG data in their file name. Typically (on tv
+             stations that care about their viewers) this contains the episode
+             title of a series. The subtitle is appended to the timer's file name,
+             separated by a '~' character, so that it results in all recordings
+             of this timer being collected in a common subdirectory.
              If this field is left blank, the channel name will be used to form
              the name of the recording.
 
@@ -401,6 +414,14 @@ Video Disk Recorder User's Manual
                          means that this recording will never be deleted
                          automatically.
 
+  UseSubtitle = 1        Repeating timers use the EPG's 'Subtitle' information to
+                         create recording file names in a hierarchical structure
+                         (for instance to gather all episodes of a series in a
+                         common subdirectory). This parameter can be used to
+                         control this.
+                         0 = don't use the 'Subtitle'
+                         1 = use it (and create subdirectories)
+
   VideoFormat = 0        The video format (or aspect ratio) of the tv set in use.
                          0 = 4:3
                          1 = 16:9
@@ -412,10 +433,23 @@ Video Disk Recorder User's Manual
   OSDwidth  = 52         The width and height of the OSD .
   OSDheight = 18         The valid ranges are width=40...56, height=12...21.
 
+  OSDMessageTime = 1     The time (in seconds) how long an informational
+                         message shall be displayed on the OSD. The valid range
+                         is 1...60.
+
   MaxVideoFileSize=2000  The maximum size of a single recorded video file in MB.
                          The valid range is 100...2000. Default is 2000, but
                          you may want to use smaller values if you are planning
                          on archiving a recording to CD.
+
+  MinEventTimeout=120    If the command line option '-s' has been set, VDR will
+  MinUserInactivity=120  automatically shutdown the computer if the next timer
+                         event is at least MinEventTimeout minutes in the future,
+                         and the user has been inactive for at least
+                         MinUserInactivity minutes. Setting MinUserInactivity
+                         to 0 disables the automatic shutdown, while still
+                         retaining the possibility to manually shutdown the
+                         computer.
 
 * Executing system commands
 

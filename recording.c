@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.33 2001/08/12 15:09:59 kls Exp $
+ * $Id: recording.c 1.36 2001/09/02 15:09:28 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -179,6 +179,7 @@ void cResumeFile::Delete(void)
 
 struct tCharExchange { char a; char b; };
 tCharExchange CharExchange[] = {
+  { '~',  '/'    },
   { ' ',  '_'    },
   { '\'', '\x01' },
   { '/',  '\x02' },
@@ -190,24 +191,45 @@ tCharExchange CharExchange[] = {
 
 char *ExchangeChars(char *s, bool ToFileSystem)
 {
-  for (struct tCharExchange *ce = CharExchange; ce->a && ce->b; ce++)
-      strreplace(s, ToFileSystem ? ce->a : ce->b, ToFileSystem ? ce->b : ce->a);
+  char *p = s;
+  while (*p) {
+        for (struct tCharExchange *ce = CharExchange; ce->a && ce->b; ce++) {
+            if (*p == (ToFileSystem ? ce->a : ce->b)) {
+               *p = ToFileSystem ? ce->b : ce->a;
+               break;
+               }
+            }
+        p++;
+        }
   return s;
 }
 
-cRecording::cRecording(cTimer *Timer)
+cRecording::cRecording(cTimer *Timer, const char *Subtitle, const char *Summary)
 {
   titleBuffer = NULL;
   fileName = NULL;
-  name = strdup(Timer->file);
+  if (Timer->IsSingleEvent() || !Setup.UseSubtitle)
+     name = strdup(Timer->file);
+  else {
+     if (isempty(Subtitle))
+        Subtitle = " ";
+     asprintf(&name, "%s~%s", Timer->file, Subtitle);
+     }
   // substitute characters that would cause problems in file names:
   strreplace(name, '\n', ' ');
-  summary = Timer->summary ? strdup(Timer->summary) : NULL;
-  if (summary)
-     strreplace(summary, '|', '\n');
   start = Timer->StartTime();
   priority = Timer->priority;
   lifetime = Timer->lifetime;
+  // handle summary:
+  summary = !isempty(Timer->summary) ? strdup(Timer->summary) : NULL;
+  if (!summary) {
+     if (isempty(Subtitle))
+        Subtitle = "";
+     if (isempty(Summary))
+        Summary = "";
+     if (*Subtitle || *Summary)
+        asprintf(&summary, "%s%s%s", Subtitle, (*Subtitle && *Summary) ? "\n\n" : "", Summary);
+     }
 }
 
 cRecording::cRecording(const char *FileName)
@@ -309,6 +331,17 @@ const char *cRecording::Title(char Delimiter, bool NewIndicator)
                          Delimiter,
                          name);
   return titleBuffer;
+}
+
+const char *cRecording::PrefixFileName(char Prefix)
+{
+  const char *p = PrefixVideoFileName(FileName(), Prefix);
+  if (p) {
+     delete fileName;
+     fileName = strdup(p);
+     return fileName;
+     }
+  return NULL;
 }
 
 bool cRecording::WriteSummary(void)

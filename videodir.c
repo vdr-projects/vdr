@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: videodir.c 1.5 2001/05/01 09:48:57 kls Exp $
+ * $Id: videodir.c 1.6 2001/09/02 14:55:15 kls Exp $
  */
 
 #include "videodir.h"
@@ -188,13 +188,21 @@ const char *PrefixVideoFileName(const char *FileName, char Prefix)
   if (!PrefixedName || strlen(PrefixedName) <= strlen(FileName))
      PrefixedName = (char *)realloc(PrefixedName, strlen(FileName) + 2);
   if (PrefixedName) {
-     strcpy(PrefixedName, VideoDirectory);
-     char *p = PrefixedName + strlen(PrefixedName);
-     *p++ = '/';
-     *p++ = Prefix;
-     strcpy(p, FileName + strlen(VideoDirectory) + 1);
+     const char *p = FileName + strlen(FileName); // p points at the terminating 0
+     int n = 2;
+     while (p-- > FileName && n > 0) {
+           if (*p == '/') {
+              if (--n == 0) {
+                 int l = p - FileName + 1;
+                 strncpy(PrefixedName, FileName, l);
+                 PrefixedName[l] = Prefix;
+                 strcpy(PrefixedName + l + 1, p + 1);
+                 return PrefixedName;
+                 }
+              }
+           }
      }
-  return PrefixedName;
+  return NULL;
 }
 
 void RemoveEmptyVideoDirectories(void)

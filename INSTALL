@@ -98,6 +98,57 @@ call to the VDR program, be sure to NOT use the '-d' option! Otherwise
 VDR will go into 'deamon' mode and the initial program call will return
 immediately!
 
+Automatic shutdown:
+-------------------
+
+If you define a shutdown command via the '-s' command line option, VDR
+will call the given command if there is currently no recording or replay
+active, the user has been inactive for at least MinUserInactivity minutes
+and the next timer event is at least MinEventTimeout minutes in the future
+(see the Setup parameters in MANUAL).
+
+The command given in the '-s' option will be called with two parameters.
+The first one is the time (in UTC) of the next timer event (as a time_t
+type number), and the second one is the number of seconds from the current
+time until the next timer event. Your program can choose which one to use
+for programming some sort of hardware device that makes sure the computer
+will be restarted in time before the next timer event. Your program must
+also initiate the actual shutdown procedure of the computer. After this
+your program should return to VDR. VDR will not automatically exit after
+calling the shutdown program, but will rather continue normally untit it
+receives a SIGTERM when the computer is actually shut down. So in case
+the shutdown fails, or the shutdown program for some reason decides not to
+perform a shutdown, VDR will stay up and running.
+
+If there are currently no timers active, both parameters will be '0'.
+In that case the program shall not set the hardware for automatic restart
+and only perform the system shutdown. A program that uses the second parameter
+to set the hardware for restart must therefore also check whether the first
+parameter is '0'.
+
+Before the shutdown program is called, the user will be prompted to inform
+him that the system is about to shut down. If any remote control key is
+pressed while this prompt is visible, the shutdown will be cancelled (and
+tried again after another MinUserInactivity minutes). The shutdown prompt
+will be displayed for 5 minutes, which should be enough time for the user
+to react.
+
+A sample shell script to be used with the '-s' option might look like this:
+
+#!/bin/sh
+setRTCwakeup $(($1 - 300))
+sudo halt
+
+Here 'setRTCwakeup' would be some program that uses the first parameter
+(which is the absolute time of the next timer event) to set the Real Time
+Clock so that it wakes up the computer 5 minutes (i.e. 300 seconds) before
+that event. The 'sudo halt' command then shuts down the computer.
+You will have to substitute both commands with whatever applies to your
+particular hard- and software environment.
+
+If the '-s' option is present, the VDR machine can be turned off by pressing
+the "Power" key on the remote control.
+
 Command line options:
 ---------------------
 
@@ -239,6 +290,7 @@ The default PC key assignments are:
   Back                      'End' in numeric block
   Red, Green, Yellow, Blue  'F1'..'F4'
   0..9                      '0'..'9' in top row
+  Power                     'P'
 
 If you prefer different key assignments, or if the default doesn't work for
 your keyboard, simply delete the file 'keys-pc.conf' and restart 'vdr' to get

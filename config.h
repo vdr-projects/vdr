@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.66 2001/08/26 14:46:53 kls Exp $
+ * $Id: config.h 1.72 2001/09/02 15:45:17 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -19,7 +19,7 @@
 #include "eit.h"
 #include "tools.h"
 
-#define VDRVERSION "0.93"
+#define VDRVERSION "0.94"
 
 #define MaxBuffer 10000
 
@@ -44,6 +44,7 @@ enum eKeys { // "Up" and "Down" must be the first two keys!
              kYellow,
              kBlue,
              k0, k1, k2, k3, k4, k5, k6, k7, k8, k9,
+             kPower,
              kNone,
              // The following flags are OR'd with the above codes:
              k_Repeat  = 0x8000,
@@ -255,7 +256,7 @@ public:
 class cTimers : public cConfig<cTimer> {
 public:
   cTimer *GetTimer(cTimer *Timer);
-  cTimer *GetMatch(void);
+  cTimer *GetMatch(time_t t);
   cTimer *GetNextActiveTimer(void);
   };
 
@@ -291,10 +292,13 @@ public:
   int SortTimers;
   int PrimaryLimit;
   int DefaultPriority, DefaultLifetime;
+  int UseSubtitle;
   int VideoFormat;
   int ChannelInfoPos;
   int OSDwidth, OSDheight;
+  int OSDMessageTime;
   int MaxVideoFileSize;
+  int MinEventTimeout, MinUserInactivity;
   int CurrentChannel;
   cSetup(void);
   bool Load(const char *FileName);

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.c 1.41 2001/08/25 13:15:00 kls Exp $
+ * $Id: interface.c 1.44 2001/09/01 15:18:46 kls Exp $
  */
 
 #include "interface.h"
@@ -20,6 +20,7 @@ cInterface::cInterface(int SVDRPport)
   cols[0] = 0;
   width = height = 0;
   keyFromWait = kNone;
+  interrupted = false;
   rcIo = NULL;
   SVDRP = NULL;
 #if defined(REMOTE_RCU)
@@ -105,16 +106,19 @@ void cInterface::PutKey(eKeys Key)
 
 eKeys cInterface::Wait(int Seconds, bool KeepChar)
 {
+  if (Seconds == 0)
+     Seconds = Setup.OSDMessageTime;
   Flush();
   eKeys Key = kNone;
   time_t timeout = time(NULL) + Seconds;
   for (;;) {
       Key = GetKey();
-      if ((Key != kNone && (RAWKEY(Key) != kOk || RAWKEY(Key) == Key)) || time(NULL) > timeout)
+      if ((Key != kNone && (RAWKEY(Key) != kOk || RAWKEY(Key) == Key)) || time(NULL) > timeout || interrupted)
          break;
       }
   if (KeepChar && ISRAWKEY(Key))
      keyFromWait = Key;
+  interrupted = false;
   return Key;
 }
 
@@ -312,12 +316,13 @@ void cInterface::Error(const char *s)
   Close();
 }
 
-bool cInterface::Confirm(const char *s)
+bool cInterface::Confirm(const char *s, int Seconds, bool WaitForTimeout)
 {
   Open();
   isyslog(LOG_INFO, "confirm: %s", s);
   Status(s, clrBlack, clrYellow);
-  bool result = Wait(10) == kOk;
+  eKeys k = Wait(Seconds);
+  bool result = WaitForTimeout ? k == kNone : k == kOk;
   Status(NULL);
   Close();
   isyslog(LOG_INFO, "%sconfirmed", result ? "" : "not ");
@@ -353,7 +358,7 @@ void cInterface::QueryKeys(void)
   WriteText(1, 5, tr("Press any key on the RC unit"));
   Flush();
 #ifndef REMOTE_KBD
-  unsigned char Code = 0;
+  unsigned char Code = '0';
   unsigned short Address;
 #endif
   for (;;) {

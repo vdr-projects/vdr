@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.59 2001/08/26 14:46:43 kls Exp $
+ * $Id: config.c 1.64 2001/09/02 15:04:13 kls Exp $
  */
 
 #include "config.h"
@@ -38,6 +38,7 @@ tKey keyTable[] = { // "Up" and "Down" must be the first two keys!
                     { k7,             "7",             0 },
                     { k8,             "8",             0 },
                     { k9,             "9",             0 },
+                    { kPower,         "Power",         0 },
                     { kNone,          "",              0 },
                   };
 
@@ -364,21 +365,6 @@ cTimer::cTimer(const cEventInfo *EventInfo)
   if (!isempty(Title))
      strn0cpy(file, EventInfo->GetTitle(), sizeof(file));
   summary = NULL;
-  const char *Subtitle = EventInfo->GetSubtitle();
-  if (isempty(Subtitle))
-     Subtitle = "";
-  const char *Summary = EventInfo->GetExtendedDescription();
-  if (isempty(Summary))
-     Summary = "";
-  if (*Subtitle || *Summary) {
-     asprintf(&summary, "%s%s%s", Subtitle, (*Subtitle && *Summary) ? "\n\n" : "", Summary);
-     char *p = summary;
-     while (*p) {
-           if (*p == '\n')
-              *p = '|';
-           p++;
-           }
-     }
 }
 
 cTimer::~cTimer()
@@ -570,7 +556,7 @@ bool cTimer::Matches(time_t t)
             }
          }
       }
-  return active && startTime <= t && t <= stopTime;
+  return active && startTime <= t && t < stopTime; // must stop *before* stopTime to allow adjacent timers
 }
 
 time_t cTimer::StartTime(void)
@@ -761,9 +747,8 @@ cTimer *cTimers::GetTimer(cTimer *Timer)
   return NULL;
 }
 
-cTimer *cTimers::GetMatch(void)
+cTimer *cTimers::GetMatch(time_t t)
 {
-  time_t t = time(NULL); // all timers must be checked against the exact same time to correctly handle Priority!
   cTimer *t0 = NULL;
   cTimer *ti = First();
   while (ti) {
@@ -815,11 +800,15 @@ cSetup::cSetup(void)
   PrimaryLimit = 0;
   DefaultPriority = 50;
   DefaultLifetime = 50;
+  UseSubtitle = 1;
   VideoFormat = VIDEO_FORMAT_4_3;
   ChannelInfoPos = 0;
   OSDwidth = 52;
   OSDheight = 18;
+  OSDMessageTime = 1;
   MaxVideoFileSize = MAXVIDEOFILESIZE;
+  MinEventTimeout = 120;
+  MinUserInactivity = 120;
   CurrentChannel = -1;
 }
 
@@ -848,11 +837,15 @@ bool cSetup::Parse(char *s)
      else if (!strcasecmp(Name, "PrimaryLimit"))        PrimaryLimit       = atoi(Value);
      else if (!strcasecmp(Name, "DefaultPriority"))     DefaultPriority    = atoi(Value);
      else if (!strcasecmp(Name, "DefaultLifetime"))     DefaultLifetime    = atoi(Value);
+     else if (!strcasecmp(Name, "UseSubtitle"))         UseSubtitle        = atoi(Value);
      else if (!strcasecmp(Name, "VideoFormat"))         VideoFormat        = atoi(Value);
      else if (!strcasecmp(Name, "ChannelInfoPos"))      ChannelInfoPos     = atoi(Value);
      else if (!strcasecmp(Name, "OSDwidth"))            OSDwidth           = atoi(Value);
      else if (!strcasecmp(Name, "OSDheight"))           OSDheight          = atoi(Value);
+     else if (!strcasecmp(Name, "OSDMessageTime"))      OSDMessageTime     = atoi(Value);
      else if (!strcasecmp(Name, "MaxVideoFileSize"))    MaxVideoFileSize   = atoi(Value);
+     else if (!strcasecmp(Name, "MinEventTimeout"))     MinEventTimeout    = atoi(Value);
+     else if (!strcasecmp(Name, "MinUserInactivity"))   MinUserInactivity  = atoi(Value);
      else if (!strcasecmp(Name, "CurrentChannel"))      CurrentChannel     = atoi(Value);
      else
         return false;
@@ -916,11 +909,15 @@ bool cSetup::Save(const char *FileName)
         fprintf(f, "PrimaryLimit       = %d\n", PrimaryLimit);
         fprintf(f, "DefaultPriority    = %d\n", DefaultPriority);
         fprintf(f, "DefaultLifetime    = %d\n", DefaultLifetime);
+        fprintf(f, "UseSubtitle        = %d\n", UseSubtitle);
         fprintf(f, "VideoFormat        = %d\n", VideoFormat);
         fprintf(f, "ChannelInfoPos     = %d\n", ChannelInfoPos);
         fprintf(f, "OSDwidth           = %d\n", OSDwidth);
         fprintf(f, "OSDheight          = %d\n", OSDheight);
+        fprintf(f, "OSDMessageTime     = %d\n", OSDMessageTime);
         fprintf(f, "MaxVideoFileSize   = %d\n", MaxVideoFileSize);
+        fprintf(f, "MinEventTimeout    = %d\n", MinEventTimeout);
+        fprintf(f, "MinUserInactivity  = %d\n", MinUserInactivity);
         fprintf(f, "CurrentChannel     = %d\n", CurrentChannel);
         f.Close();
         isyslog(LOG_INFO, "saved setup to %s", FileName);

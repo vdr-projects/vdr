@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.109 2001/08/26 14:03:27 kls Exp $
+ * $Id: menu.c 1.115 2001/09/02 15:27:54 kls Exp $
  */
 
 #include "menu.h"
@@ -19,7 +19,7 @@
 #define MENUTIMEOUT 120 // seconds
 #define MAXWAIT4EPGINFO 10 // seconds
 
-const char *FileNameChars = " aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ0123456789-.#^";
+const char *FileNameChars = " aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ0123456789-.#~^";
 
 // --- cMenuEditItem ---------------------------------------------------------
 
@@ -494,6 +494,7 @@ eOSState cMenuEditStrItem::ProcessKey(eKeys Key)
                     if (value[pos] == '^')
                        value[pos] = 0;
                     pos = -1;
+                    stripspace(value);
                     break;
                     }
                  // run into default
@@ -1159,17 +1160,6 @@ cMenuEvent::cMenuEvent(const cEventInfo *EventInfo, bool CanSwitch)
         const char *Title = eventInfo->GetTitle();
         const char *Subtitle = eventInfo->GetSubtitle();
         const char *ExtendedDescription = eventInfo->GetExtendedDescription();
-        // Some channels send a 'Subtitle' that should actually be the 'ExtendedDescription'
-        // (their 'ExtendedDescription' is then empty). In order to handle this correctly
-        // we silently shift that text to where it belongs.
-        // The German TV station 'VOX' is notorious for this - why can't they do it correctly
-        // like all the others? Well, at least like those who actually send the full range
-        // of information (like, e.g., 'Sat.1'). Some stations (like 'RTL') don't even
-        // bother sending anything but the 'Title'...
-        if (isempty(ExtendedDescription) && !isempty(Subtitle) && int(strlen(Subtitle)) > 2 * Setup.OSDwidth) {
-           ExtendedDescription = Subtitle;
-           Subtitle = NULL;
-           }
         if (!isempty(Title)) {
            Add(item = new cMenuTextItem(Title, 1, Line, Setup.OSDwidth - 2, -1, clrCyan));
            Line += item->Height() + 1;
@@ -1726,11 +1716,15 @@ void cMenuSetup::Set(void)
   Add(new cMenuEditIntItem( tr("PrimaryLimit"),       &data.PrimaryLimit, 0, MAXPRIORITY));
   Add(new cMenuEditIntItem( tr("DefaultPriority"),    &data.DefaultPriority, 0, MAXPRIORITY));
   Add(new cMenuEditIntItem( tr("DefaultLifetime"),    &data.DefaultLifetime, 0, MAXLIFETIME));
+  Add(new cMenuEditBoolItem(tr("UseSubtitle"),        &data.UseSubtitle));
   Add(new cMenuEditBoolItem(tr("VideoFormat"),        &data.VideoFormat, "4:3", "16:9"));
   Add(new cMenuEditBoolItem(tr("ChannelInfoPos"),     &data.ChannelInfoPos, tr("bottom"), tr("top")));
   Add(new cMenuEditIntItem( tr("OSDwidth"),           &data.OSDwidth, MINOSDWIDTH, MAXOSDWIDTH));
   Add(new cMenuEditIntItem( tr("OSDheight"),          &data.OSDheight, MINOSDHEIGHT, MAXOSDHEIGHT));
+  Add(new cMenuEditIntItem( tr("OSDMessageTime"),     &data.OSDMessageTime, 1, 60));
   Add(new cMenuEditIntItem( tr("MaxVideoFileSize"),   &data.MaxVideoFileSize, MINVIDEOFILESIZE, MAXVIDEOFILESIZE));
+  Add(new cMenuEditIntItem( tr("MinEventTimeout"),    &data.MinEventTimeout));
+  Add(new cMenuEditIntItem( tr("MinUserInactivity"),  &data.MinUserInactivity));
 }
 
 eOSState cMenuSetup::ProcessKey(eKeys Key)
@@ -2096,12 +2090,14 @@ cRecordControl::cRecordControl(cDvbApi *DvbApi, cTimer *Timer)
   timer->SetPending(true);
   timer->SetRecording(true);
   if (Channels.SwitchTo(timer->channel, dvbApi)) {
+     const char *Subtitle = NULL;
+     const char *Summary = NULL;
      if (GetEventInfo()) {
-        //XXX this is in preparation for storing recordings in subdirectories and giving them the name of the Subtitle
-        dsyslog(LOG_INFO, "Title: '%s' Subtitle: '%s'", eventInfo->GetTitle(), eventInfo->GetSubtitle());//XXX
-        //XXX modify timer's name and summary, mark it as modified (revert later when stopping)
+        dsyslog(LOG_INFO, "Title: '%s' Subtitle: '%s'", eventInfo->GetTitle(), eventInfo->GetSubtitle());
+        Subtitle = eventInfo->GetSubtitle();
+        Summary = eventInfo->GetExtendedDescription();
         }
-     cRecording Recording(timer);
+     cRecording Recording(timer, Subtitle, Summary);
      if (dvbApi->StartRecord(Recording.FileName(), Channels.GetByNumber(timer->channel)->ca, timer->priority))
         Recording.WriteSummary();
      Interface->DisplayRecording(dvbApi->CardIndex(), true);
@@ -2161,9 +2157,9 @@ void cRecordControl::Stop(bool KeepInstant)
      }
 }
 
-bool cRecordControl::Process(void)
+bool cRecordControl::Process(time_t t)
 {
-  if (!timer || !timer->Matches())
+  if (!timer || !timer->Matches(t))
      return false;
   AssertFreeDiskSpace(timer->priority);
   return true;
@@ -2233,11 +2229,11 @@ const char *cRecordControls::GetInstantId(const char *LastInstantId)
   return NULL;
 }
 
-void cRecordControls::Process(void)
+void cRecordControls::Process(time_t t)
 {
   for (int i = 0; i < MAXDVBAPI; i++) {
       if (RecordControls[i]) {
-         if (!RecordControls[i]->Process())
+         if (!RecordControls[i]->Process(t))
             DELETENULL(RecordControls[i]);
          }
       }

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.35 2001/08/26 13:45:10 kls Exp $
+ * $Id: i18n.c 1.39 2001/09/02 15:17:33 kls Exp $
  *
  * Slovenian translations provided by Miha Setina <mihasetina@softhome.net>
  * Italian   translations provided by Alberto Carraro <bertocar@tin.it>
@@ -385,6 +385,24 @@ const tPhrase Phrases[] = {
     "Annuler les modifications?",
     "Avbryte redigering",
   },
+  { "Recording - shut down anyway?",
+    "Aufnahme läuft - trotzdem ausschalten?",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+  },
+  { "Press any key to cancel shutdown",
+    "Taste drücken um Shutdown abzubrechen",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+  },
   // Channel parameters:
   { "Name",
     "Name",
@@ -658,6 +676,15 @@ const tPhrase Phrases[] = {
     "Montage déjà en cours!",
     "Redigeringsprosessen er allerede aktiv!",
   },
+  { "Can't shutdown - option '-s' not given!",
+    "Shutdown unmöglich - Option '-s' fehlt!",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+  },
   // Setup parameters:
   { "OSD-Language",
     "OSD-Sprache",
@@ -830,6 +857,15 @@ const tPhrase Phrases[] = {
     "Durée de vie par défaut",
     "Normal levetid (Timer)",
   },
+  { "UseSubtitle",
+    "Subtitle verwenden",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+  },
   { "VideoFormat",
     "Video Format",
     "", // TODO
@@ -866,8 +902,35 @@ const tPhrase Phrases[] = {
     "Hauteur affichage",
     "", // TODO
   },
+  { "OSDMessageTime",
+    "OSD Nachricht Dauer",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+  },
   { "MaxVideoFileSize",
     "Max. Video Dateigröße",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+  },
+  { "MinEventTimeout",
+    "Mindest Event Pause",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+  },
+  { "MinUserInactivity",
+    "Mindest User Inaktivität",
     "", // TODO
     "", // TODO
     "", // TODO
@@ -1111,6 +1174,15 @@ const tPhrase Phrases[] = {
     "Azul",
     "Bleu",
     "Blå",
+  },
+  { "Power",
+    "Ausschalten",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
   },
   // Miscellaneous:
   { "yes",

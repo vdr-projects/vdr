@@ -22,9 +22,10 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.64 2001/08/26 15:02:00 kls Exp $
+ * $Id: vdr.c 1.68 2001/09/01 14:50:40 kls Exp $
  */
 
+#define _GNU_SOURCE
 #include <getopt.h>
 #include <signal.h>
 #include <stdlib.h>
@@ -48,13 +49,16 @@
 #endif
 
 #define ACTIVITYTIMEOUT 60 // seconds before starting housekeeping
+#define SHUTDOWNWAIT   300 // seconds to wait in user prompt before automatic shutdown
 
 static int Interrupted = 0;
 
 static void SignalHandler(int signum)
 {
-  if (signum != SIGPIPE)
+  if (signum != SIGPIPE) {
      Interrupted = signum;
+     Interface->Interrupt();
+     }
   signal(signum, SignalHandler);
 }
 
@@ -77,7 +81,8 @@ int main(int argc, char *argv[])
   const char *ConfigDirectory = NULL;
   bool DaemonMode = false;
   int WatchdogTimeout = DEFAULTWATCHDOG;
-  char *Terminal = NULL;
+  const char *Terminal = NULL;
+  const char *Shutdown = NULL;
 
   static struct option long_options[] = {
       { "audio",    required_argument, NULL, 'a' },
@@ -88,16 +93,17 @@ int main(int argc, char *argv[])
       { "help",     no_argument,       NULL, 'h' },
       { "log",      required_argument, NULL, 'l' },
       { "port",     required_argument, NULL, 'p' },
+      { "shutdown", required_argument, NULL, 's' },
+      { "terminal", required_argument, NULL, 't' },
       { "video",    required_argument, NULL, 'v' },
       { "dvd",      required_argument, NULL, 'V' },
       { "watchdog", required_argument, NULL, 'w' },
-      { "terminal", required_argument, NULL, 't' },
       { NULL }
     };
 
   int c;
   int option_index = 0;
-  while ((c = getopt_long(argc, argv, "a:c:dD:E:hl:p:t:v:V:w:", long_options, &option_index)) != -1) {
+  while ((c = getopt_long(argc, argv, "a:c:dD:E:hl:p:s:t:v:V:w:", long_options, &option_index)) != -1) {
         switch (c) {
           case 'a': cDvbApi::SetAudioCommand(optarg);
                     break;
@@ -134,6 +140,7 @@ int main(int argc, char *argv[])
                            "                           2 = errors and info, 3 = errors, info and debug\n"
                            "  -p PORT,  --port=PORT    use PORT for SVDRP (default: %d)\n"
                            "                           0 turns off SVDRP\n"
+                           "  -s CMD,   --shutdown=CMD call CMD to shutdown the computer\n"
                            "  -t TTY,   --terminal=TTY controlling tty\n"
                            "  -v DIR,   --video=DIR    use DIR as video directory (default: %s)\n"
                            "  -V DEV,   --dvd=DEV      use DEV as the DVD device (default: %s)\n"
@@ -169,6 +176,8 @@ int main(int argc, char *argv[])
                        fprintf(stderr, "vdr: invalid port number: %s\n", optarg);
                        return 2;
                        }
+                    break;
+          case 's': Shutdown = optarg;
                     break;
           case 't': Terminal = optarg;
                     break;
@@ -292,8 +301,9 @@ int main(int argc, char *argv[])
   cReplayControl *ReplayControl = NULL;
   int LastChannel = -1;
   int PreviousChannel = cDvbApi::CurrentChannel();
-  time_t LastActivity = time(NULL);
+  time_t LastActivity = 0;
   int MaxLatencyTime = 0;
+  bool ForceShutdown = false;
 
   if (WatchdogTimeout > 0) {
      dsyslog(LOG_INFO, "setting watchdog timer to %d seconds", WatchdogTimeout);
@@ -323,18 +333,21 @@ int main(int argc, char *argv[])
            }
         // Timers and Recordings:
         if (!Menu) {
-           cTimer *Timer = Timers.GetMatch();
+           time_t Now = time(NULL); // must do both following calls with the exact same time!
+           cRecordControls::Process(Now);
+           cTimer *Timer = Timers.GetMatch(Now);
            if (Timer) {
               if (!cRecordControls::Start(Timer))
                  Timer->SetPending(true);
               }
-           cRecordControls::Process();
            }
         // User Input:
         cOsdBase **Interact = Menu ? &Menu : (cOsdBase **)&ReplayControl;
         eKeys key = Interface->GetKey(!*Interact || !(*Interact)->NeedsFastResponse());
-        if (NORMALKEY(key) != kNone)
+        if (NORMALKEY(key) != kNone) {
            EITScanner.Activity();
+           LastActivity = time(NULL);
+           }
         if (*Interact) {
            switch ((*Interact)->ProcessKey(key)) {
              case osMenu:   DELETENULL(Menu);
@@ -383,39 +396,50 @@ int main(int argc, char *argv[])
                   break;
              // Direct Channel Select:
              case k1 ... k9:
-                  if (!Interface->Recording())
-                     Menu = new cDisplayChannel(key);
+                  Menu = new cDisplayChannel(key);
                   break;
              // Left/Right rotates trough channel groups:
              case kLeft|k_Repeat:
              case kLeft:
              case kRight|k_Repeat:
-             case kRight: if (!Interface->Recording()) {
-                             int SaveGroup = CurrentGroup;
-                             if (NORMALKEY(key) == kRight)
-                                CurrentGroup = Channels.GetNextGroup(CurrentGroup) ;
-                             else
-                                CurrentGroup = Channels.GetPrevGroup(CurrentGroup < 1 ? 1 : CurrentGroup);
-                             if (CurrentGroup < 0)
-                                CurrentGroup = SaveGroup;
-                             Menu = new cDisplayChannel(CurrentGroup, false, true);
-                             }
-                          break;
+             case kRight: {
+                  int SaveGroup = CurrentGroup;
+                  if (NORMALKEY(key) == kRight)
+                     CurrentGroup = Channels.GetNextGroup(CurrentGroup) ;
+                  else
+                     CurrentGroup = Channels.GetPrevGroup(CurrentGroup < 1 ? 1 : CurrentGroup);
+                  if (CurrentGroup < 0)
+                     CurrentGroup = SaveGroup;
+                  Menu = new cDisplayChannel(CurrentGroup, false, true);
+                  break;
+                  }
              // Up/Down Channel Select:
              case kUp|k_Repeat:
              case kUp:
              case kDown|k_Repeat:
-             case kDown: if (!Interface->Recording()) {
-                            int n = cDvbApi::CurrentChannel() + (NORMALKEY(key) == kUp ? 1 : -1);
-                            cChannel *channel = Channels.GetByNumber(n);
-                            if (channel)
-                               channel->Switch();
-                            }
-                         break;
+             case kDown: {
+                  int n = cDvbApi::CurrentChannel() + (NORMALKEY(key) == kUp ? 1 : -1);
+                  cChannel *channel = Channels.GetByNumber(n);
+                  if (channel)
+                     channel->Switch();
+                  break;
+                  }
              // Menu Control:
              case kMenu: Menu = new cMenuMain(ReplayControl); break;
              // Viewing Control:
              case kOk:   LastChannel = -1; break; // forces channel display
+             // Power off:
+             case kPower: isyslog(LOG_INFO, "Power button pressed");
+                          if (!Shutdown) {
+                             Interface->Error(tr("Can't shutdown - option '-s' not given!"));
+                             break;
+                             }
+                          if (cRecordControls::Active()) {
+                             if (Interface->Confirm(tr("Recording - shut down anyway?")))
+                                ForceShutdown = true;
+                             }
+                          LastActivity = 1; // not 0, see below!
+                          break;
              default:    break;
              }
            }
@@ -423,14 +447,46 @@ int main(int argc, char *argv[])
            EITScanner.Process();
            cVideoCutter::Active();
            }
-        if (!*Interact && !cRecordControls::Active()) {
-           if (time(NULL) - LastActivity > ACTIVITYTIMEOUT) {
+        if (!*Interact && (!cRecordControls::Active() || ForceShutdown)) {
+           time_t Now = time(NULL);
+           if (Now - LastActivity > ACTIVITYTIMEOUT) {
+              // Shutdown:
+              if (Shutdown && (Setup.MinUserInactivity && Now - LastActivity > Setup.MinUserInactivity * 60 || ForceShutdown)) {
+                 ForceShutdown = false;
+                 cTimer *timer = Timers.GetNextActiveTimer();
+                 time_t Next  = timer ? timer->StartTime() : 0;
+                 time_t Delta = timer ? Next - Now : 0;
+                 if (timer)
+                    dsyslog(LOG_INFO, "next timer event at %s", ctime(&Next));
+                 if (!Next || Delta > Setup.MinEventTimeout * 60) {
+                    if (!LastActivity) {
+                       // Apparently the user started VDR manually
+                       dsyslog(LOG_INFO, "assuming manual start of VDR");
+                       LastActivity = Now;
+                       continue; // skip the rest of the housekeeping for now
+                       }
+                    if (WatchdogTimeout > 0)
+                       signal(SIGALRM, SIG_IGN);
+                    if (Interface->Confirm(tr("Press any key to cancel shutdown"), LastActivity == 1 ? 5 : SHUTDOWNWAIT, true)) {
+                       char *cmd;
+                       asprintf(&cmd, "%s %ld %ld", Shutdown, Next, Delta);
+                       isyslog(LOG_INFO, "executing '%s'", cmd);
+                       system(cmd);
+                       delete cmd;
+                       }
+                    else if (WatchdogTimeout > 0) {
+                       alarm(WatchdogTimeout);
+                       if (signal(SIGALRM, Watchdog) == SIG_IGN)
+                          signal(SIGALRM, SIG_IGN);
+                       }
+                    LastActivity = Now; // don't try again too soon
+                    continue; // skip the rest of the housekeeping for now
+                    }
+                 }
+              // Disk housekeeping:
               RemoveDeletedRecordings();
-              LastActivity = time(NULL);
               }
            }
-        else
-           LastActivity = time(NULL);
         }
   if (Interrupted)
      isyslog(LOG_INFO, "caught signal %d", Interrupted);

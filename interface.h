@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.h 1.22 2001/07/27 11:38:01 kls Exp $
+ * $Id: interface.h 1.24 2001/09/01 15:14:50 kls Exp $
  */
 
 #ifndef __INTERFACE_H
@@ -23,17 +23,19 @@ private:
   int open;
   int cols[MaxCols];
   eKeys keyFromWait;
+  bool interrupted;
   cSVDRP *SVDRP;
   cRcIoBase *rcIo;
   unsigned int GetCh(bool Wait = true, bool *Repeat = NULL, bool *Release = NULL);
   void QueryKeys(void);
   void HelpButton(int Index, const char *Text, eDvbColor FgColor, eDvbColor BgColor);
-  eKeys Wait(int Seconds = 1, bool KeepChar = false);
+  eKeys Wait(int Seconds = 0, bool KeepChar = false);
 public:
   cInterface(int SVDRPport = 0);
   ~cInterface();
   void Open(int NumCols = 0, int NumLines = 0);
   void Close(void);
+  void Interrupt(void) { interrupted = true; }
   int Width(void) { return width; }
   int Height(void) { return height; }
   eKeys GetKey(bool Wait = true);
@@ -52,7 +54,7 @@ public:
   void Status(const char *s, eDvbColor FgColor = clrBlack, eDvbColor BgColor = clrCyan);
   void Info(const char *s);
   void Error(const char *s);
-  bool Confirm(const char *s);
+  bool Confirm(const char *s, int Seconds = 10, bool WaitForTimeout = false);
   void Help(const char *Red, const char *Green = NULL, const char *Yellow = NULL, const char *Blue = NULL);
   void LearnKeys(void);
   void DisplayChannelNumber(int Number);
