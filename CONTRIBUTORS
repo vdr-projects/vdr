@@ -55,6 +55,7 @@ Alberto Carraro <bertocar@tin.it>
 
 Deti Fliegl <deti@fliegl.de>
  for implementing the 'CurrentChannel' setup parameter
+ for fixing setting the OSD size in the 'Confirm' interface call
 
 Dave Chapman <dave@dchapman.com>
  for implementing support for the teletext PID

@@ -866,7 +866,7 @@ Video Disk Recorder Revision History
 - The device /dev/video is now opened only if necessary (to GRAB an image),
   allowing other programs (like 'kvdr', for instance) to use that device.
 
-2001-11-25: Version 0.99
+2001-11-25: Version 0.99pre1
 
 - Fixed several channel definitions in 'channels.conf' (thanks to Thilo
   Wunderlich).
@@ -878,3 +878,8 @@ Video Disk Recorder Revision History
 - Changed the maximum value for PIDs in channels.conf from 0xFFFE to 0x1FFF.
 - Fixed DVD audio sync problems (thanks to Andreas Schultz).
 - Fixed external AC3 replay for DVDs (thanks to Andreas Schultz).
+
+2001-12-01: Version 0.99pre2
+
+- Fixed setting the OSD size in the 'Confirm' interface call (thanks to
+  Deti Fliegl).
