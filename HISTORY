@@ -2209,6 +2209,8 @@ Video Disk Recorder Revision History
 - It is now possible to directly delete a timer that is currently recording
   (thanks to Alexander Damhuis for reporting this one).
 
-2003-05-26: Version 1.1.34
+2003-05-27: Version 1.1.34
 
 - Some corrections to the French OSD texts (thanks to Olivier Jacques).
+- Fixed some missing commas in i18n.c (thanks to Dimitrios Dimitrakos for
+  reporting this problem).

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.118 2003/05/26 15:46:13 kls Exp $
+ * $Id: i18n.c 1.119 2003/05/27 06:47:38 kls Exp $
  *
  * Translations provided by:
  *
@@ -786,7 +786,7 @@ const tI18nPhrase Phrases[] = {
     "Ta bort inspelningen?",
     "Sterg inregistrarea?",
     "Felvétel törlése?",
-    "Esborrar gravació?"
+    "Esborrar gravació?",
   },
   { "Timer still recording - really delete?",
     "Timer zeichnet auf - trotzdem löschen?",
@@ -888,7 +888,7 @@ const tI18nPhrase Phrases[] = {
     "Inspelning pågår, vill du ändå starta om?",
     "In inregistrare - repornesc?",
     "Felvétel folyamatban van - mégis újraindítani?",
-    "Estic gravant - reiniciar de totes maneres?"
+    "Estic gravant - reiniciar de totes maneres?",
   },
   { "Recording - shut down anyway?",
     "Aufnahme läuft - trotzdem ausschalten?",
@@ -1707,7 +1707,7 @@ const tI18nPhrase Phrases[] = {
     "Kan inte avsluta, måste använda parameter '-s'",
     "Nu pot opri calculatorul - vezi optiunea '-s'",
     "A leállítás nem lehetséges - Opció '-s' hiányzik!",
-    "No puc apagar, falta la opció -s !"
+    "No puc apagar, falta la opció -s !",
   },
   { "Low disk space!",
     "Platte beinahe voll!",
@@ -1956,7 +1956,7 @@ const tI18nPhrase Phrases[] = {
     "Reiniciar",
     "Redémarrer",
     "Start på nytt",
-    "Uudelleenkäynnistys"
+    "Uudelleenkäynnistys",
     "Zastartowac",
     "Reiniciar",
     "Epanekinisi",
@@ -3056,7 +3056,7 @@ const tI18nPhrase Phrases[] = {
     "Höger",
     "Dreapta",
     "Jobbra",
-    "Dreta"
+    "Dreta",
   },
   { "Red",
     "Rot",
@@ -3073,7 +3073,7 @@ const tI18nPhrase Phrases[] = {
     "Röd",
     "Rosu",
     "Piros",
-    "Vermell"
+    "Vermell",
   },
   { "Green",
     "Grün",
@@ -3392,7 +3392,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "tyhjä",
     "",// TODO
-    "ninguno"
+    "ninguno",
     "kanena",
     "ingen",
     "",// TODO
@@ -3465,7 +3465,7 @@ const tI18nPhrase Phrases[] = {
     "Disk",
     "Disc",
     "Lemez",
-    "Disc"
+    "Disc",
   },
   { "free",
     "frei",
@@ -3482,7 +3482,7 @@ const tI18nPhrase Phrases[] = {
     "ledigt",
     "liber",
     "szabad",
-    "lliure"
+    "lliure",
   },
   { "Jump: ", // note the trailing blank
     "Springen: ",
@@ -3499,7 +3499,7 @@ const tI18nPhrase Phrases[] = {
     "Hopp: ",
     "Salt: ",
     "Ugrás: ",
-    "Salta a:"
+    "Salta a:",
   },
   { "Volume ", // note the trailing blank
     "Lautstärke ",
@@ -3686,7 +3686,7 @@ const tI18nPhrase Phrases[] = {
     "Pausar direktinspelningen",
     "",// TODO
     "",// TODO
-    "Pausa d'emissió en directe..."
+    "Pausa d'emissió en directe...",
   },
   { "This plugin has no setup parameters!",
     "Dieses Plugin hat keine Setup-Parameter!",
