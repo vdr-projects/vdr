@@ -16,7 +16,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.c 1.69 2003/04/13 14:06:25 kls Exp $
+ * $Id: eit.c 1.70 2003/04/18 11:29:11 kls Exp $
  ***************************************************************************/
 
 #include "eit.h"
@@ -1029,7 +1029,7 @@ cCaDescriptor::cCaDescriptor(int Source, int Transponder, int ServiceId, int CaS
   data[1] = length - 2;
   data[2] = (caSystem >> 8) & 0xFF;
   data[3] =  caSystem       & 0xFF;
-  data[4] = ((CaPid   >> 8) & 0xFF) | 0xE0;
+  data[4] = ((CaPid   >> 8) & 0x1F) | 0xE0;
   data[5] =   CaPid         & 0xFF;
   if (Length)
      memcpy(&data[6], Data, Length);

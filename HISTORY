@@ -2034,7 +2034,8 @@ Video Disk Recorder Revision History
 - Fixed handling of Ca parameters with values <= MAXDEVICES, which don't indicate
   an actual encrypted channel (thanks to Stefan Huelswitt for reporting this one).
 
-2003-04-13: Version 1.1.28
+2003-04-18: Version 1.1.28
 
 - Using masks in EIT filtering to reduce the number of filters (thanks to Andreas
   Schultz).
+- Fixed handling Ca descriptors (thanks to Stefan Huelswitt).
