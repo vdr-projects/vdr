@@ -2859,3 +2859,4 @@ Video Disk Recorder Revision History
   that implement skins will need to implement these functions. This fixes a missing
   "Editing process finished" message (thanks to Oliver Endriss for reporting this
   one).
+- Fixed the height of the channel display in the "Classic VDR" skin.

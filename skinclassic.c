@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinclassic.c 1.5 2004/05/29 13:13:50 kls Exp $
+ * $Id: skinclassic.c 1.6 2004/05/29 13:29:00 kls Exp $
  */
 
 #include "skinclassic.h"
@@ -94,7 +94,7 @@ cSkinClassicDisplayChannel::cSkinClassicDisplayChannel(bool WithInfo)
   message = false;
   osd = cOsdProvider::NewOsd(Setup.OSDLeft, Setup.OSDTop + (Setup.ChannelInfoPos ? 0 : Setup.OSDHeight - Lines * lineHeight));
   timeWidth = font->Width("00:00") + 4;
-  tArea Areas[] = { { 0, 0, Setup.OSDWidth - 1, Lines * lineHeight, 4 } };
+  tArea Areas[] = { { 0, 0, Setup.OSDWidth - 1, Lines * lineHeight - 1, 4 } };
   osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
   osd->DrawRectangle(0, 0, osd->Width() - 1, osd->Height() - 1, Theme.Color(clrBackground));
 }
