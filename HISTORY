@@ -649,3 +649,7 @@ Video Disk Recorder Revision History
 - If there is no free DVB device to record, the log message will now be given
   only once.
 - Made I/O more robust by handling EINTR (thanks to Werner Fink).
+
+2001-08-15: Version 0.92
+
+- The "channel not sync'ed" log message now also lists the card number.

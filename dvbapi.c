@@ -7,7 +7,7 @@
  * DVD support initially written by Andreas Schultz <aschultz@warp10.net>
  * based on dvdplayer-0.5 by Matjaz Thaler <matjaz.thaler@guest.arnes.si>
  *
- * $Id: dvbapi.c 1.106 2001/08/12 15:09:42 kls Exp $
+ * $Id: dvbapi.c 1.107 2001/08/15 09:07:19 kls Exp $
  */
 
 //#define DVDDEBUG        1
@@ -3160,7 +3160,7 @@ bool cDvbApi::SetChannel(int ChannelNumber, int FrequencyMHz, char Polarization,
         }
 
      if (!ChannelSynced) {
-        esyslog(LOG_ERR, "ERROR: channel %d not sync'ed!", ChannelNumber);
+        esyslog(LOG_ERR, "ERROR: channel %d not sync'ed on DVB card %d!", ChannelNumber, CardIndex() + 1);
         if (this == PrimaryDvbApi)
            cThread::RaisePanic();
         return false;
