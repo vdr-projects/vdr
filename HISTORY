@@ -2094,3 +2094,4 @@ Video Disk Recorder Revision History
   to Oliver Endriss for reporting this one).
 - Fixed double call to MainMenuAction() of a plugin if invoked via a hotkey (thanks
   to Kai Moeller for reporting this one).
+- Fixed handling dedicated keys.
