@@ -271,6 +271,8 @@ Matthias Weingart <matthias@pentax.boerde.de>
 
 Andreas Share <a.share@t-online.de>
  for his support in keeping the Premiere World channels up to date in 'channels.conf'
+ for pointing out that section filters should only be set if the device actually has
+ a lock
 
 Simon Bauschulte <SemiSchwabe@Brutzel.de>
  for his support in keeping the Premiere World channels up to date in 'channels.conf'

@@ -2967,6 +2967,8 @@ Video Disk Recorder Revision History
 - The 'radio' channel icon is now only displayed in the ST:TNG skin if the channel
   actually has an APID.
 
-2004-07-27: Version 1.3.13
+2004-08-08: Version 1.3.13
 
 - Fixed checking for the presence of NPTL (thanks to Jouni Karvo).
+- Making sure section filters are only set if the device actually has a lock
+  (thanks to Andreas Share for pointing this out).

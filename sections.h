@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: sections.h 1.3 2004/01/11 13:18:38 kls Exp $
+ * $Id: sections.h 1.4 2004/08/08 13:44:17 kls Exp $
  */
 
 #ifndef __SECTIONS_H
@@ -27,7 +27,7 @@ private:
   cDevice *device;
   bool active;
   int statusCount;
-  bool on;
+  bool on, waitForLock;
   time_t lastIncompleteSection;
   cList<cFilter> filters;
   cList<cFilterHandle> filterHandles;
