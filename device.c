@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.72 2005/01/08 13:48:19 kls Exp $
+ * $Id: device.c 1.73 2005/01/09 12:36:48 kls Exp $
  */
 
 #include "device.h"
@@ -547,7 +547,8 @@ eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
         currentAudioTrack = ttAudioFirst;
         for (int i = 0; i < MAXAPIDS; i++) {
             SetAvailableTrack(ttAudio, i, Channel->Apid(i), Channel->Alang(i));
-            SetAvailableTrack(ttDolby, i, Channel->Dpid(i), Channel->Dlang(i));
+            if (Setup.UseDolbyDigital)
+               SetAvailableTrack(ttDolby, i, Channel->Dpid(i), Channel->Dlang(i));
             }
         // Select the preferred audio track:
         eTrackType PreferredTrack = ttAudioFirst;
@@ -663,8 +664,8 @@ void cDevice::ClrAvailableTracks(bool DescriptionsOnly)
 bool cDevice::SetAvailableTrack(eTrackType Type, int Index, uint16_t Id, const char *Language, const char *Description, uint32_t Flags)
 {
   eTrackType t = eTrackType(Type + Index);
-  if ((Type == ttAudio && IS_AUDIO_TRACK(t)) ||
-      (Type == ttDolby && IS_DOLBY_TRACK(t))) {
+  if (Type == ttAudio && IS_AUDIO_TRACK(t) ||
+      Type == ttDolby && IS_DOLBY_TRACK(t)) {
      if (Language)
         strn0cpy(availableTracks[t].language, Language, sizeof(availableTracks[t].language));
      if (Description)
@@ -834,11 +835,13 @@ int cDevice::PlayPesPacket(const uchar *Data, int Length, bool VideoOnly)
                   w = PlayAudio(Start, d);
                break;
           case 0xBD: // dolby
-               SetAvailableTrack(ttDolby, 0, c);
-               if (!VideoOnly && c == availableTracks[currentAudioTrack].id) {
-                  w = PlayAudio(Start, d);
-                  if (FirstLoop)
-                     Audios.PlayAudio(Data, Length);
+               if (Setup.UseDolbyDigital) {
+                  SetAvailableTrack(ttDolby, 0, c);
+                  if (!VideoOnly && c == availableTracks[currentAudioTrack].id) {
+                     w = PlayAudio(Start, d);
+                     if (FirstLoop)
+                        Audios.PlayAudio(Data, Length);
+                     }
                   }
                break;
           default:

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.168 2005/01/04 13:40:38 kls Exp $
+ * $Id: i18n.c 1.169 2005/01/09 12:17:44 kls Exp $
  *
  * Translations provided by:
  *
@@ -3094,6 +3094,27 @@ const tI18nPhrase Phrases[] = {
     "TV külgsuhe",
     "Video format",
   },
+  { "Setup.DVB$Use Dolby Digital",
+    "Dolby Digital Ton benutzen",
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+  },
   { "Setup.DVB$Update channels",
     "Kanäle aktualisieren",
     "",// TODO
@@ -3576,27 +3597,6 @@ const tI18nPhrase Phrases[] = {
     "Trajanje direktnog snimanja (min)",
     "Otsesalvestuse kestus (min)",
     "Længde af direkte optagelse (min)",
-  },
-  { "Setup.Recording$Record Dolby Digital",
-    "Dolby Digital Ton aufzeichnen",
-    "Posnemi dolby digital",
-    "Registra Dolby Digital",
-    "Dolby Digital geluid opnamen",
-    "Gravar em Dolby Digital",
-    "Enregistrer en Dolby Digital",
-    "Ta opp Dolby Digital lyd",
-    "Dolby Digital tallennus",
-    "Nagrywac Dolby Digital",
-    "Grabar sonido Dolby Digital",
-    "ÅããñáöÞ ôïõ Dolby Digital Þ÷ïõ",
-    "Spela in ljudet med Dolby Digital",
-    "Înregistreazã Dolby Digital",
-    "Dolby Digitál felvétel",
-    "Gravar el so en Dolby Digital",
-    "·ÐßØáëÒÐâì ×ÒãÚ Dolby Digital",
-    "Snimi 'Dolby digital' ton",
-    "Dolby Digital salvestamine",
-    "Optag Dolby Digital lyd",
   },
   { "Setup.Recording$Max. video file size (MB)",
     "Max. Video Dateigröße (MB)",

@@ -3281,3 +3281,6 @@ Video Disk Recorder Revision History
   Dino Ravnic).
 - Implemented displaying mandatory subtitles in the SPU decoder (thanks to Marco
   Schlüßler).
+- The setup option "Recording/Record Dobly Digital" has been renamed and moved to
+  "DVB/Use Dolby Digital". It now controls whether Dolby Digital is recorded and
+  whether an available DD audio track will appear in the "Audio" menu.

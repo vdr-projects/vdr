@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.130 2005/01/08 10:31:19 kls Exp $
+ * $Id: config.c 1.131 2005/01/09 12:14:58 kls Exp $
  */
 
 #include "config.h"
@@ -281,7 +281,7 @@ cSetup::cSetup(void)
   RecordingDirs = 1;
   VideoFormat = 0;
   UpdateChannels = 4;
-  RecordDolbyDigital = 1;
+  UseDolbyDigital = 1;
   ChannelInfoPos = 0;
   OSDLeft = 54;
   OSDTop = 45;
@@ -436,7 +436,7 @@ bool cSetup::Parse(const char *Name, const char *Value)
   else if (!strcasecmp(Name, "RecordingDirs"))       RecordingDirs      = atoi(Value);
   else if (!strcasecmp(Name, "VideoFormat"))         VideoFormat        = atoi(Value);
   else if (!strcasecmp(Name, "UpdateChannels"))      UpdateChannels     = atoi(Value);
-  else if (!strcasecmp(Name, "RecordDolbyDigital"))  RecordDolbyDigital = atoi(Value);
+  else if (!strcasecmp(Name, "UseDolbyDigital"))     UseDolbyDigital    = atoi(Value);
   else if (!strcasecmp(Name, "ChannelInfoPos"))      ChannelInfoPos     = atoi(Value);
   else if (!strcasecmp(Name, "OSDLeft"))             OSDLeft            = atoi(Value);
   else if (!strcasecmp(Name, "OSDTop"))              OSDTop             = atoi(Value);
@@ -498,7 +498,7 @@ bool cSetup::Save(void)
   Store("RecordingDirs",      RecordingDirs);
   Store("VideoFormat",        VideoFormat);
   Store("UpdateChannels",     UpdateChannels);
-  Store("RecordDolbyDigital", RecordDolbyDigital);
+  Store("UseDolbyDigital",    UseDolbyDigital);
   Store("ChannelInfoPos",     ChannelInfoPos);
   Store("OSDLeft",            OSDLeft);
   Store("OSDTop",             OSDTop);

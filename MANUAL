@@ -588,6 +588,13 @@ Version 1.2
   Video format = 4:3     The video format (or aspect ratio) of the tv set in use
                          (4:3 or 16:9).
 
+  Use Dolby Digital = yes
+                         Turns recording of the Dolby Digital audio channels on
+                         or off. This may be useful if you don't have the equipment
+                         to replay Dolby Digital audio and want to save disk space.
+                         If turned off, Dolby Digital tracks also don't appear in the
+                         "Audio" menu.
+
   Update channels = 4    Controls the automatic channel update function. '0' means
                          no update, '1' will only update channel names, '2' will
                          update channel names and PIDs, '3' will perform all
@@ -689,11 +696,6 @@ Version 1.2
                          Default is 180 minutes (3 hours). The stop time of an
                          instant recording can be modified at any time by editing
                          the respective timer in the "Timers" menu.
-
-  Record Dolby Digital = yes
-                         Turns recording of the Dolby Digital audio channels on
-                         or off. This may be useful if you don't have the equipment
-                         to replay Dolby Digital audio and want to save disk space.
 
   Max. video file size = 2000
                          The maximum size of a single recorded video file in MB.
