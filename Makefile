@@ -4,13 +4,13 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 1.12 2000/10/01 14:27:12 kls Exp $
+# $Id: Makefile 1.13 2000/10/07 16:24:08 kls Exp $
 
 DVBDIR   = ../DVB
 
 INCLUDES = -I$(DVBDIR)/driver
 OBJS = config.o dvbapi.o dvbosd.o eit.o font.o interface.o menu.o osd.o\
-       recording.o remote.o svdrp.o tools.o vdr.o videodir.o
+       recording.o remote.o svdrp.o thread.o tools.o vdr.o videodir.o
 
 OSDFONT = -adobe-helvetica-medium-r-normal--23-*-100-100-p-*-iso8859-1
 
@@ -40,12 +40,13 @@ dvbapi.o   : dvbapi.c config.h dvbapi.h dvbosd.h font.h interface.h svdrp.h tool
 dvbosd.o   : dvbosd.c dvbosd.h font.h tools.h
 eit.o      : eit.c eit.h tools.h
 font.o     : font.c font.h fontosd.c tools.h
-interface.o: interface.c config.h dvbapi.h dvbosd.h eit.h font.h interface.h remote.h svdrp.h tools.h
+interface.o: interface.c config.h dvbapi.h dvbosd.h eit.h font.h interface.h remote.h svdrp.h thread.h tools.h
 menu.o     : menu.c config.h dvbapi.h dvbosd.h font.h interface.h menu.h osd.h recording.h svdrp.h tools.h
 osd.o      : osd.c config.h dvbapi.h dvbosd.h font.h interface.h osd.h svdrp.h tools.h
 recording.o: recording.c config.h dvbapi.h dvbosd.h font.h interface.h recording.h svdrp.h tools.h videodir.h
-remote.o   : remote.c config.h dvbapi.h dvbosd.h font.h remote.h tools.h
+remote.o   : remote.c config.h dvbapi.h dvbosd.h font.h remote.h thread.h tools.h
 svdrp.o    : svdrp.c config.h dvbapi.h dvbosd.h font.h interface.h svdrp.h tools.h
+thread.o   : thread.c thread.h
 tools.o    : tools.c tools.h
 vdr.o      : vdr.c config.h dvbapi.h dvbosd.h font.h interface.h menu.h osd.h recording.h svdrp.h tools.h videodir.h
 videodir.o : videodir.c tools.h videodir.h
@@ -53,7 +54,7 @@ videodir.o : videodir.c tools.h videodir.h
 # The main program:
 
 vdr: $(OBJS)
-	g++ -g -O2 $(OBJS) -lncurses -ljpeg -o vdr
+	g++ -g -O2 $(OBJS) -lncurses -ljpeg -lpthread -o vdr
 
 # The font file:
 

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.16 2000/09/29 16:19:31 kls Exp $
+ * $Id: tools.h 1.17 2000/10/07 18:00:21 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -68,6 +68,7 @@ public:
   int ReadString(char *Buffer, int Size);
   bool Ready(bool Wait = true);
   static bool AnyFileReady(int FileDes = -1, int TimeoutMs = 1000);
+  static bool FileReady(int FileDes, int TimeoutMs = 1000);
   };
 
 class cListObject {

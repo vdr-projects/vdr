@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.h 1.13 2000/09/18 22:29:31 kls Exp $
+ * $Id: interface.h 1.14 2000/10/07 16:17:53 kls Exp $
  */
 
 #ifndef __INTERFACE_H
@@ -38,7 +38,7 @@ public:
   void ClearEol(int x, int y, eDvbColor Color = clrBackground);
   void SetCols(int *c);
   void Write(int x, int y, const char *s, eDvbColor FgColor = clrWhite, eDvbColor BgColor = clrBackground);
-  void WriteText(int x, int y, const char *s, eDvbColor FgColor = clrWhite, eDvbColor BgColor = clrBlack);
+  void WriteText(int x, int y, const char *s, eDvbColor FgColor = clrWhite, eDvbColor BgColor = clrBackground);
   void Title(const char *s);
   void Status(const char *s, eDvbColor FgColor = clrBlack, eDvbColor BgColor = clrCyan);
   void Info(const char *s);

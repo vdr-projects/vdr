@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.c 1.21 2000/10/03 13:28:02 kls Exp $
+ * $Id: interface.c 1.22 2000/10/07 16:42:37 kls Exp $
  */
 
 #include "interface.h"
@@ -60,17 +60,16 @@ void cInterface::Close(void)
 
 unsigned int cInterface::GetCh(bool Wait)
 {
-  if (RcIo.InputAvailable(Wait)) {
-     unsigned int Command;
-     return RcIo.GetCommand(&Command, NULL) ? Command : 0;
-     }
-  return 0;
+  if (open)
+     cDvbApi::PrimaryDvbApi->Flush();
+  if (!RcIo.InputAvailable())
+     cFile::AnyFileReady(-1, Wait ? 1000 : 0);
+  unsigned int Command;
+  return RcIo.GetCommand(&Command) ? Command : 0;
 }
 
 eKeys cInterface::GetKey(bool Wait)
 {
-  if (open)
-     cDvbApi::PrimaryDvbApi->Flush();
   if (SVDRP)
      SVDRP->Process();
   eKeys Key = keyFromWait != kNone ? keyFromWait : Keys.Get(GetCh(Wait));
@@ -85,12 +84,15 @@ void cInterface::PutKey(eKeys Key)
 
 eKeys cInterface::Wait(int Seconds, bool KeepChar)
 {
-  eKeys Key = kNone;
   if (open)
      cDvbApi::PrimaryDvbApi->Flush();
-  RcIo.Flush(500);
-  if (cFile::AnyFileReady(-1, Seconds * 1000))
-     Key = GetKey();
+  eKeys Key = kNone;
+  time_t timeout = time(NULL) + Seconds;
+  for (;;) {
+      Key = GetKey();
+      if (Key != kNone || time(NULL) > timeout)
+         break;
+      }
   if (KeepChar)
      keyFromWait = Key;
   return Key;
@@ -220,9 +222,11 @@ void cInterface::Help(const char *Red, const char *Green, const char *Yellow, co
 void cInterface::QueryKeys(void)
 {
   Keys.Clear();
+  Clear();
   WriteText(1, 1, "Learning Remote Control Keys");
   WriteText(1, 3, "Phase 1: Detecting RC code type");
   WriteText(1, 5, "Press any key on the RC unit");
+  cDvbApi::PrimaryDvbApi->Flush();
 #ifndef REMOTE_KBD
   unsigned char Code = 0;
   unsigned short Address;
@@ -238,9 +242,11 @@ void cInterface::QueryKeys(void)
          Keys.address = Address;
          WriteText(1, 5, "RC code detected!");
          WriteText(1, 6, "Do not press any key...");
+         cDvbApi::PrimaryDvbApi->Flush();
          RcIo.Flush(3000);
          ClearEol(0, 5);
          ClearEol(0, 6);
+         cDvbApi::PrimaryDvbApi->Flush();
          break;
          }
 #endif

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.20 2000/09/29 16:19:28 kls Exp $
+ * $Id: tools.c 1.21 2000/10/07 18:02:24 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -391,6 +391,22 @@ bool cFile::AnyFileReady(int FileDes, int TimeoutMs)
   timeout.tv_sec  = TimeoutMs / 1000;
   timeout.tv_usec = (TimeoutMs % 1000) * 1000;
   return select(FD_SETSIZE, &set, NULL, NULL, &timeout) > 0 && (FileDes < 0 || FD_ISSET(FileDes, &set));
+}
+
+bool cFile::FileReady(int FileDes, int TimeoutMs)
+{
+#ifdef DEBUG_OSD
+  refresh();
+#endif
+  fd_set set;
+  struct timeval timeout;
+  FD_ZERO(&set);
+  FD_SET(FileDes, &set);
+  if (TimeoutMs < 100)
+     TimeoutMs = 100;
+  timeout.tv_sec  = 0;
+  timeout.tv_usec = TimeoutMs * 1000;
+  return select(FD_SETSIZE, &set, NULL, NULL, &timeout) > 0 && FD_ISSET(FileDes, &set);
 }
 
 // --- cListObject -----------------------------------------------------------

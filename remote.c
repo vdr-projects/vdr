@@ -6,7 +6,7 @@
  *
  * Ported to LIRC by Carsten Koch <Carsten.Koch@icem.de>  2000-06-16.
  *
- * $Id: remote.c 1.15 2000/10/03 10:49:58 kls Exp $
+ * $Id: remote.c 1.16 2000/10/08 09:25:20 kls Exp $
  */
 
 #include "remote.h"
@@ -27,16 +27,11 @@
 #include "config.h"
 #include "tools.h"
 
-#define REPEATLIMIT 100 // ms
-#define REPEATDELAY 250 // ms
-
 // --- cRcIoBase -------------------------------------------------------------
 
 cRcIoBase::cRcIoBase(void)
 {
   t = 0;
-  firstTime = lastTime = 0;
-  lastCommand = 0;
 }
 
 cRcIoBase::~cRcIoBase()
@@ -69,12 +64,12 @@ void cRcIoKBD::Flush(int WaitMs)
       }
 }
 
-bool cRcIoKBD::InputAvailable(bool Wait)
+bool cRcIoKBD::InputAvailable(void)
 {
-  return f.Ready(Wait);
+  return f.Ready(false);
 }
 
-bool cRcIoKBD::GetCommand(unsigned int *Command, unsigned short *)
+bool cRcIoKBD::GetCommand(unsigned int *Command)
 {
   if (Command) {
      *Command = getch();
@@ -87,36 +82,119 @@ bool cRcIoKBD::GetCommand(unsigned int *Command, unsigned short *)
 
 #elif defined REMOTE_RCU
 
+#define REPEATLIMIT  20 // ms
+#define REPEATDELAY 350 // ms
+
 cRcIoRCU::cRcIoRCU(char *DeviceName)
 {
   dp = 0;
   mode = modeB;
   code = 0;
   address = 0xFFFF;
+  receivedAddress = 0;
+  receivedCommand = 0;
+  receivedData = receivedRepeat = false;
   lastNumber = 0;
-  if (f.Open(DeviceName, O_RDWR | O_NONBLOCK)) {
+  if ((f = open(DeviceName, O_RDWR | O_NONBLOCK)) >= 0) {
      struct termios t;
      if (tcgetattr(f, &t) == 0) {
         cfsetspeed(&t, B9600);
         cfmakeraw(&t);
-        if (tcsetattr(f, TCSAFLUSH, &t) == 0)
+        if (tcsetattr(f, TCSAFLUSH, &t) == 0) {
+           Start();
            return;
+           }
         }
      LOG_ERROR_STR(DeviceName);
-     f.Close();
+     close(f);
      }
   else
      LOG_ERROR_STR(DeviceName);
+  f = -1;
 }
 
 cRcIoRCU::~cRcIoRCU()
 {
 }
 
-int cRcIoRCU::ReceiveByte(bool Wait)
+void cRcIoRCU::Action(void)
+{
+#pragma pack(1)
+  union {
+    struct {
+      unsigned short address;
+      unsigned int command;
+      } data;
+    unsigned char raw[6];
+    } buffer;
+#pragma pack()
+
+  dsyslog(LOG_INFO, "RCU remote control thread started (pid=%d)", getpid());
+
+  unsigned int LastCommand = 0;
+  int FirstTime = 0;
+
+  for (; f >= 0;) {
+
+      LOCK_THREAD;
+
+      if (ReceiveByte(REPEATLIMIT) == 'X') {
+         for (int i = 0; i < 6; i++) {
+             int b = ReceiveByte();
+             if (b >= 0) {
+                buffer.raw[i] = b;
+                if (i == 5) {
+                   unsigned short Address = ntohs(buffer.data.address); // the PIC sends bytes in "network order"
+                   unsigned int   Command = ntohl(buffer.data.command);
+                   if (code == 'B' && address == 0x0000 && Command == 0x00004000)
+                      // Well, well, if it isn't the "d-box"...
+                      // This remote control sends the above command before and after
+                      // each keypress - let's just drop this:
+                      break;
+                   int Now = time_ms();
+                   if (Command != LastCommand) {
+                      receivedAddress = Address;
+                      receivedCommand = Command;
+                      receivedData = true;
+                      FirstTime = Now;
+                      }
+                   else {
+                      if (Now - FirstTime < REPEATDELAY)
+                         break; // repeat function kicks in after a short delay
+                      receivedData = receivedRepeat = true;
+                      }
+                   LastCommand = Command;
+                   WakeUp();
+                   }
+                }
+             else
+                break;
+             }
+         }
+      else if (receivedData) { // the last data before releasing the key hasn't been fetched yet
+         if (receivedRepeat) { // it was a repeat, so let's drop it
+            //XXX replace it with "released"???
+            receivedData = receivedRepeat = false;
+            LastCommand = 0;
+            //XXX WakeUp();
+            }
+         }
+      else if (receivedRepeat) { // all data has already been fetched, but the last one was a repeat
+         //XXX replace it with "released"???
+         //XXX receivedData = true;
+         receivedRepeat = false;
+         LastCommand = 0;
+         WakeUp();
+         }
+      else
+         LastCommand = 0;
+      }
+}
+
+int cRcIoRCU::ReceiveByte(int TimeoutMs)
 {
   // Returns the byte if one was received within a timeout, -1 otherwise
-  if (InputAvailable(Wait)) {
+  if (cFile::FileReady(f, TimeoutMs)) {
      unsigned char b;
      if (read(f, &b, 1) == 1)
         return b;
@@ -128,16 +206,16 @@ int cRcIoRCU::ReceiveByte(bool Wait)
 
 bool cRcIoRCU::SendByteHandshake(unsigned char c)
 {
-  if (f.IsOpen()) {
+  if (f >= 0) {
      int w = write(f, &c, 1);
      if (w == 1) {
-        for (int reply = ReceiveByte(); reply >= 0;) {
+        for (int reply = ReceiveByte(REPEATLIMIT); reply >= 0;) {
             if (reply == c)
                return true;
             else if (reply == 'X') {
                // skip any incoming RC code - it will come again
                for (int i = 6; i--;) {
-                   if (ReceiveByte(false) < 0)
+                   if (ReceiveByte() < 0)
                       return false;
                    }
                }
@@ -152,6 +230,8 @@ bool cRcIoRCU::SendByteHandshake(unsigned char c)
 
 bool cRcIoRCU::SendByte(unsigned char c)
 {
+  LOCK_THREAD;
+
   for (int retry = 5; retry--;) {
       if (SendByteHandshake(c))
          return true;
@@ -174,66 +254,31 @@ bool cRcIoRCU::SetMode(unsigned char Mode)
 
 void cRcIoRCU::Flush(int WaitMs)
 {
-  int t0 = time_ms();
+  LOCK_THREAD;
 
+  int t0 = time_ms();
   for (;;) {
-      while (ReceiveByte(false) >= 0)
+      while (ReceiveByte() >= 0)
             t0 = time_ms();
       if (time_ms() - t0 >= WaitMs)
          break;
       }
+  receivedData = receivedRepeat = false;
 }
 
-bool cRcIoRCU::InputAvailable(bool Wait)
+bool cRcIoRCU::GetCommand(unsigned int *Command)
 {
-  return f.Ready(Wait);
-}
+  if (receivedData) { // first we check the boolean flag without a lock, to avoid delays
 
-bool cRcIoRCU::GetCommand(unsigned int *Command, unsigned short *Address)
-{
-#pragma pack(1)
-  union {
-    struct {
-      unsigned short address;
-      unsigned int command;
-      } data;
-    unsigned char raw[6];
-    } buffer;
-#pragma pack()
-    
-  Flush();
-  if (Command && ReceiveByte() == 'X') {
-     for (int i = 0; i < 6; i++) {
-         int b = ReceiveByte(false);
-         if (b >= 0)
-            buffer.raw[i] = b;
-         else
-            return false;
-         }
-     if (Address)
-        *Address = ntohs(buffer.data.address); // the PIC sends bytes in "network order"
-     else if (address != ntohs(buffer.data.address))
-        return false;
-     *Command = ntohl(buffer.data.command);
-     if (code == 'B' && address == 0x0000 && *Command == 0x00004000)
-        // Well, well, if it isn't the "d-box"...
-        // This remote control sends the above command before and after
-        // each keypress - let's just drop this:
-        return false;
-     if (*Command == lastCommand) {
-        // let's have a timeout to avoid getting overrun by commands
-        int now = time_ms();
-        int delta = now - lastTime;
-        lastTime = now;
-        if (delta < REPEATLIMIT) { // if commands come in rapidly...
-           if (now - firstTime < REPEATDELAY)
-              return false; // ...repeat function kicks in after a short delay
-           return true;
-           }
+     LOCK_THREAD;
+
+     if (receivedData) { // need to check again, since the status might have changed while waiting for the lock
+        if (Command)
+           *Command = receivedCommand;
+        //XXX repeat!!!
+        receivedData = false;
+        return true;
         }
-     lastTime = firstTime = time_ms();
-     lastCommand = *Command;
-     return true;
      }
   if (time(NULL) - t > 60) {
      SendCommand(code); // in case the PIC listens to the wrong code
@@ -254,6 +299,8 @@ bool cRcIoRCU::Digit(int n, int v)
 
 bool cRcIoRCU::Number(int n, bool Hex)
 {
+  LOCK_THREAD;
+
   if (!Hex) {
      char buf[8];
      sprintf(buf, "%4d", n & 0xFFFF);
@@ -275,6 +322,8 @@ bool cRcIoRCU::Number(int n, bool Hex)
 
 bool cRcIoRCU::String(char *s)
 {
+  LOCK_THREAD;
+
   const char *chars = mode == modeH ? "0123456789ABCDEF" : "0123456789-EHLP ";
   int n = 0;
 
@@ -318,8 +367,11 @@ bool cRcIoRCU::DetectCode(unsigned char *Code, unsigned short *Address)
      sprintf(buf, "C0D%c", *Code);
      String(buf);
      SetCode(*Code, 0);
-     unsigned int Command;
-     if (GetCommand(&Command, Address)) {
+     delay_ms(REPEATDELAY);
+     receivedData = receivedRepeat = 0;
+     delay_ms(REPEATDELAY);
+     if (GetCommand()) {
+        *Address = receivedAddress;
         SetMode(modeB);
         String("----");
         return true;
@@ -337,77 +389,90 @@ bool cRcIoRCU::DetectCode(unsigned char *Code, unsigned short *Address)
 
 #elif defined REMOTE_LIRC
 
+#define REPEATLIMIT  20 // ms
+#define REPEATDELAY 350 // ms
+
 cRcIoLIRC::cRcIoLIRC(char *DeviceName)
 {
-  repeat = 1;
+  *keyName = 0;
+  receivedData = receivedRepeat = false;
   struct sockaddr_un addr;
   addr.sun_family = AF_UNIX;
   strcpy(addr.sun_path, DeviceName);
-  int sock = socket(AF_UNIX, SOCK_STREAM, 0);
-  if (sock >= 0) {
-     if (connect(sock, (struct sockaddr *)&addr, sizeof(addr)) >= 0) {
-        f.Open(sock);
+  if ((f = socket(AF_UNIX, SOCK_STREAM, 0)) >= 0) {
+     if (connect(f, (struct sockaddr *)&addr, sizeof(addr)) >= 0) {
+        Start();
         return;
         }
      LOG_ERROR_STR(DeviceName);
-     close(sock);
+     close(f);
      }
   else
      LOG_ERROR_STR(DeviceName);
+  f = -1;
 }
 
 cRcIoLIRC::~cRcIoLIRC()
 {
 }
 
-const char *cRcIoLIRC::ReceiveString(void)
+void cRcIoLIRC::Action(void)
 {
-  int oldrepeat = 1;
+  dsyslog(LOG_INFO, "LIRC remote control thread started (pid=%d)", getpid());
 
-  if (repeat != 0) {
-     Flush();
-     if (repeat != 0) {
-        oldrepeat = repeat;
-        Flush(REPEATLIMIT);
-        }
-     }
-
-  if (repeat == 0) {
-     firstTime = time_ms();
-     repeat = 1;
-     return keyName;
-     }
-
-  if ((repeat > 1) && (repeat != oldrepeat) && (time_ms() > firstTime + REPEATDELAY)) {
-     repeat = 1;
-     return keyName;
-     }
-
-  return NULL;
-}
-
-void cRcIoLIRC::Flush(int WaitMs)
-{
+  int FirstTime = 0;
   char buf[LIRC_BUFFER_SIZE];
-  int t0 = time_ms();
 
-  do {
-     if (InputAvailable(false) && (read(f, buf, sizeof(buf)) > 21))
-        sscanf(buf, "%*x %x %7s", &repeat, keyName); // '7' in '%7s' is LIRC_KEY_BUF-1!
-     } while ((repeat != 0) && (time_ms() < t0 + WaitMs));
+  for (; f >= 0;) {
+
+      LOCK_THREAD;
+
+      if (cFile::FileReady(f, REPEATLIMIT) && read(f, buf, sizeof(buf)) > 21) {
+         int count;
+         sscanf(buf, "%*x %x %7s", &count, keyName); // '7' in '%7s' is LIRC_KEY_BUF-1!
+         int Now = time_ms();
+         if (count == 0) {
+            receivedData = true;
+            FirstTime = Now;
+            }
+         else {
+            if (Now - FirstTime < REPEATDELAY)
+               continue; // repeat function kicks in after a short delay
+            receivedData = receivedRepeat = true;
+            }
+         WakeUp();
+         }
+      else if (receivedData) { // the last data before releasing the key hasn't been fetched yet
+         if (receivedRepeat) { // it was a repeat, so let's drop it
+            //XXX replace it with "released"???
+            receivedData = receivedRepeat = false;
+            *keyName = 0;
+            //XXX WakeUp();
+            }
+         }
+      else if (receivedRepeat) { // all data has already been fetched, but the last one was a repeat
+         //XXX replace it with "released"???
+         //XXX receivedData = true;
+         receivedRepeat = false;
+         *keyName = 0;
+         WakeUp();
+         }
+      else
+         *keyName = 0;
+      }
 }
 
-bool cRcIoLIRC::InputAvailable(bool Wait)
+bool cRcIoLIRC::GetCommand(unsigned int *Command)
 {
-  return f.Ready(Wait);
-}
+  if (receivedData) { // first we check the boolean flag without a lock, to avoid delays
 
-bool cRcIoLIRC::GetCommand(unsigned int *Command, unsigned short *)
-{
-  if (Command) {
-     const char *cmd = ReceiveString();
-     if (cmd) {
-        *Command = Keys.Encode(cmd);
+     LOCK_THREAD;
+
+     if (receivedData) { // need to check again, since the status might have changed while waiting for the lock
+        if (Command)
+           *Command = Keys.Encode(keyName);
+        //XXX repeat!!!
+        receivedData = false;
         return true;
         }
      }
