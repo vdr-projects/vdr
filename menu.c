@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.174 2002/03/23 15:10:20 kls Exp $
+ * $Id: menu.c 1.175 2002/03/23 15:17:14 kls Exp $
  */
 
 #include "menu.h"
@@ -2315,6 +2315,7 @@ void cMenuMain::Set(void)
      char *buffer = NULL;
      asprintf(&buffer, "%s%s", STOP_RECORDING, ON_PRIMARY_INTERFACE);
      Add(new cOsdItem(buffer, osStopRecord));
+     delete buffer;
      }
 
   const char *s = NULL;
