@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.15 2002/09/14 12:14:38 kls Exp $
+ * $Id: dvbdevice.c 1.16 2002/09/14 13:26:16 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -321,9 +321,9 @@ bool cDvbDevice::SetPid(cPidHandle *Handle, int Type, bool On)
            return false;
            }
         }
-     else {
+     else if (!Handle->used) {
         CHECK(ioctl(Handle->handle, DMX_STOP));
-        if (Handle->used == 0 && Type <= ptTeletext) {
+        if (Type <= ptTeletext) {
            pesFilterParams.pid     = 0x1FFF;
            pesFilterParams.input   = DMX_IN_FRONTEND;
            pesFilterParams.output  = DMX_OUT_DECODER;
