@@ -2340,3 +2340,4 @@ Video Disk Recorder Revision History
 - Fixed a hangup in SVDRP when the client disappears without sending QUIT (thanks
   to Robert Bartl for reporting this one). The problem was introduced in version
   1.2.2 through the fix for an occasional "Broken pipe" error in SVDRP connections.
+- Updated 'channels.conf.terr' for Berlin.
