@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.84 2001/10/19 13:37:24 kls Exp $
+ * $Id: vdr.c 1.85 2001/10/20 10:26:54 kls Exp $
  */
 
 #include <getopt.h>
@@ -509,7 +509,7 @@ int main(int argc, char *argv[])
                        char *cmd;
                        asprintf(&cmd, "%s %ld %ld %d '%s'", Shutdown, Next, Delta, Channel, File);
                        isyslog(LOG_INFO, "executing '%s'", cmd);
-                       system(cmd);
+                       SystemExec(cmd);
                        delete cmd;
                        }
                     else if (WatchdogTimeout > 0) {

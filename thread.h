@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.h 1.9 2001/09/15 12:46:52 kls Exp $
+ * $Id: thread.h 1.10 2001/10/20 10:25:19 kls Exp $
  */
 
 #ifndef __THREAD_H
@@ -103,5 +103,10 @@ public:
   bool Open(const char *Command, const char *Mode);
   int Close(void);
   };
+
+// SystemExec() implements a 'system()' call that closes all unnecessary file
+// descriptors in the child process.
+
+int SystemExec(const char *Command);
 
 #endif //__THREAD_H

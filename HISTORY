@@ -821,3 +821,4 @@ Video Disk Recorder Revision History
 - Removed the "system time seen..." message.
 - Fixed a bug in the replay mode display when pressing the Green or Yellow
   button while in trick mode (thanks to Stefan Huelswitt)
+- Closing all open file descriptors when calling external programs.
