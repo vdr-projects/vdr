@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.85 2001/07/28 13:07:30 kls Exp $
+ * $Id: menu.c 1.86 2001/07/28 13:44:48 kls Exp $
  */
 
 #include "menu.h"
@@ -277,7 +277,12 @@ cMenuEditTimeItem::cMenuEditTimeItem(const char *Name, int *Value)
 void cMenuEditTimeItem::Set(void)
 {
   char buf[10];
-  snprintf(buf, sizeof(buf), "%02d:%02d", hh, mm);
+  switch (pos) {
+    case 1:  snprintf(buf, sizeof(buf), "%01d-:--", hh / 10); break;
+    case 2:  snprintf(buf, sizeof(buf), "%02d:--", hh); break;
+    case 3:  snprintf(buf, sizeof(buf), "%02d:%01d-", hh, mm / 10); break;
+    default: snprintf(buf, sizeof(buf), "%02d:%02d", hh, mm);
+    }
   SetValue(buf);
 }
 

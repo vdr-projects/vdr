@@ -591,3 +591,5 @@ Video Disk Recorder Revision History
 - Fixed jumping to an editing mark when replay has been paused.
 - Avoiding unnecessary code execution in the replay progress display (thanks
   to Guido Fiala).
+- When entering time values the digits that still have to be entered are now
+  shown as '-' (as in "1-:--").
