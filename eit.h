@@ -16,7 +16,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.h 1.13 2002/01/13 16:18:23 kls Exp $
+ * $Id: eit.h 1.14 2002/02/23 13:51:31 kls Exp $
  ***************************************************************************/
 
 #ifndef __EIT_H
@@ -146,10 +146,13 @@ public:
   ~cSIProcessor();
   static void SetEpgDataFileName(const char *FileName);
   static const char *GetEpgDataFileName(void);
+  static const cSchedules *Schedules(cMutexLock &MutexLock);
+         // Caller must provide a cMutexLock which has to survive the entire
+         // time the returned cSchedules is accessed. Once the cSchedules is no
+         // longer used, the cMutexLock must be destroyed.
   void SetStatus(bool On);
   bool SetUseTSTime(bool use);
   bool SetCurrentServiceID(unsigned short servid);
-  const cSchedules *Schedules(void) { return schedules; }
   };
 
 #endif

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.156 2002/02/23 09:33:04 kls Exp $
+ * $Id: menu.c 1.157 2002/02/23 13:55:23 kls Exp $
  */
 
 #include "menu.h"
@@ -1429,7 +1429,7 @@ cMenuScheduleItem::cMenuScheduleItem(const cEventInfo *EventInfo)
 
 class cMenuSchedule : public cOsdMenu {
 private:
-  cThreadLock threadLock;
+  cMutexLock mutexLock;
   const cSchedules *schedules;
   bool now, next;
   int otherChannel;
@@ -1449,7 +1449,7 @@ cMenuSchedule::cMenuSchedule(void)
   cChannel *channel = Channels.GetByNumber(cDvbApi::CurrentChannel());
   if (channel) {
      cMenuWhatsOn::SetCurrentChannel(channel->number);
-     schedules = cDvbApi::PrimaryDvbApi->Schedules(&threadLock);
+     schedules = cSIProcessor::Schedules(mutexLock);
      PrepareSchedule(channel);
      SetHelp(tr("Record"), tr("Now"), tr("Next"));
      }
@@ -2262,8 +2262,8 @@ void cDisplayChannel::DisplayInfo(void)
 {
   if (withInfo) {
      const cEventInfo *Present = NULL, *Following = NULL;
-     cThreadLock ThreadLock;
-     const cSchedules *Schedules = cDvbApi::PrimaryDvbApi->Schedules(&ThreadLock);
+     cMutexLock MutexLock;
+     const cSchedules *Schedules = cSIProcessor::Schedules(MutexLock);
      if (Schedules) {
         const cSchedule *Schedule = Schedules->GetSchedule();
         if (Schedule) {
@@ -2445,8 +2445,8 @@ bool cRecordControl::GetEventInfo(void)
   time_t Time = timer->active == taActInst ? timer->StartTime() + INSTANT_REC_EPG_LOOKAHEAD : timer->StartTime() + (timer->StopTime() - timer->StartTime()) / 2;
   for (int seconds = 0; seconds <= MAXWAIT4EPGINFO; seconds++) {
       {
-        cThreadLock ThreadLock;
-        const cSchedules *Schedules = dvbApi->Schedules(&ThreadLock);
+        cMutexLock MutexLock;
+        const cSchedules *Schedules = cSIProcessor::Schedules(MutexLock);
         if (Schedules) {
            const cSchedule *Schedule = Schedules->GetSchedule(channel->pnr);
            if (Schedule) {

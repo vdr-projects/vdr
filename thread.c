@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 1.17 2002/02/17 14:47:28 kls Exp $
+ * $Id: thread.c 1.18 2002/02/23 13:49:06 kls Exp $
  */
 
 #include "thread.h"
@@ -188,6 +188,32 @@ bool cThread::EmergencyExit(bool Request)
      return emergencyExitRequested;
   esyslog(LOG_ERR, "initiating emergency exit");
   return emergencyExitRequested = true; // yes, it's an assignment, not a comparison!
+}
+
+// --- cMutexLock ------------------------------------------------------------
+
+cMutexLock::cMutexLock(cMutex *Mutex)
+{
+  mutex = NULL;
+  locked = false;
+  Lock(Mutex);
+}
+
+cMutexLock::~cMutexLock()
+{
+  if (mutex && locked)
+     mutex->Unlock();
+}
+
+bool cMutexLock::Lock(cMutex *Mutex)
+{
+  if (Mutex && !mutex) {
+     mutex = Mutex;
+     Mutex->Lock();
+     locked = true;
+     return true;
+     }
+  return false;
 }
 
 // --- cThreadLock -----------------------------------------------------------

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.h 1.61 2002/02/03 16:43:38 kls Exp $
+ * $Id: dvbapi.h 1.62 2002/02/23 13:11:07 kls Exp $
  */
 
 #ifndef __DVBAPI_H
@@ -143,10 +143,6 @@ public:
 private:
   cSIProcessor *siProcessor;
 public:
-  const cSchedules *Schedules(cThreadLock *ThreadLock) const;
-         // Caller must provide a cThreadLock which has to survive the entire
-         // time the returned cSchedules is accessed. Once the cSchedules is no
-         // longer used, the cThreadLock must be destroyed.
   void SetUseTSTime(bool On) { if (siProcessor) siProcessor->SetUseTSTime(On); }
 
   // Image Grab facilities

@@ -16,7 +16,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.c 1.35 2002/02/15 13:58:26 kls Exp $
+ * $Id: eit.c 1.36 2002/02/23 13:53:53 kls Exp $
  ***************************************************************************/
 
 #include "eit.h"
@@ -911,6 +911,13 @@ cSIProcessor::~cSIProcessor()
    if (!--numSIProcessors) // the last one deletes it
       delete schedules;
    delete fileName;
+}
+
+const cSchedules *cSIProcessor::Schedules(cMutexLock &MutexLock)
+{
+  if (MutexLock.Lock(&schedulesMutex))
+     return schedules;
+  return NULL;
 }
 
 void cSIProcessor::SetEpgDataFileName(const char *FileName)

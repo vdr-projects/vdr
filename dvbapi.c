@@ -7,7 +7,7 @@
  * DVD support initially written by Andreas Schultz <aschultz@warp10.net>
  * based on dvdplayer-0.5 by Matjaz Thaler <matjaz.thaler@guest.arnes.si>
  *
- * $Id: dvbapi.c 1.149 2002/02/23 10:40:55 kls Exp $
+ * $Id: dvbapi.c 1.150 2002/02/23 13:11:13 kls Exp $
  */
 
 //#define DVDDEBUG        1
@@ -2730,13 +2730,6 @@ void cDvbApi::Cleanup(void)
       dvbApi[i] = NULL;
       }
   PrimaryDvbApi = NULL;
-}
-
-const cSchedules *cDvbApi::Schedules(cThreadLock *ThreadLock) const
-{
-  if (siProcessor && ThreadLock->Lock(siProcessor))
-     return siProcessor->Schedules();
-  return NULL;
 }
 
 bool cDvbApi::GrabImage(const char *FileName, bool Jpeg, int Quality, int SizeX, int SizeY)

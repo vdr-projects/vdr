@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.30 2002/02/02 15:59:18 kls Exp $
+ * $Id: svdrp.c 1.31 2002/02/23 13:55:57 kls Exp $
  */
 
 #include "svdrp.h"
@@ -600,8 +600,8 @@ void cSVDRP::CmdLSTC(const char *Option)
 
 void cSVDRP::CmdLSTE(const char *Option)
 {
-  cThreadLock ThreadLock;
-  const cSchedules *Schedules = cDvbApi::PrimaryDvbApi->Schedules(&ThreadLock);
+  cMutexLock MutexLock;
+  const cSchedules *Schedules = cSIProcessor::Schedules(MutexLock);
   if (Schedules) {
      FILE *f = fdopen(file, "w");
      if (f) {

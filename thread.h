@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.h 1.11 2001/10/27 13:22:20 kls Exp $
+ * $Id: thread.h 1.12 2002/02/23 13:53:38 kls Exp $
  */
 
 #ifndef __THREAD_H
@@ -67,6 +67,22 @@ public:
   bool Active(void);
   static void RaisePanic(void);
   static bool EmergencyExit(bool Request = false);
+  };
+
+// cMutexLock can be used to easily set a lock on mutex and make absolutely
+// sure that it will be unlocked when the block will be left. Several locks can
+// be stacked, so a function that makes many calls to another function which uses
+// cMutexLock may itself use a cMutexLock to make one longer lock instead of many
+// short ones.
+
+class cMutexLock {
+private:
+  cMutex *mutex;
+  bool locked;
+public:
+  cMutexLock(cMutex *Mutex = NULL);
+  ~cMutexLock();
+  bool Lock(cMutex *Mutex);
   };
 
 // cThreadLock can be used to easily set a lock in a thread and make absolutely
