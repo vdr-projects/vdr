@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.112 2003/05/24 10:59:00 kls Exp $
+ * $Id: i18n.c 1.113 2003/05/24 11:01:58 kls Exp $
  *
  * Translations provided by:
  *
@@ -1596,7 +1596,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "Caractéristiques des chaînes",//TODO French: that's not what it means!
+    "Caractéristiques des chaînes ne sont pas uniques",
     "",//TODO
     "Kanava-asetukset eivät ole yksilölliset!",
     "",//TODO
@@ -3166,7 +3166,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "Stop",
-    "",// TODO French: still missing
+    "Arrêt",
     "",// TODO
     "Pysäytä",
     "",// TODO
