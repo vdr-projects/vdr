@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 1.18 2002/02/23 13:49:06 kls Exp $
+ * $Id: thread.c 1.19 2002/03/09 11:51:56 kls Exp $
  */
 
 #include "thread.h"
@@ -327,14 +327,21 @@ int cPipe::Close(void)
      f = NULL;
      }
 
-  if (pid >= 0) {
+  if (pid > 0) {
      int status = 0;
-     struct rusage ru;
      int i = 5;
-     while (ret == -1 && i > 0) {
-           usleep(1000);
-           ret = wait4(pid, &status, WNOHANG, &ru);
+     while (i > 0) {
+           ret = waitpid(pid, &status, WNOHANG);
+           if (ret < 0) {
+              if (errno != EINTR && errno != ECHILD) {
+                 LOG_ERROR;
+                 break;
+                 }
+              }
+           else if (ret == pid)
+              break;
            i--;
+           usleep(100000);
            }
    
      if (!i) {

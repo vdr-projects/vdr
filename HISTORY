@@ -1083,3 +1083,6 @@ Video Disk Recorder Revision History
 - Fixed resetting 'mute' state when setting the volume to a non-zero value.
 - Added log messages when deleting recordings in case the disk runs full while
   recording.
+- Fixed closing a pipe (used for replaying Dolby Digital audio), which
+  sometimes left 'zombie' processes behind (thanks to Werner Fink for helping
+  to debug this one).
