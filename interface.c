@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.c 1.39 2001/07/28 14:57:52 kls Exp $
+ * $Id: interface.c 1.40 2001/08/07 16:23:28 kls Exp $
  */
 
 #include "interface.h"
@@ -328,7 +328,7 @@ void cInterface::HelpButton(int Index, const char *Text, eDvbColor FgColor, eDvb
 {
   if (open && Text) {
      const int w = Width() / 4;
-     int l = (w - strlen(Text)) / 2;
+     int l = (w - int(strlen(Text))) / 2;
      if (l < 0)
         l = 0;
      cDvbApi::PrimaryDvbApi->Fill(Index * w, -1, w, 1, BgColor);

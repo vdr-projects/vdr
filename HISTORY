@@ -621,3 +621,7 @@ Video Disk Recorder Revision History
 - Ringbuffer uses semaphores to signal empty/full conditions.
 - Fixed calculating the timeout value in cFile::FileReady() (thanks to
   Wolfgang Henselmann-Weiss).
+
+2001-08-07: Version 0.91
+
+- Fixed displaying colored button texts that are too long.
