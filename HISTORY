@@ -3386,3 +3386,4 @@ Video Disk Recorder Revision History
   reporting this one).
 - Fixed handling symbolic links in cRecordings::ScanVideoDir() (thanks to Stefan
   Huelswitt).
+- Completed the Danish OSD texts (thanks to Mogens Elneff).

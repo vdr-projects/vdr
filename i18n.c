@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.176 2005/02/08 12:01:23 kls Exp $
+ * $Id: i18n.c 1.177 2005/02/12 10:26:51 kls Exp $
  *
  * Translations provided by:
  *
@@ -2840,7 +2840,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Tid kanalinfo skal vises (s)",
   },
   { "Setup.OSD$Info on channel switch",
     "Info beim Kanalwechsel",
