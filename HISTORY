@@ -1423,3 +1423,5 @@ Video Disk Recorder Revision History
   Zimmermann).
 - Added cDevice::NewOsd() to allow a derived cDevice class to implement its own
   OSD capabilities (thanks to Andreas Schultz).
+- Added cPalette::AllColors() for plugins that need to get the color entries of
+  a cPalette (see osdbase.h).
