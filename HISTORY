@@ -627,3 +627,4 @@ Video Disk Recorder Revision History
 - Fixed displaying colored button texts that are too long.
 - Suppressing replay progress display when replaying a DVD.
 - Updated channels.conf.cable (thanks to Uwe Scheffler).
+- Updated French OSD texts (thanks to Jean-Claude Repetto).
