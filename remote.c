@@ -6,7 +6,7 @@
  *
  * Ported to LIRC by Carsten Koch <Carsten.Koch@icem.de>  2000-06-16.
  *
- * $Id: remote.c 1.20 2000/12/03 11:55:06 kls Exp $
+ * $Id: remote.c 1.21 2001/02/04 19:17:59 kls Exp $
  */
 
 #include "remote.h"
@@ -428,6 +428,7 @@ void cRcIoLIRC::Action(void)
   dsyslog(LOG_INFO, "LIRC remote control thread started (pid=%d)", getpid());
 
   int FirstTime = 0;
+  int LastTime = 0;
   char buf[LIRC_BUFFER_SIZE];
   char LastKeyName[LIRC_KEY_BUF];
 
@@ -451,14 +452,17 @@ void cRcIoLIRC::Action(void)
                   continue; // repeat function kicks in after a short delay
                receivedData = receivedRepeat = true;
                }
+            LastTime = Now;
             WakeUp();
             }
          }
       else if (receivedData) { // the last data before releasing the key hasn't been fetched yet
          if (receivedRepeat) { // it was a repeat, so let's make it a release
-            receivedRepeat = false;
-            receivedRelease = true;
-            WakeUp();
+            if (time_ms() - LastTime > REPEATDELAY) {
+               receivedRepeat = false;
+               receivedRelease = true;
+               WakeUp();
+               }
             }
          }
       else if (receivedRepeat) { // all data has already been fetched, but the last one was a repeat, so let's generate a release
