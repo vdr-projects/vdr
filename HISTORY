@@ -1377,3 +1377,4 @@ Video Disk Recorder Revision History
 - Fixed a hangup when switching to the next file during replay.
 - Fixed a possible race condition in the cDvbPlayer (thanks to Andreas Schultz
   for pointing out this one).
+- Disabled channels on Transponder 12070 in 'channels.conf', which apparently no longer transmits.
