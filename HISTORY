@@ -3275,3 +3275,4 @@ Video Disk Recorder Revision History
   Currently there is no visual indicator of the audio channel, yet, and it
   doesn't work with the selected audio languages. It also doesn't appear to
   work with some DVB cards (esp. the Siemens DVB-S Rev 1.3).
+- Fixed a possible race condition in cDevice::Action() (thanks to Mattias Grönlund).

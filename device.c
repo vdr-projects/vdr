@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.69 2005/01/06 14:56:08 kls Exp $
+ * $Id: device.c 1.70 2005/01/06 16:45:12 kls Exp $
  */
 
 #include "device.h"
@@ -976,8 +976,8 @@ bool cDevice::Receiving(bool CheckAny) const
 
 void cDevice::Action(void)
 {
+  active = true;
   if (OpenDvr()) {
-     active = true;
      for (; active;) {
          // Read data from the DVR device:
          uchar *b = NULL;
