@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.4 2000/08/06 12:52:04 kls Exp $
+ * $Id: svdrp.c 1.5 2000/08/26 12:51:51 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -639,7 +639,7 @@ void cSVDRP::Process(void)
         //TODO how can we get the *full* hostname?
         gethostname(buffer, sizeof(buffer));
         time_t now = time(NULL);
-        Reply(220, "%s SVDRP VideoDiskRecorder %s; %s", VDRVERSION, buffer, ctime(&now));
+        Reply(220, "%s SVDRP VideoDiskRecorder %s; %s", buffer, VDRVERSION, ctime(&now));
         }
      int rbytes = readstring(filedes, buffer, sizeof(buffer) - 1);
      if (rbytes > 0) {
