@@ -2106,3 +2106,5 @@ Video Disk Recorder Revision History
 - Removed the (no longer necessary) 'panic' stuff from cThread.
 - Added cStatus::OsdItem() to provide the entire list of menu items to a plugin
   (thanks to Carsten Siebholz).
+- The red ("Record") and yellow ("Pause") button in the "Main" menu are no longer
+  available when replaying.
