@@ -787,7 +787,7 @@ Video Disk Recorder Revision History
 - Made the volume, mute and power keys work when a menu is active, too (thanks
   to Matthias Weingart).
 
-2001-10-19: Version 0.97
+2001-10-20: Version 0.97
 
 - Implemented a lock file to prevent more than one instance of VDR from removing
   files from the video directory at the same time.
@@ -819,3 +819,5 @@ Video Disk Recorder Revision History
 - Fixed timers starting and ending at unexpected times. 'localtime()' was not
   thread safe, now using localtime_r().
 - Removed the "system time seen..." message.
+- Fixed a bug in the replay mode display when pressing the Green or Yellow
+  button while in trick mode (thanks to Stefan Huelswitt)
