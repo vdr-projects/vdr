@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 1.52 2004/06/05 16:52:51 kls Exp $
+ * $Id: osd.c 1.53 2004/06/12 13:24:42 kls Exp $
  */
 
 #include "osd.h"
@@ -713,6 +713,10 @@ cOsdProvider::~cOsdProvider()
 
 cOsd *cOsdProvider::NewOsd(int Left, int Top)
 {
+  if (cOsd::IsOpen()) {
+     esyslog("ERROR: attempt to open OSD while it is already open!");
+     return NULL;
+     }
   if (osdProvider)
      return osdProvider->CreateOsd(Left, Top);
   esyslog("ERROR: no OSD provider available - using dummy OSD!");

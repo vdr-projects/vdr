@@ -1026,3 +1026,6 @@ Jürgen Schmitz <j.schmitz@web.de>
 
 Philip Lawatsch <philip@lawatsch.at>
  for debugging a buffer overflow in eit.c
+
+Jouni Karvo <kex@netlab.hut.fi>
+ for suggesting to make the cOsd constructor 'protected'

@@ -2905,3 +2905,4 @@ Video Disk Recorder Revision History
   of UTF-8 at program start, and if it is, exists and tells the user to turn off
   UTF-8 before starting VDR.
 - Some changes to the SPU decoder interface (thanks to Sven Goethel).
+- Some improvements in cOsd creation (thanks to some suggestions by Jouni Karvo).
