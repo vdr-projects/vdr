@@ -273,3 +273,27 @@ Video Disk Recorder User's Manual
   MarginStart = 2        Defines how many minutes before the official start time
   MarginStop = 10        of a broadcast VDR shall start recording, and how long
                          after the official end time it shall stop recording.
+
+* Executing system commands
+
+  The "Main" menu option "Commands" allows you to execute any system commands
+  defined in the configuration file 'commands.conf' (see FORMATS for details).
+  The "Commands" option will only be present in the "Main" menu if a valid
+  'commands.conf' file containing at least one command definition has been
+  found at program start.
+
+  This feature can be used to do virtually anything, like checking for new
+  mail, displaying the CPU temperature - you name it! All you need to do is
+  enter the necessary command definition into 'commands.conf' and implement
+  the actual command that will be called. Such a command can typically be a
+  shell script or a Perl program. Anything that command writes to stdout will
+  be displayed on a result screen after executing the command. In order to
+  avoid error messages going to stderr, command definitions should redirect
+  stderr to stdout (see FORMATS).
+
+  WARNING: THE COMMANDS DEFINED IN 'commands.conf' WILL BE EXECUTED UNDER THE
+  =======  SAME USER ID THAT VDR IS RUNNING WITH. BE VERY CAREFUL WHEN
+           DEFINING THESE COMMANDS AND MAKE SURE THEY DON'T HARM YOUR SYSTEM,
+           ESPECIALLY IF YOU ARE RUNNING VDR UNDER A HIGH PRIVILEGED USER ID
+           (LIKE 'root').
+

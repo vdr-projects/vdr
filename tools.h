@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.18 2000/10/29 11:19:20 kls Exp $
+ * $Id: tools.h 1.19 2000/11/11 15:14:40 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -41,6 +41,7 @@ char *readline(FILE *f);
 char *strn0cpy(char *dest, const char *src, size_t n);
 char *strreplace(char *s, char c1, char c2);
 char *skipspace(const char *s);
+char *stripspace(char *s);
 bool isempty(const char *s);
 int time_ms(void);
 void delay_ms(int ms);

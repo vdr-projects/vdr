@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.44 2000/11/10 16:13:27 kls Exp $
+ * $Id: vdr.c 1.45 2000/11/11 14:40:11 kls Exp $
  */
 
 #include <getopt.h>
@@ -165,6 +165,7 @@ int main(int argc, char *argv[])
   Setup.Load(AddDirectory(ConfigDirectory, "setup.conf"));
   Channels.Load(AddDirectory(ConfigDirectory, "channels.conf"));
   Timers.Load(AddDirectory(ConfigDirectory, "timers.conf"));
+  Commands.Load(AddDirectory(ConfigDirectory, "commands.conf"));
 #ifdef REMOTE_LIRC
   Keys.SetDummyValues();
 #else

@@ -66,3 +66,27 @@ Video Disk Recorder File Formats
 
   See the MANUAL file for a description of the available options.
 
+* commands.conf
+
+  This file contains the definitions of commands that can be executed from
+  the "Main" menus "Commands" option.
+
+  Each line contains one command definition in the following format:
+
+    title : command
+
+  where 'title' is the string the will be displayed in the "Commands" menu,
+  and 'command' is the actual command string that will be executed when this
+  option is selected. The delimiting ':' may be surrounded by any number of
+  white space characters.
+
+  In order to avoid error messages to stderr, every command should have
+  stderr redirected to stdout. Everything the command prints to stdout will
+  be displayed in a result window, with 'title' as its title.
+
+  Examples:
+
+    Check for new mail: /usr/local/bin/checkmail 2>&1
+    CPU status        : /usr/loval/bin/cpustatus 2>&1
+    Disk space        : df -h | grep '/video' | awk '{ print 100 - $5 "% free"; }'
+

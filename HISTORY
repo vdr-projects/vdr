@@ -278,3 +278,6 @@ Video Disk Recorder Revision History
 - Fixed a timing problem with OSD refresh and SVDRP.
 - Avoiding multiple definitions of the same timer in the "Schedule" menu (this
   could happen when pressing the "Red" button while editing the timer).
+- There can now be a configuration file named 'commands.conf' that defines
+  commands that can be executed through the "Main" menu's "Commands" option
+  (see FORMATS for details on how to define these commands).

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.45 2000/11/11 12:55:10 kls Exp $
+ * $Id: menu.c 1.46 2000/11/11 15:22:56 kls Exp $
  */
 
 #include "menu.h"
@@ -850,26 +850,30 @@ eOSState cMenuTextItem::ProcessKey(eKeys Key)
   return osContinue;
 }
 
-// --- cMenuSummary ----------------------------------------------------------
+// --- cMenuText -------------------------------------------------------------
 
-class cMenuSummary : public cOsdMenu {
+class cMenuText : public cOsdMenu {
 public:
-  cMenuSummary(const char *Text);
+  cMenuText(const char *Title, const char *Text);
   virtual eOSState ProcessKey(eKeys Key);
   };
 
-cMenuSummary::cMenuSummary(const char *Text)
-:cOsdMenu(tr("Summary"))
+cMenuText::cMenuText(const char *Title, const char *Text)
+:cOsdMenu(Title)
 {
   Add(new cMenuTextItem(Text, 1, 2, MenuColumns - 2, MAXOSDITEMS));
 }
 
-eOSState cMenuSummary::ProcessKey(eKeys Key)
+eOSState cMenuText::ProcessKey(eKeys Key)
 {
   eOSState state = cOsdMenu::ProcessKey(Key);
 
-  if (state == osUnknown)
-     state = osContinue;
+  if (state == osUnknown) {
+     switch (Key) {
+       case kOk: return osBack;
+       default:  state = osContinue;
+       }
+     }
   return state;
 }
 
@@ -1058,7 +1062,7 @@ eOSState cMenuTimers::Summary(void)
      return osContinue;
   cTimer *ti = Timers.Get(Current());
   if (ti && ti->summary && *ti->summary)
-     return AddSubMenu(new cMenuSummary(ti->summary));
+     return AddSubMenu(new cMenuText(tr("Summary"), ti->summary));
   return Edit(); // convenience for people not using the Summary feature ;-)
 }
 
@@ -1442,7 +1446,7 @@ eOSState cMenuRecordings::Summary(void)
      return osContinue;
   cMenuRecordingItem *ri = (cMenuRecordingItem *)Get(Current());
   if (ri && ri->recording->Summary() && *ri->recording->Summary())
-     return AddSubMenu(new cMenuSummary(ri->recording->Summary()));
+     return AddSubMenu(new cMenuText(tr("Summary"), ri->recording->Summary()));
   return osContinue;
 }
 
@@ -1524,6 +1528,52 @@ eOSState cMenuSetup::ProcessKey(eKeys Key)
   return state;
 }
 
+// --- cMenuCommands ---------------------------------------------------------
+
+class cMenuCommands : public cOsdMenu {
+private:
+  eOSState Execute(void);
+public:
+  cMenuCommands(void);
+  virtual eOSState ProcessKey(eKeys Key);
+  };
+
+cMenuCommands::cMenuCommands(void)
+:cOsdMenu(tr("Commands"))
+{
+  int i = 0;
+  cCommand *command;
+
+  while ((command = Commands.Get(i)) != NULL) {
+        Add(new cOsdItem(command->Title()));
+        i++;
+        }
+}
+
+eOSState cMenuCommands::Execute(void)
+{
+  cCommand *command = Commands.Get(Current());
+  if (command) {
+     const char *Result = command->Execute();
+     if (Result)
+        return AddSubMenu(new cMenuText(command->Title(), Result));
+     }
+  return osContinue;
+}
+
+eOSState cMenuCommands::ProcessKey(eKeys Key)
+{
+  eOSState state = cOsdMenu::ProcessKey(Key);
+
+  if (state == osUnknown) {
+     switch (Key) {
+       case kOk:  return Execute();
+       default:   break;
+       }
+     }
+  return state;
+}
+
 // --- cMenuMain -------------------------------------------------------------
 
 #define STOP_RECORDING tr("Stop recording ")
@@ -1536,6 +1586,8 @@ cMenuMain::cMenuMain(bool Replaying)
   Add(new cOsdItem(tr("Timers"),     osTimers));
   Add(new cOsdItem(tr("Recordings"), osRecordings));
   Add(new cOsdItem(tr("Setup"),      osSetup));
+  if (Commands.Count())
+     Add(new cOsdItem(tr("Commands"),  osCommands));
   if (Replaying)
      Add(new cOsdItem(tr("Stop replaying"), osStopReplay));
   const char *s = NULL;
@@ -1560,6 +1612,7 @@ eOSState cMenuMain::ProcessKey(eKeys Key)
     case osTimers:     return AddSubMenu(new cMenuTimers);
     case osRecordings: return AddSubMenu(new cMenuRecordings);
     case osSetup:      return AddSubMenu(new cMenuSetup);
+    case osCommands:   return AddSubMenu(new cMenuCommands);
     case osStopRecord: if (Interface->Confirm(tr("Stop Recording?"))) {
                           cOsdItem *item = Get(Current());
                           if (item) {

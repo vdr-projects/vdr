@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.31 2000/11/11 10:39:00 kls Exp $
+ * $Id: config.h 1.32 2000/11/11 14:39:40 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -115,7 +115,7 @@ public:
   char *summary;
   cTimer(bool Instant = false);
   cTimer(const cEventInfo *EventInfo);
-  ~cTimer();
+  virtual ~cTimer();
   cTimer& operator= (const cTimer &Timer);
   const char *ToText(void);
   bool Parse(const char *s);
@@ -130,6 +130,19 @@ public:
   static time_t Day(time_t t);
   static int ParseDay(const char *s);
   static const char *PrintDay(int d);
+  };
+
+class cCommand : public cListObject {
+private:
+  char *title;
+  char *command;
+  static char *result;
+public:
+  cCommand(void);
+  virtual ~cCommand();
+  bool Parse(const char *s);
+  const char *Title(void) { return title; }
+  const char *Execute(void);
   };
 
 template<class T> class cConfig : public cList<T> {
@@ -217,11 +230,14 @@ public:
   cTimer *GetTimer(cTimer *Timer);
   };
 
+class cCommands : public cConfig<cCommand> {};
+
 extern int CurrentGroup;
 
 extern cChannels Channels;
 extern cTimers Timers;
 extern cKeys Keys;
+extern cCommands Commands;
 
 class cSetup {
 private:

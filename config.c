@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.31 2000/11/11 09:56:01 kls Exp $
+ * $Id: config.c 1.32 2000/11/11 15:41:07 kls Exp $
  */
 
 #include "config.h"
@@ -426,7 +426,7 @@ bool cTimer::Parse(const char *s)
   delete summary;
   summary = NULL;
   //XXX Apparently sscanf() doesn't work correctly if the last %a argument
-  //XXX results in an empty string (this firt occured when the EIT gathering
+  //XXX results in an empty string (this first occured when the EIT gathering
   //XXX was put into a separate thread - don't know why this happens...
   //XXX As a cure we copy the original string and add a blank.
   //XXX If anybody can shed some light on why sscanf() failes here, I'd love
@@ -539,9 +539,68 @@ cTimer *cTimer::GetMatch(void)
   return t0;
 }
 
+// --- cCommand -------------------------------------------------------------
+
+char *cCommand::result = NULL;
+
+cCommand::cCommand(void)
+{
+  title = command = NULL;
+}
+
+cCommand::~cCommand()
+{
+  delete title;
+  delete command;
+}
+
+bool cCommand::Parse(const char *s)
+{
+  const char *p = strchr(s, ':');
+  if (p) {
+     int l = p - s;
+     if (l > 0) {
+        title = new char[l + 1];
+        strn0cpy(title, s, l + 1);
+        if (!isempty(title)) {
+           command = stripspace(strdup(skipspace(p + 1)));
+           return !isempty(command);
+           }
+        }
+     }
+  return false;
+}
+
+const char *cCommand::Execute(void)
+{
+  dsyslog(LOG_INFO, "executing command '%s'", command);
+  delete result;
+  result = NULL;
+  FILE *p = popen(command, "r");
+  if (p) {
+     int l = 0;
+     int c;
+     while ((c = fgetc(p)) != EOF) {
+           if (l % 20 == 0)
+              result = (char *)realloc(result, l + 21);
+           result[l++] = c;
+           }
+     if (result)
+        result[l] = 0;
+     pclose(p);
+     }
+  else
+     esyslog(LOG_ERR, "ERROR: can't open pipe for command '%s'", command);
+  return result;
+}
+
 // -- cKeys ------------------------------------------------------------------
 
 cKeys Keys;
+
+// -- cCommands --------------------------------------------------------------
+
+cCommands Commands;
 
 // -- cChannels --------------------------------------------------------------
 

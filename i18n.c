@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.1 2000/11/11 10:39:27 kls Exp $
+ * $Id: i18n.c 1.2 2000/11/11 16:20:47 kls Exp $
  */
 
 /*
@@ -69,6 +69,9 @@ const tPhrase Phrases[] = {
   },
   { "Setup",
     "Einstellungen",
+  },
+  { "Commands",
+    "Befehle",
   },
   { "Edit Channel",
     "Kanal Editieren",
