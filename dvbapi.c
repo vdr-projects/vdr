@@ -7,7 +7,7 @@
  * DVD support initially written by Andreas Schultz <aschultz@warp10.net>
  * based on dvdplayer-0.5 by Matjaz Thaler <matjaz.thaler@guest.arnes.si>
  *
- * $Id: dvbapi.c 1.130 2001/09/30 11:28:58 kls Exp $
+ * $Id: dvbapi.c 1.131 2001/10/06 15:14:17 kls Exp $
  */
 
 //#define DVDDEBUG        1
@@ -3169,7 +3169,7 @@ void cDvbApi::SetModeNormal(bool FromRecording)
 
 void cDvbApi::SetVideoFormat(videoFormat_t Format)
 {
-  if (fd_video)
+  if (fd_video >= 0)
      CHECK(ioctl(fd_video, VIDEO_SET_FORMAT, Format));
 }
 
