@@ -2437,3 +2437,10 @@ Video Disk Recorder Revision History
 2003-10-19: Version 1.2.6pre2
 
 - Improved cDvbDevice::StillPicture() (thanks to Thomas Heiligenmann).
+
+2003-10-24: Version 1.2.6pre3
+
+- Improved cDvbDevice::StillPicture() (thanks to Oliver Endriss).
+- Continuing learning remote control keys in case one rc fails (thanks to
+  Oliver Endriss).
+- Fixed handling comments in editing marks.
