@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 1.10 2000/09/10 14:42:20 kls Exp $
+ * $Id: menu.h 1.11 2000/10/08 14:36:23 kls Exp $
  */
 
 #ifndef _MENU_H
@@ -14,6 +14,7 @@
 
 #include "dvbapi.h"
 #include "osd.h"
+#include "recording.h"
 
 class cMenuMain : public cOsdMenu {
 private:
@@ -31,6 +32,17 @@ private:
 public:
   cDirectChannelSelect(eKeys FirstKey);
   virtual ~cDirectChannelSelect();
+  virtual eOSState ProcessKey(eKeys Key);
+  };
+
+class cMenuRecordings : public cOsdMenu {
+private:
+  cRecordings Recordings;
+  eOSState Play(void);
+  eOSState Del(void);
+  eOSState Summary(void);
+public:
+  cMenuRecordings(void);
   virtual eOSState ProcessKey(eKeys Key);
   };
 
@@ -72,6 +84,7 @@ public:
   virtual eOSState ProcessKey(eKeys Key);
   bool Visible(void) { return visible; }
   static void SetRecording(const char *FileName, const char *Title);
+  static const char *LastReplayed(void);
   };
 
 #endif //_MENU_H

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.33 2000/10/08 12:44:00 kls Exp $
+ * $Id: menu.c 1.34 2000/10/08 14:50:42 kls Exp $
  */
 
 #include "menu.h"
@@ -13,7 +13,6 @@
 #include <stdio.h>
 #include <string.h>
 #include "config.h"
-#include "recording.h"
 
 #define MENUTIMEOUT 120 // seconds
 
@@ -996,28 +995,19 @@ void cMenuRecordingItem::Set(void)
 
 // --- cMenuRecordings -------------------------------------------------------
 
-class cMenuRecordings : public cOsdMenu {
-private:
-  cRecordings Recordings;
-  eOSState Play(void);
-  eOSState Del(void);
-  eOSState Summary(void);
-public:
-  cMenuRecordings(void);
-  virtual eOSState ProcessKey(eKeys Key);
-  };
-
 cMenuRecordings::cMenuRecordings(void)
 :cOsdMenu("Recordings", 6, 6)
 {
   if (Recordings.Load()) {
+     const char *lastReplayed = cReplayControl::LastReplayed();
      cRecording *recording = Recordings.First();
      while (recording) {
-           Add(new cMenuRecordingItem(recording));
+           Add(new cMenuRecordingItem(recording), lastReplayed && strcmp(lastReplayed, recording->FileName()) == 0);
            recording = Recordings.Next(recording);
            }
      }
   SetHelp("Play", NULL/*XXX"Resume"*/, "Delete", "Summary");
+  Display();
 }
 
 eOSState cMenuRecordings::Play(void)
@@ -1071,6 +1061,7 @@ eOSState cMenuRecordings::ProcessKey(eKeys Key)
        case kRed:    return Play();
        case kYellow: return Del();
        case kBlue:   return Summary();
+       case kMenu:   return osEnd;
        default: break;
        }
      }
@@ -1364,6 +1355,11 @@ void cReplayControl::SetRecording(const char *FileName, const char *Title)
   title = Title ? strdup(Title) : NULL;
 }
 
+const char *cReplayControl::LastReplayed(void)
+{
+  return fileName;
+}
+
 void cReplayControl::Show(void)
 {
   if (!visible) {
@@ -1404,6 +1400,7 @@ eOSState cReplayControl::ProcessKey(eKeys Key)
     case kYellow:  dvbApi->Skip(60); break;
     case kMenu:    Hide(); return osMenu; // allow direct switching to menu
     case kOk:      visible ? Hide() : Show(); break;
+    case kBack:    return osRecordings;
     default:       return osUnknown;
     }
   return osContinue;

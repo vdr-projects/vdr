@@ -16,7 +16,7 @@ Video Disk Recorder User's Manual
   Right   Next group  -          -          Enable     Increment     -           Search forward
   Ok      Ch display  Select     Switch     Edit       Accept        Play        Progress disp.
   Menu    Menu on     Menu off   Menu off   Menu off   Menu off      Menu off    Menu on
-  Back    -           Menu off   Main menu  Main menu  Discard       Main menu   -
+  Back    -           Menu off   Main menu  Main menu  Discard       Main menu   Recordings menu
   Red     -           Record     Edit       Edit       -             Play        -
   Green   -           -          New        New        -             -           Skip -60s
   Yellow  -           -          Delete     Delete     -             Delete      Skip +60s
@@ -128,6 +128,9 @@ Video Disk Recorder User's Manual
             time and title of the recording, a progress bar and the
             current and total time of the recording.
             Press "Ok" again to turn off the progress display.
+  - Back    Stops replaying and brings up the "Recordings" menu. This can be
+            used to easily delete a recording after watching it, or to switch
+            to a different recording.
 
 * Programming the Timer
 

@@ -233,3 +233,8 @@ Video Disk Recorder Revision History
   releasing the key stops it.
 - The '@' character that marks an "instant recording" can now be turned off
   in the "Setup" menu (thanks to Matthias Schniedermeyer).
+- Pressing the "Back" button while replaying now stops replaying and brings up
+  the "Recordings" menu (suggested by Carsten Koch). This can be used to easily
+  delete a recording after watching it, or to switch to a different recording.
+- The "Recordings" menu now places the cursor on the last replayed recording, if
+  that file still exists.
