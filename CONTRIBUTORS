@@ -104,9 +104,10 @@ Stefan Huelswitt <huels@iname.com>
  for implementing backtracing for fast forward/rewind
  for implementing the replay mode display
 
-Ulrich Röder <dynamite@efr-net.de>
+Ulrich Röder <roeder@efr-net.de>
  for pointing out that there are channels that have a symbol rate higher than
  27500
+ for his support in keeping the Premiere World channels up to date in 'channels.conf'
 
 Helmut Schächner <schaechner@yahoo.com>
  for his support in keeping the Premiere World channels up to date in 'channels.conf'
@@ -143,3 +144,6 @@ Andreas Vitting <Andreas@huji.de>
 Matthias Weingart <matthias@pentax.boerde.de>
  for fixing handling of the volume, mute and power keys when menus are active
  for fixing the repeat function when using the LIRC remote control
+
+Andreas Share <a.share@t-online.de>
+ for his support in keeping the Premiere World channels up to date in 'channels.conf'
