@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.67 2001/06/02 09:31:03 kls Exp $
+ * $Id: dvbapi.c 1.68 2001/06/02 12:20:13 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -534,7 +534,7 @@ void cRecordBuffer::Input(void)
                break;
             }
          }
-      else if (time(NULL) - t > 5) {
+      if (time(NULL) - t > 5) {
          esyslog(LOG_ERR, "ERROR: video data stream broken");
          cThread::EmergencyExit(true);
          }
