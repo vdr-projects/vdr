@@ -7,7 +7,7 @@
  * DVD support initially written by Andreas Schultz <aschultz@warp10.net>
  * based on dvdplayer-0.5 by Matjaz Thaler <matjaz.thaler@guest.arnes.si>
  *
- * $Id: dvbapi.c 1.139 2001/11/24 11:03:01 kls Exp $
+ * $Id: dvbapi.c 1.140 2001/11/24 14:45:58 kls Exp $
  */
 
 //#define DVDDEBUG        1
@@ -1403,22 +1403,16 @@ cFrame *cAC3toPCM::Get(int size, uchar PTSflags, uchar *PTSdata)
      int p_size = (size > MAXSIZE) ? MAXSIZE : size;
      int length = 10;      // default header bytes
      int header = 0;
-     int stuffb = 0;
 
      switch (PTSflags) {
        case 2:  header = 5;    // additional header bytes
-                stuffb = 1;
                 break;
        case 3:  header = 10;
                 break;
        default: header = 0;
        }
 
-     //      header = 0; //XXX ???
-     stuffb = 0; //XXX ???
-
      length += header;
-     length += stuffb;
 
      buffer[0] = 0x00;
      buffer[1] = 0x00;
@@ -1427,19 +1421,13 @@ cFrame *cAC3toPCM::Get(int size, uchar PTSflags, uchar *PTSdata)
 
      buffer[6] = 0x80;
      buffer[7] = PTSflags << 6;
-     buffer[8] = header + stuffb;
+     buffer[8] = header;
 
      if (header)
         memcpy(&buffer[9], (void *)PTSdata, header);
 
-     // add stuffing
-     data = buffer + 9 + header;
-     for (int cnt = 0; cnt < stuffb; cnt++)
-         data[cnt] = 0xff;
-     length += stuffb;
-
      // add data
-     data = buffer + 9 + header + stuffb + 7;
+     data = buffer + 9 + header + 7;
      int cnt = 0;
      while (p_size) {
            if (ac3outp != ac3inp) { // data in the buffer
@@ -1453,7 +1441,7 @@ cFrame *cAC3toPCM::Get(int size, uchar PTSflags, uchar *PTSdata)
               break;
            }
 
-     data = buffer + 9 + header + stuffb;
+     data = buffer + 9 + header;
      data[0] = aLPCM; // substream ID
      data[1] = 0x00;  // other stuff (see DVB specs), ignored by driver
      data[2] = 0x00;
@@ -2014,8 +2002,10 @@ void cDVDplayBuffer::handleAC3(unsigned char *sector, int length, uchar PTSflags
 #define PCM_FRAME_SIZE 1536
   AC3toPCM.Put(sector, length);
   cFrame *frame;
-  if ((frame = AC3toPCM.Get(PCM_FRAME_SIZE, PTSflags, PTSdata)) != NULL)
-     putFrame(frame);
+  if (ac3_buffersize() <= 100) {
+     if ((frame = AC3toPCM.Get(PCM_FRAME_SIZE, PTSflags, PTSdata)) != NULL)
+        putFrame(frame);
+     }
   while ((frame = AC3toPCM.Get(PCM_FRAME_SIZE)) != NULL)
         putFrame(frame);
 }

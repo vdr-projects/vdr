@@ -876,3 +876,4 @@ Video Disk Recorder Revision History
 - Removed the range limits for the Frequency and Srate parameters of channel
   definitions.
 - Changed the maximum value for PIDs in channels.conf from 0xFFFE to 0x1FFF.
+- Fixed DVD audio sync problems (thanks to Andreas Schultz).

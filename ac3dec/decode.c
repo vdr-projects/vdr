@@ -31,6 +31,9 @@
  *      Matjaz Thaler <matjaz.thaler@rd.iskraemeco.si>
  *      Added support for DVB-s PCI card
  *
+ * 24 Nov 2001
+ *      Andreas Schultz <aschultz@cs.uni-magdeburg.de>
+ *      Added ac3_buffersize()
  */
 
 #ifdef HAVE_CONFIG_H
@@ -95,6 +98,11 @@ static uint8_t buffer[BUFFER_MAX_SIZE];
 static uint32_t buffer_size = 0;;
 // for error handling
 jmp_buf error_jmp_mark;
+
+uint32_t ac3_buffersize()
+{
+  return buffer_size;
+}
 
 static uint32_t decode_buffer_syncframe (syncinfo_t *syncinfo, uint8_t **start, uint8_t *end)
 {
