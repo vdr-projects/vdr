@@ -1162,3 +1162,5 @@ Video Disk Recorder Revision History
 - Fixed a bug when a timer records over midnight of a day that had a change in
   Daylight Saving Time.
 - Added Polish language texts (thanks to Michael Rakowski).
+- Fixed a bug in parsing group separators in channels.conf (thanks to Henning
+  Holtschneider for reporting this one).

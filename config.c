@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.95 2002/04/01 10:54:32 kls Exp $
+ * $Id: config.c 1.96 2002/04/01 11:54:05 kls Exp $
  */
 
 #include "config.h"
@@ -248,6 +248,7 @@ bool cChannel::Parse(const char *s)
         strn0cpy(name, s, MaxChannelName);
         name[strlen(name) - 1] = 0; // strip the '\n'
         groupSep = true;
+        number = 0;
         }
      else
         return false;
