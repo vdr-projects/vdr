@@ -2233,3 +2233,4 @@ Video Disk Recorder Revision History
 - Added a note about NPTL ("Native Posix Thread Library") to the INSTALL file
   (thanks to Jon Burgess for pointing this out).
 - Some corrections to the Finnish OSD texts (thanks to Jaakko Hyvätti).
+- Officially released as version 1.2.0.
