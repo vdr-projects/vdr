@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.16 2002/09/08 09:03:10 kls Exp $
+ * $Id: device.c 1.17 2002/09/08 09:36:16 kls Exp $
  */
 
 #include "device.h"
@@ -126,9 +126,12 @@ cDevice *cDevice::GetDevice(const cChannel *Channel, int Priority, bool *NeedsDe
       bool ndr;
       if (device[i]->ProvidesChannel(Channel, Priority, &ndr) // this device is basicly able to do the job
          && (!d // we don't have a device yet, or...
-            || device[i]->Priority() < d->Priority() // ...this one has an even lower Priority, or...
-            || device[i]->Priority() == d->Priority() // ...same Priority...
-               && device[i]->ProvidesCa(Channel->ca) < d->ProvidesCa(Channel->ca) // ...but this one provides fewer Ca values
+            || (device[i]->Receiving() && !ndr) // ...this one is already receiving and allows additional receivers, or...
+            || !d->Receiving() // ...the one we have is not receiving...
+               && (device[i]->Priority() < d->Priority() // ...this one has an even lower Priority, or...
+                  || device[i]->Priority() == d->Priority() // ...same Priority...
+                     && device[i]->ProvidesCa(Channel->ca) < d->ProvidesCa(Channel->ca) // ...but this one provides fewer Ca values
+                  )
             )
          ) {
          d = device[i];
