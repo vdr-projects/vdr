@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.261 2003/07/26 10:05:20 kls Exp $
+ * $Id: menu.c 1.262 2003/07/26 16:10:39 kls Exp $
  */
 
 #include "menu.h"
@@ -2749,15 +2749,15 @@ eOSState cDisplayChannel::ProcessKey(eKeys Key)
                DisplayChannel(channel);
                lastTime = time_ms();
                // Lets see if there can be any useful further input:
-               int n = channel ? number : 0;
+               int n = channel ? number * 10 : 0;
                while (channel && (channel = Channels.Next(channel)) != NULL) {
                      if (!channel->GroupSep()) {
-                        if (channel->Number() > n)
-                           n *= 10;
                         if (n <= channel->Number() && channel->Number() <= n + 9) {
                            n = 0;
                            break;
                            }
+                        if (channel->Number() > n)
+                           n *= 10;
                         }
                      }
                if (n > 0) {
