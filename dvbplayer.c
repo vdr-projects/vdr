@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 1.15 2002/10/13 16:08:40 kls Exp $
+ * $Id: dvbplayer.c 1.16 2002/11/03 11:23:47 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -219,7 +219,7 @@ void cDvbPlayer::StripAudioPackets(uchar *b, int Length, uchar Except)
             switch (c) {
               case 0xBD: // dolby
                    if (Except)
-                      ;//XXX+ PlayExternalDolby(&b[i], Length - i);
+                      PlayAudio(&b[i], l);
                    // continue with deleting the data - otherwise it disturbs DVB replay
               case 0xC0 ... 0xC1: // audio
                    if (c == 0xC1)

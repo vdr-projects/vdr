@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: transfer.c 1.6 2002/10/26 10:17:17 kls Exp $
+ * $Id: transfer.c 1.7 2002/11/03 11:24:02 kls Exp $
  */
 
 #include "transfer.h"
@@ -123,7 +123,7 @@ void cTransfer::StripAudioPackets(uchar *b, int Length, uchar Except)
          switch (c) {
            case 0xBD: // dolby
                 if (Except)
-                   ;//XXX+ PlayExternalDolby(&b[i], Length - i);
+                   PlayAudio(&b[i], l);
                 // continue with deleting the data - otherwise it disturbs DVB replay
            case 0xC0 ... 0xC1: // audio
                 if (c == 0xC1)

@@ -4,17 +4,13 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbosd.h 1.15 2002/08/09 16:16:48 kls Exp $
+ * $Id: dvbosd.h 1.16 2002/11/01 10:05:47 kls Exp $
  */
 
 #ifndef __DVBOSD_H
 #define __DVBOSD_H
 
-#ifdef NEWSTRUCT
 #include <linux/dvb/osd.h>
-#else
-#include <ost/osd.h>
-#endif
 #include "dvbdevice.h"
 #include "osdbase.h"
 

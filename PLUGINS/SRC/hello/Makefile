@@ -1,7 +1,7 @@
 #
 # Makefile for a Video Disk Recorder plugin
 #
-# $Id: Makefile 1.5 2002/09/17 15:36:36 kls Exp $
+# $Id: Makefile 1.7 2002/11/01 13:44:11 kls Exp $
 
 # The official name of this plugin.
 # This name will be used in the '-P...' option of VDR to load the plugin.
@@ -13,18 +13,21 @@ PLUGIN = hello
 
 VERSION = $(shell grep 'static const char \*VERSION *=' $(PLUGIN).c | awk '{ print $$6 }' | sed -e 's/[";]//g')
 
+### The C++ compiler and options:
+
+CXX      = g++
+CXXFLAGS = -O2 -Wall -Woverloaded-virtual
+
 ### The directory environment:
 
-ifdef NEWSTRUCT
-DVBDIR = ../../../../DVB/include
-DEFINES += -DNEWSTRUCT
-else
-DVBDIR = ../../../../DVB/ost/include
-endif
+DVBDIR = ../../../../DVB
 VDRDIR = ../../..
-VDRINC = $(VDRDIR)/include
 LIBDIR = ../../lib
 TMPDIR = /tmp
+
+### Allow user defined options to overwrite defaults:
+
+-include $(VDRDIR)/Make.config
 
 ### The version number of VDR (taken from VDR's "config.h"):
 
@@ -37,18 +40,13 @@ PACKAGE = vdr-$(ARCHIVE)
 
 ### Includes and Defines (add further entries here):
 
-INCLUDES = -I$(VDRINC) -I$(DVBDIR)
+INCLUDES += -I$(VDRDIR)/include -I$(DVBDIR)/include
 
 DEFINES += -DPLUGIN_NAME_I18N='"$(PLUGIN)"'
 
 ### The object files (add further files here):
 
 OBJS = $(PLUGIN).o i18n.o
-
-### The C++ compiler and options:
-
-CXX      = g++
-CXXFLAGS = -O2 -Wall -Woverloaded-virtual
 
 ### Implicit rules:
 

@@ -4,15 +4,11 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 1.5 2002/10/20 11:50:47 kls Exp $
+ * $Id: channels.c 1.6 2002/11/01 10:26:45 kls Exp $
  */
 
 #include "channels.h"
-#ifdef NEWSTRUCT
 #include <linux/dvb/frontend.h>
-#else
-#include <ost/frontend.h>
-#endif
 #include <ctype.h>
 
 // IMPORTANT NOTE: in the 'sscanf()' calls there is a blank after the '%d'
@@ -32,9 +28,7 @@ const tChannelParameterMap BandwidthValues[] = {
   {   6, BANDWIDTH_6_MHZ },
   {   7, BANDWIDTH_7_MHZ },
   {   8, BANDWIDTH_8_MHZ },
-#ifdef NEWSTRUCT
   { 999, BANDWIDTH_AUTO },
-#endif
   { -1 }
   };
 
@@ -43,17 +37,11 @@ const tChannelParameterMap CoderateValues[] = {
   {  12, FEC_1_2 },
   {  23, FEC_2_3 },
   {  34, FEC_3_4 },
-#ifdef NEWSTRUCT
   {  45, FEC_4_5 },
-#endif
   {  56, FEC_5_6 },
-#ifdef NEWSTRUCT
   {  67, FEC_6_7 },
-#endif
   {  78, FEC_7_8 },
-#ifdef NEWSTRUCT
   {  89, FEC_8_9 },
-#endif
   { 999, FEC_AUTO },
   { -1 }
   };
@@ -65,18 +53,14 @@ const tChannelParameterMap ModulationValues[] = {
   {  64, QAM_64 },
   { 128, QAM_128 },
   { 256, QAM_256 },
-#ifdef NEWSTRUCT
   { 999, QAM_AUTO },
-#endif
   { -1 }
   };
 
 const tChannelParameterMap TransmissionValues[] = {
   {   2, TRANSMISSION_MODE_2K },
   {   8, TRANSMISSION_MODE_8K },
-#ifdef NEWSTRUCT
   { 999, TRANSMISSION_MODE_AUTO },
-#endif
   { -1 }
   };
 
@@ -85,9 +69,7 @@ const tChannelParameterMap GuardValues[] = {
   {   8, GUARD_INTERVAL_1_8 },
   {  16, GUARD_INTERVAL_1_16 },
   {  32, GUARD_INTERVAL_1_32 },
-#ifdef NEWSTRUCT
   { 999, GUARD_INTERVAL_AUTO },
-#endif
   { -1 }
   };
 
@@ -96,9 +78,7 @@ const tChannelParameterMap HierarchyValues[] = {
   {   1, HIERARCHY_1 },
   {   2, HIERARCHY_2 },
   {   4, HIERARCHY_4 },
-#ifdef NEWSTRUCT
   { 999, HIERARCHY_AUTO },
-#endif
   { -1 }
   };
 
@@ -160,16 +140,15 @@ cChannel::cChannel(void)
   sid          = 0;
   number       = 0;
   groupSep     = false;
-  //XXX
   polarization = 'v';
   inversion    = INVERSION_AUTO;
-  bandwidth    = BANDWIDTH_8_MHZ;
-  coderateH    = FEC_AUTO;//XXX FEC_2_3
-  coderateL    = FEC_1_2;//XXX
-  modulation   = QAM_64;
-  transmission = TRANSMISSION_MODE_2K;
-  guard        = GUARD_INTERVAL_1_32;
-  hierarchy    = HIERARCHY_NONE;
+  bandwidth    = BANDWIDTH_AUTO;
+  coderateH    = FEC_AUTO;
+  coderateL    = FEC_AUTO;
+  modulation   = QAM_AUTO;
+  transmission = TRANSMISSION_MODE_AUTO;
+  guard        = GUARD_INTERVAL_AUTO;
+  hierarchy    = HIERARCHY_AUTO;
 }
 
 cChannel::cChannel(const cChannel *Channel)
@@ -187,24 +166,20 @@ cChannel::cChannel(const cChannel *Channel)
   ca           = Channel ? Channel->ca           : 0;
   sid          = Channel ? Channel->sid          : 0;
   groupSep     = Channel ? Channel->groupSep     : false;
-  //XXX
   polarization = Channel ? Channel->polarization : 'v';
   inversion    = Channel ? Channel->inversion    : INVERSION_AUTO;
-  bandwidth    = Channel ? Channel->bandwidth    : BANDWIDTH_8_MHZ;
-  coderateH    = Channel ? Channel->coderateH    : FEC_AUTO;//XXX FEC_2_3
-  coderateL    = Channel ? Channel->coderateL    : FEC_1_2;//XXX
-  modulation   = Channel ? Channel->modulation   : QAM_64;
-  transmission = Channel ? Channel->transmission : TRANSMISSION_MODE_2K;
-  guard        = Channel ? Channel->guard        : GUARD_INTERVAL_1_32;
-  hierarchy    = Channel ? Channel->hierarchy    : HIERARCHY_NONE;
+  bandwidth    = Channel ? Channel->bandwidth    : BANDWIDTH_AUTO;
+  coderateH    = Channel ? Channel->coderateH    : FEC_AUTO;
+  coderateL    = Channel ? Channel->coderateL    : FEC_AUTO;
+  modulation   = Channel ? Channel->modulation   : QAM_AUTO;
+  transmission = Channel ? Channel->transmission : TRANSMISSION_MODE_AUTO;
+  guard        = Channel ? Channel->guard        : GUARD_INTERVAL_AUTO;
+  hierarchy    = Channel ? Channel->hierarchy    : HIERARCHY_AUTO;
 }
 
 static int PrintParameter(char *p, char Name, int Value)
 {
-  //XXX return Value >= 0 && Value != 999 ? sprintf(p, "%c%d", Name, Value) : 0;
-  //XXX let's store 999 for the moment, until we generally switch to the NEWSTRUCT
-  //XXX driver (where the defaults will all be AUTO)
-  return Value >= 0 && (Value != 999 || (Name != 'I' && Name != 'C')) ? sprintf(p, "%c%d", Name, Value) : 0;
+  return Value >= 0 && Value != 999 ? sprintf(p, "%c%d", Name, Value) : 0;
 }
 
 const char *cChannel::ParametersToString(void)
@@ -233,17 +208,8 @@ static const char *ParseParameter(const char *s, int &Value, const tChannelParam
      errno = 0;
      int n = strtol(s, &p, 10);
      if (!errno && p != s) {
-        //XXX let's tolerate 999 for the moment, until we generally switch to the NEWSTRUCT
-        //XXX driver (where the defaults will all be AUTO)
-        //XXX Value = MapToDriver(n, Map);
-        //XXX if (Value >= 0)
-        //XXX return p;
-        int v = MapToDriver(n, Map);
-        if (v >= 0) {
-           Value = v;
-           return p;
-           }
-        else if (v == 999)
+        Value = MapToDriver(n, Map);
+        if (Value >= 0)
            return p;
         }
      }

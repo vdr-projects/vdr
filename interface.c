@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.c 1.59 2002/10/27 15:54:05 kls Exp $
+ * $Id: interface.c 1.60 2002/11/01 10:50:38 kls Exp $
  */
 
 #include "interface.h"
@@ -418,9 +418,9 @@ void cInterface::LearnKeys(void)
          Clear();
          cRemote::Clear();
          WriteText(1, 1, Headline);
-         cRemote::SetLearning(true);
+         cRemote::SetLearning(Remote);
          QueryKeys(Remote);
-         cRemote::SetLearning(false);
+         cRemote::SetLearning(NULL);
          Clear();
          WriteText(1, 1, Headline);
          WriteText(1, 3, tr("Phase 3: Saving key codes"));

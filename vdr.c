@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.130 2002/10/27 15:20:56 kls Exp $
+ * $Id: vdr.c 1.132 2002/11/03 13:54:39 kls Exp $
  */
 
 #include <getopt.h>
@@ -30,6 +30,7 @@
 #include <signal.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include "audio.h"
 #include "channels.h"
 #include "config.h"
 #include "cutter.h"
@@ -87,6 +88,7 @@ int main(int argc, char *argv[])
 #define DEFAULTPLUGINDIR "./PLUGINS/lib"
 
   int SVDRPport = DEFAULTSVDRPPORT;
+  const char *AudioCommand = NULL;
   const char *ConfigDirectory = NULL;
   bool DisplayHelp = false;
   bool DisplayVersion = false;
@@ -121,10 +123,8 @@ int main(int argc, char *argv[])
   int c;
   while ((c = getopt_long(argc, argv, "a:c:dD:E:hl:L:mp:P:r:s:t:v:Vw:", long_options, NULL)) != -1) {
         switch (c) {
-          /*XXX+
-          case 'a': cDevice::SetAudioCommand(optarg);
+          case 'a': AudioCommand = optarg;
                     break;
-                    XXX*/
           case 'c': ConfigDirectory = optarg;
                     break;
           case 'd': DaemonMode = true; break;
@@ -365,6 +365,11 @@ int main(int argc, char *argv[])
 #endif
   Interface->LearnKeys();
 
+  // External audio:
+
+  if (AudioCommand)
+     new cExternalAudio(AudioCommand);
+
   // Channel:
 
   Channels.SwitchTo(Setup.CurrentChannel);
@@ -519,7 +524,7 @@ int main(int argc, char *argv[])
              case osRecord: DELETENULL(Menu);
                             Temp = NULL;
                             if (cRecordControls::Start())
-                               Interface->Info(tr("Recording"));
+                               ;//XXX Interface->Info(tr("Recording"));
                             else
                                Interface->Error(tr("No free DVB device to record!"));
                             break;
@@ -589,7 +594,7 @@ int main(int argc, char *argv[])
              // Instant recording:
              case kRecord:
                   if (cRecordControls::Start())
-                     Interface->Info(tr("Recording"));
+                     ;//XXX Interface->Info(tr("Recording"));
                   else
                      Interface->Error(tr("No free DVB device to record!"));
                   break;
@@ -676,6 +681,7 @@ int main(int argc, char *argv[])
   delete Interface;
   cOsd::Shutdown();
   Remotes.Clear();
+  Audios.Clear();
   Setup.CurrentChannel = cDevice::CurrentChannel();
   Setup.CurrentVolume  = cDevice::CurrentVolume();
   Setup.Save();

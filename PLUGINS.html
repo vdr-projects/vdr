@@ -21,18 +21,18 @@ VDR program and present itself to the user.
 The <i>inside</i> interface provides the plugin code access to VDR's internal data
 structures and allows it to hook itself into specific areas to perform special actions.
 <p>
-<!--X1.1.11--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
-Important modifications introduced in version 1.1.11 are marked like this.
-<!--X1.1.11--></td></tr></table>
-<!--X1.1.12--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
+<!--X1.1.12--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 Important modifications introduced in version 1.1.12 are marked like this.
 <!--X1.1.12--></td></tr></table>
-<!--X1.1.13--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
+<!--X1.1.13--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
 Important modifications introduced in version 1.1.13 are marked like this.
 <!--X1.1.13--></td></tr></table>
-<!--X1.1.14--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+<!--X1.1.14--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
 Important modifications introduced in version 1.1.14 are marked like this.
 <!--X1.1.14--></td></tr></table>
+<!--X1.1.15--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+Important modifications introduced in version 1.1.15 are marked like this.
+<!--X1.1.15--></td></tr></table>
 
 <a name="Part I - The Outside Interface"><hr><center><h1>Part I - The Outside Interface</h1></center>
 
@@ -964,7 +964,7 @@ bool DevicePoll(cPoller &amp;Poller, int TimeoutMs = 0);
 </pre></td></tr></table><p>
 
 to determine whether the device is ready for further data.
-<!--X1.1.13--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
+<!--X1.1.13--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
 <p>
 If the player can provide more than a single audio track, it can implement the
 following functions to make them available:
@@ -977,7 +977,16 @@ virtual void SetAudioTrack(int Index);
 
 <!--X1.1.13--></td></tr></table>
 <p>
-TODO: PlayAudio()???
+<!--X1.1.15--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+If there is an additional audio track that has to be replayed with external hardware,
+the player shall call its member function
+
+<p><table><tr><td bgcolor=#F0F0F0><pre><br>
+void PlayAudio(const uchar *Data, int Length);
+</pre></td></tr></table><p>
+
+where <tt>Data</tt> points to a complete audio PES packet of <tt>Length</tt> bytes.
+<!--X1.1.15--></td></tr></table>
 <p>
 The second part needed here is a control object that receives user input from the main
 program loop and reacts on this by telling the player what to do:
@@ -1196,7 +1205,7 @@ If the new device can receive, it most likely needs to provide a way of
 selecting which channel it shall tune to:
 
 <p><table><tr><td bgcolor=#F0F0F0><pre><br>
-<!--X1.1.12--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
+<!--X1.1.12--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 virtual bool ProvidesSource(int Source) const;
 <!--X1.1.12--></td></tr></table>
 virtual bool ProvidesChannel(const cChannel *Channel, int Priority = -1, bool *NeedsDetachReceivers = NULL);
@@ -1206,7 +1215,7 @@ virtual bool SetChannelDevice(const cChannel *Channel, bool LiveView);
 These functions will be called with the desired source or channel and shall return whether
 this device can provide the requested source or channel and whether tuning to it was successful,
 repectively.
-<!--X1.1.13--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
+<!--X1.1.13--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
 <p>
 <b>Audio selection</b>
 <p>
@@ -1253,7 +1262,7 @@ The functions to implement replaying capabilites are
 
 <p><table><tr><td bgcolor=#F0F0F0><pre><br>
 virtual bool HasDecoder(void) const;
-<!--X1.1.14--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+<!--X1.1.14--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
 virtual bool CanReplay(void) const;
 <!--X1.1.14--></td></tr></table>
 virtual bool SetPlayMode(ePlayMode PlayMode);
@@ -1315,7 +1324,51 @@ shut down (delete) all devices when the program terminates. It is therefore
 important that the devices are created on the heap, using the <tt>new</tt>
 operator!
 
-<!--X1.1.11--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
+<!--X1.1.15--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+<hr><h2>Dolby Digital</h2>
+
+<center><i><b>"The stereo effect may only be experienced if stereo equipment is used!"</b></i></center><p>
+
+There are many different ways to replay additional audio tracks, like Dolby Digital.
+So VDR offers a plugin interface that allows for the implementation of any kind of
+audio replay facility.
+<p>
+To implement a new audio output facility, simply derive a class from <tt>cAudio</tt>,
+as in
+
+<p><table><tr><td bgcolor=#F0F0F0><pre><br>
+#include &lt;vdr/audio.h&gt;
+#include &lt;vdr/thread.h&gt;
+
+class cMyAudio : public cAudio, private cThread {
+private:
+  virtual void Action(void);
+public:
+  cMyAudio(void);
+  virtual void Play(const uchar *Data, int Length);
+  virtual void Mute(bool On);
+  virtual void Clear(void);
+  };
+</pre></td></tr></table><p>
+
+You should create your derived audio object in the
+<a href="#Getting started"><tt>Start()</tt></a> function of your plugin.
+Note that the object has to be created on the heap (using <tt>new</tt>),
+and you shall not delete it at any point (it will be deleted automatically
+when the program ends).
+<p>
+The <tt>Play()</tt> function will be offered complete audio PES packets
+and has to accept each packet immediately. It must return as soon as possible,
+in order to not delay the overall replay process. Therefore you may want to
+also derive your class from <tt>cThread</tt> and run the actual audio processing
+as a separate thread. Note that the offered data is only valid within the call
+to <tt>Play()</tt>, so if you can't process the entire block immediately, you
+will need to copy it for later processing in your thread.
+<p>
+The <tt>Mute()</tt> and <tt>Clear()</tt> functions will be called whenever the audio shall
+be muted, or any buffered data shall be cleared, respectively.
+<!--X1.1.15--></td></tr></table>
+
 <hr><h2>Remote Control</h2>
 
 <center><i><b>The joy of zapping!</b></i></center><p>
@@ -1427,7 +1480,6 @@ Put(uint64 Code, bool Repeat = false, bool Release = false);
 </pre></td></tr></table><p>
 
 The other parameters have the same meaning as in the first version of this function.
-<!--X1.1.11--></td></tr></table>
 
 </body>
 </html>

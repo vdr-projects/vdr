@@ -4,20 +4,21 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.h 1.15 2002/10/26 11:35:04 kls Exp $
+ * $Id: dvbdevice.h 1.18 2002/11/03 12:31:15 kls Exp $
  */
 
 #ifndef __DVBDEVICE_H
 #define __DVBDEVICE_H
 
-#ifdef NEWSTRUCT
 #include <linux/dvb/frontend.h>
-#else
-#include <ost/frontend.h>
-#endif
+#include <linux/dvb/version.h>
 #include "device.h"
 #include "dvbspu.h"
 #include "eit.h"
+
+#if DVB_API_VERSION != 3
+#error VDR requires Linux DVB driver API version 3!
+#endif
 
 #define MAXDVBDEVICES  4
 
@@ -31,13 +32,8 @@ public:
          // Initializes the DVB devices.
          // Must be called before accessing any DVB functions.
 private:
-#ifdef NEWSTRUCT
   fe_type_t frontendType;
   int fd_osd, fd_frontend, fd_audio, fd_video, fd_dvr;
-#else
-  FrontendType frontendType;
-  int fd_osd, fd_frontend, fd_sec, fd_audio, fd_video, fd_dvr;
-#endif
   int OsdDeviceHandle(void) const { return fd_osd; }
 protected:
   virtual void MakePrimaryDevice(bool On);
@@ -112,7 +108,7 @@ public:
   virtual void StillPicture(const uchar *Data, int Length);
   virtual bool Poll(cPoller &Poller, int TimeoutMs = 0);
   virtual int PlayVideo(const uchar *Data, int Length);
-  virtual int PlayAudio(const uchar *Data, int Length);
+  virtual void PlayAudio(const uchar *Data, int Length);
 
 // Receiver facilities
 

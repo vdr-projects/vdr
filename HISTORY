@@ -1670,3 +1670,54 @@ Video Disk Recorder Revision History
 - Fixed a crash when learning the keys of several remote controls and pressing
   buttons of those that have already been learned (thanks to Oliver Endriss for
   reporting this one).
+
+2002-11-03: Version 1.1.15
+
+- Completely switched to the new CVS HEAD version of the linux-dvb driver.
+  The NEWSTRUCT compile time switch is now obsolete. The required driver is now
+  the CVS HEAD version dated 2002-11-01 or later.
+- Adjusted the INSTALL file to the 1.1.x version.
+- Only accepting key presses from the current remote control when learning (thanks to
+  Oliver Endriss).
+- Fixed the EPG scanner, which broke 'Transfer Mode' as soon as it kicked in
+  (thanks to Oliver Endriss for reporting this one).
+- Fixed handling audio tracks in cDvbDevice.
+- Updated channels.conf.terr (thanks to Uwe Scheffler).
+- Fixed displaying the group separators in the channel display (thanks to Martin
+  Hammerschmid for pointing out this one).
+- The Makefile now includes the file Make.config (if present in the VDR source
+  directory), which allows the user to overwrite several settings with individual
+  values (suggested by Andreas Schultz). The VDR distribution archive does not
+  contain this file in order to not overwrite a user defined file. There is a
+  Make.config.template which contains the default values of the macros the user
+  can overwrite.
+- Since there have been changes to the 'newplugin' script authors of plugins
+  may want to newly create their plugins' Makefiles with the new version of this
+  script, and adapt them to their individual needs (make sure you don't overwrite
+  your existing plugin directory - make a backup copy first!).
+- Fixed reading EPG data via the SVDRP command PUTE (it changed the current
+  service ID).
+- Fixed closing all dup'ed file descriptors in cPipe.
+- Implemented a plugin interface for additional audio processing (see PLUGINS.html
+  under "Dolby Digital").
+  The functionality of the '-a' command line option has been reactivated.
+  Since the author doesn't have any Dolby Digital equipment this may or may not
+  work as expected. There may still be some places where a call to cAudios::Clear()
+  or cAudios::Mute() is necessary. Those with Dolby Digital equipment should please
+  take a look at this and maybe send patches.
+  Replaying Dolby Digital in ways other than through VDR's '-a' option will have to
+  be implemented as plugins. Those who have written patches for VDR version 1.0.x
+  should convert their work into the proper plugins for version 1.1.x.
+  Note to authors of cPlayer derived plugins: please read the modified comments
+  in device.h regarding the member functions cDevice::Clear(), cDevice::Mute() and
+  cDevice::PlayAudio(). Derived classes must call these base class member functions
+  to make sure all registered cAudio objects are properly handled. Also note that
+  the return type of cDevice::PlayAudio() has been changed to 'void', since this
+  function always has to accept the entire data block immediately and there is
+  nothing that could be reasonably done in case an error occurs in one of the
+  cAudio objects.
+- Now checking the driver's DVB_API_VERSION in dvbdevice.h. Since VDR now requires
+  a driver dated 2002-11-01 or later the MIN_DVB_DRIVER_VERSION_FOR_TIMESHIFT and
+  DVB_DRIVER_VERSION stuff has been replaced with DO_REC_AND_PLAY_ON_PRIMARY_DEVICE,
+  which can be used to disable simultaneous recording and replaying on the primary
+  DVB device in case there are problems with this.

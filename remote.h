@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remote.h 1.18 2002/10/27 15:16:50 kls Exp $
+ * $Id: remote.h 1.19 2002/11/01 10:48:11 kls Exp $
  */
 
 #ifndef __REMOTE_H
@@ -24,7 +24,7 @@ private:
   static eKeys keys[MaxKeys];
   static int in;
   static int out;
-  static bool learning;
+  static cRemote *learning;
   static char *unknownCode;
   static cMutex mutex;
   static cCondVar keyPressed;
@@ -39,7 +39,7 @@ public:
   virtual ~cRemote();
   virtual bool Initialize(void) { return true; }
   const char *Name(void) { return name; }
-  static void SetLearning(bool On) { learning = On; }
+  static void SetLearning(cRemote *Learning) { learning = Learning; }
   static void Clear(void);
   static bool Put(eKeys Key);
   static bool PutMacro(eKeys Key);

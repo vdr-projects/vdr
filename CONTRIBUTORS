@@ -47,6 +47,7 @@ Martin Hammerschmid <martin@hammerschmid.com>
  for detecting a deadlock when switching channels via Schedule/Now|Next/Switch
  for adding a missing #include to ringbuffer.c
  for adding a missing 'public' keyword in device.h
+ for pointing out a bug in displaying the group separators in the channel display
 
 Bastian Guse <bastian@nocopy.de>
  for writing the FORMATS entry for timers.conf
@@ -184,6 +185,7 @@ Andreas Schultz <aschultz@warp10.net>
  for reporting a problem with plugin Makefiles and the NEWSTRUCT driver
  for pointing out some unnecessary #includes in eit.c and a problem with
  cMenuRecordings::Del(), which caused warnings with gcc-3.2
+ for suggesting a Make.config file
 
 Aaron Holtzman
  for writing 'ac3dec'
@@ -426,6 +428,10 @@ Oliver Endriss <o.endriss@gmx.de>
  one remote control
  for reporting a crash when learning the keys of several remote controls and
  pressing buttons of those that have already been learned
+ for making the remote control learn procedure accept key presses only from the
+ current remote control
+ for reporting a bug in the EPG scanner, which broke 'Transfer Mode' as soon as
+ it kicked in
 
 Reinhard Walter Buchner <rw.buchner@freenet.de>
  for adding some satellites to 'sources.conf'

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: eitscan.c 1.9 2002/10/19 11:48:02 kls Exp $
+ * $Id: eitscan.c 1.10 2002/11/01 11:04:49 kls Exp $
  */
 
 #include "eitscan.h"
@@ -55,7 +55,7 @@ void cEITScanner::Process(void)
             cDevice *Device = cDevice::GetDevice(i);
             if (Device && Device->CardIndex() < MAXDVBDEVICES) {
                if (Device != cDevice::PrimaryDevice() || (cDevice::NumDevices() == 1 && Setup.EPGScanTimeout && now - lastActivity > Setup.EPGScanTimeout * 3600)) {
-                  if (!(Device->Receiving() || Device->Replaying())) {
+                  if (!(Device->Receiving(true) || Device->Replaying())) {
                      int oldCh = lastChannel;
                      int ch = oldCh + 1;
                      while (ch != oldCh) {
