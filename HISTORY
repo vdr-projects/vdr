@@ -3009,3 +3009,6 @@ Video Disk Recorder Revision History
 - Fixed a possible crash with inconsistent SI data (thanks to Marcel Wiesweg).
 - Fixed showing the replay mode if the OSD is currently in use (thanks to Kimmo
   Tykkala for pointing out this problem).
+- cOsdProvider::NewOsd() now always returns a valid pointer, even if the OSD is
+  currently in use (it will then return a dummy cOsd object and write a message to
+  the log file).
