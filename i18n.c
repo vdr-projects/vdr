@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.147 2004/02/20 13:58:14 kls Exp $
+ * $Id: i18n.c 1.148 2004/02/21 15:14:36 kls Exp $
  *
  * Translations provided by:
  *
@@ -2354,6 +2354,24 @@ const tI18nPhrase Phrases[] = {
     "EPG hibaelhárítás",
     "Nivell de correcció de la Guia",
     "ÃàÞÒÕÝì ÚÞààÕÚæØØ ÞèØÑÞÚ",
+  },
+  { "Setup.EPG$EPG linger time (min)",
+    "Alte EPG-Daten anzeigen (min)",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "Vanha tieto näkyy (min)",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "Visa gammal info (min)",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
   },
   { "Setup.EPG$Set system time",
     "Systemzeit stellen",

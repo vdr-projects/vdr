@@ -2689,3 +2689,5 @@ Video Disk Recorder Revision History
   will still be shown in the display (provided the broadcasters handle the
   'running status' flag correctly). This also applies to programmes that have
   a start time that is in the future, but are already running.
+- Implemented an "EPG linger time", which can be set to have older EPG information
+  still displayed in the "Schedule" menu (thanks to Jaakko Hyvätti).

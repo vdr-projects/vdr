@@ -561,6 +561,7 @@ Jaakko Hyvätti <jaakko@hyvatti.iki.fi>
  for fixing the minimum lifespan of deleted recordings
  for suggesting to improve channel switching in case of numerical input by switching
  as soon as the channel is unique
+ for implementing an "EPG linger time"
 
 Dennis Noordsij <dennis.noordsij@wiral.com>
  for reporting a small glitch when switching channels

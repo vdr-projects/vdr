@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.123 2004/02/09 16:57:59 kls Exp $
+ * $Id: config.c 1.124 2004/02/21 15:05:40 kls Exp $
  */
 
 #include "config.h"
@@ -262,6 +262,7 @@ cSetup::cSetup(void)
   EPGLanguages[0] = -1;
   EPGScanTimeout = 5;
   EPGBugfixLevel = 2;
+  EPGLinger = 0;
   SVDRPTimeout = 300;
   ZapTimeout = 3;
   SortTimers = 1;
@@ -406,6 +407,7 @@ bool cSetup::Parse(const char *Name, const char *Value)
   else if (!strcasecmp(Name, "EPGLanguages"))        return ParseLanguages(Value, EPGLanguages);
   else if (!strcasecmp(Name, "EPGScanTimeout"))      EPGScanTimeout     = atoi(Value);
   else if (!strcasecmp(Name, "EPGBugfixLevel"))      EPGBugfixLevel     = atoi(Value);
+  else if (!strcasecmp(Name, "EPGLinger"))           EPGLinger          = atoi(Value);
   else if (!strcasecmp(Name, "SVDRPTimeout"))        SVDRPTimeout       = atoi(Value);
   else if (!strcasecmp(Name, "ZapTimeout"))          ZapTimeout         = atoi(Value);
   else if (!strcasecmp(Name, "SortTimers"))          SortTimers         = atoi(Value);
@@ -457,6 +459,7 @@ bool cSetup::Save(void)
   StoreLanguages("EPGLanguages", EPGLanguages);
   Store("EPGScanTimeout",     EPGScanTimeout);
   Store("EPGBugfixLevel",     EPGBugfixLevel);
+  Store("EPGLinger",          EPGLinger);
   Store("SVDRPTimeout",       SVDRPTimeout);
   Store("ZapTimeout",         ZapTimeout);
   Store("SortTimers",         SortTimers);

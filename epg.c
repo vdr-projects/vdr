@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 1.9 2004/02/21 14:33:11 kls Exp $
+ * $Id: epg.c 1.10 2004/02/21 15:15:47 kls Exp $
  */
 
 #include "epg.h"
@@ -523,7 +523,7 @@ void cSchedule::Cleanup(time_t Time)
       Event = events.Get(a);
       if (!Event)
          break;
-      if (Event->StartTime() + Event->Duration() + 3600 < Time) { // adding one hour for safety
+      if (Event->StartTime() + Event->Duration() + Setup.EPGLinger * 60 + 3600 < Time) { // adding one hour for safety
          events.Del(Event);
          a--;
          }

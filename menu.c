@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.287 2004/02/21 13:53:25 kls Exp $
+ * $Id: menu.c 1.288 2004/02/21 15:26:47 kls Exp $
  */
 
 #include "menu.h"
@@ -1366,12 +1366,13 @@ void cMenuSchedule::PrepareSchedule(cChannel *Channel)
   if (schedules) {
      const cSchedule *Schedule = schedules->GetSchedule(Channel->GetChannelID());
      if (Schedule) {
+        const cEvent *PresentEvent = Schedule->GetPresentEvent();
         int num = Schedule->NumEvents();
-        time_t now = time(NULL);
+        time_t now = time(NULL) - Setup.EPGLinger * 60;
         for (int a = 0; a < num; a++) {
             const cEvent *Event = Schedule->GetEventNumber(a);
             if (Event->StartTime() + Event->Duration() > now)
-               Add(new cMenuScheduleItem(Event));
+               Add(new cMenuScheduleItem(Event), Event == PresentEvent);
             }
         }
      }
@@ -2026,6 +2027,7 @@ void cMenuSetupEPG::Setup(void)
 
   Add(new cMenuEditIntItem( tr("Setup.EPG$EPG scan timeout (h)"),      &data.EPGScanTimeout));
   Add(new cMenuEditIntItem( tr("Setup.EPG$EPG bugfix level"),          &data.EPGBugfixLevel, 0, MAXEPGBUGFIXLEVEL));
+  Add(new cMenuEditIntItem( tr("Setup.EPG$EPG linger time (min)"),     &data.EPGLinger, 0));
   Add(new cMenuEditBoolItem(tr("Setup.EPG$Set system time"),           &data.SetSystemTime));
   if (data.SetSystemTime)
      Add(new cMenuEditTranItem(tr("Setup.EPG$Use time from transponder"), &data.TimeTransponder));

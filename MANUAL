@@ -462,6 +462,9 @@ Version 1.2
                          be fixed accordingly. Restart VDR if you want to make sure
                          all data is fixed.
 
+  EPG linger time = 0    The time (in minutes) within which old EPG information
+                         shall still be displayed in the "Schedule" menu.
+
   Set system time = no   Defines whether the system time will be set according to
                          the time received from the DVB data stream.
                          Note that this works only if VDR is running under a user
