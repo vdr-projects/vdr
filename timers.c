@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 1.14 2004/10/24 14:56:55 kls Exp $
+ * $Id: timers.c 1.15 2004/10/31 10:07:43 kls Exp $
  */
 
 #include "timers.h"
@@ -458,6 +458,7 @@ cTimers Timers;
 
 cTimers::cTimers(void)
 {
+  modified = false;
   beingEdited = 0;;
   lastSetEvents = 0;
 }
@@ -509,6 +510,18 @@ cTimer *cTimers::GetNextActiveTimer(void)
          t0 = ti;
       }
   return t0;
+}
+
+void cTimers::SetModified(void)
+{
+  modified = true;
+}
+
+bool cTimers::Modified(void)
+{
+  bool Result = modified;
+  modified = false;
+  return Result;
 }
 
 void cTimers::SetEvents(void)

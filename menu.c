@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.315 2004/10/30 15:37:16 kls Exp $
+ * $Id: menu.c 1.316 2004/10/31 10:09:16 kls Exp $
  */
 
 #include "menu.h"
@@ -639,7 +639,7 @@ eOSState cMenuEditTimer::ProcessKey(eKeys Key)
                           if (addIfConfirmed)
                              Timers.Add(timer);
                           timer->Matches();
-                          Timers.Save();
+                          Timers.SetModified();
                           isyslog("timer %d %s (%s)", timer->Index() + 1, addIfConfirmed ? "added" : "modified", timer->HasFlags(tfActive) ? "active" : "inactive");
                           addIfConfirmed = false;
                           }
@@ -747,7 +747,7 @@ eOSState cMenuTimers::OnOff(void)
         isyslog("timer %d first day set to %s", timer->Index() + 1, timer->PrintFirstDay());
      else
         isyslog("timer %d %sactivated", timer->Index() + 1, timer->HasFlags(tfActive) ? "" : "de");
-     Timers.Save();
+     Timers.SetModified();
      }
   return osContinue;
 }
@@ -784,7 +784,7 @@ eOSState cMenuTimers::Delete(void)
         int Index = ti->Index();
         Timers.Del(ti);
         cOsdMenu::Del(Current());
-        Timers.Save();
+        Timers.SetModified();
         Display();
         isyslog("timer %d deleted", Index + 1);
         }
@@ -796,7 +796,7 @@ void cMenuTimers::Move(int From, int To)
 {
   Timers.Move(From, To);
   cOsdMenu::Move(From, To);
-  Timers.Save();
+  Timers.SetModified();
   Display();
   isyslog("timer %d moved to %d", From + 1, To + 1);
 }
@@ -1556,7 +1556,7 @@ eOSState cMenuRecordings::Delete(void)
                     Timers.Del(timer);
                     isyslog("timer %d deleted", Index + 1);
                     }
-                 Timers.Save();
+                 Timers.SetModified();
                  }
               }
            else
@@ -2734,7 +2734,7 @@ cRecordControl::cRecordControl(cDevice *Device, cTimer *Timer, bool Pause)
   if (!timer) {
      timer = new cTimer(true, Pause);
      Timers.Add(timer);
-     Timers.Save();
+     Timers.SetModified();
      asprintf(&instantId, cDevice::NumDevices() > 1 ? "%s - %d" : "%s", timer->Channel()->Name(), device->CardIndex() + 1);
      }
   timer->SetPending(true);
@@ -2763,7 +2763,7 @@ cRecordControl::cRecordControl(cDevice *Device, cTimer *Timer, bool Pause)
         }
      else {
         Timers.Del(timer);
-        Timers.Save();
+        Timers.SetModified();
         if (!cReplayControl::LastReplayed()) // an instant recording, maybe from cRecordControls::PauseLiveVideo()
            cReplayControl::SetRecording(fileName, Recording.Name());
         }
@@ -2833,7 +2833,7 @@ void cRecordControl::Stop(bool KeepInstant)
      if ((IsInstant() && !KeepInstant) || (timer->IsSingleEvent() && timer->StopTime() <= time(NULL))) {
         isyslog("deleting timer %d", timer->Index() + 1);
         Timers.Del(timer);
-        Timers.Save();
+        Timers.SetModified();
         }
      timer = NULL;
      cStatus::MsgRecording(device, NULL);

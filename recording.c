@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.89 2004/07/17 11:22:29 kls Exp $
+ * $Id: recording.c 1.90 2004/10/31 10:09:36 kls Exp $
  */
 
 #include "recording.h"
@@ -335,7 +335,7 @@ cRecording::cRecording(cTimer *Timer, const char *Title, const char *Subtitle, c
      name = strreplace(name, TIMERMACRO_EPISODE, Subtitle);
      if (Timer->IsSingleEvent()) {
         Timer->SetFile(name); // this was an instant recording, so let's set the actual data
-        Timers.Save();
+        Timers.SetModified();
         }
      }
   else if (Timer->IsSingleEvent() || !Setup.UseSubtitle)

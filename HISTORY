@@ -3093,3 +3093,6 @@ Video Disk Recorder Revision History
   cCondVar to make sure any sleepers will wake up (suggested by Werner Fink).
   Also using pthread_cond_broadcast() instead of pthread_cond_signal() in
   cCondWait, in case there is more than one sleeper.
+- Making sure that timers and channels are only saved together, in a consistent
+  manner (thanks to Mirko Dölle for reporting a problem with inconsistent
+  channel and timer lists).

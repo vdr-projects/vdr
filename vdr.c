@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.191 2004/10/31 09:35:55 kls Exp $
+ * $Id: vdr.c 1.192 2004/10/31 10:17:23 kls Exp $
  */
 
 #include <getopt.h>
@@ -540,11 +540,13 @@ int main(int argc, char *argv[])
               dsyslog("max. latency time %d seconds", MaxLatencyTime);
               }
            }
-        // Handle channel modifications:
-        if (!Channels.BeingEdited()) {
+        // Handle channel and timer modifications:
+        if (!Channels.BeingEdited() && !Timers.BeingEdited()) {
            int modified = Channels.Modified();
            static time_t ChannelSaveTimeout = 0;
-           if (modified == CHANNELSMOD_USER)
+           // Channels and timers need to be stored in a consistent manner,
+           // therefore if one of them is changed, we save both.
+           if (modified == CHANNELSMOD_USER || Timers.Modified())
               ChannelSaveTimeout = 1; // triggers an immediate save
            else if (modified && !ChannelSaveTimeout)
               ChannelSaveTimeout = time(NULL) + CHANNELSAVEDELTA;
