@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recorder.c 1.2 2002/09/07 13:40:23 kls Exp $
+ * $Id: recorder.c 1.3 2002/10/12 13:34:29 kls Exp $
  */
 
 #include <stdarg.h>
@@ -119,7 +119,7 @@ void cRecorder::Action(void)
            r += g;
         if (r > 0) {
            int Count = r, Result;
-           const uchar *p = remux->Process(b, Count, Result, &pictureType);
+           uchar *p = remux->Process(b, Count, Result, &pictureType);
            if (p) {
               //XXX+ active??? see old version (Busy)
               if (!active && pictureType == I_FRAME) // finish the recording before the next 'I' frame

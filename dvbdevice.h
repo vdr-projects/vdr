@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.h 1.13 2002/10/11 12:24:19 kls Exp $
+ * $Id: dvbdevice.h 1.14 2002/10/12 11:15:39 kls Exp $
  */
 
 #ifndef __DVBDEVICE_H
@@ -13,11 +13,6 @@
 #ifdef NEWSTRUCT
 #include <linux/dvb/frontend.h>
 #else
-#include <stdlib.h> // FIXME: this is apparently necessary for the ost/... header files
-                    // FIXME: shouldn't every header file include ALL the other header
-                    // FIXME: files it depends on? The sequence in which header files
-                    // FIXME: are included here should not matter - and it should NOT
-                    // FIXME: be necessary to include <stdlib.h> here!
 #include <ost/frontend.h>
 #endif
 #include "device.h"
@@ -87,10 +82,15 @@ public:
 public:
   virtual void SetVideoFormat(bool VideoFormat16_9);
 
-// Volume facilities
+// Audio facilities
 
+private:
+  int aPid1, aPid2;
 protected:
   virtual void SetVolumeDevice(int Volume);
+  virtual int NumAudioTracksDevice(void) const;
+  virtual const char **GetAudioTracksDevice(int *CurrentTrack = NULL) const;
+  virtual void SetAudioTrackDevice(int Index);
 
 // EIT facilities
 

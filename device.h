@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 1.22 2002/10/06 15:59:08 kls Exp $
+ * $Id: device.h 1.23 2002/10/12 11:15:13 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -219,7 +219,7 @@ public:
          // Sets the output video format to either 16:9 or 4:3 (only useful
          // if this device has an MPEG decoder).
 
-// Volume facilities
+// Audio facilities
 
 private:
   bool mute;
@@ -227,6 +227,27 @@ private:
 protected:
   virtual void SetVolumeDevice(int Volume);
        // Sets the audio volume on this device (Volume = 0...255).
+  virtual int NumAudioTracksDevice(void) const;
+       // Returns the number of audio tracks that are currently available on this
+       // device. The default return value is 0, meaning that this device
+       // doesn't have multiple audio track capabilities. The return value may
+       // change with every call and need not necessarily be the number of list
+       // entries returned by GetAudioTracksDevice(). This function is mainly called to
+       // decide whether there should be an "Audio" button in a menu.
+  virtual const char **GetAudioTracksDevice(int *CurrentTrack = NULL) const;
+       // Returns a list of currently available audio tracks. The last entry in the
+       // list must be NULL. The number of entries does not necessarily have to be
+       // the same as returned by a previous call to NumAudioTracksDevice().
+       // If CurrentTrack is given, it will be set to the index of the current track
+       // in the returned list. Note that the list must not be changed after it has
+       // been returned by a call to GetAudioTracksDevice()! The only time the list may
+       // change is *inside* the GetAudioTracksDevice() function.
+       // By default the return value is NULL and CurrentTrack, if given, will not
+       // have any meaning.
+  virtual void SetAudioTrackDevice(int Index);
+       // Sets the current audio track to the given value, which should be within the
+       // range of the list returned by a previous call to GetAudioTracksDevice()
+       // (otherwise nothing will happen).
 public:
   bool IsMute(void) const { return mute; }
   bool ToggleMute(void);
@@ -235,6 +256,21 @@ public:
        // Sets the volume to the given value, either absolutely or relative to
        // the current volume.
   static int CurrentVolume(void) { return primaryDevice ? primaryDevice->volume : 0; }//XXX???
+  int NumAudioTracks(void) const;
+       // Returns the number of audio tracks that are currently available on this
+       // device or a player attached to it.
+  const char **GetAudioTracks(int *CurrentTrack = NULL) const;
+       // Returns a list of currently available audio tracks. The last entry in the
+       // list is NULL. The number of entries does not necessarily have to be
+       // the same as returned by a previous call to NumAudioTracks().
+       // If CurrentTrack is given, it will be set to the index of the current track
+       // in the returned list.
+       // By default the return value is NULL and CurrentTrack, if given, will not
+       // have any meaning.
+  void SetAudioTrack(int Index);
+       // Sets the current audio track to the given value, which should be within the
+       // range of the list returned by a previous call to GetAudioTracks() (otherwise
+       // nothing will happen).
 
 // Player facilities
 

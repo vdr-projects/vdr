@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.23 2002/10/11 12:49:12 kls Exp $
+ * $Id: dvbdevice.c 1.24 2002/10/12 11:15:45 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -129,6 +129,8 @@ cDvbDevice::cDvbDevice(int n)
      }
   else
      esyslog("ERROR: can't open DVB device %d", n);
+
+  aPid1 = aPid2 = 0;
 
   source = -1;
   frequency = -1;
@@ -722,6 +724,8 @@ bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
   // PID settings:
 
   if (TurnOnLivePIDs) {
+     aPid1 = Channel->Apid1();
+     aPid2 = Channel->Apid2();
      if (!(AddPid(Channel->Apid1(), ptAudio) && AddPid(Channel->Vpid(), ptVideo))) {//XXX+ dolby dpid1!!! (if audio plugins are attached)
         esyslog("ERROR: failed to set PIDs for channel %d on device %d", Channel->Number(), CardIndex() + 1);
         return false;
@@ -753,6 +757,36 @@ void cDvbDevice::SetVolumeDevice(int Volume)
 #endif
      am.volume_left = am.volume_right = Volume;
      CHECK(ioctl(fd_audio, AUDIO_SET_MIXER, &am));
+     }
+}
+
+int cDvbDevice::NumAudioTracksDevice(void) const
+{
+  int n = 0;
+  if (aPid1)
+     n++;
+  if (aPid2 && aPid1 != aPid2)
+     n++;
+  return n;
+}
+
+const char **cDvbDevice::GetAudioTracksDevice(int *CurrentTrack) const
+{
+  if (NumAudioTracks()) {
+     if (CurrentTrack)
+        *CurrentTrack = (pidHandles[ptAudio].pid == aPid1) ? 0 : 1;
+     static const char *audioTracks1[] = { "Audio 1", NULL };
+     static const char *audioTracks2[] = { "Audio 1", "Audio 2", NULL };
+     return NumAudioTracks() > 1 ? audioTracks2 : audioTracks1;
+     }
+  return NULL;
+}
+
+void cDvbDevice::SetAudioTrackDevice(int Index)
+{
+  if (0 <= Index && Index < NumAudioTracks()) {
+     DelPid(pidHandles[ptAudio].pid);
+     AddPid(Index ? aPid2 : aPid1, ptAudio);
      }
 }
 

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: transfer.c 1.3 2002/09/22 09:50:48 kls Exp $
+ * $Id: transfer.c 1.4 2002/10/12 13:32:48 kls Exp $
  */
 
 #include "transfer.h"
@@ -21,6 +21,8 @@ cTransfer::cTransfer(int VPid, int APid1, int APid2, int DPid1, int DPid2)
 {
   ringBuffer = new cRingBufferLinear(VIDEOBUFSIZE, true);
   remux = new cRemux(VPid, APid1, APid2, DPid1, DPid2);
+  canToggleAudioTrack = false;
+  audioTrack = 0xC0;
   gotBufferReserve = false;
   active = false;
 }
@@ -86,9 +88,9 @@ void cTransfer::Action(void)
 
         if (r > 0) {
            int Count = r, Result;
-           const uchar *p = remux->Process(b, Count, Result);
+           uchar *p = remux->Process(b, Count, Result);
            if (p) {
-              //XXX+ StripAudio???
+              StripAudioPackets(p, Result, audioTrack);
               while (Result > 0 && active) {
                     int w = PlayVideo(p, Result);
                     if (w > 0) {
@@ -112,15 +114,65 @@ void cTransfer::Action(void)
   dsyslog("transfer thread ended (pid=%d)", getpid());
 }
 
-void cTransfer::SetAudioPid(int APid)
+void cTransfer::StripAudioPackets(uchar *b, int Length, uchar Except)
 {
-  /*XXX+
-  Clear();
-  //XXX we may need to have access to the audio device, too, in order to clear it
-  CHECK(ioctl(toDevice, VIDEO_CLEAR_BUFFER));
-  gotBufferReserve = false;
-  remux.SetAudioPid(APid);
-  XXX*/
+  for (int i = 0; i < Length - 6; i++) {
+      if (b[i] == 0x00 && b[i + 1] == 0x00 && b[i + 2] == 0x01) {
+         uchar c = b[i + 3];
+         int l = b[i + 4] * 256 + b[i + 5] + 6;
+         switch (c) {
+           case 0xBD: // dolby
+                if (Except)
+                   ;//XXX+ PlayExternalDolby(&b[i], Length - i);
+                // continue with deleting the data - otherwise it disturbs DVB replay
+           case 0xC0 ... 0xC1: // audio
+                if (c == 0xC1)
+                   canToggleAudioTrack = true;
+                if (!Except || c != Except) {
+                   int n = l;
+                   for (int j = i; j < Length && n--; j++)
+                       b[j] = 0x00;
+                   }
+                break;
+           case 0xE0 ... 0xEF: // video
+                break;
+           default:
+                //esyslog("ERROR: unexpected packet id %02X", c);
+                l = 0;
+           }
+         if (l)
+            i += l - 1; // the loop increments, too!
+         }
+      /*XXX
+      else
+         esyslog("ERROR: broken packet header");
+         XXX*/
+      }
+}
+
+int cTransfer::NumAudioTracks(void) const
+{
+  return canToggleAudioTrack ? 2 : 1;
+}
+
+const char **cTransfer::GetAudioTracks(int *CurrentTrack = NULL) const
+{
+  if (NumAudioTracks()) {
+     if (CurrentTrack)
+        *CurrentTrack = (audioTrack == 0xC0) ? 0 : 1;
+     static const char *audioTracks1[] = { "Audio 1", NULL };
+     static const char *audioTracks2[] = { "Audio 1", "Audio 2", NULL };
+     return NumAudioTracks() > 1 ? audioTracks2 : audioTracks1;
+     }
+  return NULL;
+}
+
+void cTransfer::SetAudioTrack(int Index)
+{
+  if ((audioTrack == 0xC0) != (Index == 0)) {
+     audioTrack = (Index == 1) ? 0xC1 : 0xC0;
+     DeviceClear();
+     }
 }
 
 // --- cTransferControl ------------------------------------------------------

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.213 2002/10/12 09:06:57 kls Exp $
+ * $Id: menu.c 1.214 2002/10/12 13:34:56 kls Exp $
  */
 
 #include "menu.h"
@@ -2212,7 +2212,7 @@ void cMenuMain::Set(void)
 
   // Color buttons:
 
-  SetHelp(tr("Record"), /*XXX+ cDevice::PrimaryDevice()->CanToggleAudioTrack() ? tr("Language") :XXX*/ NULL, NULL, replaying ? tr("Button$Stop") : cReplayControl::LastReplayed() ? tr("Resume") : NULL);
+  SetHelp(tr("Record"), cDevice::PrimaryDevice()->NumAudioTracks() > 1 ? tr("Language") : NULL, NULL, replaying ? tr("Button$Stop") : cReplayControl::LastReplayed() ? tr("Resume") : NULL);
   Display();
   lastActivity = time(NULL);
 }
@@ -2264,13 +2264,17 @@ eOSState cMenuMain::ProcessKey(eKeys Key)
                                 state = osRecord;
                              break;
                case kGreen:  if (!HasSubMenu()) {
-                                /*XXX+
-                                if (cDevice::PrimaryDevice()->CanToggleAudioTrack()) {
+                                int CurrentAudioTrack = -1;
+                                const char **AudioTracks = cDevice::PrimaryDevice()->GetAudioTracks(&CurrentAudioTrack);
+                                if (AudioTracks) {
+                                   const char **at = &AudioTracks[CurrentAudioTrack];
+                                   if (!*++at)
+                                      at = AudioTracks;
                                    Interface->Clear();
-                                   cDevice::PrimaryDevice()->ToggleAudioTrack();
+                                   cDevice::PrimaryDevice()->SetAudioTrack(at - AudioTracks);
+                                   //XXX Interface->Info(*at);
                                    state = osEnd;
                                    }
-                                   XXX*/
                                 }
                              break;
                case kBlue:   if (!HasSubMenu())

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: player.h 1.8 2002/08/16 09:14:12 kls Exp $
+ * $Id: player.h 1.9 2002/10/12 11:17:02 kls Exp $
  */
 
 #ifndef __PLAYER_H
@@ -50,6 +50,27 @@ public:
        // we are going forward or backward and 'Speed' is -1 if this is normal
        // play/pause mode, 0 if it is single speed fast/slow forward/back mode
        // and >0 if this is multi speed mode.
+  virtual int NumAudioTracks(void) const { return 0; }
+       // Returns the number of audio tracks that are currently available on this
+       // player. The default return value is 0, meaning that this player
+       // doesn't have multiple audio track capabilities. The return value may
+       // change with every call and need not necessarily be the number of list
+       // entries returned by GetAudioTracks(). This function is mainly called to
+       // decide whether there should be an "Audio" button in a menu.
+  virtual const char **GetAudioTracks(int *CurrentTrack = NULL) const { return NULL; }
+       // Returns a list of currently available audio tracks. The last entry in the
+       // list must be NULL. The number of entries does not necessarily have to be
+       // the same as returned by a previous call to NumAudioTracks().
+       // If CurrentTrack is given, it will be set to the index of the current track
+       // in the returned list. Note that the list must not be changed after it has
+       // been returned by a call to GetAudioTracks()! The only time the list may
+       // change is *inside* the GetAudioTracks() function.
+       // By default the return value is NULL and CurrentTrack, if given, will not
+       // have any meaning.
+  virtual void SetAudioTrack(int Index) {}
+       // Sets the current audio track to the given value, which should be within the
+       // range of the list returned by a previous call to GetAudioTracks()
+       // (otherwise nothing will happen).
   };
 
 class cControl : public cOsdObject {
