@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: transfer.c 1.1 2002/06/22 13:39:23 kls Exp $
+ * $Id: transfer.c 1.2 2002/06/23 12:56:49 kls Exp $
  */
 
 #include "transfer.h"
@@ -119,4 +119,17 @@ void cTransfer::SetAudioPid(int APid)
   gotBufferReserve = false;
   remux.SetAudioPid(APid);
   XXX*/
+}
+
+// --- cTransferControl ------------------------------------------------------
+
+cTransferControl::cTransferControl(cDevice *ReceiverDevice, int VPid, int APid1, int APid2, int DPid1, int DPid2)
+:cControl(transfer = new cTransfer(VPid, APid1, APid2, DPid1, DPid2), true)
+{
+  ReceiverDevice->AttachReceiver(transfer);
+}
+
+cTransferControl::~cTransferControl()
+{
+  delete transfer;
 }

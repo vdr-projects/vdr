@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: player.c 1.2 2002/06/23 11:23:17 kls Exp $
+ * $Id: player.c 1.3 2002/06/23 12:56:25 kls Exp $
  */
 
 #include "player.h"
@@ -49,9 +49,10 @@ void cPlayer::Detach(void)
 
 cControl *cControl::control = NULL;
 
-cControl::cControl(cPlayer *Player)
+cControl::cControl(cPlayer *Player, bool Hidden)
 {
   attached = false;
+  hidden = Hidden;
   player = Player;
 }
 
@@ -59,6 +60,11 @@ cControl::~cControl()
 {
   if (this == control)
      control = NULL;
+}
+
+cControl *cControl::Control(void)
+{
+  return (control && !control->hidden) ? control : NULL;
 }
 
 void cControl::Launch(cControl *Control)

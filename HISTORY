@@ -724,7 +724,7 @@ Video Disk Recorder Revision History
   "next timer event at..." messages in that case).
 - Reduced the default value for MinEventTimeout to 30 minutes.
 - Fixed detecting manual start in shutdown feature.
-- An error message is now displayed in case the Transfer Mode can't be
+- An error message is now displayed in case the 'Transfer Mode' can't be
   started because the necessary DVB card is currently recording (or there
   is no DVB card that can access this channel).
 - Fixed toggling channels with the '0' key in case the "Ok" button has been
@@ -1108,7 +1108,7 @@ Video Disk Recorder Revision History
 - The "Left" and "Right" keys are now used to page up and down in text displays
   (like the EPG descriptions or the results of commands executed from the
   "Commands" menu).
-- Fixed high CPU usage in transfer mode.
+- Fixed high CPU usage in 'Transfer Mode'.
 - Replaced 'killproc' with 'killall' in 'runvdr', since apparently 'killproc'
   is not available by default on some Linux distributions, whereas 'killall' is.
   Please check if your system provides 'killall' - if it doesn't, please change
@@ -1343,7 +1343,7 @@ Video Disk Recorder Revision History
   will use the same DVB card. During the time where both timers record the data
   is simply saved to both files.
 - The following limitations apply to this version:
-  + Transfer mode doesn't work yet.
+  + 'Transfer Mode' doesn't work yet.
   + The '-a' option (for Dolby Digital audio) doesn't work yet.
   + Switching between different language tracks doesn't work yet.
   + Cutting doesn't work yet.
@@ -1352,6 +1352,7 @@ Video Disk Recorder Revision History
 
 - Added Hungarian language texts (thanks to Istvan Koenigsberger and Guido Josten).
 - Activated cutting.
-- Activated transfer mode.
+- Activated 'Transfer Mode'.
 - Moved handling of the Menu key entirely into vdr.c.
 - Switched VDR's own player to the new cPlayer/cControl structures.
+- Switched handling 'Transfer Mode' to the new cPlayer/cControl structures.

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 1.2 2002/06/22 13:34:55 kls Exp $
+ * $Id: device.h 1.3 2002/06/23 11:50:24 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -33,7 +33,6 @@ enum eSetChannelResult { scrOk, scrNoTransfer, scrFailed };
 
 class cPlayer;
 class cReceiver;
-class cTransfer;
 
 class cDevice : cThread {
   friend class cOsd;//XXX
@@ -107,7 +106,6 @@ public:
 private:
   int currentChannel;
   int frequency;
-  cTransfer *transfer;
 public:
   eSetChannelResult SetChannel(int ChannelNumber, int Frequency, char Polarization, int Diseqc, int Srate, int Vpid, int Apid, int Tpid, int Ca, int Pnr);
   static int CurrentChannel(void) { return primaryDevice ? primaryDevice->currentChannel : 0; }

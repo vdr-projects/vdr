@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.4 2002/06/23 11:16:21 kls Exp $
+ * $Id: device.c 1.5 2002/06/23 12:51:24 kls Exp $
  */
 
 #include "device.h"
@@ -106,7 +106,6 @@ cDevice::cDevice(int n)
 
   currentChannel = 0;
   frequency = 0;
-  transfer = NULL;
 
   mute = false;
   volume = Setup.CurrentVolume;
@@ -120,7 +119,6 @@ cDevice::cDevice(int n)
 
 cDevice::~cDevice()
 {
-  delete transfer;
   delete dvrFileName;
   delete siProcessor;
   Detach(player);
@@ -459,7 +457,6 @@ bool cDevice::SetPid(int fd, dmxPesType_t PesType, int Pid, dmxOutput_t Output)
 
 eSetChannelResult cDevice::SetChannel(int ChannelNumber, int Frequency, char Polarization, int Diseqc, int Srate, int Vpid, int Apid, int Tpid, int Ca, int Pnr)
 {
-  DELETENULL(transfer);
   StopReplay();
 
   cStatus::MsgChannelSwitch(this, 0);
@@ -623,11 +620,8 @@ eSetChannelResult cDevice::SetChannel(int ChannelNumber, int Frequency, char Pol
   if (NeedsTransferMode) {
      cDevice *CaDevice = GetDevice(Ca, 0);
      if (CaDevice && !CaDevice->Receiving()) {
-        if ((Result = CaDevice->SetChannel(ChannelNumber, Frequency, Polarization, Diseqc, Srate, Vpid, Apid, Tpid, Ca, Pnr)) == scrOk) {
-           transfer = new cTransfer(Vpid, Apid, 0, 0, 0);//XXX+
-           AttachPlayer(transfer);
-           CaDevice->AttachReceiver(transfer);
-           }
+        if ((Result = CaDevice->SetChannel(ChannelNumber, Frequency, Polarization, Diseqc, Srate, Vpid, Apid, Tpid, Ca, Pnr)) == scrOk)
+           cControl::Launch(new cTransferControl(CaDevice, Vpid, Apid, 0, 0, 0));//XXX+
         }
      else
         Result = scrNoTransfer;
@@ -791,6 +785,8 @@ void cDevice::StopReplay(void)
 {
   if (player) {
      Detach(player);
+     if (IsPrimaryDevice())
+        cControl::Shutdown();
      /*XXX+
      if (IsPrimaryDevice()) {
         // let's explicitly switch the channel back in case it was in Transfer Mode:
