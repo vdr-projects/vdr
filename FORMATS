@@ -24,7 +24,7 @@ Video Disk Recorder File Formats
   - Polarization (one of 'h', 'H', 'v', 'V') **
   - Diseqc number **
   - Symbol rate ***
-  - Video PID
+  - Video PID (set to '0' for radio channels, '1' for encrypted radio channels)
   - Audio PID (either one number, or two, separated by a comma)
     If this channel also carries Dolby Digital sound, the Dolby PIDs follow
     the audio PIDs, separated by a semicolon, as in "...:101,102;103,104:..."

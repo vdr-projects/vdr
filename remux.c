@@ -8,7 +8,7 @@
  * the Linux DVB driver's 'tuxplayer' example and were rewritten to suit
  * VDR's needs.
  *
- * $Id: remux.c 1.7 2002/02/02 12:54:30 kls Exp $
+ * $Id: remux.c 1.8 2002/02/03 16:20:37 kls Exp $
  */
 
 /* The calling interface of the 'cRemux::Process()' function is defined
@@ -554,6 +554,17 @@ XXX*/
   Result = resultDelivered = resultCount;
   return Result ? resultBuffer : NULL;
 XXX*/
+
+  // Special VPID case to enable recording radio channels:
+
+  if (vPid == 0 || vPid == 1 || vPid == 0x1FFF) {
+     // XXX actually '0' should be enough, but '1' must be used with encrypted channels (driver bug?)
+     // XXX also allowing 0x1FFF to not break Michael Paar's original patch,
+     // XXX but it would probably be best to only use '0'
+     *PictureType = I_FRAME;
+     Result = resultDelivered = resultCount;
+     return Result ? resultBuffer : NULL;
+     }
 
   // Check if we're getting anywhere here:
 

@@ -185,3 +185,6 @@ Andreas Gebel <andreas@xcapenet.de>
 
 Davide Achilli <davide@objsystem.it>
  for pointing out a bug in error handling while establishing an SVDRP connection
+
+Michael Paar <mpaar@uumail.de>
+ for enabling recording of radio channels

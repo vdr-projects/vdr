@@ -962,3 +962,8 @@ Video Disk Recorder Revision History
   'start + (Setup.MarginStart * 2) + 1)' in order to have a better chance of
   hitting the right record in case of an instant recording. Timers that start
   further in the future should always be programmed via the "Schedules" menu.
+- The special VPIDs '0' and '1' are now used to enable recording radio channels.
+  Actually '0' should be enough, but '1' must be used with encrypted channels
+  (driver bug?). Note, though, that since VDR is mainly a *video recorder*, some
+  features like, e. g.,  the progress display, may not work as expected with
+  radio recordings. Thanks to Michael Paar.
