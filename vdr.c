@@ -22,13 +22,14 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.136 2002/12/01 10:44:48 kls Exp $
+ * $Id: vdr.c 1.137 2002/12/08 13:34:39 kls Exp $
  */
 
 #include <getopt.h>
 #include <locale.h>
 #include <signal.h>
 #include <stdlib.h>
+#include <termios.h>
 #include <unistd.h>
 #include "audio.h"
 #include "channels.h"
@@ -77,6 +78,11 @@ static void Watchdog(int signum)
 
 int main(int argc, char *argv[])
 {
+  // Save terminal settings:
+
+  struct termios savedTm;
+  tcgetattr(STDIN_FILENO, &savedTm);
+
   // Initiate locale:
 
   setlocale(LC_ALL, "");
@@ -294,7 +300,7 @@ int main(int argc, char *argv[])
   // Daemon mode:
 
   if (DaemonMode) {
-#if !defined(DEBUG_OSD) && !defined(REMOTE_KBD)
+#if !defined(DEBUG_OSD)
      pid_t pid = fork();
      if (pid < 0) {
         fprintf(stderr, "%m\n");
@@ -307,7 +313,7 @@ int main(int argc, char *argv[])
      fclose(stdout);
      fclose(stderr);
 #else
-     fprintf(stderr, "vdr: can't run in daemon mode with DEBUG_OSD or REMOTE_KBD on!\n");
+     fprintf(stderr, "vdr: can't run in daemon mode with DEBUG_OSD on!\n");
      return 2;
 #endif
      }
@@ -378,8 +384,10 @@ int main(int argc, char *argv[])
   new cRcuRemote("/dev/ttyS1");
 #elif defined(REMOTE_LIRC)
   new cLircRemote("/dev/lircd");
-#elif defined(REMOTE_KBD)
-  new cKbdRemote;
+#endif
+#if defined(REMOTE_KBD)
+  if (!DaemonMode)
+     new cKbdRemote;
 #endif
   Interface->LearnKeys();
 
@@ -716,6 +724,7 @@ int main(int argc, char *argv[])
   isyslog("exiting");
   if (SysLogLevel > 0)
      closelog();
+  tcsetattr(STDIN_FILENO, TCSANOW, &savedTm);
   if (cThread::EmergencyExit()) {
      esyslog("emergency exit!");
      return 1;

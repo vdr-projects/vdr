@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remote.c 1.33 2002/12/07 11:48:10 kls Exp $
+ * $Id: remote.c 1.34 2002/12/08 13:37:13 kls Exp $
  */
 
 #include "remote.h"
@@ -13,13 +13,7 @@
 #include <string.h>
 #include <sys/types.h>
 #include <sys/time.h>
-#include <termios.h>
 #include <unistd.h>
-
-#if defined REMOTE_KBD
-#include <ncurses.h>
-#endif
-
 #include "tools.h"
 
 // --- cRemote ---------------------------------------------------------------
@@ -155,30 +149,65 @@ cRemotes Remotes;
 
 // --- cKbdRemote ------------------------------------------------------------
 
-#if defined REMOTE_KBD
-
 cKbdRemote::cKbdRemote(void)
 :cRemote("KBD")
 {
+  active = false;
+  tcgetattr(STDIN_FILENO, &savedTm);
+  struct termios tm;
+  if (tcgetattr(STDIN_FILENO, &tm) == 0) {
+     tm.c_iflag = 0;
+     tm.c_lflag &= ~(ICANON | ECHO);
+     tm.c_cc[VMIN] = 0;
+     tm.c_cc[VTIME] = 0;
+     tcsetattr(STDIN_FILENO, TCSANOW, &tm);
+     }
   Start();
 }
 
 cKbdRemote::~cKbdRemote()
 {
-  Cancel();
+  active = false;
+  Cancel(3);
+  tcsetattr(STDIN_FILENO, TCSANOW, &savedTm);
 }
 
 void cKbdRemote::Action(void)
 {
   dsyslog("KBD remote control thread started (pid=%d)", getpid());
   cPoller Poller(STDIN_FILENO);
-  for (;;) {//XXX
-      int Command = getch();
-      if (Command != EOF)
-         Put(Command);
-      Poller.Poll(100);
-      }
+  active = true;
+  while (active) {
+        if (Poller.Poll(100)) {
+           uint64 Command = 0;
+           uint i = 0;
+           int t0 = time_ms();
+           while (active && i < sizeof(Command)) {
+                 uchar ch;
+                 int r = read(STDIN_FILENO, &ch, 1);
+                 if (r == 1) {
+                    Command <<= 8;
+                    Command |= ch;
+                    i++;
+                    }
+                 else if (r == 0) {
+                    // don't know why, but sometimes special keys that start with
+                    // 0x1B ('ESC') cause a short gap between the 0x1B and the rest
+                    // of their codes, so we'll need to wait some 100ms to see if
+                    // there is more coming up - or whether this really is the 'ESC'
+                    // key (if somebody knows how to clean this up, please let me know):
+                    if (Command == 0x1B && time_ms() - t0 < 100)
+                       continue;
+                    if (Command)
+                       Put(Command);
+                    break;
+                    }
+                 else {
+                    LOG_ERROR;
+                    break;
+                    }
+                 }
+           }
+        }
   dsyslog("KBD remote control thread ended (pid=%d)", getpid());
 }
-
-#endif
