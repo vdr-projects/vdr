@@ -7,7 +7,7 @@
  * DVD support initially written by Andreas Schultz <aschultz@warp10.net>
  * based on dvdplayer-0.5 by Matjaz Thaler <matjaz.thaler@guest.arnes.si>
  *
- * $Id: dvbapi.c 1.138 2001/11/10 13:35:22 kls Exp $
+ * $Id: dvbapi.c 1.139 2001/11/24 11:03:01 kls Exp $
  */
 
 //#define DVDDEBUG        1
@@ -3068,7 +3068,7 @@ bool cDvbApi::SetPids(bool ForRecording)
          SetDpid2(ForRecording ? dPid2 : 0, DMX_OUT_TS_TAP);
 }
 
-eSetChannelResult cDvbApi::SetChannel(int ChannelNumber, int FrequencyMHz, char Polarization, int Diseqc, int Srate, int Vpid, int Apid1, int Apid2, int Dpid1, int Dpid2, int Tpid, int Ca, int Pnr)
+eSetChannelResult cDvbApi::SetChannel(int ChannelNumber, int Frequency, char Polarization, int Diseqc, int Srate, int Vpid, int Apid1, int Apid2, int Dpid1, int Dpid2, int Tpid, int Ca, int Pnr)
 {
   // Make sure the siProcessor won't access the device while switching
   cThreadLock ThreadLock(siProcessor);
@@ -3110,14 +3110,14 @@ eSetChannelResult cDvbApi::SetChannel(int ChannelNumber, int FrequencyMHz, char 
      SetDpid2(0x1FFF, DMX_OUT_DECODER);
      SetTpid( 0x1FFF, DMX_OUT_DECODER);
 
-     bool ChannelSynced = false;
+     FrontendParameters Frontend;
 
      switch (frontendType) {
        case FE_QPSK: { // DVB-S
 
             // Frequency offsets:
 
-            unsigned int freq = FrequencyMHz;
+            unsigned int freq = Frequency;
             int tone = SEC_TONE_OFF;
 
             if (freq < (unsigned int)Setup.LnbSLOF) {
@@ -3129,7 +3129,6 @@ eSetChannelResult cDvbApi::SetChannel(int ChannelNumber, int FrequencyMHz, char 
                tone = SEC_TONE_ON;
                }
 
-            FrontendParameters Frontend;
             Frontend.Frequency = freq * 1000UL;
             Frontend.Inversion = INVERSION_AUTO;
             Frontend.u.qpsk.SymbolRate = Srate * 1000UL;
@@ -3154,58 +3153,32 @@ eSetChannelResult cDvbApi::SetChannel(int ChannelNumber, int FrequencyMHz, char 
             scmds.commands = &scmd;
 
             CHECK(ioctl(fd_sec, SEC_SEND_SEQUENCE, &scmds));
-
-            // Tuning:
-
-            CHECK(ioctl(fd_frontend, FE_SET_FRONTEND, &Frontend));
-
-            // Wait for channel sync:
-
-            if (cFile::FileReady(fd_frontend, 5000)) {
-               FrontendEvent event;
-               int res = ioctl(fd_frontend, FE_GET_EVENT, &event);
-               if (res >= 0)
-                  ChannelSynced = event.type == FE_COMPLETION_EV;
-               else
-                  esyslog(LOG_ERR, "ERROR %d in frontend get event", res);
-               }
-            else
-               esyslog(LOG_ERR, "ERROR: timeout while tuning");
             }
             break;
        case FE_QAM: { // DVB-C
 
             // Frequency and symbol rate:
 
-            FrontendParameters Frontend;
-            Frontend.Frequency = FrequencyMHz * 1000000UL;
+            Frontend.Frequency = Frequency * 1000000UL;
             Frontend.Inversion = INVERSION_AUTO;
             Frontend.u.qam.SymbolRate = Srate * 1000UL;
             Frontend.u.qam.FEC_inner = FEC_AUTO;
             Frontend.u.qam.QAM = QAM_64;
-
-            // Tuning:
-
-            CHECK(ioctl(fd_frontend, FE_SET_FRONTEND, &Frontend));
-
-            // Wait for channel sync:
-
-            if (cFile::FileReady(fd_frontend, 5000)) {
-               FrontendEvent event;
-               int res = ioctl(fd_frontend, FE_GET_EVENT, &event);
-               if (res >= 0)
-                  ChannelSynced = event.type == FE_COMPLETION_EV;
-               else
-                  esyslog(LOG_ERR, "ERROR %d in frontend get event", res);
-               }
-            else
-               esyslog(LOG_ERR, "ERROR: timeout while tuning");
             }
             break;
        case FE_OFDM: { // DVB-T
-            //XXX TODO: implement DVB-T tuning (anybody with a DVB-T card out there?)
-            esyslog(LOG_ERR, "ERROR: DVB-T tuning support not yet implemented");
-            return scrFailed;
+
+            // Frequency and OFDM paramaters:
+
+            Frontend.Frequency = Frequency * 1000UL;
+            Frontend.Inversion = INVERSION_AUTO;
+            Frontend.u.ofdm.bandWidth=BANDWIDTH_8_MHZ;
+            Frontend.u.ofdm.HP_CodeRate=FEC_2_3;
+            Frontend.u.ofdm.LP_CodeRate=FEC_1_2;
+            Frontend.u.ofdm.Constellation=QAM_64;
+            Frontend.u.ofdm.TransmissionMode=TRANSMISSION_MODE_2K;
+            Frontend.u.ofdm.guardInterval=GUARD_INTERVAL_1_32;
+            Frontend.u.ofdm.HierarchyInformation=HIERARCHY_NONE;
             }
             break;
        default:
@@ -3213,12 +3186,28 @@ eSetChannelResult cDvbApi::SetChannel(int ChannelNumber, int FrequencyMHz, char 
             return scrFailed;
        }
 
-     if (!ChannelSynced) {
-        esyslog(LOG_ERR, "ERROR: channel %d not sync'ed on DVB card %d!", ChannelNumber, CardIndex() + 1);
-        if (this == PrimaryDvbApi)
-           cThread::RaisePanic();
-        return scrFailed;
+     // Tuning:
+
+     CHECK(ioctl(fd_frontend, FE_SET_FRONTEND, &Frontend));
+
+     // Wait for channel sync:
+
+     if (cFile::FileReady(fd_frontend, 5000)) {
+        FrontendEvent event;
+        int res = ioctl(fd_frontend, FE_GET_EVENT, &event);
+        if (res >= 0) {
+           if (event.type != FE_COMPLETION_EV) {
+              esyslog(LOG_ERR, "ERROR: channel %d not sync'ed on DVB card %d!", ChannelNumber, CardIndex() + 1);
+              if (this == PrimaryDvbApi)
+                 cThread::RaisePanic();
+              return scrFailed;
+              }
+           }
+        else
+           esyslog(LOG_ERR, "ERROR %d in frontend get event", res);
         }
+     else
+        esyslog(LOG_ERR, "ERROR: timeout while tuning");
 
      // PID settings:
 
@@ -3242,7 +3231,7 @@ eSetChannelResult cDvbApi::SetChannel(int ChannelNumber, int FrequencyMHz, char 
   if (NeedsTransferMode) {
      cDvbApi *CaDvbApi = GetDvbApi(Ca, 0);
      if (CaDvbApi && !CaDvbApi->Recording()) {
-        if ((Result = CaDvbApi->SetChannel(ChannelNumber, FrequencyMHz, Polarization, Diseqc, Srate, Vpid, Apid1, Apid2, Dpid1, Dpid2, Tpid, Ca, Pnr)) == scrOk) {
+        if ((Result = CaDvbApi->SetChannel(ChannelNumber, Frequency, Polarization, Diseqc, Srate, Vpid, Apid1, Apid2, Dpid1, Dpid2, Tpid, Ca, Pnr)) == scrOk) {
            SetModeReplay();
            transferringFromDvbApi = CaDvbApi->StartTransfer(fd_video);
            }

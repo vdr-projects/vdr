@@ -20,10 +20,10 @@ Video Disk Recorder File Formats
 
   - Name: the channel's name (if the name originally contains a ':' character
     it has to be replaced by '|')
-  - Frequency in MHz (as an integer)
+  - Frequency in MHz for DVB-S and DVB-C, kHz for DVB-T (as an integer)
   - Polarization (one of 'h', 'H', 'v', 'V') **
   - Diseqc number **
-  - Symbol rate
+  - Symbol rate ***
   - Video PID
   - Audio PID (either one number, or two, separated by a comma)
     If this channel also carries Dolby Digital sound, the Dolby PIDs follow
@@ -33,8 +33,10 @@ Video Disk Recorder File Formats
     DVB card, 2 = can be decrypted by the second DVB card)
   - Program Number
 
-  Fields marked with ** are only meaningful for DVB-S (satellite) receivers.
-  DVB-C receivers simply ignore these.
+  Fields marked with ** are only meaningful for DVB-S receivers.
+  DVB-C and DVB-T receivers simply ignore these.
+  Fields marked with *** are only meaningful for DVB-S and DVB-C receivers.
+  DVB-T receivers simply ignore these.
 
 * timers.conf
 

@@ -334,16 +334,23 @@ accessed using DiSEqC, you have to go to the "Setup" menu and set the "DiSEqC"
 parameter to "on". Also check the "DiSEqC" parameters for the various channels
 and set them to the necessary values.
 
-Running VDR with DVB-C (cable):
--------------------------------
+Running VDR with DVB-C (cable) or DVB-T (terrestrial):
+------------------------------------------------------
 
-VDR automatically recognizes if the DVB card in use is a cable card.
-The only things that needs to be different when using digital cable
-is the 'channels.conf' file. The distribution archive contains a default
-'channels.conf.cable', which cable users can rename or copy to 'channels.conf'
-in order to receive cable channels. The format of this file is exactly the
-same as for satellite channels (the fields containing "Polarization" and
-"Diseqc" data are ignored in case of DVB-C).
+VDR automatically recognizes if the DVB card in use is a cable or a
+terrestrial card. The only thing that needs to be different when using digital
+cable or terrestrial reception is the 'channels.conf' file. The distribution
+archive contains a default 'channels.conf.cable' and 'channels.conf.terr',
+respectively, which users of such cards can rename or copy to 'channels.conf'
+in order to receive digital cable or terrestrial channels. The format of these
+files is exactly the same as for satellite channels (the fields containing
+"Polarization" and "Diseqc" data are ignored in case of DVB-C and DVB-T, and
+the "Frequency" is in kHz in case of DVB-T).
+
+You can even use a mixture of DVB-S, DVB-C and DVB-T cards in the same system.
+All you need to do is to put all the channel definitions into one big
+'channels.conf' file and set the 'Ca' parameter of each channel to the number
+of the card that can receive it.
 
 Learning the remote control keys:
 ---------------------------------
