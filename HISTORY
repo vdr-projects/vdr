@@ -1152,3 +1152,5 @@ Video Disk Recorder Revision History
 - Fixed a bug in the 'First day' timer parameter for timers that record over
   midnight.
 - Added units to Setup parameters.
+- Changed time entry in the 'Jump' command during replay, so that it is filled
+  up from right to left.
