@@ -1137,7 +1137,7 @@ Video Disk Recorder Revision History
   important if this takes some time.
 - Fixed scrolling the "Channels" menu in case the cursor ends up on a group
   delimiter (thanks to Bernd Zierath for helping to debug this one).
-- Added a manual page vdr(1).
+- Added manual pages vdr(1) and vdr(5) (which made the FORMATS file obsolete).
 - New command command line option '-V' to display the VDR version.
 - Adjusting column width for channel numbers in case there are more than 999
   channels.
