@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 1.20 2001/07/28 13:59:29 kls Exp $
+ * $Id: menu.h 1.21 2001/08/02 14:53:29 kls Exp $
  */
 
 #ifndef _MENU_H
@@ -19,11 +19,13 @@
 class cMenuMain : public cOsdMenu {
 private:
   time_t lastActivity;
+  int digit;
+  const char *hk(const char *s);
 public:
   cMenuMain(bool Replaying);
   virtual eOSState ProcessKey(eKeys Key);
   };
-  
+
 class cDisplayChannel : public cOsdBase {
 private:
   bool withInfo, group;
@@ -36,6 +38,16 @@ public:
   cDisplayChannel(int Number, bool Switched, bool Group = false);
   cDisplayChannel(eKeys FirstKey);
   virtual ~cDisplayChannel();
+  virtual eOSState ProcessKey(eKeys Key);
+  };
+
+class cMenuDVD : public cOsdMenu {
+private:
+  cDVD *dvd;//XXX member really necessary???
+  eOSState Play(void);
+  eOSState Eject(void);
+public:
+  cMenuDVD(void);
   virtual eOSState ProcessKey(eKeys Key);
   };
 
@@ -88,6 +100,8 @@ private:
   void Show(int Seconds = 0);
   void Hide(void);
   static char *fileName;
+  static cDVD *dvd;//XXX member really necessary???
+  static int titleid;//XXX
   static char *title;
   bool ShowProgress(bool Initial);
   void MarkToggle(void);
@@ -101,6 +115,7 @@ public:
   virtual eOSState ProcessKey(eKeys Key);
   bool Visible(void) { return visible; }
   static void SetRecording(const char *FileName, const char *Title);
+  static void SetDVD(cDVD *DVD, int Title);//XXX
   static const char *LastReplayed(void);
   static void ClearLastReplayed(const char *FileName);
   };

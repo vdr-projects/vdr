@@ -7,7 +7,7 @@
  * Parts of this file were inspired by the 'ringbuffy.c' from the
  * LinuxDVB driver (see linuxtv.org).
  *
- * $Id: ringbuffer.c 1.2 2001/05/20 11:58:08 kls Exp $
+ * $Id: ringbuffer.c 1.3 2001/08/02 13:48:38 kls Exp $
  */
 
 #include "ringbuffer.h"
@@ -69,9 +69,8 @@ int cRingBuffer::Available(void)
 {
   mutex.Lock();
   int diff = head - tail;
-  int cont = (diff >= 0) ? diff : size + diff;
   mutex.Unlock();
-  return cont;
+  return (diff >= 0) ? diff : size + diff;
 }
 
 void cRingBuffer::Clear(void)

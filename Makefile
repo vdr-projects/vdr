@@ -4,17 +4,23 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 1.22 2001/06/02 09:15:39 kls Exp $
+# $Id: Makefile 1.23 2001/08/03 13:10:52 kls Exp $
 
 DVBDIR   = ../DVB
+DVDDIR   = ../DVD
+AC3DIR   = ./ac3dec
 
-INCLUDES = -I$(DVBDIR)/ost/include
-OBJS = config.o dvbapi.o dvbosd.o eit.o font.o i18n.o interface.o menu.o osd.o\
+INCLUDES = -I$(DVBDIR)/ost/include -I$(DVDDIR)/libdvdread
+LIBDIRS  = -L$(DVDDIR)/libdvdread/dvdread/.libs
+
+OBJS = config.o dvbapi.o dvbosd.o dvd.o eit.o font.o i18n.o interface.o menu.o osd.o\
        recording.o remote.o remux.o ringbuffer.o svdrp.o thread.o tools.o vdr.o\
        videodir.o
 
 OSDFONT = -adobe-helvetica-medium-r-normal--23-*-100-100-p-*-iso8859-1
 FIXFONT = -adobe-courier-bold-r-normal--25-*-100-100-m-*-iso8859-1
+
+DEFINES += -D_LARGEFILE64_SOURCE
 
 ifndef REMOTE
 REMOTE = KBD
@@ -42,29 +48,30 @@ font: genfontfile fontfix.c fontosd.c
 
 # Dependencies:
 
-config.o    : config.c config.h dvbapi.h dvbosd.h eit.h font.h i18n.h interface.h remote.h svdrp.h thread.h tools.h
-dvbapi.o    : dvbapi.c config.h dvbapi.h dvbosd.h eit.h font.h recording.h remux.h ringbuffer.h thread.h tools.h videodir.h
+config.o    : config.c config.h dvbapi.h dvbosd.h dvd.h eit.h font.h i18n.h interface.h remote.h svdrp.h thread.h tools.h
+dvbapi.o    : dvbapi.c config.h dvbapi.h dvbosd.h dvd.h eit.h font.h recording.h remux.h ringbuffer.h thread.h tools.h videodir.h
 dvbosd.o    : dvbosd.c dvbosd.h font.h tools.h
-eit.o       : eit.c config.h dvbapi.h dvbosd.h eit.h font.h thread.h tools.h videodir.h
+dvd.o       : dvd.c dvd.h
+eit.o       : eit.c config.h dvbapi.h dvbosd.h dvd.h eit.h font.h thread.h tools.h videodir.h
 font.o      : font.c font.h fontfix.c fontosd.c tools.h
-i18n.o      : i18n.c config.h dvbapi.h dvbosd.h eit.h font.h i18n.h thread.h tools.h
-interface.o : interface.c config.h dvbapi.h dvbosd.h eit.h font.h i18n.h interface.h remote.h svdrp.h thread.h tools.h
-menu.o      : menu.c config.h dvbapi.h dvbosd.h eit.h font.h i18n.h interface.h menu.h osd.h recording.h remote.h svdrp.h thread.h tools.h
-osd.o       : osd.c config.h dvbapi.h dvbosd.h eit.h font.h i18n.h interface.h osd.h remote.h svdrp.h thread.h tools.h
-recording.o : recording.c config.h dvbapi.h dvbosd.h eit.h font.h interface.h recording.h remote.h svdrp.h thread.h tools.h videodir.h
-remote.o    : remote.c config.h dvbapi.h dvbosd.h eit.h font.h remote.h thread.h tools.h
+i18n.o      : i18n.c config.h dvbapi.h dvbosd.h dvd.h eit.h font.h i18n.h thread.h tools.h
+interface.o : interface.c config.h dvbapi.h dvbosd.h dvd.h eit.h font.h i18n.h interface.h remote.h svdrp.h thread.h tools.h
+menu.o      : menu.c config.h dvbapi.h dvbosd.h dvd.h eit.h font.h i18n.h interface.h menu.h osd.h recording.h remote.h svdrp.h thread.h tools.h
+osd.o       : osd.c config.h dvbapi.h dvbosd.h dvd.h eit.h font.h i18n.h interface.h osd.h remote.h svdrp.h thread.h tools.h
+recording.o : recording.c config.h dvbapi.h dvbosd.h dvd.h eit.h font.h interface.h recording.h remote.h svdrp.h thread.h tools.h videodir.h
+remote.o    : remote.c config.h dvbapi.h dvbosd.h dvd.h eit.h font.h remote.h thread.h tools.h
 remux.o     : remux.c remux.h thread.h tools.h
 ringbuffer.o: ringbuffer.c ringbuffer.h thread.h tools.h
-svdrp.o     : svdrp.c config.h dvbapi.h dvbosd.h eit.h font.h interface.h remote.h svdrp.h thread.h tools.h
+svdrp.o     : svdrp.c config.h dvbapi.h dvbosd.h dvd.h eit.h font.h interface.h remote.h svdrp.h thread.h tools.h
 thread.o    : thread.c thread.h tools.h
 tools.o     : tools.c tools.h
-vdr.o       : vdr.c config.h dvbapi.h dvbosd.h eit.h font.h i18n.h interface.h menu.h osd.h recording.h remote.h svdrp.h thread.h tools.h videodir.h
+vdr.o       : vdr.c config.h dvbapi.h dvbosd.h dvd.h eit.h font.h i18n.h interface.h menu.h osd.h recording.h remote.h svdrp.h thread.h tools.h videodir.h
 videodir.o  : videodir.c tools.h videodir.h
 
 # The main program:
 
-vdr: $(OBJS)
-	g++ -g -O2 $(OBJS) -lncurses -ljpeg -lpthread -o vdr
+vdr: $(OBJS) $(AC3DIR)/libac3.a
+	g++ -g -O2 $(OBJS) -lncurses -ljpeg -lpthread $(LIBDIRS) -ldvdread $(AC3DIR)/libac3.a -o vdr
 
 # The font files:
 
@@ -80,9 +87,15 @@ genfontfile.o: genfontfile.c
 genfontfile: genfontfile.o
 	gcc -o $@ -L/usr/X11R6/lib $< -lX11
 
+# The ac3dec library:
+
+$(AC3DIR)/libac3.a:
+	make -C $(AC3DIR) all
+
 # Housekeeping:
 
 clean:
-	-rm -f $(OBJS) vdr genfontfile genfontfile.o core
+	make -C $(AC3DIR) clean
+	-rm -f $(OBJS) vdr genfontfile genfontfile.o core *~
 CLEAN: clean
 	-rm -f fontfix.c fontosd.c

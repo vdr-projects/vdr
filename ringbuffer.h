@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ringbuffer.h 1.2 2001/05/20 11:56:44 kls Exp $
+ * $Id: ringbuffer.h 1.3 2001/08/02 13:48:42 kls Exp $
  */
 
 #ifndef __RINGBUFFER_H
@@ -33,6 +33,7 @@ protected:
   void Lock(void) { mutex.Lock(); }
   void Unlock(void) { mutex.Unlock(); }
   int Available(void);
+  int Free(void) { return size - Available() - 1; }
   bool Busy(void) { return busy; }
   void Clear(void);
     // Immediately clears the ring buffer.

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.h 1.22 2001/07/27 11:33:30 kls Exp $
+ * $Id: osd.h 1.23 2001/08/02 13:48:34 kls Exp $
  */
 
 #ifndef __OSD_H
@@ -27,6 +27,7 @@ enum eOSState { osUnknown,
                 osCommands,
                 osRecord,
                 osReplay,
+                osDVD,
                 osStopRecord,
                 osStopReplay,
                 osCancelEdit,
@@ -43,7 +44,7 @@ private:
 protected:
   bool fresh;
   bool userColor;
-  eDvbColor fgColor, bgColor; 
+  eDvbColor fgColor, bgColor;
 public:
   cOsdItem(eOSState State = osUnknown);
   cOsdItem(const char *Text, eOSState State = osUnknown);
@@ -55,7 +56,7 @@ public:
   virtual void Display(int Offset = -1, eDvbColor FgColor = clrWhite, eDvbColor BgColor = clrBackground);
   virtual void Set(void) {}
   virtual eOSState ProcessKey(eKeys Key);
-  };
+};
 
 class cOsdBase {
 protected:
@@ -67,7 +68,7 @@ public:
   int Height(void) { return Interface->Height(); }
   bool NeedsFastResponse(void) { return needsFastResponse; }
   virtual eOSState ProcessKey(eKeys Key) = 0;
-  };
+};
 
 class cOsdMenu : public cOsdBase, public cList<cOsdItem> {
 private:

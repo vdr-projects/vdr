@@ -610,7 +610,10 @@ Video Disk Recorder Revision History
 - Explicitly switching back to the previously active channel after ending a
   replay session (to have it shown correctly in case it was in 'Transfer Mode').
 
-2001-07-31: Version 0.86
+2001-08-03: Version 0.86
 
 - Modified the display of the channel group separators (thanks to Markus Lang
   for this suggestion).
+- Added support for replaying DVDs (thanks to Andreas Schultz). VDR now needs
+  the 'libdvdread' library to be installed.
+  

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.h 1.42 2001/07/27 11:40:38 kls Exp $
+ * $Id: dvbapi.h 1.43 2001/08/02 14:50:48 kls Exp $
  */
 
 #ifndef __DVBAPI_H
@@ -26,7 +26,9 @@
 #include <ost/audio.h>
 #include <ost/osd.h>
 #include <stdio.h>
+
 #include "dvbosd.h"
+#include "dvd.h"
 #include "eit.h"
 #include "thread.h"
 
@@ -44,7 +46,9 @@ int HMSFToIndex(const char *HMSF);
 class cChannel;
 
 class cRecordBuffer;
+class cPlayBuffer;
 class cReplayBuffer;
+class cDVDplayBuffer;
 class cTransferBuffer;
 class cCuttingBuffer;
 
@@ -60,6 +64,7 @@ public:
 class cDvbApi {
   friend class cRecordBuffer;
   friend class cReplayBuffer;
+  friend class cDVDplayBuffer;
   friend class cTransferBuffer;
 private:
   int videoDev;
@@ -202,7 +207,7 @@ private:
 
 private:
   cRecordBuffer *recordBuffer;
-  cReplayBuffer *replayBuffer;
+  cPlayBuffer *replayBuffer;
   int ca;
   int priority;
   int  Ca(void) { return ca; }
@@ -238,6 +243,8 @@ public:
        // Starts replaying the given file.
        // If there is already a replay session active, it will be stopped
        // and the new file will be played back.
+  bool StartDVDplay(cDVD *dvd, int TitleID);//XXX dvd parameter necessary???
+       // Starts replaying the given TitleID on the DVD.
   void StopReplay(void);
        // Stops the current replay session (if any).
   void Pause(void);
