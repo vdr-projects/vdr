@@ -530,6 +530,7 @@ Oliver Endriss <o.endriss@gmx.de>
  for reporting that the "Classic VDR" skin wrongly displayed unused color buttons
  for reporting some missing cStatus::MsgOsdTextItem() calls
  for reporting a missing "Editing process finished" message with skins
+ for adding a sample setup for 'DisiCon-4 Single Cable Network' to 'diseqc.conf'
 
 Reinhard Walter Buchner <rw.buchner@freenet.de>
  for adding some satellites to 'sources.conf'

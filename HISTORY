@@ -3044,3 +3044,5 @@ Video Disk Recorder Revision History
 - What was previously marked with WAIT_FOR_LOCK_AFTER_TUNING is now permanently
   active and uses a cCondVar to signal when a transponder is locked.
 - Added some missing 'const' to cChannel.
+- Added a sample setup for 'DisiCon-4 Single Cable Network' to 'diseqc.conf'
+  (thanks to Oliver Endriss).
