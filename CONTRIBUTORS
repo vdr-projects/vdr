@@ -1296,3 +1296,6 @@ Luca Olivetti <luca@ventoso.org>
 Mikko Salo <mikko.salo@ppe.inet.fi>
  for suggesting to make the setup option "DVB/Video display format" available only
  if "Video format" is set to "4:3"
+
+Roman Krenický <free-rtk@gmx.de>
+ for a patch that was used a a basis for changing a timer's day handling to full date

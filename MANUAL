@@ -381,10 +381,9 @@ Version 1.2
              Any changes made in the "Channels" list (like renaming or
              reordering channels) will be automatically reflected in the
              timers settings.
-  Day:       The day on which this timer shall start. This can be either a
-             "day of month" (1..31), which allows programming a "single shot"
-             timer that hits once and is deleted after it ends. Single shot
-             timers can be programmed up to one month into the future.
+  Day:       The day on which this timer shall start. This can be a
+             date (like 2005-03-19), which allows programming a "single shot"
+             timer that hits once and is deleted after it ends.
              Another option here are "repeating timers" which are defined
              by listing the days of the week on which they shall record.
              For example, a timer that shall record every monday and wednesday
@@ -392,6 +391,9 @@ Version 1.2
              The '0' key toggles between a single shot and a repeating timer.
              If "Day" indicates a repeating timer, the keys '1'...'7' can be
              used to toggle the individual days ('1' is monday).
+             You can also switch to a set of predefined repeating timer settings
+             by pressing the "Left" key when the day is the present day. To return
+             to the single shot mode just press "Right" until a date is displayed.
   Start:     The start time of the timer in hh:mm as 24 hour ("military") time.
   Stop:      The stop time of the timer.
   VPS:       Defines whether the timer shall use VPS (if available). If this

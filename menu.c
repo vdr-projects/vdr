@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.343 2005/03/05 15:43:10 kls Exp $
+ * $Id: menu.c 1.344 2005/03/19 14:23:43 kls Exp $
  */
 
 #include "menu.h"
@@ -632,7 +632,7 @@ cMenuEditTimer::cMenuEditTimer(cTimer *Timer, bool New)
      channel = data.Channel()->Number();
      Add(new cMenuEditBitItem( tr("Active"),       &data.flags, tfActive));
      Add(new cMenuEditChanItem(tr("Channel"),      &channel));
-     Add(new cMenuEditDayItem( tr("Day"),          &data.day));
+     Add(new cMenuEditDateItem(tr("Day"),          &data.day, &data.weekdays));
      Add(new cMenuEditTimeItem(tr("Start"),        &data.start));
      Add(new cMenuEditTimeItem(tr("Stop"),         &data.stop));
      Add(new cMenuEditBitItem( tr("VPS"),          &data.flags, tfVps));
@@ -654,13 +654,12 @@ cMenuEditTimer::~cMenuEditTimer()
 void cMenuEditTimer::SetFirstDayItem(void)
 {
   if (!firstday && !data.IsSingleEvent()) {
-     Add(firstday = new cMenuEditDateItem(tr("First day"), &data.firstday));
+     Add(firstday = new cMenuEditDateItem(tr("First day"), &data.day));
      Display();
      }
   else if (firstday && data.IsSingleEvent()) {
      Del(firstday->Index());
      firstday = NULL;
-     data.firstday = 0;
      Display();
      }
 }
@@ -739,7 +738,7 @@ void cMenuTimerItem::Set(void)
                     timer->Channel()->Number(),
                     timer->IsSingleEvent() ? *WeekDayName(timer->StartTime()) : "",
                     timer->IsSingleEvent() ? " " : "",
-                    *timer->PrintDay(timer->Day()),
+                    *timer->PrintDay(timer->Day(), timer->WeekDays()),
                     timer->Start() / 100,
                     timer->Start() % 100,
                     timer->Stop() / 100,

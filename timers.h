@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.h 1.14 2005/03/12 16:27:36 kls Exp $
+ * $Id: timers.h 1.15 2005/03/19 14:22:11 kls Exp $
  */
 
 #ifndef __TIMERS_H
@@ -30,13 +30,13 @@ private:
   bool recording, pending, inVpsMargin;
   int flags;
   cChannel *channel;
-  int day;
+  mutable time_t day;   /// midnight of the day this timer shall hit, or of the first day it shall hit in case of a repeating timer
+  int weekdays; /// bitmask, lowest bits: SSFTWTM  (the 'M' is the LSB)
   int start;
   int stop;
   int priority;
   int lifetime;
   char file[MaxFileName];
-  mutable time_t firstday;
   char *summary;
   const cEvent *event;
 public:
@@ -50,13 +50,14 @@ public:
   bool InVpsMargin(void) { return inVpsMargin; }
   int Flags(void) { return flags; }
   const cChannel *Channel(void) { return channel; }
-  int Day(void) { return day; }
+  time_t Day(void) { return day; }
+  int WeekDays(void) { return weekdays; }
   int Start(void) { return start; }
   int Stop(void) { return stop; }
   int Priority(void) { return priority; }
   int Lifetime(void) { return lifetime; }
   const char *File(void) { return file; }
-  time_t FirstDay(void) { return firstday; }
+  time_t FirstDay(void) { return weekdays ? day : 0; }
   const char *Summary(void) { return summary; }
   cString ToText(bool UseChannelID = false);
   const cEvent *Event(void) { return event; }
@@ -65,7 +66,6 @@ public:
   bool IsSingleEvent(void) const;
   static int GetMDay(time_t t);
   static int GetWDay(time_t t);
-  static int GetWDayFromMDay(int MDay);
   bool DayMatches(time_t t) const;
   static time_t IncDay(time_t t, int Days);
   static time_t SetTime(time_t t, int SecondsFromMidnight);
@@ -86,8 +86,8 @@ public:
   void OnOff(void);
   cString PrintFirstDay(void);
   static int TimeToInt(int t);
-  static int ParseDay(const char *s, time_t *FirstDay = NULL);
-  static cString PrintDay(int d, time_t FirstDay = 0);
+  static bool ParseDay(const char *s, time_t &Day, int &WeekDays);
+  static cString PrintDay(time_t Day, int WeekDays);
   };
 
 class cTimers : public cConfig<cTimer> {
