@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.114 2003/05/24 12:51:02 kls Exp $
+ * $Id: i18n.c 1.115 2003/05/24 13:58:38 kls Exp $
  *
  * Translations provided by:
  *
@@ -288,7 +288,7 @@ const tI18nPhrase Phrases[] = {
     "Zawartosc",
     "Resúmen",
     "Periexomeno",
-    "Sammandrag",
+    "Sammanfattning",
     "Cuprins",
     "Tartalom",
     "Sinopsi",
@@ -527,7 +527,7 @@ const tI18nPhrase Phrases[] = {
     "Zawartosc",
     "Resumen",
     "Periexomeno",
-    "Sammandrag",
+    "Sammanfattning",
     "Cuprins",
     "Tartalom",
     "Resum",
@@ -731,7 +731,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "Reiniciar",
     "Epanafora",
-    "",//TODO
+    "Återställ",
     "",//TODO
     "",//TODO
     "Reiniciar",
@@ -834,7 +834,7 @@ const tI18nPhrase Phrases[] = {
     "na pierwszym interfejsie",
     "en interface primario",
     "stin protevon karta",
-    "från det första enheten?",
+    "från den första enheten?",
     "pe prima interfata",
     "az elsö kártyán",
     "a la interfície primària",
@@ -851,7 +851,7 @@ const tI18nPhrase Phrases[] = {
     "Zakonczyc montaz?",
     "¿Cancelar modificación?",
     "Akirosi kopsimatos?",
-    "Avbryta editeringen?",
+    "Avbryta redigeringen?",
     "Opresc editarea?",
     "Vágást befejezni?",
     "Cancel.lar l'edició?",
@@ -885,7 +885,7 @@ const tI18nPhrase Phrases[] = {
     "Nagrywanie w trakcie - rzeczywiscie nowy start?",
     "Grabando - ¿reiniciar?",
     "Ginete egrafi - Telika na ginei epanekinisi?",
-    "Inspelning pågår, vill du starta om i alla fall?",
+    "Inspelning pågår, vill du ändå starta om?",
     "In inregistrare - repornesc?",
     "Felvétel folyamatban van - mégis újraindítani?",
     "Estic gravant - reiniciar de totes maneres?"
@@ -902,7 +902,7 @@ const tI18nPhrase Phrases[] = {
     "Nagrywanie w trakcie - mimo to wylaczyc?",
     "Grabando - ¿apagar?",
     "Ginete egrafi - Telika na ginei termatismos?",
-    "Inspelning pågår, vill du avbryta i alla fall?",
+    "Inspelning pågår, vill du ändå avbryta?",
     "In inregistrare - opresc?",
     "Felvétel folyamatban van - mégis kikapcsolni?",
     "Gravant - Apagar de totes maneres?",
@@ -936,7 +936,7 @@ const tI18nPhrase Phrases[] = {
     "Dowolny przycisk zatrzyma wylaczanie",
     "Pulse una tecla para interrumpir apagar",
     "Piese ena pliktro na akirothei o termatismos",
-    "Tryck valfri knapp för att avbryta nedstängning",
+    "Tryck valfri knapp för att återkalla avstängningen",
     "Apasa orice tasta pentru a anula inchiderea",
     "Nyomj egy gombot a leállás megállításához",
     "Prem qualsevol tecla per cancel.lar l'aturada",
@@ -1022,7 +1022,7 @@ const tI18nPhrase Phrases[] = {
     "Srate",
     "Srate",
     "Srate",
-    "Srate",
+    "Symbolrate",
     "Rata simboluri",
     "Srate",
     "Srate",
@@ -1039,7 +1039,7 @@ const tI18nPhrase Phrases[] = {
     "Vpid",
     "Vpid",
     "Vpid",
-    "Vpid",
+    "Video PID",
     "PID Video",
     "Vpid",
     "PID Vídeo",
@@ -1056,7 +1056,7 @@ const tI18nPhrase Phrases[] = {
     "Apid1",
     "Apid1",
     "Apid1",
-    "Apid1",
+    "Audio PID1",
     "PID Audio (1)",
     "Apid1",
     "PID Àudio (1)",
@@ -1073,7 +1073,7 @@ const tI18nPhrase Phrases[] = {
     "Apid2",
     "Apid2",
     "Apid2",
-    "Apid2",
+    "Audio PID2",
     "PID Audio (2)",
     "Apid2",
     "PID Àudio (2)",
@@ -1124,7 +1124,7 @@ const tI18nPhrase Phrases[] = {
     "Tpid",
     "Tpid",
     "Tpid",
-    "Tpid",
+    "Teletext PID",
     "PID Teletext",
     "Tpid",
     "PID Teletext",
@@ -1141,7 +1141,7 @@ const tI18nPhrase Phrases[] = {
     "CA",
     "CA",
     "CA",
-    "CA",
+    "Kortläsare",
     "Criptare",
     "CA",
     "Accés Condicional",
@@ -1414,7 +1414,7 @@ const tI18nPhrase Phrases[] = {
     "Trwalosc dni",
     "Durabilidad",
     "Xronos Zois",
-    "Speltid",
+    "Livstid",
     "Durata",
     "Élettartam",
     "Duració",
@@ -1517,7 +1517,7 @@ const tI18nPhrase Phrases[] = {
     "Blad - brak dostepu do nagrania!",
     "¡Error al acceder a la grabación!",
     "Provlima stin prospelasi egrafis!",
-    "Det går inte att läsa inspelningen",
+    "Inspelningen går inte att läsa!",
     "Eroare in timpul accesarii inregistrarii",
     "Hiba a felvétel hozzáférésénél",
     "Error a l'accedir a la gravació!",
@@ -1534,7 +1534,7 @@ const tI18nPhrase Phrases[] = {
     "Blad przy usuwaniu nagrania!",
     "¡Error al borrar la grabación!",
     "Provlima sto svisimo egrafis !",
-    "Det går inte att ta bort inspelningen",
+    "Inspelningen går inte att ta bort!",
     "Eroare in timpul stergerii inregistrarii!",
     "Hiba a felvétel törlésénél!",
     "Error a l'esborrar la gravació!",
@@ -1653,7 +1653,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "Muokkausmerkinnät puuttuvat",
     "",//TODO
-    "",//TODO
+    "Det finns inga redigeringsmärken",//TODO
     "",//TODO
     "",//TODO
     "",//TODO
@@ -1670,7 +1670,7 @@ const tI18nPhrase Phrases[] = {
     "Uruchamianie montazu jest niemozliwe!",
     "¡No puedo iniciar proceso de modificación!",
     "Adinamia ekinisis tis epexsergasias!",
-    "Kan inte starta editering!",
+    "Kan inte starta redigering!",
     "Nu pot porni procesul de editare!",
     "A vágás nem indítható!",
     "No puc iniciar el procés d'edició!",
@@ -1687,7 +1687,7 @@ const tI18nPhrase Phrases[] = {
     "Montaz w toku!",
     "¡Proceso de modificación ya fue iniciado!",
     "Epexsergasia vriskete se exselixsi!",
-    "Editering är redan aktiv!",
+    "Redigeringen är redan aktiv!",
     "Procesul de editare este activ!",
     "A vágás már aktivált!",
     "Procés d'edició iniciat anteriorment!",
@@ -1704,7 +1704,7 @@ const tI18nPhrase Phrases[] = {
     "Wylaczenie niemozliwe - brak opcji '-s'!",
     "¡No puedo apagar - opción '-s' ausente!",
     "Adinaton na ginei termatismos. Aniparkti i parametros '-s'!",
-    "Kan inte avsluta, måste använda flagga '-s'",
+    "Kan inte avsluta, måste använda parameter '-s'",
     "Nu pot opri calculatorul - vezi optiunea '-s'",
     "A leállítás nem lehetséges - Opció '-s' hiányzik!",
     "No puc apagar, falta la opció -s !"
@@ -1738,7 +1738,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "¡No pudeo acceder al menú de la CAM!",
     "Den mpori na aniksi to CAM menou!",
-    "",//TODO
+    "Det går inte att öppna CAM menyn!",
     "",//TODO
     "",//TODO
     "No puc obrir el menú de la CAM!",
@@ -1755,7 +1755,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "¡No puedo reiniciar la CAM!",
     "Adinato na gini epanafora sto CAM",
-    "",//TODO
+    "Kan inte återställa CAM!",
     "",//TODO
     "",//TODO
     "No puc reiniciar la CAM!",
@@ -1772,7 +1772,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "CAM reiniciada",
     "Sto CAM egine apanafora",
-    "",//TODO
+    "CA modulen har återställts",
     "",//TODO
     "",//TODO
     "CAM reiniciada",
@@ -1892,7 +1892,7 @@ const tI18nPhrase Phrases[] = {
     "Odtwarzanie",
     "Opciones de Reproducción",
     "Anametadosi",
-    "Repris",
+    "Uppspelning",
     "Redare",
     "Lejátszás",
     "Opcions de Reproducció",
@@ -1926,7 +1926,7 @@ const tI18nPhrase Phrases[] = {
     "Plugins",
     "Plugins",
     "Plugins",
-    "Plugins",
+    "Moduler",
     "Plugins",
     "Plugins",
     "Plugins",
@@ -1943,7 +1943,7 @@ const tI18nPhrase Phrases[] = {
     "Plugin",
     "Plugin",
     "Plugin",
-    "Plugin",
+    "Modul",
     "Plugin",
     "Plugin",
     "Plugin",
@@ -2386,7 +2386,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Livstid för direktinspelning (dagar)",
     "",// TODO
     "",// TODO
     "Duració de la pausa (d)",
@@ -2403,7 +2403,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Prioritet för direktinspelning",
     "",// TODO
     "",// TODO
     "Prioritat de la pausa",
@@ -2420,7 +2420,7 @@ const tI18nPhrase Phrases[] = {
     "Pierwotna trwalosc (d)",
     "Duración predefinida",
     "Xronos zois",
-    "Normal livstid",
+    "Normal livstid (dagar)",
     "Durata predefinita",
     "Default élettartam",
     "Duració predefinida",
@@ -2505,7 +2505,7 @@ const tI18nPhrase Phrases[] = {
     "Nagrywac Dolby Digital",
     "Grabar sonido Dolby Digital",
     "Egrafi tou Dolby Digital ixou",
-    "Spela in ljud med Dolby Digital",
+    "Spela in ljudet med Dolby Digital",
     "Inregistreaza Dolby Digital",
     "Dolby Digitál felvétel",
     "Gravar el sò en Dolby Digital",
@@ -2539,7 +2539,7 @@ const tI18nPhrase Phrases[] = {
     "Dzielic montowane pliki",
     "Quebrar ficheros",
     "Diamelisma epeksergasmenon arxeion",
-    "Dela upp editerade filer",
+    "Dela upp redigerade filer",
     "Separare fisiere editate",
     "Feldolgozott File-k felosztása",
     "Separar arxius",
@@ -2573,7 +2573,7 @@ const tI18nPhrase Phrases[] = {
     "Wyswietlac status odtwarzania",
     "Mostrar modo de replay",
     "Endiksi katastasis anametadosis",
-    "Visa uppspelnings mode",
+    "Visa uppspelnings läge",
     "Afiseaza modul de redare",
     "Lejátszás feltüntetése",
     "Mostrar mode de reproducció",
@@ -2590,7 +2590,7 @@ const tI18nPhrase Phrases[] = {
     "Resume ID",// TODO
     "Continuar ID",
     "Resume ID",// TODO
-    "Resume ID",// TODO
+    "Återuppta ID",
     "Resume ID",// TODO
     "Resume ID",// TODO
     "Continuar ID",
@@ -2899,7 +2899,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "Pulse 'Menu' para saltarse esta tecla",
     "Pata 'Menou' gia prosperasi aftou tou pliktrou",
-    "",// TODO
+    "Tryck 'Meny' för att hoppa över denna knapp.",
     "",// TODO
     "",// TODO
     "Premi 'Menu' per obviar aquesta tecla",
@@ -3206,7 +3206,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "Adelante rápido",
     "Girisma mprosta",
-    "Spola framåt",
+    "Snabbspolning framåt",
     "",// TODO
     "",// TODO
     "Endavant ràpidament",
@@ -3223,7 +3223,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "Atrás rápido",
     "Girisma piso",
-    "Spola bakåt",
+    "Snabbspolning bakåt",
     "",// TODO
     "",// TODO
     "Enrera ràpidament",
@@ -3394,7 +3394,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "ninguno"
     "kanena",
-    "",// TODO
+    "ingen",
     "",// TODO
     "",// TODO
     "cap",
@@ -3411,7 +3411,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "auto",
     "aftomato",
-    "",// TODO
+    "automatisk",
     "",// TODO
     "",// TODO
     "auto",
@@ -3445,7 +3445,7 @@ const tI18nPhrase Phrases[] = {
     "dol",
     "parte inferior",
     "kato",
-    "nedre",
+    "undre",
     "jos",
     "lent",
     "a baix",
@@ -3564,7 +3564,7 @@ const tI18nPhrase Phrases[] = {
     " Przerwac montaz",
     " Anular modificación ",
     " Akirosi epexsergasias",
-    " Avbryt editering",
+    " Avbryt redigering",
     " Opreste editare",
     " Vágást megszakítani",
     " Cancel·lar l'edició ",
@@ -3615,7 +3615,7 @@ const tI18nPhrase Phrases[] = {
     "Uruchomiony proces montazu",
     "Proceso modificación iniciado",
     "Arxi epexsergasias",
-    "Editering startad",
+    "Redigering startad",
     "Procesul de editare a inceput",
     "Vágás elindítva",
     "Procés d'edició iniciat",
@@ -3632,7 +3632,7 @@ const tI18nPhrase Phrases[] = {
     "Proces montazu zakonczony",
     "Proceso de modificación terminado",
     "I epexsergasia teliose",
-    "Editering avslutad",
+    "Redigering avslutad",
     "Procesul de editare s-a terminat",
     "Vágás befejezve",
     "Procés d'edició finalitzat",
@@ -3649,7 +3649,7 @@ const tI18nPhrase Phrases[] = {
     "Bledny proces montazu!",
     "Modificación ha fallado!",
     "I epexsergasia apetixe!",
-    "Editeringsprocessen misslyckades",
+    "Redigeringsprocessen misslyckades",
     "Proces de editare nereusit",
     "Vágás sikertelen!",
     "Procés d'edició fallit!",
@@ -3683,7 +3683,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "Emisión en directo parada...",
     "",// TODO
-    "",// TODO
+    "Pausar direktinspelningen",
     "",// TODO
     "",// TODO
     "Pausa d'emissió en directe..."
@@ -3700,7 +3700,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "Este plugin no admite configuración",
     "Afto to plugin den exi parametrous",
-    "",// TODO
+    "Den här modulen har inga parametrar",
     "",// TODO
     "",// TODO
     "Aquest plugin no admet configuració!",

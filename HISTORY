@@ -2189,3 +2189,4 @@ Video Disk Recorder Revision History
 - Fixed volume display in case a plugin has its own OSD open (thanks to Marcel
   Wiesweg).
 - Fixed channel switching in the EPG scanner on single device systems.
+- Completed the Swedish OSD texts (thanks to Tomas Prybil).
