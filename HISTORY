@@ -273,7 +273,8 @@ Video Disk Recorder Revision History
   than one DVB card).
 - The 'SetSystemTime' option in the "Setup" menu is now shown as "yes/no".
 - Implemented "internationalization" (see 'i18n.c' for information on how to
-  add new languages).
+  add new languages). Thanks to Miha Setina for translating the OSD texts to
+  the Slovenian language.
 - Fixed learning keys on the PC keyboard (display oscillated).
 - Fixed a timing problem with OSD refresh and SVDRP.
 - Avoiding multiple definitions of the same timer in the "Schedule" menu (this
