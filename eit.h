@@ -4,6 +4,9 @@
     begin                : Fri Aug 25 2000
     copyright            : (C) 2000 by Robert Schneider
     email                : Robert.Schneider@web.de
+
+    2001-08-15: Adapted to 'libdtv' by Rolf Hakenes <hakenes@hippomi.de>
+
  ***************************************************************************/
 
 /***************************************************************************
@@ -13,7 +16,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.h 1.8 2001/08/11 09:06:17 kls Exp $
+ * $Id: eit.h 1.9 2001/08/15 13:10:28 kls Exp $
  ***************************************************************************/
 
 #ifndef __EIT_H
@@ -40,13 +43,13 @@ private:
 protected:
   void SetFollowing(bool foll);
   void SetPresent(bool pres);
-  bool SetTitle(char *string);
+  bool SetTitle(const char *string);
   void SetServiceID(unsigned short servid);
   void SetEventID(unsigned short evid);
   void SetDuration(long l);
   void SetTime(time_t t);
-  bool AddExtendedDescription(char *string);
-  bool SetSubtitle(char *string);
+  bool AddExtendedDescription(const char *string);
+  bool SetSubtitle(const char *string);
   void IncreaseExtendedDescriptorNumber(void);
   cEventInfo(unsigned short serviceid, unsigned short eventid);
 public:

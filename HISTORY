@@ -653,3 +653,5 @@ Video Disk Recorder Revision History
 2001-08-15: Version 0.92
 
 - The "channel not sync'ed" log message now also lists the card number.
+- Now using the EIT services from 'libdtv' (thanks to Rolf Hakenes), which
+  provides EPG information for NVOD ("Near Video On Demand") channels.

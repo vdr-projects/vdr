@@ -4,15 +4,18 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 1.25 2001/08/10 16:46:45 kls Exp $
+# $Id: Makefile 1.26 2001/08/15 13:56:11 kls Exp $
 
 .DELETE_ON_ERROR:
 
 DVBDIR   = ../DVB
 DVDDIR   = ../DVD
 AC3DIR   = ./ac3dec
+DTVDIR   = ./libdtv
 
 INCLUDES = -I$(DVBDIR)/ost/include
+
+DTVLIB   = $(DTVDIR)/libdtv.a
 
 ifdef DVD
 INCLUDES += -I$(DVDDIR)/libdvdread
@@ -57,10 +60,10 @@ font: genfontfile fontfix.c fontosd.c
 # Dependencies:
 
 config.o    : config.c config.h dvbapi.h dvbosd.h dvd.h eit.h font.h i18n.h interface.h remote.h svdrp.h thread.h tools.h
-dvbapi.o    : dvbapi.c config.h dvbapi.h dvbosd.h dvd.h eit.h font.h recording.h remux.h ringbuffer.h thread.h tools.h videodir.h
+dvbapi.o    : dvbapi.c $(AC3DIR)/ac3.h config.h dvbapi.h dvbosd.h dvd.h eit.h font.h recording.h remux.h ringbuffer.h thread.h tools.h videodir.h
 dvbosd.o    : dvbosd.c dvbosd.h font.h tools.h
 dvd.o       : dvd.c dvd.h
-eit.o       : eit.c config.h dvbapi.h dvbosd.h dvd.h eit.h font.h thread.h tools.h videodir.h
+eit.o       : eit.c config.h dvbapi.h dvbosd.h dvd.h eit.h font.h $(DTVDIR)/libdtv.h thread.h tools.h videodir.h
 font.o      : font.c font.h fontfix.c fontosd.c tools.h
 i18n.o      : i18n.c config.h dvbapi.h dvbosd.h dvd.h eit.h font.h i18n.h thread.h tools.h
 interface.o : interface.c config.h dvbapi.h dvbosd.h dvd.h eit.h font.h i18n.h interface.h remote.h svdrp.h thread.h tools.h
@@ -78,8 +81,8 @@ videodir.o  : videodir.c tools.h videodir.h
 
 # The main program:
 
-vdr: $(OBJS) $(AC3LIB)
-	g++ -g -O2 $(OBJS) -lncurses -ljpeg -lpthread $(LIBDIRS) $(DVDLIB) $(AC3LIB) -o vdr
+vdr: $(OBJS) $(AC3LIB) $(DTVLIB)
+	g++ -g -O2 $(OBJS) -lncurses -ljpeg -lpthread $(LIBDIRS) $(DVDLIB) $(AC3LIB) $(DTVLIB) -o vdr
 
 # The font files:
 
@@ -98,10 +101,16 @@ genfontfile: genfontfile.c
 $(AC3LIB):
 	make -C $(AC3DIR) all
 
+# The libdtv library:
+
+$(DTVLIB) $(DTVDIR)/libdtv.h:
+	make -C $(DTVDIR) all
+
 # Housekeeping:
 
 clean:
 	make -C $(AC3DIR) clean
+	make -C $(DTVDIR) clean
 	-rm -f $(OBJS) vdr genfontfile genfontfile.o core *~
 fontclean:
 	-rm -f fontfix.c fontosd.c
