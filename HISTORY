@@ -1542,7 +1542,7 @@ Video Disk Recorder Revision History
   to Oliver Endriss).
 - Modified channel handling to cover all parameters necessary for DVB-C and DVB-T
   (see man vdr(5) for the meaning of the additional parameters stored in the field
-  previously named 'polarisation'). Thanks to Uwe Scheffler and Andy Fruit for testing.
+  previously named 'polarisation'). Thanks to Uwe Scheffler and Andy Carter for testing.
   If you have a system with different kinds of DVB cards, like DVB-T and DVB-C,
   for instance, there is no more need to distinguish the channels through the
   'Ca' parameter in order to assign them to the various DVB cards. This is now
