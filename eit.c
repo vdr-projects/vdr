@@ -16,7 +16,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.c 1.66 2003/03/16 11:14:35 kls Exp $
+ * $Id: eit.c 1.67 2003/03/16 11:20:05 kls Exp $
  ***************************************************************************/
 
 #include "eit.h"
@@ -607,7 +607,7 @@ void cEventInfo::FixEpgBugs(void)
            free(pExtendedDescription);
            pExtendedDescription = pSubtitle;
            pSubtitle = NULL;
-           EpgBugFixStat(5, GetChannelID());
+           EpgBugFixStat(6, GetChannelID());
            }
         }
 

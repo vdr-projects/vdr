@@ -548,3 +548,4 @@ Marcel Wiesweg <marcel.wiesweg@gmx.de>
 Torsten Herz <torsten.herz@web.de>
  for fixing a possible deadlock when using the "Blue" button in the "Schedules" menu
  to switch to an other channel
+ for reporting a wrong EPG bugfix code number for the MAX_USEFUL_SUBTITLE_LENGTH fix
