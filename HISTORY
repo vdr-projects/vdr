@@ -2838,3 +2838,4 @@ Video Disk Recorder Revision History
 - Added some missing cStatus::MsgOsdTextItem() calls (thanks to Oliver Endriss for
   reporting this one).
 - Completed Croatian language texts (thanks to Drazen Dupor).
+- New iso8859-2 font to fix the problem with program freezes (thanks to Drazen Dupor).
