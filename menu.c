@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.16 2000/05/27 16:13:39 kls Exp $
+ * $Id: menu.c 1.17 2000/07/16 10:55:45 kls Exp $
  */
 
 #include "menu.h"
@@ -1116,7 +1116,7 @@ bool cRecordControls::Start(cTimer *Timer)
             }
         }
      else
-        esyslog(LOG_ERR, "ERROR: no free DVB device to record channel %d!", ch);
+        esyslog(LOG_ERR, "ERROR: no free DVB device to record channel %d!", ch + 1);
      }
   else
      esyslog(LOG_ERR, "ERROR: channel %d not defined!", ch + 1);
