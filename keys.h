@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: keys.h 1.4 2002/12/01 10:43:26 kls Exp $
+ * $Id: keys.h 1.5 2002/12/14 15:49:42 kls Exp $
  */
 
 #ifndef __KEYS_H
@@ -46,6 +46,7 @@ enum eKeys { // "Up" and "Down" must be the first two keys!
              kCommands,
              kUser1, kUser2, kUser3, kUser4, kUser5, kUser6, kUser7, kUser8, kUser9,
              kNone,
+             kKbd,
              // The following codes are used internally:
              k_Plugin,
              k_Setup,
@@ -68,6 +69,10 @@ enum eKeys { // "Up" and "Down" must be the first two keys!
 #define ISRAWKEY(k)      ((k) != kNone && ((k) & k_Flags) == 0)
 #define NORMALKEY(k)     (eKeys((k) & ~k_Repeat))
 #define ISMODELESSKEY(k) (RAWKEY(k) > k9)
+
+#define BASICKEY(k)      (eKeys((k) & 0xFFFF))
+#define KBDKEY(k)        (eKeys(((k) << 16) | kKbd))
+#define KEYKBD(k)        (((k) >> 16) & 0xFFFF)
 
 struct tKey {
   eKeys type;

@@ -514,3 +514,6 @@ Thomas Sailer <sailer@scs.ch>
 
 Sven Goethel <sgoethel@jausoft.com>
  for making switching audio channels work without stopping/restarting the DMX
+
+Jan Rieger <jan@ricomp.de>
+ for suggestions and testing raw keyboard input

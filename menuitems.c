@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.c 1.9 2002/09/08 14:51:28 kls Exp $
+ * $Id: menuitems.c 1.10 2002/12/15 10:58:00 kls Exp $
  */
 
 #include "menuitems.h"
@@ -284,7 +284,7 @@ eOSState cMenuEditStrItem::ProcessKey(eKeys Key)
                     uppercase = isupper(value[pos]);
                  break;
     case kRight|k_Repeat:
-    case kRight: if (pos < length && pos < int(strlen(value)) ) {
+    case kRight: if (pos < length - 2 && pos < int(strlen(value)) ) {
                     if (++pos >= int(strlen(value))) {
                        if (pos >= 2 && value[pos - 1] == ' ' && value[pos - 2] == ' ')
                           pos--; // allow only two blanks at the end
@@ -306,7 +306,7 @@ eOSState cMenuEditStrItem::ProcessKey(eKeys Key)
     case kDown:  if (pos >= 0) {
                     if (insert && newchar) {
                        // create a new character in insert mode
-                       if (int(strlen(value)) < length) {
+                       if (int(strlen(value)) < length - 1) {
                           memmove(value + pos + 1, value + pos, strlen(value) - pos + 1);
                           value[pos] = ' ';
                           }
@@ -328,7 +328,44 @@ eOSState cMenuEditStrItem::ProcessKey(eKeys Key)
                     break;
                     }
                  // run into default
-    default:     return cMenuEditItem::ProcessKey(Key);
+    default:     if (pos >= 0 && BASICKEY(Key) == kKbd) {
+                    int c = KEYKBD(Key);
+                    if (c <= 0xFF) {
+                       const char *p = strchr(allowed, tolower(c));
+                       if (p) {
+                          int l = strlen(value);
+                          if (insert && l < length - 1)
+                             memmove(value + pos + 1, value + pos, l - pos + 1);
+                          value[pos] = c;
+                          if (pos < length - 2)
+                             pos++;
+                          if (pos >= l) {
+                             value[pos] = ' ';
+                             value[pos + 1] = 0;
+                             }
+                          }
+                       else {
+                          switch (c) {
+                            case 0x7F: // backspace
+                                       if (pos > 0) {
+                                          pos--;
+                                          return ProcessKey(kYellow);
+                                          }
+                                       break;
+                            }
+                          }
+                       }
+                    else {
+                       switch (c) {
+                         case kfHome: pos = 0; break;
+                         case kfEnd:  pos = strlen(value) - 1; break;
+                         case kfIns:  return ProcessKey(kGreen);
+                         case kfDel:  return ProcessKey(kYellow);
+                         }
+                       }
+                    }
+                 else
+                    return cMenuEditItem::ProcessKey(Key);
     }
   Set();
   return osContinue;

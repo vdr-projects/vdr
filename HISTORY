@@ -1887,3 +1887,9 @@ Video Disk Recorder Revision History
 - No longer stopping/restarting the DMX when switching audio channels (thanks to
   Sven Goethel).
 - Fixed high CPU load in 'Transfer Mode' (thanks to Oliver Endriss).
+- If a PC keyboard is used as remote control, the string entry fields in the
+  menus now accept character input directly (however, this works only for keys that
+  are not otherwise defined as remote control keys). Also, plugins can switch the
+  cKbdRemote class into "raw mode", where all keyboard input will be made available
+  through the new 'kKbd' key code and none of it will be processed as normal remote
+  control functions (thanks to Jan Rieger for suggestions and testing).

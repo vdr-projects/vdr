@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remote.c 1.34 2002/12/08 13:37:13 kls Exp $
+ * $Id: remote.c 1.35 2002/12/15 10:09:27 kls Exp $
  */
 
 #include "remote.h"
@@ -149,6 +149,39 @@ cRemotes Remotes;
 
 // --- cKbdRemote ------------------------------------------------------------
 
+struct tKbdMap {
+  eKbdFunc func;
+  uint64 code;
+  };
+
+static tKbdMap KbdMap[] = {
+  { kfF1,     0x0000001B5B31317EULL },
+  { kfF2,     0x0000001B5B31327EULL },
+  { kfF3,     0x0000001B5B31337EULL },
+  { kfF4,     0x0000001B5B31347EULL },
+  { kfF5,     0x0000001B5B31357EULL },
+  { kfF6,     0x0000001B5B31377EULL },
+  { kfF7,     0x0000001B5B31387EULL },
+  { kfF8,     0x0000001B5B31397EULL },
+  { kfF9,     0x0000001B5B32307EULL },
+  { kfF10,    0x0000001B5B32317EULL },
+  { kfF11,    0x0000001B5B32327EULL },
+  { kfF12,    0x0000001B5B32337EULL },
+  { kfUp,     0x00000000001B5B41ULL },
+  { kfDown,   0x00000000001B5B42ULL },
+  { kfLeft,   0x00000000001B5B44ULL },
+  { kfRight,  0x00000000001B5B43ULL },
+  { kfHome,   0x00000000001B5B48ULL },
+  { kfEnd,    0x00000000001B5B46ULL },
+  { kfPgUp,   0x000000001B5B357EULL },
+  { kfPgDown, 0x000000001B5B367EULL },
+  { kfIns,    0x000000001B5B327EULL },
+  { kfDel,    0x000000001B5B337EULL },
+  { kfNone,   0x0000000000000000ULL }
+  };
+
+bool cKbdRemote::rawMode = false;
+
 cKbdRemote::cKbdRemote(void)
 :cRemote("KBD")
 {
@@ -170,6 +203,29 @@ cKbdRemote::~cKbdRemote()
   active = false;
   Cancel(3);
   tcsetattr(STDIN_FILENO, TCSANOW, &savedTm);
+}
+
+void cKbdRemote::SetRawMode(bool RawMode)
+{
+  rawMode = RawMode;
+}
+
+uint64 cKbdRemote::MapFuncToCode(int Func)
+{
+  for (tKbdMap *p = KbdMap; p->func != kfNone; p++) {
+      if (p->func == Func)
+         return p->code;
+      }
+  return (Func <= 0xFF) ? Func : 0;
+}
+
+int cKbdRemote::MapCodeToFunc(uint64 Code)
+{
+  for (tKbdMap *p = KbdMap; p->func != kfNone; p++) {
+      if (p->code == Code)
+         return p->func;
+      }
+  return (Code <= 0xFF) ? Code : kfNone;
 }
 
 void cKbdRemote::Action(void)
@@ -198,8 +254,13 @@ void cKbdRemote::Action(void)
                     // key (if somebody knows how to clean this up, please let me know):
                     if (Command == 0x1B && time_ms() - t0 < 100)
                        continue;
-                    if (Command)
-                       Put(Command);
+                    if (Command) {
+                       if (rawMode || !Put(Command)) {
+                          int func = MapCodeToFunc(Command);
+                          if (func)
+                             Put(KBDKEY(func));
+                          }
+                       }
                     break;
                     }
                  else {
