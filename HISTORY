@@ -350,7 +350,7 @@ Video Disk Recorder Revision History
 - Encrypted channels can now be selected even without knowing the PNR (however, it
   is still necessary for the EPG info).
 
-2001-02-11: Version 0.71
+2001-02-18: Version 0.71
 
 - Fixed 'Transfer Mode' in cases where a non-primary interface was switched to
   a channel that only the primary interface can receive (which could happen in
@@ -392,3 +392,8 @@ Video Disk Recorder Revision History
 - When removing recordings empty directories are now removed from the video
   directory.
 - Added the "schnitt" tools from Matthias Schniedermeyer.
+- New SVDRP command MESG to display a short message on the OSD.
+- The Perl script 'svdrpsend.pl' can be used to send SVDRP commands to VDR.
+- SVDRP can now immediately reuse the same port if VDR is restarted.
+- SVDRP now has a timeout after which the connection is automatically closed
+  (default is 300 seconds, can be changed in "Setup").

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.c 1.34 2001/02/02 14:49:39 kls Exp $
+ * $Id: interface.c 1.35 2001/02/18 10:46:13 kls Exp $
  */
 
 #include "interface.h"
@@ -70,8 +70,16 @@ unsigned int cInterface::GetCh(bool Wait, bool *Repeat, bool *Release)
 eKeys cInterface::GetKey(bool Wait)
 {
   Flush();
-  if (SVDRP)
+  if (SVDRP) {
      SVDRP->Process();
+     if (!open) {
+        char *message = SVDRP->GetMessage();
+        if (message) {
+           Info(message);
+           delete message;
+           }
+        }
+     }
   eKeys Key = keyFromWait;
   if (Key == kNone) {
      bool Repeat = false, Release = false;
@@ -281,7 +289,7 @@ void cInterface::Status(const char *s, eDvbColor FgColor, eDvbColor BgColor)
 void cInterface::Info(const char *s)
 {
   Open();
-  isyslog(LOG_INFO, s);
+  isyslog(LOG_INFO, "info: %s", s);
   Status(s, clrWhite, clrGreen);
   Wait();
   Status(NULL);
@@ -291,7 +299,7 @@ void cInterface::Info(const char *s)
 void cInterface::Error(const char *s)
 {
   Open();
-  esyslog(LOG_ERR, s);
+  esyslog(LOG_ERR, "ERROR: %s", s);
   Status(s, clrWhite, clrRed);
   Wait();
   Status(NULL);

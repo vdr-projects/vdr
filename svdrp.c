@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.13 2000/12/03 15:34:35 kls Exp $
+ * $Id: svdrp.c 1.14 2001/02/18 14:18:13 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -63,6 +63,10 @@ bool cSocket::Open(void)
         port = 0;
         return false;
         }
+     // allow it to always reuse the same port:
+     int ReUseAddr = 1;
+     setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &ReUseAddr, sizeof(ReUseAddr));
+     //
      struct sockaddr_in name;
      name.sin_family = AF_INET;
      name.sin_port = htons(port);
@@ -137,6 +141,12 @@ const char *HelpPages[] = {
   "LSTT [ <number> ]\n"
   "    List timers. Without option, all timers are listed. Otherwise\n"
   "    only the given timer is listed.",
+  "MESG [ <message> ]\n"
+  "    Displays the given message on the OSD. If message is omitted, the\n"
+  "    currently pending message (if any) will be returned. The message\n"
+  "    will be displayed for a few seconds as soon as the OSD has become\n"
+  "    idle. If a new MESG command is entered while the previous message\n"
+  "    has not yet been displayed, the old message will be overwritten.",
   "MODC <number> <settings>\n"
   "    Modify a channel. Settings must be in the same format as returned\n"
   "    by the LSTC command.",
@@ -224,22 +234,25 @@ const char *GetHelpPage(const char *Cmd)
 cSVDRP::cSVDRP(int Port)
 :socket(Port)
 {
+  message = NULL;
+  lastActivity = 0;
   isyslog(LOG_INFO, "SVDRP listening on port %d", Port);
 }
 
 cSVDRP::~cSVDRP()
 {
   Close();
+  delete message;
 }
 
-void cSVDRP::Close(void)
+void cSVDRP::Close(bool Timeout)
 {
   if (file.IsOpen()) {
      //TODO how can we get the *full* hostname?
      char buffer[MAXCMDBUFFER];
      gethostname(buffer, sizeof(buffer));
-     Reply(221, "%s closing connection", buffer);
-     isyslog(LOG_INFO, "closing connection"); //TODO store IP#???
+     Reply(221, "%s closing connection%s", buffer, Timeout ? " (timeout)" : "");
+     isyslog(LOG_INFO, "closing SVDRP connection"); //TODO store IP#???
      file.Close();
      }
 }
@@ -557,6 +570,20 @@ void cSVDRP::CmdLSTT(const char *Option)
      }
 }
 
+void cSVDRP::CmdMESG(const char *Option)
+{
+  if (*Option) {
+     delete message;
+     message = strdup(Option);
+     isyslog(LOG_INFO, "SVDRP message: '%s'", message);
+     Reply(250, "Message stored");
+     }
+  else if (message)
+     Reply(250, "%s", message);
+  else
+     Reply(550, "No pending message");
+}
+
 void cSVDRP::CmdMODC(const char *Option)
 {
   if (*Option) {
@@ -820,6 +847,7 @@ void cSVDRP::Execute(char *Cmd)
   else if (CMD("HITK"))  CmdHITK(s);
   else if (CMD("LSTC"))  CmdLSTC(s);
   else if (CMD("LSTT"))  CmdLSTT(s);
+  else if (CMD("MESG"))  CmdMESG(s);
   else if (CMD("MODC"))  CmdMODC(s);
   else if (CMD("MODT"))  CmdMODT(s);
   else if (CMD("MOVC"))  CmdMOVC(s);
@@ -839,7 +867,8 @@ void cSVDRP::Execute(char *Cmd)
 
 void cSVDRP::Process(void)
 {
-  bool SendGreeting = !file.IsOpen();
+  bool NewConnection = !file.IsOpen();
+  bool SendGreeting = NewConnection;
 
   if (file.IsOpen() || file.Open(socket.Accept())) {
      char buffer[MAXCMDBUFFER];
@@ -849,6 +878,8 @@ void cSVDRP::Process(void)
         time_t now = time(NULL);
         Reply(220, "%s SVDRP VideoDiskRecorder %s; %s", buffer, VDRVERSION, ctime(&now));
         }
+     if (NewConnection)
+        lastActivity = time(NULL);
      int rbytes = file.ReadString(buffer, sizeof(buffer) - 1);
      if (rbytes > 0) {
         //XXX overflow check???
@@ -859,11 +890,22 @@ void cSVDRP::Process(void)
         buffer[rbytes] = 0;
         // showtime!
         Execute(buffer);
+        lastActivity = time(NULL);
         }
      else if (rbytes < 0)
         Close();
+     else if (Setup.SVDRPTimeout && time(NULL) - lastActivity > Setup.SVDRPTimeout) {
+        isyslog(LOG_INFO, "timeout on SVDRP connection");
+        Close(true);
+        }
      }
 }
 
-//TODO timeout???
+char *cSVDRP::GetMessage(void)
+{
+  char *s = message;
+  message = NULL;
+  return s;
+}
+
 //TODO more than one connection???
