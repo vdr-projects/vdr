@@ -204,6 +204,7 @@ Andreas Schultz <aschultz@warp10.net>
  for suggesting to separate the startup of a plugin into an "early" and a "late" phase
  for changing C++ style comments in libdtv into C style to avoid warnings in gcc 3.x
  for implementing the TerrestrialDeliverySystemDescriptor in libdtv
+ for fixing setting the locking pid after a timed wait
 
 Aaron Holtzman
  for writing 'ac3dec'
