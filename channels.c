@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 1.2 2002/10/06 11:53:45 kls Exp $
+ * $Id: channels.c 1.3 2002/10/06 12:41:49 kls Exp $
  */
 
 #include "channels.h"
@@ -200,10 +200,10 @@ cChannel::cChannel(const cChannel *Channel)
 
 static int PrintParameter(char *p, char Name, int Value)
 {
-  //XXX return Value > 0 && Value != 999 ? sprintf(p, "%c%d", Name, Value) : 0;
+  //XXX return Value >= 0 && Value != 999 ? sprintf(p, "%c%d", Name, Value) : 0;
   //XXX let's store 999 for the moment, until we generally switch to the NEWSTRUCT
   //XXX driver (where the defaults will all be AUTO)
-  return Value > 0 && (Value != 999 || (Name != 'I' && Name != 'C')) ? sprintf(p, "%c%d", Name, Value) : 0;
+  return Value >= 0 && (Value != 999 || (Name != 'I' && Name != 'C')) ? sprintf(p, "%c%d", Name, Value) : 0;
 }
 
 const char *cChannel::ParametersToString(void)
