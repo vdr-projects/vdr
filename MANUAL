@@ -11,20 +11,20 @@ Version 1.2
   possible, several keys have different meanings in the various
   modes:
 
-  Key     Normal      VDR          Channels   Timers     Edit/New      Recordings        Replay
+  Key     Normal      VDR          Channels   Timers     Edit/New      Recordings        Replay           Audio
 
-  Up      Ch up       Crsr up      Crsr up    Crsr up    Crsr up       Crsr up           Play
-  Down    Ch down     Crsr down    Crsr down  Crsr down  Crsr down     Crsr down         Pause
-  Left    Prev group  -            Page up    Page up    Decrement     Page up           Search back
-  Right   Next group  -            Page down  Page down  Increment     Page down         Search forward
-  Ok      Ch display  Select       Switch     Edit       Accept        Play              Progress disp.
-  Menu    Menu on     Menu off     Menu off   Menu off   Menu off      Menu off          Menu on
-  Back    -           Menu off     VDR menu   VDR menu   Discard       VDR menu          Recordings menu
-  Red     -           Record       Edit       Edit       ABC/abc       Play/Commands(2)  Jump
-  Green   -           Language     New        New        Ins/Ovr       Rewind            Skip -60s
-  Yellow  -           Pause live   Delete     Delete     Delete        Delete            Skip +60s
-  Blue    -           Stop/Resume  Mark       On/Off(1)  -             Summary           Stop
-  0..9    Ch select   -            Sort(3)    Day(4)     Numeric inp.  Exec cmd(2)       Editing
+  Up      Ch up       Crsr up      Crsr up    Crsr up    Crsr up       Crsr up           Play             Sel. track
+  Down    Ch down     Crsr down    Crsr down  Crsr down  Crsr down     Crsr down         Pause            Sel. track
+  Left    Prev group  -            Page up    Page up    Decrement     Page up           Search back      Sel. channel
+  Right   Next group  -            Page down  Page down  Increment     Page down         Search forward   Sel. channel
+  Ok      Ch display  Select       Switch     Edit       Accept        Play              Progress disp.   Switch & Close
+  Menu    Menu on     Menu off     Menu off   Menu off   Menu off      Menu off          Menu on          Menu on
+  Back    -           Menu off     VDR menu   VDR menu   Discard       VDR menu          Recordings menu  Close
+  Red     -           Record       Edit       Edit       ABC/abc       Play/Commands(2)  Jump             -
+  Green   -           Audio        New        New        Ins/Ovr       Rewind            Skip -60s        -
+  Yellow  -           Pause live   Delete     Delete     Delete        Delete            Skip +60s        -
+  Blue    -           Stop/Resume  Mark       On/Off(1)  -             Summary           Stop             -
+  0..9    Ch select   -            Sort(3)    Day(4)     Numeric inp.  Exec cmd(2)       Editing          -
 
   In a numerical input field (like the response to a CAM enquiry) the keys 0..9
   are used to enter the data, and the Left key can be used to delete the last
@@ -48,6 +48,8 @@ Version 1.2
   Volume+     volume up
   Volume-     volume down
   Mute        mute
+
+  Audio       select audio track
 
   Schedule    \
   Channels    |
@@ -181,21 +183,36 @@ Version 1.2
   selected for at least 3 seconds.
 
   After switching to a different channel the channel number and name, as well
-  as the current time are displayed at the top of the screen. If available, the
+  as the current time are displayed in the OSD. If available, the
   'current/next' information will be displayed below this line. This display
   automatically goes away after about five seconds, or if any key is pressed.
   To bring up the channel display without switching channels you can press
   the "Ok" button.
 
-* Selecting language specific audio track
+* Selecting audio tracks
 
-  If the current channel provides different audio tracks (typically for
-  different languages), the "Green" button in the "VDR" menu can be pressed
-  to toggle between these. There can be two different audio PIDs per channel,
-  assuming that typically a channel broadcasts a country specific language
-  plus the movie's original soundtrack.
-  Recordings made form such channels will contain both audio tracks, and when
-  replaying the desired audio track can be selected the same way.
+  If the current channel or recording provides different audio tracks (for
+  different languages or Dolby Digital), the "Green" button in the "VDR" menu can
+  be pressed to bring up the "Audio" menu. Within this menu, the "Up" and "Down"
+  keys can be used to switch between the audio tracks. If your remote control has
+  a dedicated "Audio" button, the first press of that button brings up the "Audio"
+  menu, and every further press switches to the next available audio track.
+
+  The "Left" and "Right" keys can be used to switch between "mono left", "stereo"
+  and "mono right" for channels that broadcast different audio tracks in the
+  left and right stereo channels.
+
+  The "Ok" key explicitly switches to the selected track (in case the device
+  for some reason doesn't play it) and closes the "Audio" menu.
+
+  The "Audio" menu will automatically disappear after 5 seconds of user inactivity,
+  or if any key other than the ones described above is pressed.
+
+  Once a Dolby Digital track has been selected on any channel, further channel
+  switches will first search for a Dolby Digital track of one of the preferred
+  audio languages. If no such track can be found, a normal audio track will
+  be selected. Note that this only works if the broadcasters use actual language
+  codes in their PID data, not things like "dd" or "2ch".
 
 * Switching through channel groups
 
@@ -495,14 +512,15 @@ Version 1.2
                          A value of '0' completely turns off scanning on both single
                          and multiple card systems.
 
-  EPG bugfix level = 2   Some tv stations transmit weirdly formatted EPG data.
+  EPG bugfix level = 3   Some tv stations transmit weirdly formatted EPG data.
                          VDR attempts to fix these bugs up to the given level:
                          0 = no EPG fixing
                          1 = basic fixing of text location (Title, Episode and
                              Extended Description)
                          2 = removal of excess whitespace and hyphens, mapping of
                              wrongly used characters
-                         Default is '2'.
+                         3 = fix stream component descriptions
+                         Default is '3'.
                          Note that after changing the setting of this parameter
                          any EPG data that has already been received will remain
                          in its existing format - only newly received data will
@@ -570,11 +588,27 @@ Version 1.2
   Video format = 4:3     The video format (or aspect ratio) of the tv set in use
                          (4:3 or 16:9).
 
+  Use Dolby Digital = yes
+                         Turns recording of the Dolby Digital audio channels on
+                         or off. This may be useful if you don't have the equipment
+                         to replay Dolby Digital audio and want to save disk space.
+                         If turned off, Dolby Digital tracks also don't appear in the
+                         "Audio" menu.
+
   Update channels = 4    Controls the automatic channel update function. '0' means
                          no update, '1' will only update channel names, '2' will
                          update channel names and PIDs, '3' will perform all
                          updates and also add newly found channels, and '4' will
                          also add newly found transponders.
+
+  Audio languages = 0    Some tv stations broadcast various audio tracks in different
+                         languages. This option allows you to define which language(s)
+                         you prefer in such cases. By default, or if none of the
+                         preferred languages is broadcast, the first audio track will
+                         be selected when switching to such a channel. If this option
+                         is set to a non-zero value, the menu page will contain that
+                         many "Audio language" options which allow you to select the
+                         individual preferred languages.
 
   LNB:
 
@@ -662,11 +696,6 @@ Version 1.2
                          Default is 180 minutes (3 hours). The stop time of an
                          instant recording can be modified at any time by editing
                          the respective timer in the "Timers" menu.
-
-  Record Dolby Digital = yes
-                         Turns recording of the Dolby Digital audio channels on
-                         or off. This may be useful if you don't have the equipment
-                         to replay Dolby Digital audio and want to save disk space.
 
   Max. video file size = 2000
                          The maximum size of a single recorded video file in MB.

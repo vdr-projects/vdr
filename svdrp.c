@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.65 2004/10/31 10:09:53 kls Exp $
+ * $Id: svdrp.c 1.67 2004/12/26 12:23:55 kls Exp $
  */
 
 #include "svdrp.h"
@@ -555,8 +555,9 @@ void cSVDRP::CmdGRAB(const char *Option)
      char buf[strlen(Option) + 1];
      char *p = strcpy(buf, Option);
      const char *delim = " \t";
-     FileName = strtok(p, delim);
-     if ((p = strtok(NULL, delim)) != NULL) {
+     char *strtok_next;
+     FileName = strtok_r(p, delim, &strtok_next);
+     if ((p = strtok_r(NULL, delim, &strtok_next)) != NULL) {
         if (strcasecmp(p, "JPEG") == 0)
            Jpeg = true;
         else if (strcasecmp(p, "PNM") == 0)
@@ -566,7 +567,7 @@ void cSVDRP::CmdGRAB(const char *Option)
            return;
            }
         }
-     if ((p = strtok(NULL, delim)) != NULL) {
+     if ((p = strtok_r(NULL, delim, &strtok_next)) != NULL) {
         if (isnumber(p))
            Quality = atoi(p);
         else {
@@ -574,14 +575,14 @@ void cSVDRP::CmdGRAB(const char *Option)
            return;
            }
         }
-     if ((p = strtok(NULL, delim)) != NULL) {
+     if ((p = strtok_r(NULL, delim, &strtok_next)) != NULL) {
         if (isnumber(p))
            SizeX = atoi(p);
         else {
            Reply(501, "Illegal sizex \"%s\"", p);
            return;
            }
-        if ((p = strtok(NULL, delim)) != NULL) {
+        if ((p = strtok_r(NULL, delim, &strtok_next)) != NULL) {
            if (isnumber(p))
               SizeY = atoi(p);
            else {
@@ -594,7 +595,7 @@ void cSVDRP::CmdGRAB(const char *Option)
            return;
            }
         }
-     if ((p = strtok(NULL, delim)) != NULL) {
+     if ((p = strtok_r(NULL, delim, &strtok_next)) != NULL) {
         Reply(501, "Unexpected parameter \"%s\"", p);
         return;
         }
@@ -672,7 +673,7 @@ void cSVDRP::CmdLSTC(const char *Option)
      if (isnumber(Option)) {
         cChannel *channel = Channels.GetByNumber(strtol(Option, NULL, 10));
         if (channel)
-           Reply(250, "%d %s", channel->Number(), channel->ToText());
+           Reply(250, "%d %s", channel->Number(), *channel->ToText());
         else
            Reply(501, "Channel \"%s\" not defined", Option);
         }
@@ -684,7 +685,7 @@ void cSVDRP::CmdLSTC(const char *Option)
               if (channel) {
                  if (strcasestr(channel->Name(), Option)) {
                     if (next)
-                       Reply(-250, "%d %s", next->Number(), next->ToText());
+                       Reply(-250, "%d %s", next->Number(), *next->ToText());
                     next = channel;
                     }
                  }
@@ -695,7 +696,7 @@ void cSVDRP::CmdLSTC(const char *Option)
               i = channel->Number() + 1;
               }
         if (next)
-           Reply(250, "%d %s", next->Number(), next->ToText());
+           Reply(250, "%d %s", next->Number(), *next->ToText());
         else
            Reply(501, "Channel \"%s\" not defined", Option);
         }
@@ -705,7 +706,7 @@ void cSVDRP::CmdLSTC(const char *Option)
      while (i <= Channels.MaxNumber()) {
            cChannel *channel = Channels.GetByNumber(i, 1);
            if (channel)
-              Reply(channel->Number() < Channels.MaxNumber() ? -250 : 250, "%d %s", channel->Number(), channel->ToText());
+              Reply(channel->Number() < Channels.MaxNumber() ? -250 : 250, "%d %s", channel->Number(), *channel->ToText());
            else
               Reply(501, "Channel \"%d\" not found", i);
            i = channel->Number() + 1;
@@ -727,7 +728,8 @@ void cSVDRP::CmdLSTE(const char *Option)
         char buf[strlen(Option) + 1];
         strcpy(buf, Option);
         const char *delim = " \t";
-        char *p = strtok(buf, delim);
+        char *strtok_next;
+        char *p = strtok_r(buf, delim, &strtok_next);
         while (p && DumpMode == dmAll) {
               if (strcasecmp(p, "NOW") == 0)
                  DumpMode = dmPresent;
@@ -735,7 +737,7 @@ void cSVDRP::CmdLSTE(const char *Option)
                  DumpMode = dmFollowing;
               else if (strcasecmp(p, "AT") == 0) {
                  DumpMode = dmAtTime;
-                 if ((p = strtok(NULL, delim)) != NULL) {
+                 if ((p = strtok_r(NULL, delim, &strtok_next)) != NULL) {
                     if (isnumber(p))
                        AtTime = strtol(p, NULL, 10);
                     else {
@@ -770,7 +772,7 @@ void cSVDRP::CmdLSTE(const char *Option)
                  Reply(501, "Unknown option: \"%s\"", p);
                  return;
                  }
-              p = strtok(NULL, delim);
+              p = strtok_r(NULL, delim, &strtok_next);
               }
         }
      FILE *f = fdopen(file, "w");
@@ -828,7 +830,7 @@ void cSVDRP::CmdLSTT(const char *Option)
      if (isnumber(Option)) {
         cTimer *timer = Timers.Get(strtol(Option, NULL, 10) - 1);
         if (timer)
-           Reply(250, "%d %s", timer->Index() + 1, timer->ToText());
+           Reply(250, "%d %s", timer->Index() + 1, *timer->ToText());
         else
            Reply(501, "Timer \"%s\" not defined", Option);
         }
@@ -839,7 +841,7 @@ void cSVDRP::CmdLSTT(const char *Option)
      for (int i = 0; i < Timers.Count(); i++) {
          cTimer *timer = Timers.Get(i);
         if (timer)
-           Reply(i < Timers.Count() - 1 ? -250 : 250, "%d %s", timer->Index() + 1, timer->ToText());
+           Reply(i < Timers.Count() - 1 ? -250 : 250, "%d %s", timer->Index() + 1, *timer->ToText());
         else
            Reply(501, "Timer \"%d\" not found", i + 1);
          }
@@ -877,8 +879,8 @@ void cSVDRP::CmdMODC(const char *Option)
                  *channel = ch;
                  Channels.ReNumber();
                  Channels.SetModified(true);
-                 isyslog("modifed channel %d %s", channel->Number(), channel->ToText());
-                 Reply(250, "%d %s", channel->Number(), channel->ToText());
+                 isyslog("modifed channel %d %s", channel->Number(), *channel->ToText());
+                 Reply(250, "%d %s", channel->Number(), *channel->ToText());
                  }
               else
                  Reply(501, "Channel settings are not unique");
@@ -917,7 +919,7 @@ void cSVDRP::CmdMODT(const char *Option)
            *timer = t;
            Timers.SetModified();
            isyslog("timer %d modified (%s)", timer->Index() + 1, timer->HasFlags(tfActive) ? "active" : "inactive");
-           Reply(250, "%d %s", timer->Index() + 1, timer->ToText());
+           Reply(250, "%d %s", timer->Index() + 1, *timer->ToText());
            }
         else
            Reply(501, "Timer \"%d\" not defined", n);
@@ -952,8 +954,8 @@ void cSVDRP::CmdNEWC(const char *Option)
            Channels.Add(channel);
            Channels.ReNumber();
            Channels.SetModified(true);
-           isyslog("new channel %d %s", channel->Number(), channel->ToText());
-           Reply(250, "%d %s", channel->Number(), channel->ToText());
+           isyslog("new channel %d %s", channel->Number(), *channel->ToText());
+           Reply(250, "%d %s", channel->Number(), *channel->ToText());
            }
         else
            Reply(501, "Channel settings are not unique");
@@ -975,11 +977,11 @@ void cSVDRP::CmdNEWT(const char *Option)
            Timers.Add(timer);
            Timers.SetModified();
            isyslog("timer %d added", timer->Index() + 1);
-           Reply(250, "%d %s", timer->Index() + 1, timer->ToText());
+           Reply(250, "%d %s", timer->Index() + 1, *timer->ToText());
            return;
            }
         else
-           Reply(550, "Timer already defined: %d %s", t->Index() + 1, t->ToText());
+           Reply(550, "Timer already defined: %d %s", t->Index() + 1, *t->ToText());
         }
      else
         Reply(501, "Error in timer settings");
@@ -995,11 +997,8 @@ void cSVDRP::CmdNEXT(const char *Option)
   if (t) {
      time_t Start = t->StartTime();
      int Number = t->Index() + 1;
-     if (!*Option) {
-        char *s = ctime(&Start);
-        s[strlen(s) - 1] = 0; // strip trailing newline
-        Reply(250, "%d %s", Number, s);
-        }
+     if (!*Option)
+        Reply(250, "%d %s", Number, *TimeToString(Start));
      else if (strcasecmp(Option, "ABS") == 0)
         Reply(250, "%d %ld", Number, Start);
      else if (strcasecmp(Option, "REL") == 0)
@@ -1058,7 +1057,7 @@ void cSVDRP::CmdUPDT(const char *Option)
            isyslog("timer %d added", timer->Index() + 1);
            }
         Timers.SetModified();
-        Reply(250, "%d %s", timer->Index() + 1, timer->ToText());
+        Reply(250, "%d %s", timer->Index() + 1, *timer->ToText());
         return;
         }
      else
@@ -1152,7 +1151,7 @@ bool cSVDRP::Process(void)
         char buffer[BUFSIZ];
         gethostname(buffer, sizeof(buffer));
         time_t now = time(NULL);
-        Reply(220, "%s SVDRP VideoDiskRecorder %s; %s", buffer, VDRVERSION, ctime(&now));
+        Reply(220, "%s SVDRP VideoDiskRecorder %s; %s", buffer, VDRVERSION, *TimeToString(now));
         }
      if (NewConnection)
         lastActivity = time(NULL);

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recorder.c 1.11 2004/10/16 09:23:01 kls Exp $
+ * $Id: recorder.c 1.12 2005/01/09 12:16:36 kls Exp $
  */
 
 #include <stdarg.h>
@@ -128,7 +128,7 @@ void cFileWriter::Action(void)
 }
 
 cRecorder::cRecorder(const char *FileName, int Ca, int Priority, int VPid, int APid1, int APid2, int DPid1, int DPid2)
-:cReceiver(Ca, Priority, Setup.RecordDolbyDigital ? 5 : 3, VPid, APid1, APid2, DPid1, DPid2)
+:cReceiver(Ca, Priority, Setup.UseDolbyDigital ? 5 : 3, VPid, APid1, APid2, DPid1, DPid2)
 ,cThread("recording")
 {
   active = false;

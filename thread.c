@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 1.37 2004/11/20 16:21:14 kls Exp $
+ * $Id: thread.c 1.40 2004/12/19 10:43:14 kls Exp $
  */
 
 #include "thread.h"
@@ -197,7 +197,8 @@ bool cThread::emergencyExitRequested = false;
 
 cThread::cThread(const char *Description)
 {
-  parentTid = childTid = 0;
+  running = false;
+  childTid = 0;
   description = NULL;
   SetDescription(Description);
 }
@@ -221,33 +222,35 @@ void cThread::SetDescription(const char *Description, ...)
 
 void *cThread::StartThread(cThread *Thread)
 {
-  Thread->childTid = pthread_self();
   if (Thread->description)
-     dsyslog("%s thread started (pid=%d, tid=%ld)", Thread->description, getpid(), Thread->childTid);
+     dsyslog("%s thread started (pid=%d, tid=%ld)", Thread->description, getpid(), pthread_self());
   Thread->Action();
   if (Thread->description)
-     dsyslog("%s thread ended (pid=%d, tid=%ld)", Thread->description, getpid(), Thread->childTid);
-  Thread->childTid = 0;
+     dsyslog("%s thread ended (pid=%d, tid=%ld)", Thread->description, getpid(), pthread_self());
+  Thread->running = false;
   return NULL;
 }
 
 bool cThread::Start(void)
 {
-  Lock();
-  if (!childTid) {
-     parentTid = pthread_self();
-     pthread_t Tid;
-     pthread_create(&Tid, NULL, (void *(*) (void *))&StartThread, (void *)this);
-     pthread_detach(Tid); // auto-reap
-     pthread_setschedparam(Tid, SCHED_RR, 0);
+  if (!running) {
+     running = true;
+     if (pthread_create(&childTid, NULL, (void *(*) (void *))&StartThread, (void *)this) == 0) {
+        pthread_detach(childTid); // auto-reap
+        pthread_setschedparam(childTid, SCHED_RR, 0);
+        }
+     else {
+        LOG_ERROR;
+        running = false;
+        return false;
+        }
      }
-  Unlock();
-  return true; //XXX return value of pthread_create()???
+  return true;
 }
 
 bool cThread::Active(void)
 {
-  if (childTid) {
+  if (running) {
      //
      // Single UNIX Spec v2 says:
      //
@@ -262,6 +265,7 @@ bool cThread::Active(void)
         if (err != ESRCH)
            LOG_ERROR;
         childTid = 0;
+        running = false;
         }
      else
         return true;
@@ -271,21 +275,18 @@ bool cThread::Active(void)
 
 void cThread::Cancel(int WaitSeconds)
 {
-  if (childTid) {
+  if (running) {
      if (WaitSeconds > 0) {
         for (time_t t0 = time(NULL) + WaitSeconds; time(NULL) < t0; ) {
             if (!Active())
                return;
             cCondWait::SleepMs(10);
             }
-        esyslog("ERROR: thread %ld won't end (waited %d seconds) - cancelling it...", childTid, WaitSeconds);
+        esyslog("ERROR: thread %ld won't end (waited %d seconds) - canceling it...", childTid, WaitSeconds);
         }
-     Lock();
-     if (childTid) {
-        pthread_cancel(childTid);
-        childTid = 0;
-        }
-     Unlock();
+     pthread_cancel(childTid);
+     childTid = 0;
+     running = false;
      }
 }
 

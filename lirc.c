@@ -6,7 +6,7 @@
  *
  * LIRC support added by Carsten Koch <Carsten.Koch@icem.de>  2000-06-16.
  *
- * $Id: lirc.c 1.7 2003/10/18 11:34:02 kls Exp $
+ * $Id: lirc.c 1.9 2004/12/19 18:05:13 kls Exp $
  */
 
 #include "lirc.h"
@@ -41,6 +41,8 @@ cLircRemote::cLircRemote(char *DeviceName)
 cLircRemote::~cLircRemote()
 {
   Cancel();
+  if (f >= 0)
+     close(f);
 }
 
 bool cLircRemote::Ready(void)
@@ -50,16 +52,14 @@ bool cLircRemote::Ready(void)
 
 void cLircRemote::Action(void)
 {
-  int FirstTime = 0;
-  int LastTime = 0;
+  cTimeMs FirstTime;
+  cTimeMs LastTime;
   char buf[LIRC_BUFFER_SIZE];
   char LastKeyName[LIRC_KEY_BUF] = "";
   bool repeat = false;
   int timeout = -1;
 
   for (; f >= 0;) {
-
-      LOCK_THREAD;
 
       bool ready = cFile::FileReady(f, timeout);
       int ret = ready ? safe_read(f, buf, sizeof(buf)) : -1;
@@ -75,28 +75,27 @@ void cLircRemote::Action(void)
          int count;
          char KeyName[LIRC_KEY_BUF];
          sscanf(buf, "%*x %x %29s", &count, KeyName); // '29' in '%29s' is LIRC_KEY_BUF-1!
-         int Now = time_ms();
          if (count == 0) {
-            if (strcmp(KeyName, LastKeyName) == 0 && Now - FirstTime < KEYPRESSDELAY)
+            if (strcmp(KeyName, LastKeyName) == 0 && FirstTime.Elapsed() < KEYPRESSDELAY)
                continue; // skip keys coming in too fast
             if (repeat)
                Put(LastKeyName, false, true);
             strcpy(LastKeyName, KeyName);
             repeat = false;
-            FirstTime = Now;
+            FirstTime.Set();
             timeout = -1;
             }
          else {
-            if (Now - FirstTime < REPEATDELAY)
+            if (FirstTime.Elapsed() < REPEATDELAY)
                continue; // repeat function kicks in after a short delay
             repeat = true;
             timeout = REPEATDELAY;
             }
-         LastTime = Now;
+         LastTime.Set();
          Put(KeyName, repeat);
          }
       else if (repeat) { // the last one was a repeat, so let's generate a release
-         if (time_ms() - LastTime >= REPEATDELAY) {
+         if (LastTime.Elapsed() >= REPEATDELAY) {
             Put(LastKeyName, false, true);
             repeat = false;
             *LastKeyName = 0;

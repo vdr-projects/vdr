@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.193 2004/11/06 10:30:30 kls Exp $
+ * $Id: vdr.c 1.198 2005/01/06 14:36:40 kls Exp $
  */
 
 #include <getopt.h>
@@ -405,13 +405,16 @@ int main(int argc, char *argv[])
   // EPG data:
 
   if (EpgDataFileName) {
-     if (DirectoryOk(EpgDataFileName))
-        EpgDataFileName = AddDirectory(EpgDataFileName, DEFAULTEPGDATAFILENAME);
+     const char *EpgDirectory = NULL;
+     if (DirectoryOk(EpgDataFileName)) {
+        EpgDirectory = EpgDataFileName;
+        EpgDataFileName = DEFAULTEPGDATAFILENAME;
+        }
      else if (*EpgDataFileName != '/' && *EpgDataFileName != '.')
-        EpgDataFileName = AddDirectory(VideoDirectory, EpgDataFileName);
+        EpgDirectory = VideoDirectory;
+     cSchedules::SetEpgDataFileName(AddDirectory(EpgDirectory, EpgDataFileName));
+     cSchedules::Read();
      }
-  cSchedules::SetEpgDataFileName(EpgDataFileName);
-  cSchedules::Read();
 
   // DVB interfaces:
 
@@ -532,7 +535,7 @@ int main(int argc, char *argv[])
            static time_t lastTime = 0;
            if (time(NULL) - lastTime > MINCHANNELWAIT) {
               cChannel *Channel = Channels.GetByNumber(cDevice::CurrentChannel());
-              if (Channel && (Channel->Vpid() || Channel->Apid1())) {
+              if (Channel && (Channel->Vpid() || Channel->Apid(0))) {
                  if (!Channels.SwitchTo(cDevice::CurrentChannel()) // try to switch to the original channel...
                      && !(LastTimerChannel > 0 && Channels.SwitchTo(LastTimerChannel)) // ...or the one used by the last timer...
                      && !cDevice::SwitchChannel(1) // ...or the next higher available one...
@@ -675,7 +678,7 @@ int main(int argc, char *argv[])
           case kChanDn:
                cDevice::SwitchChannel(NORMALKEY(key) == kChanUp ? 1 : -1);
                break;
-          // Volume Control:
+          // Volume control:
           case kVolUp|k_Repeat:
           case kVolUp:
           case kVolDn|k_Repeat:
@@ -693,6 +696,20 @@ int main(int argc, char *argv[])
                   Menu = Temp = cDisplayVolume::Create();
                cDisplayVolume::Process(key);
                key = kNone; // nobody else needs to see these keys
+               break;
+          // Audio track control:
+          case kAudio:
+               if (cControl::Control())
+                  cControl::Control()->Hide();
+               if (Temp && !cDisplayTracks::IsOpen()) {
+                  DELETENULL(Menu);
+                  Temp = NULL;
+                  }
+               if (!Menu && !cOsd::IsOpen())
+                  Menu = Temp = cDisplayTracks::Create();
+               else
+                  cDisplayTracks::Process(key);
+               key = kNone;
                break;
           // Pausing live video:
           case kPause:
@@ -867,7 +884,7 @@ int main(int argc, char *argv[])
                  if (!Next || Delta > Setup.MinEventTimeout * 60 || ForceShutdown) {
                     ForceShutdown = false;
                     if (timer)
-                       dsyslog("next timer event at %s", ctime(&Next));
+                       dsyslog("next timer event at %s", *TimeToString(Next));
                     if (WatchdogTimeout > 0)
                        signal(SIGALRM, SIG_IGN);
                     if (Interface->Confirm(tr("Press any key to cancel shutdown"), UserShutdown ? 5 : SHUTDOWNWAIT, true)) {
@@ -875,7 +892,7 @@ int main(int argc, char *argv[])
                        const char *File = timer ? timer->File() : "";
                        Delta = Next - time(NULL); // compensates for Confirm() timeout
                        char *cmd;
-                       asprintf(&cmd, "%s %ld %ld %d \"%s\" %d", Shutdown, Next, Delta, Channel, strescape(File, "\"$"), UserShutdown);
+                       asprintf(&cmd, "%s %ld %ld %d \"%s\" %d", Shutdown, Next, Delta, Channel, *strescape(File, "\"$"), UserShutdown);
                        isyslog("executing '%s'", cmd);
                        SystemExec(cmd);
                        free(cmd);

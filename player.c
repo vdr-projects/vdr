@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: player.c 1.8 2004/11/20 11:33:08 kls Exp $
+ * $Id: player.c 1.9 2004/12/12 11:21:07 kls Exp $
  */
 
 #include "player.h"
@@ -23,21 +23,12 @@ cPlayer::~cPlayer()
   Detach();
 }
 
-int cPlayer::PlayVideo(const uchar *Data, int Length)
+int cPlayer::PlayPes(const uchar *Data, int Length, bool VideoOnly)
 {
   if (device)
-     return device->PlayVideo(Data, Length);
-  esyslog("ERROR: attempt to use cPlayer::PlayVideo() without attaching to a cDevice!");
+     return device->PlayPes(Data, Length, VideoOnly);
+  esyslog("ERROR: attempt to use cPlayer::PlayPes() without attaching to a cDevice!");
   return -1;
-}
-
-void cPlayer::PlayAudio(const uchar *Data, int Length)
-{
-  if (device) {
-     device->PlayAudio(Data, Length);
-     return;
-     }
-  esyslog("ERROR: attempt to use cPlayer::PlayAudio() without attaching to a cDevice!");
 }
 
 void cPlayer::Detach(void)

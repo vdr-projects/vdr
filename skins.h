@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skins.h 1.3 2004/05/29 13:13:21 kls Exp $
+ * $Id: skins.h 1.6 2005/01/09 11:49:37 kls Exp $
  */
 
 #ifndef __SKINS_H
@@ -66,9 +66,6 @@ public:
     Red    = Video options
     Green  = Info now
     Yellow = Info next
-    Blue   = Audio options
-  AudioOptions
-  VideoOptions
   */
   };
 
@@ -99,7 +96,7 @@ protected:
        ///< Returns the offset of the given tab from the left border of the
        ///< item display area. The value returned is in pixel.//XXX ncurses???
   const char *GetTabbedText(const char *s, int Tab);
-       ///< Returns the that part of the given string, that follows the given
+       ///< Returns the part of the given string that follows the given
        ///< Tab (where 0 indicates the beginning of the string). If no such
        ///< part can be found, NULL will be returned.
 public:
@@ -223,6 +220,17 @@ public:
        ///< indicator shall be displayed.
   };
 
+class cSkinDisplayTracks : public cSkinDisplay {
+       ///< This class implements the track display.
+public:
+  virtual void SetTrack(int Index, const char * const *Tracks) = 0;
+       ///< Sets the current track to the one given by Index, which
+       ///< points into the Tracks array of strings.
+  virtual void SetAudioChannel(int AudioChannel) = 0;
+       ///< Sets the audio channel indicator.
+       ///< 0=stereo, 1=left, 2=right, -1=don't display the audio channel indicator.
+  };
+
 class cSkinDisplayMessage : public cSkinDisplay {
        ///< This class implements a simple message display.
 public:
@@ -274,6 +282,12 @@ public:
        ///< The caller must delete the object after use.
   virtual cSkinDisplayVolume *DisplayVolume(void) = 0;
        ///< Creates and returns a new object for displaying the current volume.
+       ///< The caller must delete the object after use.
+  virtual cSkinDisplayTracks *DisplayTracks(const char *Title, int NumTracks, const char * const *Tracks) = 0;
+       ///< Creates and returns a new object for displaying the available tracks.
+       ///< NumTracks indicates how many entries in Tracks are available.
+       ///< Tracks will be valid throughout the entire lifetime of the returned
+       ///< cSkinDisplayTrack object.
        ///< The caller must delete the object after use.
   virtual cSkinDisplayMessage *DisplayMessage(void) = 0;
        ///< Creates and returns a new object for displaying a message.

@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: skincurses.c 1.2 2004/05/31 14:57:40 kls Exp $
+ * $Id: skincurses.c 1.5 2005/01/09 11:56:26 kls Exp $
  */
 
 #include <ncurses.h>
@@ -11,7 +11,7 @@
 #include <vdr/plugin.h>
 #include <vdr/skins.h>
 
-static const char *VERSION        = "0.0.2";
+static const char *VERSION        = "0.0.3";
 static const char *DESCRIPTION    = "A text only skin";
 static const char *MAINMENUENTRY  = NULL;
 
@@ -252,7 +252,7 @@ void cSkinCursesDisplayChannel::SetMessage(eMessageType Type, const char *Text)
 void cSkinCursesDisplayChannel::Flush(void)
 {
   if (!message) {
-     const char *date = DayDateTime();
+     cString date = DayDateTime();
      osd->DrawText(OsdWidth - strlen(date), 0, date, clrWhite, clrBackground, &Font);
      }
   osd->Flush();
@@ -382,11 +382,11 @@ void cSkinCursesDisplayMenu::SetEvent(const cEvent *Event)
   int y = 2;
   cTextScroller ts;
   char t[32];
-  snprintf(t, sizeof(t), "%s  %s - %s", Event->GetDateString(), Event->GetTimeString(), Event->GetEndTimeString());
+  snprintf(t, sizeof(t), "%s  %s - %s", *Event->GetDateString(), *Event->GetTimeString(), *Event->GetEndTimeString());
   ts.Set(osd, 0, y, OsdWidth, OsdHeight - y - 2, t, &Font, clrYellow, clrBackground);
   if (Event->Vps() && Event->Vps() != Event->StartTime()) {
      char *buffer;
-     asprintf(&buffer, " VPS: %s", Event->GetVpsString());
+     asprintf(&buffer, " VPS: %s", *Event->GetVpsString());
      osd->DrawText(OsdWidth - strlen(buffer), y, buffer, clrBlack, clrYellow, &Font);
      free(buffer);
      }
@@ -418,7 +418,7 @@ void cSkinCursesDisplayMenu::SetText(const char *Text, bool FixedFont)
 
 void cSkinCursesDisplayMenu::Flush(void)
 {
-  const char *date = DayDateTime();
+  cString date = DayDateTime();
   osd->DrawText(OsdWidth - strlen(date) - 2, 0, date, clrBlack, clrCyan, &Font);
   osd->Flush();
 }
@@ -558,6 +558,69 @@ void cSkinCursesDisplayVolume::Flush(void)
   osd->Flush();
 }
 
+// --- cSkinCursesDisplayTracks ----------------------------------------------
+
+class cSkinCursesDisplayTracks : public cSkinDisplayTracks {
+private:
+  cOsd *osd;
+  int itemsWidth;
+  int currentIndex;
+  void SetItem(const char *Text, int Index, bool Current);
+public:
+  cSkinCursesDisplayTracks(const char *Title, int NumTracks, const char * const *Tracks);
+  virtual ~cSkinCursesDisplayTracks();
+  virtual void SetTrack(int Index, const char * const *Tracks);
+  virtual void SetAudioChannel(int AudioChannel) {}
+  virtual void Flush(void);
+  };
+
+cSkinCursesDisplayTracks::cSkinCursesDisplayTracks(const char *Title, int NumTracks, const char * const *Tracks)
+{
+  currentIndex = -1;
+  itemsWidth = Font.Width(Title);
+  for (int i = 0; i < NumTracks; i++)
+      itemsWidth = max(itemsWidth, Font.Width(Tracks[i]));
+  itemsWidth = min(itemsWidth, OsdWidth);
+  osd = new cCursesOsd(0, 0);
+  osd->DrawRectangle(0, 0, OsdWidth - 1, OsdHeight - 1, clrBackground);
+  osd->DrawText(0, 0, Title, clrBlack, clrCyan, &Font, itemsWidth);
+  for (int i = 0; i < NumTracks; i++)
+      SetItem(Tracks[i], i, false);
+}
+
+cSkinCursesDisplayTracks::~cSkinCursesDisplayTracks()
+{
+  delete osd;
+}
+
+void cSkinCursesDisplayTracks::SetItem(const char *Text, int Index, bool Current)
+{
+  int y = 1 + Index;
+  int ColorFg, ColorBg;
+  if (Current) {
+     ColorFg = clrBlack;
+     ColorBg = clrCyan;
+     currentIndex = Index;
+     }
+  else {
+     ColorFg = clrWhite;
+     ColorBg = clrBackground;
+     }
+  osd->DrawText(0, y, Text, ColorFg, ColorBg, &Font, itemsWidth);
+}
+
+void cSkinCursesDisplayTracks::SetTrack(int Index, const char * const *Tracks)
+{
+  if (currentIndex >= 0)
+     SetItem(Tracks[currentIndex], currentIndex, false);
+  SetItem(Tracks[Index], Index, true);
+}
+
+void cSkinCursesDisplayTracks::Flush(void)
+{
+  osd->Flush();
+}
+
 // --- cSkinCursesDisplayMessage ---------------------------------------------
 
 class cSkinCursesDisplayMessage : public cSkinDisplayMessage {
@@ -600,6 +663,7 @@ public:
   virtual cSkinDisplayMenu *DisplayMenu(void);
   virtual cSkinDisplayReplay *DisplayReplay(bool ModeOnly);
   virtual cSkinDisplayVolume *DisplayVolume(void);
+  virtual cSkinDisplayTracks *DisplayTracks(const char *Title, int NumTracks, const char * const *Tracks);
   virtual cSkinDisplayMessage *DisplayMessage(void);
   };
 
@@ -631,6 +695,11 @@ cSkinDisplayReplay *cSkinCurses::DisplayReplay(bool ModeOnly)
 cSkinDisplayVolume *cSkinCurses::DisplayVolume(void)
 {
   return new cSkinCursesDisplayVolume;
+}
+
+cSkinDisplayTracks *cSkinCurses::DisplayTracks(const char *Title, int NumTracks, const char * const *Tracks)
+{
+  return new cSkinCursesDisplayTracks(Title, NumTracks, Tracks);
 }
 
 cSkinDisplayMessage *cSkinCurses::DisplayMessage(void)

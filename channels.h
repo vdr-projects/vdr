@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.h 1.22 2004/10/31 12:54:26 kls Exp $
+ * $Id: channels.h 1.24 2004/12/26 12:15:52 kls Exp $
  */
 
 #ifndef __CHANNELS_H
@@ -67,7 +67,7 @@ public:
   tChannelID &ClrRid(void) { rid = 0; return *this; }
   tChannelID &ClrPolarization(void);
   static tChannelID FromString(const char *s);
-  const char *ToString(void);
+  cString ToString(void);
   static const tChannelID InvalidID;
   };
 
@@ -87,8 +87,7 @@ class cLinkChannels : public cList<cLinkChannel> {
 class cChannel : public cListObject {
   friend class cMenuEditChannel;
 private:
-  static char *buffer;
-  static const char *ToText(const cChannel *Channel);
+  static cString ToText(const cChannel *Channel);
   char *name;
   char *shortName;
   char *provider;
@@ -124,14 +123,14 @@ private:
   int modification;
   cLinkChannels *linkChannels;
   cChannel *refChannel;
-  const char *ParametersToString(void) const;
+  cString ParametersToString(void) const;
   bool StringToParameters(const char *s);
 public:
   cChannel(void);
   cChannel(const cChannel &Channel);
   ~cChannel();
   cChannel& operator= (const cChannel &Channel);
-  const char *ToText(void) const;
+  cString ToText(void) const;
   bool Parse(const char *s, bool AllowNonUniqueID = false);
   bool Save(FILE *f);
   const char *Name(void) const { return name; }
@@ -145,10 +144,10 @@ public:
   int Srate(void) const { return srate; }
   int Vpid(void) const { return vpid; }
   int Ppid(void) const { return ppid; }
-  int Apid1(void) const { return apids[0]; }
-  int Apid2(void) const { return apids[1]; }
-  int Dpid1(void) const { return dpids[0]; }
-  int Dpid2(void) const { return dpids[1]; }
+  int Apid(int i) const { return (0 <= i && i < MAXAPIDS) ? apids[i] : 0; }
+  int Dpid(int i) const { return (0 <= i && i < MAXAPIDS) ? dpids[i] : 0; }
+  const char *Alang(int i) const { return (0 <= i && i < MAXAPIDS) ? alangs[i] : ""; }
+  const char *Dlang(int i) const { return (0 <= i && i < MAXAPIDS) ? dlangs[i] : ""; }
   int Tpid(void) const { return tpid; }
   int Ca(int Index = 0) const { return Index < MAXCAIDS ? caids[Index] : 0; }
   int Nid(void) const { return nid; }
@@ -216,6 +215,6 @@ public:
 
 extern cChannels Channels;
 
-const char *ChannelString(const cChannel *Channel, int Number);
+cString ChannelString(const cChannel *Channel, int Number);
 
 #endif //__CHANNELS_H

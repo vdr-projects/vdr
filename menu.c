@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.320 2004/11/20 10:49:17 kls Exp $
+ * $Id: menu.c 1.334 2005/01/09 13:04:49 kls Exp $
  */
 
 #include "menu.h"
@@ -116,7 +116,7 @@ void cMenuEditSrcItem::Set(void)
 {
   if (source) {
      char *buffer = NULL;
-     asprintf(&buffer, "%s - %s", cSource::ToString(source->Code()), source->Description());
+     asprintf(&buffer, "%s - %s", *cSource::ToString(source->Code()), source->Description());
      SetValue(buffer);
      free(buffer);
      }
@@ -249,7 +249,7 @@ cMenuEditChannel::cMenuEditChannel(cChannel *Channel, bool New)
 void cMenuEditChannel::Setup(void)
 {
   int current = Current();
-  char type = *cSource::ToString(data.source);
+  char type = **cSource::ToString(data.source);
 #define ST(s) if (strchr(s, type))
 
   Clear();
@@ -274,7 +274,7 @@ void cMenuEditChannel::Setup(void)
   Add(new cMenuEditIntItem( tr("Rid"),          &data.rid, 0));
   XXX*/
   // Parameters for specific types of sources:
-  ST(" S ")  Add(new cMenuEditChrItem( tr("Polarization"), &data.polarization, "hv"));
+  ST(" S ")  Add(new cMenuEditChrItem( tr("Polarization"), &data.polarization, "hvlr"));
   ST("CS ")  Add(new cMenuEditIntItem( tr("Srate"),        &data.srate));
   ST("CST")  Add(new cMenuEditMapItem( tr("Inversion"),    &data.inversion,    InversionValues, tr("off")));
   ST("CST")  Add(new cMenuEditMapItem( tr("CoderateH"),    &data.coderateH,    CoderateValues, tr("none")));
@@ -300,7 +300,7 @@ eOSState cMenuEditChannel::ProcessKey(eKeys Key)
            data.name = strcpyrealloc(data.name, name);
            if (channel) {
               *channel = data;
-              isyslog("edited channel %d %s", channel->Number(), data.ToText());
+              isyslog("edited channel %d %s", channel->Number(), *data.ToText());
               state = osBack;
               }
            else {
@@ -308,7 +308,7 @@ eOSState cMenuEditChannel::ProcessKey(eKeys Key)
               *channel = data;
               Channels.Add(channel);
               Channels.ReNumber();
-              isyslog("added channel %d %s", channel->Number(), data.ToText());
+              isyslog("added channel %d %s", channel->Number(), *data.ToText());
               state = osUser1;
               }
            Channels.SetModified(true);
@@ -737,9 +737,9 @@ void cMenuTimerItem::Set(void)
   asprintf(&buffer, "%c\t%d\t%s%s%s\t%02d:%02d\t%02d:%02d\t%s",
                     !(timer->HasFlags(tfActive)) ? ' ' : timer->FirstDay() ? '!' : timer->Recording() ? '#' : '>',
                     timer->Channel()->Number(),
-                    timer->IsSingleEvent() ? WeekDayName(timer->StartTime()) : "",
+                    timer->IsSingleEvent() ? *WeekDayName(timer->StartTime()) : "",
                     timer->IsSingleEvent() ? " " : "",
-                    timer->PrintDay(timer->Day()),
+                    *timer->PrintDay(timer->Day()),
                     timer->Start() / 100,
                     timer->Start() % 100,
                     timer->Stop() / 100,
@@ -795,7 +795,7 @@ eOSState cMenuTimers::OnOff(void)
      RefreshCurrent();
      DisplayCurrent(true);
      if (timer->FirstDay())
-        isyslog("timer %d first day set to %s", timer->Index() + 1, timer->PrintFirstDay());
+        isyslog("timer %d first day set to %s", timer->Index() + 1, *timer->PrintFirstDay());
      else
         isyslog("timer %d %sactivated", timer->Index() + 1, timer->HasFlags(tfActive) ? "" : "de");
      Timers.SetModified();
@@ -969,7 +969,7 @@ cMenuWhatsOnItem::cMenuWhatsOnItem(const cEvent *Event, cChannel *Channel)
   char t = Timers.GetMatch(Event, &TimerMatch) ? (TimerMatch == tmFull) ? 'T' : 't' : ' ';
   char v = event->Vps() && (event->Vps() - event->StartTime()) ? 'V' : ' ';
   char r = event->IsRunning() ? '*' : ' ';
-  asprintf(&buffer, "%d\t%.*s\t%s\t%c%c%c\t%s", channel->Number(), 6, channel->ShortName(true), event->GetTimeString(), t, v, r, event->Title());
+  asprintf(&buffer, "%d\t%.*s\t%s\t%c%c%c\t%s", channel->Number(), 6, channel->ShortName(true), *event->GetTimeString(), t, v, r, event->Title());
   SetText(buffer, false);
 }
 
@@ -1087,7 +1087,7 @@ cMenuScheduleItem::cMenuScheduleItem(const cEvent *Event)
   char t = Timers.GetMatch(Event, &TimerMatch) ? (TimerMatch == tmFull) ? 'T' : 't' : ' ';
   char v = event->Vps() && (event->Vps() - event->StartTime()) ? 'V' : ' ';
   char r = event->IsRunning() ? '*' : ' ';
-  asprintf(&buffer, "%.*s\t%s\t%c%c%c\t%s", 6, event->GetDateString(), event->GetTimeString(), t, v, r, event->Title());
+  asprintf(&buffer, "%.*s\t%s\t%c%c%c\t%s", 6, *event->GetDateString(), *event->GetTimeString(), t, v, r, event->Title());
   SetText(buffer, false);
 }
 
@@ -1911,6 +1911,9 @@ eOSState cMenuSetupEPG::ProcessKey(eKeys Key)
 
 class cMenuSetupDVB : public cMenuSetupBase {
 private:
+  int originalNumAudioLanguages;
+  int numAudioLanguages;
+  void Setup(void);
   const char *updateChannelsTexts[5];
 public:
   cMenuSetupDVB(void);
@@ -1919,6 +1922,9 @@ public:
 
 cMenuSetupDVB::cMenuSetupDVB(void)
 {
+  for (numAudioLanguages = 0; numAudioLanguages < I18nNumLanguages && data.AudioLanguages[numAudioLanguages] >= 0; numAudioLanguages++)
+      ;
+  originalNumAudioLanguages = numAudioLanguages;
   updateChannelsTexts[0] = tr("no");
   updateChannelsTexts[1] = tr("names only");
   updateChannelsTexts[2] = tr("names and PIDs");
@@ -1926,22 +1932,59 @@ cMenuSetupDVB::cMenuSetupDVB(void)
   updateChannelsTexts[4] = tr("add new transponders");
 
   SetSection(tr("DVB"));
+  Setup();
+}
+
+void cMenuSetupDVB::Setup(void)
+{
+  int current = Current();
+
+  Clear();
+
   Add(new cMenuEditIntItem( tr("Setup.DVB$Primary DVB interface"), &data.PrimaryDVB, 1, cDevice::NumDevices()));
   Add(new cMenuEditBoolItem(tr("Setup.DVB$Video format"),          &data.VideoFormat, "4:3", "16:9"));
+  Add(new cMenuEditBoolItem(tr("Setup.DVB$Use Dolby Digital"),     &data.UseDolbyDigital));
   Add(new cMenuEditStraItem(tr("Setup.DVB$Update channels"),       &data.UpdateChannels, 5, updateChannelsTexts));
+  Add(new cMenuEditIntItem( tr("Setup.DVB$Audio languages"),       &numAudioLanguages, 0, I18nNumLanguages));
+  for (int i = 0; i < numAudioLanguages; i++)
+     Add(new cMenuEditStraItem(tr("Setup.EPG$Audio language"),     &data.AudioLanguages[i], I18nNumLanguages, I18nLanguages()));
+
+  SetCurrent(Get(current));
+  Display();
 }
 
 eOSState cMenuSetupDVB::ProcessKey(eKeys Key)
 {
-  int oldPrimaryDVB = Setup.PrimaryDVB;
-  bool oldVideoFormat = Setup.VideoFormat;
+  int oldPrimaryDVB = ::Setup.PrimaryDVB;
+  bool oldVideoFormat = ::Setup.VideoFormat;
+  int oldnumAudioLanguages = numAudioLanguages;
   eOSState state = cMenuSetupBase::ProcessKey(Key);
 
+  if (Key != kNone) {
+     if (numAudioLanguages != oldnumAudioLanguages) {
+        for (int i = oldnumAudioLanguages; i < numAudioLanguages; i++) {
+            data.AudioLanguages[i] = 0;
+            for (int l = 0; l < I18nNumLanguages; l++) {
+                int k;
+                for (k = 0; k < oldnumAudioLanguages; k++) {
+                    if (data.AudioLanguages[k] == l)
+                       break;
+                    }
+                if (k >= oldnumAudioLanguages) {
+                   data.AudioLanguages[i] = l;
+                   break;
+                   }
+                }
+            }
+        data.AudioLanguages[numAudioLanguages] = -1;
+        Setup();
+        }
+     }
   if (state == osBack && Key == kOk) {
-     if (Setup.PrimaryDVB != oldPrimaryDVB)
+     if (::Setup.PrimaryDVB != oldPrimaryDVB)
         state = osSwitchDvb;
-     if (Setup.VideoFormat != oldVideoFormat)
-        cDevice::PrimaryDevice()->SetVideoFormat(Setup.VideoFormat);
+     if (::Setup.VideoFormat != oldVideoFormat)
+        cDevice::PrimaryDevice()->SetVideoFormat(::Setup.VideoFormat);
      }
   return state;
 }
@@ -2111,7 +2154,6 @@ cMenuSetupRecord::cMenuSetupRecord(void)
   Add(new cMenuEditBoolItem(tr("Setup.Recording$Mark instant recording"),    &data.MarkInstantRecord));
   Add(new cMenuEditStrItem( tr("Setup.Recording$Name instant recording"),     data.NameInstantRecord, sizeof(data.NameInstantRecord), tr(FileNameChars)));
   Add(new cMenuEditIntItem( tr("Setup.Recording$Instant rec. time (min)"),   &data.InstantRecordTime, 1, MAXINSTANTRECTIME));
-  Add(new cMenuEditBoolItem(tr("Setup.Recording$Record Dolby Digital"),      &data.RecordDolbyDigital));
   Add(new cMenuEditIntItem( tr("Setup.Recording$Max. video file size (MB)"), &data.MaxVideoFileSize, MINVIDEOFILESIZE, MAXVIDEOFILESIZE));
   Add(new cMenuEditBoolItem(tr("Setup.Recording$Split edited files"),        &data.SplitEditedFiles));
 }
@@ -2410,7 +2452,7 @@ void cMenuMain::Set(const char *Plugin)
 
   // Color buttons:
 
-  SetHelp(!replaying ? tr("Record") : NULL, cDevice::PrimaryDevice()->NumAudioTracks() > 1 ? tr("Language") : NULL, replaying ? NULL : tr("Pause"), replaying ? tr("Button$Stop") : cReplayControl::LastReplayed() ? tr("Resume") : NULL);
+  SetHelp(!replaying ? tr("Record") : NULL, cDevice::PrimaryDevice()->NumAudioTracks() > 1 ? tr("Audio") : NULL, replaying ? NULL : tr("Pause"), replaying ? tr("Button$Stop") : cReplayControl::LastReplayed() ? tr("Resume") : NULL);
   Display();
   lastActivity = time(NULL);
 }
@@ -2471,13 +2513,8 @@ eOSState cMenuMain::ProcessKey(eKeys Key)
                                 state = replaying ? osContinue : osRecord;
                              break;
                case kGreen:  if (!HadSubMenu) {
-                                int CurrentAudioTrack = -1;
-                                const char **AudioTracks = cDevice::PrimaryDevice()->GetAudioTracks(&CurrentAudioTrack);
-                                if (AudioTracks) {
-                                   const char **at = &AudioTracks[CurrentAudioTrack];
-                                   if (!*++at)
-                                      at = AudioTracks;
-                                   cDevice::PrimaryDevice()->SetAudioTrack(at - AudioTracks);
+                                if (cDevice::PrimaryDevice()->NumAudioTracks() > 1) {
+                                   cRemote::Put(kAudio, true);
                                    state = osEnd;
                                    }
                                 }
@@ -2504,6 +2541,40 @@ eOSState cMenuMain::ProcessKey(eKeys Key)
   return state;
 }
 
+// --- SetTrackDescriptions --------------------------------------------------
+
+static void SetTrackDescriptions(void)
+{
+  cDevice::PrimaryDevice()->ClrAvailableTracks(true);
+  cChannel *Channel = Channels.GetByNumber(cDevice::CurrentChannel());
+  if (Channel) {
+     cSchedulesLock SchedulesLock;
+     const cSchedules *Schedules = cSchedules::Schedules(SchedulesLock);
+     if (Schedules) {
+        const cSchedule *Schedule = Schedules->GetSchedule(Channel->GetChannelID());
+        if (Schedule) {
+           const cEvent *Present = Schedule->GetPresentEvent(true);
+           if (Present) {
+              const cComponents *Components = Present->Components();
+              if (Components) {
+                 int indexAudio = 0;
+                 int indexDolby = 0;
+                 for (int i = 0; i < Components->NumComponents(); i++) {
+                     const tComponent *p = Components->Component(i);
+                     if (p->stream == 2) {
+                        if (p->type == 0x05)
+                           cDevice::PrimaryDevice()->SetAvailableTrack(ttDolby, indexDolby++, 0, NULL, p->description);
+                        else
+                           cDevice::PrimaryDevice()->SetAvailableTrack(ttAudio, indexAudio++, 0, NULL, p->description);
+                        }
+                     }
+                 }
+              }
+           }
+        }
+     }
+}
+
 // --- cDisplayChannel -------------------------------------------------------
 
 #define DIRECTCHANNELTIMEOUT 1000 //ms
@@ -2523,7 +2594,7 @@ cDisplayChannel::cDisplayChannel(int Number, bool Switched)
      DisplayInfo();
      displayChannel->Flush();
      }
-  lastTime = time_ms();
+  lastTime.Set();
 }
 
 cDisplayChannel::cDisplayChannel(eKeys FirstKey)
@@ -2532,7 +2603,7 @@ cDisplayChannel::cDisplayChannel(eKeys FirstKey)
   group = -1;
   number = 0;
   lastPresent = lastFollowing = NULL;
-  lastTime = time_ms();
+  lastTime.Set();
   withInfo = Setup.ShowInfoOnChSwitch;
   displayChannel = Skins.Current()->DisplayChannel(withInfo);
   ProcessKey(FirstKey);
@@ -2562,6 +2633,7 @@ void cDisplayChannel::DisplayInfo(void)
            const cEvent *Present = Schedule->GetPresentEvent(true);
            const cEvent *Following = Schedule->GetFollowingEvent(true);
            if (Present != lastPresent || Following != lastFollowing) {
+              SetTrackDescriptions();
               displayChannel->SetEvents(Present, Following);
               cStatus::MsgOsdProgramme(Present ? Present->StartTime() : 0, Present ? Present->Title() : NULL, Present ? Present->ShortText() : NULL, Following ? Following->StartTime() : 0, Following ? Following->Title() : NULL, Following ? Following->ShortText() : NULL);
               lastPresent = Present;
@@ -2577,7 +2649,7 @@ void cDisplayChannel::Refresh(void)
   channel = Channels.GetByNumber(cDevice::CurrentChannel());
   DisplayChannel();
   displayChannel->SetEvents(NULL, NULL);
-  lastTime = time_ms();
+  lastTime.Set();
 }
 
 eOSState cDisplayChannel::ProcessKey(eKeys Key)
@@ -2597,7 +2669,7 @@ eOSState cDisplayChannel::ProcessKey(eKeys Key)
                displayChannel->SetEvents(NULL, NULL);
                withInfo = false;
                DisplayChannel();
-               lastTime = time_ms();
+               lastTime.Set();
                // Lets see if there can be any useful further input:
                int n = channel ? number * 10 : 0;
                cChannel *ch = channel;
@@ -2646,7 +2718,7 @@ eOSState cDisplayChannel::ProcessKey(eKeys Key)
                   group = -1;
                }
             }
-         lastTime = time_ms();
+         lastTime.Set();
          break;
     case kUp|k_Repeat:
     case kUp:
@@ -2663,14 +2735,14 @@ eOSState cDisplayChannel::ProcessKey(eKeys Key)
          Refresh();
          break;
     case kNone:
-         if (number && time_ms() - lastTime > DIRECTCHANNELTIMEOUT) {
+         if (number && lastTime.Elapsed() > DIRECTCHANNELTIMEOUT) {
             if (Channels.GetByNumber(number))
                Channels.SwitchTo(number);
             else {
                number = 0;
                channel = NULL;
                DisplayChannel();
-               lastTime = time_ms();
+               lastTime.Set();
                return osContinue;
                }
             return osEnd;
@@ -2694,7 +2766,7 @@ eOSState cDisplayChannel::ProcessKey(eKeys Key)
                      return osEnd;
                      }
     };
-  if (time_ms() - lastTime < INFOTIMEOUT) {
+  if (lastTime.Elapsed() < INFOTIMEOUT) {
      if (!number && group < 0 && channel && channel->Number() != cDevice::CurrentChannel())
         Refresh(); // makes sure a channel switch through the SVDRP CHAN command is displayed
      DisplayInfo();
@@ -2715,7 +2787,7 @@ cDisplayVolume::cDisplayVolume(void)
 :cOsdObject(true)
 {
   currentDisplayVolume = this;
-  timeout = time_ms() + (cDevice::PrimaryDevice()->IsMute() ? MUTETIMEOUT : VOLUMETIMEOUT);
+  timeout.Set(cDevice::PrimaryDevice()->IsMute() ? MUTETIMEOUT : VOLUMETIMEOUT);
   displayVolume = Skins.Current()->DisplayVolume();
   Show();
 }
@@ -2752,15 +2824,15 @@ eOSState cDisplayVolume::ProcessKey(eKeys Key)
     case kVolDn|k_Repeat:
     case kVolDn:
          Show();
-         timeout = time_ms() + VOLUMETIMEOUT;
+         timeout.Set(VOLUMETIMEOUT);
          break;
     case kMute:
          if (cDevice::PrimaryDevice()->IsMute()) {
             Show();
-            timeout = time_ms() + MUTETIMEOUT;
+            timeout.Set(MUTETIMEOUT);
             }
          else
-            timeout = 0;
+            timeout.Set();
          break;
     case kNone: break;
     default: if ((Key & k_Release) == 0) {
@@ -2768,7 +2840,128 @@ eOSState cDisplayVolume::ProcessKey(eKeys Key)
                 return osEnd;
                 }
     }
-  return time_ms() < timeout ? osContinue : osEnd;
+  return timeout.TimedOut() ? osEnd : osContinue;
+}
+
+// --- cDisplayTracks --------------------------------------------------------
+
+#define TRACKTIMEOUT 5000 //ms
+
+cDisplayTracks *cDisplayTracks::currentDisplayTracks = NULL;
+
+cDisplayTracks::cDisplayTracks(void)
+:cOsdObject(true)
+{
+  // Get the actual audio track descriptions from the EPG if we're not replaying:
+  if (!cDevice::PrimaryDevice()->Replaying() || cTransferControl::ReceiverDevice())
+     SetTrackDescriptions();
+  currentDisplayTracks = this;
+  numTracks = track = 0;
+  audioChannel = cDevice::PrimaryDevice()->GetAudioChannel();
+  eTrackType CurrentAudioTrack = cDevice::PrimaryDevice()->GetCurrentAudioTrack();
+  for (int i = ttAudioFirst; i <= ttDolbyLast; i++) {
+      const tTrackId *TrackId = cDevice::PrimaryDevice()->GetTrack(eTrackType(i));
+      if (TrackId && TrackId->id) {
+         types[numTracks] = eTrackType(i);
+         descriptions[numTracks] = strdup(*TrackId->description ? TrackId->description : *TrackId->language ? TrackId->language : *itoa(i));
+         if (i == CurrentAudioTrack)
+            track = numTracks;
+         numTracks++;
+         }
+      }
+  timeout.Set(TRACKTIMEOUT);
+  displayTracks = Skins.Current()->DisplayTracks(tr("Audio"), numTracks, descriptions);
+  Show();
+}
+
+cDisplayTracks::~cDisplayTracks()
+{
+  delete displayTracks;
+  currentDisplayTracks = NULL;
+  for (int i = 0; i < numTracks; i++)
+      free(descriptions[i]);
+  cStatus::MsgOsdClear();
+}
+
+void cDisplayTracks::Show(void)
+{
+  int ac = IS_AUDIO_TRACK(types[track]) ? audioChannel : -1;
+  displayTracks->SetTrack(track, descriptions);
+  displayTracks->SetAudioChannel(ac);
+  displayTracks->Flush();
+  cStatus::MsgSetAudioTrack(track, descriptions);
+  cStatus::MsgSetAudioChannel(ac);
+}
+
+cDisplayTracks *cDisplayTracks::Create(void)
+{
+  if (cDevice::PrimaryDevice()->NumAudioTracks() > 0) {
+     if (!currentDisplayTracks)
+        new cDisplayTracks;
+     return currentDisplayTracks;
+     }
+  Skins.Message(mtWarning, tr("No audio available!"));
+  return NULL;
+}
+
+void cDisplayTracks::Process(eKeys Key)
+{
+  if (currentDisplayTracks)
+     currentDisplayTracks->ProcessKey(Key);
+}
+
+eOSState cDisplayTracks::ProcessKey(eKeys Key)
+{
+  int oldTrack = track;
+  int oldAudioChannel = audioChannel;
+  switch (Key) {
+    case kUp|k_Repeat:
+    case kUp:
+    case kDown|k_Repeat:
+    case kDown:
+         if (NORMALKEY(Key) == kUp && track > 0)
+            track--;
+         else if (NORMALKEY(Key) == kDown && track < numTracks - 1)
+            track++;
+         timeout.Set(TRACKTIMEOUT);
+         break;
+    case kLeft|k_Repeat:
+    case kLeft:
+    case kRight|k_Repeat:
+    case kRight: if (IS_AUDIO_TRACK(types[track])) {
+                    static int ac[] = { 1, 0, 2 };
+                    audioChannel = ac[cDevice::PrimaryDevice()->GetAudioChannel()];
+                    if (NORMALKEY(Key) == kLeft && audioChannel > 0)
+                       audioChannel--;
+                    else if (NORMALKEY(Key) == kRight && audioChannel < 2)
+                       audioChannel++;
+                    audioChannel = ac[audioChannel];
+                    timeout.Set(TRACKTIMEOUT);
+                    }
+         break;
+    case kAudio:
+         if (++track >= numTracks)
+            track = 0;
+         timeout.Set(TRACKTIMEOUT);
+         break;
+    case kOk:
+         if (track != cDevice::PrimaryDevice()->GetCurrentAudioTrack())
+            oldTrack = -1; // make sure we explicitly switch to that track
+         timeout.Set();
+         break;
+    case kNone: break;
+    default: if ((Key & k_Release) == 0)
+                return osEnd;
+    }
+  if (track != oldTrack || audioChannel != oldAudioChannel)
+     Show();
+  if (track != oldTrack) {
+     cDevice::PrimaryDevice()->SetCurrentAudioTrack(types[track]);
+     Setup.CurrentDolby = IS_DOLBY_TRACK(types[track]);
+     }
+  if (audioChannel != oldAudioChannel)
+     cDevice::PrimaryDevice()->SetAudioChannel(audioChannel);
+  return timeout.TimedOut() ? osEnd : osContinue;
 }
 
 // --- cRecordControl --------------------------------------------------------
@@ -2826,7 +3019,7 @@ cRecordControl::cRecordControl(cDevice *Device, cTimer *Timer, bool Pause)
   isyslog("record %s", fileName);
   if (MakeDirs(fileName, true)) {
      const cChannel *ch = timer->Channel();
-     recorder = new cRecorder(fileName, ch->Ca(), timer->Priority(), ch->Vpid(), ch->Apid1(), ch->Apid2(), ch->Dpid1(), ch->Dpid2());
+     recorder = new cRecorder(fileName, ch->Ca(), timer->Priority(), ch->Vpid(), ch->Apid(0), ch->Apid(1), ch->Dpid(0), ch->Dpid(1));
      if (device->AttachReceiver(recorder)) {
         Recording.WriteSummary();
         cStatus::MsgRecording(device, Recording.Name());

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.128 2004/10/31 16:17:39 kls Exp $
+ * $Id: config.c 1.131 2005/01/09 12:14:58 kls Exp $
  */
 
 #include "config.h"
@@ -262,6 +262,7 @@ cSetup::cSetup(void)
   TimeTransponder = 0;
   MarginStart = 2;
   MarginStop = 10;
+  AudioLanguages[0] = -1;
   EPGLanguages[0] = -1;
   EPGScanTimeout = 5;
   EPGBugfixLevel = 2;
@@ -280,7 +281,7 @@ cSetup::cSetup(void)
   RecordingDirs = 1;
   VideoFormat = 0;
   UpdateChannels = 4;
-  RecordDolbyDigital = 1;
+  UseDolbyDigital = 1;
   ChannelInfoPos = 0;
   OSDLeft = 54;
   OSDTop = 45;
@@ -297,6 +298,7 @@ cSetup::cSetup(void)
   ResumeID = 0;
   CurrentChannel = -1;
   CurrentVolume = MAXVOLUME;
+  CurrentDolby = 0;
 }
 
 cSetup& cSetup::operator= (const cSetup &s)
@@ -415,6 +417,7 @@ bool cSetup::Parse(const char *Name, const char *Value)
   else if (!strcasecmp(Name, "TimeTransponder"))     TimeTransponder    = atoi(Value);
   else if (!strcasecmp(Name, "MarginStart"))         MarginStart        = atoi(Value);
   else if (!strcasecmp(Name, "MarginStop"))          MarginStop         = atoi(Value);
+  else if (!strcasecmp(Name, "AudioLanguages"))      return ParseLanguages(Value, AudioLanguages);
   else if (!strcasecmp(Name, "EPGLanguages"))        return ParseLanguages(Value, EPGLanguages);
   else if (!strcasecmp(Name, "EPGScanTimeout"))      EPGScanTimeout     = atoi(Value);
   else if (!strcasecmp(Name, "EPGBugfixLevel"))      EPGBugfixLevel     = atoi(Value);
@@ -433,7 +436,7 @@ bool cSetup::Parse(const char *Name, const char *Value)
   else if (!strcasecmp(Name, "RecordingDirs"))       RecordingDirs      = atoi(Value);
   else if (!strcasecmp(Name, "VideoFormat"))         VideoFormat        = atoi(Value);
   else if (!strcasecmp(Name, "UpdateChannels"))      UpdateChannels     = atoi(Value);
-  else if (!strcasecmp(Name, "RecordDolbyDigital"))  RecordDolbyDigital = atoi(Value);
+  else if (!strcasecmp(Name, "UseDolbyDigital"))     UseDolbyDigital    = atoi(Value);
   else if (!strcasecmp(Name, "ChannelInfoPos"))      ChannelInfoPos     = atoi(Value);
   else if (!strcasecmp(Name, "OSDLeft"))             OSDLeft            = atoi(Value);
   else if (!strcasecmp(Name, "OSDTop"))              OSDTop             = atoi(Value);
@@ -450,6 +453,7 @@ bool cSetup::Parse(const char *Name, const char *Value)
   else if (!strcasecmp(Name, "ResumeID"))            ResumeID           = atoi(Value);
   else if (!strcasecmp(Name, "CurrentChannel"))      CurrentChannel     = atoi(Value);
   else if (!strcasecmp(Name, "CurrentVolume"))       CurrentVolume      = atoi(Value);
+  else if (!strcasecmp(Name, "CurrentDolby"))        CurrentDolby       = atoi(Value);
   else
      return false;
   return true;
@@ -475,6 +479,7 @@ bool cSetup::Save(void)
   Store("TimeTransponder",    TimeTransponder);
   Store("MarginStart",        MarginStart);
   Store("MarginStop",         MarginStop);
+  StoreLanguages("AudioLanguages", AudioLanguages);
   StoreLanguages("EPGLanguages", EPGLanguages);
   Store("EPGScanTimeout",     EPGScanTimeout);
   Store("EPGBugfixLevel",     EPGBugfixLevel);
@@ -493,7 +498,7 @@ bool cSetup::Save(void)
   Store("RecordingDirs",      RecordingDirs);
   Store("VideoFormat",        VideoFormat);
   Store("UpdateChannels",     UpdateChannels);
-  Store("RecordDolbyDigital", RecordDolbyDigital);
+  Store("UseDolbyDigital",    UseDolbyDigital);
   Store("ChannelInfoPos",     ChannelInfoPos);
   Store("OSDLeft",            OSDLeft);
   Store("OSDTop",             OSDTop);
@@ -510,6 +515,7 @@ bool cSetup::Save(void)
   Store("ResumeID",           ResumeID);
   Store("CurrentChannel",     CurrentChannel);
   Store("CurrentVolume",      CurrentVolume);
+  Store("CurrentDolby",       CurrentDolby);
 
   Sort();
 

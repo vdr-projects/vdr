@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: themes.c 1.3 2004/06/18 15:05:07 kls Exp $
+ * $Id: themes.c 1.5 2004/12/24 17:00:41 kls Exp $
  */
 
 #include "themes.h"
@@ -96,7 +96,8 @@ bool cTheme::Load(const char *FileName, bool OnlyDescriptions)
      result = true;
      char *s;
      const char *error = NULL;
-     while ((s = readline(f)) != NULL) {
+     cReadLine ReadLine;
+     while ((s = ReadLine.Read(f)) != NULL) {
            line++;
            char *p = strchr(s, '#');
            if (p)
@@ -242,29 +243,26 @@ bool cThemes::Load(const char *SkinName)
 {
   Clear();
   if (themesDirectory) {
-     DIR *d = opendir(themesDirectory);
-     if (d) {
-        struct dirent *e;
-        while ((e = readdir(d)) != NULL) {
-              if (strcmp(e->d_name, ".") && strcmp(e->d_name, "..")) {
-                 if (strstr(e->d_name, SkinName) == e->d_name && e->d_name[strlen(SkinName)] == '-') {
-                    const char *FileName = AddDirectory(themesDirectory, e->d_name);
-                    cTheme Theme;
-                    if (Theme.Load(FileName, true)) {
-                       names = (char **)realloc(names, (numThemes + 1) * sizeof(char *));
-                       names[numThemes] = strdup(Theme.Name());
-                       fileNames = (char **)realloc(fileNames, (numThemes + 1) * sizeof(char *));
-                       fileNames[numThemes] = strdup(FileName);
-                       descriptions = (char **)realloc(descriptions, (numThemes + 1) * sizeof(char *));
-                       descriptions[numThemes] = strdup(Theme.Description());
-                       numThemes++;
-                       }
+     cReadDir d(themesDirectory);
+     struct dirent *e;
+     while ((e = d.Next()) != NULL) {
+           if (strcmp(e->d_name, ".") && strcmp(e->d_name, "..")) {
+              if (strstr(e->d_name, SkinName) == e->d_name && e->d_name[strlen(SkinName)] == '-') {
+                 cString FileName = AddDirectory(themesDirectory, e->d_name);
+                 cTheme Theme;
+                 if (Theme.Load(*FileName, true)) {
+                    names = (char **)realloc(names, (numThemes + 1) * sizeof(char *));
+                    names[numThemes] = strdup(Theme.Name());
+                    fileNames = (char **)realloc(fileNames, (numThemes + 1) * sizeof(char *));
+                    fileNames[numThemes] = strdup(*FileName);
+                    descriptions = (char **)realloc(descriptions, (numThemes + 1) * sizeof(char *));
+                    descriptions[numThemes] = strdup(Theme.Description());
+                    numThemes++;
                     }
                  }
               }
-        closedir(d);
-        return numThemes > 0;
-        }
+           }
+     return numThemes > 0;
      }
   return false;
 }

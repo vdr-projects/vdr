@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: status.h 1.6 2003/05/03 14:43:18 kls Exp $
+ * $Id: status.h 1.8 2005/01/09 11:50:21 kls Exp $
  */
 
 #ifndef __STATUS_H
@@ -36,6 +36,12 @@ protected:
   virtual void SetVolume(int Volume, bool Absolute) {}
                // The volume has been set to the given value, either
                // absolutely or relative to the current volume.
+  virtual void SetAudioTrack(int Index, const char * const *Tracks) {}
+               // The audio track has been set to the one given by Index, which
+               // points into the Tracks array of strings.
+  virtual void SetAudioChannel(int AudioChannel) {}
+               // The audio channel has been set to the given value.
+               // 0=stereo, 1=left, 2=right, -1=no information available.
   virtual void OsdClear(void) {}
                // The OSD has been cleared.
   virtual void OsdTitle(const char *Title) {}
@@ -67,6 +73,8 @@ public:
   static void MsgRecording(const cDevice *Device, const char *Name);
   static void MsgReplaying(const cControl *Control, const char *Name);
   static void MsgSetVolume(int Volume, bool Absolute);
+  static void MsgSetAudioTrack(int Index, const char * const *Tracks);
+  static void MsgSetAudioChannel(int AudioChannel);
   static void MsgOsdClear(void);
   static void MsgOsdTitle(const char *Title);
   static void MsgOsdStatusMessage(const char *Message);

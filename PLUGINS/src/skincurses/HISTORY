@@ -8,3 +8,8 @@ VDR Plugin 'skincurses' Revision History
 2004-05-31: Version 0.0.2
 
 - Fixed some default parameters.
+
+2005-01-02: Version 0.0.3
+
+- Made several functions threadsafe.
+- New audio track display.

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: diseqc.c 1.3 2004/10/24 11:04:56 kls Exp $
+ * $Id: diseqc.c 1.4 2005/01/09 13:05:11 kls Exp $
  */
 
 #include "diseqc.h"
@@ -37,7 +37,7 @@ bool cDiseqc::Parse(const char *s)
      source = cSource::FromString(sourcebuf);
      if (Sources.Get(source)) {
         polarization = toupper(polarization);
-        if (polarization == 'V' || polarization == 'H') {
+        if (polarization == 'V' || polarization == 'H' || polarization == 'L' || polarization == 'R') {
            parsing = true;
            char *CurrentAction = NULL;
            while (Execute(&CurrentAction) != daNone)

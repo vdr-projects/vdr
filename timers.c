@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 1.18 2004/11/21 13:15:33 kls Exp $
+ * $Id: timers.c 1.21 2004/12/26 12:35:33 kls Exp $
  */
 
 #include "timers.h"
@@ -18,8 +18,6 @@
 // value!
 
 // -- cTimer -----------------------------------------------------------------
-
-char *cTimer::buffer = NULL;
 
 cTimer::cTimer(bool Instant, bool Pause)
 {
@@ -106,12 +104,12 @@ int cTimer::Compare(const cListObject &ListObject) const
   return r;
 }
 
-const char *cTimer::ToText(bool UseChannelID)
+cString cTimer::ToText(bool UseChannelID)
 {
-  free(buffer);
+  char *buffer;
   strreplace(file, ':', '|');
   strreplace(summary, '\n', '|');
-  asprintf(&buffer, "%d:%s:%s:%04d:%04d:%d:%d:%s:%s\n", flags, UseChannelID ? Channel()->GetChannelID().ToString() : itoa(Channel()->Number()), PrintDay(day, firstday), start, stop, priority, lifetime, file, summary ? summary : "");
+  asprintf(&buffer, "%d:%s:%s:%04d:%04d:%d:%d:%s:%s\n", flags, UseChannelID ? *Channel()->GetChannelID().ToString() : *itoa(Channel()->Number()), *PrintDay(day, firstday), start, stop, priority, lifetime, file, summary ? summary : "");
   strreplace(summary, '|', '\n');
   strreplace(file, '|', ':');
   return buffer;
@@ -162,10 +160,10 @@ int cTimer::ParseDay(const char *s, time_t *FirstDay)
   return d;
 }
 
-const char *cTimer::PrintDay(int d, time_t FirstDay)
+cString cTimer::PrintDay(int d, time_t FirstDay)
 {
 #define DAYBUFFERSIZE 32
-  static char buffer[DAYBUFFERSIZE];
+  char buffer[DAYBUFFERSIZE];
   if ((d & 0x80000000) != 0) {
      char *b = buffer;
      const char *w = tr("MTWTFSS");
@@ -186,12 +184,12 @@ const char *cTimer::PrintDay(int d, time_t FirstDay)
   return buffer;
 }
 
-const char *cTimer::PrintFirstDay(void)
+cString cTimer::PrintFirstDay(void)
 {
   if (firstday) {
-     const char *s = PrintDay(day, firstday);
+     cString s = PrintDay(day, firstday);
      if (strlen(s) == 18)
-        return s + 8;
+        return *s + 8;
      }
   return ""; // not NULL, so the caller can always use the result
 }
@@ -248,7 +246,7 @@ bool cTimer::Parse(const char *s)
 
 bool cTimer::Save(FILE *f)
 {
-  return fprintf(f, ToText(true)) > 0;
+  return fprintf(f, "%s", *ToText(true)) > 0;
 }
 
 bool cTimer::IsSingleEvent(void) const
@@ -272,7 +270,6 @@ int cTimer::GetWDay(time_t t)
 int cTimer::GetWDayFromMDay(int MDay)
 {
   time_t now =  time(NULL);
-  int md = GetMDay(now);
   for (int i = -1; i <= 28; i++) { // looking 4 weeks into the future should be enough
       time_t t0 = IncDay(now, i);
       if (GetMDay(t0) == MDay)
@@ -398,8 +395,8 @@ void cTimer::SetEvent(const cEvent *Event)
      if (Event) {
         char vpsbuf[64] = "";
         if (Event->Vps())
-           sprintf(vpsbuf, "(VPS: %s) ", Event->GetVpsString());
-        isyslog("timer %d (%d %04d-%04d '%s') set to event %s %s-%s %s'%s'", Index() + 1, Channel()->Number(), start, stop, file, Event->GetDateString(), Event->GetTimeString(), Event->GetEndTimeString(), vpsbuf, Event->Title());
+           sprintf(vpsbuf, "(VPS: %s) ", *Event->GetVpsString());
+        isyslog("timer %d (%d %04d-%04d '%s') set to event %s %s-%s %s'%s'", Index() + 1, Channel()->Number(), start, stop, file, *Event->GetDateString(), *Event->GetTimeString(), *Event->GetEndTimeString(), vpsbuf, Event->Title());
         }
      else
         isyslog("timer %d (%d %04d-%04d '%s') set to no event", Index() + 1, Channel()->Number(), start, stop, file);

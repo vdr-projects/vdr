@@ -346,7 +346,7 @@ Video Disk Recorder Revision History
   and then renames it).
 - In case the video data stream is broken the log message will come only every
   5 seconds.
-- The current channel is now saved in the 'setup.conf' file when VDR is cancelled,
+- The current channel is now saved in the 'setup.conf' file when VDR is canceled,
   and will be restored next time it is started (thanks to Deti Fliegl).
 - The EIT scanning thread is now locked when switching channels to avoid problems.
 - Encrypted channels can now be selected even without knowing the PNR (however, it
@@ -2241,7 +2241,7 @@ Video Disk Recorder Revision History
   Gruber for reporting this one).
 - Fixed editing channels ('timers.conf' was not written after a channel has
   been modified, which could result in errors upon the next start of VDR).
-- Fixed a crash when cancelling a newly created timer (thanks to Thomas Schmidt
+- Fixed a crash when canceling a newly created timer (thanks to Thomas Schmidt
   for reporting this one).
 - Completed Hungarian language texts (thanks to Istvan Koenigsberger and Guido
   Josten).
@@ -3065,7 +3065,7 @@ Video Disk Recorder Revision History
   small packet.
 - Removed the signal handler and WakeUp() call from cThread (it is no longer
   needed).
-- Added some checks when cancelling a thread and removed the usleep() in
+- Added some checks when canceling a thread and removed the usleep() in
   cThread::Start() (suggested by Ludwig Nussel). Also removed 'running' from
   cThread and using only childTid to indicate whether a thread is actually
   running.
@@ -3159,3 +3159,131 @@ Video Disk Recorder Revision History
 - Fixed toggling the "Day" item in the "Timers" menu, so that it selects the
   right day of week for timers in the future.
 - Some improvements to cPoller (thanks to Marco Schlüßler).
+
+2005-01-09: Version 1.3.18
+
+- Removed an unused variable from cTimer::GetWDayFromMDay() (thanks to Wayne Keer
+  for reporting this one).
+- Some more changes to the 'childTid' handling in cThread (based on suggestions by
+  Stefan Huelswitt).
+- Fixed the spelling of 'canceling' (thanks to Wayne Keer for reporting this one).
+- Re-introduced a sleep to cDvbPlayer::Action() to avoid high CPU load in still
+  picture mode (thanks to Reinhard Nissl for reporting this one).
+- Fixed a possible race condition in generating the DVB device names (thanks to
+  Rainer Zocholl for reporting this one).
+- Changed the way PES packets are played to allow replay of AC3 sound over the
+  full featured DVB cards (partially based on a patch from Werner Fink).
+  + The new function cDevice::PlayPes() is now called with the complete PES data
+    stream and calls PlayVideo() and PlayAudio() as necessary.
+  + cDevice::PlayVideo() is now only called with actual video PES packets.
+  + cDevice::PlayAudio() is now called with the actual audio PES packets, which
+    can be either "normal" audio or AC3 data. You need at least firmware version
+    0x261d to replay AC3 sound over a full featured DVB card. This function now
+    has an 'int' return value.
+  + PlayAudio() of derived cDevice classes shall no longer call the base class
+    function. It shall just play the given data as audio.
+  + cPlayer::PlayVideo() and cPlayer::PlayAudio() are now obsolete and have been
+    replaced with cPlayer::PlayPes().
+  + All StripAudioPackets() functions are now obsolete. The functionality has been
+    moved into cDevice::PlayPes(), where only the video and audio packets that are
+    actually required will be processed.
+  + All audio track handling is now done by cDevice; cTransfer and cDvbPlayer no
+    longer care about audio tracks. cPlayer, however, still has the virtual hooks
+    for audio track handling in order to allow plugins to implement players that
+    have their own idea about this.
+  + cChannel::[AD]pid[12]() have been replaced with cChannel::[AD]pid(int i) to
+    allow access to all available PIDs.
+- Escaped the '-' and 'ö' characters in the man pages (thanks to Darren Salt for
+  pointing this out).
+- Completed the Italian OSD texts (thanks to Sean Carlos).
+- Fixed setting 'synced' in cRemux when recording radio channels (thanks to
+  Laurence Abbott).
+- Removed the LOCK_THREAD from the LIRC thread (thanks to Ludwig Nussel).
+- Fixed genfontfile.c (sometimes the character width was wrong, and the codes were
+  shifted one too far to the left).
+- Fixed the character width and shifted the codes one to the right in all font
+  files.
+- Renamed font???.c to font???-iso8859-1.c for symmetry.
+- Switched the character set to iso8859-15 for English, German and Finnish (thanks
+  to Andreas Brugger for reporting the missing Euro sign in iso8859-1).
+- Added 'channels.conf.terr' entries for Lübeck (thanks to Stefan Hußfeldt).
+- Fixed a race condition in starting a thread (thanks to Reinhard Nissl for
+  reporting this one).
+- Replaced non-threadsafe library functions with their threadsafe versions (thanks
+  to Rainer Zocholl for pointing this out).
+- Other non-threadsafe functions have been replaced by threadsafe classes that hide
+  the actual buffering. In particular these are:
+  readdir() -> cReadDir
+  readline() -> cReadLine
+- Several formerly non-threadsafe functions now have a return type of cString:
+  cChannel::ToText()
+  tChannelID::ToString()
+  cEvent::GetDateString()
+  cEvent::GetTimeString()
+  cEvent::GetEndTimeString()
+  cEvent::GetVpsString()
+  cMark::ToText()
+  cTimer::ToText()
+  cSource::ToString()
+  cTimer::PrintDay()
+  cTimer::PrintFirstDay()
+  PrefixVideoFileName()
+  IndexToHMSF()
+  ChannelString()
+  strescape()
+  AddDirectory()
+  itoa()
+  WeekDayName()
+  DayDateTime()
+  When using these functions in a 'const char *' context there is nothing special
+  to consider, except that you can no longer have a pointer to the return value,
+  as in
+  const char *date = DayDateTime();
+  Although this will compile without error message, the resulting 'date' will not
+  be valid after this line. Use this instead:
+  cString date = DayDateTime();
+  In a 'const void *' context (as in printf() etc.) the result needs to be
+  dereferenced with a '*', as in
+  printf("%s", *DayDateTime());
+  to make it a 'const char *'.
+- Removed delay_ms(), using cCondWait::SleepMs() instead.
+- Replaced time_ms() with a threadsafe and non-overflowing cTimeMs (thanks to Rainer
+  Zocholl for pointing out this problem).
+- Added cDevice::mutexReceiver to avoid a race condition when attaching/detaching
+  receivers from different threads.
+- The new remote control button "Audio" can be used to switch between different
+  audio tracks. The "Green" button in the "Main" menu has been changed from "Language"
+  to "Audio", since it now also controls switching between normal and Dolby Digital
+  audio tracks (see MANUAL for details).
+- The description of the audio tracks is now taken from the "component descriptors"
+  that are broadcast in the EPG data. However (as no big surprise), not all channels
+  actually provide useful data here, so there are now some additional EPG bugfixes,
+  which can be activated by setting the "EPG bugfix level" to 3.
+- The format of the 'epg.data' files has been extended by the new tag 'X', which
+  contains the stream components of an event (see man vdr(5) for details).
+- The cStatus class now has the new member function SetAudioTrack(), which can be
+  used to get notified when the audio track has been switched, and the new member
+  function SetAudioChannel() which is called when the audio channel is changed.
+- Skins need to implement the new cSkinDisplayTrack class to display the audio
+  track menu.
+- The ST:TNG skin now displays the current audio track description (if any) at the
+  botton left side.
+- The new setup option "DVB/Audio languages" can be used to control which audio
+  language shall be selected in case a channel broadcasts in different languages
+  (see MANUAL for details). 
+- The "Left" and "Right" keys in the "Audio" menu can be used to switch between
+  the left and right stereo channels in case there are different audio tracks
+  in these channels (see MANUAL for details).
+- Fixed a possible race condition in cDevice::Action() (thanks to Mattias Grönlund).
+- Fixed the default quality value when grabbing a JPEG image (thanks to Patrick
+  Gleichmann).
+- Fixed deleting a menu item in case the next item is not selectable (thanks to
+  Dino Ravnic).
+- Implemented displaying mandatory subtitles in the SPU decoder (thanks to Marco
+  Schlüßler).
+- The setup option "Recording/Record Dobly Digital" has been renamed and moved to
+  "DVB/Use Dolby Digital". It now controls whether Dolby Digital is recorded and
+  whether an available DD audio track will appear in the "Audio" menu.
+- Added support for circular polarization (thanks to Jonan Santiago).
+- Thanks to Werner Fink, Reinhard Nissl, Sascha Volkenandt and Bjørnar Nilsen for
+  their support in testing and fine tuning this version.

@@ -263,6 +263,8 @@ Werner Fink <werner@suse.de>
  for suggesting to add more checks and polling when getting frontend events
  for setting the VPID before the APID in live mode to avoid unnecessary
  overhead in the firmware
+ for a patch that was used as a base for implementing a modified PES packet
+ handling in order to play AC3 audio over full featured DVB cards
 
 Rolf Hakenes <hakenes@hippomi.de>
  for providing 'libdtv' and adapting the EIT mechanisms to it
@@ -345,6 +347,10 @@ Rainer Zocholl <vdrcontrib@zocki.toppoint.de>
  replaying in time shift mode
  for suggesting that VDR should stop if one of the configuration files can't be
  read correctly at program startup
+ for reporting a possible race condition in generating the DVB device names
+ for pointing out that non-threadsafe functions should be replaced with their
+ threadsafe versions
+ for pointing out a threadsafe and overflow problem with time_ms()
 
 Oleg Assovski <assen@bitcom.msk.ru>
  for adding EPG scanning for another 4 days
@@ -755,8 +761,9 @@ Ludwig Nussel <ludwig.nussel@web.de>
  for reporting a problem on systems that have UTF-8 enabled
  for pointing out a flaw in the the description of cRingBufferLinear
  for reporting a bug in cRingBufferLinear::Get() in case the buffer wraps around
- for adding some checks when cancelling a thread and removing the usleep() in
+ for adding some checks when canceling a thread and removing the usleep() in
  cThread::Start()
+ for removing the LOCK_THREAD from the LIRC thread
 
 Thomas Koch <tom@harhar.net>
  for his support in keeping the Premiere World channels up to date in 'channels.conf'
@@ -764,6 +771,7 @@ Thomas Koch <tom@harhar.net>
 
 Stefan Hußfeldt <vdr@marvin.on-luebeck.de>
  for his help in keeping 'channels.conf.cable' up to date
+ for adding 'channels.conf.terr' entries for Lübeck
 
 Christoph Friederich <christoph.friederich@gmx.de>
  for reporting a bug in deleting the last recording in the "Recordings" menu, which
@@ -804,6 +812,7 @@ Wolfgang Goeller <wgoeller@heraklit.ch>
 Jonan Santiago <jonan-lists-vdr@callisia.com>
  for fixing handling EPG data where the "extended event descriptor" comes before the
  "short event" or a "time shifted event"
+ for adding support for circular polarization
 
 Juri Haberland <juri@koschikode.com>
  for his help in keeping 'channels.conf.terr' up to date
@@ -857,7 +866,7 @@ Jon Burgess <mplayer@jburgess.uklinux.net>
  for fixing a memory leak in thread handling when using NPTL
 
 Thomas Schmidt <thomas.schmidt@in.stud.tu-ilmenau.de>
- for reporting a crash when cancelling a newly created timer
+ for reporting a crash when canceling a newly created timer
  for making 'diseqc.conf' a required file only if Setup.DiSEqC is activated
 
 Michael Walle <michael.walle@web.de>
@@ -890,6 +899,9 @@ Reinhard Nissl <rnissl@gmx.de>
  for reporting a a crash in the time search mechanism
  for taking the complete size of available data into account when deciding whether
  to clear the transfer buffer to avoid overflows
+ for reporting a high CPU load in still picture mode after removing the usleep()
+ call from cDvbPlayer::Action()
+ for reporting a race condition in starting a thread
 
 Richard Robson <richard_robson@beeb.net>
  for reporting freezing replay if a timer starts while in Transfer Mode from the
@@ -1059,6 +1071,8 @@ Wayne Keer <syphir@syphir.sytes.net>
  cDvbDevice::cDvbDevice() in case a patch references them
  for suggesting to make the "Channel not available!" message and mtInfo instead of
  mtError
+ for reporting an unused variable from cTimer::GetWDayFromMDay()
+ for reporting a spelling error in 'canceling'
 
 Marco Schlüßler <marco@lordzodiac.de>
  for fixing handling colors in cDvbSpuPalette::yuv2rgb()
@@ -1088,6 +1102,7 @@ Marco Schlüßler <marco@lordzodiac.de>
  the end of the given buffer, which has caused some unjustified "unknown picture
  type errors"
  for some improvements to cPoller
+ for implementing displaying mandatory subtitles in the SPU decoder
 
 Jürgen Schmitz <j.schmitz@web.de>
  for reporting a bug in displaying the current channel when switching via the SVDRP
@@ -1146,6 +1161,7 @@ Lucian Muresan <lucianm@users.sourceforge.net>
 Mattias Grönlund <Mattias@Gronlund.net>
  for pointing out a missing cleanup at program exit in case there is a problem
  with a plugin
+ for fixing possible race condition in cDevice::Action()
 
 Uwe Hanke <uhanke@gmx.de>
  for fixing some typos in the Makefile's 'font' target
@@ -1162,10 +1178,25 @@ Sascha Klek <sklek@gmx.de>
 Andreas Brugger <brougs78@gmx.net>
   for reporting a possible crash when pausing live video and the recording was
   unable to start, maybe because there was no lock on the device
+  for reporting the missing Euro sign in iso8859-1
 
 Dino Ravnic <dino.ravnic@fer.hr>
  for fixing some characters in the iso8859-2 font file
  for fixing some errors in the Croatian language texts
+ for fixing deleting a menu item in case the next item is not selectable
 
 Olaf Titz <olaf@bigred.inka.de>
  for fixing some typos in the Makefile's 'font' target
+
+Darren Salt <linux@youmustbejoking.demon.co.uk>
+ for pointing out that the '-' and 'ö' characters need to be escaped in the man
+ pages
+
+Sean Carlos <seanc@libero.it>
+ for translating OSD texts to the Italian language
+
+Laurence Abbott <laz@club-burniston.co.uk>
+ for fixing setting 'synced' in cRemux when recording radio channels
+
+Patrick Gleichmann <patrick@feedface.com>
+ for fixing the default quality value when grabbing a JPEG image

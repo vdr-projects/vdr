@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.h 1.17 2004/10/31 16:17:10 kls Exp $
+ * $Id: epg.h 1.19 2005/01/02 10:44:41 kls Exp $
  */
 
 #ifndef __EPG_H
@@ -17,26 +17,50 @@
 #include "thread.h"
 #include "tools.h"
 
-#define MAXEPGBUGFIXLEVEL 2
+#define MAXEPGBUGFIXLEVEL 3
+#define MAXCOMPONENTS 32
 
 enum eDumpMode { dmAll, dmPresent, dmFollowing, dmAtTime };
+
+struct tComponent {
+  uchar stream;
+  uchar type;
+  char language[4];
+  char *description;
+  cString ToString(void);
+  bool FromString(const char *s);
+  };
+
+class cComponents {
+private:
+  int numComponents;
+  tComponent *components;
+public:
+  cComponents(int NumComponents);
+  ~cComponents(void);
+  int NumComponents(void) const { return numComponents; }
+  bool SetComponent(int Index, const char *s);
+  bool SetComponent(int Index, uchar Stream, uchar Type, const char *Language, const char *Description);
+  tComponent *Component(int Index) const { return (Index < numComponents) ? &components[Index] : NULL; }
+  };
 
 class cSchedule;
 
 class cEvent : public cListObject {
 private:
-  tChannelID channelID;  // Channel ID of program for this event
-  u_int16_t eventID;     // Event ID of this event
-  uchar tableID;         // Table ID this event came from
-  uchar version;         // Version number of section this event came from
-  int runningStatus;     // 0=undefined, 1=not running, 2=starts in a few seconds, 3=pausing, 4=running
-  char *title;           // Title of this event
-  char *shortText;       // Short description of this event (typically the episode name in case of a series)
-  char *description;     // Description of this event
-  time_t startTime;      // Start time of this event
-  int duration;          // Duration of this event in seconds
-  time_t vps;            // Video Programming Service timestamp (VPS, aka "Programme Identification Label", PIL)
-  time_t seen;           // When this event was last seen in the data stream
+  tChannelID channelID;    // Channel ID of program for this event
+  u_int16_t eventID;       // Event ID of this event
+  uchar tableID;           // Table ID this event came from
+  uchar version;           // Version number of section this event came from
+  int runningStatus;       // 0=undefined, 1=not running, 2=starts in a few seconds, 3=pausing, 4=running
+  char *title;             // Title of this event
+  char *shortText;         // Short description of this event (typically the episode name in case of a series)
+  char *description;       // Description of this event
+  cComponents *components; // The stream components of this event (separated by '\n')
+  time_t startTime;        // Start time of this event
+  int duration;            // Duration of this event in seconds
+  time_t vps;              // Video Programming Service timestamp (VPS, aka "Programme Identification Label", PIL)
+  time_t seen;             // When this event was last seen in the data stream
 public:
   cEvent(tChannelID ChannelID, u_int16_t EventID);
   ~cEvent();
@@ -49,6 +73,7 @@ public:
   const char *Title(void) const { return title; }
   const char *ShortText(void) const { return shortText; }
   const char *Description(void) const { return description; }
+  const cComponents *Components(void) const { return components; }
   time_t StartTime(void) const { return startTime; }
   time_t EndTime(void) const { return startTime + duration; }
   int Duration(void) const { return duration; }
@@ -56,10 +81,10 @@ public:
   time_t Seen(void) const { return seen; }
   bool HasTimer(void) const;
   bool IsRunning(bool OrAboutToStart = false) const;
-  const char *GetDateString(void) const;
-  const char *GetTimeString(void) const;
-  const char *GetEndTimeString(void) const;
-  const char *GetVpsString(void) const;
+  cString GetDateString(void) const;
+  cString GetTimeString(void) const;
+  cString GetEndTimeString(void) const;
+  cString GetVpsString(void) const;
   void SetEventID(u_int16_t EventID);
   void SetTableID(uchar TableID);
   void SetVersion(uchar Version);
@@ -67,6 +92,7 @@ public:
   void SetTitle(const char *Title);
   void SetShortText(const char *ShortText);
   void SetDescription(const char *Description);
+  void SetComponents(cComponents *Components); // Will take ownership of Components!
   void SetStartTime(time_t StartTime);
   void SetDuration(int Duration);
   void SetVps(time_t Vps);

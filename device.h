@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 1.46 2004/10/30 14:49:56 kls Exp $
+ * $Id: device.h 1.51 2005/01/07 14:57:01 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -56,10 +56,37 @@ enum eVideoSystem { vsPAL,
                     vsNTSC
                   };
 
+enum eTrackType { ttNone,
+                  ttAudio,
+                  ttAudioFirst = ttAudio,
+                  ttAudioLast  = ttAudioFirst + 31/*XXX MAXAPIDS - 1*/,
+                  ttDolby,
+                  ttDolbyFirst = ttDolby,
+                  ttDolbyLast  = ttDolbyFirst + 31/*XXX MAXAPIDS - 1*/,
+                  /* future...
+                  ttSubtitle,
+                  ttSubtitleFirst = ttSubtitle,
+                  ttSubtitleLast  = ttSubtitleFirst + 31,
+                  */
+                  ttMaxTrackTypes
+                };
+
+#define IS_AUDIO_TRACK(t) (ttAudioFirst <= (t) && (t) <= ttAudioLast)
+#define IS_DOLBY_TRACK(t) (ttDolbyFirst <= (t) && (t) <= ttDolbyLast)
+
+struct tTrackId {
+  uint16_t id;          // The PES packet id or the PID.
+  char language[8];     // something like either "eng" or "deu/eng"
+  char description[32]; // something like "Dolby Digital 5.1"
+  // for future use:
+  uint32_t flags;   // Used to further identify the actual track.
+  };
+
 class cChannel;
 class cPlayer;
 class cReceiver;
 class cSpuDecoder;
+class cPesAssembler;
 
 /// The cDevice class is the base from which actual devices can be derived.
 
@@ -283,69 +310,96 @@ public:
          ///< Returns the video system of the currently displayed material
          ///< (default is PAL).
 
+// Track facilities
+
+private:
+  tTrackId availableTracks[ttMaxTrackTypes];
+  eTrackType currentAudioTrack;
+protected:
+  virtual void SetAudioTrackDevice(eTrackType Type);
+       ///< Sets the current audio track to the given value.
+public:
+  void ClrAvailableTracks(bool DescriptionsOnly = false);
+  bool SetAvailableTrack(eTrackType Type, int Index, uint16_t Id, const char *Language = NULL, const char *Description = NULL, uint32_t Flags = 0);
+       ///< Sets the track of the given Type and Index to the given values.
+       ///< Type must be one of the basic eTrackType values, like ttAudio or ttDolby.
+       ///< Index tells which track of the given basic type is meant.
+       ///< If Id is 0 any existing id (and flags) will be left untouched and only the
+       ///< given Language and Description will be set.
+       ///< \return Returns true if the track was set correctly, false otherwise.
+  const tTrackId *GetTrack(eTrackType Type);
+       ///< Returns a pointer to the given track id, or NULL if Type is not
+       ///< less than ttMaxTrackTypes.
+  int NumAudioTracks(void) const;
+       ///< Returns the number of audio tracks that are currently available.
+       ///< This is just for information, to quickly find out whether there
+       ///< is more than one audio track.
+  eTrackType GetCurrentAudioTrack(void) { return currentAudioTrack; }
+  bool SetCurrentAudioTrack(eTrackType Type);
+       ///< Sets the current audio track to the given Type.
+       ///< \return Returns true if Type is a valid audio track, false otherwise.
+
 // Audio facilities
 
 private:
   bool mute;
   int volume;
 protected:
+  virtual int GetAudioChannelDevice(void);
+       ///< Gets the current audio channel, which is stereo (0), mono left (1) or
+       ///< mono right (2).
+  virtual void SetAudioChannelDevice(int AudioChannel);
+       ///< Sets the audio channel to stereo (0), mono left (1) or mono right (2).
   virtual void SetVolumeDevice(int Volume);
        ///< Sets the audio volume on this device (Volume = 0...255).
-  virtual int NumAudioTracksDevice(void) const;
-       ///< Returns the number of audio tracks that are currently available on this
-       ///< device. The default return value is 0, meaning that this device
-       ///< doesn't have multiple audio track capabilities. The return value may
-       ///< change with every call and need not necessarily be the number of list
-       ///< entries returned by GetAudioTracksDevice(). This function is mainly called to
-       ///< decide whether there should be an "Audio" button in a menu.
-  virtual const char **GetAudioTracksDevice(int *CurrentTrack = NULL) const;
-       ///< Returns a list of currently available audio tracks. The last entry in the
-       ///< list must be NULL. The number of entries does not necessarily have to be
-       ///< the same as returned by a previous call to NumAudioTracksDevice().
-       ///< If CurrentTrack is given, it will be set to the index of the current track
-       ///< in the returned list. Note that the list must not be changed after it has
-       ///< been returned by a call to GetAudioTracksDevice()! The only time the list may
-       ///< change is *inside* the GetAudioTracksDevice() function.
-       ///< By default the return value is NULL and CurrentTrack, if given, will not
-       ///< have any meaning.
-  virtual void SetAudioTrackDevice(int Index);
-       ///< Sets the current audio track to the given value, which should be within the
-       ///< range of the list returned by a previous call to GetAudioTracksDevice()
-       ///< (otherwise nothing will happen).
+  virtual void SetDigitalAudioDevice(bool On);
+       ///< Tells the actual device that digital audio output shall be switched
+       ///< on or off.
 public:
   bool IsMute(void) const { return mute; }
   bool ToggleMute(void);
        ///< Turns the volume off or on and returns the new mute state.
+  int GetAudioChannel(void);
+       ///< Gets the current audio channel, which is stereo (0), mono left (1) or
+       ///< mono right (2).
+  void SetAudioChannel(int AudioChannel);
+       ///< Sets the audio channel to stereo (0), mono left (1) or mono right (2).
+       ///< Any other values will be silently ignored.
   void SetVolume(int Volume, bool Absolute = false);
        ///< Sets the volume to the given value, either absolutely or relative to
        ///< the current volume.
   static int CurrentVolume(void) { return primaryDevice ? primaryDevice->volume : 0; }//XXX???
-  int NumAudioTracks(void) const;
-       ///< Returns the number of audio tracks that are currently available on this
-       ///< device or a player attached to it.
-  const char **GetAudioTracks(int *CurrentTrack = NULL) const;
-       ///< Returns a list of currently available audio tracks. The last entry in the
-       ///< list is NULL. The number of entries does not necessarily have to be
-       ///< the same as returned by a previous call to NumAudioTracks().
-       ///< If CurrentTrack is given, it will be set to the index of the current track
-       ///< in the returned list.
-       ///< By default the return value is NULL and CurrentTrack, if given, will not
-       ///< have any meaning.
-  void SetAudioTrack(int Index);
-       ///< Sets the current audio track to the given value, which should be within the
-       ///< range of the list returned by a previous call to GetAudioTracks() (otherwise
-       ///< nothing will happen).
 
 // Player facilities
 
 private:
   cPlayer *player;
+  cPesAssembler *pesAssembler;
 protected:
   virtual bool CanReplay(void) const;
        ///< Returns true if this device can currently start a replay session.
   virtual bool SetPlayMode(ePlayMode PlayMode);
        ///< Sets the device into the given play mode.
        ///< \return true if the operation was successful.
+  virtual int PlayVideo(const uchar *Data, int Length);
+       ///< Plays the given data block as video.
+       ///< Data points to exactly one complete PES packet of the given Length.
+       ///< PlayVideo() shall process the packet either as a whole (returning
+       ///< Length) or not at all (returning 0 or -1 and setting 'errno' to EAGAIN).
+       ///< \return Returns the number of bytes actually taken from Data, or -1
+       ///< in case of an error.
+  virtual int PlayAudio(const uchar *Data, int Length);
+       ///< Plays the given data block as audio.
+       ///< Data points to exactly one complete PES packet of the given Length.
+       ///< PlayAudio() shall process the packet either as a whole (returning
+       ///< Length) or not at all (returning 0 or -1 and setting 'errno' to EAGAIN).
+       ///< \return Returns the number of bytes actually taken from Data, or -1
+       ///< in case of an error.
+  virtual int PlayPesPacket(const uchar *Data, int Length, bool VideoOnly = false);
+       ///< Plays the single PES packet in Data with the given Length.
+       ///< If VideoOnly is true, only the video will be displayed,
+       ///< which is necessary for trick modes like 'fast forward'.
+       ///< Data must point to one single, complete PES packet.
 public:
   virtual int64_t GetSTC(void);
        ///< Gets the current System Time Counter, which can be used to
@@ -382,14 +436,16 @@ public:
        ///< If TimeoutMs is not zero, the device will wait up to the given
        ///< number of milliseconds before returning in case there is still
        ///< data in the buffers..
-  virtual int PlayVideo(const uchar *Data, int Length);
-       ///< Actually plays the given data block as video. The data must be
-       ///< part of a PES (Packetized Elementary Stream) which can contain
-       ///< one video and one audio stream.
-  virtual void PlayAudio(const uchar *Data, int Length);
-       ///< Plays additional audio streams, like Dolby Digital.
-       ///< A derived class must call the base class function to make sure data
-       ///< is distributed to all registered cAudio objects.
+  virtual int PlayPes(const uchar *Data, int Length, bool VideoOnly = false);
+       ///< Plays all valid PES packets in Data with the given Length.
+       ///< If Data is NULL any leftover data from a previous call will be
+       ///< discarded. If VideoOnly is true, only the video will be displayed,
+       ///< which is necessary for trick modes like 'fast forward'.
+       ///< Data should point to a sequence of complete PES packets. If the
+       ///< last packet in Data is not complete, it will be copied and combined
+       ///< to a complete packet with data from the next call to PlayPes().
+       ///< That way any functions called from within PlayPes() will be
+       ///< guaranteed to always receive complete PES packets.
   bool Replaying(void) const;
        ///< Returns true if we are currently replaying.
   void StopReplay(void);
@@ -402,6 +458,7 @@ public:
 // Receiver facilities
 
 private:
+  cMutex mutexReceiver;
   cReceiver *receiver[MAXRECEIVERS];
   int CanShift(int Ca, int Priority, int UsedCards = 0) const;
 protected:

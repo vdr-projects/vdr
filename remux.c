@@ -8,7 +8,7 @@
  * the Linux DVB driver's 'tuxplayer' example and were rewritten to suit
  * VDR's needs.
  *
- * $Id: remux.c 1.22 2004/11/16 16:49:03 kls Exp $
+ * $Id: remux.c 1.23 2004/12/18 13:15:02 kls Exp $
  */
 
 #include "remux.h"
@@ -541,6 +541,8 @@ uchar *cRemux::Get(int &Count, uchar *PictureType)
      // XXX actually '0' should be enough, but '1' must be used with encrypted channels (driver bug?)
      // XXX also allowing 0x1FFF to not break Michael Paar's original patch,
      // XXX but it would probably be best to only use '0'
+     // Force syncing of radio channels to avoid "no useful data" error
+     synced = true;
      if (PictureType)
         *PictureType = I_FRAME;
      return resultBuffer->Get(Count);

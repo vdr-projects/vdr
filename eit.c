@@ -8,7 +8,7 @@
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  * Adapted to 'libsi' for VDR 1.3.0 by Marcel Wiesweg <marcel.wiesweg@gmx.de>.
  *
- * $Id: eit.c 1.100 2004/10/31 12:56:24 kls Exp $
+ * $Id: eit.c 1.102 2005/01/02 11:52:12 kls Exp $
  */
 
 #include "eit.h"
@@ -91,6 +91,8 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data)
       SI::ExtendedEventDescriptors *ExtendedEventDescriptors = NULL;
       SI::ShortEventDescriptor *ShortEventDescriptor = NULL;
       cLinkChannels *LinkChannels = NULL;
+      int NumComponents = 0;
+      SI::ComponentDescriptor *ComponentDescriptors[MAXCOMPONENTS];
       for (SI::Loop::Iterator it2; (d = SiEitEvent.eventDescriptors.getNext(it2)); ) {
           switch (d->getDescriptorTag()) {
             case SI::ExtendedEventDescriptorTag: {
@@ -186,6 +188,20 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data)
                     }
                  }
                  break;
+            case SI::ComponentDescriptorTag: {
+                 SI::ComponentDescriptor *cd = (SI::ComponentDescriptor *)d;
+                 uchar Stream = cd->getStreamContent();
+                 uchar Type = cd->getComponentType();
+                 if (1 <= Stream && Stream <= 2 && Type != 0) {
+                    if (NumComponents < MAXCOMPONENTS) {
+                       ComponentDescriptors[NumComponents++] = cd;
+                       d = NULL; // so that it is not deleted
+                       }
+                    else
+                       dsyslog("more than %d component descriptors!", MAXCOMPONENTS);
+                    }
+                 }
+                 break;
             default: ;
             }
           delete d;
@@ -205,8 +221,20 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data)
       delete ExtendedEventDescriptors;
       delete ShortEventDescriptor;
 
-      pEvent->FixEpgBugs();
+      if (NumComponents > 0) {
+         cComponents *Components = new cComponents(NumComponents);
+         for (int i = 0; i < NumComponents; i++) {
+             char buffer[256];
+             SI::ComponentDescriptor *cd = ComponentDescriptors[i];
+             Components->SetComponent(i, cd->getStreamContent(), cd->getComponentType(), I18nNormalizeLanguageCode(cd->languageCode), cd->description.getText(buffer, sizeof(buffer)));
+             delete cd;
+             }
+         pEvent->SetComponents(Components);
+         }
+      else
+         pEvent->SetComponents(NULL);
 
+      pEvent->FixEpgBugs();
       if (LinkChannels)
          channel->SetLinkChannels(LinkChannels);
       if (Tid == 0x4E) { // we trust only the present/following info on the actual TS
@@ -245,8 +273,8 @@ cTDT::cTDT(const u_char *Data)
 
   if (abs(sattim - loctim) > 2) {
      mutex.Lock();
-     isyslog("System Time = %s (%ld)\n", ctime(&loctim), loctim);
-     isyslog("Local Time  = %s (%ld)\n", ctime(&sattim), sattim);
+     isyslog("System Time = %s (%ld)\n", *TimeToString(loctim), loctim);
+     isyslog("Local Time  = %s (%ld)\n", *TimeToString(sattim), sattim);
      if (stime(&sattim) < 0)
         esyslog("ERROR while setting system time: %m");
      mutex.Unlock();

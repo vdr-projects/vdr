@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: rcu.c 1.6 2003/10/18 11:34:30 kls Exp $
+ * $Id: rcu.c 1.8 2004/12/19 18:06:00 kls Exp $
  */
 
 #include "rcu.h"
@@ -94,7 +94,7 @@ void cRcuRemote::Action(void)
 #pragma pack()
 
   time_t LastCodeRefresh = 0;
-  int FirstTime = 0;
+  cTimeMs FirstTime;
   uint64 LastCommand = 0;
   bool repeat = false;
 
@@ -116,15 +116,14 @@ void cRcuRemote::Action(void)
                       // This remote control sends the above command before and after
                       // each keypress - let's just drop this:
                       break;
-                   int Now = time_ms();
                    Command |= uint64(Address) << 32;
                    if (Command != LastCommand) {
                       LastCommand = Command;
                       repeat = false;
-                      FirstTime = Now;
+                      FirstTime.Set();
                       }
                    else {
-                      if (Now - FirstTime < REPEATDELAY)
+                      if (FirstTime.Elapsed() < REPEATDELAY)
                          break; // repeat function kicks in after a short delay
                       repeat = true;
                       }
@@ -295,7 +294,7 @@ bool cRcuRemote::DetectCode(unsigned char *Code)
      sprintf(buf, "C0D%c", *Code);
      String(buf);
      SetCode(*Code);
-     delay_ms(2 * REPEATDELAY);
+     cCondWait::SleepMs(2 * REPEATDELAY);
      if (receivedCommand) {
         SetMode(modeB);
         String("----");

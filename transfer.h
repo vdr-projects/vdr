@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: transfer.h 1.5 2004/10/15 12:39:54 kls Exp $
+ * $Id: transfer.h 1.8 2005/01/07 15:44:32 kls Exp $
  */
 
 #ifndef __TRANSFER_H
@@ -20,10 +20,8 @@ class cTransfer : public cReceiver, public cPlayer, public cThread {
 private:
   cRingBufferLinear *ringBuffer;
   cRemux *remux;
-  bool canToggleAudioTrack;
-  uchar audioTrack;
+  bool needsBufferReserve;
   bool active;
-  void StripAudioPackets(uchar *b, int Length, uchar Except = 0x00);
 protected:
   virtual void Activate(bool On);
   virtual void Receive(uchar *Data, int Length);
@@ -31,9 +29,6 @@ protected:
 public:
   cTransfer(int VPid, int APid1, int APid2, int DPid1, int DPid2);
   virtual ~cTransfer();
-  virtual int NumAudioTracks(void) const;
-  virtual const char **GetAudioTracks(int *CurrentTrack = NULL) const;
-  virtual void SetAudioTrack(int Index);
   };
 
 class cTransferControl : public cControl {

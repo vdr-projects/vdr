@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinclassic.c 1.7 2004/05/29 14:04:50 kls Exp $
+ * $Id: skinclassic.c 1.11 2005/01/09 11:56:29 kls Exp $
  */
 
 #include "skinclassic.h"
@@ -141,7 +141,7 @@ void cSkinClassicDisplayChannel::SetMessage(eMessageType Type, const char *Text)
 void cSkinClassicDisplayChannel::Flush(void)
 {
   if (!message) {
-     const char *date = DayDateTime();
+     cString date = DayDateTime();
      osd->DrawText(osd->Width() - cFont::GetFont(fontSml)->Width(date) - 2, 0, date, Theme.Color(clrChannelDate), Theme.Color(clrBackground), cFont::GetFont(fontSml));
      }
   osd->Flush();
@@ -299,11 +299,11 @@ void cSkinClassicDisplayMenu::SetEvent(const cEvent *Event)
   int y = y2;
   cTextScroller ts;
   char t[32];
-  snprintf(t, sizeof(t), "%s  %s - %s", Event->GetDateString(), Event->GetTimeString(), Event->GetEndTimeString());
+  snprintf(t, sizeof(t), "%s  %s - %s", *Event->GetDateString(), *Event->GetTimeString(), *Event->GetEndTimeString());
   ts.Set(osd, xl, y, x1 - xl, y3 - y, t, font, Theme.Color(clrMenuEventTime), Theme.Color(clrBackground));
   if (Event->Vps() && Event->Vps() != Event->StartTime()) {
      char *buffer;
-     asprintf(&buffer, " VPS: %s", Event->GetVpsString());
+     asprintf(&buffer, " VPS: %s", *Event->GetVpsString());
      const cFont *font = cFont::GetFont(fontSml);
      osd->DrawText(x1 - font->Width(buffer), y, buffer, Theme.Color(clrMenuEventVpsFg), Theme.Color(clrMenuEventVpsBg), font);
      free(buffer);
@@ -338,7 +338,7 @@ void cSkinClassicDisplayMenu::SetText(const char *Text, bool FixedFont)
 
 void cSkinClassicDisplayMenu::Flush(void)
 {
-  const char *date = DayDateTime();
+  cString date = DayDateTime();
   const cFont *font = cFont::GetFont(fontOsd);
   osd->DrawText(x1 - font->Width(date) - 2, y0, date, Theme.Color(clrMenuDate), Theme.Color(clrMenuTitleBg), font);
   osd->Flush();
@@ -502,6 +502,85 @@ void cSkinClassicDisplayVolume::Flush(void)
   osd->Flush();
 }
 
+// --- cSkinClassicDisplayTracks ---------------------------------------------
+
+class cSkinClassicDisplayTracks : public cSkinDisplayTracks {
+private:
+  cOsd *osd;
+  int x0, x1;
+  int y0, y1, y2;
+  int lineHeight;
+  int currentIndex;
+  void SetItem(const char *Text, int Index, bool Current);
+public:
+  cSkinClassicDisplayTracks(const char *Title, int NumTracks, const char * const *Tracks);
+  virtual ~cSkinClassicDisplayTracks();
+  virtual void SetTrack(int Index, const char * const *Tracks);
+  virtual void SetAudioChannel(int AudioChannel) {}
+  virtual void Flush(void);
+  };
+
+cSkinClassicDisplayTracks::cSkinClassicDisplayTracks(const char *Title, int NumTracks, const char * const *Tracks)
+{
+  const cFont *font = cFont::GetFont(fontOsd);
+  lineHeight = font->Height();
+  currentIndex = -1;
+  int ItemsWidth = font->Width(Title);
+  for (int i = 0; i < NumTracks; i++)
+      ItemsWidth = max(ItemsWidth, font->Width(Tracks[i]));
+  ItemsWidth += 10;
+  x0 = 0;
+  x1 = Setup.OSDWidth;
+  int d = x1 - x0;
+  if (d > ItemsWidth) {
+     d = (d - ItemsWidth) & ~0x07; // must be multiple of 8
+     x1 -= d;
+     }
+  y0 = 0;
+  y1 = lineHeight;
+  y2 = y1 + NumTracks * lineHeight;
+  osd = cOsdProvider::NewOsd(Setup.OSDLeft, Setup.OSDTop + Setup.OSDHeight - y2);
+  tArea Areas[] = { { x0, y0, x1 - 1, y2 - 1, 4 } };
+  osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
+  osd->DrawText(x0, y0, Title, Theme.Color(clrMenuTitleFg), Theme.Color(clrMenuTitleBg), font, x1 - x0);
+  for (int i = 0; i < NumTracks; i++)
+      SetItem(Tracks[i], i, false);
+}
+
+cSkinClassicDisplayTracks::~cSkinClassicDisplayTracks()
+{
+  delete osd;
+}
+
+void cSkinClassicDisplayTracks::SetItem(const char *Text, int Index, bool Current)
+{
+  int y = y1 + Index * lineHeight;
+  tColor ColorFg, ColorBg;
+  if (Current) {
+     ColorFg = Theme.Color(clrMenuItemCurrentFg);
+     ColorBg = Theme.Color(clrMenuItemCurrentBg);
+     currentIndex = Index;
+     }
+  else {
+     ColorFg = Theme.Color(clrMenuItemSelectable);
+     ColorBg = Theme.Color(clrBackground);
+     }
+  const cFont *font = cFont::GetFont(fontOsd);
+  osd->DrawText(x0, y, Text, ColorFg, ColorBg, font, x1 - x0);
+}
+
+void cSkinClassicDisplayTracks::SetTrack(int Index, const char * const *Tracks)
+{
+  if (currentIndex >= 0)
+     SetItem(Tracks[currentIndex], currentIndex, false);
+  SetItem(Tracks[Index], Index, true);
+}
+
+void cSkinClassicDisplayTracks::Flush(void)
+{
+  osd->Flush();
+}
+
 // --- cSkinClassicDisplayMessage --------------------------------------------
 
 class cSkinClassicDisplayMessage : public cSkinDisplayMessage {
@@ -569,6 +648,12 @@ cSkinDisplayReplay *cSkinClassic::DisplayReplay(bool ModeOnly)
 cSkinDisplayVolume *cSkinClassic::DisplayVolume(void)
 {
   return new cSkinClassicDisplayVolume;
+}
+
+
+cSkinDisplayTracks *cSkinClassic::DisplayTracks(const char *Title, int NumTracks, const char * const *Tracks)
+{
+  return new cSkinClassicDisplayTracks(Title, NumTracks, Tracks);
 }
 
 cSkinDisplayMessage *cSkinClassic::DisplayMessage(void)

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 1.32 2004/10/31 16:24:38 kls Exp $
+ * $Id: recording.h 1.33 2004/12/26 11:47:35 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -86,14 +86,12 @@ public:
 extern cRecordings Recordings;
 
 class cMark : public cListObject {
-private:
-  static char *buffer;
 public:
   int position;
   char *comment;
   cMark(int Position = 0, const char *Comment = NULL);
   ~cMark();
-  const char *ToText(void);
+  cString ToText(void);
   bool Parse(const char *s);
   bool Save(FILE *f);
   };
@@ -176,7 +174,7 @@ public:
   int NextFile(void);
   };
 
-const char *IndexToHMSF(int Index, bool WithFrame = false);
+cString IndexToHMSF(int Index, bool WithFrame = false);
       // Converts the given index to a string, optionally containing the frame number.
 int HMSFToIndex(const char *HMSF);
       // Converts the given string (format: "hh:mm:ss.ff") to an index.

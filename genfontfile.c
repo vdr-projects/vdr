@@ -240,7 +240,7 @@ printGlyph(FontInfoPtr font, int c)
 {
   PerGlyphInfoPtr glyph;
   unsigned char *bitmapData;
-  int width, height, spanLength;
+  int width, height, spanLength, charWidth;
   int x, y, l;
   char buf[1000], *b;
 
@@ -253,12 +253,15 @@ printGlyph(FontInfoPtr font, int c)
     width = glyph->width;
     spanLength = (width + 7) / 8;
     height = glyph->height;
+    charWidth = glyph->xoffset + width;
+    if (charWidth < glyph->advance)
+       charWidth = glyph->advance;
 
     printf("  {             // %d\n", c);
-    printf("     %d, %d,\n", glyph->advance, font->max_ascent + font->max_descent);
+    printf("     %d, %d,\n", charWidth, font->max_ascent + font->max_descent);
     for (y = 0; y < font->max_ascent - glyph->yoffset - height; y++) {
         printf("     0x%08X,  // ", 0);
-        for (x = 0; x < glyph->xoffset + width || x < glyph->advance; x++)
+        for (x = 0; x < charWidth; x++)
             putchar('.');
         putchar('\n');
         }
@@ -269,13 +272,13 @@ printGlyph(FontInfoPtr font, int c)
             *b++ = '.';
         if (bitmapData) {
            for (x = 0; x < width; x++) {
+               l <<= 1;
                if (bitmapData[y * spanLength + x / 8] & (1 << (x & 7))) {
                   *b++ = '*';
                   l |= 1;
                   }
                else
                   *b++ = '.';
-               l <<= 1;
                }
            for (x = 0; x < glyph->advance - width - glyph->xoffset; x++) {
                *b++ = '.';

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: videodir.c 1.10 2003/08/02 13:43:28 kls Exp $
+ * $Id: videodir.c 1.11 2004/12/26 11:52:12 kls Exp $
  */
 
 #include "videodir.h"
@@ -197,27 +197,23 @@ int VideoDiskSpace(int *FreeMB, int *UsedMB)
   return (free + used) ? used * 100 / (free + used) : 0;
 }
 
-const char *PrefixVideoFileName(const char *FileName, char Prefix)
+cString PrefixVideoFileName(const char *FileName, char Prefix)
 {
-  static char *PrefixedName = NULL;
+  char PrefixedName[strlen(FileName) + 2];
 
-  if (!PrefixedName || strlen(PrefixedName) <= strlen(FileName))
-     PrefixedName = (char *)realloc(PrefixedName, strlen(FileName) + 2);
-  if (PrefixedName) {
-     const char *p = FileName + strlen(FileName); // p points at the terminating 0
-     int n = 2;
-     while (p-- > FileName && n > 0) {
-           if (*p == '/') {
-              if (--n == 0) {
-                 int l = p - FileName + 1;
-                 strncpy(PrefixedName, FileName, l);
-                 PrefixedName[l] = Prefix;
-                 strcpy(PrefixedName + l + 1, p + 1);
-                 return PrefixedName;
-                 }
+  const char *p = FileName + strlen(FileName); // p points at the terminating 0
+  int n = 2;
+  while (p-- > FileName && n > 0) {
+        if (*p == '/') {
+           if (--n == 0) {
+              int l = p - FileName + 1;
+              strncpy(PrefixedName, FileName, l);
+              PrefixedName[l] = Prefix;
+              strcpy(PrefixedName + l + 1, p + 1);
+              return PrefixedName;
               }
            }
-     }
+        }
   return NULL;
 }
 

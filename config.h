@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.205 2004/11/16 16:57:43 kls Exp $
+ * $Id: config.h 1.209 2005/01/09 12:14:33 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -20,8 +20,8 @@
 #include "i18n.h"
 #include "tools.h"
 
-#define VDRVERSION  "1.3.17"
-#define VDRVERSNUM   10317  // Version * 10000 + Major * 100 + Minor
+#define VDRVERSION  "1.3.18"
+#define VDRVERSNUM   10318  // Version * 10000 + Major * 100 + Minor
 
 #define MAXPRIORITY 99
 #define MAXLIFETIME 99
@@ -222,6 +222,7 @@ public:
   int TimeSource;
   int TimeTransponder;
   int MarginStart, MarginStop;
+  int AudioLanguages[I18nNumLanguages + 1];
   int EPGLanguages[I18nNumLanguages + 1];
   int EPGScanTimeout;
   int EPGBugfixLevel;
@@ -238,7 +239,7 @@ public:
   int RecordingDirs;
   int VideoFormat;
   int UpdateChannels;
-  int RecordDolbyDigital;
+  int UseDolbyDigital;
   int ChannelInfoPos;
   int OSDLeft, OSDTop, OSDWidth, OSDHeight;
   int OSDMessageTime;
@@ -251,6 +252,7 @@ public:
   int ResumeID;
   int CurrentChannel;
   int CurrentVolume;
+  int CurrentDolby;
   int __EndData__;
   cSetup(void);
   cSetup& operator= (const cSetup &s);

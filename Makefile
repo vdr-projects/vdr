@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 1.72 2004/11/21 11:28:55 kls Exp $
+# $Id: Makefile 1.73 2004/12/18 13:39:19 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -78,7 +78,7 @@ endif
 
 all: vdr
 font: genfontfile\
-      fontfix.c fontosd.c fontsml.c\
+      fontfix-iso8859-1.c fontosd-iso8859-1.c fontsml-iso8859-1.c\
       fontfix-iso8859-2.c fontosd-iso8859-2.c fontsml-iso8859-2.c\
       fontfix-iso8859-5.c fontosd-iso8859-5.c fontsml-iso8859-5.c\
       fontfix-iso8859-7.c fontosd-iso8859-7.c fontsml-iso8859-7.c\
@@ -106,11 +106,11 @@ vdr: $(OBJS) $(SILIB)
 
 # The font files:
 
-fontfix.c:
+fontfix-iso8859-1.c:
 	./genfontfile "cFont::tPixelData FontFix_iso8859_1" "$(FIXFONT_ISO8859_1)" > $@
-fontosd.c:
+fontosd-iso8859-1.c:
 	./genfontfile "cFont::tPixelData FontOsd_iso8859_1" "$(OSDFONT_ISO8859_1)" > $@
-fontsml.c:
+fontsml-iso8859-1.c:
 	./genfontfile "cFont::tPixelData FontSml_iso8859_1" "$(SMLFONT_ISO8859_1)" > $@
 
 fontfix-iso8859-2.c:
