@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: hello.c 1.1 2002/05/09 15:28:51 kls Exp $
+ * $Id: hello.c 1.2 2002/05/11 14:17:20 kls Exp $
  */
 
 #include <getopt.h>
@@ -11,7 +11,7 @@
 #include <vdr/plugin.h>
 #include "i18n.h"
 
-static const char *VERSION        = "0.0.1";
+static const char *VERSION        = "0.0.2";
 static const char *DESCRIPTION    = "A friendly greeting";
 static const char *MAINMENUENTRY  = "Hello";
 
@@ -33,6 +33,39 @@ public:
   virtual cMenuSetupPage *SetupMenu(void);
   virtual bool SetupParse(const char *Name, const char *Value);
   };
+
+// Global variables that control the overall behaviour:
+
+int GreetingTime = 3;
+int UseAlternateGreeting = false;
+
+// --- cMenuSetupHello -------------------------------------------------------
+
+class cMenuSetupHello : public cMenuSetupPage {
+private:
+  int newGreetingTime;
+  int newUseAlternateGreeting;
+protected:
+  virtual void Store(void);
+public:
+  cMenuSetupHello(void);
+  };
+
+cMenuSetupHello::cMenuSetupHello(void)
+{
+  newGreetingTime = GreetingTime;
+  newUseAlternateGreeting = UseAlternateGreeting;
+  Add(new cMenuEditIntItem( tr("Greeting time (s)"),      &newGreetingTime));
+  Add(new cMenuEditBoolItem(tr("Use alternate greeting"), &newUseAlternateGreeting));
+}
+
+void cMenuSetupHello::Store(void)
+{
+  SetupStore("GreetingTime", GreetingTime = newGreetingTime);
+  SetupStore("UseAlternateGreeting", UseAlternateGreeting = newUseAlternateGreeting);
+}
+
+// --- cPluginHello ----------------------------------------------------------
 
 cPluginHello::cPluginHello(void)
 {
@@ -86,20 +119,24 @@ void cPluginHello::Start(void)
 cOsdMenu *cPluginHello::MainMenuAction(void)
 {
   // Perform the action when selected from the main VDR menu.
-  Interface->Info(tr("Hello world!"));
+  Interface->Confirm(UseAlternateGreeting ? tr("Howdy folks!") : tr("Hello world!"), GreetingTime);
   return NULL;
 }
 
 cMenuSetupPage *cPluginHello::SetupMenu(void)
 {
   // Return a setup menu in case the plugin supports one.
-  return NULL;
+  return new cMenuSetupHello;
 }
 
 bool cPluginHello::SetupParse(const char *Name, const char *Value)
 {
   // Parse your own setup parameters and store their values.
-  return false;
+  if      (!strcasecmp(Name, "GreetingTime"))         GreetingTime = atoi(Value);
+  else if (!strcasecmp(Name, "UseAlternateGreeting")) UseAlternateGreeting = atoi(Value);
+  else
+     return false;
+  return true;
 }
 
 VDRPLUGINCREATOR(cPluginHello); // Don't touch this!
