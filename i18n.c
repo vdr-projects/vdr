@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.158 2004/10/16 11:52:53 kls Exp $
+ * $Id: i18n.c 1.159 2004/10/16 13:20:56 kls Exp $
  *
  * Translations provided by:
  *
@@ -2445,7 +2445,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Стиль",
     "PovrЙina",
     "Kest",
   },
@@ -2465,7 +2465,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Палитра",
     "Tema",
     "Teema",
   },
@@ -2485,7 +2485,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Отступ слева",
     "Lijevo",
     "Vasakule",
   },
@@ -2505,7 +2505,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Отступ сверху",
     "Gore",
     "мlesse",
   },
@@ -2585,7 +2585,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Использовать мелкий шрифт",
     "Koristi mala slova",
     "Vфikese fondi kasutamine",
   },
@@ -2605,7 +2605,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "никогда",
     "nikada",
     "mitte kunagi",
   },
@@ -2625,7 +2625,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "согласно теме",
     "ovisno o povrЙini",
     "kestast sѕltuv",
   },
@@ -2645,7 +2645,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "всегда",
     "uvijek",
     "alati",
   },
@@ -4850,7 +4850,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Классический",
     "Klasiшcni VDR",
     "Klassikaline VDR",
   },
@@ -4870,7 +4870,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "ST:TNG панели",
     "ST:TNG Konzole",
     "ST:TNG konsool",
   },
