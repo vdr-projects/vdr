@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.c 1.20 2000/10/02 16:23:53 kls Exp $
+ * $Id: interface.c 1.21 2000/10/03 13:28:02 kls Exp $
  */
 
 #include "interface.h"
@@ -355,25 +355,24 @@ eKeys cInterface::DisplayChannel(int Number, const char *Name, bool WithInfo)
         }
      if (Lines > 0) {
         const int t = 6;
-        int w = MenuColumns - t;
         int l = 1;
         cDvbApi::PrimaryDvbApi->Fill(0, 1, MenuColumns, Lines, clrBackground);
         if (*RunningTitle) {
            Write(0, l, EIT.GetRunningTime(), clrYellow, clrBackground);
-           snprintf(buffer, BufSize, "%.*s", w, RunningTitle);    Write(t, l, buffer, clrCyan, clrBackground);
+           Write(t, l, RunningTitle, clrCyan, clrBackground);
            l++;
            }
         if (*RunningSubtitle) {
-           snprintf(buffer, BufSize, "%.*s", w, RunningSubtitle); Write(t, l, buffer, clrCyan, clrBackground);
+           Write(t, l, RunningSubtitle, clrCyan, clrBackground);
            l++;
            }
         if (*NextTitle) {
            Write(0, l, EIT.GetNextTime(), clrYellow, clrBackground);
-           snprintf(buffer, BufSize, "%.*s", w, NextTitle);       Write(t, l, buffer, clrCyan, clrBackground);
+           Write(t, l, NextTitle, clrCyan, clrBackground);
            l++;
            }
         if (*NextSubtitle) {
-           snprintf(buffer, BufSize, "%.*s", w, NextSubtitle);    Write(t, l, buffer, clrCyan, clrBackground);
+           Write(t, l, NextSubtitle, clrCyan, clrBackground);
            }
         cDvbApi::PrimaryDvbApi->Flush();
         }

@@ -216,3 +216,5 @@ Video Disk Recorder Revision History
   title.
 - The 'Recordings' menu now displays a '*' to indicate new recordings.
 - Added the description of the timers.conf file to the FORMATS file.
+- Displaying as much as possible of the current/next info (dropping characters
+  that would display only partially).

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbosd.c 1.1 2000/10/03 10:10:28 kls Exp $
+ * $Id: dvbosd.c 1.2 2000/10/03 13:34:13 kls Exp $
  */
 
 #include "dvbosd.h"
@@ -81,6 +81,8 @@ void cBitmap::Text(int x, int y, const char *s, eDvbColor ColorFg, eDvbColor Col
      int h = font->Height(s);
      while (s && *s) {
            const cFont::tCharData *CharData = font->CharData(*s++);
+           if (int(x + CharData->width) > width)
+              break;
            for (int row = 0; row < h; row++) {
                cFont::tPixelData PixelData = CharData->lines[row];
                for (int col = CharData->width; col-- > 0; ) {

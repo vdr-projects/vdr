@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.29 2000/10/03 11:25:57 kls Exp $
+ * $Id: dvbapi.c 1.30 2000/10/03 13:26:16 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -1583,7 +1583,7 @@ void cDvbApi::Text(int x, int y, const char *s, eDvbColor colorFg, eDvbColor col
 #ifdef DEBUG_OSD
   SetColor(colorFg, colorBg);
   wmove(window, y, x); // ncurses wants 'y' before 'x'!
-  waddstr(window, s);
+  waddnstr(window, s, cols - x);
 #else
   osd->Text(x * charWidth, y * lineHeight, s, colorFg, colorBg);
 #endif
