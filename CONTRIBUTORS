@@ -376,6 +376,7 @@ Ruben Nunez Francisco <ruben.nunez@tang-it.com>
 Mirko Dölle <mdoelle@linux-user.de>
  for reporting a bug when a timer records over midnight of a day that had a
  change in Daylight Saving Time
+ for suggesting to avoid the external 'find' command to scan the video directory
 
 Michael Rakowski <mrak@gmx.de>
  for translating OSD texts to the Polish language

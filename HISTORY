@@ -2911,6 +2911,8 @@ Video Disk Recorder Revision History
 - Fixed switching channels while an encrypted channel is being recorded, because the
   channel was switched if the new channel was on the same transponder and was
   a radio channel (thanks to Martin Dauskardt for reporting this one).
+- No longer using the external 'find' command to scan the video directory for
+  recordings (based on a suggestion by Mirko Dölle).
 - The list of recordings is now kept statically in memory to avoid long delays
   when opening the "Recordings" menu. As a side effect, external modifications to
   the video directory are no longer immediately reflected in the "Recordings" menu.
