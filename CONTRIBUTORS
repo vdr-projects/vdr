@@ -1110,3 +1110,6 @@ Sven Kreiensen <svenk@kammer.uni-hannover.de>
 
 Stefan Meyknecht <stefan@meyknecht.org>
  for a patch that fixed detecting transponder lock in cDvbTuner
+
+Lucian Muresan <lucianm@users.sourceforge.net>
+ for updating the Romanian language texts and the iso8859-2 fonts
