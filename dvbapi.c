@@ -7,7 +7,7 @@
  * DVD support initially written by Andreas Schultz <aschultz@warp10.net>
  * based on dvdplayer-0.5 by Matjaz Thaler <matjaz.thaler@guest.arnes.si>
  *
- * $Id: dvbapi.c 1.107 2001/08/15 09:07:19 kls Exp $
+ * $Id: dvbapi.c 1.108 2001/08/19 14:36:38 kls Exp $
  */
 
 //#define DVDDEBUG        1
@@ -545,9 +545,13 @@ void cRecordBuffer::Input(void)
          }
       else if (r < 0) {
          if (FATALERRNO) {
-            LOG_ERROR;
-            if (errno != EBUFFEROVERFLOW)
+            if (errno == EBUFFEROVERFLOW) { // this error code is not defined in the library
+               esyslog(LOG_ERR, "ERROR (%s,%d): DVB driver buffer overflow", __FILE__, __LINE__);
+               }
+            else {
+               LOG_ERROR;
                break;
+               }
             }
          }
       if (time(NULL) - t > MAXBROKENTIMEOUT) {
@@ -2075,9 +2079,13 @@ void cTransferBuffer::Input(void)
            }
         else if (r < 0) {
            if (FATALERRNO) {
-              LOG_ERROR;
-              if (errno != EBUFFEROVERFLOW)
+              if (errno == EBUFFEROVERFLOW) { // this error code is not defined in the library
+                 esyslog(LOG_ERR, "ERROR (%s,%d): DVB driver buffer overflow", __FILE__, __LINE__);
+                 }
+              else {
+                 LOG_ERROR;
                  break;
+                 }
               }
            }
         }

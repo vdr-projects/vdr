@@ -650,7 +650,7 @@ Video Disk Recorder Revision History
   only once.
 - Made I/O more robust by handling EINTR (thanks to Werner Fink).
 
-2001-08-17: Version 0.92
+2001-08-18: Version 0.92
 
 - The "channel not sync'ed" log message now also lists the card number.
 - Now using the EIT services from 'libdtv' (thanks to Rolf Hakenes), which
@@ -660,3 +660,4 @@ Video Disk Recorder Revision History
   bugs are fixed can be controlled with the EPGBugfixLevel parameter in the
   "Setup" menu (see MANUAL for details, and cEventInfo::FixEpgBugs() in eit.c
   for the actual implementation).
+- Fixed broken recordings after a driver buffer overflow.
