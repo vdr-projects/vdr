@@ -1917,7 +1917,7 @@ Video Disk Recorder Revision History
   EPG data, that string is now limited in length when used in a recording's
   file name.
 
-2003-01-25: Version 1.1.22
+2003-01-26: Version 1.1.22
 
 - Added 'Hrvatska radiotelevizija' and 'RTV Slovenija' to ca.conf (thanks to
   Paul Gohn).
@@ -1931,3 +1931,4 @@ Video Disk Recorder Revision History
 - Modified cRingBufferLinear to avoid excessive memmove() calls in 'Transfer Mode'
   and during recordings, which dramatically reduces CPU load. Thanks to Teemu
   Rantanen for pinpointing the problem with the excessive memmove() calls.
+- Updated 'channels.conf' (thanks to Achim Lange).

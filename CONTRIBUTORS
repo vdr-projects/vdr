@@ -305,7 +305,7 @@ Mirko Günther <mi.guenther@ib-helms.de>
 Achim Lange <Achim_Lange@t-online.de>
  for replacing 'killproc' with 'killall' in 'runvdr' to make it work on Debian
  for reporting a bug in switching back the replay mode display in time shift mode
- for his help in keeping 'channels.conf.cable' up to date
+ for his help in keeping 'channels.conf.cable' and 'channels.conf' up to date
 
 Klaus Wolf <klaus@wolfsoft.de>
  for reporting a bug in restoring the CICAM values for a fourth DVB card
