@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.71 2001/06/12 21:48:48 kls Exp $
+ * $Id: dvbapi.c 1.72 2001/06/14 08:19:43 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -534,9 +534,10 @@ void cRecordBuffer::Input(void)
                break;
             }
          }
-      if (time(NULL) - t > 5) {
+      if (time(NULL) - t > 10) {
          esyslog(LOG_ERR, "ERROR: video data stream broken");
          cThread::EmergencyExit(true);
+         t = time(NULL);
          }
       cFile::FileReady(videoDev, 100);
       if (!recording)
@@ -2007,17 +2008,16 @@ void cDvbApi::SetModeNormal(bool FromRecording)
 bool cDvbApi::SetPid(int fd, dmxPesType_t PesType, dvb_pid_t Pid, dmxOutput_t Output)
 {
   dmxPesFilterParams pesFilterParams;
-  if (Pid == 0 || Pid == 0xFFFF) {
-     CHECK(ioctl(fd, DMX_STOP, Pid));
-     return true;
-     }
+  if (Pid == 0 || Pid == 0xFFFF)
+     CHECK(ioctl(fd, DMX_STOP));
   pesFilterParams.pid     = Pid;
   pesFilterParams.input   = DMX_IN_FRONTEND;
   pesFilterParams.output  = Output;
   pesFilterParams.pesType = PesType;
   pesFilterParams.flags   = DMX_IMMEDIATE_START;
   if (ioctl(fd, DMX_SET_PES_FILTER, &pesFilterParams) < 0) {
-     LOG_ERROR;
+     if (Pid != 0)
+        LOG_ERROR;
      return false;
      }
   return true;
@@ -2048,9 +2048,9 @@ bool cDvbApi::SetChannel(int ChannelNumber, int FrequencyMHz, char Polarization,
 
   // Turn off current PIDs:
 
-  CHECK(ioctl(fd_demuxv, DMX_STOP));
-  CHECK(ioctl(fd_demuxa, DMX_STOP));
-  CHECK(ioctl(fd_demuxt, DMX_STOP));
+  SetVpid(0, DMX_OUT_DECODER);
+  SetApid(0, DMX_OUT_DECODER);
+  SetTpid(0, DMX_OUT_DECODER);
 
   bool ChannelSynced = false;
 

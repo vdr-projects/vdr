@@ -505,3 +505,8 @@ Video Disk Recorder Revision History
   Holtschneider).
 - Fixed removing recordings with Lifetime = 99.
 - Improved channel switching.
+
+2001-06-14: Version 0.82
+
+- Increased timeout until reporting "broken video data stream" when recording.
+- Modified method of turning off PIDs when switching channel.
