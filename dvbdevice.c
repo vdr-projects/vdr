@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.76 2004/01/04 14:48:37 kls Exp $
+ * $Id: dvbdevice.c 1.78 2004/01/10 12:21:41 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -632,7 +632,7 @@ int cDvbDevice::OpenFilter(u_short Pid, u_char Tid, u_char Mask)
      if (ioctl(f, DMX_SET_FILTER, &sctFilterParams) >= 0)
         return f;
      else {
-        esyslog("ERROR: can't set filter (pid=%d, tid=%02X, mask=%02X)", Pid, Tid, Mask);
+        esyslog("ERROR: can't set filter (pid=%d, tid=%02X, mask=%02X): %m", Pid, Tid, Mask);
         close(f);
         }
      }
@@ -772,7 +772,7 @@ bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
 
 bool cDvbDevice::HasLock(void)
 {
-  return dvbTuner->Locked();
+  return dvbTuner ? dvbTuner->Locked() : false;
 }
 
 void cDvbDevice::SetVolumeDevice(int Volume)

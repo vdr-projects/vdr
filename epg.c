@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 1.3 2004/01/04 14:07:46 kls Exp $
+ * $Id: epg.c 1.4 2004/01/09 15:22:18 kls Exp $
  */
 
 #include "epg.h"
@@ -486,6 +486,12 @@ bool cSchedule::SetFollowingEvent(cEvent *Event)
   return true;
 }
 
+void cSchedule::ResetVersions(void)
+{
+  for (cEvent *p = events.First(); p; p = events.Next(p))
+      p->SetVersion(0xFF);
+}
+
 void cSchedule::Cleanup(void)
 {
   Cleanup(time(NULL));
@@ -610,6 +616,16 @@ void cSchedules::Cleanup(bool Force)
      else
         LOG_ERROR;
      lastDump = now;
+     }
+}
+
+void cSchedules::ResetVersions(void)
+{
+  cSchedulesLock SchedulesLock(true);
+  cSchedules *s = (cSchedules *)Schedules(SchedulesLock);
+  if (s) {
+     for (cSchedule *Schedule = s->First(); Schedule; Schedule = s->Next(Schedule))
+         Schedule->ResetVersions();
      }
 }
 

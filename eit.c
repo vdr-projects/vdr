@@ -8,11 +8,12 @@
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  * Adapted to 'libsi' for VDR 1.3.0 by Marcel Wiesweg <marcel.wiesweg@gmx.de>.
  *
- * $Id: eit.c 1.84 2004/01/02 22:27:29 kls Exp $
+ * $Id: eit.c 1.85 2004/01/09 15:44:43 kls Exp $
  */
 
 #include "eit.h"
 #include "epg.h"
+#include "i18n.h"
 #include "libsi/section.h"
 #include "libsi/descriptor.h"
 
@@ -88,19 +89,36 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data)
       pEvent->SetTableID(Tid);
       pEvent->SetEventID(SiEitEvent.getEventId()); // unfortunately some stations use different event ids for the same event in different tables :-(
 
+      int LanguagePreferenceShort = -1;
+      int LanguagePreferenceExt = -1;
+      bool UseExtendedEventDescriptor = false;
       SI::Descriptor *d;
-      SI::ExtendedEventDescriptors exGroup;
-      char text[256];
+      SI::ExtendedEventDescriptors *ExtendedEventDescriptors = NULL;
+      SI::ShortEventDescriptor *ShortEventDescriptor = NULL;
       for (SI::Loop::Iterator it2; (d = SiEitEvent.eventDescriptors.getNext(it2)); ) {
           switch (d->getDescriptorTag()) {
-            case SI::ExtendedEventDescriptorTag:
-                 exGroup.Add((SI::ExtendedEventDescriptor *)d);
-                 d = NULL; //so that it is not deleted
+            case SI::ExtendedEventDescriptorTag: {
+                 SI::ExtendedEventDescriptor *eed = (SI::ExtendedEventDescriptor *)d;
+                 if (I18nIsPreferredLanguage(Setup.EPGLanguages, I18nLanguageIndex(eed->languageCode), LanguagePreferenceExt) || !ExtendedEventDescriptors) {
+                    delete ExtendedEventDescriptors;
+                    ExtendedEventDescriptors = new SI::ExtendedEventDescriptors;
+                    UseExtendedEventDescriptor = true;
+                    }
+                 if (UseExtendedEventDescriptor) {
+                    ExtendedEventDescriptors->Add(eed);
+                    d = NULL; // so that it is not deleted
+                    }
+                 if (eed->getDescriptorNumber() == eed->getLastDescriptorNumber())
+                    UseExtendedEventDescriptor = false;
+                 }
                  break;
             case SI::ShortEventDescriptorTag: {
                  SI::ShortEventDescriptor *sed = (SI::ShortEventDescriptor *)d;
-                 pEvent->SetTitle(sed->name.getText(text));
-                 pEvent->SetShortText(sed->text.getText(text));
+                 if (I18nIsPreferredLanguage(Setup.EPGLanguages, I18nLanguageIndex(sed->languageCode), LanguagePreferenceShort) || !ShortEventDescriptor) {
+                    delete ShortEventDescriptor;
+                    ShortEventDescriptor = sed;
+                    d = NULL; // so that it is not deleted
+                    }
                  }
                  break;
             case SI::ContentDescriptorTag:
@@ -126,9 +144,18 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data)
           }
 
       if (!rEvent) {
-         char buffer[exGroup.getMaximumTextLength()];
-         pEvent->SetDescription(exGroup.getText(buffer));
+         if (ShortEventDescriptor) {
+            char buffer[256];
+            pEvent->SetTitle(ShortEventDescriptor->name.getText(buffer));
+            pEvent->SetShortText(ShortEventDescriptor->text.getText(buffer));
+            }
+         if (ExtendedEventDescriptors) {
+            char buffer[ExtendedEventDescriptors->getMaximumTextLength()];
+            pEvent->SetDescription(ExtendedEventDescriptors->getText(buffer));
+            }
          }
+      delete ExtendedEventDescriptors;
+      delete ShortEventDescriptor;
 
       pEvent->SetStartTime(SiEitEvent.getStartTime());
       pEvent->SetDuration(SiEitEvent.getDuration());

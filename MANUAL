@@ -482,6 +482,19 @@ Version 1.2
                          be taken. Note that in order to set the system time from
                          the transponder data the option "Set system time" must also
                          be enabled.
+  Preferred languages = 0
+                         Some tv stations broadcast their EPG data in various
+                         different languages. This option allows you to define
+                         which language(s) you prefer in such cases. By default,
+                         or if none of the preferred languages is broadcast, any
+                         language will be accepted and the EPG data will be
+                         displayed in the first language received from the data
+                         stream. If this option is set to a non-zero value, the
+                         menu page will contain that many "Preferred language"
+                         options which allow you to select the individual preferred
+                         languages. If an actual EPG data record is received in
+                         different languages, the preferred languages are checked
+                         in the given order to decide which one to take.
 
   DVB:
 
@@ -497,6 +510,12 @@ Version 1.2
 
   Video format = 4:3     The video format (or aspect ratio) of the tv set in use
                          (4:3 or 16:9).
+
+  Update channels = 4    Controls the automatic channel update function. '0' means
+                         no update, '1' will only update channel names, '2' will
+                         update channel names and PIDs, '3' will perform all
+                         updates and also add newly found channels, and '4' will
+                         also add newly found transponders.
 
   LNB:
 

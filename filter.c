@@ -4,11 +4,38 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: filter.c 1.1 2003/12/21 15:26:16 kls Exp $
+ * $Id: filter.c 1.4 2004/01/11 13:31:34 kls Exp $
  */
 
 #include "filter.h"
 #include "sections.h"
+
+// --- cSectionSyncer --------------------------------------------------------
+
+cSectionSyncer::cSectionSyncer(void)
+{
+  Reset();
+}
+
+void cSectionSyncer::Reset(void)
+{
+  lastVersion = 0xFF;
+  synced = false;
+}
+
+bool cSectionSyncer::Sync(uchar Version, int Number, int LastNumber)
+{
+  if (Version == lastVersion)
+     return false;
+  if (!synced) {
+     if (Number != 0)
+        return false; // sync on first section
+     synced = true;
+     }
+  if (Number == LastNumber)
+     lastVersion = Version;
+  return synced;
+}
 
 // --- cFilterData -----------------------------------------------------------
 
@@ -69,6 +96,11 @@ int cFilter::Transponder(void)
   return sectionHandler ? sectionHandler->Transponder() : 0;
 }
 
+const cChannel *cFilter::Channel(void)
+{
+  return sectionHandler ? sectionHandler->Channel() : NULL;
+}
+
 void cFilter::SetStatus(bool On)
 {
   if (sectionHandler && on != On) {
@@ -93,10 +125,12 @@ void cFilter::SetStatus(bool On)
 
 bool cFilter::Matches(u_short Pid, u_char Tid)
 {
-  for (cFilterData *fd = data.First(); fd; fd = data.Next(fd)) {
-      if (fd->Matches(Pid, Tid))
-         return true;
-      }
+  if (on) {
+     for (cFilterData *fd = data.First(); fd; fd = data.Next(fd)) {
+         if (fd->Matches(Pid, Tid))
+            return true;
+         }
+     }
   return false;
 }
 

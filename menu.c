@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.276 2004/01/04 11:12:43 kls Exp $
+ * $Id: menu.c 1.279 2004/01/11 15:40:32 kls Exp $
  */
 
 #include "menu.h"
@@ -2029,22 +2029,90 @@ eOSState cMenuSetupOSD::ProcessKey(eKeys Key)
 // --- cMenuSetupEPG ---------------------------------------------------------
 
 class cMenuSetupEPG : public cMenuSetupBase {
+private:
+  int originalNumLanguages;
+  int numLanguages;
+  void Setup(void);
 public:
   cMenuSetupEPG(void);
+  virtual eOSState ProcessKey(eKeys Key);
   };
 
 cMenuSetupEPG::cMenuSetupEPG(void)
 {
+  for (numLanguages = 0; numLanguages < I18nNumLanguages && data.EPGLanguages[numLanguages] >= 0; numLanguages++)
+      ;
+  originalNumLanguages = numLanguages;
   SetSection(tr("EPG"));
+  Setup();
+}
+
+void cMenuSetupEPG::Setup(void)
+{
+  int current = Current();
+
+  Clear();
+
   Add(new cMenuEditIntItem( tr("Setup.EPG$EPG scan timeout (h)"),      &data.EPGScanTimeout));
   Add(new cMenuEditIntItem( tr("Setup.EPG$EPG bugfix level"),          &data.EPGBugfixLevel, 0, MAXEPGBUGFIXLEVEL));
   Add(new cMenuEditBoolItem(tr("Setup.EPG$Set system time"),           &data.SetSystemTime));
-  Add(new cMenuEditTranItem(tr("Setup.EPG$Use time from transponder"), &data.TimeTransponder));
+  if (data.SetSystemTime)
+     Add(new cMenuEditTranItem(tr("Setup.EPG$Use time from transponder"), &data.TimeTransponder));
+  Add(new cMenuEditIntItem( tr("Setup.EPG$Preferred languages"),       &numLanguages, 0, I18nNumLanguages));
+  for (int i = 0; i < numLanguages; i++)
+     Add(new cMenuEditStraItem(tr("Setup.EPG$Preferred language"),     &data.EPGLanguages[i], I18nNumLanguages, I18nLanguages()));
+
+  SetCurrent(Get(current));
+  Display();
+}
+
+eOSState cMenuSetupEPG::ProcessKey(eKeys Key)
+{
+  int oldnumLanguages = numLanguages;
+  int oldSetSystemTime = data.SetSystemTime;
+
+  eOSState state = cMenuSetupBase::ProcessKey(Key);
+  if (Key == kOk) {
+     bool Modified = numLanguages != originalNumLanguages;
+     if (!Modified) {
+        for (int i = 0; i < numLanguages; i++) {
+            if (data.EPGLanguages[i] != ::Setup.EPGLanguages[i]) {
+               Modified = true;
+               break;
+               }
+            }
+        }
+     if (Modified)
+        cSchedules::ResetVersions();
+     }
+  else if (Key != kNone) {
+     if (numLanguages != oldnumLanguages || data.SetSystemTime != oldSetSystemTime) {
+        for (int i = oldnumLanguages; i < numLanguages; i++) {
+            data.EPGLanguages[i] = 0;
+            for (int l = 0; l < I18nNumLanguages; l++) {
+                int k;
+                for (k = 0; k < oldnumLanguages; k++) {
+                    if (data.EPGLanguages[k] == l)
+                       break;
+                    }
+                if (k >= oldnumLanguages) {
+                   data.EPGLanguages[i] = l;
+                   break;
+                   }
+                }
+            }
+        data.EPGLanguages[numLanguages] = -1;
+        Setup();
+        }
+     }
+  return state;
 }
 
 // --- cMenuSetupDVB ---------------------------------------------------------
 
 class cMenuSetupDVB : public cMenuSetupBase {
+private:
+  const char *updateChannelsTexts[5];
 public:
   cMenuSetupDVB(void);
   virtual eOSState ProcessKey(eKeys Key);
@@ -2052,9 +2120,16 @@ public:
 
 cMenuSetupDVB::cMenuSetupDVB(void)
 {
+  updateChannelsTexts[0] = tr("no");
+  updateChannelsTexts[1] = tr("names only");
+  updateChannelsTexts[2] = tr("names and PIDs");
+  updateChannelsTexts[3] = tr("add new channels");
+  updateChannelsTexts[4] = tr("add new transponders");
+
   SetSection(tr("DVB"));
   Add(new cMenuEditIntItem( tr("Setup.DVB$Primary DVB interface"), &data.PrimaryDVB, 1, cDevice::NumDevices()));
   Add(new cMenuEditBoolItem(tr("Setup.DVB$Video format"),          &data.VideoFormat, "4:3", "16:9"));
+  Add(new cMenuEditStraItem(tr("Setup.DVB$Update channels"),       &data.UpdateChannels, 5, updateChannelsTexts));
 }
 
 eOSState cMenuSetupDVB::ProcessKey(eKeys Key)

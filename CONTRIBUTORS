@@ -522,6 +522,8 @@ Lauri Tischler <lauri.tischler@efore.fi>
  for reporting a faulty parameter initialization in menu.c
  for reporting a problem in case the original current channel becomes
  unavailable due to a recording on a different transponder
+ for reporting a compiler warning about virtual cConfig::Load() functions
+ for reporting a warning about character comparison in libsi/si.c
 
 Andy Carter <fruit@ukgateway.net>
  for helping to test new DVB-T handling
@@ -584,6 +586,7 @@ Andreas Kool <akool@akool.de>
  for reporting a problem with empty values in setup.conf
  for fixing detecting the /dev/videoN devices for GRAB in case there are others
  before the DVB devices
+ for fixing a possible NULL pointer access in cEITScanner::Process()
 
 Guy Roussin <guy.roussin@teledetection.fr>
  for suggesting not to display channel group delimiters without text
@@ -635,6 +638,9 @@ Teemu Rantanen <tvr@iki.fi>
  for adding TS error checking to remux.c
  for pinpointing a problem with excessive memmove() calls in 'Transfer Mode'
  for fixing faulty calculation of section length in eit.c
+ for reporting a problem in calculation of channel ids for tv stations that use
+ the undefined NID value 0
+ for adding EPG preferred languages
 
 Jan Ekholm <chakie@infa.abo.fi>
  for adding/improving some Swedish language OSD texts
@@ -647,6 +653,7 @@ Marcel Wiesweg <marcel.wiesweg@gmx.de>
  currently not transmitting
  for fixing volume display in case a plugin has its own OSD open
  for providing 'libsi' and adapting the EIT mechanisms to it
+ for fixing testing for matching section filters in case they are turned off
 
 Torsten Herz <torsten.herz@web.de>
  for fixing a possible deadlock when using the "Blue" button in the "Schedules" menu
@@ -670,6 +677,7 @@ Sascha Volkenandt <sascha@akv-soft.de>
  for making the 'epg.data' file being read after all plugins have been started
  for reporting a problem with cReceivers that use a ring buffer and didn't immediately
  return from their Receive() function if the buffer runs full
+ for reporting a crash in case there is no DVB hardware present
 
 Malcolm Caldwell <malcolm.caldwell@ntu.edu.au>
  for modifying LOF handling to allow for C-band reception
@@ -887,3 +895,10 @@ Pedro Miguel Sequeira de Justo Teixeira <pedro.miguel.teixeira@bigfoot.com>
 
 Antonino Sergi <voyaser@tiscalinet.it>
  for adding 'StreamType' setting to CAM communication
+
+Martin Holst <holstm@gmx.de>
+ for reporting a lockup in 1.3.0 when the EPG scanner kicks in
+
+Robert Huitl <vdr@huitl.de>
+ for fixing 'su' call in 'runvdr' to make it work on systems that require the
+ user name to appear before the command option

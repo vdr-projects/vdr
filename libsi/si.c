@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: si.c 1.3 2004/01/04 14:26:53 kls Exp $
+ *   $Id: si.c 1.4 2004/01/05 11:04:17 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -219,7 +219,7 @@ void String::decodeText(char *buffer) {
          break;
       if (    ((' ' <= *from) && (*from <= '~'))
            || (*from == '\n')
-           || ((0xA0 <= *from) && (*from <= 0xFF))
+           || (0xA0 <= *from)
          )
          *to++ = *from;
       else if (*from == 0x8A)

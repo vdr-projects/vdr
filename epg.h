@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.h 1.3 2004/01/03 17:00:25 kls Exp $
+ * $Id: epg.h 1.4 2004/01/09 15:21:05 kls Exp $
  */
 
 #ifndef __EPG_H
@@ -84,6 +84,7 @@ public:
   tChannelID ChannelID(void) const { return channelID; }
   bool SetPresentEvent(cEvent *Event);
   bool SetFollowingEvent(cEvent *Event);
+  void ResetVersions(void);
   void Cleanup(time_t Time);
   void Cleanup(void);
   cEvent *AddEvent(cEvent *Event);
@@ -122,6 +123,7 @@ public:
          ///< time the returned cSchedules is accessed. Once the cSchedules is no
          ///< longer used, the cSchedulesLock must be destroyed.
   static void Cleanup(bool Force = false);
+  static void ResetVersions(void);
   static bool ClearAll(void);
   static bool Dump(FILE *f, const char *Prefix = "");
   static bool Read(FILE *f = NULL);

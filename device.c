@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.51 2004/01/04 11:30:05 kls Exp $
+ * $Id: device.c 1.52 2004/01/11 13:21:12 kls Exp $
  */
 
 #include "device.h"
@@ -48,6 +48,7 @@ cDevice::cDevice(void)
   eitFilter = NULL;
   patFilter = NULL;
   sdtFilter = NULL;
+  nitFilter = NULL;
 
   ciHandler = NULL;
   player = NULL;
@@ -69,6 +70,7 @@ cDevice::~cDevice()
   for (int i = 0; i < MAXRECEIVERS; i++)
       Detach(receiver[i]);
   delete ciHandler;
+  delete nitFilter;
   delete sdtFilter;
   delete patFilter;
   delete eitFilter;
@@ -328,6 +330,7 @@ void cDevice::StartSectionHandler(void)
      AttachFilter(eitFilter = new cEitFilter);
      AttachFilter(patFilter = new cPatFilter);
      AttachFilter(sdtFilter = new cSdtFilter(patFilter));
+     AttachFilter(nitFilter = new cNitFilter);
      sectionHandler->SetStatus(true);
      }
 }
@@ -444,12 +447,12 @@ eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
      // Stop section handling:
      if (sectionHandler) {
         sectionHandler->SetStatus(false);
-        sectionHandler->SetSource(0, 0);
+        sectionHandler->SetChannel(NULL);
         }
      if (SetChannelDevice(Channel, LiveView)) {
         // Start section handling:
         if (sectionHandler) {
-           sectionHandler->SetSource(Channel->Source(), Channel->Transponder());
+           sectionHandler->SetChannel(Channel);
            sectionHandler->SetStatus(true);
            }
         }

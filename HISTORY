@@ -2537,3 +2537,37 @@ Video Disk Recorder Revision History
 - Limited the line length in the EPG bugfix report, which appears to fix a buffer
   overflow that caused a crash when cleaning up the EPG data (at 05:00 in the
   morning).
+
+2004-01-11: Version 1.3.1
+
+- Fixed a lockup in the EPG scanner when no non-primary device was available
+  (thanks to Martin Holst for reporting this one).
+- Fixed a compiler warning about virtual cConfig::Load() functions (thanks to
+  Lauri Tischler for reporting this one).
+- Fixed a warning about character comparison in libsi/si.c (thanks to Lauri
+  Tischler for reporting this one).
+- The new parameter "Update channels" in the "Setup/DVB" menu can be used to
+  control if and how channels will be automatically updated (see MANUAL).
+  This has already been part of the 'autopid' patch by Andreas Schultz and has
+  now been adopted.
+- Fixed a crash in case there is no DVB hardware present (thanks to Sascha
+  Volkenandt for reporting this one).
+- Changed calculation of channel ids to make it work for tv stations that use
+  the undefined NID value 0 (thanks to Teemu Rantanen for reporting this one).
+- Enhanced the SDT filter to handle multi part sections.
+- Added support for selecting preferred EPG languages (based upon a patch by
+  Teemu Rantanen).
+- Fixed a 'const' in libsi/si.h (thanks to Marcel Wiesweg).
+- Fixed the 'su' call in 'runvdr' to make it work on systems that require the
+  user name to appear before the command option (thanks to Robert Huitl).
+- Fixed testing for matching section filters in case they are turned off (thanks
+  to Marcel Wiesweg).
+- In case of incomplete sections an error message is now logged only every 10
+  seconds.
+- Fixed a possible NULL pointer access in cEITScanner::Process() (thanks to
+  Andreas Kool).
+- The actual transponder data is now taken from the NIT and existing channels
+  are adjusted if necessary. If the NIT contains new transponders, they are
+  scanned for channels during the next EPG scan. Note that only the satellite
+  branches are tested, cable and terrestrial need to be tested by somebody who
+  actually has such equipment.

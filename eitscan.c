@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: eitscan.c 1.15 2004/01/04 14:54:01 kls Exp $
+ * $Id: eitscan.c 1.18 2004/01/11 15:50:59 kls Exp $
  */
 
 #include "eitscan.h"
@@ -23,7 +23,7 @@ public:
   virtual bool operator< (const cListObject &ListObject);
   int Source(void) { return source; }
   int Transponder(void) { return transponder; }
-  cChannel *GetChannel(void);
+  cChannel *GetChannel(cList<cChannel> *Channels);
   };
 
 cScanData::cScanData(int Source, int Transponder)
@@ -38,10 +38,9 @@ bool cScanData::operator< (const cListObject &ListObject)
   return source < sd->source || source == sd->source && transponder < sd->transponder;
 }
 
-//XXX this might be done differently later...
-cChannel *cScanData::GetChannel(void)
+cChannel *cScanData::GetChannel(cList<cChannel> *Channels)
 {
-  for (cChannel *Channel = Channels.First(); Channel; Channel = Channels.Next(Channel)) {
+  for (cChannel *Channel = Channels->First(); Channel; Channel = Channels->Next(Channel)) {
       if (!Channel->GroupSep() && Channel->Source() == source && ISTRANSPONDER(Channel->Transponder(), transponder))
          return Channel;
       }
@@ -52,13 +51,13 @@ cChannel *cScanData::GetChannel(void)
 
 class cScanList : public cList<cScanData> {
 public:
-  cScanList(void);
+  cScanList(cList<cChannel> *Channels);
   void AddTransponder(const cChannel *Channel);
   };
 
-cScanList::cScanList(void)
+cScanList::cScanList(cList<cChannel> *Channels)
 {
-  for (cChannel *ch = Channels.First(); ch; ch = Channels.Next(ch))
+  for (cChannel *ch = Channels->First(); ch; ch = Channels->Next(ch))
       AddTransponder(ch);
   Sort();
 }
@@ -66,10 +65,28 @@ cScanList::cScanList(void)
 void cScanList::AddTransponder(const cChannel *Channel)
 {
   for (cScanData *sd = First(); sd; sd = Next(sd)) {
-      if (sd->Source() == Channel->Source() && sd->Transponder() == Channel->Transponder())
+      if (sd->Source() == Channel->Source() && ISTRANSPONDER(sd->Transponder(), Channel->Transponder()))
          return;
       }
   Add(new cScanData(Channel->Source(), Channel->Transponder()));
+}
+
+// --- cTransponderList ------------------------------------------------------
+
+class cTransponderList : public cList<cChannel> {
+public:
+  void AddTransponder(cChannel *Channel);
+  };
+
+void cTransponderList::AddTransponder(cChannel *Channel)
+{
+  for (cChannel *ch = First(); ch; ch = Next(ch)) {
+      if (ch->Source() == Channel->Source() && ch->Transponder() == Channel->Transponder()) {
+         delete Channel;
+         return;
+         }
+      }
+  Add(Channel);
 }
 
 // --- cEITScanner -----------------------------------------------------------
@@ -81,13 +98,22 @@ cEITScanner::cEITScanner(void)
   lastScan = lastActivity = time(NULL);
   currentDevice = NULL;
   currentChannel = 0;
-  memset(lastChannel, 0, sizeof(lastChannel));
+  numScan = 0;
   scanList = NULL;
+  transponderList = NULL;
 }
 
 cEITScanner::~cEITScanner()
 {
   delete scanList;
+  delete transponderList;
+}
+
+void cEITScanner::AddTransponder(cChannel *Channel)
+{
+  if (!transponderList)
+     transponderList = new cTransponderList;
+  transponderList->AddTransponder(Channel);
 }
 
 void cEITScanner::Activity(void)
@@ -105,36 +131,39 @@ void cEITScanner::Process(void)
      time_t now = time(NULL);
      if (now - lastScan > ScanTimeout && now - lastActivity > ActivityTimeout) {
         if (Channels.Lock(false, 10)) {
+           cList<cChannel> *ChannelList = &Channels;
+           if (numScan % 2 == 0 && transponderList) // switch between the list of new transponders and the actual channels in case there are transponders w/o any channels
+              ChannelList = transponderList;
            if (!scanList)
-              scanList = new cScanList();
+              scanList = new cScanList(ChannelList);
            for (bool AnyDeviceSwitched = false; !AnyDeviceSwitched; ) {
                cScanData *ScanData = NULL;
                for (int i = 0; i < cDevice::NumDevices(); i++) {
-                   cDevice *Device = cDevice::GetDevice(i);
-                   if (Device) {
-                      if (Device != cDevice::PrimaryDevice() || (cDevice::NumDevices() == 1 && Setup.EPGScanTimeout && now - lastActivity > Setup.EPGScanTimeout * 3600)) {
-                         if (!(Device->Receiving(true) || Device->Replaying())) {
-                            if (!ScanData)
-                               ScanData = scanList->First();
-                            if (ScanData) {
-                               cChannel *Channel = ScanData->GetChannel();
-                               //XXX if (Device->ProvidesTransponder(Channel)) {
-                               if ((!Channel->Ca() || Channel->Ca() == Device->DeviceNumber() + 1 || Channel->Ca() >= 0x0100) && Device->ProvidesTransponder(Channel)) { //XXX temporary for the 'sky' plugin
-                                  if (Device == cDevice::PrimaryDevice() && !currentChannel)
-                                     currentChannel = Device->CurrentChannel();
-                                  currentDevice = Device;//XXX see also dvbdevice.c!!!
-                                  Device->SwitchChannel(Channel, false);
-                                  currentDevice = NULL;
-                                  scanList->Del(ScanData);
-                                  ScanData = NULL;
-                                  AnyDeviceSwitched = true;
+                   if (ScanData || (ScanData = scanList->First()) != NULL) {
+                      cDevice *Device = cDevice::GetDevice(i);
+                      if (Device) {
+                         if (Device != cDevice::PrimaryDevice() || (cDevice::NumDevices() == 1 && Setup.EPGScanTimeout && now - lastActivity > Setup.EPGScanTimeout * 3600)) {
+                            if (!(Device->Receiving(true) || Device->Replaying())) {
+                               cChannel *Channel = ScanData->GetChannel(ChannelList);
+                               if (Channel) {
+                                  //XXX if (Device->ProvidesTransponder(Channel)) {
+                                  if ((!Channel->Ca() || Channel->Ca() == Device->DeviceNumber() + 1 || Channel->Ca() >= 0x0100) && Device->ProvidesTransponder(Channel)) { //XXX temporary for the 'sky' plugin
+                                     if (Device == cDevice::PrimaryDevice() && !currentChannel)
+                                        currentChannel = Device->CurrentChannel();
+                                     currentDevice = Device;//XXX see also dvbdevice.c!!!
+                                     Device->SwitchChannel(Channel, false);
+                                     currentDevice = NULL;
+                                     scanList->Del(ScanData);
+                                     ScanData = NULL;
+                                     AnyDeviceSwitched = true;
+                                     }
                                   }
                                }
-                            else
-                               break;
                             }
                          }
                       }
+                   else
+                      break;
                    }
                if (ScanData && !AnyDeviceSwitched) {
                   scanList->Del(ScanData);
@@ -143,12 +172,17 @@ void cEITScanner::Process(void)
                if (!scanList->Count()) {
                   delete scanList;
                   scanList = NULL;
+                  numScan++;
+                  if (ChannelList == transponderList) {
+                     delete transponderList;
+                     transponderList = NULL;
+                     }
                   break;
                   }
                }
-           Channels.Unlock();
-           lastScan = time(NULL);
            }
+        lastScan = time(NULL);
+        Channels.Unlock();
         }
      }
 }

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: filter.h 1.1 2003/12/22 11:41:40 kls Exp $
+ * $Id: filter.h 1.3 2004/01/11 13:31:59 kls Exp $
  */
 
 #ifndef __FILTER_H
@@ -12,6 +12,16 @@
 
 #include <sys/types.h>
 #include "tools.h"
+
+class cSectionSyncer {
+private:
+  int lastVersion;
+  bool synced;
+public:
+  cSectionSyncer(void);
+  void Reset(void);
+  bool Sync(uchar Version, int Number, int LastNumber);
+  };
 
 class cFilterData : public cListObject {
 public:
@@ -25,6 +35,7 @@ public:
   bool Matches(u_short Pid, u_char Tid);
   };
 
+class cChannel;
 class cSectionHandler;
 
 class cFilter : public cListObject {
@@ -59,6 +70,8 @@ protected:
        ///< Returns the source of the data delivered to this filter.
   int Transponder(void);
        ///< Returns the transponder of the data delivered to this filter.
+  const cChannel *Channel(void);
+       ///< Returns the channel of the data delivered to this filter.
   bool Matches(u_short Pid, u_char Tid);
        ///< Indicates whether this filter wants to receive data from the given Pid/Tid.
   void Set(u_short Pid, u_char Tid, u_char Mask = 0xFF);

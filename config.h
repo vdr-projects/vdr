@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.178 2003/12/27 13:57:56 kls Exp $
+ * $Id: config.h 1.182 2004/01/06 16:47:41 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -17,10 +17,11 @@
 #include <time.h>
 #include <unistd.h>
 #include "device.h"
+#include "i18n.h"
 #include "tools.h"
 
-#define VDRVERSION  "1.3.0"
-#define VDRVERSNUM   10300  // Version * 10000 + Major * 100 + Minor
+#define VDRVERSION  "1.3.1"
+#define VDRVERSNUM   10301  // Version * 10000 + Major * 100 + Minor
 
 #define MAXPRIORITY 99
 #define MAXLIFETIME 99
@@ -87,7 +88,7 @@ public:
   cConfig(void) { fileName = NULL; }
   virtual ~cConfig() { free(fileName); }
   const char *FileName(void) { return fileName; }
-  virtual bool Load(const char *FileName = NULL, bool AllowComments = false, bool MustExist = false)
+  bool Load(const char *FileName = NULL, bool AllowComments = false, bool MustExist = false)
   {
     Clear();
     if (FileName) {
@@ -195,6 +196,8 @@ class cSetup : public cConfig<cSetupLine> {
 private:
   void StoreCaCaps(const char *Name);
   bool ParseCaCaps(const char *Value);
+  void StoreLanguages(const char *Name, int *Values);
+  bool ParseLanguages(const char *Value, int *Values);
   bool Parse(const char *Name, const char *Value);
   cSetupLine *Get(const char *Name, const char *Plugin = NULL);
   void Store(const char *Name, const char *Value, const char *Plugin = NULL, bool AllowMultiple = false);
@@ -216,6 +219,7 @@ public:
   int SetSystemTime;
   int TimeTransponder;
   int MarginStart, MarginStop;
+  int EPGLanguages[I18nNumLanguages + 1];
   int EPGScanTimeout;
   int EPGBugfixLevel;
   int SVDRPTimeout;
@@ -227,6 +231,7 @@ public:
   int UseSubtitle;
   int RecordingDirs;
   int VideoFormat;
+  int UpdateChannels;
   int RecordDolbyDigital;
   int ChannelInfoPos;
   int OSDwidth, OSDheight;

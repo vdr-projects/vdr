@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.54 2002/12/15 14:59:53 kls Exp $
+ * $Id: tools.h 1.55 2004/01/11 15:42:15 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -51,6 +51,9 @@ template<class T> inline T max(T a, T b) { return a >= b ? a : b; }
 template<class T> inline int sgn(T a) { return a < 0 ? -1 : a > 0 ? 1 : 0; }
 template<class T> inline void swap(T &a, T &b) { T t = a; a = b; b = t; }
 #endif
+
+#define BCDCHARTOINT(x) (10 * ((x & 0xF0) >> 4) + (x & 0xF))
+int BCD2INT(int x);
 
 ssize_t safe_read(int filedes, void *buffer, size_t size);
 ssize_t safe_write(int filedes, const void *buffer, size_t size);
