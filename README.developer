@@ -30,7 +30,7 @@ Here's a list of the highlights - and what _not_ to expect yet
   to have them start at some high number.
 - Improved CAM support. Channels with conditional access now automatically
   use the device that contains the proper CAM.
-- No NVOD or "linked services" support yet.
+- No NVOD support yet.
 
 Note that this is currently work in progress, so there may be some
 areas that don't work as smooth as expected, yet.
@@ -47,7 +47,7 @@ Known issues:
 
   EURO1080:12168:v:S19.2E:27500:308:256:0:FF:21100:1:1088:0
 
-  in your 'channels.conf' file. Note the Ca parameter 'F' (255 in hex),
+  in your 'channels.conf' file. Note the Ca parameter 'FF' (255 in hex),
   which gives this channel a non-existent Ca mode, so that it won't
   be tuned to at all. If you really want to tune to this channel for
   tests, do it on your own risk.

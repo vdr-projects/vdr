@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 1.22 2004/01/26 16:28:35 kls Exp $
+ * $Id: channels.c 1.23 2004/02/08 11:05:22 kls Exp $
  */
 
 #include "channels.h"
@@ -169,11 +169,13 @@ cChannel::cChannel(void)
   guard        = GUARD_INTERVAL_AUTO;
   hierarchy    = HIERARCHY_AUTO;
   modification = CHANNELMOD_NONE;
+  linkChannels = NULL;
+  refChannel   = NULL;
 }
 
-cChannel::cChannel(const cChannel *Channel)
+cChannel::cChannel(const cChannel &Channel)
 {
-  *this = *Channel;
+  *this = Channel;
   *name = 0;
   vpid         = 0;
   ppid         = 0;
@@ -188,6 +190,28 @@ cChannel::cChannel(const cChannel *Channel)
   number       = 0;
   groupSep     = false;
   modification = CHANNELMOD_NONE;
+  linkChannels = NULL;
+  refChannel   = NULL;
+}
+
+cChannel::~cChannel()
+{
+  delete linkChannels;
+  linkChannels = NULL; // more than one channel can link to this one, so we need the following loop
+  for (cChannel *Channel = Channels.First(); Channel; Channel = Channels.Next(Channel)) {
+      if (Channel->linkChannels) {
+         for (cLinkChannel *lc = Channel->linkChannels->First(); lc; lc = Channel->linkChannels->Next(lc)) {
+             if (lc->Channel() == this) {
+                Channel->linkChannels->Del(lc);
+                break;
+                }
+             }
+         if (Channel->linkChannels->Count() == 0) {
+            delete Channel->linkChannels;
+            Channel->linkChannels = NULL;
+            }
+         }
+      }
 }
 
 cChannel& cChannel::operator= (const cChannel &Channel)
@@ -395,6 +419,57 @@ void cChannel::SetCaDescriptors(int Level)
      if (Level > 1)
         dsyslog("changing ca descriptors of channel %d", Number());
      }
+}
+
+void cChannel::SetLinkChannels(cLinkChannels *LinkChannels)
+{
+  if (!linkChannels && !LinkChannels)
+     return;
+  if (linkChannels && LinkChannels) {
+     cLinkChannel *lca = linkChannels->First();
+     cLinkChannel *lcb = LinkChannels->First();
+     while (lca && lcb) {
+           if (lca->Channel() != lcb->Channel()) {
+              lca = NULL;
+              break;
+              }
+           lca = linkChannels->Next(lca);
+           lcb = LinkChannels->Next(lcb);
+           }
+     if (!lca && !lcb) {
+        delete LinkChannels;
+        return; // linkage has not changed
+        }
+     }
+  char buffer[((linkChannels ? linkChannels->Count() : 0) + (LinkChannels ? LinkChannels->Count() : 0)) * 6 + 256]; // 6: 5 digit channel number plus blank, 256: other texts (see below) plus reserve
+  char *q = buffer;
+  q += sprintf(q, "linking channel %d from", Number());
+  if (linkChannels) {
+     for (cLinkChannel *lc = linkChannels->First(); lc; lc = linkChannels->Next(lc)) {
+         lc->Channel()->SetRefChannel(NULL);
+         q += sprintf(q, " %d", lc->Channel()->Number());
+         }
+     delete linkChannels;
+     }
+  else
+     q += sprintf(q, " none");
+  q += sprintf(q, " to");
+  linkChannels = LinkChannels;
+  if (linkChannels) {
+     for (cLinkChannel *lc = linkChannels->First(); lc; lc = linkChannels->Next(lc)) {
+         lc->Channel()->SetRefChannel(this);
+         q += sprintf(q, " %d", lc->Channel()->Number());
+         //dsyslog("link %4d -> %4d: %s", Number(), lc->Channel()->Number(), lc->Channel()->Name());
+         }
+     }
+  else
+     q += sprintf(q, " none");
+  dsyslog(buffer);
+}
+
+void cChannel::SetRefChannel(cChannel *RefChannel)
+{
+  refChannel = RefChannel;
 }
 
 static int PrintParameter(char *p, char Name, int Value)
@@ -776,7 +851,7 @@ cChannel *cChannels::NewChannel(const cChannel *Transponder, const char *Name, i
 {
   if (Transponder) {
      dsyslog("creating new channel '%s' on %s transponder %d with id %d-%d-%d-%d", Name, cSource::ToString(Transponder->Source()), Transponder->Transponder(), Nid, Tid, Sid, Rid);
-     cChannel *NewChannel = new cChannel(Transponder);
+     cChannel *NewChannel = new cChannel(*Transponder);
      Add(NewChannel);
      ReNumber();
      NewChannel->SetId(Nid, Tid, Sid, Rid, false);

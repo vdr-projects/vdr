@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.h 1.13 2004/01/25 15:31:16 kls Exp $
+ * $Id: channels.h 1.14 2004/02/07 22:04:26 kls Exp $
  */
 
 #ifndef __CHANNELS_H
@@ -66,6 +66,19 @@ public:
   static const tChannelID InvalidID;
   };
 
+class cChannel;
+
+class cLinkChannel : public cListObject {
+private:
+  cChannel *channel;
+public:
+  cLinkChannel(cChannel *Channel) { channel = Channel; }
+  cChannel *Channel(void) { return channel; }
+  };
+
+class cLinkChannels : public cList<cLinkChannel> {
+  };
+
 class cChannel : public cListObject {
   friend class cMenuEditChannel;
 private:
@@ -102,11 +115,14 @@ private:
   int hierarchy;
   int __EndData__;
   int modification;
+  cLinkChannels *linkChannels;
+  cChannel *refChannel;
   const char *ParametersToString(void);
   bool StringToParameters(const char *s);
 public:
   cChannel(void);
-  cChannel(const cChannel *Channel);
+  cChannel(const cChannel &Channel);
+  ~cChannel();
   cChannel& operator= (const cChannel &Channel);
   const char *ToText(void);
   bool Parse(const char *s, bool AllowNonUniqueID = false);
@@ -153,6 +169,8 @@ public:
   void SetPids(int Vpid, int Ppid, int *Apids, char ALangs[][4], int *Dpids, char DLangs[][4], int Tpid);
   void SetCaIds(const int *CaIds); // list must be zero-terminated
   void SetCaDescriptors(int Level);
+  void SetLinkChannels(cLinkChannels *LinkChannels);
+  void SetRefChannel(cChannel *RefChannel);
   };
 
 class cChannels : public cRwLock, public cConfig<cChannel> {
