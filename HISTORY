@@ -1956,3 +1956,8 @@ Video Disk Recorder Revision History
 - Turning SI filtering off and on when switching channels.
 - Timers are now processed even if an OSD menu is open (except for menus that
   explicitly handle timers).
+
+2003-02-15: Version 1.1.25
+
+- Fixed high CPU load during replay (thanks Marcel Wiesweg for pointing out this
+  one).

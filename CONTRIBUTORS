@@ -539,3 +539,6 @@ Teemu Rantanen <tvr@iki.fi>
 
 Jan Ekholm <chakie@infa.abo.fi>
  for adding/improving some Swedish language OSD texts
+
+Marcel Wiesweg <marcel.wiesweg@gmx.de>
+ for pointing out a problem with high CPU load during replay
