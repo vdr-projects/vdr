@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 1.34 2005/01/16 13:49:30 kls Exp $
+ * $Id: channels.c 1.35 2005/02/06 09:44:53 kls Exp $
  */
 
 #include "channels.h"
@@ -640,7 +640,7 @@ cString cChannel::ToText(const cChannel *Channel)
      *q = 0;
      asprintf(&buffer, "%s:%d:%s:%s:%d:%s:%s:%d:%s:%d:%d:%d:%d\n", FullName, Channel->frequency, *Channel->ParametersToString(), *cSource::ToString(Channel->source), Channel->srate, vpidbuf, apidbuf, Channel->tpid, caidbuf, Channel->sid, Channel->nid, Channel->tid, Channel->rid);
      }
-  return buffer;
+  return cString(buffer, true);
 }
 
 cString cChannel::ToText(void) const

@@ -3355,8 +3355,6 @@ Video Disk Recorder Revision History
   recording (thanks to Sascha Volkenandt for reporting a problem when starting
   replay of a recording that has no Dolby Digital audio after switching to a channel
   that has DD and selecting the DD audio track).
-- Fixed a memory leak in AddDirectory() and strescape() (thanks to Stefan Huelswitt
-  for reporting these).
 - Completed the Danish OSD texts (thanks to Mogens Elneff).
 - Completed the French OSD texts (thanks to Olivier Jacques).
 - The new setup option "OSD/Channel info time" can be used to define the time after
@@ -3364,3 +3362,5 @@ Video Disk Recorder Revision History
   Olivier Jacques).
 - Modified cDolbyRepacker to make sure PES packets don't exceed the requested length
   (thanks to Reinhard Nissl).
+- Fixed several memory leaks that were introduced through the use of cString (thanks
+  to Stefan Huelswitt for reporting these).
