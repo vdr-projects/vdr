@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.114 2001/09/02 15:04:41 kls Exp $
+ * $Id: menu.c 1.115 2001/09/02 15:27:54 kls Exp $
  */
 
 #include "menu.h"
@@ -1160,17 +1160,6 @@ cMenuEvent::cMenuEvent(const cEventInfo *EventInfo, bool CanSwitch)
         const char *Title = eventInfo->GetTitle();
         const char *Subtitle = eventInfo->GetSubtitle();
         const char *ExtendedDescription = eventInfo->GetExtendedDescription();
-        // Some channels send a 'Subtitle' that should actually be the 'ExtendedDescription'
-        // (their 'ExtendedDescription' is then empty). In order to handle this correctly
-        // we silently shift that text to where it belongs.
-        // The German TV station 'VOX' is notorious for this - why can't they do it correctly
-        // like all the others? Well, at least like those who actually send the full range
-        // of information (like, e.g., 'Sat.1'). Some stations (like 'RTL') don't even
-        // bother sending anything but the 'Title'...
-        if (isempty(ExtendedDescription) && !isempty(Subtitle) && int(strlen(Subtitle)) > 2 * Setup.OSDwidth) {
-           ExtendedDescription = Subtitle;
-           Subtitle = NULL;
-           }
         if (!isempty(Title)) {
            Add(item = new cMenuTextItem(Title, 1, Line, Setup.OSDwidth - 2, -1, clrCyan));
            Line += item->Height() + 1;
