@@ -7,7 +7,7 @@
  * DVD support initially written by Andreas Schultz <aschultz@warp10.net>
  * based on dvdplayer-0.5 by Matjaz Thaler <matjaz.thaler@guest.arnes.si>
  *
- * $Id: dvbapi.c 1.117 2001/09/14 14:25:33 kls Exp $
+ * $Id: dvbapi.c 1.118 2001/09/15 10:42:35 kls Exp $
  */
 
 //#define DVDDEBUG        1
@@ -1729,7 +1729,7 @@ void cDVDplayBuffer::Input(void)
 
           case cREADFRAME:
                {
-                 bool trickMode = (playMode != pmPlay);
+                 bool trickMode = (playMode == pmFast || (playMode == pmSlow && playDir == pdBackward));
 
                  /* FIXME:
                   *   the entire trickMode code relies on the assumtion
@@ -1765,7 +1765,7 @@ void cDVDplayBuffer::Input(void)
 
           case cOUTFRAMES:
                {
-                 bool trickMode = (playMode != pmPlay);
+                 bool trickMode = (playMode == pmFast || (playMode == pmSlow && playDir == pdBackward));
 
                  /**
                   * Output cursize packs.
