@@ -543,3 +543,4 @@ Jan Ekholm <chakie@infa.abo.fi>
 
 Marcel Wiesweg <marcel.wiesweg@gmx.de>
  for pointing out a problem with high CPU load during replay
+ for reporting broken support for raw OSDs of plugins
