@@ -2791,3 +2791,9 @@ Video Disk Recorder Revision History
   for information on how a skin can make use of themes, and man vdr(5) for the
   structure of a theme file. The actual theme to use can be selected through
   "Setup/OSD/Theme".
+- Added Croatian language texts (thanks to Drazen Dupor).
+  NOTE: there is apparently a problem with the newly introduced iso8859-2 font,
+  because as soon as Setup/OSD/Language is set to Croatian (currently the last one
+  in the list) everything freezes and the vdr processes have to be killed with -9
+  and the driver needs to be reloaded. Maybe somebody else can find out what's
+  going wrong here...
