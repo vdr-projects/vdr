@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: util.h 1.2 2003/12/13 10:42:20 kls Exp $
+ *   $Id: util.h 1.3 2003/12/22 14:07:41 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -14,6 +14,7 @@
 #define LIBSI_UTIL_H
 
 #include <stdint.h>
+#include <sys/types.h>
 #include <pthread.h>
 #include <time.h>
 
@@ -54,8 +55,8 @@ public:
    template <typename T> void setPointerAndOffset(const T* &p, unsigned int &offset) const { p=(T*)getData(offset); offset+=sizeof(T); }
    unsigned char operator[](const unsigned int index) const { return data_->data ? data_->data[off+index] : 0; }
    int getLength() const { return data_->size; }
-   unsigned short TwoBytes(const unsigned int index) const { return data_->data ? data_->TwoBytes(off+index) : 0; }
-   unsigned long FourBytes(const unsigned int index) const { return data_->data ? data_->FourBytes(off+index) : 0; }
+   u_int16_t TwoBytes(const unsigned int index) const { return data_->data ? data_->TwoBytes(off+index) : 0; }
+   u_int32_t FourBytes(const unsigned int index) const { return data_->data ? data_->FourBytes(off+index) : 0; }
 
    void addOffset(unsigned int offset) { off+=offset; }
 private:
@@ -67,9 +68,9 @@ private:
       virtual void assign(const unsigned char*data, unsigned int size) = 0;
       virtual void Delete() = 0;
 
-      unsigned short TwoBytes(const unsigned int index) const
+      u_int16_t TwoBytes(const unsigned int index) const
          { return (data[index] << 8) | data[index+1]; }
-      unsigned long FourBytes(const unsigned int index) const
+      u_int32_t FourBytes(const unsigned int index) const
          { return (data[index] << 24) | (data[index+1] << 16) | (data[index+2] << 8) | data[index+3]; }
       /*#ifdef CHARARRAY_THREADSAFE
       void Lock();
@@ -139,16 +140,16 @@ inline unsigned char bcdToDec(unsigned char b) { return ((b >> 4) & 0x0F) * 10 +
 //taken and adapted from libdtv, (c) Rolf Hakenes
 class CRC32 {
 public:
-   CRC32(const char *d, int len, unsigned long CRCvalue=0xFFFFFFFF);
+   CRC32(const char *d, int len, u_int32_t CRCvalue=0xFFFFFFFF);
    bool isValid() { return crc32(data, length, value) == 0; }
-   static bool isValid(const char *d, int len, unsigned long CRCvalue=0xFFFFFFFF) { return crc32(d, len, CRCvalue) == 0; }
+   static bool isValid(const char *d, int len, u_int32_t CRCvalue=0xFFFFFFFF) { return crc32(d, len, CRCvalue) == 0; }
 protected:
-   static unsigned long crc_table[256];
-   static unsigned long crc32 (const char *d, int len, unsigned long CRCvalue);
+   static u_int32_t crc_table[256];
+   static u_int32_t crc32 (const char *d, int len, u_int32_t CRCvalue);
 
    const char *data;
    int length;
-   unsigned long value;
+   u_int32_t value;
 };
 
 } //end of namespace

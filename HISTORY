@@ -2502,3 +2502,5 @@ Video Disk Recorder Revision History
 - Added 'cRWlock' to 'thread.[hc]'. Note that all plugin Makefiles need to
   define _GNU_SOURCE for this to work (see the example plugin Makefiles and
   'newplugin').
+- Fixed a problem with crc32 in SI handling on 64bit systems (thanks to Pedro
+  Miguel Sequeira de Justo Teixeira for reportign this one).

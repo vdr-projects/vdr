@@ -876,3 +876,6 @@ Emil Petersky <petersky@isr.uni-stuttgart.de>
 
 Alessio Sangalli <alesan@manoweb.com>
  for providing the iso8859-1 small font
+
+Pedro Miguel Sequeira de Justo Teixeira <pedro.miguel.teixeira@bigfoot.com>
+ for reporting a problem with crc32 in SI handling on 64bit systems

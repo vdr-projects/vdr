@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: util.c 1.2 2003/12/13 10:42:18 kls Exp $
+ *   $Id: util.c 1.3 2003/12/22 14:03:03 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -186,7 +186,7 @@ void Parsable::CheckParse() {
 
 //taken and adapted from libdtv, (c) Rolf Hakenes and VDR, (c) Klaus Schmidinger
 time_t DVBTime::getTime(unsigned char date_hi, unsigned char date_lo, unsigned char time_hour, unsigned char time_minute, unsigned char time_second) {
-   unsigned short mjd = date_hi << 8 | date_lo;
+   u_int16_t mjd = date_hi << 8 | date_lo;
    struct tm t;
 
    t.tm_sec = bcdToDec(time_second);
@@ -217,7 +217,7 @@ time_t DVBTime::getDuration(unsigned char time_hour, unsigned char time_minute, 
 
 //taken and adapted from libdtv, (c) Rolf Hakenes
 // CRC32 lookup table for polynomial 0x04c11db7
-unsigned long CRC32::crc_table[256] = {
+u_int32_t CRC32::crc_table[256] = {
    0x00000000, 0x04c11db7, 0x09823b6e, 0x0d4326d9, 0x130476dc, 0x17c56b6b,
    0x1a864db2, 0x1e475005, 0x2608edb8, 0x22c9f00f, 0x2f8ad6d6, 0x2b4bcb61,
    0x350c9b64, 0x31cd86d3, 0x3c8ea00a, 0x384fbdbd, 0x4c11db70, 0x48d0c6c7,
@@ -262,7 +262,7 @@ unsigned long CRC32::crc_table[256] = {
    0x933eb0bb, 0x97ffad0c, 0xafb010b1, 0xab710d06, 0xa6322bdf, 0xa2f33668,
    0xbcb4666d, 0xb8757bda, 0xb5365d03, 0xb1f740b4};
 
-unsigned long CRC32::crc32 (const char *d, int len, unsigned long crc)
+u_int32_t CRC32::crc32 (const char *d, int len, u_int32_t crc)
 {
    register int i;
 
@@ -272,7 +272,7 @@ unsigned long CRC32::crc32 (const char *d, int len, unsigned long crc)
    return crc;
 }
 
-CRC32::CRC32(const char *d, int len, unsigned long CRCvalue) {
+CRC32::CRC32(const char *d, int len, u_int32_t CRCvalue) {
    data=d;
    length=len;
    value=CRCvalue;
