@@ -1219,9 +1219,10 @@ Video Disk Recorder Revision History
 - Now encoding '.' at the end of a directory name in case of VFAT=1, since Windows
   can't handle these (thanks to Simon Dean for reporting this one).
 
-2002-04-26: Version 1.0.2
+2002-05-01: Version 1.0.2
 
 - Now taking an active video cutting process into account when doing shutdown or
   housekeeping (thanks to Stefan Huelswitt).
 - The default duration of an instant recording has been increased to 3 hours and
   is now configurable in the "Setup/Recording" menu.
+- Added Greek language texts (thanks to Dimitrios Dimitrakos).

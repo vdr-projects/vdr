@@ -311,3 +311,6 @@ Matthias Hilbig <hilbig@upb.de>
 Simon Dean <linux-dvb@sickhack.com>
  for reporting a problem with '.' at the end of a directory name in case of VFAT=1
  (Windows can't handle these)
+
+Dimitrios Dimitrakos <mail@dimitrios.de>
+ for translating OSD texts to the Greek language
