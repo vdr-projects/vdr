@@ -526,9 +526,13 @@ Video Disk Recorder User's Manual
                          0 = off
                          1 = on
 
-  CaCaps (no default)    Defines the "Conditional Access Capabilities" of a DVB
-                         card. The value consists of the card number, followed by
-                         a list of decryption method values (defined in 'ca.conf').
+  CICAM DVBn m           Defines the "Conditional Access" capabilities of the DVB
+                         card 'n'. Each DVB card can provide up to two CICAM
+                         methods ('m' = [1, 2]). 
+                         
+                         In the 'setup.conf' file the value consists of the card
+                         number, followed by a list of decryption method values
+                         (defined in 'ca.conf').
                          For instance
                            CaCaps = 3 101 102
                          would define that card number 3 is able to decrypt

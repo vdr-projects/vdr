@@ -1090,3 +1090,5 @@ Video Disk Recorder Revision History
   contains Dolby Digital audio data (thanks to Werner Fink).
 - Implemented OSD for Volume and Mute (works only if there is no other OSD
   activity, but this should be no problem for normal use).
+- Changed the MANUAL description of the "Conditional Access" setup parameters
+  to reflect the actual "CICAM DVBn m" notation in the "Setup" menu.
