@@ -1430,3 +1430,10 @@ Video Disk Recorder Revision History
 - Fixed handling one-shot timers that were already recording and had their start
   time changed into the future (thanks to Matthias Schniedermeyer for reporting
   this one).
+
+2002-08-28: Version 1.1.9
+
+- Fixed the 'newplugin' script to make it name the target for creating the
+  distribution package 'dist', as stated in the PLUGINS.html documentation.
+  If you have already created a plugin source directory and Makefile you may
+  want to check it and replace the 'package' target with 'dist' if necessary.
