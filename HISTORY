@@ -1118,3 +1118,4 @@ Video Disk Recorder Revision History
   including reloading the driver. Note that this can only work if VDR and the
   driver are wrapped into a mechanism that actually performs this action if VDR
   exits. The 'runvdr' script can be used for this purpose.
+- Refined texts of the "Setup" menu.

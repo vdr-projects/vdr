@@ -176,8 +176,8 @@ Video Disk Recorder User's Manual
   number of new recordings (as opposed to a recording's entry, which displays
   the date and time of the recording).
 
-  If the setup parameter UseSubtitle was turned on when a recording took place,
-  VDR adds the "subtitle" (which is usually the name of the episode in case of
+  If the setup parameter "Use episode name" was turned on when a recording took place,
+  VDR adds the "Episode name" (which is usually the name of the episode in case of
   a series) to the recording's name. The "Recordings" menu then displays all
   recordings of a repeating timer in chronological order, since these are
   usually the individual episodes of a series, which you may want to view in
@@ -322,10 +322,10 @@ Video Disk Recorder User's Manual
              structure "/video/Sci-Fi/Star_Trek/Voyager". The '~' character has
              been chosen for this since the file system's directory delimiter '/'
              may be part of a regular programme name.
-             Repeating timers create recordings that contain the 'Subtitle'
+             Repeating timers create recordings that contain the 'Episode name'
              information from the EPG data in their file name. Typically (on tv
              stations that care about their viewers) this contains the episode
-             title of a series. The subtitle is appended to the timer's file name,
+             title of a series. The episode name is appended to the timer's file name,
              separated by a '~' character, so that it results in all recordings
              of this timer being collected in a common subdirectory.
              If this field is left blank, the channel name will be used to form
@@ -357,96 +357,55 @@ Video Disk Recorder User's Manual
   displayed as "no" and "yes" in the "Setup" menu, while in the setup file they
   are stored as '0' and '1', respectively):
 
-  OSDLanguage = 0        Defines the language used to display the OSD texts.
-                         0 = Englisch
-                         1 = Deutsch
-                         2 = Slovenian
-                         3 = Italian
-                         4 = Dutch
-                         5 = Portugese
-                         6 = French
-                         7 = Norwegian
+  OSD:
 
-  PrimaryDVB = 1         Defines the primary DVB interface (i.e. the one that
-                         will display the menus and will react on input through
-                         the remote control). Valid values range from '1' to the
-                         number of installed DVB cards. If more than one DVB card
-                         is installed and a recording is to be started, the
-                         program will try to use a free DVB card that is different
-                         from the primary DVB interface, so that the viewer will
-                         be disturbed as little as possible.
+  Language = English     Defines the language used to display the OSD texts.
 
-  ShowInfoOnChSwitch = 1 Turns the display of the current/next information on
+  Width = 52             The width and height of the OSD .
+  Height = 18            The valid ranges are width=40...56, height=12...21.
+
+  Message time = 1       The time (in seconds) how long an informational
+                         message shall be displayed on the OSD. The valid range
+                         is 1...60.
+
+  Channel info position = bottom
+                         The position of the channel info window in the OSD
+                         (either 'bottom' or 'top').
+
+  Info on channel switch = yes
+                         Turns the display of the current/next information on
                          or off when switching the channel. The information is
                          always displayed when pressing the "Ok" button in
                          normal viewing mode.
 
-  MenuScrollPage = 1     0 = when pressing the "Down" ("Up") key while the cursor
-                             is on the last (first) line of a list page, the
-                             list is advanced by a full page and the cursor will
-                             be at the top (bottom) of that page
-                         1 = dto., but the cursor remains at the bottom (top) of
-                             the page (this mode allows for faster scrolling
-                             through long lists).
+  Scroll pages = yes     yes = when pressing the "Down" ("Up") key while the cursor
+                               is on the last (first) line of a list page, the
+                               list is advanced by a full page and the cursor will
+                               be at the top (bottom) of that page
+                         no  = dto., but the cursor remains at the bottom (top) of
+                               the page (this mode allows for faster scrolling
+                               through long lists).
 
-  MarkInstantRecord = 1  Defines whether an "instant recording" (started by
-                         pressing the "Red" button in the "VDR" menu) will be
-                         marked with a '@' character to make it distinguishable
-                         from timer recordings in the "Recordings" menu.
-                         0 = instant recordings will not be marked
-                         1 = instant recordings will be marked.
+  Sort timers = yes      Turns sorting the timers in the "Timers" menu on/off.
+                         Timers are sorted by ascending start times, with the
+                         first one being the next timer that will start.
 
-  NameInstantRecord = TITLE-EPISODE
-                         Defines how to name an instant recording. If the keywords
-                         TITLE and/or EPISODE are present, they will be replaced
-                         with the title and episode information from the EPG data
-                         at the time of recording (if that data is available).
-                         If this parameter is empty, the channel name will be used
-                         by default.
+  Recording directories = yes
+                         Turns displaying the Recordings menu as a hierarchical
+                         directory structure on or off.
 
-  LnbSLOF    = 11700     The switching frequency (in MHz) between low and high LOF
-  LnbFrequLo = 9750      The LNB's low and high local oscillator frequencies (in MHz)
-  LnbFrequHi = 10600     (these have no meaning for DVB-C receivers)
+  EPG:
 
-  DiSEqC = 1             Generally turns DiSEqC support on or off.
-                         0 = disabled
-                         1 = enabled
-
-  SetSystemTime = 0      Defines whether the system time will be set according to
-                         the time received from the DVB data stream.
-                         0 = system time will not be set
-                         1 = system time will be set
-                         Note that this works only if VDR is running under a user
-                         id that has permisson to set the system time. You also
-                         need to set the option TrustedTransponder to a channel
-                         that you trust to transmit a reliable time base (not all
-                         channels seem to have access to a correct time base...).
-
-  TrustedTransponder = 0 The frequency of the transponder that shall be used to
-                         set the system time. The Setup menu will offer the full
-                         list of channels, even if several of them are on the
-                         same transponder. Also, when selecting a channel, saving
-                         the Setup and opening the Setup menu again, there may be
-                         a different channel listed here, since the first one
-                         in 'channels.conf' that is on the given transponder will
-                         be taken. Note that in order to set the system time from
-                         the transponder data the option SetSystemTime must also
-                         be enabled.
-
-  MarginStart = 2        Defines how many minutes before the official start time
-  MarginStop = 10        of a broadcast VDR shall start recording, and how long
-                         after the official end time it shall stop recording.
-
-  EPGScanTimeout = 5     The time (in hours) of user inactivity after which the
+  EPG scan timeout = 5   The time (in hours) of user inactivity after which the
                          DVB card in a single card system starts scanning channels
                          to keep the EPG up-to-date.
                          A value of '0' completely turns off scanning on both single
                          and multiple card systems.
 
-  EPGBugfixLevel = 2     Some tv stations transmit weirdly formatted EPG data.
+  EPG bugfix level = 2   Some tv stations transmit weirdly formatted EPG data.
                          VDR attempts to fix these bugs up to the given level:
                          0 = no EPG fixing
-                         1 = basic fixing of text location (Title, Subtitle and
+                         1 = basic fixing of text location (Title, Episode and
                              Extended Description)
                          2 = removal of excess whitespace and hyphens, mapping of
                              wrongly used characters
@@ -457,93 +416,57 @@ Video Disk Recorder User's Manual
                          be fixed accordingly. Restart VDR if you want to make sure
                          all data is fixed.
 
-  SVDRPTimeout = 300     The time (in seconds) of inactivity on an open SVDRP
-                         connection after which the connection is automatically
-                         closed. Default is 300, a value of 0 means no timeout.
+  Set system time = no   Defines whether the system time will be set according to
+                         the time received from the DVB data stream.
+                         Note that this works only if VDR is running under a user
+                         id that has permisson to set the system time. You also
+                         need to set the option "Use time from transponder" to a
+                         channel that you trust to transmit a reliable time base
+                         (not all channels seem to have access to a correct time
+                         base...).
 
-  SortTimers = 1         Turns sorting the timers in the "Timers" menu on/off.
-                         Timers are sorted by ascending start times, with the
-                         first one being the next timer that will start.
+  Use time from transponder = 0
+                         The frequency of the transponder that shall be used to
+                         set the system time. The Setup menu will offer the full
+                         list of channels, even if several of them are on the
+                         same transponder. Also, when selecting a channel, saving
+                         the Setup and opening the Setup menu again, there may be
+                         a different channel listed here, since the first one
+                         in 'channels.conf' that is on the given transponder will
+                         be taken. Note that in order to set the system time from
+                         the transponder data the option "Set system time" must also
+                         be enabled.
 
-  PrimaryLimit = 0       The minimum priority a timer must have to be allowed to
-                         use the primary DVB interface, or to force another timer
-                         with higher priority to use the primary DVB interface.
-                         This is mainly useful for recordings that should take
-                         place only when there is nothing else to do, but should
-                         never keep the user from viewing stuff on the primary
-                         interface. On systems with only one DVB card, timers
-                         with a priority below PrimaryLimit will never execute.
-  
-  DefaultPriority = 50   The default Priority and Lifetime values used when
-  DefaultLifetime = 50   creating a new timer event. A Lifetime value of 99
-                         means that this recording will never be deleted
-                         automatically.
+  DVB:
 
-  UseSubtitle = 1        Repeating timers use the EPG's 'Subtitle' information to
-                         create recording file names in a hierarchical structure
-                         (for instance to gather all episodes of a series in a
-                         common subdirectory). This parameter can be used to
-                         control this.
-                         0 = don't use the 'Subtitle'
-                         1 = use it (and create subdirectories)
+  Primary DVB interface = 1
+                         Defines the primary DVB interface (i.e. the one that
+                         will display the menus and will react on input through
+                         the remote control). Valid values range from '1' to the
+                         number of installed DVB cards. If more than one DVB card
+                         is installed and a recording is to be started, the
+                         program will try to use a free DVB card that is different
+                         from the primary DVB interface, so that the viewer will
+                         be disturbed as little as possible.
 
-  RecordingDirs = 1      Turns displaying the Recordings menu as a hierarchical
-                         directory structure on or off.
+  Video format = 4:3     The video format (or aspect ratio) of the tv set in use
+                         (4:3 or 16:9).
 
-  VideoFormat = 0        The video format (or aspect ratio) of the tv set in use.
-                         0 = 4:3
-                         1 = 16:9
+  LNB:
 
-  RecordDolbyDigital = 1 Turns recording of the Dolby Digital audio channels on
-                         or off. This may be useful if you don't have the equipment
-                         to replay Dolby Digital audio and want to save disk space.
+  SLOF               = 11700  The switching frequency (in MHz) between low and
+                              high LOF
+  Low LNB frequency  =  9750  The LNB's low and high local oscillator frequencies
+  High LNB frequency = 10600  (in MHz, these have no meaning for DVB-C receivers)
 
-  ChannelInfoPos = 0     The position of the channel info window in the OSD.
-                         0 = bottom
-                         1 = top
+  Use DiSEqC = no        Generally turns DiSEqC support on or off.
 
-  OSDwidth  = 52         The width and height of the OSD .
-  OSDheight = 18         The valid ranges are width=40...56, height=12...21.
-
-  OSDMessageTime = 1     The time (in seconds) how long an informational
-                         message shall be displayed on the OSD. The valid range
-                         is 1...60.
-
-  MaxVideoFileSize=2000  The maximum size of a single recorded video file in MB.
-                         The valid range is 100...2000. Default is 2000, but
-                         you may want to use smaller values if you are planning
-                         on archiving a recording to CD.
-
-  SplitEditedFiles = 0   During the actual editing process VDR writes the result
-                         into files that may grow up to MaxVideoFileSize. If you
-                         prefer to have each marked sequence stored in a separate
-                         file (named 001.vdr, 002.vdr, ...) you can set this
-                         option to 1.
-
-  MinEventTimeout=30     If the command line option '-s' has been set, VDR will
-  MinUserInactivity=120  automatically shutdown the computer if the next timer
-                         event is at least MinEventTimeout minutes in the future,
-                         and the user has been inactive for at least
-                         MinUserInactivity minutes. Setting MinUserInactivity
-                         to 0 disables the automatic shutdown, while still
-                         retaining the possibility to manually shutdown the
-                         computer.
-
-  MultiSpeedMode = 0     Defines the function of the "Left" and "Right" keys in
-                         replay mode. If set to 0, one speed will be used, while
-                         if set to 1 there will be three speeds for fast and slow
-                         search, respectively.
-                         0 = off
-                         1 = on
-
-  ShowReplayMode = 0     Turns displaying the current replay mode on or off.
-                         0 = off
-                         1 = on
+  CICAM:
 
   CICAM DVBn m           Defines the "Conditional Access" capabilities of the DVB
                          card 'n'. Each DVB card can provide up to two CICAM
-                         methods ('m' = [1, 2]). 
-                         
+                         methods ('m' = [1, 2]).
+
                          In the 'setup.conf' file the value consists of the card
                          number, followed by a list of decryption method values
                          (defined in 'ca.conf').
@@ -551,6 +474,94 @@ Video Disk Recorder User's Manual
                            CaCaps = 3 101 102
                          would define that card number 3 is able to decrypt
                          "Premiere World" and the "ORF".
+
+  Recording:
+
+  Margin at start = 2    Defines how many minutes before the official start time
+  Margin at stop = 10    of a broadcast VDR shall start recording, and how long
+                         after the official end time it shall stop recording.
+                         These margins are added automatically to timers that
+                         are created from the EPG data.
+
+  Primary limit = 0      The minimum priority a timer must have to be allowed to
+                         use the primary DVB interface, or to force another timer
+                         with higher priority to use the primary DVB interface.
+                         This is mainly useful for recordings that should take
+                         place only when there is nothing else to do, but should
+                         never keep the user from viewing stuff on the primary
+                         interface. On systems with only one DVB card, timers
+                         with a priority below PrimaryLimit will never execute.
+
+  Default priority = 50  The default Priority and Lifetime values used when
+  Default lifetime = 50  creating a new timer event. A Lifetime value of 99
+                         means that this recording will never be deleted
+                         automatically.
+
+  Use episode name = yes Repeating timers use the EPG's 'Episode name' information
+                         to create recording file names in a hierarchical structure
+                         (for instance to gather all episodes of a series in a
+                         common subdirectory). This parameter can be used to
+                         control this.
+                         no  = don't use the 'Episode name'
+                         yes = use it (and create subdirectories)
+
+  Mark instant recording = yes
+                         Defines whether an "instant recording" (started by
+                         pressing the "Red" button in the "VDR" menu) will be
+                         marked with a '@' character to make it distinguishable
+                         from timer recordings in the "Recordings" menu.
+
+  Name instant recording = TITLE EPISODE
+                         Defines how to name an instant recording. If the keywords
+                         TITLE and/or EPISODE are present, they will be replaced
+                         with the title and episode information from the EPG data
+                         at the time of recording (if that data is available).
+                         If this parameter is empty, the channel name will be used
+                         by default.
+
+  Record Dolby Digital = yes
+                         Turns recording of the Dolby Digital audio channels on
+                         or off. This may be useful if you don't have the equipment
+                         to replay Dolby Digital audio and want to save disk space.
+
+  Max. video file size = 2000
+                         The maximum size of a single recorded video file in MB.
+                         The valid range is 100...2000. Default is 2000, but
+                         you may want to use smaller values if you are planning
+                         on archiving a recording to CD.
+
+  Split edited files = no
+                         During the actual editing process VDR writes the result
+                         into files that may grow up to MaxVideoFileSize. If you
+                         prefer to have each marked sequence stored in a separate
+                         file (named 001.vdr, 002.vdr, ...) you can set this
+                         option to 'yes'.
+
+  Replay:
+
+  Multi speed mode = no  Defines the function of the "Left" and "Right" keys in
+                         replay mode. If set to 'no', one speed will be used, while
+                         if set to 'yes' there will be three speeds for fast and slow
+                         search, respectively.
+
+  Show replay mode = no  Turns displaying the current replay mode on or off.
+
+  Miscellaneous:
+
+  Min. event timeout = 30
+  Min. user inactivity = 120
+                         If the command line option '-s' has been set, VDR will
+                         automatically shutdown the computer if the next timer
+                         event is at least MinEventTimeout minutes in the future,
+                         and the user has been inactive for at least
+                         MinUserInactivity minutes. Setting MinUserInactivity
+                         to 0 disables the automatic shutdown, while still
+                         retaining the possibility to manually shutdown the
+                         computer.
+
+  SVDRP timeout = 300    The time (in seconds) of inactivity on an open SVDRP
+                         connection after which the connection is automatically
+                         closed. Default is 300, a value of 0 means no timeout.
 
 * Executing system commands
 

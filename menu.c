@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.170 2002/03/17 12:01:08 kls Exp $
+ * $Id: menu.c 1.171 2002/03/17 13:50:27 kls Exp $
  */
 
 #include "menu.h"
@@ -1988,15 +1988,15 @@ void cMenuSetupOSD::Set(void)
 {
   Clear();
   SetupTitle("OSD");
-  Add(new cMenuEditStraItem(tr("OSD-Language"),       &data.OSDLanguage, NumLanguages, Languages()));
-  Add(new cMenuEditIntItem( tr("OSDwidth"),           &data.OSDwidth, MINOSDWIDTH, MAXOSDWIDTH));
-  Add(new cMenuEditIntItem( tr("OSDheight"),          &data.OSDheight, MINOSDHEIGHT, MAXOSDHEIGHT));
-  Add(new cMenuEditIntItem( tr("OSDMessageTime"),     &data.OSDMessageTime, 1, 60));
-  Add(new cMenuEditBoolItem(tr("ChannelInfoPos"),     &data.ChannelInfoPos, tr("bottom"), tr("top")));
-  Add(new cMenuEditBoolItem(tr("ShowInfoOnChSwitch"), &data.ShowInfoOnChSwitch));
-  Add(new cMenuEditBoolItem(tr("MenuScrollPage"),     &data.MenuScrollPage));
-  Add(new cMenuEditBoolItem(tr("SortTimers"),         &data.SortTimers));
-  Add(new cMenuEditBoolItem(tr("RecordingDirs"),      &data.RecordingDirs));
+  Add(new cMenuEditStraItem(tr("Setup.OSD$Language"),               &data.OSDLanguage, NumLanguages, Languages()));
+  Add(new cMenuEditIntItem( tr("Setup.OSD$Width"),                  &data.OSDwidth, MINOSDWIDTH, MAXOSDWIDTH));
+  Add(new cMenuEditIntItem( tr("Setup.OSD$Height"),                 &data.OSDheight, MINOSDHEIGHT, MAXOSDHEIGHT));
+  Add(new cMenuEditIntItem( tr("Setup.OSD$Message time"),           &data.OSDMessageTime, 1, 60));
+  Add(new cMenuEditBoolItem(tr("Setup.OSD$Channel info position"),  &data.ChannelInfoPos, tr("bottom"), tr("top")));
+  Add(new cMenuEditBoolItem(tr("Setup.OSD$Info on channel switch"), &data.ShowInfoOnChSwitch));
+  Add(new cMenuEditBoolItem(tr("Setup.OSD$Scroll pages"),           &data.MenuScrollPage));
+  Add(new cMenuEditBoolItem(tr("Setup.OSD$Sort timers"),            &data.SortTimers));
+  Add(new cMenuEditBoolItem(tr("Setup.OSD$Recording directories"),  &data.RecordingDirs));
 }
 
 // --- cMenuSetupEPG ---------------------------------------------------------
@@ -2012,10 +2012,10 @@ void cMenuSetupEPG::Set(void)
 {
   Clear();
   SetupTitle("EPG");
-  Add(new cMenuEditIntItem( tr("EPGScanTimeout"),     &data.EPGScanTimeout));
-  Add(new cMenuEditIntItem( tr("EPGBugfixLevel"),     &data.EPGBugfixLevel, 0, MAXEPGBUGFIXLEVEL));
-  Add(new cMenuEditBoolItem(tr("SetSystemTime"),      &data.SetSystemTime));
-  Add(new cMenuEditTranItem(tr("TrustedTransponder"), &data.TrustedTransponder));
+  Add(new cMenuEditIntItem( tr("Setup.EPG$EPG scan timeout"),          &data.EPGScanTimeout));
+  Add(new cMenuEditIntItem( tr("Setup.EPG$EPG bugfix level"),          &data.EPGBugfixLevel, 0, MAXEPGBUGFIXLEVEL));
+  Add(new cMenuEditBoolItem(tr("Setup.EPG$Set system time"),           &data.SetSystemTime));
+  Add(new cMenuEditTranItem(tr("Setup.EPG$Use time from transponder"), &data.TrustedTransponder));
 }
 
 // --- cMenuSetupDVB ---------------------------------------------------------
@@ -2031,8 +2031,8 @@ void cMenuSetupDVB::Set(void)
 {
   Clear();
   SetupTitle("DVB");
-  Add(new cMenuEditIntItem( tr("PrimaryDVB"),         &data.PrimaryDVB, 1, cDvbApi::NumDvbApis));
-  Add(new cMenuEditBoolItem(tr("VideoFormat"),        &data.VideoFormat, "4:3", "16:9"));
+  Add(new cMenuEditIntItem( tr("Setup.DVB$Primary DVB interface"), &data.PrimaryDVB, 1, cDvbApi::NumDvbApis));
+  Add(new cMenuEditBoolItem(tr("Setup.DVB$Video format"),          &data.VideoFormat, "4:3", "16:9"));
 }
 
 // --- cMenuSetupLNB ---------------------------------------------------------
@@ -2048,10 +2048,10 @@ void cMenuSetupLNB::Set(void)
 {
   Clear();
   SetupTitle("LNB");
-  Add(new cMenuEditIntItem( tr("LnbSLOF"),            &data.LnbSLOF));
-  Add(new cMenuEditIntItem( tr("LnbFrequLo"),         &data.LnbFrequLo));
-  Add(new cMenuEditIntItem( tr("LnbFrequHi"),         &data.LnbFrequHi));
-  Add(new cMenuEditBoolItem(tr("Setup$DiSEqC"),       &data.DiSEqC));
+  Add(new cMenuEditIntItem( tr("Setup.LNB$SLOF"),               &data.LnbSLOF));
+  Add(new cMenuEditIntItem( tr("Setup.LNB$Low LNB frequency"),  &data.LnbFrequLo));
+  Add(new cMenuEditIntItem( tr("Setup.LNB$High LNB frequency"), &data.LnbFrequHi));
+  Add(new cMenuEditBoolItem(tr("Setup.LNB$Use DiSEqC"),         &data.DiSEqC));
 }
 
 // --- cMenuSetupCICAM -------------------------------------------------------
@@ -2070,7 +2070,7 @@ void cMenuSetupCICAM::Set(void)
   for (int d = 0; d < cDvbApi::NumDvbApis; d++) {
       for (int i = 0; i < 2; i++) {
           char buffer[32];
-          snprintf(buffer, sizeof(buffer), "%s%d %d", tr("CICAM DVB"), d + 1, i + 1);
+          snprintf(buffer, sizeof(buffer), "%s%d %d", tr("Setup.CICAM$CICAM DVB"), d + 1, i + 1);
           Add(new cMenuEditCaItem(buffer, &data.CaCaps[d][i]));
           }
       }
@@ -2089,17 +2089,17 @@ void cMenuSetupRecord::Set(void)
 {
   Clear();
   SetupTitle("Recording");
-  Add(new cMenuEditIntItem( tr("MarginStart"),        &data.MarginStart));
-  Add(new cMenuEditIntItem( tr("MarginStop"),         &data.MarginStop));
-  Add(new cMenuEditIntItem( tr("PrimaryLimit"),       &data.PrimaryLimit, 0, MAXPRIORITY));
-  Add(new cMenuEditIntItem( tr("DefaultPriority"),    &data.DefaultPriority, 0, MAXPRIORITY));
-  Add(new cMenuEditIntItem( tr("DefaultLifetime"),    &data.DefaultLifetime, 0, MAXLIFETIME));
-  Add(new cMenuEditBoolItem(tr("UseSubtitle"),        &data.UseSubtitle));
-  Add(new cMenuEditBoolItem(tr("MarkInstantRecord"),  &data.MarkInstantRecord));
-  Add(new cMenuEditStrItem( tr("NameInstantRecord"),   data.NameInstantRecord, sizeof(data.NameInstantRecord), FileNameChars));
-  Add(new cMenuEditBoolItem(tr("RecordDolbyDigital"), &data.RecordDolbyDigital));
-  Add(new cMenuEditIntItem( tr("MaxVideoFileSize"),   &data.MaxVideoFileSize, MINVIDEOFILESIZE, MAXVIDEOFILESIZE));
-  Add(new cMenuEditBoolItem(tr("SplitEditedFiles"),   &data.SplitEditedFiles));
+  Add(new cMenuEditIntItem( tr("Setup.Recording$Margin at start"),        &data.MarginStart));
+  Add(new cMenuEditIntItem( tr("Setup.Recording$Margin at stop"),         &data.MarginStop));
+  Add(new cMenuEditIntItem( tr("Setup.Recording$Primary limit"),          &data.PrimaryLimit, 0, MAXPRIORITY));
+  Add(new cMenuEditIntItem( tr("Setup.Recording$Default priority"),       &data.DefaultPriority, 0, MAXPRIORITY));
+  Add(new cMenuEditIntItem( tr("Setup.Recording$Default lifetime"),       &data.DefaultLifetime, 0, MAXLIFETIME));
+  Add(new cMenuEditBoolItem(tr("Setup.Recording$Use episode name"),       &data.UseSubtitle));
+  Add(new cMenuEditBoolItem(tr("Setup.Recording$Mark instant recording"), &data.MarkInstantRecord));
+  Add(new cMenuEditStrItem( tr("Setup.Recording$Name instant recording"),  data.NameInstantRecord, sizeof(data.NameInstantRecord), FileNameChars));
+  Add(new cMenuEditBoolItem(tr("Setup.Recording$Record Dolby Digital"),   &data.RecordDolbyDigital));
+  Add(new cMenuEditIntItem( tr("Setup.Recording$Max. video file size"),   &data.MaxVideoFileSize, MINVIDEOFILESIZE, MAXVIDEOFILESIZE));
+  Add(new cMenuEditBoolItem(tr("Setup.Recording$Split edited files"),     &data.SplitEditedFiles));
 }
 
 // --- cMenuSetupReplay ------------------------------------------------------
@@ -2115,8 +2115,8 @@ void cMenuSetupReplay::Set(void)
 {
   Clear();
   SetupTitle("Replay");
-  Add(new cMenuEditBoolItem(tr("MultiSpeedMode"),     &data.MultiSpeedMode));
-  Add(new cMenuEditBoolItem(tr("ShowReplayMode"),     &data.ShowReplayMode));
+  Add(new cMenuEditBoolItem(tr("Setup.Replay$Multi speed mode"), &data.MultiSpeedMode));
+  Add(new cMenuEditBoolItem(tr("Setup.Replay$Show replay mode"), &data.ShowReplayMode));
 }
 
 // --- cMenuSetupMisc --------------------------------------------------------
@@ -2132,9 +2132,9 @@ void cMenuSetupMisc::Set(void)
 {
   Clear();
   SetupTitle("Miscellaneous");
-  Add(new cMenuEditIntItem( tr("MinEventTimeout"),    &data.MinEventTimeout));
-  Add(new cMenuEditIntItem( tr("MinUserInactivity"),  &data.MinUserInactivity));
-  Add(new cMenuEditIntItem( tr("SVDRPTimeout"),       &data.SVDRPTimeout));
+  Add(new cMenuEditIntItem( tr("Setup.Miscellaneous$Min. event timeout"),   &data.MinEventTimeout));
+  Add(new cMenuEditIntItem( tr("Setup.Miscellaneous$Min. user inactivity"), &data.MinUserInactivity));
+  Add(new cMenuEditIntItem( tr("Setup.Miscellaneous$SVDRP timeout"),        &data.SVDRPTimeout));
 }
 
 // --- cMenuSetup ------------------------------------------------------------
