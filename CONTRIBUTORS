@@ -435,3 +435,6 @@ Gerhard Steiner <steiner@mail.austria.com>
  the 'epg.data' file
  for suggesting the new configuration file 'reccmds.conf' to define commands that
  shall be executed from the "Recordings" menu
+
+Jaakko Hyvätti <jaakko@hyvatti.iki.fi>
+ for translating OSD texts to the Finnish language

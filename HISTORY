@@ -1615,3 +1615,4 @@ Video Disk Recorder Revision History
 
 - Fixed some faulty default parameter initializations (thanks to Robert Schiele).
 - Added further satellites to 'sources.conf' (thanks to Reinhard Walter Buchner).
+- Updated Finnish OSD texts (thanks to Jaakko Hyvätti).
