@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.116 2005/01/16 12:05:13 kls Exp $
+ * $Id: dvbdevice.c 1.117 2005/02/06 12:30:14 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -842,6 +842,8 @@ void cDvbDevice::SetAudioChannelDevice(int AudioChannel)
 void cDvbDevice::SetVolumeDevice(int Volume)
 {
   if (HasDecoder()) {
+     if (digitalAudio)
+        Volume = 0;
      audio_mixer_t am;
      // conversion for linear volume response:
      am.volume_left = am.volume_right = 2 * Volume - Volume * Volume / 255;
@@ -854,8 +856,8 @@ void cDvbDevice::SetDigitalAudioDevice(bool On)
   if (digitalAudio != On) {
      if (digitalAudio)
         cCondWait::SleepMs(1000); // Wait until any leftover digital data has been flushed
-     SetVolumeDevice(On || IsMute() ? 0 : CurrentVolume());
      digitalAudio = On;
+     SetVolumeDevice(On || IsMute() ? 0 : CurrentVolume());
      }
 }
 

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.83 2005/02/06 11:43:20 kls Exp $
+ * $Id: device.c 1.84 2005/02/06 12:30:01 kls Exp $
  */
 
 #include "device.h"
@@ -646,6 +646,7 @@ void cDevice::ClrAvailableTracks(bool DescriptionsOnly)
      memset(availableTracks, 0, sizeof(availableTracks));
      pre_1_3_19_PrivateStream = false;
      SetAudioChannel(0); // fall back to stereo
+     currentAudioTrackMissingCount = 0;
      }
 }
 
@@ -721,7 +722,7 @@ void cDevice::EnsureAudioTrack(bool Force)
          }
      // Make sure we're set to an available audio track:
      const tTrackId *Track = GetTrack(GetCurrentAudioTrack());
-     if (!Track || !Track->id || PreferredTrack != GetCurrentAudioTrack()) {
+     if (Force || !Track || !Track->id || PreferredTrack != GetCurrentAudioTrack()) {
         dsyslog("setting audio track to %d", PreferredTrack);
         SetCurrentAudioTrack(PreferredTrack);
         }
