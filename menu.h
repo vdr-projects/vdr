@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 1.7 2000/04/29 17:54:55 kls Exp $
+ * $Id: menu.h 1.8 2000/04/30 10:58:49 kls Exp $
  */
 
 #ifndef _MENU_H
@@ -14,17 +14,20 @@
 
 class cMenuMain : public cOsdMenu {
 public:
-  cMenuMain(void);
+  cMenuMain(bool Recording);
   virtual eOSState ProcessKey(eKeys Key);
   };
   
 class cRecordControl : public cOsdBase {
 private:
   cTimer *timer;
+  bool isInstant;
 public:
   cRecordControl(cTimer *Timer = NULL);
   virtual ~cRecordControl();
   virtual eOSState ProcessKey(eKeys Key);
+  void Stop(bool KeepInstant = false);
+  bool IsInstant(void) { return isInstant; }
   };
 
 class cReplayControl : public cOsdBase {

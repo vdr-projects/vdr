@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.15 2000/04/30 10:19:52 kls Exp $
+ * $Id: vdr.c 1.16 2000/04/30 11:06:41 kls Exp $
  */
 
 #include <signal.h>
@@ -111,12 +111,18 @@ int main(int argc, char *argv[])
         if (*Interact) {
            switch ((*Interact)->ProcessKey(key)) {
              case osMenu:   DELETENULL(Menu);
-                            Menu = new cMenuMain;
+                            Menu = new cMenuMain(RecordControl && RecordControl->IsInstant());
                             break;
              case osReplay: DELETENULL(Menu);
                             DELETENULL(ReplayControl);
                             ReplayControl = new cReplayControl;
                             break;
+             case osStopRecord: if (RecordControl) {
+                                   RecordControl->Stop();
+                                   DELETENULL(Menu); // must make sure no menu uses the timer
+                                   DELETENULL(RecordControl);
+                                   }
+                                break;
              case osBack:
              case osEnd:    DELETENULL(*Interact);
                             break;
@@ -140,7 +146,7 @@ int main(int argc, char *argv[])
                               RecordControl = new cRecordControl;
                            break;
              // Menu Control:
-             case kMenu: Menu = new cMenuMain; break;
+             case kMenu: Menu = new cMenuMain(RecordControl && RecordControl->IsInstant()); break;
              // Up/Down Channel Select:
              case kUp:
              case kDown: if (!RecordControl) {

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.11 2000/04/30 10:10:19 kls Exp $
+ * $Id: menu.c 1.12 2000/04/30 11:10:49 kls Exp $
  */
 
 #include "menu.h"
@@ -991,12 +991,14 @@ eOSState cMenuRecordings::ProcessKey(eKeys Key)
 
 // --- cMenuMain -------------------------------------------------------------
 
-cMenuMain::cMenuMain(void)
+cMenuMain::cMenuMain(bool Recording)
 :cOsdMenu("Main")
 {
   Add(new cOsdItem("Channels",   osChannels));
   Add(new cOsdItem("Timer",      osTimer));
   Add(new cOsdItem("Recordings", osRecordings));
+  if (Recording)
+     Add(new cOsdItem("Stop Recording", osStopRecord));
   Display();
 }
 
@@ -1008,6 +1010,8 @@ eOSState cMenuMain::ProcessKey(eKeys Key)
     case osChannels:   return AddSubMenu(new cMenuChannels);
     case osTimer:      return AddSubMenu(new cMenuTimers);
     case osRecordings: return AddSubMenu(new cMenuRecordings);
+    case osStopRecord: if (!Interface.Confirm("Stop Recording?"))
+                          return osContinue;
     default: if (Key == kMenu)
                 state = osEnd;
     }
@@ -1019,6 +1023,7 @@ eOSState cMenuMain::ProcessKey(eKeys Key)
 cRecordControl::cRecordControl(cTimer *Timer)
 {
   timer = Timer;
+  isInstant = !timer;
   if (!timer) {
      timer = new cTimer(true);
      Timers.Add(timer);
@@ -1032,14 +1037,22 @@ cRecordControl::cRecordControl(cTimer *Timer)
 
 cRecordControl::~cRecordControl()
 {
-  DvbApi.StopRecord();
-  timer->SetRecording(false);
-  if (timer->IsSingleEvent() && !timer->Matches()) {
-     // checking timer->Matches() to make sure we don't delete the timer
-     // if the program was cancelled before the timer's stop time!
-     isyslog(LOG_INFO, "deleting timer %d", timer->Index() + 1);
-     Timers.Del(timer);
-     Timers.Save();
+  Stop(true);
+}
+
+void cRecordControl::Stop(bool KeepInstant)
+{
+  if (timer) {
+     DvbApi.StopRecord();
+     timer->SetRecording(false);
+     if ((isInstant && !KeepInstant) || (timer->IsSingleEvent() && !timer->Matches())) {
+        // checking timer->Matches() to make sure we don't delete the timer
+        // if the program was cancelled before the timer's stop time!
+        isyslog(LOG_INFO, "deleting timer %d", timer->Index() + 1);
+        Timers.Del(timer);
+        Timers.Save();
+        }
+     timer = NULL;
      }
 }
 
