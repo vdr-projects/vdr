@@ -120,6 +120,8 @@ Stefan Huelswitt <huels@iname.com>
  for implementing backtracing for fast forward/rewind
  for implementing the replay mode display
  for fixing a crash when replaying with DEBUG_OSD=1
+ for fixing a crash when selecting the "Jump" function directly after setting
+ an editing mark
 
 Ulrich Röder <roeder@efr-net.de>
  for pointing out that there are channels that have a symbol rate higher than
@@ -293,3 +295,7 @@ Andreas Roedl <flood@flood-net.de>
 
 Jean Martin <mac_j_fr@hotmail.com>
  for pointing out a problem with OSD color palette handling on "big endian" systems
+
+Steffen Koch <Steffen.Koch@koch-enterprises.de>
+ for reporting a crash when selecting the "Jump" function directly after setting
+ an editing mark

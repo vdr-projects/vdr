@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.186 2002/04/20 09:06:51 kls Exp $
+ * $Id: menu.c 1.187 2002/04/20 09:17:08 kls Exp $
  */
 
 #include "menu.h"
@@ -3282,6 +3282,7 @@ void cReplayControl::TimeSearch(void)
      else
         return;
      }
+  timeoutShow = 0;
   TimeSearchDisplay();
   timeSearchActive = true;
 }
