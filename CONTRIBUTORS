@@ -791,6 +791,7 @@ Benjamin Harling <benjamin.harling@web.de>
 
 Christian Jacobsen <christian.jacobsen@stageholding.de>
  for making the LIRC interface skip keys that come in too fast
+ for reporting a problem in handling the '-E' options in version 1.3.18
 
 Andreas Mair <Andreas.Mair@linogate.com>
  for reporting a short display of the main menu if a plugin displays its own OSD and

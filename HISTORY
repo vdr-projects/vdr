@@ -3303,3 +3303,5 @@ Video Disk Recorder Revision History
   this one).
 - The "Green" button in the "Main" menu is now always "Audio", since the audio
   channel might be changed even if there is only one actual audio PID.
+- Fixed handling the '-E' option which was broken in version 1.3.18 (thanks to
+  Christian Jacobsen for reporting this one).

@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.199 2005/01/09 16:35:36 kls Exp $
+ * $Id: vdr.c 1.200 2005/01/14 16:50:39 kls Exp $
  */
 
 #include <getopt.h>
@@ -412,7 +412,10 @@ int main(int argc, char *argv[])
         }
      else if (*EpgDataFileName != '/' && *EpgDataFileName != '.')
         EpgDirectory = VideoDirectory;
-     cSchedules::SetEpgDataFileName(AddDirectory(EpgDirectory, EpgDataFileName));
+     if (EpgDirectory)
+        cSchedules::SetEpgDataFileName(AddDirectory(EpgDirectory, EpgDataFileName));
+     else
+        cSchedules::SetEpgDataFileName(EpgDataFileName);
      cSchedules::Read();
      }
 
