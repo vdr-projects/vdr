@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: sdt.c 1.7 2004/01/17 17:27:49 kls Exp $
+ * $Id: sdt.c 1.8 2004/03/07 10:46:08 kls Exp $
  */
 
 #include "sdt.h"
@@ -57,34 +57,17 @@ void cSdtFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                    //XXX TODO case 0x04: // NVOD reference service
                    //XXX TODO case 0x05: // NVOD time-shifted service
                         {
-                        char buffer[1024];
-                        char *p = sd->serviceName.getText(buffer);
                         char NameBuf[1024];
                         char ShortNameBuf[1024];
-                        char *pn = NameBuf;
-                        char *ps = ShortNameBuf;
-                        int IsShortName = 0;
-                        while (*p) {
-                              if ((uchar)*p == 0x86)
-                                 IsShortName++;
-                              else if ((uchar)*p == 0x87)
-                                 IsShortName--;
-                              else {
-                                 *pn++ = *p;
-                                 if (IsShortName)
-                                    *ps++ = *p;
-                                 }
-                              p++;
-                              }
-                        *pn = *ps = 0;
-                        pn = NameBuf;
+                        sd->serviceName.getText(NameBuf, ShortNameBuf);
+                        char *pn = compactspace(NameBuf);
+                        char *ps = compactspace(ShortNameBuf);
                         if (*NameBuf && *ShortNameBuf && strcmp(NameBuf, ShortNameBuf) != 0) {
+                           ps = ShortNameBuf + strlen(ShortNameBuf);
                            *ps++ = ',';
                            strcpy(ps, NameBuf);
                            pn = ShortNameBuf;
                            }
-                        pn = compactspace(pn);
-                        ps = compactspace(ps);
                         if (channel) {
                            channel->SetId(sdt.getOriginalNetworkId(), sdt.getTransportStreamId(), SiSdtService.getServiceId());
                            if (Setup.UpdateChannels >= 1)

@@ -2725,3 +2725,5 @@ Video Disk Recorder Revision History
 - Fixed handling timers in VPS margin if the EPG scan is turned on (the EPG scan
   switched the device away from the channel, so it wouldn't see the change of
   the running status).
+- Fixed handling "itemized" texts in EPG data (thanks to Stéphane Esté-Gracias
+  for pointing out this problem, and Marcel Wiesweg for improving 'libsi').

@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: descriptor.h 1.6 2004/02/22 10:16:47 kls Exp $
+ *   $Id: descriptor.h 1.7 2004/03/07 11:13:54 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -50,14 +50,29 @@ private:
 
 class ExtendedEventDescriptors : public DescriptorGroup {
 public:
-     //don't use
-   int getTextLength();
-     //really fast
    int getMaximumTextLength();
+   //Returns a concatenated version of first the non-itemized and then the itemized text
    //same semantics as with SI::String
-   char *getText();
+   char *getText(const char *separation1="\t", const char *separation2="\n");
    //buffer must at least be getTextLength(), getMaximumTextLength() is a good choice
-   char *getText(char *buffer);
+   char *getText(char *buffer, const char *separation1="\t", const char *separation2="\n");
+
+   //these only return the non-itemized text fields in concatenated form
+   int getMaximumTextPlainLength();
+   char *getTextPlain();
+   char *getTextPlain(char *buffer);
+
+   //these only return the itemized text fields in concatenated form.
+   //Between the description and the text the separation1 character is used,
+   //separation2 used between two pairs. Example:
+   //Director\tSteven Spielberg\nActor\tMichael Mendl\n
+   int getMaximumTextItemizedLength();
+   char *getTextItemized(const char *separation1="\t", const char *separation2="\n");
+   char *getTextItemized(char *buffer, const char *separation1="\t", const char *separation2="\n");
+   //returns the itemized text pair by pair. Maximum length for buffers is 256.
+   //Return value is false if and only if the end of the list is reached.
+   //The argument valid indicates whether the buffers contain valid content.
+   bool getTextItemized(Loop::Iterator &it, bool &valid, char *itemDescription, char *itemText);
 };
 
 class TimeShiftedEventDescriptor : public Descriptor {

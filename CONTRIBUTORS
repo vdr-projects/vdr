@@ -944,6 +944,7 @@ Thomas Bergwinkl <Thomas.Bergwinkl@t-online.de>
 Stéphane Esté-Gracias <sestegra@free.fr>
  for fixing a typo in libsi/si.h
  for fixing some descriptor handling in 'libsi'
+ for pointing out a problem with "itemized" texts in EPG data
 
 Marc Hoppe <MarcHoppe@gmx.de>
  for fixing handling the current menu item

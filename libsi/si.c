@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: si.c 1.8 2004/02/22 10:14:12 kls Exp $
+ *   $Id: si.c 1.9 2004/03/07 10:50:09 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -103,7 +103,7 @@ DescriptorTag Descriptor::getDescriptorTag(const unsigned char *d) {
 
 Descriptor *DescriptorLoop::getNext(Iterator &it) {
    if (it.i<getLength()) {
-      return createDescriptor(it.i);
+      return createDescriptor(it.i, true);
    }
    return 0;
 }
@@ -115,19 +115,18 @@ Descriptor *DescriptorLoop::getNext(Iterator &it, DescriptorTag tag, bool return
       const unsigned char *end=p+getLength();
       while (p < end) {
          if (Descriptor::getDescriptorTag(p) == tag) {
-            d=createDescriptor(it.i);
-            break;
+            d=createDescriptor(it.i, returnUnimplemetedDescriptor);
+            if (d)
+               break;
          }
          it.i+=Descriptor::getLength(p);
          p+=Descriptor::getLength(p);
       }
    }
-   if (d && d->getDescriptorTag()==UnimplementedDescriptorTag)
-      return returnUnimplemetedDescriptor ? d : 0;
    return d;
 }
 
-Descriptor *DescriptorLoop::getNext(Iterator &it, DescriptorTag *tags, int arrayLength, bool returnUnimplemetedDescriptor) {
+Descriptor *DescriptorLoop::getNext(Iterator &it, DescriptorTag *tags, int arrayLength, bool returnUnimplementedDescriptor) {
    Descriptor *d=0;
    if (it.i<getLength()) {
       const unsigned char *p=data.getData(it.i);
@@ -135,25 +134,36 @@ Descriptor *DescriptorLoop::getNext(Iterator &it, DescriptorTag *tags, int array
       while (p < end) {
          for (int u=0; u<arrayLength;u++)
             if (Descriptor::getDescriptorTag(p) == tags[u]) {
-               d=createDescriptor(it.i);
+               d=createDescriptor(it.i, returnUnimplementedDescriptor);
                break;
             }
          if (d)
-            break;
+            break; //length is added to it.i by createDescriptor, break here
          it.i+=Descriptor::getLength(p);
          p+=Descriptor::getLength(p);
       }
    }
-   if (d && d->getDescriptorTag()==UnimplementedDescriptorTag)
-      return returnUnimplemetedDescriptor ? d : 0;
    return d;
 }
 
-Descriptor *DescriptorLoop::createDescriptor(int &i) {
-   Descriptor *d=Descriptor::getDescriptor(data+i, domain);
+Descriptor *DescriptorLoop::createDescriptor(int &i, bool returnUnimplemetedDescriptor) {
+   Descriptor *d=Descriptor::getDescriptor(data+i, domain, returnUnimplemetedDescriptor);
+   if (!d)
+      return 0;
    i+=d->getLength();
    d->CheckParse();
    return d;
+}
+
+int DescriptorLoop::getNumberOfDescriptors() {
+   const unsigned char *p=data.getData();
+   const unsigned char *end=p+getLength();
+   int count=0;
+   while (p < end) {
+      count++;
+      p+=Descriptor::getLength(p);
+   }
+   return count;
 }
 
 DescriptorGroup::DescriptorGroup(bool del) {
@@ -211,6 +221,16 @@ char *String::getText(char *buffer) {
    return buffer;
 }
 
+//taken from VDR, Copyright Klaus Schmidinger <kls@cadsoft.de>
+char *String::getText(char *buffer, char *shortVersion) {
+   if (getLength() < 0 || getLength() >4095) {
+      strncpy(buffer, "text error", getLength()+1);
+      return buffer;
+   }
+   decodeText(buffer, shortVersion);
+   return buffer;
+}
+
 //taken from libdtv, Copyright Rolf Hakenes <hakenes@hippomi.de>
 void String::decodeText(char *buffer) {
    const unsigned char *from=data.getData(0);
@@ -228,18 +248,47 @@ void String::decodeText(char *buffer) {
       if (    ((' ' <= *from) && (*from <= '~'))
            || (*from == '\n')
            || (0xA0 <= *from)
+           || (*from == 0x86 || *from == 0x87)
          )
          *to++ = *from;
       else if (*from == 0x8A)
          *to++ = '\n';
-      else if (*from == 0x86 || *from == 0x87) //&& !(GDT_NAME_DESCRIPTOR & type))
-         *to++ = *from;
       from++;
    }
    *to = '\0';
 }
 
-Descriptor *Descriptor::getDescriptor(CharArray da, DescriptorTagDomain domain) {
+void String::decodeText(char *buffer, char *shortVersion) {
+   const unsigned char *from=data.getData(0);
+   char *to=buffer;
+   char *toShort=shortVersion;
+   int IsShortName=0;
+
+   for (int i = 0; i < getLength(); i++) {
+      if (*from == 0)
+         break;
+      if (    ((' ' <= *from) && (*from <= '~'))
+           || (*from == '\n')
+           || (0xA0 <= *from)
+         )
+      {
+         *to++ = *from;
+         if (IsShortName)
+            *toShort++ = *from;
+      }
+      else if (*from == 0x8A)
+         *to++ = '\n';
+      else if (*from == 0x86)
+         IsShortName++;
+      else if (*from == 0x87)
+         IsShortName--;
+      from++;
+   }
+   *to = '\0';
+   *toShort = '\0';
+}
+
+Descriptor *Descriptor::getDescriptor(CharArray da, DescriptorTagDomain domain, bool returnUnimplemetedDescriptor) {
    Descriptor *d=0;
    switch (domain) {
    case SI:
@@ -383,6 +432,8 @@ Descriptor *Descriptor::getDescriptor(CharArray da, DescriptorTagDomain domain) 
          case AdaptationFieldDataDescriptorTag:
          case TransportStreamDescriptorTag:
          default:
+            if (!returnUnimplemetedDescriptor)
+               return 0;
             d=new UnimplementedDescriptor();
             break;
       }
@@ -417,6 +468,8 @@ Descriptor *Descriptor::getDescriptor(CharArray da, DescriptorTagDomain domain) 
          case MHP_DelegatedApplicationDescriptorTag:
          case MHP_ApplicationStorageDescriptorTag:
          default:
+            if (!returnUnimplemetedDescriptor)
+               return 0;
             d=new UnimplementedDescriptor();
             break;
       }

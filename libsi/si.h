@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: si.h 1.8 2004/02/23 17:02:33 kls Exp $
+ *   $Id: si.h 1.9 2004/03/07 10:09:49 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -252,8 +252,11 @@ protected:
    //returns a subclass of descriptor according to the data given.
    //The object is allocated with new and must be delete'd.
    //setData() will have been called, CheckParse() not.
-   //Never returns null - maybe the UnimplementedDescriptor.
-   static Descriptor *getDescriptor(CharArray d, DescriptorTagDomain domain);
+   //if returnUnimplemetedDescriptor==true:
+   //   Never returns null - maybe the UnimplementedDescriptor.
+   //if returnUnimplemetedDescriptor==false:
+   //   Never returns the UnimplementedDescriptor - maybe null
+   static Descriptor *getDescriptor(CharArray d, DescriptorTagDomain domain, bool returnUnimplemetedDescriptor);
 };
 
 class Loop : public VariableLengthPart {
@@ -266,6 +269,7 @@ public:
       template <class T> friend class StructureLoop;
       friend class DescriptorLoop;
       template <class T> friend class TypeLoop;
+      friend class ExtendedEventDescriptors;
       int i;
    };
 protected:
@@ -311,14 +315,46 @@ public:
    //returns null if no more descriptors available
    Descriptor *getNext(Iterator &it);
    //return the next descriptor with given tag, or 0 if not available.
-   //if the descriptor found is not implemented,
-   // an UnimplementedDescriptor will be returned if returnUnimplemetedDescriptor==true,
-   // 0 will be returned if returnUnimplemetedDescriptor==false
+   //if returnUnimplemetedDescriptor==true:
+   //   an UnimplementedDescriptor may be returned if the next matching descriptor is unimplemented,
+   //   0 will be returned if and only if no matching descriptor is found.
+   //if returnUnimplemetedDescriptor==false:
+   //   if 0 is returned, either no descriptor with the given tag was found,
+   //   or descriptors were found, but the descriptor type is not implemented
+   //In either case, a return value of 0 indicates that no further calls to this method
+   //with the iterator shall be made.
    Descriptor *getNext(Iterator &it, DescriptorTag tag, bool returnUnimplemetedDescriptor=false);
    //return the next descriptor with one of the given tags, or 0 if not available.
+   //if returnUnimplemetedDescriptor==true:
+   //   returns 0 if and only if no descriptor with one of the given tags was found.
+   //   The UnimplementedDescriptor may be returned.
+   //if returnUnimplemetedDescriptor==false:
+   //   if 0 is returned, either no descriptor with one of the given tags was found,
+   //   or descriptors were found, but none of them are implemented.
+   //   The UnimplementedDescriptor will never be returned.
+   //In either case, a return value of 0 indicates that no further calls to this method
+   //with the iterator shall be made.
    Descriptor *getNext(Iterator &it, DescriptorTag *tags, int arrayLength, bool returnUnimplemetedDescriptor=false);
+   //returns the number of descriptors in this loop
+   int getNumberOfDescriptors();
+   //writes the tags of the descriptors in this loop in the array,
+   // which must at least have the size getNumberOfDescriptors().
+   //The number of descriptors, i.e. getNumberOfDescriptors(), is returned.
+   // You can specify the array type (Descriptor tags are 8 Bit,
+   // you might e.g. choose a char, short, int or DescriptorTag array)
+   template <typename T> int getDescriptorTags(T *tags)
+      {
+         const unsigned char *p=data.getData();
+         const unsigned char *end=p+getLength();
+         int count=0;
+         while (p < end) {
+            tags[count++]=(T)Descriptor::getDescriptorTag(p);
+            p+=Descriptor::getLength(p);
+         }
+         return count;
+      }
 protected:
-   Descriptor *createDescriptor(int &i);
+   Descriptor *createDescriptor(int &i, bool returnUnimplemetedDescriptor);
    DescriptorTagDomain domain;
 };
 
@@ -385,7 +421,7 @@ class String : public VariableLengthPart {
 public:
    //A note to the length: getLength() returns the length of the raw data.
    //The text may be shorter. Its length can be obtained with one of the
-   //above functions and strlen.
+   //getText functions and strlen.
 
    //returns text. Data is allocated with new and must be delete'd by the user.
    char *getText();
@@ -394,10 +430,19 @@ public:
    //In most descriptors the string length is an 8-bit field,
    //so the maximum there is 256.
    //returns the given buffer for convenience.
-   char * getText(char *buffer);
+   //The emphasis marks 0x86 and 0x87 are still available.
+   char *getText(char *buffer);
+   //The same semantics as for getText(char*) apply.
+   //The short version of the text according to ETSI TR 101 211 (chapter 4.6)
+   //will be written into the shortVersion buffer (which should, therefore, have the same
+   //length as buffer). If no shortVersion is available, shortVersion will contain
+   //an empty string.
+   //The emphasis marks 0x86 and 0x87 are still available in buffer, but not in shortVersion.
+   char *getText(char *buffer, char *shortVersion);
 protected:
    virtual void Parse() {}
    void decodeText(char *buffer);
+   void decodeText(char *buffer, char *shortVersion);
 };
 
 } //end of namespace
