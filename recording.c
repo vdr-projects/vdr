@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.40 2001/10/07 15:13:34 kls Exp $
+ * $Id: recording.c 1.41 2001/10/19 13:12:17 kls Exp $
  */
 
 #include "recording.h"
@@ -252,7 +252,8 @@ cRecording::cRecording(const char *FileName)
   summary = NULL;
   if (p) {
      time_t now = time(NULL);
-     struct tm t = *localtime(&now); // this initializes the time zone in 't'
+     struct tm tm_r;
+     struct tm t = *localtime_r(&now, &tm_r); // this initializes the time zone in 't'
      t.tm_isdst = -1; // makes sure mktime() will determine the correct dst setting
      if (7 == sscanf(p + 1, DATAFORMAT, &t.tm_year, &t.tm_mon, &t.tm_mday, &t.tm_hour, &t.tm_min, &priority, &lifetime)) {
         t.tm_year -= 1900;
@@ -350,7 +351,8 @@ bool cRecording::operator< (const cListObject &ListObject)
 const char *cRecording::FileName(void)
 {
   if (!fileName) {
-     struct tm *t = localtime(&start);
+     struct tm tm_r;
+     struct tm *t = localtime_r(&start, &tm_r);
      ExchangeChars(name, true);
      asprintf(&fileName, NAMEFORMAT, VideoDirectory, name, t->tm_year + 1900, t->tm_mon + 1, t->tm_mday, t->tm_hour, t->tm_min, priority, lifetime);
      ExchangeChars(name, false);
@@ -368,7 +370,8 @@ const char *cRecording::Title(char Delimiter, bool NewIndicator)
      }
   delete titleBuffer;
   titleBuffer = NULL;
-  struct tm *t = localtime(&start);
+  struct tm tm_r;
+  struct tm *t = localtime_r(&start, &tm_r);
   asprintf(&titleBuffer, "%02d.%02d%c%02d:%02d%c%c%s",
                          t->tm_mday,
                          t->tm_mon + 1,

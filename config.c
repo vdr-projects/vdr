@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.74 2001/09/30 11:28:47 kls Exp $
+ * $Id: config.c 1.75 2001/10/19 13:14:09 kls Exp $
  */
 
 #include "config.h"
@@ -324,7 +324,8 @@ cTimer::cTimer(bool Instant)
   cChannel *ch = Channels.GetByNumber(cDvbApi::CurrentChannel());
   channel = ch ? ch->number : 0;
   time_t t = time(NULL);
-  struct tm *now = localtime(&t);
+  struct tm tm_r;
+  struct tm *now = localtime_r(&t, &tm_r);
   day = now->tm_mday;
   start = now->tm_hour * 100 + now->tm_min;
   stop = start + 200; // "instant recording" records 2 hours by default
@@ -349,10 +350,11 @@ cTimer::cTimer(const cEventInfo *EventInfo)
   time_t tstart = EventInfo->GetTime();
   time_t tstop = tstart + EventInfo->GetDuration() + Setup.MarginStop * 60;
   tstart -= Setup.MarginStart * 60;
-  struct tm *time = localtime(&tstart);
+  struct tm tm_r;
+  struct tm *time = localtime_r(&tstart, &tm_r);
   day = time->tm_mday;
   start = time->tm_hour * 100 + time->tm_min;
-  time = localtime(&tstop);
+  time = localtime_r(&tstop, &tm_r);
   stop = time->tm_hour * 100 + time->tm_min;
   if (stop >= 2400)
      stop -= 2400;
@@ -497,12 +499,14 @@ bool cTimer::IsSingleEvent(void)
 
 int cTimer::GetMDay(time_t t)
 {
-  return localtime(&t)->tm_mday;
+  struct tm tm_r;
+  return localtime_r(&t, &tm_r)->tm_mday;
 }
 
 int cTimer::GetWDay(time_t t)
 {
-  int weekday = localtime(&t)->tm_wday;
+  struct tm tm_r;
+  int weekday = localtime_r(&t, &tm_r)->tm_wday;
   return weekday == 0 ? 6 : weekday - 1; // we start with monday==0!
 }
 
@@ -513,7 +517,8 @@ bool cTimer::DayMatches(time_t t)
 
 time_t cTimer::IncDay(time_t t, int Days)
 {
-  tm tm = *localtime(&t);
+  struct tm tm_r;
+  tm tm = *localtime_r(&t, &tm_r);
   tm.tm_mday += Days; // now tm_mday may be out of its valid range
   int h = tm.tm_hour; // save original hour to compensate for DST change
   t = mktime(&tm);    // normalize all values
@@ -523,7 +528,8 @@ time_t cTimer::IncDay(time_t t, int Days)
 
 time_t cTimer::SetTime(time_t t, int SecondsFromMidnight)
 {
-  tm tm = *localtime(&t);
+  struct tm tm_r;
+  tm tm = *localtime_r(&t, &tm_r);
   tm.tm_hour = SecondsFromMidnight / 3600;
   tm.tm_min = (SecondsFromMidnight % 3600) / 60;
   tm.tm_sec =  SecondsFromMidnight % 60;

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.49 2001/10/07 15:13:45 kls Exp $
+ * $Id: tools.c 1.50 2001/10/19 13:12:45 kls Exp $
  */
 
 #include "tools.h"
@@ -416,7 +416,8 @@ const char *DayDateTime(time_t t)
   static char buffer[32];
   if (t == 0)
      time(&t);
-  tm *tm = localtime(&t);
+  struct tm tm_r;
+  tm *tm = localtime_r(&t, &tm_r);
   int weekday = tm->tm_wday == 0 ? 6 : tm->tm_wday - 1; // we start with monday==0!
   const char *day = tr("MonTueWedThuFriSatSun");
   day += weekday * 3;

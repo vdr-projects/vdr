@@ -787,7 +787,7 @@ Video Disk Recorder Revision History
 - Made the volume, mute and power keys work when a menu is active, too (thanks
   to Matthias Weingart).
 
-2001-10-07: Version 0.97
+2001-10-19: Version 0.97
 
 - Implemented a lock file to prevent more than one instance of VDR from removing
   files from the video directory at the same time.
@@ -817,3 +817,5 @@ Video Disk Recorder Revision History
   (where these are assumed to be single line texts) and would have to be
   specially handled in the 'epg.data' file and the LSTE command in SVDRP.
 - Mapping ` ("backtick") characters in EPG texts to ' (single quote).
+- Fixed timers starting and ending at unexpected times. 'localtime()' was not
+  thread safe, now using localtime_r().
