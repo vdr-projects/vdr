@@ -91,8 +91,11 @@ Henning Holtschneider <hh@holtschneider.com>
 Paulo Manuel Martins Lopes <pmml@netvita.pt>
  for translating the OSD texts to the Portugese language
 
-Markus Lang <markus.lang@nissan-db.de> and Ulrich Röder <dynamite@efr-net.de>
+Markus Lang <pretender@gaze.de> and Ulrich Röder <dynamite@efr-net.de>
  for making DiSEqC support configurable
+
+Markus Lang <pretender@gaze.de>
+ for some initial code for grouping the Setup menu into several sub-menus
 
 Jean-Claude Repetto <jc@repetto.org>
  for translating the OSD texts to the French language
@@ -146,6 +149,9 @@ Artur Skawina <skawina@geocities.com>
 Werner Fink <werner@suse.de>
  for making I/O more robust by handling EINTR
  for fixing closing all unused file descriptors when opening a pipe
+ for helping to debug leftover 'zombie' processes when closing a pipe
+ for making the Dolby Digital thread start only if the recording actually
+ contains Dolby Digital data
 
 Rolf Hakenes <hakenes@hippomi.de>
  for providing 'libdtv' and adapting the EIT mechanisms to it
@@ -217,3 +223,13 @@ Oleg Assovski <assen@bitcom.msk.ru>
 
 Adrian Stabiszewski <as@nitegate.de>
  for fixing the SVDRP GRAB command in case the video device can't be opened
+
+Bernd Schweikert <bernd.schweikert@dit-gmbh.de>
+ for adding 'Ca' code 201 for 'Cryptoworks, GOD-DIGITAL' to 'ca.conf'
+
+Mirko Günther <mi.guenther@ib-helms.de>
+ for suggesting the -m command line option
+ for suggesting the SVDRP command VOLU
+
+Achim Lange <Achim_Lange@t-online.de>
+ for replacing 'killproc' with 'killall' in 'runvdr' to make it work on Debian

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.h 1.26 2002/02/24 12:55:16 kls Exp $
+ * $Id: osd.h 1.27 2002/03/10 16:18:11 kls Exp $
  */
 
 #ifndef __OSD_H
@@ -33,6 +33,16 @@ enum eOSState { osUnknown,
                 osSwitchDvb,
                 osBack,
                 osEnd,
+                os_User, // the following values can be used locally
+                osUser1,
+                osUser2,
+                osUser3,
+                osUser4,
+                osUser5,
+                osUser6,
+                osUser7,
+                osUser8,
+                osUser9,
               };
 
 class cOsdItem : public cListObject {
@@ -77,9 +87,12 @@ private:
   cOsdMenu *subMenu;
   const char *helpRed, *helpGreen, *helpYellow, *helpBlue;
   const char *status;
+  int digit;
   bool hasHotkeys;
 protected:
   bool visible;
+  const char *hk(const char *s);
+  void SetHasHotkeys(void);
   virtual void Clear(void);
   bool SpecialItem(int idx);
   void SetCurrent(cOsdItem *Item);
@@ -100,7 +113,6 @@ protected:
 public:
   cOsdMenu(const char *Title, int c0 = 0, int c1 = 0, int c2 = 0, int c3 = 0, int c4 = 0);
   virtual ~cOsdMenu();
-  void SetHasHotkeys(void) { hasHotkeys = true; }
   int Current(void) { return current; }
   void Add(cOsdItem *Item, bool Current = false);
   void Display(void);

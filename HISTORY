@@ -41,14 +41,14 @@ Video Disk Recorder Revision History
   of the channel, with a prepended '@' character.
 - Timers that are not given an explicit Name now use the channel name with
   a prepended '@' character.
-- If an instant recording is currently active, the Main menu now contains
+- If an instant recording is currently active, the "Main" menu now contains
   an option to stop that recording.
 - Timers are now only processed when the Menu is not active. So after editing
   a timer the effect will take place only after the menu has been closed.
   In order to avoid missing a timer event by inadvertently leaving the menu
   open, the menu will be closed automatically after about two minutes of
   inactivity.
-- If a recording is currently being replayed, the Main menu now contains an
+- If a recording is currently being replayed, the "Main" menu now contains an
   option to stop replaying.
 - Displaying the recording DVB interface status in the decimal points of the
   RCU display.
@@ -424,7 +424,7 @@ Video Disk Recorder Revision History
 - Fixed a memory leak in the EIT processor that happened when the system time
   was set.
 - Removed some redundant code from the cListBase destructor.
-- Fixed internationalization of some Main menu texts.
+- Fixed internationalization of some "Main" menu texts.
 - Updated 'channels.conf' after the recent changes of Premiere World (thanks
   to Axel Gruber).
 - Redesigned the ring buffer to make it work with two separate threads for
@@ -480,7 +480,7 @@ Video Disk Recorder Revision History
   items the amount of visible information remained the same as before, though.
   If your DVB card has even less memory (which would result in only the
   channel switching display and the replay progress display being visible, but
-  no Main menu), try reducing the constant 'MenuLines' in dvbapi.h (currently
+  no "Main" menu), try reducing the constant 'MenuLines' in dvbapi.h (currently
   '13') even further.
 - There are two new setup parameters to define the "Default Priority" and
   "Default Lifetime" when creating a new timer event.
@@ -1066,3 +1066,56 @@ Video Disk Recorder Revision History
   modes (besides the default "Free To Air" mode, which is always assumed to be
   available on any DVB card).
 - Updated French language texts (thanks to Jean-Claude Repetto).
+
+2002-03-17: Version 1.0.0pre4
+
+- Added 'Ca' code 201 for 'Cryptoworks, GOD-DIGITAL' to 'ca.conf' (thanks to
+  Bernd Schweikert).
+- Fixed avoiding the primary DVB interface in case Setup.PrimaryLimit is 0.
+- Fixed handling CICAM settings if the first one of a DVB card was FTA.
+- Fixed reacting on changes in CICAM settings (needed to restart VDR before).
+- The "Blue" button in the "Main" menu now works as "Stop" button if a recording
+  is currently being replayed.
+- New command line option '-m' to mute audio of the primary DVB device at
+  startup (suggested by Mirko Günther).
+- The new SVDRP command VOLU can be used to control the audio volume (suggested
+  by Mirko Günther).
+- Fixed resetting 'mute' state when setting the volume to a non-zero value.
+- Added log messages when deleting recordings in case the disk runs full while
+  recording.
+- Fixed closing a pipe (used for replaying Dolby Digital audio), which
+  sometimes left 'zombie' processes behind (thanks to Werner Fink for helping
+  to debug this one).
+- Now starting the Dolby Digital output thread only if the recording actually
+  contains Dolby Digital audio data (thanks to Werner Fink).
+- Implemented OSD for Volume and Mute (works only if there is no other OSD
+  activity, but this should be no problem for normal use).
+- Changed the MANUAL description of the "Conditional Access" setup parameters
+  to reflect the actual "CICAM DVBn m" notation in the "Setup" menu.
+- The new Setup parameter "Use time from transponder" can be used to define which
+  transponder shall be used to set the system time (see MANUAL for details).
+  If you have been using the SetSystemTime option previously, you now MUST
+  select a channel that you trust to have a reliable time base.
+- Grouped the Setup parameters into several sub-menus, so that each group of
+  parameters fits on a single screen - unless the height of the OSD has been
+  set to a small value (based on code from Markus Lang).
+- Changed the title of the "Main" menu to "VDR".
+- Fixed displaying a system message while the replay mode is being shown.
+- Physically removing a deleted recording if one with the same name shall be
+  deleted again.
+- The "Left" and "Right" keys are now used to page up and down in text displays
+  (like the EPG descriptions or the results of commands executed from the
+  "Commands" menu).
+- Fixed high CPU usage in transfer mode.
+- Replaced 'killproc' with 'killall' in 'runvdr', since apparently 'killproc'
+  is not available by default on some Linux distributions, whereas 'killall' is.
+  Please check if your system provides 'killall' - if it doesn't, please change
+  this back in 'runvdr' and report this (thanks to Achim Lange).
+- The "Commands" menu now automatically assigns number keys as hotkeys to the
+  commands. If you have preceeded your commands with digits you may want to
+  remove these from your 'commands.conf' file.
+- The new Setup item "Restart" can be used to force a complete restart of VDR,
+  including reloading the driver. Note that this can only work if VDR and the
+  driver are wrapped into a mechanism that actually performs this action if VDR
+  exits. The 'runvdr' script can be used for this purpose.
+- Refined texts of the "Setup" menu.

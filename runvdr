@@ -18,14 +18,14 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: runvdr 1.8 2001/07/27 07:35:19 kls Exp $
+# $Id: runvdr 1.9 2002/03/16 16:22:12 kls Exp $
 
 DVBDIR="../DVB/driver"
 VDRPRG="./vdr"
 VDRCMD="$VDRPRG -w 60 $*"
 
 LSMOD="`/sbin/lsmod | grep -w '^dvb' | wc -l`"
-KILLPROC="/sbin/killproc -TERM"
+KILL="/usr/bin/killall -q -TERM"
 
 # Load driver if it hasn't been loaded already:
 if [ $LSMOD -eq 0 ] ; then
@@ -37,7 +37,7 @@ while (true) do
       if test $? -eq 0; then exit; fi
       date
       echo "restarting VDR"
-      $KILLPROC $VDRPRG
+      $KILL $VDRPRG
       sleep 10
       (cd $DVBDIR; make rmmod; make insmod)
       date

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.54 2002/02/24 11:21:42 kls Exp $
+ * $Id: recording.c 1.57 2002/03/16 12:17:44 kls Exp $
  */
 
 #include "recording.h"
@@ -86,6 +86,7 @@ void AssertFreeDiskSpace(int Priority)
         if (!LockFile.Lock())
            return;
         // Remove the oldest file that has been "deleted":
+        isyslog(LOG_INFO, "low disk space while recording, trying to remove a deleted recording...");
         cRecordings Recordings;
         if (Recordings.Load(true)) {
            cRecording *r = Recordings.First();
@@ -101,12 +102,13 @@ void AssertFreeDiskSpace(int Priority)
               }
            }
         // No "deleted" files to remove, so let's see if we can delete a recording:
+        isyslog(LOG_INFO, "...no deleted recording found, trying to delete an old recording...");
         if (Recordings.Load(false)) {
            cRecording *r = Recordings.First();
            cRecording *r0 = NULL;
            while (r) {
                  if (r->lifetime < MAXLIFETIME) { // recordings with MAXLIFETIME live forever
-                    if ((r->lifetime == 0 && Priority > r->priority) || // the recording has guaranteed lifetime and the new recording has higher priority
+                    if ((r->lifetime == 0 && Priority > r->priority) || // the recording has no guaranteed lifetime and the new recording has higher priority
                         (time(NULL) - r->start) / SECSINDAY > r->lifetime) { // the recording's guaranteed lifetime has expired
                        if (r0) {
                           if (r->priority < r0->priority || (r->priority == r0->priority && r->start < r0->start))
@@ -122,6 +124,7 @@ void AssertFreeDiskSpace(int Priority)
               return;
            }
         // Unable to free disk space, but there's nothing we can do about that...
+        isyslog(LOG_INFO, "...no old recording found, giving up");
         Interface->Confirm(tr("Low disk space!"), 30);
         }
      LastFreeDiskCheck = time(NULL);
@@ -551,6 +554,11 @@ bool cRecording::Delete(void)
   char *ext = strrchr(NewName, '.');
   if (strcmp(ext, RECEXT) == 0) {
      strncpy(ext, DELEXT, strlen(ext));
+     if (access(NewName, F_OK) == 0) {
+        // the new name already exists, so let's remove that one first:
+        isyslog(LOG_INFO, "removing recording %s", NewName);
+        RemoveVideoFile(NewName);
+        }
      isyslog(LOG_INFO, "deleting recording %s", FileName());
      result = RenameVideoFile(FileName(), NewName);
      }

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.h 1.64 2002/03/03 14:51:20 kls Exp $
+ * $Id: dvbapi.h 1.68 2002/03/10 10:50:00 kls Exp $
  */
 
 #ifndef __DVBAPI_H
@@ -43,7 +43,8 @@
 #define MAXVIDEOFILESIZE 2000 // MB
 #define MINVIDEOFILESIZE  100 // MB
 
-#define MAXVOLUME 255
+#define MAXVOLUME         255
+#define VOLUMEDELTA         5 // used to increase/decrease the volume
 
 const char *IndexToHMSF(int Index, bool WithFrame = false);
       // Converts the given index to a string, optionally containing the frame number.
@@ -125,8 +126,8 @@ public:
          // recording and stop recording if necessary.
   int CardIndex(void) { return cardIndex; }
          // Returns the card index of this DvbApi (0 ... MAXDVBAPI - 1).
-  void SetCaCaps(void);
-         // Sets the CaCaps of this DVB device according to the Setup data.
+  static void SetCaCaps(void);
+         // Sets the CaCaps of all DVB devices according to the Setup data.
   int ProvidesCa(int Ca);
          // Checks whether this DVB device provides the given value in its
          // caCaps. Returns 0 if the value is not provided, 1 if only this
@@ -148,8 +149,6 @@ public:
 private:
   cSIProcessor *siProcessor;
 public:
-  void SetUseTSTime(bool On) { if (siProcessor) siProcessor->SetUseTSTime(On); }
-
   // Image Grab facilities
 
   bool GrabImage(const char *FileName, bool Jpeg = true, int Quality = -1, int SizeX = -1, int SizeY = -1);
@@ -307,8 +306,9 @@ private:
   bool mute;
   int volume;
 public:
-  void ToggleMute(void);
-       // Turns the volume off or on.
+  bool IsMute(void) { return mute; }
+  bool ToggleMute(void);
+       // Turns the volume off or on and returns the new mute state.
   void SetVolume(int Volume, bool Absolute = false);
        // Sets the volume to the given value, either absolutely or relative to
        // the current volume.

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.59 2002/03/03 16:38:57 kls Exp $
+ * $Id: i18n.c 1.66 2002/03/17 13:50:43 kls Exp $
  *
  * Slovenian translations provided by Miha Setina <mihasetina@softhome.net>
  * Italian   translations provided by Alberto Carraro <bertocar@tin.it>
@@ -46,6 +46,14 @@
  *    in the "Setup" menu.
  * 5. Send the modified 'i18n.c' file to <kls@cadsoft.de> to have
  *    it included in the next version of VDR.
+ *
+ * In case an English phrase is used in more than one context (and might need
+ * different translations in other languages) it can be preceeded with an
+ * arbitrary string to describe its context, separated from the actual phrase
+ * by a '$' character (see for instance "Button$Stop" vs. "Stop").
+ * Of course this means that no English phrase may contain the '$' character!
+ * If this should ever become necessary, the existing '$' would have to be
+ * replaced with something different...
  */
 
 #include "i18n.h"
@@ -70,15 +78,15 @@ const tPhrase Phrases[] = {
     "Suomi",
   },
   // Menu titles:
-  { "Main",
-    "Hauptmenü",
-    "Glavni meni",
-    "Principale",
-    "Hoofdmenu",
-    "Principal",
-    "Menu",
-    "Hovedmeny",
-    "Valikko",
+  { "VDR",
+    "VDR",
+    "VDR",
+    "VDR",
+    "VDR",
+    "VDR",
+    "VDR",
+    "VDR",
+    "VDR",
   },
   { "Schedule",
     "Programm",
@@ -291,6 +299,16 @@ const tPhrase Phrases[] = {
     "Spol tilbake",
     "Takaisinkel.",
   },
+  { "Button$Stop",
+    "Beenden",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+  },
   { "Resume",
     "Weiter",
     "Nadaljuj",
@@ -351,7 +369,7 @@ const tPhrase Phrases[] = {
     "Neste",
     "Seuraava",
   },
-  { "Schedule",
+  { "Button$Schedule",
     "Programm",
     "Urnik",
     "Programma",
@@ -366,7 +384,7 @@ const tPhrase Phrases[] = {
     "Jezik",
     "Linguaggio",
     "Taal",
-    "", // TODO
+    "Linguagem", // TODO (correct?)
     "Langue",
     "Språk",
     "Kieli",
@@ -451,6 +469,26 @@ const tPhrase Phrases[] = {
     "Annuler les modifications?",
     "Avbryte redigering?",
     "Peruutetaanko muokkaus?",
+  },
+  { "Really restart?",
+    "Wirklich neu starten?",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+  },
+  { "Recording - restart anyway?",
+    "Aufnahme läuft - trotzdem neu starten?",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
   },
   { "Recording - shut down anyway?",
     "Aufnahme läuft - trotzdem ausschalten?",
@@ -835,29 +873,150 @@ const tPhrase Phrases[] = {
     "", // TODO
     "Kovalevy lähes täynnä!",
   },
+  // Setup pages:
+  { "OSD",
+    "OSD",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+  },
+  { "EPG",
+    "EPG",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+  },
+  { "DVB",
+    "DVB",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+  },
+  { "LNB",
+    "LNB",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+  },
+  { "CICAM",
+    "CICAM",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+  },
+  { "Recording",
+    "Aufnahme",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+  },
+  { "Replay",
+    "Wiedergabe",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+  },
+  { "Miscellaneous",
+    "Sonstiges",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+  },
+  { "Restart",
+    "Neustart",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+  },
   // Setup parameters:
-  { "OSD-Language",
-    "OSD-Sprache",
-    "OSD-jezik",
-    "Linguaggio OSD",
-    "OSD-taal",
-    "Linguagem OSD",
-    "Langue OSD",
-    "OSD Språk",
-    "Näytön kieli",
+  { "Setup.OSD$Language",
+    "Sprache",
+    "Jezik",
+    "Linguaggio",
+    "Taal",
+    "Linguagem", // TODO (correct?)
+    "Langue",
+    "Språk",
+    "Kieli",
   },
-  { "PrimaryDVB",
-    "Primäres Interface",
-    "Primarna naprava",
-    "Scheda DVB primaria",
-    "Eerste DVB kaart",
-    "DVB primario",
-    "Première carte DVB",
-    "Hoved DVB-enhet",
-    "Ensisij. vast.otin",
+  { "Setup.OSD$Width",
+    "Breite",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "Largeur", //TODO (correct?)
+    "", // TODO
+    "Leveys", //TODO (correct?)
   },
-  { "ShowInfoOnChSwitch",
-    "Info zeigen",
+  { "Setup.OSD$Height",
+    "Höhe",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "Hauteur", //TODO (correct?)
+    "", // TODO
+    "Korkeus", //TODO (correct?)
+  },
+  { "Setup.OSD$Message time",
+    "Anzeigedauer für Nachrichten",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "Durée affichage écran",
+    "", // TODO
+    "Ilmoitusten näkymisaika",
+  },
+  { "Setup.OSD$Channel info position",
+    "Kanal-Info Position",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "Position infos chaînes",
+    "", // TODO
+    "Kanavainfon sijainti",
+  },
+  { "Setup.OSD$Info on channel switch",
+    "Info beim Kanalwechsel",
     "Pokazi naziv kanala",
     "Vis info nel cambio canale",
     "Kanaal info tonen",
@@ -866,7 +1025,7 @@ const tPhrase Phrases[] = {
     "Info ved kanalskifte",
     "Näytä kanavainfo",
   },
-  { "MenuScrollPage",
+  { "Setup.OSD$Scroll pages",
     "Seitenweise scrollen",
     "Drsni meni",
     "Scrolla pagina nel menu",
@@ -876,127 +1035,7 @@ const tPhrase Phrases[] = {
     "Rask rulling i menyer",
     "Valikkojen rullaus",
   },
-  { "MarkInstantRecord",
-    "Direktaufz. markieren",
-    "Oznaci direktno snemanje",
-    "Marca la registrazione",
-    "Direkte opnamen markeren",
-    "Marca de gravacao",
-    "Enregistrement immédiat",
-    "Markere direkteopptak",
-    "Merkitse välitön nauh.",
-  },
-  { "NameInstantRecord",
-    "Direktaufz. benennen",
-    "", // TODO
-    "", // TODO
-    "", // TODO
-    "", // TODO
-    "Noms enregistr. immédiats",
-    "", // TODO
-    "Nimeä välitön nauh.",
-  },
-  { "LnbSLOF",
-    "LnbSLOF",
-    "LnbSLOF",
-    "LnbSLOF",
-    "LnbSLOF",
-    "LnbSLOF",
-    "Limite de bandes LNB",
-    "LO-grensefrekvens",
-    "LnbSLOF",
-  },
-  { "LnbFrequLo",
-    "Untere LNB-Frequenz",
-    "Spodnja LNB-frek.",
-    "Freq LO LNB",
-    "Laagste LNB frequentie",
-    "Freq LO LNB",
-    "Fréquence basse LNB",
-    "LO-frekvens i lavbåndet",
-    "LO LNB taajuus",
-  },
-  { "LnbFrequHi",
-    "Obere LNB-Frequenz",
-    "Zgornja LNB-frek.",
-    "Freq HI LNB",
-    "Hoogste LNB frequentie",
-    "Freq HI LNB",
-    "Fréquence haute LNB",
-    "LO-frekvens i høybåndet",
-    "HI LNB taajuus",
-  },
-  { "DiSEqC",
-    "DiSEqC",
-    "DiSEqC",
-    "DiSEqC",
-    "DiSEqC",
-    "DiSEqC",
-    "DiSEqC",
-    "DiSEqC",
-    "DiSEqC",
-  },
-  { "SetSystemTime",
-    "Systemzeit stellen",
-    "Sistemski cas",
-    "Setta orario auto",
-    "Systeem klok instellen",
-    "Ajustar relogio do sistema",
-    "Ajuster l'heure du système",
-    "Juster system-klokken",
-    "Vastaanota kellonaika",
-  },
-  { "MarginStart",
-    "Zeitpuffer bei Anfang",
-    "Premor pred zacetkom",
-    "Min margine inizio",
-    "Tijd marge (begin)",
-    "Margem de inicio",
-    "Marge antérieure",
-    "Opptaks margin (start)",
-    "Aloitusmarginaali",
-  },
-  { "MarginStop",
-    "Zeitpuffer bei Ende",
-    "Premor za koncem",
-    "Min margine fine",
-    "Tijd marge (eind)",
-    "Margem de fim",
-    "Marge postérieure",
-    "Opptaks margin (slutt)",
-    "Lopetusmarginaali",
-  },
-  { "EPGScanTimeout",
-    "Zeit bis EPG Scan",
-    "Cas do EPG pregleda",
-    "Timeout EPG",
-    "EPG-scan Timeout",
-    "Timeout EPG",
-    "Temps maxi EPG",
-    "Ledig tid før EPG-søk",
-    "Ohjelmatied. odotusaika",
-  },
-  { "EPGBugfixLevel",
-    "EPG Fehlerbereinigung",
-    "", // TODO
-    "", // TODO
-    "", // TODO
-    "", // TODO
-    "Niveau de correction EPG",
-    "", // TODO
-    "EPGBugfixLevel",
-  },
-  { "SVDRPTimeout",
-    "SVDRP Timeout",
-    "", // TODO
-    "Timeout SVDRP",
-    "SVDRP Timeout",
-    "Timeout SVDRP",
-    "Temps maxi SVDRP",
-    "Ubrukt SVDRP-levetid",
-    "SVDRP odotusaika",
-  },
-  { "SortTimers",
+  { "Setup.OSD$Sort timers",
     "Timer sortieren",
     "", // TODO
     "", // TODO
@@ -1006,48 +1045,8 @@ const tPhrase Phrases[] = {
     "", // TODO
     "Järjestä ajastimet",
   },
-  { "PrimaryLimit",
-    "Primär-Limit",
-    "", // TODO
-    "", // TODO
-    "", // TODO
-    "Limite Primario",
-    "Première limite",
-    "Prioritets grense HovedDVB",
-    "PrimaryLimit",
-  },
-  { "DefaultPriority",
-    "Default Priorität",
-    "", // TODO
-    "", // TODO
-    "", // TODO
-    "Prioridade por defeito",
-    "Priorité par défaut",
-    "Normal prioritet (Timer)",
-    "Oletusprioriteetti",
-  },
-  { "DefaultLifetime",
-    "Default Lebensdauer",
-    "", // TODO
-    "", // TODO
-    "", // TODO
-    "Validade por defeito",
-    "Durée de vie par défaut",
-    "Normal levetid (Timer)",
-    "Oletus voimassaoloaika",
-  },
-  { "UseSubtitle",
-    "Subtitle verwenden",
-    "", // TODO
-    "", // TODO
-    "", // TODO
-    "", // TODO
-    "Utiliser les sous-titres",
-    "", // TODO
-    "Tekstitys käytössä",
-  },
-  { "RecordingDirs",
-    "Aufn. Verzeichnisse",
+  { "Setup.OSD$Recording directories",
+    "Aufnahme Verzeichnisse",
     "", // TODO
     "", // TODO
     "", // TODO
@@ -1056,7 +1055,57 @@ const tPhrase Phrases[] = {
     "", // TODO
     "Nauhoitushakemistot",
   },
-  { "VideoFormat",
+  { "Setup.EPG$EPG scan timeout",
+    "Zeit bis EPG Scan",
+    "Cas do EPG pregleda",
+    "Timeout EPG",
+    "EPG-scan Timeout",
+    "Timeout EPG",
+    "Temps maxi EPG",
+    "Ledig tid før EPG-søk",
+    "Ohjelmatied. odotusaika",
+  },
+  { "Setup.EPG$EPG bugfix level",
+    "EPG Fehlerbereinigung",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "Niveau de correction EPG",
+    "", // TODO
+    "EPG Bugfix Level",
+  },
+  { "Setup.EPG$Set system time",
+    "Systemzeit stellen",
+    "Sistemski cas",
+    "Setta orario auto",
+    "Systeem klok instellen",
+    "Ajustar relogio do sistema",
+    "Ajuster l'heure du système",
+    "Juster system-klokken",
+    "Vastaanota kellonaika",
+  },
+  { "Setup.EPG$Use time from transponder",
+    "Transponder für Systemzeit",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+  },
+  { "Setup.DVB$Primary DVB interface",
+    "Primäres DVB Interface",
+    "Primarna naprava",
+    "Scheda DVB primaria",
+    "Eerste DVB kaart",
+    "DVB primario",
+    "Première carte DVB",
+    "Hoved DVB-enhet",
+    "Ensisij. vast.otin",
+  },
+  { "Setup.DVB$Video format",
     "Video Format",
     "", // TODO
     "", // TODO
@@ -1066,8 +1115,138 @@ const tPhrase Phrases[] = {
     "TV Format",
     "Kuvamuoto",
   },
-  { "RecordDolbyDigital",
-    "Dolby Digital Ton aufz.",
+  { "Setup.LNB$SLOF",
+    "SLOF",
+    "SLOF",
+    "SLOF",
+    "SLOF",
+    "SLOF",
+    "Limite de bandes LNB",
+    "LO-grensefrekvens",
+    "SLOF",
+  },
+  { "Setup.LNB$Low LNB frequency",
+    "Untere LNB-Frequenz",
+    "Spodnja LNB-frek.",
+    "Freq LO LNB",
+    "Laagste LNB frequentie",
+    "Freq LO LNB",
+    "Fréquence basse LNB",
+    "LO-frekvens i lavbåndet",
+    "LO LNB taajuus",
+  },
+  { "Setup.LNB$High LNB frequency",
+    "Obere LNB-Frequenz",
+    "Zgornja LNB-frek.",
+    "Freq HI LNB",
+    "Hoogste LNB frequentie",
+    "Freq HI LNB",
+    "Fréquence haute LNB",
+    "LO-frekvens i høybåndet",
+    "HI LNB taajuus",
+  },
+  { "Setup.LNB$Use DiSEqC",
+    "DiSEqC benutzen",
+    "DiSEqC", // TODO
+    "DiSEqC", // TODO
+    "DiSEqC", // TODO
+    "DiSEqC", // TODO
+    "DiSEqC", // TODO
+    "DiSEqC", // TODO
+    "DiSEqC", // TODO
+  },
+  { "Setup.CICAM$CICAM DVB",
+    "CICAM DVB",
+    "CICAM DVB",
+    "CICAM DVB",
+    "CICAM DVB",
+    "CICAM DVB",
+    "CICAM DVB",
+    "CICAM DVB",
+    "CICAM DVB",
+  },
+  { "Setup.Recording$Margin at start",
+    "Zeitpuffer bei Anfang",
+    "Premor pred zacetkom",
+    "Min margine inizio",
+    "Tijd marge (begin)",
+    "Margem de inicio",
+    "Marge antérieure",
+    "Opptaks margin (start)",
+    "Aloitusmarginaali",
+  },
+  { "Setup.Recording$Margin at stop",
+    "Zeitpuffer bei Ende",
+    "Premor za koncem",
+    "Min margine fine",
+    "Tijd marge (eind)",
+    "Margem de fim",
+    "Marge postérieure",
+    "Opptaks margin (slutt)",
+    "Lopetusmarginaali",
+  },
+  { "Setup.Recording$Primary limit",
+    "Primär-Limit",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "Limite Primario",
+    "Première limite",
+    "Prioritets grense HovedDVB",
+    "PrimaryLimit",
+  },
+  { "Setup.Recording$Default priority",
+    "Default Priorität",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "Prioridade por defeito",
+    "Priorité par défaut",
+    "Normal prioritet (Timer)",
+    "Oletusprioriteetti",
+  },
+  { "Setup.Recording$Default lifetime",
+    "Default Lebensdauer",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "Validade por defeito",
+    "Durée de vie par défaut",
+    "Normal levetid (Timer)",
+    "Oletus voimassaoloaika",
+  },
+  { "Setup.Recording$Use episode name",
+    "Episodenname verwenden",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "Utiliser les sous-titres", // TODO (episode name!)
+    "", // TODO
+    "Tekstitys käytössä", // TODO (episode name!)
+  },
+  { "Setup.Recording$Mark instant recording",
+    "Direktaufzeichnung markieren",
+    "Oznaci direktno snemanje",
+    "Marca la registrazione",
+    "Direkte opnamen markeren",
+    "Marca de gravacao",
+    "Enregistrement immédiat",
+    "Markere direkteopptak",
+    "Merkitse välitön nauh.",
+  },
+  { "Setup.Recording$Name instant recording",
+    "Direktaufzeichnung benennen",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "Noms enregistr. immédiats",
+    "", // TODO
+    "Nimeä välitön nauh.",
+  },
+  { "Setup.Recording$Record Dolby Digital",
+    "Dolby Digital Ton aufzeichnen",
     "", // TODO
     "", // TODO
     "", // TODO
@@ -1076,47 +1255,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
   },
-  { "ChannelInfoPos",
-    "Kanal Info Position",
-    "", // TODO
-    "", // TODO
-    "", // TODO
-    "", // TODO
-    "Position infos chaînes",
-    "", // TODO
-    "Kanavainfon sijainti",
-  },
-  { "OSDwidth",
-    "OSD Breite",
-    "", // TODO
-    "", // TODO
-    "", // TODO
-    "", // TODO
-    "Largeur affichage",
-    "", // TODO
-    "Tekstinäytön leveys",
-  },
-  { "OSDheight",
-    "OSD Höhe",
-    "", // TODO
-    "", // TODO
-    "", // TODO
-    "", // TODO
-    "Hauteur affichage",
-    "", // TODO
-    "Tekstinäytön korkeus",
-  },
-  { "OSDMessageTime",
-    "OSD Nachricht Dauer",
-    "", // TODO
-    "", // TODO
-    "", // TODO
-    "", // TODO
-    "Durée affichage écran",
-    "", // TODO
-    "Ilmoitusten näkymisaika",
-  },
-  { "MaxVideoFileSize",
+  { "Setup.Recording$Max. video file size",
     "Max. Video Dateigröße",
     "", // TODO
     "", // TODO
@@ -1126,8 +1265,8 @@ const tPhrase Phrases[] = {
     "", // TODO
     "Maksimi tiedoston koko",
   },
-  { "SplitEditedFiles",
-    "Editierte Dateien zerteilen",
+  { "Setup.Recording$Split edited files",
+    "Editierte Dateien aufteilen",
     "", // TODO
     "", // TODO
     "", // TODO
@@ -1136,27 +1275,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "Paloittele muokatut",
   },
-  { "MinEventTimeout",
-    "Mindest Event Pause",
-    "", // TODO
-    "", // TODO
-    "", // TODO
-        "", // TODO
-    "MinEventTimeout", // Too difficult to translate - read the manual!
-    "", // TODO
-    "Minimi tapahtuman odotus",
-  },
-  { "MinUserInactivity",
-    "Mindest User Inaktivität",
-    "", // TODO
-    "", // TODO
-    "", // TODO
-    "", // TODO
-    "Durée minimale d'inactivité",
-    "", // TODO
-    "Minimi käyttäjän odotus",
-  },
-  { "MultiSpeedMode",
+  { "Setup.Replay$Multi speed mode",
     "MultiSpeed Modus",
     "", // TODO
     "", // TODO
@@ -1166,8 +1285,8 @@ const tPhrase Phrases[] = {
     "", // TODO
     "Moninopeustila",
   },
-  { "ShowReplayMode",
-    "Wiedergabe Status",
+  { "Setup.Replay$Show replay mode",
+    "Wiedergabestatus anzeigen",
     "", // TODO
     "", // TODO
     "", // TODO
@@ -1175,6 +1294,36 @@ const tPhrase Phrases[] = {
     "Affichage mode de lecture",
     "", // TODO
     "Näytä toiston tila",
+  },
+  { "Setup.Miscellaneous$Min. event timeout",
+    "Mindest Event Pause",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+        "", // TODO
+    "MinEventTimeout", // Too difficult to translate - read the manual!
+    "", // TODO
+    "Minimi tapahtuman odotus",
+  },
+  { "Setup.Miscellaneous$Min. user inactivity",
+    "Mindest Benutzer-Inaktivität",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "Durée minimale d'inactivité",
+    "", // TODO
+    "Minimi käyttäjän odotus",
+  },
+  { "Setup.Miscellaneous$SVDRP timeout",
+    "SVDRP Timeout",
+    "", // TODO
+    "Timeout SVDRP",
+    "SVDRP Timeout",
+    "Timeout SVDRP",
+    "Temps maxi SVDRP",
+    "Ubrukt SVDRP-levetid",
+    "SVDRP odotusaika",
   },
   // The days of the week:
   { "MTWTFSS",
@@ -1540,6 +1689,16 @@ const tPhrase Phrases[] = {
     "", // TODO
     "Hyppää:",
   },
+  { "Volume ", // note the trailing blank
+    "Lautstärke ",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "Volume ",
+    "", // TODO
+    "Äänenvoimakkuus ",
+  },
   { " Stop replaying", // note the leading blank!
     " Wiedergabe beenden",
     " Prekini ponavljanje",
@@ -1645,7 +1804,8 @@ const char *tr(const char *s)
          }
      esyslog(LOG_ERR, "no translation found for '%s' in language %d (%s)\n", s, Setup.OSDLanguage, Phrases[0][Setup.OSDLanguage]);
      }
-  return s;
+  const char *p = strchr(s, '$');
+  return p ? p + 1 : s;
 }
 
 const char * const * Languages(void)

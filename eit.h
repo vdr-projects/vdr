@@ -16,7 +16,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.h 1.15 2002/02/23 15:30:25 kls Exp $
+ * $Id: eit.h 1.16 2002/03/10 10:56:57 kls Exp $
  ***************************************************************************/
 
 #ifndef __EIT_H
@@ -139,7 +139,7 @@ private:
   static cMutex schedulesMutex;
   static const char *epgDataFileName;
   bool masterSIProcessor;
-  bool useTStime;
+  int currentTransponder;
   SIP_FILTER *filters;
   char *fileName;
   bool active;
@@ -157,7 +157,7 @@ public:
          // longer used, the cMutexLock must be destroyed.
   static bool Read(FILE *f = NULL);
   void SetStatus(bool On);
-  bool SetUseTSTime(bool use);
+  void SetCurrentTransponder(int CurrentTransponder);
   bool SetCurrentServiceID(unsigned short servid);
   };
 

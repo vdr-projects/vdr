@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.154 2002/03/03 15:43:24 kls Exp $
+ * $Id: dvbapi.c 1.163 2002/03/16 14:20:47 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -62,6 +62,9 @@ extern "C" {
 
 // The maximum time to wait before giving up while catching up on an index file:
 #define MAXINDEXCATCHUP   2 // seconds
+
+// The default priority for non-primary DVB cards:
+#define DEFAULTPRIORITY  -2
 
 #define CHECK(s) { if ((s) < 0) LOG_ERROR; } // used for 'ioctl()' calls
 
@@ -743,10 +746,6 @@ cPlayBuffer::cPlayBuffer(cDvbApi *DvbApi, int VideoDev, int AudioDev)
   canToggleAudioTrack = false;
   skipAC3bytes = false;
   audioTrack = 0xC0;
-  if (cDvbApi::AudioCommand()) {
-     if (!dolbyDev.Open(cDvbApi::AudioCommand(), "w"))
-        esyslog(LOG_ERR, "ERROR: can't open pipe to audio command '%s'", cDvbApi::AudioCommand());
-     }
 }
 
 cPlayBuffer::~cPlayBuffer()
@@ -755,7 +754,11 @@ cPlayBuffer::~cPlayBuffer()
 
 void cPlayBuffer::PlayExternalDolby(const uchar *b, int MaxLength)
 {
-  if (dolbyDev) {
+  if (cDvbApi::AudioCommand()) {
+     if (!dolbyDev && !dolbyDev.Open(cDvbApi::AudioCommand(), "w")) {
+        esyslog(LOG_ERR, "ERROR: can't open pipe to audio command '%s'", cDvbApi::AudioCommand());
+        return;
+        }
      if (b[0] == 0x00 && b[1] == 0x00 && b[2] == 0x01) {
         if (b[3] == 0xBD) { // dolby
            int l = b[4] * 256 + b[5] + 6;
@@ -1147,7 +1150,7 @@ void cReplayBuffer::StripAudioPackets(uchar *b, int Length, uchar Except)
             int l = b[i + 4] * 256 + b[i + 5] + 6;
             switch (c) {
               case 0xBD: // dolby
-                   if (Except && dolbyDev)
+                   if (Except)
                       PlayExternalDolby(&b[i], Length - i);
                    // continue with deleting the data - otherwise it disturbs DVB replay
               case 0xC0 ... 0xC1: // audio
@@ -1408,7 +1411,7 @@ void cTransferBuffer::Output(void)
         int r = Get(b, sizeof(b));
         if (r > 0) {
            uchar *p = b;
-           while (r > 0 && Busy()) {
+           while (r > 0 && Busy() && cFile::FileReadyForWriting(toDevice, 100)) {
                  int w = write(toDevice, p, r);
                  if (w > 0) {
                     p += w;
@@ -1685,9 +1688,8 @@ cDvbApi::cDvbApi(int n)
   transferBuffer = NULL;
   transferringFromDvbApi = NULL;
   ca = -1;
-  priority = -1;
+  priority = DEFAULTPRIORITY;
   cardIndex = n;
-  SetCaCaps();
 
   // Devices that are only present on DVB-C or DVB-S cards:
 
@@ -1721,8 +1723,6 @@ cDvbApi::cDvbApi(int n)
 
   if (fd_frontend >= 0 && fd_demuxv >= 0 && fd_demuxa1 >= 0 && fd_demuxa2 >= 0 && fd_demuxd1 >= 0 && fd_demuxd2 >= 0 && fd_demuxt >= 0) {
      siProcessor = new cSIProcessor(OstName(DEV_OST_DEMUX, n));
-     if (!dvbApi[0]) // only the first one shall set the system time
-        siProcessor->SetUseTSTime(Setup.SetSystemTime);
      FrontendInfo feinfo;
      CHECK(ioctl(fd_frontend, FE_GET_INFO, &feinfo));
      frontendType = feinfo.type;
@@ -1749,7 +1749,7 @@ cDvbApi::cDvbApi(int n)
 #endif
   currentChannel = 1;
   mute = false;
-  volume = MAXVOLUME;
+  volume = Setup.CurrentVolume;
 }
 
 cDvbApi::~cDvbApi()
@@ -1848,8 +1848,10 @@ cDvbApi *cDvbApi::GetDvbApi(int Ca, int Priority)
 
 void cDvbApi::SetCaCaps(void)
 {
-  for (int i = 0; i < MAXCACAPS; i++)
-      caCaps[i] = Setup.CaCaps[CardIndex()][i];
+  for (int d = 0; d < NumDvbApis; d++) {
+      for (int i = 0; i < MAXCACAPS; i++)
+          dvbApi[d]->caCaps[i] = Setup.CaCaps[dvbApi[d]->CardIndex()][i];
+      }
 }
 
 int cDvbApi::ProvidesCa(int Ca)
@@ -1867,8 +1869,6 @@ int cDvbApi::ProvidesCa(int Ca)
          else
             others++;
          }
-      else
-         break;
       }
   return result ? result + others : 0;
 }
@@ -1906,6 +1906,7 @@ bool cDvbApi::Init(void)
      isyslog(LOG_INFO, "found %d video device%s", NumDvbApis, NumDvbApis > 1 ? "s" : "");
   else
      esyslog(LOG_ERR, "ERROR: no video device found, giving up!");
+  SetCaCaps();
   return NumDvbApis > 0;
 }
 
@@ -2321,6 +2322,11 @@ eSetChannelResult cDvbApi::SetChannel(int ChannelNumber, int Frequency, char Pol
      CHECK(ioctl(fd_audio, AUDIO_CLEAR_BUFFER));
      }
 
+  // Stop setting system time:
+
+  if (siProcessor)
+     siProcessor->SetCurrentTransponder(0);
+
   // If this card can't receive this channel, we must not actually switch
   // the channel here, because that would irritate the driver when we
   // start replaying in Transfer Mode immediately after switching the channel:
@@ -2472,6 +2478,11 @@ eSetChannelResult cDvbApi::SetChannel(int ChannelNumber, int Frequency, char Pol
      CHECK(ioctl(fd_video, VIDEO_SET_BLANK, false));
      }
 
+  // Start setting system time:
+
+  if (Result == scrOk && siProcessor)
+     siProcessor->SetCurrentTransponder(Frequency);
+
   return Result;
 }
 
@@ -2567,7 +2578,7 @@ void cDvbApi::StopRecord(void)
      delete recordBuffer;
      recordBuffer = NULL;
      ca = -1;
-     priority = -1;
+     priority = DEFAULTPRIORITY;
      }
 }
 
@@ -2699,12 +2710,13 @@ bool cDvbApi::ToggleAudioTrack(void)
   return false;
 }
 
-void cDvbApi::ToggleMute(void)
+bool cDvbApi::ToggleMute(void)
 {
   int OldVolume = volume;
   mute = !mute;
   SetVolume(0, mute);
   volume = OldVolume;
+  return mute;
 }
 
 void cDvbApi::SetVolume(int Volume, bool Absolute)
@@ -2714,6 +2726,8 @@ void cDvbApi::SetVolume(int Volume, bool Absolute)
      audioMixer_t am;
      am.volume_left = am.volume_right = volume;
      CHECK(ioctl(fd_audio, AUDIO_SET_MIXER, &am));
+     if (volume > 0)
+        mute = false;
      }
 }
 

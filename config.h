@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.102 2002/03/03 16:04:43 kls Exp $
+ * $Id: config.h 1.105 2002/03/17 14:24:11 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -19,7 +19,7 @@
 #include "eit.h"
 #include "tools.h"
 
-#define VDRVERSION "1.0.0pre3"
+#define VDRVERSION "1.0.0pre4"
 
 #define MAXPRIORITY 99
 #define MAXLIFETIME 99
@@ -91,6 +91,8 @@ public:
   eKeys Get(unsigned int Code);
   void Set(eKeys Key, unsigned int Code);
   };
+
+#define ISTRANSPONDER(f1, f2)  (abs((f1) - (f2)) < 4)
 
 class cChannel : public cListObject {
 private:
@@ -340,6 +342,7 @@ public:
   int LnbFrequHi;
   int DiSEqC;
   int SetSystemTime;
+  int TimeTransponder;
   int MarginStart, MarginStop;
   int EPGScanTimeout;
   int EPGBugfixLevel;
