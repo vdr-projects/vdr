@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.75 2001/09/22 14:05:40 kls Exp $
+ * $Id: vdr.c 1.76 2001/09/23 09:58:36 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -310,6 +310,7 @@ int main(int argc, char *argv[])
   int LastChannel = -1;
   int PreviousChannel = cDvbApi::CurrentChannel();
   time_t LastActivity = 0;
+  time_t LinearTime = time(NULL);
   int MaxLatencyTime = 0;
   bool ForceShutdown = false;
 
@@ -319,6 +320,14 @@ int main(int argc, char *argv[])
      }
 
   while (!Interrupted) {
+        // Test if we are running in the Einstein continuum:
+        time_t Now = time(NULL);
+        time_t LinearDelta = Now - LinearTime;
+        if (LinearDelta) {
+           if (LinearDelta < 0 || LinearDelta > 300) // assuming nothing will block for more than 5 minutes
+              esyslog(LOG_ERR, "ERROR: time warp detected (%d seconds)", LinearDelta);
+           LinearTime = Now;
+           }
         // Handle emergency exits:
         if (cThread::EmergencyExit()) {
            esyslog(LOG_ERR, "emergency exit requested - shutting down");

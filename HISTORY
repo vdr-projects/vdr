@@ -780,3 +780,4 @@ Video Disk Recorder Revision History
   next program start.
 - New command line option '-r' to define a command that gets called before and
   after each recording (see INSTALL for details).
+- Implemented a check to see whether the system time is running linearly.
