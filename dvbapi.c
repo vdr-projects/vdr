@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.83 2001/07/12 12:23:29 kls Exp $
+ * $Id: dvbapi.c 1.84 2001/07/14 09:23:50 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -761,6 +761,8 @@ void cReplayBuffer::Input(void)
               break;
               }
            }
+        else
+           usleep(1); // this keeps the CPU load low
         if (blockInput > 1)
            blockInput = 1;
         }
@@ -792,6 +794,8 @@ void cReplayBuffer::Output(void)
                     }
                  }
            }
+        else
+           usleep(1); // this keeps the CPU load low
         if (blockOutput > 1)
            blockOutput = 1;
         }

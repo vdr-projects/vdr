@@ -534,7 +534,7 @@ Video Disk Recorder Revision History
 - No longer getting stuck when a channel doesn't sync while switching
   with the 'Up' and 'Down' keys.
 
-2001-07-12: Version 0.84
+2001-07-14: Version 0.84
 
 - Fixed video packet scanning to make it recognize the whole range of
   allowed video packet ids.
@@ -550,3 +550,4 @@ Video Disk Recorder Revision History
 - Increased the timeout for numeric channel switching from 500ms to 1s.
 - Fixed handling the "Green" button in the "Schedules" menu for channels that
   have a second audio PID.
+- Fixed high system load when displaying a still picture in replay.
