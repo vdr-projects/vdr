@@ -12,7 +12,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: epg2html.pl 1.1 2000/11/26 15:23:39 kls Exp $
+# $Id: epg2html.pl 1.2 2000/12/01 18:37:46 kls Exp $
 
 @Index = ();
 
@@ -39,9 +39,10 @@ while (<>) {
       chomp;
       if (/^C ([^ ]+) *(.*)/) {
          my $Channel = $2;
-         (my $Page = $Channel) =~ s/ /_/g;
+         (my $Page = $Channel) =~ y/\/ /-_/;
+         $Page .= ".htm";
          $Channel = Tags($Channel);
-         push(@Index, qq{<a href="$Page.htm">$Channel</a><br>\n});
+         push(@Index, qq{<a href="$Page">$Channel</a><br>\n});
          my %Events = ();
          while (<>) {
                if (/^E (.*) (.*) (.*)/) {
@@ -75,7 +76,7 @@ while (<>) {
                       push(@Schedule, "<tr><td valign=top>" . GetTime($t) . "</td><td>$Entry</td></tr>\n");
                       }
                   push(@Schedule, "</table>\n") if (@Schedule);
-                  open(PAGE, ">$Page.htm") or die $!;
+                  open(PAGE, ">$Page") or die "$Page: $!\n";
                   print PAGE "<html>\n<head><title>$Channel</title><head>\n<body>\n";
                   print PAGE "<h1>$Channel</h1>\n";
                   print PAGE @Schedule;
@@ -87,7 +88,7 @@ while (<>) {
          }
       }
 
-open(INDEX, ">index.htm") or die $!;
+open(INDEX, ">index.htm") or die "index.htm: $!\n";
 print INDEX "<html>\n<head><title>EPG Index</title><head>\n<body>\n";
 print INDEX sort { lc($a) cmp lc($b) } @Index;
 print INDEX "</body>\n</html>\n";
