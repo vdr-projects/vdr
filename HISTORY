@@ -2170,3 +2170,5 @@ Video Disk Recorder Revision History
   Endriss for reporting this one).
 - Fixed EPG bugfix statistics to avoid log entires for undefined channels (thanks
   to Lars Bläser for reporting this one).
+- No longer waiting inside cIndexFile::CatchUp() to avoid shortly blocking replay
+  at the end of a recording.
