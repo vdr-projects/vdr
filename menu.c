@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.205 2002/08/15 11:28:08 kls Exp $
+ * $Id: menu.c 1.206 2002/08/25 10:56:09 kls Exp $
  */
 
 #include "menu.h"
@@ -2490,9 +2490,7 @@ void cRecordControl::Stop(bool KeepInstant)
      cStatus::MsgRecording(device, NULL);
      DELETENULL(recorder);
      timer->SetRecording(false);
-     if ((IsInstant() && !KeepInstant) || (timer->IsSingleEvent() && !timer->Matches())) {
-        // checking timer->Matches() to make sure we don't delete the timer
-        // if the program was cancelled before the timer's stop time!
+     if ((IsInstant() && !KeepInstant) || (timer->IsSingleEvent() && timer->StopTime() <= time(NULL))) {
         isyslog("deleting timer %d", timer->Index() + 1);
         Timers.Del(timer);
         Timers.Save();

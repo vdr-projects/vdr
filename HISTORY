@@ -1427,3 +1427,6 @@ Video Disk Recorder Revision History
   a cPalette (see osdbase.h).
 - The new SVDRP command CLRE can be used to clear the entire EPG data (suggested
   by Matthias Schniedermeyer).
+- Fixed handling one-shot timers that were already recording and had their start
+  time changed into the future (thanks to Matthias Schniedermeyer for reporting
+  this one).
