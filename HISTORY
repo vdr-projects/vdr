@@ -2886,3 +2886,4 @@ Video Disk Recorder Revision History
 - Fixed displaying the current channel when switching via the SVDRP command CHAN
   (thanks to Jürgen Schmitz for reporting this one).
 - Fixed missing audio after replaying a DVD (thanks to Marco Schlüßler).
+- Added a note about the default assignment of the color keys to MANUAL.
