@@ -1004,5 +1004,9 @@ Michal Dobrzynski <michal_dobrzynski@mac.com>
  for reporting a freezing picture when a recording starts on a system that always
  uses 'Transfer Mode'
 
+Wayne Keer <syphir@syphir.sytes.net>
+ for reporting a bug in handling descriptor loops in 'libsi', which had sometimes
+ caused invalid CA ids to be added to the channel definitions
+
 Marco Schlüßler <marco@lordzodiac.de>
  for fixing handling colors in cDvbSpuPalette::yuv2rgb()
