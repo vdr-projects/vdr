@@ -73,4 +73,8 @@ Video Disk Recorder Revision History
 - When more than one timer matches at the same time, the first one in the list
   with the highest 'Priority' is selected.
 - The MANUAL section on "Programming the Timer" has been filled in.
+- The year in the "Recordings" menu as well as in the progress display during
+  replay has been reduced to 2 digits to allow more space for the recording's
+  title. In the internal file structure the year is still stored with 4 digits,
+  so there will be no problem at the next turn of the century ;-)
 
