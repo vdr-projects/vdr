@@ -1940,3 +1940,4 @@ Video Disk Recorder Revision History
 - Changed EIT processing to always read a full section.
 - Fixed handling user defined CFLAGS in libdtv/libvdr/Makefile (thanks to Clemens
   Kirchgatterer and Robert Schiele).
+- Fixed skipping unavailable channels in the EPG scanner.

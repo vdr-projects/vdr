@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: eitscan.c 1.10 2002/11/01 11:04:49 kls Exp $
+ * $Id: eitscan.c 1.11 2003/01/26 16:19:24 kls Exp $
  */
 
 #include "eitscan.h"
@@ -51,38 +51,42 @@ void cEITScanner::Process(void)
   if (Setup.EPGScanTimeout && Channels.MaxNumber() > 1) {
      time_t now = time(NULL);
      if (now - lastScan > ScanTimeout && now - lastActivity > ActivityTimeout) {
-        for (int i = 0; i < cDevice::NumDevices(); i++) {
-            cDevice *Device = cDevice::GetDevice(i);
-            if (Device && Device->CardIndex() < MAXDVBDEVICES) {
-               if (Device != cDevice::PrimaryDevice() || (cDevice::NumDevices() == 1 && Setup.EPGScanTimeout && now - lastActivity > Setup.EPGScanTimeout * 3600)) {
-                  if (!(Device->Receiving(true) || Device->Replaying())) {
-                     int oldCh = lastChannel;
-                     int ch = oldCh + 1;
-                     while (ch != oldCh) {
-                           if (ch > Channels.MaxNumber()) {
-                              ch = 1;
-                              numTransponders = 0;
-                              }
-                           cChannel *Channel = Channels.GetByNumber(ch, 1);
-                           if (Channel) {
-                              if (!Device->ProvidesChannel(Channel))
-                                 break;
-                              if (Channel->Sid() && !TransponderScanned(Channel)) {
-                                 if (Device == cDevice::PrimaryDevice() && !currentChannel)
-                                    currentChannel = Device->CurrentChannel();
-                                 Device->SwitchChannel(Channel, false);
-                                 lastChannel = ch;
-                                 break;
+        do {
+           int oldLastChannel = lastChannel;
+           for (int i = 0; i < cDevice::NumDevices(); i++) {
+               cDevice *Device = cDevice::GetDevice(i);
+               if (Device && Device->CardIndex() < MAXDVBDEVICES) {
+                  if (Device != cDevice::PrimaryDevice() || (cDevice::NumDevices() == 1 && Setup.EPGScanTimeout && now - lastActivity > Setup.EPGScanTimeout * 3600)) {
+                     if (!(Device->Receiving(true) || Device->Replaying())) {
+                        int oldCh = lastChannel;
+                        int ch = oldCh + 1;
+                        while (ch != oldCh) {
+                              if (ch > Channels.MaxNumber()) {
+                                 ch = 1;
+                                 numTransponders = 0;
                                  }
+                              cChannel *Channel = Channels.GetByNumber(ch, 1);
+                              if (Channel) {
+                                 if (!Device->ProvidesChannel(Channel))
+                                    break;
+                                 if (Channel->Sid() && !TransponderScanned(Channel)) {
+                                    if (Device == cDevice::PrimaryDevice() && !currentChannel)
+                                       currentChannel = Device->CurrentChannel();
+                                    Device->SwitchChannel(Channel, false);
+                                    lastChannel = ch;
+                                    break;
+                                    }
+                                 }
+                              ch = Channel->Number() + 1;
                               }
-                           ch = Channel->Number() + 1;
-                           }
+                        }
                      }
                   }
                }
-            else
-               lastChannel++; // avoid hangup in case the last channel in the list is not provided by a DVB card
-            }
+           if (lastChannel != oldLastChannel)
+              break;
+           lastChannel++;
+           } while (time(NULL) - now < 2);
         lastScan = time(NULL);
         }
      }
