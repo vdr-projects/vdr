@@ -646,3 +646,7 @@ Jonan Santiago <jonan-lists-vdr@callisia.com>
 
 Juri Haberland <juri@koschikode.com>
  for his help in keeping 'channels.conf.terr' up to date
+
+Alfred Zastrow <vdr@zastrow4u.de>
+ for suggesting to implement separate PausePriority and PauseLifetime parameters for
+ the recordings created when pausing live video

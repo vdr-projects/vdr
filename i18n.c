@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.107 2003/05/01 14:10:18 kls Exp $
+ * $Id: i18n.c 1.108 2003/05/11 13:54:23 kls Exp $
  *
  * Translations provided by:
  *
@@ -2221,6 +2221,38 @@ const tI18nPhrase Phrases[] = {
     "Normal prioritet",
     "Prioritate implicita",
     "Default priority",
+  },
+  { "Setup.Recording$Pause lifetime (d)",
+    "Pause Lebensdauer (d)",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+  },
+  { "Setup.Recording$Pause priority",
+    "Pause Priorität",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
   },
   { "Setup.Recording$Default lifetime (d)",
     "Default Lebensdauer (d)",

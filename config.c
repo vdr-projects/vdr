@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.113 2003/04/12 09:37:48 kls Exp $
+ * $Id: config.c 1.114 2003/05/11 13:50:02 kls Exp $
  */
 
 #include "config.h"
@@ -266,6 +266,8 @@ cSetup::cSetup(void)
   PrimaryLimit = 0;
   DefaultPriority = 50;
   DefaultLifetime = 50;
+  PausePriority = 10;
+  PauseLifetime = 1;
   UseSubtitle = 1;
   RecordingDirs = 1;
   VideoFormat = 0;
@@ -415,6 +417,8 @@ bool cSetup::Parse(const char *Name, const char *Value)
   else if (!strcasecmp(Name, "PrimaryLimit"))        PrimaryLimit       = atoi(Value);
   else if (!strcasecmp(Name, "DefaultPriority"))     DefaultPriority    = atoi(Value);
   else if (!strcasecmp(Name, "DefaultLifetime"))     DefaultLifetime    = atoi(Value);
+  else if (!strcasecmp(Name, "PausePriority"))       PausePriority      = atoi(Value);
+  else if (!strcasecmp(Name, "PauseLifetime"))       PauseLifetime      = atoi(Value);
   else if (!strcasecmp(Name, "UseSubtitle"))         UseSubtitle        = atoi(Value);
   else if (!strcasecmp(Name, "RecordingDirs"))       RecordingDirs      = atoi(Value);
   else if (!strcasecmp(Name, "VideoFormat"))         VideoFormat        = atoi(Value);
@@ -462,6 +466,8 @@ bool cSetup::Save(void)
   Store("PrimaryLimit",       PrimaryLimit);
   Store("DefaultPriority",    DefaultPriority);
   Store("DefaultLifetime",    DefaultLifetime);
+  Store("PausePriority",      PausePriority);
+  Store("PauseLifetime",      PauseLifetime);
   Store("UseSubtitle",        UseSubtitle);
   Store("RecordingDirs",      RecordingDirs);
   Store("VideoFormat",        VideoFormat);

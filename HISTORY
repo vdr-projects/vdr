@@ -2137,3 +2137,5 @@ Video Disk Recorder Revision History
   or the "Back" button during replay.
 - Further increased the timeout until an index file is considerd no longer to be
   written.
+- Implemented separate PausePriority and PauseLifetime parameters for the recordings
+  created when pausing live video (suggested by Alfred Zastrow).

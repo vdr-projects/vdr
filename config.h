@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.157 2003/05/11 09:12:01 kls Exp $
+ * $Id: config.h 1.158 2003/05/11 13:45:44 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -218,6 +218,7 @@ public:
   int SortTimers;
   int PrimaryLimit;
   int DefaultPriority, DefaultLifetime;
+  int PausePriority, PauseLifetime;
   int UseSubtitle;
   int RecordingDirs;
   int VideoFormat;
