@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.81 2004/10/31 16:42:36 kls Exp $
+ * $Id: tools.c 1.82 2004/11/21 14:36:34 kls Exp $
  */
 
 #include "tools.h"
@@ -532,12 +532,13 @@ bool cPoller::Add(int FileHandle, bool Out)
 {
   if (FileHandle >= 0) {
      for (int i = 0; i < numFileHandles; i++) {
-         if (pfd[i].fd == FileHandle)
+         if (pfd[i].fd == FileHandle && pfd[i].events == (Out ? POLLOUT : POLLIN))
             return true;
          }
      if (numFileHandles < MaxPollFiles) {
         pfd[numFileHandles].fd = FileHandle;
         pfd[numFileHandles].events = Out ? POLLOUT : POLLIN;
+        pfd[numFileHandles].revents = 0;
         numFileHandles++;
         return true;
         }
