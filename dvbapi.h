@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.h 1.53 2001/09/23 11:01:46 kls Exp $
+ * $Id: dvbapi.h 1.54 2001/10/27 09:50:03 kls Exp $
  */
 
 #ifndef __DVBAPI_H
@@ -330,6 +330,7 @@ public:
   void SetVolume(int Volume, bool Absolute = false);
        // Sets the volume to the given value, either absolutely or relative to
        // the current volume.
+  static int CurrentVolume(void) { return PrimaryDvbApi ? PrimaryDvbApi->volume : 0; }
   };
 
 class cEITScanner {

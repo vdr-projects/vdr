@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.86 2001/10/20 11:18:38 kls Exp $
+ * $Id: vdr.c 1.87 2001/10/27 09:47:02 kls Exp $
  */
 
 #include <getopt.h>
@@ -529,6 +529,7 @@ int main(int argc, char *argv[])
   if (Interrupted)
      isyslog(LOG_INFO, "caught signal %d", Interrupted);
   Setup.CurrentChannel = cDvbApi::CurrentChannel();
+  Setup.CurrentVolume  = cDvbApi::CurrentVolume();
   Setup.Save();
   cVideoCutter::Stop();
   delete Menu;
