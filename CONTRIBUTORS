@@ -380,3 +380,6 @@ Joerg Riechardt <J.Riechardt@gmx.de>
 
 Holger Wächtler <holger@convergence.de>
  for some valuable advice during adapting to the NEWSTRUCT driver
+
+Jürgen Zimmermann <jnzimmer@informatik.uni-kl.de>
+ for adding some missing #includes to files in libdtv for gcc 3.2

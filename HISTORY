@@ -1419,3 +1419,5 @@ Video Disk Recorder Revision History
 2002-08-24: Version 1.1.8
 
 - Fixed replaying the last few seconds of a recording.
+- Added some missing #includes to files in libdtv for gcc 3.2 (thanks to Jürgen
+  Zimmermann).
