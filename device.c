@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.58 2004/10/16 13:41:23 kls Exp $
+ * $Id: device.c 1.59 2004/10/16 13:49:35 kls Exp $
  */
 
 #include "device.h"
@@ -356,7 +356,7 @@ bool cDevice::SwitchChannel(const cChannel *Channel, bool LiveView)
   for (int i = 3; i--;) {
       switch (SetChannel(Channel, LiveView)) {
         case scrOk:           return true;
-        case scrNotAvailable: Skins.Message(mtError, tr("Channel not available!"));
+        case scrNotAvailable: Skins.Message(mtInfo, tr("Channel not available!"));
                               return false;
         case scrNoTransfer:   Skins.Message(mtError, tr("Can't start Transfer Mode!"));
                               return false;

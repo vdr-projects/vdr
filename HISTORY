@@ -3020,3 +3020,5 @@ Video Disk Recorder Revision History
   this out).
 - Completed the Russian OSD texts (thanks to Vyacheslav Dikonov).
 - Avoiding unnecessary section filter start/stops (thanks to Marco Schlüßler).
+- Made the "Channel not available!" message and mtInfo instead of mtError (suggested
+  by Wayne Keer).

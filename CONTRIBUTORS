@@ -1032,6 +1032,8 @@ Wayne Keer <syphir@syphir.sytes.net>
  caused invalid CA ids to be added to the channel definitions
  for pointing out a problem with the initialization of aPid1 and aPid2 in
  cDvbDevice::cDvbDevice() in case a patch references them
+ for suggesting to make the "Channel not available!" message and mtInfo instead of
+ mtError
 
 Marco Schlüßler <marco@lordzodiac.de>
  for fixing handling colors in cDvbSpuPalette::yuv2rgb()
