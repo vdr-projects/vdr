@@ -2159,3 +2159,7 @@ Video Disk Recorder Revision History
   the translators to have their texts translated. Note that there are now 16
   different OSD languages, so please make sure you have 16 versions for each of
   your texts.
+- Moved the detection of a broken video data stream from the cDevice into the
+  cRecorder to avoid problems with cReceivers that want to receive from PIDs
+  that are currently not transmitting (thanks to Marcel Wiesweg for reporting
+  this one).
