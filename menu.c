@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.143 2002/01/20 14:01:40 kls Exp $
+ * $Id: menu.c 1.144 2002/01/26 11:09:25 kls Exp $
  */
 
 #include "menu.h"
@@ -1572,11 +1572,13 @@ cMenuRecordings::cMenuRecordings(const char *Base, int Level, bool OpenSubMenus)
      else if (OpenSubMenus && Open(true))
         return;
      }
+  Display(); // this keeps the higher level menus from showing up briefly when pressing 'Back' during replay
   SetHelpKeys();
 }
 
 cMenuRecordings::~cMenuRecordings()
 {
+  helpKeys = -1;
   delete base;
 }
 
