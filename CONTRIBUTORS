@@ -47,6 +47,7 @@ Matthias Schniedermeyer <ms@citd.de>
  for implementing the 'MarkInstantRecord' setup option
  for his "schnitt" tools
  for his "master-timer" tool
+ for helping to debug the "move to last position in list" bug
 
 Miha Setina <mihasetina@softhome.net>
  for translating the OSD texts to the Slovenian language
@@ -161,6 +162,7 @@ Simon Bauschulte <SemiSchwabe@Brutzel.de>
 
 Andy Grobb <Charly98@01019freenet.de>
  for completing storing the current audio volume in the setup.conf file
+ for fixing the EPG display in case Setup.ShowInfoOnChSwitch is set to "no"
 
 Thomas Heiligenmann <thomas@heiligenmann.de>
  for implementing the SVDRP commands LSTR and DELR
@@ -189,3 +191,17 @@ Davide Achilli <davide@objsystem.it>
 
 Michael Paar <mpaar@uumail.de>
  for enabling recording of radio channels
+
+Hannu Savolainen <hannu@opensound.com>
+ for translating the OSD texts to the Finnish language
+
+Jürgen Schmidt <ju@ct.heise.de>
+ for fixing a problem with 'in_addr_t' on systems with glibc < 2.2.
+
+Uwe Freese <mail@uwe-freese.de>
+ for suggesting to automatically close an empty recordings page after deleting
+ an entry
+
+Rainer Zocholl <Usenet-372114@zocki.toppoint.de>
+ for suggesting a confirmation prompt when the user presses the "Power" button
+ and there is an upcoming timer event

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.49 2002/02/03 15:46:42 kls Exp $
+ * $Id: recording.c 1.51 2002/02/10 15:41:23 kls Exp $
  */
 
 #include "recording.h"
@@ -196,22 +196,82 @@ tCharExchange CharExchange[] = {
   { ' ',  '_'    },
   { '\'', '\x01' },
   { '/',  '\x02' },
-#ifdef VFAT
-  { ':',  '\x03' },
-#endif
   { 0, 0 }
   };
 
-char *ExchangeChars(char *s, bool ToFileSystem)
+static char *ExchangeChars(char *s, bool ToFileSystem)
 {
   char *p = s;
   while (*p) {
+#define VFAT 1
+#ifdef VFAT
+        // The VFAT file system can't handle all characters, so we
+        // have to take extra efforts to encode/decode them:
+        if (ToFileSystem) {
+           switch (*p) {
+                  // characters that can be used "as is":
+                  case '!':
+                  case '@':
+                  case '$':
+                  case '%':
+                  case '&':
+                  case '(':
+                  case ')':
+                  case '+':
+                  case ',':
+                  case '-':
+                  case '.':
+                  case ';':
+                  case '=':
+                  case '0' ... '9':
+                  case 'a' ... 'z':
+                  case 'A' ... 'Z': break;
+                  // characters that can be mapped to other characters:
+                  case ' ': *p = '_'; break;
+                  case '~': *p = '/'; break;
+                  // characters that have to be encoded:
+                  default: {
+                       int l = p - s;
+                       s = (char *)realloc(s, strlen(s) + 10);
+                       p = s + l;
+                       char buf[4];
+                       sprintf(buf, "#%02X", (unsigned char)*p);
+                       memmove(p + 2, p, strlen(p) + 1);
+                       strncpy(p, buf, 3);
+                       p += 2;
+                       }
+                  }
+           }
+        else {
+           switch (*p) {
+             // mapped characters:
+             case '_': *p = ' '; break;
+             case '/': *p = '~'; break;
+             // encodes characters:
+             case '#': {
+                  if (strlen(p) > 2) {
+                     char buf[3];
+                     sprintf(buf, "%c%c", *(p + 1), *(p + 2));
+                     unsigned char c = strtol(buf, NULL, 16);
+                     *p = c;
+                     memmove(p + 1, p + 3, strlen(p) - 2);
+                     }
+                  }
+                  break;
+             // backwards compatibility:
+             case '\x01': *p = '\''; break;
+             case '\x02': *p = '/';  break;
+             case '\x03': *p = ':';  break;
+             }
+           }
+#else
         for (struct tCharExchange *ce = CharExchange; ce->a && ce->b; ce++) {
             if (*p == (ToFileSystem ? ce->a : ce->b)) {
                *p = ToFileSystem ? ce->b : ce->a;
                break;
                }
             }
+#endif
         p++;
         }
   return s;
@@ -285,7 +345,7 @@ cRecording::cRecording(const char *FileName)
         name = new char[p - FileName + 1];
         strncpy(name, FileName, p - FileName);
         name[p - FileName] = 0;
-        ExchangeChars(name, false);
+        name = ExchangeChars(name, false);
         }
      // read an optional summary file:
      char *SummaryFileName = NULL;
@@ -384,9 +444,9 @@ const char *cRecording::FileName(void)
   if (!fileName) {
      struct tm tm_r;
      struct tm *t = localtime_r(&start, &tm_r);
-     ExchangeChars(name, true);
+     name = ExchangeChars(name, true);
      asprintf(&fileName, NAMEFORMAT, VideoDirectory, name, t->tm_year + 1900, t->tm_mon + 1, t->tm_mday, t->tm_hour, t->tm_min, priority, lifetime);
-     ExchangeChars(name, false);
+     name = ExchangeChars(name, false);
      }
   return fileName;
 }
@@ -399,7 +459,7 @@ const char *cRecording::Title(char Delimiter, bool NewIndicator, int Level)
   if (Level < 0 || Level == HierarchyLevels()) {
      struct tm tm_r;
      struct tm *t = localtime_r(&start, &tm_r);
-     const char *s;
+     char *s;
      if (Level > 0 && (s = strrchr(name, '~')) != NULL)
         s++;
      else
@@ -413,6 +473,11 @@ const char *cRecording::Title(char Delimiter, bool NewIndicator, int Level)
                             New,
                             Delimiter,
                             s);
+     // let's not display a trailing '~':
+     stripspace(titleBuffer);
+     s = &titleBuffer[strlen(titleBuffer) - 1];
+     if (*s == '~')
+        *s = 0;
      }
   else if (Level < HierarchyLevels()) {
      const char *s = name;

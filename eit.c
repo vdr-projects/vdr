@@ -16,7 +16,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.c 1.33 2002/02/02 12:12:26 kls Exp $
+ * $Id: eit.c 1.34 2002/02/09 14:48:43 kls Exp $
  ***************************************************************************/
 
 #include "eit.h"
@@ -352,7 +352,7 @@ void cEventInfo::Dump(FILE *f, const char *Prefix) const
       }
 }
 
-#define MAXEPGBUGFIXSTATS 6
+#define MAXEPGBUGFIXSTATS 5
 #define MAXEPGBUGFIXCHANS 50
 struct tEpgBugFixStats {
   int hits;
@@ -381,32 +381,39 @@ static void EpgBugFixStat(int Number, unsigned int ServiceID)
 static void ReportEpgBugFixStats(bool Reset = false)
 {
   if (Setup.EPGBugfixLevel > 0) {
-     dsyslog(LOG_INFO, "=====================");
-     dsyslog(LOG_INFO, "EPG bugfix statistics");
-     dsyslog(LOG_INFO, "=====================");
-     dsyslog(LOG_INFO, "IF SOMEBODY WHO IS IN CHARGE OF THE EPG DATA FOR ONE OF THE LISTED");
-     dsyslog(LOG_INFO, "CHANNELS READS THIS: PLEASE TAKE A LOOK AT THE FUNCTION cEventInfo::FixEpgBugs()");
-     dsyslog(LOG_INFO, "IN VDR/eit.c TO LEARN WHAT'S WRONG WITH YOUR DATA, AND FIX IT!");
-     dsyslog(LOG_INFO, "=====================");
-     dsyslog(LOG_INFO, "Fix\tHits\tChannels");
+     bool GotHits = false;
      char buffer[1024];
      for (int i = 0; i < MAXEPGBUGFIXSTATS; i++) {
          const char *delim = "\t";
          tEpgBugFixStats *p = &EpgBugFixStats[i];
-         char *q = buffer;
-         q += snprintf(q, sizeof(buffer) - (q - buffer), "%d\t%d", i, p->hits);
-         for (int c = 0; c < p->n; c++) {
-             cChannel *channel = Channels.GetByServiceID(p->serviceIDs[c]);
-             if (channel) {
-                q += snprintf(q, sizeof(buffer) - (q - buffer), "%s%s", delim, channel->name);
-                delim = ", ";
+         if (p->hits) {
+            if (!GotHits) {
+               dsyslog(LOG_INFO, "=====================");
+               dsyslog(LOG_INFO, "EPG bugfix statistics");
+               dsyslog(LOG_INFO, "=====================");
+               dsyslog(LOG_INFO, "IF SOMEBODY WHO IS IN CHARGE OF THE EPG DATA FOR ONE OF THE LISTED");
+               dsyslog(LOG_INFO, "CHANNELS READS THIS: PLEASE TAKE A LOOK AT THE FUNCTION cEventInfo::FixEpgBugs()");
+               dsyslog(LOG_INFO, "IN VDR/eit.c TO LEARN WHAT'S WRONG WITH YOUR DATA, AND FIX IT!");
+               dsyslog(LOG_INFO, "=====================");
+               dsyslog(LOG_INFO, "Fix\tHits\tChannels");
+               GotHits = true;
+               }
+            char *q = buffer;
+            q += snprintf(q, sizeof(buffer) - (q - buffer), "%d\t%d", i, p->hits);
+            for (int c = 0; c < p->n; c++) {
+                cChannel *channel = Channels.GetByServiceID(p->serviceIDs[c]);
+                if (channel) {
+                   q += snprintf(q, sizeof(buffer) - (q - buffer), "%s%s", delim, channel->name);
+                   delim = ", ";
+                   }
                 }
-             }
-         dsyslog(LOG_INFO, "%s", buffer);
+            dsyslog(LOG_INFO, "%s", buffer);
+            }
          if (Reset)
             p->hits = p->n = 0;
          }
-     dsyslog(LOG_INFO, "=====================");
+     if (GotHits)
+        dsyslog(LOG_INFO, "=====================");
      }
 }
 

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.148 2002/02/03 15:42:38 kls Exp $
+ * $Id: menu.c 1.152 2002/02/10 11:52:34 kls Exp $
  */
 
 #include "menu.h"
@@ -1680,6 +1680,8 @@ eOSState cMenuRecordings::Del(void)
                  cOsdMenu::Del(Current());
                  Recordings.Del(recording);
                  Display();
+                 if (!Count())
+                    return osBack;
                  }
               else
                  Interface->Error(tr("Error while deleting recording!"));
@@ -1707,6 +1709,7 @@ eOSState cMenuRecordings::Summary(void)
 
 eOSState cMenuRecordings::ProcessKey(eKeys Key)
 {
+  bool HadSubMenu = HasSubMenu();
   eOSState state = cOsdMenu::ProcessKey(Key);
 
   if (state == osUnknown) {
@@ -1719,6 +1722,13 @@ eOSState cMenuRecordings::ProcessKey(eKeys Key)
        case kMenu:   return osEnd;
        default: break;
        }
+     }
+  if (Key == kYellow && HadSubMenu && !HasSubMenu()) {
+     // the last recording in a subdirectory was deleted, so let's go back up
+     cOsdMenu::Del(Current());
+     if (!Count())
+        return osBack;
+     Display();
      }
   if (!HasSubMenu() && Key != kNone)
      SetHelpKeys();
@@ -1944,13 +1954,14 @@ cMenuMain::cMenuMain(bool Replaying, eOSState State)
 
   // Title with disk usage:
 
-#define MB_PER_MINUTE 30 // this is just an estimate!
+#define MB_PER_MINUTE 25.75 // this is just an estimate!
 
   char buffer[40];
   int FreeMB;
   int Percent = VideoDiskSpace(&FreeMB);
-  int Hours = int(double(FreeMB) / MB_PER_MINUTE / 60);
-  int Minutes = (FreeMB / MB_PER_MINUTE) % 60;
+  int Minutes = int(double(FreeMB) / MB_PER_MINUTE);
+  int Hours = Minutes / 60;
+  Minutes %= 60;
   snprintf(buffer, sizeof(buffer), "%s  -  Disk %d%%  -  %2d:%02d %s", tr("Main"), Percent, Hours, Minutes, tr("free"));
   SetTitle(buffer);
 
@@ -2113,10 +2124,11 @@ cDisplayChannel::cDisplayChannel(int Number, bool Switched)
 {
   group = -1;
   withInfo = !Switched || Setup.ShowInfoOnChSwitch;
+  int EpgLines = withInfo ? 5 : 1;
   lines = 0;
   oldNumber = number = 0;
   cChannel *channel = Channels.GetByNumber(Number);
-  Interface->Open(Setup.OSDwidth, Setup.ChannelInfoPos ? 5 : -5);
+  Interface->Open(Setup.OSDwidth, Setup.ChannelInfoPos ? EpgLines : -EpgLines);
   if (channel) {
      DisplayChannel(channel);
      DisplayInfo();
@@ -2131,7 +2143,8 @@ cDisplayChannel::cDisplayChannel(eKeys FirstKey)
   oldNumber = cDvbApi::CurrentChannel();
   number = 0;
   lastTime = time_ms();
-  Interface->Open(Setup.OSDwidth, Setup.ChannelInfoPos ? 5 : -5);
+  int EpgLines = Setup.ShowInfoOnChSwitch ? 5 : 1;
+  Interface->Open(Setup.OSDwidth, Setup.ChannelInfoPos ? EpgLines : -EpgLines);
   ProcessKey(FirstKey);
 }
 
@@ -2340,7 +2353,7 @@ cRecordControl::~cRecordControl()
 bool cRecordControl::GetEventInfo(void)
 {
   cChannel *channel = Channels.GetByNumber(timer->channel);
-  time_t Time = timer->StartTime() + ((Setup.MarginStart * 2) + 1) * 60;
+  time_t Time = timer->IsSingleEvent() ? timer->StartTime() + ((Setup.MarginStart * 2) + 1) * 60 : timer->StartTime() + (timer->StopTime() - timer->StartTime()) / 2;
   for (int seconds = 0; seconds <= MAXWAIT4EPGINFO; seconds++) {
       {
         cThreadLock ThreadLock;

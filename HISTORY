@@ -969,3 +969,30 @@ Video Disk Recorder Revision History
   radio recordings. Thanks to Michael Paar.
 - Fixed a problem with the ERR macro defined by ncurses.h (thanks to Artur
   Skawina).
+
+2002-02-10: Version 0.99
+
+- Fixed a bug in moving timers or channels to the last position in the list
+  (thanks to Matthias Schniedermeyer for helping to debug this one).
+- Changed the estimated data rate for calculating the remaining disk capacity
+  to 25.75 MB/min.
+- Only reporting the 'EPG bugfix statistics' if there really were any fixes.
+- Added Finnish language texts (thanks to Hannu Savolainen).
+- Reverted to the previous way of searching for the EPG record of the current
+  recording in case of a periodic timer (i.e. taking the one that is in the
+  middle between start and end time).
+- Added a typedef for 'in_addr_t' to make it work with glibc < 2.2 (thanks to
+  Jürgen Schmidt).
+- When the last entry in a "Recordings" menu page is deleted, that page is now
+  automatically closed (suggested by Uwe Freese).
+- Changed the default name for instant recordings to "TITLE EPISODE" (avoiding
+  the '-').
+- If Setup.ShowInfoOnChSwitch is set to "no", the box for the EPG display is no
+  longer shown (thanks to Andy Grobb).
+- If compiled with VFAT=1, characters that can't be handled by a VFAT system are
+  now encoded to '#XX'.
+- When the user presses the "Power" button and there is a timer about to start
+  recording within Setup.MinEventTimeout minutes, there is now a confirmation
+  prompt telling the user that there is an upcoming timer event.
+- If a recording has no episode title, the trailing '~' is no longer shown in
+  the progress display.
