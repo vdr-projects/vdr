@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.56 2001/08/25 13:37:37 kls Exp $
+ * $Id: config.c 1.57 2001/08/26 11:57:52 kls Exp $
  */
 
 #include "config.h"
@@ -511,43 +511,66 @@ bool cTimer::IsSingleEvent(void)
   return (day & 0x80000000) == 0;
 }
 
+int cTimer::GetMDay(time_t t)
+{
+  return localtime(&t)->tm_mday;
+}
+
+int cTimer::GetWDay(time_t t)
+{
+  int weekday = localtime(&t)->tm_wday;
+  return weekday == 0 ? 6 : weekday - 1; // we start with monday==0!
+}
+
+bool cTimer::DayMatches(time_t t)
+{
+  return IsSingleEvent() ? GetMDay(t) == day : (day & (1 << GetWDay(t))) != 0;
+}
+
+time_t cTimer::IncDay(time_t t, int Days)
+{
+  tm tm = *localtime(&t);
+  tm.tm_mday += Days; // now tm_mday may be out of its valid range
+  int h = tm.tm_hour; // save original hour to compensate for DST change
+  t = mktime(&tm);    // normalize all values
+  tm.tm_hour = h;     // compensate for DST change
+  return mktime(&tm); // calculate final result
+}
+
+time_t cTimer::SetTime(time_t t, int SecondsFromMidnight)
+{
+  tm tm = *localtime(&t);
+  tm.tm_hour = SecondsFromMidnight / 3600;
+  tm.tm_min = (SecondsFromMidnight % 3600) / 60;
+  tm.tm_sec =  SecondsFromMidnight % 60;
+  return mktime(&tm);
+}
+
 bool cTimer::Matches(time_t t)
 {
-  if (active) {
-     if (t == 0)
-        t = time(NULL);
-     struct tm now = *localtime(&t);
-     int weekday = now.tm_wday == 0 ? 6 : now.tm_wday - 1; // we start with monday==0!
-     int begin = TimeToInt(start);
-     int end   = TimeToInt(stop);
-     bool twoDays = (end < begin);
+  startTime = stopTime = 0;
+  if (t == 0)
+     t = time(NULL);
 
-     bool todayMatches = false, yesterdayMatches = false;
-     if ((day & 0x80000000) != 0) {
-        if ((day & (1 << weekday)) != 0)
-           todayMatches = true;
-        else if (twoDays) {
-           int yesterday = weekday == 0 ? 6 : weekday - 1;
-           if ((day & (1 << yesterday)) != 0)
-              yesterdayMatches = true;
-           }
-        }
-     else if (day == now.tm_mday)
-        todayMatches = true;
-     else if (twoDays) {
-        time_t ty = t - SECSINDAY;
-        if (day == localtime(&ty)->tm_mday)
-           yesterdayMatches = true;
-        }
-     if (todayMatches || (twoDays && yesterdayMatches)) {
-        startTime = Day(t - (yesterdayMatches ? SECSINDAY : 0)) + begin;
-        stopTime  = startTime + (twoDays ? SECSINDAY - begin + end : end - begin);
-        }
-     else
-        startTime = stopTime = 0;
-     return startTime <= t && t <= stopTime;
-     }
-  return false;
+  int begin  = TimeToInt(start); // seconds from midnight
+  int length = TimeToInt(stop) - begin;
+  if (length < 0)
+     length += SECSINDAY;
+
+  int DaysToCheck = IsSingleEvent() ? 31 : 7;
+  for (int i = -1; i <= DaysToCheck; i++) {
+      time_t t0 = IncDay(t, i);
+      if (DayMatches(t0)) {
+         time_t a = SetTime(t0, begin);
+         time_t b = a + length;
+         if (t <= b) {
+            startTime = a;
+            stopTime = b;
+            break;
+            }
+         }
+      }
+  return active && startTime <= t && t <= stopTime;
 }
 
 time_t cTimer::StartTime(void)

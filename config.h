@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.63 2001/08/25 13:30:54 kls Exp $
+ * $Id: config.h 1.64 2001/08/26 11:35:00 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -141,6 +141,11 @@ public:
   bool Parse(const char *s);
   bool Save(FILE *f);
   bool IsSingleEvent(void);
+  int cTimer::GetMDay(time_t t);
+  int cTimer::GetWDay(time_t t);
+  bool cTimer::DayMatches(time_t t);
+  time_t cTimer::IncDay(time_t t, int Days);
+  time_t cTimer::SetTime(time_t t, int SecondsFromMidnight);
   bool Matches(time_t t = 0);
   time_t StartTime(void);
   time_t StopTime(void);
