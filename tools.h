@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.15 2000/09/17 07:58:19 kls Exp $
+ * $Id: tools.h 1.16 2000/09/29 16:19:31 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -13,6 +13,7 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <stdio.h>
+#include <string.h>
 #include <syslog.h>
 #include <sys/stat.h>
 #include <sys/types.h>

@@ -66,9 +66,12 @@ Video Disk Recorder User's Manual
      if no key is pressed for about half a second, the digits collected so
      far will define the channel number.
 
+  Pressing the '0' key toggles between the current and the previous channel.
+
   After switching to a different channel the channel number and name, as well
-  as the current time are displayed at the top of the screen. This line
-  automatically goes away after about two seconds, or if any key is pressed.
+  as the current time are displayed at the top of the screen. If available, the
+  'current/next' information will be displayed below this line. This display
+  automatically goes away after about five seconds, or if any key is pressed.
   To bring up the channel display without switching channels you can press
   the "Ok" button.
 
@@ -97,7 +100,7 @@ Video Disk Recorder User's Manual
 
   All recordings are listed in the "Recordings" menu. Browse through the
   list with the "Up" and "Down" button and press "Ok" (or the "Red" button)
-  to start playback.
+  to start playback. New recordings are marked with an '*'.
   Playback can be stopped via the Main menu by selecting "Stop replaying",
   or by pressing the "Blue" button outside the menu.
 

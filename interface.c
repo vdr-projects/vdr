@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.c 1.19 2000/09/19 17:41:23 kls Exp $
+ * $Id: interface.c 1.21 2000/10/03 13:28:02 kls Exp $
  */
 
 #include "interface.h"
@@ -69,6 +69,8 @@ unsigned int cInterface::GetCh(bool Wait)
 
 eKeys cInterface::GetKey(bool Wait)
 {
+  if (open)
+     cDvbApi::PrimaryDvbApi->Flush();
   if (SVDRP)
      SVDRP->Process();
   eKeys Key = keyFromWait != kNone ? keyFromWait : Keys.Get(GetCh(Wait));
@@ -84,6 +86,8 @@ void cInterface::PutKey(eKeys Key)
 eKeys cInterface::Wait(int Seconds, bool KeepChar)
 {
   eKeys Key = kNone;
+  if (open)
+     cDvbApi::PrimaryDvbApi->Flush();
   RcIo.Flush(500);
   if (cFile::AnyFileReady(-1, Seconds * 1000))
      Key = GetKey();
@@ -326,15 +330,8 @@ eKeys cInterface::DisplayChannel(int Number, const char *Name, bool WithInfo)
   if (Number)
      RcIo.Number(Number);
   if (Name && !Recording()) {
-     char *RunningTitle = "", *RunningSubtitle = "", *NextTitle = "", *NextSubtitle = "";
-     int Lines = 0;
-     if (Number && WithInfo && EIT.IsValid()) {
-        if (*(RunningTitle    = EIT.GetRunningTitle()))    Lines++;
-        if (*(RunningSubtitle = EIT.GetRunningSubtitle())) Lines++;
-        if (*(NextTitle       = EIT.GetNextTitle()))       Lines++;
-        if (*(NextSubtitle    = EIT.GetNextSubtitle()))    Lines++;
-        }
-     Open(MenuColumns, Lines + 1);
+     Open(MenuColumns, 5);
+     cDvbApi::PrimaryDvbApi->Fill(0, 0, MenuColumns, 1, clrBackground);
      int BufSize = MenuColumns + 1;
      char buffer[BufSize];
      if (Number)
@@ -346,27 +343,38 @@ eKeys cInterface::DisplayChannel(int Number, const char *Name, bool WithInfo)
      struct tm *now = localtime(&t);
      snprintf(buffer, BufSize, "%02d:%02d", now->tm_hour, now->tm_min);
      Write(-5, 0, buffer);
+     cDvbApi::PrimaryDvbApi->Flush();
+
+     char *RunningTitle = "", *RunningSubtitle = "", *NextTitle = "", *NextSubtitle = "";
+     int Lines = 0;
+     if (Number && WithInfo && EIT.IsValid()) {
+        if (*(RunningTitle    = EIT.GetRunningTitle()))    Lines++;
+        if (*(RunningSubtitle = EIT.GetRunningSubtitle())) Lines++;
+        if (*(NextTitle       = EIT.GetNextTitle()))       Lines++;
+        if (*(NextSubtitle    = EIT.GetNextSubtitle()))    Lines++;
+        }
      if (Lines > 0) {
         const int t = 6;
-        int w = MenuColumns - t;
         int l = 1;
+        cDvbApi::PrimaryDvbApi->Fill(0, 1, MenuColumns, Lines, clrBackground);
         if (*RunningTitle) {
            Write(0, l, EIT.GetRunningTime(), clrYellow, clrBackground);
-           snprintf(buffer, BufSize, "%.*s", w, RunningTitle);    Write(t, l, buffer, clrCyan, clrBackground);
+           Write(t, l, RunningTitle, clrCyan, clrBackground);
            l++;
            }
         if (*RunningSubtitle) {
-           snprintf(buffer, BufSize, "%.*s", w, RunningSubtitle); Write(t, l, buffer, clrCyan, clrBackground);
+           Write(t, l, RunningSubtitle, clrCyan, clrBackground);
            l++;
            }
         if (*NextTitle) {
            Write(0, l, EIT.GetNextTime(), clrYellow, clrBackground);
-           snprintf(buffer, BufSize, "%.*s", w, NextTitle);       Write(t, l, buffer, clrCyan, clrBackground);
+           Write(t, l, NextTitle, clrCyan, clrBackground);
            l++;
            }
         if (*NextSubtitle) {
-           snprintf(buffer, BufSize, "%.*s", w, NextSubtitle);    Write(t, l, buffer, clrCyan, clrBackground);
+           Write(t, l, NextSubtitle, clrCyan, clrBackground);
            }
+        cDvbApi::PrimaryDvbApi->Flush();
         }
      eKeys Key = Wait(5, true);
      if (Key == kOk)

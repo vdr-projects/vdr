@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.27 2000/09/17 12:45:55 kls Exp $
+ * $Id: dvbapi.c 1.30 2000/10/03 13:26:16 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -19,6 +19,7 @@ extern "C" {
 #include <sys/stat.h>
 #include <sys/time.h>
 #include <unistd.h>
+#include "dvbapi.h"
 #include "interface.h"
 #include "tools.h"
 #include "videodir.h"
@@ -71,6 +72,56 @@ extern "C" {
 
 typedef unsigned char uchar;
 
+// --- cResumeFile ------------------------------------------------------------
+
+cResumeFile::cResumeFile(const char *FileName)
+{
+  fileName = new char[strlen(FileName) + strlen(RESUMEFILESUFFIX) + 1];
+  if (fileName) {
+     strcpy(fileName, FileName);
+     strcat(fileName, RESUMEFILESUFFIX);
+     }
+  else
+     esyslog(LOG_ERR, "ERROR: can't allocate memory for resume file name");
+}
+
+cResumeFile::~cResumeFile()
+{
+  delete fileName;
+}
+
+int cResumeFile::Read(void)
+{
+  int resume = -1;
+  if (fileName) {
+     int f = open(fileName, O_RDONLY);
+     if (f >= 0) {
+        if (read(f, &resume, sizeof(resume)) != sizeof(resume)) {
+           resume = -1;
+           LOG_ERROR_STR(fileName);
+           }
+        close(f);
+        }
+     else if (errno != ENOENT)
+        LOG_ERROR_STR(fileName);
+     }
+  return resume;
+}
+
+bool cResumeFile::Save(int Index)
+{
+  if (fileName) {
+     int f = open(fileName, O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR | S_IRGRP);
+     if (f >= 0) {
+        if (write(f, &Index, sizeof(Index)) != sizeof(Index))
+           LOG_ERROR_STR(fileName);
+        close(f);
+        return true;
+        }
+     }
+  return false;
+}
+
 // --- cIndexFile ------------------------------------------------------------
 
 class cIndexFile {
@@ -78,8 +129,9 @@ private:
   struct tIndex { int offset; uchar type; uchar number; short reserved; };
   int f;
   char *fileName, *pFileExt;
-  int size, last, resume;
+  int size, last;
   tIndex *index;
+  cResumeFile resumeFile;
   bool CatchUp(void);
 public:
   cIndexFile(const char *FileName, bool Record = false);
@@ -89,21 +141,22 @@ public:
   int GetNextIFrame(int Index, bool Forward, uchar *FileNumber, int *FileOffset, int *Length = NULL);
   int Get(uchar FileNumber, int FileOffset);
   int Last(void) { return last; }
-  int GetResume(void) { return resume; }
-  bool StoreResume(int Index);
+  int GetResume(void) { return resumeFile.Read(); }
+  bool StoreResume(int Index) { return resumeFile.Save(Index); }
   static char *Str(int Index, bool WithFrame = false);
   };
 
 cIndexFile::cIndexFile(const char *FileName, bool Record)
+:resumeFile(FileName)
 {
   f = -1;
   fileName = pFileExt = NULL;
   size = 0;
-  last = resume = -1;
+  last = -1;
   index = NULL;
   if (FileName) {
-     fileName = new char[strlen(FileName) + strlen(INDEXFILESUFFIX) + strlen(RESUMEFILESUFFIX) + 1];
-     if (fileName) {                        // no max() function at hand...
+     fileName = new char[strlen(FileName) + strlen(INDEXFILESUFFIX) + 1];
+     if (fileName) {
         strcpy(fileName, FileName);
         pFileExt = fileName + strlen(fileName);
         strcpy(pFileExt, INDEXFILESUFFIX);
@@ -154,19 +207,6 @@ cIndexFile::cIndexFile(const char *FileName, bool Record)
               LOG_ERROR_STR(fileName);
            delete fileName;
            fileName = pFileExt = NULL;
-           }
-        else {
-           strcpy(pFileExt, RESUMEFILESUFFIX);
-           int resumeFile = open(fileName, O_RDONLY);
-           if (resumeFile >= 0) {
-              if (read(resumeFile, &resume, sizeof(resume)) != sizeof(resume)) {
-                 resume = -1;
-                 LOG_ERROR_STR(fileName);
-                 }
-              close(resumeFile);
-              }
-           else if (errno != ENOENT)
-              LOG_ERROR_STR(fileName);
            }
         }
      else
@@ -296,22 +336,6 @@ int cIndexFile::Get(uchar FileNumber, int FileOffset)
      return i;
      }
   return -1;
-}
-
-bool cIndexFile::StoreResume(int Index)
-{
-  if (fileName) {
-     int resumeFile = open(fileName, O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR | S_IRGRP);
-     if (resumeFile >= 0) {
-        if (write(resumeFile, &Index, sizeof(Index)) != sizeof(Index))
-           LOG_ERROR_STR(fileName);
-        close(resumeFile);
-        return true;
-        }
-     else if (errno != ENOENT)
-        LOG_ERROR_STR(fileName);
-     }
-  return false;
 }
 
 char *cIndexFile::Str(int Index, bool WithFrame)
@@ -1087,6 +1111,8 @@ cDvbApi::cDvbApi(const char *FileName)
   start_color();
   leaveok(stdscr, true);
   window = NULL;
+#else
+  osd = NULL;
 #endif
   lastProgress = lastTotal = -1;
   replayTitle = NULL;
@@ -1488,18 +1514,19 @@ void cDvbApi::Open(int w, int h)
   d *= lineHeight;
   int x = (720 - MenuColumns * charWidth) / 2; //TODO PAL vs. NTSC???
   int y = (576 - MenuLines * lineHeight) / 2 + d;
-  Cmd(OSD_Open, 4, x, y, x + w - 1, y + h - 1);
+  osd = new cDvbOsd(videoDev, x, y, x + w - 1, y + h - 1, 4);
   #define SETCOLOR(n, r, g, b, o) Cmd(OSD_SetColor, n, r, g, b, o)
+  SETCOLOR(clrTransparent, 0x00, 0x00, 0x00,   0);
 #endif
-  SETCOLOR(clrBackground, 0x00, 0x00, 0x00, 127); // background 50% gray
-  SETCOLOR(clrBlack,      0x00, 0x00, 0x00, 255);
-  SETCOLOR(clrRed,        0xFC, 0x14, 0x14, 255);
-  SETCOLOR(clrGreen,      0x24, 0xFC, 0x24, 255);
-  SETCOLOR(clrYellow,     0xFC, 0xC0, 0x24, 255);
-  SETCOLOR(clrBlue,       0x00, 0x00, 0xFC, 255);
-  SETCOLOR(clrCyan,       0x00, 0xFC, 0xFC, 255);
-  SETCOLOR(clrMagenta,    0xB0, 0x00, 0xFC, 255);
-  SETCOLOR(clrWhite,      0xFC, 0xFC, 0xFC, 255);
+  SETCOLOR(clrBackground,  0x00, 0x00, 0x00, 127); // background 50% gray
+  SETCOLOR(clrBlack,       0x00, 0x00, 0x00, 255);
+  SETCOLOR(clrRed,         0xFC, 0x14, 0x14, 255);
+  SETCOLOR(clrGreen,       0x24, 0xFC, 0x24, 255);
+  SETCOLOR(clrYellow,      0xFC, 0xC0, 0x24, 255);
+  SETCOLOR(clrBlue,        0x00, 0x00, 0xFC, 255);
+  SETCOLOR(clrCyan,        0x00, 0xFC, 0xFC, 255);
+  SETCOLOR(clrMagenta,     0xB0, 0x00, 0xFC, 255);
+  SETCOLOR(clrWhite,       0xFC, 0xFC, 0xFC, 255);
 
   lastProgress = lastTotal = -1;
 }
@@ -1512,7 +1539,8 @@ void cDvbApi::Close(void)
      window = 0;
      }
 #else
-  Cmd(OSD_Close);
+  delete osd;
+  osd = NULL;
 #endif
   lastProgress = lastTotal = -1;
 }
@@ -1523,7 +1551,7 @@ void cDvbApi::Clear(void)
   SetColor(clrBackground, clrBackground);
   Fill(0, 0, cols, rows, clrBackground);
 #else
-  Cmd(OSD_Clear);
+  osd->Clear();
 #endif
 }
 
@@ -1539,7 +1567,7 @@ void cDvbApi::Fill(int x, int y, int w, int h, eDvbColor color)
       }
   wsyncup(window); // shouldn't be necessary because of 'syncok()', but w/o it doesn't work
 #else
-  Cmd(OSD_FillBlock, color, x * charWidth, y * lineHeight, (x + w) * charWidth - 1, (y + h) * lineHeight - 1);
+  osd->Fill(x * charWidth, y * lineHeight, (x + w) * charWidth - 1, (y + h) * lineHeight - 1, color);
 #endif
 }
 
@@ -1555,9 +1583,17 @@ void cDvbApi::Text(int x, int y, const char *s, eDvbColor colorFg, eDvbColor col
 #ifdef DEBUG_OSD
   SetColor(colorFg, colorBg);
   wmove(window, y, x); // ncurses wants 'y' before 'x'!
-  waddstr(window, s);
+  waddnstr(window, s, cols - x);
 #else
-  Cmd(OSD_Text, (int(colorBg) << 16) | colorFg, x * charWidth, y * lineHeight, 1, 0, s);
+  osd->Text(x * charWidth, y * lineHeight, s, colorFg, colorBg);
+#endif
+}
+
+void cDvbApi::Flush(void)
+{
+#ifndef DEBUG_OSD
+  if (osd)
+     osd->Flush();
 #endif
 }
 
@@ -1567,11 +1603,13 @@ bool cDvbApi::ShowProgress(bool Initial)
 
   if (GetIndex(&Current, &Total)) {
      if (Initial) {
+        Clear();
         if (replayTitle)
            Text(0, 0, replayTitle);
         }
      if (Total != lastTotal)
         Text(-7, 2, cIndexFile::Str(Total));
+     Flush();
 #ifdef DEBUG_OSD
      int p = cols * Current / Total;
      Fill(0, 1, p, 1, clrGreen);
@@ -1597,12 +1635,14 @@ bool cDvbApi::ShowProgress(bool Initial)
            color = clrWhite;
            }
         if (lastProgress < 0)
-           Cmd(OSD_FillBlock, clrWhite, 0, y1, w - 1, y2);
-        Cmd(OSD_FillBlock, color, x1, y1, x2, y2);
+           osd->Fill(0, y1, w - 1, y2, clrWhite);
+        osd->Fill(x1, y1, x2, y2, color);
         lastProgress = p;
         }
+     Flush();
 #endif
      Text(0, 2, cIndexFile::Str(Current));
+     Flush();
      lastTotal = Total;
      return true;
      }

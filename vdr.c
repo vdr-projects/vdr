@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.35 2000/09/20 16:45:01 kls Exp $
+ * $Id: vdr.c 1.36 2000/10/03 13:52:26 kls Exp $
  */
 
 #include <getopt.h>
@@ -193,12 +193,14 @@ int main(int argc, char *argv[])
   cOsdBase *Menu = NULL;
   cReplayControl *ReplayControl = NULL;
   int LastChannel = -1;
+  int PreviousChannel = CurrentChannel;
 
   while (!Interrupted) {
         // Channel display:
         if (CurrentChannel != LastChannel) {
            if (!Menu)
               Channels.ShowChannel(CurrentChannel, LastChannel > 0);
+           PreviousChannel = LastChannel;
            LastChannel = CurrentChannel;
            }
         // Timers and Recordings:
@@ -244,8 +246,13 @@ int main(int argc, char *argv[])
            }
         else {
            switch (key) {
+             // Toggle channels:
+             case k0:
+                  if (PreviousChannel != CurrentChannel)
+                     Channels.SwitchTo(PreviousChannel);
+                  break;
              // Direct Channel Select:
-             case k0: case k1: case k2: case k3: case k4: case k5: case k6: case k7: case k8: case k9:
+             case k1 ... k9:
                   if (!Interface.Recording())
                      Menu = new cDirectChannelSelect(key);
                   break;

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.19 2000/09/19 17:55:09 kls Exp $
+ * $Id: tools.c 1.20 2000/09/29 16:19:28 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -17,7 +17,6 @@
 #endif
 #include <signal.h>
 #include <stdlib.h>
-#include <string.h>
 #include <sys/time.h>
 #include <sys/wait.h>
 #include <unistd.h>

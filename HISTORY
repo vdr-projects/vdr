@@ -203,3 +203,21 @@ Video Disk Recorder Revision History
 - The daemon mode (option '-d') now no longer works with REMOTE=KBD (there
   is no stdin in daemon mode, so KBD makes no sense - plus it sometimes
   crashed).
+
+2000-10-03: Version 0.65
+
+- Modified LIRC interface to better handle repeat function.
+- Faster OSD by first writing into a bitmap and then sending the entire bitmap
+  to the DVB driver at once (requires the patch 'dvb.c.071.diff' to be applied
+  against the version 0.71 DVB driver file 'dvb.c').
+- When switching channels the channel is now immediately displayed, and the
+  current/next information is shown as soon as it becomes available.
+- No longer displaying the year in the 'Recordings' menu to saves space for the
+  title.
+- The 'Recordings' menu now displays a '*' to indicate new recordings.
+- Added the description of the timers.conf file to the FORMATS file (thanks to
+  Bastian Guse).
+- Displaying as much as possible of the current/next info (dropping characters
+  that would display only partially).
+- In normal viewing mode the '0' key now toggles between the current and the
+  previous channel.

@@ -15,17 +15,21 @@ If you have the DVB driver source in a different location
 you will have to change the definition of DVBDIR in the
 Makefile.
 
-This program requires the card driver version 0.05 or higher
-to work properly. If you are using driver version 0.7 you need
-to load the dvb.o module with option outstream=0, so your insmod
-statement should read 'insmod dvb.o outstream=0'. This is currently
-necessary because 'vdr' works with AV_PES data and will change
-once it has been modified to work directly with MPEG2.
+This program requires the card driver version 0.71 or higher
+to work properly. Currently you need to load the dvb.o module with
+option outstream=0, so your insmod statement should read
+'insmod dvb.o outstream=0'. This is necessary because 'vdr' works
+with AV_PES data and will change once it has been modified to work
+directly with MPEG2. You also need to apply the patch 'dvb.c.071.diff'
+for the On Screen Display to work properly.
 
 After extracting the package, change into the VDR directory
 and type 'make'. This should produce an executable file
 named 'vdr', which can be run after the DVB driver has been
 installed.
+
+IMPORTANT: See "Configuration files" below for information on how
+=========  to set up the configuration files at the proper location!
 
 The 'vdr' program can be controlled via the PC keyboard or
 an infrared remote control unit. Define the REMOTE macro to one of the
@@ -115,7 +119,8 @@ Configuration files:
 There are three configuration files that hold information about
 channels, remote control keys and timers. By default these files are
 assumed to be located in the video directory, but a different directory
-can be used with the '-c' option.
+can be used with the '-c' option. For starters just copy all *.conf files from
+the VDR directory into your video directory.
 
 The configuration files can be edited with any text editor, or will be written
 by the 'vdr' program if any changes are made inside the on-screen menus.

@@ -1,10 +1,10 @@
 /*
- * recording.h: Recording file handling
+ * recording.c: Recording file handling
  *
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.15 2000/07/29 14:08:17 kls Exp $
+ * $Id: recording.c 1.18 2000/10/03 12:39:28 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -15,6 +15,7 @@
 #include <string.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include "dvbapi.h"
 #include "interface.h"
 #include "tools.h"
 #include "videodir.h"
@@ -170,18 +171,24 @@ const char *cRecording::FileName(void)
   return fileName;
 }
 
-const char *cRecording::Title(char Delimiter)
+const char *cRecording::Title(char Delimiter, bool NewIndicator)
 {
+  char New = ' ';
+  if (NewIndicator) {
+     cResumeFile ResumeFile(FileName());
+     if (ResumeFile.Read() <= 0)
+        New = '*';
+     }
   delete titleBuffer;
   titleBuffer = NULL;
   struct tm *t = localtime(&start);
-  asprintf(&titleBuffer, "%02d.%02d.%02d%c%02d:%02d%c%s",
+  asprintf(&titleBuffer, "%02d.%02d%c%02d:%02d%c%c%s",
                          t->tm_mday,
                          t->tm_mon + 1,
-                         t->tm_year % 100,
                          Delimiter,
                          t->tm_hour,
                          t->tm_min,
+                         New,
                          Delimiter,
                          name);
   return titleBuffer;

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.27 2000/09/11 21:13:46 kls Exp $
+ * $Id: menu.c 1.30 2000/10/03 14:06:44 kls Exp $
  */
 
 #include "menu.h"
@@ -985,7 +985,7 @@ cMenuRecordingItem::cMenuRecordingItem(cRecording *Recording)
 
 void cMenuRecordingItem::Set(void)
 {
-  SetText(recording->Title('\t'));
+  SetText(recording->Title('\t', true));
 }
 
 // --- cMenuRecordings -------------------------------------------------------
@@ -1002,7 +1002,7 @@ public:
   };
 
 cMenuRecordings::cMenuRecordings(void)
-:cOsdMenu("Recordings", 9, 6)
+:cOsdMenu("Recordings", 6, 6)
 {
   if (Recordings.Load()) {
      cRecording *recording = Recordings.First();
@@ -1186,7 +1186,7 @@ cDirectChannelSelect::~cDirectChannelSelect()
 eOSState cDirectChannelSelect::ProcessKey(eKeys Key)
 {
   switch (Key) {
-    case k0: case k1: case k2: case k3: case k4: case k5: case k6: case k7: case k8: case k9:
+    case k0 ... k9:
          if (number >= 0) {
             number = number * 10 + Key - k0;
             cChannel *channel = Channels.GetByNumber(number);

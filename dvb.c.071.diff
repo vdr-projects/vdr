@@ -1,0 +1,100 @@
+--- dvb.c.001	Sun Sep 17 22:02:37 2000
++++ dvb.c	Tue Oct  3 12:11:46 2000
+@@ -1143,6 +1143,8 @@
+ {
+         int bpp;
+         int i;
++        int d, delta; //XXX kls: additional variables for data compression
++        u8 c;         //XXX kls: additional variables for data compression
+         DECLARE_WAITQUEUE(wait, current);
+         
+         if (dvb->bmp_state==BMP_LOADING) {
+@@ -1160,27 +1162,38 @@
+         if (dvb->bmp_state==BMP_LOADING)
+                 return -1;
+         dvb->bmp_state=BMP_LOADING;
+-        if (format==BITMAP8) bpp=8;
+-        else if (format==BITMAP4) bpp=4;
+-        else if (format==BITMAP2) bpp=2;
+-        else if (format==BITMAP1) bpp=1;
++        if      (format==BITMAP8) { bpp=8; delta = 1; } //XXX kls: initialize 'delta', too
++        else if (format==BITMAP4) { bpp=4; delta = 2; }
++        else if (format==BITMAP2) { bpp=2; delta = 4; }
++        else if (format==BITMAP1) { bpp=1; delta = 8; }
+         else {
+           dvb->bmp_state=BMP_NONE;
+           return -1;
+         }
+-        dvb->bmplen= (dx*dy*bpp)/8;
++        dvb->bmplen= ((dx*dy*bpp+7)&~7)/8; //XXX kls: need to round up to include partial bytes
+         dvb->bmpp=0;
+         if (dvb->bmplen>32768) {
+                 dvb->bmp_state=BMP_NONE;
+                 return -1;
+         }
+         for (i=0; i<dy; i++) {
+-                if (copy_from_user(dvb->bmpbuf+1024+i*dx, data+i*inc, (dx*bpp)/8)) {
++                if (copy_from_user(dvb->bmpbuf+1024+i*dx, data+i*inc, dx)) { //XXX kls: incoming data is "1 byte per pixel"
+                         dvb->bmp_state=BMP_NONE;
+                         return -1;
+                 }
+                 
+         }
++        // XXX kls: Incoming data is always "one byte per pixel", so we need to compress
++        // the data in case we have a lower resolution than 8 bpp:
++        if (format != BITMAP8) {
++                for (i=0; i<dx*dy/delta; i++) {
++                        c = ((u8 *)dvb->bmpbuf)[1024+i*delta+delta-1];
++                        for (d=delta-2; d>=0; d--) {
++                                c |= (((u8 *)dvb->bmpbuf)[1024+i*delta+d] << ((delta-d-1)*bpp));
++                        ((u8 *)dvb->bmpbuf)[1024+i] = c;
++                        }
++                }
++        }
+         dvb->bmplen+=1024;
+         return outcom(dvb, COMTYPE_OSD, LoadBmp, 3, format, dx, dy);
+ } 
+@@ -1256,24 +1269,25 @@
+         int i;
+ 
+         w=x1-x0+1; h=y1-y0+1;
+-        if (inc>0)
+-                w=inc;
+-        if (w>720 || h>576) 
++        if (inc<=0)
++                inc=w; //XXX kls: see dvb_4l.h: "inc<=0 uses blockwidth as linewidth"
++        if (w<=0 || w>720 || h<=0 || h>576) //XXX kls: checking lower bounds, too
+                 return -1;
+-        bpp=8;     //dvb->osdbpp[dvb->osdwin];
+-        bpl=w*bpp/8;
++        bpp=dvb->osdbpp[dvb->osdwin]+1; //XXX kls: 'bpp' needs to be taken from the window
++        bpl=((w*bpp+7)&~7)/8; //XXX kls: need to round up to include partial bytes
+         size=h*bpl;
+-        lpb=(64*1024)/bpl;
++        lpb=(32*1024)/bpl; //XXX kls: apparently 32K is the maximum possible value
+         bnum=size/(lpb*bpl);
+         brest=size-bnum*lpb*bpl;
+ 
+         for (i=0; i<bnum; i++) {
+-                LoadBitmap(dvb, BITMAP8, w, lpb, inc, data);
++                LoadBitmap(dvb, bpp2bit[dvb->osdbpp[dvb->osdwin]], w, lpb, inc, data); //XXX kls: need to take the format from the actual window
+                 BlitBitmap(dvb, dvb->osdwin, x0, y0+i*lpb, 1);
+-                data+=bpl;
++                data+=lpb*inc; //XXX kls: incrementing must be done in "one byte per pixel"
++                ddelay(2); //XXX kls: without this the block is sometimes not fully displayed - firmware bug?
+         }
+         if (brest) {
+-                LoadBitmap(dvb, BITMAP8, w, brest/bpl, inc, data);
++                LoadBitmap(dvb, bpp2bit[dvb->osdbpp[dvb->osdwin]], w, brest/bpl, inc, data); //XXX kls: need to take the format from the actual window
+                 BlitBitmap(dvb, dvb->osdwin, x0, y0+bnum*lpb, 1);
+         }
+         ReleaseBitmap(dvb);
+@@ -6141,7 +6155,7 @@
+         init_waitqueue_head(&dvb->bmpq);
+         spin_lock_init (&(dvb->bmplock));
+         dvb->bmpp=dvb->bmplen=0;
+-        dvb->bmpbuf=vmalloc(32768+1024);
++        dvb->bmpbuf=vmalloc(8*32768+1024); //XXX kls: '8*' to be prepared for the maximum possible incoming data at 1 bpp
+ 
+         init_waitqueue_head(&dvb->debiq);
+         dvb->debilock=SPIN_LOCK_UNLOCKED;
