@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: transfer.c 1.21 2005/01/06 16:23:11 kls Exp $
+ * $Id: transfer.c 1.22 2005/01/07 15:44:30 kls Exp $
  */
 
 #include "transfer.h"
@@ -20,7 +20,7 @@ cTransfer::cTransfer(int VPid, int APid1, int APid2, int DPid1, int DPid2)
 {
   ringBuffer = new cRingBufferLinear(TRANSFERBUFSIZE, TS_SIZE * 2, true, "Transfer");
   remux = new cRemux(VPid, APid1, APid2, DPid1, DPid2);
-  hasDolby = VPid != 0 && DPid1 != 0;
+  needsBufferReserve = VPid != 0 && DPid1 != 0;
   active = false;
 }
 
@@ -67,7 +67,7 @@ void cTransfer::Action(void)
   active = true;
   while (active) {
 #ifdef FW_NEEDS_BUFFER_RESERVE_FOR_AC3
-        if (hasDolby) {
+        if (needsBufferReserve) {
            if (IsAttached() && !Cleared) {
               PlayPes(NULL, 0);
               Cleared = true;

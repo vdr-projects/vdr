@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: transfer.h 1.7 2005/01/06 16:23:00 kls Exp $
+ * $Id: transfer.h 1.8 2005/01/07 15:44:32 kls Exp $
  */
 
 #ifndef __TRANSFER_H
@@ -20,7 +20,7 @@ class cTransfer : public cReceiver, public cPlayer, public cThread {
 private:
   cRingBufferLinear *ringBuffer;
   cRemux *remux;
-  bool hasDolby;
+  bool needsBufferReserve;
   bool active;
 protected:
   virtual void Activate(bool On);
