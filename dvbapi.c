@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.169 2002/04/06 15:21:29 kls Exp $
+ * $Id: dvbapi.c 1.170 2002/04/07 09:35:51 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -1194,9 +1194,10 @@ void cReplayBuffer::DisplayFrame(uchar *b, int Length)
   CHECK(ioctl(videoDev, VIDEO_STILLPICTURE, &sp));
 #else
 #define MIN_IFRAME 400000
-  for (int i = MIN_IFRAME / Length + 1; i > 0; i--)
+  for (int i = MIN_IFRAME / Length + 1; i > 0; i--) {
       safe_write(videoDev, b, Length);
-  usleep(10000); // allows the buffer to be displayed in case the progress display is active
+      usleep(1); // allows the buffer to be displayed in case the progress display is active
+      }
 #endif
 }
 

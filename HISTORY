@@ -1179,7 +1179,8 @@ Video Disk Recorder Revision History
 - Added Spanish language texts (thanks to Ruben Nunez Francisco).
 - Fixed resetting the "First day" timer parameter once the timer actually starts
   recording.
-- Fixed the still picture workaround in case the progress display is active.
+- Fixed the still picture workaround in case the progress display is active
+  (thanks to Gerald Raaf).
 - Fixed a problem with accessing the epg.data file before it is fully written
   (thanks to Thilo Wunderlich for reporting this one).
 - Now the EPG scan skips channels that have their 'Ca' parameter explicitly set

@@ -276,3 +276,7 @@ Dirk Wiebel <dirk@wiebel.de>
  for reporting a bug in the editing process in case a previously edited file
  with the same name was manually deleted on a system with more than one video
  directory
+
+Gerald Raaf <graaf@attglobal.net>
+ for helping to fix the still picture workaround in case the progress display
+ is active
