@@ -1901,11 +1901,7 @@ Video Disk Recorder Revision History
 
 2002-12-22: Version 1.1.21
 
-- The 'C' record in the 'epg.data' file now also contains the channel numbers (see
-  man vdr(5)). This does mean some redundancy, but it helps applications that don't
-  want to parse the channel definitions in order to work with the channel numbers.
-  When reading the 'epg.data' file VDR only interprets the channel IDs, everyting
-  else is optional and has no meaning to VDR.
 - Fixed the 'channels.conf' entries for "Studio Universal" and "Disney Channel".
 - Fixed handling channels in the "Channels" menu in case there are ':@nnn' group
   separators without names (thanks to Guy Roussin for reporting this one).
+- The SVDRP command CHAN now also accepts channel IDs.
