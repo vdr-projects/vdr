@@ -919,3 +919,5 @@ Video Disk Recorder Revision History
 - Activating the "Recordings" menu now displays "scanning recordings..." to
   give the user some feedback in case this takes longer.
 - Status messages are now displayed centered.
+- Removed the 'Tools' subdirectory from the VDR archive. All contributed tools
+  can now be found at ftp://ftp.cadsoft.de/pub/people/kls/vdr/Tools.
