@@ -858,6 +858,9 @@ Thomas v. Keller <v.keller@neckarufer.de>
  for reporting a crash in case the CAM connection fails while a CAM menu
  is being presented
 
+Richard Scobie <r.scobie@clear.net.nz>
+ for adding Asia-Pacific satellites to 'sources.conf'
+
 Emil Petersky <petersky@isr.uni-stuttgart.de>
  for adding "Slovak Link" and "Czech Link" to 'ca.conf'
 
