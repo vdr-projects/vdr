@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.18 2002/09/15 11:24:18 kls Exp $
+ * $Id: dvbdevice.c 1.19 2002/09/15 13:12:25 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -200,7 +200,11 @@ cSpuDecoder *cDvbDevice::GetSpuDecoder(void)
 
 bool cDvbDevice::GrabImage(const char *FileName, bool Jpeg, int Quality, int SizeX, int SizeY)
 {
-  int videoDev = DvbOpen(DEV_VIDEO, CardIndex(), O_RDWR, true);
+  char buffer[PATH_MAX];
+  snprintf(buffer, sizeof(buffer), "%s%d", DEV_VIDEO, CardIndex());
+  int videoDev = open(buffer, O_RDWR);
+  if (videoDev < 0)
+     LOG_ERROR_STR(buffer);
   if (videoDev >= 0) {
      int result = 0;
      struct video_mbuf mbuf;

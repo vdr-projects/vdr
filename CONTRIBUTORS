@@ -172,6 +172,7 @@ Andreas Schultz <aschultz@warp10.net>
  for adding cDevice::NewOsd() to allow a derived cDevice class to implement its own
  OSD capabilities
  for implementing an SPU decoder
+ for fixing opening /dev/video in cDvbDevice::GrabImage() in case of NEWSTRUCT driver
 
 Aaron Holtzman
  for writing 'ac3dec'
