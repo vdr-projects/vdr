@@ -11,7 +11,7 @@
  * The cDolbyRepacker code was originally written by Reinhard Nissl <rnissl@gmx.de>,
  * and adapted to the VDR coding style by Klaus.Schmidinger@cadsoft.de.
  *
- * $Id: remux.c 1.32 2005/03/13 12:02:15 kls Exp $
+ * $Id: remux.c 1.33 2005/03/20 13:18:15 kls Exp $
  */
 
 #include "remux.h"
@@ -59,8 +59,8 @@ private:
     get_length,
     output_packet
     } state;
-  void ResetPesHeader(void);
-  void AppendSubStreamID(void);
+  void ResetPesHeader(bool ContinuationFrame = false);
+  void AppendSubStreamID(bool ContinuationFrame = false);
   bool FinishRemainder(cRingBufferLinear *ResultBuffer, const uchar *const Data, const int Todo, int &Done, int &Bite);
   bool StartNewPacket(cRingBufferLinear *ResultBuffer, const uchar *const Data, const int Todo, int &Done, int &Bite);
 public:
@@ -105,23 +105,26 @@ cDolbyRepacker::cDolbyRepacker(void)
   Reset();
 }
 
-void cDolbyRepacker::AppendSubStreamID(void)
+void cDolbyRepacker::AppendSubStreamID(bool ContinuationFrame)
 {
   if (subStreamId) {
      pesHeader[pesHeaderLen++] = subStreamId;
+     // number of ac3 frames "starting" in this packet (1 by design).
+     pesHeader[pesHeaderLen++] = 0x01;
+     // offset to start of first ac3 frame (0 means "no ac3 frame starting"
+     // so 1 (by design) addresses the first byte after the next two bytes).
      pesHeader[pesHeaderLen++] = 0x00;
-     pesHeader[pesHeaderLen++] = 0x00;
-     pesHeader[pesHeaderLen++] = 0x00;
+     pesHeader[pesHeaderLen++] = (ContinuationFrame ? 0x00 : 0x01);
      }
 }
 
-void cDolbyRepacker::ResetPesHeader(void)
+void cDolbyRepacker::ResetPesHeader(bool ContinuationFrame)
 {
   pesHeader[6] = 0x80;
   pesHeader[7] = 0x00;
   pesHeader[8] = 0x00;
   pesHeaderLen = 9;
-  AppendSubStreamID();
+  AppendSubStreamID(ContinuationFrame);
 }
 
 void cDolbyRepacker::Reset(void)
@@ -327,8 +330,8 @@ int cDolbyRepacker::Put(cRingBufferLinear *ResultBuffer, const uchar *Data, int 
                   // start a new packet
                   if (!StartNewPacket(ResultBuffer, data, todo, done, bite))
                      return done;
-                  // prepare for next packet
-                  ResetPesHeader();
+                  // prepare for next (continuation) packet
+                  ResetPesHeader(state == output_packet);
                   }
                data += bite;
                done += bite;
