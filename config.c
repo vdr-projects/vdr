@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.11 2000/07/16 14:28:20 kls Exp $
+ * $Id: config.c 1.12 2000/07/21 13:10:50 kls Exp $
  */
 
 #include "config.h"
@@ -217,7 +217,7 @@ bool cChannel::Switch(cDvbApi *DvbApi)
   if (!DvbApi->Recording()) {
      isyslog(LOG_INFO, "switching to channel %d", Index() + 1);
      CurrentChannel = Index();
-     for (int i = 3; --i;) {
+     for (int i = 3; i--;) {
          if (DvbApi->SetChannel(frequency, polarization, diseqc, srate, vpid, apid, ca, pnr))
             return true;
          esyslog(LOG_ERR, "retrying");
