@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: osm.c 1.5 2000/04/16 15:50:21 kls Exp $
+ * $Id: osm.c 1.6 2000/04/22 09:56:33 kls Exp $
  */
 
 #include <signal.h>
@@ -71,6 +71,7 @@ int main(int argc, char *argv[])
   while (!Interrupted) {
         // Direct Channel Select (action):
         if (dcNumber) {
+           Interface.DisplayChannel(dcNumber);
            if (time_ms() - dcTime > DIRECTCHANNELTIMEOUT) {
               cChannel::SwitchTo(dcNumber - 1);
               dcNumber = 0;
@@ -120,8 +121,10 @@ int main(int argc, char *argv[])
              // Direct Channel Select (input):
              case k0: case k1: case k2: case k3: case k4: case k5: case k6: case k7: case k8: case k9:
              {
-               dcNumber = dcNumber * 10 + key - k0;
-               dcTime = time_ms();
+               if (!DvbApi.Recording()) {
+                  dcNumber = dcNumber * 10 + key - k0;
+                  dcTime = time_ms();
+                  }
              }
              // Record/Replay Control:
              case kBegin:         DvbApi.Skip(-INT_MAX); break;
