@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.88 2001/07/28 16:17:28 kls Exp $
+ * $Id: menu.c 1.89 2001/07/31 15:28:10 kls Exp $
  */
 
 #include "menu.h"
@@ -590,7 +590,7 @@ cMenuChannelItem::cMenuChannelItem(int Index, cChannel *Channel)
   index = Index;
   channel = Channel;
   if (channel->groupSep)
-     SetColor(clrWhite, clrCyan);
+     SetColor(clrCyan, clrBackground);
   Set();
 }
 
@@ -600,7 +600,7 @@ void cMenuChannelItem::Set(void)
   if (!channel->groupSep)
      asprintf(&buffer, "%d\t%s", channel->number, channel->name );
   else
-     asprintf(&buffer, "\t%s", channel->name);
+     asprintf(&buffer, "---\t%s ----------------------------------------------------------------", channel->name);
   SetText(buffer, false);
 }
 
