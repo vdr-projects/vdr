@@ -6,7 +6,7 @@
  *
  * DVD support initially written by Andreas Schultz <aschultz@warp10.net>
  *
- * $Id: dvbapi.c 1.98 2001/08/05 12:17:02 kls Exp $
+ * $Id: dvbapi.c 1.99 2001/08/05 15:46:21 kls Exp $
  */
 
 //#define DVDDEBUG        1
@@ -1187,6 +1187,8 @@ private:
   int GetPESHeaderLength(const uchar *Data);
   int SendPCM(int size);
   void playDecodedAC3(void);
+  void handleAC3(unsigned char *sector, int length);
+  void putFrame(unsigned char *sector, int length);
   unsigned int getAudioStream(unsigned int StreamId);
   void setChapid(void);
   void NextState(int State) { prevcycle = cyclestate; cyclestate = State; }
@@ -1209,6 +1211,9 @@ public:
 #define cREADFRAME       4
 #define cOUTPACK         5
 #define cOUTFRAMES       6
+
+#define aAC3          0x80
+#define aLPCM         0xA0
 
 cDVDplayBuffer::cDVDplayBuffer(cDvbApi *DvbApi, int VideoDev, int AudioDev, cDVD *DvD, int title)
 :cPlayBuffer(DvbApi, VideoDev, AudioDev)
@@ -1257,13 +1262,13 @@ unsigned int cDVDplayBuffer::getAudioStream(unsigned int StreamId)
   int track = (cur_pgc->audio_control[StreamId] >> 8) & 0x07;
   switch (vts_file->vtsi_mat->vts_audio_attr[track].audio_format) {
     case 0: // ac3
-            trackID = 0x80;
+            trackID = aAC3;
             break;
     case 2: // mpeg1
     case 3: // mpeg2ext
     case 4: // lpcm
     case 6: // dts
-            trackID = 0xC0;
+            trackID = aLPCM;
             break;
     default: esyslog(LOG_ERR, "ERROR: unknown Audio stream info");
              return 0;
@@ -1765,8 +1770,8 @@ int cDVDplayBuffer::SendPCM(int size)
         buffer[7] = 0x00;
         buffer[8] = 0x00;
 
-        buffer[9]  = 0xa0;  // substream ID
-        buffer[10] = 0x00; // other stuff (see DVD specs), ignored by driver
+        buffer[9]  = aLPCM; // substream ID
+        buffer[10] = 0x00;  // other stuff (see DVD specs), ignored by driver
         buffer[11] = 0x00;
         buffer[12] = 0x00;
         buffer[13] = 0x00;
@@ -1775,9 +1780,7 @@ int cDVDplayBuffer::SendPCM(int size)
 
         length += 6;
 
-        cFrame *frame = new cFrame(buffer, length);
-        while (Busy() && !blockInput && !Put(frame))
-              ;
+        putFrame(buffer, length);
         size -= MAXSIZE;
         }
   return 0;
@@ -1802,6 +1805,37 @@ void cDVDplayBuffer::playDecodedAC3(void)
      lpcm_count=0;
 }
 
+void cDVDplayBuffer::handleAC3(unsigned char *sector, int length)
+{
+  if (dolbyDev) {
+     while (length > 0) {
+           int w = fwrite(sector, 1, length , dolbyDev);
+           if (w < 0) {
+              LOG_ERROR;
+              break;
+              }
+           length -= w;
+           sector += w;
+           }
+     }
+  else {
+     if (ac3stat == AC3_PLAY)
+        ac3_decode_data(sector, sector+length, 0, &ac3inp, &ac3outp, (char *)ac3data);
+     else if (ac3stat == AC3_START) {
+        ac3_decode_data(sector, sector+length, 1, &ac3inp, &ac3outp, (char *)ac3data);
+        ac3stat = AC3_PLAY;
+        }
+     }
+  //playDecodedAC3();
+}
+
+void cDVDplayBuffer::putFrame(unsigned char *sector, int length)
+{
+  cFrame *frame = new cFrame(sector, length);
+  while (Busy() && !blockInput && !Put(frame))
+        ;
+}
+
 int cDVDplayBuffer::decode_packet(unsigned char *sector, int trickMode)
 {
   uchar pt = 1;
@@ -1818,9 +1852,10 @@ int cDVDplayBuffer::decode_packet(unsigned char *sector, int trickMode)
   int offset = 14 + GetStuffingLen(sector);
   sector += offset;
   int r = DVD_VIDEO_LB_LEN - offset;
-  int ac3datalen = r;
+  int datalen = r;
 
   sector[6] &= 0x8f;
+  uchar *data = sector;
 
   switch (GetPacketType(sector)) {
     case VIDEO_STREAM_S ... VIDEO_STREAM_E:
@@ -1840,12 +1875,12 @@ int cDVDplayBuffer::decode_packet(unsigned char *sector, int trickMode)
          }
     case PRIVATE_STREAM1:
          {
-           ac3datalen = GetPacketLength(sector);
+           datalen = GetPacketLength(sector);
            //skip optional Header bytes
-           ac3datalen -= GetPESHeaderLength(sector);
-           sector += GetPESHeaderLength(sector);
+           datalen -= GetPESHeaderLength(sector);
+           data += GetPESHeaderLength(sector);
            //skip mandatory header bytes
-           sector += 3;
+           data += 3;
            //fallthrough is intended
          }
     case PRIVATE_STREAM2:
@@ -1857,33 +1892,24 @@ int cDVDplayBuffer::decode_packet(unsigned char *sector, int trickMode)
               return 1;
 
            // skip PS header bytes
-           sector += 6;
-           //we are now at the beginning of the payload
+           data += 6;
+           // data now points to the beginning of the payload
 
-           //correct ac3 data lenght - FIXME: why 13 ???
-           ac3datalen -= 13;
-           if (audioTrack == *sector) {
-              sector +=4;
-              if (dolbyDev) {
-                 while (ac3datalen > 0) {
-                       int w = fwrite(sector, 1, ac3datalen , dolbyDev);
-                       if (w < 0) {
-                          LOG_ERROR;
-                          break;
-                          }
-                       ac3datalen -= w;
-                       sector += w;
-                       }
-                 }
-              else {
-                 if (ac3stat == AC3_PLAY)
-                    ac3_decode_data(sector, sector+ac3datalen, 0, &ac3inp, &ac3outp, (char *)ac3data);
-                 else if (ac3stat == AC3_START) {
-                    ac3_decode_data(sector, sector+ac3datalen, 1, &ac3inp, &ac3outp, (char *)ac3data);
-                    ac3stat = AC3_PLAY;
-                    }
-                 }
-              //playDecodedAC3();
+           if (audioTrack == *data) {
+              switch (audioTrack & 0xF8) {
+                case aAC3:
+                     data += 4;
+                     // correct a3 data lenght - FIXME: why 13 ???
+                     datalen -= 13;
+                     handleAC3(data, datalen);
+                     break;
+                case aLPCM:
+                     // write(audio, sector+14 , sector[19]+(sector[18]<<8)+6);
+                     putFrame(sector, GetPacketLength(sector));
+                     break;
+                default:
+                     break;
+                }
               }
            return pt;
          }
@@ -1908,11 +1934,9 @@ int cDVDplayBuffer::decode_packet(unsigned char *sector, int trickMode)
            return pt;
          }
     }
-  cFrame *frame = new cFrame(sector, r);
-  while (Busy() && !blockInput && !Put(frame))
-        ;
-
-  playDecodedAC3();
+  putFrame(sector, r);
+  if ((audioTrack & 0xF8) == aAC3)
+     playDecodedAC3();
   return pt;
 }
 
