@@ -1683,3 +1683,5 @@ Video Disk Recorder Revision History
   (thanks to Oliver Endriss for reporting this one).
 - Fixed handling audio tracks in cDvbDevice.
 - Updated channels.conf.terr (thanks to Uwe Scheffler).
+- Fixed displaying the group separators in the channel display (thanks to Martin
+  Hammerschmid for pointing out this one).

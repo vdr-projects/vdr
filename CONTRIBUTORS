@@ -47,6 +47,7 @@ Martin Hammerschmid <martin@hammerschmid.com>
  for detecting a deadlock when switching channels via Schedule/Now|Next/Switch
  for adding a missing #include to ringbuffer.c
  for adding a missing 'public' keyword in device.h
+ for pointing out a bug in displaying the group separators in the channel display
 
 Bastian Guse <bastian@nocopy.de>
  for writing the FORMATS entry for timers.conf
