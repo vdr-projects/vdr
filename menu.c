@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.258 2003/06/13 14:31:15 kls Exp $
+ * $Id: menu.c 1.259 2003/06/15 12:25:47 kls Exp $
  */
 
 #include "menu.h"
@@ -733,7 +733,7 @@ eOSState cMenuChannels::New(void)
 {
   if (HasSubMenu())
      return osContinue;
-  return AddSubMenu(new cMenuEditChannel(Channels.Get(Current()), true));
+  return AddSubMenu(new cMenuEditChannel(GetChannel(Current()), true));
 }
 
 eOSState cMenuChannels::Delete(void)
