@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: status.h 1.4 2002/07/13 10:48:50 kls Exp $
+ * $Id: status.h 1.5 2002/07/14 10:54:39 kls Exp $
  */
 
 #ifndef __STATUS_H
@@ -25,11 +25,14 @@ protected:
                // If ChannelNumber is 0, this is before the channel is being switched,
                // otherwise ChannelNumber is the number of the channel that has been switched to.
   virtual void Recording(const cDevice *Device, const char *Name) {}
-               // The given DVB device has started recording Name. Name is the full directory
-               // name of the recording. If Name is NULL, the recording has ended. 
+               // The given DVB device has started recording Name. Name is the name of the
+               // recording, without any directory path.
+               // If Name is NULL, the recording has ended. 
   virtual void Replaying(const cControl *Control, const char *Name) {}
-               // The given player control has started replaying Name. Name is the full directory
-               // name of the recording. If Name is NULL, the replay has ended. 
+               // The given player control has started replaying Name. Name is the name of the
+               // recording, without any directory path. In case of a player that can't provide
+               // a name, Name can be a string that identifies the player type (like, e.g., "DVD").
+               // If Name is NULL, the replay has ended. 
   virtual void SetVolume(int Volume, bool Absolute) {}
                // The volume has been set to the given value, either
                // absolutely or relative to the current volume.

@@ -1369,3 +1369,8 @@ Video Disk Recorder Revision History
   cPlayer and cControl have been given the functions GetIndex() and GetReplayMode() to
   allow access to the player's status.
 - Added cOsd::OpenRaw() to create a raw OSD (needed for displaying SPUs).
+- Changed the symantics of the Name parameter in cStatus::Recording() and
+  cStatus::Replaying(). It is no longer the full directory name of the recording,
+  but rather just the basic name. This has been changed to allow players that can't
+  provide a name to simply use a string that describes the player type (like, e.g.,
+  "DVD").
