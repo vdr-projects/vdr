@@ -371,6 +371,8 @@ Gerald Raaf <graaf@attglobal.net>
  for helping to fix the still picture workaround in case the progress display
  is active
  for his support in keeping the Premiere World channels up to date in 'channels.conf'
+ for reporting a problem in device handling in the CICAM menu in case a VDR
+ instance was started with a specific device using the -D option
 
 Andreas Roedl <flood@flood-net.de>
  for adding some DVB-T channels for Berlin (Germany) to channels.conf.terr

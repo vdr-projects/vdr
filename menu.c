@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.255 2003/06/06 14:59:47 kls Exp $
+ * $Id: menu.c 1.256 2003/06/07 12:31:57 kls Exp $
  */
 
 #include "menu.h"
@@ -2109,8 +2109,9 @@ cMenuSetupCICAM::cMenuSetupCICAM(void)
   for (int d = 0; d < cDevice::NumDevices(); d++) {
       for (int i = 0; i < 2; i++) {
           char buffer[32];
-          snprintf(buffer, sizeof(buffer), "%s%d %d", tr("Setup.CICAM$CICAM DVB"), d + 1, i + 1);
-          Add(new cMenuEditCaItem(buffer, &data.CaCaps[d][i]));
+          int CardIndex = cDevice::GetDevice(d)->CardIndex();
+          snprintf(buffer, sizeof(buffer), "%s%d %d", tr("Setup.CICAM$CICAM DVB"), CardIndex + 1, i + 1);
+          Add(new cMenuEditCaItem(buffer, &data.CaCaps[CardIndex][i]));
           }
       }
   SetHelpKeys();
