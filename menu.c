@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.194 2002/05/18 13:08:42 kls Exp $
+ * $Id: menu.c 1.195 2002/05/19 14:55:22 kls Exp $
  */
 
 #include "menu.h"
@@ -18,6 +18,7 @@
 #include "i18n.h"
 #include "menuitems.h"
 #include "plugin.h"
+#include "status.h"
 #include "videodir.h"
 
 #define MENUTIMEOUT     120 // seconds
@@ -2162,6 +2163,7 @@ void cDisplayChannel::DisplayChannel(const cChannel *Channel)
   Interface->Write(0, 0, buffer);
   const char *date = DayDateTime();
   Interface->Write(-strlen(date), 0, date);
+  cStatusMonitor::MsgOsdChannel(buffer);
 }
 
 void cDisplayChannel::DisplayInfo(void)
@@ -2215,6 +2217,7 @@ void cDisplayChannel::DisplayInfo(void)
               Interface->Flush();
               lines = Lines;
               lastTime = time_ms();
+              cStatusMonitor::MsgOsdProgramme(Present ? Present->GetTime() : 0, PresentTitle, PresentSubtitle, Following ? Following->GetTime() : 0, FollowingTitle, FollowingSubtitle);
               }
            }
         }
@@ -2431,8 +2434,10 @@ cRecordControl::cRecordControl(cDvbApi *DvbApi, cTimer *Timer)
      cRecording Recording(timer, Title, Subtitle, Summary);
      fileName = strdup(Recording.FileName());
      cRecordingUserCommand::InvokeCommand(RUC_BEFORERECORDING, fileName);
-     if (dvbApi->StartRecord(fileName, Channels.GetByNumber(timer->channel)->ca, timer->priority))
+     if (dvbApi->StartRecord(fileName, Channels.GetByNumber(timer->channel)->ca, timer->priority)) {
         Recording.WriteSummary();
+        cStatusMonitor::MsgRecording(dvbApi, fileName);
+        }
      Interface->DisplayRecording(dvbApi->CardIndex(), true);
      }
   else
@@ -2479,6 +2484,7 @@ bool cRecordControl::GetEventInfo(void)
 void cRecordControl::Stop(bool KeepInstant)
 {
   if (timer) {
+     cStatusMonitor::MsgRecording(dvbApi, NULL);
      dvbApi->StopRecord();
      timer->SetRecording(false);
      if ((IsInstant() && !KeepInstant) || (timer->IsSingleEvent() && !timer->Matches())) {
@@ -2667,12 +2673,15 @@ cReplayControl::cReplayControl(void)
      marks.Load(fileName);
      if (!dvbApi->StartReplay(fileName))
         Interface->Error(tr("Channel locked (recording)!"));
+     else
+        cStatusMonitor::MsgReplaying(dvbApi, fileName);
      }
 }
 
 cReplayControl::~cReplayControl()
 {
   Hide();
+  cStatusMonitor::MsgReplaying(dvbApi, NULL);
   dvbApi->StopReplay();
 }
 

@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 1.36 2002/05/14 21:12:28 kls Exp $
+# $Id: Makefile 1.37 2002/05/18 15:10:10 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -23,7 +23,7 @@ DTVLIB   = $(DTVDIR)/libdtv.a
 
 OBJS = config.o dvbapi.o dvbosd.o eit.o font.o i18n.o interface.o menu.o\
        menuitems.o osdbase.o osd.o plugin.o recording.o remote.o remux.o ringbuffer.o\
-       svdrp.o thread.o tools.o vdr.o videodir.o
+       status.o svdrp.o thread.o tools.o vdr.o videodir.o
 
 OSDFONT = -adobe-helvetica-medium-r-normal--23-*-100-100-p-*-iso8859-1
 FIXFONT = -adobe-courier-bold-r-normal--25-*-100-100-m-*-iso8859-1

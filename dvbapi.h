@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.h 1.70 2002/05/18 14:03:12 kls Exp $
+ * $Id: dvbapi.h 1.71 2002/05/19 10:13:34 kls Exp $
  */
 
 #ifndef __DVBAPI_H
@@ -119,7 +119,7 @@ public:
          // will be returned.
          // The caller must check whether the returned DVB device is actually
          // recording and stop recording if necessary.
-  int CardIndex(void) { return cardIndex; }
+  int CardIndex(void) const { return cardIndex; }
          // Returns the card index of this DvbApi (0 ... MAXDVBAPI - 1).
   static void SetCaCaps(void);
          // Sets the CaCaps of all DVB devices according to the Setup data.

@@ -4,13 +4,14 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 1.26 2002/05/18 14:00:21 kls Exp $
+ * $Id: osd.c 1.27 2002/05/19 12:56:57 kls Exp $
  */
 
 #include "osd.h"
 #include <string.h>
 #include "dvbapi.h"
 #include "i18n.h"
+#include "status.h"
 
 // --- cOsd ------------------------------------------------------------------
 
@@ -430,8 +431,11 @@ void cOsdMenu::Display(void)
         }
      for (int i = first; i < count; i++) {
          cOsdItem *item = Get(i);
-         if (item)
+         if (item) {
             item->Display(i - first, i == current ? clrBlack : clrWhite, i == current ? clrCyan : clrBackground);
+            if (i == current)
+               cStatusMonitor::MsgOsdCurrentItem(item->Text());
+            }
          if (++n == MAXOSDITEMS) //TODO get this from Interface!!!
             break;
          }
@@ -455,8 +459,11 @@ void cOsdMenu::RefreshCurrent(void)
 void cOsdMenu::DisplayCurrent(bool Current)
 {
   cOsdItem *item = Get(current);
-  if (item)
+  if (item) {
      item->Display(current - first, Current ? clrBlack : clrWhite, Current ? clrCyan : clrBackground);
+     if (Current)
+        cStatusMonitor::MsgOsdCurrentItem(item->Text());
+     }
 }
 
 void cOsdMenu::Clear(void)

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.45 2002/05/13 16:21:55 kls Exp $
+ * $Id: tools.h 1.46 2002/05/18 15:10:10 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -135,7 +135,7 @@ public:
   virtual ~cListBase();
   void Add(cListObject *Object, cListObject *After = NULL);
   void Ins(cListObject *Object, cListObject *Before = NULL);
-  void Del(cListObject *Object);
+  void Del(cListObject *Object, bool DeleteObject = true);
   virtual void Move(int From, int To);
   void Move(cListObject *From, cListObject *To);
   virtual void Clear(void);

@@ -4,13 +4,14 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.c 1.4 2002/05/18 13:09:04 kls Exp $
+ * $Id: menuitems.c 1.5 2002/05/19 12:34:33 kls Exp $
  */
 
 #include "menuitems.h"
 #include <ctype.h>
 #include "i18n.h"
 #include "plugin.h"
+#include "status.h"
 
 // --- cMenuEditItem ---------------------------------------------------------
 
@@ -397,6 +398,7 @@ void cMenuTextItem::Display(int Offset, eDvbColor FgColor, eDvbColor BgColor)
   // scroll indicators use inverted color scheme!
   if (CanScrollUp())   Interface->Write(x + w - 1, y,         "^", bgColor, fgColor);
   if (CanScrollDown()) Interface->Write(x + w - 1, y + h - 1, "v", bgColor, fgColor);
+  cStatusMonitor::MsgOsdTextItem(text);
 }
 
 void cMenuTextItem::ScrollUp(bool Page)
@@ -406,6 +408,7 @@ void cMenuTextItem::ScrollUp(bool Page)
      offset = max(offset - (Page ? h : 1), 0);
      Display();
      }
+  cStatusMonitor::MsgOsdTextItem(NULL, true);
 }
 
 void cMenuTextItem::ScrollDown(bool Page)
@@ -415,6 +418,7 @@ void cMenuTextItem::ScrollDown(bool Page)
      offset = min(offset + (Page ? h : 1), lines - h);
      Display();
      }
+  cStatusMonitor::MsgOsdTextItem(NULL, false);
 }
 
 eOSState cMenuTextItem::ProcessKey(eKeys Key)

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.c 1.49 2002/05/18 13:08:20 kls Exp $
+ * $Id: interface.c 1.50 2002/05/19 12:02:57 kls Exp $
  */
 
 #include "interface.h"
@@ -12,6 +12,7 @@
 #include <unistd.h>
 #include "i18n.h"
 #include "osd.h"
+#include "status.h"
 
 cInterface *Interface = NULL;
 
@@ -127,6 +128,7 @@ void cInterface::Clear(void)
 {
   if (open)
      cOsd::Clear();
+  cStatusMonitor::MsgOsdClear();
 }
 
 void cInterface::ClearEol(int x, int y, eDvbColor Color)
@@ -287,6 +289,7 @@ void cInterface::Title(const char *s)
         x = 0;
      Write(x, 0, s, clrBlack, clrCyan);
      }
+  cStatusMonitor::MsgOsdTitle(s);
 }
 
 void cInterface::Status(const char *s, eDvbColor FgColor, eDvbColor BgColor)
@@ -299,6 +302,7 @@ void cInterface::Status(const char *s, eDvbColor FgColor, eDvbColor BgColor)
         x = 0;
      Write(x, Line, s, FgColor, BgColor);
      }
+  cStatusMonitor::MsgOsdStatusMessage(s);
 }
 
 void cInterface::Info(const char *s)
@@ -354,6 +358,7 @@ void cInterface::Help(const char *Red, const char *Green, const char *Yellow, co
   HelpButton(1, Green,  clrBlack, clrGreen);
   HelpButton(2, Yellow, clrBlack, clrYellow);
   HelpButton(3, Blue,   clrWhite, clrBlue);
+  cStatusMonitor::MsgOsdHelpKeys(Red, Green, Yellow, Blue);
 }
 
 void cInterface::QueryKeys(void)

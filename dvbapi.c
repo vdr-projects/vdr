@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.178 2002/05/18 14:26:08 kls Exp $
+ * $Id: dvbapi.c 1.179 2002/05/19 14:46:38 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -25,6 +25,7 @@ extern "C" {
 #include "recording.h"
 #include "remux.h"
 #include "ringbuffer.h"
+#include "status.h"
 #include "tools.h"
 #include "videodir.h"
 
@@ -2124,6 +2125,8 @@ eSetChannelResult cDvbApi::SetChannel(int ChannelNumber, int Frequency, char Pol
   StopTransfer();
   StopReplay();
 
+  cStatusMonitor::MsgChannelSwitch(this, 0);
+
   // Must set this anyway to avoid getting stuck when switching through
   // channels with 'Up' and 'Down' keys:
   currentChannel = ChannelNumber;
@@ -2302,6 +2305,8 @@ eSetChannelResult cDvbApi::SetChannel(int ChannelNumber, int Frequency, char Pol
 
   if (Result == scrOk && siProcessor)
      siProcessor->SetCurrentTransponder(Frequency);
+
+  cStatusMonitor::MsgChannelSwitch(this, ChannelNumber);
 
   return Result;
 }
@@ -2546,6 +2551,7 @@ void cDvbApi::SetVolume(int Volume, bool Absolute)
      audioMixer_t am;
      am.volume_left = am.volume_right = volume;
      CHECK(ioctl(fd_audio, AUDIO_SET_MIXER, &am));
+     cStatusMonitor::MsgSetVolume(volume, Absolute);
      if (volume > 0)
         mute = false;
      }

@@ -4,7 +4,7 @@
 </head>
 <body bgcolor="white">
 
-<h1>The VDR Plugin System</h1>
+<center><h1>The VDR Plugin System</h1></center>
 
 VDR provides an easy to use plugin interface that allows additional functionality
 to be added to the program by implementing a dynamically loadable library file.
@@ -12,9 +12,16 @@ This interface allows programmers to develop additional functionality for VDR co
 separate from the core VDR source, without the need of patching the original
 VDR code (and all the problems of correlating various patches).
 <p>
-This document describes the "outside" interface of the plugin system.
-It handles everything necessary for a plugin to get hooked into the core
+<!--X1.1.3--><table width=100%><tr><td bgcolor=red>&nbsp;</td><td width=100%>
+This document is divided into two parts, the first one describing the
+<a href="#Part I - The Outside Interface"><i>outside</i> interface</a>
+of the plugin system, and the second one describing the
+<a href="#Part II - The Inside Interface"><i>inside</i> interface</a>.
+The <i>outside</i> interface handles everything necessary for a plugin to get hooked into the core
 VDR program and present itself to the user.
+The <i>inside</i> interface provides the plugin code access to VDR's internal data
+structures and allows it to hook itself into specific areas to perform special actions.
+<!--X1.1.3--></td></tr></table>
 <p>
 <!--X1.1.1--><table width=100%><tr><td bgcolor=lime>&nbsp;</td><td width=100%>
 Important modifications introduced in version 1.1.1 are marked like this.
@@ -26,6 +33,8 @@ Important modifications introduced in version 1.1.2 are marked like this.
 Important modifications introduced in version 1.1.3 are marked like this.
 <!--X1.1.3--></td></tr></table>
 <!--<p>TODO: Link to the document about VDR base classes to use when implementing actual functionality (yet to be written).-->
+
+<a name="Part I - The Outside Interface"><hr><center><h1>Part I - The Outside Interface</h1></center>
 
 <hr><h2>Quick start</h2>
 
@@ -839,6 +848,83 @@ vdr-hello-0.0.1.tgz
 
 in your source directory, where <tt>hello</tt> will be replaced with your actual
 plugin's name, and <tt>0.0.1</tt> will be your plugin's current version number.
+
+<!--X1.1.3--><table width=100%><tr><td bgcolor=red>&nbsp;</td><td width=100%>
+<a name="Part II - The Inside Interface"><hr><center><h1>Part II - The Inside Interface</h1></center>
+
+<hr><h2>Status monitor</h2>
+
+<center><i><b>A piece of the action</b></i></center><p>
+
+If a plugin wants to get informed on various events in VDR, it can derive a class from
+<tt>cStatusMonitor</tt>, as in
+
+<p><table><tr><td bgcolor=#F0F0F0><pre><br>
+#include &lt;vdr/status.h&gt;
+
+class cMyStatusMonitor : public cStatusMonitor {
+protected:
+  virtual void ChannelSwitch(const cDvbApi *DvbApi, int ChannelNumber);
+  };
+
+void cMyStatusMonitor::ChannelSwitch(const cDvbApi *DvbApi, int ChannelNumber)
+{
+  if (ChannelNumber)
+     dsyslog("channel switched to %d on DVB %d", ChannelNumber, DvbApi-&gt;CardIndex());
+  else
+     dsyslog("about to switch channel on DVB %d", DvbApi-&gt;CardIndex());
+}
+</pre></td></tr></table><p>
+
+An object of this class will be informed whenever the channel is switched on one of
+the DVB devices. It could be used in a plugin like this:
+
+<p><table><tr><td bgcolor=#F0F0F0><pre><br>
+#include &lt;vdr/plugin.h&gt;
+
+class cPluginStatus : public cPlugin {
+private:
+  cMyStatusMonitor *statusMonitor;
+public:
+  cPluginStatus(void);
+  virtual ~cPluginStatus();
+  ...
+  virtual bool Start(void);
+  ...
+  };
+
+cPluginStatus::cPluginStatus(void)
+{
+  statusMonitor = NULL;
+}
+
+cPluginStatus::~cPluginStatus()
+{
+  delete statusMonitor;
+}
+
+bool cPluginStatus::Start(void)
+{
+  statusMonitor = new cMyStatusMonitor;
+  return true;
+}
+</pre></td></tr></table><p>
+
+Note that the actual object is created in the <tt>Start()</tt> function, not in the
+constructor! It is also important to delete the object in the destructor, in order to
+avoid memory leaks.
+<p>
+A Plugin can implement any number of <tt>cStatusMonitor</tt> derived objects, and once
+the plugin has been started it may create and delete them as necessary.
+No further action apart from creating an object derived from <tt>cStatusMonitor</tt>
+is necessary. VDR will automatically hook it into a list of status monitors, with
+their individual virtual member functions being called in the same sequence as the
+objects were created.
+<p>
+See the file <tt>status.h</tt> for detailed information on which status monitor
+member functions are available in <tt>cStatusMonitor</tt>. You only need to implement
+the functions you actually want to use.
+<!--X1.1.3--></td></tr></table>
 
 </body>
 </html>
