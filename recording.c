@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.6 2000/04/24 09:45:13 kls Exp $
+ * $Id: recording.c 1.7 2000/04/30 10:22:13 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -62,7 +62,7 @@ void AssertFreeDiskSpace(void)
   static time_t LastFreeDiskCheck = 0;
   if (time(NULL) - LastFreeDiskCheck > DISKCHECKDELTA) {
      LastFreeDiskCheck = time(NULL);
-     if (DvbApi.Recording() && LowDiskSpace()) {
+     if (LowDiskSpace()) {
         // Remove the oldest file that has been "deleted":
         cRecordings Recordings;
         if (Recordings.Load(true)) {

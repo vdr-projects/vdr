@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.h 1.5 2000/04/29 14:45:47 kls Exp $
+ * $Id: osd.h 1.6 2000/04/30 09:47:52 kls Exp $
  */
 
 #ifndef __OSD_H
@@ -46,10 +46,13 @@ public:
   };
 
 class cOsdBase {
+protected:
+  bool needsFastResponse;
 public:
-  cOsdBase(void) {}
+  cOsdBase(bool FastResponse = false) { needsFastResponse = FastResponse; }
   virtual ~cOsdBase() {}
   virtual eOSState ProcessKey(eKeys Key) = 0;
+  bool NeedsFastResponse(void) { return needsFastResponse; }
   };
 
 class cOsdMenu : public cOsdBase, public cList<cOsdItem> {

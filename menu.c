@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.10 2000/04/29 14:53:27 kls Exp $
+ * $Id: menu.c 1.11 2000/04/30 10:10:19 kls Exp $
  */
 
 #include "menu.h"
@@ -997,6 +997,7 @@ cMenuMain::cMenuMain(void)
   Add(new cOsdItem("Channels",   osChannels));
   Add(new cOsdItem("Timer",      osTimer));
   Add(new cOsdItem("Recordings", osRecordings));
+  Display();
 }
 
 eOSState cMenuMain::ProcessKey(eKeys Key)
@@ -1011,6 +1012,48 @@ eOSState cMenuMain::ProcessKey(eKeys Key)
                 state = osEnd;
     }
   return state;
+}
+
+// --- cRecordControl --------------------------------------------------------
+
+cRecordControl::cRecordControl(cTimer *Timer)
+{
+  timer = Timer;
+  if (!timer) {
+     timer = new cTimer(true);
+     Timers.Add(timer);
+     Timers.Save();
+     }
+  timer->SetRecording(true);
+  cChannel::SwitchTo(timer->channel - 1);
+  cRecording Recording(timer);
+  DvbApi.StartRecord(Recording.FileName());
+}
+
+cRecordControl::~cRecordControl()
+{
+  DvbApi.StopRecord();
+  timer->SetRecording(false);
+  if (timer->IsSingleEvent() && !timer->Matches()) {
+     // checking timer->Matches() to make sure we don't delete the timer
+     // if the program was cancelled before the timer's stop time!
+     isyslog(LOG_INFO, "deleting timer %d", timer->Index() + 1);
+     Timers.Del(timer);
+     Timers.Save();
+     }
+}
+
+eOSState cRecordControl::ProcessKey(eKeys Key)
+{
+  if (!timer->Matches())
+     return osEnd;
+  switch (Key) {
+    case kNone: break;
+    case kMenu: return osMenu; // allow switching to menu
+    default:    return osUnknown; // anything else is blocked while recording
+    }
+  AssertFreeDiskSpace();
+  return osContinue;
 }
 
 // --- cReplayControl --------------------------------------------------------
@@ -1043,7 +1086,7 @@ void cReplayControl::Show(void)
 {
   if (!visible) {
      Interface.Open(MenuColumns, -3);
-     visible = true;
+     needsFastResponse = visible = true;
      shown = DvbApi.ShowProgress(true);
      }
 }
@@ -1052,7 +1095,7 @@ void cReplayControl::Hide(void)
 {
   if (visible) {
      Interface.Close();
-     visible = false;
+     needsFastResponse = visible = false;
      }
 }
 
