@@ -8,3 +8,7 @@ VDR Plugin 'sky' Revision History
 2002-12-13: Version 0.1.0
 
 - Changed setting of CXX and CXXFLAGS variables in Makefile.
+
+2003-05-09: Version 0.1.1
+
+- Changed Start() to Initialize().

@@ -200,6 +200,7 @@ Andreas Schultz <aschultz@warp10.net>
  for suggesting a Make.config file
  for making EIT filtering use masks to reduce the number of filters
  for suggesting to remove the Mute() call from cDvbDevice::StillPicture()
+ for suggesting to separate the startup of a plugin into an "early" and a "late" phase
 
 Aaron Holtzman
  for writing 'ac3dec'

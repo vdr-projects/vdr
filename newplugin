@@ -12,7 +12,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: newplugin 1.14 2002/12/13 14:51:46 kls Exp $
+# $Id: newplugin 1.15 2003/05/09 14:59:28 kls Exp $
 
 $PLUGIN_NAME = $ARGV[0] || die "Usage: newplugin <name>\n";
 
@@ -162,6 +162,7 @@ public:
   virtual const char *Description(void) { return DESCRIPTION; }
   virtual const char *CommandLineHelp(void);
   virtual bool ProcessArgs(int argc, char *argv[]);
+  virtual bool Initialize(void);
   virtual bool Start(void);
   virtual void Housekeeping(void);
   virtual const char *MainMenuEntry(void) { return MAINMENUENTRY; }
@@ -191,6 +192,12 @@ const char *cPlugin${PLUGIN_CLASS}::CommandLineHelp(void)
 bool cPlugin${PLUGIN_CLASS}::ProcessArgs(int argc, char *argv[])
 {
   // Implement command line argument processing here if applicable.
+  return true;
+}
+
+bool cPlugin${PLUGIN_CLASS}::Initialize(void)
+{
+  // Initialize any background activities the plugin shall perform.
   return true;
 }
 

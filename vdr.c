@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.152 2003/05/03 13:39:57 kls Exp $
+ * $Id: vdr.c 1.153 2003/05/09 14:14:13 kls Exp $
  */
 
 #include <getopt.h>
@@ -355,9 +355,9 @@ int main(int argc, char *argv[])
 
   cDvbDevice::Initialize();
 
-  // Start plugins:
+  // Initialize plugins:
 
-  if (!PluginManager.StartPlugins())
+  if (!PluginManager.InitializePlugins())
      return 2;
 
   // Primary device:
@@ -437,6 +437,18 @@ int main(int argc, char *argv[])
   if (WatchdogTimeout > 0)
      if (signal(SIGALRM, Watchdog)   == SIG_IGN) signal(SIGALRM, SIG_IGN);
 
+  // Watchdog:
+
+  if (WatchdogTimeout > 0) {
+     dsyslog("setting watchdog timer to %d seconds", WatchdogTimeout);
+     alarm(WatchdogTimeout); // Initial watchdog timer start
+     }
+
+  // Start plugins:
+
+  if (!PluginManager.StartPlugins())
+     return 2;
+
   // Main program loop:
 
   cOsdObject *Menu = NULL;
@@ -447,11 +459,6 @@ int main(int argc, char *argv[])
   int MaxLatencyTime = 0;
   bool ForceShutdown = false;
   bool UserShutdown = false;
-
-  if (WatchdogTimeout > 0) {
-     dsyslog("setting watchdog timer to %d seconds", WatchdogTimeout);
-     alarm(WatchdogTimeout); // Initial watchdog timer start
-     }
 
   while (!Interrupted) {
         // Handle emergency exits:

@@ -21,18 +21,18 @@ VDR program and present itself to the user.
 The <i>internal</i> interface provides the plugin code access to VDR's internal data
 structures and allows it to hook itself into specific areas to perform special actions.
 <p>
-<!--X1.1.14--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
-Important modifications introduced in version 1.1.14 are marked like this.
-<!--X1.1.14--></td></tr></table>
-<!--X1.1.15--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
+<!--X1.1.15--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 Important modifications introduced in version 1.1.15 are marked like this.
 <!--X1.1.15--></td></tr></table>
-<!--X1.1.17--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
+<!--X1.1.17--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
 Important modifications introduced in version 1.1.17 are marked like this.
 <!--X1.1.17--></td></tr></table>
-<!--X1.1.27--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+<!--X1.1.27--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
 Important modifications introduced in version 1.1.27 are marked like this.
 <!--X1.1.27--></td></tr></table>
+<!--X1.1.31--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+Important modifications introduced in version 1.1.31 are marked like this.
+<!--X1.1.31--></td></tr></table>
 
 <hr>
 <h1>Table Of Contents</h1>
@@ -283,7 +283,12 @@ virtual ~cPlugin();
 The <b>constructor</b> shall initialize any member variables the plugin defines, but
 <b>must not access any global structures of VDR</b>.
 It also must not create any threads or other large data structures. These things
-are done in the <a href="#Getting started"><tt>Start()</tt></a> function later.
+are done in the
+<!--X1.1.31--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+<a href="#Getting started"><tt>Initialize()</tt></a> or
+<a href="#Getting started"><tt>Start()</tt></a>
+<!--X1.1.31--></td></tr></table>
+function later.
 Constructing a plugin object shall not have any side effects or produce any output,
 since VDR, for instance, has to create the plugin objects in order to get their
 command line help - and after that immediately destroys them again.
@@ -452,13 +457,28 @@ be shorter than 80 characters.
 
 If a plugin implements a function that runs in the background (presumably in a
 thread of its own), or wants to make use of <a href="#Internationalization">internationalization</a>,
-it needs to implement the function
+it needs to implement one of the functions
 
 <p><table><tr><td bgcolor=#F0F0F0><pre><br>
+<!--X1.1.31--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%><pre>
+virtual bool Initialize(void);
+<!--X1.1.31--></pre></td></tr></table>
 virtual bool Start(void);
 </pre></td></tr></table><p>
 
-which is called once for each plugin at program startup.
+which are called once for each plugin at program startup.
+<!--X1.1.31--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+The difference between these two functions is that <tt>Initialize()</tt> is
+called early at program startup, while <tt>Start()</tt> is called after everything
+else has been set up, right before the main program loop is entered. Inside the
+<tt>Start()</tt> function of any plugin it is guaranteed that the <tt>Initialize()</tt>
+functions of all plugins have  already been called. For many plugins it probably
+doesn't matter which of these functions they implement, but it may be of importance
+for, e.g., plugins that implement devices. Such plugins should create their cDevice
+derived objects in <tt>Initialize()</tt>, so that other plugins can use them in their
+<tt>Start()</tt> functions.
+<!--X1.1.31--></td></tr></table>
+<p>
 Inside this function the plugin must set up everything necessary to perform
 its task. This may, for instance, be a thread that collects data from the DVB
 stream, which is later presented to the user via a function that is available
@@ -467,10 +487,11 @@ from the main menu.
 A return value of <i>false</i> indicates that something has gone wrong and the
 plugin will not be able to perform its task. In that case, the plugin should
 write a proper error message to the log file. The first plugin that returns
-<i>false</i> from its <tt>Start()</tt> function will cause VDR to exit.
+<i>false</i> from its <tt>Initialize()</tt> or <tt>Start()</tt> function will cause
+VDR to exit.
 <p>
 If the plugin doesn't implement any background functionality or internationalized
-texts, it doesn't need to implement this function.
+texts, it doesn't need to implement either of these functions.
 
 <a name="Main menu entry"><hr><h2>Main menu entry</h2>
 
@@ -506,7 +527,7 @@ in the call to VDR.
 
 If the user selects the main menu entry of a plugin, VDR calls the function
 
-<!--X1.1.17--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
+<!--X1.1.17--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
 <p><table><tr><td bgcolor=#F0F0F0><pre><br>
 virtual cOsdObject *MainMenuAction(void);
 </pre></td></tr></table><p>
@@ -759,7 +780,8 @@ void RegisterI18n(const tI18nPhrase * const Phrases);
 
 to register them with VDR's internationalization mechanism.
 <p>
-The call to this function must be done in the <a href="#Getting started"><tt>Start()</tt></a> function of the plugin:
+The call to this function must be done in the <a href="#Getting started"><tt>Initialize()</tt></a>
+or <a href="#Getting started"><tt>Start()</tt></a> function of the plugin:
 
 <p><table><tr><td bgcolor=#F0F0F0><pre><br>
 const tI18nPhrase Phrases[] = {
@@ -1022,7 +1044,7 @@ virtual void SetAudioTrack(int Index);
 </pre></td></tr></table><p>
 
 <p>
-<!--X1.1.15--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
+<!--X1.1.15--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 If there is an additional audio track that has to be replayed with external hardware,
 the player shall call its member function
 
@@ -1303,9 +1325,7 @@ The functions to implement replaying capabilites are
 
 <p><table><tr><td bgcolor=#F0F0F0><pre><br>
 virtual bool HasDecoder(void) const;
-<!--X1.1.14--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 virtual bool CanReplay(void) const;
-<!--X1.1.14--></td></tr></table>
 virtual bool SetPlayMode(ePlayMode PlayMode);
 virtual void TrickSpeed(int Speed);
 virtual void Clear(void);
@@ -1345,20 +1365,19 @@ needed.
 <p>
 <b>Initializing new devices</b>
 <p>
+<!--X1.1.31--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
 A derived cDevice class shall implement a static function
-
-<p><table><tr><td bgcolor=#F0F0F0><pre><br>
-static bool Initialize(void);
-</pre></td></tr></table><p>
-
 in which it determines whether the necessary hardware to run this sort of
 device is actually present in this machine (or whatever other prerequisites
 might be important), and then creates as many device objects as necessary.
 See <tt>VDR/dvbdevice.c</tt> for the implementation of the <tt>cDvbDevice</tt>
 initialize function.
 <p>
-A plugin that adds devices to a VDR instance shall call this initializing
-function from its <a href="#Getting started"><tt>Start()</tt></a> function.
+A plugin that adds devices to a VDR instance shall call this
+function from its <a href="#Getting started"><tt>Initialize()</tt></a> function
+to make sure other plugins that may need to have access to all available devices
+will see them in their <a href="#Getting started"><tt>Start()</tt></a> function.
+<!--X1.1.31--></td></tr></table>
 <p>
 Nothing needs to be done to shut down the devices. VDR will automatically
 shut down (delete) all devices when the program terminates. It is therefore
@@ -1476,7 +1495,7 @@ the incoming data (by calling your <tt>Action()</tt> function).
 In case you need to do any other setup steps, like opening a file or initializing
 member variables, you should do so before calling <tt>Start()</tt>.
 <p>
-<!--X1.1.27--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+<!--X1.1.27--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
 If your remote control for some reason can't work (maybe because it was unable to
 open some file handle it requires) it can implement the virtual function
 
