@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.14 2002/09/14 11:18:22 kls Exp $
+ * $Id: dvbdevice.c 1.15 2002/09/14 12:14:38 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -596,7 +596,7 @@ bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
   // PID settings:
 
   if (HasDecoder() && (LiveView || !IsPrimaryDevice() || Channel->ca > CACONFBASE)) { // CA channels can only be decrypted in "live" mode
-     if (!HasPid(Channel->vpid) && (IsPrimaryDevice() || !pidHandles[ptVideo].used)) {
+     if (!HasPid(Channel->vpid) && (IsPrimaryDevice() || !pidHandles[ptVideo].used || Channel->ca > CACONFBASE)) {
         if (!(AddPid(Channel->apid1, ptAudio) && AddPid(Channel->vpid, ptVideo))) {//XXX+ dolby dpid1!!! (if audio plugins are attached)
            esyslog("ERROR: failed to set PIDs for channel %d", Channel->number);
            return false;
