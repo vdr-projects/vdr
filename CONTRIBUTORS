@@ -1032,6 +1032,8 @@ Marco Schlüßler <marco@lordzodiac.de>
  for pointing out that it is unnecessary to add section filters to the list of
  filters if they can't be opened
  for fixing handling error case '-1' when polling section filters
+ for suggesting to avoiding flashing effects in the OSD of full featured DVB cards
+ by explicitly clearing the OSD windows before opening them
 
 Jürgen Schmitz <j.schmitz@web.de>
  for reporting a bug in displaying the current channel when switching via the SVDRP
