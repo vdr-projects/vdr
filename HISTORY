@@ -1614,7 +1614,8 @@ Video Disk Recorder Revision History
 2002-10-20: Version 1.1.14
 
 - Fixed some faulty default parameter initializations (thanks to Robert Schiele).
-- Added further satellites to 'sources.conf' (thanks to Reinhard Walter Buchner).
+- Added further satellites to 'sources.conf' (thanks to Reinhard Walter Buchner
+  and Oliver Endriss).
 - Updated Finnish OSD texts (thanks to Jaakko Hyvätti).
 - Fixed a small glitch when switching channels (thanks to Dennis Noordsij for
   reporting this one).
