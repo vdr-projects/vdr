@@ -1727,3 +1727,4 @@ Video Disk Recorder Revision History
 - Fixed saving the polarization parameter of channels that have a number in the
   'source' parameter (thanks to Peter Seyringer for reporting this one).
 - Updated channels.conf.terr (thanks to Andy Carter).
+- Updated channels.conf.cable (thanks to Achim Lange).
