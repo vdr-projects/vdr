@@ -220,6 +220,7 @@ Werner Fink <werner@suse.de>
  under heavy load
  for improving keyboard detection
  for adding some missing cAudio handling calls
+ for replacing the 'for' loops in StripAudioPackets() with memset() calls
 
 Rolf Hakenes <hakenes@hippomi.de>
  for providing 'libdtv' and adapting the EIT mechanisms to it

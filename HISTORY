@@ -2004,3 +2004,5 @@ Video Disk Recorder Revision History
   helping to fix it).
 - Modified LOF handling to allow for C-band reception (thanks to Malcolm Caldwell).
 - Added some missing cAudio handling calls (thanks to Werner Fink).
+- Replaced the 'for' loops in StripAudioPackets() with memset() calls (thanks to
+  Werner Fink).
