@@ -2592,3 +2592,5 @@ Video Disk Recorder Revision History
 - Channels with a zero VPID no longer write a PPID into channels.conf.
 - Short channel names are now only stored if they actually differ from the
   full name.
+- The EPG scan now scans newly found transponders together with already existing
+  ones.
