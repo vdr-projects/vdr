@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.62 2003/08/24 14:23:12 kls Exp $
+ * $Id: dvbdevice.c 1.63 2003/08/30 11:40:41 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -896,11 +896,49 @@ void cDvbDevice::StillPicture(const uchar *Data, int Length)
    If anybody ever finds out what could be changed so that VIDEO_STILLPICTURE
    could be used, please let me know!
    kls 2002-03-23
+   2003-08-30: apparently the driver can't handle PES data, so Oliver Endriss
+               <o.endriss@gmx.de> has changed this to strip all PES headers
+               and send pure ES data to the driver. Seems to work just fine!
+               Let's drop the VIDEO_STILLPICTURE_WORKS_WITH_VDR_FRAMES stuff
+               once this has proven to work in all cases.
 */
-//#define VIDEO_STILLPICTURE_WORKS_WITH_VDR_FRAMES
+#define VIDEO_STILLPICTURE_WORKS_WITH_VDR_FRAMES
 #ifdef VIDEO_STILLPICTURE_WORKS_WITH_VDR_FRAMES
-  video_still_picture sp = { (char *)Data, Length };
-  CHECK(ioctl(fd_video, VIDEO_STILLPICTURE, &sp));
+  if (Data[0] == 0x00 && Data[1] == 0x00 && Data[2] == 0x01 && (Data[3] & 0xF0) == 0xE0) {
+     // PES data
+     char *buf = MALLOC(char, Length);
+     if (!buf)
+        return;
+     int i = 0;
+     int blen = 0;
+     while (i < Length - 4) {
+           if (Data[i] == 0x00 && Data[i + 1] == 0x00 && Data[i + 2] == 0x01 && (Data[i + 3] & 0xF0) == 0xE0) {
+              // skip PES header
+              int offs = i + 6;
+              int len = Data[i + 4] * 256 + Data[i + 5];
+              // skip header extension
+              if ((Data[i + 6] & 0xC0) == 0x80) {
+                 offs += 3;
+                 offs += Data[i + 8];
+                 len -= 3;
+                 len -= Data[i + 8];
+                 }
+              memcpy(&buf[blen], &Data[offs], len);
+              i = offs + len;
+              blen += len;
+              }
+           else
+              i++;
+           }
+     video_still_picture sp = { buf, blen };
+     CHECK(ioctl(fd_video, VIDEO_STILLPICTURE, &sp));
+     free(buf);
+     }
+  else {
+     // non-PES data
+     video_still_picture sp = { (char *)Data, Length };
+     CHECK(ioctl(fd_video, VIDEO_STILLPICTURE, &sp));
+     }
 #else
 #define MIN_IFRAME 400000
   for (int i = MIN_IFRAME / Length + 1; i > 0; i--) {

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.131 2003/08/24 10:52:08 kls Exp $
+ * $Id: i18n.c 1.133 2003/08/26 15:27:25 kls Exp $
  *
  * Translations provided by:
  *
@@ -79,7 +79,7 @@ const tI18nPhrase Phrases[] = {
     "Português",
     "Français",
     "Norsk",
-    "Suomi",
+    "suomi", // this is not a typo - it's really lowercase!
     "Polski",
     "Español",
     "Ellinika",
@@ -2724,11 +2724,11 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     " aàbcçdeéèêfghiîjklmnoôpqrstuùûvwxyz0123456789-.#~",
     "",// TODO
-    " abcdefghijklmnopqrstuvxyzåäö0123456789-.#~",
+    " abcdefghijklmnopqrstuvwxyzåäö0123456789-.#~",
     " abcdefghijklmnopqrstuvwxyz0123456789-.#~",
     " aábcdeéfghiíjklmnñoópqrstuúvwxyz0123456789-.#~",
     "",// TODO
-    " abcdefghijklmnopqrstuvxyzåäö0123456789-.#~",
+    " abcdefghijklmnopqrstuvwxyzåäö0123456789-.#~",
     " abcdefghijklmnopqrstuvwxyz0123456789-.#~",
     " aábcdeéfghiíjklmnoóöpqrstuúüvwxyz0123456789-.,#~",
     " aàbcçdeéèfghiíjklmnoòpqrstuúvwxyz0123456789-.,#~_·",

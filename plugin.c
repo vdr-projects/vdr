@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: plugin.c 1.9 2003/05/09 15:01:26 kls Exp $
+ * $Id: plugin.c 1.10 2003/08/30 14:52:58 kls Exp $
  */
 
 #include "plugin.h"
@@ -170,7 +170,7 @@ bool cDll::Load(bool Log)
      if (plugin && args) {
         int argc = 0;
         char *argv[MAXPLUGINARGS];
-        char *p = args;
+        char *p = skipspace(stripspace(args));
         char *q = NULL;
         bool done = false;
         while (!done) {
@@ -205,7 +205,7 @@ bool cDll::Load(bool Log)
                                }
                             }
                          if (!done)
-                            p++;
+                            p = *p ? p + 1 : skipspace(p + 1);
                 }
               }
         argv[argc] = NULL;
@@ -278,7 +278,7 @@ void cPluginManager::AddPlugin(const char *Args)
         }
      return;
      }
-  char *s = strdup(Args);
+  char *s = strdup(skipspace(Args));
   char *p = strchr(s, ' ');
   if (p)
      *p = 0;

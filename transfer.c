@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: transfer.c 1.13 2003/05/18 15:22:09 kls Exp $
+ * $Id: transfer.c 1.14 2003/08/31 12:19:16 kls Exp $
  */
 
 #include "transfer.h"
@@ -13,6 +13,7 @@
 // The size of the array used to buffer video data:
 // (must be larger than MINVIDEODATA - see remux.h)
 #define VIDEOBUFSIZE  MEGABYTE(1)
+#define POLLTIMEOUTS_BEFORE_DEVICECLEAR 3
 
 // --- cTransfer -------------------------------------------------------------
 
@@ -67,6 +68,7 @@ void cTransfer::Action(void)
 {
   dsyslog("transfer thread started (pid=%d)", getpid());
 
+  int PollTimeouts = 0;
   active = true;
   while (active) {
 
@@ -99,6 +101,7 @@ void cTransfer::Action(void)
               while (Result > 0 && active) {
                     cPoller Poller;
                     if (DevicePoll(Poller, 100)) {
+                       PollTimeouts = 0;
                        int w = PlayVideo(p, Result);
                        if (w > 0) {
                           p += w;
@@ -107,6 +110,13 @@ void cTransfer::Action(void)
                        else if (w < 0 && FATALERRNO) {
                           LOG_ERROR;
                           break;
+                          }
+                       }
+                    else {
+                       PollTimeouts++;
+                       if (PollTimeouts == POLLTIMEOUTS_BEFORE_DEVICECLEAR) {
+                          dsyslog("clearing device because of consecutive poll timeouts");
+                          DeviceClear();
                           }
                        }
                     }
