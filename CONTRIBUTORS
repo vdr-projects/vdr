@@ -466,3 +466,6 @@ Steffen Barszus <st_barszus@gmx.de>
 Peter Seyringer <e9425234@student.tuwien.ac.at>
  for reporting a bug in saving the polarization parameter of channels that have a
  number in the 'source' parameter
+
+Stefan Schluenss <dxr3_osd@schluenss.de>
+ for reporting a bug where PID handles were not closed correctly

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.35 2002/11/10 12:57:17 kls Exp $
+ * $Id: dvbdevice.c 1.36 2002/11/15 13:53:41 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -311,11 +311,11 @@ bool cDvbDevice::SetPid(cPidHandle *Handle, int Type, bool On)
            pesFilterParams.pes_type= PesTypes[Type];
            pesFilterParams.flags   = DMX_IMMEDIATE_START;
            CHECK(ioctl(Handle->handle, DMX_SET_PES_FILTER, &pesFilterParams));
-           close(Handle->handle);
-           Handle->handle = -1;
            if (PesTypes[Type] == DMX_PES_VIDEO) // let's only do this once
               SetPlayMode(pmNone); // necessary to switch a PID from DMX_PES_VIDEO/AUDIO to DMX_PES_OTHER
            }
+        close(Handle->handle);
+        Handle->handle = -1;
         }
      }
   return true;
@@ -393,10 +393,9 @@ bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
   bool TurnOffLivePIDs = HasDecoder()
                          && (DoTune
                             || IsEncrypted && pidHandles[ptVideo].pid != Channel->Vpid() // CA channels can only be decrypted in "live" mode
-                            || IsPrimaryDevice()
-                               && (LiveView // for a new live view the old PIDs need to be turned off
-                                  || pidHandles[ptVideo].pid == Channel->Vpid() // for recording the PIDs must be shifted from DMX_PES_AUDIO/VIDEO to DMX_PES_OTHER
-                                  )
+                            || !IsPrimaryDevice()
+                            || LiveView // for a new live view the old PIDs need to be turned off
+                            || pidHandles[ptVideo].pid == Channel->Vpid() // for recording the PIDs must be shifted from DMX_PES_AUDIO/VIDEO to DMX_PES_OTHER
                             );
 
   bool StartTransferMode = IsPrimaryDevice() && !IsEncrypted && !DoTune
