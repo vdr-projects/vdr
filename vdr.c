@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.190 2004/10/24 14:01:11 kls Exp $
+ * $Id: vdr.c 1.192 2004/10/31 10:17:23 kls Exp $
  */
 
 #include <getopt.h>
@@ -347,6 +347,21 @@ int main(int argc, char *argv[])
 
   isyslog("VDR version %s started", VDRVERSION);
 
+  // Main program loop variables - need to be here to have them initialized before any EXIT():
+
+  cOsdObject *Menu = NULL;
+  cOsdObject *Temp = NULL;
+  int LastChannel = -1;
+  int LastTimerChannel = -1;
+  int PreviousChannel[2] = { 1, 1 };
+  int PreviousChannelIndex = 0;
+  time_t LastChannelChanged = time(NULL);
+  time_t LastActivity = 0;
+  int MaxLatencyTime = 0;
+  bool ForceShutdown = false;
+  bool UserShutdown = false;
+  bool TimerInVpsMargin = false;
+
   // Load plugins:
 
   if (!PluginManager.LoadPlugins(true))
@@ -490,19 +505,6 @@ int main(int argc, char *argv[])
 
   // Main program loop:
 
-  static cOsdObject *Menu = NULL;
-  static cOsdObject *Temp = NULL;
-  static int LastChannel = -1;
-  static int LastTimerChannel = -1;
-  static int PreviousChannel[2] = { 1, 1 };
-  static int PreviousChannelIndex = 0;
-  static time_t LastChannelChanged = time(NULL);
-  static time_t LastActivity = 0;
-  static int MaxLatencyTime = 0;
-  static bool ForceShutdown = false;
-  static bool UserShutdown = false;
-  static bool TimerInVpsMargin = false;
-
   while (!Interrupted) {
         // Handle emergency exits:
         if (cThread::EmergencyExit()) {
@@ -538,11 +540,13 @@ int main(int argc, char *argv[])
               dsyslog("max. latency time %d seconds", MaxLatencyTime);
               }
            }
-        // Handle channel modifications:
-        if (!Channels.BeingEdited()) {
+        // Handle channel and timer modifications:
+        if (!Channels.BeingEdited() && !Timers.BeingEdited()) {
            int modified = Channels.Modified();
            static time_t ChannelSaveTimeout = 0;
-           if (modified == CHANNELSMOD_USER)
+           // Channels and timers need to be stored in a consistent manner,
+           // therefore if one of them is changed, we save both.
+           if (modified == CHANNELSMOD_USER || Timers.Modified())
               ChannelSaveTimeout = 1; // triggers an immediate save
            else if (modified && !ChannelSaveTimeout)
               ChannelSaveTimeout = time(NULL) + CHANNELSAVEDELTA;

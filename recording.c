@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.89 2004/07/17 11:22:29 kls Exp $
+ * $Id: recording.c 1.92 2004/11/01 14:04:47 kls Exp $
  */
 
 #include "recording.h"
@@ -335,7 +335,7 @@ cRecording::cRecording(cTimer *Timer, const char *Title, const char *Subtitle, c
      name = strreplace(name, TIMERMACRO_EPISODE, Subtitle);
      if (Timer->IsSingleEvent()) {
         Timer->SetFile(name); // this was an instant recording, so let's set the actual data
-        Timers.Save();
+        Timers.SetModified();
         }
      }
   else if (Timer->IsSingleEvent() || !Setup.UseSubtitle)
@@ -451,11 +451,11 @@ char *cRecording::StripEpisodeName(char *s)
   return s;
 }
 
-char *cRecording::SortName(void)
+char *cRecording::SortName(void) const
 {
   if (!sortBuffer) {
      char *s = StripEpisodeName(strdup(FileName() + strlen(VideoDirectory) + 1));
-     int l = strxfrm(NULL, s, 0);
+     int l = strxfrm(NULL, s, 0) + 1;
      sortBuffer = MALLOC(char, l);
      strxfrm(sortBuffer, s, l);
      free(s);
@@ -472,10 +472,10 @@ int cRecording::GetResume(void) const
   return resume;
 }
 
-bool cRecording::operator< (const cListObject &ListObject)
+int cRecording::Compare(const cListObject &ListObject) const
 {
   cRecording *r = (cRecording *)&ListObject;
-  return strcasecmp(SortName(), r->SortName()) < 0;
+  return strcasecmp(SortName(), r->SortName());
 }
 
 const char *cRecording::FileName(void) const

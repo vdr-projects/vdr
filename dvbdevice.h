@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.h 1.28 2004/06/19 08:51:33 kls Exp $
+ * $Id: dvbdevice.h 1.29 2004/10/30 14:48:27 kls Exp $
  */
 
 #ifndef __DVBDEVICE_H
@@ -64,7 +64,7 @@ public:
 protected:
   virtual bool SetChannelDevice(const cChannel *Channel, bool LiveView);
 public:
-  virtual bool HasLock(void);
+  virtual bool HasLock(int TimeoutMs = 0);
 
 // PID handle facilities
 

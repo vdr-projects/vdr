@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.c 1.67 2004/05/02 10:57:06 kls Exp $
+ * $Id: interface.c 1.68 2004/11/01 14:23:28 kls Exp $
  */
 
 #include "interface.h"
@@ -76,23 +76,23 @@ bool cInterface::Confirm(const char *s, int Seconds, bool WaitForTimeout)
 
 bool cInterface::QueryKeys(cRemote *Remote, cSkinDisplayMenu *DisplayMenu)
 {
-  DisplayMenu->SetItem(tr("Phase 1: Detecting RC code type"), 1, false, false);
-  DisplayMenu->SetItem(tr("Press any key on the RC unit"), 3, false, false);
+  DisplayMenu->SetItem(tr("Phase 1: Detecting RC code type"), 2, false, false);
+  DisplayMenu->SetItem(tr("Press any key on the RC unit"), 4, false, false);
   DisplayMenu->Flush();
   if (Remote->Initialize()) {
-     DisplayMenu->SetItem(tr("RC code detected!"), 3, false, false);
-     DisplayMenu->SetItem(tr("Do not press any key..."), 4, false, false);
+     DisplayMenu->SetItem(tr("RC code detected!"), 4, false, false);
+     DisplayMenu->SetItem(tr("Do not press any key..."), 5, false, false);
      DisplayMenu->Flush();
      sleep(3);
-     DisplayMenu->SetItem("", 3, false, false);
      DisplayMenu->SetItem("", 4, false, false);
+     DisplayMenu->SetItem("", 5, false, false);
 
-     DisplayMenu->SetItem(tr("Phase 2: Learning specific key codes"), 1, false, false);
+     DisplayMenu->SetItem(tr("Phase 2: Learning specific key codes"), 2, false, false);
      eKeys NewKey = kUp;
      while (NewKey != kNone) {
            char *Prompt;
            asprintf(&Prompt, tr("Press key for '%s'"), tr(cKey::ToString(NewKey)));
-           DisplayMenu->SetItem(Prompt, 3, false, false);
+           DisplayMenu->SetItem(Prompt, 4, false, false);
            free(Prompt);
            cRemote::Clear();
            DisplayMenu->Flush();
@@ -107,11 +107,11 @@ bool cInterface::QueryKeys(cRemote *Remote, cSkinDisplayMenu *DisplayMenu)
                                    Keys.Del(last);
                                 }
                              break;
-                 case kDown: DisplayMenu->SetItem(tr("Press 'Up' to confirm"), 3, false, false);
-                             DisplayMenu->SetItem(tr("Press 'Down' to continue"), 4, false, false);
-                             DisplayMenu->SetItem("", 5, false, false);
+                 case kDown: DisplayMenu->SetItem(tr("Press 'Up' to confirm"), 4, false, false);
+                             DisplayMenu->SetItem(tr("Press 'Down' to continue"), 5, false, false);
                              DisplayMenu->SetItem("", 6, false, false);
                              DisplayMenu->SetItem("", 7, false, false);
+                             DisplayMenu->SetItem("", 8, false, false);
                              DisplayMenu->Flush();
                              for (;;) {
                                  Key = cRemote::Get(100);
@@ -120,7 +120,7 @@ bool cInterface::QueryKeys(cRemote *Remote, cSkinDisplayMenu *DisplayMenu)
                                     return true;
                                     }
                                  else if (Key == kDown) {
-                                    DisplayMenu->SetItem("", 4, false, false);
+                                    DisplayMenu->SetItem("", 5, false, false);
                                     k = kNone; // breaks the outer for() loop
                                     break;
                                     }
@@ -139,17 +139,17 @@ bool cInterface::QueryKeys(cRemote *Remote, cSkinDisplayMenu *DisplayMenu)
                  }
                }
            if (NewKey > kUp)
-              DisplayMenu->SetItem(tr("(press 'Up' to go back)"), 5, false, false);
-           else
-              DisplayMenu->SetItem("", 5, false, false);
-           if (NewKey > kDown)
-              DisplayMenu->SetItem(tr("(press 'Down' to end key definition)"), 6, false, false);
+              DisplayMenu->SetItem(tr("(press 'Up' to go back)"), 6, false, false);
            else
               DisplayMenu->SetItem("", 6, false, false);
-           if (NewKey > kMenu)
-              DisplayMenu->SetItem(tr("(press 'Menu' to skip this key)"), 7, false, false);
+           if (NewKey > kDown)
+              DisplayMenu->SetItem(tr("(press 'Down' to end key definition)"), 7, false, false);
            else
               DisplayMenu->SetItem("", 7, false, false);
+           if (NewKey > kMenu)
+              DisplayMenu->SetItem(tr("(press 'Menu' to skip this key)"), 8, false, false);
+           else
+              DisplayMenu->SetItem("", 8, false, false);
            }
      return true;
      }
@@ -168,9 +168,10 @@ void cInterface::LearnKeys(void)
       if (!known) {
          cSkinDisplayMenu *DisplayMenu = Skins.Current()->DisplayMenu();
          char Headline[256];
-         snprintf(Headline, sizeof(Headline), tr("Learning Remote Control Keys (%s)"), Remote->Name());
+         snprintf(Headline, sizeof(Headline), tr("Learning Remote Control Keys"));
          cRemote::Clear();
          DisplayMenu->SetTitle(Headline);
+         DisplayMenu->SetItem(Remote->Name(), 0, false, false);
          cRemote::SetLearning(Remote);
          bool rc = QueryKeys(Remote, DisplayMenu);
          cRemote::SetLearning(NULL);
@@ -179,8 +180,9 @@ void cInterface::LearnKeys(void)
             delete DisplayMenu;
             continue;
             }
-         DisplayMenu->SetItem(tr("Phase 3: Saving key codes"), 1, false, false);
-         DisplayMenu->SetItem(tr("Press 'Up' to save, 'Down' to cancel"), 3, false, false);
+         DisplayMenu->SetItem(Remote->Name(), 0, false, false);
+         DisplayMenu->SetItem(tr("Phase 3: Saving key codes"), 2, false, false);
+         DisplayMenu->SetItem(tr("Press 'Up' to save, 'Down' to cancel"), 4, false, false);
          for (;;) {
              eKeys key = GetKey();
              if (key == kUp) {

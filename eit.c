@@ -8,7 +8,7 @@
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  * Adapted to 'libsi' for VDR 1.3.0 by Marcel Wiesweg <marcel.wiesweg@gmx.de>.
  *
- * $Id: eit.c 1.98 2004/10/24 14:56:39 kls Exp $
+ * $Id: eit.c 1.100 2004/10/31 12:56:24 kls Exp $
  */
 
 #include "eit.h"
@@ -161,17 +161,17 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data)
                     time_t now = time(NULL);
                     bool hit = SiEitEvent.getStartTime() <= now && now < SiEitEvent.getStartTime() + SiEitEvent.getDuration();
                     if (hit) {
+                       char linkName[ld->privateData.getLength() + 1];
+                       strn0cpy(linkName, (const char *)ld->privateData.getData(), sizeof(linkName));
                        cChannel *link = Channels.GetByChannelID(linkID);
                        if (link != channel) { // only link to other channels, not the same one
-                          char linkName[ld->privateData.getLength() + 1];
-                          strn0cpy(linkName, (const char *)ld->privateData.getData(), sizeof(linkName));
                           //fprintf(stderr, "Linkage %s %4d %4d %5d %5d %5d %5d  %02X  '%s'\n", hit ? "*" : "", channel->Number(), link ? link->Number() : -1, SiEitEvent.getEventId(), ld->getOriginalNetworkId(), ld->getTransportStreamId(), ld->getServiceId(), ld->getLinkageType(), linkName);//XXX
                           if (link) {
                              if (Setup.UpdateChannels >= 1)
-                                link->SetName(linkName);
+                                link->SetName(linkName, "", "");
                              }
                           else if (Setup.UpdateChannels >= 3) {
-                             link = Channels.NewChannel(channel, linkName, ld->getOriginalNetworkId(), ld->getTransportStreamId(), ld->getServiceId());
+                             link = Channels.NewChannel(channel, linkName, "", "", ld->getOriginalNetworkId(), ld->getTransportStreamId(), ld->getServiceId());
                              //XXX patFilter->Trigger();
                              }
                           if (link) {
@@ -180,6 +180,8 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data)
                              LinkChannels->Add(new cLinkChannel(link));
                              }
                           }
+                       else
+                          channel->SetPortalName(linkName);
                        }
                     }
                  }

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.80 2004/06/13 14:36:41 kls Exp $
+ * $Id: tools.c 1.81 2004/10/31 16:42:36 kls Exp $
  */
 
 #include "tools.h"
@@ -939,19 +939,28 @@ int cListBase::Count(void) const
   return n;
 }
 
+static int CompareListObjects(const void *a, const void *b)
+{
+  const cListObject *la = *(const cListObject **)a;
+  const cListObject *lb = *(const cListObject **)b;
+  return la->Compare(*lb);
+}
+
 void cListBase::Sort(void)
 {
-  bool swapped;
-  do {
-     swapped = false;
-     cListObject *object = objects;
-     while (object) {
-           if (object->Next() && *object->Next() < *object) {
-              Move(object->Next(), object);
-              swapped = true;
-              }
-           object = object->Next();
-           }
-     } while (swapped);
+  int n = Count();
+  cListObject *a[n];
+  cListObject *object = objects;
+  int i = 0;
+  while (object && i < n) {
+        a[i++] = object;
+        object = object->Next();
+        }
+  qsort(a, n, sizeof(cListObject *), CompareListObjects);
+  objects = lastObject = NULL;
+  for (i = 0; i < n; i++) {
+      a[i]->Unlink();
+      Add(a[i]);
+      }
 }
 

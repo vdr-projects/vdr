@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: eitscan.c 1.22 2004/04/16 13:33:34 kls Exp $
+ * $Id: eitscan.c 1.23 2004/10/31 16:19:49 kls Exp $
  */
 
 #include "eitscan.h"
@@ -20,10 +20,10 @@ private:
   cChannel channel;
 public:
   cScanData(const cChannel *Channel);
-  virtual bool operator< (const cListObject &ListObject);
-  int Source(void) { return channel.Source(); }
-  int Transponder(void) { return channel.Transponder(); }
-  const cChannel *GetChannel(void) { return &channel; }
+  virtual int Compare(const cListObject &ListObject) const;
+  int Source(void) const { return channel.Source(); }
+  int Transponder(void) const { return channel.Transponder(); }
+  const cChannel *GetChannel(void) const { return &channel; }
   };
 
 cScanData::cScanData(const cChannel *Channel)
@@ -31,10 +31,13 @@ cScanData::cScanData(const cChannel *Channel)
   channel = *Channel;
 }
 
-bool cScanData::operator< (const cListObject &ListObject)
+int cScanData::Compare(const cListObject &ListObject) const
 {
-  cScanData *sd = (cScanData *)&ListObject;
-  return Source() < sd->Source() || Source() == sd->Source() && Transponder() < sd->Transponder();
+  const cScanData *sd = (const cScanData *)&ListObject;
+  int r = Source() - sd->Source();
+  if (r == 0)
+     r = Transponder() - sd->Transponder();
+  return r;
 }
 
 // --- cScanList -------------------------------------------------------------

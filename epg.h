@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.h 1.16 2004/10/24 13:56:00 kls Exp $
+ * $Id: epg.h 1.17 2004/10/31 16:17:10 kls Exp $
  */
 
 #ifndef __EPG_H
@@ -40,7 +40,7 @@ private:
 public:
   cEvent(tChannelID ChannelID, u_int16_t EventID);
   ~cEvent();
-  virtual bool operator< (const cListObject &ListObject);
+  virtual int Compare(const cListObject &ListObject) const;
   tChannelID ChannelID(void) const { return channelID; }
   u_int16_t EventID(void) const { return eventID; }
   uchar TableID(void) const { return tableID; }

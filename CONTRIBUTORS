@@ -258,6 +258,7 @@ Werner Fink <werner@suse.de>
  AC3 replay
  for changing thread handling to make it work with NPTL ("Native Posix Thread Library")
  for suggesting to replace usleep() calls with a pthread_cond_timedwait() based wait
+ for suggesting to add more checks and polling when getting frontend events
 
 Rolf Hakenes <hakenes@hippomi.de>
  for providing 'libdtv' and adapting the EIT mechanisms to it
@@ -380,6 +381,7 @@ Mirko Dölle <mdoelle@linux-user.de>
  for reporting a bug when a timer records over midnight of a day that had a
  change in Daylight Saving Time
  for suggesting to avoid the external 'find' command to scan the video directory
+ for reporting a problem with inconsistent channel and timer lists
 
 Michael Rakowski <mrak@gmx.de>
  for translating OSD texts to the Polish language
@@ -532,6 +534,8 @@ Oliver Endriss <o.endriss@gmx.de>
  for reporting some missing cStatus::MsgOsdTextItem() calls
  for reporting a missing "Editing process finished" message with skins
  for adding a sample setup for 'DisiCon-4 Single Cable Network' to 'diseqc.conf'
+ for reporting a problem with the name of the remote control for which the keys are
+ being learned overwriting the date/time in the 'classic' skin
 
 Reinhard Walter Buchner <rw.buchner@freenet.de>
  for adding some satellites to 'sources.conf'
@@ -1064,6 +1068,9 @@ Marco Schlüßler <marco@lordzodiac.de>
  should fail and all PIDs added so far should be deleted
  for fixing attaching a cPlayer to a cDevice, so that 'Operation not permited'
  errors don't occur any more
+ for reporting a problem with initialization of the main program loop variables
+ with older compiler versions
+ for adding the 'portal name' to cChannels
 
 Jürgen Schmitz <j.schmitz@web.de>
  for reporting a bug in displaying the current channel when switching via the SVDRP
@@ -1122,3 +1129,6 @@ Lucian Muresan <lucianm@users.sourceforge.net>
 Mattias Grönlund <Mattias@Gronlund.net>
  for pointing out a missing cleanup at program exit in case there is a problem
  with a plugin
+
+Uwe Hanke <uhanke@gmx.de>
+ for fixing some typos in the Makefile's 'font' target

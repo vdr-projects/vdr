@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remote.c 1.40 2004/05/28 14:19:52 kls Exp $
+ * $Id: remote.c 1.41 2004/10/31 14:05:12 kls Exp $
  */
 
 #include "remote.h"
@@ -265,7 +265,6 @@ void cKbdRemote::Action(void)
         if (Poller.Poll(100)) {
            uint64 Command = 0;
            uint i = 0;
-           int t0 = time_ms();
            while (active && i < sizeof(Command)) {
                  uchar ch;
                  int r = read(STDIN_FILENO, &ch, 1);
@@ -280,7 +279,7 @@ void cKbdRemote::Action(void)
                     // of their codes, so we'll need to wait some 100ms to see if
                     // there is more coming up - or whether this really is the 'ESC'
                     // key (if somebody knows how to clean this up, please let me know):
-                    if (Command == 0x1B && time_ms() - t0 < 100)
+                    if (Command == 0x1B && Poller.Poll(100))
                        continue;
                     if (Command) {
                        if (rawMode || !Put(Command)) {

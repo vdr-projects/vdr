@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.64 2004/10/17 10:28:47 kls Exp $
+ * $Id: svdrp.c 1.65 2004/10/31 10:09:53 kls Exp $
  */
 
 #include "svdrp.h"
@@ -529,7 +529,7 @@ void cSVDRP::CmdDELT(const char *Option)
         if (timer) {
            if (!timer->Recording()) {
               Timers.Del(timer);
-              Timers.Save();
+              Timers.SetModified();
               isyslog("timer %s deleted", Option);
               Reply(250, "Timer \"%s\" deleted", Option);
               }
@@ -915,7 +915,7 @@ void cSVDRP::CmdMODT(const char *Option)
               return;
               }
            *timer = t;
-           Timers.Save();
+           Timers.SetModified();
            isyslog("timer %d modified (%s)", timer->Index() + 1, timer->HasFlags(tfActive) ? "active" : "inactive");
            Reply(250, "%d %s", timer->Index() + 1, timer->ToText());
            }
@@ -973,7 +973,7 @@ void cSVDRP::CmdNEWT(const char *Option)
         cTimer *t = Timers.GetTimer(timer);
         if (!t) {
            Timers.Add(timer);
-           Timers.Save();
+           Timers.SetModified();
            isyslog("timer %d added", timer->Index() + 1);
            Reply(250, "%d %s", timer->Index() + 1, timer->ToText());
            return;
@@ -1057,7 +1057,7 @@ void cSVDRP::CmdUPDT(const char *Option)
            Timers.Add(timer);
            isyslog("timer %d added", timer->Index() + 1);
            }
-        Timers.Save();
+        Timers.SetModified();
         Reply(250, "%d %s", timer->Index() + 1, timer->ToText());
         return;
         }

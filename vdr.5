@@ -2,15 +2,15 @@
 .\" ** The above line should force tbl to be a preprocessor **
 .\" Man page for vdr file formats
 .\"
-.\" Copyright (C) 2003 Klaus Schmidinger
+.\" Copyright (C) 2004 Klaus Schmidinger
 .\"
 .\" You may distribute under the terms of the GNU General Public
 .\" License as specified in the file COPYING that comes with the
 .\" vdr distribution.
 .\"
-.\" $Id: vdr.5 1.28 2004/07/18 11:06:54 kls Exp $
+.\" $Id: vdr.5 1.29 2004/10/31 12:13:43 kls Exp $
 .\"
-.TH vdr 5 "1 Jun 2003" "1.2.0" "Video Disk Recorder Files"
+.TH vdr 5 "31 Oct 2004" "1.3.15" "Video Disk Recorder Files"
 .SH NAME
 vdr file formats - the Video Disk Recorder Files
 .SH DESCRIPTION
@@ -45,7 +45,7 @@ Such a delimiter will not appear in the Channels menu.
 A \fBchannel definition\fR is a line with channel data, where the fields
 are separated by ':' characters. Example:
 
-\fBRTL,RTL Television:12188:h:S19.2E:27500:163:104:105:0:12003:1:1089:0\fR
+\fBRTL Television,RTL:12188:h:S19.2E:27500:163:104:105:0:12003:1:1089:0\fR
 
 The line number of a channel definition (not counting group separators,
 and based on a possible previous '@...' parameter)
@@ -60,15 +60,15 @@ it has to be replaced by '|').
 Some tv stations provide a way of deriving a "short name" from the
 channel name, which can be used in situations where there is not
 much space for displaying a long name. If a short name is available
-for this channel, it preceeds the full name and is delimited by a comma,
+for this channel, it follows the full name and is delimited by a comma,
 as in
 
-\fBRTL,RTL Television:...\fR
+\fBRTL Television,RTL:...\fR
 
 If present, the name of the service provider or "bouquet" is appended
 to the channel name, separated by a semicolon, as in
 
-\fBRTL,RTL Television;RTL World:...\fR
+\fBRTL Television,RTL;RTL World:...\fR
 .TP
 .B Frequency
 The transponder frequency (as an integer). For DVB-S this value is in MHz. For DVB-C

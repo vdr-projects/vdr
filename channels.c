@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 1.28 2004/10/22 14:11:07 kls Exp $
+ * $Id: channels.c 1.30 2004/10/31 12:54:06 kls Exp $
  */
 
 #include "channels.h"
@@ -166,6 +166,10 @@ char *cChannel::buffer = NULL;
 
 cChannel::cChannel(void)
 {
+  name = strdup("");
+  shortName = strdup("");
+  provider = strdup("");
+  portalName = strdup("");
   memset(&__BeginData__, 0, (char *)&__EndData__ - (char *)&__BeginData__);
   inversion    = INVERSION_AUTO;
   bandwidth    = BANDWIDTH_AUTO;
@@ -182,8 +186,11 @@ cChannel::cChannel(void)
 
 cChannel::cChannel(const cChannel &Channel)
 {
+  name = strdup("");
+  shortName = strdup("");
+  provider = strdup("");
+  portalName = strdup("");
   *this = Channel;
-  *name = 0;
   vpid         = 0;
   ppid         = 0;
   apids[0]     = 0;
@@ -219,10 +226,18 @@ cChannel::~cChannel()
             }
          }
       }
+  free(name);
+  free(shortName);
+  free(provider);
+  free(portalName);
 }
 
 cChannel& cChannel::operator= (const cChannel &Channel)
 {
+  name = strcpyrealloc(name, Channel.name);
+  shortName = strcpyrealloc(shortName, Channel.shortName);
+  provider = strcpyrealloc(provider, Channel.provider);
+  portalName = strcpyrealloc(portalName, Channel.portalName);
   memcpy(&__BeginData__, &Channel.__BeginData__, (char *)&Channel.__EndData__ - (char *)&Channel.__BeginData__);
   return *this;
 }
@@ -341,15 +356,29 @@ void cChannel::SetId(int Nid, int Tid, int Sid, int Rid)
      }
 }
 
-void cChannel::SetName(const char *Name)
+void cChannel::SetName(const char *Name, const char *ShortName, const char *Provider)
 {
   if (!isempty(Name) && strcmp(name, Name) != 0) {
      if (Number()) {
-        dsyslog("changing name of channel %d from '%s' to '%s'", Number(), name, Name);
+        dsyslog("changing name of channel %d from '%s,%s;%s' to '%s,%s;%s'", Number(), name, shortName, provider, Name, ShortName, Provider);
         modification |= CHANNELMOD_NAME;
         Channels.SetModified();
         }
-     strn0cpy(name, Name, MaxChannelName);
+     name = strcpyrealloc(name, Name);
+     shortName = strcpyrealloc(shortName, ShortName);
+     provider = strcpyrealloc(provider, Provider);
+     }
+}
+
+void cChannel::SetPortalName(const char *PortalName)
+{
+  if (!isempty(PortalName) && strcmp(portalName, PortalName) != 0) {
+     if (Number()) {
+        dsyslog("changing portal name of channel %d from '%s' to '%s'", Number(), portalName, PortalName);
+        modification |= CHANNELMOD_NAME;
+        Channels.SetModified();
+        }
+     portalName = strcpyrealloc(portalName, PortalName);
      }
 }
 
@@ -565,16 +594,21 @@ bool cChannel::StringToParameters(const char *s)
 
 const char *cChannel::ToText(const cChannel *Channel)
 {
-  char buf[MaxChannelName * 2];
-  const char *s = Channel->name;
-  if (strchr(s, ':'))
-     s = strreplace(strcpy(buf, s), ':', '|');
+  char FullName[strlen(Channel->name) + 1 + strlen(Channel->shortName) + 1 + strlen(Channel->provider) + 1 + 10]; // +10: paranoia
+  char *q = FullName;
+  q += sprintf(q, "%s", Channel->name);
+  if (!isempty(Channel->shortName))
+     q += sprintf(q, ",%s", Channel->shortName);
+  if (!isempty(Channel->provider))
+     q += sprintf(q, ";%s", Channel->provider);
+  *q = 0;
+  strreplace(FullName, ':', '|');
   free(buffer);
   if (Channel->groupSep) {
      if (Channel->number)
-        asprintf(&buffer, ":@%d %s\n", Channel->number, s);
+        asprintf(&buffer, ":@%d %s\n", Channel->number, FullName);
      else
-        asprintf(&buffer, ":%s\n", s);
+        asprintf(&buffer, ":%s\n", FullName);
      }
   else {
      char vpidbuf[32];
@@ -595,7 +629,7 @@ const char *cChannel::ToText(const cChannel *Channel)
      q = caidbuf;
      q += IntArrayToString(q, Channel->caids, 16);
      *q = 0;
-     asprintf(&buffer, "%s:%d:%s:%s:%d:%s:%s:%d:%s:%d:%d:%d:%d\n", s, Channel->frequency, Channel->ParametersToString(), cSource::ToString(Channel->source), Channel->srate, vpidbuf, apidbuf, Channel->tpid, caidbuf, Channel->sid, Channel->nid, Channel->tid, Channel->rid);
+     asprintf(&buffer, "%s:%d:%s:%s:%d:%s:%s:%d:%s:%d:%d:%d:%d\n", FullName, Channel->frequency, Channel->ParametersToString(), cSource::ToString(Channel->source), Channel->srate, vpidbuf, apidbuf, Channel->tpid, caidbuf, Channel->sid, Channel->nid, Channel->tid, Channel->rid);
      }
   return buffer;
 }
@@ -619,7 +653,8 @@ bool cChannel::Parse(const char *s, bool AllowNonUniqueID)
            s = p;
            }
         }
-     strn0cpy(name, skipspace(s), MaxChannelName);
+     name = strcpyrealloc(name, skipspace(s));
+     strreplace(name, '|', ':');
      }
   else {
      groupSep = false;
@@ -717,7 +752,20 @@ bool cChannel::Parse(const char *s, bool AllowNonUniqueID)
               caids[NumCaIds] = 0;
               }
            }
-        strn0cpy(name, namebuf, MaxChannelName);
+        strreplace(namebuf, '|', ':');
+
+        char *p = strchr(namebuf, ';');
+        if (p) {
+           *p++ = 0;
+           provider = strcpyrealloc(provider, p);
+           }
+        p = strchr(namebuf, ',');
+        if (p) {
+           *p++ = 0;
+           shortName = strcpyrealloc(shortName, p);
+           }
+        name = strcpyrealloc(name, namebuf);
+
         free(parambuf);
         free(sourcebuf);
         free(vpidbuf);
@@ -736,7 +784,6 @@ bool cChannel::Parse(const char *s, bool AllowNonUniqueID)
      else
         return false;
      }
-  strreplace(name, '|', ':');
   return ok;
 }
 
@@ -878,13 +925,13 @@ int cChannels::Modified(void)
   return Result;
 }
 
-cChannel *cChannels::NewChannel(const cChannel *Transponder, const char *Name, int Nid, int Tid, int Sid, int Rid)
+cChannel *cChannels::NewChannel(const cChannel *Transponder, const char *Name, const char *ShortName, const char *Provider, int Nid, int Tid, int Sid, int Rid)
 {
   if (Transponder) {
-     dsyslog("creating new channel '%s' on %s transponder %d with id %d-%d-%d-%d", Name, cSource::ToString(Transponder->Source()), Transponder->Transponder(), Nid, Tid, Sid, Rid);
+     dsyslog("creating new channel '%s,%s;%s' on %s transponder %d with id %d-%d-%d-%d", Name, ShortName, Provider, cSource::ToString(Transponder->Source()), Transponder->Transponder(), Nid, Tid, Sid, Rid);
      cChannel *NewChannel = new cChannel(*Transponder);
      NewChannel->SetId(Nid, Tid, Sid, Rid);
-     NewChannel->SetName(Name);
+     NewChannel->SetName(Name, ShortName, Provider);
      Add(NewChannel);
      ReNumber();
      return NewChannel;

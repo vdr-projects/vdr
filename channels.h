@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.h 1.20 2004/10/22 14:09:47 kls Exp $
+ * $Id: channels.h 1.22 2004/10/31 12:54:26 kls Exp $
  */
 
 #ifndef __CHANNELS_H
@@ -89,9 +89,11 @@ class cChannel : public cListObject {
 private:
   static char *buffer;
   static const char *ToText(const cChannel *Channel);
-  enum { MaxChannelName = 64 }; // 63 chars + terminating 0!
+  char *name;
+  char *shortName;
+  char *provider;
+  char *portalName;
   int __BeginData__;
-  char name[MaxChannelName];
   int frequency; // MHz
   int source;
   int srate;
@@ -133,6 +135,9 @@ public:
   bool Parse(const char *s, bool AllowNonUniqueID = false);
   bool Save(FILE *f);
   const char *Name(void) const { return name; }
+  const char *ShortName(bool OrName = false) const { return (OrName && isempty(shortName)) ? name : shortName; }
+  const char *Provider(void) const { return provider; }
+  const char *PortalName(void) const { return portalName; }
   int Frequency(void) const { return frequency; } ///< Returns the actual frequency, as given in 'channels.conf'
   int Transponder(void) const;                    ///< Returns the transponder frequency in MHz, plus the polarization in case of sat
   static int Transponder(int Frequency, char Polarization); ///< builds the transponder from the given Frequency and Polarization
@@ -171,7 +176,8 @@ public:
   bool SetCableTransponderData(int Source, int Frequency, int Modulation, int Srate, int CoderateH);
   bool SetTerrTransponderData(int Source, int Frequency, int Bandwidth, int Modulation, int Hierarchy, int CodeRateH, int CodeRateL, int Guard, int Transmission);
   void SetId(int Nid, int Tid, int Sid, int Rid = 0);
-  void SetName(const char *Name);
+  void SetName(const char *Name, const char *ShortName, const char *Provider);
+  void SetPortalName(const char *PortalName);
   void SetPids(int Vpid, int Ppid, int *Apids, char ALangs[][4], int *Dpids, char DLangs[][4], int Tpid);
   void SetCaIds(const int *CaIds); // list must be zero-terminated
   void SetCaDescriptors(int Level);
@@ -205,7 +211,7 @@ public:
       ///< Returns 0 if no channels have been modified, 1 if an automatic
       ///< modification has been made, and 2 if the user has made a modification.
       ///< Calling this function resets the 'modified' flag to 0.
-  cChannel *NewChannel(const cChannel *Transponder, const char *Name, int Nid, int Tid, int Sid, int Rid = 0);
+  cChannel *NewChannel(const cChannel *Transponder, const char *Name, const char *ShortName, const char *Provider, int Nid, int Tid, int Sid, int Rid = 0);
   };
 
 extern cChannels Channels;

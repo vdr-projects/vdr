@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.160 2004/10/23 13:57:38 kls Exp $
+ * $Id: i18n.c 1.161 2004/11/01 14:18:48 kls Exp $
  *
  * Translations provided by:
  *
@@ -3652,25 +3652,25 @@ const tI18nPhrase Phrases[] = {
     " abcdefghijklmnopqrsğzştuvwõäöüxyå0123456789-.#~",
   },
   // Learning keys:
-  { "Learning Remote Control Keys (%s)",
-    "Fernbedienungs-Codes lernen (%s)",
-    "Ucenje kod upravljalca (%s)",
-    "Apprendimento tasti unita` remota (%s)",
-    "Leren toetsen afstandsbediening (%s)",
-    "Aprender as teclas do telecomando (%s)",
-    "Apprentissage des codes de télécommande (%s)",
-    "Lære fjernkontrolltaster (%s)",
-    "Kaukosäätimen opettaminen (%s)",
-    "Nauka kodu pilota (%s)",
-    "Aprendiendo teclas del telemando (%s)",
-    "ÅêìÜèçóç ğëŞêôñùí ôçëå÷åéñéóìïı (%s)",
-    "Inlärning av fjärrkontrollsknappar (%s)",
-    "Învãşare taste telecomandã (%s)",
-    "Távirányító betanítása (%s)",
-    "Aprenent les tecles del comandament a distància (%s)",
-    "²ÒŞÔ ÚŞÔŞÒ ÚİŞßŞÚ ßãÛìâĞ (%s)",
-    "Uèenje kôda daljinskog upravljaèa (%s)",
-    "Kaugjuhtimispuldi õpetamine (%s)",
+  { "Learning Remote Control Keys",
+    "Fernbedienungs-Codes lernen",
+    "Ucenje kod upravljalca",
+    "Apprendimento tasti unita` remota",
+    "Leren toetsen afstandsbediening",
+    "Aprender as teclas do telecomando",
+    "Apprentissage des codes de télécommande",
+    "Lære fjernkontrolltaster",
+    "Kaukosäätimen opettaminen",
+    "Nauka kodu pilota",
+    "Aprendiendo teclas del telemando",
+    "ÅêìÜèçóç ğëŞêôñùí ôçëå÷åéñéóìïı",
+    "Inlärning av fjärrkontrollsknappar",
+    "Învãşare taste telecomandã",
+    "Távirányító betanítása",
+    "Aprenent les tecles del comandament a distància",
+    "²ÒŞÔ ÚŞÔŞÒ ÚİŞßŞÚ ßãÛìâĞ",
+    "Uèenje kôda daljinskog upravljaèa",
+    "Kaugjuhtimispuldi õpetamine",
   },
   { "Phase 1: Detecting RC code type",
     "Phase 1: FB Code feststellen",
