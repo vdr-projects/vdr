@@ -772,3 +772,4 @@ Video Disk Recorder Revision History
   the progress display; no more unnecessary display of "normal play mode".
 - Supplying the new frontend parameter 'Inversion' (currently it is always
   set to INVERSION_AUTO, which should work with all channels on Astra).
+- Removing unnecessary double quotes from EPG Subtitle in EPGBugfixLevel >=1.

@@ -16,7 +16,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.c 1.22 2001/08/19 14:44:32 kls Exp $
+ * $Id: eit.c 1.23 2001/09/22 10:28:33 kls Exp $
  ***************************************************************************/
 
 #include "eit.h"
@@ -445,6 +445,22 @@ void cEventInfo::FixEpgBugs(void)
      if (pSubtitle && strcmp(pTitle, pSubtitle) == 0) {
         delete pSubtitle;
         pSubtitle = NULL;
+        }
+
+     // ZDF.info puts the Subtitle between double quotes, which is nothing
+     // but annoying (some even put a '.' after the closing '"'):
+     //
+     // Title
+     // "Subtitle"[.]
+     //
+     if (pSubtitle && *pSubtitle == '"') {
+        int l = strlen(pSubtitle);
+        if (l > 2 && (pSubtitle[l - 1] == '"' || (pSubtitle[l - 1] == '.' && pSubtitle[l - 2] == '"'))) {
+           memmove(pSubtitle, pSubtitle + 1, l);
+           char *p = strrchr(pSubtitle, '"');
+           if (p)
+              *p = 0;
+           }
         }
 
      if (Setup.EPGBugfixLevel <= 1)
