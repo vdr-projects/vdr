@@ -36,3 +36,4 @@ VDR Plugin 'hello' Revision History
 - Completely switched to the new CVS HEAD version of the linux-dvb driver.
   The NEWSTRUCT compile time switch is now obsolete. The required driver is now
   the CVS HEAD version dated 2002-11-01 or later.
+- Introduced Make.config.

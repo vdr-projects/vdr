@@ -1685,3 +1685,13 @@ Video Disk Recorder Revision History
 - Updated channels.conf.terr (thanks to Uwe Scheffler).
 - Fixed displaying the group separators in the channel display (thanks to Martin
   Hammerschmid for pointing out this one).
+- The Makefile now includes the file Make.config (if present in the VDR source
+  directory), which allows the user to overwrite several settings with individual
+  values (suggested by Andreas Schultz). The VDR distribution archive does not
+  contain this file in order to not overwrite a user defined file. There is a
+  Make.config.template which contains the default values of the macros the user
+  can overwrite.
+- Since there have been changes to the 'newplugin' script authors of plugins
+  may want to newly create their plugins' Makefiles with the new version of this
+  script, and adapt them to their individual needs (make sure you don't overwrite
+  your existing plugin directory - make a backup copy first!).

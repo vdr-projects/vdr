@@ -13,7 +13,7 @@ extracted into the directory /home/kls/vdr/DVB, then this
 package should be extracted into /home/kls/vdr/VDR.
 If you have the DVB driver source in a different location
 you will have to change the definition of DVBDIR in the
-Makefile.
+Makefile (see the file Make.config.template).
 
 VDR requires the Linux-DVB card driver version dated 2002-11-01 or higher
 to work properly.

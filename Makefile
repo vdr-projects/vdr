@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 1.50 2002/11/01 10:07:35 kls Exp $
+# $Id: Makefile 1.51 2002/11/01 13:11:53 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -22,6 +22,8 @@ BINDIR   = /usr/local/bin
 PLUGINDIR= ./PLUGINS
 
 VIDEODIR = /video
+
+-include Make.config
 
 INCLUDES = -I$(DVBDIR)/include
 
