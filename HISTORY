@@ -262,3 +262,6 @@ Video Disk Recorder Revision History
   '2'.
 - Fixed initializing the RCU remote control code (didn't work after switching
   on the system).
+- Problematic characters in recording names (which can come from timers that
+  are programmed via the "Schedules" menu) are now replaced by suitable
+  substitutes.
