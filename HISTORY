@@ -784,3 +784,5 @@ Video Disk Recorder Revision History
 - Writing the current time (as seen by VDR) into the log file when starting
   a timer recording (this may help debugging cases where timers don't start
   at the expected time).
+- Made the volume, mute and power keys work when a menu is active, too (thanks
+  to Matthias Weingart).

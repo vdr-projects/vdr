@@ -139,3 +139,6 @@ Rolf Hakenes <hakenes@hippomi.de>
 Andreas Vitting <Andreas@huji.de>
  for providing code that closes all unused file descriptors in the child
  process of a pipe (used in cPipe)
+
+Matthias Weingart <matthias@pentax.boerde.de>
+ for fixing handling of the volume, mute and power keys when menus are active
