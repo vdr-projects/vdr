@@ -562,3 +562,4 @@ Video Disk Recorder Revision History
 - Displaying the frame counter in the replay progress display only when editing
   a mark.
 - Fixed handling characters above 0xEF in SVDRP.
+- Fixed a possible crash in parsing incorrect lines in 'channels.conf'.

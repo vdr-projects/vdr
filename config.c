@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.48 2001/06/23 14:01:03 kls Exp $
+ * $Id: config.c 1.49 2001/07/22 14:15:25 kls Exp $
  */
 
 #include "config.h"
@@ -260,13 +260,17 @@ bool cChannel::Parse(const char *s)
      int fields = sscanf(s, "%a[^:]:%d:%c:%d:%d:%d:%a[^:]:%d:%d:%d", &buffer, &frequency, &polarization, &diseqc, &srate, &vpid, &apidbuf, &tpid, &ca, &pnr);
      apid1 = apid2 = 0;
      dpid1 = dpid2 = 0;
-     char *p = strchr(apidbuf, ';');
-     if (p)
-        *p++ = 0;
-     sscanf(apidbuf, "%d,%d", &apid1, &apid2);
-     if (p)
-        sscanf(p, "%d,%d", &dpid1, &dpid2);
-     delete apidbuf;
+     if (apidbuf) {
+        char *p = strchr(apidbuf, ';');
+        if (p)
+           *p++ = 0;
+        sscanf(apidbuf, "%d,%d", &apid1, &apid2);
+        if (p)
+           sscanf(p, "%d,%d", &dpid1, &dpid2);
+        delete apidbuf;
+        }
+     else
+        return false;
      if (fields >= 9) {
         if (fields == 9) {
            // allow reading of old format
