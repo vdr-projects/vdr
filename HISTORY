@@ -506,7 +506,7 @@ Video Disk Recorder Revision History
 - Fixed removing recordings with Lifetime = 99.
 - Improved channel switching.
 
-2001-06-15: Version 0.82
+2001-06-16: Version 0.82
 
 - Increased timeout until reporting "broken video data stream" when recording.
 - Modified method of turning off PIDs when switching channel.
@@ -528,3 +528,5 @@ Video Disk Recorder Revision History
   to multiplex smoothly with the video data.
 - Fixed a bug in the editing mechanism (didn't work with recordings that
   consist of more than one data file).
+- The compile time switch VFAT has been fixed to recognize the ':' character
+  in recording names, too.

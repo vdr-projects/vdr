@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.31 2001/06/12 15:31:32 kls Exp $
+ * $Id: recording.c 1.32 2001/06/16 10:33:20 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -177,18 +177,31 @@ void cResumeFile::Delete(void)
 
 // --- cRecording ------------------------------------------------------------
 
+struct tCharExchange { char a; char b; };
+tCharExchange CharExchange[] = {
+  { ' ',  '_'    },
+  { '\'', '\x01' },
+  { '/',  '\x02' },
+#ifdef VFAT
+  { ':',  '\x03' },
+#endif
+  { 0, 0 }
+  };
+
+char *ExchangeChars(char *s, bool ToFileSystem)
+{
+  for (struct tCharExchange *ce = CharExchange; ce->a && ce->b; ce++)
+      strreplace(s, ToFileSystem ? ce->a : ce->b, ToFileSystem ? ce->b : ce->a);
+  return s;
+}
+
 cRecording::cRecording(cTimer *Timer)
 {
   titleBuffer = NULL;
   fileName = NULL;
   name = strdup(Timer->file);
   // substitute characters that would cause problems in file names:
-  for (char *p = name; *p; p++) {
-      switch (*p) {
-        case '\n': *p = ' '; break;
-        case '/':  *p = '-'; break;
-        }
-      }
+  strreplace(name, '\n', ' ');
   summary = Timer->summary ? strdup(Timer->summary) : NULL;
   if (summary)
      strreplace(summary, '|', '\n');
@@ -218,8 +231,7 @@ cRecording::cRecording(const char *FileName)
         name = new char[p - FileName + 1];
         strncpy(name, FileName, p - FileName);
         name[p - FileName] = 0;
-        strreplace(name, '_', ' ');
-        strreplace(name, '\x01', '\'');
+        ExchangeChars(name, false);
         }
      // read an optional summary file:
      char *SummaryFileName = NULL;
@@ -269,11 +281,9 @@ const char *cRecording::FileName(void)
 {
   if (!fileName) {
      struct tm *t = localtime(&start);
+     ExchangeChars(name, true);
      asprintf(&fileName, NAMEFORMAT, VideoDirectory, name, t->tm_year + 1900, t->tm_mon + 1, t->tm_mday, t->tm_hour, t->tm_min, priority, lifetime);
-     if (fileName) {
-        strreplace(fileName, ' ', '_');
-        strreplace(fileName, '\'', '\x01');
-        }
+     ExchangeChars(name, false);
      }
   return fileName;
 }
