@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.27 2000/10/08 16:33:48 kls Exp $
+ * $Id: config.h 1.28 2000/10/29 09:34:10 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -15,9 +15,10 @@
 #include <string.h>
 #include <time.h>
 #include "dvbapi.h"
+#include "eit.h"
 #include "tools.h"
 
-#define VDRVERSION "0.66"
+#define VDRVERSION "0.67"
 
 #define MaxBuffer 10000
 
@@ -113,6 +114,7 @@ public:
   char file[MaxFileName];
   char *summary;
   cTimer(bool Instant = false);
+  cTimer(const cEventInfo *EventInfo);
   ~cTimer();
   cTimer& operator= (const cTimer &Timer);
   const char *ToText(void);
@@ -204,6 +206,7 @@ public:
   int GetNextNormal(int Idx);  // Get next normal channel (not group)
   void ReNumber(void);         // Recalculate 'number' based on channel type
   cChannel *GetByNumber(int Number);
+  cChannel *GetByServiceID(unsigned short ServiceId);
   const char *GetChannelNameByNumber(int Number);
   bool SwitchTo(int Number, cDvbApi *DvbApi = NULL);
   int MaxNumber(void) { return maxNumber; }
@@ -234,6 +237,8 @@ public:
   int MarkInstantRecord;
   int LnbFrequLo;
   int LnbFrequHi;
+  int SetSystemTime;
+  int MarginStart, MarginStop;
   cSetup(void);
   bool Load(const char *FileName);
   bool Save(const char *FileName = NULL);

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.17 2000/10/07 18:00:21 kls Exp $
+ * $Id: tools.h 1.18 2000/10/29 11:19:20 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -40,7 +40,8 @@ void purge(int filedes);
 char *readline(FILE *f);
 char *strn0cpy(char *dest, const char *src, size_t n);
 char *strreplace(char *s, char c1, char c2);
-char *skipspace(char *s);
+char *skipspace(const char *s);
+bool isempty(const char *s);
 int time_ms(void);
 void delay_ms(int ms);
 bool isnumber(const char *s);
@@ -80,8 +81,8 @@ public:
   void Append(cListObject *Object);
   void Unlink(void);
   int Index(void);
-  cListObject *Prev(void) { return prev; }
-  cListObject *Next(void) { return next; }
+  cListObject *Prev(void) const { return prev; }
+  cListObject *Next(void) const { return next; }
   };
 
 class cListBase {
@@ -95,15 +96,15 @@ public:
   virtual void Move(int From, int To);
   void Move(cListObject *From, cListObject *To);
   void Clear(void);
-  cListObject *Get(int Index);
-  int Count(void);
+  cListObject *Get(int Index) const;
+  int Count(void) const;
   };
 
 template<class T> class cList : public cListBase {
 public:
-  T *Get(int Index) { return (T *)cListBase::Get(Index); }
-  T *First(void) { return (T *)objects; }
-  T *Next(T *object) { return (T *)object->Next(); }
+  T *Get(int Index) const { return (T *)cListBase::Get(Index); }
+  T *First(void) const { return (T *)objects; }
+  T *Next(const T *object) const { return (T *)object->Next(); }
   };
 
 #endif //__TOOLS_H

@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 1.13 2000/10/07 16:24:08 kls Exp $
+# $Id: Makefile 1.14 2000/10/28 16:24:16 kls Exp $
 
 DVBDIR   = ../DVB
 
@@ -35,20 +35,20 @@ font: genfontfile fontosd.c
 
 # Dependencies:
 
-config.o   : config.c config.h dvbapi.h dvbosd.h eit.h font.h interface.h svdrp.h tools.h
-dvbapi.o   : dvbapi.c config.h dvbapi.h dvbosd.h font.h interface.h svdrp.h tools.h videodir.h
+config.o   : config.c config.h dvbapi.h dvbosd.h eit.h font.h interface.h remote.h svdrp.h thread.h tools.h
+dvbapi.o   : dvbapi.c config.h dvbapi.h dvbosd.h eit.h font.h interface.h remote.h svdrp.h thread.h tools.h videodir.h
 dvbosd.o   : dvbosd.c dvbosd.h font.h tools.h
-eit.o      : eit.c eit.h tools.h
+eit.o      : eit.c eit.h thread.h tools.h
 font.o     : font.c font.h fontosd.c tools.h
 interface.o: interface.c config.h dvbapi.h dvbosd.h eit.h font.h interface.h remote.h svdrp.h thread.h tools.h
-menu.o     : menu.c config.h dvbapi.h dvbosd.h font.h interface.h menu.h osd.h recording.h svdrp.h tools.h
-osd.o      : osd.c config.h dvbapi.h dvbosd.h font.h interface.h osd.h svdrp.h tools.h
-recording.o: recording.c config.h dvbapi.h dvbosd.h font.h interface.h recording.h svdrp.h tools.h videodir.h
-remote.o   : remote.c config.h dvbapi.h dvbosd.h font.h remote.h thread.h tools.h
-svdrp.o    : svdrp.c config.h dvbapi.h dvbosd.h font.h interface.h svdrp.h tools.h
+menu.o     : menu.c config.h dvbapi.h dvbosd.h eit.h font.h interface.h menu.h osd.h recording.h remote.h svdrp.h thread.h tools.h
+osd.o      : osd.c config.h dvbapi.h dvbosd.h eit.h font.h interface.h osd.h remote.h svdrp.h thread.h tools.h
+recording.o: recording.c config.h dvbapi.h dvbosd.h eit.h font.h interface.h recording.h remote.h svdrp.h thread.h tools.h videodir.h
+remote.o   : remote.c config.h dvbapi.h dvbosd.h eit.h font.h remote.h thread.h tools.h
+svdrp.o    : svdrp.c config.h dvbapi.h dvbosd.h eit.h font.h interface.h remote.h svdrp.h thread.h tools.h
 thread.o   : thread.c thread.h
 tools.o    : tools.c tools.h
-vdr.o      : vdr.c config.h dvbapi.h dvbosd.h font.h interface.h menu.h osd.h recording.h svdrp.h tools.h videodir.h
+vdr.o      : vdr.c config.h dvbapi.h dvbosd.h eit.h font.h interface.h menu.h osd.h recording.h remote.h svdrp.h thread.h tools.h videodir.h
 videodir.o : videodir.c tools.h videodir.h
 
 # The main program:

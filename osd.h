@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.h 1.11 2000/09/10 09:50:38 kls Exp $
+ * $Id: osd.h 1.12 2000/10/28 09:32:59 kls Exp $
  */
 
 #ifndef __OSD_H
@@ -19,6 +19,7 @@
 enum eOSState { osUnknown,
                 osMenu,
                 osContinue,
+                osSchedule,
                 osChannels,
                 osTimer,
                 osRecordings,
@@ -43,7 +44,7 @@ protected:
   eDvbColor fgColor, bgColor; 
 public:
   cOsdItem(eOSState State = osUnknown);
-  cOsdItem(char *Text, eOSState State = osUnknown);
+  cOsdItem(const char *Text, eOSState State = osUnknown);
   virtual ~cOsdItem();
   bool HasUserColor(void) { return userColor; }
   void SetText(const char *Text, bool Copy = true);
@@ -66,7 +67,7 @@ public:
 
 class cOsdMenu : public cOsdBase, public cList<cOsdItem> {
 private:
-  char *title;
+  const char *title;
   int cols[cInterface::MaxCols];
   int first, current, marked;
   cOsdMenu *subMenu;
@@ -83,10 +84,11 @@ protected:
   eOSState AddSubMenu(cOsdMenu *SubMenu);
   bool HasSubMenu(void) { return subMenu; }
   void SetStatus(const char *s);
+  void SetTitle(const char *Title, bool Copy = true);
   void SetHelp(const char *Red, const char *Green = NULL, const char *Yellow = NULL, const char *Blue = NULL);
   virtual void Del(int Index);
 public:
-  cOsdMenu(char *Title, int c0 = 0, int c1 = 0, int c2 = 0, int c3 = 0, int c4 = 0);
+  cOsdMenu(const char *Title, int c0 = 0, int c1 = 0, int c2 = 0, int c3 = 0, int c4 = 0);
   virtual ~cOsdMenu();
   int Current(void) { return current; }
   void Add(cOsdItem *Item, bool Current = false);

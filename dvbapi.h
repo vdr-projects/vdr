@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.h 1.18 2000/10/03 11:26:10 kls Exp $
+ * $Id: dvbapi.h 1.19 2000/10/29 12:11:16 kls Exp $
  */
 
 #ifndef __DVBAPI_H
@@ -21,6 +21,7 @@ typedef unsigned char __u8;
 #include <stdio.h>
 #include <dvb.h>
 #include "dvbosd.h"
+#include "eit.h"
 
 // Overlay facilities
 #define MAXCLIPRECTS 100
@@ -44,7 +45,8 @@ public:
 class cDvbApi {
 private:
   int videoDev;
-  cDvbApi(const char *FileName);
+  cSIProcessor *siProcessor;
+  cDvbApi(const char *VideoFileName, const char *VbiFileName);
 public:
   ~cDvbApi();
 
@@ -70,6 +72,14 @@ public:
   static void Cleanup(void);
          // Closes down all DVB devices.
          // Must be called at the end of the program.
+
+  // EIT facilities
+
+  const cSchedules *Schedules(cThreadLock *ThreadLock) const;
+         // Caller must provide a cThreadLock which has to survive the entire
+         // time the returned cSchedules is accessed. Once the cSchedules is no
+         // longer used, the cThreadLock must be destroyed.
+  void SetUseTSTime(bool On) { if (siProcessor) siProcessor->SetUseTSTime(On); }
 
   // Image Grab facilities
 

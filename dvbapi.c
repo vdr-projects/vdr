@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.32 2000/10/14 08:56:08 kls Exp $
+ * $Id: dvbapi.c 1.33 2000/10/29 10:39:57 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -25,6 +25,7 @@ extern "C" {
 #include "videodir.h"
 
 #define VIDEODEVICE "/dev/video"
+#define VBIDEVICE   "/dev/vbi"
 
 // The size of the array used to buffer video data:
 #define VIDEOBUFSIZE (1024*1024)
@@ -1084,14 +1085,27 @@ int cDvbApi::NumDvbApis = 0;
 cDvbApi *cDvbApi::dvbApi[MAXDVBAPI] = { NULL };
 cDvbApi *cDvbApi::PrimaryDvbApi = NULL;
 
-cDvbApi::cDvbApi(const char *FileName)
+cDvbApi::cDvbApi(const char *VideoFileName, const char *VbiFileName)
 {
+  siProcessor = NULL;
   pidRecord = pidReplay = 0;
   fromRecord = toRecord = -1;
   fromReplay = toReplay = -1;
-  videoDev = open(FileName, O_RDWR | O_NONBLOCK);
-  if (videoDev < 0)
-     LOG_ERROR;
+  videoDev = open(VideoFileName, O_RDWR | O_NONBLOCK);
+  if (videoDev >= 0) {
+     siProcessor = new cSIProcessor(VbiFileName);
+     if (!NumDvbApis) // only the first one shall set the system time
+        siProcessor->SetUseTSTime(Setup.SetSystemTime);
+     siProcessor->AddFilter(0x14, 0x70);  // TDT
+     siProcessor->AddFilter(0x14, 0x73);  // TOT
+     siProcessor->AddFilter(0x12, 0x4e);  // event info, actual TS, present/following
+     siProcessor->AddFilter(0x12, 0x4f);  // event info, other TS, present/following
+     siProcessor->AddFilter(0x12, 0x50);  // event info, actual TS, schedule
+     siProcessor->AddFilter(0x12, 0x60);  // event info, other TS, schedule
+     siProcessor->Start();
+     }
+  else
+     LOG_ERROR_STR(VideoFileName);
   cols = rows = 0;
 
   ovlGeoSet = ovlStat = ovlFbSet = false;
@@ -1121,6 +1135,7 @@ cDvbApi::cDvbApi(const char *FileName)
 cDvbApi::~cDvbApi()
 {
   if (videoDev >= 0) {
+     delete siProcessor;
      Close();
      Stop();
      StopRecord();
@@ -1174,11 +1189,9 @@ int cDvbApi::Index(void)
 
 bool cDvbApi::Init(void)
 {
-  char fileName[strlen(VIDEODEVICE) + 10];
-  int i;
-
   NumDvbApis = 0;
-  for (i = 0; i < MAXDVBAPI; i++) {
+  for (int i = 0; i < MAXDVBAPI; i++) {
+      char fileName[strlen(VIDEODEVICE) + 10];
       sprintf(fileName, "%s%d", VIDEODEVICE, i);
       if (access(fileName, F_OK | R_OK | W_OK) == 0) {
          dsyslog(LOG_INFO, "probing %s", fileName);
@@ -1188,7 +1201,9 @@ bool cDvbApi::Init(void)
             int r = ioctl(f, VIDIOCGCAP, &cap);
             close(f);
             if (r == 0 && (cap.type & VID_TYPE_DVB)) {
-               dvbApi[i] = new cDvbApi(fileName);
+               char vbiFileName[strlen(VBIDEVICE) + 10];
+               sprintf(vbiFileName, "%s%d", VBIDEVICE, i);
+               dvbApi[i] = new cDvbApi(fileName, vbiFileName);
                NumDvbApis++;
                }
             }
@@ -1221,6 +1236,13 @@ void cDvbApi::Cleanup(void)
       dvbApi[i] = NULL;
       }
   PrimaryDvbApi = NULL;
+}
+
+const cSchedules *cDvbApi::Schedules(cThreadLock *ThreadLock) const
+{
+  if (siProcessor && ThreadLock->Lock(siProcessor))
+     return siProcessor->Schedules();
+  return NULL;
 }
 
 bool cDvbApi::GrabImage(const char *FileName, bool Jpeg, int Quality, int SizeX, int SizeY)
@@ -1671,8 +1693,11 @@ bool cDvbApi::SetChannel(int FrequencyMHz, char Polarization, int Diseqc, int Sr
      front.fec       = 8;
      front.AFC       = 1;
      ioctl(videoDev, VIDIOCSFRONTEND, &front);
-     if (front.sync & 0x1F == 0x1F)
+     if (front.sync & 0x1F == 0x1F) {
+        if (siProcessor)
+           siProcessor->SetCurrentServiceID(Pnr);
         return true;
+        }
      esyslog(LOG_ERR, "ERROR: channel not sync'ed (front.sync=%X)!", front.sync);
      }
   return false;
