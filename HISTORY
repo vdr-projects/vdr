@@ -1151,7 +1151,7 @@ Video Disk Recorder Revision History
   commands.conf starts with a digit in the range '1'...'9', followed by a blank.
 - Fixed a bug in switching back the replay mode display in time shift mode
   (thanks to Achim Lange for reporting this one).
-- Fixed a bug in the 'First day' timer parameter for timers that record over
+- Fixed a bug in the "First day" timer parameter for timers that record over
   midnight.
 - Added units to Setup parameters.
 - Changed time entry in the 'Jump' command during replay, so that it is filled
@@ -1177,3 +1177,5 @@ Video Disk Recorder Revision History
   Kerner, problem was initially reported by Michel Moster, but somehow I had
   misplaced his message...).
 - Added Spanish language texts (thanks to Ruben Nunez Francisco).
+- Fixed resetting the "First day" timer parameter once the timer actually starts
+  recording.
