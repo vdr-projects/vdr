@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.60 2001/02/24 12:18:30 kls Exp $
+ * $Id: dvbapi.c 1.61 2001/02/24 13:13:19 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -1609,7 +1609,7 @@ bool cDvbApi::SetPrimaryDvbApi(int n)
 
 cDvbApi *cDvbApi::GetDvbApi(int Ca, int Priority)
 {
-  cDvbApi *d = NULL;
+  cDvbApi *d = NULL, *dMinPriority = NULL;
   int index = Ca - 1;
   for (int i = MAXDVBAPI; --i >= 0; ) {
       if (dvbApi[i]) {
@@ -1619,13 +1619,25 @@ cDvbApi *cDvbApi::GetDvbApi(int Ca, int Priority)
             }
          else if (Ca == 0) { // means any device would be acceptable
             if (!d || !dvbApi[i]->Recording() || (d->Recording() && d->Priority() > dvbApi[i]->Priority()))
-               d = dvbApi[i];
+               d = dvbApi[i]; // this is one that is either not currently recording or has the lowest priority
             if (d && d != PrimaryDvbApi && !d->Recording()) // avoids the PrimaryDvbApi if possible
                break;
+            if (d && d->Recording() && d->Priority() < Setup.PrimaryLimit && (!dMinPriority || d->Priority() < dMinPriority->Priority()))
+               dMinPriority = d; // this is the one with the lowest priority below Setup.PrimaryLimit
             }
          }
       }
-  return (d && (!d->Recording() || d->Priority() < Priority || (!d->Ca() && Ca))) ? d : NULL;
+  if (d == PrimaryDvbApi) { // the PrimaryDvbApi was the only one that was free
+     if (Priority < Setup.PrimaryLimit)
+        return NULL;        // not enough priority to use the PrimaryDvbApi
+     if (dMinPriority)      // there's one that must not use the PrimaryDvbApi...
+        d = dMinPriority;   // ...so let's kick out that one
+     }
+  return (d                           // we found one...
+      && (!d->Recording()             // ...that's either not currently recording...
+          || d->Priority() < Priority // ...or has a lower priority...
+          || (!d->Ca() && Ca)))       // ...or doesn't need this card
+          ? d : NULL;
 }
 
 int cDvbApi::Index(void)

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.66 2001/02/18 13:12:32 kls Exp $
+ * $Id: menu.c 1.67 2001/02/24 14:03:39 kls Exp $
  */
 
 #include "menu.h"
@@ -1609,6 +1609,7 @@ void cMenuSetup::Set(void)
   Add(new cMenuEditIntItem( tr("MarginStop"),         &data.MarginStop));
   Add(new cMenuEditIntItem( tr("EPGScanTimeout"),     &data.EPGScanTimeout));
   Add(new cMenuEditIntItem( tr("SVDRPTimeout"),       &data.SVDRPTimeout));
+  Add(new cMenuEditIntItem( tr("PrimaryLimit"),       &data.PrimaryLimit));
 }
 
 eOSState cMenuSetup::ProcessKey(eKeys Key)
@@ -1996,7 +1997,7 @@ bool cRecordControls::Start(cTimer *Timer)
                }
             }
         }
-     else
+     else if (!Timer || Timer->priority >= Setup.PrimaryLimit)
         esyslog(LOG_ERR, "ERROR: no free DVB device to record channel %d!", ch);
      }
   else

@@ -404,3 +404,6 @@ Video Disk Recorder Revision History
 - Fixed an occasional segfault in the EIT processor.
 - A value of '0' for the EPGScanTimeout setup parameter now completely turns off
   scanning for EPG data on both single and multiple card systems.
+- New setup parameter "PrimaryLimit" that allows to prevent timers from using the
+  primary DVB interface in multi card systems. Default value is 0, which means
+  that every timer may use the primary interface.

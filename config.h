@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.41 2001/02/18 13:12:06 kls Exp $
+ * $Id: config.h 1.42 2001/02/24 13:19:39 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -270,6 +270,7 @@ public:
   int MarginStart, MarginStop;
   int EPGScanTimeout;
   int SVDRPTimeout;
+  int PrimaryLimit;
   int CurrentChannel;
   cSetup(void);
   bool Load(const char *FileName);

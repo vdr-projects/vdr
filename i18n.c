@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.13 2001/02/18 13:14:00 kls Exp $
+ * $Id: i18n.c 1.14 2001/02/24 13:57:14 kls Exp $
  *
  * Slovenian translations provided by Miha Setina <mihasetina@softhome.net>
  * Italian   translations provided by Alberto Carraro <bertocar@tin.it>
@@ -420,6 +420,11 @@ const tPhrase Phrases[] = {
     "SVDRP Timeout",
     "", // TODO
     "Timeout SVDRP",
+  },
+  { "PrimaryLimit",
+    "Primär-Limit",
+    "", // TODO
+    "", // TODO
   },
   // The days of the week:
   { "MTWTFSS",
