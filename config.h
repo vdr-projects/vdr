@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.33 2000/11/12 12:22:24 kls Exp $
+ * $Id: config.h 1.34 2000/11/18 13:25:53 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -92,7 +92,7 @@ public:
   const char *ToText(void);
   bool Parse(const char *s);
   bool Save(FILE *f);
-  bool Switch(cDvbApi *DvbApi = NULL);
+  bool Switch(cDvbApi *DvbApi = NULL, bool Log = true);
   };
 
 #define DEFAULTPRIORITY 99
@@ -257,6 +257,7 @@ public:
   int LnbFrequHi;
   int SetSystemTime;
   int MarginStart, MarginStop;
+  int EPGScanTimeout;
   cSetup(void);
   bool Load(const char *FileName);
   bool Save(const char *FileName = NULL);

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.33 2000/11/12 12:22:40 kls Exp $
+ * $Id: config.c 1.34 2000/11/18 13:26:36 kls Exp $
  */
 
 #include "config.h"
@@ -257,12 +257,14 @@ bool cChannel::Save(FILE *f)
   return fprintf(f, ToText()) > 0;
 }
 
-bool cChannel::Switch(cDvbApi *DvbApi)
+bool cChannel::Switch(cDvbApi *DvbApi, bool Log)
 {
   if (!DvbApi)
      DvbApi = cDvbApi::PrimaryDvbApi;
   if (!DvbApi->Recording() && !groupSep) {
-     isyslog(LOG_INFO, "switching to channel %d", number);
+     if (Log) {
+        isyslog(LOG_INFO, "switching to channel %d", number);
+        }
      for (int i = 3; i--;) {
          if (DvbApi->SetChannel(number, frequency, polarization, diseqc, srate, vpid, apid, ca, pnr))
             return true;
@@ -720,6 +722,7 @@ cSetup::cSetup(void)
   SetSystemTime = 0;
   MarginStart = 2;
   MarginStop = 10;
+  EPGScanTimeout = 5;
 }
 
 bool cSetup::Parse(char *s)
@@ -738,6 +741,7 @@ bool cSetup::Parse(char *s)
      else if (!strcasecmp(Name, "SetSystemTime"))       SetSystemTime      = atoi(Value);
      else if (!strcasecmp(Name, "MarginStart"))         MarginStart        = atoi(Value);
      else if (!strcasecmp(Name, "MarginStop"))          MarginStop         = atoi(Value);
+     else if (!strcasecmp(Name, "EPGScanTimeout"))      EPGScanTimeout     = atoi(Value);
      else
         return false;
      return true;
@@ -788,7 +792,7 @@ bool cSetup::Save(const char *FileName)
         fprintf(f, "LnbFrequHi         = %d\n", LnbFrequHi);
         fprintf(f, "SetSystemTime      = %d\n", SetSystemTime);
         fprintf(f, "MarginStart        = %d\n", MarginStart);
-        fprintf(f, "MarginStop         = %d\n", MarginStop);
+        fprintf(f, "EPGScanTimeout     = %d\n", EPGScanTimeout);
         fclose(f);
         isyslog(LOG_INFO, "saved setup to %s", FileName);
         return true;

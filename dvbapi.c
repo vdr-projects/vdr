@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.37 2000/11/12 12:59:50 kls Exp $
+ * $Id: dvbapi.c 1.38 2000/11/18 13:46:46 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -1143,6 +1143,7 @@ cDvbApi::~cDvbApi()
      Stop();
      StopRecord();
      OvlO(false); //Overlay off!
+     //XXX the following call sometimes causes a segfault - driver problem?
      close(videoDev);
      }
 #if defined(DEBUG_OSD) || defined(REMOTE_KBD)
@@ -1727,7 +1728,7 @@ bool cDvbApi::SetChannel(int ChannelNumber, int FrequencyMHz, char Polarization,
      front.AFC       = 1;
      ioctl(videoDev, VIDIOCSFRONTEND, &front);
      if (front.sync & 0x1F == 0x1F) {
-        if (siProcessor)
+        if (this == PrimaryDvbApi && siProcessor)
            siProcessor->SetCurrentServiceID(Pnr);
         currentChannel = ChannelNumber;
         return true;
@@ -2105,5 +2106,57 @@ bool cDvbApi::GetIndex(int *Current, int *Total)
      return *Current >= 0;
      }
   return false;
+}
+
+// --- cEITScanner -----------------------------------------------------------
+
+cEITScanner::cEITScanner(void)
+{
+  lastScan = lastActivity = time(NULL);
+  currentChannel = 0;
+  lastChannel = 1;
+}
+
+void cEITScanner::Activity(void)
+{
+  if (currentChannel) {
+     Channels.SwitchTo(currentChannel);
+     currentChannel = 0;
+     }
+  lastActivity = time(NULL);
+}
+
+void cEITScanner::Process(void)
+{
+  if (Channels.MaxNumber() > 1) {
+     time_t now = time(NULL);
+     if (now - lastScan > ScanTimeout && now - lastActivity > ActivityTimeout) {
+        for (int i = 0; i < cDvbApi::NumDvbApis; i++) {
+            cDvbApi *DvbApi = cDvbApi::GetDvbApi(i, 0);
+            if (DvbApi) {
+               if (DvbApi != cDvbApi::PrimaryDvbApi || (cDvbApi::NumDvbApis == 1 && Setup.EPGScanTimeout && now - lastActivity > Setup.EPGScanTimeout * 3600)) {
+                  if (!(DvbApi->Recording() || DvbApi->Replaying())) {
+                     int oldCh = lastChannel;
+                     int ch = oldCh + 1;
+                     while (ch != oldCh) {
+                           if (ch > Channels.MaxNumber())
+                              ch = 1;
+                           cChannel *Channel = Channels.GetByNumber(ch);
+                           if (Channel && Channel->pnr) {
+                              if (DvbApi == cDvbApi::PrimaryDvbApi && !currentChannel)
+                                 currentChannel = DvbApi->Channel();
+                              Channel->Switch(DvbApi, false);
+                              lastChannel = ch;
+                              break;
+                              }
+                           ch++;
+                           }
+                     }
+                  }
+               }
+            }
+        lastScan = time(NULL);
+        }
+     }
 }
 

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.h 1.2 2000/10/28 15:08:09 kls Exp $
+ * $Id: thread.h 1.3 2000/11/14 18:38:11 kls Exp $
  */
 
 #ifndef __THREAD_H
@@ -13,11 +13,21 @@
 #include <pthread.h>
 #include <sys/types.h>
 
+class cMutex {
+private:
+  pthread_mutex_t mutex;
+public:
+  cMutex(void) { pthread_mutex_init(&mutex, NULL); }
+  ~cMutex() { pthread_mutex_destroy(&mutex); }
+  void Lock(void) { pthread_mutex_lock(&mutex); }
+  void Unlock(void) { pthread_mutex_unlock(&mutex); }
+  };
+
 class cThread {
   friend class cThreadLock;
 private:
   pthread_t thread;
-  pthread_mutex_t mutex;
+  cMutex Mutex;
   pid_t parentPid, lockingPid;
   int locked;
   bool running;

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.48 2000/11/12 16:46:19 kls Exp $
+ * $Id: menu.c 1.49 2000/11/18 13:42:52 kls Exp $
  */
 
 #include "menu.h"
@@ -1527,6 +1527,7 @@ void cMenuSetup::Set(void)
   Add(new cMenuEditBoolItem(tr("SetSystemTime"),      &data.SetSystemTime));
   Add(new cMenuEditIntItem( tr("MarginStart"),        &data.MarginStart));
   Add(new cMenuEditIntItem( tr("MarginStop"),         &data.MarginStop));
+  Add(new cMenuEditIntItem( tr("EPGScanTimeout"),     &data.EPGScanTimeout));
 }
 
 eOSState cMenuSetup::ProcessKey(eKeys Key)

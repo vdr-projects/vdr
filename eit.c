@@ -13,7 +13,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.c 1.8 2000/11/02 19:19:06 kls Exp $
+ * $Id: eit.c 1.9 2000/11/18 13:42:28 kls Exp $
  ***************************************************************************/
 
 #include "eit.h"
@@ -1056,15 +1056,20 @@ bool cEIT::WriteExtEventDescriptor(unsigned short service, eit_loop_t *eitloop, 
 
 #define MAX_FILTERS 20
 
+int cSIProcessor::numSIProcessors = 0;
+cSchedules *cSIProcessor::schedules = NULL;
+cMutex cSIProcessor::schedulesMutex;
+
 /**  */
 cSIProcessor::cSIProcessor(const char *FileName)
 {
+   masterSIProcessor = numSIProcessors == 0; // the first one becomes the 'master'
 	useTStime = false;
    filters = NULL;
-   schedules = NULL;
    if ((fsvbi = open(FileName, O_RDONLY)) >= 0)
    {
-      schedules = new cSchedules;
+      if (!numSIProcessors++) // the first one creates it
+         schedules = new cSchedules;
 	   filters = (SIP_FILTER *)calloc(MAX_FILTERS, sizeof(SIP_FILTER));
    }
    else
@@ -1078,7 +1083,8 @@ cSIProcessor::~cSIProcessor()
       Stop();
    	ShutDownFilters();
       delete filters;
-      delete schedules;
+      if (!--numSIProcessors) // the last one deletes it
+         delete schedules;
       close(fsvbi);
    }
 }
@@ -1093,7 +1099,7 @@ void cSIProcessor::Action()
       return;
       }
 
-   dsyslog(LOG_INFO, "EIT processing thread started (pid=%d)", getpid());
+   dsyslog(LOG_INFO, "EIT processing thread started (pid=%d)%s", getpid(), masterSIProcessor ? " - master" : "");
 	
    unsigned char buf[4096+1]; // max. allowed size for any EIT section (+1 for safety ;-)
 	unsigned int seclen;
@@ -1103,15 +1109,20 @@ void cSIProcessor::Action()
 	
 	while(true)
 	{
-      time_t now = time(NULL);
-      struct tm *ptm = localtime(&now);
-      if (now - lastCleanup > 3600 && ptm->tm_hour == 5)
+      if (masterSIProcessor)
       {
-         LOCK_THREAD;
+         time_t now = time(NULL);
+         struct tm *ptm = localtime(&now);
+         if (now - lastCleanup > 3600 && ptm->tm_hour == 5)
+         {
+            LOCK_THREAD;
 
-         isyslog(LOG_INFO, "Now cleaning up things");
-         schedules->Cleanup();
-         lastCleanup = now;
+            schedulesMutex.Lock();
+            isyslog(LOG_INFO, "cleaning up schedules data");
+            schedules->Cleanup();
+            schedulesMutex.Unlock();
+            lastCleanup = now;
+         }
       }
 
 		/* wait data become ready from the bitfilter */
@@ -1150,8 +1161,10 @@ void cSIProcessor::Action()
 					{
                   LOCK_THREAD;
 
+                  schedulesMutex.Lock();
 	               cEIT ceit(buf, seclen, schedules);
 						ceit.ProcessEIT();
+                  schedulesMutex.Unlock();
 					}
 					else
 						dsyslog(LOG_INFO, "Received stuffing section in EIT\n");

@@ -1,9 +1,8 @@
-On Screen Menu for the Video Disk Recorder
-------------------------------------------
+Video Disk Recorder ('VDR')
+---------------------------
 
-These files contain the source code of an on screen
-menu for a video disk recorder based on the DVB driver
-of the LinuxTV project (http://linuxtv.org).
+These files contain the source code of the "Video Disk Recorder",
+which is based on the DVB driver of the LinuxTV project (http://linuxtv.org).
 For details about the "Video Disk Recorder" project please
 refer to http://www.cadsoft.de/people/kls/vdr.
 
@@ -12,6 +11,8 @@ Web pages, which can be used within this program.
 
 Please see the INSTALL file for details on how to install
 this program on your computer.
+
+The MANUAL file describes how to operate the VDR.
 
 The author can be contacted at kls@cadsoft.de.
 

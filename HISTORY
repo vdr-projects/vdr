@@ -266,7 +266,7 @@ Video Disk Recorder Revision History
   are programmed via the "Schedules" menu) are now replaced by suitable
   substitutes.
 
-2000-11-12: Version 0.68
+2000-11-18: Version 0.68
 
 - Date and time in the title of an event info page are now always right adjusted.
 - The 'current channel' is now handled device specific (in case there is more
@@ -289,3 +289,15 @@ Video Disk Recorder Revision History
   CAM module (and thus can continue recording on a different DVB card).
 - The "Yellow" button in the "What's on now/next?" menus now displays the
   schedule of the current channel from that menu. 
+- All DVB cards in a multi-card system now write their EIT information into the
+  same data structure.
+- If there is more than one DVB card in the system, the non-primary cards are
+  now used to periodically scan through the channels in order to keep the
+  EPG info up-to-date. Scanning kicks in after 60 seconds of user inactivity
+  (timeout in order to keep user interactions instantaneously) and each channel
+  that has the 'pnr' parameter defined in 'channels.conf' is switched to for
+  20 seconds. If there is only one DVB card in the system, that card will start
+  scanning after 5 hours (configurable through the "Setup" menu) of user inactivity
+  and will switch back to the channel it originally displayed at the first sign of
+  user activity. Any scanning will only occur if that particular card is not
+  currently recording or replaying.

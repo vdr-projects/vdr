@@ -272,9 +272,15 @@ Video Disk Recorder User's Manual
                          1 = system time wil be set
                          Note that this works only if VDR is running under a user
                          id that has permisson to set the system time.
+
   MarginStart = 2        Defines how many minutes before the official start time
   MarginStop = 10        of a broadcast VDR shall start recording, and how long
                          after the official end time it shall stop recording.
+
+  EPGScanTimeout = 5     The time (in hours) of user inactivity after which the
+                         DVB card in a single card system starts scanning channels
+                         to keep the EPG up-to-date.
+                         A value of '0' turns off scanning on a single card system.
 
 * Executing system commands
 

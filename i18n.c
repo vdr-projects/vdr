@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.2 2000/11/11 16:20:47 kls Exp $
+ * $Id: i18n.c 1.3 2000/11/18 13:28:19 kls Exp $
  */
 
 /*
@@ -249,6 +249,9 @@ const tPhrase Phrases[] = {
   },
   { "MarginStop",
     "Zeitpuffer bei Ende",
+  },
+  { "EPGScanTimeout",
+    "Zeit bis EPG Scan",
   },
   // The days of the week:
   { "MTWTFSS",

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.h 1.23 2000/11/12 12:52:41 kls Exp $
+ * $Id: dvbapi.h 1.24 2000/11/18 13:46:10 kls Exp $
  */
 
 #ifndef __DVBAPI_H
@@ -45,7 +45,6 @@ public:
 class cDvbApi {
 private:
   int videoDev;
-  cSIProcessor *siProcessor;
   cDvbApi(const char *VideoFileName, const char *VbiFileName);
 public:
   ~cDvbApi();
@@ -79,6 +78,9 @@ public:
 
   // EIT facilities
 
+private:
+  cSIProcessor *siProcessor;
+public:
   const cSchedules *Schedules(cThreadLock *ThreadLock) const;
          // Caller must provide a cThreadLock which has to survive the entire
          // time the returned cSchedules is accessed. Once the cSchedules is no
@@ -147,6 +149,7 @@ private:
 public:
   bool SetChannel(int ChannelNumber, int FrequencyMHz, char Polarization, int Diseqc, int Srate, int Vpid, int Apid, int Ca, int Pnr);
   static int CurrentChannel(void) { return PrimaryDvbApi ? PrimaryDvbApi->currentChannel : 0; }
+  int Channel(void) { return currentChannel; }
 
   // Record/Replay facilities
 
@@ -210,6 +213,20 @@ public:
        // Use a very large negative value to go all the way back to the
        // beginning of the recording.
   bool GetIndex(int *Current, int *Total = NULL);
+  };
+
+class cEITScanner {
+private:
+  enum { ActivityTimeout = 60,
+         ScanTimeout = 20
+       };
+  time_t lastScan, lastActivity;
+  int currentChannel, lastChannel;
+public:
+  cEITScanner(void);
+  bool Active(void) { return currentChannel; }
+  void Activity(void);
+  void Process(void);
   };
 
 #endif //__DVBAPI_H

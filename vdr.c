@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.45 2000/11/11 14:40:11 kls Exp $
+ * $Id: vdr.c 1.46 2000/11/18 13:46:56 kls Exp $
  */
 
 #include <getopt.h>
@@ -181,6 +181,8 @@ int main(int argc, char *argv[])
 
   Channels.SwitchTo(1);
 
+  cEITScanner EITScanner;
+
   // User interface:
 
   Interface = new cInterface(SVDRPport);
@@ -205,7 +207,7 @@ int main(int argc, char *argv[])
 
   while (!Interrupted) {
         // Channel display:
-        if (cDvbApi::CurrentChannel() != LastChannel) {
+        if (!EITScanner.Active() && cDvbApi::CurrentChannel() != LastChannel) {
            if (!Menu)
               Menu = new cDisplayChannel(cDvbApi::CurrentChannel(), LastChannel > 0);
            PreviousChannel = LastChannel;
@@ -224,6 +226,8 @@ int main(int argc, char *argv[])
         // User Input:
         cOsdBase **Interact = Menu ? &Menu : (cOsdBase **)&ReplayControl;
         eKeys key = Interface->GetKey(!*Interact || !(*Interact)->NeedsFastResponse());
+        if (NORMALKEY(key) != kNone)
+           EITScanner.Activity();
         if (*Interact) {
            switch ((*Interact)->ProcessKey(key)) {
              case osMenu:   DELETENULL(Menu);
@@ -302,6 +306,8 @@ int main(int argc, char *argv[])
              default:    break;
              }
            }
+        if (!Menu)
+           EITScanner.Process();
         }
   isyslog(LOG_INFO, "caught signal %d", Interrupted);
   delete Menu;
