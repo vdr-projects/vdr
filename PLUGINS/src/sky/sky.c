@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: sky.c 1.2 2002/12/13 15:01:57 kls Exp $
+ * $Id: sky.c 1.3 2003/05/09 15:27:16 kls Exp $
  */
 
 #include <sys/socket.h>
@@ -14,7 +14,7 @@
 #include <vdr/plugin.h>
 #include <vdr/sources.h>
 
-static const char *VERSION        = "0.1.0";
+static const char *VERSION        = "0.1.1";
 static const char *DESCRIPTION    = "Sky Digibox interface";
 
 // --- cDigiboxDevice --------------------------------------------------------
@@ -186,7 +186,7 @@ public:
   virtual const char *Description(void) { return DESCRIPTION; }
   virtual const char *CommandLineHelp(void);
   virtual bool ProcessArgs(int argc, char *argv[]);
-  virtual bool Start(void);
+  virtual bool Initialize(void);
   virtual void Housekeeping(void);
   virtual cMenuSetupPage *SetupMenu(void);
   virtual bool SetupParse(const char *Name, const char *Value);
@@ -216,9 +216,9 @@ bool cPluginSky::ProcessArgs(int argc, char *argv[])
   return true;
 }
 
-bool cPluginSky::Start(void)
+bool cPluginSky::Initialize(void)
 {
-  // Start any background activities the plugin shall perform.
+  // Initialize any background activities the plugin shall perform.
   new cDigiboxDevice;
   return true;
 }

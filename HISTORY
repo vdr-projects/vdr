@@ -2108,3 +2108,37 @@ Video Disk Recorder Revision History
   (thanks to Carsten Siebholz).
 - The red ("Record") and yellow ("Pause") button in the "Main" menu are no longer
   available when replaying.
+
+2003-05-11: Version 1.1.31
+
+- Introduced the new function cPlugin::Initialize(), in order to be able to separate
+  the startup of a plugin into an "early" (Initialize()) and "late" (Start()) phase
+  (suggested by Andreas Schultz). Plugin authors should please read the section
+  about "Getting started" in PLUGINS.html and adapt their code if applicable.
+- Implemented the CableDeliverySystemDescriptor and TerrestrialDeliverySystemDescriptor
+  in libdtv (thanks to Sven Grothklags and Andreas Schultz)
+- Fixed keeping live video active in case the primary device doesn't have an MPEG
+  decoder (thanks to Wolfgang Goeller for reporting this one).
+- Implemented cDevice::ActualDevice(), which returns the actual receiving device in
+  case of 'Transfer Mode', or the primary device otherwise. This may be useful for
+  plugins that want to attach a cReceiver to the device where the current live video
+  is actually coming from.
+- Added VDRVERSNUM to config.h, which can be used by the preprocessor to check the
+  actual VDR version (suggested by Stefan Huelswitt).
+- Removed the WaitForPut/WaitForGet stuff from cRingBuffer, since it appears to
+  no longer be necessary due to the implementation of cNonBlockingFileReader in
+  dvbplayer.c. Also, the long timeout in WaitForPut caused problems with cReceivers
+  that use a ring buffer and didn't immediately return from their Receive() function
+  if the buffer runs full (thanks to Sascha Volkenandt for reporting this one).
+- Fixed handling EPG data where the "extended event descriptor" comes before the
+  "short event" or a "time shifted event" (thanks to Jonan Santiago).
+- Disabled the "Received stuffing section in EIT" log message.
+- Updated 'channels.conf.terr' for Berlin (thanks to Juri Haberland).
+- Avoiding short display of the "Main" menu when pressing the "Recordings" button
+  or the "Back" button during replay.
+- Further increased the timeout until an index file is considerd no longer to be
+  written.
+- Implemented separate PausePriority and PauseLifetime parameters for the recordings
+  created when pausing live video (suggested by Alfred Zastrow).
+- Changed C++ style comments in libdtv into C style to avoid warnings in gcc 3.x
+  (thanks to Andreas Schultz).

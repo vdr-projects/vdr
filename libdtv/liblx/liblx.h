@@ -1,29 +1,30 @@
-//////////////////////////////////////////////////////////////
-///                                                        ///
-/// liblx.h: definitions necessary for the liblx package   ///
-///                                                        ///
-//////////////////////////////////////////////////////////////
-
-// $Revision: 1.2 $
-// $Date: 2001/06/25 19:39:00 $
-// $Author: hakenes $
-//
-//   (C) 1992-2001 Rolf Hakenes <hakenes@hippomi.de>, under the GNU GPL.
-//
-// liblx is free software; you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation; either version 2, or (at your option)
-// any later version.
-//
-// liblx is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// You may have received a copy of the GNU General Public License
-// along with liblx; see the file COPYING.  If not, write to the
-// Free Software Foundation, Inc., 59 Temple Place - Suite 330,
-// Boston, MA 02111-1307, USA.
+/*
+ *
+ * liblx.h: definitions necessary for the liblx package
+ *
+ *
+ * $Revision: 1.2 $
+ * $Date: 2001/06/25 19:39:00 $
+ * $Author: hakenes $
+ *
+ *   (C) 1992-2001 Rolf Hakenes <hakenes@hippomi.de>, under the GNU GPL.
+ *
+ * liblx is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2, or (at your option)
+ * any later version.
+ *
+ * liblx is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You may have received a copy of the GNU General Public License
+ * along with liblx; see the file COPYING.  If not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
+ *
+ */
 
 #ifndef LIBLX_H
 #define LIBLX_H

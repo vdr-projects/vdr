@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.155 2003/04/27 15:56:04 kls Exp $
+ * $Id: config.h 1.158 2003/05/11 13:45:44 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -19,7 +19,8 @@
 #include "device.h"
 #include "tools.h"
 
-#define VDRVERSION "1.1.30"
+#define VDRVERSION "1.1.31"
+#define VDRVERSNUM   10131  // Version * 10000 + Major * 100 + Minor
 
 #define MAXPRIORITY 99
 #define MAXLIFETIME 99
@@ -217,6 +218,7 @@ public:
   int SortTimers;
   int PrimaryLimit;
   int DefaultPriority, DefaultLifetime;
+  int PausePriority, PauseLifetime;
   int UseSubtitle;
   int RecordingDirs;
   int VideoFormat;

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 1.4 2003/04/27 11:11:45 kls Exp $
+ * $Id: timers.c 1.5 2003/05/11 13:48:49 kls Exp $
  */
 
 #include "timers.h"
@@ -20,7 +20,7 @@
 
 char *cTimer::buffer = NULL;
 
-cTimer::cTimer(bool Instant)
+cTimer::cTimer(bool Instant, bool Pause)
 {
   startTime = stopTime = 0;
   recording = pending = false;
@@ -35,8 +35,8 @@ cTimer::cTimer(bool Instant)
   stop = (stop / 60) * 100 + (stop % 60);
   if (stop >= 2400)
      stop -= 2400;
-  priority = Setup.DefaultPriority;
-  lifetime = Setup.DefaultLifetime;
+  priority = Pause ? Setup.PausePriority : Setup.DefaultPriority;
+  lifetime = Pause ? Setup.PauseLifetime : Setup.DefaultLifetime;
   *file = 0;
   firstday = 0;
   summary = NULL;

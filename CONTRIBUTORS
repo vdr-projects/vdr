@@ -171,6 +171,7 @@ Stefan Huelswitt <huels@iname.com>
  don't indicate an actual encrypted channel
  for implementing setting the "broken link" flag for GOPs at the beginning of a new
  video sequence, which avoids artefacts when cutting
+ for suggesting to add VDRVERSNUM to config.h
 
 Ulrich Röder <roeder@efr-net.de>
  for pointing out that there are channels that have a symbol rate higher than
@@ -200,6 +201,9 @@ Andreas Schultz <aschultz@warp10.net>
  for suggesting a Make.config file
  for making EIT filtering use masks to reduce the number of filters
  for suggesting to remove the Mute() call from cDvbDevice::StillPicture()
+ for suggesting to separate the startup of a plugin into an "early" and a "late" phase
+ for changing C++ style comments in libdtv into C style to avoid warnings in gcc 3.x
+ for implementing the TerrestrialDeliverySystemDescriptor in libdtv
 
 Aaron Holtzman
  for writing 'ac3dec'
@@ -408,6 +412,7 @@ Gregoire Favre <greg@ulima.unil.ch>
 Sven Grothklags <sven@uni-paderborn.de>
  for fixing the cutting mechanism to make it re-sync in case a frame is larger
  than the buffer
+ for implementing the CableDeliverySystemDescriptor in libdtv
 
 Tomas Prybil <tomas.prybil@copper.se>
  for translating OSD texts to the Swedish language
@@ -584,6 +589,8 @@ Sascha Volkenandt <sascha@akv-soft.de>
  for helping to fix a faulty behaviour of the "Mute" key in case the channel display
  is visible
  for making the 'epg.data' file being read after all plugins have been started
+ for reporting a problem with cReceivers that use a ring buffer and didn't immediately
+ return from their Receive() function if the buffer runs full
 
 Malcolm Caldwell <malcolm.caldwell@ntu.edu.au>
  for modifying LOF handling to allow for C-band reception
@@ -630,3 +637,18 @@ Kai Moeller <moeller.ki@gmx.de>
 
 Carsten Siebholz <c.siebholz@t-online.de>
  for adding cStatus::OsdItem() to provide the entire list of menu items to a plugin
+
+Wolfgang Goeller <wgoeller@heraklit.ch>
+ for reporting a bug in keeping live video active in case the primary device doesn't
+ have an MPEG decoder
+
+Jonan Santiago <jonan-lists-vdr@callisia.com>
+ for fixing handling EPG data where the "extended event descriptor" comes before the
+ "short event" or a "time shifted event"
+
+Juri Haberland <juri@koschikode.com>
+ for his help in keeping 'channels.conf.terr' up to date
+
+Alfred Zastrow <vdr@zastrow4u.de>
+ for suggesting to implement separate PausePriority and PauseLifetime parameters for
+ the recordings created when pausing live video

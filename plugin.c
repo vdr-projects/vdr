@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: plugin.c 1.8 2002/11/16 14:22:37 kls Exp $
+ * $Id: plugin.c 1.9 2003/05/09 15:01:26 kls Exp $
  */
 
 #include "plugin.h"
@@ -46,6 +46,11 @@ const char *cPlugin::CommandLineHelp(void)
 }
 
 bool cPlugin::ProcessArgs(int argc, char *argv[])
+{
+  return true;
+}
+
+bool cPlugin::Initialize(void)
 {
   return true;
 }
@@ -293,6 +298,22 @@ bool cPluginManager::LoadPlugins(bool Log)
   return true;
 }
 
+bool cPluginManager::InitializePlugins(void)
+{
+  for (cDll *dll = dlls.First(); dll; dll = dlls.Next(dll)) {
+      cPlugin *p = dll->Plugin();
+      if (p) {
+         int Language = Setup.OSDLanguage;
+         Setup.OSDLanguage = 0; // the i18n texts are only available _after_ Start()
+         isyslog("initializing plugin: %s (%s): %s", p->Name(), p->Version(), p->Description());
+         Setup.OSDLanguage = Language;
+         if (!p->Initialize())
+            return false;
+         }
+      }
+  return true;
+}
+
 bool cPluginManager::StartPlugins(void)
 {
   for (cDll *dll = dlls.First(); dll; dll = dlls.Next(dll)) {
@@ -300,7 +321,7 @@ bool cPluginManager::StartPlugins(void)
       if (p) {
          int Language = Setup.OSDLanguage;
          Setup.OSDLanguage = 0; // the i18n texts are only available _after_ Start()
-         isyslog("starting plugin: %s (%s): %s", p->Name(), p->Version(), p->Description());
+         isyslog("starting plugin: %s", p->Name());
          Setup.OSDLanguage = Language;
          if (!p->Start())
             return false;

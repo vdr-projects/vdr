@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 1.54 2003/04/21 13:40:45 kls Exp $
+ * $Id: menu.h 1.55 2003/05/11 13:43:58 kls Exp $
  */
 
 #ifndef __MENU_H
@@ -116,7 +116,7 @@ private:
   char *fileName;
   bool GetEventInfo(void);
 public:
-  cRecordControl(cDevice *Device, cTimer *Timer = NULL);
+  cRecordControl(cDevice *Device, cTimer *Timer = NULL, bool Pause = false);
   virtual ~cRecordControl();
   bool Process(time_t t);
   bool Uses(cDevice *Device) { return Device == device; }
@@ -131,7 +131,7 @@ class cRecordControls {
 private:
   static cRecordControl *RecordControls[];
 public:
-  static bool Start(cTimer *Timer = NULL);
+  static bool Start(cTimer *Timer = NULL, bool Pause = false);
   static void Stop(const char *InstantId);
   static void Stop(cDevice *Device);
   static bool StopPrimary(bool DoIt = false);

@@ -186,10 +186,11 @@ Video Disk Recorder User's Manual
 
   You can start recording the current channel by pressing the "Red" button
   in the "VDR" menu. This will create a timer event named "@channelname" that
-  starts at the current time and records for two hours.
+  starts at the current time and by default records for 3 hours.
   If you want to modify the recording time you need to edit the timer.
   Stop instant recording by pressing the "Menu" button and selecting
-  "Stop Recording", or by disabling the timer.
+  "Stop Recording", or by disabling the timer. The default priority, lifetime
+  and recording time can be defined in the "Setup/Recording" menu.
 
 * Pausing live video
 
@@ -201,8 +202,9 @@ Video Disk Recorder User's Manual
   your live viewing session. Once you're back, simply press the "Up" or "Play"
   button and you'll be watching the current channel in time shift mode, right
   from the point where you left off. The instant recording VDR has started
-  will use the same parameters for priority, lifetime and recording duration
-  as any other instant recording, so by default it will record 3 hours (which
+  will use the parameters for "Pause priority" and "Pause lifetime" as defined
+  in the "Setup/Recording" menu. Recording time will be the same as for
+  any other instant recording, so by default it will record 3 hours (which
   should be enough for any normal broadcast).
 
 * Replaying a Recording
@@ -547,6 +549,9 @@ Video Disk Recorder User's Manual
   Default lifetime = 50  creating a new timer event. A Lifetime value of 99
                          means that this recording will never be deleted
                          automatically.
+
+  Pause priority = 10    The Priority and Lifetime values used when pausing live
+  Pause lifetime = 1     video.
 
   Use episode name = yes Repeating timers use the EPG's 'Episode name' information
                          to create recording file names in a hierarchical structure

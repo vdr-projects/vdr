@@ -16,7 +16,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.c 1.74 2003/04/27 14:41:36 kls Exp $
+ * $Id: eit.c 1.75 2003/05/11 11:25:04 kls Exp $
  ***************************************************************************/
 
 #include "eit.h"
@@ -1291,8 +1291,9 @@ void cSIProcessor::Action()
                               cEIT ceit(buf, seclen, schedules);
                               ceit.ProcessEIT(buf, currentSource);
                            }
-                           else
+                           /*else
                               dsyslog("Received stuffing section in EIT\n");
+                           */
                            break;
 
                         default: {

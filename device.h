@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 1.32 2003/05/03 13:35:55 kls Exp $
+ * $Id: device.h 1.33 2003/05/11 08:50:04 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -75,6 +75,9 @@ public:
          ///< \return true if this was possible.
   static cDevice *PrimaryDevice(void) { return primaryDevice; }
          ///< Returns the primary device.
+  static cDevice *ActualDevice(void);
+         ///< Returns the actual receiving device in case of Transfer Mode, or the
+         ///< primary device otherwise.
   static cDevice *GetDevice(int Index);
          ///< Gets the device with the given Index.
          ///< \param Index must be in the range 0..numDevices-1.

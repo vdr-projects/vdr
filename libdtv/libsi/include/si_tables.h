@@ -1126,7 +1126,41 @@ typedef struct item_subtitling_struct {
 typedef struct descr_terrestrial_delivery_struct {
    u_char descriptor_tag                         :8;
    u_char descriptor_length                      :8;
-   /* TBD */
+   u_char frequency1                             :8;
+   u_char frequency2                             :8;
+   u_char frequency3                             :8;
+   u_char frequency4                             :8;
+#if BYTE_ORDER == BIG_ENDIAN
+   u_char bandwidth                              :3;
+   u_char reserved1                              :5;
+#else
+   u_char reserved1                              :5;
+   u_char bandwidth                              :3;
+#endif
+#if BYTE_ORDER == BIG_ENDIAN
+   u_char constellation                          :2;
+   u_char hierarchy                              :3;
+   u_char code_rate_HP                           :3;
+#else
+   u_char code_rate_HP                           :3;
+   u_char hierarchy                              :3;
+   u_char constellation                          :2;
+#endif
+#if BYTE_ORDER == BIG_ENDIAN
+   u_char code_rate_LP                           :3;
+   u_char guard_interval                         :2;
+   u_char transmission_mode                      :2;
+   u_char other_frequency_flag                   :1;
+#else
+   u_char other_frequency_flag                   :1;
+   u_char transmission_mode                      :2;
+   u_char guard_interval                         :2;
+   u_char code_rate_LP                           :3;
+#endif
+   u_char reserver2                              :8;
+   u_char reserver3                              :8;
+   u_char reserver4                              :8;
+   u_char reserver5                              :8;
 } descr_terrestrial_delivery_system_t;
 #define CastTerrestrialDeliverySystemDescriptor(x) ((descr_terrestrial_delivery_system_t *)(x))
 

@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.152 2003/05/03 13:39:57 kls Exp $
+ * $Id: vdr.c 1.154 2003/05/11 08:39:09 kls Exp $
  */
 
 #include <getopt.h>
@@ -355,9 +355,9 @@ int main(int argc, char *argv[])
 
   cDvbDevice::Initialize();
 
-  // Start plugins:
+  // Initialize plugins:
 
-  if (!PluginManager.StartPlugins())
+  if (!PluginManager.InitializePlugins())
      return 2;
 
   // Primary device:
@@ -437,6 +437,18 @@ int main(int argc, char *argv[])
   if (WatchdogTimeout > 0)
      if (signal(SIGALRM, Watchdog)   == SIG_IGN) signal(SIGALRM, SIG_IGN);
 
+  // Watchdog:
+
+  if (WatchdogTimeout > 0) {
+     dsyslog("setting watchdog timer to %d seconds", WatchdogTimeout);
+     alarm(WatchdogTimeout); // Initial watchdog timer start
+     }
+
+  // Start plugins:
+
+  if (!PluginManager.StartPlugins())
+     return 2;
+
   // Main program loop:
 
   cOsdObject *Menu = NULL;
@@ -448,11 +460,6 @@ int main(int argc, char *argv[])
   bool ForceShutdown = false;
   bool UserShutdown = false;
 
-  if (WatchdogTimeout > 0) {
-     dsyslog("setting watchdog timer to %d seconds", WatchdogTimeout);
-     alarm(WatchdogTimeout); // Initial watchdog timer start
-     }
-
   while (!Interrupted) {
         // Handle emergency exits:
         if (cThread::EmergencyExit()) {
@@ -462,7 +469,7 @@ int main(int argc, char *argv[])
         // Attach launched player control:
         cControl::Attach();
         // Make sure we have a visible programme in case device usage has changed:
-        if (!cDevice::PrimaryDevice()->HasProgramme()) {
+        if (cDevice::PrimaryDevice()->HasDecoder() && !cDevice::PrimaryDevice()->HasProgramme()) {
            static time_t lastTime = 0;
            if (time(NULL) - lastTime > MINCHANNELWAIT) {
               if (!Channels.SwitchTo(cDevice::CurrentChannel()))

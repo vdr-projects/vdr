@@ -1037,21 +1037,79 @@ struct SatelliteDeliverySystemDescriptor {
    unsigned short       Tag;
    long                 Frequency;
    short                OrbitalPosition;
+   short                Modulation;
    char                 Polarization;
    long                 SymbolRate;
    char                 FEC;
 };
 
-#define CreateSatelliteDeliverySystemDescriptor(descr, freq, orb, polar, sr, fec) \
+#define CreateSatelliteDeliverySystemDescriptor(descr, freq, orb, mod, polar, sr, fec) \
    do \
    { \
       xCreateNode (((struct SatelliteDeliverySystemDescriptor *)descr), NULL); \
       ((struct SatelliteDeliverySystemDescriptor *)descr)->Tag = DESCR_SAT_DEL_SYS; \
       ((struct SatelliteDeliverySystemDescriptor *)descr)->Frequency = freq; \
       ((struct SatelliteDeliverySystemDescriptor *)descr)->OrbitalPosition = orb; \
+      ((struct SatelliteDeliverySystemDescriptor *)descr)->Modulation = mod; \
       ((struct SatelliteDeliverySystemDescriptor *)descr)->Polarization = polar; \
       ((struct SatelliteDeliverySystemDescriptor *)descr)->SymbolRate = sr; \
       ((struct SatelliteDeliverySystemDescriptor *)descr)->FEC = fec; \
+   } while (0)
+
+/* CableDeliverySystemDescriptor */
+
+struct CableDeliverySystemDescriptor {
+   struct NODE          Node;
+   unsigned short       Tag;
+   long                 Frequency;
+   long                 SymbolRate;
+   char                 FECouter;
+   char                 FECinner;
+   char                 Modulation;
+};
+
+#define CreateCableDeliverySystemDescriptor(descr, freq, sr, fec_o, fec_i, mod) \
+   do \
+   { \
+      xCreateNode (((struct CableDeliverySystemDescriptor *)descr), NULL); \
+      ((struct CableDeliverySystemDescriptor *)descr)->Tag = DESCR_CABLE_DEL_SYS; \
+      ((struct CableDeliverySystemDescriptor *)descr)->Frequency = freq; \
+      ((struct CableDeliverySystemDescriptor *)descr)->SymbolRate = sr; \
+      ((struct CableDeliverySystemDescriptor *)descr)->FECouter = fec_o; \
+      ((struct CableDeliverySystemDescriptor *)descr)->FECinner = fec_i; \
+      ((struct CableDeliverySystemDescriptor *)descr)->Modulation = mod; \
+   } while (0)
+
+/* TerrestrialDeliverySystemDescriptor */
+
+struct TerrestrialDeliverySystemDescriptor {
+   struct NODE          Node;
+   unsigned short       Tag;
+   long                 Frequency;
+   char                 Bandwidth;
+   char                 Constellation;
+   char                 Hierarchy;
+   char                 CodeRateHP;
+   char                 CodeRateLP;
+   char                 GuardInterval;
+   char                 TransmissionMode;
+   char                 OtherFrequencyFlag;
+};
+
+#define CreateTerrestrialDeliverySystemDescriptor(descr, freq, bw, cst, hr, crh, crl, gi, tm, ofm) \
+   do \
+   { \
+      xCreateNode (((struct CableDeliverySystemDescriptor *)descr), NULL); \
+      ((struct TerrestrialDeliverySystemDescriptor *)descr)->Tag = DESCR_TERR_DEL_SYS; \
+      ((struct TerrestrialDeliverySystemDescriptor *)descr)->Frequency = freq; \
+      ((struct TerrestrialDeliverySystemDescriptor *)descr)->Bandwidth = bw; \
+      ((struct TerrestrialDeliverySystemDescriptor *)descr)->Constellation = cst; \
+      ((struct TerrestrialDeliverySystemDescriptor *)descr)->Hierarchy = hr; \
+      ((struct TerrestrialDeliverySystemDescriptor *)descr)->CodeRateHP = crh; \
+      ((struct TerrestrialDeliverySystemDescriptor *)descr)->CodeRateLP = crl; \
+      ((struct TerrestrialDeliverySystemDescriptor *)descr)->GuardInterval = gi; \
+      ((struct TerrestrialDeliverySystemDescriptor *)descr)->TransmissionMode = tm; \
+      ((struct TerrestrialDeliverySystemDescriptor *)descr)->OtherFrequencyFlag = ofm; \
    } while (0)
 
 /* ServiceListDescriptor */

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.41 2003/05/03 13:40:15 kls Exp $
+ * $Id: device.c 1.42 2003/05/11 08:53:09 kls Exp $
  */
 
 #include "device.h"
@@ -128,6 +128,14 @@ cOsdBase *cDevice::NewOsd(int x, int y)
 cSpuDecoder *cDevice::GetSpuDecoder(void)
 {
   return NULL;
+}
+
+cDevice *cDevice::ActualDevice(void)
+{
+  cDevice *d = cTransferControl::ReceiverDevice();
+  if (!d)
+     d = PrimaryDevice();
+  return d;
 }
 
 cDevice *cDevice::GetDevice(int Index)

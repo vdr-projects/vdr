@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.76 2003/04/27 15:52:17 kls Exp $
+ * $Id: recording.c 1.77 2003/05/11 13:09:08 kls Exp $
  */
 
 #include "recording.h"
@@ -768,7 +768,7 @@ void cRecordingUserCommand::InvokeCommand(const char *State, const char *Recordi
 #define MAXINDEXCATCHUP   2 // seconds
 
 // The minimum age of an index file for considering it no longer to be written:
-#define MININDEXAGE     300 // seconds
+#define MININDEXAGE    3600 // seconds
 
 cIndexFile::cIndexFile(const char *FileName, bool Record)
 :resumeFile(FileName)

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.241 2003/05/03 15:59:07 kls Exp $
+ * $Id: menu.c 1.243 2003/05/11 13:58:13 kls Exp $
  */
 
 #include "menu.h"
@@ -1704,6 +1704,7 @@ cMenuRecordings::cMenuRecordings(const char *Base, int Level, bool OpenSubMenus)
 {
   base = Base ? strdup(Base) : NULL;
   level = Setup.RecordingDirs ? Level : -1;
+  Display(); // this keeps the higher level menus from showing up briefly when pressing 'Back' during replay
   if (!Base) {
      Interface->Status(tr("scanning recordings..."));
      Interface->Flush();
@@ -1737,7 +1738,6 @@ cMenuRecordings::cMenuRecordings(const char *Base, int Level, bool OpenSubMenus)
      else if (OpenSubMenus && Open(true))
         return;
      }
-  Display(); // this keeps the higher level menus from showing up briefly when pressing 'Back' during replay
   SetHelpKeys();
 }
 
@@ -2188,6 +2188,8 @@ cMenuSetupRecord::cMenuSetupRecord(void)
   Add(new cMenuEditIntItem( tr("Setup.Recording$Primary limit"),             &data.PrimaryLimit, 0, MAXPRIORITY));
   Add(new cMenuEditIntItem( tr("Setup.Recording$Default priority"),          &data.DefaultPriority, 0, MAXPRIORITY));
   Add(new cMenuEditIntItem( tr("Setup.Recording$Default lifetime (d)"),      &data.DefaultLifetime, 0, MAXLIFETIME));
+  Add(new cMenuEditIntItem( tr("Setup.Recording$Pause priority"),            &data.PausePriority, 0, MAXPRIORITY));
+  Add(new cMenuEditIntItem( tr("Setup.Recording$Pause lifetime (d)"),        &data.PauseLifetime, 0, MAXLIFETIME));
   Add(new cMenuEditBoolItem(tr("Setup.Recording$Use episode name"),          &data.UseSubtitle));
   Add(new cMenuEditBoolItem(tr("Setup.Recording$Mark instant recording"),    &data.MarkInstantRecord));
   Add(new cMenuEditStrItem( tr("Setup.Recording$Name instant recording"),     data.NameInstantRecord, sizeof(data.NameInstantRecord), tr(FileNameChars)));
@@ -2907,7 +2909,7 @@ eOSState cDisplayVolume::ProcessKey(eKeys Key)
 
 // --- cRecordControl --------------------------------------------------------
 
-cRecordControl::cRecordControl(cDevice *Device, cTimer *Timer)
+cRecordControl::cRecordControl(cDevice *Device, cTimer *Timer, bool Pause = false)
 {
   eventInfo = NULL;
   instantId = NULL;
@@ -2917,7 +2919,7 @@ cRecordControl::cRecordControl(cDevice *Device, cTimer *Timer)
   if (!device) device = cDevice::PrimaryDevice();//XXX
   timer = Timer;
   if (!timer) {
-     timer = new cTimer(true);
+     timer = new cTimer(true, Pause);
      Timers.Add(timer);
      Timers.Save();
      asprintf(&instantId, cDevice::NumDevices() > 1 ? "%s - %d" : "%s", timer->Channel()->Name(), device->CardIndex() + 1);
@@ -3014,14 +3016,15 @@ bool cRecordControl::Process(time_t t)
 
 cRecordControl *cRecordControls::RecordControls[MAXRECORDCONTROLS] = { NULL };
 
-bool cRecordControls::Start(cTimer *Timer)
+bool cRecordControls::Start(cTimer *Timer, bool Pause)
 {
   int ch = Timer ? Timer->Channel()->Number() : cDevice::CurrentChannel();
   cChannel *channel = Channels.GetByNumber(ch);
 
   if (channel) {
      bool NeedsDetachReceivers = false;
-     cDevice *device = cDevice::GetDevice(channel, Timer ? Timer->Priority() : Setup.DefaultPriority, &NeedsDetachReceivers);
+     int Priority = Timer ? Timer->Priority() : Pause ? Setup.PausePriority : Setup.DefaultPriority;
+     cDevice *device = cDevice::GetDevice(channel, Priority, &NeedsDetachReceivers);
      if (device) {
         if (NeedsDetachReceivers)
            Stop(device);
@@ -3031,7 +3034,7 @@ bool cRecordControls::Start(cTimer *Timer)
            }
         for (int i = 0; i < MAXRECORDCONTROLS; i++) {
             if (!RecordControls[i]) {
-               RecordControls[i] = new cRecordControl(device, Timer);
+               RecordControls[i] = new cRecordControl(device, Timer, Pause);
                return true;
                }
             }
@@ -3087,7 +3090,7 @@ bool cRecordControls::PauseLiveVideo(void)
   Interface->Status(tr("Pausing live video..."));
   Interface->Flush();
   cReplayControl::SetRecording(NULL, NULL); // make sure the new cRecordControl will set cReplayControl::LastReplayed()
-  if (Start()) {
+  if (Start(NULL, true)) {
      sleep(2); // allow recorded file to fill up enough to start replaying
      cReplayControl *rc = new cReplayControl;
      cControl::Launch(rc);
