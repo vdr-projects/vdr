@@ -1151,6 +1151,9 @@ Marco Schlüßler <marco@lordzodiac.de>
  for reporting a missing 'resultSkipped = 0' in cRemux::Clear()
  for reporting a missing reset of the 'repacker' in cTS2PES::Clear()
  for avoiding unnecessary calls to SetPid() in cDvbDevice::SetAudioTrackDevice()
+ for pointing out that EnsureAudioTrack() in cDevice::SetChannel() should not be
+ called if a Transfer Mode is started, to avoid setting the audio PID on the primary
+ device
  for fixing calling cStatus::MsgChannelSwitch() in cDevice::SetChannel()
  for increasing POLLTIMEOUTS_BEFORE_DEVICECLEAR in transfer.c to 6 to avoid problems
  with the larger buffer reserve
