@@ -1721,3 +1721,8 @@ Video Disk Recorder Revision History
   DVB_DRIVER_VERSION stuff has been replaced with DO_REC_AND_PLAY_ON_PRIMARY_DEVICE,
   which can be used to disable simultaneous recording and replaying on the primary
   DVB device in case there are problems with this.
+
+2002-11-08: Version 1.1.16
+
+- Fixed saving the polarization parameter of channels that have a number in the
+  'source' parameter (thanks to Peter Seyringer for reporting this one).

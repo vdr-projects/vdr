@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 1.6 2002/11/01 10:26:45 kls Exp $
+ * $Id: channels.c 1.7 2002/11/08 13:21:16 kls Exp $
  */
 
 #include "channels.h"
@@ -128,7 +128,7 @@ cChannel::cChannel(void)
 {
   *name = 0;
   frequency    = 0;
-  source       = 0;
+  source       = cSource::FromString("S19.2E");
   srate        = 0;
   vpid         = 0;
   apid1        = 0;
@@ -155,7 +155,7 @@ cChannel::cChannel(const cChannel *Channel)
 {
   strcpy(name,   Channel ? Channel->name         : "Pro7");
   frequency    = Channel ? Channel->frequency    : 12480;
-  source       = Channel ? Channel->source       : 0;
+  source       = Channel ? Channel->source       : cSource::FromString("S19.2E");
   srate        = Channel ? Channel->srate        : 27500;
   vpid         = Channel ? Channel->vpid         : 255;
   apid1        = Channel ? Channel->apid1        : 256;
@@ -185,6 +185,8 @@ static int PrintParameter(char *p, char Name, int Value)
 const char *cChannel::ParametersToString(void)
 {
   char type = *cSource::ToString(source);
+  if (isdigit(type))
+     type = 'S';
 #define ST(s) if (strchr(s, type))
   static char buffer[64];
   char *q = buffer;
