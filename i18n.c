@@ -4,15 +4,15 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.68 2002/03/22 13:58:50 kls Exp $
+ * $Id: i18n.c 1.69 2002/03/22 14:30:41 kls Exp $
  *
- * Slovenian translations provided by Miha Setina <mihasetina@softhome.net>
- * Italian   translations provided by Alberto Carraro <bertocar@tin.it>
- * Dutch     translations provided by Arnold Niessen <niessen@iae.nl> <arnold.niessen@philips.com>
- * Portugese translations provided by Paulo Manuel Martins Lopes <pmml@netvita.pt>
- * French    translations provided by Jean-Claude Repetto <jc@repetto.org>
- * Norwegian translations provided by Jørgen Tvedt <pjtvedt@online.no>
- * Finnish   translations provided by Hannu Savolainen <hannu@opensound.com>
+ * Slovenian  translations provided by Miha Setina <mihasetina@softhome.net>
+ * Italian    translations provided by Alberto Carraro <bertocar@tin.it>
+ * Dutch      translations provided by Arnold Niessen <niessen@iae.nl> <arnold.niessen@philips.com>
+ * Portuguese translations provided by Paulo Lopes <pmml@netvita.pt>
+ * French     translations provided by Jean-Claude Repetto <jc@repetto.org>
+ * Norwegian  translations provided by Jørgen Tvedt <pjtvedt@online.no>
+ * Finnish    translations provided by Hannu Savolainen <hannu@opensound.com>
  *
  */
 
@@ -72,7 +72,7 @@ const tPhrase Phrases[] = {
     "Slovenski",
     "Italiano",
     "Nederlands",
-    "Portugues",
+    "Português",
     "Français",
     "Norsk",
     "Suomi",
@@ -93,7 +93,7 @@ const tPhrase Phrases[] = {
     "Urnik",
     "Programmi",
     "Gids",
-    "Programa",
+    "Programação",
     "Programmes",
     "Programmer",
     "Ohjelmat",
@@ -103,7 +103,7 @@ const tPhrase Phrases[] = {
     "Kanali",
     "Canali",
     "Kanalen",
-    "Canal",
+    "Canais",
     "Chaînes",
     "Kanaler",
     "Kanavat",
@@ -113,7 +113,7 @@ const tPhrase Phrases[] = {
     "Termini",
     "Timer",
     "Timers",
-    "Alarmes",
+    "Timers",
     "Programmation",
     "Timer",
     "Ajastin",
@@ -123,7 +123,7 @@ const tPhrase Phrases[] = {
     "Posnetki",
     "Registrazioni",
     "Opnames",
-    "Gravacoes",
+    "Gravações",
     "Enregistrements",
     "Opptak",
     "Nauhoitteet",
@@ -163,7 +163,7 @@ const tPhrase Phrases[] = {
     "Uredi termin",
     "Modifica Timer",
     "Timer veranderen",
-    "Modificar Alarme",
+    "Modificar Timer",
     "Changer la programmation",
     "Editer Timer",
     "Muokkaa ajastusta",
@@ -203,7 +203,7 @@ const tPhrase Phrases[] = {
     "Kaj je na sporedu?",
     "In programmazione",
     "Wat is er nu?",
-    "O que ver agora?",
+    "Programa actual?",
     "Programmes en cours",
     "Hvilket program sendes nå?",
     "Nykyinen ohjelma",
@@ -213,7 +213,7 @@ const tPhrase Phrases[] = {
     "Kaj sledi?",
     "Prossimi programmi",
     "Wat komt er hierna?",
-    "O que ver depois?",
+    "Próximo Programa?",
     "Prochains programmes",
     "Hvilket program er neste?",
     "Seuraava ohjelma",
@@ -264,7 +264,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "Aan/Uit",
-    "", // TODO
+    "On/Off",
     "Marche/Arr",
     "", // TODO
     "Päällä/Pois",
@@ -304,7 +304,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "Eindigen",
-    "", // TODO
+    "Parar",
     "", // TODO
     "", // TODO
     "Pysäytä",
@@ -334,7 +334,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "Openen",
-    "", // TODO
+    "Abrir",
     "Ouvrir",
     "", // TODO
     "Avaa",
@@ -374,7 +374,7 @@ const tPhrase Phrases[] = {
     "Urnik",
     "Programma",
     "Programma",
-    "Programa",
+    "Programação",
     "Programme",
     "Programmer",
     "Ohjelmisto",
@@ -384,7 +384,7 @@ const tPhrase Phrases[] = {
     "Jezik",
     "Linguaggio",
     "Taal",
-    "Linguagem", // TODO (correct?)
+    "Linguagem",
     "Langue",
     "Språk",
     "Kieli",
@@ -394,7 +394,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "Eject",
-    "", // TODO
+    "Ejectar",
     "Ejection",
     "", // TODO
     "Avaa",
@@ -405,7 +405,7 @@ const tPhrase Phrases[] = {
     "Odstrani kanal?",
     "Cancello il canale?",
     "Kanaal verwijderen?",
-    "Apagar o Canal?",
+    "Apagar o canal?",
     "Supprimer la chaîne?",
     "Slette kanal?",
     "Poistetaanko kanava?",
@@ -415,7 +415,7 @@ const tPhrase Phrases[] = {
     "Odstani termin?",
     "Cancello il timer?",
     "Timer verwijderen?",
-    "Apagar o Alarme?",
+    "Apagar o timer?",
     "Supprimer la programmation?",
     "Slette timer?",
     "Poistetaanko ajastus?",
@@ -425,7 +425,7 @@ const tPhrase Phrases[] = {
     "Odstrani posnetek?",
     "Cancello la registrazione?",
     "Opname verwijderen?",
-    "Apagar Gravacão?",
+    "Apagar a gravação?",
     "Supprimer l'enregistrement?",
     "Slette opptak?",
     "Poistetaanko nauhoitus?",
@@ -435,7 +435,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "Timer neemt nog op - toch verwijderen?"
-    "", // TODO
+    "Timer activo - têm a certeza que quer apagar?",
     "Enregistrement en cours - confirmez la suppression",
     "", // TODO
     "Ajastin nauhoittaa - poistetaanko silti?",
@@ -445,7 +445,7 @@ const tPhrase Phrases[] = {
     "Koncaj snemanje?",
     "Fermo la registrazione?",
     "Opname stoppen?",
-    "Parar Gravacão?",
+    "Parar Gravação?",
     "Arrêter l'enregistrement?",
     "Stoppe opptak?",
     "Pysäytetäänkö nauhoitus?",
@@ -455,7 +455,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "op eerste interface",
-    "", // TODO
+    "no interface primário",
     "sur la carte principale",
     "", // TODO
     "päävastaanottimella",
@@ -465,7 +465,7 @@ const tPhrase Phrases[] = {
     "Zelite prekiniti urejanje?",
     "Annullo la modifica?",
     "Bewerken afbreken?",
-    "Cancelar Modificar?",
+    "Cancelar Modificações?",
     "Annuler les modifications?",
     "Avbryte redigering?",
     "Peruutetaanko muokkaus?",
@@ -475,7 +475,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "Werkelijk opnieuw starten?",
-    "", // TODO
+    "Tem a certeza que quer reiniciar?",
     "", // TODO
     "", // TODO
     "Aloitetaanko varmasti alusta?",
@@ -485,7 +485,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "Opname loopt - toch opnieuw starten?",
-    "", // TODO
+    "Em gravação - quer mesmo reiniciar?",
     "", // TODO
     "", // TODO
     "Nauhoitus käynnissä - aloitetaanko alusta?",
@@ -495,7 +495,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "Opname loopt - toch uitschakelen?",
-    "", // TODO
+    "Em gravação - quer mesmo desligar?",
     "Enregistrement en cours - confirmez l'arrêt",
     "", // TODO
     "Nauhoitus kesken - lopetetaanko se?",
@@ -505,7 +505,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "Opname in %d minuten - toch uitschakelen?",
-    "", // TODO
+    "Em gravação dentro de %d minutos - quer mesmo desligar?",
     "Enregistrement dans %d minutes - confirmez l'arrêt", // TODO
     "", // TODO
     "Nauhoitus alkaisi %d min. kuluttua - sammutetaanko silti?",
@@ -515,7 +515,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "Druk een toets om shutdown af te breken",
-    "", // TODO
+    "Pressione qualquer tecla para cancelar",
     "Appuyez sur une touche pour annuler l'arrêt",
     "", // TODO
     "Peruuta pysäytys painamalla jotakin näppäintä",
@@ -536,7 +536,7 @@ const tPhrase Phrases[] = {
     "Frekvenca",
     "Frequenza",
     "Frequentie",
-    "Frequencia",
+    "Frequência",
     "Fréquence",
     "Frekvens",
     "Taajuus",
@@ -546,7 +546,7 @@ const tPhrase Phrases[] = {
     "Polarizacija",
     "Polarizzazione",
     "Polarisatie",
-    "Polarizacao",
+    "Polarização",
     "Polarisation",
     "Polaritet",
     "Polarisaatio",
@@ -576,7 +576,7 @@ const tPhrase Phrases[] = {
     "Vpid",
     "Vpid",
     "Vpid",
-    "Vpid",
+    "PID de Vídeo",
     "PID Vidéo",
     "Video pid",
     "Kuva PID",
@@ -586,7 +586,7 @@ const tPhrase Phrases[] = {
     "Apid1",
     "Apid1",
     "Apid1",
-    "Apid1",
+    "PID Áudio (1)",
     "PID Audio (1)",
     "Audio pid1",
     "Ääni PID1",
@@ -597,7 +597,7 @@ const tPhrase Phrases[] = {
     "Apid2",
     "Apid2",
     "Apid2",
-    "PID Audio (2)",
+    "PID Áudio (2)",
     "Audio pid2",
     "Ääni PID2",
   },
@@ -606,7 +606,7 @@ const tPhrase Phrases[] = {
     "Dpid1",
     "Dpid1",
     "Dpid1",
-    "Dpid1",
+    "PID AC3 (1)",
     "PID AC3 (1)",
     "AC3 pid1",
     "AC3 PID1",
@@ -616,7 +616,7 @@ const tPhrase Phrases[] = {
     "Dpid2",
     "Dpid2",
     "Dpid2",
-    "Dpid2",
+    "PID AC3 (2)",
     "PID AC3 (2)",
     "AC3 pid2",
     "AC3 PID2",
@@ -626,7 +626,7 @@ const tPhrase Phrases[] = {
     "Tpid",
     "Tpid",
     "Tpid",
-    "Tpid",
+    "PID Teletexto",
     "PID Télétexte",
     "Teletext pid",
     "TekstiTV PID",
@@ -636,7 +636,7 @@ const tPhrase Phrases[] = {
     "CA",
     "CA",
     "CA",
-    "CA",
+    "Encriptação",
     "Cryptage",
     "Kortleser",
     "Salauskortti",
@@ -646,7 +646,7 @@ const tPhrase Phrases[] = {
     "Pnr",
     "Pnr",
     "Pnr",
-    "Pnr",
+    "Núm. Progr.",
     "Num. Progr.",
     "Program Id",
     "Ohjelmatunnus",
@@ -717,7 +717,7 @@ const tPhrase Phrases[] = {
     "Veljavnost",
     "Durata",
     "Bewaarduur",
-    "Duracao",
+    "Duração",
     "Durée de vie",
     "Levetid",
     "Voimassaolo",
@@ -737,7 +737,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "Eerste dag",
-    "", // TODO
+    "Primeiro dia",
     "Premier jour",
     "", // TODO
     "1. päivä",
@@ -748,7 +748,7 @@ const tPhrase Phrases[] = {
     "Urnik zaseda kanal!",
     "Canale occupato da un timer!",
     "Kanaal wordt gebruikt door een timer!",
-    "Canal a ser utilizador por um alarme!",
+    "Canal a ser utilizador por um timer!",
     "Cette chaîne est en cours d'utilisation!",
     "Kanalen er i bruk av en timer!",
     "Kanava on ajastimen käytössä!",
@@ -758,7 +758,7 @@ const tPhrase Phrases[] = {
     "Ne morem preklopiti kanala!",
     "Impossibile cambiare canale!",
     "Kan geen kanaal wisselen!",
-    "Nao pode mudar de canal!",
+    "Não pode mudar de canal!",
     "Impossible de changer de chaîne!",
     "Ikke mulig å skifte kanal!",
     "Kanavan vaihtaminen ei mahdollista!",
@@ -768,7 +768,7 @@ const tPhrase Phrases[] = {
     "Snemanje po urniku!",
     "Registrazione di un timer in corso!",
     "Timer is aan het opnemen!",
-    "Alarme a gravar!",
+    "Timer a gravar!",
     "Enregistrement en cours!",
     "Timer gjør opptak!",
     "Ajastinnauhoitus käynnissä!",
@@ -778,7 +778,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "Fout bij lezen opname!",
-    "", // TODO
+    "Erro ao aceder à gravação",
     "Impossible d'accèder à l'enregistrement",
     "", // TODO
     "Nauhoituksen toistaminen epäonnistui!",
@@ -788,7 +788,7 @@ const tPhrase Phrases[] = {
     "Napaka pri odstranjevanju posnetka!",
     "Errore durante la canc del filmato!",
     "Fout bij verwijderen opname!",
-    "Erro enquanto apagava uma gravacao!",
+    "Erro enquanto apagava uma gravação!",
     "Erreur de suppression de l'enregistrement!",
     "Feil under sletting av opptak!",
     "Nauhoituksen poistaminen epäonnistui!",
@@ -798,7 +798,7 @@ const tPhrase Phrases[] = {
     "*** Neznan kanal ***",
     "*** CANALE INVALIDO ***",
     "*** Ongeldig kanaal ***",
-    "*** Canal Invalido! ***",
+    "*** Canal Inválido! ***",
     "*** Chaîne invalide! ***",
     "*** Ugyldig Kanal! ***",
     "*** Virheellinen kanavavalinta! ***",
@@ -828,7 +828,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "Kan Transfer-Mode niet starten",
-    "", // TODO
+    "Impossível iniciar modo de transferência!",
     "Impossible d'utiliser le mode transfert!",
     "", // TODO
     "Käsittämättömiä teknisiä ongelmia!",
@@ -838,7 +838,7 @@ const tPhrase Phrases[] = {
     "Ne morem zaceti urejanja!",
     "Imposs iniziare processo di modifica",
     "Kan niet beginnen met bewerken!",
-    "Nao pode iniciar a modificacao!",
+    "Não pode iniciar a modificação!",
     "Impossible de commencer le montage!",
     "Kan ikke starte redigeringsprosessen!",
     "Muokkauksen aloittaminen ei onnistu!",
@@ -848,7 +848,7 @@ const tPhrase Phrases[] = {
     "Urejanje je ze aktivno!",
     "Processo di modifica gia` attivo",
     "Bewerken is al actief!",
-    "Processo de modificacao ja activo!",
+    "Processo de modificação já activo!",
     "Montage déjà en cours!",
     "Redigeringsprosessen er allerede aktiv!",
     "Muokkaus on jo käynnissä!",
@@ -858,7 +858,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "Shutdown onmogelijk - Optie '-s' ontbreekt!",
-    "", // TODO
+    "Impossível desligar - falta a opção '-s'!",
     "Arrêt impossible - option '-s' absente!",
     "", // TODO
     "Ei voida sammuttaa '-s' parametria ei annettu!",
@@ -868,7 +868,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "Disk bijna vol!",
-    "", // TODO
+    "Espaço em disco reduzido!",
     "Disque presque plein!",
     "", // TODO
     "Kovalevy lähes täynnä!",
@@ -879,7 +879,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "OSD",
-    "", // TODO
+    "OSD",
     "", // TODO
     "", // TODO
     "Tekstinäyttö",
@@ -889,7 +889,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "EPG",
-    "", // TODO
+    "EPG",
     "", // TODO
     "", // TODO
     "Ohjelmaopas",
@@ -899,7 +899,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "DVB",
-    "", // TODO
+    "DVB",
     "", // TODO
     "", // TODO
     "DVB",
@@ -909,7 +909,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "LNB",
-    "", // TODO
+    "LNB",
     "", // TODO
     "", // TODO
     "LNB",
@@ -919,7 +919,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "CICAM",
-    "", // TODO
+    "CICAM",
     "", // TODO
     "", // TODO
     "CICAM",
@@ -929,7 +929,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "Opname",
-    "", // TODO
+    "A gravar",
     "", // TODO
     "", // TODO
     "Nauhoita",
@@ -939,7 +939,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "Afspelen",
-    "", // TODO
+    "Replay",
     "", // TODO
     "", // TODO
     "Toista",
@@ -949,7 +949,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "Overig",
-    "", // TODO
+    "Outros",
     "", // TODO
     "", // TODO
     "Sekalaista",
@@ -959,7 +959,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "Herstart",
-    "", // TODO
+    "Reiniciar",
     "", // TODO
     "", // TODO
     "Aloita uudelleen",
@@ -970,7 +970,7 @@ const tPhrase Phrases[] = {
     "Jezik",
     "Linguaggio",
     "Taal",
-    "Linguagem", // TODO (correct?)
+    "Linguagem",
     "Langue",
     "Språk",
     "Kieli",
@@ -980,7 +980,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "Breedte",
-    "", // TODO
+    "Largura",
     "Largeur", //TODO (correct?)
     "", // TODO
     "Leveys",
@@ -990,7 +990,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "Hoogte",
-    "", // TODO
+    "Altura",
     "Hauteur", //TODO (correct?)
     "", // TODO
     "Korkeus",
@@ -1000,7 +1000,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "Nieuwstijd", // TODO (correct?)
-    "", // TODO
+    "Mostrar contador",
     "Durée affichage écran",
     "", // TODO
     "Ilmoitusten näkymisaika",
@@ -1010,7 +1010,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "Kanaal info positie",
-    "", // TODO
+    "Posição de info dos canais",
     "Position infos chaînes",
     "", // TODO
     "Kanavainfon sijainti",
@@ -1030,7 +1030,7 @@ const tPhrase Phrases[] = {
     "Drsni meni",
     "Scrolla pagina nel menu",
     "Scrollen per pagina",
-    "Scroll da pagina no menu",
+    "Scroll da página no menu",
     "Affichage progr. suivant",
     "Rask rulling i menyer",
     "Valikkojen rullaus",
@@ -1040,7 +1040,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "Timers sorteren",
-    "", // TODO
+    "Ordenar os timers",
     "Trier les programmations",
     "", // TODO
     "Järjestä ajastimet",
@@ -1050,7 +1050,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "Opname directories",
-    "", // TODO
+    "Directorias de gravação",
     "Dossiers d'enregistrements",
     "", // TODO
     "Nauhoitushakemistot",
@@ -1060,7 +1060,7 @@ const tPhrase Phrases[] = {
     "Cas do EPG pregleda",
     "Timeout EPG",
     "EPG-scan Timeout",
-    "Timeout EPG",
+    "Expirou o EPG",
     "Temps maxi EPG",
     "Ledig tid før EPG-søk",
     "Ohjelmatied. odotusaika",
@@ -1070,7 +1070,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "EPG foutcorrectieniveau",
-    "", // TODO
+    "Nível de correctção EPG",
     "Niveau de correction EPG",
     "", // TODO
     "EPG Bugfix Level",
@@ -1080,7 +1080,7 @@ const tPhrase Phrases[] = {
     "Sistemski cas",
     "Setta orario auto",
     "Systeem klok instellen",
-    "Ajustar relogio do sistema",
+    "Ajustar relógio do sistema",
     "Ajuster l'heure du système",
     "Juster system-klokken",
     "Vastaanota kellonaika",
@@ -1090,7 +1090,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "Gebruik transponder tijd voor systeem",
-    "", // TODO
+    "Usar relógio do transponder",
     "", // TODO
     "", // TODO
     "Vastaanota kellonaika lähettimeltä",
@@ -1100,7 +1100,7 @@ const tPhrase Phrases[] = {
     "Primarna naprava",
     "Scheda DVB primaria",
     "Eerste DVB kaart",
-    "DVB primario",
+    "Interface DVB primário",
     "Première carte DVB",
     "Hoved DVB-enhet",
     "Ensisij. vast.otin",
@@ -1110,7 +1110,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "Videoformaat",
-    "", // TODO
+    "Formato vídeo",
     "Format vidéo",
     "TV Format",
     "Kuvamuoto",
@@ -1120,7 +1120,7 @@ const tPhrase Phrases[] = {
     "SLOF",
     "SLOF",
     "SLOF",
-    "SLOF",
+    "Limite de bandas LNB",
     "Limite de bandes LNB",
     "LO-grensefrekvens",
     "SLOF",
@@ -1130,7 +1130,7 @@ const tPhrase Phrases[] = {
     "Spodnja LNB-frek.",
     "Freq LO LNB",
     "Laagste LNB frequentie",
-    "Freq LO LNB",
+    "Frequência base LNB",
     "Fréquence basse LNB",
     "LO-frekvens i lavbåndet",
     "LO LNB taajuus",
@@ -1140,7 +1140,7 @@ const tPhrase Phrases[] = {
     "Zgornja LNB-frek.",
     "Freq HI LNB",
     "Hoogste LNB frequentie",
-    "Freq HI LNB",
+    "Frequência alta LNB",
     "Fréquence haute LNB",
     "LO-frekvens i høybåndet",
     "HI LNB taajuus",
@@ -1150,7 +1150,7 @@ const tPhrase Phrases[] = {
     "DiSEqC", // TODO
     "DiSEqC", // TODO
     "DiSEqC gebruiken",
-    "DiSEqC", // TODO
+    "Utilizar DiSEqC",
     "DiSEqC", // TODO
     "DiSEqC", // TODO
     "Käytä DiSEqC",
@@ -1170,7 +1170,7 @@ const tPhrase Phrases[] = {
     "Premor pred zacetkom",
     "Min margine inizio",
     "Tijd marge (begin)",
-    "Margem de inicio",
+    "Margem inicial",
     "Marge antérieure",
     "Opptaks margin (start)",
     "Aloitusmarginaali",
@@ -1180,7 +1180,7 @@ const tPhrase Phrases[] = {
     "Premor za koncem",
     "Min margine fine",
     "Tijd marge (eind)",
-    "Margem de fim",
+    "Margem final",
     "Marge postérieure",
     "Opptaks margin (slutt)",
     "Lopetusmarginaali",
@@ -1190,7 +1190,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "Eerste grens",
-    "Limite Primario",
+    "Limite Primário",
     "Première limite",
     "Prioritets grense HovedDVB",
     "PrimaryLimit",
@@ -1220,7 +1220,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "Gebruik episode naam",
-    "", // TODO
+    "Utilizar o nome do episódio",
     "Utiliser les sous-titres", // TODO (episode name!)
     "", // TODO
     "Käytä jakson nimeä",
@@ -1230,7 +1230,7 @@ const tPhrase Phrases[] = {
     "Oznaci direktno snemanje",
     "Marca la registrazione",
     "Direkte opnamen markeren",
-    "Marca de gravacao",
+    "Marca de gravação rápida",
     "Enregistrement immédiat",
     "Markere direkteopptak",
     "Merkitse välitön nauh.",
@@ -1240,7 +1240,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "Naam direkt-opname",
-    "", // TODO
+    "Nome de gravação rápida",
     "Noms enregistr. immédiats",
     "", // TODO
     "Nimeä välitön nauh.",
@@ -1250,7 +1250,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "Dolby Digital geluid opnamen",
-    "", // TODO
+    "Gravar em Dolby Digital",
     "Enregistrer en Dolby Digital",
     "", // TODO
     "Dolby Digital nauhoitus",
@@ -1260,7 +1260,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "Maximale omvang video file",
-    "", // TODO
+    "Tamanho máximo dos ficheiros",
     "Taille maxi des fichiers",
     "", // TODO
     "Maksimi tiedoston koko",
@@ -1270,7 +1270,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "Bewerkte files opdelen",
-    "", // TODO
+    "Quebrar ficheiros",
     "Séparer les séquences",
     "", // TODO
     "Paloittele muokatut",
@@ -1280,7 +1280,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Modo de multi-speed",
     "Mode multi-vitesses",
     "", // TODO
     "Moninopeustila",
@@ -1290,7 +1290,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "Weergave mode aangeven",
-    "", // TODO
+    "Mostrar modo de replay",
     "Affichage mode de lecture",
     "", // TODO
     "Näytä toiston tila",
@@ -1300,7 +1300,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Período mínimo de pausa",
     "MinEventTimeout", // Too difficult to translate - read the manual!
     "", // TODO
     "Minimi tapahtuman odotus",
@@ -1310,7 +1310,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "Minimum gebruikers activiteit", // TODO *in*activity!
-    "", // TODO
+    "Período mínimo de inactividade",
     "Durée minimale d'inactivité",
     "", // TODO
     "Minimi käyttäjän odotus",
@@ -1341,7 +1341,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "MaaDinWoeDonVryZatZon",
-    "", // TODO
+    "SegTerQuaQuiSexSabDom",
     "LunMarMerJeuVenSamDim",
     "", // TODO
     "MaaTiiKesTorPerLauSun",
@@ -1382,7 +1382,7 @@ const tPhrase Phrases[] = {
     "IR koda sprejeta!",
     "Codice RC rilevato!",
     "Afstandsbediening code herkend!",
-    "Codigo do telecomando detectado!",
+    "Código do telecomando detectado!",
     "Code de la télécommande détecté!",
     "Fjernkontroll-kodetype funnet!",
     "Näppäinpainallus vastaanotettu!",
@@ -1392,7 +1392,7 @@ const tPhrase Phrases[] = {
     "Ne pritiskajte tipk...",
     "Non premere alcun tasto...",
     "Druk niet op een knop...",
-    "Nao pressione nada...",
+    "Não pressione nada...",
     "Ne pas appuyer sur une touche ...",
     "Ikke trykk på noen av tastene...",
     "Älä paina mitään näppäintä...",
@@ -1402,7 +1402,7 @@ const tPhrase Phrases[] = {
     "Faza 2: Ucenje posebnih kod",
     "Fase 2: Codici specifici dei tasti",
     "Fase 2: Leren specifieke toets-codes",
-    "Fase 2: A aprender codigos especificos",
+    "Fase 2: A aprender códigos especificos",
     "Phase 2: Apprentissage des codes des touches",
     "Fase 2: Lære spesifikke tastekoder",
     "Vaihe 2: Näppäinkoodien opettelu",
@@ -1452,7 +1452,7 @@ const tPhrase Phrases[] = {
     "(pritisnite 'Dol' za konec)",
     "('Giu' per finire la definiz tasti)",
     "(Druk 'Omlaag' om te beeindigen)",
-    "(Pressione 'Baixo' para terminar a definicao)",
+    "(Pressione 'Baixo' para terminar a definição)",
     "(Appuyer sur 'Bas' pour terminer)",
     "(trykk 'Ned' for å avslutte innlæring)",
     "(paina 'Alas' lopettaaksesi näppäinten opettelun)",
@@ -1462,7 +1462,7 @@ const tPhrase Phrases[] = {
     "Faza 3: Shranjujem kodo",
     "Fase 3: Salvataggio key codes",
     "Fase 3: Opslaan toets codes",
-    "Fase 3: A Salvar os codigos das teclas",
+    "Fase 3: A salvar os códigos das teclas",
     "Phase 3: Sauvegarde des codes des touches",
     "Fase 3: Lagre tastekoder",
     "Vaihe 3: Näppäinkoodien tallettaminen",
@@ -1593,7 +1593,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Ligar",
     "Arrêt",
     "", // TODO
     "Virtakytkin",
@@ -1603,7 +1603,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "Volume+",
-    "", // TODO
+    "Volume+",
     "Volume+",
     "", // TODO
     "Äänenvoimakkuus+",
@@ -1613,7 +1613,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "Volume-",
-    "", // TODO
+    "Volume-",
     "Volume-",
     "", // TODO
     "Äänenvoimakkuus-",
@@ -1623,7 +1623,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "Geluid onderbreken",
-    "", // TODO
+    "Sem som",
     "Coupure du son",
     "", // TODO
     "Äänen vaimennus",
@@ -1644,7 +1644,7 @@ const tPhrase Phrases[] = {
     "ne",
     "no",
     "nee",
-    "nao",
+    "não",
     "non",
     "nei",
     "ei",
@@ -1654,7 +1654,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "boven",
-    "", // TODO
+    "topo",
     "haut",
     "", // TODO
     "ylä",
@@ -1664,7 +1664,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "onder",
-    "", // TODO
+    "fundo",
     "bas",
     "", // TODO
     "ala",
@@ -1674,7 +1674,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "vrij",
-    "", // TODO
+    "livre",
     "restant",
     "", // TODO
     "vapaa",
@@ -1684,7 +1684,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "Springen: ",
-    "", // TODO
+    "Saltar: ",
     "Accès direct: ",
     "", // TODO
     "Hyppää: ",
@@ -1694,7 +1694,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "Volume ",
-    "", // TODO
+    "Volume ",
     "Volume ",
     "", // TODO
     "Äänenvoimakkuus ",
@@ -1704,7 +1704,7 @@ const tPhrase Phrases[] = {
     " Prekini ponavljanje",
     " Interrompi riproduzione",
     " Stop afspelen",
-    " Parar reproducao",
+    " Parar reprodução",
     " Arrêter la lecture",
     " Stopp avspilling",
     " Pysäytä toisto",
@@ -1714,7 +1714,7 @@ const tPhrase Phrases[] = {
     " Prekini shranjevanje ",
     " Interrompi registrazione ",
     " Stop opnemen ",
-    " Parar gravacao ",
+    " Parar gravação ",
     " Arrêter l'enregistrement ",
     " Stopp opptak fra ",
     " Pysäytä nauhoitus ",
@@ -1724,7 +1724,7 @@ const tPhrase Phrases[] = {
     " Prekini urejanje",
     " Annulla modifiche",
     " Bewerken afbreken",
-    " Anular modificacao",
+    " Anular modificação",
     " Annuler le montage",
     " Avbryt editering",
     " Peruuta muokkaus",
@@ -1734,7 +1734,7 @@ const tPhrase Phrases[] = {
     "Preklapljanje primarne naprave...",
     "Cambio su card DVB primaria...",
     "Eerste DVB-kaart wordt omgeschakeld...",
-    "A mudar placa DVB primaria...",
+    "A mudar interface DVB primário...",
     "Changement de carte DVB principale...",
     "Bytter hoved DVB-enhet...",
     "Vaihdetaan ensisijainen vastaanotin...",
@@ -1744,7 +1744,7 @@ const tPhrase Phrases[] = {
     "Gor/Dol za novo poz. - Ok za premik",
     "Su/Giu per nuova posizione - OK per muovere",
     "Gebruik Omhoog/Omlaag - daarna Ok",
-    "Cima/Baixo para nova localizacao - Ok para mudar",
+    "Cima/Baixo para nova localização - Ok para mover",
     "Haut/Bas -> nouvelle place - OK -> déplacer",
     "Opp/Ned for ny plass - OK for å flytte",
     "Ylös/Alas = liiku, OK = siirrä",
@@ -1754,7 +1754,7 @@ const tPhrase Phrases[] = {
     "Urejanje se je zacelo",
     "Processo di modifica iniziato",
     "Bewerken is gestart",
-    "Processo de modificacao iniciado",
+    "Processo de modificação iniciado",
     "Opération de montage lancée",
     "Redigeringsprosess startet",
     "Muokkaus aloitettu",
@@ -1764,7 +1764,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "Bewerken is klaar",
-    "", // TODO
+    "Processo de modificação terminado",
     "Montage terminé",
     "", // TODO
     "Muokkaus lopetettu",
@@ -1774,7 +1774,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "Bewerken is mislukt!",
-    "", // TODO
+    "Falha no processo de modificação",
     "Echec du montage!",
     "", // TODO
     "Muokkaus epäonnistui!",
@@ -1784,7 +1784,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "Doorzoeken opnames...",
-    "", // TODO
+    "A pesquisar gravações...",
     "Recherche des enregistrements...",
     "", // TODO
     "haetaan nauhoituksia...",
