@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.204 2002/08/11 11:50:20 kls Exp $
+ * $Id: menu.c 1.205 2002/08/15 11:28:08 kls Exp $
  */
 
 #include "menu.h"
@@ -31,8 +31,6 @@
 #define MAXINSTANTRECTIME (24 * 60 - 1) // 23:59 hours
 
 #define CHNUMWIDTH  (Channels.Count() > 999 ? 5 : 4) // there are people with more than 999 channels...
-
-const char *FileNameChars = " abcdefghijklmnopqrstuvwxyz0123456789-.#~";
 
 // --- cMenuEditChanItem -----------------------------------------------------
 

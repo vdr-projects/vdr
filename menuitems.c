@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.c 1.7 2002/08/11 11:17:21 kls Exp $
+ * $Id: menuitems.c 1.8 2002/08/15 11:27:57 kls Exp $
  */
 
 #include "menuitems.h"
@@ -12,6 +12,8 @@
 #include "i18n.h"
 #include "plugin.h"
 #include "status.h"
+
+const char *FileNameChars = " abcdefghijklmnopqrstuvwxyz0123456789-.#~";
 
 // --- cMenuEditItem ---------------------------------------------------------
 

@@ -4,13 +4,15 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.h 1.3 2002/08/11 11:40:05 kls Exp $
+ * $Id: menuitems.h 1.4 2002/08/15 11:28:26 kls Exp $
  */
 
 #ifndef __MENUITEMS_H
 #define __MENUITEMS_H
 
 #include "osd.h"
+
+extern const char *FileNameChars;
 
 class cMenuEditItem : public cOsdItem {
 private:
