@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.211 2002/10/06 10:36:20 kls Exp $
+ * $Id: menu.c 1.212 2002/10/06 14:08:44 kls Exp $
  */
 
 #include "menu.h"
@@ -2273,7 +2273,7 @@ eOSState cMenuMain::ProcessKey(eKeys Key)
                                 }
                              break;
                case kBlue:   if (!HasSubMenu())
-                                state = replaying ? osStopReplay : osReplay;
+                                state = replaying ? osStopReplay : cReplayControl::LastReplayed() ? osReplay : osContinue;
                              break;
                default:      break;
                }

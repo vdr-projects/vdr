@@ -93,7 +93,7 @@ Video Disk Recorder Revision History
 - The program can now run in full background mode by using the --daemon option.
 - Added a "summary" field to the timers (thanks to Carsten Koch!).
   This field can contain a descriptive text of the programme and will be
-  displayed when the "Blue" key is pressed on a recording that was created by
+  displayed when the "Blue" button is pressed on a recording that was created by
   this timer. If the text contains the special character '|', a newline will
   be inserted at that place.  When pressing "Ok" on a timer that contains a
   summary field, the summary will be displayed. To edit such a timer the "Red"
@@ -1577,3 +1577,5 @@ Video Disk Recorder Revision History
 - Improved skipping channels that are (currently) not available (thanks to Stefan
   Huelswitt).
 - Updated channels.conf.terr and channels.conf.cable (thanks to Uwe Scheffler).
+- Fixed a bug when pressing the "Blue" button in the main menu without having
+  displayed it (thanks to Oliver Endriss for reporting this one).

@@ -412,6 +412,8 @@ Jeremy Hall <jhall@UU.NET>
 Oliver Endriss <o.endriss@gmx.de>
  for fixing a missing Flush() call in the remote control learning procedure
  for helping to test and debug the new channel source and DiSEqC handling
+ for reporting a bug when pressing the "Blue" button in the main menu without
+ having displayed it
 
 Reinhard Walter Buchner <rw.buchner@freenet.de>
  for adding some satellites to 'sources.conf'
