@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.69 2003/10/19 12:59:16 kls Exp $
+ * $Id: dvbdevice.c 1.70 2003/10/24 15:45:15 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -962,7 +962,7 @@ void cDvbDevice::StillPicture(const uchar *Data, int Length)
                     offs += Data[i + 8];
                     len -= 3;
                     len -= Data[i + 8];
-                    if (len < 0 || offs + len >= Length)
+                    if (len < 0 || offs + len > Length)
                        break;
                     }
                  else {
