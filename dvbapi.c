@@ -7,7 +7,7 @@
  * DVD support initially written by Andreas Schultz <aschultz@warp10.net>
  * based on dvdplayer-0.5 by Matjaz Thaler <matjaz.thaler@guest.arnes.si>
  *
- * $Id: dvbapi.c 1.140 2001/11/24 14:45:58 kls Exp $
+ * $Id: dvbapi.c 1.141 2001/11/25 16:38:09 kls Exp $
  */
 
 //#define DVDDEBUG        1
@@ -710,6 +710,7 @@ protected:
   int readIndex, writeIndex;
   bool canDoTrickMode;
   bool canToggleAudioTrack;
+  bool skipAC3bytes;
   uchar audioTrack;
   void TrickSpeed(int Increment);
   virtual void Empty(bool Block = false);
@@ -752,6 +753,7 @@ cPlayBuffer::cPlayBuffer(cDvbApi *DvbApi, int VideoDev, int AudioDev)
   readIndex = writeIndex = -1;
   canDoTrickMode = false;
   canToggleAudioTrack = false;
+  skipAC3bytes = false;
   audioTrack = 0xC0;
   if (cDvbApi::AudioCommand()) {
      if (!dolbyDev.Open(cDvbApi::AudioCommand(), "w"))
@@ -769,7 +771,7 @@ void cPlayBuffer::PlayExternalDolby(const uchar *b, int MaxLength)
      if (b[0] == 0x00 && b[1] == 0x00 && b[2] == 0x01) {
         if (b[3] == 0xBD) { // dolby
            int l = b[4] * 256 + b[5] + 6;
-           int written = b[8] + 9; // skips the PES header
+           int written = b[8] + (skipAC3bytes ? 13 : 9); // skips the PES header
            int n = min(l - written, MaxLength);
            while (n > 0) {
                  int w = fwrite(&b[written], 1, n, dolbyDev);
@@ -1545,6 +1547,7 @@ cDVDplayBuffer::cDVDplayBuffer(cDvbApi *DvbApi, int VideoDev, int AudioDev, cDVD
   canToggleAudioTrack = true;//XXX determine from cDVD!
   data = new uchar[1024 * DVD_VIDEO_LB_LEN];
   canDoTrickMode = true;
+  skipAC3bytes = true;
   dvbApi->SetModeReplay();
   Start();
 }
