@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.78 2004/01/10 12:21:41 kls Exp $
+ * $Id: dvbdevice.c 1.79 2004/01/25 13:50:21 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -272,7 +272,7 @@ void cDvbTuner::Action(void)
            if (ciHandler->Process() && useCa) {
               if (tunerStatus == tsLocked) {
                  for (int Slot = 0; Slot < ciHandler->NumSlots(); Slot++) {
-                     cCiCaPmt CaPmt(channel.Source(), channel.Frequency(), channel.Sid(), ciHandler->GetCaSystemIds(Slot));
+                     cCiCaPmt CaPmt(channel.Source(), channel.Transponder(), channel.Sid(), ciHandler->GetCaSystemIds(Slot));
                      if (CaPmt.Valid()) {
                         CaPmt.AddPid(channel.Vpid(), 2);
                         CaPmt.AddPid(channel.Apid1(), 4);

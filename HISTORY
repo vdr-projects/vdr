@@ -2611,9 +2611,11 @@ Video Disk Recorder Revision History
 - Fixed setting the source type for newly detected terrestrial transponders
   (thanks to Christian Tramnitz for his support in debugging this).
 
-2004-01-24: Version 1.3.3
+2004-01-25: Version 1.3.3
 
 - Completed the Finnish OSD texts (thanks to Rolf Ahrenberg).
 - Added ISO639LanguageDescriptor to 'libsi'.
 - Changed the 'languageCode' members in the descriptor classes of 'libsi' to
   'char[4]' and setting the 4th byte to 0 for easier handling.
+- Fixed frequency handling when setting the CA descriptors in cDvbTuner::Action()
+  (thanks to Jan Ekholm for reporting and helping to debug this one).
