@@ -7,7 +7,7 @@
 /* X compile line: cc -o gentexfont gentexfont.c -lX11 */
 
 /* 2000-10-01: Stripped down the original code to get a simple bitmap C-code generator  */
-/*             for use with the VDR project (see http://www.cadsoft.de/people/kls/vdr)  */
+/*             for use with the VDR project (see http://www.cadsoft.de/vdr)             */
 /*             Renamed the file 'genfontfile.c' since it no longer generates 'tex' data */
 /*             Klaus Schmidinger (kls@cadsoft.de)                                       */
 

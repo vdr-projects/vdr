@@ -173,6 +173,8 @@ Stefan Huelswitt <huels@iname.com>
  video sequence, which avoids artefacts when cutting
  for suggesting to add VDRVERSNUM to config.h
  for fixing a memory leak in cNonBlockingFileReader
+ for fixing an uninitialized variable in cDisplayChannel
+ for fixing a possible access of invalid file handles in cSIProcessor::Action()
 
 Ulrich Röder <roeder@efr-net.de>
  for pointing out that there are channels that have a symbol rate higher than
@@ -677,7 +679,7 @@ Alfred Zastrow <vdr@zastrow4u.de>
 Matthias Raus <matthias-raus@web.de>
  for reporting a problem with starting the editing process if no marks have been set
 
-Marc Rovira Vall <tm05462@salleURL.edu> and Ramon Roca <ramon.roca@xcombo.com>
+Marc Rovira Vall <tm05462@salleURL.edu>, Ramon Roca <ramon.roca@xcombo.com> and Jordi Vilà <jvila@tinet.org>
  for translating OSD texts to the Catalanian language
 
 Lars Bläser <LBlaeser@hofheim.de>
@@ -699,3 +701,10 @@ Peter Bieringer <pb@bieringer.de>
 
 Alexander Damhuis <ad@phonedation.de>
  for reporting problems when deleting a timer that is currently recording
+
+Antonio Ospite <ospite@studenti.unina.it>
+ for translating OSD texts to the Italian language
+
+Karim Afifi <karim.afifi@free.fr>
+ for reporting a problem with breaking off replay in case the user presses "Play"
+ or "Pause" too soon after going into "Pause live video" mode

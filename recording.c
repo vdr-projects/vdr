@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.79 2003/05/24 11:22:34 kls Exp $
+ * $Id: recording.c 1.80 2003/05/30 13:23:54 kls Exp $
  */
 
 #include "recording.h"
@@ -769,6 +769,12 @@ void cRecordingUserCommand::InvokeCommand(const char *State, const char *Recordi
 
 #define INDEXFILESUFFIX     "/index.vdr"
 
+// The number of frames to stay off the end in case of time shift:
+#define INDEXSAFETYLIMIT 100 // frames
+
+// The maximum time to wait before giving up while catching up on an index file:
+#define MAXINDEXCATCHUP   8 // seconds
+
 // The minimum age of an index file for considering it no longer to be written:
 #define MININDEXAGE    3600 // seconds
 
@@ -852,47 +858,50 @@ bool cIndexFile::CatchUp(int Index)
 {
   // returns true unless something really goes wrong, so that 'index' becomes NULL
   if (index && f >= 0) {
-     if (Index < 0 || Index >= last) {
-        struct stat buf;
-        if (fstat(f, &buf) == 0) {
-           if (time(NULL) - buf.st_mtime > MININDEXAGE) {
-              // apparently the index file is not being written any more
-              close(f);
-              f = -1;
-              return true;
-              }
-           int newLast = buf.st_size / sizeof(tIndex) - 1;
-           if (newLast > last) {
-              if (size <= newLast) {
-                 size *= 2;
-                 if (size <= newLast)
-                    size = newLast + 1;
-                 }
-              index = (tIndex *)realloc(index, size * sizeof(tIndex));
-              if (index) {
-                 int offset = (last + 1) * sizeof(tIndex);
-                 int delta = (newLast - last) * sizeof(tIndex);
-                 if (lseek(f, offset, SEEK_SET) == offset) {
-                    if (safe_read(f, &index[last + 1], delta) != delta) {
-                       esyslog("ERROR: can't read from index");
-                       free(index);
-                       index = NULL;
-                       close(f);
-                       f = -1;
-                       return true;
-                       }
-                    last = newLast;
-                    }
-                 else
-                    LOG_ERROR_STR(fileName);
-                 }
-              else
-                 esyslog("ERROR: can't realloc() index");
-              }
-           }
-        else
-           LOG_ERROR_STR(fileName);
-        }
+     for (int i = 0; i <= MAXINDEXCATCHUP && (Index < 0 || Index >= last); i++) {
+         struct stat buf;
+         if (fstat(f, &buf) == 0) {
+            if (time(NULL) - buf.st_mtime > MININDEXAGE) {
+               // apparently the index file is not being written any more
+               close(f);
+               f = -1;
+               break;
+               }
+            int newLast = buf.st_size / sizeof(tIndex) - 1;
+            if (newLast > last) {
+               if (size <= newLast) {
+                  size *= 2;
+                  if (size <= newLast)
+                     size = newLast + 1;
+                  }
+               index = (tIndex *)realloc(index, size * sizeof(tIndex));
+               if (index) {
+                  int offset = (last + 1) * sizeof(tIndex);
+                  int delta = (newLast - last) * sizeof(tIndex);
+                  if (lseek(f, offset, SEEK_SET) == offset) {
+                     if (safe_read(f, &index[last + 1], delta) != delta) {
+                        esyslog("ERROR: can't read from index");
+                        free(index);
+                        index = NULL;
+                        close(f);
+                        f = -1;
+                        break;
+                        }
+                     last = newLast;
+                     }
+                  else
+                     LOG_ERROR_STR(fileName);
+                  }
+               else
+                  esyslog("ERROR: can't realloc() index");
+               }
+            }
+         else
+            LOG_ERROR_STR(fileName);
+         if (Index < last - (i ? 2 * INDEXSAFETYLIMIT : 0) || Index > 10 * INDEXSAFETYLIMIT) // keep off the end in case of "Pause live video"
+            break;
+         sleep(1);
+         }
      }
   return index != NULL;
 }
@@ -940,7 +949,7 @@ int cIndexFile::GetNextIFrame(int Index, bool Forward, uchar *FileNumber, int *F
      int d = Forward ? 1 : -1;
      for (;;) {
          Index += d;
-         if (Index >= 0 && Index < last - ((Forward && StayOffEnd) ? 100 : 0)) {
+         if (Index >= 0 && Index < last - ((Forward && StayOffEnd) ? INDEXSAFETYLIMIT : 0)) {
             if (index[Index].type == I_FRAME) {
                if (FileNumber)
                   *FileNumber = index[Index].number;

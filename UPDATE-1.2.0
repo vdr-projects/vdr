@@ -1,0 +1,274 @@
+This is a summary of the changes in VDR 1.2.0 since the last stable
+version 1.0.4. It only contains things that are of actual importance
+to the user and doesn't mention the many fixes and improvements that
+have been made "behind the scenes". 
+
+See the file HISTORY for a detailed list of all changes.
+
+Plugins:
+
+- Implemented a universal plugin interface. See the file PLUGINS.html
+  for a detailed description. The man page vdr(1) describes the new options '-L'
+  and '-P' used to load plugins.
+  See http://www.cadsoft.de/vdr/plugins.htm for a list of available plugins.
+- Rearranged the remote control key handling to allow plugins to implement
+  additional types of remote controls (see PLUGINS.html, section "Remote Control").
+  The previously used files 'keys.conf' and 'keys-pc.conf' have been replaced
+  by the file 'remote.conf', which holds the key definitions of all remote controls.
+- The new plugin 'sky' can be used to integrate a Sky Digibox into the VDR system,
+  using a Kfir MPEG2 encoder card (see PLUGINS/src/sky/README for details).
+
+Remote control:
+
+- If a PC keyboard is used as remote control, the string entry fields in the
+  menus now accept character input directly (however, this works only for keys that
+  are not otherwise defined as remote control keys). Also, plugins can switch the
+  cKbdRemote class into "raw mode", where all keyboard input will be made available
+  through the new 'kKbd' key code and none of it will be processed as normal remote
+  control functions.
+- The LIRC remote control keys are now handled just like the keyboard and RCU keys.
+  This means that you can use the lircd.conf file as is for your remote control,
+  without the need of editing it to make the key names the same as used in VDR.
+  When first starting VDR it will go into the "Learning keys" mode and ask you
+  to press the various keys. The resulting key assignment will be stored in
+  the file 'remote.conf'.
+- While learning the remote control keys it is now possible to press the 'Menu'
+  key to skip the definition of keys that are not available on your particular
+  RC unit.
+- Implemented additional dedicated keys for "Play", "Pause", "Stop", "Record",
+  "FastFwd", "FastRew", "Channel+" and "Channel-". If your remote control supports
+  any of these keys you can delete your 'remote.conf' file and restart VDR to
+  go through the key learning procedure again in order to assign these new keys.
+  See MANUAL for more information.
+- Implemented new keys to directly access the VDR main menu functions "Schedule",
+  "Channels", "Timers", "Recordings", "Setup" and "Commands". If your remote
+  control provides keys you want to assign these functions to, you can delete
+  your 'remote.cof' file and restart VDR to go through the key learning procedure
+  again in order to assign these new keys. See MANUAL for more information.
+- The new configuration file 'keymacros.conf' can be used to assign macros to
+  the color buttons in normal viewing mode, as well as to up to 9 user defined
+  keys. See MANUAL and man vdr(5) for more information. The default 'keymacros.conf'
+  implements the functionality of the old "color button patch".
+- Macros in 'keymacros.conf' can now use "@plugin" to directly access the main menu
+  function of a given plugin (see man vdr(5) for details).
+- The keyboard is now by default always active to control VDR. The 'make' option
+  REMOTE=KBD is therefore obsolete. When compiling VDR with REMOTE=RCU or REMOTE=LIRC,
+  the keyboard can thus now be active together with the remote control. If you want
+  to build VDR without keyboard support you can set NO_KBD=1 in the 'make' call.
+  Since the keyboard codes are now different from the ones used previously (which
+  were mapped by the 'ncurses' library) you will need to go through the "Learning
+  keys" procedure again. To do so, either delete the file /video/remote.conf or
+  remove the KBD.* entries from it before starting this version of VDR.
+- The "Left" and "Right" buttons now set the cursor to the first or last list item
+  even if the list consist only of a single page, like, for instance, the Main menu.
+- The red ("Record") and yellow ("Pause") button in the "Main" menu are no longer
+  available when replaying.
+
+Devices:
+
+- If the primary device (as defined in setup.conf) doesn't have an MPEG decoder
+  (and thus can't be used as a primary device) VDR now scans all devices at
+  startup and uses the first one (if any) that actually has an MPEG decoder.
+  That way this will also work automatically if the primary device is implemented
+  by a plugin.
+- If no device with an MPEG decoder can be found at startup, the first device
+  is now used as primary device (just to have some device).
+- Now turning off live PIDs when replaying. This avoids short spikes from other
+  channels when switching between Transfer Mode channels, and also lets an ongoing
+  replay continue even if a recording is started on the primary device.
+- Now switching to the channel used by the most recently started timer in case
+  the original current channel becomes unavailable due to a recording on a
+  different transponder. If this fails, a channel up/down switch is attempted as
+  a fallback solution.
+- Changed the DEFAULTPRIORITY in device.c to -1, so that the primary device
+  will be used for FTA recordings in case the CAM is connected to a non-primary
+  device.
+- The actual tuning is now done in a separate thread, which makes zapping through the
+  channels a lot faster and no longer gets stuck on channels that don't broadcast.
+  This also makes "Motor-DiSEqC" work. Since switching channels now no longer
+  explicitly waits for a channel lock in the foreground thread, the "panic level"
+  mechanism is no longer used.
+
+Time Shifting:
+
+- Changed device handling for being able to do simultaneous recording and
+  replay on the same device (Time Shifting). In order for this to work you need
+  to use a driver with a firmware version that has this feature implemented.
+- It is now possible to do simultaneous recording and replay with a single DVB
+  card, even with encrypted channels. This requires the use of the Link Layer
+  firmware, version 2613 or higher; the -icam firmware is still limited to live
+  encrypted channels only. Finally we have time shift for encrypted channels on
+  single card systems!
+- Implemented "pause live video". You can now press "Menu/Yellow" or "Pause" on
+  your remote control while watching live video to start an instant recording
+  of the current programme and immediately start replaying that recording.
+- Implemented separate PausePriority and PauseLifetime parameters for the recordings
+  created when pausing live video.
+
+Channels:
+
+- Modified channel handling to cover all parameters necessary for DVB-C and DVB-T
+  (see man vdr(5) for the meaning of the additional parameters stored in the field
+  previously named 'polarisation').
+  If you have a system with different kinds of DVB cards, like DVB-T and DVB-C,
+  for instance, there is no more need to distinguish the channels through the
+  'Ca' parameter in order to assign them to the various DVB cards. This is now
+  taken care of by the "source" parameter. So a channel marked as "terrestrial",
+  for example, will only be received on DVB-T cards.
+- Updated channels.conf files.
+- Switching through channels with the 'Up' and 'Down' keys now skips channels
+  that are currently not available (for instance because all devices are
+  recording and these channels are on different transponders).
+- The new configuration file 'sources.conf' contains the various signal sources
+  (satellites, cable and terrestrial) which are used in 'channels.conf' and
+  'diseqc.conf'.
+- The 'diseqc' parameter in the channel definitions has been redefined to hold the
+  "source" of the given channel (which can be either a satellite, cable or terrestrial).
+  For compatibility with channels.conf files from older versions, numeric values in
+  this parameter will be tolerated, but they have no meaning. If you want to use
+  DiSEqC you will need to replace these old values with the proper source identifiers
+  defined in the new configuration file 'sources.conf'. See how this is done in the
+  'channels.conf' file that comes with the VDR package.
+- The new configuration file 'diseqc.conf' can be used to set up the individual
+  diseqc configuration (see man vdr(5) for a description of the file format).
+- The "Edit channel" menu has a new entry "Source:" in which the source of this
+  channel can be selected (either a satellite, cable or terrestrial). The set of
+  parameters at the end of this menu will change according to the type of source.
+- The "Use DiSEqC" parameter in the "Setup/LNB" menu has been moved to the beginning
+  of the list and disables the rest of the parameters when set to "yes", since these
+  are now only meaningful if DiSEqC is not used.
+- Group separators in 'channels.conf' may now be given like ':@201 My Channels',
+  where '@201' indicates the number to be given to the next channel. This can be
+  used to create 'gaps' in the channel numbering (see 'man 5 vdr'). BE CAREFUL
+  TO UPDATE YOUR 'timers.conf' ACCORDINGLY IF INSERTING THIS NEW FEATURE INTO YOUR
+  'channels.conf' FILE!
+- Frequency values for cable and terrestrial channels in 'channels.conf' can
+  now be given either in MHz, kHz or Hz. The actual value given will be multiplied
+  by 1000 until it is larger than 1000000.
+- First step towards a "unique channel ID". The channel ID is a human readable
+  string, made up from several parameters of the channel's definition in the file
+  'channels.conf' (see man vdr(5) for details).
+  In order for the "unique channel ID" to work, all channel definitions now must
+  be unique with respect to the combination of their Source, Frequency and SID
+  parameters. You may have to fix your 'channels.conf' manually if there are error
+  messages in the log file when loading it. BE SURE TO MAKE A BACKUP COPY OF YOUR
+  'channels.conf' AND 'timers.conf' FILE BEFORE SWITCHING TO THIS VERSION, AND CHECK
+  VERY CAREFULLY WHETHER YOUR TIMERS ARE STILL SET TO THE RIGHT CHANNELS!
+  When reading an existing 'timers.conf', the channels will be identified as before
+  by their numbers. As soon as this file is written back, the channel numbers will
+  be replaced by the channel IDs. After that it is possible to manually edit the
+  'channels.conf' file and rearrange the channels without breaking the timers.
+  Note that you can still define new timers manually by using the channel number.
+  VDR will correctly identify the 'channel' parameter in a timer definition and
+  use it as a channel number or a channel ID, respectively. Also, the SVDRP commands
+  that return timer definitions will list them with channel numbers in order to
+  stay compatible with existing applications.
+  The channel ID is also used in the 'epg.data' file to allow EPG information from
+  different sources to be stored, which would previously have been mixed up in case
+  they were using the same 'service ID'. Note that the contents of an existing
+  'epg.data' file from a previous version will be silently ignored, since it doesn't
+  contain the new channel IDs. When inserting EPG data into VDR via SVDRP you now also
+  need to use the channel IDs.
+  Currently the EPG data received from the DVB data stream only uses the 'Source'
+  and 'Service ID' part of the channel ID. This makes it work for channels with
+  the same service IDs on different sources (like satellites, cable or terrestrial).
+  However, it doesn't work yet if the service IDs are not unique within a specific
+  source. This will be fixed later.
+- Added three new fields to the lines in 'channels.conf': NID, TID and RID. NID and
+  TID are the Network and Transport Stream IDs, respectively. RID is an additional ID
+  that can be used to tell apart channels that would otherwise be indistinguishable.
+  This is typically the case with radio channels, which may have the same NID, TID
+  and SID, but different "radio IDs". This new field is therefore called RID ("radio
+  ID"). Currently NID and TID are not yet used by VDR and should always be 0. The
+  RID is actually used when building the "unique channel ID", so if you have channels
+  in your 'channels.conf' file that cause error messages when loading, you can set
+  the RIDs of these channels to different values.
+  When reading an old 'channels.conf' these new fields will be automatically
+  initialized to 0 and once the file is written back to disk they will be appended
+  to the channel definitions.
+- The "unique channel ID" now contains an optional 5th part (the RID). See man vdr(5).
+- Modified LOF handling to allow for C-band reception.
+- The PCR PID can now be set separately from the video PID. The syntax in the
+  'channels.conf' file is, for example, ...:164+17:..., where 164 is the video PID
+  and 17 is the PCR PID. The separator is a '+' sign, not a comma or semicolon as
+  with the audio PIDs, because this is not an alternate PID, but rather an
+  additional, necessary PID.
+
+Recording:
+
+- It is now possible to record several channels on the same transponder with "budget
+  cards". VDR automatically attaches a recording timer to a card that already
+  records on the appropriate transponder. How many parallel recordings can actually
+  be done depends on the computer's performance. Currently any number of recordings
+  gets attached to a card, so you should carefully plan your timers to not exceed
+  the limit. On a K6-II/450 it was possible to record three channels from transponder
+  12480 with a single WinTV NOVA-S.
+- Timers that record two successive shows on the same channel may now overlap and
+  will use the same DVB card. During the time where both timers record the data
+  is simply saved to both files.
+- Since several channels put very long strings into the Subtitle part of their
+  EPG data, that string is now limited in length when used in a recording's
+  file name.
+- Timers are now processed even if an OSD menu is open (except for menus that
+  explicitly handle timers).
+- Implemented a "resume ID" which allows several users to each have their own
+  resume.vdr files. This parameter can be set in the "Setup/Replay" menu (see
+  MANUAL for details).
+- Extended logging info when starting/stopping timers to show the channel number,
+  start/stop time and the file name.
+- Reduced the time to wait for EPG data when starting a recording to 3 seconds.
+- Checking for duplicate recordings with the same file name and disabling the
+  second timer.
+- It is now possible to directly delete a timer that is currently recording.
+
+SVDRP:
+
+- The new SVDRP command CLRE can be used to clear the entire EPG data.
+- The SVDRP command PUTE now triggers an immediate write of the 'epg.data' file.
+- The SVDRP command CHAN now also accepts channel IDs.
+- The new SVDRP command STAT can be used to request information about the disk
+  usage.
+- Now taking an active SVDRP connection into account when doing shutdown or
+  housekeeping.
+
+Conditional Access:
+
+- Implemented "Link Layer" based CAM support. This allows access to the CAM menu
+  and also to reset the CAM. Furthermore the CAM can now be in any slot of any
+  DVB card, and there can be more than one CAM.
+- If your particular CAM doesn't work with the Link Layer interface, you can
+  still use the old firmware version ("-icam"), which does all the CAM handling
+  by itself (see DVB/driver/av7110/README-firmware).
+
+Misc:
+
+- Removed compiler option '-m486' to make it work on non-Intel platforms.
+- Changed setting of CXX and CXXFLAGS variables in Makefile, so that an externally
+  defined value will be taken if present.
+- New and improved internationalized OSD texts.
+- The VDR version number is now displayed in the title line of the "Setup" menu.
+- Changed the VFAT handling to allow users who normally use it but have forgotten
+  to set it when compiling a new version of VDR to at least see their recordings
+  made with VFAT enabled.
+- Commands in the file 'commands.conf' can now have a '?' at the end of their
+  title, which will result in a confirmation prompt before executing the
+  command.
+- If a command executed from the "Commands" menu doesn't return any output, the
+  OSD will now be closed automatically.
+- The new configuration file 'reccmds.conf' can be used to define commands that
+  shall be executed from the "Recordings" menu; see MANUAL and 'man vdr(5)' for
+  details.
+- The Makefile now includes the file Make.config (if present in the VDR source
+  directory), which allows the user to overwrite several settings with individual
+  values. The VDR distribution archive does not contain this file in order to not
+  overwrite a user defined file. There is a Make.config.template which contains the
+  default values of the macros the user can overwrite.
+- Extended the '-l' option to allow logging to LOG_LOCALn (n=0..7) by writing, for
+  instance, '-l 3.7'.
+- The character '|' in description texts of EPG records is now interpreted as a
+  newline character.
+- Now using "Doxygen" to generate source documentation.
+  See INSTALL for information how to do this. Some function descriptions have
+  already been adapted to Doxygen, more will follow.
+- Added VDRVERSNUM to config.h, which can be used by the preprocessor to check the
+  actual VDR version.

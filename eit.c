@@ -16,7 +16,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.c 1.78 2003/05/18 14:10:25 kls Exp $
+ * $Id: eit.c 1.79 2003/05/29 15:04:10 kls Exp $
  ***************************************************************************/
 
 #include "eit.h"
@@ -1236,10 +1236,17 @@ void cSIProcessor::Action()
       // wait until data becomes ready from the bitfilter
       if (poll(pfd, NumUsedFilters, 1000) != 0)
       {
-         for (int a = 0; a < NumUsedFilters ; a++)
+         for (int aa = 0; aa < NumUsedFilters; aa++)
          {
-            if (pfd[a].revents & POLLIN)
+            if (pfd[aa].revents & POLLIN)
             {
+               int a;
+               for (a = 0; a < MAX_FILTERS; a++) {
+                   if (pfd[aa].fd == filters[a].handle)
+                      break;
+                   }
+               if (a >= MAX_FILTERS || !filters[a].inuse) // filter no longer available
+                  continue;
                // read section
                unsigned char buf[4096]; // max. allowed size for any EIT section
                int r = safe_read(filters[a].handle, buf, sizeof(buf));

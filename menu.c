@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.249 2003/05/25 14:06:17 kls Exp $
+ * $Id: menu.c 1.253 2003/05/30 09:53:57 kls Exp $
  */
 
 #include "menu.h"
@@ -1862,6 +1862,11 @@ eOSState cMenuRecordings::Delete(void)
               if (timer) {
                  timer->Skip();
                  cRecordControls::Process(time(NULL));
+                 if (timer->IsSingleEvent()) {
+                    int Index = timer->Index();
+                    Timers.Del(timer);
+                    isyslog("timer %d deleted", Index + 1);
+                    }
                  Timers.Save();
                  }
               }
@@ -2636,7 +2641,8 @@ cDisplayChannel::cDisplayChannel(eKeys FirstKey)
   lines = 0;
   number = 0;
   lastTime = time_ms();
-  int EpgLines = Setup.ShowInfoOnChSwitch ? 5 : 1;
+  withInfo = Setup.ShowInfoOnChSwitch;
+  int EpgLines = withInfo ? 5 : 1;
   Interface->Open(Setup.OSDwidth, Setup.ChannelInfoPos ? EpgLines : -EpgLines);
   ProcessKey(FirstKey);
 }
