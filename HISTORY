@@ -1477,3 +1477,4 @@ Video Disk Recorder Revision History
   driver (thanks to Andreas Schultz).
 - Added a missing StripAudioPackets() to cDvbPlayer::Action() (thanks to
   Stefan Huelswitt).
+- Added an EPG bugfix for the latest VOX EPG data format.
