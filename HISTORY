@@ -2972,3 +2972,5 @@ Video Disk Recorder Revision History
 - Fixed checking for the presence of NPTL (thanks to Jouni Karvo).
 - Making sure section filters are only set if the device actually has a lock
   (thanks to Andreas Share for pointing this out).
+- Fixed a possible NULL pointer assignment in cMenuText::SetText() (thanks to
+  Marco Schlüssler).

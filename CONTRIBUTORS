@@ -1036,6 +1036,7 @@ Marco Schlüßler <marco@lordzodiac.de>
  for fixing handling error case '-1' when polling section filters
  for suggesting to avoiding flashing effects in the OSD of full featured DVB cards
  by explicitly clearing the OSD windows before opening them
+ for fixing a possible NULL pointer assignment in cMenuText::SetText()
 
 Jürgen Schmitz <j.schmitz@web.de>
  for reporting a bug in displaying the current channel when switching via the SVDRP

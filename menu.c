@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.309 2004/06/13 20:26:51 kls Exp $
+ * $Id: menu.c 1.310 2004/08/08 14:19:37 kls Exp $
  */
 
 #include "menu.h"
@@ -514,7 +514,7 @@ cMenuText::~cMenuText()
 void cMenuText::SetText(const char *Text)
 {
   free(text);
-  text = strdup(Text);
+  text = Text ? strdup(Text) : NULL;
 }
 
 void cMenuText::Display(void)
