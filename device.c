@@ -4,12 +4,11 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.8 2002/08/04 15:18:05 kls Exp $
+ * $Id: device.c 1.9 2002/08/15 09:59:57 kls Exp $
  */
 
 #include "device.h"
 #include <errno.h>
-#include <poll.h>
 #include <sys/ioctl.h>
 #include <sys/mman.h>
 #include "eit.h"
@@ -362,7 +361,7 @@ bool cDevice::AttachPlayer(cPlayer *Player)
         Detach(player);
      player = Player;
      player->device = this;
-     player->deviceFileHandle = SetPlayMode(true);
+     SetPlayMode(true);//XXX
      player->Activate(true);
      return true;
      }
@@ -373,7 +372,6 @@ void cDevice::Detach(cPlayer *Player)
 {
   if (Player && player == Player) {
      player->Activate(false);
-     player->deviceFileHandle = -1;
      player->device = NULL;
      player = NULL;
      SetPlayMode(false);
@@ -397,6 +395,11 @@ void cDevice::StopReplay(void)
         }
         XXX*/
      }
+}
+
+bool cDevice::NeedsData(int Wait)
+{
+  return false;
 }
 
 int cDevice::PlayVideo(const uchar *Data, int Length)

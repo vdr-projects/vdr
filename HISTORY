@@ -1393,7 +1393,7 @@ Video Disk Recorder Revision History
 - Changed the cDevice class to allow plugins to implement their own devices (see
   PLUGINS.html for details).
 
-2002-08-11: Version 1.1.7
+2002-08-15: Version 1.1.7
 
 - Adapted VDR to the NEWSTRUCT driver. To use the new driver, compile VDR with
   'make NEWSTRUCT=1' (thanks to Holger Wächtler for some valuable advice).
@@ -1404,3 +1404,7 @@ Video Disk Recorder Revision History
 - Consistently using malloc/free and new/delete (thanks to Andreas Schultz).
 - Temporarily made cDevice::ProvidesCa() virtual (Andreas Schultz needs this
   in his DXR3 plugin).
+- cDevice no longer exposes a file handle to cPlayer. A derived cPlayer class
+  can now call DeviceNeedsData() to see whether the replay device is ready for
+  further data. A derived cDevice class must implement NeedsData() and shall
+  check if any of its file handles is ready for data.

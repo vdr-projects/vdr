@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 1.6 2002/08/11 13:38:13 kls Exp $
+ * $Id: device.h 1.7 2002/08/15 09:22:13 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -211,6 +211,11 @@ public:
        // Turns off audio while replaying.
   virtual void StillPicture(const uchar *Data, int Length);
        // Displays the given I-frame as a still picture.
+  virtual bool NeedsData(int Wait = 0);
+       // Returns true if the device needs further data for replaying.
+       // If Wait is not zero, the device will wait up to the given number
+       // of milleseconds before returning in case there is no immediate
+       // need for data.
   virtual int PlayVideo(const uchar *Data, int Length);
        // Actually plays the given data block as video. The data must be
        // part of a PES (Packetized Elementary Stream) which can contain

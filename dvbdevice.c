@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.3 2002/08/11 12:03:33 kls Exp $
+ * $Id: dvbdevice.c 1.4 2002/08/15 09:59:33 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -658,6 +658,11 @@ void cDvbDevice::StillPicture(const uchar *Data, int Length)
       usleep(1); // allows the buffer to be displayed in case the progress display is active
       }
 #endif
+}
+
+bool cDvbDevice::NeedsData(int Wait)
+{
+  return cFile::FileReadyForWriting(fd_video, Wait);
 }
 
 int cDvbDevice::PlayVideo(const uchar *Data, int Length)

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 1.9 2002/08/11 10:46:53 kls Exp $
+ * $Id: dvbplayer.c 1.10 2002/08/15 10:00:28 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -13,6 +13,7 @@
 #include "recording.h"
 #include "ringbuffer.h"
 #include "thread.h"
+#include "tools.h"
 
 // --- cBackTrace ----------------------------------------------------------
 
@@ -301,12 +302,7 @@ void cDvbPlayer::Action(void)
   uchar b[MAXFRAMESIZE];
   const uchar *p = NULL;
   int pc = 0;
-
-  pollfd pfd[2];
-  pfd[0].fd = DeviceFileHandle();
-  pfd[0].events = pfd[0].revents = POLLOUT;
-  pfd[1].fd = replayFile;
-  pfd[1].events = pfd[1].revents = POLLIN;
+  bool CanWrite = true;
 
   readIndex = Resume();
   if (readIndex >= 0)
@@ -314,13 +310,12 @@ void cDvbPlayer::Action(void)
 
   running = true;
   while (running && NextFile()) {
-        pfd[1].fd = replayFile; // NextFile() may have returned a new file handle!
         {
           LOCK_THREAD;
 
           // Read the next frame from the file:
 
-          if (!readFrame && (pfd[1].revents & POLLIN)) {
+          if (!readFrame) {
              if (playMode != pmStill) {
                 int r = 0;
                 if (playMode == pmFast || (playMode == pmSlow && playDir == pdBackward)) {
@@ -386,7 +381,7 @@ void cDvbPlayer::Action(void)
 
           // Play the frame:
 
-          if (playFrame && (pfd[0].revents & POLLOUT)) {
+          if (playFrame && CanWrite) {
              if (!p) {
                 p = playFrame->Data();
                 pc = playFrame->Count();
@@ -411,13 +406,7 @@ void cDvbPlayer::Action(void)
                 }
              }
         }
-
-        // Wait for input or output to become ready:
-
-        if (poll(pfd, readFrame ? 1 : 2, 10) < 0 && FATALERRNO) {
-           LOG_ERROR;
-           break;
-           }
+        CanWrite = DeviceNeedsData(readFrame ? 10 : 0);
         }
   active = running = false;
 

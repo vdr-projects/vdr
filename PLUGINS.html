@@ -12,7 +12,6 @@ This interface allows programmers to develop additional functionality for VDR co
 separate from the core VDR source, without the need of patching the original
 VDR code (and all the problems of correlating various patches).
 <p>
-<!--X1.1.3--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 This document is divided into two parts, the first one describing the
 <a href="#Part I - The Outside Interface"><i>outside</i> interface</a>
 of the plugin system, and the second one describing the
@@ -21,20 +20,19 @@ The <i>outside</i> interface handles everything necessary for a plugin to get ho
 VDR program and present itself to the user.
 The <i>inside</i> interface provides the plugin code access to VDR's internal data
 structures and allows it to hook itself into specific areas to perform special actions.
-<!--X1.1.3--></td></tr></table>
 <p>
-<!--X1.1.3--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
-Important modifications introduced in version 1.1.3 are marked like this.
-<!--X1.1.3--></td></tr></table>
-<!--X1.1.4--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
+<!--X1.1.4--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 Important modifications introduced in version 1.1.4 are marked like this.
 <!--X1.1.4--></td></tr></table>
-<!--X1.1.5--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
+<!--X1.1.5--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
 Important modifications introduced in version 1.1.5 are marked like this.
 <!--X1.1.5--></td></tr></table>
-<!--X1.1.6--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+<!--X1.1.6--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
 Important modifications introduced in version 1.1.6 are marked like this.
 <!--X1.1.6--></td></tr></table>
+<!--X1.1.7--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+Important modifications introduced in version 1.1.7 are marked like this.
+<!--X1.1.7--></td></tr></table>
 
 <a name="Part I - The Outside Interface"><hr><center><h1>Part I - The Outside Interface</h1></center>
 
@@ -814,7 +812,6 @@ and display their help and/or version information in addition to its own output.
 
 If you want to make your plugin available to other VDR users, you'll need to
 make a package that can be easily distributed.
-<!--X1.1.3--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 The <tt>Makefile</tt> that has been created by the call to
 <a href="#Initializing a new plugin directory"><tt>newplugin</tt></a>
 provides the target <tt>dist</tt>, which does this for you.
@@ -825,7 +822,6 @@ Simply change into your source directory and execute <tt>make dist</tt>:
 cd VDR/PLUGINS/src/hello
 make dist
 </pre></td></tr></table><p>
-<!--X1.1.3--></td></tr></table>
 
 After this you should find a file named like
 
@@ -836,7 +832,6 @@ vdr-hello-0.0.1.tgz
 in your source directory, where <tt>hello</tt> will be replaced with your actual
 plugin's name, and <tt>0.0.1</tt> will be your plugin's current version number.
 
-<!--X1.1.3--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 <a name="Part II - The Inside Interface"><hr><center><h1>Part II - The Inside Interface</h1></center>
 
 <hr><h2>Status monitor</h2>
@@ -911,9 +906,8 @@ objects were created.
 See the file <tt>status.h</tt> for detailed information on which status monitor
 member functions are available in <tt>cStatus</tt>. You only need to implement
 the functions you actually want to use.
-<!--X1.1.3--></td></tr></table>
 
-<!--X1.1.4--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
+<!--X1.1.4--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 <hr><h2>Players</h2>
 
 <center><i><b>Play it again, Sam!</b></i></center><p>
@@ -959,11 +953,20 @@ To play the video data, the player needs to call its member function
 int PlayVideo(const uchar *Data, int Length);
 </pre></td></tr></table><p>
 
-where <tt>Data</tt> point to a block of <tt>Length</tt> bytes of a PES data
+where <tt>Data</tt> points to a block of <tt>Length</tt> bytes of a PES data
 stream. There are no prerequisites regarding the length or alignment of an
 individual block of data. The sum of all blocks must simply result in the
 desired video data stream, and it must be delivered fast enough so that the
 DVB device doesn't run out of data.
+<!--X1.1.7--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+To avoid busy loops the player should call its member function
+
+<p><table><tr><td bgcolor=#F0F0F0><pre><br>
+bool DeviceNeedsData(int Wait = 0);
+</pre></td></tr></table><p>
+
+to determine whether the device is ready for further data.
+<!--X1.1.7--></td></tr></table>
 <p>
 TODO: PlayAudio()???
 <p>
@@ -1064,7 +1067,7 @@ that they already know. If you absolutely want to do things differently, just go
 ahead - it's your show...
 <!--X1.1.4--></td></tr></table>
 
-<!--X1.1.6--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+<!--X1.1.6--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
 <hr><h2>Receivers</h2>
 
 <center><i><b>Tapping into the stream...</b></i></center><p>
@@ -1120,7 +1123,7 @@ If the <tt>cReceiver</tt> isn't needed any more, it may simply be <i>deleted</i>
 and will automatically detach itself from the <tt>cDevice</tt>.
 <!--X1.1.6--></td></tr></table>
 
-<!--X1.1.5--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
+<!--X1.1.5--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
 <hr><h2>The On Screen Display</h2>
 
 <center><i><b>Express yourself</b></i></center><p>
@@ -1152,7 +1155,7 @@ of these functions, and VDR/osd.c to see how VDR opens the OSD and sets up
 its windows and color depths).
 <!--X1.1.5--></td></tr></table>
 
-<!--X1.1.6--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+<!--X1.1.6--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
 <hr><h2>Devices</h2>
 
 <center><i><b>Expanding the possibilities</b></i></center><p>
@@ -1225,6 +1228,7 @@ to indicate this to VDR.
 <p>
 The functions to implement replaying capabilites are
 
+<!--X1.1.7--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
 <p><table><tr><td bgcolor=#F0F0F0><pre><br>
 virtual bool HasDecoder(void) const;
 virtual int SetPlayMode(bool On);
@@ -1234,8 +1238,10 @@ virtual void Play(void);
 virtual void Freeze(void);
 virtual void Mute(void);
 virtual void StillPicture(const uchar *Data, int Length);
+virtual bool NeedsData(int Wait = 0);
 virtual int PlayVideo(const uchar *Data, int Length);
 </pre></td></tr></table><p>
+<!--X1.1.7--></td></tr></table>
 
 In addition, the following functions may be implemented to provide further
 functionality:
