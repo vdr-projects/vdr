@@ -1040,3 +1040,6 @@ Olaf Henkel <olafhenkel@t-online.de>
 Martin Dauskardt <md001@gmx.de>
  for reporting a problem with switching channels while an encrypted channel is being
  recorded
+
+Maynard Cedric <maynard.cedric@wanadoo.fr>
+ for reporting a problem in handling the color button texts in cMenuEditStrItem

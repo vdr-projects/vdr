@@ -2924,3 +2924,5 @@ Video Disk Recorder Revision History
 - Added cDevice::Flush() to make sure that all data in the video card's buffers
   has been processed (thanks to Reinhard Nissl). Currently this is not yet actually
   implemented for FF DVB cards.
+- Fixed handling the color button texts in cMenuEditStrItem (thanks to Maynard
+  Cedric for reporting this one).
