@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 1.18 2003/12/22 15:52:31 kls Exp $
+ * $Id: ci.c 1.19 2003/12/23 10:19:56 kls Exp $
  */
 
 /* XXX TODO
@@ -1278,10 +1278,10 @@ cCiCaPmt::cCiCaPmt(int ProgramNumber)
   capmt[length++] = 0x00; // program_info_length L
 }
 
-void cCiCaPmt::AddPid(int Pid)
+void cCiCaPmt::AddPid(int Pid, uint8_t StreamType)
 {
   //XXX buffer overflow check???
-  capmt[length++] = 0x00; //XXX stream_type (apparently doesn't matter)
+  capmt[length++] = StreamType;
   capmt[length++] = (Pid >> 8) & 0xFF;
   capmt[length++] =  Pid       & 0xFF;
   esInfoLengthPos = length;

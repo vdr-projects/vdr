@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.73 2003/12/22 10:52:24 kls Exp $
+ * $Id: dvbdevice.c 1.74 2003/12/23 10:23:16 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -279,13 +279,13 @@ void cDvbTuner::Action(void)
                               cCiCaPmt CaPmt(channel.Sid());
                               CaPmt.AddCaDescriptor(length, buffer);
                               if (channel.Vpid())
-                                 CaPmt.AddPid(channel.Vpid());
+                                 CaPmt.AddPid(channel.Vpid(), 2);
                               if (channel.Apid1())
-                                 CaPmt.AddPid(channel.Apid1());
+                                 CaPmt.AddPid(channel.Apid1(), 4);
                               if (channel.Apid2())
-                                 CaPmt.AddPid(channel.Apid2());
+                                 CaPmt.AddPid(channel.Apid2(), 4);
                               if (channel.Dpid1())
-                                 CaPmt.AddPid(channel.Dpid1());
+                                 CaPmt.AddPid(channel.Dpid1(), 0);
                               if (ciHandler->SetCaPmt(CaPmt, Slot)) {
                                  tunerStatus = tsCam;
                                  startTime = 0;

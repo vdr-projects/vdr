@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.h 1.9 2003/10/26 12:22:09 kls Exp $
+ * $Id: ci.h 1.10 2003/12/23 10:20:59 kls Exp $
  */
 
 #ifndef __CI_H
@@ -68,7 +68,7 @@ private:
   uint8_t capmt[2048]; ///< XXX is there a specified maximum?
 public:
   cCiCaPmt(int ProgramNumber);
-  void AddPid(int Pid);
+  void AddPid(int Pid, uint8_t StreamType);
   void AddCaDescriptor(int Length, uint8_t *Data);
   };
 
