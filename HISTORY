@@ -1471,3 +1471,5 @@ Video Disk Recorder Revision History
 - Only calling cStatus::MsgChannelSwitch() if a channel is actually going to
   be switched or has actually been switched successfully (thanks to Stefan
   Huelswitt).
+- The EPG now drops events from "other" streams that have a duration of 86400
+  seconds or more (this avoids bogus entries like "PROGRAMMES ALLEMANDS").

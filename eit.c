@@ -16,7 +16,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.c 1.49 2002/08/25 10:43:36 kls Exp $
+ * $Id: eit.c 1.50 2002/09/15 13:02:28 kls Exp $
  ***************************************************************************/
 
 #include "eit.h"
@@ -895,6 +895,9 @@ int cEIT::ProcessEIT(unsigned char *buffer)
 
    if (VdrProgramInfos) {
       for (VdrProgramInfo = (struct VdrProgramInfo *) VdrProgramInfos->Head; VdrProgramInfo; VdrProgramInfo = (struct VdrProgramInfo *) xSucc (VdrProgramInfo)) {
+          // Drop events that belong to an "other TS" and are very long (some stations broadcast bogus data for "other" channels):
+          if (VdrProgramInfo->Duration >= 86400 && (tid == 0x4F || tid == 0x60 || tid == 0x61))
+             continue;
           pSchedule = (cSchedule *)schedules->GetSchedule(VdrProgramInfo->ServiceID);
           if (!pSchedule) {
              schedules->Add(new cSchedule(VdrProgramInfo->ServiceID));
