@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.34 2000/11/01 09:19:27 kls Exp $
+ * $Id: dvbapi.c 1.35 2000/11/05 13:04:23 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -1613,6 +1613,15 @@ int cDvbApi::Width(unsigned char c)
   return 1;
 #else
   return osd->Width(c);
+#endif
+}
+
+int cDvbApi::WidthInCells(const char *s)
+{
+#ifdef DEBUG_OSD
+  return strlen(s);
+#else
+  return (osd->Width(s) + charWidth - 1) / charWidth;
 #endif
 }
 

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.c 1.28 2000/11/01 15:27:52 kls Exp $
+ * $Id: interface.c 1.29 2000/11/05 12:50:44 kls Exp $
  */
 
 #include "interface.h"
@@ -238,11 +238,24 @@ void cInterface::WriteText(int x, int y, const char *s, eDvbColor FgColor, eDvbC
 
 void cInterface::Title(const char *s)
 {
-  int x = (Width() - strlen(s)) / 2;
-  if (x < 0)
-     x = 0;
   ClearEol(0, 0, clrCyan);
-  Write(x, 0, s, clrBlack, clrCyan);
+  const char *t = strchr(s, '\t');
+  if (t) {
+     char buffer[Width() + 1];
+     unsigned int n = t - s;
+     if (n >= sizeof(buffer))
+        n = sizeof(buffer) - 1;
+     strn0cpy(buffer, s, n);
+     Write(1, 0, buffer, clrBlack, clrCyan);
+     t++;
+     Write(-(cDvbApi::PrimaryDvbApi->WidthInCells(t) + 1), 0, t, clrBlack, clrCyan);
+     }
+  else {
+     int x = (Width() - strlen(s)) / 2;
+     if (x < 0)
+        x = 0;
+     Write(x, 0, s, clrBlack, clrCyan);
+     }
 }
 
 void cInterface::Status(const char *s, eDvbColor FgColor, eDvbColor BgColor)

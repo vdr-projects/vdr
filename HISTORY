@@ -265,3 +265,7 @@ Video Disk Recorder Revision History
 - Problematic characters in recording names (which can come from timers that
   are programmed via the "Schedules" menu) are now replaced by suitable
   substitutes.
+
+2000-11-05: Version 0.68
+
+- Date and time in the title of an event info page are now always right adjusted.

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.40 2000/11/01 15:50:00 kls Exp $
+ * $Id: menu.c 1.41 2000/11/05 12:47:44 kls Exp $
  */
 
 #include "menu.h"
@@ -1072,7 +1072,7 @@ cMenuEvent::cMenuEvent(const cEventInfo *EventInfo, bool CanSwitch)
      if (channel) {
         const char *p;
         char *buffer;
-        asprintf(&buffer, "%-17.*s %.*s  %s - %s", 17, channel->name, 5, eventInfo->GetDate(), eventInfo->GetTimeString(), eventInfo->GetEndTimeString());
+        asprintf(&buffer, "%-17.*s\t%.*s  %s - %s", 17, channel->name, 5, eventInfo->GetDate(), eventInfo->GetTimeString(), eventInfo->GetEndTimeString());
         SetTitle(buffer, false);
         int Line = 2;
         cMenuTextItem *item;
