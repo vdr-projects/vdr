@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.91 2002/03/17 14:24:09 kls Exp $
+ * $Id: config.c 1.92 2002/03/18 21:35:07 kls Exp $
  */
 
 #include "config.h"
@@ -980,7 +980,7 @@ bool cSetup::ParseCaCaps(const char *Value)
 {
   char *p;
   int d = strtol(Value, &p, 10);
-  if (d > 0 && d < MAXDVBAPI) {
+  if (d > 0 && d <= MAXDVBAPI) {
      d--;
      int i = 0;
      while (p != Value && p && *p) {
