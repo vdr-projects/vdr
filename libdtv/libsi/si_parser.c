@@ -40,7 +40,7 @@ struct LIST *siParsePAT (u_char *Buffer)
    pat_t               *Pat;
    pat_prog_t          *PatProgram;
    u_char              *Ptr;
-   u_int                SectionLength;
+   int                  SectionLength;
    int                  TransportStreamID;
    int                  PatVersion;
    struct Program      *Program;
@@ -87,7 +87,7 @@ struct Pid *siParsePMT (u_char *Buffer)
    pmt_t               *Pmt;
    pmt_info_t          *PmtInfo;
    u_char              *Ptr;
-   u_int                SectionLength, ProgramInfoLength,
+   int                  SectionLength, ProgramInfoLength,
                         StreamLength, LoopLength;
    int                  ProgramID;
    int                  PcrID;
@@ -150,7 +150,7 @@ struct LIST *siParseSDT (u_char *Buffer)
    sdt_t               *Sdt;
    sdt_descr_t         *SdtDescriptor;
    u_char              *Ptr;
-   u_int                SectionLength, LoopLength;
+   int                  SectionLength, LoopLength;
    int                  TransportStreamID;
    int                  SdtVersion;
    int                  OriginalNetworkID;
@@ -229,7 +229,7 @@ struct LIST *siParseEIT (u_char *Buffer)
    eit_t               *Eit;
    eit_event_t         *EitEvent;
    u_char              *Ptr;
-   u_int                SectionLength, LoopLength;
+   int                  SectionLength, LoopLength;
    int                  ServiceID;
    int                  EitVersion;
    int                  TransportStreamID;
@@ -316,7 +316,7 @@ time_t siParseTDT (u_char *Buffer)
 {
    tdt_t               *Tdt;
    u_char              *Ptr;
-   u_int                SectionLength;
+   int                  SectionLength;
    int                  TdtVersion;
    time_t               CurrentTime;
 
@@ -339,9 +339,9 @@ time_t siParseTDT (u_char *Buffer)
 
 
 void siParseDescriptors (struct LIST *Descriptors, u_char *Buffer,
-                         u_int Length, u_char TableID)
+                         int Length, u_char TableID)
 {
-   u_int        DescriptorLength;
+   int          DescriptorLength;
    u_char      *Ptr;
 
    DescriptorLength = 0;
@@ -838,7 +838,7 @@ void siParseDescriptor (struct LIST *Descriptors, u_char *Buffer)
 /*
  *  ToDo:  ETSI conformal text definition
  */
-char *siGetDescriptorText (u_char *Buffer, u_int Length)
+char *siGetDescriptorText (u_char *Buffer, int Length)
 {
    char *tmp, *result;
    int i;
