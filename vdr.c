@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.157 2003/05/24 12:11:43 kls Exp $
+ * $Id: vdr.c 1.158 2003/05/24 13:35:13 kls Exp $
  */
 
 #include <getopt.h>
@@ -430,8 +430,6 @@ int main(int argc, char *argv[])
   else
      cDevice::PrimaryDevice()->SetVolume(Setup.CurrentVolume, true);
 
-  cEITScanner EITScanner;
-
   cSIProcessor::Read();
 
   // Signal handlers:
@@ -470,7 +468,7 @@ int main(int argc, char *argv[])
         // Attach launched player control:
         cControl::Attach();
         // Make sure we have a visible programme in case device usage has changed:
-        if (cDevice::PrimaryDevice()->HasDecoder() && !cDevice::PrimaryDevice()->HasProgramme()) {
+        if (!EITScanner.Active() && cDevice::PrimaryDevice()->HasDecoder() && !cDevice::PrimaryDevice()->HasProgramme()) {
            static time_t lastTime = 0;
            if (time(NULL) - lastTime > MINCHANNELWAIT) {
               if (!Channels.SwitchTo(cDevice::CurrentChannel()))

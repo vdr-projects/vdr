@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: eitscan.h 1.2 2003/03/16 13:20:40 kls Exp $
+ * $Id: eitscan.h 1.3 2003/05/24 13:21:36 kls Exp $
  */
 
 #ifndef __EITSCAN_H
@@ -30,5 +30,7 @@ public:
   void Activity(void);
   void Process(void);
   };
+
+extern cEITScanner EITScanner;
 
 #endif //__EITSCAN_H

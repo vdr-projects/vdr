@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.59 2003/05/03 14:03:20 kls Exp $
+ * $Id: dvbdevice.c 1.60 2003/05/24 13:23:51 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -27,6 +27,7 @@ extern "C" {
 #include "channels.h"
 #include "diseqc.h"
 #include "dvbosd.h"
+#include "eitscan.h"
 #include "player.h"
 #include "receiver.h"
 #include "status.h"
@@ -657,6 +658,11 @@ bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
   TurnOffLivePIDs = TurnOnLivePIDs = true;
   StartTransferMode = false;
 #endif
+
+  if (EITScanner.Active()) {
+     StartTransferMode = false;
+     TurnOnLivePIDs = false;
+     }
 
   // Stop SI filtering:
 
