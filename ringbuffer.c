@@ -7,7 +7,7 @@
  * Parts of this file were inspired by the 'ringbuffy.c' from the
  * LinuxDVB driver (see linuxtv.org).
  *
- * $Id: ringbuffer.c 1.18 2003/10/18 10:29:25 kls Exp $
+ * $Id: ringbuffer.c 1.19 2004/03/07 13:46:51 kls Exp $
  */
 
 #include "ringbuffer.h"
@@ -17,6 +17,8 @@
 
 // --- cRingBuffer -----------------------------------------------------------
 
+#define OVERFLOWREPORTDELTA 5 // seconds between reports
+
 cRingBuffer::cRingBuffer(int Size, bool Statistics)
 {
   size = Size;
@@ -24,6 +26,8 @@ cRingBuffer::cRingBuffer(int Size, bool Statistics)
   maxFill = 0;
   lastPercent = 0;
   putTimeout = getTimeout = 0;
+  lastOverflowReport = 0;
+  overflowCount = overflowBytes = 0;
 }
 
 cRingBuffer::~cRingBuffer()
@@ -66,6 +70,17 @@ void cRingBuffer::SetTimeouts(int PutTimeout, int GetTimeout)
 {
   putTimeout = PutTimeout;
   getTimeout = GetTimeout;
+}
+
+void cRingBuffer::ReportOverflow(int Bytes)
+{
+  overflowCount++;
+  overflowBytes += Bytes;
+  if (time(NULL) - lastOverflowReport > OVERFLOWREPORTDELTA) {
+     esyslog("ERROR: %d ring buffer overflow%s (%d bytes dropped)", overflowCount, overflowCount > 1 ? "s" : "", overflowBytes);
+     overflowCount = overflowBytes = 0;
+     lastOverflowReport = time(NULL);
+     }
 }
 
 // --- cRingBufferLinear -----------------------------------------------------
