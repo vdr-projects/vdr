@@ -3442,3 +3442,4 @@ Video Disk Recorder Revision History
 - Keeping the track language codes and descriptions in Transfer Mode (thanks to
   Luca Olivetti).
 - Fixed handling repeated kAudio keys.
+- Improved displaying the the current audio track in the ST:TNG channel display.
