@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.66 2002/03/17 13:50:43 kls Exp $
+ * $Id: i18n.c 1.67 2002/03/22 13:31:01 kls Exp $
  *
  * Slovenian translations provided by Miha Setina <mihasetina@softhome.net>
  * Italian   translations provided by Alberto Carraro <bertocar@tin.it>
@@ -267,7 +267,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "Marche/Arr",
     "", // TODO
-    "", // TODO
+    "Päällä/Pois",
   },
   { "Record",
     "Aufnehmen",
@@ -307,7 +307,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Pysäytä",
   },
   { "Resume",
     "Weiter",
@@ -438,7 +438,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "Enregistrement en cours - confirmez la suppression",
     "", // TODO
-    "", // TODO
+    "Ajastin nauhoittaa - poistetaanko silti?",
   },
   { "Stop recording?",
     "Aufzeichnung beenden?",
@@ -478,7 +478,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Aloitetaanko varmasti alusta?",
   },
   { "Recording - restart anyway?",
     "Aufnahme läuft - trotzdem neu starten?",
@@ -488,7 +488,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Nauhoitus käynnissä - aloitetaanko alusta?",
   },
   { "Recording - shut down anyway?",
     "Aufnahme läuft - trotzdem ausschalten?",
@@ -508,7 +508,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "Enregistrement dans %d minutes - confirmez l'arrêt", // TODO
     "", // TODO
-    "", // TODO
+    "Nauhoitus alkaisi %d min. kuluttua - sammutetaanko silti?",
   },
   { "Press any key to cancel shutdown",
     "Taste drücken um Shutdown abzubrechen",
@@ -740,7 +740,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "Premier jour",
     "", // TODO
-    "", // TODO
+    "1. päivä",
   },
   // Error messages:
   { "Channel is being used by a timer!",
@@ -882,7 +882,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Tekstinäyttö",
   },
   { "EPG",
     "EPG",
@@ -892,7 +892,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Ohjelmaopas",
   },
   { "DVB",
     "DVB",
@@ -902,7 +902,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "", // TODO
-    "", // TODO
+    "DVB",
   },
   { "LNB",
     "LNB",
@@ -912,7 +912,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "", // TODO
-    "", // TODO
+    "LNB",
   },
   { "CICAM",
     "CICAM",
@@ -922,7 +922,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "", // TODO
-    "", // TODO
+    "CICAM",
   },
   { "Recording",
     "Aufnahme",
@@ -932,7 +932,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Nauhoita",
   },
   { "Replay",
     "Wiedergabe",
@@ -942,7 +942,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Toista",
   },
   { "Miscellaneous",
     "Sonstiges",
@@ -952,7 +952,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Sekalaista",
   },
   { "Restart",
     "Neustart",
@@ -962,7 +962,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Aloita uudelleen",
   },
   // Setup parameters:
   { "Setup.OSD$Language",
@@ -983,7 +983,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "Largeur", //TODO (correct?)
     "", // TODO
-    "Leveys", //TODO (correct?)
+    "Leveys",
   },
   { "Setup.OSD$Height",
     "Höhe",
@@ -993,7 +993,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "Hauteur", //TODO (correct?)
     "", // TODO
-    "Korkeus", //TODO (correct?)
+    "Korkeus",
   },
   { "Setup.OSD$Message time",
     "Anzeigedauer für Nachrichten",
@@ -1093,7 +1093,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Vastaanota kellonaika lähettimeltä",
   },
   { "Setup.DVB$Primary DVB interface",
     "Primäres DVB Interface",
@@ -1153,7 +1153,7 @@ const tPhrase Phrases[] = {
     "DiSEqC", // TODO
     "DiSEqC", // TODO
     "DiSEqC", // TODO
-    "DiSEqC", // TODO
+    "Käytä DiSEqC",
   },
   { "Setup.CICAM$CICAM DVB",
     "CICAM DVB",
@@ -1223,7 +1223,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "Utiliser les sous-titres", // TODO (episode name!)
     "", // TODO
-    "Tekstitys käytössä", // TODO (episode name!)
+    "Käytä jakson nimeä",
   },
   { "Setup.Recording$Mark instant recording",
     "Direktaufzeichnung markieren",
@@ -1251,9 +1251,9 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "", // TODO
-    "Enregistrer en Dolby Digital", 
+    "Enregistrer en Dolby Digital",
     "", // TODO
-    "", // TODO
+    "Dolby Digital nauhoitus",
   },
   { "Setup.Recording$Max. video file size",
     "Max. Video Dateigröße",
@@ -1372,7 +1372,7 @@ const tPhrase Phrases[] = {
     "Pritisnite tipko na upravljalcu",
     "Premere un tasto nell'unita` RC",
     "Druk op een willekeurige knop",
-    "Pressione qualquer tecla do telecomando", 
+    "Pressione qualquer tecla do telecomando",
     "Appuyer sur une touche de la télécommande",
     "Trykk en av tastene på fjernkontrollen",
     "Paina mitä tahansa kaukosäätimen näppäintä",

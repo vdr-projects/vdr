@@ -1120,6 +1120,7 @@ Video Disk Recorder Revision History
   exits. The 'runvdr' script can be used for this purpose.
 - Refined texts of the "Setup" menu.
 
-2002-03-18: Version 1.0.0pre5
+2002-03-22: Version 1.0.0pre5
 
 - Fixed restoring CICAM setup values for a fourth DVB card.
+- Completed internationalization of OSD texts (thanks to Hannu Savolainen).
