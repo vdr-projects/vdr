@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.138 2001/10/28 17:06:34 kls Exp $
+ * $Id: menu.c 1.139 2001/11/04 10:37:18 kls Exp $
  */
 
 #include "menu.h"
@@ -1937,6 +1937,14 @@ eOSState cMenuMain::ProcessKey(eKeys Key)
 #ifdef DVDSUPPORT
                case kYellow: if (!HasSubMenu()) {
                                 if (cDVD::DiscOk()) {
+                                   // We need to stop replaying a DVD before ejecting,
+                                   // otherwise the replay thread crashes. Currently
+                                   // checking LastReplayed() is pretty much the only way
+                                   // of finding out whether we are currently replaying a DVD
+                                   // (i.e. if LastReplayed() returns non-NULL, we are either
+                                   // replaying a normal recording, or nothing at all):
+                                   if (!cReplayControl::LastReplayed())
+                                      cDvbApi::PrimaryDvbApi->StopReplay();
                                    cDVD::Eject();
                                    state = osEnd;
                                    }

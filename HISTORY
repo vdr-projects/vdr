@@ -831,7 +831,7 @@ Video Disk Recorder Revision History
 - Fixed handling trick modes near the beginning and end of a recording.
 - Pressing the "Back" button while replaying a DVD now leads to the DVD menu.
 
-2001-11-03: Version 0.98
+2001-11-04: Version 0.98
 
 - Completed storing the current audio volume in the setup.conf file (thanks
   to Andy Grobb).
@@ -859,3 +859,4 @@ Video Disk Recorder Revision History
 - Added a fifth parameter to the 'shutdown' call that indicates the reason for
   this shutdown request (see INSTALL).
 - Fixed releasing 'index' memory after recording or playback.
+- Fixed ejecting a DVD while it is being replayed.
