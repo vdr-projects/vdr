@@ -1268,6 +1268,8 @@ Rolf Groppe <rolf@groppe.de>
 Wolfgang Rohdewald <wolfgang@rohdewald.de>
  for pointing out that primaryDevice = NULL should be done before deleting the devices
  in cDevice::Shutdown()
+ for removing some unneeded code and fixing access to unallocated memory in
+ cEvent::FixEpgBugs()
 
 Chad Flynt <hoochster@sofnet.com>
  for suggestions and experiments regarding the buffer reserve in cTransfer

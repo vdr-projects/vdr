@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 1.24 2005/01/02 11:25:25 kls Exp $
+ * $Id: epg.c 1.25 2005/02/19 11:35:00 kls Exp $
  */
 
 #include "epg.h"
@@ -525,7 +525,7 @@ void cEvent::FixEpgBugs(void)
      if (description) {
         char *p = description;
         while (*p && *(p + 1) && *(p + 2)) {
-              if (*p == '-' && *(p + 1) == ' ' && *(p + 2) && islower(*(p - 1)) && islower(*(p + 2))) {
+              if (*p == '-' && *(p + 1) == ' ' && p != description && islower(*(p - 1)) && islower(*(p + 2))) {
                  if (!startswith(p + 2, "und ")) { // special case in German, as in "Lach- und Sachgeschichten"
                     memmove(p, p + 2, strlen(p + 2) + 1);
                     EpgBugFixStat(5, ChannelID());
