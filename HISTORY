@@ -1347,3 +1347,7 @@ Video Disk Recorder Revision History
   + The '-a' option (for Dolby Digital audio) doesn't work yet.
   + Switching between different language tracks doesn't work yet.
   + Cutting doesn't work yet.
+
+2002-06-22: Version 1.1.4
+
+- Added Hungarian language texts (thanks to Istvan Koenigsberger and Guido Josten).
