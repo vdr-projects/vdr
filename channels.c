@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 1.35 2005/02/06 09:44:53 kls Exp $
+ * $Id: channels.c 1.36 2005/03/19 15:56:38 kls Exp $
  */
 
 #include "channels.h"
@@ -694,9 +694,12 @@ bool cChannel::Parse(const char *s, bool AllowNonUniqueID)
            char *p = strchr(vpidbuf, '+');
            if (p)
               *p++ = 0;
-           sscanf(vpidbuf, "%d", &vpid);
-           if (p)
-              sscanf(p, "%d", &ppid);
+           if (sscanf(vpidbuf, "%d", &vpid) != 1)
+              return false;
+           if (p) {
+              if (sscanf(p, "%d", &ppid) != 1)
+                 return false;
+              }
            else
               ppid = vpid;
 

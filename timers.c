@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 1.22 2005/02/06 09:45:52 kls Exp $
+ * $Id: timers.c 1.30 2005/03/20 14:50:37 kls Exp $
  */
 
 #include "timers.h"
@@ -30,7 +30,8 @@ cTimer::cTimer(bool Instant, bool Pause)
   time_t t = time(NULL);
   struct tm tm_r;
   struct tm *now = localtime_r(&t, &tm_r);
-  day = now->tm_mday;
+  day = SetTime(t, 0);
+  weekdays = 0;
   start = now->tm_hour * 100 + now->tm_min;
   stop = now->tm_hour * 60 + now->tm_min + Setup.InstantRecordTime;
   stop = (stop / 60) * 100 + (stop % 60);
@@ -39,7 +40,6 @@ cTimer::cTimer(bool Instant, bool Pause)
   priority = Pause ? Setup.PausePriority : Setup.DefaultPriority;
   lifetime = Pause ? Setup.PauseLifetime : Setup.DefaultLifetime;
   *file = 0;
-  firstday = 0;
   summary = NULL;
   event = NULL;
   if (Instant && channel)
@@ -62,7 +62,8 @@ cTimer::cTimer(const cEvent *Event)
      }
   struct tm tm_r;
   struct tm *time = localtime_r(&tstart, &tm_r);
-  day = time->tm_mday;
+  day = SetTime(tstart, 0);
+  weekdays = 0;
   start = time->tm_hour * 100 + time->tm_min;
   time = localtime_r(&tstop, &tm_r);
   stop = time->tm_hour * 100 + time->tm_min;
@@ -74,7 +75,6 @@ cTimer::cTimer(const cEvent *Event)
   const char *Title = Event->Title();
   if (!isempty(Title))
      strn0cpy(file, Event->Title(), sizeof(file));
-  firstday = 0;
   summary = NULL;
   event = Event;
 }
@@ -109,9 +109,16 @@ cString cTimer::ToText(bool UseChannelID)
   char *buffer;
   strreplace(file, ':', '|');
   strreplace(summary, '\n', '|');
-  asprintf(&buffer, "%d:%s:%s:%04d:%04d:%d:%d:%s:%s\n", flags, UseChannelID ? *Channel()->GetChannelID().ToString() : *itoa(Channel()->Number()), *PrintDay(day, firstday), start, stop, priority, lifetime, file, summary ? summary : "");
+  asprintf(&buffer, "%d:%s:%s:%04d:%04d:%d:%d:%s:%s\n", flags, UseChannelID ? *Channel()->GetChannelID().ToString() : *itoa(Channel()->Number()), *PrintDay(day, weekdays), start, stop, priority, lifetime, file, summary ? summary : "");
   strreplace(summary, '|', '\n');
   strreplace(file, '|', ':');
+  return cString(buffer, true);
+}
+
+cString cTimer::ToDescr(void) const
+{
+  char *buffer;
+  asprintf(&buffer, "%d (%d %04d-%04d '%s')", Index() + 1, Channel()->Number(), start, stop, file);
   return cString(buffer, true);
 }
 
@@ -120,74 +127,93 @@ int cTimer::TimeToInt(int t)
   return (t / 100 * 60 + t % 100) * 60;
 }
 
-int cTimer::ParseDay(const char *s, time_t *FirstDay)
+bool cTimer::ParseDay(const char *s, time_t &Day, int &WeekDays)
 {
-  char *tail;
-  int d = strtol(s, &tail, 10);
-  if (FirstDay)
-     *FirstDay = 0;
-  if (tail && *tail) {
-     d = 0;
-     if (tail == s) {
-        const char *first = strchr(s, '@');
-        int l = first ? first - s : strlen(s);
-        if (l == 7) {
-           for (const char *p = s + 6; p >= s; p--) {
-               d <<= 1;
-               d |= (*p != '-');
+  // possible formats are:
+  // 19
+  // 2005-03-19
+  // MTWTFSS
+  // MTWTFSS@19
+  // MTWTFSS@2005-03-19
+
+  Day = 0;
+  WeekDays = 0;
+  s = skipspace(s);
+  if (!*s)
+     return false;
+  const char *a = strchr(s, '@');
+  const char *d = a ? a + 1 : isdigit(*s) ? s : NULL;
+  if (d) {
+     if (strlen(d) == 10) {
+        struct tm tm_r;
+        if (3 == sscanf(d, "%d-%d-%d", &tm_r.tm_year, &tm_r.tm_mon, &tm_r.tm_mday)) {
+           tm_r.tm_year -= 1900;
+           tm_r.tm_mon--;
+           tm_r.tm_hour = tm_r.tm_min = tm_r.tm_sec = 0;
+           tm_r.tm_isdst = -1; // makes sure mktime() will determine the correct DST setting
+           Day = mktime(&tm_r);
+           }
+        else
+           return false;
+        }
+     else {
+        // handle "day of month" for compatibility with older versions:
+        char *tail = NULL;
+        int day = strtol(s, &tail, 10);
+        if (tail && *tail || day < 1 || day > 31)
+           return false;
+        time_t t = time(NULL);
+        int DaysToCheck = 61; // 61 to handle months with 31/30/31
+        for (int i = -1; i <= DaysToCheck; i++) {
+            time_t t0 = IncDay(t, i);
+            if (GetMDay(t0) == day) {
+               Day = SetTime(t0, 0);
+               break;
                }
-           d |= 0x80000000;
-           }
-        if (FirstDay && first) {
-           ++first;
-           if (strlen(first) == 10) {
-              struct tm tm_r;
-              if (3 == sscanf(first, "%d-%d-%d", &tm_r.tm_year, &tm_r.tm_mon, &tm_r.tm_mday)) {
-                 tm_r.tm_year -= 1900;
-                 tm_r.tm_mon--;
-                 tm_r.tm_hour = tm_r.tm_min = tm_r.tm_sec = 0;
-                 tm_r.tm_isdst = -1; // makes sure mktime() will determine the correct DST setting
-                 *FirstDay = mktime(&tm_r);
-                 }
-              }
-           else
-              d = 0;
-           }
+            }
         }
      }
-  else if (d < 1 || d > 31)
-     d = 0;
-  return d;
+  if (a || !isdigit(*s)) {
+     if ((a && a - s == 7) || strlen(s) == 7) {
+        for (const char *p = s + 6; p >= s; p--) {
+            WeekDays <<= 1;
+            WeekDays |= (*p != '-');
+            }
+        }
+     else
+        return false;
+     }
+  return true;
 }
 
-cString cTimer::PrintDay(int d, time_t FirstDay)
+cString cTimer::PrintDay(time_t Day, int WeekDays)
 {
 #define DAYBUFFERSIZE 32
   char buffer[DAYBUFFERSIZE];
-  if ((d & 0x80000000) != 0) {
-     char *b = buffer;
+  char *b = buffer;
+  if (WeekDays) {
      const char *w = tr("MTWTFSS");
      while (*w) {
-           *b++ = (d & 1) ? *w : '-';
-           d >>= 1;
+           *b++ = (WeekDays & 1) ? *w : '-';
+           WeekDays >>= 1;
            w++;
            }
-     if (FirstDay) {
-        struct tm tm_r;
-        localtime_r(&FirstDay, &tm_r);
-        b += strftime(b, DAYBUFFERSIZE - (b - buffer), "@%Y-%m-%d", &tm_r);
-        }
-     *b = 0;
+     if (Day)
+        *b++ = '@';
      }
-  else
-     sprintf(buffer, "%d", d);
+  if (Day) {
+     struct tm tm_r;
+     localtime_r(&Day, &tm_r);
+     b += strftime(b, DAYBUFFERSIZE - (b - buffer), "%Y-%m-%d", &tm_r);
+     }
+  *b = 0;
   return buffer;
 }
 
-cString cTimer::PrintFirstDay(void)
+cString cTimer::PrintFirstDay(void) const
 {
-  if (firstday) {
-     cString s = PrintDay(day, firstday);
+  if (weekdays) {
+     cString s = PrintDay(day, weekdays);
      if (strlen(s) == 18)
         return *s + 8;
      }
@@ -223,8 +249,7 @@ bool cTimer::Parse(const char *s)
         summary = NULL;
         }
      //TODO add more plausibility checks
-     day = ParseDay(daybuffer, &firstday);
-     result = day != 0;
+     result = ParseDay(daybuffer, day, weekdays);
      strn0cpy(file, filebuffer, MaxFileName);
      strreplace(file, '|', ':');
      strreplace(summary, '|', '\n');
@@ -251,7 +276,7 @@ bool cTimer::Save(FILE *f)
 
 bool cTimer::IsSingleEvent(void) const
 {
-  return (day & 0x80000000) == 0;
+  return !weekdays;
 }
 
 int cTimer::GetMDay(time_t t)
@@ -267,20 +292,9 @@ int cTimer::GetWDay(time_t t)
   return weekday == 0 ? 6 : weekday - 1; // we start with monday==0!
 }
 
-int cTimer::GetWDayFromMDay(int MDay)
-{
-  time_t now =  time(NULL);
-  for (int i = -1; i <= 28; i++) { // looking 4 weeks into the future should be enough
-      time_t t0 = IncDay(now, i);
-      if (GetMDay(t0) == MDay)
-         return GetWDay(t0);
-      }
-  return GetWDay(now); // just to return something
-}
-
 bool cTimer::DayMatches(time_t t) const
 {
-  return IsSingleEvent() ? GetMDay(t) == day : (day & (1 << GetWDay(t))) != 0;
+  return IsSingleEvent() ? SetTime(t, 0) == day : (weekdays & (1 << GetWDay(t))) != 0;
 }
 
 time_t cTimer::IncDay(time_t t, int Days)
@@ -324,26 +338,31 @@ bool cTimer::Matches(time_t t, bool Directly) const
   if (length < 0)
      length += SECSINDAY;
 
-  int DaysToCheck = IsSingleEvent() ? 61 : 7; // 61 to handle months with 31/30/31
-  for (int i = -1; i <= DaysToCheck; i++) {
-      time_t t0 = IncDay(t, i);
-      if (DayMatches(t0)) {
-         time_t a = SetTime(t0, begin);
-         time_t b = a + length;
-         if ((!firstday || a >= firstday) && t <= b) {
-            startTime = a;
-            stopTime = b;
-            break;
+  if (IsSingleEvent()) {
+     startTime = SetTime(day, begin);
+     stopTime = startTime + length;
+     }
+  else {
+     for (int i = -1; i <= 7; i++) {
+         time_t t0 = IncDay(t, i);
+         if (DayMatches(t0)) {
+            time_t a = SetTime(t0, begin);
+            time_t b = a + length;
+            if ((!day || a >= day) && t <= b) {
+               startTime = a;
+               stopTime = b;
+               break;
+               }
             }
          }
-      }
-  if (!startTime)
-     startTime = firstday; // just to have something that's more than a week in the future
-  else if (!Directly && (t > startTime || t > firstday + SECSINDAY + 3600)) // +3600 in case of DST change
-     firstday = 0;
+     if (!startTime)
+        startTime = day; // just to have something that's more than a week in the future
+     else if (!Directly && (t > startTime || t > day + SECSINDAY + 3600)) // +3600 in case of DST change
+        day = 0;
+     }
 
   if (HasFlags(tfActive)) {
-     if (HasFlags(tfVps) && !Directly && event && event->Vps()) {
+     if (HasFlags(tfVps) && !Directly && event && event->Vps() && schedule && schedule->PresentSeenWithin(30)) {
         startTime = event->StartTime();
         stopTime = event->EndTime();
         return event->IsRunning(true);
@@ -353,26 +372,40 @@ bool cTimer::Matches(time_t t, bool Directly) const
   return false;
 }
 
-int cTimer::Matches(const cEvent *Event)
+#define FULLMATCH 1000
+
+int cTimer::Matches(const cEvent *Event, int *Overlap) const
 {
-  if (channel->GetChannelID() == Event->ChannelID()) {
+  // Overlap is the percentage of the Event's duration that is covered by
+  // this timer (based on FULLMATCH for finer granularity than just 100).
+  // To make sure a VPS timer can be distinguished from a plain 100% overlap,
+  // it gets an additional 100 added, and a VPS event that is actually running
+  // gets 200 added to the FULLMATCH.
+  if (HasFlags(tfActive) && channel->GetChannelID() == Event->ChannelID()) {
      bool UseVps = HasFlags(tfVps) && Event->Vps();
-     time_t t1 = UseVps ? Event->Vps() : Event->StartTime();
-     time_t t2 = t1 + Event->Duration();
-     bool m1 = Matches(t1, true);
-     bool m2 = UseVps ? m1 : Matches(t2, true);
+     Matches(UseVps ? Event->Vps() : Event->StartTime(), true);
+     int overlap;
+     if (UseVps)
+        overlap = (startTime == Event->Vps()) ? FULLMATCH + (Event->IsRunning() ? 200 : 100) : 0;
+     else if (startTime <= Event->StartTime() && Event->EndTime() <= stopTime)
+        overlap = FULLMATCH;
+     else if (stopTime <= Event->StartTime() || Event->EndTime() <= startTime)
+        overlap = 0;
+     else
+        overlap = (min(stopTime, Event->EndTime()) - max(startTime, Event->StartTime())) * FULLMATCH / max(Event->Duration(), 1);
      startTime = stopTime = 0;
-     if (m1 && m2) {
-        if (UseVps && Event->IsRunning(true))
-           return tmFull;
-        if (time(NULL) > Event->EndTime())
-           return tmNone;
-        return tmFull;
-        }
-     if ((m1 || m2) && time(NULL) <= Event->EndTime())
-        return tmPartial;
+     if (Overlap)
+        *Overlap = overlap;
+     return overlap >= 1000 ? tmFull : overlap > 0 ? tmPartial : tmNone;
      }
   return tmNone;
+}
+
+#define EXPIRELATENCY 60 // seconds (just in case there's a short glitch in the VPS signal)
+
+bool cTimer::Expired(void) const
+{
+  return IsSingleEvent() && !Recording() && StopTime() + EXPIRELATENCY <= time(NULL);
 }
 
 time_t cTimer::StartTime(void) const
@@ -389,17 +422,18 @@ time_t cTimer::StopTime(void) const
   return stopTime;
 }
 
-void cTimer::SetEvent(const cEvent *Event)
+void cTimer::SetEvent(const cSchedule *Schedule, const cEvent *Event)
 {
   if (event != Event) { //XXX TODO check event data, too???
      if (Event) {
         char vpsbuf[64] = "";
         if (Event->Vps())
            sprintf(vpsbuf, "(VPS: %s) ", *Event->GetVpsString());
-        isyslog("timer %d (%d %04d-%04d '%s') set to event %s %s-%s %s'%s'", Index() + 1, Channel()->Number(), start, stop, file, *Event->GetDateString(), *Event->GetTimeString(), *Event->GetEndTimeString(), vpsbuf, Event->Title());
+        isyslog("timer %s set to event %s %s-%s %s'%s'", *ToDescr(), *Event->GetDateString(), *Event->GetTimeString(), *Event->GetEndTimeString(), vpsbuf, Event->Title());
         }
      else
-        isyslog("timer %d (%d %04d-%04d '%s') set to no event", Index() + 1, Channel()->Number(), start, stop, file);
+        isyslog("timer %s set to no event", *ToDescr());
+     schedule = Event ? Schedule : NULL;
      event = Event;
      }
 }
@@ -407,7 +441,7 @@ void cTimer::SetEvent(const cEvent *Event)
 void cTimer::SetRecording(bool Recording)
 {
   recording = Recording;
-  isyslog("timer %d (%d %04d-%04d '%s') %s", Index() + 1, Channel()->Number(), start, stop, file, recording ? "start" : "stop");
+  isyslog("timer %s %s", *ToDescr(), recording ? "start" : "stop");
 }
 
 void cTimer::SetPending(bool Pending)
@@ -418,7 +452,7 @@ void cTimer::SetPending(bool Pending)
 void cTimer::SetInVpsMargin(bool InVpsMargin)
 {
   if (InVpsMargin && !inVpsMargin)
-     isyslog("timer %d (%d %04d-%04d '%s') entered VPS margin", Index() + 1, Channel()->Number(), start, stop, file);
+     isyslog("timer %s entered VPS margin", *ToDescr());
   inVpsMargin = InVpsMargin;
 }
 
@@ -444,7 +478,7 @@ bool cTimer::HasFlags(int Flags) const
 
 void cTimer::Skip(void)
 {
-  firstday = IncDay(SetTime(StartTime(), 0), 1);
+  day = IncDay(SetTime(StartTime(), 0), 1);
   event = NULL;
 }
 
@@ -452,8 +486,8 @@ void cTimer::OnOff(void)
 {
   if (IsSingleEvent())
      InvFlags(tfActive);
-  else if (firstday) {
-     firstday = 0;
+  else if (day) {
+     day = 0;
      ClrFlags(tfActive);
      }
   else if (HasFlags(tfActive))
@@ -536,6 +570,9 @@ bool cTimers::Modified(void)
   return Result;
 }
 
+#define EPGLIMITPAST   (2 * 3600) // time in seconds around now, within which EPG events will be taken into consideration
+#define EPGLIMITFUTURE (4 * 3600)
+
 void cTimers::SetEvents(void)
 {
   if (time(NULL) - lastSetEvents < 5)
@@ -549,24 +586,58 @@ void cTimers::SetEvents(void)
             if (Schedule) {
                if (!lastSetEvents || Schedule->Modified() >= lastSetEvents) {
                   const cEvent *Event = NULL;
-                  int Match = tmNone;
+                  int Overlap = 0;
+                  int Distance = INT_MIN;
+                  time_t now = time(NULL);
                   for (const cEvent *e = Schedule->Events()->First(); e; e = Schedule->Events()->Next(e)) {
                       if (cRemote::HasKeys())
                          return; // react immediately on user input
-                      int m = ti->Matches(e);
-                      if (m > Match) {
-                         Match = m;
+                      if (e->EndTime() < now - EPGLIMITPAST)
+                         continue; // skip old events
+                      if (e->StartTime() > now + EPGLIMITFUTURE)
+                         break; // no need to process events too far in the future
+                      int overlap = 0;
+                      ti->Matches(e, &overlap);
+                      if (overlap && overlap >= Overlap) {
+                         int distance = 0;
+                         if (now < e->StartTime())
+                            distance = e->StartTime() - now;
+                         else if (now > e->EndTime())
+                            distance = e->EndTime() - now;
+                         if (Event && overlap == Overlap) {
+                            if (Overlap > FULLMATCH) { // this means VPS
+                               if (abs(Distance) < abs(distance)) 
+                                  break; // we've already found the closest VPS event
+                               }
+                            else if (e->Duration() <= Event->Duration())
+                               continue; // if overlap is the same, we take the longer event
+                            }
+                         Overlap = overlap;
+                         Distance = distance;
                          Event = e;
-                         if (Match == tmFull)
-                            break;
-                            //XXX what if there's another event with the same VPS time???
                          }
                       }
-                  ti->SetEvent(Event);
+                  if (Event && Event->EndTime() < now - EXPIRELATENCY && !Event->IsRunning())
+                     Event = NULL;
+                  ti->SetEvent(Schedule, Event);
                   }
                }
             }
         }
      }
   lastSetEvents = time(NULL);
+}
+
+void cTimers::DeleteExpired(void)
+{
+  cTimer *ti = First();
+  while (ti) {
+        cTimer *next = Next(ti);
+        if (ti->Expired()) {
+           isyslog("deleting timer %s", *ti->ToDescr());
+           Del(ti);
+           SetModified();
+           }
+        ti = next;
+        }
 }

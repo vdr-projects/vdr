@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.90 2005/02/19 13:43:03 kls Exp $
+ * $Id: tools.c 1.91 2005/03/20 14:44:33 kls Exp $
  */
 
 #include "tools.h"
@@ -896,7 +896,7 @@ void cListObject::Unlink(void)
   next = prev = NULL;
 }
 
-int cListObject::Index(void)
+int cListObject::Index(void) const
 {
   cListObject *p = prev;
   int i = 0;

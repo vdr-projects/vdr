@@ -11,7 +11,7 @@
  * The cDolbyRepacker code was originally written by Reinhard Nissl <rnissl@gmx.de>,
  * and adapted to the VDR coding style by Klaus.Schmidinger@cadsoft.de.
  *
- * $Id: remux.c 1.31 2005/02/13 14:36:23 kls Exp $
+ * $Id: remux.c 1.33 2005/03/20 13:18:15 kls Exp $
  */
 
 #include "remux.h"
@@ -46,6 +46,8 @@ private:
   int fragmentTodo;
   uchar pesHeader[6 + 3 + 255 + 4 + 4];
   int pesHeaderLen;
+  uchar pesHeaderBackup[6 + 3 + 255];
+  int pesHeaderBackupLen;
   uchar chk1;
   uchar chk2;
   int ac3todo;
@@ -57,8 +59,8 @@ private:
     get_length,
     output_packet
     } state;
-  void ResetPesHeader(void);
-  void AppendSubStreamID(void);
+  void ResetPesHeader(bool ContinuationFrame = false);
+  void AppendSubStreamID(bool ContinuationFrame = false);
   bool FinishRemainder(cRingBufferLinear *ResultBuffer, const uchar *const Data, const int Todo, int &Done, int &Bite);
   bool StartNewPacket(cRingBufferLinear *ResultBuffer, const uchar *const Data, const int Todo, int &Done, int &Bite);
 public:
@@ -103,23 +105,26 @@ cDolbyRepacker::cDolbyRepacker(void)
   Reset();
 }
 
-void cDolbyRepacker::AppendSubStreamID(void)
+void cDolbyRepacker::AppendSubStreamID(bool ContinuationFrame)
 {
   if (subStreamId) {
      pesHeader[pesHeaderLen++] = subStreamId;
+     // number of ac3 frames "starting" in this packet (1 by design).
+     pesHeader[pesHeaderLen++] = 0x01;
+     // offset to start of first ac3 frame (0 means "no ac3 frame starting"
+     // so 1 (by design) addresses the first byte after the next two bytes).
      pesHeader[pesHeaderLen++] = 0x00;
-     pesHeader[pesHeaderLen++] = 0x00;
-     pesHeader[pesHeaderLen++] = 0x00;
+     pesHeader[pesHeaderLen++] = (ContinuationFrame ? 0x00 : 0x01);
      }
 }
 
-void cDolbyRepacker::ResetPesHeader(void)
+void cDolbyRepacker::ResetPesHeader(bool ContinuationFrame)
 {
   pesHeader[6] = 0x80;
   pesHeader[7] = 0x00;
   pesHeader[8] = 0x00;
   pesHeaderLen = 9;
-  AppendSubStreamID();
+  AppendSubStreamID(ContinuationFrame);
 }
 
 void cDolbyRepacker::Reset(void)
@@ -131,6 +136,7 @@ void cDolbyRepacker::Reset(void)
   chk2 = 0;
   fragmentLen = 0;
   fragmentTodo = 0;
+  pesHeaderBackupLen = 0;
 }
 
 bool cDolbyRepacker::FinishRemainder(cRingBufferLinear *ResultBuffer, const uchar *const Data, const int Todo, int &Done, int &Bite)
@@ -229,12 +235,17 @@ int cDolbyRepacker::Put(cRingBufferLinear *ResultBuffer, const uchar *Data, int 
   if ((Data[6] & 0xC0) != 0x80)
      return 0;
 
+  // backup PES header
+  if (Data[6] != 0x80 || Data[7] != 0x00 || Data[8] != 0x00) {
+     pesHeaderBackupLen = 6 + 3 + Data[8];
+     memcpy(pesHeaderBackup, Data, pesHeaderBackupLen);
+     }
+
   // skip PES header
   int done = 6 + 3 + Data[8];
   int todo = Count - done;
   const uchar *data = Data + done;
-  bool headerCopied = false;
-  
+
   // look for 0x0B 0x77 <chk1> <chk2> <frameSize>
   while (todo > 0) {
         switch (state) {
@@ -242,10 +253,10 @@ int cDolbyRepacker::Put(cRingBufferLinear *ResultBuffer, const uchar *Data, int 
                if (*data == 0x0B) {
                   ++(int &)state;
                   // copy header information once for later use
-                  if (!headerCopied) {
-                     headerCopied = true;
-                     pesHeaderLen = 6 + 3 + Data[8];
-                     memcpy(pesHeader, Data, pesHeaderLen);
+                  if (pesHeaderBackupLen > 0) {
+                     pesHeaderLen = pesHeaderBackupLen;
+                     pesHeaderBackupLen = 0;
+                     memcpy(pesHeader, pesHeaderBackup, pesHeaderLen);
                      AppendSubStreamID();
                      }
                   }
@@ -279,9 +290,8 @@ int cDolbyRepacker::Put(cRingBufferLinear *ResultBuffer, const uchar *Data, int 
                ac3todo = 2 * frameSizes[*data];
                // frameSizeCode was invalid => restart searching
                if (ac3todo <= 0) {
-                  // reset PES header instead of using/copying a wrong one
+                  // reset PES header instead of using a wrong one
                   ResetPesHeader();
-                  headerCopied = true;
                   if (chk1 == 0x0B) {
                      if (chk2 == 0x77) {
                         state = store_chk1;
@@ -320,8 +330,8 @@ int cDolbyRepacker::Put(cRingBufferLinear *ResultBuffer, const uchar *Data, int 
                   // start a new packet
                   if (!StartNewPacket(ResultBuffer, data, todo, done, bite))
                      return done;
-                  // prepare for next packet
-                  ResetPesHeader();
+                  // prepare for next (continuation) packet
+                  ResetPesHeader(state == output_packet);
                   }
                data += bite;
                done += bite;

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.h 1.10 2004/11/21 13:23:00 kls Exp $
+ * $Id: menuitems.h 1.11 2005/03/19 15:02:57 kls Exp $
  */
 
 #ifndef __MENUITEMS_H
@@ -118,24 +118,16 @@ public:
   virtual eOSState ProcessKey(eKeys Key);
   };
 
-class cMenuEditDayItem : public cMenuEditIntItem {
+class cMenuEditDateItem : public cMenuEditItem {
 private:
   static int days[];
-  int d;
-  int md;
-protected:
-  virtual void Set(void);
-public:
-  cMenuEditDayItem(const char *Name, int *Value);
-  virtual eOSState ProcessKey(eKeys Key);
-  };
-
-class cMenuEditDateItem : public cMenuEditItem {
-protected:
   time_t *value;
+  int *weekdays;
+  time_t oldvalue;
+  int dayindex;
   virtual void Set(void);
 public:
-  cMenuEditDateItem(const char *Name, time_t *Value);
+  cMenuEditDateItem(const char *Name, time_t *Value, int *WeekDays = NULL);
   virtual eOSState ProcessKey(eKeys Key);
   };
 

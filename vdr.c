@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.202 2005/02/12 15:06:16 kls Exp $
+ * $Id: vdr.c 1.203 2005/03/20 10:58:59 kls Exp $
  */
 
 #include <getopt.h>
@@ -606,6 +606,8 @@ int main(int argc, char *argv[])
            PreviousChannel[PreviousChannelIndex ^= 1] = LastChannel;
         // Timers and Recordings:
         if (!Timers.BeingEdited()) {
+           // Delete expired timers:
+           Timers.DeleteExpired();
            // Assign events to timers:
            Timers.SetEvents();
            // Must do all following calls with the exact same time!

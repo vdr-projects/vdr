@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.c 1.21 2004/11/21 13:24:10 kls Exp $
+ * $Id: menuitems.c 1.22 2005/03/19 15:33:34 kls Exp $
  */
 
 #include "menuitems.h"
@@ -535,117 +535,35 @@ eOSState cMenuEditTranItem::ProcessKey(eKeys Key)
   return state;
 }
 
-// --- cMenuEditDayItem ------------------------------------------------------
-
-int cMenuEditDayItem::days[] ={ cTimer::ParseDay("M------"),
-                                cTimer::ParseDay("-T-----"),
-                                cTimer::ParseDay("--W----"),
-                                cTimer::ParseDay("---T---"),
-                                cTimer::ParseDay("----F--"),
-                                cTimer::ParseDay("-----S-"),
-                                cTimer::ParseDay("------S"),
-                                cTimer::ParseDay("MTWTF--"),
-                                cTimer::ParseDay("MTWTFS-"),
-                                cTimer::ParseDay("MTWTFSS"),
-                                cTimer::ParseDay("-----SS"),
-                                0 };
-
-cMenuEditDayItem::cMenuEditDayItem(const char *Name, int *Value)
-:cMenuEditIntItem(Name, Value, -INT_MAX, 31)
-{
-  d = -1;
-  md = 0;
-  if (*value < 0) {
-     int n = 0;
-     while (days[n]) {
-           if (days[n] == *value) {
-              d = n;
-              break;
-              }
-           n++;
-           }
-     }
-  Set();
-}
-
-void cMenuEditDayItem::Set(void)
-{
-  SetValue(cTimer::PrintDay(*value));
-}
-
-eOSState cMenuEditDayItem::ProcessKey(eKeys Key)
-{
-  switch (Key) {
-    case kLeft|k_Repeat:
-    case kLeft:  if (d > 0)
-                    *value = days[--d];
-                 else if (d == 0) {
-                    *value = 31;
-                    d = -1;
-                    }
-                 else if (*value == 1) {
-                    d = sizeof(days) / sizeof(int) - 2;
-                    *value = days[d];
-                    }
-                 else
-                    return cMenuEditIntItem::ProcessKey(Key);
-                 Set();
-                 break;
-    case kRight|k_Repeat:
-    case kRight: if (d >= 0) {
-                    *value = days[++d];
-                    if (*value == 0) {
-                       *value = 1;
-                       d = -1;
-                       }
-                    }
-                 else if (*value == 31) {
-                    d = 0;
-                    *value = days[d];
-                    }
-                 else
-                    return cMenuEditIntItem::ProcessKey(Key);
-                 Set();
-                 break;
-    default: {
-               if (d >= 0) {
-                  if (k1 <= Key && Key <= k7) {
-                     int v = *value ^ (1 << (Key - k1));
-                     if ((v & 0xFF) != 0) {
-                        *value = v; // can't let this become all 0
-                        Set();
-                        }
-                     break;
-                     }
-                  }
-               int v = *value;
-               eOSState result = cMenuEditIntItem::ProcessKey(Key);
-               if (result == osContinue && Key == k0) {
-                  if (d >= 0) {
-                     *value = md ? md : cTimer::GetMDay(time(NULL));
-                     md = 0;
-                     d = -1;
-                     Set();
-                     }
-                  else if (*value == 0 || *value == v) {
-                     md = v;
-                     d = cTimer::GetWDayFromMDay(v);
-                     *value = days[d];
-                     Set();
-                     }
-                  }
-               return result;
-             }
-    }
-  return osContinue;
-}
-
 // --- cMenuEditDateItem -----------------------------------------------------
 
-cMenuEditDateItem::cMenuEditDateItem(const char *Name, time_t *Value)
+static int ParseWeekDays(const char *s)
+{
+  time_t day;
+  int weekdays;
+  return cTimer::ParseDay(s, day, weekdays) ? weekdays : 0;
+}
+
+int cMenuEditDateItem::days[] = { ParseWeekDays("M------"),
+                                  ParseWeekDays("-T-----"),
+                                  ParseWeekDays("--W----"),
+                                  ParseWeekDays("---T---"),
+                                  ParseWeekDays("----F--"),
+                                  ParseWeekDays("-----S-"),
+                                  ParseWeekDays("------S"),
+                                  ParseWeekDays("MTWTF--"),
+                                  ParseWeekDays("MTWTFS-"),
+                                  ParseWeekDays("MTWTFSS"),
+                                  ParseWeekDays("-----SS"),
+                                  0 };
+
+cMenuEditDateItem::cMenuEditDateItem(const char *Name, time_t *Value, int *WeekDays)
 :cMenuEditItem(Name)
 {
   value = Value;
+  weekdays = WeekDays;
+  oldvalue = 0;
+  dayindex = 0;
   Set();
 }
 
@@ -653,7 +571,11 @@ void cMenuEditDateItem::Set(void)
 {
 #define DATEBUFFERSIZE 32
   char buf[DATEBUFFERSIZE];
-  if (*value) {
+  if (weekdays && *weekdays) {
+     SetValue(cTimer::PrintDay(0, *weekdays));
+     return;
+     }
+  else if (*value) {
      struct tm tm_r;
      localtime_r(value, &tm_r);
      strftime(buf, DATEBUFFERSIZE, "%Y-%m-%d ", &tm_r);
@@ -669,15 +591,73 @@ eOSState cMenuEditDateItem::ProcessKey(eKeys Key)
   eOSState state = cMenuEditItem::ProcessKey(Key);
 
   if (state == osUnknown) {
+     time_t now = time(NULL);
      if (NORMALKEY(Key) == kLeft) { // TODO might want to increase the delta if repeated quickly?
-        *value -= SECSINDAY;
-        if (*value < time(NULL))
-           *value = 0;
+        if (!weekdays || !*weekdays) {
+           // Decrement single day:
+           time_t v = *value;
+           v -= SECSINDAY;
+           if (v < now) {
+              if (now <= v + SECSINDAY) { // switched from tomorrow to today
+                 if (!weekdays)
+                    v = 0;
+                 }
+              else if (weekdays) { // switched from today to yesterday, so enter weekdays mode
+                 v = 0;
+                 dayindex = sizeof(days) / sizeof(int) - 2;
+                 *weekdays = days[dayindex];
+                 }
+              else // don't go before today
+                 v = *value;
+              }
+           *value = v;
+           }
+        else {
+           // Decrement weekday index:
+           if (dayindex > 0)
+              *weekdays = days[--dayindex];
+           }
         }
      else if (NORMALKEY(Key) == kRight) {
-        if (!*value)
-           *value = cTimer::SetTime(time(NULL), 0);
-        *value += SECSINDAY;
+        if (!weekdays || !*weekdays) {
+           // Increment single day:
+           if (!*value)
+              *value = cTimer::SetTime(now, 0);
+           *value += SECSINDAY;
+           }
+        else {
+           // Increment weekday index:
+           *weekdays = days[++dayindex];
+           if (!*weekdays) { // was last weekday entry, so switch to today
+              *value = cTimer::SetTime(now, 0);
+              dayindex = 0;
+              }
+           }
+        }
+     else if (weekdays) {
+        if (Key == k0) {
+           // Toggle between weekdays and single day:
+           if (*weekdays) {
+              *value = cTimer::SetTime(oldvalue ? oldvalue : now, 0);
+              oldvalue = 0;
+              *weekdays = 0;
+              }
+           else {
+              *weekdays = days[cTimer::GetWDay(*value)];
+              oldvalue = *value;
+              *value = 0;
+              }
+           }
+        else if (k1 <= Key && Key <= k7) {
+           // Toggle individual weekdays:
+           if (*weekdays) {
+              int v = *weekdays ^ (1 << (Key - k1));
+              if (v != 0)
+                 *weekdays = v; // can't let this become all 0
+              }
+           }
+        else
+           return state;
         }
      else
         return state;

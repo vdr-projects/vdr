@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.342 2005/02/27 14:09:00 kls Exp $
+ * $Id: menu.c 1.348 2005/03/20 15:14:51 kls Exp $
  */
 
 #include "menu.h"
@@ -632,7 +632,7 @@ cMenuEditTimer::cMenuEditTimer(cTimer *Timer, bool New)
      channel = data.Channel()->Number();
      Add(new cMenuEditBitItem( tr("Active"),       &data.flags, tfActive));
      Add(new cMenuEditChanItem(tr("Channel"),      &channel));
-     Add(new cMenuEditDayItem( tr("Day"),          &data.day));
+     Add(new cMenuEditDateItem(tr("Day"),          &data.day, &data.weekdays));
      Add(new cMenuEditTimeItem(tr("Start"),        &data.start));
      Add(new cMenuEditTimeItem(tr("Stop"),         &data.stop));
      Add(new cMenuEditBitItem( tr("VPS"),          &data.flags, tfVps));
@@ -654,13 +654,12 @@ cMenuEditTimer::~cMenuEditTimer()
 void cMenuEditTimer::SetFirstDayItem(void)
 {
   if (!firstday && !data.IsSingleEvent()) {
-     Add(firstday = new cMenuEditDateItem(tr("First day"), &data.firstday));
+     Add(firstday = new cMenuEditDateItem(tr("First day"), &data.day));
      Display();
      }
   else if (firstday && data.IsSingleEvent()) {
      Del(firstday->Index());
      firstday = NULL;
-     data.firstday = 0;
      Display();
      }
 }
@@ -691,7 +690,7 @@ eOSState cMenuEditTimer::ProcessKey(eKeys Key)
                              Timers.Add(timer);
                           timer->Matches();
                           Timers.SetModified();
-                          isyslog("timer %d %s (%s)", timer->Index() + 1, addIfConfirmed ? "added" : "modified", timer->HasFlags(tfActive) ? "active" : "inactive");
+                          isyslog("timer %s %s (%s)", *timer->ToDescr(), addIfConfirmed ? "added" : "modified", timer->HasFlags(tfActive) ? "active" : "inactive");
                           addIfConfirmed = false;
                           }
                      }
@@ -733,13 +732,28 @@ int cMenuTimerItem::Compare(const cListObject &ListObject) const
 
 void cMenuTimerItem::Set(void)
 {
+  cString day, name("");
+  if (timer->WeekDays())
+     day = timer->PrintDay(0, timer->WeekDays());
+  else if (timer->Day() - time(NULL) < 28 * SECSINDAY) {
+     day = itoa(timer->GetMDay(timer->Day()));
+     name = WeekDayName(timer->Day());
+     }
+  else {
+     struct tm tm_r;
+     time_t Day = timer->Day();
+     localtime_r(&Day, &tm_r);
+     char buffer[16];
+     strftime(buffer, sizeof(buffer), "%Y%m%d", &tm_r);
+     day = buffer;
+     }
   char *buffer = NULL;
   asprintf(&buffer, "%c\t%d\t%s%s%s\t%02d:%02d\t%02d:%02d\t%s",
                     !(timer->HasFlags(tfActive)) ? ' ' : timer->FirstDay() ? '!' : timer->Recording() ? '#' : '>',
                     timer->Channel()->Number(),
-                    timer->IsSingleEvent() ? *WeekDayName(timer->StartTime()) : "",
-                    timer->IsSingleEvent() ? " " : "",
-                    *timer->PrintDay(timer->Day()),
+                    *name,
+                    *name && **name ? " " : "",
+                    *day,
                     timer->Start() / 100,
                     timer->Start() % 100,
                     timer->Stop() / 100,
@@ -795,9 +809,9 @@ eOSState cMenuTimers::OnOff(void)
      RefreshCurrent();
      DisplayCurrent(true);
      if (timer->FirstDay())
-        isyslog("timer %d first day set to %s", timer->Index() + 1, *timer->PrintFirstDay());
+        isyslog("timer %s first day set to %s", *timer->ToDescr(), *timer->PrintFirstDay());
      else
-        isyslog("timer %d %sactivated", timer->Index() + 1, timer->HasFlags(tfActive) ? "" : "de");
+        isyslog("timer %s %sactivated", *timer->ToDescr(), timer->HasFlags(tfActive) ? "" : "de");
      Timers.SetModified();
      }
   return osContinue;
@@ -807,7 +821,7 @@ eOSState cMenuTimers::Edit(void)
 {
   if (HasSubMenu() || Count() == 0)
      return osContinue;
-  isyslog("editing timer %d", CurrentTimer()->Index() + 1);
+  isyslog("editing timer %s", *CurrentTimer()->ToDescr());
   return AddSubMenu(new cMenuEditTimer(CurrentTimer()));
 }
 
@@ -832,12 +846,11 @@ eOSState cMenuTimers::Delete(void)
            else
               return osContinue;
            }
-        int Index = ti->Index();
+        isyslog("deleting timer %s", *ti->ToDescr());
         Timers.Del(ti);
         cOsdMenu::Del(Current());
         Timers.SetModified();
         Display();
-        isyslog("timer %d deleted", Index + 1);
         }
      }
   return osContinue;
@@ -1603,9 +1616,8 @@ eOSState cMenuRecordings::Delete(void)
                  timer->Skip();
                  cRecordControls::Process(time(NULL));
                  if (timer->IsSingleEvent()) {
-                    int Index = timer->Index();
+                    isyslog("deleting timer %s", *timer->ToDescr());
                     Timers.Del(timer);
-                    isyslog("timer %d deleted", Index + 1);
                     }
                  Timers.SetModified();
                  }
@@ -1619,6 +1631,7 @@ eOSState cMenuRecordings::Delete(void)
               cReplayControl::ClearLastReplayed(ri->FileName());
               cOsdMenu::Del(Current());
               Recordings.Del(recording);
+              SetHelpKeys();
               Display();
               if (!Count())
                  return osBack;
@@ -1947,8 +1960,9 @@ void cMenuSetupDVB::Setup(void)
   Clear();
 
   Add(new cMenuEditIntItem( tr("Setup.DVB$Primary DVB interface"), &data.PrimaryDVB, 1, cDevice::NumDevices()));
-  Add(new cMenuEditStraItem(tr("Setup.DVB$Video display format"),  &data.VideoDisplayFormat, 3, videoDisplayFormatTexts));
   Add(new cMenuEditBoolItem(tr("Setup.DVB$Video format"),          &data.VideoFormat, "4:3", "16:9"));
+  if (data.VideoFormat == 0)
+     Add(new cMenuEditStraItem(tr("Setup.DVB$Video display format"), &data.VideoDisplayFormat, 3, videoDisplayFormatTexts));
   Add(new cMenuEditBoolItem(tr("Setup.DVB$Use Dolby Digital"),     &data.UseDolbyDigital));
   Add(new cMenuEditStraItem(tr("Setup.DVB$Update channels"),       &data.UpdateChannels, 5, updateChannelsTexts));
   Add(new cMenuEditIntItem( tr("Setup.DVB$Audio languages"),       &numAudioLanguages, 0, I18nNumLanguages));
@@ -1964,10 +1978,12 @@ eOSState cMenuSetupDVB::ProcessKey(eKeys Key)
   int oldPrimaryDVB = ::Setup.PrimaryDVB;
   int oldVideoDisplayFormat = ::Setup.VideoDisplayFormat;
   bool oldVideoFormat = ::Setup.VideoFormat;
+  bool newVideoFormat = data.VideoFormat;
   int oldnumAudioLanguages = numAudioLanguages;
   eOSState state = cMenuSetupBase::ProcessKey(Key);
 
   if (Key != kNone) {
+     bool DoSetup = data.VideoFormat != newVideoFormat;
      if (numAudioLanguages != oldnumAudioLanguages) {
         for (int i = oldnumAudioLanguages; i < numAudioLanguages; i++) {
             data.AudioLanguages[i] = 0;
@@ -1984,8 +2000,10 @@ eOSState cMenuSetupDVB::ProcessKey(eKeys Key)
                 }
             }
         data.AudioLanguages[numAudioLanguages] = -1;
-        Setup();
+        DoSetup = true;
         }
+     if (DoSetup)
+        Setup();
      }
   if (state == osBack && Key == kOk) {
      if (::Setup.PrimaryDVB != oldPrimaryDVB)
@@ -3048,7 +3066,7 @@ cRecordControl::cRecordControl(cDevice *Device, cTimer *Timer, bool Pause)
 
 cRecordControl::~cRecordControl()
 {
-  Stop(true);
+  Stop();
   free(instantId);
   free(fileName);
 }
@@ -3083,16 +3101,11 @@ bool cRecordControl::GetEvent(void)
   return false;
 }
 
-void cRecordControl::Stop(bool KeepInstant)
+void cRecordControl::Stop(void)
 {
   if (timer) {
      DELETENULL(recorder);
      timer->SetRecording(false);
-     if ((IsInstant() && !KeepInstant) || (timer->IsSingleEvent() && timer->StopTime() <= time(NULL))) {
-        isyslog("deleting timer %d", timer->Index() + 1);
-        Timers.Del(timer);
-        Timers.SetModified();
-        }
      timer = NULL;
      cStatus::MsgRecording(device, NULL);
      cRecordingUserCommand::InvokeCommand(RUC_AFTERRECORDING, fileName);
@@ -3153,8 +3166,16 @@ void cRecordControls::Stop(const char *InstantId)
   for (int i = 0; i < MAXRECORDCONTROLS; i++) {
       if (RecordControls[i]) {
          const char *id = RecordControls[i]->InstantId();
-         if (id && strcmp(id, InstantId) == 0)
+         if (id && strcmp(id, InstantId) == 0) {
+            cTimer *timer = RecordControls[i]->Timer();
             RecordControls[i]->Stop();
+            if (timer) {
+               isyslog("deleting timer %s", *timer->ToDescr());
+               Timers.Del(timer);
+               Timers.SetModified();
+               }
+            break;
+            }
          }
       }
 }
@@ -3165,7 +3186,7 @@ void cRecordControls::Stop(cDevice *Device)
       if (RecordControls[i]) {
          if (RecordControls[i]->Device() == Device) {
             isyslog("stopping recording on DVB device %d due to higher priority", Device->CardIndex() + 1);
-            RecordControls[i]->Stop(true);
+            RecordControls[i]->Stop();
             }
          }
       }
@@ -3242,7 +3263,7 @@ void cRecordControls::ChannelDataModified(cChannel *Channel)
          if (RecordControls[i]->Timer() && RecordControls[i]->Timer()->Channel() == Channel) {
             if (RecordControls[i]->Device()->ProvidesTransponder(Channel)) { // avoids retune on devices that don't really access the transponder
                isyslog("stopping recording due to modification of channel %d", Channel->Number());
-               RecordControls[i]->Stop(true);
+               RecordControls[i]->Stop();
                // This will restart the recording, maybe even from a different
                // device in case conditional access has changed.
                }

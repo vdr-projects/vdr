@@ -381,10 +381,9 @@ Version 1.2
              Any changes made in the "Channels" list (like renaming or
              reordering channels) will be automatically reflected in the
              timers settings.
-  Day:       The day on which this timer shall start. This can be either a
-             "day of month" (1..31), which allows programming a "single shot"
-             timer that hits once and is deleted after it ends. Single shot
-             timers can be programmed up to one month into the future.
+  Day:       The day on which this timer shall start. This can be a
+             date (like 2005-03-19), which allows programming a "single shot"
+             timer that hits once and is deleted after it ends.
              Another option here are "repeating timers" which are defined
              by listing the days of the week on which they shall record.
              For example, a timer that shall record every monday and wednesday
@@ -392,6 +391,9 @@ Version 1.2
              The '0' key toggles between a single shot and a repeating timer.
              If "Day" indicates a repeating timer, the keys '1'...'7' can be
              used to toggle the individual days ('1' is monday).
+             You can also switch to a set of predefined repeating timer settings
+             by pressing the "Left" key when the day is the present day. To return
+             to the single shot mode just press "Right" until a date is displayed.
   Start:     The start time of the timer in hh:mm as 24 hour ("military") time.
   Stop:      The stop time of the timer.
   VPS:       Defines whether the timer shall use VPS (if available). If this
@@ -588,12 +590,14 @@ Version 1.2
                          from the primary DVB interface, so that the viewer will
                          be disturbed as little as possible.
 
+  Video format = 4:3     The video format (or aspect ratio) of the tv set in use
+                         (4:3 or 16:9).
+
   Video display format = letterbox
                          The display format to use for playing wide screen video on
                          a 4:3 tv set ("pan & scan", "letterbox" or "center cut out").
-
-  Video format = 4:3     The video format (or aspect ratio) of the tv set in use
-                         (4:3 or 16:9).
+                         This option is only available if "Video format" is set to
+                         4:3.
 
   Use Dolby Digital = yes
                          Turns recording of the Dolby Digital audio channels on

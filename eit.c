@@ -8,7 +8,7 @@
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  * Adapted to 'libsi' for VDR 1.3.0 by Marcel Wiesweg <marcel.wiesweg@gmx.de>.
  *
- * $Id: eit.c 1.102 2005/01/02 11:52:12 kls Exp $
+ * $Id: eit.c 1.103 2005/03/20 12:33:51 kls Exp $
  */
 
 #include "eit.h"
@@ -246,6 +246,8 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data)
   if (Empty && Tid == 0x4E && getSectionNumber() == 0)
      // ETR 211: an empty entry in section 0 of table 0x4E means there is currently no event running
      pSchedule->ClrRunningStatus(channel);
+  if (Tid == 0x4E)
+     pSchedule->SetPresentSeen();
   if (Modified) {
      pSchedule->Sort();
      Schedules->SetModified(pSchedule);

@@ -3443,3 +3443,33 @@ Video Disk Recorder Revision History
   Luca Olivetti).
 - Fixed handling repeated kAudio keys.
 - Improved displaying the the current audio track in the ST:TNG channel display.
+
+2005-03-20: Version 1.3.23
+
+- The setup option "DVB/Video display format" is now only available if "Video format"
+  is set to "4:3" (suggested by Mikko Salo).
+- Updated the Russian OSD texts (thanks to Vyacheslav Dikonov).
+- Dropped CA support for the old '-icam' firmware.
+- Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
+- Updated the Swedish OSD texts (thanks to Tomas Prybil).
+- Fixed a few French OSD texts that were in the wrong place.
+- Improved matching timers to EPG events, especially in case there are several events
+  with the same VPS time.
+- Fixed cDolbyRepacker to allow recording ProSieben HD broadcasts (thanks to Reinhard
+  Nissl).
+- Fixed cDvbDevice::SetVideoDisplayFormat() in case of 16:9 (thanks to Marco Schlüßler).
+- The running status of a VPS event is now only taken seriously if that event has been
+  seen within the last 30 seconds - otherwise recording is done as if no VPS was
+  available.
+- The day of a timer is now stored as a full date in ISO notation ("YYYY-MM-DD") in
+  'timers.conf' and for the result of the SVDRP command LSTT (based in parts on a
+  patch by Roman Krenický).
+- Some fixes to avoid compiler warnings in gcc 4.0 (thanks to Ville Skyttä for reporting
+  these).
+- Single shot timers are now reliably deleted when they have expired.
+- Fixed setting the colored button help after deleting a recording in case the next
+  menu entry is a directory (thanks to Steffen Beyer).
+- Improved falling back to normal recording if the VPS data hasn't been seen for more
+  than 30 seconds.
+- Added a missing cMutexLock to cRemote::HasKeys() (thanks to Wolfgang Rohdewald).
+- All log entries regarding timers now contain a short description of the timer.

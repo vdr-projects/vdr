@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.67 2004/12/26 12:23:55 kls Exp $
+ * $Id: svdrp.c 1.69 2005/03/20 15:04:00 kls Exp $
  */
 
 #include "svdrp.h"
@@ -111,7 +111,8 @@ int cSocket::Accept(void)
         bool accepted = SVDRPhosts.Acceptable(clientname.sin_addr.s_addr);
         if (!accepted) {
            const char *s = "Access denied!\n";
-           write(newsock, s, strlen(s));
+           if (write(newsock, s, strlen(s)) < 0)
+              LOG_ERROR;
            close(newsock);
            newsock = -1;
            }
@@ -528,9 +529,9 @@ void cSVDRP::CmdDELT(const char *Option)
         cTimer *timer = Timers.Get(strtol(Option, NULL, 10) - 1);
         if (timer) {
            if (!timer->Recording()) {
+              isyslog("deleting timer %s", *timer->ToDescr());
               Timers.Del(timer);
               Timers.SetModified();
-              isyslog("timer %s deleted", Option);
               Reply(250, "Timer \"%s\" deleted", Option);
               }
            else
@@ -918,7 +919,7 @@ void cSVDRP::CmdMODT(const char *Option)
               }
            *timer = t;
            Timers.SetModified();
-           isyslog("timer %d modified (%s)", timer->Index() + 1, timer->HasFlags(tfActive) ? "active" : "inactive");
+           isyslog("timer %s modified (%s)", *timer->ToDescr(), timer->HasFlags(tfActive) ? "active" : "inactive");
            Reply(250, "%d %s", timer->Index() + 1, *timer->ToText());
            }
         else
@@ -976,7 +977,7 @@ void cSVDRP::CmdNEWT(const char *Option)
         if (!t) {
            Timers.Add(timer);
            Timers.SetModified();
-           isyslog("timer %d added", timer->Index() + 1);
+           isyslog("timer %s added", *timer->ToDescr());
            Reply(250, "%d %s", timer->Index() + 1, *timer->ToText());
            return;
            }
@@ -1050,11 +1051,11 @@ void cSVDRP::CmdUPDT(const char *Option)
            t->Parse(Option);
            delete timer;
            timer = t;
-           isyslog("timer %d updated", timer->Index() + 1);
+           isyslog("timer %s updated", *timer->ToDescr());
            }
         else {
            Timers.Add(timer);
-           isyslog("timer %d added", timer->Index() + 1);
+           isyslog("timer %s added", *timer->ToDescr());
            }
         Timers.SetModified();
         Reply(250, "%d %s", timer->Index() + 1, *timer->ToText());

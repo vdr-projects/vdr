@@ -1281,6 +1281,7 @@ Wolfgang Rohdewald <wolfgang@rohdewald.de>
  in cDevice::Shutdown()
  for removing some unneeded code and fixing access to unallocated memory in
  cEvent::FixEpgBugs()
+ for adding a missing cMutexLock to cRemote::HasKeys()
 
 Chad Flynt <hoochster@sofnet.com>
  for suggestions and experiments regarding the buffer reserve in cTransfer
@@ -1292,3 +1293,17 @@ Chris Warren <dvb@ixalon.net>
 Luca Olivetti <luca@ventoso.org>
  for making cDevice::AttachPlayer() keep the track language codes and descriptions
  in Transfer Mode
+
+Mikko Salo <mikko.salo@ppe.inet.fi>
+ for suggesting to make the setup option "DVB/Video display format" available only
+ if "Video format" is set to "4:3"
+
+Roman Krenický <free-rtk@gmx.de>
+ for a patch that was used a a basis for changing a timer's day handling to full date
+
+Ville Skyttä <ville.skytta@iki.fi>
+ for reporting several compiler warnings in gcc 4.0
+
+Steffen Beyer <cpunk@reactor.de>
+ for fixing setting the colored button help after deleting a recording in case the next
+ menu entry is a directory

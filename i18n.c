@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.181 2005/02/27 09:45:57 kls Exp $
+ * $Id: i18n.c 1.185 2005/03/12 10:43:16 kls Exp $
  *
  * Translations provided by:
  *
@@ -958,7 +958,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Skanna",
     "C„utare canale",
     "",//TODO
     "",//TODO
@@ -1801,7 +1801,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "VPS",
     "VPS",
     "",// TODO
     "",// TODO
@@ -2301,16 +2301,16 @@ const tI18nPhrase Phrases[] = {
     "Geen audio beschikbaar!",
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Pas d'audio disponible!",
     "ƒ‰nen kieli ei ole valittavissa!",
     "",//TODO
     "",//TODO
     "",//TODO
-    "Pas d'audio disponible!",
+    "Ljud saknas!"
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "æ‚·„‚·‚“„’‚ ◊“„⁄!",
     "",//TODO
     "Audio k‰ttesaamatu!",
     "Ingen lyd tilgÊngelig!",
@@ -2581,7 +2581,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Skin",
     "Skin",
     "",// TODO
     "",// TODO
@@ -2602,7 +2602,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Tema",
     "Tem„",
     "",// TODO
     "",// TODO
@@ -2623,7 +2623,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "V‰nster",
     "St‚nga",
     "",// TODO
     "",// TODO
@@ -2644,7 +2644,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "÷vre",
     "Sus",
     "",// TODO
     "",// TODO
@@ -2728,7 +2728,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Anv‰nd liten font",
     "Utilizare fonturi mici",
     "",// TODO
     "",// TODO
@@ -2749,7 +2749,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "aldrig",
     "niciodat„",
     "",// TODO
     "",// TODO
@@ -2770,7 +2770,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "skin beroende",
     "dep. de skin",
     "",// TODO
     "",// TODO
@@ -2791,7 +2791,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "alltid",
     "Óntotdeauna",
     "",// TODO
     "",// TODO
@@ -2833,11 +2833,11 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
+    "Kanal information (s)",
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
-    "",// TODO
+    "øﬁ⁄–◊ ÿ›‰ﬁ‡‹–Êÿÿ ﬁ ⁄–›–€’ (·’⁄)",
     "",// TODO
     "",// TODO
     "Tid kanalinfo skal vises (s)",
@@ -3043,11 +3043,11 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "÷nskade sprÂk",
     "Limbi preferate",
     "",// TODO
     "",// TODO
-    "ø‡’‘ﬂﬁÁÿ‚–’‹Î’ Ô◊Î⁄ÿ",
+    "ø‡’‘ﬂﬁÁÿ‚–’‹Î’ Ô◊Î⁄ÿ (‚’€’”ÿ‘)",
     "Preferirani jezici",
     "Eelistatuid keeli",
     "Foretrukne sprog",
@@ -3064,7 +3064,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "÷nskat sprÂk",
     "Limba preferat„",
     "",// TODO
     "",// TODO
@@ -3102,15 +3102,15 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
+    "N‰yttˆmuoto",
     "",//TODO
     "",//TODO
     "",//TODO
+    "Format fˆr Video display",
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
-    "",//TODO
-    "",//TODO
+    "»ÿ‡ﬁ⁄ﬁÌ⁄‡–››ﬁ’ ÿ◊ﬁ—‡–÷’›ÿ’",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -3131,7 +3131,7 @@ const tI18nPhrase Phrases[] = {
     "pan&scan",
     "pan&scan",
     "pan&scan",
-    "pan&scan",
+    "ﬂ–›ﬁ‡–‹ÿ‡ﬁ“–‚Ï",
     "pan&scan",
     "pan&scan",
     "pan&scan",
@@ -3152,7 +3152,7 @@ const tI18nPhrase Phrases[] = {
     "letterbox",
     "letterbox",
     "letterbox",
-    "letterbox",
+    "„‹’›ÏË–‚Ï",
     "letterbox",
     "letterbox",
     "letterbox",
@@ -3173,7 +3173,7 @@ const tI18nPhrase Phrases[] = {
     "center cut out",
     "center cut out",
     "center cut out",
-    "center cut out",
+    "ﬁ—‡’◊–‚Ï ·—ﬁ⁄„",
     "center cut out",
     "center cut out",
     "center cut out",
@@ -3205,17 +3205,17 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "Dolby Digital gebruiken",
     "",//TODO
-    "",//TODO
+    "Utiliser le Dolby Digital",
     "",//TODO
     "K‰yt‰ Dolby Digital -‰‰nt‰",
     "",//TODO
     "",//TODO
     "",//TODO
-    "Utiliser le Dolby Digital",
+    "Anv‰nd Dolby Digital",
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "≤⁄€ÓÁÿ‚Ï Dolby Digital",
     "",//TODO
     "Dolby Digital kasutamine",
     "Anvend Dolby Digital",
@@ -3232,7 +3232,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Uppdatera kanaler",
     "Actualizare canale",
     "",// TODO
     "",// TODO
@@ -3253,7 +3253,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "bara namn",
     "doar numele",
     "",// TODO
     "",// TODO
@@ -3274,7 +3274,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "namn och PIDdar",
     "nume si PID-uri",
     "",// TODO
     "",// TODO
@@ -3295,7 +3295,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "l‰gg till nya kanaler",
     "ad„ugare canale noi",
     "",// TODO
     "",// TODO
@@ -3316,7 +3316,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "l‰gg till nya transponders",
     "ad„ugare transpondere noi",
     "",// TODO
     "",// TODO
@@ -3337,11 +3337,11 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
+    "Antal ljudsprÂk",
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
-    "",//TODO
+    "ø‡’‘ﬂﬁÁÿ‚–’‹Î’ Ô◊Î⁄ÿ (◊“„⁄)",
     "",//TODO
     "",//TODO
     "Audio sprog (ant.)",
@@ -3358,11 +3358,11 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
+    "LjudsprÂk",
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
-    "",//TODO
+    "≤Î—‡–›",
     "",//TODO
     "",//TODO
     "Audio sprog",
@@ -3652,7 +3652,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Anv‰nd VPS",
     "Utilizeaz„ VPS",
     "",// TODO
     "",// TODO
@@ -3673,7 +3673,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "VPS marginal (s)",
     "Marj„ de timp la utilizare VPS (s)",
     "",// TODO
     "",// TODO
@@ -3925,7 +3925,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "∆‹ÈÌ„Í ‰È·ÍÔﬁ (‰)",
-    "",// TODO
+    "Zap timeout(s)",
     "Interval zapping (s)",
     "",// TODO
     "",// TODO
@@ -4784,17 +4784,17 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "Audio",
     "",// TODO
-    "",// TODO
+    "Audio",
     "",// TODO
     "ƒ‰ni",
     "",// TODO
     "",// TODO
     "",// TODO
-    "Audio",
+    "Ljud",
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "œ◊Î⁄",
     "",// TODO
     "Audio",
     "Audio",
@@ -5274,7 +5274,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Klassisk VDR",
     "VDR clasic",
     "",// TODO
     "",// TODO
@@ -5295,7 +5295,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "ST:TNG konsol",
     "Cons. ST:TNG",
     "",// TODO
     "",// TODO
