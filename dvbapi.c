@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.42 2000/12/09 11:04:07 kls Exp $
+ * $Id: dvbapi.c 1.43 2000/12/10 11:00:00 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -47,6 +47,7 @@ extern "C" {
 #define SC_PICTURE 0x00
 #define SC_BLOCK   0xBA
 #define SC_AUDIO   0xC0
+#define SC_VIDEO   0xE0
 
 #define FRAMESPERSEC 25
 
@@ -568,7 +569,7 @@ protected:
   int GetStartCode(int Offset) { return (Byte(Offset) == 0x00 && Byte(Offset + 1) == 0x00 && Byte(Offset + 2) == 0x01) ? Byte(Offset + 3) : -1; }
   int GetPictureType(int Offset) { return (Byte(Offset + 5) >> 3) & 0x07; }
   int FindStartCode(uchar Code, int Offset = 0);
-  int FindPacketLength(int Offset = 0);
+  int GetAudioPacketLength(int Offset = 0);
 public:
   cFileBuffer(int *InFile, int *OutFile, const char *FileName, bool Recording, int Size, int FreeLimit = 0, int AvailLimit = 0);
   virtual ~cFileBuffer();
@@ -617,18 +618,10 @@ int cFileBuffer::FindStartCode(uchar Code, int Offset)
   return -1;
 }
 
-int cFileBuffer::FindPacketLength(int Offset)
+int cFileBuffer::GetAudioPacketLength(int Offset)
 {
-  // Determines the length of the packet starting at offset.
-
-  int n = Available() - Offset;
-
-  for (int i = 1; i < n; i++) { // starts at 1 to exclude the current packet start code!
-      int c = GetStartCode(Offset + i);
-      if (c >= 0) 
-         return i;
-      }
-  return n;
+  // Returns the entire length of the audio packet starting at offset.
+  return (Byte(Offset + 4) << 8) + Byte(Offset + 5) + 6;
 }
 
 // --- cRecordBuffer ---------------------------------------------------------
@@ -729,42 +722,40 @@ int cRecordBuffer::Synchronize(void)
   // Positions to the start of a data block (skipping everything up to
   // an I-frame if not synced) and returns the block length.
 
-  int Length = 0;
-  int Skipped = 0;
-  int s;
-
-  while (Available() > MINVIDEODATA && (s = FindStartCode(SC_BLOCK)) >= 0) {
-        pictureType = NO_PICTURE;
-        Skipped += s;
-        Skip(s);
-        int PictureOffset = FindStartCode(SC_PICTURE);
-        if (PictureOffset >= 0) {
-           pictureType = GetPictureType(PictureOffset);
-           if (I_FRAME <= pictureType && pictureType <= B_FRAME) {
-              if (!synced && pictureType == I_FRAME) {
-                 synced = true;
-                 Skipped = 0;
-                 }
-              if (synced && (Length = FindStartCode(SC_BLOCK, PictureOffset)) > 0) {
-                 Length += PictureOffset;
-                 break;
-                 }
-              Length = 0;
-              }
-           else
-              esyslog(LOG_ERR, "ERROR: unknown picture type '%d'", pictureType);
+  pictureType = NO_PICTURE;
+  bool Block = false;
+  for (int i = 0; Available() > MINVIDEODATA && i < MINVIDEODATA; i++) {
+      if (Byte(i) == 0 && Byte(i + 1) == 0 && Byte(i + 2) == 1) {
+         switch (Byte(i + 3)) {
+           case SC_BLOCK:   if (Block && synced)
+                               return i; // found a block, so return its length
+                            if (i) {
+                               Skip(i);
+                               if (synced)
+                                  esyslog(LOG_ERR, "ERROR: skipped %d bytes", i);
+                               i = 0;
+                               }
+                            Block = true;
+                            break;
+           case SC_PICTURE: if (Block) {
+                               pictureType = GetPictureType(i);
+                               switch (pictureType) {
+                                 case I_FRAME: synced = true;
+                                 case P_FRAME:
+                                 case B_FRAME: break;
+                                 default: esyslog(LOG_ERR, "ERROR: unknown picture type '%d'", pictureType);
+                                          pictureType = NO_PICTURE;
+                                 }
+                               }
+                            else
+                               esyslog(LOG_ERR, "ERROR: picture header outside of block");
+                            break;
+           case SC_AUDIO:   i += GetAudioPacketLength(i) - 1; // -1 to compensate for i++ in the loop!
+                            break;
            }
-        else {
-           if (synced && (Length = FindStartCode(SC_BLOCK, 1)) > 0) {
-              Length++;
-              break;
-              }
-           }
-        Skip(1);
-        }
-  if (synced && Skipped)
-     esyslog(LOG_ERR, "ERROR: skipped %d bytes", Skipped);
-  return Length;
+         }
+      }
+  return 0; // no useful data found, wait for more
 }
 
 bool cRecordBuffer::NextFile(void)
@@ -1157,10 +1148,8 @@ int cReplayBuffer::Read(int Max = -1)
      if (mode != rmPlay) {
         // delete the audio data in modes other than rmPlay:
         int AudioOffset = FindStartCode(SC_AUDIO);
-        if (AudioOffset >= 0) {
-           int AudioLength = FindPacketLength(AudioOffset);
-           Set(AudioOffset, AudioLength, 0);
-           }
+        if (AudioOffset >= 0)
+           Set(AudioOffset, GetAudioPacketLength(AudioOffset), 0);
         }
      return readin;
      }
