@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.228 2002/12/01 10:31:55 kls Exp $
+ * $Id: menu.c 1.231 2003/01/06 16:13:53 kls Exp $
  */
 
 #include "menu.h"
@@ -645,6 +645,7 @@ private:
 public:
   cMenuChannelItem(cChannel *Channel);
   virtual void Set(void);
+  cChannel *Channel(void) { return channel; }
   };
 
 cMenuChannelItem::cMenuChannelItem(cChannel *Channel)
@@ -669,6 +670,7 @@ void cMenuChannelItem::Set(void)
 
 class cMenuChannels : public cOsdMenu {
 private:
+  cChannel *GetChannel(int Index);
   void Propagate(void);
 protected:
   eOSState Switch(void);
@@ -691,6 +693,12 @@ cMenuChannels::cMenuChannels(void)
   SetHelp(tr("Edit"), tr("New"), tr("Delete"), tr("Mark"));
 }
 
+cChannel *cMenuChannels::GetChannel(int Index)
+{
+  cMenuChannelItem *p = (cMenuChannelItem *)Get(Index);
+  return p ? (cChannel *)p->Channel() : NULL;
+}
+
 void cMenuChannels::Propagate(void)
 {
   Channels.ReNumber();
@@ -703,7 +711,7 @@ void cMenuChannels::Propagate(void)
 
 eOSState cMenuChannels::Switch(void)
 {
-  cChannel *ch = Channels.Get(Current());
+  cChannel *ch = GetChannel(Current());
   if (ch)
      cDevice::PrimaryDevice()->SwitchChannel(ch, true);
   return osEnd;
@@ -713,7 +721,7 @@ eOSState cMenuChannels::Edit(void)
 {
   if (HasSubMenu() || Count() == 0)
      return osContinue;
-  cChannel *ch = Channels.Get(Current());
+  cChannel *ch = GetChannel(Current());
   if (ch)
      return AddSubMenu(new cMenuEditChannel(ch));
   return osContinue;
@@ -730,7 +738,7 @@ eOSState cMenuChannels::Delete(void)
 {
   if (Count() > 0) {
      int Index = Current();
-     cChannel *channel = Channels.Get(Index);
+     cChannel *channel = GetChannel(Current());
      int DeletedChannel = channel->Number();
      // Check if there is a timer using this channel:
      for (cTimer *ti = Timers.First(); ti; ti = Timers.Next(ti)) {
@@ -751,12 +759,16 @@ eOSState cMenuChannels::Delete(void)
 
 void cMenuChannels::Move(int From, int To)
 {
-  int FromNumber = Channels.Get(From)->Number();
-  int ToNumber = Channels.Get(To)->Number();
-  Channels.Move(From, To);
-  cOsdMenu::Move(From, To);
-  Propagate();
-  isyslog("channel %d moved to %d", FromNumber, ToNumber);
+  cChannel *FromChannel = GetChannel(From);
+  cChannel *ToChannel = GetChannel(To);
+  if (FromChannel && ToChannel) {
+     int FromNumber = FromChannel->Number();
+     int ToNumber = ToChannel->Number();
+     Channels.Move(FromChannel, ToChannel);
+     cOsdMenu::Move(From, To);
+     Propagate();
+     isyslog("channel %d moved to %d", FromNumber, ToNumber);
+     }
 }
 
 eOSState cMenuChannels::ProcessKey(eKeys Key)
@@ -1509,6 +1521,116 @@ eOSState cMenuCommands::ProcessKey(eKeys Key)
   return state;
 }
 
+// --- cMenuCam --------------------------------------------------------------
+
+cMenuCam::cMenuCam(cCiMenu *CiMenu)
+:cOsdMenu("")
+{
+  ciMenu = CiMenu;
+  selected = false;
+  if (ciMenu->Selectable())
+     SetHasHotkeys();
+  SetTitle(ciMenu->TitleText() ? ciMenu->TitleText() : "CAM");
+  for (int i = 0; i < ciMenu->NumEntries(); i++)
+      Add(new cOsdItem(hk(ciMenu->Entry(i))));
+  //XXX implement a clean way of displaying this:
+  Add(new cOsdItem(ciMenu->SubTitleText()));
+  Add(new cOsdItem(ciMenu->BottomText()));
+  Display();
+}
+
+cMenuCam::~cMenuCam()
+{
+  if (!selected)
+     ciMenu->Cancel();
+  delete ciMenu;
+}
+
+eOSState cMenuCam::Select(void)
+{
+  if (ciMenu->Selectable()) {
+     ciMenu->Select(Current());
+     selected = true;
+     }
+  return osEnd;
+}
+
+eOSState cMenuCam::ProcessKey(eKeys Key)
+{
+  eOSState state = cOsdMenu::ProcessKey(Key);
+
+  if (state == osUnknown) {
+     switch (Key) {
+       case kOk:     return Select();
+       default: break;
+       }
+     }
+  return state;
+}
+
+// --- cMenuCamEnquiry -------------------------------------------------------
+
+//XXX this is just quick and dirty - make this a separate display object
+cMenuCamEnquiry::cMenuCamEnquiry(cCiEnquiry *CiEnquiry)
+:cOsdMenu("")
+{
+  ciEnquiry = CiEnquiry;
+  replied = false;
+  SetTitle(ciEnquiry->Text() ? ciEnquiry->Text() : "CAM");
+  Display();
+}
+
+cMenuCamEnquiry::~cMenuCamEnquiry()
+{
+  if (!replied)
+     ciEnquiry->Cancel();
+  delete ciEnquiry;
+}
+
+eOSState cMenuCamEnquiry::Reply(void)
+{
+  ciEnquiry->Reply("1234");//XXX implement actual user input
+  replied = true;
+  return osEnd;
+}
+
+eOSState cMenuCamEnquiry::ProcessKey(eKeys Key)
+{
+  eOSState state = cOsdMenu::ProcessKey(Key);
+
+  if (state == osUnknown) {
+     switch (Key) {
+       case kOk:     return Reply();
+       default: break;
+       }
+     }
+  return state;
+}
+
+// --- CamControl ------------------------------------------------------------
+
+cOsdObject *CamControl(void)
+{
+  for (int d = 0; d < cDevice::NumDevices(); d++) {
+      cDevice *Device = cDevice::GetDevice(d);
+      if (Device) {
+         cCiHandler *CiHandler = Device->CiHandler();
+         if (CiHandler) {
+            CiHandler->Process();
+            cCiMenu *CiMenu = CiHandler->GetMenu();
+            if (CiMenu)
+               return new cMenuCam(CiMenu);
+            else {
+               cCiEnquiry *CiEnquiry = CiHandler->GetEnquiry();
+               if (CiEnquiry)
+                  return new cMenuCamEnquiry(CiEnquiry);
+               }
+            }
+         }
+      }
+  return NULL;
+}
+
 // --- cMenuRecordingItem ----------------------------------------------------
 
 class cMenuRecordingItem : public cOsdItem {
@@ -1938,6 +2060,12 @@ eOSState cMenuSetupLNB::ProcessKey(eKeys Key)
 // --- cMenuSetupCICAM -------------------------------------------------------
 
 class cMenuSetupCICAM : public cMenuSetupBase {
+private:
+  int helpKeys;
+  void SetHelpKeys(void);
+  cCiHandler *GetCurrentCiHandler(void);
+  eOSState Menu(void);
+  eOSState Reset(void);
 public:
   cMenuSetupCICAM(void);
   virtual eOSState ProcessKey(eKeys Key);
@@ -1945,6 +2073,7 @@ public:
 
 cMenuSetupCICAM::cMenuSetupCICAM(void)
 {
+  helpKeys = -1;
   SetSection(tr("CICAM"));
   for (int d = 0; d < cDevice::NumDevices(); d++) {
       for (int i = 0; i < 2; i++) {
@@ -1953,6 +2082,46 @@ cMenuSetupCICAM::cMenuSetupCICAM(void)
           Add(new cMenuEditCaItem(buffer, &data.CaCaps[d][i]));
           }
       }
+  SetHelpKeys();
+}
+
+cCiHandler *cMenuSetupCICAM::GetCurrentCiHandler(void)
+{
+  cDevice *Device = cDevice::GetDevice(Current() / 2);
+  return Device ? Device->CiHandler() : NULL;
+}
+
+void cMenuSetupCICAM::SetHelpKeys(void)
+{
+  int NewHelpKeys = helpKeys;
+  NewHelpKeys = GetCurrentCiHandler() ? 1 : 0;
+  if (NewHelpKeys != helpKeys) {
+     switch (NewHelpKeys) {
+       case 0: SetHelp(NULL); break;
+       case 1: SetHelp(tr("Menu"), tr("Reset"));
+       }
+     helpKeys = NewHelpKeys;
+     }
+}
+
+eOSState cMenuSetupCICAM::Menu(void)
+{
+  cCiHandler *CiHandler = GetCurrentCiHandler();
+  if (CiHandler && CiHandler->EnterMenu())
+     return osEnd; // the CAM menu will be executed explicitly from the main loop
+  else
+     Interface->Error(tr("Can't open CAM menu!"));
+  return osContinue;
+}
+
+eOSState cMenuSetupCICAM::Reset(void)
+{
+  cCiHandler *CiHandler = GetCurrentCiHandler();
+  if (CiHandler && CiHandler->Reset())
+     Interface->Info(tr("CAM has been reset"));
+  else
+     Interface->Error(tr("Can't reset CAM!"));
+  return osContinue;
 }
 
 eOSState cMenuSetupCICAM::ProcessKey(eKeys Key)
@@ -1961,6 +2130,19 @@ eOSState cMenuSetupCICAM::ProcessKey(eKeys Key)
 
   if (state == osBack && Key == kOk)
      cDevice::SetCaCaps();
+  else if (state == osUnknown) {
+     switch (Key) {
+       case kRed:    if (helpKeys == 1)
+                        return Menu();
+                     break;
+       case kGreen:  if (helpKeys == 1)
+                        return Reset();
+                     break;
+       default: break;
+       }
+     }
+  if (Key != kNone)
+     SetHelpKeys();
   return state;
 }
 

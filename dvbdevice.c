@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.40 2002/12/14 10:52:13 kls Exp $
+ * $Id: dvbdevice.c 1.41 2003/01/06 14:44:27 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -43,6 +43,7 @@ extern "C" {
 #define DEV_DVB_DEMUX     "demux"
 #define DEV_DVB_VIDEO     "video"
 #define DEV_DVB_AUDIO     "audio"
+#define DEV_DVB_CA        "ca"
 
 static const char *DvbName(const char *Name, int n)
 {
@@ -68,30 +69,34 @@ private:
   int fd_frontend;
   int cardIndex;
   fe_type_t frontendType;
+  cCiHandler *ciHandler;
   cChannel channel;
   const char *diseqcCommands;
   bool active;
   eTunerStatus tunerStatus;
+  bool caSet;
   cMutex mutex;
   cCondVar newSet;
   bool SetFrontend(void);
   virtual void Action(void);
 public:
-  cDvbTuner(int Fd_Frontend, int CardIndex, fe_type_t FrontendType);
+  cDvbTuner(int Fd_Frontend, int CardIndex, fe_type_t FrontendType, cCiHandler *CiHandler);
   virtual ~cDvbTuner();
   bool IsTunedTo(const cChannel *Channel) const;
-  void Set(const cChannel *Channel);
+  void Set(const cChannel *Channel, bool Tune);
   bool Locked(void) { return tunerStatus == tsLocked; }
   };
 
-cDvbTuner::cDvbTuner(int Fd_Frontend, int CardIndex, fe_type_t FrontendType)
+cDvbTuner::cDvbTuner(int Fd_Frontend, int CardIndex, fe_type_t FrontendType, cCiHandler *CiHandler)
 {
   fd_frontend = Fd_Frontend;
   cardIndex = CardIndex;
   frontendType = FrontendType;
+  ciHandler = CiHandler;
   diseqcCommands = NULL;
   active = false;
   tunerStatus = tsIdle;
+  caSet = false;
   Start();
 }
 
@@ -108,11 +113,13 @@ bool cDvbTuner::IsTunedTo(const cChannel *Channel) const
   return tunerStatus != tsIdle && channel.Source() == Channel->Source() && channel.Frequency() == Channel->Frequency();
 }
 
-void cDvbTuner::Set(const cChannel *Channel)
+void cDvbTuner::Set(const cChannel *Channel, bool Tune)
 {
   cMutexLock MutexLock(&mutex);
   channel = *Channel;
-  tunerStatus = tsSet;
+  if (Tune)
+     tunerStatus = tsSet;
+  caSet = false;
   newSet.Broadcast();
 }
 
@@ -251,6 +258,30 @@ void cDvbTuner::Action(void)
               continue;
               }
            }
+        if (ciHandler && !caSet) {//XXX TODO update in case the CA descriptors have changed
+           uchar buffer[2048];
+           int length = cSIProcessor::GetCaDescriptors(channel.Source(), channel.Frequency(), channel.Sid(), sizeof(buffer), buffer);
+           if (length > 0) {
+              cCiCaPmt CaPmt(channel.Sid());
+              if (channel.Vpid()) {
+                 CaPmt.AddPid(channel.Vpid());
+                 CaPmt.AddCaDescriptor(length, buffer);
+                 }
+              if (channel.Apid1()) {
+                 CaPmt.AddPid(channel.Apid1());
+                 CaPmt.AddCaDescriptor(length, buffer);
+                 }
+              if (channel.Apid2()) {
+                 CaPmt.AddPid(channel.Apid2());
+                 CaPmt.AddCaDescriptor(length, buffer);
+                 }
+              if (channel.Dpid1()) {
+                 CaPmt.AddPid(channel.Dpid1());
+                 CaPmt.AddCaDescriptor(length, buffer);
+                 }
+              caSet = ciHandler->SetCaPmt(CaPmt);
+              }
+           }
         newSet.TimedWait(mutex, 1000);
         }
   dsyslog("tuner thread ended on device %d (pid=%d)", cardIndex + 1, getpid());
@@ -291,7 +322,8 @@ cDvbDevice::cDvbDevice(int n)
      siProcessor = new cSIProcessor(DvbName(DEV_DVB_DEMUX, n));
      if (ioctl(fd_frontend, FE_GET_INFO, &feinfo) >= 0) {
         frontendType = feinfo.type;
-        dvbTuner = new cDvbTuner(fd_frontend, CardIndex(), frontendType);
+        ciHandler = cCiHandler::CreateCiHandler(DvbName(DEV_DVB_CA, n));
+        dvbTuner = new cDvbTuner(fd_frontend, CardIndex(), frontendType, ciHandler);
         }
      else
         LOG_ERROR;
@@ -616,8 +648,8 @@ bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
      DelPid(pidHandles[ptDolby].pid);
      }
 
+  dvbTuner->Set(Channel, DoTune);
   if (DoTune) {
-     dvbTuner->Set(Channel);
      /*XXX do we still need this???
      if (!(status & FE_HAS_LOCK)) {
         esyslog("ERROR: channel %d not locked on DVB card %d!", Channel->Number(), CardIndex() + 1);

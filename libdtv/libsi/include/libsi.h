@@ -315,6 +315,29 @@ struct Descriptor {
 };
 
 
+/* ConditionalAccessDescriptor */
+
+struct ConditionalAccessDescriptor {
+   struct NODE          Node;
+   unsigned short       Tag;
+   unsigned short       Amount;        /* Data */
+   unsigned char       *Data;
+};
+
+#define CreateConditionalAccessDescriptor(descr, amount, data) \
+   do \
+   { \
+      unsigned char *tmpptr; \
+      \
+      xMemAlloc (amount, &tmpptr); \
+      memcpy (tmpptr, data, amount); \
+      xCreateNode (((struct ConditionalAccessDescriptor *)descr), NULL); \
+      ((struct ConditionalAccessDescriptor *)descr)->Tag = DESCR_CA; \
+      ((struct ConditionalAccessDescriptor *)descr)->Amount = amount; \
+      ((struct ConditionalAccessDescriptor *)descr)->Data = tmpptr; \
+   } while (0)
+
+
 /* Iso639LanguageDescriptor */
 
 struct Iso639LanguageDescriptor {

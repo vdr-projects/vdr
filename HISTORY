@@ -1898,3 +1898,21 @@ Video Disk Recorder Revision History
   for providing an initial 'Doxyfile' configuration and adjusting some comments).
   See INSTALL for information how to do this. Some function descriptions have
   already been adapted to Doxygen, more will follow.
+
+2003-01-10: Version 1.1.21
+
+- Fixed the 'channels.conf' entries for "Studio Universal" and "Disney Channel".
+- Fixed handling channels in the "Channels" menu in case there are ':@nnn' group
+  separators without names (thanks to Guy Roussin for reporting this one).
+- The SVDRP command CHAN now also accepts channel IDs.
+- Increased the timeout until an index file is considerd no longer to be written
+  (sometimes in time shift with heavy system load the index file was closed too
+  early by the replay thread).
+- Implemented "Link Layer" based CAM support, which hopefully will solve the
+  problems with CAMs we had in the past. To use this you need the driver version
+  2002-01-08 or higher (with the new firmware supporting the "Link Layer" protocol).
+- Added an EPG bugfix that moves the Subtitle data to the Extended Description in
+  case the latter is empty and the Subtitle exceeds some useful length.
+- Since several channels put very long strings into the Subtitle part of their
+  EPG data, that string is now limited in length when used in a recording's
+  file name.

@@ -16,7 +16,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.h 1.22 2002/11/24 12:45:55 kls Exp $
+ * $Id: eit.h 1.23 2003/01/04 10:12:54 kls Exp $
  ***************************************************************************/
 
 #ifndef __EIT_H
@@ -134,21 +134,29 @@ typedef struct sip_filter {
 
 }SIP_FILTER;
 
+class cCaDescriptor;
+class cCaDescriptors;
+
 class cSIProcessor : public cThread {
 private:
   static int numSIProcessors;
   static cSchedules *schedules;
   static cMutex schedulesMutex;
+  static cCaDescriptors *caDescriptors;
+  static cMutex caDescriptorsMutex;
   static const char *epgDataFileName;
   static time_t lastDump;
   bool masterSIProcessor;
   int currentSource;
   int currentTransponder;
+  int pmtIndex;
+  int pmtPid;
   SIP_FILTER *filters;
   char *fileName;
   bool active;
   void Action(void);
   bool AddFilter(u_char pid, u_char tid);
+  bool DelFilter(u_char pid, u_char tid);
   bool ShutDownFilters(void);
 public:
   cSIProcessor(const char *FileName);
@@ -159,6 +167,12 @@ public:
          // Caller must provide a cMutexLock which has to survive the entire
          // time the returned cSchedules is accessed. Once the cSchedules is no
          // longer used, the cMutexLock must be destroyed.
+  static int GetCaDescriptors(int Source, int Transponder, int ServiceId, int BufSize, uchar *Data);
+         ///< Gets all CA descriptors for a given channel.
+         ///< Copies all available CA descriptors for the given Source, Transponder and ServiceId
+         ///< into the provided buffer at Data (at most BufSize bytes).
+         ///< \return Returns the number of bytes copied into Data (0 if no CA descriptors are
+         ///< available), or -1 if BufSize was too small to hold all CA descriptors.
   static bool Read(FILE *f = NULL);
   static void Clear(void);
   void SetStatus(bool On);

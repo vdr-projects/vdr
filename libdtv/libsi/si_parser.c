@@ -705,6 +705,12 @@ void siParseDescriptor (struct LIST *Descriptors, u_char *Buffer)
             HILO (CastTimeShiftedEventDescriptor(Ptr)->reference_event_id));
       break;
 
+      case DESCR_CA:
+         CreateConditionalAccessDescriptor (Descriptor,
+            *(Ptr + 1) + 2, // we'll need the entire raw data!
+            Ptr);
+      break;
+
       case DESCR_ISO_639_LANGUAGE:
          CreateIso639LanguageDescriptor (Descriptor,
                    CastIso639LanguageDescriptor(Buffer)->lang_code1,
@@ -790,7 +796,6 @@ void siParseDescriptor (struct LIST *Descriptors, u_char *Buffer)
       case DESCR_DATA_STREAM_ALIGN:
       case DESCR_TARGET_BACKGRID:
       case DESCR_VIDEO_WINDOW:
-      case DESCR_CA:
       case DESCR_SYSTEM_CLOCK:
       case DESCR_MULTIPLEX_BUFFER_UTIL:
       case DESCR_COPYRIGHT:

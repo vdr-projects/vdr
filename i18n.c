@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.100 2002/11/10 12:32:30 kls Exp $
+ * $Id: i18n.c 1.101 2003/01/06 12:16:28 kls Exp $
  *
  * Translations provided by:
  *
@@ -663,6 +663,38 @@ const tI18nPhrase Phrases[] = {
     "Skriv över",
     "Suprascrie",
     "Átírni",
+  },
+  { "Menu",
+    "Menü",
+    "Meni",
+    "Menu",
+    "Menu",
+    "Menu",
+    "Menu",
+    "Meny",
+    "Valikko",
+    "Menu",
+    "Menu",
+    "Menou",
+    "Meny",
+    "Meniu",
+    "Menü",
+  },
+  { "Reset",
+    "Reset",
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
   },
   // Confirmations:
   { "Delete channel?",
@@ -1579,6 +1611,54 @@ const tI18nPhrase Phrases[] = {
     "Lågt diskutrymme!",
     "Spatiu scazut pe disc!",
     "A merev lemez majdnem tele!",
+  },
+  { "Can't open CAM menu!",
+    "CAM-Menü kann nicht geöffnet werden!",
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+  },
+  { "Can't reset CAM!",
+    "CAM-Reset fehlgeschlagen!",
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+  },
+  { "CAM has been reset",
+    "CAM wurde zurückgesetzt!",
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
   },
   // Setup pages:
   { "OSD",

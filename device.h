@@ -4,12 +4,13 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 1.28 2002/12/15 14:40:11 kls Exp $
+ * $Id: device.h 1.29 2003/01/03 15:43:48 kls Exp $
  */
 
 #ifndef __DEVICE_H
 #define __DEVICE_H
 
+#include "ci.h"
 #include "thread.h"
 #include "tools.h"
 
@@ -210,6 +211,13 @@ protected:
          ///< Handle->used indicated how many receivers are using this PID.
          ///< Type indicates some special types of PIDs, which the device may
          ///< need to set in a specific way.
+
+// Common Interface facilities:
+
+protected:
+  cCiHandler *ciHandler;
+public:
+  cCiHandler *CiHandler(void) { return ciHandler; }
 
 // Image Grab facilities
 

@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.49 2002/11/10 12:09:56 kls Exp $
+ * $Id: svdrp.c 1.50 2002/12/22 14:04:08 kls Exp $
  */
 
 #include "svdrp.h"
@@ -174,8 +174,8 @@ bool cPUTEhandler::Process(const char *s)
 #define MAXHELPTOPIC 10
 
 const char *HelpPages[] = {
-  "CHAN [ + | - | <number> | <name> ]\n"
-  "    Switch channel up, down or to the given channel number or name.\n"
+  "CHAN [ + | - | <number> | <name> | <id> ]\n"
+  "    Switch channel up, down or to the given channel number, name or id.\n"
   "    Without option (or after successfully switching to the channel)\n"
   "    it returns the current channel number and name.",
   "CLRE\n"
@@ -412,15 +412,19 @@ void cSVDRP::CmdCHAN(const char *Option)
            }
         }
      else {
-        int i = 1;
-        cChannel *channel;
-        while ((channel = Channels.GetByNumber(i, 1)) != NULL) {
-              if (strcasecmp(channel->Name(), Option) == 0) {
-                 n = i;
-                 break;
+        cChannel *channel = Channels.GetByChannelID(tChannelID::FromString(Option));
+        if (channel)
+           n = channel->Number();
+        else {
+           int i = 1;
+           while ((channel = Channels.GetByNumber(i, 1)) != NULL) {
+                 if (strcasecmp(channel->Name(), Option) == 0) {
+                    n = channel->Number();
+                    break;
+                    }
+                 i = channel->Number() + 1;
                  }
-              i = channel->Number() + 1;
-              }
+           }
         }
      if (n < 0) {
         Reply(501, "Undefined channel \"%s\"", Option);

@@ -494,6 +494,8 @@ Andreas Kool <akool@akool.de>
 
 Guy Roussin <guy.roussin@teledetection.fr>
  for suggesting not to display channel group delimiters without text
+ for reporting a bug in handling channels in the "Channels" menu in case there are
+ ':@nnn' group separators without names
 
 Georg Hitsch <georg@hitsch.at>
  for his help in keeping 'channels.conf' up to date

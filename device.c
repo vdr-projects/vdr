@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.35 2002/11/10 10:17:57 kls Exp $
+ * $Id: device.c 1.36 2003/01/03 15:41:14 kls Exp $
  */
 
 #include "device.h"
@@ -47,6 +47,7 @@ cDevice::cDevice(void)
   mute = false;
   volume = Setup.CurrentVolume;
 
+  ciHandler = NULL;
   player = NULL;
 
   playerDetached = false;
@@ -67,6 +68,7 @@ cDevice::~cDevice()
   Detach(player);
   for (int i = 0; i < MAXRECEIVERS; i++)
       Detach(receiver[i]);
+  delete ciHandler;
 }
 
 void cDevice::SetUseDevice(int n)
