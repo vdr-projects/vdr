@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.169 2003/09/14 09:36:54 kls Exp $
+ * $Id: vdr.c 1.172 2004/01/04 11:12:05 kls Exp $
  */
 
 #include <getopt.h>
@@ -39,6 +39,7 @@
 #include "diseqc.h"
 #include "dvbdevice.h"
 #include "eitscan.h"
+#include "epg.h"
 #include "i18n.h"
 #include "interface.h"
 #include "keys.h"
@@ -93,10 +94,12 @@ int main(int argc, char *argv[])
 #define DEFAULTSVDRPPORT 2001
 #define DEFAULTWATCHDOG     0 // seconds
 #define DEFAULTPLUGINDIR PLUGINDIR
+#define DEFAULTEPGDATAFILENAME "epg.data"
 
   int SVDRPport = DEFAULTSVDRPPORT;
   const char *AudioCommand = NULL;
   const char *ConfigDirectory = NULL;
+  const char *EpgDataFileName = DEFAULTEPGDATAFILENAME;
   bool DisplayHelp = false;
   bool DisplayVersion = false;
   bool DaemonMode = false;
@@ -146,7 +149,7 @@ int main(int argc, char *argv[])
                     fprintf(stderr, "vdr: invalid DVB device number: %s\n", optarg);
                     return 2;
                     break;
-          case 'E': cSIProcessor::SetEpgDataFileName(*optarg != '-' ? optarg : NULL);
+          case 'E': EpgDataFileName = (*optarg != '-' ? optarg : NULL);
                     break;
           case 'h': DisplayHelp = true;
                     break;
@@ -239,7 +242,8 @@ int main(int argc, char *argv[])
                "                           there may be several -D options (default: all DVB\n"
                "                           devices will be used)\n"
                "  -E FILE   --epgfile=FILE write the EPG data into the given FILE (default is\n"
-               "                           %s); use '-E-' to disable this\n"
+               "                           '%s' in the video directory)\n"
+               "                           '-E-' disables this\n"
                "                           if FILE is a directory, the default EPG file will be\n"
                "                           created in that directory\n"
                "  -h,       --help         print this help and exit\n"
@@ -261,7 +265,7 @@ int main(int argc, char *argv[])
                "  -w SEC,   --watchdog=SEC activate the watchdog timer with a timeout of SEC\n"
                "                           seconds (default: %d); '0' disables the watchdog\n"
                "\n",
-               cSIProcessor::GetEpgDataFileName() ? cSIProcessor::GetEpgDataFileName() : "'-'",
+               DEFAULTEPGDATAFILENAME,
                DEFAULTPLUGINDIR,
                DEFAULTSVDRPPORT,
                VideoDirectory,
@@ -358,6 +362,19 @@ int main(int argc, char *argv[])
         ))
      return 2;
 
+  cFont::SetCode(I18nCharSets()[Setup.OSDLanguage]);
+
+  // EPG data:
+
+  if (EpgDataFileName) {
+     if (DirectoryOk(EpgDataFileName))
+        EpgDataFileName = AddDirectory(EpgDataFileName, DEFAULTEPGDATAFILENAME);
+     else if (*EpgDataFileName != '/' && *EpgDataFileName != '.')
+        EpgDataFileName = AddDirectory(VideoDirectory, EpgDataFileName);
+     }
+  cSchedules::SetEpgDataFileName(EpgDataFileName);
+  cSchedules::Read();
+
   // DVB interfaces:
 
   cDvbDevice::Initialize();
@@ -436,8 +453,6 @@ int main(int argc, char *argv[])
   else
      cDevice::PrimaryDevice()->SetVolume(Setup.CurrentVolume, true);
 
-  cSIProcessor::Read();
-
   // Signal handlers:
 
   if (signal(SIGHUP,  SignalHandler) == SIG_IGN) signal(SIGHUP,  SIG_IGN);
@@ -494,6 +509,25 @@ int main(int argc, char *argv[])
            if (LatencyTime > MaxLatencyTime) {
               MaxLatencyTime = LatencyTime;
               dsyslog("max. latency time %d seconds", MaxLatencyTime);
+              }
+           }
+        // Handle channel modifications:
+        if (!Channels.BeingEdited() && Channels.Modified()) {
+           if (Channels.Lock(false, 100)) {
+              Channels.Save(); //XXX only after user changes???
+              Timers.Save();
+              for (cChannel *Channel = Channels.First(); Channel; Channel = Channels.Next(Channel)) {
+                  if (Channel && Channel->Modification(CHANNELMOD_RETUNE)) {
+                     cRecordControls::ChannelDataModified(Channel);
+                     if (Channel->Number() == cDevice::CurrentChannel()) {
+                        if (!cDevice::PrimaryDevice()->Replaying()) {
+                           isyslog("retuning due to modification of channel %d", Channel->Number());
+                           Channels.SwitchTo(Channel->Number());
+                           }
+                        }
+                     }
+                  }
+              Channels.Unlock();
               }
            }
         // Channel display:
@@ -779,6 +813,7 @@ int main(int argc, char *argv[])
                  }
               // Disk housekeeping:
               RemoveDeletedRecordings();
+              cSchedules::Cleanup();
               // Plugins housekeeping:
               PluginManager.Housekeeping();
               }
@@ -799,6 +834,7 @@ int main(int argc, char *argv[])
   Setup.Save();
   cDevice::Shutdown();
   PluginManager.Shutdown(true);
+  ReportEpgBugFixStats();
   if (WatchdogTimeout > 0)
      dsyslog("max. latency time %d seconds", MaxLatencyTime);
   isyslog("exiting");

@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.55 2003/08/31 11:24:47 kls Exp $
+ * $Id: svdrp.c 1.57 2003/12/28 10:09:30 kls Exp $
  */
 
 #include "svdrp.h"
@@ -155,7 +155,7 @@ bool cPUTEhandler::Process(const char *s)
      else {
         rewind(f);
         if (cSchedules::Read(f)) {
-           cSIProcessor::TriggerDump();
+           cSchedules::Cleanup(true);
            status = 250;
            message = "EPG data processed";
            }
@@ -458,7 +458,7 @@ void cSVDRP::CmdCHAN(const char *Option)
 
 void cSVDRP::CmdCLRE(const char *Option)
 {
-  cSIProcessor::Clear();
+  cSchedules::ClearAll();
   Reply(250, "EPG data cleared");
 }
 
@@ -476,7 +476,7 @@ void cSVDRP::CmdDELC(const char *Option)
                }
            Channels.Del(channel);
            Channels.ReNumber();
-           Channels.Save();
+           Channels.SetModified();
            isyslog("channel %s deleted", Option);
            Reply(250, "Channel \"%s\" deleted", Option);
            }
@@ -707,8 +707,8 @@ void cSVDRP::CmdLSTC(const char *Option)
 
 void cSVDRP::CmdLSTE(const char *Option)
 {
-  cMutexLock MutexLock;
-  const cSchedules *Schedules = cSIProcessor::Schedules(MutexLock);
+  cSchedulesLock SchedulesLock;
+  const cSchedules *Schedules = cSchedules::Schedules(SchedulesLock);
   if (Schedules) {
      FILE *f = fdopen(file, "w");
      if (f) {
@@ -810,9 +810,8 @@ void cSVDRP::CmdMODC(const char *Option)
               if (Channels.HasUniqueChannelID(&ch, channel)) {
                  *channel = ch;
                  Channels.ReNumber();
-                 Channels.Save();
+                 Channels.SetModified();
                  isyslog("modifed channel %d %s", channel->Number(), channel->ToText());
-                 Timers.Save();
                  Reply(250, "%d %s", channel->Number(), channel->ToText());
                  }
               else
@@ -886,7 +885,7 @@ void cSVDRP::CmdNEWC(const char *Option)
            *channel = ch;
            Channels.Add(channel);
            Channels.ReNumber();
-           Channels.Save();
+           Channels.SetModified();
            isyslog("new channel %d %s", channel->Number(), channel->ToText());
            Reply(250, "%d %s", channel->Number(), channel->ToText());
            }

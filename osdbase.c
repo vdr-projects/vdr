@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osdbase.c 1.10 2003/08/24 11:38:27 kls Exp $
+ * $Id: osdbase.c 1.11 2003/10/19 14:32:32 kls Exp $
  */
 
 #include "osdbase.h"
@@ -131,7 +131,6 @@ cBitmap::cBitmap(int Width, int Height, int Bpp, bool ClearWithBackground)
 
 cBitmap::~cBitmap()
 {
-  delete font;
   free(bitmap);
 }
 
@@ -139,8 +138,7 @@ eDvbFont cBitmap::SetFont(eDvbFont Font)
 {
   eDvbFont oldFont = fontType;
   if (fontType != Font || !font) {
-     delete font;
-     font = new cFont(Font);
+     font = cFont::GetFont(Font);
      fontType = Font;
      }
   return oldFont;

@@ -4,19 +4,25 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: font.h 1.2 2000/11/18 14:51:45 kls Exp $
+ * $Id: font.h 1.4 2003/10/24 12:59:45 kls Exp $
  */
 
 #ifndef __FONT_H
 #define __FONT_H
 
+#include <stdlib.h>
+
 enum eDvbFont {
   fontOsd,
   fontFix,
-/* TODO as soon as we have the font files...
-  fontTtxSmall,
-  fontTtxLarge,
-*/
+  fontSml
+#define eDvbFontSize (fontSml + 1)
+  };
+
+enum eDvbCode {
+  code_iso8859_1,
+  code_iso8859_7
+#define eDvbCodeSize (code_iso8859_7 + 1)
   };
 
 class cFont {
@@ -28,14 +34,21 @@ public:
     tPixelData lines[1];
     };
 private:
+  static eDvbCode code;
+  static cFont *fonts[];
   const tCharData *data[NUMCHARS];
 public:
-  cFont(eDvbFont Font);
-  int Width(unsigned char c) { return data[c]->width; }
-  int Width(const char *s);
-  int Height(unsigned char c) { return data[c]->height; }
-  int Height(const char *s);
-  const tCharData *CharData(unsigned char c) { return data[c]; }
+  cFont(void *Data);
+  void SetData(void *Data);
+  int Width(unsigned char c) const { return data[c]->width; }
+  int Width(const char *s) const;
+  int Height(unsigned char c) const { return data[c]->height; }
+  int Height(const char *s) const;
+  const tCharData *CharData(unsigned char c) const { return data[c]; }
+  static bool SetCode(const char *Code);
+  static void SetCode(eDvbCode Code);
+  static void SetFont(eDvbFont Font, void *Data = NULL);
+  static const cFont *GetFont(eDvbFont Font);
   };
 
 #endif //__FONT_H

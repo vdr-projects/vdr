@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.47.1.1 2003/11/07 13:16:12 kls Exp $
+ * $Id: device.c 1.51 2004/01/04 11:30:05 kls Exp $
  */
 
 #include "device.h"
@@ -13,7 +13,6 @@
 #include <sys/mman.h>
 #include "audio.h"
 #include "channels.h"
-#include "eit.h"
 #include "i18n.h"
 #include "player.h"
 #include "receiver.h"
@@ -36,12 +35,19 @@ cDevice::cDevice(void)
 {
   cardIndex = nextCardIndex++;
 
+  SetDescription("receiver on device %d", CardIndex() + 1);
+
   SetVideoFormat(Setup.VideoFormat);
 
   active = false;
 
   mute = false;
   volume = Setup.CurrentVolume;
+
+  sectionHandler = NULL;
+  eitFilter = NULL;
+  patFilter = NULL;
+  sdtFilter = NULL;
 
   ciHandler = NULL;
   player = NULL;
@@ -63,6 +69,10 @@ cDevice::~cDevice()
   for (int i = 0; i < MAXRECEIVERS; i++)
       Detach(receiver[i]);
   delete ciHandler;
+  delete sdtFilter;
+  delete patFilter;
+  delete eitFilter;
+  delete sectionHandler;
 }
 
 void cDevice::SetUseDevice(int n)
@@ -149,7 +159,7 @@ cDevice *cDevice::GetDevice(const cChannel *Channel, int Priority, bool *NeedsDe
       if (device[i]->ProvidesChannel(Channel, Priority, &ndr)) { // this device is basicly able to do the job
          if (device[i]->Receiving() && !ndr)
             pri = 0; // receiving and allows additional receivers
-         else if (d && !device[i]->Receiving() && device[i]->ProvidesCa(Channel->Ca()) < d->ProvidesCa(Channel->Ca()))
+         else if (d && !device[i]->Receiving() && device[i]->ProvidesCa(Channel) < d->ProvidesCa(Channel))
             pri = 1; // free and fewer Ca's
          else if (!device[i]->Receiving() && !device[i]->IsPrimaryDevice())
             pri = 2; // free and not the primary device
@@ -157,7 +167,7 @@ cDevice *cDevice::GetDevice(const cChannel *Channel, int Priority, bool *NeedsDe
             pri = 3; // free
          else if (d && device[i]->Priority() < d->Priority())
             pri = 4; // receiving but priority is lower
-         else if (d && device[i]->Priority() == d->Priority() && device[i]->ProvidesCa(Channel->Ca()) < d->ProvidesCa(Channel->Ca()))
+         else if (d && device[i]->Priority() == d->Priority() && device[i]->ProvidesCa(Channel) < d->ProvidesCa(Channel))
             pri = 5; // receiving with same priority but fewer Ca's
          else
             pri = 6; // all others
@@ -311,7 +321,38 @@ bool cDevice::SetPid(cPidHandle *Handle, int Type, bool On)
   return false;
 }
 
+void cDevice::StartSectionHandler(void)
+{
+  if (!sectionHandler) {
+     sectionHandler = new cSectionHandler(this);
+     AttachFilter(eitFilter = new cEitFilter);
+     AttachFilter(patFilter = new cPatFilter);
+     AttachFilter(sdtFilter = new cSdtFilter(patFilter));
+     sectionHandler->SetStatus(true);
+     }
+}
+
+int cDevice::OpenFilter(u_short Pid, u_char Tid, u_char Mask)
+{
+  return -1;
+}
+
+void cDevice::AttachFilter(cFilter *Filter)
+{
+  sectionHandler->Attach(Filter);
+}
+
+void cDevice::Detach(cFilter *Filter)
+{
+  sectionHandler->Detach(Filter);
+}
+
 bool cDevice::ProvidesSource(int Source) const
+{
+  return false;
+}
+
+bool cDevice::ProvidesTransponder(const cChannel *Channel) const
 {
   return false;
 }
@@ -398,16 +439,28 @@ eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
         Result = scrNotAvailable;
      }
   else {
+     Channels.Lock(false);
      cStatus::MsgChannelSwitch(this, 0); // only report status if we are actually going to switch the channel
-     if (!SetChannelDevice(Channel, LiveView))
+     // Stop section handling:
+     if (sectionHandler) {
+        sectionHandler->SetStatus(false);
+        sectionHandler->SetSource(0, 0);
+        }
+     if (SetChannelDevice(Channel, LiveView)) {
+        // Start section handling:
+        if (sectionHandler) {
+           sectionHandler->SetSource(Channel->Source(), Channel->Transponder());
+           sectionHandler->SetStatus(true);
+           }
+        }
+     else
         Result = scrFailed;
+     Channels.Unlock();
      }
 
   if (Result == scrOk) {
-     if (LiveView && IsPrimaryDevice()) {
-        cSIProcessor::SetCurrentChannelID(Channel->GetChannelID());
+     if (LiveView && IsPrimaryDevice())
         currentChannel = Channel->Number();
-        }
      cStatus::MsgChannelSwitch(this, Channel->Number()); // only report status if channel switch successfull
      }
 
@@ -417,6 +470,11 @@ eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
 bool cDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
 {
   return false;
+}
+
+bool cDevice::HasLock(void)
+{
+  return true;
 }
 
 bool cDevice::HasProgramme(void)
@@ -608,6 +666,7 @@ int cDevice::Priority(void) const
 int cDevice::CanShift(int Ca, int Priority, int UsedCards) const
 {
   return -1;//XXX+ too complex with multiple recordings per device
+  /*XXX
   // Test whether a receiver on this device can be shifted to another one
   // in order to perform a new receiving with the given Ca and Priority on this device:
   int ShiftLevel = -1; // default means this device can't be shifted
@@ -638,25 +697,17 @@ int cDevice::CanShift(int Ca, int Priority, int UsedCards) const
   else if (Priority > this->Priority())
      ShiftLevel = 0; // no shifting necessary, this device can do the job
   return ShiftLevel;
+  XXX*/
 }
 
-int cDevice::ProvidesCa(int Ca) const
+int cDevice::ProvidesCa(const cChannel *Channel) const
 {
+  int Ca = Channel->Ca();
   if (Ca == CardIndex() + 1)
      return 1; // exactly _this_ card was requested
   if (Ca && Ca <= MAXDEVICES)
      return 0; // a specific card was requested, but not _this_ one
-  int result = Ca ? 0 : 1; // by default every card can provide FTA
-  int others = Ca ? 1 : 0;
-  for (int i = 0; i < MAXCACAPS; i++) {
-      if (caCaps[i]) {
-         if (caCaps[i] == Ca)
-            result = 1;
-         else
-            others++;
-         }
-      }
-  return result ? result + others : 0;
+  return !Ca; // by default every card can provide FTA
 }
 
 bool cDevice::Receiving(bool CheckAny) const
@@ -670,8 +721,6 @@ bool cDevice::Receiving(bool CheckAny) const
 
 void cDevice::Action(void)
 {
-  dsyslog("receiver thread started on device %d (pid=%d)", CardIndex() + 1, getpid());
-
   if (OpenDvr()) {
      active = true;
      for (; active;) {
@@ -694,8 +743,6 @@ void cDevice::Action(void)
          }
      CloseDvr();
      }
-
-  dsyslog("receiver thread ended on device %d (pid=%d)", CardIndex() + 1, getpid());
 }
 
 bool cDevice::OpenDvr(void)

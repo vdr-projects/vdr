@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osdbase.h 1.6 2002/09/08 14:12:41 kls Exp $
+ * $Id: osdbase.h 1.8 2004/01/04 14:22:43 kls Exp $
  */
 
 #ifndef __OSDBASE_H
@@ -13,7 +13,7 @@
 #include <stdio.h>
 #include "font.h"
 
-#define MAXNUMCOLORS 16
+#define MAXNUMCOLORS 256
 
 enum eDvbColor {
 #ifdef DEBUG_OSD
@@ -73,7 +73,7 @@ public:
 
 class cBitmap : public cPalette {
 private:
-  cFont *font;
+  const cFont *font;
   eDvbFont fontType;
   char *bitmap;
   bool clearWithBackground;

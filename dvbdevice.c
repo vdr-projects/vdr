@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.67.1.4 2003/11/09 11:08:22 kls Exp $
+ * $Id: dvbdevice.c 1.76 2004/01/04 14:48:37 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -86,7 +86,7 @@ public:
   virtual ~cDvbTuner();
   bool IsTunedTo(const cChannel *Channel) const;
   void Set(const cChannel *Channel, bool Tune, bool UseCa);
-  bool Locked(void) { return tunerStatus == tsLocked; }
+  bool Locked(void) { return tunerStatus >= tsLocked; }
   };
 
 cDvbTuner::cDvbTuner(int Fd_Frontend, int CardIndex, fe_type_t FrontendType, cCiHandler *CiHandler)
@@ -100,6 +100,7 @@ cDvbTuner::cDvbTuner(int Fd_Frontend, int CardIndex, fe_type_t FrontendType, cCi
   useCa = false;
   tunerStatus = tsIdle;
   startTime = time(NULL);
+  SetDescription("tuner on device %d", cardIndex + 1);
   Start();
 }
 
@@ -113,19 +114,18 @@ cDvbTuner::~cDvbTuner()
 
 bool cDvbTuner::IsTunedTo(const cChannel *Channel) const
 {
-  return tunerStatus != tsIdle && channel.Source() == Channel->Source() && channel.Frequency() == Channel->Frequency();
+  return tunerStatus != tsIdle && channel.Source() == Channel->Source() && channel.Transponder() == Channel->Transponder();
 }
 
 void cDvbTuner::Set(const cChannel *Channel, bool Tune, bool UseCa)
 {
   cMutexLock MutexLock(&mutex);
-  bool CaChange = !(Channel->GetChannelID() == channel.GetChannelID());
   if (Tune)
      tunerStatus = tsSet;
-  else if (tunerStatus == tsCam && CaChange)
+  else if (tunerStatus == tsCam)
      tunerStatus = tsTuned;
   useCa = UseCa;
-  if (Channel->Ca() && CaChange)
+  if (Channel->Ca() && tunerStatus != tsCam)
      startTime = time(NULL);
   channel = *Channel;
   newSet.Broadcast();
@@ -247,7 +247,6 @@ bool cDvbTuner::SetFrontend(void)
 
 void cDvbTuner::Action(void)
 {
-  dsyslog("tuner thread started on device %d (pid=%d)", cardIndex + 1, getpid());
   active = true;
   while (active) {
         cMutexLock MutexLock(&mutex);
@@ -268,41 +267,31 @@ void cDvbTuner::Action(void)
                  continue;
                  }
               }
-           if (tunerStatus >= tsLocked) {
-              if (ciHandler) {
-                 if (ciHandler->Process() && useCa) {
-                    if (tunerStatus != tsCam) {//XXX TODO update in case the CA descriptors have changed
-                       for (int Slot = 0; Slot < ciHandler->NumSlots(); Slot++) {
-                           uchar buffer[2048];
-                           int length = cSIProcessor::GetCaDescriptors(channel.Source(), channel.Frequency(), channel.Sid(), ciHandler->GetCaSystemIds(Slot), sizeof(buffer), buffer);
-                           if (length > 0) {
-                              cCiCaPmt CaPmt(channel.Sid());
-                              CaPmt.AddCaDescriptor(length, buffer);
-                              if (channel.Vpid())
-                                 CaPmt.AddPid(channel.Vpid());
-                              if (channel.Apid1())
-                                 CaPmt.AddPid(channel.Apid1());
-                              if (channel.Apid2())
-                                 CaPmt.AddPid(channel.Apid2());
-                              if (channel.Dpid1())
-                                 CaPmt.AddPid(channel.Dpid1());
-                              if (ciHandler->SetCaPmt(CaPmt, Slot)) {
-                                 tunerStatus = tsCam;
-                                 startTime = 0;
-                                 }
-                              }
+           }
+        if (ciHandler) {
+           if (ciHandler->Process() && useCa) {
+              if (tunerStatus == tsLocked) {
+                 for (int Slot = 0; Slot < ciHandler->NumSlots(); Slot++) {
+                     cCiCaPmt CaPmt(channel.Source(), channel.Frequency(), channel.Sid(), ciHandler->GetCaSystemIds(Slot));
+                     if (CaPmt.Valid()) {
+                        CaPmt.AddPid(channel.Vpid(), 2);
+                        CaPmt.AddPid(channel.Apid1(), 4);
+                        CaPmt.AddPid(channel.Apid2(), 4);
+                        CaPmt.AddPid(channel.Dpid1(), 0);
+                        if (ciHandler->SetCaPmt(CaPmt, Slot)) {
+                           tunerStatus = tsCam;
+                           startTime = 0;
                            }
-                       }
-                    }
-                 else
-                    tunerStatus = tsLocked;
+                        }
+                     }
                  }
               }
+           else if (tunerStatus > tsLocked)
+              tunerStatus = tsLocked;
            }
         // in the beginning we loop more often to let the CAM connection start up fast
         newSet.TimedWait(mutex, (ciHandler && (time(NULL) - startTime < 20)) ? 100 : 1000);
         }
-  dsyslog("tuner thread ended on device %d (pid=%d)", cardIndex + 1, getpid());
 }
 
 // --- cDvbDevice ------------------------------------------------------------
@@ -313,13 +302,12 @@ cDvbDevice::cDvbDevice(int n)
 {
   dvbTuner = NULL;
   frontendType = fe_type_t(-1); // don't know how else to initialize this - there is no FE_UNKNOWN
-  siProcessor = NULL;
   spuDecoder = NULL;
   playMode = pmNone;
 
   // Devices that are present on all card types:
 
-  int fd_frontend = DvbOpen(DEV_DVB_FRONTEND, n, O_RDWR | O_NONBLOCK); 
+  int fd_frontend = DvbOpen(DEV_DVB_FRONTEND, n, O_RDWR | O_NONBLOCK);
 
   // Devices that are only present on cards with decoders:
 
@@ -369,7 +357,6 @@ cDvbDevice::cDvbDevice(int n)
 
   if (fd_frontend >= 0) {
      dvb_frontend_info feinfo;
-     siProcessor = new cSIProcessor(DvbName(DEV_DVB_DEMUX, n));
      if (ioctl(fd_frontend, FE_GET_INFO, &feinfo) >= 0) {
         frontendType = feinfo.type;
         ciHandler = cCiHandler::CreateCiHandler(DvbName(DEV_DVB_CA, n));
@@ -382,12 +369,13 @@ cDvbDevice::cDvbDevice(int n)
      esyslog("ERROR: can't open DVB device %d", n);
 
   aPid1 = aPid2 = 0;
+
+  StartSectionHandler();
 }
 
 cDvbDevice::~cDvbDevice()
 {
   delete spuDecoder;
-  delete siProcessor;
   delete dvbTuner;
   // We're not explicitly closing any device files here, since this sometimes
   // caused segfaults. Besides, the program is about to terminate anyway...
@@ -443,6 +431,17 @@ void cDvbDevice::MakePrimaryDevice(bool On)
 bool cDvbDevice::HasDecoder(void) const
 {
   return fd_video >= 0 && fd_audio >= 0;
+}
+
+int cDvbDevice::ProvidesCa(const cChannel *Channel) const
+{
+  if (Channel->Ca() >= 0x0100 && ciHandler) {
+     unsigned short ids[MAXCAIDS + 1];
+     for (int i = 0; i <= MAXCAIDS; i++) // '<=' copies the terminating 0!
+         ids[i] = Channel->Ca(i);
+     return ciHandler->ProvidesCa(ids);
+     }
+  return cDevice::ProvidesCa(Channel);
 }
 
 cOsdBase *cDvbDevice::NewOsd(int x, int y)
@@ -618,6 +617,30 @@ bool cDvbDevice::SetPid(cPidHandle *Handle, int Type, bool On)
   return true;
 }
 
+int cDvbDevice::OpenFilter(u_short Pid, u_char Tid, u_char Mask)
+{
+  const char *FileName = DvbName(DEV_DVB_DEMUX, CardIndex());
+  int f = open(FileName, O_RDWR | O_NONBLOCK);
+  if (f >= 0) {
+     dmx_sct_filter_params sctFilterParams;
+     memset(&sctFilterParams, 0, sizeof(sctFilterParams));
+     sctFilterParams.pid = Pid;
+     sctFilterParams.timeout = 0;
+     sctFilterParams.flags = DMX_IMMEDIATE_START;
+     sctFilterParams.filter.filter[0] = Tid;
+     sctFilterParams.filter.mask[0] = Mask;
+     if (ioctl(f, DMX_SET_FILTER, &sctFilterParams) >= 0)
+        return f;
+     else {
+        esyslog("ERROR: can't set filter (pid=%d, tid=%02X, mask=%02X)", Pid, Tid, Mask);
+        close(f);
+        }
+     }
+  else
+     esyslog("ERROR: can't open filter handle on '%s'", FileName);
+  return -1;
+}
+
 void cDvbDevice::TurnOffLiveMode(void)
 {
   // Avoid noise while switching:
@@ -646,13 +669,18 @@ bool cDvbDevice::ProvidesSource(int Source) const
   return true;
 }
 
+bool cDvbDevice::ProvidesTransponder(const cChannel *Channel) const
+{
+  return ProvidesSource(Channel->Source()) && ((Channel->Source() & cSource::st_Mask) != cSource::stSat || Diseqcs.Get(Channel->Source(), Channel->Frequency(), Channel->Polarization()));
+}
+
 bool cDvbDevice::ProvidesChannel(const cChannel *Channel, int Priority, bool *NeedsDetachReceivers) const
 {
   bool result = false;
   bool hasPriority = Priority < 0 || Priority > this->Priority();
   bool needsDetachReceivers = false;
 
-  if (ProvidesSource(Channel->Source()) && ProvidesCa(Channel->Ca())) {
+  if ((Channel->Vpid() || Channel->Apid1()) && ProvidesSource(Channel->Source()) && ProvidesCa(Channel)) {
      result = hasPriority;
      if (Priority >= 0 && Receiving()) {
         if (dvbTuner->IsTunedTo(Channel)) {
@@ -716,27 +744,19 @@ bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
      TurnOnLivePIDs = false;
      }
 
-  // Stop SI filtering:
-
-  if (siProcessor) {
-     siProcessor->SetCurrentTransponder(0, 0);
-     siProcessor->SetStatus(false);
-     }
-
   // Turn off live PIDs if necessary:
 
   if (TurnOffLivePIDs)
      TurnOffLiveMode();
 
-  dvbTuner->Set(Channel, DoTune, !EITScanner.UsesDevice(this)); //XXX 1.3: this is an ugly hack - find a cleaner solution
+  dvbTuner->Set(Channel, DoTune, !EITScanner.UsesDevice(this)); //XXX 1.3: this is an ugly hack - find a cleaner solution//XXX
 
   // PID settings:
 
   if (TurnOnLivePIDs) {
      aPid1 = Channel->Apid1();
      aPid2 = Channel->Apid2();
-     int pPid = Channel->Ppid() ? Channel->Ppid() : Channel->Vpid();
-     if (!(AddPid(pPid, ptPcr) && AddPid(Channel->Apid1(), ptAudio) && AddPid(Channel->Vpid(), ptVideo))) {//XXX+ dolby dpid1!!! (if audio plugins are attached)
+     if (!(AddPid(Channel->Ppid(), ptPcr) && AddPid(Channel->Apid1(), ptAudio) && AddPid(Channel->Vpid(), ptVideo))) {//XXX+ dolby dpid1!!! (if audio plugins are attached)
         esyslog("ERROR: failed to set PIDs for channel %d on device %d", Channel->Number(), CardIndex() + 1);
         return false;
         }
@@ -747,14 +767,12 @@ bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
   else if (StartTransferMode)
      cControl::Launch(new cTransferControl(this, Channel->Vpid(), Channel->Apid1(), Channel->Apid2(), Channel->Dpid1(), Channel->Dpid2()));
 
-  // Start SI filtering:
-
-  if (siProcessor) {
-     siProcessor->SetCurrentTransponder(Channel->Source(), Channel->Frequency());
-     siProcessor->SetStatus(true);
-     }
-
   return true;
+}
+
+bool cDvbDevice::HasLock(void)
+{
+  return dvbTuner->Locked();
 }
 
 void cDvbDevice::SetVolumeDevice(int Volume)
@@ -830,16 +848,12 @@ bool cDvbDevice::SetPlayMode(ePlayMode PlayMode)
          CHECK(ioctl(fd_audio, AUDIO_SELECT_SOURCE, AUDIO_SOURCE_DEMUX));
          CHECK(ioctl(fd_audio, AUDIO_SET_AV_SYNC, true));
          CHECK(ioctl(fd_audio, AUDIO_SET_MUTE, false));
-         if (siProcessor)
-            siProcessor->SetStatus(true);
          break;
     case pmAudioVideo:
          if (playMode == pmNone)
             TurnOffLiveMode();
          // continue with next...
     case pmAudioOnlyBlack:
-         if (siProcessor)
-            siProcessor->SetStatus(false);
          CHECK(ioctl(fd_video, VIDEO_SET_BLANK, true));
          CHECK(ioctl(fd_audio, AUDIO_SELECT_SOURCE, AUDIO_SOURCE_MEMORY));
          CHECK(ioctl(fd_audio, AUDIO_SET_AV_SYNC, PlayMode == pmAudioVideo));
@@ -848,8 +862,6 @@ bool cDvbDevice::SetPlayMode(ePlayMode PlayMode)
          CHECK(ioctl(fd_video, VIDEO_PLAY));
          break;
     case pmAudioOnly:
-         if (siProcessor)
-            siProcessor->SetStatus(false);
          CHECK(ioctl(fd_video, VIDEO_SET_BLANK, true));
          CHECK(ioctl(fd_audio, AUDIO_STOP, true));
          CHECK(ioctl(fd_audio, AUDIO_CLEAR_BUFFER));
@@ -859,8 +871,6 @@ bool cDvbDevice::SetPlayMode(ePlayMode PlayMode)
          CHECK(ioctl(fd_video, VIDEO_SET_BLANK, false));
          break;
     case pmExtern_THIS_SHOULD_BE_AVOIDED:
-         if (siProcessor)
-            siProcessor->SetStatus(false);
          close(fd_video);
          close(fd_audio);
          fd_video = fd_audio = -1;

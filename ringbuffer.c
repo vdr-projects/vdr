@@ -7,7 +7,7 @@
  * Parts of this file were inspired by the 'ringbuffy.c' from the
  * LinuxDVB driver (see linuxtv.org).
  *
- * $Id: ringbuffer.c 1.17 2003/05/12 17:38:11 kls Exp $
+ * $Id: ringbuffer.c 1.18 2003/10/12 14:25:09 kls Exp $
  */
 
 #include "ringbuffer.h"
@@ -75,7 +75,7 @@ cRingBufferLinear::cRingBufferLinear(int Size, int Margin, bool Statistics)
 {
   margin = Margin;
   buffer = NULL;
-  getThreadPid = -1;
+  getThreadTid = 0;
   if (Size > 1) { // 'Size - 1' must not be 0!
      buffer = MALLOC(uchar, Size);
      if (!buffer)
@@ -125,7 +125,7 @@ int cRingBufferLinear::Put(const uchar *Data, int Count)
         int percent = maxFill * 100 / (Size() - 1) / 5 * 5;
         if (abs(lastPercent - percent) >= 5) {
            if (percent > 75)
-              dsyslog("buffer usage: %d%% (pid=%d)", percent, getThreadPid);
+              dsyslog("buffer usage: %d%% (tid=%ld)", percent, getThreadTid);
            lastPercent = percent;
            }
         }
@@ -159,8 +159,8 @@ uchar *cRingBufferLinear::Get(int &Count)
 {
   uchar *p = NULL;
   Lock();
-  if (getThreadPid < 0)
-     getThreadPid = getpid();
+  if (getThreadTid <= 0)
+     getThreadTid = pthread_self();
   int rest = Size() - tail;
   if (rest < margin && head < tail) {
      int t = margin - rest;

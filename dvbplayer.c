@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 1.22 2003/05/24 09:04:26 kls Exp $
+ * $Id: dvbplayer.c 1.23 2003/10/18 11:31:54 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -93,6 +93,7 @@ public:
   };
 
 cNonBlockingFileReader::cNonBlockingFileReader(void)
+:cThread("non blocking file reader")
 {
   f = -1;
   buffer = NULL;
@@ -146,7 +147,6 @@ int cNonBlockingFileReader::Read(int FileHandle, uchar *Buffer, int Length)
 
 void cNonBlockingFileReader::Action(void)
 {
-  dsyslog("non blocking file reader thread started (pid=%d)", getpid());
   active = true;
   while (active) {
         cMutexLock MutexLock(&mutex);
@@ -165,7 +165,6 @@ void cNonBlockingFileReader::Action(void)
            }
         newSet.TimedWait(mutex, 1000);
         }
-  dsyslog("non blocking file reader thread ended (pid=%d)", getpid());
 }
 
 // --- cDvbPlayer ------------------------------------------------------------
@@ -235,6 +234,7 @@ public:
 int cDvbPlayer::Speeds[] = { 0, -2, -4, -8, 1, 2, 4, 12, 0 };
 
 cDvbPlayer::cDvbPlayer(const char *FileName)
+:cThread("dvbplayer")
 {
   nonBlockingFileReader = NULL;
   ringBuffer = NULL;
@@ -405,8 +405,6 @@ void cDvbPlayer::Activate(bool On)
 
 void cDvbPlayer::Action(void)
 {
-  dsyslog("dvbplayer thread started (pid=%d)", getpid());
-
   uchar *b = NULL;
   uchar *p = NULL;
   int pc = 0;
@@ -550,8 +548,6 @@ void cDvbPlayer::Action(void)
   cNonBlockingFileReader *nbfr = nonBlockingFileReader;
   nonBlockingFileReader = NULL;
   delete nbfr;
-
-  dsyslog("dvbplayer thread ended (pid=%d)", getpid());
 }
 
 void cDvbPlayer::Pause(void)

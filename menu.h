@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 1.57 2003/08/03 09:37:18 kls Exp $
+ * $Id: menu.h 1.59 2004/01/04 11:01:13 kls Exp $
  */
 
 #ifndef __MENU_H
@@ -12,6 +12,7 @@
 
 #include "ci.h"
 #include "device.h"
+#include "epg.h"
 #include "osd.h"
 #include "dvbplayer.h"
 #include "recorder.h"
@@ -36,7 +37,8 @@ private:
   int lines;
   int lastTime;
   int number;
-  void DisplayChannel(const cChannel *Channel);
+  cChannel *channel;
+  void DisplayChannel(void);
   void DisplayInfo(void);
   void Refresh(void);
 public:
@@ -113,10 +115,10 @@ private:
   cDevice *device;
   cTimer *timer;
   cRecorder *recorder;
-  const cEventInfo *eventInfo;
+  const cEvent *event;
   char *instantId;
   char *fileName;
-  bool GetEventInfo(void);
+  bool GetEvent(void);
 public:
   cRecordControl(cDevice *Device, cTimer *Timer = NULL, bool Pause = false);
   virtual ~cRecordControl();
@@ -141,6 +143,7 @@ public:
   static const char *GetInstantId(const char *LastInstantId);
   static cRecordControl *GetRecordControl(const char *FileName);
   static void Process(time_t t);
+  static void ChannelDataModified(cChannel *Channel);
   static bool Active(void);
   static void Shutdown(void);
   };
@@ -151,7 +154,7 @@ private:
   bool visible, modeOnly, shown, displayFrames;
   int lastCurrent, lastTotal;
   time_t timeoutShow;
-  bool timeSearchActive, timeSearchHide;  
+  bool timeSearchActive, timeSearchHide;
   int timeSearchTime, timeSearchPos;
   void TimeSearchDisplay(void);
   void TimeSearchProcess(eKeys Key);

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.h 1.5 2003/05/11 13:35:53 kls Exp $
+ * $Id: timers.h 1.6 2003/12/13 13:04:21 kls Exp $
  */
 
 #ifndef __TIMERS_H
@@ -12,7 +12,7 @@
 
 #include "channels.h"
 #include "config.h"
-#include "eit.h"
+#include "epg.h"
 #include "tools.h"
 
 enum eTimerActive { taInactive = 0,
@@ -39,7 +39,7 @@ private:
   char *summary;
 public:
   cTimer(bool Instant = false, bool Pause = false);
-  cTimer(const cEventInfo *EventInfo);
+  cTimer(const cEvent *Event);
   virtual ~cTimer();
   cTimer& operator= (const cTimer &Timer);
   virtual bool operator< (const cListObject &ListObject);

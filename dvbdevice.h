@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.h 1.24 2003/11/07 13:17:13 kls Exp $
+ * $Id: dvbdevice.h 1.26 2004/01/03 10:21:50 kls Exp $
  */
 
 #ifndef __DVBDEVICE_H
@@ -14,7 +14,6 @@
 #include <linux/dvb/version.h>
 #include "device.h"
 #include "dvbspu.h"
-#include "eit.h"
 
 #if DVB_API_VERSION != 3
 #error VDR requires Linux DVB driver API version 3!
@@ -45,6 +44,7 @@ protected:
 public:
   cDvbDevice(int n);
   virtual ~cDvbDevice();
+  virtual int ProvidesCa(const cChannel *Channel) const;
   virtual bool HasDecoder(void) const;
 
 // OSD facilities
@@ -62,14 +62,22 @@ private:
   void TurnOffLiveMode(void);
 public:
   virtual bool ProvidesSource(int Source) const;
+  virtual bool ProvidesTransponder(const cChannel *Channel) const;
   virtual bool ProvidesChannel(const cChannel *Channel, int Priority = -1, bool *NeedsDetachReceivers = NULL) const;
 protected:
   virtual bool SetChannelDevice(const cChannel *Channel, bool LiveView);
+public:
+  virtual bool HasLock(void);
 
 // PID handle facilities
 
 protected:
   virtual bool SetPid(cPidHandle *Handle, int Type, bool On);
+
+// Section filter facilities
+
+protected:
+  virtual int OpenFilter(u_short Pid, u_char Tid, u_char Mask);
 
 // Image Grab facilities
 
@@ -94,11 +102,6 @@ protected:
   virtual int NumAudioTracksDevice(void) const;
   virtual const char **GetAudioTracksDevice(int *CurrentTrack = NULL) const;
   virtual void SetAudioTrackDevice(int Index);
-
-// EIT facilities
-
-private:
-  cSIProcessor *siProcessor;
 
 // Player facilities
 

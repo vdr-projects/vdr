@@ -1,0 +1,635 @@
+/***************************************************************************
+ *       Copyright (c) 2003 by Marcel Wiesweg                              *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ *   $Id: descriptor.c 1.2 2003/12/13 10:42:05 kls Exp $
+ *                                                                         *
+ ***************************************************************************/
+
+#include <string.h>
+#include "descriptor.h"
+
+namespace SI {
+
+void ShortEventDescriptor::Parse() {
+   unsigned int offset=0;
+   const descr_short_event *s;
+   data.setPointerAndOffset<const descr_short_event>(s, offset);
+   languageCode[0]=s->lang_code1;
+   languageCode[1]=s->lang_code2;
+   languageCode[2]=s->lang_code3;
+   name.setDataAndOffset(data+offset, s->event_name_length, offset);
+   const descr_short_event_mid *mid;
+   data.setPointerAndOffset<const descr_short_event_mid>(mid, offset);
+   text.setData(data+offset, mid->text_length);
+}
+
+int ExtendedEventDescriptor::getDescriptorNumber() {
+   return s->descriptor_number;
+}
+
+int ExtendedEventDescriptor::getLastDescriptorNumber() {
+   return s->last_descriptor_number;
+}
+
+void ExtendedEventDescriptor::Parse() {
+   unsigned int offset=0;
+   data.setPointerAndOffset<const descr_extended_event>(s, offset);
+   languageCode[0]=s->lang_code1;
+   languageCode[1]=s->lang_code2;
+   languageCode[2]=s->lang_code3;
+   itemLoop.setDataAndOffset(data+offset, s->length_of_items, offset);
+   const descr_extended_event_mid *mid;
+   data.setPointerAndOffset<const descr_extended_event_mid>(mid, offset);
+   text.setData(data+offset, mid->text_length);
+}
+
+void ExtendedEventDescriptor::Item::Parse() {
+   unsigned int offset=0;
+   const item_extended_event *first;
+   data.setPointerAndOffset<const item_extended_event>(first, offset);
+   itemDescription.setDataAndOffset(data+offset, first->item_description_length, offset);
+   const item_extended_event_mid *mid;
+   data.setPointerAndOffset<const item_extended_event_mid>(mid, offset);
+   item.setData(data+offset, mid->item_length);
+}
+
+int ExtendedEventDescriptors::getTextLength() {
+   int ret=0;
+   for (int i=0;i<length;i++) {
+      ExtendedEventDescriptor *d=(ExtendedEventDescriptor *)array[i];
+      if (!d)
+         continue;
+      ret+=d->text.getLength()+1; //plus a blank
+      ExtendedEventDescriptor::Item item;
+      for (Loop::Iterator it; d->itemLoop.hasNext(it);   ) {
+         item=d->itemLoop.getNext(it);
+         ret+=item.item.getLength();
+         ret+=item.itemDescription.getLength();
+         ret+=2; //the blanks
+      }
+   }
+   return ret;
+}
+
+//is there a case where this function does not return the same as getTextLength?
+int ExtendedEventDescriptors::getMaximumTextLength() {
+   int ret=0;
+   for (int i=0;i<length;i++) {
+      ExtendedEventDescriptor *d=(ExtendedEventDescriptor *)array[i];
+      if (!d)
+         continue;
+      ret+=d->text.getLength()+1; //plus a blank
+      ret+=d->itemLoop.getLength();
+   }
+   return ret;
+}
+
+char *ExtendedEventDescriptors::getText() {
+   char *text=new char[getMaximumTextLength()];
+   return getText(text);
+}
+
+//appends the Strings of every Descriptor in the group
+char *ExtendedEventDescriptors::getText(char *buffer) {
+   int index=0, len;
+   char tempbuf[256];
+   for (int i=0;i<length;i++) {
+      ExtendedEventDescriptor *d=(ExtendedEventDescriptor *)array[i];
+      if (!d)
+         continue;
+      d->text.getText(tempbuf);
+      len=strlen(tempbuf);
+      if (len) {
+         memcpy(buffer+index, tempbuf, len);
+         index+=len;
+      }
+
+      ExtendedEventDescriptor::Item item;
+      for (Loop::Iterator it; d->itemLoop.hasNext(it);   ) {
+         item=d->itemLoop.getNext(it);
+
+         item.item.getText(tempbuf);
+         len=strlen(tempbuf);
+         if (len) {
+            memcpy(buffer+index, tempbuf, len);
+            index+=len;
+         }
+
+         item.itemDescription.getText(tempbuf);
+         len=strlen(tempbuf);
+         if (len) {
+            memcpy(buffer+index, tempbuf, len);
+            index+=len;
+         }
+      }
+   }
+   buffer[index]='\0';
+   return buffer;
+}
+
+int TimeShiftedEventDescriptor::getReferenceServiceId() const {
+   return HILO(s->reference_service_id);
+}
+
+int TimeShiftedEventDescriptor::getReferenceEventId() const {
+   return HILO(s->reference_event_id);
+}
+
+void TimeShiftedEventDescriptor::Parse() {
+   s=data.getData<const descr_time_shifted_event>();
+}
+
+void ContentDescriptor::Parse() {
+   //this descriptor is only a header and a loop
+   nibbleLoop.setData(data+sizeof(SectionHeader), getLength()-sizeof(SectionHeader));
+}
+
+int ContentDescriptor::Nibble::getContentNibbleLevel1() const {
+   return s->content_nibble_level_1;
+}
+
+int ContentDescriptor::Nibble::getContentNibbleLevel2() const {
+   return s->content_nibble_level_2;
+}
+
+int ContentDescriptor::Nibble::getUserNibble1() const {
+   return s->user_nibble_1;
+}
+
+int ContentDescriptor::Nibble::getUserNibble2() const {
+   return s->user_nibble_2;
+}
+
+void ContentDescriptor::Nibble::Parse() {
+   s=data.getData<const nibble_content>();
+}
+
+void ParentalRatingDescriptor::Parse() {
+   //this descriptor is only a header and a loop
+   ratingLoop.setData(data+sizeof(SectionHeader), getLength()-sizeof(SectionHeader));
+}
+
+int ParentalRatingDescriptor::Rating::getRating() const {
+   return s->rating;
+}
+
+void ParentalRatingDescriptor::Rating::Parse() {
+   s=data.getData<const parental_rating>();
+   languageCode[0]=s->lang_code1;
+   languageCode[1]=s->lang_code2;
+   languageCode[2]=s->lang_code3;
+}
+
+int CaDescriptor::getCaType() const {
+   return HILO(s->CA_type);
+}
+
+int CaDescriptor::getCaPid() const {
+   return HILO(s->CA_PID);
+}
+
+void CaDescriptor::Parse() {
+   unsigned int offset=0;
+   data.setPointerAndOffset<const descr_ca>(s, offset);
+   privateData.assign(data.getData(offset), getLength()-offset);
+}
+
+int StreamIdentifierDescriptor::getComponentTag() const {
+   return s->component_tag;
+}
+
+void StreamIdentifierDescriptor::Parse() {
+   s=data.getData<const descr_stream_identifier>();
+}
+
+void NetworkNameDescriptor::Parse() {
+   name.setData(data+sizeof(descr_network_name), getLength()-sizeof(descr_network_name));
+}
+
+void CaIdentifierDescriptor::Parse() {
+   identifiers.setData(data+sizeof(descr_ca_identifier), getLength()-sizeof(descr_ca_identifier));
+}
+
+int CarouselIdentifierDescriptor::getCarouselId() const {
+   return (HILO(s->carousel_id_hi) << 16) | HILO(s->carousel_id_lo);
+}
+
+int CarouselIdentifierDescriptor::getFormatId() const {
+   return s->FormatId;
+}
+
+void CarouselIdentifierDescriptor::Parse() {
+   s=data.getData<const descr_carousel_identifier>();
+}
+
+void ServiceListDescriptor::Parse() {
+   serviceLoop.setData(data+sizeof(descr_service_list), getLength()-sizeof(descr_service_list));
+}
+
+int ServiceListDescriptor::Service::getServiceId() const {
+   return HILO(s->service_id);
+}
+
+int ServiceListDescriptor::Service::getServiceType() const {
+   return s->service_type;
+}
+
+void ServiceListDescriptor::Service::Parse() {
+   s=data.getData<const descr_service_list_loop>();
+}
+
+int SatelliteDeliverySystemDescriptor::getFrequency() const {
+   return (HILO(s->frequency_hi) << 16) | HILO(s->frequency_lo);
+}
+
+int SatelliteDeliverySystemDescriptor::getOrbitalPosition() const {
+   return HILO(s->orbital_position);
+}
+
+int SatelliteDeliverySystemDescriptor::getWestEastFlag() const {
+   return s->west_east_flag;
+}
+
+int SatelliteDeliverySystemDescriptor::getPolarization() const {
+   return s->polarization;
+}
+
+int SatelliteDeliverySystemDescriptor::getModulation() const {
+   return s->modulation;
+}
+
+int SatelliteDeliverySystemDescriptor::getSymbolRate() const {
+   return (HILO(s->symbol_rate_hi) << 12) | (s->symbol_rate_lo_1 << 4) | s->symbol_rate_lo_2;
+}
+
+int SatelliteDeliverySystemDescriptor::getFecInner() const {
+   return s->fec_inner;
+}
+
+void SatelliteDeliverySystemDescriptor::Parse() {
+   s=data.getData<const descr_satellite_delivery_system>();
+}
+
+int CableDeliverySystemDescriptor::getFrequency() const {
+   return (HILO(s->frequency_hi) << 16) | HILO(s->frequency_lo);
+}
+
+int CableDeliverySystemDescriptor::getFecOuter() const {
+   return s->fec_outer;
+}
+
+int CableDeliverySystemDescriptor::getModulation() const {
+   return s->modulation;
+}
+
+int CableDeliverySystemDescriptor::getSymbolRate() const {
+   return (HILO(s->symbol_rate_hi) << 12) | (s->symbol_rate_lo_1 << 4) | s->symbol_rate_lo_2;
+}
+
+int CableDeliverySystemDescriptor::getFecInner() const {
+   return s->fec_inner;
+}
+
+void CableDeliverySystemDescriptor::Parse() {
+   s=data.getData<const descr_cable_delivery_system>();
+}
+
+int TerrestrialDeliverySystemDescriptor::getFrequency() const {
+   return (HILO(s->frequency_hi) << 16) | HILO(s->frequency_lo);
+}
+
+int TerrestrialDeliverySystemDescriptor::getBandwidth() const {
+   return s->bandwidth;
+}
+
+int TerrestrialDeliverySystemDescriptor::getConstellation() const {
+   return s->constellation;
+}
+
+int TerrestrialDeliverySystemDescriptor::getHierarchy() const {
+   return s->hierarchy;
+}
+
+int TerrestrialDeliverySystemDescriptor::getCodeRateHP() const {
+   return s->code_rate_HP;
+}
+
+int TerrestrialDeliverySystemDescriptor::getCodeRateLP() const {
+   return s->code_rate_LP;
+}
+
+int TerrestrialDeliverySystemDescriptor::getGuardInterval() const {
+   return s->guard_interval;
+}
+
+int TerrestrialDeliverySystemDescriptor::getTransmissionMode() const {
+   return s->transmission_mode;
+}
+
+bool TerrestrialDeliverySystemDescriptor::getOtherFrequency() const {
+   return s->other_frequency_flag;
+}
+
+void TerrestrialDeliverySystemDescriptor::Parse() {
+   s=data.getData<const descr_terrestrial_delivery>();
+}
+
+int ServiceDescriptor::getServiceType() const {
+   return s->service_type;
+}
+
+void ServiceDescriptor::Parse() {
+   unsigned int offset=0;
+   data.setPointerAndOffset<const descr_service>(s, offset);
+   providerName.setDataAndOffset(data+offset, s->provider_name_length, offset);
+   const descr_service_mid *mid;
+   data.setPointerAndOffset<const descr_service_mid>(mid, offset);
+   serviceName.setData(data+offset, mid->service_name_length);
+}
+
+void NVODReferenceDescriptor::Parse() {
+   serviceLoop.setData(data+sizeof(descr_nvod_reference), getLength()-sizeof(descr_nvod_reference));
+}
+
+int NVODReferenceDescriptor::Service::getTransportStream() const {
+   return HILO(s->transport_stream_id);
+}
+
+int NVODReferenceDescriptor::Service::getOriginalNetworkId() const {
+   return HILO(s->original_network_id);
+}
+
+int NVODReferenceDescriptor::Service::getServiceId() const {
+   return HILO(s->service_id);
+}
+
+void NVODReferenceDescriptor::Service::Parse() {
+   s=data.getData<const item_nvod_reference>();
+}
+
+int TimeShiftedServiceDescriptor::getReferenceServiceId() const {
+   return HILO(s->reference_service_id);
+}
+
+void TimeShiftedServiceDescriptor::Parse() {
+   s=data.getData<const descr_time_shifted_service>();
+}
+
+int ComponentDescriptor::getStreamContent() const {
+   return s->stream_content;
+}
+
+int ComponentDescriptor::getComponentType() const {
+   return s->component_type;
+}
+
+int ComponentDescriptor::getComponentTag() const {
+   return s->component_tag;
+}
+
+void ComponentDescriptor::Parse() {
+   unsigned int offset=0;
+   data.setPointerAndOffset<const descr_component>(s, offset);
+   languageCode[0]=s->lang_code1;
+   languageCode[1]=s->lang_code2;
+   languageCode[2]=s->lang_code3;
+   description.setData(data+offset, getLength()-offset);
+}
+
+void SubtitlingDescriptor::Parse() {
+   subtitlingLoop.setData(data+sizeof(descr_subtitling), getLength()-sizeof(descr_subtitling));
+}
+
+int SubtitlingDescriptor::Subtitling::getSubtitlingType() const {
+   return s->subtitling_type;
+}
+
+int SubtitlingDescriptor::Subtitling::getCompositionPageId() const {
+   return HILO(s->composition_page_id);
+}
+
+int SubtitlingDescriptor::Subtitling::getAncillaryPageId() const {
+   return HILO(s->ancillary_page_id);
+}
+
+void SubtitlingDescriptor::Subtitling::Parse() {
+   s=data.getData<const item_subtitling>();
+}
+
+int ServiceMoveDescriptor::getNewOriginalNetworkId() const {
+   return HILO(s->new_original_network_id);
+}
+
+int ServiceMoveDescriptor::getNewTransportStreamId() const {
+   return HILO(s->new_transport_stream_id);
+}
+
+int ServiceMoveDescriptor::getNewServiceId() const {
+   return HILO(s->new_service_id);
+}
+
+void ServiceMoveDescriptor::Parse() {
+   s=data.getData<const descr_service_move>();
+}
+
+int FrequencyListDescriptor::getCodingType() const {
+   return s->coding_type;
+}
+
+void FrequencyListDescriptor::Parse() {
+   unsigned int offset=0;
+   data.setPointerAndOffset<const descr_frequency_list>(s, offset);
+   frequencies.setData(data+offset, getLength()-offset);
+}
+
+void ServiceIdentifierDescriptor::Parse() {
+   textualServiceIdentifier.setData(data+sizeof(descr_service_identifier), getLength()-sizeof(descr_service_identifier));
+}
+
+void MultilingualNameDescriptor::Parse() {
+   nameLoop.setData(data+sizeof(descr_multilingual_network_name), getLength()-sizeof(descr_multilingual_network_name));
+}
+
+void MultilingualNameDescriptor::Name::Parse() {
+   unsigned int offset=0;
+   const entry_multilingual_name *s;
+   data.setPointerAndOffset<const entry_multilingual_name>(s, offset);
+   languageCode[0]=s->lang_code1;
+   languageCode[1]=s->lang_code2;
+   languageCode[2]=s->lang_code3;
+   name.setData(data+offset, s->text_length);
+}
+
+int MultilingualComponentDescriptor::getComponentTag() const {
+   return s->component_tag;
+}
+
+void MultilingualComponentDescriptor::Parse() {
+   unsigned int offset=0;
+   data.setPointerAndOffset<const descr_multilingual_component>(s, offset);
+   nameLoop.setData(data+sizeof(descr_multilingual_component), getLength()-sizeof(descr_multilingual_component));
+}
+
+void MultilingualServiceNameDescriptor::Parse() {
+   nameLoop.setData(data+sizeof(descr_multilingual_network_name), getLength()-sizeof(descr_multilingual_network_name));
+}
+
+void MultilingualServiceNameDescriptor::Name::Parse() {
+   unsigned int offset=0;
+   const entry_multilingual_name *s;
+   data.setPointerAndOffset<const entry_multilingual_name>(s, offset);
+   languageCode[0]=s->lang_code1;
+   languageCode[1]=s->lang_code2;
+   languageCode[2]=s->lang_code3;
+   providerName.setDataAndOffset(data+offset, s->text_length, offset);
+   const entry_multilingual_service_name_mid *mid;
+   data.setPointerAndOffset<const entry_multilingual_service_name_mid>(mid, offset);
+   name.setData(data+offset, mid->service_name_length);
+}
+
+void ApplicationSignallingDescriptor::Parse() {
+   entryLoop.setData(data+sizeof(descr_application_signalling), getLength()-sizeof(descr_application_signalling));
+}
+
+int ApplicationSignallingDescriptor::ApplicationEntryDescriptor::getApplicationType() const {
+   return HILO(s->application_type);
+}
+
+int ApplicationSignallingDescriptor::ApplicationEntryDescriptor::getAITVersionNumber() const {
+   return s->AIT_version_number;
+}
+
+void ApplicationSignallingDescriptor::ApplicationEntryDescriptor::Parse() {
+   s=data.getData<const application_signalling_entry>();
+}
+
+bool MHP_ApplicationDescriptor::isServiceBound() const {
+   return s->service_bound_flag;
+}
+
+int MHP_ApplicationDescriptor::getVisibility() const {
+   return s->visibility;
+}
+
+int MHP_ApplicationDescriptor::getApplicationPriority() const {
+   return s->application_priority;
+}
+
+void MHP_ApplicationDescriptor::Parse() {
+   unsigned int offset=0;
+   const descr_application *dapp;
+   data.setPointerAndOffset<const descr_application>(dapp, offset);
+   profileLoop.setDataAndOffset(data+offset, dapp->application_profiles_length, offset);
+   data.setPointerAndOffset<const descr_application_end>(s, offset);
+   transportProtocolLabels.setData(data+offset, getLength()-offset);
+}
+
+int MHP_ApplicationDescriptor::Profile::getApplicationProfile() const {
+      return HILO(s->application_profile);
+}
+
+int MHP_ApplicationDescriptor::Profile::getVersionMajor() const {
+      return s->version_major;
+}
+
+int MHP_ApplicationDescriptor::Profile::getVersionMinor() const {
+      return s->version_minor;
+}
+
+int MHP_ApplicationDescriptor::Profile::getVersionMicro() const {
+      return s->version_micro;
+}
+
+void MHP_ApplicationDescriptor::Profile::Parse() {
+   s=data.getData<application_profile_entry>();
+}
+
+void MHP_ApplicationNameDescriptor::Parse() {
+   nameLoop.setData(data+sizeof(descr_application_name), getLength()-sizeof(descr_application_name));
+}
+
+void MHP_ApplicationNameDescriptor::NameEntry::Parse() {
+   const descr_application_name_entry *s;
+   s=data.getData<const descr_application_name_entry>();
+   name.setData(data+sizeof(descr_application_name_entry), s->application_name_length);
+   languageCode[0]=s->lang_code1;
+   languageCode[1]=s->lang_code2;
+   languageCode[2]=s->lang_code3;
+}
+
+int MHP_TransportProtocolDescriptor::getProtocolId() const {
+   return HILO(s->protocol_id);
+}
+
+int MHP_TransportProtocolDescriptor::getProtocolLabel() const {
+   return s->transport_protocol_label;
+}
+
+bool MHP_TransportProtocolDescriptor::isRemote() const {
+   return remote;
+}
+
+int MHP_TransportProtocolDescriptor::getComponentTag() const {
+   return componentTag;
+}
+
+void MHP_TransportProtocolDescriptor::Parse() {
+   unsigned int offset=0;
+   data.setPointerAndOffset<const descr_transport_protocol>(s, offset);
+   if (getProtocolId() == ObjectCarousel) {
+      const transport_via_oc *oc;
+      data.setPointerAndOffset<const transport_via_oc>(oc, offset);
+      remote=oc->remote;
+      if (remote) {
+         const transport_via_oc_remote_end *rem;
+         data.setPointerAndOffset<const transport_via_oc_remote_end>(rem, offset);
+         componentTag=rem->component_tag;
+      } else {
+         const transport_via_oc_end *rem;
+         data.setPointerAndOffset<const transport_via_oc_end>(rem, offset);
+         componentTag=rem->component_tag;
+      }
+   } else { //unimplemented
+      remote=false;
+      componentTag=-1;
+   }
+}
+
+void MHP_DVBJApplicationDescriptor::Parse() {
+   applicationLoop.setData(data+sizeof(descr_dvbj_application), getLength()-sizeof(descr_dvbj_application));
+}
+
+void MHP_DVBJApplicationDescriptor::ApplicationEntry::Parse() {
+   const descr_dvbj_application_entry *entry=data.getData<const descr_dvbj_application_entry>();
+   parameter.setData(data+sizeof(descr_dvbj_application_entry), entry->parameter_length);
+}
+
+void MHP_DVBJApplicationLocationDescriptor::Parse() {
+   unsigned int offset=0;
+   const descr_dvbj_application_location *first;
+   data.setPointerAndOffset<const descr_dvbj_application_location>(first, offset);
+   baseDirectory.setDataAndOffset(data+offset, first->base_directory_length, offset);
+   const descr_dvbj_application_location_mid *mid;
+   data.setPointerAndOffset<const descr_dvbj_application_location_mid>(mid, offset);
+   classPath.setDataAndOffset(data+offset, mid->classpath_extension_length, offset);
+   initialClass.setData(data+offset, getLength()-offset);
+}
+
+int MHP_ApplicationIconsDescriptor::getIconFlags() const {
+   return HILO(s->icon_flags);
+}
+
+void MHP_ApplicationIconsDescriptor::Parse() {
+   unsigned int offset=0;
+   const descr_application_icons_descriptor *first;
+   data.setPointerAndOffset<const descr_application_icons_descriptor>(first, offset);
+   iconLocator.setDataAndOffset(data+offset, first->icon_locator_length, offset);
+   data.setPointerAndOffset<const descr_application_icons_descriptor_end>(s, offset);
+}
+
+} //end of namespace

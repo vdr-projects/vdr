@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: cutter.c 1.5 2003/08/17 09:04:04 kls Exp $
+ * $Id: cutter.c 1.6 2003/10/18 11:29:37 kls Exp $
  */
 
 #include "cutter.h"
@@ -32,6 +32,7 @@ public:
   };
 
 cCuttingThread::cCuttingThread(const char *FromFileName, const char *ToFileName)
+:cThread("video cutting")
 {
   error = NULL;
   active = false;
@@ -62,8 +63,6 @@ cCuttingThread::~cCuttingThread()
 
 void cCuttingThread::Action(void)
 {
-  dsyslog("video cutting thread started (pid=%d)", getpid());
-
   cMark *Mark = fromMarks.First();
   if (Mark) {
      fromFile = fromFileName->Open();
@@ -175,7 +174,6 @@ void cCuttingThread::Action(void)
      }
   else
      esyslog("no editing marks found!");
-  dsyslog("end video cutting thread");
 }
 
 // --- cCutter ---------------------------------------------------------------

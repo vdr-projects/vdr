@@ -83,6 +83,8 @@ Dave Chapman <dave@dchapman.com>
 Hans-Peter Raschke <Hans-Peter.Raschke@Wintermann-DatenService.de>
  for his support in adapting VDR to DVB-C
  for adding the 'statdvb2vdr' tool (see Tools/statdvb2vdr)
+ for reporting that the CA descriptors need to be sent to the CAM in the 'program'
+ or 'ES level' sections to make SkyCrypt CAMs work
 
 Peter Hofmann <software@pxh.de>
  for his support in adapting VDR to DVB-C
@@ -177,6 +179,9 @@ Stefan Huelswitt <huels@iname.com>
  for fixing an uninitialized variable in cDisplayChannel
  for fixing a possible access of invalid file handles in cSIProcessor::Action()
  for fixing extracting the ES data in cDvbDevice::StillPicture()
+ for changing thread handling to make it work with NPTL ("Native Posix Thread Library")
+ for creating mutexes with PTHREAD_MUTEX_ERRORCHECK_NP, which made the 'lockingTid'
+ stuff obsolete
 
 Ulrich Röder <roeder@efr-net.de>
  for pointing out that there are channels that have a symbol rate higher than
@@ -210,6 +215,9 @@ Andreas Schultz <aschultz@warp10.net>
  for changing C++ style comments in libdtv into C style to avoid warnings in gcc 3.x
  for implementing the TerrestrialDeliverySystemDescriptor in libdtv
  for fixing setting the locking pid after a timed wait
+ for changing thread handling to make it work with NPTL ("Native Posix Thread Library")
+ for his 'autopid' patch which was helpful when implementing automatic
+ channel data gathering
 
 Aaron Holtzman
  for writing 'ac3dec'
@@ -243,6 +251,7 @@ Werner Fink <werner@suse.de>
  for replacing the 'for' loops in StripAudioPackets() with memset() calls
  for modifying handling of audio packets in cDvbPlayer for better sync with external
  AC3 replay
+ for changing thread handling to make it work with NPTL ("Native Posix Thread Library")
 
 Rolf Hakenes <hakenes@hippomi.de>
  for providing 'libdtv' and adapting the EIT mechanisms to it
@@ -403,6 +412,7 @@ Simon Dean <linux-dvb@sickhack.com>
 Dimitrios Dimitrakos <mail@dimitrios.de>
  for translating OSD texts to the Greek language
  for fixing handling the LOG_LOCALn parameters in the -l option
+ for providing the iso8859-7 fonts
 
 Marcus Kuba <marcus@kuba4u.de>
  for reporting a bug in the unit of the "SVDRP timeout" setup parameter
@@ -636,6 +646,7 @@ Marcel Wiesweg <marcel.wiesweg@gmx.de>
  for reporting a problem with cReceivers that want to receive from PIDs that are
  currently not transmitting
  for fixing volume display in case a plugin has its own OSD open
+ for providing 'libsi' and adapting the EIT mechanisms to it
 
 Torsten Herz <torsten.herz@web.de>
  for fixing a possible deadlock when using the "Blue" button in the "Schedules" menu
@@ -762,6 +773,7 @@ Karim Afifi <karim.afifi@free.fr>
 
 Jon Burgess <mplayer@jburgess.uklinux.net>
  for pointing out a problem with NPTL ("Native Posix Thread Library")
+ for changing thread handling to make it work with NPTL ("Native Posix Thread Library")
 
 Thomas Schmidt <thomas.schmidt@in.stud.tu-ilmenau.de>
  for reporting a crash when cancelling a newly created timer
@@ -862,3 +874,16 @@ Luke Jenkins <a@xmission.com>
 Dirk Mueller <dmuell@gmx.net>
  for fixing getting the list of recordings in case VDR is started from a directory
  where it doesn't have access to
+
+Emil Petersky <petersky@isr.uni-stuttgart.de>
+ for adding "Slovak Link" and "Czech Link" to 'ca.conf'
+
+Alessio Sangalli <alesan@manoweb.com>
+ for providing the iso8859-1 small font
+
+Pedro Miguel Sequeira de Justo Teixeira <pedro.miguel.teixeira@bigfoot.com>
+ for reporting a problem with crc32 in SI handling on 64bit systems
+ for reporting an alignment problem in CAM access on 64bit systems
+
+Antonino Sergi <voyaser@tiscalinet.it>
+ for adding 'StreamType' setting to CAM communication

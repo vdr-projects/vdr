@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.h 1.15 2003/05/03 14:03:36 kls Exp $
+ * $Id: thread.h 1.20 2004/01/03 16:58:50 kls Exp $
  */
 
 #ifndef __THREAD_H
@@ -28,11 +28,20 @@ public:
   //void Signal(void);
   };
 
+class cRwLock {
+private:
+  pthread_rwlock_t rwlock;
+public:
+  cRwLock(bool PreferWriter = false);
+  ~cRwLock();
+  bool Lock(bool Write, int TimeoutMs = 0);
+  void Unlock(void);
+  };
+
 class cMutex {
   friend class cCondVar;
 private:
   pthread_mutex_t mutex;
-  pid_t lockingPid;
   int locked;
 public:
   cMutex(void);
@@ -44,10 +53,10 @@ public:
 class cThread {
   friend class cThreadLock;
 private:
-  pthread_t thread;
+  pthread_t parentTid, childTid;
   cMutex mutex;
-  pid_t parentPid, threadPid;
   bool running;
+  char *description;
   static bool emergencyExitRequested;
   static bool signalHandlerInstalled;
   static void SignalHandler(int signum);
@@ -59,8 +68,9 @@ protected:
   virtual void Action(void) = 0;
   void Cancel(int WaitSeconds = 0);
 public:
-  cThread(void);
+  cThread(const char *Description = NULL);
   virtual ~cThread();
+  void SetDescription(const char *Description, ...);
   bool Start(void);
   bool Active(void);
   static bool EmergencyExit(bool Request = false);

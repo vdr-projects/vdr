@@ -1,0 +1,83 @@
+#!/usr/bin/perl
+
+# $Id: gendescr.pl 1.2 2003/12/13 10:40:53 kls Exp $
+
+print "Name (ohne ...Descriptor):";
+$name=<STDIN>;
+$name =~ s/\n$//;
+$inner = ($name =~ s/ä$//);
+$name .= "Descriptor" unless ($inner);
+
+print "Struct:";
+$struct=<STDIN>;
+$struct =~ s/\n$//;
+
+mm:
+$index=0;
+$which=1;
+print "Variablen:";
+while ( <STDIN> ) {
+   if (/ä/) {
+      goto vv;
+   } elsif (/ü/) {
+      $which=1;
+      next;
+   }
+   $eingabe=$_;
+   $eingabe =~ s/(.{75,120} )/\1\n/g;
+   $eingabe =~ s/\n$//;
+   if ($which) {
+      $members[$index]=$eingabe;
+   } else {
+      $members_comments[$index]=$eingabe;
+      $index++;
+      print "Jep!\n";
+   }
+   $which= (! $which);
+}
+
+vv:
+$filename_h="tempdescr.h";
+$filename_c="tempdescr.c";
+schreib();
+
+sub schreib {
+   print "Danke.\n";
+   open(OUTPUT_H, ">>".$filename_h) or die "Could not open file!!";
+   open(OUTPUT_C, ">>".$filename_c) or die "Could not open file!!";
+
+   if ($inner) {
+      $offset="   ";
+   } else {
+      $offset="";
+   }
+   print(OUTPUT_H $offset."class ".$name);
+   if ($inner) {
+      print(OUTPUT_H " : public LoopElement {\n".$offset."public:");
+   } else {
+      print(OUTPUT_H " : public Descriptor {\n".$offset."public:");
+   }
+   #for ($i=0; $i<=$#vars;$i++) {
+   #   print (OUTPUT "/*\n".$vars_comments[$i]." */\n".$vars[$i].";\n\n\n");
+   #}
+   for ($i=0; $i<=$#members;$i++) {
+      print (OUTPUT_H "\n".$offset."   int get".$members[$i]."() const;");
+   }
+   print(OUTPUT_H "\n".$offset."virtual int getLength() { return sizeof(".$struct."); }") if ($inner);
+
+   print(OUTPUT_H "\n".$offset."protected:\n".$offset."   virtual void Parse();");
+   print(OUTPUT_H "\n".$offset."private:\n".$offset."   const ".$struct." *s;") if ($struct ne "");
+   print(OUTPUT_H "\n".$offset."};\n\n");
+   for ($i=0; $i<=$#members_comments;$i++) {
+      print (OUTPUT_C "int ".$name."::get".$members[$i]."() const {\n");
+      if ($members_comments[$i] =~ /^(.+)_hi$/) {
+         $varbase=$1;
+         print (OUTPUT_C "   return HILO(s->".$varbase.");\n}\n\n");
+      } else {
+         print (OUTPUT_C "   return s->".$members_comments[$i].";\n}\n\n");
+      }
+   }
+   print (OUTPUT_C "void ".$name."::Parse() {\n}\n\n");
+   print (OUTPUT_C "\n\n\n");
+   exit;
+}

@@ -12,3 +12,7 @@ VDR Plugin 'sky' Revision History
 2003-05-09: Version 0.1.1
 
 - Changed Start() to Initialize().
+
+2004-01-04: Version 0.2.0
+
+- Implemented automatic PID switching and channel detection

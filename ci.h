@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.h 1.9 2003/10/26 12:22:09 kls Exp $
+ * $Id: ci.h 1.12 2003/12/31 13:49:49 kls Exp $
  */
 
 #ifndef __CI_H
@@ -66,10 +66,14 @@ private:
   int length;
   int esInfoLengthPos;
   uint8_t capmt[2048]; ///< XXX is there a specified maximum?
+  int caDescriptorsLength;
+  uint8_t caDescriptors[2048];
+  bool streamFlag;
+  void AddCaDescriptors(int Length, const uint8_t *Data);
 public:
-  cCiCaPmt(int ProgramNumber);
-  void AddPid(int Pid);
-  void AddCaDescriptor(int Length, uint8_t *Data);
+  cCiCaPmt(int Source, int Transponder, int ProgramNumber, const unsigned short *CaSystemIds);
+  bool Valid(void);
+  void AddPid(int Pid, uint8_t StreamType);
   };
 
 #define MAX_CI_SESSION  16 //XXX
@@ -107,6 +111,7 @@ public:
   cCiMenu *GetMenu(void);
   cCiEnquiry *GetEnquiry(void);
   const unsigned short *GetCaSystemIds(int Slot);
+  bool ProvidesCa(const unsigned short *CaSystemIds); //XXX Slot???
   bool SetCaPmt(cCiCaPmt &CaPmt, int Slot);
   bool Reset(int Slot);
   };

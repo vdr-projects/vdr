@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ringbuffer.h 1.12 2003/05/12 17:35:10 kls Exp $
+ * $Id: ringbuffer.h 1.13 2003/10/12 13:57:56 kls Exp $
  */
 
 #ifndef __RINGBUFFER_H
@@ -46,7 +46,7 @@ private:
   int margin, head, tail;
   int lastGet;
   uchar *buffer;
-  pid_t getThreadPid;
+  pthread_t getThreadTid;
 public:
   cRingBufferLinear(int Size, int Margin = 0, bool Statistics = false);
     ///< Creates a linear ring buffer.

@@ -1,0 +1,415 @@
+/***************************************************************************
+ *       Copyright (c) 2003 by Marcel Wiesweg                              *
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ *   $Id: si.c 1.3 2004/01/04 14:26:53 kls Exp $
+ *                                                                         *
+ ***************************************************************************/
+
+#include <string.h>
+#include "si.h"
+#include "descriptor.h"
+
+namespace SI {
+
+Object::Object() {
+}
+
+Object::Object(CharArray &d) : data(d) {
+}
+
+void Object::setData(const unsigned char*d, unsigned int size, bool doCopy) {
+   data.assign(d, size, doCopy);
+}
+
+void Object::setData(CharArray &d) {
+   data=d;
+}
+
+Section::Section(const unsigned char *data, bool doCopy) {
+   setData(data, getLength(data), doCopy);
+}
+
+TableId Section::getTableId() const {
+   return getTableId(data.getData());
+}
+
+int Section::getLength() {
+   return getLength(data.getData());
+}
+
+TableId Section::getTableId(const unsigned char *d) {
+   return (TableId)((const SectionHeader *)d)->table_id;
+}
+
+int Section::getLength(const unsigned char *d) {
+   return HILO(((const SectionHeader *)d)->section_length)+sizeof(SectionHeader);
+}
+
+bool CRCSection::isValid() {
+   return CRC32::isValid((const char *)data.getData(), getLength()/*, data.FourBytes(getLength()-4)*/);
+}
+
+bool CRCSection::CheckCRCAndParse() {
+   if (!isValid())
+      return false;
+   CheckParse();
+   return true;
+}
+
+bool NumberedSection::getCurrentNextIndicator() const {
+   return data.getData<ExtendedSectionHeader>()->current_next_indicator;
+}
+
+int NumberedSection::getVersionNumber() const {
+   return data.getData<ExtendedSectionHeader>()->version_number;
+}
+
+int NumberedSection::getSectionNumber() const {
+   return data.getData<ExtendedSectionHeader>()->section_number;
+}
+
+int NumberedSection::getLastSectionNumber() const {
+   return data.getData<ExtendedSectionHeader>()->last_section_number;
+}
+
+int Descriptor::getLength() {
+   return getLength(data.getData());
+}
+
+DescriptorTag Descriptor::getDescriptorTag() const {
+   return getDescriptorTag(data.getData());
+}
+
+int Descriptor::getLength(const unsigned char *d) {
+   return ((const DescriptorHeader*)d)->descriptor_length+sizeof(DescriptorHeader);
+}
+
+DescriptorTag Descriptor::getDescriptorTag(const unsigned char *d) {
+   return (DescriptorTag)((const DescriptorHeader*)d)->descriptor_tag;
+}
+
+Descriptor *DescriptorLoop::getNext(Iterator &it) {
+   if (it.i<getLength()) {
+      return createDescriptor(it.i);
+   }
+   return 0;
+}
+
+Descriptor *DescriptorLoop::getNext(Iterator &it, DescriptorTag tag, bool returnUnimplemetedDescriptor) {
+   Descriptor *d=0;
+   if (it.i<getLength()) {
+      const unsigned char *p=data.getData(it.i);
+      const unsigned char *end=p+getLength();
+      while (p < end) {
+         if (Descriptor::getDescriptorTag(p) == tag) {
+            d=createDescriptor(it.i);
+            break;
+         }
+         it.i+=Descriptor::getLength(p);
+         p+=Descriptor::getLength(p);
+      }
+   }
+   if (d && d->getDescriptorTag()==UnimplementedDescriptorTag)
+      return returnUnimplemetedDescriptor ? d : 0;
+   return d;
+}
+
+Descriptor *DescriptorLoop::getNext(Iterator &it, DescriptorTag *tags, int arrayLength, bool returnUnimplemetedDescriptor) {
+   Descriptor *d=0;
+   if (it.i<getLength()) {
+      const unsigned char *p=data.getData(it.i);
+      const unsigned char *end=p+getLength();
+      while (p < end) {
+         for (int u=0; u<arrayLength;u++)
+            if (Descriptor::getDescriptorTag(p) == tags[u]) {
+               d=createDescriptor(it.i);
+               break;
+            }
+         if (d)
+            break;
+         it.i+=Descriptor::getLength(p);
+         p+=Descriptor::getLength(p);
+      }
+   }
+   if (d && d->getDescriptorTag()==UnimplementedDescriptorTag)
+      return returnUnimplemetedDescriptor ? d : 0;
+   return d;
+}
+
+Descriptor *DescriptorLoop::createDescriptor(int &i) {
+   Descriptor *d=Descriptor::getDescriptor(data+i, domain);
+   i+=d->getLength();
+   d->CheckParse();
+   return d;
+}
+
+DescriptorGroup::DescriptorGroup(bool del) {
+   array=0;
+   length=0;
+   deleteOnDesctruction=del;
+}
+
+DescriptorGroup::~DescriptorGroup() {
+   if (deleteOnDesctruction)
+      Delete();
+   delete[] array;
+}
+
+void DescriptorGroup::Delete() {
+   for (int i=0;i<length;i++)
+      if (array[i]!=0) {
+         delete array[i];
+         array[i]=0;
+      }
+}
+
+void DescriptorGroup::Add(GroupDescriptor *d) {
+   if (!array) {
+      length=d->getLastDescriptorNumber()+1;
+      array=new GroupDescriptor*[length]; //numbering is zero-based
+      for (int i=0;i<length;i++)
+         array[i]=0;
+   } else if (length != d->getLastDescriptorNumber()+1)
+      return; //avoid crash in case of misuse
+   array[d->getDescriptorNumber()]=d;
+}
+
+bool DescriptorGroup::isComplete() {
+   for (int i=0;i<length;i++)
+      if (array[i]==0)
+         return false;
+   return true;
+}
+
+char *String::getText() {
+   if (getLength() < 0 || getLength() >4095)
+      return "text error";
+   char *data=new char(getLength()+1);
+   decodeText(data);
+   return data;
+}
+
+char *String::getText(char *buffer) {
+   if (getLength() < 0 || getLength() >4095) {
+      strncpy(buffer, "text error", getLength()+1);
+      return buffer;
+   }
+   decodeText(buffer);
+   return buffer;
+}
+
+//taken from libdtv, Copyright Rolf Hakenes <hakenes@hippomi.de>
+void String::decodeText(char *buffer) {
+   const unsigned char *from=data.getData(0);
+   char *to=buffer;
+
+   /* Disable detection of coding tables - libdtv doesn't do it either
+   if ( (0x01 <= *from) && (*from <= 0x1f) ) {
+      codeTable=*from
+   }
+   */
+
+   for (int i = 0; i < getLength(); i++) {
+      if (*from == 0)
+         break;
+      if (    ((' ' <= *from) && (*from <= '~'))
+           || (*from == '\n')
+           || ((0xA0 <= *from) && (*from <= 0xFF))
+         )
+         *to++ = *from;
+      else if (*from == 0x8A)
+         *to++ = '\n';
+      else if (*from == 0x86 || *from == 0x87) //&& !(GDT_NAME_DESCRIPTOR & type))
+         *to++ = *from;
+      from++;
+   }
+   *to = '\0';
+}
+
+Descriptor *Descriptor::getDescriptor(CharArray da, DescriptorTagDomain domain) {
+   Descriptor *d=0;
+   switch (domain) {
+   case SI:
+      switch ((DescriptorTag)da.getData<DescriptorHeader>()->descriptor_tag) {
+         case CaDescriptorTag:
+            d=new CaDescriptor();
+            break;
+         case CarouselIdentifierDescriptorTag:
+            d=new CarouselIdentifierDescriptor();
+            break;
+         case NetworkNameDescriptorTag:
+            d=new NetworkNameDescriptor();
+            break;
+         case ServiceListDescriptorTag:
+            d=new ServiceListDescriptor();
+            break;
+         case SatelliteDeliverySystemDescriptorTag:
+            d=new SatelliteDeliverySystemDescriptor();
+            break;
+         case CableDeliverySystemDescriptorTag:
+            d=new CableDeliverySystemDescriptor();
+            break;
+         case TerrestrialDeliverySystemDescriptorTag:
+            d=new TerrestrialDeliverySystemDescriptor();
+            break;
+         case BouquetNameDescriptorTag:
+            d=new BouquetNameDescriptor();
+            break;
+         case ServiceDescriptorTag:
+            d=new ServiceDescriptor();
+            break;
+         case NVODReferenceDescriptorTag:
+            d=new NVODReferenceDescriptor();
+            break;
+         case TimeShiftedServiceDescriptorTag:
+            d=new TimeShiftedServiceDescriptor();
+            break;
+         case ComponentDescriptorTag:
+            d=new ComponentDescriptor();
+            break;
+         case StreamIdentifierDescriptorTag:
+            d=new StreamIdentifierDescriptor();
+            break;
+         case SubtitlingDescriptorTag:
+            d=new SubtitlingDescriptor();
+            break;
+         case MultilingualNetworkNameDescriptorTag:
+            d=new MultilingualNetworkNameDescriptor();
+            break;
+         case MultilingualBouquetNameDescriptorTag:
+            d=new MultilingualBouquetNameDescriptor();
+            break;
+         case MultilingualServiceNameDescriptorTag:
+            d=new MultilingualServiceNameDescriptor();
+            break;
+         case MultilingualComponentDescriptorTag:
+            d=new MultilingualComponentDescriptor();
+            break;
+         case ServiceMoveDescriptorTag:
+            d=new ServiceMoveDescriptor();
+            break;
+         case FrequencyListDescriptorTag:
+            d=new FrequencyListDescriptor();
+            break;
+         case ServiceIdentifierDescriptorTag:
+            d=new ServiceIdentifierDescriptor();
+            break;
+         case CaIdentifierDescriptorTag:
+            d=new CaIdentifierDescriptor();
+            break;
+         case ShortEventDescriptorTag:
+            d=new ShortEventDescriptor();
+            break;
+         case ExtendedEventDescriptorTag:
+            d=new ExtendedEventDescriptor();
+            break;
+         case TimeShiftedEventDescriptorTag:
+            d=new TimeShiftedEventDescriptor();
+            break;
+         case ContentDescriptorTag:
+            d=new ContentDescriptor();
+            break;
+         case ParentalRatingDescriptorTag:
+            d=new ParentalRatingDescriptor();
+            break;
+         case ApplicationSignallingDescriptorTag:
+            d=new ApplicationSignallingDescriptor();
+            break;
+
+         //note that it is no problem to implement one
+         //of the unimplemented descriptors.
+
+         //defined in ISO-13818-1
+         case VideoStreamDescriptorTag:
+         case AudioStreamDescriptorTag:
+         case HierarchyDescriptorTag:
+         case RegistrationDescriptorTag:
+         case DataStreamAlignmentDescriptorTag:
+         case TargetBackgroundGridDescriptorTag:
+         case VideoWindowDescriptorTag:
+         case ISO639LanguageDescriptorTag:
+         case SystemClockDescriptorTag:
+         case MultiplexBufferUtilizationDescriptorTag:
+         case CopyrightDescriptorTag:
+         case MaximumBitrateDescriptorTag:
+         case PrivateDataIndicatorDescriptorTag:
+         case SmoothingBufferDescriptorTag:
+         case STDDescriptorTag:
+         case IBPDescriptorTag:
+
+         //defined in ETSI EN 300 468
+         case StuffingDescriptorTag:
+         case VBIDataDescriptorTag:
+         case VBITeletextDescriptorTag:
+         case CountryAvailabilityDescriptorTag:
+         case MocaicDescriptorTag:
+         case LinkageDescriptorTag:
+         case TeletextDescriptorTag:
+         case TelephoneDescriptorTag:
+         case LocalTimeOffsetDescriptorTag:
+         case PrivateDataSpecifierDescriptorTag:
+         case CellListDescriptorTag:
+         case CellFrequencyLinkDescriptorTag:
+         case ServiceAvailabilityDescriptorTag:
+         case ShortSmoothingBufferDescriptorTag:
+         case PartialTransportStreamDescriptorTag:
+         case DataBroadcastDescriptorTag:
+         case DataBroadcastIdDescriptorTag:
+         case CaSystemDescriptorTag:
+         case AC3DescriptorTag:
+         case DSNGDescriptorTag:
+         case PDCDescriptorTag:
+         case AncillaryDataDescriptorTag:
+         case AnnouncementSupportDescriptorTag:
+         case AdaptationFieldDataDescriptorTag:
+         case TransportStreamDescriptorTag:
+         default:
+            d=new UnimplementedDescriptor();
+            break;
+      }
+      break;
+   case MHP:
+      switch ((DescriptorTag)da.getData<DescriptorHeader>()->descriptor_tag) {
+      // They once again start with 0x00 (see page 234, MHP specification)
+         case MHP_ApplicationDescriptorTag:
+            d=new MHP_ApplicationDescriptor();
+            break;
+         case MHP_ApplicationNameDescriptorTag:
+            d=new MHP_ApplicationNameDescriptor();
+            break;
+         case MHP_TransportProtocolDescriptorTag:
+            d=new MHP_TransportProtocolDescriptor();
+            break;
+         case MHP_DVBJApplicationDescriptorTag:
+            d=new MHP_DVBJApplicationDescriptor();
+            break;
+         case MHP_DVBJApplicationLocationDescriptorTag:
+            d=new MHP_DVBJApplicationLocationDescriptor();
+            break;
+      // 0x05 - 0x0A is unimplemented this library
+         case MHP_ExternalApplicationAuthorisationDescriptorTag:
+         case MHP_IPv4RoutingDescriptorTag:
+         case MHP_IPv6RoutingDescriptorTag:
+         case MHP_DVBHTMLApplicationDescriptorTag:
+         case MHP_DVBHTMLApplicationLocationDescriptorTag:
+         case MHP_DVBHTMLApplicationBoundaryDescriptorTag:
+         case MHP_ApplicationIconsDescriptorTag:
+         case MHP_PrefetchDescriptorTag:
+         case MHP_DelegatedApplicationDescriptorTag:
+         case MHP_ApplicationStorageDescriptorTag:
+         default:
+            d=new UnimplementedDescriptor();
+            break;
+      }
+      break;
+   }
+   d->setData(da);
+   return d;
+}
+
+} //end of namespace

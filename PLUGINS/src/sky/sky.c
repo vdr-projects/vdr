@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: sky.c 1.3 2003/05/09 15:27:16 kls Exp $
+ * $Id: sky.c 1.4 2004/01/04 15:29:15 kls Exp $
  */
 
 #include <sys/socket.h>
@@ -14,7 +14,7 @@
 #include <vdr/plugin.h>
 #include <vdr/sources.h>
 
-static const char *VERSION        = "0.1.1";
+static const char *VERSION        = "0.2.0";
 static const char *DESCRIPTION    = "Sky Digibox interface";
 
 // --- cDigiboxDevice --------------------------------------------------------
@@ -37,6 +37,7 @@ public:
   cDigiboxDevice(void);
   virtual ~cDigiboxDevice();
   virtual bool ProvidesSource(int Source) const;
+  virtual bool ProvidesTransponder(const cChannel *Channel) const;
   virtual bool ProvidesChannel(const cChannel *Channel, int Priority = -1, bool *NeedsSetChannel = NULL) const;
   virtual bool SetChannelDevice(const cChannel *Channel, bool LiveView);
   };
@@ -137,13 +138,18 @@ bool cDigiboxDevice::ProvidesSource(int Source) const
   return source == Source;
 }
 
+bool cDigiboxDevice::ProvidesTransponder(const cChannel *Channel) const
+{
+  return false; // can't provide any actual transponder
+}
+
 bool cDigiboxDevice::ProvidesChannel(const cChannel *Channel, int Priority, bool *NeedsDetachReceivers) const
 {
   bool result = false;
   bool hasPriority = Priority < 0 || Priority > this->Priority();
   bool needsDetachReceivers = true;
 
-  if (ProvidesSource(Channel->Source()) && ProvidesCa(Channel->Ca())) {
+  if (ProvidesSource(Channel->Source()) && Channel->Ca() == 0x30) {//XXX
      if (Receiving()) {
         if (digiboxChannelNumber == Channel->Frequency()) {
            needsDetachReceivers = false;
