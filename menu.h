@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 1.19 2001/07/28 13:03:39 kls Exp $
+ * $Id: menu.h 1.20 2001/07/28 13:59:29 kls Exp $
  */
 
 #ifndef _MENU_H
@@ -84,7 +84,8 @@ private:
   cMarks marks;
   bool visible, shown, displayFrames;
   int lastCurrent, lastTotal;
-  void Show(void);
+  time_t timeoutShow;
+  void Show(int Seconds = 0);
   void Hide(void);
   static char *fileName;
   static char *title;

@@ -593,3 +593,6 @@ Video Disk Recorder Revision History
   to Guido Fiala).
 - When entering time values the digits that still have to be entered are now
   shown as '-' (as in "1-:--").
+- When setting an editing mark while the progress display is not active, the
+  display will now be turned on for a short while to indicate the successful
+  setting of the mark.

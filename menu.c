@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.86 2001/07/28 13:44:48 kls Exp $
+ * $Id: menu.c 1.87 2001/07/28 14:03:39 kls Exp $
  */
 
 #include "menu.h"
@@ -2150,6 +2150,7 @@ cReplayControl::cReplayControl(void)
   dvbApi = cDvbApi::PrimaryDvbApi;
   visible = shown = displayFrames = false;
   lastCurrent = lastTotal = -1;
+  timeoutShow = 0;
   if (fileName) {
      marks.Load(fileName);
      dvbApi->StartReplay(fileName);
@@ -2183,12 +2184,15 @@ void cReplayControl::ClearLastReplayed(const char *FileName)
      }
 }
 
-void cReplayControl::Show(void)
+void cReplayControl::Show(int Seconds)
 {
   if (!visible) {
      Interface->Open(Setup.OSDwidth, -3);
      needsFastResponse = visible = true;
      shown = ShowProgress(true);
+     if (Seconds > 0) {
+        timeoutShow = time(NULL) + Seconds;
+        }
      }
 }
 
@@ -2241,8 +2245,10 @@ void cReplayControl::MarkToggle(void)
      cMark *m = marks.Get(Current);
      if (m)
         marks.Del(m);
-     else
+     else {
         marks.Add(Current);
+        Show(2);
+        }
      marks.Save();
      }
 }
@@ -2318,8 +2324,14 @@ eOSState cReplayControl::ProcessKey(eKeys Key)
 {
   if (!dvbApi->Replaying())
      return osEnd;
-  if (visible)
-     shown = ShowProgress(!shown) || shown;
+  if (visible) {
+     if (timeoutShow && time(NULL) > timeoutShow) {
+        Hide();
+        timeoutShow = 0;
+        }
+     else
+        shown = ShowProgress(!shown) || shown;
+     }
   bool DisplayedFrames = displayFrames;
   displayFrames = false;
   switch (Key) {
