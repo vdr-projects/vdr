@@ -1003,3 +1003,6 @@ Miko Wohlgemuth <weak@chello.at>
 Michal Dobrzynski <michal_dobrzynski@mac.com>
  for reporting a freezing picture when a recording starts on a system that always
  uses 'Transfer Mode'
+
+Marco Schlüßler <marco@lordzodiac.de>
+ for fixing handling colors in cDvbSpuPalette::yuv2rgb()

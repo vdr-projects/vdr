@@ -2862,3 +2862,4 @@ Video Disk Recorder Revision History
 - Fixed the height of the channel display in the "Classic VDR" skin.
 - Fixed handling descriptor loops in 'libsi', which had sometimes caused invalid
   CA ids to be added to the channel definitions (thanks to Marcel Wiesweg).
+- Fixed handling colors in cDvbSpuPalette::yuv2rgb() (thanks to Marco Schlüßler).
