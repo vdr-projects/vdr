@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.13 2002/08/25 09:16:51 kls Exp $
+ * $Id: device.c 1.14 2002/09/04 17:26:02 kls Exp $
  */
 
 #include "device.h"
@@ -12,6 +12,7 @@
 #include <sys/ioctl.h>
 #include <sys/mman.h>
 #include "eit.h"
+#include "i18n.h"
 #include "player.h"
 #include "receiver.h"
 #include "status.h"
@@ -101,11 +102,6 @@ bool cDevice::SetPrimaryDevice(int n)
   return false;
 }
 
-bool cDevice::CanBeReUsed(int Frequency, int Vpid)
-{
-  return false;
-}
-
 bool cDevice::HasDecoder(void) const
 {
   return false;
@@ -116,31 +112,26 @@ cOsdBase *cDevice::NewOsd(int x, int y)
   return NULL;
 }
 
-cDevice *cDevice::GetDevice(int Ca, int Priority, int Frequency, int Vpid, bool *ReUse)
+cDevice *cDevice::GetDevice(int Index)
 {
-  if (ReUse)
-     *ReUse = false;
+  return (0 <= Index && Index < numDevices) ? device[Index] : NULL;
+}
+
+cDevice *cDevice::GetDevice(const cChannel *Channel, int Priority, bool *NeedsSwitchChannel)
+{
   cDevice *d = NULL;
-  int Provides[MAXDEVICES];
-  // Check which devices provide Ca:
   for (int i = 0; i < numDevices; i++) {
-      if ((Provides[i] = device[i]->ProvidesCa(Ca)) != 0) { // this device is basicly able to do the job
-         //XXX+ dsyslog("GetDevice: %d %d %d %5d %5d", i, device[i]->HasDecoder(), device[i]->Receiving(), Frequency, device[i]->frequency);//XXX
-         if (device[i]->CanBeReUsed(Frequency, Vpid)) {
-            d = device[i];
-            if (ReUse)
-               *ReUse = true;
-            break;
-            }
-         if (Priority > device[i]->Priority() // Priority is high enough to use this device
-            && (!d // we don't have a device yet, or...
-               || device[i]->Priority() < d->Priority() // ...this one has an even lower Priority
-               || (device[i]->Priority() == d->Priority() // ...same Priority...
-                  && Provides[i] < Provides[d->CardIndex()] // ...but this one provides fewer Ca values
-                  )
-               )
+      bool nsc;
+      if (device[i]->ProvidesChannel(Channel, Priority, &nsc) // this device is basicly able to do the job
+         && (!d // we don't have a device yet, or...
+            || device[i]->Priority() < d->Priority() // ...this one has an even lower Priority, or...
+            || device[i]->Priority() == d->Priority() // ...same Priority...
+               && device[i]->ProvidesCa(Channel->ca) < d->ProvidesCa(Channel->ca) // ...but this one provides fewer Ca values
             )
-            d = device[i];
+         ) {
+         d = device[i];
+         if (NeedsSwitchChannel)
+            *NeedsSwitchChannel = nsc;
          }
       }
   /*XXX+ too complex with multiple recordings per device
@@ -189,8 +180,17 @@ void cDevice::SetVideoFormat(bool VideoFormat16_9)
 {
 }
 
-//#define PRINTPIDS(s) { char b[500]; char *q = b; q += sprintf(q, "%d %s ", CardIndex(), s); for (int i = 0; i < MAXPIDHANDLES; i++) q += sprintf(q, " %s%4d %d", i == ptOther ? "* " : "", pidHandles[i].pid, pidHandles[i].used); dsyslog(b); } //XXX+
+//#define PRINTPIDS(s) { char b[500]; char *q = b; q += sprintf(q, "%d %s ", CardIndex(), s); for (int i = 0; i < MAXPIDHANDLES; i++) q += sprintf(q, " %s%4d %d", i == ptOther ? "* " : "", pidHandles[i].pid, pidHandles[i].used); dsyslog(b); }
 #define PRINTPIDS(s)
+
+bool cDevice::HasPid(int Pid)
+{
+  for (int i = 0; i < MAXPIDHANDLES; i++) {
+      if (pidHandles[i].pid == Pid)
+         return true;
+      }
+  return false;
+}
 
 bool cDevice::AddPid(int Pid, ePidType PidType)
 {
@@ -207,10 +207,10 @@ bool cDevice::AddPid(int Pid, ePidType PidType)
         // The Pid is already in use
         if (++pidHandles[n].used == 2 && n <= ptTeletext) {
            // It's a special PID that may have to be switched into "tap" mode
-           PRINTPIDS("A");//XXX+
+           PRINTPIDS("A");
            return SetPid(&pidHandles[n], n, true);
            }
-        PRINTPIDS("a");//XXX+
+        PRINTPIDS("a");
         return true;
         }
      else if (PidType < ptOther) {
@@ -226,7 +226,7 @@ bool cDevice::AddPid(int Pid, ePidType PidType)
      if (n >= 0) {
         pidHandles[n].pid = Pid;
         pidHandles[n].used = 1;
-        PRINTPIDS("C");//XXX+
+        PRINTPIDS("C");
         return SetPid(&pidHandles[n], n, true);
         }
      }
@@ -238,14 +238,15 @@ void cDevice::DelPid(int Pid)
   if (Pid) {
      for (int i = 0; i < MAXPIDHANDLES; i++) {
          if (pidHandles[i].pid == Pid) {
+            PRINTPIDS("D");
             if (--pidHandles[i].used < 2) {
                SetPid(&pidHandles[i], i, false);
                if (pidHandles[i].used == 0) {
-                   pidHandles[i].handle = -1;
-                   pidHandles[i].pid = 0;
-                   }
+                  pidHandles[i].handle = -1;
+                  pidHandles[i].pid = 0;
+                  }
                }
-            PRINTPIDS("D");//XXX+
+            PRINTPIDS("E");
             }
          }
      }
@@ -256,11 +257,35 @@ bool cDevice::SetPid(cPidHandle *Handle, int Type, bool On)
   return false;
 }
 
-eSetChannelResult cDevice::SetChannel(const cChannel *Channel)
+bool cDevice::ProvidesChannel(const cChannel *Channel, int Priority, bool *NeedsSwitchChannel)
+{
+  return false;
+}
+
+bool cDevice::SwitchChannel(const cChannel *Channel, bool LiveView)
+{
+  if (LiveView)
+     isyslog("switching to channel %d", Channel->number);
+  for (int i = 3; i--;) {
+      switch (SetChannel(Channel, LiveView)) {
+        case scrOk:           return true;
+        case scrNotAvailable: return false;
+        case scrNoTransfer:   if (Interface)
+                                 Interface->Error(tr("Can't start Transfer Mode!"));
+                              return false;
+        case scrFailed:       break; // loop will retry
+        }
+      esyslog("retrying");
+      }
+  return false;
+}
+
+eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
 {
   cStatus::MsgChannelSwitch(this, 0);
 
-  StopReplay();
+  if (LiveView)
+     StopReplay();
 
   // Must set this anyway to avoid getting stuck when switching through
   // channels with 'Up' and 'Down' keys:
@@ -269,7 +294,7 @@ eSetChannelResult cDevice::SetChannel(const cChannel *Channel)
   // If this card can't receive this channel, we must not actually switch
   // the channel here, because that would irritate the driver when we
   // start replaying in Transfer Mode immediately after switching the channel:
-  bool NeedsTransferMode = (IsPrimaryDevice() && !ProvidesCa(Channel->ca));
+  bool NeedsTransferMode = (LiveView && IsPrimaryDevice() && !ProvidesChannel(Channel, Setup.PrimaryLimit));
 
   eSetChannelResult Result = scrOk;
 
@@ -277,13 +302,18 @@ eSetChannelResult cDevice::SetChannel(const cChannel *Channel)
   // use the card that actually can receive it and transfer data from there:
 
   if (NeedsTransferMode) {
-     cDevice *CaDevice = GetDevice(Channel->ca, 0);
-     if (CaDevice && !CaDevice->Receiving() && CaDevice->SetChannel(Channel) == scrOk)
-        cControl::Launch(new cTransferControl(CaDevice, Channel->vpid, Channel->apid1, 0, 0, 0));//XXX+
+     bool NeedsSwitchChannel = false;
+     cDevice *CaDevice = GetDevice(Channel, 0, &NeedsSwitchChannel);
+     if (CaDevice) {
+        if (!NeedsSwitchChannel || CaDevice->SetChannel(Channel, false) == scrOk) // calling SetChannel() directly, not SwitchChannel()!
+           cControl::Launch(new cTransferControl(CaDevice, Channel->vpid, Channel->apid1, 0, 0, 0));//XXX+
+        else
+           Result = scrNoTransfer;
+        }
      else
-        Result = scrNoTransfer;
+        Result = scrNotAvailable;
      }
-  else if (!SetChannelDevice(Channel))
+  else if (!SetChannelDevice(Channel, LiveView))
      Result = scrFailed;
 
   if (IsPrimaryDevice())
@@ -294,7 +324,7 @@ eSetChannelResult cDevice::SetChannel(const cChannel *Channel)
   return Result;
 }
 
-bool cDevice::SetChannelDevice(const cChannel *Channel)
+bool cDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
 {
   return false;
 }
@@ -357,10 +387,6 @@ bool cDevice::Replaying(void)
 
 bool cDevice::AttachPlayer(cPlayer *Player)
 {
-  if (Receiving()) {
-     esyslog("ERROR: attempt to attach a cPlayer while receiving on device %d - ignored", CardIndex() + 1);
-     return false;
-     }
   if (HasDecoder()) {
      if (player)
         Detach(player);
@@ -419,9 +445,7 @@ int cDevice::PlayAudio(const uchar *Data, int Length)
 
 int cDevice::Priority(void)
 {
-  if (IsPrimaryDevice() && !Receiving())
-     return Setup.PrimaryLimit - 1;
-  int priority = DEFAULTPRIORITY;
+  int priority = IsPrimaryDevice() ? Setup.PrimaryLimit - 1 : DEFAULTPRIORITY;
   for (int i = 0; i < MAXRECEIVERS; i++) {
       if (receiver[i])
          priority = max(receiver[i]->priority, priority);
@@ -551,12 +575,10 @@ int cDevice::GetTSPacket(uchar *Data)
 
 bool cDevice::AttachReceiver(cReceiver *Receiver)
 {
-  //XXX+ check for same transponder???
   if (!Receiver)
      return false;
   if (Receiver->device == this)
      return true;
-  StopReplay();
   for (int i = 0; i < MAXRECEIVERS; i++) {
       if (!receiver[i]) {
          for (int n = 0; n < MAXRECEIVEPIDS; n++)

@@ -1431,9 +1431,16 @@ Video Disk Recorder Revision History
   time changed into the future (thanks to Matthias Schniedermeyer for reporting
   this one).
 
-2002-08-28: Version 1.1.9
+2002-09-04: Version 1.1.9
 
 - Fixed the 'newplugin' script to make it name the target for creating the
   distribution package 'dist', as stated in the PLUGINS.html documentation.
   If you have already created a plugin source directory and Makefile you may
   want to check it and replace the 'package' target with 'dist' if necessary.
+- Changed device handling for being able to do simultaneous recording and
+  replay on the same device (Time Shifting). In order for this to work you need
+  to use a driver with a firmware version that has this feature implemented.
+- cDevice::ProvidesCa() is no longer virtual. The new function
+  cDevice::ProvidesChannel() is now used to determine whether a device can
+  receive a given channel, and by default this function returns false. So a
+  device that is a pure replaying device doesn't need to do anything here.

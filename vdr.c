@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.120 2002/08/16 09:54:03 kls Exp $
+ * $Id: vdr.c 1.121 2002/09/04 13:29:19 kls Exp $
  */
 
 #include <getopt.h>
@@ -548,7 +548,7 @@ int main(int argc, char *argv[])
                       int n = cDevice::CurrentChannel() + (NORMALKEY(key) == kUp ? 1 : -1);
                       cChannel *channel = Channels.GetByNumber(n);
                       if (channel)
-                         channel->Switch();
+                         cDevice::PrimaryDevice()->SwitchChannel(channel, true);
                       break;
                       }
                  // Viewing Control:

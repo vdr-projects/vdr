@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.h 1.6 2002/08/25 09:19:34 kls Exp $
+ * $Id: dvbdevice.h 1.7 2002/09/04 13:31:42 kls Exp $
  */
 
 #ifndef __DVBDEVICE_H
@@ -22,6 +22,8 @@
 #endif
 #include "device.h"
 #include "eit.h"
+
+#define MAXDVBDEVICES  4
 
 class cDvbDevice : public cDevice {
   friend class cDvbOsd;
@@ -45,7 +47,6 @@ protected:
 public:
   cDvbDevice(int n);
   virtual ~cDvbDevice();
-  virtual bool CanBeReUsed(int Frequency, int Vpid);
   virtual bool HasDecoder(void) const;
 
 // OSD facilities
@@ -58,7 +59,9 @@ public:
 private:
   int frequency;
 public:
-  virtual bool SetChannelDevice(const cChannel *Channel);
+  virtual bool ProvidesChannel(const cChannel *Channel, int Priority = -1, bool *NeedsSwitchChannel = NULL);
+protected:
+  virtual bool SetChannelDevice(const cChannel *Channel, bool LiveView);
 
 // PID handle facilities
 

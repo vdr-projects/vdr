@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 1.10 2002/08/25 09:16:34 kls Exp $
+ * $Id: device.h 1.11 2002/09/04 11:33:12 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -24,7 +24,7 @@
 #define TS_SYNC_BYTE     0x47
 #define PID_MASK_HI      0x1F
 
-enum eSetChannelResult { scrOk, scrNoTransfer, scrFailed };
+enum eSetChannelResult { scrOk, scrNotAvailable, scrNoTransfer, scrFailed };
 
 enum ePlayMode { pmNone,       // audio/video from decoder
                  pmAudioVideo, // audio/video from player
@@ -69,19 +69,13 @@ public:
          // 1...numDevices) and returns true if this was possible.
   static cDevice *PrimaryDevice(void) { return primaryDevice; }
          // Returns the primary device.
-  static cDevice *GetDevice(int Ca, int Priority, int Frequency = 0, int Vpid = 0, bool *ReUse = NULL);
-         // Selects a free device, avoiding the primaryDevice if possible.
-         // If Ca is not 0, the device with the given number will be returned
-         // in case Ca is <= MAXDEVICES, or the device that provides the given
-         // value in its caCaps.
-         // If there is a device that is already receiving and can be re-used to
-         // receive another data stream, that device will be returned.
-         // If all devices are currently receiving, the one receiving with the
-         // lowest priority (if any) that is lower than the given Priority
-         // will be returned.
-         // If ReUse is given, the caller will be informed whether the device can be re-used
-         // for a new recording. If ReUse returns 'true', the caller must NOT switch the channel
-         // (the device is already properly tuned). Otherwise the caller MUST switch the channel.
+  static cDevice *GetDevice(int Index);
+         // Returns the device with the Index (if Index is in the range
+         // 0..numDevices-1, NULL otherwise).
+  static cDevice *GetDevice(const cChannel *Channel, int Priority = -1, bool *NeedsSwitchChannel = NULL);
+         // Returns a device that is able to receive the given Channel at the
+         // given Priority (see ProvidesChannel() for more information on how
+         // priorities are handled, and the meaning of NeedsSwitchChannel).
   static void SetCaCaps(int Index = -1);
          // Sets the CaCaps of the given device according to the Setup data.
          // By default the CaCaps of all devices are set.
@@ -115,18 +109,13 @@ public:
   bool IsPrimaryDevice(void) const { return this == primaryDevice; }
   int CardIndex(void) const { return cardIndex; }
          // Returns the card index of this device (0 ... MAXDEVICES - 1).
-  virtual int ProvidesCa(int Ca);
-         //XXX TODO temporarily made this function virtual - until a general
-         //XXX      mechanism has been implemented
+  int ProvidesCa(int Ca);
          // Checks whether this device provides the given value in its
          // caCaps. Returns 0 if the value is not provided, 1 if only this
          // value is provided, and > 1 if this and other values are provided.
          // If the given value is equal to the number of this device,
          // 1 is returned. If it is 0 (FTA), 1 plus the number of other values
          // in caCaps is returned.
-  virtual bool CanBeReUsed(int Frequency, int Vpid);//XXX TODO make it more abstract
-         // Tells whether this device is already receiving and allows another
-         // receiver with the given settings to be attached to it.
   virtual bool HasDecoder(void) const;
          // Tells whether this device has an MPEG decoder.
 
@@ -145,10 +134,33 @@ public:
 protected:
   int currentChannel;
 public:
-  eSetChannelResult SetChannel(const cChannel *Channel);
+  virtual bool ProvidesChannel(const cChannel *Channel, int Priority = -1, bool *NeedsSwitchChannel = NULL);
+         // Returns true if this device can provide the given channel.
+         // In case the device has cReceivers attached to it or it is the primary
+         // device, Priority is used to decide whether the caller's request can
+         // be honored.
+         // The special Priority value -1 will tell the caller whether this device
+         // is principally able to provide the given Channel, regardless of any
+         // attached cReceivers.
+         // If NeedsSwitchChannel is given, the resulting value in it will tell the
+         // caller whether or not it shall call SwitchChannel to actually switch the
+         // device to the desired channel. If NeedsSwitchChannel returns false, the
+         // caller must not call SwitchChannel, since there are receivers attached
+         // to the device and it is already switched to the given channel. Note
+         // that the return value in NeedsSwitchChannel is only meaningful if the
+         // function itself actually returns true.
+         // The default implementation always returns false, so a derived cDevice
+         // class that can provide channels must implement this function.
+  bool SwitchChannel(const cChannel *Channel, bool LiveView);
+         // Switches the device to the given Channel, initiating transfer mode
+         // if necessary.
+private:
+  eSetChannelResult SetChannel(const cChannel *Channel, bool LiveView);
          // Sets the device to the given channel (general setup).
-  virtual bool SetChannelDevice(const cChannel *Channel);
+protected:
+  virtual bool SetChannelDevice(const cChannel *Channel, bool LiveView);
          // Sets the device to the given channel (actual physical setup).
+public:
   static int CurrentChannel(void) { return primaryDevice ? primaryDevice->currentChannel : 0; }
          // Returns the number of the current channel on the primary device.
   int Channel(void) { return currentChannel; }
@@ -169,6 +181,8 @@ protected:
     cPidHandle(void) { pid = used = 0; handle = -1; }
     };
   cPidHandle pidHandles[MAXPIDHANDLES];
+  bool HasPid(int Pid);
+         // Returns true if this device is currently receiving the given PID.
   bool AddPid(int Pid, ePidType PidType = ptOther);
          // Adds a PID to the set of PIDs this device shall receive.
   void DelPid(int Pid);
@@ -263,12 +277,12 @@ public:
 private:
   cReceiver *receiver[MAXRECEIVERS];
   int ca;
+  int CanShift(int Ca, int Priority, int UsedCards = 0);
+protected:
   int Priority(void);
       // Returns the priority of the current receiving session (0..MAXPRIORITY),
       // or -1 if no receiver is currently active. The primary device will
       // always return at least Setup.PrimaryLimit-1.
-  int CanShift(int Ca, int Priority, int UsedCards = 0);
-protected:
   virtual bool OpenDvr(void);
       // Opens the DVR of this device and prepares it to deliver a Transport
       // Stream for use in a cReceiver.
