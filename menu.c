@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.199 2002/06/22 13:36:10 kls Exp $
+ * $Id: menu.c 1.200 2002/06/23 09:09:11 kls Exp $
  */
 
 #include "menu.h"
@@ -1513,7 +1513,6 @@ eOSState cMenuRecordings::ProcessKey(eKeys Key)
        case kGreen:  return Rewind();
        case kYellow: return Del();
        case kBlue:   return Summary();
-       case kMenu:   return osEnd;
        default: break;
        }
      }
@@ -2080,7 +2079,6 @@ eOSState cMenuMain::ProcessKey(eKeys Key)
                        }
                        break;
     default: switch (Key) {
-               case kMenu:   state = osEnd;    break;
                case kRed:    if (!HasSubMenu())
                                 state = osRecord;
                              break;
@@ -3062,7 +3060,6 @@ eOSState cReplayControl::ProcessKey(eKeys Key)
           displayFrames = DisplayedFrames;
           switch (Key) {
             // Menu control:
-            case kMenu:    Hide(); return osMenu; // allow direct switching to menu
             case kOk:      if (visible && !modeOnly) {
                               Hide();
                               DoShowMode = true;

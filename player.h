@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: player.h 1.1 2002/06/16 11:52:45 kls Exp $
+ * $Id: player.h 1.2 2002/06/22 14:47:25 kls Exp $
  */
 
 #ifndef __PLAYER_H
@@ -46,6 +46,7 @@ class cControl : public cOsdObject {
 public:
   cControl(void);
   virtual ~cControl();
+  virtual void Hide(void) = 0;
   };
 
 #endif //__PLAYER_H

@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.115 2002/06/22 09:56:12 kls Exp $
+ * $Id: vdr.c 1.116 2002/06/23 09:35:08 kls Exp $
  */
 
 #include <getopt.h>
@@ -372,6 +372,7 @@ int main(int argc, char *argv[])
   // Main program loop:
 
   cOsdObject *Menu = NULL;
+  cOsdObject *Temp = NULL;
   cReplayControl *ReplayControl = NULL;
   int LastChannel = -1;
   int PreviousChannel = cDevice::CurrentChannel();
@@ -401,7 +402,7 @@ int main(int argc, char *argv[])
         // Channel display:
         if (!EITScanner.Active() && cDevice::CurrentChannel() != LastChannel) {
            if (!Menu)
-              Menu = new cDisplayChannel(cDevice::CurrentChannel(), LastChannel > 0);
+              Menu = Temp = new cDisplayChannel(cDevice::CurrentChannel(), LastChannel > 0);
            if (LastChannel > 0)
               PreviousChannel = LastChannel;
            LastChannel = cDevice::CurrentChannel();
@@ -425,6 +426,18 @@ int main(int argc, char *argv[])
            }
         // Keys that must work independent of any interactive mode:
         switch (key) {
+          // Menu control:
+          case kMenu:
+               if (Menu) {
+                  DELETENULL(Menu);
+                  if (!Temp)
+                     break;
+                  }
+               if (ReplayControl)
+                  ReplayControl->Hide();
+               Menu = new cMenuMain(ReplayControl);
+               Temp = NULL;
+               break;
           // Volume Control:
           case kVolUp|k_Repeat:
           case kVolUp:
@@ -437,13 +450,14 @@ int main(int argc, char *argv[])
                   }
                else
                   cDevice::PrimaryDevice()->SetVolume(NORMALKEY(key) == kVolDn ? -VOLUMEDELTA : VOLUMEDELTA);
-               if (!Menu && (!ReplayControl || !ReplayControl->Visible()))
-                  Menu = cDisplayVolume::Create();
+               if (!Interface->IsOpen())
+                  Menu = Temp = cDisplayVolume::Create();
                cDisplayVolume::Process(key);
                break;
           // Power off:
           case kPower: isyslog("Power button pressed");
                        DELETENULL(*Interact);
+                       Temp = NULL;
                        if (!Shutdown) {
                           Interface->Error(tr("Can't shutdown - option '-s' not given!"));
                           break;
@@ -457,33 +471,36 @@ int main(int argc, char *argv[])
           default:
             if (*Interact) {
                switch ((*Interact)->ProcessKey(key)) {
-                 case osMenu:   DELETENULL(Menu);
-                                Menu = new cMenuMain(ReplayControl);
-                                break;
                  case osRecord: DELETENULL(Menu);
+                                Temp = NULL;
                                 if (!cRecordControls::Start())
                                    Interface->Error(tr("No free DVB device to record!"));
                                 break;
                  case osRecordings:
                                 DELETENULL(Menu);
                                 DELETENULL(ReplayControl);
+                                Temp = NULL;
                                 Menu = new cMenuMain(ReplayControl, osRecordings);
                                 break;
                  case osReplay: DELETENULL(Menu);
                                 DELETENULL(ReplayControl);
+                                Temp = NULL;
                                 ReplayControl = new cReplayControl;
                                 break;
                  case osStopReplay:
                                 DELETENULL(*Interact);
                                 DELETENULL(ReplayControl);
+                                Temp = NULL;
                                 break;
                  case osSwitchDvb:
                                 DELETENULL(*Interact);
+                                Temp = NULL;
                                 Interface->Info(tr("Switching primary DVB..."));
                                 cDevice::SetPrimaryDevice(Setup.PrimaryDVB);
                                 break;
                  case osBack:
                  case osEnd:    DELETENULL(*Interact);
+                                Temp = NULL;
                                 break;
                  default:       ;
                  }
@@ -520,8 +537,6 @@ int main(int argc, char *argv[])
                          channel->Switch();
                       break;
                       }
-                 // Menu Control:
-                 case kMenu: Menu = new cMenuMain(ReplayControl); break;
                  // Viewing Control:
                  case kOk:   LastChannel = -1; break; // forces channel display
                  default:    break;

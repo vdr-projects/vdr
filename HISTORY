@@ -1348,8 +1348,9 @@ Video Disk Recorder Revision History
   + Switching between different language tracks doesn't work yet.
   + Cutting doesn't work yet.
 
-2002-06-22: Version 1.1.4
+2002-06-23: Version 1.1.4
 
 - Added Hungarian language texts (thanks to Istvan Koenigsberger and Guido Josten).
 - Activated cutting.
 - Activated transfer mode.
+- Moved handling of the Menu key entirely into vdr.c.
