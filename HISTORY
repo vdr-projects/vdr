@@ -1,7 +1,9 @@
 Video Disk Recorder Revision History
 ------------------------------------
 
-2000-02-19: Version 0.01 (Initial revision).
+2000-02-19: Version 0.01
+
+- Initial revision.
 
 2000-03-11: Version 0.02
 
@@ -1242,3 +1244,13 @@ Video Disk Recorder Revision History
   'channels.conf.cable' whenever a new version is sent to me.
 - Fixed skipping forward in time shift mode near the end of the recording (thanks
   to Andreas Böttger for reporting this one).
+
+2002-05-09: Version 1.1.0
+
+- Begin of the 1.1 development branch. THIS IS NOT A STABLE VERSION!
+  The current stable version for every day use is still the 1.0 branch.
+- First step towards a universal plugin interface. See the file PLUGINS.html
+  for a detailed description. The man page vdr(1) describes the new options '-L'
+  and '-P' used to load plugins. This first step implements the complete "outer"
+  shell for plugins. The "inner" access to VDR data structures will follow.
+- The VDR version number is now displayed in the title line of the "Setup" menu.

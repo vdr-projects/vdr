@@ -4,16 +4,28 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.h 1.1 2000/11/11 09:27:25 kls Exp $
+ * $Id: i18n.h 1.2 2002/05/05 13:42:31 kls Exp $
  */
 
 #ifndef __I18N_H
 #define __I18N_H
 
-extern const int NumLanguages;
+#include <stdio.h>
 
-const char *tr(const char *s);
+const int I18nNumLanguages = 12;
 
-const char * const * Languages(void);
+typedef const char *tI18nPhrase[I18nNumLanguages];
+
+void I18nRegister(const tI18nPhrase * const Phrases, const char *Plugin);
+
+const char *I18nTranslate(const char *s, const char *Plugin = NULL);
+
+const char * const * I18nLanguages(void);
+
+#ifdef PLUGIN_NAME_I18N
+#define tr(s)  I18nTranslate(s, PLUGIN_NAME_I18N)
+#else
+#define tr(s)  I18nTranslate(s)
+#endif
 
 #endif //__I18N_H

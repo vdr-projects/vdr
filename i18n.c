@@ -4,27 +4,29 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.86 2002/05/04 14:44:32 kls Exp $
+ * $Id: i18n.c 1.87 2002/05/09 13:40:51 kls Exp $
  *
- * Slovenian  translations provided by Miha Setina <mihasetina@softhome.net> and Matjaz Thaler <matjaz.thaler@guest.arnes.si>
- * Italian    translations provided by Alberto Carraro <bertocar@tin.it>
- * Dutch      translations provided by Arnold Niessen <niessen@iae.nl> <arnold.niessen@philips.com>
- * Portuguese translations provided by Paulo Lopes <pmml@netvita.pt>
- * French     translations provided by Jean-Claude Repetto <jc@repetto.org>
- * Norwegian  translations provided by Jørgen Tvedt <pjtvedt@online.no> and Truls Slevigen <truls@slevigen.no>
- * Finnish    translations provided by Hannu Savolainen <hannu@opensound.com>
- * Polish     translations provided by Michael Rakowski <mrak@gmx.de>
- * Spanish    translations provided by Ruben Nunez Francisco <ruben.nunez@tang-it.com>
- * Greek      translations provided by Dimitrios Dimitrakos <mail@dimitrios.de>
+ * Translations provided by:
+ *
+ * Slovenian   Miha Setina <mihasetina@softhome.net> and Matjaz Thaler <matjaz.thaler@guest.arnes.si>
+ * Italian     Alberto Carraro <bertocar@tin.it>
+ * Dutch       Arnold Niessen <niessen@iae.nl> <arnold.niessen@philips.com>
+ * Portuguese  Paulo Lopes <pmml@netvita.pt>
+ * French      Jean-Claude Repetto <jc@repetto.org>
+ * Norwegian   Jørgen Tvedt <pjtvedt@online.no> and Truls Slevigen <truls@slevigen.no>
+ * Finnish     Hannu Savolainen <hannu@opensound.com>
+ * Polish      Michael Rakowski <mrak@gmx.de>
+ * Spanish     Ruben Nunez Francisco <ruben.nunez@tang-it.com>
+ * Greek       Dimitrios Dimitrakos <mail@dimitrios.de>
  *
  */
 
 /*
  * How to add a new language:
  *
- * 1. Announce your translation action on the Linux-DVB mailing
+ * 1. Announce your translation action on the VDR mailing
  *    list to avoid duplicate work.
- * 2. Increase the value of 'NumLanguages'.
+ * 2. Increase the value of 'I18nNumLanguages' in 'i18n.h'.
  * 3. Insert a new line in every member of the 'Phrases[]' array,
  *    containing the translated text for the new language.
  *    For example, assuming you want to add the Italian language,
@@ -46,7 +48,7 @@
  *    Note that only the characters defined in 'fontosd.c' will
  *    be available!
  * 4. Compile VDR and test the new language by switching to it
- *    in the "Setup" menu.
+ *    in the "Setup/OSD" menu.
  * 5. Send the modified 'i18n.c' file to <kls@cadsoft.de> to have
  *    it included in the next version of VDR.
  *
@@ -60,15 +62,10 @@
  */
 
 #include "i18n.h"
-#include <stdio.h>
 #include "config.h"
 #include "tools.h"
 
-const int NumLanguages = 12;
-
-typedef const char *tPhrase[NumLanguages];
-
-const tPhrase Phrases[] = {
+const tI18nPhrase Phrases[] = {
   // The name of the language (this MUST be the first phrase!):
   { "English",
     "Deutsch",
@@ -1260,6 +1257,19 @@ const tPhrase Phrases[] = {
     "Varios",
     "Diafora",
   },
+  { "Plugins",
+    "Plugins",
+    "Plugins",
+    "Plugins",
+    "Plugins",
+    "Plugins",
+    "Plugins",
+    "Plugins",
+    "Plugins",
+    "Plugins",
+    "Plugins",
+    "Plugins",
+  },
   { "Restart",
     "Neustart",
     "Ponoven zagon",
@@ -2384,26 +2394,101 @@ const tPhrase Phrases[] = {
     "buscando grabaciones...",
     "Ginete sarosi egrafon...",
   },
+  { "This plugin has no setup parameters!",
+    "Dieses Plugin hat keine Setup-Parameter!",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+  },
   { NULL }
   };
 
-const char *tr(const char *s)
+// --- cI18nEntry ------------------------------------------------------------
+
+class cI18nEntry : public cListObject {
+private:
+  const tI18nPhrase *phrases;
+  const char *plugin;
+public:
+  cI18nEntry(const tI18nPhrase * const Phrases, const char *Plugin);
+  const tI18nPhrase *Phrases(void) { return phrases; }
+  const char *Plugin(void) { return plugin; }
+  };
+
+cI18nEntry::cI18nEntry(const tI18nPhrase * const Phrases, const char *Plugin)
+{
+  phrases = Phrases;
+  plugin = Plugin;
+}
+
+// --- cI18nList -------------------------------------------------------------
+
+class cI18nList : public cList<cI18nEntry> {
+public:
+  cI18nEntry *Get(const char *Plugin);
+  const tI18nPhrase *GetPhrases(const char *Plugin);
+  };
+
+cI18nEntry *cI18nList::Get(const char *Plugin)
+{
+  if (Plugin) {
+     for (cI18nEntry *p = First(); p; p = Next(p)) {
+         if (strcmp(p->Plugin(), Plugin) == 0)
+            return p;
+         }
+     }
+  return NULL;
+}
+
+const tI18nPhrase *cI18nList::GetPhrases(const char *Plugin)
+{
+  cI18nEntry *p = Get(Plugin);
+  return p ? p->Phrases() : NULL;
+}
+
+cI18nList I18nList;
+
+// ---
+
+void I18nRegister(const tI18nPhrase * const Phrases, const char *Plugin)
+{
+  cI18nEntry *p = I18nList.Get(Plugin);
+  if (p)
+     I18nList.Del(p);
+  if (Phrases)
+     I18nList.Add(new cI18nEntry(Phrases, Plugin));
+}
+
+const char *I18nTranslate(const char *s, const char *Plugin)
 {
   if (Setup.OSDLanguage) {
-     for (const tPhrase *p = Phrases; **p; p++) {
-         if (strcmp(s, **p) == 0) {
-            const char *t = (*p)[Setup.OSDLanguage];
-            if (t && *t)
-               return t;
-            }
+     const tI18nPhrase *p = Plugin ? I18nList.GetPhrases(Plugin) : Phrases;
+     if (!p)
+        p = Phrases;
+     for (int i = ((p == Phrases) ? 1 : 2); i--; ) {
+         for (; **p; p++) {
+             if (strcmp(s, **p) == 0) {
+                const char *t = (*p)[Setup.OSDLanguage];
+                if (t && *t)
+                   return t;
+                }
+             }
+         p = Phrases;
          }
-     esyslog(LOG_ERR, "no translation found for '%s' in language %d (%s)\n", s, Setup.OSDLanguage, Phrases[0][Setup.OSDLanguage]);
+     esyslog(LOG_ERR, "%s%sno translation found for '%s' in language %d (%s)\n", Plugin ? Plugin : "", Plugin ? ": " : "", s, Setup.OSDLanguage, Phrases[0][Setup.OSDLanguage]);
      }
   const char *p = strchr(s, '$');
   return p ? p + 1 : s;
 }
 
-const char * const * Languages(void)
+const char * const * I18nLanguages(void)
 {
   return &Phrases[0][0];
 }

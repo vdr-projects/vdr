@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.112 2002/04/26 13:56:30 kls Exp $
+ * $Id: config.h 1.113 2002/05/05 12:00:00 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -19,7 +19,7 @@
 #include "eit.h"
 #include "tools.h"
 
-#define VDRVERSION "1.0.2"
+#define VDRVERSION "1.1.0"
 
 #define MAXPRIORITY 99
 #define MAXLIFETIME 99
@@ -149,7 +149,7 @@ public:
   cTimer(const cEventInfo *EventInfo);
   virtual ~cTimer();
   cTimer& operator= (const cTimer &Timer);
-  bool operator< (const cTimer &Timer);
+  virtual bool operator< (const cListObject &ListObject);
   const char *ToText(void);
   bool Parse(const char *s);
   bool Save(FILE *f);
@@ -220,7 +220,8 @@ private:
 public:
   cConfig(void) { fileName = NULL; }
   virtual ~cConfig() { delete fileName; }
-  virtual bool Load(const char *FileName, bool AllowComments = false)
+  const char *FileName(void) { return fileName; }
+  bool Load(const char *FileName, bool AllowComments = false)
   {
     Clear();
     fileName = strdup(FileName);
@@ -323,14 +324,35 @@ extern cCommands Commands;
 extern cSVDRPhosts SVDRPhosts;
 extern cCaDefinitions CaDefinitions;
 
-class cSetup {
+class cSetupLine : public cListObject {
 private:
-  static char *fileName;
-  void PrintCaCaps(FILE *f, const char *Name);
-  bool ParseCaCaps(const char *Value);
+  char *plugin;
+  char *name;
+  char *value;
+public:
+  cSetupLine(void);
+  cSetupLine(const char *Name, const char *Value, const char *Plugin = NULL);
+  virtual ~cSetupLine();
+  virtual bool operator< (const cListObject &ListObject);
+  const char *Plugin(void) { return plugin; }
+  const char *Name(void) { return name; }
+  const char *Value(void) { return value; }
   bool Parse(char *s);
+  bool Save(FILE *f);
+  };
+
+class cSetup : public cConfig<cSetupLine> {
+  friend class cPlugin; // needs to be able to call Store()
+private:
+  void StoreCaCaps(const char *Name);
+  bool ParseCaCaps(const char *Value);
+  bool Parse(const char *Name, const char *Value);
+  cSetupLine *Get(const char *Name, const char *Plugin = NULL);
+  void Store(const char *Name, const char *Value, const char *Plugin = NULL);
+  void Store(const char *Name, int Value, const char *Plugin = NULL);
 public:
   // Also adjust cMenuSetup (menu.c) when adding parameters here!
+  int __BeginData__;
   int OSDLanguage;
   int PrimaryDVB;
   int ShowInfoOnChSwitch;
@@ -366,9 +388,11 @@ public:
   int CaCaps[MAXDVBAPI][MAXCACAPS];
   int CurrentChannel;
   int CurrentVolume;
+  int __EndData__;
   cSetup(void);
+  cSetup& operator= (const cSetup &s);
   bool Load(const char *FileName);
-  bool Save(const char *FileName = NULL);
+  bool Save(void);
   };
 
 extern cSetup Setup;

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.189 2002/05/01 14:54:10 kls Exp $
+ * $Id: menu.c 1.190 2002/05/09 10:13:47 kls Exp $
  */
 
 #include "menu.h"
@@ -16,6 +16,8 @@
 #include "config.h"
 #include "eit.h"
 #include "i18n.h"
+#include "menuitems.h"
+#include "plugin.h"
 #include "videodir.h"
 
 #define MENUTIMEOUT     120 // seconds
@@ -27,125 +29,6 @@
 #define CHNUMWIDTH  (Channels.Count() > 999 ? 5 : 4) // there are people with more than 999 channels...
 
 const char *FileNameChars = " abcdefghijklmnopqrstuvwxyz0123456789-.#~";
-
-// --- cMenuEditItem ---------------------------------------------------------
-
-class cMenuEditItem : public cOsdItem {
-private:
-  const char *name;
-  const char *value;
-public:
-  cMenuEditItem(const char *Name);
-  ~cMenuEditItem();
-  void SetValue(const char *Value);
-  };
-
-cMenuEditItem::cMenuEditItem(const char *Name)
-{
-  name = strdup(Name);
-  value = NULL;
-}
-
-cMenuEditItem::~cMenuEditItem()
-{
-  delete name;
-  delete value;
-}
-
-void cMenuEditItem::SetValue(const char *Value)
-{
-  delete value;
-  value = strdup(Value);
-  char *buffer = NULL;
-  asprintf(&buffer, "%s:\t%s", name, value);
-  SetText(buffer, false);
-  Display();
-}
-
-// --- cMenuEditIntItem ------------------------------------------------------
-
-class cMenuEditIntItem : public cMenuEditItem {
-protected:
-  int *value;
-  int min, max;
-  virtual void Set(void);
-public:
-  cMenuEditIntItem(const char *Name, int *Value, int Min = 0, int Max = INT_MAX);
-  virtual eOSState ProcessKey(eKeys Key);
-  };
-
-cMenuEditIntItem::cMenuEditIntItem(const char *Name, int *Value, int Min, int Max)
-:cMenuEditItem(Name)
-{
-  value = Value;
-  min = Min;
-  max = Max;
-  Set();
-}
-
-void cMenuEditIntItem::Set(void)
-{
-  char buf[16];
-  snprintf(buf, sizeof(buf), "%d", *value);
-  SetValue(buf);
-}
-
-eOSState cMenuEditIntItem::ProcessKey(eKeys Key)
-{
-  eOSState state = cMenuEditItem::ProcessKey(Key);
-
-  if (state == osUnknown) {
-     int newValue;
-     if (k0 <= Key && Key <= k9) {
-        if (fresh) {
-           *value = 0;
-           fresh = false;
-           }
-        newValue = *value  * 10 + (Key - k0);
-        }
-     else if (NORMALKEY(Key) == kLeft) { // TODO might want to increase the delta if repeated quickly?
-        newValue = *value - 1;
-        fresh = true;
-        }
-     else if (NORMALKEY(Key) == kRight) {
-        newValue = *value + 1;
-        fresh = true;
-        }
-     else
-        return state;
-     if ((!fresh || min <= newValue) && newValue <= max) {
-        *value = newValue;
-        Set();
-        }
-     state = osContinue;
-     }
-  return state;
-}
-
-// --- cMenuEditBoolItem -----------------------------------------------------
-
-class cMenuEditBoolItem : public cMenuEditIntItem {
-protected:
-  const char *falseString, *trueString;
-  virtual void Set(void);
-public:
-  cMenuEditBoolItem(const char *Name, int *Value, const char *FalseString = NULL, const char *TrueString = NULL);
-  };
-
-cMenuEditBoolItem::cMenuEditBoolItem(const char *Name, int *Value, const char *FalseString, const char *TrueString)
-:cMenuEditIntItem(Name, Value, 0, 1)
-{
-  falseString = FalseString ? FalseString : tr("no");
-  trueString = TrueString ? TrueString : tr("yes");
-  Set();
-}
-
-void cMenuEditBoolItem::Set(void)
-{
-  char buf[16];
-  snprintf(buf, sizeof(buf), "%s", *value ? trueString : falseString);
-  SetValue(buf);
-}
 
 // --- cMenuEditChanItem -----------------------------------------------------
 
@@ -451,282 +334,6 @@ eOSState cMenuEditTimeItem::ProcessKey(eKeys Key)
   return state;
 }
 
-// --- cMenuEditChrItem ------------------------------------------------------
-
-class cMenuEditChrItem : public cMenuEditItem {
-private:
-  char *value;
-  const char *allowed;
-  const char *current;
-  virtual void Set(void);
-public:
-  cMenuEditChrItem(const char *Name, char *Value, const char *Allowed);
-  ~cMenuEditChrItem();
-  virtual eOSState ProcessKey(eKeys Key);
-  };
-
-cMenuEditChrItem::cMenuEditChrItem(const char *Name, char *Value, const char *Allowed)
-:cMenuEditItem(Name)
-{
-  value = Value;
-  allowed = strdup(Allowed);
-  current = strchr(allowed, *Value);
-  if (!current)
-     current = allowed;
-  Set();
-}
-
-cMenuEditChrItem::~cMenuEditChrItem()
-{
-  delete allowed;
-}
-
-void cMenuEditChrItem::Set(void)
-{
-  char buf[2];
-  snprintf(buf, sizeof(buf), "%c", *value);
-  SetValue(buf);
-}
-
-eOSState cMenuEditChrItem::ProcessKey(eKeys Key)
-{
-  eOSState state = cMenuEditItem::ProcessKey(Key);
-
-  if (state == osUnknown) {
-     if (NORMALKEY(Key) == kLeft) {
-        if (current > allowed)
-           current--;
-        }
-     else if (NORMALKEY(Key) == kRight) {
-        if (*(current + 1))
-           current++;
-        }
-     else
-        return state;
-     *value = *current;
-     Set();
-     state = osContinue;
-     }
-  return state;
-}
-
-// --- cMenuEditStrItem ------------------------------------------------------
-
-class cMenuEditStrItem : public cMenuEditItem {
-private:
-  char *value;
-  int length;
-  const char *allowed;
-  int pos;
-  bool insert, newchar, uppercase;
-  void SetHelpKeys(void);
-  virtual void Set(void);
-  char Inc(char c, bool Up);
-public:
-  cMenuEditStrItem(const char *Name, char *Value, int Length, const char *Allowed);
-  ~cMenuEditStrItem();
-  virtual eOSState ProcessKey(eKeys Key);
-  };
-
-cMenuEditStrItem::cMenuEditStrItem(const char *Name, char *Value, int Length, const char *Allowed)
-:cMenuEditItem(Name)
-{
-  value = Value;
-  length = Length;
-  allowed = strdup(Allowed);
-  pos = -1;
-  insert = uppercase = false;
-  newchar = true;
-  Set();
-}
-
-cMenuEditStrItem::~cMenuEditStrItem()
-{
-  delete allowed;
-}
-
-void cMenuEditStrItem::SetHelpKeys(void)
-{
-  if (pos >= 0)
-     Interface->Help(tr("ABC/abc"), tr(insert ? "Overwrite" : "Insert"), tr("Delete"));
-  else
-     Interface->Help(NULL);
-}
-
-void cMenuEditStrItem::Set(void)
-{
-  char buf[1000];
-  const char *fmt = insert && newchar ? "[]%c%s" : "[%c]%s";
-
-  if (pos >= 0) {
-     strncpy(buf, value, pos);
-     snprintf(buf + pos, sizeof(buf) - pos - 2, fmt, *(value + pos), value + pos + 1);
-     int width = Interface->Width() - Interface->GetCols()[0];
-     if (cDvbApi::PrimaryDvbApi->WidthInCells(buf) <= width) {
-        // the whole buffer fits on the screen
-        SetValue(buf);
-        return;
-        }
-     width *= cDvbApi::PrimaryDvbApi->CellWidth();
-     width -= cDvbApi::PrimaryDvbApi->Width('>'); // assuming '<' and '>' have the same with
-     int w = 0;
-     int i = 0;
-     int l = strlen(buf);
-     while (i < l && w <= width)
-           w += cDvbApi::PrimaryDvbApi->Width(buf[i++]);
-     if (i >= pos + 4) {
-        // the cursor fits on the screen
-        buf[i - 1] = '>';
-        buf[i] = 0;
-        SetValue(buf);
-        return;
-        }
-     // the cursor doesn't fit on the screen
-     w = 0;
-     if (buf[i = pos + 3]) {
-        buf[i] = '>';
-        buf[i + 1] = 0;
-        }
-     else
-        i--;
-     while (i >= 0 && w <= width)
-           w += cDvbApi::PrimaryDvbApi->Width(buf[i--]);
-     buf[++i] = '<';
-     SetValue(buf + i);
-     }
-  else
-     SetValue(value);
-}
-
-char cMenuEditStrItem::Inc(char c, bool Up)
-{
-  const char *p = strchr(allowed, c);
-  if (!p)
-     p = allowed;
-  if (Up) {
-     if (!*++p)
-        p = allowed;
-     }
-  else if (--p < allowed)
-     p = allowed + strlen(allowed) - 1;
-  return *p;
-}
-
-eOSState cMenuEditStrItem::ProcessKey(eKeys Key)
-{
-  switch (Key) {
-    case kRed:   // Switch between upper- and lowercase characters
-                 if (pos >= 0 && (!insert || !newchar)) {
-                    uppercase = !uppercase;
-                    value[pos] = uppercase ? toupper(value[pos]) : tolower(value[pos]);
-                    }
-                 break;
-    case kGreen: // Toggle insert/overwrite modes
-                 if (pos >= 0) {
-                    insert = !insert;
-                    newchar = true;
-                    }
-                 SetHelpKeys();
-                 break;
-    case kYellow|k_Repeat:
-    case kYellow: // Remove the character at current position; in insert mode it is the character to the right of cursor
-                 if (pos >= 0) {
-                    if (strlen(value) > 1) {
-                       memmove(value + pos, value + pos + 1, strlen(value) - pos);
-                       // reduce position, if we removed the last character
-                       if (pos == int(strlen(value)))
-                          pos--;
-                       }
-                    else if (strlen(value) == 1)
-                       value[0] = ' '; // This is the last character in the string, replace it with a blank
-                    if (isalpha(value[pos]))
-                       uppercase = isupper(value[pos]);
-                    newchar = true;
-                    }
-                 break;
-    case kLeft|k_Repeat:
-    case kLeft:  if (pos > 0) {
-                    if (!insert || newchar)
-                       pos--;
-                    newchar = true;
-                    }
-                 if (!insert && isalpha(value[pos]))
-                    uppercase = isupper(value[pos]);
-                 break;
-    case kRight|k_Repeat:
-    case kRight: if (pos < length && pos < int(strlen(value)) ) {
-                    if (++pos >= int(strlen(value))) {
-                       if (pos >= 2 && value[pos - 1] == ' ' && value[pos - 2] == ' ')
-                          pos--; // allow only two blanks at the end
-                       else {
-                          value[pos] = ' ';
-                          value[pos + 1] = 0;
-                          }
-                       }
-                    }
-                 newchar = true;
-                 if (!insert && isalpha(value[pos]))
-                    uppercase = isupper(value[pos]);
-                 if (pos == 0)
-                    SetHelpKeys();
-                 break;
-    case kUp|k_Repeat:
-    case kUp:
-    case kDown|k_Repeat:
-    case kDown:  if (pos >= 0) {
-                    if (insert && newchar) {
-                       // create a new character in insert mode
-                       if (int(strlen(value)) < length) {
-                          memmove(value + pos + 1, value + pos, strlen(value) - pos + 1);
-                          value[pos] = ' ';
-                          }
-                       }
-                    if (uppercase)
-                       value[pos] = toupper(Inc(tolower(value[pos]), NORMALKEY(Key) == kUp));
-                    else
-                       value[pos] =         Inc(        value[pos],  NORMALKEY(Key) == kUp);
-                    newchar = false;
-                    }
-                 else
-                    return cMenuEditItem::ProcessKey(Key);
-                 break;
-    case kOk:    if (pos >= 0) {
-                    pos = -1;
-                    newchar = true;
-                    stripspace(value);
-                    SetHelpKeys();
-                    break;
-                    }
-                 // run into default
-    default:     return cMenuEditItem::ProcessKey(Key);
-    }
-  Set();
-  return osContinue;
-}
-
-// --- cMenuEditStraItem -----------------------------------------------------
-
-class cMenuEditStraItem : public cMenuEditIntItem {
-private:
-  const char * const *strings;
-protected:
-  virtual void Set(void);
-public:
-  cMenuEditStraItem(const char *Name, int *Value, int NumStrings, const char * const *Strings);
-  };
-
-cMenuEditStraItem::cMenuEditStraItem(const char *Name, int *Value, int NumStrings, const char * const *Strings)
-:cMenuEditIntItem(Name, Value, 0, NumStrings - 1)
-{
-  strings = Strings;
-  Set();
-}
-
-void cMenuEditStraItem::Set(void)
-{
-  SetValue(strings[*value]);
-}
-
 // --- cMenuEditCaItem -------------------------------------------------------
 
 class cMenuEditCaItem : public cMenuEditIntItem {
@@ -1016,116 +623,6 @@ eOSState cMenuChannels::ProcessKey(eKeys Key)
        }
      }
   return state;
-}
-
-// --- cMenuTextItem ---------------------------------------------------------
-
-class cMenuTextItem : public cOsdItem {
-private:
-  char *text;
-  int x, y, w, h, lines, offset;
-  eDvbColor fgColor, bgColor;
-  eDvbFont font;
-public:
-  cMenuTextItem(const char *Text, int X, int Y, int W, int H = -1, eDvbColor FgColor = clrWhite, eDvbColor BgColor = clrBackground, eDvbFont Font = fontOsd);
-  ~cMenuTextItem();
-  int Height(void) { return h; }
-  void Clear(void);
-  virtual void Display(int Offset = -1, eDvbColor FgColor = clrWhite, eDvbColor BgColor = clrBackground);
-  bool CanScrollUp(void) { return offset > 0; }
-  bool CanScrollDown(void) { return h + offset < lines; }
-  void ScrollUp(bool Page);
-  void ScrollDown(bool Page);
-  virtual eOSState ProcessKey(eKeys Key);
-  };
-
-cMenuTextItem::cMenuTextItem(const char *Text, int X, int Y, int W, int H, eDvbColor FgColor, eDvbColor BgColor, eDvbFont Font)
-{
-  x = X;
-  y = Y;
-  w = W;
-  h = H;
-  fgColor = FgColor;
-  bgColor = BgColor;
-  font = Font;
-  offset = 0;
-  eDvbFont oldFont = Interface->SetFont(font);
-  text = Interface->WrapText(Text, w - 1, &lines);
-  Interface->SetFont(oldFont);
-  if (h < 0)
-     h = lines;
-}
-
-cMenuTextItem::~cMenuTextItem()
-{
-  delete text;
-}
-
-void cMenuTextItem::Clear(void)
-{
-  Interface->Fill(x, y, w, h, bgColor);
-}
-
-void cMenuTextItem::Display(int Offset, eDvbColor FgColor, eDvbColor BgColor)
-{
-  int l = 0;
-  char *t = text;
-  eDvbFont oldFont = Interface->SetFont(font);
-  while (*t) {
-        char *n = strchr(t, '\n');
-        if (l >= offset) {
-           if (n)
-              *n = 0;
-           Interface->Write(x, y + l - offset, t, fgColor, bgColor);
-           if (n)
-              *n = '\n';
-           else
-              break;
-           }
-        if (!n)
-           break;
-        t = n + 1;
-        if (++l >= h + offset)
-           break;
-        }
-  Interface->SetFont(oldFont);
-  // scroll indicators use inverted color scheme!
-  if (CanScrollUp())   Interface->Write(x + w - 1, y,         "^", bgColor, fgColor);
-  if (CanScrollDown()) Interface->Write(x + w - 1, y + h - 1, "v", bgColor, fgColor);
-}
-
-void cMenuTextItem::ScrollUp(bool Page)
-{
-  if (CanScrollUp()) {
-     Clear();
-     offset = max(offset - (Page ? h : 1), 0);
-     Display();
-     }
-}
-
-void cMenuTextItem::ScrollDown(bool Page)
-{
-  if (CanScrollDown()) {
-     Clear();
-     offset = min(offset + (Page ? h : 1), lines - h);
-     Display();
-     }
-}
-
-eOSState cMenuTextItem::ProcessKey(eKeys Key)
-{
-  switch (Key) {
-    case kLeft|k_Repeat:
-    case kLeft:
-    case kUp|k_Repeat:
-    case kUp:            ScrollUp(NORMALKEY(Key) == kLeft);    break;
-    case kRight|k_Repeat:
-    case kRight:
-    case kDown|k_Repeat:
-    case kDown:          ScrollDown(NORMALKEY(Key) == kRight); break;
-    default:             return osUnknown;
-    }
-  return osContinue;
 }
 
 // --- cMenuText -------------------------------------------------------------
@@ -2028,60 +1525,6 @@ eOSState cMenuRecordings::ProcessKey(eKeys Key)
   return state;
 }
 
-// --- cMenuSetupPage --------------------------------------------------------
-
-class cMenuSetupPage : public cOsdMenu {
-protected:
-  cSetup data;
-  int osdLanguage;
-  void SetupTitle(const char *s);
-  virtual void Set(void) = 0;
-public:
-  cMenuSetupPage(void);
-  virtual eOSState ProcessKey(eKeys Key);
-  };
-
-cMenuSetupPage::cMenuSetupPage(void)
-:cOsdMenu("", 33)
-{
-  data = Setup;
-  osdLanguage = Setup.OSDLanguage;
-}
-
-void cMenuSetupPage::SetupTitle(const char *s)
-{
-  char buf[40]; // can't call tr() for more than one string at a time!
-  char *q = buf + snprintf(buf, sizeof(buf), "%s - ", tr("Setup"));
-  snprintf(q, sizeof(buf) - strlen(buf), "%s", tr(s));
-  SetTitle(buf);
-}
-
-eOSState cMenuSetupPage::ProcessKey(eKeys Key)
-{
-  eOSState state = cOsdMenu::ProcessKey(Key);
-
-  if (state == osUnknown) {
-     switch (Key) {
-       case kOk: state = (Setup.PrimaryDVB != data.PrimaryDVB) ? osSwitchDvb : osBack;
-                 cDvbApi::PrimaryDvbApi->SetVideoFormat(data.VideoFormat ? VIDEO_FORMAT_16_9 : VIDEO_FORMAT_4_3);
-                 Setup = data;
-                 Setup.Save();
-                 cDvbApi::SetCaCaps();
-                 break;
-       default: break;
-       }
-     }
-  if (data.OSDLanguage != osdLanguage) {
-     int OriginalOSDLanguage = Setup.OSDLanguage;
-     Setup.OSDLanguage = data.OSDLanguage;
-     Set();
-     Display();
-     osdLanguage = data.OSDLanguage;
-     Setup.OSDLanguage = OriginalOSDLanguage;
-     }
-  return state;
-}
-
 // --- cMenuSetupOSD ---------------------------------------------------------
 
 class cMenuSetupOSD : public cMenuSetupPage {
@@ -2095,7 +1538,7 @@ void cMenuSetupOSD::Set(void)
 {
   Clear();
   SetupTitle("OSD");
-  Add(new cMenuEditStraItem(tr("Setup.OSD$Language"),               &data.OSDLanguage, NumLanguages, Languages()));
+  Add(new cMenuEditStraItem(tr("Setup.OSD$Language"),               &data.OSDLanguage, I18nNumLanguages, I18nLanguages()));
   Add(new cMenuEditIntItem( tr("Setup.OSD$Width"),                  &data.OSDwidth, MINOSDWIDTH, MAXOSDWIDTH));
   Add(new cMenuEditIntItem( tr("Setup.OSD$Height"),                 &data.OSDheight, MINOSDHEIGHT, MAXOSDHEIGHT));
   Add(new cMenuEditIntItem( tr("Setup.OSD$Message time (s)"),       &data.OSDMessageTime, 1, 60));
@@ -2245,6 +1688,75 @@ void cMenuSetupMisc::Set(void)
   Add(new cMenuEditIntItem( tr("Setup.Miscellaneous$SVDRP timeout (s)"),          &data.SVDRPTimeout));
 }
 
+// --- cMenuSetupPluginItem --------------------------------------------------
+
+class cMenuSetupPluginItem : public cOsdItem {
+private:
+  int pluginIndex;
+public:
+  cMenuSetupPluginItem(const char *Name, int Index);
+  int PluginIndex(void) { return pluginIndex; }
+  };
+
+cMenuSetupPluginItem::cMenuSetupPluginItem(const char *Name, int Index)
+:cOsdItem(Name)
+{
+  pluginIndex = Index;
+}
+
+// --- cMenuSetupPlugins -----------------------------------------------------
+
+class cMenuSetupPlugins : public cMenuSetupPage {
+private:
+  virtual void Set(void);
+public:
+  cMenuSetupPlugins(void) { Set(); }
+  virtual eOSState ProcessKey(eKeys Key);
+  };
+
+void cMenuSetupPlugins::Set(void)
+{
+  Clear();
+  SetupTitle("Plugins");
+  SetHasHotkeys();
+  for (int i = 0; ; i++) {
+      cPlugin *p = cPluginManager::GetPlugin(i);
+      if (p) {
+         char *buffer = NULL;
+         asprintf(&buffer, "%s (%s) - %s", p->Name(), p->Version(), p->Description());
+         Add(new cMenuSetupPluginItem(hk(buffer), i));
+         delete buffer;
+         }
+      else
+         break;
+      }
+}
+
+eOSState cMenuSetupPlugins::ProcessKey(eKeys Key)
+{
+  eOSState state = cOsdMenu::ProcessKey(Key); // not cMenuSetupPage::ProcessKey()!
+
+  if (state == osUnknown) {
+     switch (Key) {
+       case kOk: {
+                   cMenuSetupPluginItem *item = (cMenuSetupPluginItem *)Get(Current());
+                   if (item) {
+                      cPlugin *p = cPluginManager::GetPlugin(item->PluginIndex());
+                      if (p) {
+                         cOsdMenu *menu = p->SetupMenu();
+                         if (menu)
+                            return AddSubMenu(menu);
+                         Interface->Info(tr("This plugin has no setup parameters!"));
+                         }
+                      }
+                  }
+                  break;
+       default:   break;
+       }
+     }
+  return state;
+}
+
 // --- cMenuSetup ------------------------------------------------------------
 
 class cMenuSetup : public cOsdMenu {
@@ -2265,7 +1777,9 @@ cMenuSetup::cMenuSetup(void)
 void cMenuSetup::Set(void)
 {
   Clear();
-  SetTitle(tr("Setup"));
+  char buffer[64];
+  snprintf(buffer, sizeof(buffer), "%s - VDR %s", tr("Setup"), VDRVERSION);
+  SetTitle(buffer);
   SetHasHotkeys();
   Add(new cOsdItem(hk(tr("OSD")),           osUser1));
   Add(new cOsdItem(hk(tr("EPG")),           osUser2));
@@ -2275,7 +1789,9 @@ void cMenuSetup::Set(void)
   Add(new cOsdItem(hk(tr("Recording")),     osUser6));
   Add(new cOsdItem(hk(tr("Replay")),        osUser7));
   Add(new cOsdItem(hk(tr("Miscellaneous")), osUser8));
-  Add(new cOsdItem(hk(tr("Restart")),       osUser9));
+  if (cPluginManager::HasPlugins())
+  Add(new cOsdItem(hk(tr("Plugins")),       osUser9));
+  Add(new cOsdItem(hk(tr("Restart")),       osUser10));
 }
 
 eOSState cMenuSetup::Restart(void)
@@ -2301,7 +1817,8 @@ eOSState cMenuSetup::ProcessKey(eKeys Key)
     case osUser6: return AddSubMenu(new cMenuSetupRecord);
     case osUser7: return AddSubMenu(new cMenuSetupReplay);
     case osUser8: return AddSubMenu(new cMenuSetupMisc);
-    case osUser9: return Restart();
+    case osUser9: return AddSubMenu(new cMenuSetupPlugins);
+    case osUser10: return Restart();
     default: ;
     }
   if (Setup.OSDLanguage != osdLanguage) {
@@ -2364,6 +1881,22 @@ eOSState cMenuCommands::ProcessKey(eKeys Key)
   return state;
 }
 
+// --- cMenuPluginItem -------------------------------------------------------
+
+class cMenuPluginItem : public cOsdItem {
+private:
+  int pluginIndex;
+public:
+  cMenuPluginItem(const char *Name, int Index);
+  int PluginIndex(void) { return pluginIndex; }
+  };
+
+cMenuPluginItem::cMenuPluginItem(const char *Name, int Index)
+:cOsdItem(Name, osPlugin)
+{
+  pluginIndex = Index;
+}
+
 // --- cMenuMain -------------------------------------------------------------
 
 #define STOP_RECORDING tr(" Stop recording ")
@@ -2408,6 +1941,22 @@ void cMenuMain::Set(void)
   Add(new cOsdItem(hk(tr("Channels")),   osChannels));
   Add(new cOsdItem(hk(tr("Timers")),     osTimers));
   Add(new cOsdItem(hk(tr("Recordings")), osRecordings));
+
+  // Plugins:
+
+  for (int i = 0; ; i++) {
+      cPlugin *p = cPluginManager::GetPlugin(i);
+      if (p) {
+         const char *item = p->MainMenuEntry();
+         if (item)
+            Add(new cMenuPluginItem(hk(item), i));
+         }
+      else
+         break;
+      }
+
+  // More basic menu items:
+
   Add(new cOsdItem(hk(tr("Setup")),      osSetup));
   if (Commands.Count())
      Add(new cOsdItem(hk(tr("Commands")),  osCommands));
@@ -2474,6 +2023,19 @@ eOSState cMenuMain::ProcessKey(eKeys Key)
                           cVideoCutter::Stop();
                           return osEnd;
                           }
+                       break;
+    case osPlugin:     {
+                         cMenuPluginItem *item = (cMenuPluginItem *)Get(Current());
+                         if (item) {
+                            cPlugin *p = cPluginManager::GetPlugin(item->PluginIndex());
+                            if (p) {
+                               cOsdMenu *menu = p->MainMenuAction();
+                               if (menu)
+                                  return AddSubMenu(menu);
+                               }
+                            }
+                         state = osEnd;
+                       }
                        break;
     default: switch (Key) {
                case kMenu:   state = osEnd;    break;

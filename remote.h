@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remote.h 1.15 2001/07/22 14:42:59 kls Exp $
+ * $Id: remote.h 1.16 2002/05/09 11:43:04 kls Exp $
  */
 
 #ifndef __REMOTE_H
@@ -95,7 +95,7 @@ public:
 
 #elif !defined REMOTE_NONE
 
-#error Please define a remote control mode!
+// #error Please define a remote control mode!
 
 #endif
 

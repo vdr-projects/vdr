@@ -1,0 +1,250 @@
+#!/usr/bin/perl -w
+
+# newplugin: Initializing a new plugin source directory
+#
+# Creates a new plugin source directory from which to start implementing
+# a plugin for VDR.
+# See the file PLUGINS.html for detailed instructions on how to
+# write a plugin.
+#
+# Usage: newplugin <name>
+#
+# See the main source file 'vdr.c' for copyright information and
+# how to reach the author.
+#
+# $Id: newplugin 1.1 2002/05/09 15:12:26 kls Exp $
+
+$PLUGIN_NAME = $ARGV[0] || die "Usage: newplugin <name>\n";
+
+die "Please use only lowercase letters and digits in the plugin name\n" if ($PLUGIN_NAME =~ tr/a-z0-9//c);
+
+$PLUGIN_CLASS   = ucfirst($PLUGIN_NAME);
+
+$PLUGIN_VERSION = "0.0.1";
+$PLUGIN_DESCRIPTION = "Enter description for '$PLUGIN_NAME' plugin";
+$PLUGIN_MAINENTRY = $PLUGIN_CLASS;
+
+$PLUGINS_SRC = "PLUGINS/src";
+
+$README = qq
+{This is a "plugin" for the Video Disk Recorder (VDR).
+
+Written by:                  Your Name <email\@host.dom>
+
+Project's homepage:          URL
+
+Latest version available at: URL
+
+See the file COPYING for license information.
+
+Description:
+};
+
+$HISTORY_TITLE = "VDR Plugin '$PLUGIN_NAME' Revision History";
+$HISTORY_LINE = '-' x length($HISTORY_TITLE);
+$HISTORY_DATE = sprintf("%4d-%02d-%02d", (localtime)[5] + 1900, (localtime)[4] + 1, (localtime)[3]);
+$HISTORY = qq
+{$HISTORY_TITLE
+$HISTORY_LINE
+
+$HISTORY_DATE: Version $PLUGIN_VERSION
+
+- Initial revision.
+};
+
+$MAKEFILE = qq
+{#
+# Makefile for a Video Disk Recorder plugin
+#
+# \$Id\$
+
+# The official name of this plugin.
+# This name will be used in the '-P...' option of VDR to load the plugin.
+# By default the main source file also carries this name.
+#
+PLUGIN = $PLUGIN_NAME
+
+### The version number of this plugin (taken from the main source file):
+
+VERSION = `grep 'static const char \\*VERSION *=' \$(PLUGIN).c | awk '{ print \$\$6 }' | sed -e 's/[";]//g'`
+
+### The directory environment:
+
+DVBDIR = ../../../../DVB/ost/include
+VDRDIR = ../../..
+VDRINC = \$(VDRDIR)/include
+LIBDIR = ../../lib
+TMPDIR = /tmp
+
+### The version number of VDR (taken from VDR's "config.h"):
+
+VDRVERSION = `grep 'define VDRVERSION ' \$(VDRDIR)/config.h | awk '{ print \$\$3 }' | sed -e 's/"//g'`
+
+### The name of the distribution archive:
+
+ARCHIVE = vdr-\$(PLUGIN)-\$(VERSION)
+
+### Includes and Defines (add further entries here):
+
+INCLUDES = -I\$(VDRINC) -I\$(DVBDIR)
+
+DEFINES = -DPLUGIN_NAME_I18N='"\$(PLUGIN)"'
+
+### The object files (add further files here):
+
+OBJS = \$(PLUGIN).o
+
+### The C++ compiler and options:
+
+CXX      = g++
+CXXFLAGS = -O2 -Wall -Woverloaded-virtual -m486
+
+### Implicit rules:
+
+%.o: %.c
+	\$(CXX) \$(CXXFLAGS) -c \$(DEFINES) \$(INCLUDES) \$<
+
+# Dependencies:
+
+MAKEDEP = g++ -MM -MG
+DEPFILE = .dependencies
+\$(DEPFILE): Makefile
+	\@\$(MAKEDEP) \$(DEFINES) \$(INCLUDES) \$(OBJS:%.o=%.c) > \$\@
+
+include \$(DEPFILE)
+
+### Targets:
+
+all: libvdr-\$(PLUGIN).so
+
+libvdr-\$(PLUGIN).so: \$(OBJS)
+	\$(CXX) \$(CXXFLAGS) -shared \$(OBJS) -o \$\@
+	\@cp \$\@ \$(LIBDIR)/\$\@.\$(VDRVERSION)
+
+package: clean
+	\@-rm -rf \$(TMPDIR)/\$(ARCHIVE)
+	\@mkdir \$(TMPDIR)/\$(ARCHIVE)
+	\@cp -a * \$(TMPDIR)/\$(ARCHIVE)
+	\@tar czf \$(ARCHIVE).tgz -C \$(TMPDIR) \$(ARCHIVE)
+	\@-rm -rf \$(TMPDIR)/\$(ARCHIVE)
+	\@echo Distribution archive created as \$(ARCHIVE).tgz
+
+clean:
+	\@-rm -f \$(OBJS) \$(DEPFILE) *.so *.tgz core* *~
+};
+
+$MAIN = qq
+{/*
+ * $PLUGIN_NAME.c: A plugin for the Video Disk Recorder
+ *
+ * See the README file for copyright information and how to reach the author.
+ *
+ * \$Id\$
+ */
+
+#include <vdr/plugin.h>
+
+static const char *VERSION        = "$PLUGIN_VERSION";
+static const char *DESCRIPTION    = "$PLUGIN_DESCRIPTION";
+static const char *MAINMENUENTRY  = "$PLUGIN_MAINENTRY";
+
+class cPlugin$PLUGIN_CLASS : public cPlugin {
+private:
+  // Add any member variables or functions you may need here.
+public:
+  cPlugin$PLUGIN_CLASS(void);
+  virtual ~cPlugin$PLUGIN_CLASS();
+  virtual const char *Version(void) { return VERSION; }
+  virtual const char *Description(void) { return DESCRIPTION; }
+  virtual const char *CommandLineHelp(void);
+  virtual bool ProcessArgs(int argc, char *argv[]);
+  virtual void Start(void);
+  virtual const char *MainMenuEntry(void) { return MAINMENUENTRY; }
+  virtual cOsdMenu *MainMenuAction(void);
+  virtual cMenuSetupPage *SetupMenu(void);
+  virtual bool SetupParse(const char *Name, const char *Value);
+  };
+
+cPlugin${PLUGIN_CLASS}::cPlugin$PLUGIN_CLASS(void)
+{
+  // Initialize any member varaiables here.
+  // DON'T DO ANYTHING ELSE THAT MAY HAVE SIDE EFFECTS, REQUIRE GLOBAL
+  // VDR OBJECTS TO EXIST OR PRODUCE ANY OUTPUT!
+}
+
+cPlugin${PLUGIN_CLASS}::~cPlugin$PLUGIN_CLASS()
+{
+  // Clean up after yourself!
+}
+
+const char *cPlugin${PLUGIN_CLASS}::CommandLineHelp(void)
+{
+  // Return a string that describes all known command line options.
+  return NULL;
+}
+
+bool cPlugin${PLUGIN_CLASS}::ProcessArgs(int argc, char *argv[])
+{
+  // Implement command line argument processing here if applicable.
+  return true;
+}
+
+void cPlugin${PLUGIN_CLASS}::Start(void)
+{
+  // Start any background activities the plugin shall perform.
+}
+
+cOsdMenu *cPlugin${PLUGIN_CLASS}::MainMenuAction(void)
+{
+  // Perform the action when selected from the main VDR menu.
+  return NULL;
+}
+
+cMenuSetupPage *cPlugin${PLUGIN_CLASS}::SetupMenu(void)
+{
+  // Return a setup menu in case the plugin supports one.
+  return NULL;
+}
+
+bool cPlugin${PLUGIN_CLASS}::SetupParse(const char *Name, const char *Value)
+{
+  // Parse your own setup parameters and store their values.
+  return false;
+}
+
+VDRPLUGINCREATOR(cPlugin$PLUGIN_CLASS); // Don't touch this!
+};
+
+$PLUGINDIR = "$PLUGINS_SRC/$PLUGIN_NAME";
+
+die "The directory $PLUGINS_SRC doesn't exist!\n" unless (-d "$PLUGINS_SRC");
+die "A plugin named '$PLUGIN_NAME' already exists in $PLUGINS_SRC!\n" if (-e "$PLUGINDIR");
+mkdir("$PLUGINDIR") || die "$!";
+
+CreateFile("README", $README);
+CreateFile("HISTORY", $HISTORY);
+CreateFile("Makefile", $MAKEFILE);
+CreateFile("$PLUGIN_NAME.c", $MAIN);
+`cp COPYING "$PLUGINDIR"` if (-e "COPYING");
+
+print qq{
+The new plugin source directory has been created in "$PLUGINDIR".
+
+The next steps you should perform now are:
+
+* edit the file "README" to adjust it to your specific implementation
+* fill in the code skeleton in "$PLUGIN_NAME.c" to implement your plugin function
+* add further source files if necessary
+* adapt the "Makefile" if necessary
+* do "make plugins" from the VDR source directory to build your plugin
+
+};
+
+sub CreateFile
+{
+  my ($Name, $Content) = @_;
+  open(FILE, ">$PLUGINDIR/$Name") || die "$Name:  $!\n";
+  print FILE $Content;
+  close(FILE);
+}
+
