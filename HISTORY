@@ -3089,3 +3089,7 @@ Video Disk Recorder Revision History
 - Immediately displaying the new channel info when switching channel groups.
 - Moved the main program loop variables further up to allow compilation with
   older compiler versions (thanks to Marco Schlüßler for reporting this one).
+- Now calling pthread_cond_broadcast() in the desctructor of cCondWait and
+  cCondVar to make sure any sleepers will wake up (suggested by Werner Fink).
+  Also using pthread_cond_broadcast() instead of pthread_cond_signal() in
+  cCondWait, in case there is more than one sleeper.

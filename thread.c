@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 1.35 2004/10/24 11:05:56 kls Exp $
+ * $Id: thread.c 1.36 2004/10/31 09:54:02 kls Exp $
  */
 
 #include "thread.h"
@@ -28,6 +28,7 @@ cCondWait::cCondWait(void)
 
 cCondWait::~cCondWait()
 {
+  pthread_cond_broadcast(&cond); // wake up any sleepers
   pthread_cond_destroy(&cond);
   pthread_mutex_destroy(&mutex);
 }
@@ -71,7 +72,7 @@ void cCondWait::Signal(void)
 {
   pthread_mutex_lock(&mutex);
   signaled = true;
-  pthread_cond_signal(&cond);
+  pthread_cond_broadcast(&cond);
   pthread_mutex_unlock(&mutex);
 }
 
@@ -84,6 +85,7 @@ cCondVar::cCondVar(void)
 
 cCondVar::~cCondVar()
 {
+  pthread_cond_broadcast(&cond); // wake up any sleepers
   pthread_cond_destroy(&cond);
 }
 
