@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinclassic.c 1.1 2004/05/15 14:51:18 kls Exp $
+ * $Id: skinclassic.c 1.2 2004/05/22 13:04:54 kls Exp $
  */
 
 #include "skinclassic.h"
@@ -280,7 +280,7 @@ void cSkinClassicDisplayMenu::SetEvent(const cEvent *Event)
   int y = y2;
   cTextScroller ts;
   char t[32];
-  snprintf(t, sizeof(t), "%s  %s - %s", Event->GetDateString(), Event->GetTimeString(), Event->GetEndTimeString());//TODO dayname, no year
+  snprintf(t, sizeof(t), "%s  %s - %s", Event->GetDateString(), Event->GetTimeString(), Event->GetEndTimeString());
   ts.Set(osd, xl, y, x1 - xl, y3 - y, t, font, Theme.Color(clrMenuEventTime), Theme.Color(clrBackground));
   if (Event->Vps() && Event->Vps() != Event->StartTime()) {
      char *buffer;

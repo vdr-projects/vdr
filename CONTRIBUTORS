@@ -863,6 +863,7 @@ Christoph Hermanns <christoph.hermanns@gmx.de>
 Oskar Signell <oskar@signell.net>
  for pointing out a problem with setting an editing mark while in "Pause" mode,
  where replay was not immediately positioned to the marked frame
+ for making single shot timers and events show the day of week
 
 Dirk Essl <de@floydworld.de>
  for reporting a wrong URL to the 'Doxygen' tool in INSTALL

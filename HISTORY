@@ -2814,3 +2814,8 @@ Video Disk Recorder Revision History
   Wiesweg).
 - Added a hint to PLUGINS.html about how to name a plugin that implements a skin.
 - Completed the Finnish OSD texts (thanks to Rolf Ahrenberg).
+- Single shot timers and events now show the day of week (adopted with some changes
+  from the "elchi" patch, orginally introduced by Oskar Signell). Plugins that use
+  cEvent::GetDateString() should note that this function now returns a longer
+  string, including the day of week. The new function const char *WeekDayName(time_t t)
+  can be called with a time_t value to get the day of week for that time.
