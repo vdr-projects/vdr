@@ -1195,3 +1195,6 @@ Sean Carlos <seanc@libero.it>
 
 Laurence Abbott <laz@club-burniston.co.uk>
  for fixing setting 'synced' in cRemux when recording radio channels
+
+Patrick Gleichmann <patrick@feedface.com>
+ for fixing the default quality value when grabbing a JPEG image

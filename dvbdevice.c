@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.111 2005/01/06 14:48:45 kls Exp $
+ * $Id: dvbdevice.c 1.112 2005/01/07 15:54:52 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -544,7 +544,7 @@ bool cDvbDevice::GrabImage(const char *FileName, bool Jpeg, int Quality, int Siz
                }
 
            if (Quality < 0)
-              Quality = 255; //XXX is this 'best'???
+              Quality = 100;
 
            isyslog("grabbing to %s (%s %d %d %d)", FileName, Jpeg ? "JPEG" : "PNM", Quality, vm.width, vm.height);
            FILE *f = fopen(FileName, "wb");
