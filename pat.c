@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: pat.c 1.9 2004/05/23 09:29:04 kls Exp $
+ * $Id: pat.c 1.10 2004/10/16 10:01:12 kls Exp $
  */
 
 #include "pat.h"
@@ -285,8 +285,7 @@ void cPatFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
               return;
            SI::PAT::Association assoc;
            int Index = 0;
-           for (SI::Loop::Iterator it; pat.associationLoop.hasNext(it); ) {
-               assoc = pat.associationLoop.getNext(it);
+           for (SI::Loop::Iterator it; pat.associationLoop.getNext(assoc, it); ) {
                if (!assoc.isNITPid()) {
                   if (Index++ == pmtIndex) {
                      pmtPid = assoc.getPid();
@@ -332,8 +331,7 @@ void cPatFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
         int Tpid = 0;
         int NumApids = 0;
         int NumDpids = 0;
-        for (SI::Loop::Iterator it; pmt.streamLoop.hasNext(it); ) {
-            stream = pmt.streamLoop.getNext(it);
+        for (SI::Loop::Iterator it; pmt.streamLoop.getNext(stream, it); ) {
             switch (stream.getStreamType()) {
               case 1: // STREAMTYPE_11172_VIDEO
               case 2: // STREAMTYPE_13818_VIDEO

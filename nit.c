@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: nit.c 1.8 2004/06/06 14:24:49 kls Exp $
+ * $Id: nit.c 1.9 2004/10/16 10:00:27 kls Exp $
  */
 
 #include "nit.h"
@@ -92,8 +92,8 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
      return;
   if (!Channels.Lock(true, 10))
      return;
-  for (SI::Loop::Iterator it; nit.transportStreamLoop.hasNext(it); ) {
-      SI::NIT::TransportStream ts = nit.transportStreamLoop.getNext(it);
+  SI::NIT::TransportStream ts;
+  for (SI::Loop::Iterator it; nit.transportStreamLoop.getNext(ts, it); ) {
       SI::Descriptor *d;
       for (SI::Loop::Iterator it2; (d = ts.transportStreamDescriptors.getNext(it2)); ) {
           switch (d->getDescriptorTag()) {

@@ -3006,3 +3006,4 @@ Video Disk Recorder Revision History
   testing regarding buffer performance and giving me some hints that finally led
   to finding out that this was the basic problem causing buffer overflows).
 - Improved Transfer Mode (thanks to Marco Schlüßler for suggestions and testing).
+- Fixed a possible crash with inconsistent SI data (thanks to Marcel Wiesweg).

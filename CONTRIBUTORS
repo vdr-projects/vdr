@@ -687,6 +687,7 @@ Marcel Wiesweg <marcel.wiesweg@gmx.de>
  for fixing a memory leak in NIT processing
  for adding a few missing initializations
  for adding play mode pmVideoOnly
+ for fixing a possible crash with inconsistent SI data
 
 Torsten Herz <torsten.herz@web.de>
  for fixing a possible deadlock when using the "Blue" button in the "Schedules" menu

@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: util.c 1.3 2003/12/22 14:03:03 kls Exp $
+ *   $Id: util.c 1.4 2004/10/16 09:58:41 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -88,9 +88,7 @@ CharArray CharArray::operator+(const unsigned int offset) const {
    return f;
 }
 
-CharArray::Data::Data() : count_(1) {
-   size=0;
-   data=0;
+CharArray::Data::Data() : data(0), size(0), count_(1), valid(true) {
    /*
    lockingPid = 0;
    locked = 0;

@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: util.h 1.3 2003/12/22 14:07:41 kls Exp $
+ *   $Id: util.h 1.4 2004/10/16 09:59:48 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -58,6 +58,9 @@ public:
    u_int16_t TwoBytes(const unsigned int index) const { return data_->data ? data_->TwoBytes(off+index) : 0; }
    u_int32_t FourBytes(const unsigned int index) const { return data_->data ? data_->FourBytes(off+index) : 0; }
 
+   bool isValid() const { return data_->valid; }
+   bool checkSize(unsigned int offset) { return (data_->valid && (data_->valid=(off+offset < data_->size))); }
+
    void addOffset(unsigned int offset) { off+=offset; }
 private:
    class Data {
@@ -86,10 +89,12 @@ private:
       const unsigned char*data;
       unsigned int size;
 
-      unsigned count_;
       // count_ is the number of CharArray objects that point at this
       // count_ must be initialized to 1 by all constructors
       // (it starts as 1 since it is pointed to by the CharArray object that created it)
+      unsigned count_;
+
+      bool valid;
 
       /*
       pthread_mutex_t mutex;
