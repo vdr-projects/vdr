@@ -1122,3 +1122,6 @@ Lucian Muresan <lucianm@users.sourceforge.net>
 Mattias Grönlund <Mattias@Gronlund.net>
  for pointing out a missing cleanup at program exit in case there is a problem
  with a plugin
+
+Uwe Hanke <uhanke@gmx.de>
+ for fixing some typos in the Makefile's 'font' target
