@@ -2403,7 +2403,7 @@ Video Disk Recorder Revision History
 
 - Updated 'channels.conf.cable' (thanks to Stefan Huﬂfeldt).
 
-2003-10-03: Version 1.3.0
+2003-10-17: Version 1.2.6pre1
 
 - Updated the required driver version in INSTALL (thanks to Jens Groth for
   reporting this one).
@@ -2420,3 +2420,7 @@ Video Disk Recorder Revision History
 - Now trying to get a timer's channel without RID when loading 'timers.conf'
   (thanks to Thomas Rausch).
 - Removed the unused 0x73 (TOT) filter in eit.c (thanks to Andreas Trauer).
+- Fixed extracting the ES data in cDvbDevice::StillPicture() (thanks to Stefan
+  Huelswitt).
+- Added MPEG1 handling to cDvbDevice::StillPicture() (thanks to Thomas
+  Heiligenmann).

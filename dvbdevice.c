@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.65 2003/10/04 12:31:15 kls Exp $
+ * $Id: dvbdevice.c 1.66 2003/10/17 13:31:06 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -947,21 +947,53 @@ void cDvbDevice::StillPicture(const uchar *Data, int Length)
         return;
      int i = 0;
      int blen = 0;
-     while (i < Length - 4) {
-           if (Data[i] == 0x00 && Data[i + 1] == 0x00 && Data[i + 2] == 0x01 && (Data[i + 3] & 0xF0) == 0xE0) {
-              // skip PES header
-              int offs = i + 6;
+     while (i < Length - 6) {
+           if (Data[i] == 0x00 && Data[i + 1] == 0x00 && Data[i + 2] == 0x01) {
               int len = Data[i + 4] * 256 + Data[i + 5];
-              // skip header extension
-              if ((Data[i + 6] & 0xC0) == 0x80) {
-                 offs += 3;
-                 offs += Data[i + 8];
-                 len -= 3;
-                 len -= Data[i + 8];
+              if ((Data[i + 3] & 0xF0) == 0xE0) { // video packet
+                 // skip PES header
+                 int offs = i + 6;
+                 // skip header extension
+                 if ((Data[i + 6] & 0xC0) == 0x80) {
+                    // MPEG-2 PES header
+                    offs += 3;
+                    offs += Data[i + 8];
+                    len -= 3;
+                    len -= Data[i + 8];
+                    }
+                 else {
+                    // MPEG-1 PES header
+                    while (offs < Length && len > 0 && Data[offs] == 0xFF) {
+                          offs++;
+                          len--;
+                          }
+                    if ((Data[offs] & 0xC0) == 0x40) {
+                       offs += 2;
+                       len -= 2;
+                       }
+                    if ((Data[offs] & 0xF0) == 0x20) {
+                       offs += 5;
+                       len -= 5;
+                       }
+                    else if ((Data[offs] & 0xF0) == 0x30) {
+                       offs += 10;
+                       len -= 10;
+                       }
+                    else if (Data[offs] == 0x0F) {
+                       offs++;
+                       len--;
+                       }
+                    }
+                 if (blen + len > Length) // invalid PES length field
+                    break;
+                 memcpy(&buf[blen], &Data[offs], len);
+                 i = offs + len;
+                 blen += len;
                  }
-              memcpy(&buf[blen], &Data[offs], len);
-              i = offs + len;
-              blen += len;
+              else if (Data[i + 3] >= 0xBD && Data[i + 3] <= 0xDF) // other PES packets
+                 i += len + 6;
+              else
+                 i++;
               }
            else
               i++;
