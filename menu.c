@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.288 2004/02/21 15:26:47 kls Exp $
+ * $Id: menu.c 1.289 2004/02/21 15:40:35 kls Exp $
  */
 
 #include "menu.h"
@@ -1371,7 +1371,7 @@ void cMenuSchedule::PrepareSchedule(cChannel *Channel)
         time_t now = time(NULL) - Setup.EPGLinger * 60;
         for (int a = 0; a < num; a++) {
             const cEvent *Event = Schedule->GetEventNumber(a);
-            if (Event->StartTime() + Event->Duration() > now)
+            if (Event->StartTime() + Event->Duration() > now || Event == PresentEvent)
                Add(new cMenuScheduleItem(Event), Event == PresentEvent);
             }
         }
