@@ -1214,3 +1214,7 @@ Achim Tuffentsammer <a.tuffentsammer@web.de>
 
 Michael Heyse <mhk@designassembly.de>
  for his help in keeping 'channels.conf.terr' up to date
+
+Marco Kremer <vdr.hgm.bg@gmx.net>
+ for reporting a problem with playing files with PES packets longer than 2048 byte
+ through the full featured DVB card

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.64 2005/01/04 11:09:51 kls Exp $
+ * $Id: tools.h 1.65 2005/01/16 11:39:58 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -71,6 +71,10 @@ public:
 ssize_t safe_read(int filedes, void *buffer, size_t size);
 ssize_t safe_write(int filedes, const void *buffer, size_t size);
 void writechar(int filedes, char c);
+int WriteAllOrNothing(int fd, const uchar *Data, int Length, int TimeoutMs = 0, int RetryMs = 0);
+    ///< Writes either all Data to the given file descriptor, or nothing at all.
+    ///< If TimeoutMs is greater than 0, it will only retry for that long, otherwise
+    ///< it will retry forever. RetryMs defines the time between two retries.
 char *strcpyrealloc(char *dest, const char *src);
 char *strn0cpy(char *dest, const char *src, size_t n);
 char *strreplace(char *s, char c1, char c2);

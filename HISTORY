@@ -3308,3 +3308,6 @@ Video Disk Recorder Revision History
 - Added 'channels.conf.terr' entries for Mainz (thanks to Michael Heyse).
 - Implemented cDolbyRepacker for better handling of Dolby Digital PES packets
   (thanks to Reinhard Nissl).
+- Fixed playing files with PES packets longer than 2048 byte through the full
+  featured DVB card (thanks to Marco Kremer for reporting this one and providing
+  a test sample).

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.87 2005/01/04 11:06:45 kls Exp $
+ * $Id: tools.c 1.88 2005/01/16 11:47:44 kls Exp $
  */
 
 #include "tools.h"
@@ -63,6 +63,30 @@ ssize_t safe_write(int filedes, const void *buffer, size_t size)
 void writechar(int filedes, char c)
 {
   safe_write(filedes, &c, sizeof(c));
+}
+
+int WriteAllOrNothing(int fd, const uchar *Data, int Length, int TimeoutMs, int RetryMs)
+{
+  int written = 0;
+  while (Length > 0) {
+        int w = write(fd, Data + written, Length);
+        if (w > 0) {
+           Length -= w;
+           written += w;
+           }
+        else if (written > 0 && !FATALERRNO) {
+           // we've started writing, so we must finish it!
+           cTimeMs t;
+           cPoller Poller(fd, true);
+           Poller.Poll(RetryMs);
+           if (TimeoutMs > 0 && (TimeoutMs -= t.Elapsed()) <= 0)
+              break;
+           }
+        else
+           // nothing written yet (or fatal error), so we can just return the error code:
+           return w;
+        }
+  return written;
 }
 
 char *strcpyrealloc(char *dest, const char *src)

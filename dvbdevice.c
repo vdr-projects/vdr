@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.114 2005/01/14 14:00:44 kls Exp $
+ * $Id: dvbdevice.c 1.115 2005/01/16 11:59:21 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -1130,12 +1130,12 @@ bool cDvbDevice::Flush(int TimeoutMs)
 
 int cDvbDevice::PlayVideo(const uchar *Data, int Length)
 {
-  return write(fd_video, Data, Length);
+  return WriteAllOrNothing(fd_video, Data, Length, 1000, 10);
 }
 
 int cDvbDevice::PlayAudio(const uchar *Data, int Length)
 {
-  return write(fd_audio, Data, Length);
+  return WriteAllOrNothing(fd_audio, Data, Length, 1000, 10);
 }
 
 bool cDvbDevice::OpenDvr(void)
