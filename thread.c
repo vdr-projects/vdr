@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 1.12 2001/09/15 13:00:58 kls Exp $
+ * $Id: thread.c 1.13 2001/09/23 14:04:35 kls Exp $
  */
 
 #include "thread.h"
@@ -67,16 +67,19 @@ cMutex::~cMutex()
 
 void cMutex::Lock(void)
 {
-  if (getpid() != lockingPid || !locked)
+  if (getpid() != lockingPid || !locked) {
      pthread_mutex_lock(&mutex);
-  lockingPid = getpid();
+     lockingPid = getpid();
+     }
   locked++;
 }
 
 void cMutex::Unlock(void)
 {
- if (!--locked)
+ if (!--locked) {
+    lockingPid = 0;
     pthread_mutex_unlock(&mutex);
+    }
 }
 
 // --- cThread ---------------------------------------------------------------
