@@ -490,3 +490,7 @@ Georg Hitsch <georg@hitsch.at>
 
 Clemens Kirchgatterer <clemens@thf.ath.cx>
  for suggesting to change source directory name for plugins from 'SRC' to 'src'
+
+Emil Naepflein <Emil.Naepflein@philosys.de>
+ for suggesting to take an active SVDRP connection into account when doing shutdown or
+ housekeeping

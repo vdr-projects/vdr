@@ -1829,3 +1829,5 @@ Video Disk Recorder Revision History
 - Deactivated some templates in tools.h in case some plugin needs to use the STL.
 - Timers now accept channel IDs even if the 'source' is 0 (thanks to Stefan Huelswitt
   for reporting this one).
+- Now taking an active SVDRP connection into account when doing shutdown or
+  housekeeping (suggested by Emil Naepflein).
