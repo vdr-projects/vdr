@@ -1306,3 +1306,5 @@ Video Disk Recorder Revision History
   Gregoire Favre).
 - Fixed the cutting mechanism to make it re-sync in case a frame is larger than the
   buffer (thanks to Sven Grothklags).
+- Added an error message if the directory specified in the '-L' option can't be
+  accessed (suggested by Stefan Huelswitt).

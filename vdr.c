@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.109 2002/05/13 16:32:49 kls Exp $
+ * $Id: vdr.c 1.110 2002/05/18 10:33:54 kls Exp $
  */
 
 #include <getopt.h>
@@ -146,7 +146,12 @@ int main(int argc, char *argv[])
                     fprintf(stderr, "vdr: invalid log level: %s\n", optarg);
                     return 2;
                     break;
-          case 'L': PluginManager.SetDirectory(optarg);
+          case 'L': if (access(optarg, R_OK | X_OK) == 0)
+                       PluginManager.SetDirectory(optarg);
+                    else {
+                       fprintf(stderr, "vdr: can't access plugin directory: %s\n", optarg);
+                       return 2;
+                       }
                     break;
           case 'm': MuteAudio = true;
                     break;
