@@ -45,6 +45,7 @@ Martin Hammerschmid <martin@hammerschmid.com>
  for implementing pege up/down with the "Left" and "Right" keys
  for detecting a deadlock when switching channels via Schedule/Now|Next/Switch
  for adding a missing #include to ringbuffer.c
+ for adding a missing 'public' keyword in device.h
 
 Bastian Guse <bastian@nocopy.de>
  for writing the FORMATS entry for timers.conf

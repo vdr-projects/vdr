@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 1.18 2002/09/15 11:05:41 kls Exp $
+ * $Id: device.h 1.19 2002/09/21 09:14:08 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -50,7 +50,7 @@ class cPlayer;
 class cReceiver;
 class cSpuDecoder;
 
-class cDevice : cThread {
+class cDevice : public cThread {
 private:
   static int numDevices;
   static int useDevice;
