@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.54 2002/02/24 11:21:42 kls Exp $
+ * $Id: recording.c 1.55 2002/03/07 17:07:04 kls Exp $
  */
 
 #include "recording.h"
@@ -106,7 +106,7 @@ void AssertFreeDiskSpace(int Priority)
            cRecording *r0 = NULL;
            while (r) {
                  if (r->lifetime < MAXLIFETIME) { // recordings with MAXLIFETIME live forever
-                    if ((r->lifetime == 0 && Priority > r->priority) || // the recording has guaranteed lifetime and the new recording has higher priority
+                    if ((r->lifetime == 0 && Priority > r->priority) || // the recording has no guaranteed lifetime and the new recording has higher priority
                         (time(NULL) - r->start) / SECSINDAY > r->lifetime) { // the recording's guaranteed lifetime has expired
                        if (r0) {
                           if (r->priority < r0->priority || (r->priority == r0->priority && r->start < r0->start))
