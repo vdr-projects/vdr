@@ -3063,3 +3063,5 @@ Video Disk Recorder Revision History
   2 * IPACKS to avoid a buffer overflow in case a cTS2PES writes one complete
   packet and then (within processing the same TS packet) wants to write another
   small packet.
+- Removed the signal handler and WakeUp() call from cThread (it is no longer
+  needed).

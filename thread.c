@@ -4,13 +4,12 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 1.32 2004/10/15 13:15:02 kls Exp $
+ * $Id: thread.c 1.33 2004/10/24 09:47:57 kls Exp $
  */
 
 #include "thread.h"
 #include <errno.h>
 #include <malloc.h>
-#include <signal.h>
 #include <stdarg.h>
 #include <sys/resource.h>
 #include <sys/time.h>
@@ -186,18 +185,10 @@ void cMutex::Unlock(void)
 
 // --- cThread ---------------------------------------------------------------
 
-// The signal handler is necessary to be able to use SIGIO to wake up any
-// pending 'select()' call.
-
-bool cThread::signalHandlerInstalled = false;
 bool cThread::emergencyExitRequested = false;
 
 cThread::cThread(const char *Description)
 {
-  if (!signalHandlerInstalled) {
-     signal(SIGIO, SignalHandler);
-     signalHandlerInstalled = true;
-     }
   running = false;
   parentTid = childTid = 0;
   description = NULL;
@@ -219,11 +210,6 @@ void cThread::SetDescription(const char *Description, ...)
      vasprintf(&description, Description, ap);
      va_end(ap);
      }
-}
-
-void cThread::SignalHandler(int signum)
-{
-  signal(signum, SignalHandler);
 }
 
 void *cThread::StartThread(cThread *Thread)
@@ -287,11 +273,6 @@ void cThread::Cancel(int WaitSeconds)
      esyslog("ERROR: thread %ld won't end (waited %d seconds) - cancelling it...", childTid, WaitSeconds);
      }
   pthread_cancel(childTid);
-}
-
-void cThread::WakeUp(void)
-{
-  pthread_kill(parentTid, SIGIO); // makes any waiting 'select()' call return immediately
 }
 
 bool cThread::EmergencyExit(bool Request)
