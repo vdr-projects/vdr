@@ -3305,3 +3305,4 @@ Video Disk Recorder Revision History
   channel might be changed even if there is only one actual audio PID.
 - Fixed handling the '-E' option which was broken in version 1.3.18 (thanks to
   Christian Jacobsen for reporting this one).
+- Added 'channels.conf.terr' entries for Mainz (thanks to Michael Heyse).

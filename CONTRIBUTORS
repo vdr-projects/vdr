@@ -1210,3 +1210,6 @@ Patrick Gleichmann <patrick@feedface.com>
 Achim Tuffentsammer <a.tuffentsammer@web.de>
  for reporting a crash in case a plugin needs to issue an error message before the
  skin has been set up
+
+Michael Heyse <mhk@designassembly.de>
+ for his help in keeping 'channels.conf.terr' up to date
