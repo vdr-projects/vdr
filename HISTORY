@@ -1125,7 +1125,7 @@ Video Disk Recorder Revision History
 - Fixed restoring CICAM setup values for a fourth DVB card.
 - Completed internationalization of OSD texts (thanks to Hannu Savolainen,
   Arnold Niessen, Paulo Lopes, Jean-Claude Repetto, Alberto Carraro, Matjaz
-  Thaler).
+  Thaler and Truls Slevigen).
 - Improved file I/O in case of EINTR, which may occur e.g. with heavy system
   load (thanks to Werner Fink).
 - Now writing the title of a recording into the 'summary.vdr' file.
