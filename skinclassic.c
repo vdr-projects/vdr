@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinclassic.c 1.2 2004/05/22 13:04:54 kls Exp $
+ * $Id: skinclassic.c 1.3 2004/05/23 10:40:02 kls Exp $
  */
 
 #include "skinclassic.h"
@@ -231,10 +231,10 @@ void cSkinClassicDisplayMenu::SetButtons(const char *Red, const char *Green, con
   int t2 = x0 + w / 2;
   int t3 = x1 - w / 4;
   int t4 = x1;
-  osd->DrawText(t0, y4, Red,    Theme.Color(clrButtonRedFg),    Theme.Color(clrButtonRedBg),    font, t1 - t0, 0, taCenter);
-  osd->DrawText(t1, y4, Green,  Theme.Color(clrButtonGreenFg),  Theme.Color(clrButtonGreenBg),  font, t2 - t1, 0, taCenter);
-  osd->DrawText(t2, y4, Yellow, Theme.Color(clrButtonYellowFg), Theme.Color(clrButtonYellowBg), font, t3 - t2, 0, taCenter);
-  osd->DrawText(t3, y4, Blue,   Theme.Color(clrButtonBlueFg),   Theme.Color(clrButtonBlueBg),   font, t4 - t3, 0, taCenter);
+  osd->DrawText(t0, y4, Red,    Theme.Color(clrButtonRedFg),    Red    ? Theme.Color(clrButtonRedBg)    : Theme.Color(clrBackground), font, t1 - t0, 0, taCenter);
+  osd->DrawText(t1, y4, Green,  Theme.Color(clrButtonGreenFg),  Green  ? Theme.Color(clrButtonGreenBg)  : Theme.Color(clrBackground), font, t2 - t1, 0, taCenter);
+  osd->DrawText(t2, y4, Yellow, Theme.Color(clrButtonYellowFg), Yellow ? Theme.Color(clrButtonYellowBg) : Theme.Color(clrBackground), font, t3 - t2, 0, taCenter);
+  osd->DrawText(t3, y4, Blue,   Theme.Color(clrButtonBlueFg),   Blue   ? Theme.Color(clrButtonBlueBg)   : Theme.Color(clrBackground), font, t4 - t3, 0, taCenter);
 }
 
 void cSkinClassicDisplayMenu::SetMessage(eMessageType Type, const char *Text)

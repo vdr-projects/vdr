@@ -2833,3 +2833,5 @@ Video Disk Recorder Revision History
 - Added play mode pmVideoOnly (thanks to Marcel Wiesweg).
 - Added a missing cStatus::MsgOsdClear() to cDisplayChannel::~cDisplayChannel()
   (thanks to Oliver Endriss).
+- No longer displaying unused color buttons in the "Classic VDR" skin (thanks to
+  Oliver Endriss for reporting this one).
