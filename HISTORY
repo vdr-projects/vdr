@@ -2072,3 +2072,5 @@ Video Disk Recorder Revision History
 - Removed the Mute() call from cDvbDevice::StillPicture() (suggested by Andreas
   Schultz).
 - Updated 'channels.conf.terr' for Berlin (thanks to Andreas Brachold).
+- Extended logging info when starting/stopping timers to show the channel number,
+  start/stop time and the file name (suggested by Manuel Hartl).

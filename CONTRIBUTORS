@@ -602,3 +602,6 @@ Christoph Friederich <christoph.friederich@gmx.de>
 
 Andreas Brachold <andy03@deltab.de>
  for his support in keeping 'channels.conf.terr' up to date
+
+Manuel Hartl <icecep@gmx.net>
+ for suggesting to extend the logging info when starting/stopping timers
