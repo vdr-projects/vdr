@@ -1455,3 +1455,4 @@ Video Disk Recorder Revision History
 - Switching through channels with the 'Up' and 'Down' keys now skips channels
   that are currently not available (for instance because all devices are
   recording and these channels are on different transponders).
+- Implemented an SPU decoder (thanks to Andreas Schultz).

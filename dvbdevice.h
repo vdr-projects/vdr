@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.h 1.9 2002/09/07 09:06:40 kls Exp $
+ * $Id: dvbdevice.h 1.10 2002/09/08 14:05:29 kls Exp $
  */
 
 #ifndef __DVBDEVICE_H
@@ -21,6 +21,7 @@
 #include <ost/frontend.h>
 #endif
 #include "device.h"
+#include "dvbspu.h"
 #include "eit.h"
 
 #define MAXDVBDEVICES  4
@@ -51,8 +52,11 @@ public:
 
 // OSD facilities
 
+private:
+  cDvbSpuDecoder *spuDecoder;
 public:
   cOsdBase *NewOsd(int x, int y);
+  virtual cSpuDecoder *GetSpuDecoder(void);
 
 // Channel facilities
 

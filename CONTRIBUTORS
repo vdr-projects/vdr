@@ -166,6 +166,7 @@ Andreas Schultz <aschultz@warp10.net>
  for making the use of malloc/free and new/delete consistent
  for adding cDevice::NewOsd() to allow a derived cDevice class to implement its own
  OSD capabilities
+ for implementing an SPU decoder
 
 Aaron Holtzman
  for writing 'ac3dec'

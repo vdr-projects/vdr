@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.11 2002/09/07 13:39:49 kls Exp $
+ * $Id: dvbdevice.c 1.12 2002/09/08 14:07:08 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -80,6 +80,7 @@ cDvbDevice::cDvbDevice(int n)
 {
   frontendType = FrontendType(-1); // don't know how else to initialize this - there is no FE_UNKNOWN
   siProcessor = NULL;
+  spuDecoder = NULL;
   playMode = pmNone;
 
   // Devices that are present on all card types:
@@ -128,6 +129,7 @@ cDvbDevice::cDvbDevice(int n)
 
 cDvbDevice::~cDvbDevice()
 {
+  delete spuDecoder;
   delete siProcessor;
   // We're not explicitly closing any device files here, since this sometimes
   // caused segfaults. Besides, the program is about to terminate anyway...
@@ -187,6 +189,13 @@ bool cDvbDevice::HasDecoder(void) const
 cOsdBase *cDvbDevice::NewOsd(int x, int y)
 {
   return new cDvbOsd(x, y);
+}
+
+cSpuDecoder *cDvbDevice::GetSpuDecoder(void)
+{
+  if (!spuDecoder && IsPrimaryDevice())
+     spuDecoder = new cDvbSpuDecoder();
+  return spuDecoder;
 }
 
 bool cDvbDevice::GrabImage(const char *FileName, bool Jpeg, int Quality, int SizeX, int SizeY)

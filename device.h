@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 1.14 2002/09/08 11:17:41 kls Exp $
+ * $Id: device.h 1.15 2002/09/08 14:02:50 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -47,6 +47,7 @@ class cOsdBase;
 class cChannel;
 class cPlayer;
 class cReceiver;
+class cSpuDecoder;
 
 class cDevice : cThread {
 private:
@@ -128,6 +129,9 @@ public:
          // of the OSD at the given coordinates. If a derived cDevice doesn't
          // implement this function, NULL will be returned by default (which
          // means the device has no OSD capabilities).
+  virtual cSpuDecoder *GetSpuDecoder(void);
+         // Returns a pointer to the device's SPU decoder (or NULL, if this
+         // device doesn't have an SPU decoder).
 
 // Channel facilities
 
