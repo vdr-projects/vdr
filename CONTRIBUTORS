@@ -424,6 +424,8 @@ Oliver Endriss <o.endriss@gmx.de>
  for adding some satellites to 'sources.conf'
  for reporting a bug in learning remote control keys in case there is more than
  one remote control
+ for reporting a crash when learning the keys of several remote controls and
+ pressing buttons of those that have already been learned
 
 Reinhard Walter Buchner <rw.buchner@freenet.de>
  for adding some satellites to 'sources.conf'

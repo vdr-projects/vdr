@@ -1667,3 +1667,6 @@ Video Disk Recorder Revision History
   the color buttons in normal viewing mode, as well as to up to 9 user defined
   keys. See MANUAL and man vdr(5) for more information. The default 'keymacros.conf'
   implements the functionality of the "color button patch".
+- Fixed a crash when learning the keys of several remote controls and pressing
+  buttons of those that have already been learned (thanks to Oliver Endriss for
+  reporting this one).

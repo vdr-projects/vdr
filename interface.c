@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.c 1.58 2002/10/26 12:22:18 kls Exp $
+ * $Id: interface.c 1.59 2002/10/27 15:54:05 kls Exp $
  */
 
 #include "interface.h"
@@ -352,12 +352,12 @@ void cInterface::QueryKeys(cRemote *Remote)
                char *NewCode = NULL;
                eKeys Key = cRemote::Get(100, &NewCode);
                switch (Key) {
-                 case kUp:   {
-                               NewKey = eKeys(NewKey - 1);
-                               cKey *last = Keys.Last();
-                               if (last && last->Key() == NewKey)
-                                  Keys.Del(last);
-                             }
+                 case kUp:   if (NewKey > kUp) {
+                                NewKey = eKeys(NewKey - 1);
+                                cKey *last = Keys.Last();
+                                if (last && last->Key() == NewKey)
+                                   Keys.Del(last);
+                                }
                              break;
                  case kDown: WriteText(1, 5, tr("Press 'Up' to confirm"));
                              WriteText(1, 6, tr("Press 'Down' to continue"));
