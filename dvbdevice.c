@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.7 2002/08/16 09:27:53 kls Exp $
+ * $Id: dvbdevice.c 1.8 2002/08/25 09:20:53 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -191,6 +191,11 @@ bool cDvbDevice::CanBeReUsed(int Frequency, int Vpid)
 bool cDvbDevice::HasDecoder(void) const
 {
   return fd_video >= 0 && fd_audio >= 0;
+}
+
+cOsdBase *cDvbDevice::NewOsd(int x, int y)
+{
+  return new cDvbOsd(x, y);
 }
 
 bool cDvbDevice::GrabImage(const char *FileName, bool Jpeg, int Quality, int SizeX, int SizeY)

@@ -1416,8 +1416,10 @@ Video Disk Recorder Revision History
   there is at least one device, either a DVB device found by the core VDR code
   itself, or a device implemented by a plugin.
 
-2002-08-24: Version 1.1.8
+2002-08-25: Version 1.1.8
 
 - Fixed replaying the last few seconds of a recording.
 - Added some missing #includes to files in libdtv for gcc 3.2 (thanks to Jürgen
   Zimmermann).
+- Added cDevice::NewOsd() to allow a derived cDevice class to implement its own
+  OSD capabilities (thanks to Andreas Schultz).

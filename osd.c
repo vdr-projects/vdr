@@ -4,13 +4,12 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 1.34 2002/08/15 11:20:44 kls Exp $
+ * $Id: osd.c 1.35 2002/08/25 09:18:31 kls Exp $
  */
 
 #include "osd.h"
 #include <string.h>
 #include "device.h"
-#include "dvbosd.h"
 #include "i18n.h"
 #include "status.h"
 
@@ -73,7 +72,7 @@ cOsdBase *cOsd::OpenRaw(int x, int y)
 #ifdef DEBUG_OSD
   return NULL;
 #else
-  return osd ? NULL : new cDvbOsd(x, y);
+  return osd ? NULL : cDevice::PrimaryDevice()->NewOsd(x, y);
 #endif
 }
 
