@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.241 2003/05/03 15:59:07 kls Exp $
+ * $Id: menu.c 1.242 2003/05/11 12:19:11 kls Exp $
  */
 
 #include "menu.h"
@@ -1704,6 +1704,7 @@ cMenuRecordings::cMenuRecordings(const char *Base, int Level, bool OpenSubMenus)
 {
   base = Base ? strdup(Base) : NULL;
   level = Setup.RecordingDirs ? Level : -1;
+  Display(); // this keeps the higher level menus from showing up briefly when pressing 'Back' during replay
   if (!Base) {
      Interface->Status(tr("scanning recordings..."));
      Interface->Flush();
@@ -1737,7 +1738,6 @@ cMenuRecordings::cMenuRecordings(const char *Base, int Level, bool OpenSubMenus)
      else if (OpenSubMenus && Open(true))
         return;
      }
-  Display(); // this keeps the higher level menus from showing up briefly when pressing 'Back' during replay
   SetHelpKeys();
 }
 

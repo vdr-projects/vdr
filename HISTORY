@@ -2133,3 +2133,5 @@ Video Disk Recorder Revision History
   "short event" or a "time shifted event" (thanks to Jonan Santiago).
 - Disabled the "Received stuffing section in EIT" log message.
 - Updated 'channels.conf.terr' for Berlin (thanks to Juri Haberland).
+- Avoiding short display of the "Main" menu when pressing the "Recordings" button
+  or the "Back" button during replay.
