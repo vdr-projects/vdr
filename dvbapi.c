@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.21 2000/08/06 12:00:13 kls Exp $
+ * $Id: dvbapi.c 1.22 2000/08/06 14:06:14 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -1239,7 +1239,10 @@ void cDvbApi::Open(int w, int h)
 void cDvbApi::Close(void)
 {
 #ifdef DEBUG_OSD
-  delwin(window);
+  if (window) {
+     delwin(window);
+     window = 0;
+     }
 #else
   Cmd(OSD_Close);
 #endif

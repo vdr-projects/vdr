@@ -100,7 +100,7 @@ Video Disk Recorder Revision History
   the 'timers.conf' file with a text editor, or by defining/modifying the timer
   via the SVDRP interface.
 
-2000-08-06:
+2000-08-06: Version 0.61
 
 - When scrolling through a list it now moves a full page up or down when the
   cursor reaches the top or bottom of the menu (thanks to Heino Goldenstein!).
@@ -122,3 +122,4 @@ Video Disk Recorder Revision History
 - New SVDRP command UPDT to update an existing timer (or add a new one if it
   doesn't yet exist).
 - New version of the 'epg2timers' tool (with a modified channel list).
+- Bugfix in closing window in DEBUG_OSD mode.
