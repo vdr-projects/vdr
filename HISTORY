@@ -2154,3 +2154,8 @@ Video Disk Recorder Revision History
   called before trying to learn the keys (problem reported by Oliver Endriss).
 - No longer starting the editing process if no marks have been set (thanks to
   Matthias Raus for reporting this one).
+- Added Catalanian language texts (thanks to Marc Rovira Vall and Ramon Roca).
+  Plugin authors may want to add the new entries to their I18N texts and contact
+  the translators to have their texts translated. Note that there are now 16
+  different OSD languages, so please make sure you have 16 versions for each of
+  your texts.
