@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.71 2002/03/22 15:37:52 kls Exp $
+ * $Id: i18n.c 1.72 2002/03/23 10:26:16 kls Exp $
  *
  * Slovenian  translations provided by Miha Setina <mihasetina@softhome.net>
  * Italian    translations provided by Alberto Carraro <bertocar@tin.it>
@@ -305,7 +305,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "Eindigen",
     "Parar",
-    "", // TODO
+    "Arrêt",
     "", // TODO
     "Pysäytä",
   },
@@ -456,7 +456,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "op eerste interface",
     "no interface primário",
-    "sur la carte principale",
+    "sur la carte primaire",
     "", // TODO
     "päävastaanottimella",
   },
@@ -476,7 +476,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "Werkelijk opnieuw starten?",
     "Tem a certeza que quer reiniciar?",
-    "", // TODO
+    "Redémarrer?",
     "", // TODO
     "Aloitetaanko varmasti alusta?",
   },
@@ -486,7 +486,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "Opname loopt - toch opnieuw starten?",
     "Em gravação - quer mesmo reiniciar?",
-    "", // TODO
+    "Enregistrement en cours - redémarrer?",
     "", // TODO
     "Nauhoitus käynnissä - aloitetaanko alusta?",
   },
@@ -880,7 +880,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "OSD",
     "OSD",
-    "", // TODO
+    "Affichage des menus",
     "", // TODO
     "Tekstinäyttö",
   },
@@ -890,7 +890,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "EPG",
     "EPG",
-    "", // TODO
+    "Guide des programmes",
     "", // TODO
     "Ohjelmaopas",
   },
@@ -900,7 +900,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "DVB",
     "DVB",
-    "", // TODO
+    "Cartes DVB",
     "", // TODO
     "DVB",
   },
@@ -910,7 +910,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "LNB",
     "LNB",
-    "", // TODO
+    "LNB",
     "", // TODO
     "LNB",
   },
@@ -920,7 +920,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "CICAM",
     "CICAM",
-    "", // TODO
+    "Accès conditionnel",
     "", // TODO
     "CICAM",
   },
@@ -930,7 +930,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "Opname",
     "A gravar",
-    "", // TODO
+    "Enregistrement",
     "", // TODO
     "Nauhoita",
   },
@@ -940,7 +940,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "Afspelen",
     "Replay",
-    "", // TODO
+    "Lecture",
     "", // TODO
     "Toista",
   },
@@ -950,7 +950,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "Overig",
     "Outros",
-    "", // TODO
+    "Divers",
     "", // TODO
     "Sekalaista",
   },
@@ -960,7 +960,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "Herstart",
     "Reiniciar",
-    "", // TODO
+    "Redémarrer",
     "", // TODO
     "Aloita uudelleen",
   },
@@ -981,7 +981,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "Breedte",
     "Largura",
-    "Largeur", //TODO (correct?)
+    "Largeur",
     "", // TODO
     "Leveys",
   },
@@ -991,7 +991,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "Hoogte",
     "Altura",
-    "Hauteur", //TODO (correct?)
+    "Hauteur",
     "", // TODO
     "Korkeus",
   },
@@ -1091,7 +1091,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "Gebruik transponder tijd voor systeem",
     "Usar relógio do transponder",
-    "", // TODO
+    "Utiliser l'heure de la chaîne",
     "", // TODO
     "Vastaanota kellonaika lähettimeltä",
   },
@@ -1101,7 +1101,7 @@ const tPhrase Phrases[] = {
     "Scheda DVB primaria",
     "Eerste DVB kaart",
     "Interface DVB primário",
-    "Première carte DVB",
+    "Carte DVB primaire",
     "Hoved DVB-enhet",
     "Ensisij. vast.otin",
   },
@@ -1151,7 +1151,7 @@ const tPhrase Phrases[] = {
     "DiSEqC", // TODO
     "DiSEqC gebruiken",
     "Utilizar DiSEqC",
-    "DiSEqC", // TODO
+    "Utiliser le DiSEqC",
     "DiSEqC", // TODO
     "Käytä DiSEqC",
   },
@@ -1161,7 +1161,7 @@ const tPhrase Phrases[] = {
     "CICAM DVB",
     "CICAM DVB",
     "CICAM DVB",
-    "CICAM DVB",
+    "Accès conditionnel",
     "CICAM DVB",
     "CICAM DVB",
   },
@@ -1221,7 +1221,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "Gebruik episode naam",
     "Utilizar o nome do episódio",
-    "Utiliser les sous-titres", // TODO (episode name!)
+    "Utiliser le nom de l'épisode",
     "", // TODO
     "Käytä jakson nimeä",
   },
@@ -1393,7 +1393,7 @@ const tPhrase Phrases[] = {
     "Non premere alcun tasto...",
     "Druk niet op een knop...",
     "Não pressione nada...",
-    "Ne pas appuyer sur une touche ...",
+    "N'appuyer sur aucune touche ...",
     "Ikke trykk på noen av tastene...",
     "Älä paina mitään näppäintä...",
   },
@@ -1675,7 +1675,7 @@ const tPhrase Phrases[] = {
     "Disk",
     "Disk",
     "Disk",
-    "Disk",
+    "Disque",
     "Disk",
     "Disk",
   },
@@ -1745,7 +1745,7 @@ const tPhrase Phrases[] = {
     "Cambio su card DVB primaria...",
     "Eerste DVB-kaart wordt omgeschakeld...",
     "A mudar interface DVB primário...",
-    "Changement de carte DVB principale...",
+    "Changement de carte DVB primaire...",
     "Bytter hoved DVB-enhet...",
     "Vaihdetaan ensisijainen vastaanotin...",
   },
