@@ -23,10 +23,31 @@ Video Disk Recorder User's Manual
   Blue    -           Stop/Resume  Mark       On/Off(1)  -             Summary           Stop
   0..9    Ch select   -            -          -          Numeric inp.  Exec cmd(2)       Editing
 
-  Power   Shutdown
-  Volume+ Volume up
-  Volume- Volume down
-  Mute    Mute
+  If your remote control provides additional keys, they can be used for the
+  following functions:
+
+  Play        resume normal replay
+  Pause       pause replay
+  Stop        stop replay
+  Record      instant recording
+  FastFwd     fast forward
+  FastRew     fast rewind
+
+  Channel+    channel up
+  Channel-    channel down
+
+  Power       shutdown
+
+  Volume+     volume up
+  Volume-     volume down
+  Mute        mute
+
+  Schedule    \
+  Channels    |
+  Timers      | directly access the VDR
+  Recordings  | main menu functions
+  Setup       |
+  Commands    /
 
   (1) The "On/Off" button in the "Timers" menu only works if sorting the timers
       has been enabled in the "Setup" menu. Otherwise the Blue button is used

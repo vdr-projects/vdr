@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.220 2002/10/20 14:22:09 kls Exp $
+ * $Id: menu.c 1.221 2002/10/27 14:06:02 kls Exp $
  */
 
 #include "menu.h"
@@ -1226,6 +1226,7 @@ eOSState cMenuWhatsOn::ProcessKey(eKeys Key)
 
   if (state == osUnknown) {
      switch (Key) {
+       case kRecord:
        case kRed:    return Record();
        case kYellow: state = osBack;
                      // continue with kGreen
@@ -1369,6 +1370,7 @@ eOSState cMenuSchedule::ProcessKey(eKeys Key)
 
   if (state == osUnknown) {
      switch (Key) {
+       case kRecord:
        case kRed:    return Record();
        case kGreen:  if (schedules) {
                         if (!now && !next) {
@@ -2162,7 +2164,12 @@ cMenuMain::cMenuMain(bool Replaying, eOSState State)
   // Initial submenus:
 
   switch (State) {
+    case osSchedule:   AddSubMenu(new cMenuSchedule); break;
+    case osChannels:   AddSubMenu(new cMenuChannels); break;
+    case osTimers:     AddSubMenu(new cMenuTimers); break;
     case osRecordings: AddSubMenu(new cMenuRecordings(NULL, 0, true)); break;
+    case osSetup:      AddSubMenu(new cMenuSetup); break;
+    case osCommands:   AddSubMenu(new cMenuCommands(tr("Commands"), &Commands)); break;
     default: break;
     }
 }
@@ -2289,6 +2296,7 @@ eOSState cMenuMain::ProcessKey(eKeys Key)
                        }
                        break;
     default: switch (Key) {
+               case kRecord:
                case kRed:    if (!HasSubMenu())
                                 state = osRecord;
                              break;
@@ -2351,6 +2359,7 @@ cDisplayChannel::cDisplayChannel(eKeys FirstKey)
 :cOsdObject(true)
 {
   group = -1;
+  lines = 0;
   number = 0;
   lastTime = time_ms();
   int EpgLines = Setup.ShowInfoOnChSwitch ? 5 : 1;
@@ -2443,6 +2452,14 @@ void cDisplayChannel::DisplayInfo(void)
      }
 }
 
+void cDisplayChannel::Refresh(void)
+{
+  Interface->Clear();
+  DisplayChannel(Channels.GetByNumber(cDevice::CurrentChannel()));
+  lastTime = time_ms();
+  lines = 0;
+}
+
 eOSState cDisplayChannel::ProcessKey(eKeys Key)
 {
   switch (Key) {
@@ -2490,6 +2507,18 @@ eOSState cDisplayChannel::ProcessKey(eKeys Key)
             }
          lastTime = time_ms();
          break;
+    case kUp|k_Repeat:
+    case kUp:
+    case kDown|k_Repeat:
+    case kDown:
+         cDevice::SwitchChannel(NORMALKEY(Key) == kUp ? 1 : -1);
+         // no break here
+    case kChanUp|k_Repeat:
+    case kChanUp:
+    case kChanDn|k_Repeat:
+    case kChanDn:
+         Refresh();
+         break;
     case kNone:
          if (number && time_ms() - lastTime > DIRECTCHANNELTIMEOUT) {
             if (Channels.GetByNumber(number))
@@ -2509,7 +2538,7 @@ eOSState cDisplayChannel::ProcessKey(eKeys Key)
     case kOk:     if (group >= 0)
                      Channels.SwitchTo(Channels.Get(Channels.GetNextNormal(group))->Number());
                   return osEnd;
-    default:      if (NORMALKEY(Key) == kUp || NORMALKEY(Key) == kDown || (Key & (k_Repeat | k_Release)) == 0) {
+    default:      if ((Key & (k_Repeat | k_Release)) == 0) {
                      cRemote::Put(Key);
                      return osEnd;
                      }
@@ -3080,19 +3109,23 @@ void cReplayControl::TimeSearchProcess(eKeys Key)
             TimeSearchDisplay();
             }
          break;
+    case kFastRew:
     case kLeft:
+    case kFastFwd:
     case kRight: {
-         int dir = (Key == kRight ? 1 : -1);
+         int dir = ((Key == kRight || Key == kFastFwd) ? 1 : -1);
          if (dir > 0)
             Seconds = min(Total - Current - STAY_SECONDS_OFF_END, Seconds);
          SkipSeconds(Seconds * dir);
          timeSearchActive = false;
          }
          break;
+    case kPlay:
     case kUp:
+    case kPause:
     case kDown:
          Seconds = min(Total - STAY_SECONDS_OFF_END, Seconds);
-         Goto(Seconds * FRAMESPERSEC, Key == kDown);
+         Goto(Seconds * FRAMESPERSEC, Key == kDown || Key == kPause);
          timeSearchActive = false;
          break;
     default:
@@ -3237,19 +3270,26 @@ eOSState cReplayControl::ProcessKey(eKeys Key)
   bool DoShowMode = true;
   switch (Key) {
     // Positioning:
+    case kPlay:
     case kUp:      Play(); break;
+    case kPause:
     case kDown:    Pause(); break;
+    case kFastRew|k_Release:
     case kLeft|k_Release:
                    if (Setup.MultiSpeedMode) break;
+    case kFastRew:
     case kLeft:    Backward(); break;
+    case kFastFwd|k_Release:
     case kRight|k_Release:
                    if (Setup.MultiSpeedMode) break;
+    case kFastFwd:
     case kRight:   Forward(); break;
     case kRed:     TimeSearch(); break;
     case kGreen|k_Repeat:
     case kGreen:   SkipSeconds(-60); break;
     case kYellow|k_Repeat:
     case kYellow:  SkipSeconds( 60); break;
+    case kStop:
     case kBlue:    Hide();
                    Stop();
                    return osEnd;

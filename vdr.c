@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.128 2002/10/20 12:09:45 kls Exp $
+ * $Id: vdr.c 1.129 2002/10/27 14:32:06 kls Exp $
  */
 
 #include <getopt.h>
@@ -456,6 +456,25 @@ int main(int argc, char *argv[])
                Menu = new cMenuMain(cControl::Control());
                Temp = NULL;
                break;
+          #define DirectMainFunction(function)\
+            DELETENULL(Menu);\
+            if (cControl::Control())\
+               cControl::Control()->Hide();\
+            Menu = new cMenuMain(cControl::Control(), function);\
+            Temp = NULL;
+          case kSchedule:   DirectMainFunction(osSchedule); break;
+          case kChannels:   DirectMainFunction(osChannels); break;
+          case kTimers:     DirectMainFunction(osTimers); break;
+          case kRecordings: DirectMainFunction(osRecordings); break;
+          case kSetup:      DirectMainFunction(osSetup); break;
+          case kCommands:   DirectMainFunction(osCommands); break;
+          // Channel up/down:
+          case kChanUp|k_Repeat:
+          case kChanUp:
+          case kChanDn|k_Repeat:
+          case kChanDn:
+               cDevice::SwitchChannel(NORMALKEY(key) == kChanUp ? 1 : -1);
+               break;
           // Volume Control:
           case kVolUp|k_Repeat:
           case kVolUp:
@@ -487,81 +506,94 @@ int main(int argc, char *argv[])
                           }
                        LastActivity = 1; // not 0, see below!
                        break;
-          default:
-            if (Interact) {
-               switch (Interact->ProcessKey(key)) {
-                 case osRecord: DELETENULL(Menu);
-                                Temp = NULL;
-                                if (!cRecordControls::Start())
-                                   Interface->Error(tr("No free DVB device to record!"));
-                                break;
-                 case osRecordings:
-                                DELETENULL(Menu);
-                                cControl::Shutdown();
-                                Temp = NULL;
-                                Menu = new cMenuMain(false, osRecordings);
-                                break;
-                 case osReplay: DELETENULL(Menu);
-                                cControl::Shutdown();
-                                Temp = NULL;
-                                cControl::Launch(new cReplayControl);
-                                break;
-                 case osStopReplay:
-                                DELETENULL(Menu);
-                                cControl::Shutdown();
-                                Temp = NULL;
-                                break;
-                 case osSwitchDvb:
-                                DELETENULL(Menu);
-                                cControl::Shutdown();
-                                Temp = NULL;
-                                Interface->Info(tr("Switching primary DVB..."));
-                                cDevice::SetPrimaryDevice(Setup.PrimaryDVB);
-                                break;
-                 case osBack:
-                 case osEnd:    if (Interact == Menu)
-                                   DELETENULL(Menu);
-                                else
-                                   cControl::Shutdown();
-                                Temp = NULL;
-                                break;
-                 default:       ;
-                 }
-               }
-            else {
-               // Key functions in "normal" viewing mode:
-               switch (key) {
-                 // Toggle channels:
-                 case k0: {
-                      int CurrentChannel = cDevice::CurrentChannel();
-                      Channels.SwitchTo(PreviousChannel);
-                      PreviousChannel = CurrentChannel;
-                      break;
-                      }
-                 // Direct Channel Select:
-                 case k1 ... k9:
-                      Menu = new cDisplayChannel(key);
-                      break;
-                 // Left/Right rotates trough channel groups:
-                 case kLeft|k_Repeat:
-                 case kLeft:
-                 case kRight|k_Repeat:
-                 case kRight:
-                      Menu = new cDisplayChannel(NORMALKEY(key));
-                      break;
-                 // Up/Down Channel Select:
-                 case kUp|k_Repeat:
-                 case kUp:
-                 case kDown|k_Repeat:
-                 case kDown:
-                      cDevice::SwitchChannel(NORMALKEY(key) == kUp ? 1 : -1);
-                      break;
-                 // Viewing Control:
-                 case kOk:   LastChannel = -1; break; // forces channel display
-                 default:    break;
-                 }
-               }
+          default: break;
           }
+        Interact = Menu ? Menu : cControl::Control(); // might have been closed in the mean time
+        if (Interact) {
+           eOSState state = Interact->ProcessKey(key);
+           if (state == osUnknown && ISMODELESSKEY(key) && cControl::Control() && Interact != cControl::Control())
+              state = cControl::Control()->ProcessKey(key);
+           switch (state) {
+             case osRecord: DELETENULL(Menu);
+                            Temp = NULL;
+                            if (cRecordControls::Start())
+                               Interface->Info(tr("Recording"));
+                            else
+                               Interface->Error(tr("No free DVB device to record!"));
+                            break;
+             case osRecordings:
+                            DELETENULL(Menu);
+                            cControl::Shutdown();
+                            Temp = NULL;
+                            Menu = new cMenuMain(false, osRecordings);
+                            break;
+             case osReplay: DELETENULL(Menu);
+                            cControl::Shutdown();
+                            Temp = NULL;
+                            cControl::Launch(new cReplayControl);
+                            break;
+             case osStopReplay:
+                            DELETENULL(Menu);
+                            cControl::Shutdown();
+                            Temp = NULL;
+                            break;
+             case osSwitchDvb:
+                            DELETENULL(Menu);
+                            cControl::Shutdown();
+                            Temp = NULL;
+                            Interface->Info(tr("Switching primary DVB..."));
+                            cDevice::SetPrimaryDevice(Setup.PrimaryDVB);
+                            break;
+             case osBack:
+             case osEnd:    if (Interact == Menu)
+                               DELETENULL(Menu);
+                            else
+                               cControl::Shutdown();
+                            Temp = NULL;
+                            break;
+             default:       ;
+             }
+           }
+        else {
+           // Key functions in "normal" viewing mode:
+           switch (key) {
+             // Toggle channels:
+             case k0: {
+                  int CurrentChannel = cDevice::CurrentChannel();
+                  Channels.SwitchTo(PreviousChannel);
+                  PreviousChannel = CurrentChannel;
+                  break;
+                  }
+             // Direct Channel Select:
+             case k1 ... k9:
+                  Menu = new cDisplayChannel(key);
+                  break;
+             // Left/Right rotates trough channel groups:
+             case kLeft|k_Repeat:
+             case kLeft:
+             case kRight|k_Repeat:
+             case kRight:
+                  Menu = new cDisplayChannel(NORMALKEY(key));
+                  break;
+             // Up/Down Channel Select:
+             case kUp|k_Repeat:
+             case kUp:
+             case kDown|k_Repeat:
+             case kDown:
+                  cDevice::SwitchChannel(NORMALKEY(key) == kUp ? 1 : -1);
+                  break;
+             // Viewing Control:
+             case kOk:   LastChannel = -1; break; // forces channel display
+             // Instant recording:
+             case kRecord:
+                  if (cRecordControls::Start())
+                     Interface->Info(tr("Recording"));
+                  else
+                     Interface->Error(tr("No free DVB device to record!"));
+                  break;
+             default:    break;
+             }
+           }
         if (!Menu) {
            EITScanner.Process();
            if (!cCutter::Active() && cCutter::Ended()) {

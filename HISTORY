@@ -1611,7 +1611,7 @@ Video Disk Recorder Revision History
   shall be executed from the "Recordings" menu; see MANUAL and 'man vdr(5)' for
   details (suggested by Gerhard Steiner).
 
-2002-10-26: Version 1.1.14
+2002-10-27: Version 1.1.14
 
 - Fixed some faulty default parameter initializations (thanks to Robert Schiele).
 - Added further satellites to 'sources.conf' (thanks to Reinhard Walter Buchner
@@ -1647,3 +1647,19 @@ Video Disk Recorder Revision History
 - Now the name of the remote control is displayed when learning the keys.
 - Fixed learning remote control keys in case there is more than one remote
   control (thanks to Oliver Endriss for reporting this one).
+- Implemented additional dedicated keys for "Play", "Pause", "Stop", "Record",
+  "FastFwd", "FastRew", "Channel+" and "Channel-". If your remote control supports
+  any of these keys you can delete your 'remote.conf' file and restart VDR to
+  go through the key learning procedure again in order to assign these new keys.
+  See MANUAL for more information.
+  Authors of player plugins should update their ProcessKey() functions so that
+  the new player keys have the same functionality as the "Up", "Down", "Left",
+  "Right" and "Blue" keys, respectively. Note that the existing functionality
+  of these keys should by all means be retained, since VDR (and any plugins)
+  shall be fully usable with just the basic set of keys. These new keys are only
+  for additional comfort in case the remote control in use supports them.
+- Implemented new keys to directly access the VDR main menu functions "Schedule",
+  "Channels", "Timers", "Recordings", "Setup" and "Commands". If your remote
+  control provides keys you want to assign these functions to, you can delete
+  your 'remote.cof' file and restart VDR to  go through the key learning procedure
+  again in order to assign these new keys. See MANUAL for more information.
