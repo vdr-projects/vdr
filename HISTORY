@@ -858,3 +858,4 @@ Video Disk Recorder Revision History
   disable automatic shutdown.
 - Added a fifth parameter to the 'shutdown' call that indicates the reason for
   this shutdown request (see INSTALL).
+- Fixed releasing 'index' memory after recording or playback.

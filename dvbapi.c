@@ -7,7 +7,7 @@
  * DVD support initially written by Andreas Schultz <aschultz@warp10.net>
  * based on dvdplayer-0.5 by Matjaz Thaler <matjaz.thaler@guest.arnes.si>
  *
- * $Id: dvbapi.c 1.134 2001/11/03 10:59:34 kls Exp $
+ * $Id: dvbapi.c 1.135 2001/11/03 12:46:45 kls Exp $
  */
 
 //#define DVDDEBUG        1
@@ -200,6 +200,7 @@ cIndexFile::~cIndexFile()
   if (f >= 0)
      close(f);
   delete fileName;
+  delete index;
 }
 
 bool cIndexFile::CatchUp(int Index)
