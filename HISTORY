@@ -534,7 +534,7 @@ Video Disk Recorder Revision History
 - No longer getting stuck when a channel doesn't sync while switching
   with the 'Up' and 'Down' keys.
 
-2001-07-21: Version 0.84
+2001-07-22: Version 0.84
 
 - Fixed video packet scanning to make it recognize the whole range of
   allowed video packet ids.
@@ -555,3 +555,7 @@ Video Disk Recorder Revision History
 - Increased the frame buffer size to 192KB.
 - Removed a superfluous VIDEO_FREEZE call in the replay buffer.
 - Added French language texts (thanks to Jean-Claude Repetto).
+- Modified OSD to use 2bpp windows (4 colors) in order to work with less
+  memory, allow a larger OSD window and be faster. The group separators in the
+  "Channels" menu had to be given a different color.
+- Moved the channel display to the bottom of the screen.

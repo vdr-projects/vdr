@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.77 2001/07/12 14:56:18 kls Exp $
+ * $Id: menu.c 1.78 2001/07/22 12:27:51 kls Exp $
  */
 
 #include "menu.h"
@@ -585,7 +585,7 @@ cMenuChannelItem::cMenuChannelItem(int Index, cChannel *Channel)
   index = Index;
   channel = Channel;
   if (channel->groupSep)
-     SetColor(clrWhite, clrBlue);
+     SetColor(clrWhite, clrCyan);
   Set();
 }
 
@@ -1802,7 +1802,7 @@ cDisplayChannel::cDisplayChannel(int Number, bool Switched, bool Group)
   lines = 0;
   oldNumber = number = 0;
   cChannel *channel = Group ? Channels.Get(Number) : Channels.GetByNumber(Number);
-  Interface->Open(MenuColumns, 5);
+  Interface->Open(MenuColumns, -5);
   if (channel) {
      DisplayChannel(channel);
      DisplayInfo();
@@ -1816,7 +1816,7 @@ cDisplayChannel::cDisplayChannel(eKeys FirstKey)
   oldNumber = cDvbApi::CurrentChannel();
   number = 0;
   lastTime = time_ms();
-  Interface->Open(MenuColumns, 5);
+  Interface->Open(MenuColumns, -5);
   ProcessKey(FirstKey);
 }
 
@@ -1843,7 +1843,6 @@ void cDisplayChannel::DisplayChannel(const cChannel *Channel)
   struct tm *now = localtime(&t);
   snprintf(buffer, BufSize, "%02d:%02d", now->tm_hour, now->tm_min);
   Interface->Write(-5, 0, buffer);
-  Interface->Flush();
 }
 
 void cDisplayChannel::DisplayInfo(void)
@@ -2100,7 +2099,7 @@ public:
   };
 
 cProgressBar::cProgressBar(int Width, int Height, int Current, int Total, const cMarks &Marks)
-:cBitmap(Width, Height)
+:cBitmap(Width, Height, 2)
 {
   total = Total;
   if (total > 0) {

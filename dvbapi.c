@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.86 2001/07/22 09:34:55 kls Exp $
+ * $Id: dvbapi.c 1.87 2001/07/22 12:18:29 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -1843,25 +1843,6 @@ void cDvbApi::SetColor(eDvbColor colorFg, eDvbColor colorBg)
          }
       }
 }
-#else
-void cDvbApi::Cmd(OSD_Command cmd, int color, int x0, int y0, int x1, int y1, const void *data)
-{
-  if (fd_osd >= 0) {
-     osd_cmd_t dc;
-     dc.cmd   = cmd;
-     dc.color = color;
-     dc.x0    = x0;
-     dc.y0    = y0;
-     dc.x1    = x1;
-     dc.y1    = y1;
-     dc.data  = (void *)data;
-     CHECK(ioctl(fd_osd, OSD_SEND_CMD, &dc));
-     usleep(10); // XXX Workaround for a driver bug (cInterface::DisplayChannel() displayed texts at wrong places
-                 // XXX and sometimes the OSD was no longer displayed).
-                 // XXX Increase the value if the problem still persists on your particular system.
-                 // TODO Check if this is still necessary with driver versions after 0.6.
-     }
-}
 #endif
 
 void cDvbApi::Open(int w, int h)
@@ -1875,16 +1856,7 @@ void cDvbApi::Open(int w, int h)
   syncok(window, true);
   #define B2C(b) (((b) * 1000) / 255)
   #define SETCOLOR(n, r, g, b, o) init_color(n, B2C(r), B2C(g), B2C(b))
-#else
-  w *= charWidth;
-  h *= lineHeight;
-  d *= lineHeight;
-  int x = (720 - MenuColumns * charWidth) / 2; //TODO PAL vs. NTSC???
-  int y = (576 - MenuLines * lineHeight) / 2 + d;
-  osd = new cDvbOsd(fd_osd, x, y, x + w - 1, y + h - 1, 4);
-  #define SETCOLOR(n, r, g, b, o) Cmd(OSD_SetColor, n, r, g, b, o)
-  SETCOLOR(clrTransparent, 0x00, 0x00, 0x00,   0);
-#endif
+  //XXX
   SETCOLOR(clrBackground,  0x00, 0x00, 0x00, 127); // background 50% gray
   SETCOLOR(clrBlack,       0x00, 0x00, 0x00, 255);
   SETCOLOR(clrRed,         0xFC, 0x14, 0x14, 255);
@@ -1894,6 +1866,35 @@ void cDvbApi::Open(int w, int h)
   SETCOLOR(clrCyan,        0x00, 0xFC, 0xFC, 255);
   SETCOLOR(clrMagenta,     0xB0, 0x00, 0xFC, 255);
   SETCOLOR(clrWhite,       0xFC, 0xFC, 0xFC, 255);
+#else
+  w *= charWidth;
+  h *= lineHeight;
+  d *= lineHeight;
+  int x = (720 - (MenuColumns - 1) * charWidth) / 2; //TODO PAL vs. NTSC???
+  int y = (576 - MenuLines * lineHeight) / 2 + d;
+  //XXX
+  osd = new cDvbOsd(fd_osd, x, y);
+  //XXX TODO this should be transferred to the places where the individual windows are requested (there's too much detailed knowledge here!)
+  if (d == 0) { //XXX full menu
+     osd->Create(0,                            0, w,                   lineHeight, 2);
+     osd->Create(0,                   lineHeight, w, (MenuLines - 3) * lineHeight, 2, true, clrBackground, clrCyan, clrWhite, clrBlack);
+     osd->Create(0, (MenuLines - 2) * lineHeight, w,               2 * lineHeight, 4);
+     }
+  else if (h / lineHeight == 5) { //XXX channel display
+     osd->Create(0,              0, w, h, 4);
+     }
+  else if (h / lineHeight == 1) { //XXX info display
+     osd->Create(0,              0, w, h, 4);
+     }
+  else { //XXX progress display
+     /*XXX
+     osd->Create(0,              0, w, lineHeight, 1);
+     osd->Create(0,     lineHeight, w, lineHeight, 2, false);
+     osd->Create(0, 2 * lineHeight, w, lineHeight, 1);
+     XXX*///XXX some pixels are not drawn correctly with lower bpp values
+     osd->Create(0,              0, w, 3*lineHeight, 4);
+     }
+#endif
 }
 
 void cDvbApi::Close(void)

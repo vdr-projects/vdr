@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.h 1.40 2001/06/24 17:42:19 kls Exp $
+ * $Id: dvbapi.h 1.41 2001/07/22 11:48:15 kls Exp $
  */
 
 #ifndef __DVBAPI_H
@@ -36,8 +36,8 @@ typedef struct CRect {
   signed short x, y, width, height;
   };
 
-#define MenuLines   13 // XXX originally 15, but since driver version 2001-05-25 there is less OSD memory :-(
-#define MenuColumns 40
+#define MenuLines   18
+#define MenuColumns 52
 
 const char *IndexToHMSF(int Index, bool WithFrame = false);
       // Converts the given index to a string, optionally containing the frame number.
@@ -159,7 +159,6 @@ private:
   cDvbOsd *osd;
 #endif
   int cols, rows;
-  void Cmd(OSD_Command cmd, int color = 0, int x0 = 0, int y0 = 0, int x1 = 0, int y1 = 0, const void *data = NULL);
 public:
   void Open(int w, int h);
   void Close(void);
