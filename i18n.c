@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.39 2001/09/02 15:17:33 kls Exp $
+ * $Id: i18n.c 1.43 2001/09/16 14:43:05 kls Exp $
  *
  * Slovenian translations provided by Miha Setina <mihasetina@softhome.net>
  * Italian   translations provided by Alberto Carraro <bertocar@tin.it>
@@ -658,6 +658,15 @@ const tPhrase Phrases[] = {
     "Chaîne verrouillée (enregistrement en cours)!",
     "Kanalen er låst (opptak)!",
   },
+  { "Can't start Transfer Mode!",
+    "Transfer-Mode kann nicht gestartet werden!",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+  },
   { "Can't start editing process!",
     "Schnitt kann nicht gestartet werden!",
     "Ne morem zaceti urejanja!",
@@ -938,6 +947,24 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
   },
+  { "MultiSpeedMode",
+    "MultiSpeed Modus",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+  },
+  { "ShowReplayMode",
+    "Wiedergabe Status",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+  },
   // The days of the week:
   { "MTWTFSS",
     "MDMDFSS",
@@ -1177,6 +1204,33 @@ const tPhrase Phrases[] = {
   },
   { "Power",
     "Ausschalten",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+  },
+  { "Volume+",
+    "Lautstärke+",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+  },
+  { "Volume-",
+    "Lautstärke-",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+  },
+  { "Mute",
+    "Stumm",
     "", // TODO
     "", // TODO
     "", // TODO

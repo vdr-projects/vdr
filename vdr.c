@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.68 2001/09/01 14:50:40 kls Exp $
+ * $Id: vdr.c 1.73 2001/09/16 14:54:45 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -50,6 +50,9 @@
 
 #define ACTIVITYTIMEOUT 60 // seconds before starting housekeeping
 #define SHUTDOWNWAIT   300 // seconds to wait in user prompt before automatic shutdown
+#define MANUALSTART    600 // seconds the next timer must be in the future to assume manual start
+
+#define VOLUMEDELTA      5 // used to increase/decrease the volume
 
 static int Interrupted = 0;
 
@@ -328,7 +331,8 @@ int main(int argc, char *argv[])
         if (!EITScanner.Active() && cDvbApi::CurrentChannel() != LastChannel) {
            if (!Menu)
               Menu = new cDisplayChannel(cDvbApi::CurrentChannel(), LastChannel > 0);
-           PreviousChannel = LastChannel;
+           if (LastChannel > 0)
+              PreviousChannel = LastChannel;
            LastChannel = cDvbApi::CurrentChannel();
            }
         // Timers and Recordings:
@@ -348,7 +352,7 @@ int main(int argc, char *argv[])
            EITScanner.Activity();
            LastActivity = time(NULL);
            }
-        if (*Interact) {
+        if (*Interact && key != kPower) {
            switch ((*Interact)->ProcessKey(key)) {
              case osMenu:   DELETENULL(Menu);
                             Menu = new cMenuMain(ReplayControl);
@@ -390,10 +394,12 @@ int main(int argc, char *argv[])
         else {
            switch (key) {
              // Toggle channels:
-             case k0:
-                  if (PreviousChannel != cDvbApi::CurrentChannel())
-                     Channels.SwitchTo(PreviousChannel);
+             case k0: {
+                  int CurrentChannel = cDvbApi::CurrentChannel();
+                  Channels.SwitchTo(PreviousChannel);
+                  PreviousChannel = CurrentChannel;
                   break;
+                  }
              // Direct Channel Select:
              case k1 ... k9:
                   Menu = new cDisplayChannel(key);
@@ -402,17 +408,9 @@ int main(int argc, char *argv[])
              case kLeft|k_Repeat:
              case kLeft:
              case kRight|k_Repeat:
-             case kRight: {
-                  int SaveGroup = CurrentGroup;
-                  if (NORMALKEY(key) == kRight)
-                     CurrentGroup = Channels.GetNextGroup(CurrentGroup) ;
-                  else
-                     CurrentGroup = Channels.GetPrevGroup(CurrentGroup < 1 ? 1 : CurrentGroup);
-                  if (CurrentGroup < 0)
-                     CurrentGroup = SaveGroup;
-                  Menu = new cDisplayChannel(CurrentGroup, false, true);
+             case kRight:
+                  Menu = new cDisplayChannel(NORMALKEY(key));
                   break;
-                  }
              // Up/Down Channel Select:
              case kUp|k_Repeat:
              case kUp:
@@ -428,8 +426,19 @@ int main(int argc, char *argv[])
              case kMenu: Menu = new cMenuMain(ReplayControl); break;
              // Viewing Control:
              case kOk:   LastChannel = -1; break; // forces channel display
+             // Volume Control:
+             case kVolUp|k_Repeat:
+             case kVolUp:
+             case kVolDn|k_Repeat:
+             case kVolDn:
+                  cDvbApi::PrimaryDvbApi->SetVolume(NORMALKEY(key) == kVolDn ? -VOLUMEDELTA : VOLUMEDELTA);
+                  break;
+             case kMute:
+                  cDvbApi::PrimaryDvbApi->ToggleMute();
+                  break;
              // Power off:
              case kPower: isyslog(LOG_INFO, "Power button pressed");
+                          DELETENULL(*Interact);
                           if (!Shutdown) {
                              Interface->Error(tr("Can't shutdown - option '-s' not given!"));
                              break;
@@ -451,20 +460,24 @@ int main(int argc, char *argv[])
            time_t Now = time(NULL);
            if (Now - LastActivity > ACTIVITYTIMEOUT) {
               // Shutdown:
-              if (Shutdown && (Setup.MinUserInactivity && Now - LastActivity > Setup.MinUserInactivity * 60 || ForceShutdown)) {
-                 ForceShutdown = false;
+              if (Shutdown && Setup.MinUserInactivity && Now - LastActivity > Setup.MinUserInactivity * 60) {
                  cTimer *timer = Timers.GetNextActiveTimer();
                  time_t Next  = timer ? timer->StartTime() : 0;
                  time_t Delta = timer ? Next - Now : 0;
-                 if (timer)
-                    dsyslog(LOG_INFO, "next timer event at %s", ctime(&Next));
-                 if (!Next || Delta > Setup.MinEventTimeout * 60) {
-                    if (!LastActivity) {
+                 if (!LastActivity) {
+                    if (!timer || Delta > MANUALSTART) {
                        // Apparently the user started VDR manually
                        dsyslog(LOG_INFO, "assuming manual start of VDR");
                        LastActivity = Now;
-                       continue; // skip the rest of the housekeeping for now
+                       continue; // don't run into the actual shutdown procedure below
                        }
+                    else
+                       LastActivity = 1;
+                    }
+                 if (!Next || Delta > Setup.MinEventTimeout * 60 || ForceShutdown) {
+                    ForceShutdown = false;
+                    if (timer)
+                       dsyslog(LOG_INFO, "next timer event at %s", ctime(&Next));
                     if (WatchdogTimeout > 0)
                        signal(SIGALRM, SIG_IGN);
                     if (Interface->Confirm(tr("Press any key to cancel shutdown"), LastActivity == 1 ? 5 : SHUTDOWNWAIT, true)) {

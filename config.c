@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.64 2001/09/02 15:04:13 kls Exp $
+ * $Id: config.c 1.72 2001/09/16 14:54:32 kls Exp $
  */
 
 #include "config.h"
@@ -39,6 +39,9 @@ tKey keyTable[] = { // "Up" and "Down" must be the first two keys!
                     { k8,             "8",             0 },
                     { k9,             "9",             0 },
                     { kPower,         "Power",         0 },
+                    { kVolUp,         "Volume+",       0 },
+                    { kVolDn,         "Volume-",       0 },
+                    { kMute,          "Mute",          0 },
                     { kNone,          "",              0 },
                   };
 
@@ -72,7 +75,7 @@ bool cKeys::Load(const char *FileName)
      FILE *f = fopen(fileName, "r");
      if (f) {
         int line = 0;
-        char buffer[MaxBuffer];
+        char buffer[MAXPARSEBUFFER];
         result = true;
         while (fgets(buffer, sizeof(buffer), f) > 0) {
               line++;
@@ -122,24 +125,14 @@ bool cKeys::Load(const char *FileName)
 
 bool cKeys::Save(void)
 {
-  bool result = true;
   cSafeFile f(fileName);
   if (f.Open()) {
-     if (fprintf(f, "Code\t%c\nAddress\t%04X\n", code, address) > 0) {
-        for (tKey *k = keys; k->type != kNone; k++) {
-            if (fprintf(f, "%s\t%08X\n", k->name, k->code) <= 0) {
-               result = false;
-               break;
-               }
-            }
-         }
-     else
-        result = false;
-     f.Close();
+     fprintf(f, "Code\t%c\nAddress\t%04X\n", code, address);
+     for (tKey *k = keys; k->type != kNone; k++)
+         fprintf(f, "%s\t%08X\n", k->name, k->code);
+     return f.Close();
      }
-  else
-     result = false;
-  return result;
+  return false;
 }
 
 eKeys cKeys::Get(unsigned int Code)
@@ -303,14 +296,19 @@ bool cChannel::Switch(cDvbApi *DvbApi, bool Log)
         isyslog(LOG_INFO, "switching to channel %d", number);
         }
      for (int i = 3; i--;) {
-         if (DvbApi->SetChannel(number, frequency, polarization, diseqc, srate, vpid, apid1, apid2, dpid1, dpid2, tpid, ca, pnr))
-            return true;
+         switch (DvbApi->SetChannel(number, frequency, polarization, diseqc, srate, vpid, apid1, apid2, dpid1, dpid2, tpid, ca, pnr)) {
+           case scrOk:         return true;
+           case scrNoTransfer: if (Interface)
+                                  Interface->Error(tr("Can't start Transfer Mode!"));
+                               return false;
+           case scrFailed:     break; // loop will retry
+           }
          esyslog(LOG_ERR, "retrying");
          }
      return false;
      }
   if (DvbApi->Recording())
-     Interface->Info(tr("Channel locked (recording)!"));
+     Interface->Error(tr("Channel locked (recording)!"));
   return false;
 }
 
@@ -649,8 +647,6 @@ cCommands Commands;
 
 // -- cChannels --------------------------------------------------------------
 
-int CurrentGroup = -1;
-
 cChannels Channels;
 
 bool cChannels::Load(const char *FileName)
@@ -807,8 +803,10 @@ cSetup::cSetup(void)
   OSDheight = 18;
   OSDMessageTime = 1;
   MaxVideoFileSize = MAXVIDEOFILESIZE;
-  MinEventTimeout = 120;
+  MinEventTimeout = 30;
   MinUserInactivity = 120;
+  MultiSpeedMode = 0;
+  ShowReplayMode = 0;
   CurrentChannel = -1;
 }
 
@@ -846,6 +844,8 @@ bool cSetup::Parse(char *s)
      else if (!strcasecmp(Name, "MaxVideoFileSize"))    MaxVideoFileSize   = atoi(Value);
      else if (!strcasecmp(Name, "MinEventTimeout"))     MinEventTimeout    = atoi(Value);
      else if (!strcasecmp(Name, "MinUserInactivity"))   MinUserInactivity  = atoi(Value);
+     else if (!strcasecmp(Name, "MultiSpeedMode"))      MultiSpeedMode     = atoi(Value);
+     else if (!strcasecmp(Name, "ShowReplayMode"))      ShowReplayMode     = atoi(Value);
      else if (!strcasecmp(Name, "CurrentChannel"))      CurrentChannel     = atoi(Value);
      else
         return false;
@@ -862,7 +862,7 @@ bool cSetup::Load(const char *FileName)
   FILE *f = fopen(fileName, "r");
   if (f) {
      int line = 0;
-     char buffer[MaxBuffer];
+     char buffer[MAXPARSEBUFFER];
      bool result = true;
      while (fgets(buffer, sizeof(buffer), f) > 0) {
            line++;
@@ -918,13 +918,14 @@ bool cSetup::Save(const char *FileName)
         fprintf(f, "MaxVideoFileSize   = %d\n", MaxVideoFileSize);
         fprintf(f, "MinEventTimeout    = %d\n", MinEventTimeout);
         fprintf(f, "MinUserInactivity  = %d\n", MinUserInactivity);
+        fprintf(f, "MultiSpeedMode     = %d\n", MultiSpeedMode);
+        fprintf(f, "ShowReplayMode     = %d\n", ShowReplayMode);
         fprintf(f, "CurrentChannel     = %d\n", CurrentChannel);
-        f.Close();
-        isyslog(LOG_INFO, "saved setup to %s", FileName);
-        return true;
+        if (f.Close()) {
+           isyslog(LOG_INFO, "saved setup to %s", FileName);
+           return true;
+           }
         }
-     else
-        LOG_ERROR_STR(FileName);
      }
   else
      esyslog(LOG_ERR, "attempt to save setup without file name");

@@ -1,43 +1,49 @@
-		Master-Timer (w) by Matthias Schniedermeyer (ms@citd.de)
-		============
+Master-Timer
+============
+(w) by Matthias Schniedermeyer (ms@citd.de)
 
 
 1. Introduction
 ---------------
 
-Master-Timer ist a system for recording Films/Series automaticaly
+Master-Timer is a system designed for automatically recording movies.
+Upon execution it reads its configuration files, scans the file "epg.data"
+in the current directory for matching titles and programs them via SVDRP
+into VDR.
 
-2. Requierements
-----------------
+You may for example run Master-Timer as a cron job.
 
-epg.data
-
-3. Config-Files
+2. Config files
 ---------------
 
-For all files: One Entry per Line. Each line is a "Regular Expresion" 
-               So you can use all Perl-Style REs you want.
-               The RE are matched with "i" so they are case insensitive!
-               (Except for the "done"-list, these must match excatly!)
+Configuration files are located in "~/.master-timer". Each entry is a
+regular expression so you can use all Perl style REs you want. They are
+processed case insensitive.
 
-deepblack: Blacklist of "Titles" you NEVER EVER want to get to you eyes
+config: Main configuration file.
 
-subtitle-movies: A list of "Subtitles" which indicate a movie. 
-                 (For Channels that correctly fill out the Subtitle. 
-                  e.g. it won't work for *eRTL*)
+deepblack: Blacklist of "titles" you NEVER EVER want to see.
 
-torecord:  The titles/subtitles/Description you want to record
+subtitle-movies: A list of "Subtitles" which indicate a movie (used
+  by the "MOVIE" macro in torecord).
+  For channels that correctly fill out the subtitle e.g. it will not
+  work with *eRTL*.
+
+torecord:  The titles you want to record.
 
 done: 	The titles/subtitles which are already recorded/should not be recorded
-        (Programmed Timers which got inserted into "done" will be deleted 
-         automaticaly)
+  Programmed timers which got inserted into "done" will be deleted
+  automatically.
+
+channels-to-scan: Used only by the separate "scan-channels" script which
+  switches through channels in order to get EPG data.
 
 4. Notices
 ----------
 
-- Recordings "overlapping" on the same channel, will be joined into one Timer
-- Title/Subtitle/Descriptions are "fixed" for Channel that don't fill them 
-  out "correctly" (Currently the "Bugs" from Pro-7/VOX/VIVA)
+- Recordings overlapping on the same channel will be joined into one timer
+- Title/Subtitle/Descriptions are "fixed" for channels that don't fill them 
+  out correctly (Pro-7/VOX/VIVA)
   Pro7: Remove the Title from the Subtitle  '<Title> / <Subtitle>'
   VOX/VIVA: Subtitle is enclosed into "" and after ". " is the description
   VIVA: When the Subtitle beginns with space the subtitle is moved to
@@ -48,5 +54,5 @@ done: 	The titles/subtitles which are already recorded/should not be recorded
 -------------
 
 - It isn't checked if there are enough DVB-Cards
-- Overlapping Timers, on the same channel, are always joined
-- JOINed timers which are "done" don't get deleted automaticaly
+- Overlapping timers on the same channel are always joined
+- Joined timers which are "done" don't get deleted automatically

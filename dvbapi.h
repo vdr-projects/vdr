@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.h 1.47 2001/08/25 13:37:00 kls Exp $
+ * $Id: dvbapi.h 1.51 2001/09/16 13:54:23 kls Exp $
  */
 
 #ifndef __DVBAPI_H
@@ -56,6 +56,8 @@ const char *IndexToHMSF(int Index, bool WithFrame = false);
 int HMSFToIndex(const char *HMSF);
       // Converts the given string (format: "hh:mm:ss.ff") to an index.
 
+enum eSetChannelResult { scrOk, scrNoTransfer, scrFailed };
+
 class cChannel;
 
 class cRecordBuffer;
@@ -85,7 +87,7 @@ class cDvbApi {
   friend class cTransferBuffer;
 private:
   int videoDev;
-  int fd_osd, fd_qpskfe, fd_qamfe, fd_sec, fd_dvr, fd_audio, fd_video, fd_demuxa1, fd_demuxa2, fd_demuxd1, fd_demuxd2, fd_demuxv, fd_demuxt;
+  int fd_osd, fd_frontend, fd_sec, fd_dvr, fd_audio, fd_video, fd_demuxa1, fd_demuxa2, fd_demuxd1, fd_demuxd2, fd_demuxv, fd_demuxt;
   int vPid, aPid1, aPid2, dPid1, dPid2;
   bool SetPid(int fd, dmxPesType_t PesType, int Pid, dmxOutput_t Output);
   bool SetVpid(int Vpid, dmxOutput_t Output)  { return SetPid(fd_demuxv,  DMX_PES_VIDEO,    Vpid, Output); }
@@ -203,7 +205,7 @@ public:
 private:
   int currentChannel;
 public:
-  bool SetChannel(int ChannelNumber, int FrequencyMHz, char Polarization, int Diseqc, int Srate, int Vpid, int Apid1, int Apid2, int Dpid1, int Dpid2, int Tpid, int Ca, int Pnr);
+  eSetChannelResult SetChannel(int ChannelNumber, int FrequencyMHz, char Polarization, int Diseqc, int Srate, int Vpid, int Apid1, int Apid2, int Dpid1, int Dpid2, int Tpid, int Ca, int Pnr);
   static int CurrentChannel(void) { return PrimaryDvbApi ? PrimaryDvbApi->currentChannel : 0; }
   int Channel(void) { return currentChannel; }
 
@@ -287,6 +289,12 @@ public:
   bool GetIndex(int &Current, int &Total, bool SnapToIFrame = false);
        // Returns the current and total frame index, optionally snapped to the
        // nearest I-frame.
+  bool GetReplayMode(bool &Play, bool &Forward, int &Speed);
+       // Returns the current replay mode (if applicable).
+       // 'Play' tells whether we are playing or pausing, 'Forward' tells whether
+       // we are going forward or backward and 'Speed' is -1 if this is normal
+       // play/pause mode, 0 if it is single speed fast/slow forward/back mode
+       // and >0 if this is multi speed mode.
   void Goto(int Index, bool Still = false);
        // Positions to the given index and displays that frame as a still picture
        // if Still is true.
@@ -307,6 +315,18 @@ private:
 public:
   static void SetAudioCommand(const char *Command);
   static const char *AudioCommand(void) { return audioCommand; }
+
+  // Volume facilities:
+
+private:
+  bool mute;
+  int volume;
+public:
+  void ToggleMute(void);
+       // Turns the volume off or on.
+  void SetVolume(int Volume, bool Absolute = false);
+       // Sets the volume to the given value, either absolutely or relative to
+       // the current volume.
   };
 
 class cEITScanner {

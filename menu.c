@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.115 2001/09/02 15:27:54 kls Exp $
+ * $Id: menu.c 1.120 2001/09/15 10:36:31 kls Exp $
  */
 
 #include "menu.h"
@@ -16,8 +16,9 @@
 #include "eit.h"
 #include "i18n.h"
 
-#define MENUTIMEOUT 120 // seconds
-#define MAXWAIT4EPGINFO 10 // seconds
+#define MENUTIMEOUT     120 // seconds
+#define MAXWAIT4EPGINFO  10 // seconds
+#define MODETIMEOUT       3 // seconds
 
 const char *FileNameChars = " aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ0123456789-.#~^";
 
@@ -1725,6 +1726,8 @@ void cMenuSetup::Set(void)
   Add(new cMenuEditIntItem( tr("MaxVideoFileSize"),   &data.MaxVideoFileSize, MINVIDEOFILESIZE, MAXVIDEOFILESIZE));
   Add(new cMenuEditIntItem( tr("MinEventTimeout"),    &data.MinEventTimeout));
   Add(new cMenuEditIntItem( tr("MinUserInactivity"),  &data.MinUserInactivity));
+  Add(new cMenuEditBoolItem(tr("MultiSpeedMode"),     &data.MultiSpeedMode));
+  Add(new cMenuEditBoolItem(tr("ShowReplayMode"),     &data.ShowReplayMode));
 }
 
 eOSState cMenuSetup::ProcessKey(eKeys Key)
@@ -1920,14 +1923,14 @@ eOSState cMenuMain::ProcessKey(eKeys Key)
 #define DIRECTCHANNELTIMEOUT 1000 //ms
 #define INFOTIMEOUT          5000 //ms
 
-cDisplayChannel::cDisplayChannel(int Number, bool Switched, bool Group)
+cDisplayChannel::cDisplayChannel(int Number, bool Switched)
 :cOsdBase(true)
 {
-  group = Group;
-  withInfo = !group && (!Switched || Setup.ShowInfoOnChSwitch);
+  group = -1;
+  withInfo = !Switched || Setup.ShowInfoOnChSwitch;
   lines = 0;
   oldNumber = number = 0;
-  cChannel *channel = Group ? Channels.Get(Number) : Channels.GetByNumber(Number);
+  cChannel *channel = Channels.GetByNumber(Number);
   Interface->Open(Setup.OSDwidth, Setup.ChannelInfoPos ? 5 : -5);
   if (channel) {
      DisplayChannel(channel);
@@ -1939,6 +1942,7 @@ cDisplayChannel::cDisplayChannel(int Number, bool Switched, bool Group)
 cDisplayChannel::cDisplayChannel(eKeys FirstKey)
 :cOsdBase(true)
 {
+  group = -1;
   oldNumber = cDvbApi::CurrentChannel();
   number = 0;
   lastTime = time_ms();
@@ -2049,6 +2053,32 @@ eOSState cDisplayChannel::ProcessKey(eKeys Key)
                }
             }
          break;
+    case kLeft:
+    case kRight:
+         withInfo = false;
+         if (group < 0) {
+            cChannel *channel = Channels.GetByNumber(cDvbApi::CurrentChannel());
+            if (channel)
+               group = channel->Index();
+            }
+         if (group >= 0) {
+            int SaveGroup = group;
+            if (Key == kRight)
+               group = Channels.GetNextGroup(group) ;
+            else
+               group = Channels.GetPrevGroup(group < 1 ? 1 : group);
+            if (group < 0)
+               group = SaveGroup;
+            cChannel *channel = Channels.Get(group);
+            if (channel) {
+               Interface->Clear();
+               DisplayChannel(channel);
+               if (!channel->groupSep)
+                  group = -1;
+               }
+            }
+         lastTime = time_ms();
+         break;
     case kNone:
          if (number && time_ms() - lastTime > DIRECTCHANNELTIMEOUT) {
             if (number > 0 && !Channels.SwitchTo(number))
@@ -2059,8 +2089,8 @@ eOSState cDisplayChannel::ProcessKey(eKeys Key)
     //TODO
     //XXX case kGreen:  return osEventNow;
     //XXX case kYellow: return osEventNext;
-    case kOk:     if (group)
-                     Channels.SwitchTo(Channels.Get(Channels.GetNextNormal(CurrentGroup))->number);
+    case kOk:     if (group >= 0)
+                     Channels.SwitchTo(Channels.Get(Channels.GetNextNormal(group))->number);
                   return osEnd;
     default:      Interface->PutKey(Key);
                   return osEnd;
@@ -2304,7 +2334,7 @@ int  cReplayControl::titleid = 0;//XXX
 cReplayControl::cReplayControl(void)
 {
   dvbApi = cDvbApi::PrimaryDvbApi;
-  visible = shown = displayFrames = false;
+  visible = modeOnly = shown = displayFrames = false;
   lastCurrent = lastTotal = -1;
   timeoutShow = 0;
   timeSearchActive = false;
@@ -2367,7 +2397,51 @@ void cReplayControl::Hide(void)
 {
   if (visible) {
      Interface->Close();
-     needsFastResponse = visible = false;
+     needsFastResponse = visible = modeOnly = false;
+     }
+}
+
+void cReplayControl::DisplayAtBottom(const char *s)
+{
+  if (s) {
+     int w = dvbApi->WidthInCells(s);
+     int d = max(Width() - w, 0) / 2;
+     Interface->Write(d, -1, s);
+     Interface->Flush();
+     }
+  else
+     Interface->Fill(12, 2, Width() - 22, 1, clrBackground);
+}
+
+void cReplayControl::ShowMode(void)
+{
+  if (Setup.ShowReplayMode && !timeSearchActive) {
+     bool Play, Forward;
+     int Speed;
+     if (dvbApi->GetReplayMode(Play, Forward, Speed)) {
+
+        if (!visible) {
+           // open small display
+           Interface->Open(9, -1);
+           Interface->Clear();
+           visible = modeOnly = true;
+           }
+
+        timeoutShow = (modeOnly && !timeoutShow && Speed == -1 && Play) ? time(NULL) + MODETIMEOUT : 0;
+        const char *Mode;
+        if (Speed == -1) Mode = Play    ? "  >  " : " ||  ";
+        else if (Play)   Mode = Forward ? " X>> " : " <<X ";
+        else             Mode = Forward ? " X|> " : " <|X ";
+        char buf[16];
+        strn0cpy(buf, Mode, sizeof(buf));
+        char *p = strchr(buf, 'X');
+        if (p)
+           *p = Speed > 0 ? '1' + Speed - 1 : ' ';
+
+        eDvbFont OldFont = Interface->SetFont(fontFix);
+        DisplayAtBottom(buf);
+        Interface->SetFont(OldFont);
+        }
      }
 }
 
@@ -2407,6 +2481,7 @@ bool cReplayControl::ShowProgress(bool Initial)
         lastCurrent = Current;
         }
      lastTotal = Total;
+     ShowMode();
      return true;
      }
   return false;
@@ -2428,7 +2503,7 @@ void cReplayControl::TimeSearchDisplay(void)
     default: sprintf(buf + len, "--:--"); break;
     }
 
-  Interface->Write(12, 2, buf);
+  DisplayAtBottom(buf);
 }
 
 void cReplayControl::TimeSearchProcess(eKeys Key)
@@ -2485,7 +2560,8 @@ void cReplayControl::TimeSearchProcess(eKeys Key)
      if (timeSearchHide)
         Hide();
      else
-        Interface->Fill(12, 2, Width() - 22, 1, clrBackground);
+        DisplayAtBottom();
+     ShowMode();
      }
 }
 
@@ -2493,6 +2569,8 @@ void cReplayControl::TimeSearch(void)
 {
   timeSearchHH = timeSearchMM = timeSearchPos = 0;
   timeSearchHide = false;
+  if (modeOnly)
+     Hide();
   if (!visible) {
      Show();
      if (visible)
@@ -2596,7 +2674,7 @@ eOSState cReplayControl::ProcessKey(eKeys Key)
         Hide();
         timeoutShow = 0;
         }
-     else
+     else if (!modeOnly)
         shown = ShowProgress(!shown) || shown;
      }
   bool DisplayedFrames = displayFrames;
@@ -2605,13 +2683,16 @@ eOSState cReplayControl::ProcessKey(eKeys Key)
      TimeSearchProcess(Key);
      return osContinue;
      }
+  bool DoShowMode = true;
   switch (Key) {
     // Positioning:
     case kUp:      dvbApi->Play(); break;
     case kDown:    dvbApi->Pause(); break;
     case kLeft|k_Release:
+                   if (Setup.MultiSpeedMode) break;
     case kLeft:    dvbApi->Backward(); break;
     case kRight|k_Release:
+                   if (Setup.MultiSpeedMode) break;
     case kRight:   dvbApi->Forward(); break;
     case kRed:     TimeSearch(); break;
     case kGreen|k_Repeat:
@@ -2622,6 +2703,7 @@ eOSState cReplayControl::ProcessKey(eKeys Key)
                    dvbApi->StopReplay();
                    return osEnd;
     default: {
+      DoShowMode = false;
       switch (Key) {
         // Editing:
         //XXX should we do this only when the ProgressDisplay is on???
@@ -2647,6 +2729,8 @@ eOSState cReplayControl::ProcessKey(eKeys Key)
         }
       }
     }
+  if (DoShowMode)
+     ShowMode();
   if (DisplayedFrames && !displayFrames)
      Interface->Fill(0, 2, 11, 1, clrBackground);
   return osContinue;

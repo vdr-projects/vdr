@@ -715,3 +715,46 @@ Video Disk Recorder Revision History
   definitions). Use your favourite text editor to delete that information.
   That way every recording will store the actual summary data at the time of
   the recording.
+
+2001-09-16: Version 0.95
+
+- Fixed behaviour in case the shutdown didn't take place (there were many
+  "next timer event at..." messages in that case).
+- Reduced the default value for MinEventTimeout to 30 minutes.
+- Fixed detecting manual start in shutdown feature.
+- An error message is now displayed in case the Transfer Mode can't be
+  started because the necessary DVB card is currently recording (or there
+  is no DVB card that can access this channel).
+- Fixed toggling channels with the '0' key in case the "Ok" button has been
+  pressed to display the current/next information.
+- Pressing the "Power" key now always initiates the shutdown sequence (after
+  user confirmation in case of a recording timer), event if there is currently
+  a menu or a replay session active. Note the additional remarks in INSTALL
+  regarding the values of the two parameters given to the shutdown program
+  in case of a currently recording timer.
+- Switching through channel groups with the "Left" and "Right" keys now
+  always starts at the group that contains the current channel.
+- Implemented "Multi Speed Mode" (thanks to Stefan Huelswitt).
+- Implemented backtracing to hit the right spot after fast forward/rewind
+  (thanks to Stefan Huelswitt).
+- Implemented replay mode display (thanks to Stefan Huelswitt, with a few
+  rewrites by kls).
+- Changed the size of all input buffers used to parse config files or receive
+  SVDRP commands to the same value of 10KB. This allows long strings to be
+  used in the 'summary' field of a timer, for instance.
+- The pipe to the Dolby Digital replay command (option '-a') now closes all
+  unused file descriptors in the child process to avoid crashing when the
+  OSD is used (thanks to Andreas Vitting).
+- Switched to the driver's new tuning API (VDR now requires a driver version
+  dated 2001-09-14 or higher).
+- Changed obsolete macro VIDEO_WINDOW_CHROMAKEY to VID_TYPE_CHROMAKEY (thanks
+  to Guido Fiala).
+- New version of the "Master-Timer" tool (thanks to Matthias Schniedermeyer).
+- Better error handling when writing configuration files.
+- Fixed putting the final editing mark into the edited version's marks file.
+- Fixed manipulating an editing mark at the very end of a recording.
+- Fixed starting a new replay immediately after stopping a previous one (had
+  caused a mix between live video and replay).
+- Three new keys ("Volume+", Volume-" and "Mute") to control the DVB card's
+  audio output volume.
+- New version of the 'epg2timers' tool (thanks to Carsten Koch).

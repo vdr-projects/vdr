@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.22 2001/09/01 09:50:03 kls Exp $
+ * $Id: svdrp.c 1.23 2001/09/14 14:31:22 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -262,7 +262,7 @@ void cSVDRP::Close(bool Timeout)
 {
   if (file.IsOpen()) {
      //TODO how can we get the *full* hostname?
-     char buffer[MAXCMDBUFFER];
+     char buffer[BUFSIZ];
      gethostname(buffer, sizeof(buffer));
      Reply(221, "%s closing connection%s", buffer, Timeout ? " (timeout)" : "");
      isyslog(LOG_INFO, "closing SVDRP connection"); //TODO store IP#???
@@ -944,7 +944,7 @@ void cSVDRP::Process(void)
   if (file.IsOpen() || file.Open(socket.Accept())) {
      if (SendGreeting) {
         //TODO how can we get the *full* hostname?
-        char buffer[MAXCMDBUFFER];
+        char buffer[BUFSIZ];
         gethostname(buffer, sizeof(buffer));
         time_t now = time(NULL);
         Reply(220, "%s SVDRP VideoDiskRecorder %s; %s", buffer, VDRVERSION, ctime(&now));

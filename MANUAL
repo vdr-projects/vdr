@@ -8,7 +8,7 @@ Video Disk Recorder User's Manual
   possible, several keys have different meanings in the various
   modes:
 
-  Key     Normal      Main       Channels   Timers     Edit/New      Recordings  Replay
+  Key         Normal      Main       Channels   Timers     Edit/New      Recordings  Replay
 
   Up      Ch up       Crsr up    Crsr up    Crsr up    Crsr up       Crsr up     Play
   Down    Ch down     Crsr down  Crsr down  Crsr down  Crsr down     Crsr down   Pause
@@ -23,6 +23,9 @@ Video Disk Recorder User's Manual
   Blue    -           Resume     Mark       Mark(1)    -             Summary     Stop
   0..9    Ch select   -          -          -          Numeric inp.  -           Editing
   Power   Shutdown    -          -          -          -             -           -
+  Volume+ Volume up   -          -          -          -             -           -
+  Volume- Volume down -          -          -          -             -           -
+  Mute    Mute        -          -          -          -             -           -
 
   (1) The "Mark" button in the "Timers" menu only works if sorting the timers
       has been disabled in the "Setup" menu.
@@ -177,6 +180,10 @@ Video Disk Recorder User's Manual
             backward at a slower speed; press again to return to pause mode.
             Pressing and holding down the button performs the function until
             the button is released again.
+            If "Multi Speed Mode" has been enabled in the "Setup" menu, the
+            function of these buttons changes in a way that gives you three
+            fast and slow speeds, through which you can switch by pressing
+            the respective button several times.
   - Red     Jump to a specific location. Enter the time you want to jump to
             and then press "Left" or "Right" to jump relative to the current
             position, "Up" to jump to an absolute position, and "Down" to
@@ -442,7 +449,7 @@ Video Disk Recorder User's Manual
                          you may want to use smaller values if you are planning
                          on archiving a recording to CD.
 
-  MinEventTimeout=120    If the command line option '-s' has been set, VDR will
+  MinEventTimeout=30     If the command line option '-s' has been set, VDR will
   MinUserInactivity=120  automatically shutdown the computer if the next timer
                          event is at least MinEventTimeout minutes in the future,
                          and the user has been inactive for at least
@@ -450,6 +457,17 @@ Video Disk Recorder User's Manual
                          to 0 disables the automatic shutdown, while still
                          retaining the possibility to manually shutdown the
                          computer.
+
+  MultiSpeedMode = 0     Defines the function of the "Left" and "Right" keys in
+                         replay mode. If set to 0, one speed will be used, while
+                         if set to 1 there will be three speeds for fast and slow
+                         search, respectively.
+                         0 = off
+                         1 = on
+
+  ShowReplayMode = 0     Turns displaying the current replay mode on or off.
+                         0 = off
+                         1 = on
 
 * Executing system commands
 

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.31 2001/08/26 12:52:49 kls Exp $
+ * $Id: tools.h 1.34 2001/09/15 15:22:57 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -29,9 +29,16 @@ extern int SysLogLevel;
 
 #define SECSINDAY  86400
 
+#define KILOBYTE(n) ((n) * 1024)
+#define MEGABYTE(n) ((n) * 1024 * 1024)
+
+#define MAXPARSEBUFFER KILOBYTE(10)
+
 #define DELETENULL(p) (delete (p), p = NULL)
 
-template<class T> inline void swap(T &a, T &b) { T t = a; a = b; b = t; };
+template<class T> inline T min(T a, T b) { return a <= b ? a : b; }
+template<class T> inline T max(T a, T b) { return a >= b ? a : b; }
+template<class T> inline void swap(T &a, T &b) { T t = a; a = b; b = t; }
 
 ssize_t safe_read(int filedes, void *buffer, size_t size);
 ssize_t safe_write(int filedes, const void *buffer, size_t size);
@@ -86,7 +93,7 @@ public:
   ~cSafeFile();
   operator FILE* () { return f; }
   bool Open(void);
-  void Close(void);
+  bool Close(void);
   };
 
 class cListObject {

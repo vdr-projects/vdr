@@ -1,0 +1,151 @@
+Overview.
+=========
+
+The 4 modules in this directory are designed to allow vdr timer 
+programming via the http://tvtv.de web EPG (Electronic Program Guide).
+
+Once you have these modules properly configured and installed, 
+you should be able to simply click on the things you want vdr 
+to record in the http://tvtv.de web EPG and be done with it. 
+Everything else can be handled automatically.
+
+
+
+Module description.
+===================
+
+The http://tvtv.de web EPG creates a so-called "merkliste"
+("a list of items to remember") containing all the broadcasts
+you selected.
+
+1.  The perl script "get_merkliste.pl" transfers this "merkliste"
+    from the http://tvtv.de web site to a local file "merkliste.html".
+
+2.  The C++ program "epg2timers" converts this HTML file into vdr's
+    timers.conf format.
+    
+3.  The perl script "loadvdr.pl" pumps these new timer entries
+    into a running vdr using telnet and the SVDRP protocol.
+
+4.  The shell script "update_timers" implements the overall 
+    control of the entire process.
+    It retrieves the latest merkliste from http://tvtv.de,
+    converts it to timers.conf format and sends the timer entries 
+    to vdr.
+    
+    
+
+Configuration.
+==============
+
+get_merkliste.pl requires configuration of the "files_to_fetch"
+variable preset. 
+Log in to your http://tvtv.de account and click on the "Bookmark"
+item in the "Setup" submenu of the "Mein Programm" side bar menu.
+This will open a window with a URL in the location field that ends
+with an ID value. Replace the xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+in the "files_to_fetch" variable preset with your ID value.
+If you are using an HTTP proxy, uncomment the line containing
+the $ua->proxy call and put your proxy details in.
+
+epg2timers.cxx allows various items to be configured, but it
+should work out of the box. See "tvtv.de channel names" below.
+
+update_timers must know where to find the get_merkliste.pl
+perl script and the compiled epg2timers binary. Both must be
+in a directory pointed to by the TOOLDIR variable.
+update_timers also must know where to find vdr's current 
+channels.conf file. Put that into the CHANPATH.
+
+Depending on the price of your internet access, you may want to
+run update_timers more or less frequently. It may also be a good
+idea to run it at times where it is unlikely to interfere with 
+your current use of vdr. Configure a crontab entry according to
+these personal preferences. Here is the entry I use:
+1       2       *       *       *       /home/cko/bin/update_timers
+It runs update_timers only once a night at 02:01 a.m.
+
+
+Installation.
+=============
+Create your TOOLDIR directory if it does not already exist.
+Copy get_merkliste.pl and loadvdr.pl into it, compile epg2timers.cxx 
+with the command:
+    g++ epg2timers.cxx -o epg2timers
+and move the epg2timers binary into the TOOLDIR directory.
+
+The get_merkliste.pl script requires certain packages to run.
+Besides of course perl, install perl-libwww-perl (at least
+that's the name on SuSE 7.2, it may have a different name in
+your distribution).
+
+If you have problems with SVDRP and loadvdr.pl, you may want to
+try out the update_timers.old script, which replaces the timers.conf
+file directly and kills vdr (assuming that it will be restarted
+by the runvdr script) to make vdr reload the timers.conf file.
+
+
+tvtv.de channel names.
+======================
+The file epg_channel_names contains the names of all channels
+currently (as of September 9, 2001) supported by the tvtv.de 
+web EPG. The variable "channel_map" in epg2timers.cxx maps
+these names into PNRs (aka Service IDs). I have initialized
+this table with provider names converted from a d-box channel 
+scan of Astra 19.2E, so the PNRs should be correct for that 
+satellite, but most of the names propably aren't yet- I simply 
+had not enough time yet to go through epg_channel_names
+and insert all its channel names at the proper places in the
+channel map. Consider the map supplied an example. ;-)
+If you fix any of the entries, please send me a patch.
+For my own humble purposes, the table works well as it is.
+Of course, your channels.conf must contain the matching
+PNRs (last field in each line).
+
+
+To Do.
+======
+These are just ideas. They MAY get implemented.
+If you want them to happen, contribute a patch. ;-)
+
+*  Support vdr hierarchical directories (after vdr does)
+   by mapping the http://tvtv.de genre texts into 
+   directory names.
+*  start_time_safety_margin for epg2timers.
+
+
+Authors.
+========
+Carsten Koch:    epg2timers.cxx, update_timers,  this README file.
+                                     
+Axel Gruber and 
+Rolf Hakenes:    get_merkliste.pl
+
+Peter Ahlert:    loadvdr.pl
+
+
+Credits.
+========
+I am grateful (in chronological order) to 
+
+* Klaus Schmidinger for his excellent vdr program and for
+  keeping an open mind in all directions.
+  
+* Suse (my wife, not the Linux distributor ;-) for encouraging me to 
+  write epg2timers in June 2000 and for her constant patience and support.
+  
+* Andreas Steinhauser for periodically criticizing the epg2timers 
+  "manual mode" until I came up with the idea to fully automatize it
+  and for contributing ideas.
+ 
+* Axel Gruber for reminding me half a year later, for pushing
+  the idea until it got implemented, for asking for new features
+  all the time and for contributing ideas.
+
+* Axel Gruber and Rolf Hakenes for contributing the get_merkliste.pl
+  perl script.
+  
+* Peter Ahlert for contributing the loadvdr.pl perl script.
+
+
+Carsten, September 2001.

@@ -4,12 +4,13 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 1.11 2001/08/05 10:36:52 kls Exp $
+ * $Id: thread.c 1.12 2001/09/15 13:00:58 kls Exp $
  */
 
 #include "thread.h"
 #include <errno.h>
 #include <signal.h>
+#include <sys/resource.h>
 #include <sys/wait.h>
 #include <unistd.h>
 #include "tools.h"
@@ -235,3 +236,106 @@ bool cThreadLock::Locked(void)
   return locked;
 }
 
+// --- cPipe -----------------------------------------------------------------
+
+// cPipe::Open() and cPipe::Close() are based on code originally received from
+// Andreas Vitting <Andreas@huji.de>
+
+cPipe::cPipe(void)
+{
+  pid = -1;
+  f = NULL;
+}
+
+cPipe::~cPipe()
+{
+  Close();
+}
+
+bool cPipe::Open(const char *Command, const char *Mode)
+{
+  int fd[2];
+
+  if (pipe(fd) < 0) {
+     LOG_ERROR;
+     return false;
+     }
+  if ((pid = fork()) < 0) { // fork failed
+     LOG_ERROR;
+     close(fd[0]);
+     close(fd[1]);
+     return false;
+     }
+
+  char *mode = "w";
+  int iopipe = 0;
+
+  if (pid > 0) { // parent process
+     if (strcmp(Mode, "r") == 0) {
+        mode = "r";
+        iopipe = 1;
+        }
+     close(fd[iopipe]);
+     f = fdopen(fd[1 - iopipe], mode);
+     if ((f = fdopen(fd[1 - iopipe], mode)) == NULL) {
+        LOG_ERROR;
+        close(fd[1 - iopipe]);
+        }
+     return f != NULL;
+     }
+  else { // child process
+     int iofd = STDOUT_FILENO;
+     if (strcmp(Mode, "w") == 0) {
+        mode = "r";
+        iopipe = 1;
+        iofd = STDIN_FILENO;
+        }
+     close(fd[iopipe]);
+     if (dup2(fd[1 - iopipe], iofd) == -1) { // now redirect
+        LOG_ERROR;
+        close(fd[1 - iopipe]);
+        _exit(-1);
+        }
+     else {
+        for (int i = STDERR_FILENO + 1; i < fd[1 - iopipe]; i++)
+            close(i); //close all dup'ed filedescriptors
+        if (execl("/bin/sh", "sh", "-c", Command, NULL) == -1) {
+           LOG_ERROR_STR(Command);
+           close(fd[1 - iopipe]);
+           _exit(-1);
+           }
+        }
+     _exit(0);
+     }
+}
+
+int cPipe::Close(void)
+{
+  int ret = -1;
+
+  if (f) {
+     fclose(f);
+     f = NULL;
+     }
+
+  if (pid >= 0) {
+     int status = 0;
+     struct rusage ru;
+     int i = 5;
+     while (ret == -1 && i > 0) {
+           usleep(1000);
+           ret = wait4(pid, &status, WNOHANG, &ru);
+           i--;
+           }
+   
+     if (!i) {
+        kill(pid, SIGKILL);
+        ret = -1;
+        }
+     else if (ret == -1 || !WIFEXITED(status))
+        ret = -1;
+     pid = -1;
+     }
+
+  return ret;
+}

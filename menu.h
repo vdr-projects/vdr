@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 1.25 2001/09/01 14:52:48 kls Exp $
+ * $Id: menu.h 1.28 2001/09/14 15:09:49 kls Exp $
  */
 
 #ifndef _MENU_H
@@ -31,14 +31,15 @@ public:
 
 class cDisplayChannel : public cOsdBase {
 private:
-  bool withInfo, group;
+  int group;
+  bool withInfo;
   int lines;
   int lastTime;
   int oldNumber, number;
   void DisplayChannel(const cChannel *Channel);
   void DisplayInfo(void);
 public:
-  cDisplayChannel(int Number, bool Switched, bool Group = false);
+  cDisplayChannel(int Number, bool Switched);
   cDisplayChannel(eKeys FirstKey);
   virtual ~cDisplayChannel();
   virtual eOSState ProcessKey(eKeys Key);
@@ -101,7 +102,7 @@ class cReplayControl : public cOsdBase {
 private:
   cDvbApi *dvbApi;
   cMarks marks;
-  bool visible, shown, displayFrames;
+  bool visible, modeOnly, shown, displayFrames;
   int lastCurrent, lastTotal;
   time_t timeoutShow;
   bool timeSearchActive, timeSearchHide;  
@@ -117,6 +118,8 @@ private:
   static int titleid;//XXX
 #endif //DVDSUPPORT
   static char *title;
+  void DisplayAtBottom(const char *s = NULL);
+  void ShowMode(void);
   bool ShowProgress(bool Initial);
   void MarkToggle(void);
   void MarkJump(bool Forward);

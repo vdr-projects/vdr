@@ -1,14 +1,32 @@
-# How Many Seconds "too early" should the timer begin
+# Master-Timer config file. Values shown here are defaults.
+
+# How many seconds "too early" should the timer begin
 marginstart	= 600
-# How Many Seocnds "too long" should the timer end
+
+# How many seconds "too long" should the timer end
 marginstop	= 600
-# When the Prio isn't provied in the config-File use this value
+
+# When the Prio isn't provided in the config file use this value
 defaultprio	= 50
-# How many DVB-Cards are installed in the Computer (Not used yet)
-DVBCards	= 3
-# IP/Hostname:Port of the Destinations (Space is used for delimiter)
-Dest-Host 	= localhost:2001
-# Should Timers on the same channels be joined when they overlapp (0 = off)
-jointimers	= 1
-# Debug-Level
+
+# How many DVB cards are installed in the computer (not used yet)
+DVBCards	= 1
+
+# IP/Hostname:Port of the destination (space is used for delimiter)
+Dest	 	= localhost:2001
+
+# Should timers on the same channels be joined when they overlap (0 = off)
+jointimers	= 0
+
+# Should the description be transfered to VDR?
+description     = 0
+
+# Debug level
+#    1     : Dump "torecord"
+#    2     : Dump all timers
+#    4     : Show when a timer will be deleted
+#    8     : Dump the "Done" REs
+#    16    : Verbose config reading
+#    32    : Dump program variables
+#    64    : Excessive deepblack/torecord debuging
 debug		= 0

@@ -27,11 +27,8 @@ You can find 'libdvdread' at
 
   http://www.dtek.chalmers.se/groups/dvd/downloads.html
 
-VDR requires the card driver version 0.9.0 or higher
-to work properly. You need to load the dvb.o module *without* option
-'outstream=0' (previous versions of VDR required this option to have
-the driver supply the data in AV_PES format; as of version 0.70 VDR
-works with PES format).
+VDR requires the card driver version dated 2001-09-14 or higher
+to work properly.
 
 After extracting the package, change into the VDR directory
 and type 'make'. This should produce an executable file
@@ -125,6 +122,12 @@ In that case the program shall not set the hardware for automatic restart
 and only perform the system shutdown. A program that uses the second parameter
 to set the hardware for restart must therefore also check whether the first
 parameter is '0'.
+
+If a timer is currently recording, the parameters will reflect the start
+time of that timer. This means that the first parameter will be a time in
+the past, and the second parameter will be a negative number. This only
+happens if the user presses the "Power" key while a timer is currently
+recording.
 
 Before the shutdown program is called, the user will be prompted to inform
 him that the system is about to shut down. If any remote control key is
@@ -291,6 +294,8 @@ The default PC key assignments are:
   Red, Green, Yellow, Blue  'F1'..'F4'
   0..9                      '0'..'9' in top row
   Power                     'P'
+  Volume+/-                 '+', '-'
+  Mute                      'm'
 
 If you prefer different key assignments, or if the default doesn't work for
 your keyboard, simply delete the file 'keys-pc.conf' and restart 'vdr' to get

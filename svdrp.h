@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: svdrp.h 1.10 2001/09/01 09:24:50 kls Exp $
+ * $Id: svdrp.h 1.11 2001/09/14 14:35:34 kls Exp $
  */
 
 #ifndef __SVDRP_H
@@ -26,15 +26,13 @@ public:
   int Accept(void);
   };
 
-#define MAXCMDBUFFER 1024
-
 class cSVDRP {
 private:
   cSocket socket;
   cFile file;
   CRect ovlClipRects[MAXCLIPRECTS];
   uint numChars;
-  char cmdLine[MAXCMDBUFFER];
+  char cmdLine[MAXPARSEBUFFER];
   char *message;
   time_t lastActivity;
   void Close(bool Timeout = false);

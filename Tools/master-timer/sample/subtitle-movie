@@ -3,6 +3,7 @@
 ^Actionkomödie$
 ^Actionthriller$
 ^Agentenfilm$
+^Beziehungskomödie$
 ^Biografie$
 ^Biographie$
 ^Computeranimation$
@@ -12,19 +13,24 @@
 ^Familiendrama$
 ^Fantasy$
 ^Fantasykomödie$
+^Fantasy-Komödie$
 ^Gangsterfilm$
 ^Gerichtsfilm$
 ^Gesellschaftsdrama$
+^Historiendrama$
 ^Horrorfilm$
 ^Horrorkomödie$
+^Jugenddrama$
 ^Kinderfilm$
 ^Komödie$
 ^Kriegsfilm$
 ^Krimikomödie$
 ^Kriminalfilm$
 ^Liebesfilm$
+^Liebeskomödie$
 ^Melodram$
 ^Melodrama$
+^Monumentalfilm$
 ^Musical$
 ^Politthriller$
 ^Psychothriller$
@@ -32,10 +38,15 @@
 ^Romanze$
 ^Satire$
 ^Science-Fiction$
+^Science-Fiction-Komödie$
 ^Spielfilm$
 ^TV Movie$
 ^TV-Drama$
+^Teil .$
+^Teil 0.$
 ^Thriller$
+^Tragikomödie$
 ^Western$
+^Westernkomödie$
 ^Zeichentrick$
 ^Zeichentrickkomödie$

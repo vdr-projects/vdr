@@ -7,7 +7,7 @@
  * DVD support initially written by Andreas Schultz <aschultz@warp10.net>
  * based on dvdplayer-0.5 by Matjaz Thaler <matjaz.thaler@guest.arnes.si>
  *
- * $Id: dvbapi.c 1.111 2001/09/01 13:27:52 kls Exp $
+ * $Id: dvbapi.c 1.125 2001/09/16 13:55:03 kls Exp $
  */
 
 //#define DVDDEBUG        1
@@ -40,18 +40,14 @@ extern "C" {
 #include "tools.h"
 #include "videodir.h"
 
-#define DEV_VIDEO      "/dev/video"
-#define DEV_OST_OSD    "/dev/ost/osd"
-#define DEV_OST_QAMFE  "/dev/ost/qamfe"
-#define DEV_OST_QPSKFE "/dev/ost/qpskfe"
-#define DEV_OST_SEC    "/dev/ost/sec"
-#define DEV_OST_DVR    "/dev/ost/dvr"
-#define DEV_OST_DEMUX  "/dev/ost/demux"
-#define DEV_OST_VIDEO  "/dev/ost/video"
-#define DEV_OST_AUDIO  "/dev/ost/audio"
-
-#define KILOBYTE(n) ((n) * 1024)
-#define MEGABYTE(n) ((n) * 1024 * 1024)
+#define DEV_VIDEO         "/dev/video"
+#define DEV_OST_OSD       "/dev/ost/osd"
+#define DEV_OST_FRONTEND  "/dev/ost/frontend"
+#define DEV_OST_SEC       "/dev/ost/sec"
+#define DEV_OST_DVR       "/dev/ost/dvr"
+#define DEV_OST_DEMUX     "/dev/ost/demux"
+#define DEV_OST_VIDEO     "/dev/ost/video"
+#define DEV_OST_AUDIO     "/dev/ost/audio"
 
 // The size of the array used to buffer video data:
 // (must be larger than MINVIDEODATA - see remux.h)
@@ -288,7 +284,7 @@ int cIndexFile::GetNextIFrame(int Index, bool Forward, uchar *FileNumber, int *F
      int d = Forward ? 1 : -1;
      for (;;) {
          Index += d;
-         if (Index >= 0 && Index <= last - 100) { // '- 100': need to stay off the end!
+         if (Index >= 0 && Index <= last) {
             if (index[Index].type == I_FRAME) {
                if (FileNumber)
                   *FileNumber = index[Index].number;
@@ -628,19 +624,84 @@ int ReadFrame(int f, uchar *b, int Length, int Max)
   return r;
 }
 
+// --- cBackTrace ----------------------------------------------------------
+
+#define AVG_FRAME_SIZE 15000         // an assumption about the average frame size
+#define DVB_BUF_SIZE   (256 * 1024)  // an assumption about the dvb firmware buffer size
+#define BACKTRACE_ENTRIES (DVB_BUF_SIZE / AVG_FRAME_SIZE + 20) // how many entries are needed to backtrace buffer contents
+
+class cBackTrace {
+private:
+  int index[BACKTRACE_ENTRIES];
+  int length[BACKTRACE_ENTRIES];
+  int pos, num;
+public:
+  cBackTrace(void);
+  void Clear(void);
+  void Add(int Index, int Length);
+  int Get(bool Forward);
+  };
+
+cBackTrace::cBackTrace(void)
+{
+  Clear();
+}
+
+void cBackTrace::Clear(void)
+{
+  pos = num = 0;
+}
+
+void cBackTrace::Add(int Index, int Length)
+{
+  index[pos] = Index;
+  length[pos] = Length;
+  if (++pos >= BACKTRACE_ENTRIES)
+     pos = 0;
+  if (num < BACKTRACE_ENTRIES)
+     num++;
+}
+
+int cBackTrace::Get(bool Forward)
+{
+  int p = pos;
+  int n = num;
+  int l = DVB_BUF_SIZE + (Forward ? 0 : 256 * 1024); //XXX (256 * 1024) == DVB_BUF_SIZE ???
+  int i = -1;
+
+  while (n && l > 0) {
+        if (--p < 0)
+           p = BACKTRACE_ENTRIES - 1;
+        i = index[p] - 1;
+        l -= length[p];
+        n--; 
+        }
+  return i;
+}
+
 // --- cPlayBuffer ---------------------------------------------------------
 
+#define MAX_VIDEO_SLOWMOTION 63 // max. arg to pass to VIDEO_SLOWMOTION // TODO is this value correct?
+
 class cPlayBuffer : public cRingBufferFrame {
+private:
+  cBackTrace backTrace;
 protected:
+  enum ePlayModes { pmPlay, pmPause, pmSlow, pmFast, pmStill };
+  enum ePlayDirs { pdForward, pdBackward };
+  static int Speeds[];
   cDvbApi *dvbApi;
   int videoDev, audioDev;
-  FILE *dolbyDev;
+  cPipe dolbyDev;
   int blockInput, blockOutput;
-  bool still, paused, fastForward, fastRewind;
+  ePlayModes playMode;
+  ePlayDirs playDir;
+  int trickSpeed;
   int readIndex, writeIndex;
   bool canDoTrickMode;
   bool canToggleAudioTrack;
   uchar audioTrack;
+  void TrickSpeed(int Increment);
   virtual void Empty(bool Block = false);
   virtual void StripAudioPackets(uchar *b, int Length, uchar Except = 0x00) {}
   virtual void Output(void);
@@ -655,9 +716,15 @@ public:
   virtual void SkipSeconds(int Seconds) {}
   virtual void Goto(int Position, bool Still = false) {}
   virtual void GetIndex(int &Current, int &Total, bool SnapToIFrame = false) { Current = Total = -1; }
+  bool GetReplayMode(bool &Play, bool &Forward, int &Speed);
   bool CanToggleAudioTrack(void) { return canToggleAudioTrack; };
   virtual void ToggleAudioTrack(void);
   };
+
+#define NORMAL_SPEED  4 // the index of the '1' entry in the following array
+#define MAX_SPEEDS    3 // the offset of the maximum speed from normal speed in either direction
+#define SPEED_MULT   12 // the speed multiplier
+int cPlayBuffer::Speeds[] = { 0, -2, -4, -8, 1, 2, 4, 12, 0 };
 
 cPlayBuffer::cPlayBuffer(cDvbApi *DvbApi, int VideoDev, int AudioDev)
 :cRingBufferFrame(VIDEOBUFSIZE)
@@ -665,24 +732,22 @@ cPlayBuffer::cPlayBuffer(cDvbApi *DvbApi, int VideoDev, int AudioDev)
   dvbApi = DvbApi;
   videoDev = VideoDev;
   audioDev = AudioDev;
-  dolbyDev = NULL;
   blockInput = blockOutput = false;
-  still = paused = fastForward = fastRewind = false;
+  playMode = pmPlay;
+  playDir = pdForward;
+  trickSpeed = NORMAL_SPEED;
   readIndex = writeIndex = -1;
   canDoTrickMode = false;
   canToggleAudioTrack = false;
   audioTrack = 0xC0;
   if (cDvbApi::AudioCommand()) {
-     dolbyDev = popen(cDvbApi::AudioCommand(), "w");
-     if (!dolbyDev)
+     if (!dolbyDev.Open(cDvbApi::AudioCommand(), "w"))
         esyslog(LOG_ERR, "ERROR: can't open pipe to audio command '%s'", cDvbApi::AudioCommand());
      }
 }
 
 cPlayBuffer::~cPlayBuffer()
 {
-  if (dolbyDev)
-     pclose(dolbyDev);
 }
 
 void cPlayBuffer::Output(void)
@@ -697,30 +762,49 @@ void cPlayBuffer::Output(void)
            }
         const cFrame *frame = Get();
         if (frame) {
-           StripAudioPackets((uchar *)frame->Data(), frame->Count(), (fastForward || fastRewind) ? 0x00 : audioTrack);//XXX
-           for (int i = 0; i < ((paused && fastRewind) ? 24 : 1); i++) { // show every I_FRAME 24 times in slow rewind mode to achieve roughly the same speed as in slow forward mode
-               const uchar *p = frame->Data();
-               int r = frame->Count();
-               while (r > 0 && Busy() && !blockOutput) {
-                     cFile::FileReadyForWriting(videoDev, 100);
-                     int w = write(videoDev, p, r);
-                     if (w > 0) {
-                        p += w;
-                        r -= w;
-                        }
-                     else if (w < 0 && FATALERRNO) {
-                        LOG_ERROR;
-                        Stop();
-                        return;
-                        }
-                     }
-               writeIndex = frame->Index();
-               }
+           StripAudioPackets((uchar *)frame->Data(), frame->Count(), (playMode == pmFast || playMode == pmSlow) ? 0x00 : audioTrack);//XXX
+           const uchar *p = frame->Data();
+           int r = frame->Count();
+           while (r > 0 && Busy() && !blockOutput) {
+                 cFile::FileReadyForWriting(videoDev, 100);
+                 int w = write(videoDev, p, r);
+                 if (w > 0) {
+                    p += w;
+                    r -= w;
+                    }
+                 else if (w < 0 && FATALERRNO) {
+                    LOG_ERROR;
+                    Stop();
+                    return;
+                    }
+                 }
+           writeIndex = frame->Index();
+           backTrace.Add(frame->Index(), frame->Count());
            Drop(frame);
            }
         }
 
   dsyslog(LOG_INFO, "output thread ended (pid=%d)", getpid());
+}
+
+void cPlayBuffer::TrickSpeed(int Increment)
+{
+  int nts = trickSpeed + Increment;
+  if (Speeds[nts] == 1) {
+     trickSpeed = nts;
+     if (playMode == pmFast)
+        Play();
+     else
+        Pause();
+     }
+  else if (Speeds[nts]) {
+     trickSpeed = nts;
+     int Mult = (playMode == pmSlow && playDir == pdForward) ? 1 : SPEED_MULT;
+     int sp = (Speeds[nts] > 0) ? Mult / Speeds[nts] : -Speeds[nts] * Mult;
+     if (sp > MAX_VIDEO_SLOWMOTION)
+        sp = MAX_VIDEO_SLOWMOTION;
+     CHECK(ioctl(videoDev, VIDEO_SLOWMOTION, sp));
+     }
 }
 
 void cPlayBuffer::Empty(bool Block)
@@ -733,81 +817,151 @@ void cPlayBuffer::Empty(bool Block)
      while ((blockInput > 1 || blockOutput > 1) && time(NULL) - t0 < 2)
            usleep(1);
      Lock();
-     readIndex = writeIndex;
+     if ((readIndex = backTrace.Get(playDir == pdForward)) < 0)
+        readIndex = writeIndex;
      cRingBufferFrame::Clear();
      CHECK(ioctl(videoDev, VIDEO_CLEAR_BUFFER));
      CHECK(ioctl(audioDev, AUDIO_CLEAR_BUFFER));
      }
   if (!Block) {
      blockInput = blockOutput = 0;
+     backTrace.Clear();
      Unlock();
      }
 }
 
 void cPlayBuffer::Pause(void)
 {
-  paused = !paused;
-  bool empty = fastForward || fastRewind;
-  if (empty)
-     Empty(true);
-  fastForward = fastRewind = false;
-  CHECK(ioctl(videoDev, paused ? VIDEO_FREEZE : VIDEO_CONTINUE));
-  //CHECK(ioctl(audioDev, AUDIO_SET_MUTE, paused)); //XXX this caused chirping sound when playing a DVD
-  still = false;
-  if (empty)
-     Empty(false);
+  if (playMode == pmPause || playMode == pmStill)
+     Play();
+  else {
+     bool empty = (playMode == pmFast || (playMode == pmSlow && playDir == pdBackward));
+     if (empty)
+        Empty(true);
+     CHECK(ioctl(audioDev, AUDIO_SET_AV_SYNC, false));
+     CHECK(ioctl(videoDev, VIDEO_FREEZE));
+     playMode = pmPause;
+     if (empty)
+        Empty(false);
+     }
 }
 
 void cPlayBuffer::Play(void)
 {
-  if (fastForward || fastRewind || paused) {
-     bool empty = !paused || fastRewind;
+  if (playMode != pmPlay) {
+     bool empty = (playMode == pmStill || playMode == pmFast || (playMode == pmSlow && playDir == pdBackward));
      if (empty)
         Empty(true);
-     still = false;
-     CHECK(ioctl(videoDev, paused ? VIDEO_CONTINUE : VIDEO_PLAY));
      CHECK(ioctl(audioDev, AUDIO_SET_AV_SYNC, true));
-     //CHECK(ioctl(audioDev, AUDIO_SET_MUTE, false)); //XXX this caused chirping sound when playing a DVD
+     CHECK(ioctl(videoDev, VIDEO_CONTINUE));
+     playMode = pmPlay;
+     playDir = pdForward;
      if (empty)
         Empty(false);
-     fastForward = fastRewind = paused = false;
-     }
+    }
 }
 
 void cPlayBuffer::Forward(void)
 {
-  if (canDoTrickMode || paused) {
-     bool empty = !paused || fastRewind;
-     if (empty) {
-        Empty(true);
-        if (fastForward)
-           readIndex -= 150; // this about compensates for the buffered data, so that we don't get too far ahead
-        }
-     still = false;
-     fastForward = !fastForward;
-     fastRewind = false;
-     if (paused)
-        CHECK(ioctl(videoDev, fastForward ? VIDEO_SLOWMOTION : VIDEO_FREEZE, 2));
-     CHECK(ioctl(audioDev, AUDIO_SET_AV_SYNC, !fastForward));
-     CHECK(ioctl(audioDev, AUDIO_SET_MUTE, fastForward || paused));
-     if (empty)
-        Empty(false);
+  if (canDoTrickMode) {
+     switch (playMode) {
+       case pmFast:
+            if (Setup.MultiSpeedMode) {
+               TrickSpeed(playDir == pdForward ? 1 : -1);
+               break;
+               }
+            else if (playDir == pdForward) {
+               Play();
+               break;
+               }
+            // run into pmPlay
+       case pmPlay:
+            Empty(true);
+            CHECK(ioctl(audioDev, AUDIO_SET_AV_SYNC, false));
+            playMode = pmFast;
+            playDir = pdForward;
+            trickSpeed = NORMAL_SPEED;
+            TrickSpeed(Setup.MultiSpeedMode ? 1 : MAX_SPEEDS);
+            Empty(false);
+            break;
+       case pmSlow:
+            if (Setup.MultiSpeedMode) {
+               TrickSpeed(playDir == pdForward ? -1 : 1);
+               break;
+               }
+            else if (playDir == pdForward) {
+               Pause();
+               break;
+               }
+            // run into pmPause
+       case pmStill:
+       case pmPause:
+            CHECK(ioctl(audioDev, AUDIO_SET_AV_SYNC, false));
+            playMode = pmSlow;
+            playDir = pdForward;
+            trickSpeed = NORMAL_SPEED;
+            TrickSpeed(Setup.MultiSpeedMode ? -1 : -MAX_SPEEDS);
+            break;
+       }
      }
 }
 
 void cPlayBuffer::Backward(void)
 {
   if (canDoTrickMode) {
-     Empty(true);
-     still = false;
-     fastRewind = !fastRewind;
-     fastForward = false;
-     if (paused)
-        CHECK(ioctl(videoDev, fastRewind ? VIDEO_CONTINUE : VIDEO_FREEZE));
-     CHECK(ioctl(audioDev, AUDIO_SET_AV_SYNC, !fastRewind));
-     CHECK(ioctl(audioDev, AUDIO_SET_MUTE, fastRewind || paused));
-     Empty(false);
+     switch (playMode) {
+       case pmFast:
+            if (Setup.MultiSpeedMode) {
+               TrickSpeed(playDir == pdBackward ? 1 : -1);
+               break;
+               }
+            else if (playDir == pdBackward) {
+               Play();
+               break;
+               }
+            // run into pmPlay
+       case pmPlay:
+            Empty(true);
+            CHECK(ioctl(audioDev, AUDIO_SET_AV_SYNC, false));
+            playMode = pmFast;
+            playDir = pdBackward;
+            trickSpeed = NORMAL_SPEED;
+            TrickSpeed(Setup.MultiSpeedMode ? 1 : MAX_SPEEDS);
+            Empty(false);
+            break;
+       case pmSlow:
+            if (Setup.MultiSpeedMode) {
+               TrickSpeed(playDir == pdBackward ? -1 : 1);
+               break;
+               }
+            else if (playDir == pdBackward) {
+               Pause();
+               break;
+               }
+            // run into pmPause
+       case pmStill:
+       case pmPause:
+            Empty(true);
+            CHECK(ioctl(audioDev, AUDIO_SET_AV_SYNC, false));
+            playMode = pmSlow;
+            playDir = pdBackward;
+            trickSpeed = NORMAL_SPEED;
+            TrickSpeed(Setup.MultiSpeedMode ? -1 : -MAX_SPEEDS);
+            Empty(false);
+            break;
+       }
      }
+}
+
+bool cPlayBuffer::GetReplayMode(bool &Play, bool &Forward, int &Speed)
+{
+  Play = (playMode == pmPlay || playMode == pmFast);
+  Forward = (playDir == pdForward);
+  if (playMode == pmFast || playMode == pmSlow)
+     Speed = Setup.MultiSpeedMode ? abs(trickSpeed - NORMAL_SPEED) : 0;
+  else
+     Speed = -1;
+  return true;
 }
 
 void cPlayBuffer::ToggleAudioTrack(void)
@@ -890,18 +1044,17 @@ void cReplayBuffer::Input(void)
               blockInput = 1;
            continue;
            }
-        if (!still) {
+        if (playMode != pmStill) {
            int r = 0;
-           if (fastForward && !paused || fastRewind) {
+           if (playMode == pmFast || (playMode == pmSlow && playDir == pdBackward)) {
               uchar FileNumber;
               int FileOffset, Length;
-              int Index = index->GetNextIFrame(readIndex, fastForward, &FileNumber, &FileOffset, &Length);
+              int Index = index->GetNextIFrame(readIndex, playDir == pdForward, &FileNumber, &FileOffset, &Length);
               if (Index >= 0) {
                  if (!NextFile(FileNumber, FileOffset))
                     break;
                  }
               else {
-                 paused = fastForward = fastRewind = false;
                  Play();
                  continue;
                  }
@@ -1073,23 +1226,21 @@ void cReplayBuffer::Goto(int Index, bool Still)
 {
   if (index) {
      Empty(true);
-     if (paused)
-        CHECK(ioctl(videoDev, VIDEO_CONTINUE));
      if (++Index <= 0)
         Index = 1; // not '0', to allow GetNextIFrame() below to work!
      uchar FileNumber;
      int FileOffset, Length;
      Index = index->GetNextIFrame(Index, false, &FileNumber, &FileOffset, &Length);
      if (Index >= 0 && NextFile(FileNumber, FileOffset) && Still) {
-        still = true;
         uchar b[MAXFRAMESIZE];
         int r = ReadFrame(replayFile, b, Length, sizeof(b));
-        if (r > 0)
+        if (r > 0) {
+           if (playMode == pmPause)
+              CHECK(ioctl(videoDev, VIDEO_CONTINUE));
            DisplayFrame(b, r);
-        paused = true;
+           }
+        playMode = pmStill;
         }
-     else
-        still = false;
      readIndex = writeIndex = Index;
      Empty(false);
      }
@@ -1098,7 +1249,7 @@ void cReplayBuffer::Goto(int Index, bool Still)
 void cReplayBuffer::GetIndex(int &Current, int &Total, bool SnapToIFrame)
 {
   if (index) {
-     if (still)
+     if (playMode == pmStill)
         Current = readIndex;
      else {
         Current = writeIndex;
@@ -1180,7 +1331,7 @@ private:
   int is_nav_pack(unsigned char *buffer);
   void Close(void);
   virtual void Empty(bool Block = false);
-  int decode_packet(unsigned char *sector, int iframe);
+  int decode_packet(unsigned char *sector, bool trickmode);
   int ScanVideoPacket(const uchar *Data, int Count, uchar *PictureType);
   bool PacketStart(uchar **Data, int len);
   int GetPacketType(const uchar *Data);
@@ -1460,7 +1611,7 @@ void cDVDplayBuffer::Input(void)
                     }
 
                  // init settings for next state
-                 if (!fastRewind)
+                 if (playDir == pdForward)
                     cur_pack = cur_pgc->cell_playback[cur_cell].first_sector;
                  else
                     cur_pack = cur_pgc->cell_playback[cur_cell].last_vobu_start_sector;
@@ -1478,7 +1629,7 @@ void cDVDplayBuffer::Input(void)
                   * We loop until we're out of this cell.
                   */
 
-                 if (!fastRewind) {
+                 if (playDir == pdForward) {
                     if (cur_pack >= cur_pgc->cell_playback[cur_cell].last_sector) {
                        cur_cell = next_cell;
 #ifdef DVDDEBUG
@@ -1573,7 +1724,7 @@ void cDVDplayBuffer::Input(void)
 
           case cREADFRAME:
                {
-                 int trickMode = (fastForward && !paused || fastRewind);
+                 bool trickMode = (playMode == pmFast || (playMode == pmSlow && playDir == pdBackward));
 
                  /* FIXME:
                   *   the entire trickMode code relies on the assumtion
@@ -1582,7 +1733,7 @@ void cDVDplayBuffer::Input(void)
                   *   I have no clue wether that is correct or not !!!
                   */
                  if (trickMode && (skipCnt++ % 4 != 0)) {
-                    cur_pack = (!fastRewind) ? next_vobu : prev_vobu;
+                    cur_pack = (playDir == pdForward) ? next_vobu : prev_vobu;
                     NextState(cOUTPACK);
                     break;
                     }
@@ -1609,7 +1760,7 @@ void cDVDplayBuffer::Input(void)
 
           case cOUTFRAMES:
                {
-                 int trickMode = (fastForward && !paused || fastRewind);
+                 bool trickMode = (playMode == pmFast || (playMode == pmSlow && playDir == pdBackward));
 
                  /**
                   * Output cursize packs.
@@ -1624,7 +1775,7 @@ void cDVDplayBuffer::Input(void)
                  if (decode_packet(&data[pktcnt * DVD_VIDEO_LB_LEN], trickMode) != 1) {   //we've got a video packet
                     if (trickMode) {
                         //dsyslog(LOG_INFO, "DVD: did pack: %d", pktcnt);
-                        cur_pack = (!fastRewind) ? next_vobu : prev_vobu;
+                        cur_pack = (playDir == pdForward) ? next_vobu : prev_vobu;
                         NextState(cOUTPACK);
                         break;
                         }
@@ -1835,7 +1986,7 @@ void cDVDplayBuffer::putFrame(unsigned char *sector, int length)
         ;
 }
 
-int cDVDplayBuffer::decode_packet(unsigned char *sector, int trickMode)
+int cDVDplayBuffer::decode_packet(unsigned char *sector, bool trickMode)
 {
   uchar pt = 1;
 #if 0
@@ -2213,6 +2364,8 @@ void cCuttingBuffer::Action(void)
            // Write one frame:
 
            if (PictureType == I_FRAME) { // every file shall start with an I_FRAME
+              if (!Mark) // edited version shall end before next I-frame
+                 break;
               if (FileSize > MEGABYTE(Setup.MaxVideoFileSize)) {
                  toFile = toFileName->NextFile();
                  if (toFile < 0)
@@ -2231,16 +2384,18 @@ void cCuttingBuffer::Action(void)
 
            if (Mark && Index >= Mark->position) {
               Mark = fromMarks.Next(Mark);
+              toMarks.Add(LastIFrame);
+              if (Mark)
+                 toMarks.Add(toIndex->Last() + 1);
+              toMarks.Save();
               if (Mark) {
                  Index = Mark->position;
                  Mark = fromMarks.Next(Mark);
                  CurrentFileNumber = 0; // triggers SetOffset before reading next frame
-                 toMarks.Add(LastIFrame);
-                 toMarks.Add(toIndex->Last() + 1);
-                 toMarks.Save();
                  }
-              else
-                 break; // final end mark reached
+              // the 'else' case (i.e. 'final end mark reached') is handled above
+              // in 'Write one frame', so that the edited version will end right
+              // before the next I-frame.
               }
            }
      }
@@ -2322,9 +2477,8 @@ cDvbApi::cDvbApi(int n)
 
   // Devices that are only present on DVB-C or DVB-S cards:
 
-  fd_qamfe   = OstOpen(DEV_OST_QAMFE,  n, O_RDWR);
-  fd_qpskfe  = OstOpen(DEV_OST_QPSKFE, n, O_RDWR);
-  fd_sec     = OstOpen(DEV_OST_SEC,    n, O_RDWR);
+  fd_frontend = OstOpen(DEV_OST_FRONTEND, n, O_RDWR);
+  fd_sec      = OstOpen(DEV_OST_SEC,      n, O_RDWR);
 
   // Devices that all DVB cards must have:
 
@@ -2355,7 +2509,7 @@ cDvbApi::cDvbApi(int n)
 
   // We only check the devices that must be present - the others will be checked before accessing them:
 
-  if (((fd_qpskfe >= 0 && fd_sec >= 0) || fd_qamfe >= 0) && fd_demuxv >= 0 && fd_demuxa1 >= 0 && fd_demuxa2 >= 0 && fd_demuxd1 >= 0 && fd_demuxd2 >= 0 && fd_demuxt >= 0) {
+  if (fd_frontend >= 0 && fd_demuxv >= 0 && fd_demuxa1 >= 0 && fd_demuxa2 >= 0 && fd_demuxd1 >= 0 && fd_demuxd2 >= 0 && fd_demuxt >= 0) {
      siProcessor = new cSIProcessor(OstName(DEV_OST_DEMUX, n));
      if (!dvbApi[0]) // only the first one shall set the system time
         siProcessor->SetUseTSTime(Setup.SetSystemTime);
@@ -2385,6 +2539,8 @@ cDvbApi::cDvbApi(int n)
   osd = NULL;
 #endif
   currentChannel = 1;
+  mute = false;
+  volume = 255;
 }
 
 cDvbApi::~cDvbApi()
@@ -2475,7 +2631,7 @@ bool cDvbApi::Init(void)
   NumDvbApis = 0;
   for (int i = 0; i < MAXDVBAPI; i++) {
       if (useDvbApi == 0 || (useDvbApi & (1 << i)) != 0) {
-         if (Probe(OstName(DEV_OST_QPSKFE, i)) || Probe(OstName(DEV_OST_QAMFE, i)))
+         if (Probe(OstName(DEV_OST_FRONTEND, i)))
             dvbApi[NumDvbApis++] = new cDvbApi(i);
          else
             break;
@@ -2674,7 +2830,10 @@ bool cDvbApi::OvlG(int SizeX, int SizeY, int PosX, int PosY)
      vw.width = SizeX;
      vw.height = SizeY;
      vw.chromakey = ovlPalette;
-     vw.flags = VIDEO_WINDOW_CHROMAKEY; // VIDEO_WINDOW_INTERLACE; //VIDEO_CLIP_BITMAP;
+#ifndef VID_TYPE_CHROMAKEY // name changed somewhere down the road in kernel 2.4.x
+#define VID_TYPE_CHROMAKEY VIDEO_WINDOW_CHROMAKEY
+#endif
+     vw.flags = VID_TYPE_CHROMAKEY; // VIDEO_WINDOW_INTERLACE; //VIDEO_CLIP_BITMAP;
      vw.clips = ovlClipRects;
      vw.clipcount = ovlClipCount;
      result |= ioctl(videoDev, VIDIOCSWIN, &vw);
@@ -2781,7 +2940,7 @@ void cDvbApi::Open(int w, int h)
   cols = w;
   rows = h;
 #ifdef DEBUG_OSD
-  window = subwin(stdscr, h, w, d, 0);
+  window = subwin(stdscr, h, w, d, (Setup.OSDwidth - w) / 2);
   syncok(window, true);
   #define B2C(b) (((b) * 1000) / 255)
   #define SETCOLOR(n, r, g, b, o) init_color(n, B2C(r), B2C(g), B2C(b))
@@ -2799,7 +2958,7 @@ void cDvbApi::Open(int w, int h)
   w *= charWidth;
   h *= lineHeight;
   d *= lineHeight;
-  int x = (720 - (Setup.OSDwidth - 1) * charWidth) / 2; //TODO PAL vs. NTSC???
+  int x = (720 - w + charWidth) / 2; //TODO PAL vs. NTSC???
   int y = (576 - Setup.OSDheight * lineHeight) / 2 + d;
   //XXX
   osd = new cDvbOsd(fd_osd, x, y);
@@ -3031,7 +3190,7 @@ bool cDvbApi::SetPids(bool ForRecording)
          SetDpid2(ForRecording ? dPid2 : 0, DMX_OUT_TS_TAP);
 }
 
-bool cDvbApi::SetChannel(int ChannelNumber, int FrequencyMHz, char Polarization, int Diseqc, int Srate, int Vpid, int Apid1, int Apid2, int Dpid1, int Dpid2, int Tpid, int Ca, int Pnr)
+eSetChannelResult cDvbApi::SetChannel(int ChannelNumber, int FrequencyMHz, char Polarization, int Diseqc, int Srate, int Vpid, int Apid1, int Apid2, int Dpid1, int Dpid2, int Tpid, int Ca, int Pnr)
 {
   // Make sure the siProcessor won't access the device while switching
   cThreadLock ThreadLock(siProcessor);
@@ -3075,7 +3234,7 @@ bool cDvbApi::SetChannel(int ChannelNumber, int FrequencyMHz, char Polarization,
 
      bool ChannelSynced = false;
 
-     if (fd_qpskfe >= 0 && fd_sec >= 0) { // DVB-S
+     if (fd_sec >= 0) { // DVB-S
 
         // Frequency offsets:
 
@@ -3091,10 +3250,10 @@ bool cDvbApi::SetChannel(int ChannelNumber, int FrequencyMHz, char Polarization,
            tone = SEC_TONE_ON;
            }
 
-        qpskParameters qpsk;
-        qpsk.iFrequency = freq * 1000UL;
-        qpsk.SymbolRate = Srate * 1000UL;
-        qpsk.FEC_inner = FEC_AUTO;
+        FrontendParameters Frontend;
+        Frontend.Frequency = freq * 1000UL;
+        Frontend.u.qpsk.SymbolRate = Srate * 1000UL;
+        Frontend.u.qpsk.FEC_inner = FEC_AUTO;
 
         int volt = (Polarization == 'v' || Polarization == 'V') ? SEC_VOLTAGE_13 : SEC_VOLTAGE_18;
 
@@ -3118,65 +3277,65 @@ bool cDvbApi::SetChannel(int ChannelNumber, int FrequencyMHz, char Polarization,
 
         // Tuning:
 
-        CHECK(ioctl(fd_qpskfe, QPSK_TUNE, &qpsk));
+        CHECK(ioctl(fd_frontend, FE_SET_FRONTEND, &Frontend));
 
         // Wait for channel sync:
 
-        if (cFile::FileReady(fd_qpskfe, 5000)) {
-           qpskEvent event;
-           int res = ioctl(fd_qpskfe, QPSK_GET_EVENT, &event);
+        if (cFile::FileReady(fd_frontend, 5000)) {
+           FrontendEvent event;
+           int res = ioctl(fd_frontend, FE_GET_EVENT, &event);
            if (res >= 0)
               ChannelSynced = event.type == FE_COMPLETION_EV;
            else
-              esyslog(LOG_ERR, "ERROR %d in qpsk get event", res);
+              esyslog(LOG_ERR, "ERROR %d in frontend get event", res);
            }
         else
            esyslog(LOG_ERR, "ERROR: timeout while tuning");
         }
-     else if (fd_qamfe >= 0) { // DVB-C
+     else if (fd_frontend >= 0) { // DVB-C
 
         // Frequency and symbol rate:
 
-        qamParameters qam;
-        qam.Frequency = FrequencyMHz * 1000000UL;
-        qam.SymbolRate = Srate * 1000UL;
-        qam.FEC_inner = FEC_AUTO;
-        qam.QAM = QAM_64;
+        FrontendParameters Frontend;
+        Frontend.Frequency = FrequencyMHz * 1000000UL;
+        Frontend.u.qam.SymbolRate = Srate * 1000UL;
+        Frontend.u.qam.FEC_inner = FEC_AUTO;
+        Frontend.u.qam.QAM = QAM_64;
 
         // Tuning:
 
-        CHECK(ioctl(fd_qamfe, QAM_TUNE, &qam));
+        CHECK(ioctl(fd_frontend, FE_SET_FRONTEND, &Frontend));
 
         // Wait for channel sync:
 
-        if (cFile::FileReady(fd_qamfe, 5000)) {
-           qamEvent event;
-           int res = ioctl(fd_qamfe, QAM_GET_EVENT, &event);
+        if (cFile::FileReady(fd_frontend, 5000)) {
+           FrontendEvent event;
+           int res = ioctl(fd_frontend, FE_GET_EVENT, &event);
            if (res >= 0)
               ChannelSynced = event.type == FE_COMPLETION_EV;
            else
-              esyslog(LOG_ERR, "ERROR %d in qam get event", res);
+              esyslog(LOG_ERR, "ERROR %d in frontend get event", res);
            }
         else
            esyslog(LOG_ERR, "ERROR: timeout while tuning");
         }
      else {
         esyslog(LOG_ERR, "ERROR: attempt to set channel without DVB-S or DVB-C device");
-        return false;
+        return scrFailed;
         }
 
      if (!ChannelSynced) {
         esyslog(LOG_ERR, "ERROR: channel %d not sync'ed on DVB card %d!", ChannelNumber, CardIndex() + 1);
         if (this == PrimaryDvbApi)
            cThread::RaisePanic();
-        return false;
+        return scrFailed;
         }
 
      // PID settings:
 
      if (!SetPids(false)) {
         esyslog(LOG_ERR, "ERROR: failed to set PIDs for channel %d", ChannelNumber);
-        return false;
+        return scrFailed;
         }
      SetTpid(Tpid, DMX_OUT_DECODER);
      if (fd_audio >= 0)
@@ -3186,19 +3345,21 @@ bool cDvbApi::SetChannel(int ChannelNumber, int FrequencyMHz, char Polarization,
   if (this == PrimaryDvbApi && siProcessor)
      siProcessor->SetCurrentServiceID(Pnr);
 
+  eSetChannelResult Result = scrOk;
+
   // If this DVB card can't receive this channel, let's see if we can
   // use the card that actually can receive it and transfer data from there:
 
   if (NeedsTransferMode) {
      cDvbApi *CaDvbApi = GetDvbApi(Ca, 0);
-     if (CaDvbApi) {
-        if (!CaDvbApi->Recording()) {
-           if (CaDvbApi->SetChannel(ChannelNumber, FrequencyMHz, Polarization, Diseqc, Srate, Vpid, Apid1, Apid2, Dpid1, Dpid2, Tpid, Ca, Pnr)) {
-              SetModeReplay();
-              transferringFromDvbApi = CaDvbApi->StartTransfer(fd_video);
-              }
+     if (CaDvbApi && !CaDvbApi->Recording()) {
+        if ((Result = CaDvbApi->SetChannel(ChannelNumber, FrequencyMHz, Polarization, Diseqc, Srate, Vpid, Apid1, Apid2, Dpid1, Dpid2, Tpid, Ca, Pnr)) == scrOk) {
+           SetModeReplay();
+           transferringFromDvbApi = CaDvbApi->StartTransfer(fd_video);
            }
         }
+     else
+        Result = scrNoTransfer;
      }
 
   if (fd_video >= 0 && fd_audio >= 0) {
@@ -3206,7 +3367,7 @@ bool cDvbApi::SetChannel(int ChannelNumber, int FrequencyMHz, char Polarization,
      CHECK(ioctl(fd_video, VIDEO_SET_BLANK, false));
      }
 
-  return true;
+  return Result;
 }
 
 bool cDvbApi::Transferring(void)
@@ -3372,8 +3533,10 @@ void cDvbApi::StopReplay(void)
      if (this == PrimaryDvbApi) {
         // let's explicitly switch the channel back in case it was in Transfer Mode:
         cChannel *Channel = Channels.GetByNumber(currentChannel);
-        if (Channel)
+        if (Channel) {
            Channel->Switch(this, false);
+           usleep(100000); // allow driver to sync in case a new replay will start immediately
+           }
         }
      }
 }
@@ -3424,6 +3587,11 @@ bool cDvbApi::GetIndex(int &Current, int &Total, bool SnapToIFrame)
   return false;
 }
 
+bool cDvbApi::GetReplayMode(bool &Play, bool &Forward, int &Speed)
+{
+  return replayBuffer && replayBuffer->GetReplayMode(Play, Forward, Speed);
+}
+
 void cDvbApi::Goto(int Position, bool Still)
 {
   if (replayBuffer)
@@ -3454,6 +3622,24 @@ bool cDvbApi::ToggleAudioTrack(void)
         }
      }
   return false;
+}
+
+void cDvbApi::ToggleMute(void)
+{
+  int OldVolume = volume;
+  mute = !mute;
+  SetVolume(0, mute);
+  volume = OldVolume;
+}
+
+void cDvbApi::SetVolume(int Volume, bool Absolute)
+{
+  if (fd_audio >= 0) {
+     volume = min(max(Absolute ? Volume : volume + Volume, 0), 255);
+     audioMixer_t am;
+     am.volume_left = am.volume_right = volume;
+     CHECK(ioctl(fd_audio, AUDIO_SET_MIXER, &am));
+     }
 }
 
 void cDvbApi::SetAudioCommand(const char *Command)

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.72 2001/09/02 15:45:17 kls Exp $
+ * $Id: config.h 1.79 2001/09/16 14:54:36 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -19,9 +19,7 @@
 #include "eit.h"
 #include "tools.h"
 
-#define VDRVERSION "0.94"
-
-#define MaxBuffer 10000
+#define VDRVERSION "0.95"
 
 #define MAXPRIORITY 99
 #define MAXLIFETIME 99
@@ -45,6 +43,9 @@ enum eKeys { // "Up" and "Down" must be the first two keys!
              kBlue,
              k0, k1, k2, k3, k4, k5, k6, k7, k8, k9,
              kPower,
+             kVolUp,
+             kVolDn,
+             kMute,
              kNone,
              // The following flags are OR'd with the above codes:
              k_Repeat  = 0x8000,
@@ -61,9 +62,9 @@ enum eKeys { // "Up" and "Down" must be the first two keys!
 #define kEditCut         k2
 #define kEditTest        k8
 
-#define RAWKEY(k)    ((k) & ~k_Flags)
+#define RAWKEY(k)    (eKeys((k) & ~k_Flags))
 #define ISRAWKEY(k)  ((k) != kNone && ((k) & k_Flags) == 0)
-#define NORMALKEY(k) ((k) & ~k_Repeat)
+#define NORMALKEY(k) (eKeys((k) & ~k_Repeat))
 
 struct tKey {
   eKeys type;
@@ -192,7 +193,7 @@ public:
        FILE *f = fopen(fileName, "r");
        if (f) {
           int line = 0;
-          char buffer[MaxBuffer];
+          char buffer[MAXPARSEBUFFER];
           result = true;
           while (fgets(buffer, sizeof(buffer), f) > 0) {
                 line++;
@@ -228,7 +229,8 @@ public:
                 }
              l = (T *)l->Next();
              }
-       f.Close();
+       if (!f.Close())
+          result = false;
        }
     else
        result = false;
@@ -261,8 +263,6 @@ public:
   };
 
 class cCommands : public cConfig<cCommand> {};
-
-extern int CurrentGroup;
 
 extern cChannels Channels;
 extern cTimers Timers;
@@ -299,6 +299,8 @@ public:
   int OSDMessageTime;
   int MaxVideoFileSize;
   int MinEventTimeout, MinUserInactivity;
+  int MultiSpeedMode;
+  int ShowReplayMode;
   int CurrentChannel;
   cSetup(void);
   bool Load(const char *FileName);
