@@ -2887,3 +2887,5 @@ Video Disk Recorder Revision History
   (thanks to Jürgen Schmitz for reporting this one).
 - Fixed missing audio after replaying a DVD (thanks to Marco Schlüßler).
 - Added a note about the default assignment of the color keys to MANUAL.
+- Added a note about NPTL ("Native Posix Thread Library") to the INSTALL file
+  (apparently the "fix" in version 1.3.0 didn't really fix this).
