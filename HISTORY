@@ -3299,3 +3299,5 @@ Video Disk Recorder Revision History
 - Completed the Estonian OSD texts and switched to iso8859-13 character set
   (thanks to Arthur Konovalov).
 - Made cCondWait::SleepMs() sleep at least 3ms to avoid a possible busy wait.
+- Fixed canceling the LIRC thread (thanks to Marco Schlüßler for pointing out
+  this one).
