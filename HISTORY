@@ -3434,3 +3434,4 @@ Video Disk Recorder Revision History
   format to use for playing wide screen video on a 4:3 tv set.
 - Changed MAXDPIDS to 16 (8xAC3 + 8xDTS) (thanks to Werner Fink for pointing this out).
 - Completed Dutch language texts (thanks to Hans Dingemans).
+- Added 'smi' to the Finnish language codes (thanks to Rolf Ahrenberg).
