@@ -1040,3 +1040,5 @@ Video Disk Recorder Revision History
 - The contents of the distribution archive now contains the directory name with
   the current version number, as in 'vdr-1.0.0pre1/...' in order to avoid
   inadvertently overwriting an existing VDR directory with a new version.
+- Added a missing error message in SVDRP command LSTC in case the given channel
+  can't be found.

@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.32 2002/02/24 11:05:38 kls Exp $
+ * $Id: svdrp.c 1.33 2002/02/24 14:16:03 kls Exp $
  */
 
 #include "svdrp.h"
@@ -637,6 +637,8 @@ void cSVDRP::CmdLSTC(const char *Option)
               }
         if (next)
            Reply(250, "%d %s", next->number, next->ToText());
+        else
+           Reply(501, "Channel \"%s\" not defined", Option);
         }
      }
   else if (Channels.MaxNumber() >= 1) {
