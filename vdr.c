@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.32 2000/09/15 15:01:08 kls Exp $
+ * $Id: vdr.c 1.33 2000/09/17 14:15:24 kls Exp $
  */
 
 #include <getopt.h>
@@ -116,6 +116,8 @@ int main(int argc, char *argv[])
                        }
                     break;
           case 'v': VideoDirectory = optarg;
+                    while (optarg && *optarg && optarg[strlen(optarg) - 1] == '/')
+                          optarg[strlen(optarg) - 1] = 0;
                     break;
           default:  abort();
           }

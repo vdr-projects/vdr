@@ -190,3 +190,6 @@ Video Disk Recorder Revision History
 - The new SVDRP commands 'OVL*' can be used to control video overlays (thanks
   to Guido Fiala!). This is mainly for use in the 'kvdr' tool (see the 'kvdr'
   page at http://www.s.netic.de/gfiala).
+- If the name of the video directory used with the '-v' option had trailing
+  slashes, the recording file names have been damaged. Trailing slashes are
+  now silently removed.

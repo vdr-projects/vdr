@@ -64,7 +64,9 @@ All recordings are written into directories below "/video". Please
 make sure this directory exists, and that the user who runs the 'vdr'
 program has read and write access to that directory.
 If you prefer a different location for your video files, you can use
-the '-v' option to change that.
+the '-v' option to change that. Please make sure that the directory
+name you use with '-v' is a clean and absolute path name (no '..' or
+multiple slashes).
 
 Note that the file system need not be 64-bit proof, since the 'vdr'
 program splits video files into chunks of about 1GB. You should use
