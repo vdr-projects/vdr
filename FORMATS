@@ -55,3 +55,11 @@ Video Disk Recorder File Formats
   - Name of timer (will be used to name the recording)
   - Summary
 
+* setup.conf
+
+  This file contains the basic configuration options for VDR.
+
+  Each line contains one option in the format "Name = Value".
+
+  See the MANUAL file for a description of the available options.
+

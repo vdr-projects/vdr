@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.24 2000/10/08 12:19:21 kls Exp $
+ * $Id: config.c 1.25 2000/10/08 12:41:59 kls Exp $
  */
 
 #include "config.h"
@@ -303,7 +303,7 @@ cTimer::cTimer(bool Instant)
   *file = 0;
   summary = NULL;
   if (Instant && ch)
-     snprintf(file, sizeof(file), "@%s", ch->name);
+     snprintf(file, sizeof(file), "%s%s", Setup.MarkInstantRecord ? "@" : "", ch->name);
 }
 
 cTimer::~cTimer()
@@ -596,6 +596,7 @@ cSetup::cSetup(void)
   PrimaryDVB = 1;
   ShowInfoOnChSwitch = 1;
   MenuScrollPage = 1;
+  MarkInstantRecord = 1;
 }
 
 bool cSetup::Parse(char *s)
@@ -607,6 +608,7 @@ bool cSetup::Parse(char *s)
      if      (!strcasecmp(Name, "PrimaryDVB"))          PrimaryDVB         = atoi(Value);
      else if (!strcasecmp(Name, "ShowInfoOnChSwitch"))  ShowInfoOnChSwitch = atoi(Value);
      else if (!strcasecmp(Name, "MenuScrollPage"))      MenuScrollPage     = atoi(Value);
+     else if (!strcasecmp(Name, "MarkInstantRecord"))   MarkInstantRecord  = atoi(Value);
      else
         return false;
      return true;
@@ -651,6 +653,7 @@ bool cSetup::Save(const char *FileName)
         fprintf(f, "PrimaryDVB         = %d\n", PrimaryDVB);
         fprintf(f, "ShowInfoOnChSwitch = %d\n", ShowInfoOnChSwitch);
         fprintf(f, "MenuScrollPage     = %d\n", MenuScrollPage);
+        fprintf(f, "MarkInstantRecord  = %d\n", MarkInstantRecord);
         fclose(f);
         isyslog(LOG_INFO, "saved setup to %s", FileName);
         return true;

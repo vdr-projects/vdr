@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.32 2000/10/08 12:20:03 kls Exp $
+ * $Id: menu.c 1.33 2000/10/08 12:44:00 kls Exp $
  */
 
 #include "menu.h"
@@ -1094,6 +1094,7 @@ cMenuSetup::cMenuSetup(void)
   Add(new cMenuEditIntItem( "PrimaryDVB",         &data.PrimaryDVB, 1, cDvbApi::NumDvbApis));
   Add(new cMenuEditBoolItem("ShowInfoOnChSwitch", &data.ShowInfoOnChSwitch));
   Add(new cMenuEditBoolItem("MenuScrollPage",     &data.MenuScrollPage));
+  Add(new cMenuEditBoolItem("MarkInstantRecord",  &data.MarkInstantRecord));
 }
 
 eOSState cMenuSetup::ProcessKey(eKeys Key)

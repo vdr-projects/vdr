@@ -34,3 +34,6 @@ Martin Hammerschmid <martin@hammerschmid.com>
 
 Bastian Guse <bastian@nocopy.de>
  for writing the FORMATS entry for timers.conf
+
+Matthias Schniedermeyer <ms@citd.de>
+ for implementing the 'MarkInstantRecord' setup option.

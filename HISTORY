@@ -231,3 +231,5 @@ Video Disk Recorder Revision History
   Pressing the key shortly and releasing it starts the function, and pressing it
   again stops it. Pressing and holding down the key starts the function and
   releasing the key stops it.
+- The '@' character that marks an "instant recording" can now be turned off
+  in the "Setup" menu (thanks to Matthias Schniedermeyer).

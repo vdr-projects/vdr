@@ -201,3 +201,11 @@ Video Disk Recorder User's Manual
                          1 = dto., but the cursor remains at the bottom (top) of
                              the page (this mode allows for faster scrolling
                              through long lists).
+
+  MarkInstantRecord = 1  Defines whether an "instant recording" (started by
+                         pressing the "Red" button in the main menu) will be
+                         marked with a '@' character to make it distinguishable
+                         from timer recordings in the "Recordings" menu.
+                         0 = instant recordings will not be marked
+                         1 = instant recordings will be marked.
+
