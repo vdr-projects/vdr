@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.53 2001/01/27 11:04:55 kls Exp $
+ * $Id: dvbapi.c 1.54 2001/02/02 13:10:39 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -864,8 +864,10 @@ int cRecordBuffer::Synchronize(void)
                                     }
                                  else if (pictureType == NO_PICTURE) {
                                     if (!synced) {
-                                       if (pt == I_FRAME)
+                                       if (pt == I_FRAME) {
+                                          Skip(i);
                                           synced = true;
+                                          }
                                        else {
                                           Skip(i + l);
                                           i = 0;
