@@ -747,3 +747,5 @@ Video Disk Recorder Revision History
   OSD is used (thanks to Andreas Vitting).
 - Switched to the driver's new tuning API (VDR now requires a driver version
   dated 2001-09-14 or higher).
+- Changed obsolete macro VIDEO_WINDOW_CHROMAKEY to VID_TYPE_CHROMAKEY (thanks
+  to Guido Fiala).

@@ -7,7 +7,7 @@
  * DVD support initially written by Andreas Schultz <aschultz@warp10.net>
  * based on dvdplayer-0.5 by Matjaz Thaler <matjaz.thaler@guest.arnes.si>
  *
- * $Id: dvbapi.c 1.120 2001/09/15 13:51:27 kls Exp $
+ * $Id: dvbapi.c 1.121 2001/09/15 14:15:21 kls Exp $
  */
 
 //#define DVDDEBUG        1
@@ -2824,7 +2824,10 @@ bool cDvbApi::OvlG(int SizeX, int SizeY, int PosX, int PosY)
      vw.width = SizeX;
      vw.height = SizeY;
      vw.chromakey = ovlPalette;
-     vw.flags = VIDEO_WINDOW_CHROMAKEY; // VIDEO_WINDOW_INTERLACE; //VIDEO_CLIP_BITMAP;
+#ifndef VID_TYPE_CHROMAKEY // name changed somewhere down the road in kernel 2.4.x
+#define VID_TYPE_CHROMAKEY VIDEO_WINDOW_CHROMAKEY
+#endif
+     vw.flags = VID_TYPE_CHROMAKEY; // VIDEO_WINDOW_INTERLACE; //VIDEO_CLIP_BITMAP;
      vw.clips = ovlClipRects;
      vw.clipcount = ovlClipCount;
      result |= ioctl(videoDev, VIDIOCSWIN, &vw);
