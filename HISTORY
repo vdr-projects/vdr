@@ -970,7 +970,7 @@ Video Disk Recorder Revision History
 - Fixed a problem with the ERR macro defined by ncurses.h (thanks to Artur
   Skawina).
 
-2002-02-09: Version 0.99pre6
+2002-02-10: Version 0.99pre6
 
 - Fixed a bug in moving timers or channels to the last position in the list
   (thanks to Matthias Schniedermeyer for helping to debug this one).
@@ -983,3 +983,5 @@ Video Disk Recorder Revision History
   middle between start and end time).
 - Added a typedef for 'in_addr_t' to make it work with glibc < 2.2 (thanks to
   Jürgen Schmidt).
+- When the last entry in a "Recordings" menu page is deleted, that page is now
+  automatically closed (suggested by Uwe Freese).

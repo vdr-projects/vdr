@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.150 2002/02/09 15:25:27 kls Exp $
+ * $Id: menu.c 1.151 2002/02/10 11:25:07 kls Exp $
  */
 
 #include "menu.h"
@@ -1680,6 +1680,8 @@ eOSState cMenuRecordings::Del(void)
                  cOsdMenu::Del(Current());
                  Recordings.Del(recording);
                  Display();
+                 if (!Count())
+                    return osBack;
                  }
               else
                  Interface->Error(tr("Error while deleting recording!"));
@@ -1707,6 +1709,7 @@ eOSState cMenuRecordings::Summary(void)
 
 eOSState cMenuRecordings::ProcessKey(eKeys Key)
 {
+  bool HadSubMenu = HasSubMenu();
   eOSState state = cOsdMenu::ProcessKey(Key);
 
   if (state == osUnknown) {
@@ -1719,6 +1722,13 @@ eOSState cMenuRecordings::ProcessKey(eKeys Key)
        case kMenu:   return osEnd;
        default: break;
        }
+     }
+  if (Key == kYellow && HadSubMenu && !HasSubMenu()) {
+     // the last recording in a subdirectory was deleted, so let's go back up
+     cOsdMenu::Del(Current());
+     if (!Count())
+        return osBack;
+     Display();
      }
   if (!HasSubMenu() && Key != kNone)
      SetHelpKeys();
