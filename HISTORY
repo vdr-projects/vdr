@@ -716,7 +716,7 @@ Video Disk Recorder Revision History
   That way every recording will store the actual summary data at the time of
   the recording.
 
-2001-09-15: Version 0.95
+2001-09-16: Version 0.95
 
 - Fixed behaviour in case the shutdown didn't take place (there were many
   "next timer event at..." messages in that case).
@@ -751,3 +751,4 @@ Video Disk Recorder Revision History
   to Guido Fiala).
 - New version of the "Master-Timer" tool (thanks to Matthias Schniedermeyer).
 - Better error handling when writing configuration files.
+- Fixed putting the final editing mark into the edited version's marks file.
