@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 1.15 2004/03/06 10:12:50 kls Exp $
+ * $Id: epg.c 1.16 2004/03/06 14:33:22 kls Exp $
  */
 
 #include "epg.h"
@@ -527,11 +527,15 @@ const cEvent *cSchedule::GetEventAround(time_t Time) const
   return pe;
 }
 
-void cSchedule::SetRunningStatus(cEvent *Event, int RunningStatus)
+void cSchedule::SetRunningStatus(cEvent *Event, int RunningStatus, cChannel *Channel)
 {
   for (cEvent *p = events.First(); p; p = events.Next(p)) {
-      if (p == Event)
+      if (p == Event) {
+         if (Channel && p->RunningStatus() != RunningStatus && (RunningStatus > SI::RunningStatusNotRunning || p->RunningStatus() > SI::RunningStatusUndefined))
+            if (Channel->Number() <= 30)//XXX maybe log only those that have timers???
+            isyslog("channel %d (%s) event %s '%s' status %d", Channel->Number(), Channel->Name(), Event->GetTimeString(), Event->Title(), RunningStatus);
          p->SetRunningStatus(RunningStatus);
+         }
       else if (RunningStatus >= SI::RunningStatusPausing && p->RunningStatus() > SI::RunningStatusNotRunning)
          p->SetRunningStatus(SI::RunningStatusNotRunning);
       }

@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.h 1.12 2004/03/06 10:09:40 kls Exp $
+ * $Id: epg.h 1.13 2004/03/06 14:01:38 kls Exp $
  */
 
 #ifndef __EPG_H
@@ -82,7 +82,7 @@ private:
 public:
   cSchedule(tChannelID ChannelID);
   tChannelID ChannelID(void) const { return channelID; }
-  void SetRunningStatus(cEvent *Event, int RunningStatus);
+  void SetRunningStatus(cEvent *Event, int RunningStatus, cChannel *Channel = NULL);
   void ResetVersions(void);
   void Sort(void);
   void Cleanup(time_t Time);

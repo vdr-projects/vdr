@@ -2720,3 +2720,5 @@ Video Disk Recorder Revision History
 - Fixed some descriptor handling in 'libsi' (thanks to Stéphane Esté-Gracias).
 - Fixed handling the current menu item (thanks to Marc Hoppe).
 - Fixed assigning events to timers (they no longer get "stuck").
+- Added log entries whenever the running status of an event changes (currently
+  only logging the first 30 channels).

@@ -8,7 +8,7 @@
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  * Adapted to 'libsi' for VDR 1.3.0 by Marcel Wiesweg <marcel.wiesweg@gmx.de>.
  *
- * $Id: eit.c 1.89 2004/02/22 13:17:52 kls Exp $
+ * $Id: eit.c 1.90 2004/03/06 14:24:22 kls Exp $
  */
 
 #include "eit.h"
@@ -82,10 +82,6 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data)
       pEvent->SetVersion(getVersionNumber());
       pEvent->SetStartTime(SiEitEvent.getStartTime());
       pEvent->SetDuration(SiEitEvent.getDuration());
-      if (isPresentFollowing()) {
-         if (SiEitEvent.getRunningStatus() > SI::RunningStatusNotRunning)
-            pSchedule->SetRunningStatus(pEvent, SiEitEvent.getRunningStatus());
-         }
 
       int LanguagePreferenceShort = -1;
       int LanguagePreferenceExt = -1;
@@ -205,6 +201,10 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data)
 
       if (LinkChannels)
          channel->SetLinkChannels(LinkChannels);
+      if (Tid == 0x4E) { // we trust only the present/following info on the actual TS
+         if (SiEitEvent.getRunningStatus() >= SI::RunningStatusNotRunning)
+            pSchedule->SetRunningStatus(pEvent, SiEitEvent.getRunningStatus(), channel);
+         }
       Modified = true;
       }
   if (Modified)
