@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.58 2002/03/23 11:32:33 kls Exp $
+ * $Id: recording.c 1.59 2002/03/23 16:15:32 kls Exp $
  */
 
 #include "recording.h"
@@ -172,7 +172,7 @@ bool cResumeFile::Save(int Index)
   if (fileName) {
      int f = open(fileName, O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
      if (f >= 0) {
-        if (safe_write(f, &Index, sizeof(Index)) != sizeof(Index))
+        if (safe_write(f, &Index, sizeof(Index)) < 0)
            LOG_ERROR_STR(fileName);
         close(f);
         return true;

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.164 2002/03/23 14:14:03 kls Exp $
+ * $Id: dvbapi.c 1.165 2002/03/23 16:15:00 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -98,7 +98,7 @@ class cIndexFile {
 private:
   struct tIndex { int offset; uchar type; uchar number; short reserved; };
   int f;
-  char *fileName, *pFileExt;
+  char *fileName;
   int size, last;
   tIndex *index;
   cResumeFile resumeFile;
@@ -120,7 +120,7 @@ cIndexFile::cIndexFile(const char *FileName, bool Record)
 :resumeFile(FileName)
 {
   f = -1;
-  fileName = pFileExt = NULL;
+  fileName = NULL;
   size = 0;
   last = -1;
   index = NULL;
@@ -128,7 +128,7 @@ cIndexFile::cIndexFile(const char *FileName, bool Record)
      fileName = new char[strlen(FileName) + strlen(INDEXFILESUFFIX) + 1];
      if (fileName) {
         strcpy(fileName, FileName);
-        pFileExt = fileName + strlen(fileName);
+        char *pFileExt = fileName + strlen(fileName);
         strcpy(pFileExt, INDEXFILESUFFIX);
         int delta = 0;
         if (access(fileName, R_OK) == 0) {
@@ -177,8 +177,6 @@ cIndexFile::cIndexFile(const char *FileName, bool Record)
               }
            else
               LOG_ERROR_STR(fileName);
-           delete fileName;
-           fileName = pFileExt = NULL;
            }
         }
      else
@@ -223,14 +221,14 @@ bool cIndexFile::CatchUp(int Index)
                      last = newLast;
                      }
                   else
-                     LOG_ERROR;
+                     LOG_ERROR_STR(fileName);
                   }
                else
                   esyslog(LOG_ERR, "ERROR: can't realloc() index");
                }
             }
          else
-            LOG_ERROR;
+            LOG_ERROR_STR(fileName);
          if (Index >= last)
             sleep(1);
          else
@@ -244,8 +242,8 @@ bool cIndexFile::Write(uchar PictureType, uchar FileNumber, int FileOffset)
 {
   if (f >= 0) {
      tIndex i = { FileOffset, PictureType, FileNumber, 0 };
-     if (safe_write(f, &i, sizeof(i)) != sizeof(i)) {
-        esyslog(LOG_ERR, "ERROR: can't write to index file");
+     if (safe_write(f, &i, sizeof(i)) < 0) {
+        LOG_ERROR_STR(fileName);
         close(f);
         f = -1;
         return false;
@@ -579,17 +577,12 @@ void cRecordBuffer::Output(void)
             if (NextFile()) {
                if (index && pictureType != NO_PICTURE)
                   index->Write(pictureType, fileName.Number(), fileSize);
-               while (Result > 0) {
-                     int w = safe_write(recordFile, p, Result);
-                     if (w < 0) {
-                        LOG_ERROR_STR(fileName.Name());
-                        recording = false;
-                        return;
-                        }
-                     p += w;
-                     Result -= w;
-                     fileSize += w;
-                     }
+               if (safe_write(recordFile, p, Result) < 0) {
+                  LOG_ERROR_STR(fileName.Name());
+                  recording = false;
+                  return;
+                  }
+               fileSize += Result;
                }
             else
                break;
@@ -1557,7 +1550,7 @@ void cCuttingBuffer::Action(void)
                  }
               LastIFrame = 0;
               }
-           if (safe_write(toFile, buffer, Length) != Length) {
+           if (safe_write(toFile, buffer, Length) < 0) {
               error = "safe_write";
               break;
               }
