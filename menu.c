@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.326 2005/01/04 12:52:17 kls Exp $
+ * $Id: menu.c 1.327 2005/01/04 13:40:38 kls Exp $
  */
 
 #include "menu.h"
@@ -2842,9 +2842,13 @@ void cDisplayTracks::Show(void)
 
 cDisplayTracks *cDisplayTracks::Create(void)
 {
-  if (!currentDisplayTracks)
-     new cDisplayTracks;
-  return currentDisplayTracks;
+  if (cDevice::PrimaryDevice()->NumAudioTracks() > 0) {
+     if (!currentDisplayTracks)
+        new cDisplayTracks;
+     return currentDisplayTracks;
+     }
+  Skins.Message(mtWarning, tr("No audio available!"));
+  return NULL;
 }
 
 void cDisplayTracks::Process(eKeys Key)
