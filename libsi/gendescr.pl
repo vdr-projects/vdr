@@ -1,5 +1,7 @@
 #!/usr/bin/perl
 
+# $Id: gendescr.pl 1.2 2003/12/13 10:42:05 kls Exp $
+
 print "Name (ohne ...Descriptor):";
 $name=<STDIN>;
 $name =~ s/\n$//;
@@ -9,7 +11,6 @@ $name .= "Descriptor" unless ($inner);
 print "Struct:";
 $struct=<STDIN>;
 $struct =~ s/\n$//;
-
 
 mm:
 $index=0;
@@ -44,7 +45,7 @@ sub schreib {
    print "Danke.\n";
    open(OUTPUT_H, ">>".$filename_h) or die "Could not open file!!";
    open(OUTPUT_C, ">>".$filename_c) or die "Could not open file!!";
-   
+
    if ($inner) {
       $offset="   ";
    } else {
@@ -63,7 +64,7 @@ sub schreib {
       print (OUTPUT_H "\n".$offset."   int get".$members[$i]."() const;");
    }
    print(OUTPUT_H "\n".$offset."virtual int getLength() { return sizeof(".$struct."); }") if ($inner);
-   
+
    print(OUTPUT_H "\n".$offset."protected:\n".$offset."   virtual void Parse();");
    print(OUTPUT_H "\n".$offset."private:\n".$offset."   const ".$struct." *s;") if ($struct ne "");
    print(OUTPUT_H "\n".$offset."};\n\n");

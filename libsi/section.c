@@ -6,6 +6,8 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
+ *   $Id: section.c 1.2 2003/12/13 10:42:14 kls Exp $
+ *                                                                         *
  ***************************************************************************/
 
 #include "section.h"
@@ -74,8 +76,6 @@ void PMT::Stream::Parse() {
    streamDescriptors.setData(data+offset, HILO(s->ES_info_length));
 }
 
-
-
 /*********************** NIT ***********************/
 
 int NIT::getNetworkId() const {
@@ -105,10 +105,7 @@ void NIT::TransportStream::Parse() {
    transportStreamDescriptors.setData(data+offset, HILO(s->transport_descriptors_length));
 }
 
-
-
 /*********************** SDT ***********************/
-
 
 void SDT::Parse() {
    unsigned int offset=0;
@@ -150,8 +147,6 @@ void SDT::Service::Parse() {
    serviceDescriptors.setData(data+offset, HILO(s->descriptors_loop_length));
 }
 
-
-
 /*********************** EIT ***********************/
 
 int EIT::getServiceId() const {
@@ -167,7 +162,7 @@ int EIT::getOriginalNetworkId() const {
 }
 
 bool EIT::isPresentFollowing() const {
-   return getTableId() == TableIdEIT_presentFollowing || getTableId() == TableIdEIT_presentFollowing_other; 
+   return getTableId() == TableIdEIT_presentFollowing || getTableId() == TableIdEIT_presentFollowing_other;
 }
 
 bool EIT::isActualTS() const {
@@ -182,7 +177,6 @@ void EIT::Parse() {
    //printf("%d %d %d %d %d\n", getServiceId(), getTransportStreamId(), getOriginalNetworkId(), isPresentFollowing(), isActualTS());
    eventLoop.setData(data+offset, getLength()-offset-4); //4 is for CRC
 }
-
 
 time_t EIT::Event::getStartTime() const {
    return DVBTime::getTime(s->mjd_hi, s->mjd_lo, s->start_time_h, s->start_time_m, s->start_time_s);
@@ -239,7 +233,6 @@ void EIT::Event::Parse() {
    eventDescriptors.setData(data+offset, HILO(s->descriptors_loop_length));
 }
 
-
 /*********************** TDT ***********************/
 
 time_t TDT::getTime() const {
@@ -249,7 +242,6 @@ time_t TDT::getTime() const {
 void TDT::Parse() {
    s=data.getData<const tdt>();
 }
-
 
 /*********************** TOT ***********************/
 
@@ -262,9 +254,6 @@ void TOT::Parse() {
    data.setPointerAndOffset<const tot>(s, offset);
    descriptorLoop.setData(data+offset, getLength()-offset-4);
 }
-
-
-
 
 /*********************** RST ***********************/
 
@@ -299,10 +288,7 @@ void RST::RunningInfo::Parse() {
    s=data.getData<const rst_info>();
 }
 
-
-
 /*********************** AIT ***********************/
-
 
 int AIT::getApplicationType() const {
    return HILO(first->application_type);
@@ -320,7 +306,6 @@ void AIT::Parse() {
    data.setPointerAndOffset<const ait_mid>(mid, offset);
    applicationLoop.setData(data+offset, HILO(mid->application_loop_length));
 }
-
 
 long AIT::Application::getOrganisationId() const {
    return data.FourBytes(0);
@@ -340,7 +325,4 @@ void AIT::Application::Parse() {
    applicationDescriptors.setData(data+offset, HILO(s->application_descriptors_length));
 }
 
-
-
 } //end of namespace
-

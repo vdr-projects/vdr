@@ -6,8 +6,9 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
+ *   $Id: util.h 1.2 2003/12/13 10:42:20 kls Exp $
+ *                                                                         *
  ***************************************************************************/
-
 
 #ifndef LIBSI_UTIL_H
 #define LIBSI_UTIL_H
@@ -23,28 +24,27 @@
 
 namespace SI {
 
-
 //Holds an array of unsigned char which is deleted
 //when the last object pointing to it is deleted.
 //Optimized for use in libsi.
 class CharArray {
 public:
    CharArray();
-   
+
    CharArray(const CharArray &source);
    CharArray& operator=(const CharArray &source);
    ~CharArray();
-   
+
    //can be called exactly once
    void assign(const unsigned char*data, unsigned int size, bool doCopy=true);
    //compares to a null-terminated string
-   bool operator==(const char *string) const;   
+   bool operator==(const char *string) const;
    //compares to another CharArray (data not necessarily null-terminated)
    bool operator==(const CharArray &other) const;
-   
+
    //returns another CharArray with its offset incremented by offset
    CharArray operator+(const unsigned int offset) const;
-   
+
    //access and convenience methods
    const unsigned char* getData() const { return data_->data+off; }
    const unsigned char* getData(int offset) const { return data_->data+offset+off; }
@@ -56,17 +56,17 @@ public:
    int getLength() const { return data_->size; }
    unsigned short TwoBytes(const unsigned int index) const { return data_->data ? data_->TwoBytes(off+index) : 0; }
    unsigned long FourBytes(const unsigned int index) const { return data_->data ? data_->FourBytes(off+index) : 0; }
-   
+
    void addOffset(unsigned int offset) { off+=offset; }
 private:
    class Data {
    public:
       Data();
       virtual ~Data();
-      
+
       virtual void assign(const unsigned char*data, unsigned int size) = 0;
       virtual void Delete() = 0;
-      
+
       unsigned short TwoBytes(const unsigned int index) const
          { return (data[index] << 8) | data[index+1]; }
       unsigned long FourBytes(const unsigned int index) const
@@ -81,15 +81,15 @@ private:
       Data(const Data& d);
       void assign(unsigned int size);
       */
-  
+
       const unsigned char*data;
       unsigned int size;
-  
+
       unsigned count_;
       // count_ is the number of CharArray objects that point at this
       // count_ must be initialized to 1 by all constructors
       // (it starts as 1 since it is pointed to by the CharArray object that created it)
-      
+
       /*
       pthread_mutex_t mutex;
       pid_t lockingPid;
@@ -114,8 +114,8 @@ private:
    unsigned int off;
 };
 
-  
-  
+
+
 //abstract base class
 class Parsable {
 public:
@@ -145,16 +145,12 @@ public:
 protected:
    static unsigned long crc_table[256];
    static unsigned long crc32 (const char *d, int len, unsigned long CRCvalue);
-   
+
    const char *data;
    int length;
    unsigned long value;
 };
 
-
-
 } //end of namespace
 
-
 #endif
-

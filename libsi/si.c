@@ -6,6 +6,8 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
+ *   $Id: si.c 1.2 2003/12/13 10:42:16 kls Exp $
+ *                                                                         *
  ***************************************************************************/
 
 #include <string.h>
@@ -28,8 +30,6 @@ void Object::setData(CharArray &d) {
    data=d;
 }
 
-
-
 Section::Section(const unsigned char *data, bool doCopy) {
    setData(data, getLength(data), doCopy);
 }
@@ -43,11 +43,11 @@ int Section::getLength() {
 }
 
 TableId Section::getTableId(const unsigned char *d) {
-   return (TableId)((const SectionHeader *)d)->table_id; 
+   return (TableId)((const SectionHeader *)d)->table_id;
 }
 
 int Section::getLength(const unsigned char *d) {
-   return HILO(((const SectionHeader *)d)->section_length)+sizeof(SectionHeader); 
+   return HILO(((const SectionHeader *)d)->section_length)+sizeof(SectionHeader);
 }
 
 bool CRCSection::isValid() {
@@ -60,8 +60,6 @@ bool CRCSection::CheckCRCAndParse() {
    CheckParse();
    return true;
 }
-
-
 
 bool NumberedSection::getCurrentNextIndicator() const {
    return data.getData<ExtendedSectionHeader>()->current_next_indicator;
@@ -79,10 +77,6 @@ int NumberedSection::getLastSectionNumber() const {
    return data.getData<ExtendedSectionHeader>()->last_section_number;
 }
 
-
-
-
-
 int Descriptor::getLength() {
    return getLength(data.getData());
 }
@@ -98,7 +92,6 @@ int Descriptor::getLength(const unsigned char *d) {
 DescriptorTag Descriptor::getDescriptorTag(const unsigned char *d) {
    return (DescriptorTag)((const DescriptorHeader*)d)->descriptor_tag;
 }
-
 
 Descriptor *DescriptorLoop::getNext(Iterator &it) {
    if (it.i<getLength()) {
@@ -193,8 +186,6 @@ bool DescriptorGroup::isComplete() {
    return true;
 }
 
-
-
 char *String::getText() {
    if (getLength() < 0 || getLength() >4095)
       return "text error";
@@ -216,17 +207,17 @@ char *String::getText(char *buffer) {
 void String::decodeText(char *buffer) {
    const unsigned char *from=data.getData(0);
    char *to=buffer;
-   
+
    /* Disable detection of coding tables - libdtv doesn't do it either
    if ( (0x01 <= *from) && (*from <= 0x1f) ) {
       codeTable=*from
    }
    */
-   
+
    for (int i = 0; i < getLength(); i++) {
       if (*from == 0)
          break;
-      if (    ((' ' <= *from) && (*from <= '~')) 
+      if (    ((' ' <= *from) && (*from <= '~'))
            || (*from == '\n')
            || ((0xA0 <= *from) && (*from <= 0xFF))
          )
@@ -310,7 +301,7 @@ Descriptor *Descriptor::getDescriptor(CharArray da, DescriptorTagDomain domain) 
             break;
          case CaIdentifierDescriptorTag:
             d=new CaIdentifierDescriptor();
-            break;        
+            break;
          case ShortEventDescriptorTag:
             d=new ShortEventDescriptor();
             break;
@@ -329,10 +320,10 @@ Descriptor *Descriptor::getDescriptor(CharArray da, DescriptorTagDomain domain) 
          case ApplicationSignallingDescriptorTag:
             d=new ApplicationSignallingDescriptor();
             break;
-            
+
          //note that it is no problem to implement one
          //of the unimplemented descriptors.
-         
+
          //defined in ISO-13818-1
          case VideoStreamDescriptorTag:
          case AudioStreamDescriptorTag:
@@ -350,7 +341,7 @@ Descriptor *Descriptor::getDescriptor(CharArray da, DescriptorTagDomain domain) 
          case SmoothingBufferDescriptorTag:
          case STDDescriptorTag:
          case IBPDescriptorTag:
-         
+
          //defined in ETSI EN 300 468
          case StuffingDescriptorTag:
          case VBIDataDescriptorTag:
@@ -374,7 +365,7 @@ Descriptor *Descriptor::getDescriptor(CharArray da, DescriptorTagDomain domain) 
          case DSNGDescriptorTag:
          case PDCDescriptorTag:
          case AncillaryDataDescriptorTag:
-         case AnnouncementSupportDescriptorTag:            
+         case AnnouncementSupportDescriptorTag:
          case AdaptationFieldDataDescriptorTag:
          case TransportStreamDescriptorTag:
          default:
@@ -421,11 +412,4 @@ Descriptor *Descriptor::getDescriptor(CharArray da, DescriptorTagDomain domain) 
    return d;
 }
 
-
-
-
-
-
 } //end of namespace
-
-

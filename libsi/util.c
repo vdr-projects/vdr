@@ -6,13 +6,14 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
+ *   $Id: util.c 1.2 2003/12/13 10:42:18 kls Exp $
+ *                                                                         *
  ***************************************************************************/
 
 #include <string.h>
 #include "util.h"
 
 namespace SI {
-
 
 /*---------------------------- CharArray ----------------------------*/
 
@@ -38,7 +39,7 @@ CharArray& CharArray::operator=(const CharArray &f) {
       ++ f.data_->count_;
     }
     if (data_) {
-      if (--data_->count_ == 0) 
+      if (--data_->count_ == 0)
          delete data_;
     }
     data_ = f.data_;
@@ -62,18 +63,18 @@ void CharArray::assign(const unsigned char*data, unsigned int size, bool doCopy)
 
 bool CharArray::operator==(const char *string) const {
    //here we can use strcmp, string is null-terminated.
-   if (!data_) 
+   if (!data_)
       return false;
    return data_->size ? (!strcmp((const char*)data_->data, string)) : string[0]==0;
 }
 
 bool CharArray::operator==(const CharArray &other) const {
-   if (!data_ || !other.data_) 
+   if (!data_ || !other.data_)
       return !(data_ || other.data_); //true if both empty
-      
+
    if (data_->size != other.data_->size)
       return false;
-      
+
    //do _not_ use strcmp! Data is not necessarily null-terminated.
    for (unsigned int i=0;i<data_->size;i++)
       if (data_->data[i] != other.data_->data[i])
@@ -98,7 +99,7 @@ CharArray::Data::Data() : count_(1) {
 }
 
 CharArray::Data::~Data() {
-   /*   
+   /*
    if (locked)
       pthread_mutex_unlock(&mutex);
    pthread_mutex_destroy(&mutex);
@@ -108,7 +109,7 @@ CharArray::Data::~Data() {
 /*CharArray::Data::Data(const Data& d) : count_(1) {
    size=0;
    data=0;
-   
+
    lockingPid = 0;
    locked = 0;
    pthread_mutex_init(&mutex, NULL);
@@ -142,7 +143,6 @@ void CharArray::DataForeignData::assign(const unsigned char*d, unsigned int s) {
 void CharArray::DataForeignData::Delete() {
    //do not delete!
 }
-
 
 /*
 void CharArray::Data::assign(unsigned int s) {
@@ -184,16 +184,15 @@ void Parsable::CheckParse() {
    }
 }
 
-
-//taken and adapted from libdtv, (c) Rolf Hakenes and VDR, (c) Klaus Schmidinger    
+//taken and adapted from libdtv, (c) Rolf Hakenes and VDR, (c) Klaus Schmidinger
 time_t DVBTime::getTime(unsigned char date_hi, unsigned char date_lo, unsigned char time_hour, unsigned char time_minute, unsigned char time_second) {
    unsigned short mjd = date_hi << 8 | date_lo;
    struct tm t;
-   
+
    t.tm_sec = bcdToDec(time_second);
    t.tm_min = bcdToDec(time_minute);
    t.tm_hour = bcdToDec(time_hour);
-   
+
    int k;
    t.tm_year = (int) ((mjd - 15078.2) / 365.25);
    t.tm_mon = (int) ((mjd - 14956.1 - (int)(t.tm_year * 365.25)) / 30.6001);
@@ -205,7 +204,7 @@ time_t DVBTime::getTime(unsigned char date_hi, unsigned char date_lo, unsigned c
 
    t.tm_isdst = -1;
    t.tm_gmtoff = 0;
-   
+
    return timegm(&t);
 }
 
@@ -279,12 +278,4 @@ CRC32::CRC32(const char *d, int len, unsigned long CRCvalue) {
    value=CRCvalue;
 }
 
-
-
-
-
-
 } //end of namespace
-
-
-

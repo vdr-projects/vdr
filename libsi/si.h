@@ -6,8 +6,9 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
+ *   $Id: si.h 1.2 2003/12/13 10:42:17 kls Exp $
+ *                                                                         *
  ***************************************************************************/
-
 
 #ifndef LIBSI_SI_H
 #define LIBSI_SI_H
@@ -44,7 +45,7 @@ enum TableId { TableIdPAT = 0x00, //program association section
                TableIdSIT = 0x7F, //service information section
                TableIdAIT = 0x74  //application information section
              };
-               
+
 
 enum DescriptorTag {
   // defined by ISO/IEC 13818-1
@@ -65,7 +66,7 @@ enum DescriptorTag {
                SmoothingBufferDescriptorTag = 0x10,
                STDDescriptorTag = 0x11,
                IBPDescriptorTag = 0x12,
-  // defined by ISO-13818-6 (DSM-CC) 
+  // defined by ISO-13818-6 (DSM-CC)
                CarouselIdentifierDescriptorTag = 0x13,
                // 0x14 - 0x3F  Reserved
   // defined by ETSI (EN 300 468)
@@ -138,7 +139,7 @@ enum DescriptorTag {
                MHP_PrefetchDescriptorTag = 0x0C,
                MHP_DelegatedApplicationDescriptorTag = 0x0E,
                MHP_ApplicationStorageDescriptorTag = 0x10,
-               
+
                //a descriptor currently unimplemented in this library
                //the actual value 0xFF is "forbidden" according to the spec.
                UnimplementedDescriptorTag = 0xFF
@@ -153,14 +154,12 @@ enum RunningStatus { RunningStatusUndefined = 0,
                      RunningStatusRunning = 4
                    };
 
-
 /* Some principles:
    - Objects that return references to other objects contained in their data must make sure
      that the returned objects have been parsed.
      (the Loop subclasses take care of that.)
      Note that this does not apply to Loops and Strings (their are never returned by reference, BTW).
 */
-
 
 class Object : public Parsable {
 public:
@@ -183,7 +182,7 @@ public:
    Section() {}
    TableId getTableId() const;
    virtual int getLength();
-   
+
    static int getLength(const unsigned char *d);
    static TableId getTableId(const unsigned char *d);
 };
@@ -211,9 +210,6 @@ public:
    bool moreThanOneSection()  const { return getLastSectionNumber()>1; }
 };
 
-
-
-
 class VariableLengthPart : public Object {
 public:
    //never forget to call this
@@ -225,11 +221,8 @@ private:
    int length;
 };
 
-
-
 class LoopElement : public Object {
 };
-
 
 class SubStructure : public LoopElement {
 };
@@ -238,7 +231,7 @@ class Descriptor : public LoopElement {
 public:
    virtual int getLength();
    DescriptorTag getDescriptorTag() const;
-   
+
    static int getLength(const unsigned char *d);
    static DescriptorTag getDescriptorTag(const unsigned char *d);
 protected:
@@ -249,8 +242,6 @@ protected:
    //Never returns null - maybe the UnimplementedDescriptor.
    static Descriptor *getDescriptor(CharArray d, DescriptorTagDomain domain);
 };
-
-
 
 class Loop : public VariableLengthPart {
 public:
@@ -338,11 +329,11 @@ public:
             return (data.FourBytes(index) << 32) | data.FourBytes(index+4);
          }
       }
-   T getNext(Iterator &it) const 
+   T getNext(Iterator &it) const
       {
          T ret=operator[](it.i);
          it.i+=sizeof(T);
-         return ret; 
+         return ret;
       }
    bool hasNext() const { return getLength() > it.i; }
 };
@@ -351,7 +342,6 @@ class MHP_DescriptorLoop : public DescriptorLoop {
 public:
    MHP_DescriptorLoop() { domain=MHP; }
 };
-
 
 //The content of the ExtendedEventDescriptor may be split over several
 //descriptors if the text is longer than 256 bytes.
@@ -367,7 +357,7 @@ public:
    DescriptorGroup(bool deleteOnDesctruction=true);
    ~DescriptorGroup();
    void Add(GroupDescriptor *d);
-   void Delete();   
+   void Delete();
    int getLength() { return length; }
    GroupDescriptor **getDescriptors() { return array; }
    bool isComplete(); //if all descriptors have been added
@@ -377,17 +367,15 @@ protected:
    bool deleteOnDesctruction;
 };
 
-
-
 class String : public VariableLengthPart {
 public:
    //A note to the length: getLength() returns the length of the raw data.
-   //The text may be shorter. Its length can be obtained with one of the 
+   //The text may be shorter. Its length can be obtained with one of the
    //above functions and strlen.
-   
+
    //returns text. Data is allocated with new and must be delete'd by the user.
    char *getText();
-   //copies text into given buffer. 
+   //copies text into given buffer.
    //a buffer of size getLength()+1 is guaranteed to be sufficiently large.
    //In most descriptors the string length is an 8-bit field,
    //so the maximum there is 256.
@@ -398,8 +386,6 @@ protected:
    void decodeText(char *buffer);
 };
 
-
 } //end of namespace
 
 #endif //LIBSI_SI_H
-

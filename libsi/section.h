@@ -6,6 +6,8 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
+ *   $Id: section.h 1.2 2003/12/13 10:42:15 kls Exp $
+ *                                                                         *
  ***************************************************************************/
 
 #ifndef LIBSI_SECTION_H
@@ -49,7 +51,6 @@ public:
 protected:
    virtual void Parse();
 };
-
 
 class PMT : public NumberedSection {
 public:
@@ -108,7 +109,6 @@ public:
    int getBouquetId() const { return getNetworkId(); }
 };
 
-
 class SDT : public NumberedSection {
 public:
    SDT(const unsigned char *data, bool doCopy=true) : NumberedSection(data, doCopy) {}
@@ -134,8 +134,7 @@ protected:
    virtual void Parse();
 private:
    const sdt *s;
-};  
-
+};
 
 class EIT : public NumberedSection {
 public:
@@ -146,7 +145,7 @@ public:
       int getEventId() const;
       time_t getStartTime() const; //UTC
       time_t getDuration() const;
-      
+
       int getMJD() const;
       int getStartTimeHour() const; //UTC
       int getStartTimeMinute() const; //UTC
@@ -156,7 +155,7 @@ public:
       int getDurationSecond() const;
       RunningStatus getRunningStatus() const;
       int getFreeCaMode() const;
-      
+
       DescriptorLoop eventDescriptors;
       virtual int getLength() { return sizeof(eit_event)+eventDescriptors.getLength(); }
    protected:
@@ -168,7 +167,7 @@ public:
    int getTransportStreamId() const;
    int getOriginalNetworkId() const;
    StructureLoop<Event> eventLoop;
-      
+
    //true if table conveys present/following information, false if it conveys schedule information
    bool isPresentFollowing() const;
    //true if table describes TS on which it is broadcast, false if it describes other TS
@@ -178,7 +177,6 @@ protected:
 private:
    const eit *s;
 };
-
 
 class TDT : public Section {
 public:
@@ -191,7 +189,6 @@ private:
    const tdt *s;
 };
 
-
 class TOT : public CRCSection {
 public:
    TOT(const unsigned char *data, bool doCopy=true) : CRCSection(data, doCopy) {}
@@ -203,7 +200,6 @@ protected:
 private:
    const tot *s;
 };
-
 
 class RST : public Section {
 public:
@@ -226,7 +222,6 @@ public:
 protected:
    virtual void Parse();
 };
-
 
 class AIT : public NumberedSection {
 public:
@@ -251,8 +246,6 @@ protected:
    const ait *first;
    virtual void Parse();
 };
-
-
 
 } //end of namespace
 

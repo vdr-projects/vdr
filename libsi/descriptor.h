@@ -6,6 +6,8 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
+ *   $Id: descriptor.h 1.2 2003/12/13 10:42:08 kls Exp $
+ *                                                                         *
  ***************************************************************************/
 
 #ifndef LIBSI_DESCRIPTOR_H
@@ -15,7 +17,6 @@
 #include "headers.h"
 
 namespace SI {
-
 
 class ShortEventDescriptor : public Descriptor {
 public:
@@ -56,9 +57,8 @@ public:
    //same semantics as with SI::String
    char *getText();
    //buffer must at least be getTextLength(), getMaximumTextLength() is a good choice
-   char *getText(char *buffer); 
+   char *getText(char *buffer);
 };
-
 
 class TimeShiftedEventDescriptor : public Descriptor {
 public:
@@ -89,7 +89,6 @@ protected:
    virtual void Parse();
 };
 
-
 class ParentalRatingDescriptor : public Descriptor {
 public:
    class Rating : public LoopElement {
@@ -106,7 +105,6 @@ public:
 protected:
    virtual void Parse();
 };
-
 
 class CaDescriptor : public Descriptor {
 public:
@@ -171,7 +169,6 @@ public:
 protected:
    virtual void Parse();
 };
-
 
 class SatelliteDeliverySystemDescriptor : public Descriptor {
 public:
@@ -247,7 +244,6 @@ protected:
    virtual void Parse();
 };
 
-
 class TimeShiftedServiceDescriptor : public Descriptor {
 public:
    int getReferenceServiceId() const;
@@ -287,7 +283,6 @@ public:
 protected:
    virtual void Parse();
 };
-
 
 class ServiceMoveDescriptor : public Descriptor {
 public:
@@ -366,10 +361,6 @@ protected:
    virtual void Parse();
 };
 
-
-
-
-
 //a descriptor currently unimplemented in this library
 class UnimplementedDescriptor : public Descriptor {
 protected:
@@ -418,7 +409,6 @@ protected:
    virtual void Parse();
 };
 
-
 class MHP_ApplicationNameDescriptor : public Descriptor {
 public:
    class NameEntry : public LoopElement {
@@ -433,7 +423,6 @@ public:
 protected:
    virtual void Parse();
 };
-
 
 class MHP_TransportProtocolDescriptor : public Descriptor {
 public:
@@ -464,7 +453,6 @@ protected:
    virtual void Parse();
 };
 
-
 class MHP_DVBJApplicationLocationDescriptor : public Descriptor {
 public:
    String baseDirectory;
@@ -484,9 +472,6 @@ private:
    const descr_application_icons_descriptor_end *s;
 };
 
-
-
 } //end of namespace
 
 #endif //LIBSI_TABLE_H
-

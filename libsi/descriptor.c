@@ -6,15 +6,14 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
+ *   $Id: descriptor.c 1.2 2003/12/13 10:42:05 kls Exp $
+ *                                                                         *
  ***************************************************************************/
 
- 
 #include <string.h>
 #include "descriptor.h"
 
 namespace SI {
-
-
 
 void ShortEventDescriptor::Parse() {
    unsigned int offset=0;
@@ -28,9 +27,6 @@ void ShortEventDescriptor::Parse() {
    data.setPointerAndOffset<const descr_short_event_mid>(mid, offset);
    text.setData(data+offset, mid->text_length);
 }
-
-
-
 
 int ExtendedEventDescriptor::getDescriptorNumber() {
    return s->descriptor_number;
@@ -52,9 +48,6 @@ void ExtendedEventDescriptor::Parse() {
    text.setData(data+offset, mid->text_length);
 }
 
-
-
-
 void ExtendedEventDescriptor::Item::Parse() {
    unsigned int offset=0;
    const item_extended_event *first;
@@ -64,7 +57,6 @@ void ExtendedEventDescriptor::Item::Parse() {
    data.setPointerAndOffset<const item_extended_event_mid>(mid, offset);
    item.setData(data+offset, mid->item_length);
 }
-
 
 int ExtendedEventDescriptors::getTextLength() {
    int ret=0;
@@ -116,18 +108,18 @@ char *ExtendedEventDescriptors::getText(char *buffer) {
          memcpy(buffer+index, tempbuf, len);
          index+=len;
       }
-      
+
       ExtendedEventDescriptor::Item item;
       for (Loop::Iterator it; d->itemLoop.hasNext(it);   ) {
          item=d->itemLoop.getNext(it);
-         
+
          item.item.getText(tempbuf);
          len=strlen(tempbuf);
          if (len) {
             memcpy(buffer+index, tempbuf, len);
             index+=len;
          }
-         
+
          item.itemDescription.getText(tempbuf);
          len=strlen(tempbuf);
          if (len) {
@@ -139,9 +131,6 @@ char *ExtendedEventDescriptors::getText(char *buffer) {
    buffer[index]='\0';
    return buffer;
 }
-
-
-
 
 int TimeShiftedEventDescriptor::getReferenceServiceId() const {
    return HILO(s->reference_service_id);
@@ -155,16 +144,10 @@ void TimeShiftedEventDescriptor::Parse() {
    s=data.getData<const descr_time_shifted_event>();
 }
 
-
-
-
 void ContentDescriptor::Parse() {
    //this descriptor is only a header and a loop
    nibbleLoop.setData(data+sizeof(SectionHeader), getLength()-sizeof(SectionHeader));
 }
-
-
-
 
 int ContentDescriptor::Nibble::getContentNibbleLevel1() const {
    return s->content_nibble_level_1;
@@ -186,14 +169,10 @@ void ContentDescriptor::Nibble::Parse() {
    s=data.getData<const nibble_content>();
 }
 
-
-
-
 void ParentalRatingDescriptor::Parse() {
    //this descriptor is only a header and a loop
    ratingLoop.setData(data+sizeof(SectionHeader), getLength()-sizeof(SectionHeader));
 }
-
 
 int ParentalRatingDescriptor::Rating::getRating() const {
    return s->rating;
@@ -205,9 +184,6 @@ void ParentalRatingDescriptor::Rating::Parse() {
    languageCode[1]=s->lang_code2;
    languageCode[2]=s->lang_code3;
 }
-
-
-
 
 int CaDescriptor::getCaType() const {
    return HILO(s->CA_type);
@@ -223,8 +199,6 @@ void CaDescriptor::Parse() {
    privateData.assign(data.getData(offset), getLength()-offset);
 }
 
-
-
 int StreamIdentifierDescriptor::getComponentTag() const {
    return s->component_tag;
 }
@@ -233,24 +207,13 @@ void StreamIdentifierDescriptor::Parse() {
    s=data.getData<const descr_stream_identifier>();
 }
 
-
-
-
 void NetworkNameDescriptor::Parse() {
    name.setData(data+sizeof(descr_network_name), getLength()-sizeof(descr_network_name));
 }
 
-
-
-
 void CaIdentifierDescriptor::Parse() {
    identifiers.setData(data+sizeof(descr_ca_identifier), getLength()-sizeof(descr_ca_identifier));
 }
-
-
-
-
-
 
 int CarouselIdentifierDescriptor::getCarouselId() const {
    return (HILO(s->carousel_id_hi) << 16) | HILO(s->carousel_id_lo);
@@ -264,15 +227,9 @@ void CarouselIdentifierDescriptor::Parse() {
    s=data.getData<const descr_carousel_identifier>();
 }
 
-
-
-
 void ServiceListDescriptor::Parse() {
    serviceLoop.setData(data+sizeof(descr_service_list), getLength()-sizeof(descr_service_list));
 }
-
-
-
 
 int ServiceListDescriptor::Service::getServiceId() const {
    return HILO(s->service_id);
@@ -285,9 +242,6 @@ int ServiceListDescriptor::Service::getServiceType() const {
 void ServiceListDescriptor::Service::Parse() {
    s=data.getData<const descr_service_list_loop>();
 }
-
-
-
 
 int SatelliteDeliverySystemDescriptor::getFrequency() const {
    return (HILO(s->frequency_hi) << 16) | HILO(s->frequency_lo);
@@ -321,9 +275,6 @@ void SatelliteDeliverySystemDescriptor::Parse() {
    s=data.getData<const descr_satellite_delivery_system>();
 }
 
-
-
-
 int CableDeliverySystemDescriptor::getFrequency() const {
    return (HILO(s->frequency_hi) << 16) | HILO(s->frequency_lo);
 }
@@ -347,9 +298,6 @@ int CableDeliverySystemDescriptor::getFecInner() const {
 void CableDeliverySystemDescriptor::Parse() {
    s=data.getData<const descr_cable_delivery_system>();
 }
-
-
-
 
 int TerrestrialDeliverySystemDescriptor::getFrequency() const {
    return (HILO(s->frequency_hi) << 16) | HILO(s->frequency_lo);
@@ -391,9 +339,6 @@ void TerrestrialDeliverySystemDescriptor::Parse() {
    s=data.getData<const descr_terrestrial_delivery>();
 }
 
-
-
-
 int ServiceDescriptor::getServiceType() const {
    return s->service_type;
 }
@@ -411,9 +356,6 @@ void NVODReferenceDescriptor::Parse() {
    serviceLoop.setData(data+sizeof(descr_nvod_reference), getLength()-sizeof(descr_nvod_reference));
 }
 
-
-
-
 int NVODReferenceDescriptor::Service::getTransportStream() const {
    return HILO(s->transport_stream_id);
 }
@@ -430,9 +372,6 @@ void NVODReferenceDescriptor::Service::Parse() {
    s=data.getData<const item_nvod_reference>();
 }
 
-
-
-
 int TimeShiftedServiceDescriptor::getReferenceServiceId() const {
    return HILO(s->reference_service_id);
 }
@@ -440,9 +379,6 @@ int TimeShiftedServiceDescriptor::getReferenceServiceId() const {
 void TimeShiftedServiceDescriptor::Parse() {
    s=data.getData<const descr_time_shifted_service>();
 }
-
-
-
 
 int ComponentDescriptor::getStreamContent() const {
    return s->stream_content;
@@ -465,15 +401,9 @@ void ComponentDescriptor::Parse() {
    description.setData(data+offset, getLength()-offset);
 }
 
-
-
-
 void SubtitlingDescriptor::Parse() {
    subtitlingLoop.setData(data+sizeof(descr_subtitling), getLength()-sizeof(descr_subtitling));
 }
-
-
-
 
 int SubtitlingDescriptor::Subtitling::getSubtitlingType() const {
    return s->subtitling_type;
@@ -491,9 +421,6 @@ void SubtitlingDescriptor::Subtitling::Parse() {
    s=data.getData<const item_subtitling>();
 }
 
-
-
-
 int ServiceMoveDescriptor::getNewOriginalNetworkId() const {
    return HILO(s->new_original_network_id);
 }
@@ -510,9 +437,6 @@ void ServiceMoveDescriptor::Parse() {
    s=data.getData<const descr_service_move>();
 }
 
-
-
-
 int FrequencyListDescriptor::getCodingType() const {
    return s->coding_type;
 }
@@ -523,18 +447,13 @@ void FrequencyListDescriptor::Parse() {
    frequencies.setData(data+offset, getLength()-offset);
 }
 
-
-
-
 void ServiceIdentifierDescriptor::Parse() {
    textualServiceIdentifier.setData(data+sizeof(descr_service_identifier), getLength()-sizeof(descr_service_identifier));
 }
 
-
 void MultilingualNameDescriptor::Parse() {
    nameLoop.setData(data+sizeof(descr_multilingual_network_name), getLength()-sizeof(descr_multilingual_network_name));
 }
-
 
 void MultilingualNameDescriptor::Name::Parse() {
    unsigned int offset=0;
@@ -546,7 +465,6 @@ void MultilingualNameDescriptor::Name::Parse() {
    name.setData(data+offset, s->text_length);
 }
 
-
 int MultilingualComponentDescriptor::getComponentTag() const {
    return s->component_tag;
 }
@@ -554,18 +472,12 @@ int MultilingualComponentDescriptor::getComponentTag() const {
 void MultilingualComponentDescriptor::Parse() {
    unsigned int offset=0;
    data.setPointerAndOffset<const descr_multilingual_component>(s, offset);
-   nameLoop.setData(data+sizeof(descr_multilingual_component), getLength()-sizeof(descr_multilingual_component));   
+   nameLoop.setData(data+sizeof(descr_multilingual_component), getLength()-sizeof(descr_multilingual_component));
 }
-
-
-
 
 void MultilingualServiceNameDescriptor::Parse() {
    nameLoop.setData(data+sizeof(descr_multilingual_network_name), getLength()-sizeof(descr_multilingual_network_name));
 }
-
-
-
 
 void MultilingualServiceNameDescriptor::Name::Parse() {
    unsigned int offset=0;
@@ -579,9 +491,6 @@ void MultilingualServiceNameDescriptor::Name::Parse() {
    data.setPointerAndOffset<const entry_multilingual_service_name_mid>(mid, offset);
    name.setData(data+offset, mid->service_name_length);
 }
-
-
-
 
 void ApplicationSignallingDescriptor::Parse() {
    entryLoop.setData(data+sizeof(descr_application_signalling), getLength()-sizeof(descr_application_signalling));
@@ -599,10 +508,6 @@ void ApplicationSignallingDescriptor::ApplicationEntryDescriptor::Parse() {
    s=data.getData<const application_signalling_entry>();
 }
 
-
-
-
-
 bool MHP_ApplicationDescriptor::isServiceBound() const {
    return s->service_bound_flag;
 }
@@ -615,7 +520,6 @@ int MHP_ApplicationDescriptor::getApplicationPriority() const {
    return s->application_priority;
 }
 
-
 void MHP_ApplicationDescriptor::Parse() {
    unsigned int offset=0;
    const descr_application *dapp;
@@ -624,7 +528,6 @@ void MHP_ApplicationDescriptor::Parse() {
    data.setPointerAndOffset<const descr_application_end>(s, offset);
    transportProtocolLabels.setData(data+offset, getLength()-offset);
 }
-
 
 int MHP_ApplicationDescriptor::Profile::getApplicationProfile() const {
       return HILO(s->application_profile);
@@ -646,8 +549,6 @@ void MHP_ApplicationDescriptor::Profile::Parse() {
    s=data.getData<application_profile_entry>();
 }
 
-
-
 void MHP_ApplicationNameDescriptor::Parse() {
    nameLoop.setData(data+sizeof(descr_application_name), getLength()-sizeof(descr_application_name));
 }
@@ -660,8 +561,6 @@ void MHP_ApplicationNameDescriptor::NameEntry::Parse() {
    languageCode[1]=s->lang_code2;
    languageCode[2]=s->lang_code3;
 }
-
-
 
 int MHP_TransportProtocolDescriptor::getProtocolId() const {
    return HILO(s->protocol_id);
@@ -701,8 +600,6 @@ void MHP_TransportProtocolDescriptor::Parse() {
    }
 }
 
-
-
 void MHP_DVBJApplicationDescriptor::Parse() {
    applicationLoop.setData(data+sizeof(descr_dvbj_application), getLength()-sizeof(descr_dvbj_application));
 }
@@ -711,7 +608,6 @@ void MHP_DVBJApplicationDescriptor::ApplicationEntry::Parse() {
    const descr_dvbj_application_entry *entry=data.getData<const descr_dvbj_application_entry>();
    parameter.setData(data+sizeof(descr_dvbj_application_entry), entry->parameter_length);
 }
-
 
 void MHP_DVBJApplicationLocationDescriptor::Parse() {
    unsigned int offset=0;
@@ -723,7 +619,6 @@ void MHP_DVBJApplicationLocationDescriptor::Parse() {
    classPath.setDataAndOffset(data+offset, mid->classpath_extension_length, offset);
    initialClass.setData(data+offset, getLength()-offset);
 }
-
 
 int MHP_ApplicationIconsDescriptor::getIconFlags() const {
    return HILO(s->icon_flags);
@@ -738,5 +633,3 @@ void MHP_ApplicationIconsDescriptor::Parse() {
 }
 
 } //end of namespace
-
-
