@@ -3341,3 +3341,5 @@ Video Disk Recorder Revision History
 - Now setting primaryDevice = NULL before deleting the devices in cDevice::Shutdown()
   to avoid problems in case other threads access it (thanks to Wolfgang Rohdewald for
   pointing this out).
+- Fixed a buffer overflow in case a station defines all 32 audio PIDs (thanks to
+  Christian Jacobsen for reporting this one).
