@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.17 2002/09/15 10:43:12 kls Exp $
+ * $Id: dvbdevice.c 1.18 2002/09/15 11:24:18 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -394,7 +394,7 @@ bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
 
   bool TurnOffLivePIDs = HasDecoder()
                          && (DoTune
-                            || Channel->ca > CACONFBASE // CA channels can only be decrypted in "live" mode
+                            || Channel->ca > CACONFBASE && pidHandles[ptVideo].pid != Channel->vpid // CA channels can only be decrypted in "live" mode
                             || IsPrimaryDevice()
                                && (LiveView // for a new live view the old PIDs need to be turned off
                                   || pidHandles[ptVideo].pid == Channel->vpid // for recording the PIDs must be shifted from DMX_PES_AUDIO/VIDEO to DMX_PES_OTHER
