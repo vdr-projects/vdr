@@ -1532,3 +1532,4 @@ Video Disk Recorder Revision History
 - While learning the remote control keys it is now possible to press the 'Menu'
   key to skip the definition of keys that are not available on your particular
   RC unit.
+- Fixed handling DVD subtitles in the SPU decoder (thanks to Andreas Schultz).

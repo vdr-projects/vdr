@@ -8,7 +8,7 @@
  *
  * parts of this file are derived from the OMS program.
  *
- * $Id: dvbspu.h 1.1 2002/09/08 14:17:38 kls Exp $
+ * $Id: dvbspu.h 1.2 2002/09/29 13:49:01 kls Exp $
  */
 
 #ifndef __DVBSPU_H
@@ -95,6 +95,7 @@ class cDvbSpuDecoder:public cSpuDecoder {
 
     // processing state
     uint8_t *spu;
+    uint32_t spupts;
     bool clean;
     bool ready;
 
