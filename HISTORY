@@ -1571,3 +1571,5 @@ Video Disk Recorder Revision History
 - The "Use DiSEqC" parameter in the "Setup/LNB" menu has been moved to the beginning
   of the list and disables the rest of the parameters when set to "yes", since these
   are now only meaningful if DiSEqC is _not_ used.
+- Removed some unnecessary #includes from eit.c, which caused warnings with gcc-3.2
+  (thanks to Andreas Schultz for pointing this out).

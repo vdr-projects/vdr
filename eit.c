@@ -16,15 +16,12 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.c 1.53 2002/10/05 13:44:23 kls Exp $
+ * $Id: eit.c 1.54 2002/10/06 10:31:38 kls Exp $
  ***************************************************************************/
 
 #include "eit.h"
 #include <ctype.h>
 #include <fcntl.h>
-#include <fstream.h>
-#include <iomanip.h>
-#include <iostream.h>
 #include <limits.h>
 #ifdef NEWSTRUCT
 #include <linux/dvb/dmx.h>

@@ -176,6 +176,7 @@ Andreas Schultz <aschultz@warp10.net>
  for implementing an SPU decoder
  for fixing opening /dev/video in cDvbDevice::GrabImage() in case of NEWSTRUCT driver
  for reporting a problem with plugin Makefiles and the NEWSTRUCT driver
+ for pointing out some unnecessary #includes in eit.c, which caused warnings with gcc-3.2
 
 Aaron Holtzman
  for writing 'ac3dec'
