@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: sources.c 1.1 2002/10/06 09:27:10 kls Exp $
+ * $Id: sources.c 1.2 2004/01/11 10:36:57 kls Exp $
  */
 
 #include "sources.h"
@@ -86,6 +86,17 @@ int cSource::FromString(const char *s)
      if (neg)
         pos |= st_Neg;
      code |= pos;
+     }
+  return code;
+}
+
+int cSource::FromData(eSourceType SourceType, int Position, bool East)
+{
+  int code = SourceType;
+  if (SourceType == stSat) {
+     if (East)
+        code |= st_Neg;
+     code |= (Position & st_Pos);;
      }
   return code;
 }

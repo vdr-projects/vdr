@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: filter.c 1.3 2004/01/10 10:02:06 kls Exp $
+ * $Id: filter.c 1.4 2004/01/11 13:31:34 kls Exp $
  */
 
 #include "filter.h"
@@ -94,6 +94,11 @@ int cFilter::Source(void)
 int cFilter::Transponder(void)
 {
   return sectionHandler ? sectionHandler->Transponder() : 0;
+}
+
+const cChannel *cFilter::Channel(void)
+{
+  return sectionHandler ? sectionHandler->Channel() : NULL;
 }
 
 void cFilter::SetStatus(bool On)

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.77 2003/04/06 15:31:45 kls Exp $
+ * $Id: tools.c 1.78 2004/01/11 15:42:30 kls Exp $
  */
 
 #include "tools.h"
@@ -19,6 +19,14 @@
 #include "i18n.h"
 
 int SysLogLevel = 3;
+
+int BCD2INT(int x)
+{
+  return ((1000000 * BCDCHARTOINT((x >> 24) & 0xFF)) +
+            (10000 * BCDCHARTOINT((x >> 16) & 0xFF)) +
+              (100 * BCDCHARTOINT((x >>  8) & 0xFF)) +
+                     BCDCHARTOINT( x        & 0xFF));
+}
 
 ssize_t safe_read(int filedes, void *buffer, size_t size)
 {

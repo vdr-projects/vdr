@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 1.37 2004/01/04 11:52:00 kls Exp $
+ * $Id: device.h 1.38 2004/01/11 10:35:36 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -13,6 +13,7 @@
 #include "ci.h"
 #include "eit.h"
 #include "filter.h"
+#include "nit.h"
 #include "pat.h"
 #include "sdt.h"
 #include "sections.h"
@@ -241,6 +242,7 @@ private:
   cEitFilter *eitFilter;
   cPatFilter *patFilter;
   cSdtFilter *sdtFilter;
+  cNitFilter *nitFilter;
 protected:
   void StartSectionHandler(void);
        ///< A derived device that provides section data must call

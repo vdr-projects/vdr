@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 1.18 2004/01/05 12:50:34 kls Exp $
+ * $Id: channels.c 1.19 2004/01/11 15:52:32 kls Exp $
  */
 
 #include "channels.h"
@@ -160,25 +160,6 @@ char *cChannel::buffer = NULL;
 cChannel::cChannel(void)
 {
   memset(&__BeginData__, 0, (char *)&__EndData__ - (char *)&__BeginData__);
-  strcpy(name,   "Pro7");
-  frequency    = 12480;
-  source       = cSource::FromString("S19.2E");
-  srate        = 27500;
-  vpid         = 255;
-  ppid         = 0;
-  apid1        = 256;
-  apid2        = 0;
-  dpid1        = 257;
-  dpid2        = 0;
-  tpid         = 32;
-  caids[0]     = 0;
-  nid          = 0;
-  tid          = 0;
-  sid          = 888;
-  rid          = 0;
-  number       = 0;
-  groupSep     = false;
-  polarization = 'v';
   inversion    = INVERSION_AUTO;
   bandwidth    = BANDWIDTH_AUTO;
   coderateH    = FEC_AUTO;
@@ -235,6 +216,68 @@ int cChannel::Modification(int Mask)
   int Result = modification & Mask;
   modification = CHANNELMOD_NONE;
   return Result;
+}
+
+bool cChannel::SetSatTransponderData(int Source, int Frequency, char Polarization, int Srate, int CoderateH, bool Log)
+{
+  // Workarounds for broadcaster stupidity:
+  // Some providers broadcast the transponder frequency of their channels with two different
+  // values (like 12551 and 12552), so we need to allow for a little tolerance here
+  if (abs(frequency - Frequency) <= 1)
+     Frequency = frequency;
+  // Sometimes the transponder frequency is set to 0, which is just wrong
+  if (Frequency == 0)
+     return false;
+
+  if (source != Source || frequency != Frequency || polarization != Polarization || srate != Srate || coderateH != CoderateH) {
+     if (Log)
+        dsyslog("changing transponder data of channel %d from %s:%d:%c:%d:%d to %s:%d:%c:%d:%d", Number(), cSource::ToString(source), frequency, polarization, srate, coderateH, cSource::ToString(Source), Frequency, Polarization, Srate, CoderateH);
+     source = Source;
+     frequency = Frequency;
+     polarization = Polarization;
+     srate = Srate;
+     coderateH = CoderateH;
+     modulation = QPSK;
+     modification |= CHANNELMOD_TRANSP;
+     Channels.SetModified();
+     }
+  return true;
+}
+
+bool cChannel::SetCableTransponderData(int Source, int Frequency, int Modulation, int Srate, int CoderateH, bool Log)
+{
+  if (source != Source || frequency != Frequency || modulation != Modulation || srate != Srate || coderateH != CoderateH) {
+     if (Log)
+        dsyslog("changing transponder data of channel %d from %s:%d:%d:%d:%d to %s:%d:%d:%d:%d", Number(), cSource::ToString(source), frequency, modulation, srate, coderateH, cSource::ToString(Source), Frequency, Modulation, Srate, CoderateH);
+     source = Source;
+     frequency = Frequency;
+     modulation = Modulation;
+     srate = Srate;
+     coderateH = CoderateH;
+     modification |= CHANNELMOD_TRANSP;
+     Channels.SetModified();
+     }
+  return true;
+}
+
+bool cChannel::SetTerrTransponderData(int Source, int Frequency, int Bandwidth, int Modulation, int Hierarchy, int CoderateH, int CoderateL, int Guard, int Transmission, bool Log)
+{
+  if (source != Source || frequency != Frequency || bandwidth != Bandwidth || modulation != Modulation || hierarchy != Hierarchy || coderateH != CoderateH || coderateL != CoderateL || guard != Guard || transmission != Transmission) {
+     if (Log)
+        dsyslog("changing transponder data of channel %d from %s:%d:%d:%d:%d:%d:%d:%d:%d to %s:%d:%d:%d:%d:%d:%d:%d:%d", Number(), cSource::ToString(source), frequency, bandwidth, modulation, hierarchy, coderateH, coderateL, guard, transmission, cSource::ToString(Source), Frequency, Bandwidth, Modulation, Hierarchy, CoderateH, CoderateL, Guard, Transmission);
+     source = Source;
+     frequency = Frequency;
+     bandwidth = Bandwidth;
+     modulation = Modulation;
+     hierarchy = Hierarchy;
+     coderateH = CoderateH;
+     coderateL = CoderateL;
+     guard = Guard;
+     transmission = Transmission;
+     modification |= CHANNELMOD_TRANSP;
+     Channels.SetModified();
+     }
+  return true;
 }
 
 void cChannel::SetId(int Nid, int Tid, int Sid, int Rid, bool Log)
@@ -382,9 +425,9 @@ bool cChannel::StringToParameters(const char *s)
           case 'G': s = ParseParameter(s, guard, GuardValues); break;
           case 'H': polarization = *s++; break;
           case 'I': s = ParseParameter(s, inversion, InversionValues); break;
-          // 'L' reserved for possible circular polarization
+          case 'L': polarization = *s++; break;
           case 'M': s = ParseParameter(s, modulation, ModulationValues); break;
-          // 'R' reserved for possible circular polarization
+          case 'R': polarization = *s++; break;
           case 'T': s = ParseParameter(s, transmission, TransmissionValues); break;
           case 'V': polarization = *s++; break;
           case 'Y': s = ParseParameter(s, hierarchy, HierarchyValues); break;
@@ -675,18 +718,16 @@ bool cChannels::Modified(void)
   return Result;
 }
 
-cChannel *cChannels::NewChannel(int Source, int Transponder, const char *Name, int Nid, int Tid, int Sid, int Rid)
+cChannel *cChannels::NewChannel(const cChannel *Transponder, const char *Name, int Nid, int Tid, int Sid, int Rid)
 {
-  dsyslog("creating new channel '%s' on %s transponder %d with id %d-%d-%d-%d", Name, cSource::ToString(Source), Transponder, Nid, Tid, Sid, Rid);
-  for (cChannel *channel = First(); channel; channel = Next(channel)) {
-      if (!channel->GroupSep() && channel->Source() == Source && ISTRANSPONDER(channel->Transponder(), Transponder)) {
-         cChannel *NewChannel = new cChannel(channel);
-         Add(NewChannel);
-         ReNumber();
-         NewChannel->SetId(Nid, Tid, Sid, Rid, false);
-         NewChannel->SetName(Name, false);
-         return NewChannel;
-         }
-      }
+  if (Transponder) {
+     dsyslog("creating new channel '%s' on %s transponder %d with id %d-%d-%d-%d", Name, cSource::ToString(Transponder->Source()), Transponder->Transponder(), Nid, Tid, Sid, Rid);
+     cChannel *NewChannel = new cChannel(Transponder);
+     Add(NewChannel);
+     ReNumber();
+     NewChannel->SetId(Nid, Tid, Sid, Rid, false);
+     NewChannel->SetName(Name, false);
+     return NewChannel;
+     }
   return NULL;
 }

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: sections.h 1.2 2004/01/10 11:42:49 kls Exp $
+ * $Id: sections.h 1.3 2004/01/11 13:18:38 kls Exp $
  */
 
 #ifndef __SECTIONS_H
@@ -16,15 +16,16 @@
 #include "tools.h"
 
 class cDevice;
+class cChannel;
 class cFilterHandle;
+class cSectionHandlerPrivate;
 
 class cSectionHandler : public cThread {
   friend class cFilter;
 private:
+  cSectionHandlerPrivate *shp;
   cDevice *device;
   bool active;
-  int source;
-  int transponder;
   int statusCount;
   bool on;
   time_t lastIncompleteSection;
@@ -36,11 +37,12 @@ private:
 public:
   cSectionHandler(cDevice *Device);
   virtual ~cSectionHandler();
-  int Source(void) { return source; }
-  int Transponder(void) { return transponder; }
+  int Source(void);
+  int Transponder(void);
+  const cChannel *Channel(void);
   void Attach(cFilter *Filter);
   void Detach(cFilter *Filter);
-  void SetSource(int Source, int Transponder);
+  void SetChannel(const cChannel *Channel);
   void SetStatus(bool On);
   };
 

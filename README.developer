@@ -32,7 +32,6 @@ Here's a list of the highlights - and what _not_ to expect yet
   use the device that contains the proper CAM.
 - No NVOD or "linked services" support yet.
 - No radio support yet.
-- No transponder scan yet.
 
 Note that this is currently work in progress, so there may be some
 areas that don't work as smooth as expected, yet.
@@ -77,7 +76,8 @@ Known bugs:
   are switched, and there is still an SDT data packet being processed.
   The call to device->HasLock() in sections.c should fix this (and it
   apparently does for most cases), but there must still be soemthing
-  wrong in that area.
+  wrong in that area. This may be fixed in 1.3.1 - please report if
+  it does still happen there.
 - Sometimes the current channel gets re-tuned even though the channel
   data of this channel didn't change (but that of an other channel did
   change).

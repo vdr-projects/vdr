@@ -4,11 +4,12 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: sections.c 1.3 2004/01/10 11:45:42 kls Exp $
+ * $Id: sections.c 1.4 2004/01/11 13:22:13 kls Exp $
  */
 
 #include "sections.h"
 #include <unistd.h>
+#include "channels.h"
 #include "device.h"
 
 // --- cFilterHandle----------------------------------------------------------
@@ -28,15 +29,21 @@ cFilterHandle::cFilterHandle(const cFilterData &FilterData)
   used = 0;
 }
 
+// --- cSectionHandlerPrivate ------------------------------------------------
+
+class cSectionHandlerPrivate {
+public:
+  cChannel channel;
+  };
+
 // --- cSectionHandler -------------------------------------------------------
 
 cSectionHandler::cSectionHandler(cDevice *Device)
 :cThread("Section handler")
 {
+  shp = new cSectionHandlerPrivate;
   device = Device;
   active = false;
-  source = 0;
-  transponder = 0;
   statusCount = 0;
   on = false;
   lastIncompleteSection = 0;
@@ -50,6 +57,22 @@ cSectionHandler::~cSectionHandler()
   cFilter *fi;
   while ((fi = filters.First()) != NULL)
         Detach(fi);
+  delete shp;
+}
+
+int cSectionHandler::Source(void)
+{
+  return shp->channel.Source();
+}
+
+int cSectionHandler::Transponder(void)
+{
+  return shp->channel.Transponder();
+}
+
+const cChannel *cSectionHandler::Channel(void)
+{
+  return &shp->channel;
 }
 
 void cSectionHandler::Add(const cFilterData *FilterData)
@@ -107,11 +130,10 @@ void cSectionHandler::Detach(cFilter *Filter)
   Unlock();
 }
 
-void cSectionHandler::SetSource(int Source, int Transponder)
+void cSectionHandler::SetChannel(const cChannel *Channel)
 {
   Lock();
-  source = Source;
-  transponder = Transponder;
+  shp->channel = Channel? *Channel : cChannel();
   Unlock();
 }
 

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.h 1.11 2004/01/05 10:06:15 kls Exp $
+ * $Id: channels.h 1.12 2004/01/11 15:20:18 kls Exp $
  */
 
 #ifndef __CHANNELS_H
@@ -23,7 +23,8 @@
 #define CHANNELMOD_PIDS     0x02
 #define CHANNELMOD_ID       0x04
 #define CHANNELMOD_CA       0x10
-#define CHANNELMOD_RETUNE   (CHANNELMOD_PIDS | CHANNELMOD_CA)
+#define CHANNELMOD_TRANSP   0x20
+#define CHANNELMOD_RETUNE   (CHANNELMOD_PIDS | CHANNELMOD_CA | CHANNELMOD_TRANSP)
 
 #define MAXAPIDS  2
 #define MAXCAIDS  8
@@ -142,6 +143,9 @@ public:
   bool IsTerr(void) const { return (source & cSource::st_Mask) == cSource::stTerr; }
   tChannelID GetChannelID(void) const;
   int Modification(int Mask = CHANNELMOD_ALL);
+  bool SetSatTransponderData(int Source, int Frequency, char Polarization, int Srate, int CoderateH, bool Log = true);
+  bool SetCableTransponderData(int Source, int Frequency, int Modulation, int Srate, int CoderateH, bool Log = true);
+  bool SetTerrTransponderData(int Source, int Frequency, int Bandwidth, int Modulation, int Hierarchy, int CodeRateH, int CodeRateL, int Guard, int Transmission, bool Log = true);
   void SetId(int Nid, int Tid, int Sid, int Rid = 0, bool Log = true);
   void SetName(const char *Name, bool Log = true);
   void SetPids(int Vpid, int Ppid, int Apid1, int Apid2, int Dpid1, int Dpid2, int Tpid);
@@ -172,7 +176,7 @@ public:
   int MaxNumber(void) { return maxNumber; }
   void SetModified(void);
   bool Modified(void);
-  cChannel *NewChannel(int Source, int Transponder, const char *Name, int Nid, int Tid, int Sid, int Rid = 0);
+  cChannel *NewChannel(const cChannel *Transponder, const char *Name, int Nid, int Tid, int Sid, int Rid = 0);
   };
 
 extern cChannels Channels;

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.139 2004/01/09 15:48:03 kls Exp $
+ * $Id: i18n.c 1.140 2004/01/11 15:38:45 kls Exp $
  *
  * Translations provided by:
  *
@@ -2366,6 +2366,23 @@ const tI18nPhrase Phrases[] = {
   },
   { "add new channels",
     "neue Kanäle hinzufügen",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+  },
+  { "add new transponders",
+    "neue Transponder hinzufügen",
     "",// TODO
     "",// TODO
     "",// TODO

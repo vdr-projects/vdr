@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.119 2004/01/06 17:09:54 kls Exp $
+ * $Id: config.c 1.120 2004/01/11 15:38:11 kls Exp $
  */
 
 #include "config.h"
@@ -273,7 +273,7 @@ cSetup::cSetup(void)
   UseSubtitle = 1;
   RecordingDirs = 1;
   VideoFormat = 0;
-  UpdateChannels = 3;
+  UpdateChannels = 4;
   RecordDolbyDigital = 1;
   ChannelInfoPos = 0;
   OSDwidth = 52;

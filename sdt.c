@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: sdt.c 1.3 2004/01/05 14:30:31 kls Exp $
+ * $Id: sdt.c 1.4 2004/01/11 14:28:28 kls Exp $
  */
 
 #include "sdt.h"
@@ -42,9 +42,9 @@ void cSdtFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
   for (SI::Loop::Iterator it; sdt.serviceLoop.hasNext(it); ) {
       SiSdtService = sdt.serviceLoop.getNext(it);
 
-      cChannel *Channel = Channels.GetByChannelID(tChannelID(Source(), sdt.getOriginalNetworkId(), sdt.getTransportStreamId(), SiSdtService.getServiceId()));
-      if (!Channel)
-         Channel = Channels.GetByChannelID(tChannelID(Source(), 0, Transponder(), SiSdtService.getServiceId()));
+      cChannel *channel = Channels.GetByChannelID(tChannelID(Source(), sdt.getOriginalNetworkId(), sdt.getTransportStreamId(), SiSdtService.getServiceId()));
+      if (!channel)
+         channel = Channels.GetByChannelID(tChannelID(Source(), 0, Transponder(), SiSdtService.getServiceId()));
 
       SI::Descriptor *d;
       for (SI::Loop::Iterator it2; (d = SiSdtService.serviceDescriptors.getNext(it2)); ) {
@@ -83,18 +83,18 @@ void cSdtFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                            strcpy(ps, NameBuf);
                            pn = ShortNameBuf;
                            }
-                        if (Channel) {
-                           Channel->SetId(sdt.getOriginalNetworkId(), sdt.getTransportStreamId(), SiSdtService.getServiceId());
+                        if (channel) {
+                           channel->SetId(sdt.getOriginalNetworkId(), sdt.getTransportStreamId(), SiSdtService.getServiceId());
                            if (Setup.UpdateChannels >= 1)
-                              Channel->SetName(pn);
+                              channel->SetName(pn);
                            // Using SiSdtService.getFreeCaMode() is no good, because some
                            // tv stations set this flag even for non-encrypted channels :-(
                            // The special value 0xFFFF was supposed to mean "unknown encryption"
                            // and would have been overwritten with real CA values later:
-                           // Channel->SetCa(SiSdtService.getFreeCaMode() ? 0xFFFF : 0);
+                           // channel->SetCa(SiSdtService.getFreeCaMode() ? 0xFFFF : 0);
                            }
                         else if (*pn && Setup.UpdateChannels >= 3) {
-                           Channel = Channels.NewChannel(Source(), Transponder(), pn, sdt.getOriginalNetworkId(), sdt.getTransportStreamId(), SiSdtService.getServiceId());
+                           channel = Channels.NewChannel(Channel(), pn, sdt.getOriginalNetworkId(), sdt.getTransportStreamId(), SiSdtService.getServiceId());
                            patFilter->Trigger();
                            }
                         }
@@ -106,9 +106,9 @@ void cSdtFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
             /*
             case SI::CaIdentifierDescriptorTag: {
                  SI::CaIdentifierDescriptor *cid = (SI::CaIdentifierDescriptor *)d;
-                 if (Channel) {
+                 if (channel) {
                     for (SI::Loop::Iterator it; cid->identifiers.hasNext(it); )
-                        Channel->SetCa(cid->identifiers.getNext(it));
+                        channel->SetCa(cid->identifiers.getNext(it));
                     }
                  }
                  break;

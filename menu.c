@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.278 2004/01/09 15:42:59 kls Exp $
+ * $Id: menu.c 1.279 2004/01/11 15:40:32 kls Exp $
  */
 
 #include "menu.h"
@@ -2112,7 +2112,7 @@ eOSState cMenuSetupEPG::ProcessKey(eKeys Key)
 
 class cMenuSetupDVB : public cMenuSetupBase {
 private:
-  const char *updateChannelsTexts[4];
+  const char *updateChannelsTexts[5];
 public:
   cMenuSetupDVB(void);
   virtual eOSState ProcessKey(eKeys Key);
@@ -2124,11 +2124,12 @@ cMenuSetupDVB::cMenuSetupDVB(void)
   updateChannelsTexts[1] = tr("names only");
   updateChannelsTexts[2] = tr("names and PIDs");
   updateChannelsTexts[3] = tr("add new channels");
+  updateChannelsTexts[4] = tr("add new transponders");
 
   SetSection(tr("DVB"));
   Add(new cMenuEditIntItem( tr("Setup.DVB$Primary DVB interface"), &data.PrimaryDVB, 1, cDevice::NumDevices()));
   Add(new cMenuEditBoolItem(tr("Setup.DVB$Video format"),          &data.VideoFormat, "4:3", "16:9"));
-  Add(new cMenuEditStraItem(tr("Setup.DVB$Update channels"),       &data.UpdateChannels, 4, updateChannelsTexts));
+  Add(new cMenuEditStraItem(tr("Setup.DVB$Update channels"),       &data.UpdateChannels, 5, updateChannelsTexts));
 }
 
 eOSState cMenuSetupDVB::ProcessKey(eKeys Key)
