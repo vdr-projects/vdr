@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.h 1.7 2003/04/20 09:21:23 kls Exp $
+ * $Id: ci.h 1.8 2003/05/25 11:44:47 kls Exp $
  */
 
 #ifndef __CI_H
@@ -79,6 +79,7 @@ class cCiTransportConnection;
 class cCiHandler {
 private:
   cMutex mutex;
+  int fd;
   int numSlots;
   bool newCaSupport;
   bool hasUserIO;

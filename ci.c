@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 1.14 2003/04/20 09:52:45 kls Exp $
+ * $Id: ci.c 1.15 2003/05/25 11:45:11 kls Exp $
  */
 
 /* XXX TODO
@@ -1287,6 +1287,7 @@ void cCiCaPmt::AddCaDescriptor(int Length, uint8_t *Data)
 
 cCiHandler::cCiHandler(int Fd, int NumSlots)
 {
+  fd = Fd;
   numSlots = NumSlots;
   newCaSupport = false;
   hasUserIO = false;
@@ -1301,6 +1302,7 @@ cCiHandler::~cCiHandler()
   for (int i = 0; i < MAX_CI_SESSION; i++)
       delete sessions[i];
   delete tpl;
+  close(fd);
 }
 
 cCiHandler *cCiHandler::CreateCiHandler(const char *FileName)

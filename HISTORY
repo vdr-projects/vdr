@@ -2201,3 +2201,4 @@ Video Disk Recorder Revision History
 - Changed the DEFAULTPRIORITY in device.c to -1, so that the primary device
   will be used for FTA recordings in case the CAM is connected to a non-primary
   device (thanks to Reinhard Walter Buchner for reporting this one).
+- The cCiHandler now closes its file handle when it gets destroyed.
