@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: transfer.c 1.5 2002/10/13 16:08:44 kls Exp $
+ * $Id: transfer.c 1.6 2002/10/26 10:17:17 kls Exp $
  */
 
 #include "transfer.h"
@@ -17,7 +17,7 @@
 // --- cTransfer -------------------------------------------------------------
 
 cTransfer::cTransfer(int VPid, int APid1, int APid2, int DPid1, int DPid2)
-:cReceiver(0, 0, 5, VPid, APid1, APid2, DPid1, DPid2)
+:cReceiver(0, -1, 5, VPid, APid1, APid2, DPid1, DPid2)
 {
   ringBuffer = new cRingBufferLinear(VIDEOBUFSIZE, true);
   remux = new cRemux(VPid, APid1, APid2, DPid1, DPid2);

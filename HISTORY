@@ -1637,3 +1637,5 @@ Video Disk Recorder Revision History
 - Fixed switching audio tracks in 'Transfer Mode' on the primary DVB device
   (thanks to Steffen Barszus and Stefan Huelswitt for reporting this one and
   helping to fix it).
+- Fixed channel switching in case of an active 'Transfer Mode' on the primary
+  device ('Transfer Mode' is now launched with priority '-1').

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.30 2002/10/26 09:43:11 kls Exp $
+ * $Id: device.c 1.31 2002/10/26 10:23:20 kls Exp $
  */
 
 #include "device.h"
@@ -321,7 +321,6 @@ bool cDevice::SwitchChannel(int Direction)
   if (Direction) {
      int n = CurrentChannel() + Direction;
      int first = n;
-     PrimaryDevice()->StopReplay(); // otherwise a running Transfer Mode would block channels
      cChannel *channel;
      while ((channel = Channels.GetByNumber(n, Direction)) != NULL) {
            // try only channels which are currently available
