@@ -172,9 +172,8 @@ Video Disk Recorder Revision History
 
 - NOTE: If you are using DVB driver version 0.7 you need to load the dvb.o
   module with option outstream=0, so your insmod statement should read
-  'insmod dvb.o outstream=0'. This is currently necessary because 'vdr' works
-  with AV_PES data and will change once it has been modified to work directly
-  with MPEG2.
+  'insmod dvb.o outstream=0'. This is currently necessary because 'vdr'
+  still works with AV_PES data.
 - Video files now have the 'group read' bit set.
 - Fixed handling errors in 'readstring()'.
 - Handling SIGPIPE and re-establishing handler after intercepting a signal.
