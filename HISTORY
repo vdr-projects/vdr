@@ -913,3 +913,4 @@ Video Disk Recorder Revision History
   whether the process succeeded or failed.
 - Fixed setting the LastActivity timestamp after a shutdown prompt (thanks to
   Sergei Haller).
+- A message is now prompted if free disk space becomes low during recording.

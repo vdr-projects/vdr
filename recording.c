@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.45 2002/01/26 11:57:56 kls Exp $
+ * $Id: recording.c 1.46 2002/01/26 15:21:40 kls Exp $
  */
 
 #include "recording.h"
@@ -15,6 +15,7 @@
 #include <string.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include "i18n.h"
 #include "interface.h"
 #include "tools.h"
 #include "videodir.h"
@@ -36,7 +37,7 @@
 
 #define DELETEDLIFETIME     1 // hours after which a deleted recording will be actually removed
 #define REMOVECHECKDELTA 3600 // seconds between checks for removing deleted files
-#define DISKCHECKDELTA    300 // seconds between checks for free disk space
+#define DISKCHECKDELTA    100 // seconds between checks for free disk space
 #define REMOVELATENCY      10 // seconds to wait until next check after removing a file
 
 void RemoveDeletedRecordings(void)
@@ -117,7 +118,7 @@ void AssertFreeDiskSpace(int Priority)
               return;
            }
         // Unable to free disk space, but there's nothing we can do about that...
-        esyslog(LOG_ERR, "low disk space, but no recordings to delete");
+        Interface->Confirm(tr("Low disk space"), 30);
         }
      LastFreeDiskCheck = time(NULL);
      }
