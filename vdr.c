@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.148 2003/04/12 12:17:32 kls Exp $
+ * $Id: vdr.c 1.149 2003/04/12 13:57:45 kls Exp $
  */
 
 #include <getopt.h>
@@ -354,8 +354,6 @@ int main(int argc, char *argv[])
 
   cDvbDevice::Initialize();
 
-  cSIProcessor::Read();
-
   // Start plugins:
 
   if (!PluginManager.StartPlugins())
@@ -426,6 +424,8 @@ int main(int argc, char *argv[])
      cDevice::PrimaryDevice()->SetVolume(Setup.CurrentVolume, true);
 
   cEITScanner EITScanner;
+
+  cSIProcessor::Read();
 
   // Signal handlers:
 

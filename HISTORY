@@ -2026,3 +2026,5 @@ Video Disk Recorder Revision History
   is now used as primary device (just to have some device).
 - Adjusted some Premiere channels in 'channels.conf' (thanks to Thomas Koch).
 - Updated 'channels.conf.cable' (thanks to Stefan Huﬂfeldt).
+- The 'epg.data' file is now read after all plugins have been started (thanks
+  to Sascha Volkenandt).
