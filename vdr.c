@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.137 2002/12/08 13:34:39 kls Exp $
+ * $Id: vdr.c 1.138 2002/12/13 13:37:28 kls Exp $
  */
 
 #include <getopt.h>
@@ -81,7 +81,7 @@ int main(int argc, char *argv[])
   // Save terminal settings:
 
   struct termios savedTm;
-  tcgetattr(STDIN_FILENO, &savedTm);
+  bool HasStdin = tcgetpgrp(STDIN_FILENO) == getpid() && tcgetattr(STDIN_FILENO, &savedTm) == 0;
 
   // Initiate locale:
 
@@ -386,7 +386,7 @@ int main(int argc, char *argv[])
   new cLircRemote("/dev/lircd");
 #endif
 #if defined(REMOTE_KBD)
-  if (!DaemonMode)
+  if (!DaemonMode && HasStdin)
      new cKbdRemote;
 #endif
   Interface->LearnKeys();
@@ -724,7 +724,8 @@ int main(int argc, char *argv[])
   isyslog("exiting");
   if (SysLogLevel > 0)
      closelog();
-  tcsetattr(STDIN_FILENO, TCSANOW, &savedTm);
+  if (HasStdin)
+     tcsetattr(STDIN_FILENO, TCSANOW, &savedTm);
   if (cThread::EmergencyExit()) {
      esyslog("emergency exit!");
      return 1;

@@ -464,6 +464,7 @@ Gerhard Steiner <steiner@mail.austria.com>
 
 Jaakko Hyvätti <jaakko@hyvatti.iki.fi>
  for translating OSD texts to the Finnish language
+ for adding a check if there is a connection to the keyboard
 
 Dennis Noordsij <dennis.noordsij@wiral.com>
  for reporting a small glitch when switching channels
