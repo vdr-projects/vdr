@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 1.58 2004/10/16 10:31:34 kls Exp $
+ * $Id: osd.c 1.59 2004/12/19 12:27:38 kls Exp $
  */
 
 #include "osd.h"
@@ -197,7 +197,8 @@ bool cBitmap::LoadXpm(const char *FileName)
      int lines = 0;
      int index = 0;
      char *s;
-     while ((s = readline(f)) != NULL) {
+     cReadLine ReadLine;
+     while ((s = ReadLine.Read(f)) != NULL) {
            s = skipspace(s);
            if (!isXpm) {
               if (strcmp(s, "/* XPM */") != 0) {

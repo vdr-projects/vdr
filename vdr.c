@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.194 2004/12/05 13:20:29 kls Exp $
+ * $Id: vdr.c 1.195 2004/12/19 15:28:34 kls Exp $
  */
 
 #include <getopt.h>
@@ -384,19 +384,19 @@ int main(int argc, char *argv[])
      ConfigDirectory = VideoDirectory;
 
   cPlugin::SetConfigDirectory(ConfigDirectory);
-  cThemes::SetThemesDirectory(AddDirectory(ConfigDirectory, "themes"));
+  cThemes::SetThemesDirectory(*cAddDirectory(ConfigDirectory, "themes"));
 
-  Setup.Load(AddDirectory(ConfigDirectory, "setup.conf"));
-  if (!(Sources.Load(AddDirectory(ConfigDirectory, "sources.conf"), true, true) &&
-        Diseqcs.Load(AddDirectory(ConfigDirectory, "diseqc.conf"), true, Setup.DiSEqC) &&
-        Channels.Load(AddDirectory(ConfigDirectory, "channels.conf"), false, true) &&
-        Timers.Load(AddDirectory(ConfigDirectory, "timers.conf")) &&
-        Commands.Load(AddDirectory(ConfigDirectory, "commands.conf"), true) &&
-        RecordingCommands.Load(AddDirectory(ConfigDirectory, "reccmds.conf"), true) &&
-        SVDRPhosts.Load(AddDirectory(ConfigDirectory, "svdrphosts.conf"), true) &&
-        CaDefinitions.Load(AddDirectory(ConfigDirectory, "ca.conf"), true) &&
-        Keys.Load(AddDirectory(ConfigDirectory, "remote.conf")) &&
-        KeyMacros.Load(AddDirectory(ConfigDirectory, "keymacros.conf"), true)
+  Setup.Load(*cAddDirectory(ConfigDirectory, "setup.conf"));
+  if (!(Sources.Load(*cAddDirectory(ConfigDirectory, "sources.conf"), true, true) &&
+        Diseqcs.Load(*cAddDirectory(ConfigDirectory, "diseqc.conf"), true, Setup.DiSEqC) &&
+        Channels.Load(*cAddDirectory(ConfigDirectory, "channels.conf"), false, true) &&
+        Timers.Load(*cAddDirectory(ConfigDirectory, "timers.conf")) &&
+        Commands.Load(*cAddDirectory(ConfigDirectory, "commands.conf"), true) &&
+        RecordingCommands.Load(*cAddDirectory(ConfigDirectory, "reccmds.conf"), true) &&
+        SVDRPhosts.Load(*cAddDirectory(ConfigDirectory, "svdrphosts.conf"), true) &&
+        CaDefinitions.Load(*cAddDirectory(ConfigDirectory, "ca.conf"), true) &&
+        Keys.Load(*cAddDirectory(ConfigDirectory, "remote.conf")) &&
+        KeyMacros.Load(*cAddDirectory(ConfigDirectory, "keymacros.conf"), true)
         ))
      EXIT(2);
 
@@ -405,13 +405,16 @@ int main(int argc, char *argv[])
   // EPG data:
 
   if (EpgDataFileName) {
-     if (DirectoryOk(EpgDataFileName))
-        EpgDataFileName = AddDirectory(EpgDataFileName, DEFAULTEPGDATAFILENAME);
+     const char *EpgDirectory = NULL;
+     if (DirectoryOk(EpgDataFileName)) {
+        EpgDirectory = EpgDataFileName;
+        EpgDataFileName = DEFAULTEPGDATAFILENAME;
+        }
      else if (*EpgDataFileName != '/' && *EpgDataFileName != '.')
-        EpgDataFileName = AddDirectory(VideoDirectory, EpgDataFileName);
+        EpgDirectory = VideoDirectory;
+     cSchedules::SetEpgDataFileName(*cAddDirectory(EpgDirectory, EpgDataFileName));
+     cSchedules::Read();
      }
-  cSchedules::SetEpgDataFileName(EpgDataFileName);
-  cSchedules::Read();
 
   // DVB interfaces:
 
@@ -867,7 +870,7 @@ int main(int argc, char *argv[])
                  if (!Next || Delta > Setup.MinEventTimeout * 60 || ForceShutdown) {
                     ForceShutdown = false;
                     if (timer)
-                       dsyslog("next timer event at %s", ctime(&Next));
+                       dsyslog("next timer event at %s", *cCtime(Next));
                     if (WatchdogTimeout > 0)
                        signal(SIGALRM, SIG_IGN);
                     if (Interface->Confirm(tr("Press any key to cancel shutdown"), UserShutdown ? 5 : SHUTDOWNWAIT, true)) {
@@ -875,7 +878,7 @@ int main(int argc, char *argv[])
                        const char *File = timer ? timer->File() : "";
                        Delta = Next - time(NULL); // compensates for Confirm() timeout
                        char *cmd;
-                       asprintf(&cmd, "%s %ld %ld %d \"%s\" %d", Shutdown, Next, Delta, Channel, strescape(File, "\"$"), UserShutdown);
+                       asprintf(&cmd, "%s %ld %ld %d \"%s\" %d", Shutdown, Next, Delta, Channel, *cStrEscape(File, "\"$"), UserShutdown);
                        isyslog("executing '%s'", cmd);
                        SystemExec(cmd);
                        free(cmd);

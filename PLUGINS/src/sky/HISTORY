@@ -32,3 +32,7 @@ VDR Plugin 'sky' Revision History
 2004-12-12: Version 0.3.2
 
 - Changed Apid access in cChannel.
+
+2004-12-19: Version 0.3.3
+
+- Made several functions threadsafe.

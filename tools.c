@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.82 2004/11/21 14:36:34 kls Exp $
+ * $Id: tools.c 1.83 2004/12/19 16:08:50 kls Exp $
  */
 
 #include "tools.h"
@@ -63,18 +63,6 @@ ssize_t safe_write(int filedes, const void *buffer, size_t size)
 void writechar(int filedes, char c)
 {
   safe_write(filedes, &c, sizeof(c));
-}
-
-char *readline(FILE *f)
-{
-  static char buffer[MAXPARSEBUFFER];
-  if (fgets(buffer, sizeof(buffer), f) > 0) {
-     int l = strlen(buffer) - 1;
-     if (l >= 0 && buffer[l] == '\n')
-        buffer[l] = 0;
-     return buffer;
-     }
-  return NULL;
 }
 
 char *strcpyrealloc(char *dest, const char *src)
@@ -167,29 +155,6 @@ char *compactspace(char *s)
   return s;
 }
 
-const char *strescape(const char *s, const char *chars)
-{
-  static char *buffer = NULL;
-  const char *p = s;
-  char *t = NULL;
-  while (*p) {
-        if (strchr(chars, *p)) {
-           if (!t) {
-              buffer = (char *)realloc(buffer, 2 * strlen(s) + 1);
-              t = buffer + (p - s);
-              s = strcpy(buffer, s);
-              }
-           *t++ = '\\';
-           }
-        if (t)
-           *t++ = *p;
-        p++;
-        }
-  if (t)
-     *t = 0;
-  return s;
-}
-
 bool startswith(const char *s, const char *p)
 {
   while (*p) {
@@ -251,21 +216,6 @@ bool isnumber(const char *s)
         s++;
         }
   return true;
-}
-
-const char *itoa(int n)
-{
-  static char buf[16];
-  snprintf(buf, sizeof(buf), "%d", n);
-  return buf;
-}
-
-const char *AddDirectory(const char *DirName, const char *FileName)
-{
-  static char *buf = NULL;
-  free(buf);
-  asprintf(&buf, "%s/%s", DirName && *DirName ? DirName : ".", FileName);
-  return buf;
 }
 
 int FreeDiskSpaceMB(const char *Directory, int *UsedMB)
@@ -336,10 +286,10 @@ bool RemoveFileOrDir(const char *FileName, bool FollowSymlinks)
   struct stat st;
   if (stat(FileName, &st) == 0) {
      if (S_ISDIR(st.st_mode)) {
-        DIR *d = opendir(FileName);
-        if (d) {
+        cReadDir d(FileName);
+        if (d.Ok()) {
            struct dirent *e;
-           while ((e = readdir(d)) != NULL) {
+           while ((e = d.Next()) != NULL) {
                  if (strcmp(e->d_name, ".") && strcmp(e->d_name, "..")) {
                     char *buffer;
                     asprintf(&buffer, "%s/%s", FileName, e->d_name);
@@ -367,7 +317,6 @@ bool RemoveFileOrDir(const char *FileName, bool FollowSymlinks)
                     free(buffer);
                     }
                  }
-           closedir(d);
            }
         else {
            LOG_ERROR_STR(FileName);
@@ -389,11 +338,11 @@ bool RemoveFileOrDir(const char *FileName, bool FollowSymlinks)
 
 bool RemoveEmptyDirectories(const char *DirName, bool RemoveThis)
 {
-  DIR *d = opendir(DirName);
-  if (d) {
+  cReadDir d(DirName);
+  if (d.Ok()) {
      bool empty = true;
      struct dirent *e;
-     while ((e = readdir(d)) != NULL) {
+     while ((e = d.Next()) != NULL) {
            if (strcmp(e->d_name, ".") && strcmp(e->d_name, "..") && strcmp(e->d_name, "lost+found")) {
               char *buffer;
               asprintf(&buffer, "%s/%s", DirName, e->d_name);
@@ -414,7 +363,6 @@ bool RemoveEmptyDirectories(const char *DirName, bool RemoveThis)
               free(buffer);
               }
            }
-     closedir(d);
      if (RemoveThis && empty) {
         dsyslog("removing %s", DirName);
         if (remove(DirName) < 0) {
@@ -451,7 +399,7 @@ char *ReadLink(const char *FileName)
 
 bool SpinUpDisk(const char *FileName)
 {
-  static char *buf = NULL;
+  char *buf = NULL;
   for (int n = 0; n < 10; n++) {
       free(buf);
       if (DirectoryOk(FileName))
@@ -471,12 +419,14 @@ bool SpinUpDisk(const char *FileName)
             double seconds = (((long long)tp2.tv_sec * 1000000 + tp2.tv_usec) - ((long long)tp1.tv_sec * 1000000 + tp1.tv_usec)) / 1000000.0;
             if (seconds > 0.5)
                dsyslog("SpinUpDisk took %.2f seconds\n", seconds);
+            free(buf);
             return true;
             }
          else
             LOG_ERROR_STR(buf);
          }
       }
+  free(buf);
   esyslog("ERROR: SpinUpDisk failed");
   return false;
 }
@@ -489,35 +439,119 @@ time_t LastModifiedTime(const char *FileName)
   return 0;
 }
 
-const char *WeekDayName(int WeekDay)
+// --- cBufferedStringFunction -----------------------------------------------
+
+cBufferedStringFunction::cBufferedStringFunction(void)
 {
-  static char buffer[4];
+  buffer = NULL;
+  result = ""; // makes sure dereferencing it doesn't hurt
+}
+
+cBufferedStringFunction::~cBufferedStringFunction()
+{
+  free(buffer);
+}
+
+// --- cAddDirectory ---------------------------------------------------------
+
+cAddDirectory::cAddDirectory(const char *DirName, const char *FileName)
+{
+  asprintf(&buffer, "%s/%s", DirName && *DirName ? DirName : ".", FileName);
+  result = buffer;
+}
+
+// --- cStrEscape ------------------------------------------------------------
+
+cStrEscape::cStrEscape(const char *s, const char *chars)
+{
+  buffer = NULL;
+  const char *p = s;
+  char *t = NULL;
+  while (*p) {
+        if (strchr(chars, *p)) {
+           if (!t) {
+              buffer = (char *)realloc(buffer, 2 * strlen(s) + 1);
+              t = buffer + (p - s);
+              s = strcpy(buffer, s);
+              }
+           *t++ = '\\';
+           }
+        if (t)
+           *t++ = *p;
+        p++;
+        }
+  if (t)
+     *t = 0;
+  result = s;
+}
+
+// --- cCtime ----------------------------------------------------------------
+
+cCtime::cCtime(time_t Time)
+{
+  if (ctime_r(&Time, buffer)) {
+     buffer[strlen(buffer) - 1] = 0; // strip trailing newline
+     result = buffer;
+     }
+}
+
+// --- cItoa -----------------------------------------------------------------
+
+cItoa::cItoa(int n)
+{
+  snprintf(buffer, sizeof(buffer), "%d", n);
+  result = buffer;
+}
+
+// --- cWeekDayName ----------------------------------------------------------
+
+cWeekDayName::cWeekDayName(int WeekDay)
+{
+  WeekDayName(WeekDay);
+}
+
+cWeekDayName::cWeekDayName(time_t t)
+{
+  struct tm tm_r;
+  WeekDayName(localtime_r(&t, &tm_r)->tm_wday);
+}
+
+void cWeekDayName::WeekDayName(int WeekDay)
+{
   WeekDay = WeekDay == 0 ? 6 : WeekDay - 1; // we start with monday==0!
   if (0 <= WeekDay && WeekDay <= 6) {
      const char *day = tr("MonTueWedThuFriSatSun");
      day += WeekDay * 3;
-     strncpy(buffer, day, 3);
-     return buffer;
+     strn0cpy(buffer, day, sizeof(buffer));
+     result = buffer;
      }
   else
-     return "???";
+     result = "???";
 }
 
-const char *WeekDayName(time_t t)
-{
-  struct tm tm_r;
-  return WeekDayName(localtime_r(&t, &tm_r)->tm_wday);
-}
+// --- cDayDateTime ----------------------------------------------------------
 
-const char *DayDateTime(time_t t)
+cDayDateTime::cDayDateTime(time_t t)
 {
-  static char buffer[32];
   if (t == 0)
      time(&t);
   struct tm tm_r;
   tm *tm = localtime_r(&t, &tm_r);
-  snprintf(buffer, sizeof(buffer), "%s %2d.%02d %02d:%02d", WeekDayName(tm->tm_wday), tm->tm_mday, tm->tm_mon + 1, tm->tm_hour, tm->tm_min);
-  return buffer;
+  snprintf(buffer, sizeof(buffer), "%s %2d.%02d %02d:%02d", *cWeekDayName(tm->tm_wday), tm->tm_mday, tm->tm_mon + 1, tm->tm_hour, tm->tm_min);
+  result = buffer;
+}
+
+// --- cReadLine -------------------------------------------------------------
+
+char *cReadLine::Read(FILE *f)
+{
+  if (fgets(buffer, sizeof(buffer), f) > 0) {
+     int l = strlen(buffer) - 1;
+     if (l >= 0 && buffer[l] == '\n')
+        buffer[l] = 0;
+     return buffer;
+     }
+  return NULL;
 }
 
 // --- cPoller ---------------------------------------------------------------
@@ -555,6 +589,24 @@ bool cPoller::Poll(int TimeoutMs)
                      // access the file and thus see the error code
      }
   return false;
+}
+
+// --- cReadDir --------------------------------------------------------------
+
+cReadDir::cReadDir(const char *Directory)
+{
+  directory = opendir(Directory);
+}
+
+cReadDir::~cReadDir()
+{
+  if (directory)
+     closedir(directory);
+}
+
+struct dirent *cReadDir::Next(void)
+{
+  return directory && readdir_r(directory, &u.d, &result) == 0 ? result : NULL;
 }
 
 // --- cFile -----------------------------------------------------------------

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinclassic.c 1.7 2004/05/31 14:09:00 kls Exp $
+ * $Id: skinclassic.c 1.8 2004/12/19 15:46:09 kls Exp $
  */
 
 #include "skinclassic.h"
@@ -141,8 +141,8 @@ void cSkinClassicDisplayChannel::SetMessage(eMessageType Type, const char *Text)
 void cSkinClassicDisplayChannel::Flush(void)
 {
   if (!message) {
-     const char *date = DayDateTime();
-     osd->DrawText(osd->Width() - cFont::GetFont(fontSml)->Width(date) - 2, 0, date, Theme.Color(clrChannelDate), Theme.Color(clrBackground), cFont::GetFont(fontSml));
+     cDayDateTime date;
+     osd->DrawText(osd->Width() - cFont::GetFont(fontSml)->Width(*date) - 2, 0, *date, Theme.Color(clrChannelDate), Theme.Color(clrBackground), cFont::GetFont(fontSml));
      }
   osd->Flush();
 }
@@ -338,9 +338,9 @@ void cSkinClassicDisplayMenu::SetText(const char *Text, bool FixedFont)
 
 void cSkinClassicDisplayMenu::Flush(void)
 {
-  const char *date = DayDateTime();
+  cDayDateTime date;
   const cFont *font = cFont::GetFont(fontOsd);
-  osd->DrawText(x1 - font->Width(date) - 2, y0, date, Theme.Color(clrMenuDate), Theme.Color(clrMenuTitleBg), font);
+  osd->DrawText(x1 - font->Width(*date) - 2, y0, *date, Theme.Color(clrMenuDate), Theme.Color(clrMenuTitleBg), font);
   osd->Flush();
 }
 

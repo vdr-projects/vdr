@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.92 2004/11/01 14:04:47 kls Exp $
+ * $Id: recording.c 1.93 2004/12/19 15:44:42 kls Exp $
  */
 
 #include "recording.h"
@@ -157,7 +157,7 @@ cResumeFile::cResumeFile(const char *FileName)
   fileName = MALLOC(char, strlen(FileName) + strlen(RESUMEFILESUFFIX) + 1);
   if (fileName) {
      strcpy(fileName, FileName);
-     sprintf(fileName + strlen(fileName), RESUMEFILESUFFIX, Setup.ResumeID ? "." : "", Setup.ResumeID ? itoa(Setup.ResumeID) : "");
+     sprintf(fileName + strlen(fileName), RESUMEFILESUFFIX, Setup.ResumeID ? "." : "", Setup.ResumeID ? *cItoa(Setup.ResumeID) : "");
      }
   else
      esyslog("ERROR: can't allocate memory for resume file name");
@@ -628,47 +628,44 @@ cRecordings::cRecordings(bool Deleted)
 
 void cRecordings::ScanVideoDir(const char *DirName)
 {
-  DIR *d = opendir(DirName);
-  if (d) {
-     struct dirent *e;
-     while ((e = readdir(d)) != NULL) {
-           if (strcmp(e->d_name, ".") && strcmp(e->d_name, "..")) {
-              char *buffer;
-              asprintf(&buffer, "%s/%s", DirName, e->d_name);
-              struct stat st;
-              if (stat(buffer, &st) == 0) {
-                 if (S_ISLNK(st.st_mode)) {
+  cReadDir d(DirName);
+  struct dirent *e;
+  while ((e = d.Next()) != NULL) {
+        if (strcmp(e->d_name, ".") && strcmp(e->d_name, "..")) {
+           char *buffer;
+           asprintf(&buffer, "%s/%s", DirName, e->d_name);
+           struct stat st;
+           if (stat(buffer, &st) == 0) {
+              if (S_ISLNK(st.st_mode)) {
+                 free(buffer);
+                 buffer = ReadLink(buffer);
+                 if (!buffer)
+                    continue;
+                 if (stat(buffer, &st) != 0) {
                     free(buffer);
-                    buffer = ReadLink(buffer);
-                    if (!buffer)
-                       continue;
-                    if (stat(buffer, &st) != 0) {
-                       free(buffer);
-                       continue;
-                       }
-                    }
-                 if (S_ISDIR(st.st_mode)) {
-                    if (endswith(buffer, deleted ? DELEXT : RECEXT)) {
-                       cRecording *r = new cRecording(buffer);
-                       if (r->Name())
-                          Add(r);
-                       else
-                          delete r;
-                       }
-                    else
-                       ScanVideoDir(buffer);
+                    continue;
                     }
                  }
-              free(buffer);
+              if (S_ISDIR(st.st_mode)) {
+                 if (endswith(buffer, deleted ? DELEXT : RECEXT)) {
+                    cRecording *r = new cRecording(buffer);
+                    if (r->Name())
+                       Add(r);
+                    else
+                       delete r;
+                    }
+                 else
+                    ScanVideoDir(buffer);
+                 }
               }
+           free(buffer);
            }
-     closedir(d);
-     }
+        }
 }
 
 bool cRecordings::NeedsUpdate(void)
 {
-  return lastUpdate <= LastModifiedTime(AddDirectory(VideoDirectory, ".update"));
+  return lastUpdate <= LastModifiedTime(*cAddDirectory(VideoDirectory, ".update"));
 }
 
 bool cRecordings::Load(void)
@@ -750,8 +747,7 @@ bool cMark::Save(FILE *f)
 
 bool cMarks::Load(const char *RecordingFileName)
 {
-  const char *MarksFile = AddDirectory(RecordingFileName, MARKSFILESUFFIX);
-  if (cConfig<cMark>::Load(MarksFile)) {
+  if (cConfig<cMark>::Load(*cAddDirectory(RecordingFileName, MARKSFILESUFFIX))) {
      Sort();
      return true;
      }
@@ -815,7 +811,7 @@ void cRecordingUserCommand::InvokeCommand(const char *State, const char *Recordi
 {
   if (command) {
      char *cmd;
-     asprintf(&cmd, "%s %s \"%s\"", command, State, strescape(RecordingFileName, "\"$"));
+     asprintf(&cmd, "%s %s \"%s\"", command, State, *cStrEscape(RecordingFileName, "\"$"));
      isyslog("executing '%s'", cmd);
      SystemExec(cmd);
      free(cmd);

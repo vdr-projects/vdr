@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinsttng.c 1.7 2004/12/05 13:19:59 kls Exp $
+ * $Id: skinsttng.c 1.8 2004/12/19 15:48:55 kls Exp $
  */
 
 // Star Trek: The Next Generation® is a registered trademark of Paramount Pictures
@@ -289,9 +289,9 @@ void cSkinSTTNGDisplayChannel::Flush(void)
 {
   if (withInfo) {
      if (!message) {
-        const char *date = DayDateTime();
+        cDayDateTime date;
         const cFont *font = cFont::GetFont(fontSml);
-        osd->DrawText(x4 - font->Width(date) - 2, y7 - font->Height(date), date, Theme.Color(clrChannelDate), frameColor, font);
+        osd->DrawText(x4 - font->Width(*date) - 2, y7 - font->Height(*date), *date, Theme.Color(clrChannelDate), frameColor, font);
         }
 
      int seen = 0;
@@ -456,11 +456,11 @@ void cSkinSTTNGDisplayMenu::SetTitle(const char *Title)
 
 void cSkinSTTNGDisplayMenu::SetButtons(const char *Red, const char *Green, const char *Yellow, const char *Blue)
 {
-  const char *date = DayDateTime();
+  cDayDateTime date;
   const cFont *font = cFont::GetFont(fontSml);
   int d = 10;
   int d2 = d / 2;
-  int t4 = x4 - font->Width(date) - 2;
+  int t4 = x4 - font->Width(*date) - 2;
   int w = t4 - x3;
   int t0 = x3 + d2;
   int t1 = x3 + w / 4;
@@ -583,9 +583,9 @@ void cSkinSTTNGDisplayMenu::SetText(const char *Text, bool FixedFont)
 void cSkinSTTNGDisplayMenu::Flush(void)
 {
   if (!message) {
-     const char *date = DayDateTime();
+     cDayDateTime date;
      const cFont *font = cFont::GetFont(fontSml);
-     osd->DrawText(x4 - font->Width(date) - 2, y7 - font->Height(date), date, Theme.Color(clrMenuDate), frameColor, font);
+     osd->DrawText(x4 - font->Width(*date) - 2, y7 - font->Height(*date), *date, Theme.Color(clrMenuDate), frameColor, font);
      }
   osd->Flush();
 }

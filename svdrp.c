@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.65 2004/10/31 10:09:53 kls Exp $
+ * $Id: svdrp.c 1.66 2004/12/19 13:52:34 kls Exp $
  */
 
 #include "svdrp.h"
@@ -555,8 +555,9 @@ void cSVDRP::CmdGRAB(const char *Option)
      char buf[strlen(Option) + 1];
      char *p = strcpy(buf, Option);
      const char *delim = " \t";
-     FileName = strtok(p, delim);
-     if ((p = strtok(NULL, delim)) != NULL) {
+     char *strtok_next;
+     FileName = strtok_r(p, delim, &strtok_next);
+     if ((p = strtok_r(NULL, delim, &strtok_next)) != NULL) {
         if (strcasecmp(p, "JPEG") == 0)
            Jpeg = true;
         else if (strcasecmp(p, "PNM") == 0)
@@ -566,7 +567,7 @@ void cSVDRP::CmdGRAB(const char *Option)
            return;
            }
         }
-     if ((p = strtok(NULL, delim)) != NULL) {
+     if ((p = strtok_r(NULL, delim, &strtok_next)) != NULL) {
         if (isnumber(p))
            Quality = atoi(p);
         else {
@@ -574,14 +575,14 @@ void cSVDRP::CmdGRAB(const char *Option)
            return;
            }
         }
-     if ((p = strtok(NULL, delim)) != NULL) {
+     if ((p = strtok_r(NULL, delim, &strtok_next)) != NULL) {
         if (isnumber(p))
            SizeX = atoi(p);
         else {
            Reply(501, "Illegal sizex \"%s\"", p);
            return;
            }
-        if ((p = strtok(NULL, delim)) != NULL) {
+        if ((p = strtok_r(NULL, delim, &strtok_next)) != NULL) {
            if (isnumber(p))
               SizeY = atoi(p);
            else {
@@ -594,7 +595,7 @@ void cSVDRP::CmdGRAB(const char *Option)
            return;
            }
         }
-     if ((p = strtok(NULL, delim)) != NULL) {
+     if ((p = strtok_r(NULL, delim, &strtok_next)) != NULL) {
         Reply(501, "Unexpected parameter \"%s\"", p);
         return;
         }
@@ -727,7 +728,8 @@ void cSVDRP::CmdLSTE(const char *Option)
         char buf[strlen(Option) + 1];
         strcpy(buf, Option);
         const char *delim = " \t";
-        char *p = strtok(buf, delim);
+        char *strtok_next;
+        char *p = strtok_r(buf, delim, &strtok_next);
         while (p && DumpMode == dmAll) {
               if (strcasecmp(p, "NOW") == 0)
                  DumpMode = dmPresent;
@@ -735,7 +737,7 @@ void cSVDRP::CmdLSTE(const char *Option)
                  DumpMode = dmFollowing;
               else if (strcasecmp(p, "AT") == 0) {
                  DumpMode = dmAtTime;
-                 if ((p = strtok(NULL, delim)) != NULL) {
+                 if ((p = strtok_r(NULL, delim, &strtok_next)) != NULL) {
                     if (isnumber(p))
                        AtTime = strtol(p, NULL, 10);
                     else {
@@ -770,7 +772,7 @@ void cSVDRP::CmdLSTE(const char *Option)
                  Reply(501, "Unknown option: \"%s\"", p);
                  return;
                  }
-              p = strtok(NULL, delim);
+              p = strtok_r(NULL, delim, &strtok_next);
               }
         }
      FILE *f = fdopen(file, "w");
@@ -995,11 +997,8 @@ void cSVDRP::CmdNEXT(const char *Option)
   if (t) {
      time_t Start = t->StartTime();
      int Number = t->Index() + 1;
-     if (!*Option) {
-        char *s = ctime(&Start);
-        s[strlen(s) - 1] = 0; // strip trailing newline
-        Reply(250, "%d %s", Number, s);
-        }
+     if (!*Option)
+        Reply(250, "%d %s", Number, *cCtime(Start));
      else if (strcasecmp(Option, "ABS") == 0)
         Reply(250, "%d %ld", Number, Start);
      else if (strcasecmp(Option, "REL") == 0)
@@ -1152,7 +1151,7 @@ bool cSVDRP::Process(void)
         char buffer[BUFSIZ];
         gethostname(buffer, sizeof(buffer));
         time_t now = time(NULL);
-        Reply(220, "%s SVDRP VideoDiskRecorder %s; %s", buffer, VDRVERSION, ctime(&now));
+        Reply(220, "%s SVDRP VideoDiskRecorder %s; %s", buffer, VDRVERSION, *cCtime(now));
         }
      if (NewConnection)
         lastActivity = time(NULL);

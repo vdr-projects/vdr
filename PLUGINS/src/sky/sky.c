@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: sky.c 1.8 2004/12/12 14:27:33 kls Exp $
+ * $Id: sky.c 1.9 2004/12/19 15:33:47 kls Exp $
  */
 
 #include <sys/socket.h>
@@ -14,7 +14,7 @@
 #include <vdr/plugin.h>
 #include <vdr/sources.h>
 
-static const char *VERSION        = "0.3.2";
+static const char *VERSION        = "0.3.3";
 static const char *DESCRIPTION    = "Sky Digibox interface";
 
 // --- cDigiboxDevice --------------------------------------------------------
@@ -273,7 +273,7 @@ bool cPluginSky::Initialize(void)
   // Initialize any background activities the plugin shall perform.
   const char *ConfigDir = ConfigDirectory(Name());
   if (ConfigDir) {
-     if (SkyChannels.Load(AddDirectory(ConfigDir, "channels.conf.sky"), true)) {
+     if (SkyChannels.Load(*cAddDirectory(ConfigDir, "channels.conf.sky"), true)) {
         new cDigiboxDevice;
         return true;
         }

@@ -3209,3 +3209,15 @@ Video Disk Recorder Revision History
 - Added 'channels.conf.terr' entries for Lübeck (thanks to Stefan Hußfeldt).
 - Fixed a race condition in starting a thread (thanks to Reinhard Nissl for
   reporting this one).
+- Replaced non-threadsafe library functions with their threadsafe versions (thanks
+  to Rainer Zocholl for pointing this out).
+- Other non-threadsafe functions have been replaced by threadsafe classes that hide
+  the actual buffering. In particular these are:
+  readdir() -> cReadDir
+  readline() -> cReadLine
+  strescape() -> cStrEscape
+  AddDirectory() -> cAddDirectory
+  ctime() -> cCtime
+  itoa() -> cItoa
+  WeekDayName() -> cWeekDayName
+  DayDateTime() -> cDayDateTime

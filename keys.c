@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: keys.c 1.5 2003/09/14 10:07:47 kls Exp $
+ * $Id: keys.c 1.6 2004/12/19 11:25:47 kls Exp $
  */
 
 #include "keys.h"
@@ -195,7 +195,8 @@ bool cKeyMacro::Parse(char *s)
 {
   int n = 0;
   char *p;
-  while ((p = strtok(s, " \t")) != NULL) {
+  char *strtok_next;
+  while ((p = strtok_r(s, " \t", &strtok_next)) != NULL) {
         if (n < MAXKEYSINMACRO) {
            if (*p == '@') {
               if (plugin) {

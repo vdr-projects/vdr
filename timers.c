@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 1.19 2004/11/22 16:49:15 kls Exp $
+ * $Id: timers.c 1.20 2004/12/19 14:11:29 kls Exp $
  */
 
 #include "timers.h"
@@ -111,7 +111,7 @@ const char *cTimer::ToText(bool UseChannelID)
   free(buffer);
   strreplace(file, ':', '|');
   strreplace(summary, '\n', '|');
-  asprintf(&buffer, "%d:%s:%s:%04d:%04d:%d:%d:%s:%s\n", flags, UseChannelID ? Channel()->GetChannelID().ToString() : itoa(Channel()->Number()), PrintDay(day, firstday), start, stop, priority, lifetime, file, summary ? summary : "");
+  asprintf(&buffer, "%d:%s:%s:%04d:%04d:%d:%d:%s:%s\n", flags, UseChannelID ? Channel()->GetChannelID().ToString() : *cItoa(Channel()->Number()), PrintDay(day, firstday), start, stop, priority, lifetime, file, summary ? summary : "");
   strreplace(summary, '|', '\n');
   strreplace(file, '|', ':');
   return buffer;

@@ -4,14 +4,16 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.58 2004/10/31 16:16:37 kls Exp $
+ * $Id: tools.h 1.59 2004/12/19 14:49:48 kls Exp $
  */
 
 #ifndef __TOOLS_H
 #define __TOOLS_H
 
+#include <dirent.h>
 #include <errno.h>
 #include <fcntl.h>
+#include <objalloc.h>
 #include <poll.h>
 #include <stdio.h>
 #include <string.h>
@@ -58,7 +60,6 @@ int BCD2INT(int x);
 ssize_t safe_read(int filedes, void *buffer, size_t size);
 ssize_t safe_write(int filedes, const void *buffer, size_t size);
 void writechar(int filedes, char c);
-char *readline(FILE *f);
 char *strcpyrealloc(char *dest, const char *src);
 char *strn0cpy(char *dest, const char *src, size_t n);
 char *strreplace(char *s, char c1, char c2);
@@ -66,7 +67,6 @@ char *strreplace(char *s, const char *s1, const char *s2); ///< re-allocates 's'
 char *skipspace(const char *s);
 char *stripspace(char *s);
 char *compactspace(char *s);
-const char *strescape(const char *s, const char *chars); ///< \warning returns a statically allocated string!
 bool startswith(const char *s, const char *p);
 bool endswith(const char *s, const char *p);
 bool isempty(const char *s);
@@ -74,8 +74,6 @@ int numdigits(int n);
 int time_ms(void);
 void delay_ms(int ms);
 bool isnumber(const char *s);
-const char *itoa(int n); ///< \warning returns a statically allocated string!
-const char *AddDirectory(const char *DirName, const char *FileName); ///< \warning returns a statically allocated string!
 int FreeDiskSpaceMB(const char *Directory, int *UsedMB = NULL);
 bool DirectoryOk(const char *DirName, bool LogErrors = false);
 bool MakeDirs(const char *FileName, bool IsDirectory = false);
@@ -84,9 +82,65 @@ bool RemoveEmptyDirectories(const char *DirName, bool RemoveThis = false);
 char *ReadLink(const char *FileName);
 bool SpinUpDisk(const char *FileName);
 time_t LastModifiedTime(const char *FileName);
-const char *WeekDayName(int WeekDay); ///< \warning returns a statically allocated string!
-const char *WeekDayName(time_t t); ///< \warning returns a statically allocated string!
-const char *DayDateTime(time_t t = 0); ///< \warning returns a statically allocated string!
+
+class cBufferedStringFunction {
+protected:
+  char *buffer;
+  const char *result;
+public:
+  cBufferedStringFunction(void);
+  virtual ~cBufferedStringFunction();
+  const char * operator * () { return result; }
+  };
+
+template<int size> class cBufferedStringFunctionFix : public cBufferedStringFunction {
+protected:
+  char buffer[size];
+  const char *result;
+public:
+  cBufferedStringFunctionFix(void) { result = ""; } // makes sure dereferencing it doesn't hurt
+  const char * operator * () { return result; }
+  };
+
+class cAddDirectory : public cBufferedStringFunction {
+public:
+  cAddDirectory(const char *DirName, const char *FileName);
+  };
+
+class cStrEscape : public cBufferedStringFunction {
+public:
+  cStrEscape(const char *s, const char *chars);
+  };
+
+class cCtime : public cBufferedStringFunctionFix<32> {
+public:
+  cCtime(time_t Time);
+  };
+
+class cItoa : public cBufferedStringFunctionFix<16> {
+public:
+  cItoa(int n);
+  };
+
+class cWeekDayName : public cBufferedStringFunctionFix<4> {
+private:
+  void WeekDayName(int WeekDay);
+public:
+  cWeekDayName(int WeekDay);
+  cWeekDayName(time_t t);
+  };
+
+class cDayDateTime : public cBufferedStringFunctionFix<32> {
+public:
+  cDayDateTime(time_t t = 0);
+  };
+
+class cReadLine {
+private:
+  char buffer[MAXPARSEBUFFER];
+public:
+  char *Read(FILE *f);
+  };
 
 class cPoller {
 private:
@@ -99,6 +153,21 @@ public:
   bool Poll(int TimeoutMs = 0);
   };
   
+class cReadDir {
+private:
+  DIR *directory;
+  struct dirent *result;
+  union { // according to "The GNU C Library Reference Manual"
+    struct dirent d;
+    char b[offsetof(struct dirent, d_name) + NAME_MAX + 1];
+    } u;
+public:
+  cReadDir(const char *Directory);
+  ~cReadDir();
+  bool Ok(void) { return directory != NULL; }
+  struct dirent *Next(void);
+  };
+
 class cFile {
 private:
   static bool files[];

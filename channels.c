@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 1.31 2004/11/02 18:07:05 kls Exp $
+ * $Id: channels.c 1.32 2004/12/19 11:24:51 kls Exp $
  */
 
 #include "channels.h"
@@ -705,7 +705,8 @@ bool cChannel::Parse(const char *s, bool AllowNonUniqueID)
            p = apidbuf;
            char *q;
            int NumApids = 0;
-           while ((q = strtok(p, ",")) != NULL) {
+           char *strtok_next;
+           while ((q = strtok_r(p, ",", &strtok_next)) != NULL) {
                  if (NumApids < MAXAPIDS) {
                     char *l = strchr(q, '=');
                     if (l) {
@@ -725,7 +726,8 @@ bool cChannel::Parse(const char *s, bool AllowNonUniqueID)
               char *p = dpidbuf;
               char *q;
               int NumDpids = 0;
-              while ((q = strtok(p, ",")) != NULL) {
+              char *strtok_next;
+              while ((q = strtok_r(p, ",", &strtok_next)) != NULL) {
                     if (NumDpids < MAXAPIDS) {
                        char *l = strchr(q, '=');
                        if (l) {
@@ -747,7 +749,8 @@ bool cChannel::Parse(const char *s, bool AllowNonUniqueID)
               char *p = caidbuf;
               char *q;
               int NumCaIds = 0;
-              while ((q = strtok(p, ",")) != NULL) {
+              char *strtok_next;
+              while ((q = strtok_r(p, ",", &strtok_next)) != NULL) {
                     if (NumCaIds < MAXCAIDS) {
                        caids[NumCaIds++] = strtol(q, NULL, 16) & 0xFFFF;
                        if (NumCaIds == 1 && caids[0] <= 0x00FF)
