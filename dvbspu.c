@@ -8,7 +8,7 @@
  *
  * parts of this file are derived from the OMS program.
  *
- * $Id: dvbspu.c 1.9 2005/01/02 15:27:07 kls Exp $
+ * $Id: dvbspu.c 1.10 2005/01/08 09:53:44 kls Exp $
  */
 
 #include <assert.h>
@@ -349,20 +349,6 @@ sDvbSpuRect cDvbSpuDecoder::CalcAreaSize(sDvbSpuRect fgsize, cBitmap *fgbmp, sDv
     return size;
 }
 
-static bool OsdMatchesArea(cOsd *osd, tArea &area)
-{
-  cBitmap *bmp = osd->GetBitmap(0);
-  if (!bmp)
-     return false;
-  if (bmp->Bpp() != area.bpp)
-     return false;
-  if (bmp->X0() != area.x1 || bmp->Y0() != area.y1)
-     return false;
-  if (bmp->Width() != area.Width() || bmp->Height() != area.Height())
-     return false;
-  return true;
-}
-
 void cDvbSpuDecoder::Draw(void)
 {
     if (!spubmp) {
@@ -400,16 +386,12 @@ void cDvbSpuDecoder::Draw(void)
        }
 
     if (bg || fg) {
-        int x2 = areaSize.x2;
-        while ((x2 - areaSize.x1 + 1) & 0x03)
-              x2++;
-        tArea Area = { areaSize.x1, areaSize.y1, x2, areaSize.y2, (fg && bg) ? 4 : 2 };
-        if (osd && !OsdMatchesArea(osd, Area)) {
-           delete osd;
-           osd = NULL;
-           }
         if (osd == NULL) {
            osd = cOsdProvider::NewOsd(0, 0);
+           int x2 = areaSize.x2;
+           while ((x2 - areaSize.x1 + 1) & 0x03)
+                 x2++;
+           tArea Area = { areaSize.x1, areaSize.y1, x2, areaSize.y2, (fg && bg) ? 4 : 2 };
            osd->SetAreas(&Area, 1);
            }
 
