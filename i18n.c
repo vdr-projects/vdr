@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.174 2005/02/05 10:36:38 kls Exp $
+ * $Id: i18n.c 1.175 2005/02/05 10:46:30 kls Exp $
  *
  * Translations provided by:
  *
@@ -2820,6 +2820,27 @@ const tI18nPhrase Phrases[] = {
     "Pozicija informacije o programu",
     "Kanaliinfo asukoht",
     "Placering af kanalinfo",
+  },
+  { "Setup.OSD$Channel info time (s)",
+    "Anzeigedauer für Kanal-Info (s)",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "Durée affichage infos chaînes (s)",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
   },
   { "Setup.OSD$Info on channel switch",
     "Info beim Kanalwechsel",

@@ -482,6 +482,9 @@ Version 1.2
                          The position of the channel info window in the OSD
                          (either 'bottom' or 'top').
 
+  Channel info time = 5  The time (in seconds) after which the channel info display
+                         is removed if no key has been pressed.
+
   Info on channel switch = yes
                          Turns the display of the current/next information on
                          or off when switching the channel. The information is

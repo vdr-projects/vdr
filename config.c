@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.131 2005/01/09 12:14:58 kls Exp $
+ * $Id: config.c 1.132 2005/02/05 10:43:04 kls Exp $
  */
 
 #include "config.h"
@@ -283,6 +283,7 @@ cSetup::cSetup(void)
   UpdateChannels = 4;
   UseDolbyDigital = 1;
   ChannelInfoPos = 0;
+  ChannelInfoTime = 5;
   OSDLeft = 54;
   OSDTop = 45;
   OSDWidth = 624;
@@ -438,6 +439,7 @@ bool cSetup::Parse(const char *Name, const char *Value)
   else if (!strcasecmp(Name, "UpdateChannels"))      UpdateChannels     = atoi(Value);
   else if (!strcasecmp(Name, "UseDolbyDigital"))     UseDolbyDigital    = atoi(Value);
   else if (!strcasecmp(Name, "ChannelInfoPos"))      ChannelInfoPos     = atoi(Value);
+  else if (!strcasecmp(Name, "ChannelInfoTime"))     ChannelInfoTime    = atoi(Value);
   else if (!strcasecmp(Name, "OSDLeft"))             OSDLeft            = atoi(Value);
   else if (!strcasecmp(Name, "OSDTop"))              OSDTop             = atoi(Value);
   else if (!strcasecmp(Name, "OSDWidth"))          { OSDWidth           = atoi(Value); if (OSDWidth  < 100) OSDWidth  *= 12; OSDWidth &= ~0x07; } // OSD width must be a multiple of 8
@@ -500,6 +502,7 @@ bool cSetup::Save(void)
   Store("UpdateChannels",     UpdateChannels);
   Store("UseDolbyDigital",    UseDolbyDigital);
   Store("ChannelInfoPos",     ChannelInfoPos);
+  Store("ChannelInfoTime",    ChannelInfoTime);
   Store("OSDLeft",            OSDLeft);
   Store("OSDTop",             OSDTop);
   Store("OSDWidth",           OSDWidth);

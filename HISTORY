@@ -3359,3 +3359,6 @@ Video Disk Recorder Revision History
   for reporting these).
 - Completed the Danish OSD texts (thanks to Mogens Elneff).
 - Completed the French OSD texts (thanks to Olivier Jacques).
+- The new setup option "OSD/Channel info time" can be used to define the time after
+  which the channel display is removed if no key has been pressed (thanks to
+  Olivier Jacques).

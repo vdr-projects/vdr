@@ -808,6 +808,7 @@ Andreas Mair <Andreas.Mair@linogate.com>
 
 Olivier Jacques <jacquesolivier@hotmail.com>)
  for translating OSD texts to the French language
+ for implementing the setup option "OSD/Channel info time"
 
 Kai Moeller <moeller.ki@gmx.de>
  for reporting a double call to MainMenuAction() of a plugin if invoked via a hotkey
