@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: videodir.c 1.8 2002/05/13 16:32:52 kls Exp $
+ * $Id: videodir.c 1.9 2002/08/11 13:31:02 kls Exp $
  */
 
 #include "videodir.h"
@@ -48,9 +48,9 @@ cVideoDirectory::cVideoDirectory(void)
 
 cVideoDirectory::~cVideoDirectory()
 {
-  delete name;
-  delete stored;
-  delete adjusted;
+  free(name);
+  free(stored);
+  free(adjusted);
 }
 
 int cVideoDirectory::FreeMB(int *UsedMB)
@@ -87,7 +87,7 @@ bool cVideoDirectory::Next(void)
 void cVideoDirectory::Store(void)
 {
   if (name) {
-     delete stored;
+     free(stored);
      stored = strdup(name);
      }
 }
@@ -95,7 +95,7 @@ void cVideoDirectory::Store(void)
 const char *cVideoDirectory::Adjust(const char *FileName)
 {
   if (stored) {
-     delete adjusted;
+     free(adjusted);
      adjusted = strdup(FileName);
      return strncpy(adjusted, stored, length);
      }
@@ -139,7 +139,7 @@ int OpenVideoFile(const char *FileName, int Flags)
      }
   int Result = open(ActualFileName, Flags, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
   if (ActualFileName != FileName)
-     delete ActualFileName;
+     free((char *)ActualFileName);
   return Result;
 }
 

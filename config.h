@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.122 2002/08/09 14:53:21 kls Exp $
+ * $Id: config.h 1.123 2002/08/11 11:36:36 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -12,6 +12,7 @@
 
 #include <arpa/inet.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <time.h>
 #include <unistd.h>
@@ -214,12 +215,13 @@ private:
   char *fileName;
   void Clear(void)
   {
-    delete fileName;
+    free(fileName);
+    fileName = NULL;
     cList<T>::Clear();
   }
 public:
   cConfig(void) { fileName = NULL; }
-  virtual ~cConfig() { delete fileName; }
+  virtual ~cConfig() { free(fileName); }
   const char *FileName(void) { return fileName; }
   bool Load(const char *FileName, bool AllowComments = false)
   {

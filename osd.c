@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 1.32 2002/08/04 10:11:26 kls Exp $
+ * $Id: osd.c 1.33 2002/08/11 11:43:22 kls Exp $
  */
 
 #include "osd.h"
@@ -279,13 +279,13 @@ cOsdItem::cOsdItem(const char *Text, eOSState State)
 
 cOsdItem::~cOsdItem()
 {
-  delete text;
+  free(text);
 }
 
 void cOsdItem::SetText(const char *Text, bool Copy)
 {
-  delete text;
-  text = Copy ? strdup(Text) : Text;
+  free(text);
+  text = Copy ? strdup(Text) : (char *)Text; // text assumes ownership!
 }
 
 void cOsdItem::SetColor(eDvbColor FgColor, eDvbColor BgColor)
@@ -337,9 +337,9 @@ cOsdMenu::cOsdMenu(const char *Title, int c0, int c1, int c2, int c3, int c4)
 
 cOsdMenu::~cOsdMenu()
 {
-  delete title;
+  free(title);
   delete subMenu;
-  delete status;
+  free(status);
   Interface->Clear();
   Interface->Close();
 }
@@ -367,7 +367,7 @@ void cOsdMenu::SetHasHotkeys(void)
 
 void cOsdMenu::SetStatus(const char *s)
 {
-  delete status;
+  free(status);
   status = s ? strdup(s) : NULL;
   if (visible)
      Interface->Status(status);
@@ -375,7 +375,7 @@ void cOsdMenu::SetStatus(const char *s)
 
 void cOsdMenu::SetTitle(const char *Title, bool ShowDate)
 {
-  delete title;
+  free(title);
   if (ShowDate)
      asprintf(&title, "%s\t%s", Title, DayDateTime(time(NULL)));
   else

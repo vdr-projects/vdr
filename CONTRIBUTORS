@@ -158,6 +158,7 @@ Andreas Schultz <aschultz@warp10.net>
  than 3 characters
  for adding direct access to the index data of cPalette (needed for displaying SPUs)
  for pointing out a possible race condition in the cDvbPlayer
+ for making the use of malloc/free and new/delete consistent
 
 Aaron Holtzman
  for writing 'ac3dec'

@@ -1401,3 +1401,4 @@ Video Disk Recorder Revision History
 - Added some missing #includes (thanks to Martin Hammerschmid).
 - Changed the log error message "can't record MPEG1!" to "error in data stream!",
   since the mentioning of MPEG1 has irritated many people.
+- Consistently using malloc/free and new/delete (thanks to Andreas Schultz).

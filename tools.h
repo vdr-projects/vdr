@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.47 2002/06/10 16:30:00 kls Exp $
+ * $Id: tools.h 1.48 2002/08/11 11:34:26 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -35,6 +35,8 @@ extern int SysLogLevel;
 #define MEGABYTE(n) ((n) * 1024 * 1024)
 
 #define MAXPARSEBUFFER KILOBYTE(10)
+
+#define MALLOC(type, size)  (type *)malloc(sizeof(type) * (size))
 
 #define DELETENULL(p) (delete (p), p = NULL)
 

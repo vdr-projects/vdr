@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.103 2002/08/04 12:03:11 kls Exp $
+ * $Id: config.c 1.104 2002/08/11 11:35:18 kls Exp $
  */
 
 #include "config.h"
@@ -217,7 +217,7 @@ const char *cChannel::ToText(cChannel *Channel)
      s = strcpy(buf, s);
      strreplace(s, ':', '|');
      }
-  delete buffer;
+  free(buffer);
   if (Channel->groupSep)
      asprintf(&buffer, ":%s\n", s);
   else {
@@ -267,7 +267,7 @@ bool cChannel::Parse(const char *s)
         sscanf(apidbuf, "%d ,%d ", &apid1, &apid2);
         if (p)
            sscanf(p, "%d ,%d ", &dpid1, &dpid2);
-        delete apidbuf;
+        free(apidbuf);
         }
      else
         return false;
@@ -279,7 +279,7 @@ bool cChannel::Parse(const char *s)
            tpid = 0;
            }
         strn0cpy(name, buffer, MaxChannelName);
-        delete buffer;
+        free(buffer);
         }
      else
         return false;
@@ -377,7 +377,7 @@ cTimer::cTimer(const cEventInfo *EventInfo)
 
 cTimer::~cTimer()
 {
-  delete summary;
+  free(summary);
 }
 
 cTimer& cTimer::operator= (const cTimer &Timer)
@@ -398,7 +398,7 @@ bool cTimer::operator< (const cListObject &ListObject)
 
 const char *cTimer::ToText(cTimer *Timer)
 {
-  delete buffer;
+  free(buffer);
   strreplace(Timer->file, ':', '|');
   strreplace(Timer->summary, '\n', '|');
   asprintf(&buffer, "%d:%d:%s:%04d:%04d:%d:%d:%s:%s\n", Timer->active, Timer->channel, PrintDay(Timer->day, Timer->firstday), Timer->start, Timer->stop, Timer->priority, Timer->lifetime, Timer->file, Timer->summary ? Timer->summary : "");
@@ -495,7 +495,7 @@ bool cTimer::Parse(const char *s)
 {
   char *buffer1 = NULL;
   char *buffer2 = NULL;
-  delete summary;
+  free(summary);
   summary = NULL;
   //XXX Apparently sscanf() doesn't work correctly if the last %a argument
   //XXX results in an empty string (this first occured when the EIT gathering
@@ -508,13 +508,13 @@ bool cTimer::Parse(const char *s)
   while (l2 > 0 && isspace(s[l2 - 1]))
         l2--;
   if (s[l2 - 1] == ':') {
-     s2 = (char *)malloc(l2 + 3);
+     s2 = MALLOC(char, l2 + 3);
      strcat(strn0cpy(s2, s, l2 + 1), " \n");
      s = s2;
      }
   if (8 <= sscanf(s, "%d :%d :%a[^:]:%d :%d :%d :%d :%a[^:\n]:%a[^\n]", &active, &channel, &buffer1, &start, &stop, &priority, &lifetime, &buffer2, &summary)) {
      if (summary && !*skipspace(summary)) {
-        delete summary;
+        free(summary);
         summary = NULL;
         }
      //TODO add more plausibility checks
@@ -522,12 +522,12 @@ bool cTimer::Parse(const char *s)
      strn0cpy(file, buffer2, MaxFileName);
      strreplace(file, '|', ':');
      strreplace(summary, '|', '\n');
-     delete buffer1;
-     delete buffer2;
-     delete s2;
+     free(buffer1);
+     free(buffer2);
+     free(s2);
      return day != 0;
      }
-  delete s2;
+  free(s2);
   return false;
 }
 
@@ -661,8 +661,8 @@ cCommand::cCommand(void)
 
 cCommand::~cCommand()
 {
-  delete title;
-  delete command;
+  free(title);
+  free(command);
 }
 
 bool cCommand::Parse(const char *s)
@@ -685,7 +685,7 @@ bool cCommand::Parse(const char *s)
 const char *cCommand::Execute(void)
 {
   dsyslog("executing command '%s'", command);
-  delete result;
+  free(result);
   result = NULL;
   FILE *p = popen(command, "r");
   if (p) {
@@ -749,7 +749,7 @@ cCaDefinition::cCaDefinition(void)
 
 cCaDefinition::~cCaDefinition()
 {
-  delete description;
+  free(description);
 }
 
 bool cCaDefinition::Parse(const char *s)
@@ -935,9 +935,9 @@ cSetupLine::cSetupLine(const char *Name, const char *Value, const char *Plugin)
 
 cSetupLine::~cSetupLine()
 {
-  delete plugin;
-  delete name;
-  delete value;
+  free(plugin);
+  free(name);
+  free(value);
 }
 
 bool cSetupLine::operator< (const cListObject &ListObject)
@@ -1068,7 +1068,7 @@ void cSetup::Store(const char *Name, int Value, const char *Plugin)
   char *buffer = NULL;
   asprintf(&buffer, "%d", Value);
   Store(Name, buffer, Plugin);
-  delete buffer;
+  free(buffer);
 }
 
 bool cSetup::Load(const char *FileName)

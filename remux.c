@@ -8,7 +8,7 @@
  * the Linux DVB driver's 'tuxplayer' example and were rewritten to suit
  * VDR's needs.
  *
- * $Id: remux.c 1.10 2002/08/11 10:53:10 kls Exp $
+ * $Id: remux.c 1.11 2002/08/11 11:48:34 kls Exp $
  */
 
 /* The calling interface of the 'cRemux::Process()' function is defined
@@ -66,6 +66,7 @@
 */
 
 #include "remux.h"
+#include <stdlib.h>
 #include "thread.h"
 #include "tools.h"
 
@@ -153,7 +154,7 @@ cTS2PES::cTS2PES(uint8_t *ResultBuffer, int *ResultCount, int Size, uint8_t Audi
   size = Size;
   audioCid = AudioCid;
 
-  if (!(buf = new uint8_t[size]))
+  if (!(buf = MALLOC(uint8_t, size)))
      esyslog("Not enough memory for ts_transform");
 
   reset_ipack();
@@ -161,7 +162,7 @@ cTS2PES::cTS2PES(uint8_t *ResultBuffer, int *ResultCount, int Size, uint8_t Audi
 
 cTS2PES::~cTS2PES()
 {
-  delete buf;
+  free(buf);
 }
 
 void cTS2PES::Clear(void)

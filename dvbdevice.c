@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.2 2002/08/10 14:57:33 kls Exp $
+ * $Id: dvbdevice.c 1.3 2002/08/11 12:03:33 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -316,6 +316,7 @@ bool cDvbDevice::SetPid(cPidHandle *Handle, int Type, bool On)
 
      if (Handle->pid != 0x1FFF) {
         dmxPesFilterParams pesFilterParams;
+        memset(&pesFilterParams, 0, sizeof(pesFilterParams));
         pesFilterParams.pid     = Handle->pid;
         pesFilterParams.input   = DMX_IN_FRONTEND;
         pesFilterParams.output  = (Type <= ptTeletext && Handle->used <= 1) ? DMX_OUT_DECODER : DMX_OUT_TS_TAP;
@@ -363,6 +364,8 @@ bool cDvbDevice::SetChannelDevice(const cChannel *Channel)
 #else
   FrontendParameters Frontend;
 #endif
+
+  memset(&Frontend, 0, sizeof(Frontend));
 
   switch (frontendType) {
     case FE_QPSK: { // DVB-S

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: cutter.c 1.1 2002/06/22 10:09:34 kls Exp $
+ * $Id: cutter.c 1.2 2002/08/11 11:09:23 kls Exp $
  */
 
 #include "cutter.h"
@@ -196,7 +196,7 @@ bool cCutter::Start(const char *FileName)
               RemoveVideoFile(s);
               }
            }
-        delete s;
+        free(s);
         // XXX
         editedVersionName = strdup(evn);
         Recording.WriteSummary();
@@ -231,7 +231,7 @@ bool cCutter::Active(void)
      Stop();
      if (!error)
         cRecordingUserCommand::InvokeCommand(RUC_EDITEDRECORDING, editedVersionName);
-     delete editedVersionName;
+     free(editedVersionName);
      editedVersionName = NULL;
      ended = true;
      }

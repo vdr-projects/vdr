@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.118 2002/08/04 09:56:30 kls Exp $
+ * $Id: vdr.c 1.119 2002/08/11 11:32:15 kls Exp $
  */
 
 #include <getopt.h>
@@ -585,7 +585,7 @@ int main(int argc, char *argv[])
                     asprintf(&buf, tr("Recording in %d minutes, shut down anyway?"), Delta / 60);
                     if (Interface->Confirm(buf))
                        ForceShutdown = true;
-                    delete buf;
+                    free(buf);
                     }
                  if (!Next || Delta > Setup.MinEventTimeout * 60 || ForceShutdown) {
                     ForceShutdown = false;
@@ -600,7 +600,7 @@ int main(int argc, char *argv[])
                        asprintf(&cmd, "%s %ld %ld %d \"%s\" %d", Shutdown, Next, Delta, Channel, strescape(File, "\"$"), UserShutdown);
                        isyslog("executing '%s'", cmd);
                        SystemExec(cmd);
-                       delete cmd;
+                       free(cmd);
                        }
                     else if (WatchdogTimeout > 0) {
                        alarm(WatchdogTimeout);
