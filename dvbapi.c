@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.11 2000/06/24 14:03:19 kls Exp $
+ * $Id: dvbapi.c 1.12 2000/07/15 13:33:04 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -1327,8 +1327,8 @@ bool cDvbApi::SetChannel(int FrequencyMHz, char Polarization, int Diseqc, int Sr
      struct frontend front;
      ioctl(videoDev, VIDIOCGFRONTEND, &front);
      unsigned int freq = FrequencyMHz;
-     front.ttk = (freq < 11800UL) ? 0 : 1;
-     if (freq < 11800UL)
+     front.ttk = (freq < 11700UL) ? 0 : 1;
+     if (freq < 11700UL)
         freq -=  9750UL;
      else
         freq -= 10600UL;
