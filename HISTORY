@@ -1850,7 +1850,7 @@ Video Disk Recorder Revision History
   This also makes "Motor-DiSEqC" work (thanks to Reinhard Walter Buchner for his help
   in testing this). Since switching channels now no longer explicitly waits for a
   channel lock in the foreground thread, the "panic level" mechanism is no longer
-  used (maybe we don't need it nay more, anyway).
+  used (maybe we don't need it any more, anyway).
 - The keyboard is now by default always active to control VDR. The 'make' option
   REMOTE=KBD is therefore obsolete. When compiling VDR with REMOTE=RCU or REMOTE=LIRC,
   the keyboard can thus now be active together with the remote control. If you want
@@ -1862,3 +1862,39 @@ Video Disk Recorder Revision History
   (Thanks to Thomas Sailer for pointing out how to set the terminal parameters to
   read from the keyboard).
 - The 'ncurses' library is now only necessary when compiling VDR with DEBUG_OSD=1.
+
+2002-12-15: Version 1.1.20
+
+- Now checking if there is a connection to the keyboard (thanks to Jaakko Hyvätti)
+  and only creating the KBD remote control if VDR is running in the foreground.
+- Fixed taking an active SVDRP connection into account when doing shutdown (thanks
+  to Gregoire Favre for reporting this one).
+- Changed setting of CXX and CXXFLAGS variables in Makefile, so that an externally
+  defined value will be taken if present (suggested by Robert Schiele).
+  Plugin authors should please change the lines
+
+  CXX      = g++
+  CXXFLAGS = -O2 -Wall -Woverloaded-virtual
+
+  in their Makefile to
+
+  CXX      ?= g++
+  CXXFLAGS ?= -O2 -Wall -Woverloaded-virtual
+
+- Fixed recording overlapping timers on the same channel in case
+  DO_REC_AND_PLAY_ON_PRIMARY_DEVICE and/or DO_MULTIPLE_RECORDINGS is not defined
+  (thanks to Jaakko Hyvätti).
+- No longer stopping/restarting the DMX when switching audio channels (thanks to
+  Sven Goethel).
+- Fixed high CPU load in 'Transfer Mode' (thanks to Oliver Endriss).
+- If a PC keyboard is used as remote control, the string entry fields in the
+  menus now accept character input directly (however, this works only for keys that
+  are not otherwise defined as remote control keys). Also, plugins can switch the
+  cKbdRemote class into "raw mode", where all keyboard input will be made available
+  through the new 'kKbd' key code and none of it will be processed as normal remote
+  control functions (thanks to Jan Rieger for suggestions and testing).
+- Fixed deleting characters in string entry fields in 'insert' mode.
+- Now using "Doxygen" to generate source documentation (thanks to Walter Stroebel
+  for providing an initial 'Doxyfile' configuration and adjusting some comments).
+  See INSTALL for information how to do this. Some function descriptions have
+  already been adapted to Doxygen, more will follow.

@@ -357,3 +357,11 @@ If you prefer different key assignments, or if the default doesn't work for
 your keyboard, simply delete the file 'remote.conf' and restart 'vdr' to get
 into learning mode.
 
+Generating source code documentation:
+-------------------------------------
+
+You can do a 'make srcdoc' to generate source code documentation using the
+Doxygen tool. To do so you need the Doxygen package from http://www.doxygen.src
+and the Graphviz package from http://www.research.att.com/sw/tools/graphviz.
+After installing these two packages you can do 'make srcdoc' and then use your
+HTML browser to read srcdoc/html/index.html.

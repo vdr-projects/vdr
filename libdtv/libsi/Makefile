@@ -30,8 +30,8 @@
 
 .DELETE_ON_ERROR:
 
-CC = gcc
-CFLAGS = -O2 -g -Wmissing-prototypes -Wstrict-prototypes \
+CC ?= gcc
+CFLAGS ?= -O2 -g -Wmissing-prototypes -Wstrict-prototypes \
          -DNAPI -Wimplicit -D__USE_FIXED_PROTOTYPES__ # -ansi -pedantic 
 
 INCDIRS = -Iinclude -I../include

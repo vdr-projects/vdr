@@ -386,6 +386,7 @@ Rudi Hofer (Rudi.Hofer@cadsoft.de)
 
 Gregoire Favre <greg@ulima.unil.ch>
  for fixing some function headers to make them compile with gcc 3.x
+ for reporting a bug in taking an active SVDRP connection into account when doing shutdown
 
 Sven Grothklags <sven@uni-paderborn.de>
  for fixing the cutting mechanism to make it re-sync in case a frame is larger
@@ -438,6 +439,7 @@ Oliver Endriss <o.endriss@gmx.de>
  it kicked in
  for providing examples for 'diseqc.conf'
  for improving deleting stale lock files
+ for fixing high CPU load in 'Transfer Mode'
 
 Reinhard Walter Buchner <rw.buchner@freenet.de>
  for adding some satellites to 'sources.conf'
@@ -453,6 +455,8 @@ Andy Carter <fruit@ukgateway.net>
 Robert Schiele <rschiele@uni-mannheim.de>
  for his help in keeping 'channels.conf.cable' up to date
  for reporting some faulty default parameter initializations
+ for suggesting to only set the Makefile variables CXX and CXXFLAGS if they are not
+ yet defined
 
 Gerhard Steiner <steiner@mail.austria.com>
  for suggesting that the SVDRP command PUTE shall trigger an immediate write of
@@ -464,6 +468,9 @@ Gerhard Steiner <steiner@mail.austria.com>
 
 Jaakko Hyvätti <jaakko@hyvatti.iki.fi>
  for translating OSD texts to the Finnish language
+ for adding a check if there is a connection to the keyboard
+ for fixing recording overlapping timers on the same channel in case
+ DO_REC_AND_PLAY_ON_PRIMARY_DEVICE and/or DO_MULTIPLE_RECORDINGS is not defined
 
 Dennis Noordsij <dennis.noordsij@wiral.com>
  for reporting a small glitch when switching channels
@@ -504,3 +511,12 @@ Gerald Berwolf <genka@genka.de>
 
 Thomas Sailer <sailer@scs.ch>
  for pointing out how to set the terminal parameters to read from the keyboard
+
+Sven Goethel <sgoethel@jausoft.com>
+ for making switching audio channels work without stopping/restarting the DMX
+
+Jan Rieger <jan@ricomp.de>
+ for suggestions and testing raw keyboard input
+
+Walter Stroebel <walter.stroebel@lifeline.nl>
+ for introducing "Doxygen" to document the VDR source code

@@ -1,7 +1,7 @@
 #
 # Makefile for a Video Disk Recorder plugin
 #
-# $Id: Makefile 1.1 2002/11/01 13:45:13 kls Exp $
+# $Id: Makefile 1.2 2002/12/13 14:54:24 kls Exp $
 
 # The official name of this plugin.
 # This name will be used in the '-P...' option of VDR to load the plugin.
@@ -15,8 +15,8 @@ VERSION = $(shell grep 'static const char \*VERSION *=' $(PLUGIN).c | awk '{ pri
 
 ### The C++ compiler and options:
 
-CXX      = g++
-CXXFLAGS = -O2 -Wall -Woverloaded-virtual
+CXX      ?= g++
+CXXFLAGS ?= -O2 -Wall -Woverloaded-virtual
 
 ### The directory environment:
 

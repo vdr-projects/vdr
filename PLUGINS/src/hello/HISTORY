@@ -41,3 +41,7 @@ VDR Plugin 'hello' Revision History
 2002-11-23: Version 0.0.9
 
 - Changed return type of MainMenuAction().
+
+2002-12-13: Version 0.1.0
+
+- Changed setting of CXX and CXXFLAGS variables in Makefile.

@@ -4,15 +4,15 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 1.53 2002/12/08 12:20:37 kls Exp $
+# $Id: Makefile 1.55 2002/12/15 15:15:55 kls Exp $
 
 .DELETE_ON_ERROR:
 
-CC       = gcc
-CFLAGS   = -O2
+CC       ?= gcc
+CFLAGS   ?= -O2
 
-CXX      = g++
-CXXFLAGS = -g -O2 -Wall -Woverloaded-virtual
+CXX      ?= g++
+CXXFLAGS ?= -g -O2 -Wall -Woverloaded-virtual
 
 DVBDIR   = ../DVB
 DTVDIR   = ./libdtv
@@ -22,6 +22,9 @@ BINDIR   = /usr/local/bin
 PLUGINDIR= ./PLUGINS
 
 VIDEODIR = /video
+
+DOXYGEN  = /usr/bin/doxygen
+DOXYFILE = Doxyfile
 
 -include Make.config
 
@@ -122,12 +125,21 @@ install:
             cp *.conf $(VIDEODIR);\
             fi
 
+# Source documentation:
+
+srcdoc:
+	@cp $(DOXYFILE) $(DOXYFILE).tmp
+	@echo PROJECT_NUMBER = `grep VDRVERSION config.h | awk '{ print $$3 }'` >> $(DOXYFILE).tmp
+	$(DOXYGEN) $(DOXYFILE).tmp
+	@rm $(DOXYFILE).tmp
+
 # Housekeeping:
 
 clean:
 	$(MAKE) -C $(DTVDIR) clean
 	-rm -f $(OBJS) $(DEPFILE) vdr genfontfile genfontfile.o core* *~
 	-rm -rf include
+	-rm -rf srcdoc
 fontclean:
 	-rm -f fontfix.c fontosd.c
 CLEAN: clean fontclean

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remote.h 1.22 2002/12/08 13:37:02 kls Exp $
+ * $Id: remote.h 1.24 2002/12/15 15:49:06 kls Exp $
  */
 
 #ifndef __REMOTE_H
@@ -51,14 +51,46 @@ class cRemotes : public cList<cRemote> {};
 
 extern cRemotes Remotes;
 
+enum eKbdFunc {
+  kfNone,
+  kfF1 = 0x100,
+  kfF2,
+  kfF3,
+  kfF4,
+  kfF5,
+  kfF6,
+  kfF7,
+  kfF8,
+  kfF9,
+  kfF10,
+  kfF11,
+  kfF12,
+  kfUp,
+  kfDown,
+  kfLeft,
+  kfRight,
+  kfHome,
+  kfEnd,
+  kfPgUp,
+  kfPgDown,
+  kfIns,
+  kfDel,
+  };
+
 class cKbdRemote : public cRemote, private cThread {
 private:
   bool active;
+  static bool kbdAvailable;
+  static bool rawMode;
   struct termios savedTm;
   virtual void Action(void);
+  int MapCodeToFunc(uint64 Code);
 public:
   cKbdRemote(void);
   virtual ~cKbdRemote();
+  static bool KbdAvailable(void) { return kbdAvailable; }
+  static uint64 MapFuncToCode(int Func);
+  static void SetRawMode(bool RawMode);
   };
 
 #endif //__REMOTE_H
