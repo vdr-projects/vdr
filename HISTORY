@@ -3204,3 +3204,5 @@ Video Disk Recorder Revision History
 - Fixed the character width and shifted the codes one to the right in all font
   files.
 - Renamed font???.c to font???-iso8859-1.c for symmetry.
+- Switched the character set to iso8859-15 for English, German and Finnish (thanks
+  to Andreas Brugger for reporting the missing Euro sign in iso8859-1).

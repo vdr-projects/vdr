@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.165 2004/12/18 13:04:33 kls Exp $
+ * $Id: i18n.c 1.166 2004/12/18 16:44:24 kls Exp $
  *
  * Translations provided by:
  *
@@ -103,15 +103,15 @@ const tI18nPhrase Phrases[] = {
     "Dansk",
   },
   // The character set needed for this language (this MUST be the second phrase!):
-  { "iso8859-1",
+  { "iso8859-15",
+    "iso8859-15",
     "iso8859-1",
     "iso8859-1",
     "iso8859-1",
     "iso8859-1",
     "iso8859-1",
     "iso8859-1",
-    "iso8859-1",
-    "iso8859-1",
+    "iso8859-15",
     "iso8859-1",
     "iso8859-1",
     "iso8859-7",
