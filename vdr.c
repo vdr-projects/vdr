@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.18 2000/05/06 15:24:01 kls Exp $
+ * $Id: vdr.c 1.19 2000/05/27 15:38:35 kls Exp $
  */
 
 #include <signal.h>
@@ -107,6 +107,10 @@ int main(int argc, char *argv[])
              case osMenu:   DELETENULL(Menu);
                             Menu = new cMenuMain(ReplayControl);
                             break;
+             case osRecord: DELETENULL(Menu);
+                            if (!cRecordControls::Start())
+                               Interface.Error("No free DVB device to record!");
+                            break;
              case osReplay: DELETENULL(Menu);
                             DELETENULL(ReplayControl);
                             ReplayControl = new cReplayControl;
@@ -142,11 +146,6 @@ int main(int argc, char *argv[])
                                channel->Switch();
                             }
                          break;
-             // Instant Recording:
-             case kRecord: DELETENULL(Menu);
-                           if (!cRecordControls::Start())
-                              Interface.Error("No free DVB device to record!");
-                           break;
              // Menu Control:
              case kMenu: Menu = new cMenuMain(ReplayControl); break;
              // Viewing Control:

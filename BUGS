@@ -1,7 +1,7 @@
 Video Disk Recorder - Known Bugs
 --------------------------------
 
-* Sometimes picture and sound drift apart.
+* Sometimes the picture "jumps" as if a frame is skipped.
   Presumably this is a problem in the card driver or firmware?
 
 * When the on-screen display is activated during recording,

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.14 2000/05/06 15:43:57 kls Exp $
+ * $Id: menu.c 1.15 2000/05/27 16:10:47 kls Exp $
  */
 
 #include "menu.h"
@@ -1009,6 +1009,7 @@ cMenuMain::cMenuMain(bool Replaying)
         Add(new cOsdItem(buffer, osStopRecord));
         delete buffer;
         }
+  SetHelp("Record");
   Display();
   lastActivity = time(NULL);
 }
@@ -1028,8 +1029,13 @@ eOSState cMenuMain::ProcessKey(eKeys Key)
                              return osEnd;
                              }
                           }
-    default: if (Key == kMenu)
-                state = osEnd;
+    default: switch (Key) {
+               case kMenu: state = osEnd;    break;
+               case kRed:  if (!HasSubMenu())
+                              state = osRecord;
+                           break;
+               default:    break;
+               }
     }
   if (Key != kNone)
      lastActivity = time(NULL);
@@ -1202,18 +1208,18 @@ eOSState cReplayControl::ProcessKey(eKeys Key)
   if (visible)
      shown = dvbApi->ShowProgress(!shown) || shown;
   switch (Key) {
-    case kBegin:         dvbApi->Skip(-INT_MAX); break;
-    case kPause:         dvbApi->PauseReplay(); break;
-    case kStop:          Hide();
-                         dvbApi->StopReplay();
-                         return osEnd;
-    case kSearchBack:    dvbApi->FastRewind(); break;
-    case kSearchForward: dvbApi->FastForward(); break;
-    case kSkipBack:      dvbApi->Skip(-60); break;
-    case kSkipForward:   dvbApi->Skip(60); break;
-    case kMenu:          Hide(); return osMenu; // allow direct switching to menu
-    case kOk:            visible ? Hide() : Show(); break;
-    default:             return osUnknown;
+    case kUp:      dvbApi->Skip(-INT_MAX); break;
+    case kDown:    dvbApi->PauseReplay(); break;
+    case kBlue:    Hide();
+                   dvbApi->StopReplay();
+                   return osEnd;
+    case kLeft:    dvbApi->FastRewind(); break;
+    case kRight:   dvbApi->FastForward(); break;
+    case kGreen:   dvbApi->Skip(-60); break;
+    case kYellow:  dvbApi->Skip(60); break;
+    case kMenu:    Hide(); return osMenu; // allow direct switching to menu
+    case kOk:      visible ? Hide() : Show(); break;
+    default:       return osUnknown;
     }
   return osContinue;
 }

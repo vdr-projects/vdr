@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.5 2000/05/01 10:45:17 kls Exp $
+ * $Id: config.h 1.6 2000/05/27 14:43:46 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -27,19 +27,11 @@ enum eKeys { // "Up" and "Down" must be the first two keys!
              kBack,
              kLeft,
              kRight,
-             k0, k1, k2, k3, k4, k5, k6, k7, k8, k9,
              kRed,
              kGreen,
              kYellow,
              kBlue,
-             kRecord,
-             kPause,
-             kStop,
-             kBegin,
-             kSearchForward,
-             kSearchBack,
-             kSkipForward,
-             kSkipBack,
+             k0, k1, k2, k3, k4, k5, k6, k7, k8, k9,
              kNone
            };
 
