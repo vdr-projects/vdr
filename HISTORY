@@ -541,3 +541,6 @@ Video Disk Recorder Revision History
 - Added an additional "emergency exit" in case channel switching doesn't
   work several times in a row (when will the driver finally become stable
   enough to allow rock solid channel switching??).
+- No longer sending a Diseqc command if the Diseqc value for a given channel
+  is '0'. Previously this caused problems with some multi-switches (thanks to
+  Markus Lang and Ulrich Röder).
