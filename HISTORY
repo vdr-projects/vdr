@@ -752,3 +752,4 @@ Video Disk Recorder Revision History
 - New version of the "Master-Timer" tool (thanks to Matthias Schniedermeyer).
 - Better error handling when writing configuration files.
 - Fixed putting the final editing mark into the edited version's marks file.
+- Fixed manipulating an editing mark at the very end of a recording.

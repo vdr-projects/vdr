@@ -7,7 +7,7 @@
  * DVD support initially written by Andreas Schultz <aschultz@warp10.net>
  * based on dvdplayer-0.5 by Matjaz Thaler <matjaz.thaler@guest.arnes.si>
  *
- * $Id: dvbapi.c 1.122 2001/09/16 09:35:51 kls Exp $
+ * $Id: dvbapi.c 1.123 2001/09/16 09:52:57 kls Exp $
  */
 
 //#define DVDDEBUG        1
@@ -284,7 +284,7 @@ int cIndexFile::GetNextIFrame(int Index, bool Forward, uchar *FileNumber, int *F
      int d = Forward ? 1 : -1;
      for (;;) {
          Index += d;
-         if (Index >= 0 && Index <= last - 100) { // '- 100': need to stay off the end!
+         if (Index >= 0 && Index <= last) {
             if (index[Index].type == I_FRAME) {
                if (FileNumber)
                   *FileNumber = index[Index].number;
@@ -2364,6 +2364,8 @@ void cCuttingBuffer::Action(void)
            // Write one frame:
 
            if (PictureType == I_FRAME) { // every file shall start with an I_FRAME
+              if (!Mark) // edited version shall end before next I-frame
+                 break;
               if (FileSize > MEGABYTE(Setup.MaxVideoFileSize)) {
                  toFile = toFileName->NextFile();
                  if (toFile < 0)
@@ -2391,8 +2393,9 @@ void cCuttingBuffer::Action(void)
                  Mark = fromMarks.Next(Mark);
                  CurrentFileNumber = 0; // triggers SetOffset before reading next frame
                  }
-              else
-                 break; // final end mark reached
+              // the 'else' case (i.e. 'final end mark reached') is handled above
+              // in 'Write one frame', so that the edited version will end right
+              // before the next I-frame.
               }
            }
      }
