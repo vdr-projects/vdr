@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 1.50 2002/11/23 14:51:32 kls Exp $
+ * $Id: menu.h 1.51 2002/11/30 15:55:39 kls Exp $
  */
 
 #ifndef __MENU_H
@@ -21,9 +21,9 @@ private:
   time_t lastActivity;
   bool replaying;
   static cOsdObject *pluginOsdObject;
-  void Set(void);
+  void Set(const char *Plugin = NULL);
 public:
-  cMenuMain(bool Replaying, eOSState State = osUnknown);
+  cMenuMain(bool Replaying, eOSState State = osUnknown, const char *Plugin = NULL);
   virtual eOSState ProcessKey(eKeys Key);
   static cOsdObject *PluginOsdObject(void);
   };

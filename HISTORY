@@ -1812,3 +1812,27 @@ Video Disk Recorder Revision History
   'now +/- LOCKFILESTALETIME'. This improves things in cases where the system time
   makes far jumps, so that a lock file might end up with a time stamp that lies
   in the distant future (thanks to Oliver Endriss).
+
+2002-12-01: Version 1.1.18
+
+- Fixed missing initialization of 'number' in cChannel (thanks to Martin Hammerschmid
+  for reporting this one).
+- Fixed a misplaced ')' in the fix about the stale lock files (thanks again to
+  Oliver Endriss for pointing this out - it was my fault).
+- Group delimiters in the 'channels.conf' file that have no text (like a simple ":"
+  or ":@201") no longer show up in the Channels menu (suggested by Guy Roussin).
+- Added "Tele 5" to 'channels.conf' (thanks to Georg Hitsch).
+- Changed the source directory name for plugins from 'SRC' to 'src' (suggested by
+  Clemens Kirchgatterer).
+- Removed transponders 10788, 11739 and 12266 from 'channels.conf' (apparently they
+  are no longer active).
+- Deactivated some templates in tools.h in case some plugin needs to use the STL
+  (suggested by Gerald Berwolf).
+- Timers now accept channel IDs even if the 'source' is 0 (thanks to Stefan Huelswitt
+  for reporting this one).
+- Now taking an active SVDRP connection into account when doing shutdown or
+  housekeeping (suggested by Emil Naepflein).
+- Macros in 'keymacros.conf' can now use "@plugin" to directly access the main menu
+  function of a given plugin (see man vdr(5) for details).
+- The new plugin 'sky' can be used to integrate a Sky Digibox into the VDR system,
+  using a Kfir MPEG2 encoder card (see PLUGINS/src/sky/README for details).

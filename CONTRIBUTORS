@@ -48,6 +48,7 @@ Martin Hammerschmid <martin@hammerschmid.com>
  for adding a missing #include to ringbuffer.c
  for adding a missing 'public' keyword in device.h
  for pointing out a bug in displaying the group separators in the channel display
+ for reporting a problem with a missing initialization of 'number' in cChannel
 
 Bastian Guse <bastian@nocopy.de>
  for writing the FORMATS entry for timers.conf
@@ -159,6 +160,7 @@ Stefan Huelswitt <huels@iname.com>
  for helping to fix switching audio tracks in 'Transfer Mode' on the primary DVB device
  for fixing handling 'Transfer Mode' on single device systems when recording an
  encrypted channel
+ for reporting a problem with timers when channel IDs have a 'source' that is 0
 
 Ulrich Röder <roeder@efr-net.de>
  for pointing out that there are channels that have a symbol rate higher than
@@ -479,3 +481,20 @@ Régis Bossut <rbossut@auchan.com>
 
 Andreas Kool <akool@akool.de>
   for pointing out problems with non-unique definitions in 'channels.conf.cable'
+
+Guy Roussin <guy.roussin@teledetection.fr>
+  for suggesting not to display channel group delimiters without text
+
+Georg Hitsch <georg@hitsch.at>
+ for his help in keeping 'channels.conf' up to date
+
+Clemens Kirchgatterer <clemens@thf.ath.cx>
+ for suggesting to change source directory name for plugins from 'SRC' to 'src'
+
+Emil Naepflein <Emil.Naepflein@philosys.de>
+ for suggesting to take an active SVDRP connection into account when doing shutdown or
+ housekeeping
+
+Gerald Berwolf <genka@genka.de>
+ for suggesting to deactivate some templates in tools.h in case some plugin needs to
+ use the STL

@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 1.51 2002/11/01 13:11:53 kls Exp $
+# $Id: Makefile 1.52 2002/11/29 15:23:02 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -109,10 +109,10 @@ include-dir:
 # Plugins:
 
 plugins: include-dir
-	@for i in `ls $(PLUGINDIR)/SRC | grep -v '[^a-z0-9]'`; do $(MAKE) -C "$(PLUGINDIR)/SRC/$$i" all; done
+	@for i in `ls $(PLUGINDIR)/src | grep -v '[^a-z0-9]'`; do $(MAKE) -C "$(PLUGINDIR)/src/$$i" all; done
 
 plugins-clean:
-	@for i in `ls $(PLUGINDIR)/SRC | grep -v '[^a-z0-9]'`; do $(MAKE) -C "$(PLUGINDIR)/SRC/$$i" clean; done
+	@for i in `ls $(PLUGINDIR)/src | grep -v '[^a-z0-9]'`; do $(MAKE) -C "$(PLUGINDIR)/src/$$i" clean; done
 	@-rm -f $(PLUGINDIR)/lib/*
 
 # Install the files:

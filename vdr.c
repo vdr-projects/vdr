@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.134 2002/11/24 15:50:16 kls Exp $
+ * $Id: vdr.c 1.136 2002/12/01 10:44:48 kls Exp $
  */
 
 #include <getopt.h>
@@ -480,7 +480,7 @@ int main(int argc, char *argv[])
                Menu = new cMenuMain(cControl::Control());
                Temp = NULL;
                break;
-          #define DirectMainFunction(function)\
+          #define DirectMainFunction(function...)\
             DELETENULL(Menu);\
             if (cControl::Control())\
                cControl::Control()->Hide();\
@@ -493,6 +493,7 @@ int main(int argc, char *argv[])
           case kSetup:      DirectMainFunction(osSetup); break;
           case kCommands:   DirectMainFunction(osCommands); break;
           case kUser1 ... kUser9: cRemote::PutMacro(key); break;
+          case k_Plugin:    DirectMainFunction(osPlugin, cRemote::GetPlugin()); break;
           // Channel up/down:
           case kChanUp|k_Repeat:
           case kChanUp:
@@ -638,7 +639,7 @@ int main(int argc, char *argv[])
                  Interface->Info(tr("Editing process finished"));
               }
            }
-        if (!Interact && ((!cRecordControls::Active() && !cCutter::Active()) || ForceShutdown)) {
+        if (!Interact && ((!cRecordControls::Active() && !cCutter::Active() && !Interface->HasSVDRPConnection()) || ForceShutdown)) {
            time_t Now = time(NULL);
            if (Now - LastActivity > ACTIVITYTIMEOUT) {
               // Shutdown:

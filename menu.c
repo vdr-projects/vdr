@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.226 2002/11/24 14:34:41 kls Exp $
+ * $Id: menu.c 1.228 2002/12/01 10:31:55 kls Exp $
  */
 
 #include "menu.h"
@@ -684,15 +684,10 @@ public:
 cMenuChannels::cMenuChannels(void)
 :cOsdMenu(tr("Channels"), CHNUMWIDTH)
 {
-  //TODO
-  int i = 0;
-  cChannel *channel;
-  int curr = ((channel = Channels.GetByNumber(cDevice::CurrentChannel())) != NULL) ? channel->Index() : -1;
-
-  while ((channel = Channels.Get(i)) != NULL) {
-        Add(new cMenuChannelItem(channel), i == curr);
-        i++;
-        }
+  for (cChannel *channel = Channels.First(); channel; channel = Channels.Next(channel)) {
+      if (!channel->GroupSep() || *channel->Name())
+         Add(new cMenuChannelItem(channel), channel->Number() == cDevice::CurrentChannel());
+      }
   SetHelp(tr("Edit"), tr("New"), tr("Delete"), tr("Mark"));
 }
 
@@ -2183,11 +2178,11 @@ cMenuPluginItem::cMenuPluginItem(const char *Name, int Index)
 
 cOsdObject *cMenuMain::pluginOsdObject = NULL;
 
-cMenuMain::cMenuMain(bool Replaying, eOSState State)
+cMenuMain::cMenuMain(bool Replaying, eOSState State, const char *Plugin)
 :cOsdMenu("")
 {
   replaying = Replaying;
-  Set();
+  Set(Plugin);
 
   // Initial submenus:
 
@@ -2198,6 +2193,7 @@ cMenuMain::cMenuMain(bool Replaying, eOSState State)
     case osRecordings: AddSubMenu(new cMenuRecordings(NULL, 0, true)); break;
     case osSetup:      AddSubMenu(new cMenuSetup); break;
     case osCommands:   AddSubMenu(new cMenuCommands(tr("Commands"), &Commands)); break;
+    case osPlugin:     break; // the actual work is done in Set()
     default: break;
     }
 }
@@ -2209,7 +2205,7 @@ cOsdObject *cMenuMain::PluginOsdObject(void)
   return o;
 }
 
-void cMenuMain::Set(void)
+void cMenuMain::Set(const char *Plugin)
 {
   Clear();
   //SetTitle("VDR"); // this is done below, including disk usage
@@ -2242,7 +2238,7 @@ void cMenuMain::Set(void)
       if (p) {
          const char *item = p->MainMenuEntry();
          if (item)
-            Add(new cMenuPluginItem(hk(item), i));
+            Add(new cMenuPluginItem(hk(item), i), Plugin && strcmp(Plugin, p->Name()) == 0);
          }
       else
          break;

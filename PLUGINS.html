@@ -129,13 +129,13 @@ VDR source directory. Inside this directory the following subdirectory structure
 is used:
 
 <p><table><tr><td bgcolor=#F0F0F0><pre><br>
-VDR/PLUGINS/SRC
-VDR/PLUGINS/SRC/hello
+VDR/PLUGINS/src
+VDR/PLUGINS/src/hello
 VDR/PLUGINS/lib
 VDR/PLUGINS/lib/libvdr-hello.so.1.1.0
 </pre></td></tr></table><p>
 
-The <tt>SRC</tt> directory contains one subdirectory for each plugin, which carries
+The <tt>src</tt> directory contains one subdirectory for each plugin, which carries
 the name of that plugin (in the above example that would be <tt>hello</tt>).
 What's inside the individual source directory of a
 plugin is entirely up to the author of that plugin. The only prerequisites are
@@ -156,7 +156,7 @@ is not used, the path to the plugin directory has be be given to VDR through the
 <b><tt>-L</tt></b> option.
 <p>
 The VDR <tt>Makefile</tt> contains the target <tt>plugins</tt>, which calls
-<tt>make all</tt> in every directory found under <tt>VDR/PLUGINS/SRC</tt>,
+<tt>make all</tt> in every directory found under <tt>VDR/PLUGINS/src</tt>,
 plus the target <tt>plugins-clean</tt>, which calls <tt>make clean</tt> in
 each of these directories.
 <p>
@@ -170,7 +170,7 @@ and will unpack into a directory named
 <tt>hello-0.0.1</tt>
 <p>
 To use the <tt>plugins</tt> and <tt>plugins-clean</tt> targets from the VDR <tt>Makefile</tt>
-you need to unpack such an archive into the <tt>VDR/PLUGINS/SRC</tt> directory and
+you need to unpack such an archive into the <tt>VDR/PLUGINS/src</tt> directory and
 create a symbolic link with the basic plugin name, as in
 
 <p><table><tr><td bgcolor=#F0F0F0><pre><br>
@@ -214,7 +214,7 @@ the "Setup" menu, which will bring up a list of all loaded plugins, through whic
 can access each plugin's own setup parameters (if it provides any).
 <p>
 To implement actual functionality into your plugin you need to edit the source file
-that was generated as <tt>PLUGINS/SRC/name.c</tt>. Read the comments in that file
+that was generated as <tt>PLUGINS/src/name.c</tt>. Read the comments in that file
 to see where you can bring in your own code. The following sections of this document
 will walk you through the individual member functions of the plugin class.
 <p>
@@ -866,7 +866,7 @@ provides the target <tt>dist</tt>, which does this for you.
 Simply change into your source directory and execute <tt>make dist</tt>:
 
 <p><table><tr><td bgcolor=#F0F0F0><pre><br>
-cd VDR/PLUGINS/SRC/hello
+cd VDR/PLUGINS/src/hello
 make dist
 </pre></td></tr></table><p>
 
