@@ -684,3 +684,6 @@ Video Disk Recorder Revision History
 - New SVDRP command NEXT to show the next timer event.
 - The new remote control key "Power" can be used to turn the VDR machine
   off (this requires the presence of the '-s' option).
+- Fixed code for the default "Ok" button on the PC keyboard (was 0x162 on
+  the "good old" keyboards (with the F-keys at the left side), while it changed
+  to 0x15E on the newer keyboards).
