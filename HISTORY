@@ -2089,3 +2089,4 @@ Video Disk Recorder Revision History
 
 - Fixed minimum lifespan of deleted recordings (thanks to Jaakko Hyvätti).
 - Updated French OSD texts (thanks to Olivier Jacques <jacquesolivier@hotmail.com>).
+- Fixed paging through lists with repeated Left/Right keys.
