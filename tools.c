@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.28 2001/02/04 11:27:49 kls Exp $
+ * $Id: tools.c 1.29 2001/02/11 11:18:45 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -51,7 +51,7 @@ char *strreplace(char *s, char c1, char c2)
 {
   char *p = s;
 
-  while (*p) {
+  while (p && *p) {
         if (*p == c1)
            *p = c2;
         p++;

@@ -56,8 +56,10 @@ Video Disk Recorder File Formats
   - End time (first two digits for the hour, second two digits for the minutes)
   - Priority (from 00 to 99, 00 = lowest prioity, 99 = highest priority)
   - Guaranteed lifetime of recording (in days)
-  - Name of timer (will be used to name the recording)
-  - Summary
+  - Name of timer (will be used to name the recording); if the name contains
+    any ':' characters, these have to be replaced with '|'
+  - Summary (any newline characters in the summary have to be replaced with '|';
+    the summary may contain ':' characters)
 
 * setup.conf
 

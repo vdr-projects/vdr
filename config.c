@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.40 2001/02/03 16:19:42 kls Exp $
+ * $Id: config.c 1.41 2001/02/11 11:22:48 kls Exp $
  */
 
 #include "config.h"
@@ -368,7 +368,11 @@ cTimer& cTimer::operator= (const cTimer &Timer)
 const char *cTimer::ToText(cTimer *Timer)
 {
   delete buffer;
+  strreplace(Timer->file, ':', '|');
+  strreplace(Timer->summary, '\n', '|');
   asprintf(&buffer, "%d:%d:%s:%04d:%04d:%d:%d:%s:%s\n", Timer->active, Timer->channel, PrintDay(Timer->day), Timer->start, Timer->stop, Timer->priority, Timer->lifetime, Timer->file, Timer->summary ? Timer->summary : "");
+  strreplace(Timer->summary, '|', '\n');
+  strreplace(Timer->file, '|', ':');
   return buffer;
 }
 
@@ -457,6 +461,8 @@ bool cTimer::Parse(const char *s)
      //TODO add more plausibility checks
      day = ParseDay(buffer1);
      strn0cpy(file, buffer2, MaxFileName);
+     strreplace(file, '|', ':');
+     strreplace(summary, '|', '\n');
      delete buffer1;
      delete buffer2;
      delete s2;
