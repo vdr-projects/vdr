@@ -1812,3 +1812,8 @@ Video Disk Recorder Revision History
   'now +/- LOCKFILESTALETIME'. This improves things in cases where the system time
   makes far jumps, so that a lock file might end up with a time stamp that lies
   in the distant future (thanks to Oliver Endriss).
+
+2002-11-24: Version 1.1.18
+
+- Fixed missing initialization of 'number' in cChannel (thanks to Martin Hammerschmid
+  for reporting this one).

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 1.9 2002/11/24 14:28:48 kls Exp $
+ * $Id: channels.c 1.10 2002/11/24 20:09:42 kls Exp $
  */
 
 #include "channels.h"
@@ -174,6 +174,7 @@ cChannel::cChannel(void)
   tid          = 0;
   sid          = 888;
   rid          = 0;
+  number       = 0;
   groupSep     = false;
   polarization = 'v';
   inversion    = INVERSION_AUTO;

@@ -48,6 +48,7 @@ Martin Hammerschmid <martin@hammerschmid.com>
  for adding a missing #include to ringbuffer.c
  for adding a missing 'public' keyword in device.h
  for pointing out a bug in displaying the group separators in the channel display
+ for reporting a problem with a missing initialization of 'number' in cChannel
 
 Bastian Guse <bastian@nocopy.de>
  for writing the FORMATS entry for timers.conf
