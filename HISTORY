@@ -1987,3 +1987,9 @@ Video Disk Recorder Revision History
 - Modified the EPG scanner to avoid CPU load peaks (thanks to Steffen Becker for
   reporting this one).
 - Fixed support for Viaccess CAMs (thanks to Axel Gruber for helping to debug this).
+
+2003-03-23: Version 1.1.27
+
+- The CAM is now accessed only if the current channel actually has a non-zero Ca
+  value, and CAM access is completely suppressed during replay, which avoids
+  problems in case the CAM is attached to the primary DVB device.

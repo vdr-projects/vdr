@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.46 2003/02/16 15:10:39 kls Exp $
+ * $Id: dvbdevice.c 1.47 2003/03/23 15:18:40 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -263,7 +263,7 @@ void cDvbTuner::Action(void)
                  }
               }
            if (tunerStatus >= tsLocked) {
-              if (ciHandler) {
+              if (ciHandler && channel.Ca()) {
                  if (ciHandler->Process()) {
                     if (tunerStatus != tsCam) {//XXX TODO update in case the CA descriptors have changed
                        uchar buffer[2048];
@@ -773,11 +773,15 @@ bool cDvbDevice::SetPlayMode(ePlayMode PlayMode)
          CHECK(ioctl(fd_audio, AUDIO_SET_MUTE, false));
          if (siProcessor)
             siProcessor->SetStatus(true);
+         if (ciHandler)
+            ciHandler->SetEnabled(true);
          break;
     case pmAudioVideo:
     case pmAudioOnlyBlack:
          if (siProcessor)
             siProcessor->SetStatus(false);
+         if (ciHandler)
+            ciHandler->SetEnabled(false);
          CHECK(ioctl(fd_video, VIDEO_SET_BLANK, true));
          CHECK(ioctl(fd_audio, AUDIO_SELECT_SOURCE, AUDIO_SOURCE_MEMORY));
          CHECK(ioctl(fd_audio, AUDIO_SET_AV_SYNC, PlayMode == pmAudioVideo));
@@ -788,6 +792,8 @@ bool cDvbDevice::SetPlayMode(ePlayMode PlayMode)
     case pmAudioOnly:
          if (siProcessor)
             siProcessor->SetStatus(false);
+         if (ciHandler)
+            ciHandler->SetEnabled(false);
          CHECK(ioctl(fd_video, VIDEO_SET_BLANK, true));
          CHECK(ioctl(fd_audio, AUDIO_STOP, true));
          CHECK(ioctl(fd_audio, AUDIO_CLEAR_BUFFER));
@@ -799,6 +805,8 @@ bool cDvbDevice::SetPlayMode(ePlayMode PlayMode)
     case pmExtern_THIS_SHOULD_BE_AVOIDED:
          if (siProcessor)
             siProcessor->SetStatus(false);
+         if (ciHandler)
+            ciHandler->SetEnabled(false);
          close(fd_video);
          close(fd_audio);
          fd_video = fd_audio = -1;
