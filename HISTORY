@@ -402,3 +402,5 @@ Video Disk Recorder Revision History
 - Support for DVB-C (thanks to Hans-Peter Raschke and Peter Hofmann).
   See the INSTALL file for more information about the use of VDR with cable.
 - Fixed an occasional segfault in the EIT processor.
+- A value of '0' for the EPGScanTimeout setup parameter now completely turns off
+  scanning for EPG data on both single and multiple card systems.

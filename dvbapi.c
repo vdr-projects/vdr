@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.59 2001/02/20 17:40:57 kls Exp $
+ * $Id: dvbapi.c 1.60 2001/02/24 12:18:30 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -2395,7 +2395,7 @@ void cEITScanner::Activity(void)
 
 void cEITScanner::Process(void)
 {
-  if (Channels.MaxNumber() > 1) {
+  if (Setup.EPGScanTimeout && Channels.MaxNumber() > 1) {
      time_t now = time(NULL);
      if (now - lastScan > ScanTimeout && now - lastActivity > ActivityTimeout) {
         for (int i = 0; i < cDvbApi::NumDvbApis; i++) {

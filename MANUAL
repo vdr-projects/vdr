@@ -326,7 +326,8 @@ Video Disk Recorder User's Manual
   EPGScanTimeout = 5     The time (in hours) of user inactivity after which the
                          DVB card in a single card system starts scanning channels
                          to keep the EPG up-to-date.
-                         A value of '0' turns off scanning on a single card system.
+                         A value of '0' completely turns off scanning on both single
+                         and multiple card systems.
 
   SVDRPTimeout = 300     The time (in seconds) of inactivity on an open SVDRP
                          connection after which the connection is automatically
