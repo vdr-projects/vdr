@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.102 2002/06/16 12:57:31 kls Exp $
+ * $Id: config.c 1.103 2002/08/04 12:03:11 kls Exp $
  */
 
 #include "config.h"
@@ -301,7 +301,7 @@ bool cChannel::Switch(cDevice *Device, bool Log)
      if (Log)
         isyslog("switching to channel %d", number);
      for (int i = 3; i--;) {
-         switch (Device->SetChannel(number, frequency, polarization, diseqc, srate, vpid, apid1, tpid, ca, pnr)) {
+         switch (Device->SetChannel(this)) {
            case scrOk:         return true;
            case scrNoTransfer: if (Interface)
                                   Interface->Error(tr("Can't start Transfer Mode!"));
@@ -1018,7 +1018,7 @@ cSetup::cSetup(void)
   DefaultLifetime = 50;
   UseSubtitle = 1;
   RecordingDirs = 1;
-  VideoFormat = VIDEO_FORMAT_4_3;
+  VideoFormat = 0;
   RecordDolbyDigital = 1;
   ChannelInfoPos = 0;
   OSDwidth = 52;

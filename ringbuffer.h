@@ -4,15 +4,14 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ringbuffer.h 1.6 2002/06/16 11:30:07 kls Exp $
+ * $Id: ringbuffer.h 1.7 2002/08/04 10:27:30 kls Exp $
  */
 
 #ifndef __RINGBUFFER_H
 #define __RINGBUFFER_H
 
 #include "thread.h"
-
-typedef unsigned char uchar;//XXX+
+#include "tools.h"
 
 class cRingBuffer {
 private:

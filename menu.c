@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.202 2002/07/14 10:55:37 kls Exp $
+ * $Id: menu.c 1.203 2002/08/03 09:55:44 kls Exp $
  */
 
 #include "menu.h"
@@ -1628,7 +1628,7 @@ eOSState cMenuSetupDVB::ProcessKey(eKeys Key)
   if (state == osBack && Key == kOk) {
      if (Setup.PrimaryDVB != oldPrimaryDVB) {
         state = osSwitchDvb;
-        cDevice::PrimaryDevice()->SetVideoFormat(Setup.VideoFormat ? VIDEO_FORMAT_16_9 : VIDEO_FORMAT_4_3);
+        cDevice::PrimaryDevice()->SetVideoFormat(Setup.VideoFormat);
         }
      }
   return state;

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.h 1.5 2001/06/23 14:06:59 kls Exp $
+ * $Id: remux.h 1.6 2002/08/04 10:27:07 kls Exp $
  */
 
 #ifndef __REMUX_H
@@ -12,6 +12,7 @@
 
 #include <time.h> //XXX FIXME: DVB/ost/include/ost/dmx.h should include <time.h> itself!!!
 #include <ost/dmx.h>
+#include "tools.h"
 
 // Picture types:
 #define NO_PICTURE 0
@@ -24,7 +25,6 @@
 
 #define RESULTBUFFERSIZE (MINVIDEODATA * 4)
 
-typedef unsigned char uchar;
 class cTS2PES;
 
 class cRemux {

@@ -1152,5 +1152,122 @@ of these functions, and VDR/osd.c to see how VDR opens the OSD and sets up
 its windows and color depths).
 <!--X1.1.5--></td></tr></table>
 
+<!--X1.1.6--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+<hr><h2>Devices</h2>
+
+<center><i><b>Expanding the possibilities</b></i></center><p>
+
+By default VDR is based on using DVB PCI cards that are supported by the
+LinuxDVB driver. However, a plugin can implement additional devices that
+can be used as sources of MPEG data for viewing or recording, and also
+as output devices for replaying. Such a device can be a physical card
+that is installed in the PC (like, for instance, an MPEG encoder card that
+allows the analog signal of a proprietary set-top box to be integrated
+into a VDR system; or an analog TV receiver card, which does the MPEG encoding
+"on the fly" - assuming your machine is fast enough), or just a software program that takes an MPEG data
+stream and displays it, for instance, on an existing graphics adapter.
+<p>
+To implement an additional device, a plugin must derive a class from cDevice:
+
+<p><table><tr><td bgcolor=#F0F0F0><pre><br>
+#include &lt;vdr/device.h&gt;
+
+class cMyDevice : public cDevice {
+  ...
+  };
+</pre></td></tr></table><p>
+
+The derived class must implement several virtual functions, according to
+the abilities this new class of devices can provide. See the comments in the
+file <tt>VDR/device.h</tt> for more information on the various functions,
+and also <tt>VDR/dvbdevice.[hc]</tt> for details on the implementation of
+the <tt>cDvbDevice</tt>, which is used to access the DVB PCI cards.
+<p>
+<b>Channel selection</b>
+<p>
+If the new device can receive, it most likely needs to provide a way of
+selecting which channel it shall tune to:
+
+<p><table><tr><td bgcolor=#F0F0F0><pre><br>
+virtual bool SetChannelDevice(const cChannel *Channel);
+</pre></td></tr></table><p>
+
+This function will be called with the desired channel and shall return whether
+tuning to it was successful.
+<p>
+<b>Recording</b>
+<p>
+A device that can be used for recording must implement the functions
+
+<p><table><tr><td bgcolor=#F0F0F0><pre><br>
+virtual bool SetPid(cPidHandle *Handle, int Type, bool On);
+virtual bool OpenDvr(void);
+virtual void CloseDvr(void);
+virtual int GetTSPacket(uchar *Data);
+</pre></td></tr></table><p>
+
+which allow VDR to set the PIDs that shall be recorded, set up the device fro
+recording (and shut it down again), and receive the MPEG data stream. The data
+must be delivered in the form of a Transport Stream (TS), which consists of
+packets that are all 188 bytes in size. Each call to <tt>GetTSPacket()</tt>
+must deliver exactly one such packet (if one is currently available).
+<p>
+If this device allows receiving several different data streams, it can
+implement
+
+<p><table><tr><td bgcolor=#F0F0F0><pre><br>
+virtual bool CanBeReUsed(int Frequency, int Vpid);
+</pre></td></tr></table><p>
+
+to indicate this to VDR.
+<p>
+<b>Replaying</b>
+<p>
+The functions to implement replaying capabilites are
+
+<p><table><tr><td bgcolor=#F0F0F0><pre><br>
+virtual bool HasDecoder(void) const;
+virtual int SetPlayMode(bool On);
+virtual void TrickSpeed(int Speed);
+virtual void Clear(void);
+virtual void Play(void);
+virtual void Freeze(void);
+virtual void Mute(void);
+virtual void StillPicture(const uchar *Data, int Length);
+virtual int PlayVideo(const uchar *Data, int Length);
+</pre></td></tr></table><p>
+
+In addition, the following functions may be implemented to provide further
+functionality:
+
+<p><table><tr><td bgcolor=#F0F0F0><pre><br>
+virtual bool GrabImage(const char *FileName, bool Jpeg = true, int Quality = -1, int Si
+virtual void SetVideoFormat(bool VideoFormat16_9);
+virtual void SetVolumeDevice(int Volume);
+</pre></td></tr></table><p>
+
+<b>Initializing new devices</b>
+<p>
+A derived cDevice class shall implement a static function
+
+<p><table><tr><td bgcolor=#F0F0F0><pre><br>
+static bool Initialize(void);
+</pre></td></tr></table><p>
+
+in which it determines whether the necessary hardware to run this sort of
+device is actually present in this machine (or whatever other prerequisites
+might be important), and then creates as many device objects as necessary.
+See <tt>VDR/dvbdevice.c</tt> for the implementation of the <tt>cDvbDevice</tt>
+initialize function.
+<p>
+A plugin that adds devices to a VDR instance shall call this initializing
+function from its <a href="#Getting started"><tt>Start()</tt></a> function.
+<p>
+Nothing needs to be done to shut down the devices. VDR will automatically
+shut down (delete) all devices when the program terminates. It is therefore
+important that the devices are created on the heap, using the <tt>new</tt>
+operator!
+<!--X1.1.6--></td></tr></table>
+
 </body>
 </html>

@@ -4,10 +4,11 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: eitscan.c 1.3 2002/06/22 13:02:40 kls Exp $
+ * $Id: eitscan.c 1.4 2002/07/28 15:10:23 kls Exp $
  */
 
 #include "eitscan.h"
+#include <stdlib.h>
 
 cEITScanner::cEITScanner(void)
 {
