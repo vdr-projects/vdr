@@ -3160,7 +3160,7 @@ Video Disk Recorder Revision History
   right day of week for timers in the future.
 - Some improvements to cPoller (thanks to Marco Schlüßler).
 
-2005-01-04: Version 1.3.18
+2005-01-09: Version 1.3.18
 
 - Removed an unused variable from cTimer::GetWDayFromMDay() (thanks to Wayne Keer
   for reporting this one).
@@ -3285,3 +3285,5 @@ Video Disk Recorder Revision History
   "DVB/Use Dolby Digital". It now controls whether Dolby Digital is recorded and
   whether an available DD audio track will appear in the "Audio" menu.
 - Added support for circular polarization (thanks to Jonan Santiago).
+- Thanks to Werner Fink, Reinhard Nissl, Sascha Volkenandt and Bjørnar Nilsen for
+  their support in testing and fine tuning this version.
