@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 1.21 2004/01/25 16:02:13 kls Exp $
+ * $Id: channels.c 1.22 2004/01/26 16:28:35 kls Exp $
  */
 
 #include "channels.h"
@@ -322,6 +322,8 @@ static int IntArrayToString(char *s, const int *a, int Base = 10, const char n[]
         q += sprintf(q, Base == 16 ? "%s%X" : "%s%d", i ? "," : "", a[i]);
         if (a[i] && n && *n[i])
            q += sprintf(q, "=%s", n[i]);
+        if (!a[i])
+           break;
         i++;
         }
   *q = 0;
@@ -375,8 +377,11 @@ void cChannel::SetCaIds(const int *CaIds)
      IntArrayToString(OldCaIdsBuf, caids, 16);
      IntArrayToString(NewCaIdsBuf, CaIds, 16);
      dsyslog("changing caids of channel %d from %s to %s", Number(), OldCaIdsBuf, NewCaIdsBuf);
-     for (int i = 0; i <= MAXCAIDS && CaIds[i]; i++) // <= to copy the terminating 0
+     for (int i = 0; i <= MAXCAIDS; i++) { // <= to copy the terminating 0
          caids[i] = CaIds[i];
+         if (!CaIds[i])
+            break;
+         }
      modification |= CHANNELMOD_CA;
      Channels.SetModified();
      }
