@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.117 2005/02/06 12:30:14 kls Exp $
+ * $Id: dvbdevice.c 1.118 2005/02/08 11:20:30 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -866,8 +866,10 @@ void cDvbDevice::SetAudioTrackDevice(eTrackType Type)
   const tTrackId *TrackId = GetTrack(Type);
   if (TrackId && TrackId->id) {
      if (IS_AUDIO_TRACK(Type)) {
-        pidHandles[ptAudio].pid = TrackId->id;
-        SetPid(&pidHandles[ptAudio], ptAudio, true);
+        if (pidHandles[ptAudio].pid) {
+           pidHandles[ptAudio].pid = TrackId->id;
+           SetPid(&pidHandles[ptAudio], ptAudio, true);
+           }
         }
      else if (IS_DOLBY_TRACK(Type)) {
         // Currently this works only in Transfer Mode
