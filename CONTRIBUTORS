@@ -641,6 +641,8 @@ Teemu Rantanen <tvr@iki.fi>
  for reporting a problem in calculation of channel ids for tv stations that use
  the undefined NID value 0
  for adding EPG preferred languages
+ for reporting and helping to debug resetting the EPG data versions after changing
+ the preferred languages
 
 Jan Ekholm <chakie@infa.abo.fi>
  for adding/improving some Swedish language OSD texts

@@ -2571,3 +2571,8 @@ Video Disk Recorder Revision History
   scanned for channels during the next EPG scan. Note that only the satellite
   branches are tested, cable and terrestrial need to be tested by somebody who
   actually has such equipment.
+
+2004-01-11: Version 1.3.2
+
+- Fixed resetting the EPG data versions after changing the preferred languages
+  (thanks to Teemu Rantanen for reporting this one and helping to debug it).

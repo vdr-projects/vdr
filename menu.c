@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.279 2004/01/11 15:40:32 kls Exp $
+ * $Id: menu.c 1.280 2004/01/11 21:37:17 kls Exp $
  */
 
 #include "menu.h"
@@ -2068,10 +2068,6 @@ void cMenuSetupEPG::Setup(void)
 
 eOSState cMenuSetupEPG::ProcessKey(eKeys Key)
 {
-  int oldnumLanguages = numLanguages;
-  int oldSetSystemTime = data.SetSystemTime;
-
-  eOSState state = cMenuSetupBase::ProcessKey(Key);
   if (Key == kOk) {
      bool Modified = numLanguages != originalNumLanguages;
      if (!Modified) {
@@ -2085,7 +2081,12 @@ eOSState cMenuSetupEPG::ProcessKey(eKeys Key)
      if (Modified)
         cSchedules::ResetVersions();
      }
-  else if (Key != kNone) {
+
+  int oldnumLanguages = numLanguages;
+  int oldSetSystemTime = data.SetSystemTime;
+
+  eOSState state = cMenuSetupBase::ProcessKey(Key);
+  if (Key != kNone) {
      if (numLanguages != oldnumLanguages || data.SetSystemTime != oldSetSystemTime) {
         for (int i = oldnumLanguages; i < numLanguages; i++) {
             data.EPGLanguages[i] = 0;
