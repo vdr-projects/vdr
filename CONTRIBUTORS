@@ -176,8 +176,5 @@ Lauri Pesonen <lauri.pesonen@firsthop.com>
  for avoiding linking in 'libncurses' if compiling without DEBUG_OSD=1 and
  REMOTE=KBD
 
-Emil Naepflein <Emil.Naepflein@philosys.de>
- for his hint about the 'ftw()' library function
-
 Sergei Haller <Sergei.Haller@math.uni-giessen.de>
  for fixing the LastActivity timestamp after a shutdown prompt

@@ -900,9 +900,6 @@ Video Disk Recorder Revision History
   subdirectories for the recordings. This can be controlled through the
   "RecordingDirs" parameter in the "Setup" menu.
   See "MANUAL/Replaying a Recording" for details.
-- Now using a call to the 'ftw()' library function instead of an external 'find'
-  command to collect the recordings (thanks to Emil Naepflein for his hint about
-  this function).
 - Improved speed of setting the Help button texts.
 - Fixed handling file names that contain single quotes (') or dollar signs ($)
   in the call to the shutdown command (option '-s') and the recording command
