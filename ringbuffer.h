@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ringbuffer.h 1.15 2004/06/19 10:32:15 kls Exp $
+ * $Id: ringbuffer.h 1.16 2004/10/15 13:50:46 kls Exp $
  */
 
 #ifndef __RINGBUFFER_H
@@ -15,9 +15,7 @@
 
 class cRingBuffer {
 private:
-  cMutex mutex;
-  cCondVar readyForPut, readyForGet;
-  cMutex putMutex, getMutex;
+  cCondWait readyForPut, readyForGet;
   int putTimeout;
   int getTimeout;
   int size;
@@ -25,18 +23,18 @@ private:
   int overflowCount;
   int overflowBytes;
 protected:
+  pthread_t getThreadTid;
   int maxFill;//XXX
   int lastPercent;
   bool statistics;//XXX
+  void UpdatePercentage(int Fill);
   void WaitForPut(void);
   void WaitForGet(void);
   void EnablePut(void);
   void EnableGet(void);
   virtual void Clear(void) = 0;
   virtual int Available(void) = 0;
-  int Free(void) { return size - Available() - 1; }
-  void Lock(void) { mutex.Lock(); }
-  void Unlock(void) { mutex.Unlock(); }
+  virtual int Free(void) { return Size() - Available() - 1; }
   int Size(void) { return size; }
 public:
   cRingBuffer(int Size, bool Statistics = false);
@@ -46,20 +44,39 @@ public:
   };
 
 class cRingBufferLinear : public cRingBuffer {
+//#define DEBUGRINGBUFFERS
+#ifdef DEBUGRINGBUFFERS
+private:
+  int lastHead, lastTail;
+  int lastPut, lastGet;
+  static cRingBufferLinear *RBLS[];
+  static void AddDebugRBL(cRingBufferLinear *RBL);
+  static void DelDebugRBL(cRingBufferLinear *RBL);
+public:
+  static void PrintDebugRBL(void);
+#endif
 private:
   int margin, head, tail;
-  int lastGet;
+  int gotten;
   uchar *buffer;
-  pthread_t getThreadTid;
+  char *description;
 public:
-  cRingBufferLinear(int Size, int Margin = 0, bool Statistics = false);
+  cRingBufferLinear(int Size, int Margin = 0, bool Statistics = false, const char *Description = NULL);
     ///< Creates a linear ring buffer.
     ///< The buffer will be able to hold at most Size-Margin-1 bytes of data, and will
     ///< be guaranteed to return at least Margin bytes in one consecutive block.
+    ///< The optional Description is used for debugging only.
   virtual ~cRingBufferLinear();
   virtual int Available(void);
+  virtual int Free(void) { return Size() - Available() - 1 - margin; }
   virtual void Clear(void);
     ///< Immediately clears the ring buffer.
+  int Read(int FileHandle, int Max = 0);
+    ///< Reads at most Max bytes from FileHandle and stores them in the
+    ///< ring buffer. If Max is 0, reads as many bytes as possible.
+    ///< Only one actual read() call is done.
+    ///< \return Returns the number of bytes actually read and stored, or
+    ///< an error value from the actual read() call.
   int Put(const uchar *Data, int Count);
     ///< Puts at most Count bytes of Data into the ring buffer.
     ///< \return Returns the number of bytes actually stored.
@@ -67,7 +84,7 @@ public:
     ///< Gets data from the ring buffer.
     ///< The data will remain in the buffer until a call to Del() deletes it.
     ///< \return Returns a pointer to the data, and stores the number of bytes
-    ///< actually retrieved in Count. If the returned pointer is NULL, Count has no meaning.
+    ///< actually available in Count. If the returned pointer is NULL, Count has no meaning.
   void Del(int Count);
     ///< Deletes at most Count bytes from the ring buffer.
     ///< Count must be less or equal to the number that was returned by a previous
@@ -98,9 +115,12 @@ public:
 
 class cRingBufferFrame : public cRingBuffer {
 private:
+  cMutex mutex;
   cFrame *head;
   int currentFill;
   void Delete(cFrame *Frame);
+  void Lock(void) { mutex.Lock(); }
+  void Unlock(void) { mutex.Unlock(); }
 public:
   cRingBufferFrame(int Size, bool Statistics = false);
   virtual ~cRingBufferFrame();

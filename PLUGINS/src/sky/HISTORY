@@ -24,3 +24,7 @@ VDR Plugin 'sky' Revision History
 - Added automatic DST detection to getskyepg.pl.
 - Fixed handling receivers, so that a recording on the same channel
   won't interrupt an ongoing Transfer mode.
+
+2004-10-16: Version 0.3.1
+
+- Improved buffer handling.

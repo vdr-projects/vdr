@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.93 2004/06/19 13:48:00 kls Exp $
+ * $Id: dvbdevice.c 1.94 2004/10/15 13:07:52 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -78,8 +78,7 @@ private:
   bool useCa;
   time_t startTime;
   eTunerStatus tunerStatus;
-  cMutex mutex;
-  cCondVar newSet;
+  cCondWait newSet;
   bool SetFrontend(void);
   virtual void Action(void);
 public:
@@ -111,7 +110,7 @@ cDvbTuner::~cDvbTuner()
 {
   active = false;
   tunerStatus = tsIdle;
-  newSet.Broadcast();
+  newSet.Signal();
   Cancel(3);
 }
 
@@ -122,7 +121,7 @@ bool cDvbTuner::IsTunedTo(const cChannel *Channel) const
 
 void cDvbTuner::Set(const cChannel *Channel, bool Tune, bool UseCa)
 {
-  cMutexLock MutexLock(&mutex);
+  Lock();
   if (Tune)
      tunerStatus = tsSet;
   else if (tunerStatus == tsCam)
@@ -131,7 +130,8 @@ void cDvbTuner::Set(const cChannel *Channel, bool Tune, bool UseCa)
   if (Channel->Ca() && tunerStatus != tsCam)
      startTime = time(NULL);
   channel = *Channel;
-  newSet.Broadcast();
+  Unlock();
+  newSet.Signal();
 }
 
 static unsigned int FrequencyToHz(unsigned int f)
@@ -252,7 +252,7 @@ void cDvbTuner::Action(void)
 {
   active = true;
   while (active) {
-        cMutexLock MutexLock(&mutex);
+        Lock();
         if (tunerStatus == tsSet)
            tunerStatus = SetFrontend() ? tsTuned : tsIdle;
         if (tunerStatus == tsTuned) {
@@ -267,7 +267,6 @@ void cDvbTuner::Action(void)
               if (event.status & FE_REINIT) {
                  tunerStatus = tsSet;
                  esyslog("ERROR: frontend %d was reinitialized - re-tuning", cardIndex);
-                 continue;
                  }
               }
            }
@@ -292,8 +291,9 @@ void cDvbTuner::Action(void)
            else if (tunerStatus > tsLocked)
               tunerStatus = tsLocked;
            }
+        Unlock();
         // in the beginning we loop more often to let the CAM connection start up fast
-        newSet.TimedWait(mutex, (ciHandler && (time(NULL) - startTime < 20)) ? 100 : 1000);
+        newSet.Wait((ciHandler && (time(NULL) - startTime < 20)) ? 100 : 1000);
         }
 }
 
@@ -1101,29 +1101,17 @@ bool cDvbDevice::OpenDvr(void)
 void cDvbDevice::CloseDvr(void)
 {
   if (fd_dvr >= 0) {
-     close(fd_dvr);
-     fd_dvr = -1;
      delete tsBuffer;
      tsBuffer = NULL;
+     close(fd_dvr);
+     fd_dvr = -1;
      }
 }
 
 bool cDvbDevice::GetTSPacket(uchar *&Data)
 {
   if (tsBuffer) {
-     int r = tsBuffer->Read();
-     if (r >= 0) {
-        Data = tsBuffer->Get();
-        return true;
-        }
-     else if (FATALERRNO) {
-        if (errno == EOVERFLOW)
-           esyslog("ERROR: DVB driver buffer overflow on device %d", CardIndex() + 1);
-        else {
-           LOG_ERROR;
-           return false;
-           }
-        }
+     Data = tsBuffer->Get();
      return true;
      }
   return false;

@@ -723,6 +723,7 @@ Sascha Volkenandt <sascha@akv-soft.de>
  for suggesting to ignore unused "none" color entries in XPM files written by
  some broken graphics tools
  for fixing a memory leak in theme description handling
+ for pointing out a "near miss" condition in cCondVar
 
 Malcolm Caldwell <malcolm.caldwell@ntu.edu.au>
  for modifying LOF handling to allow for C-band reception
@@ -1037,6 +1038,9 @@ Marco Schlüßler <marco@lordzodiac.de>
  for suggesting to avoiding flashing effects in the OSD of full featured DVB cards
  by explicitly clearing the OSD windows before opening them
  for fixing a possible NULL pointer assignment in cMenuText::SetText()
+ for doing some testing regarding buffer performance and giving me some hints that
+ finally lead to finding out that the basic problem causing buffer overflows was in
+ EnableGet()/EnablePut() being called too often
 
 Jürgen Schmitz <j.schmitz@web.de>
  for reporting a bug in displaying the current channel when switching via the SVDRP

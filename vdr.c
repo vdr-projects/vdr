@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.185 2004/07/27 07:21:22 kls Exp $
+ * $Id: vdr.c 1.186 2004/10/10 12:47:56 kls Exp $
  */
 
 #include <getopt.h>
@@ -516,6 +516,9 @@ int main(int argc, char *argv[])
            esyslog("emergency exit requested - shutting down");
            break;
            }
+#ifdef DEBUGRINGBUFFERS
+        cRingBufferLinear::PrintDebugRBL();
+#endif
         // Attach launched player control:
         cControl::Attach();
         // Make sure we have a visible programme in case device usage has changed:

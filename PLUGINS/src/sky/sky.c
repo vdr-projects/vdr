@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: sky.c 1.6 2004/02/15 14:59:46 kls Exp $
+ * $Id: sky.c 1.7 2004/10/16 09:10:06 kls Exp $
  */
 
 #include <sys/socket.h>
@@ -14,7 +14,7 @@
 #include <vdr/plugin.h>
 #include <vdr/sources.h>
 
-static const char *VERSION        = "0.3.0";
+static const char *VERSION        = "0.3.1";
 static const char *DESCRIPTION    = "Sky Digibox interface";
 
 // --- cDigiboxDevice --------------------------------------------------------
@@ -140,7 +140,7 @@ bool cDigiboxDevice::OpenDvr(void)
   CloseDvr();
   fd_dvr = open("/dev/video2", O_RDONLY | O_NONBLOCK);//XXX parameter???
   if (fd_dvr >= 0)
-     tsBuffer = new cTSBuffer(fd_dvr, KILOBYTE(256), CardIndex() + 1);
+     tsBuffer = new cTSBuffer(fd_dvr, MEGABYTE(2), CardIndex() + 1);
   return fd_dvr >= 0;
 }
 
@@ -157,24 +157,16 @@ void cDigiboxDevice::CloseDvr(void)
 bool cDigiboxDevice::GetTSPacket(uchar *&Data)
 {
   if (tsBuffer) {
-     int r = tsBuffer->Read();
-     if (r >= 0) {
-        Data = tsBuffer->Get();
-        if (Data) {
-           // insert the actual PIDs:
-           int Pid = (((uint16_t)Data[1] & PID_MASK_HI) << 8) | Data[2];
-           if (Pid == DUMMYAPID)
-              Pid = apid;
-           else if (Pid == DUMMYVPID)
-              Pid = vpid;
-           Data[1] = ((Pid >> 8) & 0xFF) | (Data[1] & ~PID_MASK_HI);
-           Data[2] = Pid & 0xFF;
-           }
-        return true;
-        }
-     else if (FATALERRNO) {
-        LOG_ERROR;
-        return false;
+     Data = tsBuffer->Get();
+     if (Data) {
+        // insert the actual PIDs:
+        int Pid = (((uint16_t)Data[1] & PID_MASK_HI) << 8) | Data[2];
+        if (Pid == DUMMYAPID)
+           Pid = apid;
+        else if (Pid == DUMMYVPID)
+           Pid = vpid;
+        Data[1] = ((Pid >> 8) & 0xFF) | (Data[1] & ~PID_MASK_HI);
+        Data[2] = Pid & 0xFF;
         }
      return true;
      }

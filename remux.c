@@ -8,62 +8,8 @@
  * the Linux DVB driver's 'tuxplayer' example and were rewritten to suit
  * VDR's needs.
  *
- * $Id: remux.c 1.18 2004/02/14 10:40:37 kls Exp $
+ * $Id: remux.c 1.19 2004/10/16 09:11:52 kls Exp $
  */
-
-/* The calling interface of the 'cRemux::Process()' function is defined
-   as follows:
-
-   'Data' points to a chunk of data that consists of 'Count' bytes.
-   The 'Process' function shall try to remultiplex as much of the
-   data as possible and return a pointer to the resulting buffer.
-   That buffer typically is different from the incoming 'Data',
-   but in the simplest case (when 'Process' does nothing) might
-   as well point to the original 'Data'. When returning, 'Count'
-   shall be set to the number of bytes that have been processed
-   (i.e. have been taken from 'Data'), while 'Result' indicates
-   how many bytes the returned buffer contains. 'PictureType' shall
-   be set to NO_PICTURE if the returned data does not start a new
-   picture, or one of I_FRAME, P_FRAME or B_FRAME if a new picture
-   starting point has been found. This also means that the returned
-   data buffer may contain at most one entire video frame, because
-   the next frame must be returned with its own value for 'PictureType'.
-
-   'Process' shall do it's best to keep the latency time as short
-   as possible in order to allow a quick start of VDR's "Transfer
-   mode" (displaying the signal of one DVB card on another card).
-   In order to do that, this function may decide to first pass
-   through the incoming data (almost) unprocessed, and make
-   actual processing kick in after a few seconds (if that is at
-   all possible for the algorithm). This may result in a non-
-   optimal stream at the beginning, which won't matter for normal
-   recordings but may make switching through encrypted channels
-   in "Transfer mode" faster.
-
-   In the resulting data stream, a new packet shall always be started
-   when a frame border is encountered. VDR needs this in order to
-   be able to detect and store the frame indexes, and to easily
-   display single frames in fast forward/back mode. The very first
-   data block returned shall be the starting point of an I_FRAME.
-   Everything before that shall be silently dropped.
-
-   If the incoming data is not enough to do remultiplexing, a value
-   of NULL shall be returned ('Result' has no meaning then). This
-   will tell the caller to wait for more data to be presented in
-   the next call. If NULL is returned and 'Count' is not 0, the
-   caller shall remove 'Count' bytes from the beginning of 'Data'
-   before the next call. This is the way 'Process' indicates that
-   it must skip that data.
-
-   Any data that is not used during this call will appear at the
-   beginning of the incoming 'Data' buffer at the next call, plus
-   any new data that has become available.
-
-   It is guaranteed that the caller will completely process any
-   returned data before the next call to 'Process'. That way, 'Process'
-   can dynamically allocate its return buffer and be sure the caller
-   doesn't keep any pointers into that buffer.
-*/
 
 #include "remux.h"
 #include <stdlib.h>
@@ -133,8 +79,7 @@ private:
   uint8_t check;
   int which;
   bool done;
-  uint8_t *resultBuffer;
-  int *resultCount;
+  cRingBufferLinear *resultBuffer;
   int tsErrors;
   int ccErrors;
   int ccCounter;
@@ -145,7 +90,7 @@ private:
   void write_ipack(const uint8_t *Data, int Count);
   void instant_repack(const uint8_t *Buf, int Count);
 public:
-  cTS2PES(uint8_t *ResultBuffer, int *ResultCount, int Size, uint8_t AudioCid = 0x00);
+  cTS2PES(cRingBufferLinear *ResultBuffer, int Size, uint8_t AudioCid = 0x00);
   ~cTS2PES();
   void ts_to_pes(const uint8_t *Buf); // don't need count (=188)
   void Clear(void);
@@ -153,10 +98,9 @@ public:
 
 uint8_t cTS2PES::headr[] = { 0x00, 0x00, 0x01 };
 
-cTS2PES::cTS2PES(uint8_t *ResultBuffer, int *ResultCount, int Size, uint8_t AudioCid)
+cTS2PES::cTS2PES(cRingBufferLinear *ResultBuffer, int Size, uint8_t AudioCid)
 {
   resultBuffer = ResultBuffer;
-  resultCount = ResultCount;
   size = Size;
   audioCid = AudioCid;
 
@@ -184,12 +128,9 @@ void cTS2PES::Clear(void)
 
 void cTS2PES::store(uint8_t *Data, int Count)
 {
-  if (*resultCount + Count > RESULTBUFFERSIZE) {
-     esyslog("ERROR: result buffer overflow (%d + %d > %d)", *resultCount, Count, RESULTBUFFERSIZE);
-     Count = RESULTBUFFERSIZE - *resultCount;
-     }
-  memcpy(resultBuffer + *resultCount, Data, Count);
-  *resultCount += Count;
+  int n = resultBuffer->Put(Data, Count);
+  if (n != Count)
+     esyslog("ERROR: result buffer overflow, dropped %d out of %d byte", Count - n, Count);
 }
 
 void cTS2PES::reset_ipack(void)
@@ -452,6 +393,8 @@ void cTS2PES::ts_to_pes(const uint8_t *Buf) // don't need count (=188)
 
 // --- cRemux ----------------------------------------------------------------
 
+#define RESULTBUFFERSIZE KILOBYTE(256)
+
 cRemux::cRemux(int VPid, int APid1, int APid2, int DPid1, int DPid2, bool ExitOnFailure)
 {
   vPid = VPid;
@@ -463,13 +406,15 @@ cRemux::cRemux(int VPid, int APid1, int APid2, int DPid1, int DPid2, bool ExitOn
   numUPTerrors = 0;
   synced = false;
   skipped = 0;
-  resultCount = resultDelivered = 0;
-  vTS2PES  =         new cTS2PES(resultBuffer, &resultCount, IPACKS);
-  aTS2PES1 =         new cTS2PES(resultBuffer, &resultCount, IPACKS, 0xC0);
-  aTS2PES2 = aPid2 ? new cTS2PES(resultBuffer, &resultCount, IPACKS, 0xC1) : NULL;
-  dTS2PES1 = dPid1 ? new cTS2PES(resultBuffer, &resultCount, IPACKS)       : NULL;
+  resultSkipped = 0;
+  resultBuffer = new cRingBufferLinear(RESULTBUFFERSIZE, IPACKS, false, "Result");
+  resultBuffer->SetTimeouts(0, 100);
+  vTS2PES  =         new cTS2PES(resultBuffer, IPACKS);
+  aTS2PES1 =         new cTS2PES(resultBuffer, IPACKS, 0xC0);
+  aTS2PES2 = aPid2 ? new cTS2PES(resultBuffer, IPACKS, 0xC1) : NULL;
+  dTS2PES1 = dPid1 ? new cTS2PES(resultBuffer, IPACKS)       : NULL;
   //XXX don't yet know how to tell apart primary and secondary DD data...
-  dTS2PES2 = /*XXX dPid2 ? new cTS2PES(resultBuffer, &resultCount, IPACKS) : XXX*/ NULL;
+  dTS2PES2 = /*XXX dPid2 ? new cTS2PES(resultBuffer, IPACKS) : XXX*/ NULL;
 }
 
 cRemux::~cRemux()
@@ -479,6 +424,7 @@ cRemux::~cRemux()
   delete aTS2PES2;
   delete dTS2PES1;
   delete dTS2PES2;
+  delete resultBuffer;
 }
 
 int cRemux::GetPid(const uchar *Data)
@@ -488,27 +434,32 @@ int cRemux::GetPid(const uchar *Data)
 
 int cRemux::GetPacketLength(const uchar *Data, int Count, int Offset)
 {
-  // Returns the entire length of the packet starting at offset, or -1 in case of error.
-  return (Offset + 5 < Count) ? (Data[Offset + 4] << 8) + Data[Offset + 5] + 6 : -1;
+  // Returns the length of the packet starting at Offset, or -1 if Count is
+  // too small to contain the entire packet.
+  int Length = (Offset + 5 < Count) ? (Data[Offset + 4] << 8) + Data[Offset + 5] + 6 : -1;
+  if (Length > 0 && Offset + Length <= Count)
+     return Length;
+  return -1;
 }
 
 int cRemux::ScanVideoPacket(const uchar *Data, int Count, int Offset, uchar &PictureType)
 {
   // Scans the video packet starting at Offset and returns its length.
   // If the return value is -1 the packet was not completely in the buffer.
-
   int Length = GetPacketLength(Data, Count, Offset);
-  if (Length > 0 && Offset + Length <= Count) {
-     int i = Offset + 8; // the minimum length of the video packet header
-     i += Data[i] + 1;   // possible additional header bytes
-     for (; i < Offset + Length; i++) {
-         if (Data[i] == 0 && Data[i + 1] == 0 && Data[i + 2] == 1) {
-            switch (Data[i + 3]) {
-              case SC_PICTURE: PictureType = (Data[i + 5] >> 3) & 0x07;
-                               return Length;
-              }
+  if (Length > 0) {
+     if (Length >= 8) {
+        int i = Offset + 8; // the minimum length of the video packet header
+        i += Data[i] + 1;   // possible additional header bytes
+        for (; i < Offset + Length; i++) {
+            if (Data[i] == 0 && Data[i + 1] == 0 && Data[i + 2] == 1) {
+               switch (Data[i + 3]) {
+                 case SC_PICTURE: PictureType = (Data[i + 5] >> 3) & 0x07;
+                                  return Length;
+                 }
+               }
             }
-         }
+        }
      PictureType = NO_PICTURE;
      return Length;
      }
@@ -517,28 +468,8 @@ int cRemux::ScanVideoPacket(const uchar *Data, int Count, int Offset, uchar &Pic
 
 #define TS_SYNC_BYTE 0x47
 
-uchar *cRemux::Process(const uchar *Data, int &Count, int &Result, uchar *PictureType)
+int cRemux::Put(const uchar *Data, int Count)
 {
-  uchar dummyPictureType;
-  if (!PictureType)
-     PictureType = &dummyPictureType;
-
-/*XXX
-  // test recording the raw TS:
-  Result = Count;
-  *PictureType = I_FRAME;
-  return Data;
-XXX*/
-
-  // Remove any previously delivered data from the result buffer:
-
-  if (resultDelivered) {
-     if (resultDelivered < resultCount)
-        memmove(resultBuffer, resultBuffer + resultDelivered, resultCount - resultDelivered);
-     resultCount -= resultDelivered;
-     resultDelivered = 0;
-     }
-
   int used = 0;
 
   // Make sure we are looking at a TS packet:
@@ -560,6 +491,8 @@ XXX*/
          break;
       if (Data[i] != TS_SYNC_BYTE)
          break;
+      if (resultBuffer->Free() < IPACKS)
+         break;
       int pid = GetPid(Data + i + 1);
       if (Data[i + 3] & 0x10) { // got payload
          if      (pid == vPid)              vTS2PES->ts_to_pes(Data + i);
@@ -569,31 +502,9 @@ XXX*/
          else if (pid == dPid2 && dTS2PES2) dTS2PES2->ts_to_pes(Data + i);
          }
       used += TS_SIZE;
-      if (resultCount > (int)sizeof(resultBuffer) / 2)
-         break;
       }
-  Count = used;
-
-/*XXX
-  // test recording without determining the real frame borders:
-  *PictureType = I_FRAME;
-  Result = resultDelivered = resultCount;
-  return Result ? resultBuffer : NULL;
-XXX*/
-
-  // Special VPID case to enable recording radio channels:
-
-  if (vPid == 0 || vPid == 1 || vPid == 0x1FFF) {
-     // XXX actually '0' should be enough, but '1' must be used with encrypted channels (driver bug?)
-     // XXX also allowing 0x1FFF to not break Michael Paar's original patch,
-     // XXX but it would probably be best to only use '0'
-     *PictureType = I_FRAME;
-     Result = resultDelivered = resultCount;
-     return Result ? resultBuffer : NULL;
-     }
 
   // Check if we're getting anywhere here:
-
   if (!synced && skipped >= 0) {
      if (skipped > MAXNONUSEFULDATA) {
         esyslog("ERROR: no useful data seen within %d byte of video stream", skipped);
@@ -602,77 +513,112 @@ XXX*/
            cThread::EmergencyExit(true);
         }
      else
-        skipped += Count;
+        skipped += used;
+     }
+
+  return used;
+}
+
+uchar *cRemux::Get(int &Count, uchar *PictureType)
+{
+  // Remove any previously skipped data from the result buffer:
+
+  if (resultSkipped > 0) {
+     resultBuffer->Del(resultSkipped);
+     resultSkipped = 0;
+     }
+
+#if 0
+  // Test recording without determining the real frame borders:
+  if (PictureType)
+     *PictureType = I_FRAME;
+  return resultBuffer->Get(Count);
+#endif
+
+  // Special VPID case to enable recording radio channels:
+
+  if (vPid == 0 || vPid == 1 || vPid == 0x1FFF) {
+     // XXX actually '0' should be enough, but '1' must be used with encrypted channels (driver bug?)
+     // XXX also allowing 0x1FFF to not break Michael Paar's original patch,
+     // XXX but it would probably be best to only use '0'
+     if (PictureType)
+        *PictureType = I_FRAME;
+     return resultBuffer->Get(Count);
      }
 
   // Check for frame borders:
 
-  *PictureType = NO_PICTURE;
+  if (PictureType)
+     *PictureType = NO_PICTURE;
 
-  if (resultCount >= MINVIDEODATA) {
-     for (int i = 0; i < resultCount; i++) {
-         if (resultBuffer[i] == 0 && resultBuffer[i + 1] == 0 && resultBuffer[i + 2] == 1) {
-            switch (resultBuffer[i + 3]) {
-              case VIDEO_STREAM_S ... VIDEO_STREAM_E:
-                   {
-                     uchar pt = NO_PICTURE;
-                     int l = ScanVideoPacket(resultBuffer, resultCount, i, pt);
-                     if (l < 0)
-                        return NULL; // no useful data found, wait for more
-                     if (pt != NO_PICTURE) {
-                        if (pt < I_FRAME || B_FRAME < pt) {
-                           esyslog("ERROR: unknown picture type '%d'", pt);
-                           if (++numUPTerrors > MAXNUMUPTERRORS && exitOnFailure)
-                              cThread::EmergencyExit(true);
-                           }
-                        else if (!synced) {
-                           if (pt == I_FRAME) {
-                              resultDelivered = i; // will drop everything before this position
-                              SetBrokenLink(resultBuffer + i, l);
-                              synced = true;
-                              }
-                           else {
-                              resultDelivered = i + l; // will drop everything before and including this packet
-                              return NULL;
-                              }
-                           }
+  Count = 0;
+  uchar *resultData = NULL;
+  int resultCount = 0;
+  uchar *data = resultBuffer->Get(resultCount);
+  if (data) {
+     for (int i = 0; i < resultCount - 3; i++) {
+         if (data[i] == 0 && data[i + 1] == 0 && data[i + 2] == 1) {
+            int l = 0;
+            uchar StreamType = data[i + 3];
+            if (VIDEO_STREAM_S <= StreamType && StreamType <= VIDEO_STREAM_E) {
+               uchar pt = NO_PICTURE;
+               l = ScanVideoPacket(data, resultCount, i, pt);
+               if (l < 0)
+                  return resultData;
+               if (pt != NO_PICTURE) {
+                  if (pt < I_FRAME || B_FRAME < pt) {
+                     esyslog("ERROR: unknown picture type '%d'", pt);
+                     if (++numUPTerrors > MAXNUMUPTERRORS && exitOnFailure)
+                        cThread::EmergencyExit(true);
+                     }
+                  else if (!synced) {
+                     if (pt == I_FRAME) {
+                        if (PictureType)
+                           *PictureType = pt;
+                        resultSkipped = i; // will drop everything before this position
+                        SetBrokenLink(data + i, l);
+                        synced = true;
                         }
-                     if (synced) {
-                        *PictureType = pt;
-                        Result = l;
-                        uchar *p = resultBuffer + resultDelivered;
-                        resultDelivered += l;
-                        return p;
-                        }
-                     else {
-                        resultDelivered = i + l; // will drop everything before and including this packet
-                        return NULL;
-                        }
-                   }
-                   break;
-              case PRIVATE_STREAM1:
-              case AUDIO_STREAM_S ... AUDIO_STREAM_E:
-                   {
-                     int l = GetPacketLength(resultBuffer, resultCount, i);
-                     if (l < 0)
-                        return NULL; // no useful data found, wait for more
-                     if (synced) {
-                        Result = l;
-                        uchar *p = resultBuffer + resultDelivered;
-                        resultDelivered += l;
-                        return p;
-                        }
-                     else {
-                        resultDelivered = i + l; // will drop everything before and including this packet
-                        return NULL;
-                        }
-                   }
-                   break;
-              }
+                     }
+                  else if (Count)
+                     return resultData;
+                  else if (PictureType)
+                     *PictureType = pt;
+                  }
+               }
+            else { //if (AUDIO_STREAM_S <= StreamType && StreamType <= AUDIO_STREAM_E || StreamType == PRIVATE_STREAM1) {
+               l = GetPacketLength(data, resultCount, i);
+               if (l < 0)
+                  return resultData;
+               }
+            if (synced) {
+               if (!Count)
+                  resultData = data + i;
+               Count += l;
+               }
+            else
+               resultSkipped = i;
+            if (l > 0)
+               i += l - 1; // the loop increments, too
             }
          }
      }
-  return NULL; // no useful data found, wait for more
+  return resultData;
+}
+
+void cRemux::Del(int Count)
+{
+  resultBuffer->Del(Count);
+}
+
+void cRemux::Clear(void)
+{
+  if (vTS2PES)  vTS2PES->Clear();
+  if (aTS2PES1) aTS2PES1->Clear();
+  if (aTS2PES2) aTS2PES2->Clear();
+  if (dTS2PES1) dTS2PES1->Clear();
+  if (dTS2PES2) dTS2PES2->Clear();
+  resultBuffer->Clear();
 }
 
 void cRemux::SetBrokenLink(uchar *Data, int Length)

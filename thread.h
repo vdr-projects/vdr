@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.h 1.20 2004/01/03 16:58:50 kls Exp $
+ * $Id: thread.h 1.21 2004/10/15 13:16:39 kls Exp $
  */
 
 #ifndef __THREAD_H
@@ -13,6 +13,23 @@
 #include <pthread.h>
 #include <stdio.h>
 #include <sys/types.h>
+
+class cCondWait {
+private:
+  pthread_mutex_t mutex;
+  pthread_cond_t cond;
+  bool signaled;
+public:
+  cCondWait(void);
+  ~cCondWait();
+  bool Wait(int TimeoutMs = 0);
+       ///< Waits at most TimeoutMs milliseconds for a call to Signal(), or
+       ///< forever if TimeoutMs is 0.
+       ///< \return Returns true if Signal() has been called, false it the given
+       ///< timeout has expired.
+  void Signal(void);
+       ///< Signals a caller of Wait() that the condition it is waiting for is met.
+  };
 
 class cMutex;
 
@@ -25,7 +42,6 @@ public:
   void Wait(cMutex &Mutex);
   bool TimedWait(cMutex &Mutex, int TimeoutMs);
   void Broadcast(void);
-  //void Signal(void);
   };
 
 class cRwLock {
