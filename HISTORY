@@ -2221,3 +2221,5 @@ Video Disk Recorder Revision History
   breaking off replay in case the user hits "Play" or "Pause" too soon (thanks
   to Karim Afifi for reporting ths one).
 - Some corrections to the Catalanian OSD texts (thanks to Jordi Vilà).
+- Single event timers are now deleted if the recording they are doing is
+  deleted before the timer ends.

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.250 2003/05/29 09:35:28 kls Exp $
+ * $Id: menu.c 1.251 2003/05/29 11:35:52 kls Exp $
  */
 
 #include "menu.h"
@@ -1862,6 +1862,11 @@ eOSState cMenuRecordings::Delete(void)
               if (timer) {
                  timer->Skip();
                  cRecordControls::Process(time(NULL));
+                 if (timer->IsSingleEvent()) {
+                    int Index = timer->Index();
+                    Timers.Del(timer);
+                    isyslog("timer %d deleted", Index + 1);
+                    }
                  Timers.Save();
                  }
               }
