@@ -2438,3 +2438,10 @@ Video Disk Recorder Revision History
 
 - Changed thread handling to make it work with NPTL ("Native Posix Thread Library").
   Thanks to Jon Burgess, Andreas Schultz, Werner Fink and Stefan Huelswitt.
+- The cThread class now accepts a 'Description' parameter, which is used to log
+  the beginning and end of the thread, together with its process and thread id.
+  For descriptions that need additional parameters you can use the function
+  cThread::SetDescription(), which accepts 'printf()' like arguments.
+  Existing plugins that use threads should be changed to use this functionality
+  instead of explicit 'dsyslog()' calls inside their Action() function in order
+  to support logging the thread ids.

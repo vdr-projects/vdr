@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: rcu.c 1.5 2003/05/02 14:42:40 kls Exp $
+ * $Id: rcu.c 1.6 2003/10/18 11:34:30 kls Exp $
  */
 
 #include "rcu.h"
@@ -18,6 +18,7 @@
 
 cRcuRemote::cRcuRemote(char *DeviceName)
 :cRemote("RCU")
+,cThread("RCU remote control")
 {
   dp = 0;
   mode = modeB;
@@ -91,8 +92,6 @@ void cRcuRemote::Action(void)
     unsigned char raw[6];
     } buffer;
 #pragma pack()
-
-  dsyslog("RCU remote control thread started (pid=%d)", getpid());
 
   time_t LastCodeRefresh = 0;
   int FirstTime = 0;

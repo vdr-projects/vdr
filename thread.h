@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.h 1.16 2003/10/18 10:29:25 kls Exp $
+ * $Id: thread.h 1.17 2003/10/18 12:13:10 kls Exp $
  */
 
 #ifndef __THREAD_H
@@ -47,6 +47,7 @@ private:
   pthread_t parentTid, childTid;
   cMutex mutex;
   bool running;
+  char *description;
   static bool emergencyExitRequested;
   static bool signalHandlerInstalled;
   static void SignalHandler(int signum);
@@ -58,8 +59,9 @@ protected:
   virtual void Action(void) = 0;
   void Cancel(int WaitSeconds = 0);
 public:
-  cThread(void);
+  cThread(const char *Description = NULL);
   virtual ~cThread();
+  void SetDescription(const char *Description, ...);
   bool Start(void);
   bool Active(void);
   static bool EmergencyExit(bool Request = false);

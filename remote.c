@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remote.c 1.38 2003/05/02 10:49:50 kls Exp $
+ * $Id: remote.c 1.39 2003/10/18 11:35:32 kls Exp $
  */
 
 #include "remote.h"
@@ -197,6 +197,7 @@ bool cKbdRemote::rawMode = false;
 
 cKbdRemote::cKbdRemote(void)
 :cRemote("KBD")
+,cThread("KBD remote control")
 {
   active = false;
   tcgetattr(STDIN_FILENO, &savedTm);
@@ -245,7 +246,6 @@ int cKbdRemote::MapCodeToFunc(uint64 Code)
 
 void cKbdRemote::Action(void)
 {
-  dsyslog("KBD remote control thread started (pid=%d)", getpid());
   cPoller Poller(STDIN_FILENO);
   active = true;
   while (active) {
@@ -285,5 +285,4 @@ void cKbdRemote::Action(void)
                  }
            }
         }
-  dsyslog("KBD remote control thread ended (pid=%d)", getpid());
 }

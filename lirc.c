@@ -6,7 +6,7 @@
  *
  * LIRC support added by Carsten Koch <Carsten.Koch@icem.de>  2000-06-16.
  *
- * $Id: lirc.c 1.6 2003/04/27 11:39:47 kls Exp $
+ * $Id: lirc.c 1.7 2003/10/18 11:34:02 kls Exp $
  */
 
 #include "lirc.h"
@@ -20,6 +20,7 @@
 
 cLircRemote::cLircRemote(char *DeviceName)
 :cRemote("LIRC")
+,cThread("LIRC remote control")
 {
   struct sockaddr_un addr;
   addr.sun_family = AF_UNIX;
@@ -49,8 +50,6 @@ bool cLircRemote::Ready(void)
 
 void cLircRemote::Action(void)
 {
-  dsyslog("LIRC remote control thread started (pid=%d)", getpid());
-
   int FirstTime = 0;
   int LastTime = 0;
   char buf[LIRC_BUFFER_SIZE];

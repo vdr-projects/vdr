@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.47 2003/08/15 12:34:36 kls Exp $
+ * $Id: device.c 1.48 2003/10/18 12:19:39 kls Exp $
  */
 
 #include "device.h"
@@ -35,6 +35,8 @@ cDevice *cDevice::primaryDevice = NULL;
 cDevice::cDevice(void)
 {
   cardIndex = nextCardIndex++;
+
+  SetDescription("receiver on device %d", CardIndex() + 1);
 
   SetVideoFormat(Setup.VideoFormat);
 
@@ -665,8 +667,6 @@ bool cDevice::Receiving(bool CheckAny) const
 
 void cDevice::Action(void)
 {
-  dsyslog("receiver thread started on device %d (pid=%d)", CardIndex() + 1, getpid());
-
   if (OpenDvr()) {
      active = true;
      for (; active;) {
@@ -689,8 +689,6 @@ void cDevice::Action(void)
          }
      CloseDvr();
      }
-
-  dsyslog("receiver thread ended on device %d (pid=%d)", CardIndex() + 1, getpid());
 }
 
 bool cDevice::OpenDvr(void)

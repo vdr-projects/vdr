@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: transfer.c 1.14 2003/08/31 12:19:16 kls Exp $
+ * $Id: transfer.c 1.15 2003/10/18 11:36:03 kls Exp $
  */
 
 #include "transfer.h"
@@ -19,6 +19,7 @@
 
 cTransfer::cTransfer(int VPid, int APid1, int APid2, int DPid1, int DPid2)
 :cReceiver(0, -1, 5, VPid, APid1, APid2, DPid1, DPid2)
+,cThread("transfer")
 {
   ringBuffer = new cRingBufferLinear(VIDEOBUFSIZE, TS_SIZE * 2, true);
   remux = new cRemux(VPid, APid1, APid2, DPid1, DPid2);
@@ -66,8 +67,6 @@ void cTransfer::Receive(uchar *Data, int Length)
 
 void cTransfer::Action(void)
 {
-  dsyslog("transfer thread started (pid=%d)", getpid());
-
   int PollTimeouts = 0;
   active = true;
   while (active) {
@@ -125,8 +124,6 @@ void cTransfer::Action(void)
         else
            usleep(1); // this keeps the CPU load low
         }
-
-  dsyslog("transfer thread ended (pid=%d)", getpid());
 }
 
 void cTransfer::StripAudioPackets(uchar *b, int Length, uchar Except)

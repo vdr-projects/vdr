@@ -4,12 +4,14 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 1.26 2003/10/18 10:29:25 kls Exp $
+ * $Id: thread.c 1.27 2003/10/18 12:14:55 kls Exp $
  */
 
 #include "thread.h"
 #include <errno.h>
+#include <malloc.h>
 #include <signal.h>
+#include <stdarg.h>
 #include <sys/resource.h>
 #include <sys/time.h>
 #include <sys/wait.h>
@@ -118,7 +120,7 @@ void cMutex::Unlock(void)
 bool cThread::signalHandlerInstalled = false;
 bool cThread::emergencyExitRequested = false;
 
-cThread::cThread(void)
+cThread::cThread(const char *Description)
 {
   if (!signalHandlerInstalled) {
      signal(SIGIO, SignalHandler);
@@ -126,10 +128,25 @@ cThread::cThread(void)
      }
   running = false;
   parentTid = childTid = 0;
+  description = NULL;
+  SetDescription(Description);
 }
 
 cThread::~cThread()
 {
+  free(description);
+}
+
+void cThread::SetDescription(const char *Description, ...)
+{
+  free(description);
+  description = NULL;
+  if (Description) {
+     va_list ap;
+     va_start(ap, Description);
+     vasprintf(&description, Description, ap);
+     va_end(ap);
+     }
 }
 
 void cThread::SignalHandler(int signum)
@@ -140,7 +157,11 @@ void cThread::SignalHandler(int signum)
 void *cThread::StartThread(cThread *Thread)
 {
   Thread->childTid = pthread_self();
+  if (Thread->description)
+     dsyslog("%s thread started (pid=%d, tid=%ld)", Thread->description, getpid(), Thread->childTid);
   Thread->Action();
+  if (Thread->description)
+     dsyslog("%s thread ended (pid=%d, tid=%ld)", Thread->description, getpid(), Thread->childTid);
   Thread->childTid = 0;
   return NULL;
 }

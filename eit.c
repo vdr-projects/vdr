@@ -16,7 +16,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.c 1.80 2003/10/12 11:05:42 kls Exp $
+ * $Id: eit.c 1.81 2003/10/18 12:24:18 kls Exp $
  ***************************************************************************/
 
 #include "eit.h"
@@ -1075,6 +1075,7 @@ time_t cSIProcessor::lastDump = time(NULL);
 
 /**  */
 cSIProcessor::cSIProcessor(const char *FileName)
+:cThread("EIT processing")
 {
    fileName = strdup(FileName);
    masterSIProcessor = numSIProcessors == 0; // the first one becomes the 'master'
@@ -1179,8 +1180,6 @@ information and let the classes corresponding
 to the tables write their information to the disk */
 void cSIProcessor::Action()
 {
-   dsyslog("EIT processing thread started (pid=%d)%s", getpid(), masterSIProcessor ? " - master" : "");
-
    time_t lastCleanup = time(NULL);
    time_t lastPmtScan = time(NULL);
 
@@ -1342,8 +1341,6 @@ void cSIProcessor::Action()
          }
       }
    }
-
-   dsyslog("EIT processing thread ended (pid=%d)%s", getpid(), masterSIProcessor ? " - master" : "");
 }
 
 /** Add a filter with packet identifier pid and

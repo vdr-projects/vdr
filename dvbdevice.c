@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.67 2003/10/17 15:36:13 kls Exp $
+ * $Id: dvbdevice.c 1.68 2003/10/18 12:20:38 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -100,6 +100,7 @@ cDvbTuner::cDvbTuner(int Fd_Frontend, int CardIndex, fe_type_t FrontendType, cCi
   useCa = false;
   tunerStatus = tsIdle;
   startTime = time(NULL);
+  SetDescription("tuner on device %d", cardIndex + 1);
   Start();
 }
 
@@ -247,7 +248,6 @@ bool cDvbTuner::SetFrontend(void)
 
 void cDvbTuner::Action(void)
 {
-  dsyslog("tuner thread started on device %d (pid=%d)", cardIndex + 1, getpid());
   active = true;
   while (active) {
         cMutexLock MutexLock(&mutex);
@@ -302,7 +302,6 @@ void cDvbTuner::Action(void)
         // in the beginning we loop more often to let the CAM connection start up fast
         newSet.TimedWait(mutex, (ciHandler && (time(NULL) - startTime < 20)) ? 100 : 1000);
         }
-  dsyslog("tuner thread ended on device %d (pid=%d)", cardIndex + 1, getpid());
 }
 
 // --- cDvbDevice ------------------------------------------------------------

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recorder.c 1.7 2003/08/02 13:01:19 kls Exp $
+ * $Id: recorder.c 1.8 2003/10/18 11:35:02 kls Exp $
  */
 
 #include <stdarg.h>
@@ -25,6 +25,7 @@
 
 cRecorder::cRecorder(const char *FileName, int Ca, int Priority, int VPid, int APid1, int APid2, int DPid1, int DPid2)
 :cReceiver(Ca, Priority, 5, VPid, APid1, APid2, DPid1, DPid2)
+,cThread("recording")
 {
   ringBuffer = NULL;
   remux = NULL;
@@ -106,8 +107,6 @@ void cRecorder::Receive(uchar *Data, int Length)
 
 void cRecorder::Action(void)
 {
-  dsyslog("recording thread started (pid=%d)", getpid());
-
   time_t t = time(NULL);
   active = true;
   while (active) {
@@ -143,6 +142,4 @@ void cRecorder::Action(void)
         else
            usleep(1); // this keeps the CPU load low
         }
-
-  dsyslog("recording thread ended (pid=%d)", getpid());
 }
