@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 1.1 2000/10/07 17:31:39 kls Exp $
+ * $Id: thread.c 1.2 2000/10/08 16:45:50 kls Exp $
  */
 
 #include "thread.h"
@@ -58,7 +58,7 @@ bool cThread::Start(void)
 
 void cThread::Stop(void)
 {
-  pthread_exit(NULL);
+  pthread_cancel(thread);
 }
 
 bool cThread::Lock(void)
