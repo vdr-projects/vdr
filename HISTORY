@@ -330,3 +330,4 @@ Video Disk Recorder Revision History
 - Fixed missing initialization in cConfig.
 - Implemented "On Disk Editing".
 - There is no more default 'timers.conf' file.
+- Added Italian language texts (thanks to Alberto Carraro).
