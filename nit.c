@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: nit.c 1.6 2004/02/13 14:41:36 kls Exp $
+ * $Id: nit.c 1.7 2004/05/22 15:46:21 kls Exp $
  */
 
 #include "nit.h"
@@ -76,6 +76,7 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                       break;
                  default: ;
                  }
+               delete d;
                }
            nits[numNits].networkId = nit.getNetworkId();
            nits[numNits].hasTransponder = false;

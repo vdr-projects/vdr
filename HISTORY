@@ -2825,3 +2825,4 @@ Video Disk Recorder Revision History
   this one and helping to test the fix).
 - Fixed freezing picture when a recording starts on a system that always uses
   'Transfer Mode' (thanks to Michal Dobrzynski for reporting this one).
+- Fixed a memory leak in NIT processing (thanks to Marcel Wiesweg).

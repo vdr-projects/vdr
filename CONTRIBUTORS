@@ -671,6 +671,7 @@ Marcel Wiesweg <marcel.wiesweg@gmx.de>
  for adding 'libsi' include files to the 'include' directory, so that plugins can
  use them
  for his help in fixing some issues with gcc 3.4
+ for fixing a memory leak in NIT processing
 
 Torsten Herz <torsten.herz@web.de>
  for fixing a possible deadlock when using the "Blue" button in the "Schedules" menu
