@@ -4,7 +4,7 @@
  * See the main source file 'osm.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.1 2000/02/19 13:36:48 kls Exp $
+ * $Id: menu.c 1.2 2000/03/05 15:37:31 kls Exp $
  */
 
 #include "menu.h"
@@ -13,8 +13,9 @@
 #include <string.h>
 #include "config.h"
 #include "dvbapi.h"
+#include "recording.h"
 
-const char *FileNameChars = "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789/-.# ";//TODO more?
+const char *FileNameChars = "aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ0123456789-.# ";
 
 // --- cMenuEditItem ---------------------------------------------------------
 
@@ -59,7 +60,7 @@ protected:
   virtual void Set(void);
 public:
   cMenuEditIntItem(const char *Name, int *Value, int Min = 0, int Max = INT_MAX);
-  virtual eOSStatus ProcessKey(eKeys Key);
+  virtual eOSState ProcessKey(eKeys Key);
   };
 
 cMenuEditIntItem::cMenuEditIntItem(const char *Name, int *Value, int Min, int Max)
@@ -78,11 +79,11 @@ void cMenuEditIntItem::Set(void)
   SetValue(buf);
 }
 
-eOSStatus cMenuEditIntItem::ProcessKey(eKeys Key)
+eOSState cMenuEditIntItem::ProcessKey(eKeys Key)
 {
-  eOSStatus status = cMenuEditItem::ProcessKey(Key);
+  eOSState state = cMenuEditItem::ProcessKey(Key);
 
-  if (status == osUnknown) {
+  if (state == osUnknown) {
      int newValue;
      if (k0 <= Key && Key <= k9) {
         if (fresh) {
@@ -100,14 +101,14 @@ eOSStatus cMenuEditIntItem::ProcessKey(eKeys Key)
         fresh = true;
         }
      else
-        return status;
+        return state;
      if ((!fresh || min <= newValue) && newValue <= max) {
         *value = newValue;
         Set();
         }
-     status = osContinue;
+     state = osContinue;
      }
-  return status;
+  return state;
 }
 
 // --- cMenuEditBoolItem -----------------------------------------------------
@@ -167,7 +168,7 @@ protected:
   virtual void Set(void);
 public:
   cMenuEditDayItem(const char *Name, int *Value);
-  virtual eOSStatus ProcessKey(eKeys Key);
+  virtual eOSState ProcessKey(eKeys Key);
   };
 
 int cMenuEditDayItem::days[] ={ cTimer::ParseDay("M------"),
@@ -205,7 +206,7 @@ void cMenuEditDayItem::Set(void)
   SetValue(cTimer::PrintDay(*value));
 }
 
-eOSStatus cMenuEditDayItem::ProcessKey(eKeys Key)
+eOSState cMenuEditDayItem::ProcessKey(eKeys Key)
 {
   switch (Key) {
     case kLeft:  if (d > 0)
@@ -252,7 +253,7 @@ protected:
   virtual void Set(void);
 public:
   cMenuEditTimeItem(const char *Name, int *Value);
-  virtual eOSStatus ProcessKey(eKeys Key);
+  virtual eOSState ProcessKey(eKeys Key);
   };
 
 cMenuEditTimeItem::cMenuEditTimeItem(const char *Name, int *Value)
@@ -272,11 +273,11 @@ void cMenuEditTimeItem::Set(void)
   SetValue(buf);
 }
 
-eOSStatus cMenuEditTimeItem::ProcessKey(eKeys Key)
+eOSState cMenuEditTimeItem::ProcessKey(eKeys Key)
 {
-  eOSStatus status = cMenuEditItem::ProcessKey(Key);
+  eOSState state = cMenuEditItem::ProcessKey(Key);
 
-  if (status == osUnknown) {
+  if (state == osUnknown) {
      if (k0 <= Key && Key <= k9) {
         if (fresh || pos > 3) {
            pos = 0;
@@ -324,12 +325,12 @@ eOSStatus cMenuEditTimeItem::ProcessKey(eKeys Key)
         fresh = true;
         }
      else
-        return status;
+        return state;
      *value = hh * 100 + mm;
      Set();
-     status = osContinue;
+     state = osContinue;
      }
-  return status;
+  return state;
 }
 
 // --- cMenuEditChrItem ------------------------------------------------------
@@ -343,7 +344,7 @@ private:
 public:
   cMenuEditChrItem(const char *Name, char *Value, const char *Allowed);
   ~cMenuEditChrItem();
-  virtual eOSStatus ProcessKey(eKeys Key);
+  virtual eOSState ProcessKey(eKeys Key);
   };
 
 cMenuEditChrItem::cMenuEditChrItem(const char *Name, char *Value, const char *Allowed)
@@ -369,11 +370,11 @@ void cMenuEditChrItem::Set(void)
   SetValue(buf);
 }
 
-eOSStatus cMenuEditChrItem::ProcessKey(eKeys Key)
+eOSState cMenuEditChrItem::ProcessKey(eKeys Key)
 {
-  eOSStatus status = cMenuEditItem::ProcessKey(Key);
+  eOSState state = cMenuEditItem::ProcessKey(Key);
 
-  if (status == osUnknown) {
+  if (state == osUnknown) {
      if (Key == kLeft) {
         if (current > allowed)
            current--;
@@ -383,12 +384,12 @@ eOSStatus cMenuEditChrItem::ProcessKey(eKeys Key)
            current++;
         }
      else
-        return status;
+        return state;
      *value = *current;
      Set();
-     status = osContinue;
+     state = osContinue;
      }
-  return status;
+  return state;
 }
 
 // --- cMenuEditStrItem ------------------------------------------------------
@@ -404,7 +405,7 @@ private:
 public:
   cMenuEditStrItem(const char *Name, char *Value, int Length, const char *Allowed);
   ~cMenuEditStrItem();
-  virtual eOSStatus ProcessKey(eKeys Key);
+  virtual eOSState ProcessKey(eKeys Key);
   };
 
 cMenuEditStrItem::cMenuEditStrItem(const char *Name, char *Value, int Length, const char *Allowed)
@@ -449,7 +450,7 @@ char cMenuEditStrItem::Inc(char c, bool Up)
   return *p;
 }
 
-eOSStatus cMenuEditStrItem::ProcessKey(eKeys Key)
+eOSState cMenuEditStrItem::ProcessKey(eKeys Key)
 {
   switch (Key) {
     case kLeft:  if (pos > 0) {
@@ -492,11 +493,11 @@ private:
   cChannel data;
 public:
   cMenuEditChannel(int Index);
-  virtual eOSStatus ProcessKey(eKeys Key);
+  virtual eOSState ProcessKey(eKeys Key);
   };
 
 cMenuEditChannel::cMenuEditChannel(int Index)
-:cOsdMenu("Edit channel", 14)
+:cOsdMenu("Edit Channel", 14)
 {
   channel = Channels.Get(Index);
   if (channel) {
@@ -511,19 +512,19 @@ cMenuEditChannel::cMenuEditChannel(int Index)
      }
 }
 
-eOSStatus cMenuEditChannel::ProcessKey(eKeys Key)
+eOSState cMenuEditChannel::ProcessKey(eKeys Key)
 {
-  eOSStatus status = cOsdMenu::ProcessKey(Key);
+  eOSState state = cOsdMenu::ProcessKey(Key);
 
-  if (status == osUnknown) {
+  if (state == osUnknown) {
      if (Key == kOk) {
         if (channel)
            *channel = data;
         Channels.Save();
-        status = osBack;
+        state = osBack;
         }
      }
-  return status;
+  return state;
 }
 
 // --- cMenuChannelItem ------------------------------------------------------
@@ -535,6 +536,7 @@ private:
 public:
   cMenuChannelItem(int Index, cChannel *Channel);
   virtual void Set(void);
+  void SetIndex(int Index);
   };
 
 cMenuChannelItem::cMenuChannelItem(int Index, cChannel *Channel)
@@ -551,12 +553,24 @@ void cMenuChannelItem::Set(void)
   SetText(buffer, false);
 }
 
+void cMenuChannelItem::SetIndex(int Index)
+{
+  index = Index;
+  Set();
+}
+
 // --- cMenuChannels ---------------------------------------------------------
 
 class cMenuChannels : public cOsdMenu {
+protected:
+  eOSState Switch(void);
+  eOSState Edit(void);
+  eOSState New(void);
+  eOSState Del(void);
+  virtual void Move(int From, int To);
 public:
   cMenuChannels(void);
-  virtual eOSStatus ProcessKey(eKeys Key);
+  virtual eOSState ProcessKey(eKeys Key);
   };
 
 cMenuChannels::cMenuChannels(void)
@@ -570,26 +584,124 @@ cMenuChannels::cMenuChannels(void)
         Add(new cMenuChannelItem(i, channel), i == CurrentChannel);
         i++;
         }
+  SetHelp("Edit", "New", "Delete", "Mark");
 }
 
-eOSStatus cMenuChannels::ProcessKey(eKeys Key)
+eOSState cMenuChannels::Switch(void)
 {
-  eOSStatus status = cOsdMenu::ProcessKey(Key);
+  cChannel *ch = Channels.Get(Current());
+  if (ch)
+     ch->Switch();
+  return osEnd;
+}
 
-  if (status == osUnknown) {
+eOSState cMenuChannels::Edit(void)
+{
+  if (HasSubMenu() || Count() == 0)
+     return osContinue;
+  isyslog(LOG_INFO, "editing timer %d", Current() + 1);
+  return AddSubMenu(new cMenuEditChannel(Current()));
+}
+
+eOSState cMenuChannels::New(void)
+{
+  if (HasSubMenu())
+     return osContinue;
+  cChannel *channel = new cChannel(Channels.Get(Current()));
+  Channels.Add(channel);
+  Add(new cMenuChannelItem(channel->Index()/*XXX*/, channel), true);
+  Channels.Save();
+  isyslog(LOG_INFO, "channel %d added", channel->Index() + 1);
+  return AddSubMenu(new cMenuEditChannel(Current()));
+}
+
+eOSState cMenuChannels::Del(void)
+{
+  if (Count() > 0) {
+     int Index = Current();
+     // Check if there is a timer using this channel:
+     for (cTimer *ti = Timers.First(); ti; ti = (cTimer *)ti->Next()) {
+         if (ti->channel == Index + 1) {
+            Interface.Error("Channel is being used by a timer!");
+            return osContinue;
+            }
+         }
+     if (Interface.Confirm("Delete Channel?")) {
+        // Move and renumber the channels:
+        Channels.Del(Channels.Get(Index));
+        cOsdMenu::Del(Index);
+        int i = 0;
+        for (cMenuChannelItem *ci = (cMenuChannelItem *)First(); ci; ci = (cMenuChannelItem *)ci->Next())
+            ci->SetIndex(i++);
+        Channels.Save();
+        isyslog(LOG_INFO, "channel %d deleted", Index + 1);
+        // Fix the timers:
+        bool TimersModified = false;
+        Index++; // user visible channel numbers start with '1'
+        for (cTimer *ti = Timers.First(); ti; ti = (cTimer *)ti->Next()) {
+            int OldChannel = ti->channel;
+            if (ti->channel > Index)
+               ti->channel--;
+            if (ti->channel != OldChannel) {
+               TimersModified = true;
+               isyslog(LOG_INFO, "timer %d: channel changed from %d to %d", ti->Index() + 1, OldChannel, ti->channel);
+               }
+            }
+        if (TimersModified)
+           Timers.Save();
+        Display();
+        }
+     }
+  return osContinue;
+}
+
+void cMenuChannels::Move(int From, int To)
+{
+  // Move and renumber the channels:
+  Channels.Move(From, To);
+  cOsdMenu::Move(From, To);
+  int i = 0;
+  for (cMenuChannelItem *ci = (cMenuChannelItem *)First(); ci; ci = (cMenuChannelItem *)ci->Next())
+      ci->SetIndex(i++);
+  Channels.Save();
+  isyslog(LOG_INFO, "channel %d moved to %d", From + 1, To + 1);
+  // Fix the timers:
+  bool TimersModified = false;
+  From++; // user visible channel numbers start with '1'
+  To++;
+  for (cTimer *ti = Timers.First(); ti; ti = (cTimer *)ti->Next()) {
+      int OldChannel = ti->channel;
+      if (ti->channel == From)
+         ti->channel = To;
+      else if (ti->channel > From && ti->channel <= To)
+         ti->channel--;
+      else if (ti->channel < From && ti->channel >= To)
+         ti->channel++;
+      if (ti->channel != OldChannel) {
+         TimersModified = true;
+         isyslog(LOG_INFO, "timer %d: channel changed from %d to %d", ti->Index() + 1, OldChannel, ti->channel);
+         }
+      }
+  if (TimersModified)
+     Timers.Save();
+  Display();
+}
+
+eOSState cMenuChannels::ProcessKey(eKeys Key)
+{
+  eOSState state = cOsdMenu::ProcessKey(Key);
+
+  if (state == osUnknown) {
      switch (Key) {
-       //TODO need to block this if we are already editing a channel!
-       case kRight: return AddSubMenu(new cMenuEditChannel(Current()));
-       case kOk:    {
-                      cChannel *ch = Channels.Get(Current());
-                      if (ch)
-                         ch->Switch();
-                      return osEnd;
-                    }
+       case kOk:     return Switch();
+       case kRed:    return Edit();
+       case kGreen:  return New();
+       case kYellow: return Del();
+       case kBlue:   Mark(); break;
        default: break;
        }
      }
-  return status;
+  return state;
 }
 
 // --- cMenuEditTimer --------------------------------------------------------
@@ -600,11 +712,11 @@ private:
   cTimer data;
 public:
   cMenuEditTimer(int Index);
-  virtual eOSStatus ProcessKey(eKeys Key);
+  virtual eOSState ProcessKey(eKeys Key);
   };
 
 cMenuEditTimer::cMenuEditTimer(int Index)
-:cOsdMenu("Edit timer", 10)
+:cOsdMenu("Edit Timer", 10)
 {
   timer = Timers.Get(Index);
   if (timer) {
@@ -622,21 +734,23 @@ cMenuEditTimer::cMenuEditTimer(int Index)
      }
 }
 
-eOSStatus cMenuEditTimer::ProcessKey(eKeys Key)
+eOSState cMenuEditTimer::ProcessKey(eKeys Key)
 {
-  eOSStatus status = cOsdMenu::ProcessKey(Key);
+  eOSState state = cOsdMenu::ProcessKey(Key);
 
-  if (status == osUnknown) {
+  if (state == osUnknown) {
      if (Key == kOk) {
+        if (!*data.file)
+           strcpy(data.file, "unnamed");
         if (timer && memcmp(timer, &data, sizeof(data)) != 0) {
            *timer = data;
            Timers.Save();
            isyslog(LOG_INFO, "timer %d modified (%s)", timer->Index() + 1, timer->active ? "active" : "inactive");
            }
-        status = osBack;
+        state = osBack;
         }
      }
-  return status;
+  return state;
 }
 
 // --- cMenuTimerItem --------------------------------------------------------
@@ -660,27 +774,34 @@ cMenuTimerItem::cMenuTimerItem(int Index, cTimer *Timer)
 void cMenuTimerItem::Set(void)
 {
   char *buffer = NULL;
-  asprintf(&buffer, "%d\t%c\t%d\t%s\t%02d:%02d\t%02d:%02d", index + 1,
+  asprintf(&buffer, "%c\t%d\t%s\t%02d:%02d\t%02d:%02d\t%s",
                     timer->active ? '>' : ' ', 
                     timer->channel, 
                     timer->PrintDay(timer->day), 
                     timer->start / 100,
                     timer->start % 100,
                     timer->stop / 100,
-                    timer->stop % 100); // user visible timer numbers start with '1'
+                    timer->stop % 100,
+                    timer->file);
   SetText(buffer, false);
 }
 
-// --- cMenuTimer ------------------------------------------------------------
+// --- cMenuTimers -----------------------------------------------------------
 
-class cMenuTimer : public cOsdMenu {
+class cMenuTimers : public cOsdMenu {
+private:
+  eOSState Activate(bool On);
+  eOSState Edit(void);
+  eOSState New(void);
+  eOSState Del(void);
+  virtual void Move(int From, int To);
 public:
-  cMenuTimer(void);
-  virtual eOSStatus ProcessKey(eKeys Key);
+  cMenuTimers(void);
+  virtual eOSState ProcessKey(eKeys Key);
   };
 
-cMenuTimer::cMenuTimer(void)
-:cOsdMenu("Timer", 3, 2, 4, 10, 6)
+cMenuTimers::cMenuTimers(void)
+:cOsdMenu("Timer", 2, 4, 10, 6, 6)
 {
   int i = 0;
   cTimer *timer;
@@ -689,34 +810,190 @@ cMenuTimer::cMenuTimer(void)
         Add(new cMenuTimerItem(i, timer));
         i++;
         }
+  SetHelp("Edit", "New", "Delete", "Mark");
 }
 
-eOSStatus cMenuTimer::ProcessKey(eKeys Key)
+eOSState cMenuTimers::Activate(bool On)
 {
-  eOSStatus status = cOsdMenu::ProcessKey(Key);
+  cTimer *timer = Timers.Get(Current());
+  if (timer && timer->active != On) {
+     timer->active = On;
+     RefreshCurrent();
+     DisplayCurrent(true);
+     isyslog(LOG_INFO, "timer %d %sactivated", timer->Index() + 1, timer->active ? "" : "de");
+     Timers.Save();
+     }
+  return osContinue;
+}
 
-  if (status == osUnknown) {
+eOSState cMenuTimers::Edit(void)
+{
+  if (HasSubMenu() || Count() == 0)
+     return osContinue;
+  isyslog(LOG_INFO, "editing timer %d", Current() + 1);
+  return AddSubMenu(new cMenuEditTimer(Current()));
+}
+
+eOSState cMenuTimers::New(void)
+{
+  if (HasSubMenu())
+     return osContinue;
+  cTimer *timer = new cTimer;
+  Timers.Add(timer);
+  Add(new cMenuTimerItem(timer->Index()/*XXX*/, timer), true);
+  Timers.Save();
+  isyslog(LOG_INFO, "timer %d added", timer->Index() + 1);
+  return AddSubMenu(new cMenuEditTimer(Current()));
+}
+
+eOSState cMenuTimers::Del(void)
+{
+  // Check if this timer is active:
+  int Index = Current();
+  cTimer *ti = Timers.Get(Index);
+  if (ti) {
+     if (!ti->recording) {
+        if (Interface.Confirm("Delete Timer?")) {
+           Timers.Del(Timers.Get(Index));
+           cOsdMenu::Del(Index);
+           Timers.Save();
+           Display();
+           isyslog(LOG_INFO, "timer %d deleted", Index + 1);
+           }
+        }
+     else
+        Interface.Error("Timer is recording!");
+     }
+  return osContinue;
+}
+
+void cMenuTimers::Move(int From, int To)
+{
+  Timers.Move(From, To);
+  cOsdMenu::Move(From, To);
+  Timers.Save();
+  Display();
+  isyslog(LOG_INFO, "timer %d moved to %d", From + 1, To + 1);
+}
+
+eOSState cMenuTimers::ProcessKey(eKeys Key)
+{
+  eOSState state = cOsdMenu::ProcessKey(Key);
+
+  if (state == osUnknown) {
      switch (Key) {
-       //TODO need to block this if we are already editing a channel!
-       case kOk: return AddSubMenu(new cMenuEditTimer(Current()));
-       //TODO new timer
-       //TODO delete timer
        case kLeft:
-       case kRight: 
-            {
-              cTimer *timer = Timers.Get(Current());
-              if (timer) {
-                 timer->active = (Key == kRight);
-                 isyslog(LOG_INFO, "timer %d %sactivated", timer->Index() + 1, timer->active ? "" : "de");
-                 RefreshCurrent();
-                 DisplayCurrent(true);
-                 Timers.Save();
-                 }
-            }
+       case kRight:  return Activate(Key == kRight);
+       case kOk:
+       case kRed:    return Edit();
+       case kGreen:  return New();
+       case kYellow: return Del();
+       case kBlue:   Mark(); break;
        default: break;
        }
      }
-  return status;
+  return state;
+}
+
+// --- cMenuRecordingItem ----------------------------------------------------
+
+class cMenuRecordingItem : public cOsdItem {
+public:
+  cRecording *recording;
+  cMenuRecordingItem(cRecording *Recording);
+  virtual void Set(void);
+  };
+
+cMenuRecordingItem::cMenuRecordingItem(cRecording *Recording)
+{
+  recording = Recording;
+  Set();
+}
+
+void cMenuRecordingItem::Set(void)
+{
+  char *buffer = NULL;
+  struct tm *t = localtime(&recording->start);
+  asprintf(&buffer, "%02d.%02d.%04d\t%02d:%02d\t%s",
+                    t->tm_mday,
+                    t->tm_mon + 1,
+                    t->tm_year + 1900,
+                    t->tm_hour,
+                    t->tm_min,
+                    recording->name);
+  SetText(buffer, false);
+}
+
+// --- cMenuRecordings -------------------------------------------------------
+
+class cMenuRecordings : public cOsdMenu {
+private:
+  cRecordings Recordings;
+  eOSState Play(void);
+  eOSState Del(void);
+public:
+  cMenuRecordings(void);
+  virtual eOSState ProcessKey(eKeys Key);
+  };
+
+cMenuRecordings::cMenuRecordings(void)
+:cOsdMenu("Recordings", 11, 6)
+{
+  if (Recordings.Load()) {
+     cRecording *recording = Recordings.First();
+     while (recording) {
+           Add(new cMenuRecordingItem(recording));
+           recording = Recordings.Next(recording);
+           }
+     }
+  SetHelp("Play", NULL/*XXX"Resume"*/, "Delete");
+}
+
+eOSState cMenuRecordings::Play(void)
+{
+  cMenuRecordingItem *ri = (cMenuRecordingItem *)Get(Current());
+  if (ri) {
+//XXX what if this recording's file is currently in use???
+     if (ri->recording->Play())
+        return osEnd;
+     }
+  return osContinue;
+}
+
+eOSState cMenuRecordings::Del(void)
+{
+  cMenuRecordingItem *ri = (cMenuRecordingItem *)Get(Current());
+  if (ri) {
+//XXX what if this recording's file is currently in use???
+//XXX     if (!ti->recording) {
+        if (Interface.Confirm("Delete Recording?")) {
+           if (ri->recording->Delete()) {
+              cOsdMenu::Del(Current());
+              Display();
+              }
+           else
+              Interface.Error("Error while deleting recording!");
+           }
+//XXX        }
+//XXX     else
+//XXX        Interface.Error("Timer is recording!");
+     }
+  return osContinue;
+}
+
+eOSState cMenuRecordings::ProcessKey(eKeys Key)
+{
+  eOSState state = cOsdMenu::ProcessKey(Key);
+
+  if (state == osUnknown) {
+     switch (Key) {
+       case kOk:
+       case kRed:    return Play();
+       case kYellow: return Del();
+       default: break;
+       }
+     }
+  return state;
 }
 
 // --- cMenuMain -------------------------------------------------------------
@@ -724,22 +1001,21 @@ eOSStatus cMenuTimer::ProcessKey(eKeys Key)
 cMenuMain::cMenuMain(void)
 :cOsdMenu("Main")
 {
-  //TODO
   Add(new cOsdItem("Channels",   osChannels));
   Add(new cOsdItem("Timer",      osTimer));
   Add(new cOsdItem("Recordings", osRecordings));
 }
 
-eOSStatus cMenuMain::ProcessKey(eKeys Key)
+eOSState cMenuMain::ProcessKey(eKeys Key)
 {
-  eOSStatus status = cOsdMenu::ProcessKey(Key);
+  eOSState state = cOsdMenu::ProcessKey(Key);
 
-  switch (status) {
-    case osChannels: return AddSubMenu(new cMenuChannels);
-    case osTimer:    return AddSubMenu(new cMenuTimer);
-    //TODO Replay
+  switch (state) {
+    case osChannels:   return AddSubMenu(new cMenuChannels);
+    case osTimer:      return AddSubMenu(new cMenuTimers);
+    case osRecordings: return AddSubMenu(new cMenuRecordings);
     default: break;
     }
-  return status;
+  return state;
 }
 

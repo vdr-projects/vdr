@@ -4,37 +4,40 @@
  * See the main source file 'osm.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.1 2000/02/19 13:36:48 kls Exp $
+ * $Id: config.c 1.2 2000/03/05 16:14:27 kls Exp $
  */
 
 #include "config.h"
 #include <ctype.h>
 #include <stdlib.h>
-#include <time.h>
 #include "dvbapi.h"
 #include "interface.h"
 
 // -- cKeys ------------------------------------------------------------------
 
 tKey keyTable[] = { // "Up" and "Down" must be the first two keys!
-                    { kUp,    "Up",    0 },
-                    { kDown,  "Down",  0 },
-                    { kMenu,  "Menu",  0 },
-                    { kOk,    "Ok",    0 },
-                    { kBack,  "Back",  0 },
-                    { kLeft,  "Left",  0 },
-                    { kRight, "Right", 0 },
-                    { k0,     "0",     0 },
-                    { k1,     "1",     0 },
-                    { k2,     "2",     0 },
-                    { k3,     "3",     0 },
-                    { k4,     "4",     0 },
-                    { k5,     "5",     0 },
-                    { k6,     "6",     0 },
-                    { k7,     "7",     0 },
-                    { k8,     "8",     0 },
-                    { k9,     "9",     0 },
-                    { kNone,  "",      0 },
+                    { kUp,     "Up",     0 },
+                    { kDown,   "Down",   0 },
+                    { kMenu,   "Menu",   0 },
+                    { kOk,     "Ok",     0 },
+                    { kBack,   "Back",   0 },
+                    { kLeft,   "Left",   0 },
+                    { kRight,  "Right",  0 },
+                    { k0,      "0",      0 },
+                    { k1,      "1",      0 },
+                    { k2,      "2",      0 },
+                    { k3,      "3",      0 },
+                    { k4,      "4",      0 },
+                    { k5,      "5",      0 },
+                    { k6,      "6",      0 },
+                    { k7,      "7",      0 },
+                    { k8,      "8",      0 },
+                    { k9,      "9",      0 },
+                    { kRed,    "Red",    0 },
+                    { kGreen,  "Green",  0 },
+                    { kYellow, "Yellow", 0 },
+                    { kBlue,   "Blue",   0 },
+                    { kNone,   "",       0 },
                   };
 
 cKeys::cKeys(void)
@@ -160,6 +163,17 @@ cChannel::cChannel(void)
   *name = 0;
 }
 
+cChannel::cChannel(const cChannel *Channel)
+{
+  strcpy(name,   Channel ? Channel->name         : "Pro7");
+  frequency    = Channel ? Channel->frequency    : 12480;
+  polarization = Channel ? Channel->polarization : 'v';
+  diseqc       = Channel ? Channel->diseqc       : 1;
+  srate        = Channel ? Channel->srate        : 27500;
+  vpid         = Channel ? Channel->vpid         : 255;
+  apid         = Channel ? Channel->apid         : 256;
+}
+
 bool cChannel::Parse(char *s)
 {
   char *buffer = NULL;
@@ -203,12 +217,30 @@ bool cChannel::SwitchTo(int i)
 
 cTimer::cTimer(void)
 {
+  startTime = stopTime = 0;
+  recording = false;
+  active = 1;
+  channel = CurrentChannel + 1;
+  day = 1; //XXX today!
+  start = 0; //XXX now!
+  stop = 0; //XXX now + 2h!
+//TODO VPS???
+  quality = 'H';
+  priority = 99;
+  lifetime = 99;
   *file = 0;
 }
 
 int cTimer::TimeToInt(int t)
 {
   return (t / 100 * 60 + t % 100) * 60;
+}
+
+time_t cTimer::Day(time_t t)
+{
+  struct tm d = *localtime(&t);
+  d.tm_hour = d.tm_min = d.tm_sec = 0;
+  return mktime(&d);
 }
 
 int cTimer::ParseDay(char *s)
@@ -270,13 +302,17 @@ bool cTimer::Save(FILE *f)
   return fprintf(f, "%d:%d:%s:%d:%d:%c:%d:%d:%s\n", active, channel, PrintDay(day), start, stop, quality, priority, lifetime, file) > 0;
 }
 
+bool cTimer::IsSingleEvent(void)
+{
+  return (day & 0x80000000) == 0;
+}
+
 bool cTimer::Matches(void)
 {
   if (active) {
      time_t t = time(NULL);
-     struct tm *now = localtime(&t);
-     int weekday = now->tm_wday == 0 ? 6 : now->tm_wday - 1; // we start with monday==0!
-     int current = (now->tm_hour * 60 + now->tm_min) * 60 + now->tm_sec;
+     struct tm now = *localtime(&t);
+     int weekday = now.tm_wday == 0 ? 6 : now.tm_wday - 1; // we start with monday==0!
      int begin = TimeToInt(start);
      int end   = TimeToInt(stop);
      bool twoDays = (end < begin);
@@ -291,18 +327,42 @@ bool cTimer::Matches(void)
               yesterdayMatches = true;
            }
         }
-     else if (day == now->tm_mday)
+     else if (day == now.tm_mday)
         todayMatches = true;
      else if (twoDays) {
-        t -= 86400;
-        now = localtime(&t);
-        if (day == now->tm_mday)
+        time_t ty = t - SECSINDAY;
+        if (day == localtime(&ty)->tm_mday)
            yesterdayMatches = true;
         }
-     return (todayMatches && current >= begin && (current <= end || twoDays))
-            || (twoDays && yesterdayMatches && current <= end);
+     if (todayMatches || (twoDays && yesterdayMatches)) {
+        startTime = Day(t - (yesterdayMatches ? SECSINDAY : 0)) + begin;
+        stopTime  = startTime + (twoDays ? SECSINDAY - begin + end : end - begin);
+        }
+     else
+        startTime = stopTime = 0;
+     return startTime <= t && t <= stopTime;
      }
   return false;
+}
+
+time_t cTimer::StartTime(void)
+{ 
+  if (!startTime)
+     Matches();
+  return startTime;
+}
+
+time_t cTimer::StopTime(void)
+{ 
+  if (!stopTime)
+     Matches();
+  return stopTime;
+}
+
+void cTimer::SetRecording(bool Recording)
+{
+  recording = Recording;
+  isyslog(LOG_INFO, "timer %d %s", Index() + 1, recording ? "start" : "stop");
 }
 
 cTimer *cTimer::GetMatch(void)

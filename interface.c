@@ -4,20 +4,21 @@
  * See the main source file 'osm.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.c 1.1 2000/02/19 13:36:48 kls Exp $
+ * $Id: interface.c 1.2 2000/03/06 19:45:03 kls Exp $
  */
 
 #include "interface.h"
-#include <ncurses.h>
 #include <unistd.h>
-#include "dvbapi.h"
 #include "remote.h"
+
+#define MenuLines   15
+#define MenuColumns 40
 
 #ifndef DEBUG_REMOTE
 cRcIo RcIo("/dev/ttyS1");//XXX
 #endif
 
-WINDOW *window;
+cDvbOsd DvbOsd; //XXX member of cInterface???
 
 cInterface Interface;
 
@@ -25,16 +26,6 @@ cInterface::cInterface(void)
 {
   open = 0;
   cols[0] = 0;
-#ifdef DEBUG_OSD
-  initscr();
-  keypad(stdscr, TRUE);
-  nonl();
-  cbreak();
-  noecho();
-  leaveok(stdscr, TRUE);
-  window = stdscr;
-#else
-#endif
 }
 
 void cInterface::Init(void)
@@ -46,24 +37,14 @@ void cInterface::Init(void)
 
 void cInterface::Open(void)
 {
-  if (!open++) {
-#ifdef DEBUG_OSD
-#else
-//TODO
-     DvbOsdOpen(100, 100, 500, 400);
-#endif
-     }
+  if (!open++)
+     DvbOsd.Open(MenuColumns, MenuLines);
 }
 
 void cInterface::Close(void)
 {
-  if (!--open) {
-#ifdef DEBUG_OSD
-#else
-//TODO
-     DvbOsdClose();
-#endif
-     }
+  if (!--open)
+     DvbOsd.Close();
 }
 
 unsigned int cInterface::GetCh(void)
@@ -71,9 +52,9 @@ unsigned int cInterface::GetCh(void)
 #ifdef DEBUG_REMOTE
   return getch();
 #else
-#ifdef DEBUG_OSD
-  wrefresh(window);//XXX
-#endif
+//XXX #ifdef DEBUG_OSD
+//XXX   wrefresh(window);//XXX
+//XXX #endif
   unsigned int Command;
   return RcIo.GetCommand(&Command) ? Command : 0;
 #endif
@@ -84,16 +65,28 @@ eKeys cInterface::GetKey(void)
   return Keys.Get(GetCh());
 }
 
+eKeys cInterface::Wait(int Seconds)
+{
+  int t0 = time_ms();
+
+  while (time_ms() - t0 < Seconds * 1000) {
+        eKeys Key = GetKey();
+        if (Key != kNone)
+           return Key;
+        }
+  return kNone;
+}
+
 void cInterface::Clear(void)
 {
-  if (open) {
-#ifdef DEBUG_OSD
-     wclear(window);
-#else
-//TODO
-     DvbOsdClear();
-#endif
-     }
+  if (open)
+     DvbOsd.Clear();
+}
+
+void cInterface::ClearEol(int x, int y, eDvbColor Color)
+{
+  if (open)
+     DvbOsd.ClrEol(x, y, Color);
 }
 
 void cInterface::SetCols(int *c)
@@ -105,34 +98,22 @@ void cInterface::SetCols(int *c)
       }
 }
 
-void cInterface::Write(int x, int y, char *s)
+void cInterface::Write(int x, int y, const char *s, eDvbColor FgColor, eDvbColor BgColor)
 {
-  if (open) {
-#ifdef DEBUG_OSD
-     wmove(window, y, x); // ncurses wants 'y' before 'x'!
-     waddstr(window, s);
-#else
-     DvbOsdText(x * DvbOsdCharWidth, y * DvbOsdLineHeight, s);
-#endif
-     }
+  if (open)
+     DvbOsd.Text(x, y, s, FgColor, BgColor);
 }
 
-void cInterface::WriteText(int x, int y, char *s, bool Current)
+void cInterface::WriteText(int x, int y, const char *s, bool Current)
 {
   if (open) {
-#ifdef DEBUG_OSD
-     wmove(window, y, x); // ncurses wants 'y' before 'x'!
-     wclrtoeol(window);//XXX
-#else
-//TODO
-     DvbOsdClrEol(x * DvbOsdCharWidth, y);//XXX
-#endif
-     Write(x, y, Current ? "*" : " ");
-     x++;
+     eDvbColor FgColor = Current ? clrBlack : clrWhite;
+     eDvbColor BgColor = Current ? clrCyan : clrBackground;
+     ClearEol(x, y, BgColor);
      int col = 0;
      for (;;) {
-         char *t = strchr(s, '\t');
-         char *p = s;
+         const char *t = strchr(s, '\t');
+         const char *p = s;
          char buf[1000];
          if (t && col < MaxCols && cols[col] > 0) {
             unsigned int n = t - s;
@@ -143,7 +124,7 @@ void cInterface::WriteText(int x, int y, char *s, bool Current)
             p = buf;
             s = t + 1;
             }
-         Write(x, y, p);
+         Write(x, y, p, FgColor, BgColor);
          if (p == s)
             break;
          x += cols[col++];
@@ -151,36 +132,72 @@ void cInterface::WriteText(int x, int y, char *s, bool Current)
      }
 }
 
-void cInterface::Info(char *s)
+void cInterface::Title(const char *s)
+{
+  int x = (MenuColumns - strlen(s)) / 2;
+  if (x < 0)
+     x = 0;
+  ClearEol(0, 0, clrCyan);
+  Write(x, 0, s, clrBlack, clrCyan);
+}
+
+void cInterface::Status(const char *s, eDvbColor FgColor, eDvbColor BgColor)
+{
+  ClearEol(0, -3, s ? BgColor : clrBackground);
+  if (s)
+     Write(0, -3, s, FgColor, BgColor);
+}
+
+void cInterface::Info(const char *s)
 {
   Open();
-  isyslog(LOG_ERR, s);
-  WriteText(0, 11, s);//TODO
-#ifdef DEBUG_OSD
-  wrefresh(window);//XXX
-#endif
-  sleep(1);
-  WriteText(0, 11, "");//TODO
-#ifdef DEBUG_OSD
-  wrefresh(window);//XXX
-#endif
+  isyslog(LOG_INFO, s);
+  Status(s, clrWhite, clrGreen);
+  Wait();
+  Status(NULL);
   Close();
 }
 
-void cInterface::Error(char *s)
+void cInterface::Error(const char *s)
 {
   Open();
   esyslog(LOG_ERR, s);
-  WriteText(0, 12, s);//TODO
-#ifdef DEBUG_OSD
-  wrefresh(window);//XXX
-#endif
-  sleep(1);
-  WriteText(0, 12, "");//TODO
-#ifdef DEBUG_OSD
-  wrefresh(window);//XXX
-#endif
+  Status(s, clrWhite, clrRed);
+  Wait();
+  Status(NULL);
   Close();
+}
+
+bool cInterface::Confirm(const char *s)
+{
+  Open();
+  isyslog(LOG_INFO, "confirm: %s", s);
+  Status(s, clrBlack, clrGreen);
+  bool result = Wait(10) == kOk;
+  Status(NULL);
+  Close();
+  isyslog(LOG_INFO, "%sconfirmed", result ? "" : "not ");
+  return result;
+}
+
+void cInterface::HelpButton(int Index, const char *Text, eDvbColor FgColor, eDvbColor BgColor)
+{
+  if (open && Text) {
+     const int w = MenuColumns / 4;
+     int l = (w - strlen(Text)) / 2;
+     if (l < 0)
+        l = 0;
+     DvbOsd.Fill(Index * w, -1, w, 1, BgColor);
+     DvbOsd.Text(Index * w + l, -1, Text, FgColor, BgColor);
+     }
+}
+
+void cInterface::Help(const char *Red, const char *Green, const char *Yellow, const char *Blue)
+{
+  HelpButton(0, Red,    clrBlack, clrRed);
+  HelpButton(1, Green,  clrBlack, clrGreen);
+  HelpButton(2, Yellow, clrBlack, clrYellow);
+  HelpButton(3, Blue,   clrWhite, clrBlue);
 }
 
 void cInterface::QueryKeys(void)
@@ -205,8 +222,8 @@ void cInterface::QueryKeys(void)
          WriteText(1, 5, "RC code detected!");
          WriteText(1, 6, "Do not press any key...");
          RcIo.Flush(3);
-         WriteText(1, 5, "");
-         WriteText(1, 6, "");
+         ClearEol(0, 5);
+         ClearEol(0, 6);
          break;
          }
 #endif
@@ -229,8 +246,8 @@ void cInterface::QueryKeys(void)
                  case kDown: if (k > Keys.keys + 1) {
                                 WriteText(1, 5, "Press 'Up' to confirm");
                                 WriteText(1, 6, "Press 'Down' to continue");
-                                WriteText(1, 7, "");
-                                WriteText(1, 8, "");
+                                ClearEol(0, 7);
+                                ClearEol(0, 8);
                                 for (;;) {
                                     eKeys key = GetKey();
                                     if (key == kUp) {
@@ -238,7 +255,7 @@ void cInterface::QueryKeys(void)
                                        return;
                                        }
                                     else if (key == kDown) {
-                                       WriteText(1, 6, "");
+                                       ClearEol(0, 6);
                                        break;
                                        }
                                     }
@@ -255,17 +272,18 @@ void cInterface::QueryKeys(void)
         if (k > Keys.keys)
            WriteText(1, 7, "(press 'Up' to go back)");
         else
-           WriteText(1, 7, "");
+           ClearEol(0, 7);
         if (k > Keys.keys + 1)
            WriteText(1, 8, "(press 'Down' to end key definition)");
         else
-           WriteText(1, 8, "");
+           ClearEol(0, 8);
         }
 }
 
 void cInterface::LearnKeys(void)
 {
   isyslog(LOG_INFO, "learning keys");
+  Open();
   for (;;) {
       Clear();
       QueryKeys();
@@ -277,19 +295,19 @@ void cInterface::LearnKeys(void)
           eKeys key = GetKey();
           if (key == kUp) {
              Keys.Save();
-             Clear();
+             Close();
              return;
              }
           else if (key == kDown) {
              Keys.Load();
-             Clear();
+             Close();
              return;
              }
           }
       }
 }
 
-void cInterface::DisplayChannel(int Number, char *Name)
+void cInterface::DisplayChannel(int Number, const char *Name)
 {
 //TODO
 #ifndef DEBUG_REMOTE

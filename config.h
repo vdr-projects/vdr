@@ -4,7 +4,7 @@
  * See the main source file 'osm.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.1 2000/02/19 13:36:48 kls Exp $
+ * $Id: config.h 1.2 2000/03/05 14:58:23 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -12,6 +12,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <time.h>
 #include "tools.h"
 
 #define MaxBuffer 1000
@@ -25,6 +26,10 @@ enum eKeys { // "Up" and "Down" must be the first two keys!
              kLeft,
              kRight,
              k0, k1, k2, k3, k4, k5, k6, k7, k8, k9,
+             kRed,
+             kGreen,
+             kYellow,
+             kBlue,
              kNone
            };
 
@@ -60,6 +65,7 @@ public:
   int vpid;
   int apid;
   cChannel(void);
+  cChannel(const cChannel *Channel);
   bool Parse(char *s);
   bool Save(FILE *f);
   bool Switch(void);
@@ -67,8 +73,11 @@ public:
   };
 
 class cTimer : public cListObject {
+private:
+  time_t startTime, stopTime;
 public:
   enum { MaxFileName = 256 };
+  bool recording;
   int active;
   int channel;
   int day;
@@ -82,9 +91,14 @@ public:
   cTimer(void);
   bool Parse(char *s);
   bool Save(FILE *f);
+  bool IsSingleEvent(void);
   bool Matches(void);
+  time_t StartTime(void);
+  time_t StopTime(void);
+  void SetRecording(bool Recording);
   static cTimer *GetMatch(void);
   static int TimeToInt(int t);
+  static time_t Day(time_t t);
   static int ParseDay(char *s);
   static char *PrintDay(int d);
   };

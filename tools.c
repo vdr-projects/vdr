@@ -4,12 +4,29 @@
  * See the main source file 'osm.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.1 2000/02/19 13:36:48 kls Exp $
+ * $Id: tools.c 1.2 2000/03/05 14:33:58 kls Exp $
  */
 
 #include "tools.h"
+#include <errno.h>
 #include <stdlib.h>
+#include <string.h>
+#include <sys/stat.h>
 #include <sys/time.h>
+
+#define MaxBuffer 1000
+
+char *readline(FILE *f)
+{
+  static char buffer[MaxBuffer];
+  if (fgets(buffer, sizeof(buffer), f) > 0) {
+     int l = strlen(buffer) - 1;
+     if (l >= 0 && buffer[l] == '\n')
+        buffer[l] = 0;
+     return buffer;
+     }
+  return NULL;
+}
 
 int time_ms(void)
 {
@@ -17,6 +34,30 @@ int time_ms(void)
   if (gettimeofday(&t, NULL) == 0)
      return t.tv_sec * 1000 + t.tv_usec / 1000;
   return 0;
+}
+
+bool MakeDirs(const char *FileName)
+{
+  bool result = true;
+  char *s = strdup(FileName);
+  char *p = s;
+  if (*p == '/')
+     p++;
+  while ((p = strchr(p, '/')) != NULL) {
+        *p = 0;
+        struct stat fs;
+        if (stat(s, &fs) != 0 || !S_ISDIR(fs.st_mode)) {
+           isyslog(LOG_INFO, "creating directory %s", s);
+           if (mkdir(s, S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH) == -1) {
+              esyslog(LOG_ERR, "ERROR while creating directory %s: %s", s, strerror(errno));
+              result = false;
+              break;
+              }
+           }
+        *p++ = '/';
+        }
+  delete s;
+  return result;
 }
 
 // --- cListObject -----------------------------------------------------------
@@ -42,6 +83,7 @@ void cListObject::Unlink(void)
      next->prev = prev;
   if (prev)
      prev->next = next;
+  next = prev = NULL;
 }
 
 int cListObject::Index(void)
@@ -90,6 +132,33 @@ void cListBase::Del(cListObject *Object)
      lastObject = Object->Prev();
   Object->Unlink();
   delete Object;
+}
+
+void cListBase::Move(int From, int To)
+{
+  Move(Get(From), Get(To));
+}
+
+void cListBase::Move(cListObject *From, cListObject *To)
+{
+  if (From && To) {
+     if (From->Index() < To->Index())
+        To = To->Next();
+     if (From == objects)
+        objects = From->Next();
+     if (From == lastObject)
+        lastObject = From->Prev();
+     From->Unlink();
+     if (To) {
+        if (To->Prev())
+           To->Prev()->Append(From);
+        From->Append(To);
+        }
+     else
+        lastObject->Append(From);
+     if (!From->Prev())
+        objects = From;
+     }
 }
 
 void cListBase::Clear(void)

@@ -4,7 +4,7 @@
  * See the main source file 'osm.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 1.1 2000/02/19 13:36:48 kls Exp $
+ * $Id: osd.c 1.2 2000/02/27 17:23:07 kls Exp $
  */
 
 #include "osd.h"
@@ -13,19 +13,19 @@
 
 // --- cOsdItem --------------------------------------------------------------
 
-cOsdItem::cOsdItem(eOSStatus Status)
+cOsdItem::cOsdItem(eOSState State)
 {
   text = NULL;
   offset = -1;
-  status = Status;
+  state = State;
   fresh = false;
 }
 
-cOsdItem::cOsdItem(char *Text, eOSStatus Status)
+cOsdItem::cOsdItem(char *Text, eOSState State)
 {
   text = NULL;
   offset = -1;
-  status = Status;
+  state = State;
   fresh = false;
   SetText(Text);
 }
@@ -52,24 +52,27 @@ void cOsdItem::Display(int Offset, bool Current)
      Interface.WriteText(0, offset + 2, text, Current);
 }
 
-eOSStatus cOsdItem::ProcessKey(eKeys Key)
+eOSState cOsdItem::ProcessKey(eKeys Key)
 {
-  return Key == kOk ? status : osUnknown;
+  return Key == kOk ? state : osUnknown;
 }
 
 // --- cOsdMenu --------------------------------------------------------------
 
 cOsdMenu::cOsdMenu(char *Title, int c0, int c1, int c2, int c3, int c4)
 {
+  visible = false;
   title = strdup(Title);
   cols[0] = c0;
   cols[1] = c1;
   cols[2] = c2;
   cols[3] = c3;
   cols[4] = c4;
-  first = count = 0;
-  current = -1;
+  first = 0;
+  current = marked = -1;
   subMenu = NULL;
+  helpRed = helpGreen = helpYellow = helpBlue = NULL;
+  status = NULL;
   Interface.Open();
 }
 
@@ -77,40 +80,72 @@ cOsdMenu::~cOsdMenu()
 {
   delete title;
   delete subMenu;
+  delete status;
   Interface.Clear();
   Interface.Close();
+}
+
+void cOsdMenu::SetStatus(const char *s)
+{
+  delete status;
+  status = s ? strdup(s) : NULL;
+  if (visible)
+     Interface.Status(status);
+}
+
+void cOsdMenu::SetHelp(const char *Red, const char *Green, const char *Yellow, const char *Blue)
+{
+  // strings are NOT copied - must be constants!!!
+  helpRed    = Red;
+  helpGreen  = Green;
+  helpYellow = Yellow;
+  helpBlue   = Blue;
+}
+
+void cOsdMenu::Del(int Index)
+{
+  cList<cOsdItem>::Del(Get(Index));
+  if (current == Count())
+     current--;
+  if (Index == first && first > 0)
+     first--;
 }
 
 void cOsdMenu::Add(cOsdItem *Item, bool Current)
 {
   cList<cOsdItem>::Add(Item);
-  count++;
-  if (Current && current < 0)
+  if (Current)
      current = Item->Index();
 }
 
 void cOsdMenu::Display(void)
 {
+  visible = true;
   Interface.Clear();
   Interface.SetCols(cols);
-  Interface.WriteText(0, 0, title);
-  if (current < 0 && count)
-     current = 0; // just for safety - there HAS to be a current item!
-  int n = 0;
-  if (current - first >= MAXOSDITEMS) {
-     first = current - MAXOSDITEMS / 2;
-     if (first + MAXOSDITEMS > count)
-        first = count - MAXOSDITEMS;
-     if (first < 0)
-        first = 0;
+  Interface.Title(title);
+  Interface.Help(helpRed, helpGreen, helpYellow, helpBlue);
+  int count = Count();
+  if (count > 0) {
+     if (current < 0)
+        current = 0; // just for safety - there HAS to be a current item!
+     int n = 0;
+     if (current - first >= MAXOSDITEMS) {
+        first = current - MAXOSDITEMS / 2;
+        if (first + MAXOSDITEMS > count)
+           first = count - MAXOSDITEMS;
+        if (first < 0)
+           first = 0;
+        }
+     for (int i = first; i < count; i++) {
+         cOsdItem *item = Get(i);
+         if (item)
+            item->Display(i - first, i == current);
+         if (++n == MAXOSDITEMS) //TODO get this from Interface!!!
+            break;
+         }
      }
-  for (int i = first; i < count; i++) {
-      cOsdItem *item = Get(i);
-      if (item)
-         item->Display(i - first, i == current);
-      if (++n == MAXOSDITEMS) //TODO get this from Interface!!!
-         break;
-      }
+  Interface.Status(status);
 }
 
 void cOsdMenu::RefreshCurrent(void)
@@ -144,6 +179,7 @@ void cOsdMenu::CursorUp(void)
 
 void cOsdMenu::CursorDown(void)
 {
+  int count = Count();
   if (current < count - 1) {
      DisplayCurrent(false);
      if (++current >= first + MAXOSDITEMS) {
@@ -157,7 +193,15 @@ void cOsdMenu::CursorDown(void)
      }
 }
 
-eOSStatus cOsdMenu::AddSubMenu(cOsdMenu *SubMenu)
+void cOsdMenu::Mark(void)
+{
+  if (Count() && marked < 0) {
+     marked = current;
+     SetStatus("Up/Dn for new location - OK to move");
+     }
+}
+
+eOSState cOsdMenu::AddSubMenu(cOsdMenu *SubMenu)
 {
   delete subMenu;
   subMenu = SubMenu;
@@ -165,31 +209,40 @@ eOSStatus cOsdMenu::AddSubMenu(cOsdMenu *SubMenu)
   return osContinue; // convenience return value (see cMenuMain)
 }
 
-eOSStatus cOsdMenu::ProcessKey(eKeys Key)
+eOSState cOsdMenu::ProcessKey(eKeys Key)
 {
   if (subMenu) {
-     eOSStatus status = subMenu->ProcessKey(Key);
-     if (status == osBack) {
+     eOSState state = subMenu->ProcessKey(Key);
+     if (state == osBack) {
         delete subMenu;
         subMenu = NULL;
         RefreshCurrent();
         Display();
-        status = osContinue;
+        state = osContinue;
         }
-     return status;
+     return state;
      }
 
   cOsdItem *item = Get(current);
-  if (item) {
-     eOSStatus status = item->ProcessKey(Key);
-     if (status != osUnknown)
-        return status;
+  if (marked < 0 && item) {
+     eOSState state = item->ProcessKey(Key);
+     if (state != osUnknown)
+        return state;
      }
   switch (Key) {
     case kUp:   CursorUp();   break;
     case kDown: CursorDown(); break;
     case kBack: return osBack;
-    default: return osUnknown;
+    case kOk:   if (marked >= 0) {
+                   SetStatus(NULL);
+                   if (marked != current)
+                      Move(marked, current);
+                   marked = -1;
+                   break;
+                   }
+                // else run into default
+    default: if (marked < 0)
+                return osUnknown;
     }
   return osContinue;
 }

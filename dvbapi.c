@@ -4,20 +4,14 @@
  * See the main source file 'osm.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.1 2000/02/19 13:36:48 kls Exp $
+ * $Id: dvbapi.c 1.2 2000/03/11 10:39:09 kls Exp $
  */
-
-// FIXME: these should be defined in ../DVB/driver/dvb.h!!!
-typedef unsigned int u32;
-typedef unsigned short u16;
-typedef unsigned char u8;
 
 #include "dvbapi.h"
 #include <fcntl.h>
 #include <stdio.h>
 #include <sys/ioctl.h>
 #include <unistd.h>
-#include "../DVB/driver/dvb.h"
 #include "interface.h"
 #include "tools.h"
 
@@ -60,6 +54,7 @@ bool DvbSetChannel(int FrequencyMHz, char Polarization, int Diseqc, int Srate, i
 
 cDvbRecorder::cDvbRecorder(void)
 {
+  recording = false;
 }
 
 cDvbRecorder::~cDvbRecorder()
@@ -67,18 +62,41 @@ cDvbRecorder::~cDvbRecorder()
   Stop();
 }
 
+bool cDvbRecorder::Recording(void)
+{
+  return recording;
+}
+
 bool cDvbRecorder::Record(const char *FileName, char Quality)
 {
   isyslog(LOG_INFO, "record %s (%c)", FileName, Quality);
-  return true;
+  if (MakeDirs(FileName)) {
+     FILE *f = fopen(FileName, "a");
+     if (f) {
+        fprintf(f, "%s, %c\n", FileName, Quality);
+        fclose(f);
+        recording = true;
+        // TODO
+        Interface.Error("Recording not yet implemented!");
+        return true;
+        }
+     else {
+        Interface.Error("Can't write to file!");
+        return false;
+        }
+     }
   // TODO
   return false;
 }
 
 bool cDvbRecorder::Play(const char *FileName, int Frame)
 {
-  isyslog(LOG_INFO, "play %s (%d)", FileName, Frame);
-  // TODO
+  if (!recording) {
+     isyslog(LOG_INFO, "play %s (%d)", FileName, Frame);
+     // TODO
+     Interface.Error("Playback not yet implemented!");
+     return true;
+     }
   return false;
 }
 
@@ -106,6 +124,7 @@ bool cDvbRecorder::Pause(void)
 void cDvbRecorder::Stop(void)
 {
   isyslog(LOG_INFO, "stop");
+  recording = false;
   // TODO
 }
 
@@ -116,9 +135,57 @@ int cDvbRecorder::Frame(void)
   return 0;
 }
 
-// ---------------------------------------------------------------------------
+// --- cDvbOsd ---------------------------------------------------------------
 
-static void DvbOsdCmd(OSD_Command cmd, int color = 0, int x0 = 0, int y0 = 0, int x1 = 0, int y1 = 0, void *data = NULL)
+cDvbOsd::cDvbOsd(void)
+{
+  cols = rows = 0;
+#ifdef DEBUG_OSD
+  memset(&colorPairs, 0, sizeof(colorPairs));
+  initscr();
+  start_color();
+  keypad(stdscr, TRUE);
+  nonl();
+  cbreak();
+  noecho();
+  timeout(1000);
+  leaveok(stdscr, TRUE);
+  window = stdscr;
+#endif
+#ifdef DEBUG_REMOTE
+  initscr();
+  keypad(stdscr, TRUE);
+  nonl();
+  cbreak();
+  noecho();
+  timeout(1000);
+#endif
+}
+
+cDvbOsd::~cDvbOsd()
+{
+  Close();
+}
+
+#ifdef DEBUG_OSD
+void cDvbOsd::SetColor(eDvbColor colorFg, eDvbColor colorBg)
+{
+  int color = (colorBg << 16) | colorFg | 0x80000000;
+  for (int i = 0; i < MaxColorPairs; i++) {
+      if (!colorPairs[i]) {
+         colorPairs[i] = color;
+         init_pair(i + 1, colorFg, colorBg);
+         wattrset(window, COLOR_PAIR(i + 1));
+         break;
+         }
+      else if (color == colorPairs[i]) {
+         wattrset(window, COLOR_PAIR(i + 1));
+         break;
+         }
+      }
+}
+#else
+void cDvbOsd::Cmd(OSD_Command cmd, int color, int x0, int y0, int x1, int y1, const void *data)
 {
   int v = open(VIDEODEVICE, O_RDWR);
 
@@ -130,37 +197,88 @@ static void DvbOsdCmd(OSD_Command cmd, int color = 0, int x0 = 0, int y0 = 0, in
      dc.y0    = y0;
      dc.x1    = x1;
      dc.y1    = y1;
-     dc.data  = data;
+     dc.data  = (void *)data;
      ioctl(v, VIDIOCSOSDCOMMAND, &dc);
      close(v);
      }
   else
      Interface.Error("can't open VIDEODEVICE");//XXX
 }
+#endif
 
-void DvbOsdOpen(int x, int y, int w, int h)
+void cDvbOsd::Open(int w, int h)
 {
-  DvbOsdCmd(OSD_Open, 1, x, y, x + w - 1, y + h - 1);
-  DvbOsdCmd(OSD_SetColor, 0,   0,   0,   0, 127); // background 50% gray
-  DvbOsdCmd(OSD_SetColor, 1, 255, 255, 255, 255); // text white
+  cols = w;
+  rows = h;
+#ifdef DEBUG_OSD
+  //XXX size...
+  #define B2C(b) (((b) * 1000) / 255)
+  #define SETCOLOR(n, r, g, b, o) init_color(n, B2C(r), B2C(g), B2C(b))
+#else
+  w *= charWidth;
+  h *= lineHeight;
+  int x = (720 - w) / 2; //TODO PAL vs. NTSC???
+  int y = (576 - h) / 2;
+  Cmd(OSD_Open, 4, x, y, x + w - 1, y + h - 1);
+  #define SETCOLOR(n, r, g, b, o) Cmd(OSD_SetColor, n, r, g, b, o)
+#endif
+  SETCOLOR(clrBackground, 0x00, 0x00, 0x00, 127); // background 50% gray
+  SETCOLOR(clrBlack,      0x00, 0x00, 0x00, 255);
+  SETCOLOR(clrRed,        0xFC, 0x14, 0x14, 255);
+  SETCOLOR(clrGreen,      0x24, 0xFC, 0x24, 255);
+  SETCOLOR(clrYellow,     0xFC, 0xC0, 0x24, 255);
+  SETCOLOR(clrBlue,       0x00, 0x00, 0xFC, 255);
+  SETCOLOR(clrCyan,       0x00, 0xFC, 0xFC, 255);
+  SETCOLOR(clrMagenta,    0xB0, 0x00, 0xFC, 255);
+  SETCOLOR(clrWhite,      0xFC, 0xFC, 0xFC, 255);
 }
 
-void DvbOsdClose(void)
+void cDvbOsd::Close(void)
 {
-  DvbOsdCmd(OSD_Close);
+#ifndef DEBUG_OSD
+  Cmd(OSD_Close);
+#endif
 }
 
-void DvbOsdClear(void)
+void cDvbOsd::Clear(void)
 {
-  DvbOsdCmd(OSD_Clear);
+#ifdef DEBUG_OSD
+  SetColor(clrBackground, clrBackground);
+  Fill(0, 0, cols, rows, clrBackground);
+#else
+  Cmd(OSD_Clear);
+#endif
 }
 
-void DvbOsdClrEol(int x, int y)
+void cDvbOsd::Fill(int x, int y, int w, int h, eDvbColor color)
 {
-  DvbOsdCmd(OSD_FillBlock, 0, x, y * DvbOsdLineHeight, x + 490, (y + 1) * DvbOsdLineHeight);//XXX
+  if (x < 0) x = cols + x;
+  if (y < 0) y = rows + y;
+#ifdef DEBUG_OSD
+  SetColor(color, color);
+  for (int r = 0; r < h; r++) {
+      wmove(window, y + r, x); // ncurses wants 'y' before 'x'!
+      whline(window, ' ', w);
+      }
+#else
+  Cmd(OSD_FillBlock, color, x * charWidth, y * lineHeight, (x + w) * charWidth - 1, (y + h) * lineHeight - 1);
+#endif
 }
 
-void DvbOsdText(int x, int y, char *s)
+void cDvbOsd::ClrEol(int x, int y, eDvbColor color)
 {
-  DvbOsdCmd(OSD_Text, 1, x, y, 1, 0, s);
+  Fill(x, y, cols - x, 1, color);
+}
+
+void cDvbOsd::Text(int x, int y, const char *s, eDvbColor colorFg, eDvbColor colorBg)
+{
+  if (x < 0) x = cols + x;
+  if (y < 0) y = rows + y;
+#ifdef DEBUG_OSD
+  SetColor(colorFg, colorBg);
+  wmove(window, y, x); // ncurses wants 'y' before 'x'!
+  waddstr(window, s);
+#else
+  Cmd(OSD_Text, (int(colorBg) << 16) | colorFg, x * charWidth, y * lineHeight, 1, 0, s);
+#endif
 }
