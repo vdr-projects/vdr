@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.10 2000/09/17 13:39:37 kls Exp $
+ * $Id: svdrp.c 1.11 2000/10/08 12:21:14 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -326,7 +326,7 @@ void cSVDRP::CmdCHAN(const char *Option)
         Reply(501, "Undefined channel \"%s\"", Option);
         return;
         }
-     if (Interface.Recording()) {
+     if (Interface->Recording()) {
         Reply(550, "Can't switch channel, interface is recording");
         return;
         }
@@ -474,7 +474,7 @@ void cSVDRP::CmdHITK(const char *Option)
   if (*Option) {
      eKeys k = Keys.Translate(Option);
      if (k != kNone) {
-        Interface.PutKey(k);
+        Interface->PutKey(k);
         Reply(250, "Key \"%s\" accepted", Option);
         }
      else

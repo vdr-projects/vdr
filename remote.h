@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remote.h 1.12 2000/10/08 11:19:17 kls Exp $
+ * $Id: remote.h 1.13 2000/10/08 12:11:34 kls Exp $
  */
 
 #ifndef __REMOTE_H
@@ -19,9 +19,9 @@ class cRcIoBase {
 protected:
   time_t t;
   cRcIoBase(void);
-  virtual ~cRcIoBase();
 public:
   enum { modeH = 'h', modeB = 'b', modeS = 's' };
+  virtual ~cRcIoBase();
   virtual bool SetCode(unsigned char Code, unsigned short Address) { return true; }
   virtual bool SetMode(unsigned char Mode) { return true; }
   virtual bool Number(int n, bool Hex = false) { return true; }

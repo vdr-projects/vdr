@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.23 2000/09/17 09:11:59 kls Exp $
+ * $Id: config.c 1.24 2000/10/08 12:19:21 kls Exp $
  */
 
 #include "config.h"
@@ -275,7 +275,7 @@ bool cChannel::Switch(cDvbApi *DvbApi)
          }
      return false;
      }
-  Interface.Info(DvbApi->Recording() ? "Channel locked (recording)!" : name);
+  Interface->Info(DvbApi->Recording() ? "Channel locked (recording)!" : name);
   return false;
 }
 
@@ -566,7 +566,7 @@ eKeys cChannels::ShowChannel(int Number, bool Switched, bool Group)
 {
   cChannel *channel = Group ? Get(Number) : GetByNumber(Number);
   if (channel)
-     return Interface.DisplayChannel(channel->number, channel->name, !Switched || Setup.ShowInfoOnChSwitch);
+     return Interface->DisplayChannel(channel->number, channel->name, !Switched || Setup.ShowInfoOnChSwitch);
   return kNone;
 }
 

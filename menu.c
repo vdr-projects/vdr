@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.31 2000/10/08 10:47:17 kls Exp $
+ * $Id: menu.c 1.32 2000/10/08 12:20:03 kls Exp $
  */
 
 #include "menu.h"
@@ -641,11 +641,11 @@ eOSState cMenuChannels::Del(void)
      // Check if there is a timer using this channel:
      for (cTimer *ti = Timers.First(); ti; ti = (cTimer *)ti->Next()) {
          if (ti->channel == DeletedChannel) {
-            Interface.Error("Channel is being used by a timer!");
+            Interface->Error("Channel is being used by a timer!");
             return osContinue;
             }
          }
-     if (Interface.Confirm("Delete Channel?")) {
+     if (Interface->Confirm("Delete Channel?")) {
         // Move and renumber the channels:
         Channels.Del(channel);
         Channels.ReNumber();
@@ -922,7 +922,7 @@ eOSState cMenuTimers::Del(void)
   cTimer *ti = Timers.Get(Index);
   if (ti) {
      if (!ti->recording) {
-        if (Interface.Confirm("Delete Timer?")) {
+        if (Interface->Confirm("Delete Timer?")) {
            Timers.Del(Timers.Get(Index));
            cOsdMenu::Del(Index);
            Timers.Save();
@@ -931,7 +931,7 @@ eOSState cMenuTimers::Del(void)
            }
         }
      else
-        Interface.Error("Timer is recording!");
+        Interface->Error("Timer is recording!");
      }
   return osContinue;
 }
@@ -1036,17 +1036,17 @@ eOSState cMenuRecordings::Del(void)
   if (ri) {
 //XXX what if this recording's file is currently in use???
 //XXX     if (!ti->recording) {
-        if (Interface.Confirm("Delete Recording?")) {
+        if (Interface->Confirm("Delete Recording?")) {
            if (ri->recording->Delete()) {
               cOsdMenu::Del(Current());
               Display();
               }
            else
-              Interface.Error("Error while deleting recording!");
+              Interface->Error("Error while deleting recording!");
            }
 //XXX        }
 //XXX     else
-//XXX        Interface.Error("Timer is recording!");
+//XXX        Interface->Error("Timer is recording!");
      }
   return osContinue;
 }
@@ -1146,7 +1146,7 @@ eOSState cMenuMain::ProcessKey(eKeys Key)
     case osTimer:      return AddSubMenu(new cMenuTimers);
     case osRecordings: return AddSubMenu(new cMenuRecordings);
     case osSetup:      return AddSubMenu(new cMenuSetup);
-    case osStopRecord: if (Interface.Confirm("Stop Recording?")) {
+    case osStopRecord: if (Interface->Confirm("Stop Recording?")) {
                           cOsdItem *item = Get(Current());
                           if (item) {
                              cRecordControls::Stop(item->Text() + strlen(STOP_RECORDING));
@@ -1178,15 +1178,15 @@ cDirectChannelSelect::cDirectChannelSelect(eKeys FirstKey)
   oldNumber = CurrentChannel;
   number = 0;
   lastTime = time_ms();
-  Interface.Open(MenuColumns, 1);
+  Interface->Open(MenuColumns, 1);
   ProcessKey(FirstKey);
 }
 
 cDirectChannelSelect::~cDirectChannelSelect()
 {
   if (number < 0)
-     Interface.DisplayChannel(oldNumber);
-  Interface.Close();
+     Interface->DisplayChannel(oldNumber);
+  Interface->Close();
 }
 
 eOSState cDirectChannelSelect::ProcessKey(eKeys Key)
@@ -1200,9 +1200,9 @@ eOSState cDirectChannelSelect::ProcessKey(eKeys Key)
             int BufSize = MenuColumns + 1;
             char buffer[BufSize];
             snprintf(buffer, BufSize, "%d  %s", number, Name);
-            Interface.DisplayChannel(number);
-            Interface.Clear();
-            Interface.Write(0, 0, buffer);
+            Interface->DisplayChannel(number);
+            Interface->Clear();
+            Interface->Write(0, 0, buffer);
             lastTime = time_ms();
             if (!channel) {
                number = -1;
@@ -1241,14 +1241,14 @@ cRecordControl::cRecordControl(cDvbApi *DvbApi, cTimer *Timer)
   cRecording Recording(timer);
   if (dvbApi->StartRecord(Recording.FileName()))
      Recording.WriteSummary();
-  Interface.DisplayRecording(dvbApi->Index(), true);
+  Interface->DisplayRecording(dvbApi->Index(), true);
 }
 
 cRecordControl::~cRecordControl()
 {
   Stop(true);
   delete instantId;
-  Interface.DisplayRecording(dvbApi->Index(), false);
+  Interface->DisplayRecording(dvbApi->Index(), false);
 }
 
 void cRecordControl::Stop(bool KeepInstant)
@@ -1366,7 +1366,7 @@ void cReplayControl::SetRecording(const char *FileName, const char *Title)
 void cReplayControl::Show(void)
 {
   if (!visible) {
-     Interface.Open(MenuColumns, -3);
+     Interface->Open(MenuColumns, -3);
      needsFastResponse = visible = true;
      shown = dvbApi->ShowProgress(true);
      }
@@ -1375,7 +1375,7 @@ void cReplayControl::Show(void)
 void cReplayControl::Hide(void)
 {
   if (visible) {
-     Interface.Close();
+     Interface->Close();
      needsFastResponse = visible = false;
      }
 }

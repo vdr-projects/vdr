@@ -4,43 +4,39 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.c 1.23 2000/10/08 11:17:11 kls Exp $
+ * $Id: interface.c 1.24 2000/10/08 12:15:36 kls Exp $
  */
 
 #include "interface.h"
 #include <unistd.h>
 #include "eit.h"
-#include "remote.h"
 
 cEIT EIT;
 
-#if defined(REMOTE_RCU)
-cRcIoRCU RcIo("/dev/ttyS1");
-#elif defined(REMOTE_LIRC)
-cRcIoLIRC RcIo("/dev/lircd");
-#else
-cRcIoKBD RcIo;
-#endif
+cInterface *Interface = NULL;
 
-cInterface Interface;
-
-cInterface::cInterface(void)
+cInterface::cInterface(int SVDRPport)
 {
   open = 0;
   cols[0] = 0;
   keyFromWait = kNone;
+  rcIo = NULL;
   SVDRP = NULL;
-}
-
-void cInterface::Init(int SVDRPport)
-{
-  RcIo.SetCode(Keys.code, Keys.address);
+#if defined(REMOTE_RCU)
+  rcIo = new cRcIoRCU("/dev/ttyS1");
+#elif defined(REMOTE_LIRC)
+  rcIo = new cRcIoLIRC("/dev/lircd");
+#else
+  rcIo = new cRcIoKBD;
+#endif
+  rcIo->SetCode(Keys.code, Keys.address);
   if (SVDRPport)
      SVDRP = new cSVDRP(SVDRPport);
 }
 
-void cInterface::Cleanup(void)
+cInterface::~cInterface()
 {
+  delete rcIo;
   delete SVDRP;
 }
 
@@ -62,10 +58,10 @@ unsigned int cInterface::GetCh(bool Wait, bool *Repeat, bool *Release)
 {
   if (open)
      cDvbApi::PrimaryDvbApi->Flush();
-  if (!RcIo.InputAvailable())
+  if (!rcIo->InputAvailable())
      cFile::AnyFileReady(-1, Wait ? 1000 : 0);
   unsigned int Command;
-  return RcIo.GetCommand(&Command, Repeat, Release) ? Command : 0;
+  return rcIo->GetCommand(&Command, Repeat, Release) ? Command : 0;
 }
 
 eKeys cInterface::GetKey(bool Wait)
@@ -245,13 +241,13 @@ void cInterface::QueryKeys(void)
          break;
 #else
       //TODO on screen display...
-      if (RcIo.DetectCode(&Code, &Address)) {
+      if (rcIo->DetectCode(&Code, &Address)) {
          Keys.code = Code;
          Keys.address = Address;
          WriteText(1, 5, "RC code detected!");
          WriteText(1, 6, "Do not press any key...");
          cDvbApi::PrimaryDvbApi->Flush();
-         RcIo.Flush(3000);
+         rcIo->Flush(3000);
          ClearEol(0, 5);
          ClearEol(0, 6);
          cDvbApi::PrimaryDvbApi->Flush();
@@ -342,7 +338,7 @@ eKeys cInterface::DisplayChannel(int Number, const char *Name, bool WithInfo)
 {
   // Number = 0 is used for channel group display and no EIT
   if (Number)
-     RcIo.Number(Number);
+     rcIo->Number(Number);
   if (Name && !Recording()) {
      Open(MenuColumns, 5);
      cDvbApi::PrimaryDvbApi->Fill(0, 0, MenuColumns, 1, clrBackground);
@@ -401,7 +397,7 @@ eKeys cInterface::DisplayChannel(int Number, const char *Name, bool WithInfo)
 
 void cInterface::DisplayRecording(int Index, bool On)
 {
-  RcIo.SetPoints(1 << Index, On);
+  rcIo->SetPoints(1 << Index, On);
 }
 
 bool cInterface::Recording(void)
