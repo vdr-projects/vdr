@@ -1863,7 +1863,7 @@ Video Disk Recorder Revision History
   read from the keyboard).
 - The 'ncurses' library is now only necessary when compiling VDR with DEBUG_OSD=1.
 
-2002-12-13: Version 1.1.20
+2002-12-14: Version 1.1.20
 
 - Now checking if there is a connection to the keyboard (thanks to Jaakko Hyvätti)
   and only creating the KBD remote control if VDR is running in the foreground.
@@ -1894,3 +1894,7 @@ Video Disk Recorder Revision History
   through the new 'kKbd' key code and none of it will be processed as normal remote
   control functions (thanks to Jan Rieger for suggestions and testing).
 - Fixed deleting characters in string entry fields in 'insert' mode.
+- Now using "Doxygen" to generate source documentation (thanks to Walter Stroebel
+  for providing an initial 'Doxyfile' configuration and adjusting some comments).
+  See INSTALL for information how to do this. Some function descriptions have
+  already been adapted to Doxygen, more will follow.

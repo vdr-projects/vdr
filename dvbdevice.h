@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.h 1.19 2002/12/07 14:44:29 kls Exp $
+ * $Id: dvbdevice.h 1.20 2002/12/15 14:45:29 kls Exp $
  */
 
 #ifndef __DVBDEVICE_H
@@ -24,15 +24,18 @@
 
 class cDvbTuner;
 
+/// The cDvbDevice implements a DVB device which can be accessed through the Linux DVB driver API.
+
 class cDvbDevice : public cDevice {
   friend class cDvbOsd;
 private:
   static bool Probe(const char *FileName);
-         // Probes for existing DVB devices.
+         ///< Probes for existing DVB devices.
 public:
   static bool Initialize(void);
-         // Initializes the DVB devices.
-         // Must be called before accessing any DVB functions.
+         ///< Initializes the DVB devices.
+         ///< Must be called before accessing any DVB functions.
+         ///< \return True if any devices are available.
 private:
   fe_type_t frontendType;
   int fd_osd, fd_audio, fd_video, fd_dvr;

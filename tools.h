@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.53 2002/11/30 12:51:45 kls Exp $
+ * $Id: tools.h 1.54 2002/12/15 14:59:53 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -59,11 +59,11 @@ char *readline(FILE *f);
 char *strcpyrealloc(char *dest, const char *src);
 char *strn0cpy(char *dest, const char *src, size_t n);
 char *strreplace(char *s, char c1, char c2);
-char *strreplace(char *s, const char *s1, const char *s2); // re-allocates 's' and deletes the original string if necessary!
+char *strreplace(char *s, const char *s1, const char *s2); ///< re-allocates 's' and deletes the original string if necessary!
 char *skipspace(const char *s);
 char *stripspace(char *s);
 char *compactspace(char *s);
-const char *strescape(const char *s, const char *chars); // returns a statically allocated string!
+const char *strescape(const char *s, const char *chars); ///< \warning returns a statically allocated string!
 bool startswith(const char *s, const char *p);
 bool endswith(const char *s, const char *p);
 bool isempty(const char *s);
@@ -71,8 +71,8 @@ int numdigits(int n);
 int time_ms(void);
 void delay_ms(int ms);
 bool isnumber(const char *s);
-const char *itoa(int n); // returns a statically allocated string!
-const char *AddDirectory(const char *DirName, const char *FileName); // returns a statically allocated string!
+const char *itoa(int n); ///< \warning returns a statically allocated string!
+const char *AddDirectory(const char *DirName, const char *FileName); ///< \warning returns a statically allocated string!
 int FreeDiskSpaceMB(const char *Directory, int *UsedMB = NULL);
 bool DirectoryOk(const char *DirName, bool LogErrors = false);
 bool MakeDirs(const char *FileName, bool IsDirectory = false);
@@ -80,8 +80,8 @@ bool RemoveFileOrDir(const char *FileName, bool FollowSymlinks = false);
 bool RemoveEmptyDirectories(const char *DirName, bool RemoveThis = false);
 char *ReadLink(const char *FileName);
 bool SpinUpDisk(const char *FileName);
-const char *WeekDayName(int WeekDay); // returns a statically allocated string!
-const char *DayDateTime(time_t t = 0); // returns a statically allocated string!
+const char *WeekDayName(int WeekDay); ///< \warning returns a statically allocated string!
+const char *DayDateTime(time_t t = 0); ///< \warning returns a statically allocated string!
 
 class cPoller {
 private:
