@@ -16,7 +16,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.c 1.42 2002/04/01 12:58:20 kls Exp $
+ * $Id: eit.c 1.43 2002/04/06 11:42:47 kls Exp $
  ***************************************************************************/
 
 #include "eit.h"
@@ -1090,10 +1090,10 @@ void cSIProcessor::Action()
          if (epgDataFileName && now - lastDump > 600)
          {
             cMutexLock MutexLock(&schedulesMutex);
-            FILE *f = fopen(GetEpgDataFileName(), "w");
-            if (f) {
+            cSafeFile f(GetEpgDataFileName());
+            if (f.Open()) {
                schedules->Dump(f);
-               fclose(f);
+               f.Close();
                }
             else
                LOG_ERROR;

@@ -186,6 +186,7 @@ Norbert Schmidt <nschmidt-nrw@t-online.de>
 
 Thilo Wunderlich <tw@ubcom.net>
  for his help in keeping 'channels.conf' up to date
+ for reporting a problem with accessing the epg.data file before it is fully written
 
 Stephan Schreiber <stephan@sschreiber.de>
  for his support in keeping the Premiere World channels up to date in 'channels.conf.cable'

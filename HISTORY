@@ -1180,3 +1180,5 @@ Video Disk Recorder Revision History
 - Fixed resetting the "First day" timer parameter once the timer actually starts
   recording.
 - Fixed the still picture workaround in case the progress display is active.
+- Fixed a problem with accessing the epg.data file before it is fully written
+  (thanks to Thilo Wunderlich for reporting this one).
