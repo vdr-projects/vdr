@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.87 2004/06/05 14:35:36 kls Exp $
+ * $Id: dvbdevice.c 1.88 2004/06/05 16:33:35 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -561,15 +561,15 @@ void cDvbDevice::SetVideoFormat(bool VideoFormat16_9)
 
 eVideoSystem cDvbDevice::GetVideoSystem(void)
 {
-  eVideoSystem VideoSytem = vsPAL;
+  eVideoSystem VideoSystem = vsPAL;
   video_size_t vs;
   if (ioctl(fd_video, VIDEO_GET_SIZE, &vs) == 0) {
      if (vs.h == 480 || vs.h == 240)
-        VideoSytem = vsNTSC;
+        VideoSystem = vsNTSC;
      }
   else
      LOG_ERROR;
-  return VideoSytem;
+  return VideoSystem;
 }
 
 //                            ptAudio        ptVideo        ptPcr        ptTeletext        ptDolby        ptOther
