@@ -2837,3 +2837,4 @@ Video Disk Recorder Revision History
   Oliver Endriss for reporting this one).
 - Added some missing cStatus::MsgOsdTextItem() calls (thanks to Oliver Endriss for
   reporting this one).
+- Completed Croatian language texts (thanks to Drazen Dupor).
