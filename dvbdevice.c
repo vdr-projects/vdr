@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.34 2002/11/03 12:31:11 kls Exp $
+ * $Id: dvbdevice.c 1.35 2002/11/10 12:57:17 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -412,7 +412,7 @@ bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
   // Stop setting system time:
 
   if (siProcessor)
-     siProcessor->SetCurrentTransponder(0);
+     siProcessor->SetCurrentTransponder(0, 0);
 
   // Turn off live PIDs if necessary:
 
@@ -585,7 +585,7 @@ bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
   // Start setting system time:
 
   if (siProcessor)
-     siProcessor->SetCurrentTransponder(Channel->Frequency());
+     siProcessor->SetCurrentTransponder(Channel->Source(), Channel->Frequency());
 
   return true;
 }

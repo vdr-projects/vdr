@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.h 1.1 2002/10/20 11:52:23 kls Exp $
+ * $Id: timers.h 1.2 2002/11/10 10:17:05 kls Exp $
  */
 
 #ifndef __TIMERS_H
@@ -36,7 +36,6 @@ private:
   char file[MaxFileName];
   time_t firstday;
   char *summary;
-  static const char *ToText(cTimer *Timer);
 public:
   cTimer(bool Instant = false);
   cTimer(const cEventInfo *EventInfo);
@@ -55,7 +54,7 @@ public:
   const char *File(void) { return file; }
   time_t FirstDay(void) { return firstday; }
   const char *Summary(void) { return summary; }
-  const char *ToText(void);
+  const char *ToText(bool UseChannelID = false);
   bool Parse(const char *s);
   bool Save(FILE *f);
   bool IsSingleEvent(void);

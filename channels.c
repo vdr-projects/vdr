@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 1.7 2002/11/08 13:21:16 kls Exp $
+ * $Id: channels.c 1.8 2002/11/10 13:01:55 kls Exp $
  */
 
 #include "channels.h"
@@ -126,19 +126,18 @@ char *cChannel::buffer = NULL;
 
 cChannel::cChannel(void)
 {
-  *name = 0;
-  frequency    = 0;
+  strcpy(name,   "Pro7");
+  frequency    = 12480;
   source       = cSource::FromString("S19.2E");
-  srate        = 0;
-  vpid         = 0;
-  apid1        = 0;
+  srate        = 27500;
+  vpid         = 255;
+  apid1        = 256;
   apid2        = 0;
-  dpid1        = 0;
+  dpid1        = 257;
   dpid2        = 0;
-  tpid         = 0;
+  tpid         = 32;
   ca           = 0;
   sid          = 0;
-  number       = 0;
   groupSep     = false;
   polarization = 'v';
   inversion    = INVERSION_AUTO;
@@ -151,30 +150,44 @@ cChannel::cChannel(void)
   hierarchy    = HIERARCHY_AUTO;
 }
 
-cChannel::cChannel(const cChannel *Channel)
+cChannel& cChannel::operator= (const cChannel &Channel)
 {
-  strcpy(name,   Channel ? Channel->name         : "Pro7");
-  frequency    = Channel ? Channel->frequency    : 12480;
-  source       = Channel ? Channel->source       : cSource::FromString("S19.2E");
-  srate        = Channel ? Channel->srate        : 27500;
-  vpid         = Channel ? Channel->vpid         : 255;
-  apid1        = Channel ? Channel->apid1        : 256;
-  apid2        = Channel ? Channel->apid2        : 0;
-  dpid1        = Channel ? Channel->dpid1        : 257;
-  dpid2        = Channel ? Channel->dpid2        : 0;
-  tpid         = Channel ? Channel->tpid         : 32;
-  ca           = Channel ? Channel->ca           : 0;
-  sid          = Channel ? Channel->sid          : 0;
-  groupSep     = Channel ? Channel->groupSep     : false;
-  polarization = Channel ? Channel->polarization : 'v';
-  inversion    = Channel ? Channel->inversion    : INVERSION_AUTO;
-  bandwidth    = Channel ? Channel->bandwidth    : BANDWIDTH_AUTO;
-  coderateH    = Channel ? Channel->coderateH    : FEC_AUTO;
-  coderateL    = Channel ? Channel->coderateL    : FEC_AUTO;
-  modulation   = Channel ? Channel->modulation   : QAM_AUTO;
-  transmission = Channel ? Channel->transmission : TRANSMISSION_MODE_AUTO;
-  guard        = Channel ? Channel->guard        : GUARD_INTERVAL_AUTO;
-  hierarchy    = Channel ? Channel->hierarchy    : HIERARCHY_AUTO;
+  memcpy(&__BeginData__, &Channel.__BeginData__, (char *)&Channel.__EndData__ - (char *)&Channel.__BeginData__);
+  return *this;
+}
+
+static int MHz(int frequency)
+{
+  while (frequency > 20000) {
+        frequency /= 1000;
+        }
+  return frequency;
+}
+
+uint64 cChannel::GetChannelID(void) const
+{
+  return (uint64(source) << 48) | (uint64(0) << 32) | ((MHz(frequency)) << 16) | sid;
+}
+
+const char *cChannel::GetChannelIDStr(void) const
+{
+  static char buffer[256];
+  snprintf(buffer, sizeof(buffer), "%s-%d-%d-%d", cSource::ToString(source), 0, MHz(frequency), sid);
+  return buffer;
+}
+
+uint64 cChannel::StringToChannelID(const char *s)
+{
+  char *sourcebuf = NULL;
+  int reserved;
+  int frequency;
+  int sid;
+  if (4 == sscanf(s, "%a[^-]-%d-%d-%d", &sourcebuf, &reserved, &frequency, &sid)) {
+     int source = cSource::FromString(sourcebuf);
+     if (source >= 0)
+        return (uint64(source) << 48) | (uint64(reserved) << 32) | (frequency << 16) | sid;
+     }
+  return 0;
 }
 
 static int PrintParameter(char *p, char Name, int Value)
@@ -278,7 +291,7 @@ const char *cChannel::ToText(void)
   return ToText(this);
 }
 
-bool cChannel::Parse(const char *s)
+bool cChannel::Parse(const char *s, bool AllowNonUniqueID)
 {
   if (*s == ':') {
      groupSep = true;
@@ -324,6 +337,10 @@ bool cChannel::Parse(const char *s)
         free(sourcebuf);
         free(apidbuf);
         free(namebuf);
+        if (!AllowNonUniqueID && Channels.GetByChannelID(GetChannelID())) {
+           esyslog("ERROR: channel data not unique!");
+           return false;
+           }
         return ok;
         }
      else
@@ -404,13 +421,32 @@ cChannel *cChannels::GetByNumber(int Number, int SkipGap)
   return NULL;
 }
 
-cChannel *cChannels::GetByServiceID(unsigned short ServiceId)
+cChannel *cChannels::GetByServiceID(int Source, unsigned short ServiceID)
 {
   for (cChannel *channel = First(); channel; channel = Next(channel)) {
-      if (!channel->GroupSep() && channel->Sid() == ServiceId)
+      if (!channel->GroupSep() && channel->Source() == Source && channel->Sid() == ServiceID)
          return channel;
       }
   return NULL;
+}
+
+cChannel *cChannels::GetByChannelID(uint64 ChannelID)
+{
+  for (cChannel *channel = First(); channel; channel = Next(channel)) {
+      if (!channel->GroupSep() && channel->GetChannelID() == ChannelID)
+         return channel;
+      }
+  return NULL;
+}
+
+bool cChannels::HasUniqueChannelID(cChannel *NewChannel, cChannel *OldChannel)
+{
+  uint64 NewChannelID = NewChannel->GetChannelID();
+  for (cChannel *channel = First(); channel; channel = Next(channel)) {
+      if (!channel->GroupSep() && channel != OldChannel && channel->GetChannelID() == NewChannelID)
+         return false;
+      }
+  return true;
 }
 
 bool cChannels::SwitchTo(int Number)

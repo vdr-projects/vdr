@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 1.1 2002/10/20 12:28:55 kls Exp $
+ * $Id: timers.c 1.2 2002/11/10 10:19:12 kls Exp $
  */
 
 #include "timers.h"
@@ -49,7 +49,7 @@ cTimer::cTimer(const cEventInfo *EventInfo)
   startTime = stopTime = 0;
   recording = pending = false;
   active = true;
-  channel = Channels.GetByServiceID(EventInfo->GetServiceID());
+  channel = Channels.GetByChannelID(EventInfo->GetChannelID());
   time_t tstart = EventInfo->GetTime();
   time_t tstop = tstart + EventInfo->GetDuration() + Setup.MarginStop * 60;
   tstart -= Setup.MarginStart * 60;
@@ -92,20 +92,15 @@ bool cTimer::operator< (const cListObject &ListObject)
   return t1 < t2 || (t1 == t2 && priority > ti->priority);
 }
 
-const char *cTimer::ToText(cTimer *Timer)
+const char *cTimer::ToText(bool UseChannelID)
 {
   free(buffer);
-  strreplace(Timer->file, ':', '|');
-  strreplace(Timer->summary, '\n', '|');
-  asprintf(&buffer, "%d:%d:%s:%04d:%04d:%d:%d:%s:%s\n", Timer->active, Timer->Channel()->Number(), PrintDay(Timer->day, Timer->firstday), Timer->start, Timer->stop, Timer->priority, Timer->lifetime, Timer->file, Timer->summary ? Timer->summary : "");
-  strreplace(Timer->summary, '|', '\n');
-  strreplace(Timer->file, '|', ':');
+  strreplace(file, ':', '|');
+  strreplace(summary, '\n', '|');
+  asprintf(&buffer, "%d:%s:%s:%04d:%04d:%d:%d:%s:%s\n", active, UseChannelID ? Channel()->GetChannelIDStr() : itoa(Channel()->Number()), PrintDay(day, firstday), start, stop, priority, lifetime, file, summary ? summary : "");
+  strreplace(summary, '|', '\n');
+  strreplace(file, '|', ':');
   return buffer;
-}
-
-const char *cTimer::ToText(void)
-{
-  return ToText(this);
 }
 
 int cTimer::TimeToInt(int t)
@@ -189,8 +184,9 @@ const char *cTimer::PrintFirstDay(void)
 
 bool cTimer::Parse(const char *s)
 {
-  char *buffer1 = NULL;
-  char *buffer2 = NULL;
+  char *channelbuffer = NULL;
+  char *daybuffer = NULL;
+  char *filebuffer = NULL;
   free(summary);
   summary = NULL;
   //XXX Apparently sscanf() doesn't work correctly if the last %a argument
@@ -208,34 +204,35 @@ bool cTimer::Parse(const char *s)
      strcat(strn0cpy(s2, s, l2 + 1), " \n");
      s = s2;
      }
-  int ch = 0;
-  if (8 <= sscanf(s, "%d :%d :%a[^:]:%d :%d :%d :%d :%a[^:\n]:%a[^\n]", &active, &ch, &buffer1, &start, &stop, &priority, &lifetime, &buffer2, &summary)) {
+  bool result = false;
+  if (8 <= sscanf(s, "%d :%a[^:]:%a[^:]:%d :%d :%d :%d :%a[^:\n]:%a[^\n]", &active, &channelbuffer, &daybuffer, &start, &stop, &priority, &lifetime, &filebuffer, &summary)) {
      if (summary && !*skipspace(summary)) {
         free(summary);
         summary = NULL;
         }
      //TODO add more plausibility checks
-     day = ParseDay(buffer1, &firstday);
-     strn0cpy(file, buffer2, MaxFileName);
+     day = ParseDay(daybuffer, &firstday);
+     result = day != 0;
+     strn0cpy(file, filebuffer, MaxFileName);
      strreplace(file, '|', ':');
      strreplace(summary, '|', '\n');
-     free(buffer1);
-     free(buffer2);
-     free(s2);
-     channel = Channels.GetByNumber(ch);
+     uint64 cid = cChannel::StringToChannelID(channelbuffer);
+     channel = cid ? Channels.GetByChannelID(cid) : Channels.GetByNumber(atoi(channelbuffer));
      if (!channel) {
-        esyslog("ERROR: channel %d not defined", ch);
-        return false;
+        esyslog("ERROR: channel %s not defined", channelbuffer);
+        result = false;
         }
-     return day != 0;
      }
+  free(channelbuffer);
+  free(daybuffer);
+  free(filebuffer);
   free(s2);
-  return false;
+  return result;
 }
 
 bool cTimer::Save(FILE *f)
 {
-  return fprintf(f, ToText()) > 0;
+  return fprintf(f, ToText(true)) > 0;
 }
 
 bool cTimer::IsSingleEvent(void)

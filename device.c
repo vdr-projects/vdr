@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.34 2002/11/03 11:51:24 kls Exp $
+ * $Id: device.c 1.35 2002/11/10 10:17:57 kls Exp $
  */
 
 #include "device.h"
@@ -379,7 +379,7 @@ eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
 
   if (Result == scrOk) {
      if (LiveView && IsPrimaryDevice()) {
-        cSIProcessor::SetCurrentServiceID(Channel->Sid());
+        cSIProcessor::SetCurrentChannelID(Channel->GetChannelID());
         currentChannel = Channel->Number();
         }
      cStatus::MsgChannelSwitch(this, Channel->Number()); // only report status if channel switch successfull

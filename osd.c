@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 1.36 2002/10/13 10:31:28 kls Exp $
+ * $Id: osd.c 1.37 2002/11/10 12:30:09 kls Exp $
  */
 
 #include "osd.h"
@@ -599,20 +599,24 @@ eOSState cOsdMenu::AddSubMenu(cOsdMenu *SubMenu)
   delete subMenu;
   subMenu = SubMenu;
   subMenu->Display();
-  return osContinue; // convenience return value (see cMenuMain)
+  return osContinue; // convenience return value
+}
+
+eOSState cOsdMenu::CloseSubMenu()
+{
+  delete subMenu;
+  subMenu = NULL;
+  RefreshCurrent();
+  Display();
+  return osContinue; // convenience return value
 }
 
 eOSState cOsdMenu::ProcessKey(eKeys Key)
 {
   if (subMenu) {
      eOSState state = subMenu->ProcessKey(Key);
-     if (state == osBack) {
-        delete subMenu;
-        subMenu = NULL;
-        RefreshCurrent();
-        Display();
-        state = osContinue;
-        }
+     if (state == osBack)
+        return CloseSubMenu();
      return state;
      }
 

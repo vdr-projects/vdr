@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.51 2002/10/19 12:31:50 kls Exp $
+ * $Id: tools.h 1.52 2002/11/09 15:32:36 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -20,6 +20,7 @@
 #include <sys/types.h>
 
 typedef unsigned char uchar;
+typedef unsigned long long int uint64;
 
 extern int SysLogLevel;
 
@@ -68,6 +69,7 @@ int numdigits(int n);
 int time_ms(void);
 void delay_ms(int ms);
 bool isnumber(const char *s);
+const char *itoa(int n); // returns a statically allocated string!
 const char *AddDirectory(const char *DirName, const char *FileName); // returns a statically allocated string!
 int FreeDiskSpaceMB(const char *Directory, int *UsedMB = NULL);
 bool DirectoryOk(const char *DirName, bool LogErrors = false);

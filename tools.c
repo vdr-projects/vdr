@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.72 2002/10/19 12:32:53 kls Exp $
+ * $Id: tools.c 1.73 2002/11/09 15:33:47 kls Exp $
  */
 
 #include "tools.h"
@@ -241,6 +241,13 @@ bool isnumber(const char *s)
         s++;
         }
   return true;
+}
+
+const char *itoa(int n)
+{
+  static char buf[16];
+  snprintf(buf, sizeof(buf), "%d", n);
+  return buf;
 }
 
 const char *AddDirectory(const char *DirName, const char *FileName)

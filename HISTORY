@@ -249,7 +249,7 @@ Video Disk Recorder Revision History
 - The EIT information is now gathered in a separate thread.
 - The sytem time can now be synchronized to the time broadcast in the DVB data
   stream. This can be enabled in the "Setup" menu by setting "SetSystemTime" to
-  1.  Note that this works only if VDR is running under a user id that has
+  1.  Note that this works only if VDR is running under a user ID that has
   permisson to set the system time.
 - The new item "Schedule" in the "Main" menu opens VDR's EPG (thanks to Robert
   Schneider). See the MANUAL file for a detailed description.
@@ -1722,9 +1722,46 @@ Video Disk Recorder Revision History
   which can be used to disable simultaneous recording and replaying on the primary
   DVB device in case there are problems with this.
 
-2002-11-08: Version 1.1.16
+2002-11-10: Version 1.1.16
 
 - Fixed saving the polarization parameter of channels that have a number in the
   'source' parameter (thanks to Peter Seyringer for reporting this one).
-- Updated channels.conf.terr (thanks to Andy Carter).
-- Updated channels.conf.cable (thanks to Achim Lange).
+- Updated 'channels.conf.terr' (thanks to Andy Carter).
+- Updated 'channels.conf.cable' (thanks to Achim Lange).
+- First step towards a "unique channel ID". The channel ID is a human readable
+  string, made up from several parameters of the channel's definition in the file
+  'channels.conf' (see man vdr(5) for details).
+  In order for the "unique channel ID" to work, all channel definitions now must
+  be unique with respect to the combination of their Source, Frequency and SID
+  parameters. You may have to fix your 'channels.conf' manually if there are error
+  messages in the log file when loading it. BE SURE TO MAKE A BACKUP COPY OF YOUR
+  'channels.conf' AND 'timers.conf' FILE BEFORE SWITCHING TO THIS VERSION, AND CHECK
+  VERY CAREFULLY WHETHER YOUR TIMERS ARE STILL SET TO THE RIGHT CHANNELS!
+  When reading an existing 'timers.conf', the channels will be identified as before
+  by their numbers. As soon as this file is written back, the channel numbers will
+  be replaced by the channel IDs. After that it is possible to manually edit the
+  'channels.conf' file and rearrange the channels without breaking the timers.
+  Note that you can still define new timers manually by using the channel number.
+  VDR will correctly identify the 'channel' parameter in a timer definition and
+  use it as a channel number or a channel ID, respectively. Also, the SVDRP commands
+  that return timer definitions will list them with channel numbers in order to
+  stay compatible with existing applications.
+  The channel ID is also used in the 'epg.data' file to allow EPG information from
+  different sources to be stored, which would previously have been mixed up in case
+  they were using the same 'service ID'. Note that the contents of an existing
+  'epg.data' file from a previous version will be silently ignored, since it doesn't
+  contain the new channel IDs. When inserting EPG data into VDR via SVDRP you now also
+  need to use the channel IDs.
+  Currently the EPG data received from the DVB data stream only uses the 'Source'
+  and 'Service ID' part of the channel ID. This makes it work for channels with
+  the same service IDs on different sources (like satellites, cable or terrestrial).
+  However, it doesn't work yet if the service IDs are not unique within a specific
+  source. This will be fixed later.
+- Added missing SID parameters to 'channels.conf'. Some channels have been removed
+  since they are apparently no longer broadcasted.
+- Removed dropping EPG events from "other" streams that have a duration of 86400
+  seconds or more (was introduced in version 1.1.10). This has become obsolete by
+  the modification in version 1.1.13, which fixed fetching the current/next information
+  to handle cases where the duration of an event is set wrongly and would last beyond
+  the start time of the next event. Besides, the change in 1.1.10 broke handling EPG
+  data for NVOD channels.
