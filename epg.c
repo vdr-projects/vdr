@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 1.13 2004/02/22 14:41:37 kls Exp kls $
+ * $Id: epg.c 1.18 2004/03/13 15:01:05 kls Exp $
  */
 
 #include "epg.h"
@@ -61,8 +61,11 @@ void cEvent::SetVersion(uchar Version)
   version = Version;
 }
 
-void cEvent::SetRunningStatus(int RunningStatus)
+void cEvent::SetRunningStatus(int RunningStatus, cChannel *Channel)
 {
+  if (Channel && runningStatus != RunningStatus && (RunningStatus > SI::RunningStatusNotRunning || runningStatus > SI::RunningStatusUndefined))
+     if (Channel->Number() <= 30)//XXX maybe log only those that have timers???
+     isyslog("channel %d (%s) event %s '%s' status %d", Channel->Number(), Channel->Name(), GetTimeString(), Title(), RunningStatus);
   runningStatus = RunningStatus;
 }
 
@@ -103,6 +106,11 @@ bool cEvent::HasTimer(void) const
          return true;
       }
   return false;
+}
+
+bool cEvent::IsRunning(bool OrAboutToStart) const
+{
+  return runningStatus >= (OrAboutToStart ? SI::RunningStatusStartsInAFewSeconds : SI::RunningStatusPausing);
 }
 
 const char *cEvent::GetDateString(void) const
@@ -146,8 +154,11 @@ void cEvent::Dump(FILE *f, const char *Prefix) const
         fprintf(f, "%sT %s\n", Prefix, title);
      if (!isempty(shortText))
         fprintf(f, "%sS %s\n", Prefix, shortText);
-     if (!isempty(description))
+     if (!isempty(description)) {
+        strreplace(description, '\n', '|');
         fprintf(f, "%sD %s\n", Prefix, description);
+        strreplace(description, '|', '\n');
+        }
      if (vps)
         fprintf(f, "%sV %ld\n", Prefix, vps);
      fprintf(f, "%se\n", Prefix);
@@ -186,8 +197,10 @@ bool cEvent::Read(FILE *f, cSchedule *Schedule)
              case 'S': if (Event)
                           Event->SetShortText(t);
                        break;
-             case 'D': if (Event)
+             case 'D': if (Event) {
+                          strreplace(t, '|', '\n');
                           Event->SetDescription(t);
+                          }
                        break;
              case 'V': if (Event)
                           Event->SetVps(atoi(t));
@@ -282,11 +295,10 @@ void ReportEpgBugFixStats(bool Reset)
 
 void cEvent::FixEpgBugs(void)
 {
-  // VDR can't usefully handle newline characters in the EPG data, so let's
-  // always convert them to blanks (independent of the setting of EPGBugfixLevel):
+  // VDR can't usefully handle newline characters in the title and shortText of EPG
+  // data, so let's always convert them to blanks (independent of the setting of EPGBugfixLevel):
   strreplace(title, '\n', ' ');
   strreplace(shortText, '\n', ' ');
-  strreplace(description, '\n', ' ');
   // Same for control characters:
   strreplace(title, '\x86', ' ');
   strreplace(title, '\x87', ' ');
@@ -462,6 +474,7 @@ void cEvent::FixEpgBugs(void)
 cSchedule::cSchedule(tChannelID ChannelID)
 {
   channelID = ChannelID;
+  hasRunning = false;;
 }
 
 cEvent *cSchedule::AddEvent(cEvent *Event)
@@ -475,7 +488,7 @@ const cEvent *cSchedule::GetPresentEvent(bool CheckRunningStatus) const
   const cEvent *pe = NULL;
   time_t now = time(NULL);
   for (cEvent *p = events.First(); p; p = events.Next(p)) {
-      if (p->StartTime() <= now && now < p->StartTime() + p->Duration()) {
+      if (p->StartTime() <= now && now < p->EndTime()) {
          pe = p;
          if (!CheckRunningStatus)
             break;
@@ -514,7 +527,7 @@ const cEvent *cSchedule::GetEventAround(time_t Time) const
   time_t delta = INT_MAX;
   for (cEvent *p = events.First(); p; p = events.Next(p)) {
       time_t dt = Time - p->StartTime();
-      if (dt >= 0 && dt < delta && p->StartTime() + p->Duration() >= Time) {
+      if (dt >= 0 && dt < delta && p->EndTime() >= Time) {
          delta = dt;
          pe = p;
          }
@@ -522,14 +535,29 @@ const cEvent *cSchedule::GetEventAround(time_t Time) const
   return pe;
 }
 
-void cSchedule::SetRunningStatus(cEvent *Event, int RunningStatus)
+void cSchedule::SetRunningStatus(cEvent *Event, int RunningStatus, cChannel *Channel)
 {
   for (cEvent *p = events.First(); p; p = events.Next(p)) {
       if (p == Event)
-         p->SetRunningStatus(RunningStatus);
+         p->SetRunningStatus(RunningStatus, Channel);
       else if (RunningStatus >= SI::RunningStatusPausing && p->RunningStatus() > SI::RunningStatusNotRunning)
          p->SetRunningStatus(SI::RunningStatusNotRunning);
       }
+  if (RunningStatus >= SI::RunningStatusPausing)
+     hasRunning = true;
+}
+
+void cSchedule::ClrRunningStatus(cChannel *Channel)
+{
+  if (hasRunning) {
+     for (cEvent *p = events.First(); p; p = events.Next(p)) {
+         if (p->RunningStatus() >= SI::RunningStatusPausing) {
+            p->SetRunningStatus(SI::RunningStatusNotRunning, Channel);
+            hasRunning = false;
+            break;
+            }
+         }
+     }
 }
 
 void cSchedule::ResetVersions(void)
@@ -555,7 +583,7 @@ void cSchedule::Cleanup(time_t Time)
       Event = events.Get(a);
       if (!Event)
          break;
-      if (!Event->HasTimer() && Event->StartTime() + Event->Duration() + Setup.EPGLinger * 60 + 3600 < Time) { // adding one hour for safety
+      if (!Event->HasTimer() && Event->EndTime() + Setup.EPGLinger * 60 + 3600 < Time) { // adding one hour for safety
          events.Del(Event);
          a--;
          }

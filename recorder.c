@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recorder.c 1.8 2003/10/18 11:35:02 kls Exp $
+ * $Id: recorder.c 1.9 2004/03/07 14:39:25 kls Exp $
  */
 
 #include <stdarg.h>
@@ -102,7 +102,7 @@ void cRecorder::Receive(uchar *Data, int Length)
 {
   int p = ringBuffer->Put(Data, Length);
   if (p != Length && active)
-     esyslog("ERROR: ring buffer overflow (%d bytes dropped)", Length - p);
+     ringBuffer->ReportOverflow(Length - p);
 }
 
 void cRecorder::Action(void)

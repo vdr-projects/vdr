@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.148 2004/02/21 15:14:36 kls Exp kls $
+ * $Id: i18n.c 1.152 2004/03/13 10:59:23 kls Exp $
  *
  * Translations provided by:
  *
@@ -1550,6 +1550,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
+    "VPS",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -1557,8 +1558,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
-    "",// TODO
+    "VPS ίήίΰΠÒΪΠ",
   },
   { "Priority",
     "Prioritδt",
@@ -1839,9 +1839,9 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "Pas de marques d'ιdition dιfinies!",
     "",//TODO
-    "",//TODO
+    "Muokkausmerkinnδt puuttuvat!",
     "Brak znakow montazowych!",
-    "Muokkausmerkinnδt puuttuvat",
+    "",//TODO
     "Δέν έχουν οριστεί σημεία επεξεργασίας",
     "Det finns inga redigeringsmδrken",//TODO
     "",//TODO
@@ -2389,7 +2389,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "ΕΰΠέΥέΨΥ γαβΠΰΥÒθΨε ΤΠέέλε (άΨέ)",
   },
   { "Setup.EPG$Set system time",
     "Systemzeit stellen",
@@ -2777,7 +2777,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "Prioritι des pauses",
     "",// TODO
-    "Keskeytyksen prioriteetti",
+    "Taukotallenteen prioriteetti",
     "Priorytet przerwy",
     "",// TODO
     "Προτεραιότητα διαλείμματος",
@@ -2795,7 +2795,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "Durιe de vie des pauses (j)",
     "",// TODO
-    "Keskeytyksen elinikδ (d)",
+    "Taukotallenteen elinikδ (d)",
     "Okres trwania przerwy (d)",
     "",// TODO
     "Διάρκεια διαλείματος",
@@ -2831,6 +2831,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
+    "Kδytδ VPS-toimintoa",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -2838,8 +2839,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
-    "",// TODO
+    "ΈαίήΫμΧήÒΠβμ αΨΣέΠΫλ VPS",
   },
   { "Setup.Recording$VPS margin (s)",
     "Zeitpuffer bei VPS (s)",
@@ -2849,6 +2849,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
+    "VPS-toiminnon aloitusmarginaali (s)",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -2856,8 +2857,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
-    "",// TODO
+    "±γδΥΰέήΥ ÒΰΥάο VPS (αΥΪ)",
   },
   { "Setup.Recording$Mark instant recording",
     "Direktaufzeichnung markieren",
@@ -3627,7 +3627,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "Pause",
     "",// TODO
-    "Keskeytδ",
+    "Tauko",
     "Przerwa",
     "Pausa",
     "Διάλειμμα",
@@ -4186,7 +4186,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "Pause de l'ιmission en direct...",
     "",// TODO
-    "Keskeytetδδn lδhetys...",
+    "Pysδytetδδn lδhetys...",
     "Zatrzymany program biezacy...",
     "Emisiσn en directo parada...",
     "Διάλειμμα ζωντανού σήματος",

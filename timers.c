@@ -4,14 +4,13 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 1.9 2004/02/13 15:37:49 kls Exp kls $
+ * $Id: timers.c 1.12 2004/03/14 13:27:57 kls Exp $
  */
 
 #include "timers.h"
 #include <ctype.h>
 #include "channels.h"
 #include "i18n.h"
-#include "libsi/si.h"
 
 // IMPORTANT NOTE: in the 'sscanf()' calls there is a blank after the '%d'
 // format characters in order to allow any number of blanks after a numeric
@@ -333,8 +332,8 @@ bool cTimer::Matches(time_t t, bool Directly)
   if (HasFlags(tfActive)) {
      if (HasFlags(tfVps) && !Directly && event && event->Vps()) {
         startTime = event->StartTime();
-        stopTime = startTime + event->Duration();
-        return event->RunningStatus() > SI::RunningStatusNotRunning;
+        stopTime = event->EndTime();
+        return event->IsRunning(true);
         }
      return startTime <= t && t < stopTime; // must stop *before* stopTime to allow adjacent timers
      }
@@ -350,9 +349,14 @@ int cTimer::Matches(const cEvent *Event)
      bool m1 = Matches(t1, true);
      bool m2 = UseVps ? m1 : Matches(t2, true);
      startTime = stopTime = 0;
-     if (m1 && m2)
+     if (m1 && m2) {
+        if (UseVps && Event->IsRunning(true))
+           return tmFull;
+        if (time(NULL) > Event->EndTime())
+           return tmNone;
         return tmFull;
-     if (m1 || m2)
+        }
+     if ((m1 || m2) && time(NULL) <= Event->EndTime())
         return tmPartial;
      }
   return tmNone;
@@ -381,6 +385,8 @@ void cTimer::SetEvent(const cEvent *Event)
            sprintf(vpsbuf, "(VPS: %s) ", Event->GetVpsString());
         isyslog("timer %d (%d %04d-%04d '%s') set to event %s %s-%s %s'%s'", Index() + 1, Channel()->Number(), start, stop, file, Event->GetDateString(), Event->GetTimeString(), Event->GetEndTimeString(), vpsbuf, Event->Title());
         }
+     else
+        isyslog("timer %d (%d %04d-%04d '%s') set to no event", Index() + 1, Channel()->Number(), start, stop, file);
      event = Event;
      }
 }
@@ -500,7 +506,7 @@ cTimer *cTimers::GetNextActiveTimer(void)
 
 void cTimers::SetEvents(void)
 {
-  cSchedulesLock SchedulesLock;
+  cSchedulesLock SchedulesLock(false, 100);
   const cSchedules *Schedules = cSchedules::Schedules(SchedulesLock);
   if (Schedules) {
      for (cTimer *ti = First(); ti; ti = Next(ti)) {
@@ -508,19 +514,17 @@ void cTimers::SetEvents(void)
          const cEvent *Event = NULL;
          if (Schedule) {
             //XXX what if the Schedule doesn't have any VPS???
-            const cEvent *e;
             int Match = tmNone;
-            int i = 0;
-            while ((e = Schedule->GetEventNumber(i++)) != NULL) {
-                  int m = ti->Matches(e);
-                  if (m > Match) {
-                     Match = m;
-                     Event = e;
-                     if (Match == tmFull)
-                        break;
-                        //XXX what if there's another event with the same VPS time???
-                     }
-                  }
+            for (const cEvent *e = Schedule->Events()->First(); e; e = Schedule->Events()->Next(e)) {
+                int m = ti->Matches(e);
+                if (m > Match) {
+                   Match = m;
+                   Event = e;
+                   if (Match == tmFull)
+                      break;
+                      //XXX what if there's another event with the same VPS time???
+                   }
+                }
             }
          ti->SetEvent(Event);
          }

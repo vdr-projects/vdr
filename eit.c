@@ -8,7 +8,7 @@
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  * Adapted to 'libsi' for VDR 1.3.0 by Marcel Wiesweg <marcel.wiesweg@gmx.de>.
  *
- * $Id: eit.c 1.89 2004/02/22 13:17:52 kls Exp kls $
+ * $Id: eit.c 1.93 2004/03/13 13:54:20 kls Exp $
  */
 
 #include "eit.h"
@@ -43,10 +43,12 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data)
      Schedules->Add(pSchedule);
      }
 
+  bool Empty = true;
   bool Modified = false;
 
   SI::EIT::Event SiEitEvent;
   for (SI::Loop::Iterator it; eventLoop.hasNext(it); ) {
+      Empty = false;
       SiEitEvent = eventLoop.getNext(it);
 
       cEvent *pEvent = (cEvent *)pSchedule->GetEvent(SiEitEvent.getEventId(), SiEitEvent.getStartTime());
@@ -82,10 +84,6 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data)
       pEvent->SetVersion(getVersionNumber());
       pEvent->SetStartTime(SiEitEvent.getStartTime());
       pEvent->SetDuration(SiEitEvent.getDuration());
-      if (isPresentFollowing()) {
-         if (SiEitEvent.getRunningStatus() > SI::RunningStatusNotRunning)
-            pSchedule->SetRunningStatus(pEvent, SiEitEvent.getRunningStatus());
-         }
 
       int LanguagePreferenceShort = -1;
       int LanguagePreferenceExt = -1;
@@ -130,11 +128,16 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data)
                  struct tm tm_r;
                  struct tm t = *localtime_r(&now, &tm_r); // this initializes the time zone in 't'
                  t.tm_isdst = -1; // makes sure mktime() will determine the correct DST setting
+                 int month = t.tm_mon;
                  t.tm_mon = pd->getMonth() - 1;
                  t.tm_mday = pd->getDay();
                  t.tm_hour = pd->getHour();
                  t.tm_min = pd->getMinute();
                  t.tm_sec = 0;
+                 if (month == 11 && t.tm_mon == 0) // current month is dec, but event is in jan
+                    t.tm_year++;
+                 else if (month == 0 && t.tm_mon == 11) // current month is jan, but event is in dec
+                    t.tm_year--;
                  time_t vps = mktime(&t);
                  pEvent->SetVps(vps);
                  }
@@ -195,7 +198,7 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data)
             }
          if (ExtendedEventDescriptors) {
             char buffer[ExtendedEventDescriptors->getMaximumTextLength()];
-            pEvent->SetDescription(ExtendedEventDescriptors->getText(buffer));
+            pEvent->SetDescription(ExtendedEventDescriptors->getText(buffer, ": "));
             }
          }
       delete ExtendedEventDescriptors;
@@ -205,8 +208,15 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data)
 
       if (LinkChannels)
          channel->SetLinkChannels(LinkChannels);
+      if (Tid == 0x4E) { // we trust only the present/following info on the actual TS
+         if (SiEitEvent.getRunningStatus() >= SI::RunningStatusNotRunning)
+            pSchedule->SetRunningStatus(pEvent, SiEitEvent.getRunningStatus(), channel);
+         }
       Modified = true;
       }
+  if (Empty && Tid == 0x4E && getSectionNumber() == 0)
+     // ETR 211: an empty entry in section 0 of table 0x4E means there is currently no event running
+     pSchedule->ClrRunningStatus(channel);
   if (Modified)
      pSchedule->Sort();
 }

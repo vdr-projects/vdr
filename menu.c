@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.292 2004/02/22 14:14:55 kls Exp kls $
+ * $Id: menu.c 1.297 2004/03/14 13:24:02 kls Exp $
  */
 
 #include "menu.h"
@@ -18,7 +18,6 @@
 #include "cutter.h"
 #include "eitscan.h"
 #include "i18n.h"
-#include "libsi/si.h"
 #include "menuitems.h"
 #include "plugin.h"
 #include "recording.h"
@@ -1009,13 +1008,8 @@ public:
 cMenuTimers::cMenuTimers(void)
 :cOsdMenu(tr("Timers"), 2, CHNUMWIDTH, 10, 6, 6)
 {
-  int i = 0;
-  cTimer *timer;
-
-  while ((timer = Timers.Get(i)) != NULL) {
-        Add(new cMenuTimerItem(timer));
-        i++;
-        }
+  for (cTimer *timer = Timers.First(); timer; timer = Timers.Next(timer))
+      Add(new cMenuTimerItem(timer));
   if (Setup.SortTimers)
      Sort();
   SetHelp(tr("Edit"), tr("New"), tr("Delete"), Setup.SortTimers ? tr("On/Off") : tr("Mark"));
@@ -1216,7 +1210,7 @@ cMenuWhatsOnItem::cMenuWhatsOnItem(const cEvent *Event, cChannel *Channel)
   int TimerMatch;
   char t = Timers.GetMatch(Event, &TimerMatch) ? (TimerMatch == tmFull) ? 'T' : 't' : ' ';
   char v = event->Vps() && (event->Vps() - event->StartTime()) ? 'V' : ' ';
-  char r = event->RunningStatus() > SI::RunningStatusNotRunning ? '*' : ' ';
+  char r = event->IsRunning() ? '*' : ' ';
   asprintf(&buffer, "%d\t%.*s\t%.*s\t%c%c%c\t%s", channel->Number(), 6, channel->Name(), 5, event->GetTimeString(), t, v, r, event->Title());
   SetText(buffer, false);
 }
@@ -1334,7 +1328,7 @@ cMenuScheduleItem::cMenuScheduleItem(const cEvent *Event)
   int TimerMatch;
   char t = Timers.GetMatch(Event, &TimerMatch) ? (TimerMatch == tmFull) ? 'T' : 't' : ' ';
   char v = event->Vps() && (event->Vps() - event->StartTime()) ? 'V' : ' ';
-  char r = event->RunningStatus() > SI::RunningStatusNotRunning ? '*' : ' ';
+  char r = event->IsRunning() ? '*' : ' ';
   asprintf(&buffer, "%.*s\t%.*s\t%c%c%c\t%s", 5, event->GetDateString(), 5, event->GetTimeString(), t, v, r, event->Title());
   SetText(buffer, false);
 }
@@ -1386,11 +1380,9 @@ void cMenuSchedule::PrepareSchedule(cChannel *Channel)
      const cSchedule *Schedule = schedules->GetSchedule(Channel->GetChannelID());
      if (Schedule) {
         const cEvent *PresentEvent = Schedule->GetPresentEvent(Channel->Number() == cDevice::CurrentChannel());
-        int num = Schedule->NumEvents();
         time_t now = time(NULL) - Setup.EPGLinger * 60;
-        for (int a = 0; a < num; a++) {
-            const cEvent *Event = Schedule->GetEventNumber(a);
-            if (Event->StartTime() + Event->Duration() > now || Event == PresentEvent)
+        for (const cEvent *Event = Schedule->Events()->First(); Event; Event = Schedule->Events()->Next(Event)) {
+            if (Event->EndTime() > now || Event == PresentEvent)
                Add(new cMenuScheduleItem(Event), Event == PresentEvent);
             }
         }
@@ -1494,13 +1486,8 @@ cMenuCommands::cMenuCommands(const char *Title, cCommands *Commands, const char 
   SetHasHotkeys();
   commands = Commands;
   parameters = Parameters ? strdup(Parameters) : NULL;
-  int i = 0;
-  cCommand *command;
-
-  while ((command = commands->Get(i)) != NULL) {
-        Add(new cOsdItem(hk(command->Title())));
-        i++;
-        }
+  for (cCommand *command = commands->First(); command; command = commands->Next(command))
+      Add(new cOsdItem(hk(command->Title())));
 }
 
 cMenuCommands::~cMenuCommands()
@@ -3196,6 +3183,7 @@ bool cRecordControls::Start(cTimer *Timer, bool Pause)
            if (device == cTransferControl::ReceiverDevice())
               cControl::Shutdown(); // in case this device was used for Transfer Mode
            }
+        dsyslog("switching device %d to channel %d", device->DeviceNumber() + 1, channel->Number());
         if (!device->SwitchChannel(channel, false)) {
            cThread::EmergencyExit(true);
            return false;

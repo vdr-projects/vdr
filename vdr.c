@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.177 2004/02/15 14:29:30 kls Exp kls $
+ * $Id: vdr.c 1.180 2004/03/14 14:25:02 kls Exp $
  */
 
 #include <getopt.h>
@@ -549,10 +549,13 @@ int main(int argc, char *argv[])
            PreviousChannel[PreviousChannelIndex ^= 1] = LastChannel;
         // Timers and Recordings:
         if (!Timers.BeingEdited()) {
-           static time_t LastSetEvents = 0;//XXX trigger by actual EPG data modification???
-           if (!Menu && time(NULL) - LastSetEvents > 5) {
-              Timers.SetEvents();
-              LastSetEvents = time(NULL);
+           // Assign events to timers:
+           if (time(NULL) - LastActivity > 10) {
+              static time_t LastSetEvents = 0;//XXX trigger by actual EPG data modification???
+              if (time(NULL) - LastSetEvents > 5) {
+                 Timers.SetEvents();
+                 LastSetEvents = time(NULL);
+                 }
               }
            time_t Now = time(NULL); // must do all following calls with the exact same time!
            // Process ongoing recordings:
@@ -571,7 +574,6 @@ int main(int argc, char *argv[])
                if (Timer->HasFlags(tfActive | tfVps) && !Timer->Recording() && !Timer->Pending() && Timer->Matches(Now + Setup.VpsMargin, true)) {
                   if (!Timer->InVpsMargin()) {
                      Timer->SetInVpsMargin(true);
-                     TimerInVpsMargin = true;
                      //XXX if not primary device has TP???
                      LastTimerChannel = Timer->Channel()->Number();
                      cRecordControls::Start(Timer); // will only switch the device
@@ -579,6 +581,8 @@ int main(int argc, char *argv[])
                   }
                else
                   Timer->SetInVpsMargin(false);
+               if (Timer->InVpsMargin())
+                  TimerInVpsMargin = true;
                }
            }
         // CAM control:

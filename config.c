@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.124 2004/02/21 15:05:40 kls Exp kls $
+ * $Id: config.c 1.125 2004/02/28 11:12:20 kls Exp $
  */
 
 #include "config.h"

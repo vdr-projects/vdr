@@ -2713,3 +2713,35 @@ Video Disk Recorder Revision History
   whether an event has a VPS time that's different than its start time, and
   whether an event is currently running (see MANUAL under "The "Schedule" Menu"
   for details).
+
+2004-03-14: Version 1.3.6
+
+- Completed the Finnish OSD texts (thanks to Rolf Ahrenberg).
+- Fixed some descriptor handling in 'libsi' (thanks to Stéphane Esté-Gracias).
+- Fixed handling the current menu item (thanks to Marc Hoppe).
+- Fixed assigning events to timers (they no longer get "stuck").
+- Added log entries whenever the running status of an event changes (currently
+  only logging the first 30 channels).
+- Fixed handling timers in VPS margin if the EPG scan is turned on (the EPG scan
+  switched the device away from the channel, so it wouldn't see the change of
+  the running status).
+- Fixed handling "itemized" texts in EPG data (thanks to Stéphane Esté-Gracias
+  for pointing out this problem, and Marcel Wiesweg for improving 'libsi').
+- Fixed handling VPS times at year boundaries.
+- Avoiding too many consecutive "ring buffer overflow" messages (which only
+  slowed down performance even more).
+- Taking the Sid into account when detecting version changes in processing the
+  PMT (thanks to Stéphane Esté-Gracias for pointing out this problem).
+- Completed the Russian OSD texts (thanks to Vyacheslav Dikonov).
+- Any newline characters in the 'description' of EPG events are now preserved
+  to allow texts to be displayed the way the tv stations have formatted them.
+  This was also necessary to better display itemized texts.
+- Fixed detecting the running status in case an empty EPG event is broadcast (thanks
+  to Michael Pennewiß for pointing this out).
+- Improved performance when paging through very long menu lists.
+- Removed cSchedule::GetEventNumber() and cSchedule::NumEvents(). There is now
+  cSchedule::Events() that returns the list of events directly.
+- Avoiding occasional bad responsiveness to user interaction caused by assigning
+  events to timers.
+- Now explicitly turning on the LNB power at startup, because newer drivers don't
+  do this any more (thanks to Oliver Endriss for pointing this out).

@@ -514,6 +514,8 @@ Oliver Endriss <o.endriss@gmx.de>
  for suggesting to add 'repeat' function keys '7' and '9'
  for fixing handling rc key learning in case cRemote::Initialize() returns 'false'
  for suggesting to change the default "Lifetime" to 99
+ for pointing out that the LNB power needs to be explicitly turned on at startup,
+ because newer drivers don't do this any more
 
 Reinhard Walter Buchner <rw.buchner@freenet.de>
  for adding some satellites to 'sources.conf'
@@ -943,3 +945,13 @@ Thomas Bergwinkl <Thomas.Bergwinkl@t-online.de>
 
 Stéphane Esté-Gracias <sestegra@free.fr>
  for fixing a typo in libsi/si.h
+ for fixing some descriptor handling in 'libsi'
+ for pointing out a problem with "itemized" texts in EPG data
+ for pointing out a problem with taking the Sid into account when detecting version
+ changes in processing the PMT
+
+Marc Hoppe <MarcHoppe@gmx.de>
+ for fixing handling the current menu item
+
+Michael Pennewiß <M.Pennewiss@ARD-Digital.de>
+ for pointing out that an empty EPG event means there is currently no running event

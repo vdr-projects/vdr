@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 1.60 2004/02/15 14:11:28 kls Exp kls $
+ * $Id: menu.h 1.60 2004/02/15 14:11:28 kls Exp $
  */
 
 #ifndef __MENU_H

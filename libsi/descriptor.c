@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: descriptor.c 1.6 2004/02/22 11:11:36 kls Exp $
+ *   $Id: descriptor.c 1.10 2004/03/13 15:08:12 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -60,13 +60,13 @@ void ExtendedEventDescriptor::Item::Parse() {
    item.setData(data+offset, mid->item_length);
 }
 
-int ExtendedEventDescriptors::getTextLength() {
+/*int ExtendedEventDescriptors::getTextLength() {
    int ret=0;
    for (int i=0;i<length;i++) {
       ExtendedEventDescriptor *d=(ExtendedEventDescriptor *)array[i];
       if (!d)
          continue;
-      ret+=d->text.getLength()+1; //plus a blank
+      ret+=d->text.getLength();
       ExtendedEventDescriptor::Item item;
       for (Loop::Iterator it; d->itemLoop.hasNext(it);   ) {
          item=d->itemLoop.getNext(it);
@@ -76,28 +76,18 @@ int ExtendedEventDescriptors::getTextLength() {
       }
    }
    return ret;
-}
+}*/
 
-//is there a case where this function does not return the same as getTextLength?
 int ExtendedEventDescriptors::getMaximumTextLength() {
-   int ret=0;
-   for (int i=0;i<length;i++) {
-      ExtendedEventDescriptor *d=(ExtendedEventDescriptor *)array[i];
-      if (!d)
-         continue;
-      ret+=d->text.getLength()+1; //plus a blank
-      ret+=d->itemLoop.getLength();
-   }
-   return ret;
+   return getMaximumTextPlainLength()+getMaximumTextItemizedLength();
 }
 
-char *ExtendedEventDescriptors::getText() {
-   char *text=new char[getMaximumTextLength()];
-   return getText(text);
+char *ExtendedEventDescriptors::getText(const char *separation1, const char *separation2) {
+   char *text=new char[getMaximumTextLength()+strlen(separation1)+strlen(separation2)];
+   return getText(text, separation1, separation2);
 }
 
-//appends the Strings of every Descriptor in the group
-char *ExtendedEventDescriptors::getText(char *buffer) {
+char *ExtendedEventDescriptors::getText(char *buffer, const char *separation1, const char *separation2) {
    int index=0, len;
    char tempbuf[256];
    for (int i=0;i<length;i++) {
@@ -110,17 +100,18 @@ char *ExtendedEventDescriptors::getText(char *buffer) {
          memcpy(buffer+index, tempbuf, len);
          index+=len;
       }
+   }
 
+   for (int i=0;i<length;i++) {
+      ExtendedEventDescriptor *d=(ExtendedEventDescriptor *)array[i];
+      if (!d)
+         continue;
+
+      strcpy(buffer+index, separation2); // let's have a separator between the long text and the items
+      index += strlen(separation2);
       ExtendedEventDescriptor::Item item;
       for (Loop::Iterator it; d->itemLoop.hasNext(it);   ) {
          item=d->itemLoop.getNext(it);
-
-         item.item.getText(tempbuf);
-         len=strlen(tempbuf);
-         if (len) {
-            memcpy(buffer+index, tempbuf, len);
-            index+=len;
-         }
 
          item.itemDescription.getText(tempbuf);
          len=strlen(tempbuf);
@@ -128,10 +119,143 @@ char *ExtendedEventDescriptors::getText(char *buffer) {
             memcpy(buffer+index, tempbuf, len);
             index+=len;
          }
+         strcpy(buffer+index, separation1);
+         index += strlen(separation1);
+
+         item.item.getText(tempbuf);
+         len=strlen(tempbuf);
+         if (len) {
+            memcpy(buffer+index, tempbuf, len);
+            index+=len;
+         }
+         strcpy(buffer+index, separation2);
+         index += strlen(separation2);
+      }
+   }
+
+   buffer[index]='\0';
+   return buffer;
+}
+
+int ExtendedEventDescriptors::getMaximumTextPlainLength() {
+   int ret=0;
+   for (int i=0;i<length;i++) {
+      ExtendedEventDescriptor *d=(ExtendedEventDescriptor *)array[i];
+      if (!d)
+         continue;
+      ret+=d->text.getLength();
+   }
+   return ret;
+}
+
+char *ExtendedEventDescriptors::getTextPlain() {
+   char *text=new char[getMaximumTextPlainLength()];
+   return getTextPlain(text);
+}
+
+char *ExtendedEventDescriptors::getTextPlain(char *buffer) {
+   int index=0, len;
+   char tempbuf[256];
+   for (int i=0;i<length;i++) {
+      ExtendedEventDescriptor *d=(ExtendedEventDescriptor *)array[i];
+      if (!d)
+         continue;
+      d->text.getText(tempbuf);
+      len=strlen(tempbuf);
+      if (len) {
+         memcpy(buffer+index, tempbuf, len);
+         index+=len;
       }
    }
    buffer[index]='\0';
    return buffer;
+}
+
+int ExtendedEventDescriptors::getMaximumTextItemizedLength() {
+   int ret=0;
+   for (int i=0;i<length;i++) {
+      ExtendedEventDescriptor *d=(ExtendedEventDescriptor *)array[i];
+      if (!d)
+         continue;
+      //the size for the two separating characters is included ;-)
+      ret+=d->itemLoop.getLength();
+   }
+   return ret;
+}
+
+char *ExtendedEventDescriptors::getTextItemized(const char *separation1, const char *separation2) {
+   char *text=new char[getMaximumTextItemizedLength()+strlen(separation1)+strlen(separation2)];
+   return getTextItemized(text, separation1, separation2);
+}
+
+char *ExtendedEventDescriptors::getTextItemized(char *buffer, const char *separation1, const char *separation2) {
+   int index=0, len;
+   char tempbuf[256];
+   for (int i=0;i<length;i++) {
+      ExtendedEventDescriptor *d=(ExtendedEventDescriptor *)array[i];
+      if (!d)
+         continue;
+
+      ExtendedEventDescriptor::Item item;
+      for (Loop::Iterator it; d->itemLoop.hasNext(it);   ) {
+         item=d->itemLoop.getNext(it);
+
+         item.itemDescription.getText(tempbuf);
+         len=strlen(tempbuf);
+         if (len) {
+            memcpy(buffer+index, tempbuf, len);
+            index+=len;
+         }
+         strcpy(buffer+index, separation1);
+         index += strlen(separation1);
+
+         item.item.getText(tempbuf);
+         len=strlen(tempbuf);
+         if (len) {
+            memcpy(buffer+index, tempbuf, len);
+            index+=len;
+         }
+         strcpy(buffer+index, separation2);
+         index += strlen(separation2);
+      }
+   }
+   buffer[index]='\0';
+   return buffer;
+}
+
+//returns the itemized text pair by pair. Maximum length for buffers is 256.
+//Return value is false if and only if the end of the list is reached.
+bool ExtendedEventDescriptors::getTextItemized(Loop::Iterator &it, bool &valid, char *itemDescription, char *itemText) {
+   //The iterator has to store two values: The descriptor index (4bit)
+   //and the item loop index (max overall length 256, min item length 16 => max number 128 => 7bit)
+   valid=false;
+
+   int index=(it.i & 0x780) >> 7; // 0x780 == 1111 000 0000
+   it.i &= 0x7F; //0x7F == 111 1111
+
+   for (;index<length;index++) {
+      ExtendedEventDescriptor *d=(ExtendedEventDescriptor *)array[index];
+      if (!d)
+         continue;
+
+      ExtendedEventDescriptor::Item item;
+      if (d->itemLoop.hasNext(it)) {
+         item=d->itemLoop.getNext(it);
+
+         item.item.getText(itemDescription);
+         item.itemDescription.getText(itemText);
+         valid=true;
+         break;
+      } else {
+         it.reset();
+         continue;
+      }
+   }
+
+   it.i &= 0x7F;
+   it.i |= (index & 0xF) << 7; //0xF == 1111
+
+   return index<length;
 }
 
 int TimeShiftedEventDescriptor::getReferenceServiceId() const {
@@ -148,7 +272,7 @@ void TimeShiftedEventDescriptor::Parse() {
 
 void ContentDescriptor::Parse() {
    //this descriptor is only a header and a loop
-   nibbleLoop.setData(data+sizeof(SectionHeader), getLength()-sizeof(SectionHeader));
+   nibbleLoop.setData(data+sizeof(descr_content), getLength()-sizeof(descr_content));
 }
 
 int ContentDescriptor::Nibble::getContentNibbleLevel1() const {
@@ -173,7 +297,7 @@ void ContentDescriptor::Nibble::Parse() {
 
 void ParentalRatingDescriptor::Parse() {
    //this descriptor is only a header and a loop
-   ratingLoop.setData(data+sizeof(SectionHeader), getLength()-sizeof(SectionHeader));
+   ratingLoop.setData(data+sizeof(descr_parental_rating), getLength()-sizeof(descr_parental_rating));
 }
 
 int ParentalRatingDescriptor::Rating::getRating() const {

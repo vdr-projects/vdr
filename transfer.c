@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: transfer.c 1.15 2003/10/18 11:36:03 kls Exp $
+ * $Id: transfer.c 1.16 2004/03/07 14:40:15 kls Exp $
  */
 
 #include "transfer.h"
@@ -55,7 +55,7 @@ void cTransfer::Receive(uchar *Data, int Length)
      int i = 0;
      while (active && Length > 0) {
            if (i++ > 10) {
-              esyslog("ERROR: ring buffer overflow (%d bytes dropped)", Length);
+              ringBuffer->ReportOverflow(Length);
               break;
               }
            int p = ringBuffer->Put(Data, Length);

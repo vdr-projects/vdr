@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: eitscan.h 1.8 2004/01/17 15:36:24 kls Exp kls $
+ * $Id: eitscan.h 1.8 2004/01/17 15:36:24 kls Exp $
  */
 
 #ifndef __EITSCAN_H

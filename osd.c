@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 1.43 2003/06/04 16:13:00 kls Exp $
+ * $Id: osd.c 1.45 2004/03/14 10:33:20 kls Exp $
  */
 
 #include "osd.h"
@@ -429,30 +429,27 @@ void cOsdMenu::Display(void)
   Interface->Help(helpRed, helpGreen, helpYellow, helpBlue);
   int count = Count();
   if (count > 0) {
-     for (int i = 0; i < count; i++) {
-        cOsdItem *item = Get(i);
-        if (item)
-           cStatus::MsgOsdItem(item->Text(), i);
-        }
+     int ni = 0;
+     for (cOsdItem *item = First(); item; item = Next(item))
+         cStatus::MsgOsdItem(item->Text(), ni++);
      if (current < 0)
         current = 0; // just for safety - there HAS to be a current item!
-     int n = 0;
-     if (current - first >= MAXOSDITEMS) {
+     if (current - first >= MAXOSDITEMS || current < first) {
         first = current - MAXOSDITEMS / 2;
         if (first + MAXOSDITEMS > count)
            first = count - MAXOSDITEMS;
         if (first < 0)
            first = 0;
         }
-     for (int i = first; i < count; i++) {
-         cOsdItem *item = Get(i);
-         if (item) {
-            item->Display(i - first, i == current ? clrBlack : clrWhite, i == current ? clrCyan : clrBackground);
-            if (i == current)
-               cStatus::MsgOsdCurrentItem(item->Text());
-            }
+     int i = first;
+     int n = 0;
+     for (cOsdItem *item = Get(first); item; item = Next(item)) {
+         item->Display(i - first, i == current ? clrBlack : clrWhite, i == current ? clrCyan : clrBackground);
+         if (i == current)
+            cStatus::MsgOsdCurrentItem(item->Text());
          if (++n == MAXOSDITEMS) //TODO get this from Interface!!!
             break;
+         i++;
          }
      }
   if (!isempty(status))
@@ -562,12 +559,13 @@ void cOsdMenu::PageDown(void)
 {
   current += MAXOSDITEMS;
   first += MAXOSDITEMS;
-  if (current > Count() - 1) {
-     current = Count() - 1;
-     first = max(0, Count() - MAXOSDITEMS);
+  int count = Count();
+  if (current > count - 1) {
+     current = count - 1;
+     first = max(0, count - MAXOSDITEMS);
      }
   if (SpecialItem(current)) {
-     current += (current < Count() - 1) ? 1 : -1;
+     current += (current < count - 1) ? 1 : -1;
      first = max(first, current - MAXOSDITEMS);
      }
   Display();

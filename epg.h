@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.h 1.10 2004/02/22 14:34:04 kls Exp kls $
+ * $Id: epg.h 1.15 2004/03/14 13:25:39 kls Exp $
  */
 
 #ifndef __EPG_H
@@ -49,9 +49,11 @@ public:
   const char *ShortText(void) const { return shortText; }
   const char *Description(void) const { return description; }
   time_t StartTime(void) const { return startTime; }
+  time_t EndTime(void) const { return startTime + duration; }
   int Duration(void) const { return duration; }
   time_t Vps(void) const { return vps; }
   bool HasTimer(void) const;
+  bool IsRunning(bool OrAboutToStart = false) const;
   const char *GetDateString(void) const;
   const char *GetTimeString(void) const;
   const char *GetEndTimeString(void) const;
@@ -59,7 +61,7 @@ public:
   void SetEventID(u_int16_t EventID);
   void SetTableID(uchar TableID);
   void SetVersion(uchar Version);
-  void SetRunningStatus(int RunningStatus);
+  void SetRunningStatus(int RunningStatus, cChannel *Channel = NULL);
   void SetTitle(const char *Title);
   void SetShortText(const char *ShortText);
   void SetDescription(const char *Description);
@@ -77,21 +79,22 @@ class cSchedule : public cListObject  {
 private:
   tChannelID channelID;
   cList<cEvent> events;
+  bool hasRunning;
 public:
   cSchedule(tChannelID ChannelID);
   tChannelID ChannelID(void) const { return channelID; }
-  void SetRunningStatus(cEvent *Event, int RunningStatus);
+  void SetRunningStatus(cEvent *Event, int RunningStatus, cChannel *Channel = NULL);
+  void ClrRunningStatus(cChannel *Channel = NULL);
   void ResetVersions(void);
   void Sort(void);
   void Cleanup(time_t Time);
   void Cleanup(void);
   cEvent *AddEvent(cEvent *Event);
+  const cList<cEvent> *Events(void) const { return &events; }
   const cEvent *GetPresentEvent(bool CheckRunningStatus = false) const;
   const cEvent *GetFollowingEvent(bool CheckRunningStatus = false) const;
   const cEvent *GetEvent(u_int16_t EventID, time_t StartTime = 0) const;
   const cEvent *GetEventAround(time_t Time) const;
-  const cEvent *GetEventNumber(int n) const { return events.Get(n); }
-  int NumEvents(void) const { return events.Count(); }
   void Dump(FILE *f, const char *Prefix = "", eDumpMode DumpMode = dmAll, time_t AtTime = 0) const;
   static bool Read(FILE *f, cSchedules *Schedules);
   };

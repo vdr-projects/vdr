@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 1.40 2004/02/14 11:29:57 kls Exp $
+ * $Id: device.h 1.41 2004/03/14 10:47:01 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -382,7 +382,7 @@ public:
   virtual int PlayVideo(const uchar *Data, int Length);
        ///< Actually plays the given data block as video. The data must be
        ///< part of a PES (Packetized Elementary Stream) which can contain
-       ///< one video and one audio strem.
+       ///< one video and one audio stream.
   virtual void PlayAudio(const uchar *Data, int Length);
        ///< Plays additional audio streams, like Dolby Digital.
        ///< A derived class must call the base class function to make sure data

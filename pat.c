@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: pat.c 1.7 2004/01/25 15:12:53 kls Exp $
+ * $Id: pat.c 1.8 2004/03/07 16:59:00 kls Exp $
  */
 
 #include "pat.h"
@@ -250,19 +250,21 @@ void cPatFilter::Trigger(void)
   numPmtEntries = 0;
 }
 
-bool cPatFilter::PmtVersionChanged(int PmtPid, int Version)
+bool cPatFilter::PmtVersionChanged(int PmtPid, int Sid, int Version)
 {
-  Version <<= 16;
+  uint64_t v = Version;
+  v <<= 32;
+  uint64_t id = (PmtPid | (Sid << 16)) & 0x00000000FFFFFFFFLL;
   for (int i = 0; i < numPmtEntries; i++) {
-      if ((pmtVersion[i] & 0x0000FFFF) == PmtPid) {
-         bool Changed = (pmtVersion[i] & 0x00FF0000) != Version;
+      if ((pmtVersion[i] & 0x00000000FFFFFFFFLL) == id) {
+         bool Changed = (pmtVersion[i] & 0x000000FF00000000LL) != v;
          if (Changed)
-            pmtVersion[i] = PmtPid | Version;
+            pmtVersion[i] = id | v;
          return Changed;
          }
       }
   if (numPmtEntries < MAXPMTENTRIES)
-     pmtVersion[numPmtEntries++] = PmtPid | Version;
+     pmtVersion[numPmtEntries++] = id | v;
   return true;
 }
 
@@ -301,7 +303,7 @@ void cPatFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
      SI::PMT pmt(Data, false);
      if (!pmt.CheckCRCAndParse())
         return;
-     if (!PmtVersionChanged(pmtPid, pmt.getVersionNumber())) {
+     if (!PmtVersionChanged(pmtPid, pmt.getTableIdExtension(), pmt.getVersionNumber())) {
         lastPmtScan = 0; // this triggers the next scan
         return;
         }
