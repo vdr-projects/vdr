@@ -2329,3 +2329,5 @@ Video Disk Recorder Revision History
   active (thanks to Javier Marcet for reporting this one).
 - Avoiding an unnecessary stop of an ongoing Transfer Mode when starting a
   recording on the primary device.
+- Added a missing 'w' to the allowed characters for Finnish and Swedish (thanks
+  to Lauri Tischler and Ragnar Sundblad).
