@@ -2314,3 +2314,4 @@ Video Disk Recorder Revision History
   (suggested by Helmut Auer).
 - Removing deleted recordings faster than normal when cutting, to avoid running
   out of disk space (thanks to Manfred Schmidt-Voigt for reporting this one).
+- Fixed 'runvdr' to stay in the loop only if VDR returns an exit status of '1'.
