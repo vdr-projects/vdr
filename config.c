@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.75 2001/10/19 13:14:09 kls Exp $
+ * $Id: config.c 1.76 2001/10/20 13:09:38 kls Exp $
  */
 
 #include "config.h"
@@ -13,6 +13,10 @@
 #include "dvbapi.h"
 #include "i18n.h"
 #include "interface.h"
+
+// IMPORTANT NOTE: in the 'sscanf()' calls there is a blank after the '%d'
+// format characters in order to allow any number of blanks after a numeric
+// value!
 
 // -- cKeys ------------------------------------------------------------------
 
@@ -251,16 +255,16 @@ bool cChannel::Parse(const char *s)
   else {
      groupSep = false;
      char *apidbuf = NULL;
-     int fields = sscanf(s, "%a[^:]:%d:%c:%d:%d:%d:%a[^:]:%d:%d:%d", &buffer, &frequency, &polarization, &diseqc, &srate, &vpid, &apidbuf, &tpid, &ca, &pnr);
+     int fields = sscanf(s, "%a[^:]:%d :%c:%d :%d :%d :%a[^:]:%d :%d :%d ", &buffer, &frequency, &polarization, &diseqc, &srate, &vpid, &apidbuf, &tpid, &ca, &pnr);
      apid1 = apid2 = 0;
      dpid1 = dpid2 = 0;
      if (apidbuf) {
         char *p = strchr(apidbuf, ';');
         if (p)
            *p++ = 0;
-        sscanf(apidbuf, "%d,%d", &apid1, &apid2);
+        sscanf(apidbuf, "%d ,%d ", &apid1, &apid2);
         if (p)
-           sscanf(p, "%d,%d", &dpid1, &dpid2);
+           sscanf(p, "%d ,%d ", &dpid1, &dpid2);
         delete apidbuf;
         }
      else
@@ -468,7 +472,7 @@ bool cTimer::Parse(const char *s)
      strcat(strn0cpy(s2, s, l2 + 1), " \n");
      s = s2;
      }
-  if (8 <= sscanf(s, "%d:%d:%a[^:]:%d:%d:%d:%d:%a[^:\n]:%a[^\n]", &active, &channel, &buffer1, &start, &stop, &priority, &lifetime, &buffer2, &summary)) {
+  if (8 <= sscanf(s, "%d :%d :%a[^:]:%d :%d :%d :%d :%a[^:\n]:%a[^\n]", &active, &channel, &buffer1, &start, &stop, &priority, &lifetime, &buffer2, &summary)) {
      if (summary && !*skipspace(summary)) {
         delete summary;
         summary = NULL;

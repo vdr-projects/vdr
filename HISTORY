@@ -826,3 +826,5 @@ Video Disk Recorder Revision History
   to enter the "Recordings" menu.
 - Updated 'channels.conf' for the "Bundesliga" channels of Premiere World
   (thanks to Helmut Schächner).
+- Fixed reading timers.conf and channels.conf that contain blanks after numeric
+  values.
