@@ -274,3 +274,4 @@ Video Disk Recorder Revision History
 - The 'SetSystemTime' option in the "Setup" menu is now shown as "yes/no".
 - Implemented "internationalization" (see 'i18n.c' for information on how to
   add new languages).
+- Fixed learning keys on the PC keyboard (display oscillated).
