@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.h 1.14 2000/11/01 14:29:07 kls Exp $
+ * $Id: osd.h 1.17 2000/11/12 15:27:34 kls Exp $
  */
 
 #ifndef __OSD_H
@@ -21,9 +21,10 @@ enum eOSState { osUnknown,
                 osContinue,
                 osSchedule,
                 osChannels,
-                osTimer,
+                osTimers,
                 osRecordings,
                 osSetup,
+                osCommands,
                 osRecord,
                 osReplay,
                 osStopRecord,
@@ -77,6 +78,7 @@ private:
   const char *status;
 protected:
   bool visible;
+  virtual void Clear(void);
   bool SpecialItem(int idx);
   void RefreshCurrent(void);
   void DisplayCurrent(bool Current);

@@ -4,13 +4,14 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.29 2000/11/01 18:22:43 kls Exp $
+ * $Id: config.c 1.34 2000/11/18 13:26:36 kls Exp $
  */
 
 #include "config.h"
 #include <ctype.h>
 #include <stdlib.h>
 #include "dvbapi.h"
+#include "i18n.h"
 #include "interface.h"
 
 // -- cKeys ------------------------------------------------------------------
@@ -256,22 +257,23 @@ bool cChannel::Save(FILE *f)
   return fprintf(f, ToText()) > 0;
 }
 
-bool cChannel::Switch(cDvbApi *DvbApi)
+bool cChannel::Switch(cDvbApi *DvbApi, bool Log)
 {
   if (!DvbApi)
      DvbApi = cDvbApi::PrimaryDvbApi;
   if (!DvbApi->Recording() && !groupSep) {
-     isyslog(LOG_INFO, "switching to channel %d", number);
-     CurrentChannel = number;
+     if (Log) {
+        isyslog(LOG_INFO, "switching to channel %d", number);
+        }
      for (int i = 3; i--;) {
-         if (DvbApi->SetChannel(frequency, polarization, diseqc, srate, vpid, apid, ca, pnr))
+         if (DvbApi->SetChannel(number, frequency, polarization, diseqc, srate, vpid, apid, ca, pnr))
             return true;
          esyslog(LOG_ERR, "retrying");
          }
      return false;
      }
   if (DvbApi->Recording())
-     Interface->Info("Channel locked (recording)!");
+     Interface->Info(tr("Channel locked (recording)!"));
   return false;
 }
 
@@ -284,7 +286,7 @@ cTimer::cTimer(bool Instant)
   startTime = stopTime = 0;
   recording = false;
   active = Instant;
-  cChannel *ch = Channels.GetByNumber(CurrentChannel);
+  cChannel *ch = Channels.GetByNumber(cDvbApi::CurrentChannel());
   channel = ch ? ch->number : 0;
   time_t t = time(NULL);
   struct tm *now = localtime(&t);
@@ -294,8 +296,8 @@ cTimer::cTimer(bool Instant)
   if (stop >= 2400)
      stop -= 2400;
 //TODO VPS???
-  priority = 99;
-  lifetime = 99;
+  priority = DEFAULTPRIORITY;
+  lifetime = DEFAULTLIFETIME;
   *file = 0;
   summary = NULL;
   if (Instant && ch)
@@ -319,8 +321,8 @@ cTimer::cTimer(const cEventInfo *EventInfo)
   stop = time->tm_hour * 100 + time->tm_min;
   if (stop >= 2400)
      stop -= 2400;
-  priority = 99;
-  lifetime = 99;
+  priority = DEFAULTPRIORITY;
+  lifetime = DEFAULTLIFETIME;
   *file = 0;
   const char *Title = EventInfo->GetTitle();
   if (!isempty(Title))
@@ -406,7 +408,7 @@ const char *cTimer::PrintDay(int d)
   static char buffer[8];
   if ((d & 0x80000000) != 0) {
      char *b = buffer;
-     char *w = "MTWTFSS";
+     const char *w = tr("MTWTFSS");
      *b = 0;
      while (*w) {
            *b++ = (d & 1) ? *w : '-';
@@ -426,7 +428,7 @@ bool cTimer::Parse(const char *s)
   delete summary;
   summary = NULL;
   //XXX Apparently sscanf() doesn't work correctly if the last %a argument
-  //XXX results in an empty string (this firt occured when the EIT gathering
+  //XXX results in an empty string (this first occured when the EIT gathering
   //XXX was put into a separate thread - don't know why this happens...
   //XXX As a cure we copy the original string and add a blank.
   //XXX If anybody can shed some light on why sscanf() failes here, I'd love
@@ -539,13 +541,71 @@ cTimer *cTimer::GetMatch(void)
   return t0;
 }
 
+// --- cCommand -------------------------------------------------------------
+
+char *cCommand::result = NULL;
+
+cCommand::cCommand(void)
+{
+  title = command = NULL;
+}
+
+cCommand::~cCommand()
+{
+  delete title;
+  delete command;
+}
+
+bool cCommand::Parse(const char *s)
+{
+  const char *p = strchr(s, ':');
+  if (p) {
+     int l = p - s;
+     if (l > 0) {
+        title = new char[l + 1];
+        strn0cpy(title, s, l + 1);
+        if (!isempty(title)) {
+           command = stripspace(strdup(skipspace(p + 1)));
+           return !isempty(command);
+           }
+        }
+     }
+  return false;
+}
+
+const char *cCommand::Execute(void)
+{
+  dsyslog(LOG_INFO, "executing command '%s'", command);
+  delete result;
+  result = NULL;
+  FILE *p = popen(command, "r");
+  if (p) {
+     int l = 0;
+     int c;
+     while ((c = fgetc(p)) != EOF) {
+           if (l % 20 == 0)
+              result = (char *)realloc(result, l + 21);
+           result[l++] = c;
+           }
+     if (result)
+        result[l] = 0;
+     pclose(p);
+     }
+  else
+     esyslog(LOG_ERR, "ERROR: can't open pipe for command '%s'", command);
+  return result;
+}
+
 // -- cKeys ------------------------------------------------------------------
 
 cKeys Keys;
 
+// -- cCommands --------------------------------------------------------------
+
+cCommands Commands;
+
 // -- cChannels --------------------------------------------------------------
 
-int CurrentChannel = 1;
 int CurrentGroup = -1;
 
 cChannels Channels;
@@ -652,6 +712,7 @@ char *cSetup::fileName = NULL;
 
 cSetup::cSetup(void)
 {
+  OSDLanguage = 0;
   PrimaryDVB = 1;
   ShowInfoOnChSwitch = 1;
   MenuScrollPage = 1;
@@ -661,6 +722,7 @@ cSetup::cSetup(void)
   SetSystemTime = 0;
   MarginStart = 2;
   MarginStop = 10;
+  EPGScanTimeout = 5;
 }
 
 bool cSetup::Parse(char *s)
@@ -669,7 +731,8 @@ bool cSetup::Parse(char *s)
   char *Name  = strtok(s, Delimiters);
   char *Value = strtok(NULL, Delimiters);
   if (Name && Value) {
-     if      (!strcasecmp(Name, "PrimaryDVB"))          PrimaryDVB         = atoi(Value);
+     if      (!strcasecmp(Name, "OSDLanguage"))         OSDLanguage        = atoi(Value);
+     else if (!strcasecmp(Name, "PrimaryDVB"))          PrimaryDVB         = atoi(Value);
      else if (!strcasecmp(Name, "ShowInfoOnChSwitch"))  ShowInfoOnChSwitch = atoi(Value);
      else if (!strcasecmp(Name, "MenuScrollPage"))      MenuScrollPage     = atoi(Value);
      else if (!strcasecmp(Name, "MarkInstantRecord"))   MarkInstantRecord  = atoi(Value);
@@ -678,6 +741,7 @@ bool cSetup::Parse(char *s)
      else if (!strcasecmp(Name, "SetSystemTime"))       SetSystemTime      = atoi(Value);
      else if (!strcasecmp(Name, "MarginStart"))         MarginStart        = atoi(Value);
      else if (!strcasecmp(Name, "MarginStop"))          MarginStop         = atoi(Value);
+     else if (!strcasecmp(Name, "EPGScanTimeout"))      EPGScanTimeout     = atoi(Value);
      else
         return false;
      return true;
@@ -719,6 +783,7 @@ bool cSetup::Save(const char *FileName)
      FILE *f = fopen(FileName, "w");
      if (f) {
         fprintf(f, "# VDR Setup\n");
+        fprintf(f, "OSDLanguage        = %d\n", OSDLanguage);
         fprintf(f, "PrimaryDVB         = %d\n", PrimaryDVB);
         fprintf(f, "ShowInfoOnChSwitch = %d\n", ShowInfoOnChSwitch);
         fprintf(f, "MenuScrollPage     = %d\n", MenuScrollPage);
@@ -727,7 +792,7 @@ bool cSetup::Save(const char *FileName)
         fprintf(f, "LnbFrequHi         = %d\n", LnbFrequHi);
         fprintf(f, "SetSystemTime      = %d\n", SetSystemTime);
         fprintf(f, "MarginStart        = %d\n", MarginStart);
-        fprintf(f, "MarginStop         = %d\n", MarginStop);
+        fprintf(f, "EPGScanTimeout     = %d\n", EPGScanTimeout);
         fclose(f);
         isyslog(LOG_INFO, "saved setup to %s", FileName);
         return true;

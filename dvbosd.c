@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbosd.c 1.4 2000/11/01 09:13:32 kls Exp $
+ * $Id: dvbosd.c 1.6 2000/11/18 15:36:51 kls Exp $
  */
 
 #include "dvbosd.h"
@@ -21,6 +21,7 @@ cBitmap::cBitmap(int Width, int Height)
   width = Width;
   height = Height;
   bitmap = NULL;
+  fontType = fontOsd;
   font = NULL;
   if (width > 0 && height > 0) {
      bitmap = new char[width * height];
@@ -42,10 +43,15 @@ cBitmap::~cBitmap()
   delete bitmap;
 }
 
-void cBitmap::SetFont(eDvbFont Font)
+eDvbFont cBitmap::SetFont(eDvbFont Font)
 {
-  delete font;
-  font = new cFont(Font);
+  eDvbFont oldFont = fontType;
+  if (fontType != Font || !font) {
+     delete font;
+     font = new cFont(Font);
+     fontType = Font;
+     }
+  return oldFont;
 }
 
 bool cBitmap::Dirty(void)
@@ -79,6 +85,11 @@ void cBitmap::SetPixel(int x, int y, eDvbColor Color)
 int cBitmap::Width(unsigned char c)
 {
   return font ? font->Width(c) : -1;
+}
+
+int cBitmap::Width(const char *s)
+{
+  return font ? font->Width(s) : -1;
 }
 
 void cBitmap::Text(int x, int y, const char *s, eDvbColor ColorFg, eDvbColor ColorBg)

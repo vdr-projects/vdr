@@ -4,12 +4,13 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 1.11 2000/11/01 11:21:51 kls Exp $
+ * $Id: osd.c 1.13 2000/11/12 15:29:25 kls Exp $
  */
 
 #include "osd.h"
 #include <assert.h>
 #include <string.h>
+#include "i18n.h"
 
 // --- cOsdItem --------------------------------------------------------------
 
@@ -188,6 +189,13 @@ void cOsdMenu::DisplayCurrent(bool Current)
      item->Display(current - first, Current ? clrBlack : clrWhite, Current ? clrCyan : clrBackground);
 }
 
+void cOsdMenu::Clear(void)
+{
+  first = 0;
+  current = marked = -1;
+  cList<cOsdItem>::Clear();
+}
+
 bool cOsdMenu::SpecialItem(int idx)
 {
   cOsdItem *item = Get(idx);
@@ -248,7 +256,7 @@ void cOsdMenu::Mark(void)
 {
   if (Count() && marked < 0) {
      marked = current;
-     SetStatus("Up/Dn for new location - OK to move");
+     SetStatus(tr("Up/Dn for new location - OK to move"));
      }
 }
 

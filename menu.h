@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 1.13 2000/11/01 14:03:09 kls Exp $
+ * $Id: menu.h 1.14 2000/11/12 12:33:00 kls Exp $
  */
 
 #ifndef _MENU_H
@@ -59,6 +59,7 @@ public:
   cRecordControl(cDvbApi *DvbApi, cTimer *Timer = NULL);
   virtual ~cRecordControl();
   bool Process(void);
+  bool Uses(cDvbApi *DvbApi) { return DvbApi == dvbApi; }
   void Stop(bool KeepInstant = false);
   bool IsInstant(void) { return instantId; }
   const char *InstantId(void) { return instantId; }
@@ -70,6 +71,7 @@ private:
 public:
   static bool Start(cTimer *Timer = NULL);
   static void Stop(const char *InstantId);
+  static void Stop(cDvbApi *DvbApi);
   static const char *GetInstantId(const char *LastInstantId);
   static void Process(void);
   };

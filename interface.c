@@ -4,12 +4,13 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.c 1.28 2000/11/01 15:27:52 kls Exp $
+ * $Id: interface.c 1.32 2000/11/18 15:28:50 kls Exp $
  */
 
 #include "interface.h"
 #include <ctype.h>
 #include <unistd.h>
+#include "i18n.h"
 
 cInterface *Interface = NULL;
 
@@ -57,8 +58,7 @@ void cInterface::Close(void)
 
 unsigned int cInterface::GetCh(bool Wait, bool *Repeat, bool *Release)
 {
-  if (open)
-     cDvbApi::PrimaryDvbApi->Flush();
+  Flush();
   if (!rcIo->InputAvailable())
      cFile::AnyFileReady(-1, Wait ? 1000 : 0);
   unsigned int Command;
@@ -67,6 +67,7 @@ unsigned int cInterface::GetCh(bool Wait, bool *Repeat, bool *Release)
 
 eKeys cInterface::GetKey(bool Wait)
 {
+  Flush();
   if (SVDRP)
      SVDRP->Process();
   eKeys Key = keyFromWait;
@@ -89,8 +90,7 @@ void cInterface::PutKey(eKeys Key)
 
 eKeys cInterface::Wait(int Seconds, bool KeepChar)
 {
-  if (open)
-     cDvbApi::PrimaryDvbApi->Flush();
+  Flush();
   eKeys Key = kNone;
   time_t timeout = time(NULL) + Seconds;
   for (;;) {
@@ -134,6 +134,11 @@ void cInterface::SetCols(int *c)
       if (cols[i] == 0)
          break;
       }
+}
+
+eDvbFont cInterface::SetFont(eDvbFont Font)
+{
+  return cDvbApi::PrimaryDvbApi->SetFont(Font);
 }
 
 char *cInterface::WrapText(const char *Text, int Width, int *Height)
@@ -238,11 +243,24 @@ void cInterface::WriteText(int x, int y, const char *s, eDvbColor FgColor, eDvbC
 
 void cInterface::Title(const char *s)
 {
-  int x = (Width() - strlen(s)) / 2;
-  if (x < 0)
-     x = 0;
   ClearEol(0, 0, clrCyan);
-  Write(x, 0, s, clrBlack, clrCyan);
+  const char *t = strchr(s, '\t');
+  if (t) {
+     char buffer[Width() + 1];
+     unsigned int n = t - s;
+     if (n >= sizeof(buffer))
+        n = sizeof(buffer) - 1;
+     strn0cpy(buffer, s, n);
+     Write(1, 0, buffer, clrBlack, clrCyan);
+     t++;
+     Write(-(cDvbApi::PrimaryDvbApi->WidthInCells(t) + 1), 0, t, clrBlack, clrCyan);
+     }
+  else {
+     int x = (Width() - strlen(s)) / 2;
+     if (x < 0)
+        x = 0;
+     Write(x, 0, s, clrBlack, clrCyan);
+     }
 }
 
 void cInterface::Status(const char *s, eDvbColor FgColor, eDvbColor BgColor)
@@ -308,10 +326,10 @@ void cInterface::QueryKeys(void)
 {
   Keys.Clear();
   Clear();
-  WriteText(1, 1, "Learning Remote Control Keys");
-  WriteText(1, 3, "Phase 1: Detecting RC code type");
-  WriteText(1, 5, "Press any key on the RC unit");
-  cDvbApi::PrimaryDvbApi->Flush();
+  WriteText(1, 1, tr("Learning Remote Control Keys"));
+  WriteText(1, 3, tr("Phase 1: Detecting RC code type"));
+  WriteText(1, 5, tr("Press any key on the RC unit"));
+  Flush();
 #ifndef REMOTE_KBD
   unsigned char Code = 0;
   unsigned short Address;
@@ -325,22 +343,22 @@ void cInterface::QueryKeys(void)
       if (rcIo->DetectCode(&Code, &Address)) {
          Keys.code = Code;
          Keys.address = Address;
-         WriteText(1, 5, "RC code detected!");
-         WriteText(1, 6, "Do not press any key...");
-         cDvbApi::PrimaryDvbApi->Flush();
+         WriteText(1, 5, tr("RC code detected!"));
+         WriteText(1, 6, tr("Do not press any key..."));
+         Flush();
          rcIo->Flush(3000);
          ClearEol(0, 5);
          ClearEol(0, 6);
-         cDvbApi::PrimaryDvbApi->Flush();
+         Flush();
          break;
          }
 #endif
       }
-  WriteText(1, 3, "Phase 2: Learning specific key codes");
+  WriteText(1, 3, tr("Phase 2: Learning specific key codes"));
   tKey *k = Keys.keys;
   while (k->type != kNone) {
         char *Prompt;
-        asprintf(&Prompt, "Press key for '%s'", k->name);
+        asprintf(&Prompt, tr("Press key for '%s'"), tr(k->name));
         WriteText(1, 5, Prompt);
         delete Prompt;
         for (;;) {
@@ -352,8 +370,8 @@ void cInterface::QueryKeys(void)
                                 break;
                                 }
                  case kDown: if (k > Keys.keys + 1) {
-                                WriteText(1, 5, "Press 'Up' to confirm");
-                                WriteText(1, 6, "Press 'Down' to continue");
+                                WriteText(1, 5, tr("Press 'Up' to confirm"));
+                                WriteText(1, 6, tr("Press 'Down' to continue"));
                                 ClearEol(0, 7);
                                 ClearEol(0, 8);
                                 for (;;) {
@@ -378,11 +396,11 @@ void cInterface::QueryKeys(void)
                }
             }
         if (k > Keys.keys)
-           WriteText(1, 7, "(press 'Up' to go back)");
+           WriteText(1, 7, tr("(press 'Up' to go back)"));
         else
            ClearEol(0, 7);
         if (k > Keys.keys + 1)
-           WriteText(1, 8, "(press 'Down' to end key definition)");
+           WriteText(1, 8, tr("(press 'Down' to end key definition)"));
         else
            ClearEol(0, 8);
         }
@@ -396,9 +414,9 @@ void cInterface::LearnKeys(void)
       Clear();
       QueryKeys();
       Clear();
-      WriteText(1, 1, "Learning Remote Control Keys");
-      WriteText(1, 3, "Phase 3: Saving key codes");
-      WriteText(1, 5, "Press 'Up' to save, 'Down' to cancel");
+      WriteText(1, 1, tr("Learning Remote Control Keys"));
+      WriteText(1, 3, tr("Phase 3: Saving key codes"));
+      WriteText(1, 5, tr("Press 'Up' to save, 'Down' to cancel"));
       for (;;) {
           eKeys key = GetKey();
           if (key == kUp) {

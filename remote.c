@@ -6,7 +6,7 @@
  *
  * Ported to LIRC by Carsten Koch <Carsten.Koch@icem.de>  2000-06-16.
  *
- * $Id: remote.c 1.18 2000/10/08 16:49:41 kls Exp $
+ * $Id: remote.c 1.19 2000/11/11 11:22:22 kls Exp $
  */
 
 #include "remote.h"
@@ -73,7 +73,7 @@ bool cRcIoKBD::GetCommand(unsigned int *Command, bool *Repeat, bool *Release)
 {
   if (Command) {
      *Command = getch();
-     return *Command > 0;
+     return int(*Command) > 0;
      }
   return false;
 }

@@ -13,7 +13,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.h 1.2 2000/10/29 10:21:56 kls Exp $
+ * $Id: eit.h 1.3 2000/11/17 16:14:27 kls Exp $
  ***************************************************************************/
 
 #ifndef __EIT_H
@@ -120,7 +120,10 @@ typedef struct sip_filter {
 
 class cSIProcessor : public cThread {
 private:
-  cSchedules *schedules;
+  static int numSIProcessors;
+  static cSchedules *schedules;
+  static cMutex schedulesMutex;
+  bool masterSIProcessor;
   bool useTStime;
   SIP_FILTER *filters;
   int fsvbi;

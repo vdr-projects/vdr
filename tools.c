@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.22 2000/10/29 11:21:55 kls Exp $
+ * $Id: tools.c 1.23 2000/11/11 15:17:12 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -90,6 +90,18 @@ char *skipspace(const char *s)
   while (*s && isspace(*s))
         s++;
   return (char *)s;
+}
+
+char *stripspace(char *s)
+{
+  if (s && *s) {
+     for (char *p = s + strlen(s) - 1; p >= s; p--) {
+         if (!isspace(*p))
+            break;
+         *p = 0;
+         }
+     }
+  return s;
 }
 
 bool isempty(const char *s)

@@ -47,8 +47,11 @@ Video Disk Recorder File Formats
       ----F-- = Friday
       -----S- = Saturday
       ------S = Sunday
-    (any combination is possible, for example MTWTF--) or the "day of month" (1..31)
-  - Star time (first two digits for the hour, second two digits for the minutes)
+    (any combination is possible, for example MTWTF--, and the days may be
+    indicated by any characters except '-', so for example ABC---- would set
+    a timer that records on monday, tuesday and wednesday) or the "day of month"
+    (1..31)
+  - Start time (first two digits for the hour, second two digits for the minutes)
   - End time (first two digits for the hour, second two digits for the minutes)
   - Priority (from 00 to 99, 00 = lowest prioity, 99 = highest priority)
   - Guaranteed lifetime of recording (in days)
@@ -62,4 +65,28 @@ Video Disk Recorder File Formats
   Each line contains one option in the format "Name = Value".
 
   See the MANUAL file for a description of the available options.
+
+* commands.conf
+
+  This file contains the definitions of commands that can be executed from
+  the "Main" menus "Commands" option.
+
+  Each line contains one command definition in the following format:
+
+    title : command
+
+  where 'title' is the string the will be displayed in the "Commands" menu,
+  and 'command' is the actual command string that will be executed when this
+  option is selected. The delimiting ':' may be surrounded by any number of
+  white space characters.
+
+  In order to avoid error messages to stderr, every command should have
+  stderr redirected to stdout. Everything the command prints to stdout will
+  be displayed in a result window, with 'title' as its title.
+
+  Examples:
+
+    Check for new mail: /usr/local/bin/checkmail 2>&1
+    CPU status        : /usr/loval/bin/cpustatus 2>&1
+    Disk space        : df -h | grep '/video' | awk '{ print 100 - $5 "% free"; }'
 

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.20 2000/11/01 16:00:36 kls Exp $
+ * $Id: recording.c 1.21 2000/11/18 16:22:29 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -32,6 +32,7 @@
 #define MINDISKSPACE 1024 // MB
 
 #define DISKCHECKDELTA 300 // seconds between checks for free disk space
+#define REMOVELATENCY   10 // seconds to wait until next check after removing a file 
 
 void AssertFreeDiskSpace(void)
 {
@@ -51,8 +52,10 @@ void AssertFreeDiskSpace(void)
                     r0 = r;
                  r = Recordings.Next(r);
                  }
-           if (r0 && r0->Remove())
+           if (r0 && r0->Remove()) {
+              LastFreeDiskCheck += REMOVELATENCY;
               return;
+              }
            }
         // No "deleted" files to remove, so let's see if we can delete a recording:
         if (Recordings.Load(false)) {

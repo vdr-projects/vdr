@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 1.3 2000/10/28 15:26:02 kls Exp $
+ * $Id: thread.c 1.4 2000/11/14 18:38:25 kls Exp $
  */
 
 #include "thread.h"
@@ -24,7 +24,6 @@ cThread::cThread(void)
      signal(SIGIO, SignalHandler);
      signalHandlerInstalled = true;
      }
-  pthread_mutex_init(&mutex, NULL);
   running = false;
   parentPid = lockingPid = 0;
   locked = 0;
@@ -32,7 +31,6 @@ cThread::cThread(void)
 
 cThread::~cThread()
 {
-  pthread_mutex_destroy(&mutex);
 }
 
 void cThread::SignalHandler(int signum)
@@ -64,7 +62,7 @@ void cThread::Stop(void)
 bool cThread::Lock(void)
 {
   if (!lockingPid || lockingPid != getpid()) {
-     pthread_mutex_lock(&mutex);
+     Mutex.Lock();
      lockingPid = getpid();
      }
   locked++;
@@ -75,7 +73,7 @@ void cThread::Unlock(void)
 {
   if (!--locked) {
      lockingPid = 0;
-     pthread_mutex_unlock(&mutex);
+     Mutex.Unlock();
      }
 }
 

@@ -265,3 +265,49 @@ Video Disk Recorder Revision History
 - Problematic characters in recording names (which can come from timers that
   are programmed via the "Schedules" menu) are now replaced by suitable
   substitutes.
+
+2000-11-19: Version 0.68
+
+- Date and time in the title of an event info page are now always right adjusted.
+- The 'current channel' is now handled device specific (in case there is more
+  than one DVB card).
+- The 'SetSystemTime' option in the "Setup" menu is now shown as "yes/no".
+- Implemented "internationalization" (see 'i18n.c' for information on how to
+  add new languages). Thanks to Miha Setina for translating the OSD texts to
+  the Slovenian language.
+- Fixed learning keys on the PC keyboard (display oscillated).
+- Fixed a timing problem with OSD refresh and SVDRP.
+- Avoiding multiple definitions of the same timer in the "Schedule" menu (this
+  could happen when pressing the "Red" button while editing the timer).
+- There can now be a configuration file named 'commands.conf' that defines
+  commands that can be executed through the "Main" menu's "Commands" option
+  (see FORMATS for details on how to define these commands).
+- Added a 'fixed' font for use with the output of system commands.
+- The 'Priority' parameter of the timers is now also used to interrupt a low
+  priority timer recording if a higher priority timer wants to record.
+- A timer recording on a DVB card with a CAM module will now be interrupted
+  by a timer that needs to use this specific DVB card to record an encrypted
+  channel, if the timer currently occupying this DVB card doesn't need the
+  CAM module (and thus can continue recording on a different DVB card).
+- The "Yellow" button in the "What's on now/next?" menus now displays the
+  schedule of the current channel from that menu. 
+- All DVB cards in a multi-card system now write their EIT information into the
+  same data structure.
+- If there is more than one DVB card in the system, the non-primary cards are
+  now used to periodically scan through the channels in order to keep the
+  EPG info up-to-date. Scanning kicks in after 60 seconds of user inactivity
+  (timeout in order to keep user interactions instantaneously) and each channel
+  that has the 'pnr' parameter defined in 'channels.conf' is switched to for
+  20 seconds. If there is only one DVB card in the system, that card will start
+  scanning after 5 hours (configurable through the "Setup" menu) of user inactivity
+  and will switch back to the channel it originally displayed at the first sign of
+  user activity. Any scanning will only occur if that particular card is not
+  currently recording or replaying.
+- Now shifting the 'Subtitle' info into the 'ExtendedDescription' on stations
+  that don't send the EIT information correctly (like, e.g., 'VOX').
+- Implemented a 10 seconds latency when removing files.
+- Fixed unwanted reaction on the "Green" and "Yellow" button in the "Event" display.
+- Implemented 'Transfer Mode' to display video data from the DVB card that actually
+  can receive a certain channel on the primary interface. This is currently in
+  an early state and may still cause some problems, but it appears to work nice
+  already.

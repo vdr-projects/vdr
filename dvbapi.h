@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.h 1.20 2000/11/01 09:18:50 kls Exp $
+ * $Id: dvbapi.h 1.26 2000/11/19 14:09:41 kls Exp $
  */
 
 #ifndef __DVBAPI_H
@@ -42,10 +42,11 @@ public:
   bool Save(int Index);
   };
 
+class cTransferBuffer;
+
 class cDvbApi {
 private:
   int videoDev;
-  cSIProcessor *siProcessor;
   cDvbApi(const char *VideoFileName, const char *VbiFileName);
 public:
   ~cDvbApi();
@@ -59,11 +60,15 @@ public:
   static bool SetPrimaryDvbApi(int n);
          // Sets the primary DVB device to 'n' (which must be in the range
          // 1...NumDvbApis) and returns true if this was possible.
-  static cDvbApi *GetDvbApi(int Ca = 0);
+  static cDvbApi *GetDvbApi(int Ca, int Priority);
          // Selects a free DVB device, starting with the highest device number
          // (but avoiding, if possible, the PrimaryDvbApi).
-         // If Ca is not 0, the device with the given number will be returned
-         // if it is not currently recording.
+         // If Ca is not 0, the device with the given number will be returned.
+         // If all DVB devices are currently recording, the one recording the
+         // lowest priority timer (if any) that is lower than the given Priority
+         // will be returned.
+         // The caller must check whether the returned DVB device is actually
+         // recording and stop recording if necessary.
   int Index(void);
          // Returns the index of this DvbApi.
   static bool Init(void);
@@ -75,6 +80,9 @@ public:
 
   // EIT facilities
 
+private:
+  cSIProcessor *siProcessor;
+public:
   const cSchedules *Schedules(cThreadLock *ThreadLock) const;
          // Caller must provide a cThreadLock which has to survive the entire
          // time the returned cSchedules is accessed. Once the cSchedules is no
@@ -124,6 +132,8 @@ public:
   void ClrEol(int x, int y, eDvbColor color = clrBackground);
   int CellWidth(void);
   int Width(unsigned char c);
+  int WidthInCells(const char *s);
+  eDvbFont SetFont(eDvbFont Font);
   void Text(int x, int y, const char *s, eDvbColor colorFg = clrWhite, eDvbColor colorBg = clrBackground);
   void Flush(void);
 
@@ -137,7 +147,26 @@ public:
 
   // Channel facilities
 
-  bool SetChannel(int FrequencyMHz, char Polarization, int Diseqc, int Srate, int Vpid, int Apid, int Ca, int Pnr);
+private:
+  int currentChannel;
+public:
+  bool SetChannel(int ChannelNumber, int FrequencyMHz, char Polarization, int Diseqc, int Srate, int Vpid, int Apid, int Ca, int Pnr);
+  static int CurrentChannel(void) { return PrimaryDvbApi ? PrimaryDvbApi->currentChannel : 0; }
+  int Channel(void) { return currentChannel; }
+
+  // Transfer facilities
+
+private:
+  cTransferBuffer *transferBuffer;
+  cDvbApi *transferringFromDvbApi;
+public:
+  bool Transferring(void);
+       // Returns true if we are currently transferring video data.
+private:
+  cDvbApi *StartTransfer(int TransferToVideoDev);
+       // Starts transferring video data from this DVB device to TransferToVideoDev.
+  void StopTransfer(void);
+       // Stops transferring video data (in case a transfer is currently active).
 
   // Record/Replay facilities
 
@@ -153,14 +182,23 @@ private:
   pid_t pidRecord, pidReplay;
   int fromRecord, toRecord;
   int fromReplay, toReplay;
+  int ca;
+  int priority;
   void SetReplayMode(int Mode);
+protected:
+  int  Ca(void) { return ca; }
+       // Returns the ca of the current recording session (0..MAXDVBAPI).
+  int  Priority(void) { return priority; }
+       // Returns the priority of the current recording session (0..99),
+       // or -1 if no recording is currently active.
 public:
   bool Recording(void);
        // Returns true if we are currently recording.
   bool Replaying(void);
        // Returns true if we are currently replaying.
-  bool StartRecord(const char *FileName);
-       // Starts recording the current channel into the given file.
+  bool StartRecord(const char *FileName, int Ca, int Priority);
+       // Starts recording the current channel into the given file, with
+       // the given ca and priority.
        // In order to be able to record longer movies,
        // a numerical suffix will be appended to the file name. The inital
        // value of that suffix will be larger than any existing file under
@@ -192,6 +230,20 @@ public:
        // Use a very large negative value to go all the way back to the
        // beginning of the recording.
   bool GetIndex(int *Current, int *Total = NULL);
+  };
+
+class cEITScanner {
+private:
+  enum { ActivityTimeout = 60,
+         ScanTimeout = 20
+       };
+  time_t lastScan, lastActivity;
+  int currentChannel, lastChannel;
+public:
+  cEITScanner(void);
+  bool Active(void) { return currentChannel; }
+  void Activity(void);
+  void Process(void);
   };
 
 #endif //__DVBAPI_H

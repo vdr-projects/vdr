@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.29 2000/11/01 13:42:29 kls Exp $
+ * $Id: config.h 1.34 2000/11/18 13:25:53 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -18,7 +18,7 @@
 #include "eit.h"
 #include "tools.h"
 
-#define VDRVERSION "0.67"
+#define VDRVERSION "0.68"
 
 #define MaxBuffer 10000
 
@@ -92,8 +92,11 @@ public:
   const char *ToText(void);
   bool Parse(const char *s);
   bool Save(FILE *f);
-  bool Switch(cDvbApi *DvbApi = NULL);
+  bool Switch(cDvbApi *DvbApi = NULL, bool Log = true);
   };
+
+#define DEFAULTPRIORITY 99
+#define DEFAULTLIFETIME 99
 
 class cTimer : public cListObject {
 private:
@@ -115,7 +118,7 @@ public:
   char *summary;
   cTimer(bool Instant = false);
   cTimer(const cEventInfo *EventInfo);
-  ~cTimer();
+  virtual ~cTimer();
   cTimer& operator= (const cTimer &Timer);
   const char *ToText(void);
   bool Parse(const char *s);
@@ -130,6 +133,19 @@ public:
   static time_t Day(time_t t);
   static int ParseDay(const char *s);
   static const char *PrintDay(int d);
+  };
+
+class cCommand : public cListObject {
+private:
+  char *title;
+  char *command;
+  static char *result;
+public:
+  cCommand(void);
+  virtual ~cCommand();
+  bool Parse(const char *s);
+  const char *Title(void) { return title; }
+  const char *Execute(void);
   };
 
 template<class T> class cConfig : public cList<T> {
@@ -217,12 +233,14 @@ public:
   cTimer *GetTimer(cTimer *Timer);
   };
 
-extern int CurrentChannel;
+class cCommands : public cConfig<cCommand> {};
+
 extern int CurrentGroup;
 
 extern cChannels Channels;
 extern cTimers Timers;
 extern cKeys Keys;
+extern cCommands Commands;
 
 class cSetup {
 private:
@@ -230,6 +248,7 @@ private:
   bool Parse(char *s);
 public:
   // Also adjust cMenuSetup (menu.c) when adding parameters here!
+  int OSDLanguage;
   int PrimaryDVB;
   int ShowInfoOnChSwitch;
   int MenuScrollPage;
@@ -238,6 +257,7 @@ public:
   int LnbFrequHi;
   int SetSystemTime;
   int MarginStart, MarginStop;
+  int EPGScanTimeout;
   cSetup(void);
   bool Load(const char *FileName);
   bool Save(const char *FileName = NULL);

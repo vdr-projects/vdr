@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.41 2000/11/01 14:31:32 kls Exp $
+ * $Id: vdr.c 1.46 2000/11/18 13:46:56 kls Exp $
  */
 
 #include <getopt.h>
@@ -31,6 +31,7 @@
 #include <unistd.h>
 #include "config.h"
 #include "dvbapi.h"
+#include "i18n.h"
 #include "interface.h"
 #include "menu.h"
 #include "recording.h"
@@ -156,11 +157,6 @@ int main(int argc, char *argv[])
      }
   isyslog(LOG_INFO, "VDR version %s started", VDRVERSION);
 
-  // DVB interfaces:
-
-  if (!cDvbApi::Init())
-     abort();
-
   // Configuration data:
 
   if (!ConfigDirectory)
@@ -169,15 +165,23 @@ int main(int argc, char *argv[])
   Setup.Load(AddDirectory(ConfigDirectory, "setup.conf"));
   Channels.Load(AddDirectory(ConfigDirectory, "channels.conf"));
   Timers.Load(AddDirectory(ConfigDirectory, "timers.conf"));
+  Commands.Load(AddDirectory(ConfigDirectory, "commands.conf"));
 #ifdef REMOTE_LIRC
   Keys.SetDummyValues();
 #else
   bool KeysLoaded = Keys.Load(AddDirectory(ConfigDirectory, KEYS_CONF));
 #endif
 
+  // DVB interfaces:
+
+  if (!cDvbApi::Init())
+     abort();
+
   cDvbApi::SetPrimaryDvbApi(Setup.PrimaryDVB);
 
-  Channels.SwitchTo(CurrentChannel);
+  Channels.SwitchTo(1);
+
+  cEITScanner EITScanner;
 
   // User interface:
 
@@ -199,15 +203,15 @@ int main(int argc, char *argv[])
   cOsdBase *Menu = NULL;
   cReplayControl *ReplayControl = NULL;
   int LastChannel = -1;
-  int PreviousChannel = CurrentChannel;
+  int PreviousChannel = cDvbApi::CurrentChannel();
 
   while (!Interrupted) {
         // Channel display:
-        if (CurrentChannel != LastChannel) {
+        if (!EITScanner.Active() && cDvbApi::CurrentChannel() != LastChannel) {
            if (!Menu)
-              Menu = new cDisplayChannel(CurrentChannel, LastChannel > 0);
+              Menu = new cDisplayChannel(cDvbApi::CurrentChannel(), LastChannel > 0);
            PreviousChannel = LastChannel;
-           LastChannel = CurrentChannel;
+           LastChannel = cDvbApi::CurrentChannel();
            }
         // Timers and Recordings:
         if (!Menu) {
@@ -222,6 +226,8 @@ int main(int argc, char *argv[])
         // User Input:
         cOsdBase **Interact = Menu ? &Menu : (cOsdBase **)&ReplayControl;
         eKeys key = Interface->GetKey(!*Interact || !(*Interact)->NeedsFastResponse());
+        if (NORMALKEY(key) != kNone)
+           EITScanner.Activity();
         if (*Interact) {
            switch ((*Interact)->ProcessKey(key)) {
              case osMenu:   DELETENULL(Menu);
@@ -229,7 +235,7 @@ int main(int argc, char *argv[])
                             break;
              case osRecord: DELETENULL(Menu);
                             if (!cRecordControls::Start())
-                               Interface->Error("No free DVB device to record!");
+                               Interface->Error(tr("No free DVB device to record!"));
                             break;
              case osRecordings:
                             DELETENULL(Menu);
@@ -246,7 +252,7 @@ int main(int argc, char *argv[])
                             break;
              case osSwitchDvb:
                             DELETENULL(*Interact);
-                            Interface->Info("Switching primary DVB...");
+                            Interface->Info(tr("Switching primary DVB..."));
                             cDvbApi::SetPrimaryDvbApi(Setup.PrimaryDVB);
                             break;
              case osBack:
@@ -259,7 +265,7 @@ int main(int argc, char *argv[])
            switch (key) {
              // Toggle channels:
              case k0:
-                  if (PreviousChannel != CurrentChannel)
+                  if (PreviousChannel != cDvbApi::CurrentChannel())
                      Channels.SwitchTo(PreviousChannel);
                   break;
              // Direct Channel Select:
@@ -287,7 +293,7 @@ int main(int argc, char *argv[])
              case kUp:
              case kDown|k_Repeat:
              case kDown: if (!Interface->Recording()) {
-                            int n = CurrentChannel + (NORMALKEY(key) == kUp ? 1 : -1);
+                            int n = cDvbApi::CurrentChannel() + (NORMALKEY(key) == kUp ? 1 : -1);
                             cChannel *channel = Channels.GetByNumber(n);
                             if (channel)
                                channel->Switch();
@@ -300,6 +306,8 @@ int main(int argc, char *argv[])
              default:    break;
              }
            }
+        if (!Menu)
+           EITScanner.Process();
         }
   isyslog(LOG_INFO, "caught signal %d", Interrupted);
   delete Menu;

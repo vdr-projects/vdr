@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.34 2000/11/01 09:19:27 kls Exp $
+ * $Id: dvbapi.c 1.40 2000/11/19 16:46:37 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -372,7 +372,9 @@ private:
   int *inFile, *outFile;
 protected:
   int Free(void) { return ((tail >= head) ? size + head - tail : head - tail) - 1; }
+public:
   int Available(void) { return (tail >= head) ? tail - head : size - head + tail; }
+protected:
   int Readable(void) { return (tail >= head) ? size - tail - (head ? 0 : 1) : head - tail - 1; } // keep a 1 byte gap!
   int Writeable(void) { return (tail >= head) ? tail - head : size - head; }
   int Byte(int Offset);
@@ -1079,6 +1081,63 @@ int cReplayBuffer::Write(int Max)
   return Written;
 }
 
+// --- cTransferBuffer -------------------------------------------------------
+
+class cTransferBuffer : public cThread {
+private:
+  bool active;
+  int fromDevice, toDevice;
+protected:
+  virtual void Action(void);
+public:
+  cTransferBuffer(int FromDevice, int ToDevice);
+  virtual ~cTransferBuffer();
+  };
+
+cTransferBuffer::cTransferBuffer(int FromDevice, int ToDevice)
+{
+  fromDevice = FromDevice;
+  toDevice = ToDevice;
+  active = true;
+  Start();
+}
+
+cTransferBuffer::~cTransferBuffer()
+{
+  {
+    LOCK_THREAD;
+    active = false;
+  }
+  for (time_t t0 = time(NULL); time(NULL) - t0 < 3; ) {
+      LOCK_THREAD;
+      if (active)
+         break;
+      }
+}
+
+void cTransferBuffer::Action(void)
+{
+  dsyslog(LOG_INFO, "data transfer thread started (pid=%d)", getpid());
+  //XXX hack to make the video device go into 'replaying' mode:
+  char *dummy = "AV"; // must be "AV" to make the driver go into AV_PES mode!
+  write(toDevice, dummy, strlen(dummy));
+  {
+    cRingBuffer Buffer(&fromDevice, &toDevice, VIDEOBUFSIZE, 0, 0);
+    while (active && Buffer.Available() < 100000) { // need to give the read buffer a head start
+          Buffer.Read(); // initializes fromDevice for reading
+          usleep(1); // this keeps the CPU load low
+          }
+    for (; active;) {
+        if (Buffer.Read() < 0 || Buffer.Write() < 0)
+           break;
+        usleep(1); // this keeps the CPU load low
+        }
+  }
+  dsyslog(LOG_INFO, "data transfer thread stopped (pid=%d)", getpid());
+  LOCK_THREAD;
+  active = true;
+}
+
 // --- cDvbApi ---------------------------------------------------------------
 
 int cDvbApi::NumDvbApis = 0;
@@ -1091,6 +1150,10 @@ cDvbApi::cDvbApi(const char *VideoFileName, const char *VbiFileName)
   pidRecord = pidReplay = 0;
   fromRecord = toRecord = -1;
   fromReplay = toReplay = -1;
+  ca = 0;
+  priority = -1;
+  transferBuffer = NULL;
+  transferringFromDvbApi = NULL;
   videoDev = open(VideoFileName, O_RDWR | O_NONBLOCK);
   if (videoDev >= 0) {
      siProcessor = new cSIProcessor(VbiFileName);
@@ -1130,6 +1193,7 @@ cDvbApi::cDvbApi(const char *VideoFileName, const char *VbiFileName)
 #endif
   lastProgress = lastTotal = -1;
   replayTitle = NULL;
+  currentChannel = 1;
 }
 
 cDvbApi::~cDvbApi()
@@ -1139,7 +1203,9 @@ cDvbApi::~cDvbApi()
      Close();
      Stop();
      StopRecord();
+     StopTransfer();
      OvlO(false); //Overlay off!
+     //XXX the following call sometimes causes a segfault - driver problem?
      close(videoDev);
      }
 #if defined(DEBUG_OSD) || defined(REMOTE_KBD)
@@ -1160,22 +1226,25 @@ bool cDvbApi::SetPrimaryDvbApi(int n)
   return false;
 }
 
-cDvbApi *cDvbApi::GetDvbApi(int Ca)
+cDvbApi *cDvbApi::GetDvbApi(int Ca, int Priority)
 {
   cDvbApi *d = NULL;
-  Ca--;
+  int index = Ca - 1;
   for (int i = MAXDVBAPI; --i >= 0; ) {
-      if (dvbApi[i] && !dvbApi[i]->Recording()) {
-         if (i == Ca)
-            return dvbApi[i];
-         if (Ca < 0) {
+      if (dvbApi[i]) {
+         if (i == index) { // means we need exactly _this_ device
             d = dvbApi[i];
-            if (d != PrimaryDvbApi)
+            break;
+            }
+         else if (Ca == 0) { // means any device would be acceptable
+            if (!d || !dvbApi[i]->Recording() || (d->Recording() && d->Priority() > dvbApi[i]->Priority()))
+               d = dvbApi[i];
+            if (d && d != PrimaryDvbApi && !d->Recording()) // avoids the PrimaryDvbApi if possible
                break;
             }
          }
       }
-  return d;
+  return (d && (!d->Recording() || d->Priority() < Priority || (!d->Ca() && Ca))) ? d : NULL;
 }
 
 int cDvbApi::Index(void)
@@ -1616,6 +1685,24 @@ int cDvbApi::Width(unsigned char c)
 #endif
 }
 
+int cDvbApi::WidthInCells(const char *s)
+{
+#ifdef DEBUG_OSD
+  return strlen(s);
+#else
+  return (osd->Width(s) + charWidth - 1) / charWidth;
+#endif
+}
+
+eDvbFont cDvbApi::SetFont(eDvbFont Font)
+{
+#ifdef DEBUG_OSD
+  return Font;
+#else
+  return osd->SetFont(Font);
+#endif
+}
+
 void cDvbApi::Text(int x, int y, const char *s, eDvbColor colorFg, eDvbColor colorBg)
 {
   if (x < 0) x = cols + x;
@@ -1689,9 +1776,15 @@ bool cDvbApi::ShowProgress(bool Initial)
   return false;
 }
 
-bool cDvbApi::SetChannel(int FrequencyMHz, char Polarization, int Diseqc, int Srate, int Vpid, int Apid, int Ca, int Pnr)
+bool cDvbApi::SetChannel(int ChannelNumber, int FrequencyMHz, char Polarization, int Diseqc, int Srate, int Vpid, int Apid, int Ca, int Pnr)
 {
   if (videoDev >= 0) {
+     StopTransfer();
+     if (transferringFromDvbApi) {
+        transferringFromDvbApi->StopTransfer();
+        transferringFromDvbApi = NULL;
+        }
+     SetReplayMode(VID_PLAY_RESET);
      struct frontend front;
      ioctl(videoDev, VIDIOCGFRONTEND, &front);
      unsigned int freq = FrequencyMHz;
@@ -1712,13 +1805,46 @@ bool cDvbApi::SetChannel(int FrequencyMHz, char Polarization, int Diseqc, int Sr
      front.AFC       = 1;
      ioctl(videoDev, VIDIOCSFRONTEND, &front);
      if (front.sync & 0x1F == 0x1F) {
-        if (siProcessor)
+        if (this == PrimaryDvbApi && siProcessor)
            siProcessor->SetCurrentServiceID(Pnr);
+        currentChannel = ChannelNumber;
+        // If this DVB card can't receive this channel, let's see if we can
+        // use the card that actually can receive it and transfer data from there:
+        if (Ca && Ca != Index() + 1) {
+           cDvbApi *CaDvbApi = GetDvbApi(Ca, 0);
+           if (CaDvbApi) {
+              if (!CaDvbApi->Recording()) {
+                 if (CaDvbApi->SetChannel(ChannelNumber, FrequencyMHz, Polarization, Diseqc, Srate, Vpid, Apid, Ca, Pnr))
+                    transferringFromDvbApi = CaDvbApi->StartTransfer(videoDev);
+                 }
+              }
+           }
         return true;
         }
      esyslog(LOG_ERR, "ERROR: channel not sync'ed (front.sync=%X)!", front.sync);
      }
   return false;
+}
+
+bool cDvbApi::Transferring(void)
+{
+  return transferBuffer;
+}
+
+cDvbApi *cDvbApi::StartTransfer(int TransferToVideoDev)
+{
+  StopTransfer();
+  transferBuffer = new cTransferBuffer(videoDev, TransferToVideoDev);
+  return this;
+}
+
+void cDvbApi::StopTransfer(void)
+{
+  if (transferBuffer) {
+     delete transferBuffer;
+     transferBuffer = NULL;
+     SetReplayMode(VID_PLAY_RESET);
+     }
 }
 
 bool cDvbApi::Recording(void)
@@ -1735,13 +1861,15 @@ bool cDvbApi::Replaying(void)
   return pidReplay;
 }
 
-bool cDvbApi::StartRecord(const char *FileName)
+bool cDvbApi::StartRecord(const char *FileName, int Ca, int Priority)
 {
   if (Recording()) {
      esyslog(LOG_ERR, "ERROR: StartRecord() called while recording - ignored!");
      return false;
      }
   if (videoDev >= 0) {
+
+     StopTransfer();
 
      Stop(); // TODO: remove this if the driver is able to do record and replay at the same time
 
@@ -1832,6 +1960,9 @@ bool cDvbApi::StartRecord(const char *FileName)
 
      fromRecord = fromRecordPipe[0];
      toRecord = toRecordPipe[1];
+
+     ca = Ca;
+     priority = Priority;
      return true;
      }
   return false;
@@ -1846,6 +1977,8 @@ void cDvbApi::StopRecord(void)
      toRecord = fromRecord = -1;
      KillProcess(pidRecord);
      pidRecord = 0;
+     ca = 0;
+     priority = -1;
      SetReplayMode(VID_PLAY_RESET); //XXX
      }
 }
@@ -1865,6 +1998,7 @@ bool cDvbApi::StartReplay(const char *FileName, const char *Title)
      esyslog(LOG_ERR, "ERROR: StartReplay() called while recording - ignored!");
      return false;
      }
+  StopTransfer();
   Stop();
   if (videoDev >= 0) {
 
@@ -2084,5 +2218,57 @@ bool cDvbApi::GetIndex(int *Current, int *Total)
      return *Current >= 0;
      }
   return false;
+}
+
+// --- cEITScanner -----------------------------------------------------------
+
+cEITScanner::cEITScanner(void)
+{
+  lastScan = lastActivity = time(NULL);
+  currentChannel = 0;
+  lastChannel = 1;
+}
+
+void cEITScanner::Activity(void)
+{
+  if (currentChannel) {
+     Channels.SwitchTo(currentChannel);
+     currentChannel = 0;
+     }
+  lastActivity = time(NULL);
+}
+
+void cEITScanner::Process(void)
+{
+  if (Channels.MaxNumber() > 1) {
+     time_t now = time(NULL);
+     if (now - lastScan > ScanTimeout && now - lastActivity > ActivityTimeout) {
+        for (int i = 0; i < cDvbApi::NumDvbApis; i++) {
+            cDvbApi *DvbApi = cDvbApi::GetDvbApi(i, 0);
+            if (DvbApi) {
+               if (DvbApi != cDvbApi::PrimaryDvbApi || (cDvbApi::NumDvbApis == 1 && Setup.EPGScanTimeout && now - lastActivity > Setup.EPGScanTimeout * 3600)) {
+                  if (!(DvbApi->Recording() || DvbApi->Replaying() || DvbApi->Transferring())) {
+                     int oldCh = lastChannel;
+                     int ch = oldCh + 1;
+                     while (ch != oldCh) {
+                           if (ch > Channels.MaxNumber())
+                              ch = 1;
+                           cChannel *Channel = Channels.GetByNumber(ch);
+                           if (Channel && Channel->pnr) {
+                              if (DvbApi == cDvbApi::PrimaryDvbApi && !currentChannel)
+                                 currentChannel = DvbApi->Channel();
+                              Channel->Switch(DvbApi, false);
+                              lastChannel = ch;
+                              break;
+                              }
+                           ch++;
+                           }
+                     }
+                  }
+               }
+            }
+        lastScan = time(NULL);
+        }
+     }
 }
 

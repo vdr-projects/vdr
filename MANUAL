@@ -74,8 +74,8 @@ Video Disk Recorder User's Manual
   programmes that will start next on all channels.
 
   Inside the "What's on now/next?" menus the "Green" button toggles between
-  the "Now" and "Next" display, and the "Yellow" button gets you back to the
-  "Schedule" menu of the current channel.
+  the "Now" and "Next" display, and the "Yellow" button takes you to the
+  "Schedule" menu of the current channel in the list.
 
   The "Red" button allows you to instantly program a timer to record the
   selected programme. You will get into the "Edit Timer" menu in which
@@ -203,7 +203,9 @@ Video Disk Recorder User's Manual
              to free space for a new recording. If the disk is full and a new
              recording needs more space, an existing recording with the lowest
              Priority (and which has exceeded its guaranteed Lifetime) will be
-             removed.
+             removed. If all available DVB cards are currently occupied, a
+             timer with a higher priority will interrupt the timer with the
+             lowest priority in order to start recording.
   Lifetime:  The number of days (0..99) a recording made through this timer is
              guaranteed to remain on disk before it is automatically removed
              to free up space for a new recording. Note that setting this
@@ -227,6 +229,10 @@ Video Disk Recorder User's Manual
   modify the following system parameters (note that "boolean" values will be
   displayed as "no" and "yes" in the "Setup" menu, while in the setup file they
   are stored as '0' and '1', respectively):
+
+  OSDLanguage = 0        Defines the language used to display the OSD texts.
+                         0 = Englisch
+                         1 = Deutsch
 
   PrimaryDVB = 1         Defines the primary DVB interface (i.e. the one that
                          will display the menus and will react on input through
@@ -266,6 +272,37 @@ Video Disk Recorder User's Manual
                          1 = system time wil be set
                          Note that this works only if VDR is running under a user
                          id that has permisson to set the system time.
+
   MarginStart = 2        Defines how many minutes before the official start time
   MarginStop = 10        of a broadcast VDR shall start recording, and how long
                          after the official end time it shall stop recording.
+
+  EPGScanTimeout = 5     The time (in hours) of user inactivity after which the
+                         DVB card in a single card system starts scanning channels
+                         to keep the EPG up-to-date.
+                         A value of '0' turns off scanning on a single card system.
+
+* Executing system commands
+
+  The "Main" menu option "Commands" allows you to execute any system commands
+  defined in the configuration file 'commands.conf' (see FORMATS for details).
+  The "Commands" option will only be present in the "Main" menu if a valid
+  'commands.conf' file containing at least one command definition has been
+  found at program start.
+
+  This feature can be used to do virtually anything, like checking for new
+  mail, displaying the CPU temperature - you name it! All you need to do is
+  enter the necessary command definition into 'commands.conf' and implement
+  the actual command that will be called. Such a command can typically be a
+  shell script or a Perl program. Anything that command writes to stdout will
+  be displayed on a result screen after executing the command. This screen will
+  use a 'fixed' font so that you can generate formatted output. In order to
+  avoid error messages going to stderr, command definitions should redirect
+  stderr to stdout (see FORMATS).
+
+  WARNING: THE COMMANDS DEFINED IN 'commands.conf' WILL BE EXECUTED UNDER THE
+  =======  SAME USER ID THAT VDR IS RUNNING WITH. BE VERY CAREFUL WHEN
+           DEFINING THESE COMMANDS AND MAKE SURE THEY DON'T HARM YOUR SYSTEM,
+           ESPECIALLY IF YOU ARE RUNNING VDR UNDER A HIGH PRIVILEGED USER ID
+           (LIKE 'root').
+

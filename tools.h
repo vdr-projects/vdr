@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.18 2000/10/29 11:19:20 kls Exp $
+ * $Id: tools.h 1.20 2000/11/12 15:27:06 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -41,6 +41,7 @@ char *readline(FILE *f);
 char *strn0cpy(char *dest, const char *src, size_t n);
 char *strreplace(char *s, char c1, char c2);
 char *skipspace(const char *s);
+char *stripspace(char *s);
 bool isempty(const char *s);
 int time_ms(void);
 void delay_ms(int ms);
@@ -95,7 +96,7 @@ public:
   void Del(cListObject *Object);
   virtual void Move(int From, int To);
   void Move(cListObject *From, cListObject *To);
-  void Clear(void);
+  virtual void Clear(void);
   cListObject *Get(int Index) const;
   int Count(void) const;
   };

@@ -4,21 +4,27 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: font.c 1.1 2000/10/01 15:01:49 kls Exp $
+ * $Id: font.c 1.2 2000/11/18 15:16:08 kls Exp $
  */
 
 #include "font.h"
 #include "tools.h"
 
+#include "fontfix.c"
 #include "fontosd.c"
 
-cFont::cFont(eDvbFont Font)//XXX
+cFont::cFont(eDvbFont Font)
 {
+
+#define FONTINDEX(Name)\
+    case font##Name: for (int i = 0; i < NUMCHARS; i++)\
+                         data[i] = (tCharData *)&Font##Name[i < 32 ? 0 : i - 32];\
+                     break;
+
   switch (Font) {
     default:
-    case fontOsd: for (int i = 0; i < NUMCHARS; i++)
-                      data[i] = (tCharData *)&FontOsd[i < 32 ? 0 : i - 32];
-                  break;
+    FONTINDEX(Osd);
+    FONTINDEX(Fix);
     // TODO others...
     }
 }

@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.11 2000/10/08 12:21:14 kls Exp $
+ * $Id: svdrp.c 1.12 2000/11/05 13:44:42 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -302,13 +302,13 @@ void cSVDRP::CmdCHAN(const char *Option)
            n = o;
         }
      else if (strcmp(Option, "-") == 0) {
-        n = CurrentChannel;
-        if (CurrentChannel > 1)
+        n = cDvbApi::CurrentChannel();
+        if (n > 1)
            n--;
         }
      else if (strcmp(Option, "+") == 0) {
-        n = CurrentChannel;
-        if (CurrentChannel < Channels.MaxNumber())
+        n = cDvbApi::CurrentChannel();
+        if (n < Channels.MaxNumber())
            n++;
         }
      else {
@@ -342,11 +342,11 @@ void cSVDRP::CmdCHAN(const char *Option)
         return;
         }
      }
-  cChannel *channel = Channels.GetByNumber(CurrentChannel);
+  cChannel *channel = Channels.GetByNumber(cDvbApi::CurrentChannel());
   if (channel)
-     Reply(250, "%d %s", CurrentChannel, channel->name);
+     Reply(250, "%d %s", channel->number, channel->name);
   else
-     Reply(550, "Unable to find channel \"%d\"", CurrentChannel);
+     Reply(550, "Unable to find channel \"%d\"", cDvbApi::CurrentChannel());
 }
 
 void cSVDRP::CmdDELC(const char *Option)
