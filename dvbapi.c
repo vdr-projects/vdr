@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.48 2001/01/14 10:15:26 kls Exp $
+ * $Id: dvbapi.c 1.49 2001/01/18 17:03:34 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -2165,6 +2165,7 @@ void cDvbApi::Flush(void)
 bool cDvbApi::SetChannel(int ChannelNumber, int FrequencyMHz, char Polarization, int Diseqc, int Srate, int Vpid, int Apid, int Ca, int Pnr)
 {
   if (videoDev >= 0) {
+     cThreadLock ThreadLock(siProcessor); // makes sure the siProcessor won't access the vbi-device while switching
      StopTransfer();
      SetPlayMode(videoDev, VID_PLAY_RESET);
      struct frontend front;
