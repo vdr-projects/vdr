@@ -1964,3 +1964,4 @@ Video Disk Recorder Revision History
 - Fixed margin handling in cRingBufferLinear.
 - Now polling the output device in 'Transfer Mode' and retrying to put packets
   into the ring buffer.
+- Resetting the CAM slot in case communication breaks down.
