@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 1.15 2001/10/21 12:25:31 kls Exp $
+ * $Id: thread.c 1.16 2001/10/27 13:23:06 kls Exp $
  */
 
 #include "thread.h"
@@ -99,8 +99,7 @@ cThread::cThread(void)
      signalHandlerInstalled = true;
      }
   running = false;
-  parentPid = threadPid = lockingPid = 0;
-  locked = 0;
+  parentPid = threadPid = 0;
 }
 
 cThread::~cThread()
@@ -159,24 +158,6 @@ void cThread::Cancel(int WaitSeconds)
   pthread_cancel(thread);
 }
 
-bool cThread::Lock(void)
-{
-  if (getpid() != lockingPid || !locked) {
-     Mutex.Lock();
-     lockingPid = getpid();
-     }
-  locked++;
-  return true;
-}
-
-void cThread::Unlock(void)
-{
-  if (!--locked) {
-     lockingPid = 0;
-     Mutex.Unlock();
-     }
-}
-
 void cThread::WakeUp(void)
 {
   kill(parentPid, SIGIO); // makes any waiting 'select()' call return immediately
@@ -228,15 +209,11 @@ bool cThreadLock::Lock(cThread *Thread)
 {
   if (Thread && !thread) {
      thread = Thread;
-     locked = Thread->Lock();
-     return locked;
+     Thread->Lock();
+     locked = true;
+     return true;
      }
   return false;
-}
-
-bool cThreadLock::Locked(void)
-{
-  return locked;
 }
 
 // --- cPipe -----------------------------------------------------------------

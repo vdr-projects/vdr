@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.h 1.10 2001/10/20 10:25:19 kls Exp $
+ * $Id: thread.h 1.11 2001/10/27 13:22:20 kls Exp $
  */
 
 #ifndef __THREAD_H
@@ -45,9 +45,8 @@ class cThread {
   friend class cThreadLock;
 private:
   pthread_t thread;
-  cMutex Mutex;
-  pid_t parentPid, threadPid, lockingPid;
-  int locked;
+  cMutex mutex;
+  pid_t parentPid, threadPid;
   bool running;
   static time_t lastPanic;
   static int panicLevel;
@@ -55,8 +54,8 @@ private:
   static bool signalHandlerInstalled;
   static void SignalHandler(int signum);
   static void *StartThread(cThread *Thread);
-  bool Lock(void);
-  void Unlock(void);
+  void Lock(void) { mutex.Lock(); }
+  void Unlock(void) { mutex.Unlock(); }
 protected:
   void WakeUp(void);
   virtual void Action(void) = 0;
@@ -84,7 +83,6 @@ public:
   cThreadLock(cThread *Thread = NULL);
   ~cThreadLock();
   bool Lock(cThread *Thread);
-  bool Locked(void);
   };
 
 #define LOCK_THREAD cThreadLock ThreadLock(this)
