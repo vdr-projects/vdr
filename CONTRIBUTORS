@@ -879,3 +879,4 @@ Alessio Sangalli <alesan@manoweb.com>
 
 Pedro Miguel Sequeira de Justo Teixeira <pedro.miguel.teixeira@bigfoot.com>
  for reporting a problem with crc32 in SI handling on 64bit systems
+ for reporting an alignment problem in CAM access on 64bit systems

@@ -2503,4 +2503,6 @@ Video Disk Recorder Revision History
   define _GNU_SOURCE for this to work (see the example plugin Makefiles and
   'newplugin').
 - Fixed a problem with crc32 in SI handling on 64bit systems (thanks to Pedro
-  Miguel Sequeira de Justo Teixeira for reportign this one).
+  Miguel Sequeira de Justo Teixeira for reporting this one).
+- Fixed an alignment problem in CAM access on 64bit systems  (thanks to Pedro
+  Miguel Sequeira de Justo Teixeira for reporting this one).

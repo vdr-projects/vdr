@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 1.17 2003/10/26 13:04:23 kls Exp $
+ * $Id: ci.c 1.18 2003/12/22 15:52:31 kls Exp $
  */
 
 /* XXX TODO
@@ -12,6 +12,7 @@
 XXX*/
 
 #include "ci.h"
+#include <asm/unaligned.h>
 #include <ctype.h>
 #include <linux/dvb/ca.h>
 #include <malloc.h>
@@ -793,10 +794,10 @@ bool cCiApplicationInformation::Process(int Length, const uint8_t *Data)
             if ((l -= 1) < 0) break;
             applicationType = *d++;
             if ((l -= 2) < 0) break;
-            applicationManufacturer = ntohs(*(uint16_t *)d);
+            applicationManufacturer = ntohs(get_unaligned((uint16_t *)d));
             d += 2;
             if ((l -= 2) < 0) break;
-            manufacturerCode = ntohs(*(uint16_t *)d);
+            manufacturerCode = ntohs(get_unaligned((uint16_t *)d));
             d += 2;
             free(menuString);
             menuString = GetString(l, &d);
@@ -1355,7 +1356,7 @@ cCiHandler *cCiHandler::CreateCiHandler(const char *FileName)
 
 int cCiHandler::ResourceIdToInt(const uint8_t *Data)
 {
-  return (ntohl(*(int *)Data));
+  return (ntohl(get_unaligned((int32_t *)Data)));
 }
 
 bool cCiHandler::Send(uint8_t Tag, int SessionId, int ResourceId, int Status)
@@ -1367,10 +1368,10 @@ bool cCiHandler::Send(uint8_t Tag, int SessionId, int ResourceId, int Status)
   if (Status >= 0)
      *p++ = Status;
   if (ResourceId) {
-     *(int *)p = htonl(ResourceId);
+     put_unaligned(htonl(ResourceId), (int32_t *)p);
      p += 4;
      }
-  *(short *)p = htons(SessionId);
+  put_unaligned(htons(SessionId), (uint16_t *)p);
   p += 2;
   buffer[1] = p - buffer - 2; // length
   return tc && tc->SendData(p - buffer, buffer) == OK;
@@ -1481,7 +1482,7 @@ bool cCiHandler::Process(void)
          if (Data && Length > 1) {
             switch (*Data) {
               case ST_SESSION_NUMBER:          if (Length > 4) {
-                                                  int SessionId = ntohs(*(short *)&Data[2]);
+                                                  int SessionId = ntohs(get_unaligned((uint16_t *)&Data[2]));
                                                   cCiSession *Session = GetSessionBySessionId(SessionId);
                                                   if (Session)
                                                      Session->Process(Length - 4, Data + 4);
@@ -1492,7 +1493,7 @@ bool cCiHandler::Process(void)
               case ST_OPEN_SESSION_REQUEST:    OpenSession(Length, Data);
                                                break;
               case ST_CLOSE_SESSION_REQUEST:   if (Length == 4)
-                                                  CloseSession(ntohs(*(short *)&Data[2]));
+                                                  CloseSession(ntohs(get_unaligned((uint16_t *)&Data[2])));
                                                break;
               case ST_CREATE_SESSION_RESPONSE: //XXX fall through to default
               case ST_CLOSE_SESSION_RESPONSE:  //XXX fall through to default
