@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.41 2003/01/06 14:44:27 kls Exp $
+ * $Id: dvbdevice.c 1.42 2003/02/02 15:31:31 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -263,22 +263,15 @@ void cDvbTuner::Action(void)
            int length = cSIProcessor::GetCaDescriptors(channel.Source(), channel.Frequency(), channel.Sid(), sizeof(buffer), buffer);
            if (length > 0) {
               cCiCaPmt CaPmt(channel.Sid());
-              if (channel.Vpid()) {
+              CaPmt.AddCaDescriptor(length, buffer);
+              if (channel.Vpid())
                  CaPmt.AddPid(channel.Vpid());
-                 CaPmt.AddCaDescriptor(length, buffer);
-                 }
-              if (channel.Apid1()) {
+              if (channel.Apid1())
                  CaPmt.AddPid(channel.Apid1());
-                 CaPmt.AddCaDescriptor(length, buffer);
-                 }
-              if (channel.Apid2()) {
+              if (channel.Apid2())
                  CaPmt.AddPid(channel.Apid2());
-                 CaPmt.AddCaDescriptor(length, buffer);
-                 }
-              if (channel.Dpid1()) {
+              if (channel.Dpid1())
                  CaPmt.AddPid(channel.Dpid1());
-                 CaPmt.AddCaDescriptor(length, buffer);
-                 }
               caSet = ciHandler->SetCaPmt(CaPmt);
               }
            }

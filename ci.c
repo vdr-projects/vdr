@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 1.2 2003/01/11 11:15:19 kls Exp $
+ * $Id: ci.c 1.3 2003/02/02 15:49:52 kls Exp $
  */
 
 /* XXX TODO
@@ -13,7 +13,6 @@
 - update CA descriptors in case they change
 - dynamically react on CAM insert/remove
 - implement CAM reset (per slot)
-- implement a CA enquiry menu with actual user input
 XXX*/
 
 #include "ci.h"
@@ -45,7 +44,7 @@ static int SysLogLevel = 3;
 static bool DumpTPDUDataTransfer = false;
 static bool DebugProtocol = false;
 
-#define dbgprotocol(a...) if (DebugProtocol) printf(a)
+#define dbgprotocol(a...) if (DebugProtocol) fprintf(stderr, a)
 
 #define OK       0
 #define TIMEOUT -1
@@ -460,19 +459,32 @@ cCiTransportConnection *cCiTransportLayer::NewConnection(void)
   return NULL;
 }
 
-#define CA_RESET_TIMEOUT  2 // seconds
+#define CA_RESET_TIMEOUT  3 // seconds
 
 bool cCiTransportLayer::ResetSlot(int Slot)
 {
+  dbgprotocol("Resetting slot %d...", Slot);
   ca_slot_info_t sinfo;
   sinfo.num = Slot;
-  ioctl(fd, CA_RESET, Slot);
-  time_t t0 = time(NULL);
-  do {
-     ioctl(fd, CA_GET_SLOT_INFO, &sinfo);
-     if ((sinfo.flags & CA_CI_MODULE_READY) != 0)
-        return true;
-     } while (time(NULL) - t0 < CA_RESET_TIMEOUT);
+  if (ioctl(fd, CA_RESET, 1 << Slot) != -1) {
+     time_t t0 = time(NULL);
+     do {
+        if (ioctl(fd, CA_GET_SLOT_INFO, &sinfo) != -1) {
+           ioctl(fd, CA_GET_SLOT_INFO, &sinfo);
+           if ((sinfo.flags & CA_CI_MODULE_READY) != 0) {
+              dbgprotocol("ok.\n");
+              return true;
+              }
+           }
+        else {
+           esyslog("ERROR: can't get info on CAM slot %d: %m", Slot);
+           break;
+           }
+        } while (time(NULL) - t0 < CA_RESET_TIMEOUT);
+     }
+  else
+     esyslog("ERROR: can't reset CAM slot %d: %m", Slot);
+  dbgprotocol("failed!\n");
   return false;
 }
 
@@ -818,7 +830,27 @@ cCiConditionalAccessSupport::cCiConditionalAccessSupport(int SessionId, cCiTrans
 
 bool cCiConditionalAccessSupport::Process(int Length, const uint8_t *Data)
 {
-  if (state == 0) {
+  if (Data) {
+     int Tag = GetTag(Length, &Data);
+     switch (Tag) {
+       case AOT_CA_INFO: {
+            dbgprotocol("%d: <== Ca Info", SessionId());
+            int l = 0;
+            const uint8_t *d = GetData(Data, l);
+            while (l > 1) {
+                  dbgprotocol(" %04X", ((unsigned int)(*d) << 8) | *(d + 1));
+                  d += 2;
+                  l -= 2;
+                  }
+            dbgprotocol("\n");
+            }
+            state = 2;
+            break;
+       default: esyslog("ERROR: CI conditional access support: unknown tag %06X", Tag);
+                return false;
+       }
+     }
+  else if (state == 0) {
      dbgprotocol("%d: ==> Ca Info Enq\n", SessionId());
      SendData(AOT_CA_INFO_ENQ);
      state = 1;
@@ -828,7 +860,7 @@ bool cCiConditionalAccessSupport::Process(int Length, const uint8_t *Data)
 
 bool cCiConditionalAccessSupport::SendPMT(cCiCaPmt &CaPmt)
 {
-  if (state == 1) {
+  if (state == 2) {
      SendData(AOT_CA_PMT, CaPmt.length, CaPmt.capmt);
      return true;
      }
@@ -1186,27 +1218,27 @@ cCiCaPmt::cCiCaPmt(int ProgramNumber)
   capmt[length++] = (ProgramNumber >> 8) & 0xFF;
   capmt[length++] =  ProgramNumber       & 0xFF;
   capmt[length++] = 0x00; //XXX version_number, current_next_indicator - apparently may be 0x00
-  capmt[length++] = 0x00; //XXX program_info_length H (at program level)
-  capmt[length++] = 0x00; //XXX program_info_length L
-  esInfoLengthPos = 0;
+  esInfoLengthPos = length;
+  capmt[length++] = 0x00; // program_info_length H (at program level)
+  capmt[length++] = 0x00; // program_info_length L
 }
 
 void cCiCaPmt::AddPid(int Pid)
 {
+  //XXX buffer overflow check???
   capmt[length++] = 0x00; //XXX stream_type (apparently doesn't matter)
   capmt[length++] = (Pid >> 8) & 0xFF;
   capmt[length++] =  Pid       & 0xFF;
   esInfoLengthPos = length;
+  capmt[length++] = 0x00; // ES_info_length H (at ES level)
+  capmt[length++] = 0x00; // ES_info_length L
 }
 
 void cCiCaPmt::AddCaDescriptor(int Length, uint8_t *Data)
 {
   if (esInfoLengthPos) {
-     if (esInfoLengthPos == length) {
-        length += 2;
-        capmt[length++] = CPCI_OK_DESCRAMBLING;
-        }
      if (length + Length < int(sizeof(capmt))) {
+        capmt[length++] = CPCI_OK_DESCRAMBLING;
         memcpy(capmt + length, Data, Length);
         length += Length;
         int l = length - esInfoLengthPos - 2;
@@ -1215,6 +1247,7 @@ void cCiCaPmt::AddCaDescriptor(int Length, uint8_t *Data)
         }
      else
         esyslog("ERROR: buffer overflow in CA descriptor");
+     esInfoLengthPos = 0;
      }
   else
      esyslog("ERROR: adding CA descriptor without Pid!");

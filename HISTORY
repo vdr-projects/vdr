@@ -1942,7 +1942,8 @@ Video Disk Recorder Revision History
   Kirchgatterer and Robert Schiele).
 - Fixed skipping unavailable channels in the EPG scanner.
 
-2003-01-26: Version 1.1.23
+2003-02-02: Version 1.1.23
 
 - Fixed a new/delete malloc/free mismatch in ringbuffer.c (thanks to Stefan
   Huelswitt for reporting this one).
+- Improved CAM handling.
