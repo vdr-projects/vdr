@@ -1219,7 +1219,7 @@ Video Disk Recorder Revision History
 - Now encoding '.' at the end of a directory name in case of VFAT=1, since Windows
   can't handle these (thanks to Simon Dean for reporting this one).
 
-2002-05-01: Version 1.0.2
+2002-05-03: Version 1.0.2
 
 - Now taking an active video cutting process into account when doing shutdown or
   housekeeping (thanks to Stefan Huelswitt).
@@ -1230,3 +1230,9 @@ Video Disk Recorder Revision History
   for reporting this one).
 - Fixed a crash on systems with disks that have a block size larger than 1MB
   (thanks to Ulrich Petri for helping to debug this one).
+- Updated 'channels.conf' for the new PW settings (thanks to Andreas Share and
+  Carsten Koch). Note that all channels with numbers over 50 may have moved,
+  so you should carefully check any timers you have set!
+- Updated 'channels.conf.cable' for the new PW settings (thanks to Oliver Lorei
+  and Stephan Schreiber). Note that all channels may have moved, so you should
+  carefully check any timers you have set!

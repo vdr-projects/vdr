@@ -12,6 +12,7 @@ Carsten Koch <Carsten.Koch@icem.de>
  for implementing the 'new recording' indicator
  for suggesting that the "Back" button in replay mode should bring up the "Recordings" menu
  for fixing the watchdog timer if the program hangs in OSD activities
+ for his support in keeping the Premiere World channels up to date in 'channels.conf'
 
 Plamen Ganev <pganev@com-it.net>
  for fixing the frequency offset for Hotbird channels
@@ -321,3 +322,6 @@ Marcus Kuba <marcus@kuba4u.de>
 Ulrich Petri <ulope@gmx.de>
  for his help in debugging a crash on systems with disks that have a block size
  larger than 1MB
+
+Oliver Lorei <oliverlorei@cityweb.de>
+ for his support in keeping the Premiere World channels up to date in 'channels.conf.cable'
