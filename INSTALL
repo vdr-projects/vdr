@@ -15,12 +15,16 @@ If you have the DVB driver source in a different location
 you will have to change the definition of DVBDIR in the
 Makefile.
 
-VDR also needs the package 'libdvdread' in order to replay DVDs.
-This package is expected to be located in the directory ../DVD (seen
-from the VDR directory).  Adjust the definition of DVDDIR in the
-Makefile if necessary.
+If you want to use your DVD drive you will need to compile VDR with
 
-This program requires the card driver version 0.9.0 or higher
+  make DVD=1
+
+to activate DVD support. VDR then also needs the package 'libdvdread'
+in order to replay DVDs. This package is expected to be located in the
+directory ../DVD (seen from the VDR directory).  Adjust the definition
+of DVDDIR in the Makefile if necessary.
+
+VDR requires the card driver version 0.9.0 or higher
 to work properly. You need to load the dvb.o module *without* option
 'outstream=0' (previous versions of VDR required this option to have
 the driver supply the data in AV_PES format; as of version 0.70 VDR

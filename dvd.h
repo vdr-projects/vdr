@@ -6,11 +6,13 @@
  *
  * Initially written by Andreas Schultz <aschultz@warp10.net>
  *
- * $Id: dvd.h 1.2 2001/08/05 15:00:23 kls Exp $
+ * $Id: dvd.h 1.3 2001/08/05 16:00:57 kls Exp $
  */
 
 #ifndef __DVD_H
 #define __DVD_H
+
+#ifdef DVDSUPPORT
 
 #include <dvdread/dvd_reader.h>
 #include <dvdread/ifo_types.h>
@@ -45,5 +47,7 @@ public:
   dvd_file_t *openTitle(int Title, dvd_read_domain_t domain);
   static cDVD *getDVD(void);
   };
+
+#endif //DVDSUPPORT
 
 #endif //__DVD_H

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 1.21 2001/08/02 14:53:29 kls Exp $
+ * $Id: menu.h 1.22 2001/08/05 16:04:58 kls Exp $
  */
 
 #ifndef _MENU_H
@@ -13,6 +13,9 @@
 #define _GNU_SOURCE
 
 #include "dvbapi.h"
+#ifdef DVDSUPPORT
+#include "dvd.h"
+#endif //DVDSUPPORT
 #include "osd.h"
 #include "recording.h"
 
@@ -41,6 +44,7 @@ public:
   virtual eOSState ProcessKey(eKeys Key);
   };
 
+#ifdef DVDSUPPORT
 class cMenuDVD : public cOsdMenu {
 private:
   cDVD *dvd;//XXX member really necessary???
@@ -50,6 +54,7 @@ public:
   cMenuDVD(void);
   virtual eOSState ProcessKey(eKeys Key);
   };
+#endif //DVDSUPPORT
 
 class cMenuRecordings : public cOsdMenu {
 private:
@@ -100,8 +105,10 @@ private:
   void Show(int Seconds = 0);
   void Hide(void);
   static char *fileName;
+#ifdef DVDSUPPORT
   static cDVD *dvd;//XXX member really necessary???
   static int titleid;//XXX
+#endif //DVDSUPPORT
   static char *title;
   bool ShowProgress(bool Initial);
   void MarkToggle(void);
@@ -115,7 +122,9 @@ public:
   virtual eOSState ProcessKey(eKeys Key);
   bool Visible(void) { return visible; }
   static void SetRecording(const char *FileName, const char *Title);
+#ifdef DVDSUPPORT
   static void SetDVD(cDVD *DVD, int Title);//XXX
+#endif //DVDSUPPORT
   static const char *LastReplayed(void);
   static void ClearLastReplayed(const char *FileName);
   };

@@ -6,11 +6,13 @@
  *
  * Initially written by Andreas Schultz <aschultz@warp10.net>
  *
- * $Id: dvd.c 1.2 2001/08/05 15:00:45 kls Exp $
+ * $Id: dvd.c 1.3 2001/08/06 16:07:44 kls Exp $
  */
 
-//XXX //#define DVDDEBUG        1
-//XXX //#define DEBUG_BUFFER    1
+#ifdef DVDSUPPORT
+
+//#define DVDSUPPORTDEBUG 1
+//#define DEBUG_BUFFER    1
 
 #include <fcntl.h>
 #include <linux/cdrom.h>
@@ -92,7 +94,7 @@ void cDVD::Open(void)
 
 void cDVD::Close(void)
 {
-#ifdef DVDDEBUG
+#ifdef DVDSUPPORTDEBUG
   dsyslog(LOG_INFO, "DVD: cDVD::Close(%p): vts: %p, vmg: %p, title: %p, dvd: %p", this, vts_file, vmg_file, title, dvd);
 #endif
   if (vts_file)
@@ -143,3 +145,4 @@ dvd_file_t *cDVD::openTitle(int Title, dvd_read_domain_t domain)
   return title;
 }
 
+#endif //DVDSUPPORT

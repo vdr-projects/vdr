@@ -5,8 +5,9 @@
  * how to reach the author.
  *
  * DVD support initially written by Andreas Schultz <aschultz@warp10.net>
+ * based on dvdplayer-0.5 by Matjaz Thaler <matjaz.thaler@guest.arnes.si>
  *
- * $Id: dvbapi.c 1.99 2001/08/05 15:46:21 kls Exp $
+ * $Id: dvbapi.c 1.100 2001/08/06 16:19:20 kls Exp $
  */
 
 //#define DVDDEBUG        1
@@ -27,9 +28,11 @@ extern "C" {
 #include <sys/time.h>
 #include <unistd.h>
 
+#ifdef DVDSUPPORT
 extern "C" {
 #include "ac3dec/ac3.h"
 }
+#endif //DVDSUPPORT
 
 #include "config.h"
 #include "recording.h"
@@ -1124,6 +1127,7 @@ bool cReplayBuffer::NextFile(uchar FileNumber, int FileOffset)
   return replayFile >= 0;
 }
 
+#ifdef DVDSUPPORT
 // --- cDVDplayBuffer --------------------------------------------------------
 
 class cDVDplayBuffer : public cPlayBuffer {
@@ -1651,7 +1655,7 @@ void cDVDplayBuffer::Input(void)
         // dsyslog(LOG_INF, "DVD: new cyclestate: %d, pktcnt: %d, cur: %d", cyclestate, pktcnt, cur_output_size);
         }
 
-  dsyslog(LOG_INFO, "output thread ended (pid=%d)", getpid());
+  dsyslog(LOG_INFO, "input thread ended (pid=%d)", getpid());
 }
 
 #define NO_PICTURE 0
@@ -2004,6 +2008,7 @@ void cDVDplayBuffer::GetIndex(int &Current, int &Total, bool SnapToIFrame)
 {
   Current = Total = -1;
 }
+#endif //DVDSUPPORT
 
 // --- cTransferBuffer -------------------------------------------------------
 
@@ -3332,6 +3337,7 @@ bool cDvbApi::StartReplay(const char *FileName)
   return false;
 }
 
+#ifdef DVDSUPPORT
 bool cDvbApi::StartDVDplay(cDVD *dvd, int TitleID)
 {
   if (Recording()) {
@@ -3359,6 +3365,7 @@ bool cDvbApi::StartDVDplay(cDVD *dvd, int TitleID)
      }
   return false;
 }
+#endif //DVDSUPPORT
 
 void cDvbApi::StopReplay(void)
 {

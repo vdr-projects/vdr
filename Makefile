@@ -4,14 +4,22 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 1.23 2001/08/03 13:10:52 kls Exp $
+# $Id: Makefile 1.24 2001/08/06 16:13:42 kls Exp $
 
 DVBDIR   = ../DVB
 DVDDIR   = ../DVD
 AC3DIR   = ./ac3dec
 
-INCLUDES = -I$(DVBDIR)/ost/include -I$(DVDDIR)/libdvdread
-LIBDIRS  = -L$(DVDDIR)/libdvdread/dvdread/.libs
+INCLUDES = -I$(DVBDIR)/ost/include
+
+ifdef DVD
+INCLUDES += -I$(DVDDIR)/libdvdread
+LIBDIRS  += -L$(DVDDIR)/libdvdread/dvdread/.libs
+DEFINES  += -DDVDSUPPORT
+DEFINES  += -D_LARGEFILE64_SOURCE # needed by libdvdread
+AC3LIB    = $(AC3DIR)/libac3.a
+DVDLIB    = -ldvdread
+endif
 
 OBJS = config.o dvbapi.o dvbosd.o dvd.o eit.o font.o i18n.o interface.o menu.o osd.o\
        recording.o remote.o remux.o ringbuffer.o svdrp.o thread.o tools.o vdr.o\
@@ -19,8 +27,6 @@ OBJS = config.o dvbapi.o dvbosd.o dvd.o eit.o font.o i18n.o interface.o menu.o o
 
 OSDFONT = -adobe-helvetica-medium-r-normal--23-*-100-100-p-*-iso8859-1
 FIXFONT = -adobe-courier-bold-r-normal--25-*-100-100-m-*-iso8859-1
-
-DEFINES += -D_LARGEFILE64_SOURCE
 
 ifndef REMOTE
 REMOTE = KBD
@@ -70,8 +76,8 @@ videodir.o  : videodir.c tools.h videodir.h
 
 # The main program:
 
-vdr: $(OBJS) $(AC3DIR)/libac3.a
-	g++ -g -O2 $(OBJS) -lncurses -ljpeg -lpthread $(LIBDIRS) -ldvdread $(AC3DIR)/libac3.a -o vdr
+vdr: $(OBJS) $(AC3LIB)
+	g++ -g -O2 $(OBJS) -lncurses -ljpeg -lpthread $(LIBDIRS) $(DVDLIB) $(AC3LIB) -o vdr
 
 # The font files:
 
@@ -89,7 +95,7 @@ genfontfile: genfontfile.o
 
 # The ac3dec library:
 
-$(AC3DIR)/libac3.a:
+$(AC3LIB):
 	make -C $(AC3DIR) all
 
 # Housekeeping:

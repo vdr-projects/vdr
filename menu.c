@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.94 2001/08/05 15:11:35 kls Exp $
+ * $Id: menu.c 1.95 2001/08/05 16:09:41 kls Exp $
  */
 
 #include "menu.h"
@@ -1590,6 +1590,7 @@ eOSState cMenuRecordings::ProcessKey(eKeys Key)
   return state;
 }
 
+#ifdef DVDSUPPORT
 // --- cMenuDVDItem ----------------------------------------------------------
 
 class cMenuDVDItem : public cOsdItem {
@@ -1661,6 +1662,7 @@ eOSState cMenuDVD::ProcessKey(eKeys Key)
      }
   return state;
 }
+#endif //DVDSUPPORT
 
 // --- cMenuSetup ------------------------------------------------------------
 
@@ -1794,8 +1796,10 @@ cMenuMain::cMenuMain(bool Replaying)
   Add(new cOsdItem(hk(tr("Channels")),   osChannels));
   Add(new cOsdItem(hk(tr("Timers")),     osTimers));
   Add(new cOsdItem(hk(tr("Recordings")), osRecordings));
+#ifdef DVDSUPPORT
   if (cDVD::DriveExists())
   Add(new cOsdItem(hk(tr("DVD")),        osDVD));
+#endif //DVDSUPPORT
   Add(new cOsdItem(hk(tr("Setup")),      osSetup));
   if (Commands.Count())
      Add(new cOsdItem(hk(tr("Commands")),  osCommands));
@@ -1810,7 +1814,13 @@ cMenuMain::cMenuMain(bool Replaying)
         }
   if (cVideoCutter::Active())
      Add(new cOsdItem(hk(tr(" Cancel editing")), osCancelEdit));
-  SetHelp(tr("Record"), cDvbApi::PrimaryDvbApi->CanToggleAudioTrack() ? tr("Language") : NULL, cDVD::DiscOk() ? tr("Eject DVD") : NULL, cReplayControl::LastReplayed() ? tr("Resume") : NULL);
+  const char *DVDbutton =
+#ifdef DVDSUPPORT
+                          cDVD::DiscOk() ? tr("Eject DVD") : NULL;
+#else
+                          NULL;
+#endif //DVDSUPPORT
+  SetHelp(tr("Record"), cDvbApi::PrimaryDvbApi->CanToggleAudioTrack() ? tr("Language") : NULL, DVDbutton, cReplayControl::LastReplayed() ? tr("Resume") : NULL);
   Display();
   lastActivity = time(NULL);
   SetHasHotkeys();
@@ -1836,7 +1846,9 @@ eOSState cMenuMain::ProcessKey(eKeys Key)
     case osChannels:   return AddSubMenu(new cMenuChannels);
     case osTimers:     return AddSubMenu(new cMenuTimers);
     case osRecordings: return AddSubMenu(new cMenuRecordings);
+#ifdef DVDSUPPORT
     case osDVD:        return AddSubMenu(new cMenuDVD);
+#endif //DVDSUPPORT
     case osSetup:      return AddSubMenu(new cMenuSetup);
     case osCommands:   return AddSubMenu(new cMenuCommands);
     case osStopRecord: if (Interface->Confirm(tr("Stop recording?"))) {
@@ -1865,6 +1877,7 @@ eOSState cMenuMain::ProcessKey(eKeys Key)
                                    }
                                 }
                              break;
+#ifdef DVDSUPPORT
                case kYellow: if (!HasSubMenu()) {
                                 if (cDVD::DiscOk()) {
                                    cDVD::Eject();
@@ -1872,6 +1885,7 @@ eOSState cMenuMain::ProcessKey(eKeys Key)
                                    }
                                 }
                              break;
+#endif //DVDSUPPORT
                case kBlue:   if (!HasSubMenu())
                                 state = osReplay;
                              break;
@@ -2231,8 +2245,10 @@ void cProgressBar::Mark(int x, bool Start, bool Current)
 
 char *cReplayControl::fileName = NULL;
 char *cReplayControl::title = NULL;
+#ifdef DVDSUPPORT
 cDVD *cReplayControl::dvd = NULL;//XXX
 int  cReplayControl::titleid = 0;//XXX
+#endif //DVDSUPPORT
 
 cReplayControl::cReplayControl(void)
 {
@@ -2244,8 +2260,10 @@ cReplayControl::cReplayControl(void)
      marks.Load(fileName);
      dvbApi->StartReplay(fileName);
      }
+#ifdef DVDSUPPORT
   else if (dvd)
      dvbApi->StartDVDplay(dvd, titleid);//XXX
+#endif //DVDSUPPORT
 }
 
 cReplayControl::~cReplayControl()
@@ -2262,12 +2280,14 @@ void cReplayControl::SetRecording(const char *FileName, const char *Title)
   title = Title ? strdup(Title) : NULL;
 }
 
+#ifdef DVDSUPPORT
 void cReplayControl::SetDVD(cDVD *DVD, int Title)//XXX
 {
   SetRecording(NULL, NULL);
   dvd = DVD;
   titleid = Title;
 }
+#endif //DVDSUPPORT
 
 const char *cReplayControl::LastReplayed(void)
 {

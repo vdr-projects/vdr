@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.60 2001/08/05 12:58:12 kls Exp $
+ * $Id: vdr.c 1.61 2001/08/05 16:15:51 kls Exp $
  */
 
 #include <getopt.h>
@@ -31,7 +31,9 @@
 #include <unistd.h>
 #include "config.h"
 #include "dvbapi.h"
+#ifdef DVDSUPPORT
 #include "dvd.h"
+#endif //DVDSUPPORT
 #include "i18n.h"
 #include "interface.h"
 #include "menu.h"
@@ -134,7 +136,11 @@ int main(int argc, char *argv[])
                            "Report bugs to <vdr-bugs@cadsoft.de>\n",
                            DEFAULTSVDRPPORT,
                            VideoDirectory,
+#ifdef DVDSUPPORT
                            cDVD::DeviceName(),
+#else
+                           "no DVD support",
+#endif //DVDSUPPORT
                            DEFAULTWATCHDOG
                            );
                     return 0;
@@ -162,11 +168,17 @@ int main(int argc, char *argv[])
                     while (optarg && *optarg && optarg[strlen(optarg) - 1] == '/')
                           optarg[strlen(optarg) - 1] = 0;
                     break;
-          case 'V': cDVD::SetDeviceName(optarg);
+          case 'V': 
+#ifdef DVDSUPPORT
+                    cDVD::SetDeviceName(optarg);
                     if (!cDVD::DriveExists()) {
                        fprintf(stderr, "vdr: DVD drive not found: %s\n", optarg);
                        return 2;
                        }
+#else
+                    fprintf(stderr, "vdr: DVD support has not been compiled in!");
+                    return 2;
+#endif //DVDSUPPORT
                     break;
           case 'w': if (isnumber(optarg)) {
                        int t = atoi(optarg);
@@ -334,10 +346,12 @@ int main(int argc, char *argv[])
                             DELETENULL(ReplayControl);
                             ReplayControl = new cReplayControl;
                             break;
+#ifdef DVDSUPPORT
              case osDVD:    DELETENULL(Menu);
                             DELETENULL(ReplayControl);
                             Menu = new cMenuDVD;
                             break;
+#endif //DVDSUPPORT
              case osStopReplay:
                             DELETENULL(*Interact);
                             DELETENULL(ReplayControl);
