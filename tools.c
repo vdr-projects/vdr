@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.18 2000/09/17 15:36:33 kls Exp $
+ * $Id: tools.c 1.19 2000/09/19 17:55:09 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -353,7 +353,7 @@ int cFile::ReadString(char *Buffer, int Size)
   bool wait = true;
 
   while (Ready(wait)) {
-        int n = read(f, Buffer + rbytes, Size - rbytes);
+        int n = read(f, Buffer + rbytes, 1);
         if (n == 0)
            break; // EOF
         if (n < 0) {
@@ -361,7 +361,7 @@ int cFile::ReadString(char *Buffer, int Size)
            return -1;
            }
         rbytes += n;
-        if (rbytes == Size)
+        if (rbytes == Size || Buffer[rbytes - 1] == '\n')
            break;
         wait = false;
         }
