@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remote.h 1.23 2002/12/15 09:58:32 kls Exp $
+ * $Id: remote.h 1.24 2002/12/15 15:49:06 kls Exp $
  */
 
 #ifndef __REMOTE_H
@@ -80,6 +80,7 @@ enum eKbdFunc {
 class cKbdRemote : public cRemote, private cThread {
 private:
   bool active;
+  static bool kbdAvailable;
   static bool rawMode;
   struct termios savedTm;
   virtual void Action(void);
@@ -87,7 +88,8 @@ private:
 public:
   cKbdRemote(void);
   virtual ~cKbdRemote();
-  uint64 MapFuncToCode(int Func);
+  static bool KbdAvailable(void) { return kbdAvailable; }
+  static uint64 MapFuncToCode(int Func);
   static void SetRawMode(bool RawMode);
   };
 

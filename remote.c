@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remote.c 1.35 2002/12/15 10:09:27 kls Exp $
+ * $Id: remote.c 1.36 2002/12/15 15:58:59 kls Exp $
  */
 
 #include "remote.h"
@@ -180,6 +180,7 @@ static tKbdMap KbdMap[] = {
   { kfNone,   0x0000000000000000ULL }
   };
 
+bool cKbdRemote::kbdAvailable = false;
 bool cKbdRemote::rawMode = false;
 
 cKbdRemote::cKbdRemote(void)
@@ -195,11 +196,13 @@ cKbdRemote::cKbdRemote(void)
      tm.c_cc[VTIME] = 0;
      tcsetattr(STDIN_FILENO, TCSANOW, &tm);
      }
+  kbdAvailable = true;
   Start();
 }
 
 cKbdRemote::~cKbdRemote()
 {
+  kbdAvailable = false;
   active = false;
   Cancel(3);
   tcsetattr(STDIN_FILENO, TCSANOW, &savedTm);
