@@ -2254,7 +2254,7 @@ Video Disk Recorder Revision History
 - Some corrections to the Finnish OSD texts (thanks to Niko Tarnanen and Rolf
   Ahrenberg).
 
-2003-06-15: Version 1.2.2
+2003-06-19: Version 1.2.2
 
 - Fixed a bug in channel switching after Left/Right has been pressed (thanks to
   Michael Walle for reporting this one).
@@ -2266,3 +2266,5 @@ Video Disk Recorder Revision History
 - Changed the behaviour of the '0' key in normal viewing mode so that a channel
   only qualifies as "previous" if it has been selected for at least 3 seconds
   (suggested by Thomas Keil).
+- Now clearing the channel info display when entering numeric keys to switch
+  channels (suggested by Guy Roussin).
