@@ -311,3 +311,10 @@ Video Disk Recorder Revision History
   can receive a certain channel on the primary interface. This is currently in
   an early state and may still cause some problems, but it appears to work nice
   already.
+
+2000-11-26: Version 0.69
+
+- The EPG data is now dumped into the file /video/epg.data every ten minutes.
+  Use the Perl script 'epg2html.pl' to convert the raw EPG data into a simple
+  HTML programme listing.
+
