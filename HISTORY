@@ -110,3 +110,4 @@ Video Disk Recorder Revision History
   disks).
 - Fixed learning key codes for PC keyboard.
 - New command line option '-l' to set the log level.
+- Times in timers.conf are now always printed with 4 digits (leading '0').

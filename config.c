@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.15 2000/07/25 16:21:20 kls Exp $
+ * $Id: config.c 1.16 2000/07/29 19:09:51 kls Exp $
  */
 
 #include "config.h"
@@ -294,7 +294,7 @@ cTimer& cTimer::operator= (const cTimer &Timer)
 
 const char *cTimer::ToText(cTimer *Timer)
 {
-  asprintf(&buffer, "%d:%d:%s:%d:%d:%d:%d:%s:%s\n", Timer->active, Timer->channel, PrintDay(Timer->day), Timer->start, Timer->stop, Timer->priority, Timer->lifetime, Timer->file, Timer->summary ? Timer->summary : "");
+  asprintf(&buffer, "%d:%d:%s:%04d:%04d:%d:%d:%s:%s\n", Timer->active, Timer->channel, PrintDay(Timer->day), Timer->start, Timer->stop, Timer->priority, Timer->lifetime, Timer->file, Timer->summary ? Timer->summary : "");
   return buffer;
 }
 
