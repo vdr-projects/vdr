@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.51 2001/01/20 09:51:51 kls Exp $
+ * $Id: dvbapi.c 1.52 2001/01/20 09:52:56 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -2403,7 +2403,7 @@ cEITScanner::cEITScanner(void)
 {
   lastScan = lastActivity = time(NULL);
   currentChannel = 0;
-  lastChannel = 1;
+  lastChannel = 0;
 }
 
 void cEITScanner::Activity(void)

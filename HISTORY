@@ -355,3 +355,5 @@ Video Disk Recorder Revision History
 - Fixed 'Transfer Mode' in cases where a non-primary interface was switched to
   a channel that only the primary interface can receive (which could happen in
   the EPG scanner).
+- The EPG scanner now starts with the first channel (it used to start with the
+  second channel).
