@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.116 2003/05/25 09:46:42 kls Exp $
+ * $Id: i18n.c 1.117 2003/05/25 14:03:00 kls Exp $
  *
  * Translations provided by:
  *
@@ -2374,22 +2374,22 @@ const tI18nPhrase Phrases[] = {
     "Default priority",
     "Prioritat per defecte",
   },
-  { "Setup.Recording$Pause lifetime (d)",
-    "Pause Lebensdauer (d)",
-    "Cas pavze (d)",
-    "",// TODO
-    "",// TODO
-    "",// TODO
-    "Durée de vie des pauses (j)",
-    "",// TODO
-    "Keskeytyksen elinikä (d)",
-    "",// TODO
-    "",// TODO
-    "",// TODO
-    "Livstid för direktinspelning (dagar)",
-    "",// TODO
-    "",// TODO
-    "Duració de la pausa (d)",
+  { "Setup.Recording$Default lifetime (d)",
+    "Default Lebensdauer (d)",
+    "Osnovni zivljenski cas (d)",
+    "Durata predefinita (d)",
+    "Standaard levensduur (d)",
+    "Validade por defeito (d)",
+    "Durée de vie par défaut (j)",
+    "Normal levetid timer (d)",
+    "Oletuselinikä (d)",
+    "Pierwotna trwalosc (d)",
+    "Duración predefinida",
+    "Xronos zois",
+    "Normal livstid (dagar)",
+    "Durata predefinita",
+    "Default élettartam",
+    "Duració predefinida",
   },
   { "Setup.Recording$Pause priority",
     "Pause Priorität",
@@ -2408,22 +2408,22 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "Prioritat de la pausa",
   },
-  { "Setup.Recording$Default lifetime (d)",
-    "Default Lebensdauer (d)",
-    "Osnovni zivljenski cas (d)",
-    "Durata predefinita (d)",
-    "Standaard levensduur (d)",
-    "Validade por defeito (d)",
-    "Durée de vie par défaut (j)",
-    "Normal levetid timer (d)",
-    "Oletuselinikä (d)",
-    "Pierwotna trwalosc (d)",
-    "Duración predefinida",
-    "Xronos zois",
-    "Normal livstid (dagar)",
-    "Durata predefinita",
-    "Default élettartam",
-    "Duració predefinida",
+  { "Setup.Recording$Pause lifetime (d)",
+    "Pause Lebensdauer (d)",
+    "Cas pavze (d)",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "Durée de vie des pauses (j)",
+    "",// TODO
+    "Keskeytyksen elinikä (d)",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "Livstid för direktinspelning (dagar)",
+    "",// TODO
+    "",// TODO
+    "Duració de la pausa (d)",
   },
   { "Setup.Recording$Use episode name",
     "Episodenname verwenden",
