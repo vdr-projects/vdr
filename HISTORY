@@ -1141,3 +1141,5 @@ Video Disk Recorder Revision History
 - New command command line option '-V' to display the VDR version.
 - Adjusting column width for channel numbers in case there are more than 999
   channels.
+- Checking the return value of '...FileReady...' calls in dvbapi.c for better
+  performance under heavy system load.

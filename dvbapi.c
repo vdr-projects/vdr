@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.165 2002/03/23 16:15:00 kls Exp $
+ * $Id: dvbapi.c 1.166 2002/03/29 11:32:47 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -525,23 +525,25 @@ void cRecordBuffer::Input(void)
   time_t t = time(NULL);
   recording = true;
   for (;;) {
-      int r = read(videoDev, b, sizeof(b));
-      if (r > 0) {
-         uchar *p = b;
-         while (r > 0) {
-               int w = Put(p, r);
-               p += w;
-               r -= w;
-               }
-         t = time(NULL);
-         }
-      else if (r < 0) {
-         if (FATALERRNO) {
-            if (errno == EBUFFEROVERFLOW) // this error code is not defined in the library
-               esyslog(LOG_ERR, "ERROR (%s,%d): DVB driver buffer overflow", __FILE__, __LINE__);
-            else {
-               LOG_ERROR;
-               break;
+      if (cFile::FileReady(videoDev, 100)) {
+         int r = read(videoDev, b, sizeof(b));
+         if (r > 0) {
+            uchar *p = b;
+            while (r > 0) {
+                  int w = Put(p, r);
+                  p += w;
+                  r -= w;
+                  }
+            t = time(NULL);
+            }
+         else if (r < 0) {
+            if (FATALERRNO) {
+               if (errno == EBUFFEROVERFLOW) // this error code is not defined in the library
+                  esyslog(LOG_ERR, "ERROR (%s,%d): DVB driver buffer overflow", __FILE__, __LINE__);
+               else {
+                  LOG_ERROR;
+                  break;
+                  }
                }
             }
          }
@@ -550,7 +552,6 @@ void cRecordBuffer::Input(void)
          cThread::EmergencyExit(true);
          t = time(NULL);
          }
-      cFile::FileReady(videoDev, 100);
       if (!recording)
          break;
       }
@@ -790,16 +791,17 @@ void cPlayBuffer::Output(void)
               const uchar *p = frame->Data();
               int r = frame->Count();
               while (r > 0 && Busy() && !blockOutput) {
-                    cFile::FileReadyForWriting(videoDev, 100);
-                    int w = write(videoDev, p, r);
-                    if (w > 0) {
-                       p += w;
-                       r -= w;
-                       }
-                    else if (w < 0 && FATALERRNO) {
-                       LOG_ERROR;
-                       Stop();
-                       return;
+                    if (cFile::FileReadyForWriting(videoDev, 100)) {
+                       int w = write(videoDev, p, r);
+                       if (w > 0) {
+                          p += w;
+                          r -= w;
+                          }
+                       else if (w < 0 && FATALERRNO) {
+                          LOG_ERROR;
+                          Stop();
+                          return;
+                          }
                        }
                     }
               writeIndex = frame->Index();
@@ -1370,31 +1372,32 @@ void cTransferBuffer::Input(void)
   uchar b[MINVIDEODATA];
   int n = 0;
   while (Busy()) {
-        cFile::FileReady(fromDevice, 100);
-        int r = read(fromDevice, b + n, sizeof(b) - n);
-        if (r > 0) {
-           n += r;
-           int Count = n, Result;
-           const uchar *p = remux.Process(b, Count, Result);
-           if (p) {
-              while (Result > 0 && Busy()) {
-                    int w = Put(p, Result);
-                    p += w;
-                    Result -= w;
+        if (cFile::FileReady(fromDevice, 100)) {
+           int r = read(fromDevice, b + n, sizeof(b) - n);
+           if (r > 0) {
+              n += r;
+              int Count = n, Result;
+              const uchar *p = remux.Process(b, Count, Result);
+              if (p) {
+                 while (Result > 0 && Busy()) {
+                       int w = Put(p, Result);
+                       p += w;
+                       Result -= w;
+                       }
+                 }
+              if (Count > 0) {
+                 n -= Count;
+                 memmove(b, b + Count, n);
+                 }
+              }
+           else if (r < 0) {
+              if (FATALERRNO) {
+                 if (errno == EBUFFEROVERFLOW) // this error code is not defined in the library
+                    esyslog(LOG_ERR, "ERROR (%s,%d): DVB driver buffer overflow", __FILE__, __LINE__);
+                 else {
+                    LOG_ERROR;
+                    break;
                     }
-              }
-           if (Count > 0) {
-              n -= Count;
-              memmove(b, b + Count, n);
-              }
-           }
-        else if (r < 0) {
-           if (FATALERRNO) {
-              if (errno == EBUFFEROVERFLOW) // this error code is not defined in the library
-                 esyslog(LOG_ERR, "ERROR (%s,%d): DVB driver buffer overflow", __FILE__, __LINE__);
-              else {
-                 LOG_ERROR;
-                 break;
                  }
               }
            }
