@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.92 2004/06/19 08:52:24 kls Exp $
+ * $Id: dvbdevice.c 1.93 2004/06/19 13:48:00 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -684,7 +684,7 @@ bool cDvbDevice::ProvidesChannel(const cChannel *Channel, int Priority, bool *Ne
         if (dvbTuner->IsTunedTo(Channel)) {
            if (Channel->Vpid() && !HasPid(Channel->Vpid()) || Channel->Apid1() && !HasPid(Channel->Apid1())) {
 #ifdef DO_MULTIPLE_RECORDINGS
-              if (Channel->Ca() > CACONFBASE)
+              if (Ca() > CACONFBASE || Channel->Ca() > CACONFBASE)
                  needsDetachReceivers = !ciHandler // only LL-firmware can do non-live CA channels
                                         || Ca() != Channel->Ca();
               else if (!IsPrimaryDevice())
