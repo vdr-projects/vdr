@@ -595,7 +595,7 @@ Video Disk Recorder Revision History
 - When setting an editing mark while the progress display is not active, the
   display will now be turned on for a short while to indicate the successful
   setting of the mark.
-- Updated 'channels.conf' for Premiere World (thanks to Helmut Schächner).
+- Updated 'channels.conf' for Premiere World (thanks to Mel Schächner).
   Check your timers if you use this channels.conf file, since the sequence of
   several PW channels has been changed.
 - Changed the color of "Info" messages to "black on green" and that of the
@@ -825,7 +825,7 @@ Video Disk Recorder Revision History
 - The menu timeout now also works when pressing the "Back" button during replay
   to enter the "Recordings" menu.
 - Updated 'channels.conf' for the "Bundesliga" channels of Premiere World
-  (thanks to Helmut Schächner).
+  (thanks to Mel Schächner).
 - Fixed reading timers.conf and channels.conf that contain blanks after numeric
   values.
 - Fixed handling trick modes near the beginning and end of a recording.
@@ -841,7 +841,7 @@ Video Disk Recorder Revision History
   Thomas Heiligenmann).
 - Fixed a crash when pressing the '2' button while replaying a DVD.
 - Updated 'channels.conf' for the "Bundesliga" channels of Premiere World
-  (thanks to Helmut Schächner).
+  (thanks to Mel Schächner).
 - Changed the tuning code to use FrontendInfo to detect the type of DVB card.
 - Removed the recursion stuff from cThread (cMutex already does this).
 - Fixed handling the repeat function in the channel display.
