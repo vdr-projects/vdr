@@ -4,13 +4,14 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: plugin.c 1.5 2002/05/13 16:31:09 kls Exp $
+ * $Id: plugin.c 1.6 2002/08/11 10:47:11 kls Exp $
  */
 
 #include "plugin.h"
 #include <ctype.h>
 #include <dirent.h>
 #include <dlfcn.h>
+#include <stdlib.h>
 #include <time.h>
 #include "config.h"
 

@@ -4,11 +4,12 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 1.8 2002/07/27 11:57:48 kls Exp $
+ * $Id: dvbplayer.c 1.9 2002/08/11 10:46:53 kls Exp $
  */
 
 #include "dvbplayer.h"
 #include <poll.h>
+#include <stdlib.h>
 #include "recording.h"
 #include "ringbuffer.h"
 #include "thread.h"

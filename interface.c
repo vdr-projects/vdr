@@ -4,11 +4,12 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.c 1.52 2002/06/16 13:23:40 kls Exp $
+ * $Id: interface.c 1.53 2002/08/11 10:47:04 kls Exp $
  */
 
 #include "interface.h"
 #include <ctype.h>
+#include <stdlib.h>
 #include <unistd.h>
 #include "i18n.h"
 #include "osd.h"
