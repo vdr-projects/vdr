@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 1.43 2003/06/04 16:13:00 kls Exp $
+ * $Id: osd.c 1.44 2004/03/05 15:27:48 kls Exp $
  */
 
 #include "osd.h"
@@ -437,7 +437,7 @@ void cOsdMenu::Display(void)
      if (current < 0)
         current = 0; // just for safety - there HAS to be a current item!
      int n = 0;
-     if (current - first >= MAXOSDITEMS) {
+     if (current - first >= MAXOSDITEMS || current < first) {
         first = current - MAXOSDITEMS / 2;
         if (first + MAXOSDITEMS > count)
            first = count - MAXOSDITEMS;
