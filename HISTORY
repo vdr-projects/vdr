@@ -1988,7 +1988,7 @@ Video Disk Recorder Revision History
   reporting this one).
 - Fixed support for Viaccess CAMs (thanks to Axel Gruber for helping to debug this).
 
-2003-03-30: Version 1.1.27
+2003-04-06: Version 1.1.27
 
 - The CAM is now accessed only if the current channel actually has a non-zero Ca
   value, and CAM access is completely suppressed during replay, which avoids
@@ -2010,3 +2010,5 @@ Video Disk Recorder Revision History
   written.
 - Fixed a crash in case the index file can't be accessed any more during replay
   (thanks to Stefan Huelswitt for reporting this one).
+- Fixed displaying messages in the status line in case they exceed the OSD width
+  (thanks to Gerhard Steiner for reporting this one).
