@@ -18,7 +18,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: runvdr 1.11 2003/08/26 16:15:41 kls Exp $
+# $Id: runvdr 1.12 2004/01/09 16:19:26 kls Exp $
 
 DVBDIR="../DVB/driver"
 VDRPRG="./vdr"
@@ -33,7 +33,7 @@ if [ $LSMOD -eq 0 ] ; then
    fi
 
 while (true) do
-      su -c "$VDRCMD" $VDRUSR
+      su $VDRUSR -c "$VDRCMD"
       if test $? -eq 0 -o $? -eq 2; then exit; fi
       date
       echo "restarting VDR"

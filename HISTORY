@@ -2558,3 +2558,5 @@ Video Disk Recorder Revision History
 - Added support for selecting preferred EPG languages (based upon a patch by
   Teemu Rantanen).
 - Fixed a 'const' in libsi/si.h (thanks to Marcel Wiesweg).
+- Fixed the 'su' call in 'runvdr' to make it work on systems that require the
+  user name to appear before the command option (thanks to Robert Huitl).
