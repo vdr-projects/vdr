@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.5 2002/06/23 12:51:24 kls Exp $
+ * $Id: device.c 1.6 2002/07/28 11:03:53 kls Exp $
  */
 
 #include "device.h"
@@ -882,7 +882,7 @@ int cDevice::ProvidesCa(int Ca)
 bool cDevice::Receiving(void)
 {
   for (int i = 0; i < MAXRECEIVERS; i++) {
-      if (receiver[i])
+      if (receiver[i] && receiver[i]->priority > 0) // cReceiver with priority < 0 doesn't count
          return true;
       }
   return false;
@@ -964,12 +964,8 @@ bool cDevice::AttachReceiver(cReceiver *Receiver)
   for (int i = 0; i < MAXRECEIVERS; i++) {
       if (!receiver[i]) {
          //siProcessor->SetStatus(false);//XXX+
-         for (int n = 0; n < MAXRECEIVEPIDS; n++) {
-             if (Receiver->pids[n])
-                AddPid(Receiver->pids[n]);//XXX+ retval!
-             else
-                break;
-             }
+         for (int n = 0; n < MAXRECEIVEPIDS; n++)
+             AddPid(Receiver->pids[n]);//XXX+ retval!
          Receiver->Activate(true);
          Lock();
          Receiver->device = this;
@@ -995,12 +991,8 @@ void cDevice::Detach(cReceiver *Receiver)
          receiver[i] = NULL;
          Receiver->device = NULL;
          Unlock();
-         for (int n = 0; n < MAXRECEIVEPIDS; n++) {
-             if (Receiver->pids[n])
-                DelPid(Receiver->pids[n]);
-             else
-                break;
-             }
+         for (int n = 0; n < MAXRECEIVEPIDS; n++)
+             DelPid(Receiver->pids[n]);
          }
       else if (receiver[i])
          receiversLeft = true;

@@ -12,7 +12,7 @@ This interface allows programmers to develop additional functionality for VDR co
 separate from the core VDR source, without the need of patching the original
 VDR code (and all the problems of correlating various patches).
 <p>
-<!--X1.1.3--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
+<!--X1.1.3--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 This document is divided into two parts, the first one describing the
 <a href="#Part I - The Outside Interface"><i>outside</i> interface</a>
 of the plugin system, and the second one describing the
@@ -23,18 +23,18 @@ The <i>inside</i> interface provides the plugin code access to VDR's internal da
 structures and allows it to hook itself into specific areas to perform special actions.
 <!--X1.1.3--></td></tr></table>
 <p>
-<!--X1.1.2--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
-Important modifications introduced in version 1.1.2 are marked like this.
-<!--X1.1.2--></td></tr></table>
-<!--X1.1.3--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
+<!--X1.1.3--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 Important modifications introduced in version 1.1.3 are marked like this.
 <!--X1.1.3--></td></tr></table>
-<!--X1.1.4--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
+<!--X1.1.4--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
 Important modifications introduced in version 1.1.4 are marked like this.
 <!--X1.1.4--></td></tr></table>
-<!--X1.1.5--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+<!--X1.1.5--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
 Important modifications introduced in version 1.1.5 are marked like this.
 <!--X1.1.5--></td></tr></table>
+<!--X1.1.6--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+Important modifications introduced in version 1.1.6 are marked like this.
+<!--X1.1.6--></td></tr></table>
 
 <a name="Part I - The Outside Interface"><hr><center><h1>Part I - The Outside Interface</h1></center>
 
@@ -131,15 +131,12 @@ from the web, it will typically have a name like
 <p>
 and will unpack into a directory named
 <p>
-<!--X1.1.2--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 <tt>hello-0.0.1</tt>
-<!--X1.1.2--></td></tr></table>
 <p>
 To use the <tt>plugins</tt> and <tt>plugins-clean</tt> targets from the VDR <tt>Makefile</tt>
 you need to unpack such an archive into the <tt>VDR/PLUGINS/src</tt> directory and
 create a symbolic link with the basic plugin name, as in
 
-<!--X1.1.2--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 <p><table><tr><td bgcolor=#F0F0F0><pre><br>
 ln -s hello-0.0.1 hello
 </pre></td></tr></table><p>
@@ -149,7 +146,6 @@ of only lowercase characters and digits, it will only follow the symbolic links,
 should lead to the current version of the plugin you want to use. This way you can
 have several different versions of a plugin source (like <tt>hello-0.0.1</tt> and
 <tt>hello-0.0.2</tt>) and define which one to actually use through the symbolic link.
-<!--X1.1.2--></td></tr></table>
 
 <a name="Initializing a new plugin directory"><hr><h2>Initializing a new plugin directory</h2>
 
@@ -422,11 +418,9 @@ If a plugin implements a function that runs in the background (presumably in a
 thread of its own), or wants to make use of <a href="#Internationalization">internationalization</a>,
 it needs to implement the function
 
-<!--X1.1.2--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 <p><table><tr><td bgcolor=#F0F0F0><pre><br>
 virtual bool Start(void);
 </pre></td></tr></table><p>
-<!--X1.1.2--></td></tr></table>
 
 which is called once for each plugin at program startup.
 Inside this function the plugin must set up everything necessary to perform
@@ -434,12 +428,10 @@ its task. This may, for instance, be a thread that collects data from the DVB
 stream, which is later presented to the user via a function that is available
 from the main menu.
 <p>
-<!--X1.1.2--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 A return value of <i>false</i> indicates that something has gone wrong and the
 plugin will not be able to perform its task. In that case, the plugin should
 write a proper error message to the log file. The first plugin that returns
 <i>false</i> from its <tt>Start()</tt> function will cause VDR to exit.
-<!--X1.1.2--></td></tr></table>
 <p>
 If the plugin doesn't implement any background functionality or internationalized
 texts, it doesn't need to implement this function.
@@ -498,7 +490,6 @@ interaction is possible. If a specific action takes longer than a few seconds,
 the plugin should launch a separate thread to do this.
 </b>
 
-<!--X1.1.2--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 <hr><h2>Housekeeping</h2>
 
 <center><i><b>Chores, chores...</b></i></center><p>
@@ -523,7 +514,6 @@ as possible! As long as the program stays inside this function, no other user
 interaction is possible. If a specific action takes longer than a few seconds,
 the plugin should launch a separate thread to do this.
 </b>
-<!--X1.1.2--></td></tr></table>
 
 <a name="Setup parameters"><hr><h2>Setup parameters</h2>
 
@@ -656,7 +646,6 @@ You can first assign the temporary values to the global variables and then do th
 your setup parameters and use that one to copy all parameters with one single statement
 (like VDR does with its cSetup class).
 
-<!--X1.1.2--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 <hr><h2>Configuration files</h2>
 
 <center><i><b>I want my own stuff!</b></i></center><p>
@@ -711,7 +700,6 @@ plugin class, by writing
 <p><table><tr><td bgcolor=#F0F0F0><pre><br>
 const char *MyConfigDir = cPlugin::ConfigDirectory();
 </pre></td></tr></table><p>
-<!--X1.1.2--></td></tr></table>
 
 <a name="Internationalization"><hr><h2>Internationalization</h2>
 
@@ -826,7 +814,7 @@ and display their help and/or version information in addition to its own output.
 
 If you want to make your plugin available to other VDR users, you'll need to
 make a package that can be easily distributed.
-<!--X1.1.3--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
+<!--X1.1.3--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 The <tt>Makefile</tt> that has been created by the call to
 <a href="#Initializing a new plugin directory"><tt>newplugin</tt></a>
 provides the target <tt>dist</tt>, which does this for you.
@@ -848,7 +836,7 @@ vdr-hello-0.0.1.tgz
 in your source directory, where <tt>hello</tt> will be replaced with your actual
 plugin's name, and <tt>0.0.1</tt> will be your plugin's current version number.
 
-<!--X1.1.3--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
+<!--X1.1.3--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 <a name="Part II - The Inside Interface"><hr><center><h1>Part II - The Inside Interface</h1></center>
 
 <hr><h2>Status monitor</h2>
@@ -925,7 +913,7 @@ member functions are available in <tt>cStatus</tt>. You only need to implement
 the functions you actually want to use.
 <!--X1.1.3--></td></tr></table>
 
-<!--X1.1.4--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
+<!--X1.1.4--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
 <hr><h2>Players</h2>
 
 <center><i><b>Play it again, Sam!</b></i></center><p>
@@ -1076,7 +1064,63 @@ that they already know. If you absolutely want to do things differently, just go
 ahead - it's your show...
 <!--X1.1.4--></td></tr></table>
 
-<!--X1.1.5--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+<!--X1.1.6--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+<hr><h2>Receivers</h2>
+
+<center><i><b>Tapping into the stream...</b></i></center><p>
+
+In order to receive any kind of data from a <tt>cDevice</tt>, a plugin must set up an
+object derived from the <tt>cReceiver</tt> class:
+
+<p><table><tr><td bgcolor=#F0F0F0><pre><br>
+#include &lt;vdr/receiver.h&gt;
+
+class cMyReceiver : public cReceiver, cThread {
+protected:
+  virtual void Activate(bool On);
+  virtual void Receive(uchar *Data, int Length);
+public:
+  cMyReceiver(int Pid);
+  };
+
+cMyReceiver::cMyReceiver(int Pid)
+:cReceiver(0, -1, 1, Pid)
+{
+}
+
+void cMyReceiver::Activate(bool On)
+{
+  // start your own thread for processing the received data
+}
+
+void cMyReceiver::Receive(uchar *Data, int Length)
+{
+  // buffer the data for processing in a separate thread
+}
+</pre></td></tr></table><p>
+
+See the comments in <tt>VDR/receiver.h</tt> for details about the various
+member functions of <tt>cReceiver</tt>.
+<p>
+The above example sets up a receiver that wants to receive data from only one
+PID (for example the Teletext PID). In order to not interfere with other recording
+operations, it sets its priority to <tt>-1</tt> (any negative value will allow
+a <tt>cReceiver</tt> to be detached from its <tt>cDevice</tt> at any time.
+<p>
+Once a <tt>cReceiver</tt> has been created, it needs to be <i>attached</i> to
+a <tt>cDevice</tt>:
+
+<p><table><tr><td bgcolor=#F0F0F0><pre><br>
+cMyReceiver *Receiver = new cMyReceiver(123);
+
+cDevice::PrimaryDevice()-&gt;AttachReceiver(Receiver);
+</pre></td></tr></table><p>
+
+If the <tt>cReceiver</tt> isn't needed any more, it may simply be <i>deleted</i>
+and will automatically detach itself from the <tt>cDevice</tt>.
+<!--X1.1.6--></td></tr></table>
+
+<!--X1.1.5--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
 <hr><h2>The On Screen Display</h2>
 
 <center><i><b>Express yourself</b></i></center><p>

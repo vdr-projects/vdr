@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 1.3 2002/06/23 11:50:24 kls Exp $
+ * $Id: device.h 1.4 2002/07/28 10:48:12 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -89,7 +89,7 @@ private:
 public:
   cDevice(int n);
   virtual ~cDevice();
-  bool IsPrimaryDevice(void) { return this == primaryDevice; }
+  bool IsPrimaryDevice(void) const { return this == primaryDevice; }
   int CardIndex(void) const { return cardIndex; }
          // Returns the card index of this device (0 ... MAXDEVICES - 1).
   int ProvidesCa(int Ca);

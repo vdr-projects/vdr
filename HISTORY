@@ -1379,7 +1379,7 @@ Video Disk Recorder Revision History
   for pointing out this one).
 - Disabled channels on Transponder 12070 in 'channels.conf', which apparently no longer transmits.
 
-2002-07-27: Version 1.1.6
+2002-07-28: Version 1.1.6
 
 - Re-visited the race condition fix in the cDvbPlayer (thanks again to Andreas
   Schultz).
@@ -1387,3 +1387,4 @@ Video Disk Recorder Revision History
   to set it when compiling a new version of VDR to at least see their recordings
   made with VFAT enabled (thanks to Christian Rienecker).
 - Added some missing teletext PIDs (thanks to Joerg Riechardt).
+- Fixed PID handling for cReceiver.
