@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.64 2004/12/24 15:37:11 kls Exp $
+ * $Id: device.c 1.65 2005/01/02 14:08:40 kls Exp $
  */
 
 #include "device.h"
@@ -604,15 +604,19 @@ void cDevice::ClrAvailableTracks(void)
   memset(availableTracks, 0, sizeof(availableTracks));
 }
 
-bool cDevice::SetAvailableTrack(eTrackType Type, int Index, uint16_t Id, const char *Language, uint32_t Flags)
+bool cDevice::SetAvailableTrack(eTrackType Type, int Index, uint16_t Id, const char *Language, const char *Description, uint32_t Flags)
 {
   eTrackType t = eTrackType(Type + Index);
   if ((Type == ttAudio && IS_AUDIO_TRACK(t)) ||
       (Type == ttDolby && IS_DOLBY_TRACK(t))) {
      if (Language)
         strn0cpy(availableTracks[t].language, Language, sizeof(availableTracks[t].language));
-     availableTracks[t].flags = Flags;
-     availableTracks[t].id = Id; // setting 'id' last to avoid the need for extensive locking
+     if (Description)
+        strn0cpy(availableTracks[t].description, Description, sizeof(availableTracks[t].description));
+     if (Id) {
+        availableTracks[t].flags = Flags;
+        availableTracks[t].id = Id; // setting 'id' last to avoid the need for extensive locking
+        }
      return true;
      }
   else
@@ -649,21 +653,6 @@ bool cDevice::SetCurrentAudioTrack(eTrackType Type)
         SetDigitalAudioDevice(false);
      return true;
      }
-  return false;
-}
-
-bool cDevice::IncCurrentAudioTrack(void)
-{
-  int i = currentAudioTrack + 1;
-  for (;;) {
-      if (i > ttDolbyLast)
-         i = ttAudioFirst;
-      if (i == currentAudioTrack)
-         break;
-      if (availableTracks[i].id)
-         return SetCurrentAudioTrack(eTrackType(i));
-      i++;
-      }
   return false;
 }
 

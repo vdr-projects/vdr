@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.196 2004/12/26 10:30:30 kls Exp $
+ * $Id: vdr.c 1.197 2005/01/02 14:39:41 kls Exp $
  */
 
 #include <getopt.h>
@@ -678,7 +678,7 @@ int main(int argc, char *argv[])
           case kChanDn:
                cDevice::SwitchChannel(NORMALKEY(key) == kChanUp ? 1 : -1);
                break;
-          // Volume Control:
+          // Volume control:
           case kVolUp|k_Repeat:
           case kVolUp:
           case kVolDn|k_Repeat:
@@ -696,6 +696,14 @@ int main(int argc, char *argv[])
                   Menu = Temp = cDisplayVolume::Create();
                cDisplayVolume::Process(key);
                key = kNone; // nobody else needs to see these keys
+               break;
+          // Audio track control:
+          case kAudio:
+               if (!Menu && !cOsd::IsOpen())
+                  Menu = Temp = cDisplayTracks::Create();
+               else
+                  cDisplayTracks::Process(key);
+               key = kNone;
                break;
           // Pausing live video:
           case kPause:

@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 1.23 2004/12/26 11:32:01 kls Exp $
+ * $Id: epg.c 1.24 2005/01/02 11:25:25 kls Exp $
  */
 
 #include "epg.h"
@@ -15,6 +15,66 @@
 #include "timers.h"
 #include <ctype.h>
 #include <time.h>
+
+// --- tComponent ------------------------------------------------------------
+
+cString tComponent::ToString(void)
+{
+  char buffer[256];
+  snprintf(buffer, sizeof(buffer), "%X %02X %-3s %s", stream, type, language, description ? description : "");
+  return buffer;
+}
+
+bool tComponent::FromString(const char *s)
+{
+  unsigned int Stream, Type;
+  int n = sscanf(s, "%X %02X %3c %a[^\n]", &Stream, &Type, language, &description);
+  if (n != 4)
+     description = NULL;
+  else if (isempty(description)) {
+     free(description);
+     description = NULL;
+     }
+  stream = Stream;
+  type = Type;
+  return n >= 3;
+}
+
+// --- cComponents -----------------------------------------------------------
+
+cComponents::cComponents(int NumComponents)
+{
+  numComponents = NumComponents;
+  components = MALLOC(tComponent, numComponents);
+  memset(components, 0, sizeof(tComponent) * numComponents);
+}
+
+cComponents::~cComponents(void)
+{
+  for (int i = 0; i < numComponents; i++)
+      free(components[i].description);
+  free(components);
+}
+
+bool cComponents::SetComponent(int Index, const char *s)
+{
+  if (Index < numComponents)
+     return components[Index].FromString(s);
+  return false;
+}
+
+bool cComponents::SetComponent(int Index, uchar Stream, uchar Type, const char *Language, const char *Description)
+{
+  if (Index < numComponents) {
+     tComponent *p = &components[Index];
+     p->stream = Stream;
+     p->type = Type;
+     strn0cpy(p->language, Language, sizeof(p->language));
+     p->description = strcpyrealloc(p->description, !isempty(Description) ? Description : NULL);
+     return true;
+     }
+  return false;
+}
 
 // --- cEvent ----------------------------------------------------------------
 
@@ -28,6 +88,7 @@ cEvent::cEvent(tChannelID ChannelID, u_int16_t EventID)
   title = NULL;
   shortText = NULL;
   description = NULL;
+  components = NULL;
   startTime = 0;
   duration = 0;
   vps = 0;
@@ -39,6 +100,7 @@ cEvent::~cEvent()
   free(title);
   free(shortText);
   free(description);
+  delete components;
 }
 
 int cEvent::Compare(const cListObject &ListObject) const
@@ -83,6 +145,12 @@ void cEvent::SetShortText(const char *ShortText)
 void cEvent::SetDescription(const char *Description)
 {
   description = strcpyrealloc(description, Description);
+}
+
+void cEvent::SetComponents(cComponents *Components)
+{
+  delete components;
+  components = Components;
 }
 
 void cEvent::SetStartTime(time_t StartTime)
@@ -168,6 +236,12 @@ void cEvent::Dump(FILE *f, const char *Prefix) const
         fprintf(f, "%sD %s\n", Prefix, description);
         strreplace(description, '|', '\n');
         }
+     if (components) {
+        for (int i = 0; i < components->NumComponents(); i++) {
+            tComponent *p = components->Component(i);
+            fprintf(f, "%sX %s\n", Prefix, *p->ToString());
+            }
+        }
      if (vps)
         fprintf(f, "%sV %ld\n", Prefix, vps);
      fprintf(f, "%se\n", Prefix);
@@ -178,6 +252,8 @@ bool cEvent::Read(FILE *f, cSchedule *Schedule)
 {
   if (Schedule) {
      cEvent *Event = NULL;
+     int NumComponents = 0;
+     char *ComponentStrings[MAXCOMPONENTS];
      char *s;
      cReadLine ReadLine;
      while ((s = ReadLine.Read(f)) != NULL) {
@@ -199,6 +275,7 @@ bool cEvent::Read(FILE *f, cSchedule *Schedule)
                                 Event->SetDuration(Duration);
                                 }
                              }
+                          NumComponents = 0;
                           }
                        break;
              case 'T': if (Event)
@@ -212,10 +289,26 @@ bool cEvent::Read(FILE *f, cSchedule *Schedule)
                           Event->SetDescription(t);
                           }
                        break;
+             case 'X': if (Event) {
+                          if (NumComponents < MAXCOMPONENTS)
+                             ComponentStrings[NumComponents++] = strdup(t);
+                          else
+                             dsyslog("more than %d component descriptors!", MAXCOMPONENTS);
+                          }
+                       break;
              case 'V': if (Event)
                           Event->SetVps(atoi(t));
                        break;
-             case 'e': Event = NULL;
+             case 'e': if (Event && NumComponents > 0) {
+                          cComponents *Components = new cComponents(NumComponents);
+                          for (int i = 0; i < NumComponents; i++) {
+                              if (!Components->SetComponent(i, ComponentStrings[i]))
+                                 esyslog("ERROR: faulty component string in EPG data: '%s'", ComponentStrings[i]);
+                              free(ComponentStrings[i]);
+                              }
+                          Event->SetComponents(Components);
+                          }
+                       Event = NULL;
                        break;
              case 'c': // to keep things simple we react on 'c' here
                        return true;
@@ -228,7 +321,7 @@ bool cEvent::Read(FILE *f, cSchedule *Schedule)
   return false;
 }
 
-#define MAXEPGBUGFIXSTATS 8
+#define MAXEPGBUGFIXSTATS 12
 #define MAXEPGBUGFIXCHANS 100
 struct tEpgBugFixStats {
   int hits;
@@ -476,6 +569,72 @@ void cEvent::FixEpgBugs(void)
      strreplace(title, '`', '\'');
      strreplace(shortText, '`', '\'');
      strreplace(description, '`', '\'');
+
+     if (Setup.EPGBugfixLevel <= 2)
+        return;
+
+     // The stream components have a "description" field which some channels
+     // apparently have no idea of how to set correctly:
+     if (components) {
+        for (int i = 0; i < components->NumComponents(); i++) {
+            tComponent *p = components->Component(i);
+            switch (p->stream) {
+              case 0x01: { // video
+                   if (p->description) {
+                      if (strcasecmp(p->description, "Video") == 0 ||
+                           strcasecmp(p->description, "Bildformat") == 0) {
+                         // Yes, we know it's video - that's what the 'stream' code
+                         // is for! But _which_ video is it?
+                         free(p->description);
+                         p->description = NULL;
+                         EpgBugFixStat(8, ChannelID());
+                         }
+                      }
+                   if (!p->description) {
+                      switch (p->type) {
+                        case 0x01:
+                        case 0x05: p->description = strdup("4:3"); break;
+                        case 0x02:
+                        case 0x03:
+                        case 0x06:
+                        case 0x07: p->description = strdup("16:9"); break;
+                        case 0x04:
+                        case 0x08: p->description = strdup(">16:9"); break;
+                        case 0x09:
+                        case 0x0D: p->description = strdup("HD 4:3"); break;
+                        case 0x0A:
+                        case 0x0B:
+                        case 0x0E:
+                        case 0x0F: p->description = strdup("HD 16:9"); break;
+                        case 0x0C:
+                        case 0x10: p->description = strdup("HD >16:9"); break;
+                        }
+                      EpgBugFixStat(9, ChannelID());
+                      }
+                   }
+                   break;
+              case 0x02: { // audio
+                   if (p->description) {
+                      if (strcasecmp(p->description, "Audio") == 0) {
+                         // Yes, we know it's audio - that's what the 'stream' code
+                         // is for! But _which_ audio is it?
+                         free(p->description);
+                         p->description = NULL;
+                         EpgBugFixStat(10, ChannelID());
+                         }
+                      }
+                   if (!p->description) {
+                      switch (p->type) {
+                        case 0x05: p->description = strdup("Dolby Digital"); break;
+                        // all others will just display the language
+                        }
+                      EpgBugFixStat(11, ChannelID());
+                      }
+                   }
+                   break;
+              }
+            }
+        }
      }
 }
 

@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: skincurses.c 1.3 2004/12/26 11:36:35 kls Exp $
+ * $Id: skincurses.c 1.4 2005/01/02 15:11:29 kls Exp $
  */
 
 #include <ncurses.h>
@@ -558,6 +558,68 @@ void cSkinCursesDisplayVolume::Flush(void)
   osd->Flush();
 }
 
+// --- cSkinCursesDisplayTracks ----------------------------------------------
+
+class cSkinCursesDisplayTracks : public cSkinDisplayTracks {
+private:
+  cOsd *osd;
+  int itemsWidth;
+  int currentIndex;
+  void SetItem(const char *Text, int Index, bool Current);
+public:
+  cSkinCursesDisplayTracks(const char *Title, int NumTracks, const char * const *Tracks);
+  virtual ~cSkinCursesDisplayTracks();
+  virtual void SetTrack(int Index, const char * const *Tracks);
+  virtual void Flush(void);
+  };
+
+cSkinCursesDisplayTracks::cSkinCursesDisplayTracks(const char *Title, int NumTracks, const char * const *Tracks)
+{
+  currentIndex = -1;
+  itemsWidth = Font.Width(Title);
+  for (int i = 0; i < NumTracks; i++)
+      itemsWidth = max(itemsWidth, Font.Width(Tracks[i]));
+  itemsWidth = min(itemsWidth, OsdWidth);
+  osd = new cCursesOsd(0, 0);
+  osd->DrawRectangle(0, 0, OsdWidth - 1, OsdHeight - 1, clrBackground);
+  osd->DrawText(0, 0, Title, clrBlack, clrCyan, &Font, itemsWidth);
+  for (int i = 0; i < NumTracks; i++)
+      SetItem(Tracks[i], i, false);
+}
+
+cSkinCursesDisplayTracks::~cSkinCursesDisplayTracks()
+{
+  delete osd;
+}
+
+void cSkinCursesDisplayTracks::SetItem(const char *Text, int Index, bool Current)
+{
+  int y = 1 + Index;
+  int ColorFg, ColorBg;
+  if (Current) {
+     ColorFg = clrBlack;
+     ColorBg = clrCyan;
+     currentIndex = Index;
+     }
+  else {
+     ColorFg = clrWhite;
+     ColorBg = clrBackground;
+     }
+  osd->DrawText(0, y, Text, ColorFg, ColorBg, &Font, itemsWidth);
+}
+
+void cSkinCursesDisplayTracks::SetTrack(int Index, const char * const *Tracks)
+{
+  if (currentIndex >= 0)
+     SetItem(Tracks[currentIndex], currentIndex, false);
+  SetItem(Tracks[Index], Index, true);
+}
+
+void cSkinCursesDisplayTracks::Flush(void)
+{
+  osd->Flush();
+}
+
 // --- cSkinCursesDisplayMessage ---------------------------------------------
 
 class cSkinCursesDisplayMessage : public cSkinDisplayMessage {
@@ -600,6 +662,7 @@ public:
   virtual cSkinDisplayMenu *DisplayMenu(void);
   virtual cSkinDisplayReplay *DisplayReplay(bool ModeOnly);
   virtual cSkinDisplayVolume *DisplayVolume(void);
+  virtual cSkinDisplayTracks *DisplayTracks(const char *Title, int NumTracks, const char * const *Tracks);
   virtual cSkinDisplayMessage *DisplayMessage(void);
   };
 
@@ -631,6 +694,11 @@ cSkinDisplayReplay *cSkinCurses::DisplayReplay(bool ModeOnly)
 cSkinDisplayVolume *cSkinCurses::DisplayVolume(void)
 {
   return new cSkinCursesDisplayVolume;
+}
+
+cSkinDisplayTracks *cSkinCurses::DisplayTracks(const char *Title, int NumTracks, const char * const *Tracks)
+{
+  return new cSkinCursesDisplayTracks(Title, NumTracks, Tracks);
 }
 
 cSkinDisplayMessage *cSkinCurses::DisplayMessage(void)

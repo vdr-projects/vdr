@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: transfer.c 1.19 2004/11/28 11:51:00 kls Exp $
+ * $Id: transfer.c 1.20 2004/12/27 11:08:34 kls Exp $
  */
 
 #include "transfer.h"
@@ -58,11 +58,7 @@ void cTransfer::Action(void)
   int PollTimeouts = 0;
   uchar *p = NULL;
   int Result = 0;
-// XXX Apparently this isn't necessary with the new PES data handling that
-// XXX was intorduced in VDR 1.3.18. If you do need this, enable the following
-// XXX line and send an email to kls@cadsoft.de. If nobody requires this, it
-// XXX will be removed later. kls 2004-12-27
-//#define FW_NEEDS_BUFFER_RESERVE_FOR_AC3
+#define FW_NEEDS_BUFFER_RESERVE_FOR_AC3
 #ifdef FW_NEEDS_BUFFER_RESERVE_FOR_AC3
   bool Cleared = false;
   bool GotBufferReserve = false;

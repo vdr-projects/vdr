@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 1.48 2004/12/24 14:57:24 kls Exp $
+ * $Id: device.h 1.49 2005/01/02 14:08:36 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -75,8 +75,9 @@ enum eTrackType { ttNone,
 #define IS_DOLBY_TRACK(t) (ttDolbyFirst <= (t) && (t) <= ttDolbyLast)
 
 struct tTrackId {
-  uint16_t id;      // The PES packet id or the PID.
-  char language[8]; // something like either "eng" or "deu/eng"
+  uint16_t id;          // The PES packet id or the PID.
+  char language[8];     // something like either "eng" or "deu/eng"
+  char description[32]; // something like "Dolby Digital 5.1"
   // for future use:
   uint32_t flags;   // Used to further identify the actual track.
   };
@@ -319,10 +320,12 @@ protected:
        ///< Sets the current audio track to the given value.
 public:
   void ClrAvailableTracks(void);
-  bool SetAvailableTrack(eTrackType Type, int Index, uint16_t Id, const char *Language = NULL, uint32_t Flags = 0);
+  bool SetAvailableTrack(eTrackType Type, int Index, uint16_t Id, const char *Language = NULL, const char *Description = NULL, uint32_t Flags = 0);
        ///< Sets the track of the given Type and Index to the given values.
        ///< Type must be one of the basic eTrackType values, like ttAudio or ttDolby.
        ///< Index tells which track of the given basic type is meant.
+       ///< If Id is 0 any existing id (and flags) will be left untouched and only the
+       ///< given Language and Description will be set.
        ///< \return Returns true if the track was set correctly, false otherwise.
   const tTrackId *GetTrack(eTrackType Type);
        ///< Returns a pointer to the given track id, or NULL if Type is not
@@ -335,10 +338,6 @@ public:
   bool SetCurrentAudioTrack(eTrackType Type);
        ///< Sets the current audio track to the given Type.
        ///< \return Returns true if Type is a valid audio track, false otherwise.
-  bool IncCurrentAudioTrack(void);
-       ///< Sets the current audio track to the next available track (wraps to
-       ///< to the first one if necessary).
-       ///< \return Returns true if the audio track has been changed, false otherwise.
 
 // Audio facilities
 

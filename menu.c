@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.323 2004/12/26 12:18:29 kls Exp $
+ * $Id: menu.c 1.324 2005/01/02 15:03:53 kls Exp $
  */
 
 #include "menu.h"
@@ -2410,7 +2410,7 @@ void cMenuMain::Set(const char *Plugin)
 
   // Color buttons:
 
-  SetHelp(!replaying ? tr("Record") : NULL, cDevice::PrimaryDevice()->NumAudioTracks() > 1 ? tr("Language") : NULL, replaying ? NULL : tr("Pause"), replaying ? tr("Button$Stop") : cReplayControl::LastReplayed() ? tr("Resume") : NULL);
+  SetHelp(!replaying ? tr("Record") : NULL, cDevice::PrimaryDevice()->NumAudioTracks() > 1 ? tr("Audio") : NULL, replaying ? NULL : tr("Pause"), replaying ? tr("Button$Stop") : cReplayControl::LastReplayed() ? tr("Resume") : NULL);
   Display();
   lastActivity = time(NULL);
 }
@@ -2471,8 +2471,10 @@ eOSState cMenuMain::ProcessKey(eKeys Key)
                                 state = replaying ? osContinue : osRecord;
                              break;
                case kGreen:  if (!HadSubMenu) {
-                                cDevice::PrimaryDevice()->IncCurrentAudioTrack();
-                                state = osEnd;
+                                if (cDevice::PrimaryDevice()->NumAudioTracks() > 1) {
+                                   cRemote::Put(kAudio, true);
+                                   state = osEnd;
+                                   }
                                 }
                              break;
                case kYellow: if (!HadSubMenu)
@@ -2761,6 +2763,122 @@ eOSState cDisplayVolume::ProcessKey(eKeys Key)
                 return osEnd;
                 }
     }
+  return timeout.TimedOut() ? osEnd : osContinue;
+}
+
+// --- cDisplayTracks --------------------------------------------------------
+
+#define TRACKTIMEOUT 5000 //ms
+
+cDisplayTracks *cDisplayTracks::currentDisplayTracks = NULL;
+
+cDisplayTracks::cDisplayTracks(void)
+:cOsdObject(true)
+{
+  // Get the actual audio track descriptions from the EPG if we're not replaying:
+  if (!cDevice::PrimaryDevice()->Replaying() || cTransferControl::ReceiverDevice()) {
+     cChannel *Channel = Channels.GetByNumber(cDevice::CurrentChannel());
+     if (Channel) {
+        cSchedulesLock SchedulesLock;
+        const cSchedules *Schedules = cSchedules::Schedules(SchedulesLock);
+        if (Schedules) {
+           const cSchedule *Schedule = Schedules->GetSchedule(Channel->GetChannelID());
+           if (Schedule) {
+              const cEvent *Present = Schedule->GetPresentEvent(true);
+              if (Present) {
+                 const cComponents *Components = Present->Components();
+                 if (Components) {
+                    int indexAudio = 0;
+                    int indexDolby = 0;
+                    for (int i = 0; i < Components->NumComponents(); i++) {
+                        const tComponent *p = Components->Component(i);
+                        if (p->stream == 2) {
+                           if (p->type == 0x05)
+                              cDevice::PrimaryDevice()->SetAvailableTrack(ttDolby, indexDolby++, 0, NULL, p->description);
+                           else
+                              cDevice::PrimaryDevice()->SetAvailableTrack(ttAudio, indexAudio++, 0, NULL, p->description);
+                           }
+                        }
+                    }
+                 }
+              }
+           }
+        }
+     }
+
+  currentDisplayTracks = this;
+  numTracks = track = 0;
+  eTrackType CurrentAudioTrack = cDevice::PrimaryDevice()->GetCurrentAudioTrack();
+  for (int i = ttAudioFirst; i <= ttDolbyLast; i++) {
+      const tTrackId *TrackId = cDevice::PrimaryDevice()->GetTrack(eTrackType(i));
+      if (TrackId && TrackId->id) {
+         types[numTracks] = eTrackType(i);
+         descriptions[numTracks] = strdup(*TrackId->description ? TrackId->description : *TrackId->language ? TrackId->language : itoa(i));
+         if (i == CurrentAudioTrack)
+            track = numTracks;
+         numTracks++;
+         }
+      }
+  timeout.Set(TRACKTIMEOUT);
+  displayTracks = Skins.Current()->DisplayTracks(tr("Audio"), numTracks, descriptions);
+  Show();
+}
+
+cDisplayTracks::~cDisplayTracks()
+{
+  delete displayTracks;
+  currentDisplayTracks = NULL;
+  for (int i = 0; i < numTracks; i++)
+      free(descriptions[i]);
+  cStatus::MsgOsdClear();
+}
+
+void cDisplayTracks::Show(void)
+{
+  displayTracks->SetTrack(track, descriptions);
+  displayTracks->Flush();
+  cStatus::MsgSetAudioTrack(track, descriptions);
+}
+
+cDisplayTracks *cDisplayTracks::Create(void)
+{
+  if (!currentDisplayTracks)
+     new cDisplayTracks;
+  return currentDisplayTracks;
+}
+
+void cDisplayTracks::Process(eKeys Key)
+{
+  if (currentDisplayTracks)
+     currentDisplayTracks->ProcessKey(Key);
+}
+
+eOSState cDisplayTracks::ProcessKey(eKeys Key)
+{
+  int oldTrack = track;
+  switch (Key) {
+    case kUp|k_Repeat:
+    case kUp:
+    case kDown|k_Repeat:
+    case kDown:
+         if (NORMALKEY(Key) == kUp && track > 0)
+            track--;
+         else if (NORMALKEY(Key) == kDown && track < numTracks - 1)
+            track++;
+         timeout.Set(TRACKTIMEOUT);
+         break;
+    case kAudio:
+         if (++track >= numTracks)
+            track = 0;
+         timeout.Set(TRACKTIMEOUT);
+         break;
+    case kNone: break;
+    default: return osEnd;
+    }
+  if (track != oldTrack) {
+     Show();
+     cDevice::PrimaryDevice()->SetCurrentAudioTrack(types[track]);
+     }
   return timeout.TimedOut() ? osEnd : osContinue;
 }
 

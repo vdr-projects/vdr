@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinclassic.c 1.9 2004/12/26 11:33:53 kls Exp $
+ * $Id: skinclassic.c 1.10 2005/01/02 14:41:08 kls Exp $
  */
 
 #include "skinclassic.h"
@@ -502,6 +502,84 @@ void cSkinClassicDisplayVolume::Flush(void)
   osd->Flush();
 }
 
+// --- cSkinClassicDisplayTracks ---------------------------------------------
+
+class cSkinClassicDisplayTracks : public cSkinDisplayTracks {
+private:
+  cOsd *osd;
+  int x0, x1;
+  int y0, y1, y2;
+  int lineHeight;
+  int currentIndex;
+  void SetItem(const char *Text, int Index, bool Current);
+public:
+  cSkinClassicDisplayTracks(const char *Title, int NumTracks, const char * const *Tracks);
+  virtual ~cSkinClassicDisplayTracks();
+  virtual void SetTrack(int Index, const char * const *Tracks);
+  virtual void Flush(void);
+  };
+
+cSkinClassicDisplayTracks::cSkinClassicDisplayTracks(const char *Title, int NumTracks, const char * const *Tracks)
+{
+  const cFont *font = cFont::GetFont(fontOsd);
+  lineHeight = font->Height();
+  currentIndex = -1;
+  int ItemsWidth = font->Width(Title);
+  for (int i = 0; i < NumTracks; i++)
+      ItemsWidth = max(ItemsWidth, font->Width(Tracks[i]));
+  ItemsWidth += 10;
+  x0 = 0;
+  x1 = Setup.OSDWidth;
+  int d = x1 - x0;
+  if (d > ItemsWidth) {
+     d = (d - ItemsWidth) & ~0x07; // must be multiple of 8
+     x1 -= d;
+     }
+  y0 = 0;
+  y1 = lineHeight;
+  y2 = y1 + NumTracks * lineHeight;
+  osd = cOsdProvider::NewOsd(Setup.OSDLeft, Setup.OSDTop + Setup.OSDHeight - y2);
+  tArea Areas[] = { { x0, y0, x1 - 1, y2 - 1, 4 } };
+  osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
+  osd->DrawText(x0, y0, Title, Theme.Color(clrMenuTitleFg), Theme.Color(clrMenuTitleBg), font, x1 - x0);
+  for (int i = 0; i < NumTracks; i++)
+      SetItem(Tracks[i], i, false);
+}
+
+cSkinClassicDisplayTracks::~cSkinClassicDisplayTracks()
+{
+  delete osd;
+}
+
+void cSkinClassicDisplayTracks::SetItem(const char *Text, int Index, bool Current)
+{
+  int y = y1 + Index * lineHeight;
+  tColor ColorFg, ColorBg;
+  if (Current) {
+     ColorFg = Theme.Color(clrMenuItemCurrentFg);
+     ColorBg = Theme.Color(clrMenuItemCurrentBg);
+     currentIndex = Index;
+     }
+  else {
+     ColorFg = Theme.Color(clrMenuItemSelectable);
+     ColorBg = Theme.Color(clrBackground);
+     }
+  const cFont *font = cFont::GetFont(fontOsd);
+  osd->DrawText(x0, y, Text, ColorFg, ColorBg, font, x1 - x0);
+}
+
+void cSkinClassicDisplayTracks::SetTrack(int Index, const char * const *Tracks)
+{
+  if (currentIndex >= 0)
+     SetItem(Tracks[currentIndex], currentIndex, false);
+  SetItem(Tracks[Index], Index, true);
+}
+
+void cSkinClassicDisplayTracks::Flush(void)
+{
+  osd->Flush();
+}
+
 // --- cSkinClassicDisplayMessage --------------------------------------------
 
 class cSkinClassicDisplayMessage : public cSkinDisplayMessage {
@@ -569,6 +647,12 @@ cSkinDisplayReplay *cSkinClassic::DisplayReplay(bool ModeOnly)
 cSkinDisplayVolume *cSkinClassic::DisplayVolume(void)
 {
   return new cSkinClassicDisplayVolume;
+}
+
+
+cSkinDisplayTracks *cSkinClassic::DisplayTracks(const char *Title, int NumTracks, const char * const *Tracks)
+{
+  return new cSkinClassicDisplayTracks(Title, NumTracks, Tracks);
 }
 
 cSkinDisplayMessage *cSkinClassic::DisplayMessage(void)

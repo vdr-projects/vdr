@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.166 2004/12/18 16:44:24 kls Exp $
+ * $Id: i18n.c 1.167 2004/12/27 11:10:42 kls Exp $
  *
  * Translations provided by:
  *
@@ -4609,6 +4609,27 @@ const tI18nPhrase Phrases[] = {
     "Bez zvuka",
     "H‰‰letu",
     "Sluk lyd",
+  },
+  { "Audio",
+    "Audio",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
   },
   // Miscellaneous:
   { "yes",

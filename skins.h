@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skins.h 1.4 2004/12/26 11:57:54 kls Exp $
+ * $Id: skins.h 1.5 2005/01/02 14:36:19 kls Exp $
  */
 
 #ifndef __SKINS_H
@@ -66,8 +66,6 @@ public:
     Red    = Video options
     Green  = Info now
     Yellow = Info next
-    Blue   = Audio options
-  AudioOptions
   VideoOptions
   */
   };
@@ -223,6 +221,14 @@ public:
        ///< indicator shall be displayed.
   };
 
+class cSkinDisplayTracks : public cSkinDisplay {
+       ///< This class implements the track display.
+public:
+  virtual void SetTrack(int Index, const char * const *Tracks) = 0;
+       ///< Sets the current track to the one given by Index, which
+       ///< points into the Tracks array of strings.
+  };
+
 class cSkinDisplayMessage : public cSkinDisplay {
        ///< This class implements a simple message display.
 public:
@@ -274,6 +280,12 @@ public:
        ///< The caller must delete the object after use.
   virtual cSkinDisplayVolume *DisplayVolume(void) = 0;
        ///< Creates and returns a new object for displaying the current volume.
+       ///< The caller must delete the object after use.
+  virtual cSkinDisplayTracks *DisplayTracks(const char *Title, int NumTracks, const char * const *Tracks) = 0;
+       ///< Creates and returns a new object for displaying the available tracks.
+       ///< NumTracks indicates how many entries in Tracks are available.
+       ///< Tracks will be valid throughout the entire lifetime of the returned
+       ///< cSkinDisplayTrack object.
        ///< The caller must delete the object after use.
   virtual cSkinDisplayMessage *DisplayMessage(void) = 0;
        ///< Creates and returns a new object for displaying a message.

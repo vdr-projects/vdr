@@ -21,7 +21,7 @@ Version 1.2
   Menu    Menu on     Menu off     Menu off   Menu off   Menu off      Menu off          Menu on
   Back    -           Menu off     VDR menu   VDR menu   Discard       VDR menu          Recordings menu
   Red     -           Record       Edit       Edit       ABC/abc       Play/Commands(2)  Jump
-  Green   -           Language     New        New        Ins/Ovr       Rewind            Skip -60s
+  Green   -           Audio        New        New        Ins/Ovr       Rewind            Skip -60s
   Yellow  -           Pause live   Delete     Delete     Delete        Delete            Skip +60s
   Blue    -           Stop/Resume  Mark       On/Off(1)  -             Summary           Stop
   0..9    Ch select   -            Sort(3)    Day(4)     Numeric inp.  Exec cmd(2)       Editing
@@ -48,6 +48,8 @@ Version 1.2
   Volume+     volume up
   Volume-     volume down
   Mute        mute
+
+  Audio       select audio track
 
   Schedule    \
   Channels    |
@@ -187,15 +189,16 @@ Version 1.2
   To bring up the channel display without switching channels you can press
   the "Ok" button.
 
-* Selecting language specific audio track
+* Selecting audio tracks
 
-  If the current channel provides different audio tracks (typically for
-  different languages), the "Green" button in the "VDR" menu can be pressed
-  to toggle between these. There can be two different audio PIDs per channel,
-  assuming that typically a channel broadcasts a country specific language
-  plus the movie's original soundtrack.
-  Recordings made form such channels will contain both audio tracks, and when
-  replaying the desired audio track can be selected the same way.
+  If the current channel or recording provides different audio tracks (for
+  different languages or Dolby Digital), the "Green" button in the "VDR" menu can
+  be pressed to bring up the "Audio" menu. Within this menu, the "Up" and "Down"
+  keys can be used to switch between the audio tracks. If your remote control has
+  a dedicated "Audio" button, the first press of that button brings up the "Audio"
+  menu, and every further press switches to the next available audio track.
+  The "Audio" menu will automatically disappear after 5 seconds of user inactivity,
+  or if any key other than the ones described above is pressed.
 
 * Switching through channel groups
 
@@ -495,14 +498,15 @@ Version 1.2
                          A value of '0' completely turns off scanning on both single
                          and multiple card systems.
 
-  EPG bugfix level = 2   Some tv stations transmit weirdly formatted EPG data.
+  EPG bugfix level = 3   Some tv stations transmit weirdly formatted EPG data.
                          VDR attempts to fix these bugs up to the given level:
                          0 = no EPG fixing
                          1 = basic fixing of text location (Title, Episode and
                              Extended Description)
                          2 = removal of excess whitespace and hyphens, mapping of
                              wrongly used characters
-                         Default is '2'.
+                         3 = fix stream component descriptions
+                         Default is '3'.
                          Note that after changing the setting of this parameter
                          any EPG data that has already been received will remain
                          in its existing format - only newly received data will
