@@ -2732,3 +2732,4 @@ Video Disk Recorder Revision History
   slowed down performance even more).
 - Taking the Sid into account when detecting version changes in processing the
   PMT (thanks to Stéphane Esté-Gracias for pointing out this problem).
+- Completed the Russian OSD texts (thanks to Vyacheslav Dikonov).

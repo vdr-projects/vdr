@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.151 2004/03/13 10:52:33 kls Exp $
+ * $Id: i18n.c 1.152 2004/03/13 10:59:23 kls Exp $
  *
  * Translations provided by:
  *
@@ -1558,7 +1558,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "VPS поправка",
   },
   { "Priority",
     "Prioritфt",
@@ -2389,7 +2389,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Хранение устаревших данных (мин)",
   },
   { "Setup.EPG$Set system time",
     "Systemzeit stellen",
@@ -2839,7 +2839,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Использовать сигналы VPS",
   },
   { "Setup.Recording$VPS margin (s)",
     "Zeitpuffer bei VPS (s)",
@@ -2857,7 +2857,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Буферное время VPS (сек)",
   },
   { "Setup.Recording$Mark instant recording",
     "Direktaufzeichnung markieren",
