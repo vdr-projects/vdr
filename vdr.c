@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.46 2000/11/18 13:46:56 kls Exp $
+ * $Id: vdr.c 1.49 2001/01/14 15:29:51 kls Exp $
  */
 
 #include <getopt.h>
@@ -141,8 +141,8 @@ int main(int argc, char *argv[])
 #if !defined(DEBUG_OSD) && !defined(REMOTE_KBD)
      pid_t pid = fork();
      if (pid < 0) {
-        fprintf(stderr, "%s\n", strerror(errno));
-        esyslog(LOG_ERR, "ERROR: %s", strerror(errno));
+        fprintf(stderr, "%m\n");
+        esyslog(LOG_ERR, "ERROR: %m");
         abort();
         }
      if (pid != 0)
@@ -179,7 +179,7 @@ int main(int argc, char *argv[])
 
   cDvbApi::SetPrimaryDvbApi(Setup.PrimaryDVB);
 
-  Channels.SwitchTo(1);
+  Channels.SwitchTo(Setup.CurrentChannel);
 
   cEITScanner EITScanner;
 
@@ -306,10 +306,15 @@ int main(int argc, char *argv[])
              default:    break;
              }
            }
-        if (!Menu)
+        if (!Menu) {
            EITScanner.Process();
+           cVideoCutter::Active();
+           }
         }
   isyslog(LOG_INFO, "caught signal %d", Interrupted);
+  Setup.CurrentChannel = cDvbApi::CurrentChannel();
+  Setup.Save();
+  cVideoCutter::Stop();
   delete Menu;
   delete ReplayControl;
   delete Interface;

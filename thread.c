@@ -4,12 +4,15 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 1.4 2000/11/14 18:38:25 kls Exp $
+ * $Id: thread.c 1.7 2000/12/24 12:27:21 kls Exp $
  */
 
 #include "thread.h"
+#include <errno.h>
 #include <signal.h>
+#include <sys/wait.h>
 #include <unistd.h>
+#include "tools.h"
 
 // --- cThread ---------------------------------------------------------------
 
@@ -25,7 +28,7 @@ cThread::cThread(void)
      signalHandlerInstalled = true;
      }
   running = false;
-  parentPid = lockingPid = 0;
+  parentPid = threadPid = lockingPid = 0;
   locked = 0;
 }
 
@@ -40,6 +43,7 @@ void cThread::SignalHandler(int signum)
 
 void *cThread::StartThread(cThread *Thread)
 {
+  Thread->threadPid = getpid();
   Thread->Action();
   return NULL;
 }
@@ -49,13 +53,37 @@ bool cThread::Start(void)
   if (!running) {
      running = true;
      parentPid = getpid();
-     pthread_create(&thread, NULL, &StartThread, (void *)this);
+     pthread_create(&thread, NULL, (void *(*) (void *))&StartThread, (void *)this);
+     usleep(10000); // otherwise calling Active() immediately after Start() causes a "pure virtual method called" error
      }
   return true; //XXX return value of pthread_create()???
 }
 
-void cThread::Stop(void)
+bool cThread::Active(void)
 {
+  if (threadPid) {
+     if (kill(threadPid, SIGIO) < 0) { // couldn't find another way of checking whether the thread is still running - any ideas?
+        if (errno == ESRCH)
+           threadPid = 0;
+        else
+           LOG_ERROR;
+        }
+     else
+        return true;
+     }
+  return false;
+}
+
+void cThread::Cancel(int WaitSeconds)
+{
+  if (WaitSeconds > 0) {
+     for (time_t t0 = time(NULL) + WaitSeconds; time(NULL) < t0; ) {
+         if (!Active())
+            return;
+         usleep(10000);
+         }
+     esyslog(LOG_ERR, "ERROR: thread %d won't end (waited %d seconds) - cancelling it...", threadPid, WaitSeconds);
+     }
   pthread_cancel(thread);
 }
 

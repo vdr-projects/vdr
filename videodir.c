@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: videodir.c 1.2 2000/09/15 13:23:47 kls Exp $
+ * $Id: videodir.c 1.3 2000/12/24 12:51:41 kls Exp $
  */
 
 #include "videodir.h"
@@ -180,3 +180,20 @@ bool VideoFileSpaceAvailable(unsigned int SizeMB)
      }
   return Dir.FreeMB() >= SizeMB;
 }
+
+const char *PrefixVideoFileName(const char *FileName, char Prefix)
+{
+  static char *PrefixedName = NULL;
+
+  if (!PrefixedName || strlen(PrefixedName) <= strlen(FileName))
+     PrefixedName = (char *)realloc(PrefixedName, strlen(FileName) + 2);
+  if (PrefixedName) {
+     strcpy(PrefixedName, VideoDirectory);
+     char *p = PrefixedName + strlen(PrefixedName);
+     *p++ = '/';
+     *p++ = Prefix;
+     strcpy(p, FileName + strlen(VideoDirectory) + 1);
+     }
+  return PrefixedName;
+}
+

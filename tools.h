@@ -4,13 +4,13 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.20 2000/11/12 15:27:06 kls Exp $
+ * $Id: tools.h 1.23 2001/01/13 15:36:00 kls Exp $
  */
 
 #ifndef __TOOLS_H
 #define __TOOLS_H
 
-#include <errno.h>
+//#include <errno.h>
 #include <fcntl.h>
 #include <stdio.h>
 #include <string.h>
@@ -24,19 +24,16 @@ extern int SysLogLevel;
 #define isyslog if (SysLogLevel > 1) syslog
 #define dsyslog if (SysLogLevel > 2) syslog
 
-#define LOG_ERROR         esyslog(LOG_ERR, "ERROR (%s,%d): %s", __FILE__, __LINE__, strerror(errno))
-#define LOG_ERROR_STR(s)  esyslog(LOG_ERR, "ERROR: %s: %s", s, strerror(errno));
+#define LOG_ERROR         esyslog(LOG_ERR, "ERROR (%s,%d): %m", __FILE__, __LINE__)
+#define LOG_ERROR_STR(s)  esyslog(LOG_ERR, "ERROR: %s: %m", s)
 
 #define SECSINDAY  86400
-#define MAXPROCESSTIMEOUT   3 // seconds
 
 #define DELETENULL(p) (delete (p), p = NULL)
 
+template<class T> inline void swap(T &a, T &b) { T t = a; a = b; b = t; };
+
 void writechar(int filedes, char c);
-void writeint(int filedes, int n);
-char readchar(int filedes);
-bool readint(int filedes, int &n);
-void purge(int filedes);
 char *readline(FILE *f);
 char *strn0cpy(char *dest, const char *src, size_t n);
 char *strreplace(char *s, char c1, char c2);
@@ -51,8 +48,7 @@ uint FreeDiskSpaceMB(const char *Directory);
 bool DirectoryOk(const char *DirName, bool LogErrors = false);
 bool MakeDirs(const char *FileName, bool IsDirectory = false);
 bool RemoveFileOrDir(const char *FileName, bool FollowSymlinks = false);
-bool CheckProcess(pid_t pid);
-void KillProcess(pid_t pid, int Timeout = MAXPROCESSTIMEOUT);
+char *ReadLink(const char *FileName);
 
 class cFile {
 private:
@@ -71,6 +67,19 @@ public:
   bool Ready(bool Wait = true);
   static bool AnyFileReady(int FileDes = -1, int TimeoutMs = 1000);
   static bool FileReady(int FileDes, int TimeoutMs = 1000);
+  };
+
+class cSafeFile {
+private:
+  FILE *f;
+  char *fileName;
+  char *tempName;
+public:
+  cSafeFile(const char *FileName);
+  ~cSafeFile();
+  operator FILE* () { return f; }
+  bool Open(void);
+  void Close(void);
   };
 
 class cListObject {
@@ -105,6 +114,8 @@ template<class T> class cList : public cListBase {
 public:
   T *Get(int Index) const { return (T *)cListBase::Get(Index); }
   T *First(void) const { return (T *)objects; }
+  T *Last(void) const { return (T *)lastObject; }
+  T *Prev(const T *object) const { return (T *)object->Prev(); }
   T *Next(const T *object) const { return (T *)object->Next(); }
   };
 

@@ -13,7 +13,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.c 1.9 2000/11/18 13:42:28 kls Exp $
+ * $Id: eit.c 1.11 2000/12/03 15:33:37 kls Exp $
  ***************************************************************************/
 
 #include "eit.h"
@@ -33,6 +33,8 @@
 #include <sys/types.h>
 #include <time.h>
 #include <unistd.h>
+#include "config.h"
+#include "videodir.h"
 
 // --- cMJD ------------------------------------------------------------------
 
@@ -129,7 +131,7 @@ bool cMJD::SetSystemTime()
 		isyslog(LOG_INFO, "System Time = %s (%ld)\n", ctime(&loctim), loctim);
 		isyslog(LOG_INFO, "Local Time  = %s (%ld)\n", ctime(&mjdtime), mjdtime);
 		if (stime(&mjdtime) < 0)
-         esyslog(LOG_ERR, "ERROR while setting system time: %s", strerror(errno));
+         esyslog(LOG_ERR, "ERROR while setting system time: %m");
 		return true;
 	}
 	
@@ -393,6 +395,21 @@ unsigned short cEventInfo::GetServiceID() const
    return uServiceID;
 }
 
+/**  */
+void cEventInfo::Dump(FILE *f) const
+{
+   if (tTime + lDuration >= time(NULL)) {
+      fprintf(f, "E %u %ld %ld\n", uEventID, tTime, lDuration);
+      if (!isempty(pTitle))
+         fprintf(f, "T %s\n", pTitle);
+      if (!isempty(pSubtitle))
+         fprintf(f, "S %s\n", pSubtitle);
+      if (!isempty(pExtendedDescription))
+         fprintf(f, "D %s\n", pExtendedDescription);
+      fprintf(f, "e\n");
+      }
+}
+
 // --- cSchedule -------------------------------------------------------------
 
 cSchedule::cSchedule(unsigned short servid)
@@ -529,6 +546,19 @@ void cSchedule::Cleanup(time_t tTime)
 	}
 }
 
+/**  */
+void cSchedule::Dump(FILE *f) const
+{
+   cChannel *channel = Channels.GetByServiceID(uServiceID);
+   if (channel)
+   {
+      fprintf(f, "C %u %s\n", uServiceID, channel->name);
+      for (cEventInfo *p = Events.First(); p; p = Events.Next(p))
+         p->Dump(f);
+      fprintf(f, "c\n");
+   }
+}
+
 // --- cSchedules ------------------------------------------------------------
 
 cSchedules::cSchedules()
@@ -588,6 +618,13 @@ void cSchedules::Cleanup()
 		p->Cleanup(time(NULL));
 		p = Next(p);
 	}
+}
+
+/**  */
+void cSchedules::Dump(FILE *f) const
+{
+   for (cSchedule *p = First(); p; p = Next(p))
+      p->Dump(f);
 }
 
 // --- cEIT ------------------------------------------------------------------
@@ -1080,7 +1117,7 @@ cSIProcessor::~cSIProcessor()
 {
    if (fsvbi >= 0)
    {
-      Stop();
+      Cancel();
    	ShutDownFilters();
       delete filters;
       if (!--numSIProcessors) // the last one deletes it
@@ -1105,6 +1142,7 @@ void cSIProcessor::Action()
 	unsigned int seclen;
 	unsigned int pid;
    time_t lastCleanup = time(NULL);
+   time_t lastDump = time(NULL);
 	struct pollfd pfd;
 	
 	while(true)
@@ -1122,6 +1160,19 @@ void cSIProcessor::Action()
             schedules->Cleanup();
             schedulesMutex.Unlock();
             lastCleanup = now;
+         }
+         if (now - lastDump > 600)
+         {
+            LOCK_THREAD;
+
+            schedulesMutex.Lock();
+            FILE *f = fopen(AddDirectory(VideoDirectory, "epg.data"), "w");
+            if (f) {
+               schedules->Dump(f);
+               fclose(f);
+               }
+            lastDump = now;
+            schedulesMutex.Unlock();
          }
       }
 
@@ -1283,4 +1334,3 @@ bool cSIProcessor::RefreshFilters()
 
 	return ret;
 }
-

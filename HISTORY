@@ -311,3 +311,41 @@ Video Disk Recorder Revision History
   can receive a certain channel on the primary interface. This is currently in
   an early state and may still cause some problems, but it appears to work nice
   already.
+
+2001-01-18: Version 0.70
+
+- VDR now requires driver version 0.8.1 or higher.
+- Recordings are now saved in PES mode. Note that you now need to install the
+  driver *WITHOUT* 'outstream=0'! This is the default when you 'make insmod' in
+  the DVB/driver directory.
+  Old recordings (in AV_PES mode) can still be replayed (as long as the driver
+  still supports replaying AV_PES files). The only limitation with this is that
+  in fast forward/back mode the picture may be slightly distorted and there may
+  be sound fragments.
+- The EPG data is now dumped into the file /video/epg.data every ten minutes.
+  Use the Perl script 'epg2html.pl' to convert the raw EPG data into a simple
+  HTML programme listing.
+- Fixed handling of channel switching with the "Blue" button in the "What's on
+  now/next?" menus.
+- Fixed saving the MarginStop setup parameter.
+- Fixed missing initialization in cConfig.
+- Implemented "On Disk Editing".
+- There is no more default 'timers.conf' file.
+- Added Italian language texts (thanks to Alberto Carraro).
+- Fixed starting a replay session when the program is currently in "transfer
+  mode".
+- Fixed setting/modifying timers via SVDRP with empty summary fields.
+- Fixed a problem with recordings that have a single quote character in their
+  name (this is now mapped to 0x01).
+- Changed the value for Diseqc to '0' in the default 'channels.conf'.
+- Fixed displaying channels and recording status in the RCU's LED display when
+  a recording is interrupted due to higher priority.
+- Implemented safe writing of config files (first writes into a temporary file
+  and then renames it).
+- In case the video data stream is broken the log message will come only every
+  5 seconds.
+- The current channel is now saved in the 'setup.conf' file when VDR is cancelled,
+  and will be restored next time it is started (thanks to Deti Fliegl).
+- The EIT scanning thread is now locked when switching channels to avoid problems.
+- Encrypted channels can now be selected even without knowing the PNR (however, it
+  is still necessary for the EPG info).

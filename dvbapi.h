@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.h 1.26 2000/11/19 14:09:41 kls Exp $
+ * $Id: dvbapi.h 1.30 2001/01/07 15:56:10 kls Exp $
  */
 
 #ifndef __DVBAPI_H
@@ -22,6 +22,7 @@ typedef unsigned char __u8;
 #include <dvb.h>
 #include "dvbosd.h"
 #include "eit.h"
+#include "thread.h"
 
 // Overlay facilities
 #define MAXCLIPRECTS 100
@@ -42,7 +43,24 @@ public:
   bool Save(int Index);
   };
 
+const char *IndexToHMSF(int Index, bool WithFrame = false);
+      // Converts the given index to a string, optionally containing the frame number.
+int HMSFToIndex(const char *HMSF);
+      // Converts the given string (format: "hh:mm:ss.ff") to an index.
+
+class cRecordBuffer;
+class cReplayBuffer;
 class cTransferBuffer;
+class cCuttingBuffer;
+
+class cVideoCutter {
+private:
+  static cCuttingBuffer *cuttingBuffer;
+public:
+  static bool Start(const char *FileName);
+  static void Stop(void);
+  static bool Active(void);
+  };
 
 class cDvbApi {
 private:
@@ -129,21 +147,15 @@ public:
   void Close(void);
   void Clear(void);
   void Fill(int x, int y, int w, int h, eDvbColor color = clrBackground);
+  void SetBitmap(int x, int y, const cBitmap &Bitmap);
   void ClrEol(int x, int y, eDvbColor color = clrBackground);
   int CellWidth(void);
+  int LineHeight(void);
   int Width(unsigned char c);
   int WidthInCells(const char *s);
   eDvbFont SetFont(eDvbFont Font);
   void Text(int x, int y, const char *s, eDvbColor colorFg = clrWhite, eDvbColor colorBg = clrBackground);
   void Flush(void);
-
-  // Progress Display facilities
-
-private:
-  int lastProgress, lastTotal;
-  char *replayTitle;
-public:
-  bool ShowProgress(bool Initial = false);
 
   // Channel facilities
 
@@ -171,20 +183,10 @@ private:
   // Record/Replay facilities
 
 private:
-  enum { dvbStop = 1, // let's not have 0 as a command
-         dvbPause,
-         dvbPlay,
-         dvbForward,
-         dvbBackward,
-         dvbSkip,
-         dvbGetIndex,
-       };
-  pid_t pidRecord, pidReplay;
-  int fromRecord, toRecord;
-  int fromReplay, toReplay;
+  cRecordBuffer *recordBuffer;
+  cReplayBuffer *replayBuffer;
   int ca;
   int priority;
-  void SetReplayMode(int Mode);
 protected:
   int  Ca(void) { return ca; }
        // Returns the ca of the current recording session (0..MAXDVBAPI).
@@ -192,6 +194,8 @@ protected:
        // Returns the priority of the current recording session (0..99),
        // or -1 if no recording is currently active.
 public:
+  int  SecondsToFrames(int Seconds);
+       // Returns the number of frames corresponding to the given number of seconds.
   bool Recording(void);
        // Returns true if we are currently recording.
   bool Replaying(void);
@@ -209,12 +213,11 @@ public:
        // returned.
   void StopRecord(void);
        // Stops the current recording session (if any).
-  bool StartReplay(const char *FileName, const char *Title = NULL);
+  bool StartReplay(const char *FileName);
        // Starts replaying the given file.
        // If there is already a replay session active, it will be stopped
        // and the new file will be played back.
-       // If provided Title will be used in the progress display.
-  void Stop(void);
+  void StopReplay(void);
        // Stops the current replay session (if any).
   void Pause(void);
        // Pauses the current replay session, or resumes a paused session.
@@ -224,12 +227,21 @@ public:
        // Runs the current replay session forward at a higher speed.
   void Backward(void);
        // Runs the current replay session backwards at a higher speed.
-  void Skip(int Seconds);
+  void SkipSeconds(int Seconds);
        // Skips the given number of seconds in the current replay session.
        // The sign of 'Seconds' determines the direction in which to skip.
        // Use a very large negative value to go all the way back to the
        // beginning of the recording.
-  bool GetIndex(int *Current, int *Total = NULL);
+  int  SkipFrames(int Frames);
+       // Returns the new index into the current replay session after skipping
+       // the given number of frames (no actual repositioning is done!).
+       // The sign of 'Frames' determines the direction in which to skip.
+  bool GetIndex(int &Current, int &Total, bool SnapToIFrame = false);
+       // Returns the current and total frame index, optionally snapped to the
+       // nearest I-frame.
+  void Goto(int Index, bool Still = false);
+       // Positions to the given index and displays that frame as a still picture
+       // if Still is true. 
   };
 
 class cEITScanner {

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbosd.c 1.6 2000/11/18 15:36:51 kls Exp $
+ * $Id: dvbosd.c 1.7 2000/12/09 11:13:00 kls Exp $
  */
 
 #include "dvbosd.h"
@@ -79,6 +79,16 @@ void cBitmap::SetPixel(int x, int y, eDvbColor Color)
            if (dirtyY2 < y)  dirtyY2 = y;
            }
         }
+     }
+}
+
+void cBitmap::SetBitmap(int x, int y, const cBitmap &Bitmap)
+{
+  if (bitmap && Bitmap.bitmap) {
+     for (int ix = 0; ix < Bitmap.width; ix++) {
+         for (int iy = 0; iy < Bitmap.height; iy++)
+             SetPixel(x + ix, y + iy, eDvbColor(Bitmap.bitmap[Bitmap.width * iy + ix]));
+         }
      }
 }
 

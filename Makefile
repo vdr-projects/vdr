@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 1.16 2000/11/18 14:58:10 kls Exp $
+# $Id: Makefile 1.18 2001/01/13 12:26:43 kls Exp $
 
 DVBDIR   = ../DVB
 
@@ -37,9 +37,9 @@ font: genfontfile fontfix.c fontosd.c
 # Dependencies:
 
 config.o   : config.c config.h dvbapi.h dvbosd.h eit.h font.h i18n.h interface.h remote.h svdrp.h thread.h tools.h
-dvbapi.o   : dvbapi.c config.h dvbapi.h dvbosd.h eit.h font.h interface.h remote.h svdrp.h thread.h tools.h videodir.h
+dvbapi.o   : dvbapi.c config.h dvbapi.h dvbosd.h eit.h font.h interface.h recording.h remote.h svdrp.h thread.h tools.h videodir.h
 dvbosd.o   : dvbosd.c dvbosd.h font.h tools.h
-eit.o      : eit.c eit.h thread.h tools.h
+eit.o      : eit.c config.h dvbapi.h dvbosd.h eit.h font.h thread.h tools.h videodir.h
 font.o     : font.c font.h fontfix.c fontosd.c tools.h
 i18n.o     : i18n.c config.h dvbapi.h dvbosd.h eit.h font.h i18n.h thread.h tools.h
 interface.o: interface.c config.h dvbapi.h dvbosd.h eit.h font.h i18n.h interface.h remote.h svdrp.h thread.h tools.h
@@ -48,7 +48,7 @@ osd.o      : osd.c config.h dvbapi.h dvbosd.h eit.h font.h i18n.h interface.h os
 recording.o: recording.c config.h dvbapi.h dvbosd.h eit.h font.h interface.h recording.h remote.h svdrp.h thread.h tools.h videodir.h
 remote.o   : remote.c config.h dvbapi.h dvbosd.h eit.h font.h remote.h thread.h tools.h
 svdrp.o    : svdrp.c config.h dvbapi.h dvbosd.h eit.h font.h interface.h remote.h svdrp.h thread.h tools.h
-thread.o   : thread.c thread.h
+thread.o   : thread.c thread.h tools.h
 tools.o    : tools.c tools.h
 vdr.o      : vdr.c config.h dvbapi.h dvbosd.h eit.h font.h i18n.h interface.h menu.h osd.h recording.h remote.h svdrp.h thread.h tools.h videodir.h
 videodir.o : videodir.c tools.h videodir.h

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.34 2000/11/18 13:26:36 kls Exp $
+ * $Id: config.c 1.39 2001/01/14 15:29:15 kls Exp $
  */
 
 #include "config.h"
@@ -119,10 +119,9 @@ bool cKeys::Load(const char *FileName)
 
 bool cKeys::Save(void)
 {
-  //TODO make backup copies???
   bool result = true;
-  FILE *f = fopen(fileName, "w");
-  if (f) {
+  cSafeFile f(fileName);
+  if (f.Open()) {
      if (fprintf(f, "Code\t%c\nAddress\t%04X\n", code, address) > 0) {
         for (tKey *k = keys; k->type != kNone; k++) {
             if (fprintf(f, "%s\t%08X\n", k->name, k->code) <= 0) {
@@ -133,7 +132,7 @@ bool cKeys::Save(void)
          }
      else
         result = false;
-     fclose(f);
+     f.Close();
      }
   else
      result = false;
@@ -196,7 +195,7 @@ cChannel::cChannel(const cChannel *Channel)
   strcpy(name,   Channel ? Channel->name         : "Pro7");
   frequency    = Channel ? Channel->frequency    : 12480;
   polarization = Channel ? Channel->polarization : 'v';
-  diseqc       = Channel ? Channel->diseqc       : 1;
+  diseqc       = Channel ? Channel->diseqc       : 0;
   srate        = Channel ? Channel->srate        : 27500;
   vpid         = Channel ? Channel->vpid         : 255;
   apid         = Channel ? Channel->apid         : 256;
@@ -435,9 +434,11 @@ bool cTimer::Parse(const char *s)
   //XXX to hear about that!
   char *s2 = NULL;
   int l2 = strlen(s);
-  if (s[l2 - 2] == ':') { // note that 's' has a trailing '\n'
-     s2 = (char *)malloc(l2 + 2);
-     strcat(strn0cpy(s2, s, l2), " \n");
+  while (l2 > 0 && isspace(s[l2 - 1]))
+        l2--;
+  if (s[l2 - 1] == ':') {
+     s2 = (char *)malloc(l2 + 3);
+     strcat(strn0cpy(s2, s, l2 + 1), " \n");
      s = s2;
      }
   if (8 <= sscanf(s, "%d:%d:%a[^:]:%d:%d:%d:%d:%a[^:\n]:%a[^\n]", &active, &channel, &buffer1, &start, &stop, &priority, &lifetime, &buffer2, &summary)) {
@@ -723,6 +724,7 @@ cSetup::cSetup(void)
   MarginStart = 2;
   MarginStop = 10;
   EPGScanTimeout = 5;
+  CurrentChannel = -1;
 }
 
 bool cSetup::Parse(char *s)
@@ -742,6 +744,7 @@ bool cSetup::Parse(char *s)
      else if (!strcasecmp(Name, "MarginStart"))         MarginStart        = atoi(Value);
      else if (!strcasecmp(Name, "MarginStop"))          MarginStop         = atoi(Value);
      else if (!strcasecmp(Name, "EPGScanTimeout"))      EPGScanTimeout     = atoi(Value);
+     else if (!strcasecmp(Name, "CurrentChannel"))      CurrentChannel     = atoi(Value);
      else
         return false;
      return true;
@@ -780,8 +783,8 @@ bool cSetup::Save(const char *FileName)
   if (!FileName)
      FileName = fileName;
   if (FileName) {
-     FILE *f = fopen(FileName, "w");
-     if (f) {
+     cSafeFile f(FileName);
+     if (f.Open()) {
         fprintf(f, "# VDR Setup\n");
         fprintf(f, "OSDLanguage        = %d\n", OSDLanguage);
         fprintf(f, "PrimaryDVB         = %d\n", PrimaryDVB);
@@ -792,8 +795,10 @@ bool cSetup::Save(const char *FileName)
         fprintf(f, "LnbFrequHi         = %d\n", LnbFrequHi);
         fprintf(f, "SetSystemTime      = %d\n", SetSystemTime);
         fprintf(f, "MarginStart        = %d\n", MarginStart);
+        fprintf(f, "MarginStop         = %d\n", MarginStop);
         fprintf(f, "EPGScanTimeout     = %d\n", EPGScanTimeout);
-        fclose(f);
+        fprintf(f, "CurrentChannel     = %d\n", CurrentChannel);
+        f.Close();
         isyslog(LOG_INFO, "saved setup to %s", FileName);
         return true;
         }

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.h 1.3 2000/11/14 18:38:11 kls Exp $
+ * $Id: thread.h 1.4 2000/12/03 11:18:37 kls Exp $
  */
 
 #ifndef __THREAD_H
@@ -28,7 +28,7 @@ class cThread {
 private:
   pthread_t thread;
   cMutex Mutex;
-  pid_t parentPid, lockingPid;
+  pid_t parentPid, threadPid, lockingPid;
   int locked;
   bool running;
   static bool signalHandlerInstalled;
@@ -39,11 +39,12 @@ private:
 protected:
   void WakeUp(void);
   virtual void Action(void) = 0;
-  void Stop(void);
+  void Cancel(int WaitSeconds = 0);
 public:
   cThread(void);
   virtual ~cThread();
   bool Start(void);
+  bool Active(void);
   };
 
 // cThreadLock can be used to easily set a lock in a thread and make absolutely

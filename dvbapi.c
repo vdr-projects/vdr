@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.40 2000/11/19 16:46:37 kls Exp $
+ * $Id: dvbapi.c 1.50 2001/01/18 19:53:54 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -21,6 +21,7 @@ extern "C" {
 #include <unistd.h>
 #include "config.h"
 #include "interface.h"
+#include "recording.h"
 #include "tools.h"
 #include "videodir.h"
 
@@ -32,22 +33,24 @@ extern "C" {
 
 // The minimum amount of video data necessary to identify frames
 // (must be smaller than VIDEOBUFSIZE!):
-#define MINVIDEODATA (20*1024) // just a safe guess (max. size of any AV_PES block, plus some safety)
+#define MINVIDEODATA (256*1024) // just a safe guess (max. size of any frame block, plus some safety)
 
 // The maximum time the buffer is allowed to write data to disk when recording:
 #define MAXRECORDWRITETIME 50 // ms
-
-#define AV_PES_HEADER_LEN 8
-
-// AV_PES block types:
-#define AV_PES_VIDEO 1
-#define AV_PES_AUDIO 2
 
 // Picture types:
 #define NO_PICTURE 0
 #define I_FRAME    1
 #define P_FRAME    2
 #define B_FRAME    3
+
+// Start codes:
+#define SC_PICTURE 0x00  // "picture header"
+#define SC_SEQU    0xB3  // "sequence header"
+#define SC_PHEAD   0xBA  // "pack header"
+#define SC_SHEAD   0xBB  // "system header"
+#define SC_AUDIO   0xC0
+#define SC_VIDEO   0xE0
 
 #define FRAMESPERSEC 25
 
@@ -72,6 +75,35 @@ extern "C" {
 #define RESUMEBACKUP (10 * FRAMESPERSEC)
 
 typedef unsigned char uchar;
+
+static void SetPlayMode(int VideoDev, int Mode)
+{
+  if (VideoDev >= 0) {
+     struct video_play_mode pmode;
+     pmode.mode = Mode;
+     ioctl(VideoDev, VIDIOCSPLAYMODE, &pmode);
+     }
+}
+
+const char *IndexToHMSF(int Index, bool WithFrame)
+{
+  static char buffer[16];
+  int f = (Index % FRAMESPERSEC) + 1;
+  int s = (Index / FRAMESPERSEC);
+  int m = s / 60 % 60;
+  int h = s / 3600;
+  s %= 60;
+  snprintf(buffer, sizeof(buffer), WithFrame ? "%d:%02d:%02d.%02d" : "%d:%02d:%02d", h, m, s, f);
+  return buffer;
+}
+
+int HMSFToIndex(const char *HMSF)
+{
+  int h, m, s, f = 0;
+  if (3 <= sscanf(HMSF, "%d:%d:%d.%d", &h, &m, &s, &f))
+     return (h * 3600 + m * 60 + s) * FRAMESPERSEC + f - 1;
+  return 0;
+}
 
 // --- cResumeFile ------------------------------------------------------------
 
@@ -135,16 +167,15 @@ private:
   cResumeFile resumeFile;
   bool CatchUp(void);
 public:
-  cIndexFile(const char *FileName, bool Record = false);
+  cIndexFile(const char *FileName, bool Record);
   ~cIndexFile();
   void Write(uchar PictureType, uchar FileNumber, int FileOffset);
-  bool Get(int Index, uchar *FileNumber, int *FileOffset, uchar *PictureType = NULL);
-  int GetNextIFrame(int Index, bool Forward, uchar *FileNumber, int *FileOffset, int *Length = NULL);
+  bool Get(int Index, uchar *FileNumber, int *FileOffset, uchar *PictureType = NULL, int *Length = NULL);
+  int GetNextIFrame(int Index, bool Forward, uchar *FileNumber = NULL, int *FileOffset = NULL, int *Length = NULL);
   int Get(uchar FileNumber, int FileOffset);
-  int Last(void) { return last; }
+  int Last(void) { CatchUp(); return last; }
   int GetResume(void) { return resumeFile.Read(); }
   bool StoreResume(int Index) { return resumeFile.Save(Index); }
-  static char *Str(int Index, bool WithFrame = false);
   };
 
 cIndexFile::cIndexFile(const char *FileName, bool Record)
@@ -276,7 +307,7 @@ void cIndexFile::Write(uchar PictureType, uchar FileNumber, int FileOffset)
      }
 }
 
-bool cIndexFile::Get(int Index, uchar *FileNumber, int *FileOffset, uchar *PictureType)
+bool cIndexFile::Get(int Index, uchar *FileNumber, int *FileOffset, uchar *PictureType, int *Length)
 {
   if (index) {
      CatchUp();
@@ -285,6 +316,14 @@ bool cIndexFile::Get(int Index, uchar *FileNumber, int *FileOffset, uchar *Pictu
         *FileOffset = index[Index].offset;
         if (PictureType)
            *PictureType = index[Index].type;
+        if (Length) {
+           int fn = index[Index + 1].number;
+           int fo = index[Index + 1].offset;
+           if (fn == *FileNumber)
+              *Length = fo - *FileOffset;
+           else
+              *Length = -1; // this means "everything up to EOF" (the buffer's Read function will act accordingly)
+           }
         return true;
         }
      }
@@ -301,8 +340,14 @@ int cIndexFile::GetNextIFrame(int Index, bool Forward, uchar *FileNumber, int *F
          Index += d;
          if (Index >= 0 && Index <= last - 100) { // '- 100': need to stay off the end!
             if (index[Index].type == I_FRAME) {
-               *FileNumber = index[Index].number;
-               *FileOffset = index[Index].offset;
+               if (FileNumber)
+                  *FileNumber = index[Index].number;
+               else
+                  FileNumber = &index[Index].number;
+               if (FileOffset)
+                  *FileOffset = index[Index].offset;
+               else
+                  FileOffset = &index[Index].offset;
                if (Length) {
                   // all recordings end with a non-I_FRAME, so the following should be safe:
                   int fn = index[Index + 1].number;
@@ -339,18 +384,6 @@ int cIndexFile::Get(uchar FileNumber, int FileOffset)
   return -1;
 }
 
-char *cIndexFile::Str(int Index, bool WithFrame)
-{
-  static char buffer[16];
-  int f = (Index % FRAMESPERSEC) + 1;
-  int s = (Index / FRAMESPERSEC);
-  int m = s / 60 % 60;
-  int h = s / 3600;
-  s %= 60;
-  snprintf(buffer, sizeof(buffer), WithFrame ? "%d:%02d:%02d.%02d" : "%d:%02d:%02d", h, m, s, f);
-  return buffer;
-}
-
 // --- cRingBuffer -----------------------------------------------------------
 
 /* cRingBuffer reads data from an input file, stores it in a buffer and writes
@@ -378,6 +411,12 @@ protected:
   int Readable(void) { return (tail >= head) ? size - tail - (head ? 0 : 1) : head - tail - 1; } // keep a 1 byte gap!
   int Writeable(void) { return (tail >= head) ? tail - head : size - head; }
   int Byte(int Offset);
+  bool Set(int Offset, int Length, int Value);
+protected:
+  int GetStartCode(int Offset) { return (Byte(Offset) == 0x00 && Byte(Offset + 1) == 0x00 && Byte(Offset + 2) == 0x01) ? Byte(Offset + 3) : -1; }
+  int GetPictureType(int Offset) { return (Byte(Offset + 5) >> 3) & 0x07; }
+  int FindStartCode(uchar Code, int Offset = 0);
+  int GetPacketLength(int Offset = 0);
 public:
   cRingBuffer(int *InFile, int *OutFile, int Size, int FreeLimit = 0, int AvailLimit = 0);
   virtual ~cRingBuffer();
@@ -422,19 +461,36 @@ int cRingBuffer::Byte(int Offset)
   return -1;
 }
 
+bool cRingBuffer::Set(int Offset, int Length, int Value)
+{
+  if (buffer && Offset + Length <= Available() ) {
+     Offset += head;
+     while (Length--) {
+           if (Offset >= size)
+              Offset -= size;
+           buffer[Offset] = Value;
+           Offset++;
+           }
+     return true;
+     }
+  return false;
+}
+
 void cRingBuffer::Skip(int n)
 {
-  if (head < tail) {
-     head += n;
-     if (head > tail)
-        head = tail;
-     }
-  else if (head > tail) {
-     head += n;
-     if (head >= size)
-        head -= size;
-     if (head > tail)
-        head = tail;
+  if (n > 0) {
+     if (head < tail) {
+        head += n;
+        if (head > tail)
+           head = tail;
+        }
+     else if (head > tail) {
+        head += n;
+        if (head >= size)
+           head -= size;
+        if (head > tail)
+           head = tail;
+        }
      }
 }
 
@@ -477,9 +533,11 @@ int cRingBuffer::Read(int Max)
                if (tail >= size)
                   tail = 0;
                }
-            else if (r < 0 && errno != EAGAIN) {
-               LOG_ERROR;
-               return -1;
+            else if (r < 0) {
+               if (errno != EAGAIN) {
+                  LOG_ERROR;
+                  return -1;
+                  }
                }
             else
                eof = true;
@@ -533,37 +591,53 @@ int cRingBuffer::Write(int Max)
   return -1;
 }
 
-// --- cFileBuffer -----------------------------------------------------------
+int cRingBuffer::FindStartCode(uchar Code, int Offset)
+{
+  // Searches for a start code (beginning at Offset) and returns the number
+  // of bytes from Offset to the start code.
 
-class cFileBuffer : public cRingBuffer {
-protected:
-  cIndexFile *index;
-  uchar fileNumber;
+  int n = Available() - Offset;
+
+  for (int i = 0; i < n; i++) {
+      int c = GetStartCode(Offset + i);
+      if (c == Code) 
+         return i;
+      if (i > 0 && c == SC_PHEAD)
+         break; // found another block start while looking for a different code
+      }
+  return -1;
+}
+
+int cRingBuffer::GetPacketLength(int Offset)
+{
+  // Returns the entire length of the packet starting at offset.
+  return (Byte(Offset + 4) << 8) + Byte(Offset + 5) + 6;
+}
+
+// --- cFileName -------------------------------------------------------------
+
+class cFileName {
+private:
+  int file;
+  int fileNumber;
   char *fileName, *pFileNumber;
-  bool stop;
-  int GetAvPesLength(void)
-  {
-    if (Byte(0) == 'A' && Byte(1) == 'V' && Byte(4) == 'U')
-       return (Byte(6) << 8) + Byte(7) + AV_PES_HEADER_LEN;
-    return 0;
-  }
-  int GetAvPesType(void) { return Byte(2); }
-  int GetAvPesTag(void) { return Byte(3); }
-  int FindAvPesBlock(void);
-  int GetPictureType(int Offset) { return (Byte(Offset + 5) >> 3) & 0x07; }
-  int FindPictureStartCode(int Length);
+  bool record;
 public:
-  cFileBuffer(int *InFile, int *OutFile, const char *FileName, bool Recording, int Size, int FreeLimit = 0, int AvailLimit = 0);
-  virtual ~cFileBuffer();
-  void Stop(void) { stop = true; }
+  cFileName(const char *FileName, bool Record);
+  ~cFileName();
+  const char *Name(void) { return fileName; }
+  int Number(void) { return fileNumber; }
+  int Open(void);
+  void Close(void);
+  int SetOffset(int Number, int Offset = 0);
+  int NextFile(void);
   };
 
-cFileBuffer::cFileBuffer(int *InFile, int *OutFile, const char *FileName, bool Recording, int Size, int FreeLimit = 0, int AvailLimit = 0)
-:cRingBuffer(InFile, OutFile, Size, FreeLimit, AvailLimit)
+cFileName::cFileName(const char *FileName, bool Record)
 {
-  index = NULL;
+  file = -1;
   fileNumber = 0;
-  stop = false;
+  record = Record;
   // Prepare the file name:
   fileName = new char[strlen(FileName) + RECORDFILESUFFIXLEN];
   if (!fileName) {
@@ -572,98 +646,165 @@ cFileBuffer::cFileBuffer(int *InFile, int *OutFile, const char *FileName, bool R
      }
   strcpy(fileName, FileName);
   pFileNumber = fileName + strlen(fileName);
-  // Create the index file:
-  index = new cIndexFile(FileName, Recording);
-  if (!index)
-     esyslog(LOG_ERR, "ERROR: can't allocate index");
-     // let's continue without index, so we'll at least have the recording
+  SetOffset(1);
 }
 
-cFileBuffer::~cFileBuffer()
+cFileName::~cFileName()
 {
-  delete index;
+  Close();
   delete fileName;
 }
 
-int cFileBuffer::FindAvPesBlock(void)
+int cFileName::Open(void)
 {
-  int Skipped = 0;
-
-  while (Available() > MINVIDEODATA) {
-        if (GetAvPesLength())
-           return Skipped;
-        Skip(1);
-        Skipped++;
+  if (file < 0) {
+     if (record) {
+        dsyslog(LOG_INFO, "recording to '%s'", fileName);
+        file = OpenVideoFile(fileName, O_RDWR | O_CREAT | O_NONBLOCK);
+        if (file < 0)
+           LOG_ERROR_STR(fileName);
         }
+     else {
+        if (access(fileName, R_OK) == 0) {
+           dsyslog(LOG_INFO, "playing '%s'", fileName);
+           file = open(fileName, O_RDONLY | O_NONBLOCK);
+           if (file < 0)
+              LOG_ERROR_STR(fileName);
+           }
+        else if (errno != ENOENT)
+           LOG_ERROR_STR(fileName);
+        }
+     }
+  return file;
+}
+
+void cFileName::Close(void)
+{
+  if (file >= 0) {
+     if ((record && CloseVideoFile(file) < 0) || (!record && close(file) < 0))
+        LOG_ERROR_STR(fileName);
+     file = -1;
+     }
+}
+
+int cFileName::SetOffset(int Number, int Offset)
+{
+  if (fileNumber != Number)
+     Close();
+  if (0 < Number && Number <= MAXFILESPERRECORDING) {
+     fileNumber = Number;
+     sprintf(pFileNumber, RECORDFILESUFFIX, fileNumber);
+     if (record) {
+        if (access(fileName, F_OK) == 0) // file exists, let's try next suffix
+           return SetOffset(Number + 1);
+        else if (errno != ENOENT) { // something serious has happened
+           LOG_ERROR_STR(fileName);
+           return -1;
+           }
+        // found a non existing file suffix
+        }
+     if (Open() >= 0) {
+        if (!record && Offset >= 0 && lseek(file, Offset, SEEK_SET) != Offset) {
+           LOG_ERROR_STR(fileName);
+           return -1;
+           }
+        }
+     return file;
+     }
+  esyslog(LOG_ERR, "ERROR: max number of files (%d) exceeded", MAXFILESPERRECORDING);
   return -1;
 }
 
-int cFileBuffer::FindPictureStartCode(int Length)
+int cFileName::NextFile(void)
 {
-  for (int i = AV_PES_HEADER_LEN; i < Length; i++) {
-      if (Byte(i) == 0 && Byte(i + 1) == 0 && Byte(i + 2) == 1 && Byte(i + 3) == 0)
-         return i;
-      }
-  return -1;
+  return SetOffset(fileNumber + 1);
 }
 
 // --- cRecordBuffer ---------------------------------------------------------
 
-class cRecordBuffer : public cFileBuffer {
+class cRecordBuffer : public cRingBuffer, public cThread {
 private:
+  cFileName fileName;
+  cIndexFile *index;
   uchar pictureType;
   int fileSize;
+  int videoDev;
   int recordFile;
-  uchar tagAudio, tagVideo;
-  bool ok, synced;
+  bool ok, synced, stop;
   time_t lastDiskSpaceCheck;
   bool RunningLowOnDiskSpace(void);
+  int ScanVideoPacket(int *PictureType, int Offset);
   int Synchronize(void);
   bool NextFile(void);
   virtual int Write(int Max = -1);
+  bool WriteWithTimeout(void);
+protected:
+  virtual void Action(void);
 public:
   cRecordBuffer(int *InFile, const char *FileName);
   virtual ~cRecordBuffer();
-  int WriteWithTimeout(bool EndIfEmpty = false);
   };
 
 cRecordBuffer::cRecordBuffer(int *InFile, const char *FileName)
-:cFileBuffer(InFile, &recordFile, FileName, true, VIDEOBUFSIZE, VIDEOBUFSIZE / 10, 0)
+:cRingBuffer(InFile, &recordFile, VIDEOBUFSIZE, VIDEOBUFSIZE / 10, 0)
+,fileName(FileName, true)
 {
+  index = NULL;
   pictureType = NO_PICTURE;
   fileSize = 0;
-  recordFile = -1;
-  tagAudio = tagVideo = 0;
-  ok = synced = false;
+  videoDev = *InFile;
+  recordFile = fileName.Open();
+  ok = synced = stop = false;
   lastDiskSpaceCheck = time(NULL);
-  if (!fileName)
-     return;//XXX find a better way???
-  // Find the highest existing file suffix:
-  for (;;) {
-      sprintf(pFileNumber, RECORDFILESUFFIX, ++fileNumber);
-      if (access(fileName, F_OK) < 0) {
-         if (errno == ENOENT)
-            break; // found a non existing file suffix
-         LOG_ERROR;
-         return;
-         }
-      }
+  if (!fileName.Name())
+     return;
+  // Create the index file:
+  index = new cIndexFile(FileName, true);
+  if (!index)
+     esyslog(LOG_ERR, "ERROR: can't allocate index");
+     // let's continue without index, so we'll at least have the recording
   ok = true;
-  //XXX hack to make the video device go into 'recording' mode:
-  char dummy;
-  read(*InFile, &dummy, sizeof(dummy));
+  Start();
 }
 
 cRecordBuffer::~cRecordBuffer()
 {
-  if (recordFile >= 0)
-     CloseVideoFile(recordFile);
+  stop = true;
+  Cancel(3);
+  delete index;
+}
+
+void cRecordBuffer::Action(void)
+{
+  dsyslog(LOG_INFO, "recording thread started (pid=%d)", getpid());
+
+  time_t t = time(NULL);
+  for (;;) {
+      usleep(1); // this keeps the CPU load low
+
+      LOCK_THREAD;
+
+      int r = Read();
+      if (r >= 0) {
+         if (r > 0)
+            t = time(NULL);
+         if (!WriteWithTimeout())
+            break;
+         }
+      if (r < 0 || (r == 0 && time(NULL) - t > 5)) {
+         esyslog(LOG_ERR, "ERROR: video data stream broken");
+         t = time(NULL);
+         }
+      }
+  SetPlayMode(videoDev, VID_PLAY_RESET);
+
+  dsyslog(LOG_INFO, "end recording thread");
 }
 
 bool cRecordBuffer::RunningLowOnDiskSpace(void)
 {
   if (time(NULL) > lastDiskSpaceCheck + DISKCHECKINTERVAL) {
-     uint Free = FreeDiskSpaceMB(fileName);
+     uint Free = FreeDiskSpaceMB(fileName.Name());
      lastDiskSpaceCheck = time(NULL);
      if (Free < MINFREEDISKSPACE) {
         dsyslog(LOG_INFO, "low disk space (%d MB, limit is %d MB)", Free, MINFREEDISKSPACE);
@@ -673,109 +814,109 @@ bool cRecordBuffer::RunningLowOnDiskSpace(void)
   return false;
 }
 
+int cRecordBuffer::ScanVideoPacket(int *PictureType, int Offset)
+{
+  // Scans the video packet starting at Offset and returns its length.
+  // If the return value is -1 the packet was not completely in the buffer.
+
+  int Length = GetPacketLength(Offset);
+  if (Length <= Available()) {
+     for (int i = Offset; i < Offset + Length; i++) {
+         if (Byte(i) == 0 && Byte(i + 1) == 0 && Byte(i + 2) == 1) {
+            switch (Byte(i + 3)) {
+              case SC_PICTURE: *PictureType = GetPictureType(i);
+                               return Length;
+              }
+            }
+         }
+     *PictureType = NO_PICTURE;
+     return Length;
+     }
+  return -1;
+}
+
 int cRecordBuffer::Synchronize(void)
 {
-  int Length = 0;
-  int Skipped = 0;
-  int s;
+  // Positions to the start of a data block (skipping everything up to
+  // an I-frame if not synced) and returns the block length.
 
-  while ((s = FindAvPesBlock()) >= 0) {
-        pictureType = NO_PICTURE;
-        Skipped += s;
-        Length = GetAvPesLength();
-        if (Length <= MINVIDEODATA) {
-           switch (GetAvPesType()) {
-             case AV_PES_VIDEO:
-                     {
-                       int PictureOffset = FindPictureStartCode(Length);
-                       if (PictureOffset >= 0) {
-                          pictureType = GetPictureType(PictureOffset);
-                          if (pictureType < I_FRAME || pictureType > B_FRAME)
-                             esyslog(LOG_ERR, "ERROR: unknown picture type '%d'", pictureType);
-                          }
-                     }
-                     if (!synced) {
-                        tagVideo = GetAvPesTag();
-                        if (pictureType == I_FRAME) {
-                           synced = true;
-                           Skipped = 0;
-                           }
-                        else {
-                           Skip(Length - 1);
-                           Length = 0;
-                           }
-                        }
-                     else {
-                        if (++tagVideo != GetAvPesTag()) {
-                           esyslog(LOG_ERR, "ERROR: missed video data block #%d (next block is #%d)", tagVideo, GetAvPesTag());
-                           tagVideo = GetAvPesTag();
-                           }
-                        }
-                     break;
-             case AV_PES_AUDIO:
-                     if (!synced) {
-                        tagAudio = GetAvPesTag();
-                        Skip(Length - 1);
-                        Length = 0;
-                        }
-                     else {
-                        //XXX might get fooled the first time!!!
-                        if (++tagAudio != GetAvPesTag()) {
-                           esyslog(LOG_ERR, "ERROR: missed audio data block #%d (next block is #%d)", tagAudio, GetAvPesTag());
-                           tagAudio = GetAvPesTag();
-                           }
-                        }
-                     break;
-             default: // unknown data
-                      Length = 0; // don't skip entire block - maybe we're just not in sync with AV_PES yet
-                      if (synced)
-                         esyslog(LOG_ERR, "ERROR: unknown data type '%d'", GetAvPesType());
-             }
-           if (Length > 0)
-              break;
+  int LastPackHeader = -1;
+
+  pictureType = NO_PICTURE;
+
+  //XXX remove this once the buffer is handled with two separate threads:
+  if (!synced && Free() < 100000) {
+     dsyslog(LOG_INFO, "unable to synchronize, dropped %d bytes", Available());
+     Clear();
+     return 0;
+     }
+  for (int i = 0; Available() > MINVIDEODATA && i < MINVIDEODATA; i++) {
+      if (Byte(i) == 0 && Byte(i + 1) == 0 && Byte(i + 2) == 1) {
+         switch (Byte(i + 3)) {
+           case SC_PHEAD:   LastPackHeader = i;
+                            break;
+           case SC_VIDEO:   {
+                              int pt = NO_PICTURE;
+                              int l = ScanVideoPacket(&pt, i);
+                              if (l < 0)
+                                 return 0; // no useful data found, wait for more
+                              if (pt != NO_PICTURE) {
+                                 if (pt < I_FRAME || B_FRAME < pt) {
+                                   esyslog(LOG_ERR, "ERROR: unknown picture type '%d'", pt);
+                                   }
+                                 else if (pictureType == NO_PICTURE) {
+                                    if (!synced) {
+                                       if (LastPackHeader == 0) {
+                                          if (pt == I_FRAME)
+                                             synced = true;
+                                          }
+                                       else if (LastPackHeader > 0) {
+                                          Skip(LastPackHeader);
+                                          LastPackHeader = -1;
+                                          i = 0;
+                                          break;
+                                          }
+                                       else { // LastPackHeader < 0
+                                          Skip(i + l);
+                                          i = 0;
+                                          break;
+                                          }
+                                       }
+                                    if (synced)
+                                       pictureType = pt;
+                                    }
+                                 else if (LastPackHeader > 0)
+                                    return LastPackHeader;
+                                 else
+                                    return i;
+                                 }
+                              i += l - 1; // -1 to compensate for i++ in the loop!
+                              LastPackHeader = -1;
+                            }
+                            break;
+           case SC_AUDIO:   i += GetPacketLength(i) - 1; // -1 to compensate for i++ in the loop!
+                            break;
            }
-        else if (synced) {
-           esyslog(LOG_ERR, "ERROR: block length too big (%d)", Length);
-           Length = 0;
-           }
-        Skip(1);
-        Skipped++;
-        }
-  if (synced && Skipped)
-     esyslog(LOG_ERR, "ERROR: skipped %d bytes", Skipped);
-  return Length;
+         }
+      }
+  return 0; // no useful data found, wait for more
 }
 
 bool cRecordBuffer::NextFile(void)
 {
   if (recordFile >= 0 && pictureType == I_FRAME) { // every file shall start with an I_FRAME
      if (fileSize > MAXVIDEOFILESIZE || RunningLowOnDiskSpace()) {
-        if (CloseVideoFile(recordFile) < 0)
-           LOG_ERROR;
-           // don't return 'false', maybe we can still record into the next file
-        recordFile = -1;
-        fileNumber++;
-        if (fileNumber == 0)
-           esyslog(LOG_ERR, "ERROR: max number of files (%d) exceeded", MAXFILESPERRECORDING);
+        recordFile = fileName.NextFile();
         fileSize = 0;
         }
      }
-  if (recordFile < 0) {
-     sprintf(pFileNumber, RECORDFILESUFFIX, fileNumber);
-     dsyslog(LOG_INFO, "recording to '%s'", fileName);
-     recordFile = OpenVideoFile(fileName, O_RDWR | O_CREAT | O_NONBLOCK);
-     if (recordFile < 0) {
-        LOG_ERROR;
-        return false;
-        }
-     }
-  return true;
+  return recordFile >= 0;
 }
 
 int cRecordBuffer::Write(int Max)
 {
   // This function ignores the incoming 'Max'!
-  // It tries to write out exactly *one* block of AV_PES data.
+  // It tries to write out exactly *one* frame block.
   if (!ok)
      return -1;
   int n = Synchronize();
@@ -786,10 +927,10 @@ int cRecordBuffer::Write(int Max)
         }
      if (NextFile()) {
         if (index && pictureType != NO_PICTURE)
-           index->Write(pictureType, fileNumber, fileSize);
+           index->Write(pictureType, fileName.Number(), fileSize);
         int written = 0;
         for (;;) {
-            int w = cFileBuffer::Write(n);
+            int w = cRingBuffer::Write(n);
             if (w >= 0) {
                fileSize += w;
                written += w;
@@ -806,30 +947,41 @@ int cRecordBuffer::Write(int Max)
   return 0;
 }
 
-int cRecordBuffer::WriteWithTimeout(bool EndIfEmpty)
+bool cRecordBuffer::WriteWithTimeout(void)
 {
-  int w, written = 0;
   int t0 = time_ms();
-  while ((w = Write()) > 0 && time_ms() - t0 < MAXRECORDWRITETIME)
-        written += w;
-  return w < 0 ? w : (written == 0 && EndIfEmpty ? -1 : written);
+  do {
+     int w = Write();
+     if (w < 0)
+        return false;
+     if (w == 0)
+        break;
+     } while (time_ms() - t0 < MAXRECORDWRITETIME);
+  return true;
 }
 
 // --- cReplayBuffer ---------------------------------------------------------
 
-enum eReplayMode { rmPlay, rmFastForward, rmFastRewind, rmSlowRewind };
-
-class cReplayBuffer : public cFileBuffer {
+class cReplayBuffer : public cRingBuffer, public cThread {
 private:
+  enum eReplayCmd { rcNone, rcStill, rcPause, rcPlay, rcForward, rcBackward };
+  enum eReplayMode { rmStill, rmPlay, rmFastForward, rmFastRewind, rmSlowRewind };
+  cIndexFile *index;
+  cFileName fileName;
   int fileOffset;
+  int videoDev;
   int replayFile;
   eReplayMode mode;
-  bool skipAudio;
-  int lastIndex;
+  int lastIndex, stillIndex;
   int brakeCounter;
-  void SkipAudioBlocks(void);
+  eReplayCmd command;
+  bool active;
   bool NextFile(uchar FileNumber = 0, int FileOffset = -1);
   void Close(void);
+  void SetCmd(eReplayCmd Cmd) { LOCK_THREAD; command = Cmd; }
+  void SetTemporalReference(void);
+protected:
+  virtual void Action(void);
 public:
   cReplayBuffer(int *OutFile, const char *FileName);
   virtual ~cReplayBuffer();
@@ -838,38 +990,136 @@ public:
   void SetMode(eReplayMode Mode);
   int Resume(void);
   bool Save(void);
+  void Pause(void)    { SetCmd(rcPause); }
+  void Play(void)     { SetCmd(rcPlay); }
+  void Forward(void)  { SetCmd(rcForward); }
+  void Backward(void) { SetCmd(rcBackward); }
+  int SkipFrames(int Frames);
   void SkipSeconds(int Seconds);
-  void GetIndex(int &Current, int &Total);
+  void Goto(int Position, bool Still = false);
+  void GetIndex(int &Current, int &Total, bool SnapToIFrame = false);
   };
 
 cReplayBuffer::cReplayBuffer(int *OutFile, const char *FileName)
-:cFileBuffer(&replayFile, OutFile, FileName, false, VIDEOBUFSIZE, 0, VIDEOBUFSIZE / 10)
+:cRingBuffer(&replayFile, OutFile, VIDEOBUFSIZE, 0, VIDEOBUFSIZE / 10)
+,fileName(FileName, false)
 {
+  index = NULL;
   fileOffset = 0;
-  replayFile = -1;
+  videoDev = *OutFile;
+  replayFile = fileName.Open();
   mode = rmPlay;
   brakeCounter = 0;
-  skipAudio = false;
-  lastIndex = -1;
-  if (!fileName)
-     return;//XXX find a better way???
-  // All recordings start with '1':
-  fileNumber = 1; //TODO what if it doesn't start with '1'???
-  //XXX hack to make the video device go into 'replaying' mode:
-  char *dummy = "AV"; // must be "AV" to make the driver go into AV_PES mode!
-  write(*OutFile, dummy, strlen(dummy));
+  command = rcNone;
+  lastIndex = stillIndex = -1;
+  active = false;
+  if (!fileName.Name())
+     return;
+  // Create the index file:
+  index = new cIndexFile(FileName, false);
+  if (!index)
+     esyslog(LOG_ERR, "ERROR: can't allocate index");
+     // let's continue without index, so we'll at least have the recording
+  Start();
 }
 
 cReplayBuffer::~cReplayBuffer()
 {
+  active = false;
+  Cancel(3);
   Close();
+  SetPlayMode(videoDev, VID_PLAY_CLEAR_BUFFER);
+  SetPlayMode(videoDev, VID_PLAY_RESET);
+  delete index;
+}
+
+void cReplayBuffer::Action(void)
+{
+  dsyslog(LOG_INFO, "replay thread started (pid=%d)", getpid());
+
+  bool Paused = false;
+  bool FastForward = false;
+  bool FastRewind = false;
+
+  int ResumeIndex = Resume();
+  if (ResumeIndex >= 0)
+     isyslog(LOG_INFO, "resuming replay at index %d (%s)", ResumeIndex, IndexToHMSF(ResumeIndex, true));
+  active = true;
+  while (active) {
+        usleep(1); // this keeps the CPU load low
+
+        LOCK_THREAD;
+
+        if (command != rcNone) {
+           switch (command) {
+             case rcStill:    SetPlayMode(videoDev, VID_PLAY_CLEAR_BUFFER);
+                              SetPlayMode(videoDev, VID_PLAY_NORMAL);
+                              SetMode(rmStill);
+                              Paused = FastForward = FastRewind = false;
+                              break;
+             case rcPause:    SetPlayMode(videoDev, Paused ? VID_PLAY_NORMAL : VID_PLAY_PAUSE);
+                              Paused = !Paused;
+                              if (FastForward || FastRewind) {
+                                 SetPlayMode(videoDev, VID_PLAY_CLEAR_BUFFER);
+                                 Clear();
+                                 }
+                              FastForward = FastRewind = false;
+                              SetMode(rmPlay);
+                              if (!Paused)
+                                 stillIndex = -1;
+                              break;
+             case rcPlay:     if (FastForward || FastRewind || Paused) {
+                                 SetPlayMode(videoDev, VID_PLAY_CLEAR_BUFFER);
+                                 SetPlayMode(videoDev, VID_PLAY_NORMAL);
+                                 FastForward = FastRewind = Paused = false;
+                                 SetMode(rmPlay);
+                                 }
+                              stillIndex = -1;
+                              break;
+             case rcForward:  SetPlayMode(videoDev, VID_PLAY_CLEAR_BUFFER);
+                              Clear();
+                              FastForward = !FastForward;
+                              FastRewind = false;
+                              if (Paused) {
+                                 SetMode(rmPlay);
+                                 SetPlayMode(videoDev, FastForward ? VID_PLAY_SLOW_MOTION : VID_PLAY_PAUSE);
+                                 }
+                              else {
+                                 SetPlayMode(videoDev, VID_PLAY_NORMAL);
+                                 SetMode(FastForward ? rmFastForward : rmPlay);
+                                 }
+                              stillIndex = -1;
+                              break;
+             case rcBackward: SetPlayMode(videoDev, VID_PLAY_CLEAR_BUFFER);
+                              Clear();
+                              FastRewind = !FastRewind;
+                              FastForward = false;
+                              if (Paused) {
+                                 SetMode(FastRewind ? rmSlowRewind : rmPlay);
+                                 SetPlayMode(videoDev, FastRewind ? VID_PLAY_NORMAL : VID_PLAY_PAUSE);
+                                 }
+                              else {
+                                 SetPlayMode(videoDev, VID_PLAY_NORMAL);
+                                 SetMode(FastRewind ? rmFastRewind : rmPlay);
+                                 }
+                              stillIndex = -1;
+                              break;
+             default:         break;
+             }
+           command = rcNone;
+           }
+        if (Read() < 0 || Write() < 0)
+           break;
+        }
+  Save();
+
+  dsyslog(LOG_INFO, "end replaying thread");
 }
 
 void cReplayBuffer::Close(void)
 {
   if (replayFile >= 0) {
-     if (close(replayFile) < 0)
-        LOG_ERROR;
+     fileName.Close();
      replayFile = -1;
      fileOffset = 0;
      }
@@ -878,7 +1128,6 @@ void cReplayBuffer::Close(void)
 void cReplayBuffer::SetMode(eReplayMode Mode)
 {
   mode = Mode;
-  skipAudio = Mode != rmPlay;
   brakeCounter = 0;
   if (mode != rmPlay)
      Clear();
@@ -901,14 +1150,11 @@ int cReplayBuffer::Resume(void)
 bool cReplayBuffer::Save(void)
 {
   if (index) {
-     int Index = index->Get(fileNumber, fileOffset);
+     int Index = index->Get(fileName.Number(), fileOffset);
      if (Index >= 0) {
         Index -= RESUMEBACKUP;
-        if (Index > 0) {
-           uchar FileNumber;
-           int FileOffset;
-           Index = index->GetNextIFrame(Index, false, &FileNumber, &FileOffset);
-           }
+        if (Index > 0)
+           Index = index->GetNextIFrame(Index, false);
         else
            Index = 0;
         if (Index >= 0)
@@ -918,15 +1164,39 @@ bool cReplayBuffer::Save(void)
   return false;
 }
 
+int cReplayBuffer::SkipFrames(int Frames)
+{
+  if (index && Frames) {
+
+     LOCK_THREAD;
+
+     int Current, Total;
+     GetIndex(Current, Total, true);
+     int OldCurrent = Current;
+     Current = index->GetNextIFrame(Current + Frames, Frames > 0);
+     return Current >= 0 ? Current : OldCurrent;
+     }
+  return -1;
+}
+
 void cReplayBuffer::SkipSeconds(int Seconds)
 {
+  LOCK_THREAD;
+
+  SetPlayMode(videoDev, VID_PLAY_PAUSE);
+  SetPlayMode(videoDev, VID_PLAY_CLEAR_BUFFER);
+  SetPlayMode(videoDev, VID_PLAY_NORMAL);
+  command = rcPlay;
+  SetMode(rmPlay);
+  Clear();
+
   if (index && Seconds) {
-     int Index = index->Get(fileNumber, fileOffset);
+     int Index = index->Get(fileName.Number(), fileOffset);
      if (Index >= 0) {
         if (Seconds < 0) {
            int sec = index->Last() / FRAMESPERSEC;
            if (Seconds < -sec)
-              Seconds = - sec;
+              Seconds = -sec;
            }
         Index += Seconds * FRAMESPERSEC;
         if (Index < 0)
@@ -934,103 +1204,120 @@ void cReplayBuffer::SkipSeconds(int Seconds)
         uchar FileNumber;
         int FileOffset;
         if (index->GetNextIFrame(Index, false, &FileNumber, &FileOffset) >= 0)
-        if ((Index = index->GetNextIFrame(Index, false, &FileNumber, &FileOffset)) >= 0)
            NextFile(FileNumber, FileOffset);
         }
      }
 }
 
-void cReplayBuffer::GetIndex(int &Current, int &Total)
+void cReplayBuffer::Goto(int Index, bool Still)
+{
+  LOCK_THREAD;
+
+  if (Still)
+     command = rcStill;
+  if (++Index <= 0)
+     Index = 1; // not '0', to allow GetNextIFrame() below to work!
+  uchar FileNumber;
+  int FileOffset;
+  if ((stillIndex = index->GetNextIFrame(Index, false, &FileNumber, &FileOffset)) >= 0)
+     NextFile(FileNumber, FileOffset);
+  SetPlayMode(videoDev, VID_PLAY_CLEAR_BUFFER);
+  Clear();
+}
+
+void cReplayBuffer::GetIndex(int &Current, int &Total, bool SnapToIFrame)
 {
   if (index) {
-     Current = index->Get(fileNumber, fileOffset);
+
+     LOCK_THREAD;
+
+     if (stillIndex >= 0)
+        Current = stillIndex;
+     else {
+        Current = index->Get(fileName.Number(), fileOffset);
+        if (SnapToIFrame) {
+           int i1 = index->GetNextIFrame(Current + 1, false);
+           int i2 = index->GetNextIFrame(Current, true);
+           Current = (abs(Current - i1) <= abs(Current - i2)) ? i1 : i2;
+           }
+        }
      Total = index->Last();
      }
   else
      Current = Total = -1;
 }
 
-void cReplayBuffer::SkipAudioBlocks(void)
-{
-  int Length;
-
-  while ((Length = GetAvPesLength()) > 0) {
-        if (GetAvPesType() == AV_PES_AUDIO)
-           Skip(Length);
-        else
-           break;
-        }
-}
-
 bool cReplayBuffer::NextFile(uchar FileNumber, int FileOffset)
 {
   if (FileNumber > 0) {
      Clear();
-     if (FileNumber != fileNumber) {
-        Close();
-        fileNumber = FileNumber;
-        }
+     fileOffset = FileOffset;
+     replayFile = fileName.SetOffset(FileNumber, FileOffset);
      }
-  if (replayFile >= 0 && EndOfFile()) {
+  else if (replayFile >= 0 && EndOfFile()) {
      Close();
-     fileNumber++;
-     if (fileNumber == 0)
-        esyslog(LOG_ERR, "ERROR: max number of files (%d) exceeded", MAXFILESPERRECORDING);
+     replayFile = fileName.NextFile();
      }
-  if (replayFile < 0) {
-     sprintf(pFileNumber, RECORDFILESUFFIX, fileNumber);
-     if (access(fileName, R_OK) == 0) {
-        dsyslog(LOG_INFO, "playing '%s'", fileName);
-        replayFile = open(fileName, O_RDONLY | O_NONBLOCK);
-        if (replayFile < 0) {
-           LOG_ERROR;
-           return false;
+  return replayFile >= 0;
+}
+
+void cReplayBuffer::SetTemporalReference(void)
+{
+  for (int i = 0; i < Available(); i++) {
+      if (Byte(i) == 0 && Byte(i + 1) == 0 && Byte(i + 2) == 1) {
+         switch (Byte(i + 3)) {
+           case SC_PICTURE: {
+                              unsigned short m = (Byte(i + 4) << 8) | Byte(i + 5);
+                              m &= 0x003F;
+                              Set(i + 4, 1, m >> 8);
+                              Set(i + 5, 1, m & 0xFF);
+                            }
+                            return;
            }
-        }
-     else if (errno != ENOENT)
-        LOG_ERROR;
-     }
-  if (replayFile >= 0) {
-     if (FileOffset >= 0) {
-        if ((fileOffset = lseek(replayFile, FileOffset, SEEK_SET)) != FileOffset)
-           LOG_ERROR;
-           // don't return 'false', maybe we can still replay the file
-        }
-     return true;
-     }
-  return false;
+         }
+      }
 }
 
 int cReplayBuffer::Read(int Max = -1)
 {
-  if (stop)
-     return -1;
   if (mode != rmPlay) {
      if (index) {
         if (Available())
            return 0; // write out the entire block
-        int Index = (lastIndex >= 0) ? lastIndex : index->Get(fileNumber, fileOffset);
-        if (Index >= 0) {
+        if (mode == rmStill) {
            uchar FileNumber;
            int FileOffset, Length;
-           if (mode == rmSlowRewind && (brakeCounter++ % 24) != 0) {
-              // show every I_FRAME 24 times in rmSlowRewind mode to achieve roughly the same speed as in slow forward mode
-              Index = index->GetNextIFrame(Index, true, &FileNumber, &FileOffset, &Length); // jump ahead one frame
-              }
-           Index = index->GetNextIFrame(Index, mode == rmFastForward, &FileNumber, &FileOffset, &Length);
-           if (Index >= 0) {
+           if (index->GetNextIFrame(stillIndex + 1, false, &FileNumber, &FileOffset, &Length) >= 0) {
               if (!NextFile(FileNumber, FileOffset))
                  return -1;
               Max = Length;
               }
-           lastIndex = Index;
+           command = rcPause;
            }
-        if (Index < 0) {
-           // This results in normal replay after a fast rewind.
-           // After a fast forward it will stop.
-           // TODO Could we cause it to pause at the last frame?
-           SetMode(rmPlay);
-           return 0;
+        else {
+           int Index = (lastIndex >= 0) ? lastIndex : index->Get(fileName.Number(), fileOffset);
+           if (Index >= 0) {
+              if (mode == rmSlowRewind && (brakeCounter++ % 24) != 0) {
+                 // show every I_FRAME 24 times in rmSlowRewind mode to achieve roughly the same speed as in slow forward mode
+                 Index = index->GetNextIFrame(Index, true); // jump ahead one frame
+                 }
+              uchar FileNumber;
+              int FileOffset, Length;
+              Index = index->GetNextIFrame(Index, mode == rmFastForward, &FileNumber, &FileOffset, &Length);
+              if (Index >= 0) {
+                 if (!NextFile(FileNumber, FileOffset))
+                    return -1;
+                 Max = Length;
+                 }
+              lastIndex = Index;
+              }
+           if (Index < 0) {
+              // This results in normal replay after a fast rewind.
+              // After a fast forward it will stop.
+              // TODO Could we cause it to pause at the last frame?
+              SetMode(rmPlay);
+              return 0;
+              }
            }
         }
      }
@@ -1041,12 +1328,22 @@ int cReplayBuffer::Read(int Max = -1)
      int readin = 0;
      do {
         // If Max is > 0 here we need to make sure we read in the entire block!
-        int r = cFileBuffer::Read(Max);
+        int r = cRingBuffer::Read(Max);
         if (r >= 0)
            readin += r;
         else
            return -1;
         } while (readin < Max && Free() > 0);
+     if (mode != rmPlay) {
+        // delete the audio data in modes other than rmPlay:
+        int AudioOffset, StartOffset = 0;
+        while ((AudioOffset = FindStartCode(SC_AUDIO, StartOffset)) >= 0) {
+              if (!Set(StartOffset + AudioOffset, GetPacketLength(StartOffset + AudioOffset), 0))
+                 break; // to be able to replay old AV_PES recordings!
+              StartOffset += AudioOffset;
+              }
+        SetTemporalReference();
+        }
      return readin;
      }
   if (Available() > 0)
@@ -1057,16 +1354,10 @@ int cReplayBuffer::Read(int Max = -1)
 int cReplayBuffer::Write(int Max)
 {
   int Written = 0;
-  int Av = Available();
-  if (skipAudio) {
-     SkipAudioBlocks();
-     Max = GetAvPesLength();
-     fileOffset += Av - Available();
-     }
   if (Max) {
      int w;
      do {
-        w = cFileBuffer::Write(Max);
+        w = cRingBuffer::Write(Max);
         if (w >= 0) {
            fileOffset += w;
            Written += w;
@@ -1076,7 +1367,7 @@ int cReplayBuffer::Write(int Max)
            }
         else
            return w;
-        } while (Max > 0); // we MUST write this entire AV_PES block
+        } while (Max > 0); // we MUST write this entire frame block
      }
   return Written;
 }
@@ -1098,44 +1389,188 @@ cTransferBuffer::cTransferBuffer(int FromDevice, int ToDevice)
 {
   fromDevice = FromDevice;
   toDevice = ToDevice;
-  active = true;
+  active = false;
   Start();
 }
 
 cTransferBuffer::~cTransferBuffer()
 {
-  {
-    LOCK_THREAD;
-    active = false;
-  }
-  for (time_t t0 = time(NULL); time(NULL) - t0 < 3; ) {
-      LOCK_THREAD;
-      if (active)
-         break;
-      }
+  active = false;
+  Cancel(3);
+  SetPlayMode(fromDevice, VID_PLAY_RESET);
+  SetPlayMode(toDevice, VID_PLAY_RESET);
 }
 
 void cTransferBuffer::Action(void)
 {
   dsyslog(LOG_INFO, "data transfer thread started (pid=%d)", getpid());
-  //XXX hack to make the video device go into 'replaying' mode:
-  char *dummy = "AV"; // must be "AV" to make the driver go into AV_PES mode!
-  write(toDevice, dummy, strlen(dummy));
-  {
-    cRingBuffer Buffer(&fromDevice, &toDevice, VIDEOBUFSIZE, 0, 0);
-    while (active && Buffer.Available() < 100000) { // need to give the read buffer a head start
-          Buffer.Read(); // initializes fromDevice for reading
-          usleep(1); // this keeps the CPU load low
-          }
-    for (; active;) {
+
+  cRingBuffer Buffer(&fromDevice, &toDevice, VIDEOBUFSIZE, 0, 0);
+  active = true;
+  while (active && Buffer.Available() < 100000) { // need to give the read buffer a head start
+        Buffer.Read(); // initializes fromDevice for reading
+        usleep(1); // this keeps the CPU load low
+        }
+  while (active) {
         if (Buffer.Read() < 0 || Buffer.Write() < 0)
            break;
         usleep(1); // this keeps the CPU load low
         }
-  }
   dsyslog(LOG_INFO, "data transfer thread stopped (pid=%d)", getpid());
-  LOCK_THREAD;
-  active = true;
+}
+
+// --- cCuttingBuffer --------------------------------------------------------
+
+class cCuttingBuffer : public cRingBuffer, public cThread {
+private:
+  bool active;
+  int fromFile, toFile;
+  cFileName *fromFileName, *toFileName;
+  cIndexFile *fromIndex, *toIndex;
+  cMarks fromMarks, toMarks;
+protected:
+  virtual void Action(void);
+public:
+  cCuttingBuffer(const char *FromFileName, const char *ToFileName);
+  virtual ~cCuttingBuffer();
+  };
+
+cCuttingBuffer::cCuttingBuffer(const char *FromFileName, const char *ToFileName)
+:cRingBuffer(&fromFile, &toFile, VIDEOBUFSIZE, 0, VIDEOBUFSIZE / 10)
+{
+  active = false;
+  fromFile = toFile = -1;
+  fromFileName = toFileName = NULL;
+  fromIndex = toIndex = NULL;
+  if (fromMarks.Load(FromFileName) && fromMarks.Count()) {
+     fromFileName = new cFileName(FromFileName, false);
+     toFileName = new cFileName(ToFileName, true);
+     fromIndex = new cIndexFile(FromFileName, false);
+     toIndex = new cIndexFile(ToFileName, true);
+     toMarks.Load(ToFileName); // doesn't actually load marks, just sets the file name
+     Start();
+     }
+  else
+     esyslog(LOG_ERR, "no editing marks found for %s", FromFileName);
+}
+
+cCuttingBuffer::~cCuttingBuffer()
+{
+  active = false;
+  Cancel(3);
+  delete fromFileName;
+  delete toFileName;
+  delete fromIndex;
+  delete toIndex;
+}
+
+void cCuttingBuffer::Action(void)
+{
+  dsyslog(LOG_INFO, "video cutting thread started (pid=%d)", getpid());
+
+  cMark *Mark = fromMarks.First();
+  if (Mark) {
+     fromFile = fromFileName->Open();
+     toFile = toFileName->Open();
+     active = fromFile >= 0 && toFile >= 0;
+     int Index = Mark->position;
+     Mark = fromMarks.Next(Mark);
+     int FileSize = 0;
+     int CurrentFileNumber = 0;
+     int LastIFrame = 0;
+     toMarks.Add(0);
+     toMarks.Save();
+     while (active) {
+           uchar FileNumber;
+           int FileOffset, Length;
+           uchar PictureType;
+   
+           Clear(); // makes sure one frame is completely read and written
+   
+           // Read one frame:
+   
+           if (fromIndex->Get(Index++, &FileNumber, &FileOffset, &PictureType, &Length)) {
+              if (FileNumber != CurrentFileNumber) {
+                 fromFile = fromFileName->SetOffset(FileNumber, FileOffset);
+                 CurrentFileNumber = FileNumber;
+                 }
+              if (fromFile >= 0)
+                 Length = cRingBuffer::Read(Length);
+              else
+                 break;
+              }
+           else
+              break;
+
+           // Write one frame:
+
+           if (PictureType == I_FRAME) { // every file shall start with an I_FRAME
+              if (FileSize > MAXVIDEOFILESIZE) {
+                 toFile = toFileName->NextFile();
+                 if (toFile < 0)
+                    break;
+                 FileSize = 0;
+                 }
+              LastIFrame = 0;
+              }
+           cRingBuffer::Write(Length);
+           toIndex->Write(PictureType, toFileName->Number(), FileSize);
+           FileSize += Length;
+           if (!LastIFrame)
+              LastIFrame = toIndex->Last();
+
+           // Check editing marks:
+
+           if (Mark && Index >= Mark->position) {
+              Mark = fromMarks.Next(Mark);
+              if (Mark) {
+                 Index = Mark->position;
+                 Mark = fromMarks.Next(Mark);
+                 CurrentFileNumber = 0; // triggers SetOffset before reading next frame
+                 toMarks.Add(LastIFrame);
+                 toMarks.Add(toIndex->Last() + 1);
+                 toMarks.Save();
+                 }
+              else
+                 break; // final end mark reached
+              }
+           }
+     }
+  else
+     esyslog(LOG_ERR, "no editing marks found!");
+  dsyslog(LOG_INFO, "end video cutting thread");
+}
+
+// --- cVideoCutter ----------------------------------------------------------
+
+cCuttingBuffer *cVideoCutter::cuttingBuffer = NULL;
+
+bool cVideoCutter::Start(const char *FileName)
+{
+  if (!cuttingBuffer) {
+     const char *EditedVersionName = PrefixVideoFileName(FileName, '%');
+     if (EditedVersionName && RemoveVideoFile(EditedVersionName) && MakeDirs(EditedVersionName, true)) {
+        cuttingBuffer = new cCuttingBuffer(FileName, EditedVersionName);
+        return true;
+        }
+     }
+  return false;
+}
+
+void cVideoCutter::Stop(void)
+{
+  delete cuttingBuffer;
+  cuttingBuffer = NULL;
+}
+
+bool cVideoCutter::Active(void)
+{
+  if (cuttingBuffer) {
+     if (cuttingBuffer->Active())
+        return true;
+     Stop();
+     }
+  return false;
 }
 
 // --- cDvbApi ---------------------------------------------------------------
@@ -1147,13 +1582,12 @@ cDvbApi *cDvbApi::PrimaryDvbApi = NULL;
 cDvbApi::cDvbApi(const char *VideoFileName, const char *VbiFileName)
 {
   siProcessor = NULL;
-  pidRecord = pidReplay = 0;
-  fromRecord = toRecord = -1;
-  fromReplay = toReplay = -1;
-  ca = 0;
-  priority = -1;
+  recordBuffer = NULL;
+  replayBuffer = NULL;
   transferBuffer = NULL;
   transferringFromDvbApi = NULL;
+  ca = 0;
+  priority = -1;
   videoDev = open(VideoFileName, O_RDWR | O_NONBLOCK);
   if (videoDev >= 0) {
      siProcessor = new cSIProcessor(VbiFileName);
@@ -1191,8 +1625,6 @@ cDvbApi::cDvbApi(const char *VideoFileName, const char *VbiFileName)
 #else
   osd = NULL;
 #endif
-  lastProgress = lastTotal = -1;
-  replayTitle = NULL;
   currentChannel = 1;
 }
 
@@ -1201,7 +1633,7 @@ cDvbApi::~cDvbApi()
   if (videoDev >= 0) {
      delete siProcessor;
      Close();
-     Stop();
+     StopReplay();
      StopRecord();
      StopTransfer();
      OvlO(false); //Overlay off!
@@ -1211,7 +1643,6 @@ cDvbApi::~cDvbApi()
 #if defined(DEBUG_OSD) || defined(REMOTE_KBD)
   endwin();
 #endif
-  delete replayTitle;
 }
 
 bool cDvbApi::SetPrimaryDvbApi(int n)
@@ -1618,8 +2049,6 @@ void cDvbApi::Open(int w, int h)
   SETCOLOR(clrCyan,        0x00, 0xFC, 0xFC, 255);
   SETCOLOR(clrMagenta,     0xB0, 0x00, 0xFC, 255);
   SETCOLOR(clrWhite,       0xFC, 0xFC, 0xFC, 255);
-
-  lastProgress = lastTotal = -1;
 }
 
 void cDvbApi::Close(void)
@@ -1633,7 +2062,6 @@ void cDvbApi::Close(void)
   delete osd;
   osd = NULL;
 #endif
-  lastProgress = lastTotal = -1;
 }
 
 void cDvbApi::Clear(void)
@@ -1662,6 +2090,13 @@ void cDvbApi::Fill(int x, int y, int w, int h, eDvbColor color)
 #endif
 }
 
+void cDvbApi::SetBitmap(int x, int y, const cBitmap &Bitmap)
+{
+#ifndef DEBUG_OSD
+  osd->SetBitmap(x, y, Bitmap);
+#endif
+}
+
 void cDvbApi::ClrEol(int x, int y, eDvbColor color)
 {
   Fill(x, y, cols - x, 1, color);
@@ -1673,6 +2108,15 @@ int cDvbApi::CellWidth(void)
   return 1;
 #else
   return charWidth;
+#endif
+}
+
+int cDvbApi::LineHeight(void)
+{
+#ifdef DEBUG_OSD
+  return 1;
+#else
+  return lineHeight;
 #endif
 }
 
@@ -1724,67 +2168,12 @@ void cDvbApi::Flush(void)
 #endif
 }
 
-bool cDvbApi::ShowProgress(bool Initial)
-{
-  int Current, Total;
-
-  if (GetIndex(&Current, &Total)) {
-     if (Initial) {
-        Clear();
-        if (replayTitle)
-           Text(0, 0, replayTitle);
-        }
-     if (Total != lastTotal)
-        Text(-7, 2, cIndexFile::Str(Total));
-     Flush();
-#ifdef DEBUG_OSD
-     int p = cols * Current / Total;
-     Fill(0, 1, p, 1, clrGreen);
-     Fill(p, 1, cols - p, 1, clrWhite);
-#else
-     int w = cols * charWidth;
-     int p = w * Current / Total;
-     if (p != lastProgress) {
-        int y1 = 1 * lineHeight;
-        int y2 = 2 * lineHeight - 1;
-        int x1, x2;
-        eDvbColor color;
-        if (lastProgress < p) {
-           x1 = lastProgress + 1;
-           x2 = p;
-           if (p >= w)
-              p = w - 1;
-           color = clrGreen;
-           }
-        else {
-           x1 = p + 1;
-           x2 = lastProgress;
-           color = clrWhite;
-           }
-        if (lastProgress < 0)
-           osd->Fill(0, y1, w - 1, y2, clrWhite);
-        osd->Fill(x1, y1, x2, y2, color);
-        lastProgress = p;
-        }
-     Flush();
-#endif
-     Text(0, 2, cIndexFile::Str(Current));
-     Flush();
-     lastTotal = Total;
-     return true;
-     }
-  return false;
-}
-
 bool cDvbApi::SetChannel(int ChannelNumber, int FrequencyMHz, char Polarization, int Diseqc, int Srate, int Vpid, int Apid, int Ca, int Pnr)
 {
   if (videoDev >= 0) {
+     cThreadLock ThreadLock(siProcessor); // makes sure the siProcessor won't access the vbi-device while switching
      StopTransfer();
-     if (transferringFromDvbApi) {
-        transferringFromDvbApi->StopTransfer();
-        transferringFromDvbApi = NULL;
-        }
-     SetReplayMode(VID_PLAY_RESET);
+     SetPlayMode(videoDev, VID_PLAY_RESET);
      struct frontend front;
      ioctl(videoDev, VIDIOCGFRONTEND, &front);
      unsigned int freq = FrequencyMHz;
@@ -1793,8 +2182,7 @@ bool cDvbApi::SetChannel(int ChannelNumber, int FrequencyMHz, char Polarization,
         freq -= Setup.LnbFrequLo;
      else
         freq -= Setup.LnbFrequHi;
-     front.channel_flags = Ca ? DVB_CHANNEL_CA : DVB_CHANNEL_FTA;
-     front.pnr       = Pnr;
+     front.pnr       = 0;
      front.freq      = freq * 1000000UL;
      front.diseqc    = Diseqc;
      front.srate     = Srate * 1000;
@@ -1821,7 +2209,7 @@ bool cDvbApi::SetChannel(int ChannelNumber, int FrequencyMHz, char Polarization,
            }
         return true;
         }
-     esyslog(LOG_ERR, "ERROR: channel not sync'ed (front.sync=%X)!", front.sync);
+     esyslog(LOG_ERR, "ERROR: channel %d not sync'ed (front.sync=%X)!", ChannelNumber, front.sync);
      }
   return false;
 }
@@ -1843,22 +2231,31 @@ void cDvbApi::StopTransfer(void)
   if (transferBuffer) {
      delete transferBuffer;
      transferBuffer = NULL;
-     SetReplayMode(VID_PLAY_RESET);
+     SetPlayMode(videoDev, VID_PLAY_RESET);
      }
+  if (transferringFromDvbApi) {
+     transferringFromDvbApi->StopTransfer();
+     transferringFromDvbApi = NULL;
+     }
+}
+
+int cDvbApi::SecondsToFrames(int Seconds)
+{
+  return Seconds * FRAMESPERSEC;
 }
 
 bool cDvbApi::Recording(void)
 {
-  if (pidRecord && !CheckProcess(pidRecord))
-     pidRecord = 0;
-  return pidRecord;
+  if (recordBuffer && !recordBuffer->Active())
+     StopRecord();
+  return recordBuffer != NULL;
 }
 
 bool cDvbApi::Replaying(void)
 {
-  if (pidReplay && !CheckProcess(pidReplay))
-     pidReplay = 0;
-  return pidReplay;
+  if (replayBuffer && !replayBuffer->Active())
+     StopReplay();
+  return replayBuffer != NULL;
 }
 
 bool cDvbApi::StartRecord(const char *FileName, int Ca, int Priority)
@@ -1871,7 +2268,7 @@ bool cDvbApi::StartRecord(const char *FileName, int Ca, int Priority)
 
      StopTransfer();
 
-     Stop(); // TODO: remove this if the driver is able to do record and replay at the same time
+     StopReplay(); // TODO: remove this if the driver is able to do record and replay at the same time
 
      // Check FileName:
 
@@ -1886,128 +2283,40 @@ bool cDvbApi::StartRecord(const char *FileName, int Ca, int Priority)
      if (!MakeDirs(FileName, true))
         return false;
 
-     // Open pipes for recording process:
+     // Create recording buffer:
 
-     int fromRecordPipe[2], toRecordPipe[2];
+     recordBuffer = new cRecordBuffer(&videoDev, FileName);
 
-     if (pipe(fromRecordPipe) != 0) {
-        LOG_ERROR;
-        return false;
+     if (recordBuffer) {
+        ca = Ca;
+        priority = Priority;
+        return true;
         }
-     if (pipe(toRecordPipe) != 0) {
-        LOG_ERROR;
-        return false;
-        }
-
-     // Create recording process:
-
-     pidRecord = fork();
-     if (pidRecord < 0) {
-        LOG_ERROR;
-        return false;
-        }
-     if (pidRecord == 0) {
-
-        // This is the actual recording process
-
-        dsyslog(LOG_INFO, "start recording process (pid=%d)", getpid());
-        bool DataStreamBroken = false;
-        int fromMain = toRecordPipe[0];
-        int toMain = fromRecordPipe[1];
-        cRecordBuffer *Buffer = new cRecordBuffer(&videoDev, FileName);
-        if (Buffer) {
-           for (;;) {
-               fd_set set;
-               FD_ZERO(&set);
-               FD_SET(videoDev, &set);
-               FD_SET(fromMain, &set);
-               struct timeval timeout;
-               timeout.tv_sec = 1;
-               timeout.tv_usec = 0;
-               bool ForceEnd = false;
-               if (select(FD_SETSIZE, &set, NULL, NULL, &timeout) > 0) {
-                  if (FD_ISSET(videoDev, &set)) {
-                     if (Buffer->Read() < 0)
-                        break;
-                     DataStreamBroken = false;
-                     }
-                  if (FD_ISSET(fromMain, &set)) {
-                     switch (readchar(fromMain)) {
-                       case dvbStop: Buffer->Stop();
-                                     ForceEnd = DataStreamBroken;
-                                     break;
-                       }
-                     }
-                  }
-               else {
-                  DataStreamBroken = true;
-                  esyslog(LOG_ERR, "ERROR: video data stream broken");
-                  }
-               if (Buffer->WriteWithTimeout(ForceEnd) < 0)
-                  break;
-               }
-           delete Buffer;
-           }
-        else
-           esyslog(LOG_ERR, "ERROR: can't allocate recording buffer");
-        close(fromMain);
-        close(toMain);
-        dsyslog(LOG_INFO, "end recording process");
-        exit(0);
-        }
-
-     // Establish communication with the recording process:
-
-     fromRecord = fromRecordPipe[0];
-     toRecord = toRecordPipe[1];
-
-     ca = Ca;
-     priority = Priority;
-     return true;
+     else
+        esyslog(LOG_ERR, "ERROR: can't allocate recording buffer");
      }
   return false;
 }
 
 void cDvbApi::StopRecord(void)
 {
-  if (pidRecord) {
-     writechar(toRecord, dvbStop);
-     close(toRecord);
-     close(fromRecord);
-     toRecord = fromRecord = -1;
-     KillProcess(pidRecord);
-     pidRecord = 0;
+  if (recordBuffer) {
+     delete recordBuffer;
+     recordBuffer = NULL;
      ca = 0;
      priority = -1;
-     SetReplayMode(VID_PLAY_RESET); //XXX
      }
 }
 
-void cDvbApi::SetReplayMode(int Mode)
-{
-  if (videoDev >= 0) {
-     struct video_play_mode pmode;
-     pmode.mode = Mode;
-     ioctl(videoDev, VIDIOCSPLAYMODE, &pmode);
-     }
-}
-
-bool cDvbApi::StartReplay(const char *FileName, const char *Title)
+bool cDvbApi::StartReplay(const char *FileName)
 {
   if (Recording()) {
      esyslog(LOG_ERR, "ERROR: StartReplay() called while recording - ignored!");
      return false;
      }
   StopTransfer();
-  Stop();
+  StopReplay();
   if (videoDev >= 0) {
-
-     lastProgress = lastTotal = -1;
-     delete replayTitle;
-     if (Title) {
-        if ((replayTitle = strdup(Title)) == NULL)
-           esyslog(LOG_ERR, "ERROR: StartReplay: can't copy title '%s'", Title);
-        }
 
      // Check FileName:
 
@@ -2017,207 +2326,75 @@ bool cDvbApi::StartReplay(const char *FileName, const char *Title)
         }
      isyslog(LOG_INFO, "replay %s", FileName);
 
-     // Open pipes for replay process:
+     // Create replay buffer:
 
-     int fromReplayPipe[2], toReplayPipe[2];
-
-     if (pipe(fromReplayPipe) != 0) {
-        LOG_ERROR;
-        return false;
-        }
-     if (pipe(toReplayPipe) != 0) {
-        LOG_ERROR;
-        return false;
-        }
-
-     // Create replay process:
-
-     pidReplay = fork();
-     if (pidReplay < 0) {
-        LOG_ERROR;
-        return false;
-        }
-     if (pidReplay == 0) {
-
-        // This is the actual replaying process
-
-        dsyslog(LOG_INFO, "start replaying process (pid=%d)", getpid());
-        int fromMain = toReplayPipe[0];
-        int toMain = fromReplayPipe[1];
-        cReplayBuffer *Buffer = new cReplayBuffer(&videoDev, FileName);
-        if (Buffer) {
-           bool Paused = false;
-           bool FastForward = false;
-           bool FastRewind = false;
-           int ResumeIndex = Buffer->Resume();
-           if (ResumeIndex >= 0)
-              isyslog(LOG_INFO, "resuming replay at index %d (%s)", ResumeIndex, cIndexFile::Str(ResumeIndex, true));
-           for (;;) {
-               if (Buffer->Read() < 0)
-                  break;
-               fd_set setIn, setOut;
-               FD_ZERO(&setIn);
-               FD_ZERO(&setOut);
-               FD_SET(fromMain, &setIn);
-               FD_SET(videoDev, &setOut);
-               struct timeval timeout;
-               timeout.tv_sec = 1;
-               timeout.tv_usec = 0;
-               if (select(FD_SETSIZE, &setIn, &setOut, NULL, &timeout) > 0) {
-                  if (FD_ISSET(videoDev, &setOut)) {
-                     if (Buffer->Write() < 0)
-                        break;
-                     }
-                  if (FD_ISSET(fromMain, &setIn)) {
-                     switch (readchar(fromMain)) {
-                       case dvbStop:     SetReplayMode(VID_PLAY_CLEAR_BUFFER);
-                                         Buffer->Stop();
-                                         break;
-                       case dvbPause:    SetReplayMode(Paused ? VID_PLAY_NORMAL : VID_PLAY_PAUSE);
-                                         Paused = !Paused;
-                                         if (FastForward || FastRewind) {
-                                            SetReplayMode(VID_PLAY_CLEAR_BUFFER);
-                                            Buffer->Clear();
-                                            }
-                                         FastForward = FastRewind = false;
-                                         Buffer->SetMode(rmPlay);
-                                         break;
-                       case dvbPlay:     if (FastForward || FastRewind || Paused) {
-                                            SetReplayMode(VID_PLAY_CLEAR_BUFFER);
-                                            SetReplayMode(VID_PLAY_NORMAL);
-                                            FastForward = FastRewind = Paused = false;
-                                            Buffer->SetMode(rmPlay);
-                                            }
-                                         break;
-                       case dvbForward:  SetReplayMode(VID_PLAY_CLEAR_BUFFER);
-                                         Buffer->Clear();
-                                         FastForward = !FastForward;
-                                         FastRewind = false;
-                                         if (Paused) {
-                                            Buffer->SetMode(rmPlay);
-                                            SetReplayMode(FastForward ? VID_PLAY_SLOW_MOTION : VID_PLAY_PAUSE);
-                                            }
-                                         else {
-                                            SetReplayMode(VID_PLAY_NORMAL);
-                                            Buffer->SetMode(FastForward ? rmFastForward : rmPlay);
-                                            }
-                                         break;
-                       case dvbBackward: SetReplayMode(VID_PLAY_CLEAR_BUFFER);
-                                         Buffer->Clear();
-                                         FastRewind = !FastRewind;
-                                         FastForward = false;
-                                         if (Paused) {
-                                            Buffer->SetMode(FastRewind ? rmSlowRewind : rmPlay);
-                                            SetReplayMode(FastRewind ? VID_PLAY_NORMAL : VID_PLAY_PAUSE);
-                                            }
-                                         else {
-                                            SetReplayMode(VID_PLAY_NORMAL);
-                                            Buffer->SetMode(FastRewind ? rmFastRewind : rmPlay);
-                                            }
-                                         break;
-                       case dvbSkip:     {
-                                           int Seconds;
-                                           if (readint(fromMain, Seconds)) {
-                                              SetReplayMode(VID_PLAY_CLEAR_BUFFER);
-                                              SetReplayMode(VID_PLAY_NORMAL);
-                                              FastForward = FastRewind = Paused = false;
-                                              Buffer->SetMode(rmPlay);
-                                              Buffer->SkipSeconds(Seconds);
-                                              }
-                                         }
-                                         break;
-                       case dvbGetIndex: {
-                                           int Current, Total;
-                                           Buffer->GetIndex(Current, Total);
-                                           writeint(toMain, Current);
-                                           writeint(toMain, Total);
-                                         }
-                                         break;
-                       }
-                     }
-                  }
-               }
-           Buffer->Save();
-           delete Buffer;
-           }
-        else
-           esyslog(LOG_ERR, "ERROR: can't allocate replaying buffer");
-        close(fromMain);
-        close(toMain);
-        SetReplayMode(VID_PLAY_RESET); //XXX
-        dsyslog(LOG_INFO, "end replaying process");
-        exit(0);
-        }
-
-     // Establish communication with the replay process:
-
-     fromReplay = fromReplayPipe[0];
-     toReplay = toReplayPipe[1];
-     return true;
+     replayBuffer = new cReplayBuffer(&videoDev, FileName);
+     if (replayBuffer)
+        return true;
+     else
+        esyslog(LOG_ERR, "ERROR: can't allocate replaying buffer");
      }
   return false;
 }
 
-void cDvbApi::Stop(void)
+void cDvbApi::StopReplay(void)
 {
-  if (pidReplay) {
-     writechar(toReplay, dvbStop);
-     close(toReplay);
-     close(fromReplay);
-     toReplay = fromReplay = -1;
-     KillProcess(pidReplay);
-     pidReplay = 0;
-     SetReplayMode(VID_PLAY_RESET); //XXX
+  if (replayBuffer) {
+     delete replayBuffer;
+     replayBuffer = NULL;
      }
 }
 
 void cDvbApi::Pause(void)
 {
-  if (pidReplay)
-     writechar(toReplay, dvbPause);
+  if (replayBuffer)
+     replayBuffer->Pause();
 }
 
 void cDvbApi::Play(void)
 {
-  if (pidReplay)
-     writechar(toReplay, dvbPlay);
+  if (replayBuffer)
+     replayBuffer->Play();
 }
 
 void cDvbApi::Forward(void)
 {
-  if (pidReplay)
-     writechar(toReplay, dvbForward);
+  if (replayBuffer)
+     replayBuffer->Forward();
 }
 
 void cDvbApi::Backward(void)
 {
-  if (pidReplay)
-     writechar(toReplay, dvbBackward);
+  if (replayBuffer)
+     replayBuffer->Backward();
 }
 
-void cDvbApi::Skip(int Seconds)
+void cDvbApi::SkipSeconds(int Seconds)
 {
-  if (pidReplay) {
-     writechar(toReplay, dvbSkip);
-     writeint(toReplay, Seconds);
-     }
+  if (replayBuffer)
+     replayBuffer->SkipSeconds(Seconds);
 }
 
-bool cDvbApi::GetIndex(int *Current, int *Total)
+int cDvbApi::SkipFrames(int Frames)
 {
-  if (pidReplay) {
-     int total;
-     purge(fromReplay);
-     writechar(toReplay, dvbGetIndex);
-     if (readint(fromReplay, *Current) && readint(fromReplay, total)) {
-        if (Total)
-           *Total = total;
-        }
-     else
-        *Current = -1;
-     return *Current >= 0;
+  if (replayBuffer)
+     return replayBuffer->SkipFrames(Frames);
+  return -1;
+}
+
+bool cDvbApi::GetIndex(int &Current, int &Total, bool SnapToIFrame)
+{
+  if (replayBuffer) {
+     replayBuffer->GetIndex(Current, Total, SnapToIFrame);
+     return true;
      }
   return false;
+}
+
+void cDvbApi::Goto(int Position, bool Still)
+{
+  if (replayBuffer)
+     replayBuffer->Goto(Position, Still);
 }
 
 // --- cEITScanner -----------------------------------------------------------

@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.12 2000/11/05 13:44:42 kls Exp $
+ * $Id: svdrp.c 1.13 2000/12/03 15:34:35 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -18,6 +18,7 @@
 #include "svdrp.h"
 #include <arpa/inet.h>
 #include <ctype.h>
+#include <errno.h>
 #include <fcntl.h>
 #include <netinet/in.h>
 #include <stdarg.h>

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.23 2000/11/11 15:17:12 kls Exp $
+ * $Id: tools.c 1.27 2001/01/13 15:35:02 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -15,10 +15,7 @@
 #if defined(DEBUG_OSD)
 #include <ncurses.h>
 #endif
-#include <signal.h>
-#include <stdlib.h>
 #include <sys/time.h>
-#include <sys/wait.h>
 #include <unistd.h>
 
 #define MaxBuffer 1000
@@ -28,29 +25,6 @@ int SysLogLevel = 3;
 void writechar(int filedes, char c)
 {
   write(filedes, &c, sizeof(c));
-}
-
-void writeint(int filedes, int n)
-{
-  write(filedes, &n, sizeof(n));
-}
-
-char readchar(int filedes)
-{
-  char c;
-  read(filedes, &c, 1);
-  return c;
-}
-
-bool readint(int filedes, int &n)
-{
-  return cFile::AnyFileReady(filedes, 0) && read(filedes, &n, sizeof(n)) == sizeof(n);
-}
-
-void purge(int filedes)
-{
-  while (cFile::AnyFileReady(filedes, 0))
-        readchar(filedes);
 }
 
 char *readline(FILE *f)
@@ -146,7 +120,7 @@ const char *AddDirectory(const char *DirName, const char *FileName)
   return buf;
 }
 
-#define DFCMD  "df -m %s"
+#define DFCMD  "df -m '%s'"
 
 uint FreeDiskSpaceMB(const char *Directory)
 {
@@ -205,7 +179,7 @@ bool MakeDirs(const char *FileName, bool IsDirectory)
         if (stat(s, &fs) != 0 || !S_ISDIR(fs.st_mode)) {
            dsyslog(LOG_INFO, "creating directory %s", s);
            if (mkdir(s, S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH) == -1) {
-              esyslog(LOG_ERR, "ERROR: %s: %s", s, strerror(errno));
+              LOG_ERROR_STR(s);
               result = false;
               break;
               }
@@ -266,44 +240,32 @@ bool RemoveFileOrDir(const char *FileName, bool FollowSymlinks)
      if (remove(FileName) == 0)
         return true;
      }
-  else
+  else if (errno != ENOENT) {
      LOG_ERROR_STR(FileName);
-  return false;
-}
-
-bool CheckProcess(pid_t pid)
-{
-  pid_t Pid2Check = pid;
-  int status;
-  pid = waitpid(Pid2Check, &status, WNOHANG);
-  if (pid < 0) {
-     if (errno != ECHILD)
-        LOG_ERROR;
      return false;
      }
   return true;
 }
 
-void KillProcess(pid_t pid, int Timeout)
+char *ReadLink(const char *FileName)
 {
-  pid_t Pid2Wait4 = pid;
-  for (time_t t0 = time(NULL); time(NULL) - t0 < Timeout; ) {
-      int status;
-      pid_t pid = waitpid(Pid2Wait4, &status, WNOHANG);
-      if (pid < 0) {
-         if (errno != ECHILD)
-            LOG_ERROR;
-         return;
-         }
-      if (pid == Pid2Wait4)
-         return;
-      }
-  esyslog(LOG_ERR, "ERROR: process %d won't end (waited %d seconds) - terminating it...", Pid2Wait4, Timeout);
-  if (kill(Pid2Wait4, SIGTERM) < 0) {
-     esyslog(LOG_ERR, "ERROR: process %d won't terminate (%s) - killing it...", Pid2Wait4, strerror(errno));
-     if (kill(Pid2Wait4, SIGKILL) < 0)
-        esyslog(LOG_ERR, "ERROR: process %d won't die (%s) - giving up", Pid2Wait4, strerror(errno));
+  char RealName[_POSIX_PATH_MAX];
+  const char *TargetName = NULL;
+  int n = readlink(FileName, RealName, sizeof(RealName) - 1);
+  if (n < 0) {
+     if (errno == ENOENT || errno == EINVAL) // file doesn't exist or is not a symlink
+        TargetName = FileName;
+     else { // some other error occurred
+        LOG_ERROR_STR(FileName);
+        }
      }
+  else if (n < int(sizeof(RealName))) { // got it!
+     RealName[n] = 0;
+     TargetName = RealName;
+     }
+  else
+     esyslog(LOG_ERR, "ERROR: symlink's target name too long: %s", FileName);
+  return TargetName ? strdup(TargetName) : NULL;
 }
 
 // --- cFile -----------------------------------------------------------------
@@ -424,6 +386,45 @@ bool cFile::FileReady(int FileDes, int TimeoutMs)
   timeout.tv_sec  = 0;
   timeout.tv_usec = TimeoutMs * 1000;
   return select(FD_SETSIZE, &set, NULL, NULL, &timeout) > 0 && FD_ISSET(FileDes, &set);
+}
+
+// --- cSafeFile -------------------------------------------------------------
+
+cSafeFile::cSafeFile(const char *FileName)
+{
+  f = NULL;
+  fileName = ReadLink(FileName);
+  tempName = fileName ? new char[strlen(fileName) + 5] : NULL;
+  if (tempName)
+     strcat(strcpy(tempName, fileName), ".$$$");
+}
+
+cSafeFile::~cSafeFile()
+{
+  if (f)
+     fclose(f);
+  unlink(tempName);
+  delete fileName;
+  delete tempName;
+}
+
+bool cSafeFile::Open(void)
+{
+  if (!f && fileName && tempName) {
+     f = fopen(tempName, "w");
+     if (!f)
+        LOG_ERROR_STR(tempName);
+     }
+  return f != NULL;
+}
+
+void cSafeFile::Close(void)
+{
+  if (f) {
+     fclose(f);
+     f = NULL;
+     rename(tempName, fileName);
+     }
 }
 
 // --- cListObject -----------------------------------------------------------
