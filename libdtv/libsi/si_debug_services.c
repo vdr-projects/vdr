@@ -540,6 +540,19 @@ void siDebugDescriptors (char *Prepend, struct LIST *Descriptors)
          }
          break;
 
+         case DESCR_CABLE_DEL_SYS:
+         {
+            struct CableDeliverySystemDescriptor *cds =
+                (struct CableDeliverySystemDescriptor *)Descriptor;
+
+            printf ("%sDescriptor: Cable Delivery System\n", Prepend);
+            printf ("%s   Frequency: %ld\n", Prepend, cds->Frequency);
+            printf ("%s   SymbolRate: %ld\n", Prepend, cds->SymbolRate);
+            printf ("%s   FEC: %d\n", Prepend, cds->FEC);
+            printf ("%s   Modulation: %d\n", Prepend, cds->Modulation);
+         }
+         break;
+
          case DESCR_SERVICE_LIST:
          {
             struct ServiceListEntry *Entry;
@@ -572,7 +585,6 @@ void siDebugDescriptors (char *Prepend, struct LIST *Descriptors)
          break;
 
          case DESCR_STUFFING:
-         case DESCR_CABLE_DEL_SYS:
          case DESCR_VBI_DATA:
          case DESCR_VBI_TELETEXT:
          case DESCR_MOSAIC:
@@ -598,7 +610,7 @@ void siDebugDescriptors (char *Prepend, struct LIST *Descriptors)
          case DESCR_CELL_FREQ_LINK:
          case DESCR_ANNOUNCEMENT_SUPPORT:
          default:
-            printf ("%sDescriptor: (noch nicht unterstützt)\n", Prepend);
+            printf ("%sDescriptor: %02x (noch nicht unterstützt)\n", Prepend, DescriptorTag (Descriptor));
          break;
       }
    }

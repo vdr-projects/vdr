@@ -1064,6 +1064,36 @@ void siParseDescriptor (struct LIST *Descriptors, u_char *Buffer)
       }
       break;
 
+      case DESCR_CABLE_DEL_SYS:
+//         fprintf (stderr, "got descriptor 0x%x\n", GetDescriptorTag(Buffer));
+      {
+         descr_cable_delivery_system_t *cds;
+         cds = (descr_cable_delivery_system_t *) Ptr;
+         if (CheckBcdChar (cds->frequency1) && CheckBcdChar (cds->frequency2) &&
+             CheckBcdChar (cds->frequency3) && CheckBcdChar (cds->frequency4) &&
+             CheckBcdChar (cds->symbol_rate1) && CheckBcdChar (cds->symbol_rate1) &&
+             CheckBcdChar (cds->symbol_rate3) && (cds->fec_inner != 0))
+         {
+           CreateCableDeliverySystemDescriptor (Descriptor,
+            BcdCharToInt (cds->frequency1) * 100 * 1000 * 1000 +
+            BcdCharToInt (cds->frequency2) * 1000 * 1000 +
+            BcdCharToInt (cds->frequency3) * 10 * 1000 +
+            BcdCharToInt (cds->frequency4) * 100,
+            BcdCharToInt (cds->symbol_rate1) * 10 * 1000 +
+            BcdCharToInt (cds->symbol_rate2) * 100 +
+            BcdCharToInt (cds->symbol_rate3),
+            cds->fec_inner,
+           cds->modulation
+           );
+         }
+         /* else
+         {
+            fprintf (stderr, "Illegal cds descriptor\n");
+            siDumpDescriptor (Buffer);
+         } */
+      }
+      break;
+
       case DESCR_SERVICE_LIST:
 //         fprintf (stderr, "got descriptor 0x%x\n", GetDescriptorTag(Buffer));
          CreateServiceListDescriptor (Descriptor);
@@ -1119,7 +1149,6 @@ void siParseDescriptor (struct LIST *Descriptors, u_char *Buffer)
       case DESCR_SMOOTHING_BUFFER:
       case DESCR_STD:
       case DESCR_IBP:
-      case DESCR_CABLE_DEL_SYS:
       case DESCR_VBI_DATA:
       case DESCR_VBI_TELETEXT:
       case DESCR_MOSAIC:
@@ -1181,7 +1210,6 @@ char *siGetDescriptorTextHandler (u_char *Buffer, int Length, int type)
          if ((*Buffer >= ' ' && *Buffer <= '~') || (*Buffer == '\n') ||
              (*Buffer >= 0xa0 && *Buffer <= 0xff)) *tmp++ = *Buffer;
          if (*Buffer == 0x8A) *tmp++ = '\n';
-         if (*Buffer == 0x86 || *Buffer == 0x87) *tmp++ = ' ';
          if ((*Buffer == 0x86 || *Buffer == 0x87) && !(GDT_NAME_DESCRIPTOR & type)) *tmp++ = ' ';
          Buffer++;
       }

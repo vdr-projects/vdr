@@ -409,6 +409,7 @@ Gregoire Favre <greg@ulima.unil.ch>
 Sven Grothklags <sven@uni-paderborn.de>
  for fixing the cutting mechanism to make it re-sync in case a frame is larger
  than the buffer
+ for implementing the CableDeliverySystemDescriptor in libdtv
 
 Tomas Prybil <tomas.prybil@copper.se>
  for translating OSD texts to the Swedish language

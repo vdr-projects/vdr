@@ -2109,9 +2109,10 @@ Video Disk Recorder Revision History
 - The red ("Record") and yellow ("Pause") button in the "Main" menu are no longer
   available when replaying.
 
-2003-05-09: Version 1.1.31
+2003-05-10: Version 1.1.31
 
 - Introduced the new function cPlugin::Initialize(), in order to be able to separate
   the startup of a plugin into an "early" (Initialize()) and "late" (Start()) phase
   (suggested by Andreas Schultz). Plugin authors should please read the section
   about "Getting started" in PLUGINS.html and adapt their code if applicable.
+- Implemented the CableDeliverySystemDescriptor in libdtv (thanks to Sven Grothklags)

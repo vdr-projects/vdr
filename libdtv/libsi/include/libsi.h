@@ -1054,6 +1054,28 @@ struct SatelliteDeliverySystemDescriptor {
       ((struct SatelliteDeliverySystemDescriptor *)descr)->FEC = fec; \
    } while (0)
 
+/* CableDeliverySystemDescriptor */
+
+struct CableDeliverySystemDescriptor {
+   struct NODE          Node;
+   unsigned short       Tag;
+   long                 Frequency;
+   long                 SymbolRate;
+   char                 FEC;
+   char                 Modulation;
+};
+
+#define CreateCableDeliverySystemDescriptor(descr, freq, sr, fec, mod) \
+   do \
+   { \
+      xCreateNode (((struct CableDeliverySystemDescriptor *)descr), NULL); \
+      ((struct CableDeliverySystemDescriptor *)descr)->Tag = DESCR_CABLE_DEL_SYS; \
+      ((struct CableDeliverySystemDescriptor *)descr)->Frequency = freq; \
+      ((struct CableDeliverySystemDescriptor *)descr)->SymbolRate = sr; \
+      ((struct CableDeliverySystemDescriptor *)descr)->FEC = fec; \
+      ((struct CableDeliverySystemDescriptor *)descr)->Modulation = mod; \
+   } while (0)
+
 /* ServiceListDescriptor */
 
 struct ServiceListDescriptor {
