@@ -2431,3 +2431,5 @@ Video Disk Recorder Revision History
   new VDR installations.
 - Edited recordings will now never be deleted automatically if the disk runs
   full (suggested by Emil Naepflein).
+- Channel IDs are now checked when reading 'channels.conf' to avoid later
+  problems with timers.

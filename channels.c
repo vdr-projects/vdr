@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 1.15 2003/10/03 15:12:59 kls Exp $
+ * $Id: channels.c 1.16 2003/10/17 15:42:40 kls Exp $
  */
 
 #include "channels.h"
@@ -369,6 +369,10 @@ bool cChannel::Parse(const char *s, bool AllowNonUniqueID)
         free(vpidbuf);
         free(apidbuf);
         free(namebuf);
+        if (!GetChannelID().Valid()) {
+           esyslog("ERROR: channel data results in invalid ID!");
+           return false;
+           }
         if (!AllowNonUniqueID && Channels.GetByChannelID(GetChannelID())) {
            esyslog("ERROR: channel data not unique!");
            return false;
