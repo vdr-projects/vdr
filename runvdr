@@ -1,13 +1,17 @@
 #!/bin/sh
 
-DVBDIR='../DVB/driver'
-VDRCMD='./vdr -w 60'
+DVBDIR="../DVB/driver"
+VDRPRG="./vdr"
+VDRCMD="$VDRPRG -w 60"
 
-while test 1; do
+KILLPROC="/sbin/killproc -TERM"
+
+while (true) do
 #      (cd $DVBDIR; make reload)
 #      sleep 3
       if $VDRCMD; then exit; fi
       date
       echo "restarting VDR"
+      $KILLPROC $VDRPRG
       sleep 10
       done
