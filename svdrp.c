@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.51 2003/04/27 14:21:07 kls Exp $
+ * $Id: svdrp.c 1.52 2003/06/06 13:30:52 kls Exp $
  */
 
 #include "svdrp.h"
@@ -790,6 +790,7 @@ void cSVDRP::CmdMODC(const char *Option)
                  Channels.ReNumber();
                  Channels.Save();
                  isyslog("modifed channel %d %s", channel->Number(), channel->ToText());
+                 Timers.Save();
                  Reply(250, "%d %s", channel->Number(), channel->ToText());
                  }
               else

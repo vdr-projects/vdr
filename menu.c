@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.253 2003/05/30 09:53:57 kls Exp $
+ * $Id: menu.c 1.254 2003/06/06 12:56:05 kls Exp $
  */
 
 #include "menu.h"
@@ -615,6 +615,7 @@ eOSState cMenuEditChannel::ProcessKey(eKeys Key)
            if (channel) {
               *channel = data;
               isyslog("edited channel %d %s", channel->Number(), data.ToText());
+              Timers.Save();
               state = osBack;
               }
            else {

@@ -2239,3 +2239,5 @@ Video Disk Recorder Revision History
 
 - Fixed OSD access in case none of the devices provides one (thanks to Axel
   Gruber for reporting this one).
+- Fixed editing channels ('timers.conf' was not written after a channel has
+  been modified, which could result in errors upon the next start of VDR).
