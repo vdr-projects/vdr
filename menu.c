@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.300 2004/05/16 12:47:22 kls Exp $
+ * $Id: menu.c 1.306 2004/05/23 11:21:06 kls Exp $
  */
 
 #include "menu.h"
@@ -499,25 +499,29 @@ eOSState cMenuChannels::ProcessKey(eKeys Key)
 
 // --- cMenuText -------------------------------------------------------------
 
-class cMenuText : public cOsdMenu {
-private:
-  const char *text;
-public:
-  cMenuText(const char *Title, const char *Text, eDvbFont Font = fontOsd);
-  virtual void Display(void);
-  virtual eOSState ProcessKey(eKeys Key);
-  };
-
 cMenuText::cMenuText(const char *Title, const char *Text, eDvbFont Font)
 :cOsdMenu(Title)
 {
-  text = Text;
+  text = NULL;
+  SetText(Text);
+}
+
+cMenuText::~cMenuText()
+{
+  free(text);
+}
+
+void cMenuText::SetText(const char *Text)
+{
+  free(text);
+  text = strdup(Text);
 }
 
 void cMenuText::Display(void)
 {
   cOsdMenu::Display();
   DisplayMenu()->SetText(text, true);//XXX define control character in text to choose the font???
+  cStatus::MsgOsdTextItem(text);
 }
 
 eOSState cMenuText::ProcessKey(eKeys Key)
@@ -532,6 +536,7 @@ eOSState cMenuText::ProcessKey(eKeys Key)
     case kRight|k_Repeat:
     case kRight:
                   DisplayMenu()->Scroll(NORMALKEY(Key) == kUp || NORMALKEY(Key) == kLeft, NORMALKEY(Key) == kLeft || NORMALKEY(Key) == kRight);
+                  cStatus::MsgOsdTextItem(NULL, NORMALKEY(Key) == kUp);
                   return osContinue;
     default: break;
     }
@@ -633,6 +638,7 @@ eOSState cMenuEditTimer::ProcessKey(eKeys Key)
                              }
                           if (addIfConfirmed)
                              Timers.Add(timer);
+                          timer->Matches();
                           Timers.Save();
                           isyslog("timer %d %s (%s)", timer->Index() + 1, addIfConfirmed ? "added" : "modified", timer->HasFlags(tfActive) ? "active" : "inactive");
                           addIfConfirmed = false;
@@ -677,9 +683,11 @@ bool cMenuTimerItem::operator< (const cListObject &ListObject)
 void cMenuTimerItem::Set(void)
 {
   char *buffer = NULL;
-  asprintf(&buffer, "%c\t%d\t%s\t%02d:%02d\t%02d:%02d\t%s",
+  asprintf(&buffer, "%c\t%d\t%s%s%s\t%02d:%02d\t%02d:%02d\t%s",
                     !(timer->HasFlags(tfActive)) ? ' ' : timer->FirstDay() ? '!' : timer->Recording() ? '#' : '>',
                     timer->Channel()->Number(),
+                    timer->IsSingleEvent() ? WeekDayName(timer->StartTime()) : "",
+                    timer->IsSingleEvent() ? " " : "",
                     timer->PrintDay(timer->Day()),
                     timer->Start() / 100,
                     timer->Start() % 100,
@@ -859,6 +867,7 @@ void cMenuEvent::Display(void)
 {
   cOsdMenu::Display();
   DisplayMenu()->SetEvent(event);
+  cStatus::MsgOsdTextItem(event->Description());
 }
 
 eOSState cMenuEvent::ProcessKey(eKeys Key)
@@ -873,6 +882,7 @@ eOSState cMenuEvent::ProcessKey(eKeys Key)
     case kRight|k_Repeat:
     case kRight:
                   DisplayMenu()->Scroll(NORMALKEY(Key) == kUp || NORMALKEY(Key) == kLeft, NORMALKEY(Key) == kLeft || NORMALKEY(Key) == kRight);
+                  cStatus::MsgOsdTextItem(NULL, NORMALKEY(Key) == kUp);
                   return osContinue;
     default: break;
     }
@@ -908,7 +918,7 @@ cMenuWhatsOnItem::cMenuWhatsOnItem(const cEvent *Event, cChannel *Channel)
   char t = Timers.GetMatch(Event, &TimerMatch) ? (TimerMatch == tmFull) ? 'T' : 't' : ' ';
   char v = event->Vps() && (event->Vps() - event->StartTime()) ? 'V' : ' ';
   char r = event->IsRunning() ? '*' : ' ';
-  asprintf(&buffer, "%d\t%.*s\t%.*s\t%c%c%c\t%s", channel->Number(), 6, channel->Name(), 5, event->GetTimeString(), t, v, r, event->Title());
+  asprintf(&buffer, "%d\t%.*s\t%s\t%c%c%c\t%s", channel->Number(), 6, channel->Name(), event->GetTimeString(), t, v, r, event->Title());
   SetText(buffer, false);
 }
 
@@ -1026,7 +1036,7 @@ cMenuScheduleItem::cMenuScheduleItem(const cEvent *Event)
   char t = Timers.GetMatch(Event, &TimerMatch) ? (TimerMatch == tmFull) ? 'T' : 't' : ' ';
   char v = event->Vps() && (event->Vps() - event->StartTime()) ? 'V' : ' ';
   char r = event->IsRunning() ? '*' : ' ';
-  asprintf(&buffer, "%.*s\t%.*s\t%c%c%c\t%s", 5, event->GetDateString(), 5, event->GetTimeString(), t, v, r, event->Title());
+  asprintf(&buffer, "%.*s\t%s\t%c%c%c\t%s", 6, event->GetDateString(), event->GetTimeString(), t, v, r, event->Title());
   SetText(buffer, false);
 }
 
@@ -1048,7 +1058,7 @@ public:
   };
 
 cMenuSchedule::cMenuSchedule(void)
-:cOsdMenu("", 6, 6, 4)
+:cOsdMenu("", 7, 6, 4)
 {
   now = next = false;
   otherChannel = 0;
@@ -2485,6 +2495,7 @@ cDisplayChannel::cDisplayChannel(eKeys FirstKey)
 cDisplayChannel::~cDisplayChannel()
 {
   delete displayChannel;
+  cStatus::MsgOsdClear();
 }
 
 void cDisplayChannel::DisplayChannel(void)

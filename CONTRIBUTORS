@@ -183,6 +183,8 @@ Stefan Huelswitt <huels@iname.com>
  for changing thread handling to make it work with NPTL ("Native Posix Thread Library")
  for creating mutexes with PTHREAD_MUTEX_ERRORCHECK_NP, which made the 'lockingTid'
  stuff obsolete
+ for suggesting to move the declaration of cMenuText to VDR/menu.h to make it
+ available to plugins, and to add a SetText() function
 
 Ulrich Röder <roeder@efr-net.de>
  for pointing out that there are channels that have a symbol rate higher than
@@ -518,6 +520,9 @@ Oliver Endriss <o.endriss@gmx.de>
  for suggesting to change the default "Lifetime" to 99
  for pointing out that the LNB power needs to be explicitly turned on at startup,
  because newer drivers don't do this any more
+ for adding a missing cStatus::MsgOsdClear() to cDisplayChannel::~cDisplayChannel()
+ for reporting that the "Classic VDR" skin wrongly displayed unused color buttons
+ for reporting some missing cStatus::MsgOsdTextItem() calls
 
 Reinhard Walter Buchner <rw.buchner@freenet.de>
  for adding some satellites to 'sources.conf'
@@ -670,6 +675,10 @@ Marcel Wiesweg <marcel.wiesweg@gmx.de>
  for fixing testing for matching section filters in case they are turned off
  for adding 'libsi' include files to the 'include' directory, so that plugins can
  use them
+ for his help in fixing some issues with gcc 3.4
+ for fixing a memory leak in NIT processing
+ for adding a few missing initializations
+ for adding play mode pmVideoOnly
 
 Torsten Herz <torsten.herz@web.de>
  for fixing a possible deadlock when using the "Blue" button in the "Schedules" menu
@@ -695,6 +704,9 @@ Sascha Volkenandt <sascha@akv-soft.de>
  return from their Receive() function if the buffer runs full
  for reporting a crash in case there is no DVB hardware present
  for his support in debugging the the "Unknown picture type error"
+ for reporting a crash when switching the skin and having selected a non-default
+ theme that is not available for the newly selected skin
+ for suggesting to map the color name "None" to #00000000 when processing XPM data
 
 Malcolm Caldwell <malcolm.caldwell@ntu.edu.au>
  for modifying LOF handling to allow for C-band reception
@@ -860,6 +872,7 @@ Christoph Hermanns <christoph.hermanns@gmx.de>
 Oskar Signell <oskar@signell.net>
  for pointing out a problem with setting an editing mark while in "Pause" mode,
  where replay was not immediately positioned to the marked frame
+ for making single shot timers and events show the day of week
 
 Dirk Essl <de@floydworld.de>
  for reporting a wrong URL to the 'Doxygen' tool in INSTALL
@@ -972,3 +985,13 @@ John Kennedy <rkennedy@ix.netcom.com>
 
 Drazen Dupor <drazen.dupor@dupor.com>
  for translating OSD texts to the Croatian language
+
+Prakash K. Cheemplavam <PrakashKC@gmx.de>
+ for fixing some issues with gcc 3.4
+
+Miko Wohlgemuth <weak@chello.at>
+ for reporting a problem with the OSD alignment in the SPU decoder
+
+Michal Dobrzynski <michal_dobrzynski@mac.com>
+ for reporting a freezing picture when a recording starts on a system that always
+ uses 'Transfer Mode'

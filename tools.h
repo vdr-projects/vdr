@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.55 2004/01/11 15:42:15 kls Exp $
+ * $Id: tools.h 1.56 2004/05/22 12:11:44 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -84,6 +84,7 @@ bool RemoveEmptyDirectories(const char *DirName, bool RemoveThis = false);
 char *ReadLink(const char *FileName);
 bool SpinUpDisk(const char *FileName);
 const char *WeekDayName(int WeekDay); ///< \warning returns a statically allocated string!
+const char *WeekDayName(time_t t); ///< \warning returns a statically allocated string!
 const char *DayDateTime(time_t t = 0); ///< \warning returns a statically allocated string!
 
 class cPoller {

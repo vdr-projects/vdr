@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinsttng.c 1.1 2004/05/16 09:27:35 kls Exp $
+ * $Id: skinsttng.c 1.2 2004/05/22 13:05:07 kls Exp $
  */
 
 // Star Trek: The Next Generation® is a registered trademark of Paramount Pictures
@@ -515,7 +515,7 @@ void cSkinSTTNGDisplayMenu::SetEvent(const cEvent *Event)
   int y = y3;
   cTextScroller ts;
   char t[32];
-  snprintf(t, sizeof(t), "%s  %s - %s", Event->GetDateString(), Event->GetTimeString(), Event->GetEndTimeString());//TODO dayname, no year
+  snprintf(t, sizeof(t), "%s  %s - %s", Event->GetDateString(), Event->GetTimeString(), Event->GetEndTimeString());
   ts.Set(osd, xl, y, x4 - xl, y4 - y, t, font, Theme.Color(clrMenuEventTime), Theme.Color(clrBackground));
   if (Event->Vps() && Event->Vps() != Event->StartTime()) {
      char *buffer;

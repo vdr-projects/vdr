@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.84 2004/05/01 13:15:46 kls Exp $
+ * $Id: dvbdevice.c 1.86 2004/05/23 10:11:42 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -679,7 +679,7 @@ bool cDvbDevice::ProvidesChannel(const cChannel *Channel, int Priority, bool *Ne
 
   if (ProvidesSource(Channel->Source()) && ProvidesCa(Channel)) {
      result = hasPriority;
-     if (Priority >= 0 && Receiving()) {
+     if (Priority >= 0 && Receiving(true)) {
         if (dvbTuner->IsTunedTo(Channel)) {
            if (!HasPid(Channel->Vpid())) {
 #ifdef DO_MULTIPLE_RECORDINGS
@@ -872,6 +872,16 @@ bool cDvbDevice::SetPlayMode(ePlayMode PlayMode)
          CHECK(ioctl(fd_audio, AUDIO_SET_AV_SYNC, false));
          CHECK(ioctl(fd_audio, AUDIO_PLAY));
          CHECK(ioctl(fd_video, VIDEO_SET_BLANK, false));
+         break;
+    case pmVideoOnly:
+         CHECK(ioctl(fd_video, VIDEO_SET_BLANK, true));
+         CHECK(ioctl(fd_video, VIDEO_STOP, true));
+         CHECK(ioctl(fd_audio, AUDIO_SELECT_SOURCE, AUDIO_SOURCE_DEMUX));
+         CHECK(ioctl(fd_audio, AUDIO_SET_AV_SYNC, false));
+         CHECK(ioctl(fd_audio, AUDIO_PLAY));
+         CHECK(ioctl(fd_video, VIDEO_CLEAR_BUFFER));
+         CHECK(ioctl(fd_video, VIDEO_SELECT_SOURCE, VIDEO_SOURCE_MEMORY));
+         CHECK(ioctl(fd_video, VIDEO_PLAY));
          break;
     case pmExtern_THIS_SHOULD_BE_AVOIDED:
          close(fd_video);

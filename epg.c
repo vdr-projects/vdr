@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 1.18 2004/03/13 15:01:05 kls Exp $
+ * $Id: epg.c 1.19 2004/05/22 12:37:07 kls Exp $
  */
 
 #include "epg.h"
@@ -115,9 +115,12 @@ bool cEvent::IsRunning(bool OrAboutToStart) const
 
 const char *cEvent::GetDateString(void) const
 {
-  static char buf[25];
+  static char buf[32];
   struct tm tm_r;
-  strftime(buf, sizeof(buf), "%d.%m.%Y", localtime_r(&startTime, &tm_r));
+  tm *tm = localtime_r(&startTime, &tm_r);
+  char *p = stpcpy(buf, WeekDayName(tm->tm_wday));
+  *p++ = ' ';
+  strftime(p, sizeof(buf) - (p - buf), "%d.%m.%Y", tm);
   return buf;
 }
 

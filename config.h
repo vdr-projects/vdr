@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.193 2004/05/16 12:41:43 kls Exp $
+ * $Id: config.h 1.195 2004/05/22 11:29:52 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -20,8 +20,8 @@
 #include "i18n.h"
 #include "tools.h"
 
-#define VDRVERSION  "1.3.7"
-#define VDRVERSNUM   10307  // Version * 10000 + Major * 100 + Minor
+#define VDRVERSION  "1.3.8"
+#define VDRVERSNUM   10308  // Version * 10000 + Major * 100 + Minor
 
 #define MAXPRIORITY 99
 #define MAXLIFETIME 99
@@ -140,7 +140,7 @@ public:
   bool Save(void)
   {
     bool result = true;
-    T *l = (T *)First();
+    T *l = (T *)this->First();
     cSafeFile f(fileName);
     if (f.Open()) {
        while (l) {

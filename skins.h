@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skins.h 1.1 2004/05/16 09:40:18 kls Exp $
+ * $Id: skins.h 1.2 2004/05/16 20:16:57 kls Exp $
  */
 
 #ifndef __SKINS_H
@@ -184,7 +184,7 @@ public:
        ///< indicator, showing the user whether we are currently in normal
        ///< play mode, fast forward etc.
   virtual void SetProgress(int Current, int Total) = 0;
-       ///< This function will be called whenever the position in of the total
+       ///< This function will be called whenever the position in or the total
        ///< length of the recording has changed. A cProgressBar shall then be
        ///< used to display a progress indicator.
   virtual void SetCurrent(const char *Current) = 0;

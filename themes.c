@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: themes.c 1.1 2004/05/16 09:43:14 kls Exp $
+ * $Id: themes.c 1.2 2004/05/22 10:30:06 kls Exp $
  */
 
 #include "themes.h"
@@ -274,7 +274,7 @@ int cThemes::GetThemeIndex(const char *Description)
       if (strcmp(descriptions[i], Description) == 0)
          return i;
       if (strcmp(descriptions[i], "Default") == 0)
-         index = 1;
+         index = i;
       }
   return index;
 }

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 1.42 2004/04/17 10:15:25 kls Exp $
+ * $Id: device.h 1.43 2004/05/23 10:10:08 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -36,6 +36,7 @@ enum ePlayMode { pmNone,           // audio/video from decoder
                  pmAudioVideo,     // audio/video from player
                  pmAudioOnly,      // audio only from player, video from decoder
                  pmAudioOnlyBlack, // audio only from player, no video (black screen)
+                 pmVideoOnly,      // video only from player, audio from decoder
                  pmExtern_THIS_SHOULD_BE_AVOIDED
                  // external player (e.g. MPlayer), release the device
                  // WARNING: USE THIS MODE ONLY AS A LAST RESORT, IF YOU

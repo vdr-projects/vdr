@@ -2804,3 +2804,36 @@ Video Disk Recorder Revision History
   actual source (sat, cable etc.) into account. Please go into "Setup/EPG" and
   set the "Set system time" and "Use time from transponder" parameters accordingly
   (this is necessary even if you have already set them before!).
+
+2004-05-23: Version 1.3.8
+
+- Fixed a crash when switching the skin and having selected a non-default theme
+  that is not available for the newly selected skin (thanks to Sascha Volkenandt
+  for reporting this one).
+- Fixed some issues with gcc 3.4 (thanks to Prakash K. Cheemplavam and Marcel
+  Wiesweg).
+- Added a hint to PLUGINS.html about how to name a plugin that implements a skin.
+- Completed the Finnish OSD texts (thanks to Rolf Ahrenberg).
+- Single shot timers and events now show the day of week (adopted with some changes
+  from the "elchi" patch, orginally introduced by Oskar Signell). Plugins that use
+  cEvent::GetDateString() should note that this function now returns a longer
+  string, including the day of week. The new function const char *WeekDayName(time_t t)
+  can be called with a time_t value to get the day of week for that time.
+- When processing XPM data, the color name "None" is no mapped to #00000000, which
+  is "fully transparent" (suggested by Sascha Volkenandt).
+- Fixed the OSD alignment in the SPU decoder (thanks to Miko Wohlgemuth for reporting
+  this one and helping to test the fix).
+- Fixed freezing picture when a recording starts on a system that always uses
+  'Transfer Mode' (thanks to Michal Dobrzynski for reporting this one).
+- Fixed a memory leak in NIT processing (thanks to Marcel Wiesweg).
+- Added a few missing initializations (thanks to Marcel Wiesweg).
+- Moved the declaration of cMenuText to VDR/menu.h to make it available to plugins.
+  It now also has a SetText() function that can be used to dynamically set the text
+  in an already existing cMenuText (both suggested by Stefan Huelswitt).
+- Added play mode pmVideoOnly (thanks to Marcel Wiesweg).
+- Added a missing cStatus::MsgOsdClear() to cDisplayChannel::~cDisplayChannel()
+  (thanks to Oliver Endriss).
+- No longer displaying unused color buttons in the "Classic VDR" skin (thanks to
+  Oliver Endriss for reporting this one).
+- Added some missing cStatus::MsgOsdTextItem() calls (thanks to Oliver Endriss for
+  reporting this one).

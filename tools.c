@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.78 2004/01/11 15:42:30 kls Exp $
+ * $Id: tools.c 1.79 2004/05/22 12:13:27 kls Exp $
  */
 
 #include "tools.h"
@@ -493,6 +493,12 @@ const char *WeekDayName(int WeekDay)
      }
   else
      return "???";
+}
+
+const char *WeekDayName(time_t t)
+{
+  struct tm tm_r;
+  return WeekDayName(localtime_r(&t, &tm_r)->tm_wday);
 }
 
 const char *DayDateTime(time_t t)
