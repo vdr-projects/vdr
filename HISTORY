@@ -366,7 +366,7 @@ Video Disk Recorder Revision History
   a certain instance of VDR shall use.
 - The "Left" and "Right" keys are now used to page up and down in lists (thanks
   to Martin Hammerschmid). Since the "Timers" menu already uses these keys to
-  (de)activate timers, this functionality is not available here.
+  (de)activate timers, this functionality is not available there.
 - The "Main" and "Commands" menu now support "hotkeys", which means that if the
   first non-blank character of a menu item is a digit in the range 1..9, that
   item can be selected by pressing the respective numeric key on the remote
