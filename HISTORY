@@ -1101,3 +1101,5 @@ Video Disk Recorder Revision History
   set to a small value (based on code from Markus Lang).
 - Changed the title of the "Main" menu to "VDR".
 - Fixed displaying a system message while the replay mode is being shown.
+- Physically removing a deleted recording if one with the same name shall be
+  deleted again.
