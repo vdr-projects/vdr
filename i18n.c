@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.101 2003/01/06 12:16:28 kls Exp $
+ * $Id: i18n.c 1.102 2003/01/26 11:33:50 kls Exp $
  *
  * Translations provided by:
  *
@@ -2700,7 +2700,7 @@ const tI18nPhrase Phrases[] = {
     "Paina 'Ylös' tallettaaksesi ja 'Alas' peruuttaaksesi",
     "'Gora' zapamietuje, 'Dol' przerywa",
     "Pulse 'Arriba' para guarder, 'Abajo' para anular",
-    "'kato' apothikevsi, 'Pano' akirosi",
+    "'Kato' apothikevsi, 'Pano' akirosi",
     "Tryck 'Upp' för att spara, 'Ner' för att avsluta",
     "Apsati 'Sus' pentru salvare, 'Jos' pentru anulare",
     "'Fel' mentés, 'Le´ mégse",
