@@ -7,7 +7,7 @@
  * DVD support initially written by Andreas Schultz <aschultz@warp10.net>
  * based on dvdplayer-0.5 by Matjaz Thaler <matjaz.thaler@guest.arnes.si>
  *
- * $Id: dvbapi.c 1.115 2001/09/14 13:23:21 kls Exp $
+ * $Id: dvbapi.c 1.116 2001/09/14 14:19:37 kls Exp $
  */
 
 //#define DVDDEBUG        1
@@ -873,6 +873,16 @@ void cPlayBuffer::Forward(void)
 {
   if (canDoTrickMode) {
      switch (playMode) {
+       case pmFast:
+            if (Setup.MultiSpeedMode) {
+               TrickSpeed(playDir == pdForward ? 1 : -1);
+               break;
+               }
+            else if (playDir == pdForward) {
+               Play();
+               break;
+               }
+            // run into pmPlay
        case pmPlay:
             Empty(true);
             CHECK(ioctl(audioDev, AUDIO_SET_AV_SYNC, false));
@@ -882,6 +892,16 @@ void cPlayBuffer::Forward(void)
             TrickSpeed(Setup.MultiSpeedMode ? 1 : MAX_SPEEDS);
             Empty(false);
             break;
+       case pmSlow:
+            if (Setup.MultiSpeedMode) {
+               TrickSpeed(playDir == pdForward ? -1 : 1);
+               break;
+               }
+            else if (playDir == pdForward) {
+               Pause();
+               break;
+               }
+            // run into pmPause
        case pmStill:
        case pmPause:
             CHECK(ioctl(audioDev, AUDIO_SET_AV_SYNC, false));
@@ -890,26 +910,24 @@ void cPlayBuffer::Forward(void)
             trickSpeed = NORMAL_SPEED;
             TrickSpeed(Setup.MultiSpeedMode ? -1 : -MAX_SPEEDS);
             break;
-       case pmFast:
-            if (Setup.MultiSpeedMode)
-               TrickSpeed(playDir == pdForward ? 1 : -1);
-            else if (playDir == pdForward)
-               Play();
-            break;
-       case pmSlow:
-            if (Setup.MultiSpeedMode)
-               TrickSpeed(playDir == pdForward ? -1 : 1);
-            else if (playDir == pdForward)
-               Pause();
-            break;
-            }
        }
+     }
 }
 
 void cPlayBuffer::Backward(void)
 {
   if (canDoTrickMode) {
      switch (playMode) {
+       case pmFast:
+            if (Setup.MultiSpeedMode) {
+               TrickSpeed(playDir == pdBackward ? 1 : -1);
+               break;
+               }
+            else if (playDir == pdBackward) {
+               Play();
+               break;
+               }
+            // run into pmPlay
        case pmPlay:
             Empty(true);
             CHECK(ioctl(audioDev, AUDIO_SET_AV_SYNC, false));
@@ -919,6 +937,16 @@ void cPlayBuffer::Backward(void)
             TrickSpeed(Setup.MultiSpeedMode ? 1 : MAX_SPEEDS);
             Empty(false);
             break;
+       case pmSlow:
+            if (Setup.MultiSpeedMode) {
+               TrickSpeed(playDir == pdBackward ? -1 : 1);
+               break;
+               }
+            else if (playDir == pdBackward) {
+               Pause();
+               break;
+               }
+            // run into pmPause
        case pmStill:
        case pmPause:
             Empty(true);
@@ -928,18 +956,6 @@ void cPlayBuffer::Backward(void)
             trickSpeed = NORMAL_SPEED;
             TrickSpeed(Setup.MultiSpeedMode ? -1 : -MAX_SPEEDS);
             Empty(false);
-            break;
-       case pmFast:
-            if (Setup.MultiSpeedMode)
-               TrickSpeed(playDir == pdBackward ? 1 : -1);
-            else if (playDir == pdBackward)
-               Play();
-            break;
-       case pmSlow:
-            if (Setup.MultiSpeedMode)
-               TrickSpeed(playDir == pdBackward ? -1 : 1);
-            else if (playDir == pdBackward)
-               Pause();
             break;
        }
      }
