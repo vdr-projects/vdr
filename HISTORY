@@ -1959,7 +1959,7 @@ Video Disk Recorder Revision History
 
 2003-02-16: Version 1.1.25
 
-- Fixed high CPU load during replay (thanks Marcel Wiesweg for pointing out this
+- Fixed high CPU load during replay (thanks to Marcel Wiesweg for pointing out this
   one).
 - Fixed margin handling in cRingBufferLinear.
 - Now polling the output device in 'Transfer Mode' and retrying to put packets
@@ -1970,3 +1970,8 @@ Video Disk Recorder Revision History
 - Fixed broken support for raw OSDs of plugins (thanks to Marcel Wiesweg for
   reporting this one).
 - Broken CAM connections are now restored automatically.
+
+2003-03-09: Version 1.1.26
+
+- Removed signal handling and usleep(5000) from cDvbOsd::Cmd() (apparently this
+  is no longer necessary with DVB driver 1.0.0pre2 or later).

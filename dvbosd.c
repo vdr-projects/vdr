@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbosd.c 1.19 2002/08/25 09:53:51 kls Exp $
+ * $Id: dvbosd.c 1.20 2003/03/09 09:59:13 kls Exp $
  */
 
 #include "dvbosd.h"
@@ -60,18 +60,7 @@ void cDvbOsd::Cmd(OSD_Command cmd, int color, int x0, int y0, int x1, int y1, co
      dc.x1    = x1;
      dc.y1    = y1;
      dc.data  = (void *)data;
-     // must block all signals, otherwise the command might not be fully executed
-     sigset_t set, oldset;
-     sigfillset(&set);
-     sigdelset(&set, SIGALRM);
-     sigprocmask(SIG_BLOCK, &set, &oldset);
      ioctl(osdDev, OSD_SEND_CMD, &dc);
-     if (cmd == OSD_SetBlock) // XXX this is the only command that takes longer
-        usleep(5000); // XXX Workaround for a driver bug (cInterface::DisplayChannel() displayed texts at wrong places
-                      // XXX and sometimes the OSD was no longer displayed).
-                      // XXX Increase the value if the problem still persists on your particular system.
-                      // TODO Check if this is still necessary with driver versions after 0.7.
-     sigprocmask(SIG_SETMASK, &oldset, NULL);
      }
 }
 
