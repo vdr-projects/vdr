@@ -2031,3 +2031,5 @@ Video Disk Recorder Revision History
 - The LIRC remote control no longer tries to learn keys if it can't connect to
   the LIRC daemon (thanks to Ludwig Nussel for reporting this one). The same
   applies to the RCU remote control in case of errors during startup.
+- Fixed handling of Ca parameters with values <= MAXDEVICES, which don't indicate
+  an actual encrypted channel (thanks to Stefan Huelswitt for reporting this one).

@@ -167,6 +167,8 @@ Stefan Huelswitt <huels@iname.com>
  for reporting a new/delete malloc/free mismatch in ringbuffer.c
  for reporting a crash in case the index file can't be accessed any more during replay
  for adapting VDR to 'libdtv' version 0.0.5
+ for reporting a bug in handling of Ca parameters with values <= MAXDEVICES, which
+ don't indicate an actual encrypted channel
 
 Ulrich Röder <roeder@efr-net.de>
  for pointing out that there are channels that have a symbol rate higher than

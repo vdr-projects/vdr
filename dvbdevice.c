@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.50 2003/04/12 12:09:16 kls Exp $
+ * $Id: dvbdevice.c 1.51 2003/04/12 15:06:11 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -714,7 +714,7 @@ int cDvbDevice::NumAudioTracksDevice(void) const
   int n = 0;
   if (aPid1)
      n++;
-  if (!Ca() && aPid2 && aPid1 != aPid2) // a Ca recording session blocks switching live audio tracks
+  if (Ca() <= MAXDEVICES && aPid2 && aPid1 != aPid2) // a Ca recording session blocks switching live audio tracks
      n++;
   return n;
 }
@@ -746,7 +746,7 @@ bool cDvbDevice::CanReplay(void) const
   if (Receiving())
      return false;
 #endif
-  return cDevice::CanReplay() && !Ca(); // we can only replay if there is no Ca recording going on
+  return cDevice::CanReplay() && Ca() <= MAXDEVICES; // we can only replay if there is no Ca recording going on
 }
 
 bool cDvbDevice::SetPlayMode(ePlayMode PlayMode)
