@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.c 1.13 2000/09/10 10:35:18 kls Exp $
+ * $Id: interface.c 1.14 2000/09/10 11:22:21 kls Exp $
  */
 
 #include "interface.h"
@@ -319,8 +319,15 @@ eKeys cInterface::DisplayChannel(int Number, const char *Name, bool WithInfo)
   if (Number)
      RcIo.Number(Number);
   if (Name && !Recording()) {
-     //XXX Maybe show only those lines that have actual information???
-     Open(MenuColumns, Number && WithInfo && EIT.IsValid() ? 5 : 1);
+     char *RunningTitle = "", *RunningSubtitle = "", *NextTitle = "", *NextSubtitle = "";
+     int Lines = 0;
+     if (Number && WithInfo && EIT.IsValid()) {
+        if (*(RunningTitle    = EIT.GetRunningTitle()))    Lines++;
+        if (*(RunningSubtitle = EIT.GetRunningSubtitle())) Lines++;
+        if (*(NextTitle       = EIT.GetNextTitle()))       Lines++;
+        if (*(NextSubtitle    = EIT.GetNextSubtitle()))    Lines++;
+        }
+     Open(MenuColumns, Lines + 1);
      int BufSize = MenuColumns + 1;
      char buffer[BufSize];
      if (Number)
@@ -332,15 +339,26 @@ eKeys cInterface::DisplayChannel(int Number, const char *Name, bool WithInfo)
      struct tm *now = localtime(&t);
      snprintf(buffer, BufSize, "%02d:%02d", now->tm_hour, now->tm_min);
      Write(-5, 0, buffer);
-     if (Number && WithInfo && EIT.IsValid()) { 
+     if (Lines > 0) {
         const int t = 6;
         int w = MenuColumns - t;
-        Write(0, 1, EIT.GetRunningTime(), clrYellow, clrBackground); 
-        snprintf(buffer, BufSize, "%.*s", w, EIT.GetRunningTitle());    Write(t, 1, buffer, clrCyan, clrBackground); 
-        snprintf(buffer, BufSize, "%.*s", w, EIT.GetRunningSubtitle()); Write(t, 2, buffer, clrCyan, clrBackground); 
-        Write(0, 3, EIT.GetNextTime(), clrYellow, clrBackground); 
-        snprintf(buffer, BufSize, "%.*s", w, EIT.GetNextTitle());       Write(t, 3, buffer, clrCyan, clrBackground); 
-        snprintf(buffer, BufSize, "%.*s", w, EIT.GetNextSubtitle());    Write(t, 4, buffer, clrCyan, clrBackground); 
+        int l = 1;
+        if (*RunningTitle) {
+           Write(0, l, EIT.GetRunningTime(), clrYellow, clrBackground);
+           snprintf(buffer, BufSize, "%.*s", w, RunningTitle);    Write(t, l, buffer, clrCyan, clrBackground);
+           l++;
+           }
+        if (*RunningSubtitle) {
+           snprintf(buffer, BufSize, "%.*s", w, RunningSubtitle); Write(t, l, buffer, clrCyan, clrBackground);
+           l++;
+           }
+        if (*NextTitle) {
+           Write(0, l, EIT.GetNextTime(), clrYellow, clrBackground);
+           snprintf(buffer, BufSize, "%.*s", w, NextTitle);       Write(t, l, buffer, clrCyan, clrBackground);
+           l++;
+           }
+        if (*NextSubtitle)
+           snprintf(buffer, BufSize, "%.*s", w, NextSubtitle);    Write(t, l, buffer, clrCyan, clrBackground);
         }
      eKeys Key = Wait(5, true);
      if (Key == kOk)

@@ -163,3 +163,5 @@ Video Disk Recorder Revision History
 - The "Primary DVB interface" can now be chosen via the "Setup" menu.
 - Display of the "current/next" information when switching channels can now
   be disabled via the "Setup" menu.
+- The "current/next" display now only shows those lines that actually contain
+  information.
