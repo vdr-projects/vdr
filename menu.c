@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.207 2002/09/04 13:27:13 kls Exp $
+ * $Id: menu.c 1.208 2002/09/06 14:07:58 kls Exp $
  */
 
 #include "menu.h"
@@ -2519,15 +2519,14 @@ bool cRecordControls::Start(cTimer *Timer)
   cChannel *channel = Channels.GetByNumber(ch);
 
   if (channel) {
-     bool NeedsSwitchChannel = false;
-     cDevice *device = cDevice::GetDevice(channel, Timer ? Timer->priority : Setup.DefaultPriority, &NeedsSwitchChannel);
+     bool NeedsDetachReceivers = false;
+     cDevice *device = cDevice::GetDevice(channel, Timer ? Timer->priority : Setup.DefaultPriority, &NeedsDetachReceivers);
      if (device) {
-        if (NeedsSwitchChannel) {
+        if (NeedsDetachReceivers)
            Stop(device);
-           if (!device->SwitchChannel(channel, false)) {
-              cThread::EmergencyExit(true);
-              return false;
-              }
+        if (!device->SwitchChannel(channel, false)) {
+           cThread::EmergencyExit(true);
+           return false;
            }
         for (int i = 0; i < MAXRECORDCONTROLS; i++) {
             if (!RecordControls[i]) {

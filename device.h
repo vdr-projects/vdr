@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 1.11 2002/09/04 11:33:12 kls Exp $
+ * $Id: device.h 1.12 2002/09/06 14:04:52 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -72,10 +72,10 @@ public:
   static cDevice *GetDevice(int Index);
          // Returns the device with the Index (if Index is in the range
          // 0..numDevices-1, NULL otherwise).
-  static cDevice *GetDevice(const cChannel *Channel, int Priority = -1, bool *NeedsSwitchChannel = NULL);
+  static cDevice *GetDevice(const cChannel *Channel, int Priority = -1, bool *NeedsDetachReceivers = NULL);
          // Returns a device that is able to receive the given Channel at the
          // given Priority (see ProvidesChannel() for more information on how
-         // priorities are handled, and the meaning of NeedsSwitchChannel).
+         // priorities are handled, and the meaning of NeedsDetachReceivers).
   static void SetCaCaps(int Index = -1);
          // Sets the CaCaps of the given device according to the Setup data.
          // By default the CaCaps of all devices are set.
@@ -134,7 +134,7 @@ public:
 protected:
   int currentChannel;
 public:
-  virtual bool ProvidesChannel(const cChannel *Channel, int Priority = -1, bool *NeedsSwitchChannel = NULL);
+  virtual bool ProvidesChannel(const cChannel *Channel, int Priority = -1, bool *NeedsDetachReceivers = NULL);
          // Returns true if this device can provide the given channel.
          // In case the device has cReceivers attached to it or it is the primary
          // device, Priority is used to decide whether the caller's request can
@@ -142,12 +142,10 @@ public:
          // The special Priority value -1 will tell the caller whether this device
          // is principally able to provide the given Channel, regardless of any
          // attached cReceivers.
-         // If NeedsSwitchChannel is given, the resulting value in it will tell the
-         // caller whether or not it shall call SwitchChannel to actually switch the
-         // device to the desired channel. If NeedsSwitchChannel returns false, the
-         // caller must not call SwitchChannel, since there are receivers attached
-         // to the device and it is already switched to the given channel. Note
-         // that the return value in NeedsSwitchChannel is only meaningful if the
+         // If NeedsDetachReceivers is given, the resulting value in it will tell the
+         // caller whether or not it will have to detach any currently attached
+         // receivers from this device before calling SwitchChannel. Note
+         // that the return value in NeedsDetachReceivers is only meaningful if the
          // function itself actually returns true.
          // The default implementation always returns false, so a derived cDevice
          // class that can provide channels must implement this function.

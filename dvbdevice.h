@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.h 1.7 2002/09/04 13:31:42 kls Exp $
+ * $Id: dvbdevice.h 1.8 2002/09/06 14:10:17 kls Exp $
  */
 
 #ifndef __DVBDEVICE_H
@@ -59,7 +59,7 @@ public:
 private:
   int frequency;
 public:
-  virtual bool ProvidesChannel(const cChannel *Channel, int Priority = -1, bool *NeedsSwitchChannel = NULL);
+  virtual bool ProvidesChannel(const cChannel *Channel, int Priority = -1, bool *NeedsDetachReceivers = NULL);
 protected:
   virtual bool SetChannelDevice(const cChannel *Channel, bool LiveView);
 

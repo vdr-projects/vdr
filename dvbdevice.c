@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.9 2002/09/04 13:46:03 kls Exp $
+ * $Id: dvbdevice.c 1.10 2002/09/06 14:09:55 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -338,19 +338,19 @@ bool cDvbDevice::SetPid(cPidHandle *Handle, int Type, bool On)
   return true;
 }
 
-bool cDvbDevice::ProvidesChannel(const cChannel *Channel, int Priority, bool *NeedsSwitchChannel)
+bool cDvbDevice::ProvidesChannel(const cChannel *Channel, int Priority, bool *NeedsDetachReceivers)
 {
   bool result = false;
   bool hasPriority = Priority < 0 || Priority > this->Priority();
-  bool needsSwitchChannel = true;
+  bool needsDetachReceivers = true;
 
   if (ProvidesCa(Channel->ca)) {
      if (Receiving()) {
         if (frequency == Channel->frequency) {
-           needsSwitchChannel = false;
+           needsDetachReceivers = false;
            if (!HasPid(Channel->vpid)) {
               if (Channel->ca > CACONFBASE) {
-                 needsSwitchChannel = true;
+                 needsDetachReceivers = true;
                  result = hasPriority;
                  }
               else if (!HasDecoder())
@@ -360,8 +360,6 @@ bool cDvbDevice::ProvidesChannel(const cChannel *Channel, int Priority, bool *Ne
 #define MIN_DVB_DRIVER_VERSION_FOR_TIMESHIFT 2002090101
 #ifdef DVB_DRIVER_VERSION
 #if (DVB_DRIVER_VERSION >= MIN_DVB_DRIVER_VERSION_FOR_TIMESHIFT)
-                 if (pidHandles[ptVideo].used)
-                    needsSwitchChannel = true; // to have it turn off the live PIDs
                  result = !IsPrimaryDevice() || Priority >= Setup.PrimaryLimit;
 #endif
 #else
@@ -378,8 +376,8 @@ bool cDvbDevice::ProvidesChannel(const cChannel *Channel, int Priority, bool *Ne
      else
         result = hasPriority;
      }
-  if (NeedsSwitchChannel)
-     *NeedsSwitchChannel = needsSwitchChannel;
+  if (NeedsDetachReceivers)
+     *NeedsDetachReceivers = needsDetachReceivers;
   return result;
 }
 

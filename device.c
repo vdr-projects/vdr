@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.14 2002/09/04 17:26:02 kls Exp $
+ * $Id: device.c 1.15 2002/09/06 14:02:19 kls Exp $
  */
 
 #include "device.h"
@@ -117,12 +117,12 @@ cDevice *cDevice::GetDevice(int Index)
   return (0 <= Index && Index < numDevices) ? device[Index] : NULL;
 }
 
-cDevice *cDevice::GetDevice(const cChannel *Channel, int Priority, bool *NeedsSwitchChannel)
+cDevice *cDevice::GetDevice(const cChannel *Channel, int Priority, bool *NeedsDetachReceivers)
 {
   cDevice *d = NULL;
   for (int i = 0; i < numDevices; i++) {
-      bool nsc;
-      if (device[i]->ProvidesChannel(Channel, Priority, &nsc) // this device is basicly able to do the job
+      bool ndr;
+      if (device[i]->ProvidesChannel(Channel, Priority, &ndr) // this device is basicly able to do the job
          && (!d // we don't have a device yet, or...
             || device[i]->Priority() < d->Priority() // ...this one has an even lower Priority, or...
             || device[i]->Priority() == d->Priority() // ...same Priority...
@@ -130,8 +130,8 @@ cDevice *cDevice::GetDevice(const cChannel *Channel, int Priority, bool *NeedsSw
             )
          ) {
          d = device[i];
-         if (NeedsSwitchChannel)
-            *NeedsSwitchChannel = nsc;
+         if (NeedsDetachReceivers)
+            *NeedsDetachReceivers = ndr;
          }
       }
   /*XXX+ too complex with multiple recordings per device
@@ -257,7 +257,7 @@ bool cDevice::SetPid(cPidHandle *Handle, int Type, bool On)
   return false;
 }
 
-bool cDevice::ProvidesChannel(const cChannel *Channel, int Priority, bool *NeedsSwitchChannel)
+bool cDevice::ProvidesChannel(const cChannel *Channel, int Priority, bool *NeedsDetachReceivers)
 {
   return false;
 }
@@ -302,10 +302,9 @@ eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
   // use the card that actually can receive it and transfer data from there:
 
   if (NeedsTransferMode) {
-     bool NeedsSwitchChannel = false;
-     cDevice *CaDevice = GetDevice(Channel, 0, &NeedsSwitchChannel);
+     cDevice *CaDevice = GetDevice(Channel, 0);
      if (CaDevice) {
-        if (!NeedsSwitchChannel || CaDevice->SetChannel(Channel, false) == scrOk) // calling SetChannel() directly, not SwitchChannel()!
+        if (CaDevice->SetChannel(Channel, false) == scrOk) // calling SetChannel() directly, not SwitchChannel()!
            cControl::Launch(new cTransferControl(CaDevice, Channel->vpid, Channel->apid1, 0, 0, 0));//XXX+
         else
            Result = scrNoTransfer;
