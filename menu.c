@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.284 2004/02/08 15:06:42 kls Exp $
+ * $Id: menu.c 1.285 2004/02/13 13:23:07 kls Exp $
  */
 
 #include "menu.h"
@@ -557,8 +557,12 @@ cMenuEditChannel::cMenuEditChannel(cChannel *Channel, bool New)
   channel = Channel;
   if (channel) {
      data = *channel;
-     if (New)
+     if (New) {
         channel = NULL;
+        data.nid = 0;
+        data.tid = 0;
+        data.rid = 0;
+        }
      Setup();
      }
 }
@@ -583,7 +587,7 @@ void cMenuEditChannel::Setup(void)
   Add(new cMenuEditIntItem( tr("Dpid2"),        &data.dpids[1], 0, 0x1FFF));
   Add(new cMenuEditIntItem( tr("Tpid"),         &data.tpid,  0, 0x1FFF));
   Add(new cMenuEditCaItem(  tr("CA"),           &data.caids[0], true));//XXX
-  Add(new cMenuEditIntItem( tr("Sid"),          &data.sid, 0));
+  Add(new cMenuEditIntItem( tr("Sid"),          &data.sid, 1, 0xFFFF));
   /* XXX not yet used
   Add(new cMenuEditIntItem( tr("Nid"),          &data.nid, 0));
   Add(new cMenuEditIntItem( tr("Tid"),          &data.tid, 0));

@@ -2657,3 +2657,5 @@ Video Disk Recorder Revision History
 - Fixed reading the EPG preferred language parameter from 'setup.conf'.
 - Fixed switching to a visible programme in case the current channel has neither
   a video nor an audio PID.
+- Fixed editing channels (SID now range checked) and creating new channels (NID,
+  TID and RID are now set to 0).
