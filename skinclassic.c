@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinclassic.c 1.3 2004/05/23 10:40:02 kls Exp $
+ * $Id: skinclassic.c 1.7 2004/05/29 14:04:50 kls Exp $
  */
 
 #include "skinclassic.h"
@@ -71,16 +71,18 @@ THEME_CLR(Theme, clrReplayProgressCurrent,  clrRed);
 
 // --- cSkinClassicDisplayChannel --------------------------------------------
 
-class cSkinClassicDisplayChannel : public cSkinDisplayChannel{
+class cSkinClassicDisplayChannel : public cSkinDisplayChannel {
 private:
   cOsd *osd;
   int lineHeight;
   int timeWidth;
+  bool message;
 public:
   cSkinClassicDisplayChannel(bool WithInfo);
   virtual ~cSkinClassicDisplayChannel();
   virtual void SetChannel(const cChannel *Channel, int Number);
   virtual void SetEvents(const cEvent *Present, const cEvent *Following);
+  virtual void SetMessage(eMessageType Type, const char *Text);
   virtual void Flush(void);
   };
 
@@ -89,9 +91,10 @@ cSkinClassicDisplayChannel::cSkinClassicDisplayChannel(bool WithInfo)
   int Lines = WithInfo ? 5 : 1;
   const cFont *font = cFont::GetFont(fontOsd);
   lineHeight = font->Height();
+  message = false;
   osd = cOsdProvider::NewOsd(Setup.OSDLeft, Setup.OSDTop + (Setup.ChannelInfoPos ? 0 : Setup.OSDHeight - Lines * lineHeight));
   timeWidth = font->Width("00:00") + 4;
-  tArea Areas[] = { { 0, 0, Setup.OSDWidth - 1, Lines * lineHeight, 4 } };
+  tArea Areas[] = { { 0, 0, Setup.OSDWidth - 1, Lines * lineHeight - 1, 4 } };
   osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
   osd->DrawRectangle(0, 0, osd->Width() - 1, osd->Height() - 1, Theme.Color(clrBackground));
 }
@@ -121,10 +124,26 @@ void cSkinClassicDisplayChannel::SetEvents(const cEvent *Present, const cEvent *
       }
 }
 
+void cSkinClassicDisplayChannel::SetMessage(eMessageType Type, const char *Text)
+{
+  const cFont *font = cFont::GetFont(fontOsd);
+  if (Text) {
+     osd->SaveRegion(0, 0, osd->Width() - 1, lineHeight - 1);
+     osd->DrawText(0, 0, Text, Theme.Color(clrMessageStatusFg + 2 * Type), Theme.Color(clrMessageStatusBg + 2 * Type), font, osd->Width(), 0, taCenter);
+     message = true;
+     }
+  else {
+     osd->RestoreRegion();
+     message = false;
+     }
+}
+
 void cSkinClassicDisplayChannel::Flush(void)
 {
-  const char *date = DayDateTime();
-  osd->DrawText(osd->Width() - cFont::GetFont(fontSml)->Width(date) - 2, 0, date, Theme.Color(clrChannelDate), Theme.Color(clrBackground), cFont::GetFont(fontSml));
+  if (!message) {
+     const char *date = DayDateTime();
+     osd->DrawText(osd->Width() - cFont::GetFont(fontSml)->Width(date) - 2, 0, date, Theme.Color(clrChannelDate), Theme.Color(clrBackground), cFont::GetFont(fontSml));
+     }
   osd->Flush();
 }
 
@@ -333,6 +352,7 @@ private:
   int x0, x1;
   int y0, y1, y2, y3;
   int lastCurrentWidth;
+  bool message;
 public:
   cSkinClassicDisplayReplay(bool ModeOnly);
   virtual ~cSkinClassicDisplayReplay();
@@ -342,6 +362,7 @@ public:
   virtual void SetCurrent(const char *Current);
   virtual void SetTotal(const char *Total);
   virtual void SetJump(const char *Jump);
+  virtual void SetMessage(eMessageType Type, const char *Text);
   virtual void Flush(void);
   };
 
@@ -350,6 +371,7 @@ cSkinClassicDisplayReplay::cSkinClassicDisplayReplay(bool ModeOnly)
   const cFont *font = cFont::GetFont(fontOsd);
   int lineHeight = font->Height();
   lastCurrentWidth = 0;
+  message = false;
   x0 = 0;
   x1 = Setup.OSDWidth;
   y0 = 0;
@@ -369,7 +391,7 @@ cSkinClassicDisplayReplay::~cSkinClassicDisplayReplay()
 
 void cSkinClassicDisplayReplay::SetTitle(const char *Title)
 {
-  osd->DrawText(x0, y0, Title, Theme.Color(clrReplayTitle), Theme.Color(clrBackground), cFont::GetFont(fontOsd));
+  osd->DrawText(x0, y0, Title, Theme.Color(clrReplayTitle), Theme.Color(clrBackground), cFont::GetFont(fontOsd), x1 - x0);
 }
 
 void cSkinClassicDisplayReplay::SetMode(bool Play, bool Forward, int Speed)
@@ -411,6 +433,20 @@ void cSkinClassicDisplayReplay::SetTotal(const char *Total)
 void cSkinClassicDisplayReplay::SetJump(const char *Jump)
 {
   osd->DrawText(x0 + (x1 - x0) / 4, y2, Jump, Theme.Color(clrReplayModeJump), Theme.Color(clrBackground), cFont::GetFont(fontOsd), (x1 - x0) / 2, 0, taCenter);
+}
+
+void cSkinClassicDisplayReplay::SetMessage(eMessageType Type, const char *Text)
+{
+  const cFont *font = cFont::GetFont(fontOsd);
+  if (Text) {
+     osd->SaveRegion(x0, y2, x1 - 1, y3 - 1);
+     osd->DrawText(x0, y2, Text, Theme.Color(clrMessageStatusFg + 2 * Type), Theme.Color(clrMessageStatusBg + 2 * Type), font, x1 - x0, y3 - y2, taCenter);
+     message = true;
+     }
+  else {
+     osd->RestoreRegion();
+     message = false;
+     }
 }
 
 void cSkinClassicDisplayReplay::Flush(void)

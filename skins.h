@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skins.h 1.2 2004/05/16 20:16:57 kls Exp $
+ * $Id: skins.h 1.3 2004/05/29 13:13:21 kls Exp $
  */
 
 #ifndef __SKINS_H
@@ -56,6 +56,11 @@ public:
   virtual void SetEvents(const cEvent *Present, const cEvent *Following) = 0;
        ///< Sets the Present and Following EPG events. It either of these
        ///< is not available, NULL will be given.
+  virtual void SetMessage(eMessageType Type, const char *Text) = 0;
+       ///< Sets a one line message Text, with the given Type. Type can be used
+       ///< to determine, e.g., the colors for displaying the Text.
+       ///< If Text is NULL, any previously displayed message must be removed, and
+       ///< any previous contents overwritten by the message must be restored.
   /*TODO
   SetButtons
     Red    = Video options
@@ -202,6 +207,11 @@ public:
        ///< needs to be able to handle variations in the length of this
        ///< string, which will occur when the user enters an actual value.
        ///< If Jump is NULL, the jump prompt shall be removed from the display.
+  virtual void SetMessage(eMessageType Type, const char *Text) = 0;
+       ///< Sets a one line message Text, with the given Type. Type can be used
+       ///< to determine, e.g., the colors for displaying the Text.
+       ///< If Text is NULL, any previously displayed message must be removed, and
+       ///< any previous contents overwritten by the message must be restored.
   };
 
 class cSkinDisplayVolume : public cSkinDisplay {

@@ -185,6 +185,8 @@ Stefan Huelswitt <huels@iname.com>
  stuff obsolete
  for suggesting to move the declaration of cMenuText to VDR/menu.h to make it
  available to plugins, and to add a SetText() function
+ for reporting a bug in setting the title in the replay display of the "Classic VDR"
+ skin in case a shorter title is set after a longer one
 
 Ulrich Röder <roeder@efr-net.de>
  for pointing out that there are channels that have a symbol rate higher than
@@ -479,6 +481,7 @@ Helmut Auer <vdr@helmutauer.de>
  for suggesting to make the "Zap timeout" a setup variable
  for fixing a frequency/transponder handling mixup when setting the time from the
  DVB data stream
+ for implementing a default cRemote::Initialize()
 
 Jeremy Hall <jhall@UU.NET>
  for fixing an incomplete initialization of the filter parameters in eit.c
@@ -523,6 +526,7 @@ Oliver Endriss <o.endriss@gmx.de>
  for adding a missing cStatus::MsgOsdClear() to cDisplayChannel::~cDisplayChannel()
  for reporting that the "Classic VDR" skin wrongly displayed unused color buttons
  for reporting some missing cStatus::MsgOsdTextItem() calls
+ for reporting a missing "Editing process finished" message with skins
 
 Reinhard Walter Buchner <rw.buchner@freenet.de>
  for adding some satellites to 'sources.conf'
@@ -707,6 +711,8 @@ Sascha Volkenandt <sascha@akv-soft.de>
  for reporting a crash when switching the skin and having selected a non-default
  theme that is not available for the newly selected skin
  for suggesting to map the color name "None" to #00000000 when processing XPM data
+ for suggesting to also reset the palette in cBitmap::DrawBitmap() if the entire
+ bitmap area is covered
 
 Malcolm Caldwell <malcolm.caldwell@ntu.edu.au>
  for modifying LOF handling to allow for C-band reception
@@ -952,6 +958,8 @@ Jens Rosenboom <me@jayr.de>
 
 Andreas Regel <andreas.regel@gmx.de>
  for fixing handling bitmap indexes for 256 color mode
+ for reporting a bug in removing the "scanning recordings..." message in case the
+ video directory is empty
 
 Thomas Bergwinkl <Thomas.Bergwinkl@t-online.de>
  for fixing the validity check for channel IDs, because some providers use TIDs
@@ -995,3 +1003,10 @@ Miko Wohlgemuth <weak@chello.at>
 Michal Dobrzynski <michal_dobrzynski@mac.com>
  for reporting a freezing picture when a recording starts on a system that always
  uses 'Transfer Mode'
+
+Wayne Keer <syphir@syphir.sytes.net>
+ for reporting a bug in handling descriptor loops in 'libsi', which had sometimes
+ caused invalid CA ids to be added to the channel definitions
+
+Marco Schlüßler <marco@lordzodiac.de>
+ for fixing handling colors in cDvbSpuPalette::yuv2rgb()

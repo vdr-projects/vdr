@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.156 2004/05/22 11:46:35 kls Exp $
+ * $Id: i18n.c 1.157 2004/05/28 13:19:29 kls Exp $
  *
  * Translations provided by:
  *
@@ -1889,7 +1889,7 @@ const tI18nPhrase Phrases[] = {
     "A csatornabe·llÌt·sok nem egyÈrtelm¸ek",
     "Propietats del canal duplicades!",
     "Ω–·‚‡ﬁŸ⁄ÿ ⁄–›–€– ›’ „›ÿ⁄–€Ï›Î!",
-    "Parametri programa nisu jedinstveni!",
+    "Parametri programa nisu jednoznaËni!",
   },
   { "Channel locked (recording)!",
     "Kanal blockiert (zeichnet auf)!",
@@ -2328,7 +2328,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Povrπina",
   },
   { "Setup.OSD$Theme",
     "Thema",
@@ -2347,7 +2347,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Tema",
   },
   { "Setup.OSD$Left",
     "Links",
@@ -2366,7 +2366,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Lijevo",
   },
   { "Setup.OSD$Top",
     "Oben",
@@ -2385,7 +2385,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Gore",
   },
   { "Setup.OSD$Width",
     "Breite",
@@ -2461,7 +2461,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Koristi mala slova",
   },
   { "never",
     "nie",
@@ -2480,7 +2480,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "nikada",
   },
   { "skin dependent",
     "je nach Oberfl‰che",
@@ -2499,7 +2499,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "ovisno o povrπini",
   },
   { "always",
     "immer",
@@ -2518,7 +2518,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "uvijek",
   },
   { "Setup.OSD$Channel info position",
     "Kanal-Info Position",
@@ -2670,7 +2670,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "≈‡–›’›ÿ’ „·‚–‡’“ËÿÂ ‘–››ÎÂ (‹ÿ›)",
-    "Prikaæi stare EPG podatke (min)",// TODO
+    "Prikaæi stare EPG podatke (min)",
   },
   { "Setup.EPG$Set system time",
     "Systemzeit stellen",
@@ -2710,7 +2710,7 @@ const tI18nPhrase Phrases[] = {
     "∏·ﬂﬁ€Ï◊ﬁ“–‚Ï “‡’‹Ô ‚‡–›·ﬂﬁ›‘’‡–",
     "Transponder za podeπavanje sata",
   },
-  { "Setup.EPG$Preferred languages",
+  { "Setup.EPG$Preferred languages", // note the plural
     "Bevorzugte Sprachen",
     "",// TODO
     "",// TODO
@@ -2727,9 +2727,9 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "ø‡’‘ﬂﬁÁÿ‚–’‹Î’ Ô◊Î⁄ÿ",
-    "Preferirani jezik",
+    "Preferirani jezici",
   },
-  { "Setup.EPG$Preferred language",
+  { "Setup.EPG$Preferred language", // note the singular
     "Bevorzugte Sprache",
     "",// TODO
     "",// TODO
@@ -4613,7 +4613,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "KlasiËcni VDR",
   },
   { "ST:TNG Panels",
     "ST:TNG Konsolen",
@@ -4632,7 +4632,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "ST:TNG Konzole",
   },
   { NULL }
   };

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.h 1.41 2004/05/15 14:54:37 kls Exp $
+ * $Id: osd.h 1.43 2004/05/29 14:02:47 kls Exp $
  */
 
 #ifndef __OSD_H
@@ -122,9 +122,12 @@ public:
        ///< unchanged.
   bool Contains(int x, int y) const;
        ///< Returns true if this bitmap contains the point (x, y).
+  bool Covers(int x1, int y1, int x2, int y2) const;
+       ///< Returns true if the rectangle defined by the given coordinates
+       ///< completely covers this bitmap.
   bool Intersects(int x1, int y1, int x2, int y2) const;
-       ///< Returns true if this bitmap intersects with the rectangle
-       ///< defined by the given coordinates.
+       ///< Returns true if the rectangle defined by the given coordinates
+       ///< intersects with this bitmap.
   bool Dirty(int &x1, int &y1, int &x2, int &y2);
        ///< Tells whether there is a dirty area and returns the bounding
        ///< rectangle of that area (relative to the bitmaps origin).
@@ -287,7 +290,7 @@ public:
        ///< -1..-8  draws the inverted part of the given quadrant(s)
        ///< If Quadrants is not 0, the coordinates are those of the actual area, not
        ///< the full circle!
-  void DrawSlope(int x1, int y1, int x2, int y2, tColor Color, int Type);
+  virtual void DrawSlope(int x1, int y1, int x2, int y2, tColor Color, int Type);
        ///< Draws a "slope" into the rectangle defined by the upper left (x1, y1) and
        ///< lower right (x2, y2) corners with the given Color. Type controls the
        ///< direction of the slope and which side of it will be drawn:

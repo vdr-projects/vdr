@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remote.c 1.39 2003/10/18 11:35:32 kls Exp $
+ * $Id: remote.c 1.40 2004/05/28 14:19:52 kls Exp $
  */
 
 #include "remote.h"
@@ -17,6 +17,8 @@
 #include "tools.h"
 
 // --- cRemote ---------------------------------------------------------------
+
+#define INITTIMEOUT 10000 // ms
 
 eKeys cRemote::keys[MaxKeys];
 int cRemote::in = 0;
@@ -46,6 +48,17 @@ const char *cRemote::GetSetup(void)
 void cRemote::PutSetup(const char *Setup)
 {
   Keys.PutSetup(Name(), Setup);
+}
+
+bool cRemote::Initialize(void)
+{
+  if (Ready()) {
+     char *NewCode = NULL;
+     eKeys Key = Get(INITTIMEOUT, &NewCode);
+     if (Key != kNone || NewCode)
+        return true;
+     }
+  return false;
 }
 
 void cRemote::Clear(void)

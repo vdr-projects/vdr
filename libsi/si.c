@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: si.c 1.9 2004/03/07 10:50:09 kls Exp $
+ *   $Id: si.c 1.10 2004/05/29 17:06:23 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -112,7 +112,7 @@ Descriptor *DescriptorLoop::getNext(Iterator &it, DescriptorTag tag, bool return
    Descriptor *d=0;
    if (it.i<getLength()) {
       const unsigned char *p=data.getData(it.i);
-      const unsigned char *end=p+getLength();
+      const unsigned char *end=p+getLength()-it.i;
       while (p < end) {
          if (Descriptor::getDescriptorTag(p) == tag) {
             d=createDescriptor(it.i, returnUnimplemetedDescriptor);
@@ -130,7 +130,7 @@ Descriptor *DescriptorLoop::getNext(Iterator &it, DescriptorTag *tags, int array
    Descriptor *d=0;
    if (it.i<getLength()) {
       const unsigned char *p=data.getData(it.i);
-      const unsigned char *end=p+getLength();
+      const unsigned char *end=p+getLength()-it.i;
       while (p < end) {
          for (int u=0; u<arrayLength;u++)
             if (Descriptor::getDescriptorTag(p) == tags[u]) {
