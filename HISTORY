@@ -1863,7 +1863,7 @@ Video Disk Recorder Revision History
   read from the keyboard).
 - The 'ncurses' library is now only necessary when compiling VDR with DEBUG_OSD=1.
 
-2002-12-14: Version 1.1.20
+2002-12-15: Version 1.1.20
 
 - Now checking if there is a connection to the keyboard (thanks to Jaakko Hyvätti)
   and only creating the KBD remote control if VDR is running in the foreground.
