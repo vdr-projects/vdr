@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.21 2001/08/12 15:10:16 kls Exp $
+ * $Id: svdrp.c 1.22 2001/09/01 09:50:03 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -166,6 +166,16 @@ const char *HelpPages[] = {
   "    Create a new timer. Settings must be in the same format as returned\n"
   "    by the LSTT command. It is an error if a timer with the same channel,\n"
   "    day, start and stop time already exists.",
+  "NEXT [ abs | rel ]\n"
+  "    Show the next timer event. If no option is given, the output will be\n"
+  "    in human readable form. With option 'abs' the absolute time of the next\n"
+  "    event will be given as the number of seconds since the epoch (time_t\n"
+  "    format), while with option 'rel' the relative time will be given as the\n"
+  "    number of seconds from now until the event. If the absolute time given\n"
+  "    is smaller than the current time, or if the relative time is less than\n"
+  "    zero, this means that the timer is currently recording and has started\n"
+  "    at the given time. The first value in the resulting line is the number\n"
+  "    of the timer.",
   "OVLF <sizex> <sizey> <fbaddr> <bpp> <palette>\n"
   "    Set the size, address depth and palette of the overlay.",
   "OVLG <sizex> <sizey> <posx> <posy>\n"
@@ -737,6 +747,28 @@ void cSVDRP::CmdNEWT(const char *Option)
      Reply(501, "Missing timer settings");
 }
 
+void cSVDRP::CmdNEXT(const char *Option)
+{
+  cTimer *t = Timers.GetNextActiveTimer();
+  if (t) {
+     time_t Start = t->StartTime();
+     int Number = t->Index() + 1;
+     if (!*Option) {
+        char *s = ctime(&Start);
+        s[strlen(s) - 1] = 0; // strip trailing newline
+        Reply(250, "%d %s", Number, s);
+        }
+     else if (strcasecmp(Option, "ABS") == 0)
+        Reply(250, "%d %ld", Number, Start);
+     else if (strcasecmp(Option, "REL") == 0)
+        Reply(250, "%d %ld", Number, Start - time(NULL));
+     else
+        Reply(501, "Unknown option: \"%s\"", Option);
+     }
+  else
+     Reply(550, "No active timers");
+}
+
 void cSVDRP::CmdOVLF(const char *Option)
 {
   if (*Option) {
@@ -893,6 +925,7 @@ void cSVDRP::Execute(char *Cmd)
   else if (CMD("MOVT"))  CmdMOVT(s);
   else if (CMD("NEWC"))  CmdNEWC(s);
   else if (CMD("NEWT"))  CmdNEWT(s);
+  else if (CMD("NEXT"))  CmdNEXT(s);
   else if (CMD("OVLF"))  CmdOVLF(s);
   else if (CMD("OVLG"))  CmdOVLG(s);
   else if (CMD("OVLC"))  CmdOVLC(s);

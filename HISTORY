@@ -681,4 +681,5 @@ Video Disk Recorder Revision History
 
 - Changed version number notation.
 - Implemented automatic shutdown (see INSTALL and MANUAL for details).
+- New SVDRP command NEXT to show the next timer event.
 
