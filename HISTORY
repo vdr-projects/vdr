@@ -3387,3 +3387,4 @@ Video Disk Recorder Revision History
 - Fixed handling symbolic links in cRecordings::ScanVideoDir() (thanks to Stefan
   Huelswitt).
 - Completed the Danish OSD texts (thanks to Mogens Elneff).
+- Forcing a new resync after a call to cRemux::Clear() (suggested by Marco Schlüßler).
