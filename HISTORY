@@ -2343,7 +2343,11 @@ Video Disk Recorder Revision History
 - Updated 'channels.conf.terr' for Berlin.
 - Fixed displaying still pictures, now using the driver's VIDEO_STILLPICTURE call
   directly (thanks to Oliver Endriss). This also improves navigating through DVD
-  menus with the DVD plugin.
+  menus with the DVD plugin. If this causes problems with your particular system
+  (maybe because you are using the 'analogtv' plugin) you can reactivate the
+  previous behaviour by commenting out the line
+  #define VIDEO_STILLPICTURE_WORKS_WITH_VDR_FRAMES
+  in VDR/dvbdevice.c.
 - Fixed handling extra blanks in plugin command lines.
 - Actually implemented the SVDRP command DELC.
 - Now clearing the player device if there are too many poll timeouts in 'Transfer
