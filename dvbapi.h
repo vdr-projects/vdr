@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.h 1.33 2001/02/03 17:39:33 kls Exp $
+ * $Id: dvbapi.h 1.34 2001/02/10 13:11:48 kls Exp $
  */
 
 #ifndef __DVBAPI_H
@@ -71,7 +71,7 @@ private:
 public:
   ~cDvbApi();
 
-#define MAXDVBAPI 2
+#define MAXDVBAPI 4
   static int NumDvbApis;
 private:
   static cDvbApi *dvbApi[MAXDVBAPI];

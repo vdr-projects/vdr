@@ -350,7 +350,7 @@ Video Disk Recorder Revision History
 - Encrypted channels can now be selected even without knowing the PNR (however, it
   is still necessary for the EPG info).
 
-2001-02-04: Version 0.71
+2001-02-10: Version 0.71
 
 - Fixed 'Transfer Mode' in cases where a non-primary interface was switched to
   a channel that only the primary interface can receive (which could happen in
@@ -379,3 +379,8 @@ Video Disk Recorder Revision History
 - Deleted recordings are now automatically removed from disk after a while (not
   only when disk space is being needed for a new recording).
 - Fixed repeat function in LIRC remote control.
+- Changed the MAXDVBAPI macro in dvbapi.c to 4 in order to directly support the
+  maximum possible number of DVB cards.
+- The 'Ca' parameter in the default 'channels.conf' has been changed from '2'
+  to '3' because the VDR prototype now has 3 DVB cards (and currently the CAM
+  module only works if it is inserted into the last DVB card).
