@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.47 2002/10/20 10:24:20 kls Exp $
+ * $Id: svdrp.c 1.48 2002/10/20 12:45:03 kls Exp $
  */
 
 #include "svdrp.h"
@@ -1012,7 +1012,7 @@ void cSVDRP::Execute(char *Cmd)
   else                   Reply(500, "Command unrecognized: \"%s\"", Cmd);
 }
 
-void cSVDRP::Process(void)
+bool cSVDRP::Process(void)
 {
   bool NewConnection = !file.IsOpen();
   bool SendGreeting = NewConnection;
@@ -1073,7 +1073,9 @@ void cSVDRP::Process(void)
         isyslog("timeout on SVDRP connection");
         Close(true);
         }
+     return true;
      }
+  return false;
 }
 
 char *cSVDRP::GetMessage(void)

@@ -1626,3 +1626,4 @@ Video Disk Recorder Revision History
   'channels.conf' FILE!
 - Timers now internally have a pointer to their channel (this is necessary to
   handle gaps in channel numbers, and in preparation for unique channel ids).
+- Fixed slow reaction on SVDRP input (thanks to Guido Fiala for reporting this one).

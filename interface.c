@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.c 1.56 2002/09/30 15:32:10 kls Exp $
+ * $Id: interface.c 1.57 2002/10/20 12:45:35 kls Exp $
  */
 
 #include "interface.h"
@@ -58,7 +58,8 @@ eKeys cInterface::GetKey(bool Wait)
 {
   Flush();
   if (SVDRP) {
-     SVDRP->Process();
+     if (SVDRP->Process())
+        Wait = false;
      if (!open) {
         char *message = SVDRP->GetMessage();
         if (message) {

@@ -31,6 +31,7 @@ Guido Fiala <gfiala@s.netic.de>
  (overlay capabilities have been removed again in VDR 0.98, since kvdr version 0.4
  now does these things itself)
  for making the replay progress display avoid unnecessary code execution
+ for reporting a problem with slow reaction on SVDRP input
 
 Robert Schneider <Robert.Schneider@de.ibm.com>
  for implementing EIT support for displaying the current/next info
