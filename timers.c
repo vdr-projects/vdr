@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 1.13 2004/07/17 12:46:27 kls Exp $
+ * $Id: timers.c 1.14 2004/10/24 14:56:55 kls Exp $
  */
 
 #include "timers.h"
@@ -456,6 +456,12 @@ void cTimer::OnOff(void)
 
 cTimers Timers;
 
+cTimers::cTimers(void)
+{
+  beingEdited = 0;;
+  lastSetEvents = 0;
+}
+
 cTimer *cTimers::GetTimer(cTimer *Timer)
 {
   for (cTimer *ti = First(); ti; ti = Next(ti)) {
@@ -507,29 +513,35 @@ cTimer *cTimers::GetNextActiveTimer(void)
 
 void cTimers::SetEvents(void)
 {
+  if (time(NULL) - lastSetEvents < 5)
+     return;
   cSchedulesLock SchedulesLock(false, 100);
   const cSchedules *Schedules = cSchedules::Schedules(SchedulesLock);
   if (Schedules) {
-     for (cTimer *ti = First(); ti; ti = Next(ti)) {
-         const cSchedule *Schedule = Schedules->GetSchedule(ti->Channel()->GetChannelID());
-         const cEvent *Event = NULL;
-         if (Schedule) {
-            //XXX what if the Schedule doesn't have any VPS???
-            int Match = tmNone;
-            for (const cEvent *e = Schedule->Events()->First(); e; e = Schedule->Events()->Next(e)) {
-                if (cRemote::HasKeys())
-                   return; // react immediately on user input
-                int m = ti->Matches(e);
-                if (m > Match) {
-                   Match = m;
-                   Event = e;
-                   if (Match == tmFull)
-                      break;
-                      //XXX what if there's another event with the same VPS time???
-                   }
-                }
+     if (!lastSetEvents || Schedules->Modified() >= lastSetEvents) {
+        for (cTimer *ti = First(); ti; ti = Next(ti)) {
+            const cSchedule *Schedule = Schedules->GetSchedule(ti->Channel()->GetChannelID());
+            if (Schedule) {
+               if (!lastSetEvents || Schedule->Modified() >= lastSetEvents) {
+                  const cEvent *Event = NULL;
+                  int Match = tmNone;
+                  for (const cEvent *e = Schedule->Events()->First(); e; e = Schedule->Events()->Next(e)) {
+                      if (cRemote::HasKeys())
+                         return; // react immediately on user input
+                      int m = ti->Matches(e);
+                      if (m > Match) {
+                         Match = m;
+                         Event = e;
+                         if (Match == tmFull)
+                            break;
+                            //XXX what if there's another event with the same VPS time???
+                         }
+                      }
+                  ti->SetEvent(Event);
+                  }
+               }
             }
-         ti->SetEvent(Event);
-         }
+        }
      }
+  lastSetEvents = time(NULL);
 }

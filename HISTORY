@@ -3071,3 +3071,9 @@ Video Disk Recorder Revision History
   running.
 - Added cCondWait::Sleep() and using it to replace all usleep() calls (based
   on a suggestion by Werner Fink).
+- Only assigning events to timers if the related schedule has actually been
+  modified.
+- When searching for the present event, the running status is now only taken
+  into account if the event has been "seen" within the past 30 seconds.
+  This avoids shortly seeing the wrong events in the channel display when
+  switching to a channel that hasn't been tuned to in a while.

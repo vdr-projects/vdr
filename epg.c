@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 1.19 2004/05/22 12:37:07 kls Exp $
+ * $Id: epg.c 1.20 2004/10/24 15:01:50 kls Exp $
  */
 
 #include "epg.h"
@@ -97,6 +97,11 @@ void cEvent::SetDuration(int Duration)
 void cEvent::SetVps(time_t Vps)
 {
   vps = Vps;
+}
+
+void cEvent::SetSeen(void)
+{
+  seen = time(NULL);
 }
 
 bool cEvent::HasTimer(void) const
@@ -478,6 +483,7 @@ cSchedule::cSchedule(tChannelID ChannelID)
 {
   channelID = ChannelID;
   hasRunning = false;;
+  modified = 0;
 }
 
 cEvent *cSchedule::AddEvent(cEvent *Event)
@@ -496,7 +502,7 @@ const cEvent *cSchedule::GetPresentEvent(bool CheckRunningStatus) const
          if (!CheckRunningStatus)
             break;
          }
-      if (CheckRunningStatus && p->RunningStatus() >= SI::RunningStatusPausing)
+      if (CheckRunningStatus && time(NULL) - p->Seen() < 30 && p->RunningStatus() >= SI::RunningStatusPausing)
          return p;
       }
   return pe;
@@ -643,6 +649,7 @@ bool cSchedule::Read(FILE *f, cSchedules *Schedules)
                        if (!cEvent::Read(f, p))
                           return false;
                        p->Sort();
+                       Schedules->SetModified(p);
                        }
                     }
                  else {
@@ -680,6 +687,7 @@ cSchedules cSchedules::schedules;
 const char *cSchedules::epgDataFileName = NULL;
 time_t cSchedules::lastCleanup = time(NULL);
 time_t cSchedules::lastDump = time(NULL);
+time_t cSchedules::modified = 0;
 
 const cSchedules *cSchedules::Schedules(cSchedulesLock &SchedulesLock)
 {
@@ -691,6 +699,12 @@ void cSchedules::SetEpgDataFileName(const char *FileName)
   delete epgDataFileName;
   if (FileName)
      epgDataFileName = strdup(FileName);
+}
+
+void cSchedules::SetModified(cSchedule *Schedule)
+{
+  Schedule->SetModified();
+  modified = time(NULL);
 }
 
 void cSchedules::Cleanup(bool Force)

@@ -8,7 +8,7 @@
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  * Adapted to 'libsi' for VDR 1.3.0 by Marcel Wiesweg <marcel.wiesweg@gmx.de>.
  *
- * $Id: eit.c 1.97 2004/10/16 09:49:13 kls Exp $
+ * $Id: eit.c 1.98 2004/10/24 14:56:39 kls Exp $
  */
 
 #include "eit.h"
@@ -59,6 +59,7 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data)
          }
       else {
          // We have found an existing event, either through its event ID or its start time.
+         pEvent->SetSeen();
          // If the existing event has a zero table ID it was defined externally and shall
          // not be overwritten.
          if (pEvent->TableID() == 0x00)
@@ -215,8 +216,10 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data)
   if (Empty && Tid == 0x4E && getSectionNumber() == 0)
      // ETR 211: an empty entry in section 0 of table 0x4E means there is currently no event running
      pSchedule->ClrRunningStatus(channel);
-  if (Modified)
+  if (Modified) {
      pSchedule->Sort();
+     Schedules->SetModified(pSchedule);
+     }
 }
 
 // --- cTDT ------------------------------------------------------------------

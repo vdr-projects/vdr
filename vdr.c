@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.189 2004/10/23 15:04:52 kls Exp $
+ * $Id: vdr.c 1.190 2004/10/24 14:01:11 kls Exp $
  */
 
 #include <getopt.h>
@@ -581,14 +581,9 @@ int main(int argc, char *argv[])
         // Timers and Recordings:
         if (!Timers.BeingEdited()) {
            // Assign events to timers:
-           if (time(NULL) - LastActivity > 10) {
-              static time_t LastSetEvents = 0;//XXX trigger by actual EPG data modification???
-              if (time(NULL) - LastSetEvents > 5) {
-                 Timers.SetEvents();
-                 LastSetEvents = time(NULL);
-                 }
-              }
-           time_t Now = time(NULL); // must do all following calls with the exact same time!
+           Timers.SetEvents();
+           // Must do all following calls with the exact same time!
+           time_t Now = time(NULL);
            // Process ongoing recordings:
            cRecordControls::Process(Now);
            // Start new recordings:
