@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.28 2000/11/01 13:42:52 kls Exp $
+ * $Id: config.c 1.29 2000/11/01 15:52:00 kls Exp $
  */
 
 #include "config.h"
@@ -270,7 +270,8 @@ bool cChannel::Switch(cDvbApi *DvbApi)
          }
      return false;
      }
-  Interface->Info(DvbApi->Recording() ? "Channel locked (recording)!" : name);
+  if (DvbApi->Recording())
+     Interface->Info("Channel locked (recording)!");
   return false;
 }
 
