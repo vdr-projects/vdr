@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbosd.c 1.10 2001/07/24 16:25:34 kls Exp $
+ * $Id: dvbosd.c 1.11 2002/01/13 15:49:28 kls Exp $
  */
 
 #include "dvbosd.h"
@@ -257,25 +257,35 @@ const char *cBitmap::Data(int x, int y)
 
 class cWindow : public cBitmap {
 private:
+  int handle;  // the index within the OSD's window array (0...MAXNUMWINDOWS - 1)
   int x0, y0;
+  int bpp;
+  bool tiled;
   bool shown;
 public:
-  cWindow(int x, int y, int w, int h, int Bpp, bool ClearWithBackground = true);
+  cWindow(int Handle, int x, int y, int w, int h, int Bpp, bool ClearWithBackground, bool Tiled);
   int X0(void) { return x0; }
   int Y0(void) { return y0; }
+  int Bpp(void) { return bpp; }
+  bool Tiled(void) { return tiled; }
   bool Shown(void) { bool s = shown; shown = true; return s; }
+  int Handle(void) { return handle; }
   bool Contains(int x, int y);
+  void Relocate(int x, int y);
   void Fill(int x1, int y1, int x2, int y2, eDvbColor Color);
   void SetBitmap(int x, int y, const cBitmap &Bitmap);
   void Text(int x, int y, const char *s, eDvbColor ColorFg = clrWhite, eDvbColor ColorBg = clrBackground);
   const char *Data(int x, int y);
   };
 
-cWindow::cWindow(int x, int y, int w, int h, int Bpp, bool ClearWithBackground)
+cWindow::cWindow(int Handle, int x, int y, int w, int h, int Bpp, bool ClearWithBackground, bool Tiled)
 :cBitmap(w, h, Bpp, ClearWithBackground)
 {
+  handle = Handle;
   x0 = x;
   y0 = y;
+  bpp = Bpp;
+  tiled = Tiled;
   shown = false;
 }
 
@@ -286,19 +296,39 @@ bool cWindow::Contains(int x, int y)
   return x >= 0 && y >= 0 && x < width && y < height;
 }
 
+void cWindow::Relocate(int x, int y)
+{
+  x0 = x;
+  y0 = y;
+}
+
 void cWindow::Fill(int x1, int y1, int x2, int y2, eDvbColor Color)
 {
-  cBitmap::Fill(x1 - x0, y1 - y0, x2 - x0, y2 - y0, Color);
+  if (tiled) {
+     x1 -= x0;
+     y1 -= y0;
+     x2 -= x0;
+     y2 -= y0;
+     }
+  cBitmap::Fill(x1, y1, x2, y2, Color);
 }
 
 void cWindow::SetBitmap(int x, int y, const cBitmap &Bitmap)
 {
-  cBitmap::SetBitmap(x - x0, y - y0, Bitmap);
+  if (tiled) {
+     x -= x0;
+     y -= y0;
+     }
+  cBitmap::SetBitmap(x, y, Bitmap);
 }
 
 void cWindow::Text(int x, int y, const char *s, eDvbColor ColorFg, eDvbColor ColorBg)
 {
-  cBitmap::Text(x - x0, y - y0, s, ColorFg, ColorBg);
+  if (tiled) {
+     x -= x0;
+     y -= y0;
+     }
+  cBitmap::Text(x, y, s, ColorFg, ColorBg);
 }
 
 const char *cWindow::Data(int x, int y)
@@ -325,12 +355,26 @@ cDvbOsd::cDvbOsd(int VideoDev, int x, int y, int w, int h, int Bpp)
 cDvbOsd::~cDvbOsd()
 {
   if (videoDev >= 0) {
-     while (numWindows > 0) {
-           Cmd(OSD_SetWindow, 0, numWindows--);
-           Cmd(OSD_Close);
-           delete window[numWindows];
-           }
+     for (int i = 0; i < numWindows; i++) {
+         SetWindow(window[i]);
+         Cmd(OSD_Close);
+         delete window[i];
+         }
+     numWindows = 0;
      }
+}
+
+bool cDvbOsd::SetWindow(cWindow *Window)
+{
+  // Window handles are counted 0...(MAXNUMWINDOWS - 1), but the actual window
+  // numbers in the driver are used from 1...MAXNUMWINDOWS.
+  int Handle = Window->Handle();
+  if (0 <= Handle && Handle < MAXNUMWINDOWS) {
+     Cmd(OSD_SetWindow, 0, Handle + 1);
+     return true;
+     }
+  esyslog(LOG_ERR, "ERROR: illegal window handle: %d", Handle);
+  return -1;
 }
 
 void cDvbOsd::Cmd(OSD_Command cmd, int color, int x0, int y0, int x1, int y1, const void *data)
@@ -349,51 +393,65 @@ void cDvbOsd::Cmd(OSD_Command cmd, int color, int x0, int y0, int x1, int y1, co
      sigfillset(&set);
      sigprocmask(SIG_BLOCK, &set, &oldset);
      ioctl(videoDev, OSD_SEND_CMD, &dc);
-     usleep(5000); // XXX Workaround for a driver bug (cInterface::DisplayChannel() displayed texts at wrong places
-                   // XXX and sometimes the OSD was no longer displayed).
-                   // XXX Increase the value if the problem still persists on your particular system.
-                   // TODO Check if this is still necessary with driver versions after 0.7.
+     if (cmd == OSD_SetBlock) // XXX this is the only command that takes longer
+        usleep(5000); // XXX Workaround for a driver bug (cInterface::DisplayChannel() displayed texts at wrong places
+                      // XXX and sometimes the OSD was no longer displayed).
+                      // XXX Increase the value if the problem still persists on your particular system.
+                      // TODO Check if this is still necessary with driver versions after 0.7.
      sigprocmask(SIG_SETMASK, &oldset, NULL);
      }
 }
 
-bool cDvbOsd::Create(int x, int y, int w, int h, int Bpp, bool ClearWithBackground, eDvbColor Color0, eDvbColor Color1, eDvbColor Color2, eDvbColor Color3)
+tWindowHandle cDvbOsd::Create(int x, int y, int w, int h, int Bpp, bool ClearWithBackground, bool Tiled)
 {
-  /* TODO XXX
-     - check that no two windows overlap
-  */
   if (numWindows < MAXNUMWINDOWS) {
      if (x >= 0 && y >= 0 && w > 0 && h > 0 && (Bpp == 1 || Bpp == 2 || Bpp == 4 || Bpp == 8)) {
         if ((w & 0x03) != 0) {
            w += 4 - (w & 0x03);
            esyslog(LOG_ERR, "ERROR: OSD window width must be a multiple of 4 - increasing to %d", w);
            }
-        cWindow *win = new cWindow(x, y, w, h, Bpp, ClearWithBackground);
-        if (Color0 != clrTransparent) {
-           win->Index(Color0);
-           win->Index(Color1);
-           win->Index(Color2);
-           win->Index(Color3);
-           win->Reset();
+        cWindow *win = new cWindow(numWindows, x, y, w, h, Bpp, ClearWithBackground, Tiled);
+        if (SetWindow(win)) {
+           window[win->Handle()] = win;
+           Cmd(OSD_Open, Bpp, x0 + x, y0 + y, x0 + x + w - 1, y0 + y + h - 1, (void *)1); // initially hidden!
+           numWindows++;
+           return win->Handle();
            }
-        window[numWindows++] = win;
-        Cmd(OSD_SetWindow, 0, numWindows);
-        Cmd(OSD_Open, Bpp, x0 + x, y0 + y, x0 + x + w - 1, y0 + y + h - 1, (void *)1); // initially hidden!
+        else
+           delete win;
         }
      else
         esyslog(LOG_ERR, "ERROR: illegal OSD parameters");
      }
   else
      esyslog(LOG_ERR, "ERROR: too many OSD windows");
-  return false;
+  return -1;
+}
+
+void cDvbOsd::AddColor(eDvbColor Color, tWindowHandle Window)
+{
+  cWindow *w = GetWindow(Window);
+  if (w) {
+     w->Index(Color);
+     w->Reset();
+     }
 }
 
 cWindow *cDvbOsd::GetWindow(int x, int y)
 {
   for (int i = 0; i < numWindows; i++) {
-      if (window[i]->Contains(x, y))
+      if (window[i]->Tiled() && window[i]->Contains(x, y))
          return window[i];
       }
+  return NULL;
+}
+
+cWindow *cDvbOsd::GetWindow(tWindowHandle Window)
+{
+  if (0 <= Window && Window < numWindows)
+     return window[Window];
+  if (Window == LAST_CREATED_WINDOW && numWindows > 0)
+     return window[numWindows - 1];
   return NULL;
 }
 
@@ -402,7 +460,7 @@ void cDvbOsd::Flush(void)
   for (int i = 0; i < numWindows; i++) {
       int x1 = 0, y1 = 0, x2 = 0, y2 = 0;
       if (window[i]->Dirty(x1, y1, x2, y2)) {
-         Cmd(OSD_SetWindow, 0, i + 1);
+         SetWindow(window[i]);
          int FirstColor = 0, LastColor = 0;
          const eDvbColor *pal;
          while ((pal = window[i]->Colors(FirstColor, LastColor)) != NULL)
@@ -414,28 +472,36 @@ void cDvbOsd::Flush(void)
   // Showing the windows in a separate loop to avoid seeing them come up one after another
   for (int i = 0; i < numWindows; i++) {
       if (!window[i]->Shown()) {
-         Cmd(OSD_SetWindow, 0, i + 1);
+         SetWindow(window[i]);
          Cmd(OSD_MoveWindow, 0, x0 + window[i]->X0(), y0 + window[i]->Y0());
          }
       }
 }
 
-void cDvbOsd::Clear(void)
+void cDvbOsd::Clear(tWindowHandle Window)
 {
-  for (int i = 0; i < numWindows; i++)
-      window[i]->Clear();
+  if (Window == ALL_TILED_WINDOWS || Window == ALL_WINDOWS) {
+     for (int i = 0; i < numWindows; i++)
+         if (Window == ALL_WINDOWS || window[i]->Tiled())
+            window[i]->Clear();
+     }
+  else {
+     cWindow *w = GetWindow(Window);
+     if (w)
+        w->Clear();
+     }
 }
 
-void cDvbOsd::Fill(int x1, int y1, int x2, int y2, eDvbColor Color)
+void cDvbOsd::Fill(int x1, int y1, int x2, int y2, eDvbColor Color, tWindowHandle Window)
 {
-  cWindow *w = GetWindow(x1, y1);
+  cWindow *w = (Window == ALL_TILED_WINDOWS) ? GetWindow(x1, y1) : GetWindow(Window);
   if (w)
      w->Fill(x1, y1, x2, y2, Color);
 }
 
-void cDvbOsd::SetBitmap(int x, int y, const cBitmap &Bitmap)
+void cDvbOsd::SetBitmap(int x, int y, const cBitmap &Bitmap, tWindowHandle Window)
 {
-  cWindow *w = GetWindow(x, y);
+  cWindow *w = (Window == ALL_TILED_WINDOWS) ? GetWindow(x, y) : GetWindow(Window);
   if (w)
      w->SetBitmap(x, y, Bitmap);
 }
@@ -458,10 +524,44 @@ eDvbFont cDvbOsd::SetFont(eDvbFont Font)
   return oldFont;
 }
 
-void cDvbOsd::Text(int x, int y, const char *s, eDvbColor ColorFg = clrWhite, eDvbColor ColorBg = clrBackground)
+void cDvbOsd::Text(int x, int y, const char *s, eDvbColor ColorFg = clrWhite, eDvbColor ColorBg = clrBackground, tWindowHandle Window)
 {
-  cWindow *w = GetWindow(x, y);
+  cWindow *w = (Window == ALL_TILED_WINDOWS) ? GetWindow(x, y) : GetWindow(Window);
   if (w)
      w->Text(x, y, s, ColorFg, ColorBg);
+}
+
+void cDvbOsd::Relocate(tWindowHandle Window, int x, int y, int NewWidth, int NewHeight)
+{
+  cWindow *w = GetWindow(Window);
+  if (w) {
+     SetWindow(w);
+     if (NewWidth > 0 && NewHeight > 0) {
+        if ((NewWidth & 0x03) != 0) {
+           NewWidth += 4 - (NewWidth & 0x03);
+           esyslog(LOG_ERR, "ERROR: OSD window width must be a multiple of 4 - increasing to %d", NewWidth);
+           }
+        Cmd(OSD_Close);
+        window[w->Handle()] = new cWindow(w->Handle(), x, y, NewWidth, NewHeight, w->Bpp(), w->ClearWithBackground(), w->Tiled());
+        delete w;
+        Cmd(OSD_Open, 2, x0 + x, y0 + y, x0 + x + NewWidth - 1, y0 + y + NewHeight - 1, (void *)1); // initially hidden!
+        }
+     else {
+        w->Relocate(x, y);
+        Cmd(OSD_MoveWindow, 0, x0 + x, y0 + y);
+        }
+     }
+}
+
+void cDvbOsd::Hide(tWindowHandle Window)
+{
+  if (SetWindow(GetWindow(Window)))
+     Cmd(OSD_Hide, 0);
+}
+
+void cDvbOsd::Show(tWindowHandle Window)
+{
+  if (SetWindow(GetWindow(Window)))
+     Cmd(OSD_Show, 0);
 }
 

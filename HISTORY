@@ -887,3 +887,4 @@ Video Disk Recorder Revision History
 - Fixed channel data for "DW TV" (thanks to Axel Gruber).
 - Added DPID to "PREMIERE MOVIE 1" in channels.conf.cable (thanks to Stephan
   Schreiber).
+- Prepared the OSD functions for multiple overlapping windows.

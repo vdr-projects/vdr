@@ -7,7 +7,7 @@
  * DVD support initially written by Andreas Schultz <aschultz@warp10.net>
  * based on dvdplayer-0.5 by Matjaz Thaler <matjaz.thaler@guest.arnes.si>
  *
- * $Id: dvbapi.c 1.141 2001/11/25 16:38:09 kls Exp $
+ * $Id: dvbapi.c 1.142 2002/01/13 15:48:37 kls Exp $
  */
 
 //#define DVDDEBUG        1
@@ -2842,7 +2842,11 @@ void cDvbApi::Open(int w, int h)
      }
   else if (d == 0) { //XXX full menu
      osd->Create(0,                            0, w,                         lineHeight, 2);
-     osd->Create(0,                   lineHeight, w, (Setup.OSDheight - 3) * lineHeight, 2, true, clrBackground, clrCyan, clrWhite, clrBlack);
+     osd->Create(0,                   lineHeight, w, (Setup.OSDheight - 3) * lineHeight, 2);
+     osd->AddColor(clrBackground);
+     osd->AddColor(clrCyan);
+     osd->AddColor(clrWhite);
+     osd->AddColor(clrBlack);
      osd->Create(0, (Setup.OSDheight - 2) * lineHeight, w,               2 * lineHeight, 4);
      }
   else { //XXX progress display
@@ -3197,7 +3201,7 @@ eSetChannelResult cDvbApi::SetChannel(int ChannelNumber, int Frequency, char Pol
               }
            }
         else
-           esyslog(LOG_ERR, "ERROR %d in frontend get event", res);
+           esyslog(LOG_ERR, "ERROR %d in frontend get event (channel %d, card %d)", res, ChannelNumber, CardIndex() + 1);
         }
      else
         esyslog(LOG_ERR, "ERROR: timeout while tuning");
