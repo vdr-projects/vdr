@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 1.2 2003/12/25 12:47:26 kls Exp $
+ * $Id: epg.c 1.3 2004/01/04 15:20:42 kls Exp $
  */
 
 #include "epg.h"
@@ -233,6 +233,10 @@ void ReportEpgBugFixStats(bool Reset)
                       }
                    q += snprintf(q, sizeof(buffer) - (q - buffer), "%s%s", delim, channel->Name());
                    delim = ", ";
+                   if (q - buffer > 80) {
+                      q += snprintf(q, sizeof(buffer) - (q - buffer), "%s...", delim);
+                      break;
+                      }
                    }
                 }
             if (*buffer)
@@ -261,7 +265,7 @@ void cEvent::FixEpgBugs(void)
   // EPG data. Let's fix their bugs as good as we can:
   if (title) {
 
-     // VOX puts too much information into the ShortText and leaves the
+     // Some channels put too much information into the ShortText and leave the
      // Description empty:
      //
      // Title
@@ -287,7 +291,7 @@ void cEvent::FixEpgBugs(void)
            }
         }
 
-     // VOX and VIVA put the ShortText in quotes and use either the ShortText
+     // Some channels put the ShortText in quotes and use either the ShortText
      // or the Description field, depending on how long the string is:
      //
      // Title
@@ -311,7 +315,7 @@ void cEvent::FixEpgBugs(void)
            }
         }
 
-     // VOX and VIVA put the Description into the ShortText (preceeded
+     // Some channels put the Description into the ShortText (preceeded
      // by a blank) if there is no actual ShortText and the Description
      // is short enough:
      //
@@ -327,7 +331,7 @@ void cEvent::FixEpgBugs(void)
            }
         }
 
-     // Pro7 sometimes repeats the Title in the ShortText:
+     // Sometimes they repeat the Title in the ShortText:
      //
      // Title
      // Title
@@ -338,7 +342,7 @@ void cEvent::FixEpgBugs(void)
         EpgBugFixStat(3, ChannelID());
         }
 
-     // ZDF.info puts the ShortText between double quotes, which is nothing
+     // Some channels put the ShortText between double quotes, which is nothing
      // but annoying (some even put a '.' after the closing '"'):
      //
      // Title

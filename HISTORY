@@ -2534,3 +2534,6 @@ Video Disk Recorder Revision History
   provided by the installed CAM. Only the special values 1-16 are used to assign
   a channel to a particular device.
 - Increased the maximum number of possible OSD colors to 256.
+- Limited the line length in the EPG bugfix report, which appears to fix a buffer
+  overflow that caused a crash when cleaning up the EPG data (at 05:00 in the
+  morning).
