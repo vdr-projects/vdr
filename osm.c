@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: osm.c 1.6 2000/04/22 09:56:33 kls Exp $
+ * $Id: osm.c 1.7 2000/04/22 13:35:37 kls Exp $
  */
 
 #include <signal.h>
@@ -67,8 +67,16 @@ int main(int argc, char *argv[])
   cMenuMain *Menu = NULL;
   cTimer *Timer = NULL;
   int dcTime = 0, dcNumber = 0;
+  int LastChannel = -1;
 
   while (!Interrupted) {
+        // Channel display:
+        if (CurrentChannel != LastChannel) {
+           cChannel *channel = Channels.Get(CurrentChannel);
+           if (channel)
+              Interface.DisplayChannel(CurrentChannel + 1, channel->name);
+           LastChannel = CurrentChannel;
+           }
         // Direct Channel Select (action):
         if (dcNumber) {
            Interface.DisplayChannel(dcNumber);
@@ -146,6 +154,7 @@ int main(int argc, char *argv[])
              case kMenu: Menu = new cMenuMain;
                          Menu->Display();
                          break;
+             // Up/Down Channel Select:
              case kUp:
              case kDown: {
                            int n = CurrentChannel + (key == kUp ? 1 : -1);
@@ -154,6 +163,9 @@ int main(int argc, char *argv[])
                               channel->Switch();
                          }
                          break;
+             // Viewing Control:
+             case kOk:   LastChannel = -1; break; // forces channel display
+                         //TODO if replaying switch to progress display instead
              default:    break;
              }
            }

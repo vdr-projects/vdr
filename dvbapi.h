@@ -4,7 +4,7 @@
  * See the main source file 'osm.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.h 1.3 2000/04/15 13:36:10 kls Exp $
+ * $Id: dvbapi.h 1.4 2000/04/22 13:07:34 kls Exp $
  */
 
 #ifndef __DVBAPI_H
@@ -20,6 +20,9 @@ typedef unsigned char __u8;
 #endif
 #include <stdio.h>
 #include "../DVB/driver/dvb.h"
+
+#define MenuLines   15
+#define MenuColumns 40
 
 enum eDvbColor { clrBackground,
 #ifndef DEBUG_OSD
@@ -59,7 +62,7 @@ private:
   int cols, rows;
   void Cmd(OSD_Command cmd, int color = 0, int x0 = 0, int y0 = 0, int x1 = 0, int y1 = 0, const void *data = NULL);
 public:
-  void Open(int w, int h);
+  void Open(int w, int h, int d = 0);
   void Close(void);
   void Clear(void);
   void Fill(int x, int y, int w, int h, eDvbColor color = clrBackground);

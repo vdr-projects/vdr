@@ -3,9 +3,22 @@ Video Disk Recorder User's Manual
 
 * Selecting a Channel
 
-  You can select a channel either by pressing the "Up" or "Down" key (while
-  no On Screen Menu is displayed), or browsing through the channel list in
-  the menu and pressing "Ok" on the desired channel.
+  There are three ways to select a channel:
+
+  1. With no On Screen Menu displayed press the "Up" or "Down" key to switch
+     to the next higher or lower channel.
+  2. Press the "Menu" button to bring up the On Screen Menu, select "Channels"
+     and browse through the list with the "Up" and "Down" key; to switch to the
+     selected channel press "Ok".
+  2. Directly type in the channel number with the numeric keys ('0'..'9');
+     if no key is pressed for about half a second, the digits collected so
+     far will define the channel number.
+
+  After switching to a different channel the channel number and name, as well
+  as the current time are displayed at the top of the screen. This line
+  automatically goes away after about two seconds, or if any key is pressed.
+  To bring up the channel display without switching channels you can press
+  the "Ok" button.
 
 * Instant Recording
 

@@ -4,15 +4,12 @@
  * See the main source file 'osm.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.c 1.3 2000/04/15 17:38:11 kls Exp $
+ * $Id: interface.c 1.4 2000/04/22 13:51:48 kls Exp $
  */
 
 #include "interface.h"
 #include <unistd.h>
 #include "remote.h"
-
-#define MenuLines   15
-#define MenuColumns 40
 
 #ifndef DEBUG_REMOTE
 cRcIo RcIo("/dev/ttyS1");
@@ -26,6 +23,7 @@ cInterface::cInterface(void)
 {
   open = 0;
   cols[0] = 0;
+  keyFromWait = kNone;
 }
 
 void cInterface::Init(void)
@@ -35,10 +33,10 @@ void cInterface::Init(void)
 #endif
 }
 
-void cInterface::Open(void)
+void cInterface::Open(int NumCols, int NumLines, int StartLine)
 {
   if (!open++)
-     DvbApi.Open(MenuColumns, MenuLines);
+     DvbApi.Open(NumCols, NumLines, StartLine);
 }
 
 void cInterface::Close(void)
@@ -65,19 +63,24 @@ unsigned int cInterface::GetCh(void)
 
 eKeys cInterface::GetKey(void)
 {
-  return Keys.Get(GetCh());
+  eKeys Key = keyFromWait != kNone ? keyFromWait : Keys.Get(GetCh());
+  keyFromWait = kNone;
+  return Key;
 }
 
-eKeys cInterface::Wait(int Seconds)
+eKeys cInterface::Wait(int Seconds, bool KeepChar)
 {
   int t0 = time_ms();
+  eKeys Key = kNone;
 
   while (time_ms() - t0 < Seconds * 1000) {
-        eKeys Key = GetKey();
+        Key = GetKey();
         if (Key != kNone)
-           return Key;
+           break;
         }
-  return kNone;
+  if (KeepChar)
+     keyFromWait = Key;
+  return Key;
 }
 
 void cInterface::Clear(void)
@@ -312,8 +315,20 @@ void cInterface::LearnKeys(void)
 
 void cInterface::DisplayChannel(int Number, const char *Name)
 {
-//TODO
 #ifndef DEBUG_REMOTE
   RcIo.Number(Number);
 #endif
+  if (Name) {
+     Open(MenuColumns, 1);
+     char buffer[MenuColumns + 1];
+     snprintf(buffer, sizeof(buffer), "%d  %s", Number, Name ? Name : "");
+     Write(0, 0, buffer);
+     time_t t = time(NULL);
+     struct tm *now = localtime(&t);
+     snprintf(buffer, sizeof(buffer), "%02d:%02d", now->tm_hour, now->tm_min);
+     Write(-5, 0, buffer);
+     if (Wait(2, true) == kOk)
+        GetKey();
+     Close();
+     }
 }

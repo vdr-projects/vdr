@@ -4,7 +4,7 @@
  * See the main source file 'osm.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.3 2000/04/15 14:45:04 kls Exp $
+ * $Id: dvbapi.c 1.4 2000/04/22 13:09:49 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -1001,7 +1001,7 @@ cDvbApi::cDvbApi(void)
   memset(&colorPairs, 0, sizeof(colorPairs));
   start_color();
   leaveok(stdscr, TRUE);
-  window = stdscr;
+  window = NULL;
 #endif
 }
 
@@ -1054,19 +1054,21 @@ void cDvbApi::Cmd(OSD_Command cmd, int color, int x0, int y0, int x1, int y1, co
 }
 #endif
 
-void cDvbApi::Open(int w, int h)
+void cDvbApi::Open(int w, int h, int d)
 {
   cols = w;
   rows = h;
 #ifdef DEBUG_OSD
-  //XXX size...
+  window = subwin(stdscr, h, w, d, 0);
+  syncok(window, TRUE);
   #define B2C(b) (((b) * 1000) / 255)
   #define SETCOLOR(n, r, g, b, o) init_color(n, B2C(r), B2C(g), B2C(b))
 #else
   w *= charWidth;
   h *= lineHeight;
-  int x = (720 - w) / 2; //TODO PAL vs. NTSC???
-  int y = (576 - h) / 2;
+  d *= lineHeight;
+  int x = (720 - MenuColumns * charWidth) / 2; //TODO PAL vs. NTSC???
+  int y = (576 - MenuLines * lineHeight) / 2 + d;
   Cmd(OSD_Open, 4, x, y, x + w - 1, y + h - 1);
   #define SETCOLOR(n, r, g, b, o) Cmd(OSD_SetColor, n, r, g, b, o)
 #endif
@@ -1108,6 +1110,7 @@ void cDvbApi::Fill(int x, int y, int w, int h, eDvbColor color)
       wmove(window, y + r, x); // ncurses wants 'y' before 'x'!
       whline(window, ' ', w);
       }
+  wsyncup(window); // shouldn't be necessary because of 'syncok()', but w/o it doesn't work
 #else
   Cmd(OSD_FillBlock, color, x * charWidth, y * lineHeight, (x + w) * charWidth - 1, (y + h) * lineHeight - 1);
 #endif
