@@ -1456,3 +1456,5 @@ Video Disk Recorder Revision History
   that are currently not available (for instance because all devices are
   recording and these channels are on different transponders).
 - Implemented an SPU decoder (thanks to Andreas Schultz).
+- Fixed a crash when entering an integer value outside the limits (thanks to
+  Stefan Huelswitt for reporting this one).
