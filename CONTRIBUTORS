@@ -1275,3 +1275,7 @@ Wolfgang Rohdewald <wolfgang@rohdewald.de>
 
 Chad Flynt <hoochster@sofnet.com>
  for suggestions and experiments regarding the buffer reserve in cTransfer
+
+Chris Warren <dvb@ixalon.net>
+ for pointing out that the call to system("sync") in SpinUpDisk() should be
+ replaced with fsync(f) to avoid problems on NPTL systems
