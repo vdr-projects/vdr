@@ -1592,3 +1592,5 @@ Video Disk Recorder Revision History
   you still need to add NEWSTRUCT=1 to the make call when building VDR. You
   need a HEAD version of the LinuxDVB driver dated 2002-10-11 or later to compile
   VDR with NEWSTRUCT=1.
+- Fixed radio channels in channels.conf.cable (thanks to Robert Schiele and Uwe
+  Scheffler).
