@@ -51,10 +51,10 @@ Matthias Schniedermeyer <ms@citd.de>
  for helping to debug the "move to last position in list" bug
 
 Miha Setina <mihasetina@softhome.net>
- for translating the OSD texts to the Slovenian language
+ for translating OSD texts to the Slovenian language
 
 Alberto Carraro <bertocar@tin.it>
- for translating the OSD texts to the Italian language
+ for translating OSD texts to the Italian language
 
 Deti Fliegl <deti@fliegl.de>
  for implementing the 'CurrentChannel' setup parameter
@@ -77,7 +77,7 @@ Axel Gruber <axel@agm.de>
  for his support in keeping the Premiere World channels up to date in 'channels.conf'
 
 Arnold Niessen <niessen@iae.nl> <arnold.niessen@philips.com>
- for translating the OSD texts to the Dutch language
+ for translating OSD texts to the Dutch language
 
 Jürgen Sauer <jojo@automatix.de>
  for implementing the -t option to set the controlling terminal
@@ -89,7 +89,7 @@ Henning Holtschneider <hh@holtschneider.com>
  for patching 'runvdr' to check whether the driver is already loaded
 
 Paulo Lopes <pmml@netvita.pt>
- for translating the OSD texts to the Portugese language
+ for translating OSD texts to the Portugese language
 
 Markus Lang <pretender@gaze.de> and Ulrich Röder <dynamite@efr-net.de>
  for making DiSEqC support configurable
@@ -98,13 +98,13 @@ Markus Lang <pretender@gaze.de>
  for some initial code for grouping the Setup menu into several sub-menus
 
 Jean-Claude Repetto <jc@repetto.org>
- for translating the OSD texts to the French language
+ for translating OSD texts to the French language
 
 Andre Valentin <av2000@topmail.de>
  for increasing the key name buffer size for LIRC
 
 Jørgen Tvedt <pjtvedt@online.no>
- for translating the OSD texts to the Norwegian language
+ for translating OSD texts to the Norwegian language
 
 Stefan Huelswitt <huels@iname.com>
  for fixing the repeat function with LIRC
@@ -141,6 +141,7 @@ Uwe Scheffler <UweScheffler@t-online.de>
 
 Matjaz Thaler <matjaz.thaler@guest.arnes.si>
  for improving AC3 decoding when replaying DVDs
+ for translating OSD texts to the Slovenian language
 
 Artur Skawina <skawina@geocities.com>
  for improving the font file generation in the Makefile
@@ -205,7 +206,7 @@ Michael Paar <mpaar@uumail.de>
  for enabling recording of radio channels
 
 Hannu Savolainen <hannu@opensound.com>
- for translating the OSD texts to the Finnish language
+ for translating OSD texts to the Finnish language
 
 Jürgen Schmidt <ju@ct.heise.de>
  for fixing a problem with 'in_addr_t' on systems with glibc < 2.2.
