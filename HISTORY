@@ -619,3 +619,5 @@ Video Disk Recorder Revision History
 - Fixed replay progress display in case replay is paused while watching an
   ongoing recording.
 - Ringbuffer uses semaphores to signal empty/full conditions.
+- Fixed calculating the timeout value in cFile::FileReady() (thanks to
+  Wolfgang Henselmann-Weiss).

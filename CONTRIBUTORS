@@ -112,3 +112,6 @@ Andreas Schultz <aschultz@warp10.net>
 
 Aaron Holtzman
  for writing 'ac3dec'
+
+Wolfgang Henselmann-Weiss <Wolfgang_Henselmann@betaresearch.de>
+ for fixing calculating the timeout value in cFile::FileReady()
