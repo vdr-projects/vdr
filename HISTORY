@@ -569,3 +569,7 @@ Video Disk Recorder Revision History
   Valentin).
 - Fixed handling a channel group separator at the very beginning of the
   'channels.conf' file.
+
+2001-07-24: Version 0.85
+
+- Added Norwegian language texts (thanks to Jørgen Tvedt).
