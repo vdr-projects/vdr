@@ -111,6 +111,26 @@ Video Disk Recorder File Formats
   1..9, the command can be selected directly by pressing the respective numerical
   key on the remote control.
 
+* svdrphosts.conf
+
+  This file contains the IP numbers of all hosts that are allowed to access the
+  SVDRP port.
+
+  Each line contains one IP number in the format
+
+    IP-Address[/Netmask]
+
+  where 'IP-Address' is the address of a host or a network in the usual dot
+  separated notation (as in 192.168.100.1). If the optional 'Netmask' is given
+  only the given number of bits of 'IP-Address' are taken into account. This
+  allows you to grant SVDRP access to all hosts of an entire network. 'Netmask'
+  can be any integer from 1 to 32. The special value of 0 is only accepted if
+  the 'IP-Address' is 0.0.0.0, because this will give access to any host (USE
+  THIS WITH CARE!).
+
+  Everything following (and including) a '#' character is considered to be
+  comment.
+
 * marks.vdr
 
   This file (if present in a recording directory) contains the editing marks

@@ -950,3 +950,6 @@ Video Disk Recorder Revision History
   thus making it safe to use them in nested 'if/else' statements.
 - Fixed error handling in establishing an SVDRP connection (thanks to Davide
   Achilli) for pointing this out).
+- The new configuration file 'svdrphosts.conf' is now used to define which
+  hosts may access the SVDRP port (by default only 'localhost' has access).
+  See FORMATS for details.

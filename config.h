@@ -4,12 +4,13 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.91 2002/02/02 15:57:48 kls Exp $
+ * $Id: config.h 1.92 2002/02/02 15:59:18 kls Exp $
  */
 
 #ifndef __CONFIG_H
 #define __CONFIG_H
 
+#include <arpa/inet.h>
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
@@ -171,6 +172,16 @@ public:
   const char *Execute(void);
   };
 
+class cSVDRPhost : public cListObject {
+private:
+  struct in_addr addr;
+  in_addr_t mask;
+public:
+  cSVDRPhost(void);
+  bool Parse(const char *s);
+  bool Accepts(in_addr_t Address);
+  };
+
 template<class T> class cConfig : public cList<T> {
 private:
   char *fileName;
@@ -268,10 +279,16 @@ public:
 
 class cCommands : public cConfig<cCommand> {};
 
+class cSVDRPhosts : public cConfig<cSVDRPhost> {
+public:
+  bool Acceptable(in_addr_t Address);
+  };
+
 extern cChannels Channels;
 extern cTimers Timers;
 extern cKeys Keys;
 extern cCommands Commands;
+extern cSVDRPhosts SVDRPhosts;
 
 class cSetup {
 private:

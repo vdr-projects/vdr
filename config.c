@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.80 2002/02/02 15:57:48 kls Exp $
+ * $Id: config.c 1.81 2002/02/02 17:15:03 kls Exp $
  */
 
 #include "config.h"
@@ -646,6 +646,40 @@ const char *cCommand::Execute(void)
   return result;
 }
 
+// -- cSVDRPhost -------------------------------------------------------------
+
+cSVDRPhost::cSVDRPhost(void)
+{
+  addr.s_addr = 0;
+  mask = 0;
+}
+
+bool cSVDRPhost::Parse(const char *s)
+{
+  mask = 0xFFFFFFFF;
+  const char *p = strchr(s, '/');
+  if (p) {
+     char *error = NULL;
+     int m = strtoul(p + 1, &error, 10);
+     if (error && !isspace(*error) || m > 32)
+        return false;
+     *(char *)p = 0; // yes, we know it's 'const' - will be restored!
+     if (m == 0)
+        mask = 0;
+     else
+        mask >>= (32 - m);
+     }
+  int result = inet_aton(s, &addr);
+  if (p)
+     *(char *)p = '/'; // there it is again
+  return result != 0 && (mask != 0 || addr.s_addr == 0);
+}
+
+bool cSVDRPhost::Accepts(in_addr_t Address)
+{
+  return (Address & mask) == addr.s_addr;
+}
+
 // -- cKeys ------------------------------------------------------------------
 
 cKeys Keys;
@@ -776,6 +810,21 @@ cTimer *cTimers::GetNextActiveTimer(void)
         ti = (cTimer *)ti->Next();
         }
   return t0;
+}
+
+// -- cSVDRPhosts ------------------------------------------------------------
+
+cSVDRPhosts SVDRPhosts;
+
+bool cSVDRPhosts::Acceptable(in_addr_t Address)
+{
+  cSVDRPhost *h = First();
+  while (h) {
+        if (h->Accepts(Address))
+           return true;
+        h = (cSVDRPhost *)h->Next();
+        }
+  return false;
 }
 
 // -- cSetup -----------------------------------------------------------------
