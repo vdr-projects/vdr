@@ -13,7 +13,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.c 1.7 2000/11/01 15:53:00 kls Exp $
+ * $Id: eit.c 1.8 2000/11/02 19:19:06 kls Exp $
  ***************************************************************************/
 
 #include "eit.h"
@@ -24,7 +24,6 @@
 #include <fstream.h>
 #include <iomanip.h>
 #include <iostream.h>
-#include <minmax.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -753,7 +752,7 @@ protected: // Protected attributes
 
 cEIT::cEIT(void * buf, int length, cSchedules *Schedules)
 {
-	buflen = min((unsigned int)length, sizeof(buffer));
+	buflen = length < int(sizeof(buffer)) ? length : sizeof(buffer);
 	memset(buffer, 0, sizeof(buffer));
 	memcpy(buffer, buf, buflen);
 	tid = buffer[0];
