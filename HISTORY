@@ -1907,3 +1907,5 @@ Video Disk Recorder Revision History
   When reading the 'epg.data' file VDR only interprets the channel IDs, everyting
   else is optional and has no meaning to VDR.
 - Fixed the 'channels.conf' entries for "Studio Universal" and "Disney Channel".
+- Fixed handling channels in the "Channels" menu in case there are ':@nnn' group
+  separators without names (thanks to Guy Roussin for reporting this one).

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.228 2002/12/01 10:31:55 kls Exp $
+ * $Id: menu.c 1.229 2002/12/22 12:40:43 kls Exp $
  */
 
 #include "menu.h"
@@ -645,6 +645,7 @@ private:
 public:
   cMenuChannelItem(cChannel *Channel);
   virtual void Set(void);
+  cChannel *Channel(void) { return channel; }
   };
 
 cMenuChannelItem::cMenuChannelItem(cChannel *Channel)
@@ -669,6 +670,7 @@ void cMenuChannelItem::Set(void)
 
 class cMenuChannels : public cOsdMenu {
 private:
+  cChannel *GetChannel(int Index);
   void Propagate(void);
 protected:
   eOSState Switch(void);
@@ -691,6 +693,12 @@ cMenuChannels::cMenuChannels(void)
   SetHelp(tr("Edit"), tr("New"), tr("Delete"), tr("Mark"));
 }
 
+cChannel *cMenuChannels::GetChannel(int Index)
+{
+  cMenuChannelItem *p = (cMenuChannelItem *)Get(Index);
+  return p ? (cChannel *)p->Channel() : NULL;
+}
+
 void cMenuChannels::Propagate(void)
 {
   Channels.ReNumber();
@@ -703,7 +711,7 @@ void cMenuChannels::Propagate(void)
 
 eOSState cMenuChannels::Switch(void)
 {
-  cChannel *ch = Channels.Get(Current());
+  cChannel *ch = GetChannel(Current());
   if (ch)
      cDevice::PrimaryDevice()->SwitchChannel(ch, true);
   return osEnd;
@@ -713,7 +721,7 @@ eOSState cMenuChannels::Edit(void)
 {
   if (HasSubMenu() || Count() == 0)
      return osContinue;
-  cChannel *ch = Channels.Get(Current());
+  cChannel *ch = GetChannel(Current());
   if (ch)
      return AddSubMenu(new cMenuEditChannel(ch));
   return osContinue;
@@ -730,7 +738,7 @@ eOSState cMenuChannels::Delete(void)
 {
   if (Count() > 0) {
      int Index = Current();
-     cChannel *channel = Channels.Get(Index);
+     cChannel *channel = GetChannel(Current());
      int DeletedChannel = channel->Number();
      // Check if there is a timer using this channel:
      for (cTimer *ti = Timers.First(); ti; ti = Timers.Next(ti)) {
@@ -751,12 +759,16 @@ eOSState cMenuChannels::Delete(void)
 
 void cMenuChannels::Move(int From, int To)
 {
-  int FromNumber = Channels.Get(From)->Number();
-  int ToNumber = Channels.Get(To)->Number();
-  Channels.Move(From, To);
-  cOsdMenu::Move(From, To);
-  Propagate();
-  isyslog("channel %d moved to %d", FromNumber, ToNumber);
+  cChannel *FromChannel = GetChannel(From);
+  cChannel *ToChannel = GetChannel(To);
+  if (FromChannel && ToChannel) {
+     int FromNumber = FromChannel->Number();
+     int ToNumber = ToChannel->Number();
+     Channels.Move(FromChannel, ToChannel);
+     cOsdMenu::Move(From, To);
+     Propagate();
+     isyslog("channel %d moved to %d", FromNumber, ToNumber);
+     }
 }
 
 eOSState cMenuChannels::ProcessKey(eKeys Key)
