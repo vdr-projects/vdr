@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.168 2002/04/06 13:14:40 kls Exp $
+ * $Id: dvbapi.c 1.169 2002/04/06 15:21:29 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -1613,6 +1613,18 @@ bool cVideoCutter::Start(const char *FileName)
      cRecording Recording(FileName);
      const char *evn = Recording.PrefixFileName('%');
      if (evn && RemoveVideoFile(evn) && MakeDirs(evn, true)) {
+        // XXX this can be removed once RenameVideoFile() follows symlinks (see videodir.c)
+        // remove a possible deleted recording with the same name to avoid symlink mixups:
+        char *s = strdup(evn);
+        char *e = strrchr(s, '.');
+        if (e) {
+           if (strcmp(e, ".rec") == 0) {
+              strcpy(e, ".del");
+              RemoveVideoFile(s);
+              }
+           }
+        delete s;
+        // XXX
         editedVersionName = strdup(evn);
         Recording.WriteSummary();
         cuttingBuffer = new cCuttingBuffer(FileName, editedVersionName);
