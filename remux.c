@@ -8,7 +8,7 @@
  * the Linux DVB driver's 'tuxplayer' example and were rewritten to suit
  * VDR's needs.
  *
- * $Id: remux.c 1.19 2004/10/16 09:11:52 kls Exp $
+ * $Id: remux.c 1.20 2004/10/23 12:06:13 kls Exp $
  */
 
 #include "remux.h"
@@ -597,7 +597,7 @@ uchar *cRemux::Get(int &Count, uchar *PictureType)
                Count += l;
                }
             else
-               resultSkipped = i;
+               resultSkipped = i + l;
             if (l > 0)
                i += l - 1; // the loop increments, too
             }

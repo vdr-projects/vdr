@@ -3048,3 +3048,4 @@ Video Disk Recorder Revision History
   (thanks to Oliver Endriss).
 - Fixed attaching a cPlayer to a cDevice, so that 'Operation not permited'
   errors don't occur any more (thanks to Marco Schlüßler).
+- Fixed a case where the resultBuffer in cRemux ran full before getting a sync.
