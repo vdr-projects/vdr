@@ -930,3 +930,42 @@ Video Disk Recorder Revision History
 2002-01-30: Version 0.99pre4
 
 - Fixed handling improperly formatted EIT data (thanks to Rolf Hakenes).
+
+2002-02-03: Version 0.99pre5
+
+- Updated channel settings for 'N24' (thanks to Andreas Gebel).
+- Fixed handling hierarchical recordings menu in case of directories starting
+  with the same sequence of characters.
+- Fixed handling timers on the 29th, 30th or 31st of a month in case the next
+  month has less than 31 days.
+- Added a description of the sort order of individual episodes in the
+  recordings menu to the MANUAL.
+- Removed the EPG bugfix for "Title / Subtitle" cleanup. Apparently Pro-7 has
+  finally stopped this nasty habit.
+- Added some EPG bugfix statistics (printed to the log file every time the EPG
+  data is cleaned up and when VDR is terminated). Maybe somebody in charge of
+  the EPG data at the listed channels will read this and take the necessary
+  actions to fix these things...
+- Changed the [dei]syslog macros in tools.h to use a variable number of args,
+  thus making it safe to use them in nested 'if/else' statements.
+- Fixed error handling in establishing an SVDRP connection (thanks to Davide
+  Achilli) for pointing this out).
+- The new configuration file 'svdrphosts.conf' is now used to define which
+  hosts may access the SVDRP port (by default only 'localhost' has access).
+  See FORMATS for details.
+- The special keywords TITLE and EPISODE can now be used in timer file names
+  (see MANUAL and FORMATS for details).
+- The new setup parameter NameInstantRecord can be used to define how an
+  instant recording will be named (see MANUAL for details).
+- When looking for the EPG record of the timer that starts a recording, now
+  that record is taken which covers the time calculated as
+  'start + (Setup.MarginStart * 2) + 1)' in order to have a better chance of
+  hitting the right record in case of an instant recording. Timers that start
+  further in the future should always be programmed via the "Schedules" menu.
+- The special VPIDs '0' and '1' are now used to enable recording radio channels.
+  Actually '0' should be enough, but '1' must be used with encrypted channels
+  (driver bug?). Note, though, that since VDR is mainly a *video recorder*, some
+  features like, e. g.,  the progress display, may not work as expected with
+  radio recordings. Thanks to Michael Paar.
+- Fixed a problem with the ERR macro defined by ncurses.h (thanks to Artur
+  Skawina).

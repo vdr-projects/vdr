@@ -24,7 +24,7 @@ Video Disk Recorder File Formats
   - Polarization (one of 'h', 'H', 'v', 'V') **
   - Diseqc number **
   - Symbol rate ***
-  - Video PID
+  - Video PID (set to '0' for radio channels, '1' for encrypted radio channels)
   - Audio PID (either one number, or two, separated by a comma)
     If this channel also carries Dolby Digital sound, the Dolby PIDs follow
     the audio PIDs, separated by a semicolon, as in "...:101,102;103,104:..."
@@ -72,6 +72,11 @@ Video Disk Recorder File Formats
     any ':' characters, these have to be replaced with '|'. If the name shall
     contain subdirectories, these have to be delimited by '~' (since the '/'
     character may be part of a regular programme name).
+    The special keywords TITLE and EPISODE, if present, will be replaced 
+    with the title and episode information from the EPG data at the time of
+    recording (if that data is available). If at the time of recording either
+    of these cannot be determined, TITLE will default to the channel name, and
+    EPISODE will default to a blank.
   - Summary (any newline characters in the summary have to be replaced with '|';
     the summary may contain ':' characters)
 
@@ -110,6 +115,26 @@ Video Disk Recorder File Formats
   If the first non-blank character of the 'title' is a digit in the range
   1..9, the command can be selected directly by pressing the respective numerical
   key on the remote control.
+
+* svdrphosts.conf
+
+  This file contains the IP numbers of all hosts that are allowed to access the
+  SVDRP port.
+
+  Each line contains one IP number in the format
+
+    IP-Address[/Netmask]
+
+  where 'IP-Address' is the address of a host or a network in the usual dot
+  separated notation (as in 192.168.100.1). If the optional 'Netmask' is given
+  only the given number of bits of 'IP-Address' are taken into account. This
+  allows you to grant SVDRP access to all hosts of an entire network. 'Netmask'
+  can be any integer from 1 to 32. The special value of 0 is only accepted if
+  the 'IP-Address' is 0.0.0.0, because this will give access to any host (USE
+  THIS WITH CARE!).
+
+  Everything following (and including) a '#' character is considered to be
+  comment.
 
 * marks.vdr
 

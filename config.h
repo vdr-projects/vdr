@@ -4,12 +4,13 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.90 2002/01/30 18:30:03 kls Exp $
+ * $Id: config.h 1.93 2002/02/03 15:16:21 kls Exp $
  */
 
 #ifndef __CONFIG_H
 #define __CONFIG_H
 
+#include <arpa/inet.h>
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
@@ -18,7 +19,7 @@
 #include "eit.h"
 #include "tools.h"
 
-#define VDRVERSION "0.99pre4"
+#define VDRVERSION "0.99pre5"
 
 #define MAXPRIORITY 99
 #define MAXLIFETIME 99
@@ -64,6 +65,8 @@ enum eKeys { // "Up" and "Down" must be the first two keys!
 #define RAWKEY(k)    (eKeys((k) & ~k_Flags))
 #define ISRAWKEY(k)  ((k) != kNone && ((k) & k_Flags) == 0)
 #define NORMALKEY(k) (eKeys((k) & ~k_Repeat))
+
+#define MaxFileName 256
 
 struct tKey {
   eKeys type;
@@ -122,7 +125,6 @@ private:
   static char *buffer;
   static const char *ToText(cTimer *Timer);
 public:
-  enum { MaxFileName = 256 };
   bool recording, pending;
   int active;
   int channel;
@@ -148,6 +150,7 @@ public:
   bool DayMatches(time_t t);
   time_t IncDay(time_t t, int Days);
   time_t SetTime(time_t t, int SecondsFromMidnight);
+  char *SetFile(const char *File);
   bool Matches(time_t t = 0);
   time_t StartTime(void);
   time_t StopTime(void);
@@ -171,6 +174,16 @@ public:
   const char *Execute(void);
   };
 
+class cSVDRPhost : public cListObject {
+private:
+  struct in_addr addr;
+  in_addr_t mask;
+public:
+  cSVDRPhost(void);
+  bool Parse(const char *s);
+  bool Accepts(in_addr_t Address);
+  };
+
 template<class T> class cConfig : public cList<T> {
 private:
   char *fileName;
@@ -182,7 +195,7 @@ private:
 public:
   cConfig(void) { fileName = NULL; }
   virtual ~cConfig() { delete fileName; }
-  virtual bool Load(const char *FileName)
+  virtual bool Load(const char *FileName, bool AllowComments = false)
   {
     Clear();
     fileName = strdup(FileName);
@@ -196,6 +209,11 @@ public:
           result = true;
           while (fgets(buffer, sizeof(buffer), f) > 0) {
                 line++;
+                if (AllowComments) {
+                   char *p = strchr(buffer, '#');
+                   if (p)
+                      *p = 0;
+                   }
                 if (!isempty(buffer)) {
                    T *l = new T;
                    if (l->Parse(buffer))
@@ -242,7 +260,7 @@ protected:
   int maxNumber;
 public:
   cChannels(void) { maxNumber = 0; }
-  virtual bool Load(const char *FileName);
+  virtual bool Load(const char *FileName, bool AllowComments = false);
   int GetNextGroup(int Idx);   // Get next channel group
   int GetPrevGroup(int Idx);   // Get previous channel group
   int GetNextNormal(int Idx);  // Get next normal channel (not group)
@@ -263,10 +281,16 @@ public:
 
 class cCommands : public cConfig<cCommand> {};
 
+class cSVDRPhosts : public cConfig<cSVDRPhost> {
+public:
+  bool Acceptable(in_addr_t Address);
+  };
+
 extern cChannels Channels;
 extern cTimers Timers;
 extern cKeys Keys;
 extern cCommands Commands;
+extern cSVDRPhosts SVDRPhosts;
 
 class cSetup {
 private:
@@ -279,6 +303,7 @@ public:
   int ShowInfoOnChSwitch;
   int MenuScrollPage;
   int MarkInstantRecord;
+  char NameInstantRecord[MaxFileName];
   int LnbSLOF;
   int LnbFrequLo;
   int LnbFrequHi;

@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 1.29 2002/01/13 16:57:27 kls Exp $
+# $Id: Makefile 1.30 2002/02/01 14:40:09 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -105,7 +105,7 @@ $(DTVLIB) $(DTVDIR)/libdtv.h:
 clean:
 	make -C $(AC3DIR) clean
 	make -C $(DTVDIR) clean
-	-rm -f $(OBJS) $(DEPFILE) vdr genfontfile genfontfile.o core *~
+	-rm -f $(OBJS) $(DEPFILE) vdr genfontfile genfontfile.o core* *~
 fontclean:
 	-rm -f fontfix.c fontosd.c
 CLEAN: clean fontclean

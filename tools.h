@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.39 2002/01/26 15:38:10 kls Exp $
+ * $Id: tools.h 1.41 2002/02/03 12:36:25 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -20,9 +20,9 @@
 
 extern int SysLogLevel;
 
-#define esyslog if (SysLogLevel > 0) syslog
-#define isyslog if (SysLogLevel > 1) syslog
-#define dsyslog if (SysLogLevel > 2) syslog
+#define esyslog(a...) void( (SysLogLevel > 0) ? syslog(a) : void() )
+#define isyslog(a...) void( (SysLogLevel > 1) ? syslog(a) : void() )
+#define dsyslog(a...) void( (SysLogLevel > 2) ? syslog(a) : void() )
 
 #define LOG_ERROR         esyslog(LOG_ERR, "ERROR (%s,%d): %m", __FILE__, __LINE__)
 #define LOG_ERROR_STR(s)  esyslog(LOG_ERR, "ERROR: %s: %m", s)
@@ -47,6 +47,7 @@ char *readline(FILE *f);
 char *strcpyrealloc(char *dest, const char *src);
 char *strn0cpy(char *dest, const char *src, size_t n);
 char *strreplace(char *s, char c1, char c2);
+char *strreplace(char *s, const char *s1, const char *s2); // re-allocates 's' and deletes the original string if necessary!
 char *skipspace(const char *s);
 char *stripspace(char *s);
 char *compactspace(char *s);

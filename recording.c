@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.48 2002/01/27 15:14:45 kls Exp $
+ * $Id: recording.c 1.49 2002/02/03 15:46:42 kls Exp $
  */
 
 #include "recording.h"
@@ -40,6 +40,9 @@
 #define REMOVECHECKDELTA 3600 // seconds between checks for removing deleted files
 #define DISKCHECKDELTA    100 // seconds between checks for free disk space
 #define REMOVELATENCY      10 // seconds to wait until next check after removing a file
+
+#define TIMERMACRO_TITLE    "TITLE"
+#define TIMERMACRO_EPISODE  "EPISODE"
 
 void RemoveDeletedRecordings(void)
 {
@@ -214,19 +217,33 @@ char *ExchangeChars(char *s, bool ToFileSystem)
   return s;
 }
 
-cRecording::cRecording(cTimer *Timer, const char *Subtitle, const char *Summary)
+cRecording::cRecording(cTimer *Timer, const char *Title, const char *Subtitle, const char *Summary)
 {
   resume = RESUME_NOT_INITIALIZED;
   titleBuffer = NULL;
   sortBuffer = NULL;
   fileName = NULL;
-  if (Timer->IsSingleEvent() || !Setup.UseSubtitle)
+  name = NULL;
+  // set up the actual name:
+  if (isempty(Title))
+     Title = Channels.GetChannelNameByNumber(Timer->channel);
+  if (isempty(Subtitle))
+     Subtitle = " ";
+  char *macroTITLE   = strstr(Timer->file, TIMERMACRO_TITLE);
+  char *macroEPISODE = strstr(Timer->file, TIMERMACRO_EPISODE);
+  if (macroTITLE || macroEPISODE) {
      name = strdup(Timer->file);
-  else {
-     if (isempty(Subtitle))
-        Subtitle = " ";
-     asprintf(&name, "%s~%s", Timer->file, Subtitle);
+     name = strreplace(name, TIMERMACRO_TITLE, Title);
+     name = strreplace(name, TIMERMACRO_EPISODE, Subtitle);
+     if (Timer->IsSingleEvent()) {
+        Timer->SetFile(name); // this was an instant recording, so let's set the actual data
+        Timers.Save();
+        }
      }
+  else if (Timer->IsSingleEvent() || !Setup.UseSubtitle)
+     name = strdup(Timer->file);
+  else
+     asprintf(&name, "%s~%s", Timer->file, Subtitle);
   // substitute characters that would cause problems in file names:
   strreplace(name, '\n', ' ');
   start = Timer->StartTime();

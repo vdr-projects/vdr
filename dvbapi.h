@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.h 1.60 2002/01/26 13:01:16 kls Exp $
+ * $Id: dvbapi.h 1.61 2002/02/03 16:43:38 kls Exp $
  */
 
 #ifndef __DVBAPI_H
@@ -12,6 +12,7 @@
 
 #if defined(DEBUG_OSD) || defined(REMOTE_KBD)
 #include <ncurses.h>
+#undef ERR //XXX ncurses defines this - but this clashes with newer system header files
 #endif
 #include <stdlib.h> // FIXME: this is apparently necessary for the ost/... header files
                     // FIXME: shouldn't every header file include ALL the other header

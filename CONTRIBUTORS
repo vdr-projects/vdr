@@ -137,6 +137,7 @@ Matjaz Thaler <matjaz.thaler@guest.arnes.si>
 
 Artur Skawina <skawina@geocities.com>
  for improving the font file generation in the Makefile
+ for pointing out a problem with the ERR macro defined by ncurses.h
 
 Werner Fink <werner@suse.de>
  for making I/O more robust by handling EINTR
@@ -179,3 +180,12 @@ Lauri Pesonen <lauri.pesonen@firsthop.com>
 
 Sergei Haller <Sergei.Haller@math.uni-giessen.de>
  for fixing the LastActivity timestamp after a shutdown prompt
+
+Andreas Gebel <andreas@xcapenet.de>
+ for his help in keeping 'channels.conf' up to date
+
+Davide Achilli <davide@objsystem.it>
+ for pointing out a bug in error handling while establishing an SVDRP connection
+
+Michael Paar <mpaar@uumail.de>
+ for enabling recording of radio channels

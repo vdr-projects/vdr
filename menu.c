@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.146 2002/01/27 15:50:50 kls Exp $
+ * $Id: menu.c 1.148 2002/02/03 15:42:38 kls Exp $
  */
 
 #include "menu.h"
@@ -1553,7 +1553,7 @@ cMenuRecordings::cMenuRecordings(const char *Base, int Level, bool OpenSubMenus)
      cMenuRecordingItem *LastItem = NULL;
      char *LastItemText = NULL;
      for (cRecording *recording = Recordings.First(); recording; recording = Recordings.Next(recording)) {
-         if (!Base || strstr(recording->Name(), Base) == recording->Name()) {
+         if (!Base || (strstr(recording->Name(), Base) == recording->Name() && recording->Name()[strlen(Base)] == '~')) {
             cMenuRecordingItem *Item = new cMenuRecordingItem(recording, level);
             if (*Item->Text() && (!LastItem || strcmp(Item->Text(), LastItemText) != 0)) {
                Add(Item);
@@ -1829,6 +1829,7 @@ void cMenuSetup::Set(void)
   Add(new cMenuEditBoolItem(tr("ShowInfoOnChSwitch"), &data.ShowInfoOnChSwitch));
   Add(new cMenuEditBoolItem(tr("MenuScrollPage"),     &data.MenuScrollPage));
   Add(new cMenuEditBoolItem(tr("MarkInstantRecord"),  &data.MarkInstantRecord));
+  Add(new cMenuEditStrItem( tr("NameInstantRecord"),   data.NameInstantRecord, sizeof(data.NameInstantRecord), FileNameChars));
   Add(new cMenuEditIntItem( tr("LnbSLOF"),            &data.LnbSLOF));
   Add(new cMenuEditIntItem( tr("LnbFrequLo"),         &data.LnbFrequLo));
   Add(new cMenuEditIntItem( tr("LnbFrequHi"),         &data.LnbFrequHi));
@@ -2309,14 +2310,16 @@ cRecordControl::cRecordControl(cDvbApi *DvbApi, cTimer *Timer)
   timer->SetPending(true);
   timer->SetRecording(true);
   if (Channels.SwitchTo(timer->channel, dvbApi)) {
+     const char *Title = NULL;
      const char *Subtitle = NULL;
      const char *Summary = NULL;
      if (GetEventInfo()) {
-        dsyslog(LOG_INFO, "Title: '%s' Subtitle: '%s'", eventInfo->GetTitle(), eventInfo->GetSubtitle());
+        Title = eventInfo->GetTitle();
         Subtitle = eventInfo->GetSubtitle();
         Summary = eventInfo->GetExtendedDescription();
+        dsyslog(LOG_INFO, "Title: '%s' Subtitle: '%s'", Title, Subtitle);
         }
-     cRecording Recording(timer, Subtitle, Summary);
+     cRecording Recording(timer, Title, Subtitle, Summary);
      fileName = strdup(Recording.FileName());
      cRecordingUserCommand::InvokeCommand(RUC_BEFORERECORDING, fileName);
      if (dvbApi->StartRecord(fileName, Channels.GetByNumber(timer->channel)->ca, timer->priority))
@@ -2337,7 +2340,7 @@ cRecordControl::~cRecordControl()
 bool cRecordControl::GetEventInfo(void)
 {
   cChannel *channel = Channels.GetByNumber(timer->channel);
-  time_t Time = timer->StartTime() + (timer->StopTime() - timer->StartTime()) / 2;
+  time_t Time = timer->StartTime() + ((Setup.MarginStart * 2) + 1) * 60;
   for (int seconds = 0; seconds <= MAXWAIT4EPGINFO; seconds++) {
       {
         cThreadLock ThreadLock;

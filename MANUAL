@@ -166,6 +166,14 @@ Video Disk Recorder User's Manual
   that directory (and any possible subdirectory thereof) as well as the total
   number of new recordings (as opposed to a recording's entry, which displays
   the date and time of the recording).
+
+  If the setup parameter UseSubtitle was turned on when a recording took place,
+  VDR adds the "subtitle" (which is usually the name of the episode in case of
+  a series) to the recording's name. The "Recordings" menu then displays all
+  recordings of a periodic timer in chronological order, since these are
+  usually the individual episodes of a series, which you may want to view in
+  the order in which they were broadcast.
+
   Playback can be stopped via the "Main" menu by selecting "Stop replaying",
   or by pressing the "Blue" button outside the menu.
   A previously stopped playback session can be resumed by pressing the "Blue"
@@ -376,6 +384,14 @@ Video Disk Recorder User's Manual
                          from timer recordings in the "Recordings" menu.
                          0 = instant recordings will not be marked
                          1 = instant recordings will be marked.
+
+  NameInstantRecord = TITLE-EPISODE
+                         Defines how to name an instant recording. If the keywords
+                         TITLE and/or EPISODE are present, they will be replaced
+                         with the title and episode information from the EPG data
+                         at the time of recording (if that data is available).
+                         If this parameter is empty, the channel name will be used
+                         by default.
 
   LnbSLOF    = 11700     The switching frequency (in MHz) between low and high LOF
   LnbFrequLo = 9750      The LNB's low and high local oscillator frequencies (in MHz)

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.53 2002/01/27 12:36:23 kls Exp $
+ * $Id: tools.c 1.56 2002/02/03 16:44:08 kls Exp $
  */
 
 #include "tools.h"
@@ -13,6 +13,7 @@
 #include <errno.h>
 #if defined(DEBUG_OSD)
 #include <ncurses.h>
+#undef ERR //XXX ncurses defines this - but this clashes with newer system header files
 #endif
 #include <stdlib.h>
 #include <sys/time.h>
@@ -97,6 +98,23 @@ char *strreplace(char *s, char c1, char c2)
            *p = c2;
         p++;
         }
+  return s;
+}
+
+char *strreplace(char *s, const char *s1, const char *s2)
+{
+  char *p = strstr(s, s1);
+  if (p) {
+     int of = p - s;
+     int l  = strlen(s);
+     int l1 = strlen(s1);
+     int l2 = strlen(s2);
+     if (l2 > l1)
+        s = (char *)realloc(s, strlen(s) + l2 - l1 + 1);
+     if (l2 != l1)
+        memmove(s + of + l2, s + of + l1, l - of - l1 + 1);
+     strncpy(s + of, s2, l2);
+     }
   return s;
 }
 
@@ -404,9 +422,8 @@ char *ReadLink(const char *FileName)
   if (n < 0) {
      if (errno == ENOENT || errno == EINVAL) // file doesn't exist or is not a symlink
         TargetName = FileName;
-     else { // some other error occurred
+     else // some other error occurred
         LOG_ERROR_STR(FileName);
-        }
      }
   else if (n < int(sizeof(RealName))) { // got it!
      RealName[n] = 0;
