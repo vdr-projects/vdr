@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.82 2001/09/30 10:37:18 kls Exp $
+ * $Id: config.h 1.83 2001/09/30 11:28:52 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -298,6 +298,7 @@ public:
   int OSDwidth, OSDheight;
   int OSDMessageTime;
   int MaxVideoFileSize;
+  int SplitEditedFiles;
   int MinEventTimeout, MinUserInactivity;
   int MultiSpeedMode;
   int ShowReplayMode;

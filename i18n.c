@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.43 2001/09/16 14:43:05 kls Exp $
+ * $Id: i18n.c 1.44 2001/09/30 11:31:43 kls Exp $
  *
  * Slovenian translations provided by Miha Setina <mihasetina@softhome.net>
  * Italian   translations provided by Alberto Carraro <bertocar@tin.it>
@@ -922,6 +922,15 @@ const tPhrase Phrases[] = {
   },
   { "MaxVideoFileSize",
     "Max. Video Dateigröße",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+  },
+  { "SplitEditedFiles",
+    "Editierte Dateien zerteilen",
     "", // TODO
     "", // TODO
     "", // TODO

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.73 2001/09/22 13:36:59 kls Exp $
+ * $Id: config.c 1.74 2001/09/30 11:28:47 kls Exp $
  */
 
 #include "config.h"
@@ -803,6 +803,7 @@ cSetup::cSetup(void)
   OSDheight = 18;
   OSDMessageTime = 1;
   MaxVideoFileSize = MAXVIDEOFILESIZE;
+  SplitEditedFiles = 0;
   MinEventTimeout = 30;
   MinUserInactivity = 120;
   MultiSpeedMode = 0;
@@ -843,6 +844,7 @@ bool cSetup::Parse(char *s)
      else if (!strcasecmp(Name, "OSDheight"))           OSDheight          = atoi(Value);
      else if (!strcasecmp(Name, "OSDMessageTime"))      OSDMessageTime     = atoi(Value);
      else if (!strcasecmp(Name, "MaxVideoFileSize"))    MaxVideoFileSize   = atoi(Value);
+     else if (!strcasecmp(Name, "SplitEditedFiles"))    SplitEditedFiles   = atoi(Value);
      else if (!strcasecmp(Name, "MinEventTimeout"))     MinEventTimeout    = atoi(Value);
      else if (!strcasecmp(Name, "MinUserInactivity"))   MinUserInactivity  = atoi(Value);
      else if (!strcasecmp(Name, "MultiSpeedMode"))      MultiSpeedMode     = atoi(Value);
@@ -918,6 +920,7 @@ bool cSetup::Save(const char *FileName)
         fprintf(f, "OSDheight          = %d\n", OSDheight);
         fprintf(f, "OSDMessageTime     = %d\n", OSDMessageTime);
         fprintf(f, "MaxVideoFileSize   = %d\n", MaxVideoFileSize);
+        fprintf(f, "SplitEditedFiles   = %d\n", SplitEditedFiles);
         fprintf(f, "MinEventTimeout    = %d\n", MinEventTimeout);
         fprintf(f, "MinUserInactivity  = %d\n", MinUserInactivity);
         fprintf(f, "MultiSpeedMode     = %d\n", MultiSpeedMode);

@@ -791,3 +791,5 @@ Video Disk Recorder Revision History
 
 - Implemented a lock file to prevent more than one instance of VDR from removing
   files from the video directory at the same time.
+- The new setup parameter SplitEditedFiles can be used to control whether or
+  not the result of an editing process shall be written into separate files.

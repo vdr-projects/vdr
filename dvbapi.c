@@ -7,7 +7,7 @@
  * DVD support initially written by Andreas Schultz <aschultz@warp10.net>
  * based on dvdplayer-0.5 by Matjaz Thaler <matjaz.thaler@guest.arnes.si>
  *
- * $Id: dvbapi.c 1.129 2001/09/23 13:44:27 kls Exp $
+ * $Id: dvbapi.c 1.130 2001/09/30 11:28:58 kls Exp $
  */
 
 //#define DVDDEBUG        1
@@ -2392,6 +2392,12 @@ void cCuttingBuffer::Action(void)
                  Index = Mark->position;
                  Mark = fromMarks.Next(Mark);
                  CurrentFileNumber = 0; // triggers SetOffset before reading next frame
+                 if (Setup.SplitEditedFiles) {
+                    toFile = toFileName->NextFile();
+                    if (toFile < 0)
+                       break;
+                    FileSize = 0;
+                    }
                  }
               // the 'else' case (i.e. 'final end mark reached') is handled above
               // in 'Write one frame', so that the edited version will end right
