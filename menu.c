@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.266 2003/08/16 10:17:49 kls Exp $
+ * $Id: menu.c 1.267 2003/08/16 13:12:26 kls Exp $
  */
 
 #include "menu.h"
@@ -3099,8 +3099,11 @@ bool cRecordControls::Start(cTimer *Timer, bool Pause)
      int Priority = Timer ? Timer->Priority() : Pause ? Setup.PausePriority : Setup.DefaultPriority;
      cDevice *device = cDevice::GetDevice(channel, Priority, &NeedsDetachReceivers);
      if (device) {
-        if (NeedsDetachReceivers)
+        if (NeedsDetachReceivers) {
            Stop(device);
+           if (device == cDevice::ActualDevice())
+              cControl::Shutdown(); // in case this device was used for Transfer Mode
+           }
         if (!device->SwitchChannel(channel, false)) {
            cThread::EmergencyExit(true);
            return false;
