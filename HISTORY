@@ -346,7 +346,7 @@ Video Disk Recorder Revision History
   and then renames it).
 - In case the video data stream is broken the log message will come only every
   5 seconds.
-- The current channel is now saved in the 'setup.conf' file when VDR is cancelled,
+- The current channel is now saved in the 'setup.conf' file when VDR is canceled,
   and will be restored next time it is started (thanks to Deti Fliegl).
 - The EIT scanning thread is now locked when switching channels to avoid problems.
 - Encrypted channels can now be selected even without knowing the PNR (however, it
@@ -2241,7 +2241,7 @@ Video Disk Recorder Revision History
   Gruber for reporting this one).
 - Fixed editing channels ('timers.conf' was not written after a channel has
   been modified, which could result in errors upon the next start of VDR).
-- Fixed a crash when cancelling a newly created timer (thanks to Thomas Schmidt
+- Fixed a crash when canceling a newly created timer (thanks to Thomas Schmidt
   for reporting this one).
 - Completed Hungarian language texts (thanks to Istvan Koenigsberger and Guido
   Josten).
@@ -3065,7 +3065,7 @@ Video Disk Recorder Revision History
   small packet.
 - Removed the signal handler and WakeUp() call from cThread (it is no longer
   needed).
-- Added some checks when cancelling a thread and removed the usleep() in
+- Added some checks when canceling a thread and removed the usleep() in
   cThread::Start() (suggested by Ludwig Nussel). Also removed 'running' from
   cThread and using only childTid to indicate whether a thread is actually
   running.
@@ -3166,3 +3166,4 @@ Video Disk Recorder Revision History
   for reporting this one).
 - Some more changes to the 'childTid' handling in cThread (based on suggestions by
   Stefan Huelswitt).
+- Fixed the spelling of 'canceling' (thanks to Wayne Keer for reporting this one).

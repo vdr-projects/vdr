@@ -755,7 +755,7 @@ Ludwig Nussel <ludwig.nussel@web.de>
  for reporting a problem on systems that have UTF-8 enabled
  for pointing out a flaw in the the description of cRingBufferLinear
  for reporting a bug in cRingBufferLinear::Get() in case the buffer wraps around
- for adding some checks when cancelling a thread and removing the usleep() in
+ for adding some checks when canceling a thread and removing the usleep() in
  cThread::Start()
 
 Thomas Koch <tom@harhar.net>
@@ -857,7 +857,7 @@ Jon Burgess <mplayer@jburgess.uklinux.net>
  for fixing a memory leak in thread handling when using NPTL
 
 Thomas Schmidt <thomas.schmidt@in.stud.tu-ilmenau.de>
- for reporting a crash when cancelling a newly created timer
+ for reporting a crash when canceling a newly created timer
  for making 'diseqc.conf' a required file only if Setup.DiSEqC is activated
 
 Michael Walle <michael.walle@web.de>
@@ -1060,6 +1060,7 @@ Wayne Keer <syphir@syphir.sytes.net>
  for suggesting to make the "Channel not available!" message and mtInfo instead of
  mtError
  for reporting an unused variable from cTimer::GetWDayFromMDay()
+ for reporting a spelling error in 'canceling'
 
 Marco Schlüßler <marco@lordzodiac.de>
  for fixing handling colors in cDvbSpuPalette::yuv2rgb()

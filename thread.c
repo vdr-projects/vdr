@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 1.38 2004/11/26 13:50:37 kls Exp $
+ * $Id: thread.c 1.39 2004/11/26 14:16:07 kls Exp $
  */
 
 #include "thread.h"
@@ -281,7 +281,7 @@ void cThread::Cancel(int WaitSeconds)
                return;
             cCondWait::SleepMs(10);
             }
-        esyslog("ERROR: thread %ld won't end (waited %d seconds) - cancelling it...", childTid, WaitSeconds);
+        esyslog("ERROR: thread %ld won't end (waited %d seconds) - canceling it...", childTid, WaitSeconds);
         }
      childTidMutex.Lock();
      if (childTid) {
