@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.50 2001/02/02 15:48:11 kls Exp $
+ * $Id: vdr.c 1.51 2001/02/04 11:51:11 kls Exp $
  */
 
 #include <getopt.h>
@@ -324,6 +324,8 @@ int main(int argc, char *argv[])
            EITScanner.Process();
            cVideoCutter::Active();
            }
+        if (!*Interact && !cRecordControls::Active())
+           RemoveDeletedRecordings();
         }
   isyslog(LOG_INFO, "caught signal %d", Interrupted);
   Setup.CurrentChannel = cDvbApi::CurrentChannel();

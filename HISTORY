@@ -350,7 +350,7 @@ Video Disk Recorder Revision History
 - Encrypted channels can now be selected even without knowing the PNR (however, it
   is still necessary for the EPG info).
 
-2001-02-03: Version 0.71
+2001-02-04: Version 0.71
 
 - Fixed 'Transfer Mode' in cases where a non-primary interface was switched to
   a channel that only the primary interface can receive (which could happen in
@@ -376,3 +376,5 @@ Video Disk Recorder Revision History
   to 0), but once they are written back (due to some channel editing) the file
   will have the new format.
 - The EPG scanner now scans each transponder only once per cycle.
+- Deleted recordings are now automatically removed from disk after a while (not
+  only when disk space is being needed for a new recording).

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.27 2001/01/13 15:35:02 kls Exp $
+ * $Id: tools.c 1.28 2001/02/04 11:27:49 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -237,8 +237,10 @@ bool RemoveFileOrDir(const char *FileName, bool FollowSymlinks)
            }
         }
      dsyslog(LOG_INFO, "removing %s", FileName);
-     if (remove(FileName) == 0)
-        return true;
+     if (remove(FileName) < 0) {
+        LOG_ERROR_STR(FileName);
+        return false;
+        }
      }
   else if (errno != ENOENT) {
      LOG_ERROR_STR(FileName);

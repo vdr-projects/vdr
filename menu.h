@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 1.16 2000/12/25 14:25:29 kls Exp $
+ * $Id: menu.h 1.17 2001/02/04 11:47:21 kls Exp $
  */
 
 #ifndef _MENU_H
@@ -74,6 +74,7 @@ public:
   static void Stop(cDvbApi *DvbApi);
   static const char *GetInstantId(const char *LastInstantId);
   static void Process(void);
+  static bool Active(void);
   };
 
 class cReplayControl : public cOsdBase {

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.62 2001/02/03 16:05:31 kls Exp $
+ * $Id: menu.c 1.63 2001/02/04 11:48:01 kls Exp $
  */
 
 #include "menu.h"
@@ -2017,6 +2017,15 @@ void cRecordControls::Process(void)
             DELETENULL(RecordControls[i]);
          }
       }
+}
+
+bool cRecordControls::Active(void)
+{
+  for (int i = 0; i < MAXDVBAPI; i++) {
+      if (RecordControls[i])
+         return true;
+      }
+  return false;
 }
 
 // --- cProgressBar ----------------------------------------------------------
