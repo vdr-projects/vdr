@@ -8,7 +8,7 @@
  * the Linux DVB driver's 'tuxplayer' example and were rewritten to suit
  * VDR's needs.
  *
- * $Id: remux.c 1.17 2003/09/14 10:34:39 kls Exp $
+ * $Id: remux.c 1.18 2004/02/14 10:40:37 kls Exp $
  */
 
 /* The calling interface of the 'cRemux::Process()' function is defined
@@ -114,6 +114,7 @@
 #define SC_PICTURE 0x00  // "picture header"
 
 #define MAXNONUSEFULDATA (10*1024*1024)
+#define MAXNUMUPTERRORS  10
 
 class cTS2PES {
 private:
@@ -459,6 +460,7 @@ cRemux::cRemux(int VPid, int APid1, int APid2, int DPid1, int DPid2, bool ExitOn
   dPid1 = DPid1;
   dPid2 = DPid2;
   exitOnFailure = ExitOnFailure;
+  numUPTerrors = 0;
   synced = false;
   skipped = 0;
   resultCount = resultDelivered = 0;
@@ -618,8 +620,11 @@ XXX*/
                      if (l < 0)
                         return NULL; // no useful data found, wait for more
                      if (pt != NO_PICTURE) {
-                        if (pt < I_FRAME || B_FRAME < pt)
+                        if (pt < I_FRAME || B_FRAME < pt) {
                            esyslog("ERROR: unknown picture type '%d'", pt);
+                           if (++numUPTerrors > MAXNUMUPTERRORS && exitOnFailure)
+                              cThread::EmergencyExit(true);
+                           }
                         else if (!synced) {
                            if (pt == I_FRAME) {
                               resultDelivered = i; // will drop everything before this position
