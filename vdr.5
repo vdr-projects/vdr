@@ -8,7 +8,7 @@
 .\" License as specified in the file COPYING that comes with the
 .\" vdr distribution.
 .\"
-.\" $Id: vdr.5 1.10 2002/10/20 14:15:40 kls Exp $
+.\" $Id: vdr.5 1.11 2002/10/27 15:36:44 kls Exp $
 .\"
 .TH vdr 5 "7 Oct 2002" "1.2.0" "Video Disk Recorder Files"
 .SH NAME
@@ -323,6 +323,20 @@ PC keyboard, RCU for the home-built "Remote Control Unit", or LIRC for the
 "Linux Infrared Remote Control"), \fBkey\fR is the name of the key that is
 defined (like Up, Down, Menu etc.), and \fBcode\fR is a character string that
 this remote control delivers when the given key is pressed.
+.SS KEY MACROS
+The file \fIkeymacros.conf\fR contains user defined macros that will be executed
+whenever the given key is pressed. The format is
+
+\fBmacrokey  key1 key2 key3...\fR
+
+where \fBmacrokey\fR is the key that shall initiate execution of this macro
+and can be one of \fIRed\fR, \fIGreen\fR, \fIYellow\fR, \fIBlue\fR or
+\fIUser1\fR...\fIUser9\fR. The rest of the line consists of a set of
+keys, which will be executed just as if they had been pressed in the given
+sequence. Note that the color keys will only execute their macro function
+in "normal viewing" mode (i.e. when no other menu or player is active). The
+\fIUser1\fR...\fIUser9\fR keys will always execute their macro function.
+There may be up to 15 keys in such a key sequence.
 .SS COMMANDS
 The file \fIcommands.conf\fR contains the definitions of commands that can
 be executed from the \fBvdr\fR main menu's "Commands" option.

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remote.c 1.29 2002/10/12 15:22:08 kls Exp $
+ * $Id: remote.c 1.30 2002/10/27 15:15:58 kls Exp $
  */
 
 #include "remote.h"
@@ -82,6 +82,22 @@ bool cRemote::Put(eKeys Key)
      return false;
      }
   return true; // only a real key shall report an overflow!
+}
+
+bool cRemote::PutMacro(eKeys Key)
+{
+  const cKeyMacro *km = KeyMacros.Get(Key);
+  if (km) {
+     for (int i = 1; i < MAXKEYSINMACRO; i++) {
+         if (km->Macro()[i] != kNone) {
+            if (!Put(km->Macro()[i]))
+               return false;
+            }
+         else
+            break;
+         }
+     }
+  return true;
 }
 
 bool cRemote::Put(uint64 Code, bool Repeat, bool Release)

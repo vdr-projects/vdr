@@ -49,6 +49,9 @@ Video Disk Recorder User's Manual
   Setup       |
   Commands    /
 
+  User1...9   additional user defined keys for macro functions
+              (defined in 'keymacros.conf')
+
   (1) The "On/Off" button in the "Timers" menu only works if sorting the timers
       has been enabled in the "Setup" menu. Otherwise the Blue button is used
       to "mark" a timer for moving.

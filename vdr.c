@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.129 2002/10/27 14:32:06 kls Exp $
+ * $Id: vdr.c 1.130 2002/10/27 15:20:56 kls Exp $
  */
 
 #include <getopt.h>
@@ -324,6 +324,7 @@ int main(int argc, char *argv[])
   SVDRPhosts.Load(AddDirectory(ConfigDirectory, "svdrphosts.conf"), true);
   CaDefinitions.Load(AddDirectory(ConfigDirectory, "ca.conf"), true);
   Keys.Load(AddDirectory(ConfigDirectory, "remote.conf"));
+  KeyMacros.Load(AddDirectory(ConfigDirectory, "keymacros.conf"), true);
 
   // DVB interfaces:
 
@@ -468,6 +469,7 @@ int main(int argc, char *argv[])
           case kRecordings: DirectMainFunction(osRecordings); break;
           case kSetup:      DirectMainFunction(osSetup); break;
           case kCommands:   DirectMainFunction(osCommands); break;
+          case kUser1 ... kUser9: cRemote::PutMacro(key); break;
           // Channel up/down:
           case kChanUp|k_Repeat:
           case kChanUp:
@@ -591,6 +593,11 @@ int main(int argc, char *argv[])
                   else
                      Interface->Error(tr("No free DVB device to record!"));
                   break;
+             // Key macros:
+             case kRed:
+             case kGreen:
+             case kYellow:
+             case kBlue: cRemote::PutMacro(key); break;
              default:    break;
              }
            }

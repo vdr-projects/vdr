@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remote.h 1.17 2002/09/29 11:26:45 kls Exp $
+ * $Id: remote.h 1.18 2002/10/27 15:16:50 kls Exp $
  */
 
 #ifndef __REMOTE_H
@@ -20,7 +20,7 @@ typedef unsigned long long int uint64;
 
 class cRemote : public cListObject {
 private:
-  enum { MaxKeys = 16 };
+  enum { MaxKeys = MAXKEYSINMACRO };
   static eKeys keys[MaxKeys];
   static int in;
   static int out;
@@ -42,6 +42,7 @@ public:
   static void SetLearning(bool On) { learning = On; }
   static void Clear(void);
   static bool Put(eKeys Key);
+  static bool PutMacro(eKeys Key);
   static eKeys Get(int WaitMs = 1000, char **UnknownCode = NULL);
   };
 

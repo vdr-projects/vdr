@@ -1663,3 +1663,7 @@ Video Disk Recorder Revision History
   control provides keys you want to assign these functions to, you can delete
   your 'remote.cof' file and restart VDR to  go through the key learning procedure
   again in order to assign these new keys. See MANUAL for more information.
+- The new configuration file 'keymacros.conf' can be used to assign macros to
+  the color buttons in normal viewing mode, as well as to up to 9 user defined
+  keys. See MANUAL and man vdr(5) for more information. The default 'keymacros.conf'
+  implements the functionality of the "color button patch".
