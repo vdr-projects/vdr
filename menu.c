@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.295 2004/03/07 09:40:34 kls Exp $
+ * $Id: menu.c 1.296 2004/03/14 10:31:13 kls Exp $
  */
 
 #include "menu.h"
@@ -1008,13 +1008,8 @@ public:
 cMenuTimers::cMenuTimers(void)
 :cOsdMenu(tr("Timers"), 2, CHNUMWIDTH, 10, 6, 6)
 {
-  int i = 0;
-  cTimer *timer;
-
-  while ((timer = Timers.Get(i)) != NULL) {
-        Add(new cMenuTimerItem(timer));
-        i++;
-        }
+  for (cTimer *timer = Timers.First(); timer; timer = Timers.Next(timer))
+      Add(new cMenuTimerItem(timer));
   if (Setup.SortTimers)
      Sort();
   SetHelp(tr("Edit"), tr("New"), tr("Delete"), Setup.SortTimers ? tr("On/Off") : tr("Mark"));
@@ -1493,13 +1488,8 @@ cMenuCommands::cMenuCommands(const char *Title, cCommands *Commands, const char 
   SetHasHotkeys();
   commands = Commands;
   parameters = Parameters ? strdup(Parameters) : NULL;
-  int i = 0;
-  cCommand *command;
-
-  while ((command = commands->Get(i)) != NULL) {
-        Add(new cOsdItem(hk(command->Title())));
-        i++;
-        }
+  for (cCommand *command = commands->First(); command; command = commands->Next(command))
+      Add(new cOsdItem(hk(command->Title())));
 }
 
 cMenuCommands::~cMenuCommands()

@@ -2714,7 +2714,7 @@ Video Disk Recorder Revision History
   whether an event is currently running (see MANUAL under "The "Schedule" Menu"
   for details).
 
-2004-03-13: Version 1.3.6
+2004-03-14: Version 1.3.6
 
 - Completed the Finnish OSD texts (thanks to Rolf Ahrenberg).
 - Fixed some descriptor handling in 'libsi' (thanks to Stéphane Esté-Gracias).
@@ -2738,3 +2738,4 @@ Video Disk Recorder Revision History
   This was also necessary to better display itemized texts.
 - Fixed detecting the running status in case an empty EPG event is broadcast (thanks
   to Michael Pennewiß for pointing this out).
+- Improved performance when paging through very long menu lists.
