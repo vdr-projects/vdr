@@ -3345,3 +3345,7 @@ Video Disk Recorder Revision History
   Christian Jacobsen for reporting this one).
 - Fixed masking SubStreamType in cDevice::PlayPesPacket() (thanks to Werner Fink
   for pointing out this one).
+- The new function cPlugin::Stop() shall be used to stop any background activities
+  of a plugin. Previously this was done in the plugin's desctructor, but it is
+  better to do this in a dedicated function that can be called early when shutting
+  down.

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: plugin.c 1.12 2004/12/19 12:05:28 kls Exp $
+ * $Id: plugin.c 1.13 2005/01/30 14:05:20 kls Exp $
  */
 
 #include "plugin.h"
@@ -28,6 +28,7 @@ char *cPlugin::configDirectory = NULL;
 cPlugin::cPlugin(void) 
 {
   name = NULL;
+  started = false;
 }
 
 cPlugin::~cPlugin()
@@ -58,6 +59,10 @@ bool cPlugin::Initialize(void)
 bool cPlugin::Start(void)
 {
   return true;
+}
+
+void cPlugin::Stop(void)
+{
 }
 
 void cPlugin::Housekeeping(void)
@@ -322,6 +327,7 @@ bool cPluginManager::StartPlugins(void)
          Setup.OSDLanguage = Language;
          if (!p->Start())
             return false;
+         p->started = true;
          }
       }
   return true;
@@ -366,15 +372,25 @@ cPlugin *cPluginManager::GetPlugin(const char *Name)
   return NULL;
 }
 
-void cPluginManager::Shutdown(bool Log)
+void cPluginManager::StopPlugins(void)
+{
+  for (cDll *dll = dlls.Last(); dll; dll = dlls.Prev(dll)) {
+      cPlugin *p = dll->Plugin();
+      if (p && p->started) {
+         isyslog("stopping plugin: %s", p->Name());
+         p->Stop();
+         p->started = false;
+         }
+      }
+}
+
+void cPluginManager::Shutdown(void)
 {
   cDll *dll;
   while ((dll = dlls.Last()) != NULL) {
-        if (Log) {
-           cPlugin *p = dll->Plugin();
-           if (p)
-              isyslog("stopping plugin: %s", p->Name());
-           }
+        cPlugin *p = dll->Plugin();
+        if (p)
+           isyslog("deleting plugin: %s", p->Name());
         dlls.Del(dll);
         }
 }
