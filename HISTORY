@@ -1214,3 +1214,5 @@ Video Disk Recorder Revision History
   to Stefan Huelswitt for reporting this one).
 - Updated the Premiere World Formula 1 channels in 'channels.conf' (thanks to Mel
   Schächner).
+- No longer setting PIDs 0x1FFF, which apparently fixes problems with CAMs and
+  AC3 sound only working the first time (thanks to Stefan Huelswitt).

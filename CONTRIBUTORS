@@ -123,6 +123,8 @@ Stefan Huelswitt <huels@iname.com>
  for fixing a crash when selecting the "Jump" function directly after setting
  an editing mark
  for reporting a possible endless loop in shifting recordings between DVB cards
+ for making it no longer setting PIDs 0x1FFF, which apparently fixes problems
+ with CAMs and AC3 sound only working the first time
 
 Ulrich Röder <roeder@efr-net.de>
  for pointing out that there are channels that have a symbol rate higher than
