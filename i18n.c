@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.117 2003/05/25 14:03:00 kls Exp $
+ * $Id: i18n.c 1.118 2003/05/26 15:46:13 kls Exp $
  *
  * Translations provided by:
  *
@@ -1067,7 +1067,7 @@ const tI18nPhrase Phrases[] = {
     "Apid2",
     "Apid2",
     "Apid2",
-    "PID Áudio (2)",
+    "PID Audio (2)",
     "Apid2",
     "Ääni PID (2)",
     "Apid2",
@@ -1186,7 +1186,7 @@ const tI18nPhrase Phrases[] = {
     "Bandwidth",
     "Bandwidth",
     "Bandwidth",
-    "Bandwidth",
+    "Bande passante",
     "Bandwidth",
     "Kaistanleveys",
     "Bandwidth",
@@ -1288,7 +1288,7 @@ const tI18nPhrase Phrases[] = {
     "Hierarchy",
     "Hierarchy",
     "Hierarchy",
-    "Hierarchy",
+    "Hierarchie",
     "Hierarchy",
     "Hierarkia",
     "Hierarchy",
@@ -2346,7 +2346,7 @@ const tI18nPhrase Phrases[] = {
     "Limite primario",
     "Eerste grens",
     "Limite Primário",
-    "Première limite",
+    "Limite primaire",
     "Prioritetsgrense HovedDVB",
     "Päälimitti", //Finnish - unsure about this ;-)
     "Pierwotny limit",
@@ -2533,7 +2533,7 @@ const tI18nPhrase Phrases[] = {
     "Dividi i file modificati",
     "Bewerkte files opdelen",
     "Quebrar ficheiros",
-    "Séparer les séquences",
+    "Séparer les séquences éditées",
     "Splitt redigerte filer",
     "Jaottele muokatut tallenteet",
     "Dzielic montowane pliki",
@@ -2584,7 +2584,7 @@ const tI18nPhrase Phrases[] = {
     "Resume ID",// TODO
     "Resume ID",// TODO
     "Resume ID",// TODO
-    "Resume ID",// TODO
+    "ID de reprise",
     "Resume ID",// TODO
     "Jatko ID", //Finnish - unsure about this
     "Resume ID",// TODO
@@ -2688,7 +2688,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    " aàbcçdeéèêfghiîjklmnoôpqrstuùûvxyz0123456789-.#~",
+    " aàbcçdeéèêfghiîjklmnoôpqrstuùûvwxyz0123456789-.#~",
     "",// TODO
     " abcdefghijklmnopqrstuvxyzåäö0123456789-.#~",
     "",// TODO
@@ -3166,7 +3166,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "Stop",
-    "Arrêt",
+    "Stop",
     "",// TODO
     "Pysäytä",
     "",// TODO
@@ -3234,7 +3234,7 @@ const tI18nPhrase Phrases[] = {
     "Power",
     "Uitschakelen",
     "Ligar",
-    "Arrêt",
+    "Veille", // This one caused some bug reports ;)
     "Power",
     "Virtakytkin",
     "Wylaczyc",
