@@ -490,3 +490,14 @@ Video Disk Recorder Revision History
   a new recording with higher priority needs disk space.
 - Updated version of Matthias Schniedermeyer's 'schnitt' tools.
 - New 'master-timer' tool (thanks to Matthias Schniedermeyer).
+
+2001-06-03: Version 0.81
+
+- Fixed handling the case where the driver reports EAGAIN during recording,
+  but no data comes within 5 seconds.
+- Fixed EPG scanning on single DVB card systems.
+- There can now be two audio PIDs per channel, which can be toggled via the
+  "Green" button in the "Main" menu. The "Edit Channel" menu therefore now
+  has two audio PID fields (Apid1 and Apid2). By default, Apid2 is 0, which
+  means there is no alternate audio track.
+

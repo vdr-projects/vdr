@@ -25,7 +25,7 @@ Video Disk Recorder File Formats
   - Diseqc number **
   - Symbol rate
   - Video PID
-  - Audio PID
+  - Audio PID (either one number, or two, separated by a comma)
   - Teletext PID
   - Conditional Access (0 = Free To Air, 1 = can be decrypted by the first
     DVB card, 2 = can be decrypted by the second DVB card)

@@ -18,7 +18,7 @@ Video Disk Recorder User's Manual
   Menu    Menu on     Menu off   Menu off   Menu off   Menu off      Menu off    Menu on
   Back    -           Menu off   Main menu  Main menu  Discard       Main menu   Recordings menu
   Red     -           Record     Edit       Edit       -             Play        -
-  Green   -           -          New        New        -             Rewind      Skip -60s
+  Green   -           Language   New        New        -             Rewind      Skip -60s
   Yellow  -           -          Delete     Delete     -             Delete      Skip +60s
   Blue    -           Resume     Mark       Mark       -             Summary     Stop
   0..9    Ch select   -          -          -          Numeric inp.  -           Editing
@@ -114,6 +114,14 @@ Video Disk Recorder User's Manual
   automatically goes away after about five seconds, or if any key is pressed.
   To bring up the channel display without switching channels you can press
   the "Ok" button.
+
+* Selecting language specific audio track
+
+  If the current channel provides different audio tracks (typically for
+  different languages), the "Green" button in the "Main" menu can be pressed
+  to toggle between these. There can be two different audio PIDs per channel,
+  assuming that typically a channel broadcasts a country specific language
+  plus the movie's original soundtrack.
 
 * Switching through channel groups
 
@@ -257,6 +265,9 @@ Video Disk Recorder User's Manual
              to free up space for a new recording. Note that setting this
              parameter to very high values for all recordings may soon fill up
              the entire disk and cause new recordings to fail due to low disk
+             space. The special value 99 means that this recording will live
+             "forever", and a value of 0 means that this recording can be
+             deleted any time if a recording with a higher priority needs disk
              space.
   File:      The name under which a recording created through this timer will
              be stored on disk (the actual name will also contain the date and

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.71 2001/06/02 09:59:54 kls Exp $
+ * $Id: menu.c 1.72 2001/06/02 13:51:28 kls Exp $
  */
 
 #include "menu.h"
@@ -540,7 +540,8 @@ cMenuEditChannel::cMenuEditChannel(int Index)
      Add(new cMenuEditIntItem( tr("Diseqc"),       &data.diseqc, 0, 10)); //TODO exact limits???
      Add(new cMenuEditIntItem( tr("Srate"),        &data.srate, 22000, 27500)); //TODO exact limits - toggle???
      Add(new cMenuEditIntItem( tr("Vpid"),         &data.vpid, 0, 0xFFFE));
-     Add(new cMenuEditIntItem( tr("Apid"),         &data.apid, 0, 0xFFFE));
+     Add(new cMenuEditIntItem( tr("Apid1"),        &data.apid1, 0, 0xFFFE));
+     Add(new cMenuEditIntItem( tr("Apid2"),        &data.apid2, 0, 0xFFFE));
      Add(new cMenuEditIntItem( tr("Tpid"),         &data.tpid, 0, 0xFFFE));
      Add(new cMenuEditIntItem( tr("CA"),           &data.ca, 0, cDvbApi::NumDvbApis));
      Add(new cMenuEditIntItem( tr("Pnr"),          &data.pnr, 0));
@@ -1725,7 +1726,7 @@ cMenuMain::cMenuMain(bool Replaying)
         }
   if (cVideoCutter::Active())
      Add(new cOsdItem(tr(" Cancel editing"), osCancelEdit));
-  SetHelp(tr("Record"), NULL, NULL, cReplayControl::LastReplayed() ? tr("Resume") : NULL);
+  SetHelp(tr("Record"), cDvbApi::PrimaryDvbApi->CanToggleAudioPid() ? tr("Language") : NULL, NULL, cReplayControl::LastReplayed() ? tr("Resume") : NULL);
   Display();
   lastActivity = time(NULL);
   SetHasHotkeys();
@@ -1756,14 +1757,20 @@ eOSState cMenuMain::ProcessKey(eKeys Key)
                           }
                        break;
     default: switch (Key) {
-               case kMenu: state = osEnd;    break;
-               case kRed:  if (!HasSubMenu())
-                              state = osRecord;
-                           break;
-               case kBlue: if (!HasSubMenu())
-                              state = osReplay;
-                           break;
-               default:    break;
+               case kMenu:  state = osEnd;    break;
+               case kRed:   if (!HasSubMenu())
+                               state = osRecord;
+                            break;
+               case kGreen: if (cDvbApi::PrimaryDvbApi->CanToggleAudioPid()) {
+                               Interface->Clear();
+                               cDvbApi::PrimaryDvbApi->ToggleAudioPid();
+                               state = osEnd;
+                               }
+                            break;
+               case kBlue:  if (!HasSubMenu())
+                               state = osReplay;
+                            break;
+               default:     break;
                }
     }
   if (Key != kNone)

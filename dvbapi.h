@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.h 1.36 2001/06/02 09:44:00 kls Exp $
+ * $Id: dvbapi.h 1.37 2001/06/03 11:51:30 kls Exp $
  */
 
 #ifndef __DVBAPI_H
@@ -67,7 +67,7 @@ class cDvbApi {
 private:
   int videoDev;
   int fd_osd, fd_qpskfe, fd_qamfe, fd_sec, fd_dvr, fd_audio, fd_video, fd_demuxa, fd_demuxv, fd_demuxt;
-  int vPid, aPid;
+  int vPid, aPid1, aPid2;
   bool SetPid(int fd, dmxPesType_t PesType, dvb_pid_t Pid, dmxOutput_t Output);
   bool SetVpid(int Vpid, dmxOutput_t Output) { return SetPid(fd_demuxv, DMX_PES_VIDEO,    Vpid, Output); }
   bool SetApid(int Apid, dmxOutput_t Output) { return SetPid(fd_demuxa, DMX_PES_AUDIO,    Apid, Output); }
@@ -177,9 +177,11 @@ public:
 private:
   int currentChannel;
 public:
-  bool SetChannel(int ChannelNumber, int FrequencyMHz, char Polarization, int Diseqc, int Srate, int Vpid, int Apid, int Tpid, int Ca, int Pnr);
+  bool SetChannel(int ChannelNumber, int FrequencyMHz, char Polarization, int Diseqc, int Srate, int Vpid, int Apid1, int Apid2, int Tpid, int Ca, int Pnr);
   static int CurrentChannel(void) { return PrimaryDvbApi ? PrimaryDvbApi->currentChannel : 0; }
   int Channel(void) { return currentChannel; }
+  bool CanToggleAudioPid(void);
+  bool ToggleAudioPid(void);
 
   // Transfer facilities
 

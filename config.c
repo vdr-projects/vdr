@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.45 2001/06/02 09:42:25 kls Exp $
+ * $Id: config.c 1.46 2001/06/02 13:57:25 kls Exp $
  */
 
 #include "config.h"
@@ -200,7 +200,8 @@ cChannel::cChannel(const cChannel *Channel)
   diseqc       = Channel ? Channel->diseqc       : 0;
   srate        = Channel ? Channel->srate        : 27500;
   vpid         = Channel ? Channel->vpid         : 255;
-  apid         = Channel ? Channel->apid         : 256;
+  apid1        = Channel ? Channel->apid1        : 256;
+  apid2        = Channel ? Channel->apid2        : 0;
   tpid         = Channel ? Channel->tpid         : 32;
   ca           = Channel ? Channel->ca           : 0;
   pnr          = Channel ? Channel->pnr          : 0;
@@ -218,8 +219,15 @@ const char *cChannel::ToText(cChannel *Channel)
   delete buffer;
   if (Channel->groupSep)
      asprintf(&buffer, ":%s\n", s);
-  else
-     asprintf(&buffer, "%s:%d:%c:%d:%d:%d:%d:%d:%d:%d\n", s, Channel->frequency, Channel->polarization, Channel->diseqc, Channel->srate, Channel->vpid, Channel->apid, Channel->tpid, Channel->ca, Channel->pnr);
+  else {
+     char apidbuf[20];
+     char *q = apidbuf;
+     q += snprintf(q, sizeof(apidbuf), "%d", Channel->apid1);
+     if (Channel->apid2)
+        q += snprintf(q, sizeof(apidbuf) - (q - apidbuf), ",%d", Channel->apid2);
+     *q = 0;
+     asprintf(&buffer, "%s:%d:%c:%d:%d:%d:%s:%d:%d:%d\n", s, Channel->frequency, Channel->polarization, Channel->diseqc, Channel->srate, Channel->vpid, apidbuf, Channel->tpid, Channel->ca, Channel->pnr);
+     }
   return buffer;
 }
 
@@ -242,8 +250,11 @@ bool cChannel::Parse(const char *s)
      }
   else {
      groupSep = false;
-     //XXX
-     int fields = sscanf(s, "%a[^:]:%d:%c:%d:%d:%d:%d:%d:%d:%d", &buffer, &frequency, &polarization, &diseqc, &srate, &vpid, &apid, &tpid, &ca, &pnr);
+     char *apidbuf = NULL;
+     int fields = sscanf(s, "%a[^:]:%d:%c:%d:%d:%d:%a[^:]:%d:%d:%d", &buffer, &frequency, &polarization, &diseqc, &srate, &vpid, &apidbuf, &tpid, &ca, &pnr);
+     apid1 = apid2 = 0;
+     sscanf(apidbuf, "%d,%d", &apid1, &apid2);
+     delete apidbuf;
      if (fields >= 9) {
         if (fields == 9) {
            // allow reading of old format
@@ -275,7 +286,7 @@ bool cChannel::Switch(cDvbApi *DvbApi, bool Log)
         isyslog(LOG_INFO, "switching to channel %d", number);
         }
      for (int i = 3; i--;) {
-         if (DvbApi->SetChannel(number, frequency, polarization, diseqc, srate, vpid, apid, tpid, ca, pnr))
+         if (DvbApi->SetChannel(number, frequency, polarization, diseqc, srate, vpid, apid1, apid2, tpid, ca, pnr))
             return true;
          esyslog(LOG_ERR, "retrying");
          }

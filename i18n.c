@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.17 2001/06/02 09:39:36 kls Exp $
+ * $Id: i18n.c 1.18 2001/06/03 12:57:21 kls Exp $
  *
  * Slovenian translations provided by Miha Setina <mihasetina@softhome.net>
  * Italian   translations provided by Alberto Carraro <bertocar@tin.it>
@@ -225,6 +225,12 @@ const tPhrase Phrases[] = {
     "Programma",
     "Programma",
   },
+  { "Language",
+    "Sprache",
+    "Jezik",
+    "Linguaggio",
+    "Taal",
+  },
   // Confirmations:
   { "Delete channel?",
     "Kanal löschen?",
@@ -293,11 +299,17 @@ const tPhrase Phrases[] = {
     "Vpid",
     "Vpid",
   },
-  { "Apid",
-    "Apid",
-    "Apid",
-    "Apid",
-    "Apid",
+  { "Apid1",
+    "Apid1",
+    "Apid1",
+    "Apid1",
+    "Apid1",
+  },
+  { "Apid2",
+    "Apid2",
+    "Apid2",
+    "Apid2",
+    "Apid2",
   },
   { "Tpid",
     "Tpid",

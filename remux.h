@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.h 1.2 2001/05/26 11:50:52 kls Exp $
+ * $Id: remux.h 1.3 2001/06/02 15:15:43 kls Exp $
  */
 
 #ifndef __REMUX_H
@@ -50,6 +50,7 @@ private:
 public:
   cRemux(dvb_pid_t VPid, dvb_pid_t APid, bool ExitOnFailure = false);
   ~cRemux();
+  void SetAudioPid(int APid);
   const uchar *Process(const uchar *Data, int &Count, int &Result, uchar *PictureType = NULL);
   };
 

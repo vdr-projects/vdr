@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.68 2001/06/02 12:20:13 kls Exp $
+ * $Id: dvbapi.c 1.69 2001/06/03 13:07:20 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -1018,6 +1018,7 @@ class cTransferBuffer : public cRingBuffer {
 private:
   cDvbApi *dvbApi;
   int fromDevice, toDevice;
+  bool gotBufferReserve;
   cRemux remux;
 protected:
   virtual void Input(void);
@@ -1025,6 +1026,7 @@ protected:
 public:
   cTransferBuffer(cDvbApi *DvbApi, int ToDevice, dvb_pid_t VPid, dvb_pid_t APid);
   virtual ~cTransferBuffer();
+  void SetAudioPid(int APid);
   };
 
 cTransferBuffer::cTransferBuffer(cDvbApi *DvbApi, int ToDevice, dvb_pid_t VPid, dvb_pid_t APid)
@@ -1034,6 +1036,7 @@ cTransferBuffer::cTransferBuffer(cDvbApi *DvbApi, int ToDevice, dvb_pid_t VPid, 
   dvbApi = DvbApi;
   fromDevice = dvbApi->SetModeRecord();
   toDevice = ToDevice;
+  gotBufferReserve = false;
   Start();
 }
 
@@ -1041,6 +1044,15 @@ cTransferBuffer::~cTransferBuffer()
 {
   Stop();
   dvbApi->SetModeNormal(true);
+}
+
+void cTransferBuffer::SetAudioPid(int APid)
+{
+  Clear();
+  //XXX we may need to have access to the audio device, too, in order to clear it
+  CHECK(ioctl(toDevice, VIDEO_CLEAR_BUFFER));
+  gotBufferReserve = false;
+  remux.SetAudioPid(APid);
 }
 
 void cTransferBuffer::Input(void)
@@ -1084,14 +1096,13 @@ void cTransferBuffer::Output(void)
 {
   dsyslog(LOG_INFO, "output thread started (pid=%d)", getpid());
 
-  bool GotBufferReserve = false;
   uchar b[MINVIDEODATA];
   while (Busy()) {
-        if (!GotBufferReserve) {
+        if (!gotBufferReserve) {
            if (Available() < MAXFRAMESIZE)
               usleep(100000); // allow the buffer to collect some reserve
            else
-              GotBufferReserve = true;
+              gotBufferReserve = true;
            }
         int r = Get(b, sizeof(b));
         if (r > 0) {
@@ -1302,7 +1313,7 @@ cDvbApi *cDvbApi::PrimaryDvbApi = NULL;
 
 cDvbApi::cDvbApi(int n)
 {
-  vPid = aPid = 0;
+  vPid = aPid1 = aPid2 = 0;
   siProcessor = NULL;
   recordBuffer = NULL;
   replayBuffer = NULL;
@@ -2010,11 +2021,11 @@ bool cDvbApi::SetPid(int fd, dmxPesType_t PesType, dvb_pid_t Pid, dmxOutput_t Ou
 
 bool cDvbApi::SetPids(bool ForRecording)
 {
-  return SetVpid(vPid, ForRecording ? DMX_OUT_TS_TAP : DMX_OUT_DECODER) &&
-         SetApid(aPid, ForRecording ? DMX_OUT_TS_TAP : DMX_OUT_DECODER);
+  return SetVpid(vPid,  ForRecording ? DMX_OUT_TS_TAP : DMX_OUT_DECODER) &&
+         SetApid(aPid1, ForRecording ? DMX_OUT_TS_TAP : DMX_OUT_DECODER);
 }
 
-bool cDvbApi::SetChannel(int ChannelNumber, int FrequencyMHz, char Polarization, int Diseqc, int Srate, int Vpid, int Apid, int Tpid, int Ca, int Pnr)
+bool cDvbApi::SetChannel(int ChannelNumber, int FrequencyMHz, char Polarization, int Diseqc, int Srate, int Vpid, int Apid1, int Apid2, int Tpid, int Ca, int Pnr)
 {
   // Make sure the siProcessor won't access the device while switching
   cThreadLock ThreadLock(siProcessor);
@@ -2127,7 +2138,8 @@ bool cDvbApi::SetChannel(int ChannelNumber, int FrequencyMHz, char Polarization,
   // PID settings:
 
   vPid = Vpid;
-  aPid = Apid;
+  aPid1 = Apid1;
+  aPid2 = Apid2;
   if (!SetPids(false)) {
      esyslog(LOG_ERR, "ERROR: failed to set PIDs for channel %d", ChannelNumber);
      return false;
@@ -2146,7 +2158,7 @@ bool cDvbApi::SetChannel(int ChannelNumber, int FrequencyMHz, char Polarization,
      cDvbApi *CaDvbApi = GetDvbApi(Ca, 0);
      if (CaDvbApi) {
         if (!CaDvbApi->Recording()) {
-           if (CaDvbApi->SetChannel(ChannelNumber, FrequencyMHz, Polarization, Diseqc, Srate, Vpid, Apid, Tpid, Ca, Pnr)) {
+           if (CaDvbApi->SetChannel(ChannelNumber, FrequencyMHz, Polarization, Diseqc, Srate, Vpid, Apid1, Apid2, Tpid, Ca, Pnr)) {
               SetModeReplay();
               transferringFromDvbApi = CaDvbApi->StartTransfer(fd_video);
               }
@@ -2161,6 +2173,28 @@ bool cDvbApi::SetChannel(int ChannelNumber, int FrequencyMHz, char Polarization,
   return true;
 }
 
+bool cDvbApi::CanToggleAudioPid(void)
+{
+  return aPid1 && aPid2 && aPid1 != aPid2;
+}
+
+bool cDvbApi::ToggleAudioPid(void)
+{
+  if (CanToggleAudioPid()) {
+     int a = aPid2;
+     aPid2 = aPid1;
+     aPid1 = a;
+     if (transferringFromDvbApi)
+        return transferringFromDvbApi->ToggleAudioPid();
+     else {
+        if (transferBuffer)
+           transferBuffer->SetAudioPid(aPid1);
+        return SetPids(transferBuffer != NULL);
+        }
+     }
+  return false;
+}
+
 bool cDvbApi::Transferring(void)
 {
   return transferBuffer;
@@ -2169,7 +2203,7 @@ bool cDvbApi::Transferring(void)
 cDvbApi *cDvbApi::StartTransfer(int TransferToVideoDev)
 {
   StopTransfer();
-  transferBuffer = new cTransferBuffer(this, TransferToVideoDev, vPid, aPid);
+  transferBuffer = new cTransferBuffer(this, TransferToVideoDev, vPid, aPid1);
   return this;
 }
 
@@ -2230,7 +2264,7 @@ bool cDvbApi::StartRecord(const char *FileName, int Ca, int Priority)
 
   // Create recording buffer:
 
-  recordBuffer = new cRecordBuffer(this, FileName, vPid, aPid);
+  recordBuffer = new cRecordBuffer(this, FileName, vPid, aPid1);
 
   if (recordBuffer) {
      ca = Ca;
@@ -2384,7 +2418,7 @@ void cEITScanner::Process(void)
      time_t now = time(NULL);
      if (now - lastScan > ScanTimeout && now - lastActivity > ActivityTimeout) {
         for (int i = 0; i < cDvbApi::NumDvbApis; i++) {
-            cDvbApi *DvbApi = cDvbApi::GetDvbApi(i + 1, 0);
+            cDvbApi *DvbApi = cDvbApi::GetDvbApi(i + 1, MAXPRIORITY);
             if (DvbApi) {
                if (DvbApi != cDvbApi::PrimaryDvbApi || (cDvbApi::NumDvbApis == 1 && Setup.EPGScanTimeout && now - lastActivity > Setup.EPGScanTimeout * 3600)) {
                   if (!(DvbApi->Recording() || DvbApi->Replaying() || DvbApi->Transferring())) {

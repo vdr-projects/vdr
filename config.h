@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.45 2001/06/02 09:43:04 kls Exp $
+ * $Id: config.h 1.46 2001/06/02 12:26:13 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -95,7 +95,7 @@ public:
   int diseqc;
   int srate;
   int vpid;
-  int apid;
+  int apid1, apid2;
   int tpid;
   int ca;
   int pnr;

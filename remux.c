@@ -8,7 +8,7 @@
  * the Linux DVB driver's 'tuxplayer' example and were rewritten to suit
  * VDR's needs.
  *
- * $Id: remux.c 1.2 2001/05/27 10:27:15 kls Exp $
+ * $Id: remux.c 1.3 2001/06/02 15:39:16 kls Exp $
  */
 
 /* The calling interface of the 'cRemux::Process()' function is defined
@@ -135,6 +135,7 @@ public:
   cTS2PES(uint8_t *ResultBuffer, int *ResultCount, int Size);
   ~cTS2PES();
   void ts_to_pes(const uint8_t *Buf); // don't need count (=188)
+  void Clear(void);
   };
 
 uint8_t cTS2PES::headr[] = { 0x00, 0x00, 0x01 };
@@ -154,6 +155,11 @@ cTS2PES::cTS2PES(uint8_t *ResultBuffer, int *ResultCount, int Size)
 cTS2PES::~cTS2PES()
 {
   delete buf;
+}
+
+void cTS2PES::Clear(void)
+{
+  reset_ipack();
 }
 
 void cTS2PES::store(uint8_t *Data, int Count)
@@ -453,6 +459,14 @@ int cRemux::ScanVideoPacket(const uchar *Data, int Count, int Offset, uchar &Pic
      return Length;
      }
   return -1;
+}
+
+void cRemux::SetAudioPid(int APid)
+{
+  aPid = APid;
+  vTS2PES->Clear();
+  aTS2PES->Clear();
+  resultCount = resultDelivered = 0;
 }
 
 const uchar *cRemux::Process(const uchar *Data, int &Count, int &Result, uchar *PictureType)
