@@ -2870,6 +2870,9 @@ Video Disk Recorder Revision History
   available by compiling VDR with DEBUG_OSD. Some things may not yet work as they
   should, but it's a starting point.
 
-2004-05-31: Version 1.3.10
+2004-06-05: Version 1.3.10
 
 - Fixed some default parameters in 'skincurses'.
+- Fixed cBitmap::DrawPixel(), which messed with other bitmaps' palettes in case
+  the pixel coordinates were outside this bitmap (thanks to Sascha Volkenandt for
+  reporting this one).

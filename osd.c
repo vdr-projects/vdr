@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 1.48 2004/05/28 15:33:22 kls Exp $
+ * $Id: osd.c 1.49 2004/06/05 11:15:43 kls Exp $
  */
 
 #include "osd.h"
@@ -324,7 +324,8 @@ void cBitmap::DrawPixel(int x, int y, tColor Color)
 {
   x -= x0;
   y -= y0;
-  SetIndex(x, y, Index(Color));
+  if (0 <= x && x < width && 0 <= y && y < height)
+     SetIndex(x, y, Index(Color));
 }
 
 void cBitmap::DrawBitmap(int x, int y, const cBitmap &Bitmap, tColor ColorFg, tColor ColorBg)

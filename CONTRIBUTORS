@@ -713,6 +713,8 @@ Sascha Volkenandt <sascha@akv-soft.de>
  for suggesting to map the color name "None" to #00000000 when processing XPM data
  for suggesting to also reset the palette in cBitmap::DrawBitmap() if the entire
  bitmap area is covered
+ for reporting a bug in cBitmap::DrawPixel(), which messed with other bitmaps'
+ palettes in case the pixel coordinates were outside this bitmap
 
 Malcolm Caldwell <malcolm.caldwell@ntu.edu.au>
  for modifying LOF handling to allow for C-band reception
