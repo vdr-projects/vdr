@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.63 2001/03/14 18:39:53 kls Exp $
+ * $Id: dvbapi.c 1.64 2001/03/18 16:47:16 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -22,6 +22,8 @@ extern "C" {
 #include "config.h"
 #include "interface.h"
 #include "recording.h"
+#include "remux.h"
+#include "ringbuffer.h"
 #include "tools.h"
 #include "videodir.h"
 
@@ -29,28 +31,8 @@ extern "C" {
 #define VBIDEVICE   "/dev/vbi"
 
 // The size of the array used to buffer video data:
+// (must be larger than MINVIDEODATA - see remux.h)
 #define VIDEOBUFSIZE (1024*1024)
-
-// The minimum amount of video data necessary to identify frames
-// (must be smaller than VIDEOBUFSIZE!):
-#define MINVIDEODATA (256*1024) // just a safe guess (max. size of any frame block, plus some safety)
-
-// The maximum time the buffer is allowed to write data to disk when recording:
-#define MAXRECORDWRITETIME 50 // ms
-
-// Picture types:
-#define NO_PICTURE 0
-#define I_FRAME    1
-#define P_FRAME    2
-#define B_FRAME    3
-
-// Start codes:
-#define SC_PICTURE 0x00  // "picture header"
-#define SC_SEQU    0xB3  // "sequence header"
-#define SC_PHEAD   0xBA  // "pack header"
-#define SC_SHEAD   0xBB  // "system header"
-#define SC_AUDIO   0xC0
-#define SC_VIDEO   0xE0
 
 #define FRAMESPERSEC 25
 
@@ -333,7 +315,7 @@ int cIndexFile::Get(uchar FileNumber, int FileOffset)
   return -1;
 }
 
-// --- cRingBuffer -----------------------------------------------------------
+// --- cRingBuffer_ -----------------------------------------------------------
 
 /* cRingBuffer reads data from an input file, stores it in a buffer and writes
    it to an output file upon request. The Read() and Write() functions should
@@ -344,7 +326,7 @@ int cIndexFile::Get(uchar FileNumber, int FileOffset)
    will be made.
 */
 
-class cRingBuffer {
+class cRingBuffer_ {
 private:
   uchar *buffer;
   int size, head, tail, freeLimit, availLimit;
@@ -367,8 +349,8 @@ protected:
   int FindStartCode(uchar Code, int Offset = 0);
   int GetPacketLength(int Offset = 0);
 public:
-  cRingBuffer(int *InFile, int *OutFile, int Size, int FreeLimit = 0, int AvailLimit = 0);
-  virtual ~cRingBuffer();
+  cRingBuffer_(int *InFile, int *OutFile, int Size, int FreeLimit = 0, int AvailLimit = 0);
+  virtual ~cRingBuffer_();
   virtual int Read(int Max = -1);
   virtual int Write(int Max = -1);
   bool EndOfFile(void) { return eof; }
@@ -377,7 +359,7 @@ public:
   void Skip(int n);
   };
 
-cRingBuffer::cRingBuffer(int *InFile, int *OutFile, int Size, int FreeLimit, int AvailLimit)
+cRingBuffer_::cRingBuffer_(int *InFile, int *OutFile, int Size, int FreeLimit, int AvailLimit)
 {
   inFile = InFile;
   outFile = OutFile;
@@ -393,13 +375,13 @@ cRingBuffer::cRingBuffer(int *InFile, int *OutFile, int Size, int FreeLimit, int
      esyslog(LOG_ERR, "ERROR: can't allocate ring buffer (size=%d)", size);
 }
 
-cRingBuffer::~cRingBuffer()
+cRingBuffer_::~cRingBuffer_()
 {
   dsyslog(LOG_INFO, "buffer stats: %d free, %d overflows, limit exceeded %d times", minFree, countOverflow, countLimit);
   delete buffer;
 }
 
-int cRingBuffer::Byte(int Offset)
+int cRingBuffer_::Byte(int Offset)
 {
   if (buffer && Offset < Available()) {
      Offset += head;
@@ -410,7 +392,7 @@ int cRingBuffer::Byte(int Offset)
   return -1;
 }
 
-bool cRingBuffer::Set(int Offset, int Length, int Value)
+bool cRingBuffer_::Set(int Offset, int Length, int Value)
 {
   if (buffer && Offset + Length <= Available() ) {
      Offset += head;
@@ -425,7 +407,7 @@ bool cRingBuffer::Set(int Offset, int Length, int Value)
   return false;
 }
 
-void cRingBuffer::Skip(int n)
+void cRingBuffer_::Skip(int n)
 {
   if (n > 0) {
      if (head < tail) {
@@ -443,7 +425,7 @@ void cRingBuffer::Skip(int n)
      }
 }
 
-int cRingBuffer::Read(int Max)
+int cRingBuffer_::Read(int Max)
 {
   if (buffer) {
      eof = false;
@@ -501,7 +483,7 @@ int cRingBuffer::Read(int Max)
   return -1;
 }
 
-int cRingBuffer::Write(int Max)
+int cRingBuffer_::Write(int Max)
 {
   if (buffer) {
      int avail = Available();
@@ -540,7 +522,7 @@ int cRingBuffer::Write(int Max)
   return -1;
 }
 
-int cRingBuffer::FindStartCode(uchar Code, int Offset)
+int cRingBuffer_::FindStartCode(uchar Code, int Offset)
 {
   // Searches for a start code (beginning at Offset) and returns the number
   // of bytes from Offset to the start code.
@@ -557,7 +539,7 @@ int cRingBuffer::FindStartCode(uchar Code, int Offset)
   return -1;
 }
 
-int cRingBuffer::GetPacketLength(int Offset)
+int cRingBuffer_::GetPacketLength(int Offset)
 {
   // Returns the entire length of the packet starting at offset.
   return (Byte(Offset + 4) << 8) + Byte(Offset + 5) + 6;
@@ -671,31 +653,29 @@ int cFileName::NextFile(void)
 
 // --- cRecordBuffer ---------------------------------------------------------
 
-class cRecordBuffer : public cRingBuffer, public cThread {
+class cRecordBuffer : public cRingBuffer {
 private:
   cFileName fileName;
   cIndexFile *index;
+  cRemux remux;
   uchar pictureType;
   int fileSize;
   int videoDev;
   int recordFile;
-  bool ok, synced, stop;
+  bool recording;
   time_t lastDiskSpaceCheck;
   bool RunningLowOnDiskSpace(void);
-  int ScanVideoPacket(int *PictureType, int Offset);
-  int Synchronize(void);
   bool NextFile(void);
-  virtual int Write(int Max = -1);
-  bool WriteWithTimeout(void);
 protected:
-  virtual void Action(void);
+  virtual void Input(void);
+  virtual void Output(void);
 public:
   cRecordBuffer(int *InFile, const char *FileName);
   virtual ~cRecordBuffer();
   };
 
 cRecordBuffer::cRecordBuffer(int *InFile, const char *FileName)
-:cRingBuffer(InFile, &recordFile, VIDEOBUFSIZE, VIDEOBUFSIZE / 10, 0)
+:cRingBuffer(VIDEOBUFSIZE)
 ,fileName(FileName, true)
 {
   index = NULL;
@@ -703,7 +683,7 @@ cRecordBuffer::cRecordBuffer(int *InFile, const char *FileName)
   fileSize = 0;
   videoDev = *InFile;
   recordFile = fileName.Open();
-  ok = synced = stop = false;
+  recording = false;
   lastDiskSpaceCheck = time(NULL);
   if (!fileName.Name())
      return;
@@ -712,42 +692,13 @@ cRecordBuffer::cRecordBuffer(int *InFile, const char *FileName)
   if (!index)
      esyslog(LOG_ERR, "ERROR: can't allocate index");
      // let's continue without index, so we'll at least have the recording
-  ok = true;
   Start();
 }
 
 cRecordBuffer::~cRecordBuffer()
 {
-  stop = true;
-  Cancel(3);
+  Stop();
   delete index;
-}
-
-void cRecordBuffer::Action(void)
-{
-  dsyslog(LOG_INFO, "recording thread started (pid=%d)", getpid());
-
-  time_t t = time(NULL);
-  for (;;) {
-      usleep(1); // this keeps the CPU load low
-
-      LOCK_THREAD;
-
-      int r = Read();
-      if (r >= 0) {
-         if (r > 0)
-            t = time(NULL);
-         if (!WriteWithTimeout())
-            break;
-         }
-      if (r < 0 || (r == 0 && time(NULL) - t > 5)) {
-         esyslog(LOG_ERR, "ERROR: video data stream broken");
-         t = time(NULL);
-         }
-      }
-  SetPlayMode(videoDev, VID_PLAY_RESET);
-
-  dsyslog(LOG_INFO, "end recording thread");
 }
 
 bool cRecordBuffer::RunningLowOnDiskSpace(void)
@@ -763,88 +714,6 @@ bool cRecordBuffer::RunningLowOnDiskSpace(void)
   return false;
 }
 
-int cRecordBuffer::ScanVideoPacket(int *PictureType, int Offset)
-{
-  // Scans the video packet starting at Offset and returns its length.
-  // If the return value is -1 the packet was not completely in the buffer.
-
-  int Length = GetPacketLength(Offset);
-  if (Length <= Available()) {
-     int i = Offset + 8; // the minimum length of the video packet header
-     i += Byte(i) + 1;   // possible additional header bytes
-     for (; i < Offset + Length; i++) {
-         if (Byte(i) == 0 && Byte(i + 1) == 0 && Byte(i + 2) == 1) {
-            switch (Byte(i + 3)) {
-              case SC_PICTURE: *PictureType = GetPictureType(i);
-                               return Length;
-              }
-            }
-         }
-     *PictureType = NO_PICTURE;
-     return Length;
-     }
-  return -1;
-}
-
-int cRecordBuffer::Synchronize(void)
-{
-  // Positions to the start of a data block (skipping everything up to
-  // an I-frame if not synced) and returns the block length.
-
-  pictureType = NO_PICTURE;
-
-  //XXX remove this once the buffer is handled with two separate threads:
-  if (!synced && Free() < 100000) {
-     dsyslog(LOG_INFO, "unable to synchronize, dropped %d bytes", Available());
-     Clear();
-     return 0;
-     }
-  for (int i = 0; Available() > MINVIDEODATA && i < MINVIDEODATA; i++) {
-      if (Byte(i) == 0 && Byte(i + 1) == 0 && Byte(i + 2) == 1) {
-         switch (Byte(i + 3)) {
-           case SC_VIDEO:   {
-                              int pt = NO_PICTURE;
-                              int l = ScanVideoPacket(&pt, i);
-                              if (l < 0)
-                                 return 0; // no useful data found, wait for more
-                              if (pt != NO_PICTURE) {
-                                 if (pt < I_FRAME || B_FRAME < pt) {
-                                    esyslog(LOG_ERR, "ERROR: unknown picture type '%d'", pt);
-                                    }
-                                 else if (pictureType == NO_PICTURE) {
-                                    if (!synced) {
-                                       if (pt == I_FRAME) {
-                                          Skip(i);
-                                          synced = true;
-                                          }
-                                       else {
-                                          Skip(i + l);
-                                          i = 0;
-                                          break;
-                                          }
-                                       }
-                                    if (synced)
-                                       pictureType = pt;
-                                    }
-                                 else
-                                    return i;
-                                 }
-                              else if (!synced) {
-                                 Skip(i + l);
-                                 i = 0;
-                                 break;
-                                 }
-                              i += l - 1; // -1 to compensate for i++ in the loop!
-                            }
-                            break;
-           case SC_AUDIO:   i += GetPacketLength(i) - 1; // -1 to compensate for i++ in the loop!
-                            break;
-           }
-         }
-      }
-  return 0; // no useful data found, wait for more
-}
-
 bool cRecordBuffer::NextFile(void)
 {
   if (recordFile >= 0 && pictureType == I_FRAME) { // every file shall start with an I_FRAME
@@ -856,56 +725,93 @@ bool cRecordBuffer::NextFile(void)
   return recordFile >= 0;
 }
 
-int cRecordBuffer::Write(int Max)
+void cRecordBuffer::Input(void)
 {
-  // This function ignores the incoming 'Max'!
-  // It tries to write out exactly *one* frame block.
-  if (!ok)
-     return -1;
-  int n = Synchronize();
-  if (n) {
-     if (stop && pictureType == I_FRAME) {
-        ok = false;
-        return -1; // finish the recording before the next 'I' frame
-        }
-     if (NextFile()) {
-        if (index && pictureType != NO_PICTURE)
-           index->Write(pictureType, fileName.Number(), fileSize);
-        int written = 0;
-        for (;;) {
-            int w = cRingBuffer::Write(n);
-            if (w >= 0) {
-               fileSize += w;
-               written += w;
-               n -= w;
-               if (n == 0)
-                  return written;
+  dsyslog(LOG_INFO, "input thread started (pid=%d)", getpid());
+
+  uchar b[MINVIDEODATA];
+  time_t t = time(NULL);
+  recording = true;
+  for (;;) {
+      int r = read(videoDev, b, sizeof(b));
+      if (r > 0) {
+         uchar *p = b;
+         while (r > 0) {
+               int w = Put(p, r);
+               p += w;
+               r -= w;
                }
-            else
-               return w;
+         t = time(NULL);
+         }
+      else if (r < 0) {
+         if (errno != EAGAIN) {
+            LOG_ERROR;
+            break;
             }
-        }
-     return -1;
-     }
-  return 0;
+         }
+      else if (time(NULL) - t > 5) {
+         esyslog(LOG_ERR, "ERROR: video data stream broken");
+         t = time(NULL);
+         }
+      cFile::FileReady(videoDev, 100);
+      if (!recording)
+         break;
+      }
+  SetPlayMode(videoDev, VID_PLAY_RESET);
+
+  dsyslog(LOG_INFO, "input thread ended (pid=%d)", getpid());
 }
 
-bool cRecordBuffer::WriteWithTimeout(void)
+void cRecordBuffer::Output(void)
 {
-  int t0 = time_ms();
-  do {
-     int w = Write();
-     if (w < 0)
-        return false;
-     if (w == 0)
-        break;
-     } while (time_ms() - t0 < MAXRECORDWRITETIME);
-  return true;
+  dsyslog(LOG_INFO, "output thread started (pid=%d)", getpid());
+
+  uchar b[MINVIDEODATA * 2];
+  int r = 0;
+  for (;;) {
+      usleep(1); // this keeps the CPU load low
+      r += Get(b + r, sizeof(b) - r);
+      if (r > 0) {
+         //XXX buffer full???
+         int Count = r, Result;
+         const uchar *p = remux.Process(b, Count, Result, pictureType);
+         if (p) {
+            if (!Busy() && pictureType == I_FRAME) // finish the recording before the next 'I' frame
+               break;
+            if (NextFile()) {
+               if (index && pictureType != NO_PICTURE)
+                  index->Write(pictureType, fileName.Number(), fileSize);
+               while (Result > 0) {
+                     int w = write(recordFile, p, Result);
+                     if (w < 0) {
+                        LOG_ERROR_STR(fileName.Name());
+                        recording = false;
+                        return;
+                        }
+                     p += w;
+                     Result -= w;
+                     fileSize += w;
+                     }
+               }
+            else
+               break;
+            }
+         if (Count > 0) {
+            r -= Count;
+            memmove(b, b + Count, r);
+            }
+         if (!recording)
+            break;
+         }
+      }
+  recording = false;
+
+  dsyslog(LOG_INFO, "output thread ended (pid=%d)", getpid());
 }
 
 // --- cReplayBuffer ---------------------------------------------------------
 
-class cReplayBuffer : public cRingBuffer, public cThread {
+class cReplayBuffer : public cRingBuffer_, public cThread {
 private:
   enum eReplayCmd { rcNone, rcStill, rcPause, rcPlay, rcForward, rcBackward };
   enum eReplayMode { rmStill, rmPlay, rmFastForward, rmFastRewind, rmSlowRewind };
@@ -944,7 +850,7 @@ public:
   };
 
 cReplayBuffer::cReplayBuffer(int *OutFile, const char *FileName)
-:cRingBuffer(&replayFile, OutFile, VIDEOBUFSIZE, 0, VIDEOBUFSIZE / 10)
+:cRingBuffer_(&replayFile, OutFile, VIDEOBUFSIZE, 0, VIDEOBUFSIZE / 10)
 ,fileName(FileName, false)
 {
   index = NULL;
@@ -1271,7 +1177,7 @@ int cReplayBuffer::Read(int Max = -1)
      int readin = 0;
      do {
         // If Max is > 0 here we need to make sure we read in the entire block!
-        int r = cRingBuffer::Read(Max);
+        int r = cRingBuffer_::Read(Max);
         if (r >= 0)
            readin += r;
         else
@@ -1300,7 +1206,7 @@ int cReplayBuffer::Write(int Max)
   if (Max) {
      int w;
      do {
-        w = cRingBuffer::Write(Max);
+        w = cRingBuffer_::Write(Max);
         if (w >= 0) {
            fileOffset += w;
            Written += w;
@@ -1348,7 +1254,7 @@ void cTransferBuffer::Action(void)
 {
   dsyslog(LOG_INFO, "data transfer thread started (pid=%d)", getpid());
 
-  cRingBuffer Buffer(&fromDevice, &toDevice, VIDEOBUFSIZE, 0, 0);
+  cRingBuffer_ Buffer(&fromDevice, &toDevice, VIDEOBUFSIZE, 0, 0);
   active = true;
   while (active && Buffer.Available() < 100000) { // need to give the read buffer a head start
         Buffer.Read(); // initializes fromDevice for reading
@@ -1364,7 +1270,7 @@ void cTransferBuffer::Action(void)
 
 // --- cCuttingBuffer --------------------------------------------------------
 
-class cCuttingBuffer : public cRingBuffer, public cThread {
+class cCuttingBuffer : public cRingBuffer_, public cThread {
 private:
   bool active;
   int fromFile, toFile;
@@ -1379,7 +1285,7 @@ public:
   };
 
 cCuttingBuffer::cCuttingBuffer(const char *FromFileName, const char *ToFileName)
-:cRingBuffer(&fromFile, &toFile, VIDEOBUFSIZE, 0, VIDEOBUFSIZE / 10)
+:cRingBuffer_(&fromFile, &toFile, VIDEOBUFSIZE, 0, VIDEOBUFSIZE / 10)
 {
   active = false;
   fromFile = toFile = -1;
@@ -1438,7 +1344,7 @@ void cCuttingBuffer::Action(void)
                  CurrentFileNumber = FileNumber;
                  }
               if (fromFile >= 0)
-                 Length = cRingBuffer::Read(Length);
+                 Length = cRingBuffer_::Read(Length);
               else
                  break;
               }
@@ -1456,7 +1362,7 @@ void cCuttingBuffer::Action(void)
                  }
               LastIFrame = 0;
               }
-           cRingBuffer::Write(Length);
+           cRingBuffer_::Write(Length);
            toIndex->Write(PictureType, toFileName->Number(), FileSize);
            FileSize += Length;
            if (!LastIFrame)

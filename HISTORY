@@ -414,7 +414,7 @@ Video Disk Recorder Revision History
   given number of seconds. This is mainly useful in combination with the new
   'runvdr' script that restarts VDR in case is has exited.
 
-2001-03-02: Version 0.72
+2001-04-01: Version 0.72
 
 - Fixed SVDRP commands LSTC and LSTT to make them return an error message if
   no channels or timers are defined.
@@ -427,3 +427,8 @@ Video Disk Recorder Revision History
 - Fixed internationalization of some Main menu texts.
 - Updated 'channels.conf' after the recent changes of Premiere World (thanks
   to Axel Gruber).
+- Redesigned the ring buffer to make it work with two separate threads for
+  input and output (also prepared for using a remultiplexer).
+- Fixed setting system time from transponders.
+- Fixed a segfault in the Schedule menu in case there is no EPG information.
+- The 'runvdr' script now kills any leftover vdr threads before restarting it.
