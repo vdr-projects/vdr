@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbosd.c 1.12 2002/01/13 16:25:18 kls Exp $
+ * $Id: dvbosd.c 1.13 2002/04/13 11:34:48 kls Exp $
  */
 
 #include "dvbosd.h"
@@ -25,6 +25,9 @@ cPalette::cPalette(int Bpp)
 
 int cPalette::Index(eDvbColor Color)
 {
+#if __BYTE_ORDER == __BIG_ENDIAN
+  Color = eDvbColor(((Color & 0xFF) << 24) | ((Color & 0xFF00) << 8) | ((Color & 0xFF0000) >> 8) | ((Color & 0xFF000000) >> 24));
+#endif
   for (int i = 0; i < numColors; i++) {
       if (color[i] == Color) {
          used[i] = true;

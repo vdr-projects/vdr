@@ -285,3 +285,6 @@ Gerald Raaf <graaf@attglobal.net>
 
 Andreas Roedl <flood@flood-net.de>
  for adding some DVB-T channels for Berlin (Germany) to channels.conf.terr
+
+Jean Martin <mac_j_fr@hotmail.com>
+ for pointing out a problem with OSD color palette handling on "big endian" systems
