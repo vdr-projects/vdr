@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.2 2002/06/16 13:23:31 kls Exp $
+ * $Id: device.c 1.3 2002/06/22 13:45:53 kls Exp $
  */
 
 #include "device.h"
@@ -21,6 +21,7 @@ extern "C" {
 #include "player.h"
 #include "receiver.h"
 #include "status.h"
+#include "transfer.h"
 
 #define DEV_VIDEO         "/dev/video"
 #define DEV_OST_OSD       "/dev/ost/osd"
@@ -105,6 +106,7 @@ cDevice::cDevice(int n)
 
   currentChannel = 0;
   frequency = 0;
+  transfer = NULL;
 
   mute = false;
   volume = Setup.CurrentVolume;
@@ -118,6 +120,7 @@ cDevice::cDevice(int n)
 
 cDevice::~cDevice()
 {
+  delete transfer;
   delete dvrFileName;
   delete siProcessor;
   Detach(player);
@@ -456,7 +459,7 @@ bool cDevice::SetPid(int fd, dmxPesType_t PesType, int Pid, dmxOutput_t Output)
 
 eSetChannelResult cDevice::SetChannel(int ChannelNumber, int Frequency, char Polarization, int Diseqc, int Srate, int Vpid, int Apid, int Tpid, int Ca, int Pnr)
 {
-  //XXX+StopTransfer();
+  DELETENULL(transfer);
   //XXX+StopReplay();
 
   cStatus::MsgChannelSwitch(this, 0);
@@ -621,8 +624,9 @@ eSetChannelResult cDevice::SetChannel(int ChannelNumber, int Frequency, char Pol
      cDevice *CaDevice = GetDevice(Ca, 0);
      if (CaDevice && !CaDevice->Receiving()) {
         if ((Result = CaDevice->SetChannel(ChannelNumber, Frequency, Polarization, Diseqc, Srate, Vpid, Apid, Tpid, Ca, Pnr)) == scrOk) {
-           //XXX+SetModeReplay();
-           //XXX+transferringFromDevice = CaDevice->StartTransfer(fd_video);
+           transfer = new cTransfer(Vpid, Apid, 0, 0, 0);//XXX+
+           AttachPlayer(transfer);
+           CaDevice->AttachReceiver(transfer);
            }
         }
      else
@@ -739,7 +743,7 @@ bool cDevice::Replaying(void)
   return player != NULL;
 }
 
-bool cDevice::Attach(cPlayer *Player)
+bool cDevice::AttachPlayer(cPlayer *Player)
 {
   if (Receiving()) {
      esyslog("ERROR: attempt to attach a cPlayer while receiving on device %d - ignored", CardIndex() + 1);
@@ -958,7 +962,7 @@ void cDevice::Action(void)
   dsyslog("receiver thread ended on device %d (pid=%d)", CardIndex() + 1, getpid());
 }
 
-bool cDevice::Attach(cReceiver *Receiver)
+bool cDevice::AttachReceiver(cReceiver *Receiver)
 {
   //XXX+ check for same transponder???
   if (!Receiver)

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 1.1 2002/06/10 16:30:00 kls Exp $
+ * $Id: device.h 1.2 2002/06/22 13:34:55 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -33,6 +33,7 @@ enum eSetChannelResult { scrOk, scrNoTransfer, scrFailed };
 
 class cPlayer;
 class cReceiver;
+class cTransfer;
 
 class cDevice : cThread {
   friend class cOsd;//XXX
@@ -106,6 +107,7 @@ public:
 private:
   int currentChannel;
   int frequency;
+  cTransfer *transfer;
 public:
   eSetChannelResult SetChannel(int ChannelNumber, int Frequency, char Polarization, int Diseqc, int Srate, int Vpid, int Apid, int Tpid, int Ca, int Pnr);
   static int CurrentChannel(void) { return primaryDevice ? primaryDevice->currentChannel : 0; }
@@ -172,7 +174,7 @@ public:
        // Returns true if we are currently replaying.
   void StopReplay(void);
        // Stops the current replay session (if any).
-  bool Attach(cPlayer *Player);
+  bool AttachPlayer(cPlayer *Player);
   void Detach(cPlayer *Player);
   virtual int PlayVideo(const uchar *Data, int Length);
   virtual int PlayAudio(const uchar *Data, int Length);
@@ -192,7 +194,7 @@ public:
        // Returns the ca of the current receiving session.
   bool Receiving(void);
        // Returns true if we are currently receiving.
-  bool Attach(cReceiver *Receiver);
+  bool AttachReceiver(cReceiver *Receiver);
   void Detach(cReceiver *Receiver);
   };
 

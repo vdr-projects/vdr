@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 1.2 2002/06/22 10:11:59 kls Exp $
+ * $Id: dvbplayer.c 1.3 2002/06/22 13:35:36 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -644,7 +644,7 @@ bool cDvbPlayerControl::Start(const char *FileName)
 {
   delete player;
   player = new cDvbPlayer(FileName);
-  if (cDevice::PrimaryDevice()->Attach(player))
+  if (cDevice::PrimaryDevice()->AttachPlayer(player))
      return true;
   Stop();
   return false;

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.198 2002/06/22 09:55:58 kls Exp $
+ * $Id: menu.c 1.199 2002/06/22 13:36:10 kls Exp $
  */
 
 #include "menu.h"
@@ -2442,7 +2442,7 @@ cRecordControl::cRecordControl(cDevice *Device, cTimer *Timer)
   cRecordingUserCommand::InvokeCommand(RUC_BEFORERECORDING, fileName);
   cChannel *ch = Channels.GetByNumber(timer->channel);
   recorder = new cRecorder(fileName, ch->ca, timer->priority, ch->vpid, ch->apid1, ch->apid2, ch->dpid1, ch->dpid2);
-  if (device->Attach(recorder)) {
+  if (device->AttachReceiver(recorder)) {
      Recording.WriteSummary();
      cStatus::MsgRecording(device, fileName);
      Interface->DisplayRecording(device->CardIndex(), true);
