@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.60 2001/02/03 15:28:49 kls Exp $
+ * $Id: menu.c 1.61 2001/02/03 15:32:47 kls Exp $
  */
 
 #include "menu.h"
@@ -1076,16 +1076,20 @@ eOSState cMenuTimers::ProcessKey(eKeys Key)
 {
   // Must do these before calling cOsdMenu::ProcessKey() because cOsdMenu
   // uses them to page up/down:
-  switch (Key) {
-    case kLeft:
-    case kRight:  return Activate(Key == kRight);
-    default: break;
-    }
+  if (!HasSubMenu()) {
+     switch (Key) {
+       case kLeft:
+       case kRight:  return Activate(Key == kRight);
+       default: break;
+       }
+     }
 
   eOSState state = cOsdMenu::ProcessKey(Key);
 
   if (state == osUnknown) {
      switch (Key) {
+       case kLeft:
+       case kRight:  return Activate(Key == kRight);
        case kOk:     return Summary();
        case kRed:    return Edit();
        case kGreen:  return New();
