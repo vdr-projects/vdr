@@ -1821,3 +1821,4 @@ Video Disk Recorder Revision History
   Oliver Endriss for pointing this out - it was my fault).
 - Group delimiters in the 'channels.conf' file that have no text (like a simple ":"
   or ":@201") no longer show up in the Channels menu (suggested by Guy Roussin).
+- Added "Tele 5" to 'channels.conf' (thanks to Georg Hitsch).
