@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.h 1.5 2001/05/25 09:36:27 kls Exp $
+ * $Id: thread.h 1.6 2001/06/27 11:22:04 kls Exp $
  */
 
 #ifndef __THREAD_H
@@ -33,6 +33,8 @@ private:
   pid_t parentPid, threadPid, lockingPid;
   int locked;
   bool running;
+  static time_t lastPanic;
+  static int panicLevel;
   static bool emergencyExitRequested;
   static bool signalHandlerInstalled;
   static void SignalHandler(int signum);
@@ -48,6 +50,7 @@ public:
   virtual ~cThread();
   bool Start(void);
   bool Active(void);
+  static void RaisePanic(void);
   static bool EmergencyExit(bool Request = false);
   };
 

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 1.8 2001/05/25 09:37:00 kls Exp $
+ * $Id: thread.c 1.9 2001/06/27 11:34:41 kls Exp $
  */
 
 #include "thread.h"
@@ -47,6 +47,8 @@ void cMutex::Unlock(void)
 // The signal handler is necessary to be able to use SIGIO to wake up any
 // pending 'select()' call.
 
+time_t cThread::lastPanic = 0;
+int cThread::panicLevel = 0;
 bool cThread::signalHandlerInstalled = false;
 bool cThread::emergencyExitRequested = false;
 
@@ -137,6 +139,25 @@ void cThread::Unlock(void)
 void cThread::WakeUp(void)
 {
   kill(parentPid, SIGIO); // makes any waiting 'select()' call return immediately
+}
+
+#define MAXPANICLEVEL 10
+
+void cThread::RaisePanic(void)
+{
+  if (lastPanic > 0) {
+     if (time(NULL) - lastPanic < 5)
+        panicLevel++;
+     else if (panicLevel > 0)
+        panicLevel--;
+     }
+  lastPanic = time(NULL);
+  if (panicLevel > MAXPANICLEVEL) {
+     esyslog(LOG_ERR, "ERROR: max. panic level exceeded");
+     EmergencyExit(true);
+     }
+  else
+     dsyslog(LOG_INFO, "panic level: %d", panicLevel);
 }
 
 bool cThread::EmergencyExit(bool Request)
