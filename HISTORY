@@ -1161,3 +1161,4 @@ Video Disk Recorder Revision History
   for reporting this one).
 - Fixed a bug when a timer records over midnight of a day that had a change in
   Daylight Saving Time.
+- Added Polish language texts (thanks to Michael Rakowski).

@@ -249,3 +249,6 @@ Truls Slevigen <truls@slevigen.no>
 
 Ruben Nunez Francisco <ruben.nunez@tang-it.com>
  for implementing FreeDiskSpaceMB() without external 'df' command
+
+Michael Rakowski <mrak@gmx.de>
+ for translating OSD texts to the Polish language
