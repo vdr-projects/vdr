@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 1.20 2004/01/25 15:32:08 kls Exp $
+ * $Id: channels.c 1.21 2004/01/25 16:02:13 kls Exp $
  */
 
 #include "channels.h"
@@ -320,7 +320,7 @@ static int IntArrayToString(char *s, const int *a, int Base = 10, const char n[]
   int i = 0;
   while (a[i] || i == 0) {
         q += sprintf(q, Base == 16 ? "%s%X" : "%s%d", i ? "," : "", a[i]);
-        if (n && *n[i])
+        if (a[i] && n && *n[i])
            q += sprintf(q, "=%s", n[i]);
         i++;
         }
