@@ -16,7 +16,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.h 1.9 2001/08/15 13:10:28 kls Exp $
+ * $Id: eit.h 1.10 2001/08/15 15:47:31 kls Exp $
  ***************************************************************************/
 
 #ifndef __EIT_H
@@ -38,7 +38,6 @@ private:
   unsigned short uEventID;          // Event ID of this event
   long lDuration;                   // duration of event in seconds
   time_t tTime;                     // Start time
-  u_char cExtendedDescriptorNumber; // current extended descriptor number that has to be inserted
   int nChannelNumber;               // the actual channel number from VDR's channel list (used in cMenuSchedule for sorting by channel number)
 protected:
   void SetFollowing(bool foll);
@@ -50,7 +49,6 @@ protected:
   void SetTime(time_t t);
   bool AddExtendedDescription(const char *string);
   bool SetSubtitle(const char *string);
-  void IncreaseExtendedDescriptorNumber(void);
   cEventInfo(unsigned short serviceid, unsigned short eventid);
 public:
   ~cEventInfo();
@@ -65,11 +63,11 @@ public:
   unsigned short GetEventID(void) const;
   long GetDuration(void) const;
   time_t GetTime(void) const;
-  u_char GetExtendedDescriptorNumber(void) const;
   unsigned short GetServiceID(void) const;
   int GetChannelNumber(void) const { return nChannelNumber; }
   void SetChannelNumber(int ChannelNumber) const { ((cEventInfo *)this)->nChannelNumber = ChannelNumber; } // doesn't modify the EIT data, so it's ok to make it 'const'
   void Dump(FILE *f, const char *Prefix = "") const;
+  void FixEpgBugs(void);
   };
 
 class cSchedule : public cListObject  {

@@ -16,7 +16,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.c 1.20 2001/08/15 13:23:21 kls Exp $
+ * $Id: eit.c 1.21 2001/08/17 13:19:10 kls Exp $
  ***************************************************************************/
 
 #include "eit.h"
@@ -190,7 +190,6 @@ cEventInfo::cEventInfo(unsigned short serviceid, unsigned short eventid)
    tTime = 0;
    uEventID = eventid;
    uServiceID = serviceid;
-   cExtendedDescriptorNumber = 0;
    nChannelNumber = 0;
 }
 
@@ -354,16 +353,6 @@ void cEventInfo::SetServiceID(unsigned short servid)
 {
    uServiceID = servid;
 }
-/**  */
-u_char cEventInfo::GetExtendedDescriptorNumber() const
-{
-   return cExtendedDescriptorNumber;
-}
-/**  */
-void cEventInfo::IncreaseExtendedDescriptorNumber()
-{
-   cExtendedDescriptorNumber++;
-}
 
 /**  */
 unsigned short cEventInfo::GetServiceID() const
@@ -384,6 +373,116 @@ void cEventInfo::Dump(FILE *f, const char *Prefix) const
          fprintf(f, "%sD %s\n", Prefix, pExtendedDescription);
       fprintf(f, "%se\n", Prefix);
       }
+}
+
+void cEventInfo::FixEpgBugs(void)
+{
+  if (Setup.EPGBugfixLevel == 0)
+     return;
+
+  // Some TV stations apparently have their own idea about how to fill in the
+  // EPG data. Let's fix their bugs as good as we can:
+  if (pTitle) {
+
+     // Pro7 preceeds the Subtitle with the Title:
+     //
+     // Title
+     // Title / Subtitle
+     //
+     if (pSubtitle && strstr(pSubtitle, pTitle) == pSubtitle) {
+        char *p = pSubtitle + strlen(pTitle);
+        const char *delim = " / ";
+        if (strstr(p, delim) == p) {
+           p += strlen(delim);
+           memmove(pSubtitle, p, strlen(p) + 1);
+           }
+        }
+
+     // VOX and VIVA put the Subtitle in quotes and use either the Subtitle
+     // or the Extended Description field, depending on how long the string is:
+     //
+     // Title
+     // "Subtitle". Extended Description
+     //
+     if ((pSubtitle == NULL) != (pExtendedDescription == NULL)) {
+        char *p = pSubtitle ? pSubtitle : pExtendedDescription;
+        if (*p == '"') {
+           const char *delim = "\".";
+           char *e = strstr(p + 1, delim);
+           if (e) {
+              *e = 0;
+              char *s = strdup(p + 1);
+              char *d = strdup(e + strlen(delim));
+              delete pSubtitle;
+              delete pExtendedDescription;
+              pSubtitle = s;
+              pExtendedDescription = d;
+              }
+           }
+        }
+
+     // VOX and VIVA put the Extended Description into the Subtitle (preceeded
+     // by a blank) if there is no actual Subtitle and the Extended Description
+     // is short enough:
+     //
+     // Title
+     //  Extended Description
+     //
+     if (pSubtitle && !pExtendedDescription) {
+        if (*pSubtitle == ' ') {
+           memmove(pSubtitle, pSubtitle + 1, strlen(pSubtitle));
+           pExtendedDescription = pSubtitle;
+           pSubtitle = NULL;
+           }
+        }
+     }
+
+     // Pro7 sometimes repeats the Title in the Subtitle:
+     //
+     // Title
+     // Title
+     //
+     if (pSubtitle && strcmp(pTitle, pSubtitle) == 0) {
+        delete pSubtitle;
+        pSubtitle = NULL;
+        }
+
+     if (Setup.EPGBugfixLevel <= 1)
+        return;
+
+     // Some channels apparently try to do some formatting in the texts,
+     // which is a bad idea because they have no way of knowing the width
+     // of the window that will actually display the text.
+     // Remove excess whitespace:
+     pTitle = compactspace(pTitle);
+     pSubtitle = compactspace(pSubtitle);
+     pExtendedDescription = compactspace(pExtendedDescription);
+     // Remove superfluous hyphens:
+     if (pExtendedDescription) {
+        char *p = pExtendedDescription + 1;
+        while (*p) {
+              if (*p == '-' && *(p + 1) == ' ' && *(p + 2) && islower(*(p - 1)) && islower(*(p + 2))) {
+                 if (!startswith(p + 2, "und ")) // special case in German, as in "Lach- und Sachgeschichten"
+                    memmove(p, p + 2, strlen(p + 2) + 1);
+                 }
+              p++;
+              }
+        }
+
+     if (Setup.EPGBugfixLevel <= 2)
+        return;
+
+     // Pro7 and Kabel1 apparently are unable to use a calendar/clock,
+     // because all events between 00:00 and 06:00 have the date of the
+     // day before (sometimes even this correction doesn't help).
+     // Channels are recognized by their ServiceID, which may only work
+     // correctly on the ASTRA satellite system.
+     if (uServiceID == 898    // Pro-7
+      || uServiceID == 899) { // Kabel 1
+        tm *t = localtime(&tTime);
+        if (t->tm_hour * 3600 + t->tm_min * 60 + t->tm_sec <= 6 * 3600)
+           tTime += 24 * 3600;
+        }
 }
 
 // --- cSchedule -------------------------------------------------------------
@@ -677,18 +776,17 @@ int cEIT::ProcessEIT(unsigned char *buffer)
                 pEvent->SetSubtitle(rEvent->GetSubtitle());
                 pEvent->SetTime(VdrProgramInfo->StartTime);
                 pEvent->SetDuration(VdrProgramInfo->Duration);
-                if (pEvent->AddExtendedDescription(rEvent->GetExtendedDescription()))
-                   pEvent->IncreaseExtendedDescriptorNumber();
+                pEvent->AddExtendedDescription(rEvent->GetExtendedDescription());
+                pEvent->FixEpgBugs();
                 }
              else {
                 pEvent->SetTitle(VdrProgramInfo->ShortName);
                 pEvent->SetSubtitle(VdrProgramInfo->ShortText);
                 pEvent->SetTime(VdrProgramInfo->StartTime);
                 pEvent->SetDuration(VdrProgramInfo->Duration);
-                if (pEvent->AddExtendedDescription(VdrProgramInfo->ExtendedName))
-                   pEvent->IncreaseExtendedDescriptorNumber();
-                if (pEvent->AddExtendedDescription(VdrProgramInfo->ExtendedText))
-                   pEvent->IncreaseExtendedDescriptorNumber();
+                pEvent->AddExtendedDescription(VdrProgramInfo->ExtendedName);
+                pEvent->AddExtendedDescription(VdrProgramInfo->ExtendedText);
+                pEvent->FixEpgBugs();
                 }
              }
           if (IsPresentFollowing()) {

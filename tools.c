@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.39 2001/08/12 15:12:54 kls Exp $
+ * $Id: tools.c 1.40 2001/08/17 12:45:42 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -101,6 +101,32 @@ char *stripspace(char *s)
          }
      }
   return s;
+}
+
+char *compactspace(char *s)
+{
+  if (s && *s) {
+     char *t = stripspace(skipspace(s));
+     char *p = t;
+     while (p && *p) {
+           char *q = skipspace(p);
+           if (q - p > 1)
+              memmove(p + 1, q, strlen(q) + 1);
+           p++;
+           }
+     if (t != s)
+        memmove(s, t, strlen(t) + 1);
+     }
+  return s;
+}
+
+bool startswith(const char *s, const char *p)
+{
+  while (*p) {
+        if (*p++ != *s++)
+           return false;
+        }
+  return true;
 }
 
 bool isempty(const char *s)
