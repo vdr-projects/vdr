@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 1.5 2002/08/04 14:02:19 kls Exp $
+ * $Id: device.h 1.6 2002/08/11 13:38:13 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -97,7 +97,9 @@ public:
   bool IsPrimaryDevice(void) const { return this == primaryDevice; }
   int CardIndex(void) const { return cardIndex; }
          // Returns the card index of this device (0 ... MAXDEVICES - 1).
-  int ProvidesCa(int Ca);
+  virtual int ProvidesCa(int Ca);
+         //XXX TODO temporarily made this function virtual - until a general
+         //XXX      mechanism has been implemented
          // Checks whether this device provides the given value in its
          // caCaps. Returns 0 if the value is not provided, 1 if only this
          // value is provided, and > 1 if this and other values are provided.
