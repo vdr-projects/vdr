@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 1.63 2004/05/23 09:47:26 kls Exp $
+ * $Id: menu.h 1.64 2004/06/13 11:46:03 kls Exp $
  */
 
 #ifndef __MENU_H
@@ -16,7 +16,6 @@
 #include "osdbase.h"
 #include "dvbplayer.h"
 #include "recorder.h"
-#include "recording.h"
 #include "skins.h"
 
 class cMenuText : public cOsdMenu {
@@ -107,7 +106,6 @@ class cMenuRecordingItem;
 
 class cMenuRecordings : public cOsdMenu {
 private:
-  static cRecordings Recordings;
   char *base;
   int level;
   static int helpKeys;

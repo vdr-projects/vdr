@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.183 2004/06/12 10:07:17 kls Exp $
+ * $Id: vdr.c 1.184 2004/06/13 13:52:09 kls Exp $
  */
 
 #include <getopt.h>
@@ -475,6 +475,10 @@ int main(int argc, char *argv[])
   else
      cDevice::PrimaryDevice()->SetVolume(Setup.CurrentVolume, true);
 
+  // Recordings:
+
+  Recordings.Load();
+
   // Signal handlers:
 
   if (signal(SIGHUP,  SignalHandler) == SIG_IGN) signal(SIGHUP,  SIG_IGN);
@@ -606,6 +610,8 @@ int main(int argc, char *argv[])
                   TimerInVpsMargin = true;
                }
            }
+        if (!Menu && Recordings.NeedsUpdate())
+           Recordings.Load();
         // CAM control:
         if (!Menu && !cOsd::IsOpen())
            Menu = CamControl();
