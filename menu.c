@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.223 2002/11/10 12:32:42 kls Exp $
+ * $Id: menu.c 1.224 2002/11/10 16:05:15 kls Exp $
  */
 
 #include "menu.h"
@@ -669,7 +669,7 @@ protected:
   eOSState Switch(void);
   eOSState Edit(void);
   eOSState New(void);
-  eOSState Del(void);
+  eOSState Delete(void);
   virtual void Move(int From, int To);
 public:
   cMenuChannels(void);
@@ -726,7 +726,7 @@ eOSState cMenuChannels::New(void)
   return AddSubMenu(new cMenuEditChannel(Channels.Get(Current()), true));
 }
 
-eOSState cMenuChannels::Del(void)
+eOSState cMenuChannels::Delete(void)
 {
   if (Count() > 0) {
      int Index = Current();
@@ -778,7 +778,7 @@ eOSState cMenuChannels::ProcessKey(eKeys Key)
               case kOk:     return Switch();
               case kRed:    return Edit();
               case kGreen:  return New();
-              case kYellow: return Del();
+              case kYellow: return Delete();
               case kBlue:   Mark(); break;
               default: break;
               }
@@ -945,7 +945,7 @@ class cMenuTimers : public cOsdMenu {
 private:
   eOSState Edit(void);
   eOSState New(void);
-  eOSState Del(void);
+  eOSState Delete(void);
   eOSState OnOff(void);
   virtual void Move(int From, int To);
   eOSState Summary(void);
@@ -1012,7 +1012,7 @@ eOSState cMenuTimers::New(void)
   return AddSubMenu(new cMenuEditTimer(timer->Index(), true));
 }
 
-eOSState cMenuTimers::Del(void)
+eOSState cMenuTimers::Delete(void)
 {
   // Check if this timer is active:
   cTimer *ti = CurrentTimer();
@@ -1061,7 +1061,7 @@ eOSState cMenuTimers::ProcessKey(eKeys Key)
        case kOk:     return Summary();
        case kRed:    return Edit();
        case kGreen:  return New();
-       case kYellow: return Del();
+       case kYellow: return Delete();
        case kBlue:   if (Setup.SortTimers)
                         OnOff();
                      else

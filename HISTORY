@@ -1765,3 +1765,5 @@ Video Disk Recorder Revision History
   to handle cases where the duration of an event is set wrongly and would last beyond
   the start time of the next event. Besides, the change in 1.1.10 broke handling EPG
   data for NVOD channels.
+- Fixed a compiler warning regarding cMenuChannels::Del() and MenuTimers::Del() hiding
+  the base class virtual functions.
