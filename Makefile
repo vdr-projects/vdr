@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 1.60 2003/10/24 13:13:02 kls Exp $
+# $Id: Makefile 1.61 2003/12/21 14:45:27 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -15,7 +15,7 @@ CXX      ?= g++
 CXXFLAGS ?= -g -O2 -Wall -Woverloaded-virtual
 
 DVBDIR   = ../DVB
-DTVDIR   = ./libdtv
+LSIDIR   = ./libsi
 MANDIR   = /usr/local/man
 BINDIR   = /usr/local/bin
 
@@ -31,12 +31,12 @@ DOXYFILE = Doxyfile
 
 INCLUDES = -I$(DVBDIR)/include
 
-DTVLIB   = $(DTVDIR)/libdtv.a
+SILIB    = $(LSIDIR)/libsi.a
 
 OBJS = audio.o channels.o ci.o config.o cutter.o device.o diseqc.o dvbdevice.o dvbosd.o\
-       dvbplayer.o dvbspu.o eit.o eitscan.o font.o i18n.o interface.o keys.o\
-       lirc.o menu.o menuitems.o osdbase.o osd.o player.o plugin.o rcu.o\
-       receiver.o recorder.o recording.o remote.o remux.o ringbuffer.o sources.o\
+       dvbplayer.o dvbspu.o eit.o eitscan.o epg.o filter.o font.o i18n.o interface.o keys.o\
+       lirc.o menu.o menuitems.o osdbase.o osd.o pat.o player.o plugin.o rcu.o\
+       receiver.o recorder.o recording.o remote.o remux.o ringbuffer.o sections.o sources.o\
        spu.o status.o svdrp.o thread.o timers.o tools.o transfer.o vdr.o videodir.o
 
 FIXFONT_ISO8859_1 = -adobe-courier-bold-r-normal--25-*-100-100-m-*-iso8859-1
@@ -89,8 +89,8 @@ $(DEPFILE): Makefile
 
 # The main program:
 
-vdr: $(OBJS) $(DTVLIB)
-	$(CXX) $(CXXFLAGS) -rdynamic $(OBJS) $(NCURSESLIB) -ljpeg -lpthread -ldl $(LIBDIRS) $(DTVLIB) -o vdr
+vdr: $(OBJS) $(SILIB)
+	$(CXX) $(CXXFLAGS) -rdynamic $(OBJS) $(NCURSESLIB) -ljpeg -lpthread -ldl $(LIBDIRS) $(SILIB) -o vdr
 
 # The font files:
 
@@ -112,10 +112,10 @@ fontsml_iso8859_1.c:
 genfontfile: genfontfile.c
 	$(CC) $(CFLAGS) -o $@ -L/usr/X11R6/lib $< -lX11
 
-# The libdtv library:
+# The libsi library:
 
-$(DTVLIB) $(DTVDIR)/libdtv.h:
-	$(MAKE) -C $(DTVDIR) all
+$(SILIB):
+	$(MAKE) -C $(LSIDIR) all
 
 # The 'include' directory (for plugins):
 
@@ -154,7 +154,7 @@ srcdoc:
 # Housekeeping:
 
 clean:
-	$(MAKE) -C $(DTVDIR) clean
+	$(MAKE) -C $(LSIDIR) clean
 	-rm -f $(OBJS) $(DEPFILE) vdr genfontfile genfontfile.o core* *~
 	-rm -rf include
 	-rm -rf srcdoc

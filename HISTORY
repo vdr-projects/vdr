@@ -2393,7 +2393,7 @@ Video Disk Recorder Revision History
   not loaded (suggested by Alexander Wetzel).
 - Fixed checking for VIDEO_STREAM_S in cRemux::SetBrokenLink() (thanks to Oliver
   Endriss).
-- Added 'repeat' function keys '7' and '9' ("jump to mark") in replay mode
+- Added 'repeat' function to keys '7' and '9' ("jump to mark") in replay mode
   (suggested by Oliver Endriss).
 - Made cOsdMenu::Display() virtual, which allows plugins to do some additional
   processing after calling the base class function (suggested by Jan Rieger).
@@ -2470,7 +2470,7 @@ Video Disk Recorder Revision History
 
 - Final release of version 1.2.6.
 
-2003-10-24: Version 1.3.0
+2003-12-22: Version 1.3.0
 
 - Changed thread handling to make it work with NPTL ("Native Posix Thread Library").
   Thanks to Jon Burgess, Andreas Schultz, Werner Fink and Stefan Huelswitt.
@@ -2489,3 +2489,16 @@ Video Disk Recorder Revision History
   provided by Alessio Sangalli).
 - Greek language texts now use iso8859-7 character set (thanks to Dimitrios
   Dimitrakos).
+- Rearranged section data handling, so that the actual data handling can be done
+  separately, even from within plugins.
+- The EPG data structures have been moved from eit.[hc] to epg.[hc] and have been
+  adapted to the general VDR coding style. Plugins that use these data structures
+  may need to change some function names (which should be obvious).
+  The name 'subtitle' has been changed to 'shortText' to avoid clashes with actual
+  subtitles that are part of a movie. The name 'extendedDescription' has been
+  shortened to 'description'.
+- Replaced 'libdtv' with 'libsi' (thanks to Marcel Wiesweg), which is thread
+  safe and can be used by multiple section filters simultaneously.
+- Added 'cRWlock' to 'thread.[hc]'. Note that all plugin Makefiles need to
+  define _GNU_SOURCE for this to work (see the example plugin Makefiles and
+  'newplugin').

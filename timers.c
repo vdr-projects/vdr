@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 1.6 2003/10/12 10:33:09 kls Exp $
+ * $Id: timers.c 1.7 2003/12/13 13:06:29 kls Exp $
  */
 
 #include "timers.h"
@@ -44,14 +44,14 @@ cTimer::cTimer(bool Instant, bool Pause)
      snprintf(file, sizeof(file), "%s%s", Setup.MarkInstantRecord ? "@" : "", *Setup.NameInstantRecord ? Setup.NameInstantRecord : channel->Name());
 }
 
-cTimer::cTimer(const cEventInfo *EventInfo)
+cTimer::cTimer(const cEvent *Event)
 {
   startTime = stopTime = 0;
   recording = pending = false;
   active = true;
-  channel = Channels.GetByChannelID(EventInfo->GetChannelID(), true);
-  time_t tstart = EventInfo->GetTime();
-  time_t tstop = tstart + EventInfo->GetDuration() + Setup.MarginStop * 60;
+  channel = Channels.GetByChannelID(Event->ChannelID(), true);
+  time_t tstart = Event->StartTime();
+  time_t tstop = tstart + Event->Duration() + Setup.MarginStop * 60;
   tstart -= Setup.MarginStart * 60;
   struct tm tm_r;
   struct tm *time = localtime_r(&tstart, &tm_r);
@@ -64,9 +64,9 @@ cTimer::cTimer(const cEventInfo *EventInfo)
   priority = Setup.DefaultPriority;
   lifetime = Setup.DefaultLifetime;
   *file = 0;
-  const char *Title = EventInfo->GetTitle();
+  const char *Title = Event->Title();
   if (!isempty(Title))
-     strn0cpy(file, EventInfo->GetTitle(), sizeof(file));
+     strn0cpy(file, Event->Title(), sizeof(file));
   firstday = 0;
   summary = NULL;
 }

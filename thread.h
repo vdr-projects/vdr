@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.h 1.18 2003/10/18 12:56:20 kls Exp $
+ * $Id: thread.h 1.19 2003/12/21 15:44:31 kls Exp $
  */
 
 #ifndef __THREAD_H
@@ -26,6 +26,16 @@ public:
   bool TimedWait(cMutex &Mutex, int TimeoutMs);
   void Broadcast(void);
   //void Signal(void);
+  };
+
+class cRWlock {
+private:
+  pthread_rwlock_t rwlock;
+public:
+  cRWlock(bool PreferWriter = false);
+  ~cRWlock();
+  bool Lock(bool Write, int TimeoutMs = 0);
+  void Unlock(void);
   };
 
 class cMutex {

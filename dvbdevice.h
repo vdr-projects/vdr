@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.h 1.24 2003/11/07 13:17:13 kls Exp $
+ * $Id: dvbdevice.h 1.25 2003/12/21 14:04:00 kls Exp $
  */
 
 #ifndef __DVBDEVICE_H
@@ -14,7 +14,6 @@
 #include <linux/dvb/version.h>
 #include "device.h"
 #include "dvbspu.h"
-#include "eit.h"
 
 #if DVB_API_VERSION != 3
 #error VDR requires Linux DVB driver API version 3!
@@ -71,6 +70,11 @@ protected:
 protected:
   virtual bool SetPid(cPidHandle *Handle, int Type, bool On);
 
+// Section filter facilities
+
+protected:
+  virtual int OpenFilter(u_short Pid, u_char Tid, u_char Mask);
+
 // Image Grab facilities
 
 private:
@@ -94,11 +98,6 @@ protected:
   virtual int NumAudioTracksDevice(void) const;
   virtual const char **GetAudioTracksDevice(int *CurrentTrack = NULL) const;
   virtual void SetAudioTrackDevice(int Index);
-
-// EIT facilities
-
-private:
-  cSIProcessor *siProcessor;
 
 // Player facilities
 

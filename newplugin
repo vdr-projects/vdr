@@ -12,7 +12,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: newplugin 1.15 2003/05/09 14:59:28 kls Exp $
+# $Id: newplugin 1.16 2003/12/21 15:45:18 kls Exp $
 
 $PLUGIN_NAME = $ARGV[0] || die "Usage: newplugin <name>\n";
 
@@ -97,7 +97,7 @@ PACKAGE = vdr-\$(ARCHIVE)
 
 INCLUDES += -I\$(VDRDIR)/include -I\$(DVBDIR)/include
 
-DEFINES += -DPLUGIN_NAME_I18N='"\$(PLUGIN)"'
+DEFINES += -D_GNU_SOURCE -DPLUGIN_NAME_I18N='"\$(PLUGIN)"'
 
 ### The object files (add further files here):
 

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.49 2003/11/07 14:15:10 kls Exp $
+ * $Id: device.c 1.50 2003/12/22 10:53:45 kls Exp $
  */
 
 #include "device.h"
@@ -13,7 +13,6 @@
 #include <sys/mman.h>
 #include "audio.h"
 #include "channels.h"
-#include "eit.h"
 #include "i18n.h"
 #include "player.h"
 #include "receiver.h"
@@ -45,6 +44,10 @@ cDevice::cDevice(void)
   mute = false;
   volume = Setup.CurrentVolume;
 
+  sectionHandler = NULL;
+  eitFilter = NULL;
+  patFilter = NULL;
+
   ciHandler = NULL;
   player = NULL;
 
@@ -65,6 +68,9 @@ cDevice::~cDevice()
   for (int i = 0; i < MAXRECEIVERS; i++)
       Detach(receiver[i]);
   delete ciHandler;
+  delete eitFilter;
+  delete patFilter;
+  delete sectionHandler;
 }
 
 void cDevice::SetUseDevice(int n)
@@ -313,6 +319,31 @@ bool cDevice::SetPid(cPidHandle *Handle, int Type, bool On)
   return false;
 }
 
+void cDevice::StartSectionHandler(void)
+{
+  if (!sectionHandler) {
+     sectionHandler = new cSectionHandler(this);
+     AttachFilter(eitFilter = new cEitFilter);
+     AttachFilter(patFilter = new cPatFilter);
+     sectionHandler->SetStatus(true);
+     }
+}
+
+int cDevice::OpenFilter(u_short Pid, u_char Tid, u_char Mask)
+{
+  return -1;
+}
+
+void cDevice::AttachFilter(cFilter *Filter)
+{
+  sectionHandler->Attach(Filter);
+}
+
+void cDevice::Detach(cFilter *Filter)
+{
+  sectionHandler->Detach(Filter);
+}
+
 bool cDevice::ProvidesSource(int Source) const
 {
   return false;
@@ -401,15 +432,25 @@ eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
      }
   else {
      cStatus::MsgChannelSwitch(this, 0); // only report status if we are actually going to switch the channel
-     if (!SetChannelDevice(Channel, LiveView))
+     // Stop section handling:
+     if (sectionHandler) {
+        sectionHandler->SetStatus(false);
+        sectionHandler->SetSource(0, 0);
+        }
+     if (SetChannelDevice(Channel, LiveView)) {
+        // Start section handling:
+        if (sectionHandler) {
+           sectionHandler->SetSource(Channel->Source(), Channel->Frequency());
+           sectionHandler->SetStatus(true);
+           }
+        }
+     else
         Result = scrFailed;
      }
 
   if (Result == scrOk) {
-     if (LiveView && IsPrimaryDevice()) {
-        cSIProcessor::SetCurrentChannelID(Channel->GetChannelID());
+     if (LiveView && IsPrimaryDevice())
         currentChannel = Channel->Number();
-        }
      cStatus::MsgChannelSwitch(this, Channel->Number()); // only report status if channel switch successfull
      }
 

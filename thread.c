@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 1.28 2003/10/18 13:00:04 kls Exp $
+ * $Id: thread.c 1.29 2003/12/21 15:17:24 kls Exp $
  */
 
 #include "thread.h"
@@ -79,6 +79,39 @@ void cCondVar::Signal(void)
   pthread_cond_signal(&cond);
 }
 */
+
+// --- cRWlock ---------------------------------------------------------------
+
+cRWlock::cRWlock(bool PreferWriter)
+{
+  pthread_rwlockattr_t attr = { PreferWriter ? PTHREAD_RWLOCK_PREFER_WRITER_NP : PTHREAD_RWLOCK_PREFER_READER_NP };
+  pthread_rwlock_init(&rwlock, &attr);
+}
+
+cRWlock::~cRWlock()
+{
+  pthread_rwlock_destroy(&rwlock);
+}
+
+bool cRWlock::Lock(bool Write, int TimeoutMs)
+{
+  int Result = 0;
+  struct timespec abstime;
+  if (TimeoutMs) {
+     abstime.tv_sec = TimeoutMs / 1000;
+     abstime.tv_nsec = (TimeoutMs % 1000) * 1000000;
+     }
+  if (Write)
+     Result = TimeoutMs ? pthread_rwlock_timedwrlock(&rwlock, &abstime) : pthread_rwlock_wrlock(&rwlock);
+  else
+     Result = TimeoutMs ? pthread_rwlock_timedrdlock(&rwlock, &abstime) : pthread_rwlock_rdlock(&rwlock);
+  return Result == 0;
+}
+
+void cRWlock::Unlock(void)
+{
+  pthread_rwlock_unlock(&rwlock);
+}
 
 // --- cMutex ----------------------------------------------------------------
 

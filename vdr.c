@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.170 2003/10/19 15:14:42 kls Exp $
+ * $Id: vdr.c 1.171 2003/12/22 13:29:24 kls Exp $
  */
 
 #include <getopt.h>
@@ -39,6 +39,7 @@
 #include "diseqc.h"
 #include "dvbdevice.h"
 #include "eitscan.h"
+#include "epg.h"
 #include "i18n.h"
 #include "interface.h"
 #include "keys.h"
@@ -93,10 +94,12 @@ int main(int argc, char *argv[])
 #define DEFAULTSVDRPPORT 2001
 #define DEFAULTWATCHDOG     0 // seconds
 #define DEFAULTPLUGINDIR PLUGINDIR
+#define DEFAULTEPGDATAFILENAME "epg.data"
 
   int SVDRPport = DEFAULTSVDRPPORT;
   const char *AudioCommand = NULL;
   const char *ConfigDirectory = NULL;
+  const char *EpgDataFileName = DEFAULTEPGDATAFILENAME;
   bool DisplayHelp = false;
   bool DisplayVersion = false;
   bool DaemonMode = false;
@@ -146,7 +149,7 @@ int main(int argc, char *argv[])
                     fprintf(stderr, "vdr: invalid DVB device number: %s\n", optarg);
                     return 2;
                     break;
-          case 'E': cSIProcessor::SetEpgDataFileName(*optarg != '-' ? optarg : NULL);
+          case 'E': EpgDataFileName = (*optarg != '-' ? optarg : NULL);
                     break;
           case 'h': DisplayHelp = true;
                     break;
@@ -239,7 +242,8 @@ int main(int argc, char *argv[])
                "                           there may be several -D options (default: all DVB\n"
                "                           devices will be used)\n"
                "  -E FILE   --epgfile=FILE write the EPG data into the given FILE (default is\n"
-               "                           %s); use '-E-' to disable this\n"
+               "                           '%s' in the video directory)\n"
+               "                           '-E-' disables this\n"
                "                           if FILE is a directory, the default EPG file will be\n"
                "                           created in that directory\n"
                "  -h,       --help         print this help and exit\n"
@@ -261,7 +265,7 @@ int main(int argc, char *argv[])
                "  -w SEC,   --watchdog=SEC activate the watchdog timer with a timeout of SEC\n"
                "                           seconds (default: %d); '0' disables the watchdog\n"
                "\n",
-               cSIProcessor::GetEpgDataFileName() ? cSIProcessor::GetEpgDataFileName() : "'-'",
+               DEFAULTEPGDATAFILENAME,
                DEFAULTPLUGINDIR,
                DEFAULTSVDRPPORT,
                VideoDirectory,
@@ -360,6 +364,17 @@ int main(int argc, char *argv[])
 
   cFont::SetCode(I18nCharSets()[Setup.OSDLanguage]);
 
+  // EPG data:
+
+  if (EpgDataFileName) {
+     if (DirectoryOk(EpgDataFileName))
+        EpgDataFileName = AddDirectory(EpgDataFileName, DEFAULTEPGDATAFILENAME);
+     else if (*EpgDataFileName != '/' && *EpgDataFileName != '.')
+        EpgDataFileName = AddDirectory(VideoDirectory, EpgDataFileName);
+     }
+  cSchedules::SetEpgDataFileName(EpgDataFileName);
+  cSchedules::Read();
+
   // DVB interfaces:
 
   cDvbDevice::Initialize();
@@ -437,8 +452,6 @@ int main(int argc, char *argv[])
      cDevice::PrimaryDevice()->ToggleMute();
   else
      cDevice::PrimaryDevice()->SetVolume(Setup.CurrentVolume, true);
-
-  cSIProcessor::Read();
 
   // Signal handlers:
 
@@ -781,6 +794,7 @@ int main(int argc, char *argv[])
                  }
               // Disk housekeeping:
               RemoveDeletedRecordings();
+              cSchedules::Cleanup();
               // Plugins housekeeping:
               PluginManager.Housekeeping();
               }
@@ -801,6 +815,7 @@ int main(int argc, char *argv[])
   Setup.Save();
   cDevice::Shutdown();
   PluginManager.Shutdown(true);
+  ReportEpgBugFixStats();
   if (WatchdogTimeout > 0)
      dsyslog("max. latency time %d seconds", MaxLatencyTime);
   isyslog("exiting");

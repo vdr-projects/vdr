@@ -4,13 +4,17 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 1.35 2003/11/07 13:15:45 kls Exp $
+ * $Id: device.h 1.36 2003/12/22 10:52:39 kls Exp $
  */
 
 #ifndef __DEVICE_H
 #define __DEVICE_H
 
 #include "ci.h"
+#include "eit.h"
+#include "filter.h"
+#include "pat.h"
+#include "sections.h"
 #include "thread.h"
 #include "tools.h"
 
@@ -221,6 +225,26 @@ protected:
          ///< Handle->used indicated how many receivers are using this PID.
          ///< Type indicates some special types of PIDs, which the device may
          ///< need to set in a specific way.
+
+// Section filter facilities
+
+private:
+  cSectionHandler *sectionHandler;
+  cEitFilter *eitFilter;
+  cPatFilter *patFilter;
+protected:
+  void StartSectionHandler(void);
+       ///< A derived device that provides section data must call
+       ///< this function to actually set up the section handler.
+public:
+  virtual int OpenFilter(u_short Pid, u_char Tid, u_char Mask);
+       ///< Opens a file handle for the given filter data.
+       ///< A derived device that provides section data must
+       ///< implement this function.
+  void AttachFilter(cFilter *Filter);
+       ///< Attaches the given filter to this device.
+  void Detach(cFilter *Filter);
+       ///< Detaches the given filter from this device.
 
 // Common Interface facilities:
 
