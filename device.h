@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 1.47 2004/12/17 13:44:34 kls Exp $
+ * $Id: device.h 1.48 2004/12/24 14:57:24 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -448,6 +448,7 @@ public:
 // Receiver facilities
 
 private:
+  cMutex mutexReceiver;
   cReceiver *receiver[MAXRECEIVERS];
   int CanShift(int Ca, int Priority, int UsedCards = 0) const;
 protected:

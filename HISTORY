@@ -3160,7 +3160,7 @@ Video Disk Recorder Revision History
   right day of week for timers in the future.
 - Some improvements to cPoller (thanks to Marco Schlüßler).
 
-2004-12-19: Version 1.3.18
+2004-12-24: Version 1.3.18
 
 - Removed an unused variable from cTimer::GetWDayFromMDay() (thanks to Wayne Keer
   for reporting this one).
@@ -3224,3 +3224,5 @@ Video Disk Recorder Revision History
 - Removed delay_ms(), using cCondWait::SleepMs() instead.
 - Replaced time_ms() with a threadsafe and non-overflowing cTimeMs (thanks to Rainer
   Zocholl for pointing out this problem).
+- Added cDevice::mutexReceiver to avoid a race condition when attaching/detaching
+  receivers from different threads.

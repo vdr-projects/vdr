@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.63 2004/12/17 13:51:44 kls Exp $
+ * $Id: device.c 1.64 2004/12/24 15:37:11 kls Exp $
  */
 
 #include "device.h"
@@ -990,6 +990,7 @@ bool cDevice::AttachReceiver(cReceiver *Receiver)
      esyslog("ERROR: device %d has no lock, can't attach receiver!", CardIndex() + 1);
      return false;
      }
+  cMutexLock MutexLock(&mutexReceiver);
   for (int i = 0; i < MAXRECEIVERS; i++) {
       if (!receiver[i]) {
          for (int n = 0; n < MAXRECEIVEPIDS; n++) {
@@ -1017,6 +1018,7 @@ void cDevice::Detach(cReceiver *Receiver)
   if (!Receiver || Receiver->device != this)
      return;
   bool receiversLeft = false;
+  cMutexLock MutexLock(&mutexReceiver);
   for (int i = 0; i < MAXRECEIVERS; i++) {
       if (receiver[i] == Receiver) {
          Receiver->Activate(false);
