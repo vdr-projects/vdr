@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.h 1.14 2002/10/12 11:15:39 kls Exp $
+ * $Id: dvbdevice.h 1.15 2002/10/26 11:35:04 kls Exp $
  */
 
 #ifndef __DVBDEVICE_H
@@ -101,6 +101,7 @@ private:
 
 protected:
   ePlayMode playMode;
+  virtual bool CanReplay(void) const;
   virtual bool SetPlayMode(ePlayMode PlayMode);
 public:
   virtual void TrickSpeed(int Speed);

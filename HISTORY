@@ -1642,3 +1642,5 @@ Video Disk Recorder Revision History
 - Fixed a ternary expression in dvbspu.c.
 - Fixed handling 'Transfer Mode' on single device systems when recording an
   encrypted channel (thanks to Stefan Huelswitt).
+- Fixed blocking replaying in case an encrypted channel is being recorded on
+  the primary device.

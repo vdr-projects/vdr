@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 1.24 2002/10/26 09:35:20 kls Exp $
+ * $Id: device.h 1.25 2002/10/26 11:33:42 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -278,6 +278,8 @@ private:
   cPlayer *player;
   bool playerDetached;
 protected:
+  virtual bool CanReplay(void) const;
+       // Returns true if this device can currently start a replay session.
   virtual bool SetPlayMode(ePlayMode PlayMode);
        // Sets the device into the given play mode.
        // Returns true if the operation was successful.

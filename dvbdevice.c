@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.29 2002/10/26 11:11:42 kls Exp $
+ * $Id: dvbdevice.c 1.30 2002/10/26 11:37:03 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -800,6 +800,11 @@ void cDvbDevice::SetAudioTrackDevice(int Index)
      AddPid(Index ? aPid2 : aPid1, ptAudio);
      AddPid(vpid, ptVideo);
      }
+}
+
+bool cDvbDevice::CanReplay(void) const
+{
+  return cDevice::CanReplay() && !Ca(); // we can only replay if there is no Ca recording going on
 }
 
 bool cDvbDevice::SetPlayMode(ePlayMode PlayMode)
