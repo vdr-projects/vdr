@@ -2898,9 +2898,9 @@ Video Disk Recorder Revision History
 - In order to avoid problems on NPTL systems, VDR now checks for the presence
   of NPTL at program start, and if it is, exists and tells the user to do
   'export LD_ASSUME_KERNEL=2.4.1' before starting VDR.
-- Revoked the "Fixed missing audio after replaying a DVD" change because it
+- Revisited the "Fixed missing audio after replaying a DVD" change because it
   introduced a sound disturbance when switching between channels on the same
-  transponder.
+  transponder (thanks to Marco Schlüßler).
 - In order to avoid problems on UTF-8 systems, VDR now checks for the presence
   of UTF-8 at program start, and if it is, exists and tells the user to turn off
   UTF-8 before starting VDR.

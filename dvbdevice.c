@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.89 2004/06/06 11:28:28 kls Exp $
+ * $Id: dvbdevice.c 1.90 2004/06/12 14:42:19 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -766,9 +766,10 @@ bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
         }
      if (IsPrimaryDevice())
         AddPid(Channel->Tpid(), ptTeletext);
+     CHECK(ioctl(fd_audio, AUDIO_SET_MUTE, true)); // actually one would expect 'false' here, but according to Marco Schlüßler <marco@lordzodiac.de> this works
+                                                   // to avoid missing audio after replaying a DVD; with 'false' there is an audio disturbance when switching
+                                                   // between two channels on the same transponder on DVB-S
      CHECK(ioctl(fd_audio, AUDIO_SET_AV_SYNC, true));
-     CHECK(ioctl(fd_audio, AUDIO_SET_MUTE, false));
-     CHECK(ioctl(fd_video, VIDEO_SET_BLANK, false));
      }
   else if (StartTransferMode)
      cControl::Launch(new cTransferControl(this, Channel->Vpid(), Channel->Apid1(), Channel->Apid2(), Channel->Dpid1(), Channel->Dpid2()));
