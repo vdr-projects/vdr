@@ -735,6 +735,7 @@ Sascha Volkenandt <sascha@akv-soft.de>
  for pointing out a "near miss" condition in cCondVar
  for reporting a bug in cChannel::SetName() in case only the ShortName or Provider
  has changed
+ for fixing a possible recursion in cControl::Shutdown()
 
 Malcolm Caldwell <malcolm.caldwell@ntu.edu.au>
  for modifying LOF handling to allow for C-band reception

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: player.c 1.7 2004/04/16 13:34:11 kls Exp $
+ * $Id: player.c 1.8 2004/11/20 11:33:08 kls Exp $
  */
 
 #include "player.h"
@@ -88,6 +88,7 @@ void cControl::Attach(void)
 
 void cControl::Shutdown(void)
 {
-  delete control;
+  cControl *c = control; // avoids recursions
   control = NULL;
+  delete c;
 }
