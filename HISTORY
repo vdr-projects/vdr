@@ -631,3 +631,5 @@ Video Disk Recorder Revision History
 - Improved AC3 decoding when replaying DVDs (thanks to Matjaz Thaler).
 - Fixed handling DVB card indexes when using only one card in a multi-card
   system.
+- Changed the 'Eject DVD' button text to a simple 'Eject' (the German text
+  was too long...).

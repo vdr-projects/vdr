@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.97 2001/08/10 14:57:17 kls Exp $
+ * $Id: menu.c 1.98 2001/08/10 15:37:53 kls Exp $
  */
 
 #include "menu.h"
@@ -1816,7 +1816,7 @@ cMenuMain::cMenuMain(bool Replaying)
      Add(new cOsdItem(hk(tr(" Cancel editing")), osCancelEdit));
   const char *DVDbutton =
 #ifdef DVDSUPPORT
-                          cDVD::DiscOk() ? tr("Eject DVD") : NULL;
+                          cDVD::DiscOk() ? tr("Eject") : NULL;
 #else
                           NULL;
 #endif //DVDSUPPORT

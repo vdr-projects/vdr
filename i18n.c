@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.28 2001/08/08 16:42:18 kls Exp $
+ * $Id: i18n.c 1.29 2001/08/10 15:37:46 kls Exp $
  *
  * Slovenian translations provided by Miha Setina <mihasetina@softhome.net>
  * Italian   translations provided by Alberto Carraro <bertocar@tin.it>
@@ -330,13 +330,13 @@ const tPhrase Phrases[] = {
     "Langue",
     "Språk",
   },
-  { "Eject DVD",
-    "DVD auswerfen",
+  { "Eject",
+    "Auswerfen",
     "", // TODO
     "", // TODO
     "", // TODO
     "", // TODO
-    "Ejection DVD",
+    "Ejection",
     "", // TODO
   },
   // Confirmations:
