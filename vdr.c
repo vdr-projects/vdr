@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.162 2003/08/02 14:01:32 kls Exp $
+ * $Id: vdr.c 1.165 2003/08/17 08:50:25 kls Exp $
  */
 
 #include <getopt.h>
@@ -57,7 +57,6 @@
 #define ACTIVITYTIMEOUT 60 // seconds before starting housekeeping
 #define SHUTDOWNWAIT   300 // seconds to wait in user prompt before automatic shutdown
 #define MANUALSTART    600 // seconds the next timer must be in the future to assume manual start
-#define ZAPTIMEOUT       3 // seconds until a channel counts as "previous" for switching with '0'
 
 static int Interrupted = 0;
 
@@ -341,17 +340,19 @@ int main(int argc, char *argv[])
 
   cPlugin::SetConfigDirectory(ConfigDirectory);
 
-  Setup.Load(AddDirectory(ConfigDirectory, "setup.conf"));
-  Sources.Load(AddDirectory(ConfigDirectory, "sources.conf"), true);
-  Diseqcs.Load(AddDirectory(ConfigDirectory, "diseqc.conf"), true);
-  Channels.Load(AddDirectory(ConfigDirectory, "channels.conf"));
-  Timers.Load(AddDirectory(ConfigDirectory, "timers.conf"));
-  Commands.Load(AddDirectory(ConfigDirectory, "commands.conf"), true);
-  RecordingCommands.Load(AddDirectory(ConfigDirectory, "reccmds.conf"), true);
-  SVDRPhosts.Load(AddDirectory(ConfigDirectory, "svdrphosts.conf"), true);
-  CaDefinitions.Load(AddDirectory(ConfigDirectory, "ca.conf"), true);
-  Keys.Load(AddDirectory(ConfigDirectory, "remote.conf"));
-  KeyMacros.Load(AddDirectory(ConfigDirectory, "keymacros.conf"), true);
+  if (!(Setup.Load(AddDirectory(ConfigDirectory, "setup.conf")) &&
+        Sources.Load(AddDirectory(ConfigDirectory, "sources.conf"), true, true) &&
+        Diseqcs.Load(AddDirectory(ConfigDirectory, "diseqc.conf"), true, true) &&
+        Channels.Load(AddDirectory(ConfigDirectory, "channels.conf"), false, true) &&
+        Timers.Load(AddDirectory(ConfigDirectory, "timers.conf")) &&
+        Commands.Load(AddDirectory(ConfigDirectory, "commands.conf"), true) &&
+        RecordingCommands.Load(AddDirectory(ConfigDirectory, "reccmds.conf"), true) &&
+        SVDRPhosts.Load(AddDirectory(ConfigDirectory, "svdrphosts.conf"), true) &&
+        CaDefinitions.Load(AddDirectory(ConfigDirectory, "ca.conf"), true) &&
+        Keys.Load(AddDirectory(ConfigDirectory, "remote.conf")) &&
+        KeyMacros.Load(AddDirectory(ConfigDirectory, "keymacros.conf"), true)
+        ))
+     return 2;
 
   // DVB interfaces:
 
@@ -455,8 +456,8 @@ int main(int argc, char *argv[])
   cOsdObject *Temp = NULL;
   int LastChannel = -1;
   int LastTimerChannel = -1;
-  int PreviousChannel = cDevice::CurrentChannel();
-  int LastLastChannel = PreviousChannel;
+  int PreviousChannel[2] = { 1, 1 };
+  int PreviousChannelIndex = 0;
   time_t LastChannelChanged = time(NULL);
   time_t LastActivity = 0;
   int MaxLatencyTime = 0;
@@ -498,10 +499,8 @@ int main(int argc, char *argv[])
            LastChannel = cDevice::CurrentChannel();
            LastChannelChanged = time(NULL);
            }
-        if (LastLastChannel != LastChannel && time(NULL) - LastChannelChanged >= ZAPTIMEOUT) {
-           PreviousChannel = LastLastChannel;
-           LastLastChannel = LastChannel;
-           }
+        if (time(NULL) - LastChannelChanged >= Setup.ZapTimeout && LastChannel != PreviousChannel[0] && LastChannel != PreviousChannel[1])
+           PreviousChannel[PreviousChannelIndex ^= 1] = LastChannel;
         // Timers and Recordings:
         if (!Timers.BeingEdited()) {
            time_t Now = time(NULL); // must do both following calls with the exact same time!
@@ -680,9 +679,9 @@ int main(int argc, char *argv[])
            switch (key) {
              // Toggle channels:
              case k0: {
-                  int CurrentChannel = cDevice::CurrentChannel();
-                  Channels.SwitchTo(PreviousChannel);
-                  PreviousChannel = CurrentChannel;
+                  if (PreviousChannel[PreviousChannelIndex ^ 1] == LastChannel || LastChannel != PreviousChannel[0] && LastChannel != PreviousChannel[1])
+                     PreviousChannelIndex ^= 1;
+                  Channels.SwitchTo(PreviousChannel[PreviousChannelIndex ^= 1]);
                   break;
                   }
              // Direct Channel Select:

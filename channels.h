@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.h 1.7 2003/04/26 09:15:40 kls Exp $
+ * $Id: channels.h 1.8 2003/08/16 09:12:15 kls Exp $
  */
 
 #ifndef __CHANNELS_H
@@ -130,7 +130,7 @@ protected:
   int maxNumber;
 public:
   cChannels(void) { maxNumber = 0; }
-  virtual bool Load(const char *FileName, bool AllowComments = false);
+  virtual bool Load(const char *FileName, bool AllowComments = false, bool MustExist = false);
   int GetNextGroup(int Idx);   // Get next channel group
   int GetPrevGroup(int Idx);   // Get previous channel group
   int GetNextNormal(int Idx);  // Get next normal channel (not group)

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 1.12 2003/04/26 09:57:48 kls Exp $
+ * $Id: channels.c 1.13 2003/08/16 09:12:26 kls Exp $
  */
 
 #include "channels.h"
@@ -390,9 +390,9 @@ bool cChannel::Save(FILE *f)
 
 cChannels Channels;
 
-bool cChannels::Load(const char *FileName, bool AllowComments)
+bool cChannels::Load(const char *FileName, bool AllowComments, bool MustExist)
 {
-  if (cConfig<cChannel>::Load(FileName, AllowComments)) {
+  if (cConfig<cChannel>::Load(FileName, AllowComments, MustExist)) {
      ReNumber();
      return true;
      }

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.264 2003/08/03 09:38:37 kls Exp $
+ * $Id: menu.c 1.268 2003/08/17 08:52:07 kls Exp $
  */
 
 #include "menu.h"
@@ -763,6 +763,8 @@ eOSState cMenuChannels::Delete(void)
 
 void cMenuChannels::Move(int From, int To)
 {
+  int CurrentChannelNr = cDevice::CurrentChannel();
+  cChannel *CurrentChannel = Channels.GetByNumber(CurrentChannelNr);
   cChannel *FromChannel = GetChannel(From);
   cChannel *ToChannel = GetChannel(To);
   if (FromChannel && ToChannel) {
@@ -772,6 +774,8 @@ void cMenuChannels::Move(int From, int To)
      cOsdMenu::Move(From, To);
      Propagate();
      isyslog("channel %d moved to %d", FromNumber, ToNumber);
+     if (CurrentChannel && CurrentChannel->Number() != CurrentChannelNr)
+        Channels.SwitchTo(CurrentChannel->Number());
      }
 }
 
@@ -2252,6 +2256,7 @@ cMenuSetupMisc::cMenuSetupMisc(void)
   Add(new cMenuEditIntItem( tr("Setup.Miscellaneous$Min. event timeout (min)"),   &data.MinEventTimeout));
   Add(new cMenuEditIntItem( tr("Setup.Miscellaneous$Min. user inactivity (min)"), &data.MinUserInactivity));
   Add(new cMenuEditIntItem( tr("Setup.Miscellaneous$SVDRP timeout (s)"),          &data.SVDRPTimeout));
+  Add(new cMenuEditIntItem( tr("Setup.Miscellaneous$Zap timeout (s)"),            &data.ZapTimeout));
 }
 
 // --- cMenuSetupPluginItem --------------------------------------------------
@@ -2997,6 +3002,8 @@ cRecordControl::cRecordControl(cDevice *Device, cTimer *Timer, bool Pause)
      else {
         Timers.Del(timer);
         Timers.Save();
+        if (!cReplayControl::LastReplayed()) // an instant recording, maybe from cRecordControls::PauseLiveVideo()
+           cReplayControl::SetRecording(fileName, Recording.Name());
         }
      timer = NULL;
      return;
@@ -3093,8 +3100,11 @@ bool cRecordControls::Start(cTimer *Timer, bool Pause)
      int Priority = Timer ? Timer->Priority() : Pause ? Setup.PausePriority : Setup.DefaultPriority;
      cDevice *device = cDevice::GetDevice(channel, Priority, &NeedsDetachReceivers);
      if (device) {
-        if (NeedsDetachReceivers)
+        if (NeedsDetachReceivers) {
            Stop(device);
+           if (device == cDevice::ActualDevice())
+              cControl::Shutdown(); // in case this device was used for Transfer Mode
+           }
         if (!device->SwitchChannel(channel, false)) {
            cThread::EmergencyExit(true);
            return false;

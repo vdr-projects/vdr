@@ -1226,7 +1226,6 @@ void siParseDescriptors (struct LIST *, u_char *, int, u_char);
 void siParseDescriptor (struct LIST *, u_char *);
 char *siGetDescriptorText (u_char *, int);
 char *siGetDescriptorName (u_char *, int);
-u_long crc32 (char *data, int len);
 
 /* si_debug_services.c */
 

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.165 2003/06/12 20:37:14 kls Exp $
+ * $Id: config.h 1.168 2003/08/17 08:46:34 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -19,8 +19,8 @@
 #include "device.h"
 #include "tools.h"
 
-#define VDRVERSION  "1.2.2"
-#define VDRVERSNUM   10202  // Version * 10000 + Major * 100 + Minor
+#define VDRVERSION  "1.2.3"
+#define VDRVERSNUM   10203  // Version * 10000 + Major * 100 + Minor
 
 #define MAXPRIORITY 99
 #define MAXLIFETIME 99
@@ -87,7 +87,7 @@ public:
   cConfig(void) { fileName = NULL; }
   virtual ~cConfig() { free(fileName); }
   const char *FileName(void) { return fileName; }
-  bool Load(const char *FileName = NULL, bool AllowComments = false)
+  bool Load(const char *FileName = NULL, bool AllowComments = false, bool MustExist = false)
   {
     Clear();
     if (FileName) {
@@ -95,7 +95,7 @@ public:
        fileName = strdup(FileName);
        allowComments = AllowComments;
        }
-    bool result = false;
+    bool result = !MustExist;
     if (fileName && access(fileName, F_OK) == 0) {
        isyslog("loading %s", fileName);
        FILE *f = fopen(fileName, "r");
@@ -125,9 +125,13 @@ public:
                 }
           fclose(f);
           }
-       else
+       else {
           LOG_ERROR_STR(fileName);
+          result = false;
+          }
        }
+    if (!result)
+       fprintf(stderr, "vdr: error while reading '%s'\n", fileName);
     return result;
   }
   bool Save(void)
@@ -215,6 +219,7 @@ public:
   int EPGScanTimeout;
   int EPGBugfixLevel;
   int SVDRPTimeout;
+  int ZapTimeout;
   int SortTimers;
   int PrimaryLimit;
   int DefaultPriority, DefaultLifetime;

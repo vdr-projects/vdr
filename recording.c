@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.80 2003/05/30 13:23:54 kls Exp $
+ * $Id: recording.c 1.82 2003/08/17 09:10:46 kls Exp $
  */
 
 #include "recording.h"
@@ -95,7 +95,8 @@ void AssertFreeDiskSpace(int Priority)
   // a file, or mark a file for removal ("delete" it), so that
   // it will get removed during the next call.
   static time_t LastFreeDiskCheck = 0;
-  if (time(NULL) - LastFreeDiskCheck > DISKCHECKDELTA) {
+  int Factor = (Priority == -1) ? 10 : 1;
+  if (time(NULL) - LastFreeDiskCheck > DISKCHECKDELTA / Factor) {
      if (!VideoFileSpaceAvailable(MINDISKSPACE)) {
         // Make sure only one instance of VDR does this:
         cLockFile LockFile(VideoDirectory);
@@ -113,7 +114,7 @@ void AssertFreeDiskSpace(int Priority)
                  r = Recordings.Next(r);
                  }
            if (r0 && r0->Remove()) {
-              LastFreeDiskCheck += REMOVELATENCY;
+              LastFreeDiskCheck += REMOVELATENCY / Factor;
               return;
               }
            }
@@ -770,7 +771,7 @@ void cRecordingUserCommand::InvokeCommand(const char *State, const char *Recordi
 #define INDEXFILESUFFIX     "/index.vdr"
 
 // The number of frames to stay off the end in case of time shift:
-#define INDEXSAFETYLIMIT 100 // frames
+#define INDEXSAFETYLIMIT 150 // frames
 
 // The maximum time to wait before giving up while catching up on an index file:
 #define MAXINDEXCATCHUP   8 // seconds

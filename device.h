@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 1.33 2003/05/11 08:50:04 kls Exp $
+ * $Id: device.h 1.34 2003/08/15 13:05:50 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -44,6 +44,10 @@ enum ePlayMode { pmNone,           // audio/video from decoder
                  // IF A PARTICULAR VDR INSTALLATION USES A DEVICE NOT
                  // KNOWN TO YOUR PLAYER.
                };
+
+enum eVideoSystem { vsPAL,
+                    vsNTSC
+                  };
 
 class cOsdBase;
 class cChannel;
@@ -248,6 +252,9 @@ public:
   virtual void SetVideoFormat(bool VideoFormat16_9);
          ///< Sets the output video format to either 16:9 or 4:3 (only useful
          ///< if this device has an MPEG decoder).
+  virtual eVideoSystem GetVideoSystem(void);
+         ///< Returns the video system of the currently displayed material
+         ///< (default is PAL).
 
 // Audio facilities
 

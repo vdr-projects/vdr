@@ -315,6 +315,10 @@ Rainer Zocholl <vdrcontrib@zocki.toppoint.de>
  for suggesting a confirmation prompt when the user presses the "Power" button
  and there is an upcoming timer event
  for reporting a bug in skipping the next hit of a repeating timer
+ for reporting a problem with staying off the end of an ongoing recording while
+ replaying in time shift mode
+ for suggesting that VDR should stop if one of the configuration files can't be
+ read correctly at program startup
 
 Oleg Assovski <assen@bitcom.msk.ru>
  for adding EPG scanning for another 4 days
@@ -328,6 +332,9 @@ Bernd Schweikert <bernd.schweikert@dit-gmbh.de>
 Mirko Günther <mi.guenther@ib-helms.de>
  for suggesting the -m command line option
  for suggesting the SVDRP command VOLU
+ for reporting a bug in keeping track of the current channel number when moving
+ channels in the "Channels" menu
+ for reporting a bug in toggling channels with the '0' key
 
 Achim Lange <Achim_Lange@t-online.de>
  for replacing 'killproc' with 'killall' in 'runvdr' to make it work on Debian
@@ -450,6 +457,7 @@ Jürgen Zimmermann <jnzimmer@informatik.uni-kl.de>
 
 Helmut Auer <vdr@helmutauer.de>
  for reporting a superfluous error message in cLockFile
+ for suggesting to make the "Zap timeout" a setup variable
 
 Jeremy Hall <jhall@UU.NET>
  for fixing an incomplete initialization of the filter parameters in eit.c
@@ -550,6 +558,7 @@ Régis Bossut <rbossut@auchan.com>
 
 Andreas Kool <akool@akool.de>
  for his help in keeping 'channels.conf.cable' up to date
+ for fixing the TS to PES repacker so that it works with MPEG1 streams
 
 Guy Roussin <guy.roussin@teledetection.fr>
  for suggesting not to display channel group delimiters without text
@@ -637,6 +646,7 @@ Ludwig Nussel <ludwig.nussel@web.de>
  for fixing handling repeat function with LIRC
  for reporting a problem with the LIRC remote control trying to learn keys even if it
  couldn't connect to the LIRC daemon
+ for making the plugin library directory configurable via Make.config
 
 Thomas Koch <tom@harhar.net>
  for his support in keeping the Premiere World channels up to date in 'channels.conf'
@@ -689,6 +699,7 @@ Juri Haberland <juri@koschikode.com>
 Alfred Zastrow <vdr@zastrow4u.de>
  for suggesting to implement separate PausePriority and PauseLifetime parameters for
  the recordings created when pausing live video
+ for reporting two warnings when compiling with gcc 3.3.1
 
 Matthias Raus <matthias-raus@web.de>
  for reporting a problem with starting the editing process if no marks have been set
@@ -744,3 +755,15 @@ Kenneth Aafløy <ke-aa@frisurf.no>
 Ernst Fürst <ernstfuerst@swissonline.ch>
  for reporting a crash in case a VFAT file system is used without compiling VDR
  with VFAT=1
+
+Reinhard Nissl <rnissl@gmx.de>
+ for reporting a name clash because of function crc32() in libdtv/libsi/si_parser.c
+ when using other libraries that also implement a function by that name
+
+Richard Robson <richard_robson@beeb.net>
+ for reporting freezing replay if a timer starts while in Transfer Mode from the
+ device used by the timer, and the timer needs a different transponder
+
+Manfred Schmidt-Voigt <manfred.schmidt-voigt@mannitec.de>
+ for reporting a problem with runnign out of disk space while cutting in case
+ there are still deleted recordings to remove

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.129 2003/07/13 15:03:07 kls Exp $
+ * $Id: i18n.c 1.130 2003/08/17 08:53:24 kls Exp $
  *
  * Translations provided by:
  *
@@ -2662,6 +2662,23 @@ const tI18nPhrase Phrases[] = {
     "Timeout SVDRP (sec)",
     "SVDRP Timeout (s)",
     "SVDRP Timeout (s)",
+  },
+  { "Setup.Miscellaneous$Zap timeout (s)",
+    "Zap Timeout (s)",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
   },
   // The days of the week:
   { "MTWTFSS",
