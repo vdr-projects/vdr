@@ -3367,3 +3367,5 @@ Video Disk Recorder Revision History
   that has DD and selecting the DD audio track).
 - Removed 'flags' from tTrackId (thought we would need this, but apparently we don't).
 - Making sure the "Mute" and "Volume+/-" keys don't interfere with digital audio.
+- Fixed the "pre 1.3.19" compatibility mode for old Dolby Digital recordings (thanks
+  to Werner Fink for pointing out that this can be triggered in the default branch).
