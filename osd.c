@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 1.20 2002/01/26 11:09:58 kls Exp $
+ * $Id: osd.c 1.21 2002/03/10 16:18:06 kls Exp $
  */
 
 #include "osd.h"
@@ -100,6 +100,23 @@ cOsdMenu::~cOsdMenu()
   delete status;
   Interface->Clear();
   Interface->Close();
+}
+
+const char *cOsdMenu::hk(const char *s)
+{
+  static char buffer[32];
+  if (digit < 9) {
+     snprintf(buffer, sizeof(buffer), " %d %s", ++digit, s);
+     return buffer;
+     }
+  else
+     return s;
+}
+
+void cOsdMenu::SetHasHotkeys(void)
+{
+  hasHotkeys = true;
+  digit = 0;
 }
 
 void cOsdMenu::SetStatus(const char *s)

@@ -1067,7 +1067,7 @@ Video Disk Recorder Revision History
   available on any DVB card).
 - Updated French language texts (thanks to Jean-Claude Repetto).
 
-2002-03-08: Version 1.0.0pre4
+2002-03-16: Version 1.0.0pre4
 
 - Added 'Ca' code 201 for 'Cryptoworks, GOD-DIGITAL' to 'ca.conf' (thanks to
   Bernd Schweikert).
@@ -1096,3 +1096,6 @@ Video Disk Recorder Revision History
   transponder shall be used to set the system time (see MANUAL for details).
   If you have been using the SetSystemTime option previously, you now MUST
   select a channel that you trust to have a reliable time base.
+- Grouped the Setup parameters into several sub-menus, so that each group of
+  parameters fits on a single screen - unless the height of the OSD has been
+  set to a small value (based on code from Markus Lang).

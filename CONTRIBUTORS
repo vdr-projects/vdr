@@ -91,8 +91,11 @@ Henning Holtschneider <hh@holtschneider.com>
 Paulo Manuel Martins Lopes <pmml@netvita.pt>
  for translating the OSD texts to the Portugese language
 
-Markus Lang <markus.lang@nissan-db.de> and Ulrich Röder <dynamite@efr-net.de>
+Markus Lang <pretender@gaze.de> and Ulrich Röder <dynamite@efr-net.de>
  for making DiSEqC support configurable
+
+Markus Lang <pretender@gaze.de>
+ for some initial code for grouping the Setup menu into several sub-menus
 
 Jean-Claude Repetto <jc@repetto.org>
  for translating the OSD texts to the French language

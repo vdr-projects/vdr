@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.62 2002/03/10 10:43:46 kls Exp $
+ * $Id: i18n.c 1.63 2002/03/10 17:02:42 kls Exp $
  *
  * Slovenian translations provided by Miha Setina <mihasetina@softhome.net>
  * Italian   translations provided by Alberto Carraro <bertocar@tin.it>
@@ -852,6 +852,87 @@ const tPhrase Phrases[] = {
     "Disque presque plein!",
     "", // TODO
     "Kovalevy lähes täynnä!",
+  },
+  // Setup pages:
+  { "OSD",
+    "OSD",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+  },
+  { "EPG",
+    "EPG",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+  },
+  { "DVB",
+    "DVB",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+  },
+  { "LNB",
+    "LNB",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+  },
+  { "CICAM",
+    "CICAM",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+  },
+  { "Recording",
+    "Aufnahme",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+  },
+  { "Replay",
+    "Wiedergabe",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+  },
+  { "Miscellaneous",
+    "Sonstiges",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
   },
   // Setup parameters:
   { "OSD-Language",
