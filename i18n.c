@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.141 2004/01/16 13:21:37 kls Exp $
+ * $Id: i18n.c 1.142 2004/01/16 13:48:16 kls Exp $
  *
  * Translations provided by:
  *
@@ -2255,7 +2255,7 @@ const tI18nPhrase Phrases[] = {
     "Scroll da pαgina no menu",
     "Scrolling par pages",
     "Rask rulling i menyer",
-    "Valikkojen sivutus",
+    "Valikkosivujen pikaselaus",
     "Przesuwac stronami",
     "Desplazar pαgina entera",
     "Κίλιση σελίδας",
@@ -2363,7 +2363,7 @@ const tI18nPhrase Phrases[] = {
     "Usar relσgio do transponder",
     "Utiliser l'heure de la chaξne",
     "Bruk klokke fra transponder",
-    "Vastaanota kellonaika lδhettimeltδ",
+    "Vastaanota kellonaika transponderilta",
     "Transponder do ustawiania czasu",
     "Transponder para reloj de sistema",
     "Αναμεταδότης συντονισμού ώρας",
@@ -2453,7 +2453,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Pδivitδ kanavat",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -2471,7 +2471,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "vain nimet",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -2489,7 +2489,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "nimet ja PID:it",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -2507,7 +2507,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "lisδδ uudet kanavat",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -2525,7 +2525,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "lisδδ uudet transponderit",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -4042,7 +4042,7 @@ const tI18nPhrase Phrases[] = {
     "Processo de modificaηγo terminado",
     "Montage terminι",
     "Redigeringsprosess avsluttet",
-    "Muokkaus lopetettu",
+    "Muokkaus valmis",
     "Proces montazu zakonczony",
     "Proceso de modificaciσn terminado",
     "Η επεξεργασία τελείωσε",
