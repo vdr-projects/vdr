@@ -2197,3 +2197,4 @@ Video Disk Recorder Revision History
   Hermann Gausterer for suggesting to switch to the recording channel).
 - Fixed cReplayControl::Show() to avoid a compiler warning in g++ 3.2.3 (thanks
   to Jan Ekholm for reporting this one).
+- Completed the Slovenian OSD texts (thanks to Matjaz Thaler).

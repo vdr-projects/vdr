@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.115 2003/05/24 13:58:38 kls Exp $
+ * $Id: i18n.c 1.116 2003/05/25 09:46:42 kls Exp $
  *
  * Translations provided by:
  *
@@ -108,7 +108,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Schedule",
     "Programm",
-    "Urnik",
+    "Program",
     "Programmi",
     "Gids",
     "Programação",
@@ -210,7 +210,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Recording commands",
     "Befehle für Aufzeichnungen",
-    "",// TODO
+    "Ukazi za snemanje",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -295,7 +295,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Schedule - %s",
     "Programm - %s",
-    "Urnik - %s",
+    "Program - %s",
     "Programma - %s",
     "Programma - %s",
     "Programa - %s",
@@ -381,7 +381,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Delete",
     "Löschen",
-    "Odstrani",
+    "Izbrisi",
     "Cancella",
     "Verwijder",
     "Apagar",
@@ -449,7 +449,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Play",
     "Wiedergabe",
-    "Predavajaj",
+    "Predvajaj",
     "Riproduci",
     "Afspelen",
     "Play",
@@ -466,7 +466,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Rewind",
     "Anfang",
-    "Zacetek",
+    "Na zacetek",
     "Da inizio",
     "Naar begin",
     "Rebobinar",
@@ -585,7 +585,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Next",
     "Nächste",
-    "Naslednji",
+    "Sledi",
     "Prossimo",
     "Hierna",
     "Proximo",
@@ -602,7 +602,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Button$Schedule",
     "Programm",
-    "Urnik",
+    "Program",
     "Programma",
     "Programma",
     "Programação",
@@ -670,7 +670,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Insert",
     "Einfügen",
-    "",// TODO
+    "Vstavi",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -687,7 +687,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Overwrite",
     "Überschreiben",
-    "",// TODO
+    "Prepisi",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -721,7 +721,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Reset",
     "Reset",
-    "",//TODO
+    "Reset",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -739,7 +739,7 @@ const tI18nPhrase Phrases[] = {
   // Confirmations:
   { "Delete channel?",
     "Kanal löschen?",
-    "Odstrani kanal?",
+    "Izbrisi kanal?",
     "Cancello il canale?",
     "Kanaal verwijderen?",
     "Apagar o canal?",
@@ -756,7 +756,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Delete timer?",
     "Timer löschen?",
-    "Odstani termin?",
+    "Izbrisi termin?",
     "Cancello il timer?",
     "Timer verwijderen?",
     "Apagar o timer?",
@@ -773,7 +773,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Delete recording?",
     "Aufzeichnung löschen?",
-    "Odstrani posnetek?",
+    "Izbrisi posnetek?",
     "Cancello la registrazione?",
     "Opname verwijderen?",
     "Apagar a gravação?",
@@ -790,7 +790,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Timer still recording - really delete?",
     "Timer zeichnet auf - trotzdem löschen?",
-    "Snemanje po terminu - zares odstrani?",
+    "Snemanje po terminu - zares izbrisi?",
     "Timer in regestazione - cancello?",
     "Timer neemt nog op - toch verwijderen?",
     "Timer activo - têm a certeza que quer apagar?",
@@ -858,7 +858,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Really restart?",
     "Wirklich neu starten?",
-    "Zares ponoven zagon",
+    "Zares ponoven zagon?",
     "Eseguo un restart?",
     "Werkelijk opnieuw starten?",
     "Tem a certeza que quer reiniciar?",
@@ -875,7 +875,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Recording - restart anyway?",
     "Aufnahme läuft - trotzdem neu starten?",
-    "Snemanje - zares ponoven zagon",
+    "Snemanje - zares ponoven zagon?",
     "In registrazione - restart comunque?",
     "Opname loopt - toch opnieuw starten?",
     "Em gravação - quer mesmo reiniciar?",
@@ -995,7 +995,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Source",
     "Quelle",
-    "",//TODO
+    "Pozicija",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -1165,7 +1165,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Inversion",
     "Inversion",
-    "Inversion",
+    "Inverzija",
     "Inversion",
     "Inversion",
     "Inversion",
@@ -1182,7 +1182,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Bandwidth",
     "Bandwidth",
-    "Bandwidth",
+    "Pasovna sirina",
     "Bandwidth",
     "Bandwidth",
     "Bandwidth",
@@ -1233,7 +1233,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Modulation",
     "Modulation",
-    "Modulation",
+    "Modulacija",
     "Modulation",
     "Modulation",
     "Modulation",
@@ -1250,7 +1250,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Transmission",
     "Transmission",
-    "Transmission",
+    "Prenos",
     "Transmission",
     "Transmission",
     "Transmission",
@@ -1267,7 +1267,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Guard",
     "Guard",
-    "Guard",
+    "Zascita",
     "Guard",
     "Guard",
     "Guard",
@@ -1284,7 +1284,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Hierarchy",
     "Hierarchy",
-    "Hierarchy",
+    "Hierarhija",
     "Hierarchy",
     "Hierarchy",
     "Hierarchy",
@@ -1456,7 +1456,7 @@ const tI18nPhrase Phrases[] = {
   // Error messages:
   { "Channel is being used by a timer!",
     "Kanal wird von einem Timer benutzt!",
-    "Urnik zaseda kanal!",
+    "Kanal uporablja termin za snemanje!",
     "Canale occupato da un timer!",
     "Kanaal wordt gebruikt door een timer!",
     "Canal a ser utilizador por um timer!",
@@ -1490,7 +1490,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Timer is recording!",
     "Timer zeichnet gerade auf!",
-    "Snemanje po urniku!",
+    "Snemanje po terminu!",
     "Registrazione di un timer in corso!",
     "Timer is aan het opnemen!",
     "Timer a gravar!",
@@ -1507,7 +1507,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Error while accessing recording!",
     "Fehler beim Ansprechen der Aufzeichnung!",
-    "Napaka pri dostopu do posnetka",
+    "Napaka pri dostopu do posnetka!",
     "Errore nel tentativo di acc alla registrazione",
     "Fout bij lezen opname!",
     "Erro ao aceder à gravação",
@@ -1524,7 +1524,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Error while deleting recording!",
     "Fehler beim Löschen der Aufzeichnung!",
-    "Napaka pri odstranjevanju posnetka!",
+    "Napaka pri brisanju posnetka!",
     "Errore durante la canc del filmato!",
     "Fout bij verwijderen opname!",
     "Erro enquanto apagava uma gravação!",
@@ -1575,7 +1575,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Channel not available!",
     "Kanal nicht verfügbar!",
-    "",//TODO
+    "Kanal ni razpolozljiv!",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -1592,7 +1592,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Channel settings are not unique!",
     "Kanaleinstellungen sind nicht eindeutig!",
-    "",//TODO
+    "Nastavitve kanala niso edinstvene!",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -1643,7 +1643,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "No editing marks defined!",
     "Keine Schnittmarken gesetzt!",
-    "",//TODO
+    "Nobena tocka ni definirana!",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -1694,7 +1694,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Can't shutdown - option '-s' not given!",
     "Shutdown unmöglich - Option '-s' fehlt!",
-    "Zaustavitev ni mogoca - opcija '-s' ni podana!",
+    "Zaustavitev ni izvedljiva - opcija '-s' ni podana!",
     "Impossibile spegnere - parametro '-s' non passato",
     "Shutdown onmogelijk - Optie '-s' ontbreekt!",
     "Impossível desligar - falta a opção '-s'!",
@@ -1728,7 +1728,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Can't open CAM menu!",
     "CAM-Menü kann nicht geöffnet werden!",
-    "",//TODO
+    "Ne morem odpreti CAM menija!",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -1745,7 +1745,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Can't reset CAM!",
     "CAM-Reset fehlgeschlagen!",
-    "",//TODO
+    "Ne morem resetirati CAM-a",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -1762,7 +1762,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "CAM has been reset",
     "CAM wurde zurückgesetzt!",
-    "",//TODO
+    "CAM je resetiran!",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -1797,7 +1797,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "EPG",
     "EPG",
-    "EPG",
+    "Programski vodnik",
     "EPG",
     "EPG",
     "EPG",
@@ -2376,7 +2376,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Setup.Recording$Pause lifetime (d)",
     "Pause Lebensdauer (d)",
-    "",// TODO
+    "Cas pavze (d)",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -2393,7 +2393,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Setup.Recording$Pause priority",
     "Pause Priorität",
-    "",// TODO
+    "Prioriteta pavze",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -2478,7 +2478,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Setup.Recording$Instant rec. time (min)",
     "Dauer der Direktaufzeichnung (min)",
-    "",//TODO
+    "Cas direktnega snemanja (min)",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -2580,7 +2580,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Setup.Replay$Resume ID",
     "Wiedergabe ID",
-    "Resume ID",// TODO
+    "Predvajalni ID",
     "Resume ID",// TODO
     "Resume ID",// TODO
     "Resume ID",// TODO
@@ -2631,7 +2631,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Setup.Miscellaneous$SVDRP timeout (s)",
     "SVDRP Timeout (s)",
-    "SVDRP Timeout (s)",
+    "SVDRP cas neaktivnosti (s)",
     "Timeout SVDRP (s)",
     "SVDRP Timeout (s)",
     "Timeout SVDRP (s)",
@@ -2684,7 +2684,7 @@ const tI18nPhrase Phrases[] = {
   // The allowed characters in strings:
   { " abcdefghijklmnopqrstuvwxyz0123456789-.#~",
     " aäbcdefghijklmnoöpqrstuüvwxyz0123456789-.#~",
-    "",// TODO
+    " abcdefghijklmnopqrstuvwxyz0123456789-.#~",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -2702,7 +2702,7 @@ const tI18nPhrase Phrases[] = {
   // Learning keys:
   { "Learning Remote Control Keys (%s)",
     "Fernbedienungs-Codes lernen (%s)",
-    "Ucim se kod upravljalca (%s)",
+    "Ucenje kod upravljalca (%s)",
     "Apprendimento tasti unita` remota (%s)",
     "Leren toetsen afstandsbediening (%s)",
     "Aprender as teclas do telecomando (%s)",
@@ -2889,7 +2889,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "(press 'Menu' to skip this key)",
     "('Menü' drücken zum Überspringen)",
-    "",// TODO
+    "pritisnite 'Meni' za preskok te tipke",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -2906,7 +2906,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Phase 3: Saving key codes",
     "Phase 3: Codes abspeichern",
-    "Faza 3: Shranjujem kodo",
+    "Faza 3: Shranjevanje kod tipk",
     "Fase 3: Salvataggio key codes",
     "Fase 3: Opslaan toets codes",
     "Fase 3: A salvar os códigos das teclas",
@@ -3128,7 +3128,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Play",
     "Wiedergabe",
-    "",// TODO
+    "Predvajaj",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -3145,7 +3145,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Pause",
     "Pause",
-    "",// TODO
+    "Pavza",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -3162,7 +3162,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Stop",
     "Stop",
-    "",// TODO
+    "Ustavi",
     "",// TODO
     "",// TODO
     "Stop",
@@ -3179,7 +3179,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Record",
     "Aufnehmen",
-    "",// TODO
+    "Snemaj",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -3196,7 +3196,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "FastFwd",
     "Vorlauf",
-    "",// TODO
+    "Hitro naprej",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -3213,7 +3213,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "FastRew",
     "Rücklauf",
-    "",// TODO
+    "Hitro nazaj",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -3247,7 +3247,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Channel+",
     "Kanal+",
-    "",// TODO
+    "Kanal+",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -3264,7 +3264,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Channel-",
     "Kanal-",
-    "",// TODO
+    "Kanal-",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -3367,7 +3367,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "off",
     "aus",
-    "",// TODO
+    "izklop",
     "",// TODO
     "",// TODO
     "off",
@@ -3384,7 +3384,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "none",
     "keine",
-    "",// TODO
+    "nobeden",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -3401,7 +3401,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "auto",
     "auto",
-    "",// TODO
+    "avtomatsko",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -3537,7 +3537,7 @@ const tI18nPhrase Phrases[] = {
   },
   { " Stop recording ", // note the leading and trailing blanks!
     " Aufzeichnung beenden ",
-    " Prekini shranjevanje ",
+    " Prekini snemanje ",
     " Interrompi registrazione ",
     " Stop opnemen ",
     " Parar gravação ",
@@ -3622,7 +3622,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Editing process finished",
     "Schnitt beendet",
-    "Proces urejanja koncan",
+    "Proces urejanja je koncan",
     "Processo di modifica terminato",
     "Bewerken is klaar",
     "Processo de modificação terminado",
@@ -3673,7 +3673,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Pausing live video...",
     "Live-Signal wird angehalten...",
-    "",// TODO
+    "Ustavljanje predvajanja v zivo...",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -3690,7 +3690,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "This plugin has no setup parameters!",
     "Dieses Plugin hat keine Setup-Parameter!",
-    "",// TODO
+    "Ta plugin nima nastavitvenih parametrov!",
     "",// TODO
     "",// TODO
     "",// TODO
