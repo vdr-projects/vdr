@@ -1138,3 +1138,4 @@ Video Disk Recorder Revision History
 - Fixed scrolling the "Channels" menu in case the cursor ends up on a group
   delimiter (thanks to Bernd Zierath for helping to debug this one).
 - Added a manual page vdr(1).
+- New command command line option '-V' to display the VDR version.

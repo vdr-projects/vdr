@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.101 2002/03/09 17:10:16 kls Exp $
+ * $Id: vdr.c 1.102 2002/03/29 10:09:20 kls Exp $
  */
 
 #include <getopt.h>
@@ -101,6 +101,7 @@ int main(int argc, char *argv[])
       { "record",   required_argument, NULL, 'r' },
       { "shutdown", required_argument, NULL, 's' },
       { "terminal", required_argument, NULL, 't' },
+      { "version",  no_argument,       NULL, 'V' },
       { "video",    required_argument, NULL, 'v' },
       { "watchdog", required_argument, NULL, 'w' },
       { NULL }
@@ -108,7 +109,7 @@ int main(int argc, char *argv[])
 
   int c;
   int option_index = 0;
-  while ((c = getopt_long(argc, argv, "a:c:dD:E:hl:mp:r:s:t:v:w:", long_options, &option_index)) != -1) {
+  while ((c = getopt_long(argc, argv, "a:c:dD:E:hl:mp:r:s:t:v:Vw:", long_options, &option_index)) != -1) {
         switch (c) {
           case 'a': cDvbApi::SetAudioCommand(optarg);
                     break;
@@ -139,7 +140,7 @@ int main(int argc, char *argv[])
                            "                           %s); use '-E-' to disable this\n"
                            "                           if FILE is a directory, the default EPG file will be\n"
                            "                           created in that directory\n"
-                           "  -h,       --help         display this help and exit\n"
+                           "  -h,       --help         print this help and exit\n"
                            "  -l LEVEL, --log=LEVEL    set log level (default: 3)\n"
                            "                           0 = no logging, 1 = errors only,\n"
                            "                           2 = errors and info, 3 = errors, info and debug\n"
@@ -149,6 +150,7 @@ int main(int argc, char *argv[])
                            "  -r CMD,   --record=CMD   call CMD before and after a recording\n"
                            "  -s CMD,   --shutdown=CMD call CMD to shutdown the computer\n"
                            "  -t TTY,   --terminal=TTY controlling tty\n"
+                           "  -V,       --version      print version information and exit\n"
                            "  -v DIR,   --video=DIR    use DIR as video directory (default: %s)\n"
                            "  -w SEC,   --watchdog=SEC activate the watchdog timer with a timeout of SEC\n"
                            "                           seconds (default: %d); '0' disables the watchdog\n"
@@ -185,6 +187,9 @@ int main(int argc, char *argv[])
           case 's': Shutdown = optarg;
                     break;
           case 't': Terminal = optarg;
+                    break;
+          case 'V': printf("vdr, version %s\n", VDRVERSION);
+                    return 0;
                     break;
           case 'v': VideoDirectory = optarg;
                     while (optarg && *optarg && optarg[strlen(optarg) - 1] == '/')

@@ -8,13 +8,12 @@
 .\" License as specified in the file COPYING that comes with the
 .\" vdr distribution.
 .\"
-.\" $Id: vdr.1 1.1 2002/03/24 14:10:00 kls Exp $
+.\" $Id: vdr.1 1.2 2002/03/29 10:10:04 kls Exp $
 .\"
-.TH vdr 1 "24 Mar 2002" "1.0.0" "Video Disk Recorder"
+.TH vdr 1 "29 Mar 2002" "1.0.0" "Video Disk Recorder"
 .SH NAME
 vdr - the Video Disk Recorder
 .SH SYNOPSIS
-.\" The general command line
 .B vdr
 [options]
 .SH DESCRIPTION
@@ -91,6 +90,9 @@ Set the controlling terminal.
 Use \fIdir\fR as video directory.
 The default is \fI/video\fR.
 .TP
+.B -V, --version
+Print version information and exit.
+.TP
 .BI -w\  sec ,\ --watchdog= sec
 Activate the watchdog timer with a timeout of \fIsec\fR seconds.
 A value of \fB0\fR (default) disables the watchdog.
@@ -152,7 +154,7 @@ also be read at program startup to have the full EPG data available immediately.
 .BR vdr (5)
 .SH AUTHOR
 Written by Klaus Schmidinger, with contributions from many others.
-See the file \fICONTRIBUTORS\fR in the source distribution.
+See the file \fICONTRIBUTORS\fR in the \fBvdr\fR source distribution.
 .SH REPORTING BUGS
 Report bugs to <vdr-bugs@cadsoft.de>.
 .SH COPYRIGHT
