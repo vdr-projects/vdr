@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 1.17 2003/01/19 15:43:58 kls Exp $
+ * $Id: dvbplayer.c 1.18 2003/02/15 10:38:59 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -420,8 +420,6 @@ void cDvbPlayer::Action(void)
   running = true;
   while (running && (NextFile() || readIndex >= 0 || ringBuffer->Available())) {
         cPoller Poller;
-        if (!readFrame)
-           Poller.Add(replayFile, false);
         if (DevicePoll(Poller, 100)) {
 
            LOCK_THREAD;
@@ -532,7 +530,7 @@ void cDvbPlayer::Action(void)
                  backTrace->Add(playFrame->Index(), playFrame->Count());
                  ringBuffer->Drop(playFrame);
                  playFrame = NULL;
-                 p = 0;
+                 p = NULL;
                  }
               }
            }

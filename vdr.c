@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.143 2003/02/09 13:13:42 kls Exp $
+ * $Id: vdr.c 1.145 2003/02/16 10:34:24 kls Exp $
  */
 
 #include <getopt.h>
@@ -81,7 +81,7 @@ int main(int argc, char *argv[])
   // Save terminal settings:
 
   struct termios savedTm;
-  bool HasStdin = tcgetpgrp(STDIN_FILENO) == getpid() && tcgetattr(STDIN_FILENO, &savedTm) == 0;
+  bool HasStdin = (tcgetpgrp(STDIN_FILENO) == getpid() || getppid() != (pid_t)1) && tcgetattr(STDIN_FILENO, &savedTm) == 0;
 
   // Initiate locale:
 
@@ -469,7 +469,7 @@ int main(int argc, char *argv[])
               }
            }
         // CAM control:
-        if (!Interface->IsOpen())
+        if (!Menu && !Interface->IsOpen())
            Menu = CamControl();
         // User Input:
         cOsdObject *Interact = Menu ? Menu : cControl::Control();

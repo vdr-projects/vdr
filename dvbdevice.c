@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.44 2003/02/09 12:41:14 kls Exp $
+ * $Id: dvbdevice.c 1.46 2003/02/16 15:10:39 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -65,7 +65,7 @@ static int DvbOpen(const char *Name, int n, int Mode, bool ReportError = false)
 
 class cDvbTuner : public cThread {
 private:
-  enum eTunerStatus { tsIdle, tsSet, tsTuned, tsLocked };
+  enum eTunerStatus { tsIdle, tsSet, tsTuned, tsLocked, tsCam };
   int fd_frontend;
   int cardIndex;
   fe_type_t frontendType;
@@ -73,8 +73,8 @@ private:
   cChannel channel;
   const char *diseqcCommands;
   bool active;
+  time_t startTime;
   eTunerStatus tunerStatus;
-  bool caSet;
   cMutex mutex;
   cCondVar newSet;
   bool SetFrontend(void);
@@ -96,7 +96,7 @@ cDvbTuner::cDvbTuner(int Fd_Frontend, int CardIndex, fe_type_t FrontendType, cCi
   diseqcCommands = NULL;
   active = false;
   tunerStatus = tsIdle;
-  caSet = false;
+  startTime = time(NULL);
   Start();
 }
 
@@ -119,7 +119,10 @@ void cDvbTuner::Set(const cChannel *Channel, bool Tune)
   channel = *Channel;
   if (Tune)
      tunerStatus = tsSet;
-  caSet = false;
+  else if (tunerStatus == tsCam)
+     tunerStatus = tsTuned;
+  if (Channel->Ca())
+     startTime = time(NULL);
   newSet.Broadcast();
 }
 
@@ -238,7 +241,6 @@ bool cDvbTuner::SetFrontend(void)
 
 void cDvbTuner::Action(void)
 {
-  time_t StartTime = time(NULL);
   dsyslog("tuner thread started on device %d (pid=%d)", cardIndex + 1, getpid());
   active = true;
   while (active) {
@@ -251,36 +253,46 @@ void cDvbTuner::Action(void)
            if (status & FE_HAS_LOCK)
               tunerStatus = tsLocked;
            }
-        dvb_frontend_event event;
-        if (ioctl(fd_frontend, FE_GET_EVENT, &event) == 0) {
-           if (tunerStatus != tsIdle && event.status & FE_REINIT) {
-              tunerStatus = tsSet;
-              esyslog("ERROR: frontend %d was reinitialized - re-tuning", cardIndex);
-              continue;
+        if (tunerStatus != tsIdle) {
+           dvb_frontend_event event;
+           if (ioctl(fd_frontend, FE_GET_EVENT, &event) == 0) {
+              if (event.status & FE_REINIT) {
+                 tunerStatus = tsSet;
+                 esyslog("ERROR: frontend %d was reinitialized - re-tuning", cardIndex);
+                 continue;
+                 }
               }
-           }
-        if (ciHandler) {
-           ciHandler->Process();
-           if (!caSet) {//XXX TODO update in case the CA descriptors have changed
-              uchar buffer[2048];
-              int length = cSIProcessor::GetCaDescriptors(channel.Source(), channel.Frequency(), channel.Sid(), sizeof(buffer), buffer);
-              if (length > 0) {
-                 cCiCaPmt CaPmt(channel.Sid());
-                 CaPmt.AddCaDescriptor(length, buffer);
-                 if (channel.Vpid())
-                    CaPmt.AddPid(channel.Vpid());
-                 if (channel.Apid1())
-                    CaPmt.AddPid(channel.Apid1());
-                 if (channel.Apid2())
-                    CaPmt.AddPid(channel.Apid2());
-                 if (channel.Dpid1())
-                    CaPmt.AddPid(channel.Dpid1());
-                 caSet = ciHandler->SetCaPmt(CaPmt);
+           if (tunerStatus >= tsLocked) {
+              if (ciHandler) {
+                 if (ciHandler->Process()) {
+                    if (tunerStatus != tsCam) {//XXX TODO update in case the CA descriptors have changed
+                       uchar buffer[2048];
+                       int length = cSIProcessor::GetCaDescriptors(channel.Source(), channel.Frequency(), channel.Sid(), sizeof(buffer), buffer);
+                       if (length > 0) {
+                          cCiCaPmt CaPmt(channel.Sid());
+                          CaPmt.AddCaDescriptor(length, buffer);
+                          if (channel.Vpid())
+                             CaPmt.AddPid(channel.Vpid());
+                          if (channel.Apid1())
+                             CaPmt.AddPid(channel.Apid1());
+                          if (channel.Apid2())
+                             CaPmt.AddPid(channel.Apid2());
+                          if (channel.Dpid1())
+                             CaPmt.AddPid(channel.Dpid1());
+                          if (ciHandler->SetCaPmt(CaPmt)) {
+                             tunerStatus = tsCam;
+                             startTime = 0;
+                             }
+                          }
+                       }
+                    }
+                 else
+                    tunerStatus = tsLocked;
                  }
               }
            }
         // in the beginning we loop more often to let the CAM connection start up fast
-        newSet.TimedWait(mutex, (ciHandler && (time(NULL) - StartTime < 20)) ? 100 : 1000);
+        newSet.TimedWait(mutex, (ciHandler && (time(NULL) - startTime < 20)) ? 100 : 1000);
         }
   dsyslog("tuner thread ended on device %d (pid=%d)", cardIndex + 1, getpid());
 }

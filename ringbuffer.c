@@ -7,7 +7,7 @@
  * Parts of this file were inspired by the 'ringbuffy.c' from the
  * LinuxDVB driver (see linuxtv.org).
  *
- * $Id: ringbuffer.c 1.13 2003/01/26 19:47:10 kls Exp $
+ * $Id: ringbuffer.c 1.14 2003/02/15 13:21:50 kls Exp $
  */
 
 #include "ringbuffer.h"
@@ -34,14 +34,14 @@ cRingBuffer::~cRingBuffer()
 void cRingBuffer::WaitForPut(void)
 {
   putMutex.Lock();
-  readyForPut.Wait(putMutex);
+  readyForPut.TimedWait(putMutex, 1000);
   putMutex.Unlock();
 }
 
 void cRingBuffer::WaitForGet(void)
 {
   getMutex.Lock();
-  readyForGet.Wait(getMutex);
+  readyForGet.TimedWait(getMutex, 10);
   getMutex.Unlock();
 }
 
@@ -102,7 +102,7 @@ int cRingBufferLinear::Put(const uchar *Data, int Count)
      Lock();
      int rest = Size() - head;
      int diff = tail - head;
-     int free = (diff > 0) ? diff - 1 : Size() + diff - (tail < margin ? -(margin - tail) : margin) - 1;
+     int free = ((tail < margin) ? rest : (diff > 0) ? diff : Size() + diff - margin) - 1;
      if (statistics) {
         int fill = Size() - free - 1 + Count;
         if (fill >= Size())
@@ -136,6 +136,8 @@ int cRingBufferLinear::Put(const uchar *Data, int Count)
         Count = 0;
      Unlock();
      EnableGet();
+     if (Count == 0)
+        WaitForPut();
      }
   return Count;
 }
@@ -147,7 +149,7 @@ const uchar *cRingBufferLinear::Get(int &Count)
   if (getThreadPid < 0)
      getThreadPid = getpid();
   int rest = Size() - tail;
-  if (tail > Size() - margin && head < tail) {
+  if (rest < margin && head < tail) {
      int t = margin - rest;
      memcpy(buffer + t, buffer + tail, rest);
      tail = t;
@@ -169,10 +171,13 @@ const uchar *cRingBufferLinear::Get(int &Count)
 void cRingBufferLinear::Del(int Count)
 {
   if (Count > 0 && Count <= lastGet) {
+     Lock();
      tail += Count;
      lastGet -= Count;
      if (tail >= Size())
         tail = margin;
+     Unlock();
+     EnablePut();
      }
   else
      esyslog("ERROR: invalid Count in cRingBufferLinear::Del: %d", Count);
