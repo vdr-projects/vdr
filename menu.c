@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.337 2005/01/16 12:05:13 kls Exp $
+ * $Id: menu.c 1.338 2005/01/23 19:24:04 kls Exp $
  */
 
 #include "menu.h"
@@ -2513,10 +2513,8 @@ eOSState cMenuMain::ProcessKey(eKeys Key)
                                 state = replaying ? osContinue : osRecord;
                              break;
                case kGreen:  if (!HadSubMenu) {
-                                if (cDevice::PrimaryDevice()->NumAudioTracks() > 1) {
-                                   cRemote::Put(kAudio, true);
-                                   state = osEnd;
-                                   }
+                                cRemote::Put(kAudio, true);
+                                state = osEnd;
                                 }
                              break;
                case kYellow: if (!HadSubMenu)
