@@ -2090,3 +2090,5 @@ Video Disk Recorder Revision History
 - Fixed minimum lifespan of deleted recordings (thanks to Jaakko Hyvätti).
 - Updated French OSD texts (thanks to Olivier Jacques <jacquesolivier@hotmail.com>).
 - Fixed paging through lists with repeated Left/Right keys.
+- Fixed setting the PCR-PID in case it is equal to one of the other PIDs (thanks
+  to Oliver Endriss for reporting this one).

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 1.30 2003/04/26 09:49:12 kls Exp $
+ * $Id: device.h 1.31 2003/05/02 08:21:05 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -201,7 +201,7 @@ protected:
          ///< Returns true if this device is currently receiving the given PID.
   bool AddPid(int Pid, ePidType PidType = ptOther);
          ///< Adds a PID to the set of PIDs this device shall receive.
-  void DelPid(int Pid);
+  void DelPid(int Pid, ePidType PidType = ptOther);
          ///< Deletes a PID from the set of PIDs this device shall receive.
   virtual bool SetPid(cPidHandle *Handle, int Type, bool On);
          ///< Does the actual PID setting on this device.
