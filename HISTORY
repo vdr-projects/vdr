@@ -2224,3 +2224,5 @@ Video Disk Recorder Revision History
 - Single event timers are now deleted if the recording they are doing is
   deleted before the timer ends.
 - Fixed an uninitialized variable in cDisplayChannel (thanks to Stefan Huelswitt).
+- Fixed a possible access of invalid file handles in cSIProcessor::Action()
+  (thanks to Stefan Huelswitt).
