@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.162 2004/11/06 10:26:52 kls Exp $
+ * $Id: i18n.c 1.163 2004/11/14 14:28:29 kls Exp $
  *
  * Translations provided by:
  *
@@ -75,6 +75,7 @@
  */
 
 #include "i18n.h"
+#include <ctype.h>
 #include "config.h"
 #include "tools.h"
 
@@ -5222,6 +5223,12 @@ int I18nLanguageIndex(const char *Code)
 
 const char *I18nNormalizeLanguageCode(const char *Code)
 {
+  if (Code[0] && !isalnum(Code[0]) || Code[1] && !isalnum(Code[1]) || Code[2] && !isalnum(Code[2])) {
+     // ISO 639 language codes are defined as alphabetical characters, but digits are apparently
+     // also used, for instance for "2ch"
+     //dsyslog("invalid language code: '%s'", Code);
+     return "???";
+     }
   int n = I18nLanguageIndex(Code);
   return n >= 0 ? I18nLanguageCode(n) : Code;
 }
