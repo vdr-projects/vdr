@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.9 2000/07/16 11:41:51 kls Exp $
+ * $Id: config.h 1.10 2000/07/23 11:54:53 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -51,7 +51,7 @@ public:
   cKeys(void);
   void Clear(void);
   void SetDummyValues(void);
-  bool Load(char *FileName = NULL);
+  bool Load(const char *FileName = NULL);
   bool Save(void);
   unsigned int Encode(const char *Command);
   eKeys Get(unsigned int Code);
@@ -59,6 +59,9 @@ public:
   };
 
 class cChannel : public cListObject {
+private:
+  static char *buffer;
+  static const char *ToText(cChannel *Channel);
 public:
   enum { MaxChannelName = 32 }; // 31 chars + terminating 0!
   char name[MaxChannelName];
@@ -72,7 +75,8 @@ public:
   int pnr;
   cChannel(void);
   cChannel(const cChannel *Channel);
-  bool Parse(char *s);
+  const char *ToText(void);
+  bool Parse(const char *s);
   bool Save(FILE *f);
   bool Switch(cDvbApi *DvbApi = NULL);
   static bool SwitchTo(int i, cDvbApi *DvbApi = NULL);
@@ -82,6 +86,8 @@ public:
 class cTimer : public cListObject {
 private:
   time_t startTime, stopTime;
+  static char *buffer;
+  static const char *ToText(cTimer *Timer);
 public:
   enum { MaxFileName = 256 };
   bool recording;
@@ -95,7 +101,8 @@ public:
   int lifetime;
   char file[MaxFileName];
   cTimer(bool Instant = false);
-  bool Parse(char *s);
+  const char *ToText(void);
+  bool Parse(const char *s);
   bool Save(FILE *f);
   bool IsSingleEvent(void);
   bool Matches(time_t t = 0);
@@ -105,8 +112,8 @@ public:
   static cTimer *GetMatch(void);
   static int TimeToInt(int t);
   static time_t Day(time_t t);
-  static int ParseDay(char *s);
-  static char *PrintDay(int d);
+  static int ParseDay(const char *s);
+  static const char *PrintDay(int d);
   };
 
 template<class T> class cConfig : public cList<T> {
@@ -118,7 +125,7 @@ private:
     cList<T>::Clear();
   }
 public:
-  bool Load(char *FileName)
+  bool Load(const char *FileName)
   {
     isyslog(LOG_INFO, "loading %s", FileName);
     bool result = true;

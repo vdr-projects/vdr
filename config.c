@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.12 2000/07/21 13:10:50 kls Exp $
+ * $Id: config.c 1.13 2000/07/23 11:56:06 kls Exp $
  */
 
 #include "config.h"
@@ -60,7 +60,7 @@ void cKeys::SetDummyValues(void)
       k->code = k->type + 1; // '+1' to avoid 0
 }
 
-bool cKeys::Load(char *FileName)
+bool cKeys::Load(const char *FileName)
 {
   isyslog(LOG_INFO, "loading %s", FileName);
   bool result = false;
@@ -175,6 +175,8 @@ void cKeys::Set(eKeys Key, unsigned int Code)
 
 // -- cChannel ---------------------------------------------------------------
 
+char *cChannel::buffer = NULL;
+
 cChannel::cChannel(void)
 {
   *name = 0;
@@ -193,7 +195,18 @@ cChannel::cChannel(const cChannel *Channel)
   pnr          = Channel ? Channel->pnr          : 0;
 }
 
-bool cChannel::Parse(char *s)
+const char *cChannel::ToText(cChannel *Channel)
+{
+  asprintf(&buffer, "%s:%d:%c:%d:%d:%d:%d:%d:%d\n", Channel->name, Channel->frequency, Channel->polarization, Channel->diseqc, Channel->srate, Channel->vpid, Channel->apid, Channel->ca, Channel->pnr);
+  return buffer;
+}
+
+const char *cChannel::ToText(void)
+{
+  return ToText(this);
+}
+
+bool cChannel::Parse(const char *s)
 {
   char *buffer = NULL;
   if (9 == sscanf(s, "%a[^:]:%d:%c:%d:%d:%d:%d:%d:%d", &buffer, &frequency, &polarization, &diseqc, &srate, &vpid, &apid, &ca, &pnr)) {
@@ -207,7 +220,7 @@ bool cChannel::Parse(char *s)
 
 bool cChannel::Save(FILE *f)
 {
-  return fprintf(f, "%s:%d:%c:%d:%d:%d:%d:%d:%d\n", name, frequency, polarization, diseqc, srate, vpid, apid, ca, pnr) > 0;
+  return fprintf(f, ToText()) > 0;
 }
 
 bool cChannel::Switch(cDvbApi *DvbApi)
@@ -242,6 +255,8 @@ const char *cChannel::GetChannelName(int i)
 
 // -- cTimer -----------------------------------------------------------------
 
+char *cTimer::buffer = NULL;
+
 cTimer::cTimer(bool Instant)
 {
   startTime = stopTime = 0;
@@ -263,6 +278,17 @@ cTimer::cTimer(bool Instant)
      snprintf(file, sizeof(file), "@%s", cChannel::GetChannelName(CurrentChannel));
 }
 
+const char *cTimer::ToText(cTimer *Timer)
+{
+  asprintf(&buffer, "%d:%d:%s:%d:%d:%d:%d:%s\n", Timer->active, Timer->channel, PrintDay(Timer->day), Timer->start, Timer->stop, Timer->priority, Timer->lifetime, Timer->file);
+  return buffer;
+}
+
+const char *cTimer::ToText(void)
+{
+  return ToText(this);
+}
+
 int cTimer::TimeToInt(int t)
 {
   return (t / 100 * 60 + t % 100) * 60;
@@ -275,7 +301,7 @@ time_t cTimer::Day(time_t t)
   return mktime(&d);
 }
 
-int cTimer::ParseDay(char *s)
+int cTimer::ParseDay(const char *s)
 {
   char *tail;
   int d = strtol(s, &tail, 10);
@@ -283,7 +309,7 @@ int cTimer::ParseDay(char *s)
      d = 0;
      if (tail == s) {
         if (strlen(s) == 7) {
-           for (char *p = s + 6; p >= s; p--) {
+           for (const char *p = s + 6; p >= s; p--) {
                  d <<= 1;
                  d |= (*p != '-');
                  }
@@ -296,7 +322,7 @@ int cTimer::ParseDay(char *s)
   return d;
 }
 
-char *cTimer::PrintDay(int d)
+const char *cTimer::PrintDay(int d)
 {
   static char buffer[8];
   if ((d & 0x80000000) != 0) {
@@ -314,11 +340,12 @@ char *cTimer::PrintDay(int d)
   return buffer;
 }
 
-bool cTimer::Parse(char *s)
+bool cTimer::Parse(const char *s)
 {
   char *buffer1 = NULL;
   char *buffer2 = NULL;
   if (8 == sscanf(s, "%d:%d:%a[^:]:%d:%d:%d:%d:%a[^:\n]", &active, &channel, &buffer1, &start, &stop, &priority, &lifetime, &buffer2)) {
+     //TODO add more plausibility checks
      day = ParseDay(buffer1);
      strncpy(file, buffer2, MaxFileName - 1);
      file[strlen(buffer2)] = 0;
@@ -331,7 +358,7 @@ bool cTimer::Parse(char *s)
 
 bool cTimer::Save(FILE *f)
 {
-  return fprintf(f, "%d:%d:%s:%d:%d:%d:%d:%s\n", active, channel, PrintDay(day), start, stop, priority, lifetime, file) > 0;
+  return fprintf(f, ToText()) > 0;
 }
 
 bool cTimer::IsSingleEvent(void)

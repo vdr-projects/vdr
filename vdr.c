@@ -22,15 +22,18 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.21 2000/07/15 16:26:57 kls Exp $
+ * $Id: vdr.c 1.22 2000/07/23 14:53:22 kls Exp $
  */
 
+#include <getopt.h>
 #include <signal.h>
+#include <stdlib.h>
 #include "config.h"
 #include "dvbapi.h"
 #include "interface.h"
 #include "menu.h"
 #include "recording.h"
+#include "svdrp.h"
 #include "tools.h"
 
 #ifdef REMOTE_KBD
@@ -50,11 +53,52 @@ void SignalHandler(int signum)
 
 int main(int argc, char *argv[])
 {
+  // Command line options:
+
+#define DEFAULTSVDRPPORT 2001
+
+  int SVDRPport = DEFAULTSVDRPPORT;
+
+  static struct option long_options[] = {
+      { "help", no_argument,       NULL, 'h' },
+      { "port", required_argument, NULL, 'p' },
+      { 0 }
+    };
+  
+  int c;
+  int option_index = 0;
+  while ((c = getopt_long(argc, argv, "hp:", long_options, &option_index)) != -1) {
+        switch (c) {
+          case 'h': printf("Usage: vdr [OPTION]\n\n"
+                           "  -h,      --help        display this help and exit\n"
+                           "  -p PORT, --port=PORT   use PORT for SVDRP ('0' turns off SVDRP)\n"
+                           "\n"
+                           "Report bugs to <vdr-bugs@cadsoft.de>\n"
+                           );
+                    return 0;
+                    break;
+          case 'p': if (isnumber(optarg))
+                       SVDRPport = strtol(optarg, NULL, 10);
+                    else {
+                       fprintf(stderr, "vdr: invalid port number: %s\n", optarg);
+                       return 1;
+                       }
+                    break;
+          default:  abort();
+          }
+        }
+
+  // Log file:
+  
   openlog("vdr", LOG_PID | LOG_CONS, LOG_USER);
   isyslog(LOG_INFO, "started");
 
+  // DVB interfaces:
+
   if (!cDvbApi::Init())
      return 1;
+
+  // Configuration data:
 
   Channels.Load("channels.conf");
   Timers.Load("timers.conf");
@@ -68,10 +112,15 @@ int main(int argc, char *argv[])
 
   cChannel::SwitchTo(CurrentChannel);
 
+  // Signal handlers:
+
   if (signal(SIGHUP,  SignalHandler) == SIG_IGN) signal(SIGHUP,  SIG_IGN);
   if (signal(SIGINT,  SignalHandler) == SIG_IGN) signal(SIGINT,  SIG_IGN);
   if (signal(SIGTERM, SignalHandler) == SIG_IGN) signal(SIGTERM, SIG_IGN);
 
+  // Main program loop:
+
+  cSVDRP *SVDRP = SVDRPport ? new cSVDRP(SVDRPport) : NULL;
   cMenuMain *Menu = NULL;
   cReplayControl *ReplayControl = NULL;
   int dcTime = 0, dcNumber = 0;
@@ -157,10 +206,13 @@ int main(int argc, char *argv[])
              default:    break;
              }
            }
+        if (SVDRP)
+           SVDRP->Process();//TODO lock menu vs. SVDRP?
         }
   isyslog(LOG_INFO, "caught signal %d", Interrupted);
   delete Menu;
   delete ReplayControl;
+  delete SVDRP;
   cDvbApi::Cleanup();
   isyslog(LOG_INFO, "exiting");
   closelog();

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.9 2000/07/16 14:11:34 kls Exp $
+ * $Id: tools.h 1.10 2000/07/23 13:16:37 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -35,11 +35,14 @@ void writechar(int filedes, char c);
 void writeint(int filedes, int n);
 char readchar(int filedes);
 bool readint(int filedes, int &n);
+int readstring(int filedes, char *buffer, int size, bool wait = false);
 void purge(int filedes);
 char *readline(FILE *f);
 char *strreplace(char *s, char c1, char c2);
+char *skipspace(char *s);
 int time_ms(void);
 void delay_ms(int ms);
+bool isnumber(const char *s);
 bool MakeDirs(const char *FileName, bool IsDirectory = false);
 bool RemoveFileOrDir(const char *FileName);
 bool CheckProcess(pid_t pid);

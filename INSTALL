@@ -40,6 +40,13 @@ When running, the 'vdr' program writes status information into the
 system log file (/var/log/messages). You may want to watch these
 messages (tail -f /var/log/mesages) to see if there are any problems.
 
+The program can be controlled via a network connection to its SVDRP
+port ("Simple Video Disk Recorder Protocol"). By default, it listens
+on port 2001 (use the --port=PORT option to change this). For details
+about the SVDRP syntax see the source file 'svdrp.c'.
+
+Use "vdr --help" for a list of available command line options.
+
 The video data directory:
 -------------------------
 

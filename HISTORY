@@ -56,7 +56,7 @@ Video Disk Recorder Revision History
   the PC keyboard to better resemble the "up-down-left-right-ok" layout on
   menu controlling remote control units.
 
-2000-07-15: Version 0.06
+2000-07-23: Version 0.06
 
 - Added support for LIRC remote control (thanks to Carsten Koch!).
   There are now three different remote control modes: KBD (PC-Keyboard), RCU
@@ -83,3 +83,6 @@ Video Disk Recorder Revision History
 - The polarization can now be given in uppercase or lowercase characters in
   channels.conf.
 - Fixed buffer initialization to work with DVB driver version 0.6.
+- Implemented the "Simple Video Disk Recorder Protocol" (SVDRP) to control
+  the VDR over a network connection.
+- Implemented command line option handling.
