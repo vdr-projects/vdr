@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.100 2001/08/11 14:30:21 kls Exp $
+ * $Id: menu.c 1.101 2001/08/11 15:04:05 kls Exp $
  */
 
 #include "menu.h"
@@ -2458,6 +2458,7 @@ void cReplayControl::MarkToggle(void)
   int Current, Total;
   if (dvbApi->GetIndex(Current, Total, true)) {
      cMark *m = marks.Get(Current);
+     lastCurrent = -1; // triggers redisplay
      if (m)
         marks.Del(m);
      else {
@@ -2596,7 +2597,7 @@ eOSState cReplayControl::ProcessKey(eKeys Key)
       }
     }
   if (DisplayedFrames && !displayFrames)
-     Interface->Fill(0, 2, Width() / 2, 1, clrBackground);
+     Interface->Fill(0, 2, 11, 1, clrBackground);
   return osContinue;
 }
 
