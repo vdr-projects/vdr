@@ -1234,7 +1234,11 @@ Video Disk Recorder Revision History
   Carsten Koch, Gerald Raaf and Mel Schächner). Note that all channels with numbers
   over 50 may have moved, so you should carefully check any timers you have set!
 - Updated 'channels.conf.cable' for the new PW settings (thanks to Oliver Lorei
-  and Stephan Schreiber). Note that all channels may have moved, so you should
-  carefully check any timers you have set!
+  Stephan Schreiber and Uwe Scheffler). Note that all channels may have moved, so
+  you should carefully check any timers you have set!
+  For future updates of this file somebody with digital cable should take the role
+  of the "maintainer" and send me updated versions based on the file that comes
+  with the most recent version of VDR. I will then simply replace the entire file
+  'channels.conf.cable' whenever a new version is sent to me.
 - Fixed skipping forward in time shift mode near the end of the recording (thanks
   to Andreas Böttger for reporting this one).
