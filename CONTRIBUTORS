@@ -734,6 +734,7 @@ Ludwig Nussel <ludwig.nussel@web.de>
  couldn't connect to the LIRC daemon
  for making the plugin library directory configurable via Make.config
  for reporting a problem on systems that have UTF-8 enabled
+ for pointing out a flaw in the the description of cRingBufferLinear
 
 Thomas Koch <tom@harhar.net>
  for his support in keeping the Premiere World channels up to date in 'channels.conf'

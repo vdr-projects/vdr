@@ -2930,3 +2930,5 @@ Video Disk Recorder Revision History
   implemented for FF DVB cards.
 - Fixed handling the color button texts in cMenuEditStrItem (thanks to Maynard
   Cedric for reporting this one).
+- Fixed the description of cRingBufferLinear (thanks to Ludwig Nussel for pointing
+  out this one).
