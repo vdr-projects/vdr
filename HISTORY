@@ -1410,3 +1410,5 @@ Video Disk Recorder Revision History
   check if any of its file handles is ready for data.
 - Implemented several replay modes to allow players that play only audio (thanks
   to Stefan Huelswitt).
+- Improved cCondVar::Wait() and implemented cCondVar::TimedWait() (thanks to
+  Stefan Huelswitt).
