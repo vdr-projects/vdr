@@ -8,7 +8,7 @@
  *
  * parts of this file are derived from the OMS program.
  *
- * $Id: dvbspu.c 1.2 2002/09/29 13:48:39 kls Exp $
+ * $Id: dvbspu.c 1.3 2002/10/26 10:46:49 kls Exp $
  */
 
 #include <assert.h>
@@ -192,7 +192,7 @@ void cDvbSpuBitmap::putFieldData(int field, uint8_t * data, uint8_t * endp)
         int len = vlc >> 2;
 
         // if len == 0 -> end sequence - fill to end of line
-        len = len ? : bmpsize.x2 - xp + 1;
+        len = len ? len : bmpsize.x2 - xp + 1;
         putPixel(xp, yp, len, color);
         xp += len;
 

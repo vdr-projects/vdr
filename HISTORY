@@ -1639,3 +1639,4 @@ Video Disk Recorder Revision History
   helping to fix it).
 - Fixed channel switching in case of an active 'Transfer Mode' on the primary
   device ('Transfer Mode' is now launched with priority '-1').
+- Fixed a ternary expression in dvbspu.c.
