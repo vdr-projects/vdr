@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.h 1.1 2002/05/09 09:41:06 kls Exp $
+ * $Id: menuitems.h 1.2 2002/05/11 10:48:28 kls Exp $
  */
 
 #ifndef __MENUITEMS_H
@@ -96,15 +96,20 @@ public:
   virtual eOSState ProcessKey(eKeys Key);
   };
 
+class cPlugin;
+
 class cMenuSetupPage : public cOsdMenu {
+private:
+  cPlugin *plugin;
 protected:
-  cSetup data;
-  int osdLanguage;
-  void SetupTitle(const char *s);
-  virtual void Set(void) = 0;
+  void SetSection(const char *Section);
+  virtual void Store(void) = 0;
+  void SetupStore(const char *Name, const char *Value = NULL);
+  void SetupStore(const char *Name, int Value);
 public:
   cMenuSetupPage(void);
   virtual eOSState ProcessKey(eKeys Key);
+  void SetPlugin(cPlugin *Plugin);
   };
 
 #endif //__MENUITEMS_H

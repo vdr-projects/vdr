@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.99 2002/05/05 12:00:00 kls Exp $
+ * $Id: config.c 1.100 2002/05/11 12:05:22 kls Exp $
  */
 
 #include "config.h"
@@ -1073,14 +1073,19 @@ bool cSetup::Load(const char *FileName)
   if (cConfig<cSetupLine>::Load(FileName, true)) {
      bool result = true;
      for (cSetupLine *l = First(); l; l = Next(l)) {
+         bool error = false;
          if (l->Plugin()) {
             cPlugin *p = cPluginManager::GetPlugin(l->Plugin());
             if (p && !p->SetupParse(l->Name(), l->Value()))
-               result = false;
+               error = true;
             }
          else {
             if (!Parse(l->Name(), l->Value()))
-               result = false;
+               error = true;
+            }
+         if (error) {
+            esyslog(LOG_ERR, "ERROR: unknown config parameter: %s%s%s = %s", l->Plugin() ? l->Plugin() : "", l->Plugin() ? "." : "", l->Name(), l->Value());
+            result = false;
             }
          }
      return result;

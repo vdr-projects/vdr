@@ -15,7 +15,10 @@ VDR code (and all the problems of correlating various patches).
 This document describes the "outside" interface of the plugin system.
 It handles everything necessary for a plugin to get hooked into the core
 VDR program and present itself to the user.
-
+<p>
+<!--X1.1.1--><table width=100%><tr><td bgcolor=red>&nbsp;</td><td width=100%>
+Important modifications introduced in version 1.1.1 are marked like this.
+<!--X1.1.1--></td></tr></table>
 <!--<p>TODO: Link to the document about VDR base classes to use when implementing actual functionality (yet to be written).-->
 
 <hr><h2>Quick start</h2>
@@ -25,12 +28,12 @@ VDR program and present itself to the user.
 Actually you should read this entire document before starting to work with VDR plugins,
 but you probably want to see something happening right away <tt>;-)</tt>
 <p>
-So, for a quick demonstration of the plugin system, there is a demo plugin called
+So, for a quick demonstration of the plugin system, there is a sample plugin called
 "hello" that comes with the VDR source. To test drive this one, do the following:
 <ul>
 <li>change into the VDR source directory
 <li><b><tt>make</tt></b> the VDR program with your usual <tt>REMOTE=...</tt> (and maybe other) options
-<li>do <b><tt>make plugins</tt></b> to build the demo plugin
+<li>do <b><tt>make plugins</tt></b> to build the plugin
 <li>run VDR with <b><tt>vdr -V</tt></b> to see the version information
 <li>run VDR with <b><tt>vdr -h</tt></b> to see the command line options
 <li>run VDR with <b><tt>vdr -Phello</tt></b>
@@ -74,16 +77,14 @@ is used:
 
 <p><table><tr><td bgcolor=#F0F0F0><pre><br>
 VDR/PLUGINS/src
-VDR/PLUGINS/src/demo
 VDR/PLUGINS/src/hello
 VDR/PLUGINS/lib
-VDR/PLUGINS/lib/libvdr-demo.so.1.1.0
 VDR/PLUGINS/lib/libvdr-hello.so.1.1.0
 </pre></td></tr></table><p>
 
 The <tt>src</tt> directory contains one subdirectory for each plugin, which carries
-the name of that plugin (in the above example that would be <tt>demo</tt> and
-<tt>hello</tt>, respectively). What's inside the individual source directory of a
+the name of that plugin (in the above example that would be <tt>hello</tt>).
+What's inside the individual source directory of a
 plugin is entirely up to the author of that plugin. The only prerequisites are
 that there is a <tt>Makefile</tt> that provides the targets <tt>all</tt> and
 <tt>clean</tt>, and that a call to <tt>make all</tt> actually produces a dynamically
@@ -93,7 +94,7 @@ The <tt>lib</tt> directory contains the dynamically loadable libraries of all
 available plugins. Note that the names of these files are created by concatenating
 <p>
 <table border=2>
-<tr><td align=center><b><tt>libvdr-</tt></b></td><td align=center><b><tt>demo</tt></b></td><td align=center><b><tt>.so.</tt></b></td><td align=center><b><tt>1.1.0</tt></b></td></tr>
+<tr><td align=center><b><tt>libvdr-</tt></b></td><td align=center><b><tt>hello</tt></b></td><td align=center><b><tt>.so.</tt></b></td><td align=center><b><tt>1.1.0</tt></b></td></tr>
 <tr><td align=center><font size=-1>VDR plugin<br>library prefix</font></td><td align=center><font size=-1>name of<br>the plugin</font></td><td align=center><font size=-1>shared object<br>indicator</font></td><td align=center><font size=-1>VDR version number<br>this plugin was<br>compiled for</font></td></tr>
 </table>
 <p>
@@ -109,25 +110,25 @@ each of these directories.
 If you download a plugin <a href="#Building the distribution package">package</a>
 from the web, it will typically have a name like
 <p>
-<tt>vdr-demo-0.0.1.tgz</tt>
+<tt>vdr-hello-0.0.1.tgz</tt>
 <p>
 and will unpack into a directory named
 <p>
-<tt>vdr-demo-0.0.1</tt>
+<tt>vdr-hello-0.0.1</tt>
 <p>
 To use the <tt>plugins</tt> and <tt>plugins-clean</tt> targets from the VDR <tt>Makefile</tt>
 you need to unpack such an archive into the <tt>VDR/PLUGINS/src</tt> directory and
 create a symbolic link with the basic plugin name, as in
 
 <p><table><tr><td bgcolor=#F0F0F0><pre><br>
-ln -s vdr-demo-0.0.1 demo
+ln -s vdr-hello-0.0.1 hello
 </pre></td></tr></table><p>
 
 Since the VDR <tt>Makefile</tt> only searches for directories with names consisting
 of only lowercase characters and digits, it will only follow the symbolic links, which
 should lead to the current version of the plugin you want to use. This way you can
-have several different versions of a plugin source (like <tt>vdr-demo-0.0.1</tt> and
-<tt>vdr-demo-0.0.2</tt>) and define which one to actually use through the symbolic link.
+have several different versions of a plugin source (like <tt>vdr-hello-0.0.1</tt> and
+<tt>vdr-hello-0.0.2</tt>) and define which one to actually use through the symbolic link.
 
 <a name="Initializing a new plugin directory"><hr><h2>Initializing a new plugin directory</h2>
 
@@ -174,7 +175,7 @@ If your plugin shall not be accessible through VDR's main menu, simply remove
 At the end of the plugin's source file you will find a line that looks like this:
 
 <p><table><tr><td bgcolor=#F0F0F0><pre><br>
-VDRPLUGINCREATOR(cPluginDemo);
+VDRPLUGINCREATOR(cPluginHello);
 </pre></td></tr></table><p>
 
 This is the "magic" hook that allows VDR to actually load the plugin into
@@ -230,9 +231,7 @@ Here's an example:
 <p><table><tr><td bgcolor=#F0F0F0><pre><br>
 static const char *VERSION = "0.0.1";
 
-...
-
-const char *cPluginDemo::Version(void)
+const char *cPluginHello::Version(void)
 {
   return VERSION;
 }
@@ -265,14 +264,19 @@ In order to tell the user what exactly a plugin does, it must implement the func
 virtual const char *Description(void) = 0;
 </pre></td></tr></table><p>
 
-which returns a short, one line description of the plugin's purpose.
+which returns a short, one line description of the plugin's purpose:
 
 <p><table><tr><td bgcolor=#F0F0F0><pre><br>
+static const char *DESCRIPTION = "A friendly greeting";
+
 virtual const char *Description(void)
 {
-  return "A simple demo plugin";
+  return tr(DESCRIPTION);
 }
 </pre></td></tr></table><p>
+
+Note the <tt>tr()</tt> around the <tt>DESCRIPTION</tt>, which allows the description
+to be <a href="#Internationalization">internationalized</a>.
 
 <hr><h2>Command line arguments</h2>
 
@@ -300,20 +304,21 @@ will survive the entire lifetime of the plugin, so it is safe to store pointers 
 these values inside the plugin. Here's an example:
 
 <p><table><tr><td bgcolor=#F0F0F0><pre><br>
-bool cPluginDemo::ProcessArgs(int argc, char *argv[])
-{
+bool cPluginHello::ProcessArgs(int argc, char *argv[])
+{ 
+  // Implement command line argument processing here if applicable.
   static struct option long_options[] = {
-      { "aaa",      required_argument, NULL, 'a' },
-      { "bbb",      no_argument,       NULL, 'b' },
-      { NULL }
-    };
-
+       { "aaa",      required_argument, NULL, 'a' },
+       { "bbb",      no_argument,       NULL, 'b' },
+       { NULL }
+     };
+  
   int c;
   while ((c = getopt_long(argc, argv, "a:b", long_options, NULL)) != -1) {
         switch (c) {
-          case 'a': fprintf(stderr, "option -a = %s\n", optarg);
+          case 'a': option_a = optarg;
                     break;
-          case 'b': fprintf(stderr, "option -b\n");
+          case 'b': option_b = true; 
                     break;
           default:  return false;
           }
@@ -342,8 +347,9 @@ The returned string should contain the command line help for this plugin, format
 in the same way as done by VDR itself:
 
 <p><table><tr><td bgcolor=#F0F0F0><pre><br>
-const char *cPluginDemo::CommandLineHelp(void)
+const char *cPluginHello::CommandLineHelp(void)
 {
+  // Return a string that describes all known command line options.
   return "  -a ABC,   --aaa=ABC      do something nice with ABC\n"
          "  -b,       --bbb          activate 'plan B'\n";
 }
@@ -392,9 +398,11 @@ this plugin will not have an item in the main menu. Here's an example of a
 plugin that will have a main menu item:
 
 <p><table><tr><td bgcolor=#F0F0F0><pre><br>
-const char *cPluginDemo::MainMenuEntry(void)
+static const char *MAINMENUENTRY = "Hello";
+
+const char *cPluginHello::MainMenuEntry(void)
 {
-  return "Demo";
+  return tr(MAINMENUENTRY);
 }
 </pre></td></tr></table><p>
 
@@ -440,7 +448,7 @@ virtual cMenuSetupPage *SetupMenu(void);
 virtual bool SetupParse(const char *Name, const char *Value);
 </pre></td></tr></table><p>
 
-The <tt>SetupMenu()</tt> function shall return the plugin's "Setup" menu
+The <tt>SetupMenu()</tt> function shall return the plugin's <a href="#The Setup menu"><i>Setup</i> menu</a>
 page, where the user can adjust all the parameters known to this plugin.
 <p>
 <tt>SetupParse()</tt> will be called for each parameter the plugin has
@@ -448,13 +456,30 @@ previously stored in the global setup data (see below). It shall return
 <i>true</i> if the parameter was parsed correctly, <i>false</i> in case of
 an error. If <i>false</i> is returned, an error message will be written to
 the log file (and program execution will continue).
+<!--X1.1.1--><table width=100%><tr><td bgcolor=red>&nbsp;</td><td width=100%>
+A possible implementation of <tt>SetupParse()</tt> could look like this:
+
+<p><table><tr><td bgcolor=#F0F0F0><pre><br>
+bool cPluginHello::SetupParse(const char *Name, const char *Value)
+{
+  // Parse your own setup parameters and store their values.
+  if      (!strcasecmp(Name, "GreetingTime"))         GreetingTime = atoi(Value);
+  else if (!strcasecmp(Name, "UseAlternateGreeting")) UseAlternateGreeting = atoi(Value);
+  else
+     return false;
+  return true;
+</pre></td></tr></table><p>
+
+It is important to make sure that the parameter names are exactly the same as
+used in the <a href="#The Setup menu"><i>Setup</i> menu</a>'s <tt>Store()</tt> function.
+<!--X1.1.1--></td></tr></table>
 <p>
 The plugin's setup parameters are stored in the same file as VDR's parameters.
 In order to allow each plugin (and VDR itself) to have its own set of parameters,
 the <tt>Name</tt> of each parameter will be preceeded with the plugin's
 name, as in
 <p>
-<tt>demo.SomeParameter = 123</tt>
+<tt>hello.GreetingTime = 3</tt>
 <p>
 The prefix will be handled by the core VDR setup code, so the individual
 plugins need not worry about this.
@@ -465,8 +490,8 @@ To store its values in the global setup, a plugin has to call the function
 void SetupStore(const char *Name, <i>type</i> Value);
 </pre></td></tr></table><p>
 
-where <tt>Name</tt> is the name of the parameter (<tt>"SomeParameter"</tt> in the above
-example, without the prefix <tt>"demo."</tt>) and <tt>Value</tt> is a simple data type (like
+where <tt>Name</tt> is the name of the parameter (<tt>"GreetingTime"</tt> in the above
+example, without the prefix <tt>"hello."</tt>) and <tt>Value</tt> is a simple data type (like
 <tt>char&nbsp;*</tt>, <tt>int</tt> etc).
 Note that this is not a function that the individual plugin class needs to implement!
 <tt>SetupStore()</tt> is a non-virtual member function of the <tt>cPlugin</tt> class.
@@ -474,7 +499,7 @@ Note that this is not a function that the individual plugin class needs to imple
 To remove a parameter from the setup data, call <tt>SetupStore()</tt> with the appropriate
 name and without any value, as in
 <p>
-<tt>SetupStore("SomeParameter");</tt>
+<tt>SetupStore("GreetingTime");</tt>
 <p>
 The VDR menu "Setup/Plugins" will list all loaded plugins with their name,
 version number and description. Selecting an item in this list will bring up
@@ -485,6 +510,66 @@ Finally, a plugin doesn't have to implement the <tt>SetupMenu()</tt> if it only
 needs setup parameters that are not directly user adjustable. It can use
 <tt>SetupStore()</tt> and <tt>SetupParse()</tt> without presenting these
 parameters to the user.
+
+<!--X1.1.1--><table width=100%><tr><td bgcolor=red>&nbsp;</td><td width=100%>
+<a name="The Setup menu"><hr><h2>The Setup menu</h2>
+
+<center><i><b>Have it your way!</b></i></center><p>
+
+To implement a <i>Setup</i> menu, a plugin needs to derive a class from
+<tt>cMenuSetupPage</tt> and implement its constructor and the pure virtual
+<tt>Store()</tt> member function:
+
+<p><table><tr><td bgcolor=#F0F0F0><pre><br>
+int GreetingTime = 3;
+int UseAlternateGreeting = false;
+
+class cMenuSetupHello : public cMenuSetupPage {
+private:
+  int newGreetingTime;
+  int newUseAlternateGreeting;
+protected:
+  virtual void Store(void);
+public:
+  cMenuSetupHello(void);
+  };
+
+cMenuSetupHello::cMenuSetupHello(void)
+{ 
+  newGreetingTime = GreetingTime;
+  newUseAlternateGreeting = UseAlternateGreeting;
+  Add(new cMenuEditIntItem( tr("Greeting time (s)"),      &amp;newGreetingTime));
+  Add(new cMenuEditBoolItem(tr("Use alternate greeting"), &amp;newUseAlternateGreeting));
+}
+
+void cMenuSetupHello::Store(void)
+{ 
+  SetupStore("GreetingTime", GreetingTime = newGreetingTime);
+  SetupStore("UseAlternateGreeting", UseAlternateGreeting = newUseAlternateGreeting);
+}
+</pre></td></tr></table><p>
+
+In this example we have two global setup parameters (<tt>GreetingTime</tt> and <tt>UseAlternateGreeting</tt>).
+The constructor initializes two private members with the values of these parameters, so
+that the <i>Setup</i> menu can work with temporary copies (in order to discard any changes
+if the user doesn't confirm them by pressing the "Ok" button).
+After this the constructor adds the appropriate menu items, using internationalized texts
+and the addresses of the temporary variables. That's all there is to inizialize a <i>Setup</i>
+menu - the rest will be done by the core VDR code.
+<p>
+Once the user has pressed the "Ok" button to confirm the changes, the <tt>Store()</tt> function will
+be called, in which all setup parameters must be actually stored in VDR's global setup data.
+This is done by calling the <tt>SetupStore()</tt> function for each of the parameters.
+The <i>Name</i> string given here will be used to identify the parameter in VDR's
+<tt>setup.conf</tt> file, and will be automatically prepended with the plugin's name.
+<p>
+Note that in this small example the new values of the parameters are copied into the
+global variables within each <tt>SetupStore()</tt> call. This is not mandatory, however.
+You can first assign the temporary values to the global variables and then do the
+<tt>SetupStore()</tt> calls, or you can define a class or struct that contains all
+your setup parameters and use that one to copy all parameters with one single statement
+(like VDR does with its cSetup class).
+<!--X1.1.1--></td></tr></table>
 
 <a name="Internationalization"><hr><h2>Internationalization</h2>
 
@@ -519,7 +604,7 @@ const tI18nPhrase Phrases[] = {
   { NULL }
   };
 
-void cPluginDemo::Start(void)
+void cPluginHello::Start(void)
 {
   RegisterI18n(Phrases);
 }
@@ -557,20 +642,20 @@ core VDR code.
 Plugins are loaded into VDR using the command line option <b><tt>-P</tt></b>, as in
 
 <p><table><tr><td bgcolor=#F0F0F0><pre><br>
-vdr -Pdemo
+vdr -Phello
 </pre></td></tr></table><p>
 
 If the plugin accepts command line options, they are given as part of the argument
 to the <b><tt>-P</tt></b> option, which then has to be enclosed in quotes:
 
 <p><table><tr><td bgcolor=#F0F0F0><pre><br>
-vdr -P"demo -a abc -b"
+vdr -P"hello -a abc -b"
 </pre></td></tr></table><p>
 
 Any number of plugins can be loaded this way, each with its own <b><tt>-P</tt></b> option:
 
 <p><table><tr><td bgcolor=#F0F0F0><pre><br>
-vdr -P"demo -a abc -b" -Pdvd -Pmp3
+vdr -P"hello -a abc -b" -Pdvd -Pmp3
 </pre></td></tr></table><p>
 
 If you are not starting VDR from the VDR source directory (and thus your plugins
@@ -578,7 +663,7 @@ cannot be found at their default location) you need to tell VDR the location of
 the plugins through the <b><tt>-L</tt></b> option:
 
 <p><table><tr><td bgcolor=#F0F0F0><pre><br>
-vdr -L/usr/lib/vdr -Pdemo
+vdr -L/usr/lib/vdr -Phello
 </pre></td></tr></table><p>
 
 There can be any number of <b><tt>-L</tt></b> options, and each of them will apply to the
@@ -603,17 +688,17 @@ provides the target <tt>package</tt>, which does this for you.
 Simply change into your source directory and execute <tt>make package</tt>:
 
 <p><table><tr><td bgcolor=#F0F0F0><pre><br>
-cd VDR/PLUGINS/src/demo
+cd VDR/PLUGINS/src/hello
 make package
 </pre></td></tr></table><p>
 
 After this you should find a file named like
 
 <p><table><tr><td bgcolor=#F0F0F0><pre><br>
-vdr-demo-0.0.1.tgz
+vdr-hello-0.0.1.tgz
 </pre></td></tr></table><p>
 
-in your source directory, where <tt>demo</tt> will be replaced with your actual
+in your source directory, where <tt>hello</tt> will be replaced with your actual
 plugin's name, and <tt>0.0.1</tt> will be your plugin's current version number.
 
 </body>
