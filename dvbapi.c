@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.20 2000/08/01 18:06:39 kls Exp $
+ * $Id: dvbapi.c 1.21 2000/08/06 12:00:13 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -1130,9 +1130,13 @@ bool cDvbApi::Init(void)
          dsyslog(LOG_INFO, "probing %s", fileName);
          int f = open(fileName, O_RDWR);
          if (f >= 0) {
+            struct video_capability cap;
+            int r = ioctl(f, VIDIOCGCAP, &cap);
             close(f);
-            dvbApi[i] = new cDvbApi(fileName);
-            NumDvbApis++;
+            if (r == 0 && (cap.type & VID_TYPE_DVB)) {
+               dvbApi[i] = new cDvbApi(fileName);
+               NumDvbApis++;
+               }
             }
          else {
             if (errno != ENODEV)

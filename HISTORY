@@ -118,3 +118,4 @@ Video Disk Recorder Revision History
   of the recording.
 - Improved reaction on user input in fast/slow forward/back modes.
 - No more upper limit for the value of 'Pnr'.
+- Checking if the video card is really a DVB card.
