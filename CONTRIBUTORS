@@ -983,3 +983,7 @@ Prakash K. Cheemplavam <PrakashKC@gmx.de>
 
 Miko Wohlgemuth <weak@chello.at>
  for reporting a problem with the OSD alignment in the SPU decoder
+
+Michal Dobrzynski <michal_dobrzynski@mac.com>
+ for reporting a freezing picture when a recording starts on a system that always
+ uses 'Transfer Mode'

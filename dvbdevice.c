@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.84 2004/05/01 13:15:46 kls Exp $
+ * $Id: dvbdevice.c 1.85 2004/05/22 15:11:48 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -679,7 +679,7 @@ bool cDvbDevice::ProvidesChannel(const cChannel *Channel, int Priority, bool *Ne
 
   if (ProvidesSource(Channel->Source()) && ProvidesCa(Channel)) {
      result = hasPriority;
-     if (Priority >= 0 && Receiving()) {
+     if (Priority >= 0 && Receiving(true)) {
         if (dvbTuner->IsTunedTo(Channel)) {
            if (!HasPid(Channel->Vpid())) {
 #ifdef DO_MULTIPLE_RECORDINGS
