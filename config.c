@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.89 2002/03/08 14:57:08 kls Exp $
+ * $Id: config.c 1.90 2002/03/10 12:22:25 kls Exp $
  */
 
 #include "config.h"
@@ -811,7 +811,7 @@ cChannel *cChannels::GetByNumber(int Number)
 {
   cChannel *channel = (cChannel *)First();
   while (channel) {
-        if (channel->number == Number)
+        if (!channel->groupSep && channel->number == Number)
            return channel;
         channel = (cChannel *)channel->Next();
         }
@@ -822,7 +822,7 @@ cChannel *cChannels::GetByServiceID(unsigned short ServiceId)
 {
   cChannel *channel = (cChannel *)First();
   while (channel) {
-        if (channel->pnr == ServiceId)
+        if (!channel->groupSep && channel->pnr == ServiceId)
            return channel;
         channel = (cChannel *)channel->Next();
         }
@@ -931,6 +931,7 @@ cSetup::cSetup(void)
   LnbFrequHi = 10600;
   DiSEqC = 0;
   SetSystemTime = 0;
+  TrustedTransponder = 0;
   MarginStart = 2;
   MarginStop = 10;
   EPGScanTimeout = 5;
@@ -1017,6 +1018,7 @@ bool cSetup::Parse(char *s)
         else if (!strcasecmp(Name, "LnbFrequHi"))          LnbFrequHi         = atoi(Value);
         else if (!strcasecmp(Name, "DiSEqC"))              DiSEqC             = atoi(Value);
         else if (!strcasecmp(Name, "SetSystemTime"))       SetSystemTime      = atoi(Value);
+        else if (!strcasecmp(Name, "TrustedTransponder"))  TrustedTransponder = atoi(Value);
         else if (!strcasecmp(Name, "MarginStart"))         MarginStart        = atoi(Value);
         else if (!strcasecmp(Name, "MarginStop"))          MarginStop         = atoi(Value);
         else if (!strcasecmp(Name, "EPGScanTimeout"))      EPGScanTimeout     = atoi(Value);
@@ -1098,6 +1100,7 @@ bool cSetup::Save(const char *FileName)
         fprintf(f, "LnbFrequHi         = %d\n", LnbFrequHi);
         fprintf(f, "DiSEqC             = %d\n", DiSEqC);
         fprintf(f, "SetSystemTime      = %d\n", SetSystemTime);
+        fprintf(f, "TrustedTransponder = %d\n", TrustedTransponder);
         fprintf(f, "MarginStart        = %d\n", MarginStart);
         fprintf(f, "MarginStop         = %d\n", MarginStop);
         fprintf(f, "EPGScanTimeout     = %d\n", EPGScanTimeout);

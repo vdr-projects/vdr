@@ -415,9 +415,23 @@ Video Disk Recorder User's Manual
   SetSystemTime = 0      Defines whether the system time will be set according to
                          the time received from the DVB data stream.
                          0 = system time will not be set
-                         1 = system time wil be set
+                         1 = system time will be set
                          Note that this works only if VDR is running under a user
-                         id that has permisson to set the system time.
+                         id that has permisson to set the system time. You also
+                         need to set the option TrustedTransponder to a channel
+                         that you trust to transmit a reliable time base (not all
+                         channels seem to have access to a correct time base...).
+
+  TrustedTransponder = 0 The frequency of the transponder that shall be used to
+                         set the system time. The Setup menu will offer the full
+                         list of channels, even if several of them are on the
+                         same transponder. Also, when selecting a channel, saving
+                         the Setup and opening the Setup menu again, there may be
+                         a different channel listed here, since the first one
+                         in 'channels.conf' that is on the given transponder will
+                         be taken. Note that in order to set the system time from
+                         the transponder data the option SetSystemTime must also
+                         be enabled.
 
   MarginStart = 2        Defines how many minutes before the official start time
   MarginStop = 10        of a broadcast VDR shall start recording, and how long

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.161 2002/03/09 14:18:25 kls Exp $
+ * $Id: dvbapi.c 1.162 2002/03/10 11:01:38 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -1723,8 +1723,6 @@ cDvbApi::cDvbApi(int n)
 
   if (fd_frontend >= 0 && fd_demuxv >= 0 && fd_demuxa1 >= 0 && fd_demuxa2 >= 0 && fd_demuxd1 >= 0 && fd_demuxd2 >= 0 && fd_demuxt >= 0) {
      siProcessor = new cSIProcessor(OstName(DEV_OST_DEMUX, n));
-     if (!dvbApi[0]) // only the first one shall set the system time
-        siProcessor->SetUseTSTime(Setup.SetSystemTime);
      FrontendInfo feinfo;
      CHECK(ioctl(fd_frontend, FE_GET_INFO, &feinfo));
      frontendType = feinfo.type;
@@ -2324,6 +2322,11 @@ eSetChannelResult cDvbApi::SetChannel(int ChannelNumber, int Frequency, char Pol
      CHECK(ioctl(fd_audio, AUDIO_CLEAR_BUFFER));
      }
 
+  // Stop setting system time:
+
+  if (siProcessor)
+     siProcessor->SetCurrentTransponder(0);
+
   // If this card can't receive this channel, we must not actually switch
   // the channel here, because that would irritate the driver when we
   // start replaying in Transfer Mode immediately after switching the channel:
@@ -2474,6 +2477,11 @@ eSetChannelResult cDvbApi::SetChannel(int ChannelNumber, int Frequency, char Pol
      CHECK(ioctl(fd_audio, AUDIO_SET_MUTE, false));
      CHECK(ioctl(fd_video, VIDEO_SET_BLANK, false));
      }
+
+  // Start setting system time:
+
+  if (Result == scrOk && siProcessor)
+     siProcessor->SetCurrentTransponder(Frequency);
 
   return Result;
 }

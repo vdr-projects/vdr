@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.61 2002/03/09 16:21:59 kls Exp $
+ * $Id: i18n.c 1.62 2002/03/10 10:43:46 kls Exp $
  *
  * Slovenian translations provided by Miha Setina <mihasetina@softhome.net>
  * Italian   translations provided by Alberto Carraro <bertocar@tin.it>
@@ -963,6 +963,16 @@ const tPhrase Phrases[] = {
     "Ajuster l'heure du système",
     "Juster system-klokken",
     "Vastaanota kellonaika",
+  },
+  { "TrustedTransponder",
+    "Vertr. Transponder",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
   },
   { "MarginStart",
     "Zeitpuffer bei Anfang",

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.103 2002/03/08 17:59:02 kls Exp $
+ * $Id: config.h 1.104 2002/03/10 12:45:11 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -91,6 +91,8 @@ public:
   eKeys Get(unsigned int Code);
   void Set(eKeys Key, unsigned int Code);
   };
+
+#define ISTRANSPONDER(f1, f2)  (abs((f1) - (f2)) < 4)
 
 class cChannel : public cListObject {
 private:
@@ -340,6 +342,7 @@ public:
   int LnbFrequHi;
   int DiSEqC;
   int SetSystemTime;
+  int TrustedTransponder;
   int MarginStart, MarginStop;
   int EPGScanTimeout;
   int EPGBugfixLevel;

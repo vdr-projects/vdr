@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.163 2002/03/09 16:57:34 kls Exp $
+ * $Id: menu.c 1.164 2002/03/10 12:45:58 kls Exp $
  */
 
 #include "menu.h"
@@ -166,6 +166,47 @@ void cMenuEditChanItem::Set(void)
   else
      *buf = 0;
   SetValue(buf);
+}
+
+// --- cMenuEditTranItem -----------------------------------------------------
+
+class cMenuEditTranItem : public cMenuEditChanItem {
+private:
+  int number;
+  int transponder;
+public:
+  cMenuEditTranItem(const char *Name, int *Value);
+  virtual eOSState ProcessKey(eKeys Key);
+  };
+
+cMenuEditTranItem::cMenuEditTranItem(const char *Name, int *Value)
+:cMenuEditChanItem(Name, Value)
+{
+  number = 0;
+  transponder = *Value;
+  cChannel *channel = Channels.First();
+  while (channel) {
+        if (!channel->groupSep && ISTRANSPONDER(channel->frequency, *Value)) {
+           number = channel->number;
+           break;
+           }
+        channel = (cChannel *)channel->Next();
+        }
+  *Value = number;
+  Set();
+  *Value = transponder;
+}
+
+eOSState cMenuEditTranItem::ProcessKey(eKeys Key)
+{
+  *value = number;
+  eOSState state = cMenuEditChanItem::ProcessKey(Key);
+  number = *value;
+  cChannel *channel = Channels.GetByNumber(*value);
+  if (channel)
+     transponder = channel->frequency;
+  *value = transponder;
+  return state;
 }
 
 // --- cMenuEditDayItem ------------------------------------------------------
@@ -1911,6 +1952,7 @@ void cMenuSetup::Set(void)
   Add(new cMenuEditIntItem( tr("LnbFrequHi"),         &data.LnbFrequHi));
   Add(new cMenuEditBoolItem(tr("Setup$DiSEqC"),       &data.DiSEqC));
   Add(new cMenuEditBoolItem(tr("SetSystemTime"),      &data.SetSystemTime));
+  Add(new cMenuEditTranItem(tr("TrustedTransponder"), &data.TrustedTransponder));
   Add(new cMenuEditIntItem( tr("MarginStart"),        &data.MarginStart));
   Add(new cMenuEditIntItem( tr("MarginStop"),         &data.MarginStop));
   Add(new cMenuEditIntItem( tr("EPGScanTimeout"),     &data.EPGScanTimeout));
@@ -1950,7 +1992,6 @@ eOSState cMenuSetup::ProcessKey(eKeys Key)
   if (state == osUnknown) {
      switch (Key) {
        case kOk: state = (Setup.PrimaryDVB != data.PrimaryDVB) ? osSwitchDvb : osEnd;
-                 cDvbApi::PrimaryDvbApi->SetUseTSTime(data.SetSystemTime);
                  cDvbApi::PrimaryDvbApi->SetVideoFormat(data.VideoFormat ? VIDEO_FORMAT_16_9 : VIDEO_FORMAT_4_3);
                  Setup = data;
                  Setup.Save();

@@ -16,7 +16,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.c 1.39 2002/03/01 16:32:11 kls Exp $
+ * $Id: eit.c 1.40 2002/03/10 12:45:38 kls Exp $
  ***************************************************************************/
 
 #include "eit.h"
@@ -981,7 +981,6 @@ cSIProcessor::cSIProcessor(const char *FileName)
 {
    fileName = strdup(FileName);
    masterSIProcessor = numSIProcessors == 0; // the first one becomes the 'master'
-   useTStime = false;
    filters = NULL;
    if (!numSIProcessors++) // the first one creates it
       schedules = new cSchedules;
@@ -1138,7 +1137,7 @@ void cSIProcessor::Action()
                         case 0x14:
                            if (buf[0] == 0x70)
                            {
-                              if (useTStime)
+                              if (Setup.SetSystemTime && Setup.TrustedTransponder && ISTRANSPONDER(currentTransponder, Setup.TrustedTransponder))
                               {
                                  cTDT ctdt((tdt_t *)buf);
                                  ctdt.SetSystemTime();
@@ -1222,14 +1221,6 @@ bool cSIProcessor::AddFilter(u_char pid, u_char tid)
    return false;
 }
 
-/** set whether local systems time should be
-set by the received TDT or TOT packets */
-bool cSIProcessor::SetUseTSTime(bool use)
-{
-   useTStime = use;
-   return useTStime;
-}
-
 /**  */
 bool cSIProcessor::ShutDownFilters(void)
 {
@@ -1244,6 +1235,12 @@ bool cSIProcessor::ShutDownFilters(void)
    }
 
    return true; // there's no real 'boolean' to return here...
+}
+
+/** */
+void cSIProcessor::SetCurrentTransponder(int CurrentTransponder)
+{
+  currentTransponder = CurrentTransponder;
 }
 
 /** */

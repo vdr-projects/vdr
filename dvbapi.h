@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.h 1.67 2002/03/09 14:18:10 kls Exp $
+ * $Id: dvbapi.h 1.68 2002/03/10 10:50:00 kls Exp $
  */
 
 #ifndef __DVBAPI_H
@@ -149,8 +149,6 @@ public:
 private:
   cSIProcessor *siProcessor;
 public:
-  void SetUseTSTime(bool On) { if (siProcessor) siProcessor->SetUseTSTime(On); }
-
   // Image Grab facilities
 
   bool GrabImage(const char *FileName, bool Jpeg = true, int Quality = -1, int SizeX = -1, int SizeY = -1);
