@@ -3458,3 +3458,6 @@ Video Disk Recorder Revision History
 - Fixed cDolbyRepacker to allow recording ProSieben HD broadcasts (thanks to Reinhard
   Nissl).
 - Fixed cDvbDevice::SetVideoDisplayFormat() in case of 16:9 (thanks to Marco Schlüßler).
+- The running status of a VPS event is now only taken seriously if that event has been
+  seen within the last 30 seconds - otherwise recording is done as if no VPS was
+  available.
