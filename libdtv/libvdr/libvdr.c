@@ -118,7 +118,6 @@ struct LIST *createVdrProgramInfos (unsigned char *siBuffer)
                   AddItemToText (Item->Text,
                      VdrProgramInfo->ExtendedText);
                }
-               GotVdrProgramInfo = 1;
             }
             break;
 
@@ -134,7 +133,6 @@ struct LIST *createVdrProgramInfos (unsigned char *siBuffer)
                   VdrProgramInfo->ContentNibble2 =
                      GetContentContentNibble2(Descriptor, j);
                }
-               GotVdrProgramInfo = 1;
             }
             break;
 
@@ -147,12 +145,12 @@ struct LIST *createVdrProgramInfos (unsigned char *siBuffer)
                   if (!strncmp (VdrProgramInfo->LanguageCode,
                           Rating->LanguageCode, 3))
                      VdrProgramInfo->Rating = Rating->Rating;
-               GotVdrProgramInfo = 1;
             }
             break;
          }
       }      
       if (GotVdrProgramInfo) xAddTail (Result, VdrProgramInfo);
+      else                   xMemFree (VdrProgramInfo);
    }
 
    return (Result);
