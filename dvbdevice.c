@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.100 2004/10/24 11:06:37 kls Exp $
+ * $Id: dvbdevice.c 1.101 2004/10/30 14:18:53 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -81,6 +81,7 @@ private:
   cMutex mutex;
   cCondVar locked;
   cCondWait newSet;
+  bool GetFrontendEvent(dvb_frontend_event &Event, int TimeoutMs = 0);
   bool SetFrontend(void);
   virtual void Action(void);
 public:
@@ -142,6 +143,36 @@ bool cDvbTuner::Locked(int TimeoutMs)
   if (TimeoutMs && tunerStatus < tsLocked)
      locked.TimedWait(mutex, TimeoutMs);
   return tunerStatus >= tsLocked;
+}
+
+bool cDvbTuner::GetFrontendEvent(dvb_frontend_event &Event, int TimeoutMs)
+{
+  if (TimeoutMs) {
+     struct pollfd pfd;
+     pfd.fd = fd_frontend;
+     pfd.events = POLLIN | POLLPRI;
+     do {
+        int stat = poll(&pfd, 1, TimeoutMs);
+        if (stat == 1)
+           break;
+        if (stat < 0) {
+           if (errno == EINTR)
+              continue;
+           esyslog("ERROR: frontend %d poll failed: %m", cardIndex);
+           }
+        return false;
+        } while (0);
+     }
+  do {
+     int stat = ioctl(fd_frontend, FE_GET_EVENT, &Event);
+     if (stat == 0)
+        return true;
+     if (stat < 0) {
+        if (errno == EINTR)
+           continue;
+        }
+     } while (0);
+  return false;
 }
 
 static unsigned int FrequencyToHz(unsigned int f)
@@ -260,18 +291,17 @@ bool cDvbTuner::SetFrontend(void)
 
 void cDvbTuner::Action(void)
 {
+  dvb_frontend_event event;
   active = true;
   while (active) {
         Lock();
         if (tunerStatus == tsSet) {
-           dvb_frontend_event event;
-           while (ioctl(fd_frontend, FE_GET_EVENT, &event) == 0)
+           while (GetFrontendEvent(event))
                  ; // discard stale events
            tunerStatus = SetFrontend() ? tsTuned : tsIdle;
            }
         if (tunerStatus != tsIdle) {
-           dvb_frontend_event event;
-           while (ioctl(fd_frontend, FE_GET_EVENT, &event) == 0) {
+           while (GetFrontendEvent(event, 10)) {
                  if (event.status & FE_REINIT) {
                     tunerStatus = tsSet;
                     esyslog("ERROR: frontend %d was reinitialized - re-tuning", cardIndex);
@@ -306,7 +336,8 @@ void cDvbTuner::Action(void)
            }
         Unlock();
         // in the beginning we loop more often to let the CAM connection start up fast
-        newSet.Wait((tunerStatus == tsTuned || ciHandler && (time(NULL) - startTime < 20)) ? 100 : 1000);
+        if (tunerStatus != tsTuned)
+           newSet.Wait((ciHandler && (time(NULL) - startTime < 20)) ? 100 : 1000);
         }
 }
 
