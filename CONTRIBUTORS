@@ -673,3 +673,6 @@ Marc Rovira Vall <tm05462@salleURL.edu> and Ramon Roca <ramon.roca@xcombo.com>
 Lars Bläser <LBlaeser@hofheim.de>
  for reporting a bug in EPG bugfix statistics which made log entires for undefined
  channels
+
+Niko Tarnanen <niko.tarnanen@hut.fi> and Rolf Ahrenberg <rahrenbe@cc.hut.fi>
+ for translating OSD texts to the Finnish language

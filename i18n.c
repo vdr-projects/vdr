@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.111 2003/05/24 10:23:16 kls Exp $
+ * $Id: i18n.c 1.112 2003/05/24 10:59:00 kls Exp $
  *
  * Translations provided by:
  *
@@ -14,7 +14,7 @@
  * Portuguese  Paulo Lopes <pmml@netvita.pt>
  * French      Jean-Claude Repetto <jc@repetto.org>, Olivier Jacques <jacquesolivier@hotmail.com> and Gregoire Favre <greg@magma.unil.ch>
  * Norwegian   Jørgen Tvedt <pjtvedt@online.no> and Truls Slevigen <truls@slevigen.no>
- * Finnish     Hannu Savolainen <hannu@opensound.com> and Jaakko Hyvätti <jaakko@hyvatti.iki.fi>
+ * Finnish     Hannu Savolainen <hannu@opensound.com>, Jaakko Hyvätti <jaakko@hyvatti.iki.fi>, Niko Tarnanen <niko.tarnanen@hut.fi> and Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  * Polish      Michael Rakowski <mrak@gmx.de>
  * Spanish     Ruben Nunez Francisco <ruben.nunez@tang-it.com>
  * Greek       Dimitrios Dimitrakos <mail@dimitrios.de>
@@ -79,7 +79,7 @@ const tI18nPhrase Phrases[] = {
     "Português",
     "Français",
     "Norsk",
-    "Suomi",
+    "suomi",
     "Polski",
     "Español",
     "Ellinika",
@@ -114,7 +114,7 @@ const tI18nPhrase Phrases[] = {
     "Programação",
     "Programmes",
     "Programmer",
-    "Ohjelmat",
+    "Ohjelmisto",
     "Program",
     "Guía de Programación",
     "Programma",
@@ -165,7 +165,7 @@ const tI18nPhrase Phrases[] = {
     "Gravações",
     "Enregistrements",
     "Opptak",
-    "Nauhoitteet",
+    "Tallenteet",
     "Nagrania",
     "Grabaciones",
     "Egrafes",
@@ -216,7 +216,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "Commandes d'enregistrement",
     "",// TODO
-    "Nauhoituskomennot",
+    "Tallennuskomennot",
     "",// TODO
     "Órdenes de grabación",
     "Entoles gia egrafes",// TODO
@@ -250,7 +250,7 @@ const tI18nPhrase Phrases[] = {
     "Modificar timer",
     "Changer la programmation",
     "Editer timer",
-    "Muokkaa ajastusta",
+    "Muokkaa ajastinta",
     "Ustawienie timerow",
     "Modificar timer",
     "Prosarmogi Programmatismou",
@@ -301,7 +301,7 @@ const tI18nPhrase Phrases[] = {
     "Programa - %s",
     "Programmes - %s",
     "Program Guide - %s",
-    "Ohjelma - %s",
+    "Ohjelmisto - %s",
     "Program - %s",
     "Programa - %s",
     "Programma - %s",
@@ -318,7 +318,7 @@ const tI18nPhrase Phrases[] = {
     "Programa actual?",
     "Programmes en cours",
     "Hvilket program sendes nå?",
-    "Nykyinen ohjelma",
+    "Menossa nyt",
     "Program biezacy",
     "¿Qué hay ahora?",
     "Trexon Programma",
@@ -335,7 +335,7 @@ const tI18nPhrase Phrases[] = {
     "Próximo Programa?",
     "Prochains programmes",
     "Hvilket program er neste?",
-    "Seuraava ohjelma",
+    "Tulossa seuraavaksi",
     "Program nastepny",
     "¿Qué hay proximo?",
     "Epomeno Programma",
@@ -353,7 +353,7 @@ const tI18nPhrase Phrases[] = {
     "Modificar",
     "Modifier",
     "Editer",
-    "Muuta",
+    "Muokkaa",
     "Edycja",
     "Modificar",
     "Prosarmogi",
@@ -438,7 +438,7 @@ const tI18nPhrase Phrases[] = {
     "Gravar",
     "Enregistre",
     "Ta opp",
-    "Nauhoita",
+    "Tallenna",
     "Nagrywac",
     "Grabar",
     "Egrafi",
@@ -472,7 +472,7 @@ const tI18nPhrase Phrases[] = {
     "Rebobinar",
     "Retour",
     "Spol tilbake",
-    "Takaisinkel.",
+    "Alkuun",
     "Poczatek",
     "Rebobinar",
     "Arxi",
@@ -727,7 +727,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "Réinitialisation",
     "",//TODO
-    "",//TODO
+    "Nollaa",
     "",//TODO
     "Reiniciar",
     "Epanafora",
@@ -745,7 +745,7 @@ const tI18nPhrase Phrases[] = {
     "Apagar o canal?",
     "Supprimer la chaîne?",
     "Slette kanal?",
-    "Poistetaanko kanava?",
+    "Poista kanava?",
     "Usunac kanal?",
     "¿Eliminar canal?",
     "Diagrafi Kanaliou?",
@@ -762,7 +762,7 @@ const tI18nPhrase Phrases[] = {
     "Apagar o timer?",
     "Supprimer la programmation?",
     "Slette timer?",
-    "Poistetaanko ajastus?",
+    "Poista ajastin?",
     "Usunac timer?",
     "¿Eliminar timer?",
     "Diagrafi programmitismou?",
@@ -779,7 +779,7 @@ const tI18nPhrase Phrases[] = {
     "Apagar a gravação?",
     "Supprimer l'enregistrement?",
     "Slette opptak?",
-    "Poistetaanko nauhoitus?",
+    "Poista tallenne?",
     "Usunac nagranie?",
     "¿Eliminar grabacion?",
     "Svisimo egrafis?",
@@ -796,7 +796,7 @@ const tI18nPhrase Phrases[] = {
     "Timer activo - têm a certeza que quer apagar?",
     "Enregistrement en cours - confirmez la suppression",
     "Timer gjør opptak - vil du slette likevel?",
-    "Ajastin nauhoittaa - poistetaanko silti?",
+    "Ajastin aktiivinen - poistetaanko?",
     "Nagrywanie w trakcie - napewno usunac?",
     "¿Timer activo - de verdad eliminarlo?",
     "Programmatismos se exselixsi - Diagrafi sigoura?",
@@ -813,7 +813,7 @@ const tI18nPhrase Phrases[] = {
     "Parar Gravação?",
     "Arrêter l'enregistrement?",
     "Stoppe opptak?",
-    "Pysäytetäänkö nauhoitus?",
+    "Keskeytä tallennus?",
     "Zakonczyc nagranie?",
     "¿Parar grabación?",
     "Akirosi egrafis?",
@@ -847,7 +847,7 @@ const tI18nPhrase Phrases[] = {
     "Cancelar Modificações?",
     "Annuler les modifications?",
     "Avbryte redigering?",
-    "Peruutetaanko muokkaus?",
+    "Peru muokkaus?",
     "Zakonczyc montaz?",
     "¿Cancelar modificación?",
     "Akirosi kopsimatos?",
@@ -864,7 +864,7 @@ const tI18nPhrase Phrases[] = {
     "Tem a certeza que quer reiniciar?",
     "Redémarrer?",
     "Vil du virkelig starte på nytt?",
-    "Aloitetaanko varmasti alusta?",
+    "Käynnistä uudelleen?",
     "Rzeczywiscie nowy start?",
     "¿De verdad reiniciar?",
     "Na gini sigoura epanekinisi?",
@@ -881,7 +881,7 @@ const tI18nPhrase Phrases[] = {
     "Em gravação - quer mesmo reiniciar?",
     "Enregistrement en cours - redémarrer?",
     "Gjør opptak - starte på nytt likevel?",
-    "Nauhoitus käynnissä - aloitetaanko alusta?",
+    "Tallennus kesken - käynnistetäänkö uudelleen?",
     "Nagrywanie w trakcie - rzeczywiscie nowy start?",
     "Grabando - ¿reiniciar?",
     "Ginete egrafi - Telika na ginei epanekinisi?",
@@ -898,7 +898,7 @@ const tI18nPhrase Phrases[] = {
     "Em gravação - quer mesmo desligar?",
     "Enregistrement en cours - confirmez l'arrêt",
     "Gjør opptak - slå av likevel?",
-    "Nauhoitus kesken - lopetetaanko se?",
+    "Tallennus kesken - sammutetaanko?",
     "Nagrywanie w trakcie - mimo to wylaczyc?",
     "Grabando - ¿apagar?",
     "Ginete egrafi - Telika na ginei termatismos?",
@@ -915,7 +915,7 @@ const tI18nPhrase Phrases[] = {
     "Em gravação dentro de %d minutos - quer mesmo desligar?",
     "Enregistrement dans %d minutes - confirmez l'arrêt",
     "Skal gjøre opptak om %d minutter - slå av likevel?",
-    "Nauhoitus alkaisi %d min. kuluttua - sammutetaanko silti?",
+    "Tallennus alkaa %d min kuluttua - sammutetaanko?",
     "Nagrywanie za %d minut - mimo to wylaczyc?",
     "Grabando en %d minutos, ¿de verdad apagar?",
     "Anamenete egrafi se %d lepta - Telika na termatistei?",
@@ -932,7 +932,7 @@ const tI18nPhrase Phrases[] = {
     "Pressione qualquer tecla para cancelar",
     "Appuyez sur une touche pour annuler l'arrêt",
     "Trykk en tast for ikke å slå av",
-    "Peruuta pysäytys painamalla jotakin näppäintä",
+    "Peru sammutus painamalla jotain näppäintä",
     "Dowolny przycisk zatrzyma wylaczanie",
     "Pulse una tecla para interrumpir apagar",
     "Piese ena pliktro na akirothei o termatismos",
@@ -1018,7 +1018,7 @@ const tI18nPhrase Phrases[] = {
     "Srate",
     "Fréq. Symbole",
     "Srate",
-    "Srate",
+    "Symbolinopeus",
     "Srate",
     "Srate",
     "Srate",
@@ -1052,7 +1052,7 @@ const tI18nPhrase Phrases[] = {
     "PID Áudio (1)",
     "PID Audio (1)",
     "Apid1",
-    "Ääni PID1",
+    "Ääni PID (1)",
     "Apid1",
     "Apid1",
     "Apid1",
@@ -1069,7 +1069,7 @@ const tI18nPhrase Phrases[] = {
     "Apid2",
     "PID Áudio (2)",
     "Apid2",
-    "Ääni PID2",
+    "Ääni PID (2)",
     "Apid2",
     "Apid2",
     "Apid2",
@@ -1086,7 +1086,7 @@ const tI18nPhrase Phrases[] = {
     "PID AC3 (1)",
     "PID AC3 (1)",
     "AC3pid1",
-    "AC3 PID1",
+    "AC3 PID (1)",
     "Dpid1",
     "Dpid1",
     "Dpid1",
@@ -1103,7 +1103,7 @@ const tI18nPhrase Phrases[] = {
     "PID AC3 (2)",
     "PID AC3 (2)",
     "AC3pid2",
-    "AC3 PID2",
+    "AC3 PID (2)",
     "Dpid2",
     "Dpid2",
     "Dpid2",
@@ -1120,7 +1120,7 @@ const tI18nPhrase Phrases[] = {
     "PID Teletexto",
     "PID Télétexte",
     "Tekst-TV pid",
-    "TekstiTV PID",
+    "Teksti-TV PID",
     "Tpid",
     "Tpid",
     "Tpid",
@@ -1154,7 +1154,7 @@ const tI18nPhrase Phrases[] = {
     "Sid",
     "Sid",
     "Sid",
-    "Sid",
+    "Palvelu ID",
     "Sid",
     "Sid",
     "Sid",
@@ -1188,7 +1188,7 @@ const tI18nPhrase Phrases[] = {
     "Bandwidth",
     "Bandwidth",
     "Bandwidth",
-    "Bandwidth",
+    "Kaistanleveys",
     "Bandwidth",
     "Bandwidth",
     "Bandwidth",
@@ -1205,7 +1205,7 @@ const tI18nPhrase Phrases[] = {
     "CoderateH",
     "CoderateH",
     "CoderateH",
-    "CoderateH",
+    "Yläkoodinopeus", //Finnish - unsure about this
     "CoderateH",
     "CoderateH",
     "CoderateH",
@@ -1222,7 +1222,7 @@ const tI18nPhrase Phrases[] = {
     "CoderateL",
     "CoderateL",
     "CoderateL",
-    "CoderateL",
+    "Alakoodinopeus", //Finnish - unsure about this
     "CoderateL",
     "CoderateL",
     "CoderateL",
@@ -1256,7 +1256,7 @@ const tI18nPhrase Phrases[] = {
     "Transmission",
     "Transmission",
     "Transmission",
-    "Transmission",
+    "Lähetys", //Finnish - unsure about this
     "Transmission",
     "Transmission",
     "Transmission",
@@ -1273,7 +1273,7 @@ const tI18nPhrase Phrases[] = {
     "Guard",
     "Guard",
     "Guard",
-    "Guard",
+    "Suoja", //Finnish - unsure about this
     "Guard",
     "Guard",
     "Guard",
@@ -1290,7 +1290,7 @@ const tI18nPhrase Phrases[] = {
     "Hierarchy",
     "Hierarchy",
     "Hierarchy",
-    "Hierarchy",
+    "Hierarkia",
     "Hierarchy",
     "Hierarchy",
     "Hierarchy",
@@ -1410,7 +1410,7 @@ const tI18nPhrase Phrases[] = {
     "Duração",
     "Durée de vie",
     "Levetid",
-    "Voimassaolo",
+    "Elinikä",
     "Trwalosc dni",
     "Durabilidad",
     "Xronos Zois",
@@ -1496,7 +1496,7 @@ const tI18nPhrase Phrases[] = {
     "Timer a gravar!",
     "Enregistrement en cours!",
     "Timer gjør opptak!",
-    "Ajastinnauhoitus käynnissä!",
+    "Ajastintallennus käynnissä!",
     "Timer nagrywa!",
     "¡Timer esta grabando!",
     "Ginete progrmamatismeni egrafi!",
@@ -1513,7 +1513,7 @@ const tI18nPhrase Phrases[] = {
     "Erro ao aceder à gravação",
     "Impossible d'accèder à l'enregistrement",
     "Feil under lesing av opptak!",
-    "Nauhoituksen toistaminen epäonnistui!",
+    "Tallenteen toistaminen epäonnistui!",
     "Blad - brak dostepu do nagrania!",
     "¡Error al acceder a la grabación!",
     "Provlima stin prospelasi egrafis!",
@@ -1530,7 +1530,7 @@ const tI18nPhrase Phrases[] = {
     "Erro enquanto apagava uma gravação!",
     "Erreur de suppression de l'enregistrement!",
     "Feil under sletting av opptak!",
-    "Nauhoituksen poistaminen epäonnistui!",
+    "Tallenteen poistaminen epäonnistui!",
     "Blad przy usuwaniu nagrania!",
     "¡Error al borrar la grabación!",
     "Provlima sto svisimo egrafis !",
@@ -1564,7 +1564,7 @@ const tI18nPhrase Phrases[] = {
     "Nenhuma placa DVB disponivel para gravar!",
     "Pas de carte DVB disponible pour l'enregistrement!",
     "Ingen ledige DVB enheter for opptak!",
-    "Ei vapaata vastaanotinta nauhoitusta varten!",
+    "Ei vapaata vastaanotinta tallennukselle!",
     "Brak wolnej karty DVB do nagrywania!",
     "¡No hay dispositivo DVB disponible para grabar!",
     "Den periseuei DVB Karta gia egrafi!",
@@ -1581,7 +1581,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "Chaîne non disponible!",
     "",//TODO
-    "Kanavaa ei voi katsoa nyt!",
+    "Kanava ei ole käytettävissä!",
     "",//TODO
     "!Canal no disponible!",
     "To kanali den ine diathesimo",
@@ -1598,7 +1598,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "Caractéristiques des chaînes",//TODO French: that's not what it means!
     "",//TODO
-    "",//TODO
+    "Kanava-asetukset eivät ole yksilölliset!",
     "",//TODO
     "!Propiedades de canal duplicadas!",
     "Ta kanalia stin lista den ine monadika!",
@@ -1615,7 +1615,7 @@ const tI18nPhrase Phrases[] = {
     "Canal bloqueado (a gravar)!",
     "Chaîne verrouillée (enregistrement en cours)!",
     "Kanalen er låst (opptak)!",
-    "Kanava lukittu (nauhoitusta varten)!",
+    "Kanava lukittu (tallennus käynnissä)!",
     "Kanal zablokowany (nagrywanie w toku)!",
     "¡Canal bloqueado (grabando)!",
     "To kanali ine klidomeno (Ginete egrafi)!",
@@ -1632,7 +1632,7 @@ const tI18nPhrase Phrases[] = {
     "Impossível iniciar modo de transferência!",
     "Impossible d'utiliser le mode transfert!",
     "Kan ikke starte transfer modus!",
-    "Käsittämättömiä teknisiä ongelmia!",
+    "Käsittämättömiä teknisiä ongelmia!", //Finnish - unsure about this ;-)
     "Tryb transferowy jest niemozliwy!",
     "¡No puedo iniciar modo de transferencia!",
     "Adinamia ekinisis katastasis metaforas!",
@@ -1651,7 +1651,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Muokkausmerkinnät puuttuvat",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -1666,7 +1666,7 @@ const tI18nPhrase Phrases[] = {
     "Não pode iniciar a modificação!",
     "Impossible de commencer le montage!",
     "Kan ikke starte redigeringsprosessen!",
-    "Muokkauksen aloittaminen ei onnistu!",
+    "Muokkauksen aloitus epäonnistui!",
     "Uruchamianie montazu jest niemozliwe!",
     "¡No puedo iniciar proceso de modificación!",
     "Adinamia ekinisis tis epexsergasias!",
@@ -1700,7 +1700,7 @@ const tI18nPhrase Phrases[] = {
     "Impossível desligar - falta a opção '-s'!",
     "Arrêt impossible - option '-s' absente!",
     "Kan ikke slå av - startet uten parameteret '-s'!",
-    "Ei voida sammuttaa '-s' parametria ei annettu!",
+    "Sammutus ei onnistu - '-s' parametri puuttuu!",
     "Wylaczenie niemozliwe - brak opcji '-s'!",
     "¡No puedo apagar - opción '-s' ausente!",
     "Adinaton na ginei termatismos. Aniparkti i parametros '-s'!",
@@ -1734,7 +1734,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "Impossible d'ouvrir le menu CAM!",
     "",//TODO
-    "",//TODO
+    "Salausmoduuli ei valittavissa",
     "",//TODO
     "¡No pudeo acceder al menú de la CAM!",
     "Den mpori na aniksi to CAM menou!",
@@ -1751,7 +1751,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "Impossible de réinitialiser la CAM!",
     "",//TODO
-    "",//TODO
+    "Salausmoduulin alustus epäonnistui!",
     "",//TODO
     "¡No puedo reiniciar la CAM!",
     "Adinato na gini epanafora sto CAM",
@@ -1768,7 +1768,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "La CAM a été réinitialisée",
     "",//TODO
-    "",//TODO
+    "Salausmoduuli alustettu",
     "",//TODO
     "CAM reiniciada",
     "Sto CAM egine apanafora",
@@ -1786,7 +1786,7 @@ const tI18nPhrase Phrases[] = {
     "OSD",
     "Affichage des menus",
     "OSD",
-    "Tekstinäyttö",
+    "Kuvaruutunäyttö",
     "OSD",
     "Menús en pantalla",
     "OSD",
@@ -1871,7 +1871,7 @@ const tI18nPhrase Phrases[] = {
     "A gravar",
     "Enregistrement",
     "Opptak",
-    "Nauhoita",
+    "Tallennus",
     "Nagranie",
     "Opciones de Grabación",
     "Egrafi",
@@ -1888,7 +1888,7 @@ const tI18nPhrase Phrases[] = {
     "Replay",
     "Lecture",
     "Spill av",
-    "Toista",
+    "Toisto",
     "Odtwarzanie",
     "Opciones de Reproducción",
     "Anametadosi",
@@ -1905,7 +1905,7 @@ const tI18nPhrase Phrases[] = {
     "Outros",
     "Divers",
     "Forskjellig",
-    "Sekalaista",
+    "Sekalaiset",
     "Pozostale",
     "Varios",
     "Diafora",
@@ -1922,7 +1922,7 @@ const tI18nPhrase Phrases[] = {
     "Plugins",
     "Plugins",
     "Plugins",
-    "Laajennokset",
+    "Laajennukset",
     "Plugins",
     "Plugins",
     "Plugins",
@@ -1939,7 +1939,7 @@ const tI18nPhrase Phrases[] = {
     "Plugin",
     "Plugin",
     "Plugin",
-    "Laajennos",
+    "Laajennus",
     "Plugin",
     "Plugin",
     "Plugin",
@@ -1956,7 +1956,7 @@ const tI18nPhrase Phrases[] = {
     "Reiniciar",
     "Redémarrer",
     "Start på nytt",
-    "Aloita uudelleen",
+    "Uudelleenkäynnistys"
     "Zastartowac",
     "Reiniciar",
     "Epanekinisi",
@@ -2025,7 +2025,7 @@ const tI18nPhrase Phrases[] = {
     "Mostrar contador (s)",
     "Durée affichage écran (s)",
     "Tid meldinger skal vises (s)",
-    "Ilmoitusten näkymisaika (s)",
+    "Viestien esitysaika (s)",
     "Czas wyswietlania wiadomosci (s)",
     "Duración muestra mensajes (s)",
     "Xronos endiksis minimaton (d)",
@@ -2042,7 +2042,7 @@ const tI18nPhrase Phrases[] = {
     "Posição de info dos canais",
     "Position infos chaînes",
     "Posisjon på kanalinformasjon",
-    "Kanavainfon sijainti",
+    "Kanavatiedon sijainti",
     "Lokalizacja informacji o kanale",
     "Posición para información canal",
     "Thesi Pliroforias kanalion",
@@ -2059,7 +2059,7 @@ const tI18nPhrase Phrases[] = {
     "Mostrar info ao mudar de Canal",
     "Affichage progr. en cours",
     "Info ved kanalskifte",
-    "Näytä kanavainfo",
+    "Näytä kanavatieto",
     "Informacja przy zmianie kanalu",
     "Información para cambio de canal",
     "Plirofories stin alagi kanaliou",
@@ -2076,7 +2076,7 @@ const tI18nPhrase Phrases[] = {
     "Scroll da página no menu",
     "Scrolling par pages",
     "Rask rulling i menyer",
-    "Valikkojen rullaus",
+    "Valikkojen selaus",
     "Przesuwac stronami",
     "Desplazar página entera",
     "Kilisi selidas",
@@ -2110,7 +2110,7 @@ const tI18nPhrase Phrases[] = {
     "Directorias de gravação",
     "Dossiers d'enregistrements",
     "Kataloger til opptak",
-    "Nauhoitushakemistot",
+    "Tallennehakemistot",
     "Wykaz nagran",
     "Gracaciones en directorios",
     "Fakeloi egrafon",
@@ -2127,7 +2127,7 @@ const tI18nPhrase Phrases[] = {
     "Expirou o EPG (h)",
     "Inactivité avant rech. EPG (h)",
     "Ledig tid før EPG-søk (h)",
-    "Ohjelmatied. odotusaika (h)",
+    "Ohjelmaoppaan taustapäivitys (h)",
     "Czas do skanu EPG (h)",
     "Tiempo hasta exploración EPG (h)",
     "Xronos mexri eksetasi EPG se Ores",
@@ -2144,7 +2144,7 @@ const tI18nPhrase Phrases[] = {
     "Nível de correctção EPG",
     "Niveau de correction EPG",
     "Nivå for EPG-feilretting",
-    "EPG Bugfix Level",
+    "Ohjelmaoppaan korjaustaso",
     "Poziom bledow EPG",
     "Nivel para arreglar EPG",
     "EPG Bugfix Vathmos",
@@ -2161,7 +2161,7 @@ const tI18nPhrase Phrases[] = {
     "Ajustar relógio do sistema",
     "Ajuster l'heure du système",
     "Juster system-klokken",
-    "Vastaanota kellonaika",
+    "Aseta kellonaika",
     "Ustawianie czasu",
     "Ajustar reloj de sistema",
     "Sintonismos Oras ipologosti",
@@ -2195,7 +2195,7 @@ const tI18nPhrase Phrases[] = {
     "Interface DVB primário",
     "Carte DVB primaire",
     "Hoved DVB-enhet",
-    "Ensisij. vast.otin",
+    "Päävastaanotin",
     "Pierwotny interfejs DVB",
     "Primer interface DVB",
     "Protevon DVB karta",
@@ -2212,7 +2212,7 @@ const tI18nPhrase Phrases[] = {
     "Formato vídeo",
     "Format vidéo",
     "TV-Format",
-    "Kuvamuoto",
+    "Kuvasuhde",
     "Format telewizyjny",
     "Formato Vídeo",
     "Video Format",
@@ -2229,7 +2229,7 @@ const tI18nPhrase Phrases[] = {
     "Limite de bandas LNB (MHz)",
     "Limite de bandes LNB (MHz)",
     "LO-grensefrekvens (MHz)",
-    "SLOF (MHz)",
+    "SLOF (MHz)", //Finnish - unsure about this
     "SLOF (MHz)",
     "SLOF (MHz)",
     "SLOF (MHz)",
@@ -2246,7 +2246,7 @@ const tI18nPhrase Phrases[] = {
     "Frequência base LNB (MHz)",
     "Fréquence basse LNB (MHz)",
     "LO-frekvens i lavbåndet (MHz)",
-    "LO LNB taajuus (MHz)",
+    "LNB alataajuus (MHz)",
     "Dolna czestotliwosc LNB (MHz)",
     "Frecuencia baja LNB (MHz)",
     "Kato LNB-Sixnotita (MHz)",
@@ -2263,7 +2263,7 @@ const tI18nPhrase Phrases[] = {
     "Frequência alta LNB (MHz)",
     "Fréquence haute LNB (MHz)",
     "LO-frekvens i høybåndet (MHz)",
-    "HI LNB taajuus (MHz)",
+    "LNB ylätaajuus (MHz)",
     "Gorna czestotliwosc LNB (MHz)",
     "Frecuencia alta LNB (MHz)",
     "Ano LNB-Sixnotita (MHz)",
@@ -2280,7 +2280,7 @@ const tI18nPhrase Phrases[] = {
     "Utilizar DiSEqC",
     "Utiliser le DiSEqC",
     "Bruk DiSEqC",
-    "Käytä DiSEqC",
+    "DiSEqC käytössä",
     "Uzywac DiSEqC",
     "Utilizar DiSEqC",
     "Energopiisi DiSEqC",
@@ -2297,7 +2297,7 @@ const tI18nPhrase Phrases[] = {
     "CICAM DVB",
     "Accès conditionnel",
     "CICAM DVB",
-    "CICAM DVB",
+    "CICAM DVB", //Finnish - unsure about this "Salausmoduuli"
     "CICAM DVB",
     "CICAM DVB",
     "CICAM DVB",
@@ -2348,7 +2348,7 @@ const tI18nPhrase Phrases[] = {
     "Limite Primário",
     "Première limite",
     "Prioritetsgrense HovedDVB",
-    "PrimaryLimit",
+    "Päälimitti", //Finnish - unsure about this ;-)
     "Pierwotny limit",
     "Límite primario",
     "Protevon orio",
@@ -2382,7 +2382,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "Durée de vie des pauses (j)",
     "",// TODO
-    "",// TODO
+    "Keskeytyksen elinikä (d)",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -2399,7 +2399,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "Priorité des pauses",
     "",// TODO
-    "",// TODO
+    "Keskeytyksen prioriteetti",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -2416,7 +2416,7 @@ const tI18nPhrase Phrases[] = {
     "Validade por defeito (d)",
     "Durée de vie par défaut (j)",
     "Normal levetid timer (d)",
-    "Oletus voimassaoloaika (d)",
+    "Oletuselinikä (d)",
     "Pierwotna trwalosc (d)",
     "Duración predefinida",
     "Xronos zois",
@@ -2450,7 +2450,7 @@ const tI18nPhrase Phrases[] = {
     "Marca de gravação rápida",
     "Marquage enregistr. immédiats",
     "Markere direkteopptak",
-    "Merkitse välitön nauh.",
+    "Merkitse pikatallenne",
     "Zaznaczyc natychm. nagranie",
     "Marcar grabaciones instantáneas",
     "Epilogi trexon egrafis",
@@ -2467,7 +2467,7 @@ const tI18nPhrase Phrases[] = {
     "Nome de gravação rápida",
     "Noms enregistr. immédiats",
     "Navngi direkteopptak",
-    "Nimeä välitön nauh.",
+    "Nimeä pikatallenne",
     "Nazwac natychm. nagranie",
     "Nombrar grabaciones instantáneas",
     "eponomasi trexon egrafis",
@@ -2484,7 +2484,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "Durée enregistr. immédiat (min)",
     "",//TODO
-    "Pikanauhoituksen pituus (min)",
+    "Pikatallennuksen kesto (min)",
     "",//TODO
     "Tiempo de grabación instantánea (min)",
     "Stigmiees egrafes xronos (lepta)",
@@ -2501,7 +2501,7 @@ const tI18nPhrase Phrases[] = {
     "Gravar em Dolby Digital",
     "Enregistrer en Dolby Digital",
     "Ta opp Dolby Digital lyd",
-    "Dolby Digital nauhoitus",
+    "Dolby Digital tallennus",
     "Nagrywac Dolby Digital",
     "Grabar sonido Dolby Digital",
     "Egrafi tou Dolby Digital ixou",
@@ -2518,7 +2518,7 @@ const tI18nPhrase Phrases[] = {
     "Tamanho máximo dos ficheiros (MB)",
     "Taille maxi des fichiers (MB)",
     "Maksimal størrelse på videofiler (MB)",
-    "Maksimi tiedoston koko (MB)",
+    "Suurin tiedostokoko (MB)",
     "Maks. wielkosc pliku (MB)",
     "Tamaño máx. de fichero (MB)",
     "Megisto megethos arxeiou (MB)",
@@ -2535,7 +2535,7 @@ const tI18nPhrase Phrases[] = {
     "Quebrar ficheiros",
     "Séparer les séquences",
     "Splitt redigerte filer",
-    "Paloittele muokatut",
+    "Jaottele muokatut tallenteet",
     "Dzielic montowane pliki",
     "Quebrar ficheros",
     "Diamelisma epeksergasmenon arxeion",
@@ -2586,7 +2586,7 @@ const tI18nPhrase Phrases[] = {
     "Resume ID",// TODO
     "Resume ID",// TODO
     "Resume ID",// TODO
-    "Resume ID",// TODO
+    "Jatko ID", //Finnish - unsure about this
     "Resume ID",// TODO
     "Continuar ID",
     "Resume ID",// TODO
@@ -2603,7 +2603,7 @@ const tI18nPhrase Phrases[] = {
     "Período mínimo de pausa (min)",
     "MinEventTimeout (min)",
     "Minste hendelsespause (min)",
-    "Minimi tapahtuman odotus (min)",
+    "Tapahtuman odotusaika (min)", //Finnish - unsure about this
     "Min. czas do nast. akcji (Event) (min)",
     "Tiempo mínimo pausa (min)",
     "Elaxistos Xronos paremvolis (lepta)",
@@ -2620,7 +2620,7 @@ const tI18nPhrase Phrases[] = {
     "Período mínimo de inactividade (min)",
     "Durée minimale d'inact. (min)",
     "Minimumstid med inaktivitet (min)",
-    "Minimi käyttäjän odotus (min)",
+    "Käyttäjätoiminnon odotusaika (min)", //Finnish - unsure about this
     "Min. brak aktywnosci uzytkownika (min)",
     "Tiempo mínimo inactividad (min)",
     "Elaxistos xronos mi xrisis (lepta)",
@@ -2708,7 +2708,7 @@ const tI18nPhrase Phrases[] = {
     "Aprender as teclas do telecomando (%s)",
     "Apprentissage des codes de télécommande (%s)",
     "Lære fjernkontrolltaster (%s)",
-    "Kaukosäätimen näppäinten opettelu (%s)",
+    "Kaukosäätimen opettaminen (%s)",
     "Nauka kodu pilota (%s)",
     "Aprendiendo teclas del telemando (%s)",
     "Ekmathisi pliktron tilexirismou (%s)",
@@ -2725,7 +2725,7 @@ const tI18nPhrase Phrases[] = {
     "Fase 1: detectar tipo de receptor",
     "Phase 1: Détection du type de code",
     "Fase 1: Finne fjernkontroll-kodetype",
-    "Vaihe 1: Lähetystavan selvittäminen",
+    "Vaihe 1: Koodauksen tunnistaminen",
     "Faza 1: Detekcja typu kodu",
     "Fase 1: Detectando tipo de receptor",
     "Phasi 1: Anixneusi kodika RC",
@@ -2742,7 +2742,7 @@ const tI18nPhrase Phrases[] = {
     "Pressione qualquer tecla do telecomando",
     "Appuyer sur une touche de la télécommande",
     "Trykk en av tastene på fjernkontrollen",
-    "Paina mitä tahansa kaukosäätimen näppäintä",
+    "Paina jotain kaukosäätimen näppäintä",
     "Nacisnac klawisz pilota",
     "Pulse una tecla en el telemando",
     "Piese ena pliktro sto tilexiristirio",
@@ -2776,7 +2776,7 @@ const tI18nPhrase Phrases[] = {
     "Não pressione nada...",
     "N'appuyer sur aucune touche ...",
     "Ikke trykk på noen av tastene...",
-    "Älä paina mitään näppäintä...",
+    "Älä paina kaukosäätimen näppäimiä...",
     "Nie naciskac klawiszy...",
     "No pulse ninguna tecla...",
     "Min piezeis pliktra...",
@@ -2827,7 +2827,7 @@ const tI18nPhrase Phrases[] = {
     "Pressione 'Cima' para confirmar",
     "Appuyer sur 'Haut' pour confirmer",
     "Trykk 'Opp' for å bekrefte",
-    "Paina 'Ylös' hyväksyäksesi",
+    "Hyväksy painamalla 'Ylös'",
     "Nacisnac 'Gora' do potwierdzenia",
     "Pulse 'Arriba' para confirmar",
     "Piese 'pano' gia apodoxi",
@@ -2844,7 +2844,7 @@ const tI18nPhrase Phrases[] = {
     "Pressione 'Baixo' para continuar",
     "Appuyer sur 'Bas' pour continuer",
     "Trykk Ned' for å fortsette",
-    "Paina 'Alas' jatkaaksesi",
+    "Jatka painamalla 'Alas'",
     "Nacisnac 'Dol' zeby kontynuowac",
     "Pulse 'Abajo' para confirmar",
     "Piese 'kato' gia sinexia",
@@ -2861,7 +2861,7 @@ const tI18nPhrase Phrases[] = {
     "(Pressione 'Cima' para voltar)",
     "(Appuyer sur 'Haut' pour revenir en arrière)",
     "(trykk 'Opp' for å gå tilbake)",
-    "(paina 'Ylös' palataksesi takaisin)",
+    "(palaa takaisin painamalla 'Ylös')",
     "(Nacisnac 'Gora' cofa)",
     "(Pulse 'Arriba' para retornar)",
     "(Piese 'pano' gia epistrofi",
@@ -2878,7 +2878,7 @@ const tI18nPhrase Phrases[] = {
     "(Pressione 'Baixo' para terminar a definição)",
     "(Appuyer sur 'Bas' pour terminer)",
     "(trykk 'Ned' for å avslutte innlæring)",
-    "(paina 'Alas' lopettaaksesi näppäinten opettelun)",
+    "(lopeta opettaminen painamalla 'Alas')",
     "(Nacisnac 'Dol' by zakonczyc)",
     "(Pulse 'Abajo' para terminar programación teclas)",
     "(Piese 'Kato' gia termatismo diloseon plktron)",
@@ -2895,7 +2895,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "('Menu' pour passer cette touche)",
     "",// TODO
-    "(Paina 'Valikko' jos näppäintä ei ole)",
+    "näppäimen puuttuessa paina 'Valikko'",
     "",// TODO
     "Pulse 'Menu' para saltarse esta tecla",
     "Pata 'Menou' gia prosperasi aftou tou pliktrou",
@@ -2912,7 +2912,7 @@ const tI18nPhrase Phrases[] = {
     "Fase 3: A salvar os códigos das teclas",
     "Phase 3: Sauvegarde des codes des touches",
     "Fase 3: Lagre tastekoder",
-    "Vaihe 3: Näppäinkoodien tallettaminen",
+    "Vaihe 3: Näppäinkoodien tallentaminen",
     "Faza 3: Zapamietac Kod",
     "Fase 3: Guardar códigos de teclas",
     "Fasi 3: Apothikevsi kodikon",
@@ -2929,7 +2929,7 @@ const tI18nPhrase Phrases[] = {
     "'Cima' para Salvar, 'Baixo' para Cancelar",
     "Appuyer sur 'Haut' pour sauvegarder, 'Bas' pour annuler",
     "Trykk 'Opp' for å lagre, 'Ned' for å avbryte",
-    "Paina 'Ylös' tallettaaksesi ja 'Alas' peruuttaaksesi",
+    "Paina 'Ylös' tallentaaksesi ja 'Alas' peruuttaaksesi",
     "'Gora' zapamietuje, 'Dol' przerywa",
     "Pulse 'Arriba' para guardar, 'Abajo' para anular",
     "'Pano' apothikevsi, 'Kato' akirosi",
@@ -3134,7 +3134,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "Lecture",
     "",// TODO
-    "",// TODO
+    "Toista",
     "",// TODO
     "Reproducir",
     "Anametadosi",
@@ -3151,7 +3151,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "Pause",
     "",// TODO
-    "",// TODO
+    "Keskeytä",
     "",// TODO
     "Pausa",
     "Dialima",
@@ -3168,7 +3168,7 @@ const tI18nPhrase Phrases[] = {
     "Stop",
     "",// TODO French: still missing
     "",// TODO
-    "",// TODO
+    "Pysäytä",
     "",// TODO
     "Parar",
     "Terma",
@@ -3185,7 +3185,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "Enregistrement",
     "",// TODO
-    "",// TODO
+    "Tallenna",
     "",// TODO
     "Grabar",
     "Egrafi",
@@ -3202,7 +3202,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "Avance rapide",
     "",// TODO
-    "",// TODO
+    "Pikakelaus >>",
     "",// TODO
     "Adelante rápido",
     "Girisma mprosta",
@@ -3219,7 +3219,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "Retour rapide",
     "",// TODO
-    "",// TODO
+    "Pikakelaus <<",
     "",// TODO
     "Atrás rápido",
     "Girisma piso",
@@ -3253,7 +3253,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "Chaîne+",
     "",// TODO
-    "",// TODO
+    "Kanava +",
     "",// TODO
     "Canal +",
     "Kanali+",
@@ -3270,7 +3270,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "Chaîne-",
     "",// TODO
-    "",// TODO
+    "Kanava -",
     "",// TODO
     "Canal -",
     "Kanali-",
@@ -3287,7 +3287,7 @@ const tI18nPhrase Phrases[] = {
     "Volume+",
     "Volume+",
     "Volum+",
-    "Äänenvoimakkuus+",
+    "Äänenvoimakkuus +",
     "Glosnej",
     "Volumen+",
     "Entasi+",
@@ -3304,7 +3304,7 @@ const tI18nPhrase Phrases[] = {
     "Volume-",
     "Volume-",
     "Volum-",
-    "Äänenvoimakkuus-",
+    "Äänenvoimakkuus -",
     "Ciszej",
     "Volumen-",
     "Entasi-",
@@ -3321,7 +3321,7 @@ const tI18nPhrase Phrases[] = {
     "Sem som",
     "Coupure du son",
     "Lyd av",
-    "Äänen vaimennus",
+    "Mykistä",
     "Cisza",
     "Mudo",
     "Siopilo",
@@ -3373,7 +3373,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO French: still missing
     "",// TODO
     "",// TODO
-    "",// TODO
+    "pois",
     "",// TODO
     "off",
     "klisto",
@@ -3390,7 +3390,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "aucun",
     "",// TODO
-    "",// TODO
+    "tyhjä",
     "",// TODO
     "ninguno"
     "kanena",
@@ -3407,7 +3407,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "auto",
     "",// TODO
-    "",// TODO
+    "auto",
     "",// TODO
     "auto",
     "aftomato",
@@ -3458,7 +3458,7 @@ const tI18nPhrase Phrases[] = {
     "Disk",
     "Disque",
     "Disk",
-    "Disk",
+    "Levy",
     "Disk",
     "Disco",
     "Disk",
@@ -3492,7 +3492,7 @@ const tI18nPhrase Phrases[] = {
     "Saltar: ",
     "Accès direct: ",
     "Hopp: ",
-    "Hyppää: ",
+    "Siirry: ",
     "Skok: ",
     "Salta a: ",
     "Pidima: ",
@@ -3543,7 +3543,7 @@ const tI18nPhrase Phrases[] = {
     " Parar gravação ",
     " Arrêter l'enregistrement ",
     " Stopp opptak fra ",
-    " Pysäytä nauhoitus ",
+    " Pysäytä tallennus ",
     " Zatrzymac nagrywanie ",
     " Parar grabación ",
     " Telos egrafis ",
@@ -3560,7 +3560,7 @@ const tI18nPhrase Phrases[] = {
     " Anular modificação",
     " Annuler le montage",
     " Avbryt redigering",
-    " Peruuta muokkaus",
+    " Peru muokkaus",
     " Przerwac montaz",
     " Anular modificación ",
     " Akirosi epexsergasias",
@@ -3577,7 +3577,7 @@ const tI18nPhrase Phrases[] = {
     "A mudar interface DVB primário...",
     "Changement de carte DVB primaire...",
     "Bytter første DVB-enhet...",
-    "Vaihdetaan ensisijainen vastaanotin...",
+    "Vaihdetaan päävastaanottimelle...",
     "Pierwszy interfejs DVB przelacza...",
     "Cambio al interface DVB primario...",
     "I protevon DVB Karta alazi...",
@@ -3662,7 +3662,7 @@ const tI18nPhrase Phrases[] = {
     "A pesquisar gravações...",
     "Recherche des enregistrements...",
     "Går igjennom opptakene...",
-    "haetaan nauhoituksia...",
+    "haetaan tallenteita...",
     "Skan nagran...",
     "buscando grabaciones...",
     "Eksetasi egrafon...",
@@ -3679,7 +3679,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "Pause de l'émission en direct...",
     "",// TODO
-    "",// TODO
+    "Keskeytetään lähetys...",
     "",// TODO
     "Emisión en directo parada...",
     "",// TODO
@@ -3696,7 +3696,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "Ce plugin n'a pas de paramètres!",
     "",// TODO
-    "Tällä laajennoksella ei ole asetuksia!",
+    "Tällä laajennuksella ei ole asetuksia!",
     "",// TODO
     "Este plugin no admite configuración",
     "Afto to plugin den exi parametrous",
