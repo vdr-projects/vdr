@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 1.26 2003/08/17 09:03:46 kls Exp $
+ * $Id: recording.h 1.27 2003/09/09 16:00:56 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -12,6 +12,7 @@
 
 #include <time.h>
 #include "config.h"
+#include "thread.h"
 #include "timers.h"
 #include "tools.h"
 
@@ -130,6 +131,7 @@ private:
   int size, last;
   tIndex *index;
   cResumeFile resumeFile;
+  cMutex mutex;
   bool CatchUp(int Index = -1);
 public:
   cIndexFile(const char *FileName, bool Record);
