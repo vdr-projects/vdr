@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.108 2003/05/11 13:54:23 kls Exp $
+ * $Id: i18n.c 1.109 2003/05/16 12:44:43 kls Exp $
  *
  * Translations provided by:
  *
@@ -1547,6 +1547,22 @@ const tI18nPhrase Phrases[] = {
     "Kan inte starta Transfer Mode!",
     "Nu pot porni Modul de Transfer!",
     "Transfer-Mode nem indítható!",
+  },
+  { "No editing marks defined!",
+    "Keine Schnittmarken gesetzt!",
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
   },
   { "Can't start editing process!",
     "Schnitt kann nicht gestartet werden!",

@@ -2152,3 +2152,5 @@ Video Disk Recorder Revision History
   waiting functionality it can call the new SetTimeouts() function.
 - Moved the call to cPlugin::Start() further up in vdr.c, to make sure it gets
   called before trying to learn the keys (problem reported by Oliver Endriss).
+- No longer starting the editing process if no marks have been set (thanks to
+  Matthias Raus for reporting this one).
