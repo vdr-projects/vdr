@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.43 2003/05/16 13:26:43 kls Exp $
+ * $Id: device.c 1.44 2003/05/25 10:57:59 kls Exp $
  */
 
 #include "device.h"
@@ -23,7 +23,7 @@
 // --- cDevice ---------------------------------------------------------------
 
 // The default priority for non-primary devices:
-#define DEFAULTPRIORITY  -2
+#define DEFAULTPRIORITY  -1
 
 int cDevice::numDevices = 0;
 int cDevice::useDevice = 0;

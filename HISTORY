@@ -2172,3 +2172,39 @@ Video Disk Recorder Revision History
   to Lars Bläser for reporting this one).
 - No longer waiting inside cIndexFile::CatchUp() to avoid shortly blocking replay
   at the end of a recording.
+
+2003-05-25: Version 1.1.33
+
+- Modified handling of audio packets in cDvbPlayer for better sync with external
+  AC3 replay (thanks to Werner Fink).
+- Fixed a memory leak in cNonBlockingFileReader (thanks to Stefan Huelswitt).
+- Completed the French OSD texts (thanks to Gregoire Favre).
+- Completed the Finnish OSD texts (thanks to Niko Tarnanen and Rolf Ahrenberg).
+- Fixed I/O handling in case an explicit controlling terminal is given (thanks
+  to Oliver Endriss).
+- Fixed resume file handling in case the resume.vdr file can't be written
+  (thanks to Gerhard Steiner).
+- Fixed cutting a recording if there is only a single editing mark (thanks to
+  Ralf Klueber for reporting this one).
+- Fixed volume display in case a plugin has its own OSD open (thanks to Marcel
+  Wiesweg).
+- Fixed channel switching in the EPG scanner on single device systems.
+- Completed the Swedish OSD texts (thanks to Tomas Prybil).
+- Now switching to the channel used by the most recently started timer in case
+  the original current channel becomes unavailable due to a recording on a
+  different transponder. If this fails, a channel up/down switch is attempted as
+  a fallback solution (thanks to Lauri Tischler for reporting this one, and to
+  Hermann Gausterer for suggesting to switch to the recording channel).
+- Fixed cReplayControl::Show() to avoid a compiler warning in g++ 3.2.3 (thanks
+  to Jan Ekholm for reporting this one).
+- Completed the Slovenian OSD texts (thanks to Matjaz Thaler).
+- Changed the DEFAULTPRIORITY in device.c to -1, so that the primary device
+  will be used for FTA recordings in case the CAM is connected to a non-primary
+  device (thanks to Reinhard Walter Buchner for reporting this one).
+- The cCiHandler now closes its file handle when it gets destroyed.
+- Checking for duplicate recordings with the same file name and disabling the
+  second timer (thanks to Peter Bieringer for reporting this one).
+- Fixed handling newly created timers in case they are not confirmed with "Ok"
+  (thanks to Gerhard Steiner for reporting this one).
+- It is now possible to directly delete a timer that is currently recording
+  (thanks to Alexander Damhuis for reporting this one).

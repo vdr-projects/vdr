@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: cutter.c 1.3 2003/04/26 15:11:17 kls Exp $
+ * $Id: cutter.c 1.4 2003/05/24 11:59:33 kls Exp $
  */
 
 #include "cutter.h"
@@ -77,6 +77,7 @@ void cCuttingThread::Action(void)
      toMarks.Add(0);
      toMarks.Save();
      uchar buffer[MAXFRAMESIZE];
+     bool LastMark = false;
      bool cutIn = true;
      while (active) {
            uchar FileNumber;
@@ -116,7 +117,7 @@ void cCuttingThread::Action(void)
            // Write one frame:
 
            if (PictureType == I_FRAME) { // every file shall start with an I_FRAME
-              if (!Mark) // edited version shall end before next I-frame
+              if (LastMark) // edited version shall end before next I-frame
                  break;
               if (FileSize > MEGABYTE(Setup.MaxVideoFileSize)) {
                  toFile = toFileName->NextFile();
@@ -167,9 +168,8 @@ void cCuttingThread::Action(void)
                     FileSize = 0;
                     }
                  }
-              // the 'else' case (i.e. 'final end mark reached') is handled above
-              // in 'Write one frame', so that the edited version will end right
-              // before the next I-frame.
+              else
+                 LastMark = true;
               }
            }
      }

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.245 2003/05/16 12:40:12 kls Exp $
+ * $Id: menu.c 1.249 2003/05/25 14:06:17 kls Exp $
  */
 
 #include "menu.h"
@@ -834,6 +834,7 @@ private:
   cTimer *timer;
   cTimer data;
   int channel;
+  bool deleteIfCancelled;
   cMenuEditDateItem *firstday;
   void SetFirstDayItem(void);
 public:
@@ -847,6 +848,7 @@ cMenuEditTimer::cMenuEditTimer(int Index, bool New)
 {
   firstday = NULL;
   timer = Timers.Get(Index);
+  deleteIfCancelled = New;
   if (timer) {
      data = *timer;
      if (New)
@@ -867,6 +869,12 @@ cMenuEditTimer::cMenuEditTimer(int Index, bool New)
 
 cMenuEditTimer::~cMenuEditTimer()
 {
+  if (timer && deleteIfCancelled) {
+     int Index = timer->Index();
+     Timers.Del(timer);
+     Timers.Save();
+     isyslog("timer %d deleted", Index + 1);
+     }
   Timers.DecBeingEdited();
 }
 
@@ -907,6 +915,7 @@ eOSState cMenuEditTimer::ProcessKey(eKeys Key)
                           Timers.Save();
                           isyslog("timer %d modified (%s)", timer->Index() + 1, timer->active ? "active" : "inactive");
                           }
+                       deleteIfCancelled = false;
                      }
                      return osBack;
        case kRed:
@@ -1044,18 +1053,22 @@ eOSState cMenuTimers::Delete(void)
   // Check if this timer is active:
   cTimer *ti = CurrentTimer();
   if (ti) {
-     if (!ti->Recording()) {
-        if (Interface->Confirm(tr("Delete timer?"))) {
-           int Index = ti->Index();
-           Timers.Del(ti);
-           cOsdMenu::Del(Current());
-           Timers.Save();
-           Display();
-           isyslog("timer %d deleted", Index + 1);
+     if (Interface->Confirm(tr("Delete timer?"))) {
+        if (ti->Recording()) {
+           if (Interface->Confirm(tr("Timer still recording - really delete?"))) {
+              ti->Skip();
+              cRecordControls::Process(time(NULL));
+              }
+           else
+              return osContinue;
            }
+        int Index = ti->Index();
+        Timers.Del(ti);
+        cOsdMenu::Del(Current());
+        Timers.Save();
+        Display();
+        isyslog("timer %d deleted", Index + 1);
         }
-     else
-        Interface->Error(tr("Timer is recording!"));
      }
   return osContinue;
 }
@@ -1081,6 +1094,8 @@ eOSState cMenuTimers::Summary(void)
 
 eOSState cMenuTimers::ProcessKey(eKeys Key)
 {
+  cTimer *ti = HasSubMenu() ? CurrentTimer() : NULL;
+  int TimerNumber = ti ? ti->Index() : -1;
   eOSState state = cOsdMenu::ProcessKey(Key);
 
   if (state == osUnknown) {
@@ -1096,6 +1111,11 @@ eOSState cMenuTimers::ProcessKey(eKeys Key)
                      break;
        default: break;
        }
+     }
+  if (TimerNumber >= 0 && !HasSubMenu() && !Timers.Get(TimerNumber)) {
+     // a newly created timer wasn't confirmed with Ok
+     cOsdMenu::Del(Current());
+     Display();
      }
   return state;
 }
@@ -1263,7 +1283,7 @@ eOSState cMenuWhatsOn::Record(void)
         delete timer;
         timer = t;
         }
-     return AddSubMenu(new cMenuEditTimer(timer->Index(), true));
+     return AddSubMenu(new cMenuEditTimer(timer->Index(), !t));
      }
   return osContinue;
 }
@@ -1397,7 +1417,7 @@ eOSState cMenuSchedule::Record(void)
         delete timer;
         timer = t;
         }
-     return AddSubMenu(new cMenuEditTimer(timer->Index(), true));
+     return AddSubMenu(new cMenuEditTimer(timer->Index(), !t));
      }
   return osContinue;
 }
@@ -2938,6 +2958,23 @@ cRecordControl::cRecordControl(cDevice *Device, cTimer *Timer, bool Pause)
      }
   cRecording Recording(timer, Title, Subtitle, Summary);
   fileName = strdup(Recording.FileName());
+
+  // crude attempt to avoid duplicate recordings:
+  if (cRecordControls::GetRecordControl(fileName)) {
+     isyslog("already recording: '%s'", fileName);
+     if (Timer) {
+        timer->SetPending(false);
+        timer->SetRecording(false);
+        timer->OnOff();
+        }
+     else {
+        Timers.Del(timer);
+        Timers.Save();
+        }
+     timer = NULL;
+     return;
+     }
+
   cRecordingUserCommand::InvokeCommand(RUC_BEFORERECORDING, fileName);
   const cChannel *ch = timer->Channel();
   recorder = new cRecorder(fileName, ch->Ca(), timer->Priority(), ch->Vpid(), ch->Apid1(), ch->Apid2(), ch->Dpid1(), ch->Dpid2());
@@ -3240,7 +3277,7 @@ void cReplayControl::ClearLastReplayed(const char *FileName)
      }
 }
 
-void cReplayControl::Show(int Seconds)
+void cReplayControl::ShowTimed(int Seconds)
 {
   if (modeOnly)
      Hide();
@@ -3248,6 +3285,11 @@ void cReplayControl::Show(int Seconds)
      shown = ShowProgress(true);
      timeoutShow = (shown && Seconds > 0) ? time(NULL) + Seconds : 0;
      }
+}
+
+void cReplayControl::Show(void)
+{
+  ShowTimed();
 }
 
 void cReplayControl::Hide(void)
@@ -3447,7 +3489,7 @@ void cReplayControl::MarkToggle(void)
         marks.Del(m);
      else {
         marks.Add(Current);
-        Show(2);
+        ShowTimed(2);
         }
      marks.Save();
      }

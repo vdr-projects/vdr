@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.155 2003/05/16 12:11:45 kls Exp $
+ * $Id: vdr.c 1.159 2003/05/24 15:17:38 kls Exp $
  */
 
 #include <getopt.h>
@@ -323,6 +323,7 @@ int main(int argc, char *argv[])
      stdin  = freopen(Terminal, "r", stdin);
      stdout = freopen(Terminal, "w", stdout);
      stderr = freopen(Terminal, "w", stderr);
+     HasStdin = true;
      }
 
   isyslog("VDR version %s started", VDRVERSION);
@@ -429,8 +430,6 @@ int main(int argc, char *argv[])
   else
      cDevice::PrimaryDevice()->SetVolume(Setup.CurrentVolume, true);
 
-  cEITScanner EITScanner;
-
   cSIProcessor::Read();
 
   // Signal handlers:
@@ -454,6 +453,7 @@ int main(int argc, char *argv[])
   cOsdObject *Menu = NULL;
   cOsdObject *Temp = NULL;
   int LastChannel = -1;
+  int LastTimerChannel = -1;
   int PreviousChannel = cDevice::CurrentChannel();
   time_t LastActivity = 0;
   int MaxLatencyTime = 0;
@@ -469,11 +469,15 @@ int main(int argc, char *argv[])
         // Attach launched player control:
         cControl::Attach();
         // Make sure we have a visible programme in case device usage has changed:
-        if (cDevice::PrimaryDevice()->HasDecoder() && !cDevice::PrimaryDevice()->HasProgramme()) {
+        if (!EITScanner.Active() && cDevice::PrimaryDevice()->HasDecoder() && !cDevice::PrimaryDevice()->HasProgramme()) {
            static time_t lastTime = 0;
            if (time(NULL) - lastTime > MINCHANNELWAIT) {
-              if (!Channels.SwitchTo(cDevice::CurrentChannel()))
+              if (!Channels.SwitchTo(cDevice::CurrentChannel()) // try to switch to the original channel...
+                  && !(LastTimerChannel > 0 && Channels.SwitchTo(LastTimerChannel)) // ...or the one used by the last timer...
+                  && !cDevice::SwitchChannel(1) // ...or the next higher available one...
+                  && !cDevice::SwitchChannel(-1)) // ...or the next lower available one
                  lastTime = time(NULL); // don't do this too often
+              LastTimerChannel = -1;
               }
            }
         // Restart the Watchdog timer:
@@ -500,6 +504,8 @@ int main(int argc, char *argv[])
            if (Timer) {
               if (!cRecordControls::Start(Timer))
                  Timer->SetPending(true);
+              else
+                 LastTimerChannel = Timer->Channel()->Number();
               }
            }
         // CAM control:
@@ -563,7 +569,7 @@ int main(int argc, char *argv[])
                   }
                else
                   cDevice::PrimaryDevice()->SetVolume(NORMALKEY(key) == kVolDn ? -VOLUMEDELTA : VOLUMEDELTA);
-               if (!Interface->IsOpen())
+               if (!Menu && !Interface->IsOpen())
                   Menu = Temp = cDisplayVolume::Create();
                cDisplayVolume::Process(key);
                key = kNone; // nobody else needs to see these keys

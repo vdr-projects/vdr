@@ -172,6 +172,7 @@ Stefan Huelswitt <huels@iname.com>
  for implementing setting the "broken link" flag for GOPs at the beginning of a new
  video sequence, which avoids artefacts when cutting
  for suggesting to add VDRVERSNUM to config.h
+ for fixing a memory leak in cNonBlockingFileReader
 
 Ulrich Röder <roeder@efr-net.de>
  for pointing out that there are channels that have a symbol rate higher than
@@ -236,6 +237,8 @@ Werner Fink <werner@suse.de>
  for improving keyboard detection
  for adding some missing cAudio handling calls
  for replacing the 'for' loops in StripAudioPackets() with memset() calls
+ for modifying handling of audio packets in cDvbPlayer for better sync with external
+ AC3 replay
 
 Rolf Hakenes <hakenes@hippomi.de>
  for providing 'libdtv' and adapting the EIT mechanisms to it
@@ -409,6 +412,7 @@ Rudi Hofer (Rudi.Hofer@cadsoft.de)
 Gregoire Favre <greg@ulima.unil.ch>
  for fixing some function headers to make them compile with gcc 3.x
  for reporting a bug in taking an active SVDRP connection into account when doing shutdown
+ for translating OSD texts to the French language
 
 Sven Grothklags <sven@uni-paderborn.de>
  for fixing the cutting mechanism to make it re-sync in case a frame is larger
@@ -471,15 +475,20 @@ Oliver Endriss <o.endriss@gmx.de>
  for reporting a problem with cPlugin::Start() being called after trying to learn
  the remote control keys
  for reporting a bug in reading 'epg.data' for channels with non-zero RID
+ for fixing I/O handling in case an explicit controlling terminal is given
 
 Reinhard Walter Buchner <rw.buchner@freenet.de>
  for adding some satellites to 'sources.conf'
  for his help in testing tuning with "Motor-DiSEqC"
  for his help in debugging CAM support
+ for reporting a problem with recording FTA channels on the CAM device in case
+ the CAM is not connected to the primary device
 
 Lauri Tischler <lauri.tischler@efore.fi>
  for helping to test and debug the new channel source and DiSEqC handling
  for reporting a faulty parameter initialization in menu.c
+ for reporting a problem in case the original current channel becomes
+ unavailable due to a recording on a different transponder
 
 Andy Carter <fruit@ukgateway.net>
  for helping to test new DVB-T handling
@@ -501,6 +510,9 @@ Gerhard Steiner <steiner@mail.austria.com>
  records as a newline character
  for reporting a bug in displaying messages in the status line in case they exceed
  the OSD width
+ for fixing resume file handling in case the resume.vdr file can't be written
+ for reporting a problem with newly created timers in case they are not confirmed
+ with "Ok"
 
 Jaakko Hyvätti <jaakko@hyvatti.iki.fi>
  for translating OSD texts to the Finnish language
@@ -573,12 +585,14 @@ Teemu Rantanen <tvr@iki.fi>
 
 Jan Ekholm <chakie@infa.abo.fi>
  for adding/improving some Swedish language OSD texts
+ for reporting a compiler warning in g++ 3.2.3 regarding cReplayControl::Show()
 
 Marcel Wiesweg <marcel.wiesweg@gmx.de>
  for pointing out a problem with high CPU load during replay
  for reporting broken support for raw OSDs of plugins
  for reporting a problem with cReceivers that want to receive from PIDs that are
  currently not transmitting
+ for fixing volume display in case a plugin has its own OSD open
 
 Torsten Herz <torsten.herz@web.de>
  for fixing a possible deadlock when using the "Blue" button in the "Schedules" menu
@@ -669,3 +683,19 @@ Marc Rovira Vall <tm05462@salleURL.edu> and Ramon Roca <ramon.roca@xcombo.com>
 Lars Bläser <LBlaeser@hofheim.de>
  for reporting a bug in EPG bugfix statistics which made log entires for undefined
  channels
+
+Niko Tarnanen <niko.tarnanen@hut.fi> and Rolf Ahrenberg <rahrenbe@cc.hut.fi>
+ for translating OSD texts to the Finnish language
+
+Ralf Klueber <ralf.klueber@vodafone.com>
+ for reporting a bug in cutting a recording if there is only a single editing mark
+
+Hermann Gausterer <mrq1@gmx.net>
+ for suggesting to switch to the recording channel in case the current channel
+ becomes unavailable
+
+Peter Bieringer <pb@bieringer.de>
+ for reporting a problem with duplicate recordings with the same file name
+
+Alexander Damhuis <ad@phonedation.de>
+ for reporting problems when deleting a timer that is currently recording

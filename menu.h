@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 1.55 2003/05/11 13:43:58 kls Exp $
+ * $Id: menu.h 1.56 2003/05/24 16:35:52 kls Exp $
  */
 
 #ifndef __MENU_H
@@ -50,7 +50,7 @@ class cDisplayVolume : public cOsdObject {
 private:
   int timeout;
   static cDisplayVolume *displayVolume;
-  void Show(void);
+  virtual void Show(void);
   cDisplayVolume(void);
 public:
   virtual ~cDisplayVolume();
@@ -154,7 +154,7 @@ private:
   void TimeSearchDisplay(void);
   void TimeSearchProcess(eKeys Key);
   void TimeSearch(void);
-  void Show(int Seconds = 0);
+  void ShowTimed(int Seconds = 0);
   static char *fileName;
   static char *title;
   void DisplayAtBottom(const char *s = NULL);
@@ -169,6 +169,7 @@ public:
   cReplayControl(void);
   virtual ~cReplayControl();
   virtual eOSState ProcessKey(eKeys Key);
+  virtual void Show(void);
   virtual void Hide(void);
   bool Visible(void) { return visible; }
   static void SetRecording(const char *FileName, const char *Title);
