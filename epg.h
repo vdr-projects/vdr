@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.h 1.11 2004/02/29 14:10:06 kls Exp $
+ * $Id: epg.h 1.12 2004/03/06 10:09:40 kls Exp $
  */
 
 #ifndef __EPG_H
@@ -49,9 +49,11 @@ public:
   const char *ShortText(void) const { return shortText; }
   const char *Description(void) const { return description; }
   time_t StartTime(void) const { return startTime; }
+  time_t EndTime(void) const { return startTime + duration; }
   int Duration(void) const { return duration; }
   time_t Vps(void) const { return vps; }
   bool HasTimer(void) const;
+  bool IsRunning(bool OrAboutToStart = false) const;
   const char *GetDateString(void) const;
   const char *GetTimeString(void) const;
   const char *GetEndTimeString(void) const;

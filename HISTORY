@@ -2719,3 +2719,4 @@ Video Disk Recorder Revision History
 - Completed the Finnish OSD texts (thanks to Rolf Ahrenberg).
 - Fixed some descriptor handling in 'libsi' (thanks to Stéphane Esté-Gracias).
 - Fixed handling the current menu item (thanks to Marc Hoppe).
+- Fixed assigning events to timers (they no longer get "stuck").

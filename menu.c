@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.293 2004/02/29 14:11:16 kls Exp $
+ * $Id: menu.c 1.294 2004/03/06 10:13:15 kls Exp $
  */
 
 #include "menu.h"
@@ -18,7 +18,6 @@
 #include "cutter.h"
 #include "eitscan.h"
 #include "i18n.h"
-#include "libsi/si.h"
 #include "menuitems.h"
 #include "plugin.h"
 #include "recording.h"
@@ -1216,7 +1215,7 @@ cMenuWhatsOnItem::cMenuWhatsOnItem(const cEvent *Event, cChannel *Channel)
   int TimerMatch;
   char t = Timers.GetMatch(Event, &TimerMatch) ? (TimerMatch == tmFull) ? 'T' : 't' : ' ';
   char v = event->Vps() && (event->Vps() - event->StartTime()) ? 'V' : ' ';
-  char r = event->RunningStatus() > SI::RunningStatusNotRunning ? '*' : ' ';
+  char r = event->IsRunning() ? '*' : ' ';
   asprintf(&buffer, "%d\t%.*s\t%.*s\t%c%c%c\t%s", channel->Number(), 6, channel->Name(), 5, event->GetTimeString(), t, v, r, event->Title());
   SetText(buffer, false);
 }
@@ -1334,7 +1333,7 @@ cMenuScheduleItem::cMenuScheduleItem(const cEvent *Event)
   int TimerMatch;
   char t = Timers.GetMatch(Event, &TimerMatch) ? (TimerMatch == tmFull) ? 'T' : 't' : ' ';
   char v = event->Vps() && (event->Vps() - event->StartTime()) ? 'V' : ' ';
-  char r = event->RunningStatus() > SI::RunningStatusNotRunning ? '*' : ' ';
+  char r = event->IsRunning() ? '*' : ' ';
   asprintf(&buffer, "%.*s\t%.*s\t%c%c%c\t%s", 5, event->GetDateString(), 5, event->GetTimeString(), t, v, r, event->Title());
   SetText(buffer, false);
 }
@@ -1390,7 +1389,7 @@ void cMenuSchedule::PrepareSchedule(cChannel *Channel)
         time_t now = time(NULL) - Setup.EPGLinger * 60;
         for (int a = 0; a < num; a++) {
             const cEvent *Event = Schedule->GetEventNumber(a);
-            if (Event->StartTime() + Event->Duration() > now || Event == PresentEvent)
+            if (Event->EndTime() > now || Event == PresentEvent)
                Add(new cMenuScheduleItem(Event), Event == PresentEvent);
             }
         }
