@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 1.4 2004/01/09 15:22:18 kls Exp $
+ * $Id: epg.c 1.5 2004/02/14 11:00:00 kls Exp $
  */
 
 #include "epg.h"
@@ -175,7 +175,7 @@ bool cEvent::Read(FILE *f, cSchedule *Schedule)
   return false;
 }
 
-#define MAXEPGBUGFIXSTATS 7
+#define MAXEPGBUGFIXSTATS 8
 #define MAXEPGBUGFIXCHANS 100
 struct tEpgBugFixStats {
   int hits;
@@ -257,6 +257,13 @@ void cEvent::FixEpgBugs(void)
   strreplace(title, '\n', ' ');
   strreplace(shortText, '\n', ' ');
   strreplace(description, '\n', ' ');
+  // Same for control characters:
+  strreplace(title, '\x86', ' ');
+  strreplace(title, '\x87', ' ');
+  strreplace(shortText, '\x86', ' ');
+  strreplace(shortText, '\x87', ' ');
+  strreplace(description, '\x86', ' ');
+  strreplace(description, '\x87', ' ');
 
   if (Setup.EPGBugfixLevel == 0)
      return;
@@ -395,6 +402,20 @@ void cEvent::FixEpgBugs(void)
            shortText = NULL;
            EpgBugFixStat(6, ChannelID());
            }
+        }
+
+     // Some channels put the same information into ShortText and Description.
+     // In that case we delete one of them:
+     if (shortText && description && strcmp(shortText, description) == 0) {
+        if (strlen(shortText) > MAX_USEFUL_EPISODE_LENGTH) {
+           free(shortText);
+           shortText = NULL;
+           }
+        else {
+           free(description);
+           description = NULL;
+           }
+        EpgBugFixStat(7, ChannelID());
         }
 
      // Some channels use the ` ("backtick") character, where a ' (single quote)
