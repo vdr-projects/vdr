@@ -1913,3 +1913,6 @@ Video Disk Recorder Revision History
   2002-01-06 or higher (with the new firmware supporting the "Link Layer" protocol).
 - Added an EPG bugfix that moves the Subtitle data to the Extended Description in
   case the latter is empty and the Subtitle exceeds some useful length.
+- Since several channels put very long strings into the Subtitle part of their
+  EPG data, that string is now limited in length when used in a recording's
+  file name.

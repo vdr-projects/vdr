@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.71 2002/12/23 12:41:20 kls Exp $
+ * $Id: recording.c 1.72 2003/01/06 15:36:12 kls Exp $
  */
 
 #include "recording.h"
@@ -57,6 +57,8 @@
 
 #define TIMERMACRO_TITLE    "TITLE"
 #define TIMERMACRO_EPISODE  "EPISODE"
+
+#define MAX_SUBTITLE_LENGTH  40
 
 void RemoveDeletedRecordings(void)
 {
@@ -306,10 +308,17 @@ cRecording::cRecording(cTimer *Timer, const char *Title, const char *Subtitle, c
   fileName = NULL;
   name = NULL;
   // set up the actual name:
+  const char *OriginalSubtitle = Subtitle;
+  char SubtitleBuffer[MAX_SUBTITLE_LENGTH];
   if (isempty(Title))
      Title = Timer->Channel()->Name();
   if (isempty(Subtitle))
      Subtitle = " ";
+  else if (strlen(Subtitle) > MAX_SUBTITLE_LENGTH) {
+     // let's make sure the Subtitle doesn't produce too long a file name:
+     strn0cpy(SubtitleBuffer, Subtitle, MAX_SUBTITLE_LENGTH);
+     Subtitle = SubtitleBuffer;
+     }
   char *macroTITLE   = strstr(Timer->File(), TIMERMACRO_TITLE);
   char *macroEPISODE = strstr(Timer->File(), TIMERMACRO_EPISODE);
   if (macroTITLE || macroEPISODE) {
@@ -333,6 +342,7 @@ cRecording::cRecording(cTimer *Timer, const char *Title, const char *Subtitle, c
   // handle summary:
   summary = !isempty(Timer->Summary()) ? strdup(Timer->Summary()) : NULL;
   if (!summary) {
+     Subtitle = OriginalSubtitle;
      if (isempty(Subtitle))
         Subtitle = "";
      if (isempty(Summary))
