@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.h 1.4 2000/04/24 09:44:32 kls Exp $
+ * $Id: osd.h 1.5 2000/04/29 14:45:47 kls Exp $
  */
 
 #ifndef __OSD_H
@@ -17,11 +17,12 @@
 #define MAXOSDITEMS 9
 
 enum eOSState { osUnknown,
+                osMenu,
                 osContinue,
-                osProcessed,
                 osChannels,
                 osTimer,
                 osRecordings,
+                osReplay,
                 osBack,
                 osEnd,
               };
@@ -44,7 +45,14 @@ public:
   virtual eOSState ProcessKey(eKeys Key);
   };
 
-class cOsdMenu : public cList<cOsdItem> {
+class cOsdBase {
+public:
+  cOsdBase(void) {}
+  virtual ~cOsdBase() {}
+  virtual eOSState ProcessKey(eKeys Key) = 0;
+  };
+
+class cOsdMenu : public cOsdBase, public cList<cOsdItem> {
 private:
   char *title;
   int cols[cInterface::MaxCols];

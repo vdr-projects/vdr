@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 1.5 2000/04/24 15:31:53 kls Exp $
+ * $Id: menu.h 1.6 2000/04/29 15:38:39 kls Exp $
  */
 
 #ifndef _MENU_H
@@ -18,13 +18,19 @@ public:
   virtual eOSState ProcessKey(eKeys Key);
   };
   
-class cReplayDisplay {
+class cReplayControl : public cOsdBase {
 private:
-  bool shown;
+  bool visible, shown;
+  void Show(void);
+  void Hide(void);
+  static char *fileName;
+  static char *title;
 public:
-  cReplayDisplay(void);
-  ~cReplayDisplay();
-  eKeys ProcessKey(eKeys Key);
+  cReplayControl(void);
+  virtual ~cReplayControl();
+  virtual eOSState ProcessKey(eKeys Key);
+  bool Visible(void) { return visible; }
+  static void SetRecording(const char *FileName, const char *Title);
   };
 
 #endif //_MENU_H
