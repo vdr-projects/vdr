@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.63 2001/08/11 15:33:30 kls Exp $
+ * $Id: vdr.c 1.64 2001/08/26 15:02:00 kls Exp $
  */
 
 #include <getopt.h>
@@ -323,7 +323,7 @@ int main(int argc, char *argv[])
            }
         // Timers and Recordings:
         if (!Menu) {
-           cTimer *Timer = cTimer::GetMatch();
+           cTimer *Timer = Timers.GetMatch();
            if (Timer) {
               if (!cRecordControls::Start(Timer))
                  Timer->SetPending(true);

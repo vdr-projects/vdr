@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.58 2001/08/26 14:11:29 kls Exp $
+ * $Id: config.c 1.59 2001/08/26 14:46:43 kls Exp $
  */
 
 #include "config.h"
@@ -422,13 +422,6 @@ int cTimer::TimeToInt(int t)
   return (t / 100 * 60 + t % 100) * 60;
 }
 
-time_t cTimer::Day(time_t t)
-{
-  struct tm d = *localtime(&t);
-  d.tm_hour = d.tm_min = d.tm_sec = 0;
-  return mktime(&d);
-}
-
 int cTimer::ParseDay(const char *s)
 {
   char *tail;
@@ -605,21 +598,6 @@ void cTimer::SetPending(bool Pending)
   pending = Pending;
 }
 
-cTimer *cTimer::GetMatch(void)
-{
-  time_t t = time(NULL); // all timers must be checked against the exact same time to correctly handle Priority!
-  cTimer *t0 = NULL;
-  cTimer *ti = (cTimer *)Timers.First();
-  while (ti) {
-        if (!ti->recording && ti->Matches(t)) {
-           if (!t0 || ti->priority > t0->priority)
-              t0 = ti;
-           }
-        ti = (cTimer *)ti->Next();
-        }
-  return t0;
-}
-
 // --- cCommand -------------------------------------------------------------
 
 char *cCommand::result = NULL;
@@ -781,6 +759,33 @@ cTimer *cTimers::GetTimer(cTimer *Timer)
         ti = (cTimer *)ti->Next();
         }
   return NULL;
+}
+
+cTimer *cTimers::GetMatch(void)
+{
+  time_t t = time(NULL); // all timers must be checked against the exact same time to correctly handle Priority!
+  cTimer *t0 = NULL;
+  cTimer *ti = First();
+  while (ti) {
+        if (!ti->recording && ti->Matches(t)) {
+           if (!t0 || ti->priority > t0->priority)
+              t0 = ti;
+           }
+        ti = (cTimer *)ti->Next();
+        }
+  return t0;
+}
+
+cTimer *cTimers::GetNextActiveTimer(void)
+{
+  cTimer *t0 = NULL;
+  cTimer *ti = First();
+  while (ti) {
+        if (ti->active && (!t0 || *ti < *t0))
+           t0 = ti;
+        ti = (cTimer *)ti->Next();
+        }
+  return t0;
 }
 
 // -- cSetup -----------------------------------------------------------------
