@@ -3381,3 +3381,4 @@ Video Disk Recorder Revision History
 - Fixed a possible freeze in pause mode in case a device's PlayPesPacket() function
   permanently returns 0 (thanks to Reinhard Nissl and Olaf Titz).
 - Completed the Finnish OSD texts (thanks to Rolf Ahrenberg).
+- Restricted the "setting audio track" log message to automatic changes during replay.

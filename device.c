@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.88 2005/02/08 11:37:09 kls Exp $
+ * $Id: device.c 1.89 2005/02/08 13:06:12 kls Exp $
  */
 
 #include "device.h"
@@ -756,7 +756,8 @@ void cDevice::EnsureAudioTrack(bool Force)
      // Make sure we're set to an available audio track:
      const tTrackId *Track = GetTrack(GetCurrentAudioTrack());
      if (Force || !Track || !Track->id || PreferredTrack != GetCurrentAudioTrack()) {
-        dsyslog("setting audio track to %d", PreferredTrack);
+        if (!Force) // only log this for automatic changes
+           dsyslog("setting audio track to %d", PreferredTrack);
         SetCurrentAudioTrack(PreferredTrack);
         }
      }
