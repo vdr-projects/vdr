@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 1.4 2000/11/14 18:38:25 kls Exp $
+ * $Id: thread.c 1.5 2000/11/22 17:11:04 kls Exp $
  */
 
 #include "thread.h"
@@ -49,7 +49,7 @@ bool cThread::Start(void)
   if (!running) {
      running = true;
      parentPid = getpid();
-     pthread_create(&thread, NULL, &StartThread, (void *)this);
+     pthread_create(&thread, NULL, (void *(*) (void *))&StartThread, (void *)this);
      }
   return true; //XXX return value of pthread_create()???
 }
