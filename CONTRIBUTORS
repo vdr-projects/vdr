@@ -150,6 +150,7 @@ Stefan Huelswitt <huels@iname.com>
  for helping to fix starting a recording of the current channel with only one DVB card
  for making cStatus::MsgChannelSwitch() only be called if a channel is actually going to
  be switched or has actually been switched successfully
+ for adding a missing StripAudioPackets() to cDvbPlayer::Action()
 
 Ulrich Röder <roeder@efr-net.de>
  for pointing out that there are channels that have a symbol rate higher than

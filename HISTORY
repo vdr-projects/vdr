@@ -1475,3 +1475,5 @@ Video Disk Recorder Revision History
   seconds or more (this avoids bogus entries like "PROGRAMMES ALLEMANDS").
 - Fixed opening /dev/video in cDvbDevice::GrabImage() in case of NEWSTRUCT
   driver (thanks to Andreas Schultz).
+- Added a missing StripAudioPackets() to cDvbPlayer::Action() (thanks to
+  Stefan Huelswitt).
