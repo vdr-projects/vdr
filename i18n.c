@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.49 2002/01/27 13:11:23 kls Exp $
+ * $Id: i18n.c 1.50 2002/01/27 15:52:32 kls Exp $
  *
  * Slovenian translations provided by Miha Setina <mihasetina@softhome.net>
  * Italian   translations provided by Alberto Carraro <bertocar@tin.it>
@@ -1409,6 +1409,14 @@ const tPhrase Phrases[] = {
   },
   { "Editing process failed!",
     "Schnitt gescheitert!",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+  },
+  { "scanning recordings...",
+    "Aufzeichnungen werden durchsucht...",
     "", // TODO
     "", // TODO
     "", // TODO

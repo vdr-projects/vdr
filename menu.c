@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.145 2002/01/27 13:09:49 kls Exp $
+ * $Id: menu.c 1.146 2002/01/27 15:50:50 kls Exp $
  */
 
 #include "menu.h"
@@ -1544,6 +1544,10 @@ cMenuRecordings::cMenuRecordings(const char *Base, int Level, bool OpenSubMenus)
 {
   base = Base ? strdup(Base) : NULL;
   level = Setup.RecordingDirs ? Level : -1;
+  if (!Base) {
+     Interface->Status(tr("scanning recordings..."));
+     Interface->Flush();
+     }
   if (Base || Recordings.Load()) {
      const char *LastReplayed = cReplayControl::LastReplayed();
      cMenuRecordingItem *LastItem = NULL;

@@ -916,3 +916,5 @@ Video Disk Recorder Revision History
 - The "Main" menu now displays in its title the used disk space (in percent)
   and the estimated free disk space (in hh:mm), assuming a data rate of 30 MB
   per minute.
+- Activating the "Recordings" menu now displays "scanning recordings..." to
+  give the user some feedback in case this takes longer.
