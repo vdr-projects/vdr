@@ -1927,3 +1927,4 @@ Video Disk Recorder Revision History
   class to make sure replay remains smooth even under heavy system load.
 - Increased the maximum possible packet size in remux.c to avoid corrupted streams
   with broadcasters that send extremely large PES packets (thanks to Teemu Rantanen).
+- Added TS error checking to remux.c (thanks to Teemu Rantanen).

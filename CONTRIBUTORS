@@ -529,3 +529,4 @@ Paul Gohn <pgohn@nexgo.de>
 Teemu Rantanen <tvr@iki.fi>
  for increased the maximum possible packet size in remux.c to avoid corrupted streams
  with broadcasters that send extremely large PES packets
+ for adding TS error checking to remux.c
