@@ -1602,3 +1602,4 @@ Video Disk Recorder Revision History
 - Commands in the file 'commands.conf' can now have a '?' at the end of their
   title, which will result in a confirmation prompt before executing the
   command.
+- Changed a few leftover 'new char[...]' to MALLOC(char, ...).
