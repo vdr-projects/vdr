@@ -23,6 +23,10 @@ Video Disk Recorder User's Manual
   Blue    -           Stop/Resume  Mark       On/Off(1)  -             Summary           Stop
   0..9    Ch select   -            -          -          Numeric inp.  Exec cmd(2)       Editing
 
+  In a numerical input field (like the response to a CAM enquiry) the keys 0..9
+  are used to enter the data, and the Left key can be used to delete the last
+  entered digit.
+
   If your remote control provides additional keys, they can be used for the
   following functions:
 
