@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.6 2000/04/24 13:54:23 kls Exp $
+ * $Id: tools.c 1.7 2000/04/24 15:01:35 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -21,6 +21,17 @@
 #define MaxBuffer 1000
 
 int SysLogLevel = 3;
+
+bool DataAvailable(int filedes)
+{
+  fd_set set;
+  FD_ZERO(&set);
+  FD_SET(filedes, &set);
+  struct timeval timeout;
+  timeout.tv_sec = 0;
+  timeout.tv_usec = 10000;
+  return select(FD_SETSIZE, &set, NULL, NULL, &timeout) > 0 && FD_ISSET(filedes, &set);
+}
 
 void writechar(int filedes, char c)
 {
@@ -41,7 +52,13 @@ char readchar(int filedes)
 
 bool readint(int filedes, int &n)
 {
-  return read(filedes, &n, sizeof(n)) == sizeof(n);
+  return DataAvailable(filedes) && read(filedes, &n, sizeof(n)) == sizeof(n);
+}
+
+void purge(int filedes)
+{
+  while (DataAvailable(filedes))
+        readchar(filedes);
 }
 
 char *readline(FILE *f)

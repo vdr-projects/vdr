@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.h 1.7 2000/04/24 10:46:47 kls Exp $
+ * $Id: dvbapi.h 1.8 2000/04/24 15:31:07 kls Exp $
  */
 
 #ifndef __DVBAPI_H
@@ -75,7 +75,7 @@ private:
   int lastProgress;
   char *replayTitle;
 public:
-  void ShowProgress(bool Initial = false);
+  bool ShowProgress(bool Initial = false);
 
   // Channel facilities
 

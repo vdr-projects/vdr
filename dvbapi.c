@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.7 2000/04/24 13:27:38 kls Exp $
+ * $Id: dvbapi.c 1.8 2000/04/24 15:30:35 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -1150,7 +1150,7 @@ void cDvbApi::Text(int x, int y, const char *s, eDvbColor colorFg, eDvbColor col
 #endif
 }
 
-void cDvbApi::ShowProgress(bool Initial)
+bool cDvbApi::ShowProgress(bool Initial)
 {
   int Current, Total;
 
@@ -1191,7 +1191,9 @@ void cDvbApi::ShowProgress(bool Initial)
         }
 #endif
      Text(0, 2, cIndexFile::Str(Current));
+     return true;
      }
+  return false;
 }
 
 bool cDvbApi::SetChannel(int FrequencyMHz, char Polarization, int Diseqc, int Srate, int Vpid, int Apid, int Ca, int Pnr)
@@ -1538,6 +1540,7 @@ bool cDvbApi::GetIndex(int *Current, int *Total)
 {
   if (pidReplay) {
      int total;
+     purge(fromReplay);
      writechar(toReplay, dvbGetIndex);
      if (readint(fromReplay, *Current) && readint(fromReplay, total)) {
         if (Total)
@@ -1545,7 +1548,8 @@ bool cDvbApi::GetIndex(int *Current, int *Total)
         }
      else
         *Current = -1;
+     return *Current >= 0;
      }
-  return *Current >= 0;
+  return false;
 }
 
