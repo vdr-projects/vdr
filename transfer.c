@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: transfer.c 1.25 2005/01/23 14:27:40 kls Exp $
+ * $Id: transfer.c 1.26 2005/02/12 13:51:21 kls Exp $
  */
 
 #include "transfer.h"
@@ -61,17 +61,12 @@ void cTransfer::Action(void)
   int Result = 0;
 #define FW_NEEDS_BUFFER_RESERVE_FOR_AC3
 #ifdef FW_NEEDS_BUFFER_RESERVE_FOR_AC3
-  bool Cleared = false;
   bool GotBufferReserve = false;
 #endif
   active = true;
   while (active) {
 #ifdef FW_NEEDS_BUFFER_RESERVE_FOR_AC3
-        if (needsBufferReserve) {
-           if (IsAttached() && !Cleared) {
-              PlayPes(NULL, 0);
-              Cleared = true;
-              }
+        if (needsBufferReserve && !GotBufferReserve) {
            //XXX For dolby we've to fill the buffer because the firmware does
            //XXX not decode dolby but use a PCM stream for transport, therefore
            //XXX the firmware has not enough buffer for noiseless skipping early
@@ -79,14 +74,12 @@ void cTransfer::Action(void)
            //XXX audio is mostly to early in comparison to video).
            //XXX To resolve this, the remuxer or PlayPes() should synchronize
            //XXX audio with the video frames. 2004/09/09 Werner
-           if (!GotBufferReserve) {
-              if (ringBuffer->Available() < 3 * KILOBYTE(192) / 2) { // used to be MAXFRAMESIZE, but the HDTV value of KILOBYTE(512) is way too much here
-                 cCondWait::SleepMs(20); // allow the buffer to collect some reserve
-                 continue;
-                 }
-              else
-                 GotBufferReserve = true;
+           if (ringBuffer->Available() < 3 * KILOBYTE(192) / 2) { // used to be MAXFRAMESIZE, but the HDTV value of KILOBYTE(512) is way too much here
+              cCondWait::SleepMs(20); // allow the buffer to collect some reserve
+              continue;
               }
+           else
+              GotBufferReserve = true;
            }
 #endif
         int Count;
@@ -98,10 +91,14 @@ void cTransfer::Action(void)
               // So let's clear the buffer instead of suffering from permanent
               // overflows.
               dsyslog("clearing transfer buffer to avoid overflows");
+              DeviceClear();
               ringBuffer->Clear();
               remux->Clear();
               PlayPes(NULL, 0);
               p = NULL;
+#ifdef FW_NEEDS_BUFFER_RESERVE_FOR_AC3
+              GotBufferReserve = false;
+#endif
               continue;
               }
            Count = remux->Put(b, Count);
@@ -132,7 +129,11 @@ void cTransfer::Action(void)
                  DeviceClear();
                  ringBuffer->Clear();
                  remux->Clear();
+                 PlayPes(NULL, 0);
                  p = NULL;
+#ifdef FW_NEEDS_BUFFER_RESERVE_FOR_AC3
+                 GotBufferReserve = false;
+#endif
                  }
               }
            }

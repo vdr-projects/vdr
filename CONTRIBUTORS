@@ -1138,6 +1138,8 @@ Marco Schlüßler <marco@lordzodiac.de>
  for adding CMD_SPU_CHG_COLCON to cDvbSpuDecoder::setTime()
  for suggesting to force a new resync after a call to cRemux::Clear()
  for suggestions that led to the addition of the 'Id' parameter to cAudio::Play().
+ for removing the "Cleared/PlayPes(NULL, 0)" handling from cTransfer::Action(), since
+ this is now done when attaching the player to the device
 
 Jürgen Schmitz <j.schmitz@web.de>
  for reporting a bug in displaying the current channel when switching via the SVDRP
