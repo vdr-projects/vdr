@@ -1607,3 +1607,6 @@ Video Disk Recorder Revision History
   OSD will now be closed automatically.
 - The SVDRP command PUTE now triggers an immediate write of the 'epg.data' file
   (suggested by Gerhard Steiner).
+- The new configuration file 'reccmds.conf' can be used to define commands that
+  shall be executed from the "Recordings" menu; see MANUAL and 'man vdr(5)' for
+  details (suggested by Gerhard Steiner).

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.216 2002/10/13 09:15:26 kls Exp $
+ * $Id: menu.c 1.217 2002/10/13 12:10:54 kls Exp $
  */
 
 #include "menu.h"
@@ -1431,6 +1431,77 @@ eOSState cMenuSchedule::ProcessKey(eKeys Key)
   return state;
 }
 
+// --- cMenuCommands ---------------------------------------------------------
+
+class cMenuCommands : public cOsdMenu {
+private:
+  cCommands *commands;
+  char *parameters;
+  eOSState Execute(void);
+public:
+  cMenuCommands(const char *Title, cCommands *Commands, const char *Parameters = NULL);
+  virtual ~cMenuCommands();
+  virtual eOSState ProcessKey(eKeys Key);
+  };
+
+cMenuCommands::cMenuCommands(const char *Title, cCommands *Commands, const char *Parameters)
+:cOsdMenu(Title)
+{
+  SetHasHotkeys();
+  commands = Commands;
+  parameters = Parameters ? strdup(Parameters) : NULL;
+  int i = 0;
+  cCommand *command;
+
+  while ((command = commands->Get(i)) != NULL) {
+        Add(new cOsdItem(hk(command->Title())));
+        i++;
+        }
+}
+
+cMenuCommands::~cMenuCommands()
+{
+  free(parameters);
+}
+
+eOSState cMenuCommands::Execute(void)
+{
+  cCommand *command = commands->Get(Current());
+  if (command) {
+     char *buffer = NULL;
+     bool confirmed = true;
+     if (command->Confirm()) {
+        asprintf(&buffer, "%s?", command->Title());
+        confirmed = Interface->Confirm(buffer);
+        free(buffer);
+        }
+     if (confirmed) {
+        asprintf(&buffer, "%s...", command->Title());
+        Interface->Status(buffer);
+        Interface->Flush();
+        free(buffer);
+        const char *Result = command->Execute(parameters);
+        if (Result)
+           return AddSubMenu(new cMenuText(command->Title(), Result, fontFix));
+        return osEnd;
+        }
+     }
+  return osContinue;
+}
+
+eOSState cMenuCommands::ProcessKey(eKeys Key)
+{
+  eOSState state = cOsdMenu::ProcessKey(Key);
+
+  if (state == osUnknown) {
+     switch (Key) {
+       case kOk:  return Execute();
+       default:   break;
+       }
+     }
+  return state;
+}
+
 // --- cMenuRecordingItem ----------------------------------------------------
 
 class cMenuRecordingItem : public cOsdItem {
@@ -1545,7 +1616,7 @@ void cMenuRecordings::SetHelpKeys(void)
        case 0: SetHelp(NULL); break;
        case 1: SetHelp(tr("Open")); break;
        case 2:
-       case 3: SetHelp(tr("Play"), tr("Rewind"), tr("Delete"), NewHelpKeys == 3 ? tr("Summary") : NULL);
+       case 3: SetHelp(RecordingCommands.Count() ? tr("Commands") : tr("Play"), tr("Rewind"), tr("Delete"), NewHelpKeys == 3 ? tr("Summary") : NULL);
        }
      helpKeys = NewHelpKeys;
      }
@@ -1595,6 +1666,8 @@ eOSState cMenuRecordings::Play(void)
 
 eOSState cMenuRecordings::Rewind(void)
 {
+  if (HasSubMenu() || Count() == 0)
+     return osContinue;
   cMenuRecordingItem *ri = (cMenuRecordingItem *)Get(Current());
   if (ri && !ri->IsDirectory()) {
      cDevice::PrimaryDevice()->StopReplay(); // must do this first to be able to rewind the currently replayed recording
@@ -1607,6 +1680,8 @@ eOSState cMenuRecordings::Rewind(void)
 
 eOSState cMenuRecordings::Delete(void)
 {
+  if (HasSubMenu() || Count() == 0)
+     return osContinue;
   cMenuRecordingItem *ri = (cMenuRecordingItem *)Get(Current());
   if (ri && !ri->IsDirectory()) {
      if (Interface->Confirm(tr("Delete recording?"))) {
@@ -1654,6 +1729,27 @@ eOSState cMenuRecordings::Summary(void)
   return osContinue;
 }
 
+eOSState cMenuRecordings::Commands(eKeys Key)
+{
+  if (HasSubMenu() || Count() == 0)
+     return osContinue;
+  cMenuRecordingItem *ri = (cMenuRecordingItem *)Get(Current());
+  if (ri && !ri->IsDirectory()) {
+     cRecording *recording = GetRecording(ri);
+     if (recording) {
+        char *parameter = NULL;
+        asprintf(&parameter, "'%s'", recording->FileName());
+        cMenuCommands *menu;
+        eOSState state = AddSubMenu(menu = new cMenuCommands(tr("Recording commands"), &RecordingCommands, parameter));
+        free(parameter);
+        if (Key != kNone)
+           state = menu->ProcessKey(Key);
+        return state;
+        }
+     }
+  return osContinue;
+}
+
 eOSState cMenuRecordings::ProcessKey(eKeys Key)
 {
   bool HadSubMenu = HasSubMenu();
@@ -1661,11 +1757,12 @@ eOSState cMenuRecordings::ProcessKey(eKeys Key)
 
   if (state == osUnknown) {
      switch (Key) {
-       case kOk:
-       case kRed:    return Play();
+       case kOk:     return Play();
+       case kRed:    return (helpKeys > 1 && RecordingCommands.Count()) ? Commands() : Play();
        case kGreen:  return Rewind();
        case kYellow: return Delete();
        case kBlue:   return Summary();
+       case k1...k9: return Commands(Key);
        default: break;
        }
      }
@@ -2051,67 +2148,6 @@ eOSState cMenuSetup::ProcessKey(eKeys Key)
   return state;
 }
 
-// --- cMenuCommands ---------------------------------------------------------
-
-class cMenuCommands : public cOsdMenu {
-private:
-  eOSState Execute(void);
-public:
-  cMenuCommands(void);
-  virtual eOSState ProcessKey(eKeys Key);
-  };
-
-cMenuCommands::cMenuCommands(void)
-:cOsdMenu(tr("Commands"))
-{
-  SetHasHotkeys();
-  int i = 0;
-  cCommand *command;
-
-  while ((command = Commands.Get(i)) != NULL) {
-        Add(new cOsdItem(hk(command->Title())));
-        i++;
-        }
-}
-
-eOSState cMenuCommands::Execute(void)
-{
-  cCommand *command = Commands.Get(Current());
-  if (command) {
-     char *buffer = NULL;
-     bool confirmed = true;
-     if (command->Confirm()) {
-        asprintf(&buffer, "%s?", command->Title());
-        confirmed = Interface->Confirm(buffer);
-        free(buffer);
-        }
-     if (confirmed) {
-        asprintf(&buffer, "%s...", command->Title());
-        Interface->Status(buffer);
-        Interface->Flush();
-        free(buffer);
-        const char *Result = command->Execute();
-        if (Result)
-           return AddSubMenu(new cMenuText(command->Title(), Result, fontFix));
-        return osEnd;
-        }
-     }
-  return osContinue;
-}
-
-eOSState cMenuCommands::ProcessKey(eKeys Key)
-{
-  eOSState state = cOsdMenu::ProcessKey(Key);
-
-  if (state == osUnknown) {
-     switch (Key) {
-       case kOk:  return Execute();
-       default:   break;
-       }
-     }
-  return state;
-}
-
 // --- cMenuPluginItem -------------------------------------------------------
 
 class cMenuPluginItem : public cOsdItem {
@@ -2237,7 +2273,7 @@ eOSState cMenuMain::ProcessKey(eKeys Key)
     case osTimers:     return AddSubMenu(new cMenuTimers);
     case osRecordings: return AddSubMenu(new cMenuRecordings);
     case osSetup:      return AddSubMenu(new cMenuSetup);
-    case osCommands:   return AddSubMenu(new cMenuCommands);
+    case osCommands:   return AddSubMenu(new cMenuCommands(tr("Commands"), &Commands));
     case osStopRecord: if (Interface->Confirm(tr("Stop recording?"))) {
                           cOsdItem *item = Get(Current());
                           if (item) {

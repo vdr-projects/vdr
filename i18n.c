@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.95 2002/10/06 11:31:18 kls Exp $
+ * $Id: i18n.c 1.96 2002/10/13 11:03:39 kls Exp $
  *
  * Translations provided by:
  *
@@ -198,6 +198,22 @@ const tI18nPhrase Phrases[] = {
     "Kommandon",
     "Comenzi",
     "Parancsok",
+  },
+  { "Recording commands",
+    "Befehle für Aufzeichnungen",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
   },
   { "Edit channel",
     "Kanal editieren",

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.108 2002/10/13 08:52:25 kls Exp $
+ * $Id: config.c 1.109 2002/10/13 10:03:49 kls Exp $
  */
 
 #include "config.h"
@@ -391,12 +391,16 @@ bool cCommand::Parse(const char *s)
   return false;
 }
 
-const char *cCommand::Execute(void)
+const char *cCommand::Execute(const char *Parameters)
 {
-  dsyslog("executing command '%s'", command);
   free(result);
   result = NULL;
-  FILE *p = popen(command, "r");
+  char *cmdbuf = NULL;
+  if (Parameters)
+     asprintf(&cmdbuf, "%s %s", command, Parameters);
+  const char *cmd = cmdbuf ? cmdbuf : command;
+  dsyslog("executing command '%s'", cmd);
+  FILE *p = popen(cmd, "r");
   if (p) {
      int l = 0;
      int c;
@@ -410,7 +414,8 @@ const char *cCommand::Execute(void)
      pclose(p);
      }
   else
-     esyslog("ERROR: can't open pipe for command '%s'", command);
+     esyslog("ERROR: can't open pipe for command '%s'", cmd);
+  free(cmdbuf);
   return result;
 }
 
@@ -469,6 +474,7 @@ bool cCaDefinition::Parse(const char *s)
 // -- cCommands --------------------------------------------------------------
 
 cCommands Commands;
+cCommands RecordingCommands;
 
 // -- cTimers ----------------------------------------------------------------
 

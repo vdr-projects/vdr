@@ -8,20 +8,20 @@ Video Disk Recorder User's Manual
   possible, several keys have different meanings in the various
   modes:
 
-  Key     Normal      VDR          Channels   Timers     Edit/New      Recordings  Replay
+  Key     Normal      VDR          Channels   Timers     Edit/New      Recordings        Replay
 
-  Up      Ch up       Crsr up      Crsr up    Crsr up    Crsr up       Crsr up     Play
-  Down    Ch down     Crsr down    Crsr down  Crsr down  Crsr down     Crsr down   Pause
-  Left    Prev group  -            Page up    Page up    Decrement     Page up     Search back
-  Right   Next group  -            Page down  Page down  Increment     Page down   Search forward
-  Ok      Ch display  Select       Switch     Edit       Accept        Play        Progress disp.
-  Menu    Menu on     Menu off     Menu off   Menu off   Menu off      Menu off    Menu on
-  Back    -           Menu off     VDR menu   VDR menu   Discard       VDR menu    Recordings menu
-  Red     -           Record       Edit       Edit       ABC/abc       Play        Jump
-  Green   -           Language     New        New        Ins/Ovr       Rewind      Skip -60s
-  Yellow  -           -            Delete     Delete     Delete        Delete      Skip +60s
-  Blue    -           Stop/Resume  Mark       On/Off(1)  -             Summary     Stop
-  0..9    Ch select   -            -          -          Numeric inp.  -           Editing
+  Up      Ch up       Crsr up      Crsr up    Crsr up    Crsr up       Crsr up           Play
+  Down    Ch down     Crsr down    Crsr down  Crsr down  Crsr down     Crsr down         Pause
+  Left    Prev group  -            Page up    Page up    Decrement     Page up           Search back
+  Right   Next group  -            Page down  Page down  Increment     Page down         Search forward
+  Ok      Ch display  Select       Switch     Edit       Accept        Play              Progress disp.
+  Menu    Menu on     Menu off     Menu off   Menu off   Menu off      Menu off          Menu on
+  Back    -           Menu off     VDR menu   VDR menu   Discard       VDR menu          Recordings menu
+  Red     -           Record       Edit       Edit       ABC/abc       Play/Commands(2)  Jump
+  Green   -           Language     New        New        Ins/Ovr       Rewind            Skip -60s
+  Yellow  -           -            Delete     Delete     Delete        Delete            Skip +60s
+  Blue    -           Stop/Resume  Mark       On/Off(1)  -             Summary           Stop
+  0..9    Ch select   -            -          -          Numeric inp.  Exec cmd(2)       Editing
 
   Power   Shutdown
   Volume+ Volume up
@@ -31,6 +31,7 @@ Video Disk Recorder User's Manual
   (1) The "On/Off" button in the "Timers" menu only works if sorting the timers
       has been enabled in the "Setup" menu. Otherwise the Blue button is used
       to "mark" a timer for moving.
+  (2) See "Processing Recordings" below.
 
 * Navigating through the On Screen Menus
 
@@ -186,6 +187,15 @@ Video Disk Recorder User's Manual
   or by pressing the "Blue" button outside the menu.
   A previously stopped playback session can be resumed by pressing the "Blue"
   button in the "VDR" menu.
+
+* Processing Recordings
+
+  The configuration file 'reccmds.conf' can be used to define system commands
+  that can be applied to the recording that is currently highlighted in the
+  "Recordings" menu. The "Red" button in the "Recordings" menu opens the "Recording
+  commands" menu if there are commands defined in the file 'reccmds.conf'. Pressing
+  one of the keys '1'..'9' in the "Recordings" menu executes the corresponding
+  command from 'reccmds.conf' (see also "Executing system commands" below).
 
 * Replay Control
 

@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.126 2002/10/12 15:22:29 kls Exp $
+ * $Id: vdr.c 1.127 2002/10/13 12:13:19 kls Exp $
  */
 
 #include <getopt.h>
@@ -319,6 +319,7 @@ int main(int argc, char *argv[])
   Channels.Load(AddDirectory(ConfigDirectory, "channels.conf"));
   Timers.Load(AddDirectory(ConfigDirectory, "timers.conf"));
   Commands.Load(AddDirectory(ConfigDirectory, "commands.conf"), true);
+  RecordingCommands.Load(AddDirectory(ConfigDirectory, "reccmds.conf"), true);
   SVDRPhosts.Load(AddDirectory(ConfigDirectory, "svdrphosts.conf"), true);
   CaDefinitions.Load(AddDirectory(ConfigDirectory, "ca.conf"), true);
   Keys.Load(AddDirectory(ConfigDirectory, "remote.conf"));

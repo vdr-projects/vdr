@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.133 2002/10/13 08:35:49 kls Exp $
+ * $Id: config.h 1.134 2002/10/13 10:03:09 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -95,7 +95,7 @@ public:
   bool Parse(const char *s);
   const char *Title(void) { return title; }
   bool Confirm(void) { return confirm; }
-  const char *Execute(void);
+  const char *Execute(const char *Parameters = NULL);
   };
 
 typedef uint32_t in_addr_t; //XXX from /usr/include/netinet/in.h (apparently this is not defined on systems with glibc < 2.2)
@@ -224,6 +224,7 @@ public:
 
 extern cTimers Timers;
 extern cCommands Commands;
+extern cCommands RecordingCommands;
 extern cSVDRPhosts SVDRPhosts;
 extern cCaDefinitions CaDefinitions;
 

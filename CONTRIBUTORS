@@ -432,3 +432,5 @@ Robert Schiele <rschiele@uni-mannheim.de>
 Gerhard Steiner <steiner@mail.austria.com>
  for suggesting that the SVDRP command PUTE shall trigger an immediate write of
  the 'epg.data' file
+ for suggesting the new configuration file 'reccmds.conf' to define commands that
+ shall be executed from the "Recordings" menu
