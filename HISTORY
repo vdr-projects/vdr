@@ -1106,3 +1106,4 @@ Video Disk Recorder Revision History
 - The "Left" and "Right" keys are now used to page up and down in text displays
   (like the EPG descriptions or the results of commands executed from the
   "Commands" menu).
+- Fixed high CPU usage in transfer mode.

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.162 2002/03/10 11:01:38 kls Exp $
+ * $Id: dvbapi.c 1.163 2002/03/16 14:20:47 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -1411,7 +1411,7 @@ void cTransferBuffer::Output(void)
         int r = Get(b, sizeof(b));
         if (r > 0) {
            uchar *p = b;
-           while (r > 0 && Busy()) {
+           while (r > 0 && Busy() && cFile::FileReadyForWriting(toDevice, 100)) {
                  int w = write(toDevice, p, r);
                  if (w > 0) {
                     p += w;
