@@ -260,5 +260,9 @@ Mirko Dölle <mdoelle@linux-user.de>
 Michael Rakowski <mrak@gmx.de>
  for translating OSD texts to the Polish language
 
+Michael Moster <dvb@juelich-gmbh.de>
+ for initally reporting the problem with wrong EPG data in the Schedules menu
+ (somehow I had misplaced his message...)
+
 Tobias Kerner <tobschle@gmx.de>
  for helping to debug a problem with wrong EPG data in the Schedules menu

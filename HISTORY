@@ -1174,4 +1174,5 @@ Video Disk Recorder Revision History
 2002-04-02: Version 1.0.0pre6
 
 - Fixed a problem with wrong EPG data in the Schedules menu (thanks to Tobias
-  Kerner).
+  Kerner, problem was initially reported by Michel Moster, but somehow I had
+  misplaced his message...).
