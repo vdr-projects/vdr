@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: descriptor.c 1.10 2004/03/13 15:08:12 kls Exp $
+ *   $Id: descriptor.c 1.11 2004/03/20 10:51:49 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -78,12 +78,13 @@ void ExtendedEventDescriptor::Item::Parse() {
    return ret;
 }*/
 
-int ExtendedEventDescriptors::getMaximumTextLength() {
-   return getMaximumTextPlainLength()+getMaximumTextItemizedLength();
+int ExtendedEventDescriptors::getMaximumTextLength(const char *separation1, const char *separation2) {
+   //add length of plain text, of itemized text with separators, and for one separator between the two fields.
+   return getMaximumTextPlainLength()+getMaximumTextItemizedLength(separation1, separation2)+strlen(separation2);
 }
 
 char *ExtendedEventDescriptors::getText(const char *separation1, const char *separation2) {
-   char *text=new char[getMaximumTextLength()+strlen(separation1)+strlen(separation2)];
+   char *text=new char[getMaximumTextLength(separation1, separation2)];
    return getText(text, separation1, separation2);
 }
 
@@ -171,20 +172,21 @@ char *ExtendedEventDescriptors::getTextPlain(char *buffer) {
    return buffer;
 }
 
-int ExtendedEventDescriptors::getMaximumTextItemizedLength() {
+int ExtendedEventDescriptors::getMaximumTextItemizedLength(const char *separation1, const char *separation2) {
    int ret=0;
+   int sepLength=strlen(separation1)+strlen(separation2)-2;
    for (int i=0;i<length;i++) {
       ExtendedEventDescriptor *d=(ExtendedEventDescriptor *)array[i];
       if (!d)
          continue;
-      //the size for the two separating characters is included ;-)
-      ret+=d->itemLoop.getLength();
+      //The length includes two 8-bit length fields which have already been subtracted from sepLength
+      ret+=d->itemLoop.getLength()+sepLength;
    }
    return ret;
 }
 
 char *ExtendedEventDescriptors::getTextItemized(const char *separation1, const char *separation2) {
-   char *text=new char[getMaximumTextItemizedLength()+strlen(separation1)+strlen(separation2)];
+   char *text=new char[getMaximumTextItemizedLength(separation1, separation2)];
    return getTextItemized(text, separation1, separation2);
 }
 

@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: descriptor.h 1.7 2004/03/07 11:13:54 kls Exp $
+ *   $Id: descriptor.h 1.8 2004/03/20 10:52:22 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -50,7 +50,7 @@ private:
 
 class ExtendedEventDescriptors : public DescriptorGroup {
 public:
-   int getMaximumTextLength();
+   int getMaximumTextLength(const char *separation1="\t", const char *separation2="\n");
    //Returns a concatenated version of first the non-itemized and then the itemized text
    //same semantics as with SI::String
    char *getText(const char *separation1="\t", const char *separation2="\n");
@@ -66,7 +66,7 @@ public:
    //Between the description and the text the separation1 character is used,
    //separation2 used between two pairs. Example:
    //Director\tSteven Spielberg\nActor\tMichael Mendl\n
-   int getMaximumTextItemizedLength();
+   int getMaximumTextItemizedLength(const char *separation1="\t", const char *separation2="\n");
    char *getTextItemized(const char *separation1="\t", const char *separation2="\n");
    char *getTextItemized(char *buffer, const char *separation1="\t", const char *separation2="\n");
    //returns the itemized text pair by pair. Maximum length for buffers is 256.

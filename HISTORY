@@ -2750,3 +2750,4 @@ Video Disk Recorder Revision History
 
 - Fixed a memory leak in thread handling when using NPTL (thanks to Jon Burgess).
 - Fixed handling Setup.RecordDolbyDigital, which was broken since version 1.1.6.
+- Fixed handling text lengths for itemized EPG texts (thanks to Marcel Wiesweg).
