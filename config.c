@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.116 2003/08/24 11:00:24 kls Exp $
+ * $Id: config.c 1.117 2003/10/17 14:11:27 kls Exp $
  */
 
 #include "config.h"
@@ -266,7 +266,7 @@ cSetup::cSetup(void)
   SortTimers = 1;
   PrimaryLimit = 0;
   DefaultPriority = 50;
-  DefaultLifetime = 50;
+  DefaultLifetime = 99;
   PausePriority = 10;
   PauseLifetime = 1;
   UseSubtitle = 1;

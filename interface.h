@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.h 1.29 2002/11/30 14:37:04 kls Exp $
+ * $Id: interface.h 1.30 2003/10/05 09:42:53 kls Exp $
  */
 
 #ifndef __INTERFACE_H
@@ -24,7 +24,7 @@ private:
   int cols[MaxCols];
   bool interrupted;
   cSVDRP *SVDRP;
-  void QueryKeys(cRemote *Remote);
+  bool QueryKeys(cRemote *Remote);
   void HelpButton(int Index, const char *Text, eDvbColor FgColor, eDvbColor BgColor);
   eKeys Wait(int Seconds = 0, bool KeepChar = false);
 public:

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.64 2003/09/06 13:19:33 kls Exp $
+ * $Id: dvbdevice.c 1.67 2003/10/17 15:36:13 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -307,6 +307,8 @@ void cDvbTuner::Action(void)
 
 // --- cDvbDevice ------------------------------------------------------------
 
+int cDvbDevice::devVideoOffset = -1;
+
 cDvbDevice::cDvbDevice(int n)
 {
   dvbTuner = NULL;
@@ -317,7 +319,7 @@ cDvbDevice::cDvbDevice(int n)
 
   // Devices that are present on all card types:
 
-  int fd_frontend = DvbOpen(DEV_DVB_FRONTEND, n, O_RDWR | O_NONBLOCK);
+  int fd_frontend = DvbOpen(DEV_DVB_FRONTEND, n, O_RDWR | O_NONBLOCK); 
 
   // Devices that are only present on cards with decoders:
 
@@ -328,6 +330,35 @@ cDvbDevice::cDvbDevice(int n)
   // The DVR device (will be opened and closed as needed):
 
   fd_dvr = -1;
+
+  // The offset of the /dev/video devices:
+
+  if (devVideoOffset < 0) { // the first one checks this
+     FILE *f = NULL;
+     char buffer[PATH_MAX];
+     for (int ofs = 0; ofs < 100; ofs++) {
+         snprintf(buffer, sizeof(buffer), "/proc/video/dev/video%d", ofs);
+         if ((f = fopen(buffer, "r")) != NULL) {
+            if (fgets(buffer, sizeof(buffer), f)) {
+               if (strstr(buffer, "DVB Board")) { // found the _first_ DVB card
+                  devVideoOffset = ofs;
+                  dsyslog("video device offset is %d", devVideoOffset);
+                  break;
+                  }
+               }
+            else
+               break;
+            fclose(f);
+            }
+         else
+            break;
+         }
+     if (devVideoOffset < 0)
+        devVideoOffset = 0;
+     if (f)
+        fclose(f);
+     }
+  devVideoIndex = (devVideoOffset >= 0 && HasDecoder()) ? devVideoOffset++ : -1;
 
   // Video format:
 
@@ -427,8 +458,10 @@ cSpuDecoder *cDvbDevice::GetSpuDecoder(void)
 
 bool cDvbDevice::GrabImage(const char *FileName, bool Jpeg, int Quality, int SizeX, int SizeY)
 {
+  if (devVideoIndex < 0)
+     return false;
   char buffer[PATH_MAX];
-  snprintf(buffer, sizeof(buffer), "%s%d", DEV_VIDEO, CardIndex());
+  snprintf(buffer, sizeof(buffer), "%s%d", DEV_VIDEO, devVideoIndex);
   int videoDev = open(buffer, O_RDWR);
   if (videoDev < 0)
      LOG_ERROR_STR(buffer);
@@ -915,21 +948,53 @@ void cDvbDevice::StillPicture(const uchar *Data, int Length)
         return;
      int i = 0;
      int blen = 0;
-     while (i < Length - 4) {
-           if (Data[i] == 0x00 && Data[i + 1] == 0x00 && Data[i + 2] == 0x01 && (Data[i + 3] & 0xF0) == 0xE0) {
-              // skip PES header
-              int offs = i + 6;
+     while (i < Length - 6) {
+           if (Data[i] == 0x00 && Data[i + 1] == 0x00 && Data[i + 2] == 0x01) {
               int len = Data[i + 4] * 256 + Data[i + 5];
-              // skip header extension
-              if ((Data[i + 6] & 0xC0) == 0x80) {
-                 offs += 3;
-                 offs += Data[i + 8];
-                 len -= 3;
-                 len -= Data[i + 8];
+              if ((Data[i + 3] & 0xF0) == 0xE0) { // video packet
+                 // skip PES header
+                 int offs = i + 6;
+                 // skip header extension
+                 if ((Data[i + 6] & 0xC0) == 0x80) {
+                    // MPEG-2 PES header
+                    offs += 3;
+                    offs += Data[i + 8];
+                    len -= 3;
+                    len -= Data[i + 8];
+                    }
+                 else {
+                    // MPEG-1 PES header
+                    while (offs < Length && len > 0 && Data[offs] == 0xFF) {
+                          offs++;
+                          len--;
+                          }
+                    if ((Data[offs] & 0xC0) == 0x40) {
+                       offs += 2;
+                       len -= 2;
+                       }
+                    if ((Data[offs] & 0xF0) == 0x20) {
+                       offs += 5;
+                       len -= 5;
+                       }
+                    else if ((Data[offs] & 0xF0) == 0x30) {
+                       offs += 10;
+                       len -= 10;
+                       }
+                    else if (Data[offs] == 0x0F) {
+                       offs++;
+                       len--;
+                       }
+                    }
+                 if (blen + len > Length) // invalid PES length field
+                    break;
+                 memcpy(&buf[blen], &Data[offs], len);
+                 i = offs + len;
+                 blen += len;
                  }
-              memcpy(&buf[blen], &Data[offs], len);
-              i = offs + len;
-              blen += len;
+              else if (Data[i + 3] >= 0xBD && Data[i + 3] <= 0xDF) // other PES packets
+                 i += len + 6;
+              else
+                 i++;
               }
            else
               i++;

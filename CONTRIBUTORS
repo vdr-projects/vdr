@@ -176,6 +176,7 @@ Stefan Huelswitt <huels@iname.com>
  for fixing a memory leak in cNonBlockingFileReader
  for fixing an uninitialized variable in cDisplayChannel
  for fixing a possible access of invalid file handles in cSIProcessor::Action()
+ for fixing extracting the ES data in cDvbDevice::StillPicture()
 
 Ulrich Röder <roeder@efr-net.de>
  for pointing out that there are channels that have a symbol rate higher than
@@ -267,6 +268,7 @@ Andy Grobb <Charly98@01019freenet.de>
 
 Thomas Heiligenmann <thomas@heiligenmann.de>
  for implementing the SVDRP commands LSTR and DELR
+ for adding MPEG1 handling to cDvbDevice::StillPicture()
 
 Norbert Schmidt <nschmidt-nrw@t-online.de>
  for filling in some missing teletext PIDs
@@ -495,6 +497,8 @@ Oliver Endriss <o.endriss@gmx.de>
  recording that is still going on
  for fixing checking for VIDEO_STREAM_S in cRemux::SetBrokenLink()
  for suggesting to add 'repeat' function keys '7' and '9'
+ for fixing handling rc key learning in case cRemote::Initialize() returns 'false'
+ for suggesting to change the default "Lifetime" to 99
 
 Reinhard Walter Buchner <rw.buchner@freenet.de>
  for adding some satellites to 'sources.conf'
@@ -568,6 +572,8 @@ Andreas Kool <akool@akool.de>
  for his help in keeping 'channels.conf.cable' up to date
  for fixing the TS to PES repacker so that it works with MPEG1 streams
  for reporting a problem with empty values in setup.conf
+ for fixing detecting the /dev/videoN devices for GRAB in case there are others
+ before the DVB devices
 
 Guy Roussin <guy.roussin@teledetection.fr>
  for suggesting not to display channel group delimiters without text
@@ -588,6 +594,7 @@ Emil Naepflein <Emil.Naepflein@philosys.de>
  housekeeping
  for fixing selecting the device, because sometimes an FTA recording terminated a
  CA recording
+ for suggesting to never delete edited recordings automatically if the disk runs full
 
 Gerald Berwolf <genka@genka.de>
  for suggesting to deactivate some templates in tools.h in case some plugin needs to
@@ -598,6 +605,7 @@ Thomas Sailer <sailer@scs.ch>
 
 Sven Goethel <sgoethel@jausoft.com>
  for making switching audio channels work without stopping/restarting the DMX
+ for fixing initializing the highlight area in cDvbSpuDecoder
 
 Jan Rieger <jan@ricomp.de>
  for suggestions and testing raw keyboard input
@@ -728,6 +736,8 @@ Niko Tarnanen <niko.tarnanen@hut.fi> and Rolf Ahrenberg <rahrenbe@cc.hut.fi>
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark
+ for reporting a bug in handling a channels.conf that contains a ":@nnn" line as
+ its last entry
 
 Hermann Gausterer <mrq1@gmx.net>
  for suggesting to switch to the recording channel in case the current channel
@@ -821,3 +831,16 @@ Alexander Wetzel <alexander.wetzel@web.de>
 
 Marco Franceschetti <ordaz@quipo.it>
  for updating 'ca.conf'
+
+Jens Groth <Jens_Groth@t-online.de>
+ for reporting a an outdated driver version number in INSTALL
+
+Andreas Trauer <vdr@trauers.homelinux.net>
+ for fixing missing channel info after an incomplete channel group switch
+ for removing the unused 0x73 (TOT) filter in eit.c
+
+Markus Hardt <markus.hardt@gmx.net>
+ for his help in keeping 'channels.conf.terr' up to date
+
+Thomas Rausch <Thomas.Rausch@gmx.de>
+ for making VDR try to get a timer's channel without RID when loading 'timers.conf'

@@ -16,7 +16,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.c 1.79 2003/05/29 15:04:10 kls Exp $
+ * $Id: eit.c 1.80 2003/10/12 11:05:42 kls Exp $
  ***************************************************************************/
 
 #include "eit.h"
@@ -1166,7 +1166,6 @@ void cSIProcessor::SetStatus(bool On)
    {
       AddFilter(0x00, 0x00);  // PAT
       AddFilter(0x14, 0x70);  // TDT
-      AddFilter(0x14, 0x73);  // TOT
       AddFilter(0x12, 0x4e, 0xfe);  // event info, actual(0x4e)/other(0x4f) TS, present/following
       AddFilter(0x12, 0x50, 0xfe);  // event info, actual TS, schedule(0x50)/schedule for another 4 days(0x51)
       AddFilter(0x12, 0x60, 0xfe);  // event info, other  TS, schedule(0x60)/schedule for another 4 days(0x61)
@@ -1301,10 +1300,6 @@ void cSIProcessor::Action()
                                  ctdt.SetSystemTime();
                               }
                            }
-                              /*XXX this comes pretty often:
-                           else
-                              dsyslog("Time packet was not 0x70 but 0x%02x\n", (int)buf[0]);
-                              XXX*/
                            break;
 
                         case 0x12:

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.272 2003/09/14 10:49:28 kls Exp $
+ * $Id: menu.c 1.273 2003/10/03 14:36:20 kls Exp $
  */
 
 #include "menu.h"
@@ -2823,6 +2823,7 @@ eOSState cDisplayChannel::ProcessKey(eKeys Key)
     case kChanUp:
     case kChanDn|k_Repeat:
     case kChanDn:
+         withInfo = true;
          group = -1;
          Refresh();
          break;

@@ -327,6 +327,9 @@ Version 1.2
   a second. A "start" mark marks the first frame of a resulting video
   sequence, and an "end" mark marks the last frame of that sequence.
 
+  An edited recording (indicated by the '%' character) will never be deleted
+  automatically in case the disk runs full (no matter what "lifetime" it has).
+
 * Programming the Timer
 
   Use the "Timer" menu to maintain your list of timer controlled recordings.
@@ -536,7 +539,7 @@ Version 1.2
                          with a priority below PrimaryLimit will never execute.
 
   Default priority = 50  The default Priority and Lifetime values used when
-  Default lifetime = 50  creating a new timer event. A Lifetime value of 99
+  Default lifetime = 99  creating a new timer event. A Lifetime value of 99
                          means that this recording will never be deleted
                          automatically.
 

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.h 1.22 2003/08/15 12:34:55 kls Exp $
+ * $Id: dvbdevice.h 1.23 2003/10/04 11:54:50 kls Exp $
  */
 
 #ifndef __DVBDEVICE_H
@@ -73,6 +73,9 @@ protected:
 
 // Image Grab facilities
 
+private:
+  static int devVideoOffset;
+  int devVideoIndex;
 public:
   virtual bool GrabImage(const char *FileName, bool Jpeg = true, int Quality = -1, int SizeX = -1, int SizeY = -1);
 

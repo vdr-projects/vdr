@@ -8,7 +8,7 @@
  *
  * parts of this file are derived from the OMS program.
  *
- * $Id: dvbspu.c 1.4 2003/08/15 13:04:39 kls Exp $
+ * $Id: dvbspu.c 1.5 2003/10/12 09:43:18 kls Exp $
  */
 
 #include <assert.h>
@@ -297,6 +297,10 @@ void cDvbSpuDecoder::clearHighlight(void)
 {
     clean &= !highlight;
     highlight = false;
+    hlpsize.x1 = -1;
+    hlpsize.y1 = -1;
+    hlpsize.x2 = -1;
+    hlpsize.y2 = -1;
 }
 
 int cDvbSpuDecoder::ScaleYcoord(int value)

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.c 1.64 2003/04/27 12:08:52 kls Exp $
+ * $Id: interface.c 1.65 2003/10/05 09:48:13 kls Exp $
  */
 
 #include "interface.h"
@@ -329,7 +329,7 @@ void cInterface::Help(const char *Red, const char *Green, const char *Yellow, co
   cStatus::MsgOsdHelpKeys(Red, Green, Yellow, Blue);
 }
 
-void cInterface::QueryKeys(cRemote *Remote)
+bool cInterface::QueryKeys(cRemote *Remote)
 {
   WriteText(1, 3, tr("Phase 1: Detecting RC code type"));
   WriteText(1, 5, tr("Press any key on the RC unit"));
@@ -372,7 +372,7 @@ void cInterface::QueryKeys(cRemote *Remote)
                                  Key = cRemote::Get(100);
                                  if (Key == kUp) {
                                     Clear();
-                                    return;
+                                    return true;
                                     }
                                  else if (Key == kDown) {
                                     ClearEol(0, 6);
@@ -406,7 +406,9 @@ void cInterface::QueryKeys(cRemote *Remote)
            else
               ClearEol(0, 9);
            }
+     return true;
      }
+  return false;
 }
 
 void cInterface::LearnKeys(void)
@@ -426,9 +428,13 @@ void cInterface::LearnKeys(void)
          cRemote::Clear();
          WriteText(1, 1, Headline);
          cRemote::SetLearning(Remote);
-         QueryKeys(Remote);
+         bool rc = QueryKeys(Remote);
          cRemote::SetLearning(NULL);
          Clear();
+         if (!rc) {
+            Close();
+            return;
+            }
          WriteText(1, 1, Headline);
          WriteText(1, 3, tr("Phase 3: Saving key codes"));
          WriteText(1, 5, tr("Press 'Up' to save, 'Down' to cancel"));
