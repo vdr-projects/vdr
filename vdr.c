@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.175 2004/02/08 11:23:29 kls Exp $
+ * $Id: vdr.c 1.176 2004/02/13 13:13:13 kls Exp $
  */
 
 #include <getopt.h>
@@ -496,11 +496,15 @@ int main(int argc, char *argv[])
         if (!EITScanner.Active() && cDevice::PrimaryDevice()->HasDecoder() && !cDevice::PrimaryDevice()->HasProgramme()) {
            static time_t lastTime = 0;
            if (time(NULL) - lastTime > MINCHANNELWAIT) {
-              if (!Channels.SwitchTo(cDevice::CurrentChannel()) // try to switch to the original channel...
-                  && !(LastTimerChannel > 0 && Channels.SwitchTo(LastTimerChannel)) // ...or the one used by the last timer...
-                  && !cDevice::SwitchChannel(1) // ...or the next higher available one...
-                  && !cDevice::SwitchChannel(-1)) // ...or the next lower available one
-                 lastTime = time(NULL); // don't do this too often
+              cChannel *Channel = Channels.GetByNumber(cDevice::CurrentChannel());
+              if (Channel && (Channel->Vpid() || Channel->Apid1())) {
+                 if (!Channels.SwitchTo(cDevice::CurrentChannel()) // try to switch to the original channel...
+                     && !(LastTimerChannel > 0 && Channels.SwitchTo(LastTimerChannel)) // ...or the one used by the last timer...
+                     && !cDevice::SwitchChannel(1) // ...or the next higher available one...
+                     && !cDevice::SwitchChannel(-1)) // ...or the next lower available one
+                    ; 
+                 }   
+              lastTime = time(NULL); // don't do this too often
               LastTimerChannel = -1;
               }
            }
