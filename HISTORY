@@ -1360,7 +1360,7 @@ Video Disk Recorder Revision History
   + The '-a' option (for Dolby Digital audio) doesn't work yet.
   + Switching between different language tracks doesn't work yet.
 
-2002-07-13: Version 1.1.5
+2002-07-14: Version 1.1.5
 
 - Added direct access to the index data of cPalette (needed for displaying SPUs,
   thanks to Andreas Schultz).
@@ -1374,3 +1374,4 @@ Video Disk Recorder Revision History
   but rather just the basic name. This has been changed to allow players that can't
   provide a name to simply use a string that describes the player type (like, e.g.,
   "DVD").
+- Fixed a hangup when switching to the next file during replay.

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 1.5 2002/07/13 11:11:08 kls Exp $
+ * $Id: dvbplayer.c 1.6 2002/07/14 12:24:59 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -310,6 +310,7 @@ void cDvbPlayer::Action(void)
      isyslog("resuming replay at index %d (%s)", readIndex, IndexToHMSF(readIndex, true));
 
   while (active && NextFile()) {
+        pfd[1].fd = replayFile; // NextFile() may have returned a new file handle!
         {
           LOCK_THREAD;
 
