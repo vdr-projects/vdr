@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 1.41 2003/05/02 10:46:13 kls Exp $
+ * $Id: osd.c 1.42 2003/05/03 14:46:38 kls Exp $
  */
 
 #include "osd.h"
@@ -423,6 +423,11 @@ void cOsdMenu::Display(void)
   Interface->Help(helpRed, helpGreen, helpYellow, helpBlue);
   int count = Count();
   if (count > 0) {
+     for (int i = 0; i < count; i++) {
+        cOsdItem *item = Get(i);
+        if (item)
+           cStatus::MsgOsdItem(item->Text(), i);
+        }
      if (current < 0)
         current = 0; // just for safety - there HAS to be a current item!
      int n = 0;

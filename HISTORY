@@ -2104,3 +2104,5 @@ Video Disk Recorder Revision History
   If all devices are busy and none of them can provide the current channel, the
   message "Channel not available!" will be displayed.
 - Removed the (no longer necessary) 'panic' stuff from cThread.
+- Added cStatus::OsdItem() to provide the entire list of menu items to a plugin
+  (thanks to Carsten Siebholz).

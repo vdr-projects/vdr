@@ -627,3 +627,6 @@ Olivier Jacques <jacquesolivier@hotmail.com>)
 
 Kai Moeller <moeller.ki@gmx.de>
  for reporting a double call to MainMenuAction() of a plugin if invoked via a hotkey
+
+Carsten Siebholz <c.siebholz@t-online.de>
+ for adding cStatus::OsdItem() to provide the entire list of menu items to a plugin
