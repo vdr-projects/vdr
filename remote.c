@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remote.c 1.31 2002/11/01 10:50:13 kls Exp $
+ * $Id: remote.c 1.32 2002/12/01 10:40:04 kls Exp $
  */
 
 #include "remote.h"
@@ -31,6 +31,7 @@ cRemote *cRemote::learning = NULL;
 char *cRemote::unknownCode = NULL;
 cMutex cRemote::mutex;
 cCondVar cRemote::keyPressed;
+const char *cRemote::plugin = NULL;
 
 cRemote::cRemote(const char *Name)
 {
@@ -88,6 +89,7 @@ bool cRemote::PutMacro(eKeys Key)
 {
   const cKeyMacro *km = KeyMacros.Get(Key);
   if (km) {
+     plugin = km->Plugin();
      for (int i = 1; i < MAXKEYSINMACRO; i++) {
          if (km->Macro()[i] != kNone) {
             if (!Put(km->Macro()[i]))

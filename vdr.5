@@ -8,7 +8,7 @@
 .\" License as specified in the file COPYING that comes with the
 .\" vdr distribution.
 .\"
-.\" $Id: vdr.5 1.15 2002/11/29 14:13:40 kls Exp $
+.\" $Id: vdr.5 1.16 2002/12/01 10:34:40 kls Exp $
 .\"
 .TH vdr 5 "24 Nov 2002" "1.2.0" "Video Disk Recorder Files"
 .SH NAME
@@ -363,13 +363,26 @@ this remote control delivers when the given key is pressed.
 The file \fIkeymacros.conf\fR contains user defined macros that will be executed
 whenever the given key is pressed. The format is
 
-\fBmacrokey  key1 key2 key3...\fR
+\fBmacrokey  [@plugin] key1 key2 key3...\fR
 
 where \fBmacrokey\fR is the key that shall initiate execution of this macro
 and can be one of \fIRed\fR, \fIGreen\fR, \fIYellow\fR, \fIBlue\fR or
 \fIUser1\fR...\fIUser9\fR. The rest of the line consists of a set of
 keys, which will be executed just as if they had been pressed in the given
-sequence. Note that the color keys will only execute their macro function
+sequence. The optional \fB@plugin\fR can be used to automatically select
+the given plugin from the main menu (provided that plugin has a main menu
+entry). \fBplugin\fR is the name of the plugin, exactly as given in the -P
+option when starting VDR. There can be only one \fB@plugin\fR per key macro,
+and it implicitly adds an \fIOk\fR key to the macro definition (in order to
+actually select the plugins main menu entry), which counts against the total
+number of keys in the macro. For instance
+
+\fBUser1 @abc Down Down Ok\fR
+
+would call the main menu function of the "abc" plugin and execute two "Down"
+key presses, followed by "Ok".
+.br
+Note that the color keys will only execute their macro function
 in "normal viewing" mode (i.e. when no other menu or player is active). The
 \fIUser1\fR...\fIUser9\fR keys will always execute their macro function.
 There may be up to 15 keys in such a key sequence.

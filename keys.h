@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: keys.h 1.3 2002/10/27 15:18:21 kls Exp $
+ * $Id: keys.h 1.4 2002/12/01 10:43:26 kls Exp $
  */
 
 #ifndef __KEYS_H
@@ -46,6 +46,8 @@ enum eKeys { // "Up" and "Down" must be the first two keys!
              kCommands,
              kUser1, kUser2, kUser3, kUser4, kUser5, kUser6, kUser7, kUser8, kUser9,
              kNone,
+             // The following codes are used internally:
+             k_Plugin,
              k_Setup,
              // The following flags are OR'd with the above codes:
              k_Repeat  = 0x8000,
@@ -105,10 +107,13 @@ extern cKeys Keys;
 class cKeyMacro : public cListObject {
 private:
   eKeys macro[MAXKEYSINMACRO];
+  char *plugin;
 public:
   cKeyMacro(void);
+  ~cKeyMacro();
   bool Parse(char *s);
   const eKeys *Macro(void) const { return macro; }
+  const char *Plugin(void) const { return plugin; }
   };
 
 class cKeyMacros : public cConfig<cKeyMacro> {

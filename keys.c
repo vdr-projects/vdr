@@ -4,10 +4,11 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: keys.c 1.3 2002/10/27 15:19:40 kls Exp $
+ * $Id: keys.c 1.4 2002/11/30 16:01:37 kls Exp $
  */
 
 #include "keys.h"
+#include "plugin.h"
 
 static tKey keyTable[] = { // "Up" and "Down" must be the first two keys!
                     { kUp,            "Up"         },
@@ -182,6 +183,12 @@ cKeyMacro::cKeyMacro(void)
 {
   for (int i = 0; i < MAXKEYSINMACRO; i++)
       macro[i] = kNone;
+  plugin = NULL;
+}
+
+cKeyMacro::~cKeyMacro()
+{
+  free(plugin);
 }
 
 bool cKeyMacro::Parse(char *s)
@@ -190,10 +197,35 @@ bool cKeyMacro::Parse(char *s)
   char *p;
   while ((p = strtok(s, " \t")) != NULL) {
         if (n < MAXKEYSINMACRO) {
-           macro[n] = cKey::FromString(p);
-           if (macro[n] == kNone) {
-              esyslog("ERROR: unknown key '%s'", p);
-              return false;
+           if (*p == '@') {
+              if (plugin) {
+                 esyslog("ERROR: only one @plugin allowed per macro");
+                 return false;
+                 }
+              if (!n) {
+                 esyslog("ERROR: @plugin can't be first in macro");
+                 return false;
+                 }
+              macro[n++] = k_Plugin;
+              if (n < MAXKEYSINMACRO) {
+                 macro[n] = kOk;
+                 plugin = strdup(p + 1);
+                 if (!cPluginManager::GetPlugin(plugin)) {
+                    esyslog("ERROR: unknown plugin '%s'", plugin);
+                    return false;
+                    }
+                 }
+              else {
+                 esyslog("ERROR: key macro too long");
+                 return false;
+                 }
+              }
+           else {
+              macro[n] = cKey::FromString(p);
+              if (macro[n] == kNone) {
+                 esyslog("ERROR: unknown key '%s'", p);
+                 return false;
+                 }
               }
            n++;
            s = NULL;

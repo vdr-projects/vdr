@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remote.h 1.20 2002/11/09 11:07:33 kls Exp $
+ * $Id: remote.h 1.21 2002/12/01 10:39:10 kls Exp $
  */
 
 #ifndef __REMOTE_H
@@ -26,6 +26,7 @@ private:
   static char *unknownCode;
   static cMutex mutex;
   static cCondVar keyPressed;
+  static const char *plugin;
   char *name;
 protected:
   cRemote(const char *Name);
@@ -41,6 +42,7 @@ public:
   static void Clear(void);
   static bool Put(eKeys Key);
   static bool PutMacro(eKeys Key);
+  static const char *GetPlugin(void) { return plugin; }
   static eKeys Get(int WaitMs = 1000, char **UnknownCode = NULL);
   };
 

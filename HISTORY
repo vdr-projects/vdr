@@ -1813,7 +1813,7 @@ Video Disk Recorder Revision History
   makes far jumps, so that a lock file might end up with a time stamp that lies
   in the distant future (thanks to Oliver Endriss).
 
-2002-11-30: Version 1.1.18
+2002-12-01: Version 1.1.18
 
 - Fixed missing initialization of 'number' in cChannel (thanks to Martin Hammerschmid
   for reporting this one).
@@ -1832,3 +1832,5 @@ Video Disk Recorder Revision History
   for reporting this one).
 - Now taking an active SVDRP connection into account when doing shutdown or
   housekeeping (suggested by Emil Naepflein).
+- Macros in 'keymacros.conf' can now use "@plugin" to directly access the main menu
+  function of a given plugin (see man vdr(5) for details).
