@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.50 2001/10/19 13:12:45 kls Exp $
+ * $Id: tools.c 1.51 2002/01/20 15:43:35 kls Exp $
  */
 
 #include "tools.h"
@@ -140,6 +140,17 @@ bool startswith(const char *s, const char *p)
 {
   while (*p) {
         if (*p++ != *s++)
+           return false;
+        }
+  return true;
+}
+
+bool endswith(const char *s, const char *p)
+{
+  const char *se = s + strlen(s) - 1;
+  const char *pe = p + strlen(p) - 1;
+  while (pe >= p) {
+        if (*pe-- != *se-- || (se < s && pe >= p))
            return false;
         }
   return true;

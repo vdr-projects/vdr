@@ -4,12 +4,13 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.43 2002/01/20 12:14:25 kls Exp $
+ * $Id: recording.c 1.44 2002/01/20 16:47:09 kls Exp $
  */
 
 #include "recording.h"
 #include <errno.h>
 #include <fcntl.h>
+#include <ftw.h>
 #include <stdio.h>
 #include <string.h>
 #include <sys/stat.h>
@@ -30,8 +31,6 @@
 #define RESUMEFILESUFFIX  "/resume.vdr"
 #define SUMMARYFILESUFFIX "/summary.vdr"
 #define MARKSFILESUFFIX   "/marks.vdr"
-
-#define FINDCMD      "find %s -follow -type d -name '%s' 2> /dev/null"
 
 #define MINDISKSPACE 1024 // MB
 
@@ -473,35 +472,50 @@ bool cRecording::Delete(void)
 
 bool cRecording::Remove(void)
 {
+  // let's do a final safety check here:
+  if (!endswith(FileName(), DELEXT)) {
+     esyslog(LOG_ERR, "attempt to remove recording %s", FileName());
+     return false;
+     }
   isyslog(LOG_INFO, "removing recording %s", FileName());
   return RemoveVideoFile(FileName());
 }
 
 // --- cRecordings -----------------------------------------------------------
 
+cRecordings *FilterRecordings = NULL;
+const char *FilterSuffix = NULL;
+
+static int Filter(const char *Name, const struct stat *Stat, int Status)
+{
+  if (FilterRecordings && FilterSuffix) {
+     if (Status == FTW_D) {
+        if (endswith(Name, FilterSuffix)) {
+           cRecording *r = new cRecording(Name);
+           FilterRecordings->Add(r);
+           }
+        }
+     return 0;
+     }
+  return 1;
+}
+
 bool cRecordings::Load(bool Deleted)
 {
+  if (FilterRecordings)
+     return false; // because of the static Filter() function only _one_ call at a time is allowed!
   Clear();
-  bool result = false;
-  char *cmd = NULL;
-  asprintf(&cmd, FINDCMD, VideoDirectory, Deleted ? "*" DELEXT : "*" RECEXT);
-  FILE *p = popen(cmd, "r");
-  if (p) {
-     char *s;
-     while ((s = readline(p)) != NULL) {
-           cRecording *r = new cRecording(s);
-           if (r->name)
-              Add(r);
-           else
-              delete r;
-           }
-     pclose(p);
-     Sort();
-     result = Count() > 0;
+  bool result = true;
+  FilterRecordings = this;
+  FilterSuffix = Deleted ? DELEXT : RECEXT;
+  if (ftw(VideoDirectory, Filter, 10) < 0) {
+     LOG_ERROR;
+     result = false;
      }
-  else
-     Interface->Error("Error while opening pipe!");
-  delete cmd;
+  Sort();
+  result = result && Count() > 0;
+  FilterRecordings = NULL;
+  FilterSuffix = NULL;
   return result;
 }
 

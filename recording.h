@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 1.19 2002/01/20 11:35:32 kls Exp $
+ * $Id: recording.h 1.20 2002/01/20 16:05:24 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -29,7 +29,6 @@ public:
   };
 
 class cRecording : public cListObject {
-  friend class cRecordings;
 private:
   int resume;
   char *titleBuffer;
