@@ -2577,3 +2577,8 @@ Video Disk Recorder Revision History
 - Fixed resetting the EPG data versions after changing the preferred languages
   (thanks to Teemu Rantanen for reporting this one and helping to debug it).
 - Added LinkageDescriptor handling to 'libsi' (thanks to Marcel Wiesweg).
+- Added Russian language texts (thanks to Vyacheslav Dikonov).
+  Plugin authors may want to add the new entries to their I18N texts and contact
+  the translators to have their texts translated. Note that there are now 17
+  different OSD languages, so please make sure you have 17 versions for each of
+  your texts.

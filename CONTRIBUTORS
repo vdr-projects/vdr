@@ -904,3 +904,6 @@ Martin Holst <holstm@gmx.de>
 Robert Huitl <vdr@huitl.de>
  for fixing 'su' call in 'runvdr' to make it work on systems that require the
  user name to appear before the command option
+
+Vyacheslav Dikonov <sdiconov@mail.ru>
+ for translating OSD texts to the Russian language
