@@ -865,3 +865,8 @@ Video Disk Recorder Revision History
   will now need to use kvdr 0.4 or later.
 - The device /dev/video is now opened only if necessary (to GRAB an image),
   allowing other programs (like 'kvdr', for instance) to use that device.
+
+2001-11-10: Version 0.9.9
+
+- Changed version numbering scheme.
+
