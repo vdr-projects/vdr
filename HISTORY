@@ -1774,3 +1774,6 @@ Video Disk Recorder Revision History
 - Fixed closing unused PID handles (thanks to Stefan Schluenss for reporting this
   one).
 - Added more examples to 'diseqc.conf' (thanks to Oliver Endriss).
+- Fixed disabling multiple recordings on a single DVB card (comment out the definition
+  of the macros DO_REC_AND_PLAY_ON_PRIMARY_DEVICE and DO_MULTIPLE_RECORDINGS in
+  dvbdevice.c).

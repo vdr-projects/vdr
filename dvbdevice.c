@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.36 2002/11/15 13:53:41 kls Exp $
+ * $Id: dvbdevice.c 1.37 2002/11/16 12:36:50 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -33,6 +33,7 @@ extern "C" {
 #include "transfer.h"
 
 #define DO_REC_AND_PLAY_ON_PRIMARY_DEVICE 1
+#define DO_MULTIPLE_RECORDINGS 1
 
 #define DEV_VIDEO         "/dev/video"
 #define DEV_DVB_ADAPTER   "/dev/dvb/adapter"
@@ -343,6 +344,7 @@ bool cDvbDevice::ProvidesChannel(const cChannel *Channel, int Priority, bool *Ne
   bool needsDetachReceivers = true;
 
   if (ProvidesSource(Channel->Source()) && ProvidesCa(Channel->Ca())) {
+#ifdef DO_MULTIPLE_RECORDINGS
      if (Receiving()) {
         if (IsTunedTo(Channel)) {
            needsDetachReceivers = false;
@@ -365,6 +367,7 @@ bool cDvbDevice::ProvidesChannel(const cChannel *Channel, int Priority, bool *Ne
            result = hasPriority;
         }
      else
+#endif
         result = hasPriority;
      }
   if (NeedsDetachReceivers)
@@ -381,11 +384,6 @@ static unsigned int FrequencyToHz(unsigned int f)
 
 bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
 {
-#ifndef DO_REC_AND_PLAY_ON_PRIMARY_DEVICE
-  if (HasDecoder())
-     LiveView = true;
-#endif
-
   bool IsEncrypted = Channel->Ca() > CACONFBASE;
 
   bool DoTune = !IsTunedTo(Channel);
@@ -407,6 +405,11 @@ bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
                         && (IsEncrypted // CA channels can only be decrypted in "live" mode
                            || LiveView
                            );
+
+#ifndef DO_MULTIPLE_RECORDINGS
+  TurnOffLivePIDs = TurnOnLivePIDs = true;
+  StartTransferMode = false;
+#endif
 
   // Stop setting system time:
 
@@ -633,6 +636,10 @@ void cDvbDevice::SetAudioTrackDevice(int Index)
 
 bool cDvbDevice::CanReplay(void) const
 {
+#ifndef DO_REC_AND_PLAY_ON_PRIMARY_DEVICE
+  if (Receiving())
+     return false;
+#endif
   return cDevice::CanReplay() && !Ca(); // we can only replay if there is no Ca recording going on
 }
 
