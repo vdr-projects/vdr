@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osdbase.c 1.7 2002/08/25 10:02:36 kls Exp $
+ * $Id: osdbase.c 1.8 2003/03/23 15:53:29 kls Exp $
  */
 
 #include "osdbase.h"
@@ -355,7 +355,7 @@ tWindowHandle cOsdBase::Create(int x, int y, int w, int h, int Bpp, bool ClearWi
      if (x >= 0 && y >= 0 && w > 0 && h > 0 && (Bpp == 1 || Bpp == 2 || Bpp == 4 || Bpp == 8)) {
         if ((w & 0x03) != 0) {
            w += 4 - (w & 0x03);
-           esyslog("ERROR: OSD window width must be a multiple of 4 - increasing to %d", w);
+           dsyslog("OSD window width must be a multiple of 4 - increasing to %d", w);
            }
         cWindow *win = new cWindow(numWindows, x, y, w, h, Bpp, ClearWithBackground, Tiled);
         if (OpenWindow(win)) {
@@ -474,7 +474,7 @@ void cOsdBase::Relocate(tWindowHandle Window, int x, int y, int NewWidth, int Ne
      if (NewWidth > 0 && NewHeight > 0) {
         if ((NewWidth & 0x03) != 0) {
            NewWidth += 4 - (NewWidth & 0x03);
-           esyslog("ERROR: OSD window width must be a multiple of 4 - increasing to %d", NewWidth);
+           dsyslog("OSD window width must be a multiple of 4 - increasing to %d", NewWidth);
            }
         CloseWindow(w);
         cWindow *NewWindow = new cWindow(w->Handle(), x, y, NewWidth, NewHeight, w->Bpp(), w->ClearWithBackground(), w->Tiled());
