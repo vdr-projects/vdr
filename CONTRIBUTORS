@@ -850,3 +850,6 @@ Thomas Rausch <Thomas.Rausch@gmx.de>
 Thomas v. Keller <v.keller@neckarufer.de>
  for reporting a crash in case the CAM connection fails while a CAM menu
  is being presented
+
+Richard Scobie <r.scobie@clear.net.nz>
+ for adding Asia-Pacific satellites to 'sources.conf'

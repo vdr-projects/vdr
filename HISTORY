@@ -2455,3 +2455,4 @@ Video Disk Recorder Revision History
 2003-11-07: Version 1.2.6pre5
 
 - Added cDevice::GetSTC() (suggested by Sven Goethel).
+- Added Asia-Pacific satellites to 'sources.conf' (thanks to Richard Scobie).
