@@ -78,6 +78,8 @@ option to set the controlling terminal, as in
 
 vdr:123:respawn:/usr/local/bin/vdr --terminal=/dev/tty8 -w 60
 
+See the man page vdr(1) for complete information about all command line options.
+
 Locale
 ------
 
@@ -279,17 +281,15 @@ with the name of the basic directory when running 'vdr':
 Configuration files:
 --------------------
 
-There are three configuration files that hold information about
-channels, remote control keys and timers. By default these files are
+There are several configuration files that hold information about
+channels, remote control keys, timers etc. By default these files are
 assumed to be located in the video directory, but a different directory
 can be used with the '-c' option. For starters just copy all *.conf files from
 the VDR directory into your video directory.
 
 The configuration files can be edited with any text editor, or will be written
 by the 'vdr' program if any changes are made inside the on-screen menus.
-The meaning of the data entries may still vary in future releases, so for the
-moment please look at the source code (config.c) to see the meaning of the
-various fields.
+Take a look at man page vdr(5) for information about the file formats.
 
 The files that come with this package contain the author's selections,
 so please make sure you adapt these to your personal taste. Also make sure
