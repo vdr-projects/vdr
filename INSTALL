@@ -4,6 +4,16 @@ Installation of the Video Disk Recorder
 Version 1.2
 -----------
 
+IMPORTANT NOTE:
+---------------
+
+VDR currently doesn't work with NPTL ("Native Posix Thread Library").
+Either don't use NPTL, or set the environment variable
+
+  LD_ASSUME_KERNEL=2.4.1
+  
+before running VDR.
+
 Compiling and running the program:
 ----------------------------------
 
