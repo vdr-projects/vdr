@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: nit.c 1.9 2004/10/16 10:00:27 kls Exp $
+ * $Id: nit.c 1.10 2004/10/17 12:00:54 kls Exp $
  */
 
 #include "nit.h"
@@ -123,8 +123,8 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                      }
                  if (!found && Setup.UpdateChannels >= 4) {
                     cChannel *Channel = new cChannel;
-                    Channel->SetId(ts.getOriginalNetworkId(), ts.getTransportStreamId(), 0, 0, false);
-                    if (Channel->SetSatTransponderData(Source, Frequency, Polarization, SymbolRate, CodeRate, false))
+                    Channel->SetId(ts.getOriginalNetworkId(), ts.getTransportStreamId(), 0, 0);
+                    if (Channel->SetSatTransponderData(Source, Frequency, Polarization, SymbolRate, CodeRate))
                        EITScanner.AddTransponder(Channel);
                     else
                        delete Channel;
@@ -158,8 +158,8 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                      }
                  if (!found && Setup.UpdateChannels >= 4) {
                     cChannel *Channel = new cChannel;
-                    Channel->SetId(ts.getOriginalNetworkId(), ts.getTransportStreamId(), 0, 0, false);
-                    if (Channel->SetCableTransponderData(Source, Frequency, Modulation, SymbolRate, CodeRate, false))
+                    Channel->SetId(ts.getOriginalNetworkId(), ts.getTransportStreamId(), 0, 0);
+                    if (Channel->SetCableTransponderData(Source, Frequency, Modulation, SymbolRate, CodeRate))
                        EITScanner.AddTransponder(Channel);
                     else
                        delete Channel;
@@ -200,8 +200,8 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                      }
                  if (!found && Setup.UpdateChannels >= 4) {
                     cChannel *Channel = new cChannel;
-                    Channel->SetId(ts.getOriginalNetworkId(), ts.getTransportStreamId(), 0, 0, false);
-                    if (Channel->SetTerrTransponderData(Source, Frequency, Bandwidth, Constellation, Hierarchy, CodeRateHP, CodeRateLP, GuardInterval, TransmissionMode, false))
+                    Channel->SetId(ts.getOriginalNetworkId(), ts.getTransportStreamId(), 0, 0);
+                    if (Channel->SetTerrTransponderData(Source, Frequency, Bandwidth, Constellation, Hierarchy, CodeRateHP, CodeRateLP, GuardInterval, TransmissionMode))
                        EITScanner.AddTransponder(Channel);
                     else
                        delete Channel;

@@ -3033,3 +3033,5 @@ Video Disk Recorder Revision History
   lots of disk access due to automatic channel updates). Automatic channel
   modifications will be saved every 10 minutes if no recording is currently
   active.
+- Removed the 'Log' parameter from the cChannel::Set... functions. Instead
+  checking if the channel has a non-zero number.

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.h 1.18 2004/10/17 10:33:38 kls Exp $
+ * $Id: channels.h 1.19 2004/10/17 11:52:07 kls Exp $
  */
 
 #ifndef __CHANNELS_H
@@ -167,11 +167,11 @@ public:
   bool IsTerr(void) const { return (source & cSource::st_Mask) == cSource::stTerr; }
   tChannelID GetChannelID(void) const;
   int Modification(int Mask = CHANNELMOD_ALL);
-  bool SetSatTransponderData(int Source, int Frequency, char Polarization, int Srate, int CoderateH, bool Log = true);
-  bool SetCableTransponderData(int Source, int Frequency, int Modulation, int Srate, int CoderateH, bool Log = true);
-  bool SetTerrTransponderData(int Source, int Frequency, int Bandwidth, int Modulation, int Hierarchy, int CodeRateH, int CodeRateL, int Guard, int Transmission, bool Log = true);
-  void SetId(int Nid, int Tid, int Sid, int Rid = 0, bool Log = true);
-  void SetName(const char *Name, bool Log = true);
+  bool SetSatTransponderData(int Source, int Frequency, char Polarization, int Srate, int CoderateH);
+  bool SetCableTransponderData(int Source, int Frequency, int Modulation, int Srate, int CoderateH);
+  bool SetTerrTransponderData(int Source, int Frequency, int Bandwidth, int Modulation, int Hierarchy, int CodeRateH, int CodeRateL, int Guard, int Transmission);
+  void SetId(int Nid, int Tid, int Sid, int Rid = 0);
+  void SetName(const char *Name);
   void SetPids(int Vpid, int Ppid, int *Apids, char ALangs[][4], int *Dpids, char DLangs[][4], int Tpid);
   void SetCaIds(const int *CaIds); // list must be zero-terminated
   void SetCaDescriptors(int Level);
