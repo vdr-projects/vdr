@@ -879,8 +879,9 @@ Video Disk Recorder Revision History
 - Fixed DVD audio sync problems (thanks to Andreas Schultz).
 - Fixed external AC3 replay for DVDs (thanks to Andreas Schultz).
 
-2001-12-01: Version 0.99pre2
+2002-01-13: Version 0.99pre2
 
 - Fixed setting the OSD size in the 'Confirm' interface call (thanks to
   Deti Fliegl).
 - Removed the 'read incomplete section...' error message in the EIT processor.
+- Fixed channel data for "DW TV" (thanks to Axel Gruber).
