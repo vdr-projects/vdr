@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.35 2000/12/01 16:53:48 kls Exp $
+ * $Id: config.c 1.36 2001/01/13 11:30:08 kls Exp $
  */
 
 #include "config.h"
@@ -435,9 +435,11 @@ bool cTimer::Parse(const char *s)
   //XXX to hear about that!
   char *s2 = NULL;
   int l2 = strlen(s);
-  if (s[l2 - 2] == ':') { // note that 's' has a trailing '\n'
-     s2 = (char *)malloc(l2 + 2);
-     strcat(strn0cpy(s2, s, l2), " \n");
+  while (l2 > 0 && isspace(s[l2 - 1]))
+        l2--;
+  if (s[l2 - 1] == ':') {
+     s2 = (char *)malloc(l2 + 3);
+     strcat(strn0cpy(s2, s, l2 + 1), " \n");
      s = s2;
      }
   if (8 <= sscanf(s, "%d:%d:%a[^:]:%d:%d:%d:%d:%a[^:\n]:%a[^\n]", &active, &channel, &buffer1, &start, &stop, &priority, &lifetime, &buffer2, &summary)) {

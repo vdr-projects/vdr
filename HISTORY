@@ -312,7 +312,7 @@ Video Disk Recorder Revision History
   an early state and may still cause some problems, but it appears to work nice
   already.
 
-2001-01-03: Version 0.70
+2001-01-13: Version 0.70
 
 - VDR now requires driver version 0.80 or higher.
 - Recordings are now saved in PES mode. Note that you now need to install the
@@ -334,3 +334,4 @@ Video Disk Recorder Revision History
 - Added Italian language texts (thanks to Alberto Carraro).
 - Fixed starting a replay session when the program is currently in "transfer
   mode".
+- Fixed setting/modifying timers via SVDRP with empty summary fields.
