@@ -1212,3 +1212,5 @@ Video Disk Recorder Revision History
 - Fixed some missing ',' in i18n.c (thanks to Matthias Hilbig).
 - Fixed a possible endless loop in shifting recordings between DVB cards (thanks
   to Stefan Huelswitt for reporting this one).
+- Updated the Premiere World Formula 1 channels in 'channels.conf' (thanks to Mel
+  Schächner).
