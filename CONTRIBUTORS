@@ -605,3 +605,7 @@ Andreas Brachold <andy03@deltab.de>
 
 Manuel Hartl <icecep@gmx.net>
  for suggesting to extend the logging info when starting/stopping timers
+
+Benjamin Harling <benjamin.harling@web.de>
+ for suggesting to add a note regarding non-VDR files in the /videoX directories to
+ INSTALL

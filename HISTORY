@@ -2074,3 +2074,5 @@ Video Disk Recorder Revision History
 - Updated 'channels.conf.terr' for Berlin (thanks to Andreas Brachold).
 - Extended logging info when starting/stopping timers to show the channel number,
   start/stop time and the file name (suggested by Manuel Hartl).
+- Added a note regarding non-VDR files in the /videoX directories to INSTALL
+  (suggested by Benjamin Harling).
