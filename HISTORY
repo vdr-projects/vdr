@@ -2810,3 +2810,5 @@ Video Disk Recorder Revision History
 - Fixed a crash when switching the skin and having selected a non-default theme
   that is not available for the newly selected skin (thanks to Sascha Volkenandt
   for reporting this one).
+- Fixed some issues with gcc 3.4 (thanks to Prakash K. Cheemplavam and Marcel
+  Wiesweg).

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.194 2004/05/22 10:33:46 kls Exp $
+ * $Id: config.h 1.195 2004/05/22 11:29:52 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -140,7 +140,7 @@ public:
   bool Save(void)
   {
     bool result = true;
-    T *l = (T *)First();
+    T *l = (T *)this->First();
     cSafeFile f(fileName);
     if (f.Open()) {
        while (l) {

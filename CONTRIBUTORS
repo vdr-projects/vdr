@@ -670,6 +670,7 @@ Marcel Wiesweg <marcel.wiesweg@gmx.de>
  for fixing testing for matching section filters in case they are turned off
  for adding 'libsi' include files to the 'include' directory, so that plugins can
  use them
+ for his help in fixing some issues with gcc 3.4
 
 Torsten Herz <torsten.herz@web.de>
  for fixing a possible deadlock when using the "Blue" button in the "Schedules" menu
@@ -974,3 +975,6 @@ John Kennedy <rkennedy@ix.netcom.com>
 
 Drazen Dupor <drazen.dupor@dupor.com>
  for translating OSD texts to the Croatian language
+
+Prakash K. Cheemplavam <PrakashKC@gmx.de>
+ for fixing some issues with gcc 3.4

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: plugin.c 1.10 2003/08/30 14:52:58 kls Exp $
+ * $Id: plugin.c 1.11 2004/05/22 11:25:22 kls Exp $
  */
 
 #include "plugin.h"
@@ -162,7 +162,7 @@ bool cDll::Load(bool Log)
   const char *error = dlerror();
   if (!error) {
      void *(*creator)(void);
-     (void *)creator = dlsym(handle, "VDRPluginCreator");
+     creator = (void *(*)(void))dlsym(handle, "VDRPluginCreator");
      if (!(error = dlerror()))
         plugin = (cPlugin *)creator();
      }
