@@ -1077,6 +1077,8 @@ Marco Schlüßler <marco@lordzodiac.de>
  with older compiler versions
  for adding the 'portal name' to cChannels
  for fixing the cDvbSpuDecoder
+ for fixing a short glitch when starting a recording on the primary device while
+ in replay or transfer mode
 
 Jürgen Schmitz <j.schmitz@web.de>
  for reporting a bug in displaying the current channel when switching via the SVDRP

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.h 1.29 2004/10/30 14:48:27 kls Exp $
+ * $Id: dvbdevice.h 1.30 2004/11/07 10:25:16 kls Exp $
  */
 
 #ifndef __DVBDEVICE_H
@@ -56,7 +56,7 @@ public:
 
 private:
   cDvbTuner *dvbTuner;
-  void TurnOffLiveMode(void);
+  void TurnOffLiveMode(bool LiveView);
 public:
   virtual bool ProvidesSource(int Source) const;
   virtual bool ProvidesTransponder(const cChannel *Channel) const;
