@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.74 2003/03/30 13:26:20 kls Exp $
+ * $Id: recording.c 1.75 2003/04/12 09:51:44 kls Exp $
  */
 
 #include "recording.h"
@@ -42,7 +42,7 @@
 #define NAMEFORMAT   "%s/%s/" nameFORMAT
 // end of implementation for brain dead systems
 
-#define RESUMEFILESUFFIX  "/resume.vdr"
+#define RESUMEFILESUFFIX  "/resume%s%s.vdr"
 #define SUMMARYFILESUFFIX "/summary.vdr"
 #define MARKSFILESUFFIX   "/marks.vdr"
 
@@ -154,7 +154,7 @@ cResumeFile::cResumeFile(const char *FileName)
   fileName = MALLOC(char, strlen(FileName) + strlen(RESUMEFILESUFFIX) + 1);
   if (fileName) {
      strcpy(fileName, FileName);
-     strcat(fileName, RESUMEFILESUFFIX);
+     sprintf(fileName + strlen(fileName), RESUMEFILESUFFIX, Setup.ResumeID ? "." : "", Setup.ResumeID ? itoa(Setup.ResumeID) : "");
      }
   else
      esyslog("ERROR: can't allocate memory for resume file name");

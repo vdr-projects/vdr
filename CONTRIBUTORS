@@ -49,6 +49,8 @@ Martin Hammerschmid <martin@hammerschmid.com>
  for adding a missing 'public' keyword in device.h
  for pointing out a bug in displaying the group separators in the channel display
  for reporting a problem with a missing initialization of 'number' in cChannel
+ for implementing a "resume ID" which allows several users to each have their own
+ resume.vdr files
 
 Bastian Guse <bastian@nocopy.de>
  for writing the FORMATS entry for timers.conf

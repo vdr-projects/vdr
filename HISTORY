@@ -2017,3 +2017,6 @@ Video Disk Recorder Revision History
 - Fixed handling repeat function with LIRC (thanks to Ludwig Nussel).
 - Fixed handling min/max borders when entering integer values (thanks to Andy
   Grobb for reporting this one).
+- Implemented a "resume ID" which allows several users to each have their own
+  resume.vdr files (thanks to Martin Hammerschmid). This parameter can be set in
+  the "Setup/Replay" menu (see MANUAL for details).

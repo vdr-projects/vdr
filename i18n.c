@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.104 2003/03/30 10:04:56 kls Exp $
+ * $Id: i18n.c 1.105 2003/04/12 09:39:35 kls Exp $
  *
  * Translations provided by:
  *
@@ -2381,6 +2381,22 @@ const tI18nPhrase Phrases[] = {
     "Visa uppspelnings mode",
     "Afiseaza modul de redare",
     "Lejátszás feltüntetése",
+  },
+  { "Setup.Replay$Resume ID",
+    "Wiedergabe ID",
+    "Resume ID",// TODO
+    "Resume ID",// TODO
+    "Resume ID",// TODO
+    "Resume ID",// TODO
+    "Resume ID",// TODO
+    "Resume ID",// TODO
+    "Resume ID",// TODO
+    "Resume ID",// TODO
+    "Resume ID",// TODO
+    "Resume ID",// TODO
+    "Resume ID",// TODO
+    "Resume ID",// TODO
+    "Resume ID",// TODO
   },
   { "Setup.Miscellaneous$Min. event timeout (min)",
     "Mindest Event Pause (min)",
