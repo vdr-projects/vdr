@@ -481,6 +481,8 @@ Reinhard Walter Buchner <rw.buchner@freenet.de>
  for adding some satellites to 'sources.conf'
  for his help in testing tuning with "Motor-DiSEqC"
  for his help in debugging CAM support
+ for reporting a problem with recording FTA channels on the CAM device in case
+ the CAM is not connected to the primary device
 
 Lauri Tischler <lauri.tischler@efore.fi>
  for helping to test and debug the new channel source and DiSEqC handling

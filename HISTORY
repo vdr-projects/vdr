@@ -2173,7 +2173,7 @@ Video Disk Recorder Revision History
 - No longer waiting inside cIndexFile::CatchUp() to avoid shortly blocking replay
   at the end of a recording.
 
-2003-05-24: Version 1.1.33
+2003-05-25: Version 1.1.33
 
 - Modified handling of audio packets in cDvbPlayer for better sync with external
   AC3 replay (thanks to Werner Fink).
@@ -2198,3 +2198,6 @@ Video Disk Recorder Revision History
 - Fixed cReplayControl::Show() to avoid a compiler warning in g++ 3.2.3 (thanks
   to Jan Ekholm for reporting this one).
 - Completed the Slovenian OSD texts (thanks to Matjaz Thaler).
+- Changed the DEFAULTPRIORITY in device.c to -1, so that the primary device
+  will be used for FTA recordings in case the CAM is connected to a non-primary
+  device (thanks to Reinhard Walter Buchner for reporting this one).
