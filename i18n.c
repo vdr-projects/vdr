@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.121 2003/05/27 15:38:01 kls Exp $
+ * $Id: i18n.c 1.122 2003/05/29 10:38:51 kls Exp $
  *
  * Translations provided by:
  *
@@ -21,7 +21,7 @@
  * Swedish     Tomas Prybil <tomas@prybil.se> and Jan Ekholm <chakie@infa.abo.fi>
  * Romanian    Paul Lacatus <paul@campina.iiruc.ro>
  * Hungarian   Istvan Koenigsberger <istvnko@hotmail.com> and Guido Josten <guido.josten@t-online.de>
- * Catalanian  Marc Rovira Vall <tm05462@salleURL.edu> and Ramon Roca <ramon.roca@xcombo.com>
+ * Catalanian  Marc Rovira Vall <tm05462@salleURL.edu>, Ramon Roca <ramon.roca@xcombo.com> and Jordi Vilà <jvila@tinet.org>
  *
  */
 
@@ -274,7 +274,7 @@ const tI18nPhrase Phrases[] = {
     "Sändning",
     "Evenimente",
     "Adás",
-    "Event",
+    "Esdeveniment",
   },
   { "Summary",
     "Inhalt",
@@ -325,7 +325,7 @@ const tI18nPhrase Phrases[] = {
     "Vilket program sänds nu?",
     "Programul actual?",
     "Mi megy most?",
-    "Que fan ara?",
+    "Què fan ara?",
   },
   { "What's on next?",
     "Was läuft als nächstes?",
@@ -342,7 +342,7 @@ const tI18nPhrase Phrases[] = {
     "Vilket är nästa program?",
     "Programul urmator?",
     "Mi következik?",
-    "Que fan després?",
+    "Què fan després?",
   },
   // Button texts (should not be more than 10 characters!):
   { "Edit",
@@ -496,7 +496,7 @@ const tI18nPhrase Phrases[] = {
     "Stopp",
     "Stop",
     "Stop",
-    "Parar",
+    "Aturar",
   },
   { "Resume",
     "Weiter",
@@ -683,7 +683,7 @@ const tI18nPhrase Phrases[] = {
     "Infoga",
     "Insereaza",
     "Beilleszteni",
-    "Insertar",
+    "Inserir",
   },
   { "Overwrite",
     "Überschreiben",
@@ -820,7 +820,7 @@ const tI18nPhrase Phrases[] = {
     "Stanna inspelning?",
     "Opresc inregistrarea?",
     "Felvétel befejezni?",
-    "Parar la gravació?",
+    "Aturar la gravació?",
   },
   { "on primary interface",
     "auf dem primären Interface",
@@ -854,7 +854,7 @@ const tI18nPhrase Phrases[] = {
     "Avbryta redigeringen?",
     "Opresc editarea?",
     "Vágást befejezni?",
-    "Cancel.lar l'edició?",
+    "Cancel·lar l'edició?",
   },
   { "Really restart?",
     "Wirklich neu starten?",
@@ -871,7 +871,7 @@ const tI18nPhrase Phrases[] = {
     "Vill du verkligen starta om?",
     "Esti sigur de repornire?",
     "Tényleg újraindítani?",
-    "Segur que vols reiniciar?",
+    "Segur que voleu reiniciar?",
   },
   { "Recording - restart anyway?",
     "Aufnahme läuft - trotzdem neu starten?",
@@ -888,7 +888,7 @@ const tI18nPhrase Phrases[] = {
     "Inspelning pågår, vill du ändå starta om?",
     "In inregistrare - repornesc?",
     "Felvétel folyamatban van - mégis újraindítani?",
-    "Estic gravant - reiniciar de totes maneres?",
+    "Gravant - Reiniciar de totes maneres?",
   },
   { "Recording - shut down anyway?",
     "Aufnahme läuft - trotzdem ausschalten?",
@@ -939,7 +939,7 @@ const tI18nPhrase Phrases[] = {
     "Tryck valfri knapp för att återkalla avstängningen",
     "Apasa orice tasta pentru a anula inchiderea",
     "Nyomj egy gombot a leállás megállításához",
-    "Prem qualsevol tecla per cancel.lar l'aturada",
+    "Prem qualsevol tecla per cancel·lar l'aturada",
   },
   // Channel parameters:
   { "Name",
@@ -1195,7 +1195,7 @@ const tI18nPhrase Phrases[] = {
     "Bandbredd",
     "Bandwidth",
     "Bandwidth",
-    "Ampla de banda",
+    "Amplada de banda",
   },
   { "CoderateH",
     "CoderateH",
@@ -1383,7 +1383,7 @@ const tI18nPhrase Phrases[] = {
     "Slutar",
     "Stop",
     "Vége",
-    "Final",
+    "Fi",
   },
   { "Priority",
     "Priorität",
@@ -1417,7 +1417,7 @@ const tI18nPhrase Phrases[] = {
     "Livstid",
     "Durata",
     "Élettartam",
-    "Duració",
+    "Durada",
   },
   { "File",
     "Datei",
@@ -1656,7 +1656,7 @@ const tI18nPhrase Phrases[] = {
     "Det finns inga redigeringsmärken",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "No hi ha marques d'edició definides",
   },
   { "Can't start editing process!",
     "Schnitt kann nicht gestartet werden!",
@@ -1724,7 +1724,7 @@ const tI18nPhrase Phrases[] = {
     "Lågt diskutrymme!",
     "Spatiu scazut pe disc!",
     "A merev lemez majdnem tele!",
-    "Disc gairebé plè!",
+    "Disc gairebé ple!",
   },
   { "Can't open CAM menu!",
     "CAM-Menü kann nicht geöffnet werden!",
@@ -2032,7 +2032,7 @@ const tI18nPhrase Phrases[] = {
     "Tid för meddelanden (sek)",
     "Timp afisare mesaj (sec)",
     "Információ feltüntetésének idötartama",
-    "Duració dels missatges (s)",
+    "Durada dels missatges (s)",
   },
   { "Setup.OSD$Channel info position",
     "Kanal-Info Position",
@@ -2117,7 +2117,7 @@ const tI18nPhrase Phrases[] = {
     "Kataloger för inspelningar",
     "Directoare inregistrari",
     "Felvételek listája",
-    "Gravacions en sub-carpetes",
+    "Gravacions en subcarpetes",
   },
   { "Setup.EPG$EPG scan timeout (h)",
     "Zeit bis EPG Scan (h)",
@@ -2321,7 +2321,7 @@ const tI18nPhrase Phrases[] = {
     "Marginal för start (min)",
     "Margine la pornire (min)",
     "Idöeltolódás a kezdésnél (min)",
-    "Iniciar la gravació avans de (min)",
+    "Marge d'inici de gravació (min)",
   },
   { "Setup.Recording$Margin at stop (min)",
     "Zeitpuffer bei Ende (min)",
@@ -2338,7 +2338,7 @@ const tI18nPhrase Phrases[] = {
     "Marginal för stopp (min)",
     "Margine la oprire (min)",
     "Idöeltolódás a befejezésnél",
-    "Acavar la gravació després de (min)",
+    "Marge de fi de gravació (min)",
   },
   { "Setup.Recording$Primary limit",
     "Primär-Limit",
@@ -2389,7 +2389,7 @@ const tI18nPhrase Phrases[] = {
     "Normal livstid (dagar)",
     "Durata predefinita",
     "Default élettartam",
-    "Duració predefinida",
+    "Durada predefinida",
   },
   { "Setup.Recording$Pause priority",
     "Pause Priorität",
@@ -2423,7 +2423,7 @@ const tI18nPhrase Phrases[] = {
     "Livstid för direktinspelning (dagar)",
     "",// TODO
     "",// TODO
-    "Duració de la pausa (d)",
+    "Durada de la pausa (d)",
   },
   { "Setup.Recording$Use episode name",
     "Episodenname verwenden",
@@ -2508,7 +2508,7 @@ const tI18nPhrase Phrases[] = {
     "Spela in ljudet med Dolby Digital",
     "Inregistreaza Dolby Digital",
     "Dolby Digitál felvétel",
-    "Gravar el sò en Dolby Digital",
+    "Gravar el so en Dolby Digital",
   },
   { "Setup.Recording$Max. video file size (MB)",
     "Max. Video Dateigröße (MB)",
@@ -2525,7 +2525,7 @@ const tI18nPhrase Phrases[] = {
     "Maximal filstorlek för inspelning (MB)",
     "Dimensiune maxima a fisierului video (MB)",
     "Max. video File-terjedelem (MB)",
-    "Tamany màxim de l'arxiu (MB)",
+    "Mida màxima de l'arxiu (MB)",
   },
   { "Setup.Recording$Split edited files",
     "Editierte Dateien aufteilen",
@@ -2559,7 +2559,7 @@ const tI18nPhrase Phrases[] = {
     "Multispeed mode",
     "Mod multi-rata",
     "MultiSpeed funkció",
-    "Mode de multi-velocitat",
+    "Mode de multivelocitat",
   },
   { "Setup.Replay$Show replay mode",
     "Wiedergabestatus anzeigen",
@@ -2593,7 +2593,7 @@ const tI18nPhrase Phrases[] = {
     "Återuppta ID",
     "Resume ID",// TODO
     "Resume ID",// TODO
-    "Continuar ID",
+    "ID de Continuar",
   },
   { "Setup.Miscellaneous$Min. event timeout (min)",
     "Mindest Event Pause (min)",
@@ -2662,7 +2662,7 @@ const tI18nPhrase Phrases[] = {
     "MTOTFLS",
     "LMMJVSD",
     "HKSCPSV",
-    "LMXJVSU",
+    "LMCJVSG",
   },
   { "MonTueWedThuFriSatSun", // must all be 3 letters!
     "MonDieMitDonFreSamSon",
@@ -2679,7 +2679,7 @@ const tI18nPhrase Phrases[] = {
     "MånTisOnsTorFreLörSön",
     "LunMarMieJoiVinSimDum",
     "HétKedSzeCsüPénSzoVas",
-    "DllDimDmcDijDivDisDiu",
+    "Dl Dm Dc Dj Dv Ds Dg ",
   },
   // The allowed characters in strings:
   { " abcdefghijklmnopqrstuvwxyz0123456789-.#~",
@@ -2749,7 +2749,7 @@ const tI18nPhrase Phrases[] = {
     "Tryck valfri tangent på fjärrkontrollen",
     "Apasati o tasta pe telecomanda",
     "Nyomjon meg egy gombot a távirányítón",
-    "Premi qualsevol tecla del comandament",
+    "Premeu qualsevol tecla del comandament",
   },
   { "RC code detected!",
     "FB Code erkannt!",
@@ -2783,7 +2783,7 @@ const tI18nPhrase Phrases[] = {
     "Tryck inte på någon knapp...",
     "Nu apasati nicio tasta...",
     "Ne nyomjon meg gombot...",
-    "No premi cap tecla...",
+    "No premeu cap tecla...",
   },
   { "Phase 2: Learning specific key codes",
     "Phase 2: Einzelne Tastencodes lernen",
@@ -2817,7 +2817,7 @@ const tI18nPhrase Phrases[] = {
     "Tryck på knappen för '%s'",
     "Apasati tasta pentru '%s'",
     "'%s' gomb megnyomása",
-    "Premi una tecla per '%s'",
+    "Premeu una tecla per '%s'",
   },
   { "Press 'Up' to confirm",
     "'Auf' drücken zum Bestätigen",
@@ -2834,7 +2834,7 @@ const tI18nPhrase Phrases[] = {
     "Tryck 'Upp' för att bekräfta",
     "Apsati 'Sus' pentru confirmare",
     "'Fel' megnyomása az elfogadáshoz",
-    "Premi 'Amunt' per confirmar",
+    "Premeu 'Amunt' per confirmar",
   },
   { "Press 'Down' to continue",
     "'Ab' drücken zum Weitermachen",
@@ -2851,7 +2851,7 @@ const tI18nPhrase Phrases[] = {
     "Tryck 'Ner' för att bekräfta",
     "Apasati jos pentru continuare",
     "'Le' megnyomása a folytatáshoz",
-    "Premi 'Avall' per continuar",
+    "Premeu 'Avall' per continuar",
   },
   { "(press 'Up' to go back)",
     "('Auf' drücken um zurückzugehen)",
@@ -2868,7 +2868,7 @@ const tI18nPhrase Phrases[] = {
     "(Tryck 'Upp' för att backa)",
     "(Apsati 'Sus' pentru revenire)",
     "(´Fel' megnyomása a visszatéréshez)",
-    "(Premi 'Amunt' per retornar)",
+    "(Premeu 'Amunt' per retornar)",
   },
   { "(press 'Down' to end key definition)",
     "('Ab' drücken zum Beenden)",
@@ -2885,7 +2885,7 @@ const tI18nPhrase Phrases[] = {
     "(Tryck 'Ner' för att avsluta knapp definition)",
     "(Apasati 'Jos' pentru terminare)",
     "('Le' megnyomása a befejezéshez)",
-    "(Premi 'Avall' per finalitzar l'aprenentatge)",
+    "(Premeu 'Avall' per finalitzar l'aprenentatge)",
   },
   { "(press 'Menu' to skip this key)",
     "('Menü' drücken zum Überspringen)",
@@ -2902,7 +2902,7 @@ const tI18nPhrase Phrases[] = {
     "Tryck 'Meny' för att hoppa över denna knapp.",
     "",// TODO
     "",// TODO
-    "Premi 'Menu' per obviar aquesta tecla",
+    "Premeu 'Menú' per obviar aquesta tecla",
   },
   { "Phase 3: Saving key codes",
     "Phase 3: Codes abspeichern",
@@ -2936,7 +2936,7 @@ const tI18nPhrase Phrases[] = {
     "Tryck 'Upp' för att spara, 'Ner' för att avsluta",
     "Apsati 'Sus' pentru salvare, 'Jos' pentru anulare",
     "'Fel' mentés, 'Le´ mégse",
-    "Premi 'Amunt' per guardar, 'Avall' per anul.lar",
+    "Premeu 'Amunt' per guardar, 'Avall' per anul·lar",
   },
   // Key names:
   { "Up",
@@ -3005,7 +3005,7 @@ const tI18nPhrase Phrases[] = {
     "Ok",
     "Ok",
     "Ok",
-    "Ok",
+    "D'acord",
   },
   { "Back",
     "Zurück",
@@ -3175,7 +3175,7 @@ const tI18nPhrase Phrases[] = {
     "Stoppa",
     "",// TODO
     "",// TODO
-    "Parar",
+    "Aturar",
   },
   { "Record",
     "Aufnehmen",
@@ -3243,7 +3243,7 @@ const tI18nPhrase Phrases[] = {
     "På/Av",
     "Pornit",
     "Kikapcsolni",
-    "Parar",
+    "Aturar",
   },
   { "Channel+",
     "Kanal+",
@@ -3533,7 +3533,7 @@ const tI18nPhrase Phrases[] = {
     " Avsluta uppspelning",
     " Opreste redare",
     " Lejátszást befejzni",
-    " Parar la reproducció",
+    " Aturar la reproducció",
   },
   { " Stop recording ", // note the leading and trailing blanks!
     " Aufzeichnung beenden ",
@@ -3550,7 +3550,7 @@ const tI18nPhrase Phrases[] = {
     " Avsluta inspelning ",
     " Opreste inregistrarea ",
     " Felvételt befejezni ",
-    " Parar la gravació ",
+    " Aturar la gravació ",
   },
   { " Cancel editing", // note the leading blank!
     " Schneiden abbrechen",

@@ -2220,3 +2220,4 @@ Video Disk Recorder Revision History
 - Added an additional sleep() after going into "Pause live video" mode to avoid
   breaking off replay in case the user hits "Play" or "Pause" too soon (thanks
   to Karim Afifi for reporting ths one).
+- Some corrections to the Catalanian OSD texts (thanks to Jordi Vilà).
