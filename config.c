@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.53 2001/08/11 08:38:11 kls Exp $
+ * $Id: config.c 1.54 2001/08/11 15:34:42 kls Exp $
  */
 
 #include "config.h"
@@ -320,7 +320,7 @@ char *cTimer::buffer = NULL;
 cTimer::cTimer(bool Instant)
 {
   startTime = stopTime = 0;
-  recording = false;
+  recording = pending = false;
   active = Instant;
   cChannel *ch = Channels.GetByNumber(cDvbApi::CurrentChannel());
   channel = ch ? ch->number : 0;
@@ -343,7 +343,7 @@ cTimer::cTimer(bool Instant)
 cTimer::cTimer(const cEventInfo *EventInfo)
 {
   startTime = stopTime = 0;
-  recording = false;
+  recording = pending = false;
   active = true;
   cChannel *ch = Channels.GetByServiceID(EventInfo->GetServiceID());
   channel = ch ? ch->number : 0;
@@ -568,6 +568,11 @@ void cTimer::SetRecording(bool Recording)
 {
   recording = Recording;
   isyslog(LOG_INFO, "timer %d %s", Index() + 1, recording ? "start" : "stop");
+}
+
+void cTimer::SetPending(bool Pending)
+{
+  pending = Pending;
 }
 
 cTimer *cTimer::GetMatch(void)

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.101 2001/08/11 15:04:05 kls Exp $
+ * $Id: menu.c 1.102 2001/08/11 15:47:23 kls Exp $
  */
 
 #include "menu.h"
@@ -2072,6 +2072,7 @@ cRecordControl::cRecordControl(cDvbApi *DvbApi, cTimer *Timer)
      Timers.Save();
      asprintf(&instantId, cDvbApi::NumDvbApis > 1 ? "%s - %d" : "%s", Channels.GetChannelNameByNumber(timer->channel), dvbApi->CardIndex() + 1);
      }
+  timer->SetPending(true);
   timer->SetRecording(true);
   if (Channels.SwitchTo(timer->channel, dvbApi)) {
      cRecording Recording(timer);
@@ -2134,8 +2135,8 @@ bool cRecordControls::Start(cTimer *Timer)
                }
             }
         }
-     else if (!Timer || Timer->priority >= Setup.PrimaryLimit)
-        esyslog(LOG_ERR, "ERROR: no free DVB device to record channel %d!", ch);
+     else if (!Timer || (Timer->priority >= Setup.PrimaryLimit && !Timer->pending))
+        isyslog(LOG_ERR, "no free DVB device to record channel %d!", ch);
      }
   else
      esyslog(LOG_ERR, "ERROR: channel %d not defined!", ch);

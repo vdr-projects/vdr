@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.62 2001/08/11 09:38:12 kls Exp $
+ * $Id: vdr.c 1.63 2001/08/11 15:33:30 kls Exp $
  */
 
 #include <getopt.h>
@@ -325,9 +325,8 @@ int main(int argc, char *argv[])
         if (!Menu) {
            cTimer *Timer = cTimer::GetMatch();
            if (Timer) {
-              if (!cRecordControls::Start(Timer)) {
-                 //TODO need to do something to prevent the timer from hitting over and over again...
-                 }
+              if (!cRecordControls::Start(Timer))
+                 Timer->SetPending(true);
               }
            cRecordControls::Process();
            }
