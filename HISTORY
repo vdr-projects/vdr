@@ -2615,3 +2615,5 @@ Video Disk Recorder Revision History
 
 - Completed the Finnish OSD texts (thanks to Rolf Ahrenberg).
 - Added ISO639LanguageDescriptor to 'libsi'.
+- Changed the 'languageCode' members in the descriptor classes of 'libsi' to
+  'char[4]' and setting the 4th byte to 0 for easier handling.
