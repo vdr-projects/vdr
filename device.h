@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 1.53 2005/01/22 14:58:07 kls Exp $
+ * $Id: device.h 1.54 2005/02/06 11:25:37 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -315,6 +315,7 @@ public:
 private:
   tTrackId availableTracks[ttMaxTrackTypes];
   eTrackType currentAudioTrack;
+  int currentAudioTrackMissingCount;
   bool pre_1_3_19_PrivateStream;
 protected:
   virtual void SetAudioTrackDevice(eTrackType Type);
@@ -339,6 +340,10 @@ public:
   bool SetCurrentAudioTrack(eTrackType Type);
        ///< Sets the current audio track to the given Type.
        ///< \return Returns true if Type is a valid audio track, false otherwise.
+  void EnsureAudioTrack(bool Force = false);
+       ///< Makes sure an audio track is selected that is actually available.
+       ///< If Force is true, the language and Dolby Digital settings will
+       ///< be verified even if the current audio track is available.
 
 // Audio facilities
 

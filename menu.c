@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.339 2005/02/05 11:35:23 kls Exp $
+ * $Id: menu.c 1.340 2005/02/06 11:33:13 kls Exp $
  */
 
 #include "menu.h"
@@ -2850,6 +2850,7 @@ cDisplayTracks *cDisplayTracks::currentDisplayTracks = NULL;
 cDisplayTracks::cDisplayTracks(void)
 :cOsdObject(true)
 {
+  cDevice::PrimaryDevice()->EnsureAudioTrack();
   // Get the actual audio track descriptions from the EPG if we're not replaying:
   if (!cDevice::PrimaryDevice()->Replaying() || cTransferControl::ReceiverDevice())
      SetTrackDescriptions();

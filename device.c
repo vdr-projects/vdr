@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.81 2005/01/30 14:41:57 kls Exp $
+ * $Id: device.c 1.82 2005/02/06 11:32:05 kls Exp $
  */
 
 #include "device.h"
@@ -137,6 +137,7 @@ cDevice::cDevice(void)
   pesAssembler = new cPesAssembler;
   ClrAvailableTracks();
   currentAudioTrack = ttAudioFirst;
+  currentAudioTrackMissingCount = 0;
 
   for (int i = 0; i < MAXRECEIVERS; i++)
       receiver[i] = NULL;
@@ -551,24 +552,7 @@ eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
            for (int i = 0; i < MAXDPIDS; i++)
                SetAvailableTrack(ttDolby, i, Channel->Dpid(i), Channel->Dlang(i));
            }
-        // Select the preferred audio track:
-        eTrackType PreferredTrack = ttAudioFirst;
-        int LanguagePreference = -1;
-        int StartCheck = Setup.CurrentDolby ? ttDolbyFirst : ttAudioFirst;
-        int EndCheck = ttDolbyLast;
-        for (int i = StartCheck; i <= EndCheck; i++) {
-            const tTrackId *TrackId = GetTrack(eTrackType(i));
-            if (TrackId && TrackId->id && I18nIsPreferredLanguage(Setup.AudioLanguages, I18nLanguageIndex(TrackId->language), LanguagePreference))
-               PreferredTrack = eTrackType(i);
-            if (Setup.CurrentDolby && i == ttDolbyLast) {
-               i = ttAudioFirst - 1;
-               EndCheck = ttAudioLast;
-               }
-            }
-        // Make sure we're set to an available audio track:
-        const tTrackId *Track = GetTrack(GetCurrentAudioTrack());
-        if (!Track || !Track->id || PreferredTrack != GetCurrentAudioTrack())
-           SetCurrentAudioTrack(PreferredTrack);
+        EnsureAudioTrack(true);
         }
      cStatus::MsgChannelSwitch(this, Channel->Number()); // only report status if channel switch successfull
      }
@@ -678,6 +662,10 @@ bool cDevice::SetAvailableTrack(eTrackType Type, int Index, uint16_t Id, const c
         availableTracks[t].flags = Flags;
         availableTracks[t].id = Id; // setting 'id' last to avoid the need for extensive locking
         }
+     if (t == currentAudioTrack)
+        currentAudioTrackMissingCount = 0;
+     else if (!availableTracks[currentAudioTrack].id && currentAudioTrackMissingCount++ > NumAudioTracks() * 10)
+        EnsureAudioTrack();
      return true;
      }
   else
@@ -715,6 +703,31 @@ bool cDevice::SetCurrentAudioTrack(eTrackType Type)
      return true;
      }
   return false;
+}
+
+void cDevice::EnsureAudioTrack(bool Force)
+{
+  if (Force || !availableTracks[currentAudioTrack].id) {
+     eTrackType PreferredTrack = ttAudioFirst;
+     int LanguagePreference = -1;
+     int StartCheck = Setup.CurrentDolby ? ttDolbyFirst : ttAudioFirst;
+     int EndCheck = ttDolbyLast;
+     for (int i = StartCheck; i <= EndCheck; i++) {
+         const tTrackId *TrackId = GetTrack(eTrackType(i));
+         if (TrackId && TrackId->id && I18nIsPreferredLanguage(Setup.AudioLanguages, I18nLanguageIndex(TrackId->language), LanguagePreference))
+            PreferredTrack = eTrackType(i);
+         if (Setup.CurrentDolby && i == ttDolbyLast) {
+            i = ttAudioFirst - 1;
+            EndCheck = ttAudioLast;
+            }
+         }
+     // Make sure we're set to an available audio track:
+     const tTrackId *Track = GetTrack(GetCurrentAudioTrack());
+     if (!Track || !Track->id || PreferredTrack != GetCurrentAudioTrack()) {
+        dsyslog("setting audio track to %d", PreferredTrack);
+        SetCurrentAudioTrack(PreferredTrack);
+        }
+     }
 }
 
 bool cDevice::CanReplay(void) const
