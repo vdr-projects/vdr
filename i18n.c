@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.110 2003/05/16 13:02:08 kls Exp $
+ * $Id: i18n.c 1.111 2003/05/24 10:23:16 kls Exp $
  *
  * Translations provided by:
  *
@@ -12,7 +12,7 @@
  * Italian     Alberto Carraro <bertocar@tin.it>
  * Dutch       Arnold Niessen <niessen@iae.nl> <arnold.niessen@philips.com>
  * Portuguese  Paulo Lopes <pmml@netvita.pt>
- * French      Jean-Claude Repetto <jc@repetto.org> and Olivier Jacques <jacquesolivier@hotmail.com>
+ * French      Jean-Claude Repetto <jc@repetto.org>, Olivier Jacques <jacquesolivier@hotmail.com> and Gregoire Favre <greg@magma.unil.ch>
  * Norwegian   Jørgen Tvedt <pjtvedt@online.no> and Truls Slevigen <truls@slevigen.no>
  * Finnish     Hannu Savolainen <hannu@opensound.com> and Jaakko Hyvätti <jaakko@hyvatti.iki.fi>
  * Polish      Michael Rakowski <mrak@gmx.de>
@@ -214,7 +214,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Commandes d'enregistrement",
     "",// TODO
     "Nauhoituskomennot",
     "",// TODO
@@ -674,7 +674,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Insért",
     "",// TODO
     "Lisää",
     "",// TODO
@@ -691,7 +691,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Écraser",
     "",// TODO
     "Korvaa",
     "",// TODO
@@ -725,7 +725,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Réinitialisation",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -999,7 +999,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Source",
     "",//TODO
     "Lähde",
     "",//TODO
@@ -1579,7 +1579,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Chaîne non disponible!",
     "",//TODO
     "Kanavaa ei voi katsoa nyt!",
     "",//TODO
@@ -1596,7 +1596,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Caractéristiques des chaînes",//TODO French: that's not what it means!
     "",//TODO
     "",//TODO
     "",//TODO
@@ -1647,7 +1647,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Pas de marques d'édition définies!",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -1732,7 +1732,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Impossible d'ouvrir le menu CAM!",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -1749,7 +1749,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Impossible de réinitialiser la CAM!",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -1766,7 +1766,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "La CAM a été réinitialisée",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -2380,7 +2380,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Durée de vie des pauses (j)",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -2397,7 +2397,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Priorité des pauses",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -3166,7 +3166,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "Stop",
-    "",// TODO
+    "",// TODO French: still missing
     "",// TODO
     "",// TODO
     "",// TODO
@@ -3370,7 +3370,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "",// TODO French: still missing
     "",// TODO
     "",// TODO
     "",// TODO
@@ -3694,7 +3694,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "Ce plugin n'a pas de paramètres !",
+    "Ce plugin n'a pas de paramètres!",
     "",// TODO
     "Tällä laajennoksella ei ole asetuksia!",
     "",// TODO
