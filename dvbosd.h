@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbosd.h 1.9 2002/01/13 15:48:00 kls Exp $
+ * $Id: dvbosd.h 1.10 2002/02/03 16:43:50 kls Exp $
  */
 
 #ifndef __DVBOSD_H
@@ -12,6 +12,7 @@
 
 #if defined(DEBUG_OSD) || defined(REMOTE_KBD)
 #include <ncurses.h>
+#undef ERR //XXX ncurses defines this - but this clashes with newer system header files
 #endif
 #include <ost/osd.h>
 #include <stdio.h>

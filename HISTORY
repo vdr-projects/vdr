@@ -967,3 +967,5 @@ Video Disk Recorder Revision History
   (driver bug?). Note, though, that since VDR is mainly a *video recorder*, some
   features like, e. g.,  the progress display, may not work as expected with
   radio recordings. Thanks to Michael Paar.
+- Fixed a problem with the ERR macro defined by ncurses.h (thanks to Artur
+  Skawina).

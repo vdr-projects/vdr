@@ -137,6 +137,7 @@ Matjaz Thaler <matjaz.thaler@guest.arnes.si>
 
 Artur Skawina <skawina@geocities.com>
  for improving the font file generation in the Makefile
+ for pointing out a problem with the ERR macro defined by ncurses.h
 
 Werner Fink <werner@suse.de>
  for making I/O more robust by handling EINTR

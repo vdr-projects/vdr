@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.55 2002/02/03 13:35:38 kls Exp $
+ * $Id: tools.c 1.56 2002/02/03 16:44:08 kls Exp $
  */
 
 #include "tools.h"
@@ -13,6 +13,7 @@
 #include <errno.h>
 #if defined(DEBUG_OSD)
 #include <ncurses.h>
+#undef ERR //XXX ncurses defines this - but this clashes with newer system header files
 #endif
 #include <stdlib.h>
 #include <sys/time.h>
