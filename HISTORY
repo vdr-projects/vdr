@@ -3410,3 +3410,6 @@ Video Disk Recorder Revision History
   library files from this version of VDR (suggested by Andreas Brachold).
 - Added a missing 'resultSkipped = 0' to cRemux::Clear() (thanks to Marco Schlüßler
   for reporting this one).
+- The new function cDvbDevice::SetTransferModeForDolbyDigital() can be used by
+  plugins that implement Dolby Digital output and thus want to prevent the cDvbDevice
+  from starting Transfer Mode in order to replay DD over the DVB device.

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.h 1.32 2005/01/06 13:30:51 kls Exp $
+ * $Id: dvbdevice.h 1.33 2005/02/13 14:14:31 kls Exp $
  */
 
 #ifndef __DVBDEVICE_H
@@ -99,11 +99,14 @@ protected:
 
 private:
   bool digitalAudio;
+  static bool setTransferModeForDolbyDigital;
 protected:
   virtual int GetAudioChannelDevice(void);
   virtual void SetAudioChannelDevice(int AudioChannel);
   virtual void SetVolumeDevice(int Volume);
   virtual void SetDigitalAudioDevice(bool On);
+public:
+  static void SetTransferModeForDolbyDigital(bool On);
 
 // Player facilities
 

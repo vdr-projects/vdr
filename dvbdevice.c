@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.119 2005/02/08 14:07:16 kls Exp $
+ * $Id: dvbdevice.c 1.120 2005/02/13 14:26:37 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -346,6 +346,7 @@ void cDvbTuner::Action(void)
 // --- cDvbDevice ------------------------------------------------------------
 
 int cDvbDevice::devVideoOffset = -1;
+bool cDvbDevice::setTransferModeForDolbyDigital = true;
 
 cDvbDevice::cDvbDevice(int n)
 {
@@ -861,6 +862,11 @@ void cDvbDevice::SetDigitalAudioDevice(bool On)
      }
 }
 
+void cDvbDevice::SetTransferModeForDolbyDigital(bool On)
+{
+  setTransferModeForDolbyDigital = On;
+}
+
 void cDvbDevice::SetAudioTrackDevice(eTrackType Type)
 {
   const tTrackId *TrackId = GetTrack(Type);
@@ -872,6 +878,8 @@ void cDvbDevice::SetAudioTrackDevice(eTrackType Type)
            }
         }
      else if (IS_DOLBY_TRACK(Type)) {
+        if (!setTransferModeForDolbyDigital)
+           return;
         // Currently this works only in Transfer Mode
         cChannel *Channel = Channels.GetByNumber(CurrentChannel());
         if (Channel)
