@@ -8,7 +8,7 @@
  *
  * parts of this file are derived from the OMS program.
  *
- * $Id: dvbspu.h 1.4 2004/05/31 08:49:20 kls Exp $
+ * $Id: dvbspu.h 1.5 2004/06/12 12:57:55 kls Exp $
  */
 
 #ifndef __DVBSPU_H
@@ -132,9 +132,6 @@ class cDvbSpuDecoder:public cSpuDecoder {
     int ScaleYres(int value);
     void DrawBmp(sDvbSpuRect & size, cBitmap * bmp);
 
-    void Draw();
-    void Hide();
-
   public:
     cDvbSpuDecoder();
     ~cDvbSpuDecoder();
@@ -147,6 +144,9 @@ class cDvbSpuDecoder:public cSpuDecoder {
                       uint32_t palette);
     void clearHighlight(void);
     void Empty(void);
+    void Hide(void);
+    void Draw(void);
+    bool IsVisible(void) { return osd != NULL; }
     void processSPU(uint32_t pts, uint8_t * buf);
 };
 

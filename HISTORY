@@ -2904,3 +2904,4 @@ Video Disk Recorder Revision History
 - In order to avoid problems on UTF-8 systems, VDR now checks for the presence
   of UTF-8 at program start, and if it is, exists and tells the user to turn off
   UTF-8 before starting VDR.
+- Some changes to the SPU decoder interface (thanks to Sven Goethel).
