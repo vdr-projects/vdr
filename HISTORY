@@ -3464,3 +3464,5 @@ Video Disk Recorder Revision History
 - The day of a timer is now stored as a full date in ISO notation ("YYYY-MM-DD") in
   'timers.conf' and for the result of the SVDRP command LSTT (based in parts on a
   patch by Roman Krenický).
+- Some fixes to avoid compiler warnings in gcc 4.0 (thanks to Ville Skyttä for reporting
+  these).

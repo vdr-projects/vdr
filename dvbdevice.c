@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.126 2005/03/13 12:34:00 kls Exp $
+ * $Id: dvbdevice.c 1.127 2005/03/20 10:10:38 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -577,7 +577,7 @@ bool cDvbDevice::GrabImage(const char *FileName, bool Jpeg, int Quality, int Siz
               else {
                  // write PNM file:
                  if (fprintf(f, "P6\n%d\n%d\n255\n", vm.width, vm.height) < 0 ||
-                     fwrite(mem, vm.width * vm.height * 3, 1, f) < 0) {
+                     fwrite(mem, vm.width * vm.height * 3, 1, f) != 1) {
                     LOG_ERROR_STR(FileName);
                     result |= 1;
                     }

@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.67 2004/12/26 12:23:55 kls Exp $
+ * $Id: svdrp.c 1.68 2005/03/19 16:05:33 kls Exp $
  */
 
 #include "svdrp.h"
@@ -111,7 +111,8 @@ int cSocket::Accept(void)
         bool accepted = SVDRPhosts.Acceptable(clientname.sin_addr.s_addr);
         if (!accepted) {
            const char *s = "Access denied!\n";
-           write(newsock, s, strlen(s));
+           if (write(newsock, s, strlen(s)) < 0)
+              LOG_ERROR;
            close(newsock);
            newsock = -1;
            }
