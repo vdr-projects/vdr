@@ -921,3 +921,7 @@ Christian Tramnitz <maillist@tramnitz.com>
  for terrestrial transponders
  for his support in debugging a problem in setting the source type for newly
  detected terrestrial transponders
+
+Jens Rosenboom <me@jayr.de>
+ for fixing the SVDRP command 'STAT DISK' to avoid a 'division by 0' in case
+ the disk is full
