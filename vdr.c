@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.122 2002/09/08 11:19:01 kls Exp $
+ * $Id: vdr.c 1.123 2002/09/15 11:08:35 kls Exp $
  */
 
 #include <getopt.h>
@@ -400,6 +400,9 @@ int main(int argc, char *argv[])
            }
         // Attach launched player control:
         cControl::Attach();
+        // Make sure Transfer-Mode is re-started after detaching a player:
+        if (cDevice::PrimaryDevice()->PlayerDetached() && !cDevice::PrimaryDevice()->Replaying())
+           Channels.SwitchTo(cDevice::CurrentChannel());
         // Restart the Watchdog timer:
         if (WatchdogTimeout > 0) {
            int LatencyTime = WatchdogTimeout - alarm(WatchdogTimeout);

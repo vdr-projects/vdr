@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.19 2002/09/08 14:03:43 kls Exp $
+ * $Id: device.c 1.20 2002/09/15 11:05:41 kls Exp $
  */
 
 #include "device.h"
@@ -46,6 +46,8 @@ cDevice::cDevice(void)
   volume = Setup.CurrentVolume;
 
   player = NULL;
+
+  playerDetached = false;
 
   for (int i = 0; i < MAXRECEIVERS; i++)
       receiver[i] = NULL;
@@ -106,6 +108,13 @@ bool cDevice::SetPrimaryDevice(int n)
 bool cDevice::HasDecoder(void) const
 {
   return false;
+}
+
+bool cDevice::PlayerDetached(void)
+{
+  bool result = playerDetached;
+  playerDetached = false;
+  return result;
 }
 
 cOsdBase *cDevice::NewOsd(int x, int y)
@@ -438,6 +447,7 @@ void cDevice::Detach(cPlayer *Player)
      player->device = NULL;
      player = NULL;
      SetPlayMode(pmNone);
+     playerDetached = true;
      }
 }
 
@@ -447,16 +457,6 @@ void cDevice::StopReplay(void)
      Detach(player);
      if (IsPrimaryDevice())
         cControl::Shutdown();
-     /*XXX+
-     if (IsPrimaryDevice()) {
-        // let's explicitly switch the channel back in case it was in Transfer Mode:
-        cChannel *Channel = Channels.GetByNumber(currentChannel);
-        if (Channel) {
-           Channel->Switch(this, false);
-           usleep(100000); // allow driver to sync in case a new replay will start immediately
-           }
-        }
-        XXX*/
      }
 }
 

@@ -1466,3 +1466,5 @@ Video Disk Recorder Revision History
   Helmut Auer).
 - Fixed starting a recording of the current channel with only one DVB card
   (thanks to Stefan Huelswitt for his help).
+- A previous 'Transfer Mode' is now automatically re-started after a replay
+  stops.

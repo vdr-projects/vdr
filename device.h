@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 1.17 2002/09/14 10:00:16 kls Exp $
+ * $Id: device.h 1.18 2002/09/15 11:05:41 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -236,6 +236,7 @@ public:
 
 private:
   cPlayer *player;
+  bool playerDetached;
 protected:
   virtual bool SetPlayMode(ePlayMode PlayMode);
        // Sets the device into the given play mode.
@@ -276,6 +277,8 @@ public:
        // Attaches the given player to this device.
   void Detach(cPlayer *Player);
        // Detaches the given player from this device.
+  bool PlayerDetached(void);
+       // Returns true if a player has been detached and resets the 'playerDetached' flag.
 
 // Receiver facilities
 
