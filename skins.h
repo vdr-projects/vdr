@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skins.h 1.6 2005/01/09 11:49:37 kls Exp $
+ * $Id: skins.h 1.7 2005/02/27 14:37:37 kls Exp $
  */
 
 #ifndef __SKINS_H
@@ -54,7 +54,7 @@ public:
        ///< user is in the process of entering a channel number, which must
        ///< be displayed accordingly.
   virtual void SetEvents(const cEvent *Present, const cEvent *Following) = 0;
-       ///< Sets the Present and Following EPG events. It either of these
+       ///< Sets the Present and Following EPG events. If either of these
        ///< is not available, NULL will be given.
   virtual void SetMessage(eMessageType Type, const char *Text) = 0;
        ///< Sets a one line message Text, with the given Type. Type can be used
