@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.70 2003/10/24 15:45:15 kls Exp $
+ * $Id: dvbdevice.c 1.71 2003/11/07 14:16:25 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -325,6 +325,7 @@ cDvbDevice::cDvbDevice(int n)
   fd_osd      = DvbOpen(DEV_DVB_OSD,    n, O_RDWR);
   fd_video    = DvbOpen(DEV_DVB_VIDEO,  n, O_RDWR | O_NONBLOCK);
   fd_audio    = DvbOpen(DEV_DVB_AUDIO,  n, O_RDWR | O_NONBLOCK);
+  fd_stc      = DvbOpen(DEV_DVB_DEMUX,  n, O_RDWR);
 
   // The DVR device (will be opened and closed as needed):
 
@@ -866,6 +867,20 @@ bool cDvbDevice::SetPlayMode(ePlayMode PlayMode)
     }
   playMode = PlayMode;
   return true;
+}
+
+int64_t cDvbDevice::GetSTC(void)
+{
+  if (fd_stc >= 0) {
+     struct dmx_stc stc;
+     stc.num = 0;
+     if (ioctl(fd_stc, DMX_GET_STC, &stc) == -1) {
+        esyslog("ERROR: stc %d: %m", CardIndex() + 1);
+        return -1;
+        }
+     return stc.stc / stc.base;
+     }
+  return -1;
 }
 
 void cDvbDevice::TrickSpeed(int Speed)

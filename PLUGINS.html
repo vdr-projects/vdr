@@ -6,13 +6,17 @@
 
 <center><h1>The VDR Plugin System</h1></center>
 
-<center><b>Version 1.2</b></center>
+<center><b>Version 1.2.6</b></center>
 <p>
 <center>
 Copyright &copy; 2003 Klaus Schmidinger<br>
 <a href="mailto:kls@cadsoft.de">kls@cadsoft.de</a><br>
 <a href="http://www.cadsoft.de/vdr">www.cadsoft.de/vdr</a>
 </center>
+<p>
+<!--X1.1.32--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+Important modifications introduced in version 1.2.6 are marked like this.
+<!--X1.1.32--></td></tr></table>
 <p>
 VDR provides an easy to use plugin interface that allows additional functionality
 to be added to the program by implementing a dynamically loadable library file.
@@ -1318,6 +1322,9 @@ The functions to implement replaying capabilites are
 virtual bool HasDecoder(void) const;
 virtual bool CanReplay(void) const;
 virtual bool SetPlayMode(ePlayMode PlayMode);
+<!--X1.1.32--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+virtual int64_t GetSTC(void);
+<!--X1.1.32--></td></tr></table>
 virtual void TrickSpeed(int Speed);
 virtual void Clear(void);
 virtual void Play(void);
