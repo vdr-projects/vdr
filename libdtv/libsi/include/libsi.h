@@ -4,9 +4,9 @@
 ///                                                        ///
 //////////////////////////////////////////////////////////////
 
-// $Revision: 1.1 $
-// $Date: 2001/06/26 07:18:43 $
-// $Author: kls $
+// $Revision: 1.4 $
+// $Date: 2001/10/07 10:24:46 $
+// $Author: hakenes $
 //
 //   (C) 2001 Rolf Hakenes <hakenes@hippomi.de>, under the GNU GPL.
 //
@@ -288,18 +288,20 @@ struct PidInfo {
    } while (0)
 
 
-#define STREAMTYPE_ISO_VIDEO                     1
+#define STREAMTYPE_11172_VIDEO                   1
 #define STREAMTYPE_13818_VIDEO                   2
 #define STREAMTYPE_11172_AUDIO                   3
 #define STREAMTYPE_13818_AUDIO                   4
-#define STREAMTYPE_VIDEOTEXT                     6
-#define STREAMTYPE_13522_MPEG                    7
-#define STREAMTYPE_ITU_222                       8
-#define STREAMTYPE_13818_A                       9
-#define STREAMTYPE_13818_B                      10
-#define STREAMTYPE_13818_C                      11
-#define STREAMTYPE_13818_D                      12
-#define STREAMTYPE_13818_AUX                    13
+#define STREAMTYPE_13818_PRIVATE                 5
+#define STREAMTYPE_13818_PES_PRIVATE             6
+#define STREAMTYPE_13522_MHPEG                   7
+#define STREAMTYPE_13818_DSMCC                   8
+#define STREAMTYPE_ITU_222_1                     9
+#define STREAMTYPE_13818_A                      10
+#define STREAMTYPE_13818_B                      11
+#define STREAMTYPE_13818_C                      12
+#define STREAMTYPE_13818_D                      13
+#define STREAMTYPE_13818_AUX                    14
 
 /* Descriptors */
 
@@ -328,6 +330,58 @@ struct Iso639LanguageDescriptor {
       ((struct Iso639LanguageDescriptor *)descr)->LanguageCode[1] = lc2; \
       ((struct Iso639LanguageDescriptor *)descr)->LanguageCode[2] = lc3; \
       ((struct Iso639LanguageDescriptor *)descr)->LanguageCode[3] = '\0'; \
+   } while (0)
+
+
+/* Ac3Descriptor */
+
+#define AC3_TYPE_FLAG          0x0001
+#define BS_ID_FLAG             0x0002
+#define MAIN_ID_FLAG           0x0004
+#define ASVC_FLAG              0x0008
+
+struct Ac3Descriptor {
+   struct NODE          Node;
+   unsigned short       Tag;
+   unsigned short       PresentFlags;
+   unsigned short       Ac3Type;
+   unsigned short       BsId;
+   unsigned short       MainId;
+   unsigned short       Asvc;
+   unsigned short       Amount;        /* AdditionalData */
+   unsigned char       *AdditionalData;
+};
+
+#define CreateAc3Descriptor(descr) \
+   do \
+   { \
+      xCreateNode (((struct Ac3Descriptor *)descr), NULL); \
+      ((struct Ac3Descriptor *)descr)->Tag = DESCR_AC3; \
+   } while (0)
+
+#define AddAc3FlagAndValue(descr, flg, val) \
+   do \
+   { \
+      if ((flg) & AC3_TYPE_FLAG) { \
+         ((struct Ac3Descriptor *)descr)->PresentFlags |= AC3_TYPE_FLAG; \
+         ((struct Ac3Descriptor *)descr)->Ac3Type = (val); } \
+      else if ((flg) & BS_ID_FLAG) { \
+         ((struct Ac3Descriptor *)descr)->PresentFlags |= BS_ID_FLAG; \
+         ((struct Ac3Descriptor *)descr)->BsId = (val); } \
+      else if ((flg) & MAIN_ID_FLAG) { \
+         ((struct Ac3Descriptor *)descr)->PresentFlags |= MAIN_ID_FLAG; \
+         ((struct Ac3Descriptor *)descr)->MainId = (val); } \
+      else if ((flg) & ASVC_FLAG) { \
+         ((struct Ac3Descriptor *)descr)->PresentFlags |= ASVC_FLAG; \
+         ((struct Ac3Descriptor *)descr)->Asvc = (val); } \
+   } while (0)
+
+#define AddAc3AdditionalData(descr, ptr, len) \
+   do \
+   { \
+      xMemAlloc ((len)+1, &(((struct Ac3Descriptor *) \
+         descr)->AdditionalData)); \
+      memcpy ((((struct Ac3Descriptor *)descr)->AdditionalData),(ptr),(len)); \
    } while (0)
 
 
@@ -775,6 +829,106 @@ struct ShortEventDescriptor {
       ((struct ShortEventDescriptor *)descr)->LanguageCode[2] = lc3; \
       ((struct ShortEventDescriptor *)descr)->LanguageCode[3] = '\0'; \
       ((struct ShortEventDescriptor *)descr)->Text = text; \
+   } while (0)
+
+
+/* TeletextDescriptor */
+
+struct TeletextDescriptor {
+   struct NODE          Node;
+   unsigned short       Tag;
+   struct LIST         *Items;
+};
+
+#define CreateTeletextDescriptor(descr) \
+   do \
+   { \
+      xCreateNode (((struct TeletextDescriptor *)descr), NULL); \
+      ((struct TeletextDescriptor *)descr)->Tag = DESCR_TELETEXT; \
+      ((struct TeletextDescriptor *)descr)->Items = xNewList (NULL); \
+   } while (0)
+
+#define TELETEXT_TYPE_INITIAL_PAGE         0x0001
+#define TELETEXT_TYPE_SUBTITLE_PAGE        0x0002
+#define TELETEXT_TYPE_ADDITIONAL_INFO      0x0003
+#define TELETEXT_TYPE_PROGRAM_SCHEDULE     0x0004
+#define TELETEXT_TYPE_HEARING_IMPAIRED     0x0005
+
+struct TeletextItem {
+   struct NODE          Node;
+   char                 LanguageCode[4];
+   unsigned short       Type;
+   unsigned short       MagazineNumber;
+   unsigned short       PageNumber;
+};
+
+#define CreateTeletextItem(itm, tp, mg, pg, lc1, lc2, lc3) \
+   do \
+   { \
+      xCreateNode (itm, NULL); \
+      ((struct TeletextItem *)itm)->Type = (tp); \
+      ((struct TeletextItem *)itm)->MagazineNumber = (mg); \
+      ((struct TeletextItem *)itm)->PageNumber = (mg); \
+      ((struct TeletextItem *)itm)->LanguageCode[0] = (lc1); \
+      ((struct TeletextItem *)itm)->LanguageCode[1] = (lc2); \
+      ((struct TeletextItem *)itm)->LanguageCode[2] = (lc3); \
+      ((struct TeletextItem *)itm)->LanguageCode[3] = '\0'; \
+   } while (0)
+
+#define AddTeletextItem(desc, tp, mg, pg, lc1, lc2, lc3) \
+   do \
+   { \
+      struct TeletextItem *item; \
+      \
+      CreateTeletextItem(item, tp, mg, pg, lc1, lc2, lc3); \
+      xAddTail (((struct TeletextDescriptor *)desc)->Items, item); \
+   } while (0)
+
+
+/* SubtitlingDescriptor */
+
+struct SubtitlingDescriptor {
+   struct NODE          Node;
+   unsigned short       Tag;
+   struct LIST         *Items;
+};
+
+#define CreateSubtitlingDescriptor(descr) \
+   do \
+   { \
+      xCreateNode (((struct SubtitlingDescriptor *)descr), NULL); \
+      ((struct SubtitlingDescriptor *)descr)->Tag = DESCR_SUBTITLING; \
+      ((struct SubtitlingDescriptor *)descr)->Items = xNewList (NULL); \
+   } while (0)
+
+struct SubtitlingItem {
+   struct NODE          Node;
+   char                 LanguageCode[4];
+   unsigned char        Type;
+   unsigned short       CompositionPageId;
+   unsigned short       AncillaryPageId;
+};
+
+#define CreateSubtitlingItem(itm, tp, cp, ap, lc1, lc2, lc3) \
+   do \
+   { \
+      xCreateNode (itm, NULL); \
+      ((struct SubtitlingItem *)itm)->Type = (tp); \
+      ((struct SubtitlingItem *)itm)->CompositionPageId = (cp); \
+      ((struct SubtitlingItem *)itm)->AncillaryPageId = (ap); \
+      ((struct SubtitlingItem *)itm)->LanguageCode[0] = (lc1); \
+      ((struct SubtitlingItem *)itm)->LanguageCode[1] = (lc2); \
+      ((struct SubtitlingItem *)itm)->LanguageCode[2] = (lc3); \
+      ((struct SubtitlingItem *)itm)->LanguageCode[3] = '\0'; \
+   } while (0)
+
+#define AddSubtitlingItem(desc, tp, cp, ap, lc1, lc2, lc3) \
+   do \
+   { \
+      struct SubtitlingItem *item; \
+      \
+      CreateSubtitlingItem(item, tp, cp, ap, lc1, lc2, lc3); \
+      xAddTail (((struct SubtitlingDescriptor *)desc)->Items, item); \
    } while (0)
 
 

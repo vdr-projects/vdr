@@ -4,9 +4,9 @@
 ///                                                        ///
 //////////////////////////////////////////////////////////////
 
-// $Revision: 1.1 $
-// $Date: 2001/06/26 07:18:42 $
-// $Author: kls $
+// $Revision: 1.2 $
+// $Date: 2001/06/25 19:39:00 $
+// $Author: hakenes $
 //
 //   (C) 1992-2001 Rolf Hakenes <hakenes@hippomi.de>, under the GNU GPL.
 //

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.73 2001/09/22 13:36:59 kls Exp $
+ * $Id: config.c 1.76 2001/10/20 13:09:38 kls Exp $
  */
 
 #include "config.h"
@@ -13,6 +13,10 @@
 #include "dvbapi.h"
 #include "i18n.h"
 #include "interface.h"
+
+// IMPORTANT NOTE: in the 'sscanf()' calls there is a blank after the '%d'
+// format characters in order to allow any number of blanks after a numeric
+// value!
 
 // -- cKeys ------------------------------------------------------------------
 
@@ -251,16 +255,16 @@ bool cChannel::Parse(const char *s)
   else {
      groupSep = false;
      char *apidbuf = NULL;
-     int fields = sscanf(s, "%a[^:]:%d:%c:%d:%d:%d:%a[^:]:%d:%d:%d", &buffer, &frequency, &polarization, &diseqc, &srate, &vpid, &apidbuf, &tpid, &ca, &pnr);
+     int fields = sscanf(s, "%a[^:]:%d :%c:%d :%d :%d :%a[^:]:%d :%d :%d ", &buffer, &frequency, &polarization, &diseqc, &srate, &vpid, &apidbuf, &tpid, &ca, &pnr);
      apid1 = apid2 = 0;
      dpid1 = dpid2 = 0;
      if (apidbuf) {
         char *p = strchr(apidbuf, ';');
         if (p)
            *p++ = 0;
-        sscanf(apidbuf, "%d,%d", &apid1, &apid2);
+        sscanf(apidbuf, "%d ,%d ", &apid1, &apid2);
         if (p)
-           sscanf(p, "%d,%d", &dpid1, &dpid2);
+           sscanf(p, "%d ,%d ", &dpid1, &dpid2);
         delete apidbuf;
         }
      else
@@ -324,7 +328,8 @@ cTimer::cTimer(bool Instant)
   cChannel *ch = Channels.GetByNumber(cDvbApi::CurrentChannel());
   channel = ch ? ch->number : 0;
   time_t t = time(NULL);
-  struct tm *now = localtime(&t);
+  struct tm tm_r;
+  struct tm *now = localtime_r(&t, &tm_r);
   day = now->tm_mday;
   start = now->tm_hour * 100 + now->tm_min;
   stop = start + 200; // "instant recording" records 2 hours by default
@@ -349,10 +354,11 @@ cTimer::cTimer(const cEventInfo *EventInfo)
   time_t tstart = EventInfo->GetTime();
   time_t tstop = tstart + EventInfo->GetDuration() + Setup.MarginStop * 60;
   tstart -= Setup.MarginStart * 60;
-  struct tm *time = localtime(&tstart);
+  struct tm tm_r;
+  struct tm *time = localtime_r(&tstart, &tm_r);
   day = time->tm_mday;
   start = time->tm_hour * 100 + time->tm_min;
-  time = localtime(&tstop);
+  time = localtime_r(&tstop, &tm_r);
   stop = time->tm_hour * 100 + time->tm_min;
   if (stop >= 2400)
      stop -= 2400;
@@ -466,7 +472,7 @@ bool cTimer::Parse(const char *s)
      strcat(strn0cpy(s2, s, l2 + 1), " \n");
      s = s2;
      }
-  if (8 <= sscanf(s, "%d:%d:%a[^:]:%d:%d:%d:%d:%a[^:\n]:%a[^\n]", &active, &channel, &buffer1, &start, &stop, &priority, &lifetime, &buffer2, &summary)) {
+  if (8 <= sscanf(s, "%d :%d :%a[^:]:%d :%d :%d :%d :%a[^:\n]:%a[^\n]", &active, &channel, &buffer1, &start, &stop, &priority, &lifetime, &buffer2, &summary)) {
      if (summary && !*skipspace(summary)) {
         delete summary;
         summary = NULL;
@@ -497,12 +503,14 @@ bool cTimer::IsSingleEvent(void)
 
 int cTimer::GetMDay(time_t t)
 {
-  return localtime(&t)->tm_mday;
+  struct tm tm_r;
+  return localtime_r(&t, &tm_r)->tm_mday;
 }
 
 int cTimer::GetWDay(time_t t)
 {
-  int weekday = localtime(&t)->tm_wday;
+  struct tm tm_r;
+  int weekday = localtime_r(&t, &tm_r)->tm_wday;
   return weekday == 0 ? 6 : weekday - 1; // we start with monday==0!
 }
 
@@ -513,7 +521,8 @@ bool cTimer::DayMatches(time_t t)
 
 time_t cTimer::IncDay(time_t t, int Days)
 {
-  tm tm = *localtime(&t);
+  struct tm tm_r;
+  tm tm = *localtime_r(&t, &tm_r);
   tm.tm_mday += Days; // now tm_mday may be out of its valid range
   int h = tm.tm_hour; // save original hour to compensate for DST change
   t = mktime(&tm);    // normalize all values
@@ -523,7 +532,8 @@ time_t cTimer::IncDay(time_t t, int Days)
 
 time_t cTimer::SetTime(time_t t, int SecondsFromMidnight)
 {
-  tm tm = *localtime(&t);
+  struct tm tm_r;
+  tm tm = *localtime_r(&t, &tm_r);
   tm.tm_hour = SecondsFromMidnight / 3600;
   tm.tm_min = (SecondsFromMidnight % 3600) / 60;
   tm.tm_sec =  SecondsFromMidnight % 60;
@@ -803,6 +813,7 @@ cSetup::cSetup(void)
   OSDheight = 18;
   OSDMessageTime = 1;
   MaxVideoFileSize = MAXVIDEOFILESIZE;
+  SplitEditedFiles = 0;
   MinEventTimeout = 30;
   MinUserInactivity = 120;
   MultiSpeedMode = 0;
@@ -843,6 +854,7 @@ bool cSetup::Parse(char *s)
      else if (!strcasecmp(Name, "OSDheight"))           OSDheight          = atoi(Value);
      else if (!strcasecmp(Name, "OSDMessageTime"))      OSDMessageTime     = atoi(Value);
      else if (!strcasecmp(Name, "MaxVideoFileSize"))    MaxVideoFileSize   = atoi(Value);
+     else if (!strcasecmp(Name, "SplitEditedFiles"))    SplitEditedFiles   = atoi(Value);
      else if (!strcasecmp(Name, "MinEventTimeout"))     MinEventTimeout    = atoi(Value);
      else if (!strcasecmp(Name, "MinUserInactivity"))   MinUserInactivity  = atoi(Value);
      else if (!strcasecmp(Name, "MultiSpeedMode"))      MultiSpeedMode     = atoi(Value);
@@ -918,6 +930,7 @@ bool cSetup::Save(const char *FileName)
         fprintf(f, "OSDheight          = %d\n", OSDheight);
         fprintf(f, "OSDMessageTime     = %d\n", OSDMessageTime);
         fprintf(f, "MaxVideoFileSize   = %d\n", MaxVideoFileSize);
+        fprintf(f, "SplitEditedFiles   = %d\n", SplitEditedFiles);
         fprintf(f, "MinEventTimeout    = %d\n", MinEventTimeout);
         fprintf(f, "MinUserInactivity  = %d\n", MinUserInactivity);
         fprintf(f, "MultiSpeedMode     = %d\n", MultiSpeedMode);

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 1.13 2001/09/23 14:04:35 kls Exp $
+ * $Id: thread.c 1.15 2001/10/21 12:25:31 kls Exp $
  */
 
 #include "thread.h"
@@ -161,7 +161,7 @@ void cThread::Cancel(int WaitSeconds)
 
 bool cThread::Lock(void)
 {
-  if (!lockingPid || lockingPid != getpid()) {
+  if (getpid() != lockingPid || !locked) {
      Mutex.Lock();
      lockingPid = getpid();
      }
@@ -342,3 +342,35 @@ int cPipe::Close(void)
 
   return ret;
 }
+
+// --- SystemExec ------------------------------------------------------------
+
+int SystemExec(const char *Command)
+{
+  pid_t pid;
+
+  if ((pid = fork()) < 0) { // fork failed
+     LOG_ERROR;
+     return -1;
+     }
+
+  if (pid > 0) { // parent process
+     int status;
+     if (waitpid(pid, &status, 0) < 0) {
+        LOG_ERROR;
+        return -1;
+        }
+     return status;
+     }
+  else { // child process
+     int MaxPossibleFileDescriptors = getdtablesize();
+     for (int i = STDERR_FILENO + 1; i < MaxPossibleFileDescriptors; i++)
+         close(i); //close all dup'ed filedescriptors
+     if (execl("/bin/sh", "sh", "-c", Command, NULL) == -1) {
+        LOG_ERROR_STR(Command);
+        _exit(-1);
+        }
+     _exit(0);
+     }
+}
+

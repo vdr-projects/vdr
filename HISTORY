@@ -786,3 +786,47 @@ Video Disk Recorder Revision History
   at the expected time).
 - Made the volume, mute and power keys work when a menu is active, too (thanks
   to Matthias Weingart).
+
+2001-10-21: Version 0.97
+
+- Implemented a lock file to prevent more than one instance of VDR from removing
+  files from the video directory at the same time.
+- The new setup parameter SplitEditedFiles can be used to control whether or
+  not the result of an editing process shall be written into separate files.
+- Fixed handling repeat function when using LIRC (thanks to Matthias Weingart).
+- The shutdown program (defined with the '-s' option) now also gets the channel
+  number and recording title of the timer (see INSTALL).
+- New channel data for 'Premiere One', 'Premiere X-Action', 'Fox Kids Türkce'
+  and 'N24' (thanks to Andreas Share, Ulrich Röder, Uwe Scheffler and Simon
+  Bauschulte). Note that if you are using the default 'channels.conf' or
+  'channels.conf.cable' files you may need to check any exiting timers to see
+  whether they still use the correct channel number.
+- Fixed the "EPG bugfix" (sometimes had duplicate information in Subtitle and
+  Extended Description).
+- Fixed checking for valid video device when setting the video mode.
+- The external command 'sort' is no longer required. VDR now sorts the list of
+  recordings itself, making sure that recordings that stem from repeating timers
+  are sorted chronologically. Sorting is done according to the setting of the
+  current locale, so you may want to make sure LC_COLLATE is set to the desired
+  value (see INSTALL).
+- Fixed handling 'newline' characters in EPG texts (thanks to Rolf Hakenes for
+  an improved version of his 'libdtv').
+  Newline characters are always mapped to a single "blank" in VDR, because they
+  would otherwise disturb the Title and Subtitle layout in the channel display
+  (where these are assumed to be single line texts) and would have to be
+  specially handled in the 'epg.data' file and the LSTE command in SVDRP.
+- Mapping ` ("backtick") characters in EPG texts to ' (single quote).
+- Fixed timers starting and ending at unexpected times. 'localtime()' was not
+  thread safe, now using localtime_r().
+- Removed the "system time seen..." message.
+- Fixed a bug in the replay mode display when pressing the Green or Yellow
+  button while in trick mode (thanks to Stefan Huelswitt)
+- Closing all open file descriptors when calling external programs.
+- The menu timeout now also works when pressing the "Back" button during replay
+  to enter the "Recordings" menu.
+- Updated 'channels.conf' for the "Bundesliga" channels of Premiere World
+  (thanks to Helmut Schächner).
+- Fixed reading timers.conf and channels.conf that contain blanks after numeric
+  values.
+- Fixed handling trick modes near the beginning and end of a recording.
+- Pressing the "Back" button while replaying a DVD now leads to the DVD menu.

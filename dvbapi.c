@@ -7,7 +7,7 @@
  * DVD support initially written by Andreas Schultz <aschultz@warp10.net>
  * based on dvdplayer-0.5 by Matjaz Thaler <matjaz.thaler@guest.arnes.si>
  *
- * $Id: dvbapi.c 1.129 2001/09/23 13:44:27 kls Exp $
+ * $Id: dvbapi.c 1.132 2001/10/21 13:36:27 kls Exp $
  */
 
 //#define DVDDEBUG        1
@@ -72,6 +72,9 @@ extern "C" {
 // is broken:
 #define MAXBROKENTIMEOUT 30 // seconds
 
+// The maximum time to wait before giving up while catching up on an index file:
+#define MAXINDEXCATCHUP   2 // seconds
+
 #define CHECK(s) { if ((s) < 0) LOG_ERROR; } // used for 'ioctl()' calls
 
 #define FATALERRNO (errno != EAGAIN && errno != EINTR)
@@ -108,14 +111,14 @@ private:
   int size, last;
   tIndex *index;
   cResumeFile resumeFile;
-  bool CatchUp(void);
+  bool CatchUp(int Index = -1);
 public:
   cIndexFile(const char *FileName, bool Record);
   ~cIndexFile();
   bool Ok(void) { return index != NULL; }
   void Write(uchar PictureType, uchar FileNumber, int FileOffset);
   bool Get(int Index, uchar *FileNumber, int *FileOffset, uchar *PictureType = NULL, int *Length = NULL);
-  int GetNextIFrame(int Index, bool Forward, uchar *FileNumber = NULL, int *FileOffset = NULL, int *Length = NULL);
+  int GetNextIFrame(int Index, bool Forward, uchar *FileNumber = NULL, int *FileOffset = NULL, int *Length = NULL, bool StayOffEnd = false);
   int Get(uchar FileNumber, int FileOffset);
   int Last(void) { CatchUp(); return last; }
   int GetResume(void) { return resumeFile.Read(); }
@@ -199,42 +202,48 @@ cIndexFile::~cIndexFile()
   delete fileName;
 }
 
-bool cIndexFile::CatchUp(void)
+bool cIndexFile::CatchUp(int Index)
 {
   if (index && f >= 0) {
-     struct stat buf;
-     if (fstat(f, &buf) == 0) {
-        int newLast = buf.st_size / sizeof(tIndex) - 1;
-        if (newLast > last) {
-           if (size <= newLast) {
-              size *= 2;
-              if (size <= newLast)
-                 size = newLast + 1;
-              }
-           index = (tIndex *)realloc(index, size * sizeof(tIndex));
-           if (index) {
-              int offset = (last + 1) * sizeof(tIndex);
-              int delta = (newLast - last) * sizeof(tIndex);
-              if (lseek(f, offset, SEEK_SET) == offset) {
-                 if (safe_read(f, &index[last + 1], delta) != delta) {
-                    esyslog(LOG_ERR, "ERROR: can't read from index");
-                    delete index;
-                    index = NULL;
-                    close(f);
-                    f = -1;
-                    }
-                 last = newLast;
-                 return true;
-                 }
-              else
-                 LOG_ERROR;
-              }
-           else
-              esyslog(LOG_ERR, "ERROR: can't realloc() index");
-           }
-        }
-     else
-        LOG_ERROR;
+     for (int i = 0; i <= MAXINDEXCATCHUP && (Index < 0 || Index >= last); i++) {
+         struct stat buf;
+         if (fstat(f, &buf) == 0) {
+            int newLast = buf.st_size / sizeof(tIndex) - 1;
+            if (newLast > last) {
+               if (size <= newLast) {
+                  size *= 2;
+                  if (size <= newLast)
+                     size = newLast + 1;
+                  }
+               index = (tIndex *)realloc(index, size * sizeof(tIndex));
+               if (index) {
+                  int offset = (last + 1) * sizeof(tIndex);
+                  int delta = (newLast - last) * sizeof(tIndex);
+                  if (lseek(f, offset, SEEK_SET) == offset) {
+                     if (safe_read(f, &index[last + 1], delta) != delta) {
+                        esyslog(LOG_ERR, "ERROR: can't read from index");
+                        delete index;
+                        index = NULL;
+                        close(f);
+                        f = -1;
+                        break;
+                        }
+                     last = newLast;
+                     }
+                  else
+                     LOG_ERROR;
+                  }
+               else
+                  esyslog(LOG_ERR, "ERROR: can't realloc() index");
+               }
+            }
+         else
+            LOG_ERROR;
+         if (Index >= last)
+            sleep(1);
+         else
+            return true;
+         }
      }
   return false;
 }
@@ -256,7 +265,7 @@ void cIndexFile::Write(uchar PictureType, uchar FileNumber, int FileOffset)
 bool cIndexFile::Get(int Index, uchar *FileNumber, int *FileOffset, uchar *PictureType, int *Length)
 {
   if (index) {
-     CatchUp();
+     CatchUp(Index);
      if (Index >= 0 && Index <= last) {
         *FileNumber = index[Index].number;
         *FileOffset = index[Index].offset;
@@ -276,7 +285,7 @@ bool cIndexFile::Get(int Index, uchar *FileNumber, int *FileOffset, uchar *Pictu
   return false;
 }
 
-int cIndexFile::GetNextIFrame(int Index, bool Forward, uchar *FileNumber, int *FileOffset, int *Length)
+int cIndexFile::GetNextIFrame(int Index, bool Forward, uchar *FileNumber, int *FileOffset, int *Length, bool StayOffEnd)
 {
   if (index) {
      if (Forward)
@@ -284,7 +293,7 @@ int cIndexFile::GetNextIFrame(int Index, bool Forward, uchar *FileNumber, int *F
      int d = Forward ? 1 : -1;
      for (;;) {
          Index += d;
-         if (Index >= 0 && Index <= last) {
+         if (Index >= 0 && Index < last - ((Forward && StayOffEnd) ? 100 : 0)) {
             if (index[Index].type == I_FRAME) {
                if (FileNumber)
                   *FileNumber = index[Index].number;
@@ -1049,17 +1058,26 @@ void cReplayBuffer::Input(void)
            if (playMode == pmFast || (playMode == pmSlow && playDir == pdBackward)) {
               uchar FileNumber;
               int FileOffset, Length;
-              int Index = index->GetNextIFrame(readIndex, playDir == pdForward, &FileNumber, &FileOffset, &Length);
+              int Index = index->GetNextIFrame(readIndex, playDir == pdForward, &FileNumber, &FileOffset, &Length, true);
               if (Index >= 0) {
                  if (!NextFile(FileNumber, FileOffset))
                     break;
                  }
               else {
-                 Play();
+                 // can't call Play() here, because those functions may only be
+                 // called from the foreground thread - and we also don't need
+                 // to empty the buffer here
+                 CHECK(ioctl(audioDev, AUDIO_SET_AV_SYNC, true));
+                 CHECK(ioctl(videoDev, VIDEO_CONTINUE));
+                 playMode = pmPlay;
+                 playDir = pdForward;
                  continue;
                  }
               readIndex = Index;
               r = ReadFrame(replayFile, b, Length, sizeof(b));
+              // must call StripAudioPackets() here because the buffer is not emptied
+              // when falling back from "fast forward" to "play" (see above)
+              StripAudioPackets(b, r);
               }
            else if (index) {
               uchar FileNumber;
@@ -1205,17 +1223,11 @@ void cReplayBuffer::SkipSeconds(int Seconds)
      Empty(true);
      int Index = writeIndex;
      if (Index >= 0) {
-        if (Seconds < 0) {
-           int sec = index->Last() / FRAMESPERSEC;
-           if (Seconds < -sec)
-              Seconds = -sec;
-           }
-        Index += Seconds * FRAMESPERSEC;
-        if (Index < 0)
-           Index = 1; // not '0', to allow GetNextIFrame() below to work!
-        uchar FileNumber;
-        int FileOffset;
-        readIndex = writeIndex = index->GetNextIFrame(Index, false, &FileNumber, &FileOffset) - 1; // Input() will first increment it!
+        Index = max(Index + Seconds * FRAMESPERSEC, 0);
+        if (Index > 0)
+           Index = index->GetNextIFrame(Index, false, NULL, NULL, NULL, true);
+        if (Index >= 0)
+           readIndex = writeIndex = Index - 1; // Input() will first increment it!
         }
      Empty(false);
      Play();
@@ -1250,9 +1262,9 @@ void cReplayBuffer::GetIndex(int &Current, int &Total, bool SnapToIFrame)
 {
   if (index) {
      if (playMode == pmStill)
-        Current = readIndex;
+        Current = max(readIndex, 0);
      else {
-        Current = writeIndex;
+        Current = max(writeIndex, 0);
         if (SnapToIFrame) {
            int i1 = index->GetNextIFrame(Current + 1, false);
            int i2 = index->GetNextIFrame(Current, true);
@@ -2392,6 +2404,12 @@ void cCuttingBuffer::Action(void)
                  Index = Mark->position;
                  Mark = fromMarks.Next(Mark);
                  CurrentFileNumber = 0; // triggers SetOffset before reading next frame
+                 if (Setup.SplitEditedFiles) {
+                    toFile = toFileName->NextFile();
+                    if (toFile < 0)
+                       break;
+                    FileSize = 0;
+                    }
                  }
               // the 'else' case (i.e. 'final end mark reached') is handled above
               // in 'Write one frame', so that the edited version will end right
@@ -3163,7 +3181,7 @@ void cDvbApi::SetModeNormal(bool FromRecording)
 
 void cDvbApi::SetVideoFormat(videoFormat_t Format)
 {
-  if (fd_video)
+  if (fd_video >= 0)
      CHECK(ioctl(fd_video, VIDEO_SET_FORMAT, Format));
 }
 

@@ -5,9 +5,9 @@
 ///                                                        ///
 //////////////////////////////////////////////////////////////
 
-// $Revision: 1.1 $
-// $Date: 2001/06/25 12:41:20 $
-// $Author: kls $
+// $Revision: 1.3 $
+// $Date: 2001/10/07 10:24:46 $
+// $Author: hakenes $
 //
 //   (C) 2001 Rolf Hakenes <hakenes@hippomi.de>, under the GNU GPL.
 //
@@ -25,9 +25,6 @@
 // along with libsi; see the file COPYING.  If not, write to the
 // Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 // Boston, MA 02111-1307, USA.
-
-#ifndef SI_TABLES_H
-#define SI_TABLES_H
 
 #define HILO(x) (x##_hi << 8 | x##_lo)
 
@@ -930,13 +927,28 @@ typedef struct parental_rating_struct {
 
 /* 0x56 teletext_descriptor */
 
-#define DESCR_TELETEXT_LEN XX
+#define DESCR_TELETEXT_LEN 2
 typedef struct descr_teletext_struct {
    u_char descriptor_tag                         :8;
    u_char descriptor_length                      :8;
-   /* TBD */
 } descr_teletext_t;
 #define CastTeletextDescriptor(x) ((descr_teletext_t *)(x))
+
+#define ITEM_TELETEXT_LEN 5
+typedef struct item_teletext_struct {
+   u_char lang_code1                             :8;
+   u_char lang_code2                             :8;
+   u_char lang_code3                             :8;
+#if BYTE_ORDER == BIG_ENDIAN
+   u_char type                                   :5; 
+   u_char magazine_number                        :3; 
+#else 
+   u_char magazine_number                        :3; 
+   u_char type                                   :5; 
+#endif 
+   u_char page_number                            :8; 
+} item_teletext_t;
+#define CastTeletextItem(x) ((item_teletext_t *)(x))
 
 
 /* 0x57 telephone_descriptor */
@@ -963,13 +975,25 @@ typedef struct descr_local_time_offset_struct {
 
 /* 0x59 subtitling_descriptor */
 
-#define DESCR_SUBTITLING_LEN XX
+#define DESCR_SUBTITLING_LEN 2
 typedef struct descr_subtitling_struct {
    u_char descriptor_tag                         :8;
    u_char descriptor_length                      :8;
-   /* TBD */
 } descr_subtitling_t;
 #define CastSubtitlingDescriptor(x) ((descr_subtitling_t *)(x))
+
+#define ITEM_SUBTITLING_LEN 8
+typedef struct item_subtitling_struct {
+   u_char lang_code1                             :8;
+   u_char lang_code2                             :8;
+   u_char lang_code3                             :8;
+   u_char subtitling_type                        :8; 
+   u_char composition_page_id_hi                 :8; 
+   u_char composition_page_id_lo                 :8; 
+   u_char ancillary_page_id_hi                   :8; 
+   u_char ancillary_page_id_lo                   :8; 
+} item_subtitling_t;
+#define CastSubtitlingItem(x) ((item_subtitling_t *)(x))
 
 
 /* 0x5A terrestrial_delivery_system_descriptor */
@@ -1150,11 +1174,27 @@ typedef struct descr_pdc_struct {
 
 /* 0x6A ac3_descriptor */
 
-#define DESCR_AC3_LEN XX
+#define DESCR_AC3_LEN 3
 typedef struct descr_ac3_struct {
    u_char descriptor_tag                         :8;
    u_char descriptor_length                      :8;
-   /* TBD */
+#if BYTE_ORDER == BIG_ENDIAN
+   u_char ac3_type_flag                          :1;
+   u_char bsid_flag                              :1;
+   u_char mainid_flag                            :1;
+   u_char asvc_flag                              :1;
+   u_char reserved                               :4;
+#else
+   u_char reserved                               :4;
+   u_char asvc_flag                              :1;
+   u_char mainid_flag                            :1;
+   u_char bsid_flag                              :1;
+   u_char ac3_type_flag                          :1;
+#endif
+   u_char ac3_type                               :8;
+   u_char bsid                                   :8;
+   u_char mainid                                 :8;
+   u_char asvc                                   :8;
 } descr_ac3_t;
 #define CastAc3Descriptor(x) ((descr_ac3_t *)(x))
 
@@ -1202,4 +1242,4 @@ typedef struct descr_announcement_support_struct {
 } descr_announcement_support_t;
 #define CastAnnouncementSupportDescriptor(x) ((descr_announcement_support_t *)(x))
 
-#endif
+

@@ -16,7 +16,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.c 1.24 2001/09/22 13:07:21 kls Exp $
+ * $Id: eit.c 1.28 2001/10/19 13:13:25 kls Exp $
  ***************************************************************************/
 
 #include "eit.h"
@@ -126,7 +126,8 @@ bool cMJD::SetSystemTime()
    struct tm *ptm;
    time_t loctim;
 
-   ptm = localtime(&mjdtime);
+   struct tm tm_r;
+   ptm = localtime_r(&mjdtime, &tm_r);
    loctim = time(NULL);
 
    if (abs(mjdtime - loctim) > 2)
@@ -240,7 +241,8 @@ const char * cEventInfo::GetDate() const
 {
    static char szDate[25];
 
-   strftime(szDate, sizeof(szDate), "%d.%m.%Y", localtime(&tTime));
+   struct tm tm_r;
+   strftime(szDate, sizeof(szDate), "%d.%m.%Y", localtime_r(&tTime, &tm_r));
 
    return szDate;
 }
@@ -249,7 +251,8 @@ const char * cEventInfo::GetTimeString() const
 {
    static char szTime[25];
 
-   strftime(szTime, sizeof(szTime), "%R", localtime(&tTime));
+   struct tm tm_r;
+   strftime(szTime, sizeof(szTime), "%R", localtime_r(&tTime, &tm_r));
 
    return szTime;
 }
@@ -259,7 +262,8 @@ const char * cEventInfo::GetEndTimeString() const
    static char szEndTime[25];
    time_t tEndTime = tTime + lDuration;
 
-   strftime(szEndTime, sizeof(szEndTime), "%R", localtime(&tEndTime));
+   struct tm tm_r;
+   strftime(szEndTime, sizeof(szEndTime), "%R", localtime_r(&tEndTime, &tm_r));
 
    return szEndTime;
 }
@@ -337,6 +341,12 @@ void cEventInfo::Dump(FILE *f, const char *Prefix) const
 
 void cEventInfo::FixEpgBugs(void)
 {
+  // VDR can't usefully handle newline characters in the EPG data, so let's
+  // always convert them to blanks (independent of the setting of EPGBugfixLevel):
+  strreplace(pTitle, '\n', ' ');
+  strreplace(pSubtitle, '\n', ' ');
+  strreplace(pExtendedDescription, '\n', ' ');
+
   if (Setup.EPGBugfixLevel == 0)
      return;
 
@@ -395,7 +405,6 @@ void cEventInfo::FixEpgBugs(void)
            pSubtitle = NULL;
            }
         }
-     }
 
      // Pro7 sometimes repeats the Title in the Subtitle:
      //
@@ -445,6 +454,13 @@ void cEventInfo::FixEpgBugs(void)
               }
         }
 
+     // Some channels use the ` ("backtick") character, where a ' (single quote)
+     // would be normally used. Actually, "backticks" in normal text don't make
+     // much sense, so let's replace them:
+     strreplace(pTitle, '`', '\'');
+     strreplace(pSubtitle, '`', '\'');
+     strreplace(pExtendedDescription, '`', '\'');
+
      if (Setup.EPGBugfixLevel <= 2)
         return;
 
@@ -455,10 +471,12 @@ void cEventInfo::FixEpgBugs(void)
      // correctly on the ASTRA satellite system.
      if (uServiceID == 898    // Pro-7
       || uServiceID == 899) { // Kabel 1
-        tm *t = localtime(&tTime);
+        struct tm tm_r;
+        tm *t = localtime_r(&tTime, &tm_r);
         if (t->tm_hour * 3600 + t->tm_min * 60 + t->tm_sec <= 6 * 3600)
            tTime += 24 * 3600;
         }
+     }
 }
 
 // --- cSchedule -------------------------------------------------------------
@@ -873,7 +891,8 @@ void cSIProcessor::Action()
       if (masterSIProcessor)
       {
          time_t now = time(NULL);
-         struct tm *ptm = localtime(&now);
+         struct tm tm_r;
+         struct tm *ptm = localtime_r(&now, &tm_r);
          if (now - lastCleanup > 3600 && ptm->tm_hour == 5)
          {
             LOCK_THREAD;

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.127 2001/09/23 10:58:48 kls Exp $
+ * $Id: menu.c 1.131 2001/10/21 14:28:14 kls Exp $
  */
 
 #include "menu.h"
@@ -1636,11 +1636,12 @@ cMenuDVD::cMenuDVD(void)
      dvd->Open();
      ifo_handle_t *vmg = dvd->openVMG();
      if (vmg) {
+        int lastTitleID = cReplayControl::LastTitleID();
         dsyslog(LOG_INFO, "DVD: vmg: %p", vmg);//XXX
         tt_srpt_t *tt_srpt = vmg->tt_srpt;
         dsyslog(LOG_INFO, "DVD: tt_srpt: %p", tt_srpt);//XXX
         for (int i = 0; i < tt_srpt->nr_of_srpts; i++)
-            Add(new cMenuDVDItem(i, tt_srpt->title[i].nr_of_ptts));
+            Add(new cMenuDVDItem(i, tt_srpt->title[i].nr_of_ptts), i == lastTitleID);
         }
      }
   SetHelp(tr("Play"), NULL, NULL, NULL);
@@ -1724,6 +1725,7 @@ void cMenuSetup::Set(void)
   Add(new cMenuEditIntItem( tr("OSDheight"),          &data.OSDheight, MINOSDHEIGHT, MAXOSDHEIGHT));
   Add(new cMenuEditIntItem( tr("OSDMessageTime"),     &data.OSDMessageTime, 1, 60));
   Add(new cMenuEditIntItem( tr("MaxVideoFileSize"),   &data.MaxVideoFileSize, MINVIDEOFILESIZE, MAXVIDEOFILESIZE));
+  Add(new cMenuEditBoolItem(tr("SplitEditedFiles"),   &data.SplitEditedFiles));
   Add(new cMenuEditIntItem( tr("MinEventTimeout"),    &data.MinEventTimeout));
   Add(new cMenuEditIntItem( tr("MinUserInactivity"),  &data.MinUserInactivity));
   Add(new cMenuEditBoolItem(tr("MultiSpeedMode"),     &data.MultiSpeedMode));
@@ -1807,7 +1809,7 @@ eOSState cMenuCommands::ProcessKey(eKeys Key)
 
 #define STOP_RECORDING tr(" Stop recording ")
 
-cMenuMain::cMenuMain(bool Replaying)
+cMenuMain::cMenuMain(bool Replaying, eOSState State)
 :cOsdMenu(tr("Main"))
 {
   digit = 0;
@@ -1843,6 +1845,13 @@ cMenuMain::cMenuMain(bool Replaying)
   Display();
   lastActivity = time(NULL);
   SetHasHotkeys();
+  switch (State) {
+    case osRecordings: AddSubMenu(new cMenuRecordings); break;
+#ifdef DVDSUPPORT
+    case osDVD:        AddSubMenu(new cMenuDVD); break;
+#endif //DVDSUPPORT
+    default: break;
+    }
 }
 
 const char *cMenuMain::hk(const char *s)
@@ -2374,6 +2383,11 @@ void cReplayControl::SetDVD(cDVD *DVD, int Title)//XXX
   dvd = DVD;
   titleid = Title;
 }
+
+int cReplayControl::LastTitleID(void)
+{
+  return titleid;
+}
 #endif //DVDSUPPORT
 
 const char *cReplayControl::LastReplayed(void)
@@ -2710,9 +2724,9 @@ eOSState cReplayControl::ProcessKey(eKeys Key)
     case kRight:   dvbApi->Forward(); break;
     case kRed:     TimeSearch(); break;
     case kGreen|k_Repeat:
-    case kGreen:   dvbApi->SkipSeconds(-60); DoShowMode = false; break;
+    case kGreen:   dvbApi->SkipSeconds(-60); break;
     case kYellow|k_Repeat:
-    case kYellow:  dvbApi->SkipSeconds( 60); DoShowMode = false; break;
+    case kYellow:  dvbApi->SkipSeconds( 60); break;
     case kBlue:    Hide();
                    dvbApi->StopReplay();
                    return osEnd;
@@ -2740,7 +2754,7 @@ eOSState cReplayControl::ProcessKey(eKeys Key)
                            else
                               Show();
                            break;
-            case kBack:    return osRecordings;
+            case kBack:    return fileName ? osRecordings : osDVD;
             default:       return osUnknown;
             }
           }

@@ -6,7 +6,7 @@
  *
  * Ported to LIRC by Carsten Koch <Carsten.Koch@icem.de>  2000-06-16.
  *
- * $Id: remote.c 1.24 2001/08/12 15:07:26 kls Exp $
+ * $Id: remote.c 1.25 2001/09/30 11:39:49 kls Exp $
  */
 
 #include "remote.h"
@@ -451,6 +451,7 @@ void cRcIoLIRC::Action(void)
                if (Now - FirstTime < REPEATDELAY)
                   continue; // repeat function kicks in after a short delay
                receivedData = receivedRepeat = true;
+               receivedRelease = false;
                }
             LastTime = Now;
             WakeUp();

@@ -6,7 +6,7 @@
 
 // $Revision: 1.1 $
 // $Date: 2001/06/25 12:29:47 $
-// $Author: kls $
+// $Author: hakenes $
 //
 //   (C) 2001 Rolf Hakenes <hakenes@hippomi.de>, under the GNU GPL.
 //

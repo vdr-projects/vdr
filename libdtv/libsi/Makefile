@@ -4,9 +4,9 @@
 ###                                                        ###
 ##############################################################
 
-## $Revision: 1.1 $
-## $Date: 2001/08/15 14:47:22 $
-## $Author: kls $
+## $Revision: 1.4 $
+## $Date: 2001/10/07 10:24:46 $
+## $Author: hakenes $
 ##
 ##   (C) 2001 Rolf Hakenes <hakenes@hippomi.de>, under the GNU GPL.
 ##
@@ -80,4 +80,4 @@ $(SILIB) : $(OBJS)
 	@echo compiling $<...
 	@$(CC) $(DEFINES) $(CFLAGS) $(INCDIRS) -c $<
 
-include Makefile.dep
+-include Makefile.dep

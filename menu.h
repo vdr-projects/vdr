@@ -4,13 +4,11 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 1.30 2001/09/23 10:57:33 kls Exp $
+ * $Id: menu.h 1.33 2001/10/21 14:26:01 kls Exp $
  */
 
 #ifndef _MENU_H
 #define _MENU_H
-
-#define _GNU_SOURCE
 
 #include "dvbapi.h"
 #ifdef DVDSUPPORT
@@ -25,7 +23,7 @@ private:
   int digit;
   const char *hk(const char *s);
 public:
-  cMenuMain(bool Replaying);
+  cMenuMain(bool Replaying, eOSState State = osUnknown);
   virtual eOSState ProcessKey(eKeys Key);
   };
 
@@ -135,6 +133,7 @@ public:
   static void SetRecording(const char *FileName, const char *Title);
 #ifdef DVDSUPPORT
   static void SetDVD(cDVD *DVD, int Title);//XXX
+  static int LastTitleID(void);
 #endif //DVDSUPPORT
   static const char *LastReplayed(void);
   static void ClearLastReplayed(const char *FileName);

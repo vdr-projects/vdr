@@ -22,11 +22,11 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.79 2001/09/23 14:33:39 kls Exp $
+ * $Id: vdr.c 1.86 2001/10/20 11:18:38 kls Exp $
  */
 
-#define _GNU_SOURCE
 #include <getopt.h>
+#include <locale.h>
 #include <signal.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -75,6 +75,10 @@ static void Watchdog(int signum)
 
 int main(int argc, char *argv[])
 {
+  // Initiate locale:
+
+  setlocale(LC_ALL, "");
+
   // Command line options:
 
 #define DEFAULTSVDRPPORT 2001
@@ -355,7 +359,6 @@ int main(int argc, char *argv[])
            cRecordControls::Process(Now);
            cTimer *Timer = Timers.GetMatch(Now);
            if (Timer) {
-              dsyslog(LOG_INFO, "system time seen is %s", ctime(&Now));
               if (!cRecordControls::Start(Timer))
                  Timer->SetPending(true);
               }
@@ -405,7 +408,7 @@ int main(int argc, char *argv[])
                  case osRecordings:
                                 DELETENULL(Menu);
                                 DELETENULL(ReplayControl);
-                                Menu = new cMenuRecordings;
+                                Menu = new cMenuMain(ReplayControl, osRecordings);
                                 break;
                  case osReplay: DELETENULL(Menu);
                                 DELETENULL(ReplayControl);
@@ -414,7 +417,7 @@ int main(int argc, char *argv[])
 #ifdef DVDSUPPORT
                  case osDVD:    DELETENULL(Menu);
                                 DELETENULL(ReplayControl);
-                                Menu = new cMenuDVD;
+                                Menu = new cMenuMain(ReplayControl, osDVD);
                                 break;
 #endif //DVDSUPPORT
                  case osStopReplay:
@@ -501,10 +504,12 @@ int main(int argc, char *argv[])
                     if (WatchdogTimeout > 0)
                        signal(SIGALRM, SIG_IGN);
                     if (Interface->Confirm(tr("Press any key to cancel shutdown"), LastActivity == 1 ? 5 : SHUTDOWNWAIT, true)) {
+                       int Channel = timer ? timer->channel : 0;
+                       const char *File = timer ? timer->file : "";
                        char *cmd;
-                       asprintf(&cmd, "%s %ld %ld", Shutdown, Next, Delta);
+                       asprintf(&cmd, "%s %ld %ld %d '%s'", Shutdown, Next, Delta, Channel, File);
                        isyslog(LOG_INFO, "executing '%s'", cmd);
-                       system(cmd);
+                       SystemExec(cmd);
                        delete cmd;
                        }
                     else if (WatchdogTimeout > 0) {

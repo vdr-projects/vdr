@@ -8,7 +8,7 @@ Video Disk Recorder User's Manual
   possible, several keys have different meanings in the various
   modes:
 
-  Key         Normal      Main       Channels   Timers     Edit/New      Recordings  Replay
+  Key     Normal      Main       Channels   Timers     Edit/New      Recordings  Replay
 
   Up      Ch up       Crsr up    Crsr up    Crsr up    Crsr up       Crsr up     Play
   Down    Ch down     Crsr down  Crsr down  Crsr down  Crsr down     Crsr down   Pause
@@ -386,7 +386,8 @@ Video Disk Recorder User's Manual
                          0 = no EPG fixing
                          1 = basic fixing of text location (Title, Subtitle and
                              Extended Description)
-                         2 = removal of excess whitespace and hyphens
+                         2 = removal of excess whitespace and hyphens, mapping of
+                             wrongly used characters
                          3 = fixing the date in timestamps between 00:00 and 06:00
                              (use with care - hopefully one day Pro7 and Kabel1
                              will learn how to read the clock/calender)
@@ -448,6 +449,12 @@ Video Disk Recorder User's Manual
                          The valid range is 100...2000. Default is 2000, but
                          you may want to use smaller values if you are planning
                          on archiving a recording to CD.
+
+  SplitEditedFiles = 0   During the actual editing process VDR writes the result
+                         into files that may grow up to MaxVideoFileSize. If you
+                         prefer to have each marked sequence stored in a separate
+                         file (named 001.vdr, 002.vdr, ...) you can set this
+                         option to 1.
 
   MinEventTimeout=30     If the command line option '-s' has been set, VDR will
   MinUserInactivity=120  automatically shutdown the computer if the next timer

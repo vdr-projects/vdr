@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 1.27 2001/08/31 13:13:30 kls Exp $
+# $Id: Makefile 1.28 2001/10/07 15:14:50 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -38,6 +38,8 @@ REMOTE = KBD
 endif
 
 DEFINES += -DREMOTE_$(REMOTE)
+
+DEFINES += -D_GNU_SOURCE
 
 ifdef DEBUG_OSD
 DEFINES += -DDEBUG_OSD

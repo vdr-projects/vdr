@@ -4,10 +4,9 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.37 2001/09/23 13:43:29 kls Exp $
+ * $Id: recording.c 1.42 2001/10/20 10:28:28 kls Exp $
  */
 
-#define _GNU_SOURCE
 #include "recording.h"
 #include <errno.h>
 #include <fcntl.h>
@@ -32,7 +31,7 @@
 #define SUMMARYFILESUFFIX "/summary.vdr"
 #define MARKSFILESUFFIX   "/marks.vdr"
 
-#define FINDCMD      "find %s -follow -type d -name '%s' 2> /dev/null | sort -df"
+#define FINDCMD      "find %s -follow -type d -name '%s' 2> /dev/null"
 
 #define MINDISKSPACE 1024 // MB
 
@@ -45,6 +44,10 @@ void RemoveDeletedRecordings(void)
 {
   static time_t LastRemoveCheck = 0;
   if (time(NULL) - LastRemoveCheck > REMOVECHECKDELTA) {
+     // Make sure only one instance of VDR does this:
+     cLockFile LockFile(VideoDirectory);
+     if (!LockFile.Lock())
+        return;
      // Remove the oldest file that has been "deleted":
      cRecordings Recordings;
      if (Recordings.Load(true)) {
@@ -74,6 +77,10 @@ void AssertFreeDiskSpace(int Priority)
   static time_t LastFreeDiskCheck = 0;
   if (time(NULL) - LastFreeDiskCheck > DISKCHECKDELTA) {
      if (!VideoFileSpaceAvailable(MINDISKSPACE)) {
+        // Make sure only one instance of VDR does this:
+        cLockFile LockFile(VideoDirectory);
+        if (!LockFile.Lock())
+           return;
         // Remove the oldest file that has been "deleted":
         cRecordings Recordings;
         if (Recordings.Load(true)) {
@@ -207,6 +214,7 @@ char *ExchangeChars(char *s, bool ToFileSystem)
 cRecording::cRecording(cTimer *Timer, const char *Subtitle, const char *Summary)
 {
   titleBuffer = NULL;
+  sortBuffer = NULL;
   fileName = NULL;
   if (Timer->IsSingleEvent() || !Setup.UseSubtitle)
      name = strdup(Timer->file);
@@ -235,6 +243,7 @@ cRecording::cRecording(cTimer *Timer, const char *Subtitle, const char *Summary)
 cRecording::cRecording(const char *FileName)
 {
   titleBuffer = NULL;
+  sortBuffer = NULL;
   fileName = strdup(FileName);
   FileName += strlen(VideoDirectory) + 1;
   char *p = strrchr(FileName, '/');
@@ -243,7 +252,8 @@ cRecording::cRecording(const char *FileName)
   summary = NULL;
   if (p) {
      time_t now = time(NULL);
-     struct tm t = *localtime(&now); // this initializes the time zone in 't'
+     struct tm tm_r;
+     struct tm t = *localtime_r(&now, &tm_r); // this initializes the time zone in 't'
      t.tm_isdst = -1; // makes sure mktime() will determine the correct dst setting
      if (7 == sscanf(p + 1, DATAFORMAT, &t.tm_year, &t.tm_mon, &t.tm_mday, &t.tm_hour, &t.tm_min, &priority, &lifetime)) {
         t.tm_year -= 1900;
@@ -294,15 +304,55 @@ cRecording::cRecording(const char *FileName)
 cRecording::~cRecording()
 {
   delete titleBuffer;
+  delete sortBuffer;
   delete fileName;
   delete name;
   delete summary;
 }
 
+char *cRecording::StripEpisodeName(char *s)
+{
+  char *t = s, *s1 = NULL, *s2 = NULL;
+  while (*t) {
+        if (*t == '/') {
+           if (s1) {
+              if (s2)
+                 s1 = s2;
+              s2 = t;
+              }
+           else
+              s1 = t;
+           }
+        t++;
+        }
+  if (s1 && s2)
+     memmove(s1 + 1, s2, t - s2 + 1);
+  return s;
+}
+
+char *cRecording::SortName(void)
+{
+  if (!sortBuffer) {
+     char *s = StripEpisodeName(strdup(FileName() + strlen(VideoDirectory) + 1));
+     int l = strxfrm(NULL, s, 0);
+     sortBuffer = new char[l];
+     strxfrm(sortBuffer, s, l);
+     delete s;
+     }
+  return sortBuffer;
+}
+
+bool cRecording::operator< (const cListObject &ListObject)
+{
+  cRecording *r = (cRecording *)&ListObject;
+  return strcasecmp(SortName(), r->SortName()) < 0;
+}
+
 const char *cRecording::FileName(void)
 {
   if (!fileName) {
-     struct tm *t = localtime(&start);
+     struct tm tm_r;
+     struct tm *t = localtime_r(&start, &tm_r);
      ExchangeChars(name, true);
      asprintf(&fileName, NAMEFORMAT, VideoDirectory, name, t->tm_year + 1900, t->tm_mon + 1, t->tm_mday, t->tm_hour, t->tm_min, priority, lifetime);
      ExchangeChars(name, false);
@@ -320,7 +370,8 @@ const char *cRecording::Title(char Delimiter, bool NewIndicator)
      }
   delete titleBuffer;
   titleBuffer = NULL;
-  struct tm *t = localtime(&start);
+  struct tm tm_r;
+  struct tm *t = localtime_r(&start, &tm_r);
   asprintf(&titleBuffer, "%02d.%02d%c%02d:%02d%c%c%s",
                          t->tm_mday,
                          t->tm_mon + 1,
@@ -401,6 +452,7 @@ bool cRecordings::Load(bool Deleted)
               delete r;
            }
      pclose(p);
+     Sort();
      result = Count() > 0;
      }
   else
@@ -523,7 +575,7 @@ void cRecordingUserCommand::InvokeCommand(const char *State, const char *Recordi
      char *cmd;
      asprintf(&cmd, "%s %s '%s'", command, State, RecordingFileName);
      isyslog(LOG_INFO, "executing '%s'", cmd);
-     system(cmd);
+     SystemExec(cmd);
      delete cmd;
      }
 }
