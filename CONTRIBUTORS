@@ -328,6 +328,8 @@ Bernd Schweikert <bernd.schweikert@dit-gmbh.de>
 Mirko Günther <mi.guenther@ib-helms.de>
  for suggesting the -m command line option
  for suggesting the SVDRP command VOLU
+ for reporting a bug in keeping track of the current channel number when moving
+ channels in the "Channels" menu
 
 Achim Lange <Achim_Lange@t-online.de>
  for replacing 'killproc' with 'killall' in 'runvdr' to make it work on Debian

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.264 2003/08/03 09:38:37 kls Exp $
+ * $Id: menu.c 1.265 2003/08/09 10:14:44 kls Exp $
  */
 
 #include "menu.h"
@@ -763,6 +763,8 @@ eOSState cMenuChannels::Delete(void)
 
 void cMenuChannels::Move(int From, int To)
 {
+  int CurrentChannelNr = cDevice::CurrentChannel();
+  cChannel *CurrentChannel = Channels.GetByNumber(CurrentChannelNr);
   cChannel *FromChannel = GetChannel(From);
   cChannel *ToChannel = GetChannel(To);
   if (FromChannel && ToChannel) {
@@ -772,6 +774,8 @@ void cMenuChannels::Move(int From, int To)
      cOsdMenu::Move(From, To);
      Propagate();
      isyslog("channel %d moved to %d", FromNumber, ToNumber);
+     if (CurrentChannel && CurrentChannel->Number() != CurrentChannelNr)
+        Channels.SwitchTo(CurrentChannel->Number());
      }
 }
 

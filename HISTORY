@@ -2283,7 +2283,9 @@ Video Disk Recorder Revision History
   or Makefile.config as defaults (thanks to Steffen Barszus).
 - Added the usual menu timeout to the CAM menus.
 
-2003-08-06: Version 1.2.3
+2003-08-09: Version 1.2.3
 
 - Fixed the TS to PES repacker so that it works with MPEG1 streams (thanks to
   Andreas Kool).
+- Fixed keeping track of the current channel number when moving channels in
+  the "Channels" menu (thanks to Mirko Günther for reporting this one).
