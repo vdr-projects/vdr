@@ -577,3 +577,4 @@ Video Disk Recorder Revision History
   systems with the KURT/utime-patch (thanks to Guido Fiala).
 - Changed the check whether the driver is loaded in runvdr to check for the
   'dvb' module (the last one loaded).
+- Fixed repeat function with LIRC (thanks to Stefan Huelswitt).

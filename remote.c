@@ -6,7 +6,7 @@
  *
  * Ported to LIRC by Carsten Koch <Carsten.Koch@icem.de>  2000-06-16.
  *
- * $Id: remote.c 1.22 2001/07/22 14:43:45 kls Exp $
+ * $Id: remote.c 1.23 2001/07/27 10:17:19 kls Exp $
  */
 
 #include "remote.h"
@@ -466,9 +466,11 @@ void cRcIoLIRC::Action(void)
             }
          }
       else if (receivedRepeat) { // all data has already been fetched, but the last one was a repeat, so let's generate a release
-         receivedData = receivedRelease = true;
-         receivedRepeat = false;
-         WakeUp();
+         if (time_ms() - LastTime > REPEATDELAY) {
+            receivedData = receivedRelease = true;
+            receivedRepeat = false;
+            WakeUp();
+            }
          }
       }
 }
