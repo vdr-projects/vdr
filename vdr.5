@@ -8,7 +8,7 @@
 .\" License as specified in the file COPYING that comes with the
 .\" vdr distribution.
 .\"
-.\" $Id: vdr.5 1.2 2002/03/29 16:45:36 kls Exp $
+.\" $Id: vdr.5 1.3 2002/04/01 12:32:59 kls Exp $
 .\"
 .TH vdr 5 "29 Mar 2002" "1.0.0" "Video Disk Recorder Files"
 .SH NAME
@@ -209,6 +209,12 @@ channels that don't require additional decryption hardware.
 
 The values \fB1...4\fR can be used for channels that for some reason explicitly
 need a given DVB card (for backward compatibility).
+.SS KEYS
+The file \fIkeys.conf\fR contains the key assignments for the remote control
+unit (RCU). If \fBvdr\fR has been built with REMOTE=KBD, the file \fIkeys-pc.conf\fR
+will be used instead. If you are using \fBvdr\fR together with \fBLIRC\fR, no
+such file will be used. In that case you need to consult the \fBLIRC\fR
+documentation to see how to set up the remote control key assignments there.
 .SS COMMANDS
 The file \fIcommands.conf\fR contains the definitions of commands that can
 be executed from the \fBvdr\fR main menu's "Commands" option.
