@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.167 2002/04/06 11:08:54 kls Exp $
+ * $Id: dvbapi.c 1.168 2002/04/06 13:14:40 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -2804,12 +2804,16 @@ void cEITScanner::Process(void)
                               numTransponders = 0;
                               }
                            cChannel *Channel = Channels.GetByNumber(ch);
-                           if (Channel && Channel->pnr && !TransponderScanned(Channel)) {
-                              if (DvbApi == cDvbApi::PrimaryDvbApi && !currentChannel)
-                                 currentChannel = DvbApi->Channel();
-                              Channel->Switch(DvbApi, false);
-                              lastChannel = ch;
-                              break;
+                           if (Channel) {
+                              if (Channel->ca <= MAXDVBAPI && !DvbApi->ProvidesCa(Channel->ca))
+                                 break; // the channel says it explicitly needs a different card
+                              if (Channel->pnr && !TransponderScanned(Channel)) {
+                                 if (DvbApi == cDvbApi::PrimaryDvbApi && !currentChannel)
+                                    currentChannel = DvbApi->Channel();
+                                 Channel->Switch(DvbApi, false);
+                                 lastChannel = ch;
+                                 break;
+                                 }
                               }
                            ch++;
                            }

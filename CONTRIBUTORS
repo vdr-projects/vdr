@@ -199,6 +199,8 @@ Sergei Haller <Sergei.Haller@math.uni-giessen.de>
  for fixing the LastActivity timestamp after a shutdown prompt
  for fixing the "Low disk space!" message
  for adding the TPID to Hessen-3 in 'channels.conf'
+ for suggesting that the EPG scan should skip channels with their 'Ca' parameter
+ explicitly set to an other DVB card
 
 Andreas Gebel <andreas@xcapenet.de>
  for his help in keeping 'channels.conf' up to date

@@ -1182,3 +1182,5 @@ Video Disk Recorder Revision History
 - Fixed the still picture workaround in case the progress display is active.
 - Fixed a problem with accessing the epg.data file before it is fully written
   (thanks to Thilo Wunderlich for reporting this one).
+- Now the EPG scan skips channels that have their 'Ca' parameter explicitly set
+  to an other DVB card (suggested by Sergei Haller).
