@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: sections.c 1.8 2004/08/08 13:59:08 kls Exp $
+ * $Id: sections.c 1.9 2004/10/16 13:45:02 kls Exp $
  */
 
 #include "sections.h"
@@ -121,7 +121,8 @@ void cSectionHandler::Attach(cFilter *Filter)
   statusCount++;
   filters.Add(Filter);
   Filter->sectionHandler = this;
-  Filter->SetStatus(true);
+  if (on)
+     Filter->SetStatus(true);
   Unlock();
 }
 
@@ -176,6 +177,7 @@ void cSectionHandler::Action(void)
             int i = fh->Index();
             pfd[i].fd = fh->handle;
             pfd[i].events = POLLIN;
+            pfd[i].revents = 0;
             }
         int oldStatusCount = statusCount;
         Unlock();

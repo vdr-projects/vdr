@@ -1046,6 +1046,7 @@ Marco Schlüßler <marco@lordzodiac.de>
  for doing some testing regarding buffer performance and giving me some hints that
  finally lead to finding out that the basic problem causing buffer overflows was in
  EnableGet()/EnablePut() being called too often
+ for avoiding unnecessary section filter start/stops
 
 Jürgen Schmitz <j.schmitz@web.de>
  for reporting a bug in displaying the current channel when switching via the SVDRP

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.57 2004/10/09 12:53:02 kls Exp $
+ * $Id: device.c 1.58 2004/10/16 13:41:23 kls Exp $
  */
 
 #include "device.h"
@@ -314,7 +314,6 @@ void cDevice::StartSectionHandler(void)
      AttachFilter(patFilter = new cPatFilter);
      AttachFilter(sdtFilter = new cSdtFilter(patFilter));
      AttachFilter(nitFilter = new cNitFilter);
-     sectionHandler->SetStatus(true);
      }
 }
 

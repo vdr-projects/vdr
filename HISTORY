@@ -3019,3 +3019,4 @@ Video Disk Recorder Revision History
   to have them set in case a patch references them (thanks to Wayne Keer for pointing
   this out).
 - Completed the Russian OSD texts (thanks to Vyacheslav Dikonov).
+- Avoiding unnecessary section filter start/stops (thanks to Marco Schlüßler).
