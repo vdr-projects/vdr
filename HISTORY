@@ -3116,3 +3116,8 @@ Video Disk Recorder Revision History
 - Now displaying the name of the remote control for which the keys are being
   learned inside the menu to avoid overwriting the date/time in the 'classic'
   skin (thanks to Oliver Endriss for reporting this one).
+
+2004-11-02: Version 1.3.16
+
+- Fixed cChannel::SetName() in case only the ShortName or Provider has changed
+  (thanks to Sascha Volkenandt for reporting this one).
