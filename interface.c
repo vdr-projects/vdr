@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.c 1.6 2000/04/24 09:44:23 kls Exp $
+ * $Id: interface.c 1.9 2000/05/07 09:28:39 kls Exp $
  */
 
 #include "interface.h"
@@ -14,8 +14,6 @@
 #ifndef DEBUG_REMOTE
 cRcIo RcIo("/dev/ttyS1");
 #endif
-
-cDvbApi DvbApi; //XXX member of cInterface???
 
 cInterface Interface;
 
@@ -36,7 +34,7 @@ void cInterface::Init(void)
 void cInterface::Open(int NumCols, int NumLines)
 {
   if (!open++)
-     DvbApi.Open(NumCols, NumLines);
+     cDvbApi::PrimaryDvbApi->Open(NumCols, NumLines);
 }
 
 void cInterface::Close(void)
@@ -44,7 +42,7 @@ void cInterface::Close(void)
   if (open == 1)
      Clear();
   if (!--open)
-     DvbApi.Close();
+     cDvbApi::PrimaryDvbApi->Close();
 }
 
 unsigned int cInterface::GetCh(bool Wait)
@@ -91,13 +89,13 @@ eKeys cInterface::Wait(int Seconds, bool KeepChar)
 void cInterface::Clear(void)
 {
   if (open)
-     DvbApi.Clear();
+     cDvbApi::PrimaryDvbApi->Clear();
 }
 
 void cInterface::ClearEol(int x, int y, eDvbColor Color)
 {
   if (open)
-     DvbApi.ClrEol(x, y, Color);
+     cDvbApi::PrimaryDvbApi->ClrEol(x, y, Color);
 }
 
 void cInterface::SetCols(int *c)
@@ -112,7 +110,7 @@ void cInterface::SetCols(int *c)
 void cInterface::Write(int x, int y, const char *s, eDvbColor FgColor, eDvbColor BgColor)
 {
   if (open)
-     DvbApi.Text(x, y, s, FgColor, BgColor);
+     cDvbApi::PrimaryDvbApi->Text(x, y, s, FgColor, BgColor);
 }
 
 void cInterface::WriteText(int x, int y, const char *s, bool Current)
@@ -198,8 +196,8 @@ void cInterface::HelpButton(int Index, const char *Text, eDvbColor FgColor, eDvb
      int l = (w - strlen(Text)) / 2;
      if (l < 0)
         l = 0;
-     DvbApi.Fill(Index * w, -1, w, 1, BgColor);
-     DvbApi.Text(Index * w + l, -1, Text, FgColor, BgColor);
+     cDvbApi::PrimaryDvbApi->Fill(Index * w, -1, w, 1, BgColor);
+     cDvbApi::PrimaryDvbApi->Text(Index * w + l, -1, Text, FgColor, BgColor);
      }
 }
 
@@ -323,7 +321,7 @@ void cInterface::DisplayChannel(int Number, const char *Name)
 #ifndef DEBUG_REMOTE
   RcIo.Number(Number);
 #endif
-  if (Name) {
+  if (Name && !Recording()) {
      Open(MenuColumns, 1);
      char buffer[MenuColumns + 1];
      snprintf(buffer, sizeof(buffer), "%d  %s", Number, Name ? Name : "");
@@ -336,4 +334,17 @@ void cInterface::DisplayChannel(int Number, const char *Name)
         GetKey();
      Close();
      }
+}
+
+void cInterface::DisplayRecording(int Index, bool On)
+{
+#ifndef DEBUG_REMOTE
+  RcIo.SetPoints(1 << Index, On);
+#endif
+}
+
+bool cInterface::Recording(void)
+{
+  // This is located here because the Interface has to do with the "PrimaryDvbApi" anyway
+  return cDvbApi::PrimaryDvbApi->Recording();
 }

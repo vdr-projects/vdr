@@ -1,6 +1,28 @@
 Video Disk Recorder User's Manual
 ---------------------------------
 
+* Remote Control Keys
+
+  The following remote control keys are used to control the VDR
+  operation. To keep the number of different keys as small as
+  possible, several keys have different meanings in the various
+  modes:
+
+  Key     Normal      Main       Channels   Timer      Edit/New      Recordings  Replay
+
+  Up      Ch up       Crsr up    Crsr up    Crsr up    Crsr up       Crsr up     Begin
+  Down    Ch down     Crsr down  Crsr down  Crsr down  Crsr down     Crsr down   Pause
+  Left    -           -          -          Disable    Decrement     -           Search back
+  Right   -           -          -          Enable     Increment     -           Search forward
+  Ok      Ch display  Select     Switch     Edit       Accept        Play        Progress disp.
+  Menu    Menu on     Menu off   Menu off   Menu off   Menu off      Menu off    Menu on
+  Back    -           Menu off   Main menu  Main menu  Discard       Main menu   -
+  Red     -           Record     Edit       Edit       -             Play        -
+  Green   -           -          New        New        -             -           Skip -60s
+  Yellow  -           -          Delete     Delete     -             Delete      Skip +60s
+  Blue    -           -          Mark       Mark       -             -           Stop
+  0..9    Ch select   -          -          -          Numeric inp.  -           -
+
 * Navigating through the On Screen Menus
 
   The "Main" menu can be called up with the "Menu" key of your remote
@@ -22,10 +44,10 @@ Video Disk Recorder User's Manual
   keys. "Ok" then confirms the changes.
   
   The "Red", "Green", "Yellow" and "Blue" buttons have special meanings
-  in the various menus and are listed at the bottom of the on-screen-display.
+  in various menus and are listed at the bottom of the on-screen-display.
   
   At any point in the menu system, pressing the "Menu" key again will
-  immediately leave the menu system.
+  immediately leave the menu system (discarding any pending changes).
 
 * Selecting a Channel
 
@@ -48,35 +70,40 @@ Video Disk Recorder User's Manual
 
 * Instant Recording
 
-  You can start recording the current channel by pressing the "Record"
-  button. This will create a timer event named "instant" that starts
-  at the current time and records for two hours.
+  You can start recording the current channel by pressing the "Red" button
+  in the Main menu. This will create a timer event named "@channelname" that
+  starts at the current time and records for two hours.
   If you want to modify the recording time you need to edit the timer.
-  Stop instant recording by disabling or deleting the timer.
+  Stop instant recording by pressing the "Menu" button and selecting
+  "Stop Recording", or by disabling the timer.
 
 * Replaying a Recording
 
   All recordings are listed in the "Recordings" menu. Browse through the
   list with the "Up" and "Down" button and press "Ok" (or the "Red" button)
   to start playback.
+  Playback can be stopped via the Main menu by selecting "Stop replaying",
+  or by pressing the "Blue" button outside the menu.
 
 * Replay Control
 
   The following keys have the listed meaning in Replay mode:
 
-  - "Begin"   Positions to beginning of the recording and starts playback
-              from there.
-  - "Pause"   Halts playback at the current frame. Press again to continue
-              playback.
-  - "Stop"    Stops playback and stores the current position, so that
-              playback can be resumed later at that point.
-  - "Search"  Runs playback forward or backward at a higher speed. Press
-              again to resume normal speed.
-  - "Skip"    Skips about 60 seconds forward or backward.
-  - "Ok"      Brings up the replay progress display, which shows the date,
-              time and title of the recording, a progress bar and the
-              current and total time of the recording.
-              Press "Ok" again to turn off the progress display.
+  - Up      Positions to beginning of the recording and starts playback
+            from there.
+  - Down    Halts playback at the current position. Press again to continue
+            playback.
+  - Blue    Stops playback and stores the current position, so that
+            playback can be resumed later at that point.
+  - Left
+    Right   Runs playback forward or backward at a higher speed. Press
+            again to resume normal speed.
+  - Green
+    Yellow  Skips about 60 seconds back or forward.
+  - Ok      Brings up the replay progress display, which shows the date,
+            time and title of the recording, a progress bar and the
+            current and total time of the recording.
+            Press "Ok" again to turn off the progress display.
 
 * Programming the Timer
 

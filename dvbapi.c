@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.8 2000/04/24 15:30:35 kls Exp $
+ * $Id: dvbapi.c 1.10 2000/05/27 14:07:17 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -70,8 +70,9 @@ private:
   struct tIndex { int offset; uchar type; uchar number; short reserved; };
   int f;
   char *fileName, *pFileExt;
-  int last, resume;
+  int size, last, resume;
   tIndex *index;
+  bool CatchUp(void);
 public:
   cIndexFile(const char *FileName, bool Record = false);
   ~cIndexFile();
@@ -89,6 +90,7 @@ cIndexFile::cIndexFile(const char *FileName, bool Record)
 {
   f = -1;
   fileName = pFileExt = NULL;
+  size = 0;
   last = resume = -1;
   index = NULL;
   if (FileName) {
@@ -108,18 +110,25 @@ cIndexFile::cIndexFile(const char *FileName, bool Record)
                  }
               last = (buf.st_size + delta) / sizeof(tIndex) - 1;
               if (!Record && last >= 0) {
-                 index = new tIndex[last + 1];
-                 int fi = open(fileName, O_RDONLY);
-                 if (fi >= 0) {
-                    if ((int)read(fi, index, buf.st_size) != buf.st_size) {
-                       esyslog(LOG_ERR, "ERROR: can't read from file '%s'", fileName);
-                       delete index;
-                       index = NULL;
+                 size = last + 1;
+                 index = new tIndex[size];
+                 if (index) {
+                    f = open(fileName, O_RDONLY);
+                    if (f >= 0) {
+                       if ((int)read(f, index, buf.st_size) != buf.st_size) {
+                          esyslog(LOG_ERR, "ERROR: can't read from file '%s'", fileName);
+                          delete index;
+                          index = NULL;
+                          close(f);
+                          f = -1;
+                          }
+                       // we don't close f here, see CatchUp()!
                        }
-                    close(fi);
+                    else
+                       LOG_ERROR_STR(fileName);
                     }
                  else
-                    LOG_ERROR_STR(fileName);
+                    esyslog(LOG_ERR, "ERROR: can't allocate %d bytes for index '%s'", size * sizeof(tIndex), fileName);
                  }
               }
            else
@@ -164,6 +173,46 @@ cIndexFile::~cIndexFile()
   delete fileName;
 }
 
+bool cIndexFile::CatchUp(void)
+{
+  if (index && f >= 0) {
+     struct stat buf;
+     if (fstat(f, &buf) == 0) {
+        int newLast = buf.st_size / sizeof(tIndex) - 1;
+        if (newLast > last) {
+           if (size <= newLast) {
+              size *= 2;
+              if (size <= newLast)
+                 size = newLast + 1;
+              }
+           index = (tIndex *)realloc(index, size * sizeof(tIndex));
+           if (index) {
+              int offset = (last + 1) * sizeof(tIndex);
+              int delta = (newLast - last) * sizeof(tIndex);
+              if (lseek(f, offset, SEEK_SET) == offset) {
+                 if (read(f, &index[last + 1], delta) != delta) {
+                    esyslog(LOG_ERR, "ERROR: can't read from index");
+                    delete index;
+                    index = NULL;
+                    close(f);
+                    f = -1;
+                    }
+                 last = newLast;
+                 return true;
+                 }
+              else
+                 LOG_ERROR;
+              }
+           else
+              esyslog(LOG_ERR, "ERROR: can't realloc() index");
+           }
+        }
+     else
+        LOG_ERROR;
+     }
+  return false;
+}
+
 void cIndexFile::Write(uchar PictureType, uchar FileNumber, int FileOffset)
 {
   if (f >= 0) {
@@ -181,6 +230,7 @@ void cIndexFile::Write(uchar PictureType, uchar FileNumber, int FileOffset)
 bool cIndexFile::Get(int Index, uchar *FileNumber, int *FileOffset, uchar *PictureType)
 {
   if (index) {
+     CatchUp();
      if (Index >= 0 && Index <= last) {
         *FileNumber = index[Index].number;
         *FileOffset = index[Index].offset;
@@ -195,10 +245,12 @@ bool cIndexFile::Get(int Index, uchar *FileNumber, int *FileOffset, uchar *Pictu
 int cIndexFile::GetNextIFrame(int Index, bool Forward, uchar *FileNumber, int *FileOffset, int *Length)
 {
   if (index) {
+     if (Forward)
+        CatchUp();
      int d = Forward ? 1 : -1;
      for (;;) {
          Index += d;
-         if (Index >= 0 && Index <= last) {
+         if (Index >= 0 && Index <= last - 100) { // '- 100': need to stay off the end!
             if (index[Index].type == I_FRAME) {
                *FileNumber = index[Index].number;
                *FileOffset = index[Index].offset;
@@ -226,6 +278,7 @@ int cIndexFile::GetNextIFrame(int Index, bool Forward, uchar *FileNumber, int *F
 int cIndexFile::Get(uchar FileNumber, int FileOffset)
 {
   if (index) {
+     CatchUp();
      //TODO implement binary search!
      int i;
      for (i = 0; i < last; i++) {
@@ -842,6 +895,7 @@ void cReplayBuffer::SkipSeconds(int Seconds)
         uchar FileNumber;
         int FileOffset;
         if (index->GetNextIFrame(Index, false, &FileNumber, &FileOffset) >= 0)
+        if ((Index = index->GetNextIFrame(Index, false, &FileNumber, &FileOffset)) >= 0)
            NextFile(FileNumber, FileOffset);
         }
      }
@@ -987,13 +1041,16 @@ int cReplayBuffer::Write(int Max)
 
 // --- cDvbApi ---------------------------------------------------------------
 
-cDvbApi::cDvbApi(void)
+int cDvbApi::NumDvbApis = 0;
+cDvbApi *cDvbApi::dvbApi[MAXDVBAPI] = { NULL };
+cDvbApi *cDvbApi::PrimaryDvbApi = NULL;
+
+cDvbApi::cDvbApi(const char *FileName)
 {
-  isMainProcess = true;
   pidRecord = pidReplay = 0;
   fromRecord = toRecord = -1;
   fromReplay = toReplay = -1;
-  videoDev = open(VIDEODEVICE, O_RDWR | O_NONBLOCK);
+  videoDev = open(FileName, O_RDWR | O_NONBLOCK);
   if (videoDev < 0)
      LOG_ERROR;
   cols = rows = 0;
@@ -1011,24 +1068,88 @@ cDvbApi::cDvbApi(void)
   leaveok(stdscr, TRUE);
   window = NULL;
 #endif
-  lastProgress = -1;
+  lastProgress = lastTotal = -1;
   replayTitle = NULL;
 }
 
 cDvbApi::~cDvbApi()
 {
-  if (isMainProcess) {
-     if (videoDev >= 0) {
-        Close();
-        StopReplay();
-        StopRecord();
-        close(videoDev);
-        }
-#if defined(DEBUG_REMOTE) || defined(DEBUG_OSD)
-     endwin();
-#endif
+  if (videoDev >= 0) {
+     Close();
+     StopReplay();
+     StopRecord();
+     close(videoDev);
      }
+#if defined(DEBUG_REMOTE) || defined(DEBUG_OSD)
+  endwin();
+#endif
   delete replayTitle;
+}
+
+cDvbApi *cDvbApi::GetDvbApi(int Ca)
+{
+  Ca--;
+  for (int i = MAXDVBAPI; --i >= 0; ) {
+      if (dvbApi[i]) {
+         if ((i == Ca || Ca < 0) && !dvbApi[i]->Recording())
+            return dvbApi[i];
+         }
+      }
+  return NULL;
+}
+
+int cDvbApi::Index(void)
+{
+  for (int i = 0; i < MAXDVBAPI; i++) {
+      if (dvbApi[i] == this)
+         return i;
+      }
+  return -1;
+}
+
+bool cDvbApi::Init(void)
+{
+  char fileName[strlen(VIDEODEVICE) + 10];
+  int i;
+
+  NumDvbApis = 0;
+  for (i = 0; i < MAXDVBAPI; i++) {
+      sprintf(fileName, "%s%d", VIDEODEVICE, i);
+      if (access(fileName, F_OK | R_OK | W_OK) == 0) {
+         dsyslog(LOG_INFO, "probing %s", fileName);
+         int f = open(fileName, O_RDWR);
+         if (f >= 0) {
+            close(f);
+            dvbApi[i] = new cDvbApi(fileName);
+            NumDvbApis++;
+            }
+         else {
+            if (errno != ENODEV)
+               LOG_ERROR_STR(fileName);
+            break;
+            }
+         }
+      else {
+         if (errno != ENOENT)
+            LOG_ERROR_STR(fileName);
+         break;
+         }
+      }
+  PrimaryDvbApi = dvbApi[0];
+  if (NumDvbApis > 0)
+     isyslog(LOG_INFO, "found %d video device%s", NumDvbApis, NumDvbApis > 1 ? "s" : "");
+  else
+     esyslog(LOG_ERR, "ERROR: no video device found, giving up!");
+  return NumDvbApis > 0;
+}
+
+void cDvbApi::Cleanup(void)
+{
+  for (int i = 0; i < MAXDVBAPI; i++) {
+      delete dvbApi[i];
+      dvbApi[i] = NULL;
+      }
+  PrimaryDvbApi = NULL;
 }
 
 #ifdef DEBUG_OSD
@@ -1095,15 +1216,17 @@ void cDvbApi::Open(int w, int h)
   SETCOLOR(clrMagenta,    0xB0, 0x00, 0xFC, 255);
   SETCOLOR(clrWhite,      0xFC, 0xFC, 0xFC, 255);
 
-  lastProgress = -1;
+  lastProgress = lastTotal = -1;
 }
 
 void cDvbApi::Close(void)
 {
-#ifndef DEBUG_OSD
+#ifdef DEBUG_OSD
+  delwin(window);
+#else
   Cmd(OSD_Close);
 #endif
-  lastProgress = -1;
+  lastProgress = lastTotal = -1;
 }
 
 void cDvbApi::Clear(void)
@@ -1158,8 +1281,9 @@ bool cDvbApi::ShowProgress(bool Initial)
      if (Initial) {
         if (replayTitle)
            Text(0, 0, replayTitle);
-        Text(-7, 2, cIndexFile::Str(Total));
         }
+     if (Total != lastTotal)
+        Text(-7, 2, cIndexFile::Str(Total));
 #ifdef DEBUG_OSD
      int p = cols * Current / Total;
      Fill(0, 1, p, 1, clrGreen);
@@ -1191,6 +1315,7 @@ bool cDvbApi::ShowProgress(bool Initial)
         }
 #endif
      Text(0, 2, cIndexFile::Str(Current));
+     lastTotal = Total;
      return true;
      }
   return false;
@@ -1247,6 +1372,8 @@ bool cDvbApi::StartRecord(const char *FileName)
      }
   if (videoDev >= 0) {
 
+     StopReplay(); // TODO: remove this if the driver is able to do record and replay at the same time
+
      // Check FileName:
 
      if (!FileName) {
@@ -1285,7 +1412,6 @@ bool cDvbApi::StartRecord(const char *FileName)
         // This is the actual recording process
 
         dsyslog(LOG_INFO, "start recording process (pid=%d)", getpid());
-        isMainProcess = false;
         bool DataStreamBroken = false;
         int fromMain = toRecordPipe[0];
         int toMain = fromRecordPipe[1];
@@ -1371,7 +1497,7 @@ bool cDvbApi::StartReplay(const char *FileName, const char *Title)
   StopReplay();
   if (videoDev >= 0) {
 
-     lastProgress = -1;
+     lastProgress = lastTotal = -1;
      delete replayTitle;
      if (Title) {
         if ((replayTitle = strdup(Title)) == NULL)
@@ -1411,7 +1537,6 @@ bool cDvbApi::StartReplay(const char *FileName, const char *Title)
         // This is the actual replaying process
 
         dsyslog(LOG_INFO, "start replaying process (pid=%d)", getpid());
-        isMainProcess = false;
         int fromMain = toReplayPipe[0];
         int toMain = fromReplayPipe[1];
         cReplayBuffer *Buffer = new cReplayBuffer(&videoDev, FileName);
@@ -1440,7 +1565,8 @@ bool cDvbApi::StartReplay(const char *FileName, const char *Title)
                      }
                   if (FD_ISSET(fromMain, &setIn)) {
                      switch (readchar(fromMain)) {
-                       case dvbStop:        Buffer->Stop(); break;
+                       case dvbStop:        SetReplayMode(VID_PLAY_CLEAR_BUFFER);
+                                            Buffer->Stop(); break;
                        case dvbPauseReplay: SetReplayMode(Paused ? VID_PLAY_NORMAL : VID_PLAY_PAUSE);
                                             Paused = !Paused;
                                             FastForward = FastRewind = false;
@@ -1459,6 +1585,7 @@ bool cDvbApi::StartReplay(const char *FileName, const char *Title)
                        case dvbSkip:        {
                                               int Seconds;
                                               if (readint(fromMain, Seconds)) {
+                                                 SetReplayMode(VID_PLAY_CLEAR_BUFFER);
                                                  SetReplayMode(VID_PLAY_NORMAL);
                                                  FastForward = FastRewind = Paused = false;
                                                  Buffer->SetMode(rmPlay);

@@ -1,7 +1,7 @@
 Video Disk Recorder - Known Bugs
 --------------------------------
 
-* Sometimes picture and sound drift apart.
+* Sometimes the picture "jumps" as if a frame is skipped.
   Presumably this is a problem in the card driver or firmware?
 
 * When the on-screen display is activated during recording,
@@ -9,8 +9,4 @@ Video Disk Recorder - Known Bugs
   distorted picture when replaying such a recording.
   I assume this is a problem in the driver of firmware.
   There is no such problem in replay mode.
-
-* After a replay session the screen may go blank.
-  Haven't figured out yet how to ensure that it switches back to
-  the current channel.
 

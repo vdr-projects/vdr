@@ -1,11 +1,8 @@
 TODO list for the Video Disk Recorder project
 ---------------------------------------------
 
-* Make it work with two DVB-S PCI cards to allow simultaneous
-  recording of one programme, while replaying another programme
-  (or maybe the same one, but time delayed).
-  Maybe we can do this with only a single card, if the card
-  driver/firmware allows simultaneuos record/playback?
+* Implement simultaneous record/replay with a single DVB card once
+  the card driver/firmware allows this.
 * Implement "on-disk editing" to allow "cutting out" of certain
   scenes in order to archive them (or, reversely, cut out
   commercial breaks).

@@ -12,7 +12,7 @@ about that driver). For example, if the DVB driver was
 extracted into the directory /home/kls/vdr/DVB, then this
 package should be extracted into /home/kls/vdr/VDR.
 
-This program requires the card driver version 0.04 or higher
+This program requires the card driver version 0.05 or higher
 to work properly.
 
 After extracting the package, change into the VDR directory
@@ -29,6 +29,10 @@ to display texts instead of the DVB card's on-screen display
 interface. These modes are useful when testing new menus if you
 only have a remote connection to the VDR (which, in my case, is
 located in the living room and has neither a monitor nor a keyboard).
+
+When running, the 'vdr' program writes status information into the
+system log file (/var/log/messages). You may want to watch these
+messages (tail -f /var/log/mesages) to see if there are any problems.
 
 The video data directory:
 -------------------------
@@ -69,7 +73,9 @@ key after the other so that it can learn the various key codes. You will
 at least need to provide an "Up" and a "Down" key, so that you can switch
 channels. The rest of the key definitions is optional, but the more keys
 you define, the more you will be able to navigate through the menus and
-control recording/replaying.
+control recording/replaying. The program uses only a very small number
+of keys which have multiple meanings in the various modes (see MANUAL
+for a detailed description).
 If the program has been built with "DEBUG_REMOTE=1", it will use the
 key configuration file 'keys-pc.conf', so that you won't loose data
 when switching between normal and debug mode.
@@ -77,19 +83,11 @@ when switching between normal and debug mode.
 The default PC key assignments are:
 
   Up, Down, Left, Right     Crsr keys in numeric block
-  Menu                      '5' in numeric block
-  Ok                        Enter
-  Back                      Backspace
-  0..9                      '0'..'9' in top row
+  Menu                      'Home' in numeric block
+  Ok                        '5' in numeric block
+  Back                      'End' in numeric block
   Red, Green, Yellow, Blue  'F1'..'F4'
-  Record                    'r'
-  Pause                     'p'
-  Stop                      's'
-  Begin                     'B'
-  SearchForward             'f'
-  SearchBack                'b'
-  SkipForward               'PgDn' in numeric block
-  SkipBack                  'PgUp' in numeric block
+  0..9                      '0'..'9' in top row
 
 If you prefer different key assignments, simply delete the file
 'keys-pc.conf' and restart 'vdr' to get into learning mode.

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.8 2000/04/24 15:32:11 kls Exp $
+ * $Id: menu.c 1.16 2000/05/27 16:13:39 kls Exp $
  */
 
 #include "menu.h"
@@ -12,8 +12,9 @@
 #include <stdio.h>
 #include <string.h>
 #include "config.h"
-#include "dvbapi.h"
 #include "recording.h"
+
+#define MENUTIMEOUT 120 // seconds
 
 const char *FileNameChars = "aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ0123456789-.# ";
 
@@ -509,7 +510,7 @@ cMenuEditChannel::cMenuEditChannel(int Index)
      Add(new cMenuEditIntItem( "Srate",        &data.srate, 22000, 27500)); //TODO exact limits - toggle???
      Add(new cMenuEditIntItem( "Vpid",         &data.vpid, 0, 10000)); //TODO exact limits???
      Add(new cMenuEditIntItem( "Apid",         &data.apid, 0, 10000)); //TODO exact limits???
-     Add(new cMenuEditBoolItem("CA",           &data.ca));
+     Add(new cMenuEditIntItem( "CA",           &data.ca, 0, cDvbApi::NumDvbApis));
      Add(new cMenuEditIntItem( "Pnr",          &data.pnr, 0, 10000)); //TODO exact limits???
      }
 }
@@ -744,7 +745,7 @@ eOSState cMenuEditTimer::ProcessKey(eKeys Key)
   if (state == osUnknown) {
      if (Key == kOk) {
         if (!*data.file)
-           strcpy(data.file, "unnamed");
+           strcpy(data.file, cChannel::GetChannelName(data.channel - 1));
         if (timer && memcmp(timer, &data, sizeof(data)) != 0) {
            *timer = data;
            Timers.Save();
@@ -947,9 +948,8 @@ eOSState cMenuRecordings::Play(void)
 {
   cMenuRecordingItem *ri = (cMenuRecordingItem *)Get(Current());
   if (ri) {
-//XXX what if this recording's file is currently in use???
-     if (DvbApi.StartReplay(ri->recording->FileName(), ri->recording->Title()))
-        return osEnd;
+     cReplayControl::SetRecording(ri->recording->FileName(), ri->recording->Title());
+     return osReplay;
      }
   return osContinue;
 }
@@ -992,12 +992,26 @@ eOSState cMenuRecordings::ProcessKey(eKeys Key)
 
 // --- cMenuMain -------------------------------------------------------------
 
-cMenuMain::cMenuMain(void)
+#define STOP_RECORDING "Stop recording "
+
+cMenuMain::cMenuMain(bool Replaying)
 :cOsdMenu("Main")
 {
   Add(new cOsdItem("Channels",   osChannels));
   Add(new cOsdItem("Timer",      osTimer));
   Add(new cOsdItem("Recordings", osRecordings));
+  if (Replaying)
+     Add(new cOsdItem("Stop replaying", osStopReplay));
+  const char *s = NULL;
+  while ((s = cRecordControls::GetInstantId(s)) != NULL) {
+        char *buffer = NULL;
+        asprintf(&buffer, "%s%s", STOP_RECORDING, s);
+        Add(new cOsdItem(buffer, osStopRecord));
+        delete buffer;
+        }
+  SetHelp("Record");
+  Display();
+  lastActivity = time(NULL);
 }
 
 eOSState cMenuMain::ProcessKey(eKeys Key)
@@ -1008,41 +1022,205 @@ eOSState cMenuMain::ProcessKey(eKeys Key)
     case osChannels:   return AddSubMenu(new cMenuChannels);
     case osTimer:      return AddSubMenu(new cMenuTimers);
     case osRecordings: return AddSubMenu(new cMenuRecordings);
-    default: break;
+    case osStopRecord: if (Interface.Confirm("Stop Recording?")) {
+                          cOsdItem *item = Get(Current());
+                          if (item) {
+                             cRecordControls::Stop(item->Text() + strlen(STOP_RECORDING));
+                             return osEnd;
+                             }
+                          }
+    default: switch (Key) {
+               case kMenu: state = osEnd;    break;
+               case kRed:  if (!HasSubMenu())
+                              state = osRecord;
+                           break;
+               default:    break;
+               }
     }
+  if (Key != kNone)
+     lastActivity = time(NULL);
+  else if (time(NULL) - lastActivity > MENUTIMEOUT)
+     state = osEnd;
   return state;
 }
 
-// --- cReplayDisplay --------------------------------------------------------
+// --- cRecordControl --------------------------------------------------------
 
-cReplayDisplay::cReplayDisplay(void)
+cRecordControl::cRecordControl(cDvbApi *DvbApi, cTimer *Timer)
 {
-  Interface.Open(MenuColumns, -3);
-  shown = DvbApi.ShowProgress(true);
+  instantId = NULL;
+  dvbApi = DvbApi;
+  if (!dvbApi) dvbApi = cDvbApi::PrimaryDvbApi;//XXX
+  timer = Timer;
+  if (!timer) {
+     timer = new cTimer(true);
+     Timers.Add(timer);
+     Timers.Save();
+     asprintf(&instantId, cDvbApi::NumDvbApis > 1 ? "%s on %d" : "%s", cChannel::GetChannelName(timer->channel - 1), dvbApi->Index() + 1);
+     }
+  timer->SetRecording(true);
+  cChannel::SwitchTo(timer->channel - 1, dvbApi);
+  cRecording Recording(timer);
+  dvbApi->StartRecord(Recording.FileName());
+  Interface.DisplayRecording(dvbApi->Index(), true);
 }
 
-cReplayDisplay::~cReplayDisplay()
+cRecordControl::~cRecordControl()
 {
-  Interface.Close();
+  Stop(true);
+  delete instantId;
+  Interface.DisplayRecording(dvbApi->Index(), false);
 }
 
-eKeys cReplayDisplay::ProcessKey(eKeys Key)
+void cRecordControl::Stop(bool KeepInstant)
 {
-  if (!DvbApi.Replaying())
-     return kOk; // will turn off replay display
-  shown = DvbApi.ShowProgress(!shown);
+  if (timer) {
+     dvbApi->StopRecord();
+     timer->SetRecording(false);
+     if ((IsInstant() && !KeepInstant) || (timer->IsSingleEvent() && !timer->Matches())) {
+        // checking timer->Matches() to make sure we don't delete the timer
+        // if the program was cancelled before the timer's stop time!
+        isyslog(LOG_INFO, "deleting timer %d", timer->Index() + 1);
+        Timers.Del(timer);
+        Timers.Save();
+        }
+     timer = NULL;
+     }
+}
+
+bool cRecordControl::Process(void)
+{
+  if (!timer || !timer->Matches())
+     return false;
+  AssertFreeDiskSpace();
+  return true;
+}
+
+// --- cRecordControls -------------------------------------------------------
+
+cRecordControl *cRecordControls::RecordControls[MAXDVBAPI] = { NULL };
+
+bool cRecordControls::Start(cTimer *Timer)
+{
+  int ch = Timer ? Timer->channel - 1 : CurrentChannel;
+  cChannel *channel = Channels.Get(ch);
+
+  if (channel) {
+     cDvbApi *dvbApi = cDvbApi::GetDvbApi(channel->ca);
+     if (dvbApi) {
+        for (int i = 0; i < MAXDVBAPI; i++) {
+            if (!RecordControls[i]) {
+               RecordControls[i] = new cRecordControl(dvbApi, Timer);
+               return true;
+               }
+            }
+        }
+     else
+        esyslog(LOG_ERR, "ERROR: no free DVB device to record channel %d!", ch);
+     }
+  else
+     esyslog(LOG_ERR, "ERROR: channel %d not defined!", ch + 1);
+  return false;
+}
+
+void cRecordControls::Stop(const char *InstantId)
+{
+  for (int i = 0; i < MAXDVBAPI; i++) {
+      if (RecordControls[i]) {
+         const char *id = RecordControls[i]->InstantId();
+         if (id && strcmp(id, InstantId) == 0)
+            RecordControls[i]->Stop();
+         }
+      }
+}
+
+const char *cRecordControls::GetInstantId(const char *LastInstantId)
+{
+  for (int i = 0; i < MAXDVBAPI; i++) {
+      if (RecordControls[i]) {
+         if (!LastInstantId && RecordControls[i]->InstantId())
+            return RecordControls[i]->InstantId();
+         if (LastInstantId && LastInstantId == RecordControls[i]->InstantId())
+            LastInstantId = NULL;
+         }
+      }
+  return NULL;
+}
+
+void cRecordControls::Process(void)
+{
+  for (int i = 0; i < MAXDVBAPI; i++) {
+      if (RecordControls[i]) {
+         if (!RecordControls[i]->Process())
+            DELETENULL(RecordControls[i]);
+         }
+      }
+}
+
+// --- cReplayControl --------------------------------------------------------
+
+char *cReplayControl::fileName = NULL;
+char *cReplayControl::title = NULL;
+
+cReplayControl::cReplayControl(void)
+{
+  dvbApi = cDvbApi::PrimaryDvbApi;//XXX
+  visible = shown = false;
+  if (fileName)
+     dvbApi->StartReplay(fileName, title);
+}
+
+cReplayControl::~cReplayControl()
+{
+  Hide();
+  dvbApi->StopReplay();
+}
+
+void cReplayControl::SetRecording(const char *FileName, const char *Title)
+{
+  delete fileName;
+  delete title;
+  fileName = FileName ? strdup(FileName) : NULL;
+  title = Title ? strdup(Title) : NULL;
+}
+
+void cReplayControl::Show(void)
+{
+  if (!visible) {
+     Interface.Open(MenuColumns, -3);
+     needsFastResponse = visible = true;
+     shown = dvbApi->ShowProgress(true);
+     }
+}
+
+void cReplayControl::Hide(void)
+{
+  if (visible) {
+     Interface.Close();
+     needsFastResponse = visible = false;
+     }
+}
+
+eOSState cReplayControl::ProcessKey(eKeys Key)
+{
+  if (!dvbApi->Replaying())
+     return osEnd;
+  if (visible)
+     shown = dvbApi->ShowProgress(!shown) || shown;
   switch (Key) {
-    case kBegin:
-    case kPause:
-    case kStop:
-    case kSearchBack:
-    case kSearchForward:
-    case kSkipBack:
-    case kSkipForward:   break; // will be done in main loop
-    case kMenu:          break; // allow direct switching to menu
-    case kOk:            break; // switches off replay display
-    default:             Key = kNone; // ignore anything not explicitly known here
+    case kUp:      dvbApi->Skip(-INT_MAX); break;
+    case kDown:    dvbApi->PauseReplay(); break;
+    case kBlue:    Hide();
+                   dvbApi->StopReplay();
+                   return osEnd;
+    case kLeft:    dvbApi->FastRewind(); break;
+    case kRight:   dvbApi->FastForward(); break;
+    case kGreen:   dvbApi->Skip(-60); break;
+    case kYellow:  dvbApi->Skip(60); break;
+    case kMenu:    Hide(); return osMenu; // allow direct switching to menu
+    case kOk:      visible ? Hide() : Show(); break;
+    default:       return osUnknown;
     }
-  return Key;
+  return osContinue;
 }
 

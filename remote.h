@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remote.h 1.4 2000/04/24 09:46:00 kls Exp $
+ * $Id: remote.h 1.5 2000/05/07 09:27:54 kls Exp $
  */
 
 #ifndef __REMOTE_H
@@ -21,10 +21,12 @@ private:
   time_t t;
   int firstTime, lastTime;
   unsigned int lastCommand;
+  int lastNumber;
   bool SendCommand(unsigned char Cmd);
   int ReceiveByte(bool Wait = true);
   bool SendByteHandshake(unsigned char c);
   bool SendByte(unsigned char c);
+  bool Digit(int n, int v);
 public:
   enum { modeH = 'h', modeB = 'b', modeS = 's' };
   cRcIo(char *DeviceName);
@@ -34,9 +36,8 @@ public:
   bool SetCode(unsigned char Code, unsigned short Address);
   bool SetMode(unsigned char Mode);
   bool GetCommand(unsigned int *Command, unsigned short *Address = NULL);
-  bool Digit(int n, int v);
   bool Number(int n, bool Hex = false);
-  void Points(unsigned char Dp) { dp = Dp; }
+  void SetPoints(unsigned char Dp, bool On);
   bool String(char *s);
   bool DetectCode(unsigned char *Code, unsigned short *Address);
   };

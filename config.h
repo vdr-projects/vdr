@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.4 2000/04/24 09:44:17 kls Exp $
+ * $Id: config.h 1.6 2000/05/27 14:43:46 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -14,6 +14,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
+#include "dvbapi.h"
 #include "tools.h"
 
 #define MaxBuffer 1000
@@ -26,19 +27,11 @@ enum eKeys { // "Up" and "Down" must be the first two keys!
              kBack,
              kLeft,
              kRight,
-             k0, k1, k2, k3, k4, k5, k6, k7, k8, k9,
              kRed,
              kGreen,
              kYellow,
              kBlue,
-             kRecord,
-             kPause,
-             kStop,
-             kBegin,
-             kSearchForward,
-             kSearchBack,
-             kSkipForward,
-             kSkipBack,
+             k0, k1, k2, k3, k4, k5, k6, k7, k8, k9,
              kNone
            };
 
@@ -79,8 +72,9 @@ public:
   cChannel(const cChannel *Channel);
   bool Parse(char *s);
   bool Save(FILE *f);
-  bool Switch(void);
-  static bool SwitchTo(int i);
+  bool Switch(cDvbApi *DvbApi = NULL);
+  static bool SwitchTo(int i, cDvbApi *DvbApi = NULL);
+  static const char *GetChannelName(int i);
   };
 
 class cTimer : public cListObject {
