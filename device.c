@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.78 2005/01/23 15:41:05 kls Exp $
+ * $Id: device.c 1.87 2005/02/06 14:10:37 kls Exp $
  */
 
 #include "device.h"
@@ -31,7 +31,8 @@ private:
 public:
   cPesAssembler(void);
   ~cPesAssembler();
-  int ExpectedLength(void) { return data[4] * 256 + data[5] + 6; }
+  int ExpectedLength(void) { return PacketSize(data); }
+  static int PacketSize(const uchar *data);
   int Length(void) { return length; }
   const uchar *Data(void) { return data; }
   void Reset(void);
@@ -100,6 +101,38 @@ void cPesAssembler::Put(const uchar *Data, int Length)
      }
 }
 
+int cPesAssembler::PacketSize(const uchar *data)
+{
+  // we need atleast 6 bytes of data here !!!
+  switch (data[3]) {
+    default:
+    case 0x00 ... 0xB8: // video stream start codes
+    case 0xB9: // Program end
+    case 0xBC: // Programm stream map
+    case 0xF0 ... 0xFF: // reserved
+         return 6;
+
+    case 0xBA: // Pack header
+         if ((data[4] & 0xC0) == 0x40) // MPEG2
+            return 14;
+         // to be absolutely correct we would have to add the stuffing bytes
+         // as well, but at this point we only may have 6 bytes of data avail-
+         // able. So it's up to the higher level to resync...
+         //return 14 + (data[13] & 0x07); // add stuffing bytes
+         else // MPEG1
+            return 12;
+
+    case 0xBB: // System header
+    case 0xBD: // Private stream1
+    case 0xBE: // Padding stream
+    case 0xBF: // Private stream2 (navigation data)
+    case 0xC0 ... 0xCF: // all the rest (the real packets)
+    case 0xD0 ... 0xDF:
+    case 0xE0 ... 0xEF:
+         return 6 + data[4] * 256 + data[5];
+    }
+}
+
 // --- cDevice ---------------------------------------------------------------
 
 // The default priority for non-primary devices:
@@ -137,6 +170,7 @@ cDevice::cDevice(void)
   pesAssembler = new cPesAssembler;
   ClrAvailableTracks();
   currentAudioTrack = ttAudioFirst;
+  currentAudioTrackMissingCount = 0;
 
   for (int i = 0; i < MAXRECEIVERS; i++)
       receiver[i] = NULL;
@@ -281,11 +315,11 @@ cDevice *cDevice::GetDevice(const cChannel *Channel, int Priority, bool *NeedsDe
 
 void cDevice::Shutdown(void)
 {
+  primaryDevice = NULL;
   for (int i = 0; i < numDevices; i++) {
       delete device[i];
       device[i] = NULL;
       }
-  primaryDevice = NULL;
 }
 
 bool cDevice::GrabImage(const char *FileName, bool Jpeg, int Quality, int SizeX, int SizeY)
@@ -551,26 +585,7 @@ eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
            for (int i = 0; i < MAXDPIDS; i++)
                SetAvailableTrack(ttDolby, i, Channel->Dpid(i), Channel->Dlang(i));
            }
-        // Select the preferred audio track:
-        eTrackType PreferredTrack = ttAudioFirst;
-        int LanguagePreference = -1;
-        int StartCheck = Setup.CurrentDolby ? ttDolbyFirst : ttAudioFirst;
-        int EndCheck = ttDolbyLast;
-        for (int i = StartCheck; i <= EndCheck; i++) {
-            const tTrackId *TrackId = GetTrack(eTrackType(i));
-            if (TrackId && TrackId->id && I18nIsPreferredLanguage(Setup.AudioLanguages, I18nLanguageIndex(TrackId->language), LanguagePreference))
-               PreferredTrack = eTrackType(i);
-            if (Setup.CurrentDolby && i == ttDolbyLast) {
-               i = ttAudioFirst - 1;
-               EndCheck = ttAudioLast;
-               }
-            }
-        // Make sure we're set to an available audio track:
-        const tTrackId *Track = GetTrack(GetCurrentAudioTrack());
-        if (!Track || !Track->id || PreferredTrack != GetCurrentAudioTrack())
-           SetCurrentAudioTrack(PreferredTrack);
-        // Fall back to stereo:
-        SetAudioChannel(0);
+        EnsureAudioTrack(true);
         }
      cStatus::MsgChannelSwitch(this, Channel->Number()); // only report status if channel switch successfull
      }
@@ -663,10 +678,12 @@ void cDevice::ClrAvailableTracks(bool DescriptionsOnly)
   else {
      memset(availableTracks, 0, sizeof(availableTracks));
      pre_1_3_19_PrivateStream = false;
+     SetAudioChannel(0); // fall back to stereo
+     currentAudioTrackMissingCount = 0;
      }
 }
 
-bool cDevice::SetAvailableTrack(eTrackType Type, int Index, uint16_t Id, const char *Language, const char *Description, uint32_t Flags)
+bool cDevice::SetAvailableTrack(eTrackType Type, int Index, uint16_t Id, const char *Language, const char *Description)
 {
   eTrackType t = eTrackType(Type + Index);
   if (Type == ttAudio && IS_AUDIO_TRACK(t) ||
@@ -675,10 +692,12 @@ bool cDevice::SetAvailableTrack(eTrackType Type, int Index, uint16_t Id, const c
         strn0cpy(availableTracks[t].language, Language, sizeof(availableTracks[t].language));
      if (Description)
         strn0cpy(availableTracks[t].description, Description, sizeof(availableTracks[t].description));
-     if (Id) {
-        availableTracks[t].flags = Flags;
+     if (Id)
         availableTracks[t].id = Id; // setting 'id' last to avoid the need for extensive locking
-        }
+     if (t == currentAudioTrack)
+        currentAudioTrackMissingCount = 0;
+     else if (!availableTracks[currentAudioTrack].id && currentAudioTrackMissingCount++ > NumAudioTracks() * 10)
+        EnsureAudioTrack();
      return true;
      }
   else
@@ -716,6 +735,31 @@ bool cDevice::SetCurrentAudioTrack(eTrackType Type)
      return true;
      }
   return false;
+}
+
+void cDevice::EnsureAudioTrack(bool Force)
+{
+  if (Force || !availableTracks[currentAudioTrack].id) {
+     eTrackType PreferredTrack = ttAudioFirst;
+     int LanguagePreference = -1;
+     int StartCheck = Setup.CurrentDolby ? ttDolbyFirst : ttAudioFirst;
+     int EndCheck = ttDolbyLast;
+     for (int i = StartCheck; i <= EndCheck; i++) {
+         const tTrackId *TrackId = GetTrack(eTrackType(i));
+         if (TrackId && TrackId->id && I18nIsPreferredLanguage(Setup.AudioLanguages, I18nLanguageIndex(TrackId->language), LanguagePreference))
+            PreferredTrack = eTrackType(i);
+         if (Setup.CurrentDolby && i == ttDolbyLast) {
+            i = ttAudioFirst - 1;
+            EndCheck = ttAudioLast;
+            }
+         }
+     // Make sure we're set to an available audio track:
+     const tTrackId *Track = GetTrack(GetCurrentAudioTrack());
+     if (Force || !Track || !Track->id || PreferredTrack != GetCurrentAudioTrack()) {
+        dsyslog("setting audio track to %d", PreferredTrack);
+        SetCurrentAudioTrack(PreferredTrack);
+        }
+     }
 }
 
 bool cDevice::CanReplay(void) const
@@ -772,6 +816,7 @@ bool cDevice::AttachPlayer(cPlayer *Player)
      if (player)
         Detach(player);
      ClrAvailableTracks();
+     pesAssembler->Reset();
      player = Player;
      SetPlayMode(player->playMode);
      player->device = this;
@@ -831,6 +876,7 @@ int cDevice::PlayPesPacket(const uchar *Data, int Length, bool VideoOnly)
         int d = End - Start;
         int w = d;
         switch (c) {
+          case 0xBE:          // padding stream, needed for MPEG1
           case 0xE0 ... 0xEF: // video
                w = PlayVideo(Start, d);
                break;
@@ -842,13 +888,10 @@ int cDevice::PlayPesPacket(const uchar *Data, int Length, bool VideoOnly)
           case 0xBD: { // private stream 1
                int PayloadOffset = Data[8] + 9;
                uchar SubStreamId = Data[PayloadOffset];
-               uchar SubStreamType = SubStreamId & 0xE0;
+               uchar SubStreamType = SubStreamId & 0xF0;
                uchar SubStreamIndex = SubStreamId & 0x1F;
 
                // Compatibility mode for old VDR recordings, where 0xBD was only AC3:
-               //TODO apparently this doesn't work for old ORF Dolby Digital recordings
-               if (!pre_1_3_19_PrivateStream && (Data[6] & 4) && Data[PayloadOffset] == 0x0B && Data[PayloadOffset + 1] == 0x77)
-                  pre_1_3_19_PrivateStream = true;
                if (pre_1_3_19_PrivateStream) {
                   SubStreamId = c;
                   SubStreamType = 0x80;
@@ -857,6 +900,7 @@ int cDevice::PlayPesPacket(const uchar *Data, int Length, bool VideoOnly)
 
                switch (SubStreamType) {
                  case 0x20: // SPU
+                 case 0x30: // SPU
                       break;
                  case 0x80: // AC3 & DTS
                       if (Setup.UseDolbyDigital) {
@@ -873,6 +917,13 @@ int cDevice::PlayPesPacket(const uchar *Data, int Length, bool VideoOnly)
                       if (!VideoOnly && SubStreamId == availableTracks[currentAudioTrack].id)
                          w = PlayAudio(Start, d);
                       break;
+                 default:
+                      // Compatibility mode for old VDR recordings, where 0xBD was only AC3:
+                      if (!pre_1_3_19_PrivateStream) {
+                         dsyslog("switching to pre 1.3.19 Dolby Digital compatibility mode");
+                         ClrAvailableTracks();
+                         pre_1_3_19_PrivateStream = true;
+                         }
                  }
                }
                break;
@@ -924,7 +975,7 @@ int cDevice::PlayPes(const uchar *Data, int Length, bool VideoOnly)
   int i = 0;
   while (i <= Length - 6) {
         if (Data[i] == 0x00 && Data[i + 1] == 0x00 && Data[i + 2] == 0x01) {
-           int l = Data[i + 4] * 256 + Data[i + 5] + 6;
+           int l = cPesAssembler::PacketSize(&Data[i]);
            if (i + l > Length) {
               // Store incomplete PES packet for later completion:
               pesAssembler->Put(Data + i, Length - i);

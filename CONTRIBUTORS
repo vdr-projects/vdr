@@ -190,10 +190,11 @@ Stefan Huelswitt <huels@iname.com>
  for fixing handling of pmAudioOnlyBlack
  for pointing out possible race conditions in handling childTid in cThread
  for fixing a possible race condition in cDevice::Action() and cTSBuffer::Action()
+ for reporting several memory leaks that were introduced through the use of cString
+ for adding MPEG1 replay capability to cPesAssembler
 
 Ulrich Röder <roeder@efr-net.de>
- for pointing out that there are channels that have a symbol rate higher than
- 27500
+ for pointing out that there are channels that have a symbol rate higher than 27500
  for his support in keeping the Premiere World channels up to date in 'channels.conf'
 
 Mel Schächner <schaechner@yahoo.com>
@@ -266,6 +267,11 @@ Werner Fink <werner@suse.de>
  overhead in the firmware
  for a patch that was used as a base for implementing a modified PES packet
  handling in order to play AC3 audio over full featured DVB cards
+ for pointing out an error in masking SubStreamType in cDevice::PlayPesPacket()
+ for pointing out that the "pre 1.3.19" compatibility mode for old Dolby Digital
+ recordings can be triggered in the default branch
+ for pointing out that pesAssembler->Reset() needs to be called between subsequent
+ Transfer Modes
 
 Rolf Hakenes <hakenes@hippomi.de>
  for providing 'libdtv' and adapting the EIT mechanisms to it
@@ -747,6 +753,11 @@ Sascha Volkenandt <sascha@akv-soft.de>
  for reporting a bug in cChannel::SetName() in case only the ShortName or Provider
  has changed
  for fixing a possible recursion in cControl::Shutdown()
+ for reporting that the "Audio" menu is not displayed with the "Green" button from
+ the "Main" menu in case there is only one audio track
+ for reporting a problem when starting replay of a recording that has no Dolby
+ Digital audio after switching to a channel that has DD and selecting the DD audio
+ track
 
 Malcolm Caldwell <malcolm.caldwell@ntu.edu.au>
  for modifying LOF handling to allow for C-band reception
@@ -793,6 +804,7 @@ Benjamin Harling <benjamin.harling@web.de>
 Christian Jacobsen <christian.jacobsen@stageholding.de>
  for making the LIRC interface skip keys that come in too fast
  for reporting a problem in handling the '-E' options in version 1.3.18
+ for reporting a problem in case a station defines all 32 audio PIDs
 
 Andreas Mair <Andreas.Mair@linogate.com>
  for reporting a short display of the main menu if a plugin displays its own OSD and
@@ -800,6 +812,7 @@ Andreas Mair <Andreas.Mair@linogate.com>
 
 Olivier Jacques <jacquesolivier@hotmail.com>)
  for translating OSD texts to the French language
+ for implementing the setup option "OSD/Channel info time"
 
 Kai Moeller <moeller.ki@gmx.de>
  for reporting a double call to MainMenuAction() of a plugin if invoked via a hotkey
@@ -911,6 +924,7 @@ Reinhard Nissl <rnissl@gmx.de>
  for implementing cDolbyRepacker for better handling of Dolby Digital PES packets
  for extending some buffer sizes to allow handling HDTV streams
  for adding substream handling to cDolbyRepacker
+ for modifying cDolbyRepacker to make sure PES packets don't exceed the requested length
 
 Richard Robson <richard_robson@beeb.net>
  for reporting freezing replay if a timer starts while in Transfer Mode from the
@@ -1116,6 +1130,7 @@ Marco Schlüßler <marco@lordzodiac.de>
  for a patch that implements substream handling into cDevice::PlayPesPacket()
  for pointing out that PlayPes(NULL, 0) needs to be called in cTransfer::Action()
  when clearing the transfer buffer to avoid overflows
+ for adding CMD_SPU_CHG_COLCON to cDvbSpuDecoder::setTime()
 
 Jürgen Schmitz <j.schmitz@web.de>
  for reporting a bug in displaying the current channel when switching via the SVDRP
@@ -1231,3 +1246,7 @@ Walter Koch <koch@u32.de>
 Rolf Groppe <rolf@groppe.de>
  for suggesting to fall back to 'stereo' when switching channels in case the user
  had switched to 'left' or 'right'
+
+Wolfgang Rohdewald <wolfgang@rohdewald.de>
+ for pointing out that primaryDevice = NULL should be done before deleting the devices
+ in cDevice::Shutdown()

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: plugin.h 1.7 2004/04/30 13:46:21 kls Exp $
+ * $Id: plugin.h 1.8 2005/01/30 14:03:48 kls Exp $
  */
 
 #ifndef __PLUGIN_H
@@ -19,9 +19,11 @@
 
 class cPlugin {
   friend class cDll;
+  friend class cPluginManager;
 private:
   static char *configDirectory;
   const char *name;
+  bool started;
   void SetName(const char *s);
 public:
   cPlugin(void);
@@ -35,6 +37,7 @@ public:
   virtual bool ProcessArgs(int argc, char *argv[]);
   virtual bool Initialize(void);
   virtual bool Start(void);
+  virtual void Stop(void);
   virtual void Housekeeping(void);
 
   virtual const char *MainMenuEntry(void);
@@ -85,7 +88,8 @@ public:
   static bool HasPlugins(void);
   static cPlugin *GetPlugin(int Index);
   static cPlugin *GetPlugin(const char *Name);
-  void Shutdown(bool Log = false);
+  void StopPlugins(void);
+  void Shutdown(void);
   };
 
 #endif //__PLUGIN_H

@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.200 2005/01/14 16:50:39 kls Exp $
+ * $Id: vdr.c 1.201 2005/01/30 14:15:50 kls Exp $
  */
 
 #include <getopt.h>
@@ -928,6 +928,7 @@ int main(int argc, char *argv[])
 
 Exit:
 
+  PluginManager.StopPlugins();
   cRecordControls::Shutdown();
   cCutter::Stop();
   delete Menu;
@@ -941,7 +942,7 @@ Exit:
   Setup.CurrentVolume  = cDevice::CurrentVolume();
   Setup.Save();
   cDevice::Shutdown();
-  PluginManager.Shutdown(true);
+  PluginManager.Shutdown();
   ReportEpgBugFixStats();
   if (WatchdogTimeout > 0)
      dsyslog("max. latency time %d seconds", MaxLatencyTime);

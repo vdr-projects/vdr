@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.337 2005/01/15 16:32:34 kls Exp $
+ * $Id: menu.c 1.340 2005/02/06 11:33:13 kls Exp $
  */
 
 #include "menu.h"
@@ -1769,6 +1769,7 @@ void cMenuSetupOSD::Set(void)
   Add(new cMenuEditIntItem( tr("Setup.OSD$Message time (s)"),       &data.OSDMessageTime, 1, 60));
   Add(new cMenuEditStraItem(tr("Setup.OSD$Use small font"),         &data.UseSmallFont, 3, useSmallFontTexts));
   Add(new cMenuEditBoolItem(tr("Setup.OSD$Channel info position"),  &data.ChannelInfoPos, tr("bottom"), tr("top")));
+  Add(new cMenuEditIntItem( tr("Setup.OSD$Channel info time (s)"),  &data.ChannelInfoTime, 1, 60));
   Add(new cMenuEditBoolItem(tr("Setup.OSD$Info on channel switch"), &data.ShowInfoOnChSwitch));
   Add(new cMenuEditBoolItem(tr("Setup.OSD$Scroll pages"),           &data.MenuScrollPage));
   Add(new cMenuEditBoolItem(tr("Setup.OSD$Sort timers"),            &data.SortTimers));
@@ -2513,10 +2514,8 @@ eOSState cMenuMain::ProcessKey(eKeys Key)
                                 state = replaying ? osContinue : osRecord;
                              break;
                case kGreen:  if (!HadSubMenu) {
-                                if (cDevice::PrimaryDevice()->NumAudioTracks() > 1) {
-                                   cRemote::Put(kAudio, true);
-                                   state = osEnd;
-                                   }
+                                cRemote::Put(kAudio, true);
+                                state = osEnd;
                                 }
                              break;
                case kYellow: if (!HadSubMenu)
@@ -2578,7 +2577,6 @@ static void SetTrackDescriptions(void)
 // --- cDisplayChannel -------------------------------------------------------
 
 #define DIRECTCHANNELTIMEOUT 1000 //ms
-#define INFOTIMEOUT          5000 //ms
 
 cDisplayChannel::cDisplayChannel(int Number, bool Switched)
 :cOsdObject(true)
@@ -2766,7 +2764,7 @@ eOSState cDisplayChannel::ProcessKey(eKeys Key)
                      return osEnd;
                      }
     };
-  if (lastTime.Elapsed() < INFOTIMEOUT) {
+  if (lastTime.Elapsed() < (uint64)(Setup.ChannelInfoTime * 1000)) {
      if (!number && group < 0 && channel && channel->Number() != cDevice::CurrentChannel())
         Refresh(); // makes sure a channel switch through the SVDRP CHAN command is displayed
      DisplayInfo();
@@ -2852,6 +2850,7 @@ cDisplayTracks *cDisplayTracks::currentDisplayTracks = NULL;
 cDisplayTracks::cDisplayTracks(void)
 :cOsdObject(true)
 {
+  cDevice::PrimaryDevice()->EnsureAudioTrack();
   // Get the actual audio track descriptions from the EPG if we're not replaying:
   if (!cDevice::PrimaryDevice()->Replaying() || cTransferControl::ReceiverDevice())
      SetTrackDescriptions();

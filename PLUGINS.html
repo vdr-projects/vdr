@@ -14,18 +14,18 @@ Copyright &copy; 2004 Klaus Schmidinger<br>
 <a href="http://www.cadsoft.de/vdr">www.cadsoft.de/vdr</a>
 </center>
 <p>
-<!--X1.3.7--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
-Important modifications introduced in version 1.3.7 are marked like this.
-<!--X1.3.7--></td></tr></table>
-<!--X1.3.8--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
+<!--X1.3.8--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 Important modifications introduced in version 1.3.8 are marked like this.
 <!--X1.3.8--></td></tr></table>
-<!--X1.3.18--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
+<!--X1.3.18--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
 Important modifications introduced in version 1.3.18 are marked like this.
 <!--X1.3.18--></td></tr></table>
-<!--X1.3.19--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+<!--X1.3.19--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
 Important modifications introduced in version 1.3.19 are marked like this.
 <!--X1.3.19--></td></tr></table>
+<!--X1.3.20--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+Important modifications introduced in version 1.3.20 are marked like this.
+<!--X1.3.20--></td></tr></table>
 <p>
 VDR provides an easy to use plugin interface that allows additional functionality
 to be added to the program by implementing a dynamically loadable library file.
@@ -58,6 +58,9 @@ structures and allows it to hook itself into specific areas to perform special a
 <li><a href="#Command line arguments">Command line arguments</a>
 <li><a href="#Command line help">Command line help</a>
 <li><a href="#Getting started">Getting started</a>
+<!--X1.3.20--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+<li><a href="#Shutting down">Shutting down</a>
+<!--X1.3.20--></td></tr></table>
 <li><a href="#Main menu entry">Main menu entry</a>
 <li><a href="#User interaction">User interaction</a>
 <li><a href="#Housekeeping">Housekeeping</a>
@@ -75,10 +78,8 @@ structures and allows it to hook itself into specific areas to perform special a
 <li><a href="#Receivers">Receivers</a>
 <li><a href="#Filters">Filters</a>
 <li><a href="#The On Screen Display">The On Screen Display</a>
-<!--X1.3.7--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 <li><a href="#Skins">Skins</a>
 <li><a href="#Themes">Themes</a>
-<!--X1.3.7--></td></tr></table>
 <li><a href="#Devices">Devices</a>
 <li><a href="#Dolby Digital">Dolby Digital</a>
 <li><a href="#Remote Control">Remote Control</a>
@@ -304,8 +305,11 @@ Constructing a plugin object shall not have any side effects or produce any outp
 since VDR, for instance, has to create the plugin objects in order to get their
 command line help - and after that immediately destroys them again.
 <p>
-The <b>destructor</b> has to clean up any data created by the plugin, and has to
-take care that any threads the plugin may have created will be stopped.
+The <b>destructor</b> has to clean up any data created by the plugin.
+<!--X1.3.20--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+Any threads the plugin may have created shall be stopped in the
+<a href="#Shutting down"><tt>Stop()</tt></a> function.
+<!--X1.3.20--></td></tr></table>
 <p>
 Of course, if your plugin doesn't define any member variables that need to be
 initialized (and deleted), you don't need to implement either of these functions.
@@ -499,6 +503,25 @@ VDR to exit.
 <p>
 If the plugin doesn't implement any background functionality or internationalized
 texts, it doesn't need to implement either of these functions.
+
+<!--X1.3.20--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+<a name="Shutting down"><hr><h2>Shutting down</h2>
+
+<center><i><b>Stop it, right there!</b></i></center><p>
+
+If a plugin performs any background tasks, it shall implement the function
+
+<p><table><tr><td bgcolor=#F0F0F0><pre>
+virtual void Stop(void);
+</pre></td></tr></table><p>
+
+in which it shall stop them.
+<p>
+The <tt>Stop()</tt> function will only be called if a previous call to the 
+<a href="#Getting started"><tt>Start()</tt></a> function of that plugin has
+returned <i>true</i>. The <tt>Stop()</tt> functions are called in the reverse order
+as the <a href="#Getting started"><tt>Start()</tt></a> functions were called.
+<!--X1.3.20--></td></tr></table>
 
 <a name="Main menu entry"><hr><h2>Main menu entry</h2>
 
@@ -1021,7 +1044,7 @@ public:
 Take a look at the files <tt>player.h</tt> and <tt>dvbplayer.c</tt> to see how VDR implements
 its own player for the VDR recordings.
 <p>
-<!--X1.3.18--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
+<!--X1.3.18--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
 To play the actual data, the player needs to call its member function
 
 <p><table><tr><td bgcolor=#F0F0F0><pre>
@@ -1044,7 +1067,7 @@ bool DevicePoll(cPoller &amp;Poller, int TimeoutMs = 0);
 
 to determine whether the device is ready for further data.
 <p>
-<!--X1.3.18--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
+<!--X1.3.18--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
 By default all audio track handling is done by the device a player is
 attached to.
 If the player can provide more than a single audio track, and has special
@@ -1181,7 +1204,7 @@ public:
   };
 
 cMyReceiver::cMyReceiver(int Pid)
-<!--X1.3.19--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+<!--X1.3.19--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
 :cReceiver(0, -1, Pid)
 <!--X1.3.19--></td></tr></table>
 {
@@ -1267,7 +1290,6 @@ and will automatically detach itself from the <tt>cDevice</tt>.
 <p>
 See VDR/eit.c or VDR/pat.c to learn how to process filter data.
 
-<!--X1.3.7--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 <a name="The On Screen Display"><hr><h2>The On Screen Display</h2>
 
 <center><i><b>Window to the world</b></i></center><p>
@@ -1360,7 +1382,7 @@ public:
   virtual cSkinDisplayMenu *DisplayMenu(void);
   virtual cSkinDisplayReplay *DisplayReplay(bool ModeOnly);
   virtual cSkinDisplayVolume *DisplayVolume(void);
-<!--X1.3.18--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
+<!--X1.3.18--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
   virtual cSkinDisplayMessage *DisplayTrack(int NumTracks, const char * const *Tracks);
 <!--X1.3.18--></td></tr></table>
   virtual cSkinDisplayMessage *DisplayMessage(void);
@@ -1382,7 +1404,7 @@ new cMySkin;
 in the <a href="#Getting started"><tt>Start()</tt></a> function of your plugin.
 Do not delete this object, it will be automatically deleted when the program ends.
 <p>
-<!--X1.3.8--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
+<!--X1.3.8--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 In order to be able to easily identify plugins that implement a skin it is recommended
 that the name of such a plugin should be
 
@@ -1441,7 +1463,6 @@ osd-&gt;DrawText(x, y, s, Theme.Color(clrButtonRedFg), Theme.Color(clrButtonRedB
 By default this will use the colors that have been defined in the respective
 <tt>THEME_CLR()</tt> line, but may be overwritten through user supplied theme
 files (see <tt>man vdr(5)</tt> for information about the format of a theme file).
-<!--X1.3.7--></td></tr></table>
 
 <a name="Devices"><hr><h2>Devices</h2>
 
@@ -1493,7 +1514,7 @@ repectively.
 If the device can provide more than a single audio track, it can implement the
 following function to make them available:
 
-<!--X1.3.18--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
+<!--X1.3.18--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
 <p><table><tr><td bgcolor=#F0F0F0><pre>
 virtual void SetAudioTrackDevice(eTrackType Type);
 virtual int GetAudioChannelDevice(void);
@@ -1584,7 +1605,6 @@ handle section data.
 <p>
 <b>On Screen Display</b>
 <p>
-<!--X1.3.7--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 If your device provides On Screen Display (OSD) capabilities (which every device
 that is supposed to be used as a primary device should do), it shall implement
 an "OSD provider" class, derived from <tt>cOsdProvider</tt>, which, when its <tt>CreateOsd()</tt>
@@ -1618,7 +1638,6 @@ in any way. All it needs to make sure is that the OSD will be visible to the
 user - whether this goes through OSD facilities of the physical device (like
 a "full featured" DVB card) or through a graphics adapter that overlays its
 output with the video signal, doesn't matter.
-<!--X1.3.7--></td></tr></table>
 
 <p>
 <b>Initializing new devices</b>

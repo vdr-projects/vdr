@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.210 2005/01/09 16:50:11 kls Exp $
+ * $Id: config.h 1.212 2005/02/05 10:43:22 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -20,8 +20,8 @@
 #include "i18n.h"
 #include "tools.h"
 
-#define VDRVERSION  "1.3.19"
-#define VDRVERSNUM   10319  // Version * 10000 + Major * 100 + Minor
+#define VDRVERSION  "1.3.20"
+#define VDRVERSNUM   10320  // Version * 10000 + Major * 100 + Minor
 
 #define MAXPRIORITY 99
 #define MAXLIFETIME 99
@@ -241,6 +241,7 @@ public:
   int UpdateChannels;
   int UseDolbyDigital;
   int ChannelInfoPos;
+  int ChannelInfoTime;
   int OSDLeft, OSDTop, OSDWidth, OSDHeight;
   int OSDMessageTime;
   int UseSmallFont;

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 1.53 2005/01/22 14:58:07 kls Exp $
+ * $Id: device.h 1.55 2005/02/06 11:43:04 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -78,8 +78,6 @@ struct tTrackId {
   uint16_t id;          // The PES packet id or the PID.
   char language[8];     // something like either "eng" or "deu/eng"
   char description[32]; // something like "Dolby Digital 5.1"
-  // for future use:
-  uint32_t flags;   // Used to further identify the actual track.
   };
 
 class cChannel;
@@ -315,17 +313,18 @@ public:
 private:
   tTrackId availableTracks[ttMaxTrackTypes];
   eTrackType currentAudioTrack;
+  int currentAudioTrackMissingCount;
   bool pre_1_3_19_PrivateStream;
 protected:
   virtual void SetAudioTrackDevice(eTrackType Type);
        ///< Sets the current audio track to the given value.
 public:
   void ClrAvailableTracks(bool DescriptionsOnly = false);
-  bool SetAvailableTrack(eTrackType Type, int Index, uint16_t Id, const char *Language = NULL, const char *Description = NULL, uint32_t Flags = 0);
+  bool SetAvailableTrack(eTrackType Type, int Index, uint16_t Id, const char *Language = NULL, const char *Description = NULL);
        ///< Sets the track of the given Type and Index to the given values.
        ///< Type must be one of the basic eTrackType values, like ttAudio or ttDolby.
        ///< Index tells which track of the given basic type is meant.
-       ///< If Id is 0 any existing id (and flags) will be left untouched and only the
+       ///< If Id is 0 any existing id will be left untouched and only the
        ///< given Language and Description will be set.
        ///< \return Returns true if the track was set correctly, false otherwise.
   const tTrackId *GetTrack(eTrackType Type);
@@ -339,6 +338,10 @@ public:
   bool SetCurrentAudioTrack(eTrackType Type);
        ///< Sets the current audio track to the given Type.
        ///< \return Returns true if Type is a valid audio track, false otherwise.
+  void EnsureAudioTrack(bool Force = false);
+       ///< Makes sure an audio track is selected that is actually available.
+       ///< If Force is true, the language and Dolby Digital settings will
+       ///< be verified even if the current audio track is available.
 
 // Audio facilities
 

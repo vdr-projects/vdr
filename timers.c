@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 1.21 2004/12/26 12:35:33 kls Exp $
+ * $Id: timers.c 1.22 2005/02/06 09:45:52 kls Exp $
  */
 
 #include "timers.h"
@@ -112,7 +112,7 @@ cString cTimer::ToText(bool UseChannelID)
   asprintf(&buffer, "%d:%s:%s:%04d:%04d:%d:%d:%s:%s\n", flags, UseChannelID ? *Channel()->GetChannelID().ToString() : *itoa(Channel()->Number()), *PrintDay(day, firstday), start, stop, priority, lifetime, file, summary ? summary : "");
   strreplace(summary, '|', '\n');
   strreplace(file, '|', ':');
-  return buffer;
+  return cString(buffer, true);
 }
 
 int cTimer::TimeToInt(int t)

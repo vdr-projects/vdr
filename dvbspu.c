@@ -8,7 +8,7 @@
  *
  * parts of this file are derived from the OMS program.
  *
- * $Id: dvbspu.c 1.11 2005/01/08 09:57:03 kls Exp $
+ * $Id: dvbspu.c 1.12 2005/02/06 09:54:51 kls Exp $
  */
 
 #include <assert.h>
@@ -216,6 +216,7 @@ void cDvbSpuBitmap::putFieldData(int field, uint8_t * data, uint8_t * endp)
 #define CMD_SPU_SET_ALPHA       0x04
 #define CMD_SPU_SET_SIZE        0x05
 #define CMD_SPU_SET_PXD_OFFSET  0x06
+#define CMD_SPU_CHG_COLCON      0x07
 #define CMD_SPU_EOF             0xff
 
 #define spuU32(i)  ((spu[i] << 8) + spu[i+1])
@@ -507,6 +508,12 @@ int cDvbSpuDecoder::setTime(uint32_t pts)
                     feven = spuU32(i + 3);
                     DEBUG("\todd = %d even = %d\n", fodd, feven);
                     i += 5;
+                    break;
+
+                case CMD_SPU_CHG_COLCON: {
+                    int size = spuU32(i + 1);
+                    i += 1 + size;
+                    }
                     break;
 
                 case CMD_SPU_MENU:

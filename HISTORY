@@ -3332,3 +3332,44 @@ Video Disk Recorder Revision History
   cDolbyRepacker).
 - Added PlayPes(NULL, 0) to cTransfer::Action() when clearing the transfer buffer
   to avoid overflows (thanks to Marco Schlüßler for pointing this out).
+
+2005-02-06: Version 1.3.20
+
+- Fixed displaying the "Audio" menu with the "Green" button from the "Main" menu
+  in case there is only one audio track (thanks to Sascha Volkenandt for reporting
+  this one).
+- Now setting primaryDevice = NULL before deleting the devices in cDevice::Shutdown()
+  to avoid problems in case other threads access it (thanks to Wolfgang Rohdewald for
+  pointing this out).
+- Fixed a buffer overflow in case a station defines all 32 audio PIDs (thanks to
+  Christian Jacobsen for reporting this one).
+- Fixed masking SubStreamType in cDevice::PlayPesPacket() (thanks to Werner Fink
+  for pointing out this one).
+- The new function cPlugin::Stop() shall be used to stop any background activities
+  of a plugin. Previously this was done in the plugin's desctructor, but it is
+  better to do this in a dedicated function that can be called early when shutting
+  down.
+- Moved the call to SetAudioChannel(0) into cDevice::ClrAvailableTracks() to have it
+  executed also when starting a replay.
+- Completed the Danish OSD texts (thanks to Mogens Elneff).
+- Completed the French OSD texts (thanks to Olivier Jacques).
+- The new setup option "OSD/Channel info time" can be used to define the time after
+  which the channel display is removed if no key has been pressed (thanks to
+  Olivier Jacques).
+- Modified cDolbyRepacker to make sure PES packets don't exceed the requested length
+  (thanks to Reinhard Nissl).
+- Fixed several memory leaks that were introduced through the use of cString (thanks
+  to Stefan Huelswitt for reporting these).
+- Added CMD_SPU_CHG_COLCON to cDvbSpuDecoder::setTime() (thanks to Marco Schlüßler).
+- Making sure the current audio track is actually one of the ones available in a
+  recording (thanks to Sascha Volkenandt for reporting a problem when starting
+  replay of a recording that has no Dolby Digital audio after switching to a channel
+  that has DD and selecting the DD audio track).
+- Removed 'flags' from tTrackId (thought we would need this, but apparently we don't).
+- Making sure the "Mute" and "Volume+/-" keys don't interfere with digital audio.
+- Fixed the "pre 1.3.19" compatibility mode for old Dolby Digital recordings (thanks
+  to Werner Fink for pointing out that this can be triggered in the default branch).
+- Calling pesAssembler->Reset() in cDevice::AttachPlayer() to avoid problems with
+  residual data in replay and Transfer Mode (thanks to Werner Fink for pointing this
+  out).
+- Added MPEG1 replay capability to cPesAssembler (thanks to Stefan Huelswitt).

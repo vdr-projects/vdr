@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.65 2005/01/16 11:39:58 kls Exp $
+ * $Id: tools.h 1.66 2005/02/05 10:00:22 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -61,7 +61,7 @@ class cString {
 private:
   char *s;
 public:
-  cString(const char *S = NULL);
+  cString(const char *S = NULL, bool TakePointer = false);
   virtual ~cString();
   operator const char * () const { return s; } // for use in (const char *) context
   const char * operator*() const { return s; } // for use in (const void *) context (printf() etc.)
