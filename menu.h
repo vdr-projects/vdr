@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 1.61 2004/04/30 13:45:19 kls Exp $
+ * $Id: menu.h 1.62 2004/05/23 09:39:02 kls Exp $
  */
 
 #ifndef __MENU_H
@@ -18,6 +18,15 @@
 #include "recorder.h"
 #include "recording.h"
 #include "skins.h"
+
+class cMenuText : public cOsdMenu {
+private:
+  const char *text;
+public:
+  cMenuText(const char *Title, const char *Text, eDvbFont Font = fontOsd);
+  virtual void Display(void);
+  virtual eOSState ProcessKey(eKeys Key);
+  };
 
 class cMenuMain : public cOsdMenu {
 private:

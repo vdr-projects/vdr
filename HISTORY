@@ -2805,7 +2805,7 @@ Video Disk Recorder Revision History
   set the "Set system time" and "Use time from transponder" parameters accordingly
   (this is necessary even if you have already set them before!).
 
-2004-05-22: Version 1.3.8
+2004-05-23: Version 1.3.8
 
 - Fixed a crash when switching the skin and having selected a non-default theme
   that is not available for the newly selected skin (thanks to Sascha Volkenandt
@@ -2827,3 +2827,5 @@ Video Disk Recorder Revision History
   'Transfer Mode' (thanks to Michal Dobrzynski for reporting this one).
 - Fixed a memory leak in NIT processing (thanks to Marcel Wiesweg).
 - Added a few missing initializations (thanks to Marcel Wiesweg).
+- Moved the declaration of cMenuText to VDR/menu.h to make it available to plugins
+  (suggested by Stefan Huelswitt).
