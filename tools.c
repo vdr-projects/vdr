@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.65 2002/05/13 16:32:12 kls Exp $
+ * $Id: tools.c 1.66 2002/05/13 17:56:17 kls Exp $
  */
 
 #include "tools.h"
@@ -788,9 +788,8 @@ void cListBase::Ins(cListObject *Object, cListObject *Before)
      if (objects)
         objects->Insert(Object);
      else
-        objects = Object;
-     if (!lastObject)
         lastObject = Object;
+     objects = Object;
      }
 }
 
