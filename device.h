@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 1.5 2002/08/04 14:02:19 kls Exp $
+ * $Id: device.h 1.9 2002/08/16 08:52:27 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -25,6 +25,23 @@
 #define PID_MASK_HI      0x1F
 
 enum eSetChannelResult { scrOk, scrNoTransfer, scrFailed };
+
+enum ePlayMode { pmNone,       // audio/video from decoder
+                 pmAudioVideo, // audio/video from player
+                 pmAudioOnly,  // audio only from player, video from decoder
+                 pmExtern_THIS_SHOULD_BE_AVOIDED
+                 // external player (e.g. MPlayer), release the device
+                 // WARNING: USE THIS MODE ONLY AS A LAST RESORT, IF YOU
+                 // ABSOLUTELY, POSITIVELY CAN'T IMPLEMENT YOUR PLAYER
+                 // THE WAY IT IS SUPPOSED TO WORK. FORCING THE DEVICE
+                 // TO RELEASE ITS FILES HANDLES (OR WHATEVER RESOURCES
+                 // IT MAY USE) TO ALLOW AN EXTERNAL PLAYER TO ACCESS
+                 // THEM MEANS THAT SUCH A PLAYER WILL NEED TO HAVE
+                 // DETAILED KNOWLEDGE ABOUT THE INTERNALS OF THE DEVICE
+                 // IN USE. AS A CONSEQUENCE, YOUR PLAYER MAY NOT WORK
+                 // IF A PARTICULAR VDR INSTALLATION USES A DEVICE NOT
+                 // KNOWN TO YOUR PLAYER.
+               };
 
 class cChannel;
 class cPlayer;
@@ -97,7 +114,9 @@ public:
   bool IsPrimaryDevice(void) const { return this == primaryDevice; }
   int CardIndex(void) const { return cardIndex; }
          // Returns the card index of this device (0 ... MAXDEVICES - 1).
-  int ProvidesCa(int Ca);
+  virtual int ProvidesCa(int Ca);
+         //XXX TODO temporarily made this function virtual - until a general
+         //XXX      mechanism has been implemented
          // Checks whether this device provides the given value in its
          // caCaps. Returns 0 if the value is not provided, 1 if only this
          // value is provided, and > 1 if this and other values are provided.
@@ -188,11 +207,9 @@ public:
 private:
   cPlayer *player;
 protected:
-  virtual int SetPlayMode(bool On);
-       // Sets the device into play mode (On = true) or normal
-       // viewing mode (On = false). If On is true, it may return a file
-       // handle that a player can use to poll this device when replaying.
-       //XXX TODO should be implemented differently
+  virtual bool SetPlayMode(ePlayMode PlayMode);
+       // Sets the device into the given play mode.
+       // Returns true if the operation was successful.
 public:
   virtual void TrickSpeed(int Speed);
        // Sets the device into a mode where replay is done slower.
@@ -209,6 +226,12 @@ public:
        // Turns off audio while replaying.
   virtual void StillPicture(const uchar *Data, int Length);
        // Displays the given I-frame as a still picture.
+  virtual bool Poll(cPoller &Poller, int TimeoutMs = 0);
+       // Returns true if the device itself or any of the file handles in
+       // Poller is ready for further action.
+       // If TimeoutMs is not zero, the device will wait up to the given number
+       // of milleseconds before returning in case there is no immediate
+       // need for data.
   virtual int PlayVideo(const uchar *Data, int Length);
        // Actually plays the given data block as video. The data must be
        // part of a PES (Packetized Elementary Stream) which can contain

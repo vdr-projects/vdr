@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.68 2002/08/03 15:44:53 kls Exp $
+ * $Id: tools.c 1.70 2002/08/16 13:43:40 kls Exp $
  */
 
 #include "tools.h"
@@ -80,7 +80,7 @@ char *strcpyrealloc(char *dest, const char *src)
         esyslog("ERROR: out of memory");
      }
   else {
-     delete dest;
+     free(dest);
      dest = NULL;
      }
   return dest;
@@ -239,7 +239,7 @@ bool isnumber(const char *s)
 const char *AddDirectory(const char *DirName, const char *FileName)
 {
   static char *buf = NULL;
-  delete buf;
+  free(buf);
   asprintf(&buf, "%s/%s", DirName && *DirName ? DirName : ".", FileName);
   return buf;
 }
@@ -303,7 +303,7 @@ bool MakeDirs(const char *FileName, bool IsDirectory)
         else
            break;
         }
-  delete s;
+  free(s);
   return result;
 }
 
@@ -321,7 +321,7 @@ bool RemoveFileOrDir(const char *FileName, bool FollowSymlinks)
                     asprintf(&buffer, "%s/%s", FileName, e->d_name);
                     if (FollowSymlinks) {
                        int size = strlen(buffer) * 2; // should be large enough
-                       char *l = new char[size];
+                       char *l = MALLOC(char, size);
                        int n = readlink(buffer, l, size);
                        if (n < 0) {
                           if (errno != EINVAL)
@@ -335,12 +335,12 @@ bool RemoveFileOrDir(const char *FileName, bool FollowSymlinks)
                           }
                        else
                           esyslog("ERROR: symlink name length (%d) exceeded anticipated buffer size (%d)", n, size);
-                       delete l;
+                       free(l);
                        }
                     dsyslog("removing %s", buffer);
                     if (remove(buffer) < 0)
                        LOG_ERROR_STR(buffer);
-                    delete buffer;
+                    free(buffer);
                     }
                  }
            closedir(d);
@@ -384,10 +384,10 @@ bool RemoveEmptyDirectories(const char *DirName, bool RemoveThis)
                  }
               else {
                  LOG_ERROR_STR(buffer);
-                 delete buffer;
+                 free(buffer);
                  return false;
                  }
-              delete buffer;
+              free(buffer);
               }
            }
      closedir(d);
@@ -429,7 +429,7 @@ bool SpinUpDisk(const char *FileName)
 {
   static char *buf = NULL;
   for (int n = 0; n < 10; n++) {
-      delete buf;
+      free(buf);
       if (DirectoryOk(FileName))
          asprintf(&buf, "%s/vdr-%06d", *FileName ? FileName : ".", n);
       else
@@ -480,6 +480,42 @@ const char *DayDateTime(time_t t)
   tm *tm = localtime_r(&t, &tm_r);
   snprintf(buffer, sizeof(buffer), "%s %2d.%02d %02d:%02d", WeekDayName(tm->tm_wday), tm->tm_mday, tm->tm_mon + 1, tm->tm_hour, tm->tm_min);
   return buffer;
+}
+
+// --- cPoller ---------------------------------------------------------------
+
+cPoller::cPoller(int FileHandle, bool Out)
+{
+  numFileHandles = 0;
+  Add(FileHandle, Out);
+}
+
+bool cPoller::Add(int FileHandle, bool Out)
+{
+  if (FileHandle >= 0) {
+     for (int i = 0; i < numFileHandles; i++) {
+         if (pfd[i].fd == FileHandle)
+            return true;
+         }
+     if (numFileHandles < MaxPollFiles) {
+        pfd[numFileHandles].fd = FileHandle;
+        pfd[numFileHandles].events = Out ? POLLOUT : POLLIN;
+        numFileHandles++;
+        return true;
+        }
+     esyslog("ERROR: too many file handles in cPoller");
+     }
+  return false;
+}
+
+bool cPoller::Poll(int TimeoutMs)
+{
+  if (numFileHandles) {
+     if (poll(pfd, numFileHandles, TimeoutMs) != 0)
+        return true; // returns true even in case of an error, to let the caller
+                     // access the file and thus see the error code
+     }
+  return false;
 }
 
 // --- cFile -----------------------------------------------------------------
@@ -594,7 +630,7 @@ cSafeFile::cSafeFile(const char *FileName)
 {
   f = NULL;
   fileName = ReadLink(FileName);
-  tempName = fileName ? new char[strlen(fileName) + 5] : NULL;
+  tempName = fileName ? MALLOC(char, strlen(fileName) + 5) : NULL;
   if (tempName)
      strcat(strcpy(tempName, fileName), ".$$$");
 }
@@ -604,8 +640,8 @@ cSafeFile::~cSafeFile()
   if (f)
      fclose(f);
   unlink(tempName);
-  delete fileName;
-  delete tempName;
+  free(fileName);
+  free(tempName);
 }
 
 bool cSafeFile::Open(void)
@@ -657,7 +693,7 @@ cLockFile::cLockFile(const char *Directory)
 cLockFile::~cLockFile()
 {
   Unlock();
-  delete fileName;
+  free(fileName);
 }
 
 bool cLockFile::Lock(int WaitSeconds)

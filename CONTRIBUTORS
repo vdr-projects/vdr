@@ -140,6 +140,8 @@ Stefan Huelswitt <huels@iname.com>
  for suggesting to make the config directory available to plugins
  for suggesting to add an error message if the directory specified in the '-L'
  option can't be accessed
+ for implementing several replay modes to allow players that play only audio
+ for improving cCondVar::Wait() and implementing cCondVar::TimedWait()
 
 Ulrich Röder <roeder@efr-net.de>
  for pointing out that there are channels that have a symbol rate higher than
@@ -158,6 +160,7 @@ Andreas Schultz <aschultz@warp10.net>
  than 3 characters
  for adding direct access to the index data of cPalette (needed for displaying SPUs)
  for pointing out a possible race condition in the cDvbPlayer
+ for making the use of malloc/free and new/delete consistent
 
 Aaron Holtzman
  for writing 'ac3dec'
@@ -369,8 +372,11 @@ Paul Lacatus <paul@campina.iiruc.ro>
 Istvan Koenigsberger <istvnko@hotmail.com> and Guido Josten <guido.josten@t-online.de>
  for translating OSD texts to the Hungarian language
 
-Christian Rienecker <C.Rienecker@deutschepost.de>
+Christian Rienecker <C.Rienecker@gmx.net>
  for making the VFAT handling more tolerant for users who forget to turn it on
 
 Joerg Riechardt <J.Riechardt@gmx.de>
  for filling in some missing teletext PIDs
+
+Holger Wächtler <holger@convergence.de>
+ for some valuable advice during adapting to the NEWSTRUCT driver

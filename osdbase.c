@@ -4,11 +4,12 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osdbase.c 1.5 2002/07/13 14:42:47 kls Exp $
+ * $Id: osdbase.c 1.6 2002/08/11 11:47:21 kls Exp $
  */
 
 #include "osdbase.h"
 #include <signal.h>
+#include <stdlib.h>
 #include <sys/ioctl.h>
 #include <sys/stat.h>
 #include <sys/unistd.h>
@@ -109,7 +110,7 @@ cBitmap::cBitmap(int Width, int Height, int Bpp, bool ClearWithBackground)
   fontType = fontOsd;
   font = NULL;
   if (width > 0 && height > 0) {
-     bitmap = new char[width * height];
+     bitmap = MALLOC(char, width * height);
      if (bitmap) {
         Clean();
         memset(bitmap, 0x00, width * height);
@@ -125,7 +126,7 @@ cBitmap::cBitmap(int Width, int Height, int Bpp, bool ClearWithBackground)
 cBitmap::~cBitmap()
 {
   delete font;
-  delete bitmap;
+  free(bitmap);
 }
 
 eDvbFont cBitmap::SetFont(eDvbFont Font)

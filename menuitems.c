@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.c 1.6 2002/06/16 13:23:56 kls Exp $
+ * $Id: menuitems.c 1.8 2002/08/15 11:27:57 kls Exp $
  */
 
 #include "menuitems.h"
@@ -12,6 +12,8 @@
 #include "i18n.h"
 #include "plugin.h"
 #include "status.h"
+
+const char *FileNameChars = " abcdefghijklmnopqrstuvwxyz0123456789-.#~";
 
 // --- cMenuEditItem ---------------------------------------------------------
 
@@ -23,13 +25,13 @@ cMenuEditItem::cMenuEditItem(const char *Name)
 
 cMenuEditItem::~cMenuEditItem()
 {
-  delete name;
-  delete value;
+  free(name);
+  free(value);
 }
 
 void cMenuEditItem::SetValue(const char *Value)
 {
-  delete value;
+  free(value);
   value = strdup(Value);
   char *buffer = NULL;
   asprintf(&buffer, "%s:\t%s", name, value);
@@ -119,7 +121,7 @@ cMenuEditChrItem::cMenuEditChrItem(const char *Name, char *Value, const char *Al
 
 cMenuEditChrItem::~cMenuEditChrItem()
 {
-  delete allowed;
+  free(allowed);
 }
 
 void cMenuEditChrItem::Set(void)
@@ -167,7 +169,7 @@ cMenuEditStrItem::cMenuEditStrItem(const char *Name, char *Value, int Length, co
 
 cMenuEditStrItem::~cMenuEditStrItem()
 {
-  delete allowed;
+  free(allowed);
 }
 
 void cMenuEditStrItem::SetHelpKeys(void)
@@ -364,7 +366,7 @@ cMenuTextItem::cMenuTextItem(const char *Text, int X, int Y, int W, int H, eDvbC
 
 cMenuTextItem::~cMenuTextItem()
 {
-  delete text;
+  free(text);
 }
 
 void cMenuTextItem::Clear(void)

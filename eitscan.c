@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: eitscan.c 1.4 2002/07/28 15:10:23 kls Exp $
+ * $Id: eitscan.c 1.5 2002/08/11 11:11:39 kls Exp $
  */
 
 #include "eitscan.h"
@@ -21,7 +21,7 @@ cEITScanner::cEITScanner(void)
 
 cEITScanner::~cEITScanner()
 {
-  delete transponders;
+  free(transponders);
 }
 
 bool cEITScanner::TransponderScanned(cChannel *Channel)

@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.118 2002/08/04 09:56:30 kls Exp $
+ * $Id: vdr.c 1.120 2002/08/16 09:54:03 kls Exp $
  */
 
 #include <getopt.h>
@@ -327,8 +327,7 @@ int main(int argc, char *argv[])
 
   // DVB interfaces:
 
-  if (!cDvbDevice::Initialize())
-     return 2;
+  cDvbDevice::Initialize();
 
   cSIProcessor::Read();
 
@@ -340,6 +339,12 @@ int main(int argc, char *argv[])
   // Primary device:
 
   cDevice::SetPrimaryDevice(Setup.PrimaryDVB);
+  if (!cDevice::PrimaryDevice()) {
+     const char *msg = "no primary device found - giving up!";
+     fprintf(stderr, "vdr: %s\n", msg);
+     esyslog("ERROR: %s", msg);
+     return 2;
+     }
 
   // OSD:
 
@@ -585,7 +590,7 @@ int main(int argc, char *argv[])
                     asprintf(&buf, tr("Recording in %d minutes, shut down anyway?"), Delta / 60);
                     if (Interface->Confirm(buf))
                        ForceShutdown = true;
-                    delete buf;
+                    free(buf);
                     }
                  if (!Next || Delta > Setup.MinEventTimeout * 60 || ForceShutdown) {
                     ForceShutdown = false;
@@ -600,7 +605,7 @@ int main(int argc, char *argv[])
                        asprintf(&cmd, "%s %ld %ld %d \"%s\" %d", Shutdown, Next, Delta, Channel, strescape(File, "\"$"), UserShutdown);
                        isyslog("executing '%s'", cmd);
                        SystemExec(cmd);
-                       delete cmd;
+                       free(cmd);
                        }
                     else if (WatchdogTimeout > 0) {
                        alarm(WatchdogTimeout);

@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 1.44 2002/07/28 15:20:47 kls Exp $
+# $Id: Makefile 1.45 2002/08/09 16:02:02 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -23,7 +23,12 @@ PLUGINDIR= ./PLUGINS
 
 VIDEODIR = /video
 
+ifdef NEWSTRUCT
+INCLUDES = -I$(DVBDIR)/include
+DEFINES += -DNEWSTRUCT
+else
 INCLUDES = -I$(DVBDIR)/ost/include
+endif
 
 DTVLIB   = $(DTVDIR)/libdtv.a
 

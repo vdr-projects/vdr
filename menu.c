@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.203 2002/08/03 09:55:44 kls Exp $
+ * $Id: menu.c 1.205 2002/08/15 11:28:08 kls Exp $
  */
 
 #include "menu.h"
@@ -31,8 +31,6 @@
 #define MAXINSTANTRECTIME (24 * 60 - 1) // 23:59 hours
 
 #define CHNUMWIDTH  (Channels.Count() > 999 ? 5 : 4) // there are people with more than 999 channels...
-
-const char *FileNameChars = " abcdefghijklmnopqrstuvwxyz0123456789-.#~";
 
 // --- cMenuEditChanItem -----------------------------------------------------
 
@@ -936,7 +934,7 @@ cMenuEvent::cMenuEvent(const cEventInfo *EventInfo, bool CanSwitch)
         char *buffer;
         asprintf(&buffer, "%-17.*s\t%.*s  %s - %s", 17, channel->name, 5, eventInfo->GetDate(), eventInfo->GetTimeString(), eventInfo->GetEndTimeString());
         SetTitle(buffer, false);
-        delete buffer;
+        free(buffer);
         int Line = 2;
         cMenuTextItem *item;
         const char *Title = eventInfo->GetTitle();
@@ -1040,7 +1038,7 @@ cMenuWhatsOn::cMenuWhatsOn(const cSchedules *Schedules, bool Now, int CurrentCha
       Add(new cMenuWhatsOnItem(pArray[a]), pArray[a]->GetChannelNumber() == CurrentChannelNr);
 
   currentChannel = CurrentChannelNr;
-  delete pArray;
+  free(pArray);
   SetHelp(tr("Record"), Now ? tr("Next") : tr("Now"), tr("Button$Schedule"), tr("Switch"));
 }
 
@@ -1173,11 +1171,11 @@ void cMenuSchedule::PrepareSchedule(cChannel *Channel)
   char *buffer = NULL;
   asprintf(&buffer, tr("Schedule - %s"), Channel->name);
   SetTitle(buffer);
-  delete buffer;
+  free(buffer);
   if (schedules) {
      const cSchedule *Schedule = Channel->pnr ? schedules->GetSchedule(Channel->pnr) : schedules->GetSchedule();
      int num = Schedule->NumEvents();
-     const cEventInfo **pArray = (const cEventInfo **)malloc(num * sizeof(cEventInfo *));
+     const cEventInfo **pArray = MALLOC(const cEventInfo *, num);
      if (pArray) {
         time_t now = time(NULL);
         int numreal = 0;
@@ -1191,7 +1189,7 @@ void cMenuSchedule::PrepareSchedule(cChannel *Channel)
 
         for (int a = 0; a < numreal; a++)
             Add(new cMenuScheduleItem(pArray[a]));
-        delete pArray;
+        free(pArray);
         }
      }
 }
@@ -1306,8 +1304,8 @@ cMenuRecordingItem::cMenuRecordingItem(cRecording *Recording, int Level)
 
 cMenuRecordingItem::~cMenuRecordingItem()
 {
-  delete fileName;
-  delete name;
+  free(fileName);
+  free(name);
 }
 
 void cMenuRecordingItem::IncrementCounter(bool New)
@@ -1344,7 +1342,7 @@ cMenuRecordings::cMenuRecordings(const char *Base, int Level, bool OpenSubMenus)
             if (*Item->Text() && (!LastItem || strcmp(Item->Text(), LastItemText) != 0)) {
                Add(Item);
                LastItem = Item;
-               delete LastItemText;
+               free(LastItemText);
                LastItemText = strdup(LastItem->Text()); // must use a copy because of the counters!
                }
             else
@@ -1357,7 +1355,7 @@ cMenuRecordings::cMenuRecordings(const char *Base, int Level, bool OpenSubMenus)
                }
             }
          }
-     delete LastItemText;
+     free(LastItemText);
      if (Current() < 0)
         SetCurrent(First());
      else if (OpenSubMenus && Open(true))
@@ -1370,7 +1368,7 @@ cMenuRecordings::cMenuRecordings(const char *Base, int Level, bool OpenSubMenus)
 cMenuRecordings::~cMenuRecordings()
 {
   helpKeys = -1;
-  delete base;
+  free(base);
 }
 
 void cMenuRecordings::SetHelpKeys(void)
@@ -1417,7 +1415,7 @@ bool cMenuRecordings::Open(bool OpenSubMenus)
         t = buffer;
         }
      AddSubMenu(new cMenuRecordings(t, level + 1, OpenSubMenus));
-     delete buffer;
+     free(buffer);
      return true;
      }
   return false;
@@ -1766,7 +1764,7 @@ cMenuSetupPlugins::cMenuSetupPlugins(void)
          char *buffer = NULL;
          asprintf(&buffer, "%s (%s) - %s", p->Name(), p->Version(), p->Description());
          Add(new cMenuSetupPluginItem(hk(buffer), i));
-         delete buffer;
+         free(buffer);
          }
       else
          break;
@@ -1901,7 +1899,7 @@ eOSState cMenuCommands::Execute(void)
      asprintf(&buffer, "%s...", command->Title());
      Interface->Status(buffer);
      Interface->Flush();
-     delete buffer;
+     free(buffer);
      const char *Result = command->Execute();
      if (Result)
         return AddSubMenu(new cMenuText(command->Title(), Result, fontFix));
@@ -2013,7 +2011,7 @@ void cMenuMain::Set(void)
      char *buffer = NULL;
      asprintf(&buffer, "%s%s", STOP_RECORDING, ON_PRIMARY_INTERFACE);
      Add(new cOsdItem(buffer, osStopRecord));
-     delete buffer;
+     free(buffer);
      }
 
   const char *s = NULL;
@@ -2021,7 +2019,7 @@ void cMenuMain::Set(void)
         char *buffer = NULL;
         asprintf(&buffer, "%s%s", STOP_RECORDING, s);
         Add(new cOsdItem(buffer, osStopRecord));
-        delete buffer;
+        free(buffer);
         }
 
   // Editing control:
@@ -2452,8 +2450,8 @@ cRecordControl::cRecordControl(cDevice *Device, cTimer *Timer)
 cRecordControl::~cRecordControl()
 {
   Stop(true);
-  delete instantId;
-  delete fileName;
+  free(instantId);
+  free(fileName);
 }
 
 #define INSTANT_REC_EPG_LOOKAHEAD 300 // seconds to look into the EPG data for an instant recording
@@ -2701,8 +2699,8 @@ cReplayControl::~cReplayControl()
 
 void cReplayControl::SetRecording(const char *FileName, const char *Title)
 {
-  delete fileName;
-  delete title;
+  free(fileName);
+  free(title);
   fileName = FileName ? strdup(FileName) : NULL;
   title = Title ? strdup(Title) : NULL;
 }
@@ -2715,7 +2713,7 @@ const char *cReplayControl::LastReplayed(void)
 void cReplayControl::ClearLastReplayed(const char *FileName)
 {
   if (fileName && FileName && strcmp(fileName, FileName) == 0) {
-     delete fileName;
+     free(fileName);
      fileName = NULL;
      }
 }

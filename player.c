@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: player.c 1.3 2002/06/23 12:56:25 kls Exp $
+ * $Id: player.c 1.5 2002/08/15 10:29:17 kls Exp $
  */
 
 #include "player.h"
@@ -12,10 +12,10 @@
 
 // --- cPlayer ---------------------------------------------------------------
 
-cPlayer::cPlayer(void)
+cPlayer::cPlayer(ePlayMode PlayMode)
 {
   device = NULL;
-  deviceFileHandle = -1;
+  playMode = PlayMode;
 }
 
 cPlayer::~cPlayer()

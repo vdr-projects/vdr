@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.65 2002/07/27 12:55:14 kls Exp $
+ * $Id: recording.c 1.66 2002/08/11 11:48:11 kls Exp $
  */
 
 #include "recording.h"
@@ -148,7 +148,7 @@ void AssertFreeDiskSpace(int Priority)
 
 cResumeFile::cResumeFile(const char *FileName)
 {
-  fileName = new char[strlen(FileName) + strlen(RESUMEFILESUFFIX) + 1];
+  fileName = MALLOC(char, strlen(FileName) + strlen(RESUMEFILESUFFIX) + 1);
   if (fileName) {
      strcpy(fileName, FileName);
      strcat(fileName, RESUMEFILESUFFIX);
@@ -159,7 +159,7 @@ cResumeFile::cResumeFile(const char *FileName)
 
 cResumeFile::~cResumeFile()
 {
-  delete fileName;
+  free(fileName);
 }
 
 int cResumeFile::Read(void)
@@ -375,7 +375,7 @@ cRecording::cRecording(const char *FileName)
         struct stat buf;
         if (fstat(f, &buf) == 0) {
            int size = buf.st_size;
-           summary = new char[size + 1]; // +1 for terminating 0
+           summary = MALLOC(char, size + 1); // +1 for terminating 0
            if (summary) {
               int rbytes = safe_read(f, summary, size);
               if (rbytes >= 0) {
@@ -385,7 +385,7 @@ cRecording::cRecording(const char *FileName)
                  }
               else {
                  LOG_ERROR_STR(SummaryFileName);
-                 delete summary;
+                 free(summary);
                  summary = NULL;
                  }
 
@@ -399,17 +399,17 @@ cRecording::cRecording(const char *FileName)
         }
      else if (errno != ENOENT)
         LOG_ERROR_STR(SummaryFileName);
-     delete SummaryFileName;
+     free(SummaryFileName);
      }
 }
 
 cRecording::~cRecording()
 {
-  delete titleBuffer;
-  delete sortBuffer;
-  delete fileName;
-  delete name;
-  delete summary;
+  free(titleBuffer);
+  free(sortBuffer);
+  free(fileName);
+  free(name);
+  free(summary);
 }
 
 char *cRecording::StripEpisodeName(char *s)
@@ -437,9 +437,9 @@ char *cRecording::SortName(void)
   if (!sortBuffer) {
      char *s = StripEpisodeName(strdup(FileName() + strlen(VideoDirectory) + 1));
      int l = strxfrm(NULL, s, 0);
-     sortBuffer = new char[l];
+     sortBuffer = MALLOC(char, l);
      strxfrm(sortBuffer, s, l);
-     delete s;
+     free(s);
      }
   return sortBuffer;
 }
@@ -474,7 +474,7 @@ const char *cRecording::FileName(void)
 const char *cRecording::Title(char Delimiter, bool NewIndicator, int Level)
 {
   char New = NewIndicator && IsNew() ? '*' : ' ';
-  delete titleBuffer;
+  free(titleBuffer);
   titleBuffer = NULL;
   if (Level < 0 || Level == HierarchyLevels()) {
      struct tm tm_r;
@@ -524,7 +524,7 @@ const char *cRecording::PrefixFileName(char Prefix)
 {
   const char *p = PrefixVideoFileName(FileName(), Prefix);
   if (p) {
-     delete fileName;
+     free(fileName);
      fileName = strdup(p);
      return fileName;
      }
@@ -555,7 +555,7 @@ bool cRecording::WriteSummary(void)
         }
      else
         LOG_ERROR_STR(SummaryFileName);
-     delete SummaryFileName;
+     free(SummaryFileName);
      }
   return true;
 }
@@ -575,7 +575,7 @@ bool cRecording::Delete(void)
      isyslog("deleting recording %s", FileName());
      result = RenameVideoFile(FileName(), NewName);
      }
-  delete NewName;
+  free(NewName);
   return result;
 }
 
@@ -614,7 +614,7 @@ bool cRecordings::Load(bool Deleted)
      }
   else
      Interface->Error("Error while opening pipe!");
-  delete cmd;
+  free(cmd);
   return result;
 }
 
@@ -639,19 +639,19 @@ cMark::cMark(int Position, const char *Comment)
 
 cMark::~cMark()
 {
-  delete comment;
+  free(comment);
 }
 
 const char *cMark::ToText(void)
 {
-  delete buffer;
+  free(buffer);
   asprintf(&buffer, "%s%s%s\n", IndexToHMSF(position, true), comment ? " " : "", comment ? comment : "");
   return buffer;
 }
 
 bool cMark::Parse(const char *s)
 {
-  delete comment;
+  free(comment);
   comment = NULL;
   position = HMSFToIndex(s);
   const char *p = strchr(s, ' ');
@@ -742,7 +742,7 @@ void cRecordingUserCommand::InvokeCommand(const char *State, const char *Recordi
      asprintf(&cmd, "%s %s \"%s\"", command, State, strescape(RecordingFileName, "\"$"));
      isyslog("executing '%s'", cmd);
      SystemExec(cmd);
-     delete cmd;
+     free(cmd);
      }
 }
 
@@ -782,13 +782,13 @@ cIndexFile::cIndexFile(const char *FileName, bool Record)
               last = (buf.st_size + delta) / sizeof(tIndex) - 1;
               if (!Record && last >= 0) {
                  size = last + 1;
-                 index = new tIndex[size];
+                 index = MALLOC(tIndex, size);
                  if (index) {
                     f = open(fileName, O_RDONLY);
                     if (f >= 0) {
                        if ((int)safe_read(f, index, buf.st_size) != buf.st_size) {
                           esyslog("ERROR: can't read from file '%s'", fileName);
-                          delete index;
+                          free(index);
                           index = NULL;
                           close(f);
                           f = -1;
@@ -828,8 +828,8 @@ cIndexFile::~cIndexFile()
 {
   if (f >= 0)
      close(f);
-  delete fileName;
-  delete index;
+  free(fileName);
+  free(index);
 }
 
 bool cIndexFile::CatchUp(int Index)
@@ -852,7 +852,7 @@ bool cIndexFile::CatchUp(int Index)
                   if (lseek(f, offset, SEEK_SET) == offset) {
                      if (safe_read(f, &index[last + 1], delta) != delta) {
                         esyslog("ERROR: can't read from index");
-                        delete index;
+                        free(index);
                         index = NULL;
                         close(f);
                         f = -1;
@@ -999,7 +999,7 @@ cFileName::cFileName(const char *FileName, bool Record, bool Blocking)
 cFileName::~cFileName()
 {
   Close();
-  delete fileName;
+  free(fileName);
 }
 
 int cFileName::Open(void)

@@ -4,11 +4,12 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.c 1.52 2002/06/16 13:23:40 kls Exp $
+ * $Id: interface.c 1.54 2002/08/11 11:46:47 kls Exp $
  */
 
 #include "interface.h"
 #include <ctype.h>
+#include <stdlib.h>
 #include <unistd.h>
 #include "i18n.h"
 #include "osd.h"
@@ -84,7 +85,7 @@ eKeys cInterface::GetKey(bool Wait)
         char *message = SVDRP->GetMessage();
         if (message) {
            Info(message);
-           delete message;
+           free(message);
            }
         }
      }
@@ -213,12 +214,12 @@ char *cInterface::WrapText(const char *Text, int Width, int *Height)
             // punch in a newline, so we need to make room for it:
             if (Delim)
                p = Delim + 1; // let's fall back to the most recent delimiter
-            char *s = new char[strlen(t) + 2]; // The additional '\n' plus the terminating '\0'
+            char *s = MALLOC(char, strlen(t) + 2); // The additional '\n' plus the terminating '\0'
             int l = p - t;
             strncpy(s, t, l);
             s[l] = '\n';
             strcpy(s + l + 1, p);
-            delete t;
+            free(t);
             t = s;
             p = t + l;
             continue;
@@ -399,7 +400,7 @@ void cInterface::QueryKeys(void)
         char *Prompt;
         asprintf(&Prompt, tr("Press key for '%s'"), tr(k->name));
         WriteText(1, 5, Prompt);
-        delete Prompt;
+        free(Prompt);
         for (;;) {
             unsigned int ch = GetCh();
             if (ch != 0) {

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.h 1.33 2002/07/13 12:47:06 kls Exp $
+ * $Id: osd.h 1.34 2002/08/11 11:42:15 kls Exp $
  */
 
 #ifndef __OSD_H
@@ -89,7 +89,7 @@ public:
 
 class cOsdItem : public cListObject {
 private:
-  const char *text;
+  char *text;
   int offset;
   eOSState state;
 protected:
@@ -128,7 +128,7 @@ private:
   int first, current, marked;
   cOsdMenu *subMenu;
   const char *helpRed, *helpGreen, *helpYellow, *helpBlue;
-  const char *status;
+  char *status;
   int digit;
   bool hasHotkeys;
 protected:

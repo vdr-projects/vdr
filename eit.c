@@ -16,7 +16,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.c 1.46 2002/05/31 10:26:56 kls Exp $
+ * $Id: eit.c 1.48 2002/08/11 11:11:12 kls Exp $
  ***************************************************************************/
 
 #include "eit.h"
@@ -26,7 +26,11 @@
 #include <iomanip.h>
 #include <iostream.h>
 #include <limits.h>
+#ifdef NEWSTRUCT
+#include <linux/dvb/dmx.h>
+#else
 #include <ost/dmx.h>
+#endif
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -198,9 +202,9 @@ cEventInfo::cEventInfo(unsigned short serviceid, unsigned short eventid)
 
 cEventInfo::~cEventInfo()
 {
-   delete pTitle;
-   delete pSubtitle;
-   delete pExtendedDescription;
+   free(pTitle);
+   free(pSubtitle);
+   free(pExtendedDescription);
 }
 
 /**  */
@@ -496,8 +500,8 @@ void cEventInfo::FixEpgBugs(void)
               *e = 0;
               char *s = strdup(p + 1);
               char *d = strdup(e + strlen(delim));
-              delete pSubtitle;
-              delete pExtendedDescription;
+              free(pSubtitle);
+              free(pExtendedDescription);
               pSubtitle = s;
               pExtendedDescription = d;
               EpgBugFixStat(0, GetServiceID());
@@ -527,7 +531,7 @@ void cEventInfo::FixEpgBugs(void)
      // Title
      //
      if (pSubtitle && strcmp(pTitle, pSubtitle) == 0) {
-        delete pSubtitle;
+        free(pSubtitle);
         pSubtitle = NULL;
         EpgBugFixStat(2, GetServiceID());
         }
@@ -997,10 +1001,10 @@ cSIProcessor::~cSIProcessor()
    active = false;
    Cancel(3);
    ShutDownFilters();
-   delete filters;
+   free(filters);
    if (!--numSIProcessors) // the last one deletes it
       delete schedules;
-   delete fileName;
+   free(fileName);
 }
 
 const cSchedules *cSIProcessor::Schedules(cMutexLock &MutexLock)

@@ -4,13 +4,14 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: plugin.c 1.5 2002/05/13 16:31:09 kls Exp $
+ * $Id: plugin.c 1.7 2002/08/11 11:21:00 kls Exp $
  */
 
 #include "plugin.h"
 #include <ctype.h>
 #include <dirent.h>
 #include <dlfcn.h>
+#include <stdlib.h>
 #include <time.h>
 #include "config.h"
 
@@ -101,7 +102,7 @@ void cPlugin::SetConfigDirectory(const char *Dir)
 const char *cPlugin::ConfigDirectory(const char *PluginName)
 {
   static char *buffer = NULL;
-  delete buffer;
+  free(buffer);
   asprintf(&buffer, "%s/plugins%s%s", configDirectory, PluginName ? "/" : "", PluginName ? PluginName : "");
   return MakeDirs(buffer, true) ? buffer : NULL;
 }
@@ -121,8 +122,8 @@ cDll::~cDll()
   delete plugin;
   if (handle)
      dlclose(handle);
-  delete args;
-  delete fileName;
+  free(args);
+  free(fileName);
 }
 
 static char *SkipQuote(char *s)
@@ -236,14 +237,14 @@ cPluginManager::cPluginManager(const char *Directory)
 cPluginManager::~cPluginManager()
 {
   Shutdown();
-  delete directory;
+  free(directory);
   if (pluginManager == this)
      pluginManager = NULL;
 }
 
 void cPluginManager::SetDirectory(const char *Directory)
 {
-  delete directory;
+  free(directory);
   directory = Directory ? strdup(Directory) : NULL;
 }
 
@@ -279,8 +280,8 @@ void cPluginManager::AddPlugin(const char *Args)
   char *buffer = NULL;
   asprintf(&buffer, "%s/%s%s%s%s", directory, LIBVDR_PREFIX, s, SO_INDICATOR, VDRVERSION);
   dlls.Add(new cDll(buffer, Args));
-  delete buffer;
-  delete s;
+  free(buffer);
+  free(s);
 }
 
 bool cPluginManager::LoadPlugins(bool Log)

@@ -4,13 +4,14 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 1.21 2002/06/01 15:28:46 kls Exp $
+ * $Id: thread.c 1.22 2002/08/15 11:44:48 kls Exp $
  */
 
 #include "thread.h"
 #include <errno.h>
 #include <signal.h>
 #include <sys/resource.h>
+#include <sys/time.h>
 #include <sys/wait.h>
 #include <unistd.h>
 #include "tools.h"
@@ -27,17 +28,43 @@ cCondVar::~cCondVar()
   pthread_cond_destroy(&cond);
 }
 
-bool cCondVar::Wait(cMutex &Mutex)
+void cCondVar::Wait(cMutex &Mutex)
 {
-  return pthread_cond_wait(&cond, &Mutex.mutex);
+  if (Mutex.locked && Mutex.lockingPid == getpid()) {
+     int locked = Mutex.locked;
+     Mutex.locked = 0; // have to clear the locked count here, as pthread_cond_wait
+                       // does an implizit unlock of the mutex
+     pthread_cond_wait(&cond, &Mutex.mutex);
+     Mutex.locked = locked;
+     }
 }
 
-/*
-bool cCondVar::TimedWait(cMutex &Mutex, unsigned long tmout)
+bool cCondVar::TimedWait(cMutex &Mutex, int TimeoutMs)
 {
-  return pthread_cond_timedwait(&cond, &Mutex.mutex, tmout);
+  bool r = true; // true = condition signaled false = timeout
+
+  if (Mutex.locked && Mutex.lockingPid == getpid()) {
+     struct timeval now;                   // unfortunately timedwait needs the absolute time, not the delta :-(
+     if (gettimeofday(&now, NULL) == 0) {  // get current time
+        now.tv_usec += TimeoutMs * 1000;   // add the timeout
+        while (now.tv_usec >= 1000000) {   // take care of an overflow
+              now.tv_sec++;
+              now.tv_usec -= 1000000;
+              }
+        struct timespec abstime;              // build timespec for timedwait
+        abstime.tv_sec = now.tv_sec;          // seconds
+        abstime.tv_nsec = now.tv_usec * 1000; // nano seconds
+
+        int locked = Mutex.locked;
+        Mutex.locked = 0; // have to clear the locked count here, as pthread_cond_timedwait
+                          // does an implizit unlock of the mutex.
+        if (pthread_cond_timedwait(&cond, &Mutex.mutex, &abstime) == ETIMEDOUT)
+           r = false;
+        Mutex.locked = locked;
+        }
+     }
+  return r;
 }
-*/
 
 void cCondVar::Broadcast(void)
 {
@@ -344,7 +371,6 @@ int cPipe::Close(void)
            i--;
            usleep(100000);
            }
-   
      if (!i) {
         kill(pid, SIGKILL);
         ret = -1;

@@ -4,14 +4,15 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 1.8 2002/07/27 11:57:48 kls Exp $
+ * $Id: dvbplayer.c 1.11 2002/08/16 09:16:38 kls Exp $
  */
 
 #include "dvbplayer.h"
-#include <poll.h>
+#include <stdlib.h>
 #include "recording.h"
 #include "ringbuffer.h"
 #include "thread.h"
+#include "tools.h"
 
 // --- cBackTrace ----------------------------------------------------------
 
@@ -63,7 +64,7 @@ int cBackTrace::Get(bool Forward)
            p = BACKTRACE_ENTRIES - 1;
         i = index[p] - 1;
         l -= length[p];
-        n--; 
+        n--;
         }
   return i;
 }
@@ -301,121 +302,111 @@ void cDvbPlayer::Action(void)
   const uchar *p = NULL;
   int pc = 0;
 
-  pollfd pfd[2];
-  pfd[0].fd = DeviceFileHandle();
-  pfd[0].events = pfd[0].revents = POLLOUT;
-  pfd[1].fd = replayFile;
-  pfd[1].events = pfd[1].revents = POLLIN;
-
   readIndex = Resume();
   if (readIndex >= 0)
      isyslog("resuming replay at index %d (%s)", readIndex, IndexToHMSF(readIndex, true));
 
   running = true;
   while (running && NextFile()) {
-        pfd[1].fd = replayFile; // NextFile() may have returned a new file handle!
-        {
-          LOCK_THREAD;
+        cPoller Poller;
+        if (!readFrame)
+           Poller.Add(replayFile, false);
+        if (DevicePoll(Poller, 100)) {
 
-          // Read the next frame from the file:
+           LOCK_THREAD;
 
-          if (!readFrame && (pfd[1].revents & POLLIN)) {
-             if (playMode != pmStill) {
-                int r = 0;
-                if (playMode == pmFast || (playMode == pmSlow && playDir == pdBackward)) {
-                   uchar FileNumber;
-                   int FileOffset, Length;
-                   int Index = index->GetNextIFrame(readIndex, playDir == pdForward, &FileNumber, &FileOffset, &Length, true);
-                   if (Index >= 0) {
-                      if (!NextFile(FileNumber, FileOffset))
-                         break;
-                      }
-                   else {
-                      // can't call Play() here, because those functions may only be
-                      // called from the foreground thread - and we also don't need
-                      // to empty the buffer here
-                      DevicePlay();
-                      playMode = pmPlay;
-                      playDir = pdForward;
-                      continue;
-                      }
-                   readIndex = Index;
-                   r = ReadFrame(replayFile, b, Length, sizeof(b));
-                   // must call StripAudioPackets() here because the buffer is not emptied
-                   // when falling back from "fast forward" to "play" (see above)
-                   StripAudioPackets(b, r);
-                   }
-                else if (index) {
-                   uchar FileNumber;
-                   int FileOffset, Length;
-                   readIndex++;
-                   if (!(index->Get(readIndex, &FileNumber, &FileOffset, NULL, &Length) && NextFile(FileNumber, FileOffset)))
-                      break;
-                   r = ReadFrame(replayFile, b, Length, sizeof(b));
-                   }
-                else // allows replay even if the index file is missing
-                   r = read(replayFile, b, sizeof(b));
-                if (r > 0)
-                   readFrame = new cFrame(b, r, ftUnknown, readIndex);
-                else if (r == 0)
-                   eof = true;
-                else if (r < 0 && FATALERRNO) {
-                   LOG_ERROR;
-                   break;
-                   }
-                }
-             else//XXX
-                usleep(1); // this keeps the CPU load low
-             }
+           // Read the next frame from the file:
 
-          // Store the frame in the buffer:
+           if (!readFrame) {
+              if (playMode != pmStill) {
+                 int r = 0;
+                 if (playMode == pmFast || (playMode == pmSlow && playDir == pdBackward)) {
+                    uchar FileNumber;
+                    int FileOffset, Length;
+                    int Index = index->GetNextIFrame(readIndex, playDir == pdForward, &FileNumber, &FileOffset, &Length, true);
+                    if (Index >= 0) {
+                       if (!NextFile(FileNumber, FileOffset))
+                          break;
+                       }
+                    else {
+                       // can't call Play() here, because those functions may only be
+                       // called from the foreground thread - and we also don't need
+                       // to empty the buffer here
+                       DevicePlay();
+                       playMode = pmPlay;
+                       playDir = pdForward;
+                       continue;
+                       }
+                    readIndex = Index;
+                    r = ReadFrame(replayFile, b, Length, sizeof(b));
+                    // must call StripAudioPackets() here because the buffer is not emptied
+                    // when falling back from "fast forward" to "play" (see above)
+                    StripAudioPackets(b, r);
+                    }
+                 else if (index) {
+                    uchar FileNumber;
+                    int FileOffset, Length;
+                    readIndex++;
+                    if (!(index->Get(readIndex, &FileNumber, &FileOffset, NULL, &Length) && NextFile(FileNumber, FileOffset)))
+                       break;
+                    r = ReadFrame(replayFile, b, Length, sizeof(b));
+                    }
+                 else // allows replay even if the index file is missing
+                    r = read(replayFile, b, sizeof(b));
+                 if (r > 0)
+                    readFrame = new cFrame(b, r, ftUnknown, readIndex);
+                 else if (r == 0)
+                    eof = true;
+                 else if (r < 0 && FATALERRNO) {
+                    LOG_ERROR;
+                    break;
+                    }
+                 }
+              else//XXX
+                 usleep(1); // this keeps the CPU load low
+              }
 
-          if (readFrame) {
-             if (ringBuffer->Put(readFrame))
-                readFrame = NULL;
-             }
+           // Store the frame in the buffer:
 
-          // Get the next frame from the buffer:
-        
-          if (!playFrame) {
-             playFrame = ringBuffer->Get();
-             p = NULL;
-             pc = 0;
-             }
+           if (readFrame) {
+              if (ringBuffer->Put(readFrame))
+                 readFrame = NULL;
+              }
 
-          // Play the frame:
+           // Get the next frame from the buffer:
 
-          if (playFrame && (pfd[0].revents & POLLOUT)) {
-             if (!p) {
-                p = playFrame->Data();
-                pc = playFrame->Count();
-                }
-             if (p) {
-                int w = PlayVideo(p, pc);
-                if (w > 0) {
-                   p += w;
-                   pc -= w;
-                   }
-                else if (w < 0 && FATALERRNO) {
-                   LOG_ERROR;
-                   break;
-                   }
-                }
-             if (pc == 0) {
-                writeIndex = playFrame->Index();
-                backTrace->Add(playFrame->Index(), playFrame->Count());
-                ringBuffer->Drop(playFrame);
-                playFrame = NULL;
-                p = 0;
-                }
-             }
-        }
+           if (!playFrame) {
+              playFrame = ringBuffer->Get();
+              p = NULL;
+              pc = 0;
+              }
 
-        // Wait for input or output to become ready:
+           // Play the frame:
 
-        if (poll(pfd, readFrame ? 1 : 2, 10) < 0 && FATALERRNO) {
-           LOG_ERROR;
-           break;
+           if (playFrame) {
+              if (!p) {
+                 p = playFrame->Data();
+                 pc = playFrame->Count();
+                 }
+              if (p) {
+                 int w = PlayVideo(p, pc);
+                 if (w > 0) {
+                    p += w;
+                    pc -= w;
+                    }
+                 else if (w < 0 && FATALERRNO) {
+                    LOG_ERROR;
+                    break;
+                    }
+                 }
+              if (pc == 0) {
+                 writeIndex = playFrame->Index();
+                 backTrace->Add(playFrame->Index(), playFrame->Count());
+                 ringBuffer->Drop(playFrame);
+                 playFrame = NULL;
+                 p = 0;
+                 }
+              }
            }
         }
   active = running = false;

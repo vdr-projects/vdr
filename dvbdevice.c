@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.1 2002/08/04 12:24:25 kls Exp $
+ * $Id: dvbdevice.c 1.7 2002/08/16 09:27:53 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -18,10 +18,15 @@ extern "C" {
 }
 #include <limits.h>
 #include <linux/videodev.h>
+#ifdef NEWSTRUCT
+#include <linux/dvb/audio.h>
+#include <linux/dvb/frontend.h>
+#include <linux/dvb/video.h>
+#else
 #include <ost/audio.h>
 #include <ost/sec.h>
 #include <ost/video.h>
-#include <poll.h>
+#endif
 #include <sys/ioctl.h>
 #include <sys/mman.h>
 #include "dvbosd.h"
@@ -33,24 +38,38 @@ extern "C" {
 #define MAXDVBDEVICES     4
 
 #define DEV_VIDEO         "/dev/video"
-#define DEV_OST_OSD       "/dev/ost/osd"
-#define DEV_OST_FRONTEND  "/dev/ost/frontend"
-#define DEV_OST_SEC       "/dev/ost/sec"
-#define DEV_OST_DVR       "/dev/ost/dvr"
-#define DEV_OST_DEMUX     "/dev/ost/demux"
-#define DEV_OST_VIDEO     "/dev/ost/video"
-#define DEV_OST_AUDIO     "/dev/ost/audio"
+#ifdef NEWSTRUCT
+#define DEV_DVB_ADAPTER   "/dev/dvb/adapter"
+#define DEV_DVB_OSD       "osd"
+#define DEV_DVB_FRONTEND  "frontend"
+#define DEV_DVB_DVR       "dvr"
+#define DEV_DVB_DEMUX     "demux"
+#define DEV_DVB_VIDEO     "video"
+#define DEV_DVB_AUDIO     "audio"
+#else
+#define DEV_DVB_OSD       "/dev/ost/osd"
+#define DEV_DVB_FRONTEND  "/dev/ost/frontend"
+#define DEV_DVB_SEC       "/dev/ost/sec"
+#define DEV_DVB_DVR       "/dev/ost/dvr"
+#define DEV_DVB_DEMUX     "/dev/ost/demux"
+#define DEV_DVB_VIDEO     "/dev/ost/video"
+#define DEV_DVB_AUDIO     "/dev/ost/audio"
+#endif
 
-static const char *OstName(const char *Name, int n)
+static const char *DvbName(const char *Name, int n)
 {
   static char buffer[PATH_MAX];
+#ifdef NEWSTRUCT
+  snprintf(buffer, sizeof(buffer), "%s%d/%s%d", DEV_DVB_ADAPTER, n, Name, 0);
+#else
   snprintf(buffer, sizeof(buffer), "%s%d", Name, n);
+#endif
   return buffer;
 }
 
-static int OstOpen(const char *Name, int n, int Mode, bool ReportError = false)
+static int DvbOpen(const char *Name, int n, int Mode, bool ReportError = false)
 {
-  const char *FileName = OstName(Name, n);
+  const char *FileName = DvbName(Name, n);
   int fd = open(FileName, Mode);
   if (fd < 0 && ReportError)
      LOG_ERROR_STR(FileName);
@@ -61,20 +80,23 @@ cDvbDevice::cDvbDevice(int n)
 {
   frontendType = FrontendType(-1); // don't know how else to initialize this - there is no FE_UNKNOWN
   siProcessor = NULL;
+  playMode = pmNone;
 
   // Devices that are present on all card types:
 
-  fd_frontend = OstOpen(DEV_OST_FRONTEND, n, O_RDWR);
-
-  // Devices that are only present on DVB-S cards:
-
-  fd_sec      = OstOpen(DEV_OST_SEC,      n, O_RDWR);
+  fd_frontend = DvbOpen(DEV_DVB_FRONTEND, n, O_RDWR | O_NONBLOCK);
 
   // Devices that are only present on cards with decoders:
 
-  fd_osd      = OstOpen(DEV_OST_OSD,    n, O_RDWR);
-  fd_video    = OstOpen(DEV_OST_VIDEO,  n, O_RDWR | O_NONBLOCK);
-  fd_audio    = OstOpen(DEV_OST_AUDIO,  n, O_RDWR | O_NONBLOCK);
+  fd_osd      = DvbOpen(DEV_DVB_OSD,    n, O_RDWR);
+  fd_video    = DvbOpen(DEV_DVB_VIDEO,  n, O_RDWR | O_NONBLOCK);
+  fd_audio    = DvbOpen(DEV_DVB_AUDIO,  n, O_RDWR | O_NONBLOCK);
+  
+#ifndef NEWSTRUCT
+  // Devices that are only present on DVB-S cards:
+ 
+  fd_sec      = DvbOpen(DEV_DVB_SEC,      n, O_RDWR);
+#endif
 
   // The DVR device (will be opened and closed as needed):
 
@@ -87,8 +109,12 @@ cDvbDevice::cDvbDevice(int n)
   // We only check the devices that must be present - the others will be checked before accessing them://XXX
 
   if (fd_frontend >= 0) {
-     siProcessor = new cSIProcessor(OstName(DEV_OST_DEMUX, n));
+#ifdef NEWSTRUCT
+     dvb_frontend_info feinfo;
+#else
      FrontendInfo feinfo;
+#endif
+     siProcessor = new cSIProcessor(DvbName(DEV_DVB_DEMUX, n));
      if (ioctl(fd_frontend, FE_GET_INFO, &feinfo) >= 0)
         frontendType = feinfo.type;
      else
@@ -130,7 +156,7 @@ bool cDvbDevice::Initialize(void)
   int i;
   for (i = 0; i < MAXDVBDEVICES; i++) {
       if (UseDevice(NextCardIndex())) {
-         if (Probe(OstName(DEV_OST_FRONTEND, i))) {
+         if (Probe(DvbName(DEV_DVB_FRONTEND, i))) {
             new cDvbDevice(i);
             found++;
             }
@@ -169,7 +195,7 @@ bool cDvbDevice::HasDecoder(void) const
 
 bool cDvbDevice::GrabImage(const char *FileName, bool Jpeg, int Quality, int SizeX, int SizeY)
 {
-  int videoDev = OstOpen(DEV_VIDEO, CardIndex(), O_RDWR, true);
+  int videoDev = DvbOpen(DEV_VIDEO, CardIndex(), O_RDWR, true);
   if (videoDev >= 0) {
      int result = 0;
      struct video_mbuf mbuf;
@@ -274,7 +300,7 @@ bool cDvbDevice::SetPid(cPidHandle *Handle, int Type, bool On)
   if (Handle->pid) {
      if (On) {
         if (Handle->handle < 0) {
-           Handle->handle = OstOpen(DEV_OST_DEMUX, CardIndex(), O_RDWR | O_NONBLOCK, true);
+           Handle->handle = DvbOpen(DEV_DVB_DEMUX, CardIndex(), O_RDWR | O_NONBLOCK, true);
            if (Handle->handle < 0)
               return false;
            }
@@ -290,6 +316,7 @@ bool cDvbDevice::SetPid(cPidHandle *Handle, int Type, bool On)
 
      if (Handle->pid != 0x1FFF) {
         dmxPesFilterParams pesFilterParams;
+        memset(&pesFilterParams, 0, sizeof(pesFilterParams));
         pesFilterParams.pid     = Handle->pid;
         pesFilterParams.input   = DMX_IN_FRONTEND;
         pesFilterParams.output  = (Type <= ptTeletext && Handle->used <= 1) ? DMX_OUT_DECODER : DMX_OUT_TS_TAP;
@@ -332,7 +359,13 @@ bool cDvbDevice::SetChannelDevice(const cChannel *Channel)
      DelPid(pidHandles[ptDolby].pid);
      }
 
+#ifdef NEWSTRUCT
+  dvb_frontend_parameters Frontend;
+#else
   FrontendParameters Frontend;
+#endif
+
+  memset(&Frontend, 0, sizeof(Frontend));
 
   switch (frontendType) {
     case FE_QPSK: { // DVB-S
@@ -351,15 +384,38 @@ bool cDvbDevice::SetChannelDevice(const cChannel *Channel)
             tone = SEC_TONE_ON;
             }
 
+#ifdef NEWSTRUCT
+         Frontend.frequency = freq * 1000UL;
+         Frontend.inversion = INVERSION_AUTO;
+         Frontend.u.qpsk.symbol_rate = Channel->srate * 1000UL;
+         Frontend.u.qpsk.fec_inner = FEC_AUTO;
+#else
          Frontend.Frequency = freq * 1000UL;
          Frontend.Inversion = INVERSION_AUTO;
          Frontend.u.qpsk.SymbolRate = Channel->srate * 1000UL;
          Frontend.u.qpsk.FEC_inner = FEC_AUTO;
+#endif
 
          int volt = (Channel->polarization == 'v' || Channel->polarization == 'V') ? SEC_VOLTAGE_13 : SEC_VOLTAGE_18;
 
-         // DiseqC:
+         // DiSEqC:
 
+#ifdef NEWSTRUCT
+         struct dvb_diseqc_master_cmd cmd = { {0xE0, 0x10, 0x38, 0xF0, 0x00, 0x00}, 4};
+         cmd.msg[3] = 0xF0 | (((Channel->diseqc * 4) & 0x0F) | (tone == SEC_TONE_ON ? 1 : 0) | (volt == SEC_VOLTAGE_18 ? 2 : 0));
+
+         if (Setup.DiSEqC)
+            CHECK(ioctl(fd_frontend, FE_SET_TONE, SEC_TONE_OFF));
+         CHECK(ioctl(fd_frontend, FE_SET_VOLTAGE, volt));
+         if (Setup.DiSEqC) {
+            usleep(15 * 1000);
+            CHECK(ioctl(fd_frontend, FE_DISEQC_SEND_MASTER_CMD, &cmd));
+            usleep(15 * 1000);
+            CHECK(ioctl(fd_frontend, FE_DISEQC_SEND_BURST, (Channel->diseqc / 4) % 2 ? SEC_MINI_B : SEC_MINI_A));
+            usleep(15 * 1000);
+            }
+         CHECK(ioctl(fd_frontend, FE_SET_TONE, tone));
+#else
          secCommand scmd;
          scmd.type = 0;
          scmd.u.diseqc.addr = 0x10;
@@ -375,23 +431,43 @@ bool cDvbDevice::SetChannelDevice(const cChannel *Channel)
          scmds.commands = &scmd;
 
          CHECK(ioctl(fd_sec, SEC_SEND_SEQUENCE, &scmds));
+#endif
          }
          break;
     case FE_QAM: { // DVB-C
 
          // Frequency and symbol rate:
 
+#ifdef NEWSTRUCT
+         Frontend.frequency = Channel->frequency * 1000000UL;
+         Frontend.inversion = INVERSION_AUTO;
+         Frontend.u.qam.symbol_rate = Channel->srate * 1000UL;
+         Frontend.u.qam.fec_inner = FEC_AUTO;
+         Frontend.u.qam.modulation = QAM_64;
+#else
          Frontend.Frequency = Channel->frequency * 1000000UL;
          Frontend.Inversion = INVERSION_AUTO;
          Frontend.u.qam.SymbolRate = Channel->srate * 1000UL;
          Frontend.u.qam.FEC_inner = FEC_AUTO;
          Frontend.u.qam.QAM = QAM_64;
+#endif
          }
          break;
     case FE_OFDM: { // DVB-T
 
          // Frequency and OFDM paramaters:
 
+#ifdef NEWSTRUCT
+         Frontend.frequency = Channel->frequency * 1000UL;
+         Frontend.inversion = INVERSION_AUTO;
+         Frontend.u.ofdm.bandwidth=BANDWIDTH_8_MHZ;
+         Frontend.u.ofdm.code_rate_HP = FEC_2_3;
+         Frontend.u.ofdm.code_rate_LP = FEC_1_2;
+         Frontend.u.ofdm.constellation = QAM_64;
+         Frontend.u.ofdm.transmission_mode = TRANSMISSION_MODE_2K;
+         Frontend.u.ofdm.guard_interval = GUARD_INTERVAL_1_32;
+         Frontend.u.ofdm.hierarchy_information = HIERARCHY_NONE;
+#else
          Frontend.Frequency = Channel->frequency * 1000UL;
          Frontend.Inversion = INVERSION_AUTO;
          Frontend.u.ofdm.bandWidth=BANDWIDTH_8_MHZ;
@@ -401,6 +477,7 @@ bool cDvbDevice::SetChannelDevice(const cChannel *Channel)
          Frontend.u.ofdm.TransmissionMode=TRANSMISSION_MODE_2K;
          Frontend.u.ofdm.guardInterval=GUARD_INTERVAL_1_32;
          Frontend.u.ofdm.HierarchyInformation=HIERARCHY_NONE;
+#endif
          }
          break;
     default:
@@ -408,16 +485,40 @@ bool cDvbDevice::SetChannelDevice(const cChannel *Channel)
          return false;
     }
 
+#ifdef NEWSTRUCT
+  // Discard stale events:
+
+  for (;;) {
+      dvb_frontend_event event;
+      if (ioctl(fd_frontend, FE_GET_EVENT, &event) < 0)
+         break;
+      }
+#endif
+
   // Tuning:
 
   CHECK(ioctl(fd_frontend, FE_SET_FRONTEND, &Frontend));
 
-  // Wait for channel sync:
+  // Wait for channel lock:
 
+#ifdef NEWSTRUCT
+  FrontendStatus status = FrontendStatus(0);
+  for (int i = 0; i < 100; i++) {
+      CHECK(ioctl(fd_frontend, FE_READ_STATUS, &status));
+      if (status & FE_HAS_LOCK)
+         break;
+      usleep(10 * 1000);
+      }
+  if (!(status & FE_HAS_LOCK)) {
+     esyslog("ERROR: channel %d not locked on DVB card %d!", Channel->number, CardIndex() + 1);
+     if (IsPrimaryDevice())
+        cThread::RaisePanic();
+     return false;
+     }
+#else
   if (cFile::FileReady(fd_frontend, 5000)) {
      FrontendEvent event;
-     int res = ioctl(fd_frontend, FE_GET_EVENT, &event);
-     if (res >= 0) {
+     if (ioctl(fd_frontend, FE_GET_EVENT, &event) >= 0) {
         if (event.type != FE_COMPLETION_EV) {
            esyslog("ERROR: channel %d not sync'ed on DVB card %d!", Channel->number, CardIndex() + 1);
            if (IsPrimaryDevice())
@@ -426,10 +527,11 @@ bool cDvbDevice::SetChannelDevice(const cChannel *Channel)
            }
         }
      else
-        esyslog("ERROR %d in frontend get event (channel %d, card %d)", res, Channel->number, CardIndex() + 1);
+        esyslog("ERROR in frontend get event (channel %d, card %d): %m", Channel->number, CardIndex() + 1);
      }
   else
-     esyslog("ERROR: timeout while tuning");
+     esyslog("ERROR: timeout while tuning on DVB card %d", CardIndex() + 1);
+#endif
 
   frequency = Channel->frequency;
 
@@ -467,32 +569,64 @@ void cDvbDevice::SetVolumeDevice(int Volume)
      }
 }
 
-int cDvbDevice::SetPlayMode(bool On)
+bool cDvbDevice::SetPlayMode(ePlayMode PlayMode)
 {
-  if (On) {
-     if (siProcessor)
-        siProcessor->SetStatus(false);
-     CHECK(ioctl(fd_video, VIDEO_SET_BLANK, true));
-     CHECK(ioctl(fd_audio, AUDIO_SELECT_SOURCE, AUDIO_SOURCE_MEMORY));
-     CHECK(ioctl(fd_audio, AUDIO_SET_AV_SYNC, true));
-     CHECK(ioctl(fd_audio, AUDIO_PLAY));
-     CHECK(ioctl(fd_video, VIDEO_SELECT_SOURCE, VIDEO_SOURCE_MEMORY));
-     CHECK(ioctl(fd_video, VIDEO_PLAY));
-     return fd_video;
+  if (PlayMode != pmExtern_THIS_SHOULD_BE_AVOIDED && fd_video < 0 && fd_audio < 0) {
+     // reopen the devices
+     fd_video = DvbOpen(DEV_DVB_VIDEO,  CardIndex(), O_RDWR | O_NONBLOCK);
+     fd_audio = DvbOpen(DEV_DVB_AUDIO,  CardIndex(), O_RDWR | O_NONBLOCK);
+     SetVideoFormat(Setup.VideoFormat);
      }
-  else {
-     CHECK(ioctl(fd_video, VIDEO_STOP, true));
-     CHECK(ioctl(fd_audio, AUDIO_STOP, true));
-     CHECK(ioctl(fd_video, VIDEO_CLEAR_BUFFER));
-     CHECK(ioctl(fd_audio, AUDIO_CLEAR_BUFFER));
-     CHECK(ioctl(fd_video, VIDEO_SELECT_SOURCE, VIDEO_SOURCE_DEMUX));
-     CHECK(ioctl(fd_audio, AUDIO_SELECT_SOURCE, AUDIO_SOURCE_DEMUX));
-     CHECK(ioctl(fd_audio, AUDIO_SET_AV_SYNC, true));
-     CHECK(ioctl(fd_audio, AUDIO_SET_MUTE, false));
-     if (siProcessor)
-        siProcessor->SetStatus(true);
-     return -1;
-     }
+
+  switch (PlayMode) {
+    case pmNone:
+         // special handling to return from PCM replay:
+         CHECK(ioctl(fd_video, VIDEO_SET_BLANK, true));
+         CHECK(ioctl(fd_video, VIDEO_SELECT_SOURCE, VIDEO_SOURCE_MEMORY));
+         CHECK(ioctl(fd_video, VIDEO_PLAY));
+
+         CHECK(ioctl(fd_video, VIDEO_STOP, true));
+         CHECK(ioctl(fd_audio, AUDIO_STOP, true));
+         CHECK(ioctl(fd_video, VIDEO_CLEAR_BUFFER));
+         CHECK(ioctl(fd_audio, AUDIO_CLEAR_BUFFER));
+         CHECK(ioctl(fd_video, VIDEO_SELECT_SOURCE, VIDEO_SOURCE_DEMUX));
+         CHECK(ioctl(fd_audio, AUDIO_SELECT_SOURCE, AUDIO_SOURCE_DEMUX));
+         CHECK(ioctl(fd_audio, AUDIO_SET_AV_SYNC, true));
+         CHECK(ioctl(fd_audio, AUDIO_SET_MUTE, false));
+         if (siProcessor)
+            siProcessor->SetStatus(true);
+         break;
+    case pmAudioVideo:
+         if (siProcessor)
+            siProcessor->SetStatus(false);
+         CHECK(ioctl(fd_video, VIDEO_SET_BLANK, true));
+         CHECK(ioctl(fd_audio, AUDIO_SELECT_SOURCE, AUDIO_SOURCE_MEMORY));
+         CHECK(ioctl(fd_audio, AUDIO_SET_AV_SYNC, true));
+         CHECK(ioctl(fd_audio, AUDIO_PLAY));
+         CHECK(ioctl(fd_video, VIDEO_SELECT_SOURCE, VIDEO_SOURCE_MEMORY));
+         CHECK(ioctl(fd_video, VIDEO_PLAY));
+         break;
+    case pmAudioOnly:
+         if (siProcessor)
+            siProcessor->SetStatus(false);
+         CHECK(ioctl(fd_video, VIDEO_SET_BLANK, true));
+         CHECK(ioctl(fd_audio, AUDIO_STOP, true));
+         CHECK(ioctl(fd_audio, AUDIO_CLEAR_BUFFER));
+         CHECK(ioctl(fd_audio, AUDIO_SELECT_SOURCE, AUDIO_SOURCE_MEMORY));
+         CHECK(ioctl(fd_audio, AUDIO_SET_AV_SYNC, false));
+         CHECK(ioctl(fd_audio, AUDIO_PLAY));
+         CHECK(ioctl(fd_video, VIDEO_SET_BLANK, false));
+         break;
+    case pmExtern_THIS_SHOULD_BE_AVOIDED:
+         if (siProcessor)
+            siProcessor->SetStatus(false);
+         close(fd_video);
+         close(fd_audio);
+         fd_video = fd_audio = -1;
+         break;
+    }
+  playMode = PlayMode;
+  return true;
 }
 
 void cDvbDevice::TrickSpeed(int Speed)
@@ -558,10 +692,17 @@ void cDvbDevice::StillPicture(const uchar *Data, int Length)
 #endif
 }
 
+bool cDvbDevice::Poll(cPoller &Poller, int TimeoutMs)
+{
+  Poller.Add(playMode == pmAudioOnly ? fd_audio : fd_video, true);
+  return Poller.Poll(TimeoutMs);
+}
+
 int cDvbDevice::PlayVideo(const uchar *Data, int Length)
 {
-  if (fd_video >= 0)
-     return write(fd_video, Data, Length);
+  int fd = playMode == pmAudioOnly ? fd_audio : fd_video;
+  if (fd >= 0)
+     return write(fd, Data, Length);
   return -1;
 }
 
@@ -574,7 +715,7 @@ int cDvbDevice::PlayAudio(const uchar *Data, int Length)
 bool cDvbDevice::OpenDvr(void)
 {
   CloseDvr();
-  fd_dvr = OstOpen(DEV_OST_DVR, CardIndex(), O_RDONLY | O_NONBLOCK, true);
+  fd_dvr = DvbOpen(DEV_DVB_DVR, CardIndex(), O_RDONLY | O_NONBLOCK, true);
   return fd_dvr >= 0;
 }
 
@@ -589,13 +730,8 @@ void cDvbDevice::CloseDvr(void)
 int cDvbDevice::GetTSPacket(uchar *Data)
 {
   if (fd_dvr >= 0) {
-     pollfd pfd;
-     pfd.fd = fd_dvr;
-     pfd.events = POLLIN;
-
-     poll(&pfd, 1, 100);
-
-     if (pfd.revents & POLLIN != 0) {
+     cPoller Poller(fd_dvr, false);
+     if (Poller.Poll(100)) {
         int r = read(fd_dvr, Data, TS_SIZE);
         if (r >= 0)
            return r;

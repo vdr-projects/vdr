@@ -4,12 +4,11 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.8 2002/08/04 15:18:05 kls Exp $
+ * $Id: device.c 1.12 2002/08/16 09:50:43 kls Exp $
  */
 
 #include "device.h"
 #include <errno.h>
-#include <poll.h>
 #include <sys/ioctl.h>
 #include <sys/mman.h>
 #include "eit.h"
@@ -98,7 +97,7 @@ bool cDevice::SetPrimaryDevice(int n)
      primaryDevice->MakePrimaryDevice(true);
      return true;
      }
-  esyslog("invalid device number: %d", n + 1);
+  esyslog("invalid primary device number: %d", n + 1);
   return false;
 }
 
@@ -317,9 +316,9 @@ void cDevice::SetVolume(int Volume, bool Absolute)
      mute = false;
 }
 
-int cDevice::SetPlayMode(bool On)
+bool cDevice::SetPlayMode(ePlayMode PlayMode)
 {
-  return -1;
+  return false;
 }
 
 void cDevice::TrickSpeed(int Speed)
@@ -362,7 +361,7 @@ bool cDevice::AttachPlayer(cPlayer *Player)
         Detach(player);
      player = Player;
      player->device = this;
-     player->deviceFileHandle = SetPlayMode(true);
+     SetPlayMode(player->playMode);
      player->Activate(true);
      return true;
      }
@@ -373,10 +372,9 @@ void cDevice::Detach(cPlayer *Player)
 {
   if (Player && player == Player) {
      player->Activate(false);
-     player->deviceFileHandle = -1;
      player->device = NULL;
      player = NULL;
-     SetPlayMode(false);
+     SetPlayMode(pmNone);
      }
 }
 
@@ -397,6 +395,11 @@ void cDevice::StopReplay(void)
         }
         XXX*/
      }
+}
+
+bool cDevice::Poll(cPoller &Poller, int TimeoutMs)
+{
+  return false;
 }
 
 int cDevice::PlayVideo(const uchar *Data, int Length)

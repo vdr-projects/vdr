@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.38 2002/06/09 15:56:54 kls Exp $
+ * $Id: svdrp.c 1.39 2002/08/11 12:01:28 kls Exp $
  */
 
 #include "svdrp.h"
@@ -37,6 +37,7 @@ cSocket::cSocket(int Port, int Queue)
 {
   port = Port;
   sock = -1;
+  queue = Queue;
 }
 
 cSocket::~cSocket()
@@ -320,7 +321,7 @@ cSVDRP::cSVDRP(int Port)
 cSVDRP::~cSVDRP()
 {
   Close();
-  delete message;
+  free(message);
 }
 
 void cSVDRP::Close(bool Timeout)
@@ -370,7 +371,7 @@ void cSVDRP::Reply(int Code, const char *fmt, ...)
                  }
               s = n ? n + 1 : NULL;
               }
-        delete buffer;
+        free(buffer);
         va_end(ap);
         }
      else {
@@ -685,7 +686,7 @@ void cSVDRP::CmdLSTR(const char *Option)
            if (recording->Summary()) {
               char *summary = strdup(recording->Summary());
               Reply(250, "%s", strreplace(summary,'\n','|'));
-              delete summary;
+              free(summary);
               }
            else
               Reply(550, "No summary availabe");
@@ -736,7 +737,7 @@ void cSVDRP::CmdLSTT(const char *Option)
 void cSVDRP::CmdMESG(const char *Option)
 {
   if (*Option) {
-     delete message;
+     free(message);
      message = strdup(Option);
      isyslog("SVDRP message: '%s'", message);
      Reply(250, "Message stored");

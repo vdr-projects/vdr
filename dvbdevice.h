@@ -4,18 +4,22 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.h 1.1 2002/08/04 12:19:10 kls Exp $
+ * $Id: dvbdevice.h 1.5 2002/08/16 08:53:30 kls Exp $
  */
 
 #ifndef __DVBDEVICE_H
 #define __DVBDEVICE_H
 
+#ifdef NEWSTRUCT
+#include <linux/dvb/frontend.h>
+#else
 #include <stdlib.h> // FIXME: this is apparently necessary for the ost/... header files
                     // FIXME: shouldn't every header file include ALL the other header
                     // FIXME: files it depends on? The sequence in which header files
                     // FIXME: are included here should not matter - and it should NOT
                     // FIXME: be necessary to include <stdlib.h> here!
 #include <ost/frontend.h>
+#endif
 #include "device.h"
 #include "eit.h"
 
@@ -30,7 +34,11 @@ public:
          // Must be called before accessing any DVB functions.
 private:
   FrontendType frontendType;
+#ifdef NEWSTRUCT
+  int fd_osd, fd_frontend, fd_audio, fd_video, fd_dvr;
+#else
   int fd_osd, fd_frontend, fd_sec, fd_audio, fd_video, fd_dvr;
+#endif
   int OsdDeviceHandle(void) const { return fd_osd; }
 protected:
   virtual void MakePrimaryDevice(bool On);
@@ -75,7 +83,8 @@ private:
 // Player facilities
 
 protected:
-  virtual int SetPlayMode(bool On);
+  ePlayMode playMode;
+  virtual bool SetPlayMode(ePlayMode PlayMode);
 public:
   virtual void TrickSpeed(int Speed);
   virtual void Clear(void);
@@ -83,6 +92,7 @@ public:
   virtual void Freeze(void);
   virtual void Mute(void);
   virtual void StillPicture(const uchar *Data, int Length);
+  virtual bool Poll(cPoller &Poller, int TimeoutMs = 0);
   virtual int PlayVideo(const uchar *Data, int Length);
   virtual int PlayAudio(const uchar *Data, int Length);
 
