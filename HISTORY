@@ -3323,3 +3323,5 @@ Video Disk Recorder Revision History
 - Extended some buffer sizes to allow handling HDTV streams (thanks to Reinhard
   Nissl).
 - Added 'channels.conf.terr' entries for Düsseldorf and Köln (thanks to Walter Koch).
+- Falling back to 'stereo' when switching channels in case the user had switched
+  to 'left' or 'right' (suggested by Rolf Groppe).

@@ -1223,3 +1223,7 @@ Marco Kremer <vdr.hgm.bg@gmx.net>
 
 Walter Koch <koch@u32.de>
  for adding channels for DVB-T Düsseldorf and Köln (Germany) to channels.cont.terr
+
+Rolf Groppe <rolf@groppe.de>
+ for suggesting to fall back to 'stereo' when switching channels in case the user
+ had switched to 'left' or 'right'
