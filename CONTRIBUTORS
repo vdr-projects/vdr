@@ -1,4 +1,7 @@
-Thanks go to the following people for patches and contributions:
+Tons of suggestions, bugreports, patches and other contributions have been
+provided by the people on the 'linux-dvb' and 'vdr' mailing lists.
+Special thanks go to the following individuals (if your name is missing here,
+please send an email to kls@cadsoft.de):
 
 Carsten Koch <Carsten.Koch@icem.de>
  for adding LIRC support
