@@ -1389,3 +1389,4 @@ Video Disk Recorder Revision History
 - Added some missing teletext PIDs (thanks to Joerg Riechardt).
 - Fixed PID handling for cReceiver.
 - Added a missing #include to ringbuffer.c (thanks to Martin Hammerschmid).
+- Now using CC, CFLAGS, CXX and CXXFLAGS in Makefile.
