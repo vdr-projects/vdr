@@ -7,7 +7,7 @@
  * Parts of this file were inspired by the 'ringbuffy.c' from the
  * LinuxDVB driver (see linuxtv.org).
  *
- * $Id: ringbuffer.c 1.14 2003/02/15 13:21:50 kls Exp $
+ * $Id: ringbuffer.c 1.15 2003/04/27 09:54:32 kls Exp $
  */
 
 #include "ringbuffer.h"
@@ -142,9 +142,9 @@ int cRingBufferLinear::Put(const uchar *Data, int Count)
   return Count;
 }
 
-const uchar *cRingBufferLinear::Get(int &Count)
+uchar *cRingBufferLinear::Get(int &Count)
 {
-  const uchar *p = NULL;
+  uchar *p = NULL;
   Lock();
   if (getThreadPid < 0)
      getThreadPid = getpid();
@@ -224,7 +224,7 @@ cRingBufferFrame::~cRingBufferFrame()
 void cRingBufferFrame::Clear(void)
 {
   Lock();
-  const cFrame *p;
+  cFrame *p;
   while ((p = Get()) != NULL)
         Drop(p);
   Unlock();
@@ -252,7 +252,7 @@ bool cRingBufferFrame::Put(cFrame *Frame)
   return false;
 }
 
-const cFrame *cRingBufferFrame::Get(void)
+cFrame *cRingBufferFrame::Get(void)
 {
   Lock();
   cFrame *p = head ? head->next : NULL;
@@ -260,13 +260,13 @@ const cFrame *cRingBufferFrame::Get(void)
   return p;
 }
 
-void cRingBufferFrame::Delete(const cFrame *Frame)
+void cRingBufferFrame::Delete(cFrame *Frame)
 {
   currentFill -= Frame->Count();
   delete Frame;
 }
 
-void cRingBufferFrame::Drop(const cFrame *Frame)
+void cRingBufferFrame::Drop(cFrame *Frame)
 {
   Lock();
   if (head) {

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ringbuffer.h 1.9 2003/01/26 09:47:39 kls Exp $
+ * $Id: ringbuffer.h 1.10 2003/04/27 09:55:08 kls Exp $
  */
 
 #ifndef __RINGBUFFER_H
@@ -56,7 +56,7 @@ public:
   int Put(const uchar *Data, int Count);
     ///< Puts at most Count bytes of Data into the ring buffer.
     ///< \return Returns the number of bytes actually stored.
-  const uchar *Get(int &Count);
+  uchar *Get(int &Count);
     ///< Gets data from the ring buffer.
     ///< The data will remain in the buffer until a call to Del() deletes it.
     ///< \return Returns a pointer to the data, and stores the number of bytes
@@ -83,7 +83,7 @@ public:
     ///< If Count is negative, the cFrame object will take ownership of the given
     ///< Data. Otherwise it will allocate Count bytes of memory and copy Data.
   ~cFrame();
-  const uchar *Data(void) const { return data; }
+  uchar *Data(void) const { return data; }
   int Count(void) const { return count; }
   eFrameType Type(void) const { return type; }
   int Index(void) const { return index; }
@@ -93,7 +93,7 @@ class cRingBufferFrame : public cRingBuffer {
 private:
   cFrame *head;
   int currentFill;
-  void Delete(const cFrame *Frame);
+  void Delete(cFrame *Frame);
 public:
   cRingBufferFrame(int Size, bool Statistics = false);
   virtual ~cRingBufferFrame();
@@ -103,10 +103,10 @@ public:
   bool Put(cFrame *Frame);
     // Puts the Frame into the ring buffer.
     // Returns true if this was possible.
-  const cFrame *Get(void);
+  cFrame *Get(void);
     // Gets the next frame from the ring buffer.
     // The actual data still remains in the buffer until Drop() is called.
-  void Drop(const cFrame *Frame);
+  void Drop(cFrame *Frame);
     // Drops the Frame that has just been fetched with Get().
   };
 
