@@ -217,3 +217,6 @@ Oleg Assovski <assen@bitcom.msk.ru>
 
 Adrian Stabiszewski <as@nitegate.de>
  for fixing the SVDRP GRAB command in case the video device can't be opened
+
+Bernd Schweikert <bernd.schweikert@dit-gmbh.de>
+ for adding 'Ca' code 201 for 'Cryptoworks, GOD-DIGITAL' to 'ca.conf'

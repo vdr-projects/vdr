@@ -1066,3 +1066,8 @@ Video Disk Recorder Revision History
   modes (besides the default "Free To Air" mode, which is always assumed to be
   available on any DVB card).
 - Updated French language texts (thanks to Jean-Claude Repetto).
+
+2002-03-08: Version 1.0.0pre4
+
+- Added 'Ca' code 201 for 'Cryptoworks, GOD-DIGITAL' to 'ca.conf' (thanks to
+  Bernd Schweikert).
