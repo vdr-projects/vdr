@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.36 2000/11/05 18:30:58 kls Exp $
+ * $Id: dvbapi.c 1.37 2000/11/12 12:59:50 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -1091,6 +1091,8 @@ cDvbApi::cDvbApi(const char *VideoFileName, const char *VbiFileName)
   pidRecord = pidReplay = 0;
   fromRecord = toRecord = -1;
   fromReplay = toReplay = -1;
+  ca = 0;
+  priority = -1;
   videoDev = open(VideoFileName, O_RDWR | O_NONBLOCK);
   if (videoDev >= 0) {
      siProcessor = new cSIProcessor(VbiFileName);
@@ -1161,22 +1163,25 @@ bool cDvbApi::SetPrimaryDvbApi(int n)
   return false;
 }
 
-cDvbApi *cDvbApi::GetDvbApi(int Ca)
+cDvbApi *cDvbApi::GetDvbApi(int Ca, int Priority)
 {
   cDvbApi *d = NULL;
-  Ca--;
+  int index = Ca - 1;
   for (int i = MAXDVBAPI; --i >= 0; ) {
-      if (dvbApi[i] && !dvbApi[i]->Recording()) {
-         if (i == Ca)
-            return dvbApi[i];
-         if (Ca < 0) {
+      if (dvbApi[i]) {
+         if (i == index) { // means we need exactly _this_ device
             d = dvbApi[i];
-            if (d != PrimaryDvbApi)
+            break;
+            }
+         else if (Ca == 0) { // means any device would be acceptable
+            if (!d || !dvbApi[i]->Recording() || (d->Recording() && d->Priority() > dvbApi[i]->Priority()))
+               d = dvbApi[i];
+            if (d && d != PrimaryDvbApi && !d->Recording()) // avoids the PrimaryDvbApi if possible
                break;
             }
          }
       }
-  return d;
+  return (d && (!d->Recording() || d->Priority() < Priority || (!d->Ca() && Ca))) ? d : NULL;
 }
 
 int cDvbApi::Index(void)
@@ -1746,7 +1751,7 @@ bool cDvbApi::Replaying(void)
   return pidReplay;
 }
 
-bool cDvbApi::StartRecord(const char *FileName)
+bool cDvbApi::StartRecord(const char *FileName, int Ca, int Priority)
 {
   if (Recording()) {
      esyslog(LOG_ERR, "ERROR: StartRecord() called while recording - ignored!");
@@ -1843,6 +1848,9 @@ bool cDvbApi::StartRecord(const char *FileName)
 
      fromRecord = fromRecordPipe[0];
      toRecord = toRecordPipe[1];
+
+     ca = Ca;
+     priority = Priority;
      return true;
      }
   return false;
@@ -1857,6 +1865,8 @@ void cDvbApi::StopRecord(void)
      toRecord = fromRecord = -1;
      KillProcess(pidRecord);
      pidRecord = 0;
+     ca = 0;
+     priority = -1;
      SetReplayMode(VID_PLAY_RESET); //XXX
      }
 }

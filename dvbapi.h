@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.h 1.22 2000/11/05 13:39:31 kls Exp $
+ * $Id: dvbapi.h 1.23 2000/11/12 12:52:41 kls Exp $
  */
 
 #ifndef __DVBAPI_H
@@ -59,11 +59,15 @@ public:
   static bool SetPrimaryDvbApi(int n);
          // Sets the primary DVB device to 'n' (which must be in the range
          // 1...NumDvbApis) and returns true if this was possible.
-  static cDvbApi *GetDvbApi(int Ca = 0);
+  static cDvbApi *GetDvbApi(int Ca, int Priority);
          // Selects a free DVB device, starting with the highest device number
          // (but avoiding, if possible, the PrimaryDvbApi).
-         // If Ca is not 0, the device with the given number will be returned
-         // if it is not currently recording.
+         // If Ca is not 0, the device with the given number will be returned.
+         // If all DVB devices are currently recording, the one recording the
+         // lowest priority timer (if any) that is lower than the given Priority
+         // will be returned.
+         // The caller must check whether the returned DVB device is actually
+         // recording and stop recording if necessary.
   int Index(void);
          // Returns the index of this DvbApi.
   static bool Init(void);
@@ -158,14 +162,23 @@ private:
   pid_t pidRecord, pidReplay;
   int fromRecord, toRecord;
   int fromReplay, toReplay;
+  int ca;
+  int priority;
   void SetReplayMode(int Mode);
+protected:
+  int  Ca(void) { return ca; }
+       // Returns the ca of the current recording session (0..MAXDVBAPI).
+  int  Priority(void) { return priority; }
+       // Returns the priority of the current recording session (0..99),
+       // or -1 if no recording is currently active.
 public:
   bool Recording(void);
        // Returns true if we are currently recording.
   bool Replaying(void);
        // Returns true if we are currently replaying.
-  bool StartRecord(const char *FileName);
-       // Starts recording the current channel into the given file.
+  bool StartRecord(const char *FileName, int Ca, int Priority);
+       // Starts recording the current channel into the given file, with
+       // the given ca and priority.
        // In order to be able to record longer movies,
        // a numerical suffix will be appended to the file name. The inital
        // value of that suffix will be larger than any existing file under

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.32 2000/11/11 15:41:07 kls Exp $
+ * $Id: config.c 1.33 2000/11/12 12:22:40 kls Exp $
  */
 
 #include "config.h"
@@ -294,8 +294,8 @@ cTimer::cTimer(bool Instant)
   if (stop >= 2400)
      stop -= 2400;
 //TODO VPS???
-  priority = 99;
-  lifetime = 99;
+  priority = DEFAULTPRIORITY;
+  lifetime = DEFAULTLIFETIME;
   *file = 0;
   summary = NULL;
   if (Instant && ch)
@@ -319,8 +319,8 @@ cTimer::cTimer(const cEventInfo *EventInfo)
   stop = time->tm_hour * 100 + time->tm_min;
   if (stop >= 2400)
      stop -= 2400;
-  priority = 99;
-  lifetime = 99;
+  priority = DEFAULTPRIORITY;
+  lifetime = DEFAULTLIFETIME;
   *file = 0;
   const char *Title = EventInfo->GetTitle();
   if (!isempty(Title))

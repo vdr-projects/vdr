@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.46 2000/11/11 15:22:56 kls Exp $
+ * $Id: menu.c 1.47 2000/11/12 13:03:35 kls Exp $
  */
 
 #include "menu.h"
@@ -1817,7 +1817,7 @@ cRecordControl::cRecordControl(cDvbApi *DvbApi, cTimer *Timer)
   timer->SetRecording(true);
   Channels.SwitchTo(timer->channel, dvbApi);
   cRecording Recording(timer);
-  if (dvbApi->StartRecord(Recording.FileName()))
+  if (dvbApi->StartRecord(Recording.FileName(), Channels.GetByNumber(timer->channel)->ca, timer->priority))
      Recording.WriteSummary();
   Interface->DisplayRecording(dvbApi->Index(), true);
 }
@@ -1863,8 +1863,9 @@ bool cRecordControls::Start(cTimer *Timer)
   cChannel *channel = Channels.GetByNumber(ch);
 
   if (channel) {
-     cDvbApi *dvbApi = cDvbApi::GetDvbApi(channel->ca);
+     cDvbApi *dvbApi = cDvbApi::GetDvbApi(channel->ca, Timer ? Timer->priority : DEFAULTPRIORITY);
      if (dvbApi) {
+        Stop(dvbApi);
         for (int i = 0; i < MAXDVBAPI; i++) {
             if (!RecordControls[i]) {
                RecordControls[i] = new cRecordControl(dvbApi, Timer);
@@ -1887,6 +1888,18 @@ void cRecordControls::Stop(const char *InstantId)
          const char *id = RecordControls[i]->InstantId();
          if (id && strcmp(id, InstantId) == 0)
             RecordControls[i]->Stop();
+         }
+      }
+}
+
+void cRecordControls::Stop(cDvbApi *DvbApi)
+{
+  for (int i = 0; i < MAXDVBAPI; i++) {
+      if (RecordControls[i]) {
+         if (RecordControls[i]->Uses(DvbApi)) {
+            isyslog(LOG_INFO, "stopping recording on DVB device %d due to higher priority", DvbApi->Index() + 1);
+            RecordControls[i]->Stop();
+            }
          }
       }
 }

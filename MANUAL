@@ -203,7 +203,9 @@ Video Disk Recorder User's Manual
              to free space for a new recording. If the disk is full and a new
              recording needs more space, an existing recording with the lowest
              Priority (and which has exceeded its guaranteed Lifetime) will be
-             removed.
+             removed. If all available DVB cards are currently occupied, a
+             timer with a higher priority will interrupt the timer with the
+             lowest priority in order to start recording.
   Lifetime:  The number of days (0..99) a recording made through this timer is
              guaranteed to remain on disk before it is automatically removed
              to free up space for a new recording. Note that setting this

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.32 2000/11/11 14:39:40 kls Exp $
+ * $Id: config.h 1.33 2000/11/12 12:22:24 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -94,6 +94,9 @@ public:
   bool Save(FILE *f);
   bool Switch(cDvbApi *DvbApi = NULL);
   };
+
+#define DEFAULTPRIORITY 99
+#define DEFAULTLIFETIME 99
 
 class cTimer : public cListObject {
 private:
