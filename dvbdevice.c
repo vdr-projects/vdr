@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.6 2002/08/16 09:22:29 kls Exp $
+ * $Id: dvbdevice.c 1.7 2002/08/16 09:27:53 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -580,12 +580,11 @@ bool cDvbDevice::SetPlayMode(ePlayMode PlayMode)
 
   switch (PlayMode) {
     case pmNone:
-         if (playMode == pmAudioOnly) {
-            // special "handling" to return from PCM replay
-            CHECK(ioctl(fd_video, VIDEO_SET_BLANK, true));
-            CHECK(ioctl(fd_video, VIDEO_SELECT_SOURCE, VIDEO_SOURCE_MEMORY));
-            CHECK(ioctl(fd_video, VIDEO_PLAY));
-            }
+         // special handling to return from PCM replay:
+         CHECK(ioctl(fd_video, VIDEO_SET_BLANK, true));
+         CHECK(ioctl(fd_video, VIDEO_SELECT_SOURCE, VIDEO_SOURCE_MEMORY));
+         CHECK(ioctl(fd_video, VIDEO_PLAY));
+
          CHECK(ioctl(fd_video, VIDEO_STOP, true));
          CHECK(ioctl(fd_audio, AUDIO_STOP, true));
          CHECK(ioctl(fd_video, VIDEO_CLEAR_BUFFER));
