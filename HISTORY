@@ -83,7 +83,7 @@ Video Disk Recorder Revision History
   with file names that contain blanks, all blanks in recording file names are
   converted to underscores.
 - The polarization can now be given in uppercase or lowercase characters in
-  channels.conf.
+  'channels.conf'.
 - Fixed buffer initialization to work with DVB driver version 0.6.
 - Implemented the "Simple Video Disk Recorder Protocol" (SVDRP) to control
   the VDR over a network connection.
@@ -147,7 +147,7 @@ Video Disk Recorder Revision History
   the OSD to no longer be displayed (thanks to Niels de Carpentier).
 - Added the '-m486' option to the compiler call.
 - If a channel name contains a colon (':') it is now replaced with a '|' in
-  channels.conf.
+  'channels.conf'.
 - Not everybody appears to like the "page scrolling" mechanism introduced by
   Heino Goldenstein in version 0.61, so this is now configurable via the "Setup"
   menu.
@@ -622,7 +622,8 @@ Video Disk Recorder Revision History
 - Fixed calculating the timeout value in cFile::FileReady() (thanks to
   Wolfgang Henselmann-Weiss).
 
-2001-08-07: Version 0.91
+2001-08-08: Version 0.91
 
 - Fixed displaying colored button texts that are too long.
 - Suppressing replay progress display when replaying a DVD.
+- Updated channels.conf.cable (thanks to Uwe Scheffler).

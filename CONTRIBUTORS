@@ -116,3 +116,6 @@ Aaron Holtzman
 
 Wolfgang Henselmann-Weiss <Wolfgang_Henselmann@betaresearch.de>
  for fixing calculating the timeout value in cFile::FileReady()
+
+Uwe Scheffler <UweScheffler@t-online.de>
+ for his help in keeping 'channels.conf.cable' up to date
