@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: pat.c 1.8 2004/03/07 16:59:00 kls Exp $
+ * $Id: pat.c 1.9 2004/05/23 09:29:04 kls Exp $
  */
 
 #include "pat.h"
@@ -211,6 +211,7 @@ int cCaDescriptorHandler::AddCaDescriptors(cCaDescriptors *CaDescriptors)
 int cCaDescriptorHandler::GetCaDescriptors(int Source, int Transponder, int ServiceId, const unsigned short *CaSystemIds, int BufSize, uchar *Data, bool &StreamFlag)
 {
   cMutexLock MutexLock(&mutex);
+  StreamFlag = false;
   for (cCaDescriptors *ca = First(); ca; ca = Next(ca)) {
       if (ca->Is(Source, Transponder, ServiceId))
          return ca->GetCaDescriptors(CaSystemIds, BufSize, Data, StreamFlag);
@@ -326,8 +327,8 @@ void cPatFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
         int Ppid = pmt.getPCRPid();
         int Apids[MAXAPIDS] = { 0 };
         int Dpids[MAXAPIDS] = { 0 };
-        char ALangs[MAXAPIDS][4];
-        char DLangs[MAXAPIDS][4];
+        char ALangs[MAXAPIDS][4] = { "" };
+        char DLangs[MAXAPIDS][4] = { "" };
         int Tpid = 0;
         int NumApids = 0;
         int NumDpids = 0;
@@ -343,7 +344,6 @@ void cPatFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                       {
                       if (NumApids < MAXAPIDS) {
                          Apids[NumApids] = stream.getPid();
-                         *ALangs[NumApids] = 0;
                          SI::Descriptor *d;
                          for (SI::Loop::Iterator it; (d = stream.streamDescriptors.getNext(it)); ) {
                              switch (d->getDescriptorTag()) {
