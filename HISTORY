@@ -1999,3 +1999,6 @@ Video Disk Recorder Revision History
 - Made the log message "OSD window width must be a multiple of 4..." a debug message
   instead of an error message, so it can be avoided by using a log level less than 3.
 - Updated Greek language texts (thanks to Dimitrios Dimitrakos).
+- Fixed faulty behaviour of the "Mute" key in case the channel display is visible
+  (thanks to Florian Bartels for reporting this one and Sascha Volkenandt for
+  helping to fix it).

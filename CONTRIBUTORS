@@ -556,3 +556,11 @@ Torsten Herz <torsten.herz@web.de>
 
 Steffen Becker <stbecker@rbg.informatik.tu-darmstadt.de>
  for reporting a problem with CPU load peaks (in the EPG scanner)
+
+Florian Bartels <Florian.Bartels@envisage.de>
+ for reporting a faulty behaviour of the "Mute" key in case the channel display
+ is visible
+
+Sascha Volkenandt <sascha@akv-soft.de>
+ for helping to fix a faulty behaviour of the "Mute" key in case the channel display
+ is visible

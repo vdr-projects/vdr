@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.146 2003/03/09 14:07:46 kls Exp $
+ * $Id: vdr.c 1.147 2003/03/30 10:43:58 kls Exp $
  */
 
 #include <getopt.h>
@@ -530,14 +530,17 @@ int main(int argc, char *argv[])
           case kVolDn:
           case kMute:
                if (key == kMute) {
-                  if (!cDevice::PrimaryDevice()->ToggleMute() && !Menu)
+                  if (!cDevice::PrimaryDevice()->ToggleMute() && !Menu) {
+                     key = kNone; // nobody else needs to see these keys
                      break; // no need to display "mute off"
+                     }
                   }
                else
                   cDevice::PrimaryDevice()->SetVolume(NORMALKEY(key) == kVolDn ? -VOLUMEDELTA : VOLUMEDELTA);
                if (!Interface->IsOpen())
                   Menu = Temp = cDisplayVolume::Create();
                cDisplayVolume::Process(key);
+               key = kNone; // nobody else needs to see these keys
                break;
           // Power off:
           case kPower: isyslog("Power button pressed");
