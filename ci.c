@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 1.16 2003/08/02 10:00:01 kls Exp $
+ * $Id: ci.c 1.17 2003/10/26 13:04:23 kls Exp $
  */
 
 /* XXX TODO
@@ -1004,15 +1004,15 @@ bool cCiDateTime::Process(int Length, const uint8_t *Data)
 class cCiMMI : public cCiSession {
 private:
   char *GetText(int &Length, const uint8_t **Data);
-  cCiMenu *menu;
-  cCiEnquiry *enquiry;
+  cCiMenu *menu, *fetchedMenu;
+  cCiEnquiry *enquiry, *fetchedEnquiry;
 public:
   cCiMMI(int SessionId, cCiTransportConnection *Tc);
   virtual ~cCiMMI();
   virtual bool Process(int Length = 0, const uint8_t *Data = NULL);
   virtual bool HasUserIO(void) { return menu || enquiry; }
-  cCiMenu *Menu(void);
-  cCiEnquiry *Enquiry(void);
+  cCiMenu *Menu(bool Clear = false);
+  cCiEnquiry *Enquiry(bool Clear = false);
   bool SendMenuAnswer(uint8_t Selection);
   bool SendAnswer(const char *Text);
   };
@@ -1021,13 +1021,21 @@ cCiMMI::cCiMMI(int SessionId, cCiTransportConnection *Tc)
 :cCiSession(SessionId, RI_MMI, Tc)
 {
   dbgprotocol("New MMI (session id %d)\n", SessionId);
-  menu = NULL;
-  enquiry = NULL;
+  menu = fetchedMenu = NULL;
+  enquiry = fetchedEnquiry = NULL;
 }
 
 cCiMMI::~cCiMMI()
 {
+  if (fetchedMenu) {
+     cMutexLock MutexLock(&fetchedMenu->mutex);
+     fetchedMenu->mmi = NULL;
+     }
   delete menu;
+  if (fetchedEnquiry) {
+     cMutexLock MutexLock(&fetchedEnquiry->mutex);
+     fetchedEnquiry->mmi = NULL;
+     }
   delete enquiry;
 }
 
@@ -1123,18 +1131,26 @@ bool cCiMMI::Process(int Length, const uint8_t *Data)
   return true;
 }
 
-cCiMenu *cCiMMI::Menu(void)
+cCiMenu *cCiMMI::Menu(bool Clear)
 {
-  cCiMenu *m = menu;
-  menu = NULL;
-  return m;
+  if (Clear)
+     fetchedMenu = NULL;
+  else if (menu) {
+     fetchedMenu = menu;
+     menu = NULL;
+     }
+  return fetchedMenu;
 }
 
-cCiEnquiry *cCiMMI::Enquiry(void)
+cCiEnquiry *cCiMMI::Enquiry(bool Clear)
 {
-  cCiEnquiry *e = enquiry;
-  enquiry = NULL;
-  return e;
+  if (Clear)
+     fetchedEnquiry = NULL;
+  else if (enquiry) {
+     fetchedEnquiry = enquiry;
+     enquiry = NULL;
+     }
+  return fetchedEnquiry;
 }
 
 bool cCiMMI::SendMenuAnswer(uint8_t Selection)
@@ -1170,6 +1186,9 @@ cCiMenu::cCiMenu(cCiMMI *MMI, bool Selectable)
 
 cCiMenu::~cCiMenu()
 {
+  cMutexLock MutexLock(&mutex);
+  if (mmi)
+     mmi->Menu(true);
   free(titleText);
   free(subTitleText);
   free(bottomText);
@@ -1188,6 +1207,7 @@ bool cCiMenu::AddEntry(char *s)
 
 bool cCiMenu::Select(int Index)
 {
+  cMutexLock MutexLock(&mutex);
   if (mmi && -1 <= Index && Index < numEntries)
      return mmi->SendMenuAnswer(Index + 1);
   return false;
@@ -1210,11 +1230,15 @@ cCiEnquiry::cCiEnquiry(cCiMMI *MMI)
 
 cCiEnquiry::~cCiEnquiry()
 {
+  cMutexLock MutexLock(&mutex);
+  if (mmi)
+     mmi->Enquiry(true);
   free(text);
 }
 
 bool cCiEnquiry::Reply(const char *s)
 {
+  cMutexLock MutexLock(&mutex);
   return mmi ? mmi->SendAnswer(s) : false;
 }
 
