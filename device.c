@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.96 2005/02/26 11:45:10 kls Exp $
+ * $Id: device.c 1.97 2005/02/26 16:19:57 kls Exp $
  */
 
 #include "device.h"
@@ -169,7 +169,7 @@ cDevice::cDevice(void)
   player = NULL;
   pesAssembler = new cPesAssembler;
   ClrAvailableTracks();
-  currentAudioTrack = ttAudioFirst;
+  currentAudioTrack = ttNone;
   currentAudioTrackMissingCount = 0;
 
   for (int i = 0; i < MAXRECEIVERS; i++)
@@ -598,13 +598,13 @@ eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
         if (LiveView && IsPrimaryDevice()) {
            // Set the available audio tracks:
            ClrAvailableTracks();
-           currentAudioTrack = ttAudioFirst;
            for (int i = 0; i < MAXAPIDS; i++)
                 SetAvailableTrack(ttAudio, i, Channel->Apid(i), Channel->Alang(i));
            if (Setup.UseDolbyDigital) {
               for (int i = 0; i < MAXDPIDS; i++)
                   SetAvailableTrack(ttDolby, i, Channel->Dpid(i), Channel->Dlang(i));
               }
+           currentChannel = Channel->Number();
            EnsureAudioTrack(true);
            }
         }
@@ -705,6 +705,7 @@ void cDevice::ClrAvailableTracks(bool DescriptionsOnly)
      pre_1_3_19_PrivateStream = false;
      SetAudioChannel(0); // fall back to stereo
      currentAudioTrackMissingCount = 0;
+     currentAudioTrack = ttNone;
      }
 }
 
@@ -717,12 +718,14 @@ bool cDevice::SetAvailableTrack(eTrackType Type, int Index, uint16_t Id, const c
         strn0cpy(availableTracks[t].language, Language, sizeof(availableTracks[t].language));
      if (Description)
         strn0cpy(availableTracks[t].description, Description, sizeof(availableTracks[t].description));
-     if (Id)
+     if (Id) {
         availableTracks[t].id = Id; // setting 'id' last to avoid the need for extensive locking
-     if (!availableTracks[currentAudioTrack].id && currentAudioTrackMissingCount++ > NumAudioTracks() * 10)
-        EnsureAudioTrack();
-     else if (t == currentAudioTrack)
-        currentAudioTrackMissingCount = 0;
+        int numAudioTracks = NumAudioTracks();
+        if (!availableTracks[currentAudioTrack].id && numAudioTracks && currentAudioTrackMissingCount++ > numAudioTracks * 10)
+           EnsureAudioTrack();
+        else if (t == currentAudioTrack)
+           currentAudioTrackMissingCount = 0;
+        }
      return true;
      }
   else
@@ -920,7 +923,7 @@ int cDevice::PlayPesPacket(const uchar *Data, int Length, bool VideoOnly)
                uchar SubStreamId = Data[PayloadOffset];
                uchar SubStreamType = SubStreamId & 0xF0;
                uchar SubStreamIndex = SubStreamId & 0x1F;
-
+        
                // Compatibility mode for old VDR recordings, where 0xBD was only AC3:
 pre_1_3_19_PrivateStreamDeteced:
                if (pre_1_3_19_PrivateStream) {
@@ -928,7 +931,6 @@ pre_1_3_19_PrivateStreamDeteced:
                   SubStreamType = 0x80;
                   SubStreamIndex = 0;
                   }
-
                switch (SubStreamType) {
                  case 0x20: // SPU
                  case 0x30: // SPU
@@ -1028,7 +1030,7 @@ int cDevice::PlayPes(const uchar *Data, int Length, bool VideoOnly)
   if (i < Length)
      pesAssembler->Put(Data + i, Length - i);
   return Length;
- }
+}
 
 int cDevice::Ca(void) const
 {
