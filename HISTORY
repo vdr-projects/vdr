@@ -2097,4 +2097,6 @@ Video Disk Recorder Revision History
 - Fixed handling dedicated keys.
 - Now turning off live PIDs when replaying. This avoids short spikes from other
   channels when switching between Transfer Mode channels, and also lets an ongoing
-  replay continue even if a recording is started on the primary card.
+  replay continue even if a recording is started on the primary device.
+- The RCU channel display no longer changes when a recording on a different
+  channel starts on the primary device.
