@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.60 2004/10/17 09:39:10 kls Exp $
+ * $Id: device.c 1.61 2004/10/23 10:15:31 kls Exp $
  */
 
 #include "device.h"
@@ -595,8 +595,8 @@ bool cDevice::AttachPlayer(cPlayer *Player)
      if (player)
         Detach(player);
      player = Player;
-     player->device = this;
      SetPlayMode(player->playMode);
+     player->device = this;
      player->Activate(true);
      return true;
      }

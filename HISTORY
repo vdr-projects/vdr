@@ -3046,3 +3046,5 @@ Video Disk Recorder Revision History
 - Added some missing 'const' to cChannel.
 - Added a sample setup for 'DisiCon-4 Single Cable Network' to 'diseqc.conf'
   (thanks to Oliver Endriss).
+- Fixed attaching a cPlayer to a cDevice, so that 'Operation not permited'
+  errors don't occur any more (thanks to Marco Schlüßler).
