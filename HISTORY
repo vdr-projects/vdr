@@ -3169,3 +3169,5 @@ Video Disk Recorder Revision History
 - Fixed the spelling of 'canceling' (thanks to Wayne Keer for reporting this one).
 - Re-introduced a sleep to cDvbPlayer::Action() to avoid high CPU load in still
   picture mode (thanks to Reinhard Nissl for reporting this one).
+- Fixed a possible race condition in generating the DVB device names (thanks to
+  Rainer Zocholl for reporting this one).

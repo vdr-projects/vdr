@@ -345,6 +345,7 @@ Rainer Zocholl <vdrcontrib@zocki.toppoint.de>
  replaying in time shift mode
  for suggesting that VDR should stop if one of the configuration files can't be
  read correctly at program startup
+ for reporting a possible race condition in generating the DVB device names
 
 Oleg Assovski <assen@bitcom.msk.ru>
  for adding EPG scanning for another 4 days

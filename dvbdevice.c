@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.105 2004/11/20 11:41:37 kls Exp $
+ * $Id: dvbdevice.c 1.106 2004/11/27 10:24:47 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -46,16 +46,19 @@ extern "C" {
 #define DEV_DVB_AUDIO     "audio"
 #define DEV_DVB_CA        "ca"
 
-static const char *DvbName(const char *Name, int n)
-{
-  static char buffer[PATH_MAX];
-  snprintf(buffer, sizeof(buffer), "%s%d/%s%d", DEV_DVB_ADAPTER, n, Name, 0);
-  return buffer;
-}
+class cDvbName {
+private:
+  char buffer[PATH_MAX];
+public:
+  cDvbName(const char *Name, int n) {
+    snprintf(buffer, sizeof(buffer), "%s%d/%s%d", DEV_DVB_ADAPTER, n, Name, 0);
+    }
+  const char *operator*() { return buffer; }
+  };
 
 static int DvbOpen(const char *Name, int n, int Mode, bool ReportError = false)
 {
-  const char *FileName = DvbName(Name, n);
+  const char *FileName = *cDvbName(Name, n);
   int fd = open(FileName, Mode);
   if (fd < 0 && ReportError)
      LOG_ERROR_STR(FileName);
@@ -406,7 +409,7 @@ cDvbDevice::cDvbDevice(int n)
      dvb_frontend_info feinfo;
      if (ioctl(fd_frontend, FE_GET_INFO, &feinfo) >= 0) {
         frontendType = feinfo.type;
-        ciHandler = cCiHandler::CreateCiHandler(DvbName(DEV_DVB_CA, n));
+        ciHandler = cCiHandler::CreateCiHandler(*cDvbName(DEV_DVB_CA, n));
         dvbTuner = new cDvbTuner(fd_frontend, CardIndex(), frontendType, ciHandler);
         }
      else
@@ -449,7 +452,7 @@ bool cDvbDevice::Initialize(void)
   int i;
   for (i = 0; i < MAXDVBDEVICES; i++) {
       if (UseDevice(NextCardIndex())) {
-         if (Probe(DvbName(DEV_DVB_FRONTEND, i))) {
+         if (Probe(*cDvbName(DEV_DVB_FRONTEND, i))) {
             new cDvbDevice(i);
             found++;
             }
@@ -659,7 +662,7 @@ bool cDvbDevice::SetPid(cPidHandle *Handle, int Type, bool On)
 
 int cDvbDevice::OpenFilter(u_short Pid, u_char Tid, u_char Mask)
 {
-  const char *FileName = DvbName(DEV_DVB_DEMUX, CardIndex());
+  const char *FileName = *cDvbName(DEV_DVB_DEMUX, CardIndex());
   int f = open(FileName, O_RDWR | O_NONBLOCK);
   if (f >= 0) {
      dmx_sct_filter_params sctFilterParams;
