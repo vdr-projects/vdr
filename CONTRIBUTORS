@@ -1043,3 +1043,6 @@ Martin Dauskardt <md001@gmx.de>
 
 Maynard Cedric <maynard.cedric@wanadoo.fr>
  for reporting a problem in handling the color button texts in cMenuEditStrItem
+
+Jörg Knitter <joerg.knitter@gmx.de>
+ for reporting a problem in case the video partition is mounted with "iocharset=utf8"

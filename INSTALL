@@ -20,7 +20,12 @@ $LANG or $LC_CTYPE environment variable, and if it contains something
 like "de_DE.UTF-8", make sure you set it to something like "de_DE.iso8859-1"
 or whatever single byte character mode you want. If you run VDR with
 UTF-8 enabled, it may crash in case it encounters EPG or channel data
-that contains non-7-bit ASCII characters.
+that contains non-7-bit ASCII characters. Another problem may occur if
+you have mounted your video partition with "iocharset=utf8". In that case
+recordings that contain umlauts or other non-seven-bit ASCII characters
+may be displayed wrong, or not at all. Please make sure you mount your
+video partition with "iocharset=iso8859-1" or whatever single byte character
+mode you want.
 
 Compiling and running the program:
 ----------------------------------
