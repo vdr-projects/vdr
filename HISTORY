@@ -3127,3 +3127,4 @@ Video Disk Recorder Revision History
 - Added missing calls to cStatus::MsgOsdClear() in cSkins::Message() (thanks
   to Joachim Wilke for reporting this one).
 - Fixed the cDvbSpuDecoder (thanks to Marco Schlüßler).
+- Fixed handling of pmAudioOnlyBlack (thanks to Stefan Huelswitt).

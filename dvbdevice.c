@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.102 2004/10/30 14:53:30 kls Exp $
+ * $Id: dvbdevice.c 1.103 2004/11/06 13:16:25 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -897,10 +897,9 @@ bool cDvbDevice::SetPlayMode(ePlayMode PlayMode)
          CHECK(ioctl(fd_audio, AUDIO_SET_MUTE, false));
          break;
     case pmAudioVideo:
+    case pmAudioOnlyBlack:
          if (playMode == pmNone)
             TurnOffLiveMode();
-         // continue with next...
-    case pmAudioOnlyBlack:
          CHECK(ioctl(fd_video, VIDEO_SET_BLANK, true));
          CHECK(ioctl(fd_audio, AUDIO_SELECT_SOURCE, AUDIO_SOURCE_MEMORY));
          CHECK(ioctl(fd_audio, AUDIO_SET_AV_SYNC, PlayMode == pmAudioVideo));
