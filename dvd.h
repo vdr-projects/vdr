@@ -6,7 +6,7 @@
  *
  * Initially written by Andreas Schultz <aschultz@warp10.net>
  *
- * $Id: dvd.h 1.1 2001/08/03 12:35:42 kls Exp $
+ * $Id: dvd.h 1.2 2001/08/05 15:00:23 kls Exp $
  */
 
 #ifndef __DVD_H
@@ -28,19 +28,22 @@ private:
   ifo_handle_t *vmg_file;
   ifo_handle_t *vts_file;
   int titleset;
+  static int Command(int Cmd);
 public:
   cDVD(void);
   ~cDVD();
+  static void SetDeviceName(const char *DeviceName);
+  static const char *DeviceName(void);
+  static bool DriveExists(void);
+  static bool DiscOk(void);
+  static void Eject(void);
   void Open(void);
   void Close(void);
-  void Eject(void);
   bool isValid(void) { return (dvd != NULL); }
   ifo_handle_t *openVMG(void);
   ifo_handle_t *openVTS(int TitleSet);
   dvd_file_t *openTitle(int Title, dvd_read_domain_t domain);
   static cDVD *getDVD(void);
-  static void SetDeviceName(const char *DeviceName);
-  static const char *DeviceName(void);
   };
 
 #endif //__DVD_H

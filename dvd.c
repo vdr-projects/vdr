@@ -6,7 +6,7 @@
  *
  * Initially written by Andreas Schultz <aschultz@warp10.net>
  *
- * $Id: dvd.c 1.1 2001/08/03 12:35:38 kls Exp $
+ * $Id: dvd.c 1.2 2001/08/05 15:00:45 kls Exp $
  */
 
 //XXX //#define DVDDEBUG        1
@@ -46,6 +46,17 @@ cDVD::~cDVD()
   Close();
 }
 
+int cDVD::Command(int Cmd)
+{
+  int result = -1;
+  int f;
+  if ((f = open(deviceName, O_RDONLY | O_NONBLOCK)) > 0) {
+     result = ioctl(f, Cmd, 0);
+     close(f);
+     }
+  return result;
+}
+
 void cDVD::SetDeviceName(const char *DeviceName)
 {
   deviceName = strdup(DeviceName);
@@ -54,6 +65,23 @@ void cDVD::SetDeviceName(const char *DeviceName)
 const char *cDVD::DeviceName(void)
 {
   return deviceName;
+}
+
+bool cDVD::DriveExists(void)
+{
+  return access(deviceName, F_OK) == 0;
+}
+
+bool cDVD::DiscOk(void)
+{
+  return Command(CDROM_DRIVE_STATUS) == CDS_DISC_OK;
+}
+
+void cDVD::Eject(void)
+{
+  if (dvdInstance)
+     dvdInstance->Close();
+  Command(CDROMEJECT);
 }
 
 void cDVD::Open(void)
@@ -79,17 +107,6 @@ void cDVD::Close(void)
   vmg_file = NULL;
   title = NULL;
   dvd = NULL;
-}
-
-void cDVD::Eject(void)
-{
-  int fd;
-  Close();
-  // ignore all errors try our best :-)
-  if ((fd = open(deviceName, O_RDONLY)) > 0) {
-     ioctl(fd, CDROMEJECT, 0);
-     close(fd);
-     }
 }
 
 ifo_handle_t *cDVD::openVMG(void)

@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.59 2001/08/02 13:48:51 kls Exp $
+ * $Id: vdr.c 1.60 2001/08/05 12:58:12 kls Exp $
  */
 
 #include <getopt.h>
@@ -163,6 +163,10 @@ int main(int argc, char *argv[])
                           optarg[strlen(optarg) - 1] = 0;
                     break;
           case 'V': cDVD::SetDeviceName(optarg);
+                    if (!cDVD::DriveExists()) {
+                       fprintf(stderr, "vdr: DVD drive not found: %s\n", optarg);
+                       return 2;
+                       }
                     break;
           case 'w': if (isnumber(optarg)) {
                        int t = atoi(optarg);

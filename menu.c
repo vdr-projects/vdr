@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.93 2001/08/05 12:47:14 kls Exp $
+ * $Id: menu.c 1.94 2001/08/05 15:11:35 kls Exp $
  */
 
 #include "menu.h"
@@ -1794,6 +1794,7 @@ cMenuMain::cMenuMain(bool Replaying)
   Add(new cOsdItem(hk(tr("Channels")),   osChannels));
   Add(new cOsdItem(hk(tr("Timers")),     osTimers));
   Add(new cOsdItem(hk(tr("Recordings")), osRecordings));
+  if (cDVD::DriveExists())
   Add(new cOsdItem(hk(tr("DVD")),        osDVD));
   Add(new cOsdItem(hk(tr("Setup")),      osSetup));
   if (Commands.Count())
@@ -1809,7 +1810,7 @@ cMenuMain::cMenuMain(bool Replaying)
         }
   if (cVideoCutter::Active())
      Add(new cOsdItem(hk(tr(" Cancel editing")), osCancelEdit));
-  SetHelp(tr("Record"), cDvbApi::PrimaryDvbApi->CanToggleAudioTrack() ? tr("Language") : NULL, /*XXX only if DVD loaded?*/tr("Eject DVD"), cReplayControl::LastReplayed() ? tr("Resume") : NULL);
+  SetHelp(tr("Record"), cDvbApi::PrimaryDvbApi->CanToggleAudioTrack() ? tr("Language") : NULL, cDVD::DiscOk() ? tr("Eject DVD") : NULL, cReplayControl::LastReplayed() ? tr("Resume") : NULL);
   Display();
   lastActivity = time(NULL);
   SetHasHotkeys();
@@ -1865,9 +1866,8 @@ eOSState cMenuMain::ProcessKey(eKeys Key)
                                 }
                              break;
                case kYellow: if (!HasSubMenu()) {
-                                cDVD *dvd;
-                                if ((dvd = cDVD::getDVD())) {
-                                   dvd->Eject();
+                                if (cDVD::DiscOk()) {
+                                   cDVD::Eject();
                                    state = osEnd;
                                    }
                                 }
