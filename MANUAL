@@ -53,20 +53,60 @@ Video Disk Recorder User's Manual
   At any point in the menu system, pressing the "Menu" key again will
   immediately leave the menu system (discarding any pending changes).
 
+* The "Schedule" Menu
+
+  The "Schedule" menu implements VDR's "Electronic Program Guide" (EPG).
+
+  Select "Schedule" from the "Main" menu and you get a list of all upcoming
+  broadcasts on the current channel.
+
+  "Up" and "Down" can be used to scroll through this list, and pressing "Ok"
+  displays detailed information about the selected programme. Pressing "Ok"
+  again (or pressing "Back") gets you back into the "Schedule" menu.
+
+  From the "Schedule" menu, the "Green" button opens the "What's on now?"
+  menu, which displays all programmes that are currently running on all
+  channels that broadcast their programme information on the current
+  transponder, or from channels that have been current lately (VDR stores
+  all information it gathers in an internal list). The more channels you
+  have been switching through lately, the longer this list will be.
+  The "Yellow" button opens the "What's on next?" menu, which lists all
+  programmes that will start next on all channels.
+
+  Inside the "What's on now/next?" menus the "Green" button toggles between
+  the "Now" and "Next" display, and the "Yellow" button gets you back to the
+  "Schedule" menu of the current channel.
+
+  The "Red" button allows you to instantly program a timer to record the
+  selected programme. You will get into the "Edit Timer" menu in which
+  everything has already been filled in, and you can make any modifications
+  you may want to apply. Note that the Start and Stop time are offset by the
+  MarginStart and MarginStop parameters (see Setup) in order to make sure the
+  entire programme is recorded in case it doesn't exactly adhere to its
+  published start/stop times. Of course, no guarantee can be given that the
+  default margin values will be sufficient, so in case this recording is
+  really important you may want to add an extra margin ;-)
+
+  The "Blue" button can be pressed to switch to the channel with the selected
+  programme.
+
 * Selecting a Channel
 
-  There are three ways to select a channel:
+  There are four ways to select a channel:
 
   1. With no On Screen Menu displayed press the "Up" or "Down" key to switch
      to the next higher or lower channel.
   2. Press the "Menu" button to bring up the On Screen Menu, select "Channels"
      and browse through the list with the "Up" and "Down" key; to switch to the
      selected channel press "Ok".
-  2. Directly type in the channel number with the numeric keys ('0'..'9');
+  3. Directly type in the channel number with the numeric keys ('0'..'9');
      if no key is pressed for about half a second, the digits collected so
      far will define the channel number.
+  4. From the "Now", "Next" and "Event" menus (accessible through the "Schedule"
+     menu) by pressing the "Blue" button.
 
-  Pressing the '0' key toggles between the current and the previous channel.
+  Pressing the '0' key in normal viewing mode toggles between the current and
+  the previous channel.
 
   After switching to a different channel the channel number and name, as well
   as the current time are displayed at the top of the screen. If available, the
@@ -178,6 +218,9 @@ Video Disk Recorder User's Manual
              If this field is left blank, the channel name will be used to form
              the name of the recording.
 
+  A timer can also be programmed by pressing the "Red" button on the "Schedule",
+  "Now", "Next" or "Event" menus.
+
 * Parameters in the "Setup" menu
 
   Select "Setup" from the "Main" menu to enter the setup menu. From there you can
@@ -216,3 +259,13 @@ Video Disk Recorder User's Manual
 
   LnbFrequLo = 9750      The low and high LNB frequencies (in MHz)
   LnbFrequHi = 10600
+
+  SetSystemTime = 0      Defines whether the system time will be set according to
+                         the time received from the DVB data stream.
+                         0 = system time will not be set
+                         1 = system time wil be set
+                         Note that this works only if VDR is running under a user
+                         id that has permisson to set the system time.
+  MarginStart = 2        Defines how many minutes before the official start time
+  MarginStop = 10        of a broadcast VDR shall start recording, and how long
+                         after the official end time it shall stop recording.

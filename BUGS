@@ -4,3 +4,5 @@ Video Disk Recorder - Known Bugs
 * Sometimes the picture "jumps" as if a frame is skipped.
   Presumably this is a problem in the card driver or firmware?
 
+* The first picture captured with the GRAB command in SVDRP
+  is empty. Also, these pictures appear to be too dark.

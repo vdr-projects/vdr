@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 1.2 2000/10/08 16:45:50 kls Exp $
+ * $Id: thread.c 1.3 2000/10/28 15:26:02 kls Exp $
  */
 
 #include "thread.h"
@@ -88,14 +88,25 @@ void cThread::WakeUp(void)
 
 cThreadLock::cThreadLock(cThread *Thread)
 {
-  thread = Thread;
-  locked = Thread->Lock();
+  thread = NULL;
+  locked = false;
+  Lock(Thread);
 }
 
 cThreadLock::~cThreadLock()
 {
-  if (locked)
+  if (thread && locked)
      thread->Unlock();
+}
+
+bool cThreadLock::Lock(cThread *Thread)
+{
+  if (Thread && !thread) {
+     thread = Thread;
+     locked = Thread->Lock();
+     return locked;
+     }
+  return false;
 }
 
 bool cThreadLock::Locked(void)

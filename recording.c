@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.19 2000/10/08 12:20:53 kls Exp $
+ * $Id: recording.c 1.20 2000/11/01 16:00:36 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -86,6 +86,13 @@ cRecording::cRecording(cTimer *Timer)
   titleBuffer = NULL;
   fileName = NULL;
   name = strdup(Timer->file);
+  // substitute characters that would cause problems in file names:
+  for (char *p = name; *p; p++) {
+      switch (*p) {
+        case '\n': *p = ' '; break;
+        case '/':  *p = '-'; break; 
+        }
+      }
   summary = Timer->summary ? strdup(Timer->summary) : NULL;
   if (summary)
      strreplace(summary, '|', '\n');

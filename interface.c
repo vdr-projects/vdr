@@ -4,14 +4,12 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.c 1.25 2000/10/08 16:34:17 kls Exp $
+ * $Id: interface.c 1.28 2000/11/01 15:27:52 kls Exp $
  */
 
 #include "interface.h"
+#include <ctype.h>
 #include <unistd.h>
-#include "eit.h"
-
-cEIT EIT;
 
 cInterface *Interface = NULL;
 
@@ -19,6 +17,7 @@ cInterface::cInterface(int SVDRPport)
 {
   open = 0;
   cols[0] = 0;
+  width = height = 0;
   keyFromWait = kNone;
   rcIo = NULL;
   SVDRP = NULL;
@@ -43,15 +42,17 @@ cInterface::~cInterface()
 void cInterface::Open(int NumCols, int NumLines)
 {
   if (!open++)
-     cDvbApi::PrimaryDvbApi->Open(NumCols, NumLines);
+     cDvbApi::PrimaryDvbApi->Open(width = NumCols, height = NumLines);
 }
 
 void cInterface::Close(void)
 {
   if (open == 1)
      Clear();
-  if (!--open)
+  if (!--open) {
      cDvbApi::PrimaryDvbApi->Close();
+     width = height = 0;
+     }
 }
 
 unsigned int cInterface::GetCh(bool Wait, bool *Repeat, bool *Release)
@@ -114,6 +115,18 @@ void cInterface::ClearEol(int x, int y, eDvbColor Color)
      cDvbApi::PrimaryDvbApi->ClrEol(x, y, Color);
 }
 
+void cInterface::Fill(int x, int y, int w, int h, eDvbColor Color)
+{
+  if (open)
+     cDvbApi::PrimaryDvbApi->Fill(x, y, w, h, Color);
+}
+
+void cInterface::Flush(void)
+{
+  if (open)
+     cDvbApi::PrimaryDvbApi->Flush();
+}
+
 void cInterface::SetCols(int *c)
 {
   for (int i = 0; i < MaxCols; i++) {
@@ -121,6 +134,74 @@ void cInterface::SetCols(int *c)
       if (cols[i] == 0)
          break;
       }
+}
+
+char *cInterface::WrapText(const char *Text, int Width, int *Height)
+{
+  // Wraps the Text to make it fit into the area defined by the given Width
+  // (which is given in character cells).
+  // The actual number of lines resulting from this operation is returned in
+  // Height.
+  // The returned string is newly created on the heap and the caller
+  // is responsible for deleting it once it is no longer used.
+  // Wrapping is done by inserting the necessary number of newline
+  // characters into the string.
+
+  int Lines = 1;
+  char *t = strdup(Text);
+  char *Blank = NULL;
+  char *Delim = NULL;
+  int w = 0;
+
+  Width *= cDvbApi::PrimaryDvbApi->CellWidth();
+
+  while (*t && t[strlen(t) - 1] == '\n')
+        t[strlen(t) - 1] = 0; // skips trailing newlines
+
+  for (char *p = t; *p; ) {
+      if (*p == '\n') {
+         Lines++;
+         w = 0;
+         Blank = Delim = NULL;
+         p++;
+         continue;
+         }
+      else if (isspace(*p))
+         Blank = p;
+      int cw = cDvbApi::PrimaryDvbApi->Width(*p);
+      if (w + cw > Width) {
+         if (Blank) {
+            *Blank = '\n';
+            p = Blank;
+            continue;
+            }
+         else {
+            // Here's the ugly part, where we don't have any whitespace to
+            // punch in a newline, so we need to make room for it:
+            if (Delim)
+               p = Delim + 1; // let's fall back to the most recent delimiter
+            char *s = new char[strlen(t) + 2]; // The additional '\n' plus the terminating '\0'
+            int l = p - t;
+            strncpy(s, t, l);
+            s[l] = '\n';
+            strcpy(s + l + 1, p);
+            delete t;
+            t = s;
+            p = t + l;
+            continue;
+            }
+         }
+      else
+         w += cw;
+      if (strchr("-.,:;!?_", *p)) {
+         Delim = p;
+         Blank = NULL;
+         }
+      p++;
+      }
+
+  *Height = Lines;
+  return t;
 }
 
 void cInterface::Write(int x, int y, const char *s, eDvbColor FgColor, eDvbColor BgColor)
@@ -157,7 +238,7 @@ void cInterface::WriteText(int x, int y, const char *s, eDvbColor FgColor, eDvbC
 
 void cInterface::Title(const char *s)
 {
-  int x = (MenuColumns - strlen(s)) / 2;
+  int x = (Width() - strlen(s)) / 2;
   if (x < 0)
      x = 0;
   ClearEol(0, 0, clrCyan);
@@ -206,7 +287,7 @@ bool cInterface::Confirm(const char *s)
 void cInterface::HelpButton(int Index, const char *Text, eDvbColor FgColor, eDvbColor BgColor)
 {
   if (open && Text) {
-     const int w = MenuColumns / 4;
+     const int w = Width() / 4;
      int l = (w - strlen(Text)) / 2;
      if (l < 0)
         l = 0;
@@ -334,65 +415,9 @@ void cInterface::LearnKeys(void)
       }
 }
 
-eKeys cInterface::DisplayChannel(int Number, const char *Name, bool WithInfo)
+void cInterface::DisplayChannelNumber(int Number)
 {
-  // Number = 0 is used for channel group display and no EIT
-  if (Number)
-     rcIo->Number(Number);
-  if (Name && !Recording()) {
-     Open(MenuColumns, 5);
-     cDvbApi::PrimaryDvbApi->Fill(0, 0, MenuColumns, 1, clrBackground);
-     int BufSize = MenuColumns + 1;
-     char buffer[BufSize];
-     if (Number)
-        snprintf(buffer, BufSize, "%d  %s", Number, Name ? Name : "");
-     else
-        snprintf(buffer, BufSize, "%s", Name ? Name : "");
-     Write(0, 0, buffer);
-     time_t t = time(NULL);
-     struct tm *now = localtime(&t);
-     snprintf(buffer, BufSize, "%02d:%02d", now->tm_hour, now->tm_min);
-     Write(-5, 0, buffer);
-     cDvbApi::PrimaryDvbApi->Flush();
-
-     char *RunningTitle = "", *RunningSubtitle = "", *NextTitle = "", *NextSubtitle = "";
-     int Lines = 0;
-     if (Number && WithInfo && EIT.IsValid()) {
-        if (*(RunningTitle    = EIT.GetRunningTitle()))    Lines++;
-        if (*(RunningSubtitle = EIT.GetRunningSubtitle())) Lines++;
-        if (*(NextTitle       = EIT.GetNextTitle()))       Lines++;
-        if (*(NextSubtitle    = EIT.GetNextSubtitle()))    Lines++;
-        }
-     if (Lines > 0) {
-        const int t = 6;
-        int l = 1;
-        cDvbApi::PrimaryDvbApi->Fill(0, 1, MenuColumns, Lines, clrBackground);
-        if (*RunningTitle) {
-           Write(0, l, EIT.GetRunningTime(), clrYellow, clrBackground);
-           Write(t, l, RunningTitle, clrCyan, clrBackground);
-           l++;
-           }
-        if (*RunningSubtitle) {
-           Write(t, l, RunningSubtitle, clrCyan, clrBackground);
-           l++;
-           }
-        if (*NextTitle) {
-           Write(0, l, EIT.GetNextTime(), clrYellow, clrBackground);
-           Write(t, l, NextTitle, clrCyan, clrBackground);
-           l++;
-           }
-        if (*NextSubtitle) {
-           Write(t, l, NextSubtitle, clrCyan, clrBackground);
-           }
-        cDvbApi::PrimaryDvbApi->Flush();
-        }
-     eKeys Key = Wait(5, true);
-     if (Key == kOk)
-        GetKey();
-     Close();
-     return Key;
-     }
-  return kNone;
+  rcIo->Number(Number);
 }
 
 void cInterface::DisplayRecording(int Index, bool On)

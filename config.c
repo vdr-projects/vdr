@@ -4,17 +4,14 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.26 2000/10/08 16:10:40 kls Exp $
+ * $Id: config.c 1.29 2000/11/01 18:22:43 kls Exp $
  */
 
 #include "config.h"
 #include <ctype.h>
 #include <stdlib.h>
 #include "dvbapi.h"
-#include "eit.h"
 #include "interface.h"
-
-extern cEIT EIT;
 
 // -- cKeys ------------------------------------------------------------------
 
@@ -267,15 +264,14 @@ bool cChannel::Switch(cDvbApi *DvbApi)
      isyslog(LOG_INFO, "switching to channel %d", number);
      CurrentChannel = number;
      for (int i = 3; i--;) {
-         if (DvbApi->SetChannel(frequency, polarization, diseqc, srate, vpid, apid, ca, pnr)) {
-            EIT.SetProgramNumber(pnr);
+         if (DvbApi->SetChannel(frequency, polarization, diseqc, srate, vpid, apid, ca, pnr))
             return true;
-            }
          esyslog(LOG_ERR, "retrying");
          }
      return false;
      }
-  Interface->Info(DvbApi->Recording() ? "Channel locked (recording)!" : name);
+  if (DvbApi->Recording())
+     Interface->Info("Channel locked (recording)!");
   return false;
 }
 
@@ -304,6 +300,47 @@ cTimer::cTimer(bool Instant)
   summary = NULL;
   if (Instant && ch)
      snprintf(file, sizeof(file), "%s%s", Setup.MarkInstantRecord ? "@" : "", ch->name);
+}
+
+cTimer::cTimer(const cEventInfo *EventInfo)
+{
+  startTime = stopTime = 0;
+  recording = false;
+  active = true;
+  cChannel *ch = Channels.GetByServiceID(EventInfo->GetServiceID());
+  channel = ch ? ch->number : 0;
+  time_t tstart = EventInfo->GetTime();
+  time_t tstop = tstart + EventInfo->GetDuration() + Setup.MarginStop * 60;
+  tstart -= Setup.MarginStart * 60;
+  struct tm *time = localtime(&tstart);
+  day = time->tm_mday;
+  start = time->tm_hour * 100 + time->tm_min;
+  time = localtime(&tstop);
+  stop = time->tm_hour * 100 + time->tm_min;
+  if (stop >= 2400)
+     stop -= 2400;
+  priority = 99;
+  lifetime = 99;
+  *file = 0;
+  const char *Title = EventInfo->GetTitle();
+  if (!isempty(Title))
+     strn0cpy(file, EventInfo->GetTitle(), sizeof(file));
+  summary = NULL;
+  const char *Subtitle = EventInfo->GetSubtitle();
+  if (isempty(Subtitle))
+     Subtitle = "";
+  const char *Summary = EventInfo->GetExtendedDescription();
+  if (isempty(Summary))
+     Summary = "";
+  if (*Subtitle || *Summary) {
+     asprintf(&summary, "%s%s%s", Subtitle, (*Subtitle && *Summary) ? "\n\n" : "", Summary);
+     char *p = summary;
+     while (*p) {
+           if (*p == '\n')
+              *p = '|';
+           p++;
+           }
+     }
 }
 
 cTimer::~cTimer()
@@ -388,14 +425,33 @@ bool cTimer::Parse(const char *s)
   char *buffer2 = NULL;
   delete summary;
   summary = NULL;
+  //XXX Apparently sscanf() doesn't work correctly if the last %a argument
+  //XXX results in an empty string (this firt occured when the EIT gathering
+  //XXX was put into a separate thread - don't know why this happens...
+  //XXX As a cure we copy the original string and add a blank.
+  //XXX If anybody can shed some light on why sscanf() failes here, I'd love
+  //XXX to hear about that!
+  char *s2 = NULL;
+  int l2 = strlen(s);
+  if (s[l2 - 2] == ':') { // note that 's' has a trailing '\n'
+     s2 = (char *)malloc(l2 + 2);
+     strcat(strn0cpy(s2, s, l2), " \n");
+     s = s2;
+     }
   if (8 <= sscanf(s, "%d:%d:%a[^:]:%d:%d:%d:%d:%a[^:\n]:%a[^\n]", &active, &channel, &buffer1, &start, &stop, &priority, &lifetime, &buffer2, &summary)) {
+     if (summary && !*skipspace(summary)) {
+        delete summary;
+        summary = NULL;
+        }
      //TODO add more plausibility checks
      day = ParseDay(buffer1);
      strn0cpy(file, buffer2, MaxFileName);
      delete buffer1;
      delete buffer2;
+     delete s2;
      return day != 0;
      }
+  delete s2;
   return false;
 }
 
@@ -550,6 +606,17 @@ cChannel *cChannels::GetByNumber(int Number)
   return NULL;
 }
 
+cChannel *cChannels::GetByServiceID(unsigned short ServiceId)
+{
+  cChannel *channel = (cChannel *)First();
+  while (channel) {
+        if (channel->pnr == ServiceId)
+           return channel;
+        channel = (cChannel *)channel->Next();
+        }
+  return NULL;
+}
+
 bool cChannels::SwitchTo(int Number, cDvbApi *DvbApi)
 {
   cChannel *channel = GetByNumber(Number);
@@ -560,14 +627,6 @@ const char *cChannels::GetChannelNameByNumber(int Number)
 {
   cChannel *channel = GetByNumber(Number);
   return channel ? channel->name : NULL;
-}
-
-eKeys cChannels::ShowChannel(int Number, bool Switched, bool Group)
-{
-  cChannel *channel = Group ? Get(Number) : GetByNumber(Number);
-  if (channel)
-     return Interface->DisplayChannel(channel->number, channel->name, !Switched || Setup.ShowInfoOnChSwitch);
-  return kNone;
 }
 
 // -- cTimers ----------------------------------------------------------------
@@ -599,6 +658,9 @@ cSetup::cSetup(void)
   MarkInstantRecord = 1;
   LnbFrequLo =  9750;
   LnbFrequHi = 10600;
+  SetSystemTime = 0;
+  MarginStart = 2;
+  MarginStop = 10;
 }
 
 bool cSetup::Parse(char *s)
@@ -613,6 +675,9 @@ bool cSetup::Parse(char *s)
      else if (!strcasecmp(Name, "MarkInstantRecord"))   MarkInstantRecord  = atoi(Value);
      else if (!strcasecmp(Name, "LnbFrequLo"))          LnbFrequLo         = atoi(Value);
      else if (!strcasecmp(Name, "LnbFrequHi"))          LnbFrequHi         = atoi(Value);
+     else if (!strcasecmp(Name, "SetSystemTime"))       SetSystemTime      = atoi(Value);
+     else if (!strcasecmp(Name, "MarginStart"))         MarginStart        = atoi(Value);
+     else if (!strcasecmp(Name, "MarginStop"))          MarginStop         = atoi(Value);
      else
         return false;
      return true;
@@ -660,6 +725,9 @@ bool cSetup::Save(const char *FileName)
         fprintf(f, "MarkInstantRecord  = %d\n", MarkInstantRecord);
         fprintf(f, "LnbFrequLo         = %d\n", LnbFrequLo);
         fprintf(f, "LnbFrequHi         = %d\n", LnbFrequHi);
+        fprintf(f, "SetSystemTime      = %d\n", SetSystemTime);
+        fprintf(f, "MarginStart        = %d\n", MarginStart);
+        fprintf(f, "MarginStop         = %d\n", MarginStop);
         fclose(f);
         isyslog(LOG_INFO, "saved setup to %s", FileName);
         return true;

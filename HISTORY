@@ -241,3 +241,27 @@ Video Disk Recorder Revision History
 - The "Blue" button in the "Main" menu can now be used to "Resume" a previously
   stopped replay session (suggested by Martin Hammerschmid).
 - The low and high LNB frequencies can now be changed in the "Setup" menu.
+
+2000-11-01: Version 0.67
+
+- The EIT information is now gathered in a separate thread.
+- The sytem time can now be synchronized to the time broadcast in the DVB data
+  stream. This can be enabled in the "Setup" menu by setting "SetSystemTime" to
+  1.  Note that this works only if VDR is running under a user id that has
+  permisson to set the system time.
+- The new item "Schedule" in the "Main" menu opens VDR's EPG (thanks to Robert
+  Schneider). See the MANUAL file for a detailed description.
+- The new setup parameters MarginStart and MarginStop define how long (in
+  minutes) before the official start time of a broadcast VDR shall begin
+  recording, and how long after the official end time it shall stop recording.
+  These are used when a recording is programmed from the "Schedules" menu.
+- The delay value in the dvb.c.071.diff patch to the driver has been increased
+  to '3', because on some systems the OSD was not displayed correctly. If you
+  are running an already patched version 0.71 driver and encounter problems
+  with the OSD, please make sure the parameter in the ddelay call is '3', not
+  '2'.
+- Fixed initializing the RCU remote control code (didn't work after switching
+  on the system).
+- Problematic characters in recording names (which can come from timers that
+  are programmed via the "Schedules" menu) are now replaced by suitable
+  substitutes.

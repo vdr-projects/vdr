@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbosd.h 1.1 2000/10/01 15:00:00 kls Exp $
+ * $Id: dvbosd.h 1.2 2000/11/01 09:13:44 kls Exp $
  */
 
 #ifndef __DVBOSD_H
@@ -56,6 +56,7 @@ public:
   void SetFont(eDvbFont Font);
   bool Dirty(void);
   void SetPixel(int x, int y, eDvbColor Color);
+  int Width(unsigned char c);
   void Text(int x, int y, const char *s, eDvbColor ColorFg = clrWhite, eDvbColor ColorBg = clrBackground);
   void Fill(int x1, int y1, int x2, int y2, eDvbColor Color);
   void Clear(void);

@@ -81,7 +81,7 @@
                  BlitBitmap(dvb, dvb->osdwin, x0, y0+i*lpb, 1);
 -                data+=bpl;
 +                data+=lpb*inc; //XXX kls: incrementing must be done in "one byte per pixel"
-+                ddelay(2); //XXX kls: without this the block is sometimes not fully displayed - firmware bug?
++                ddelay(3); //XXX kls: without this the block is sometimes not fully displayed - firmware bug?
          }
          if (brest) {
 -                LoadBitmap(dvb, BITMAP8, w, brest/bpl, inc, data);

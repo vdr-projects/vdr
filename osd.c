@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 1.9 2000/10/08 12:20:34 kls Exp $
+ * $Id: osd.c 1.11 2000/11/01 11:21:51 kls Exp $
  */
 
 #include "osd.h"
@@ -24,7 +24,7 @@ cOsdItem::cOsdItem(eOSState State)
   bgColor = clrBackground;
 }
 
-cOsdItem::cOsdItem(char *Text, eOSState State)
+cOsdItem::cOsdItem(const char *Text, eOSState State)
 {
   text = NULL;
   offset = -1;
@@ -74,7 +74,7 @@ eOSState cOsdItem::ProcessKey(eKeys Key)
 
 // --- cOsdMenu --------------------------------------------------------------
 
-cOsdMenu::cOsdMenu(char *Title, int c0, int c1, int c2, int c3, int c4)
+cOsdMenu::cOsdMenu(const char *Title, int c0, int c1, int c2, int c3, int c4)
 {
   visible = false;
   title = strdup(Title);
@@ -106,6 +106,12 @@ void cOsdMenu::SetStatus(const char *s)
   status = s ? strdup(s) : NULL;
   if (visible)
      Interface->Status(status);
+}
+
+void cOsdMenu::SetTitle(const char *Title, bool Copy)
+{
+  delete title;
+  title = Copy ? strdup(Title) : Title;
 }
 
 void cOsdMenu::SetHelp(const char *Red, const char *Green, const char *Yellow, const char *Blue)
@@ -164,7 +170,8 @@ void cOsdMenu::Display(void)
             break;
          }
      }
-  Interface->Status(status);
+  if (!isempty(status))
+     Interface->Status(status);
 }
 
 void cOsdMenu::RefreshCurrent(void)

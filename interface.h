@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.h 1.16 2000/10/08 12:15:49 kls Exp $
+ * $Id: interface.h 1.19 2000/11/01 15:27:23 kls Exp $
  */
 
 #ifndef __INTERFACE_H
@@ -19,6 +19,7 @@ class cInterface {
 public:
   enum { MaxCols = 5 };
 private:
+  int width, height;
   int open;
   int cols[MaxCols];
   eKeys keyFromWait;
@@ -33,11 +34,16 @@ public:
   ~cInterface();
   void Open(int NumCols = MenuColumns, int NumLines = MenuLines);
   void Close(void);
+  int Width(void) { return width; }
+  int Height(void) { return height; }
   eKeys GetKey(bool Wait = true);
   void PutKey(eKeys Key);
   void Clear(void);
   void ClearEol(int x, int y, eDvbColor Color = clrBackground);
+  void Fill(int x, int y, int w, int h, eDvbColor color = clrBackground);
+  void Flush(void);
   void SetCols(int *c);
+  char *WrapText(const char *Text, int Width, int *Height);
   void Write(int x, int y, const char *s, eDvbColor FgColor = clrWhite, eDvbColor BgColor = clrBackground);
   void WriteText(int x, int y, const char *s, eDvbColor FgColor = clrWhite, eDvbColor BgColor = clrBackground);
   void Title(const char *s);
@@ -47,7 +53,7 @@ public:
   bool Confirm(const char *s);
   void Help(const char *Red, const char *Green = NULL, const char *Yellow = NULL, const char *Blue = NULL);
   void LearnKeys(void);
-  eKeys DisplayChannel(int Number, const char *Name = NULL, bool WithInfo = false);
+  void DisplayChannelNumber(int Number);
   void DisplayRecording(int Index, bool On);
   bool Recording(void);
   };

@@ -26,6 +26,7 @@ Guido Fiala <gfiala@s.netic.de>
 
 Robert Schneider <Robert.Schneider@lotus.com>
  for implementing EIT support for displaying the current/next info
+ for extending EIT support to implement a complete EPG
 
 Niels de Carpentier <niels@casema.net>
  for adding a workaround for a driver timing problem in cDvbApi::Cmd()

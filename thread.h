@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.h 1.1 2000/10/08 08:36:21 kls Exp $
+ * $Id: thread.h 1.2 2000/10/28 15:08:09 kls Exp $
  */
 
 #ifndef __THREAD_H
@@ -47,8 +47,9 @@ private:
   cThread *thread;
   bool locked;
 public:
-  cThreadLock(cThread *Thread);
+  cThreadLock(cThread *Thread = NULL);
   ~cThreadLock();
+  bool Lock(cThread *Thread);
   bool Locked(void);
   };
 
