@@ -1803,3 +1803,5 @@ Video Disk Recorder Revision History
   Thanks to Régis Bossut for pointing out that with some providers the channels can
   only be distinguished through the RID.
 - The "unique channel ID" now contains an optional 5th part (the RID). See man vdr(5).
+- Updated 'channels.conf.cable' and made some channels unique using the new RID
+  (thanks to Andreas Kool for pointing out the problems).

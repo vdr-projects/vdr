@@ -474,3 +474,6 @@ Stefan Schluenss <dxr3_osd@schluenss.de>
 Régis Bossut <rbossut@auchan.com>
   for pointing out that with some providers the channels can only be distinguished
   through the RID
+
+Andreas Kool <akool@akool.de>
+  for pointing out problems with non-unique definitions in 'channels.conf.cable'
