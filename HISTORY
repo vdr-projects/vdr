@@ -994,3 +994,5 @@ Video Disk Recorder Revision History
 - When the user presses the "Power" button and there is a timer about to start
   recording within Setup.MinEventTimeout minutes, there is now a confirmation
   prompt telling the user that there is an upcoming timer event.
+- If a recording has no episode title, the trailing '~' is no longer shown in
+  the progress display.

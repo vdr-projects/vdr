@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.50 2002/02/10 14:19:06 kls Exp $
+ * $Id: recording.c 1.51 2002/02/10 15:41:23 kls Exp $
  */
 
 #include "recording.h"
@@ -459,7 +459,7 @@ const char *cRecording::Title(char Delimiter, bool NewIndicator, int Level)
   if (Level < 0 || Level == HierarchyLevels()) {
      struct tm tm_r;
      struct tm *t = localtime_r(&start, &tm_r);
-     const char *s;
+     char *s;
      if (Level > 0 && (s = strrchr(name, '~')) != NULL)
         s++;
      else
@@ -473,6 +473,11 @@ const char *cRecording::Title(char Delimiter, bool NewIndicator, int Level)
                             New,
                             Delimiter,
                             s);
+     // let's not display a trailing '~':
+     stripspace(titleBuffer);
+     s = &titleBuffer[strlen(titleBuffer) - 1];
+     if (*s == '~')
+        *s = 0;
      }
   else if (Level < HierarchyLevels()) {
      const char *s = name;
