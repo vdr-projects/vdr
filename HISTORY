@@ -2366,3 +2366,6 @@ Video Disk Recorder Revision History
   this out).
 - Fixed setting the primary device in case none of the devices provides an MPEG
   decoder (thanks to Rene Bartsch for reporting this one).
+- Fixed handling the "Red" button in the "Schedules" menu in case there are no
+  events listed for a particular channel (thanks to Christoph Hermanns for
+  reporting this one).

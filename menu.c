@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.269 2003/08/24 14:28:44 kls Exp $
+ * $Id: menu.c 1.270 2003/09/05 13:30:02 kls Exp $
  */
 
 #include "menu.h"
@@ -1250,7 +1250,7 @@ cMenuWhatsOn::cMenuWhatsOn(const cSchedules *Schedules, bool Now, int CurrentCha
 
   currentChannel = CurrentChannelNr;
   free(pArray);
-  SetHelp(tr("Record"), Now ? tr("Next") : tr("Now"), tr("Button$Schedule"), tr("Switch"));
+  SetHelp(Count() ? tr("Record") : NULL, Now ? tr("Next") : tr("Now"), tr("Button$Schedule"), tr("Switch"));
 }
 
 const cEventInfo *cMenuWhatsOn::ScheduleEventInfo(void)
@@ -1358,7 +1358,7 @@ cMenuSchedule::cMenuSchedule(void)
      cMenuWhatsOn::SetCurrentChannel(channel->Number());
      schedules = cSIProcessor::Schedules(mutexLock);
      PrepareSchedule(channel);
-     SetHelp(tr("Record"), tr("Now"), tr("Next"));
+     SetHelp(Count() ? tr("Record") : NULL, tr("Now"), tr("Next"));
      }
 }
 
@@ -1470,7 +1470,7 @@ eOSState cMenuSchedule::ProcessKey(eKeys Key)
            PrepareSchedule(channel);
            if (channel->Number() != cDevice::CurrentChannel()) {
               otherChannel = channel->Number();
-              SetHelp(tr("Record"), tr("Now"), tr("Next"), tr("Switch"));
+              SetHelp(Count() ? tr("Record") : NULL, tr("Now"), tr("Next"), tr("Switch"));
               }
            Display();
            }

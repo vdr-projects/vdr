@@ -791,3 +791,7 @@ Sebastian Frei <sebastian@schnapsleichen.de>
 Rene Bartsch <ml@bartschnet.de>
  for reporting a bug in setting the primary device in case none of the devices
  provides an MPEG decoder
+
+Christoph Hermanns <christoph.hermanns@gmx.de>
+ for reporting a bug in handling the "Red" button in the "Schedules" menu in case
+ there are no events listed for a particular channel
