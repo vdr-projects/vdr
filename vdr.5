@@ -8,7 +8,7 @@
 .\" License as specified in the file COPYING that comes with the
 .\" vdr distribution.
 .\"
-.\" $Id: vdr.5 1.1 2002/03/29 14:05:31 kls Exp $
+.\" $Id: vdr.5 1.2 2002/03/29 16:45:36 kls Exp $
 .\"
 .TH vdr 5 "29 Mar 2002" "1.0.0" "Video Disk Recorder Files"
 .SH NAME
@@ -221,6 +221,13 @@ and \fBcommand\fR is the actual command string that will be executed when this
 option is selected. The delimiting ':' may be surrounded by any number of
 white space characters.
 
+By default the menu entries in the "Commands" menu will be numbered '1'...'9'
+to make them selectable by pressing the corresponding number key. If you want
+to use your own numbering scheme (maybe to skip certain numbers), just precede
+the \fBtitle\fRs with the numbers of your choice. \fBvdr\fR will suppress its
+automatic numbering if the first entry in \fIcommands.conf\fR starts with a
+digit in the range '1'...'9', followed by a blank.
+
 In order to avoid error messages to the console, every command should have
 \fIstderr\fR redirected to \fIstdout\fR. Everything the command prints to
 \fIstdout\fR will be displayed in a result window, with \fBtitle\fR as its title.
@@ -232,6 +239,8 @@ Check for new mail: /usr/local/bin/checkmail 2>&1
 CPU status        : /usr/local/bin/cpustatus 2>&1
 .br
 Disk space        : df -h | grep '/video' | awk '{ print 100 - $5 "% free"; }'
+.br
+Calendar          : date;echo;cal
 
 Note that the commands 'checkmail' and 'cpustatus' are only \fBexamples\fR!
 Don't send emails to the author asking where to find these ;-)

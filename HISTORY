@@ -1145,3 +1145,5 @@ Video Disk Recorder Revision History
   performance under heavy system load.
 - New 'make' target 'install', which copies the manual pages and executables
   to their appropriate system locations.
+- Automatic hotkey assignment is now suppressed if the first entry in
+  commands.conf starts with a digit in the range '1'...'9', followed by a blank.
