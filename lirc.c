@@ -6,7 +6,7 @@
  *
  * LIRC support added by Carsten Koch <Carsten.Koch@icem.de>  2000-06-16.
  *
- * $Id: lirc.c 1.3 2003/04/06 15:45:10 kls Exp $
+ * $Id: lirc.c 1.4 2003/04/12 14:37:17 kls Exp $
  */
 
 #include "lirc.h"
@@ -39,6 +39,11 @@ cLircRemote::cLircRemote(char *DeviceName)
 cLircRemote::~cLircRemote()
 {
   Cancel();
+}
+
+bool cLircRemote::Ready(void)
+{
+  return f >= 0;
 }
 
 void cLircRemote::Action(void)

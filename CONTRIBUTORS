@@ -581,6 +581,8 @@ Malcolm Caldwell <malcolm.caldwell@ntu.edu.au>
 Ludwig Nussel <ludwig.nussel@web.de>
  for making the LIRC thread avoid high CPU load in case the connection to LIRC gets lost
  for fixing handling repeat function with LIRC
+ for reporting a problem with the LIRC remote control trying to learn keys even if it
+ couldn't connect to the LIRC daemon
 
 Thomas Koch <tom@harhar.net>
  for his support in keeping the Premiere World channels up to date in 'channels.conf'

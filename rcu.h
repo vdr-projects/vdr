@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: rcu.h 1.2 2002/12/07 12:21:25 kls Exp $
+ * $Id: rcu.h 1.3 2003/04/12 14:36:09 kls Exp $
  */
 
 #ifndef __RCU_H
@@ -39,6 +39,7 @@ private:
 public:
   cRcuRemote(char *DeviceName);
   virtual ~cRcuRemote();
+  virtual bool Ready(void);
   virtual bool Initialize(void);
   };
 

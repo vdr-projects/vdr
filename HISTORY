@@ -2028,3 +2028,6 @@ Video Disk Recorder Revision History
 - Updated 'channels.conf.cable' (thanks to Stefan Huﬂfeldt).
 - The 'epg.data' file is now read after all plugins have been started (thanks
   to Sascha Volkenandt).
+- The LIRC remote control no longer tries to learn keys if it can't connect to
+  the LIRC daemon (thanks to Ludwig Nussel for reporting this one). The same
+  applies to the RCU remote control in case of errors during startup.

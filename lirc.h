@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: lirc.h 1.1 2002/09/28 14:11:04 kls Exp $
+ * $Id: lirc.h 1.2 2003/04/12 14:15:20 kls Exp $
  */
 
 #ifndef __LIRC_H
@@ -21,6 +21,7 @@ private:
 public:
   cLircRemote(char *DeviceName);
   virtual ~cLircRemote();
+  virtual bool Ready(void);
   };
 
 #endif //__LIRC_H

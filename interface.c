@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.c 1.62 2003/04/06 12:47:51 kls Exp $
+ * $Id: interface.c 1.63 2003/04/12 14:17:49 kls Exp $
  */
 
 #include "interface.h"
@@ -411,6 +411,10 @@ void cInterface::QueryKeys(cRemote *Remote)
 void cInterface::LearnKeys(void)
 {
   for (cRemote *Remote = Remotes.First(); Remote; Remote = Remotes.Next(Remote)) {
+      if (!Remote->Ready()) {
+         esyslog("ERROR: remote control %s not ready!", Remote->Name());
+         continue;
+         }
       bool known = Keys.KnowsRemote(Remote->Name());
       dsyslog("remote control %s - %s", Remote->Name(), known ? "keys known" : "learning keys");
       if (!known) {
