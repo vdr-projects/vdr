@@ -260,6 +260,8 @@ Werner Fink <werner@suse.de>
  for changing thread handling to make it work with NPTL ("Native Posix Thread Library")
  for suggesting to replace usleep() calls with a pthread_cond_timedwait() based wait
  for suggesting to add more checks and polling when getting frontend events
+ for setting the VPID before the APID in live mode to avoid unnecessary
+ overhead in the firmware
 
 Rolf Hakenes <hakenes@hippomi.de>
  for providing 'libdtv' and adapting the EIT mechanisms to it

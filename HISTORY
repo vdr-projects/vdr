@@ -3155,3 +3155,5 @@ Video Disk Recorder Revision History
 - Fixed some characters in the iso8859-2 font file (thanks to Dino Ravnic).
 - Fixed some errors in the Croatian language texts (thanks to Dino Ravnic).
 - Fixed a possible recursion in cControl::Shutdown() (thanks to Sascha Volkenandt).
+- Now setting the VPID before the APID in live mode to avoid unnecessary
+  overhead in the firmware (thanks to Werner Fink).
