@@ -530,3 +530,4 @@ Video Disk Recorder Revision History
   consist of more than one data file).
 - The compile time switch VFAT has been fixed to recognize the ':' character
   in recording names, too.
+- Setting all PIDs to 0x1FFF before switching channel.
