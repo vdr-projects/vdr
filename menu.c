@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.263 2003/08/02 13:23:58 kls Exp $
+ * $Id: menu.c 1.264 2003/08/03 09:38:37 kls Exp $
  */
 
 #include "menu.h"
@@ -1562,6 +1562,7 @@ cMenuCam::cMenuCam(cCiMenu *CiMenu)
   Add(new cOsdItem(ciMenu->BottomText()));
   Display();
   dsyslog("CAM: Menu - %s", ciMenu->TitleText());
+  lastActivity = time(NULL);
 }
 
 cMenuCam::~cMenuCam()
@@ -1590,6 +1591,10 @@ eOSState cMenuCam::ProcessKey(eKeys Key)
        default: break;
        }
      }
+  if (Key != kNone)
+     lastActivity = time(NULL);
+  else if (time(NULL) - lastActivity > MENUTIMEOUT)
+     state = osEnd;
   return state;
 }
 
@@ -1607,6 +1612,7 @@ cMenuCamEnquiry::cMenuCamEnquiry(cCiEnquiry *CiEnquiry)
   SetTitle(ciEnquiry->Text() ? ciEnquiry->Text() : "CAM");
   Add(new cMenuEditNumItem("Input", input, Length, ciEnquiry->Blind()));
   Display();
+  lastActivity = time(NULL);
 }
 
 cMenuCamEnquiry::~cMenuCamEnquiry()
@@ -1635,6 +1641,10 @@ eOSState cMenuCamEnquiry::ProcessKey(eKeys Key)
        default: break;
        }
      }
+  if (Key != kNone)
+     lastActivity = time(NULL);
+  else if (time(NULL) - lastActivity > MENUTIMEOUT)
+     state = osEnd;
   return state;
 }
 

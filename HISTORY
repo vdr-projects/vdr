@@ -2254,7 +2254,7 @@ Video Disk Recorder Revision History
 - Some corrections to the Finnish OSD texts (thanks to Niko Tarnanen and Rolf
   Ahrenberg).
 
-2003-07-26: Version 1.2.2
+2003-08-03: Version 1.2.2
 
 - Fixed a bug in channel switching after Left/Right has been pressed (thanks to
   Michael Walle for reporting this one).
@@ -2281,3 +2281,4 @@ Video Disk Recorder Revision History
   with VFAT=1 (thanks to Ernst Fürst for reporting this one).
 - Now the program uses the values of VIDEODIR and PLUGINDIR defined in Makefile
   or Makefile.config as defaults (thanks to Steffen Barszus).
+- Added the usual menu timeout to the CAM menus.
