@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.27 2000/10/29 13:04:37 kls Exp $
+ * $Id: config.c 1.28 2000/11/01 13:42:52 kls Exp $
  */
 
 #include "config.h"
@@ -626,14 +626,6 @@ const char *cChannels::GetChannelNameByNumber(int Number)
 {
   cChannel *channel = GetByNumber(Number);
   return channel ? channel->name : NULL;
-}
-
-eKeys cChannels::ShowChannel(int Number, bool Switched, bool Group)
-{
-  cChannel *channel = Group ? Get(Number) : GetByNumber(Number);
-  if (channel)
-     return Interface->DisplayChannel(channel->number, channel->name, !Switched || Setup.ShowInfoOnChSwitch);
-  return kNone;
 }
 
 // -- cTimers ----------------------------------------------------------------

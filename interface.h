@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.h 1.18 2000/11/01 11:18:23 kls Exp $
+ * $Id: interface.h 1.19 2000/11/01 15:27:23 kls Exp $
  */
 
 #ifndef __INTERFACE_H
@@ -29,8 +29,6 @@ private:
   void QueryKeys(void);
   void HelpButton(int Index, const char *Text, eDvbColor FgColor, eDvbColor BgColor);
   eKeys Wait(int Seconds = 1, bool KeepChar = false);
-  eKeys DisplayDescription(const cEventInfo *EventInfo);
-  int WriteParagraph(int Line, const char *Text);
 public:
   cInterface(int SVDRPport = 0);
   ~cInterface();
@@ -42,6 +40,8 @@ public:
   void PutKey(eKeys Key);
   void Clear(void);
   void ClearEol(int x, int y, eDvbColor Color = clrBackground);
+  void Fill(int x, int y, int w, int h, eDvbColor color = clrBackground);
+  void Flush(void);
   void SetCols(int *c);
   char *WrapText(const char *Text, int Width, int *Height);
   void Write(int x, int y, const char *s, eDvbColor FgColor = clrWhite, eDvbColor BgColor = clrBackground);
@@ -53,7 +53,7 @@ public:
   bool Confirm(const char *s);
   void Help(const char *Red, const char *Green = NULL, const char *Yellow = NULL, const char *Blue = NULL);
   void LearnKeys(void);
-  eKeys DisplayChannel(int Number, const char *Name = NULL, bool WithInfo = false);
+  void DisplayChannelNumber(int Number);
   void DisplayRecording(int Index, bool On);
   bool Recording(void);
   };

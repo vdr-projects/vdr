@@ -115,11 +115,6 @@ Video Disk Recorder User's Manual
   To bring up the channel display without switching channels you can press
   the "Ok" button.
 
-  When the "current/next" information is being displayed, pressing the "Green"
-  button will display the detailed information about the current broadcast,
-  if such information is available. The "Yellow" button will do the same thing
-  for the next broadcast.
-
 * Switching through channel groups
 
   If the 'channels.conf' file contains "group separators" you can switch

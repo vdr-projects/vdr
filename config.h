@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.28 2000/10/29 09:34:10 kls Exp $
+ * $Id: config.h 1.29 2000/11/01 13:42:29 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -210,7 +210,6 @@ public:
   const char *GetChannelNameByNumber(int Number);
   bool SwitchTo(int Number, cDvbApi *DvbApi = NULL);
   int MaxNumber(void) { return maxNumber; }
-  eKeys ShowChannel(int Number, bool Switched, bool Group = false);
   };
  
 class cTimers : public cConfig<cTimer> {

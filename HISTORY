@@ -242,13 +242,9 @@ Video Disk Recorder Revision History
   stopped replay session (suggested by Martin Hammerschmid).
 - The low and high LNB frequencies can now be changed in the "Setup" menu.
 
-2000-10-29: Version 0.67
+2000-11-01: Version 0.67
 
 - The EIT information is now gathered in a separate thread.
-- While the "current/next" information is being displayed (either after switching
-  channels or due to pressing the "Ok" button in normal viewing mode), the "Green"
-  and "Yellow" button display detailed information about the current/next broad-
-  cast (if such information is available).
 - The sytem time can now be synchronized to the time broadcast in the DVB data
   stream. This can be enabled in the "Setup" menu by setting "SetSystemTime" to
   1.  Note that this works only if VDR is running under a user id that has

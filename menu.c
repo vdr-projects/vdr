@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.38 2000/11/01 11:45:05 kls Exp $
+ * $Id: menu.c 1.39 2000/11/01 15:35:43 kls Exp $
  */
 
 #include "menu.h"
@@ -767,7 +767,7 @@ cMenuTextItem::~cMenuTextItem()
 
 void cMenuTextItem::Clear(void)
 {
-  cDvbApi::PrimaryDvbApi->Fill(x, y, w, h, bgColor);
+  Interface->Fill(x, y, w, h, bgColor);
 }
 
 void cMenuTextItem::Display(int Offset, eDvbColor FgColor, eDvbColor BgColor)
@@ -1059,6 +1059,7 @@ private:
   const cEventInfo *eventInfo;
 public:
   cMenuEvent(const cEventInfo *EventInfo, bool CanSwitch = false);
+  cMenuEvent(bool Now);
   virtual eOSState ProcessKey(eKeys Key);
 };
 
@@ -1518,58 +1519,166 @@ eOSState cMenuMain::ProcessKey(eKeys Key)
   return state;
 }
 
-// --- cDirectChannelSelect --------------------------------------------------
+// --- cDisplayChannel -------------------------------------------------------
 
-#define DIRECTCHANNELTIMEOUT 500 //ms
+#define DIRECTCHANNELTIMEOUT  500 //ms
+#define INFOTIMEOUT          5000 //ms
 
-cDirectChannelSelect::cDirectChannelSelect(eKeys FirstKey)
+cDisplayChannel::cDisplayChannel(int Number, bool Switched, bool Group)
+:cOsdBase(true)
+{
+  group = Group;
+  withInfo = !group && (!Switched || Setup.ShowInfoOnChSwitch);
+  lines = 0;
+  oldNumber = number = 0;
+  cChannel *channel = Group ? Channels.Get(Number) : Channels.GetByNumber(Number);
+  Interface->Open(MenuColumns, 5);
+  if (channel) {
+     DisplayChannel(channel);
+     DisplayInfo();
+     }
+  lastTime = time_ms();
+}
+
+cDisplayChannel::cDisplayChannel(eKeys FirstKey)
 :cOsdBase(true)
 {
   oldNumber = CurrentChannel;
   number = 0;
   lastTime = time_ms();
-  Interface->Open(MenuColumns, 1);
+  Interface->Open(MenuColumns, 5);
   ProcessKey(FirstKey);
 }
 
-cDirectChannelSelect::~cDirectChannelSelect()
+cDisplayChannel::~cDisplayChannel()
 {
   if (number < 0)
-     Interface->DisplayChannel(oldNumber);
+     Interface->DisplayChannelNumber(oldNumber);
   Interface->Close();
 }
 
-eOSState cDirectChannelSelect::ProcessKey(eKeys Key)
+void cDisplayChannel::DisplayChannel(const cChannel *Channel)
+{
+  if (!Interface->Recording()) {
+     if (Channel && Channel->number)
+        Interface->DisplayChannelNumber(Channel->number);
+     int BufSize = Width() + 1;
+     char buffer[BufSize];
+     if (Channel && Channel->number)
+        snprintf(buffer, BufSize, "%d  %s", Channel->number, Channel->name);
+     else
+        snprintf(buffer, BufSize, "%s", Channel ? Channel->name : "*** Invalid Channel ***");
+     Interface->Fill(0, 0, MenuColumns, 1, clrBackground);
+     Interface->Write(0, 0, buffer);
+     time_t t = time(NULL);
+     struct tm *now = localtime(&t);
+     snprintf(buffer, BufSize, "%02d:%02d", now->tm_hour, now->tm_min);
+     Interface->Write(-5, 0, buffer);
+     Interface->Flush();
+     }
+}
+
+void cDisplayChannel::DisplayInfo(void)
+{
+  if (withInfo) {
+     const cEventInfo *Present = NULL, *Following = NULL;
+     cThreadLock ThreadLock;
+     const cSchedules *Schedules = cDvbApi::PrimaryDvbApi->Schedules(&ThreadLock);
+     if (Schedules) {
+        const cSchedule *Schedule = Schedules->GetSchedule();
+        if (Schedule) {
+           const char *PresentTitle = NULL, *PresentSubtitle = NULL, *FollowingTitle = NULL, *FollowingSubtitle = NULL;
+           int Lines = 0;
+           if ((Present = Schedule->GetPresentEvent()) != NULL) {
+              PresentTitle = Present->GetTitle();
+              if (!isempty(PresentTitle))
+                 Lines++;
+              PresentSubtitle = Present->GetSubtitle();
+              if (!isempty(PresentSubtitle))
+                 Lines++;
+              }
+           if ((Following = Schedule->GetFollowingEvent()) != NULL) {
+              FollowingTitle = Following->GetTitle();
+              if (!isempty(FollowingTitle))
+                 Lines++;
+              FollowingSubtitle = Following->GetSubtitle();
+              if (!isempty(FollowingSubtitle))
+                 Lines++;
+              }
+           if (Lines > lines) {
+              const int t = 6;
+              int l = 1;
+              Interface->Fill(0, 1, MenuColumns, Lines, clrBackground);
+              if (!isempty(PresentTitle)) {
+                 Interface->Write(0, l, Present->GetTimeString(), clrYellow, clrBackground);
+                 Interface->Write(t, l, PresentTitle, clrCyan, clrBackground);
+                 l++;
+                 }
+              if (!isempty(PresentSubtitle)) {
+                 Interface->Write(t, l, PresentSubtitle, clrCyan, clrBackground);
+                 l++;
+                 }
+              if (!isempty(FollowingTitle)) {
+                 Interface->Write(0, l, Following->GetTimeString(), clrYellow, clrBackground);
+                 Interface->Write(t, l, FollowingTitle, clrCyan, clrBackground);
+                 l++;
+                 }
+              if (!isempty(FollowingSubtitle)) {
+                 Interface->Write(t, l, FollowingSubtitle, clrCyan, clrBackground);
+                 }
+              Interface->Flush();
+              lines = Lines;
+              lastTime = time_ms();
+              }
+           }
+        }
+     }
+}
+
+eOSState cDisplayChannel::ProcessKey(eKeys Key)
 {
   switch (Key) {
-    case k0 ... k9:
+    case k0:
+         if (number == 0) {
+            // keep the "Toggle channels" function working
+            Interface->PutKey(Key);
+            return osEnd;
+            }
+    case k1 ... k9:
          if (number >= 0) {
             number = number * 10 + Key - k0;
-            cChannel *channel = Channels.GetByNumber(number);
-            const char *Name = channel ? channel->name : "*** Invalid Channel ***";
-            int BufSize = MenuColumns + 1;
-            char buffer[BufSize];
-            snprintf(buffer, BufSize, "%d  %s", number, Name);
-            Interface->DisplayChannel(number);
-            Interface->Clear();
-            Interface->Write(0, 0, buffer);
-            lastTime = time_ms();
-            if (!channel) {
-               number = -1;
-               lastTime += 1000;
+            if (number > 0) {
+               cChannel *channel = Channels.GetByNumber(number);
+               DisplayChannel(channel);
+               lastTime = time_ms();
+               if (!channel) {
+                  number = -1;
+                  lastTime += 1000;
+                  }
                }
             }
          break;
     case kNone:
-         if (time_ms() - lastTime > DIRECTCHANNELTIMEOUT) {
+         if (number && time_ms() - lastTime > DIRECTCHANNELTIMEOUT) {
             if (number > 0 && !Channels.SwitchTo(number))
                number = -1;
+            return osEnd;
             }
-         else
-            break;
-    default: return osEnd;
+         break;
+    //TODO
+    //XXX case kGreen:  return osEventNow;
+    //XXX case kYellow: return osEventNext;
+    case kOk:     if (group)
+                     Channels.SwitchTo(Channels.Get(Channels.GetNextNormal(CurrentGroup))->number);
+                  return osEnd;
+    default:      Interface->PutKey(Key);
+                  return osEnd;
     };
-  return osContinue;
+  if (time_ms() - lastTime < INFOTIMEOUT) {
+     DisplayInfo();
+     return osContinue;
+     }
+  return osEnd;
 }
 
 // --- cRecordControl --------------------------------------------------------

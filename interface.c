@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.c 1.27 2000/11/01 11:25:25 kls Exp $
+ * $Id: interface.c 1.28 2000/11/01 15:27:52 kls Exp $
  */
 
 #include "interface.h"
@@ -113,6 +113,18 @@ void cInterface::ClearEol(int x, int y, eDvbColor Color)
 {
   if (open)
      cDvbApi::PrimaryDvbApi->ClrEol(x, y, Color);
+}
+
+void cInterface::Fill(int x, int y, int w, int h, eDvbColor Color)
+{
+  if (open)
+     cDvbApi::PrimaryDvbApi->Fill(x, y, w, h, Color);
+}
+
+void cInterface::Flush(void)
+{
+  if (open)
+     cDvbApi::PrimaryDvbApi->Flush();
 }
 
 void cInterface::SetCols(int *c)
@@ -403,160 +415,9 @@ void cInterface::LearnKeys(void)
       }
 }
 
-eKeys cInterface::DisplayChannel(int Number, const char *Name, bool WithInfo)
+void cInterface::DisplayChannelNumber(int Number)
 {
-  // Number = 0 is used for channel group display and no EIT
-  if (Number)
-     rcIo->Number(Number);
-  if (Name && !Recording()) {
-     Open(MenuColumns, 5);
-     cDvbApi::PrimaryDvbApi->Fill(0, 0, MenuColumns, 1, clrBackground);
-     int BufSize = MenuColumns + 1;
-     char buffer[BufSize];
-     if (Number)
-        snprintf(buffer, BufSize, "%d  %s", Number, Name ? Name : "");
-     else
-        snprintf(buffer, BufSize, "%s", Name ? Name : "");
-     Write(0, 0, buffer);
-     time_t t = time(NULL);
-     struct tm *now = localtime(&t);
-     snprintf(buffer, BufSize, "%02d:%02d", now->tm_hour, now->tm_min);
-     Write(-5, 0, buffer);
-     cDvbApi::PrimaryDvbApi->Flush();
-
-#define INFO_TIMEOUT 5
-
-     const cEventInfo *Present = NULL, *Following = NULL;
-
-     int Tries = 0;
-     if (Number && WithInfo) {
-        for (; Tries < INFO_TIMEOUT; Tries++) {
-            {
-              cThreadLock ThreadLock;
-              const cSchedules *Schedules = cDvbApi::PrimaryDvbApi->Schedules(&ThreadLock);
-              if (Schedules) {
-                 const cSchedule *Schedule = Schedules->GetSchedule();
-                 if (Schedule) {
-                    const char *PresentTitle = NULL, *PresentSubtitle = NULL, *FollowingTitle = NULL, *FollowingSubtitle = NULL;
-                    int Lines = 0;
-                    if ((Present = Schedule->GetPresentEvent()) != NULL) {
-                       PresentTitle = Present->GetTitle();
-                       if (!isempty(PresentTitle))
-                          Lines++;
-                       PresentSubtitle = Present->GetSubtitle();
-                       if (!isempty(PresentSubtitle))
-                          Lines++;
-                       }
-                    if ((Following = Schedule->GetFollowingEvent()) != NULL) {
-                       FollowingTitle = Following->GetTitle();
-                       if (!isempty(FollowingTitle))
-                          Lines++;
-                       FollowingSubtitle = Following->GetSubtitle();
-                       if (!isempty(FollowingSubtitle))
-                          Lines++;
-                       }
-                    if (Lines > 0) {
-                       const int t = 6;
-                       int l = 1;
-                       cDvbApi::PrimaryDvbApi->Fill(0, 1, MenuColumns, Lines, clrBackground);
-                       if (!isempty(PresentTitle)) {
-                          Write(0, l, Present->GetTimeString(), clrYellow, clrBackground);
-                          Write(t, l, PresentTitle, clrCyan, clrBackground);
-                          l++;
-                          }
-                       if (!isempty(PresentSubtitle)) {
-                          Write(t, l, PresentSubtitle, clrCyan, clrBackground);
-                          l++;
-                          }
-                       if (!isempty(FollowingTitle)) {
-                          Write(0, l, Following->GetTimeString(), clrYellow, clrBackground);
-                          Write(t, l, FollowingTitle, clrCyan, clrBackground);
-                          l++;
-                          }
-                       if (!isempty(FollowingSubtitle)) {
-                          Write(t, l, FollowingSubtitle, clrCyan, clrBackground);
-                          }
-                       cDvbApi::PrimaryDvbApi->Flush();
-                       if (Lines == 4) {
-                          Tries = 0;
-                          break;
-                          }
-                       }
-                    }
-                 }
-            }
-            eKeys Key = Wait(1, true);
-            if (Key != kNone)
-               break;
-            }
-        }
-     eKeys Key = Wait(INFO_TIMEOUT - Tries, true);
-     Close();
-     if (Key == kOk)
-        GetKey();
-     if (Key == kGreen || Key == kYellow) {
-        GetKey();
-        do {
-           Key = DisplayDescription((Key == kGreen) ? Present : Following);
-           } while (Key == kGreen || Key == kYellow);
-        Key = kNone;
-        }
-     return Key;
-     }
-  return kNone;
-}
-
-eKeys cInterface::DisplayDescription(const cEventInfo *EventInfo)
-{
-  eKeys Key = kNone;
-
-  if (EventInfo) {
-     int line = 0;
-
-     Open();
-     Clear();
-
-     char buffer[MenuColumns + 1];
-     snprintf(buffer, sizeof(buffer), "%s  %s", EventInfo->GetDate() ? EventInfo->GetDate() : "", EventInfo->GetTimeString() ? EventInfo->GetTimeString() : "");
-     Write(-strlen(buffer), line, buffer, clrYellow);
-
-     line = WriteParagraph(line, EventInfo->GetTitle());
-     line = WriteParagraph(line, EventInfo->GetSubtitle());
-     line = WriteParagraph(line, EventInfo->GetExtendedDescription());
-
-     Key = Wait(300);
-     Close();
-     }
-  return Key;
-}
-
-int cInterface::WriteParagraph(int Line, const char *Text)
-{
-  if (Line < Height() && Text) {
-     Line++;
-     char *s = strdup(Text);
-     char *pStart = s, *pEnd;
-     char *pEndText = &s[strlen(s) - 1];
-
-     while (pStart < pEndText) {
-           if (strlen(pStart) > (unsigned)(MenuColumns - 2))
-              pEnd = &pStart[MenuColumns - 2];
-           else
-              pEnd = &pStart[strlen(pStart)];
-
-           while (*pEnd != 0 && *pEnd != ' ' && pEnd > pStart)
-                 pEnd--;
-
-           //XXX what if there are no blanks???
-           //XXX need to scroll if text is longer
-           *pEnd = 0;
-           Write(1, Line++, pStart, clrCyan);
-           if (Line >= Height())
-              return Line;
-           pStart = pEnd + 1;
-           }
-     }
-  return Line;
+  rcIo->Number(Number);
 }
 
 void cInterface::DisplayRecording(int Index, bool On)
