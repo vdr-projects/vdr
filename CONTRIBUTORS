@@ -155,6 +155,7 @@ Stefan Huelswitt <huels@iname.com>
  for adding a missing StripAudioPackets() to cDvbPlayer::Action()
  for improving skipping channels that are (currently) not available
  for fixing checking the Ca() status of a cDevice
+ for helping to fix switching audio tracks in 'Transfer Mode' on the primary DVB device
 
 Ulrich Röder <roeder@efr-net.de>
  for pointing out that there are channels that have a symbol rate higher than
@@ -444,3 +445,6 @@ Jaakko Hyvätti <jaakko@hyvatti.iki.fi>
 
 Dennis Noordsij <dennis.noordsij@wiral.com>
  for reporting a small glitch when switching channels
+
+Steffen Barszus <st_barszus@gmx.de>
+ for reporting a bug in switching audio tracks in 'Transfer Mode' on the primary DVB device

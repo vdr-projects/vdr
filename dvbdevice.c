@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.26 2002/10/20 14:10:49 kls Exp $
+ * $Id: dvbdevice.c 1.27 2002/10/26 09:44:49 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -742,7 +742,7 @@ bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
      CHECK(ioctl(fd_audio, AUDIO_SET_AV_SYNC, true));
      }
   else if (StartTransferMode)
-     cControl::Launch(new cTransferControl(this, Channel->Vpid(), Channel->Apid1(), 0, 0, 0));
+     cControl::Launch(new cTransferControl(this, Channel->Vpid(), Channel->Apid1(), Channel->Apid2(), Channel->Dpid1(), Channel->Dpid2()));
 
   // Start setting system time:
 
@@ -777,6 +777,8 @@ int cDvbDevice::NumAudioTracksDevice(void) const
 
 const char **cDvbDevice::GetAudioTracksDevice(int *CurrentTrack) const
 {
+  if (Ca())
+     return NULL; // a Ca recording session blocks switching live audio tracks
   if (NumAudioTracks()) {
      if (CurrentTrack)
         *CurrentTrack = (pidHandles[ptAudio].pid == aPid1) ? 0 : 1;
@@ -790,8 +792,11 @@ const char **cDvbDevice::GetAudioTracksDevice(int *CurrentTrack) const
 void cDvbDevice::SetAudioTrackDevice(int Index)
 {
   if (0 <= Index && Index < NumAudioTracks()) {
+     int vpid = pidHandles[ptVideo].pid; // need to turn video PID off/on to restart demux
+     DelPid(vpid);
      DelPid(pidHandles[ptAudio].pid);
      AddPid(Index ? aPid2 : aPid1, ptAudio);
+     AddPid(vpid, ptVideo);
      }
 }
 

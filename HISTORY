@@ -1634,3 +1634,6 @@ Video Disk Recorder Revision History
   by 1000 until it is larger than 1000000.
 - Fixed skipping unavailable channels when zapping downwards.
 - Fixed checking the Ca() status of a cDevice (thanks to Stefan Huelswitt).
+- Fixed switching audio tracks in 'Transfer Mode' on the primary DVB device
+  (thanks to Steffen Barszus and Stefan Huelswitt for reporting this one and
+  helping to fix it).
