@@ -7,7 +7,7 @@
  * DVD support initially written by Andreas Schultz <aschultz@warp10.net>
  * based on dvdplayer-0.5 by Matjaz Thaler <matjaz.thaler@guest.arnes.si>
  *
- * $Id: dvbapi.c 1.116 2001/09/14 14:19:37 kls Exp $
+ * $Id: dvbapi.c 1.117 2001/09/14 14:25:33 kls Exp $
  */
 
 //#define DVDDEBUG        1
@@ -49,9 +49,6 @@ extern "C" {
 #define DEV_OST_DEMUX  "/dev/ost/demux"
 #define DEV_OST_VIDEO  "/dev/ost/video"
 #define DEV_OST_AUDIO  "/dev/ost/audio"
-
-#define KILOBYTE(n) ((n) * 1024)
-#define MEGABYTE(n) ((n) * 1024 * 1024)
 
 // The size of the array used to buffer video data:
 // (must be larger than MINVIDEODATA - see remux.h)

@@ -739,3 +739,6 @@ Video Disk Recorder Revision History
   (thanks to Stefan Huelswitt).
 - Implemented replay mode display (thanks to Stefan Huelswitt, with a few
   rewrites by kls).
+- Changed the size of all input buffers used to parse config files or receive
+  SVDRP commands to the same value of 10KB. This allows long strings to be
+  used in the 'summary' field of a timer, for instance.

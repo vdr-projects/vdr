@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.76 2001/09/09 13:51:45 kls Exp $
+ * $Id: config.h 1.77 2001/09/14 14:35:32 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -20,8 +20,6 @@
 #include "tools.h"
 
 #define VDRVERSION "0.95"
-
-#define MaxBuffer 10000
 
 #define MAXPRIORITY 99
 #define MAXLIFETIME 99
@@ -192,7 +190,7 @@ public:
        FILE *f = fopen(fileName, "r");
        if (f) {
           int line = 0;
-          char buffer[MaxBuffer];
+          char buffer[MAXPARSEBUFFER];
           result = true;
           while (fgets(buffer, sizeof(buffer), f) > 0) {
                 line++;

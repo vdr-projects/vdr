@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.32 2001/09/14 13:40:35 kls Exp $
+ * $Id: tools.h 1.33 2001/09/14 14:35:40 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -28,6 +28,11 @@ extern int SysLogLevel;
 #define LOG_ERROR_STR(s)  esyslog(LOG_ERR, "ERROR: %s: %m", s)
 
 #define SECSINDAY  86400
+
+#define KILOBYTE(n) ((n) * 1024)
+#define MEGABYTE(n) ((n) * 1024 * 1024)
+
+#define MAXPARSEBUFFER KILOBYTE(10)
 
 #define DELETENULL(p) (delete (p), p = NULL)
 

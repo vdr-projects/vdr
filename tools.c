@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.43 2001/08/26 15:45:41 kls Exp $
+ * $Id: tools.c 1.44 2001/09/14 14:35:37 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -20,8 +20,6 @@
 #include <time.h>
 #include <unistd.h>
 #include "i18n.h"
-
-#define MaxBuffer 1000
 
 int SysLogLevel = 3;
 
@@ -56,7 +54,7 @@ void writechar(int filedes, char c)
 
 char *readline(FILE *f)
 {
-  static char buffer[MaxBuffer];
+  static char buffer[MAXPARSEBUFFER];
   if (fgets(buffer, sizeof(buffer), f) > 0) {
      int l = strlen(buffer) - 1;
      if (l >= 0 && buffer[l] == '\n')

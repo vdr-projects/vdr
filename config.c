@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.69 2001/09/09 13:52:48 kls Exp $
+ * $Id: config.c 1.70 2001/09/14 14:35:30 kls Exp $
  */
 
 #include "config.h"
@@ -72,7 +72,7 @@ bool cKeys::Load(const char *FileName)
      FILE *f = fopen(fileName, "r");
      if (f) {
         int line = 0;
-        char buffer[MaxBuffer];
+        char buffer[MAXPARSEBUFFER];
         result = true;
         while (fgets(buffer, sizeof(buffer), f) > 0) {
               line++;
@@ -869,7 +869,7 @@ bool cSetup::Load(const char *FileName)
   FILE *f = fopen(fileName, "r");
   if (f) {
      int line = 0;
-     char buffer[MaxBuffer];
+     char buffer[MAXPARSEBUFFER];
      bool result = true;
      while (fgets(buffer, sizeof(buffer), f) > 0) {
            line++;
