@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.19 2000/07/30 16:14:22 kls Exp $
+ * $Id: dvbapi.c 1.20 2000/08/01 18:06:39 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -347,7 +347,6 @@ protected:
   int Readable(void) { return (tail >= head) ? size - tail - (head ? 0 : 1) : head - tail - 1; } // keep a 1 byte gap!
   int Writeable(void) { return (tail >= head) ? tail - head : size - head; }
   int Byte(int Offset);
-  bool WaitForOutFile(int Timeout);
 public:
   cRingBuffer(int *InFile, int *OutFile, int Size, int FreeLimit = 0, int AvailLimit = 0);
   virtual ~cRingBuffer();
@@ -406,22 +405,6 @@ void cRingBuffer::Skip(int n)
      if (head > tail)
         head = tail;
      }
-}
-
-bool cRingBuffer::WaitForOutFile(int Timeout)
-{
-  fd_set set;
-  FD_ZERO(&set);
-  FD_SET(*outFile, &set);
-  struct timeval timeout;
-  timeout.tv_sec = 0;
-  timeout.tv_usec = Timeout;
-  if (select(FD_SETSIZE, NULL, &set, NULL, &timeout) > 0) {
-     if (FD_ISSET(*outFile, &set))
-        return true;
-     }
-  esyslog(LOG_ERR, "ERROR: timeout in WaitForOutFile(%d)", Timeout);  
-  return false;
 }
 
 int cRingBuffer::Read(int Max)
@@ -1001,7 +984,7 @@ int cReplayBuffer::Read(int Max = -1)
            int FileOffset, Length;
            if (mode == rmSlowRewind && (brakeCounter++ % 24) != 0) {
               // show every I_FRAME 24 times in rmSlowRewind mode to achieve roughly the same speed as in slow forward mode
-              Index = index->GetNextIFrame(Index, true, &FileNumber, &FileOffset, &Length); //springe eine Frame vorwärts!
+              Index = index->GetNextIFrame(Index, true, &FileNumber, &FileOffset, &Length); // jump ahead one frame
               }
            Index = index->GetNextIFrame(Index, mode == rmFastForward, &FileNumber, &FileOffset, &Length);
            if (Index >= 0) {
@@ -1043,28 +1026,27 @@ int cReplayBuffer::Read(int Max = -1)
 int cReplayBuffer::Write(int Max)
 {
   int Written = 0;
-
-  do {
-     if (skipAudio) {
-        SkipAudioBlocks();
-        Max = GetAvPesLength();
-        }
-     while (Max) {
-           int w = cFileBuffer::Write(Max);
-           if (w >= 0) {
-              fileOffset += w;
-              Written += w;
-              if (Max < 0)
-                 break;
-              Max -= w;
-              }
-           else
-              return w;
-               //XXX??? Why does the buffer get empty here???
-           if (Empty() || !WaitForOutFile(1000000))
-              return Written;
+  int Av = Available();
+  if (skipAudio) {
+     SkipAudioBlocks();
+     Max = GetAvPesLength();
+     fileOffset += Av - Available();
+     }
+  if (Max) {
+     int w;
+     do {
+        w = cFileBuffer::Write(Max);
+        if (w >= 0) {
+           fileOffset += w;
+           Written += w;
+           if (Max < 0)
+              break;
+           Max -= w;
            }
-     } while (skipAudio && Available());
+        else
+           return w;
+        } while (Max > 0); // we MUST write this entire AV_PES block
+     }
   return Written;
 }
 

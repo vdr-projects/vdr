@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.12 2000/07/29 18:18:00 kls Exp $
+ * $Id: config.h 1.13 2000/08/02 16:38:40 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -17,7 +17,7 @@
 #include "dvbapi.h"
 #include "tools.h"
 
-#define VDRVERSION "0.6"
+#define VDRVERSION "0.61"
 
 #define MaxBuffer 10000
 

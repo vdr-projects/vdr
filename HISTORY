@@ -116,3 +116,4 @@ Video Disk Recorder Revision History
   but rather resumes normal replay mode after a "pause", "forward" or "backward"
   operation. Use the "Skip -60s" function repeatedly to go back to the beginning
   of the recording.
+- Improved reaction on user input in fast/slow forward/back modes.
