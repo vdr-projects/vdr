@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osdbase.c 1.2 2002/05/13 16:30:59 kls Exp $
+ * $Id: osdbase.c 1.3 2002/05/18 08:54:31 kls Exp $
  */
 
 #include "osdbase.h"
@@ -442,7 +442,7 @@ eDvbFont cOsd::SetFont(eDvbFont Font)
   return oldFont;
 }
 
-void cOsd::Text(int x, int y, const char *s, eDvbColor ColorFg = clrWhite, eDvbColor ColorBg = clrBackground, tWindowHandle Window)
+void cOsd::Text(int x, int y, const char *s, eDvbColor ColorFg, eDvbColor ColorBg, tWindowHandle Window)
 {
   cWindow *w = (Window == ALL_TILED_WINDOWS) ? GetWindow(x, y) : GetWindow(Window);
   if (w)

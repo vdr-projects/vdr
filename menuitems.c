@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.c 1.2 2002/05/11 10:49:45 kls Exp $
+ * $Id: menuitems.c 1.3 2002/05/18 08:53:59 kls Exp $
  */
 
 #include "menuitems.h"
@@ -471,7 +471,7 @@ void cMenuSetupPage::SetPlugin(cPlugin *Plugin)
   SetSection(buf);
 }
 
-void cMenuSetupPage::SetupStore(const char *Name, const char *Value = NULL)
+void cMenuSetupPage::SetupStore(const char *Name, const char *Value)
 {
   if (plugin)
      plugin->SetupStore(Name, Value);

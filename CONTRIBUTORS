@@ -341,3 +341,9 @@ Andreas Böttger <fboettger@t-online.de>
 
 Onno Kreuzinger <ok@solutas.net>
  for reporting leftover references to the file FORMATS in MANUAL and svdrp.c
+
+Rudi Hofer (Rudi.Hofer@cadsoft.de)
+ for his help in keeping 'channels.conf' up to date
+
+Gregoire Favre <greg@ulima.unil.ch>
+ for fixing some function headers to make them compile with gcc 3.x
