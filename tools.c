@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.42 2001/08/26 13:11:17 kls Exp $
+ * $Id: tools.c 1.43 2001/08/26 15:45:41 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -17,6 +17,7 @@
 #endif
 #include <stdlib.h>
 #include <sys/time.h>
+#include <time.h>
 #include <unistd.h>
 #include "i18n.h"
 

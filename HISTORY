@@ -664,7 +664,7 @@ Video Disk Recorder Revision History
 - Fixed the chirping sound after Pause/Play of a DVD (thanks to Andreas
   Schultz).
 
-2001-08-25: Version 0.93
+2001-08-26: Version 0.93
 
 - The menus and the channel display now show the current date and time.
 - The new Setup parameter MaxVideoFileSize can be used to customize the
