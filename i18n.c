@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.14 2001/02/24 13:57:14 kls Exp $
+ * $Id: i18n.c 1.15 2001/03/04 11:38:02 kls Exp $
  *
  * Slovenian translations provided by Miha Setina <mihasetina@softhome.net>
  * Italian   translations provided by Alberto Carraro <bertocar@tin.it>
@@ -565,20 +565,20 @@ const tPhrase Phrases[] = {
     "ne",
     "no",
   },
-  { "Stop replaying",
-    "Wiedergabe beenden",
-    "Prekini ponavljanje",
-    "Interrompi riproduzione",
+  { " Stop replaying", // note the leading blank!
+    " Wiedergabe beenden",
+    " Prekini ponavljanje",
+    " Interrompi riproduzione",
   },
-  { "Stop recording ", // note the trailing blank!
-    "Aufzeichnung beenden ",
-    "Prekini shranjevanje ",
-    "Interrompi registrazione ",
+  { " Stop recording ", // note the leading and trailing blanks!
+    " Aufzeichnung beenden ",
+    " Prekini shranjevanje ",
+    " Interrompi registrazione ",
   },
-  { "Cancel editing",
-    "Schneiden abbrechen",
-    "Prekini urejanje",
-    "Annulla modifiche",
+  { " Cancel editing", // note the leading blank!
+    " Schneiden abbrechen",
+    " Prekini urejanje",
+    " Annulla modifiche",
   },
   { "Switching primary DVB...",
     "Primäres Interface wird umgeschaltet...",

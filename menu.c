@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.68 2001/02/24 14:53:40 kls Exp $
+ * $Id: menu.c 1.69 2001/03/04 11:37:22 kls Exp $
  */
 
 #include "menu.h"
@@ -1688,7 +1688,7 @@ eOSState cMenuCommands::ProcessKey(eKeys Key)
 
 // --- cMenuMain -------------------------------------------------------------
 
-#define STOP_RECORDING tr("Stop recording ")
+#define STOP_RECORDING tr(" Stop recording ")
 
 static const char *hk(int n, const char *s)
 {

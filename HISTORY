@@ -424,3 +424,4 @@ Video Disk Recorder Revision History
 - Fixed a memory leak in the EIT processor that happened when the system time
   was set.
 - Removed some redundant code from the cListBase destructor.
+- Fixed internationalization of some Main menu texts.
