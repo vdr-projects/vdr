@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.h 1.11 2000/09/10 10:35:46 kls Exp $
+ * $Id: interface.h 1.12 2000/09/17 09:19:43 kls Exp $
  */
 
 #ifndef __INTERFACE_H
@@ -30,6 +30,7 @@ public:
   void Open(int NumCols = MenuColumns, int NumLines = MenuLines);
   void Close(void);
   eKeys GetKey(bool Wait = true);
+  void PutKey(eKeys Key);
   void Clear(void);
   void ClearEol(int x, int y, eDvbColor Color = clrBackground);
   void SetCols(int *c);

@@ -18,6 +18,7 @@ Heino Goldenstein <heino.goldenstein@microplex.de>
 
 Guido Fiala <gfiala@s.netic.de>
  for implementing slow forward/back
+ for implementing the SVDRP command 'HITK'
 
 Robert Schneider <Robert.Schneider@lotus.com>
  for implementing EIT support for displaying the current/next info

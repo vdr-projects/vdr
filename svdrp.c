@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.7 2000/09/16 13:34:28 kls Exp $
+ * $Id: svdrp.c 1.8 2000/09/17 09:24:52 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -122,6 +122,9 @@ const char *HelpPages[] = {
   "    Delete timer.",
   "HELP [ <topic> ]\n"
   "    The HELP command gives help info.",
+  "HITK [ <key> ]\n"
+  "    Hit the given remote control key. Without option a list of all\n"
+  "    valid key names is given.",
   "LSTC [ <number> | <name> ]\n"
   "    List channels. Without option, all channels are listed. Otherwise\n"
   "    only the given channel is listed. If a name is given, all channels\n"
@@ -272,7 +275,7 @@ void cSVDRP::Reply(int Code, const char *fmt, ...)
      }
 }
 
-void cSVDRP::CmdChan(const char *Option)
+void cSVDRP::CmdCHAN(const char *Option)
 {
   if (*Option) {
      int n = -1;
@@ -329,13 +332,13 @@ void cSVDRP::CmdChan(const char *Option)
      Reply(550, "Unable to find channel \"%d\"", CurrentChannel);
 }
 
-void cSVDRP::CmdDelc(const char *Option)
+void cSVDRP::CmdDELC(const char *Option)
 {
   //TODO combine this with menu action (timers must be updated)
   Reply(502, "DELC not yet implemented");
 }
 
-void cSVDRP::CmdDelt(const char *Option)
+void cSVDRP::CmdDELT(const char *Option)
 {
   if (*Option) {
      if (isnumber(Option)) {
@@ -360,7 +363,7 @@ void cSVDRP::CmdDelt(const char *Option)
      Reply(501, "Missing timer number");
 }
 
-void cSVDRP::CmdHelp(const char *Option)
+void cSVDRP::CmdHELP(const char *Option)
 {
   if (*Option) {
      const char *hp = GetHelpPage(Option);
@@ -388,7 +391,27 @@ void cSVDRP::CmdHelp(const char *Option)
   Reply(214, "End of HELP info");
 }
 
-void cSVDRP::CmdLstc(const char *Option)
+void cSVDRP::CmdHITK(const char *Option)
+{
+  if (*Option) {
+     eKeys k = Keys.Translate(Option);
+     if (k != kNone) {
+        Interface.PutKey(k);
+        Reply(250, "Key \"%s\" accepted", Option);
+        }
+     else
+        Reply(504, "Unknown key: \"%s\"", Option);
+     }
+  else {
+     Reply(-214, "Valid <key> names for the HITK command:");
+     for (int i = 0; i < kNone; i++) {
+         Reply(-214, "    %s", Keys.keys[i].name);
+         }
+     Reply(214, "End of key list");
+     }
+}
+
+void cSVDRP::CmdLSTC(const char *Option)
 {
   if (*Option) {
      if (isnumber(Option)) {
@@ -431,7 +454,7 @@ void cSVDRP::CmdLstc(const char *Option)
      }
 }
 
-void cSVDRP::CmdLstt(const char *Option)
+void cSVDRP::CmdLSTT(const char *Option)
 {
   if (*Option) {
      if (isnumber(Option)) {
@@ -455,7 +478,7 @@ void cSVDRP::CmdLstt(const char *Option)
      }
 }
 
-void cSVDRP::CmdModc(const char *Option)
+void cSVDRP::CmdMODC(const char *Option)
 {
   if (*Option) {
      char *tail;
@@ -484,7 +507,7 @@ void cSVDRP::CmdModc(const char *Option)
      Reply(501, "Missing channel settings");
 }
 
-void cSVDRP::CmdModt(const char *Option)
+void cSVDRP::CmdMODT(const char *Option)
 {
   if (*Option) {
      char *tail;
@@ -517,19 +540,19 @@ void cSVDRP::CmdModt(const char *Option)
      Reply(501, "Missing timer settings");
 }
 
-void cSVDRP::CmdMovc(const char *Option)
+void cSVDRP::CmdMOVC(const char *Option)
 {
   //TODO combine this with menu action (timers must be updated)
   Reply(502, "MOVC not yet implemented");
 }
 
-void cSVDRP::CmdMovt(const char *Option)
+void cSVDRP::CmdMOVT(const char *Option)
 {
   //TODO combine this with menu action
   Reply(502, "MOVT not yet implemented");
 }
 
-void cSVDRP::CmdNewc(const char *Option)
+void cSVDRP::CmdNEWC(const char *Option)
 {
   if (*Option) {
      cChannel *channel = new cChannel;
@@ -547,7 +570,7 @@ void cSVDRP::CmdNewc(const char *Option)
      Reply(501, "Missing channel settings");
 }
 
-void cSVDRP::CmdNewt(const char *Option)
+void cSVDRP::CmdNEWT(const char *Option)
 {
   if (*Option) {
      cTimer *timer = new cTimer;
@@ -571,7 +594,7 @@ void cSVDRP::CmdNewt(const char *Option)
      Reply(501, "Missing timer settings");
 }
 
-void cSVDRP::CmdUpdt(const char *Option)
+void cSVDRP::CmdUPDT(const char *Option)
 {
   if (*Option) {
      cTimer *timer = new cTimer;
@@ -610,19 +633,20 @@ void cSVDRP::Execute(char *Cmd)
   while (*s && !isspace(*s))
         s++;
   *s++ = 0;
-  if      (CMD("CHAN"))  CmdChan(s);
-  else if (CMD("DELC"))  CmdDelc(s);
-  else if (CMD("DELT"))  CmdDelt(s);
-  else if (CMD("HELP"))  CmdHelp(s);
-  else if (CMD("LSTC"))  CmdLstc(s);
-  else if (CMD("LSTT"))  CmdLstt(s);
-  else if (CMD("MODC"))  CmdModc(s);
-  else if (CMD("MODT"))  CmdModt(s);
-  else if (CMD("MOVC"))  CmdMovc(s);
-  else if (CMD("MOVT"))  CmdMovt(s);
-  else if (CMD("NEWC"))  CmdNewc(s);
-  else if (CMD("NEWT"))  CmdNewt(s);
-  else if (CMD("UPDT"))  CmdUpdt(s);
+  if      (CMD("CHAN"))  CmdCHAN(s);
+  else if (CMD("DELC"))  CmdDELC(s);
+  else if (CMD("DELT"))  CmdDELT(s);
+  else if (CMD("HELP"))  CmdHELP(s);
+  else if (CMD("HITK"))  CmdHITK(s);
+  else if (CMD("LSTC"))  CmdLSTC(s);
+  else if (CMD("LSTT"))  CmdLSTT(s);
+  else if (CMD("MODC"))  CmdMODC(s);
+  else if (CMD("MODT"))  CmdMODT(s);
+  else if (CMD("MOVC"))  CmdMOVC(s);
+  else if (CMD("MOVT"))  CmdMOVT(s);
+  else if (CMD("NEWC"))  CmdNEWC(s);
+  else if (CMD("NEWT"))  CmdNEWT(s);
+  else if (CMD("UPDT"))  CmdUPDT(s);
   else if (CMD("QUIT")
        ||  CMD("\x04"))  Close();
   else                   Reply(500, "Command unrecognized: \"%s\"", Cmd);

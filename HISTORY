@@ -168,7 +168,7 @@ Video Disk Recorder Revision History
   entered so far together with the name of that channel are displayed on the
   OSD (suggested by Martin Hammerschmid).
 
-2000-09-16: Version 0.64
+2000-09-17: Version 0.64
 
 - Video files now have the 'group read' bit set.
 - Fixed handling errors in 'readstring()'.
@@ -182,3 +182,7 @@ Video Disk Recorder Revision History
   response time on user actions. As a consequence the EIT data may sometimes
   not be displayed, but this will change later when cEIT runs as a separate
   thread.
+- The new SVDRP command 'HITK' can be used to 'hit' a remote control key.
+  Establish an SVDRP connection and enter HITK without a parameter for a list
+  of all valid key names.
+

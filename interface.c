@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.c 1.16 2000/09/17 08:21:45 kls Exp $
+ * $Id: interface.c 1.17 2000/09/17 09:25:30 kls Exp $
  */
 
 #include "interface.h"
@@ -64,6 +64,11 @@ eKeys cInterface::GetKey(bool Wait)
   eKeys Key = keyFromWait != kNone ? keyFromWait : Keys.Get(GetCh(Wait));
   keyFromWait = kNone;
   return Key;
+}
+
+void cInterface::PutKey(eKeys Key)
+{
+  keyFromWait = Key;
 }
 
 eKeys cInterface::Wait(int Seconds, bool KeepChar)
