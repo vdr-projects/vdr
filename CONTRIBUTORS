@@ -644,6 +644,7 @@ Torsten Herz <torsten.herz@web.de>
  for fixing a bug in resetting OSD color palettes
  for adding missing 'const' to some cChannel member functions
  for fixing handling Priority -1 in cDvbDevice::ProvidesChannel()
+ for fixing processing EPG data in case there is no title
 
 Steffen Becker <stbecker@rbg.informatik.tu-darmstadt.de>
  for reporting a problem with CPU load peaks (in the EPG scanner)

@@ -2464,3 +2464,4 @@ Video Disk Recorder Revision History
 
 - Fixed handling Priority -1 in cDvbDevice::ProvidesChannel() (thanks to
   Torsten Herz).
+- Fixed processing EPG data in case there is no title (thanks to Torsten Herz).
