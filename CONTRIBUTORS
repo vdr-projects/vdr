@@ -818,3 +818,6 @@ Hans Dingemans <hans.dingemans@tacticalops.nl>
 Alexander Wetzel <alexander.wetzel@web.de>
  for suggesting to let VDR start up even if 'keymacros.conf' references a plugin
  that is currently not loaded
+
+Marco Franceschetti <ordaz@quipo.it>
+ for updating 'ca.conf'
