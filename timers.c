@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 1.18 2004/11/21 13:15:33 kls Exp $
+ * $Id: timers.c 1.19 2004/11/22 16:49:15 kls Exp $
  */
 
 #include "timers.h"
@@ -272,7 +272,6 @@ int cTimer::GetWDay(time_t t)
 int cTimer::GetWDayFromMDay(int MDay)
 {
   time_t now =  time(NULL);
-  int md = GetMDay(now);
   for (int i = -1; i <= 28; i++) { // looking 4 weeks into the future should be enough
       time_t t0 = IncDay(now, i);
       if (GetMDay(t0) == MDay)

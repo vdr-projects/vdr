@@ -1059,6 +1059,7 @@ Wayne Keer <syphir@syphir.sytes.net>
  cDvbDevice::cDvbDevice() in case a patch references them
  for suggesting to make the "Channel not available!" message and mtInfo instead of
  mtError
+ for reporting an unused variable from cTimer::GetWDayFromMDay()
 
 Marco Schlüßler <marco@lordzodiac.de>
  for fixing handling colors in cDvbSpuPalette::yuv2rgb()
