@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.80 2005/01/30 12:52:45 kls Exp $
+ * $Id: device.c 1.81 2005/01/30 14:41:57 kls Exp $
  */
 
 #include "device.h"
@@ -569,8 +569,6 @@ eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
         const tTrackId *Track = GetTrack(GetCurrentAudioTrack());
         if (!Track || !Track->id || PreferredTrack != GetCurrentAudioTrack())
            SetCurrentAudioTrack(PreferredTrack);
-        // Fall back to stereo:
-        SetAudioChannel(0);
         }
      cStatus::MsgChannelSwitch(this, Channel->Number()); // only report status if channel switch successfull
      }
@@ -663,6 +661,7 @@ void cDevice::ClrAvailableTracks(bool DescriptionsOnly)
   else {
      memset(availableTracks, 0, sizeof(availableTracks));
      pre_1_3_19_PrivateStream = false;
+     SetAudioChannel(0); // fall back to stereo
      }
 }
 
