@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 1.51 2004/06/05 13:20:19 kls Exp $
+ * $Id: osd.c 1.52 2004/06/05 16:52:51 kls Exp $
  */
 
 #include "osd.h"
@@ -397,7 +397,7 @@ void cBitmap::DrawText(int x, int y, const char *s, tColor ColorFg, tColor Color
      x -= x0;
      y -= y0;
      tIndex fg = Index(ColorFg);
-     tIndex bg = Index(ColorBg);
+     tIndex bg = (ColorBg != clrTransparent) ? Index(ColorBg) : 0;
      while (s && *s) {
            const cFont::tCharData *CharData = Font->CharData(*s++);
            if (limit && int(x + CharData->width) > limit)
