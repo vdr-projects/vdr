@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.78 2001/07/22 12:27:51 kls Exp $
+ * $Id: menu.c 1.79 2001/07/22 13:46:07 kls Exp $
  */
 
 #include "menu.h"
@@ -2199,7 +2199,6 @@ bool cReplayControl::ShowProgress(bool Initial)
         Interface->Clear();
         if (title)
            Interface->Write(0, 0, title);
-        displayFrames = marks.Count() > 0;
         }
      Interface->Write(-7, 2, IndexToHMSF(Total));
      Interface->Flush();
@@ -2230,18 +2229,18 @@ void cReplayControl::MarkToggle(void)
         marks.Add(Current);
      marks.Save();
      }
-  displayFrames = marks.Count() > 0;
-  if (!displayFrames)
-     Interface->Fill(0, 2, Width() / 2, 1, clrBackground);
 }
 
 void cReplayControl::MarkJump(bool Forward)
 {
-  int Current, Total;
-  if (dvbApi->GetIndex(Current, Total)) {
-     cMark *m = Forward ? marks.GetNext(Current) : marks.GetPrev(Current);
-     if (m)
-        dvbApi->Goto(m->position, true);
+  if (marks.Count()) {
+     int Current, Total;
+     if (dvbApi->GetIndex(Current, Total)) {
+        cMark *m = Forward ? marks.GetNext(Current) : marks.GetPrev(Current);
+        if (m)
+           dvbApi->Goto(m->position, true);
+        }
+     displayFrames = true;
      }
 }
 
@@ -2251,6 +2250,7 @@ void cReplayControl::MarkMove(bool Forward)
   if (dvbApi->GetIndex(Current, Total)) {
      cMark *m = marks.Get(Current);
      if (m) {
+        displayFrames = true;
         int p = dvbApi->SkipFrames(Forward ? 1 : -1);
         cMark *m2;
         if (Forward) {
@@ -2304,6 +2304,8 @@ eOSState cReplayControl::ProcessKey(eKeys Key)
      return osEnd;
   if (visible)
      shown = ShowProgress(!shown) || shown;
+  bool DisplayedFrames = displayFrames;
+  displayFrames = false;
   switch (Key) {
     // Positioning:
     case kUp:      dvbApi->Play(); break;
@@ -2320,23 +2322,34 @@ eOSState cReplayControl::ProcessKey(eKeys Key)
     case kBlue:    Hide();
                    dvbApi->StopReplay();
                    return osEnd;
-    // Editing:
-    //XXX should we do this only when the ProgressDisplay is on???
-    case kMarkToggle:      MarkToggle(); break;
-    case kMarkJumpBack:    MarkJump(false); break;
-    case kMarkJumpForward: MarkJump(true); break;
-    case kMarkMoveBack|k_Repeat:
-    case kMarkMoveBack:    MarkMove(false); break;
-    case kMarkMoveForward|k_Repeat:
-    case kMarkMoveForward: MarkMove(true); break;
-    case kEditCut:         EditCut(); break;
-    case kEditTest:        EditTest(); break;
-    // Menu control:
-    case kMenu:    Hide(); return osMenu; // allow direct switching to menu
-    case kOk:      visible ? Hide() : Show(); break;
-    case kBack:    return osRecordings;
-    default:       return osUnknown;
+    default: {
+      switch (Key) {
+        // Editing:
+        //XXX should we do this only when the ProgressDisplay is on???
+        case kMarkToggle:      MarkToggle(); break;
+        case kMarkJumpBack:    MarkJump(false); break;
+        case kMarkJumpForward: MarkJump(true); break;
+        case kMarkMoveBack|k_Repeat:
+        case kMarkMoveBack:    MarkMove(false); break;
+        case kMarkMoveForward|k_Repeat:
+        case kMarkMoveForward: MarkMove(true); break;
+        case kEditCut:         EditCut(); break;
+        case kEditTest:        EditTest(); break;
+        default: {
+          displayFrames = DisplayedFrames;
+          switch (Key) {
+            // Menu control:
+            case kMenu:    Hide(); return osMenu; // allow direct switching to menu
+            case kOk:      visible ? Hide() : Show(); break;
+            case kBack:    return osRecordings;
+            default:       return osUnknown;
+            }
+          }
+        }
+      }
     }
+  if (DisplayedFrames && !displayFrames)
+     Interface->Fill(0, 2, Width() / 2, 1, clrBackground);
   return osContinue;
 }
 

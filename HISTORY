@@ -559,3 +559,5 @@ Video Disk Recorder Revision History
   memory, allow a larger OSD window and be faster. The group separators in the
   "Channels" menu had to be given a different color.
 - Moved the channel display to the bottom of the screen.
+- Displaying the frame counter in the replay progress display only when editing
+  a mark.
