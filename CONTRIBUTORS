@@ -276,6 +276,7 @@ Hannu Savolainen <hannu@opensound.com>
 
 Jürgen Schmidt <ju@ct.heise.de>
  for fixing a problem with 'in_addr_t' on systems with glibc < 2.2.
+ for suggesting to optionally allow logging to LOG_LOCALn (n=0..7)
 
 Uwe Freese <mail@uwe-freese.de>
  for suggesting to automatically close an empty recordings page after deleting

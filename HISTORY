@@ -1806,3 +1806,5 @@ Video Disk Recorder Revision History
 - Updated 'channels.conf.cable' and made some channels unique using the new RID
   (thanks to Andreas Kool for pointing out the problems).
 - Made some channels unique in 'channels.conf.terr' using the new RID.
+- Extended the '-l' option to allow logging to LOG_LOCALn (n=0..7) by writing, for
+  instance, '-l 3.7' (suggested by Jürgen Schmidt).

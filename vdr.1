@@ -8,7 +8,7 @@
 .\" License as specified in the file COPYING that comes with the
 .\" vdr distribution.
 .\"
-.\" $Id: vdr.1 1.4 2002/05/09 16:04:17 kls Exp $
+.\" $Id: vdr.1 1.5 2002/11/24 15:52:00 kls Exp $
 .\"
 .TH vdr 1 "9 May 2002" "1.1.0" "Video Disk Recorder"
 .SH NAME
@@ -67,6 +67,8 @@ Set logging to \fIlevel\fR.
 \fB0\fR\ =\ no logging, \fB1\fR\ =\ errors only,
 \fB2\fR\ =\ errors and info, \fB3\fR\ =\ errors, info and debug.
 The default logging level is \fB3\fR.
+If logging should be done to LOG_LOCALn instead of
+LOG_USER, add '.n' to LEVEL, as in 3.7 (n=0..7).
 .TP
 .BI -L\  dir ,\ --lib= dir
 Search for plugins in directory \fIdir\fR (default is ./PLUGINS/lib).

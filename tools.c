@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.73 2002/11/09 15:33:47 kls Exp $
+ * $Id: tools.c 1.74 2002/11/24 15:47:02 kls Exp $
  */
 
 #include "tools.h"
@@ -235,6 +235,8 @@ void delay_ms(int ms)
 
 bool isnumber(const char *s)
 {
+  if (!*s)
+     return false;
   while (*s) {
         if (!isdigit(*s))
            return false;
