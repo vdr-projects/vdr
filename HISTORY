@@ -2932,3 +2932,5 @@ Video Disk Recorder Revision History
   Cedric for reporting this one).
 - Fixed the description of cRingBufferLinear (thanks to Ludwig Nussel for pointing
   out this one).
+- Fixed cRingBufferLinear::Get() in case the buffer wraps around (thanks to Ludwig
+  Nussel for reporting this one).
