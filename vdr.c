@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.131 2002/11/03 11:44:17 kls Exp $
+ * $Id: vdr.c 1.132 2002/11/03 12:00:00 kls Exp $
  */
 
 #include <getopt.h>
@@ -524,7 +524,7 @@ int main(int argc, char *argv[])
              case osRecord: DELETENULL(Menu);
                             Temp = NULL;
                             if (cRecordControls::Start())
-                               Interface->Info(tr("Recording"));
+                               ;//XXX Interface->Info(tr("Recording"));
                             else
                                Interface->Error(tr("No free DVB device to record!"));
                             break;
@@ -594,7 +594,7 @@ int main(int argc, char *argv[])
              // Instant recording:
              case kRecord:
                   if (cRecordControls::Start())
-                     Interface->Info(tr("Recording"));
+                     ;//XXX Interface->Info(tr("Recording"));
                   else
                      Interface->Error(tr("No free DVB device to record!"));
                   break;
