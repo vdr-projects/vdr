@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.93 2004/12/19 15:44:42 kls Exp $
+ * $Id: recording.c 1.94 2004/12/26 11:55:24 kls Exp $
  */
 
 #include "recording.h"
@@ -157,7 +157,7 @@ cResumeFile::cResumeFile(const char *FileName)
   fileName = MALLOC(char, strlen(FileName) + strlen(RESUMEFILESUFFIX) + 1);
   if (fileName) {
      strcpy(fileName, FileName);
-     sprintf(fileName + strlen(fileName), RESUMEFILESUFFIX, Setup.ResumeID ? "." : "", Setup.ResumeID ? *cItoa(Setup.ResumeID) : "");
+     sprintf(fileName + strlen(fileName), RESUMEFILESUFFIX, Setup.ResumeID ? "." : "", Setup.ResumeID ? *itoa(Setup.ResumeID) : "");
      }
   else
      esyslog("ERROR: can't allocate memory for resume file name");
@@ -541,8 +541,8 @@ const char *cRecording::Title(char Delimiter, bool NewIndicator, int Level) cons
 
 const char *cRecording::PrefixFileName(char Prefix)
 {
-  const char *p = PrefixVideoFileName(FileName(), Prefix);
-  if (p) {
+  cString p = PrefixVideoFileName(FileName(), Prefix);
+  if (*p) {
      free(fileName);
      fileName = strdup(p);
      return fileName;
@@ -665,7 +665,7 @@ void cRecordings::ScanVideoDir(const char *DirName)
 
 bool cRecordings::NeedsUpdate(void)
 {
-  return lastUpdate <= LastModifiedTime(*cAddDirectory(VideoDirectory, ".update"));
+  return lastUpdate <= LastModifiedTime(AddDirectory(VideoDirectory, ".update"));
 }
 
 bool cRecordings::Load(void)
@@ -704,8 +704,6 @@ void cRecordings::DelByName(const char *FileName)
 
 // --- cMark -----------------------------------------------------------------
 
-char *cMark::buffer = NULL;
-
 cMark::cMark(int Position, const char *Comment)
 {
   position = Position;
@@ -717,10 +715,10 @@ cMark::~cMark()
   free(comment);
 }
 
-const char *cMark::ToText(void)
+cString cMark::ToText(void)
 {
-  free(buffer);
-  asprintf(&buffer, "%s%s%s\n", IndexToHMSF(position, true), comment ? " " : "", comment ? comment : "");
+  char *buffer;
+  asprintf(&buffer, "%s%s%s\n", *IndexToHMSF(position, true), comment ? " " : "", comment ? comment : "");
   return buffer;
 }
 
@@ -747,7 +745,7 @@ bool cMark::Save(FILE *f)
 
 bool cMarks::Load(const char *RecordingFileName)
 {
-  if (cConfig<cMark>::Load(*cAddDirectory(RecordingFileName, MARKSFILESUFFIX))) {
+  if (cConfig<cMark>::Load(AddDirectory(RecordingFileName, MARKSFILESUFFIX))) {
      Sort();
      return true;
      }
@@ -811,7 +809,7 @@ void cRecordingUserCommand::InvokeCommand(const char *State, const char *Recordi
 {
   if (command) {
      char *cmd;
-     asprintf(&cmd, "%s %s \"%s\"", command, State, *cStrEscape(RecordingFileName, "\"$"));
+     asprintf(&cmd, "%s %s \"%s\"", command, State, *strescape(RecordingFileName, "\"$"));
      isyslog("executing '%s'", cmd);
      SystemExec(cmd);
      free(cmd);
@@ -1152,9 +1150,9 @@ int cFileName::NextFile(void)
 
 // --- Index stuff -----------------------------------------------------------
 
-const char *IndexToHMSF(int Index, bool WithFrame)
+cString IndexToHMSF(int Index, bool WithFrame)
 {
-  static char buffer[16];
+  char buffer[16];
   int f = (Index % FRAMESPERSEC) + 1;
   int s = (Index / FRAMESPERSEC);
   int m = s / 60 % 60;

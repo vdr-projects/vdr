@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 1.32 2004/12/19 11:24:51 kls Exp $
+ * $Id: channels.c 1.33 2004/12/26 12:34:52 kls Exp $
  */
 
 #include "channels.h"
@@ -146,10 +146,10 @@ tChannelID tChannelID::FromString(const char *s)
   return tChannelID::InvalidID;
 }
 
-const char *tChannelID::ToString(void)
+cString tChannelID::ToString(void)
 {
-  static char buffer[256];
-  snprintf(buffer, sizeof(buffer), rid ? "%s-%d-%d-%d-%d" : "%s-%d-%d-%d", cSource::ToString(source), nid, tid, sid, rid);
+  char buffer[256];
+  snprintf(buffer, sizeof(buffer), rid ? "%s-%d-%d-%d-%d" : "%s-%d-%d-%d", *cSource::ToString(source), nid, tid, sid, rid);
   return buffer;
 }
 
@@ -161,8 +161,6 @@ tChannelID &tChannelID::ClrPolarization(void)
 }
 
 // -- cChannel ---------------------------------------------------------------
-
-char *cChannel::buffer = NULL;
 
 cChannel::cChannel(void)
 {
@@ -289,7 +287,7 @@ bool cChannel::SetSatTransponderData(int Source, int Frequency, char Polarizatio
 
   if (source != Source || frequency != Frequency || polarization != Polarization || srate != Srate || coderateH != CoderateH) {
      if (Number()) {
-        dsyslog("changing transponder data of channel %d from %s:%d:%c:%d:%d to %s:%d:%c:%d:%d", Number(), cSource::ToString(source), frequency, polarization, srate, coderateH, cSource::ToString(Source), Frequency, Polarization, Srate, CoderateH);
+        dsyslog("changing transponder data of channel %d from %s:%d:%c:%d:%d to %s:%d:%c:%d:%d", Number(), *cSource::ToString(source), frequency, polarization, srate, coderateH, *cSource::ToString(Source), Frequency, Polarization, Srate, CoderateH);
         modification |= CHANNELMOD_TRANSP;
         Channels.SetModified();
         }
@@ -307,7 +305,7 @@ bool cChannel::SetCableTransponderData(int Source, int Frequency, int Modulation
 {
   if (source != Source || frequency != Frequency || modulation != Modulation || srate != Srate || coderateH != CoderateH) {
      if (Number()) {
-        dsyslog("changing transponder data of channel %d from %s:%d:%d:%d:%d to %s:%d:%d:%d:%d", Number(), cSource::ToString(source), frequency, modulation, srate, coderateH, cSource::ToString(Source), Frequency, Modulation, Srate, CoderateH);
+        dsyslog("changing transponder data of channel %d from %s:%d:%d:%d:%d to %s:%d:%d:%d:%d", Number(), *cSource::ToString(source), frequency, modulation, srate, coderateH, *cSource::ToString(Source), Frequency, Modulation, Srate, CoderateH);
         modification |= CHANNELMOD_TRANSP;
         Channels.SetModified();
         }
@@ -324,7 +322,7 @@ bool cChannel::SetTerrTransponderData(int Source, int Frequency, int Bandwidth, 
 {
   if (source != Source || frequency != Frequency || bandwidth != Bandwidth || modulation != Modulation || hierarchy != Hierarchy || coderateH != CoderateH || coderateL != CoderateL || guard != Guard || transmission != Transmission) {
      if (Number()) {
-        dsyslog("changing transponder data of channel %d from %s:%d:%d:%d:%d:%d:%d:%d:%d to %s:%d:%d:%d:%d:%d:%d:%d:%d", Number(), cSource::ToString(source), frequency, bandwidth, modulation, hierarchy, coderateH, coderateL, guard, transmission, cSource::ToString(Source), Frequency, Bandwidth, Modulation, Hierarchy, CoderateH, CoderateL, Guard, Transmission);
+        dsyslog("changing transponder data of channel %d from %s:%d:%d:%d:%d:%d:%d:%d:%d to %s:%d:%d:%d:%d:%d:%d:%d:%d", Number(), *cSource::ToString(source), frequency, bandwidth, modulation, hierarchy, coderateH, coderateL, guard, transmission, *cSource::ToString(Source), Frequency, Bandwidth, Modulation, Hierarchy, CoderateH, CoderateL, Guard, Transmission);
         modification |= CHANNELMOD_TRANSP;
         Channels.SetModified();
         }
@@ -540,13 +538,13 @@ static int PrintParameter(char *p, char Name, int Value)
   return Value >= 0 && Value != 999 ? sprintf(p, "%c%d", Name, Value) : 0;
 }
 
-const char *cChannel::ParametersToString(void) const
+cString cChannel::ParametersToString(void) const
 {
-  char type = *cSource::ToString(source);
+  char type = **cSource::ToString(source);
   if (isdigit(type))
      type = 'S';
 #define ST(s) if (strchr(s, type))
-  static char buffer[64];
+  char buffer[64];
   char *q = buffer;
   *q = 0;
   ST(" S ")  q += sprintf(q, "%c", polarization);
@@ -600,7 +598,7 @@ bool cChannel::StringToParameters(const char *s)
   return true;
 }
 
-const char *cChannel::ToText(const cChannel *Channel)
+cString cChannel::ToText(const cChannel *Channel)
 {
   char FullName[strlen(Channel->name) + 1 + strlen(Channel->shortName) + 1 + strlen(Channel->provider) + 1 + 10]; // +10: paranoia
   char *q = FullName;
@@ -611,7 +609,7 @@ const char *cChannel::ToText(const cChannel *Channel)
      q += sprintf(q, ";%s", Channel->provider);
   *q = 0;
   strreplace(FullName, ':', '|');
-  free(buffer);
+  char *buffer;
   if (Channel->groupSep) {
      if (Channel->number)
         asprintf(&buffer, ":@%d %s\n", Channel->number, FullName);
@@ -637,12 +635,12 @@ const char *cChannel::ToText(const cChannel *Channel)
      q = caidbuf;
      q += IntArrayToString(q, Channel->caids, 16);
      *q = 0;
-     asprintf(&buffer, "%s:%d:%s:%s:%d:%s:%s:%d:%s:%d:%d:%d:%d\n", FullName, Channel->frequency, Channel->ParametersToString(), cSource::ToString(Channel->source), Channel->srate, vpidbuf, apidbuf, Channel->tpid, caidbuf, Channel->sid, Channel->nid, Channel->tid, Channel->rid);
+     asprintf(&buffer, "%s:%d:%s:%s:%d:%s:%s:%d:%s:%d:%d:%d:%d\n", FullName, Channel->frequency, *Channel->ParametersToString(), *cSource::ToString(Channel->source), Channel->srate, vpidbuf, apidbuf, Channel->tpid, caidbuf, Channel->sid, Channel->nid, Channel->tid, Channel->rid);
      }
   return buffer;
 }
 
-const char *cChannel::ToText(void) const
+cString cChannel::ToText(void) const
 {
   return ToText(this);
 }
@@ -800,7 +798,7 @@ bool cChannel::Parse(const char *s, bool AllowNonUniqueID)
 
 bool cChannel::Save(FILE *f)
 {
-  return fprintf(f, ToText()) > 0;
+  return fprintf(f, "%s", *ToText()) > 0;
 }
 
 // -- cChannels --------------------------------------------------------------
@@ -939,7 +937,7 @@ int cChannels::Modified(void)
 cChannel *cChannels::NewChannel(const cChannel *Transponder, const char *Name, const char *ShortName, const char *Provider, int Nid, int Tid, int Sid, int Rid)
 {
   if (Transponder) {
-     dsyslog("creating new channel '%s,%s;%s' on %s transponder %d with id %d-%d-%d-%d", Name, ShortName, Provider, cSource::ToString(Transponder->Source()), Transponder->Transponder(), Nid, Tid, Sid, Rid);
+     dsyslog("creating new channel '%s,%s;%s' on %s transponder %d with id %d-%d-%d-%d", Name, ShortName, Provider, *cSource::ToString(Transponder->Source()), Transponder->Transponder(), Nid, Tid, Sid, Rid);
      cChannel *NewChannel = new cChannel(*Transponder);
      NewChannel->SetId(Nid, Tid, Sid, Rid);
      NewChannel->SetName(Name, ShortName, Provider);
@@ -950,9 +948,9 @@ cChannel *cChannels::NewChannel(const cChannel *Transponder, const char *Name, c
   return NULL;
 }
 
-const char *ChannelString(const cChannel *Channel, int Number)
+cString ChannelString(const cChannel *Channel, int Number)
 {
-  static char buffer[256];
+  char buffer[256];
   if (Channel) {
      if (Channel->GroupSep())
         snprintf(buffer, sizeof(buffer), "%s", Channel->Name());

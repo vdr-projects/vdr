@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.61 2004/12/19 18:06:10 kls Exp $
+ * $Id: tools.h 1.62 2004/12/26 10:26:09 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -57,6 +57,17 @@ template<class T> inline void swap(T &a, T &b) { T t = a; a = b; b = t; }
 #define BCDCHARTOINT(x) (10 * ((x & 0xF0) >> 4) + (x & 0xF))
 int BCD2INT(int x);
 
+class cString {
+private:
+  char *s;
+public:
+  cString(const char *S = NULL);
+  virtual ~cString();
+  operator const char * () const { return s; } // for use in (const char *) context
+  const char * operator*() const { return s; } // for use in (const void *) context (printf() etc.)
+  cString &operator=(const cString &String);
+  };
+
 ssize_t safe_read(int filedes, void *buffer, size_t size);
 ssize_t safe_write(int filedes, const void *buffer, size_t size);
 void writechar(int filedes, char c);
@@ -67,11 +78,14 @@ char *strreplace(char *s, const char *s1, const char *s2); ///< re-allocates 's'
 char *skipspace(const char *s);
 char *stripspace(char *s);
 char *compactspace(char *s);
+cString strescape(const char *s, const char *chars);
 bool startswith(const char *s, const char *p);
 bool endswith(const char *s, const char *p);
 bool isempty(const char *s);
 int numdigits(int n);
 bool isnumber(const char *s);
+cString itoa(int n);
+cString AddDirectory(const char *DirName, const char *FileName);
 int FreeDiskSpaceMB(const char *Directory, int *UsedMB = NULL);
 bool DirectoryOk(const char *DirName, bool LogErrors = false);
 bool MakeDirs(const char *FileName, bool IsDirectory = false);
@@ -80,6 +94,10 @@ bool RemoveEmptyDirectories(const char *DirName, bool RemoveThis = false);
 char *ReadLink(const char *FileName);
 bool SpinUpDisk(const char *FileName);
 time_t LastModifiedTime(const char *FileName);
+cString WeekDayName(int WeekDay);
+cString WeekDayName(time_t t);
+cString DayDateTime(time_t t = 0);
+cString TimeToString(time_t t);
 
 class cTimeMs {
 private:
@@ -90,58 +108,6 @@ public:
   bool TimedOut(void);
   uint64 Now(void);
   uint64 Elapsed(void);
-  };
-
-class cBufferedStringFunction {
-protected:
-  char *buffer;
-  const char *result;
-public:
-  cBufferedStringFunction(void);
-  virtual ~cBufferedStringFunction();
-  const char * operator * () { return result; }
-  };
-
-template<int size> class cBufferedStringFunctionFix : public cBufferedStringFunction {
-protected:
-  char buffer[size];
-  const char *result;
-public:
-  cBufferedStringFunctionFix(void) { result = ""; } // makes sure dereferencing it doesn't hurt
-  const char * operator * () { return result; }
-  };
-
-class cAddDirectory : public cBufferedStringFunction {
-public:
-  cAddDirectory(const char *DirName, const char *FileName);
-  };
-
-class cStrEscape : public cBufferedStringFunction {
-public:
-  cStrEscape(const char *s, const char *chars);
-  };
-
-class cCtime : public cBufferedStringFunctionFix<32> {
-public:
-  cCtime(time_t Time);
-  };
-
-class cItoa : public cBufferedStringFunctionFix<16> {
-public:
-  cItoa(int n);
-  };
-
-class cWeekDayName : public cBufferedStringFunctionFix<4> {
-private:
-  void WeekDayName(int WeekDay);
-public:
-  cWeekDayName(int WeekDay);
-  cWeekDayName(time_t t);
-  };
-
-class cDayDateTime : public cBufferedStringFunctionFix<32> {
-public:
-  cDayDateTime(time_t t = 0);
   };
 
 class cReadLine {

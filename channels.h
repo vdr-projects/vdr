@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.h 1.23 2004/12/05 13:49:04 kls Exp $
+ * $Id: channels.h 1.24 2004/12/26 12:15:52 kls Exp $
  */
 
 #ifndef __CHANNELS_H
@@ -67,7 +67,7 @@ public:
   tChannelID &ClrRid(void) { rid = 0; return *this; }
   tChannelID &ClrPolarization(void);
   static tChannelID FromString(const char *s);
-  const char *ToString(void);
+  cString ToString(void);
   static const tChannelID InvalidID;
   };
 
@@ -87,8 +87,7 @@ class cLinkChannels : public cList<cLinkChannel> {
 class cChannel : public cListObject {
   friend class cMenuEditChannel;
 private:
-  static char *buffer;
-  static const char *ToText(const cChannel *Channel);
+  static cString ToText(const cChannel *Channel);
   char *name;
   char *shortName;
   char *provider;
@@ -124,14 +123,14 @@ private:
   int modification;
   cLinkChannels *linkChannels;
   cChannel *refChannel;
-  const char *ParametersToString(void) const;
+  cString ParametersToString(void) const;
   bool StringToParameters(const char *s);
 public:
   cChannel(void);
   cChannel(const cChannel &Channel);
   ~cChannel();
   cChannel& operator= (const cChannel &Channel);
-  const char *ToText(void) const;
+  cString ToText(void) const;
   bool Parse(const char *s, bool AllowNonUniqueID = false);
   bool Save(FILE *f);
   const char *Name(void) const { return name; }
@@ -216,6 +215,6 @@ public:
 
 extern cChannels Channels;
 
-const char *ChannelString(const cChannel *Channel, int Number);
+cString ChannelString(const cChannel *Channel, int Number);
 
 #endif //__CHANNELS_H

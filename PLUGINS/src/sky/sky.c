@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: sky.c 1.10 2004/12/19 17:21:52 kls Exp $
+ * $Id: sky.c 1.11 2004/12/26 12:45:22 kls Exp $
  */
 
 #include <sys/socket.h>
@@ -273,7 +273,7 @@ bool cPluginSky::Initialize(void)
   // Initialize any background activities the plugin shall perform.
   const char *ConfigDir = ConfigDirectory(Name());
   if (ConfigDir) {
-     if (SkyChannels.Load(*cAddDirectory(ConfigDir, "channels.conf.sky"), true)) {
+     if (SkyChannels.Load(AddDirectory(ConfigDir, "channels.conf.sky"), true)) {
         new cDigiboxDevice;
         return true;
         }

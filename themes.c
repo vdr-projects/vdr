@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: themes.c 1.4 2004/12/19 15:49:49 kls Exp $
+ * $Id: themes.c 1.5 2004/12/24 17:00:41 kls Exp $
  */
 
 #include "themes.h"
@@ -248,7 +248,7 @@ bool cThemes::Load(const char *SkinName)
      while ((e = d.Next()) != NULL) {
            if (strcmp(e->d_name, ".") && strcmp(e->d_name, "..")) {
               if (strstr(e->d_name, SkinName) == e->d_name && e->d_name[strlen(SkinName)] == '-') {
-                 cAddDirectory FileName(themesDirectory, e->d_name);
+                 cString FileName = AddDirectory(themesDirectory, e->d_name);
                  cTheme Theme;
                  if (Theme.Load(*FileName, true)) {
                     names = (char **)realloc(names, (numThemes + 1) * sizeof(char *));

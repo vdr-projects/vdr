@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 1.28 2004/12/11 17:02:40 kls Exp $
+ * $Id: dvbplayer.c 1.29 2004/12/26 11:45:34 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -366,7 +366,7 @@ void cDvbPlayer::Action(void)
 
   readIndex = Resume();
   if (readIndex >= 0)
-     isyslog("resuming replay at index %d (%s)", readIndex, IndexToHMSF(readIndex, true));
+     isyslog("resuming replay at index %d (%s)", readIndex, *IndexToHMSF(readIndex, true));
 
   nonBlockingFileReader = new cNonBlockingFileReader;
   int Length = 0;

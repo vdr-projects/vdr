@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.h 1.12 2004/11/21 12:37:33 kls Exp $
+ * $Id: timers.h 1.13 2004/12/26 12:21:29 kls Exp $
  */
 
 #ifndef __TIMERS_H
@@ -27,7 +27,6 @@ class cTimer : public cListObject {
   friend class cMenuEditTimer;
 private:
   mutable time_t startTime, stopTime;
-  static char *buffer;
   bool recording, pending, inVpsMargin;
   int flags;
   cChannel *channel;
@@ -59,7 +58,7 @@ public:
   const char *File(void) { return file; }
   time_t FirstDay(void) { return firstday; }
   const char *Summary(void) { return summary; }
-  const char *ToText(bool UseChannelID = false);
+  cString ToText(bool UseChannelID = false);
   const cEvent *Event(void) { return event; }
   bool Parse(const char *s);
   bool Save(FILE *f);
@@ -85,10 +84,10 @@ public:
   bool HasFlags(int Flags) const;
   void Skip(void);
   void OnOff(void);
-  const char *PrintFirstDay(void);
+  cString PrintFirstDay(void);
   static int TimeToInt(int t);
   static int ParseDay(const char *s, time_t *FirstDay = NULL);
-  static const char *PrintDay(int d, time_t FirstDay = 0);
+  static cString PrintDay(int d, time_t FirstDay = 0);
   };
 
 class cTimers : public cConfig<cTimer> {

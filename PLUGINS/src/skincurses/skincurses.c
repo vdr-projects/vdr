@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: skincurses.c 1.2 2004/05/31 14:57:40 kls Exp $
+ * $Id: skincurses.c 1.3 2004/12/26 11:36:35 kls Exp $
  */
 
 #include <ncurses.h>
@@ -11,7 +11,7 @@
 #include <vdr/plugin.h>
 #include <vdr/skins.h>
 
-static const char *VERSION        = "0.0.2";
+static const char *VERSION        = "0.0.3";
 static const char *DESCRIPTION    = "A text only skin";
 static const char *MAINMENUENTRY  = NULL;
 
@@ -252,7 +252,7 @@ void cSkinCursesDisplayChannel::SetMessage(eMessageType Type, const char *Text)
 void cSkinCursesDisplayChannel::Flush(void)
 {
   if (!message) {
-     const char *date = DayDateTime();
+     cString date = DayDateTime();
      osd->DrawText(OsdWidth - strlen(date), 0, date, clrWhite, clrBackground, &Font);
      }
   osd->Flush();
@@ -382,11 +382,11 @@ void cSkinCursesDisplayMenu::SetEvent(const cEvent *Event)
   int y = 2;
   cTextScroller ts;
   char t[32];
-  snprintf(t, sizeof(t), "%s  %s - %s", Event->GetDateString(), Event->GetTimeString(), Event->GetEndTimeString());
+  snprintf(t, sizeof(t), "%s  %s - %s", *Event->GetDateString(), *Event->GetTimeString(), *Event->GetEndTimeString());
   ts.Set(osd, 0, y, OsdWidth, OsdHeight - y - 2, t, &Font, clrYellow, clrBackground);
   if (Event->Vps() && Event->Vps() != Event->StartTime()) {
      char *buffer;
-     asprintf(&buffer, " VPS: %s", Event->GetVpsString());
+     asprintf(&buffer, " VPS: %s", *Event->GetVpsString());
      osd->DrawText(OsdWidth - strlen(buffer), y, buffer, clrBlack, clrYellow, &Font);
      free(buffer);
      }
@@ -418,7 +418,7 @@ void cSkinCursesDisplayMenu::SetText(const char *Text, bool FixedFont)
 
 void cSkinCursesDisplayMenu::Flush(void)
 {
-  const char *date = DayDateTime();
+  cString date = DayDateTime();
   osd->DrawText(OsdWidth - strlen(date) - 2, 0, date, clrBlack, clrCyan, &Font);
   osd->Flush();
 }

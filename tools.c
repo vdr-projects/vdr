@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.85 2004/12/19 18:06:16 kls Exp $
+ * $Id: tools.c 1.86 2004/12/26 11:23:35 kls Exp $
  */
 
 #include "tools.h"
@@ -155,6 +155,29 @@ char *compactspace(char *s)
   return s;
 }
 
+cString strescape(const char *s, const char *chars)
+{
+  char *buffer;
+  const char *p = s;
+  char *t = NULL;
+  while (*p) {
+        if (strchr(chars, *p)) {
+           if (!t) {
+              buffer = MALLOC(char, 2 * strlen(s) + 1);
+              t = buffer + (p - s);
+              s = strcpy(buffer, s);
+              }
+           *t++ = '\\';
+           }
+        if (t)
+           *t++ = *p;
+        p++;
+        }
+  if (t)
+     *t = 0;
+  return s;
+}
+
 bool startswith(const char *s, const char *p)
 {
   while (*p) {
@@ -197,6 +220,20 @@ bool isnumber(const char *s)
         s++;
         }
   return true;
+}
+
+cString AddDirectory(const char *DirName, const char *FileName)
+{
+  char *buf;
+  asprintf(&buf, "%s/%s", DirName && *DirName ? DirName : ".", FileName);
+  return buf;
+}
+
+cString itoa(int n)
+{
+  char buf[16];
+  snprintf(buf, sizeof(buf), "%d", n);
+  return buf;
 }
 
 int FreeDiskSpaceMB(const char *Directory, int *UsedMB)
@@ -450,106 +487,63 @@ uint64 cTimeMs::Elapsed(void)
   return Now() - begin;
 }
 
-// --- cBufferedStringFunction -----------------------------------------------
+// --- cString ---------------------------------------------------------------
 
-cBufferedStringFunction::cBufferedStringFunction(void)
+cString::cString(const char *S)
 {
-  buffer = NULL;
-  result = ""; // makes sure dereferencing it doesn't hurt
+  s = S ? strdup(S) : NULL;
 }
 
-cBufferedStringFunction::~cBufferedStringFunction()
+cString::~cString()
 {
-  free(buffer);
+  free(s);
 }
 
-// --- cAddDirectory ---------------------------------------------------------
-
-cAddDirectory::cAddDirectory(const char *DirName, const char *FileName)
+cString &cString::operator=(const cString &String)
 {
-  asprintf(&buffer, "%s/%s", DirName && *DirName ? DirName : ".", FileName);
-  result = buffer;
+  s = String.s ? strdup(String.s) : NULL;
+  return *this;
 }
 
-// --- cStrEscape ------------------------------------------------------------
-
-cStrEscape::cStrEscape(const char *s, const char *chars)
+cString WeekDayName(int WeekDay)
 {
-  buffer = NULL;
-  const char *p = s;
-  char *t = NULL;
-  while (*p) {
-        if (strchr(chars, *p)) {
-           if (!t) {
-              buffer = (char *)realloc(buffer, 2 * strlen(s) + 1);
-              t = buffer + (p - s);
-              s = strcpy(buffer, s);
-              }
-           *t++ = '\\';
-           }
-        if (t)
-           *t++ = *p;
-        p++;
-        }
-  if (t)
-     *t = 0;
-  result = s;
-}
-
-// --- cCtime ----------------------------------------------------------------
-
-cCtime::cCtime(time_t Time)
-{
-  if (ctime_r(&Time, buffer)) {
-     buffer[strlen(buffer) - 1] = 0; // strip trailing newline
-     result = buffer;
-     }
-}
-
-// --- cItoa -----------------------------------------------------------------
-
-cItoa::cItoa(int n)
-{
-  snprintf(buffer, sizeof(buffer), "%d", n);
-  result = buffer;
-}
-
-// --- cWeekDayName ----------------------------------------------------------
-
-cWeekDayName::cWeekDayName(int WeekDay)
-{
-  WeekDayName(WeekDay);
-}
-
-cWeekDayName::cWeekDayName(time_t t)
-{
-  struct tm tm_r;
-  WeekDayName(localtime_r(&t, &tm_r)->tm_wday);
-}
-
-void cWeekDayName::WeekDayName(int WeekDay)
-{
+  char buffer[4];
   WeekDay = WeekDay == 0 ? 6 : WeekDay - 1; // we start with monday==0!
   if (0 <= WeekDay && WeekDay <= 6) {
      const char *day = tr("MonTueWedThuFriSatSun");
      day += WeekDay * 3;
      strn0cpy(buffer, day, sizeof(buffer));
-     result = buffer;
+     return buffer;
      }
   else
-     result = "???";
+     return "???";
 }
 
-// --- cDayDateTime ----------------------------------------------------------
-
-cDayDateTime::cDayDateTime(time_t t)
+cString WeekDayName(time_t t)
 {
+  struct tm tm_r;
+  return WeekDayName(localtime_r(&t, &tm_r)->tm_wday);
+}
+
+cString DayDateTime(time_t t)
+{
+  char buffer[32];
   if (t == 0)
      time(&t);
   struct tm tm_r;
   tm *tm = localtime_r(&t, &tm_r);
-  snprintf(buffer, sizeof(buffer), "%s %2d.%02d %02d:%02d", *cWeekDayName(tm->tm_wday), tm->tm_mday, tm->tm_mon + 1, tm->tm_hour, tm->tm_min);
-  result = buffer;
+  snprintf(buffer, sizeof(buffer), "%s %2d.%02d %02d:%02d", *WeekDayName(tm->tm_wday), tm->tm_mday, tm->tm_mon + 1, tm->tm_hour, tm->tm_min);
+  return buffer;
+}
+
+cString TimeToString(time_t t)
+{
+  char buffer[32];
+  if (ctime_r(&t, buffer)) {
+     buffer[strlen(buffer) - 1] = 0; // strip trailing newline
+     return buffer;
+     }
+  return "???";
 }
 
 // --- cReadLine -------------------------------------------------------------

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.322 2004/12/19 17:59:47 kls Exp $
+ * $Id: menu.c 1.323 2004/12/26 12:18:29 kls Exp $
  */
 
 #include "menu.h"
@@ -116,7 +116,7 @@ void cMenuEditSrcItem::Set(void)
 {
   if (source) {
      char *buffer = NULL;
-     asprintf(&buffer, "%s - %s", cSource::ToString(source->Code()), source->Description());
+     asprintf(&buffer, "%s - %s", *cSource::ToString(source->Code()), source->Description());
      SetValue(buffer);
      free(buffer);
      }
@@ -249,7 +249,7 @@ cMenuEditChannel::cMenuEditChannel(cChannel *Channel, bool New)
 void cMenuEditChannel::Setup(void)
 {
   int current = Current();
-  char type = *cSource::ToString(data.source);
+  char type = **cSource::ToString(data.source);
 #define ST(s) if (strchr(s, type))
 
   Clear();
@@ -300,7 +300,7 @@ eOSState cMenuEditChannel::ProcessKey(eKeys Key)
            data.name = strcpyrealloc(data.name, name);
            if (channel) {
               *channel = data;
-              isyslog("edited channel %d %s", channel->Number(), data.ToText());
+              isyslog("edited channel %d %s", channel->Number(), *data.ToText());
               state = osBack;
               }
            else {
@@ -308,7 +308,7 @@ eOSState cMenuEditChannel::ProcessKey(eKeys Key)
               *channel = data;
               Channels.Add(channel);
               Channels.ReNumber();
-              isyslog("added channel %d %s", channel->Number(), data.ToText());
+              isyslog("added channel %d %s", channel->Number(), *data.ToText());
               state = osUser1;
               }
            Channels.SetModified(true);
@@ -737,9 +737,9 @@ void cMenuTimerItem::Set(void)
   asprintf(&buffer, "%c\t%d\t%s%s%s\t%02d:%02d\t%02d:%02d\t%s",
                     !(timer->HasFlags(tfActive)) ? ' ' : timer->FirstDay() ? '!' : timer->Recording() ? '#' : '>',
                     timer->Channel()->Number(),
-                    timer->IsSingleEvent() ? WeekDayName(timer->StartTime()) : "",
+                    timer->IsSingleEvent() ? *WeekDayName(timer->StartTime()) : "",
                     timer->IsSingleEvent() ? " " : "",
-                    timer->PrintDay(timer->Day()),
+                    *timer->PrintDay(timer->Day()),
                     timer->Start() / 100,
                     timer->Start() % 100,
                     timer->Stop() / 100,
@@ -795,7 +795,7 @@ eOSState cMenuTimers::OnOff(void)
      RefreshCurrent();
      DisplayCurrent(true);
      if (timer->FirstDay())
-        isyslog("timer %d first day set to %s", timer->Index() + 1, timer->PrintFirstDay());
+        isyslog("timer %d first day set to %s", timer->Index() + 1, *timer->PrintFirstDay());
      else
         isyslog("timer %d %sactivated", timer->Index() + 1, timer->HasFlags(tfActive) ? "" : "de");
      Timers.SetModified();
@@ -969,7 +969,7 @@ cMenuWhatsOnItem::cMenuWhatsOnItem(const cEvent *Event, cChannel *Channel)
   char t = Timers.GetMatch(Event, &TimerMatch) ? (TimerMatch == tmFull) ? 'T' : 't' : ' ';
   char v = event->Vps() && (event->Vps() - event->StartTime()) ? 'V' : ' ';
   char r = event->IsRunning() ? '*' : ' ';
-  asprintf(&buffer, "%d\t%.*s\t%s\t%c%c%c\t%s", channel->Number(), 6, channel->ShortName(true), event->GetTimeString(), t, v, r, event->Title());
+  asprintf(&buffer, "%d\t%.*s\t%s\t%c%c%c\t%s", channel->Number(), 6, channel->ShortName(true), *event->GetTimeString(), t, v, r, event->Title());
   SetText(buffer, false);
 }
 
@@ -1087,7 +1087,7 @@ cMenuScheduleItem::cMenuScheduleItem(const cEvent *Event)
   char t = Timers.GetMatch(Event, &TimerMatch) ? (TimerMatch == tmFull) ? 'T' : 't' : ' ';
   char v = event->Vps() && (event->Vps() - event->StartTime()) ? 'V' : ' ';
   char r = event->IsRunning() ? '*' : ' ';
-  asprintf(&buffer, "%.*s\t%s\t%c%c%c\t%s", 6, event->GetDateString(), event->GetTimeString(), t, v, r, event->Title());
+  asprintf(&buffer, "%.*s\t%s\t%c%c%c\t%s", 6, *event->GetDateString(), *event->GetTimeString(), t, v, r, event->Title());
   SetText(buffer, false);
 }
 

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skins.h 1.3 2004/05/29 13:13:21 kls Exp $
+ * $Id: skins.h 1.4 2004/12/26 11:57:54 kls Exp $
  */
 
 #ifndef __SKINS_H
@@ -99,7 +99,7 @@ protected:
        ///< Returns the offset of the given tab from the left border of the
        ///< item display area. The value returned is in pixel.//XXX ncurses???
   const char *GetTabbedText(const char *s, int Tab);
-       ///< Returns the that part of the given string, that follows the given
+       ///< Returns the part of the given string that follows the given
        ///< Tab (where 0 indicates the beginning of the string). If no such
        ///< part can be found, NULL will be returned.
 public:

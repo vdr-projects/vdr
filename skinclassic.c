@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinclassic.c 1.8 2004/12/19 15:46:09 kls Exp $
+ * $Id: skinclassic.c 1.9 2004/12/26 11:33:53 kls Exp $
  */
 
 #include "skinclassic.h"
@@ -141,8 +141,8 @@ void cSkinClassicDisplayChannel::SetMessage(eMessageType Type, const char *Text)
 void cSkinClassicDisplayChannel::Flush(void)
 {
   if (!message) {
-     cDayDateTime date;
-     osd->DrawText(osd->Width() - cFont::GetFont(fontSml)->Width(*date) - 2, 0, *date, Theme.Color(clrChannelDate), Theme.Color(clrBackground), cFont::GetFont(fontSml));
+     cString date = DayDateTime();
+     osd->DrawText(osd->Width() - cFont::GetFont(fontSml)->Width(date) - 2, 0, date, Theme.Color(clrChannelDate), Theme.Color(clrBackground), cFont::GetFont(fontSml));
      }
   osd->Flush();
 }
@@ -299,11 +299,11 @@ void cSkinClassicDisplayMenu::SetEvent(const cEvent *Event)
   int y = y2;
   cTextScroller ts;
   char t[32];
-  snprintf(t, sizeof(t), "%s  %s - %s", Event->GetDateString(), Event->GetTimeString(), Event->GetEndTimeString());
+  snprintf(t, sizeof(t), "%s  %s - %s", *Event->GetDateString(), *Event->GetTimeString(), *Event->GetEndTimeString());
   ts.Set(osd, xl, y, x1 - xl, y3 - y, t, font, Theme.Color(clrMenuEventTime), Theme.Color(clrBackground));
   if (Event->Vps() && Event->Vps() != Event->StartTime()) {
      char *buffer;
-     asprintf(&buffer, " VPS: %s", Event->GetVpsString());
+     asprintf(&buffer, " VPS: %s", *Event->GetVpsString());
      const cFont *font = cFont::GetFont(fontSml);
      osd->DrawText(x1 - font->Width(buffer), y, buffer, Theme.Color(clrMenuEventVpsFg), Theme.Color(clrMenuEventVpsBg), font);
      free(buffer);
@@ -338,9 +338,9 @@ void cSkinClassicDisplayMenu::SetText(const char *Text, bool FixedFont)
 
 void cSkinClassicDisplayMenu::Flush(void)
 {
-  cDayDateTime date;
+  cString date = DayDateTime();
   const cFont *font = cFont::GetFont(fontOsd);
-  osd->DrawText(x1 - font->Width(*date) - 2, y0, *date, Theme.Color(clrMenuDate), Theme.Color(clrMenuTitleBg), font);
+  osd->DrawText(x1 - font->Width(date) - 2, y0, date, Theme.Color(clrMenuDate), Theme.Color(clrMenuTitleBg), font);
   osd->Flush();
 }
 

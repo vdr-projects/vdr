@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 1.22 2004/11/07 10:43:30 kls Exp $
+ * $Id: epg.c 1.23 2004/12/26 11:32:01 kls Exp $
  */
 
 #include "epg.h"
@@ -66,7 +66,7 @@ void cEvent::SetRunningStatus(int RunningStatus, cChannel *Channel)
 {
   if (Channel && runningStatus != RunningStatus && (RunningStatus > SI::RunningStatusNotRunning || runningStatus > SI::RunningStatusUndefined))
      if (Channel->Number() <= 30)//XXX maybe log only those that have timers???
-     isyslog("channel %d (%s) event %s '%s' status %d", Channel->Number(), Channel->Name(), GetTimeString(), Title(), RunningStatus);
+     isyslog("channel %d (%s) event %s '%s' status %d", Channel->Number(), Channel->Name(), *GetTimeString(), Title(), RunningStatus);
   runningStatus = RunningStatus;
 }
 
@@ -119,9 +119,9 @@ bool cEvent::IsRunning(bool OrAboutToStart) const
   return runningStatus >= (OrAboutToStart ? SI::RunningStatusStartsInAFewSeconds : SI::RunningStatusPausing);
 }
 
-const char *cEvent::GetDateString(void) const
+cString cEvent::GetDateString(void) const
 {
-  static char buf[32];
+  char buf[32];
   struct tm tm_r;
   tm *tm = localtime_r(&startTime, &tm_r);
   char *p = stpcpy(buf, WeekDayName(tm->tm_wday));
@@ -130,26 +130,26 @@ const char *cEvent::GetDateString(void) const
   return buf;
 }
 
-const char *cEvent::GetTimeString(void) const
+cString cEvent::GetTimeString(void) const
 {
-  static char buf[25];
+  char buf[25];
   struct tm tm_r;
   strftime(buf, sizeof(buf), "%R", localtime_r(&startTime, &tm_r));
   return buf;
 }
 
-const char *cEvent::GetEndTimeString(void) const
+cString cEvent::GetEndTimeString(void) const
 {
-  static char buf[25];
+  char buf[25];
   time_t EndTime = startTime + duration;
   struct tm tm_r;
   strftime(buf, sizeof(buf), "%R", localtime_r(&EndTime, &tm_r));
   return buf;
 }
 
-const char *cEvent::GetVpsString(void) const
+cString cEvent::GetVpsString(void) const
 {
-  static char buf[25];
+  char buf[25];
   struct tm tm_r;
   strftime(buf, sizeof(buf), "%d.%m %R", localtime_r(&vps, &tm_r));
   return buf;
@@ -179,7 +179,8 @@ bool cEvent::Read(FILE *f, cSchedule *Schedule)
   if (Schedule) {
      cEvent *Event = NULL;
      char *s;
-     while ((s = readline(f)) != NULL) {
+     cReadLine ReadLine;
+     while ((s = ReadLine.Read(f)) != NULL) {
            char *t = skipspace(s + 1);
            switch (*s) {
              case 'E': if (!Event) {
@@ -604,7 +605,7 @@ void cSchedule::Dump(FILE *f, const char *Prefix, eDumpMode DumpMode, time_t AtT
 {
   cChannel *channel = Channels.GetByChannelID(channelID, true);
   if (channel) {
-     fprintf(f, "%sC %s %s\n", Prefix, channel->GetChannelID().ToString(), channel->Name());
+     fprintf(f, "%sC %s %s\n", Prefix, *channel->GetChannelID().ToString(), channel->Name());
      const cEvent *p;
      switch (DumpMode) {
        case dmAll: {
@@ -635,8 +636,9 @@ void cSchedule::Dump(FILE *f, const char *Prefix, eDumpMode DumpMode, time_t AtT
 bool cSchedule::Read(FILE *f, cSchedules *Schedules)
 {
   if (Schedules) {
+     cReadLine ReadLine;
      char *s;
-     while ((s = readline(f)) != NULL) {
+     while ((s = ReadLine.Read(f)) != NULL) {
            if (*s == 'C') {
               s = skipspace(s + 1);
               char *p = strchr(s, ' ');
@@ -698,8 +700,7 @@ const cSchedules *cSchedules::Schedules(cSchedulesLock &SchedulesLock)
 void cSchedules::SetEpgDataFileName(const char *FileName)
 {
   delete epgDataFileName;
-  if (FileName)
-     epgDataFileName = strdup(FileName);
+  epgDataFileName = FileName ? strdup(FileName) : NULL;
 }
 
 void cSchedules::SetModified(cSchedule *Schedule)
