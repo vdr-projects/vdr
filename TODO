@@ -3,8 +3,5 @@ TODO list for the Video Disk Recorder project
 
 * Implement simultaneous record/replay with a single DVB card once
   the card driver/firmware allows this.
-* Implement "on-disk editing" to allow "cutting out" of certain
-  scenes in order to archive them (or, reversely, cut out
-  commercial breaks).
 * Implement channel scanning.
 * Implement remaining commands in SVDRP.

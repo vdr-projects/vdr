@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.35 2000/12/08 13:57:23 kls Exp $
+ * $Id: config.h 1.36 2000/12/25 14:20:09 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -14,6 +14,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
+#include <unistd.h>
 #include "dvbapi.h"
 #include "eit.h"
 #include "tools.h"
@@ -41,6 +42,15 @@ enum eKeys { // "Up" and "Down" must be the first two keys!
              k_Release = 0x4000,
              k_Flags   = k_Repeat | k_Release,
            };
+
+// This is in preparation for having more key codes:
+#define kMarkToggle      k0
+#define kMarkMoveBack    k4
+#define kMarkMoveForward k6
+#define kMarkJumpBack    k7
+#define kMarkJumpForward k9
+#define kEditCut         k2
+#define kEditTest        k8
 
 #define RAWKEY(k)    ((k) & ~k_Flags)
 #define ISRAWKEY(k)  ((k) != kNone && ((k) & k_Flags) == 0)
@@ -157,33 +167,36 @@ private:
     cList<T>::Clear();
   }
 public:
+  cConfig(void) { fileName = NULL; }
+  virtual ~cConfig() { delete fileName; }
   virtual bool Load(const char *FileName)
   {
-    isyslog(LOG_INFO, "loading %s", FileName);
-    bool result = true;
     Clear();
     fileName = strdup(FileName);
-    FILE *f = fopen(fileName, "r");
-    if (f) {
-       int line = 0;
-       char buffer[MaxBuffer];
-       while (fgets(buffer, sizeof(buffer), f) > 0) {
-             line++;
-             T *l = new T;
-             if (l->Parse(buffer))
-                Add(l);
-             else {
-                esyslog(LOG_ERR, "error in %s, line %d\n", fileName, line);
-                delete l;
-                result = false;
-                break;
+    bool result = false;
+    if (access(FileName, F_OK) == 0) {
+       isyslog(LOG_INFO, "loading %s", FileName);
+       FILE *f = fopen(fileName, "r");
+       if (f) {
+          int line = 0;
+          char buffer[MaxBuffer];
+          result = true;
+          while (fgets(buffer, sizeof(buffer), f) > 0) {
+                line++;
+                T *l = new T;
+                if (l->Parse(buffer))
+                   Add(l);
+                else {
+                   esyslog(LOG_ERR, "error in %s, line %d\n", fileName, line);
+                   delete l;
+                   result = false;
+                   break;
+                   }
                 }
-             }
-       fclose(f);
-       }
-    else {
-       LOG_ERROR_STR(fileName);
-       result = false;
+          fclose(f);
+          }
+       else
+          LOG_ERROR_STR(fileName);
        }
     return result;
   }

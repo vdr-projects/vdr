@@ -27,7 +27,7 @@ driver software (of course, the hardware still has to be bought).
 
 The on screen menu system is simple, but shall provide all the
 possibilites necessary to perform timer controlled recording,
-file management and, maybe, even "on disk editing". The menus
+file management and even "on disk editing". The menus
 of commercial set-top-boxes usually are a lot more fancy than
 the ones in this system, but here we have the full source code
 and can modify the menus in whatever way desired.

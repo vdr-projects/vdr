@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.47 2000/12/03 15:36:46 kls Exp $
+ * $Id: vdr.c 1.48 2000/12/25 09:43:08 kls Exp $
  */
 
 #include <getopt.h>
@@ -306,10 +306,13 @@ int main(int argc, char *argv[])
              default:    break;
              }
            }
-        if (!Menu)
+        if (!Menu) {
            EITScanner.Process();
+           cVideoCutter::Active();
+           }
         }
   isyslog(LOG_INFO, "caught signal %d", Interrupted);
+  cVideoCutter::Stop();
   delete Menu;
   delete ReplayControl;
   delete Interface;

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.21 2000/11/18 16:22:29 kls Exp $
+ * $Id: recording.c 1.22 2000/12/16 14:25:14 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -26,6 +26,7 @@
 #define NAMEFORMAT   "%s/%s/" DATAFORMAT
 
 #define SUMMARYFILESUFFIX "/summary.vdr"
+#define MARKSFILESUFFIX   "/marks.vdr"
 
 #define FINDCMD      "find %s -follow -type d -name '%s' 2> /dev/null | sort -df"
 
@@ -267,5 +268,109 @@ bool cRecordings::Load(bool Deleted)
      Interface->Error("Error while opening pipe!");
   delete cmd;
   return result;
+}
+
+// --- cMark -----------------------------------------------------------------
+
+char *cMark::buffer = NULL;
+
+cMark::cMark(int Position, const char *Comment)
+{
+  position = Position;
+  comment = Comment ? strdup(Comment) : NULL;
+}
+
+cMark::~cMark()
+{
+  delete comment;
+}
+
+const char *cMark::ToText(void)
+{
+  delete buffer;
+  asprintf(&buffer, "%s%s%s\n", IndexToHMSF(position, true), comment ? " " : "", comment ? comment : "");
+  return buffer;
+}
+
+bool cMark::Parse(const char *s)
+{
+  delete comment;
+  comment = NULL;
+  position = HMSFToIndex(s);
+  const char *p = strchr(s, ' ');
+  if (p) {
+     p = skipspace(p);
+     if (*p) {
+        comment = strdup(p);
+        comment[strlen(comment) - 1] = 0; // strips trailing newline
+        }
+     }
+  return true;
+}
+
+bool cMark::Save(FILE *f)
+{
+  return fprintf(f, ToText()) > 0;
+}
+
+// --- cMarks ----------------------------------------------------------------
+
+bool cMarks::Load(const char *RecordingFileName)
+{
+  const char *MarksFile = AddDirectory(RecordingFileName, MARKSFILESUFFIX);
+  if (cConfig::Load(MarksFile)) {
+     Sort();
+     return true;
+     }
+  return false;
+}
+
+void cMarks::Sort(void)
+{
+  for (cMark *m1 = First(); m1; m1 = Next(m1)) {
+      for (cMark *m2 = Next(m1); m2; m2 = Next(m2)) {
+          if (m2->position < m1->position) {
+             swap(m1->position, m2->position);
+             swap(m1->comment, m2->comment);
+             }
+          }
+      }
+}
+
+cMark *cMarks::Add(int Position)
+{
+  cMark *m = Get(Position);
+  if (!m) {
+     cConfig::Add(m = new cMark(Position));
+     Sort();
+     }
+  return m;
+}
+
+cMark *cMarks::Get(int Position)
+{
+  for (cMark *mi = First(); mi; mi = Next(mi)) {
+      if (mi->position == Position)
+         return mi;
+      }
+  return NULL;
+}
+
+cMark *cMarks::GetPrev(int Position)
+{
+  for (cMark *mi = Last(); mi; mi = Prev(mi)) {
+      if (mi->position < Position)
+         return mi;
+      }
+  return NULL;
+}
+
+cMark *cMarks::GetNext(int Position)
+{
+  for (cMark *mi = First(); mi; mi = Next(mi)) {
+      if (mi->position > Position)
+         return mi;
+      }
+  return NULL;
 }
 

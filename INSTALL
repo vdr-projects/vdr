@@ -37,7 +37,7 @@ following values 'make' call to activate the respective control mode:
   REMOTE=RCU    control via the "Remote Control Unit" receiver
                 (see http://www.cadsoft.de/people/kls/vdr/remote.htm)
   REMOTE=LIRC   control via the "Linux Infrared Remote Control"
-                (see http://fsinfo.cs.uni-sb.de/~columbus/lirc)
+                (see http://www.lirc.org)
 
 Adding "DEBUG_OSD=1" will use the PC screen (or current window)
 to display texts instead of the DVB card's on-screen display
@@ -166,6 +166,5 @@ into learning mode.
 
 If the program has been compiled with 'REMOTE=LIRC', no 'keys.conf' file
 will be used. Instead, the key names as listed in the source file 'config.c'
-must be used when setting up LIRC. See http://www2.arnes.si/~mthale1 for
-more about LIRC.
+must be used when setting up LIRC. See http://www.lirc.org for more about LIRC.
 

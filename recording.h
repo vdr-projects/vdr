@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 1.10 2000/10/03 12:27:49 kls Exp $
+ * $Id: recording.h 1.11 2000/12/16 14:25:20 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -45,6 +45,29 @@ public:
 class cRecordings : public cList<cRecording> {
 public:
   bool Load(bool Deleted = false);
+  };
+
+class cMark : public cListObject {
+private:
+  static char *buffer;
+public:
+  int position;
+  char *comment;
+  cMark(int Position = 0, const char *Comment = NULL);
+  ~cMark();
+  const char *ToText(void);
+  bool Parse(const char *s);
+  bool Save(FILE *f);
+  };
+
+class cMarks : public cConfig<cMark> {
+public:
+  bool Load(const char *RecordingFileName);
+  void Sort(void);
+  cMark *Add(int Position);
+  cMark *Get(int Position);
+  cMark *GetPrev(int Position);
+  cMark *GetNext(int Position);
   };
 
 #endif //__RECORDING_H

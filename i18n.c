@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.6 2000/11/19 12:12:53 kls Exp $
+ * $Id: i18n.c 1.7 2000/12/25 17:51:55 kls Exp $
  *
  * Slovenian translations provided by Miha Setina <mihasetina@softhome.net>
  *
@@ -165,21 +165,25 @@ const tPhrase Phrases[] = {
     "Urnik",
   },
   // Confirmations:
-  { "Delete Channel?",
+  { "Delete channel?",
     "Kanal löschen?",
     "Odstrani kanal?",
   },
-  { "Delete Timer?",
+  { "Delete timer?",
     "Timer löschen?",
     "Odstani termin?",
   },
-  { "Delete Recording?",
+  { "Delete recording?",
     "Aufzeichnung löschen?",
     "Odstrani posnetek?",
   },
-  { "Stop Recording?",
+  { "Stop recording?",
     "Aufzeichnung beenden?",
     "Koncaj snemanje?",
+  },
+  { "Cancel editing?",
+    "Schneiden abbrechen?",
+    "Zelite prekiniti urejanje?",
   },
   // Channel parameters:
   { "Name",
@@ -279,6 +283,14 @@ const tPhrase Phrases[] = {
   { "Channel locked (recording)!",
     "Kanal blockiert (zeichnet auf)!",
     "Zaklenjen kanal (snemanje)!",
+  },
+  { "Can't start editing process!",
+    "Schnitt kann nicht gestartet werden!",
+    "Ne morem zaceti urejanja!",
+  },
+  { "Editing process already active!",
+    "Schnitt bereits aktiv!",
+    "Urejanje je ze aktivno!",
   },
   // Setup parameters:
   { "OSD-Language",
@@ -445,6 +457,10 @@ const tPhrase Phrases[] = {
     "Aufzeichnung beenden ",
     "Prekini shranjevanje ",
   },
+  { "Cancel editing",
+    "Schneiden abbrechen",
+    "Prekini urejanje",
+  },
   { "Switching primary DVB...",
     "Primäres Interface wird umgeschaltet...",
     "Preklapljanje primarne naprave...",
@@ -452,6 +468,10 @@ const tPhrase Phrases[] = {
   { "Up/Dn for new location - OK to move",
     "Auf/Ab für neue Position - dann OK",
     "Gor/Dol za novo poz. - Ok za premik",
+  },
+  { "Editing process started",
+    "Schnitt gestartet",
+    "Urejanje se je zacelo",
   },
   { NULL }
   };

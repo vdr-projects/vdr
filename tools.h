@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.21 2000/12/03 15:32:54 kls Exp $
+ * $Id: tools.h 1.22 2000/12/10 11:49:42 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -30,6 +30,8 @@ extern int SysLogLevel;
 #define SECSINDAY  86400
 
 #define DELETENULL(p) (delete (p), p = NULL)
+
+template<class T> inline void swap(T &a, T &b) { T t = a; a = b; b = t; };
 
 void writechar(int filedes, char c);
 char *readline(FILE *f);
@@ -98,6 +100,8 @@ template<class T> class cList : public cListBase {
 public:
   T *Get(int Index) const { return (T *)cListBase::Get(Index); }
   T *First(void) const { return (T *)objects; }
+  T *Last(void) const { return (T *)lastObject; }
+  T *Prev(const T *object) const { return (T *)object->Prev(); }
   T *Next(const T *object) const { return (T *)object->Next(); }
   };
 

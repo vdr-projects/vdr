@@ -312,7 +312,7 @@ Video Disk Recorder Revision History
   an early state and may still cause some problems, but it appears to work nice
   already.
 
-2000-12-08: Version 0.70
+2000-12-28: Version 0.70
 
 - VDR now requires driver version 0.80 or higher.
 - Recordings are now saved in PES mode. Note that you now need to install the
@@ -327,3 +327,5 @@ Video Disk Recorder Revision History
 - Fixed handling of channel switching with the "Blue" button in the "What's on
   now/next?" menus.
 - Fixed saving the MarginStop setup parameter.
+- Fixed missing initialization in cConfig.
+- Implemented "On Disk Editing".

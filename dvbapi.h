@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.h 1.28 2000/12/09 10:54:09 kls Exp $
+ * $Id: dvbapi.h 1.29 2000/12/25 15:17:03 kls Exp $
  */
 
 #ifndef __DVBAPI_H
@@ -22,6 +22,7 @@ typedef unsigned char __u8;
 #include <dvb.h>
 #include "dvbosd.h"
 #include "eit.h"
+#include "thread.h"
 
 // Overlay facilities
 #define MAXCLIPRECTS 100
@@ -42,11 +43,24 @@ public:
   bool Save(int Index);
   };
 
-const char *IndexToStr(int Index, bool WithFrame = false);
+const char *IndexToHMSF(int Index, bool WithFrame = false);
       // Converts the given index to a string, optionally containing the frame number.
+int HMSFToIndex(const char *HMSF);
+      // Converts the given string (format: "hh:mm:ss.ff") to an index.
+
 class cRecordBuffer;
 class cReplayBuffer;
 class cTransferBuffer;
+class cCuttingBuffer;
+
+class cVideoCutter {
+private:
+  static cCuttingBuffer *cuttingBuffer;
+public:
+  static bool Start(const char *FileName);
+  static void Stop(void);
+  static bool Active(void);
+  };
 
 class cDvbApi {
 private:
@@ -180,6 +194,8 @@ protected:
        // Returns the priority of the current recording session (0..99),
        // or -1 if no recording is currently active.
 public:
+  int  SecondsToFrames(int Seconds);
+       // Returns the number of frames corresponding to the given number of seconds.
   bool Recording(void);
        // Returns true if we are currently recording.
   bool Replaying(void);
@@ -211,12 +227,20 @@ public:
        // Runs the current replay session forward at a higher speed.
   void Backward(void);
        // Runs the current replay session backwards at a higher speed.
-  void Skip(int Seconds);
+  void SkipSeconds(int Seconds);
        // Skips the given number of seconds in the current replay session.
        // The sign of 'Seconds' determines the direction in which to skip.
        // Use a very large negative value to go all the way back to the
        // beginning of the recording.
-  bool GetIndex(int &Current, int &Total);
+  int  SkipFrames(int Frames);
+       // Returns the new index into the current replay session after skipping
+       // the given number of frames (no actual repositioning is done!).
+       // The sign of 'Frames' determines the direction in which to skip.
+  bool GetIndex(int &Current, int &Total, bool SnapToIFrame = false);
+       // Returns the current and total frame index, optionally snapped to the
+       // nearest I-frame.
+  void Goto(int Index);
+       // Positions to the given index and displays that frame as a still picture. 
   };
 
 class cEITScanner {

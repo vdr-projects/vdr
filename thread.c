@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 1.6 2000/12/03 15:35:02 kls Exp $
+ * $Id: thread.c 1.7 2000/12/24 12:27:21 kls Exp $
  */
 
 #include "thread.h"
@@ -54,6 +54,7 @@ bool cThread::Start(void)
      running = true;
      parentPid = getpid();
      pthread_create(&thread, NULL, (void *(*) (void *))&StartThread, (void *)this);
+     usleep(10000); // otherwise calling Active() immediately after Start() causes a "pure virtual method called" error
      }
   return true; //XXX return value of pthread_create()???
 }

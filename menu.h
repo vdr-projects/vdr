@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 1.15 2000/12/09 10:40:13 kls Exp $
+ * $Id: menu.h 1.16 2000/12/25 14:25:29 kls Exp $
  */
 
 #ifndef _MENU_H
@@ -79,12 +79,18 @@ public:
 class cReplayControl : public cOsdBase {
 private:
   cDvbApi *dvbApi;
-  bool visible, shown;
+  cMarks marks;
+  bool visible, shown, displayFrames;
   void Show(void);
   void Hide(void);
   static char *fileName;
   static char *title;
   bool ShowProgress(bool Initial);
+  void MarkToggle(void);
+  void MarkJump(bool Forward);
+  void MarkMove(bool Forward);
+  void EditCut(void);
+  void EditTest(void);
 public:
   cReplayControl(void);
   virtual ~cReplayControl();
