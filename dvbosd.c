@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbosd.c 1.9 2001/07/22 11:48:54 kls Exp $
+ * $Id: dvbosd.c 1.10 2001/07/24 16:25:34 kls Exp $
  */
 
 #include "dvbosd.h"
@@ -349,10 +349,10 @@ void cDvbOsd::Cmd(OSD_Command cmd, int color, int x0, int y0, int x1, int y1, co
      sigfillset(&set);
      sigprocmask(SIG_BLOCK, &set, &oldset);
      ioctl(videoDev, OSD_SEND_CMD, &dc);
-     usleep(10); // XXX Workaround for a driver bug (cInterface::DisplayChannel() displayed texts at wrong places
-                 // XXX and sometimes the OSD was no longer displayed).
-                 // XXX Increase the value if the problem still persists on your particular system.
-                 // TODO Check if this is still necessary with driver versions after 0.7.
+     usleep(5000); // XXX Workaround for a driver bug (cInterface::DisplayChannel() displayed texts at wrong places
+                   // XXX and sometimes the OSD was no longer displayed).
+                   // XXX Increase the value if the problem still persists on your particular system.
+                   // TODO Check if this is still necessary with driver versions after 0.7.
      sigprocmask(SIG_SETMASK, &oldset, NULL);
      }
 }

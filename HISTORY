@@ -573,3 +573,5 @@ Video Disk Recorder Revision History
 2001-07-24: Version 0.85
 
 - Added Norwegian language texts (thanks to Jørgen Tvedt).
+- Increased the usleep value in cDvbOsd::Cmd() to 5000 in order to work on
+  systems with the KURT/utime-patch (thanks to Guido Fiala).
