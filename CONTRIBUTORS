@@ -812,6 +812,7 @@ Wolfgang Goeller <wgoeller@heraklit.ch>
 Jonan Santiago <jonan-lists-vdr@callisia.com>
  for fixing handling EPG data where the "extended event descriptor" comes before the
  "short event" or a "time shifted event"
+ for adding support for circular polarization
 
 Juri Haberland <juri@koschikode.com>
  for his help in keeping 'channels.conf.terr' up to date

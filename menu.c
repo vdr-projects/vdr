@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.333 2005/01/09 12:16:17 kls Exp $
+ * $Id: menu.c 1.334 2005/01/09 13:04:49 kls Exp $
  */
 
 #include "menu.h"
@@ -274,7 +274,7 @@ void cMenuEditChannel::Setup(void)
   Add(new cMenuEditIntItem( tr("Rid"),          &data.rid, 0));
   XXX*/
   // Parameters for specific types of sources:
-  ST(" S ")  Add(new cMenuEditChrItem( tr("Polarization"), &data.polarization, "hv"));
+  ST(" S ")  Add(new cMenuEditChrItem( tr("Polarization"), &data.polarization, "hvlr"));
   ST("CS ")  Add(new cMenuEditIntItem( tr("Srate"),        &data.srate));
   ST("CST")  Add(new cMenuEditMapItem( tr("Inversion"),    &data.inversion,    InversionValues, tr("off")));
   ST("CST")  Add(new cMenuEditMapItem( tr("CoderateH"),    &data.coderateH,    CoderateValues, tr("none")));

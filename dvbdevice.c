@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.112 2005/01/07 15:54:52 kls Exp $
+ * $Id: dvbdevice.c 1.113 2005/01/09 13:04:20 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -242,7 +242,7 @@ bool cDvbTuner::SetFrontend(void)
                frequency -= Setup.LnbFrequHi;
                tone = SEC_TONE_ON;
                }
-            int volt = (channel.Polarization() == 'v' || channel.Polarization() == 'V') ? SEC_VOLTAGE_13 : SEC_VOLTAGE_18;
+            int volt = (channel.Polarization() == 'v' || channel.Polarization() == 'V' || channel.Polarization() == 'r' || channel.Polarization() == 'R') ? SEC_VOLTAGE_13 : SEC_VOLTAGE_18;
             CHECK(ioctl(fd_frontend, FE_SET_VOLTAGE, volt));
             CHECK(ioctl(fd_frontend, FE_SET_TONE, tone));
             }

@@ -3284,3 +3284,4 @@ Video Disk Recorder Revision History
 - The setup option "Recording/Record Dobly Digital" has been renamed and moved to
   "DVB/Use Dolby Digital". It now controls whether Dolby Digital is recorded and
   whether an available DD audio track will appear in the "Audio" menu.
+- Added support for circular polarization (thanks to Jonan Santiago).
