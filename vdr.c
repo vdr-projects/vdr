@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.48 2000/12/25 09:43:08 kls Exp $
+ * $Id: vdr.c 1.49 2001/01/14 15:29:51 kls Exp $
  */
 
 #include <getopt.h>
@@ -179,7 +179,7 @@ int main(int argc, char *argv[])
 
   cDvbApi::SetPrimaryDvbApi(Setup.PrimaryDVB);
 
-  Channels.SwitchTo(1);
+  Channels.SwitchTo(Setup.CurrentChannel);
 
   cEITScanner EITScanner;
 
@@ -312,6 +312,8 @@ int main(int argc, char *argv[])
            }
         }
   isyslog(LOG_INFO, "caught signal %d", Interrupted);
+  Setup.CurrentChannel = cDvbApi::CurrentChannel();
+  Setup.Save();
   cVideoCutter::Stop();
   delete Menu;
   delete ReplayControl;

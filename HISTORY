@@ -344,3 +344,5 @@ Video Disk Recorder Revision History
   and then renames it).
 - In case the video data stream is broken the log message will come only every
   5 seconds.
+- The current channel is now saved in the 'setup.conf' file when VDR is cancelled,
+  and will be restored next time it is started (thanks to Deti Fliegl).

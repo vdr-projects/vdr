@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.38 2001/01/13 15:36:31 kls Exp $
+ * $Id: config.c 1.39 2001/01/14 15:29:15 kls Exp $
  */
 
 #include "config.h"
@@ -724,6 +724,7 @@ cSetup::cSetup(void)
   MarginStart = 2;
   MarginStop = 10;
   EPGScanTimeout = 5;
+  CurrentChannel = -1;
 }
 
 bool cSetup::Parse(char *s)
@@ -743,6 +744,7 @@ bool cSetup::Parse(char *s)
      else if (!strcasecmp(Name, "MarginStart"))         MarginStart        = atoi(Value);
      else if (!strcasecmp(Name, "MarginStop"))          MarginStop         = atoi(Value);
      else if (!strcasecmp(Name, "EPGScanTimeout"))      EPGScanTimeout     = atoi(Value);
+     else if (!strcasecmp(Name, "CurrentChannel"))      CurrentChannel     = atoi(Value);
      else
         return false;
      return true;
@@ -795,6 +797,7 @@ bool cSetup::Save(const char *FileName)
         fprintf(f, "MarginStart        = %d\n", MarginStart);
         fprintf(f, "MarginStop         = %d\n", MarginStop);
         fprintf(f, "EPGScanTimeout     = %d\n", EPGScanTimeout);
+        fprintf(f, "CurrentChannel     = %d\n", CurrentChannel);
         f.Close();
         isyslog(LOG_INFO, "saved setup to %s", FileName);
         return true;

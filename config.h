@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.37 2001/01/13 14:56:29 kls Exp $
+ * $Id: config.h 1.38 2001/01/14 15:29:27 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -268,6 +268,7 @@ public:
   int SetSystemTime;
   int MarginStart, MarginStop;
   int EPGScanTimeout;
+  int CurrentChannel;
   cSetup(void);
   bool Load(const char *FileName);
   bool Save(const char *FileName = NULL);
