@@ -30,4 +30,4 @@ Video Disk Recorder Revision History
 - The repeat function for the remote control no longer adapts dynamically
   to the timing of the RCU (this sometimes caused the repeat function to
   kick in too early).
-
+- Channel selection is now blocked when recording or replaying.

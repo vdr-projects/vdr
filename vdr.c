@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.10 2000/04/24 09:45:03 kls Exp $
+ * $Id: vdr.c 1.11 2000/04/24 10:33:38 kls Exp $
  */
 
 #include <signal.h>
@@ -134,20 +134,18 @@ int main(int argc, char *argv[])
              // Direct Channel Select (input):
              case k0: case k1: case k2: case k3: case k4: case k5: case k6: case k7: case k8: case k9:
              {
-               if (!DvbApi.Recording()) {
+               if (!(DvbApi.Recording() || DvbApi.Replaying())) {
                   dcNumber = dcNumber * 10 + key - k0;
                   dcTime = time_ms();
                   }
              }
              // Record/Replay Control:
              case kBegin:         DvbApi.Skip(-INT_MAX); break;
-             case kRecord:        if (!DvbApi.Recording()) {
+             case kRecord:        if (!(DvbApi.Recording() || DvbApi.Replaying())) {
                                      cTimer *timer = new cTimer(true);
                                      Timers.Add(timer);
                                      Timers.Save();
                                      }
-                                  else
-                                     Interface.Error("Already recording!");
                                   break;
              case kPause:         DvbApi.PauseReplay(); break;
              case kStop:          DELETENULL(ReplayDisplay);
@@ -164,12 +162,12 @@ int main(int argc, char *argv[])
                          break;
              // Up/Down Channel Select:
              case kUp:
-             case kDown: {
-                           int n = CurrentChannel + (key == kUp ? 1 : -1);
-                           cChannel *channel = Channels.Get(n);
-                           if (channel)
-                              channel->Switch();
-                         }
+             case kDown: if (!(DvbApi.Recording() || DvbApi.Replaying())) {
+                            int n = CurrentChannel + (key == kUp ? 1 : -1);
+                            cChannel *channel = Channels.Get(n);
+                            if (channel)
+                               channel->Switch();
+                            }
                          break;
              // Viewing Control:
              case kOk:   if (ReplayDisplay)
