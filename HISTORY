@@ -3432,3 +3432,4 @@ Video Disk Recorder Revision History
 - Added support for setting the video display mode (thanks to Marco Schlüßler).
 - The new setup option "DVB/Video display format" can be used to define which display
   format to use for playing wide screen video on a 4:3 tv set.
+- Changed MAXDPIDS to 16 (8xAC3 + 8xDTS) (thanks to Werner Fink for pointing this out).

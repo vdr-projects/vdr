@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 1.56 2005/02/20 11:30:11 kls Exp $
+ * $Id: device.h 1.57 2005/02/20 14:06:28 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -68,11 +68,11 @@ enum eTrackType { ttNone,
                   ttAudioLast  = ttAudioFirst + 31, // MAXAPIDS - 1
                   ttDolby,
                   ttDolbyFirst = ttDolby,
-                  ttDolbyLast  = ttDolbyFirst + 8, // MAXDPIDS - 1
+                  ttDolbyLast  = ttDolbyFirst + 15, // MAXDPIDS - 1
                   /* future...
                   ttSubtitle,
                   ttSubtitleFirst = ttSubtitle,
-                  ttSubtitleLast  = ttSubtitleFirst + 8, // MAXSPIDS - 1
+                  ttSubtitleLast  = ttSubtitleFirst + 7, // MAXSPIDS - 1
                   */
                   ttMaxTrackTypes
                 };
