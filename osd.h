@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.h 1.25 2002/01/20 10:42:14 kls Exp $
+ * $Id: osd.h 1.26 2002/02/24 12:55:16 kls Exp $
  */
 
 #ifndef __OSD_H
@@ -27,7 +27,6 @@ enum eOSState { osUnknown,
                 osCommands,
                 osRecord,
                 osReplay,
-                osDVD,
                 osStopRecord,
                 osStopReplay,
                 osCancelEdit,

@@ -1031,3 +1031,12 @@ Video Disk Recorder Revision History
   or don't have the equipment to replay Dolby Digital audio.
 - Reading the 'setup.conf' file no longer terminates in case of an error, but
   rather attempts to read the rest of the file.
+- Removed DVD support from the core VDR source, since the current version from
+  Andreas Schultz is already much further developed (DVD menu navigation) and
+  the concept of "additional players" in VDR is going to change in version 1.1.0,
+  where a new "plugin" interface shall allow the easy implementation of new
+  players without having to patch the core VDR source. Until then, Andreas has
+  agreed to provide his DVD support as a completely external patch.
+- The contents of the distribution archive now contains the directory name with
+  the current version number, as in 'vdr-1.0.0pre1/...' in order to avoid
+  inadvertently overwriting an existing VDR directory with a new version.

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.158 2002/02/24 11:54:04 kls Exp $
+ * $Id: menu.c 1.159 2002/02/24 12:55:49 kls Exp $
  */
 
 #include "menu.h"
@@ -1822,81 +1822,6 @@ eOSState cMenuRecordings::ProcessKey(eKeys Key)
   return state;
 }
 
-#ifdef DVDSUPPORT
-// --- cMenuDVDItem ----------------------------------------------------------
-
-class cMenuDVDItem : public cOsdItem {
-  private:
-  int title;
-  int chapters;
-  virtual void Set(void);
-public:
-  cMenuDVDItem(int Title, int Chapters);
-  int Title(void) { return title; }
-  };
-
-cMenuDVDItem::cMenuDVDItem(int Title, int Chapters)
-{
-  title = Title;
-  chapters = Chapters;
-  Set();
-}
-
-void cMenuDVDItem::Set(void)
-{
-  char *buffer = NULL;
-  asprintf(&buffer, " %2d.\tTitle - \t%2d\tChapters", title + 1, chapters);
-  SetText(buffer, false);
-}
-
-// --- cMenuDVD --------------------------------------------------------------
-
-cMenuDVD::cMenuDVD(void)
-:cOsdMenu(tr("DVD"), 5, 8, 3)
-{
-  if ((dvd = cDVD::getDVD())) {
-     dvd->Open();
-     ifo_handle_t *vmg = dvd->openVMG();
-     if (vmg) {
-        int lastTitleID = cReplayControl::LastTitleID();
-        dsyslog(LOG_INFO, "DVD: vmg: %p", vmg);//XXX
-        tt_srpt_t *tt_srpt = vmg->tt_srpt;
-        dsyslog(LOG_INFO, "DVD: tt_srpt: %p", tt_srpt);//XXX
-        for (int i = 0; i < tt_srpt->nr_of_srpts; i++)
-            Add(new cMenuDVDItem(i, tt_srpt->title[i].nr_of_ptts), i == lastTitleID);
-        }
-     }
-  SetHelp(tr("Play"), NULL, NULL, NULL);
-  Display();
-}
-
-eOSState cMenuDVD::Play(void)
-{
-  cMenuDVDItem *ri = (cMenuDVDItem *)Get(Current());
-  if (ri) {
-     cReplayControl::SetDVD(dvd, ri->Title());
-     isyslog(LOG_INFO, "DVD: playing title %d", ri->Title());
-     return osReplay;
-     }
-  return osContinue;
-}
-
-eOSState cMenuDVD::ProcessKey(eKeys Key)
-{
-  eOSState state = cOsdMenu::ProcessKey(Key);
-
-  if (state == osUnknown) {
-     switch (Key) {
-       case kOk:
-       case kRed:    return Play();
-       case kMenu:   return osEnd;
-       default: break;
-       }
-     }
-  return state;
-}
-#endif //DVDSUPPORT
-
 // --- cMenuSetup ------------------------------------------------------------
 
 class cMenuSetup : public cOsdMenu {
@@ -2059,10 +1984,6 @@ cMenuMain::cMenuMain(bool Replaying, eOSState State)
   Add(new cOsdItem(hk(tr("Channels")),   osChannels));
   Add(new cOsdItem(hk(tr("Timers")),     osTimers));
   Add(new cOsdItem(hk(tr("Recordings")), osRecordings));
-#ifdef DVDSUPPORT
-  if (cDVD::DriveExists())
-  Add(new cOsdItem(hk(tr("DVD")),        osDVD));
-#endif //DVDSUPPORT
   Add(new cOsdItem(hk(tr("Setup")),      osSetup));
   if (Commands.Count())
      Add(new cOsdItem(hk(tr("Commands")),  osCommands));
@@ -2095,13 +2016,7 @@ cMenuMain::cMenuMain(bool Replaying, eOSState State)
 
   // Color buttons:
 
-  const char *DVDbutton =
-#ifdef DVDSUPPORT
-                          cDVD::DiscOk() ? tr("Eject") : NULL;
-#else
-                          NULL;
-#endif //DVDSUPPORT
-  SetHelp(tr("Record"), cDvbApi::PrimaryDvbApi->CanToggleAudioTrack() ? tr("Language") : NULL, DVDbutton, cReplayControl::LastReplayed() ? tr("Resume") : NULL);
+  SetHelp(tr("Record"), cDvbApi::PrimaryDvbApi->CanToggleAudioTrack() ? tr("Language") : NULL, NULL, cReplayControl::LastReplayed() ? tr("Resume") : NULL);
   Display();
   lastActivity = time(NULL);
   SetHasHotkeys();
@@ -2110,9 +2025,6 @@ cMenuMain::cMenuMain(bool Replaying, eOSState State)
 
   switch (State) {
     case osRecordings: AddSubMenu(new cMenuRecordings(NULL, 0, true)); break;
-#ifdef DVDSUPPORT
-    case osDVD:        AddSubMenu(new cMenuDVD); break;
-#endif //DVDSUPPORT
     default: break;
     }
 }
@@ -2137,9 +2049,6 @@ eOSState cMenuMain::ProcessKey(eKeys Key)
     case osChannels:   return AddSubMenu(new cMenuChannels);
     case osTimers:     return AddSubMenu(new cMenuTimers);
     case osRecordings: return AddSubMenu(new cMenuRecordings);
-#ifdef DVDSUPPORT
-    case osDVD:        return AddSubMenu(new cMenuDVD);
-#endif //DVDSUPPORT
     case osSetup:      return AddSubMenu(new cMenuSetup);
     case osCommands:   return AddSubMenu(new cMenuCommands);
     case osStopRecord: if (Interface->Confirm(tr("Stop recording?"))) {
@@ -2172,23 +2081,6 @@ eOSState cMenuMain::ProcessKey(eKeys Key)
                                    }
                                 }
                              break;
-#ifdef DVDSUPPORT
-               case kYellow: if (!HasSubMenu()) {
-                                if (cDVD::DiscOk()) {
-                                   // We need to stop replaying a DVD before ejecting,
-                                   // otherwise the replay thread crashes. Currently
-                                   // checking LastReplayed() is pretty much the only way
-                                   // of finding out whether we are currently replaying a DVD
-                                   // (i.e. if LastReplayed() returns non-NULL, we are either
-                                   // replaying a normal recording, or nothing at all):
-                                   if (!cReplayControl::LastReplayed())
-                                      cDvbApi::PrimaryDvbApi->StopReplay();
-                                   cDVD::Eject();
-                                   state = osEnd;
-                                   }
-                                }
-                             break;
-#endif //DVDSUPPORT
                case kBlue:   if (!HasSubMenu())
                                 state = osReplay;
                              break;
@@ -2647,10 +2539,6 @@ void cProgressBar::Mark(int x, bool Start, bool Current)
 
 char *cReplayControl::fileName = NULL;
 char *cReplayControl::title = NULL;
-#ifdef DVDSUPPORT
-cDVD *cReplayControl::dvd = NULL;//XXX
-int  cReplayControl::titleid = 0;//XXX
-#endif //DVDSUPPORT
 
 cReplayControl::cReplayControl(void)
 {
@@ -2664,10 +2552,6 @@ cReplayControl::cReplayControl(void)
      if (!dvbApi->StartReplay(fileName))
         Interface->Error(tr("Channel locked (recording)!"));
      }
-#ifdef DVDSUPPORT
-  else if (dvd)
-     dvbApi->StartDVDplay(dvd, titleid);//XXX
-#endif //DVDSUPPORT
 }
 
 cReplayControl::~cReplayControl()
@@ -2683,20 +2567,6 @@ void cReplayControl::SetRecording(const char *FileName, const char *Title)
   fileName = FileName ? strdup(FileName) : NULL;
   title = Title ? strdup(Title) : NULL;
 }
-
-#ifdef DVDSUPPORT
-void cReplayControl::SetDVD(cDVD *DVD, int Title)//XXX
-{
-  SetRecording(NULL, NULL);
-  dvd = DVD;
-  titleid = Title;
-}
-
-int cReplayControl::LastTitleID(void)
-{
-  return titleid;
-}
-#endif //DVDSUPPORT
 
 const char *cReplayControl::LastReplayed(void)
 {
@@ -3065,7 +2935,7 @@ eOSState cReplayControl::ProcessKey(eKeys Key)
                            else
                               Show();
                            break;
-            case kBack:    return fileName ? osRecordings : osDVD;
+            case kBack:    return osRecordings;
             default:       return osUnknown;
             }
           }

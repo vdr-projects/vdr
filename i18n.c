@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.56 2002/02/24 11:53:44 kls Exp $
+ * $Id: i18n.c 1.57 2002/02/24 12:54:12 kls Exp $
  *
  * Slovenian translations provided by Miha Setina <mihasetina@softhome.net>
  * Italian   translations provided by Alberto Carraro <bertocar@tin.it>
@@ -119,16 +119,6 @@ const tPhrase Phrases[] = {
     "Enregistrements",
     "Opptak",
     "Nauhoitteet",
-  },
-  { "DVD",
-    "DVD",
-    "DVD",
-    "DVD",
-    "DVD",
-    "DVD",
-    "DVD",
-    "DVD",
-    "DVD",
   },
   { "Setup",
     "Einstellungen",

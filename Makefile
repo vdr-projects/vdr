@@ -4,29 +4,18 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 1.30 2002/02/01 14:40:09 kls Exp $
+# $Id: Makefile 1.31 2002/02/24 12:29:54 kls Exp $
 
 .DELETE_ON_ERROR:
 
 DVBDIR   = ../DVB
-DVDDIR   = ../DVD
-AC3DIR   = ./ac3dec
 DTVDIR   = ./libdtv
 
 INCLUDES = -I$(DVBDIR)/ost/include
 
 DTVLIB   = $(DTVDIR)/libdtv.a
 
-ifdef DVD
-INCLUDES += -I$(DVDDIR)/libdvdread
-LIBDIRS  += -L$(DVDDIR)/libdvdread/dvdread/.libs
-DEFINES  += -DDVDSUPPORT
-DEFINES  += -D_LARGEFILE64_SOURCE # needed by libdvdread
-AC3LIB    = $(AC3DIR)/libac3.a
-DVDLIB    = -ldvdread
-endif
-
-OBJS = config.o dvbapi.o dvbosd.o dvd.o eit.o font.o i18n.o interface.o menu.o osd.o\
+OBJS = config.o dvbapi.o dvbosd.o eit.o font.o i18n.o interface.o menu.o osd.o\
        recording.o remote.o remux.o ringbuffer.o svdrp.o thread.o tools.o vdr.o\
        videodir.o
 
@@ -75,8 +64,8 @@ include $(DEPFILE)
 
 # The main program:
 
-vdr: $(OBJS) $(AC3LIB) $(DTVLIB)
-	g++ -g -O2 $(OBJS) $(NCURSESLIB) -ljpeg -lpthread $(LIBDIRS) $(DVDLIB) $(AC3LIB) $(DTVLIB) -o vdr
+vdr: $(OBJS) $(DTVLIB)
+	g++ -g -O2 $(OBJS) $(NCURSESLIB) -ljpeg -lpthread $(LIBDIRS) $(DTVLIB) -o vdr
 
 # The font files:
 
@@ -90,11 +79,6 @@ fontosd.c:
 genfontfile: genfontfile.c
 	gcc -o $@ -O2 -L/usr/X11R6/lib $< -lX11
 
-# The ac3dec library:
-
-$(AC3LIB):
-	make -C $(AC3DIR) all
-
 # The libdtv library:
 
 $(DTVLIB) $(DTVDIR)/libdtv.h:
@@ -103,7 +87,6 @@ $(DTVLIB) $(DTVDIR)/libdtv.h:
 # Housekeeping:
 
 clean:
-	make -C $(AC3DIR) clean
 	make -C $(DTVDIR) clean
 	-rm -f $(OBJS) $(DEPFILE) vdr genfontfile genfontfile.o core* *~
 fontclean:

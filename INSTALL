@@ -15,23 +15,6 @@ If you have the DVB driver source in a different location
 you will have to change the definition of DVBDIR in the
 Makefile.
 
-If you want to use your DVD drive you will need to compile VDR with
-
-  make DVD=1
-
-to activate DVD support. VDR then also needs the package 'libdvdread'
-in order to replay DVDs. This package is expected to be located in the
-directory ../DVD (seen from the VDR directory).  Adjust the definition
-of DVDDIR in the Makefile if necessary.
-You can find 'libdvdread' at
-
-  http://www.dtek.chalmers.se/groups/dvd/downloads.shtml
-
-If you want to replay CSS encrypted DVDs you also need to get the 'libdvdcss'
-library from
-
-  http://www.videolan.org/libdvdcss/download.html
-
 VDR requires the Linux-DVB card driver version dated 2001-09-14 or higher
 to work properly.
 
@@ -249,19 +232,6 @@ from stdin and processes it in a way suitable for your audio hardware.
 This program must be given to VDR with the '-a' option, as in
 
   vdr -a ac3play
-
-Accessing the DVD drive:
-------------------------
-
-By default VDR expects the DVD drive to be located at /dev/dvd (which
-typically is a symbolic link to the actual device, for instance /dev/hdc).
-You can use the '-V' option to overwrite this, as in
-
-  vdr -V /media/dvd
-
-Note that the user id under which VDR runs needs to have write access to
-the DVD device in order to replay CSS protected DVDs (which also requires
-the presence of the 'libdvdcss' library).
 
 The video data directory:
 -------------------------
