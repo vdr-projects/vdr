@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 1.8 2000/09/03 15:38:18 kls Exp $
+# $Id: Makefile 1.9 2000/09/10 08:55:45 kls Exp $
 
 DVBDIR   = ../DVB
 
@@ -19,10 +19,6 @@ DEFINES += -DREMOTE_$(REMOTE)
 
 ifdef DEBUG_OSD
 DEFINES += -DDEBUG_OSD
-endif
-
-ifdef NO_PAGE_SCROLL
-DEFINES += -DNO_PAGE_SCROLL
 endif
 
 %.o: %.c

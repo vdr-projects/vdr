@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.c 1.12 2000/09/09 14:17:48 kls Exp $
+ * $Id: interface.c 1.13 2000/09/10 10:35:18 kls Exp $
  */
 
 #include "interface.h"
@@ -313,14 +313,14 @@ void cInterface::LearnKeys(void)
       }
 }
 
-eKeys cInterface::DisplayChannel(int Number, const char *Name)
+eKeys cInterface::DisplayChannel(int Number, const char *Name, bool WithInfo)
 {
   // Number = 0 is used for channel group display and no EIT
   if (Number)
      RcIo.Number(Number);
   if (Name && !Recording()) {
      //XXX Maybe show only those lines that have actual information???
-     Open(MenuColumns, Number && EIT.IsValid() ? 5 : 1);
+     Open(MenuColumns, Number && WithInfo && EIT.IsValid() ? 5 : 1);
      int BufSize = MenuColumns + 1;
      char buffer[BufSize];
      if (Number)
@@ -332,7 +332,7 @@ eKeys cInterface::DisplayChannel(int Number, const char *Name)
      struct tm *now = localtime(&t);
      snprintf(buffer, BufSize, "%02d:%02d", now->tm_hour, now->tm_min);
      Write(-5, 0, buffer);
-     if (Number && EIT.IsValid()) { 
+     if (Number && WithInfo && EIT.IsValid()) { 
         const int t = 6;
         int w = MenuColumns - t;
         Write(0, 1, EIT.GetRunningTime(), clrYellow, clrBackground); 

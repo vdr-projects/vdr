@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.23 2000/09/09 14:43:37 kls Exp $
+ * $Id: menu.c 1.24 2000/09/10 10:28:46 kls Exp $
  */
 
 #include "menu.h"
@@ -1072,6 +1072,41 @@ eOSState cMenuRecordings::ProcessKey(eKeys Key)
   return state;
 }
 
+// --- cMenuSetup ------------------------------------------------------------
+
+class cMenuSetup : public cOsdMenu {
+private:
+  cSetup data;
+public:
+  cMenuSetup(void);
+  virtual eOSState ProcessKey(eKeys Key);
+  };
+
+cMenuSetup::cMenuSetup(void)
+:cOsdMenu("Setup", 20)
+{
+  data = Setup;
+  Add(new cMenuEditIntItem( "PrimaryDVB",         &data.PrimaryDVB, 1, cDvbApi::NumDvbApis));
+  Add(new cMenuEditBoolItem("ShowInfoOnChSwitch", &data.ShowInfoOnChSwitch));
+  Add(new cMenuEditBoolItem("MenuScrollPage",     &data.MenuScrollPage));
+}
+
+eOSState cMenuSetup::ProcessKey(eKeys Key)
+{
+  eOSState state = cOsdMenu::ProcessKey(Key);
+
+  if (state == osUnknown) {
+     switch (Key) {
+       case kOk: state = (Setup.PrimaryDVB != data.PrimaryDVB) ? osSwitchDvb : osBack;
+                 Setup = data;
+                 Setup.Save();
+                 break;
+       default: break;
+       }
+     }
+  return state;
+}
+
 // --- cMenuMain -------------------------------------------------------------
 
 #define STOP_RECORDING "Stop recording "
@@ -1082,6 +1117,7 @@ cMenuMain::cMenuMain(bool Replaying)
   Add(new cOsdItem("Channels",   osChannels));
   Add(new cOsdItem("Timer",      osTimer));
   Add(new cOsdItem("Recordings", osRecordings));
+  Add(new cOsdItem("Setup",      osSetup));
   if (Replaying)
      Add(new cOsdItem("Stop replaying", osStopReplay));
   const char *s = NULL;
@@ -1104,6 +1140,7 @@ eOSState cMenuMain::ProcessKey(eKeys Key)
     case osChannels:   return AddSubMenu(new cMenuChannels);
     case osTimer:      return AddSubMenu(new cMenuTimers);
     case osRecordings: return AddSubMenu(new cMenuRecordings);
+    case osSetup:      return AddSubMenu(new cMenuSetup);
     case osStopRecord: if (Interface.Confirm("Stop Recording?")) {
                           cOsdItem *item = Get(Current());
                           if (item) {

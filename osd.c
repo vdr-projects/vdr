@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 1.6 2000/09/09 14:28:57 kls Exp $
+ * $Id: osd.c 1.7 2000/09/10 08:24:50 kls Exp $
  */
 
 #include "osd.h"
@@ -199,9 +199,8 @@ void cOsdMenu::CursorUp(void)
      current = tmpCurrent;
      if (current < first) {
         first = first > MAXOSDITEMS - 1 ? first - (MAXOSDITEMS - 1) : 0;
-#ifndef NO_PAGE_SCROLL
-        current = SpecialItem(first) ? first + 1 : first;
-#endif
+        if (Setup.MenuScrollPage)
+           current = SpecialItem(first) ? first + 1 : first;
         Display();
         }
      else
@@ -229,9 +228,8 @@ void cOsdMenu::CursorDown(void)
            first = last - (MAXOSDITEMS - 1);
            lastOnScreen = last;
            }
-#ifndef NO_PAGE_SCROLL
-        current = SpecialItem(lastOnScreen) ? lastOnScreen - 1 : lastOnScreen;
-#endif
+        if (Setup.MenuScrollPage)
+           current = SpecialItem(lastOnScreen) ? lastOnScreen - 1 : lastOnScreen;
         Display();
         }
      else

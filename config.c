@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.19 2000/09/09 14:50:58 kls Exp $
+ * $Id: config.c 1.20 2000/09/10 10:30:15 kls Exp $
  */
 
 #include "config.h"
@@ -573,5 +573,83 @@ cTimer *cTimers::GetTimer(cTimer *Timer)
         ti = (cTimer *)ti->Next();
         }
   return NULL;
+}
+
+// -- cSetup -----------------------------------------------------------------
+
+cSetup Setup;
+
+char *cSetup::fileName = NULL;
+
+cSetup::cSetup(void)
+{
+  PrimaryDVB = 1;
+  ShowInfoOnChSwitch = 1;
+  MenuScrollPage = 1;
+}
+
+bool cSetup::Parse(char *s)
+{
+  const char *Delimiters = " \t\n=";
+  char *Name  = strtok(s, Delimiters);
+  char *Value = strtok(NULL, Delimiters);
+  if (Name && Value) {
+     if      (!strcasecmp(Name, "PrimaryDVB"))          PrimaryDVB         = atoi(Value);
+     else if (!strcasecmp(Name, "ShowInfoOnChSwitch"))  ShowInfoOnChSwitch = atoi(Value);
+     else if (!strcasecmp(Name, "MenuScrollPage"))      MenuScrollPage     = atoi(Value);
+     else
+        return false;
+     return true;
+     }
+  return false;
+}
+
+bool cSetup::Load(const char *FileName)
+{
+  isyslog(LOG_INFO, "loading %s", FileName);
+  delete fileName;
+  fileName = strdup(FileName);
+  FILE *f = fopen(fileName, "r");
+  if (f) {
+     int line = 0;
+     char buffer[MaxBuffer];
+     bool result = true;
+     while (fgets(buffer, sizeof(buffer), f) > 0) {
+           line++;
+           if (*buffer != '#' && !Parse(buffer)) {
+              esyslog(LOG_ERR, "error in %s, line %d\n", fileName, line);
+              result = false;
+              break;
+              }
+           }
+     fclose(f);
+     return result;
+     }
+  else
+     LOG_ERROR_STR(FileName);
+  return false;
+}
+
+bool cSetup::Save(const char *FileName)
+{
+  if (!FileName)
+     FileName = fileName;
+  if (FileName) {
+     FILE *f = fopen(FileName, "w");
+     if (f) {
+        fprintf(f, "# VDR Setup\n");
+        fprintf(f, "PrimaryDVB         = %d\n", PrimaryDVB);
+        fprintf(f, "ShowInfoOnChSwitch = %d\n", ShowInfoOnChSwitch);
+        fprintf(f, "MenuScrollPage     = %d\n", MenuScrollPage);
+        fclose(f);
+        isyslog(LOG_INFO, "saved setup to %s", FileName);
+        return true;
+        }
+     else
+        LOG_ERROR_STR(FileName);
+     }
+  else
+     esyslog(LOG_ERR, "attempt to save setup without file name");
+  return false;
 }
 

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.23 2000/09/09 12:13:55 kls Exp $
+ * $Id: dvbapi.c 1.24 2000/09/10 10:25:09 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -1097,16 +1097,34 @@ cDvbApi::~cDvbApi()
   delete replayTitle;
 }
 
+bool cDvbApi::SetPrimaryDvbApi(int n)
+{
+  n--;
+  if (0 <= n && n < NumDvbApis && dvbApi[n]) {
+     isyslog(LOG_INFO, "setting primary DVB to %d", n + 1);
+     PrimaryDvbApi = dvbApi[n];
+     return true;
+     }
+  esyslog(LOG_ERR, "invalid DVB interface: %d", n + 1);
+  return false;
+}
+
 cDvbApi *cDvbApi::GetDvbApi(int Ca)
 {
+  cDvbApi *d = NULL;
   Ca--;
   for (int i = MAXDVBAPI; --i >= 0; ) {
-      if (dvbApi[i]) {
-         if ((i == Ca || Ca < 0) && !dvbApi[i]->Recording())
+      if (dvbApi[i] && !dvbApi[i]->Recording()) {
+         if (i == Ca)
             return dvbApi[i];
+         if (Ca < 0) {
+            d = dvbApi[i];
+            if (d != PrimaryDvbApi)
+               break;
+            }
          }
       }
-  return NULL;
+  return d;
 }
 
 int cDvbApi::Index(void)

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.h 1.10 2000/09/03 14:34:24 kls Exp $
+ * $Id: interface.h 1.11 2000/09/10 10:35:46 kls Exp $
  */
 
 #ifndef __INTERFACE_H
@@ -42,7 +42,7 @@ public:
   bool Confirm(const char *s);
   void Help(const char *Red, const char *Green = NULL, const char *Yellow = NULL, const char *Blue = NULL);
   void LearnKeys(void);
-  eKeys DisplayChannel(int Number, const char *Name = NULL);
+  eKeys DisplayChannel(int Number, const char *Name = NULL, bool WithInfo = false);
   void DisplayRecording(int Index, bool On);
   bool Recording(void);
   };

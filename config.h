@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.16 2000/09/09 14:21:35 kls Exp $
+ * $Id: config.h 1.17 2000/09/10 10:29:05 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -156,7 +156,7 @@ public:
        fclose(f);
        }
     else {
-       esyslog(LOG_ERR, "can't open '%s'\n", fileName);
+       LOG_ERROR_STR(fileName);
        result = false;
        }
     return result;
@@ -177,8 +177,10 @@ public:
              }
        fclose(f);
        }
-    else
+    else {
+       LOG_ERROR_STR(fileName);
        result = false;
+       }
     return result;
   }
   };
@@ -210,5 +212,21 @@ extern int CurrentGroup;
 extern cChannels Channels;
 extern cTimers Timers;
 extern cKeys Keys;
+
+class cSetup {
+private:
+  static char *fileName;
+  bool Parse(char *s);
+public:
+  // Also adjust cMenuSetup (menu.c) when adding parameters here!
+  int PrimaryDVB;
+  int ShowInfoOnChSwitch;
+  int MenuScrollPage;
+  cSetup(void);
+  bool Load(const char *FileName);
+  bool Save(const char *FileName = NULL);
+  };
+
+extern cSetup Setup;
 
 #endif //__CONFIG_H

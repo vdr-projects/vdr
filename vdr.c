@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.28 2000/09/09 14:18:25 kls Exp $
+ * $Id: vdr.c 1.29 2000/09/10 10:42:32 kls Exp $
  */
 
 #include <getopt.h>
@@ -53,11 +53,11 @@ void SignalHandler(int signum)
   Interrupted = signum;
 }
 
-static eKeys ShowChannel(int Number, bool Group = false) 
+static eKeys ShowChannel(int Number, bool Switched, bool Group = false)
 {
   cChannel *channel = Group ? Channels.Get(Number) : Channels.GetByNumber(Number);
   if (channel)
-     return Interface.DisplayChannel(channel->number, channel->name);
+     return Interface.DisplayChannel(channel->number, channel->name, !Switched || Setup.ShowInfoOnChSwitch);
   return kNone;
 }
 
@@ -164,6 +164,7 @@ int main(int argc, char *argv[])
 
   // Configuration data:
 
+  Setup.Load("setup.conf");
   Channels.Load("channels.conf");
   Timers.Load("timers.conf");
 #ifdef REMOTE_LIRC
@@ -173,6 +174,8 @@ int main(int argc, char *argv[])
      Interface.LearnKeys();
 #endif
   Interface.Init();
+
+  cDvbApi::SetPrimaryDvbApi(Setup.PrimaryDVB);
 
   Channels.SwitchTo(CurrentChannel);
 
@@ -194,7 +197,7 @@ int main(int argc, char *argv[])
         // Channel display:
         if (CurrentChannel != LastChannel) {
            if (!Menu)
-              ShowChannel(CurrentChannel);
+              ShowChannel(CurrentChannel, LastChannel > 0);
            LastChannel = CurrentChannel;
            }
         // Direct Channel Select (action):
@@ -233,6 +236,11 @@ int main(int argc, char *argv[])
                             DELETENULL(*Interact);
                             DELETENULL(ReplayControl);
                             break;
+             case osSwitchDvb:
+                            DELETENULL(*Interact);
+                            Interface.Info("Switching primary DVB...");
+                            cDvbApi::SetPrimaryDvbApi(Setup.PrimaryDVB);
+                            break;
              case osBack:
              case osEnd:    DELETENULL(*Interact);
                             break;
@@ -261,7 +269,7 @@ int main(int argc, char *argv[])
                                 CurrentGroup = Channels.GetPrevGroup(CurrentGroup < 1 ? 1 : CurrentGroup);
                              if (CurrentGroup < 0)
                                 CurrentGroup = SaveGroup;
-                             if (ShowChannel(CurrentGroup, true) == kOk)
+                             if (ShowChannel(CurrentGroup, false, true) == kOk)
                                 Channels.SwitchTo(Channels.Get(Channels.GetNextNormal(CurrentGroup))->number);
                              }
                           break;
