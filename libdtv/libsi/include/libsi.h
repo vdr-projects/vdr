@@ -4,8 +4,8 @@
 ///                                                        ///
 //////////////////////////////////////////////////////////////
 
-// $Revision: 1.4 $
-// $Date: 2001/10/07 10:24:46 $
+// $Revision: 1.6 $
+// $Date: 2002/01/30 17:04:13 $
 // $Author: hakenes $
 //
 //   (C) 2001 Rolf Hakenes <hakenes@hippomi.de>, under the GNU GPL.
@@ -31,6 +31,8 @@
 #include <time.h>
 #include <sys/types.h>
 #include <asm/types.h>
+
+#define dvb_pid_t int
 
 
   /* Program Identifier */
@@ -274,7 +276,7 @@ struct Pid {
 struct PidInfo {
    struct NODE          Node;
    int                  StreamType;
-   int                  ElementaryPid;
+   dvb_pid_t            ElementaryPid;
    struct LIST         *Descriptors;
 };
 
@@ -283,7 +285,7 @@ struct PidInfo {
    { \
       xCreateNode (pidinfo, NULL); \
       pidinfo->StreamType = styp; \
-      pidinfo->ElementaryPid = epid; \
+      pidinfo->ElementaryPid = (dvb_pid_t) epid; \
       pidinfo->Descriptors = xNewList (NULL); \
    } while (0)
 
@@ -418,7 +420,9 @@ struct BouquetNameDescriptor {
 #define CreateBouquetNameDescriptor(descr, text) \
    do \
    { \
-      xCreateNode (((struct BouquetNameDescriptor *)descr), text); \
+      xCreateNode (((struct BouquetNameDescriptor *)descr), NULL); \
+      ((struct NODE *)descr)->Name = text; \
+      ((struct NODE *)descr)->HashKey = xHashKey (text); \
       ((struct BouquetNameDescriptor *)descr)->Tag = DESCR_BOUQUET_NAME; \
    } while (0)
 
@@ -613,7 +617,9 @@ struct ServiceDescriptor {
 #define CreateServiceDescriptor(descr, styp, prov, name) \
    do \
    { \
-      xCreateNode (((struct ServiceDescriptor *)descr), name); \
+      xCreateNode (((struct ServiceDescriptor *)descr), NULL); \
+      ((struct NODE *)descr)->Name = name; \
+      ((struct NODE *)descr)->HashKey = xHashKey (name); \
       ((struct ServiceDescriptor *)descr)->Tag = DESCR_SERVICE; \
       ((struct ServiceDescriptor *)descr)->ServiceType = styp; \
       ((struct ServiceDescriptor *)descr)->ServiceProvider = prov; \
@@ -678,7 +684,9 @@ struct ComponentDescriptor {
 #define CreateComponentDescriptor(descr, scnt, ctyp, tag, lc1, lc2, lc3, txt) \
    do \
    { \
-      xCreateNode (((struct ComponentDescriptor *)descr), txt); \
+      xCreateNode (((struct ComponentDescriptor *)descr), NULL); \
+      ((struct NODE *)descr)->Name = txt; \
+      ((struct NODE *)descr)->HashKey = xHashKey (txt); \
       ((struct ComponentDescriptor *)descr)->Tag = DESCR_COMPONENT; \
       ((struct ComponentDescriptor *)descr)->StreamContent = scnt; \
       ((struct ComponentDescriptor *)descr)->ComponentType = ctyp; \
@@ -735,7 +743,9 @@ struct ExtendedEventDescriptor {
 #define CreateExtendedEventDescriptor(descr, dnum, ldnb, lc1, lc2, lc3, text) \
    do \
    { \
-      xCreateNode (((struct ExtendedEventDescriptor *)descr), text); \
+      xCreateNode (((struct ExtendedEventDescriptor *)descr), NULL); \
+      ((struct NODE *)descr)->Name = text; \
+      ((struct NODE *)descr)->HashKey = xHashKey (text); \
       ((struct ExtendedEventDescriptor *)descr)->Tag = DESCR_EXTENDED_EVENT; \
       ((struct ExtendedEventDescriptor *)descr)->DescriptorNumber = dnum; \
       ((struct ExtendedEventDescriptor *)descr)->LastDescriptorNumber = ldnb; \
@@ -754,7 +764,9 @@ struct ExtendedEventItem {
 #define CreateExtendedEventItem(itm, dtxt, text) \
    do \
    { \
-      xCreateNode (itm, dtxt); \
+      xCreateNode (itm, NULL); \
+      ((struct NODE *)itm)->Name = dtxt; \
+      ((struct NODE *)itm)->HashKey = xHashKey (dtxt); \
       itm->Text = text; \
    } while (0)
 
@@ -822,7 +834,9 @@ struct ShortEventDescriptor {
 #define CreateShortEventDescriptor(descr, name, lc1, lc2, lc3, text) \
    do \
    { \
-      xCreateNode (((struct ShortEventDescriptor *)descr), name); \
+      xCreateNode (((struct ShortEventDescriptor *)descr), NULL); \
+      ((struct NODE *)descr)->Name = name; \
+      ((struct NODE *)descr)->HashKey = xHashKey (name); \
       ((struct ShortEventDescriptor *)descr)->Tag = DESCR_SHORT_EVENT; \
       ((struct ShortEventDescriptor *)descr)->LanguageCode[0] = lc1; \
       ((struct ShortEventDescriptor *)descr)->LanguageCode[1] = lc2; \

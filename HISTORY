@@ -926,3 +926,7 @@ Video Disk Recorder Revision History
 
 - Fixed handling improper buffer lengths in the EIT parser (thanks to Deti
   Fliegl).
+
+2002-01-30: Version 0.99pre4
+
+- Fixed handling improperly formatted EIT data (thanks to Rolf Hakenes).

@@ -4,8 +4,8 @@
 ///                                                        ///
 //////////////////////////////////////////////////////////////
 
-// $Revision: 1.4 $
-// $Date: 2001/10/07 10:24:46 $
+// $Revision: 1.6 $
+// $Date: 2002/01/30 17:04:13 $
 // $Author: hakenes $
 //
 //   (C) 2001 Rolf Hakenes <hakenes@hippomi.de>, under the GNU GPL.
@@ -119,7 +119,8 @@ struct Pid *siParsePMT (u_char *Buffer)
 
    CreatePid (Pid, ProgramID, PcrID, PmtVersion);
 
-   siParseDescriptors (Pid->Descriptors, Ptr, ProgramInfoLength, Pmt->table_id);
+   if (StreamLength >= 0) siParseDescriptors (Pid->Descriptors, Ptr,
+                             ProgramInfoLength, Pmt->table_id);
 
    Ptr += ProgramInfoLength;
 
@@ -209,6 +210,8 @@ struct LIST *siParseSDT (u_char *Buffer)
          SetPresentFollowing (Service->Status);
 
       LoopLength = HILO (SdtDescriptor->descriptors_loop_length);
+      if (LoopLength > SectionLength - SDT_DESCR_LEN)
+         return (ServiceList);
       Ptr += SDT_DESCR_LEN;
 
       siParseDescriptors (Service->Descriptors, Ptr, LoopLength, Sdt->table_id);
@@ -297,6 +300,8 @@ struct LIST *siParseEIT (u_char *Buffer)
       Event->Duration = BcdTimeToSeconds (EitEvent->duration);
 
       LoopLength = HILO (EitEvent->descriptors_loop_length);
+      if (LoopLength > SectionLength - EIT_EVENT_LEN)
+         return (EventList);
       Ptr += EIT_EVENT_LEN;
 
       siParseDescriptors (Event->Descriptors, Ptr, LoopLength, Eit->table_id);
@@ -349,6 +354,8 @@ void siParseDescriptors (struct LIST *Descriptors, u_char *Buffer,
 
    while (DescriptorLength < Length)
    {
+      if ((GetDescriptorLength (Ptr) > Length - DescriptorLength) ||
+          (GetDescriptorLength (Ptr) <= 0)) return;
       switch (TableID)
       {
          case TID_NIT_ACT: case TID_NIT_OTH:
@@ -554,7 +561,6 @@ void siParseDescriptor (struct LIST *Descriptors, u_char *Buffer)
          Text = siGetDescriptorText (Buffer + DESCR_BOUQUET_NAME_LEN,
                    GetDescriptorLength (Buffer) - DESCR_BOUQUET_NAME_LEN);
          CreateBouquetNameDescriptor (Descriptor, Text);
-//         xMemFree (Text);
       break;
 
       case DESCR_COMPONENT:
@@ -567,7 +573,6 @@ void siParseDescriptor (struct LIST *Descriptors, u_char *Buffer)
                    CastComponentDescriptor(Buffer)->lang_code1,
                    CastComponentDescriptor(Buffer)->lang_code2,
                    CastComponentDescriptor(Buffer)->lang_code3, Text);
-//         xMemFree (Text);
       break;
 
       case DESCR_SERVICE:
@@ -579,7 +584,6 @@ void siParseDescriptor (struct LIST *Descriptors, u_char *Buffer)
                    CastServiceDescriptor(Buffer)->provider_name_length)));
          CreateServiceDescriptor (Descriptor,
                    CastServiceDescriptor(Buffer)->service_type, Text, Text2);
-//         xMemFree (Text2);
       break;
 
       case DESCR_COUNTRY_AVAIL:
@@ -603,7 +607,6 @@ void siParseDescriptor (struct LIST *Descriptors, u_char *Buffer)
                    CastShortEventDescriptor(Buffer)->lang_code1,
                    CastShortEventDescriptor(Buffer)->lang_code2,
                    CastShortEventDescriptor(Buffer)->lang_code3, Text2);
-//         xMemFree (Text);
       break;
 
       case DESCR_EXTENDED_EVENT:
@@ -617,10 +620,9 @@ void siParseDescriptor (struct LIST *Descriptors, u_char *Buffer)
                    CastExtendedEventDescriptor(Buffer)->lang_code1,
                    CastExtendedEventDescriptor(Buffer)->lang_code2,
                    CastExtendedEventDescriptor(Buffer)->lang_code3, Text);
-//         xMemFree (Text);
          Length = CastExtendedEventDescriptor(Buffer)->length_of_items;
          Ptr += DESCR_EXTENDED_EVENT_LEN;
-         while (Length > 0)
+         while ((Length > 0) && (Length < GetDescriptorLength (Buffer)))
          {
             Text = siGetDescriptorText (Ptr + ITEM_EXTENDED_EVENT_LEN,
                       CastExtendedEventItem(Ptr)->item_description_length);
@@ -629,7 +631,6 @@ void siParseDescriptor (struct LIST *Descriptors, u_char *Buffer)
                       *((u_char *)(Ptr + ITEM_EXTENDED_EVENT_LEN +
                       CastExtendedEventItem(Ptr)->item_description_length)));
             AddExtendedEventItem (Descriptor, Text2, Text);
-//            xMemFree (Text2);
             Length -= ITEM_EXTENDED_EVENT_LEN + CastExtendedEventItem(Ptr)->item_description_length +
                       *((u_char *)(Ptr + ITEM_EXTENDED_EVENT_LEN +
                         CastExtendedEventItem(Ptr)->item_description_length)) + 1;
@@ -760,7 +761,7 @@ void siParseDescriptor (struct LIST *Descriptors, u_char *Buffer)
             ASVC_FLAG, CastAc3Descriptor(Buffer)->asvc); }
          Length -= DESCR_AC3_LEN;
          Ptr += DESCR_AC3_LEN;
-         if (Length) AddAc3AdditionalData (Descriptor, Ptr, Length);
+         if (Length > 0) AddAc3AdditionalData (Descriptor, Ptr, Length);
       break;
 
       case DESCR_SUBTITLING:
@@ -843,6 +844,8 @@ char *siGetDescriptorText (u_char *Buffer, int Length)
    char *tmp, *result;
    int i;
 
+   if ((Length < 0) || (Length > 4095))
+      return (xSetText ("text error"));
    if (*Buffer == 0x05 || (*Buffer >= 0x20 && *Buffer <= 0xff))
    {
       xMemAlloc (Length+1, &result);
@@ -852,9 +855,8 @@ char *siGetDescriptorText (u_char *Buffer, int Length)
          if (*Buffer == 0) break;
 
          if ((*Buffer >= ' ' && *Buffer <= '~') ||
-             (*Buffer == '\n') ||
              (*Buffer >= 0xa0 && *Buffer <= 0xff)) *tmp++ = *Buffer;
-         if (*Buffer == 0x8A) *tmp++ = '\n';
+         if (*Buffer == 0x8A || *Buffer == '\n') *tmp++ = '\n';
          if (*Buffer == 0x86 || *Buffer == 0x87) *tmp++ = ' ';
          Buffer++;
       }
