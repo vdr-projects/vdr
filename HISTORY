@@ -1103,3 +1103,6 @@ Video Disk Recorder Revision History
 - Fixed displaying a system message while the replay mode is being shown.
 - Physically removing a deleted recording if one with the same name shall be
   deleted again.
+- The "Left" and "Right" keys are now used to page up and down in text displays
+  (like the EPG descriptions or the results of commands executed from the
+  "Commands" menu).

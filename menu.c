@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.167 2002/03/16 11:29:58 kls Exp $
+ * $Id: menu.c 1.168 2002/03/16 14:03:38 kls Exp $
  */
 
 #include "menu.h"
@@ -933,8 +933,8 @@ public:
   virtual void Display(int Offset = -1, eDvbColor FgColor = clrWhite, eDvbColor BgColor = clrBackground);
   bool CanScrollUp(void) { return offset > 0; }
   bool CanScrollDown(void) { return h + offset < lines; }
-  void ScrollUp(void);
-  void ScrollDown(void);
+  void ScrollUp(bool Page);
+  void ScrollDown(bool Page);
   virtual eOSState ProcessKey(eKeys Key);
   };
 
@@ -993,20 +993,20 @@ void cMenuTextItem::Display(int Offset, eDvbColor FgColor, eDvbColor BgColor)
   if (CanScrollDown()) Interface->Write(x + w - 1, y + h - 1, "v", bgColor, fgColor);
 }
 
-void cMenuTextItem::ScrollUp(void)
+void cMenuTextItem::ScrollUp(bool Page)
 {
   if (CanScrollUp()) {
      Clear();
-     offset--;
+     offset = max(offset - (Page ? h : 1), 0);
      Display();
      }
 }
 
-void cMenuTextItem::ScrollDown(void)
+void cMenuTextItem::ScrollDown(bool Page)
 {
   if (CanScrollDown()) {
      Clear();
-     offset++;
+     offset = min(offset + (Page ? h : 1), lines - h);
      Display();
      }
 }
@@ -1014,10 +1014,14 @@ void cMenuTextItem::ScrollDown(void)
 eOSState cMenuTextItem::ProcessKey(eKeys Key)
 {
   switch (Key) {
+    case kLeft|k_Repeat:
+    case kLeft:
     case kUp|k_Repeat:
-    case kUp:            ScrollUp();   break;
+    case kUp:            ScrollUp(NORMALKEY(Key) == kLeft);    break;
+    case kRight|k_Repeat:
+    case kRight:
     case kDown|k_Repeat:
-    case kDown:          ScrollDown(); break;
+    case kDown:          ScrollDown(NORMALKEY(Key) == kRight); break;
     default:             return osUnknown;
     }
   return osContinue;
