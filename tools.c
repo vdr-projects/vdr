@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.29 2001/02/11 11:18:45 kls Exp $
+ * $Id: tools.c 1.30 2001/02/11 14:44:22 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -247,6 +247,48 @@ bool RemoveFileOrDir(const char *FileName, bool FollowSymlinks)
      return false;
      }
   return true;
+}
+
+bool RemoveEmptyDirectories(const char *DirName, bool RemoveThis)
+{
+  DIR *d = opendir(DirName);
+  if (d) {
+     bool empty = true;
+     struct dirent *e;
+     while ((e = readdir(d)) != NULL) {
+           if (strcmp(e->d_name, ".") && strcmp(e->d_name, "..") && strcmp(e->d_name, "lost+found")) {
+              char *buffer;
+              asprintf(&buffer, "%s/%s", DirName, e->d_name);
+              struct stat st;
+              if (stat(buffer, &st) == 0) {
+                 if (S_ISDIR(st.st_mode)) {
+                    if (!RemoveEmptyDirectories(buffer, true))
+                       empty = false;
+                    }
+                 else
+                    empty = false;
+                 }
+              else {
+                 LOG_ERROR_STR(buffer);
+                 delete buffer;
+                 return false;
+                 }
+              delete buffer;
+              }
+           }
+     closedir(d);
+     if (RemoveThis && empty) {
+        dsyslog(LOG_INFO, "removing %s", DirName);
+        if (remove(DirName) < 0) {
+           LOG_ERROR_STR(DirName);
+           return false;
+           }
+        }
+     return empty;
+     }
+  else
+     LOG_ERROR_STR(DirName);
+  return false;
 }
 
 char *ReadLink(const char *FileName)

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: videodir.c 1.3 2000/12/24 12:51:41 kls Exp $
+ * $Id: videodir.c 1.4 2001/02/11 13:48:30 kls Exp $
  */
 
 #include "videodir.h"
@@ -28,7 +28,7 @@ public:
   cVideoDirectory(void);
   ~cVideoDirectory();
   uint FreeMB(void);
-  const char *Name(void) { return name; }
+  const char *Name(void) { return name ? name : VideoDirectory; }
   const char *Stored(void) { return stored; }
   int Length(void) { return length; }
   bool IsDistributed(void) { return name != NULL; }
@@ -195,5 +195,13 @@ const char *PrefixVideoFileName(const char *FileName, char Prefix)
      strcpy(p, FileName + strlen(VideoDirectory) + 1);
      }
   return PrefixedName;
+}
+
+void RemoveEmptyVideoDirectories(void)
+{
+  cVideoDirectory Dir;
+  do {
+     RemoveEmptyDirectories(Dir.Name());
+     } while (Dir.Next());
 }
 

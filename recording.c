@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.26 2001/02/11 10:47:31 kls Exp $
+ * $Id: recording.c 1.27 2001/02/11 14:53:44 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -53,6 +53,7 @@ void RemoveDeletedRecordings(void)
               }
         if (r0 && time(NULL) - r0->start > DELETEDLIFETIME * 60) {
            r0->Remove();
+           RemoveEmptyVideoDirectories();
            LastRemoveCheck += REMOVELATENCY;
            return;
            }

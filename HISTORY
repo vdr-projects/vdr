@@ -389,3 +389,5 @@ Video Disk Recorder Revision History
 - The "Green" button in the "Recordings" menu can now be used to rewind a
   recording and play it from the very beginning.
 - Fixed handling ':' in timer filenames and '\n' in timer summaries (see FORMATS).
+- When removing recordings empty directories are now removed from the video
+  directory.

@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.52 2001/02/04 19:41:24 kls Exp $
+ * $Id: vdr.c 1.53 2001/02/11 14:51:44 kls Exp $
  */
 
 #include <getopt.h>
@@ -43,6 +43,8 @@
 #else
 #define KEYS_CONF "keys.conf"
 #endif
+
+#define ACTIVITYTIMEOUT 60 // seconds before starting housekeeping
 
 static int Interrupted = 0;
 
@@ -218,6 +220,7 @@ int main(int argc, char *argv[])
   cReplayControl *ReplayControl = NULL;
   int LastChannel = -1;
   int PreviousChannel = cDvbApi::CurrentChannel();
+  time_t LastActivity = time(NULL);
 
   while (!Interrupted) {
         // Channel display:
@@ -324,8 +327,14 @@ int main(int argc, char *argv[])
            EITScanner.Process();
            cVideoCutter::Active();
            }
-        if (!*Interact && !cRecordControls::Active())
-           RemoveDeletedRecordings();
+        if (!*Interact && !cRecordControls::Active()) {
+           if (time(NULL) - LastActivity > ACTIVITYTIMEOUT) {
+              RemoveDeletedRecordings();
+              LastActivity = time(NULL);
+              }
+           }
+        else
+           LastActivity = time(NULL);
         }
   isyslog(LOG_INFO, "caught signal %d", Interrupted);
   Setup.CurrentChannel = cDvbApi::CurrentChannel();
