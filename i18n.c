@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.5 2000/11/19 09:27:15 kls Exp $
+ * $Id: i18n.c 1.6 2000/11/19 12:12:53 kls Exp $
  *
  * Slovenian translations provided by Miha Setina <mihasetina@softhome.net>
  *
@@ -323,7 +323,7 @@ const tPhrase Phrases[] = {
   },
   { "EPGScanTimeout",
     "Zeit bis EPG Scan",
-    "", //TODO
+    "Cas do EPG pregleda",
   },
   // The days of the week:
   { "MTWTFSS",
