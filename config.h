@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.29 2000/11/01 13:42:29 kls Exp $
+ * $Id: config.h 1.30 2000/11/05 13:17:03 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -217,7 +217,6 @@ public:
   cTimer *GetTimer(cTimer *Timer);
   };
 
-extern int CurrentChannel;
 extern int CurrentGroup;
 
 extern cChannels Channels;

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.41 2000/11/05 12:47:44 kls Exp $
+ * $Id: menu.c 1.42 2000/11/05 13:42:39 kls Exp $
  */
 
 #include "menu.h"
@@ -594,7 +594,7 @@ cMenuChannels::cMenuChannels(void)
   //TODO
   int i = 0;
   cChannel *channel;
-  int curr = ((channel = Channels.GetByNumber(CurrentChannel)) != NULL) ? channel->Index() : -1;
+  int curr = ((channel = Channels.GetByNumber(cDvbApi::CurrentChannel())) != NULL) ? channel->Index() : -1;
 
   while ((channel = Channels.Get(i)) != NULL) {
         Add(new cMenuChannelItem(i, channel), i == curr);
@@ -1245,7 +1245,7 @@ cMenuSchedule::cMenuSchedule(void)
 :cOsdMenu("Schedule", 6, 6)
 {
   now = next = false;
-  cChannel *channel = Channels.GetByNumber(CurrentChannel);
+  cChannel *channel = Channels.GetByNumber(cDvbApi::CurrentChannel());
   if (channel) {
      char *buffer = NULL;
      asprintf(&buffer, "Schedule - %s", channel->name);
@@ -1547,7 +1547,7 @@ cDisplayChannel::cDisplayChannel(int Number, bool Switched, bool Group)
 cDisplayChannel::cDisplayChannel(eKeys FirstKey)
 :cOsdBase(true)
 {
-  oldNumber = CurrentChannel;
+  oldNumber = cDvbApi::CurrentChannel();
   number = 0;
   lastTime = time_ms();
   Interface->Open(MenuColumns, 5);
@@ -1744,7 +1744,7 @@ cRecordControl *cRecordControls::RecordControls[MAXDVBAPI] = { NULL };
 
 bool cRecordControls::Start(cTimer *Timer)
 {
-  int ch = Timer ? Timer->channel : CurrentChannel;
+  int ch = Timer ? Timer->channel : cDvbApi::CurrentChannel();
   cChannel *channel = Channels.GetByNumber(ch);
 
   if (channel) {

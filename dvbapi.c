@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.35 2000/11/05 13:04:23 kls Exp $
+ * $Id: dvbapi.c 1.36 2000/11/05 18:30:58 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -1130,6 +1130,7 @@ cDvbApi::cDvbApi(const char *VideoFileName, const char *VbiFileName)
 #endif
   lastProgress = lastTotal = -1;
   replayTitle = NULL;
+  currentChannel = 1;
 }
 
 cDvbApi::~cDvbApi()
@@ -1698,7 +1699,7 @@ bool cDvbApi::ShowProgress(bool Initial)
   return false;
 }
 
-bool cDvbApi::SetChannel(int FrequencyMHz, char Polarization, int Diseqc, int Srate, int Vpid, int Apid, int Ca, int Pnr)
+bool cDvbApi::SetChannel(int ChannelNumber, int FrequencyMHz, char Polarization, int Diseqc, int Srate, int Vpid, int Apid, int Ca, int Pnr)
 {
   if (videoDev >= 0) {
      struct frontend front;
@@ -1723,6 +1724,7 @@ bool cDvbApi::SetChannel(int FrequencyMHz, char Polarization, int Diseqc, int Sr
      if (front.sync & 0x1F == 0x1F) {
         if (siProcessor)
            siProcessor->SetCurrentServiceID(Pnr);
+        currentChannel = ChannelNumber;
         return true;
         }
      esyslog(LOG_ERR, "ERROR: channel not sync'ed (front.sync=%X)!", front.sync);

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.29 2000/11/01 15:52:00 kls Exp $
+ * $Id: config.c 1.30 2000/11/05 18:18:30 kls Exp $
  */
 
 #include "config.h"
@@ -262,9 +262,8 @@ bool cChannel::Switch(cDvbApi *DvbApi)
      DvbApi = cDvbApi::PrimaryDvbApi;
   if (!DvbApi->Recording() && !groupSep) {
      isyslog(LOG_INFO, "switching to channel %d", number);
-     CurrentChannel = number;
      for (int i = 3; i--;) {
-         if (DvbApi->SetChannel(frequency, polarization, diseqc, srate, vpid, apid, ca, pnr))
+         if (DvbApi->SetChannel(number, frequency, polarization, diseqc, srate, vpid, apid, ca, pnr))
             return true;
          esyslog(LOG_ERR, "retrying");
          }
@@ -284,7 +283,7 @@ cTimer::cTimer(bool Instant)
   startTime = stopTime = 0;
   recording = false;
   active = Instant;
-  cChannel *ch = Channels.GetByNumber(CurrentChannel);
+  cChannel *ch = Channels.GetByNumber(cDvbApi::CurrentChannel());
   channel = ch ? ch->number : 0;
   time_t t = time(NULL);
   struct tm *now = localtime(&t);
@@ -545,7 +544,6 @@ cKeys Keys;
 
 // -- cChannels --------------------------------------------------------------
 
-int CurrentChannel = 1;
 int CurrentGroup = -1;
 
 cChannels Channels;

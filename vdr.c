@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.42 2000/11/03 15:31:03 kls Exp $
+ * $Id: vdr.c 1.43 2000/11/05 18:39:17 kls Exp $
  */
 
 #include <getopt.h>
@@ -177,7 +177,7 @@ int main(int argc, char *argv[])
 
   cDvbApi::SetPrimaryDvbApi(Setup.PrimaryDVB);
 
-  Channels.SwitchTo(CurrentChannel);
+  Channels.SwitchTo(1);
 
   // User interface:
 
@@ -199,15 +199,15 @@ int main(int argc, char *argv[])
   cOsdBase *Menu = NULL;
   cReplayControl *ReplayControl = NULL;
   int LastChannel = -1;
-  int PreviousChannel = CurrentChannel;
+  int PreviousChannel = cDvbApi::CurrentChannel();
 
   while (!Interrupted) {
         // Channel display:
-        if (CurrentChannel != LastChannel) {
+        if (cDvbApi::CurrentChannel() != LastChannel) {
            if (!Menu)
-              Menu = new cDisplayChannel(CurrentChannel, LastChannel > 0);
+              Menu = new cDisplayChannel(cDvbApi::CurrentChannel(), LastChannel > 0);
            PreviousChannel = LastChannel;
-           LastChannel = CurrentChannel;
+           LastChannel = cDvbApi::CurrentChannel();
            }
         // Timers and Recordings:
         if (!Menu) {
@@ -259,7 +259,7 @@ int main(int argc, char *argv[])
            switch (key) {
              // Toggle channels:
              case k0:
-                  if (PreviousChannel != CurrentChannel)
+                  if (PreviousChannel != cDvbApi::CurrentChannel())
                      Channels.SwitchTo(PreviousChannel);
                   break;
              // Direct Channel Select:
@@ -287,7 +287,7 @@ int main(int argc, char *argv[])
              case kUp:
              case kDown|k_Repeat:
              case kDown: if (!Interface->Recording()) {
-                            int n = CurrentChannel + (NORMALKEY(key) == kUp ? 1 : -1);
+                            int n = cDvbApi::CurrentChannel() + (NORMALKEY(key) == kUp ? 1 : -1);
                             cChannel *channel = Channels.GetByNumber(n);
                             if (channel)
                                channel->Switch();
