@@ -367,3 +367,6 @@ Paul Lacatus <paul@campina.iiruc.ro>
 
 Istvan Koenigsberger <istvnko@hotmail.com> and Guido Josten <guido.josten@t-online.de>
  for translating OSD texts to the Hungarian language
+
+Christian Rienecker <C.Rienecker@deutschepost.de>
+ for making the VFAT handling more tolerant for users who forget to turn it on

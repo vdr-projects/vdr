@@ -1383,3 +1383,6 @@ Video Disk Recorder Revision History
 
 - Re-visited the race condition fix in the cDvbPlayer (thanks again to Andreas
   Schultz).
+- Changed the VFAT handling to allow users who normally use it but have forgotten
+  to set it when compiling a new version of VDR to at least see their recordings
+  made with VFAT enabled (thanks to Christian Rienecker).
