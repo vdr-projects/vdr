@@ -3408,3 +3408,5 @@ Video Disk Recorder Revision History
   Dolby Digital compatibility mode".
 - The 'plugins-clean' target of the Makefile now only deletes the actual plugin
   library files from this version of VDR (suggested by Andreas Brachold).
+- Added a missing 'resultSkipped = 0' to cRemux::Clear() (thanks to Marco Schlüßler
+  for reporting this one).

@@ -11,7 +11,7 @@
  * The cDolbyRepacker code was originally written by Reinhard Nissl <rnissl@gmx.de>,
  * and adapted to the VDR coding style by Klaus.Schmidinger@cadsoft.de.
  *
- * $Id: remux.c 1.29 2005/02/12 10:57:50 kls Exp $
+ * $Id: remux.c 1.30 2005/02/13 10:23:10 kls Exp $
  */
 
 #include "remux.h"
@@ -1009,6 +1009,7 @@ void cRemux::Clear(void)
   resultBuffer->Clear();
   synced = false;
   skipped = 0;
+  resultSkipped = 0;
 }
 
 void cRemux::SetBrokenLink(uchar *Data, int Length)
