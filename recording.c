@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.85 2003/10/24 15:49:00 kls Exp $
+ * $Id: recording.c 1.86 2003/11/08 15:25:35 kls Exp $
  */
 
 #include "recording.h"
@@ -46,7 +46,7 @@
 #define SUMMARYFILESUFFIX "/summary.vdr"
 #define MARKSFILESUFFIX   "/marks.vdr"
 
-#define FINDCMD      "find %s -follow -type d -name '%s' 2> /dev/null"
+#define FINDCMD      "cd '%s' && find '%s' -follow -type d -name '%s' 2> /dev/null"
 
 #define MINDISKSPACE 1024 // MB
 
@@ -621,7 +621,7 @@ bool cRecordings::Load(bool Deleted)
   Clear();
   bool result = false;
   char *cmd = NULL;
-  asprintf(&cmd, FINDCMD, VideoDirectory, Deleted ? "*" DELEXT : "*" RECEXT);
+  asprintf(&cmd, FINDCMD, VideoDirectory, VideoDirectory, Deleted ? "*" DELEXT : "*" RECEXT);
   FILE *p = popen(cmd, "r");
   if (p) {
      char *s;
