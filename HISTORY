@@ -1899,9 +1899,12 @@ Video Disk Recorder Revision History
   See INSTALL for information how to do this. Some function descriptions have
   already been adapted to Doxygen, more will follow.
 
-2002-12-22: Version 1.1.21
+2002-12-23: Version 1.1.21
 
 - Fixed the 'channels.conf' entries for "Studio Universal" and "Disney Channel".
 - Fixed handling channels in the "Channels" menu in case there are ':@nnn' group
   separators without names (thanks to Guy Roussin for reporting this one).
 - The SVDRP command CHAN now also accepts channel IDs.
+- Increased the timeout until an index file is considerd no longer to be written
+  (sometimes in time shift with heavy system load the index file was closed too
+  early by the replay thread).
