@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.h 1.46 2001/08/11 12:22:01 kls Exp $
+ * $Id: dvbapi.h 1.47 2001/08/25 13:37:00 kls Exp $
  */
 
 #ifndef __DVBAPI_H
@@ -41,6 +41,15 @@ typedef struct CRect {
   };
 
 #define FRAMESPERSEC 25
+
+// The maximum file size is limited by the range that can be covered
+// with 'int'. 4GB might be possible (if the range is considered
+// 'unsigned'), 2GB should be possible (even if the range is considered
+// 'signed'), so let's use 2000MB for absolute safety (the actual file size
+// may be slightly higher because we stop recording only before the next
+// 'I' frame, to have a complete Group Of Pictures):
+#define MAXVIDEOFILESIZE 2000 // MB
+#define MINVIDEOFILESIZE  100 // MB
 
 const char *IndexToHMSF(int Index, bool WithFrame = false);
       // Converts the given index to a string, optionally containing the frame number.

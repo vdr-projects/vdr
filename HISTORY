@@ -667,3 +667,5 @@ Video Disk Recorder Revision History
 2001-08-25: Version 0.93
 
 - The menus and the channel display now show the current date and time.
+- The new Setup parameter MaxVideoFileSize can be used to customize the
+  maximum size of the recorded video files.

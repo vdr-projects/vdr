@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.33 2001/08/25 12:27:03 kls Exp $
+ * $Id: i18n.c 1.34 2001/08/25 13:41:57 kls Exp $
  *
  * Slovenian translations provided by Miha Setina <mihasetina@softhome.net>
  * Italian   translations provided by Alberto Carraro <bertocar@tin.it>
@@ -855,6 +855,15 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "Hauteur affichage",
+    "", // TODO
+  },
+  { "MaxVideoFileSize",
+    "Max. Video Dateigröße",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
     "", // TODO
   },
   // The days of the week:

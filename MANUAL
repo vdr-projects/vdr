@@ -398,6 +398,11 @@ Video Disk Recorder User's Manual
   OSDwidth  = 52         The width and height of the OSD .
   OSDheight = 18         The valid ranges are width=40...56, height=12...21.
 
+  MaxVideoFileSize=2000  The maximum size of a single recorded video file in MB.
+                         The valid range is 100...2000. Default is 2000, but
+                         you may want to use smaller values if you are planning
+                         on archiving a recording to CD.
+
 * Executing system commands
 
   The "Main" menu option "Commands" allows you to execute any system commands

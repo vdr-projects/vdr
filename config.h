@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.62 2001/08/25 11:50:24 kls Exp $
+ * $Id: config.h 1.63 2001/08/25 13:30:54 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -287,6 +287,7 @@ public:
   int VideoFormat;
   int ChannelInfoPos;
   int OSDwidth, OSDheight;
+  int MaxVideoFileSize;
   int CurrentChannel;
   cSetup(void);
   bool Load(const char *FileName);
