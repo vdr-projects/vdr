@@ -1478,3 +1478,8 @@ Video Disk Recorder Revision History
 - Added a missing StripAudioPackets() to cDvbPlayer::Action() (thanks to
   Stefan Huelswitt).
 - Added an EPG bugfix for the latest VOX EPG data format.
+
+2002-09-21: Version 1.1.11
+
+- Fixed an incomplete initialization of the filter parameters in eit.c (thanks
+  to Jeremy Hall).
