@@ -4,11 +4,11 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 1.41 2002/03/31 13:53:23 kls Exp $
+ * $Id: menu.h 1.42 2002/04/13 15:31:41 kls Exp $
  */
 
-#ifndef _MENU_H
-#define _MENU_H
+#ifndef __MENU_H
+#define __MENU_H
 
 #include "dvbapi.h"
 #include "osd.h"
@@ -142,4 +142,4 @@ public:
   static void ClearLastReplayed(const char *FileName);
   };
 
-#endif //_MENU_H
+#endif //__MENU_H
