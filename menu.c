@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.165 2002/03/16 10:00:41 kls Exp $
+ * $Id: menu.c 1.166 2002/03/16 10:06:18 kls Exp $
  */
 
 #include "menu.h"
@@ -2257,7 +2257,7 @@ cMenuMain::cMenuMain(bool Replaying, eOSState State)
 void cMenuMain::Set(void)
 {
   Clear();
-  //SetTitle(tr("Main")); // this is done below, including disk usage
+  //SetTitle("VDR"); // this is done below, including disk usage
   SetHasHotkeys();
 
   // Title with disk usage:
@@ -2270,7 +2270,7 @@ void cMenuMain::Set(void)
   int Minutes = int(double(FreeMB) / MB_PER_MINUTE);
   int Hours = Minutes / 60;
   Minutes %= 60;
-  snprintf(buffer, sizeof(buffer), "%s  -  Disk %d%%  -  %2d:%02d %s", tr("Main"), Percent, Hours, Minutes, tr("free"));
+  snprintf(buffer, sizeof(buffer), "%s  -  Disk %d%%  -  %2d:%02d %s", tr("VDR"), Percent, Hours, Minutes, tr("free"));
   SetTitle(buffer);
 
   // Basic menu items:

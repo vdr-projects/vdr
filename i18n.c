@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.63 2002/03/10 17:02:42 kls Exp $
+ * $Id: i18n.c 1.64 2002/03/16 10:04:23 kls Exp $
  *
  * Slovenian translations provided by Miha Setina <mihasetina@softhome.net>
  * Italian   translations provided by Alberto Carraro <bertocar@tin.it>
@@ -78,15 +78,15 @@ const tPhrase Phrases[] = {
     "Suomi",
   },
   // Menu titles:
-  { "Main",
-    "Hauptmenü",
-    "Glavni meni",
-    "Principale",
-    "Hoofdmenu",
-    "Principal",
-    "Menu",
-    "Hovedmeny",
-    "Valikko",
+  { "VDR",
+    "VDR",
+    "VDR",
+    "VDR",
+    "VDR",
+    "VDR",
+    "VDR",
+    "VDR",
+    "VDR",
   },
   { "Schedule",
     "Programm",

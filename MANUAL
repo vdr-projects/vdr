@@ -8,7 +8,7 @@ Video Disk Recorder User's Manual
   possible, several keys have different meanings in the various
   modes:
 
-  Key     Normal      Main         Channels   Timers     Edit/New      Recordings  Replay
+  Key     Normal      VDR          Channels   Timers     Edit/New      Recordings  Replay
 
   Up      Ch up       Crsr up      Crsr up    Crsr up    Crsr up       Crsr up     Play
   Down    Ch down     Crsr down    Crsr down  Crsr down  Crsr down     Crsr down   Pause
@@ -16,7 +16,7 @@ Video Disk Recorder User's Manual
   Right   Next group  -            Page down  Page down  Increment     Page down   Search forward
   Ok      Ch display  Select       Switch     Edit       Accept        Play        Progress disp.
   Menu    Menu on     Menu off     Menu off   Menu off   Menu off      Menu off    Menu on
-  Back    -           Menu off     Main menu  Main menu  Discard       Main menu   Recordings menu
+  Back    -           Menu off     VDR menu   VDR menu   Discard       VDR menu    Recordings menu
   Red     -           Record       Edit       Edit       -             Play        Jump
   Green   -           Language     New        New        -             Rewind      Skip -60s
   Yellow  -           -            Delete     Delete     -             Delete      Skip +60s
@@ -34,7 +34,7 @@ Video Disk Recorder User's Manual
 
 * Navigating through the On Screen Menus
 
-  The "Main" menu can be called up with the "Menu" key of your remote
+  The "VDR" menu can be called up with the "Menu" key of your remote
   control unit. The "Up" and "Down" keys are used to select a specific
   item. The "Left" and "Right" keys can be used to change options, and
   the numeric keys allow direct input of numeric data. The "Ok" key
@@ -74,7 +74,7 @@ Video Disk Recorder User's Manual
 
   The "Schedule" menu implements VDR's "Electronic Program Guide" (EPG).
 
-  Select "Schedule" from the "Main" menu and you get a list of all upcoming
+  Select "Schedule" from the "VDR" menu and you get a list of all upcoming
   broadcasts on the current channel.
 
   "Up" and "Down" can be used to scroll through this list, and pressing "Ok"
@@ -135,7 +135,7 @@ Video Disk Recorder User's Manual
 * Selecting language specific audio track
 
   If the current channel provides different audio tracks (typically for
-  different languages), the "Green" button in the "Main" menu can be pressed
+  different languages), the "Green" button in the "VDR" menu can be pressed
   to toggle between these. There can be two different audio PIDs per channel,
   assuming that typically a channel broadcasts a country specific language
   plus the movie's original soundtrack.
@@ -157,7 +157,7 @@ Video Disk Recorder User's Manual
 * Instant Recording
 
   You can start recording the current channel by pressing the "Red" button
-  in the "Main" menu. This will create a timer event named "@channelname" that
+  in the "VDR" menu. This will create a timer event named "@channelname" that
   starts at the current time and records for two hours.
   If you want to modify the recording time you need to edit the timer.
   Stop instant recording by pressing the "Menu" button and selecting
@@ -183,10 +183,10 @@ Video Disk Recorder User's Manual
   usually the individual episodes of a series, which you may want to view in
   the order in which they were broadcast.
 
-  Playback can be stopped via the "Main" menu by selecting "Stop replaying",
+  Playback can be stopped via the "VDR" menu by selecting "Stop replaying",
   or by pressing the "Blue" button outside the menu.
   A previously stopped playback session can be resumed by pressing the "Blue"
-  button in the "Main" menu.
+  button in the "VDR" menu.
 
 * Replay Control
 
@@ -342,7 +342,7 @@ Video Disk Recorder User's Manual
   the channel or replay another recording on that interface. However, if there
   is an other DVB interface that is currently not recording and provides the
   necessary conditional access facilities to continue the recording that is
-  currently being performed on the primary DVB interface, the Main menu will
+  currently being performed on the primary DVB interface, the "VDR" menu will
   contain an option that allows you to stop recording on the primary DVB
   interface. Select that option to stop the ongoing recording and thus free the
   primary DVB interface to allow channel switching or replaying. The interrupted
@@ -352,7 +352,7 @@ Video Disk Recorder User's Manual
 
 * Parameters in the "Setup" menu
 
-  Select "Setup" from the "Main" menu to enter the setup menu. From there you can
+  Select "Setup" from the "VDR" menu to enter the setup menu. From there you can
   modify the following system parameters (note that "boolean" values will be
   displayed as "no" and "yes" in the "Setup" menu, while in the setup file they
   are stored as '0' and '1', respectively):
@@ -390,7 +390,7 @@ Video Disk Recorder User's Manual
                              through long lists).
 
   MarkInstantRecord = 1  Defines whether an "instant recording" (started by
-                         pressing the "Red" button in the "Main" menu) will be
+                         pressing the "Red" button in the "VDR" menu) will be
                          marked with a '@' character to make it distinguishable
                          from timer recordings in the "Recordings" menu.
                          0 = instant recordings will not be marked
@@ -554,9 +554,9 @@ Video Disk Recorder User's Manual
 
 * Executing system commands
 
-  The "Main" menu option "Commands" allows you to execute any system commands
+  The "VDR" menu option "Commands" allows you to execute any system commands
   defined in the configuration file 'commands.conf' (see FORMATS for details).
-  The "Commands" option will only be present in the "Main" menu if a valid
+  The "Commands" option will only be present in the "VDR" menu if a valid
   'commands.conf' file containing at least one command definition has been
   found at program start.
 

@@ -117,7 +117,7 @@ Video Disk Recorder File Formats
 * commands.conf
 
   This file contains the definitions of commands that can be executed from
-  the "Main" menus "Commands" option.
+  the "VDR" menu's "Commands" option.
 
   Each line contains one command definition in the following format:
 
