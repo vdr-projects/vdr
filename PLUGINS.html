@@ -183,6 +183,40 @@ its memory. You don't need to worry about the details behind all this.
 <p>
 If your plugin requires additional source files, simply add them to your plugin's
 source directory and adjust the <tt>Makefile</tt> accordingly.
+<p>
+<!--X1.1.1--><table width=100%><tr><td bgcolor=red>&nbsp;</td><td width=100%>
+Header files usually contain preprocessor statements that prevent the same
+file (or rather its contents, to be precise) from being included more than once, like
+
+<p><table><tr><td bgcolor=#F0F0F0><pre><br>
+#ifndef __I18N_H
+#define __I18N_H
+
+...
+
+#endif //__I18N_H
+</pre></td></tr></table><p>
+
+The example shown here is the way VDR does this in its core source files.
+It takes the header file's name, converts it to all uppercase, replaces the
+dot with an underline and preceedes the whole thing with two underlines.
+The GNU library header files do this pretty much the same way, except that they
+usually precede the name with only one underline (there are exceptions, though).
+<p>
+As long as you make shure that none of your plugin's header files will be named
+like one of VDR's header files, you can use the same method as VDR. However,
+if you want to name a header file like one that is already existing in VDR's
+source (<tt>i18n.h</tt> would be a possible candidate for this), you may want
+to make sure that the macros used here don't clash. How you do this is completely
+up to you. You could, for instance, prepend the macro with a <tt>'P'</tt>, as in
+<tt>P__I18N_H</tt>, or leave out the trailing <tt>_H</tt>, as in <tt>__I18N</tt>,
+or use a completely different way to make sure a header file is included only once.
+<p>
+The 'hello' example that comes with VDR makes use of <a href="#Internationalization">internationalization</a>
+and implements a file named <tt>i18n.h</tt>. To make sure it won't clash with VDR's
+<tt>i18n.h</tt> it uses the macro <tt>_I18N__H</tt> (one underline at the beginning
+and two replacing the dot).
+<!--X1.1.1--></td></tr></table>
 
 <hr><h2>Construction and Destruction</h2>
 
