@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.11 2001/02/13 17:11:44 kls Exp $
+ * $Id: i18n.c 1.12 2001/02/13 22:17:27 kls Exp $
  *
  * Slovenian translations provided by Miha Setina <mihasetina@softhome.net>
  * Italian   translations provided by Alberto Carraro <bertocar@tin.it>
@@ -163,7 +163,7 @@ const tPhrase Phrases[] = {
   },
   { "Rewind",
     "Anfang",
-    "",// TODO
+    "Zacetek",
     "Da inizio",
   },
   { "Resume",
