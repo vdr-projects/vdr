@@ -126,3 +126,6 @@ Matjaz Thaler <matjaz.thaler@guest.arnes.si>
 
 Artur Skawina <skawina@geocities.com>
  for improving the font file generation in the Makefile
+
+Werner Fink <werner@suse.de>
+ for making I/O more robust by handling EINTR

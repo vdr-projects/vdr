@@ -13,7 +13,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.c 1.18 2001/08/11 14:51:28 kls Exp $
+ * $Id: eit.c 1.19 2001/08/12 15:04:37 kls Exp $
  ***************************************************************************/
 
 #include "eit.h"
@@ -1229,11 +1229,11 @@ void cSIProcessor::Action()
             {
                /* read section */
                unsigned char buf[4096+1]; // max. allowed size for any EIT section (+1 for safety ;-)
-               if (read(filters[a].handle, buf, 3) == 3)
+               if (safe_read(filters[a].handle, buf, 3) == 3)
                {
                   int seclen = ((buf[1] & 0x0F) << 8) | (buf[2] & 0xFF);
                   int pid = filters[a].pid;
-                  int n = read(filters[a].handle, buf + 3, seclen);
+                  int n = safe_read(filters[a].handle, buf + 3, seclen);
                   if (n == seclen)
                   {
                      seclen += 3;

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.32 2001/06/16 10:33:20 kls Exp $
+ * $Id: recording.c 1.33 2001/08/12 15:09:59 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -141,7 +141,7 @@ int cResumeFile::Read(void)
   if (fileName) {
      int f = open(fileName, O_RDONLY);
      if (f >= 0) {
-        if (read(f, &resume, sizeof(resume)) != sizeof(resume)) {
+        if (safe_read(f, &resume, sizeof(resume)) != sizeof(resume)) {
            resume = -1;
            LOG_ERROR_STR(fileName);
            }
@@ -158,7 +158,7 @@ bool cResumeFile::Save(int Index)
   if (fileName) {
      int f = open(fileName, O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
      if (f >= 0) {
-        if (write(f, &Index, sizeof(Index)) != sizeof(Index))
+        if (safe_write(f, &Index, sizeof(Index)) != sizeof(Index))
            LOG_ERROR_STR(fileName);
         close(f);
         return true;
@@ -243,7 +243,7 @@ cRecording::cRecording(const char *FileName)
            int size = buf.st_size;
            summary = new char[size + 1]; // +1 for terminating 0
            if (summary) {
-              int rbytes = read(f, summary, size);
+              int rbytes = safe_read(f, summary, size);
               if (rbytes >= 0) {
                  summary[rbytes] = 0;
                  if (rbytes != size)

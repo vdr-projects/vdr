@@ -6,7 +6,7 @@
  *
  * Ported to LIRC by Carsten Koch <Carsten.Koch@icem.de>  2000-06-16.
  *
- * $Id: remote.c 1.23 2001/07/27 10:17:19 kls Exp $
+ * $Id: remote.c 1.24 2001/08/12 15:07:26 kls Exp $
  */
 
 #include "remote.h"
@@ -199,7 +199,7 @@ int cRcIoRCU::ReceiveByte(int TimeoutMs)
   // Returns the byte if one was received within a timeout, -1 otherwise
   if (cFile::FileReady(f, TimeoutMs)) {
      unsigned char b;
-     if (read(f, &b, 1) == 1)
+     if (safe_read(f, &b, 1) == 1)
         return b;
      else
         LOG_ERROR;
@@ -436,7 +436,7 @@ void cRcIoLIRC::Action(void)
 
       LOCK_THREAD;
 
-      if (cFile::FileReady(f, REPEATLIMIT) && read(f, buf, sizeof(buf)) > 21) {
+      if (cFile::FileReady(f, REPEATLIMIT) && safe_read(f, buf, sizeof(buf)) > 21) {
          if (!receivedData) { // only accept new data the previous data has been fetched
             int count;
             sscanf(buf, "%*x %x %29s", &count, LastKeyName); // '29' in '%29s' is LIRC_KEY_BUF-1!

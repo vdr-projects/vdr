@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.38 2001/08/11 14:49:48 kls Exp $
+ * $Id: tools.c 1.39 2001/08/12 15:12:54 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -23,9 +23,33 @@
 
 int SysLogLevel = 3;
 
+ssize_t safe_read(int filedes, void *buffer, size_t size)
+{
+  for (;;) {
+      ssize_t p = read(filedes, buffer, size);
+      if (p < 0 && errno == EINTR) {
+         dsyslog(LOG_INFO, "EINTR while reading from file handle %d - retrying", filedes);
+         continue;
+         }
+      return p;
+      }
+}
+
+ssize_t safe_write(int filedes, const void *buffer, size_t size)
+{
+  for (;;) {
+      ssize_t p = write(filedes, buffer, size);
+      if (p < 0 && errno == EINTR) {
+         dsyslog(LOG_INFO, "EINTR while writing to file handle %d - retrying", filedes);
+         continue;
+         }
+      return p;
+      }
+}
+
 void writechar(int filedes, char c)
 {
-  write(filedes, &c, sizeof(c));
+  safe_write(filedes, &c, sizeof(c));
 }
 
 char *readline(FILE *f)

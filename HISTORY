@@ -622,7 +622,7 @@ Video Disk Recorder Revision History
 - Fixed calculating the timeout value in cFile::FileReady() (thanks to
   Wolfgang Henselmann-Weiss).
 
-2001-08-11: Version 0.91
+2001-08-12: Version 0.91
 
 - Fixed displaying colored button texts that are too long.
 - Suppressing replay progress display when replaying a DVD.
@@ -648,3 +648,4 @@ Video Disk Recorder Revision History
 - Fixed displaying editing marks when toggling a mark in "pause" mode.
 - If there is no free DVB device to record, the log message will now be given
   only once.
+- Made I/O more robust by handling EINTR (thanks to Werner Fink).

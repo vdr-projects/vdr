@@ -7,7 +7,7 @@
  * DVD support initially written by Andreas Schultz <aschultz@warp10.net>
  * based on dvdplayer-0.5 by Matjaz Thaler <matjaz.thaler@guest.arnes.si>
  *
- * $Id: dvbapi.c 1.105 2001/08/11 12:21:49 kls Exp $
+ * $Id: dvbapi.c 1.106 2001/08/12 15:09:42 kls Exp $
  */
 
 //#define DVDDEBUG        1
@@ -81,6 +81,8 @@ extern "C" {
 #define MAXBROKENTIMEOUT 30 // seconds
 
 #define CHECK(s) { if ((s) < 0) LOG_ERROR; } // used for 'ioctl()' calls
+
+#define FATALERRNO (errno != EAGAIN && errno != EINTR)
 
 typedef unsigned char uchar;
 
@@ -158,7 +160,7 @@ cIndexFile::cIndexFile(const char *FileName, bool Record)
                  if (index) {
                     f = open(fileName, O_RDONLY);
                     if (f >= 0) {
-                       if ((int)read(f, index, buf.st_size) != buf.st_size) {
+                       if ((int)safe_read(f, index, buf.st_size) != buf.st_size) {
                           esyslog(LOG_ERR, "ERROR: can't read from file '%s'", fileName);
                           delete index;
                           index = NULL;
@@ -222,7 +224,7 @@ bool cIndexFile::CatchUp(void)
               int offset = (last + 1) * sizeof(tIndex);
               int delta = (newLast - last) * sizeof(tIndex);
               if (lseek(f, offset, SEEK_SET) == offset) {
-                 if (read(f, &index[last + 1], delta) != delta) {
+                 if (safe_read(f, &index[last + 1], delta) != delta) {
                     esyslog(LOG_ERR, "ERROR: can't read from index");
                     delete index;
                     index = NULL;
@@ -249,7 +251,7 @@ void cIndexFile::Write(uchar PictureType, uchar FileNumber, int FileOffset)
 {
   if (f >= 0) {
      tIndex i = { FileOffset, PictureType, FileNumber, 0 };
-     if (write(f, &i, sizeof(i)) != sizeof(i)) {
+     if (safe_write(f, &i, sizeof(i)) != sizeof(i)) {
         esyslog(LOG_ERR, "ERROR: can't write to index file");
         close(f);
         f = -1;
@@ -542,7 +544,7 @@ void cRecordBuffer::Input(void)
          t = time(NULL);
          }
       else if (r < 0) {
-         if (errno != EAGAIN) {
+         if (FATALERRNO) {
             LOG_ERROR;
             if (errno != EBUFFEROVERFLOW)
                break;
@@ -569,8 +571,9 @@ void cRecordBuffer::Output(void)
   int r = 0;
   for (;;) {
       int g = Get(b + r, sizeof(b) - r);
-      if (g > 0) {
+      if (g > 0)
          r += g;
+      if (r > 0) {
          int Count = r, Result;
          const uchar *p = remux.Process(b, Count, Result, &pictureType);
          if (p) {
@@ -580,7 +583,7 @@ void cRecordBuffer::Output(void)
                if (index && pictureType != NO_PICTURE)
                   index->Write(pictureType, fileName.Number(), fileSize);
                while (Result > 0) {
-                     int w = write(recordFile, p, Result);
+                     int w = safe_write(recordFile, p, Result);
                      if (w < 0) {
                         LOG_ERROR_STR(fileName.Name());
                         recording = false;
@@ -619,7 +622,7 @@ int ReadFrame(int f, uchar *b, int Length, int Max)
      esyslog(LOG_ERR, "ERROR: frame larger than buffer (%d > %d)", Length, Max);
      Length = Max;
      }
-  int r = read(f, b, Length);
+  int r = safe_read(f, b, Length);
   if (r < 0)
      LOG_ERROR;
   return r;
@@ -705,7 +708,7 @@ void cPlayBuffer::Output(void)
                         p += w;
                         r -= w;
                         }
-                     else if (w < 0 && errno != EAGAIN) {
+                     else if (w < 0 && FATALERRNO) {
                         LOG_ERROR;
                         Stop();
                         return;
@@ -922,7 +925,7 @@ void cReplayBuffer::Input(void)
               }
            else if (r == 0)
               eof = true;
-           else if (r < 0 && errno != EAGAIN) {
+           else if (r < 0 && FATALERRNO) {
               LOG_ERROR;
               break;
               }
@@ -2071,7 +2074,7 @@ void cTransferBuffer::Input(void)
               }
            }
         else if (r < 0) {
-           if (errno != EAGAIN) {
+           if (FATALERRNO) {
               LOG_ERROR;
               if (errno != EBUFFEROVERFLOW)
                  break;
@@ -2105,7 +2108,7 @@ void cTransferBuffer::Output(void)
                     p += w;
                     r -= w;
                     }
-                 else if (w < 0 && errno != EAGAIN) {
+                 else if (w < 0 && FATALERRNO) {
                     LOG_ERROR;
                     Stop();
                     return;
@@ -2214,7 +2217,7 @@ void cCuttingBuffer::Action(void)
                  }
               LastIFrame = 0;
               }
-           write(toFile, buffer, Length);
+           safe_write(toFile, buffer, Length);
            toIndex->Write(PictureType, toFileName->Number(), FileSize);
            FileSize += Length;
            if (!LastIFrame)

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.27 2001/08/11 09:52:14 kls Exp $
+ * $Id: tools.h 1.28 2001/08/12 15:13:02 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -33,6 +33,8 @@ extern int SysLogLevel;
 
 template<class T> inline void swap(T &a, T &b) { T t = a; a = b; b = t; };
 
+ssize_t safe_read(int filedes, void *buffer, size_t size);
+ssize_t safe_write(int filedes, const void *buffer, size_t size);
 void writechar(int filedes, char c);
 char *readline(FILE *f);
 char *strn0cpy(char *dest, const char *src, size_t n);
