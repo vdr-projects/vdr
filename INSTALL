@@ -126,6 +126,12 @@ and only perform the system shutdown. A program that uses the second parameter
 to set the hardware for restart must therefore also check whether the first
 parameter is '0'.
 
+If a timer is currently recording, the parameters will reflect the start
+time of that timer. This means that the first parameter will be a time in
+the past, and the second parameter will be a negative number. This only
+happens if the user presses the "Power" key while a timer is currently
+recording.
+
 Before the shutdown program is called, the user will be prompted to inform
 him that the system is about to shut down. If any remote control key is
 pressed while this prompt is visible, the shutdown will be cancelled (and

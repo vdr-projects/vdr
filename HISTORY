@@ -727,3 +727,8 @@ Video Disk Recorder Revision History
   is no DVB card that can access this channel).
 - Fixed toggling channels with the '0' key in case the "Ok" button has been
   pressed to display the current/next information.
+- Pressing the "Power" key now always initiates the shutdown sequence (after
+  user confirmation in case of a recording timer), event if there is currently
+  a menu or a replay session active. Note the additional remarks in INSTALL
+  regarding the values of the two parameters given to the shutdown program
+  in case of a currently recording timer.

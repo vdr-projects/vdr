@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.70 2001/09/08 12:15:05 kls Exp $
+ * $Id: vdr.c 1.71 2001/09/08 12:49:38 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -350,7 +350,7 @@ int main(int argc, char *argv[])
            EITScanner.Activity();
            LastActivity = time(NULL);
            }
-        if (*Interact) {
+        if (*Interact && key != kPower) {
            switch ((*Interact)->ProcessKey(key)) {
              case osMenu:   DELETENULL(Menu);
                             Menu = new cMenuMain(ReplayControl);
@@ -434,6 +434,7 @@ int main(int argc, char *argv[])
              case kOk:   LastChannel = -1; break; // forces channel display
              // Power off:
              case kPower: isyslog(LOG_INFO, "Power button pressed");
+                          DELETENULL(*Interact);
                           if (!Shutdown) {
                              Interface->Error(tr("Can't shutdown - option '-s' not given!"));
                              break;
@@ -455,8 +456,7 @@ int main(int argc, char *argv[])
            time_t Now = time(NULL);
            if (Now - LastActivity > ACTIVITYTIMEOUT) {
               // Shutdown:
-              if (Shutdown && (Setup.MinUserInactivity && Now - LastActivity > Setup.MinUserInactivity * 60 || ForceShutdown)) {
-                 ForceShutdown = false;
+              if (Shutdown && Setup.MinUserInactivity && Now - LastActivity > Setup.MinUserInactivity * 60) {
                  cTimer *timer = Timers.GetNextActiveTimer();
                  time_t Next  = timer ? timer->StartTime() : 0;
                  time_t Delta = timer ? Next - Now : 0;
@@ -470,7 +470,8 @@ int main(int argc, char *argv[])
                     else
                        LastActivity = 1;
                     }
-                 if (!Next || Delta > Setup.MinEventTimeout * 60) {
+                 if (!Next || Delta > Setup.MinEventTimeout * 60 || ForceShutdown) {
+                    ForceShutdown = false;
                     if (timer)
                        dsyslog(LOG_INFO, "next timer event at %s", ctime(&Next));
                     if (WatchdogTimeout > 0)
