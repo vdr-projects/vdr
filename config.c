@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.92 2002/03/18 21:35:07 kls Exp $
+ * $Id: config.c 1.93 2002/03/31 11:57:07 kls Exp $
  */
 
 #include "config.h"
@@ -602,7 +602,7 @@ bool cTimer::Matches(time_t t)
          if ((!firstday || a >= firstday) && t <= b) {
             startTime = a;
             stopTime = b;
-            if (t >= firstday)
+            if (t >= firstday + SECSINDAY)
                firstday = 0;
             break;
             }
