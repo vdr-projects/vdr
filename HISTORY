@@ -2184,3 +2184,5 @@ Video Disk Recorder Revision History
   to Oliver Endriss).
 - Fixed resume file handling in case the resume.vdr file can't be written
   (thanks to Gerhard Steiner).
+- Fixed cutting a recording if there is only a single editing mark (thanks to
+  Ralf Klueber for reporting this one).

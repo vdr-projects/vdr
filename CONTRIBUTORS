@@ -678,3 +678,6 @@ Lars Bläser <LBlaeser@hofheim.de>
 
 Niko Tarnanen <niko.tarnanen@hut.fi> and Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  for translating OSD texts to the Finnish language
+
+Ralf Klueber <ralf.klueber@vodafone.com>
+ for reporting a bug in cutting a recording if there is only a single editing mark
