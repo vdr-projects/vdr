@@ -3455,3 +3455,5 @@ Video Disk Recorder Revision History
 - Fixed a few French OSD texts that were in the wrong place.
 - Improved matching timers to EPG events, especially in case there are several events
   with the same VPS time.
+- Fixed cDolbyRepacker to allow recording ProSieben HD broadcasts (thanks to Reinhard
+  Nissl).
