@@ -1128,3 +1128,6 @@ Video Disk Recorder Revision History
 - Improved file I/O in case of EINTR, which may occur e.g. with heavy system
   load (thanks to Werner Fink).
 - Now writing the title of a recording into the 'summary.vdr' file.
+- Workaround for displaying still frames with the unpatched LinuxDVB driver
+  (if anybody ever finds out why the unpatched driver doesn't display VDR's
+  still frames, please let me know).

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.163 2002/03/16 14:20:47 kls Exp $
+ * $Id: dvbapi.c 1.164 2002/03/23 14:14:03 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -1182,10 +1182,26 @@ void cReplayBuffer::StripAudioPackets(uchar *b, int Length, uchar Except)
 void cReplayBuffer::DisplayFrame(uchar *b, int Length)
 {
   StripAudioPackets(b, Length);
-  videoDisplayStillPicture sp = { (char *)b, Length };
   CHECK(ioctl(audioDev, AUDIO_SET_AV_SYNC, false));
   CHECK(ioctl(audioDev, AUDIO_SET_MUTE, true));
+/* Using the VIDEO_STILLPICTURE ioctl call would be the
+   correct way to display a still frame, but unfortunately this
+   doesn't work with frames from VDR. So let's do pretty much the
+   same here as in DVB/driver/dvb.c's play_iframe() - I have absolutely
+   no idea why it works this way, but doesn't work with VIDEO_STILLPICTURE.
+   If anybody ever finds out what could be changed so that VIDEO_STILLPICTURE
+   could be used, please let me know!
+   kls 2002-03-23
+*/
+//#define VIDEO_STILLPICTURE_WORKS_WITH_VDR_FRAMES
+#ifdef VIDEO_STILLPICTURE_WORKS_WITH_VDR_FRAMES
+  videoDisplayStillPicture sp = { (char *)b, Length };
   CHECK(ioctl(videoDev, VIDEO_STILLPICTURE, &sp));
+#else
+#define MIN_IFRAME 400000
+  for (int i = MIN_IFRAME / Length + 1; i > 0; i--)
+      safe_write(videoDev, b, Length);
+#endif
 }
 
 void cReplayBuffer::Close(void)
