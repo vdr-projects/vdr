@@ -689,3 +689,5 @@ Video Disk Recorder Revision History
   to 0x15E on the newer keyboards).
 - When a recording is edited, the summary information (if present) is now
   also copied.
+- When a recording is running on the primary interface, any attempt to change
+  the current channel will now lead to a "Channel locked" message.

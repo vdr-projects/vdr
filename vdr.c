@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.66 2001/09/01 11:44:08 kls Exp $
+ * $Id: vdr.c 1.67 2001/09/01 13:48:44 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -395,35 +395,34 @@ int main(int argc, char *argv[])
                   break;
              // Direct Channel Select:
              case k1 ... k9:
-                  if (!Interface->Recording())
-                     Menu = new cDisplayChannel(key);
+                  Menu = new cDisplayChannel(key);
                   break;
              // Left/Right rotates trough channel groups:
              case kLeft|k_Repeat:
              case kLeft:
              case kRight|k_Repeat:
-             case kRight: if (!Interface->Recording()) {
-                             int SaveGroup = CurrentGroup;
-                             if (NORMALKEY(key) == kRight)
-                                CurrentGroup = Channels.GetNextGroup(CurrentGroup) ;
-                             else
-                                CurrentGroup = Channels.GetPrevGroup(CurrentGroup < 1 ? 1 : CurrentGroup);
-                             if (CurrentGroup < 0)
-                                CurrentGroup = SaveGroup;
-                             Menu = new cDisplayChannel(CurrentGroup, false, true);
-                             }
-                          break;
+             case kRight: {
+                  int SaveGroup = CurrentGroup;
+                  if (NORMALKEY(key) == kRight)
+                     CurrentGroup = Channels.GetNextGroup(CurrentGroup) ;
+                  else
+                     CurrentGroup = Channels.GetPrevGroup(CurrentGroup < 1 ? 1 : CurrentGroup);
+                  if (CurrentGroup < 0)
+                     CurrentGroup = SaveGroup;
+                  Menu = new cDisplayChannel(CurrentGroup, false, true);
+                  break;
+                  }
              // Up/Down Channel Select:
              case kUp|k_Repeat:
              case kUp:
              case kDown|k_Repeat:
-             case kDown: if (!Interface->Recording()) {
-                            int n = cDvbApi::CurrentChannel() + (NORMALKEY(key) == kUp ? 1 : -1);
-                            cChannel *channel = Channels.GetByNumber(n);
-                            if (channel)
-                               channel->Switch();
-                            }
-                         break;
+             case kDown: {
+                  int n = cDvbApi::CurrentChannel() + (NORMALKEY(key) == kUp ? 1 : -1);
+                  cChannel *channel = Channels.GetByNumber(n);
+                  if (channel)
+                     channel->Switch();
+                  break;
+                  }
              // Menu Control:
              case kMenu: Menu = new cMenuMain(ReplayControl); break;
              // Viewing Control:
