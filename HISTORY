@@ -1881,3 +1881,6 @@ Video Disk Recorder Revision History
   CXX      ?= g++
   CXXFLAGS ?= -O2 -Wall -Woverloaded-virtual
 
+- Fixed recording overlapping timers on the same channel in case
+  DO_REC_AND_PLAY_ON_PRIMARY_DEVICE and/or DO_MULTIPLE_RECORDINGS is not defined
+  (thanks to Jaakko Hyvätti).
