@@ -1360,7 +1360,7 @@ Video Disk Recorder Revision History
   + The '-a' option (for Dolby Digital audio) doesn't work yet.
   + Switching between different language tracks doesn't work yet.
 
-2002-07-14: Version 1.1.5
+2002-07-21: Version 1.1.5
 
 - Added direct access to the index data of cPalette (needed for displaying SPUs,
   thanks to Andreas Schultz).
