@@ -193,3 +193,4 @@ Video Disk Recorder Revision History
 - If the name of the video directory used with the '-v' option had trailing
   slashes, the recording file names have been damaged. Trailing slashes are
   now silently removed.
+- Fixed a buffer overflow in EIT parsing.

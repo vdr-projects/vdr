@@ -13,7 +13,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.c 1.2 2000/09/17 08:02:30 kls Exp $
+ * $Id: eit.c 1.3 2000/09/17 15:23:05 kls Exp $
  ***************************************************************************/
 
 #include "eit.h"
@@ -308,11 +308,11 @@ char * cEIT::mjd2string(unsigned short mjd)
 /**  */
 int cEIT::GetEIT()
 {
-	unsigned char buf[1024];
+	unsigned char buf[4096+1]; // max. allowed size for any EIT section (+1 for safety ;-)
 	eit_t *eit;
 	struct eit_loop_struct1 *eitloop;
 	struct eit_short_event_descriptor_struct *eitevt;
-	int seclen;
+	unsigned int seclen;
 	unsigned short handle, pid;
 	eit_event * pevt = (eit_event *)0;
 	time_t tstart;
@@ -350,6 +350,8 @@ int cEIT::GetEIT()
 		seclen=(buf[6]<<8)|buf[7];
 		pid=(buf[4]<<8)|buf[5];
 	
+                if (seclen >= sizeof(buf))
+                   seclen = sizeof(buf) - 1;
 		read(fsvbi, buf, seclen);
 	
 		if (seclen < (int)(sizeof(eit_t)
