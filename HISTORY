@@ -1251,3 +1251,7 @@ Video Disk Recorder Revision History
 - Fixed the cutting mechanism to make it re-sync in case a frame is larger than the
   buffer (thanks to Sven Grothklags).
 - Added Swedish language texts (thanks to Tomas Prybil).
+
+2002-06-10: Version 1.0.4
+
+- Added Romanian language texts (thanks to Paul Lacatus).
