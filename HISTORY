@@ -2223,3 +2223,4 @@ Video Disk Recorder Revision History
 - Some corrections to the Catalanian OSD texts (thanks to Jordi Vilà).
 - Single event timers are now deleted if the recording they are doing is
   deleted before the timer ends.
+- Fixed an uninitialized variable in cDisplayChannel (thanks to Stefan Huelswitt).

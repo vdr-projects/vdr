@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.251 2003/05/29 11:35:52 kls Exp $
+ * $Id: menu.c 1.252 2003/05/29 11:43:36 kls Exp $
  */
 
 #include "menu.h"
@@ -2641,7 +2641,8 @@ cDisplayChannel::cDisplayChannel(eKeys FirstKey)
   lines = 0;
   number = 0;
   lastTime = time_ms();
-  int EpgLines = Setup.ShowInfoOnChSwitch ? 5 : 1;
+  withInfo = Setup.ShowInfoOnChSwitch;
+  int EpgLines = withInfo ? 5 : 1;
   Interface->Open(Setup.OSDwidth, Setup.ChannelInfoPos ? EpgLines : -EpgLines);
   ProcessKey(FirstKey);
 }

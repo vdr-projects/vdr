@@ -173,6 +173,7 @@ Stefan Huelswitt <huels@iname.com>
  video sequence, which avoids artefacts when cutting
  for suggesting to add VDRVERSNUM to config.h
  for fixing a memory leak in cNonBlockingFileReader
+ for fixing an uninitialized variable in cDisplayChannel
 
 Ulrich Röder <roeder@efr-net.de>
  for pointing out that there are channels that have a symbol rate higher than
