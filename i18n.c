@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.149 2004/02/28 11:13:27 kls Exp $
+ * $Id: i18n.c 1.150 2004/03/05 14:33:27 kls Exp $
  *
  * Translations provided by:
  *
@@ -1550,7 +1550,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "VPS",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -2777,7 +2777,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "Prioritι des pauses",
     "",// TODO
-    "Keskeytyksen prioriteetti",
+    "Taukotallenteen prioriteetti",
     "Priorytet przerwy",
     "",// TODO
     "Προτεραιότητα διαλείμματος",
@@ -2795,7 +2795,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "Durιe de vie des pauses (j)",
     "",// TODO
-    "Keskeytyksen elinikδ (d)",
+    "Taukotallenteen elinikδ (d)",
     "Okres trwania przerwy (d)",
     "",// TODO
     "Διάρκεια διαλείματος",
@@ -2831,7 +2831,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Kδytδ VPS-toimintoa",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -2849,7 +2849,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "VPS-toiminnon aloitusmarginaali (s)",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -3627,7 +3627,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "Pause",
     "",// TODO
-    "Keskeytδ",
+    "Tauko",
     "Przerwa",
     "Pausa",
     "Διάλειμμα",
@@ -4186,7 +4186,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "Pause de l'ιmission en direct...",
     "",// TODO
-    "Keskeytetδδn lδhetys...",
+    "Pysδytetδδn lδhetys...",
     "Zatrzymany program biezacy...",
     "Emisiσn en directo parada...",
     "Διάλειμμα ζωντανού σήματος",
