@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.65 2005/01/02 14:08:40 kls Exp $
+ * $Id: device.c 1.66 2005/01/04 13:13:24 kls Exp $
  */
 
 #include "device.h"
@@ -540,8 +540,14 @@ eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
      }
 
   if (Result == scrOk) {
-     if (LiveView && IsPrimaryDevice())
+     if (LiveView && IsPrimaryDevice()) {
+        ClrAvailableTracks();
+        for (int i = 0; i < MAXAPIDS; i++) {
+            SetAvailableTrack(ttAudio, i, Channel->Apid(i), Channel->Alang(i));
+            SetAvailableTrack(ttDolby, i, Channel->Dpid(i), Channel->Dlang(i));
+            }
         currentChannel = Channel->Number();
+        }
      cStatus::MsgChannelSwitch(this, Channel->Number()); // only report status if channel switch successfull
      }
 
