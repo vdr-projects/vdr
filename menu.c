@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.289 2004/02/21 15:40:35 kls Exp $
+ * $Id: menu.c 1.290 2004/02/22 13:32:07 kls Exp $
  */
 
 #include "menu.h"
@@ -1166,6 +1166,13 @@ cMenuEvent::cMenuEvent(const cEvent *Event, bool CanSwitch)
            }
         if (!isempty(Subtitle)) {
            Add(item = new cMenuTextItem(Subtitle, 1, Line, Setup.OSDwidth - 2, -1, clrYellow));
+           Line += item->Height() + 1;
+           }
+        if (Event->Vps() && Event->Vps() != Event->StartTime()) {
+           char *buffer;
+           asprintf(&buffer, "VPS: %s", Event->GetVpsString());
+           Add(item = new cMenuTextItem(buffer, 1, Line, Setup.OSDwidth - 2, -1, clrYellow));
+           free(buffer);
            Line += item->Height() + 1;
            }
         if (!isempty(ExtendedDescription))

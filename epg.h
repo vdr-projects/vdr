@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.h 1.7 2004/02/21 13:46:18 kls Exp $
+ * $Id: epg.h 1.8 2004/02/22 13:18:14 kls Exp $
  */
 
 #ifndef __EPG_H
@@ -33,6 +33,7 @@ private:
   char *description;     // Description of this event
   time_t startTime;      // Start time of this event
   int duration;          // Duration of this event in seconds
+  time_t vps;            // Video Programming Service timestamp (VPS, aka "Programme Identification Label", PIL)
 public:
   cEvent(tChannelID ChannelID, u_int16_t EventID);
   ~cEvent();
@@ -47,9 +48,11 @@ public:
   const char *Description(void) const { return description; }
   time_t StartTime(void) const { return startTime; }
   int Duration(void) const { return duration; }
+  time_t Vps(void) const { return vps; }
   const char *GetDateString(void) const;
   const char *GetTimeString(void) const;
   const char *GetEndTimeString(void) const;
+  const char *GetVpsString(void) const;
   void SetEventID(u_int16_t EventID);
   void SetTableID(uchar TableID);
   void SetVersion(uchar Version);
@@ -59,6 +62,7 @@ public:
   void SetDescription(const char *Description);
   void SetStartTime(time_t StartTime);
   void SetDuration(int Duration);
+  void SetVps(time_t Vps);
   void Dump(FILE *f, const char *Prefix = "") const;
   static bool Read(FILE *f, cSchedule *Schedule);
   void FixEpgBugs(void);

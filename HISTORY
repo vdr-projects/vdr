@@ -2692,3 +2692,7 @@ Video Disk Recorder Revision History
 - Implemented an "EPG linger time", which can be set to have older EPG information
   still displayed in the "Schedule" menu (thanks to Jaakko Hyvätti).
 - Added PDCDescriptor handling to 'libsi'.
+- Implemented handling the VPS timestamps (aka "Programme Identification Label")
+  in preparation for full VPS support for timers (provided the tv stations
+  actually broadcast this information). Currently these are just displayed in
+  the event page if they exist and are different than the event's start time.

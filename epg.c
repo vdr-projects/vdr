@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 1.10 2004/02/21 15:15:47 kls Exp $
+ * $Id: epg.c 1.11 2004/02/22 13:18:01 kls Exp $
  */
 
 #include "epg.h"
@@ -29,6 +29,7 @@ cEvent::cEvent(tChannelID ChannelID, u_int16_t EventID)
   description = NULL;
   startTime = 0;
   duration = 0;
+  vps = 0;
 }
 
 cEvent::~cEvent()
@@ -89,6 +90,11 @@ void cEvent::SetDuration(int Duration)
   duration = Duration;
 }
 
+void cEvent::SetVps(time_t Vps)
+{
+  vps = Vps;
+}
+
 const char *cEvent::GetDateString(void) const
 {
   static char buf[25];
@@ -114,6 +120,14 @@ const char *cEvent::GetEndTimeString(void) const
   return buf;
 }
 
+const char *cEvent::GetVpsString(void) const
+{
+  static char buf[25];
+  struct tm tm_r;
+  strftime(buf, sizeof(buf), "%d.%m %R", localtime_r(&vps, &tm_r));
+  return buf;
+}
+
 void cEvent::Dump(FILE *f, const char *Prefix) const
 {
   if (startTime + duration >= time(NULL)) {
@@ -124,6 +138,8 @@ void cEvent::Dump(FILE *f, const char *Prefix) const
         fprintf(f, "%sS %s\n", Prefix, shortText);
      if (!isempty(description))
         fprintf(f, "%sD %s\n", Prefix, description);
+     if (vps)
+        fprintf(f, "%sV %ld\n", Prefix, vps);
      fprintf(f, "%se\n", Prefix);
      }
 }
@@ -162,6 +178,9 @@ bool cEvent::Read(FILE *f, cSchedule *Schedule)
                        break;
              case 'D': if (Event)
                           Event->SetDescription(t);
+                       break;
+             case 'V': if (Event)
+                          Event->SetVps(atoi(t));
                        break;
              case 'e': Event = NULL;
                        break;
