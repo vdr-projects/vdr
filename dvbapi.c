@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.56 2001/02/03 16:00:23 kls Exp $
+ * $Id: dvbapi.c 1.57 2001/02/03 17:43:21 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -2408,6 +2408,24 @@ cEITScanner::cEITScanner(void)
   lastScan = lastActivity = time(NULL);
   currentChannel = 0;
   lastChannel = 0;
+  numTransponders = 0;
+  transponders = NULL;
+}
+
+cEITScanner::~cEITScanner()
+{
+  delete transponders;
+}
+
+bool cEITScanner::TransponderScanned(cChannel *Channel)
+{
+  for (int i = 0; i < numTransponders; i++) {
+      if (transponders[i] == Channel->frequency)
+         return true;
+      }
+  transponders = (int *)realloc(transponders, ++numTransponders * sizeof(int));
+  transponders[numTransponders - 1] = Channel->frequency;
+  return false;
 }
 
 void cEITScanner::Activity(void)
@@ -2432,10 +2450,12 @@ void cEITScanner::Process(void)
                      int oldCh = lastChannel;
                      int ch = oldCh + 1;
                      while (ch != oldCh) {
-                           if (ch > Channels.MaxNumber())
+                           if (ch > Channels.MaxNumber()) {
                               ch = 1;
+                              numTransponders = 0;
+                              }
                            cChannel *Channel = Channels.GetByNumber(ch);
-                           if (Channel && Channel->pnr) {
+                           if (Channel && Channel->pnr && !TransponderScanned(Channel)) {
                               if (DvbApi == cDvbApi::PrimaryDvbApi && !currentChannel)
                                  currentChannel = DvbApi->Channel();
                               Channel->Switch(DvbApi, false);

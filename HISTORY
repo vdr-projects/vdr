@@ -375,3 +375,4 @@ Video Disk Recorder Revision History
   Dave Chapman). Existing files will be read normally (and the teletext PID set
   to 0), but once they are written back (due to some channel editing) the file
   will have the new format.
+- The EPG scanner now scans each transponder only once per cycle.

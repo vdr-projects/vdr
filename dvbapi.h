@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.h 1.32 2001/02/03 15:59:35 kls Exp $
+ * $Id: dvbapi.h 1.33 2001/02/03 17:39:33 kls Exp $
  */
 
 #ifndef __DVBAPI_H
@@ -47,6 +47,8 @@ const char *IndexToHMSF(int Index, bool WithFrame = false);
       // Converts the given index to a string, optionally containing the frame number.
 int HMSFToIndex(const char *HMSF);
       // Converts the given string (format: "hh:mm:ss.ff") to an index.
+
+class cChannel;
 
 class cRecordBuffer;
 class cReplayBuffer;
@@ -256,8 +258,11 @@ private:
        };
   time_t lastScan, lastActivity;
   int currentChannel, lastChannel;
+  int numTransponders, *transponders;
+  bool TransponderScanned(cChannel *Channel);
 public:
   cEITScanner(void);
+  ~cEITScanner();
   bool Active(void) { return currentChannel; }
   void Activity(void);
   void Process(void);
