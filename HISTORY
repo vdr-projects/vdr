@@ -2319,3 +2319,5 @@ Video Disk Recorder Revision History
 
 - Fixed 'runvdr' to stay in the loop only if VDR returns an exit status of '1'.
 - Completed the Finnish OSD texts (thanks to Rolf Ahrenberg).
+- Empty values in setup.conf are no longer treated as an error (thanks to Andreas
+  Kool for reporting this one).
