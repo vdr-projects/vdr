@@ -15,7 +15,7 @@ If you have the DVB driver source in a different location
 you will have to change the definition of DVBDIR in the
 Makefile.
 
-VDR requires the Linux-DVB card driver version dated 2001-09-14 or higher
+VDR requires the Linux-DVB card driver version dated 2002-11-01 or higher
 to work properly.
 
 After extracting the package, change into the VDR directory
@@ -306,8 +306,8 @@ Setting up DiSEqC:
 
 If you are using a DVB-S card with a satellite equipment that needs to be
 accessed using DiSEqC, you have to go to the "Setup" menu and set the "DiSEqC"
-parameter to "on". Also check the "DiSEqC" parameters for the various channels
-and set them to the necessary values.
+parameter to "on". You also need to set up the file 'diseqc.conf' to properly
+access your DiSEqC equipment (see man vdr(5) for details).
 
 Running VDR with DVB-C (cable) or DVB-T (terrestrial):
 ------------------------------------------------------
@@ -318,14 +318,13 @@ cable or terrestrial reception is the 'channels.conf' file. The distribution
 archive contains a default 'channels.conf.cable' and 'channels.conf.terr',
 respectively, which users of such cards can rename or copy to 'channels.conf'
 in order to receive digital cable or terrestrial channels. The format of these
-files is exactly the same as for satellite channels (the fields containing
-"Polarization" and "Diseqc" data are ignored in case of DVB-C and DVB-T, and
-the "Frequency" is in kHz in case of DVB-T).
+files is mostly the same as for satellite channels, however, some fields have
+different or extended meanings (see man vdr(5) for details).
 
 You can even use a mixture of DVB-S, DVB-C and DVB-T cards in the same system.
 All you need to do is to put all the channel definitions into one big
-'channels.conf' file and set the 'Ca' parameter of each channel to the number
-of the card that can receive it.
+'channels.conf' file. VDR will automatically know which channels can be
+received with which card(s) by evaluating the 'source' parameter.
 
 Learning the remote control keys:
 ---------------------------------
