@@ -2799,3 +2799,8 @@ Video Disk Recorder Revision History
   going wrong here...
 - Added missing NULL checks when accessing sectionHandler in device.c (thanks to
   Pekka Virtanen).
+- Fixed setting the time from the DVB data stream (thanks to Helmut Auer for
+  pointing out a frequency/transponder handling mixup). This now also takes the
+  actual source (sat, cable etc.) into account. Please go into "Setup/EPG" and
+  set the "Set system time" and "Use time from transponder" parameters accordingly
+  (this is necessary even if you have already set them before!).

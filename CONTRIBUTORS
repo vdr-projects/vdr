@@ -475,6 +475,8 @@ Jürgen Zimmermann <jnzimmer@informatik.uni-kl.de>
 Helmut Auer <vdr@helmutauer.de>
  for reporting a superfluous error message in cLockFile
  for suggesting to make the "Zap timeout" a setup variable
+ for fixing a frequency/transponder handling mixup when setting the time from the
+ DVB data stream
 
 Jeremy Hall <jhall@UU.NET>
  for fixing an incomplete initialization of the filter parameters in eit.c

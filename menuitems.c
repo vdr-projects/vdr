@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.c 1.17 2004/05/02 10:37:34 kls Exp $
+ * $Id: menuitems.c 1.18 2004/05/16 12:47:02 kls Exp $
  */
 
 #include "menuitems.h"
@@ -502,14 +502,15 @@ eOSState cMenuEditChanItem::ProcessKey(eKeys Key)
 
 // --- cMenuEditTranItem -----------------------------------------------------
 
-cMenuEditTranItem::cMenuEditTranItem(const char *Name, int *Value)
+cMenuEditTranItem::cMenuEditTranItem(const char *Name, int *Value, int *Source)
 :cMenuEditChanItem(Name, Value)
 {
   number = 0;
+  source = Source;
   transponder = *Value;
   cChannel *channel = Channels.First();
   while (channel) {
-        if (!channel->GroupSep() && ISTRANSPONDER(channel->Frequency(), *Value)) {
+        if (!channel->GroupSep() && *source == channel->Source() && ISTRANSPONDER(channel->Transponder(), *Value)) {
            number = channel->Number();
            break;
            }
@@ -526,8 +527,10 @@ eOSState cMenuEditTranItem::ProcessKey(eKeys Key)
   eOSState state = cMenuEditChanItem::ProcessKey(Key);
   number = *value;
   cChannel *channel = Channels.GetByNumber(*value);
-  if (channel)
-     transponder = channel->Frequency();
+  if (channel) {
+     *source = channel->Source();
+     transponder = channel->Transponder();
+     }
   *value = transponder;
   return state;
 }

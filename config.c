@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.126 2004/05/16 10:08:09 kls Exp $
+ * $Id: config.c 1.127 2004/05/16 12:43:55 kls Exp $
  */
 
 #include "config.h"
@@ -258,6 +258,7 @@ cSetup::cSetup(void)
   LnbFrequHi = 10600;
   DiSEqC = 0;
   SetSystemTime = 0;
+  TimeSource = 0;
   TimeTransponder = 0;
   MarginStart = 2;
   MarginStop = 10;
@@ -410,6 +411,7 @@ bool cSetup::Parse(const char *Name, const char *Value)
   else if (!strcasecmp(Name, "LnbFrequHi"))          LnbFrequHi         = atoi(Value);
   else if (!strcasecmp(Name, "DiSEqC"))              DiSEqC             = atoi(Value);
   else if (!strcasecmp(Name, "SetSystemTime"))       SetSystemTime      = atoi(Value);
+  else if (!strcasecmp(Name, "TimeSource"))          TimeSource         = cSource::FromString(Value);
   else if (!strcasecmp(Name, "TimeTransponder"))     TimeTransponder    = atoi(Value);
   else if (!strcasecmp(Name, "MarginStart"))         MarginStart        = atoi(Value);
   else if (!strcasecmp(Name, "MarginStop"))          MarginStop         = atoi(Value);
@@ -469,6 +471,7 @@ bool cSetup::Save(void)
   Store("LnbFrequHi",         LnbFrequHi);
   Store("DiSEqC",             DiSEqC);
   Store("SetSystemTime",      SetSystemTime);
+  Store("TimeSource",         cSource::ToString(TimeSource));
   Store("TimeTransponder",    TimeTransponder);
   Store("MarginStart",        MarginStart);
   Store("MarginStop",         MarginStop);

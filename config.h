@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.192 2004/05/08 09:18:36 kls Exp $
+ * $Id: config.h 1.193 2004/05/16 12:41:43 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -219,6 +219,7 @@ public:
   int LnbFrequHi;
   int DiSEqC;
   int SetSystemTime;
+  int TimeSource;
   int TimeTransponder;
   int MarginStart, MarginStop;
   int EPGLanguages[I18nNumLanguages + 1];
