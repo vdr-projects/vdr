@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.152 2002/02/10 11:52:34 kls Exp $
+ * $Id: menu.c 1.153 2002/02/17 13:00:13 kls Exp $
  */
 
 #include "menu.h"
@@ -252,6 +252,62 @@ eOSState cMenuEditDayItem::ProcessKey(eKeys Key)
     default : return cMenuEditIntItem::ProcessKey(Key);
     }
   return osContinue;
+}
+
+// --- cMenuEditDateItem -----------------------------------------------------
+
+class cMenuEditDateItem : public cMenuEditItem {
+protected:
+  time_t *value;
+  virtual void Set(void);
+public:
+  cMenuEditDateItem(const char *Name, time_t *Value);
+  virtual eOSState ProcessKey(eKeys Key);
+  };
+
+cMenuEditDateItem::cMenuEditDateItem(const char *Name, time_t *Value)
+:cMenuEditItem(Name)
+{
+  value = Value;
+  Set();
+}
+
+void cMenuEditDateItem::Set(void)
+{
+#define DATEBUFFERSIZE 32
+  char buf[DATEBUFFERSIZE];
+  if (*value) {
+     struct tm tm_r;
+     localtime_r(value, &tm_r);
+     strftime(buf, DATEBUFFERSIZE, "%Y-%m-%d ", &tm_r);
+     strcat(buf, WeekDayName(tm_r.tm_wday));
+     }
+  else
+     *buf = 0;
+  SetValue(buf);
+}
+
+eOSState cMenuEditDateItem::ProcessKey(eKeys Key)
+{
+  eOSState state = cMenuEditItem::ProcessKey(Key);
+
+  if (state == osUnknown) {
+     if (NORMALKEY(Key) == kLeft) { // TODO might want to increase the delta if repeated quickly?
+        *value -= SECSINDAY;
+        if (*value < time(NULL))
+           *value = 0;
+        }
+     else if (NORMALKEY(Key) == kRight) {
+        if (!*value)
+           *value = cTimer::SetTime(time(NULL), 0);
+        *value += SECSINDAY;
+        }
+     else
+        return state;
+     Set();
+     state = osContinue;
+     }
+  return state;
 }
 
 // --- cMenuEditTimeItem -----------------------------------------------------
@@ -905,6 +961,8 @@ class cMenuEditTimer : public cOsdMenu {
 private:
   cTimer *timer;
   cTimer data;
+  cMenuEditDateItem *firstday;
+  void SetFirstDayItem(void);
 public:
   cMenuEditTimer(int Index, bool New = false);
   virtual eOSState ProcessKey(eKeys Key);
@@ -913,6 +971,7 @@ public:
 cMenuEditTimer::cMenuEditTimer(int Index, bool New)
 :cOsdMenu(tr("Edit Timer"), 12)
 {
+  firstday = NULL;
   timer = Timers.Get(Index);
   if (timer) {
      data = *timer;
@@ -927,6 +986,21 @@ cMenuEditTimer::cMenuEditTimer(int Index, bool New)
      Add(new cMenuEditIntItem( tr("Priority"),     &data.priority, 0, MAXPRIORITY));
      Add(new cMenuEditIntItem( tr("Lifetime"),     &data.lifetime, 0, MAXLIFETIME));
      Add(new cMenuEditStrItem( tr("File"),          data.file, sizeof(data.file), FileNameChars));
+     SetFirstDayItem();
+     }
+}
+
+void cMenuEditTimer::SetFirstDayItem(void)
+{
+  if (!firstday && !data.IsSingleEvent()) {
+     Add(firstday = new cMenuEditDateItem(tr("First day"), &data.firstday));
+     Display();
+     }
+  else if (firstday && data.IsSingleEvent()) {
+     Del(firstday->Index());
+     firstday = NULL;
+     data.firstday = 0;
+     Display();
      }
 }
 
@@ -953,6 +1027,8 @@ eOSState cMenuEditTimer::ProcessKey(eKeys Key)
        default: break;
        }
      }
+  if (Key != kNone)
+     SetFirstDayItem();
   return state;
 }
 
@@ -983,7 +1059,7 @@ void cMenuTimerItem::Set(void)
 {
   char *buffer = NULL;
   asprintf(&buffer, "%c\t%d\t%s\t%02d:%02d\t%02d:%02d\t%s",
-                    timer->active ? timer->recording ? '#' : '>' : ' ',
+                    !timer->active ? ' ' : timer->firstday ? '!' : timer->recording ? '#' : '>',
                     timer->channel,
                     timer->PrintDay(timer->day),
                     timer->start / 100,
@@ -998,10 +1074,10 @@ void cMenuTimerItem::Set(void)
 
 class cMenuTimers : public cOsdMenu {
 private:
-  eOSState Activate(bool On);
   eOSState Edit(void);
   eOSState New(void);
   eOSState Del(void);
+  eOSState OnOff(void);
   virtual void Move(int From, int To);
   eOSState Summary(void);
   cTimer *CurrentTimer(void);
@@ -1022,7 +1098,7 @@ cMenuTimers::cMenuTimers(void)
         }
   if (Setup.SortTimers)
      Sort();
-  SetHelp(tr("Edit"), tr("New"), tr("Delete"), Setup.SortTimers ? NULL : tr("Mark"));
+  SetHelp(tr("Edit"), tr("New"), tr("Delete"), Setup.SortTimers ? tr("On/Off") : tr("Mark"));
 }
 
 cTimer *cMenuTimers::CurrentTimer(void)
@@ -1031,14 +1107,27 @@ cTimer *cMenuTimers::CurrentTimer(void)
   return item ? item->Timer() : NULL;
 }
 
-eOSState cMenuTimers::Activate(bool On)
+eOSState cMenuTimers::OnOff(void)
 {
   cTimer *timer = CurrentTimer();
-  if (timer && timer->active != On) {
-     timer->active = On;
+  if (timer) {
+     if (timer->IsSingleEvent())
+        timer->active = !timer->active;
+     else if (timer->firstday) {
+        timer->firstday = 0;
+        timer->active = false;
+        }
+     else if (timer->active)
+        timer->SkipToday();
+     else
+        timer->active = true;
+     timer->Matches(); // refresh start and end time
      RefreshCurrent();
      DisplayCurrent(true);
-     isyslog(LOG_INFO, "timer %d %sactivated", timer->Index() + 1, timer->active ? "" : "de");
+     if (timer->firstday)
+        isyslog(LOG_INFO, "timer %d first day set to %s", timer->Index() + 1, timer->PrintFirstDay());
+     else
+        isyslog(LOG_INFO, "timer %d %sactivated", timer->Index() + 1, timer->active ? "" : "de");
      Timers.Save();
      }
   return osContinue;
@@ -1106,27 +1195,17 @@ eOSState cMenuTimers::Summary(void)
 
 eOSState cMenuTimers::ProcessKey(eKeys Key)
 {
-  // Must do these before calling cOsdMenu::ProcessKey() because cOsdMenu
-  // uses them to page up/down:
-  if (!HasSubMenu()) {
-     switch (Key) {
-       case kLeft:
-       case kRight:  return Activate(Key == kRight);
-       default: break;
-       }
-     }
-
   eOSState state = cOsdMenu::ProcessKey(Key);
 
   if (state == osUnknown) {
      switch (Key) {
-       case kLeft:
-       case kRight:  return Activate(Key == kRight);
        case kOk:     return Summary();
        case kRed:    return Edit();
        case kGreen:  return New();
        case kYellow: return Del();
-       case kBlue:   if (!Setup.SortTimers)
+       case kBlue:   if (Setup.SortTimers)
+                        OnOff();
+                     else
                         Mark();
                      break;
        default: break;

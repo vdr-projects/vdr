@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.53 2002/02/10 15:07:46 kls Exp $
+ * $Id: i18n.c 1.54 2002/02/17 12:36:19 kls Exp $
  *
  * Slovenian translations provided by Miha Setina <mihasetina@softhome.net>
  * Italian   translations provided by Alberto Carraro <bertocar@tin.it>
@@ -260,6 +260,16 @@ const tPhrase Phrases[] = {
     "Marquer",
     "Marker",
     "Merkitse",
+  },
+  { "On/Off",
+    "Ein/Aus",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
   },
   { "Record",
     "Aufnehmen",
@@ -683,6 +693,16 @@ const tPhrase Phrases[] = {
     "Fichier",
     "Filnavn",
     "Tiedosto",
+  },
+  { "First day",
+    "Erster Tag",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
   },
   // Error messages:
   { "Channel is being used by a timer!",

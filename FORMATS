@@ -50,7 +50,7 @@ Video Disk Recorder File Formats
     and recognize if the user has modified them. When a user modifes an active
     timer the 'active' field will be explicitly set to '1'.
   - Program number of the channel to record
-  - Day of recording, either one or more of
+  - Day of recording (in case of a repeating timer), either one or more of
       M------ = Monday
       -T----- = Tuesday
       --W---- = Wednesday
@@ -61,7 +61,14 @@ Video Disk Recorder File Formats
     (any combination is possible, for example MTWTF--, and the days may be
     indicated by any characters except '-', so for example ABC---- would set
     a timer that records on monday, tuesday and wednesday) or the "day of month"
-    (1..31)
+    (1..31) in case of a single shot timer.
+    The day definition of a repeating timer may be followed by the date when that
+    timer shall hit for the first time. The format for this is @YYYY-MM-DD,
+    so a complete definition could look like this: MTWTF--@2002-02-18. This
+    "first day" feature can be used to disable a repeating timer for a couple
+    of days, or for instance to define a new Mon...Fri timer on wednesday, which
+    actually starts "monday next week". The "first day" date given need not be
+    that of a day when the timer would actually hit.
   - Start time (first two digits for the hour, second two digits for the minutes)
   - End time (first two digits for the hour, second two digits for the minutes)
   - Priority (from 0 to 99, 0 = lowest prioity, 99 = highest priority)

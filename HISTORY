@@ -979,7 +979,7 @@ Video Disk Recorder Revision History
 - Only reporting the 'EPG bugfix statistics' if there really were any fixes.
 - Added Finnish language texts (thanks to Hannu Savolainen).
 - Reverted to the previous way of searching for the EPG record of the current
-  recording in case of a periodic timer (i.e. taking the one that is in the
+  recording in case of a repeating timer (i.e. taking the one that is in the
   middle between start and end time).
 - Added a typedef for 'in_addr_t' to make it work with glibc < 2.2 (thanks to
   Jürgen Schmidt).
@@ -997,7 +997,7 @@ Video Disk Recorder Revision History
 - If a recording has no episode title, the trailing '~' is no longer shown in
   the progress display.
 
-2002-02-16: Version 1.0.0pre1
+2002-02-17: Version 1.0.0pre1
 
 - Added scanning for EPG data for another 4 days on channels that support this
   (thanks to Oleg Assovski).
@@ -1005,3 +1005,7 @@ Video Disk Recorder Revision History
 - Fixed the "Low disk space!" message (thanks to Sergei Haller).
 - Added the TPID to Hessen-3 in 'channels.conf' (thanks to Sergei Haller).
 - Fixed a crash when replaying with DEBUG_OSD=1 (thanks to Stefan Huelswitt).
+- Implemented the "First day" parameter for repeating timers. See FORMATS for
+  information about the enhanced 'timers.conf' file format, and MANUAL for
+  a description of the new item in the "Edit Timer" menu and the enhanced
+  functionality of the "Blue" button in the "Timers" menu.

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.58 2002/02/16 12:41:44 kls Exp $
+ * $Id: tools.c 1.59 2002/02/17 12:57:23 kls Exp $
  */
 
 #include "tools.h"
@@ -462,6 +462,20 @@ bool SpinUpDisk(const char *FileName)
   return false;
 }
 
+const char *WeekDayName(int WeekDay)
+{
+  static char buffer[4];
+  WeekDay = WeekDay == 0 ? 6 : WeekDay - 1; // we start with monday==0!
+  if (0 <= WeekDay && WeekDay <= 6) {
+     const char *day = tr("MonTueWedThuFriSatSun");
+     day += WeekDay * 3;
+     strncpy(buffer, day, 3);
+     return buffer;
+     }
+  else
+     return "???";
+}
+
 const char *DayDateTime(time_t t)
 {
   static char buffer[32];
@@ -469,11 +483,7 @@ const char *DayDateTime(time_t t)
      time(&t);
   struct tm tm_r;
   tm *tm = localtime_r(&t, &tm_r);
-  int weekday = tm->tm_wday == 0 ? 6 : tm->tm_wday - 1; // we start with monday==0!
-  const char *day = tr("MonTueWedThuFriSatSun");
-  day += weekday * 3;
-  strncpy(buffer, day, 3);
-  snprintf(buffer + 3, sizeof(buffer) - 3, " %2d.%02d %02d:%02d", tm->tm_mday, tm->tm_mon + 1, tm->tm_hour, tm->tm_min);
+  snprintf(buffer, sizeof(buffer), "%s %2d.%02d %02d:%02d", WeekDayName(tm->tm_wday), tm->tm_mday, tm->tm_mon + 1, tm->tm_hour, tm->tm_min);
   return buffer;
 }
 

@@ -41,8 +41,15 @@ Video Disk Recorder User's Manual
   any changes that might have been made in the current menu.
 
   In the "Timers" menu, the current timer can be enabled or disabled with
-  the "Right" or "Left" key, respectively (enabled timers are marked with '>',
-  timers that are currently recording are marked with '#').
+  the "Blue" key (this is only possible if the "Timers" list is sorted,
+  otherwise the "Blue" key is used to mark a timer in order to move it to
+  another position in the list). Enabled timers are marked with '>', timers
+  that are currently recording are marked with '#'. If a timer has the
+  "First day" set so that it will start recording only on the given date,
+  it is marked with '!'. The "Blue" key toggles through the "enabled" and
+  "disabled" states, and for repeating timers that are currently recording
+  also a state that ends this recording prematurely and sets the "First day"
+  date so that it will record again the next time the timer hits.
   "Ok" here opens the "Edit timer" menu.
 
   Textual options, like channel names or recording file names, can be edited
@@ -160,7 +167,7 @@ Video Disk Recorder User's Manual
   list with the "Up" and "Down" button and press "Ok" (or the "Red" button)
   to start playback. New recordings are marked with an '*'.
   If the Setup parameter RecordingDirs has been set and there are recordings
-  from periodic timers organized in a subdirectory structure, only the
+  from repeating timers organized in a subdirectory structure, only the
   directory is displayed and it can be opened by pressing "Ok" (or the "Red"
   button). A directory entry displays the total number of recordings within
   that directory (and any possible subdirectory thereof) as well as the total
@@ -170,7 +177,7 @@ Video Disk Recorder User's Manual
   If the setup parameter UseSubtitle was turned on when a recording took place,
   VDR adds the "subtitle" (which is usually the name of the episode in case of
   a series) to the recording's name. The "Recordings" menu then displays all
-  recordings of a periodic timer in chronological order, since these are
+  recordings of a repeating timer in chronological order, since these are
   usually the individual episodes of a series, which you may want to view in
   the order in which they were broadcast.
 
@@ -321,6 +328,8 @@ Video Disk Recorder User's Manual
              of this timer being collected in a common subdirectory.
              If this field is left blank, the channel name will be used to form
              the name of the recording.
+  First day: The date of the first day when this timer shall start recording
+             (only available for repeating timers).
 
   A timer can also be programmed by pressing the "Red" button on the "Schedule",
   "Now", "Next" or "Event" menus.
