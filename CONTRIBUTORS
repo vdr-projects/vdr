@@ -620,6 +620,8 @@ Sascha Volkenandt <sascha@akv-soft.de>
 
 Malcolm Caldwell <malcolm.caldwell@ntu.edu.au>
  for modifying LOF handling to allow for C-band reception
+ for reporting a crash in creating a new timer in case there is no device in the
+ system that can actually receive any channel
 
 Ludwig Nussel <ludwig.nussel@web.de>
  for making the LIRC thread avoid high CPU load in case the connection to LIRC gets lost

@@ -2235,7 +2235,7 @@ Video Disk Recorder Revision History
 - Some corrections to the Finnish OSD texts (thanks to Jaakko Hyvätti).
 - Officially released as version 1.2.0.
 
-2003-06-07: Version 1.2.1
+2003-06-08: Version 1.2.1
 
 - Fixed OSD access in case none of the devices provides one (thanks to Axel
   Gruber for reporting this one).
@@ -2248,3 +2248,6 @@ Video Disk Recorder Revision History
 - Fixed device handling in the CICAM menu in case a VDR instance was started
   with a specific device using the -D option (thanks to Gerald Raaf for reporting
   ths one).
+- Initializing the current channel to '1' to avoid a crash in creating a new
+  timer in case there is no device in the system that can actually receive any
+  channel (thanks to Malcolm Caldwell for reporting this one).
