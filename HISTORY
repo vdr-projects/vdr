@@ -1,0 +1,12 @@
+Video Disk Recorder OSM Revision History
+----------------------------------------
+
+2000-02-19: Version 0.01 (Initial revision).
+
+2000-03-11: Version 0.02
+
+- Fixed compilation with only DEBUG_REMOTE=1.
+- Menus now use colors.
+- Support for "Red", "Green", "Yellow", "Blue" buttons.
+- Channels and Timers can now be added, deleted and moved.
+- Basic record/play file handling support (no actual record/playback yet).

@@ -22,13 +22,13 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: osm.c 1.1 2000/02/19 13:36:48 kls Exp $
+ * $Id: osm.c 1.2 2000/03/05 17:18:15 kls Exp $
  */
 
 #include "config.h"
-#include "dvbapi.h"
 #include "interface.h"
 #include "menu.h"
+#include "recording.h"
 #include "tools.h"
 
 #ifdef DEBUG_REMOTE
@@ -52,39 +52,39 @@ int main(int argc, char *argv[])
 
   cMenuMain *Menu = NULL;
   cTimer *Timer = NULL;
-  cDvbRecorder *Recorder = NULL;
+  cRecording *Recording = NULL;
 
   for (;;) {
-      //TODO check for free disk space and delete files if necessary/possible
-      //     in case there is an ongoing recording
-      if (!Timer && (Timer = cTimer::GetMatch()) != NULL) {
+      AssertFreeDiskSpace();
+      if (!Recording && !Timer && (Timer = cTimer::GetMatch()) != NULL) {
+         DELETENULL(Menu);
+         // make sure the timer won't be deleted:
+         Timer->SetRecording(true);
          // switch to channel:
-         isyslog(LOG_INFO, "timer %d start", Timer->Index() + 1);
-         delete Menu;
-         Menu = NULL;
          cChannel::SwitchTo(Timer->channel - 1);
          ChannelLocked = true;
          // start recording:
-         delete Recorder;
-         Recorder = new cDvbRecorder;
-         //TODO special filename handling!!!
-         if (!Recorder->Record(Timer->file, Timer->quality)) {
-            delete Recorder;
-            Recorder = NULL;
-            }
+         Recording = new cRecording(Timer);
+         if (!Recording->Record())
+            DELETENULL(Recording);
          }
-      if (Timer) {
-         if (!Timer->Matches()) {
-            // stop recording:
-            if (Recorder)
-               Recorder->Stop();
-            // end timer:
-            ChannelLocked = false;
-            isyslog(LOG_INFO, "timer %d stop", Timer->Index() + 1);
-            Timer = NULL;
-            //TODO switch back to the previous channel???
-            //TODO clear single event timer???
+      if (Timer && !Timer->Matches()) {
+         // stop recording:
+         if (Recording) {
+            Recording->Stop();
+            DELETENULL(Recording);
             }
+         // release channel and timer:
+         ChannelLocked = false;
+         Timer->SetRecording(false);
+         // clear single event timer:
+         if (Timer->IsSingleEvent()) {
+            DELETENULL(Menu); // must make sure no menu uses it
+            isyslog(LOG_INFO, "deleting timer %d", Timer->Index() + 1);
+            Timers.Del(Timer);
+            Timers.Save();
+            }
+         Timer = NULL;
          }
       eKeys key = Interface.GetKey();
       if (Menu) {
@@ -92,8 +92,7 @@ int main(int argc, char *argv[])
            default: if (key != kMenu)
                        break;
            case osBack:
-           case osEnd: delete Menu;
-                       Menu = NULL;
+           case osEnd: DELETENULL(Menu);
                        break;
            }
          }

@@ -36,10 +36,34 @@ about that driver). For example, if the DVB driver was
 extracted into the directory /home/kls/vdr/DVB, then this
 package should be extracted into /home/kls/vdr/OSM.
 
+In order for the menu colors to work correctly you may want
+to replace the function RGB2YUV() in DVB/driver/dvb.c with
+
+static u32 RGB2YUV(u16 R, u16 G, u16 B)
+{
+        u16 y, u, v;
+        u16 Y, Cr, Cb;
+
+        y = R * 77 + G * 150 + B * 29;  // Luma=0.299R+0.587G+0.114B 0..65535
+        u = 2048+B * 8 -(y>>5);    // Cr 0..4095
+        v = 2048+R * 8 -(y>>5);    // Cb 0..4095
+
+        Y = y >> 8;
+        Cb= u >> 4;
+        Cr= v >> 4;
+
+        return Cr|(Cb<<16)|(Y<<8);
+}
+
+(this may no longer be necessary with driver versions after 0.03c).
+
 After extracting the package, change into the OSM directory
 and type 'make'. This should produce an executable file
 named 'osm', which can be run after the DVB driver has been
-installed.
+installed. There may be several warnings about "implicit declaration
+of function `int asprintf(...)'" during the compilation, which I was
+unable to avoid (anybody know how to avoid them?). Just ignore them,
+the program will work, anyway.
 
 There are two macros you can use to customize the 'osm' program
 at compile time. Adding "DEBUG_REMOTE=1" to the 'make' call
@@ -75,10 +99,10 @@ this package contains the codes for the "d-box" remote control unit.
 If you want to use a different remote control unit, simply delete
 the file 'keys.conf' and restart the 'osm' program. The program will
 then start a key learning session in which it first attempts to determine
-the basic data tranfer mode and timing of your remote control unit,
+the basic data transfer mode and timing of your remote control unit,
 and then will ask you to press one key after the other so that it can
 learn the various key codes. You will at least need to provide an "Up"
-and a "Down" key, so that you can switch channels. The rest os the key
+and a "Down" key, so that you can switch channels. The rest of the key
 definitions is optional, but the more keys you define, the more you
 will be able to navigate through the menus.
 
@@ -97,9 +121,6 @@ confirms any changes (or switches to a channel in the "Channels" menu).
 The "Back" key goes back one level in the menu structure, discarding
 any changes that might have been made in the current menu.
 
-In the "Channels" menu, the current channel can be edited by pressing
-the "Right" key.
-
 In the "Timers" menu, the current timer can be enabled or disabled with
 the "Right" or "Left" key, respectively (enabled timers are marked with ">").
 "Ok" here opens the "Edit timer" menu.
@@ -109,6 +130,9 @@ by pressing the "Right" button (which puts brackets around the current
 character as in "[R]TL"), selecting the desired character position with
 "Left" and "Right", and changing the character with the "Up" and "Down"
 keys. "Ok" then confirms the changes.
+
+The "Red", "Green", "Yellow" and "Blue" buttons have special meanings
+in the various menus and are listed at the bottom of the on-screen-display.
 
 At any point in the menu system, pressing the "Menu" key again will
 immediately leave the menu system.

@@ -1,13 +1,12 @@
 TODO list for the Video Disk Recorder project
 ---------------------------------------------
 
-* Implement a way to add and delete channels and timers.
 * Implement recording to disk and playback from disk.
-* Implement disk file management (delete old/viewed files to make
-  room for new recordings if necessary).
 * Make it work with two DVB-S PCI cards to allow simultaneous
   recording of one programme, while replaying another programme
   (or maybe the same one, but time delayed).
+  Maybe we can do this with only a single card, if the card
+  driver/firmware allows simultaneuos record/playback?
 * Implement "on-disk editing" to allow "cutting out" of certain
   scenes in order to archive them (or, reversely, cut out
   commercial breaks).
