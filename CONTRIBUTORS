@@ -1220,3 +1220,6 @@ Michael Heyse <mhk@designassembly.de>
 Marco Kremer <vdr.hgm.bg@gmx.net>
  for reporting a problem with playing files with PES packets longer than 2048 byte
  through the full featured DVB card
+
+Walter Koch <koch@u32.de>
+ for adding channels for DVB-T Düsseldorf and Köln (Germany) to channels.cont.terr

@@ -3322,3 +3322,4 @@ Video Disk Recorder Revision History
   (thanks to Stefan Huelswitt).
 - Extended some buffer sizes to allow handling HDTV streams (thanks to Reinhard
   Nissl).
+- Added 'channels.conf.terr' entries for Düsseldorf and Köln (thanks to Walter Koch).
