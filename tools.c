@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.83 2004/12/19 16:08:50 kls Exp $
+ * $Id: tools.c 1.84 2004/12/19 17:19:46 kls Exp $
  */
 
 #include "tools.h"
@@ -197,13 +197,6 @@ int time_ms(void)
      return (t.tv_sec - t0) * 1000 + t.tv_usec / 1000;
      }
   return 0;
-}
-
-void delay_ms(int ms)
-{
-  int t0 = time_ms();
-  while (time_ms() - t0 < ms)
-        ;
 }
 
 bool isnumber(const char *s)

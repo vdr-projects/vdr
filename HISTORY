@@ -3221,3 +3221,4 @@ Video Disk Recorder Revision History
   itoa() -> cItoa
   WeekDayName() -> cWeekDayName
   DayDateTime() -> cDayDateTime
+- Removed delay_ms(), using cCondWait::SleepMs() instead.

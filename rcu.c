@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: rcu.c 1.6 2003/10/18 11:34:30 kls Exp $
+ * $Id: rcu.c 1.7 2004/12/19 17:19:34 kls Exp $
  */
 
 #include "rcu.h"
@@ -295,7 +295,7 @@ bool cRcuRemote::DetectCode(unsigned char *Code)
      sprintf(buf, "C0D%c", *Code);
      String(buf);
      SetCode(*Code);
-     delay_ms(2 * REPEATDELAY);
+     cCondWait::SleepMs(2 * REPEATDELAY);
      if (receivedCommand) {
         SetMode(modeB);
         String("----");

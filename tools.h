@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.59 2004/12/19 14:49:48 kls Exp $
+ * $Id: tools.h 1.60 2004/12/19 17:20:05 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -72,7 +72,6 @@ bool endswith(const char *s, const char *p);
 bool isempty(const char *s);
 int numdigits(int n);
 int time_ms(void);
-void delay_ms(int ms);
 bool isnumber(const char *s);
 int FreeDiskSpaceMB(const char *Directory, int *UsedMB = NULL);
 bool DirectoryOk(const char *DirName, bool LogErrors = false);

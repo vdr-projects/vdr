@@ -36,3 +36,4 @@ VDR Plugin 'sky' Revision History
 2004-12-19: Version 0.3.3
 
 - Made several functions threadsafe.
+- Removed delay_ms(), using cCondWait::SleepMs() instead.

@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: sky.c 1.9 2004/12/19 15:33:47 kls Exp $
+ * $Id: sky.c 1.10 2004/12/19 17:21:52 kls Exp $
  */
 
 #include <sys/socket.h>
@@ -113,7 +113,7 @@ void cDigiboxDevice::LircSend(const char *s)
   dsyslog(buf);//XXX
   if (write(fd_lirc, buf, strlen(buf)) < 0)
      LOG_ERROR;//XXX _STR
-  delay_ms(200);
+  cCondWait::SleepMs(200);
 }
 
 void cDigiboxDevice::LircSend(int n)
