@@ -125,6 +125,8 @@ Stefan Huelswitt <huels@iname.com>
  for reporting a possible endless loop in shifting recordings between DVB cards
  for making it no longer setting PIDs 0x1FFF, which apparently fixes problems
  with CAMs and AC3 sound only working the first time
+ for making the main loop take an active video cutting process into account when
+ doing shutdown or housekeeping
 
 Ulrich Röder <roeder@efr-net.de>
  for pointing out that there are channels that have a symbol rate higher than

@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.102 2002/03/29 10:09:20 kls Exp $
+ * $Id: vdr.c 1.103 2002/04/26 12:15:30 kls Exp $
  */
 
 #include <getopt.h>
@@ -469,7 +469,7 @@ int main(int argc, char *argv[])
                  Interface->Info(tr("Editing process finished"));
               }
            }
-        if (!*Interact && (!cRecordControls::Active() || ForceShutdown)) {
+        if (!*Interact && ((!cRecordControls::Active() && !cVideoCutter::Active()) || ForceShutdown)) {
            time_t Now = time(NULL);
            if (Now - LastActivity > ACTIVITYTIMEOUT) {
               // Shutdown:

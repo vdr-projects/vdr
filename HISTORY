@@ -1218,3 +1218,8 @@ Video Disk Recorder Revision History
   AC3 sound only working the first time (thanks to Stefan Huelswitt).
 - Now encoding '.' at the end of a directory name in case of VFAT=1, since Windows
   can't handle these (thanks to Simon Dean for reporting this one).
+
+2002-04-26: Version 1.0.2
+
+- Now taking an active video cutting process into account when doing shutdown or
+  housekeeping (thanks to Stefan Huelswitt).
