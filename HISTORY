@@ -1184,3 +1184,5 @@ Video Disk Recorder Revision History
   (thanks to Thilo Wunderlich for reporting this one).
 - Now the EPG scan skips channels that have their 'Ca' parameter explicitly set
   to an other DVB card (suggested by Sergei Haller).
+- Fixed a possible hangup when reading a broken epg.data file (thanks to Henning
+  Holtschneider for pointing this one out).

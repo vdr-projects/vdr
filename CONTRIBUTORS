@@ -88,6 +88,7 @@ Benjamin Reichardt <reichard@math.uni-goettingen.de>
 Henning Holtschneider <hh@holtschneider.com>
  for patching 'runvdr' to check whether the driver is already loaded
  for reporting a bug in parsing group separators in channels.conf
+ for pointing out a possible hangup when reading a broken epg.data file
 
 Paulo Lopes <pmml@netvita.pt>
  for translating OSD texts to the Portugese language
