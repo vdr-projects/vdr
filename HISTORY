@@ -2964,3 +2964,5 @@ Video Disk Recorder Revision History
 - Now storing the name of the service provider (aka "bouquet") in the channel
   name, separated by a semicolon (see man vdr(5) for details). Explicit usage
   of the various parts of the channel name is yet to come.
+- The 'radio' channel icon is now only displayed in the ST:TNG skin if the channel
+  actually has an APID.
