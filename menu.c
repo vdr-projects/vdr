@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.42 2000/11/05 13:42:39 kls Exp $
+ * $Id: menu.c 1.43 2000/11/05 18:41:09 kls Exp $
  */
 
 #include "menu.h"
@@ -1440,7 +1440,7 @@ cMenuSetup::cMenuSetup(void)
   Add(new cMenuEditBoolItem("MarkInstantRecord",  &data.MarkInstantRecord));
   Add(new cMenuEditIntItem( "LnbFrequLo",         &data.LnbFrequLo));
   Add(new cMenuEditIntItem( "LnbFrequHi",         &data.LnbFrequHi));
-  Add(new cMenuEditIntItem( "SetSystemTime",      &data.SetSystemTime));
+  Add(new cMenuEditBoolItem("SetSystemTime",      &data.SetSystemTime));
   Add(new cMenuEditIntItem( "MarginStart",        &data.MarginStart));
   Add(new cMenuEditIntItem( "MarginStop",         &data.MarginStop));
 }

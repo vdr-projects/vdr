@@ -271,3 +271,4 @@ Video Disk Recorder Revision History
 - Date and time in the title of an event info page are now always right adjusted.
 - The 'current channel' is now handled device specific (in case there is more
   than one DVB card).
+- The 'SetSystemTime' option in the "Setup" menu is now shown as "yes/no".
