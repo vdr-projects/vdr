@@ -1971,7 +1971,7 @@ Video Disk Recorder Revision History
   reporting this one).
 - Broken CAM connections are now restored automatically.
 
-2003-03-16: Version 1.1.26
+2003-03-19: Version 1.1.26
 
 - Removed signal handling and usleep(5000) from cDvbOsd::Cmd() (apparently this
   is no longer necessary with DVB driver 1.0.0pre2 or later).
@@ -1986,3 +1986,4 @@ Video Disk Recorder Revision History
   Torsten Herz for reporting this one).
 - Modified the EPG scanner to avoid CPU load peaks (thanks to Steffen Becker for
   reporting this one).
+- Fixed support for Viaccess CAMs (thanks to Axel Gruber for helping to debug this).
