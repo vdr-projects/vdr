@@ -43,3 +43,5 @@ uses to generate the EPG pages are stored as the 'sid' parameter in
 the channels.conf definitions of the Sky channels. You can keep your
 EPG data up-to-date by entering a call to getskyepg.pl into your
 /etc/crontab. Call 'getskyepg.pl -h' for a list of options.
+The getskyepg.pl script requires the programs /usr/bin/wget and /usr/bin/logger
+to be installed on your system.
