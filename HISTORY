@@ -1917,7 +1917,7 @@ Video Disk Recorder Revision History
   EPG data, that string is now limited in length when used in a recording's
   file name.
 
-2003-01-24: Version 1.1.22
+2003-01-25: Version 1.1.22
 
 - Added 'Hrvatska radiotelevizija' and 'RTV Slovenija' to ca.conf (thanks to
   Paul Gohn).
@@ -1928,3 +1928,6 @@ Video Disk Recorder Revision History
 - Increased the maximum possible packet size in remux.c to avoid corrupted streams
   with broadcasters that send extremely large PES packets (thanks to Teemu Rantanen).
 - Added TS error checking to remux.c (thanks to Teemu Rantanen).
+- Modified cRingBufferLinear to avoid excessive memmove() calls in 'Transfer Mode'
+  and during recordings, which dramatically reduces CPU load. Thanks to Teemu
+  Rantanen for pinpointing the problem with the excessive memmove() calls.
