@@ -20,7 +20,7 @@ Video Disk Recorder User's Manual
   Red     -           Record     Edit       Edit       -             Play        -
   Green   -           -          New        New        -             -           Skip -60s
   Yellow  -           -          Delete     Delete     -             Delete      Skip +60s
-  Blue    -           -          Mark       Mark       -             -           Stop
+  Blue    -           Resume     Mark       Mark       -             -           Stop
   0..9    Ch select   -          -          -          Numeric inp.  -           -
 
 * Navigating through the On Screen Menus
@@ -90,7 +90,7 @@ Video Disk Recorder User's Manual
 * Instant Recording
 
   You can start recording the current channel by pressing the "Red" button
-  in the Main menu. This will create a timer event named "@channelname" that
+  in the "Main" menu. This will create a timer event named "@channelname" that
   starts at the current time and records for two hours.
   If you want to modify the recording time you need to edit the timer.
   Stop instant recording by pressing the "Menu" button and selecting
@@ -101,8 +101,10 @@ Video Disk Recorder User's Manual
   All recordings are listed in the "Recordings" menu. Browse through the
   list with the "Up" and "Down" button and press "Ok" (or the "Red" button)
   to start playback. New recordings are marked with an '*'.
-  Playback can be stopped via the Main menu by selecting "Stop replaying",
+  Playback can be stopped via the "Main" menu by selecting "Stop replaying",
   or by pressing the "Blue" button outside the menu.
+  A previously stopped playback session can be resumed by pressing the "Blue"
+  button in the "Main" menu.
 
 * Replay Control
 
@@ -178,7 +180,7 @@ Video Disk Recorder User's Manual
 
 * Parameters in the "Setup" menu
 
-  Select "Setup" from the main menu to enter the setup menu. From there you can
+  Select "Setup" from the "Main" menu to enter the setup menu. From there you can
   modify the following system parameters (note that "boolean" values will be
   displayed as "no" and "yes" in the "Setup" menu, while in the setup file they
   are stored as '0' and '1', respectively):
@@ -206,7 +208,7 @@ Video Disk Recorder User's Manual
                              through long lists).
 
   MarkInstantRecord = 1  Defines whether an "instant recording" (started by
-                         pressing the "Red" button in the main menu) will be
+                         pressing the "Red" button in the "Main" menu) will be
                          marked with a '@' character to make it distinguishable
                          from timer recordings in the "Recordings" menu.
                          0 = instant recordings will not be marked

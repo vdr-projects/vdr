@@ -238,3 +238,5 @@ Video Disk Recorder Revision History
   delete a recording after watching it, or to switch to a different recording.
 - The "Recordings" menu now places the cursor on the last replayed recording, if
   that file still exists.
+- The "Blue" button in the "Main" menu can now be used to "Resume" a previously
+  stopped replay session (suggested by Martin Hammerschmid).

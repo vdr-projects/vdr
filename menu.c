@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.34 2000/10/08 14:50:42 kls Exp $
+ * $Id: menu.c 1.35 2000/10/08 15:34:26 kls Exp $
  */
 
 #include "menu.h"
@@ -1006,7 +1006,7 @@ cMenuRecordings::cMenuRecordings(void)
            recording = Recordings.Next(recording);
            }
      }
-  SetHelp("Play", NULL/*XXX"Resume"*/, "Delete", "Summary");
+  SetHelp("Play", NULL, "Delete", "Summary");
   Display();
 }
 
@@ -1028,6 +1028,7 @@ eOSState cMenuRecordings::Del(void)
 //XXX     if (!ti->recording) {
         if (Interface->Confirm("Delete Recording?")) {
            if (ri->recording->Delete()) {
+              cReplayControl::ClearLastReplayed(ri->recording->FileName());
               cOsdMenu::Del(Current());
               Display();
               }
@@ -1124,7 +1125,7 @@ cMenuMain::cMenuMain(bool Replaying)
         Add(new cOsdItem(buffer, osStopRecord));
         delete buffer;
         }
-  SetHelp("Record");
+  SetHelp("Record", NULL, NULL, cReplayControl::LastReplayed() ? "Resume" : NULL);
   Display();
   lastActivity = time(NULL);
 }
@@ -1149,6 +1150,9 @@ eOSState cMenuMain::ProcessKey(eKeys Key)
                case kMenu: state = osEnd;    break;
                case kRed:  if (!HasSubMenu())
                               state = osRecord;
+                           break;
+               case kBlue: if (!HasSubMenu())
+                              state = osReplay;
                            break;
                default:    break;
                }
@@ -1358,6 +1362,14 @@ void cReplayControl::SetRecording(const char *FileName, const char *Title)
 const char *cReplayControl::LastReplayed(void)
 {
   return fileName;
+}
+
+void cReplayControl::ClearLastReplayed(const char *FileName)
+{
+  if (fileName && FileName && strcmp(fileName, FileName) == 0) {
+     delete fileName;
+     fileName = NULL;
+     }
 }
 
 void cReplayControl::Show(void)
