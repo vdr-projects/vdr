@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.92 2002/01/26 13:35:05 kls Exp $
+ * $Id: vdr.c 1.93 2002/01/26 14:07:01 kls Exp $
  */
 
 #include <getopt.h>
@@ -514,7 +514,7 @@ int main(int argc, char *argv[])
                        if (signal(SIGALRM, Watchdog) == SIG_IGN)
                           signal(SIGALRM, SIG_IGN);
                        }
-                    LastActivity = Now; // don't try again too soon
+                    LastActivity = time(NULL); // don't try again too soon
                     continue; // skip the rest of the housekeeping for now
                     }
                  }

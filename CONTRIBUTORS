@@ -178,3 +178,6 @@ Lauri Pesonen <lauri.pesonen@firsthop.com>
 
 Emil Naepflein <Emil.Naepflein@philosys.de>
  for his hint about the 'ftw()' library function
+
+Sergei Haller <Sergei.Haller@math.uni-giessen.de>
+ for fixing the LastActivity timestamp after a shutdown prompt
