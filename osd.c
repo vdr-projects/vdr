@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 1.47 2004/05/22 13:47:39 kls Exp $
+ * $Id: osd.c 1.48 2004/05/28 15:33:22 kls Exp $
  */
 
 #include "osd.h"
@@ -147,6 +147,15 @@ bool cBitmap::Contains(int x, int y) const
   x -= x0;
   y -= y0;
   return 0 <= x && x < width && 0 <= y && y < height;
+}
+
+bool cBitmap::Covers(int x1, int y1, int x2, int y2) const
+{
+  x1 -= x0;
+  y1 -= y0;
+  x2 -= x0;
+  y2 -= y0;
+  return x1 <= 0 && y1 <= 0 && x2 >= width - 1 && y2 >= height - 1;
 }
 
 bool cBitmap::Intersects(int x1, int y1, int x2, int y2) const
@@ -321,11 +330,11 @@ void cBitmap::DrawPixel(int x, int y, tColor Color)
 void cBitmap::DrawBitmap(int x, int y, const cBitmap &Bitmap, tColor ColorFg, tColor ColorBg)
 {
   if (bitmap && Bitmap.bitmap && Intersects(x, y, x + Bitmap.Width() - 1, y + Bitmap.Height() - 1)) {
+     if (Covers(x, y, x + Bitmap.Width() - 1, y + Bitmap.Height() - 1))
+        Reset();
      x -= x0;
      y -= y0;
      tIndexes Indexes;
-     if (ColorFg || ColorBg) {
-        }
      Take(Bitmap, &Indexes, ColorFg, ColorBg);
      for (int ix = 0; ix < Bitmap.width; ix++) {
          for (int iy = 0; iy < Bitmap.height; iy++)
@@ -401,6 +410,8 @@ void cBitmap::DrawText(int x, int y, const char *s, tColor ColorFg, tColor Color
 void cBitmap::DrawRectangle(int x1, int y1, int x2, int y2, tColor Color)
 {
   if (bitmap && Intersects(x1, y1, x2, y2)) {
+     if (Covers(x1, y1, x2, y2))
+        Reset();
      x1 -= x0;
      y1 -= y0;
      x2 -= x0;
@@ -409,8 +420,6 @@ void cBitmap::DrawRectangle(int x1, int y1, int x2, int y2, tColor Color)
      y1 = max(y1, 0);
      x2 = min(x2, width - 1);
      y2 = min(y2, height - 1);
-     if (x1 == 0 && y1 == 0 && x2 == width - 1 && y2 == height - 1)
-        Reset();
      tIndex c = Index(Color);
      for (int y = y1; y <= y2; y++)
          for (int x = x1; x <= x2; x++)

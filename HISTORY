@@ -2846,3 +2846,5 @@ Video Disk Recorder Revision History
   in order to prevent a "hangup" in case, e.g., the LIRC driver is not loaded (thanks
   to Helmut Auer).
 - Updated 'channels.conf.terr' for Hannover (thanks to Peter Waechtler).
+- cBitmap::DrawBitmap() now also resets the palette if the entire bitmap area is
+  covered (suggested by Sascha Volkenandt).
