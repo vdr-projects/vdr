@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 1.4 2003/02/09 11:54:22 kls Exp $
+ * $Id: ci.c 1.5 2003/02/09 12:45:00 kls Exp $
  */
 
 /* XXX TODO
@@ -396,6 +396,8 @@ const uint8_t *cCiTransportConnection::Data(int &Length)
   return tpdu->Data(Length);
 }
 
+#define MAX_CONNECT_RETRIES  20
+
 int cCiTransportConnection::CreateConnection(void)
 {
   if (state == stIDLE) {
@@ -405,13 +407,14 @@ int cCiTransportConnection::CreateConnection(void)
            return OK;
         // the following is a workaround for CAMs that don't quite follow the specs...
         else {
-           dbgprotocol("*** no reaction on T_CREATE_TC - retrying\n");
-           if (RecvTPDU() == T_CTC_REPLY) {
-              dbgprotocol("*** received T_CTC_REPLY\n");
-              RecvTPDU();
-              dbgprotocol("*** done dummy RecvTPDU()\n");
-              }
-           return OK;
+           for (int i = 0; i < MAX_CONNECT_RETRIES; i++) {
+               dsyslog("CAM: retrying to establish connection");
+               if (RecvTPDU() == T_CTC_REPLY) {
+                  dsyslog("CAM: connection established");
+                  return OK;
+                  }
+               }
+           return ERROR;
            }
         }
      }
