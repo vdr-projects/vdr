@@ -1127,3 +1127,4 @@ Video Disk Recorder Revision History
   Arnold Niessen, Paulo Lopes, Jean-Claude Repetto).
 - Improved file I/O in case of EINTR, which may occur e.g. with heavy system
   load (thanks to Werner Fink).
+- Now writing the title of a recording into the 'summary.vdr' file.

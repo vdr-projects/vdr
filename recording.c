@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.57 2002/03/16 12:17:44 kls Exp $
+ * $Id: recording.c 1.58 2002/03/23 11:32:33 kls Exp $
  */
 
 #include "recording.h"
@@ -324,7 +324,7 @@ cRecording::cRecording(cTimer *Timer, const char *Title, const char *Subtitle, c
      if (isempty(Summary))
         Summary = "";
      if (*Subtitle || *Summary)
-        asprintf(&summary, "%s%s%s", Subtitle, (*Subtitle && *Summary) ? "\n\n" : "", Summary);
+        asprintf(&summary, "%s\n\n%s%s%s", Title, Subtitle, (*Subtitle && *Summary) ? "\n\n" : "", Summary);
      }
 }
 
