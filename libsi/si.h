@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: si.h 1.4 2004/01/05 14:54:55 kls Exp $
+ *   $Id: si.h 1.5 2004/01/09 15:59:53 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -316,7 +316,7 @@ typedef uint64_t  SixtyFourBit;
 
 template <typename T> class TypeLoop : public Loop {
 public:
-   int getCount() const { return getLength()/sizeof(T); }
+   int getCount() { return getLength()/sizeof(T); }
    T operator[](const unsigned int index) const
       {
          switch (sizeof(T)) {

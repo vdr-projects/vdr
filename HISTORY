@@ -2538,7 +2538,7 @@ Video Disk Recorder Revision History
   overflow that caused a crash when cleaning up the EPG data (at 05:00 in the
   morning).
 
-2004-01-05: Version 1.3.1
+2004-01-09: Version 1.3.1
 
 - Fixed a lockup in the EPG scanner when no non-primary device was available
   (thanks to Martin Holst for reporting this one).
@@ -2557,3 +2557,4 @@ Video Disk Recorder Revision History
 - Enhanced the SDT filter to handle multi part sections.
 - Added support for selecting preferred EPG languages (based upon a patch by
   Teemu Rantanen).
+- Fixed a 'const' in libsi/si.h (thanks to Marcel Wiesweg).
