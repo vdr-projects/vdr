@@ -177,6 +177,7 @@ Stefan Huelswitt <huels@iname.com>
  for fixing an uninitialized variable in cDisplayChannel
  for fixing a possible access of invalid file handles in cSIProcessor::Action()
  for fixing extracting the ES data in cDvbDevice::StillPicture()
+ for changing thread handling to make it work with NPTL ("Native Posix Thread Library")
 
 Ulrich Röder <roeder@efr-net.de>
  for pointing out that there are channels that have a symbol rate higher than
@@ -210,6 +211,7 @@ Andreas Schultz <aschultz@warp10.net>
  for changing C++ style comments in libdtv into C style to avoid warnings in gcc 3.x
  for implementing the TerrestrialDeliverySystemDescriptor in libdtv
  for fixing setting the locking pid after a timed wait
+ for changing thread handling to make it work with NPTL ("Native Posix Thread Library")
 
 Aaron Holtzman
  for writing 'ac3dec'
@@ -243,6 +245,7 @@ Werner Fink <werner@suse.de>
  for replacing the 'for' loops in StripAudioPackets() with memset() calls
  for modifying handling of audio packets in cDvbPlayer for better sync with external
  AC3 replay
+ for changing thread handling to make it work with NPTL ("Native Posix Thread Library")
 
 Rolf Hakenes <hakenes@hippomi.de>
  for providing 'libdtv' and adapting the EIT mechanisms to it
@@ -758,6 +761,7 @@ Karim Afifi <karim.afifi@free.fr>
 
 Jon Burgess <mplayer@jburgess.uklinux.net>
  for pointing out a problem with NPTL ("Native Posix Thread Library")
+ for changing thread handling to make it work with NPTL ("Native Posix Thread Library")
 
 Thomas Schmidt <thomas.schmidt@in.stud.tu-ilmenau.de>
  for reporting a crash when cancelling a newly created timer

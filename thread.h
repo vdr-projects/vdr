@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.h 1.15 2003/05/03 14:03:36 kls Exp $
+ * $Id: thread.h 1.16 2003/10/18 10:29:25 kls Exp $
  */
 
 #ifndef __THREAD_H
@@ -32,7 +32,7 @@ class cMutex {
   friend class cCondVar;
 private:
   pthread_mutex_t mutex;
-  pid_t lockingPid;
+  pthread_t lockingTid;
   int locked;
 public:
   cMutex(void);
@@ -44,9 +44,8 @@ public:
 class cThread {
   friend class cThreadLock;
 private:
-  pthread_t thread;
+  pthread_t parentTid, childTid;
   cMutex mutex;
-  pid_t parentPid, threadPid;
   bool running;
   static bool emergencyExitRequested;
   static bool signalHandlerInstalled;

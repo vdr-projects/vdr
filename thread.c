@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 1.25 2003/05/18 12:45:13 kls Exp $
+ * $Id: thread.c 1.26 2003/10/18 10:29:25 kls Exp $
  */
 
 #include "thread.h"
@@ -30,7 +30,7 @@ cCondVar::~cCondVar()
 
 void cCondVar::Wait(cMutex &Mutex)
 {
-  if (Mutex.locked && Mutex.lockingPid == getpid()) {
+  if (Mutex.locked && pthread_equal(Mutex.lockingTid, pthread_self())) {
      int locked = Mutex.locked;
      Mutex.locked = 0; // have to clear the locked count here, as pthread_cond_wait
                        // does an implizit unlock of the mutex
@@ -43,7 +43,7 @@ bool cCondVar::TimedWait(cMutex &Mutex, int TimeoutMs)
 {
   bool r = true; // true = condition signaled false = timeout
 
-  if (Mutex.locked && Mutex.lockingPid == getpid()) {
+  if (Mutex.locked && pthread_equal(Mutex.lockingTid, pthread_self())) {
      struct timeval now;                   // unfortunately timedwait needs the absolute time, not the delta :-(
      if (gettimeofday(&now, NULL) == 0) {  // get current time
         now.tv_usec += TimeoutMs * 1000;   // add the timeout
@@ -61,7 +61,7 @@ bool cCondVar::TimedWait(cMutex &Mutex, int TimeoutMs)
         if (pthread_cond_timedwait(&cond, &Mutex.mutex, &abstime) == ETIMEDOUT)
            r = false;
         Mutex.locked = locked;
-        Mutex.lockingPid = getpid();
+        Mutex.lockingTid = pthread_self();
         }
      }
   return r;
@@ -83,7 +83,7 @@ void cCondVar::Signal(void)
 
 cMutex::cMutex(void)
 {
-  lockingPid = 0;
+  lockingTid = 0;
   locked = 0;
   pthread_mutex_init(&mutex, NULL);
 }
@@ -95,9 +95,9 @@ cMutex::~cMutex()
 
 void cMutex::Lock(void)
 {
-  if (getpid() != lockingPid || !locked) {
+  if (!pthread_equal(lockingTid, pthread_self()) || !locked) {
      pthread_mutex_lock(&mutex);
-     lockingPid = getpid();
+     lockingTid = pthread_self();
      }
   locked++;
 }
@@ -105,7 +105,7 @@ void cMutex::Lock(void)
 void cMutex::Unlock(void)
 {
  if (!--locked) {
-    lockingPid = 0;
+    lockingTid = 0;
     pthread_mutex_unlock(&mutex);
     }
 }
@@ -125,7 +125,7 @@ cThread::cThread(void)
      signalHandlerInstalled = true;
      }
   running = false;
-  parentPid = threadPid = 0;
+  parentTid = childTid = 0;
 }
 
 cThread::~cThread()
@@ -139,8 +139,9 @@ void cThread::SignalHandler(int signum)
 
 void *cThread::StartThread(cThread *Thread)
 {
-  Thread->threadPid = getpid();
+  Thread->childTid = pthread_self();
   Thread->Action();
+  Thread->childTid = 0;
   return NULL;
 }
 
@@ -148,9 +149,9 @@ bool cThread::Start(void)
 {
   if (!running) {
      running = true;
-     parentPid = getpid();
-     pthread_create(&thread, NULL, (void *(*) (void *))&StartThread, (void *)this);
-     pthread_setschedparam(thread, SCHED_RR, 0);
+     parentTid = pthread_self();
+     pthread_create(&childTid, NULL, (void *(*) (void *))&StartThread, (void *)this);
+     pthread_setschedparam(childTid, SCHED_RR, 0);
      usleep(10000); // otherwise calling Active() immediately after Start() causes a "pure virtual method called" error
      }
   return true; //XXX return value of pthread_create()???
@@ -158,12 +159,21 @@ bool cThread::Start(void)
 
 bool cThread::Active(void)
 {
-  if (threadPid) {
-     if (kill(threadPid, SIGIO) < 0) { // couldn't find another way of checking whether the thread is still running - any ideas?
-        if (errno == ESRCH)
-           threadPid = 0;
-        else
+  if (childTid) {
+     //
+     // Single UNIX Spec v2 says:
+     //
+     // The pthread_kill() function is used to request
+     // that a signal be delivered to the specified thread.
+     //
+     // As in kill(), if sig is zero, error checking is
+     // performed but no signal is actually sent.
+     //
+     int err;
+     if ((err = pthread_kill(childTid, 0)) != 0) {
+        if (err != ESRCH)
            LOG_ERROR;
+        childTid = 0;
         }
      else
         return true;
@@ -180,14 +190,14 @@ void cThread::Cancel(int WaitSeconds)
             return;
          usleep(10000);
          }
-     esyslog("ERROR: thread %d won't end (waited %d seconds) - cancelling it...", threadPid, WaitSeconds);
+     esyslog("ERROR: thread %ld won't end (waited %d seconds) - cancelling it...", childTid, WaitSeconds);
      }
-  pthread_cancel(thread);
+  pthread_cancel(childTid);
 }
 
 void cThread::WakeUp(void)
 {
-  kill(parentPid, SIGIO); // makes any waiting 'select()' call return immediately
+  pthread_kill(parentTid, SIGIO); // makes any waiting 'select()' call return immediately
 }
 
 bool cThread::EmergencyExit(bool Request)
