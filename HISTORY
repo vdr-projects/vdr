@@ -391,3 +391,4 @@ Video Disk Recorder Revision History
 - Fixed handling ':' in timer filenames and '\n' in timer summaries (see FORMATS).
 - When removing recordings empty directories are now removed from the video
   directory.
+- Added the "schnitt" tools from Matthias Schniedermeyer.
