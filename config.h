@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.80 2001/09/22 13:00:04 kls Exp $
+ * $Id: config.h 1.81 2001/09/22 13:37:05 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -302,6 +302,7 @@ public:
   int MultiSpeedMode;
   int ShowReplayMode;
   int CurrentChannel;
+  int CurrentVolume;
   cSetup(void);
   bool Load(const char *FileName);
   bool Save(const char *FileName = NULL);

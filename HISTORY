@@ -776,3 +776,5 @@ Video Disk Recorder Revision History
 - EPG info is now updated if the contents changes but the ID remains the same.
 - Fixed handling SVDRP commands whith more than one blank between the command
   word and the options.
+- The current volume setting is now saved to setup.conf and restored at the
+  next program start.

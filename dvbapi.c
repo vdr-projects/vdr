@@ -7,7 +7,7 @@
  * DVD support initially written by Andreas Schultz <aschultz@warp10.net>
  * based on dvdplayer-0.5 by Matjaz Thaler <matjaz.thaler@guest.arnes.si>
  *
- * $Id: dvbapi.c 1.127 2001/09/22 09:24:59 kls Exp $
+ * $Id: dvbapi.c 1.128 2001/09/22 13:39:56 kls Exp $
  */
 
 //#define DVDDEBUG        1
@@ -2540,7 +2540,7 @@ cDvbApi::cDvbApi(int n)
 #endif
   currentChannel = 1;
   mute = false;
-  volume = 255;
+  volume = MAXVOLUME;
 }
 
 cDvbApi::~cDvbApi()
@@ -3637,7 +3637,7 @@ void cDvbApi::ToggleMute(void)
 void cDvbApi::SetVolume(int Volume, bool Absolute)
 {
   if (fd_audio >= 0) {
-     volume = min(max(Absolute ? Volume : volume + Volume, 0), 255);
+     volume = min(max(Absolute ? Volume : volume + Volume, 0), MAXVOLUME);
      audioMixer_t am;
      am.volume_left = am.volume_right = volume;
      CHECK(ioctl(fd_audio, AUDIO_SET_MIXER, &am));

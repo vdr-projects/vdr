@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.73 2001/09/16 14:54:45 kls Exp $
+ * $Id: vdr.c 1.74 2001/09/22 13:38:28 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -278,6 +278,7 @@ int main(int argc, char *argv[])
   cDvbApi::SetPrimaryDvbApi(Setup.PrimaryDVB);
 
   Channels.SwitchTo(Setup.CurrentChannel);
+  cDvbApi::PrimaryDvbApi->SetVolume(Setup.CurrentVolume, true);
 
   cEITScanner EITScanner;
 
