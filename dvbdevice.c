@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.98 2004/10/23 09:57:19 kls Exp $
+ * $Id: dvbdevice.c 1.99 2004/10/24 08:50:15 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -748,24 +748,26 @@ bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
   StartTransferMode = false;
 #endif
 
-  // XXX 1.3: use the same mechanism as below (!EITScanner.UsesDevice(this))
-  if (EITScanner.Active()) {
-     StartTransferMode = false;
-     TurnOnLivePIDs = false;
-     }
-
   // Turn off live PIDs if necessary:
 
   if (TurnOffLivePIDs)
      TurnOffLiveMode();
 
-  // Set the tuner and wait for a lock:
+  // Set the tuner:
 
   dvbTuner->Set(Channel, DoTune, !EITScanner.UsesDevice(this)); //XXX 1.3: this is an ugly hack - find a cleaner solution//XXX
 
+  // If this channel switch was requested by the EITScanner we don't wait for
+  // a lock and don't set any live PIDs (the EITScanner will wait for the lock
+  // by itself before setting any filters):
+
+  if (EITScanner.UsesDevice(this))
+     return true;
+
+  // Wait for a lock:
+
   if (!dvbTuner->Locked(TUNER_LOCK_TIMEOUT)) {
-     if (Channel->Number()) // don't log raw transponders
-        esyslog("ERROR: no lock for channel %s on device %d", Channel->ToText(), CardIndex() + 1);
+     esyslog("ERROR: no lock for channel %d on device %d", Channel->Number(), CardIndex() + 1);
      return false;
      }
 
