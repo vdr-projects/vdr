@@ -332,3 +332,5 @@ Video Disk Recorder Revision History
 - Implemented "On Disk Editing".
 - There is no more default 'timers.conf' file.
 - Added Italian language texts (thanks to Alberto Carraro).
+- Fixed starting a replay session when the program is currently in "transfer
+  mode".

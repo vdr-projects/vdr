@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.45 2001/01/07 17:00:50 kls Exp $
+ * $Id: dvbapi.c 1.46 2001/01/07 17:02:38 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -2164,10 +2164,6 @@ bool cDvbApi::SetChannel(int ChannelNumber, int FrequencyMHz, char Polarization,
 {
   if (videoDev >= 0) {
      StopTransfer();
-     if (transferringFromDvbApi) {
-        transferringFromDvbApi->StopTransfer();
-        transferringFromDvbApi = NULL;
-        }
      SetPlayMode(videoDev, VID_PLAY_RESET);
      struct frontend front;
      ioctl(videoDev, VIDIOCGFRONTEND, &front);
@@ -2228,6 +2224,10 @@ void cDvbApi::StopTransfer(void)
      delete transferBuffer;
      transferBuffer = NULL;
      SetPlayMode(videoDev, VID_PLAY_RESET);
+     }
+  if (transferringFromDvbApi) {
+     transferringFromDvbApi->StopTransfer();
+     transferringFromDvbApi = NULL;
      }
 }
 
