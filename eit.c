@@ -16,7 +16,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.c 1.71 2003/04/18 11:30:42 kls Exp $
+ * $Id: eit.c 1.72 2003/04/21 13:21:54 kls Exp $
  ***************************************************************************/
 
 #include "eit.h"
@@ -1002,27 +1002,31 @@ bool cEIT::IsPresentFollowing()
 // --- cCaDescriptor ---------------------------------------------------------
 
 class cCaDescriptor : public cListObject {
-  friend class cCaDescriptors;
+  friend class cSIProcessor;
 private:
   int source;
   int transponder;
   int serviceId;
   int caSystem;
+  unsigned int providerId;
+  int caPid;
   int length;
   uchar *data;
 public:
-  cCaDescriptor(int Source, int Transponder, int ServiceId, int CaSystem, int CaPid, int Length, uchar *Data);
+  cCaDescriptor(int Source, int Transponder, int ServiceId, int CaSystem, unsigned int ProviderId, int CaPid, int Length, uchar *Data);
   virtual ~cCaDescriptor();
   int Length(void) const { return length; }
   const uchar *Data(void) const { return data; }
   };
 
-cCaDescriptor::cCaDescriptor(int Source, int Transponder, int ServiceId, int CaSystem, int CaPid, int Length, uchar *Data)
+cCaDescriptor::cCaDescriptor(int Source, int Transponder, int ServiceId, int CaSystem, unsigned int ProviderId, int CaPid, int Length, uchar *Data)
 {
   source = Source;
   transponder = Transponder;
   serviceId = ServiceId;
   caSystem = CaSystem;
+  providerId = ProviderId;
+  caPid = CaPid;
   length = Length + 6;
   data = MALLOC(uchar, length);
   data[0] = DESCR_CA;
@@ -1037,7 +1041,7 @@ cCaDescriptor::cCaDescriptor(int Source, int Transponder, int ServiceId, int CaS
 #ifdef DEBUG_CA_DESCRIPTORS
   char buffer[1024];
   char *q = buffer;
-  q += sprintf(q, "CAM: %04X %5d %4d", source, transponder, serviceId);
+  q += sprintf(q, "CAM: %04X %5d %5d %04X %6X %04X -", source, transponder, serviceId, caSystem, providerId, caPid);
   for (int i = 0; i < length; i++)
       q += sprintf(q, " %02X", data[i]);
   dsyslog(buffer);
@@ -1049,22 +1053,6 @@ cCaDescriptor::~cCaDescriptor()
   free(data);
 }
 
-// --- cCaDescriptors --------------------------------------------------------
-
-class cCaDescriptors : public cList<cCaDescriptor> {
-public:
-  const cCaDescriptor *Get(int Source, int Transponder, int ServiceId, int CaSystem);
-  };
-
-const cCaDescriptor *cCaDescriptors::Get(int Source, int Transponder, int ServiceId, int CaSystem)
-{
-  for (cCaDescriptor *ca = First(); ca; ca = Next(ca)) {
-      if (ca->source == Source && ca->transponder == Transponder && ca->serviceId == ServiceId && ca->caSystem == CaSystem)
-         return ca;
-      }
-  return NULL;
-}
-
 // --- cSIProcessor ----------------------------------------------------------
 
 #define MAX_FILTERS 20
@@ -1073,7 +1061,7 @@ const cCaDescriptor *cCaDescriptors::Get(int Source, int Transponder, int Servic
 int cSIProcessor::numSIProcessors = 0;
 cSchedules *cSIProcessor::schedules = NULL;
 cMutex cSIProcessor::schedulesMutex;
-cCaDescriptors *cSIProcessor::caDescriptors = NULL;
+cList<cCaDescriptor> cSIProcessor::caDescriptors;
 cMutex cSIProcessor::caDescriptorsMutex;
 const char *cSIProcessor::epgDataFileName = EPGDATAFILENAME;
 time_t cSIProcessor::lastDump = time(NULL);
@@ -1090,7 +1078,6 @@ cSIProcessor::cSIProcessor(const char *FileName)
    filters = NULL;
    if (!numSIProcessors++) { // the first one creates them
       schedules = new cSchedules;
-      caDescriptors = new cCaDescriptors;
       }
    filters = (SIP_FILTER *)calloc(MAX_FILTERS, sizeof(SIP_FILTER));
    SetStatus(true);
@@ -1107,7 +1094,6 @@ cSIProcessor::~cSIProcessor()
    free(filters);
    if (!--numSIProcessors) { // the last one deletes them
       delete schedules;
-      delete caDescriptors;
       }
    free(fileName);
 }
@@ -1436,14 +1422,17 @@ void cSIProcessor::TriggerDump(void)
   lastDump = 0;
 }
 
-void cSIProcessor::NewCaDescriptor(struct Descriptor *d, int ProgramID)
+void cSIProcessor::NewCaDescriptor(struct Descriptor *d, int ServiceId)
 {
   if (DescriptorTag(d) == DESCR_CA) {
      struct CaDescriptor *cd = (struct CaDescriptor *)d;
-     if (!caDescriptors->Get(currentSource, currentTransponder, ProgramID, cd->CA_type)) {
-        cMutexLock MutexLock(&caDescriptorsMutex);
-        caDescriptors->Add(new cCaDescriptor(currentSource, currentTransponder, ProgramID, cd->CA_type, cd->CA_PID, cd->DataLength, cd->Data));
-        }
+     cMutexLock MutexLock(&caDescriptorsMutex);
+
+     for (cCaDescriptor *ca = caDescriptors.First(); ca; ca = caDescriptors.Next(ca)) {
+         if (ca->source == currentSource && ca->transponder == currentTransponder && ca->serviceId == ServiceId && ca->caSystem == cd->CA_type && ca->providerId == cd->ProviderID && ca->caPid == cd->CA_PID)
+            return;
+         }
+     caDescriptors.Add(new cCaDescriptor(currentSource, currentTransponder, ServiceId, cd->CA_type, cd->ProviderID, cd->CA_PID, cd->DataLength, cd->Data));
      //XXX update???
      }
 }
@@ -1456,15 +1445,16 @@ int cSIProcessor::GetCaDescriptors(int Source, int Transponder, int ServiceId, c
      cMutexLock MutexLock(&caDescriptorsMutex);
      int length = 0;
      do {
-        const cCaDescriptor *d = caDescriptors->Get(Source, Transponder, ServiceId, *CaSystemIds);
-        if (d) {
-           if (length + d->Length() <= BufSize) {
-              memcpy(Data + length, d->Data(), d->Length());
-              length += d->Length();
-              }
-           else
-              return -1;
-           }
+        for (cCaDescriptor *d = caDescriptors.First(); d; d = caDescriptors.Next(d)) {
+            if (d->source == Source && d->transponder == Transponder && d->serviceId == ServiceId && d->caSystem == *CaSystemIds) {
+               if (length + d->Length() <= BufSize) {
+                  memcpy(Data + length, d->Data(), d->Length());
+                  length += d->Length();
+                  }
+               else
+                  return -1;
+               }
+            }
         } while (*++CaSystemIds);
      return length;
      }

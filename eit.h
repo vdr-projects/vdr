@@ -16,7 +16,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.h 1.27 2003/04/18 11:30:42 kls Exp $
+ * $Id: eit.h 1.28 2003/04/21 13:22:06 kls Exp $
  ***************************************************************************/
 
 #ifndef __EIT_H
@@ -135,14 +135,13 @@ typedef struct sip_filter {
 }SIP_FILTER;
 
 class cCaDescriptor;
-class cCaDescriptors;
 
 class cSIProcessor : public cThread {
 private:
   static int numSIProcessors;
   static cSchedules *schedules;
   static cMutex schedulesMutex;
-  static cCaDescriptors *caDescriptors;
+  static cList<cCaDescriptor> caDescriptors;
   static cMutex caDescriptorsMutex;
   static const char *epgDataFileName;
   static time_t lastDump;
@@ -158,7 +157,7 @@ private:
   bool AddFilter(unsigned short pid, u_char tid, u_char mask = 0xFF);
   bool DelFilter(unsigned short pid, u_char tid);
   bool ShutDownFilters(void);
-  void NewCaDescriptor(struct Descriptor *d, int ProgramID);
+  void NewCaDescriptor(struct Descriptor *d, int ServiceId);
 public:
   cSIProcessor(const char *FileName);
   ~cSIProcessor();
