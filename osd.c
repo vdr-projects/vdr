@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 1.33 2002/08/11 11:43:22 kls Exp $
+ * $Id: osd.c 1.34 2002/08/15 11:20:44 kls Exp $
  */
 
 #include "osd.h"
@@ -128,7 +128,7 @@ void cOsd::Open(int w, int h)
      osd->Create(0,     lineHeight, w, lineHeight, 2, false);
      osd->Create(0, 2 * lineHeight, w, lineHeight, 1);
      XXX*///XXX some pixels are not drawn correctly with lower bpp values
-     osd->Create(0,              0, w, 3*lineHeight, 4);
+     osd->Create(0,              0, w, h, 4);
      }
 #endif
 }
