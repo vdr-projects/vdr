@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.150 2004/03/05 14:33:27 kls Exp $
+ * $Id: i18n.c 1.151 2004/03/13 10:52:33 kls Exp $
  *
  * Translations provided by:
  *
@@ -1839,9 +1839,9 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "Pas de marques d'édition définies!",
     "",//TODO
-    "",//TODO
+    "Muokkausmerkinnät puuttuvat!",
     "Brak znakow montazowych!",
-    "Muokkausmerkinnät puuttuvat",
+    "",//TODO
     "Äİí İ÷ïõí ïñéóôåß óçìåßá åğåîåñãáóßáò",
     "Det finns inga redigeringsmärken",//TODO
     "",//TODO
