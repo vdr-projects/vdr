@@ -1984,3 +1984,5 @@ Video Disk Recorder Revision History
   to switch to an other channel (thanks to Torsten Herz).
 - Fixed the EPG bugfix code number for the MAX_USEFUL_SUBTITLE_LENGTH fix (thanks to
   Torsten Herz for reporting this one).
+- Modified the EPG scanner to avoid CPU load peaks (thanks to Steffen Becker for
+  reporting this one).
