@@ -16,15 +16,12 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.c 1.52 2002/09/20 16:24:17 kls Exp $
+ * $Id: eit.c 1.54 2002/10/06 10:31:38 kls Exp $
  ***************************************************************************/
 
 #include "eit.h"
 #include <ctype.h>
 #include <fcntl.h>
-#include <fstream.h>
-#include <iomanip.h>
-#include <iostream.h>
 #include <limits.h>
 #ifdef NEWSTRUCT
 #include <linux/dvb/dmx.h>
@@ -40,6 +37,7 @@
 #include <sys/types.h>
 #include <time.h>
 #include <unistd.h>
+#include "channels.h"
 #include "config.h"
 #include "libdtv/libdtv.h"
 #include "videodir.h"
@@ -456,7 +454,7 @@ static void ReportEpgBugFixStats(bool Reset = false)
             for (int c = 0; c < p->n; c++) {
                 cChannel *channel = Channels.GetByServiceID(p->serviceIDs[c]);
                 if (channel) {
-                   q += snprintf(q, sizeof(buffer) - (q - buffer), "%s%s", delim, channel->name);
+                   q += snprintf(q, sizeof(buffer) - (q - buffer), "%s%s", delim, channel->Name());
                    delim = ", ";
                    }
                 }
@@ -768,7 +766,7 @@ void cSchedule::Dump(FILE *f, const char *Prefix) const
    cChannel *channel = Channels.GetByServiceID(uServiceID);
    if (channel)
    {
-      fprintf(f, "%sC %u %s\n", Prefix, uServiceID, channel->name);
+      fprintf(f, "%sC %u %s\n", Prefix, uServiceID, channel->Name());
       for (cEventInfo *p = Events.First(); p; p = Events.Next(p))
          p->Dump(f, Prefix);
       fprintf(f, "%sc\n", Prefix);

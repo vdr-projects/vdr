@@ -4,12 +4,13 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.106 2002/09/28 09:43:41 kls Exp $
+ * $Id: config.c 1.107 2002/10/03 10:06:55 kls Exp $
  */
 
 #include "config.h"
 #include <ctype.h>
 #include <stdlib.h>
+#include "channels.h" //XXX timers!
 #include "i18n.h"
 #include "interface.h"
 #include "plugin.h"
@@ -18,116 +19,6 @@
 // IMPORTANT NOTE: in the 'sscanf()' calls there is a blank after the '%d'
 // format characters in order to allow any number of blanks after a numeric
 // value!
-
-// -- cChannel ---------------------------------------------------------------
-
-char *cChannel::buffer = NULL;
-
-cChannel::cChannel(void)
-{
-  *name = 0;
-}
-
-cChannel::cChannel(const cChannel *Channel)
-{
-  strcpy(name,   Channel ? Channel->name         : "Pro7");
-  frequency    = Channel ? Channel->frequency    : 12480;
-  polarization = Channel ? Channel->polarization : 'v';
-  diseqc       = Channel ? Channel->diseqc       : 0;
-  srate        = Channel ? Channel->srate        : 27500;
-  vpid         = Channel ? Channel->vpid         : 255;
-  apid1        = Channel ? Channel->apid1        : 256;
-  apid2        = Channel ? Channel->apid2        : 0;
-  dpid1        = Channel ? Channel->dpid1        : 257;
-  dpid2        = Channel ? Channel->dpid2        : 0;
-  tpid         = Channel ? Channel->tpid         : 32;
-  ca           = Channel ? Channel->ca           : 0;
-  pnr          = Channel ? Channel->pnr          : 0;
-  groupSep     = Channel ? Channel->groupSep     : false;
-}
-
-const char *cChannel::ToText(cChannel *Channel)
-{
-  char buf[MaxChannelName * 2];
-  char *s = Channel->name;
-  if (strchr(s, ':')) {
-     s = strcpy(buf, s);
-     strreplace(s, ':', '|');
-     }
-  free(buffer);
-  if (Channel->groupSep)
-     asprintf(&buffer, ":%s\n", s);
-  else {
-     char apidbuf[32];
-     char *q = apidbuf;
-     q += snprintf(q, sizeof(apidbuf), "%d", Channel->apid1);
-     if (Channel->apid2)
-        q += snprintf(q, sizeof(apidbuf) - (q - apidbuf), ",%d", Channel->apid2);
-     if (Channel->dpid1 || Channel->dpid2)
-        q += snprintf(q, sizeof(apidbuf) - (q - apidbuf), ";%d", Channel->dpid1);
-     if (Channel->dpid2)
-        q += snprintf(q, sizeof(apidbuf) - (q - apidbuf), ",%d", Channel->dpid2);
-     *q = 0;
-     asprintf(&buffer, "%s:%d:%c:%d:%d:%d:%s:%d:%d:%d\n", s, Channel->frequency, Channel->polarization, Channel->diseqc, Channel->srate, Channel->vpid, apidbuf, Channel->tpid, Channel->ca, Channel->pnr);
-     }
-  return buffer;
-}
-
-const char *cChannel::ToText(void)
-{
-  return ToText(this);
-}
-
-bool cChannel::Parse(const char *s)
-{
-  char *buffer = NULL;
-  if (*s == ':') {
-     if (*++s) {
-        strn0cpy(name, s, MaxChannelName);
-        groupSep = true;
-        number = 0;
-        }
-     else
-        return false;
-     }
-  else {
-     groupSep = false;
-     char *apidbuf = NULL;
-     int fields = sscanf(s, "%a[^:]:%d :%c:%d :%d :%d :%a[^:]:%d :%d :%d ", &buffer, &frequency, &polarization, &diseqc, &srate, &vpid, &apidbuf, &tpid, &ca, &pnr);
-     apid1 = apid2 = 0;
-     dpid1 = dpid2 = 0;
-     if (apidbuf) {
-        char *p = strchr(apidbuf, ';');
-        if (p)
-           *p++ = 0;
-        sscanf(apidbuf, "%d ,%d ", &apid1, &apid2);
-        if (p)
-           sscanf(p, "%d ,%d ", &dpid1, &dpid2);
-        free(apidbuf);
-        }
-     else
-        return false;
-     if (fields >= 9) {
-        if (fields == 9) {
-           // allow reading of old format
-           pnr = ca;
-           ca = tpid;
-           tpid = 0;
-           }
-        strn0cpy(name, buffer, MaxChannelName);
-        free(buffer);
-        }
-     else
-        return false;
-     }
-  strreplace(name, '|', ':');
-  return true;
-}
-
-bool cChannel::Save(FILE *f)
-{
-  return fprintf(f, ToText()) > 0;
-}
 
 // -- cTimer -----------------------------------------------------------------
 
@@ -139,7 +30,7 @@ cTimer::cTimer(bool Instant)
   recording = pending = false;
   active = Instant ? taActInst : taInactive;
   cChannel *ch = Channels.GetByNumber(cDevice::CurrentChannel());
-  channel = ch ? ch->number : 0;
+  channel = ch ? ch->Number() : 0;
   time_t t = time(NULL);
   struct tm tm_r;
   struct tm *now = localtime_r(&t, &tm_r);
@@ -156,7 +47,7 @@ cTimer::cTimer(bool Instant)
   firstday = 0;
   summary = NULL;
   if (Instant && ch)
-     snprintf(file, sizeof(file), "%s%s", Setup.MarkInstantRecord ? "@" : "", *Setup.NameInstantRecord ? Setup.NameInstantRecord : ch->name);
+     snprintf(file, sizeof(file), "%s%s", Setup.MarkInstantRecord ? "@" : "", *Setup.NameInstantRecord ? Setup.NameInstantRecord : ch->Name());
 }
 
 cTimer::cTimer(const cEventInfo *EventInfo)
@@ -165,7 +56,7 @@ cTimer::cTimer(const cEventInfo *EventInfo)
   recording = pending = false;
   active = true;
   cChannel *ch = Channels.GetByServiceID(EventInfo->GetServiceID());
-  channel = ch ? ch->number : 0;
+  channel = ch ? ch->Number() : 0;
   time_t tstart = EventInfo->GetTime();
   time_t tstop = tstart + EventInfo->GetDuration() + Setup.MarginStop * 60;
   tstart -= Setup.MarginStart * 60;
@@ -572,89 +463,6 @@ bool cCaDefinition::Parse(const char *s)
 // -- cCommands --------------------------------------------------------------
 
 cCommands Commands;
-
-// -- cChannels --------------------------------------------------------------
-
-cChannels Channels;
-
-bool cChannels::Load(const char *FileName, bool AllowComments)
-{
-  if (cConfig<cChannel>::Load(FileName, AllowComments)) {
-     ReNumber();
-     return true;
-     }
-  return false;
-}
-
-int cChannels::GetNextGroup(int Idx)
-{
-  cChannel *channel = Get(++Idx);
-  while (channel && !channel->groupSep)
-        channel = Get(++Idx);
-  return channel ? Idx : -1;
-}
-
-int cChannels::GetPrevGroup(int Idx)
-{
-  cChannel *channel = Get(--Idx);
-  while (channel && !channel->groupSep)
-        channel = Get(--Idx);
-  return channel ? Idx : -1;
-}
-
-int cChannels::GetNextNormal(int Idx)
-{
-  cChannel *channel = Get(++Idx);
-  while (channel && channel->groupSep)
-        channel = Get(++Idx);
-  return channel ? Idx : -1;
-}
-
-void cChannels::ReNumber( void )
-{
-  int Number = 0;
-  cChannel *ch = (cChannel *)First();
-  while (ch) {
-        if (!ch->groupSep)
-           ch->number = ++Number;
-        ch = (cChannel *)ch->Next();
-        }
-  maxNumber = Number;
-}
-
-cChannel *cChannels::GetByNumber(int Number)
-{
-  cChannel *channel = (cChannel *)First();
-  while (channel) {
-        if (!channel->groupSep && channel->number == Number)
-           return channel;
-        channel = (cChannel *)channel->Next();
-        }
-  return NULL;
-}
-
-cChannel *cChannels::GetByServiceID(unsigned short ServiceId)
-{
-  cChannel *channel = (cChannel *)First();
-  while (channel) {
-        if (!channel->groupSep && channel->pnr == ServiceId)
-           return channel;
-        channel = (cChannel *)channel->Next();
-        }
-  return NULL;
-}
-
-bool cChannels::SwitchTo(int Number)
-{
-  cChannel *channel = GetByNumber(Number);
-  return channel && cDevice::PrimaryDevice()->SwitchChannel(channel, true);
-}
-
-const char *cChannels::GetChannelNameByNumber(int Number)
-{
-  cChannel *channel = GetByNumber(Number);
-  return channel ? channel->name : NULL;
-}
 
 // -- cTimers ----------------------------------------------------------------
 

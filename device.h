@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 1.20 2002/09/28 12:20:34 kls Exp $
+ * $Id: device.h 1.21 2002/10/05 15:18:13 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -139,6 +139,8 @@ public:
 protected:
   static int currentChannel;
 public:
+  virtual bool ProvidesSource(int Source) const;
+         // Returns true if this device can provide the given source.
   virtual bool ProvidesChannel(const cChannel *Channel, int Priority = -1, bool *NeedsDetachReceivers = NULL) const;
          // Returns true if this device can provide the given channel.
          // In case the device has cReceivers attached to it or it is the primary

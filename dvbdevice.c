@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.21 2002/09/29 13:53:26 kls Exp $
+ * $Id: dvbdevice.c 1.22 2002/10/06 09:07:45 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -31,6 +31,8 @@ extern "C" {
 #endif
 #include <sys/ioctl.h>
 #include <sys/mman.h>
+#include "channels.h"
+#include "diseqc.h"
 #include "dvbosd.h"
 #include "player.h"
 #include "receiver.h"
@@ -124,7 +126,9 @@ cDvbDevice::cDvbDevice(int n)
   else
      esyslog("ERROR: can't open DVB device %d", n);
 
-  frequency = 0;
+  source = -1;
+  frequency = -1;
+  diseqcCommands = NULL;
 }
 
 cDvbDevice::~cDvbDevice()
@@ -344,18 +348,33 @@ bool cDvbDevice::SetPid(cPidHandle *Handle, int Type, bool On)
   return true;
 }
 
+bool cDvbDevice::IsTunedTo(const cChannel *Channel) const
+{
+  return source == Channel->Source() && frequency == Channel->Frequency();
+}
+
+bool cDvbDevice::ProvidesSource(int Source) const
+{
+  int type = Source & cSource::st_Mask;
+  return type == cSource::stNone
+      || type == cSource::stCable && frontendType == FE_QAM
+      || type == cSource::stSat   && frontendType == FE_QPSK
+      || type == cSource::stTerr  && frontendType == FE_OFDM;
+  return true;
+}
+
 bool cDvbDevice::ProvidesChannel(const cChannel *Channel, int Priority, bool *NeedsDetachReceivers) const
 {
   bool result = false;
   bool hasPriority = Priority < 0 || Priority > this->Priority();
   bool needsDetachReceivers = true;
 
-  if (ProvidesCa(Channel->ca)) {
+  if (ProvidesSource(Channel->Source()) && ProvidesCa(Channel->Ca())) {
      if (Receiving()) {
-        if (frequency == Channel->frequency) {
+        if (IsTunedTo(Channel)) {
            needsDetachReceivers = false;
-           if (!HasPid(Channel->vpid)) {
-              if (Channel->ca > CACONFBASE) {
+           if (!HasPid(Channel->Vpid())) {
+              if (Channel->Ca() > CACONFBASE) {
                  needsDetachReceivers = true;
                  result = hasPriority;
                  }
@@ -394,24 +413,24 @@ bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
      LiveView = true;
 #endif
 
-  bool DoTune = frequency != Channel->frequency; // TODO will be changed when DiSEqC handling is revised
+  bool DoTune = !IsTunedTo(Channel);
 
   bool TurnOffLivePIDs = HasDecoder()
                          && (DoTune
-                            || Channel->ca > CACONFBASE && pidHandles[ptVideo].pid != Channel->vpid // CA channels can only be decrypted in "live" mode
+                            || Channel->Ca() > CACONFBASE && pidHandles[ptVideo].pid != Channel->Vpid() // CA channels can only be decrypted in "live" mode
                             || IsPrimaryDevice()
                                && (LiveView // for a new live view the old PIDs need to be turned off
-                                  || pidHandles[ptVideo].pid == Channel->vpid // for recording the PIDs must be shifted from DMX_PES_AUDIO/VIDEO to DMX_PES_OTHER
+                                  || pidHandles[ptVideo].pid == Channel->Vpid() // for recording the PIDs must be shifted from DMX_PES_AUDIO/VIDEO to DMX_PES_OTHER
                                   )
                             );
 
   bool StartTransferMode = IsPrimaryDevice() && !DoTune
-                           && (LiveView && HasPid(Channel->vpid) && pidHandles[ptVideo].pid != Channel->vpid // the PID is already set as DMX_PES_OTHER
-                              || !LiveView && pidHandles[ptVideo].pid == Channel->vpid // a recording is going to shift the PIDs from DMX_PES_AUDIO/VIDEO to DMX_PES_OTHER
+                           && (LiveView && HasPid(Channel->Vpid()) && pidHandles[ptVideo].pid != Channel->Vpid() // the PID is already set as DMX_PES_OTHER
+                              || !LiveView && pidHandles[ptVideo].pid == Channel->Vpid() // a recording is going to shift the PIDs from DMX_PES_AUDIO/VIDEO to DMX_PES_OTHER
                               );
 
   bool TurnOnLivePIDs = HasDecoder() && !StartTransferMode
-                        && (Channel->ca > CACONFBASE // CA channels can only be decrypted in "live" mode
+                        && (Channel->Ca() > CACONFBASE // CA channels can only be decrypted in "live" mode
                            || LiveView
                            );
 
@@ -452,67 +471,127 @@ bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
      switch (frontendType) {
        case FE_QPSK: { // DVB-S
 
-            // Frequency offsets:
+            unsigned int frequency = Channel->Frequency();
 
-            unsigned int freq = Channel->frequency;
-            int tone = SEC_TONE_OFF;
+            if (Setup.DiSEqC) {
+               cDiseqc *diseqc = Diseqcs.Get(Channel->Source(), Channel->Frequency(), Channel->Polarization());
+               if (diseqc) {
+                  if (diseqc->Commands() && (!diseqcCommands || strcmp(diseqcCommands, diseqc->Commands()) != 0)) {
+#ifndef NEWSTRUCT
+                     int SecTone = SEC_TONE_OFF;
+                     int SecVolt = SEC_VOLTAGE_13;
+#endif
+                     cDiseqc::eDiseqcActions da;
+                     for (bool Start = true; (da = diseqc->Execute(Start)) != cDiseqc::daNone; Start = false) {
+                         switch (da) {
+#ifdef NEWSTRUCT
+                           case cDiseqc::daNone:      break;
+                           case cDiseqc::daToneOff:   CHECK(ioctl(fd_frontend, FE_SET_TONE, SEC_TONE_OFF)); break;
+                           case cDiseqc::daToneOn:    CHECK(ioctl(fd_frontend, FE_SET_TONE, SEC_TONE_ON)); break;
+                           case cDiseqc::daVoltage13: CHECK(ioctl(fd_frontend, FE_SET_VOLTAGE, SEC_VOLTAGE_13)); break;
+                           case cDiseqc::daVoltage18: CHECK(ioctl(fd_frontend, FE_SET_VOLTAGE, SEC_VOLTAGE_18)); break;
+                           case cDiseqc::daMiniA:     CHECK(ioctl(fd_frontend, FE_DISEQC_SEND_BURST, SEC_MINI_A)); break;
+                           case cDiseqc::daMiniB:     CHECK(ioctl(fd_frontend, FE_DISEQC_SEND_BURST, SEC_MINI_B)); break;
+                           case cDiseqc::daCodes: {
+                                int n = 0;
+                                uchar *codes = diseqc->Codes(n);
+                                if (codes) {
+                                   struct dvb_diseqc_master_cmd cmd;
+                                   memcpy(cmd.msg, codes, min(n, int(sizeof(cmd.msg))));
+                                   cmd.msg_len = n;
+                                   CHECK(ioctl(fd_frontend, FE_DISEQC_SEND_MASTER_CMD, &cmd));
+                                   }
+                                }
+                                break;
+#else
+                           // This may not work very good with the old driver.
+                           // Let's try to emulate the NEWSTRUCT driver's behaviour as good as possible...
+                           case cDiseqc::daNone:      break;
+                           case cDiseqc::daToneOff:   CHECK(ioctl(fd_sec, SEC_SET_TONE, SecTone = SEC_TONE_OFF)); break;
+                           case cDiseqc::daToneOn:    CHECK(ioctl(fd_sec, SEC_SET_TONE, SecTone = SEC_TONE_ON)); break;
+                           case cDiseqc::daVoltage13: CHECK(ioctl(fd_sec, SEC_SET_VOLTAGE, SecVolt = SEC_VOLTAGE_13)); break;
+                           case cDiseqc::daVoltage18: CHECK(ioctl(fd_sec, SEC_SET_VOLTAGE, SecVolt = SEC_VOLTAGE_18)); break;
+                           case cDiseqc::daMiniA:
+                           case cDiseqc::daMiniB: {
+                                secCmdSequence scmds;
+                                memset(&scmds, 0, sizeof(scmds));
+                                scmds.voltage = SecVolt;
+                                scmds.miniCommand = (da == cDiseqc::daMiniA) ? SEC_MINI_A : SEC_MINI_B;
+                                scmds.continuousTone = SecTone;
+                                CHECK(ioctl(fd_sec, SEC_SEND_SEQUENCE, &scmds));
+                                }
+                                break;
+                           case cDiseqc::daCodes: {
+                                int n = 0;
+                                uchar *codes = diseqc->Codes(n);
+                                if (codes && n >= 3 && codes[0] == 0xE0) {
+                                   secCommand scmd;
+                                   memset(&scmd, 0, sizeof(scmd));
+                                   scmd.type = SEC_CMDTYPE_DISEQC;
+                                   scmd.u.diseqc.addr = codes[1];
+                                   scmd.u.diseqc.cmd = codes[2];
+                                   scmd.u.diseqc.numParams = n - 3;
+                                   memcpy(scmd.u.diseqc.params, &codes[3], min(n - 3, int(sizeof(scmd.u.diseqc.params))));
+   
+                                   secCmdSequence scmds;
+                                   memset(&scmds, 0, sizeof(scmds));
+                                   scmds.voltage = SecVolt;
+                                   scmds.miniCommand = SEC_MINI_NONE;
+                                   scmds.continuousTone = SecTone;
+                                   scmds.numCommands = 1;
+                                   scmds.commands = &scmd;
 
-            if (freq < (unsigned int)Setup.LnbSLOF) {
-               freq -= Setup.LnbFrequLo;
-               tone = SEC_TONE_OFF;
+                                   CHECK(ioctl(fd_sec, SEC_SEND_SEQUENCE, &scmds));
+                                   }
+                                }
+                                break;
+#endif
+                           }
+                         }
+                     diseqcCommands = diseqc->Commands();
+                     }
+                  frequency -= diseqc->Lof();
+                  }
+               else {
+                  esyslog("ERROR: no DiSEqC parameters found for channel %d", Channel->Number());
+                  return false;
+                  }
                }
             else {
-               freq -= Setup.LnbFrequHi;
-               tone = SEC_TONE_ON;
-               }
+               int tone = SEC_TONE_OFF;
 
+               if (frequency < (unsigned int)Setup.LnbSLOF) {
+                  frequency -= Setup.LnbFrequLo;
+                  tone = SEC_TONE_OFF;
+                  }
+               else {
+                  frequency -= Setup.LnbFrequHi;
+                  tone = SEC_TONE_ON;
+                  }
+               int volt = (Channel->Polarization() == 'v' || Channel->Polarization() == 'V') ? SEC_VOLTAGE_13 : SEC_VOLTAGE_18;
 #ifdef NEWSTRUCT
-            Frontend.frequency = freq * 1000UL;
-            Frontend.inversion = INVERSION_AUTO;
-            Frontend.u.qpsk.symbol_rate = Channel->srate * 1000UL;
-            Frontend.u.qpsk.fec_inner = FEC_AUTO;
+               CHECK(ioctl(fd_frontend, FE_SET_VOLTAGE, volt));
+               CHECK(ioctl(fd_frontend, FE_SET_TONE, tone));
 #else
-            Frontend.Frequency = freq * 1000UL;
-            Frontend.Inversion = INVERSION_AUTO;
-            Frontend.u.qpsk.SymbolRate = Channel->srate * 1000UL;
-            Frontend.u.qpsk.FEC_inner = FEC_AUTO;
+               secCmdSequence scmds;
+               memset(&scmds, 0, sizeof(scmds));
+               scmds.voltage = volt;
+               scmds.miniCommand = SEC_MINI_NONE;
+               scmds.continuousTone = tone;
+               CHECK(ioctl(fd_sec, SEC_SEND_SEQUENCE, &scmds));
 #endif
-
-            int volt = (Channel->polarization == 'v' || Channel->polarization == 'V') ? SEC_VOLTAGE_13 : SEC_VOLTAGE_18;
-
-            // DiSEqC:
+               }
 
 #ifdef NEWSTRUCT
-            struct dvb_diseqc_master_cmd cmd = { {0xE0, 0x10, 0x38, 0xF0, 0x00, 0x00}, 4};
-            cmd.msg[3] = 0xF0 | (((Channel->diseqc * 4) & 0x0F) | (tone == SEC_TONE_ON ? 1 : 0) | (volt == SEC_VOLTAGE_18 ? 2 : 0));
-
-            if (Setup.DiSEqC)
-               CHECK(ioctl(fd_frontend, FE_SET_TONE, SEC_TONE_OFF));
-            CHECK(ioctl(fd_frontend, FE_SET_VOLTAGE, volt));
-            if (Setup.DiSEqC) {
-               usleep(15 * 1000);
-               CHECK(ioctl(fd_frontend, FE_DISEQC_SEND_MASTER_CMD, &cmd));
-               usleep(15 * 1000);
-               CHECK(ioctl(fd_frontend, FE_DISEQC_SEND_BURST, (Channel->diseqc / 4) % 2 ? SEC_MINI_B : SEC_MINI_A));
-               usleep(15 * 1000);
-               }
-            CHECK(ioctl(fd_frontend, FE_SET_TONE, tone));
+            Frontend.frequency = frequency * 1000UL;
+            Frontend.inversion = SpectralInversion(Channel->Inversion());
+            Frontend.u.qpsk.symbol_rate = Channel->Srate() * 1000UL;
+            Frontend.u.qpsk.fec_inner = CodeRate(Channel->CoderateH());
 #else
-            secCommand scmd;
-            scmd.type = 0;
-            scmd.u.diseqc.addr = 0x10;
-            scmd.u.diseqc.cmd = 0x38;
-            scmd.u.diseqc.numParams = 1;
-            scmd.u.diseqc.params[0] = 0xF0 | ((Channel->diseqc * 4) & 0x0F) | (tone == SEC_TONE_ON ? 1 : 0) | (volt == SEC_VOLTAGE_18 ? 2 : 0);
-
-            secCmdSequence scmds;
-            scmds.voltage = volt;
-            scmds.miniCommand = SEC_MINI_NONE;
-            scmds.continuousTone = tone;
-            scmds.numCommands = Setup.DiSEqC ? 1 : 0;
-            scmds.commands = &scmd;
-
-            CHECK(ioctl(fd_sec, SEC_SEND_SEQUENCE, &scmds));
+            Frontend.Frequency = frequency * 1000UL;
+            Frontend.Inversion = SpectralInversion(Channel->Inversion());
+            Frontend.u.qpsk.SymbolRate = Channel->Srate() * 1000UL;
+            Frontend.u.qpsk.FEC_inner = CodeRate(Channel->CoderateH());
 #endif
             }
             break;
@@ -521,17 +600,17 @@ bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
             // Frequency and symbol rate:
 
 #ifdef NEWSTRUCT
-            Frontend.frequency = Channel->frequency * 1000000UL;
-            Frontend.inversion = INVERSION_AUTO;
-            Frontend.u.qam.symbol_rate = Channel->srate * 1000UL;
-            Frontend.u.qam.fec_inner = FEC_AUTO;
-            Frontend.u.qam.modulation = QAM_64;
+            Frontend.frequency = Channel->Frequency() * 1000000UL;
+            Frontend.inversion = SpectralInversion(Channel->Inversion());
+            Frontend.u.qam.symbol_rate = Channel->Srate() * 1000UL;
+            Frontend.u.qam.fec_inner = CodeRate(Channel->CoderateH());
+            Frontend.u.qam.modulation = Modulation(Channel->Modulation());
 #else
-            Frontend.Frequency = Channel->frequency * 1000000UL;
-            Frontend.Inversion = INVERSION_AUTO;
-            Frontend.u.qam.SymbolRate = Channel->srate * 1000UL;
-            Frontend.u.qam.FEC_inner = FEC_AUTO;
-            Frontend.u.qam.QAM = QAM_64;
+            Frontend.Frequency = Channel->Frequency() * 1000000UL;
+            Frontend.Inversion = SpectralInversion(Channel->Inversion());
+            Frontend.u.qam.SymbolRate = Channel->Srate() * 1000UL;
+            Frontend.u.qam.FEC_inner = CodeRate(Channel->CoderateH());
+            Frontend.u.qam.QAM = Modulation(Channel->Modulation());
 #endif
             }
             break;
@@ -540,25 +619,25 @@ bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
             // Frequency and OFDM paramaters:
 
 #ifdef NEWSTRUCT
-            Frontend.frequency = Channel->frequency * 1000UL;
-            Frontend.inversion = INVERSION_AUTO;
-            Frontend.u.ofdm.bandwidth=BANDWIDTH_8_MHZ;
-            Frontend.u.ofdm.code_rate_HP = FEC_2_3;
-            Frontend.u.ofdm.code_rate_LP = FEC_1_2;
-            Frontend.u.ofdm.constellation = QAM_64;
-            Frontend.u.ofdm.transmission_mode = TRANSMISSION_MODE_2K;
-            Frontend.u.ofdm.guard_interval = GUARD_INTERVAL_1_32;
-            Frontend.u.ofdm.hierarchy_information = HIERARCHY_NONE;
+            Frontend.frequency = Channel->Frequency() * 1000UL;
+            Frontend.inversion = SpectralInversion(Channel->Inversion());
+            Frontend.u.ofdm.bandwidth = BandWidth(Channel->Bandwidth());
+            Frontend.u.ofdm.code_rate_HP = CodeRate(Channel->CoderateH());
+            Frontend.u.ofdm.code_rate_LP = CodeRate(Channel->CoderateL());
+            Frontend.u.ofdm.constellation = Modulation(Channel->Modulation());
+            Frontend.u.ofdm.transmission_mode = TransmitMode(Channel->Transmission());
+            Frontend.u.ofdm.guard_interval = GuardInterval(Channel->Guard());
+            Frontend.u.ofdm.hierarchy_information = Hierarchy(Channel->Hierarchy());
 #else
-            Frontend.Frequency = Channel->frequency * 1000UL;
-            Frontend.Inversion = INVERSION_AUTO;
-            Frontend.u.ofdm.bandWidth=BANDWIDTH_8_MHZ;
-            Frontend.u.ofdm.HP_CodeRate=FEC_2_3;
-            Frontend.u.ofdm.LP_CodeRate=FEC_1_2;
-            Frontend.u.ofdm.Constellation=QAM_64;
-            Frontend.u.ofdm.TransmissionMode=TRANSMISSION_MODE_2K;
-            Frontend.u.ofdm.guardInterval=GUARD_INTERVAL_1_32;
-            Frontend.u.ofdm.HierarchyInformation=HIERARCHY_NONE;
+            Frontend.Frequency = Channel->Frequency() * 1000UL;
+            Frontend.Inversion = SpectralInversion(Channel->Inversion());
+            Frontend.u.ofdm.bandWidth = BandWidth(Channel->Bandwidth());
+            Frontend.u.ofdm.HP_CodeRate = CodeRate(Channel->CoderateH());
+            Frontend.u.ofdm.LP_CodeRate = CodeRate(Channel->CoderateL());
+            Frontend.u.ofdm.Constellation = Modulation(Channel->Modulation());
+            Frontend.u.ofdm.TransmissionMode = TransmitMode(Channel->Transmission());
+            Frontend.u.ofdm.guardInterval = GuardInterval(Channel->Guard());
+            Frontend.u.ofdm.HierarchyInformation = Hierarchy(Channel->Hierarchy());
 #endif
             }
             break;
@@ -592,7 +671,7 @@ bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
          usleep(10 * 1000);
          }
      if (!(status & FE_HAS_LOCK)) {
-        esyslog("ERROR: channel %d not locked on DVB card %d!", Channel->number, CardIndex() + 1);
+        esyslog("ERROR: channel %d not locked on DVB card %d!", Channel->Number(), CardIndex() + 1);
         if (LiveView && IsPrimaryDevice())
            cThread::RaisePanic();
         return false;
@@ -602,43 +681,44 @@ bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
         FrontendEvent event;
         if (ioctl(fd_frontend, FE_GET_EVENT, &event) >= 0) {
            if (event.type != FE_COMPLETION_EV) {
-              esyslog("ERROR: channel %d not sync'ed on DVB card %d!", Channel->number, CardIndex() + 1);
+              esyslog("ERROR: channel %d not sync'ed on DVB card %d!", Channel->Number(), CardIndex() + 1);
               if (LiveView && IsPrimaryDevice())
                  cThread::RaisePanic();
               return false;
               }
            }
         else
-           esyslog("ERROR in frontend get event (channel %d, card %d): %m", Channel->number, CardIndex() + 1);
+           esyslog("ERROR in frontend get event (channel %d, card %d): %m", Channel->Number(), CardIndex() + 1);
         }
      else
         esyslog("ERROR: timeout while tuning on DVB card %d", CardIndex() + 1);
 #endif
 
-     frequency = Channel->frequency;
+     source = Channel->Source();
+     frequency = Channel->Frequency();
 
      }
 
   // PID settings:
 
   if (TurnOnLivePIDs) {
-     if (!(AddPid(Channel->apid1, ptAudio) && AddPid(Channel->vpid, ptVideo))) {//XXX+ dolby dpid1!!! (if audio plugins are attached)
-        esyslog("ERROR: failed to set PIDs for channel %d on device %d", Channel->number, CardIndex() + 1);
+     if (!(AddPid(Channel->Apid1(), ptAudio) && AddPid(Channel->Vpid(), ptVideo))) {//XXX+ dolby dpid1!!! (if audio plugins are attached)
+        esyslog("ERROR: failed to set PIDs for channel %d on device %d", Channel->Number(), CardIndex() + 1);
         return false;
         }
      if (IsPrimaryDevice())
-        AddPid(Channel->tpid, ptTeletext);
+        AddPid(Channel->Tpid(), ptTeletext);
      CHECK(ioctl(fd_audio, AUDIO_SET_AV_SYNC, true));
      CHECK(ioctl(fd_audio, AUDIO_SET_MUTE, false));
      CHECK(ioctl(fd_video, VIDEO_SET_BLANK, false));
      }
   else if (StartTransferMode)
-     cControl::Launch(new cTransferControl(this, Channel->vpid, Channel->apid1, 0, 0, 0));
+     cControl::Launch(new cTransferControl(this, Channel->Vpid(), Channel->Apid1(), 0, 0, 0));
 
   // Start setting system time:
 
   if (siProcessor)
-     siProcessor->SetCurrentTransponder(Channel->frequency);
+     siProcessor->SetCurrentTransponder(Channel->Frequency());
 
   return true;
 }

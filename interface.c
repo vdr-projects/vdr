@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.c 1.55 2002/09/29 12:50:22 kls Exp $
+ * $Id: interface.c 1.56 2002/09/30 15:32:10 kls Exp $
  */
 
 #include "interface.h"
@@ -366,6 +366,7 @@ void cInterface::QueryKeys(cRemote *Remote)
                              ClearEol(0, 7);
                              ClearEol(0, 8);
                              ClearEol(0, 9);
+                             Flush();
                              for (;;) {
                                  Key = cRemote::Get(100);
                                  if (Key == kUp) {
