@@ -1073,3 +1073,4 @@ Video Disk Recorder Revision History
   Bernd Schweikert).
 - Fixed avoiding the primary DVB interface in case Setup.PrimaryLimit is 0.
 - Fixed handling CICAM settings if the first one of a DVB card was FTA.
+- Fixed reacting on changes in CICAM settings (needed to restart VDR before).

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.160 2002/03/03 16:12:29 kls Exp $
+ * $Id: menu.c 1.161 2002/03/08 15:18:20 kls Exp $
  */
 
 #include "menu.h"
@@ -1954,6 +1954,7 @@ eOSState cMenuSetup::ProcessKey(eKeys Key)
                  cDvbApi::PrimaryDvbApi->SetVideoFormat(data.VideoFormat ? VIDEO_FORMAT_16_9 : VIDEO_FORMAT_4_3);
                  Setup = data;
                  Setup.Save();
+                 cDvbApi::SetCaCaps();
                  break;
        default: break;
        }

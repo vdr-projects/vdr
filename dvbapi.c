@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.156 2002/03/08 15:06:37 kls Exp $
+ * $Id: dvbapi.c 1.157 2002/03/08 15:14:04 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -1690,7 +1690,6 @@ cDvbApi::cDvbApi(int n)
   ca = -1;
   priority = DEFAULTPRIORITY;
   cardIndex = n;
-  SetCaCaps();
 
   // Devices that are only present on DVB-C or DVB-S cards:
 
@@ -1851,8 +1850,10 @@ cDvbApi *cDvbApi::GetDvbApi(int Ca, int Priority)
 
 void cDvbApi::SetCaCaps(void)
 {
-  for (int i = 0; i < MAXCACAPS; i++)
-      caCaps[i] = Setup.CaCaps[CardIndex()][i];
+  for (int d = 0; d < NumDvbApis; d++) {
+      for (int i = 0; i < MAXCACAPS; i++)
+          dvbApi[d]->caCaps[i] = Setup.CaCaps[dvbApi[d]->CardIndex()][i];
+      }
 }
 
 int cDvbApi::ProvidesCa(int Ca)
@@ -1907,6 +1908,7 @@ bool cDvbApi::Init(void)
      isyslog(LOG_INFO, "found %d video device%s", NumDvbApis, NumDvbApis > 1 ? "s" : "");
   else
      esyslog(LOG_ERR, "ERROR: no video device found, giving up!");
+  SetCaCaps();
   return NumDvbApis > 0;
 }
 
