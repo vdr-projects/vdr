@@ -563,3 +563,5 @@ Video Disk Recorder Revision History
   a mark.
 - Fixed handling characters above 0xEF in SVDRP.
 - Fixed a possible crash in parsing incorrect lines in 'channels.conf'.
+- New channel settings for Premiere World (Dolby Digital PIDs not yet
+  available).
