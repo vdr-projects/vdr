@@ -253,5 +253,9 @@ Truls Slevigen <truls@slevigen.no>
 Ruben Nunez Francisco <ruben.nunez@tang-it.com>
  for implementing FreeDiskSpaceMB() without external 'df' command
 
+Mirko Dölle <mdoelle@linux-user.de>
+  for reporting a bug when a timer records over midnight of a day that had a
+  change in Daylight Saving Time
+
 Michael Rakowski <mrak@gmx.de>
  for translating OSD texts to the Polish language
