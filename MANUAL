@@ -8,7 +8,7 @@ Video Disk Recorder User's Manual
   possible, several keys have different meanings in the various
   modes:
 
-  Key     Normal      Main       Channels   Timer      Edit/New      Recordings  Replay
+  Key     Normal      Main       Channels   Timers     Edit/New      Recordings  Replay
 
   Up      Ch up       Crsr up    Crsr up    Crsr up    Crsr up       Crsr up     Play
   Down    Ch down     Crsr down  Crsr down  Crsr down  Crsr down     Crsr down   Pause
@@ -20,8 +20,11 @@ Video Disk Recorder User's Manual
   Red     -           Record     Edit       Edit       -             Play        Jump
   Green   -           Language   New        New        -             Rewind      Skip -60s
   Yellow  -           Eject DVD  Delete     Delete     -             Delete      Skip +60s
-  Blue    -           Resume     Mark       Mark       -             Summary     Stop
+  Blue    -           Resume     Mark       Mark(1)    -             Summary     Stop
   0..9    Ch select   -          -          -          Numeric inp.  -           Editing
+
+  (1) The "Mark" button in the "Timers" menu only works if sorting the timers
+      has been disabled in the "Setup" menu.
 
 * Navigating through the On Screen Menus
 
@@ -297,6 +300,12 @@ Video Disk Recorder User's Manual
   OSDLanguage = 0        Defines the language used to display the OSD texts.
                          0 = Englisch
                          1 = Deutsch
+                         2 = Slovenian
+                         3 = Italian
+                         4 = Dutch
+                         5 = Portugese
+                         6 = French
+                         7 = Norwegian
 
   PrimaryDVB = 1         Defines the primary DVB interface (i.e. the one that
                          will display the menus and will react on input through
@@ -373,6 +382,10 @@ Video Disk Recorder User's Manual
   SVDRPTimeout = 300     The time (in seconds) of inactivity on an open SVDRP
                          connection after which the connection is automatically
                          closed. Default is 300, a value of 0 means no timeout.
+
+  SortTimers = 1         Turns sorting the timers in the "Timers" menu on/off.
+                         Timers are sorted by ascending start times, with the
+                         first one being the next timer that will start.
 
   PrimaryLimit = 0       The minimum priority a timer must have to be allowed to
                          use the primary DVB interface, or to force another timer

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.64 2001/08/26 11:35:00 kls Exp $
+ * $Id: config.h 1.65 2001/08/26 14:08:23 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -137,15 +137,16 @@ public:
   cTimer(const cEventInfo *EventInfo);
   virtual ~cTimer();
   cTimer& operator= (const cTimer &Timer);
+  bool operator< (const cTimer &Timer);
   const char *ToText(void);
   bool Parse(const char *s);
   bool Save(FILE *f);
   bool IsSingleEvent(void);
-  int cTimer::GetMDay(time_t t);
-  int cTimer::GetWDay(time_t t);
-  bool cTimer::DayMatches(time_t t);
-  time_t cTimer::IncDay(time_t t, int Days);
-  time_t cTimer::SetTime(time_t t, int SecondsFromMidnight);
+  int GetMDay(time_t t);
+  int GetWDay(time_t t);
+  bool DayMatches(time_t t);
+  time_t IncDay(time_t t, int Days);
+  time_t SetTime(time_t t, int SecondsFromMidnight);
   bool Matches(time_t t = 0);
   time_t StartTime(void);
   time_t StopTime(void);
@@ -287,6 +288,7 @@ public:
   int EPGScanTimeout;
   int EPGBugfixLevel;
   int SVDRPTimeout;
+  int SortTimers;
   int PrimaryLimit;
   int DefaultPriority, DefaultLifetime;
   int VideoFormat;

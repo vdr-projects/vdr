@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.34 2001/08/25 13:41:57 kls Exp $
+ * $Id: i18n.c 1.35 2001/08/26 13:45:10 kls Exp $
  *
  * Slovenian translations provided by Miha Setina <mihasetina@softhome.net>
  * Italian   translations provided by Alberto Carraro <bertocar@tin.it>
@@ -793,6 +793,15 @@ const tPhrase Phrases[] = {
     "Timeout SVDRP",
     "Temps maxi SVDRP",
     "Ubrukt SVDRP-levetid",
+  },
+  { "SortTimers",
+    "Timer sortieren",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
   },
   { "PrimaryLimit",
     "Primär-Limit",

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.57 2001/08/26 11:57:52 kls Exp $
+ * $Id: config.c 1.58 2001/08/26 14:11:29 kls Exp $
  */
 
 #include "config.h"
@@ -392,6 +392,13 @@ cTimer& cTimer::operator= (const cTimer &Timer)
   if (summary)
      summary = strdup(summary);
   return *this;
+}
+
+bool cTimer::operator< (const cTimer &Timer)
+{
+  time_t t1 = StartTime();
+  time_t t2 = (*(cTimer *)&Timer).StartTime();
+  return t1 < t2 || (t1 == t2 && priority > Timer.priority);
 }
 
 const char *cTimer::ToText(cTimer *Timer)
@@ -799,6 +806,7 @@ cSetup::cSetup(void)
   EPGScanTimeout = 5;
   EPGBugfixLevel = 2;
   SVDRPTimeout = 300;
+  SortTimers = 1;
   PrimaryLimit = 0;
   DefaultPriority = 50;
   DefaultLifetime = 50;
@@ -831,6 +839,7 @@ bool cSetup::Parse(char *s)
      else if (!strcasecmp(Name, "EPGScanTimeout"))      EPGScanTimeout     = atoi(Value);
      else if (!strcasecmp(Name, "EPGBugfixLevel"))      EPGBugfixLevel     = atoi(Value);
      else if (!strcasecmp(Name, "SVDRPTimeout"))        SVDRPTimeout       = atoi(Value);
+     else if (!strcasecmp(Name, "SortTimers"))          SortTimers         = atoi(Value);
      else if (!strcasecmp(Name, "PrimaryLimit"))        PrimaryLimit       = atoi(Value);
      else if (!strcasecmp(Name, "DefaultPriority"))     DefaultPriority    = atoi(Value);
      else if (!strcasecmp(Name, "DefaultLifetime"))     DefaultLifetime    = atoi(Value);
@@ -898,6 +907,7 @@ bool cSetup::Save(const char *FileName)
         fprintf(f, "EPGScanTimeout     = %d\n", EPGScanTimeout);
         fprintf(f, "EPGBugfixLevel     = %d\n", EPGBugfixLevel);
         fprintf(f, "SVDRPTimeout       = %d\n", SVDRPTimeout);
+        fprintf(f, "SortTimers         = %d\n", SortTimers);
         fprintf(f, "PrimaryLimit       = %d\n", PrimaryLimit);
         fprintf(f, "DefaultPriority    = %d\n", DefaultPriority);
         fprintf(f, "DefaultLifetime    = %d\n", DefaultLifetime);

@@ -673,3 +673,6 @@ Video Disk Recorder Revision History
   calculation of matching timers has been completely rewritten).
 - Timers that are currently recording are now marked with '#' in the "Timers"
   menu.
+- Timers are now sorted in the "Timers" menu, showing the sequence in which
+  they will be recording. This can be disabled in the "Setup" menu. Note
+  that the "Mark" button doesn't work if timers are displayed sorted.

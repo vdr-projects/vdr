@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.41 2001/08/25 13:21:22 kls Exp $
+ * $Id: tools.c 1.42 2001/08/26 13:11:17 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -690,5 +690,21 @@ int cListBase::Count(void) const
         object = object->Next();
         }
   return n;
+}
+
+void cListBase::Sort(void)
+{
+  bool swapped;
+  do {
+     swapped = false;
+     cListObject *object = objects;
+     while (object) {
+           if (object->Next() && *object->Next() < *object) {
+              Move(object->Next(), object);
+              swapped = true;
+              }
+           object = object->Next();
+           }
+     } while (swapped);
 }
 
