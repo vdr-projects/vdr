@@ -2315,7 +2315,7 @@ Video Disk Recorder Revision History
 - Removing deleted recordings faster than normal when cutting, to avoid running
   out of disk space (thanks to Manfred Schmidt-Voigt for reporting this one).
 
-2003-08-24: Version 1.2.4
+2003-08-26: Version 1.2.4
 
 - Fixed 'runvdr' to stay in the loop only if VDR returns an exit status of '1'.
 - Completed the Finnish OSD texts (thanks to Rolf Ahrenberg).

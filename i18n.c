@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.131 2003/08/24 10:52:08 kls Exp $
+ * $Id: i18n.c 1.132 2003/08/26 15:23:07 kls Exp $
  *
  * Translations provided by:
  *
@@ -79,7 +79,7 @@ const tI18nPhrase Phrases[] = {
     "Português",
     "Français",
     "Norsk",
-    "Suomi",
+    "suomi", // this is not a typo - it's really lowercase!
     "Polski",
     "Español",
     "Ellinika",
