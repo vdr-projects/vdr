@@ -16,7 +16,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.c 1.76 2003/05/18 12:51:50 kls Exp $
+ * $Id: eit.c 1.77 2003/05/18 13:13:31 kls Exp $
  ***************************************************************************/
 
 #include "eit.h"
@@ -807,6 +807,7 @@ cSchedules::~cSchedules()
 /**  */
 const cSchedule *cSchedules::AddChannelID(tChannelID channelid)
 {
+  channelid.ClrRid();
   const cSchedule *p = GetSchedule(channelid);
   if (!p) {
      Add(new cSchedule(channelid));
