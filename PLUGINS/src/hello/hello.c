@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: hello.c 1.3 2002/05/12 09:24:08 kls Exp $
+ * $Id: hello.c 1.4 2002/05/12 10:18:59 kls Exp $
  */
 
 #include <getopt.h>
@@ -28,6 +28,7 @@ public:
   virtual const char *CommandLineHelp(void);
   virtual bool ProcessArgs(int argc, char *argv[]);
   virtual bool Start(void);
+  virtual void Housekeeping(void);
   virtual const char *MainMenuEntry(void) { return tr(MAINMENUENTRY); }
   virtual cOsdMenu *MainMenuAction(void);
   virtual cMenuSetupPage *SetupMenu(void);
@@ -115,6 +116,11 @@ bool cPluginHello::Start(void)
   // Start any background activities the plugin shall perform.
   RegisterI18n(Phrases);
   return true;
+}
+
+void cPluginHello::Housekeeping(void)
+{
+  // Perform any cleanup or other regular tasks.
 }
 
 cOsdMenu *cPluginHello::MainMenuAction(void)

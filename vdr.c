@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.106 2002/05/12 09:05:37 kls Exp $
+ * $Id: vdr.c 1.107 2002/05/12 10:11:08 kls Exp $
  */
 
 #include <getopt.h>
@@ -574,6 +574,8 @@ int main(int argc, char *argv[])
                  }
               // Disk housekeeping:
               RemoveDeletedRecordings();
+              // Plugins housekeeping:
+              PluginManager.Housekeeping();
               }
            }
         }

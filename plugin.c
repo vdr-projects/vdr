@@ -4,19 +4,21 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: plugin.c 1.2 2002/05/12 09:04:51 kls Exp $
+ * $Id: plugin.c 1.3 2002/05/12 10:10:38 kls Exp $
  */
 
 #include "plugin.h"
 #include <ctype.h>
 #include <dirent.h>
 #include <dlfcn.h>
+#include <time.h>
 #include "config.h"
 
 #define LIBVDR_PREFIX  "libvdr-"
 #define SO_INDICATOR   ".so."
 
 #define MAXPLUGINARGS  1024
+#define HOUSEKEEPINGDELTA 10 // seconds
 
 // --- cPlugin ---------------------------------------------------------------
 
@@ -48,6 +50,10 @@ bool cPlugin::ProcessArgs(int argc, char *argv[])
 bool cPlugin::Start(void)
 {
   return true;
+}
+
+void cPlugin::Housekeeping(void)
+{
 }
 
 const char *cPlugin::MainMenuEntry(void)
@@ -202,6 +208,8 @@ cPluginManager *cPluginManager::pluginManager = NULL;
 cPluginManager::cPluginManager(const char *Directory)
 {
   directory = NULL;
+  lastHousekeeping = time(NULL);
+  nextHousekeeping = -1;
   if (pluginManager) {
      fprintf(stderr, "vdr: attempt to create more than one plugin manager - exiting!\n");
      exit(2);
@@ -278,11 +286,27 @@ bool cPluginManager::StartPlugins(void)
          Setup.OSDLanguage = 0; // the i18n texts are only available _after_ Start()
          isyslog(LOG_INFO, "starting plugin: %s (%s): %s", p->Name(), p->Version(), p->Description());
          Setup.OSDLanguage = Language;
-         if (!dll->Plugin()->Start())
+         if (!p->Start())
             return false;
          }
       }
   return true;
+}
+
+void cPluginManager::Housekeeping(void)
+{
+  if (time(NULL) - lastHousekeeping > HOUSEKEEPINGDELTA) {
+     if (++nextHousekeeping >= dlls.Count())
+        nextHousekeeping = 0;
+     cDll *dll = dlls.Get(nextHousekeeping);
+     if (dll) {
+        cPlugin *p = dll->Plugin();
+        if (p) {
+           p->Housekeeping();
+           }
+        }
+     lastHousekeeping = time(NULL);
+     }
 }
 
 bool cPluginManager::HasPlugins(void)

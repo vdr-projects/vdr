@@ -12,7 +12,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: newplugin 1.2 2002/05/12 09:06:43 kls Exp $
+# $Id: newplugin 1.3 2002/05/12 10:14:47 kls Exp $
 
 $PLUGIN_NAME = $ARGV[0] || die "Usage: newplugin <name>\n";
 
@@ -159,6 +159,7 @@ public:
   virtual const char *CommandLineHelp(void);
   virtual bool ProcessArgs(int argc, char *argv[]);
   virtual bool Start(void);
+  virtual void Housekeeping(void);
   virtual const char *MainMenuEntry(void) { return MAINMENUENTRY; }
   virtual cOsdMenu *MainMenuAction(void);
   virtual cMenuSetupPage *SetupMenu(void);
@@ -193,6 +194,11 @@ bool cPlugin${PLUGIN_CLASS}::Start(void)
 {
   // Start any background activities the plugin shall perform.
   return true;
+}
+
+void cPlugin${PLUGIN_CLASS}::Housekeeping(void)
+{
+  // Perform any cleanup or other regular tasks.
 }
 
 cOsdMenu *cPlugin${PLUGIN_CLASS}::MainMenuAction(void)

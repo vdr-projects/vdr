@@ -482,6 +482,33 @@ interaction is possible. If a specific action takes longer than a few seconds,
 the plugin should launch a separate thread to do this.
 </b>
 
+<!--X1.1.2--><table width=100%><tr><td bgcolor=red>&nbsp;</td><td width=100%>
+<hr><h2>Housekeeping</h2>
+
+<center><i><b>Chores, chores...</b></i></center><p>
+
+From time to time a plugin may want to do some regular tasks, like cleaning
+up some files or other things. In order to do this it can implement the function
+
+<p><table><tr><td bgcolor=#F0F0F0><pre><br>
+virtual void Housekeeping(void);
+</pre></td></tr></table><p>
+
+which gets called when VDR is otherwise idle. The intervals between subsequent
+calls to this function are not defined. There may be several hours between two
+calls (if, for instance, there are recordings or replays going on) or they may
+be as close as ten seconds. The only thing that is guaranteed is that there are
+at least ten seconds between two subsequent calls to the <tt>Housekeeping()</tt>
+function of the same plugin.
+<p>
+<b>
+It is very important that a call to <tt>Housekeeping()</tt> returns as soon
+as possible! As long as the program stays inside this function, no other user
+interaction is possible. If a specific action takes longer than a few seconds,
+the plugin should launch a separate thread to do this.
+</b>
+<!--X1.1.2--></td></tr></table>
+
 <hr><h2>Setup parameters</h2>
 
 <center><i><b>Remember me...</b></i></center><p>

@@ -132,6 +132,7 @@ Stefan Huelswitt <huels@iname.com>
  lists"
  for suggesting to make the cPlugin::Start() function return a boolean value that
  indicates if the plugin will not be able to perform its task
+ for suggesting to add the cPlugin::Housekeeping() function
 
 Ulrich Röder <roeder@efr-net.de>
  for pointing out that there are channels that have a symbol rate higher than
