@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 1.6 2002/07/14 12:24:59 kls Exp $
+ * $Id: dvbplayer.c 1.7 2002/07/14 14:30:36 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -132,7 +132,7 @@ cDvbPlayer::cDvbPlayer(const char *FileName)
   backTrace = NULL;
   index = NULL;
   eof = false;
-  active = false;
+  active = true;
   playMode = pmPlay;
   playDir = pdForward;
   trickSpeed = NORMAL_SPEED;
@@ -292,7 +292,6 @@ void cDvbPlayer::Activate(bool On)
 
 void cDvbPlayer::Action(void)
 {
-  active = true;
   dsyslog("dvbplayer thread started (pid=%d)", getpid());
 
   uchar b[MAXFRAMESIZE];

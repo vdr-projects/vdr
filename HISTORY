@@ -1375,3 +1375,5 @@ Video Disk Recorder Revision History
   provide a name to simply use a string that describes the player type (like, e.g.,
   "DVD").
 - Fixed a hangup when switching to the next file during replay.
+- Fixed a possible race condition in the cDvbPlayer (thanks to Andreas Schultz
+  for pointing out this one).
