@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.h 1.8 2003/05/25 11:44:47 kls Exp $
+ * $Id: ci.h 1.9 2003/10/26 12:22:09 kls Exp $
  */
 
 #ifndef __CI_H
@@ -21,6 +21,7 @@ class cCiMenu {
 private:
   enum { MAX_CIMENU_ENTRIES = 64 }; ///< XXX is there a specified maximum?
   cCiMMI *mmi;
+  cMutex mutex;
   bool selectable;
   char *titleText;
   char *subTitleText;
@@ -45,6 +46,7 @@ class cCiEnquiry {
   friend class cCiMMI;
 private:
   cCiMMI *mmi;
+  cMutex mutex;
   char *text;
   bool blind;
   int expectedLength;

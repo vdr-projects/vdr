@@ -641,6 +641,7 @@ Torsten Herz <torsten.herz@web.de>
  to switch to an other channel
  for reporting a wrong EPG bugfix code number for the MAX_USEFUL_SUBTITLE_LENGTH fix
  for fixing a bug in resetting OSD color palettes
+ for adding missing 'const' to some cChannel member functions
 
 Steffen Becker <stbecker@rbg.informatik.tu-darmstadt.de>
  for reporting a problem with CPU load peaks (in the EPG scanner)
@@ -844,3 +845,7 @@ Markus Hardt <markus.hardt@gmx.net>
 
 Thomas Rausch <Thomas.Rausch@gmx.de>
  for making VDR try to get a timer's channel without RID when loading 'timers.conf'
+
+Thomas v. Keller <v.keller@neckarufer.de>
+ for reporting a crash in case the CAM connection fails while a CAM menu
+ is being presented
