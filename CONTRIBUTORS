@@ -106,7 +106,7 @@ Stefan Huelswitt <huels@iname.com>
 
 Ulrich Röder <dynamite@efr-net.de>
  for pointing out that there are channels that have a symbol rate higher than
- 27500.
+ 27500
 
 Helmut Schächner <schaechner@yahoo.com>
  for his support in keeping the Premiere World channels up to date in 'channels.conf'
@@ -135,3 +135,7 @@ Werner Fink <werner@suse.de>
 
 Rolf Hakenes <hakenes@hippomi.de>
  for providing 'libdtv' and adapting the EIT mechanisms to it
+
+Andreas Vitting <Andreas@huji.de>
+ for providing code that closes all unused file descriptors in the child
+ process of a pipe (used in cPipe)

@@ -4,13 +4,14 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.h 1.8 2001/08/05 10:36:47 kls Exp $
+ * $Id: thread.h 1.9 2001/09/15 12:46:52 kls Exp $
  */
 
 #ifndef __THREAD_H
 #define __THREAD_H
 
 #include <pthread.h>
+#include <stdio.h>
 #include <sys/types.h>
 
 class cMutex;
@@ -87,5 +88,20 @@ public:
   };
 
 #define LOCK_THREAD cThreadLock ThreadLock(this)
+
+// cPipe implements a pipe that closes all unnecessary file descriptors in
+// the child process.
+
+class cPipe {
+private:
+  pid_t pid;
+  FILE *f;
+public:
+  cPipe(void);
+  ~cPipe();
+  operator FILE* () { return f; }
+  bool Open(const char *Command, const char *Mode);
+  int Close(void);
+  };
 
 #endif //__THREAD_H

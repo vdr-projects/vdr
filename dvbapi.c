@@ -7,7 +7,7 @@
  * DVD support initially written by Andreas Schultz <aschultz@warp10.net>
  * based on dvdplayer-0.5 by Matjaz Thaler <matjaz.thaler@guest.arnes.si>
  *
- * $Id: dvbapi.c 1.118 2001/09/15 10:42:35 kls Exp $
+ * $Id: dvbapi.c 1.119 2001/09/15 12:45:19 kls Exp $
  */
 
 //#define DVDDEBUG        1
@@ -693,7 +693,7 @@ protected:
   static int Speeds[];
   cDvbApi *dvbApi;
   int videoDev, audioDev;
-  FILE *dolbyDev;
+  cPipe dolbyDev;
   int blockInput, blockOutput;
   ePlayModes playMode;
   ePlayDirs playDir;
@@ -733,7 +733,6 @@ cPlayBuffer::cPlayBuffer(cDvbApi *DvbApi, int VideoDev, int AudioDev)
   dvbApi = DvbApi;
   videoDev = VideoDev;
   audioDev = AudioDev;
-  dolbyDev = NULL;
   blockInput = blockOutput = false;
   playMode = pmPlay;
   playDir = pdForward;
@@ -743,16 +742,13 @@ cPlayBuffer::cPlayBuffer(cDvbApi *DvbApi, int VideoDev, int AudioDev)
   canToggleAudioTrack = false;
   audioTrack = 0xC0;
   if (cDvbApi::AudioCommand()) {
-     dolbyDev = popen(cDvbApi::AudioCommand(), "w");
-     if (!dolbyDev)
+     if (!dolbyDev.Open(cDvbApi::AudioCommand(), "w"))
         esyslog(LOG_ERR, "ERROR: can't open pipe to audio command '%s'", cDvbApi::AudioCommand());
      }
 }
 
 cPlayBuffer::~cPlayBuffer()
 {
-  if (dolbyDev)
-     pclose(dolbyDev);
 }
 
 void cPlayBuffer::Output(void)

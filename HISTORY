@@ -716,7 +716,7 @@ Video Disk Recorder Revision History
   That way every recording will store the actual summary data at the time of
   the recording.
 
-2001-09-14: Version 0.95
+2001-09-15: Version 0.95
 
 - Fixed behaviour in case the shutdown didn't take place (there were many
   "next timer event at..." messages in that case).
@@ -742,3 +742,6 @@ Video Disk Recorder Revision History
 - Changed the size of all input buffers used to parse config files or receive
   SVDRP commands to the same value of 10KB. This allows long strings to be
   used in the 'summary' field of a timer, for instance.
+- The pipe to the Dolby Digital replay command (option '-a') now closes all
+  unused file descriptors in the child process to avoid crashing when the
+  OSD is used (thanks to Andreas Vitting).
