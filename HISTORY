@@ -3013,8 +3013,8 @@ Video Disk Recorder Revision History
   currently in use (it will then return a dummy cOsd object and write a message to
   the log file).
 - Added Estonian language texts (thanks to Arthur Konovalov).
-- Fixed 'newplugin' to use the compiler defined in $(CXX) for generating file
-  dependencies (thanks to Andreas Brachold).
+- Fixed 'newplugin' and libsi/Makefile to use the compiler defined in $(CXX) for
+  generating file dependencies (thanks to Andreas Brachold).
 - Moved the initialization of aPid1 and aPid2 to the beginning of cDvbDevice::cDvbDevice()
   to have them set in case a patch references them (thanks to Wayne Keer for pointing
   this out).
