@@ -6,7 +6,7 @@
  *
  * LIRC support added by Carsten Koch <Carsten.Koch@icem.de>  2000-06-16.
  *
- * $Id: lirc.c 1.5 2003/04/25 13:45:15 kls Exp $
+ * $Id: lirc.c 1.6 2003/04/27 11:39:47 kls Exp $
  */
 
 #include "lirc.h"
@@ -16,6 +16,7 @@
 
 #define REPEATLIMIT  20 // ms
 #define REPEATDELAY 350 // ms
+#define KEYPRESSDELAY 150 // ms
 
 cLircRemote::cLircRemote(char *DeviceName)
 :cRemote("LIRC")
@@ -77,6 +78,8 @@ void cLircRemote::Action(void)
          sscanf(buf, "%*x %x %29s", &count, KeyName); // '29' in '%29s' is LIRC_KEY_BUF-1!
          int Now = time_ms();
          if (count == 0) {
+            if (strcmp(KeyName, LastKeyName) == 0 && Now - FirstTime < KEYPRESSDELAY)
+               continue; // skip keys coming in too fast
             if (repeat)
                Put(LastKeyName, false, true);
             strcpy(LastKeyName, KeyName);

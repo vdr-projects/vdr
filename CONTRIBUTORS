@@ -609,3 +609,6 @@ Manuel Hartl <icecep@gmx.net>
 Benjamin Harling <benjamin.harling@web.de>
  for suggesting to add a note regarding non-VDR files in the /videoX directories to
  INSTALL
+
+Christian Jacobsen <christian.jacobsen@stageholding.de>
+ for making the LIRC interface skip keys that come in too fast
