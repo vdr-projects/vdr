@@ -16,7 +16,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.c 1.49 2002/08/25 10:43:36 kls Exp $
+ * $Id: eit.c 1.51 2002/09/15 14:35:32 kls Exp $
  ***************************************************************************/
 
 #include "eit.h"
@@ -405,7 +405,7 @@ bool cEventInfo::Read(FILE *f, cSchedule *Schedule)
   return false;
 }
 
-#define MAXEPGBUGFIXSTATS 5
+#define MAXEPGBUGFIXSTATS 6
 #define MAXEPGBUGFIXCHANS 50
 struct tEpgBugFixStats {
   int hits;
@@ -485,6 +485,32 @@ void cEventInfo::FixEpgBugs(void)
   // EPG data. Let's fix their bugs as good as we can:
   if (pTitle) {
 
+     // VOX puts too much information into the Subtitle and leaves the Extended
+     // Description empty:
+     //
+     // Title
+     // (NAT, Year Min')[ ["Subtitle". ]Extended Description]
+     //
+     if (pSubtitle && !pExtendedDescription) {
+        if (*pSubtitle == '(') {
+           char *e = strchr(pSubtitle + 1, ')');
+           if (e) {
+              if (*(e + 1)) {
+                 if (*++e == ' ')
+                    if (*(e + 1) == '"')
+                       e++;
+                 }
+              else
+                 e = NULL;
+              char *s = e ? strdup(e) : NULL;
+              free(pSubtitle);
+              pSubtitle = s;
+              EpgBugFixStat(0, GetServiceID());
+              // now the fixes #1 and #2 below will handle the rest
+              }
+           }
+        }
+
      // VOX and VIVA put the Subtitle in quotes and use either the Subtitle
      // or the Extended Description field, depending on how long the string is:
      //
@@ -504,7 +530,7 @@ void cEventInfo::FixEpgBugs(void)
               free(pExtendedDescription);
               pSubtitle = s;
               pExtendedDescription = d;
-              EpgBugFixStat(0, GetServiceID());
+              EpgBugFixStat(1, GetServiceID());
               }
            }
         }
@@ -521,7 +547,7 @@ void cEventInfo::FixEpgBugs(void)
            memmove(pSubtitle, pSubtitle + 1, strlen(pSubtitle));
            pExtendedDescription = pSubtitle;
            pSubtitle = NULL;
-           EpgBugFixStat(1, GetServiceID());
+           EpgBugFixStat(2, GetServiceID());
            }
         }
 
@@ -533,7 +559,7 @@ void cEventInfo::FixEpgBugs(void)
      if (pSubtitle && strcmp(pTitle, pSubtitle) == 0) {
         free(pSubtitle);
         pSubtitle = NULL;
-        EpgBugFixStat(2, GetServiceID());
+        EpgBugFixStat(3, GetServiceID());
         }
 
      // ZDF.info puts the Subtitle between double quotes, which is nothing
@@ -549,7 +575,7 @@ void cEventInfo::FixEpgBugs(void)
            char *p = strrchr(pSubtitle, '"');
            if (p)
               *p = 0;
-           EpgBugFixStat(3, GetServiceID());
+           EpgBugFixStat(4, GetServiceID());
            }
         }
 
@@ -570,7 +596,7 @@ void cEventInfo::FixEpgBugs(void)
               if (*p == '-' && *(p + 1) == ' ' && *(p + 2) && islower(*(p - 1)) && islower(*(p + 2))) {
                  if (!startswith(p + 2, "und ")) { // special case in German, as in "Lach- und Sachgeschichten"
                     memmove(p, p + 2, strlen(p + 2) + 1);
-                    EpgBugFixStat(4, GetServiceID());
+                    EpgBugFixStat(5, GetServiceID());
                     }
                  }
               p++;
@@ -895,6 +921,9 @@ int cEIT::ProcessEIT(unsigned char *buffer)
 
    if (VdrProgramInfos) {
       for (VdrProgramInfo = (struct VdrProgramInfo *) VdrProgramInfos->Head; VdrProgramInfo; VdrProgramInfo = (struct VdrProgramInfo *) xSucc (VdrProgramInfo)) {
+          // Drop events that belong to an "other TS" and are very long (some stations broadcast bogus data for "other" channels):
+          if (VdrProgramInfo->Duration >= 86400 && (tid == 0x4F || tid == 0x60 || tid == 0x61))
+             continue;
           pSchedule = (cSchedule *)schedules->GetSchedule(VdrProgramInfo->ServiceID);
           if (!pSchedule) {
              schedules->Add(new cSchedule(VdrProgramInfo->ServiceID));

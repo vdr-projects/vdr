@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 1.12 2002/08/24 14:59:35 kls Exp $
+ * $Id: dvbplayer.c 1.13 2002/09/15 13:33:31 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -353,6 +353,7 @@ void cDvbPlayer::Action(void)
                        continue;
                        }
                     r = ReadFrame(replayFile, b, Length, sizeof(b));
+                    StripAudioPackets(b, r, 0xC0); //XXX+ audioTrack
                     }
                  else // allows replay even if the index file is missing
                     r = read(replayFile, b, sizeof(b));

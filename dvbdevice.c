@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.13 2002/09/08 15:00:46 kls Exp $
+ * $Id: dvbdevice.c 1.19 2002/09/15 13:12:25 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -200,7 +200,11 @@ cSpuDecoder *cDvbDevice::GetSpuDecoder(void)
 
 bool cDvbDevice::GrabImage(const char *FileName, bool Jpeg, int Quality, int SizeX, int SizeY)
 {
-  int videoDev = DvbOpen(DEV_VIDEO, CardIndex(), O_RDWR, true);
+  char buffer[PATH_MAX];
+  snprintf(buffer, sizeof(buffer), "%s%d", DEV_VIDEO, CardIndex());
+  int videoDev = open(buffer, O_RDWR);
+  if (videoDev < 0)
+     LOG_ERROR_STR(buffer);
   if (videoDev >= 0) {
      int result = 0;
      struct video_mbuf mbuf;
@@ -297,51 +301,44 @@ void cDvbDevice::SetVideoFormat(bool VideoFormat16_9)
      CHECK(ioctl(fd_video, VIDEO_SET_FORMAT, VideoFormat16_9 ? VIDEO_FORMAT_16_9 : VIDEO_FORMAT_4_3));
 }
 
-//                          ptVideo        ptAudio        ptTeletext        ptDolby        ptOther
-dmxPesType_t PesTypes[] = { DMX_PES_VIDEO, DMX_PES_AUDIO, DMX_PES_TELETEXT, DMX_PES_OTHER, DMX_PES_OTHER };
+//                          ptAudio        ptVideo        ptTeletext        ptDolby        ptOther
+dmxPesType_t PesTypes[] = { DMX_PES_AUDIO, DMX_PES_VIDEO, DMX_PES_TELETEXT, DMX_PES_OTHER, DMX_PES_OTHER };
 
 bool cDvbDevice::SetPid(cPidHandle *Handle, int Type, bool On)
 {
   if (Handle->pid) {
+     dmxPesFilterParams pesFilterParams;
+     memset(&pesFilterParams, 0, sizeof(pesFilterParams));
      if (On) {
         if (Handle->handle < 0) {
            Handle->handle = DvbOpen(DEV_DVB_DEMUX, CardIndex(), O_RDWR | O_NONBLOCK, true);
            if (Handle->handle < 0)
               return false;
            }
-        }
-     else {
-        CHECK(ioctl(Handle->handle, DMX_STOP));
-        if (Handle->used == 0) {
-           dmxPesFilterParams pesFilterParams;
-           memset(&pesFilterParams, 0, sizeof(pesFilterParams));
-           pesFilterParams.pid     = 0x1FFF;
-           pesFilterParams.input   = DMX_IN_FRONTEND;
-           pesFilterParams.output  = DMX_OUT_DECODER;
-           pesFilterParams.pesType = PesTypes[Type < ptOther ? Type : ptOther];
-           pesFilterParams.flags   = DMX_IMMEDIATE_START;
-           CHECK(ioctl(Handle->handle, DMX_SET_PES_FILTER, &pesFilterParams));
-           close(Handle->handle);
-           Handle->handle = -1;
-           return true;
-           }
-        }
-
-     if (Handle->pid != 0x1FFF) {
-        dmxPesFilterParams pesFilterParams;
-        memset(&pesFilterParams, 0, sizeof(pesFilterParams));
         pesFilterParams.pid     = Handle->pid;
         pesFilterParams.input   = DMX_IN_FRONTEND;
         pesFilterParams.output  = (Type <= ptTeletext && Handle->used <= 1) ? DMX_OUT_DECODER : DMX_OUT_TS_TAP;
         pesFilterParams.pesType = PesTypes[Type < ptOther ? Type : ptOther];
         pesFilterParams.flags   = DMX_IMMEDIATE_START;
-        //XXX+ pesFilterParams.flags   = DMX_CHECK_CRC;//XXX
         if (ioctl(Handle->handle, DMX_SET_PES_FILTER, &pesFilterParams) < 0) {
            LOG_ERROR;
            return false;
            }
-        //XXX+ CHECK(ioctl(Handle->handle, DMX_SET_BUFFER_SIZE, KILOBYTE(32)));//XXX
-        //XXX+ CHECK(ioctl(Handle->handle, DMX_START));//XXX
+        }
+     else if (!Handle->used) {
+        CHECK(ioctl(Handle->handle, DMX_STOP));
+        if (Type <= ptTeletext) {
+           pesFilterParams.pid     = 0x1FFF;
+           pesFilterParams.input   = DMX_IN_FRONTEND;
+           pesFilterParams.output  = DMX_OUT_DECODER;
+           pesFilterParams.pesType = PesTypes[Type];
+           pesFilterParams.flags   = DMX_IMMEDIATE_START;
+           CHECK(ioctl(Handle->handle, DMX_SET_PES_FILTER, &pesFilterParams));
+           close(Handle->handle);
+           Handle->handle = -1;
+           if (PesTypes[Type] == DMX_PES_VIDEO) // let's only do this once
+              SetPlayMode(pmNone); // necessary to switch a PID from DMX_PES_VIDEO/AUDIO to DMX_PES_OTHER
+           }
         }
      }
   return true;
@@ -362,8 +359,8 @@ bool cDvbDevice::ProvidesChannel(const cChannel *Channel, int Priority, bool *Ne
                  needsDetachReceivers = true;
                  result = hasPriority;
                  }
-              else if (!HasDecoder())
-                 result = true; // if it has no decoder it can't be the primary device
+              else if (!IsPrimaryDevice())
+                 result = true;
               else {
 #define DVB_DRIVER_VERSION 2002090101 //XXX+
 #define MIN_DVB_DRIVER_VERSION_FOR_TIMESHIFT 2002090101
@@ -397,30 +394,52 @@ bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
      LiveView = true;
 #endif
 
-  // Avoid noise while switching:
+  bool DoTune = frequency != Channel->frequency; // TODO will be changed when DiSEqC handling is revised
 
-  if (HasDecoder()) {
-     CHECK(ioctl(fd_audio, AUDIO_SET_MUTE, true));
-     CHECK(ioctl(fd_video, VIDEO_SET_BLANK, true));
-     CHECK(ioctl(fd_audio, AUDIO_CLEAR_BUFFER));
-     CHECK(ioctl(fd_video, VIDEO_CLEAR_BUFFER));
-     }
+  bool TurnOffLivePIDs = HasDecoder()
+                         && (DoTune
+                            || Channel->ca > CACONFBASE && pidHandles[ptVideo].pid != Channel->vpid // CA channels can only be decrypted in "live" mode
+                            || IsPrimaryDevice()
+                               && (LiveView // for a new live view the old PIDs need to be turned off
+                                  || pidHandles[ptVideo].pid == Channel->vpid // for recording the PIDs must be shifted from DMX_PES_AUDIO/VIDEO to DMX_PES_OTHER
+                                  )
+                            );
+
+  bool StartTransferMode = IsPrimaryDevice() && !DoTune
+                           && (LiveView && HasPid(Channel->vpid) && pidHandles[ptVideo].pid != Channel->vpid // the PID is already set as DMX_PES_OTHER
+                              || !LiveView && pidHandles[ptVideo].pid == Channel->vpid // a recording is going to shift the PIDs from DMX_PES_AUDIO/VIDEO to DMX_PES_OTHER
+                              );
+
+  bool TurnOnLivePIDs = HasDecoder() && !StartTransferMode
+                        && (Channel->ca > CACONFBASE // CA channels can only be decrypted in "live" mode
+                           || LiveView
+                           );
 
   // Stop setting system time:
 
   if (siProcessor)
      siProcessor->SetCurrentTransponder(0);
 
-  // Turn off current PIDs:
+  // Turn off live PIDs if necessary:
 
-  if (HasDecoder() && (LiveView || pidHandles[ptVideo].pid == Channel->vpid)) {
-     DelPid(pidHandles[ptVideo].pid);
+  if (TurnOffLivePIDs) {
+
+     // Avoid noise while switching:
+
+     CHECK(ioctl(fd_audio, AUDIO_SET_MUTE, true));
+     CHECK(ioctl(fd_video, VIDEO_SET_BLANK, true));
+     CHECK(ioctl(fd_audio, AUDIO_CLEAR_BUFFER));
+     CHECK(ioctl(fd_video, VIDEO_CLEAR_BUFFER));
+
+     // Turn off live PIDs:
+
      DelPid(pidHandles[ptAudio].pid);
+     DelPid(pidHandles[ptVideo].pid);
      DelPid(pidHandles[ptTeletext].pid);
      DelPid(pidHandles[ptDolby].pid);
      }
 
-  if (frequency != Channel->frequency || Channel->ca > CACONFBASE) { // CA channels can only be decrypted in "live" mode
+  if (DoTune) {
 
 #ifdef NEWSTRUCT
      dvb_frontend_parameters Frontend;
@@ -602,21 +621,19 @@ bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
 
   // PID settings:
 
-  if (HasDecoder() && (LiveView || Channel->ca > CACONFBASE)) { // CA channels can only be decrypted in "live" mode
-     if (!HasPid(Channel->vpid)) {
-        if (!(AddPid(Channel->vpid, ptVideo) && AddPid(Channel->apid1, ptAudio))) {//XXX+ dolby dpid1!!! (if audio plugins are attached)
-           esyslog("ERROR: failed to set PIDs for channel %d", Channel->number);
-           return false;
-           }
-        if (IsPrimaryDevice())
-           AddPid(Channel->tpid, ptTeletext);
-        CHECK(ioctl(fd_audio, AUDIO_SET_AV_SYNC, true));
-        CHECK(ioctl(fd_audio, AUDIO_SET_MUTE, false));
-        CHECK(ioctl(fd_video, VIDEO_SET_BLANK, false));
+  if (TurnOnLivePIDs) {
+     if (!(AddPid(Channel->apid1, ptAudio) && AddPid(Channel->vpid, ptVideo))) {//XXX+ dolby dpid1!!! (if audio plugins are attached)
+        esyslog("ERROR: failed to set PIDs for channel %d on device %d", Channel->number, CardIndex() + 1);
+        return false;
         }
-     else
-        cControl::Launch(new cTransferControl(this, Channel->vpid, Channel->apid1, 0, 0, 0));
+     if (IsPrimaryDevice())
+        AddPid(Channel->tpid, ptTeletext);
+     CHECK(ioctl(fd_audio, AUDIO_SET_AV_SYNC, true));
+     CHECK(ioctl(fd_audio, AUDIO_SET_MUTE, false));
+     CHECK(ioctl(fd_video, VIDEO_SET_BLANK, false));
      }
+  else if (StartTransferMode)
+     cControl::Launch(new cTransferControl(this, Channel->vpid, Channel->apid1, 0, 0, 0));
 
   // Start setting system time:
 

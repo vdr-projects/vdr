@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.70 2002/08/16 13:43:40 kls Exp $
+ * $Id: tools.c 1.71 2002/09/09 21:35:49 kls Exp $
  */
 
 #include "tools.h"
@@ -739,8 +739,6 @@ void cLockFile::Unlock(void)
      remove(fileName);
      f = -1;
      }
-  else
-     esyslog("ERROR: attempt to unlock %s without holding a lock!", fileName);
 }
 
 // --- cListObject -----------------------------------------------------------

@@ -1459,3 +1459,22 @@ Video Disk Recorder Revision History
 - Fixed a crash when entering an integer value outside the limits (thanks to
   Stefan Huelswitt for reporting this one).
 - Added play mode pmAudioOnlyBlack (thanks to Stefan Huelswitt).
+
+2002-09-15: Version 1.1.10
+
+- Removed a superfluous error message from cLockFile::Unlock() (reported by
+  Helmut Auer).
+- Fixed starting a recording of the current channel with only one DVB card
+  (thanks to Stefan Huelswitt for his help).
+- A previous 'Transfer Mode' is now automatically re-started after a replay
+  stops.
+- Only calling cStatus::MsgChannelSwitch() if a channel is actually going to
+  be switched or has actually been switched successfully (thanks to Stefan
+  Huelswitt).
+- The EPG now drops events from "other" streams that have a duration of 86400
+  seconds or more (this avoids bogus entries like "PROGRAMMES ALLEMANDS").
+- Fixed opening /dev/video in cDvbDevice::GrabImage() in case of NEWSTRUCT
+  driver (thanks to Andreas Schultz).
+- Added a missing StripAudioPackets() to cDvbPlayer::Action() (thanks to
+  Stefan Huelswitt).
+- Added an EPG bugfix for the latest VOX EPG data format.

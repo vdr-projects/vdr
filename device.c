@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.19 2002/09/08 14:03:43 kls Exp $
+ * $Id: device.c 1.21 2002/09/15 11:50:19 kls Exp $
  */
 
 #include "device.h"
@@ -46,6 +46,8 @@ cDevice::cDevice(void)
   volume = Setup.CurrentVolume;
 
   player = NULL;
+
+  playerDetached = false;
 
   for (int i = 0; i < MAXRECEIVERS; i++)
       receiver[i] = NULL;
@@ -106,6 +108,13 @@ bool cDevice::SetPrimaryDevice(int n)
 bool cDevice::HasDecoder(void) const
 {
   return false;
+}
+
+bool cDevice::PlayerDetached(void)
+{
+  bool result = playerDetached;
+  playerDetached = false;
+  return result;
 }
 
 cOsdBase *cDevice::NewOsd(int x, int y)
@@ -317,8 +326,6 @@ bool cDevice::SwitchChannel(int Direction)
 
 eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
 {
-  cStatus::MsgChannelSwitch(this, 0);
-
   if (LiveView)
      StopReplay();
 
@@ -335,6 +342,7 @@ eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
   if (NeedsTransferMode) {
      cDevice *CaDevice = GetDevice(Channel, 0);
      if (CaDevice) {
+        cStatus::MsgChannelSwitch(this, 0); // only report status if we are actually going to switch the channel
         if (CaDevice->SetChannel(Channel, false) == scrOk) // calling SetChannel() directly, not SwitchChannel()!
            cControl::Launch(new cTransferControl(CaDevice, Channel->vpid, Channel->apid1, 0, 0, 0));//XXX+
         else
@@ -343,15 +351,19 @@ eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
      else
         Result = scrNotAvailable;
      }
-  else if (!SetChannelDevice(Channel, LiveView))
-     Result = scrFailed;
-
-  if (Result == scrOk && LiveView && IsPrimaryDevice()) {
-     cSIProcessor::SetCurrentServiceID(Channel->pnr);
-     currentChannel = Channel->number;
+  else {
+     cStatus::MsgChannelSwitch(this, 0); // only report status if we are actually going to switch the channel
+     if (!SetChannelDevice(Channel, LiveView))
+        Result = scrFailed;
      }
 
-  cStatus::MsgChannelSwitch(this, Channel->number);
+  if (Result == scrOk) {
+     if (LiveView && IsPrimaryDevice()) {
+        cSIProcessor::SetCurrentServiceID(Channel->pnr);
+        currentChannel = Channel->number;
+        }
+     cStatus::MsgChannelSwitch(this, Channel->number); // only report status if channel switch successfull
+     }
 
   return Result;
 }
@@ -438,6 +450,7 @@ void cDevice::Detach(cPlayer *Player)
      player->device = NULL;
      player = NULL;
      SetPlayMode(pmNone);
+     playerDetached = true;
      }
 }
 
@@ -447,16 +460,6 @@ void cDevice::StopReplay(void)
      Detach(player);
      if (IsPrimaryDevice())
         cControl::Shutdown();
-     /*XXX+
-     if (IsPrimaryDevice()) {
-        // let's explicitly switch the channel back in case it was in Transfer Mode:
-        cChannel *Channel = Channels.GetByNumber(currentChannel);
-        if (Channel) {
-           Channel->Switch(this, false);
-           usleep(100000); // allow driver to sync in case a new replay will start immediately
-           }
-        }
-        XXX*/
      }
 }
 

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 1.16 2002/09/08 14:56:21 kls Exp $
+ * $Id: device.h 1.18 2002/09/14 15:24:47 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -177,7 +177,7 @@ private:
   bool active;
   virtual void Action(void);
 protected:
-  enum ePidType { ptVideo, ptAudio, ptTeletext, ptDolby, ptOther };
+  enum ePidType { ptAudio, ptVideo, ptTeletext, ptDolby, ptOther };
   class cPidHandle {
   public:
     int pid;
@@ -236,6 +236,7 @@ public:
 
 private:
   cPlayer *player;
+  bool playerDetached;
 protected:
   virtual bool SetPlayMode(ePlayMode PlayMode);
        // Sets the device into the given play mode.
@@ -276,6 +277,8 @@ public:
        // Attaches the given player to this device.
   void Detach(cPlayer *Player);
        // Detaches the given player from this device.
+  bool PlayerDetached(void);
+       // Returns true if a player has been detached and resets the 'playerDetached' flag.
 
 // Receiver facilities
 

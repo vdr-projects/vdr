@@ -147,6 +147,10 @@ Stefan Huelswitt <huels@iname.com>
  for improving cCondVar::Wait() and implementing cCondVar::TimedWait()
  for reporting a bug when entering an integer value outside the limit
  for adding play mode pmAudioOnlyBlack
+ for helping to fix starting a recording of the current channel with only one DVB card
+ for making cStatus::MsgChannelSwitch() only be called if a channel is actually going to
+ be switched or has actually been switched successfully
+ for adding a missing StripAudioPackets() to cDvbPlayer::Action()
 
 Ulrich Röder <roeder@efr-net.de>
  for pointing out that there are channels that have a symbol rate higher than
@@ -169,6 +173,7 @@ Andreas Schultz <aschultz@warp10.net>
  for adding cDevice::NewOsd() to allow a derived cDevice class to implement its own
  OSD capabilities
  for implementing an SPU decoder
+ for fixing opening /dev/video in cDvbDevice::GrabImage() in case of NEWSTRUCT driver
 
 Aaron Holtzman
  for writing 'ac3dec'
@@ -391,3 +396,6 @@ Holger Wächtler <holger@convergence.de>
 
 Jürgen Zimmermann <jnzimmer@informatik.uni-kl.de>
  for adding some missing #includes to files in libdtv for gcc 3.2
+
+Helmut Auer <vdr@helmutauer.de>
+ for reporting a superfluous error message in cLockFile.
