@@ -1170,3 +1170,8 @@ Video Disk Recorder Revision History
   the F-keys on top.
 - Fixed a bug in the EPG bugfix mechanism if the extended description is shorter
   than 3 characters (thanks to Andreas Schultz).
+
+2002-04-02: Version 1.0.0pre6
+
+- Fixed a problem with wrong EPG data in the Schedules menu (thanks to Tobias
+  Kerner).
