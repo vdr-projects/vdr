@@ -112,7 +112,7 @@ for programming some sort of hardware device that makes sure the computer
 will be restarted in time before the next timer event. Your program must
 also initiate the actual shutdown procedure of the computer. After this
 your program should return to VDR. VDR will not automatically exit after
-calling the shutdown program, but will rather continue normally untit it
+calling the shutdown program, but will rather continue normally until it
 receives a SIGTERM when the computer is actually shut down. So in case
 the shutdown fails, or the shutdown program for some reason decides not to
 perform a shutdown, VDR will stay up and running.
