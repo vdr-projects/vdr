@@ -914,3 +914,5 @@ Video Disk Recorder Revision History
 - Fixed setting the LastActivity timestamp after a shutdown prompt (thanks to
   Sergei Haller).
 - A message is now prompted if free disk space becomes low during recording.
+- The editing process now calls AssertFreeDiskSpace() to remove deleted
+  recordings if the disk becomes full.

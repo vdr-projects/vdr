@@ -7,7 +7,7 @@
  * DVD support initially written by Andreas Schultz <aschultz@warp10.net>
  * based on dvdplayer-0.5 by Matjaz Thaler <matjaz.thaler@guest.arnes.si>
  *
- * $Id: dvbapi.c 1.144 2002/01/26 13:42:15 kls Exp $
+ * $Id: dvbapi.c 1.145 2002/01/26 15:28:41 kls Exp $
  */
 
 //#define DVDDEBUG        1
@@ -2370,6 +2370,10 @@ void cCuttingBuffer::Action(void)
            uchar FileNumber;
            int FileOffset, Length;
            uchar PictureType;
+
+           // Make sure there is enough disk space:
+
+           AssertFreeDiskSpace();
 
            // Read one frame:
 
