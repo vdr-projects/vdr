@@ -716,6 +716,8 @@ Sascha Volkenandt <sascha@akv-soft.de>
  for reporting a bug in cBitmap::DrawPixel(), which messed with other bitmaps'
  palettes in case the pixel coordinates were outside this bitmap
  for suggesting to allow drawing "transparent" texts
+ for suggesting to ignore unused "none" color entries in XPM files written by
+ some broken graphics tools
 
 Malcolm Caldwell <malcolm.caldwell@ntu.edu.au>
  for modifying LOF handling to allow for C-band reception

@@ -2879,3 +2879,5 @@ Video Disk Recorder Revision History
 - The cBitmap::DrawText() function now doesn't set any background pixels if the
   given background color is clrTransparent. This allows drawing "transparent"
   texts (suggested by Sascha Volkenandt).
+- The cBitmap::SetXpm() function now ignores unused "none" color entries, which
+  some broken graphics tools write into XPM files (suggested by Sascha Volkenandt).

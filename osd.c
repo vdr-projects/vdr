@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 1.50 2004/06/05 11:37:42 kls Exp $
+ * $Id: osd.c 1.51 2004/06/05 13:20:19 kls Exp $
  */
 
 #include "osd.h"
@@ -244,7 +244,7 @@ bool cBitmap::LoadXpm(const char *FileName)
   return Result;
 }
 
-bool cBitmap::SetXpm(char *Xpm[])
+bool cBitmap::SetXpm(char *Xpm[], bool IgnoreNone)
 {
   char **p = Xpm;
   int w, h, n, c;
@@ -257,10 +257,11 @@ bool cBitmap::SetXpm(char *Xpm[])
      return false;
      }
   int b = 0;
-  while (1 << (1 << b) < n)
+  while (1 << (1 << b) < (IgnoreNone ? n - 1 : n))
         b++;
   SetBpp(1 << b);
   SetSize(w, h);
+  int NoneColorIndex = MAXNUMCOLORS;
   for (int i = 0; i < n; i++) {
       const char *s = *++p;
       if (int(strlen(s)) < c) {
@@ -273,14 +274,18 @@ bool cBitmap::SetXpm(char *Xpm[])
          return false;
          }
       s = skipspace(s + 1);
-      if (strcasecmp(s, "none") == 0)
+      if (strcasecmp(s, "none") == 0) {
          s = "#00000000";
+         NoneColorIndex = i;
+         if (IgnoreNone)
+            continue;
+         }
       if (*s != '#') {
          esyslog("ERROR: unknown color code in XPM: '%c'", *s);
          return false;
          }
       tColor color = strtoul(++s, NULL, 16) | 0xFF000000;
-      SetColor(i, color);
+      SetColor((IgnoreNone && i > NoneColorIndex) ? i - 1 : i, color);
       }
   for (int y = 0; y < h; y++) {
       const char *s = *++p;
@@ -295,13 +300,17 @@ bool cBitmap::SetXpm(char *Xpm[])
                  return false;
                  }
               if (strncmp(Xpm[i + 1], s, c) == 0) {
-                 SetIndex(x, y, i);
+                 if (i == NoneColorIndex)
+                    NoneColorIndex = MAXNUMCOLORS;
+                 SetIndex(x, y, (IgnoreNone && i > NoneColorIndex) ? i - 1 : i);
                  break;
                  }
               }
           s += c;
           }
       }
+  if (NoneColorIndex < MAXNUMCOLORS && !IgnoreNone)
+     return SetXpm(Xpm, true);
   return true;
 }
 
