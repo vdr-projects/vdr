@@ -2743,3 +2743,5 @@ Video Disk Recorder Revision History
   cSchedule::Events() that returns the list of events directly.
 - Avoiding occasional bad responsiveness to user interaction caused by assigning
   events to timers.
+- Now explicitly turning on the LNB power at startup, because newer drivers don't
+  do this any more (thanks to Oliver Endriss for pointing this out).

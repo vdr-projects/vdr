@@ -514,6 +514,8 @@ Oliver Endriss <o.endriss@gmx.de>
  for suggesting to add 'repeat' function keys '7' and '9'
  for fixing handling rc key learning in case cRemote::Initialize() returns 'false'
  for suggesting to change the default "Lifetime" to 99
+ for pointing out that the LNB power needs to be explicitly turned on at startup,
+ because newer drivers don't do this any more
 
 Reinhard Walter Buchner <rw.buchner@freenet.de>
  for adding some satellites to 'sources.conf'
