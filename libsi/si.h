@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: si.h 1.2 2003/12/13 10:42:17 kls Exp $
+ *   $Id: si.h 1.3 2003/12/25 13:30:56 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -252,6 +252,7 @@ public:
    private:
       template <class T> friend class StructureLoop;
       friend class DescriptorLoop;
+      template <class T> friend class TypeLoop;
       int i;
    };
 protected:
@@ -326,7 +327,7 @@ public:
          case 4:
             return data.FourBytes(index);
          case 8:
-            return (data.FourBytes(index) << 32) | data.FourBytes(index+4);
+            return (SixtyFourBit(data.FourBytes(index)) << 32) | data.FourBytes(index+4);
          }
       }
    T getNext(Iterator &it) const
@@ -335,7 +336,7 @@ public:
          it.i+=sizeof(T);
          return ret;
       }
-   bool hasNext() const { return getLength() > it.i; }
+   bool hasNext(Iterator &it) { return getLength() > it.i; }
 };
 
 class MHP_DescriptorLoop : public DescriptorLoop {
