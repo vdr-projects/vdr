@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.74 2001/06/15 14:11:21 kls Exp $
+ * $Id: dvbapi.c 1.75 2001/06/16 09:43:03 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -797,13 +797,16 @@ void cReplayBuffer::StripAudioPackets(uchar *b, int Length, uchar Except)
          uchar c = b[i + 3];
          switch (c) {
            case 0xC0 ... 0xDF: // audio
-                if (c == 0xC1)
-                   canToggleAudioTrack = true;
-                if (!Except || c != Except) {
-                   int n = b[i + 4] * 256 + b[i + 5];
-                   for (int j = i; j < Length && n--; j++)
-                       b[j] = 0x00;
-                   }
+                {
+                  int n = b[i + 4] * 256 + b[i + 5];
+                  if (c == 0xC1)
+                     canToggleAudioTrack = true;
+                  if (!Except || c != Except) {
+                     for (int j = i; j < Length && n--; j++)
+                         b[j] = 0x00;
+                     }
+                  i += n;
+                }
                 break;
            case 0xE0 ... 0xEF: // video
                 i += b[i + 4] * 256 + b[i + 5];
