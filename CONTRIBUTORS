@@ -774,3 +774,6 @@ Manfred Schmidt-Voigt <manfred.schmidt-voigt@mannitec.de>
 Javier Marcet <lists@marcet.info>
  for reporting a problem when starting a recording on the primary device if there
  is a replay session active
+
+Peter Waechtler <pwaechtler@mac.com>
+ for adding channels for DVB-T Hannover (Germany) to channels.cont.terr

@@ -2315,7 +2315,7 @@ Video Disk Recorder Revision History
 - Removing deleted recordings faster than normal when cutting, to avoid running
   out of disk space (thanks to Manfred Schmidt-Voigt for reporting this one).
 
-2003-08-26: Version 1.2.4
+2003-08-26: Version 1.2.4 (not officially released)
 
 - Fixed 'runvdr' to stay in the loop only if VDR returns an exit status of '1'.
 - Completed the Finnish OSD texts (thanks to Rolf Ahrenberg).
@@ -2329,5 +2329,10 @@ Video Disk Recorder Revision History
   active (thanks to Javier Marcet for reporting this one).
 - Avoiding an unnecessary stop of an ongoing Transfer Mode when starting a
   recording on the primary device.
+
+2003-08-30: Version 1.2.5pre1
+
 - Added a missing 'w' to the allowed characters for Finnish and Swedish (thanks
   to Lauri Tischler and Ragnar Sundblad).
+- Added channels for DVB-T Hannover (Germany) to channels.cont.terr (thanks to
+  Peter Waechtler).
