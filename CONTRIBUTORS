@@ -364,6 +364,7 @@ Simon Dean <linux-dvb@sickhack.com>
 
 Dimitrios Dimitrakos <mail@dimitrios.de>
  for translating OSD texts to the Greek language
+ for fixing handling the LOG_LOCALn parameters in the -l option
 
 Marcus Kuba <marcus@kuba4u.de>
  for reporting a bug in the unit of the "SVDRP timeout" setup parameter

@@ -1935,3 +1935,5 @@ Video Disk Recorder Revision History
 - Added/improved Swedish language texts (thanks to Jan Ekholm).
 - Fixed the description of the "Scroll pages" OSD setup parameter ('yes' and 'no'
   were mixed up).
+- Fixed handling the LOG_LOCALn parameters in the -l option (thanks to Dimitrios
+  Dimitrakos).
