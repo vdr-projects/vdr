@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.44 2001/09/30 11:31:43 kls Exp $
+ * $Id: i18n.c 1.45 2001/10/28 16:04:58 kls Exp $
  *
  * Slovenian translations provided by Miha Setina <mihasetina@softhome.net>
  * Italian   translations provided by Alberto Carraro <bertocar@tin.it>
@@ -375,6 +375,15 @@ const tPhrase Phrases[] = {
     "Parar Gravacão?",
     "Arrêter l'enregistrement?",
     "Stoppe opptak?",
+  },
+  { "on primary interface",
+    "auf dem primären Interface",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
   },
   { "Cancel editing?",
     "Schneiden abbrechen?",

@@ -831,7 +831,7 @@ Video Disk Recorder Revision History
 - Fixed handling trick modes near the beginning and end of a recording.
 - Pressing the "Back" button while replaying a DVD now leads to the DVD menu.
 
-2001-10-27: Version 0.98
+2001-10-28: Version 0.98
 
 - Completed storing the current audio volume in the setup.conf file (thanks
   to Andy Grobb).
@@ -847,3 +847,6 @@ Video Disk Recorder Revision History
 - Fixed handling the repeat function in the channel display.
 - Avoiding multiple EPG entries for the same event (thanks to Rolf Hakenes
   for some valuable information on how to do this).
+- A recording on the primary interface can now be stopped to make it continue
+  on an other free DVB card (if one is free at the moment). See MANUAL for
+  details.

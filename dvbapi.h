@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.h 1.55 2001/10/27 12:44:45 kls Exp $
+ * $Id: dvbapi.h 1.56 2001/10/28 15:47:10 kls Exp $
  */
 
 #ifndef __DVBAPI_H
@@ -234,8 +234,6 @@ private:
   cPlayBuffer *replayBuffer;
   int ca;
   int priority;
-  int  Ca(void) { return ca; }
-       // Returns the ca of the current recording session (0..MAXDVBAPI).
   int  Priority(void) { return priority; }
        // Returns the priority of the current recording session (0..MAXPRIORITY),
        // or -1 if no recording is currently active.
@@ -244,6 +242,8 @@ private:
   void SetModeReplay(void);
   void SetModeNormal(bool FromRecording);
 public:
+  int  Ca(void) { return ca; }
+       // Returns the ca of the current recording session (0..MAXDVBAPI).
   int  SecondsToFrames(int Seconds);
        // Returns the number of frames corresponding to the given number of seconds.
   bool Recording(void);

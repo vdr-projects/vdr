@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.136 2001/10/28 12:00:16 kls Exp $
+ * $Id: menu.c 1.137 2001/10/28 16:03:49 kls Exp $
  */
 
 #include "menu.h"
@@ -1808,11 +1808,15 @@ eOSState cMenuCommands::ProcessKey(eKeys Key)
 // --- cMenuMain -------------------------------------------------------------
 
 #define STOP_RECORDING tr(" Stop recording ")
+#define ON_PRIMARY_INTERFACE tr("on primary interface")
 
 cMenuMain::cMenuMain(bool Replaying, eOSState State)
 :cOsdMenu(tr("Main"))
 {
   digit = 0;
+
+  // Basic menu items:
+
   Add(new cOsdItem(hk(tr("Schedule")),   osSchedule));
   Add(new cOsdItem(hk(tr("Channels")),   osChannels));
   Add(new cOsdItem(hk(tr("Timers")),     osTimers));
@@ -1824,8 +1828,20 @@ cMenuMain::cMenuMain(bool Replaying, eOSState State)
   Add(new cOsdItem(hk(tr("Setup")),      osSetup));
   if (Commands.Count())
      Add(new cOsdItem(hk(tr("Commands")),  osCommands));
+
+  // Replay control:
+
   if (Replaying)
      Add(new cOsdItem(tr(" Stop replaying"), osStopReplay));
+
+  // Record control:
+
+  if (cRecordControls::StopPrimary()) {
+     char *buffer = NULL;
+     asprintf(&buffer, "%s%s", STOP_RECORDING, ON_PRIMARY_INTERFACE);
+     Add(new cOsdItem(buffer, osStopRecord));
+     }
+
   const char *s = NULL;
   while ((s = cRecordControls::GetInstantId(s)) != NULL) {
         char *buffer = NULL;
@@ -1833,8 +1849,14 @@ cMenuMain::cMenuMain(bool Replaying, eOSState State)
         Add(new cOsdItem(buffer, osStopRecord));
         delete buffer;
         }
+
+  // Editing control:
+
   if (cVideoCutter::Active())
      Add(new cOsdItem(tr(" Cancel editing"), osCancelEdit));
+
+  // Color buttons:
+
   const char *DVDbutton =
 #ifdef DVDSUPPORT
                           cDVD::DiscOk() ? tr("Eject") : NULL;
@@ -1845,6 +1867,9 @@ cMenuMain::cMenuMain(bool Replaying, eOSState State)
   Display();
   lastActivity = time(NULL);
   SetHasHotkeys();
+
+  // Initial submenus:
+
   switch (State) {
     case osRecordings: AddSubMenu(new cMenuRecordings); break;
 #ifdef DVDSUPPORT
@@ -1882,7 +1907,11 @@ eOSState cMenuMain::ProcessKey(eKeys Key)
     case osStopRecord: if (Interface->Confirm(tr("Stop recording?"))) {
                           cOsdItem *item = Get(Current());
                           if (item) {
-                             cRecordControls::Stop(item->Text() + strlen(STOP_RECORDING));
+                             const char *s = item->Text() + strlen(STOP_RECORDING);
+                             if (strcmp(s, ON_PRIMARY_INTERFACE) == 0)
+                                cRecordControls::StopPrimary(true);
+                             else
+                                cRecordControls::Stop(item->Text() + strlen(STOP_RECORDING));
                              return osEnd;
                              }
                           }
@@ -2264,6 +2293,19 @@ void cRecordControls::Stop(cDvbApi *DvbApi)
       }
 }
 
+bool cRecordControls::StopPrimary(bool DoIt)
+{
+  if (cDvbApi::PrimaryDvbApi->Recording()) {
+     cDvbApi *dvbApi = cDvbApi::GetDvbApi(cDvbApi::PrimaryDvbApi->Ca(), 0);
+     if (dvbApi) {
+        if (DoIt)
+           Stop(cDvbApi::PrimaryDvbApi);
+        return true;
+        }
+     }
+  return false;
+}
+
 const char *cRecordControls::GetInstantId(const char *LastInstantId)
 {
   for (int i = 0; i < MAXDVBAPI; i++) {
@@ -2358,7 +2400,8 @@ cReplayControl::cReplayControl(void)
   timeSearchActive = false;
   if (fileName) {
      marks.Load(fileName);
-     dvbApi->StartReplay(fileName);
+     if (!dvbApi->StartReplay(fileName))
+        Interface->Error(tr("Channel locked (recording)!"));
      }
 #ifdef DVDSUPPORT
   else if (dvd)
