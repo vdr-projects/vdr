@@ -3374,7 +3374,7 @@ Video Disk Recorder Revision History
   out).
 - Added MPEG1 replay capability to cPesAssembler (thanks to Stefan Huelswitt).
 
-2005-02-08: Version 1.3.21
+2005-02-12: Version 1.3.21
 
 - Fixed cDvbDevice::SetAudioTrackDevice() to avoid a blank screen after switching
   back to live mode if a recording is currently active on the primary device.
@@ -3384,3 +3384,5 @@ Video Disk Recorder Revision History
 - Restricted the "setting audio track" log message to automatic changes during replay.
 - Fixed handling Transfer Mode for radio channels (thanks to Andreas Regel for
   reporting this one).
+- Fixed handling symbolic links in cRecordings::ScanVideoDir() (thanks to Stefan
+  Huelswitt).

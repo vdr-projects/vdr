@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.66 2005/02/05 10:00:22 kls Exp $
+ * $Id: tools.h 1.67 2005/02/12 10:17:14 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -95,7 +95,7 @@ bool DirectoryOk(const char *DirName, bool LogErrors = false);
 bool MakeDirs(const char *FileName, bool IsDirectory = false);
 bool RemoveFileOrDir(const char *FileName, bool FollowSymlinks = false);
 bool RemoveEmptyDirectories(const char *DirName, bool RemoveThis = false);
-char *ReadLink(const char *FileName);
+char *ReadLink(const char *FileName); ///< returns a new strings allocated on the heap, which the caller must delete (or NULL in case of an error)
 bool SpinUpDisk(const char *FileName);
 time_t LastModifiedTime(const char *FileName);
 cString WeekDayName(int WeekDay);

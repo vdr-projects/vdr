@@ -192,6 +192,7 @@ Stefan Huelswitt <huels@iname.com>
  for fixing a possible race condition in cDevice::Action() and cTSBuffer::Action()
  for reporting several memory leaks that were introduced through the use of cString
  for adding MPEG1 replay capability to cPesAssembler
+ for fixing handling symbolic links in cRecordings::ScanVideoDir()
 
 Ulrich Röder <roeder@efr-net.de>
  for pointing out that there are channels that have a symbol rate higher than 27500
