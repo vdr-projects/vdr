@@ -486,3 +486,6 @@ Guy Roussin <guy.roussin@teledetection.fr>
 
 Georg Hitsch <georg@hitsch.at>
  for his help in keeping 'channels.conf' up to date
+
+Clemens Kirchgatterer <clemens@thf.ath.cx>
+ for suggesting to change source directory name for plugins from 'SRC' to 'src'
