@@ -322,8 +322,8 @@ Ruben Nunez Francisco <ruben.nunez@tang-it.com>
  for translating OSD texts to the Spanish language
 
 Mirko Dölle <mdoelle@linux-user.de>
-  for reporting a bug when a timer records over midnight of a day that had a
-  change in Daylight Saving Time
+ for reporting a bug when a timer records over midnight of a day that had a
+ change in Daylight Saving Time
 
 Michael Rakowski <mrak@gmx.de>
  for translating OSD texts to the Polish language
@@ -441,6 +441,7 @@ Oliver Endriss <o.endriss@gmx.de>
 
 Reinhard Walter Buchner <rw.buchner@freenet.de>
  for adding some satellites to 'sources.conf'
+ for his help in testing tuning with "Motor-DiSEqC"
 
 Lauri Tischler <lauri.tischler@efore.fi>
  for helping to test and debug the new channel source and DiSEqC handling
@@ -458,6 +459,8 @@ Gerhard Steiner <steiner@mail.austria.com>
  the 'epg.data' file
  for suggesting the new configuration file 'reccmds.conf' to define commands that
  shall be executed from the "Recordings" menu
+ for suggesting to interpret the character '|' in the description texts of EPG
+ records as a newline character
 
 Jaakko Hyvätti <jaakko@hyvatti.iki.fi>
  for translating OSD texts to the Finnish language
@@ -476,14 +479,14 @@ Stefan Schluenss <dxr3_osd@schluenss.de>
  for reporting a bug where PID handles were not closed correctly
 
 Régis Bossut <rbossut@auchan.com>
-  for pointing out that with some providers the channels can only be distinguished
-  through the RID
+ for pointing out that with some providers the channels can only be distinguished
+ through the RID
 
 Andreas Kool <akool@akool.de>
-  for pointing out problems with non-unique definitions in 'channels.conf.cable'
+ for his help in keeping 'channels.conf.cable' up to date
 
 Guy Roussin <guy.roussin@teledetection.fr>
-  for suggesting not to display channel group delimiters without text
+ for suggesting not to display channel group delimiters without text
 
 Georg Hitsch <georg@hitsch.at>
  for his help in keeping 'channels.conf' up to date
@@ -498,3 +501,6 @@ Emil Naepflein <Emil.Naepflein@philosys.de>
 Gerald Berwolf <genka@genka.de>
  for suggesting to deactivate some templates in tools.h in case some plugin needs to
  use the STL
+
+Thomas Sailer <sailer@scs.ch>
+ for pointing out how to set the terminal parameters to read from the keyboard

@@ -19,6 +19,9 @@ illegal, like decrypting the Sky programme without a subscription. You
 will need a Sky Digibox and a valid subscription in order to use this
 plugin.
 
+The 'kfir' module must be loaded with the option 'streamtype=4' to make it
+produce a Transport Stream.
+
 The Digibox is remotely controlled through VDR via LIRC (see lirc.org).
 The file lircd.conf.sky contains the remote control codes necessary to
 control the Digibox.
@@ -43,3 +46,5 @@ uses to generate the EPG pages are stored as the 'sid' parameter in
 the channels.conf definitions of the Sky channels. You can keep your
 EPG data up-to-date by entering a call to getskyepg.pl into your
 /etc/crontab. Call 'getskyepg.pl -h' for a list of options.
+The getskyepg.pl script requires the programs /usr/bin/wget and /usr/bin/logger
+to be installed on your system.

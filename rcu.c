@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: rcu.c 1.2 2002/10/06 15:49:03 kls Exp $
+ * $Id: rcu.c 1.3 2002/12/07 12:22:40 kls Exp $
  */
 
 #include "rcu.h"
@@ -22,6 +22,7 @@ cRcuRemote::cRcuRemote(char *DeviceName)
   dp = 0;
   mode = modeB;
   code = 0;
+  numberToSend = -1;
   lastNumber = 0;
   receivedCommand = false;
   if ((f = open(DeviceName, O_RDWR | O_NONBLOCK)) >= 0) {
@@ -136,8 +137,13 @@ void cRcuRemote::Action(void)
          repeat = false;
          LastCommand = 0;
          }
-      else
+      else {
          LastCommand = 0;
+         if (numberToSend >= 0) {
+            Number(numberToSend);
+            numberToSend = -1;
+            }
+         }
       if (code && time(NULL) - LastCodeRefresh > 60) {
          SendCommand(code); // in case the PIC listens to the wrong code
          LastCodeRefresh = time(NULL);
@@ -302,8 +308,10 @@ bool cRcuRemote::DetectCode(unsigned char *Code)
 
 void cRcuRemote::ChannelSwitch(const cDevice *Device, int ChannelNumber)
 {
-  if (ChannelNumber && Device->IsPrimaryDevice())
-     Number(ChannelNumber);
+  if (ChannelNumber && Device->IsPrimaryDevice()) {
+     LOCK_THREAD;
+     numberToSend = ChannelNumber;
+     }
 }
 
 void cRcuRemote::Recording(const cDevice *Device, const char *Name)

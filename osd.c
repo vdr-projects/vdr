@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 1.38 2002/11/16 14:20:26 kls Exp $
+ * $Id: osd.c 1.39 2002/12/08 13:17:13 kls Exp $
  */
 
 #include "osd.h"
@@ -26,15 +26,8 @@
 
 void cOsd::Initialize(void)
 {
-#if defined(DEBUG_OSD) || defined(REMOTE_KBD)
-  initscr();
-  keypad(stdscr, true);
-  nonl();
-  cbreak();
-  noecho();
-  timeout(10);
-#endif
 #if defined(DEBUG_OSD)
+  initscr();
   start_color();
   leaveok(stdscr, true);
 #endif
@@ -43,7 +36,7 @@ void cOsd::Initialize(void)
 void cOsd::Shutdown(void)
 {
   Close();
-#if defined(DEBUG_OSD) || defined(REMOTE_KBD)
+#if defined(DEBUG_OSD)
   endwin();
 #endif
 }
@@ -150,6 +143,7 @@ void cOsd::Clear(void)
 #ifdef DEBUG_OSD
   SetColor(clrBackground, clrBackground);
   Fill(0, 0, cols, rows, clrBackground);
+  refresh();
 #else
   osd->Clear();
 #endif

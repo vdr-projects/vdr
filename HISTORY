@@ -1836,3 +1836,29 @@ Video Disk Recorder Revision History
   function of a given plugin (see man vdr(5) for details).
 - The new plugin 'sky' can be used to integrate a Sky Digibox into the VDR system,
   using a Kfir MPEG2 encoder card (see PLUGINS/src/sky/README for details).
+
+2002-12-08: Version 1.1.19
+
+- The character '|' in description texts of EPG records is now interpreted as a
+  newline character (suggested by Gerhard Steiner).
+- Updated 'channels.conf.cable' (thanks to Andreas Kool).
+- Improved handling of repeated remote keys.
+- The RCU now only sets the channel number display when there are no incoming remote
+  control keys, which improves reaction on repeated keys.
+- The actual tuning is now done in a separate thread, which makes zapping through the
+  channels a lot faster and no longer gets stuck on channels that don't broadcast.
+  This also makes "Motor-DiSEqC" work (thanks to Reinhard Walter Buchner for his help
+  in testing this). Since switching channels now no longer explicitly waits for a
+  channel lock in the foreground thread, the "panic level" mechanism is no longer
+  used (maybe we don't need it nay more, anyway).
+- The keyboard is now by default always active to control VDR. The 'make' option
+  REMOTE=KBD is therefore obsolete. When compiling VDR with REMOTE=RCU or REMOTE=LIRC,
+  the keyboard can thus now be active together with the remote control. If you want
+  to build VDR _without_ keyboard support you can set NO_KBD=1 in the 'make' call.
+  Since the keyboard codes are now different from the ones used previously (which
+  were mapped by the 'ncurses' library) you will need to go through the "Learning
+  keys" procedure again. To do so, either delete the file /video/remote.conf or
+  remove the KBD.* entries from it before starting this version of VDR.
+  (Thanks to Thomas Sailer for pointing out how to set the terminal parameters to
+  read from the keyboard).
+- The 'ncurses' library is now only necessary when compiling VDR with DEBUG_OSD=1.

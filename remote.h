@@ -4,13 +4,14 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remote.h 1.21 2002/12/01 10:39:10 kls Exp $
+ * $Id: remote.h 1.22 2002/12/08 13:37:02 kls Exp $
  */
 
 #ifndef __REMOTE_H
 #define __REMOTE_H
 
 #include <stdio.h>
+#include <termios.h>
 #include <time.h>
 #include "keys.h"
 #include "thread.h"
@@ -50,16 +51,14 @@ class cRemotes : public cList<cRemote> {};
 
 extern cRemotes Remotes;
 
-#if defined REMOTE_KBD
-
 class cKbdRemote : public cRemote, private cThread {
 private:
+  bool active;
+  struct termios savedTm;
   virtual void Action(void);
 public:
   cKbdRemote(void);
   virtual ~cKbdRemote();
   };
-
-#endif
 
 #endif //__REMOTE_H

@@ -26,17 +26,17 @@ installed.
 IMPORTANT: See "Configuration files" below for information on how
 =========  to set up the configuration files at the proper location!
 
-The 'vdr' program can be controlled via the PC keyboard or
-an infrared remote control unit. Define the REMOTE macro to one of the
-following values 'make' call to activate the respective control mode:
+By default the 'vdr' program can be controlled via the PC keyboard. If you have
+an infrared remote control unit you can define the REMOTE macro to one of the
+following values in the 'make' call to activate the respective control mode:
 
-  REMOTE=KBD    control via the PC keyboard (default)
   REMOTE=RCU    control via the "Remote Control Unit" receiver
                 (see http://www.cadsoft.de/vdr/remote.htm)
   REMOTE=LIRC   control via the "Linux Infrared Remote Control"
                 (see http://www.lirc.org)
-  REMOTE=NONE   no remote control (in case only SVDRP shall be used)
 
+If you want to disable control via the PC keyboard, you can add NO_KBD=1
+to the 'make' call.
 Adding "DEBUG_OSD=1" will use the PC screen (or current window)
 to display texts instead of the DVB card's on-screen display
 interface. These modes are useful when testing new menus if you

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.h 1.18 2002/11/03 12:31:15 kls Exp $
+ * $Id: dvbdevice.h 1.19 2002/12/07 14:44:29 kls Exp $
  */
 
 #ifndef __DVBDEVICE_H
@@ -22,6 +22,8 @@
 
 #define MAXDVBDEVICES  4
 
+class cDvbTuner;
+
 class cDvbDevice : public cDevice {
   friend class cDvbOsd;
 private:
@@ -33,7 +35,7 @@ public:
          // Must be called before accessing any DVB functions.
 private:
   fe_type_t frontendType;
-  int fd_osd, fd_frontend, fd_audio, fd_video, fd_dvr;
+  int fd_osd, fd_audio, fd_video, fd_dvr;
   int OsdDeviceHandle(void) const { return fd_osd; }
 protected:
   virtual void MakePrimaryDevice(bool On);
@@ -53,10 +55,7 @@ public:
 // Channel facilities
 
 private:
-  int source;
-  int frequency;
-  const char *diseqcCommands;
-  bool IsTunedTo(const cChannel *Channel) const;
+  cDvbTuner *dvbTuner;
 public:
   virtual bool ProvidesSource(int Source) const;
   virtual bool ProvidesChannel(const cChannel *Channel, int Priority = -1, bool *NeedsDetachReceivers = NULL) const;

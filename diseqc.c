@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: diseqc.c 1.1 2002/10/05 13:54:32 kls Exp $
+ * $Id: diseqc.c 1.2 2002/12/07 13:44:56 kls Exp $
  */
 
 #include "diseqc.h"
@@ -16,7 +16,6 @@
 cDiseqc::cDiseqc(void)
 {
   commands = NULL;
-  currentAction = NULL;;
   parsing = false;
   numCodes = 0;
 }
@@ -39,11 +38,11 @@ bool cDiseqc::Parse(const char *s)
         polarization = toupper(polarization);
         if (polarization == 'V' || polarization == 'H') {
            parsing = true;
-           bool Start = true;
-           while (Execute(Start) != daNone)
-                 Start = false;
+           char *CurrentAction = NULL;
+           while (Execute(&CurrentAction) != daNone)
+                 ;
            parsing = false;
-           result = !commands || currentAction && !*currentAction;
+           result = !commands || !*CurrentAction;
            }
         else
            esyslog("ERROR: unknown polarization '%c'", polarization);
@@ -101,12 +100,12 @@ char *cDiseqc::Codes(char *s)
   return NULL;
 }
 
-cDiseqc::eDiseqcActions cDiseqc::Execute(bool Start)
+cDiseqc::eDiseqcActions cDiseqc::Execute(char **CurrentAction)
 {
-  if (Start)
-     currentAction = commands;
-  while (currentAction && *currentAction) {
-        switch (*currentAction++) {
+  if (!*CurrentAction)
+     *CurrentAction = commands;
+  while (*CurrentAction && **CurrentAction) {
+        switch (*(*CurrentAction)++) {
           case ' ': break;
           case 't': return daToneOff;
           case 'T': return daToneOn;
@@ -114,8 +113,8 @@ cDiseqc::eDiseqcActions cDiseqc::Execute(bool Start)
           case 'V': return daVoltage18;
           case 'A': return daMiniA;
           case 'B': return daMiniB;
-          case 'W': currentAction = Wait(currentAction); break;
-          case '[': currentAction = Codes(currentAction); return currentAction ? daCodes : daNone;
+          case 'W': *CurrentAction = Wait(*CurrentAction); break;
+          case '[': *CurrentAction = Codes(*CurrentAction); return *CurrentAction ? daCodes : daNone;
           default: return daNone;
           }
         }

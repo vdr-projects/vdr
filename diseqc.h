@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: diseqc.h 1.1 2002/10/05 13:02:52 kls Exp $
+ * $Id: diseqc.h 1.2 2002/12/07 13:54:02 kls Exp $
  */
 
 #ifndef __DISEQC_H
@@ -31,7 +31,6 @@ private:
   char polarization;
   int lof;
   char *commands;
-  char *currentAction;
   bool parsing;
   uchar codes[MaxDiseqcCodes];
   int numCodes;
@@ -41,7 +40,14 @@ public:
   cDiseqc(void);
   ~cDiseqc();
   bool Parse(const char *s);
-  eDiseqcActions Execute(bool Start = false);
+  eDiseqcActions Execute(char **CurrentAction);
+      // Parses the DiSEqC commands and returns the appropriate action code
+      // with every call. CurrentAction must be the address of a character pointer,
+      // which is initialized to NULL. This pointer is used internally while parsing
+      // the commands and shall not be modified once Execute() has been called with
+      // it. Call Execute() repeatedly (always providing the same CurrentAction pointer)
+      // until it returns daNone. After a successful execution of all commands
+      // *CurrentAction points to the value 0x00.
   int Source(void) const { return source; }
   int Slof(void) const { return slof; }
   char Polarization(void) const { return polarization; }

@@ -1,4 +1,0 @@
-Are the parameter names well chosen?
-
-  "Coderate"  <-->  FEC
-

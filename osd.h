@@ -4,13 +4,13 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.h 1.37 2002/11/24 10:32:29 kls Exp $
+ * $Id: osd.h 1.38 2002/12/08 12:21:26 kls Exp $
  */
 
 #ifndef __OSD_H
 #define __OSD_H
 
-#if defined(DEBUG_OSD) || defined(REMOTE_KBD)
+#if defined(DEBUG_OSD)
 #include <ncurses.h>
 #endif
 #include "config.h"

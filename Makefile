@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 1.52 2002/11/29 15:23:02 kls Exp $
+# $Id: Makefile 1.53 2002/12/08 12:20:37 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -38,12 +38,8 @@ OBJS = audio.o channels.o config.o cutter.o device.o diseqc.o dvbdevice.o dvbosd
 OSDFONT = -adobe-helvetica-medium-r-normal--23-*-100-100-p-*-iso8859-1
 FIXFONT = -adobe-courier-bold-r-normal--25-*-100-100-m-*-iso8859-1
 
-ifndef REMOTE
-REMOTE = KBD
-endif
-
-ifeq ($(REMOTE), KBD)
-NCURSESLIB = -lncurses
+ifndef NO_KBD
+DEFINES += -DREMOTE_KBD
 endif
 
 DEFINES += -DREMOTE_$(REMOTE)
