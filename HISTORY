@@ -2195,3 +2195,5 @@ Video Disk Recorder Revision History
   different transponder. If this fails, a channel up/down switch is attempted as
   a fallback solution (thanks to Lauri Tischler for reporting this one, and to
   Hermann Gausterer for suggesting to switch to the recording channel).
+- Fixed cReplayControl::Show() to avoid a compiler warning in g++ 3.2.3 (thanks
+  to Jan Ekholm for reporting this one).

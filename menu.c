@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.245 2003/05/16 12:40:12 kls Exp $
+ * $Id: menu.c 1.246 2003/05/24 16:35:34 kls Exp $
  */
 
 #include "menu.h"
@@ -3240,7 +3240,7 @@ void cReplayControl::ClearLastReplayed(const char *FileName)
      }
 }
 
-void cReplayControl::Show(int Seconds)
+void cReplayControl::ShowTimed(int Seconds)
 {
   if (modeOnly)
      Hide();
@@ -3248,6 +3248,11 @@ void cReplayControl::Show(int Seconds)
      shown = ShowProgress(true);
      timeoutShow = (shown && Seconds > 0) ? time(NULL) + Seconds : 0;
      }
+}
+
+void cReplayControl::Show(void)
+{
+  ShowTimed();
 }
 
 void cReplayControl::Hide(void)
@@ -3447,7 +3452,7 @@ void cReplayControl::MarkToggle(void)
         marks.Del(m);
      else {
         marks.Add(Current);
-        Show(2);
+        ShowTimed(2);
         }
      marks.Save();
      }
