@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.121 2001/09/21 15:01:43 kls Exp $
+ * $Id: menu.c 1.122 2001/09/21 15:46:21 kls Exp $
  */
 
 #include "menu.h"
@@ -2388,8 +2388,7 @@ void cReplayControl::Show(int Seconds)
 {
   if (!visible) {
      shown = ShowProgress(true);
-     if (shown && Seconds > 0)
-        timeoutShow = time(NULL) + Seconds;
+     timeoutShow = (shown && Seconds > 0) ? time(NULL) + Seconds : 0;
      }
 }
 
@@ -2427,7 +2426,8 @@ void cReplayControl::ShowMode(void)
            visible = modeOnly = true;
            }
 
-        timeoutShow = (modeOnly && !timeoutShow && Speed == -1 && Play) ? time(NULL) + MODETIMEOUT : 0;
+        if (modeOnly && !timeoutShow && Speed == -1 && Play)
+           timeoutShow = time(NULL) + MODETIMEOUT;
         const char *Mode;
         if (Speed == -1) Mode = Play    ? "  >  " : " ||  ";
         else if (Play)   Mode = Forward ? " X>> " : " <<X ";
