@@ -6,7 +6,7 @@
  *
  * LIRC support added by Carsten Koch <Carsten.Koch@icem.de>  2000-06-16.
  *
- * $Id: lirc.c 1.4 2003/04/12 14:37:17 kls Exp $
+ * $Id: lirc.c 1.5 2003/04/25 13:45:15 kls Exp $
  */
 
 #include "lirc.h"
@@ -64,13 +64,14 @@ void cLircRemote::Action(void)
       bool ready = cFile::FileReady(f, timeout);
       int ret = ready ? safe_read(f, buf, sizeof(buf)) : -1;
 
-      if (ready) {
-         if (ret <= 21) {
-            esyslog("ERROR: lircd connection lost");
-            close(f);
-            f = -1;
-            break;
-            }
+      if (ready && ret <= 0 ) {
+         esyslog("ERROR: lircd connection lost");
+         close(f);
+         f = -1;
+         break;
+         }
+
+      if (ready && ret > 21) {
          int count;
          char KeyName[LIRC_KEY_BUF];
          sscanf(buf, "%*x %x %29s", &count, KeyName); // '29' in '%29s' is LIRC_KEY_BUF-1!
