@@ -1805,3 +1805,4 @@ Video Disk Recorder Revision History
 - The "unique channel ID" now contains an optional 5th part (the RID). See man vdr(5).
 - Updated 'channels.conf.cable' and made some channels unique using the new RID
   (thanks to Andreas Kool for pointing out the problems).
+- Made some channels unique in 'channels.conf.terr' using the new RID.
