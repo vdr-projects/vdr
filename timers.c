@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 1.22 2005/02/06 09:45:52 kls Exp $
+ * $Id: timers.c 1.23 2005/03/13 11:42:59 kls Exp $
  */
 
 #include "timers.h"
@@ -353,24 +353,26 @@ bool cTimer::Matches(time_t t, bool Directly) const
   return false;
 }
 
-int cTimer::Matches(const cEvent *Event)
+#define FULLMATCH 1000
+
+int cTimer::Matches(const cEvent *Event, int *Overlap)
 {
-  if (channel->GetChannelID() == Event->ChannelID()) {
+  if (HasFlags(tfActive) && channel->GetChannelID() == Event->ChannelID()) {
      bool UseVps = HasFlags(tfVps) && Event->Vps();
-     time_t t1 = UseVps ? Event->Vps() : Event->StartTime();
-     time_t t2 = t1 + Event->Duration();
-     bool m1 = Matches(t1, true);
-     bool m2 = UseVps ? m1 : Matches(t2, true);
+     Matches(UseVps ? Event->Vps() : Event->StartTime(), true);
+     int overlap;
+     if (UseVps)
+        overlap = (startTime == Event->Vps()) ? FULLMATCH + (Event->IsRunning() ? 200 : 100) : 0;
+     else if (startTime <= Event->StartTime() && Event->EndTime() <= stopTime)
+        overlap = FULLMATCH;
+     else if (stopTime <= Event->StartTime() || Event->EndTime() <= startTime)
+        overlap = 0;
+     else
+        overlap = (min(stopTime, Event->EndTime()) - max(startTime, Event->StartTime())) * FULLMATCH / max(Event->Duration(), 1);
      startTime = stopTime = 0;
-     if (m1 && m2) {
-        if (UseVps && Event->IsRunning(true))
-           return tmFull;
-        if (time(NULL) > Event->EndTime())
-           return tmNone;
-        return tmFull;
-        }
-     if ((m1 || m2) && time(NULL) <= Event->EndTime())
-        return tmPartial;
+     if (Overlap)
+        *Overlap = overlap;
+     return overlap >= 1000 ? tmFull : overlap > 0 ? tmPartial : tmNone;
      }
   return tmNone;
 }
@@ -536,6 +538,8 @@ bool cTimers::Modified(void)
   return Result;
 }
 
+#define EPGLIMIT (12 * 3600) // time in seconds around now, within which EPG events will be taken into consideration
+
 void cTimers::SetEvents(void)
 {
   if (time(NULL) - lastSetEvents < 5)
@@ -549,17 +553,35 @@ void cTimers::SetEvents(void)
             if (Schedule) {
                if (!lastSetEvents || Schedule->Modified() >= lastSetEvents) {
                   const cEvent *Event = NULL;
-                  int Match = tmNone;
+                  int Overlap = 0;
+                  int Distance = INT_MIN;
+                  time_t now = time(NULL);
                   for (const cEvent *e = Schedule->Events()->First(); e; e = Schedule->Events()->Next(e)) {
                       if (cRemote::HasKeys())
                          return; // react immediately on user input
-                      int m = ti->Matches(e);
-                      if (m > Match) {
-                         Match = m;
+                      if (e->EndTime() < now - EPGLIMIT)
+                         continue; // skip old events
+                      if (e->StartTime() > now + EPGLIMIT)
+                         break; // no need to process events too far in the future
+                      int overlap = 0;
+                      ti->Matches(e, &overlap);
+                      if (overlap && overlap >= Overlap) {
+                         int distance = 0;
+                         if (now < e->StartTime())
+                            distance = e->StartTime() - now;
+                         else if (now > e->EndTime())
+                            distance = e->EndTime() - now;
+                         if (Event && overlap == Overlap) {
+                            if (Overlap > FULLMATCH) { // this means VPS
+                               if (abs(Distance) < abs(distance)) 
+                                  break; // we've already found the closest VPS event
+                               }
+                            else if (e->Duration() <= Event->Duration())
+                               continue; // if overlap is the same, we take the longer event
+                            }
+                         Overlap = overlap;
+                         Distance = distance;
                          Event = e;
-                         if (Match == tmFull)
-                            break;
-                            //XXX what if there's another event with the same VPS time???
                          }
                       }
                   ti->SetEvent(Event);

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.h 1.13 2004/12/26 12:21:29 kls Exp $
+ * $Id: timers.h 1.14 2005/03/12 16:27:36 kls Exp $
  */
 
 #ifndef __TIMERS_H
@@ -71,7 +71,7 @@ public:
   static time_t SetTime(time_t t, int SecondsFromMidnight);
   char *SetFile(const char *File);
   bool Matches(time_t t = 0, bool Directly = false) const;
-  int Matches(const cEvent *Event);
+  int Matches(const cEvent *Event, int *Overlap = NULL);
   time_t StartTime(void) const;
   time_t StopTime(void) const;
   void SetEvent(const cEvent *Event);
