@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.50 2001/01/18 19:53:54 kls Exp $
+ * $Id: dvbapi.c 1.51 2001/01/20 09:51:51 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -2198,7 +2198,7 @@ bool cDvbApi::SetChannel(int ChannelNumber, int FrequencyMHz, char Polarization,
         currentChannel = ChannelNumber;
         // If this DVB card can't receive this channel, let's see if we can
         // use the card that actually can receive it and transfer data from there:
-        if (Ca && Ca != Index() + 1) {
+        if (this == PrimaryDvbApi && Ca && Ca != Index() + 1) {
            cDvbApi *CaDvbApi = GetDvbApi(Ca, 0);
            if (CaDvbApi) {
               if (!CaDvbApi->Recording()) {
