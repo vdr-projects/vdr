@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.h 1.4 2001/06/14 15:27:07 kls Exp $
+ * $Id: remux.h 1.5 2001/06/23 14:06:59 kls Exp $
  */
 
 #ifndef __REMUX_H
@@ -32,8 +32,8 @@ private:
   bool exitOnFailure;
   bool synced;
   int skipped;
-  dvb_pid_t vPid, aPid1, aPid2;
-  cTS2PES *vTS2PES, *aTS2PES1, *aTS2PES2;
+  int vPid, aPid1, aPid2, dPid1, dPid2;
+  cTS2PES *vTS2PES, *aTS2PES1, *aTS2PES2, *dTS2PES1, *dTS2PES2;
   uchar resultBuffer[RESULTBUFFERSIZE];
   int resultCount;
   int resultDelivered;
@@ -41,7 +41,7 @@ private:
   int GetPacketLength(const uchar *Data, int Count, int Offset);
   int ScanVideoPacket(const uchar *Data, int Count, int Offset, uchar &PictureType);
 public:
-  cRemux(dvb_pid_t VPid, dvb_pid_t APid1, dvb_pid_t APid2 = 0, bool ExitOnFailure = false);
+  cRemux(int VPid, int APid1, int APid2, int DPid1, int DPid2, bool ExitOnFailure = false);
   ~cRemux();
   void SetAudioPid(int APid);
   const uchar *Process(const uchar *Data, int &Count, int &Result, uchar *PictureType = NULL);

@@ -88,6 +88,15 @@ Command line options:
 
 Use "vdr --help" for a list of available command line options.
 
+Replaying Dolby Digital audio:
+------------------------------
+
+To replay Dolby Digital audio you need a program that reads the DD data
+from stdin and processes it in a way suitable for your audio hardware.
+This program must be given to VDR with the '-a' option, as in
+
+  vdr -a ac3play
+
 The video data directory:
 -------------------------
 

@@ -526,8 +526,11 @@ Video Disk Recorder Revision History
 - New setup parameter "VideoFormat" to define the aspect ratio of the tv set
   in use (4:3 or 16:9).
 
-2001-06-22: Version 0.83
+2001-06-26: Version 0.83
 
 - Avoiding "Device or resource busy" error message when setting PIDs.
 - Added Portugese language texts (Paulo Manuel Martins Lopes).
+- Recording and replaying Dolby Digital (AC3) sound.
+- No longer getting stuck when a channel doesn't sync while switching
+  with the 'Up' and 'Down' keys.
 

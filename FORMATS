@@ -26,6 +26,8 @@ Video Disk Recorder File Formats
   - Symbol rate
   - Video PID
   - Audio PID (either one number, or two, separated by a comma)
+    If this channel also carries Dolby Digital sound, the Dolby PIDs follow
+    the audio PIDs, separated by a semicolon, as in "...:101,102;103,104:..."
   - Teletext PID
   - Conditional Access (0 = Free To Air, 1 = can be decrypted by the first
     DVB card, 2 = can be decrypted by the second DVB card)
@@ -135,5 +137,6 @@ Video Disk Recorder File Formats
   an individual file below a given limit, a recording is split into several
   files. The contents of these files is "Packetized Elementary Stream" (PES)
   and contains ES packets with ids 0xE0 for video, 0xC0 for audio 1 and 0xC1
-  for audio 2 (if available).
+  for audio 2 (if available). Dolby Digital data is stored in packets with
+  ids 0xBD.
 

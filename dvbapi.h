@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.h 1.39 2001/06/16 14:21:16 kls Exp $
+ * $Id: dvbapi.h 1.40 2001/06/24 17:42:19 kls Exp $
  */
 
 #ifndef __DVBAPI_H
@@ -66,13 +66,15 @@ class cDvbApi {
   friend class cTransferBuffer;
 private:
   int videoDev;
-  int fd_osd, fd_qpskfe, fd_qamfe, fd_sec, fd_dvr, fd_audio, fd_video, fd_demuxa1, fd_demuxa2, fd_demuxv, fd_demuxt;
-  int vPid, aPid1, aPid2;
-  bool SetPid(int fd, dmxPesType_t PesType, dvb_pid_t Pid, dmxOutput_t Output);
-  bool SetVpid(int Vpid, dmxOutput_t Output) { return SetPid(fd_demuxv, DMX_PES_VIDEO,    Vpid, Output); }
+  int fd_osd, fd_qpskfe, fd_qamfe, fd_sec, fd_dvr, fd_audio, fd_video, fd_demuxa1, fd_demuxa2, fd_demuxd1, fd_demuxd2, fd_demuxv, fd_demuxt;
+  int vPid, aPid1, aPid2, dPid1, dPid2;
+  bool SetPid(int fd, dmxPesType_t PesType, int Pid, dmxOutput_t Output);
+  bool SetVpid(int Vpid, dmxOutput_t Output)  { return SetPid(fd_demuxv,  DMX_PES_VIDEO,    Vpid, Output); }
   bool SetApid1(int Apid, dmxOutput_t Output) { return SetPid(fd_demuxa1, DMX_PES_AUDIO,    Apid, Output); }
   bool SetApid2(int Apid, dmxOutput_t Output) { return SetPid(fd_demuxa2, DMX_PES_OTHER,    Apid, Output); }
-  bool SetTpid(int Tpid, dmxOutput_t Output) { return SetPid(fd_demuxt, DMX_PES_TELETEXT, Tpid, Output); }
+  bool SetDpid1(int Dpid, dmxOutput_t Output) { return SetPid(fd_demuxd1, DMX_PES_OTHER,    Dpid, Output); }
+  bool SetDpid2(int Dpid, dmxOutput_t Output) { return SetPid(fd_demuxd2, DMX_PES_OTHER,    Dpid, Output); }
+  bool SetTpid(int Tpid, dmxOutput_t Output)  { return SetPid(fd_demuxt,  DMX_PES_TELETEXT, Tpid, Output); }
   bool SetPids(bool ForRecording);
   cDvbApi(int n);
 public:
@@ -182,7 +184,7 @@ public:
 private:
   int currentChannel;
 public:
-  bool SetChannel(int ChannelNumber, int FrequencyMHz, char Polarization, int Diseqc, int Srate, int Vpid, int Apid1, int Apid2, int Tpid, int Ca, int Pnr);
+  bool SetChannel(int ChannelNumber, int FrequencyMHz, char Polarization, int Diseqc, int Srate, int Vpid, int Apid1, int Apid2, int Dpid1, int Dpid2, int Tpid, int Ca, int Pnr);
   static int CurrentChannel(void) { return PrimaryDvbApi ? PrimaryDvbApi->currentChannel : 0; }
   int Channel(void) { return currentChannel; }
 
@@ -268,11 +270,20 @@ public:
 
   // Audio track facilities
 
+public:
   bool CanToggleAudioTrack(void);
        // Returns true if we are currently replaying and this recording has two
        // audio tracks, or if the current channel has two audio PIDs.
   bool ToggleAudioTrack(void);
        // Toggles the audio track if possible.
+
+  // Dolby Digital audio facilities
+
+private:
+  static char *audioCommand;
+public:
+  static void SetAudioCommand(const char *Command);
+  static const char *AudioCommand(void) { return audioCommand; }
   };
 
 class cEITScanner {

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.20 2001/06/22 15:16:39 kls Exp $
+ * $Id: i18n.c 1.21 2001/06/23 13:47:15 kls Exp $
  *
  * Slovenian translations provided by Miha Setina <mihasetina@softhome.net>
  * Italian   translations provided by Alberto Carraro <bertocar@tin.it>
@@ -353,6 +353,20 @@ const tPhrase Phrases[] = {
     "Apid2",
     "Apid2",
     "Apid2",
+  },
+  { "Dpid1",
+    "Dpid1",
+    "Dpid1",
+    "Dpid1",
+    "Dpid1",
+    "Dpid1",
+  },
+  { "Dpid2",
+    "Dpid2",
+    "Dpid2",
+    "Dpid2",
+    "Dpid2",
+    "Dpid2",
   },
   { "Tpid",
     "Tpid",

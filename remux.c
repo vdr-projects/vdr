@@ -8,7 +8,7 @@
  * the Linux DVB driver's 'tuxplayer' example and were rewritten to suit
  * VDR's needs.
  *
- * $Id: remux.c 1.4 2001/06/14 15:30:09 kls Exp $
+ * $Id: remux.c 1.5 2001/06/24 16:37:23 kls Exp $
  */
 
 /* The calling interface of the 'cRemux::Process()' function is defined
@@ -419,11 +419,13 @@ void cTS2PES::ts_to_pes(const uint8_t *Buf) // don't need count (=188)
 
 // --- cRemux ----------------------------------------------------------------
 
-cRemux::cRemux(dvb_pid_t VPid, dvb_pid_t APid1, dvb_pid_t APid2, bool ExitOnFailure)
+cRemux::cRemux(int VPid, int APid1, int APid2, int DPid1, int DPid2, bool ExitOnFailure)
 {
   vPid = VPid;
   aPid1 = APid1;
   aPid2 = APid2;
+  dPid1 = DPid1;
+  dPid2 = DPid2;
   exitOnFailure = ExitOnFailure;
   synced = false;
   skipped = 0;
@@ -431,6 +433,9 @@ cRemux::cRemux(dvb_pid_t VPid, dvb_pid_t APid1, dvb_pid_t APid2, bool ExitOnFail
   vTS2PES  =         new cTS2PES(resultBuffer, &resultCount, IPACKS);
   aTS2PES1 =         new cTS2PES(resultBuffer, &resultCount, IPACKS, 0xC0);
   aTS2PES2 = aPid2 ? new cTS2PES(resultBuffer, &resultCount, IPACKS, 0xC1) : NULL;
+  dTS2PES1 = dPid1 ? new cTS2PES(resultBuffer, &resultCount, IPACKS)       : NULL;
+  //XXX don't yet know how to tell apart primary and secondary DD data...
+  dTS2PES2 = /*XXX dPid2 ? new cTS2PES(resultBuffer, &resultCount, IPACKS) : XXX*/ NULL;
 }
 
 cRemux::~cRemux()
@@ -438,6 +443,8 @@ cRemux::~cRemux()
   delete vTS2PES;
   delete aTS2PES1;
   delete aTS2PES2;
+  delete dTS2PES1;
+  delete dTS2PES2;
 }
 
 int cRemux::GetPid(const uchar *Data)
@@ -510,14 +517,13 @@ XXX*/
   for (int i = 0; i < Count; i += TS_SIZE) {
       if (Count - i < TS_SIZE)
          break;
-      dvb_pid_t pid = GetPid(Data + i + 1);
+      int pid = GetPid(Data + i + 1);
       if (Data[i + 3] & 0x10) { // got payload
-         if (pid == vPid)
-            vTS2PES->ts_to_pes(Data + i);
-         else if (pid == aPid1)
-            aTS2PES1->ts_to_pes(Data + i);
-         else if (pid == aPid2 && aTS2PES2)
-            aTS2PES2->ts_to_pes(Data + i);
+         if      (pid == vPid)              vTS2PES->ts_to_pes(Data + i);
+         else if (pid == aPid1)             aTS2PES1->ts_to_pes(Data + i);
+         else if (pid == aPid2 && aTS2PES2) aTS2PES2->ts_to_pes(Data + i);
+         else if (pid == dPid1 && dTS2PES1) dTS2PES1->ts_to_pes(Data + i);
+         else if (pid == dPid2 && dTS2PES2) dTS2PES2->ts_to_pes(Data + i);
          }
       used += TS_SIZE;
       if (resultCount > (int)sizeof(resultBuffer) / 2)
@@ -587,6 +593,7 @@ XXX*/
                         }
                    }
                    break;
+              case PRIVATE_STREAM1:
               case AUDIO_STREAM_S ... AUDIO_STREAM_E:
                    {
                      int l = GetPacketLength(resultBuffer, resultCount, i);

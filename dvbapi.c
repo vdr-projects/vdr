@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.79 2001/06/17 15:18:11 kls Exp $
+ * $Id: dvbapi.c 1.80 2001/06/24 17:42:19 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -451,14 +451,14 @@ protected:
   virtual void Input(void);
   virtual void Output(void);
 public:
-  cRecordBuffer(cDvbApi *DvbApi, const char *FileName, dvb_pid_t VPid, dvb_pid_t APid1, dvb_pid_t APid2);
+  cRecordBuffer(cDvbApi *DvbApi, const char *FileName, int VPid, int APid1, int APid2, int DPid1, int DPid2);
   virtual ~cRecordBuffer();
   };
 
-cRecordBuffer::cRecordBuffer(cDvbApi *DvbApi, const char *FileName, dvb_pid_t VPid, dvb_pid_t APid1, dvb_pid_t APid2)
+cRecordBuffer::cRecordBuffer(cDvbApi *DvbApi, const char *FileName, int VPid, int APid1, int APid2, int DPid1, int DPid2)
 :cRingBuffer(VIDEOBUFSIZE, true)
 ,fileName(FileName, true)
-,remux(VPid, APid1, APid2, true)
+,remux(VPid, APid1, APid2, DPid1, DPid2, true)
 {
   dvbApi = DvbApi;
   index = NULL;
@@ -620,6 +620,7 @@ private:
   cFileName fileName;
   int fileOffset;
   int videoDev, audioDev;
+  FILE *dolbyDev;
   int replayFile;
   bool eof;
   int blockInput, blockOutput;
@@ -661,6 +662,12 @@ cReplayBuffer::cReplayBuffer(cDvbApi *DvbApi, int VideoDev, int AudioDev, const 
   fileOffset = 0;
   videoDev = VideoDev;
   audioDev = AudioDev;
+  dolbyDev = NULL;
+  if (cDvbApi::AudioCommand()) {
+     dolbyDev = popen(cDvbApi::AudioCommand(), "w");
+     if (!dolbyDev)
+        esyslog(LOG_ERR, "ERROR: can't open pipe to audio command '%s'", cDvbApi::AudioCommand());
+     }
   replayFile = fileName.Open();
   eof = false;
   blockInput = blockOutput = false;
@@ -688,6 +695,8 @@ cReplayBuffer::~cReplayBuffer()
   Stop();
   Save();
   Close();
+  if (dolbyDev)
+     pclose(dolbyDev);
   dvbApi->SetModeNormal(false);
   delete index;
 }
@@ -795,24 +804,45 @@ void cReplayBuffer::StripAudioPackets(uchar *b, int Length, uchar Except)
   for (int i = 0; i < Length - 6; i++) {
       if (b[i] == 0x00 && b[i + 1] == 0x00 && b[i + 2] == 0x01) {
          uchar c = b[i + 3];
+         int l = b[i + 4] * 256 + b[i + 5] + 6;
          switch (c) {
-           case 0xC0 ... 0xDF: // audio
-                {
-                  int n = b[i + 4] * 256 + b[i + 5];
-                  if (c == 0xC1)
-                     canToggleAudioTrack = true;
-                  if (!Except || c != Except) {
-                     for (int j = i; j < Length && n--; j++)
-                         b[j] = 0x00;
-                     }
-                  i += n;
-                }
+           case 0xBD: // dolby
+                if (Except && dolbyDev) {
+                   int written = b[i + 8] + 9; // skips the PES header
+                   int n = l - written;
+                   while (n > 0) {
+                         int w = fwrite(&b[i + written], 1, n, dolbyDev);
+                         if (w < 0) {
+                            LOG_ERROR;
+                            break;
+                            }
+                         n -= w;
+                         written += w;
+                         }
+                   }
+                // continue with deleting the data - otherwise it disturbs DVB replay
+           case 0xC0 ... 0xC1: // audio
+                if (c == 0xC1)
+                   canToggleAudioTrack = true;
+                if (!Except || c != Except) {
+                   int n = l;
+                   for (int j = i; j < Length && n--; j++)
+                       b[j] = 0x00;
+                   }
                 break;
-           case 0xE0 ... 0xEF: // video
-                i += b[i + 4] * 256 + b[i + 5];
+           case 0xE0: // video
                 break;
+           default:
+                //esyslog(LOG_ERR, "ERROR: unexpected packet id %02X", c);
+                l = 0;
            }
+         if (l)
+            i += l - 1; // the loop increments, too!
          }
+      /*XXX
+      else
+         esyslog(LOG_ERR, "ERROR: broken packet header");
+         XXX*/
       }
 }
 
@@ -1055,14 +1085,14 @@ protected:
   virtual void Input(void);
   virtual void Output(void);
 public:
-  cTransferBuffer(cDvbApi *DvbApi, int ToDevice, dvb_pid_t VPid, dvb_pid_t APid);
+  cTransferBuffer(cDvbApi *DvbApi, int ToDevice, int VPid, int APid);
   virtual ~cTransferBuffer();
   void SetAudioPid(int APid);
   };
 
-cTransferBuffer::cTransferBuffer(cDvbApi *DvbApi, int ToDevice, dvb_pid_t VPid, dvb_pid_t APid)
+cTransferBuffer::cTransferBuffer(cDvbApi *DvbApi, int ToDevice, int VPid, int APid)
 :cRingBuffer(VIDEOBUFSIZE, true)
-,remux(VPid, APid)
+,remux(VPid, APid, 0, 0, 0)
 {
   dvbApi = DvbApi;
   fromDevice = dvbApi->SetModeRecord();
@@ -1336,10 +1366,11 @@ int cDvbApi::NumDvbApis = 0;
 int cDvbApi::useDvbApi = 0;
 cDvbApi *cDvbApi::dvbApi[MAXDVBAPI] = { NULL };
 cDvbApi *cDvbApi::PrimaryDvbApi = NULL;
+char *cDvbApi::audioCommand = NULL;
 
 cDvbApi::cDvbApi(int n)
 {
-  vPid = aPid1 = aPid2 = 0;
+  vPid = aPid1 = aPid2 = dPid1 = dPid2 = 0;
   siProcessor = NULL;
   recordBuffer = NULL;
   replayBuffer = NULL;
@@ -1359,6 +1390,8 @@ cDvbApi::cDvbApi(int n)
   fd_demuxv  = OstOpen(DEV_OST_DEMUX,  n, O_RDWR | O_NONBLOCK, true);
   fd_demuxa1 = OstOpen(DEV_OST_DEMUX,  n, O_RDWR | O_NONBLOCK, true);
   fd_demuxa2 = OstOpen(DEV_OST_DEMUX,  n, O_RDWR | O_NONBLOCK, true);
+  fd_demuxd1 = OstOpen(DEV_OST_DEMUX,  n, O_RDWR | O_NONBLOCK, true);
+  fd_demuxd2 = OstOpen(DEV_OST_DEMUX,  n, O_RDWR | O_NONBLOCK, true);
   fd_demuxt  = OstOpen(DEV_OST_DEMUX,  n, O_RDWR | O_NONBLOCK, true);
 
   // Devices not present on "budget" cards:
@@ -1381,7 +1414,7 @@ cDvbApi::cDvbApi(int n)
 
   // We only check the devices that must be present - the others will be checked before accessing them:
 
-  if (((fd_qpskfe >= 0 && fd_sec >= 0) || fd_qamfe >= 0) && fd_demuxv >= 0 && fd_demuxa1 >= 0 && fd_demuxa2 >= 0 && fd_demuxt >= 0) {
+  if (((fd_qpskfe >= 0 && fd_sec >= 0) || fd_qamfe >= 0) && fd_demuxv >= 0 && fd_demuxa1 >= 0 && fd_demuxa2 >= 0 && fd_demuxd1 >= 0 && fd_demuxd2 >= 0 && fd_demuxt >= 0) {
      siProcessor = new cSIProcessor(OstName(DEV_OST_DEMUX, n));
      if (!dvbApi[0]) // only the first one shall set the system time
         siProcessor->SetUseTSTime(Setup.SetSystemTime);
@@ -2037,32 +2070,35 @@ void cDvbApi::SetVideoFormat(videoFormat_t Format)
      CHECK(ioctl(fd_video, VIDEO_SET_FORMAT, Format));
 }
 
-bool cDvbApi::SetPid(int fd, dmxPesType_t PesType, dvb_pid_t Pid, dmxOutput_t Output)
+bool cDvbApi::SetPid(int fd, dmxPesType_t PesType, int Pid, dmxOutput_t Output)
 {
-  if (Pid == 0x1FFF)
+  if (Pid) {
      CHECK(ioctl(fd, DMX_STOP));
-  dmxPesFilterParams pesFilterParams;
-  pesFilterParams.pid     = Pid;
-  pesFilterParams.input   = DMX_IN_FRONTEND;
-  pesFilterParams.output  = Output;
-  pesFilterParams.pesType = PesType;
-  pesFilterParams.flags   = DMX_IMMEDIATE_START;
-  if (ioctl(fd, DMX_SET_PES_FILTER, &pesFilterParams) < 0) {
-     if (Pid != 0 && Pid != 0x1FFF)
-        LOG_ERROR;
-     return false;
+     dmxPesFilterParams pesFilterParams;
+     pesFilterParams.pid     = Pid;
+     pesFilterParams.input   = DMX_IN_FRONTEND;
+     pesFilterParams.output  = Output;
+     pesFilterParams.pesType = PesType;
+     pesFilterParams.flags   = DMX_IMMEDIATE_START;
+     if (ioctl(fd, DMX_SET_PES_FILTER, &pesFilterParams) < 0) {
+        if (Pid != 0x1FFF)
+           LOG_ERROR;
+        return false;
+        }
      }
   return true;
 }
 
 bool cDvbApi::SetPids(bool ForRecording)
 {
-  return SetVpid(vPid,  ForRecording ? DMX_OUT_TS_TAP : DMX_OUT_DECODER) &&
+  return SetVpid(vPid,   ForRecording ? DMX_OUT_TS_TAP : DMX_OUT_DECODER) &&
          SetApid1(aPid1, ForRecording ? DMX_OUT_TS_TAP : DMX_OUT_DECODER) &&
-         SetApid2(ForRecording ? aPid2 : 0, DMX_OUT_TS_TAP);
+         SetApid2(ForRecording ? aPid2 : 0, DMX_OUT_TS_TAP) &&
+         SetDpid1(ForRecording ? dPid1 : 0, DMX_OUT_TS_TAP) &&
+         SetDpid2(ForRecording ? dPid2 : 0, DMX_OUT_TS_TAP);
 }
 
-bool cDvbApi::SetChannel(int ChannelNumber, int FrequencyMHz, char Polarization, int Diseqc, int Srate, int Vpid, int Apid1, int Apid2, int Tpid, int Ca, int Pnr)
+bool cDvbApi::SetChannel(int ChannelNumber, int FrequencyMHz, char Polarization, int Diseqc, int Srate, int Vpid, int Apid1, int Apid2, int Dpid1, int Dpid2, int Tpid, int Ca, int Pnr)
 {
   // Make sure the siProcessor won't access the device while switching
   cThreadLock ThreadLock(siProcessor);
@@ -2084,7 +2120,13 @@ bool cDvbApi::SetChannel(int ChannelNumber, int FrequencyMHz, char Polarization,
   SetVpid( 0x1FFF, DMX_OUT_DECODER);
   SetApid1(0x1FFF, DMX_OUT_DECODER);
   SetApid2(0x1FFF, DMX_OUT_DECODER);
+  SetDpid1(0x1FFF, DMX_OUT_DECODER);
+  SetDpid2(0x1FFF, DMX_OUT_DECODER);
   SetTpid( 0x1FFF, DMX_OUT_DECODER);
+
+  // Must set this anyway to avoid getting stuck when switching through
+  // channels with 'Up' and 'Down' keys:
+  currentChannel = ChannelNumber;
 
   bool ChannelSynced = false;
 
@@ -2188,6 +2230,8 @@ bool cDvbApi::SetChannel(int ChannelNumber, int FrequencyMHz, char Polarization,
   vPid = Vpid;
   aPid1 = Apid1;
   aPid2 = Apid2;
+  dPid1 = Dpid1;
+  dPid2 = Dpid2;
   if (!SetPids(false)) {
      esyslog(LOG_ERR, "ERROR: failed to set PIDs for channel %d", ChannelNumber);
      return false;
@@ -2197,7 +2241,6 @@ bool cDvbApi::SetChannel(int ChannelNumber, int FrequencyMHz, char Polarization,
      CHECK(ioctl(fd_audio, AUDIO_SET_AV_SYNC, true));
   if (this == PrimaryDvbApi && siProcessor)
      siProcessor->SetCurrentServiceID(Pnr);
-  currentChannel = ChannelNumber;
   
   // If this DVB card can't receive this channel, let's see if we can
   // use the card that actually can receive it and transfer data from there:
@@ -2206,7 +2249,7 @@ bool cDvbApi::SetChannel(int ChannelNumber, int FrequencyMHz, char Polarization,
      cDvbApi *CaDvbApi = GetDvbApi(Ca, 0);
      if (CaDvbApi) {
         if (!CaDvbApi->Recording()) {
-           if (CaDvbApi->SetChannel(ChannelNumber, FrequencyMHz, Polarization, Diseqc, Srate, Vpid, Apid1, Apid2, Tpid, Ca, Pnr)) {
+           if (CaDvbApi->SetChannel(ChannelNumber, FrequencyMHz, Polarization, Diseqc, Srate, Vpid, Apid1, Apid2, Dpid1, Dpid2, Tpid, Ca, Pnr)) {
               SetModeReplay();
               transferringFromDvbApi = CaDvbApi->StartTransfer(fd_video);
               }
@@ -2290,7 +2333,7 @@ bool cDvbApi::StartRecord(const char *FileName, int Ca, int Priority)
 
   // Create recording buffer:
 
-  recordBuffer = new cRecordBuffer(this, FileName, vPid, aPid1, aPid2);
+  recordBuffer = new cRecordBuffer(this, FileName, vPid, aPid1, aPid2, dPid1, dPid2);
 
   if (recordBuffer) {
      ca = Ca;
@@ -2426,6 +2469,12 @@ bool cDvbApi::ToggleAudioTrack(void)
         }
      }
   return false;
+}
+
+void cDvbApi::SetAudioCommand(const char *Command)
+{
+  delete audioCommand;
+  audioCommand = strdup(Command);
 }
 
 // --- cEITScanner -----------------------------------------------------------

@@ -18,7 +18,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: runvdr 1.6 2001/06/09 12:20:04 kls Exp $
+# $Id: runvdr 1.7 2001/06/24 17:42:19 kls Exp $
 
 DVBDIR="../DVB/driver"
 VDRPRG="./vdr"
@@ -39,6 +39,6 @@ while (true) do
       echo "restarting VDR"
       $KILLPROC $VDRPRG
       sleep 10
-      (cd $DVBDIR; make reload)
+      (cd $DVBDIR; make rmmod; make insmod)
       date
       done
