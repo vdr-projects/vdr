@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.324 2005/01/02 15:03:53 kls Exp $
+ * $Id: menu.c 1.325 2005/01/04 11:11:16 kls Exp $
  */
 
 #include "menu.h"
@@ -2813,7 +2813,7 @@ cDisplayTracks::cDisplayTracks(void)
       const tTrackId *TrackId = cDevice::PrimaryDevice()->GetTrack(eTrackType(i));
       if (TrackId && TrackId->id) {
          types[numTracks] = eTrackType(i);
-         descriptions[numTracks] = strdup(*TrackId->description ? TrackId->description : *TrackId->language ? TrackId->language : itoa(i));
+         descriptions[numTracks] = strdup(*TrackId->description ? TrackId->description : *TrackId->language ? TrackId->language : *itoa(i));
          if (i == CurrentAudioTrack)
             track = numTracks;
          numTracks++;
