@@ -1107,3 +1107,7 @@ Video Disk Recorder Revision History
   (like the EPG descriptions or the results of commands executed from the
   "Commands" menu).
 - Fixed high CPU usage in transfer mode.
+- Replaced 'killproc' with 'killall' in 'runvdr', since apparently 'killproc'
+  is not available by default on some Linux distributions, whereas 'killall' is.
+  Please check if your system provides 'killall' - if it doesn't, please change
+  this back in 'runvdr' and report this (thanks to Achim Lange).
