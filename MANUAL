@@ -41,7 +41,11 @@ Video Disk Recorder User's Manual
   by pressing the "Right" button (which puts brackets around the current
   character as in "[R]TL"), selecting the desired character position with
   "Left" and "Right", and changing the character with the "Up" and "Down"
-  keys. "Ok" then confirms the changes.
+  keys. "Ok" then confirms the changes. The special character '^' can be used
+  to "cut off" a string at this position. When this character is visible in the
+  brackets (as in abc[^]), the next press to the "Left" or "Ok" button will
+  actually cut off the string. Using "Up" and/or "Down" brings back the
+  original rest of the string (unless you have pressed "Left" or "Ok").
   
   The "Red", "Green", "Yellow" and "Blue" buttons have special meanings
   in various menus and are listed at the bottom of the on-screen-display.
@@ -108,4 +112,43 @@ Video Disk Recorder User's Manual
 * Programming the Timer
 
   Use the "Timer" menu to maintain your list of timer controlled recordings.
+  The parameters in the "Edit Timer" menu have the following meanings:
 
+  Active:    Defines whether the timer will be processed (set it to 'no' to
+             temporarily desable a timer).
+  Channel:   The channel to be recorded (as defined in the "Channels" list).
+             Any changes made in the "Channels" list (like renaming or
+             reordering channels) will be automatically reflected in the
+             timers settings.
+  Day:       The day on which this timer shall start. This can be either a
+             "day of month" (1..31), which allows programming a "single shot"
+             timer that hits once and is deleted after it ends. Single shot
+             timers can be programmed up to one month into the future.
+             Another option here are "repeating timers" which are defined
+             by listing the days of the week on which they shall record.
+             For example, a timer that shall record every monday and wednesday
+             would have a Day setting of "M-W----".
+  Start:     The start time of the timer in hh:mm as 24 hour ("military") time.
+  Stop:      The stop time of the timer.
+  Priority:  The Priority (0..99) is used to decide which timer shall be
+             started in case there are two or more timers with the exact same
+             start time. The first timer in the list with the highest Priority
+             will be used. This value is also stored with the recording and is
+             later used to decide which recording to remove from disk in order
+             to free space for a new recording. If the disk is full and a new
+             recording needs more space, an existing recording with the lowest
+             Priority (and which has exceeded its guaranteed Lifetime) will be
+             removed.
+  Lifetime:  The number of days (0..99) a recording made through this timer is
+             guaranteed to remain on disk before it is automatically removed
+             to free up space for a new recording. Note that setting this
+             parameter to very high values for all recordings may soon fill up
+             the entire disk and cause new recordings to fail due to low disk
+             space.
+  File:      The name under which a recording created through this timer will
+             be stored on disk (the actual name will also contain the date and
+             time, so it is possible to have a "repeating timer" store all its
+             recordings under the same name; they will be distinguishable by
+             their date and time).
+             If this field is left blank, the channel name will be used to form
+             the name of the recording.

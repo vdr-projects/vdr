@@ -4,9 +4,3 @@ Video Disk Recorder - Known Bugs
 * Sometimes the picture "jumps" as if a frame is skipped.
   Presumably this is a problem in the card driver or firmware?
 
-* When the on-screen display is activated during recording,
-  the video data stream gets corrupted, which results in a
-  distorted picture when replaying such a recording.
-  I assume this is a problem in the driver of firmware.
-  There is no such problem in replay mode.
-

@@ -2,4 +2,10 @@ Thanks go to the following people for patches and contributions:
 
 Carsten Koch <Carsten.Koch@icem.de>
  for adding LIRC support
+ for making the 'Recordings' menu be listed alphabetically
+ for implementing the 'Summary' feature
+ for adding the 'epg2timers' tool (see Tools/epg2timers)
 
+Plamen Ganev <pganev@com-it.net>
+ for fixing the frequency offset for Hotbird channels
+ for adding the 'xtvrc2vdr' tool (see Tools/xtvrc2vdr)

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.8 2000/06/24 13:43:14 kls Exp $
+ * $Id: config.c 1.15 2000/07/25 16:21:20 kls Exp $
  */
 
 #include "config.h"
@@ -54,7 +54,13 @@ void cKeys::Clear(void)
       k->code = 0;
 }
 
-bool cKeys::Load(char *FileName)
+void cKeys::SetDummyValues(void)
+{
+  for (tKey *k = keys; k->type != kNone; k++)
+      k->code = k->type + 1; // '+1' to avoid 0
+}
+
+bool cKeys::Load(const char *FileName)
 {
   isyslog(LOG_INFO, "loading %s", FileName);
   bool result = false;
@@ -150,7 +156,7 @@ unsigned int cKeys::Encode(const char *Command)
 {  
   if (Command != NULL) {
      const tKey *k = keys;
-     while ((k->type != kNone) && strncmp(k->name, Command, strlen(k->name)) != 0) //XXX why 'strncmp()'???
+     while ((k->type != kNone) && strcmp(k->name, Command) != 0)
            k++;
      return k->code;
      }
@@ -168,6 +174,8 @@ void cKeys::Set(eKeys Key, unsigned int Code)
 }
 
 // -- cChannel ---------------------------------------------------------------
+
+char *cChannel::buffer = NULL;
 
 cChannel::cChannel(void)
 {
@@ -187,7 +195,18 @@ cChannel::cChannel(const cChannel *Channel)
   pnr          = Channel ? Channel->pnr          : 0;
 }
 
-bool cChannel::Parse(char *s)
+const char *cChannel::ToText(cChannel *Channel)
+{
+  asprintf(&buffer, "%s:%d:%c:%d:%d:%d:%d:%d:%d\n", Channel->name, Channel->frequency, Channel->polarization, Channel->diseqc, Channel->srate, Channel->vpid, Channel->apid, Channel->ca, Channel->pnr);
+  return buffer;
+}
+
+const char *cChannel::ToText(void)
+{
+  return ToText(this);
+}
+
+bool cChannel::Parse(const char *s)
 {
   char *buffer = NULL;
   if (9 == sscanf(s, "%a[^:]:%d:%c:%d:%d:%d:%d:%d:%d", &buffer, &frequency, &polarization, &diseqc, &srate, &vpid, &apid, &ca, &pnr)) {
@@ -201,7 +220,7 @@ bool cChannel::Parse(char *s)
 
 bool cChannel::Save(FILE *f)
 {
-  return fprintf(f, "%s:%d:%c:%d:%d:%d:%d:%d:%d\n", name, frequency, polarization, diseqc, srate, vpid, apid, ca, pnr) > 0;
+  return fprintf(f, ToText()) > 0;
 }
 
 bool cChannel::Switch(cDvbApi *DvbApi)
@@ -211,7 +230,7 @@ bool cChannel::Switch(cDvbApi *DvbApi)
   if (!DvbApi->Recording()) {
      isyslog(LOG_INFO, "switching to channel %d", Index() + 1);
      CurrentChannel = Index();
-     for (int i = 3; --i;) {
+     for (int i = 3; i--;) {
          if (DvbApi->SetChannel(frequency, polarization, diseqc, srate, vpid, apid, ca, pnr))
             return true;
          esyslog(LOG_ERR, "retrying");
@@ -236,6 +255,8 @@ const char *cChannel::GetChannelName(int i)
 
 // -- cTimer -----------------------------------------------------------------
 
+char *cTimer::buffer = NULL;
+
 cTimer::cTimer(bool Instant)
 {
   startTime = stopTime = 0;
@@ -253,8 +274,33 @@ cTimer::cTimer(bool Instant)
   priority = 99;
   lifetime = 99;
   *file = 0;
+  summary = NULL;
   if (Instant)
      snprintf(file, sizeof(file), "@%s", cChannel::GetChannelName(CurrentChannel));
+}
+
+cTimer::~cTimer()
+{
+  delete summary;
+}
+
+cTimer& cTimer::operator= (const cTimer &Timer)
+{
+  memcpy(this, &Timer, sizeof(*this));
+  if (summary)
+     summary = strdup(summary);
+  return *this;
+}
+
+const char *cTimer::ToText(cTimer *Timer)
+{
+  asprintf(&buffer, "%d:%d:%s:%d:%d:%d:%d:%s:%s\n", Timer->active, Timer->channel, PrintDay(Timer->day), Timer->start, Timer->stop, Timer->priority, Timer->lifetime, Timer->file, Timer->summary ? Timer->summary : "");
+  return buffer;
+}
+
+const char *cTimer::ToText(void)
+{
+  return ToText(this);
 }
 
 int cTimer::TimeToInt(int t)
@@ -269,7 +315,7 @@ time_t cTimer::Day(time_t t)
   return mktime(&d);
 }
 
-int cTimer::ParseDay(char *s)
+int cTimer::ParseDay(const char *s)
 {
   char *tail;
   int d = strtol(s, &tail, 10);
@@ -277,7 +323,7 @@ int cTimer::ParseDay(char *s)
      d = 0;
      if (tail == s) {
         if (strlen(s) == 7) {
-           for (char *p = s + 6; p >= s; p--) {
+           for (const char *p = s + 6; p >= s; p--) {
                  d <<= 1;
                  d |= (*p != '-');
                  }
@@ -290,7 +336,7 @@ int cTimer::ParseDay(char *s)
   return d;
 }
 
-char *cTimer::PrintDay(int d)
+const char *cTimer::PrintDay(int d)
 {
   static char buffer[8];
   if ((d & 0x80000000) != 0) {
@@ -308,14 +354,20 @@ char *cTimer::PrintDay(int d)
   return buffer;
 }
 
-bool cTimer::Parse(char *s)
+bool cTimer::Parse(const char *s)
 {
   char *buffer1 = NULL;
   char *buffer2 = NULL;
-  if (8 == sscanf(s, "%d:%d:%a[^:]:%d:%d:%d:%d:%as", &active, &channel, &buffer1, &start, &stop, &priority, &lifetime, &buffer2)) {
+  delete summary;
+  summary = NULL;
+  if (8 <= sscanf(s, "%d:%d:%a[^:]:%d:%d:%d:%d:%a[^:\n]:%a[^\n]", &active, &channel, &buffer1, &start, &stop, &priority, &lifetime, &buffer2, &summary)) {
+     //TODO add more plausibility checks
      day = ParseDay(buffer1);
-     strncpy(file, buffer2, MaxFileName - 1);
-     file[strlen(buffer2)] = 0;
+     int l = strlen(buffer2);
+     if (l >= MaxFileName)
+        l = MaxFileName - 1;
+     strncpy(file, buffer2, l);
+     file[l] = 0;
      delete buffer1;
      delete buffer2;
      return day != 0;
@@ -325,7 +377,7 @@ bool cTimer::Parse(char *s)
 
 bool cTimer::Save(FILE *f)
 {
-  return fprintf(f, "%d:%d:%s:%d:%d:%d:%d:%s\n", active, channel, PrintDay(day), start, stop, priority, lifetime, file) > 0;
+  return fprintf(f, ToText()) > 0;
 }
 
 bool cTimer::IsSingleEvent(void)
@@ -333,10 +385,11 @@ bool cTimer::IsSingleEvent(void)
   return (day & 0x80000000) == 0;
 }
 
-bool cTimer::Matches(void)
+bool cTimer::Matches(time_t t)
 {
   if (active) {
-     time_t t = time(NULL);
+     if (t == 0)
+        t = time(NULL);
      struct tm now = *localtime(&t);
      int weekday = now.tm_wday == 0 ? 6 : now.tm_wday - 1; // we start with monday==0!
      int begin = TimeToInt(start);
@@ -393,13 +446,17 @@ void cTimer::SetRecording(bool Recording)
 
 cTimer *cTimer::GetMatch(void)
 {
-  cTimer *t = (cTimer *)Timers.First();
-  while (t) {
-        if (!t->recording && t->Matches())
-           return t;
-        t = (cTimer *)t->Next();
+  time_t t = time(NULL); // all timers must be checked against the exact same time to correctly handle Priority!
+  cTimer *t0 = NULL;
+  cTimer *ti = (cTimer *)Timers.First();
+  while (ti) {
+        if (!ti->recording && ti->Matches(t)) {
+           if (!t0 || ti->priority > t0->priority)
+              t0 = ti;
+           }
+        ti = (cTimer *)ti->Next();
         }
-  return NULL;
+  return t0;
 }
 
 // -- cKeys ------------------------------------------------------------------

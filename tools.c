@@ -4,11 +4,12 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.8 2000/06/24 15:26:15 kls Exp $
+ * $Id: tools.c 1.10 2000/07/23 13:16:54 kls Exp $
  */
 
 #define _GNU_SOURCE
 #include "tools.h"
+#include <ctype.h>
 #include <dirent.h>
 #include <errno.h>
 #include <signal.h>
@@ -58,6 +59,26 @@ bool readint(int filedes, int &n)
   return DataAvailable(filedes) && read(filedes, &n, sizeof(n)) == sizeof(n);
 }
 
+int readstring(int filedes, char *buffer, int size, bool wait = false)
+{
+  int rbytes = 0;
+
+  while (DataAvailable(filedes, wait)) {
+        int n = read(filedes, buffer + rbytes, size - rbytes);
+        if (n == 0)
+           break; // EOF
+        if (n < 0) {
+           LOG_ERROR;
+           break;
+           }
+        rbytes += n;
+        if (rbytes == size)
+           break;
+        wait = false;
+        }
+  return rbytes;
+}
+
 void purge(int filedes)
 {
   while (DataAvailable(filedes))
@@ -74,6 +95,25 @@ char *readline(FILE *f)
      return buffer;
      }
   return NULL;
+}
+
+char *strreplace(char *s, char c1, char c2)
+{
+  char *p = s;
+
+  while (*p) {
+        if (*p == c1)
+           *p = c2;
+        p++;
+        }
+  return s;
+}
+
+char *skipspace(char *s)
+{
+  while (*s && isspace(*s))
+        s++;
+  return s;
 }
 
 int time_ms(void)
@@ -93,6 +133,16 @@ void delay_ms(int ms)
   int t0 = time_ms();
   while (time_ms() - t0 < ms)
         ;
+}
+
+bool isnumber(const char *s)
+{
+  while (*s) {
+        if (!isdigit(*s))
+           return false;
+        s++;
+        }
+  return true;
 }
 
 bool MakeDirs(const char *FileName, bool IsDirectory)

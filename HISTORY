@@ -56,11 +56,46 @@ Video Disk Recorder Revision History
   the PC keyboard to better resemble the "up-down-left-right-ok" layout on
   menu controlling remote control units.
 
-2000-07-15: Version 0.06
+2000-07-25: Version 0.6
 
 - Added support for LIRC remote control (thanks to Carsten Koch!).
   There are now three different remote control modes: KBD (PC-Keyboard), RCU
   and LIRC. See the INSTALL file for information on how to enable either of
   these modes. The default mode is now KBD, not RCU as before (to make it
   work immediately even if there is no actual remote control).
-
+- Fixed small bug in dvbapi.c that was causing some channels (many on hotbird)
+  not to be correctly tuned (thanks to Plamen Ganev!).
+- Now clearing the replay buffer in search forward/back, which results in
+  faster reaction.
+- The 'Recordings' menu is now listed alphabetically (thanks to Carsten Koch!).
+- The new 'epg2timers' tool (thanks to Carsten Koch!) can be used to convert
+  an EPG "merkliste" page (http://www.tvtv.de) to vdr timer entries.
+- The new 'xtvrc2vdr' tool (thanks to Plamen Ganev!) can be used to convert
+  'xtvrc' channel files into 'vdr' format.
+- When more than one timer matches at the same time, the first one in the list
+  with the highest 'Priority' is selected.
+- The MANUAL section on "Programming the Timer" has been filled in.
+- The year in the "Recordings" menu as well as in the progress display during
+  replay has been reduced to 2 digits to allow more space for the recording's
+  title. In the internal file structure the year is still stored with 4 digits,
+  so there will be no problem at the next turn of the century ;-)
+- Channel names and timer filenames can now contain blanks. To avoid problems
+  with file names that contain blanks, all blanks in recording file names are
+  converted to underscores.
+- The polarization can now be given in uppercase or lowercase characters in
+  channels.conf.
+- Fixed buffer initialization to work with DVB driver version 0.6.
+- Implemented the "Simple Video Disk Recorder Protocol" (SVDRP) to control
+  the VDR over a network connection.
+- Implemented command line option handling.
+- The program can now run in full background mode by using the --daemon option.
+- Added a "summary" field to the timers (thanks to Carsten Koch!).
+  This field can contain a descriptive text of the programme and will be
+  displayed when the "Blue" key is pressed on a recording that was created by
+  this timer. If the text contains the special character '|', a newline will
+  be inserted at that place.  When pressing "Ok" on a timer that contains a
+  summary field, the summary will be displayed. To edit such a timer the "Red"
+  key must be pressed. Timers without a summary still go into Edit mode when
+  pressing "Ok".  The summary field can only be filled in directly by editing
+  the 'timers.conf' file with a text editor, or by defining/modifying the timer
+  via the SVDRP interface.

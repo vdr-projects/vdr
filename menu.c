@@ -4,10 +4,11 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.16 2000/05/27 16:13:39 kls Exp $
+ * $Id: menu.c 1.20 2000/07/24 16:25:53 kls Exp $
  */
 
 #include "menu.h"
+#include <ctype.h>
 #include <limits.h>
 #include <stdio.h>
 #include <string.h>
@@ -16,7 +17,7 @@
 
 #define MENUTIMEOUT 120 // seconds
 
-const char *FileNameChars = "aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ0123456789-.# ";
+const char *FileNameChars = " aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ0123456789-.#^";
 
 // --- cMenuEditItem ---------------------------------------------------------
 
@@ -429,7 +430,7 @@ void cMenuEditStrItem::Set(void)
   char buf[1000];
   if (pos >= 0) {
      strncpy(buf, value, pos);
-     const char *s = value[pos] != ' ' ? value + pos + 1 : "";
+     const char *s = value[pos] != '^' ? value + pos + 1 : "";
      snprintf(buf + pos, sizeof(buf) - pos - 2, "[%c]%s", *(value + pos), s);
      SetValue(buf);
      }
@@ -455,12 +456,12 @@ eOSState cMenuEditStrItem::ProcessKey(eKeys Key)
 {
   switch (Key) {
     case kLeft:  if (pos > 0) {
-                    if (value[pos] == ' ')
+                    if (value[pos] == '^')
                        value[pos] = 0;
                     pos--;
                     }
                  break;
-    case kRight: if (pos < length && value[pos] != ' ') {
+    case kRight: if (pos < length && value[pos] != '^' && (pos < int(strlen(value) - 1) || value[pos] != ' ')) {
                     if (++pos >= int(strlen(value))) {
                        value[pos] = ' ';
                        value[pos + 1] = 0;
@@ -474,7 +475,7 @@ eOSState cMenuEditStrItem::ProcessKey(eKeys Key)
                     return cMenuEditItem::ProcessKey(Key);
                  break;
     case kOk:    if (pos >= 0) {
-                    if (value[pos] == ' ')
+                    if (value[pos] == '^')
                        value[pos] = 0;
                     pos = -1;
                     break;
@@ -707,6 +708,51 @@ eOSState cMenuChannels::ProcessKey(eKeys Key)
   return state;
 }
 
+// --- cMenuSummary --------------------------------------------------------
+
+class cMenuSummary : public cOsdMenu {
+public:
+  cMenuSummary(const char *Text);
+  virtual eOSState ProcessKey(eKeys Key);
+  };
+
+cMenuSummary::cMenuSummary(const char *Text)
+:cOsdMenu("Summary")
+{
+  while (*Text) {
+        char line[MenuColumns + 1];
+        char *p = line;
+        const char *b = NULL;
+        *p++ = ' ';
+        while (*Text && p - line < MenuColumns - 2) {
+              if (isspace(*Text))
+                 b = Text; // remember the blank
+              if (*Text == '\n')
+                 break;
+              *p++ = *Text++;
+              }
+        if (*Text) {
+           if (b && Text - b > 0) {
+              p -= Text - b;
+              Text = b + 1;
+              }
+           else
+              Text++;
+           }
+        *p = 0;
+        Add(new cOsdItem(line, osBack));
+        }
+}
+
+eOSState cMenuSummary::ProcessKey(eKeys Key)
+{
+  eOSState state = cOsdMenu::ProcessKey(Key);
+
+  if (state == osUnknown)
+     state = osContinue;
+  return state;
+}
+
 // --- cMenuEditTimer --------------------------------------------------------
 
 class cMenuEditTimer : public cOsdMenu {
@@ -799,6 +845,7 @@ private:
   eOSState New(void);
   eOSState Del(void);
   virtual void Move(int From, int To);
+  eOSState Summary(void);
 public:
   cMenuTimers(void);
   virtual eOSState ProcessKey(eKeys Key);
@@ -880,6 +927,16 @@ void cMenuTimers::Move(int From, int To)
   isyslog(LOG_INFO, "timer %d moved to %d", From + 1, To + 1);
 }
 
+eOSState cMenuTimers::Summary(void)
+{
+  if (HasSubMenu() || Count() == 0)
+     return osContinue;
+  cTimer *ti = Timers.Get(Current());
+  if (ti && ti->summary && *ti->summary)
+     return AddSubMenu(new cMenuSummary(ti->summary));
+  return Edit(); // convenience for people not using the Summary feature ;-)
+}
+
 eOSState cMenuTimers::ProcessKey(eKeys Key)
 {
   eOSState state = cOsdMenu::ProcessKey(Key);
@@ -888,7 +945,7 @@ eOSState cMenuTimers::ProcessKey(eKeys Key)
      switch (Key) {
        case kLeft:
        case kRight:  return Activate(Key == kRight);
-       case kOk:
+       case kOk:     return Summary();
        case kRed:    return Edit();
        case kGreen:  return New();
        case kYellow: return Del();
@@ -926,13 +983,14 @@ private:
   cRecordings Recordings;
   eOSState Play(void);
   eOSState Del(void);
+  eOSState Summary(void);
 public:
   cMenuRecordings(void);
   virtual eOSState ProcessKey(eKeys Key);
   };
 
 cMenuRecordings::cMenuRecordings(void)
-:cOsdMenu("Recordings", 11, 6)
+:cOsdMenu("Recordings", 9, 6)
 {
   if (Recordings.Load()) {
      cRecording *recording = Recordings.First();
@@ -941,7 +999,7 @@ cMenuRecordings::cMenuRecordings(void)
            recording = Recordings.Next(recording);
            }
      }
-  SetHelp("Play", NULL/*XXX"Resume"*/, "Delete");
+  SetHelp("Play", NULL/*XXX"Resume"*/, "Delete", "Summary");
 }
 
 eOSState cMenuRecordings::Play(void)
@@ -975,6 +1033,16 @@ eOSState cMenuRecordings::Del(void)
   return osContinue;
 }
 
+eOSState cMenuRecordings::Summary(void)
+{
+  if (HasSubMenu() || Count() == 0)
+     return osContinue;
+  cMenuRecordingItem *ri = (cMenuRecordingItem *)Get(Current());
+  if (ri && ri->recording->Summary() && *ri->recording->Summary())
+     return AddSubMenu(new cMenuSummary(ri->recording->Summary()));
+  return osContinue;
+}
+
 eOSState cMenuRecordings::ProcessKey(eKeys Key)
 {
   eOSState state = cOsdMenu::ProcessKey(Key);
@@ -984,6 +1052,7 @@ eOSState cMenuRecordings::ProcessKey(eKeys Key)
        case kOk:
        case kRed:    return Play();
        case kYellow: return Del();
+       case kBlue:   return Summary();
        default: break;
        }
      }
@@ -1061,7 +1130,8 @@ cRecordControl::cRecordControl(cDvbApi *DvbApi, cTimer *Timer)
   timer->SetRecording(true);
   cChannel::SwitchTo(timer->channel - 1, dvbApi);
   cRecording Recording(timer);
-  dvbApi->StartRecord(Recording.FileName());
+  if (dvbApi->StartRecord(Recording.FileName()))
+     Recording.WriteSummary();
   Interface.DisplayRecording(dvbApi->Index(), true);
 }
 
@@ -1116,7 +1186,7 @@ bool cRecordControls::Start(cTimer *Timer)
             }
         }
      else
-        esyslog(LOG_ERR, "ERROR: no free DVB device to record channel %d!", ch);
+        esyslog(LOG_ERR, "ERROR: no free DVB device to record channel %d!", ch + 1);
      }
   else
      esyslog(LOG_ERR, "ERROR: channel %d not defined!", ch + 1);

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 1.6 2000/04/24 09:45:49 kls Exp $
+ * $Id: recording.h 1.7 2000/07/23 19:06:14 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -22,16 +22,18 @@ private:
   char *titleBuffer;
   char *fileName;
   char *name;
+  char *summary;
 public:
   time_t start;
   int priority;
   int lifetime;
-  cRecording(const char *Name, time_t Start, int Priority, int LifeTime);
   cRecording(cTimer *Timer);
   cRecording(const char *FileName);
   ~cRecording();
   const char *FileName(void);
   const char *Title(char Delimiter = ' ');
+  const char *Summary(void) { return summary; }
+  bool WriteSummary(void);
   bool Delete(void);
        // Changes the file name so that it will no longer be visible in the "Recordings" menu
        // Returns false in case of error

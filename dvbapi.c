@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.11 2000/06/24 14:03:19 kls Exp $
+ * $Id: dvbapi.c 1.15 2000/07/21 13:18:02 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -818,8 +818,8 @@ cReplayBuffer::cReplayBuffer(int *OutFile, const char *FileName)
   // All recordings start with '1':
   fileNumber = 1; //TODO what if it doesn't start with '1'???
   //XXX hack to make the video device go into 'replaying' mode:
-  char dummy;
-  write(*OutFile, &dummy, sizeof(dummy));
+  char *dummy = "AV"; // must be "AV" to make the driver go into AV_PES mode!
+  write(*OutFile, dummy, strlen(dummy));
 }
 
 cReplayBuffer::~cReplayBuffer()
@@ -1327,8 +1327,8 @@ bool cDvbApi::SetChannel(int FrequencyMHz, char Polarization, int Diseqc, int Sr
      struct frontend front;
      ioctl(videoDev, VIDIOCGFRONTEND, &front);
      unsigned int freq = FrequencyMHz;
-     front.ttk = (freq < 11800UL) ? 0 : 1;
-     if (freq < 11800UL)
+     front.ttk = (freq < 11700UL) ? 0 : 1;
+     if (freq < 11700UL)
         freq -=  9750UL;
      else
         freq -= 10600UL;
@@ -1337,7 +1337,7 @@ bool cDvbApi::SetChannel(int FrequencyMHz, char Polarization, int Diseqc, int Sr
      front.freq      = freq * 1000000UL;
      front.diseqc    = Diseqc;
      front.srate     = Srate * 1000;
-     front.volt      = (Polarization == 'v') ? 0 : 1;
+     front.volt      = (Polarization == 'v' || Polarization == 'V') ? 0 : 1;
      front.video_pid = Vpid;
      front.audio_pid = Apid;
      front.fec       = 8;
@@ -1569,17 +1569,25 @@ bool cDvbApi::StartReplay(const char *FileName, const char *Title)
                                             Buffer->Stop(); break;
                        case dvbPauseReplay: SetReplayMode(Paused ? VID_PLAY_NORMAL : VID_PLAY_PAUSE);
                                             Paused = !Paused;
+                                            if (FastForward || FastRewind) {
+                                               SetReplayMode(VID_PLAY_CLEAR_BUFFER);
+                                               Buffer->Clear();
+                                               }
                                             FastForward = FastRewind = false;
                                             Buffer->SetMode(rmPlay);
                                             break;
-                       case dvbFastForward: SetReplayMode(VID_PLAY_NORMAL);
+                       case dvbFastForward: SetReplayMode(VID_PLAY_CLEAR_BUFFER);
+                                            SetReplayMode(VID_PLAY_NORMAL);
                                             FastForward = !FastForward;
                                             FastRewind = Paused = false;
+                                            Buffer->Clear();
                                             Buffer->SetMode(FastForward ? rmFastForward : rmPlay);
                                             break;
-                       case dvbFastRewind:  SetReplayMode(VID_PLAY_NORMAL);
+                       case dvbFastRewind:  SetReplayMode(VID_PLAY_CLEAR_BUFFER);
+                                            SetReplayMode(VID_PLAY_NORMAL);
                                             FastRewind = !FastRewind;
                                             FastForward = Paused = false;
+                                            Buffer->Clear();
                                             Buffer->SetMode(FastRewind ? rmFastRewind : rmPlay);
                                             break;
                        case dvbSkip:        {
@@ -1592,6 +1600,7 @@ bool cDvbApi::StartReplay(const char *FileName, const char *Title)
                                                  Buffer->SkipSeconds(Seconds);
                                                  }
                                             }
+                                            break;
                        case dvbGetIndex:    {
                                               int Current, Total;
                                               Buffer->GetIndex(Current, Total);
