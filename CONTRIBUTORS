@@ -910,6 +910,7 @@ Reinhard Nissl <rnissl@gmx.de>
  for reporting a race condition in starting a thread
  for implementing cDolbyRepacker for better handling of Dolby Digital PES packets
  for extending some buffer sizes to allow handling HDTV streams
+ for adding substream handling to cDolbyRepacker
 
 Richard Robson <richard_robson@beeb.net>
  for reporting freezing replay if a timer starts while in Transfer Mode from the
@@ -1112,6 +1113,7 @@ Marco Schlüßler <marco@lordzodiac.de>
  for some improvements to cPoller
  for implementing displaying mandatory subtitles in the SPU decoder
  for pointing out a problem with canceling the LIRC thread
+ for a patch that implements substream handling into cDevice::PlayPesPacket()
 
 Jürgen Schmitz <j.schmitz@web.de>
  for reporting a bug in displaying the current channel when switching via the SVDRP

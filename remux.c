@@ -11,7 +11,7 @@
  * The cDolbyRepacker code was originally written by Reinhard Nissl <rnissl@gmx.de>,
  * and adapted to the VDR coding style by Klaus.Schmidinger@cadsoft.de.
  *
- * $Id: remux.c 1.26 2005/01/16 15:22:16 kls Exp $
+ * $Id: remux.c 1.27 2005/01/23 12:56:39 kls Exp $
  */
 
 #include "remux.h"
@@ -23,10 +23,14 @@
 // --- cRepacker -------------------------------------------------------------
 
 class cRepacker {
+protected:
+  uint8_t subStreamId;
 public:
+  cRepacker(void) { subStreamId = 0; }
   virtual ~cRepacker() {}
   virtual int Put(cRingBufferLinear *ResultBuffer, const uchar *Data, int Count) = 0;
   virtual int BreakAt(const uchar *Data, int Count) = 0;
+  void SetSubStreamId(uint8_t SubStreamId) { subStreamId = SubStreamId; }
   };
 
 // --- cDolbyRepacker --------------------------------------------------------
@@ -36,7 +40,7 @@ private:
   static int frameSizes[];
   uchar fragmentData[6 + 65535];
   int fragmentLen;
-  uchar pesHeader[6 + 3 + 255 + 4];
+  uchar pesHeader[6 + 3 + 255 + 4 + 4];
   int pesHeaderLen;
   uchar chk1;
   uchar chk2;
@@ -211,6 +215,12 @@ int cDolbyRepacker::Put(cRingBufferLinear *ResultBuffer, const uchar *Data, int 
                   continue;
                   }
                // adjust PES packet length and output packet
+               if (subStreamId) {
+                  pesHeader[pesHeaderLen++] = subStreamId;
+                  pesHeader[pesHeaderLen++] = 0x00;
+                  pesHeader[pesHeaderLen++] = 0x00;
+                  pesHeader[pesHeaderLen++] = 0x00;
+                  }
                int packetLen = pesHeaderLen - 6 + ac3todo;
                pesHeader[4] = packetLen >> 8;
                pesHeader[5] = packetLen & 0xFF;
@@ -343,6 +353,7 @@ private:
   uint8_t *buf;
   uint8_t cid;
   uint8_t audioCid;
+  uint8_t subStreamId;
   int plength;
   uint8_t plen[2];
   uint8_t flag1;
@@ -364,7 +375,7 @@ private:
   void write_ipack(const uint8_t *Data, int Count);
   void instant_repack(const uint8_t *Buf, int Count);
 public:
-  cTS2PES(int Pid, cRingBufferLinear *ResultBuffer, int Size, uint8_t AudioCid = 0x00, cRepacker *Repacker = NULL);
+  cTS2PES(int Pid, cRingBufferLinear *ResultBuffer, int Size, uint8_t AudioCid = 0x00, uint8_t SubStreamId = 0x00, cRepacker *Repacker = NULL);
   ~cTS2PES();
   int Pid(void) { return pid; }
   void ts_to_pes(const uint8_t *Buf); // don't need count (=188)
@@ -373,13 +384,16 @@ public:
 
 uint8_t cTS2PES::headr[] = { 0x00, 0x00, 0x01 };
 
-cTS2PES::cTS2PES(int Pid, cRingBufferLinear *ResultBuffer, int Size, uint8_t AudioCid, cRepacker *Repacker)
+cTS2PES::cTS2PES(int Pid, cRingBufferLinear *ResultBuffer, int Size, uint8_t AudioCid, uint8_t SubStreamId, cRepacker *Repacker)
 {
   pid = Pid;
   resultBuffer = ResultBuffer;
   size = Size;
   audioCid = AudioCid;
+  subStreamId = SubStreamId;
   repacker = Repacker;
+  if (repacker)
+     repacker->SetSubStreamId(subStreamId);
 
   tsErrors = 0;
   ccErrors = 0;
@@ -724,16 +738,14 @@ cRemux::cRemux(int VPid, const int *APids, const int *DPids, const int *SPids, b
      }
   if (DPids) {
      int n = 0;
-     while (*DPids && numTracks < MAXTRACKS && n < MAXDPIDS) {
-           ts2pes[numTracks++] = new cTS2PES(*DPids++, resultBuffer, IPACKS, 0x00, new cDolbyRepacker); //XXX substream id(n++)???
-           break; //XXX until we can handle substream ids we can only handle a single Dolby track
-           }
+     while (*DPids && numTracks < MAXTRACKS && n < MAXDPIDS)
+           ts2pes[numTracks++] = new cTS2PES(*DPids++, resultBuffer, IPACKS, 0x00, 0x80 + n++, new cDolbyRepacker);
      }
   /* future...
   if (SPids) {
      int n = 0;
      while (*SPids && numTracks < MAXTRACKS && n < MAXSPIDS)
-           ts2pes[numTracks++] = new cTS2PES(*SPids++, resultBuffer, IPACKS); //XXX substream id(n++)???
+           ts2pes[numTracks++] = new cTS2PES(*SPids++, resultBuffer, IPACKS, 0x00, 0x28 + n++);
      }
   */
 }

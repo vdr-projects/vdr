@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 1.52 2005/01/16 14:26:16 kls Exp $
+ * $Id: device.h 1.53 2005/01/22 14:58:07 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -315,6 +315,7 @@ public:
 private:
   tTrackId availableTracks[ttMaxTrackTypes];
   eTrackType currentAudioTrack;
+  bool pre_1_3_19_PrivateStream;
 protected:
   virtual void SetAudioTrackDevice(eTrackType Type);
        ///< Sets the current audio track to the given value.
