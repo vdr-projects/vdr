@@ -2538,7 +2538,7 @@ Video Disk Recorder Revision History
   overflow that caused a crash when cleaning up the EPG data (at 05:00 in the
   morning).
 
-2004-01-09: Version 1.3.1
+2004-01-10: Version 1.3.1
 
 - Fixed a lockup in the EPG scanner when no non-primary device was available
   (thanks to Martin Holst for reporting this one).
@@ -2560,3 +2560,5 @@ Video Disk Recorder Revision History
 - Fixed a 'const' in libsi/si.h (thanks to Marcel Wiesweg).
 - Fixed the 'su' call in 'runvdr' to make it work on systems that require the
   user name to appear before the command option (thanks to Robert Huitl).
+- Fixed testing for matching section filters in case they are turned off (thanks
+  to Marcel Wiesweg).

@@ -652,6 +652,7 @@ Marcel Wiesweg <marcel.wiesweg@gmx.de>
  currently not transmitting
  for fixing volume display in case a plugin has its own OSD open
  for providing 'libsi' and adapting the EIT mechanisms to it
+ for fixing testing for matching section filters in case they are turned off
 
 Torsten Herz <torsten.herz@web.de>
  for fixing a possible deadlock when using the "Blue" button in the "Schedules" menu
