@@ -2103,3 +2103,4 @@ Video Disk Recorder Revision History
 - Restoring the current channel in case a recording has switched the transponder.
   If all devices are busy and none of them can provide the current channel, the
   message "Channel not available!" will be displayed.
+- Removed the (no longer necessary) 'panic' stuff from cThread.

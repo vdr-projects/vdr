@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.58 2003/05/02 12:24:04 kls Exp $
+ * $Id: dvbdevice.c 1.59 2003/05/03 14:03:20 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -671,16 +671,6 @@ bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
      TurnOffLiveMode();
 
   dvbTuner->Set(Channel, DoTune);
-  if (DoTune) {
-     /*XXX do we still need this???
-     if (!(status & FE_HAS_LOCK)) {
-        esyslog("ERROR: channel %d not locked on DVB card %d!", Channel->Number(), CardIndex() + 1);
-        if (LiveView && IsPrimaryDevice())
-           cThread::RaisePanic();
-        return false;
-        }
-     XXX*/
-     }
 
   // PID settings:
 
