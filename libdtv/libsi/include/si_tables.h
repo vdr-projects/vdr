@@ -5,11 +5,13 @@
 ///                                                        ///
 //////////////////////////////////////////////////////////////
 
-// $Revision: 1.3 $
-// $Date: 2001/10/07 10:24:46 $
+// $Revision: 1.4 $
+// $Date: 2003/02/04 18:45:36 $
 // $Author: hakenes $
 //
-//   (C) 2001 Rolf Hakenes <hakenes@hippomi.de>, under the GNU GPL.
+//   (C) 2001-03 Rolf Hakenes <hakenes@hippomi.de>, under the
+//               GNU GPL with contribution of Oleg Assovski,
+//               www.satmania.com
 //
 // libsi is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -32,12 +34,22 @@
 #define BcdTimeToSeconds(x) ((3600 * ((10*((x##_h & 0xF0)>>4)) + (x##_h & 0xF))) + \
                              (60 * ((10*((x##_m & 0xF0)>>4)) + (x##_m & 0xF))) + \
                              ((10*((x##_s & 0xF0)>>4)) + (x##_s & 0xF)))
+#define BcdTimeToMinutes(x) ((60 * ((10*((x##_h & 0xF0)>>4)) + (x##_h & 0xF))) + \
+                             (((10*((x##_m & 0xF0)>>4)) + (x##_m & 0xF))))
+#define BcdCharToInt(x) (10*((x & 0xF0)>>4) + (x & 0xF))
+#define CheckBcdChar(x) ((((x & 0xF0)>>4) <= 9) && \
+                         ((x & 0x0F) <= 9))
+#define CheckBcdSignedChar(x) ((((x & 0xF0)>>4) >= 0) && (((x & 0xF0)>>4) <= 9) && \
+                         ((x & 0x0F) >= 0) && ((x & 0x0F) <= 9))
 
 #define TableHasMoreSections(x) (((pat_t *)(x))->last_section_number > ((pat_t *)(x))->section_number)
 #define GetTableId(x) ((pat_t *)(x))->table_id
 #define GetSectionNumber(x) ((pat_t *)(x))->section_number
 #define GetLastSectionNumber(x) ((pat_t *)(x))->last_section_number
 #define GetServiceId(x) (((eit_t *)(x))->service_id_hi << 8) | ((eit_t *)(x))->service_id_lo
+#define GetSegmentLastSectionNumber(x) ((eit_t *)(x))->segment_last_section_number
+#define GetLastTableId(x) ((eit_t *)(x))->segment_last_table_id
+#define GetSectionLength(x) HILO(((pat_t *)(x))->section_length)
 
 /*
  *
@@ -113,7 +125,37 @@ typedef struct {
  *         applicable.
  *
  */
-    /* TO BE DONE */
+#define CAT_LEN 8
+
+typedef struct {
+   u_char table_id                               :8;
+#if BYTE_ORDER == BIG_ENDIAN
+   u_char section_syntax_indicator               :1;
+   u_char dummy                                  :1;        // has to be 0
+   u_char                                        :2;
+   u_char section_length_hi                      :4;
+#else
+   u_char section_length_hi                      :4;
+   u_char                                        :2;
+   u_char dummy                                  :1;        // has to be 0
+   u_char section_syntax_indicator               :1;
+#endif
+   u_char section_length_lo                      :8;
+   u_char reserved_1                             :8;
+   u_char reserved_2                             :8;
+#if BYTE_ORDER == BIG_ENDIAN
+   u_char                                        :2;
+   u_char version_number                         :5;
+   u_char current_next_indicator                 :1;
+#else
+   u_char current_next_indicator                 :1;
+   u_char version_number                         :5;
+   u_char                                        :2;
+#endif
+   u_char section_number                         :8;
+   u_char last_section_number                    :8;
+} cat_t;
+
 /*
  *
  *    3) Program Map Table (PMT):
@@ -297,7 +339,7 @@ typedef struct {
  *         bouquet.
  *
  */
-    /* TO BE DONE */
+/* SEE NIT (It has the same structure but has different allowed descriptors) */
 /*
  *
  *    2) Service Description Table (SDT):
@@ -338,6 +380,9 @@ typedef struct {
    u_char original_network_id_lo                 :8;
    u_char                                        :8;
 } sdt_t;
+
+#define GetSDTTransportStreamId(x) (HILO(((sdt_t *) x)->transport_stream_id))
+#define GetSDTOriginalNetworkId(x) (HILO(((sdt_t *) x)->original_network_id))
 
 #define SDT_DESCR_LEN 5
 
@@ -483,7 +528,36 @@ typedef struct {
  *         to the frequent updating of the time information.
  *
  */
-    /* TO BE DONE */
+#define TOT_LEN 10
+
+typedef struct {
+   u_char table_id                               :8; 
+#if BYTE_ORDER == BIG_ENDIAN
+   u_char section_syntax_indicator               :1;
+   u_char                                        :3;
+   u_char section_length_hi                      :4;
+#else
+   u_char section_length_hi                      :4;
+   u_char                                        :3;
+   u_char section_syntax_indicator               :1;
+#endif
+   u_char section_length_lo                      :8;
+   u_char utc_mjd_hi                             :8;
+   u_char utc_mjd_lo                             :8;
+   u_char utc_time_h                             :8;
+   u_char utc_time_m                             :8;
+   u_char utc_time_s                             :8;
+#if BYTE_ORDER == BIG_ENDIAN
+   u_char                                        :4;
+   u_char descriptors_loop_length_hi             :4;
+#else
+   u_char descriptors_loop_length_hi             :4;
+   u_char                                        :4;
+#endif
+   u_char descriptors_loop_length_lo             :8;
+} tot_t;
+
+
 /*
  *
  *    7) Stuffing Table (ST):
@@ -545,6 +619,25 @@ typedef struct descr_gen_struct {
 #define GetDescriptorLength(x) (((descr_gen_t *) x)->descriptor_length+DESCR_GEN_LEN)
 
 
+/* 0x09 ca_descriptor */
+
+#define DESCR_CA_LEN 6
+typedef struct descr_ca_struct {
+   u_char descriptor_tag                         :8;
+   u_char descriptor_length                      :8;
+   u_char CA_type_hi                             :8;
+   u_char CA_type_lo                             :8;
+#if BYTE_ORDER == BIG_ENDIAN
+   u_char reserved                               :3;
+   u_char CA_PID_hi                              :5;
+#else
+   u_char CA_PID_hi                              :5;
+   u_char reserved                               :3;
+#endif
+   u_char CA_PID_lo                              :8;
+} descr_ca_t;
+#define CastCaDescriptor(x) ((descr_ca_t *)(x))
+
 /* 0x0A iso_639_language_descriptor */
 
 #define DESCR_ISO_639_LANGUAGE_LEN 5
@@ -560,24 +653,30 @@ typedef struct descr_iso_639_language_struct {
 
 /* 0x40 network_name_descriptor */
 
-#define DESCR_NETWORK_NAME_LEN XX
+#define DESCR_NETWORK_NAME_LEN 2
 typedef struct descr_network_name_struct {
    u_char descriptor_tag                         :8;
    u_char descriptor_length                      :8;
-   /* TBD */
 } descr_network_name_t;
 #define CastNetworkNameDescriptor(x) ((descr_network_name_t *)(x))
 
 
 /* 0x41 service_list_descriptor */
 
-#define DESCR_SERVICE_LIST_LEN XX
+#define DESCR_SERVICE_LIST_LEN 2
 typedef struct descr_service_list_struct {
    u_char descriptor_tag                         :8;
    u_char descriptor_length                      :8;
-   /* TBD */
 } descr_service_list_t;
 #define CastServiceListDescriptor(x) ((descr_service_list_t *)(x))
+
+#define DESCR_SERVICE_LIST_LOOP_LEN 3
+typedef struct descr_service_list_loop_struct {
+   u_char service_id_hi                          :8;
+   u_char service_id_lo                          :8;
+   u_char service_type                           :8;
+} descr_service_list_loop_t;
+#define CastServiceListDescriptorLoop(x) ((descr_service_list_loop_t *)(x))
 
 
 /* 0x42 stuffing_descriptor */
@@ -604,13 +703,13 @@ typedef struct descr_satellite_delivery_system_struct {
    u_char orbital_position1                      :8;
    u_char orbital_position2                      :8;
 #if BYTE_ORDER == BIG_ENDIAN
-   u_char modulation                             :5;
-   u_char polarization                           :2;
    u_char west_east_flag                         :1;
+   u_char polarization                           :2;
+   u_char modulation                             :5;
 #else
-   u_char west_east_flag                         :1;
-   u_char polarization                           :2;
    u_char modulation                             :5;
+   u_char polarization                           :2;
+   u_char west_east_flag                         :1;
 #endif
    u_char symbol_rate1                           :8;
    u_char symbol_rate2                           :8;
@@ -964,13 +1063,38 @@ typedef struct descr_telephone_struct {
 
 /* 0x58 local_time_offset_descriptor */
 
-#define DESCR_LOCAL_TIME_OFFSET_LEN XX
+#define DESCR_LOCAL_TIME_OFFSET_LEN 2
 typedef struct descr_local_time_offset_struct {
    u_char descriptor_tag                         :8;
    u_char descriptor_length                      :8;
-   /* TBD */
 } descr_local_time_offset_t;
 #define CastLocalTimeOffsetDescriptor(x) ((descr_local_time_offset_t *)(x))
+
+#define LOCAL_TIME_OFFSET_ENTRY_LEN 15
+typedef struct local_time_offset_entry_struct {
+   u_char country_code1                          :8;
+   u_char country_code2                          :8;
+   u_char country_code3                          :8;
+#if BYTE_ORDER == BIG_ENDIAN
+   u_char country_region_id                      :6;
+   u_char                                        :1;
+   u_char local_time_offset_polarity             :1;
+#else
+   u_char local_time_offset_polarity             :1;
+   u_char                                        :1;
+   u_char country_region_id                      :6;
+#endif
+   u_char local_time_offset_h                    :8;
+   u_char local_time_offset_m                    :8;
+   u_char time_of_change_mjd_hi                  :8;
+   u_char time_of_change_mjd_lo                  :8;
+   u_char time_of_change_time_h                  :8;
+   u_char time_of_change_time_m                  :8;
+   u_char time_of_change_time_s                  :8;
+   u_char next_time_offset_h                     :8;
+   u_char next_time_offset_m                     :8;
+} local_time_offset_entry_t ;
+#define CastLocalTimeOffsetEntry(x) ((local_time_offset_entry_t *)(x))
 
 
 /* 0x59 subtitling_descriptor */

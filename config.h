@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.150 2003/03/09 10:01:02 kls Exp $
+ * $Id: config.h 1.152 2003/04/12 09:35:50 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -19,7 +19,7 @@
 #include "device.h"
 #include "tools.h"
 
-#define VDRVERSION "1.1.26"
+#define VDRVERSION "1.1.27"
 
 #define MAXPRIORITY 99
 #define MAXLIFETIME 99
@@ -229,6 +229,7 @@ public:
   int MinEventTimeout, MinUserInactivity;
   int MultiSpeedMode;
   int ShowReplayMode;
+  int ResumeID;
   int CaCaps[MAXDEVICES][MAXCACAPS];
   int CurrentChannel;
   int CurrentVolume;

@@ -1987,3 +1987,49 @@ Video Disk Recorder Revision History
 - Modified the EPG scanner to avoid CPU load peaks (thanks to Steffen Becker for
   reporting this one).
 - Fixed support for Viaccess CAMs (thanks to Axel Gruber for helping to debug this).
+
+2003-04-13: Version 1.1.27
+
+- The CAM is now accessed only if the current channel actually has a non-zero Ca
+  value, and CAM access is completely suppressed during replay, which avoids
+  problems in case the CAM is attached to the primary DVB device.
+- The "Left" and "Right" buttons now set the cursor to the first or last list item
+  even if the list consist only of a single page, like, for instance, the Main menu
+  (thanks to Oliver Endriss).
+- Made the log message "OSD window width must be a multiple of 4..." a debug message
+  instead of an error message, so it can be avoided by using a log level less than 3.
+- Updated Greek language texts (thanks to Dimitrios Dimitrakos).
+- Fixed faulty behaviour of the "Mute" key in case the channel display is visible
+  (thanks to Florian Bartels for reporting this one and Sascha Volkenandt for
+  helping to fix it).
+- Modified LOF handling to allow for C-band reception (thanks to Malcolm Caldwell).
+- Added some missing cAudio handling calls (thanks to Werner Fink).
+- Replaced the 'for' loops in StripAudioPackets() with memset() calls (thanks to
+  Werner Fink).
+- Further increased the timeout until an index file is considerd no longer to be
+  written.
+- Fixed a crash in case the index file can't be accessed any more during replay
+  (thanks to Stefan Huelswitt for reporting this one).
+- Fixed displaying messages in the status line in case they exceed the OSD width
+  (thanks to Gerhard Steiner for reporting this one).
+- Avoiding high CPU load in case the connection to LIRC gets lost (thanks to
+  Ludwig Nussel).
+- Fixed handling repeat function with LIRC (thanks to Ludwig Nussel).
+- Fixed handling min/max borders when entering integer values (thanks to Andy
+  Grobb for reporting this one).
+- Implemented a "resume ID" which allows several users to each have their own
+  resume.vdr files (thanks to Martin Hammerschmid). This parameter can be set in
+  the "Setup/Replay" menu (see MANUAL for details).
+- Now using 'libdtv' version 0.0.5 (thanks to Rolf Hakenes for the new version
+  and Stefan Huelswitt for adapting VDR to it).
+- If no device with an MPEG decoder can be found at startup, the first device
+  is now used as primary device (just to have some device).
+- Adjusted some Premiere channels in 'channels.conf' (thanks to Thomas Koch).
+- Updated 'channels.conf.cable' (thanks to Stefan Huﬂfeldt).
+- The 'epg.data' file is now read after all plugins have been started (thanks
+  to Sascha Volkenandt).
+- The LIRC remote control no longer tries to learn keys if it can't connect to
+  the LIRC daemon (thanks to Ludwig Nussel for reporting this one). The same
+  applies to the RCU remote control in case of errors during startup.
+- Fixed handling of Ca parameters with values <= MAXDEVICES, which don't indicate
+  an actual encrypted channel (thanks to Stefan Huelswitt for reporting this one).

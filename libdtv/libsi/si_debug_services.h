@@ -4,8 +4,8 @@
 ///                                                        ///
 //////////////////////////////////////////////////////////////
 
-// $Revision: 1.1 $
-// $Date: 2001/06/25 12:29:47 $
+// $Revision: 1.2 $
+// $Date: 2003/02/04 18:45:35 $
 // $Author: hakenes $
 //
 //   (C) 2001 Rolf Hakenes <hakenes@hippomi.de>, under the GNU GPL.
@@ -197,7 +197,7 @@ static struct content_type ContentTypes[] = {
 };
 #define CONTENT_TYPE_NUMBER 79
 
-static char StreamTypes[][70] = {
+static char *StreamTypes[] = {
    "ITU-T|ISO/IEC Reserved",
    "ISO/IEC Video",
    "13818-2 Video or 11172-2 constrained parameter video stream",
@@ -215,3 +215,31 @@ static char StreamTypes[][70] = {
    "ITU-T Rec. H.222.0 | ISO 13818-1 Reserved",
    "User private"
 };
+
+static char *CaIdents[] = {
+   "Standardized systems",
+   "Canal Plus",
+   "CCETT",
+   "Deutsche Telecom",
+   "Eurodec",
+   "France Telecom",
+   "Irdeto",
+   "Jerrold/GI",
+   "Matra Communication",
+   "News Datacom",
+   "Nokia",
+   "Norwegian Telekom",
+   "NTL",
+   "Philips",
+   "Scientific Atlanta",
+   "Sony",
+   "Tandberg Television",
+   "Thomson",
+   "TV/Com",
+   "HPT - Croatian Post and Telecommunications",
+   "HRT - Croatian Radio and Television",
+   "IBM",
+   "Nera",
+   "BetaTechnik"
+};
+#define MAX_CA_IDENT 24

@@ -49,6 +49,8 @@ Martin Hammerschmid <martin@hammerschmid.com>
  for adding a missing 'public' keyword in device.h
  for pointing out a bug in displaying the group separators in the channel display
  for reporting a problem with a missing initialization of 'number' in cChannel
+ for implementing a "resume ID" which allows several users to each have their own
+ resume.vdr files
 
 Bastian Guse <bastian@nocopy.de>
  for writing the FORMATS entry for timers.conf
@@ -163,6 +165,10 @@ Stefan Huelswitt <huels@iname.com>
  encrypted channel
  for reporting a problem with timers when channel IDs have a 'source' that is 0
  for reporting a new/delete malloc/free mismatch in ringbuffer.c
+ for reporting a crash in case the index file can't be accessed any more during replay
+ for adapting VDR to 'libdtv' version 0.0.5
+ for reporting a bug in handling of Ca parameters with values <= MAXDEVICES, which
+ don't indicate an actual encrypted channel
 
 Ulrich Rˆder <roeder@efr-net.de>
  for pointing out that there are channels that have a symbol rate higher than
@@ -219,6 +225,8 @@ Werner Fink <werner@suse.de>
  for improving thread locking in the ring buffer to avoid possible race conditions
  under heavy load
  for improving keyboard detection
+ for adding some missing cAudio handling calls
+ for replacing the 'for' loops in StripAudioPackets() with memset() calls
 
 Rolf Hakenes <hakenes@hippomi.de>
  for providing 'libdtv' and adapting the EIT mechanisms to it
@@ -240,6 +248,7 @@ Simon Bauschulte <SemiSchwabe@Brutzel.de>
 Andy Grobb <Charly98@01019freenet.de>
  for completing storing the current audio volume in the setup.conf file
  for fixing the EPG display in case Setup.ShowInfoOnChSwitch is set to "no"
+ for reporting a bug in handling min/max borders when entering integer values
 
 Thomas Heiligenmann <thomas@heiligenmann.de>
  for implementing the SVDRP commands LSTR and DELR
@@ -444,6 +453,9 @@ Oliver Endriss <o.endriss@gmx.de>
  for providing examples for 'diseqc.conf'
  for improving deleting stale lock files
  for fixing high CPU load in 'Transfer Mode'
+ for making the "Left" and "Right" buttons set the cursor to the first or last
+ list item even if the list consist only of a single page, like, for instance,
+ the Main menu
 
 Reinhard Walter Buchner <rw.buchner@freenet.de>
  for adding some satellites to 'sources.conf'
@@ -471,6 +483,8 @@ Gerhard Steiner <steiner@mail.austria.com>
  shall be executed from the "Recordings" menu
  for suggesting to interpret the character '|' in the description texts of EPG
  records as a newline character
+ for reporting a bug in displaying messages in the status line in case they exceed
+ the OSD width
 
 Jaakko Hyv‰tti <jaakko@hyvatti.iki.fi>
  for translating OSD texts to the Finnish language
@@ -553,3 +567,27 @@ Torsten Herz <torsten.herz@web.de>
 
 Steffen Becker <stbecker@rbg.informatik.tu-darmstadt.de>
  for reporting a problem with CPU load peaks (in the EPG scanner)
+
+Florian Bartels <Florian.Bartels@envisage.de>
+ for reporting a faulty behaviour of the "Mute" key in case the channel display
+ is visible
+
+Sascha Volkenandt <sascha@akv-soft.de>
+ for helping to fix a faulty behaviour of the "Mute" key in case the channel display
+ is visible
+ for making the 'epg.data' file being read after all plugins have been started
+
+Malcolm Caldwell <malcolm.caldwell@ntu.edu.au>
+ for modifying LOF handling to allow for C-band reception
+
+Ludwig Nussel <ludwig.nussel@web.de>
+ for making the LIRC thread avoid high CPU load in case the connection to LIRC gets lost
+ for fixing handling repeat function with LIRC
+ for reporting a problem with the LIRC remote control trying to learn keys even if it
+ couldn't connect to the LIRC daemon
+
+Thomas Koch <tom@harhar.net>
+ for his support in keeping the Premiere World channels up to date in 'channels.conf'
+
+Stefan Huﬂfeldt <vdr@marvin.on-luebeck.de>
+ for his help in keeping 'channels.conf.cable' up to date

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 1.18 2003/02/15 10:38:59 kls Exp $
+ * $Id: dvbplayer.c 1.19 2003/03/30 12:51:51 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -324,11 +324,8 @@ void cDvbPlayer::StripAudioPackets(uchar *b, int Length, uchar Except)
               case 0xC0 ... 0xC1: // audio
                    if (c == 0xC1)
                       canToggleAudioTrack = true;
-                   if (!Except || c != Except) {
-                      int n = l;
-                      for (int j = i; j < Length && n--; j++)
-                          b[j] = 0x00;
-                      }
+                   if (!Except || c != Except)
+                      memset(&b[i], 0x00, min(l, Length-i));
                    break;
               case 0xE0 ... 0xEF: // video
                    break;

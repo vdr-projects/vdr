@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.146 2003/03/09 14:07:46 kls Exp $
+ * $Id: vdr.c 1.149 2003/04/12 13:57:45 kls Exp $
  */
 
 #include <getopt.h>
@@ -354,8 +354,6 @@ int main(int argc, char *argv[])
 
   cDvbDevice::Initialize();
 
-  cSIProcessor::Read();
-
   // Start plugins:
 
   if (!PluginManager.StartPlugins())
@@ -364,21 +362,32 @@ int main(int argc, char *argv[])
   // Primary device:
 
   cDevice::SetPrimaryDevice(Setup.PrimaryDVB);
-  if (!cDevice::PrimaryDevice()) {
+  if (!cDevice::PrimaryDevice() || !cDevice::PrimaryDevice()->HasDecoder()) {
+     if (cDevice::PrimaryDevice() && !cDevice::PrimaryDevice()->HasDecoder())
+        isyslog("device %d has no MPEG decoder", cDevice::PrimaryDevice()->DeviceNumber() + 1);
      for (int i = 0; i < cDevice::NumDevices(); i++) {
          cDevice *d = cDevice::GetDevice(i);
          if (d && d->HasDecoder()) {
             isyslog("trying device number %d instead", i + 1);
-            if (cDevice::SetPrimaryDevice(i + 1))
+            if (cDevice::SetPrimaryDevice(i + 1)) {
                Setup.PrimaryDVB = i + 1;
+               break;
+               }
             }
          }
-     }
-  if (!cDevice::PrimaryDevice()) {
-     const char *msg = "no primary device found - giving up!";
-     fprintf(stderr, "vdr: %s\n", msg);
-     esyslog("ERROR: %s", msg);
-     return 2;
+     if (!cDevice::PrimaryDevice()) {
+        const char *msg = "no primary device found - using first device!";
+        fprintf(stderr, "vdr: %s\n", msg);
+        esyslog("ERROR: %s", msg);
+        if (!cDevice::SetPrimaryDevice(0))
+           return 2;
+        if (!cDevice::PrimaryDevice()) {
+           const char *msg = "no primary device found - giving up!";
+           fprintf(stderr, "vdr: %s\n", msg);
+           esyslog("ERROR: %s", msg);
+           return 2;
+           }
+        }
      }
 
   // OSD:
@@ -415,6 +424,8 @@ int main(int argc, char *argv[])
      cDevice::PrimaryDevice()->SetVolume(Setup.CurrentVolume, true);
 
   cEITScanner EITScanner;
+
+  cSIProcessor::Read();
 
   // Signal handlers:
 
@@ -530,14 +541,17 @@ int main(int argc, char *argv[])
           case kVolDn:
           case kMute:
                if (key == kMute) {
-                  if (!cDevice::PrimaryDevice()->ToggleMute() && !Menu)
+                  if (!cDevice::PrimaryDevice()->ToggleMute() && !Menu) {
+                     key = kNone; // nobody else needs to see these keys
                      break; // no need to display "mute off"
+                     }
                   }
                else
                   cDevice::PrimaryDevice()->SetVolume(NORMALKEY(key) == kVolDn ? -VOLUMEDELTA : VOLUMEDELTA);
                if (!Interface->IsOpen())
                   Menu = Temp = cDisplayVolume::Create();
                cDisplayVolume::Process(key);
+               key = kNone; // nobody else needs to see these keys
                break;
           // Power off:
           case kPower: isyslog("Power button pressed");

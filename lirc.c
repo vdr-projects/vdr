@@ -6,7 +6,7 @@
  *
  * LIRC support added by Carsten Koch <Carsten.Koch@icem.de>  2000-06-16.
  *
- * $Id: lirc.c 1.1 2002/09/29 13:16:33 kls Exp $
+ * $Id: lirc.c 1.4 2003/04/12 14:37:17 kls Exp $
  */
 
 #include "lirc.h"
@@ -41,6 +41,11 @@ cLircRemote::~cLircRemote()
   Cancel();
 }
 
+bool cLircRemote::Ready(void)
+{
+  return f >= 0;
+}
+
 void cLircRemote::Action(void)
 {
   dsyslog("LIRC remote control thread started (pid=%d)", getpid());
@@ -50,34 +55,49 @@ void cLircRemote::Action(void)
   char buf[LIRC_BUFFER_SIZE];
   char LastKeyName[LIRC_KEY_BUF] = "";
   bool repeat = false;
+  int timeout = -1;
 
   for (; f >= 0;) {
 
       LOCK_THREAD;
 
-      if (cFile::FileReady(f, REPEATLIMIT) && safe_read(f, buf, sizeof(buf)) > 21) {
+      bool ready = cFile::FileReady(f, timeout);
+      int ret = ready ? safe_read(f, buf, sizeof(buf)) : -1;
+
+      if (ready) {
+         if (ret <= 21) {
+            esyslog("ERROR: lircd connection lost");
+            close(f);
+            f = -1;
+            break;
+            }
          int count;
          char KeyName[LIRC_KEY_BUF];
          sscanf(buf, "%*x %x %29s", &count, KeyName); // '29' in '%29s' is LIRC_KEY_BUF-1!
          int Now = time_ms();
          if (count == 0) {
+            if (repeat)
+               Put(LastKeyName, false, true);
             strcpy(LastKeyName, KeyName);
             repeat = false;
             FirstTime = Now;
+            timeout = -1;
             }
          else {
             if (Now - FirstTime < REPEATDELAY)
                continue; // repeat function kicks in after a short delay
             repeat = true;
+            timeout = REPEATDELAY;
             }
          LastTime = Now;
          Put(KeyName, repeat);
          }
       else if (repeat) { // the last one was a repeat, so let's generate a release
-         if (time_ms() - LastTime > REPEATDELAY) {
+         if (time_ms() - LastTime >= REPEATDELAY) {
             Put(LastKeyName, false, true);
             repeat = false;
             *LastKeyName = 0;
+            timeout = -1;
             }
          }
       }

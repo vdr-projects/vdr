@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.37 2003/03/09 14:05:23 kls Exp $
+ * $Id: device.c 1.39 2003/04/12 11:51:04 kls Exp $
  */
 
 #include "device.h"
@@ -106,19 +106,14 @@ bool cDevice::SetPrimaryDevice(int n)
 {
   n--;
   if (0 <= n && n < numDevices && device[n]) {
-     if (device[n]->HasDecoder()) {
-        isyslog("setting primary device to %d", n + 1);
-        if (primaryDevice)
-           primaryDevice->MakePrimaryDevice(false);
-        primaryDevice = device[n];
-        primaryDevice->MakePrimaryDevice(true);
-        return true;
-        }
-     else
-        esyslog("ERROR: device number %d has no MPEG decoder", n + 1);
+     isyslog("setting primary device to %d", n + 1);
+     if (primaryDevice)
+        primaryDevice->MakePrimaryDevice(false);
+     primaryDevice = device[n];
+     primaryDevice->MakePrimaryDevice(true);
+     return true;
      }
-  else
-     esyslog("ERROR: invalid primary device number: %d", n + 1);
+  esyslog("ERROR: invalid primary device number: %d", n + 1);
   return false;
 }
 
@@ -422,9 +417,16 @@ bool cDevice::ToggleMute(void)
 {
   int OldVolume = volume;
   mute = !mute;
-  SetVolume(0, mute);
+  //XXX why is it necessary to use different sequences???
+  if (mute) {
+     SetVolume(0, mute);
+     Audios.MuteAudio(mute); // Mute external audio after analog audio
+     }
+  else {
+     Audios.MuteAudio(mute); // Enable external audio before analog audio
+     SetVolume(0, mute);
+     }
   volume = OldVolume;
-  Audios.MuteAudio(mute);
   return mute;
 }
 
@@ -478,10 +480,12 @@ void cDevice::Clear(void)
 
 void cDevice::Play(void)
 {
+  Audios.MuteAudio(mute);
 }
 
 void cDevice::Freeze(void)
 {
+  Audios.MuteAudio(true);
 }
 
 void cDevice::Mute(void)
@@ -520,6 +524,7 @@ void cDevice::Detach(cPlayer *Player)
      player = NULL;
      SetPlayMode(pmNone);
      playerDetached = true;
+     Audios.ClearAudio();
      }
 }
 

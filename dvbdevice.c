@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.46 2003/02/16 15:10:39 kls Exp $
+ * $Id: dvbdevice.c 1.51 2003/04/12 15:06:11 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -196,6 +196,7 @@ bool cDvbTuner::SetFrontend(void)
             CHECK(ioctl(fd_frontend, FE_SET_TONE, tone));
             }
 
+         frequency = abs(frequency); // Allow for C-band, where the frequency is less than the LOF
          Frontend.frequency = frequency * 1000UL;
          Frontend.inversion = fe_spectral_inversion_t(channel.Inversion());
          Frontend.u.qpsk.symbol_rate = channel.Srate() * 1000UL;
@@ -263,7 +264,7 @@ void cDvbTuner::Action(void)
                  }
               }
            if (tunerStatus >= tsLocked) {
-              if (ciHandler) {
+              if (ciHandler && channel.Ca()) {
                  if (ciHandler->Process()) {
                     if (tunerStatus != tsCam) {//XXX TODO update in case the CA descriptors have changed
                        uchar buffer[2048];
@@ -396,7 +397,8 @@ bool cDvbDevice::Initialize(void)
 
 void cDvbDevice::MakePrimaryDevice(bool On)
 {
-  cDvbOsd::SetDvbDevice(On ? this : NULL);
+  if (HasDecoder())
+     cDvbOsd::SetDvbDevice(On ? this : NULL);
 }
 
 bool cDvbDevice::HasDecoder(void) const
@@ -712,7 +714,7 @@ int cDvbDevice::NumAudioTracksDevice(void) const
   int n = 0;
   if (aPid1)
      n++;
-  if (!Ca() && aPid2 && aPid1 != aPid2) // a Ca recording session blocks switching live audio tracks
+  if (Ca() <= MAXDEVICES && aPid2 && aPid1 != aPid2) // a Ca recording session blocks switching live audio tracks
      n++;
   return n;
 }
@@ -744,7 +746,7 @@ bool cDvbDevice::CanReplay(void) const
   if (Receiving())
      return false;
 #endif
-  return cDevice::CanReplay() && !Ca(); // we can only replay if there is no Ca recording going on
+  return cDevice::CanReplay() && Ca() <= MAXDEVICES; // we can only replay if there is no Ca recording going on
 }
 
 bool cDvbDevice::SetPlayMode(ePlayMode PlayMode)
@@ -773,11 +775,15 @@ bool cDvbDevice::SetPlayMode(ePlayMode PlayMode)
          CHECK(ioctl(fd_audio, AUDIO_SET_MUTE, false));
          if (siProcessor)
             siProcessor->SetStatus(true);
+         if (ciHandler)
+            ciHandler->SetEnabled(true);
          break;
     case pmAudioVideo:
     case pmAudioOnlyBlack:
          if (siProcessor)
             siProcessor->SetStatus(false);
+         if (ciHandler)
+            ciHandler->SetEnabled(false);
          CHECK(ioctl(fd_video, VIDEO_SET_BLANK, true));
          CHECK(ioctl(fd_audio, AUDIO_SELECT_SOURCE, AUDIO_SOURCE_MEMORY));
          CHECK(ioctl(fd_audio, AUDIO_SET_AV_SYNC, PlayMode == pmAudioVideo));
@@ -788,6 +794,8 @@ bool cDvbDevice::SetPlayMode(ePlayMode PlayMode)
     case pmAudioOnly:
          if (siProcessor)
             siProcessor->SetStatus(false);
+         if (ciHandler)
+            ciHandler->SetEnabled(false);
          CHECK(ioctl(fd_video, VIDEO_SET_BLANK, true));
          CHECK(ioctl(fd_audio, AUDIO_STOP, true));
          CHECK(ioctl(fd_audio, AUDIO_CLEAR_BUFFER));
@@ -799,6 +807,8 @@ bool cDvbDevice::SetPlayMode(ePlayMode PlayMode)
     case pmExtern_THIS_SHOULD_BE_AVOIDED:
          if (siProcessor)
             siProcessor->SetStatus(false);
+         if (ciHandler)
+            ciHandler->SetEnabled(false);
          close(fd_video);
          close(fd_audio);
          fd_video = fd_audio = -1;
@@ -820,6 +830,7 @@ void cDvbDevice::Clear(void)
      CHECK(ioctl(fd_video, VIDEO_CLEAR_BUFFER));
   if (fd_audio >= 0)
      CHECK(ioctl(fd_audio, AUDIO_CLEAR_BUFFER));
+  cDevice::Clear();
 }
 
 void cDvbDevice::Play(void)
@@ -834,6 +845,7 @@ void cDvbDevice::Play(void)
      if (fd_video >= 0)
         CHECK(ioctl(fd_video, VIDEO_CONTINUE));
      }
+  cDevice::Play();
 }
 
 void cDvbDevice::Freeze(void)
@@ -848,6 +860,7 @@ void cDvbDevice::Freeze(void)
      if (fd_video >= 0)
         CHECK(ioctl(fd_video, VIDEO_FREEZE));
      }
+  cDevice::Freeze();
 }
 
 void cDvbDevice::Mute(void)
@@ -856,6 +869,7 @@ void cDvbDevice::Mute(void)
      CHECK(ioctl(fd_audio, AUDIO_SET_AV_SYNC, false));
      CHECK(ioctl(fd_audio, AUDIO_SET_MUTE, true));
      }
+  cDevice::Mute();
 }
 
 void cDvbDevice::StillPicture(const uchar *Data, int Length)

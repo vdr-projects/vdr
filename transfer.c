@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: transfer.c 1.10 2003/02/15 14:12:41 kls Exp $
+ * $Id: transfer.c 1.11 2003/03/30 12:52:11 kls Exp $
  */
 
 #include "transfer.h"
@@ -133,11 +133,8 @@ void cTransfer::StripAudioPackets(uchar *b, int Length, uchar Except)
            case 0xC0 ... 0xC1: // audio
                 if (c == 0xC1)
                    canToggleAudioTrack = true;
-                if (!Except || c != Except) {
-                   int n = l;
-                   for (int j = i; j < Length && n--; j++)
-                       b[j] = 0x00;
-                   }
+                if (!Except || c != Except)
+                   memset(&b[i], 0x00, min(l, Length-i));
                 break;
            case 0xE0 ... 0xEF: // video
                 break;

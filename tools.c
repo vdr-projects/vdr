@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.76 2002/11/24 20:17:31 kls Exp $
+ * $Id: tools.c 1.77 2003/04/06 15:31:45 kls Exp $
  */
 
 #include "tools.h"
@@ -620,11 +620,13 @@ bool cFile::FileReady(int FileDes, int TimeoutMs)
   struct timeval timeout;
   FD_ZERO(&set);
   FD_SET(FileDes, &set);
-  if (TimeoutMs < 100)
-     TimeoutMs = 100;
-  timeout.tv_sec  = TimeoutMs / 1000;
-  timeout.tv_usec = (TimeoutMs % 1000) * 1000;
-  return select(FD_SETSIZE, &set, NULL, NULL, &timeout) > 0 && FD_ISSET(FileDes, &set);
+  if (TimeoutMs >= 0) {
+     if (TimeoutMs < 100)
+        TimeoutMs = 100;
+     timeout.tv_sec  = TimeoutMs / 1000;
+     timeout.tv_usec = (TimeoutMs % 1000) * 1000;
+     }
+  return select(FD_SETSIZE, &set, NULL, NULL, (TimeoutMs >= 0) ? &timeout : NULL) > 0 && FD_ISSET(FileDes, &set);
 }
 
 bool cFile::FileReadyForWriting(int FileDes, int TimeoutMs)

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.72 2003/01/06 15:36:12 kls Exp $
+ * $Id: recording.c 1.75 2003/04/12 09:51:44 kls Exp $
  */
 
 #include "recording.h"
@@ -42,7 +42,7 @@
 #define NAMEFORMAT   "%s/%s/" nameFORMAT
 // end of implementation for brain dead systems
 
-#define RESUMEFILESUFFIX  "/resume.vdr"
+#define RESUMEFILESUFFIX  "/resume%s%s.vdr"
 #define SUMMARYFILESUFFIX "/summary.vdr"
 #define MARKSFILESUFFIX   "/marks.vdr"
 
@@ -154,7 +154,7 @@ cResumeFile::cResumeFile(const char *FileName)
   fileName = MALLOC(char, strlen(FileName) + strlen(RESUMEFILESUFFIX) + 1);
   if (fileName) {
      strcpy(fileName, FileName);
-     strcat(fileName, RESUMEFILESUFFIX);
+     sprintf(fileName + strlen(fileName), RESUMEFILESUFFIX, Setup.ResumeID ? "." : "", Setup.ResumeID ? itoa(Setup.ResumeID) : "");
      }
   else
      esyslog("ERROR: can't allocate memory for resume file name");
@@ -768,7 +768,7 @@ void cRecordingUserCommand::InvokeCommand(const char *State, const char *Recordi
 #define MAXINDEXCATCHUP   2 // seconds
 
 // The minimum age of an index file for considering it no longer to be written:
-#define MININDEXAGE      60 // seconds
+#define MININDEXAGE     300 // seconds
 
 cIndexFile::cIndexFile(const char *FileName, bool Record)
 :resumeFile(FileName)
@@ -848,6 +848,7 @@ cIndexFile::~cIndexFile()
 
 bool cIndexFile::CatchUp(int Index)
 {
+  // returns true unless something really goes wrong, so that 'index' becomes NULL
   if (index && f >= 0) {
      for (int i = 0; i <= MAXINDEXCATCHUP && (Index < 0 || Index >= last); i++) {
          struct stat buf;
@@ -856,7 +857,7 @@ bool cIndexFile::CatchUp(int Index)
                // apparently the index file is not being written any more
                close(f);
                f = -1;
-               return false;
+               break;
                }
             int newLast = buf.st_size / sizeof(tIndex) - 1;
             if (newLast > last) {
@@ -889,13 +890,12 @@ bool cIndexFile::CatchUp(int Index)
             }
          else
             LOG_ERROR_STR(fileName);
-         if (Index >= last)
-            sleep(1);
-         else
-            return true;
+         if (Index < last)
+            break;
+         sleep(1);
          }
      }
-  return false;
+  return index != NULL;
 }
 
 bool cIndexFile::Write(uchar PictureType, uchar FileNumber, int FileOffset)
@@ -915,8 +915,7 @@ bool cIndexFile::Write(uchar PictureType, uchar FileNumber, int FileOffset)
 
 bool cIndexFile::Get(int Index, uchar *FileNumber, int *FileOffset, uchar *PictureType, int *Length)
 {
-  if (index) {
-     CatchUp(Index);
+  if (CatchUp(Index)) {
      if (Index >= 0 && Index < last) {
         *FileNumber = index[Index].number;
         *FileOffset = index[Index].offset;
@@ -938,8 +937,7 @@ bool cIndexFile::Get(int Index, uchar *FileNumber, int *FileOffset, uchar *Pictu
 
 int cIndexFile::GetNextIFrame(int Index, bool Forward, uchar *FileNumber, int *FileOffset, int *Length, bool StayOffEnd)
 {
-  if (index) {
-     CatchUp();
+  if (CatchUp()) {
      int d = Forward ? 1 : -1;
      for (;;) {
          Index += d;
@@ -976,8 +974,7 @@ int cIndexFile::GetNextIFrame(int Index, bool Forward, uchar *FileNumber, int *F
 
 int cIndexFile::Get(uchar FileNumber, int FileOffset)
 {
-  if (index) {
-     CatchUp();
+  if (CatchUp()) {
      //TODO implement binary search!
      int i;
      for (i = 0; i < last; i++) {

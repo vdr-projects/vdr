@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 1.39 2002/12/08 13:17:13 kls Exp $
+ * $Id: osd.c 1.40 2003/03/23 15:41:54 kls Exp $
  */
 
 #include "osd.h"
@@ -535,8 +535,6 @@ void cOsdMenu::CursorDown(void)
 
 void cOsdMenu::PageUp(void)
 {
-  if (Count() <= MAXOSDITEMS)
-     return;
   current -= MAXOSDITEMS;
   first -= MAXOSDITEMS;
   if (first < 0)
@@ -551,13 +549,11 @@ void cOsdMenu::PageUp(void)
 
 void cOsdMenu::PageDown(void) 
 {
-  if (Count() <= MAXOSDITEMS)
-     return;
   current += MAXOSDITEMS;
   first += MAXOSDITEMS;
   if (current > Count() - 1) {
      current = Count() - 1;
-     first = Count() - MAXOSDITEMS;
+     first = max(0, Count() - MAXOSDITEMS);
      }
   if (SpecialItem(current)) {
      current += (current < Count() - 1) ? 1 : -1;

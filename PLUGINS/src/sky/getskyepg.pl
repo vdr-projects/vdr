@@ -8,7 +8,7 @@
 #
 # See the README file for copyright information and how to reach the author.
 #
-# $Id: getskyepg.pl 1.1 2002/11/10 10:05:17 kls Exp $
+# $Id: getskyepg.pl 1.2 2003/04/02 16:21:47 kls Exp $
 
 use Getopt::Std;
 use Time::Local;
@@ -33,7 +33,7 @@ $SkyWebPage = "www.ananova.com/tv/frontpage.html";
 $WGET = "/usr/bin/wget -q -O-";
 $LOGGER = "/usr/bin/logger -t SKYEPG";
 
-$DST = 0; ##XXX TODO find out whether DST is active!
+$DST = -3600; ##XXX TODO find out whether DST is active!
 $SecsInDay = 86400;
 
 $MaxFrequency = 1000;

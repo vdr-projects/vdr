@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: rcu.c 1.3 2002/12/07 12:22:40 kls Exp $
+ * $Id: rcu.c 1.4 2003/04/12 14:37:13 kls Exp $
  */
 
 #include "rcu.h"
@@ -53,6 +53,11 @@ cRcuRemote::cRcuRemote(char *DeviceName)
 cRcuRemote::~cRcuRemote()
 {
   Cancel();
+}
+
+bool cRcuRemote::Ready(void)
+{
+  return f >= 0;
 }
 
 bool cRcuRemote::Initialize(void)

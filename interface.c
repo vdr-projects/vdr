@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.c 1.61 2002/12/06 14:13:16 kls Exp $
+ * $Id: interface.c 1.63 2003/04/12 14:17:49 kls Exp $
  */
 
 #include "interface.h"
@@ -264,7 +264,7 @@ void cInterface::Status(const char *s, eDvbColor FgColor, eDvbColor BgColor)
   int Line = (abs(height) == 1) ? 0 : -2;
   ClearEol(0, Line, s ? BgColor : clrBackground);
   if (s) {
-     int x = (Width() - strlen(s)) / 2;
+     int x = (Width() - int(strlen(s))) / 2;
      if (x < 0)
         x = 0;
      Write(x, Line, s, FgColor, BgColor);
@@ -411,6 +411,10 @@ void cInterface::QueryKeys(cRemote *Remote)
 void cInterface::LearnKeys(void)
 {
   for (cRemote *Remote = Remotes.First(); Remote; Remote = Remotes.Next(Remote)) {
+      if (!Remote->Ready()) {
+         esyslog("ERROR: remote control %s not ready!", Remote->Name());
+         continue;
+         }
       bool known = Keys.KnowsRemote(Remote->Name());
       dsyslog("remote control %s - %s", Remote->Name(), known ? "keys known" : "learning keys");
       if (!known) {

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 1.8 2003/03/16 22:32:47 kls Exp $
+ * $Id: ci.c 1.9 2003/03/23 15:18:40 kls Exp $
  */
 
 /* XXX TODO
@@ -1273,6 +1273,7 @@ void cCiCaPmt::AddCaDescriptor(int Length, uint8_t *Data)
 cCiHandler::cCiHandler(int Fd, int NumSlots)
 {
   numSlots = NumSlots;
+  enabled = true;
   for (int i = 0; i < MAX_CI_SESSION; i++)
       sessions[i] = NULL;
   tpl = new cCiTransportLayer(Fd, numSlots);
@@ -1425,6 +1426,8 @@ int cCiHandler::CloseAllSessions(int Slot)
 
 bool cCiHandler::Process(void)
 {
+  if (!enabled)
+     return false;
   bool result = true;
   cMutexLock MutexLock(&mutex);
   for (int Slot = 0; Slot < numSlots; Slot++) {

@@ -21,18 +21,18 @@ VDR program and present itself to the user.
 The <i>internal</i> interface provides the plugin code access to VDR's internal data
 structures and allows it to hook itself into specific areas to perform special actions.
 <p>
-<!--X1.1.13--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
-Important modifications introduced in version 1.1.13 are marked like this.
-<!--X1.1.13--></td></tr></table>
-<!--X1.1.14--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
+<!--X1.1.14--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 Important modifications introduced in version 1.1.14 are marked like this.
 <!--X1.1.14--></td></tr></table>
-<!--X1.1.15--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
+<!--X1.1.15--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
 Important modifications introduced in version 1.1.15 are marked like this.
 <!--X1.1.15--></td></tr></table>
-<!--X1.1.17--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+<!--X1.1.17--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
 Important modifications introduced in version 1.1.17 are marked like this.
 <!--X1.1.17--></td></tr></table>
+<!--X1.1.27--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+Important modifications introduced in version 1.1.27 are marked like this.
+<!--X1.1.27--></td></tr></table>
 
 <hr>
 <h1>Table Of Contents</h1>
@@ -506,7 +506,7 @@ in the call to VDR.
 
 If the user selects the main menu entry of a plugin, VDR calls the function
 
-<!--X1.1.17--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+<!--X1.1.17--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
 <p><table><tr><td bgcolor=#F0F0F0><pre><br>
 virtual cOsdObject *MainMenuAction(void);
 </pre></td></tr></table><p>
@@ -1011,7 +1011,6 @@ bool DevicePoll(cPoller &amp;Poller, int TimeoutMs = 0);
 </pre></td></tr></table><p>
 
 to determine whether the device is ready for further data.
-<!--X1.1.13--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 <p>
 If the player can provide more than a single audio track, it can implement the
 following functions to make them available:
@@ -1022,9 +1021,8 @@ virtual const char **GetAudioTracks(int *CurrentTrack = NULL);
 virtual void SetAudioTrack(int Index);
 </pre></td></tr></table><p>
 
-<!--X1.1.13--></td></tr></table>
 <p>
-<!--X1.1.15--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
+<!--X1.1.15--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
 If there is an additional audio track that has to be replayed with external hardware,
 the player shall call its member function
 
@@ -1260,7 +1258,6 @@ virtual bool SetChannelDevice(const cChannel *Channel, bool LiveView);
 These functions will be called with the desired source or channel and shall return whether
 this device can provide the requested source or channel and whether tuning to it was successful,
 repectively.
-<!--X1.1.13--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 <p>
 <b>Audio selection</b>
 <p>
@@ -1273,7 +1270,6 @@ virtual const char **GetAudioTracksDevice(int *CurrentTrack = NULL) const;
 virtual void SetAudioTrackDevice(int Index);
 </pre></td></tr></table><p>
 
-<!--X1.1.13--></td></tr></table>
 <p>
 <b>Recording</b>
 <p>
@@ -1307,7 +1303,7 @@ The functions to implement replaying capabilites are
 
 <p><table><tr><td bgcolor=#F0F0F0><pre><br>
 virtual bool HasDecoder(void) const;
-<!--X1.1.14--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
+<!--X1.1.14--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 virtual bool CanReplay(void) const;
 <!--X1.1.14--></td></tr></table>
 virtual bool SetPlayMode(ePlayMode PlayMode);
@@ -1369,7 +1365,7 @@ shut down (delete) all devices when the program terminates. It is therefore
 important that the devices are created on the heap, using the <tt>new</tt>
 operator!
 
-<!--X1.1.15--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
+<!--X1.1.15--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
 <a name="Dolby Digital"><hr><h2>Dolby Digital</h2>
 
 <center><i><b>"The stereo effect may only be experienced if stereo equipment is used!"</b></i></center><p>
@@ -1480,6 +1476,17 @@ the incoming data (by calling your <tt>Action()</tt> function).
 In case you need to do any other setup steps, like opening a file or initializing
 member variables, you should do so before calling <tt>Start()</tt>.
 <p>
+<!--X1.1.27--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+If your remote control for some reason can't work (maybe because it was unable to
+open some file handle it requires) it can implement the virtual function
+
+<p><table><tr><td bgcolor=#F0F0F0><pre><br>
+virtual bool Ready(void);
+</pre></td></tr></table><p>
+
+and have it return <i>false</i>. In that case VDR will not try to learn keys from
+that remote control.
+<!--X1.1.27--></td></tr></table>
 VDR will handle everything necessary to learn the key mappings of your remote
 control. In order to do so, it will first call the virtual function <tt>Initialize()</tt>,
 in which you should take all necessary steps to make sure your remote control
