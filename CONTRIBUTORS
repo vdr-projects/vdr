@@ -163,6 +163,7 @@ Stefan Huelswitt <huels@iname.com>
  encrypted channel
  for reporting a problem with timers when channel IDs have a 'source' that is 0
  for reporting a new/delete malloc/free mismatch in ringbuffer.c
+ for reporting a crash in case the index file can't be accessed any more during replay
 
 Ulrich Röder <roeder@efr-net.de>
  for pointing out that there are channels that have a symbol rate higher than

@@ -2008,3 +2008,5 @@ Video Disk Recorder Revision History
   Werner Fink).
 - Further increased the timeout until an index file is considerd no longer to be
   written.
+- Fixed a crash in case the index file can't be accessed any more during replay
+  (thanks to Stefan Huelswitt for reporting this one).
