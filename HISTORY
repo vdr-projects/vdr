@@ -1209,3 +1209,4 @@ Video Disk Recorder Revision History
 - Fixed a crash when selecting the "Jump" function directly after setting an
   editing mark (thanks to Steffen Koch for reporting and Stefan Huelswitt for
   fixing this one).
+- Fixed some missing ',' in i18n.c (thanks to Matthias Hilbig).

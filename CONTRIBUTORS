@@ -299,3 +299,6 @@ Jean Martin <mac_j_fr@hotmail.com>
 Steffen Koch <Steffen.Koch@koch-enterprises.de>
  for reporting a crash when selecting the "Jump" function directly after setting
  an editing mark
+
+Matthias Hilbig <hilbig@upb.de>
+ for fixing some missing ',' in i18n.c
