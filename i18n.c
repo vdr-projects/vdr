@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.173 2005/02/05 10:14:43 kls Exp $
+ * $Id: i18n.c 1.174 2005/02/05 10:36:38 kls Exp $
  *
  * Translations provided by:
  *
@@ -952,7 +952,7 @@ const tI18nPhrase Phrases[] = {
     "Scansione",
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Scan",
     "",//TODO
     "Päivitä",
     "",//TODO
@@ -1668,7 +1668,7 @@ const tI18nPhrase Phrases[] = {
     "Hierarchy",
     "Hierarchy",
     "Hierarchy",
-    "Hierarchie",
+    "Hiérarchie",
     "Hierarchy",
     "Hierarkia",
     "Hierachia",
@@ -1795,7 +1795,7 @@ const tI18nPhrase Phrases[] = {
     "VPS",
     "",// TODO
     "",// TODO
-    "",// TODO
+    "VPS",
     "",// TODO
     "VPS",
     "",// TODO
@@ -2306,7 +2306,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Pas d'audio disponible!",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -2575,7 +2575,7 @@ const tI18nPhrase Phrases[] = {
     "Superficie Skin",
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Skin",
     "",// TODO
     "Ulkoasu",
     "",// TODO
@@ -2596,7 +2596,7 @@ const tI18nPhrase Phrases[] = {
     "Tema",
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Thème",
     "",// TODO
     "Teema",
     "",// TODO
@@ -2617,7 +2617,7 @@ const tI18nPhrase Phrases[] = {
     "Sinistra",
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Gauche",
     "",// TODO
     "Vaakakeskitys",
     "",// TODO
@@ -2638,7 +2638,7 @@ const tI18nPhrase Phrases[] = {
     "Cima",
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Haut",
     "",// TODO
     "Pystykeskitys",
     "",// TODO
@@ -2701,7 +2701,7 @@ const tI18nPhrase Phrases[] = {
     "Tempo del messaggio (s)",
     "Weergave duur van berichten (s)",
     "Mostrar contador (s)",
-    "Durée affichage écran (s)",
+    "Durée affichage message (s)",
     "Tid meldinger skal vises (s)",
     "Viestien esitysaika (s)",
     "Czas wyswietlania wiadomosci (s)",
@@ -2722,7 +2722,7 @@ const tI18nPhrase Phrases[] = {
     "Utilizzare caratteri piccoli",
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Utiliser les petits caractères",
     "",// TODO
     "Käytä pieniä kirjasimia",
     "",// TODO
@@ -2743,7 +2743,7 @@ const tI18nPhrase Phrases[] = {
     "mai",
     "",// TODO
     "",// TODO
-    "",// TODO
+    "jamais",
     "",// TODO
     "ei koskaan",
     "",// TODO
@@ -2764,7 +2764,7 @@ const tI18nPhrase Phrases[] = {
     "in base alla superficie",
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Dépend du skin",
     "",// TODO
     "ulkoasun mukaan",
     "",// TODO
@@ -2785,7 +2785,7 @@ const tI18nPhrase Phrases[] = {
     "sempre",
     "",// TODO
     "",// TODO
-    "",// TODO
+    "toujours",
     "",// TODO
     "aina",
     "",// TODO
@@ -2953,7 +2953,7 @@ const tI18nPhrase Phrases[] = {
     "Visualizzazione dati vecchi (min)",
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Montrer l'EPG plus vieux de m min",
     "",// TODO
     "Vanha tieto näkyy (min)",
     "",// TODO
@@ -3016,7 +3016,7 @@ const tI18nPhrase Phrases[] = {
     "Lingue preferite",
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Langues préférées",
     "",// TODO
     "Suosikkikielet",
     "",// TODO
@@ -3037,7 +3037,7 @@ const tI18nPhrase Phrases[] = {
     "Lingua preferita",
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Langue préférée",
     "",// TODO
     "Suosikkikieli",
     "",// TODO
@@ -3106,7 +3106,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Utiliser le Dolby Digital",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -3121,7 +3121,7 @@ const tI18nPhrase Phrases[] = {
     "Aggiornare i canali",
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Mettre à jour les chaînes",
     "",// TODO
     "Päivitä kanavat",
     "",// TODO
@@ -3142,7 +3142,7 @@ const tI18nPhrase Phrases[] = {
     "solo nomi",
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Seulement les noms",
     "",// TODO
     "vain nimet",
     "",// TODO
@@ -3163,7 +3163,7 @@ const tI18nPhrase Phrases[] = {
     "nomi e PIDs",
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Noms et PIDs",
     "",// TODO
     "nimet ja PID:it",
     "",// TODO
@@ -3184,7 +3184,7 @@ const tI18nPhrase Phrases[] = {
     "aggiungere canali nuovi",
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Ajouter les nouvelles chaînes",
     "",// TODO
     "lisää uudet kanavat",
     "",// TODO
@@ -3205,7 +3205,7 @@ const tI18nPhrase Phrases[] = {
     "aggiungere transponder nuovi",
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Ajouter les nouveaux transpondeurs",
     "",// TODO
     "lisää uudet transponderit",
     "",// TODO
@@ -3541,7 +3541,7 @@ const tI18nPhrase Phrases[] = {
     "Utilizzare VPS",
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Utiliser le VPS",
     "",// TODO
     "Käytä VPS-toimintoa",
     "",// TODO
@@ -3562,7 +3562,7 @@ const tI18nPhrase Phrases[] = {
     "Margine VPS",
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Marge VPS",
     "",// TODO
     "VPS-toiminnon aloitusmarginaali (s)",
     "",// TODO
@@ -3814,7 +3814,7 @@ const tI18nPhrase Phrases[] = {
     "Timeout Zapping",
     "Zap timeout (s)",
     "",// TODO
-    "",// TODO
+    "Prise en compte dernière chaîne (s)",
     "",// TODO
     "Kanavavalinnan odotusaika (s)",
     "",// TODO
@@ -4685,7 +4685,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Audio",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -4743,7 +4743,7 @@ const tI18nPhrase Phrases[] = {
     "off",
     "uit",
     "off",
-    "",// TODO
+    "off",
     "",// TODO
     "pois",
     "wyl.",
