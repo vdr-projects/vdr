@@ -16,7 +16,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.h 1.25 2003/04/12 10:59:26 kls Exp $
+ * $Id: eit.h 1.26 2003/04/13 14:01:24 kls Exp $
  ***************************************************************************/
 
 #ifndef __EIT_H
@@ -155,7 +155,7 @@ private:
   char *fileName;
   bool active;
   void Action(void);
-  bool AddFilter(unsigned short pid, u_char tid);
+  bool AddFilter(unsigned short pid, u_char tid, u_char mask = 0xFF);
   bool DelFilter(unsigned short pid, u_char tid);
   bool ShutDownFilters(void);
   void NewCaDescriptor(struct Descriptor *d, int ProgramID);

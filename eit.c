@@ -16,7 +16,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.c 1.68 2003/04/12 11:27:31 kls Exp $
+ * $Id: eit.c 1.69 2003/04/13 14:06:25 kls Exp $
  ***************************************************************************/
 
 #include "eit.h"
@@ -1176,12 +1176,9 @@ void cSIProcessor::SetStatus(bool On)
       AddFilter(0x00, 0x00);  // PAT
       AddFilter(0x14, 0x70);  // TDT
       AddFilter(0x14, 0x73);  // TOT
-      AddFilter(0x12, 0x4e);  // event info, actual TS, present/following
-      AddFilter(0x12, 0x4f);  // event info, other TS, present/following
-      AddFilter(0x12, 0x50);  // event info, actual TS, schedule
-      AddFilter(0x12, 0x60);  // event info, other TS, schedule
-      AddFilter(0x12, 0x51);  // event info, actual TS, schedule for another 4 days
-      AddFilter(0x12, 0x61);  // event info, other TS, schedule for another 4 days
+      AddFilter(0x12, 0x4e, 0xfe);  // event info, actual(0x4e)/other(0x4f) TS, present/following
+      AddFilter(0x12, 0x50, 0xfe);  // event info, actual TS, schedule(0x50)/schedule for another 4 days(0x51)
+      AddFilter(0x12, 0x60, 0xfe);  // event info, other  TS, schedule(0x60)/schedule for another 4 days(0x61)
    }
 }
 
@@ -1351,7 +1348,7 @@ void cSIProcessor::Action()
 
 /** Add a filter with packet identifier pid and
 table identifer tid */
-bool cSIProcessor::AddFilter(unsigned short pid, u_char tid)
+bool cSIProcessor::AddFilter(unsigned short pid, u_char tid, u_char mask)
 {
    dmx_sct_filter_params sctFilterParams;
    memset(&sctFilterParams, 0, sizeof(sctFilterParams));
@@ -1359,7 +1356,7 @@ bool cSIProcessor::AddFilter(unsigned short pid, u_char tid)
    sctFilterParams.timeout = 0;
    sctFilterParams.flags = DMX_IMMEDIATE_START;
    sctFilterParams.filter.filter[0] = tid;
-   sctFilterParams.filter.mask[0] = 0xFF;
+   sctFilterParams.filter.mask[0] = mask;
 
    for (int a = 0; a < MAX_FILTERS; a++)
    {
