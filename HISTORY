@@ -1677,3 +1677,5 @@ Video Disk Recorder Revision History
   The NEWSTRUCT compile time switch is now obsolete. The required driver is now
   the CVS HEAD version dated 2002-11-01 or later.
 - Adjusted the INSTALL file to the 1.1.x version.
+- Only accepting key presses from the current remote control when learning (thanks to
+  Oliver Endriss).
