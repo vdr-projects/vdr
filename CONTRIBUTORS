@@ -856,3 +856,7 @@ Richard Scobie <r.scobie@clear.net.nz>
 
 Luke Jenkins <a@xmission.com>
  for adding North American satellites to 'sources.conf'
+
+Dirk Mueller <dmuell@gmx.net>
+ for fixing getting the list of recordings in case VDR is started from a directory
+ where it doesn't have access to
