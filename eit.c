@@ -8,7 +8,7 @@
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  * Adapted to 'libsi' for VDR 1.3.0 by Marcel Wiesweg <marcel.wiesweg@gmx.de>.
  *
- * $Id: eit.c 1.92 2004/03/07 11:51:57 kls Exp $
+ * $Id: eit.c 1.93 2004/03/13 13:54:20 kls Exp $
  */
 
 #include "eit.h"
@@ -43,10 +43,12 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data)
      Schedules->Add(pSchedule);
      }
 
+  bool Empty = true;
   bool Modified = false;
 
   SI::EIT::Event SiEitEvent;
   for (SI::Loop::Iterator it; eventLoop.hasNext(it); ) {
+      Empty = false;
       SiEitEvent = eventLoop.getNext(it);
 
       cEvent *pEvent = (cEvent *)pSchedule->GetEvent(SiEitEvent.getEventId(), SiEitEvent.getStartTime());
@@ -212,6 +214,9 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data)
          }
       Modified = true;
       }
+  if (Empty && Tid == 0x4E && getSectionNumber() == 0)
+     // ETR 211: an empty entry in section 0 of table 0x4E means there is currently no event running
+     pSchedule->ClrRunningStatus(channel);
   if (Modified)
      pSchedule->Sort();
 }

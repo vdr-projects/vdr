@@ -950,3 +950,6 @@ Stéphane Esté-Gracias <sestegra@free.fr>
 
 Marc Hoppe <MarcHoppe@gmx.de>
  for fixing handling the current menu item
+
+Michael Pennewiß <M.Pennewiss@ARD-Digital.de>
+ for pointing out that an empty EPG event means there is currently no running event

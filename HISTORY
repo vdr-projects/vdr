@@ -2736,3 +2736,5 @@ Video Disk Recorder Revision History
 - Any newline characters in the 'description' of EPG events are now preserved
   to allow texts to be displayed the way the tv stations have formatted them.
   This was also necessary to better display itemized texts.
+- Fixed detecting the running status in case an empty EPG event is broadcast (thanks
+  to Michael Pennewiﬂ for pointing this out).

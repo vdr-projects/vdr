@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.h 1.13 2004/03/06 14:01:38 kls Exp $
+ * $Id: epg.h 1.14 2004/03/13 13:39:13 kls Exp $
  */
 
 #ifndef __EPG_H
@@ -61,7 +61,7 @@ public:
   void SetEventID(u_int16_t EventID);
   void SetTableID(uchar TableID);
   void SetVersion(uchar Version);
-  void SetRunningStatus(int RunningStatus);
+  void SetRunningStatus(int RunningStatus, cChannel *Channel = NULL);
   void SetTitle(const char *Title);
   void SetShortText(const char *ShortText);
   void SetDescription(const char *Description);
@@ -79,10 +79,12 @@ class cSchedule : public cListObject  {
 private:
   tChannelID channelID;
   cList<cEvent> events;
+  bool hasRunning;
 public:
   cSchedule(tChannelID ChannelID);
   tChannelID ChannelID(void) const { return channelID; }
   void SetRunningStatus(cEvent *Event, int RunningStatus, cChannel *Channel = NULL);
+  void ClrRunningStatus(cChannel *Channel = NULL);
   void ResetVersions(void);
   void Sort(void);
   void Cleanup(time_t Time);
