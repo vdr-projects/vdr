@@ -2135,3 +2135,5 @@ Video Disk Recorder Revision History
 - Updated 'channels.conf.terr' for Berlin (thanks to Juri Haberland).
 - Avoiding short display of the "Main" menu when pressing the "Recordings" button
   or the "Back" button during replay.
+- Further increased the timeout until an index file is considerd no longer to be
+  written.
