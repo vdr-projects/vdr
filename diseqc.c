@@ -4,12 +4,13 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: diseqc.c 1.2 2002/12/07 13:44:56 kls Exp $
+ * $Id: diseqc.c 1.3 2004/10/24 11:04:56 kls Exp $
  */
 
 #include "diseqc.h"
 #include <ctype.h>
 #include "sources.h"
+#include "thread.h"
 
 // -- cDiseqc ----------------------------------------------------------------
 
@@ -61,7 +62,7 @@ char *cDiseqc::Wait(char *s)
   int n = strtol(s, &p, 10);
   if (!errno && p != s && n >= 0) {
      if (!parsing)
-        usleep(n * 1000);
+        cCondWait::SleepMs(n);
      return p;
      }
   esyslog("ERROR: illegal value for wait time in '%s'", s - 1);

@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.187 2004/10/17 11:50:21 kls Exp $
+ * $Id: vdr.c 1.190 2004/10/24 14:01:11 kls Exp $
  */
 
 #include <getopt.h>
@@ -64,6 +64,8 @@
 #define MANUALSTART       600 // seconds the next timer must be in the future to assume manual start
 #define CHANNELSAVEDELTA  600 // seconds before saving channels.conf after automatic modifications
 
+#define EXIT(v) { ExitCode = (v); goto Exit; }
+
 static int Interrupted = 0;
 
 static void SignalHandler(int signum)
@@ -85,17 +87,6 @@ static void Watchdog(int signum)
 
 int main(int argc, char *argv[])
 {
-#ifdef _CS_GNU_LIBPTHREAD_VERSION
-  // Check for NPTL and exit if present - VDR apparently doesn't run well with NPTL:
-  char LibPthreadVersion[128];
-  if (confstr(_CS_GNU_LIBPTHREAD_VERSION, LibPthreadVersion, sizeof(LibPthreadVersion)) > 0) {
-     if (strstr(LibPthreadVersion, "NPTL")) {
-        fprintf(stderr, "vdr: please turn off NPTL by setting 'export LD_ASSUME_KERNEL=2.4.1' before starting VDR\n");
-        return 2;
-        }
-     }
-#endif
-
   // Check for UTF-8 and exit if present - asprintf() will fail if it encounters 8 bit ASCII codes
   char *LangEnv;
   if ((LangEnv = getenv("LANG"))    != NULL && strcasestr(LangEnv, "utf") ||
@@ -133,6 +124,7 @@ int main(int argc, char *argv[])
   const char *Terminal = NULL;
   const char *Shutdown = NULL;
   cPluginManager PluginManager(DEFAULTPLUGINDIR);
+  int ExitCode = 0;
 
   static struct option long_options[] = {
       { "audio",    required_argument, NULL, 'a' },
@@ -358,7 +350,7 @@ int main(int argc, char *argv[])
   // Load plugins:
 
   if (!PluginManager.LoadPlugins(true))
-     return 2;
+     EXIT(2);
 
   // Configuration data:
 
@@ -380,7 +372,7 @@ int main(int argc, char *argv[])
         Keys.Load(AddDirectory(ConfigDirectory, "remote.conf")) &&
         KeyMacros.Load(AddDirectory(ConfigDirectory, "keymacros.conf"), true)
         ))
-     return 2;
+     EXIT(2);
 
   cFont::SetCode(I18nCharSets()[Setup.OSDLanguage]);
 
@@ -402,7 +394,7 @@ int main(int argc, char *argv[])
   // Initialize plugins:
 
   if (!PluginManager.InitializePlugins())
-     return 2;
+     EXIT(2);
 
   // Primary device:
 
@@ -425,12 +417,12 @@ int main(int argc, char *argv[])
         fprintf(stderr, "vdr: %s\n", msg);
         esyslog("ERROR: %s", msg);
         if (!cDevice::SetPrimaryDevice(1))
-           return 2;
+           EXIT(2);
         if (!cDevice::PrimaryDevice()) {
            const char *msg = "no primary device found - giving up!";
            fprintf(stderr, "vdr: %s\n", msg);
            esyslog("ERROR: %s", msg);
-           return 2;
+           EXIT(2);
            }
         }
      }
@@ -442,7 +434,7 @@ int main(int argc, char *argv[])
   // Start plugins:
 
   if (!PluginManager.StartPlugins())
-     return 2;
+     EXIT(2);
 
   // Skins:
 
@@ -498,18 +490,18 @@ int main(int argc, char *argv[])
 
   // Main program loop:
 
-  cOsdObject *Menu = NULL;
-  cOsdObject *Temp = NULL;
-  int LastChannel = -1;
-  int LastTimerChannel = -1;
-  int PreviousChannel[2] = { 1, 1 };
-  int PreviousChannelIndex = 0;
-  time_t LastChannelChanged = time(NULL);
-  time_t LastActivity = 0;
-  int MaxLatencyTime = 0;
-  bool ForceShutdown = false;
-  bool UserShutdown = false;
-  bool TimerInVpsMargin = false;
+  static cOsdObject *Menu = NULL;
+  static cOsdObject *Temp = NULL;
+  static int LastChannel = -1;
+  static int LastTimerChannel = -1;
+  static int PreviousChannel[2] = { 1, 1 };
+  static int PreviousChannelIndex = 0;
+  static time_t LastChannelChanged = time(NULL);
+  static time_t LastActivity = 0;
+  static int MaxLatencyTime = 0;
+  static bool ForceShutdown = false;
+  static bool UserShutdown = false;
+  static bool TimerInVpsMargin = false;
 
   while (!Interrupted) {
         // Handle emergency exits:
@@ -589,14 +581,9 @@ int main(int argc, char *argv[])
         // Timers and Recordings:
         if (!Timers.BeingEdited()) {
            // Assign events to timers:
-           if (time(NULL) - LastActivity > 10) {
-              static time_t LastSetEvents = 0;//XXX trigger by actual EPG data modification???
-              if (time(NULL) - LastSetEvents > 5) {
-                 Timers.SetEvents();
-                 LastSetEvents = time(NULL);
-                 }
-              }
-           time_t Now = time(NULL); // must do all following calls with the exact same time!
+           Timers.SetEvents();
+           // Must do all following calls with the exact same time!
+           time_t Now = time(NULL);
            // Process ongoing recordings:
            cRecordControls::Process(Now);
            // Start new recordings:
@@ -898,6 +885,9 @@ int main(int argc, char *argv[])
         }
   if (Interrupted)
      isyslog("caught signal %d", Interrupted);
+
+Exit:
+
   cRecordControls::Shutdown();
   cCutter::Stop();
   delete Menu;
@@ -924,5 +914,5 @@ int main(int argc, char *argv[])
      esyslog("emergency exit!");
      return 1;
      }
-  return 0;
+  return ExitCode;
 }

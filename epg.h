@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.h 1.15 2004/03/14 13:25:39 kls Exp $
+ * $Id: epg.h 1.16 2004/10/24 13:56:00 kls Exp $
  */
 
 #ifndef __EPG_H
@@ -36,6 +36,7 @@ private:
   time_t startTime;      // Start time of this event
   int duration;          // Duration of this event in seconds
   time_t vps;            // Video Programming Service timestamp (VPS, aka "Programme Identification Label", PIL)
+  time_t seen;           // When this event was last seen in the data stream
 public:
   cEvent(tChannelID ChannelID, u_int16_t EventID);
   ~cEvent();
@@ -52,6 +53,7 @@ public:
   time_t EndTime(void) const { return startTime + duration; }
   int Duration(void) const { return duration; }
   time_t Vps(void) const { return vps; }
+  time_t Seen(void) const { return seen; }
   bool HasTimer(void) const;
   bool IsRunning(bool OrAboutToStart = false) const;
   const char *GetDateString(void) const;
@@ -68,6 +70,7 @@ public:
   void SetStartTime(time_t StartTime);
   void SetDuration(int Duration);
   void SetVps(time_t Vps);
+  void SetSeen(void);
   void Dump(FILE *f, const char *Prefix = "") const;
   static bool Read(FILE *f, cSchedule *Schedule);
   void FixEpgBugs(void);
@@ -80,9 +83,12 @@ private:
   tChannelID channelID;
   cList<cEvent> events;
   bool hasRunning;
+  time_t modified;
 public:
   cSchedule(tChannelID ChannelID);
   tChannelID ChannelID(void) const { return channelID; }
+  time_t Modified(void) const { return modified; }
+  void SetModified(void) { modified = time(NULL); }
   void SetRunningStatus(cEvent *Event, int RunningStatus, cChannel *Channel = NULL);
   void ClrRunningStatus(cChannel *Channel = NULL);
   void ResetVersions(void);
@@ -117,12 +123,15 @@ private:
   static const char *epgDataFileName;
   static time_t lastCleanup;
   static time_t lastDump;
+  static time_t modified;
 public:
   static void SetEpgDataFileName(const char *FileName);
   static const cSchedules *Schedules(cSchedulesLock &SchedulesLock);
          ///< Caller must provide a cSchedulesLock which has to survive the entire
          ///< time the returned cSchedules is accessed. Once the cSchedules is no
          ///< longer used, the cSchedulesLock must be destroyed.
+  static time_t Modified(void) { return modified; }
+  static void SetModified(cSchedule *Schedule);
   static void Cleanup(bool Force = false);
   static void ResetVersions(void);
   static bool ClearAll(void);

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: font.c 1.8 2004/05/31 09:55:37 kls Exp $
+ * $Id: font.c 1.9 2004/10/23 14:06:01 kls Exp $
  */
 
 #include "config.h"
@@ -28,13 +28,18 @@
 #include "fontosd-iso8859-7.c"
 #include "fontsml-iso8859-7.c"
 
+#include "fontfix-iso8859-15.c"
+#include "fontosd-iso8859-15.c"
+#include "fontsml-iso8859-15.c"
+
 // --- cFont -----------------------------------------------------------------
 
 static void *FontData[eDvbCodeSize][eDvbFontSize] = {
-  { FontOsd_iso8859_1, FontFix_iso8859_1, FontSml_iso8859_1 },
-  { FontOsd_iso8859_2, FontFix_iso8859_2, FontSml_iso8859_2 },
-  { FontOsd_iso8859_5, FontFix_iso8859_5, FontSml_iso8859_5 },
-  { FontOsd_iso8859_7, FontFix_iso8859_7, FontSml_iso8859_7 },
+  { FontOsd_iso8859_1,  FontFix_iso8859_1,  FontSml_iso8859_1 },
+  { FontOsd_iso8859_2,  FontFix_iso8859_2,  FontSml_iso8859_2 },
+  { FontOsd_iso8859_5,  FontFix_iso8859_5,  FontSml_iso8859_5 },
+  { FontOsd_iso8859_7,  FontFix_iso8859_7,  FontSml_iso8859_7 },
+  { FontOsd_iso8859_15, FontFix_iso8859_15, FontSml_iso8859_15 },
   };
 
 static const char *FontCode[eDvbCodeSize] = {
@@ -42,6 +47,7 @@ static const char *FontCode[eDvbCodeSize] = {
   "iso8859-2",
   "iso8859-5",
   "iso8859-7",
+  "iso8859-15",
   };
 
 eDvbCode cFont::code = code_iso8859_1;

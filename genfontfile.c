@@ -179,7 +179,7 @@ SuckGlyphsFromServer(Display * dpy, Font font)
           charHeight = charinfo->ascent + charinfo->descent;
           spanLength = (charWidth + 7) / 8;
         }
-        bitmapData = calloc(height * spanLength, sizeof(char));
+        bitmapData = (unsigned char *)calloc(height * spanLength, sizeof(char));
         if (!bitmapData)
           goto FreeFontAndReturn;
         DEBUG_GLYPH4("index %d, glyph %d (%d by %d)\n",

@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: util.h 1.4 2004/10/16 09:59:48 kls Exp $
+ *   $Id: util.h 1.5 2004/10/23 14:22:40 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -140,7 +140,7 @@ namespace DVBTime {
 time_t getTime(unsigned char date_hi, unsigned char date_lo, unsigned char timehr, unsigned char timemi, unsigned char timese);
 time_t getDuration(unsigned char timehr, unsigned char timemi, unsigned char timese);
 inline unsigned char bcdToDec(unsigned char b) { return ((b >> 4) & 0x0F) * 10 + (b & 0x0F); }
-};
+}
 
 //taken and adapted from libdtv, (c) Rolf Hakenes
 class CRC32 {

@@ -4,13 +4,12 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 1.32 2004/10/15 13:15:02 kls Exp $
+ * $Id: thread.c 1.35 2004/10/24 11:05:56 kls Exp $
  */
 
 #include "thread.h"
 #include <errno.h>
 #include <malloc.h>
-#include <signal.h>
 #include <stdarg.h>
 #include <sys/resource.h>
 #include <sys/time.h>
@@ -31,6 +30,12 @@ cCondWait::~cCondWait()
 {
   pthread_cond_destroy(&cond);
   pthread_mutex_destroy(&mutex);
+}
+
+void cCondWait::SleepMs(int TimeoutMs)
+{
+  cCondWait w;
+  w.Wait(TimeoutMs);
 }
 
 bool cCondWait::Wait(int TimeoutMs)
@@ -186,19 +191,10 @@ void cMutex::Unlock(void)
 
 // --- cThread ---------------------------------------------------------------
 
-// The signal handler is necessary to be able to use SIGIO to wake up any
-// pending 'select()' call.
-
-bool cThread::signalHandlerInstalled = false;
 bool cThread::emergencyExitRequested = false;
 
 cThread::cThread(const char *Description)
 {
-  if (!signalHandlerInstalled) {
-     signal(SIGIO, SignalHandler);
-     signalHandlerInstalled = true;
-     }
-  running = false;
   parentTid = childTid = 0;
   description = NULL;
   SetDescription(Description);
@@ -221,11 +217,6 @@ void cThread::SetDescription(const char *Description, ...)
      }
 }
 
-void cThread::SignalHandler(int signum)
-{
-  signal(signum, SignalHandler);
-}
-
 void *cThread::StartThread(cThread *Thread)
 {
   Thread->childTid = pthread_self();
@@ -240,13 +231,11 @@ void *cThread::StartThread(cThread *Thread)
 
 bool cThread::Start(void)
 {
-  if (!running) {
-     running = true;
+  if (!childTid) {
      parentTid = pthread_self();
      pthread_create(&childTid, NULL, (void *(*) (void *))&StartThread, (void *)this);
      pthread_detach(childTid); // auto-reap
      pthread_setschedparam(childTid, SCHED_RR, 0);
-     usleep(10000); // otherwise calling Active() immediately after Start() causes a "pure virtual method called" error
      }
   return true; //XXX return value of pthread_create()???
 }
@@ -277,21 +266,20 @@ bool cThread::Active(void)
 
 void cThread::Cancel(int WaitSeconds)
 {
-  running = false;
-  if (WaitSeconds > 0) {
-     for (time_t t0 = time(NULL) + WaitSeconds; time(NULL) < t0; ) {
-         if (!Active())
-            return;
-         usleep(10000);
-         }
-     esyslog("ERROR: thread %ld won't end (waited %d seconds) - cancelling it...", childTid, WaitSeconds);
+  if (childTid) {
+     if (WaitSeconds > 0) {
+        for (time_t t0 = time(NULL) + WaitSeconds; time(NULL) < t0; ) {
+            if (!Active())
+               return;
+            cCondWait::SleepMs(10);
+            }
+        esyslog("ERROR: thread %ld won't end (waited %d seconds) - cancelling it...", childTid, WaitSeconds);
+        }
+     if (childTid) {
+        pthread_cancel(childTid);
+        childTid = 0;
+        }
      }
-  pthread_cancel(childTid);
-}
-
-void cThread::WakeUp(void)
-{
-  pthread_kill(parentTid, SIGIO); // makes any waiting 'select()' call return immediately
 }
 
 bool cThread::EmergencyExit(bool Request)
@@ -451,7 +439,7 @@ int cPipe::Close(void)
            else if (ret == pid)
               break;
            i--;
-           usleep(100000);
+           cCondWait::SleepMs(100);
            }
      if (!i) {
         kill(pid, SIGKILL);

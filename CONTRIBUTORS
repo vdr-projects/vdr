@@ -257,6 +257,7 @@ Werner Fink <werner@suse.de>
  for modifying handling of audio packets in cDvbPlayer for better sync with external
  AC3 replay
  for changing thread handling to make it work with NPTL ("Native Posix Thread Library")
+ for suggesting to replace usleep() calls with a pthread_cond_timedwait() based wait
 
 Rolf Hakenes <hakenes@hippomi.de>
  for providing 'libdtv' and adapting the EIT mechanisms to it
@@ -530,6 +531,7 @@ Oliver Endriss <o.endriss@gmx.de>
  for reporting that the "Classic VDR" skin wrongly displayed unused color buttons
  for reporting some missing cStatus::MsgOsdTextItem() calls
  for reporting a missing "Editing process finished" message with skins
+ for adding a sample setup for 'DisiCon-4 Single Cable Network' to 'diseqc.conf'
 
 Reinhard Walter Buchner <rw.buchner@freenet.de>
  for adding some satellites to 'sources.conf'
@@ -741,6 +743,8 @@ Ludwig Nussel <ludwig.nussel@web.de>
  for reporting a problem on systems that have UTF-8 enabled
  for pointing out a flaw in the the description of cRingBufferLinear
  for reporting a bug in cRingBufferLinear::Get() in case the buffer wraps around
+ for adding some checks when cancelling a thread and removing the usleep() in
+ cThread::Start()
 
 Thomas Koch <tom@harhar.net>
  for his support in keeping the Premiere World channels up to date in 'channels.conf'
@@ -797,6 +801,8 @@ Alfred Zastrow <vdr@zastrow4u.de>
  the recordings created when pausing live video
  for reporting two warnings when compiling with gcc 3.3.1
  for reporting a bug in handling menu status messages when the list contents is scrolled
+ for reporting that without the usleep() call in cDvbPlayer::Action() VDR runs on NPTL
+ systems
 
 Matthias Raus <matthias-raus@web.de>
  for reporting a problem with starting the editing process if no marks have been set
@@ -870,6 +876,8 @@ Reinhard Nissl <rnissl@gmx.de>
  for suggesting to make sure the OSD reports oeWrongAlignment errors before any
  oeAreasOverlap error
  for reporting a a crash in the time search mechanism
+ for taking the complete size of available data into account when deciding whether
+ to clear the transfer buffer to avoid overflows
 
 Richard Robson <richard_robson@beeb.net>
  for reporting freezing replay if a timer starts while in Transfer Mode from the
@@ -1021,6 +1029,7 @@ Drazen Dupor <drazen.dupor@dupor.com>
 
 Prakash K. Cheemplavam <PrakashKC@gmx.de>
  for fixing some issues with gcc 3.4
+ for some minor code cleanups
 
 Miko Wohlgemuth <weak@chello.at>
  for reporting a problem with the OSD alignment in the SPU decoder
@@ -1053,6 +1062,8 @@ Marco Schlüßler <marco@lordzodiac.de>
  for avoiding unnecessary section filter start/stops
  for pointing out that if one PID can't be added, the whole cDevice::AttachReceiver()
  should fail and all PIDs added so far should be deleted
+ for fixing attaching a cPlayer to a cDevice, so that 'Operation not permited'
+ errors don't occur any more
 
 Jürgen Schmitz <j.schmitz@web.de>
  for reporting a bug in displaying the current channel when switching via the SVDRP
@@ -1100,3 +1111,14 @@ Udo Richter <udo_richter@gmx.de>
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date
+
+Stefan Meyknecht <stefan@meyknecht.org>
+ for a patch that fixed detecting transponder lock in cDvbTuner
+
+Lucian Muresan <lucianm@users.sourceforge.net>
+ for updating the Romanian language texts and the iso8859-2 fonts
+ for making VDR actually use the iso8859-15 fonts
+
+Mattias Grönlund <Mattias@Gronlund.net>
+ for pointing out a missing cleanup at program exit in case there is a problem
+ with a plugin

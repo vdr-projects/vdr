@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.97 2004/10/17 09:10:43 kls Exp $
+ * $Id: dvbdevice.c 1.100 2004/10/24 11:06:37 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -35,7 +35,7 @@ extern "C" {
 
 #define DO_REC_AND_PLAY_ON_PRIMARY_DEVICE 1
 #define DO_MULTIPLE_RECORDINGS 1
-//#define WAIT_FOR_LOCK_AFTER_TUNING 1
+#define TUNER_LOCK_TIMEOUT 5000 // ms
 
 #define DEV_VIDEO         "/dev/video"
 #define DEV_DVB_ADAPTER   "/dev/dvb/adapter"
@@ -78,6 +78,8 @@ private:
   bool useCa;
   time_t startTime;
   eTunerStatus tunerStatus;
+  cMutex mutex;
+  cCondVar locked;
   cCondWait newSet;
   bool SetFrontend(void);
   virtual void Action(void);
@@ -86,7 +88,7 @@ public:
   virtual ~cDvbTuner();
   bool IsTunedTo(const cChannel *Channel) const;
   void Set(const cChannel *Channel, bool Tune, bool UseCa);
-  bool Locked(void) { return tunerStatus >= tsLocked; }
+  bool Locked(int TimeoutMs = 0);
   };
 
 cDvbTuner::cDvbTuner(int Fd_Frontend, int CardIndex, fe_type_t FrontendType, cCiHandler *CiHandler)
@@ -125,13 +127,21 @@ void cDvbTuner::Set(const cChannel *Channel, bool Tune, bool UseCa)
   if (Tune)
      tunerStatus = tsSet;
   else if (tunerStatus == tsCam)
-     tunerStatus = tsTuned;
+     tunerStatus = tsLocked;
   useCa = UseCa;
   if (Channel->Ca() && tunerStatus != tsCam)
      startTime = time(NULL);
   channel = *Channel;
   Unlock();
   newSet.Signal();
+}
+
+bool cDvbTuner::Locked(int TimeoutMs)
+{
+  cMutexLock MutexLock(&mutex);
+  if (TimeoutMs && tunerStatus < tsLocked)
+     locked.TimedWait(mutex, TimeoutMs);
+  return tunerStatus >= tsLocked;
 }
 
 static unsigned int FrequencyToHz(unsigned int f)
@@ -253,22 +263,25 @@ void cDvbTuner::Action(void)
   active = true;
   while (active) {
         Lock();
-        if (tunerStatus == tsSet)
+        if (tunerStatus == tsSet) {
+           dvb_frontend_event event;
+           while (ioctl(fd_frontend, FE_GET_EVENT, &event) == 0)
+                 ; // discard stale events
            tunerStatus = SetFrontend() ? tsTuned : tsIdle;
-        if (tunerStatus == tsTuned) {
-           fe_status_t status = fe_status_t(0);
-           CHECK(ioctl(fd_frontend, FE_READ_STATUS, &status));
-           if (status & FE_HAS_LOCK)
-              tunerStatus = tsLocked;
            }
         if (tunerStatus != tsIdle) {
            dvb_frontend_event event;
-           if (ioctl(fd_frontend, FE_GET_EVENT, &event) == 0) {
-              if (event.status & FE_REINIT) {
-                 tunerStatus = tsSet;
-                 esyslog("ERROR: frontend %d was reinitialized - re-tuning", cardIndex);
+           while (ioctl(fd_frontend, FE_GET_EVENT, &event) == 0) {
+                 if (event.status & FE_REINIT) {
+                    tunerStatus = tsSet;
+                    esyslog("ERROR: frontend %d was reinitialized - re-tuning", cardIndex);
+                    }
+                 if (event.status & FE_HAS_LOCK) {
+                    cMutexLock MutexLock(&mutex);
+                    tunerStatus = tsLocked;
+                    locked.Broadcast();
+                    }
                  }
-              }
            }
         if (ciHandler) {
            if (ciHandler->Process() && useCa) {
@@ -293,7 +306,7 @@ void cDvbTuner::Action(void)
            }
         Unlock();
         // in the beginning we loop more often to let the CAM connection start up fast
-        newSet.Wait((ciHandler && (time(NULL) - startTime < 20)) ? 100 : 1000);
+        newSet.Wait((tunerStatus == tsTuned || ciHandler && (time(NULL) - startTime < 20)) ? 100 : 1000);
         }
 }
 
@@ -735,25 +748,29 @@ bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
   StartTransferMode = false;
 #endif
 
-  // XXX 1.3: use the same mechanism as below (!EITScanner.UsesDevice(this))
-  if (EITScanner.Active()) {
-     StartTransferMode = false;
-     TurnOnLivePIDs = false;
-     }
-
   // Turn off live PIDs if necessary:
 
   if (TurnOffLivePIDs)
      TurnOffLiveMode();
 
+  // Set the tuner:
+
   dvbTuner->Set(Channel, DoTune, !EITScanner.UsesDevice(this)); //XXX 1.3: this is an ugly hack - find a cleaner solution//XXX
 
-#ifdef WAIT_FOR_LOCK_AFTER_TUNING
-  //XXX TODO preliminary fix for the "Unknown picture type" error
-  time_t t0 = time(NULL);
-  while (!dvbTuner->Locked() && time(NULL) - t0 < 5)
-        usleep(100);
-#endif
+  // If this channel switch was requested by the EITScanner we don't wait for
+  // a lock and don't set any live PIDs (the EITScanner will wait for the lock
+  // by itself before setting any filters):
+
+  if (EITScanner.UsesDevice(this))
+     return true;
+
+  // Wait for a lock:
+
+  if (!dvbTuner->Locked(TUNER_LOCK_TIMEOUT)) {
+     esyslog("ERROR: no lock for channel %d on device %d", Channel->Number(), CardIndex() + 1);
+     return false;
+     }
+
   // PID settings:
 
   if (TurnOnLivePIDs) {
@@ -1058,7 +1075,7 @@ void cDvbDevice::StillPicture(const uchar *Data, int Length)
 #define MIN_IFRAME 400000
   for (int i = MIN_IFRAME / Length + 1; i > 0; i--) {
       safe_write(fd_video, Data, Length);
-      usleep(1); // allows the buffer to be displayed in case the progress display is active
+      cCondWait::SleepMs(1); // allows the buffer to be displayed in case the progress display is active
       }
 #endif
 }

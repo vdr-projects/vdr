@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.h 1.21 2004/10/15 13:16:39 kls Exp $
+ * $Id: thread.h 1.24 2004/10/24 11:00:32 kls Exp $
  */
 
 #ifndef __THREAD_H
@@ -22,6 +22,10 @@ private:
 public:
   cCondWait(void);
   ~cCondWait();
+  static void SleepMs(int TimeoutMs);
+       ///< Creates a cCondWait object and uses it to sleep for TimeoutMs
+       ///< milliseconds, immediately giving up the calling thread's time
+       ///< slice and thus avoiding a "busy wait".
   bool Wait(int TimeoutMs = 0);
        ///< Waits at most TimeoutMs milliseconds for a call to Signal(), or
        ///< forever if TimeoutMs is 0.
@@ -71,16 +75,12 @@ class cThread {
 private:
   pthread_t parentTid, childTid;
   cMutex mutex;
-  bool running;
   char *description;
   static bool emergencyExitRequested;
-  static bool signalHandlerInstalled;
-  static void SignalHandler(int signum);
   static void *StartThread(cThread *Thread);
 protected:
   void Lock(void) { mutex.Lock(); }
   void Unlock(void) { mutex.Unlock(); }
-  void WakeUp(void);
   virtual void Action(void) = 0;
   void Cancel(int WaitSeconds = 0);
 public:
