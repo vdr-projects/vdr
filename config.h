@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.166 2003/08/06 14:45:10 kls Exp $
+ * $Id: config.h 1.167 2003/08/16 09:08:33 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -87,7 +87,7 @@ public:
   cConfig(void) { fileName = NULL; }
   virtual ~cConfig() { free(fileName); }
   const char *FileName(void) { return fileName; }
-  bool Load(const char *FileName = NULL, bool AllowComments = false)
+  bool Load(const char *FileName = NULL, bool AllowComments = false, bool MustExist = false)
   {
     Clear();
     if (FileName) {
@@ -95,7 +95,7 @@ public:
        fileName = strdup(FileName);
        allowComments = AllowComments;
        }
-    bool result = false;
+    bool result = !MustExist;
     if (fileName && access(fileName, F_OK) == 0) {
        isyslog("loading %s", fileName);
        FILE *f = fopen(fileName, "r");
@@ -125,9 +125,13 @@ public:
                 }
           fclose(f);
           }
-       else
+       else {
           LOG_ERROR_STR(fileName);
+          result = false;
+          }
        }
+    if (!result)
+       fprintf(stderr, "vdr: error while reading '%s'\n", fileName);
     return result;
   }
   bool Save(void)

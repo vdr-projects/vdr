@@ -317,6 +317,8 @@ Rainer Zocholl <vdrcontrib@zocki.toppoint.de>
  for reporting a bug in skipping the next hit of a repeating timer
  for reporting a problem with staying off the end of an ongoing recording while
  replaying in time shift mode
+ for suggesting that VDR should stop if one of the configuration files can't be
+ read correctly at program startup
 
 Oleg Assovski <assen@bitcom.msk.ru>
  for adding EPG scanning for another 4 days

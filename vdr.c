@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.162 2003/08/02 14:01:32 kls Exp $
+ * $Id: vdr.c 1.163 2003/08/16 09:15:28 kls Exp $
  */
 
 #include <getopt.h>
@@ -341,17 +341,19 @@ int main(int argc, char *argv[])
 
   cPlugin::SetConfigDirectory(ConfigDirectory);
 
-  Setup.Load(AddDirectory(ConfigDirectory, "setup.conf"));
-  Sources.Load(AddDirectory(ConfigDirectory, "sources.conf"), true);
-  Diseqcs.Load(AddDirectory(ConfigDirectory, "diseqc.conf"), true);
-  Channels.Load(AddDirectory(ConfigDirectory, "channels.conf"));
-  Timers.Load(AddDirectory(ConfigDirectory, "timers.conf"));
-  Commands.Load(AddDirectory(ConfigDirectory, "commands.conf"), true);
-  RecordingCommands.Load(AddDirectory(ConfigDirectory, "reccmds.conf"), true);
-  SVDRPhosts.Load(AddDirectory(ConfigDirectory, "svdrphosts.conf"), true);
-  CaDefinitions.Load(AddDirectory(ConfigDirectory, "ca.conf"), true);
-  Keys.Load(AddDirectory(ConfigDirectory, "remote.conf"));
-  KeyMacros.Load(AddDirectory(ConfigDirectory, "keymacros.conf"), true);
+  if (!(Setup.Load(AddDirectory(ConfigDirectory, "setup.conf")) &&
+        Sources.Load(AddDirectory(ConfigDirectory, "sources.conf"), true, true) &&
+        Diseqcs.Load(AddDirectory(ConfigDirectory, "diseqc.conf"), true, true) &&
+        Channels.Load(AddDirectory(ConfigDirectory, "channels.conf"), false, true) &&
+        Timers.Load(AddDirectory(ConfigDirectory, "timers.conf")) &&
+        Commands.Load(AddDirectory(ConfigDirectory, "commands.conf"), true) &&
+        RecordingCommands.Load(AddDirectory(ConfigDirectory, "reccmds.conf"), true) &&
+        SVDRPhosts.Load(AddDirectory(ConfigDirectory, "svdrphosts.conf"), true) &&
+        CaDefinitions.Load(AddDirectory(ConfigDirectory, "ca.conf"), true) &&
+        Keys.Load(AddDirectory(ConfigDirectory, "remote.conf")) &&
+        KeyMacros.Load(AddDirectory(ConfigDirectory, "keymacros.conf"), true)
+        ))
+     return 2;
 
   // DVB interfaces:
 

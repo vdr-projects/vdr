@@ -2300,3 +2300,5 @@ Video Disk Recorder Revision History
   to Reinhard Nissl for reporting this one).
 - Fixed staying off the end of an ongoing recording while replaying in time shift
   mode (thanks to Rainer Zocholl for reporting this one).
+- VDR now stops with exit status 2 if one of the configuration files can't be
+  read correctly at program startup (suggested by Rainer Zocholl).
