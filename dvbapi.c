@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.93 2001/07/28 11:45:04 kls Exp $
+ * $Id: dvbapi.c 1.94 2001/07/29 09:00:19 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -2116,6 +2116,15 @@ bool cDvbApi::SetChannel(int ChannelNumber, int FrequencyMHz, char Polarization,
   StopTransfer();
   StopReplay();
 
+  // Must set this anyway to avoid getting stuck when switching through
+  // channels with 'Up' and 'Down' keys:
+  currentChannel = ChannelNumber;
+  vPid = Vpid;
+  aPid1 = Apid1;
+  aPid2 = Apid2;
+  dPid1 = Dpid1;
+  dPid2 = Dpid2;
+
   // Avoid noise while switching:
 
   if (fd_video >= 0 && fd_audio >= 0) {
@@ -2125,150 +2134,150 @@ bool cDvbApi::SetChannel(int ChannelNumber, int FrequencyMHz, char Polarization,
      CHECK(ioctl(fd_audio, AUDIO_CLEAR_BUFFER));
      }
 
-  // Turn off current PIDs:
+  // If this card can't receive this channel, we must not actually switch
+  // the channel here, because that would irritate the driver when we
+  // start replaying in Transfer Mode immediately after switching the channel:
+  bool NeedsTransferMode = (this == PrimaryDvbApi && Ca && Ca != Index() + 1);
 
-  SetVpid( 0x1FFF, DMX_OUT_DECODER);
-  SetApid1(0x1FFF, DMX_OUT_DECODER);
-  SetApid2(0x1FFF, DMX_OUT_DECODER);
-  SetDpid1(0x1FFF, DMX_OUT_DECODER);
-  SetDpid2(0x1FFF, DMX_OUT_DECODER);
-  SetTpid( 0x1FFF, DMX_OUT_DECODER);
+  if (!NeedsTransferMode) {
 
-  // Must set this anyway to avoid getting stuck when switching through
-  // channels with 'Up' and 'Down' keys:
-  currentChannel = ChannelNumber;
+     // Turn off current PIDs:
 
-  bool ChannelSynced = false;
+     SetVpid( 0x1FFF, DMX_OUT_DECODER);
+     SetApid1(0x1FFF, DMX_OUT_DECODER);
+     SetApid2(0x1FFF, DMX_OUT_DECODER);
+     SetDpid1(0x1FFF, DMX_OUT_DECODER);
+     SetDpid2(0x1FFF, DMX_OUT_DECODER);
+     SetTpid( 0x1FFF, DMX_OUT_DECODER);
 
-  if (fd_qpskfe >= 0 && fd_sec >= 0) { // DVB-S
+     bool ChannelSynced = false;
 
-     // Frequency offsets:
+     if (fd_qpskfe >= 0 && fd_sec >= 0) { // DVB-S
 
-     unsigned int freq = FrequencyMHz;
-     int tone = SEC_TONE_OFF;
+        // Frequency offsets:
 
-     if (freq < (unsigned int)Setup.LnbSLOF) {
-        freq -= Setup.LnbFrequLo;
-        tone = SEC_TONE_OFF;
+        unsigned int freq = FrequencyMHz;
+        int tone = SEC_TONE_OFF;
+
+        if (freq < (unsigned int)Setup.LnbSLOF) {
+           freq -= Setup.LnbFrequLo;
+           tone = SEC_TONE_OFF;
+           }
+        else {
+           freq -= Setup.LnbFrequHi;
+           tone = SEC_TONE_ON;
+           }
+
+        qpskParameters qpsk;
+        qpsk.iFrequency = freq * 1000UL;
+        qpsk.SymbolRate = Srate * 1000UL;
+        qpsk.FEC_inner = FEC_AUTO;
+
+        int volt = (Polarization == 'v' || Polarization == 'V') ? SEC_VOLTAGE_13 : SEC_VOLTAGE_18;
+
+        // DiseqC:
+
+        secCommand scmd;
+        scmd.type = 0;
+        scmd.u.diseqc.addr = 0x10;
+        scmd.u.diseqc.cmd = 0x38;
+        scmd.u.diseqc.numParams = 1;
+        scmd.u.diseqc.params[0] = 0xF0 | ((Diseqc * 4) & 0x0F) | (tone == SEC_TONE_ON ? 1 : 0) | (volt == SEC_VOLTAGE_18 ? 2 : 0);
+
+        secCmdSequence scmds;
+        scmds.voltage = volt;
+        scmds.miniCommand = SEC_MINI_NONE;
+        scmds.continuousTone = tone;
+        scmds.numCommands = Setup.DiSEqC ? 1 : 0;
+        scmds.commands = &scmd;
+
+        CHECK(ioctl(fd_sec, SEC_SEND_SEQUENCE, &scmds));
+
+        // Tuning:
+
+        CHECK(ioctl(fd_qpskfe, QPSK_TUNE, &qpsk));
+
+        // Wait for channel sync:
+
+        if (cFile::FileReady(fd_qpskfe, 5000)) {
+           qpskEvent event;
+           int res = ioctl(fd_qpskfe, QPSK_GET_EVENT, &event);
+           if (res >= 0)
+              ChannelSynced = event.type == FE_COMPLETION_EV;
+           else
+              esyslog(LOG_ERR, "ERROR %d in qpsk get event", res);
+           }
+        else
+           esyslog(LOG_ERR, "ERROR: timeout while tuning\n");
+        }
+     else if (fd_qamfe >= 0) { // DVB-C
+
+        // Frequency and symbol rate:
+
+        qamParameters qam;
+        qam.Frequency = FrequencyMHz * 1000000UL;
+        qam.SymbolRate = Srate * 1000UL;
+        qam.FEC_inner = FEC_AUTO;
+        qam.QAM = QAM_64;
+
+        // Tuning:
+
+        CHECK(ioctl(fd_qamfe, QAM_TUNE, &qam));
+
+        // Wait for channel sync:
+
+        if (cFile::FileReady(fd_qamfe, 5000)) {
+           qamEvent event;
+           int res = ioctl(fd_qamfe, QAM_GET_EVENT, &event);
+           if (res >= 0)
+              ChannelSynced = event.type == FE_COMPLETION_EV;
+           else
+              esyslog(LOG_ERR, "ERROR %d in qam get event", res);
+           }
+        else
+           esyslog(LOG_ERR, "ERROR: timeout while tuning\n");
         }
      else {
-        freq -= Setup.LnbFrequHi;
-        tone = SEC_TONE_ON;
+        esyslog(LOG_ERR, "ERROR: attempt to set channel without DVB-S or DVB-C device");
+        return false;
         }
 
-     qpskParameters qpsk;
-     qpsk.iFrequency = freq * 1000UL;
-     qpsk.SymbolRate = Srate * 1000UL;
-     qpsk.FEC_inner = FEC_AUTO;
-
-     int volt = (Polarization == 'v' || Polarization == 'V') ? SEC_VOLTAGE_13 : SEC_VOLTAGE_18;
-
-     // DiseqC:
-
-     secCommand scmd;
-     scmd.type = 0;
-     scmd.u.diseqc.addr = 0x10;
-     scmd.u.diseqc.cmd = 0x38;
-     scmd.u.diseqc.numParams = 1;
-     scmd.u.diseqc.params[0] = 0xF0 | ((Diseqc * 4) & 0x0F) | (tone == SEC_TONE_ON ? 1 : 0) | (volt == SEC_VOLTAGE_18 ? 2 : 0);
-
-     secCmdSequence scmds;
-     scmds.voltage = volt;
-     scmds.miniCommand = SEC_MINI_NONE;
-     scmds.continuousTone = tone;
-     scmds.numCommands = Setup.DiSEqC ? 1 : 0;
-     scmds.commands = &scmd;
-
-     CHECK(ioctl(fd_sec, SEC_SEND_SEQUENCE, &scmds));
-
-     // Tuning:
-
-     CHECK(ioctl(fd_qpskfe, QPSK_TUNE, &qpsk));
-
-     // Wait for channel sync:
-
-     if (cFile::FileReady(fd_qpskfe, 5000)) {
-        qpskEvent event;
-        int res = ioctl(fd_qpskfe, QPSK_GET_EVENT, &event);
-        if (res >= 0)
-           ChannelSynced = event.type == FE_COMPLETION_EV;
-        else
-           esyslog(LOG_ERR, "ERROR %d in qpsk get event", res);
+     if (!ChannelSynced) {
+        esyslog(LOG_ERR, "ERROR: channel %d not sync'ed!", ChannelNumber);
+        if (this == PrimaryDvbApi)
+           cThread::RaisePanic();
+        return false;
         }
-     else
-        esyslog(LOG_ERR, "ERROR: timeout while tuning\n");
-     }
-  else if (fd_qamfe >= 0) { // DVB-C
 
-     // Frequency and symbol rate:
+     // PID settings:
 
-     qamParameters qam;
-     qam.Frequency = FrequencyMHz * 1000000UL;
-     qam.SymbolRate = Srate * 1000UL;
-     qam.FEC_inner = FEC_AUTO;
-     qam.QAM = QAM_64;
-
-     // Tuning:
-
-     CHECK(ioctl(fd_qamfe, QAM_TUNE, &qam));
-
-     // Wait for channel sync:
-
-     if (cFile::FileReady(fd_qamfe, 5000)) {
-        qamEvent event;
-        int res = ioctl(fd_qamfe, QAM_GET_EVENT, &event);
-        if (res >= 0)
-           ChannelSynced = event.type == FE_COMPLETION_EV;
-        else
-           esyslog(LOG_ERR, "ERROR %d in qam get event", res);
+     if (!SetPids(false)) {
+        esyslog(LOG_ERR, "ERROR: failed to set PIDs for channel %d", ChannelNumber);
+        return false;
         }
-     else
-        esyslog(LOG_ERR, "ERROR: timeout while tuning\n");
-     }
-  else {
-     esyslog(LOG_ERR, "ERROR: attempt to set channel without DVB-S or DVB-C device");
-     return false;
+     SetTpid(Tpid, DMX_OUT_DECODER);
+     if (fd_audio >= 0)
+        CHECK(ioctl(fd_audio, AUDIO_SET_AV_SYNC, true));
      }
 
-  if (!ChannelSynced) {
-     esyslog(LOG_ERR, "ERROR: channel %d not sync'ed!", ChannelNumber);
-     if (this == PrimaryDvbApi)
-        cThread::RaisePanic();
-     return false;
-     }
-
-  // PID settings:
-
-  vPid = Vpid;
-  aPid1 = Apid1;
-  aPid2 = Apid2;
-  dPid1 = Dpid1;
-  dPid2 = Dpid2;
-  if (!SetPids(false)) {
-     esyslog(LOG_ERR, "ERROR: failed to set PIDs for channel %d", ChannelNumber);
-     return false;
-     }
-  SetTpid(Tpid, DMX_OUT_DECODER);
-  if (fd_audio >= 0)
-     CHECK(ioctl(fd_audio, AUDIO_SET_AV_SYNC, true));
   if (this == PrimaryDvbApi && siProcessor)
      siProcessor->SetCurrentServiceID(Pnr);
-  
+
   // If this DVB card can't receive this channel, let's see if we can
   // use the card that actually can receive it and transfer data from there:
 
-  if (this == PrimaryDvbApi && Ca && Ca != Index() + 1) {
+  if (NeedsTransferMode) {
      cDvbApi *CaDvbApi = GetDvbApi(Ca, 0);
      if (CaDvbApi) {
         if (!CaDvbApi->Recording()) {
            if (CaDvbApi->SetChannel(ChannelNumber, FrequencyMHz, Polarization, Diseqc, Srate, Vpid, Apid1, Apid2, Dpid1, Dpid2, Tpid, Ca, Pnr)) {
-              usleep(500000); // avoids distortions (apparently switching into replay mode immediately after tuning causes problems)
               SetModeReplay();
               transferringFromDvbApi = CaDvbApi->StartTransfer(fd_video);
               }
            }
         }
      }
+
   if (fd_video >= 0 && fd_audio >= 0) {
      CHECK(ioctl(fd_audio, AUDIO_SET_MUTE, false));
      CHECK(ioctl(fd_video, VIDEO_SET_BLANK, false));

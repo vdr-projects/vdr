@@ -586,7 +586,6 @@ Video Disk Recorder Revision History
 - DiSEqC support can now be generally enabled/disabled in the Setup menu. This
   may be necessary if your multiswitch gets irritated by the default DiSEqC
   codes '0' (thanks to Markus Lang).
-- Avoiding audio/video distortions in 'Transfer Mode'.
 - Fixed replaying in case there is no index file.
 - Fixed jumping to an editing mark when replay has been paused.
 - Avoiding unnecessary code execution in the replay progress display (thanks
@@ -603,3 +602,7 @@ Video Disk Recorder Revision History
   confirmation messages (like "Delete...") to "black on yellow".
 - Fixed display with DEBUG_OSD (it still crashes sometimes, esp. when replaying,
   but I can't seem to find what causes this... any ideas anybody?).
+- Avoiding audio/video distortions in 'Transfer Mode' by no longer actually
+  tuning the primary interface (which can't receive this channel, anyway).
+  Apparently the driver gets irritated when the channel is switched and a
+  replay session is started immediately after that.
