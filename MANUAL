@@ -518,6 +518,12 @@ Video Disk Recorder User's Manual
                          If this parameter is empty, the channel name will be used
                          by default.
 
+  Instant rec. time = 180
+                         Defines the duration of an instant recording in minutes.
+                         Default is 180 minutes (3 hours). The stop time of an
+                         instant recording can be modified at any time by editing
+                         the respective timer in the "Timers" menu.
+
   Record Dolby Digital = yes
                          Turns recording of the Dolby Digital audio channels on
                          or off. This may be useful if you don't have the equipment

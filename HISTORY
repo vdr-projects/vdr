@@ -1223,3 +1223,5 @@ Video Disk Recorder Revision History
 
 - Now taking an active video cutting process into account when doing shutdown or
   housekeeping (thanks to Stefan Huelswitt).
+- The default duration of an instant recording has been increased to 3 hours and
+  is now configurable in the "Setup/Recording" menu.

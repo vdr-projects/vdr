@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.97 2002/04/06 09:58:36 kls Exp $
+ * $Id: config.c 1.98 2002/04/26 12:30:00 kls Exp $
  */
 
 #include "config.h"
@@ -332,7 +332,8 @@ cTimer::cTimer(bool Instant)
   struct tm *now = localtime_r(&t, &tm_r);
   day = now->tm_mday;
   start = now->tm_hour * 100 + now->tm_min;
-  stop = start + 200; // "instant recording" records 2 hours by default
+  stop = now->tm_hour * 60 + now->tm_min + Setup.InstantRecordTime;
+  stop = (stop / 60) * 100 + (stop % 60);
   if (stop >= 2400)
      stop -= 2400;
 //TODO VPS???
@@ -930,6 +931,7 @@ cSetup::cSetup(void)
   MenuScrollPage = 1;
   MarkInstantRecord = 1;
   strcpy(NameInstantRecord, "TITLE EPISODE");
+  InstantRecordTime = 180;
   LnbSLOF    = 11700;
   LnbFrequLo =  9750;
   LnbFrequHi = 10600;
@@ -1017,6 +1019,7 @@ bool cSetup::Parse(char *s)
         else if (!strcasecmp(Name, "MenuScrollPage"))      MenuScrollPage     = atoi(Value);
         else if (!strcasecmp(Name, "MarkInstantRecord"))   MarkInstantRecord  = atoi(Value);
         else if (!strcasecmp(Name, "NameInstantRecord"))   strn0cpy(NameInstantRecord, Value, MaxFileName);
+        else if (!strcasecmp(Name, "InstantRecordTime"))   InstantRecordTime  = atoi(Value);
         else if (!strcasecmp(Name, "LnbSLOF"))             LnbSLOF            = atoi(Value);
         else if (!strcasecmp(Name, "LnbFrequLo"))          LnbFrequLo         = atoi(Value);
         else if (!strcasecmp(Name, "LnbFrequHi"))          LnbFrequHi         = atoi(Value);
@@ -1099,6 +1102,7 @@ bool cSetup::Save(const char *FileName)
         fprintf(f, "MenuScrollPage     = %d\n", MenuScrollPage);
         fprintf(f, "MarkInstantRecord  = %d\n", MarkInstantRecord);
         fprintf(f, "NameInstantRecord  = %s\n", NameInstantRecord);
+        fprintf(f, "InstantRecordTime  = %d\n", InstantRecordTime);
         fprintf(f, "LnbSLOF            = %d\n", LnbSLOF);
         fprintf(f, "LnbFrequLo         = %d\n", LnbFrequLo);
         fprintf(f, "LnbFrequHi         = %d\n", LnbFrequHi);

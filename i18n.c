@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.82 2002/04/20 09:40:37 kls Exp $
+ * $Id: i18n.c 1.83 2002/04/26 12:30:30 kls Exp $
  *
  * Slovenian  translations provided by Miha Setina <mihasetina@softhome.net> and Matjaz Thaler <matjaz.thaler@guest.arnes.si>
  * Italian    translations provided by Alberto Carraro <bertocar@tin.it>
@@ -1516,6 +1516,18 @@ const tPhrase Phrases[] = {
     "Nimeä välitön nauh.",
     "Nazwac natychm. nagranie",
     "Nombrar grabaciones instantáneas",
+  },
+  { "Setup.Recording$Instant rec. time (min)",
+    "Dauer der Direktaufzeichnung (min)",
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
   },
   { "Setup.Recording$Record Dolby Digital",
     "Dolby Digital Ton aufzeichnen",
