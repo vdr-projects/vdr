@@ -23,6 +23,9 @@ to activate DVD support. VDR then also needs the package 'libdvdread'
 in order to replay DVDs. This package is expected to be located in the
 directory ../DVD (seen from the VDR directory).  Adjust the definition
 of DVDDIR in the Makefile if necessary.
+You can find 'libdvdread' at
+
+  http://www.dtek.chalmers.se/groups/dvd/downloads.html
 
 VDR requires the card driver version 0.9.0 or higher
 to work properly. You need to load the dvb.o module *without* option
