@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.12 2000/04/24 13:36:39 kls Exp $
+ * $Id: vdr.c 1.13 2000/04/29 13:13:42 kls Exp $
  */
 
 #include <signal.h>
@@ -73,7 +73,7 @@ int main(int argc, char *argv[])
   while (!Interrupted) {
         // Channel display:
         if (CurrentChannel != LastChannel) {
-           if (!Menu && !ReplayDisplay) {
+           if (!Timer && !Menu && !ReplayDisplay) {
               cChannel *channel = Channels.Get(CurrentChannel);
               if (channel)
                  Interface.DisplayChannel(CurrentChannel + 1, channel->name);
