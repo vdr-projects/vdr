@@ -82,3 +82,4 @@ Video Disk Recorder Revision History
   converted to underscores.
 - The polarization can now be given in uppercase or lowercase characters in
   channels.conf.
+- Fixed buffer initialization to work with DVB driver version 0.6.

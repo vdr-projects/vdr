@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.14 2000/07/16 15:28:50 kls Exp $
+ * $Id: dvbapi.c 1.15 2000/07/21 13:18:02 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -818,8 +818,8 @@ cReplayBuffer::cReplayBuffer(int *OutFile, const char *FileName)
   // All recordings start with '1':
   fileNumber = 1; //TODO what if it doesn't start with '1'???
   //XXX hack to make the video device go into 'replaying' mode:
-  char dummy;
-  write(*OutFile, &dummy, sizeof(dummy));
+  char *dummy = "AV"; // must be "AV" to make the driver go into AV_PES mode!
+  write(*OutFile, dummy, strlen(dummy));
 }
 
 cReplayBuffer::~cReplayBuffer()
