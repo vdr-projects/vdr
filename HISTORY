@@ -3156,3 +3156,5 @@ Video Disk Recorder Revision History
 - Fixed some typos in the Makefile's 'font' target (thanks to Olaf Titz).
 - Fixed handling childTid in cThread to avoid possible race conditions (thanks
   to Stefan Huelswitt for pointing this out).
+- Fixed toggling the "Day" item in the "Timers" menu, so that it selects the
+  right day of week for timers in the future.
