@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 1.57 2003/08/02 14:27:21 kls Exp $
+# $Id: Makefile 1.58 2003/08/09 11:09:45 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -20,6 +20,7 @@ MANDIR   = /usr/local/man
 BINDIR   = /usr/local/bin
 
 PLUGINDIR= ./PLUGINS
+PLUGINLIBDIR= $(PLUGINDIR)/lib
 
 VIDEODIR = /video
 
@@ -50,7 +51,7 @@ DEFINES += -DREMOTE_$(REMOTE)
 DEFINES += -D_GNU_SOURCE
 
 DEFINES += -DVIDEODIR=\"$(VIDEODIR)\"
-DEFINES += -DPLUGINDIR=\"$(PLUGINDIR)/lib\"
+DEFINES += -DPLUGINDIR=\"$(PLUGINLIBDIR)\"
 
 ifdef DEBUG_OSD
 DEFINES += -DDEBUG_OSD
@@ -115,7 +116,7 @@ plugins: include-dir
 
 plugins-clean:
 	@for i in `ls $(PLUGINDIR)/src | grep -v '[^a-z0-9]'`; do $(MAKE) -C "$(PLUGINDIR)/src/$$i" clean; done
-	@-rm -f $(PLUGINDIR)/lib/*
+	@-rm -f $(PLUGINLIBDIR)/*
 
 # Install the files:
 

@@ -2289,3 +2289,5 @@ Video Disk Recorder Revision History
   Andreas Kool).
 - Fixed keeping track of the current channel number when moving channels in
   the "Channels" menu (thanks to Mirko Günther for reporting this one).
+- Made the plugin library directory configurable via Make.config (thanks to
+  Ludwig Nussel).
