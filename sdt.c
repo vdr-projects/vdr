@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: sdt.c 1.4 2004/01/11 14:28:28 kls Exp $
+ * $Id: sdt.c 1.5 2004/01/16 14:59:06 kls Exp $
  */
 
 #include "sdt.h"
@@ -53,7 +53,7 @@ void cSdtFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                  SI::ServiceDescriptor *sd = (SI::ServiceDescriptor *)d;
                  switch (sd->getServiceType()) {
                    case 0x01: // digital television service
-                   //XXX TODO case 0x02: // digital radio sound service
+                   case 0x02: // digital radio sound service
                    //XXX TODO case 0x04: // NVOD reference service
                    //XXX TODO case 0x05: // NVOD time-shifted service
                         {

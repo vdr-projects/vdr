@@ -31,7 +31,6 @@ Here's a list of the highlights - and what _not_ to expect yet
 - Improved CAM support. Channels with conditional access now automatically
   use the device that contains the proper CAM.
 - No NVOD or "linked services" support yet.
-- No radio support yet.
 
 Note that this is currently work in progress, so there may be some
 areas that don't work as smooth as expected, yet.
