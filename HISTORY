@@ -940,3 +940,5 @@ Video Disk Recorder Revision History
   month has less than 31 days.
 - Added a description of the sort order of individual episodes in the
   recordings menu to the MANUAL.
+- Removed the EPG bugfix for "Title / Subtitle" cleanup. Apparently Pro-7 has
+  finally stopped this nasty habit.

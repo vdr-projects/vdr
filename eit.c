@@ -16,7 +16,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.c 1.31 2002/01/13 16:14:31 kls Exp $
+ * $Id: eit.c 1.32 2002/02/02 11:57:57 kls Exp $
  ***************************************************************************/
 
 #include "eit.h"
@@ -366,20 +366,6 @@ void cEventInfo::FixEpgBugs(void)
   // Some TV stations apparently have their own idea about how to fill in the
   // EPG data. Let's fix their bugs as good as we can:
   if (pTitle) {
-
-     // Pro7 preceeds the Subtitle with the Title:
-     //
-     // Title
-     // Title / Subtitle
-     //
-     if (pSubtitle && strstr(pSubtitle, pTitle) == pSubtitle) {
-        char *p = pSubtitle + strlen(pTitle);
-        const char *delim = " / ";
-        if (strstr(p, delim) == p) {
-           p += strlen(delim);
-           memmove(pSubtitle, p, strlen(p) + 1);
-           }
-        }
 
      // VOX and VIVA put the Subtitle in quotes and use either the Subtitle
      // or the Extended Description field, depending on how long the string is:
