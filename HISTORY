@@ -2952,3 +2952,5 @@ Video Disk Recorder Revision History
 - Fixed handling error case '-1' when polling section filters (thanks to Marco
   Schlüßler).
 - Fixed handling error case '-1' when polling CAM connections.
+- Making sure the OSD reports oeWrongAlignment errors before any oeAreasOverlap
+  error (suggested by Reinhard Nissl).
