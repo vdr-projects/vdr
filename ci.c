@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 1.21 2004/01/02 15:07:36 kls Exp $
+ * $Id: ci.c 1.22 2004/02/08 15:02:04 kls Exp $
  */
 
 #include "ci.h"
@@ -763,6 +763,7 @@ public:
   virtual ~cCiApplicationInformation();
   virtual bool Process(int Length = 0, const uint8_t *Data = NULL);
   bool EnterMenu(void);
+  const char *GetMenuString(void) { return menuString; }
   };
 
 cCiApplicationInformation::cCiApplicationInformation(int SessionId, cCiTransportConnection *Tc)
@@ -1557,6 +1558,13 @@ cCiEnquiry *cCiHandler::GetEnquiry(void)
          return mmi->Enquiry();
       }
   return NULL;
+}
+
+const char *cCiHandler::GetCamName(int Slot)
+{
+  cMutexLock MutexLock(&mutex);
+  cCiApplicationInformation *ai = (cCiApplicationInformation *)GetSessionByResourceId(RI_APPLICATION_INFORMATION, Slot);
+  return ai ? ai->GetMenuString() : NULL;
 }
 
 const unsigned short *cCiHandler::GetCaSystemIds(int Slot)

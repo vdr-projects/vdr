@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.h 1.12 2003/12/31 13:49:49 kls Exp $
+ * $Id: ci.h 1.13 2004/02/08 14:36:23 kls Exp $
  */
 
 #ifndef __CI_H
@@ -110,6 +110,7 @@ public:
   bool EnterMenu(int Slot);
   cCiMenu *GetMenu(void);
   cCiEnquiry *GetEnquiry(void);
+  const char *GetCamName(int Slot);
   const unsigned short *GetCaSystemIds(int Slot);
   bool ProvidesCa(const unsigned short *CaSystemIds); //XXX Slot???
   bool SetCaPmt(cCiCaPmt &CaPmt, int Slot);

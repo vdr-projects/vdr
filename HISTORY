@@ -2648,3 +2648,6 @@ Video Disk Recorder Revision History
   might be automatically set when tuned to that transponder.
 - No longer closing the Channels menu after trying to switch to a channel that
   is currently not available.
+- Removed the now obsolete CaCaps stuff. The Setup/CICAM menu now displays the
+  actual CAM type as reported by the CAM. The 'ca.conf' file has been stripped
+  down to the values 0..4.
