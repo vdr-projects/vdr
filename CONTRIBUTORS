@@ -526,6 +526,7 @@ Oliver Endriss <o.endriss@gmx.de>
  for adding a missing cStatus::MsgOsdClear() to cDisplayChannel::~cDisplayChannel()
  for reporting that the "Classic VDR" skin wrongly displayed unused color buttons
  for reporting some missing cStatus::MsgOsdTextItem() calls
+ for reporting a missing "Editing process finished" message with skins
 
 Reinhard Walter Buchner <rw.buchner@freenet.de>
  for adding some satellites to 'sources.conf'

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinsttng.c 1.3 2004/05/29 09:56:22 kls Exp $
+ * $Id: skinsttng.c 1.4 2004/05/29 13:14:09 kls Exp $
  */
 
 // Star Trek: The Next Generation® is a registered trademark of Paramount Pictures
@@ -124,6 +124,7 @@ private:
   bool withInfo;
   int lineHeight;
   tColor frameColor;
+  bool message;
   const cEvent *present;
   int lastSeen;
   static cBitmap bmTeletext, bmRadio, bmAudio, bmDolbyDigital, bmEncrypted, bmRecording;
@@ -132,6 +133,7 @@ public:
   virtual ~cSkinSTTNGDisplayChannel();
   virtual void SetChannel(const cChannel *Channel, int Number);
   virtual void SetEvents(const cEvent *Present, const cEvent *Following);
+  virtual void SetMessage(eMessageType Type, const char *Text);
   virtual void Flush(void);
   };
 
@@ -150,6 +152,7 @@ cSkinSTTNGDisplayChannel::cSkinSTTNGDisplayChannel(bool WithInfo)
   withInfo = WithInfo;
   lineHeight = font->Height();
   frameColor = Theme.Color(clrChannelFrame);
+  message = false;
   if (withInfo) {
      x0 = 0;
      x1 = x0 + font->Width("00:00") + 4;
@@ -251,7 +254,7 @@ void cSkinSTTNGDisplayChannel::SetEvents(const cEvent *Present, const cEvent *Fo
      return;
   if (present != Present)
      lastSeen = -1;
-  present = Present;   
+  present = Present;
   osd->DrawRectangle(x0, y3, x1 - 1, y4 - 1, frameColor);
   osd->DrawRectangle(x3, y3, x7 - 1, y4 - 1, Theme.Color(clrBackground));
   for (int i = 0; i < 2; i++) {
@@ -264,13 +267,33 @@ void cSkinSTTNGDisplayChannel::SetEvents(const cEvent *Present, const cEvent *Fo
       }
 }
 
+void cSkinSTTNGDisplayChannel::SetMessage(eMessageType Type, const char *Text)
+{
+  const cFont *font = cFont::GetFont(withInfo ? fontSml : fontOsd);
+  if (Text) {
+     int yt = withInfo ? y6 : y0;
+     int yb = withInfo ? y7 : y1;
+     osd->SaveRegion(x2, yt, x4 - 1, yb - 1);
+     if (withInfo)
+        osd->DrawRectangle(x2, yt, x3 - 1, yb - 1, Theme.Color(clrBackground));
+     osd->DrawText(x3, yt, Text, Theme.Color(clrMessageStatusFg + 2 * Type), Theme.Color(clrMessageStatusBg + 2 * Type), font, x4 - x3, 0, taCenter);
+     message = true;
+     }
+  else {
+     osd->RestoreRegion();
+     message = false;
+     }
+}
+
 void cSkinSTTNGDisplayChannel::Flush(void)
 {
   if (withInfo) {
-     const char *date = DayDateTime();
-     const cFont *font = cFont::GetFont(fontSml);
-     osd->DrawText(x4 - font->Width(date) - 2, y7 - font->Height(date), date, Theme.Color(clrChannelDate), frameColor, font);
-   
+     if (!message) {
+        const char *date = DayDateTime();
+        const cFont *font = cFont::GetFont(fontSml);
+        osd->DrawText(x4 - font->Width(date) - 2, y7 - font->Height(date), date, Theme.Color(clrChannelDate), frameColor, font);
+        }
+
      int seen = 0;
      if (present) {
         time_t t = time(NULL);
@@ -576,6 +599,7 @@ private:
   int y0, y1, y2, y3, y4, y5, y6, y7;
   tColor frameColor;
   int lastCurrentWidth;
+  bool message;
 public:
   cSkinSTTNGDisplayReplay(bool ModeOnly);
   virtual ~cSkinSTTNGDisplayReplay();
@@ -585,6 +609,7 @@ public:
   virtual void SetCurrent(const char *Current);
   virtual void SetTotal(const char *Total);
   virtual void SetJump(const char *Jump);
+  virtual void SetMessage(eMessageType Type, const char *Text);
   virtual void Flush(void);
   };
 
@@ -597,6 +622,7 @@ cSkinSTTNGDisplayReplay::cSkinSTTNGDisplayReplay(bool ModeOnly)
   int lineHeight = font->Height();
   frameColor = Theme.Color(clrReplayFrame);
   lastCurrentWidth = 0;
+  message = false;
   cBitmap bm(play_xpm);
   x0 = 0;
   x1 = max(SymbolWidth, bm.Width());
@@ -693,6 +719,21 @@ void cSkinSTTNGDisplayReplay::SetTotal(const char *Total)
 void cSkinSTTNGDisplayReplay::SetJump(const char *Jump)
 {
   osd->DrawText(x0 + (x4 - x0) / 4, y6, Jump, Theme.Color(clrReplayJump), frameColor, cFont::GetFont(fontSml), (x4 - x3) / 2, 0, taCenter);
+}
+
+void cSkinSTTNGDisplayReplay::SetMessage(eMessageType Type, const char *Text)
+{
+  const cFont *font = cFont::GetFont(fontSml);
+  if (Text) {
+     osd->SaveRegion(x2, y6, x4 - 1, y7 - 1);
+     osd->DrawRectangle(x2, y6, x3 - 1, y7 - 1, Theme.Color(clrBackground));
+     osd->DrawText(x3, y6, Text, Theme.Color(clrMessageStatusFg + 2 * Type), Theme.Color(clrMessageStatusBg + 2 * Type), font, x4 - x3, 0, taCenter);
+     message = true;
+     }
+  else {
+     osd->RestoreRegion();
+     message = false;
+     }
 }
 
 void cSkinSTTNGDisplayReplay::Flush(void)

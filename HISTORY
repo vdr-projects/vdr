@@ -2838,7 +2838,7 @@ Video Disk Recorder Revision History
 - Added some missing cStatus::MsgOsdTextItem() calls (thanks to Oliver Endriss for
   reporting this one).
 
-2004-05-28: Version 1.3.9
+2004-05-29: Version 1.3.9
 
 - Completed Croatian language texts (thanks to Drazen Dupor).
 - New iso8859-2 font to fix the problem with program freezes (thanks to Drazen Dupor).
@@ -2855,3 +2855,7 @@ Video Disk Recorder Revision History
   use more independent clrMenu* colors.
 - Fixed removing the "scanning recordings..." message in case the video directory
   is empty (thanks to Andreas Regel for reporting this one).
+- Added SetMessage() functions to the Replay and Channel skin functions. Plugins
+  that implement skins will need to implement these functions. This fixes a missing
+  "Editing process finished" message (thanks to Oliver Endriss for reporting this
+  one).
