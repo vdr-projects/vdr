@@ -1899,7 +1899,7 @@ Video Disk Recorder Revision History
   See INSTALL for information how to do this. Some function descriptions have
   already been adapted to Doxygen, more will follow.
 
-2003-01-06: Version 1.1.21
+2003-01-10: Version 1.1.21
 
 - Fixed the 'channels.conf' entries for "Studio Universal" and "Disney Channel".
 - Fixed handling channels in the "Channels" menu in case there are ':@nnn' group
@@ -1910,7 +1910,7 @@ Video Disk Recorder Revision History
   early by the replay thread).
 - Implemented "Link Layer" based CAM support, which hopefully will solve the
   problems with CAMs we had in the past. To use this you need the driver version
-  2002-01-06 or higher (with the new firmware supporting the "Link Layer" protocol).
+  2002-01-08 or higher (with the new firmware supporting the "Link Layer" protocol).
 - Added an EPG bugfix that moves the Subtitle data to the Extended Description in
   case the latter is empty and the Subtitle exceeds some useful length.
 - Since several channels put very long strings into the Subtitle part of their
