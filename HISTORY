@@ -2309,3 +2309,6 @@ Video Disk Recorder Revision History
   Richard Robson for reporting this one).
 - Fixed toggling channels with the '0' key (thanks to Mirko Günther for reporting
   this one).
+- Made the "Zap timeout" (the time until a channel counts as "previous" for
+  switching with '0') a setup variable, available in "Setup/Miscellaneous"
+  (suggested by Helmut Auer).

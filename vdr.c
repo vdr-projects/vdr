@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.164 2003/08/16 15:21:35 kls Exp $
+ * $Id: vdr.c 1.165 2003/08/17 08:50:25 kls Exp $
  */
 
 #include <getopt.h>
@@ -57,7 +57,6 @@
 #define ACTIVITYTIMEOUT 60 // seconds before starting housekeeping
 #define SHUTDOWNWAIT   300 // seconds to wait in user prompt before automatic shutdown
 #define MANUALSTART    600 // seconds the next timer must be in the future to assume manual start
-#define ZAPTIMEOUT       3 // seconds until a channel counts as "previous" for switching with '0'
 
 static int Interrupted = 0;
 
@@ -500,7 +499,7 @@ int main(int argc, char *argv[])
            LastChannel = cDevice::CurrentChannel();
            LastChannelChanged = time(NULL);
            }
-        if (time(NULL) - LastChannelChanged >= ZAPTIMEOUT && LastChannel != PreviousChannel[0] && LastChannel != PreviousChannel[1])
+        if (time(NULL) - LastChannelChanged >= Setup.ZapTimeout && LastChannel != PreviousChannel[0] && LastChannel != PreviousChannel[1])
            PreviousChannel[PreviousChannelIndex ^= 1] = LastChannel;
         // Timers and Recordings:
         if (!Timers.BeingEdited()) {

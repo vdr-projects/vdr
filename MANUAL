@@ -635,6 +635,9 @@ Version 1.2
                          connection after which the connection is automatically
                          closed. Default is 300, a value of 0 means no timeout.
 
+  Zap Timeout = 3        The time (in seconds) until a channel counts as "previous"
+                         for switching with '0'
+
 * Executing system commands
 
   The "VDR" menu option "Commands" allows you to execute any system commands

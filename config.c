@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.114 2003/05/11 13:50:02 kls Exp $
+ * $Id: config.c 1.115 2003/08/17 08:47:41 kls Exp $
  */
 
 #include "config.h"
@@ -262,6 +262,7 @@ cSetup::cSetup(void)
   EPGScanTimeout = 5;
   EPGBugfixLevel = 2;
   SVDRPTimeout = 300;
+  ZapTimeout = 3;
   SortTimers = 1;
   PrimaryLimit = 0;
   DefaultPriority = 50;
@@ -413,6 +414,7 @@ bool cSetup::Parse(const char *Name, const char *Value)
   else if (!strcasecmp(Name, "EPGScanTimeout"))      EPGScanTimeout     = atoi(Value);
   else if (!strcasecmp(Name, "EPGBugfixLevel"))      EPGBugfixLevel     = atoi(Value);
   else if (!strcasecmp(Name, "SVDRPTimeout"))        SVDRPTimeout       = atoi(Value);
+  else if (!strcasecmp(Name, "ZapTimeout"))          ZapTimeout         = atoi(Value);
   else if (!strcasecmp(Name, "SortTimers"))          SortTimers         = atoi(Value);
   else if (!strcasecmp(Name, "PrimaryLimit"))        PrimaryLimit       = atoi(Value);
   else if (!strcasecmp(Name, "DefaultPriority"))     DefaultPriority    = atoi(Value);
@@ -462,6 +464,7 @@ bool cSetup::Save(void)
   Store("EPGScanTimeout",     EPGScanTimeout);
   Store("EPGBugfixLevel",     EPGBugfixLevel);
   Store("SVDRPTimeout",       SVDRPTimeout);
+  Store("ZapTimeout",         ZapTimeout);
   Store("SortTimers",         SortTimers);
   Store("PrimaryLimit",       PrimaryLimit);
   Store("DefaultPriority",    DefaultPriority);

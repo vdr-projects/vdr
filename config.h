@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.167 2003/08/16 09:08:33 kls Exp $
+ * $Id: config.h 1.168 2003/08/17 08:46:34 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -219,6 +219,7 @@ public:
   int EPGScanTimeout;
   int EPGBugfixLevel;
   int SVDRPTimeout;
+  int ZapTimeout;
   int SortTimers;
   int PrimaryLimit;
   int DefaultPriority, DefaultLifetime;
