@@ -219,6 +219,7 @@ Werner Fink <werner@suse.de>
  for improving thread locking in the ring buffer to avoid possible race conditions
  under heavy load
  for improving keyboard detection
+ for adding some missing cAudio handling calls
 
 Rolf Hakenes <hakenes@hippomi.de>
  for providing 'libdtv' and adapting the EIT mechanisms to it

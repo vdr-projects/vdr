@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.48 2003/03/30 11:43:14 kls Exp $
+ * $Id: dvbdevice.c 1.49 2003/03/30 12:40:47 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -829,6 +829,7 @@ void cDvbDevice::Clear(void)
      CHECK(ioctl(fd_video, VIDEO_CLEAR_BUFFER));
   if (fd_audio >= 0)
      CHECK(ioctl(fd_audio, AUDIO_CLEAR_BUFFER));
+  cDevice::Clear();
 }
 
 void cDvbDevice::Play(void)
@@ -843,6 +844,7 @@ void cDvbDevice::Play(void)
      if (fd_video >= 0)
         CHECK(ioctl(fd_video, VIDEO_CONTINUE));
      }
+  cDevice::Play();
 }
 
 void cDvbDevice::Freeze(void)
@@ -857,6 +859,7 @@ void cDvbDevice::Freeze(void)
      if (fd_video >= 0)
         CHECK(ioctl(fd_video, VIDEO_FREEZE));
      }
+  cDevice::Freeze();
 }
 
 void cDvbDevice::Mute(void)
@@ -865,6 +868,7 @@ void cDvbDevice::Mute(void)
      CHECK(ioctl(fd_audio, AUDIO_SET_AV_SYNC, false));
      CHECK(ioctl(fd_audio, AUDIO_SET_MUTE, true));
      }
+  cDevice::Mute();
 }
 
 void cDvbDevice::StillPicture(const uchar *Data, int Length)

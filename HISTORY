@@ -2003,3 +2003,4 @@ Video Disk Recorder Revision History
   (thanks to Florian Bartels for reporting this one and Sascha Volkenandt for
   helping to fix it).
 - Modified LOF handling to allow for C-band reception (thanks to Malcolm Caldwell).
+- Added some missing cAudio handling calls (thanks to Werner Fink).
