@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.h 1.8 2000/04/24 15:31:07 kls Exp $
+ * $Id: dvbapi.h 1.9 2000/05/01 12:46:25 kls Exp $
  */
 
 #ifndef __DVBAPI_H
@@ -43,9 +43,28 @@ enum eDvbColor { clrBackground,
 class cDvbApi {
 private:
   int videoDev;
+  cDvbApi(const char *FileName);
 public:
-  cDvbApi(void);
   ~cDvbApi();
+
+#define MAXDVBAPI 2
+  static int NumDvbApis;
+private:
+  static cDvbApi *dvbApi[MAXDVBAPI];
+public:
+  static cDvbApi *PrimaryDvbApi;
+  static cDvbApi *GetDvbApi(int Ca = 0);
+         // Selects a free DVB device, starting with the highest device number.
+         // If Ca is nor 0, the device with the given number will be returned
+         // if it is not currently recording.
+  int Index(void);
+         // Returns the index of this DvbApi.
+  static bool Init(void);
+         // Initializes the DVB API and probes for existing DVB devices.
+         // Must be called before accessing any DVB functions.
+  static void Cleanup(void);
+         // Closes down all DVB devices.
+         // Must be called at the end of the program.
 
   // On Screen Display facilities
 
@@ -91,7 +110,6 @@ private:
          dvbSkip,
          dvbGetIndex,
        };
-  bool isMainProcess;
   pid_t pidRecord, pidReplay;
   int fromRecord, toRecord;
   int fromReplay, toReplay;
@@ -133,5 +151,5 @@ public:
        // beginning of the recording.
   bool GetIndex(int *Current, int *Total = NULL);
   };
-  
+
 #endif //__DVBAPI_H

@@ -22,11 +22,12 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.16 2000/04/30 11:06:41 kls Exp $
+ * $Id: vdr.c 1.17 2000/05/01 15:24:56 kls Exp $
  */
 
 #include <signal.h>
 #include "config.h"
+#include "dvbapi.h"
 #include "interface.h"
 #include "menu.h"
 #include "recording.h"
@@ -52,6 +53,9 @@ int main(int argc, char *argv[])
   openlog("vdr", LOG_PID | LOG_CONS, LOG_USER);
   isyslog(LOG_INFO, "started");
 
+  if (!cDvbApi::Init())
+     return 1;
+
   Channels.Load("channels.conf");
   Timers.Load("timers.conf");
   if (!Keys.Load(KEYS_CONF))
@@ -65,7 +69,6 @@ int main(int argc, char *argv[])
   if (signal(SIGTERM, SignalHandler) == SIG_IGN) signal(SIGTERM, SIG_IGN);
 
   cMenuMain *Menu = NULL;
-  cRecordControl *RecordControl = NULL;
   cReplayControl *ReplayControl = NULL;
   int dcTime = 0, dcNumber = 0;
   int LastChannel = -1;
@@ -73,7 +76,7 @@ int main(int argc, char *argv[])
   while (!Interrupted) {
         // Channel display:
         if (CurrentChannel != LastChannel) {
-           if (!RecordControl) {
+           if (!Menu && !Interface.Recording()) {
               cChannel *channel = Channels.Get(CurrentChannel);
               if (channel)
                  Interface.DisplayChannel(CurrentChannel + 1, channel->name);
@@ -86,43 +89,32 @@ int main(int argc, char *argv[])
            dcNumber = 0;
            LastChannel = -1; // in case an invalid channel number was entered!
            }
-        // Timer Processing:
-        else if (!RecordControl) {
+        // Timers and Recordings:
+        if (!Menu) {
            cTimer *Timer = cTimer::GetMatch();
            if (Timer) {
-              DELETENULL(Menu);
-              DELETENULL(ReplayControl);
-              RecordControl = new cRecordControl(Timer);
+              if (!cRecordControls::Start(Timer)) {
+                 //TODO need to do something to prevent the timer from hitting over and over again...
+                 }
               }
+           cRecordControls::Process();
            }
         // User Input:
         cOsdBase **Interact = Menu ? (cOsdBase **)&Menu : (cOsdBase **)&ReplayControl;
         eKeys key = Interface.GetKey(!*Interact || !(*Interact)->NeedsFastResponse());
-        if (RecordControl) {
-           switch (RecordControl->ProcessKey(key)) {
-             case osMenu: break;
-             case osEnd:  DELETENULL(Menu); // must make sure no menu uses the timer
-                          DELETENULL(RecordControl);
-                          break;
-             default:     if (!*Interact)
-                             continue;
-             }
-           }
         if (*Interact) {
            switch ((*Interact)->ProcessKey(key)) {
              case osMenu:   DELETENULL(Menu);
-                            Menu = new cMenuMain(RecordControl && RecordControl->IsInstant());
+                            Menu = new cMenuMain(ReplayControl);
                             break;
              case osReplay: DELETENULL(Menu);
                             DELETENULL(ReplayControl);
                             ReplayControl = new cReplayControl;
                             break;
-             case osStopRecord: if (RecordControl) {
-                                   RecordControl->Stop();
-                                   DELETENULL(Menu); // must make sure no menu uses the timer
-                                   DELETENULL(RecordControl);
-                                   }
-                                break;
+             case osStopReplay:
+                            DELETENULL(*Interact);
+                            DELETENULL(ReplayControl);
+                            break;
              case osBack:
              case osEnd:    DELETENULL(*Interact);
                             break;
@@ -134,28 +126,29 @@ int main(int argc, char *argv[])
              // Direct Channel Select (input):
              case k0: case k1: case k2: case k3: case k4: case k5: case k6: case k7: case k8: case k9:
                   {
-                    if (!RecordControl) {
+                    if (!Interface.Recording()) {
                        dcNumber = dcNumber * 10 + key - k0;
                        dcTime = time_ms();
                        Interface.DisplayChannel(dcNumber);
                        }
                   }
                   break;
-             // Instant Recording:
-             case kRecord: if (!RecordControl)
-                              RecordControl = new cRecordControl;
-                           break;
-             // Menu Control:
-             case kMenu: Menu = new cMenuMain(RecordControl && RecordControl->IsInstant()); break;
              // Up/Down Channel Select:
              case kUp:
-             case kDown: if (!RecordControl) {
+             case kDown: if (!Interface.Recording()) {
                             int n = CurrentChannel + (key == kUp ? 1 : -1);
                             cChannel *channel = Channels.Get(n);
                             if (channel)
                                channel->Switch();
                             }
                          break;
+             // Instant Recording:
+             case kRecord: DELETENULL(Menu);
+                           if (!cRecordControls::Start())
+                              Interface.Error("No free DVB device to record!");
+                           break;
+             // Menu Control:
+             case kMenu: Menu = new cMenuMain(ReplayControl); break;
              // Viewing Control:
              case kOk:   LastChannel = -1; break; // forces channel display
              default:    break;
@@ -164,8 +157,8 @@ int main(int argc, char *argv[])
         }
   isyslog(LOG_INFO, "caught signal %d", Interrupted);
   delete Menu;
-  delete RecordControl;
   delete ReplayControl;
+  cDvbApi::Cleanup();
   isyslog(LOG_INFO, "exiting");
   closelog();
   return 0;

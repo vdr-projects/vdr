@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.5 2000/04/24 09:44:15 kls Exp $
+ * $Id: config.c 1.6 2000/05/01 16:29:31 kls Exp $
  */
 
 #include "config.h"
@@ -201,13 +201,15 @@ bool cChannel::Save(FILE *f)
   return fprintf(f, "%s:%d:%c:%d:%d:%d:%d:%d:%d\n", name, frequency, polarization, diseqc, srate, vpid, apid, ca, pnr) > 0;
 }
 
-bool cChannel::Switch(void)
+bool cChannel::Switch(cDvbApi *DvbApi)
 {
-  if (!DvbApi.Recording()) {
+  if (!DvbApi)
+     DvbApi = cDvbApi::PrimaryDvbApi;
+  if (!DvbApi->Recording()) {
      isyslog(LOG_INFO, "switching to channel %d", Index() + 1);
      CurrentChannel = Index();
      for (int i = 3; --i;) {
-         if (DvbApi.SetChannel(frequency, polarization, diseqc, srate, vpid, apid, ca, pnr))
+         if (DvbApi->SetChannel(frequency, polarization, diseqc, srate, vpid, apid, ca, pnr))
             return true;
          esyslog(LOG_ERR, "retrying");
          }
@@ -217,10 +219,16 @@ bool cChannel::Switch(void)
   return false;
 }
 
-bool cChannel::SwitchTo(int i)
+bool cChannel::SwitchTo(int i, cDvbApi *DvbApi)
 {
   cChannel *channel = Channels.Get(i);
-  return channel && channel->Switch();
+  return channel && channel->Switch(DvbApi);
+}
+
+const char *cChannel::GetChannelName(int i)
+{
+  cChannel *channel = Channels.Get(i);
+  return channel ? channel->name : NULL;
 }
 
 // -- cTimer -----------------------------------------------------------------
@@ -241,7 +249,9 @@ cTimer::cTimer(bool Instant)
 //TODO VPS???
   priority = 99;
   lifetime = 99;
-  strcpy(file, Instant ? "instant" : "");
+  *file = 0;
+  if (Instant)
+     snprintf(file, sizeof(file), "@%s", cChannel::GetChannelName(CurrentChannel));
 }
 
 int cTimer::TimeToInt(int t)
@@ -382,7 +392,7 @@ cTimer *cTimer::GetMatch(void)
 {
   cTimer *t = (cTimer *)Timers.First();
   while (t) {
-        if (t->Matches())
+        if (!t->recording && t->Matches())
            return t;
         t = (cTimer *)t->Next();
         }

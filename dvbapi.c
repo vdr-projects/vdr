@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.8 2000/04/24 15:30:35 kls Exp $
+ * $Id: dvbapi.c 1.9 2000/05/01 13:18:29 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -987,13 +987,16 @@ int cReplayBuffer::Write(int Max)
 
 // --- cDvbApi ---------------------------------------------------------------
 
-cDvbApi::cDvbApi(void)
+int cDvbApi::NumDvbApis = 0;
+cDvbApi *cDvbApi::dvbApi[MAXDVBAPI] = { NULL };
+cDvbApi *cDvbApi::PrimaryDvbApi = NULL;
+
+cDvbApi::cDvbApi(const char *FileName)
 {
-  isMainProcess = true;
   pidRecord = pidReplay = 0;
   fromRecord = toRecord = -1;
   fromReplay = toReplay = -1;
-  videoDev = open(VIDEODEVICE, O_RDWR | O_NONBLOCK);
+  videoDev = open(FileName, O_RDWR | O_NONBLOCK);
   if (videoDev < 0)
      LOG_ERROR;
   cols = rows = 0;
@@ -1017,18 +1020,82 @@ cDvbApi::cDvbApi(void)
 
 cDvbApi::~cDvbApi()
 {
-  if (isMainProcess) {
-     if (videoDev >= 0) {
-        Close();
-        StopReplay();
-        StopRecord();
-        close(videoDev);
-        }
-#if defined(DEBUG_REMOTE) || defined(DEBUG_OSD)
-     endwin();
-#endif
+  if (videoDev >= 0) {
+     Close();
+     StopReplay();
+     StopRecord();
+     close(videoDev);
      }
+#if defined(DEBUG_REMOTE) || defined(DEBUG_OSD)
+  endwin();
+#endif
   delete replayTitle;
+}
+
+cDvbApi *cDvbApi::GetDvbApi(int Ca)
+{
+  Ca--;
+  for (int i = MAXDVBAPI; --i >= 0; ) {
+      if (dvbApi[i]) {
+         if ((i == Ca || Ca < 0) && !dvbApi[i]->Recording())
+            return dvbApi[i];
+         }
+      }
+  return NULL;
+}
+
+int cDvbApi::Index(void)
+{
+  for (int i = 0; i < MAXDVBAPI; i++) {
+      if (dvbApi[i] == this)
+         return i;
+      }
+  return -1;
+}
+
+bool cDvbApi::Init(void)
+{
+  char fileName[strlen(VIDEODEVICE) + 10];
+  int i;
+
+  NumDvbApis = 0;
+  for (i = 0; i < MAXDVBAPI; i++) {
+      sprintf(fileName, "%s%d", VIDEODEVICE, i);
+      if (access(fileName, F_OK | R_OK | W_OK) == 0) {
+         dsyslog(LOG_INFO, "probing %s", fileName);
+         int f = open(fileName, O_RDWR);
+         if (f >= 0) {
+            close(f);
+            dvbApi[i] = new cDvbApi(fileName);
+            NumDvbApis++;
+            }
+         else {
+            if (errno != ENODEV)
+               LOG_ERROR_STR(fileName);
+            break;
+            }
+         }
+      else {
+         if (errno != ENOENT)
+            LOG_ERROR_STR(fileName);
+         break;
+         }
+      }
+  PrimaryDvbApi = dvbApi[0];
+  if (NumDvbApis > 0)
+     isyslog(LOG_INFO, "found %d video device%s", NumDvbApis, NumDvbApis > 1 ? "s" : "");
+  else
+     esyslog(LOG_ERR, "ERROR: no video device found, giving up!");
+  return NumDvbApis > 0;
+}
+
+void cDvbApi::Cleanup(void)
+{
+  for (int i = 0; i < MAXDVBAPI; i++) {
+      delete dvbApi[i];
+      dvbApi[i] = NULL;
+      }
+  PrimaryDvbApi = NULL;
 }
 
 #ifdef DEBUG_OSD
@@ -1100,7 +1167,9 @@ void cDvbApi::Open(int w, int h)
 
 void cDvbApi::Close(void)
 {
-#ifndef DEBUG_OSD
+#ifdef DEBUG_OSD
+  delwin(window);
+#else
   Cmd(OSD_Close);
 #endif
   lastProgress = -1;
@@ -1247,6 +1316,8 @@ bool cDvbApi::StartRecord(const char *FileName)
      }
   if (videoDev >= 0) {
 
+     StopReplay(); // TODO: remove this if the driver is able to do record and replay at the same time
+
      // Check FileName:
 
      if (!FileName) {
@@ -1285,7 +1356,6 @@ bool cDvbApi::StartRecord(const char *FileName)
         // This is the actual recording process
 
         dsyslog(LOG_INFO, "start recording process (pid=%d)", getpid());
-        isMainProcess = false;
         bool DataStreamBroken = false;
         int fromMain = toRecordPipe[0];
         int toMain = fromRecordPipe[1];
@@ -1411,7 +1481,6 @@ bool cDvbApi::StartReplay(const char *FileName, const char *Title)
         // This is the actual replaying process
 
         dsyslog(LOG_INFO, "start replaying process (pid=%d)", getpid());
-        isMainProcess = false;
         int fromMain = toReplayPipe[0];
         int toMain = fromReplayPipe[1];
         cReplayBuffer *Buffer = new cReplayBuffer(&videoDev, FileName);

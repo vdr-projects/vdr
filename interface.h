@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.h 1.7 2000/04/24 09:44:25 kls Exp $
+ * $Id: interface.h 1.8 2000/05/01 10:10:08 kls Exp $
  */
 
 #ifndef __INTERFACE_H
@@ -43,9 +43,9 @@ public:
   void Help(const char *Red, const char *Green = NULL, const char *Yellow = NULL, const char *Blue = NULL);
   void LearnKeys(void);
   void DisplayChannel(int Number, const char *Name = NULL);
+  bool Recording(void);
   };
 
 extern cInterface Interface;
-extern cDvbApi DvbApi; //XXX member of cInterface???
 
 #endif //__INTERFACE_H

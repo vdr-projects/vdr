@@ -4,34 +4,52 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 1.8 2000/04/30 10:58:49 kls Exp $
+ * $Id: menu.h 1.9 2000/05/01 15:16:23 kls Exp $
  */
 
 #ifndef _MENU_H
 #define _MENU_H
 
+#define _GNU_SOURCE
+
+#include "dvbapi.h"
 #include "osd.h"
 
 class cMenuMain : public cOsdMenu {
+private:
+  time_t lastActivity;
 public:
-  cMenuMain(bool Recording);
+  cMenuMain(bool Replaying);
   virtual eOSState ProcessKey(eKeys Key);
   };
   
-class cRecordControl : public cOsdBase {
+class cRecordControl {
 private:
+  cDvbApi *dvbApi;
   cTimer *timer;
-  bool isInstant;
+  char *instantId;
 public:
-  cRecordControl(cTimer *Timer = NULL);
+  cRecordControl(cDvbApi *DvbApi, cTimer *Timer = NULL);
   virtual ~cRecordControl();
-  virtual eOSState ProcessKey(eKeys Key);
+  bool Process(void);
   void Stop(bool KeepInstant = false);
-  bool IsInstant(void) { return isInstant; }
+  bool IsInstant(void) { return instantId; }
+  const char *InstantId(void) { return instantId; }
+  };
+
+class cRecordControls {
+private:
+  static cRecordControl *RecordControls[MAXDVBAPI];
+public:
+  static bool Start(cTimer *Timer = NULL);
+  static void Stop(const char *InstantId);
+  static const char *GetInstantId(const char *LastInstantId);
+  static void Process(void);
   };
 
 class cReplayControl : public cOsdBase {
 private:
+  cDvbApi *dvbApi;
   bool visible, shown;
   void Show(void);
   void Hide(void);

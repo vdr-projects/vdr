@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.4 2000/04/24 09:44:17 kls Exp $
+ * $Id: config.h 1.5 2000/05/01 10:45:17 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -14,6 +14,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
+#include "dvbapi.h"
 #include "tools.h"
 
 #define MaxBuffer 1000
@@ -79,8 +80,9 @@ public:
   cChannel(const cChannel *Channel);
   bool Parse(char *s);
   bool Save(FILE *f);
-  bool Switch(void);
-  static bool SwitchTo(int i);
+  bool Switch(cDvbApi *DvbApi = NULL);
+  static bool SwitchTo(int i, cDvbApi *DvbApi = NULL);
+  static const char *GetChannelName(int i);
   };
 
 class cTimer : public cListObject {

@@ -32,3 +32,20 @@ Video Disk Recorder Revision History
   kick in too early).
 - Channel selection is now blocked when recording or replaying.
 - Improved process handling.
+
+2000-05-01: Version 0.05
+
+- Prepared for support of more than one DVB card.
+- Instant recordings no longer get the name "instant". They now get the name
+  of the channel, with a prepended '@' character.
+- Timers that are not given an explicit Name now use the channel name with
+  a prepended '@' character.
+- If an instant recording is currently active, the Main menu now contains
+  an option to stop that recording.
+- Timers are now only processed when the Menu is not active. So after editing
+  a timer the effect will take place only after the menu has been closed.
+  In order to avoid missing a timer event by inadvertently leaving the menu
+  open, the menu will be closed automatically after about two minutes of
+  inactivity.
+- If a recording is currently being replayed, the Main menu now contains an
+  option to stop replaying.
