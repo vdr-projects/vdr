@@ -200,7 +200,7 @@ Version 1.2
 
   The "Left" and "Right" keys can be used to switch between "mono left", "stereo"
   and "mono right" for channels that broadcast different audio tracks in the
-  left and right stereo channels (as was often done in the old analog days).
+  left and right stereo channels.
 
   The "Ok" key explicitly switches to the selected track (in case the device
   for some reason doesn't play it) and closes the "Audio" menu.
@@ -211,7 +211,7 @@ Version 1.2
   Once a Dolby Digital track has been selected on any channel, further channel
   switches will first search for a Dolby Digital track of one of the preferred
   audio languages. If no such track can be found, a normal audio track will
-  be selected. Note that this only works is the broadcasters use actual language
+  be selected. Note that this only works if the broadcasters use actual language
   codes in their PID data, not things like "dd" or "2ch".
 
 * Switching through channel groups

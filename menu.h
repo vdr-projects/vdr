@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 1.67 2005/01/06 14:29:46 kls Exp $
+ * $Id: menu.h 1.68 2005/01/08 15:48:57 kls Exp $
  */
 
 #ifndef __MENU_H
@@ -81,7 +81,7 @@ private:
   cTimeMs timeout;
   eTrackType types[ttMaxTrackTypes];
   char *descriptions[ttMaxTrackTypes];
-  int numTracks, track;
+  int numTracks, track, audioChannel;
   static cDisplayTracks *currentDisplayTracks;
   virtual void Show(void);
   cDisplayTracks(void);

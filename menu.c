@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.331 2005/01/08 10:46:44 kls Exp $
+ * $Id: menu.c 1.332 2005/01/09 11:55:12 kls Exp $
  */
 
 #include "menu.h"
@@ -2857,6 +2857,7 @@ cDisplayTracks::cDisplayTracks(void)
      SetTrackDescriptions();
   currentDisplayTracks = this;
   numTracks = track = 0;
+  audioChannel = cDevice::PrimaryDevice()->GetAudioChannel();
   eTrackType CurrentAudioTrack = cDevice::PrimaryDevice()->GetCurrentAudioTrack();
   for (int i = ttAudioFirst; i <= ttDolbyLast; i++) {
       const tTrackId *TrackId = cDevice::PrimaryDevice()->GetTrack(eTrackType(i));
@@ -2884,9 +2885,12 @@ cDisplayTracks::~cDisplayTracks()
 
 void cDisplayTracks::Show(void)
 {
+  int ac = IS_AUDIO_TRACK(types[track]) ? audioChannel : -1;
   displayTracks->SetTrack(track, descriptions);
+  displayTracks->SetAudioChannel(ac);
   displayTracks->Flush();
   cStatus::MsgSetAudioTrack(track, descriptions);
+  cStatus::MsgSetAudioChannel(ac);
 }
 
 cDisplayTracks *cDisplayTracks::Create(void)
@@ -2909,6 +2913,7 @@ void cDisplayTracks::Process(eKeys Key)
 eOSState cDisplayTracks::ProcessKey(eKeys Key)
 {
   int oldTrack = track;
+  int oldAudioChannel = audioChannel;
   switch (Key) {
     case kUp|k_Repeat:
     case kUp:
@@ -2923,16 +2928,16 @@ eOSState cDisplayTracks::ProcessKey(eKeys Key)
     case kLeft|k_Repeat:
     case kLeft:
     case kRight|k_Repeat:
-    case kRight: {
-         static int ac[] = { 1, 0, 2 };
-         int AudioChannel = ac[cDevice::PrimaryDevice()->GetAudioChannel()];
-         if (NORMALKEY(Key) == kLeft && AudioChannel > 0)
-            AudioChannel--;
-         else if (NORMALKEY(Key) == kRight && AudioChannel < 2)
-            AudioChannel++;
-         cDevice::PrimaryDevice()->SetAudioChannel(ac[AudioChannel]);
-         timeout.Set(TRACKTIMEOUT);
-         }
+    case kRight: if (IS_AUDIO_TRACK(types[track])) {
+                    static int ac[] = { 1, 0, 2 };
+                    audioChannel = ac[cDevice::PrimaryDevice()->GetAudioChannel()];
+                    if (NORMALKEY(Key) == kLeft && audioChannel > 0)
+                       audioChannel--;
+                    else if (NORMALKEY(Key) == kRight && audioChannel < 2)
+                       audioChannel++;
+                    audioChannel = ac[audioChannel];
+                    timeout.Set(TRACKTIMEOUT);
+                    }
          break;
     case kAudio:
          if (++track >= numTracks)
@@ -2948,11 +2953,14 @@ eOSState cDisplayTracks::ProcessKey(eKeys Key)
     default: if ((Key & k_Release) == 0)
                 return osEnd;
     }
-  if (track != oldTrack) {
+  if (track != oldTrack || audioChannel != oldAudioChannel)
      Show();
+  if (track != oldTrack) {
      cDevice::PrimaryDevice()->SetCurrentAudioTrack(types[track]);
      Setup.CurrentDolby = IS_DOLBY_TRACK(types[track]);
      }
+  if (audioChannel != oldAudioChannel)
+     cDevice::PrimaryDevice()->SetAudioChannel(audioChannel);
   return timeout.TimedOut() ? osEnd : osContinue;
 }
 

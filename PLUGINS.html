@@ -1493,13 +1493,15 @@ repectively.
 <b>Audio selection</b>
 <p>
 If the device can provide more than a single audio track, it can implement the
-following functions to make them available:
+following function to make them available:
 
+<!--X1.3.18--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
 <p><table><tr><td bgcolor=#F0F0F0><pre>
-virtual int NumAudioTracksDevice(void) const;
-virtual const char **GetAudioTracksDevice(int *CurrentTrack = NULL) const;
-virtual void SetAudioTrackDevice(int Index);
+virtual void SetAudioTrackDevice(eTrackType Type);
+virtual int GetAudioChannelDevice(void);
+virtual void SetAudioChannelDevice(int AudioChannel);
 </pre></td></tr></table><p>
+<!--X1.3.18--></td></tr></table>
 
 <p>
 <b>Recording</b>

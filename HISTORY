@@ -3262,7 +3262,8 @@ Video Disk Recorder Revision History
 - The format of the 'epg.data' files has been extended by the new tag 'X', which
   contains the stream components of an event (see man vdr(5) for details).
 - The cStatus class now has the new member function SetAudioTrack(), which can be
-  used to get notified when the audio track has been switched.
+  used to get notified when the audio track has been switched, and the new member
+  function SetAudioChannel() which is called when the audio channel is changed.
 - Skins need to implement the new cSkinDisplayTrack class to display the audio
   track menu.
 - The ST:TNG skin now displays the current audio track description (if any) at the
@@ -3273,8 +3274,6 @@ Video Disk Recorder Revision History
 - The "Left" and "Right" keys in the "Audio" menu can be used to switch between
   the left and right stereo channels in case there are different audio tracks
   in these channels (see MANUAL for details).
-  Currently there is no visual indicator of the audio channel, yet, and it
-  doesn't work with the selected audio languages.
 - Fixed a possible race condition in cDevice::Action() (thanks to Mattias Grönlund).
 - Fixed the default quality value when grabbing a JPEG image (thanks to Patrick
   Gleichmann).

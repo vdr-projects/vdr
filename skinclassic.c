@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinclassic.c 1.10 2005/01/02 14:41:08 kls Exp $
+ * $Id: skinclassic.c 1.11 2005/01/09 11:56:29 kls Exp $
  */
 
 #include "skinclassic.h"
@@ -516,6 +516,7 @@ public:
   cSkinClassicDisplayTracks(const char *Title, int NumTracks, const char * const *Tracks);
   virtual ~cSkinClassicDisplayTracks();
   virtual void SetTrack(int Index, const char * const *Tracks);
+  virtual void SetAudioChannel(int AudioChannel) {}
   virtual void Flush(void);
   };
 

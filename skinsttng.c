@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinsttng.c 1.11 2005/01/08 10:15:00 kls Exp $
+ * $Id: skinsttng.c 1.12 2005/01/08 15:37:55 kls Exp $
  */
 
 // Star Trek: The Next Generation® is a registered trademark of Paramount Pictures
@@ -20,6 +20,9 @@
 #include "symbols/arrowdown.xpm"
 #include "symbols/arrowup.xpm"
 #include "symbols/audio.xpm"
+#include "symbols/audioleft.xpm"
+#include "symbols/audioright.xpm"
+#include "symbols/audiostereo.xpm"
 #include "symbols/dolbydigital.xpm"
 #include "symbols/encrypted.xpm"
 #include "symbols/ffwd.xpm"
@@ -835,13 +838,19 @@ private:
   int lineHeight;
   tColor frameColor;
   int currentIndex;
+  static cBitmap bmAudioLeft, bmAudioRight, bmAudioStereo;
   void SetItem(const char *Text, int Index, bool Current);
 public:
   cSkinSTTNGDisplayTracks(const char *Title, int NumTracks, const char * const *Tracks);
   virtual ~cSkinSTTNGDisplayTracks();
   virtual void SetTrack(int Index, const char * const *Tracks);
+  virtual void SetAudioChannel(int AudioChannel);
   virtual void Flush(void);
   };
+
+cBitmap cSkinSTTNGDisplayTracks::bmAudioLeft(audioleft_xpm);
+cBitmap cSkinSTTNGDisplayTracks::bmAudioRight(audioright_xpm);
+cBitmap cSkinSTTNGDisplayTracks::bmAudioStereo(audiostereo_xpm);
 
 cSkinSTTNGDisplayTracks::cSkinSTTNGDisplayTracks(const char *Title, int NumTracks, const char * const *Tracks)
 {
@@ -952,6 +961,20 @@ void cSkinSTTNGDisplayTracks::SetTrack(int Index, const char * const *Tracks)
   if (currentIndex >= 0)
      SetItem(Tracks[currentIndex], currentIndex, false);
   SetItem(Tracks[Index], Index, true);
+}
+
+void cSkinSTTNGDisplayTracks::SetAudioChannel(int AudioChannel)
+{
+  cBitmap *bm = NULL;
+  switch (AudioChannel) {
+    case 0: bm = &bmAudioStereo; break;
+    case 1: bm = &bmAudioLeft;   break;
+    case 2: bm = &bmAudioRight;  break;
+    }
+  if (bm)
+     osd->DrawBitmap(x3 + 5, y6 + (y7 - y6 - bm->Height()) / 2, *bm, Theme.Color(clrChannelSymbolOn), frameColor);
+  else
+     osd->DrawRectangle(x3, y6, x4 - 1, y7 - 1, frameColor);
 }
 
 void cSkinSTTNGDisplayTracks::Flush(void)

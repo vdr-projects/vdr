@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skins.h 1.5 2005/01/02 14:36:19 kls Exp $
+ * $Id: skins.h 1.6 2005/01/09 11:49:37 kls Exp $
  */
 
 #ifndef __SKINS_H
@@ -66,7 +66,6 @@ public:
     Red    = Video options
     Green  = Info now
     Yellow = Info next
-  VideoOptions
   */
   };
 
@@ -227,6 +226,9 @@ public:
   virtual void SetTrack(int Index, const char * const *Tracks) = 0;
        ///< Sets the current track to the one given by Index, which
        ///< points into the Tracks array of strings.
+  virtual void SetAudioChannel(int AudioChannel) = 0;
+       ///< Sets the audio channel indicator.
+       ///< 0=stereo, 1=left, 2=right, -1=don't display the audio channel indicator.
   };
 
 class cSkinDisplayMessage : public cSkinDisplay {

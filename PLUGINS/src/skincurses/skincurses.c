@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: skincurses.c 1.4 2005/01/02 15:11:29 kls Exp $
+ * $Id: skincurses.c 1.5 2005/01/09 11:56:26 kls Exp $
  */
 
 #include <ncurses.h>
@@ -570,6 +570,7 @@ public:
   cSkinCursesDisplayTracks(const char *Title, int NumTracks, const char * const *Tracks);
   virtual ~cSkinCursesDisplayTracks();
   virtual void SetTrack(int Index, const char * const *Tracks);
+  virtual void SetAudioChannel(int AudioChannel) {}
   virtual void Flush(void);
   };
 
