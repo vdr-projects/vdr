@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remote.c 1.36 2002/12/15 15:58:59 kls Exp $
+ * $Id: remote.c 1.38 2003/05/02 10:49:50 kls Exp $
  */
 
 #include "remote.h"
@@ -58,7 +58,7 @@ void cRemote::Clear(void)
      }
 }
 
-bool cRemote::Put(eKeys Key)
+bool cRemote::Put(eKeys Key, bool AtFront)
 {
   if (Key != kNone) {
      cMutexLock MutexLock(&mutex);
@@ -68,9 +68,16 @@ bool cRemote::Put(eKeys Key)
      if (d <= 0)
         d = MaxKeys + d;
      if (d - 1 > 0) {
-        keys[in] = Key;
-        if (++in >= MaxKeys)
-           in = 0;
+        if (AtFront) {
+           if (--out < 0)
+              out = MaxKeys - 1;
+           keys[out] = Key;
+           }
+        else {
+           keys[in] = Key;
+           if (++in >= MaxKeys)
+              in = 0;
+           }
         keyPressed.Broadcast();
         return true;
         }
@@ -121,6 +128,11 @@ bool cRemote::Put(const char *Code, bool Repeat, bool Release)
      keyPressed.Broadcast();
      }
   return false;
+}
+
+bool cRemote::HasKeys(void)
+{
+  return in != out && !(keys[out] & k_Repeat);
 }
 
 eKeys cRemote::Get(int WaitMs, char **UnknownCode)

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remote.h 1.26 2003/04/27 12:05:48 kls Exp $
+ * $Id: remote.h 1.28 2003/05/02 10:41:35 kls Exp $
  */
 
 #ifndef __REMOTE_H
@@ -42,10 +42,10 @@ public:
   const char *Name(void) { return name; }
   static void SetLearning(cRemote *Learning) { learning = Learning; }
   static void Clear(void);
-  static bool Put(eKeys Key);
+  static bool Put(eKeys Key, bool AtFront = false);
   static bool PutMacro(eKeys Key);
   static const char *GetPlugin(void) { return plugin; }
-  static bool HasKeys(void) { return in != out; }
+  static bool HasKeys(void);
   static eKeys Get(int WaitMs = 1000, char **UnknownCode = NULL);
   };
 

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.240 2003/04/27 12:50:31 kls Exp $
+ * $Id: menu.c 1.241 2003/05/03 15:59:07 kls Exp $
  */
 
 #include "menu.h"
@@ -2489,7 +2489,7 @@ void cMenuMain::Set(const char *Plugin)
 
   // Color buttons:
 
-  SetHelp(tr("Record"), cDevice::PrimaryDevice()->NumAudioTracks() > 1 ? tr("Language") : NULL, replaying ? NULL : tr("Pause"), replaying ? tr("Button$Stop") : cReplayControl::LastReplayed() ? tr("Resume") : NULL);
+  SetHelp(!replaying ? tr("Record") : NULL, cDevice::PrimaryDevice()->NumAudioTracks() > 1 ? tr("Language") : NULL, replaying ? NULL : tr("Pause"), replaying ? tr("Button$Stop") : cReplayControl::LastReplayed() ? tr("Resume") : NULL);
   Display();
   lastActivity = time(NULL);
 }
@@ -2547,7 +2547,7 @@ eOSState cMenuMain::ProcessKey(eKeys Key)
     default: switch (Key) {
                case kRecord:
                case kRed:    if (!HadSubMenu)
-                                state = osRecord;
+                                state = replaying ? osContinue : osRecord;
                              break;
                case kGreen:  if (!HadSubMenu) {
                                 int CurrentAudioTrack = -1;
@@ -2564,7 +2564,7 @@ eOSState cMenuMain::ProcessKey(eKeys Key)
                                 }
                              break;
                case kYellow: if (!HadSubMenu)
-                                state = osPause;
+                                state = replaying ? osContinue : osPause;
                              break;
                case kBlue:   if (!HadSubMenu)
                                 state = replaying ? osStopReplay : cReplayControl::LastReplayed() ? osReplay : osContinue;

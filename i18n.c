@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.106 2003/04/21 14:05:17 kls Exp $
+ * $Id: i18n.c 1.107 2003/05/01 14:10:18 kls Exp $
  *
  * Translations provided by:
  *
@@ -12,7 +12,7 @@
  * Italian     Alberto Carraro <bertocar@tin.it>
  * Dutch       Arnold Niessen <niessen@iae.nl> <arnold.niessen@philips.com>
  * Portuguese  Paulo Lopes <pmml@netvita.pt>
- * French      Jean-Claude Repetto <jc@repetto.org>
+ * French      Jean-Claude Repetto <jc@repetto.org> and Olivier Jacques <jacquesolivier@hotmail.com>
  * Norwegian   Jørgen Tvedt <pjtvedt@online.no> and Truls Slevigen <truls@slevigen.no>
  * Finnish     Hannu Savolainen <hannu@opensound.com> and Jaakko Hyvätti <jaakko@hyvatti.iki.fi>
  * Polish      Michael Rakowski <mrak@gmx.de>
@@ -1940,7 +1940,7 @@ const tI18nPhrase Phrases[] = {
     "Scrolla pagina nel menu",
     "Scrollen per pagina",
     "Scroll da página no menu",
-    "Affichage progr. suivant",
+    "Scrolling par pages",
     "Rask rulling i menyer",
     "Valikkojen rullaus",
     "Przesuwac stronami",
@@ -1988,7 +1988,7 @@ const tI18nPhrase Phrases[] = {
     "Timeout EPG (h)",
     "EPG-scan Timeout (h)",
     "Expirou o EPG (h)",
-    "Temps maxi EPG (h)",
+    "Inactivité avant rech. EPG (h)",
     "Ledig tid før EPG-søk (h)",
     "Ohjelmatied. odotusaika (h)",
     "Czas do skanu EPG (h)",
@@ -2228,7 +2228,7 @@ const tI18nPhrase Phrases[] = {
     "Durata predefinita (d)",
     "Standaard levensduur (d)",
     "Validade por defeito (d)",
-    "Durée de vie par défaut (d)",
+    "Durée de vie par défaut (j)",
     "Normal levetid timer (d)",
     "Oletus voimassaoloaika (d)",
     "Pierwotna trwalosc (d)",
@@ -2260,7 +2260,7 @@ const tI18nPhrase Phrases[] = {
     "Marca la registrazione",
     "Direkte opnamen markeren",
     "Marca de gravação rápida",
-    "Enregistrement immédiat",
+    "Marquage enregistr. immédiats",
     "Markere direkteopptak",
     "Merkitse välitön nauh.",
     "Zaznaczyc natychm. nagranie",
@@ -2292,7 +2292,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Durée enregistr. immédiat (min)",
     "",//TODO
     "Pikanauhoituksen pituus (min)",
     "",//TODO
@@ -2404,7 +2404,7 @@ const tI18nPhrase Phrases[] = {
     "Tempo minimo di pausa (min)", // ??? i don't know...
     "Minimale event time-out (min)",
     "Período mínimo de pausa (min)",
-    "MinEventTimeout (min)", // Too difficult to translate - read the manual!
+    "MinEventTimeout (min)",
     "Minste hendelsespause (min)",
     "Minimi tapahtuman odotus (min)",
     "Min. czas do nast. akcji (Event) (min)",
@@ -2420,7 +2420,7 @@ const tI18nPhrase Phrases[] = {
     "Tempo minimo di inattivita' (min)",
     "Minimum gebruikers inactiviteit (min)",
     "Período mínimo de inactividade (min)",
-    "Durée minimale d'inactivité (min)",
+    "Durée minimale d'inact. (min)",
     "Minimumstid med inaktivitet (min)",
     "Minimi käyttäjän odotus (min)",
     "Min. brak aktywnosci uzytkownika (min)",
@@ -2486,7 +2486,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    " aàbcçdeéèêfghiîjklmnoôpqrstuùûvxyz0123456789-.#~",
     "",// TODO
     " abcdefghijklmnopqrstuvxyzåäö0123456789-.#~",
     "",// TODO
@@ -2679,7 +2679,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "('Menu' pour passer cette touche)",
     "",// TODO
     "(Paina 'Valikko' jos näppäintä ei ole)",
     "",// TODO
@@ -2904,7 +2904,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Lecture",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -2920,7 +2920,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Pause",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -2935,7 +2935,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Stop",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -2952,7 +2952,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Enregistrement",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -2968,7 +2968,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Avance rapide",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -2984,7 +2984,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Retour rapide",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -3016,7 +3016,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Chaîne+",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -3032,7 +3032,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Chaîne-",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -3145,7 +3145,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "aucun",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -3161,7 +3161,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "auto",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -3417,7 +3417,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Pause de l'émission en direct...",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -3433,7 +3433,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Ce plugin n'a pas de paramètres !",
     "",// TODO
     "Tällä laajennoksella ei ole asetuksia!",
     "",// TODO

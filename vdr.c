@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.150 2003/04/21 14:41:41 kls Exp $
+ * $Id: vdr.c 1.152 2003/05/03 13:39:57 kls Exp $
  */
 
 #include <getopt.h>
@@ -53,6 +53,7 @@
 #include "tools.h"
 #include "videodir.h"
 
+#define MINCHANNELWAIT  10 // seconds to wait between failed channel switchings
 #define ACTIVITYTIMEOUT 60 // seconds before starting housekeeping
 #define SHUTDOWNWAIT   300 // seconds to wait in user prompt before automatic shutdown
 #define MANUALSTART    600 // seconds the next timer must be in the future to assume manual start
@@ -460,9 +461,14 @@ int main(int argc, char *argv[])
            }
         // Attach launched player control:
         cControl::Attach();
-        // Make sure Transfer-Mode is re-started after detaching a player:
-        if (cDevice::PrimaryDevice()->PlayerDetached() && !cDevice::PrimaryDevice()->Replaying())
-           Channels.SwitchTo(cDevice::CurrentChannel());
+        // Make sure we have a visible programme in case device usage has changed:
+        if (!cDevice::PrimaryDevice()->HasProgramme()) {
+           static time_t lastTime = 0;
+           if (time(NULL) - lastTime > MINCHANNELWAIT) {
+              if (!Channels.SwitchTo(cDevice::CurrentChannel()))
+                 lastTime = time(NULL); // don't do this too often
+              }
+           }
         // Restart the Watchdog timer:
         if (WatchdogTimeout > 0) {
            int LatencyTime = WatchdogTimeout - alarm(WatchdogTimeout);
@@ -503,6 +509,7 @@ int main(int argc, char *argv[])
         switch (key) {
           // Menu control:
           case kMenu:
+               key = kNone; // nobody else needs to see this key
                if (Menu) {
                   DELETENULL(Menu);
                   if (!Temp)
@@ -518,14 +525,15 @@ int main(int argc, char *argv[])
             if (cControl::Control())\
                cControl::Control()->Hide();\
             Menu = new cMenuMain(cControl::Control(), function);\
-            Temp = NULL;
+            Temp = NULL;\
+            key = kNone; // nobody else needs to see this key
           case kSchedule:   DirectMainFunction(osSchedule); break;
           case kChannels:   DirectMainFunction(osChannels); break;
           case kTimers:     DirectMainFunction(osTimers); break;
           case kRecordings: DirectMainFunction(osRecordings); break;
           case kSetup:      DirectMainFunction(osSetup); break;
           case kCommands:   DirectMainFunction(osCommands); break;
-          case kUser1 ... kUser9: cRemote::PutMacro(key); break;
+          case kUser1 ... kUser9: cRemote::PutMacro(key); key = kNone; break;
           case k_Plugin:    DirectMainFunction(osPlugin, cRemote::GetPlugin()); break;
           // Channel up/down:
           case kChanUp|k_Repeat:

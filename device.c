@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.39 2003/04/12 11:51:04 kls Exp $
+ * $Id: device.c 1.41 2003/05/03 13:40:15 kls Exp $
  */
 
 #include "device.h"
@@ -49,8 +49,6 @@ cDevice::cDevice(void)
 
   ciHandler = NULL;
   player = NULL;
-
-  playerDetached = false;
 
   for (int i = 0; i < MAXRECEIVERS; i++)
       receiver[i] = NULL;
@@ -120,13 +118,6 @@ bool cDevice::SetPrimaryDevice(int n)
 bool cDevice::HasDecoder(void) const
 {
   return false;
-}
-
-bool cDevice::PlayerDetached(void)
-{
-  bool result = playerDetached;
-  playerDetached = false;
-  return result;
 }
 
 cOsdBase *cDevice::NewOsd(int x, int y)
@@ -224,15 +215,19 @@ bool cDevice::HasPid(int Pid) const
 
 bool cDevice::AddPid(int Pid, ePidType PidType)
 {
-  if (Pid) {
+  if (Pid || PidType == ptPcr) {
      int n = -1;
      int a = -1;
-     for (int i = 0; i < MAXPIDHANDLES; i++) {
-         if (pidHandles[i].pid == Pid)
-            n = i;
-         else if (a < 0 && i >= ptOther && !pidHandles[i].used)
-            a = i;
-         }
+     if (PidType != ptPcr) { // PPID always has to be explicit
+        for (int i = 0; i < MAXPIDHANDLES; i++) {
+            if (i != ptPcr) {
+               if (pidHandles[i].pid == Pid)
+                  n = i;
+               else if (a < 0 && i >= ptOther && !pidHandles[i].used)
+                  a = i;
+               }
+            }
+        }
      if (n >= 0) {
         // The Pid is already in use
         if (++pidHandles[n].used == 2 && n <= ptTeletext) {
@@ -263,22 +258,31 @@ bool cDevice::AddPid(int Pid, ePidType PidType)
   return true;
 }
 
-void cDevice::DelPid(int Pid)
+void cDevice::DelPid(int Pid, ePidType PidType)
 {
-  if (Pid) {
-     for (int i = 0; i < MAXPIDHANDLES; i++) {
-         if (pidHandles[i].pid == Pid) {
-            PRINTPIDS("D");
-            if (--pidHandles[i].used < 2) {
-               SetPid(&pidHandles[i], i, false);
-               if (pidHandles[i].used == 0) {
-                  pidHandles[i].handle = -1;
-                  pidHandles[i].pid = 0;
-                  }
+  if (Pid || PidType == ptPcr) {
+     int n = -1;
+     if (PidType == ptPcr)
+        n = PidType; // PPID always has to be explicit
+     else {
+        for (int i = 0; i < MAXPIDHANDLES; i++) {
+            if (pidHandles[i].pid == Pid) {
+               n = i;
+               break;
                }
-            PRINTPIDS("E");
             }
-         }
+        }
+     if (n >= 0 && pidHandles[n].used) {
+        PRINTPIDS("D");
+        if (--pidHandles[n].used < 2) {
+           SetPid(&pidHandles[n], n, false);
+           if (pidHandles[n].used == 0) {
+              pidHandles[n].handle = -1;
+              pidHandles[n].pid = 0;
+              }
+           }
+        PRINTPIDS("E");
+        }
      }
 }
 
@@ -393,6 +397,11 @@ eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
 bool cDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
 {
   return false;
+}
+
+bool cDevice::HasProgramme(void)
+{
+  return Replaying() || pidHandles[ptAudio].pid || pidHandles[ptVideo].pid;
 }
 
 void cDevice::SetVolumeDevice(int Volume)
@@ -523,7 +532,6 @@ void cDevice::Detach(cPlayer *Player)
      player->device = NULL;
      player = NULL;
      SetPlayMode(pmNone);
-     playerDetached = true;
      Audios.ClearAudio();
      }
 }

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 1.40 2003/03/23 15:41:54 kls Exp $
+ * $Id: osd.c 1.42 2003/05/03 14:46:38 kls Exp $
  */
 
 #include "osd.h"
@@ -423,6 +423,11 @@ void cOsdMenu::Display(void)
   Interface->Help(helpRed, helpGreen, helpYellow, helpBlue);
   int count = Count();
   if (count > 0) {
+     for (int i = 0; i < count; i++) {
+        cOsdItem *item = Get(i);
+        if (item)
+           cStatus::MsgOsdItem(item->Text(), i);
+        }
      if (current < 0)
         current = 0; // just for safety - there HAS to be a current item!
      int n = 0;
@@ -578,7 +583,8 @@ eOSState cOsdMenu::HotKey(eKeys Key)
       if (s && (s = skipspace(s)) != NULL) {
          if (*s == Key - k1 + '1') {
             current = item->Index();
-            return ProcessKey(kOk);
+            cRemote::Put(kOk, true);
+            break;
             }
          }
       }

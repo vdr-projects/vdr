@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.56 2003/04/27 09:44:17 kls Exp $
+ * $Id: dvbdevice.c 1.59 2003/05/03 14:03:20 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -567,6 +567,24 @@ bool cDvbDevice::SetPid(cPidHandle *Handle, int Type, bool On)
   return true;
 }
 
+void cDvbDevice::TurnOffLiveMode(void)
+{
+  // Avoid noise while switching:
+
+  CHECK(ioctl(fd_audio, AUDIO_SET_MUTE, true));
+  CHECK(ioctl(fd_video, VIDEO_SET_BLANK, true));
+  CHECK(ioctl(fd_audio, AUDIO_CLEAR_BUFFER));
+  CHECK(ioctl(fd_video, VIDEO_CLEAR_BUFFER));
+
+  // Turn off live PIDs:
+
+  DelPid(pidHandles[ptAudio].pid);
+  DelPid(pidHandles[ptVideo].pid);
+  DelPid(pidHandles[ptPcr].pid, ptPcr);
+  DelPid(pidHandles[ptTeletext].pid);
+  DelPid(pidHandles[ptDolby].pid);
+}
+
 bool cDvbDevice::ProvidesSource(int Source) const
 {
   int type = Source & cSource::st_Mask;
@@ -649,42 +667,18 @@ bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
 
   // Turn off live PIDs if necessary:
 
-  if (TurnOffLivePIDs) {
-
-     // Avoid noise while switching:
-
-     CHECK(ioctl(fd_audio, AUDIO_SET_MUTE, true));
-     CHECK(ioctl(fd_video, VIDEO_SET_BLANK, true));
-     CHECK(ioctl(fd_audio, AUDIO_CLEAR_BUFFER));
-     CHECK(ioctl(fd_video, VIDEO_CLEAR_BUFFER));
-
-     // Turn off live PIDs:
-
-     DelPid(pidHandles[ptAudio].pid);
-     DelPid(pidHandles[ptVideo].pid);
-     DelPid(pidHandles[ptPcr].pid);
-     DelPid(pidHandles[ptTeletext].pid);
-     DelPid(pidHandles[ptDolby].pid);
-     }
+  if (TurnOffLivePIDs)
+     TurnOffLiveMode();
 
   dvbTuner->Set(Channel, DoTune);
-  if (DoTune) {
-     /*XXX do we still need this???
-     if (!(status & FE_HAS_LOCK)) {
-        esyslog("ERROR: channel %d not locked on DVB card %d!", Channel->Number(), CardIndex() + 1);
-        if (LiveView && IsPrimaryDevice())
-           cThread::RaisePanic();
-        return false;
-        }
-     XXX*/
-     }
 
   // PID settings:
 
   if (TurnOnLivePIDs) {
      aPid1 = Channel->Apid1();
      aPid2 = Channel->Apid2();
-     if (!(AddPid(Channel->Ppid(), ptPcr) && AddPid(Channel->Apid1(), ptAudio) && AddPid(Channel->Vpid(), ptVideo))) {//XXX+ dolby dpid1!!! (if audio plugins are attached)
+     int pPid = Channel->Ppid() ? Channel->Ppid() : Channel->Vpid();
+     if (!(AddPid(pPid, ptPcr) && AddPid(Channel->Apid1(), ptAudio) && AddPid(Channel->Vpid(), ptVideo))) {//XXX+ dolby dpid1!!! (if audio plugins are attached)
         esyslog("ERROR: failed to set PIDs for channel %d on device %d", Channel->Number(), CardIndex() + 1);
         return false;
         }
@@ -782,6 +776,9 @@ bool cDvbDevice::SetPlayMode(ePlayMode PlayMode)
             siProcessor->SetStatus(true);
          break;
     case pmAudioVideo:
+         if (playMode == pmNone)
+            TurnOffLiveMode();
+         // continue with next...
     case pmAudioOnlyBlack:
          if (siProcessor)
             siProcessor->SetStatus(false);

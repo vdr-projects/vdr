@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: rcu.c 1.4 2003/04/12 14:37:13 kls Exp $
+ * $Id: rcu.c 1.5 2003/05/02 14:42:40 kls Exp $
  */
 
 #include "rcu.h"
@@ -315,7 +315,7 @@ void cRcuRemote::ChannelSwitch(const cDevice *Device, int ChannelNumber)
 {
   if (ChannelNumber && Device->IsPrimaryDevice()) {
      LOCK_THREAD;
-     numberToSend = ChannelNumber;
+     numberToSend = cDevice::CurrentChannel();
      }
 }
 

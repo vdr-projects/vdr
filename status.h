@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: status.h 1.5 2002/07/14 10:54:39 kls Exp $
+ * $Id: status.h 1.6 2003/05/03 14:43:18 kls Exp $
  */
 
 #ifndef __STATUS_H
@@ -45,6 +45,8 @@ protected:
                // If Message is NULL, the status line has been cleared.
   virtual void OsdHelpKeys(const char *Red, const char *Green, const char *Yellow, const char *Blue) {}
                // The help keys have been set to the given values (may be NULL).
+  virtual void OsdItem(const char *Text, int Index) {}
+               // The OSD displays the given single line Text as menu item at Index.
   virtual void OsdCurrentItem(const char *Text) {}
                // The OSD displays the given single line Text as the current menu item.
   virtual void OsdTextItem(const char *Text, bool Scroll) {}
@@ -69,6 +71,7 @@ public:
   static void MsgOsdTitle(const char *Title);
   static void MsgOsdStatusMessage(const char *Message);
   static void MsgOsdHelpKeys(const char *Red, const char *Green, const char *Yellow, const char *Blue);
+  static void MsgOsdItem(const char *Text, int Index);
   static void MsgOsdCurrentItem(const char *Text);
   static void MsgOsdTextItem(const char *Text,  bool Scroll = false);
   static void MsgOsdChannel(const char *Text);

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: status.c 1.4 2002/07/13 10:49:34 kls Exp $
+ * $Id: status.c 1.5 2003/05/03 14:47:44 kls Exp $
  */
 
 #include "status.h"
@@ -69,6 +69,12 @@ void cStatus::MsgOsdHelpKeys(const char *Red, const char *Green, const char *Yel
 {
   for (cStatus *sm = statusMonitors.First(); sm; sm = statusMonitors.Next(sm))
       sm->OsdHelpKeys(Red, Green, Yellow, Blue);
+}
+
+void cStatus::MsgOsdItem(const char *Text, int Index)
+{
+  for (cStatus *sm = statusMonitors.First(); sm; sm = statusMonitors.Next(sm))
+      sm->OsdItem(Text, Index);
 }
 
 void cStatus::MsgOsdCurrentItem(const char *Text)

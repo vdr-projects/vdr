@@ -2084,3 +2084,27 @@ Video Disk Recorder Revision History
 - The new SVDRP command STAT can be used to request information about the disk
   usage (thanks to Thomas Koch).
 - Fixed faulty calculation of section length in eit.c (thanks to Teemu Rantanen).
+
+2003-05-04: Version 1.1.30
+
+- Fixed minimum lifespan of deleted recordings (thanks to Jaakko Hyvätti).
+- Updated French OSD texts (thanks to Olivier Jacques).
+- Fixed paging through lists with repeated Left/Right keys.
+- Fixed setting the PCR-PID in case it is equal to one of the other PIDs (thanks
+  to Oliver Endriss for reporting this one).
+- Fixed double call to MainMenuAction() of a plugin if invoked via a hotkey (thanks
+  to Kai Moeller for reporting this one).
+- Fixed handling dedicated keys.
+- Now turning off live PIDs when replaying. This avoids short spikes from other
+  channels when switching between Transfer Mode channels, and also lets an ongoing
+  replay continue even if a recording is started on the primary device.
+- The RCU channel display no longer changes when a recording on a different
+  channel starts on the primary device.
+- Restoring the current channel in case a recording has switched the transponder.
+  If all devices are busy and none of them can provide the current channel, the
+  message "Channel not available!" will be displayed.
+- Removed the (no longer necessary) 'panic' stuff from cThread.
+- Added cStatus::OsdItem() to provide the entire list of menu items to a plugin
+  (thanks to Carsten Siebholz).
+- The red ("Record") and yellow ("Pause") button in the "Main" menu are no longer
+  available when replaying.
