@@ -1824,3 +1824,5 @@ Video Disk Recorder Revision History
 - Added "Tele 5" to 'channels.conf' (thanks to Georg Hitsch).
 - Changed the source directory name for plugins from 'SRC' to 'src' (suggested by
   Clemens Kirchgatterer).
+- Removed transponders 10788, 11739 and 12266 from 'channels.conf' (apparently they
+  are no longer active).
