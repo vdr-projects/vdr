@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 1.64 2004/06/13 11:46:03 kls Exp $
+ * $Id: menu.h 1.65 2004/12/19 17:59:47 kls Exp $
  */
 
 #ifndef __MENU_H
@@ -46,7 +46,7 @@ private:
   cSkinDisplayChannel *displayChannel;
   int group;
   bool withInfo;
-  int lastTime;
+  cTimeMs lastTime;
   int number;
   cChannel *channel;
   const cEvent *lastPresent;
@@ -64,7 +64,7 @@ public:
 class cDisplayVolume : public cOsdObject {
 private:
   cSkinDisplayVolume *displayVolume;
-  int timeout;
+  cTimeMs timeout;
   static cDisplayVolume *currentDisplayVolume;
   virtual void Show(void);
   cDisplayVolume(void);

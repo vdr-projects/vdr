@@ -350,6 +350,7 @@ Rainer Zocholl <vdrcontrib@zocki.toppoint.de>
  for reporting a possible race condition in generating the DVB device names
  for pointing out that non-threadsafe functions should be replaced with their
  threadsafe versions
+ for pointing out a threadsafe and overflow problem with time_ms()
 
 Oleg Assovski <assen@bitcom.msk.ru>
  for adding EPG scanning for another 4 days

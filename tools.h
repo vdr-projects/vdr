@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.60 2004/12/19 17:20:05 kls Exp $
+ * $Id: tools.h 1.61 2004/12/19 18:06:10 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -71,7 +71,6 @@ bool startswith(const char *s, const char *p);
 bool endswith(const char *s, const char *p);
 bool isempty(const char *s);
 int numdigits(int n);
-int time_ms(void);
 bool isnumber(const char *s);
 int FreeDiskSpaceMB(const char *Directory, int *UsedMB = NULL);
 bool DirectoryOk(const char *DirName, bool LogErrors = false);
@@ -81,6 +80,17 @@ bool RemoveEmptyDirectories(const char *DirName, bool RemoveThis = false);
 char *ReadLink(const char *FileName);
 bool SpinUpDisk(const char *FileName);
 time_t LastModifiedTime(const char *FileName);
+
+class cTimeMs {
+private:
+  uint64 begin;
+public:
+  cTimeMs(void);
+  void Set(int Ms = 0);
+  bool TimedOut(void);
+  uint64 Now(void);
+  uint64 Elapsed(void);
+  };
 
 class cBufferedStringFunction {
 protected:

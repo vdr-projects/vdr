@@ -3222,3 +3222,5 @@ Video Disk Recorder Revision History
   WeekDayName() -> cWeekDayName
   DayDateTime() -> cDayDateTime
 - Removed delay_ms(), using cCondWait::SleepMs() instead.
+- Replaced time_ms() with a threadsafe and non-overflowing cTimeMs (thanks to Rainer
+  Zocholl for pointing out this problem).

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.321 2004/12/12 16:07:05 kls Exp $
+ * $Id: menu.c 1.322 2004/12/19 17:59:47 kls Exp $
  */
 
 #include "menu.h"
@@ -2516,7 +2516,7 @@ cDisplayChannel::cDisplayChannel(int Number, bool Switched)
      DisplayInfo();
      displayChannel->Flush();
      }
-  lastTime = time_ms();
+  lastTime.Set();
 }
 
 cDisplayChannel::cDisplayChannel(eKeys FirstKey)
@@ -2525,7 +2525,7 @@ cDisplayChannel::cDisplayChannel(eKeys FirstKey)
   group = -1;
   number = 0;
   lastPresent = lastFollowing = NULL;
-  lastTime = time_ms();
+  lastTime.Set();
   withInfo = Setup.ShowInfoOnChSwitch;
   displayChannel = Skins.Current()->DisplayChannel(withInfo);
   ProcessKey(FirstKey);
@@ -2570,7 +2570,7 @@ void cDisplayChannel::Refresh(void)
   channel = Channels.GetByNumber(cDevice::CurrentChannel());
   DisplayChannel();
   displayChannel->SetEvents(NULL, NULL);
-  lastTime = time_ms();
+  lastTime.Set();
 }
 
 eOSState cDisplayChannel::ProcessKey(eKeys Key)
@@ -2590,7 +2590,7 @@ eOSState cDisplayChannel::ProcessKey(eKeys Key)
                displayChannel->SetEvents(NULL, NULL);
                withInfo = false;
                DisplayChannel();
-               lastTime = time_ms();
+               lastTime.Set();
                // Lets see if there can be any useful further input:
                int n = channel ? number * 10 : 0;
                cChannel *ch = channel;
@@ -2639,7 +2639,7 @@ eOSState cDisplayChannel::ProcessKey(eKeys Key)
                   group = -1;
                }
             }
-         lastTime = time_ms();
+         lastTime.Set();
          break;
     case kUp|k_Repeat:
     case kUp:
@@ -2656,14 +2656,14 @@ eOSState cDisplayChannel::ProcessKey(eKeys Key)
          Refresh();
          break;
     case kNone:
-         if (number && time_ms() - lastTime > DIRECTCHANNELTIMEOUT) {
+         if (number && lastTime.Elapsed() > DIRECTCHANNELTIMEOUT) {
             if (Channels.GetByNumber(number))
                Channels.SwitchTo(number);
             else {
                number = 0;
                channel = NULL;
                DisplayChannel();
-               lastTime = time_ms();
+               lastTime.Set();
                return osContinue;
                }
             return osEnd;
@@ -2687,7 +2687,7 @@ eOSState cDisplayChannel::ProcessKey(eKeys Key)
                      return osEnd;
                      }
     };
-  if (time_ms() - lastTime < INFOTIMEOUT) {
+  if (lastTime.Elapsed() < INFOTIMEOUT) {
      if (!number && group < 0 && channel && channel->Number() != cDevice::CurrentChannel())
         Refresh(); // makes sure a channel switch through the SVDRP CHAN command is displayed
      DisplayInfo();
@@ -2708,7 +2708,7 @@ cDisplayVolume::cDisplayVolume(void)
 :cOsdObject(true)
 {
   currentDisplayVolume = this;
-  timeout = time_ms() + (cDevice::PrimaryDevice()->IsMute() ? MUTETIMEOUT : VOLUMETIMEOUT);
+  timeout.Set(cDevice::PrimaryDevice()->IsMute() ? MUTETIMEOUT : VOLUMETIMEOUT);
   displayVolume = Skins.Current()->DisplayVolume();
   Show();
 }
@@ -2745,15 +2745,15 @@ eOSState cDisplayVolume::ProcessKey(eKeys Key)
     case kVolDn|k_Repeat:
     case kVolDn:
          Show();
-         timeout = time_ms() + VOLUMETIMEOUT;
+         timeout.Set(VOLUMETIMEOUT);
          break;
     case kMute:
          if (cDevice::PrimaryDevice()->IsMute()) {
             Show();
-            timeout = time_ms() + MUTETIMEOUT;
+            timeout.Set(MUTETIMEOUT);
             }
          else
-            timeout = 0;
+            timeout.Set();
          break;
     case kNone: break;
     default: if ((Key & k_Release) == 0) {
@@ -2761,7 +2761,7 @@ eOSState cDisplayVolume::ProcessKey(eKeys Key)
                 return osEnd;
                 }
     }
-  return time_ms() < timeout ? osContinue : osEnd;
+  return timeout.TimedOut() ? osEnd : osContinue;
 }
 
 // --- cRecordControl --------------------------------------------------------

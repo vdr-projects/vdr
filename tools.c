@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.84 2004/12/19 17:19:46 kls Exp $
+ * $Id: tools.c 1.85 2004/12/19 18:06:16 kls Exp $
  */
 
 #include "tools.h"
@@ -185,18 +185,6 @@ int numdigits(int n)
   char buf[16];
   snprintf(buf, sizeof(buf), "%d", n);
   return strlen(buf);
-}
-
-int time_ms(void)
-{
-  static time_t t0 = 0;
-  struct timeval t;
-  if (gettimeofday(&t, NULL) == 0) {
-     if (t0 == 0)
-        t0 = t.tv_sec; // this avoids an overflow (we only work with deltas)
-     return (t.tv_sec - t0) * 1000 + t.tv_usec / 1000;
-     }
-  return 0;
 }
 
 bool isnumber(const char *s)
@@ -430,6 +418,36 @@ time_t LastModifiedTime(const char *FileName)
   if (stat(FileName, &fs) == 0)
      return fs.st_mtime;
   return 0;
+}
+
+// --- cTimeMs ---------------------------------------------------------------
+
+cTimeMs::cTimeMs(void)
+{
+  Set();
+}
+
+void cTimeMs::Set(int Ms)
+{
+  begin = Now() + Ms;
+}
+
+bool cTimeMs::TimedOut(void)
+{
+  return Now() >= begin;
+}
+
+uint64 cTimeMs::Now(void)
+{
+  struct timeval t;
+  if (gettimeofday(&t, NULL) == 0)
+     return (uint64(t.tv_sec)) * 1000 + t.tv_usec / 1000;
+  return 0;
+}
+
+uint64 cTimeMs::Elapsed(void)
+{
+  return Now() - begin;
 }
 
 // --- cBufferedStringFunction -----------------------------------------------
