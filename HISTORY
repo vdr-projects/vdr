@@ -1767,3 +1767,7 @@ Video Disk Recorder Revision History
   data for NVOD channels.
 - Fixed a compiler warning regarding cMenuChannels::Del() and MenuTimers::Del() hiding
   the base class virtual functions.
+
+2002-11-11: Version 1.1.17
+
+- Added new entries to 'ca.conf'.
