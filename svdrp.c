@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.63 2004/06/13 13:38:38 kls Exp $
+ * $Id: svdrp.c 1.64 2004/10/17 10:28:47 kls Exp $
  */
 
 #include "svdrp.h"
@@ -484,7 +484,7 @@ void cSVDRP::CmdDELC(const char *Option)
                }
            Channels.Del(channel);
            Channels.ReNumber();
-           Channels.SetModified();
+           Channels.SetModified(true);
            isyslog("channel %s deleted", Option);
            Reply(250, "Channel \"%s\" deleted", Option);
            }
@@ -876,7 +876,7 @@ void cSVDRP::CmdMODC(const char *Option)
               if (Channels.HasUniqueChannelID(&ch, channel)) {
                  *channel = ch;
                  Channels.ReNumber();
-                 Channels.SetModified();
+                 Channels.SetModified(true);
                  isyslog("modifed channel %d %s", channel->Number(), channel->ToText());
                  Reply(250, "%d %s", channel->Number(), channel->ToText());
                  }
@@ -951,7 +951,7 @@ void cSVDRP::CmdNEWC(const char *Option)
            *channel = ch;
            Channels.Add(channel);
            Channels.ReNumber();
-           Channels.SetModified();
+           Channels.SetModified(true);
            isyslog("new channel %d %s", channel->Number(), channel->ToText());
            Reply(250, "%d %s", channel->Number(), channel->ToText());
            }

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.313 2004/10/16 16:10:42 kls Exp $
+ * $Id: menu.c 1.314 2004/10/17 10:28:27 kls Exp $
  */
 
 #include "menu.h"
@@ -308,7 +308,7 @@ eOSState cMenuEditChannel::ProcessKey(eKeys Key)
               isyslog("added channel %d %s", channel->Number(), data.ToText());
               state = osUser1;
               }
-           Channels.SetModified();
+           Channels.SetModified(true);
            }
         else {
            Skins.Message(mtError, tr("Channel settings are not unique!"));
@@ -396,7 +396,7 @@ void cMenuChannels::Propagate(void)
   for (cMenuChannelItem *ci = (cMenuChannelItem *)First(); ci; ci = (cMenuChannelItem *)ci->Next())
       ci->Set();
   Display();
-  Channels.SetModified();
+  Channels.SetModified(true);
 }
 
 eOSState cMenuChannels::Switch(void)

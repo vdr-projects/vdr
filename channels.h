@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.h 1.17 2004/04/03 13:40:47 kls Exp $
+ * $Id: channels.h 1.18 2004/10/17 10:33:38 kls Exp $
  */
 
 #ifndef __CHANNELS_H
@@ -25,6 +25,10 @@
 #define CHANNELMOD_CA       0x10
 #define CHANNELMOD_TRANSP   0x20
 #define CHANNELMOD_RETUNE   (CHANNELMOD_PIDS | CHANNELMOD_CA | CHANNELMOD_TRANSP)
+
+#define CHANNELSMOD_NONE    0
+#define CHANNELSMOD_AUTO    1
+#define CHANNELSMOD_USER    2
 
 #define MAXAPIDS 32
 #define MAXCAIDS  8
@@ -178,7 +182,7 @@ public:
 class cChannels : public cRwLock, public cConfig<cChannel> {
 private:
   int maxNumber;
-  bool modified;
+  int modified;
   int beingEdited;
 public:
   cChannels(void);
@@ -196,8 +200,11 @@ public:
   bool HasUniqueChannelID(cChannel *NewChannel, cChannel *OldChannel = NULL);
   bool SwitchTo(int Number);
   int MaxNumber(void) { return maxNumber; }
-  void SetModified(void);
-  bool Modified(void);
+  void SetModified(bool ByUser = false);
+  int Modified(void);
+      ///< Returns 0 if no channels have been modified, 1 if an automatic
+      ///< modification has been made, and 2 if the user has made a modification.
+      ///< Calling this function resets the 'modified' flag to 0.
   cChannel *NewChannel(const cChannel *Transponder, const char *Name, int Nid, int Tid, int Sid, int Rid = 0);
   };
 

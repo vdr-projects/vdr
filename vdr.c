@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.186 2004/10/10 12:47:56 kls Exp $
+ * $Id: vdr.c 1.187 2004/10/17 11:50:21 kls Exp $
  */
 
 #include <getopt.h>
@@ -58,10 +58,11 @@
 #include "transfer.h"
 #include "videodir.h"
 
-#define MINCHANNELWAIT  10 // seconds to wait between failed channel switchings
-#define ACTIVITYTIMEOUT 60 // seconds before starting housekeeping
-#define SHUTDOWNWAIT   300 // seconds to wait in user prompt before automatic shutdown
-#define MANUALSTART    600 // seconds the next timer must be in the future to assume manual start
+#define MINCHANNELWAIT     10 // seconds to wait between failed channel switchings
+#define ACTIVITYTIMEOUT    60 // seconds before starting housekeeping
+#define SHUTDOWNWAIT      300 // seconds to wait in user prompt before automatic shutdown
+#define MANUALSTART       600 // seconds the next timer must be in the future to assume manual start
+#define CHANNELSAVEDELTA  600 // seconds before saving channels.conf after automatic modifications
 
 static int Interrupted = 0;
 
@@ -546,10 +547,20 @@ int main(int argc, char *argv[])
               }
            }
         // Handle channel modifications:
-        if (!Channels.BeingEdited() && Channels.Modified()) {
-           if (Channels.Lock(false, 100)) {
-              Channels.Save(); //XXX only after user changes???
-              Timers.Save();
+        if (!Channels.BeingEdited()) {
+           int modified = Channels.Modified();
+           static time_t ChannelSaveTimeout = 0;
+           if (modified == CHANNELSMOD_USER)
+              ChannelSaveTimeout = 1; // triggers an immediate save
+           else if (modified && !ChannelSaveTimeout)
+              ChannelSaveTimeout = time(NULL) + CHANNELSAVEDELTA;
+           bool timeout = ChannelSaveTimeout == 1 || ChannelSaveTimeout && time(NULL) > ChannelSaveTimeout && !cRecordControls::Active();
+           if ((modified || timeout) && Channels.Lock(false, 100)) {
+              if (timeout) {
+                 Channels.Save();
+                 Timers.Save();
+                 ChannelSaveTimeout = 0;
+                 }
               for (cChannel *Channel = Channels.First(); Channel; Channel = Channels.Next(Channel)) {
                   if (Channel->Modification(CHANNELMOD_RETUNE)) {
                      cRecordControls::ChannelDataModified(Channel);

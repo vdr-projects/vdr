@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 1.25 2004/04/03 13:42:06 kls Exp $
+ * $Id: channels.c 1.26 2004/10/17 11:21:39 kls Exp $
  */
 
 #include "channels.h"
@@ -749,7 +749,7 @@ cChannels Channels;
 cChannels::cChannels(void)
 {
   maxNumber = 0;
-  modified = false;
+  modified = CHANNELSMOD_NONE;
 }
 
 bool cChannels::Load(const char *FileName, bool AllowComments, bool MustExist)
@@ -863,15 +863,15 @@ bool cChannels::SwitchTo(int Number)
   return channel && cDevice::PrimaryDevice()->SwitchChannel(channel, true);
 }
 
-void cChannels::SetModified(void)
+void cChannels::SetModified(bool ByUser)
 {
-  modified = true;
+  modified = ByUser ? CHANNELSMOD_USER : !modified ? CHANNELSMOD_AUTO : modified;
 }
 
-bool cChannels::Modified(void)
+int cChannels::Modified(void)
 {
-  bool Result = modified;
-  modified = false;
+  int Result = modified;
+  modified = CHANNELSMOD_NONE;
   return Result;
 }
 

@@ -3029,3 +3029,7 @@ Video Disk Recorder Revision History
 - If one PID can't be added, the whole cDevice::AttachReceiver() will now fail
   and all PIDs added so far will be deleted (thanks to Marco Schlüßler for
   pointing out this one).
+- Now only saving channels.conf after a modification made by the user (avoids
+  lots of disk access due to automatic channel updates). Automatic channel
+  modifications will be saved every 10 minutes if no recording is currently
+  active.
