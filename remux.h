@@ -4,18 +4,14 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.h 1.8 2002/10/12 13:30:24 kls Exp $
+ * $Id: remux.h 1.9 2002/11/01 10:06:46 kls Exp $
  */
 
 #ifndef __REMUX_H
 #define __REMUX_H
 
 #include <time.h> //XXX FIXME: DVB/linux/dvb/dmx.h should include <time.h> itself!!!
-#ifdef NEWSTRUCT
 #include <linux/dvb/dmx.h>
-#else
-#include <ost/dmx.h>
-#endif
 #include "tools.h"
 
 // Picture types:

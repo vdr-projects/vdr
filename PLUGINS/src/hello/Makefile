@@ -1,7 +1,7 @@
 #
 # Makefile for a Video Disk Recorder plugin
 #
-# $Id: Makefile 1.5 2002/09/21 08:38:39 kls Exp $
+# $Id: Makefile 1.6 2002/11/01 10:15:37 kls Exp $
 
 # The official name of this plugin.
 # This name will be used in the '-P...' option of VDR to load the plugin.
@@ -15,12 +15,7 @@ VERSION = $(shell grep 'static const char \*VERSION *=' $(PLUGIN).c | awk '{ pri
 
 ### The directory environment:
 
-ifdef NEWSTRUCT
 DVBDIR = ../../../../DVB/include
-DEFINES += -DNEWSTRUCT
-else
-DVBDIR = ../../../../DVB/ost/include
-endif
 VDRDIR = ../../..
 VDRINC = $(VDRDIR)/include
 LIBDIR = ../../lib

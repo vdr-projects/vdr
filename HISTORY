@@ -1670,3 +1670,9 @@ Video Disk Recorder Revision History
 - Fixed a crash when learning the keys of several remote controls and pressing
   buttons of those that have already been learned (thanks to Oliver Endriss for
   reporting this one).
+
+2002-11-01: Version 1.1.15
+
+- Completely switched to the new CVS HEAD version of the linux-dvb driver.
+  The NEWSTRUCT compile time switch is now obsolete. The required driver is now
+  the CVS HEAD version dated 2002-11-01 or later.

@@ -12,7 +12,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: newplugin 1.9 2002/10/26 14:32:12 kls Exp $
+# $Id: newplugin 1.10 2002/11/01 10:06:32 kls Exp $
 
 $PLUGIN_NAME = $ARGV[0] || die "Usage: newplugin <name>\n";
 
@@ -70,12 +70,7 @@ VERSION = \$(shell grep 'static const char \\*VERSION *=' \$(PLUGIN).c | awk '{ 
 
 ### The directory environment:
 
-ifdef NEWSTRUCT
 DVBDIR = ../../../../DVB/include
-DEFINES += -DNEWSTRUCT
-else
-DVBDIR = ../../../../DVB/ost/include
-endif
 VDRDIR = ../../..
 VDRINC = \$(VDRDIR)/include
 LIBDIR = ../../lib
