@@ -12,3 +12,7 @@ VDR Plugin 'status' Revision History
 2002-09-21: Version 0.0.3
 
 - Fixed Makefile for NEWSTRUCT driver.
+
+2002-10-26: Version 0.0.4
+
+- Fixed a typo.

@@ -26,3 +26,7 @@ VDR Plugin 'hello' Revision History
 2002-09-21: Version 0.0.6
 
 - Fixed Makefile for NEWSTRUCT driver.
+
+2002-10-26: Version 0.0.7
+
+- Fixed a typo.

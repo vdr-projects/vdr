@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: hello.c 1.7 2002/09/21 08:44:56 kls Exp $
+ * $Id: hello.c 1.8 2002/10/26 14:34:48 kls Exp $
  */
 
 #include <getopt.h>
@@ -12,7 +12,7 @@
 #include <vdr/plugin.h>
 #include "i18n.h"
 
-static const char *VERSION        = "0.0.6";
+static const char *VERSION        = "0.0.7";
 static const char *DESCRIPTION    = "A friendly greeting";
 static const char *MAINMENUENTRY  = "Hello";
 
@@ -71,7 +71,7 @@ void cMenuSetupHello::Store(void)
 
 cPluginHello::cPluginHello(void)
 {
-  // Initialize any member varaiables here.
+  // Initialize any member variables here.
   // DON'T DO ANYTHING ELSE THAT MAY HAVE SIDE EFFECTS, REQUIRE GLOBAL
   // VDR OBJECTS TO EXIST OR PRODUCE ANY OUTPUT!
   option_a = NULL;

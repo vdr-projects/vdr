@@ -3,13 +3,13 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: status.c 1.3 2002/09/21 08:46:01 kls Exp $
+ * $Id: status.c 1.4 2002/10/26 14:34:53 kls Exp $
  */
 
 #include <vdr/plugin.h>
 #include <vdr/status.h>
 
-static const char *VERSION        = "0.0.3";
+static const char *VERSION        = "0.0.4";
 static const char *DESCRIPTION    = "Status monitor test";
 static const char *MAINMENUENTRY  = NULL;
 
@@ -122,7 +122,7 @@ public:
 
 cPluginStatus::cPluginStatus(void)
 {
-  // Initialize any member varaiables here.
+  // Initialize any member variables here.
   // DON'T DO ANYTHING ELSE THAT MAY HAVE SIDE EFFECTS, REQUIRE GLOBAL
   // VDR OBJECTS TO EXIST OR PRODUCE ANY OUTPUT!
   statusTest = NULL;

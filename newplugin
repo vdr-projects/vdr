@@ -12,7 +12,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: newplugin 1.8 2002/09/21 09:09:00 kls Exp $
+# $Id: newplugin 1.9 2002/10/26 14:32:12 kls Exp $
 
 $PLUGIN_NAME = $ARGV[0] || die "Usage: newplugin <name>\n";
 
@@ -174,7 +174,7 @@ public:
 
 cPlugin${PLUGIN_CLASS}::cPlugin$PLUGIN_CLASS(void)
 {
-  // Initialize any member varaiables here.
+  // Initialize any member variables here.
   // DON'T DO ANYTHING ELSE THAT MAY HAVE SIDE EFFECTS, REQUIRE GLOBAL
   // VDR OBJECTS TO EXIST OR PRODUCE ANY OUTPUT!
 }
