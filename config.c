@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.21 2000/09/10 14:32:45 kls Exp $
+ * $Id: config.c 1.22 2000/09/10 15:07:15 kls Exp $
  */
 
 #include "config.h"
@@ -196,7 +196,6 @@ cChannel::cChannel(const cChannel *Channel)
   apid         = Channel ? Channel->apid         : 256;
   ca           = Channel ? Channel->ca           : 0;
   pnr          = Channel ? Channel->pnr          : 0;
-  preferred    = Channel ? Channel->preferred    : 0;
   groupSep     = Channel ? Channel->groupSep     : false;
 }
 
@@ -212,7 +211,7 @@ const char *cChannel::ToText(cChannel *Channel)
   if (Channel->groupSep)
      asprintf(&buffer, ":%s\n", s);
   else
-     asprintf(&buffer, "%s:%d:%c:%d:%d:%d:%d:%d:%d:%d\n", s, Channel->frequency, Channel->polarization, Channel->diseqc, Channel->srate, Channel->vpid, Channel->apid, Channel->ca, Channel->pnr, Channel->preferred);
+     asprintf(&buffer, "%s:%d:%c:%d:%d:%d:%d:%d:%d\n", s, Channel->frequency, Channel->polarization, Channel->diseqc, Channel->srate, Channel->vpid, Channel->apid, Channel->ca, Channel->pnr);
   return buffer;
 }
 
@@ -235,15 +234,10 @@ bool cChannel::Parse(const char *s)
      }
   else {
      groupSep = false;
-     int fields = sscanf(s, "%a[^:]:%d:%c:%d:%d:%d:%d:%d:%d:%d", &buffer, &frequency, &polarization, &diseqc, &srate, &vpid, &apid, &ca, &pnr, &preferred);
-#define VER062_FIELDS 9
-#define VER063_FIELDS 10
-     if (fields == VER062_FIELDS || fields == VER063_FIELDS) {
+     int fields = sscanf(s, "%a[^:]:%d:%c:%d:%d:%d:%d:%d:%d", &buffer, &frequency, &polarization, &diseqc, &srate, &vpid, &apid, &ca, &pnr);
+     if (fields == 9) {
         strn0cpy(name, buffer, MaxChannelName);
         delete buffer;
-        if (fields == VER062_FIELDS) {
-           preferred = 0;
-           }
         }
      else
         return false;

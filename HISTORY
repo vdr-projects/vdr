@@ -157,7 +157,6 @@ Video Disk Recorder Revision History
   There is currently no mechanism to define and maintain "Channel groups" via
   the menu, so you'll have to insert "Channel group" control lines into your
   'channels.conf' file manually (for example with a text editor).
-  XXX additional fields for 'preferred' etc???
 - Started a new file named FORMATS with a description of the various file
   formats used by VDR.
 - The "Primary DVB interface" can now be chosen via the "Setup" menu.

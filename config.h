@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.18 2000/09/10 14:32:05 kls Exp $
+ * $Id: config.h 1.19 2000/09/10 15:05:08 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -75,7 +75,6 @@ public:
   int apid;
   int ca;
   int pnr;
-  int preferred; //TODO implement "preferred channel" mechanism
   int number;    // Sequence number assigned on load
   bool groupSep;
   cChannel(void);

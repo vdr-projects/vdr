@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.25 2000/09/10 14:45:29 kls Exp $
+ * $Id: menu.c 1.26 2000/09/10 15:06:15 kls Exp $
  */
 
 #include "menu.h"
@@ -513,7 +513,6 @@ cMenuEditChannel::cMenuEditChannel(int Index)
      Add(new cMenuEditIntItem( "Apid",         &data.apid, 0, 10000)); //TODO exact limits???
      Add(new cMenuEditIntItem( "CA",           &data.ca, 0, cDvbApi::NumDvbApis));
      Add(new cMenuEditIntItem( "Pnr",          &data.pnr, 0));
-     Add(new cMenuEditIntItem( "Preferred",    &data.preferred, 0, 1)); //TODO implement "preferred channel" mechanism
      }
 }
 
