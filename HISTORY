@@ -3357,3 +3357,4 @@ Video Disk Recorder Revision History
   that has DD and selecting the DD audio track).
 - Fixed a memory leak in AddDirectory() and strescape() (thanks to Stefan Huelswitt
   for reporting these).
+- Completed the Danish OSD texts (thanks to Mogens Elneff).
