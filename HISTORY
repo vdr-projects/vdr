@@ -2414,3 +2414,5 @@ Video Disk Recorder Revision History
 - Fixed detecting the /dev/videoN devices for GRAB in case there are others
   before the DVB devices (thanks to Andreas Kool).
 - Updated 'channels.conf.terr' for Berlin (thanks to Markus Hardt).
+- Fixed handling rc key learning in case cRemote::Initialize() returns 'false'
+  (thanks to Oliver Endriss).
