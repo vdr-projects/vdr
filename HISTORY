@@ -1628,3 +1628,4 @@ Video Disk Recorder Revision History
 - Timers now internally have a pointer to their channel (this is necessary to
   handle gaps in channel numbers, and in preparation for unique channel ids).
 - Fixed slow reaction on SVDRP input (thanks to Guido Fiala for reporting this one).
+- Added KI.KA to channels.conf.cable (thanks to Robert Schiele).
