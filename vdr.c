@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.138 2002/12/13 13:37:28 kls Exp $
+ * $Id: vdr.c 1.139 2002/12/13 14:30:00 kls Exp $
  */
 
 #include <getopt.h>
@@ -424,6 +424,7 @@ int main(int argc, char *argv[])
   time_t LastActivity = 0;
   int MaxLatencyTime = 0;
   bool ForceShutdown = false;
+  bool UserShutdown = false;
 
   if (WatchdogTimeout > 0) {
      dsyslog("setting watchdog timer to %d seconds", WatchdogTimeout);
@@ -539,6 +540,7 @@ int main(int argc, char *argv[])
                              ForceShutdown = true;
                           }
                        LastActivity = 1; // not 0, see below!
+                       UserShutdown = true;
                        break;
           default: break;
           }
@@ -647,7 +649,7 @@ int main(int argc, char *argv[])
                  Interface->Info(tr("Editing process finished"));
               }
            }
-        if (!Interact && ((!cRecordControls::Active() && !cCutter::Active() && !Interface->HasSVDRPConnection()) || ForceShutdown)) {
+        if (!Interact && ((!cRecordControls::Active() && !cCutter::Active() && (!Interface->HasSVDRPConnection() || UserShutdown)) || ForceShutdown)) {
            time_t Now = time(NULL);
            if (Now - LastActivity > ACTIVITYTIMEOUT) {
               // Shutdown:
@@ -665,12 +667,13 @@ int main(int argc, char *argv[])
                     else
                        LastActivity = 1;
                     }
-                 bool UserShutdown = key == kPower;
                  if (UserShutdown && Next && Delta <= Setup.MinEventTimeout * 60 && !ForceShutdown) {
                     char *buf;
                     asprintf(&buf, tr("Recording in %d minutes, shut down anyway?"), Delta / 60);
                     if (Interface->Confirm(buf))
                        ForceShutdown = true;
+                    else
+                       UserShutdown = false;
                     free(buf);
                     }
                  if (!Next || Delta > Setup.MinEventTimeout * 60 || ForceShutdown) {
@@ -694,6 +697,7 @@ int main(int argc, char *argv[])
                           signal(SIGALRM, SIG_IGN);
                        }
                     LastActivity = time(NULL); // don't try again too soon
+                    UserShutdown = false;
                     continue; // skip the rest of the housekeeping for now
                     }
                  }

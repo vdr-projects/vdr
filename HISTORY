@@ -1867,3 +1867,5 @@ Video Disk Recorder Revision History
 
 - Now checking if there is a connection to the keyboard (thanks to Jaakko Hyvätti)
   and only creating the KBD remote control if VDR is running in the foreground.
+- Fixed taking an active SVDRP connection into account when doing shutdown (thanks
+  to Gregoire Favre for reporting this one).
