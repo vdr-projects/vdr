@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 1.14 2003/09/09 18:55:26 kls Exp $
+ * $Id: channels.c 1.15 2003/10/03 15:12:59 kls Exp $
  */
 
 #include "channels.h"
@@ -431,10 +431,11 @@ void cChannels::ReNumber( void )
          if (channel->Number() > Number)
             Number = channel->Number();
          }
-      else
+      else {
+         maxNumber = Number;
          channel->SetNumber(Number++);
+         }
       }
-  maxNumber = Number - 1;
 }
 
 cChannel *cChannels::GetByNumber(int Number, int SkipGap)

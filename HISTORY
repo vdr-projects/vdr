@@ -2409,3 +2409,5 @@ Video Disk Recorder Revision History
   reporting this one).
 - Fixed missing channel info after an incomplete channel group switch (thanks
   to Andreas Trauer).
+- Fixed handling a channels.conf that contains a ":@nnn" line as its last entry
+  (thanks to Ralf Klueber).

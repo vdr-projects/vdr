@@ -728,6 +728,8 @@ Niko Tarnanen <niko.tarnanen@hut.fi> and Rolf Ahrenberg <rahrenbe@cc.hut.fi>
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark
+ for reporting a bug in handling a channels.conf that contains a ":@nnn" line as
+ its last entry
 
 Hermann Gausterer <mrq1@gmx.net>
  for suggesting to switch to the recording channel in case the current channel
