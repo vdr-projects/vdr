@@ -1261,7 +1261,8 @@ Video Disk Recorder Revision History
   interface. 'osdbase.c/.h' now implements the abstract OSD, while 'dvbosd.c/.h'
   is the actual implementation for the DVB hardware. This is in preparation for
   allowing additional kinds of OSD hardware implementations.
-- Fixed leftover references to the file FORMATS in MANUAL and svdrp.c.
+- Fixed leftover references to the file FORMATS in MANUAL and svdrp.c (thanks to
+  Onno Kreuzinger for reporting this one).
 - Avoiding ambiguities in the cList template class in case one defines a "list of
   lists" (thanks to Stefan Huelswitt).
 - Simplified the basic cMenuSetupPage class for easier use in plugins.
