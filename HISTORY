@@ -1594,3 +1594,5 @@ Video Disk Recorder Revision History
   VDR with NEWSTRUCT=1.
 - Fixed radio channels in channels.conf.cable (thanks to Robert Schiele and Uwe
   Scheffler).
+- Fixed switching the video format in the Setup/DVB menu (thanks to Uwe Scheffler
+  for reporting this one).
