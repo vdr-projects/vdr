@@ -31,3 +31,4 @@ Video Disk Recorder Revision History
   to the timing of the RCU (this sometimes caused the repeat function to
   kick in too early).
 - Channel selection is now blocked when recording or replaying.
+- Improved process handling.
