@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: hello.c 1.9 2002/11/01 10:16:53 kls Exp $
+ * $Id: hello.c 1.10 2002/11/23 15:07:28 kls Exp $
  */
 
 #include <getopt.h>
@@ -12,7 +12,7 @@
 #include <vdr/plugin.h>
 #include "i18n.h"
 
-static const char *VERSION        = "0.0.8";
+static const char *VERSION        = "0.0.9";
 static const char *DESCRIPTION    = "A friendly greeting";
 static const char *MAINMENUENTRY  = "Hello";
 
@@ -31,7 +31,7 @@ public:
   virtual bool Start(void);
   virtual void Housekeeping(void);
   virtual const char *MainMenuEntry(void) { return tr(MAINMENUENTRY); }
-  virtual cOsdMenu *MainMenuAction(void);
+  virtual cOsdObject *MainMenuAction(void);
   virtual cMenuSetupPage *SetupMenu(void);
   virtual bool SetupParse(const char *Name, const char *Value);
   };
@@ -124,7 +124,7 @@ void cPluginHello::Housekeeping(void)
   // Perform any cleanup or other regular tasks.
 }
 
-cOsdMenu *cPluginHello::MainMenuAction(void)
+cOsdObject *cPluginHello::MainMenuAction(void)
 {
   // Perform the action when selected from the main VDR menu.
   Interface->Confirm(UseAlternateGreeting ? tr("Howdy folks!") : tr("Hello world!"), GreetingTime);

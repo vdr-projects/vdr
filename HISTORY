@@ -1767,3 +1767,48 @@ Video Disk Recorder Revision History
   data for NVOD channels.
 - Fixed a compiler warning regarding cMenuChannels::Del() and MenuTimers::Del() hiding
   the base class virtual functions.
+
+2002-11-24: Version 1.1.17
+
+- Added new entries to 'ca.conf'.
+- Fixed closing unused PID handles (thanks to Stefan Schluenss for reporting this
+  one).
+- Added more examples to 'diseqc.conf' (thanks to Oliver Endriss).
+- Fixed disabling multiple recordings on a single DVB card (comment out the definition
+  of the macros DO_REC_AND_PLAY_ON_PRIMARY_DEVICE and DO_MULTIPLE_RECORDINGS in
+  dvbdevice.c).
+- Plugins can now have their very own OSD setup in the object they return from
+  a call to cPlugin::MainMenuAction(). In order to implement this, the return type
+  of cPlugin::MainMenuAction() had to be changed from (cOsdMenu *) to (cOsdObject *).
+  So in case you are compiling an existing plugin with this version of VDR and you
+  get an error message, simply change cOsdMenu to cOsdObject in the plugin's source
+  for the MainMenuAction() function.
+  Plugin authors who have so far (ab)used the cControl mechanism to implement their
+  own raw OSD should take a look at the new demo plugin 'osddemo'. It implements
+  a very primitive game that shows how a plugin can have its own raw OSD. Especially
+  look into cLineGame and see how it implements the Show() function. See also
+  the chapter on "User interaction" in PLUGINS.html.
+- Added three new fields to the lines in 'channels.conf': NID, TID and RID. NID and
+  TID are the Network and Transport Stream IDs, respectively. RID is an additional ID
+  that can be used to tell apart channels that would otherwise be indistinguishable.
+  This is typically the case with radio channels, which may have the same NID, TID
+  and SID, but different "radio IDs". This new field is therefore called RID ("radio
+  ID"). Currently NID and TID are not yet used by VDR and should always be 0. The
+  RID is actually used when building the "unique channel ID", so if you have channels
+  in your 'channels.conf' file that cause error messages when loading, you can set
+  the RIDs of these channels to different values.
+  When reading an old 'channels.conf' these new fields will be automatically
+  initialized to 0 and once the file is written back to disk they will be appended
+  to the channel definitions.
+  Thanks to Régis Bossut for pointing out that with some providers the channels can
+  only be distinguished through the RID.
+- The "unique channel ID" now contains an optional 5th part (the RID). See man vdr(5).
+- Updated 'channels.conf.cable' and made some channels unique using the new RID
+  (thanks to Andreas Kool for pointing out the problems).
+- Made some channels unique in 'channels.conf.terr' using the new RID.
+- Extended the '-l' option to allow logging to LOG_LOCALn (n=0..7) by writing, for
+  instance, '-l 3.7' (suggested by Jürgen Schmidt).
+- Now deleting stale lock files if they have a time stamp that is outside the window
+  'now +/- LOCKFILESTALETIME'. This improves things in cases where the system time
+  makes far jumps, so that a lock file might end up with a time stamp that lies
+  in the distant future (thanks to Oliver Endriss).

@@ -276,6 +276,7 @@ Hannu Savolainen <hannu@opensound.com>
 
 Jürgen Schmidt <ju@ct.heise.de>
  for fixing a problem with 'in_addr_t' on systems with glibc < 2.2.
+ for suggesting to optionally allow logging to LOG_LOCALn (n=0..7)
 
 Uwe Freese <mail@uwe-freese.de>
  for suggesting to automatically close an empty recordings page after deleting
@@ -433,6 +434,8 @@ Oliver Endriss <o.endriss@gmx.de>
  current remote control
  for reporting a bug in the EPG scanner, which broke 'Transfer Mode' as soon as
  it kicked in
+ for providing examples for 'diseqc.conf'
+ for improving deleting stale lock files
 
 Reinhard Walter Buchner <rw.buchner@freenet.de>
  for adding some satellites to 'sources.conf'
@@ -466,3 +469,13 @@ Steffen Barszus <st_barszus@gmx.de>
 Peter Seyringer <e9425234@student.tuwien.ac.at>
  for reporting a bug in saving the polarization parameter of channels that have a
  number in the 'source' parameter
+
+Stefan Schluenss <dxr3_osd@schluenss.de>
+ for reporting a bug where PID handles were not closed correctly
+
+Régis Bossut <rbossut@auchan.com>
+  for pointing out that with some providers the channels can only be distinguished
+  through the RID
+
+Andreas Kool <akool@akool.de>
+  for pointing out problems with non-unique definitions in 'channels.conf.cable'

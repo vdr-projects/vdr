@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.35 2002/11/10 12:57:17 kls Exp $
+ * $Id: dvbdevice.c 1.37 2002/11/15 15:17:30 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -33,6 +33,7 @@ extern "C" {
 #include "transfer.h"
 
 #define DO_REC_AND_PLAY_ON_PRIMARY_DEVICE 1
+#define DO_MULTIPLE_RECORDINGS 1
 
 #define DEV_VIDEO         "/dev/video"
 #define DEV_DVB_ADAPTER   "/dev/dvb/adapter"
@@ -311,11 +312,11 @@ bool cDvbDevice::SetPid(cPidHandle *Handle, int Type, bool On)
            pesFilterParams.pes_type= PesTypes[Type];
            pesFilterParams.flags   = DMX_IMMEDIATE_START;
            CHECK(ioctl(Handle->handle, DMX_SET_PES_FILTER, &pesFilterParams));
-           close(Handle->handle);
-           Handle->handle = -1;
            if (PesTypes[Type] == DMX_PES_VIDEO) // let's only do this once
               SetPlayMode(pmNone); // necessary to switch a PID from DMX_PES_VIDEO/AUDIO to DMX_PES_OTHER
            }
+        close(Handle->handle);
+        Handle->handle = -1;
         }
      }
   return true;
@@ -343,6 +344,7 @@ bool cDvbDevice::ProvidesChannel(const cChannel *Channel, int Priority, bool *Ne
   bool needsDetachReceivers = true;
 
   if (ProvidesSource(Channel->Source()) && ProvidesCa(Channel->Ca())) {
+#ifdef DO_MULTIPLE_RECORDINGS
      if (Receiving()) {
         if (IsTunedTo(Channel)) {
            needsDetachReceivers = false;
@@ -365,6 +367,7 @@ bool cDvbDevice::ProvidesChannel(const cChannel *Channel, int Priority, bool *Ne
            result = hasPriority;
         }
      else
+#endif
         result = hasPriority;
      }
   if (NeedsDetachReceivers)
@@ -381,11 +384,6 @@ static unsigned int FrequencyToHz(unsigned int f)
 
 bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
 {
-#ifndef DO_REC_AND_PLAY_ON_PRIMARY_DEVICE
-  if (HasDecoder())
-     LiveView = true;
-#endif
-
   bool IsEncrypted = Channel->Ca() > CACONFBASE;
 
   bool DoTune = !IsTunedTo(Channel);
@@ -393,10 +391,9 @@ bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
   bool TurnOffLivePIDs = HasDecoder()
                          && (DoTune
                             || IsEncrypted && pidHandles[ptVideo].pid != Channel->Vpid() // CA channels can only be decrypted in "live" mode
-                            || IsPrimaryDevice()
-                               && (LiveView // for a new live view the old PIDs need to be turned off
-                                  || pidHandles[ptVideo].pid == Channel->Vpid() // for recording the PIDs must be shifted from DMX_PES_AUDIO/VIDEO to DMX_PES_OTHER
-                                  )
+                            || !IsPrimaryDevice()
+                            || LiveView // for a new live view the old PIDs need to be turned off
+                            || pidHandles[ptVideo].pid == Channel->Vpid() // for recording the PIDs must be shifted from DMX_PES_AUDIO/VIDEO to DMX_PES_OTHER
                             );
 
   bool StartTransferMode = IsPrimaryDevice() && !IsEncrypted && !DoTune
@@ -408,6 +405,11 @@ bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
                         && (IsEncrypted // CA channels can only be decrypted in "live" mode
                            || LiveView
                            );
+
+#ifndef DO_MULTIPLE_RECORDINGS
+  TurnOffLivePIDs = TurnOnLivePIDs = true;
+  StartTransferMode = false;
+#endif
 
   // Stop setting system time:
 
@@ -634,6 +636,10 @@ void cDvbDevice::SetAudioTrackDevice(int Index)
 
 bool cDvbDevice::CanReplay(void) const
 {
+#ifndef DO_REC_AND_PLAY_ON_PRIMARY_DEVICE
+  if (Receiving())
+     return false;
+#endif
   return cDevice::CanReplay() && !Ca(); // we can only replay if there is no Ca recording going on
 }
 

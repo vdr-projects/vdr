@@ -3,13 +3,13 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: status.c 1.5 2002/11/01 10:16:59 kls Exp $
+ * $Id: status.c 1.6 2002/11/23 15:07:40 kls Exp $
  */
 
 #include <vdr/plugin.h>
 #include <vdr/status.h>
 
-static const char *VERSION        = "0.0.5";
+static const char *VERSION        = "0.0.6";
 static const char *DESCRIPTION    = "Status monitor test";
 static const char *MAINMENUENTRY  = NULL;
 
@@ -115,7 +115,7 @@ public:
   virtual bool Start(void);
   virtual void Housekeeping(void);
   virtual const char *MainMenuEntry(void) { return MAINMENUENTRY; }
-  virtual cOsdMenu *MainMenuAction(void);
+  virtual cOsdObject *MainMenuAction(void);
   virtual cMenuSetupPage *SetupMenu(void);
   virtual bool SetupParse(const char *Name, const char *Value);
   };
@@ -158,7 +158,7 @@ void cPluginStatus::Housekeeping(void)
   // Perform any cleanup or other regular tasks.
 }
 
-cOsdMenu *cPluginStatus::MainMenuAction(void)
+cOsdObject *cPluginStatus::MainMenuAction(void)
 {
   // Perform the action when selected from the main VDR menu.
   return NULL;

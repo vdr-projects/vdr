@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.132 2002/11/03 13:54:39 kls Exp $
+ * $Id: vdr.c 1.134 2002/11/24 15:50:16 kls Exp $
  */
 
 #include <getopt.h>
@@ -93,6 +93,7 @@ int main(int argc, char *argv[])
   bool DisplayHelp = false;
   bool DisplayVersion = false;
   bool DaemonMode = false;
+  int SysLogTarget = LOG_USER;
   bool MuteAudio = false;
   int WatchdogTimeout = DEFAULTWATCHDOG;
   const char *Terminal = NULL;
@@ -142,15 +143,31 @@ int main(int argc, char *argv[])
                     break;
           case 'h': DisplayHelp = true;
                     break;
-          case 'l': if (isnumber(optarg)) {
-                       int l = atoi(optarg);
-                       if (0 <= l && l <= 3) {
-                          SysLogLevel = l;
-                          break;
-                          }
-                       }
+          case 'l': {
+                      char *p = strchr(optarg, '.');
+                      if (p)
+                         *p = 0;
+                      if (isnumber(optarg)) {
+                         int l = atoi(optarg);
+                         if (0 <= l && l <= 3) {
+                            SysLogLevel = l;
+                            if (!p)
+                               break;
+                            if (isnumber(p + 1)) {
+                               int l = atoi(optarg);
+                               if (0 <= l && l <= 7) {
+                                  int targets[] = { LOG_LOCAL0, LOG_LOCAL1, LOG_LOCAL2, LOG_LOCAL3, LOG_LOCAL4, LOG_LOCAL5, LOG_LOCAL6, LOG_LOCAL7 };
+                                  SysLogTarget = targets[l];
+                                  break;
+                                  }
+                               }
+                            }
+                         }
+                    if (p)
+                       *p = '.';
                     fprintf(stderr, "vdr: invalid log level: %s\n", optarg);
                     return 2;
+                    }
                     break;
           case 'L': if (access(optarg, R_OK | X_OK) == 0)
                        PluginManager.SetDirectory(optarg);
@@ -182,8 +199,7 @@ int main(int argc, char *argv[])
                     while (optarg && *optarg && optarg[strlen(optarg) - 1] == '/')
                           optarg[strlen(optarg) - 1] = 0;
                     break;
-          case 'w': if (isnumber(optarg)) {
-                       int t = atoi(optarg);
+          case 'w': if (isnumber(optarg)) { int t = atoi(optarg);
                        if (t >= 0) {
                           WatchdogTimeout = t;
                           break;
@@ -219,6 +235,8 @@ int main(int argc, char *argv[])
                "  -l LEVEL, --log=LEVEL    set log level (default: 3)\n"
                "                           0 = no logging, 1 = errors only,\n"
                "                           2 = errors and info, 3 = errors, info and debug\n"
+               "                           if logging should be done to LOG_LOCALn instead of\n"
+               "                           LOG_USER, add '.n' to LEVEL, as in 3.7 (n=0..7)\n"
                "  -L DIR,   --lib=DIR      search for plugins in DIR (default is %s)\n"
                "  -m,       --mute         mute audio of the primary DVB device at startup\n"
                "  -p PORT,  --port=PORT    use PORT for SVDRP (default: %d)\n"
@@ -264,7 +282,7 @@ int main(int argc, char *argv[])
   // Log file:
 
   if (SysLogLevel > 0)
-     openlog("vdr", LOG_PID | LOG_CONS, LOG_USER);
+     openlog("vdr", LOG_PID | LOG_CONS, SysLogTarget);
 
   // Check the video directory:
 
@@ -550,6 +568,11 @@ int main(int argc, char *argv[])
                             Temp = NULL;
                             Interface->Info(tr("Switching primary DVB..."));
                             cDevice::SetPrimaryDevice(Setup.PrimaryDVB);
+                            break;
+             case osPlugin: DELETENULL(Menu);
+                            Menu = Temp = cMenuMain::PluginOsdObject();
+                            if (Menu)
+                               Menu->Show();
                             break;
              case osBack:
              case osEnd:    if (Interact == Menu)

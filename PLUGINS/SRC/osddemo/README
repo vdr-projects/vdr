@@ -1,0 +1,18 @@
+This is a "plugin" for the Video Disk Recorder (VDR).
+
+Written by:                  Klaus Schmidinger <kls@cadsoft.de>
+
+Project's homepage:          http://www.cadsoft.de/vdr
+
+Latest version available at: http://www.cadsoft.de/vdr
+
+See the file COPYING for license information.
+
+Description:
+
+Demonstration of how a plugin can have its very own OSD setup.
+
+It's a very primitive game that opens a small window in which the
+user can draw lines with the Up, Down, Left and Right buttons.
+The color buttons are used to switch color.
+Press Ok to close the window.

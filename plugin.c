@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: plugin.c 1.7 2002/08/11 11:21:00 kls Exp $
+ * $Id: plugin.c 1.8 2002/11/16 14:22:37 kls Exp $
  */
 
 #include "plugin.h"
@@ -64,7 +64,7 @@ const char *cPlugin::MainMenuEntry(void)
   return NULL;
 }
 
-cOsdMenu *cPlugin::MainMenuAction(void)
+cOsdObject *cPlugin::MainMenuAction(void)
 {
   return NULL;
 }

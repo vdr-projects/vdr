@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 1.8 2002/11/10 13:01:55 kls Exp $
+ * $Id: channels.c 1.9 2002/11/24 14:28:48 kls Exp $
  */
 
 #include "channels.h"
@@ -120,6 +120,39 @@ int MapToDriver(int Value, const tChannelParameterMap *Map)
   return -1;
 }
 
+// -- tChannelID -------------------------------------------------------------
+
+const tChannelID tChannelID::InvalidID;
+
+bool tChannelID::operator== (const tChannelID &arg) const
+{
+  return source == arg.source && nid == arg.nid && tid == arg.tid && sid == arg.sid && rid == arg.rid;
+}
+
+tChannelID tChannelID::FromString(const char *s)
+{
+  char *sourcebuf = NULL;
+  int nid;
+  int tid;
+  int sid;
+  int rid = 0;
+  int fields = sscanf(s, "%a[^-]-%d-%d-%d-%d", &sourcebuf, &nid, &tid, &sid, &rid);
+  if (fields == 4 || fields == 5) {
+     int source = cSource::FromString(sourcebuf);
+     free(sourcebuf);
+     if (source >= 0)
+        return tChannelID(source, nid, tid, sid, rid);
+     }
+  return tChannelID::InvalidID;
+}
+
+const char *tChannelID::ToString(void)
+{
+  static char buffer[256];
+  snprintf(buffer, sizeof(buffer), rid ? "%s-%d-%d-%d-%d" : "%s-%d-%d-%d", cSource::ToString(source), nid, tid, sid, rid);
+  return buffer;
+}
+
 // -- cChannel ---------------------------------------------------------------
 
 char *cChannel::buffer = NULL;
@@ -137,7 +170,10 @@ cChannel::cChannel(void)
   dpid2        = 0;
   tpid         = 32;
   ca           = 0;
-  sid          = 0;
+  nid          = 0;
+  tid          = 0;
+  sid          = 888;
+  rid          = 0;
   groupSep     = false;
   polarization = 'v';
   inversion    = INVERSION_AUTO;
@@ -158,36 +194,14 @@ cChannel& cChannel::operator= (const cChannel &Channel)
 
 static int MHz(int frequency)
 {
-  while (frequency > 20000) {
+  while (frequency > 20000)
         frequency /= 1000;
-        }
   return frequency;
 }
 
-uint64 cChannel::GetChannelID(void) const
+tChannelID cChannel::GetChannelID(void) const
 {
-  return (uint64(source) << 48) | (uint64(0) << 32) | ((MHz(frequency)) << 16) | sid;
-}
-
-const char *cChannel::GetChannelIDStr(void) const
-{
-  static char buffer[256];
-  snprintf(buffer, sizeof(buffer), "%s-%d-%d-%d", cSource::ToString(source), 0, MHz(frequency), sid);
-  return buffer;
-}
-
-uint64 cChannel::StringToChannelID(const char *s)
-{
-  char *sourcebuf = NULL;
-  int reserved;
-  int frequency;
-  int sid;
-  if (4 == sscanf(s, "%a[^-]-%d-%d-%d", &sourcebuf, &reserved, &frequency, &sid)) {
-     int source = cSource::FromString(sourcebuf);
-     if (source >= 0)
-        return (uint64(source) << 48) | (uint64(reserved) << 32) | (frequency << 16) | sid;
-     }
-  return 0;
+  return tChannelID(source, nid, nid ? tid : MHz(frequency), sid, rid);
 }
 
 static int PrintParameter(char *p, char Name, int Value)
@@ -281,7 +295,7 @@ const char *cChannel::ToText(cChannel *Channel)
      if (Channel->dpid2)
         q += snprintf(q, sizeof(apidbuf) - (q - apidbuf), ",%d", Channel->dpid2);
      *q = 0;
-     asprintf(&buffer, "%s:%d:%s:%s:%d:%d:%s:%d:%d:%d\n", s, Channel->frequency, Channel->ParametersToString(), cSource::ToString(Channel->source), Channel->srate, Channel->vpid, apidbuf, Channel->tpid, Channel->ca, Channel->sid);
+     asprintf(&buffer, "%s:%d:%s:%s:%d:%d:%s:%d:%d:%d:%d:%d:%d\n", s, Channel->frequency, Channel->ParametersToString(), cSource::ToString(Channel->source), Channel->srate, Channel->vpid, apidbuf, Channel->tpid, Channel->ca, Channel->sid, Channel->nid, Channel->tid, Channel->rid);
      }
   return buffer;
 }
@@ -312,7 +326,7 @@ bool cChannel::Parse(const char *s, bool AllowNonUniqueID)
      char *sourcebuf = NULL;
      char *parambuf = NULL;
      char *apidbuf = NULL;
-     int fields = sscanf(s, "%a[^:]:%d :%a[^:]:%a[^:] :%d :%d :%a[^:]:%d :%d :%d ", &namebuf, &frequency, &parambuf, &sourcebuf, &srate, &vpid, &apidbuf, &tpid, &ca, &sid);
+     int fields = sscanf(s, "%a[^:]:%d :%a[^:]:%a[^:] :%d :%d :%a[^:]:%d :%d :%d :%d :%d :%d ", &namebuf, &frequency, &parambuf, &sourcebuf, &srate, &vpid, &apidbuf, &tpid, &ca, &sid, &nid, &tid, &rid);
      if (fields >= 9) {
         if (fields == 9) {
            // allow reading of old format
@@ -430,18 +444,25 @@ cChannel *cChannels::GetByServiceID(int Source, unsigned short ServiceID)
   return NULL;
 }
 
-cChannel *cChannels::GetByChannelID(uint64 ChannelID)
+cChannel *cChannels::GetByChannelID(tChannelID ChannelID, bool TryWithoutRid)
 {
   for (cChannel *channel = First(); channel; channel = Next(channel)) {
       if (!channel->GroupSep() && channel->GetChannelID() == ChannelID)
          return channel;
       }
+  if (TryWithoutRid) {
+     ChannelID.ClrRid();
+     for (cChannel *channel = First(); channel; channel = Next(channel)) {
+         if (!channel->GroupSep() && channel->GetChannelID().ClrRid() == ChannelID)
+            return channel;
+         }
+     }
   return NULL;
 }
 
 bool cChannels::HasUniqueChannelID(cChannel *NewChannel, cChannel *OldChannel)
 {
-  uint64 NewChannelID = NewChannel->GetChannelID();
+  tChannelID NewChannelID = NewChannel->GetChannelID();
   for (cChannel *channel = First(); channel; channel = Next(channel)) {
       if (!channel->GroupSep() && channel != OldChannel && channel->GetChannelID() == NewChannelID)
          return false;
