@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.181 2004/01/05 11:31:54 kls Exp $
+ * $Id: config.h 1.182 2004/01/06 16:47:41 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -17,6 +17,7 @@
 #include <time.h>
 #include <unistd.h>
 #include "device.h"
+#include "i18n.h"
 #include "tools.h"
 
 #define VDRVERSION  "1.3.1"
@@ -195,6 +196,8 @@ class cSetup : public cConfig<cSetupLine> {
 private:
   void StoreCaCaps(const char *Name);
   bool ParseCaCaps(const char *Value);
+  void StoreLanguages(const char *Name, int *Values);
+  bool ParseLanguages(const char *Value, int *Values);
   bool Parse(const char *Name, const char *Value);
   cSetupLine *Get(const char *Name, const char *Plugin = NULL);
   void Store(const char *Name, const char *Value, const char *Plugin = NULL, bool AllowMultiple = false);
@@ -216,6 +219,7 @@ public:
   int SetSystemTime;
   int TimeTransponder;
   int MarginStart, MarginStop;
+  int EPGLanguages[I18nNumLanguages + 1];
   int EPGScanTimeout;
   int EPGBugfixLevel;
   int SVDRPTimeout;

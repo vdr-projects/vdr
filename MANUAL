@@ -482,6 +482,19 @@ Version 1.2
                          be taken. Note that in order to set the system time from
                          the transponder data the option "Set system time" must also
                          be enabled.
+  Preferred languages = 0
+                         Some tv stations broadcast their EPG data in various
+                         different languages. This option allows you to define
+                         which language(s) you prefer in such cases. By default,
+                         or if none of the preferred languages is broadcast, any
+                         language will be accepted and the EPG data will be
+                         displayed in the first language received from the data
+                         stream. If this option is set to a non-zero value, the
+                         menu page will contain that many "Preferred language"
+                         options which allow you to select the individual preferred
+                         languages. If an actual EPG data record is received in
+                         different languages, the preferred languages are checked
+                         in the given order to decide which one to take.
 
   DVB:
 

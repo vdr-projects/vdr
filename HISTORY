@@ -2555,3 +2555,5 @@ Video Disk Recorder Revision History
 - Changed calculation of channel ids to make it work for tv stations that use
   the undefined NID value 0 (thanks to Teemu Rantanen for reporting this one).
 - Enhanced the SDT filter to handle multi part sections.
+- Added support for selecting preferred EPG languages (based upon a patch by
+  Teemu Rantanen).

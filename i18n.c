@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.138 2004/01/05 11:56:24 kls Exp $
+ * $Id: i18n.c 1.139 2004/01/09 15:48:03 kls Exp $
  *
  * Translations provided by:
  *
@@ -110,6 +110,24 @@ const tI18nPhrase Phrases[] = {
     "iso8859-1",
     "iso8859-1",
     "iso8859-1",
+  },
+  // The 3-letter names of the language (this MUST be the third phrase!):
+  { "eng",
+    "deu,ger",
+    "slv",
+    "ita",
+    "dut,nla",
+    "por",
+    "fra,fre",
+    "nor",
+    "fin",
+    "pol",
+    "esl,spa",
+    "ell,gre",
+    "sve,swe",
+    "ron,rum",
+    "hun",
+    "cat,cln",
   },
   // Menu titles:
   { "VDR",
@@ -2227,6 +2245,40 @@ const tI18nPhrase Phrases[] = {
     "Idöhöz tartozó Transponder",
     "Usar el temps del múltiplex",
   },
+  { "Setup.EPG$Preferred languages",
+    "Bevorzugte Sprachen",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "Suosikkikielet",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+  },
+  { "Setup.EPG$Preferred language",
+    "Bevorzugte Sprache",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "Suosikkikieli",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+  },
   { "Setup.DVB$Primary DVB interface",
     "Primäres DVB Interface",
     "Primarna naprava",
@@ -3919,4 +3971,42 @@ const char * const * I18nLanguages(void)
 const char * const * I18nCharSets(void)
 {
   return &Phrases[1][0];
+}
+
+const char * I18nLanguageAbbreviation(int Index)
+{
+  return Index < I18nNumLanguages ? Phrases[2][Index] : NULL;
+}
+
+int I18nLanguageIndex(const char Code[3])
+{
+  char s[4];
+  memcpy(s, Code, 3);
+  s[3] = 0;
+  for (int i = 0; i < I18nNumLanguages; i++) {
+      if (strcasestr(Phrases[2][i], s))
+         return i;
+      }
+  //dsyslog("unknown language code: '%s'", s);
+  return -1;
+}
+
+bool I18nIsPreferredLanguage(int *PreferredLanguages, int LanguageIndex, int &OldPreference)
+{
+  for (int i = 0; i < I18nNumLanguages; i++) {
+      if (PreferredLanguages[i] < 0)
+         break; // the language is not a preferred one
+      if (PreferredLanguages[i] == LanguageIndex) {
+         if (OldPreference < 0 || i < OldPreference) {
+            OldPreference = i;
+            return true;
+            }
+         break;
+         }
+      }
+  if (OldPreference < 0) {
+     OldPreference = I18nNumLanguages; // higher than the maximum possible value
+     return true; // if we don't find a preferred one, we take the first one
+     }
+  return false;
 }

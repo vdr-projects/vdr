@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.118 2004/01/05 11:45:40 kls Exp $
+ * $Id: config.c 1.119 2004/01/06 17:09:54 kls Exp $
  */
 
 #include "config.h"
@@ -259,6 +259,7 @@ cSetup::cSetup(void)
   TimeTransponder = 0;
   MarginStart = 2;
   MarginStop = 10;
+  EPGLanguages[0] = -1;
   EPGScanTimeout = 5;
   EPGBugfixLevel = 2;
   SVDRPTimeout = 300;
@@ -395,6 +396,39 @@ bool cSetup::ParseCaCaps(const char *Value)
   return false;
 }
 
+void cSetup::StoreLanguages(const char *Name, int *Values)
+{
+  char buffer[I18nNumLanguages * 4];
+  char *q = buffer;
+  for (int i = 0; i < I18nNumLanguages; i++) {
+      if (Values[i] < 0)
+         break;
+      const char *s = I18nLanguageAbbreviation(Values[i]);
+      if (s) {
+         if (q > buffer)
+            *q++ = ' ';
+         strncpy(q, s, 3);
+         q += 3;
+         }
+      }
+  *q = 0;
+  Store(Name, buffer);
+}
+
+bool cSetup::ParseLanguages(const char *Value, int *Values)
+{
+  int n = 0;
+  while (Value && *Value && n < I18nNumLanguages) {
+        int i = I18nLanguageIndex(Value);
+        if (i >= 0)
+           Values[n++] = i;
+        if ((Value = strchr(Value, ' ')) != NULL)
+           Value++;
+        }
+  Values[n] = -1;
+  return true;
+}
+
 bool cSetup::Parse(const char *Name, const char *Value)
 {
   if      (!strcasecmp(Name, "OSDLanguage"))         OSDLanguage        = atoi(Value);
@@ -412,6 +446,7 @@ bool cSetup::Parse(const char *Name, const char *Value)
   else if (!strcasecmp(Name, "TimeTransponder"))     TimeTransponder    = atoi(Value);
   else if (!strcasecmp(Name, "MarginStart"))         MarginStart        = atoi(Value);
   else if (!strcasecmp(Name, "MarginStop"))          MarginStop         = atoi(Value);
+  else if (!strcasecmp(Name, "EPGLanguages"))        return ParseLanguages(Value, EPGLanguages);
   else if (!strcasecmp(Name, "EPGScanTimeout"))      EPGScanTimeout     = atoi(Value);
   else if (!strcasecmp(Name, "EPGBugfixLevel"))      EPGBugfixLevel     = atoi(Value);
   else if (!strcasecmp(Name, "SVDRPTimeout"))        SVDRPTimeout       = atoi(Value);
@@ -463,6 +498,7 @@ bool cSetup::Save(void)
   Store("TimeTransponder",    TimeTransponder);
   Store("MarginStart",        MarginStart);
   Store("MarginStop",         MarginStop);
+  StoreLanguages("EPGLanguages", EPGLanguages);
   Store("EPGScanTimeout",     EPGScanTimeout);
   Store("EPGBugfixLevel",     EPGBugfixLevel);
   Store("SVDRPTimeout",       SVDRPTimeout);

@@ -639,6 +639,7 @@ Teemu Rantanen <tvr@iki.fi>
  for fixing faulty calculation of section length in eit.c
  for reporting a problem in calculation of channel ids for tv stations that use
  the undefined NID value 0
+ for adding EPG preferred languages
 
 Jan Ekholm <chakie@infa.abo.fi>
  for adding/improving some Swedish language OSD texts
