@@ -2383,3 +2383,4 @@ Video Disk Recorder Revision History
   one).
 - Fixed handling ':' characters in channel names when reading channels.conf
   (thanks to Reinhard Nissl for reporting this one).
+- Fixed the URL to the 'Doxygen' tool in INSTALL (thanks to Dirk Essl).
