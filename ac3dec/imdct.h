@@ -22,5 +22,5 @@
  *
  */
 
-void imdct(bsi_t *bsi,audblk_t *audblk, stream_samples_t samples);
+void imdct (bsi_t *bsi,audblk_t *audblk, stream_samples_t samples, int16_t *s16_samples, dm_par_t *dm_par);
 void imdct_init(void);

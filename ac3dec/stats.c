@@ -28,16 +28,16 @@
 #include "ac3_internal.h"
 
 
-#include "decode.h"
 #include "stats.h"
 #include "debug.h"
 
-
+#if !defined (__GNUC__) || defined (DEBUG)
 static const char *service_ids[8] = 
 {
 	"CM","ME","VI","HI",
 	 "D", "C","E", "VO"
 };
+#endif
 
 struct mixlev_s
 {
@@ -77,9 +77,10 @@ static const char *language[128] =
 	"Bengali", "Belorussian", "Bambora", "Azerbijani", "Assamese", "Armenian", "Arabic", "Amharic"
 };
 
+
 void stats_print_banner(syncinfo_t *syncinfo,bsi_t *bsi)
 {
-	fprintf(stdout,"ac3dec-0.6.2-cvs (C) 2000 Aaron Holtzman (aholtzma@ess.engr.uvic.ca)\n");
+  //	fprintf(stdout,PACKAGE"-"VERSION" (C) 2000 Aaron Holtzman (aholtzma@ess.engr.uvic.ca)\n");
 
 	fprintf(stdout,"%d.%d Mode ",bsi->nfchans,bsi->lfeon);
 	fprintf(stdout,"%2.1f KHz",syncinfo->sampling_rate * 1e-3);
@@ -87,8 +88,7 @@ void stats_print_banner(syncinfo_t *syncinfo,bsi_t *bsi)
 	if (bsi->langcode && (bsi->langcod < 128))
 		fprintf(stdout,"%s ", language[bsi->langcod]);
 
-	switch(bsi->bsmod)
-	{
+	switch(bsi->bsmod) {
 		case 0:
 			fprintf(stdout,"Complete Main Audio Service");
 			break;
@@ -116,12 +116,12 @@ void stats_print_banner(syncinfo_t *syncinfo,bsi_t *bsi)
 	fprintf(stdout,"\n");
 }
 
-void stats_print_syncinfo(syncinfo_t *syncinfo)
+
+void stats_print_syncinfo (syncinfo_t *syncinfo)
 {
 	dprintf("(syncinfo) ");
 	
-	switch (syncinfo->fscod)
-	{
+	switch (syncinfo->fscod) {
 		case 2:
 			dprintf("32 KHz   ");
 			break;
@@ -140,9 +140,9 @@ void stats_print_syncinfo(syncinfo_t *syncinfo)
 			syncinfo->frame_size);
 
 }
+
 	
-void stats_print_bsi(bsi_t *bsi)
-{
+void stats_print_bsi(bsi_t *bsi) {
 	dprintf("(bsi) ");
 	dprintf("%s",service_ids[bsi->bsmod]);
 	dprintf(" %d.%d Mode ",bsi->nfchans,bsi->lfeon);
@@ -154,11 +154,11 @@ void stats_print_bsi(bsi_t *bsi)
 
 }
 
+
 char *exp_strat_tbl[4] = {"R   ","D15 ","D25 ","D45 "};
 
-void stats_print_audblk(bsi_t *bsi,audblk_t *audblk)
-{
-	uint_32 i;
+void stats_print_audblk(bsi_t *bsi,audblk_t *audblk) {
+	uint32_t i;
 
 	dprintf("(audblk) ");
 	dprintf("%s ",audblk->cplinu ? "cpl on " : "cpl off");

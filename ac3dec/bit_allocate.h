@@ -21,4 +21,4 @@
  *
  */
 
-void bit_allocate(uint_16 fscod, bsi_t *bsi, audblk_t *audblk);
+void bit_allocate(uint16_t fscod, bsi_t *bsi, audblk_t *audblk);

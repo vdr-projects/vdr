@@ -21,56 +21,24 @@
  *
  */
 
-//My new and improved vego-matic endian swapping routine
-//(stolen from the kernel)
-#ifdef WORDS_BIGENDIAN
 
-#	define swab32(x) (x)
+#include <inttypes.h>
 
-#else
+extern uint32_t bits_left;
+extern uint64_t current_word;
 
-#	if defined (__i386__)
+void bitstream_init(uint8_t *start);
+inline uint32_t bitstream_get_bh(uint32_t num_bits);
 
-#	define swab32(x) __i386_swab32(x)
-	static inline const uint_32 __i386_swab32(uint_32 x)
-	{
-		__asm__("bswap %0" : "=r" (x) : "0" (x));
-		return x;
-	}
-
-#	else
-
-#	define swab32(x)\
-((((uint_8*)&x)[0] << 24) | (((uint_8*)&x)[1] << 16) |  \
- (((uint_8*)&x)[2] << 8)  | (((uint_8*)&x)[3]))
-
-#	endif
-#endif
-
-extern uint_32 bits_left;
-extern uint_32 current_word;
-
-void bitstream_init(uint_8 *start);
-
-uint_8 bitstream_get_byte(void);
-
-uint_8 *bitstream_get_buffer_start(void);
-void bitstream_buffer_frame(uint_32 frame_size);
-
-uint_32 bitstream_get_bh(uint_32 num_bits);
-
-static inline uint_32 
-bitstream_get(uint_32 num_bits)
+static inline uint32_t bitstream_get (uint32_t num_bits)
 {
-	uint_32 result;
-	
-	if(num_bits < bits_left)
-	{
-		result = (current_word << (32 - bits_left)) >> (32 - num_bits);
+	uint32_t result;
+
+	if (num_bits < bits_left) {
+		result = (current_word << (64 - bits_left)) >> (64 - num_bits);
 		bits_left -= num_bits;
 		return result;
 	}
 
-	return bitstream_get_bh(num_bits);
+	return bitstream_get_bh (num_bits);
 }
-
