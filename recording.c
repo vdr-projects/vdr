@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.8 2000/05/13 16:16:56 kls Exp $
+ * $Id: recording.c 1.9 2000/07/15 16:55:08 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -20,7 +20,7 @@
 #define DATAFORMAT   "%4d-%02d-%02d.%02d:%02d.%02d.%02d" RECEXT
 #define NAMEFORMAT   "%s/%s/" DATAFORMAT
 
-#define FINDCMD      "find %s -type d -name '%s'"
+#define FINDCMD      "find %s -type d -name '%s' | sort -df"
 
 #define DFCMD        "df -m %s"
 #define MINDISKSPACE 1024 // MB

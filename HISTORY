@@ -67,3 +67,4 @@ Video Disk Recorder Revision History
   not to be correctly tuned (thanks to Plamen Ganev!).
 - Now clearing the replay buffer in search forward/back, which results in
   faster reaction.
+- The 'Recordings' menu is now listed alphabetically (thanks to Carsten Koch!).
