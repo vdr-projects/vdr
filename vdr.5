@@ -8,7 +8,7 @@
 .\" License as specified in the file COPYING that comes with the
 .\" vdr distribution.
 .\"
-.\" $Id: vdr.5 1.21 2004/01/02 15:24:21 kls Exp $
+.\" $Id: vdr.5 1.22 2004/01/05 15:26:33 kls Exp $
 .\"
 .TH vdr 5 "1 Jun 2003" "1.2.0" "Video Disk Recorder Files"
 .SH NAME
@@ -544,7 +544,7 @@ l l.
 \fBC\fR@<channel id> <channel name>
 \fBE\fR@<event id> <start time> <duration> <table id>
 \fBT\fR@<title>
-\fBS\fR@<subtitle>
+\fBS\fR@<short text>
 \fBD\fR@<description>
 \fBe\fR@
 \fBc\fR@
@@ -566,7 +566,7 @@ l l.
 <duration>     @is the time (in seconds) that this event will take
 <table id>     @is a hex number that indicates the table this event is contained in (if this is left empty or 0 this event will not be overwritten or modified by data that comes from the DVB stream)
 <title>        @is the title of the event
-<subtitle>     @is the subtitle (typically the name of the episode etc.)
+<short text>   @is the short text of the event (typically the name of the episode etc.)
 <description>  @is the description of the event (any '|' characters will be interpreted as newlines)
 .TE
 
