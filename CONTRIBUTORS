@@ -713,6 +713,11 @@ Sascha Volkenandt <sascha@akv-soft.de>
  for suggesting to map the color name "None" to #00000000 when processing XPM data
  for suggesting to also reset the palette in cBitmap::DrawBitmap() if the entire
  bitmap area is covered
+ for reporting a bug in cBitmap::DrawPixel(), which messed with other bitmaps'
+ palettes in case the pixel coordinates were outside this bitmap
+ for suggesting to allow drawing "transparent" texts
+ for suggesting to ignore unused "none" color entries in XPM files written by
+ some broken graphics tools
 
 Malcolm Caldwell <malcolm.caldwell@ntu.edu.au>
  for modifying LOF handling to allow for C-band reception
@@ -1010,3 +1015,12 @@ Wayne Keer <syphir@syphir.sytes.net>
 
 Marco Schlüßler <marco@lordzodiac.de>
  for fixing handling colors in cDvbSpuPalette::yuv2rgb()
+ for fixing setting lnb voltage if the frontend is not DVB-S
+ for fixing missing audio after replaying a DVD
+
+Jürgen Schmitz <j.schmitz@web.de>
+ for reporting a bug in displaying the current channel when switching via the SVDRP
+ command CHAN
+
+Philip Lawatsch <philip@lawatsch.at>
+ for debugging a buffer overflow in eit.c

@@ -59,6 +59,14 @@ Version 1.2
   User1...9   additional user defined keys for macro functions
               (defined in 'keymacros.conf')
 
+  Note that in normal viewing mode (no OSD active) the color keys can have user
+  defined functionality, as configured in 'keymacros.conf'.
+  The default assignment is
+
+  Red       Recordings menu
+  Green     Schedule menu
+  Blue      Timers menu
+
   (1) The "On/Off" button in the "Timers" menu only works if sorting the timers
       has been enabled in the "Setup" menu. Otherwise the Blue button is used
       to "mark" a timer for moving.

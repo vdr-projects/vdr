@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.86 2004/05/23 10:11:42 kls Exp $
+ * $Id: dvbdevice.c 1.89 2004/06/06 11:28:28 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -101,7 +101,8 @@ cDvbTuner::cDvbTuner(int Fd_Frontend, int CardIndex, fe_type_t FrontendType, cCi
   useCa = false;
   tunerStatus = tsIdle;
   startTime = time(NULL);
-  CHECK(ioctl(fd_frontend, FE_SET_VOLTAGE, SEC_VOLTAGE_13)); // must explicitly turn on LNB power
+  if (frontendType == FE_QPSK)
+     CHECK(ioctl(fd_frontend, FE_SET_VOLTAGE, SEC_VOLTAGE_13)); // must explicitly turn on LNB power
   SetDescription("tuner on device %d", cardIndex + 1);
   Start();
 }
@@ -560,15 +561,15 @@ void cDvbDevice::SetVideoFormat(bool VideoFormat16_9)
 
 eVideoSystem cDvbDevice::GetVideoSystem(void)
 {
-  eVideoSystem VideoSytem = vsPAL;
+  eVideoSystem VideoSystem = vsPAL;
   video_size_t vs;
   if (ioctl(fd_video, VIDEO_GET_SIZE, &vs) == 0) {
      if (vs.h == 480 || vs.h == 240)
-        VideoSytem = vsNTSC;
+        VideoSystem = vsNTSC;
      }
   else
      LOG_ERROR;
-  return VideoSytem;
+  return VideoSystem;
 }
 
 //                            ptAudio        ptVideo        ptPcr        ptTeletext        ptDolby        ptOther
@@ -766,6 +767,8 @@ bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
      if (IsPrimaryDevice())
         AddPid(Channel->Tpid(), ptTeletext);
      CHECK(ioctl(fd_audio, AUDIO_SET_AV_SYNC, true));
+     CHECK(ioctl(fd_audio, AUDIO_SET_MUTE, false));
+     CHECK(ioctl(fd_video, VIDEO_SET_BLANK, false));
      }
   else if (StartTransferMode)
      cControl::Launch(new cTransferControl(this, Channel->Vpid(), Channel->Apid1(), Channel->Apid2(), Channel->Dpid1(), Channel->Dpid2()));

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.307 2004/05/29 10:19:22 kls Exp $
+ * $Id: menu.c 1.308 2004/06/06 15:06:28 kls Exp $
  */
 
 #include "menu.h"
@@ -2643,6 +2643,8 @@ eOSState cDisplayChannel::ProcessKey(eKeys Key)
                      }
     };
   if (time_ms() - lastTime < INFOTIMEOUT) {
+     if (!number && group < 0 && channel && channel->Number() != cDevice::CurrentChannel())
+        Refresh(); // makes sure a channel switch through the SVDRP CHAN command is displayed
      DisplayInfo();
      displayChannel->Flush();
      return osContinue;

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.h 1.43 2004/05/29 14:02:47 kls Exp $
+ * $Id: osd.h 1.45 2004/06/05 12:38:44 kls Exp $
  */
 
 #ifndef __OSD_H
@@ -136,9 +136,15 @@ public:
   bool LoadXpm(const char *FileName);
        ///< Calls SetXpm() with the data from the file FileName.
        ///< Returns true if the operation was successful.
-  bool SetXpm(char *Xpm[]);
+  bool SetXpm(char *Xpm[], bool IgnoreNone = false);
        ///< Sets this bitmap to the given XPM data. Any previous bitmap or
        ///< palette data will be overwritten with the new data.
+       ///< If IgnoreNone is true, a "none" color entry will be ignored.
+       ///< Only set IgnoreNone to true if you know that there is a "none"
+       ///< color entry in the XPM data and that this entry is not used!
+       ///< If SetXpm() is called with IgnoreNone set to false and the XPM
+       ///< data contains an unused "none" entry, it will be automatically
+       ///< called again with IgnoreNone set to true.
        ///< Returns true if the operation was successful.
   void SetIndex(int x, int y, tIndex Index);
        ///< Sets the index at the given coordinates to Index.
@@ -158,7 +164,8 @@ public:
        ///< Draws the given string at coordinates (x, y) with the given foreground
        ///< and background color and font. If Width and Height are given, the text
        ///< will be drawn into a rectangle with the given size and the given
-       ///< Alignment (default is top-left).
+       ///< Alignment (default is top-left). If ColorBg is clrTransparent, no
+       ///< background pixels will be drawn, which allows drawing "transparent" text.
   void DrawRectangle(int x1, int y1, int x2, int y2, tColor Color);
        ///< Draws a filled rectangle defined by the upper left (x1, y1) and lower right
        ///< (x2, y2) corners with the given Color. If the rectangle covers the entire
@@ -276,7 +283,8 @@ public:
        ///< Draws the given string at coordinates (x, y) with the given foreground
        ///< and background color and font. If Width and Height are given, the text
        ///< will be drawn into a rectangle with the given size and the given
-       ///< Alignment (default is top-left).
+       ///< Alignment (default is top-left). If ColorBg is clrTransparent, no
+       ///< background pixels will be drawn, which allows drawing "transparent" text.
   virtual void DrawRectangle(int x1, int y1, int x2, int y2, tColor Color);
        ///< Draws a filled rectangle defined by the upper left (x1, y1) and lower right
        ///< (x2, y2) corners with the given Color.

@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: descriptor.c 1.12 2004/03/26 15:25:28 kls Exp $
+ *   $Id: descriptor.c 1.13 2004/06/06 14:47:30 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -84,53 +84,61 @@ int ExtendedEventDescriptors::getMaximumTextLength(const char *separation1, cons
 }
 
 char *ExtendedEventDescriptors::getText(const char *separation1, const char *separation2) {
-   char *text=new char[getMaximumTextLength(separation1, separation2)];
-   return getText(text, separation1, separation2);
+   int size = getMaximumTextLength(separation1, separation2);
+   char *text=new char[size];
+   return getText(text, size, separation1, separation2);
 }
 
-char *ExtendedEventDescriptors::getText(char *buffer, const char *separation1, const char *separation2) {
+char *ExtendedEventDescriptors::getText(char *buffer, int size, const char *separation1, const char *separation2) {
    int index=0, len;
-   char tempbuf[256];
    for (int i=0;i<length;i++) {
       ExtendedEventDescriptor *d=(ExtendedEventDescriptor *)array[i];
       if (!d)
          continue;
-      d->text.getText(tempbuf);
-      len=strlen(tempbuf);
-      if (len) {
-         memcpy(buffer+index, tempbuf, len);
-         index+=len;
-      }
+      d->text.getText(buffer+index, size);
+      len = strlen(buffer+index);
+      index += len;
+      size -= len;
    }
 
+   int sepLen1 = strlen(separation1);
+   int sepLen2 = strlen(separation2);
+   bool separated = false;
    for (int i=0;i<length;i++) {
       ExtendedEventDescriptor *d=(ExtendedEventDescriptor *)array[i];
       if (!d)
          continue;
 
-      strcpy(buffer+index, separation2); // let's have a separator between the long text and the items
-      index += strlen(separation2);
       ExtendedEventDescriptor::Item item;
       for (Loop::Iterator it; d->itemLoop.hasNext(it);   ) {
          item=d->itemLoop.getNext(it);
 
-         item.itemDescription.getText(tempbuf);
-         len=strlen(tempbuf);
-         if (len) {
-            memcpy(buffer+index, tempbuf, len);
-            index+=len;
+         if (!separated && size > sepLen2) {
+            strcpy(buffer+index, separation2); // let's have a separator between the long text and the items
+            index += sepLen2;
+            size -= sepLen2;
+            separated = true;
          }
-         strcpy(buffer+index, separation1);
-         index += strlen(separation1);
 
-         item.item.getText(tempbuf);
-         len=strlen(tempbuf);
-         if (len) {
-            memcpy(buffer+index, tempbuf, len);
-            index+=len;
+         item.itemDescription.getText(buffer+index, size);
+         len = strlen(buffer+index);
+         index += len;
+         size -= len;
+         if (size > sepLen1) {
+            strcpy(buffer+index, separation1);
+            index += sepLen1;
+            size -= sepLen1;
          }
-         strcpy(buffer+index, separation2);
-         index += strlen(separation2);
+
+         item.item.getText(buffer+index, size);
+         len = strlen(buffer+index);
+         index += len;
+         size -= len;
+         if (size > sepLen2) {
+            strcpy(buffer+index, separation2);
+            index += sepLen2;
+            size -= sepLen2;
+         }
       }
    }
 
@@ -150,23 +158,21 @@ int ExtendedEventDescriptors::getMaximumTextPlainLength() {
 }
 
 char *ExtendedEventDescriptors::getTextPlain() {
-   char *text=new char[getMaximumTextPlainLength()];
-   return getTextPlain(text);
+   int size = getMaximumTextPlainLength();
+   char *text=new char[size];
+   return getTextPlain(text, size);
 }
 
-char *ExtendedEventDescriptors::getTextPlain(char *buffer) {
+char *ExtendedEventDescriptors::getTextPlain(char *buffer, int size) {
    int index=0, len;
-   char tempbuf[256];
    for (int i=0;i<length;i++) {
       ExtendedEventDescriptor *d=(ExtendedEventDescriptor *)array[i];
       if (!d)
          continue;
-      d->text.getText(tempbuf);
-      len=strlen(tempbuf);
-      if (len) {
-         memcpy(buffer+index, tempbuf, len);
-         index+=len;
-      }
+      d->text.getText(buffer+index, size);
+      len = strlen(buffer+index);
+      index += len;
+      size -= len;
    }
    buffer[index]='\0';
    return buffer;
@@ -174,25 +180,27 @@ char *ExtendedEventDescriptors::getTextPlain(char *buffer) {
 
 int ExtendedEventDescriptors::getMaximumTextItemizedLength(const char *separation1, const char *separation2) {
    int ret=0;
-   int sepLength=strlen(separation1)+strlen(separation2)-2;
+   int sepLength=strlen(separation1)+strlen(separation2);
    for (int i=0;i<length;i++) {
       ExtendedEventDescriptor *d=(ExtendedEventDescriptor *)array[i];
       if (!d)
          continue;
-      //The length includes two 8-bit length fields which have already been subtracted from sepLength
+      //The length includes two 8-bit length fields which have already been subtracted from sepLength //XXX kls 2004-06-06: what does this mean???
       ret+=d->itemLoop.getLength()+sepLength;
    }
    return ret;
 }
 
 char *ExtendedEventDescriptors::getTextItemized(const char *separation1, const char *separation2) {
-   char *text=new char[getMaximumTextItemizedLength(separation1, separation2)];
-   return getTextItemized(text, separation1, separation2);
+   int size = getMaximumTextItemizedLength(separation1, separation2);
+   char *text=new char[size];
+   return getTextItemized(text, size, separation1, separation2);
 }
 
-char *ExtendedEventDescriptors::getTextItemized(char *buffer, const char *separation1, const char *separation2) {
+char *ExtendedEventDescriptors::getTextItemized(char *buffer, int size, const char *separation1, const char *separation2) {
    int index=0, len;
-   char tempbuf[256];
+   int sepLen1 = strlen(separation1);
+   int sepLen2 = strlen(separation2);
    for (int i=0;i<length;i++) {
       ExtendedEventDescriptor *d=(ExtendedEventDescriptor *)array[i];
       if (!d)
@@ -202,23 +210,25 @@ char *ExtendedEventDescriptors::getTextItemized(char *buffer, const char *separa
       for (Loop::Iterator it; d->itemLoop.hasNext(it);   ) {
          item=d->itemLoop.getNext(it);
 
-         item.itemDescription.getText(tempbuf);
-         len=strlen(tempbuf);
-         if (len) {
-            memcpy(buffer+index, tempbuf, len);
-            index+=len;
+         item.itemDescription.getText(buffer+index, size);
+         len = strlen(buffer+index);
+         index += len;
+         size -= len;
+         if (size > sepLen1) {
+            strcpy(buffer+index, separation1);
+            index += sepLen1;
+            size -= sepLen1;
          }
-         strcpy(buffer+index, separation1);
-         index += strlen(separation1);
 
-         item.item.getText(tempbuf);
-         len=strlen(tempbuf);
-         if (len) {
-            memcpy(buffer+index, tempbuf, len);
-            index+=len;
+         item.item.getText(buffer+index, size);
+         len = strlen(buffer+index);
+         index += len;
+         size -= len;
+         if (size > sepLen2) {
+            strcpy(buffer+index, separation2);
+            index += sepLen2;
+            size -= sepLen2;
          }
-         strcpy(buffer+index, separation2);
-         index += strlen(separation2);
       }
    }
    buffer[index]='\0';
@@ -227,7 +237,7 @@ char *ExtendedEventDescriptors::getTextItemized(char *buffer, const char *separa
 
 //returns the itemized text pair by pair. Maximum length for buffers is 256.
 //Return value is false if and only if the end of the list is reached.
-bool ExtendedEventDescriptors::getTextItemized(Loop::Iterator &it, bool &valid, char *itemDescription, char *itemText) {
+bool ExtendedEventDescriptors::getTextItemized(Loop::Iterator &it, bool &valid, char *itemDescription, char *itemText, int sizeItemDescription, int sizeItemText) {
    //The iterator has to store two values: The descriptor index (4bit)
    //and the item loop index (max overall length 256, min item length 16 => max number 128 => 7bit)
    valid=false;
@@ -244,8 +254,8 @@ bool ExtendedEventDescriptors::getTextItemized(Loop::Iterator &it, bool &valid, 
       if (d->itemLoop.hasNext(it)) {
          item=d->itemLoop.getNext(it);
 
-         item.item.getText(itemDescription);
-         item.itemDescription.getText(itemText);
+         item.item.getText(itemDescription, sizeItemDescription);
+         item.itemDescription.getText(itemText, sizeItemText);
          valid=true;
          break;
       } else {

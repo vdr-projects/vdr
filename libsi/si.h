@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: si.h 1.9 2004/03/07 10:09:49 kls Exp $
+ *   $Id: si.h 1.10 2004/06/06 13:35:21 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -431,18 +431,18 @@ public:
    //so the maximum there is 256.
    //returns the given buffer for convenience.
    //The emphasis marks 0x86 and 0x87 are still available.
-   char *getText(char *buffer);
+   char *getText(char *buffer, int size);
    //The same semantics as for getText(char*) apply.
    //The short version of the text according to ETSI TR 101 211 (chapter 4.6)
    //will be written into the shortVersion buffer (which should, therefore, have the same
    //length as buffer). If no shortVersion is available, shortVersion will contain
    //an empty string.
    //The emphasis marks 0x86 and 0x87 are still available in buffer, but not in shortVersion.
-   char *getText(char *buffer, char *shortVersion);
+   char *getText(char *buffer, char *shortVersion, int sizeBuffer, int sizeShortVersion);
 protected:
    virtual void Parse() {}
-   void decodeText(char *buffer);
-   void decodeText(char *buffer, char *shortVersion);
+   void decodeText(char *buffer, int size);
+   void decodeText(char *buffer, char *shortVersion, int sizeBuffer, int sizeShortVersion);
 };
 
 } //end of namespace

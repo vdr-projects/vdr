@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 1.48 2004/05/28 15:33:22 kls Exp $
+ * $Id: osd.c 1.52 2004/06/05 16:52:51 kls Exp $
  */
 
 #include "osd.h"
@@ -244,7 +244,7 @@ bool cBitmap::LoadXpm(const char *FileName)
   return Result;
 }
 
-bool cBitmap::SetXpm(char *Xpm[])
+bool cBitmap::SetXpm(char *Xpm[], bool IgnoreNone)
 {
   char **p = Xpm;
   int w, h, n, c;
@@ -257,10 +257,11 @@ bool cBitmap::SetXpm(char *Xpm[])
      return false;
      }
   int b = 0;
-  while (1 << (1 << b) < n)
+  while (1 << (1 << b) < (IgnoreNone ? n - 1 : n))
         b++;
   SetBpp(1 << b);
   SetSize(w, h);
+  int NoneColorIndex = MAXNUMCOLORS;
   for (int i = 0; i < n; i++) {
       const char *s = *++p;
       if (int(strlen(s)) < c) {
@@ -273,14 +274,18 @@ bool cBitmap::SetXpm(char *Xpm[])
          return false;
          }
       s = skipspace(s + 1);
-      if (strcasecmp(s, "none") == 0)
+      if (strcasecmp(s, "none") == 0) {
          s = "#00000000";
+         NoneColorIndex = i;
+         if (IgnoreNone)
+            continue;
+         }
       if (*s != '#') {
          esyslog("ERROR: unknown color code in XPM: '%c'", *s);
          return false;
          }
       tColor color = strtoul(++s, NULL, 16) | 0xFF000000;
-      SetColor(i, color);
+      SetColor((IgnoreNone && i > NoneColorIndex) ? i - 1 : i, color);
       }
   for (int y = 0; y < h; y++) {
       const char *s = *++p;
@@ -295,13 +300,17 @@ bool cBitmap::SetXpm(char *Xpm[])
                  return false;
                  }
               if (strncmp(Xpm[i + 1], s, c) == 0) {
-                 SetIndex(x, y, i);
+                 if (i == NoneColorIndex)
+                    NoneColorIndex = MAXNUMCOLORS;
+                 SetIndex(x, y, (IgnoreNone && i > NoneColorIndex) ? i - 1 : i);
                  break;
                  }
               }
           s += c;
           }
       }
+  if (NoneColorIndex < MAXNUMCOLORS && !IgnoreNone)
+     return SetXpm(Xpm, true);
   return true;
 }
 
@@ -324,7 +333,8 @@ void cBitmap::DrawPixel(int x, int y, tColor Color)
 {
   x -= x0;
   y -= y0;
-  SetIndex(x, y, Index(Color));
+  if (0 <= x && x < width && 0 <= y && y < height)
+     SetIndex(x, y, Index(Color));
 }
 
 void cBitmap::DrawBitmap(int x, int y, const cBitmap &Bitmap, tColor ColorFg, tColor ColorBg)
@@ -354,7 +364,8 @@ void cBitmap::DrawText(int x, int y, const char *s, tColor ColorFg, tColor Color
         int ch = Height ? Height : h;
         if (!Intersects(x, y, x + cw - 1, y + ch - 1))
            return;
-        DrawRectangle(x, y, x + cw - 1, y + ch - 1, ColorBg);
+        if (ColorBg != clrTransparent)
+           DrawRectangle(x, y, x + cw - 1, y + ch - 1, ColorBg);
         limit = x + cw - x0;
         if (Width) {
            if ((Alignment & taLeft) != 0)
@@ -386,7 +397,7 @@ void cBitmap::DrawText(int x, int y, const char *s, tColor ColorFg, tColor Color
      x -= x0;
      y -= y0;
      tIndex fg = Index(ColorFg);
-     tIndex bg = Index(ColorBg);
+     tIndex bg = (ColorBg != clrTransparent) ? Index(ColorBg) : 0;
      while (s && *s) {
            const cFont::tCharData *CharData = Font->CharData(*s++);
            if (limit && int(x + CharData->width) > limit)
@@ -395,7 +406,8 @@ void cBitmap::DrawText(int x, int y, const char *s, tColor ColorFg, tColor Color
               for (int row = 0; row < h; row++) {
                   cFont::tPixelData PixelData = CharData->lines[row];
                   for (int col = CharData->width; col-- > 0; ) {
-                      SetIndex(x + col, y + row, (PixelData & 1) ? fg : bg);
+                      if (ColorBg != clrTransparent || (PixelData & 1))
+                         SetIndex(x + col, y + row, (PixelData & 1) ? fg : bg);
                       PixelData >>= 1;
                       }
                   }
