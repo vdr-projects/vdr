@@ -2804,3 +2804,9 @@ Video Disk Recorder Revision History
   actual source (sat, cable etc.) into account. Please go into "Setup/EPG" and
   set the "Set system time" and "Use time from transponder" parameters accordingly
   (this is necessary even if you have already set them before!).
+
+2004-05-22: Version 1.3.8
+
+- Fixed a crash when switching the skin and having selected a non-default theme
+  that is not available for the newly selected skin (thanks to Sascha Volkenandt
+  for reporting this one).

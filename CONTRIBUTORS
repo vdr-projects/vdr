@@ -695,6 +695,8 @@ Sascha Volkenandt <sascha@akv-soft.de>
  return from their Receive() function if the buffer runs full
  for reporting a crash in case there is no DVB hardware present
  for his support in debugging the the "Unknown picture type error"
+ for reporting a crash when switching the skin and having selected a non-default
+ theme that is not available for the newly selected skin
 
 Malcolm Caldwell <malcolm.caldwell@ntu.edu.au>
  for modifying LOF handling to allow for C-band reception
