@@ -2947,3 +2947,5 @@ Video Disk Recorder Revision History
   Alfred Zastrow for reporting this one).
 - Fixed checking the last area for misalignment in cOsd::CanHandleAreas() (thanks
   to Reinhard Nissl for reporting this one).
+- No longer adding section filters to the list of filters if they can't be opened
+  (thanks to Marco Schlüßler for pointing this out).
