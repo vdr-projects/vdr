@@ -425,3 +425,5 @@ Video Disk Recorder Revision History
   was set.
 - Removed some redundant code from the cListBase destructor.
 - Fixed internationalization of some Main menu texts.
+- Updated 'channels.conf' after the recent changes of Premiere World (thanks
+  to Axel Gruber).
