@@ -989,3 +989,5 @@ Video Disk Recorder Revision History
   the '-').
 - If Setup.ShowInfoOnChSwitch is set to "no", the box for the EPG display is no
   longer shown (thanks to Andy Grobb).
+- If compiled with VFAT=1, characters that can't be handled by a VFAT system are
+  now encoded to '#XX'.
