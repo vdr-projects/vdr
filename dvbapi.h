@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.h 1.71 2002/05/19 10:13:34 kls Exp $
+ * $Id: dvbapi.h 1.72 2002/05/20 10:58:20 kls Exp $
  */
 
 #ifndef __DVBAPI_H
@@ -278,23 +278,6 @@ public:
        // Sets the volume to the given value, either absolutely or relative to
        // the current volume.
   static int CurrentVolume(void) { return PrimaryDvbApi ? PrimaryDvbApi->volume : 0; }
-  };
-
-class cEITScanner {
-private:
-  enum { ActivityTimeout = 60,
-         ScanTimeout = 20
-       };
-  time_t lastScan, lastActivity;
-  int currentChannel, lastChannel;
-  int numTransponders, *transponders;
-  bool TransponderScanned(cChannel *Channel);
-public:
-  cEITScanner(void);
-  ~cEITScanner();
-  bool Active(void) { return currentChannel; }
-  void Activity(void);
-  void Process(void);
   };
 
 #endif //__DVBAPI_H

@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.112 2002/05/18 14:03:22 kls Exp $
+ * $Id: vdr.c 1.113 2002/05/20 11:02:10 kls Exp $
  */
 
 #include <getopt.h>
@@ -32,7 +32,7 @@
 #include <unistd.h>
 #include "config.h"
 #include "dvbapi.h"
-#include "eit.h"
+#include "eitscan.h"
 #include "i18n.h"
 #include "interface.h"
 #include "menu.h"

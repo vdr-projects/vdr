@@ -1294,7 +1294,7 @@ Video Disk Recorder Revision History
 - Fixed the cutting mechanism to make it re-sync in case a frame is larger than the
   buffer (thanks to Sven Grothklags).
 
-2002-05-19: Version 1.1.3
+2002-05-20: Version 1.1.3
 
 - Improved the VDR Makefile to avoid a warning if the '.dependencies' file does
   not exist, and also using $(MAKE) to call recursive makes.
@@ -1314,3 +1314,4 @@ Video Disk Recorder Revision History
 - Completely moved OSD handling out of the cDvbApi class, into the new cOsd.
 - Implemented cStatusMonitor to allow plugins to set up a status monitor.
   See PLUGINS.html for details.
+- Moved the cEITScanner out of dvbapi.h/.c, into the new eitscan.h/.c.
