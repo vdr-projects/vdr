@@ -121,3 +121,4 @@ Video Disk Recorder Revision History
 - Checking if the video card is really a DVB card.
 - New SVDRP command UPDT to update an existing timer (or add a new one if it
   doesn't yet exist).
+- New version of the 'epg2timers' tool (with a modified channel list).
