@@ -1468,3 +1468,6 @@ Video Disk Recorder Revision History
   (thanks to Stefan Huelswitt for his help).
 - A previous 'Transfer Mode' is now automatically re-started after a replay
   stops.
+- Only calling cStatus::MsgChannelSwitch() if a channel is actually going to
+  be switched or has actually been switched successfully (thanks to Stefan
+  Huelswitt).

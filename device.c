@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.20 2002/09/15 11:05:41 kls Exp $
+ * $Id: device.c 1.21 2002/09/15 11:50:19 kls Exp $
  */
 
 #include "device.h"
@@ -326,8 +326,6 @@ bool cDevice::SwitchChannel(int Direction)
 
 eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
 {
-  cStatus::MsgChannelSwitch(this, 0);
-
   if (LiveView)
      StopReplay();
 
@@ -344,6 +342,7 @@ eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
   if (NeedsTransferMode) {
      cDevice *CaDevice = GetDevice(Channel, 0);
      if (CaDevice) {
+        cStatus::MsgChannelSwitch(this, 0); // only report status if we are actually going to switch the channel
         if (CaDevice->SetChannel(Channel, false) == scrOk) // calling SetChannel() directly, not SwitchChannel()!
            cControl::Launch(new cTransferControl(CaDevice, Channel->vpid, Channel->apid1, 0, 0, 0));//XXX+
         else
@@ -352,15 +351,19 @@ eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
      else
         Result = scrNotAvailable;
      }
-  else if (!SetChannelDevice(Channel, LiveView))
-     Result = scrFailed;
-
-  if (Result == scrOk && LiveView && IsPrimaryDevice()) {
-     cSIProcessor::SetCurrentServiceID(Channel->pnr);
-     currentChannel = Channel->number;
+  else {
+     cStatus::MsgChannelSwitch(this, 0); // only report status if we are actually going to switch the channel
+     if (!SetChannelDevice(Channel, LiveView))
+        Result = scrFailed;
      }
 
-  cStatus::MsgChannelSwitch(this, Channel->number);
+  if (Result == scrOk) {
+     if (LiveView && IsPrimaryDevice()) {
+        cSIProcessor::SetCurrentServiceID(Channel->pnr);
+        currentChannel = Channel->number;
+        }
+     cStatus::MsgChannelSwitch(this, Channel->number); // only report status if channel switch successfull
+     }
 
   return Result;
 }
