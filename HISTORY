@@ -554,3 +554,4 @@ Video Disk Recorder Revision History
 - Fixed a hanging SVDRP connection if the client dies without issuing QUIT.
 - Increased the frame buffer size to 192KB.
 - Removed a superfluous VIDEO_FREEZE call in the replay buffer.
+- Added French language texts (thanks to Jean-Claude Repetto).
