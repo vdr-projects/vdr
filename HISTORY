@@ -2358,3 +2358,5 @@ Video Disk Recorder Revision History
 - Updated VIVA, VIVA Plus, MTV Central and MTV 2 in channels.conf (thanks to
   Sebastian Frei).
 - Changed "Studio Universal" to "Sci-Fi" in channels.conf.
+- Fixed a crash when using the --terminal option without having access to the
+  given terminal (thanks to Steffen Barszus for helping to debug this one).
