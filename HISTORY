@@ -2243,3 +2243,5 @@ Video Disk Recorder Revision History
   been modified, which could result in errors upon the next start of VDR).
 - Fixed a crash when cancelling a newly created timer (thanks to Thomas Schmidt
   for reporting this one).
+- Completed Hungarian language texts (thanks to Istvan Koenigsberger and Guido
+  Josten).
