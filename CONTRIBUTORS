@@ -925,6 +925,8 @@ Reinhard Nissl <rnissl@gmx.de>
  for extending some buffer sizes to allow handling HDTV streams
  for adding substream handling to cDolbyRepacker
  for modifying cDolbyRepacker to make sure PES packets don't exceed the requested length
+ for fixing a possible freeze in pause mode in case a device's PlayPesPacket()
+ function permanently returns 0
 
 Richard Robson <richard_robson@beeb.net>
  for reporting freezing replay if a timer starts while in Transfer Mode from the
@@ -1215,6 +1217,8 @@ Dino Ravnic <dino.ravnic@fer.hr>
 
 Olaf Titz <olaf@bigred.inka.de>
  for fixing some typos in the Makefile's 'font' target
+ for reporting a problem and some advice in fixing a possible freeze in pause mode
+ in case a device's PlayPesPacket() function permanently returns 0
 
 Darren Salt <linux@youmustbejoking.demon.co.uk>
  for pointing out that the '-' and 'ö' characters need to be escaped in the man

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.87 2005/02/06 14:10:37 kls Exp $
+ * $Id: device.c 1.88 2005/02/08 11:37:09 kls Exp $
  */
 
 #include "device.h"
@@ -984,7 +984,7 @@ int cDevice::PlayPes(const uchar *Data, int Length, bool VideoOnly)
            int w = PlayPesPacket(Data + i, l, VideoOnly);
            if (w > 0)
               i += l;
-           else if (w < 0)
+           else
               return i == 0 ? w : i;
            }
         else
