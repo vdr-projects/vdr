@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.192 2002/05/13 16:30:50 kls Exp $
+ * $Id: menu.c 1.193 2002/05/18 12:35:21 kls Exp $
  */
 
 #include "menu.h"
@@ -2113,7 +2113,7 @@ eOSState cMenuMain::ProcessKey(eKeys Key)
 #define INFOTIMEOUT          5000 //ms
 
 cDisplayChannel::cDisplayChannel(int Number, bool Switched)
-:cOsdBase(true)
+:cOsdObject(true)
 {
   group = -1;
   withInfo = !Switched || Setup.ShowInfoOnChSwitch;
@@ -2130,7 +2130,7 @@ cDisplayChannel::cDisplayChannel(int Number, bool Switched)
 }
 
 cDisplayChannel::cDisplayChannel(eKeys FirstKey)
-:cOsdBase(true)
+:cOsdObject(true)
 {
   group = -1;
   oldNumber = cDvbApi::CurrentChannel();
@@ -2322,7 +2322,7 @@ cVolumeBar::cVolumeBar(int Width, int Height, int Current, int Total, const char
 cDisplayVolume *cDisplayVolume::displayVolume = NULL;
 
 cDisplayVolume::cDisplayVolume(void)
-:cOsdBase(true)
+:cOsdObject(true)
 {
   displayVolume = this;
   timeout = time_ms() + (cDvbApi::PrimaryDvbApi->IsMute() ? MUTETIMEOUT : VOLUMETIMEOUT);

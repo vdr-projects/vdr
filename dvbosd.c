@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbosd.c 1.15 2002/05/13 16:29:20 kls Exp $
+ * $Id: dvbosd.c 1.16 2002/05/18 12:39:39 kls Exp $
  */
 
 #include "dvbosd.h"
@@ -14,7 +14,7 @@
 #include "tools.h"
 
 cDvbOsd::cDvbOsd(int VideoDev, int x, int y)
-:cOsd(x, y)
+:cOsdBase(x, y)
 {
   videoDev = VideoDev;
   if (videoDev < 0)

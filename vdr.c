@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.110 2002/05/18 10:33:54 kls Exp $
+ * $Id: vdr.c 1.111 2002/05/18 12:35:34 kls Exp $
  */
 
 #include <getopt.h>
@@ -363,7 +363,7 @@ int main(int argc, char *argv[])
 
   // Main program loop:
 
-  cOsdBase *Menu = NULL;
+  cOsdObject *Menu = NULL;
   cReplayControl *ReplayControl = NULL;
   int LastChannel = -1;
   int PreviousChannel = cDvbApi::CurrentChannel();
@@ -409,7 +409,7 @@ int main(int argc, char *argv[])
               }
            }
         // User Input:
-        cOsdBase **Interact = Menu ? &Menu : (cOsdBase **)&ReplayControl;
+        cOsdObject **Interact = Menu ? &Menu : (cOsdObject **)&ReplayControl;
         eKeys key = Interface->GetKey(!*Interact || !(*Interact)->NeedsFastResponse());
         if (NORMALKEY(key) != kNone) {
            EITScanner.Activity();

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osdbase.h 1.1 2002/05/10 14:26:09 kls Exp $
+ * $Id: osdbase.h 1.2 2002/05/18 12:38:17 kls Exp $
  */
 
 #ifndef __OSDBASE_H
@@ -119,7 +119,7 @@ typedef int tWindowHandle;
 #define ALL_TILED_WINDOWS   (-3)
 #define LAST_CREATED_WINDOW (-4)
 
-class cOsd {
+class cOsdBase {
 private:
   int numWindows;
   int x0, y0;
@@ -149,9 +149,9 @@ protected:
   virtual void CloseWindow(cWindow *Window) = 0;
        // Close the window and release any OSD hardware resources allocated for it.
 public:
-  cOsd(int x, int y);
+  cOsdBase(int x, int y);
        // Initializes the OSD, starting at screen coordinates (x, y).
-  virtual ~cOsd();
+  virtual ~cOsdBase();
        // Destroys all windows and shuts down the OSD.
   tWindowHandle Create(int x, int y, int w, int h, int Bpp, bool ClearWithBackground = true, bool Tiled = true);
        // Creates a window at coordinates (x, y), which are relative to the OSD's

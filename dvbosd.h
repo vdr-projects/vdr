@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbosd.h 1.11 2002/05/10 14:22:07 kls Exp $
+ * $Id: dvbosd.h 1.12 2002/05/18 12:39:31 kls Exp $
  */
 
 #ifndef __DVBOSD_H
@@ -13,7 +13,7 @@
 #include <ost/osd.h>
 #include "osdbase.h"
 
-class cDvbOsd : public cOsd {
+class cDvbOsd : public cOsdBase {
 private:
   int videoDev;
   bool SetWindow(cWindow *Window);

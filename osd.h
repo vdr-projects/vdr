@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.h 1.29 2002/05/12 11:19:22 kls Exp $
+ * $Id: osd.h 1.30 2002/05/18 12:36:30 kls Exp $
  */
 
 #ifndef __OSD_H
@@ -69,19 +69,19 @@ public:
   virtual eOSState ProcessKey(eKeys Key);
 };
 
-class cOsdBase {
+class cOsdObject {
 protected:
   bool needsFastResponse;
 public:
-  cOsdBase(bool FastResponse = false) { needsFastResponse = FastResponse; }
-  virtual ~cOsdBase() {}
+  cOsdObject(bool FastResponse = false) { needsFastResponse = FastResponse; }
+  virtual ~cOsdObject() {}
   int Width(void) { return Interface->Width(); }
   int Height(void) { return Interface->Height(); }
   bool NeedsFastResponse(void) { return needsFastResponse; }
   virtual eOSState ProcessKey(eKeys Key) = 0;
 };
 
-class cOsdMenu : public cOsdBase, public cList<cOsdItem> {
+class cOsdMenu : public cOsdObject, public cList<cOsdItem> {
 private:
   char *title;
   int cols[cInterface::MaxCols];
