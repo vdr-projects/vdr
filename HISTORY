@@ -362,3 +362,5 @@ Video Disk Recorder Revision History
 - The new compile time option REMOTE=NONE can be used to compile VDR without
   any remote control support (for applications where it shall be controlled
   exclusively via SVDRP).
+- The new command line option -D can be used to define which DVB interfaces
+  a certain instance of VDR shall use.

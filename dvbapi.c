@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.54 2001/02/02 13:10:39 kls Exp $
+ * $Id: dvbapi.c 1.55 2001/02/02 15:35:44 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -1570,6 +1570,7 @@ bool cVideoCutter::Active(void)
 // --- cDvbApi ---------------------------------------------------------------
 
 int cDvbApi::NumDvbApis = 0;
+int cDvbApi::useDvbApi = 0;
 cDvbApi *cDvbApi::dvbApi[MAXDVBAPI] = { NULL };
 cDvbApi *cDvbApi::PrimaryDvbApi = NULL;
 
@@ -1639,6 +1640,12 @@ cDvbApi::~cDvbApi()
 #endif
 }
 
+void cDvbApi::SetUseDvbApi(int n)
+{
+  if (n < MAXDVBAPI)
+     useDvbApi |= (1 << n);
+}
+
 bool cDvbApi::SetPrimaryDvbApi(int n)
 {
   n--;
@@ -1685,32 +1692,33 @@ bool cDvbApi::Init(void)
 {
   NumDvbApis = 0;
   for (int i = 0; i < MAXDVBAPI; i++) {
-      char fileName[strlen(VIDEODEVICE) + 10];
-      sprintf(fileName, "%s%d", VIDEODEVICE, i);
-      if (access(fileName, F_OK | R_OK | W_OK) == 0) {
-         dsyslog(LOG_INFO, "probing %s", fileName);
-         int f = open(fileName, O_RDWR);
-         if (f >= 0) {
-            struct video_capability cap;
-            int r = ioctl(f, VIDIOCGCAP, &cap);
-            close(f);
-            if (r == 0 && (cap.type & VID_TYPE_DVB)) {
-               char vbiFileName[strlen(VBIDEVICE) + 10];
-               sprintf(vbiFileName, "%s%d", VBIDEVICE, i);
-               dvbApi[i] = new cDvbApi(fileName, vbiFileName);
-               NumDvbApis++;
+      if (useDvbApi == 0 || (useDvbApi & (1 << i)) != 0) {
+         char fileName[strlen(VIDEODEVICE) + 10];
+         sprintf(fileName, "%s%d", VIDEODEVICE, i);
+         if (access(fileName, F_OK | R_OK | W_OK) == 0) {
+            dsyslog(LOG_INFO, "probing %s", fileName);
+            int f = open(fileName, O_RDWR);
+            if (f >= 0) {
+               struct video_capability cap;
+               int r = ioctl(f, VIDIOCGCAP, &cap);
+               close(f);
+               if (r == 0 && (cap.type & VID_TYPE_DVB)) {
+                  char vbiFileName[strlen(VBIDEVICE) + 10];
+                  sprintf(vbiFileName, "%s%d", VBIDEVICE, i);
+                  dvbApi[NumDvbApis++] = new cDvbApi(fileName, vbiFileName);
+                  }
+               }
+            else {
+               if (errno != ENODEV)
+                  LOG_ERROR_STR(fileName);
+               break;
                }
             }
          else {
-            if (errno != ENODEV)
+            if (errno != ENOENT)
                LOG_ERROR_STR(fileName);
             break;
             }
-         }
-      else {
-         if (errno != ENOENT)
-            LOG_ERROR_STR(fileName);
-         break;
          }
       }
   PrimaryDvbApi = dvbApi[0];

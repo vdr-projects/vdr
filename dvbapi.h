@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.h 1.30 2001/01/07 15:56:10 kls Exp $
+ * $Id: dvbapi.h 1.31 2001/02/02 15:21:30 kls Exp $
  */
 
 #ifndef __DVBAPI_H
@@ -73,8 +73,13 @@ public:
   static int NumDvbApis;
 private:
   static cDvbApi *dvbApi[MAXDVBAPI];
+  static int useDvbApi;
 public:
   static cDvbApi *PrimaryDvbApi;
+  static void SetUseDvbApi(int n);
+         // Sets the 'useDvbApi' flag of the given DVB device.
+         // If this function is not called before Init(), all DVB devices
+         // will be used.
   static bool SetPrimaryDvbApi(int n);
          // Sets the primary DVB device to 'n' (which must be in the range
          // 1...NumDvbApis) and returns true if this was possible.

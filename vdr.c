@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.49 2001/01/14 15:29:51 kls Exp $
+ * $Id: vdr.c 1.50 2001/02/02 15:48:11 kls Exp $
  */
 
 #include <getopt.h>
@@ -66,6 +66,7 @@ int main(int argc, char *argv[])
   static struct option long_options[] = {
       { "config", required_argument, NULL, 'c' },
       { "daemon", no_argument,       NULL, 'd' },
+      { "device", required_argument, NULL, 'D' },
       { "help",   no_argument,       NULL, 'h' },
       { "log",    required_argument, NULL, 'l' },
       { "port",   required_argument, NULL, 'p' },
@@ -75,16 +76,29 @@ int main(int argc, char *argv[])
   
   int c;
   int option_index = 0;
-  while ((c = getopt_long(argc, argv, "c:dhl:p:v:", long_options, &option_index)) != -1) {
+  while ((c = getopt_long(argc, argv, "c:dD:hl:p:v:", long_options, &option_index)) != -1) {
         switch (c) {
           case 'c': ConfigDirectory = optarg;
                     break;
           case 'd': DaemonMode = true; break;
+          case 'D': if (isnumber(optarg)) {
+                       int n = atoi(optarg);
+                       if (0 <= n && n < MAXDVBAPI) {
+                          cDvbApi::SetUseDvbApi(n);
+                          break;
+                          }
+                       }
+                    fprintf(stderr, "vdr: invalid DVB device number: %s\n", optarg);
+                    abort();
+                    break;
           case 'h': printf("Usage: vdr [OPTION]\n\n"           // for easier orientation, this is column 80|
                            "  -c DIR,   --config=DIR  read config files from DIR (default is to read them\n"
                            "                          from the video directory)\n"
                            "  -h,       --help        display this help and exit\n"
                            "  -d,       --daemon      run in daemon mode\n"
+                           "  -D NUM,   --device=NUM  use only the given DVB device (NUM = 0, 1, 2...)\n"
+                           "                          there may be several -D options (default: all DVB\n"
+                           "                          devices will be used)\n"
                            "  -l LEVEL, --log=LEVEL   set log level (default: 3)\n"
                            "                          0 = no logging, 1 = errors only,\n"
                            "                          2 = errors and info, 3 = errors, info and debug\n"
