@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.87 2002/05/09 13:40:51 kls Exp $
+ * $Id: i18n.c 1.88 2002/05/11 11:43:38 kls Exp $
  *
  * Translations provided by:
  *
@@ -1269,6 +1269,19 @@ const tI18nPhrase Phrases[] = {
     "Plugins",
     "Plugins",
     "Plugins",
+  },
+  { "Plugin",
+    "Plugin",
+    "Plugin",
+    "Plugin",
+    "Plugin",
+    "Plugin",
+    "Plugin",
+    "Plugin",
+    "Plugin",
+    "Plugin",
+    "Plugin",
+    "Plugin",
   },
   { "Restart",
     "Neustart",

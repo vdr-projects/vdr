@@ -4,12 +4,13 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.c 1.1 2002/05/09 10:10:12 kls Exp $
+ * $Id: menuitems.c 1.2 2002/05/11 10:49:45 kls Exp $
  */
 
 #include "menuitems.h"
 #include <ctype.h>
 #include "i18n.h"
+#include "plugin.h"
 
 // --- cMenuEditItem ---------------------------------------------------------
 
@@ -437,15 +438,13 @@ eOSState cMenuTextItem::ProcessKey(eKeys Key)
 cMenuSetupPage::cMenuSetupPage(void)
 :cOsdMenu("", 33)
 {
-  data = Setup;
-  osdLanguage = Setup.OSDLanguage;
+  plugin = NULL;
 }
 
-void cMenuSetupPage::SetupTitle(const char *s)
+void cMenuSetupPage::SetSection(const char *Section)
 {
-  char buf[40]; // can't call tr() for more than one string at a time!
-  char *q = buf + snprintf(buf, sizeof(buf), "%s - ", tr("Setup"));
-  snprintf(q, sizeof(buf) - strlen(buf), "%s", tr(s));
+  char buf[40];
+  snprintf(buf, sizeof(buf), "%s - %s", tr("Setup"), Section);
   SetTitle(buf);
 }
 
@@ -455,22 +454,31 @@ eOSState cMenuSetupPage::ProcessKey(eKeys Key)
 
   if (state == osUnknown) {
      switch (Key) {
-       case kOk: state = (Setup.PrimaryDVB != data.PrimaryDVB) ? osSwitchDvb : osBack;
-                 cDvbApi::PrimaryDvbApi->SetVideoFormat(data.VideoFormat ? VIDEO_FORMAT_16_9 : VIDEO_FORMAT_4_3);
-                 Setup = data;
-                 Setup.Save();
-                 cDvbApi::SetCaCaps();
+       case kOk: Store();
+                 state = osBack;
                  break;
        default: break;
        }
      }
-  if (data.OSDLanguage != osdLanguage) {
-     int OriginalOSDLanguage = Setup.OSDLanguage;
-     Setup.OSDLanguage = data.OSDLanguage;
-     Set();
-     Display();
-     osdLanguage = data.OSDLanguage;
-     Setup.OSDLanguage = OriginalOSDLanguage;
-     }
   return state;
+}
+
+void cMenuSetupPage::SetPlugin(cPlugin *Plugin)
+{
+  plugin = Plugin;
+  char buf[40];
+  snprintf(buf, sizeof(buf), "%s '%s'", tr("Plugin"), plugin->Name());
+  SetSection(buf);
+}
+
+void cMenuSetupPage::SetupStore(const char *Name, const char *Value = NULL)
+{
+  if (plugin)
+     plugin->SetupStore(Name, Value);
+}
+
+void cMenuSetupPage::SetupStore(const char *Name, int Value)
+{
+  if (plugin)
+     plugin->SetupStore(Name, Value);
 }

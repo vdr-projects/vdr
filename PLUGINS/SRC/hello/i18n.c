@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: i18n.c 1.1 2002/05/09 15:13:31 kls Exp $
+ * $Id: i18n.c 1.2 2002/05/11 12:27:00 kls Exp $
  */
 
 #include "i18n.h"
@@ -35,8 +35,47 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
   },
+  { "Howdy folks!",
+    "Tach zusammen!",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+  },
   { "A friendly greeting",
     "Ein freundlicher Gruﬂ",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+  },
+  { "Greeting time (s)",
+    "Dauer des Gruﬂes (s)",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+  },
+  { "Use alternate greeting",
+    "Alternativen Gruﬂ verwenden",
     "",// TODO
     "",// TODO
     "",// TODO

@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.104 2002/05/05 10:34:31 kls Exp $
+ * $Id: vdr.c 1.105 2002/05/11 11:46:40 kls Exp $
  */
 
 #include <getopt.h>
@@ -578,14 +578,14 @@ int main(int argc, char *argv[])
         }
   if (Interrupted)
      isyslog(LOG_INFO, "caught signal %d", Interrupted);
-  Setup.CurrentChannel = cDvbApi::CurrentChannel();
-  Setup.CurrentVolume  = cDvbApi::CurrentVolume();
-  Setup.Save();
-  PluginManager.Shutdown(true);
   cVideoCutter::Stop();
   delete Menu;
   delete ReplayControl;
   delete Interface;
+  PluginManager.Shutdown(true);
+  Setup.CurrentChannel = cDvbApi::CurrentChannel();
+  Setup.CurrentVolume  = cDvbApi::CurrentVolume();
+  Setup.Save();
   cDvbApi::Cleanup();
   if (WatchdogTimeout > 0)
      dsyslog(LOG_INFO, "max. latency time %d seconds", MaxLatencyTime);

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.190 2002/05/09 10:13:47 kls Exp $
+ * $Id: menu.c 1.191 2002/05/11 11:16:32 kls Exp $
  */
 
 #include "menu.h"
@@ -1525,19 +1525,41 @@ eOSState cMenuRecordings::ProcessKey(eKeys Key)
   return state;
 }
 
+// --- cMenuSetupBase --------------------------------------------------------
+
+class cMenuSetupBase : public cMenuSetupPage {
+protected:
+  cSetup data;
+  virtual void Store(void);
+public:
+  cMenuSetupBase(void);
+  };
+
+cMenuSetupBase::cMenuSetupBase(void)
+{
+  data = Setup;
+}
+
+void cMenuSetupBase::Store(void)
+{
+  Setup = data;
+  Setup.Save();
+}
+
 // --- cMenuSetupOSD ---------------------------------------------------------
 
-class cMenuSetupOSD : public cMenuSetupPage {
+class cMenuSetupOSD : public cMenuSetupBase {
 private:
   virtual void Set(void);
 public:
   cMenuSetupOSD(void) { Set(); }
+  virtual eOSState ProcessKey(eKeys Key);
   };
 
 void cMenuSetupOSD::Set(void)
 {
   Clear();
-  SetupTitle("OSD");
+  SetSection(tr("OSD"));
   Add(new cMenuEditStraItem(tr("Setup.OSD$Language"),               &data.OSDLanguage, I18nNumLanguages, I18nLanguages()));
   Add(new cMenuEditIntItem( tr("Setup.OSD$Width"),                  &data.OSDwidth, MINOSDWIDTH, MAXOSDWIDTH));
   Add(new cMenuEditIntItem( tr("Setup.OSD$Height"),                 &data.OSDheight, MINOSDHEIGHT, MAXOSDHEIGHT));
@@ -1549,19 +1571,31 @@ void cMenuSetupOSD::Set(void)
   Add(new cMenuEditBoolItem(tr("Setup.OSD$Recording directories"),  &data.RecordingDirs));
 }
 
+eOSState cMenuSetupOSD::ProcessKey(eKeys Key)
+{
+  int osdLanguage = data.OSDLanguage;
+  eOSState state = cMenuSetupBase::ProcessKey(Key);
+
+  if (data.OSDLanguage != osdLanguage) {
+     int OriginalOSDLanguage = Setup.OSDLanguage;
+     Setup.OSDLanguage = data.OSDLanguage;
+     Set();
+     Display();
+     Setup.OSDLanguage = OriginalOSDLanguage;
+     }
+  return state;
+}
+
 // --- cMenuSetupEPG ---------------------------------------------------------
 
-class cMenuSetupEPG : public cMenuSetupPage {
-private:
-  virtual void Set(void);
+class cMenuSetupEPG : public cMenuSetupBase {
 public:
-  cMenuSetupEPG(void) { Set(); }
+  cMenuSetupEPG(void);
   };
 
-void cMenuSetupEPG::Set(void)
+cMenuSetupEPG::cMenuSetupEPG(void)
 {
-  Clear();
-  SetupTitle("EPG");
+  SetSection(tr("EPG"));
   Add(new cMenuEditIntItem( tr("Setup.EPG$EPG scan timeout (h)"),      &data.EPGScanTimeout));
   Add(new cMenuEditIntItem( tr("Setup.EPG$EPG bugfix level"),          &data.EPGBugfixLevel, 0, MAXEPGBUGFIXLEVEL));
   Add(new cMenuEditBoolItem(tr("Setup.EPG$Set system time"),           &data.SetSystemTime));
@@ -1570,34 +1604,43 @@ void cMenuSetupEPG::Set(void)
 
 // --- cMenuSetupDVB ---------------------------------------------------------
 
-class cMenuSetupDVB : public cMenuSetupPage {
-private:
-  virtual void Set(void);
+class cMenuSetupDVB : public cMenuSetupBase {
 public:
-  cMenuSetupDVB(void) { Set(); }
+  cMenuSetupDVB(void);
+  virtual eOSState ProcessKey(eKeys Key);
   };
 
-void cMenuSetupDVB::Set(void)
+cMenuSetupDVB::cMenuSetupDVB(void)
 {
-  Clear();
-  SetupTitle("DVB");
+  SetSection(tr("DVB"));
   Add(new cMenuEditIntItem( tr("Setup.DVB$Primary DVB interface"), &data.PrimaryDVB, 1, cDvbApi::NumDvbApis));
   Add(new cMenuEditBoolItem(tr("Setup.DVB$Video format"),          &data.VideoFormat, "4:3", "16:9"));
 }
 
+eOSState cMenuSetupDVB::ProcessKey(eKeys Key)
+{
+  int oldPrimaryDVB = Setup.PrimaryDVB;
+  eOSState state = cMenuSetupBase::ProcessKey(Key);
+
+  if (state == osBack && Key == kOk) {
+     if (Setup.PrimaryDVB != oldPrimaryDVB) {
+        state = osSwitchDvb;
+        cDvbApi::PrimaryDvbApi->SetVideoFormat(Setup.VideoFormat ? VIDEO_FORMAT_16_9 : VIDEO_FORMAT_4_3);
+        }
+     }
+  return state;
+}
+
 // --- cMenuSetupLNB ---------------------------------------------------------
 
-class cMenuSetupLNB : public cMenuSetupPage {
-private:
-  virtual void Set(void);
+class cMenuSetupLNB : public cMenuSetupBase {
 public:
-  cMenuSetupLNB(void) { Set(); }
+  cMenuSetupLNB(void);
   };
 
-void cMenuSetupLNB::Set(void)
+cMenuSetupLNB::cMenuSetupLNB(void)
 {
-  Clear();
-  SetupTitle("LNB");
+  SetSection(tr("LNB"));
   Add(new cMenuEditIntItem( tr("Setup.LNB$SLOF (MHz)"),               &data.LnbSLOF));
   Add(new cMenuEditIntItem( tr("Setup.LNB$Low LNB frequency (MHz)"),  &data.LnbFrequLo));
   Add(new cMenuEditIntItem( tr("Setup.LNB$High LNB frequency (MHz)"), &data.LnbFrequHi));
@@ -1606,17 +1649,15 @@ void cMenuSetupLNB::Set(void)
 
 // --- cMenuSetupCICAM -------------------------------------------------------
 
-class cMenuSetupCICAM : public cMenuSetupPage {
-private:
-  virtual void Set(void);
+class cMenuSetupCICAM : public cMenuSetupBase {
 public:
-  cMenuSetupCICAM(void) { Set(); }
+  cMenuSetupCICAM(void);
+  virtual eOSState ProcessKey(eKeys Key);
   };
 
-void cMenuSetupCICAM::Set(void)
+cMenuSetupCICAM::cMenuSetupCICAM(void)
 {
-  Clear();
-  SetupTitle("CICAM");
+  SetSection(tr("CICAM"));
   for (int d = 0; d < cDvbApi::NumDvbApis; d++) {
       for (int i = 0; i < 2; i++) {
           char buffer[32];
@@ -1626,19 +1667,25 @@ void cMenuSetupCICAM::Set(void)
       }
 }
 
+eOSState cMenuSetupCICAM::ProcessKey(eKeys Key)
+{
+  eOSState state = cMenuSetupBase::ProcessKey(Key);
+
+  if (state == osBack && Key == kOk)
+     cDvbApi::SetCaCaps();
+  return state;
+}
+
 // --- cMenuSetupRecord ------------------------------------------------------
 
-class cMenuSetupRecord : public cMenuSetupPage {
-private:
-  virtual void Set(void);
+class cMenuSetupRecord : public cMenuSetupBase {
 public:
-  cMenuSetupRecord(void) { Set(); }
+  cMenuSetupRecord(void);
   };
 
-void cMenuSetupRecord::Set(void)
+cMenuSetupRecord::cMenuSetupRecord(void)
 {
-  Clear();
-  SetupTitle("Recording");
+  SetSection(tr("Recording"));
   Add(new cMenuEditIntItem( tr("Setup.Recording$Margin at start (min)"),     &data.MarginStart));
   Add(new cMenuEditIntItem( tr("Setup.Recording$Margin at stop (min)"),      &data.MarginStop));
   Add(new cMenuEditIntItem( tr("Setup.Recording$Primary limit"),             &data.PrimaryLimit, 0, MAXPRIORITY));
@@ -1655,34 +1702,28 @@ void cMenuSetupRecord::Set(void)
 
 // --- cMenuSetupReplay ------------------------------------------------------
 
-class cMenuSetupReplay : public cMenuSetupPage {
-private:
-  virtual void Set(void);
+class cMenuSetupReplay : public cMenuSetupBase {
 public:
-  cMenuSetupReplay(void) { Set(); }
+  cMenuSetupReplay(void);
   };
 
-void cMenuSetupReplay::Set(void)
+cMenuSetupReplay::cMenuSetupReplay(void)
 {
-  Clear();
-  SetupTitle("Replay");
+  SetSection(tr("Replay"));
   Add(new cMenuEditBoolItem(tr("Setup.Replay$Multi speed mode"), &data.MultiSpeedMode));
   Add(new cMenuEditBoolItem(tr("Setup.Replay$Show replay mode"), &data.ShowReplayMode));
 }
 
 // --- cMenuSetupMisc --------------------------------------------------------
 
-class cMenuSetupMisc : public cMenuSetupPage {
-private:
-  virtual void Set(void);
+class cMenuSetupMisc : public cMenuSetupBase {
 public:
-  cMenuSetupMisc(void) { Set(); }
+  cMenuSetupMisc(void);
   };
 
-void cMenuSetupMisc::Set(void)
+cMenuSetupMisc::cMenuSetupMisc(void)
 {
-  Clear();
-  SetupTitle("Miscellaneous");
+  SetSection(tr("Miscellaneous"));
   Add(new cMenuEditIntItem( tr("Setup.Miscellaneous$Min. event timeout (min)"),   &data.MinEventTimeout));
   Add(new cMenuEditIntItem( tr("Setup.Miscellaneous$Min. user inactivity (min)"), &data.MinUserInactivity));
   Add(new cMenuEditIntItem( tr("Setup.Miscellaneous$SVDRP timeout (s)"),          &data.SVDRPTimeout));
@@ -1706,18 +1747,15 @@ cMenuSetupPluginItem::cMenuSetupPluginItem(const char *Name, int Index)
 
 // --- cMenuSetupPlugins -----------------------------------------------------
 
-class cMenuSetupPlugins : public cMenuSetupPage {
-private:
-  virtual void Set(void);
+class cMenuSetupPlugins : public cMenuSetupBase {
 public:
-  cMenuSetupPlugins(void) { Set(); }
+  cMenuSetupPlugins(void);
   virtual eOSState ProcessKey(eKeys Key);
   };
 
-void cMenuSetupPlugins::Set(void)
+cMenuSetupPlugins::cMenuSetupPlugins(void)
 {
-  Clear();
-  SetupTitle("Plugins");
+  SetSection(tr("Plugins"));
   SetHasHotkeys();
   for (int i = 0; ; i++) {
       cPlugin *p = cPluginManager::GetPlugin(i);
@@ -1734,25 +1772,25 @@ void cMenuSetupPlugins::Set(void)
 
 eOSState cMenuSetupPlugins::ProcessKey(eKeys Key)
 {
-  eOSState state = cOsdMenu::ProcessKey(Key); // not cMenuSetupPage::ProcessKey()!
+  eOSState state = HasSubMenu() ? cMenuSetupBase::ProcessKey(Key) : cOsdMenu::ProcessKey(Key);
 
-  if (state == osUnknown) {
-     switch (Key) {
-       case kOk: {
-                   cMenuSetupPluginItem *item = (cMenuSetupPluginItem *)Get(Current());
-                   if (item) {
-                      cPlugin *p = cPluginManager::GetPlugin(item->PluginIndex());
-                      if (p) {
-                         cOsdMenu *menu = p->SetupMenu();
-                         if (menu)
-                            return AddSubMenu(menu);
-                         Interface->Info(tr("This plugin has no setup parameters!"));
-                         }
-                      }
-                  }
-                  break;
-       default:   break;
-       }
+  if (Key == kOk) {
+     if (state == osUnknown) {
+        cMenuSetupPluginItem *item = (cMenuSetupPluginItem *)Get(Current());
+        if (item) {
+           cPlugin *p = cPluginManager::GetPlugin(item->PluginIndex());
+           if (p) {
+              cMenuSetupPage *menu = p->SetupMenu();
+              if (menu) {
+                 menu->SetPlugin(p);
+                 return AddSubMenu(menu);
+                 }
+              Interface->Info(tr("This plugin has no setup parameters!"));
+              }
+           }
+        }
+     else if (state == osContinue)
+        Store();
      }
   return state;
 }
