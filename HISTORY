@@ -1378,3 +1378,8 @@ Video Disk Recorder Revision History
 - Fixed a possible race condition in the cDvbPlayer (thanks to Andreas Schultz
   for pointing out this one).
 - Disabled channels on Transponder 12070 in 'channels.conf', which apparently no longer transmits.
+
+2002-07-27: Version 1.1.6
+
+- Re-visited the race condition fix in the cDvbPlayer (thanks again to Andreas
+  Schultz).

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 1.7 2002/07/14 14:30:36 kls Exp $
+ * $Id: dvbplayer.c 1.8 2002/07/27 11:57:48 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -90,6 +90,7 @@ private:
   int replayFile;
   bool eof;
   bool active;
+  bool running;
   ePlayModes playMode;
   ePlayDirs playDir;
   int trickSpeed;
@@ -133,6 +134,7 @@ cDvbPlayer::cDvbPlayer(const char *FileName)
   index = NULL;
   eof = false;
   active = true;
+  running = false;
   playMode = pmPlay;
   playDir = pdForward;
   trickSpeed = NORMAL_SPEED;
@@ -285,8 +287,9 @@ void cDvbPlayer::Activate(bool On)
         Start();
      }
   else if (active) {
-     active = false;
+     running = false;
      Cancel(3);
+     active = false;
      }
 }
 
@@ -308,7 +311,8 @@ void cDvbPlayer::Action(void)
   if (readIndex >= 0)
      isyslog("resuming replay at index %d (%s)", readIndex, IndexToHMSF(readIndex, true));
 
-  while (active && NextFile()) {
+  running = true;
+  while (running && NextFile()) {
         pfd[1].fd = replayFile; // NextFile() may have returned a new file handle!
         {
           LOCK_THREAD;
@@ -414,9 +418,9 @@ void cDvbPlayer::Action(void)
            break;
            }
         }
+  active = running = false;
 
   dsyslog("dvbplayer thread ended (pid=%d)", getpid());
-  active = false;
 }
 
 void cDvbPlayer::Pause(void)
