@@ -2386,3 +2386,4 @@ Video Disk Recorder Revision History
 - Fixed the URL to the 'Doxygen' tool in INSTALL (thanks to Dirk Essl).
 - Removed the obsolete chapter "Stopping a recording on the primary DVB interface"
   from MANUAL.
+- Completed Dutch language texts (thanks to Hans Dingemans).

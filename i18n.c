@@ -4,13 +4,13 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.133 2003/08/26 15:27:25 kls Exp $
+ * $Id: i18n.c 1.134 2003/09/11 13:51:56 kls Exp $
  *
  * Translations provided by:
  *
  * Slovenian   Miha Setina <mihasetina@softhome.net> and Matjaz Thaler <matjaz.thaler@guest.arnes.si>
  * Italian     Alberto Carraro <bertocar@tin.it> and Antonio Ospite <ospite@studenti.unina.it>
- * Dutch       Arnold Niessen <niessen@iae.nl> <arnold.niessen@philips.com>
+ * Dutch       Arnold Niessen <niessen@iae.nl> <arnold.niessen@philips.com> and Hans Dingemans <hans.dingemans@tacticalops.nl>
  * Portuguese  Paulo Lopes <pmml@netvita.pt>
  * French      Jean-Claude Repetto <jc@repetto.org>, Olivier Jacques <jacquesolivier@hotmail.com> and Gregoire Favre <greg@magma.unil.ch>
  * Norwegian   Jørgen Tvedt <pjtvedt@online.no> and Truls Slevigen <truls@slevigen.no>
@@ -212,7 +212,7 @@ const tI18nPhrase Phrases[] = {
     "Befehle für Aufzeichnungen",
     "Ukazi za snemanje",
     "Comandi di Registrazione",
-    "",// TODO
+    "Opname commando's",
     "",// TODO
     "Commandes d'enregistrement",
     "",// TODO
@@ -672,7 +672,7 @@ const tI18nPhrase Phrases[] = {
     "Einfügen",
     "Vstavi",
     "Inserisci",
-    "",// TODO
+    "Invoegen",
     "",// TODO
     "Insért",
     "",// TODO
@@ -689,7 +689,7 @@ const tI18nPhrase Phrases[] = {
     "Überschreiben",
     "Prepisi",
     "Sovrascrivi",
-    "",// TODO
+    "Overschrijven",
     "",// TODO
     "Écraser",
     "",// TODO
@@ -723,7 +723,7 @@ const tI18nPhrase Phrases[] = {
     "Reset",
     "Reset",
     "Reset",
-    "",//TODO
+    "Herstart",
     "",//TODO
     "Réinitialisation",
     "",//TODO
@@ -997,7 +997,7 @@ const tI18nPhrase Phrases[] = {
     "Quelle",
     "Pozicija",
     "Sorgente",
-    "",//TODO
+    "Bron",
     "",//TODO
     "Source",
     "",//TODO
@@ -1594,7 +1594,7 @@ const tI18nPhrase Phrases[] = {
     "Kanal nicht verfügbar!",
     "Kanal ni razpolozljiv!",
     "Canale non disponibile!",
-    "",//TODO
+    "Kanaal niet beschikbaar",
     "",//TODO
     "Chaîne non disponible!",
     "",//TODO
@@ -1611,7 +1611,7 @@ const tI18nPhrase Phrases[] = {
     "Kanaleinstellungen sind nicht eindeutig!",
     "Nastavitve kanala niso edinstvene!",
     "Paramentri Canale non unici!",
-    "",//TODO
+    "Kanaalinstellingen zijn niet uniek!",
     "",//TODO
     "Caractéristiques des chaînes ne sont pas uniques",
     "",//TODO
@@ -1662,7 +1662,7 @@ const tI18nPhrase Phrases[] = {
     "Keine Schnittmarken gesetzt!",
     "Nobena tocka ni definirana!",
     "Nessun marcatore di modifica definito!",
-    "",//TODO
+    "Geen bewerkingsmarkeringen gedefinieerd!",
     "",//TODO
     "Pas de marques d'édition définies!",
     "",//TODO
@@ -1747,7 +1747,7 @@ const tI18nPhrase Phrases[] = {
     "CAM-Menü kann nicht geöffnet werden!",
     "Ne morem odpreti CAM menija!",
     "Impossibile aprire il menu CAM!",
-    "",//TODO
+    "Kan CAM-menu niet openen!",
     "",//TODO
     "Impossible d'ouvrir le menu CAM!",
     "",//TODO
@@ -1764,7 +1764,7 @@ const tI18nPhrase Phrases[] = {
     "CAM-Reset fehlgeschlagen!",
     "Ne morem resetirati CAM-a",
     "Impossibile reimpostare il modulo CAM!",
-    "",//TODO
+    "Kan CAM niet herstarten!",
     "",//TODO
     "Impossible de réinitialiser la CAM!",
     "",//TODO
@@ -1781,7 +1781,7 @@ const tI18nPhrase Phrases[] = {
     "CAM wurde zurückgesetzt!",
     "CAM je resetiran!",
     "Modulo CAM reimpostato!",
-    "",//TODO
+    "CAM is herstart!",
     "",//TODO
     "La CAM a été réinitialisée",
     "",//TODO
@@ -2412,7 +2412,7 @@ const tI18nPhrase Phrases[] = {
     "Pause Priorität",
     "Prioriteta pavze",
     "Priorita' di pausa",
-    "",// TODO
+    "Pauze prioriteit",
     "",// TODO
     "Priorité des pauses",
     "",// TODO
@@ -2429,7 +2429,7 @@ const tI18nPhrase Phrases[] = {
     "Pause Lebensdauer (d)",
     "Cas pavze (d)",
     "Durata pausa (gg)",
-    "",// TODO
+    "Pauze levensduur (d)",
     "",// TODO
     "Durée de vie des pauses (j)",
     "",// TODO
@@ -2497,7 +2497,7 @@ const tI18nPhrase Phrases[] = {
     "Dauer der Direktaufzeichnung (min)",
     "Cas direktnega snemanja (min)",
     "Tempo registrazione istantanea (min)",
-    "",//TODO
+    "Duur van de directe opname (min)",
     "",//TODO
     "Durée enregistr. immédiat (min)",
     "",//TODO
@@ -2599,7 +2599,7 @@ const tI18nPhrase Phrases[] = {
     "Wiedergabe ID",
     "Predvajalni ID",
     "Resume ID",// TODO
-    "Resume ID",// TODO
+    "Hervattings ID",
     "Resume ID",// TODO
     "ID de reprise",
     "Resume ID",// TODO
@@ -2667,7 +2667,7 @@ const tI18nPhrase Phrases[] = {
     "Zap Timeout (s)",
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Zap timeout (s)",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -2925,7 +2925,7 @@ const tI18nPhrase Phrases[] = {
     "('Menü' drücken zum Überspringen)",
     "pritisnite 'Meni' za preskok te tipke",
     "(premere 'Menu' per saltare questo tasto)",
-    "",// TODO
+    "Druk 'Menu' om deze toets over te slaan",
     "",// TODO
     "('Menu' pour passer cette touche)",
     "",// TODO
@@ -3164,7 +3164,7 @@ const tI18nPhrase Phrases[] = {
     "Wiedergabe",
     "Predvajaj",
     "Riproduci",
-    "",// TODO
+    "Weergeven",
     "",// TODO
     "Lecture",
     "",// TODO
@@ -3181,7 +3181,7 @@ const tI18nPhrase Phrases[] = {
     "Pause",
     "Pavza",
     "Pausa",
-    "",// TODO
+    "Pauze",
     "",// TODO
     "Pause",
     "",// TODO
@@ -3198,7 +3198,7 @@ const tI18nPhrase Phrases[] = {
     "Stop",
     "Ustavi",
     "Stop",
-    "",// TODO
+    "Stop",
     "Stop",
     "Stop",
     "",// TODO
@@ -3215,7 +3215,7 @@ const tI18nPhrase Phrases[] = {
     "Aufnehmen",
     "Snemaj",
     "Registra",
-    "",// TODO
+    "Opnemen",
     "",// TODO
     "Enregistrement",
     "",// TODO
@@ -3232,7 +3232,7 @@ const tI18nPhrase Phrases[] = {
     "Vorlauf",
     "Hitro naprej",
     "Avanti Veloce",
-    "",// TODO
+    "Vooruitspoelen",
     "",// TODO
     "Avance rapide",
     "",// TODO
@@ -3249,7 +3249,7 @@ const tI18nPhrase Phrases[] = {
     "Rücklauf",
     "Hitro nazaj",
     "Indietro Veloce",
-    "",// TODO
+    "Terugspoelen",
     "",// TODO
     "Retour rapide",
     "",// TODO
@@ -3283,7 +3283,7 @@ const tI18nPhrase Phrases[] = {
     "Kanal+",
     "Kanal+",
     "Canale +",
-    "",// TODO
+    "Kanaal+",
     "",// TODO
     "Chaîne+",
     "",// TODO
@@ -3300,7 +3300,7 @@ const tI18nPhrase Phrases[] = {
     "Kanal-",
     "Kanal-",
     "Canale -",
-    "",// TODO
+    "Kanaal-",
     "",// TODO
     "Chaîne-",
     "",// TODO
@@ -3403,7 +3403,7 @@ const tI18nPhrase Phrases[] = {
     "aus",
     "izklop",
     "off",
-    "",// TODO
+    "uit",
     "off",
     "",// TODO
     "",// TODO
@@ -3420,7 +3420,7 @@ const tI18nPhrase Phrases[] = {
     "keine",
     "nobeden",
     "nessuno",
-    "",// TODO
+    "geen",
     "",// TODO
     "aucun",
     "",// TODO
@@ -3437,7 +3437,7 @@ const tI18nPhrase Phrases[] = {
     "auto",
     "avtomatsko",
     "auto",
-    "",// TODO
+    "auto",
     "",// TODO
     "auto",
     "",// TODO
@@ -3709,7 +3709,7 @@ const tI18nPhrase Phrases[] = {
     "Live-Signal wird angehalten...",
     "Ustavljanje predvajanja v zivo...",
     "Pausa del canale in visione...",
-    "",// TODO
+    "Pauzeren live uitzending...",
     "",// TODO
     "Pause de l'émission en direct...",
     "",// TODO
@@ -3726,7 +3726,7 @@ const tI18nPhrase Phrases[] = {
     "Dieses Plugin hat keine Setup-Parameter!",
     "Ta plugin nima nastavitvenih parametrov!",
     "Questo plugin non ha parametri di setup!",
-    "",// TODO
+    "Deze plugin heeft geen instelparameters",
     "",// TODO
     "Ce plugin n'a pas de paramètres!",
     "",// TODO
