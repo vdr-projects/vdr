@@ -2283,7 +2283,7 @@ Video Disk Recorder Revision History
   or Makefile.config as defaults (thanks to Steffen Barszus).
 - Added the usual menu timeout to the CAM menus.
 
-2003-08-17: Version 1.2.3
+2003-08-17: Version 1.2.3 (not officially released)
 
 - Fixed the TS to PES repacker so that it works with MPEG1 streams (thanks to
   Andreas Kool).
@@ -2314,3 +2314,18 @@ Video Disk Recorder Revision History
   (suggested by Helmut Auer).
 - Removing deleted recordings faster than normal when cutting, to avoid running
   out of disk space (thanks to Manfred Schmidt-Voigt for reporting this one).
+
+2003-08-24: Version 1.2.4
+
+- Fixed 'runvdr' to stay in the loop only if VDR returns an exit status of '1'.
+- Completed the Finnish OSD texts (thanks to Rolf Ahrenberg).
+- Empty values in setup.conf are no longer treated as an error (thanks to Andreas
+  Kool for reporting this one).
+- Added a note about the config files of plugins to INSTALL (thanks to Thomas
+  Keil).
+- VDR now continues to start up, even if there is an error in setup.conf.
+- Fixed a bug in resetting OSD color palettes (thanks to Torsten Herz).
+- Fixed starting a recording on the primary device if there is a replay session
+  active (thanks to Javier Marcet for reporting this one).
+- Avoiding an unnecessary stop of an ongoing Transfer Mode when starting a
+  recording on the primary device.

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.115 2003/08/17 08:47:41 kls Exp $
+ * $Id: config.c 1.116 2003/08/24 11:00:24 kls Exp $
  */
 
 #include "config.h"
@@ -215,7 +215,7 @@ bool cSetupLine::Parse(char *s)
      *p = 0;
      char *Name  = compactspace(s);
      char *Value = compactspace(p + 1);
-     if (*Name && *Value) {
+     if (*Name) { // value may be an empty string
         p = strchr(Name, '.');
         if (p) {
            *p = 0;

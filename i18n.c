@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.130 2003/08/17 08:53:24 kls Exp $
+ * $Id: i18n.c 1.131 2003/08/24 10:52:08 kls Exp $
  *
  * Translations provided by:
  *
@@ -79,7 +79,7 @@ const tI18nPhrase Phrases[] = {
     "Português",
     "Français",
     "Norsk",
-    "suomi",
+    "Suomi",
     "Polski",
     "Español",
     "Ellinika",
@@ -2671,7 +2671,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Kanavavalinnan odotusaika (s)",
     "",// TODO
     "",// TODO
     "",// TODO

@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.165 2003/08/17 08:50:25 kls Exp $
+ * $Id: vdr.c 1.166 2003/08/24 11:18:04 kls Exp $
  */
 
 #include <getopt.h>
@@ -340,8 +340,8 @@ int main(int argc, char *argv[])
 
   cPlugin::SetConfigDirectory(ConfigDirectory);
 
-  if (!(Setup.Load(AddDirectory(ConfigDirectory, "setup.conf")) &&
-        Sources.Load(AddDirectory(ConfigDirectory, "sources.conf"), true, true) &&
+  Setup.Load(AddDirectory(ConfigDirectory, "setup.conf"));
+  if (!(Sources.Load(AddDirectory(ConfigDirectory, "sources.conf"), true, true) &&
         Diseqcs.Load(AddDirectory(ConfigDirectory, "diseqc.conf"), true, true) &&
         Channels.Load(AddDirectory(ConfigDirectory, "channels.conf"), false, true) &&
         Timers.Load(AddDirectory(ConfigDirectory, "timers.conf")) &&
