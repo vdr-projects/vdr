@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.120 2005/02/13 14:26:37 kls Exp $
+ * $Id: dvbdevice.c 1.121 2005/02/19 11:52:44 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -872,7 +872,7 @@ void cDvbDevice::SetAudioTrackDevice(eTrackType Type)
   const tTrackId *TrackId = GetTrack(Type);
   if (TrackId && TrackId->id) {
      if (IS_AUDIO_TRACK(Type)) {
-        if (pidHandles[ptAudio].pid) {
+        if (pidHandles[ptAudio].pid && pidHandles[ptAudio].pid != TrackId->id) {
            pidHandles[ptAudio].pid = TrackId->id;
            SetPid(&pidHandles[ptAudio], ptAudio, true);
            }

@@ -3420,3 +3420,5 @@ Video Disk Recorder Revision History
 
 - Removed some unneeded code and fixed access to unallocated memory in
   cEvent::FixEpgBugs() (thanks to Wolfgang Rohdewald).
+- Avoiding unnecessary calls to SetPid() in cDvbDevice::SetAudioTrackDevice()
+  (thanks to Marco Schlüßler).
