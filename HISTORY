@@ -691,3 +691,6 @@ Video Disk Recorder Revision History
   also copied.
 - When a recording is running on the primary interface, any attempt to change
   the current channel will now lead to a "Channel locked" message.
+- The main program loop now first checks whether any timer recordings are
+  finished, before starting a new timer recording. This is important in case
+  one timer ends at the same time another timer starts.

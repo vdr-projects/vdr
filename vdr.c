@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.67 2001/09/01 13:48:44 kls Exp $
+ * $Id: vdr.c 1.68 2001/09/01 14:50:40 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -333,12 +333,13 @@ int main(int argc, char *argv[])
            }
         // Timers and Recordings:
         if (!Menu) {
-           cTimer *Timer = Timers.GetMatch();
+           time_t Now = time(NULL); // must do both following calls with the exact same time!
+           cRecordControls::Process(Now);
+           cTimer *Timer = Timers.GetMatch(Now);
            if (Timer) {
               if (!cRecordControls::Start(Timer))
                  Timer->SetPending(true);
               }
-           cRecordControls::Process();
            }
         // User Input:
         cOsdBase **Interact = Menu ? &Menu : (cOsdBase **)&ReplayControl;

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.68 2001/09/01 10:01:51 kls Exp $
+ * $Id: config.h 1.69 2001/09/01 14:56:06 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -256,7 +256,7 @@ public:
 class cTimers : public cConfig<cTimer> {
 public:
   cTimer *GetTimer(cTimer *Timer);
-  cTimer *GetMatch(void);
+  cTimer *GetMatch(time_t t);
   cTimer *GetNextActiveTimer(void);
   };
 

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.61 2001/09/01 10:02:21 kls Exp $
+ * $Id: config.c 1.62 2001/09/01 15:04:14 kls Exp $
  */
 
 #include "config.h"
@@ -571,7 +571,7 @@ bool cTimer::Matches(time_t t)
             }
          }
       }
-  return active && startTime <= t && t <= stopTime;
+  return active && startTime <= t && t < stopTime; // must stop *before* stopTime to allow adjacent timers
 }
 
 time_t cTimer::StartTime(void)
@@ -762,9 +762,8 @@ cTimer *cTimers::GetTimer(cTimer *Timer)
   return NULL;
 }
 
-cTimer *cTimers::GetMatch(void)
+cTimer *cTimers::GetMatch(time_t t)
 {
-  time_t t = time(NULL); // all timers must be checked against the exact same time to correctly handle Priority!
   cTimer *t0 = NULL;
   cTimer *ti = First();
   while (ti) {

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.110 2001/08/31 13:47:28 kls Exp $
+ * $Id: menu.c 1.111 2001/09/01 14:56:31 kls Exp $
  */
 
 #include "menu.h"
@@ -2163,9 +2163,9 @@ void cRecordControl::Stop(bool KeepInstant)
      }
 }
 
-bool cRecordControl::Process(void)
+bool cRecordControl::Process(time_t t)
 {
-  if (!timer || !timer->Matches())
+  if (!timer || !timer->Matches(t))
      return false;
   AssertFreeDiskSpace(timer->priority);
   return true;
@@ -2235,11 +2235,11 @@ const char *cRecordControls::GetInstantId(const char *LastInstantId)
   return NULL;
 }
 
-void cRecordControls::Process(void)
+void cRecordControls::Process(time_t t)
 {
   for (int i = 0; i < MAXDVBAPI; i++) {
       if (RecordControls[i]) {
-         if (!RecordControls[i]->Process())
+         if (!RecordControls[i]->Process(t))
             DELETENULL(RecordControls[i]);
          }
       }
