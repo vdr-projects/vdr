@@ -962,7 +962,7 @@ DVB device doesn't run out of data.
 To avoid busy loops the player should call its member function
 
 <p><table><tr><td bgcolor=#F0F0F0><pre><br>
-bool DeviceNeedsData(int Wait = 0);
+bool DevicePoll(cPoller &amp;Poller, int TimeoutMs = 0);
 </pre></td></tr></table><p>
 
 to determine whether the device is ready for further data.
@@ -1238,7 +1238,7 @@ virtual void Play(void);
 virtual void Freeze(void);
 virtual void Mute(void);
 virtual void StillPicture(const uchar *Data, int Length);
-virtual bool NeedsData(int Wait = 0);
+virtual bool Poll(cPoller &amp;Poller, int TimeoutMs = 0);
 virtual int PlayVideo(const uchar *Data, int Length);
 </pre></td></tr></table><p>
 <!--X1.1.7--></td></tr></table>

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.10 2002/08/15 10:30:08 kls Exp $
+ * $Id: device.c 1.11 2002/08/16 08:52:56 kls Exp $
  */
 
 #include "device.h"
@@ -397,7 +397,7 @@ void cDevice::StopReplay(void)
      }
 }
 
-bool cDevice::NeedsData(int Wait)
+bool cDevice::Poll(cPoller &Poller, int TimeoutMs)
 {
   return false;
 }

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.h 1.4 2002/08/15 10:59:25 kls Exp $
+ * $Id: dvbdevice.h 1.5 2002/08/16 08:53:30 kls Exp $
  */
 
 #ifndef __DVBDEVICE_H
@@ -92,7 +92,7 @@ public:
   virtual void Freeze(void);
   virtual void Mute(void);
   virtual void StillPicture(const uchar *Data, int Length);
-  virtual bool NeedsData(int Wait = 0);
+  virtual bool Poll(cPoller &Poller, int TimeoutMs = 0);
   virtual int PlayVideo(const uchar *Data, int Length);
   virtual int PlayAudio(const uchar *Data, int Length);
 

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 1.8 2002/08/15 11:09:21 kls Exp $
+ * $Id: device.h 1.9 2002/08/16 08:52:27 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -226,9 +226,10 @@ public:
        // Turns off audio while replaying.
   virtual void StillPicture(const uchar *Data, int Length);
        // Displays the given I-frame as a still picture.
-  virtual bool NeedsData(int Wait = 0);
-       // Returns true if the device needs further data for replaying.
-       // If Wait is not zero, the device will wait up to the given number
+  virtual bool Poll(cPoller &Poller, int TimeoutMs = 0);
+       // Returns true if the device itself or any of the file handles in
+       // Poller is ready for further action.
+       // If TimeoutMs is not zero, the device will wait up to the given number
        // of milleseconds before returning in case there is no immediate
        // need for data.
   virtual int PlayVideo(const uchar *Data, int Length);

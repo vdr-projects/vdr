@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.5 2002/08/15 11:13:46 kls Exp $
+ * $Id: dvbdevice.c 1.6 2002/08/16 09:22:29 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -27,7 +27,6 @@ extern "C" {
 #include <ost/sec.h>
 #include <ost/video.h>
 #endif
-#include <poll.h>
 #include <sys/ioctl.h>
 #include <sys/mman.h>
 #include "dvbosd.h"
@@ -694,9 +693,10 @@ void cDvbDevice::StillPicture(const uchar *Data, int Length)
 #endif
 }
 
-bool cDvbDevice::NeedsData(int Wait)
+bool cDvbDevice::Poll(cPoller &Poller, int TimeoutMs)
 {
-  return cFile::FileReadyForWriting(fd_video, Wait);
+  Poller.Add(playMode == pmAudioOnly ? fd_audio : fd_video, true);
+  return Poller.Poll(TimeoutMs);
 }
 
 int cDvbDevice::PlayVideo(const uchar *Data, int Length)
@@ -731,13 +731,8 @@ void cDvbDevice::CloseDvr(void)
 int cDvbDevice::GetTSPacket(uchar *Data)
 {
   if (fd_dvr >= 0) {
-     pollfd pfd;
-     pfd.fd = fd_dvr;
-     pfd.events = POLLIN;
-
-     poll(&pfd, 1, 100);
-
-     if (pfd.revents & POLLIN != 0) {
+     cPoller Poller(fd_dvr, false);
+     if (Poller.Poll(100)) {
         int r = read(fd_dvr, Data, TS_SIZE);
         if (r >= 0)
            return r;

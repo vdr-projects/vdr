@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.69 2002/08/11 11:49:08 kls Exp $
+ * $Id: tools.c 1.70 2002/08/16 08:52:01 kls Exp $
  */
 
 #include "tools.h"
@@ -480,6 +480,42 @@ const char *DayDateTime(time_t t)
   tm *tm = localtime_r(&t, &tm_r);
   snprintf(buffer, sizeof(buffer), "%s %2d.%02d %02d:%02d", WeekDayName(tm->tm_wday), tm->tm_mday, tm->tm_mon + 1, tm->tm_hour, tm->tm_min);
   return buffer;
+}
+
+// --- cPoller ---------------------------------------------------------------
+
+cPoller::cPoller(int FileHandle, bool Out)
+{
+  numFileHandles = 0;
+  Add(FileHandle, Out);
+}
+
+bool cPoller::Add(int FileHandle, bool Out)
+{
+  if (FileHandle >= 0) {
+     for (int i = 0; i < numFileHandles; i++) {
+         if (pfd[i].fd == FileHandle)
+            return true;
+         }
+     if (numFileHandles < MaxPollFiles) {
+        pfd[numFileHandles].fd = FileHandle;
+        pfd[numFileHandles].events = Out ? POLLOUT : POLLIN;
+        numFileHandles++;
+        return true;
+        }
+     esyslog("ERROR: too many file handles in cPoller");
+     }
+  return false;
+}
+
+bool cPoller::Poll(int TimeoutMs)
+{
+  if (numFileHandles) {
+     if (poll(pfd, numFileHandles, TimeoutMs) != 0)
+        return true; // returns true even in case of an error, to let the caller
+                     // access the file and thus see the error code
+     }
+  return false;
 }
 
 // --- cFile -----------------------------------------------------------------

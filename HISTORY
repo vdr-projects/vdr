@@ -1405,8 +1405,8 @@ Video Disk Recorder Revision History
 - Temporarily made cDevice::ProvidesCa() virtual (Andreas Schultz needs this
   in his DXR3 plugin).
 - cDevice no longer exposes a file handle to cPlayer. A derived cPlayer class
-  can now call DeviceNeedsData() to see whether the replay device is ready for
-  further data. A derived cDevice class must implement NeedsData() and shall
+  can now call DevicePoll() to see whether the replay device is ready for
+  further data. A derived cDevice class must implement Poll() and shall
   check if any of its file handles is ready for data.
 - Implemented several replay modes to allow players that play only audio (thanks
   to Stefan Huelswitt).

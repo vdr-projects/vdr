@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.48 2002/08/11 11:34:26 kls Exp $
+ * $Id: tools.h 1.49 2002/08/16 08:52:01 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -12,6 +12,7 @@
 
 #include <errno.h>
 #include <fcntl.h>
+#include <poll.h>
 #include <stdio.h>
 #include <string.h>
 #include <syslog.h>
@@ -76,6 +77,17 @@ bool SpinUpDisk(const char *FileName);
 const char *WeekDayName(int WeekDay); // returns a statically allocated string!
 const char *DayDateTime(time_t t = 0); // returns a statically allocated string!
 
+class cPoller {
+private:
+  enum { MaxPollFiles = 16 };
+  pollfd pfd[MaxPollFiles];
+  int numFileHandles;
+public:
+  cPoller(int FileHandle = -1, bool Out = false);
+  bool Add(int FileHandle, bool Out);
+  bool Poll(int TimeoutMs = 0);
+  };
+  
 class cFile {
 private:
   static bool files[];
