@@ -21,18 +21,18 @@ VDR program and present itself to the user.
 The <i>inside</i> interface provides the plugin code access to VDR's internal data
 structures and allows it to hook itself into specific areas to perform special actions.
 <p>
-<!--X1.1.5--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
-Important modifications introduced in version 1.1.5 are marked like this.
-<!--X1.1.5--></td></tr></table>
-<!--X1.1.6--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
+<!--X1.1.6--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 Important modifications introduced in version 1.1.6 are marked like this.
 <!--X1.1.6--></td></tr></table>
-<!--X1.1.7--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
+<!--X1.1.7--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
 Important modifications introduced in version 1.1.7 are marked like this.
 <!--X1.1.7--></td></tr></table>
-<!--X1.1.8--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+<!--X1.1.8--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
 Important modifications introduced in version 1.1.8 are marked like this.
 <!--X1.1.8--></td></tr></table>
+<!--X1.1.9--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+Important modifications introduced in version 1.1.9 are marked like this.
+<!--X1.1.9--></td></tr></table>
 
 <a name="Part I - The Outside Interface"><hr><center><h1>Part I - The Outside Interface</h1></center>
 
@@ -352,20 +352,20 @@ these values inside the plugin. Here's an example:
 
 <p><table><tr><td bgcolor=#F0F0F0><pre><br>
 bool cPluginHello::ProcessArgs(int argc, char *argv[])
-{ 
+{
   // Implement command line argument processing here if applicable.
   static struct option long_options[] = {
        { "aaa",      required_argument, NULL, 'a' },
        { "bbb",      no_argument,       NULL, 'b' },
        { NULL }
      };
-  
+
   int c;
   while ((c = getopt_long(argc, argv, "a:b", long_options, NULL)) != -1) {
         switch (c) {
           case 'a': option_a = optarg;
                     break;
-          case 'b': option_b = true; 
+          case 'b': option_b = true;
                     break;
           default:  return false;
           }
@@ -609,7 +609,7 @@ public:
   };
 
 cMenuSetupHello::cMenuSetupHello(void)
-{ 
+{
   newGreetingTime = GreetingTime;
   newUseAlternateGreeting = UseAlternateGreeting;
   Add(new cMenuEditIntItem( tr("Greeting time (s)"),      &amp;newGreetingTime));
@@ -617,7 +617,7 @@ cMenuSetupHello::cMenuSetupHello(void)
 }
 
 void cMenuSetupHello::Store(void)
-{ 
+{
   SetupStore("GreetingTime", GreetingTime = newGreetingTime);
   SetupStore("UseAlternateGreeting", UseAlternateGreeting = newUseAlternateGreeting);
 }
@@ -957,7 +957,7 @@ stream. There are no prerequisites regarding the length or alignment of an
 individual block of data. The sum of all blocks must simply result in the
 desired video data stream, and it must be delivered fast enough so that the
 DVB device doesn't run out of data.
-<!--X1.1.7--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
+<!--X1.1.7--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
 To avoid busy loops the player should call its member function
 
 <p><table><tr><td bgcolor=#F0F0F0><pre><br>
@@ -1034,7 +1034,7 @@ void DeviceStillPicture(const uchar *Data, int Length);
 
 which can be called to display a still picture. VDR uses this function when handling
 its editing marks. A special case of a "player" might use this function to implement
-a "picture viewer". 
+a "picture viewer".
 <p>
 For detailed information on how to implement your own player, please take a look
 at VDR's <tt>cDvbPlayer</tt> and <tt>cDvbPlayerControl</tt> classes.
@@ -1065,7 +1065,7 @@ enjoy additional players, since they will be able to control them with actions
 that they already know. If you absolutely want to do things differently, just go
 ahead - it's your show...
 
-<!--X1.1.6--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
+<!--X1.1.6--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 <hr><h2>Receivers</h2>
 
 <center><i><b>Tapping into the stream...</b></i></center><p>
@@ -1121,7 +1121,6 @@ If the <tt>cReceiver</tt> isn't needed any more, it may simply be <i>deleted</i>
 and will automatically detach itself from the <tt>cDevice</tt>.
 <!--X1.1.6--></td></tr></table>
 
-<!--X1.1.5--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 <hr><h2>The On Screen Display</h2>
 
 <center><i><b>Express yourself</b></i></center><p>
@@ -1151,9 +1150,8 @@ MyOsd-&gt;Create(...);
 to define an actual OSD drawing area (see VDR/osdbase.h for the declarations
 of these functions, and VDR/osd.c to see how VDR opens the OSD and sets up
 its windows and color depths).
-<!--X1.1.5--></td></tr></table>
 
-<!--X1.1.6--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
+<!--X1.1.6--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 <hr><h2>Devices</h2>
 
 <center><i><b>Expanding the possibilities</b></i></center><p>
@@ -1189,12 +1187,16 @@ the <tt>cDvbDevice</tt>, which is used to access the DVB PCI cards.
 If the new device can receive, it most likely needs to provide a way of
 selecting which channel it shall tune to:
 
+<!--X1.1.9--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
 <p><table><tr><td bgcolor=#F0F0F0><pre><br>
-virtual bool SetChannelDevice(const cChannel *Channel);
+virtual bool ProvidesChannel(const cChannel *Channel, int Priority = -1, bool *NeedsDetachReceivers = NULL);
+virtual bool SetChannelDevice(const cChannel *Channel, bool LiveView);
 </pre></td></tr></table><p>
 
-This function will be called with the desired channel and shall return whether
-tuning to it was successful.
+These functions will be called with the desired channel and shall return whether
+this device can provide the requested channel and whether tuning to it was successful,
+repectively.
+<!--X1.1.9--></td></tr></table>
 <p>
 <b>Recording</b>
 <p>
@@ -1204,10 +1206,12 @@ A device that can be used for recording must implement the functions
 virtual bool SetPid(cPidHandle *Handle, int Type, bool On);
 virtual bool OpenDvr(void);
 virtual void CloseDvr(void);
-virtual int GetTSPacket(uchar *Data);
+<!--X1.1.9--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+virtual bool GetTSPacket(uchar *&amp;Data);
+<!--X1.1.9--></td></tr></table>
 </pre></td></tr></table><p>
 
-which allow VDR to set the PIDs that shall be recorded, set up the device fro
+which allow VDR to set the PIDs that shall be recorded, set up the device for
 recording (and shut it down again), and receive the MPEG data stream. The data
 must be delivered in the form of a Transport Stream (TS), which consists of
 packets that are all 188 bytes in size. Each call to <tt>GetTSPacket()</tt>
@@ -1226,7 +1230,7 @@ to indicate this to VDR.
 <p>
 The functions to implement replaying capabilites are
 
-<!--X1.1.7--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
+<!--X1.1.7--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
 <p><table><tr><td bgcolor=#F0F0F0><pre><br>
 virtual bool HasDecoder(void) const;
 virtual bool SetPlayMode(ePlayMode PlayMode);
@@ -1250,7 +1254,7 @@ virtual void SetVideoFormat(bool VideoFormat16_9);
 virtual void SetVolumeDevice(int Volume);
 </pre></td></tr></table><p>
 
-<!--X1.1.8--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+<!--X1.1.8--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
 <p>
 <b>On Screen Display</b>
 <p>

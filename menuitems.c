@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.c 1.8 2002/08/15 11:27:57 kls Exp $
+ * $Id: menuitems.c 1.9 2002/09/08 14:51:28 kls Exp $
  */
 
 #include "menuitems.h"
@@ -68,7 +68,7 @@ eOSState cMenuEditIntItem::ProcessKey(eKeys Key)
            *value = 0;
            fresh = false;
            }
-        newValue = *value  * 10 + (Key - k0);
+        newValue = *value * 10 + (Key - k0);
         }
      else if (NORMALKEY(Key) == kLeft) { // TODO might want to increase the delta if repeated quickly?
         newValue = *value - 1;
@@ -78,8 +78,11 @@ eOSState cMenuEditIntItem::ProcessKey(eKeys Key)
         newValue = *value + 1;
         fresh = true;
         }
-     else
+     else {
+        if (*value < min) { *value = min; Set(); }
+        if (*value > max) { *value = max; Set(); }
         return state;
+        }
      if ((!fresh || min <= newValue) && newValue <= max) {
         *value = newValue;
         Set();

@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.40 2002/08/25 10:40:46 kls Exp $
+ * $Id: svdrp.c 1.42 2002/09/08 11:22:57 kls Exp $
  */
 
 #include "svdrp.h"
@@ -387,6 +387,7 @@ void cSVDRP::CmdCHAN(const char *Option)
 {
   if (*Option) {
      int n = -1;
+     int d = 0;
      if (isnumber(Option)) {
         int o = strtol(Option, NULL, 10);
         if (o >= 1 && o <= Channels.MaxNumber())
@@ -394,13 +395,17 @@ void cSVDRP::CmdCHAN(const char *Option)
         }
      else if (strcmp(Option, "-") == 0) {
         n = cDevice::CurrentChannel();
-        if (n > 1)
+        if (n > 1) {
            n--;
+           d = -1;
+           }
         }
      else if (strcmp(Option, "+") == 0) {
         n = cDevice::CurrentChannel();
-        if (n < Channels.MaxNumber())
+        if (n < Channels.MaxNumber()) {
            n++;
+           d = 1;
+           }
         }
      else {
         int i = 1;
@@ -417,21 +422,21 @@ void cSVDRP::CmdCHAN(const char *Option)
         Reply(501, "Undefined channel \"%s\"", Option);
         return;
         }
-     if (Interface->Recording()) {
-        Reply(550, "Can't switch channel, interface is recording");
-        return;
-        }
-     cChannel *channel = Channels.GetByNumber(n);
-     if (channel) {
-        if (!channel->Switch()) {
-           Reply(554, "Error switching to channel \"%d\"", channel->number);
+     if (!d) {
+        cChannel *channel = Channels.GetByNumber(n);
+        if (channel) {
+           if (!cDevice::PrimaryDevice()->SwitchChannel(channel, true)) {
+              Reply(554, "Error switching to channel \"%d\"", channel->number);
+              return;
+              }
+           }
+        else {
+           Reply(550, "Unable to find channel \"%s\"", Option);
            return;
            }
         }
-     else {
-        Reply(550, "Unable to find channel \"%s\"", Option);
-        return;
-        }
+     else
+        cDevice::SwitchChannel(d);
      }
   cChannel *channel = Channels.GetByNumber(cDevice::CurrentChannel());
   if (channel)

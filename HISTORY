@@ -1430,3 +1430,32 @@ Video Disk Recorder Revision History
 - Fixed handling one-shot timers that were already recording and had their start
   time changed into the future (thanks to Matthias Schniedermeyer for reporting
   this one).
+
+2002-09-08: Version 1.1.9
+
+- Fixed the 'newplugin' script to make it name the target for creating the
+  distribution package 'dist', as stated in the PLUGINS.html documentation.
+  If you have already created a plugin source directory and Makefile you may
+  want to check it and replace the 'package' target with 'dist' if necessary.
+- Changed device handling for being able to do simultaneous recording and
+  replay on the same device (Time Shifting). In order for this to work you need
+  to use a driver with a firmware version that has this feature implemented.
+- cDevice::ProvidesCa() is no longer virtual. The new function
+  cDevice::ProvidesChannel() is now used to determine whether a device can
+  receive a given channel, and by default this function returns false. So a
+  device that is a pure replaying device doesn't need to do anything here.
+- Increased the recorder buffer size to 5MB in order to be able to better handle
+  multiple recordings.
+- Implemented cTSBuffer for better handling TS packet buffering in derived
+  cDevice classes.
+- Changed the interface if cDevice::GetTSPacket() to avoid unnecessary copying
+  of data.
+- Removed cDevice::Channel(), since this makes no more sense with devices
+  receiving multiple channels.
+- Switching through channels with the 'Up' and 'Down' keys now skips channels
+  that are currently not available (for instance because all devices are
+  recording and these channels are on different transponders).
+- Implemented an SPU decoder (thanks to Andreas Schultz).
+- Fixed a crash when entering an integer value outside the limits (thanks to
+  Stefan Huelswitt for reporting this one).
+- Added play mode pmAudioOnlyBlack (thanks to Stefan Huelswitt).

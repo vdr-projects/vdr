@@ -4,11 +4,12 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: eitscan.c 1.5 2002/08/11 11:11:39 kls Exp $
+ * $Id: eitscan.c 1.7 2002/09/08 11:08:52 kls Exp $
  */
 
 #include "eitscan.h"
 #include <stdlib.h>
+#include "dvbdevice.h"
 
 cEITScanner::cEITScanner(void)
 {
@@ -49,9 +50,9 @@ void cEITScanner::Process(void)
   if (Setup.EPGScanTimeout && Channels.MaxNumber() > 1) {
      time_t now = time(NULL);
      if (now - lastScan > ScanTimeout && now - lastActivity > ActivityTimeout) {
-        for (int i = 0; i < MAXDEVICES; i++) {
-            cDevice *Device = cDevice::GetDevice(i + 1, MAXPRIORITY + 1);
-            if (Device) {
+        for (int i = 0; i < cDevice::NumDevices(); i++) {
+            cDevice *Device = cDevice::GetDevice(i);
+            if (Device && Device->CardIndex() < MAXDVBDEVICES) {
                if (Device != cDevice::PrimaryDevice() || (cDevice::NumDevices() == 1 && Setup.EPGScanTimeout && now - lastActivity > Setup.EPGScanTimeout * 3600)) {
                   if (!(Device->Receiving() || Device->Replaying())) {
                      int oldCh = lastChannel;
@@ -63,12 +64,12 @@ void cEITScanner::Process(void)
                               }
                            cChannel *Channel = Channels.GetByNumber(ch);
                            if (Channel) {
-                              if (Channel->ca <= MAXDEVICES && !Device->ProvidesCa(Channel->ca))
-                                 break; // the channel says it explicitly needs a different card
+                              if (!Device->ProvidesChannel(Channel))
+                                 break;
                               if (Channel->pnr && !TransponderScanned(Channel)) {
                                  if (Device == cDevice::PrimaryDevice() && !currentChannel)
-                                    currentChannel = Device->Channel();
-                                 Channel->Switch(Device, false);
+                                    currentChannel = Device->CurrentChannel();
+                                 Device->SwitchChannel(Channel, false);
                                  lastChannel = ch;
                                  break;
                                  }
@@ -78,6 +79,8 @@ void cEITScanner::Process(void)
                      }
                   }
                }
+            else
+               lastChannel++; // avoid hangup in case the last channel in the list is not provided by a DVB card
             }
         lastScan = time(NULL);
         }

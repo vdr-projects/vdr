@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 1.45 2002/08/09 16:02:02 kls Exp $
+# $Id: Makefile 1.46 2002/09/08 14:00:48 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -32,9 +32,9 @@ endif
 
 DTVLIB   = $(DTVDIR)/libdtv.a
 
-OBJS = audio.o config.o cutter.o device.o dvbdevice.o dvbosd.o dvbplayer.o eit.o eitscan.o font.o i18n.o\
+OBJS = audio.o config.o cutter.o device.o dvbdevice.o dvbosd.o dvbplayer.o dvbspu.o eit.o eitscan.o font.o i18n.o\
        interface.o menu.o menuitems.o osdbase.o osd.o player.o plugin.o receiver.o\
-       recorder.o recording.o remote.o remux.o ringbuffer.o status.o svdrp.o thread.o\
+       recorder.o recording.o remote.o remux.o ringbuffer.o spu.o status.o svdrp.o thread.o\
        tools.o transfer.o vdr.o videodir.o
 
 OSDFONT = -adobe-helvetica-medium-r-normal--23-*-100-100-p-*-iso8859-1

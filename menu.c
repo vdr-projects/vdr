@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.206 2002/08/25 10:56:09 kls Exp $
+ * $Id: menu.c 1.208 2002/09/06 14:07:58 kls Exp $
  */
 
 #include "menu.h"
@@ -508,7 +508,7 @@ eOSState cMenuChannels::Switch(void)
 {
   cChannel *ch = Channels.Get(Current());
   if (ch)
-     ch->Switch();
+     cDevice::PrimaryDevice()->SwitchChannel(ch, true);
   return osEnd;
 }
 
@@ -1054,7 +1054,7 @@ eOSState cMenuWhatsOn::Switch(void)
   cMenuWhatsOnItem *item = (cMenuWhatsOnItem *)Get(Current());
   if (item) {
      cChannel *channel = Channels.GetByServiceID(item->eventInfo->GetServiceID());
-     if (channel && channel->Switch())
+     if (channel && cDevice::PrimaryDevice()->SwitchChannel(channel, true))
         return osEnd;
      }
   Interface->Error(tr("Can't switch channel!"));
@@ -2519,15 +2519,14 @@ bool cRecordControls::Start(cTimer *Timer)
   cChannel *channel = Channels.GetByNumber(ch);
 
   if (channel) {
-     bool ReUse = false;
-     cDevice *device = cDevice::GetDevice(channel->ca, Timer ? Timer->priority : Setup.DefaultPriority, channel->frequency, channel->vpid, &ReUse);
+     bool NeedsDetachReceivers = false;
+     cDevice *device = cDevice::GetDevice(channel, Timer ? Timer->priority : Setup.DefaultPriority, &NeedsDetachReceivers);
      if (device) {
-        if (!ReUse) {
+        if (NeedsDetachReceivers)
            Stop(device);
-           if (!channel->Switch(device)) {
-              cThread::EmergencyExit(true);
-              return false;
-              }
+        if (!device->SwitchChannel(channel, false)) {
+           cThread::EmergencyExit(true);
+           return false;
            }
         for (int i = 0; i < MAXRECORDCONTROLS; i++) {
             if (!RecordControls[i]) {
@@ -2570,7 +2569,8 @@ void cRecordControls::Stop(cDevice *Device)
 bool cRecordControls::StopPrimary(bool DoIt)
 {
   if (cDevice::PrimaryDevice()->Receiving()) {
-     cDevice *device = cDevice::GetDevice(cDevice::PrimaryDevice()->Ca(), 0);
+     //XXX+ disabled for the moment - might become obsolete with DVB_DRIVER_VERSION >= 2002090101
+     cDevice *device = NULL;//XXX cDevice::GetDevice(cDevice::PrimaryDevice()->Ca(), 0);
      if (device) {
         if (DoIt)
            Stop(cDevice::PrimaryDevice());

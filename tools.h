@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.49 2002/08/16 08:52:01 kls Exp $
+ * $Id: tools.h 1.50 2002/09/08 10:22:29 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -46,6 +46,7 @@ extern int SysLogLevel;
 
 template<class T> inline T min(T a, T b) { return a <= b ? a : b; }
 template<class T> inline T max(T a, T b) { return a >= b ? a : b; }
+template<class T> inline int sgn(T a) { return a < 0 ? -1 : a > 0 ? 1 : 0; }
 template<class T> inline void swap(T &a, T &b) { T t = a; a = b; b = t; }
 
 ssize_t safe_read(int filedes, void *buffer, size_t size);

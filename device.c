@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.13 2002/08/25 09:16:51 kls Exp $
+ * $Id: device.c 1.19 2002/09/08 14:03:43 kls Exp $
  */
 
 #include "device.h"
@@ -12,10 +12,13 @@
 #include <sys/ioctl.h>
 #include <sys/mman.h>
 #include "eit.h"
+#include "i18n.h"
 #include "player.h"
 #include "receiver.h"
 #include "status.h"
 #include "transfer.h"
+
+// --- cDevice ---------------------------------------------------------------
 
 // The default priority for non-primary devices:
 #define DEFAULTPRIORITY  -2
@@ -27,6 +30,7 @@
 int cDevice::numDevices = 0;
 int cDevice::useDevice = 0;
 int cDevice::nextCardIndex = 0;
+int cDevice::currentChannel = 0;
 cDevice *cDevice::device[MAXDEVICES] = { NULL };
 cDevice *cDevice::primaryDevice = NULL;
 
@@ -37,8 +41,6 @@ cDevice::cDevice(void)
   SetVideoFormat(Setup.VideoFormat);
 
   active = false;
-
-  currentChannel = 0;
 
   mute = false;
   volume = Setup.CurrentVolume;
@@ -101,11 +103,6 @@ bool cDevice::SetPrimaryDevice(int n)
   return false;
 }
 
-bool cDevice::CanBeReUsed(int Frequency, int Vpid)
-{
-  return false;
-}
-
 bool cDevice::HasDecoder(void) const
 {
   return false;
@@ -116,31 +113,34 @@ cOsdBase *cDevice::NewOsd(int x, int y)
   return NULL;
 }
 
-cDevice *cDevice::GetDevice(int Ca, int Priority, int Frequency, int Vpid, bool *ReUse)
+cSpuDecoder *cDevice::GetSpuDecoder(void)
 {
-  if (ReUse)
-     *ReUse = false;
+  return NULL;
+}
+
+cDevice *cDevice::GetDevice(int Index)
+{
+  return (0 <= Index && Index < numDevices) ? device[Index] : NULL;
+}
+
+cDevice *cDevice::GetDevice(const cChannel *Channel, int Priority, bool *NeedsDetachReceivers)
+{
   cDevice *d = NULL;
-  int Provides[MAXDEVICES];
-  // Check which devices provide Ca:
   for (int i = 0; i < numDevices; i++) {
-      if ((Provides[i] = device[i]->ProvidesCa(Ca)) != 0) { // this device is basicly able to do the job
-         //XXX+ dsyslog("GetDevice: %d %d %d %5d %5d", i, device[i]->HasDecoder(), device[i]->Receiving(), Frequency, device[i]->frequency);//XXX
-         if (device[i]->CanBeReUsed(Frequency, Vpid)) {
-            d = device[i];
-            if (ReUse)
-               *ReUse = true;
-            break;
-            }
-         if (Priority > device[i]->Priority() // Priority is high enough to use this device
-            && (!d // we don't have a device yet, or...
-               || device[i]->Priority() < d->Priority() // ...this one has an even lower Priority
-               || (device[i]->Priority() == d->Priority() // ...same Priority...
-                  && Provides[i] < Provides[d->CardIndex()] // ...but this one provides fewer Ca values
+      bool ndr;
+      if (device[i]->ProvidesChannel(Channel, Priority, &ndr) // this device is basicly able to do the job
+         && (!d // we don't have a device yet, or...
+            || (device[i]->Receiving() && !ndr) // ...this one is already receiving and allows additional receivers, or...
+            || !d->Receiving() // ...the one we have is not receiving...
+               && (device[i]->Priority() < d->Priority() // ...this one has an even lower Priority, or...
+                  || device[i]->Priority() == d->Priority() // ...same Priority...
+                     && device[i]->ProvidesCa(Channel->ca) < d->ProvidesCa(Channel->ca) // ...but this one provides fewer Ca values
                   )
-               )
             )
-            d = device[i];
+         ) {
+         d = device[i];
+         if (NeedsDetachReceivers)
+            *NeedsDetachReceivers = ndr;
          }
       }
   /*XXX+ too complex with multiple recordings per device
@@ -189,8 +189,17 @@ void cDevice::SetVideoFormat(bool VideoFormat16_9)
 {
 }
 
-//#define PRINTPIDS(s) { char b[500]; char *q = b; q += sprintf(q, "%d %s ", CardIndex(), s); for (int i = 0; i < MAXPIDHANDLES; i++) q += sprintf(q, " %s%4d %d", i == ptOther ? "* " : "", pidHandles[i].pid, pidHandles[i].used); dsyslog(b); } //XXX+
+//#define PRINTPIDS(s) { char b[500]; char *q = b; q += sprintf(q, "%d %s ", CardIndex(), s); for (int i = 0; i < MAXPIDHANDLES; i++) q += sprintf(q, " %s%4d %d", i == ptOther ? "* " : "", pidHandles[i].pid, pidHandles[i].used); dsyslog(b); }
 #define PRINTPIDS(s)
+
+bool cDevice::HasPid(int Pid)
+{
+  for (int i = 0; i < MAXPIDHANDLES; i++) {
+      if (pidHandles[i].pid == Pid)
+         return true;
+      }
+  return false;
+}
 
 bool cDevice::AddPid(int Pid, ePidType PidType)
 {
@@ -207,10 +216,10 @@ bool cDevice::AddPid(int Pid, ePidType PidType)
         // The Pid is already in use
         if (++pidHandles[n].used == 2 && n <= ptTeletext) {
            // It's a special PID that may have to be switched into "tap" mode
-           PRINTPIDS("A");//XXX+
+           PRINTPIDS("A");
            return SetPid(&pidHandles[n], n, true);
            }
-        PRINTPIDS("a");//XXX+
+        PRINTPIDS("a");
         return true;
         }
      else if (PidType < ptOther) {
@@ -226,7 +235,7 @@ bool cDevice::AddPid(int Pid, ePidType PidType)
      if (n >= 0) {
         pidHandles[n].pid = Pid;
         pidHandles[n].used = 1;
-        PRINTPIDS("C");//XXX+
+        PRINTPIDS("C");
         return SetPid(&pidHandles[n], n, true);
         }
      }
@@ -238,14 +247,15 @@ void cDevice::DelPid(int Pid)
   if (Pid) {
      for (int i = 0; i < MAXPIDHANDLES; i++) {
          if (pidHandles[i].pid == Pid) {
+            PRINTPIDS("D");
             if (--pidHandles[i].used < 2) {
                SetPid(&pidHandles[i], i, false);
                if (pidHandles[i].used == 0) {
-                   pidHandles[i].handle = -1;
-                   pidHandles[i].pid = 0;
-                   }
+                  pidHandles[i].handle = -1;
+                  pidHandles[i].pid = 0;
+                  }
                }
-            PRINTPIDS("D");//XXX+
+            PRINTPIDS("E");
             }
          }
      }
@@ -256,20 +266,66 @@ bool cDevice::SetPid(cPidHandle *Handle, int Type, bool On)
   return false;
 }
 
-eSetChannelResult cDevice::SetChannel(const cChannel *Channel)
+bool cDevice::ProvidesChannel(const cChannel *Channel, int Priority, bool *NeedsDetachReceivers)
+{
+  return false;
+}
+
+bool cDevice::SwitchChannel(const cChannel *Channel, bool LiveView)
+{
+  if (LiveView)
+     isyslog("switching to channel %d", Channel->number);
+  for (int i = 3; i--;) {
+      switch (SetChannel(Channel, LiveView)) {
+        case scrOk:           return true;
+        case scrNotAvailable: return false;
+        case scrNoTransfer:   if (Interface)
+                                 Interface->Error(tr("Can't start Transfer Mode!"));
+                              return false;
+        case scrFailed:       break; // loop will retry
+        }
+      esyslog("retrying");
+      }
+  return false;
+}
+
+bool cDevice::SwitchChannel(int Direction)
+{
+  bool result = false;
+  Direction = sgn(Direction);
+  if (Direction) {
+     int n = CurrentChannel() + Direction;
+     int first = n;
+     for (;;) {
+         cChannel *channel = Channels.GetByNumber(n);
+         if (!channel)
+            break;
+         if (PrimaryDevice()->SwitchChannel(channel, true)) {
+            result = true;
+            break;
+            }
+         n += Direction;
+         }
+     int d = n - first;
+     if (abs(d) == 1)
+        dsyslog("skipped channel %d", first);
+     else if (d)
+        dsyslog("skipped channels %d..%d", first, n - sgn(d));
+     }
+  return result;
+}
+
+eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
 {
   cStatus::MsgChannelSwitch(this, 0);
 
-  StopReplay();
-
-  // Must set this anyway to avoid getting stuck when switching through
-  // channels with 'Up' and 'Down' keys:
-  currentChannel = Channel->number;
+  if (LiveView)
+     StopReplay();
 
   // If this card can't receive this channel, we must not actually switch
   // the channel here, because that would irritate the driver when we
   // start replaying in Transfer Mode immediately after switching the channel:
-  bool NeedsTransferMode = (IsPrimaryDevice() && !ProvidesCa(Channel->ca));
+  bool NeedsTransferMode = (LiveView && IsPrimaryDevice() && !ProvidesChannel(Channel, Setup.PrimaryLimit));
 
   eSetChannelResult Result = scrOk;
 
@@ -277,24 +333,30 @@ eSetChannelResult cDevice::SetChannel(const cChannel *Channel)
   // use the card that actually can receive it and transfer data from there:
 
   if (NeedsTransferMode) {
-     cDevice *CaDevice = GetDevice(Channel->ca, 0);
-     if (CaDevice && !CaDevice->Receiving() && CaDevice->SetChannel(Channel) == scrOk)
-        cControl::Launch(new cTransferControl(CaDevice, Channel->vpid, Channel->apid1, 0, 0, 0));//XXX+
+     cDevice *CaDevice = GetDevice(Channel, 0);
+     if (CaDevice) {
+        if (CaDevice->SetChannel(Channel, false) == scrOk) // calling SetChannel() directly, not SwitchChannel()!
+           cControl::Launch(new cTransferControl(CaDevice, Channel->vpid, Channel->apid1, 0, 0, 0));//XXX+
+        else
+           Result = scrNoTransfer;
+        }
      else
-        Result = scrNoTransfer;
+        Result = scrNotAvailable;
      }
-  else if (!SetChannelDevice(Channel))
+  else if (!SetChannelDevice(Channel, LiveView))
      Result = scrFailed;
 
-  if (IsPrimaryDevice())
+  if (Result == scrOk && LiveView && IsPrimaryDevice()) {
      cSIProcessor::SetCurrentServiceID(Channel->pnr);
+     currentChannel = Channel->number;
+     }
 
   cStatus::MsgChannelSwitch(this, Channel->number);
 
   return Result;
 }
 
-bool cDevice::SetChannelDevice(const cChannel *Channel)
+bool cDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
 {
   return false;
 }
@@ -357,10 +419,6 @@ bool cDevice::Replaying(void)
 
 bool cDevice::AttachPlayer(cPlayer *Player)
 {
-  if (Receiving()) {
-     esyslog("ERROR: attempt to attach a cPlayer while receiving on device %d - ignored", CardIndex() + 1);
-     return false;
-     }
   if (HasDecoder()) {
      if (player)
         Detach(player);
@@ -419,9 +477,7 @@ int cDevice::PlayAudio(const uchar *Data, int Length)
 
 int cDevice::Priority(void)
 {
-  if (IsPrimaryDevice() && !Receiving())
-     return Setup.PrimaryLimit - 1;
-  int priority = DEFAULTPRIORITY;
+  int priority = IsPrimaryDevice() ? Setup.PrimaryLimit - 1 : DEFAULTPRIORITY;
   for (int i = 0; i < MAXRECEIVERS; i++) {
       if (receiver[i])
          priority = max(receiver[i]->priority, priority);
@@ -497,15 +553,13 @@ void cDevice::Action(void)
   dsyslog("receiver thread started on device %d (pid=%d)", CardIndex() + 1, getpid());
 
   if (OpenDvr()) {
-     uchar b[TS_SIZE];
      time_t t = time(NULL);
      active = true;
      for (; active;) {
          // Read data from the DVR device:
-         int r = GetTSPacket(b);
-         if (r == TS_SIZE) {
-            if (*b == TS_SYNC_BYTE) {
-               // We're locked on to a TS packet
+         uchar *b = NULL;
+         if (GetTSPacket(b)) {
+            if (b) {
                int Pid = (((uint16_t)b[1] & PID_MASK_HI) << 8) | b[2];
                // Distribute the packet to all attached receivers:
                Lock();
@@ -514,12 +568,10 @@ void cDevice::Action(void)
                       receiver[i]->Receive(b, TS_SIZE);
                    }
                Unlock();
+               t = time(NULL);
                }
-            t = time(NULL);
             }
-         else if (r > 0)
-            esyslog("ERROR: got incomplete TS packet (%d bytes) on device %d", r, CardIndex() + 1);//XXX+ TODO do we have to read the rest???
-         else if (r < 0)
+         else
             break;
 
          //XXX+ put this into the recorder??? or give the receiver a flag whether it wants this?
@@ -544,19 +596,17 @@ void cDevice::CloseDvr(void)
 {
 }
 
-int cDevice::GetTSPacket(uchar *Data)
+bool cDevice::GetTSPacket(uchar *&Data)
 {
-  return -1;
+  return false;
 }
 
 bool cDevice::AttachReceiver(cReceiver *Receiver)
 {
-  //XXX+ check for same transponder???
   if (!Receiver)
      return false;
   if (Receiver->device == this)
      return true;
-  StopReplay();
   for (int i = 0; i < MAXRECEIVERS; i++) {
       if (!receiver[i]) {
          for (int n = 0; n < MAXRECEIVEPIDS; n++)
@@ -596,4 +646,86 @@ void cDevice::Detach(cReceiver *Receiver)
      active = false;
      Cancel(3);
      }
+}
+
+// --- cTSBuffer -------------------------------------------------------------
+
+cTSBuffer::cTSBuffer(int File, int Size, int CardIndex)
+{
+  f = File;
+  size = Size / TS_SIZE * TS_SIZE;
+  cardIndex = CardIndex;
+  tsRead = tsWrite = 0;
+  buf = (f >= 0 && size >= TS_SIZE) ? MALLOC(uchar, size + TS_SIZE) : NULL;
+  // the '+ TS_SIZE' allocates some extra space for handling packets that got split by a buffer roll-over
+  firstRead = true;
+}
+
+cTSBuffer::~cTSBuffer()
+{
+  free(buf);
+}
+
+int cTSBuffer::Read(void)
+{
+  if (buf) {
+     cPoller Poller(f, false);
+     bool repeat;
+     int total = 0;
+     do {
+        repeat = false;
+        if (firstRead || Used() > TS_SIZE || Poller.Poll(100)) { // only wait if there's not enough data in the buffer
+           firstRead = false;
+           if (tsRead == tsWrite)
+              tsRead = tsWrite = 0; // keep the maximum buffer space available
+           if (tsWrite >= size && tsRead > 0)
+              tsWrite = 0;
+           int free = tsRead <= tsWrite ? size - tsWrite : tsRead - tsWrite - 1;
+           if (free > 0) {
+              int r = read(f, buf + tsWrite, free);
+              if (r > 0) {
+                 total += r;
+                 tsWrite += r;
+                 if (tsWrite >= size && tsRead > 0) {
+                    tsWrite = 0;
+                    repeat = true; // read again after a boundary roll-over
+                    }
+                 }
+              }
+           }
+        } while (repeat);
+     return total;
+     }
+  return -1;
+}
+
+uchar *cTSBuffer::Get(void)
+{
+  if (Used() >= TS_SIZE) {
+     uchar *p = buf + tsRead;
+     if (*p != TS_SYNC_BYTE) {
+        esyslog("ERROR: not sync'ed to TS packet on device %d", cardIndex);
+        int tsMax = tsRead < tsWrite ? tsWrite : size;
+        for (int i = tsRead; i < tsMax; i++) {
+            if (buf[i] == TS_SYNC_BYTE) {
+               esyslog("ERROR: skipped %d bytes to sync on TS packet on device %d", i - tsRead, cardIndex);
+               tsRead = i;
+               return NULL;
+               }
+            }
+        if ((tsRead = tsMax) >= size)
+           tsRead = 0;
+        return NULL;
+        }
+     if (tsRead + TS_SIZE > size) {
+        // the packet rolled over the buffer boundary, so let's fetch the rest from the beginning (which MUST be there, since Used() >= TS_SIZE)
+        int rest = TS_SIZE - (size - tsRead);
+        memcpy(buf + size, buf, rest);
+        tsRead = rest;
+        }
+     else if ((tsRead += TS_SIZE) >= size)
+        tsRead = 0;
+     return p;
+     }
+  return NULL;
 }

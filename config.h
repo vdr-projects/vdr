@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.124 2002/08/24 10:23:48 kls Exp $
+ * $Id: config.h 1.126 2002/09/04 11:04:55 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -20,7 +20,7 @@
 #include "eit.h"
 #include "tools.h"
 
-#define VDRVERSION "1.1.8"
+#define VDRVERSION "1.1.9"
 
 #define MAXPRIORITY 99
 #define MAXLIFETIME 99
@@ -119,7 +119,6 @@ public:
   const char *ToText(void);
   bool Parse(const char *s);
   bool Save(FILE *f);
-  bool Switch(cDevice *Device = NULL, bool Log = true);
   };
 
 enum eTimerActive { taInactive = 0,
@@ -197,6 +196,8 @@ public:
   bool Parse(const char *s);
   bool Accepts(in_addr_t Address);
   };
+
+#define CACONFBASE 100
 
 class cCaDefinition : public cListObject {
 private:
@@ -296,7 +297,7 @@ public:
   cChannel *GetByNumber(int Number);
   cChannel *GetByServiceID(unsigned short ServiceId);
   const char *GetChannelNameByNumber(int Number);
-  bool SwitchTo(int Number, cDevice *Device = NULL);
+  bool SwitchTo(int Number);
   int MaxNumber(void) { return maxNumber; }
   };
 

@@ -145,6 +145,8 @@ Stefan Huelswitt <huels@iname.com>
  option can't be accessed
  for implementing several replay modes to allow players that play only audio
  for improving cCondVar::Wait() and implementing cCondVar::TimedWait()
+ for reporting a bug when entering an integer value outside the limit
+ for adding play mode pmAudioOnlyBlack
 
 Ulrich Röder <roeder@efr-net.de>
  for pointing out that there are channels that have a symbol rate higher than
@@ -166,6 +168,7 @@ Andreas Schultz <aschultz@warp10.net>
  for making the use of malloc/free and new/delete consistent
  for adding cDevice::NewOsd() to allow a derived cDevice class to implement its own
  OSD capabilities
+ for implementing an SPU decoder
 
 Aaron Holtzman
  for writing 'ac3dec'

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.104 2002/08/11 11:35:18 kls Exp $
+ * $Id: config.c 1.105 2002/09/04 13:45:56 kls Exp $
  */
 
 #include "config.h"
@@ -291,30 +291,6 @@ bool cChannel::Parse(const char *s)
 bool cChannel::Save(FILE *f)
 {
   return fprintf(f, ToText()) > 0;
-}
-
-bool cChannel::Switch(cDevice *Device, bool Log)
-{
-  if (!Device)
-     Device = cDevice::PrimaryDevice();
-  if (!(Device->IsPrimaryDevice() && Device->Receiving()) && !groupSep) {
-     if (Log)
-        isyslog("switching to channel %d", number);
-     for (int i = 3; i--;) {
-         switch (Device->SetChannel(this)) {
-           case scrOk:         return true;
-           case scrNoTransfer: if (Interface)
-                                  Interface->Error(tr("Can't start Transfer Mode!"));
-                               return false;
-           case scrFailed:     break; // loop will retry
-           }
-         esyslog("retrying");
-         }
-     return false;
-     }
-  if (Device->IsPrimaryDevice() && Device->Receiving())
-     Interface->Error(tr("Channel locked (recording)!"));
-  return false;
 }
 
 // -- cTimer -----------------------------------------------------------------
@@ -836,10 +812,10 @@ cChannel *cChannels::GetByServiceID(unsigned short ServiceId)
   return NULL;
 }
 
-bool cChannels::SwitchTo(int Number, cDevice *Device)
+bool cChannels::SwitchTo(int Number)
 {
   cChannel *channel = GetByNumber(Number);
-  return channel && channel->Switch(Device);
+  return channel && cDevice::PrimaryDevice()->SwitchChannel(channel, true);
 }
 
 const char *cChannels::GetChannelNameByNumber(int Number)
@@ -944,7 +920,7 @@ bool cSetupLine::operator< (const cListObject &ListObject)
 {
   const cSetupLine *sl = (cSetupLine *)&ListObject;
   if (!plugin && !sl->plugin)
-     return strcasecmp(name, sl->name) < 0; 
+     return strcasecmp(name, sl->name) < 0;
   if (!plugin)
      return true;
   if (!sl->plugin)

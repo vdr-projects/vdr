@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 1.10 2002/08/25 09:16:34 kls Exp $
+ * $Id: device.h 1.16 2002/09/08 14:56:21 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -24,11 +24,12 @@
 #define TS_SYNC_BYTE     0x47
 #define PID_MASK_HI      0x1F
 
-enum eSetChannelResult { scrOk, scrNoTransfer, scrFailed };
+enum eSetChannelResult { scrOk, scrNotAvailable, scrNoTransfer, scrFailed };
 
-enum ePlayMode { pmNone,       // audio/video from decoder
-                 pmAudioVideo, // audio/video from player
-                 pmAudioOnly,  // audio only from player, video from decoder
+enum ePlayMode { pmNone,           // audio/video from decoder
+                 pmAudioVideo,     // audio/video from player
+                 pmAudioOnly,      // audio only from player, video from decoder
+                 pmAudioOnlyBlack, // audio only from player, no video (black screen)
                  pmExtern_THIS_SHOULD_BE_AVOIDED
                  // external player (e.g. MPlayer), release the device
                  // WARNING: USE THIS MODE ONLY AS A LAST RESORT, IF YOU
@@ -47,6 +48,7 @@ class cOsdBase;
 class cChannel;
 class cPlayer;
 class cReceiver;
+class cSpuDecoder;
 
 class cDevice : cThread {
 private:
@@ -69,19 +71,13 @@ public:
          // 1...numDevices) and returns true if this was possible.
   static cDevice *PrimaryDevice(void) { return primaryDevice; }
          // Returns the primary device.
-  static cDevice *GetDevice(int Ca, int Priority, int Frequency = 0, int Vpid = 0, bool *ReUse = NULL);
-         // Selects a free device, avoiding the primaryDevice if possible.
-         // If Ca is not 0, the device with the given number will be returned
-         // in case Ca is <= MAXDEVICES, or the device that provides the given
-         // value in its caCaps.
-         // If there is a device that is already receiving and can be re-used to
-         // receive another data stream, that device will be returned.
-         // If all devices are currently receiving, the one receiving with the
-         // lowest priority (if any) that is lower than the given Priority
-         // will be returned.
-         // If ReUse is given, the caller will be informed whether the device can be re-used
-         // for a new recording. If ReUse returns 'true', the caller must NOT switch the channel
-         // (the device is already properly tuned). Otherwise the caller MUST switch the channel.
+  static cDevice *GetDevice(int Index);
+         // Returns the device with the Index (if Index is in the range
+         // 0..numDevices-1, NULL otherwise).
+  static cDevice *GetDevice(const cChannel *Channel, int Priority = -1, bool *NeedsDetachReceivers = NULL);
+         // Returns a device that is able to receive the given Channel at the
+         // given Priority (see ProvidesChannel() for more information on how
+         // priorities are handled, and the meaning of NeedsDetachReceivers).
   static void SetCaCaps(int Index = -1);
          // Sets the CaCaps of the given device according to the Setup data.
          // By default the CaCaps of all devices are set.
@@ -115,18 +111,13 @@ public:
   bool IsPrimaryDevice(void) const { return this == primaryDevice; }
   int CardIndex(void) const { return cardIndex; }
          // Returns the card index of this device (0 ... MAXDEVICES - 1).
-  virtual int ProvidesCa(int Ca);
-         //XXX TODO temporarily made this function virtual - until a general
-         //XXX      mechanism has been implemented
+  int ProvidesCa(int Ca);
          // Checks whether this device provides the given value in its
          // caCaps. Returns 0 if the value is not provided, 1 if only this
          // value is provided, and > 1 if this and other values are provided.
          // If the given value is equal to the number of this device,
          // 1 is returned. If it is 0 (FTA), 1 plus the number of other values
          // in caCaps is returned.
-  virtual bool CanBeReUsed(int Frequency, int Vpid);//XXX TODO make it more abstract
-         // Tells whether this device is already receiving and allows another
-         // receiver with the given settings to be attached to it.
   virtual bool HasDecoder(void) const;
          // Tells whether this device has an MPEG decoder.
 
@@ -139,20 +130,46 @@ public:
          // of the OSD at the given coordinates. If a derived cDevice doesn't
          // implement this function, NULL will be returned by default (which
          // means the device has no OSD capabilities).
+  virtual cSpuDecoder *GetSpuDecoder(void);
+         // Returns a pointer to the device's SPU decoder (or NULL, if this
+         // device doesn't have an SPU decoder).
 
 // Channel facilities
 
 protected:
-  int currentChannel;
+  static int currentChannel;
 public:
-  eSetChannelResult SetChannel(const cChannel *Channel);
+  virtual bool ProvidesChannel(const cChannel *Channel, int Priority = -1, bool *NeedsDetachReceivers = NULL);
+         // Returns true if this device can provide the given channel.
+         // In case the device has cReceivers attached to it or it is the primary
+         // device, Priority is used to decide whether the caller's request can
+         // be honored.
+         // The special Priority value -1 will tell the caller whether this device
+         // is principally able to provide the given Channel, regardless of any
+         // attached cReceivers.
+         // If NeedsDetachReceivers is given, the resulting value in it will tell the
+         // caller whether or not it will have to detach any currently attached
+         // receivers from this device before calling SwitchChannel. Note
+         // that the return value in NeedsDetachReceivers is only meaningful if the
+         // function itself actually returns true.
+         // The default implementation always returns false, so a derived cDevice
+         // class that can provide channels must implement this function.
+  bool SwitchChannel(const cChannel *Channel, bool LiveView);
+         // Switches the device to the given Channel, initiating transfer mode
+         // if necessary.
+  static bool SwitchChannel(int Direction);
+         // Switches the primary device to the next available channel in the given
+         // Direction (only the sign of Direction is evaluated, positive values
+         // switch to higher channel numbers).
+private:
+  eSetChannelResult SetChannel(const cChannel *Channel, bool LiveView);
          // Sets the device to the given channel (general setup).
-  virtual bool SetChannelDevice(const cChannel *Channel);
+protected:
+  virtual bool SetChannelDevice(const cChannel *Channel, bool LiveView);
          // Sets the device to the given channel (actual physical setup).
-  static int CurrentChannel(void) { return primaryDevice ? primaryDevice->currentChannel : 0; }
+public:
+  static int CurrentChannel(void) { return primaryDevice ? currentChannel : 0; }
          // Returns the number of the current channel on the primary device.
-  int Channel(void) { return currentChannel; }
-         // Returns the number of the current channel on this device.
 
 // PID handle facilities
 
@@ -169,6 +186,8 @@ protected:
     cPidHandle(void) { pid = used = 0; handle = -1; }
     };
   cPidHandle pidHandles[MAXPIDHANDLES];
+  bool HasPid(int Pid);
+         // Returns true if this device is currently receiving the given PID.
   bool AddPid(int Pid, ePidType PidType = ptOther);
          // Adds a PID to the set of PIDs this device shall receive.
   void DelPid(int Pid);
@@ -263,23 +282,24 @@ public:
 private:
   cReceiver *receiver[MAXRECEIVERS];
   int ca;
+  int CanShift(int Ca, int Priority, int UsedCards = 0);
+protected:
   int Priority(void);
       // Returns the priority of the current receiving session (0..MAXPRIORITY),
       // or -1 if no receiver is currently active. The primary device will
       // always return at least Setup.PrimaryLimit-1.
-  int CanShift(int Ca, int Priority, int UsedCards = 0);
-protected:
   virtual bool OpenDvr(void);
       // Opens the DVR of this device and prepares it to deliver a Transport
       // Stream for use in a cReceiver.
   virtual void CloseDvr(void);
       // Shuts down the DVR.
-  virtual int GetTSPacket(uchar *Data);
-      // Gets exactly one TS packet from the DVR of this device and copies it
-      // into the given memory area (which is exactly 188 bytes in size).
-      // Returns the number of bytes copied into Data (which must be 188).
-      // If there is currently no TS packet available, 0 should be returned.
-      // In case of a non recoverable error, returns -1.
+  virtual bool GetTSPacket(uchar *&Data);
+      // Gets exactly one TS packet from the DVR of this device and returns
+      // a pointer to it in Data. Only the first 188 bytes (TS_SIZE) Data
+      // points to are valid and may be accessed. If there is currently no
+      // new data available, Data will be set to NULL. The function returns
+      // false in case of a non recoverable error, otherwise it returns true,
+      // even if Data is NULL.
 public:
   int  Ca(void) { return ca; }
        // Returns the ca of the current receiving session.
@@ -289,6 +309,31 @@ public:
        // Attaches the given receiver to this device.
   void Detach(cReceiver *Receiver);
        // Detaches the given receiver from this device.
+  };
+
+// Derived cDevice classes that can receive channels will have to provide
+// Transport Stream (TS) packets one at a time. cTSBuffer implements a
+// simple buffer that allows the device to read a larger amount of data
+// from the driver with each call to Read(), thus avoiding the overhead
+// of getting each TS packet separately from the driver. It also makes
+// sure the returned data points to a TS packet and automatically
+// re-synchronizes after broken packet.
+
+class cTSBuffer {
+private:
+  int f;
+  int size;
+  int cardIndex;
+  int tsRead;
+  int tsWrite;
+  uchar *buf;
+  bool firstRead;
+  int Used(void) { return tsRead <= tsWrite ? tsWrite - tsRead : size - tsRead + tsWrite; }
+public:
+  cTSBuffer(int File, int Size, int CardIndex);
+  ~cTSBuffer();
+  int Read(void);
+  uchar *Get(void);
   };
 
 #endif //__DEVICE_H

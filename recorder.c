@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recorder.c 1.1 2002/06/16 10:03:25 kls Exp $
+ * $Id: recorder.c 1.2 2002/09/07 13:40:23 kls Exp $
  */
 
 #include <stdarg.h>
@@ -14,7 +14,7 @@
 
 // The size of the array used to buffer video data:
 // (must be larger than MINVIDEODATA - see remux.h)
-#define VIDEOBUFSIZE  MEGABYTE(1)
+#define VIDEOBUFSIZE  MEGABYTE(5)
 
 #define MINFREEDISKSPACE    (512) // MB
 #define DISKCHECKINTERVAL   100 // seconds
