@@ -3467,3 +3467,5 @@ Video Disk Recorder Revision History
 - Some fixes to avoid compiler warnings in gcc 4.0 (thanks to Ville Skyttä for reporting
   these).
 - Single shot timers are now reliably deleted when they have expired.
+- Fixed setting the colored button help after deleting a recording in case the next
+  menu entry is a directory (thanks to Steffen Beyer).
