@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.62 2001/03/03 11:36:36 kls Exp $
+ * $Id: dvbapi.c 1.63 2001/03/14 18:39:53 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -1535,7 +1535,7 @@ cDvbApi::cDvbApi(const char *VideoFileName, const char *VbiFileName)
   videoDev = open(VideoFileName, O_RDWR | O_NONBLOCK);
   if (videoDev >= 0) {
      siProcessor = new cSIProcessor(VbiFileName);
-     if (!NumDvbApis) // only the first one shall set the system time
+     if (!dvbApi[0]) // only the first one shall set the system time
         siProcessor->SetUseTSTime(Setup.SetSystemTime);
      siProcessor->AddFilter(0x14, 0x70);  // TDT
      siProcessor->AddFilter(0x14, 0x73);  // TOT
