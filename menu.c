@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.51 2000/11/18 15:42:39 kls Exp $
+ * $Id: menu.c 1.52 2000/11/18 16:30:13 kls Exp $
  */
 
 #include "menu.h"
@@ -1149,6 +1149,8 @@ eOSState cMenuEvent::ProcessKey(eKeys Key)
 
   if (state == osUnknown) {
      switch (Key) {
+       case kGreen:
+       case kYellow: return osContinue;
        case kOk:     return osBack;
        default: break;
        }
