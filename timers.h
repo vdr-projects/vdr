@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.h 1.2 2002/11/10 10:17:05 kls Exp $
+ * $Id: timers.h 1.3 2002/11/24 11:50:56 kls Exp $
  */
 
 #ifndef __TIMERS_H
@@ -12,6 +12,7 @@
 
 #include "channels.h"
 #include "config.h"
+#include "eit.h"
 #include "tools.h"
 
 enum eTimerActive { taInactive = 0,

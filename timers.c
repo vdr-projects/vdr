@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 1.2 2002/11/10 10:19:12 kls Exp $
+ * $Id: timers.c 1.3 2002/11/24 14:29:21 kls Exp $
  */
 
 #include "timers.h"
@@ -49,7 +49,7 @@ cTimer::cTimer(const cEventInfo *EventInfo)
   startTime = stopTime = 0;
   recording = pending = false;
   active = true;
-  channel = Channels.GetByChannelID(EventInfo->GetChannelID());
+  channel = Channels.GetByChannelID(EventInfo->GetChannelID(), true);
   time_t tstart = EventInfo->GetTime();
   time_t tstop = tstart + EventInfo->GetDuration() + Setup.MarginStop * 60;
   tstart -= Setup.MarginStart * 60;
@@ -97,7 +97,7 @@ const char *cTimer::ToText(bool UseChannelID)
   free(buffer);
   strreplace(file, ':', '|');
   strreplace(summary, '\n', '|');
-  asprintf(&buffer, "%d:%s:%s:%04d:%04d:%d:%d:%s:%s\n", active, UseChannelID ? Channel()->GetChannelIDStr() : itoa(Channel()->Number()), PrintDay(day, firstday), start, stop, priority, lifetime, file, summary ? summary : "");
+  asprintf(&buffer, "%d:%s:%s:%04d:%04d:%d:%d:%s:%s\n", active, UseChannelID ? Channel()->GetChannelID().ToString() : itoa(Channel()->Number()), PrintDay(day, firstday), start, stop, priority, lifetime, file, summary ? summary : "");
   strreplace(summary, '|', '\n');
   strreplace(file, '|', ':');
   return buffer;
@@ -216,8 +216,8 @@ bool cTimer::Parse(const char *s)
      strn0cpy(file, filebuffer, MaxFileName);
      strreplace(file, '|', ':');
      strreplace(summary, '|', '\n');
-     uint64 cid = cChannel::StringToChannelID(channelbuffer);
-     channel = cid ? Channels.GetByChannelID(cid) : Channels.GetByNumber(atoi(channelbuffer));
+     tChannelID cid = tChannelID::FromString(channelbuffer);
+     channel = cid.Valid() ? Channels.GetByChannelID(cid) : Channels.GetByNumber(atoi(channelbuffer));
      if (!channel) {
         esyslog("ERROR: channel %s not defined", channelbuffer);
         result = false;

@@ -8,7 +8,7 @@
 .\" License as specified in the file COPYING that comes with the
 .\" vdr distribution.
 .\"
-.\" $Id: vdr.5 1.12 2002/11/10 10:10:15 kls Exp $
+.\" $Id: vdr.5 1.13 2002/11/24 13:48:13 kls Exp $
 .\"
 .TH vdr 5 "10 Nov 2002" "1.2.0" "Video Disk Recorder Files"
 .SH NAME
@@ -38,7 +38,7 @@ The given number must be larger than the number of any previous channel
 A \fBchannel definition\fR is a line with channel data, where the fields
 are separated by ':' characters. Example:
 
-\fBRTL:12188:h:S19.2E:27500:163:104:105:0:12003\fR
+\fBRTL:12188:h:S19.2E:27500:163:104:105:0:12003:0:0:0\fR
 
 The line number of a channel definition (not counting group separators,
 and based on a possible previous '@...' parameter)
@@ -119,16 +119,27 @@ l l.
 .TE
 .TP
 .B SID
-The service ID of this channel.
+The Service ID of this channel.
+.TP
+.B NID
+The Network ID of this channel (for future use, currently always 0).
+.TP
+.B TID
+The Transport stream ID of this channel (for future use, currently always 0).
+.TP
+.B RID
+The Radio ID of this channel (typically 0, may be used to distinguish channels where
+NID, TID and SID are all equal).
 .PP
 A particular channel can be uniquely identified by its \fBchannel\ ID\fR,
 which is a string that looks like this:
 
-\fBS19.2E-0-12188-12003\fR
+\fBS19.2E-0-12188-12003-0\fR
 
 The components of this string are the \fBSource\fR (S19.2E), \fBFrequency\fR
-(12188, MHz) and \fBSID\fR (12003) as defined above. The part that is currently
-\fB0\fR is reserved for future use.
+(12188, MHz) and \fBSID\fR (12003) as defined above. The parts that are currently
+\fB0\fR are reserved for future use (the last part can be omitted if it is \fB0\fR,
+so the above example could also be written as \fBS19.2E-0-12188-12003\fR).
 .br
 The \fBchannel\ ID\fR is used in the \fItimers.conf\fR and \fIepg.data\fR
 files to properly identify the channels.

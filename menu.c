@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.225 2002/11/23 14:51:24 kls Exp $
+ * $Id: menu.c 1.226 2002/11/24 14:34:41 kls Exp $
  */
 
 #include "menu.h"
@@ -582,6 +582,11 @@ void cMenuEditChannel::Setup(void)
   Add(new cMenuEditIntItem( tr("Tpid"),         &data.tpid,  0, 0x1FFF));
   Add(new cMenuEditCaItem(  tr("CA"),           &data.ca, true));
   Add(new cMenuEditIntItem( tr("Sid"),          &data.sid, 0));
+  /* XXX not yet used
+  Add(new cMenuEditIntItem( tr("Nid"),          &data.nid, 0));
+  Add(new cMenuEditIntItem( tr("Tid"),          &data.tid, 0));
+  Add(new cMenuEditIntItem( tr("Rid"),          &data.rid, 0));
+  XXX*/
   // Parameters for specific types of sources:
   ST(" S ")  Add(new cMenuEditChrItem( tr("Polarization"), &data.polarization, "hv"));
   ST("CS ")  Add(new cMenuEditIntItem( tr("Srate"),        &data.srate));
@@ -1089,7 +1094,7 @@ cMenuEvent::cMenuEvent(const cEventInfo *EventInfo, bool CanSwitch)
 {
   eventInfo = EventInfo;
   if (eventInfo) {
-     cChannel *channel = Channels.GetByChannelID(eventInfo->GetChannelID());
+     cChannel *channel = Channels.GetByChannelID(eventInfo->GetChannelID(), true);
      if (channel) {
         char *buffer;
         asprintf(&buffer, "%-17.*s\t%.*s  %s - %s", 17, channel->Name(), 5, eventInfo->GetDate(), eventInfo->GetTimeString(), eventInfo->GetEndTimeString());
@@ -1183,7 +1188,7 @@ cMenuWhatsOn::cMenuWhatsOn(const cSchedules *Schedules, bool Now, int CurrentCha
 
         pArray[num] = Now ? Schedule->GetPresentEvent() : Schedule->GetFollowingEvent();
         if (pArray[num]) {
-           cChannel *channel = Channels.GetByChannelID(pArray[num]->GetChannelID());
+           cChannel *channel = Channels.GetByChannelID(pArray[num]->GetChannelID(), true);
            if (channel) {
               pArray[num]->SetChannelNumber(channel->Number());
               num++;
@@ -1213,7 +1218,7 @@ eOSState cMenuWhatsOn::Switch(void)
 {
   cMenuWhatsOnItem *item = (cMenuWhatsOnItem *)Get(Current());
   if (item) {
-     cChannel *channel = Channels.GetByChannelID(item->eventInfo->GetChannelID());
+     cChannel *channel = Channels.GetByChannelID(item->eventInfo->GetChannelID(), true);
      if (channel && cDevice::PrimaryDevice()->SwitchChannel(channel, true))
         return osEnd;
      }
@@ -1397,7 +1402,7 @@ eOSState cMenuSchedule::ProcessKey(eKeys Key)
                         if (!now && !next) {
                            int ChannelNr = 0;
                            if (Count()) {
-                              cChannel *channel = Channels.GetByChannelID(((cMenuScheduleItem *)Get(Current()))->eventInfo->GetChannelID());
+                              cChannel *channel = Channels.GetByChannelID(((cMenuScheduleItem *)Get(Current()))->eventInfo->GetChannelID(), true);
                               if (channel)
                                  ChannelNr = channel->Number();
                               }
@@ -1424,7 +1429,7 @@ eOSState cMenuSchedule::ProcessKey(eKeys Key)
      now = next = false;
      const cEventInfo *ei = cMenuWhatsOn::ScheduleEventInfo();
      if (ei) {
-        cChannel *channel = Channels.GetByChannelID(ei->GetChannelID());
+        cChannel *channel = Channels.GetByChannelID(ei->GetChannelID(), true);
         if (channel) {
            PrepareSchedule(channel);
            if (channel->Number() != cDevice::CurrentChannel()) {

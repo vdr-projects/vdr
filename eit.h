@@ -16,12 +16,13 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.h 1.21 2002/11/10 12:58:27 kls Exp $
+ * $Id: eit.h 1.22 2002/11/24 12:45:55 kls Exp $
  ***************************************************************************/
 
 #ifndef __EIT_H
 #define __EIT_H
 
+#include "channels.h"
 #include "thread.h"
 #include "tools.h"
 
@@ -32,7 +33,7 @@ class cEventInfo : public cListObject {
   friend class cEIT;
 private:
   unsigned char uTableID;           // Table ID this event came from
-  uint64 uChannelID;                // Channel ID of program for that event
+  tChannelID channelID;             // Channel ID of program for that event
   bool bIsFollowing;                // true if this is the next event on this channel
   bool bIsPresent;                  // true if this is the present event running
   char *pExtendedDescription;       // Extended description of this event
@@ -47,13 +48,13 @@ protected:
   void SetFollowing(bool foll);
   void SetPresent(bool pres);
   void SetTitle(const char *string);
-  void SetChannelID(uint64 channelid);
+  void SetChannelID(tChannelID channelid);
   void SetEventID(unsigned short evid);
   void SetDuration(long l);
   void SetTime(time_t t);
   void SetExtendedDescription(const char *string);
   void SetSubtitle(const char *string);
-  cEventInfo(uint64 channelid, unsigned short eventid);
+  cEventInfo(tChannelID channelid, unsigned short eventid);
 public:
   ~cEventInfo();
   const unsigned char GetTableID(void) const;
@@ -68,7 +69,7 @@ public:
   unsigned short GetEventID(void) const;
   long GetDuration(void) const;
   time_t GetTime(void) const;
-  uint64 GetChannelID(void) const;
+  tChannelID GetChannelID(void) const;
   int GetChannelNumber(void) const { return nChannelNumber; }
   void SetChannelNumber(int ChannelNumber) const { ((cEventInfo *)this)->nChannelNumber = ChannelNumber; } // doesn't modify the EIT data, so it's ok to make it 'const'
   void Dump(FILE *f, const char *Prefix = "") const;
@@ -82,21 +83,21 @@ class cSchedule : public cListObject  {
 private:
   cEventInfo *pPresent;
   cEventInfo *pFollowing;
-  uint64 uChannelID;
+  tChannelID channelID;
   cList<cEventInfo> Events;
 protected:
-  void SetChannelID(uint64 channelid);
+  void SetChannelID(tChannelID channelid);
   bool SetFollowingEvent(cEventInfo *pEvent);
   bool SetPresentEvent(cEventInfo *pEvent);
   void Cleanup(time_t tTime);
   void Cleanup(void);
-  cSchedule(uint64 channelid = 0);
+  cSchedule(tChannelID channelid = tChannelID::InvalidID);
 public:
   ~cSchedule();
   cEventInfo *AddEvent(cEventInfo *EventInfo);
   const cEventInfo *GetPresentEvent(void) const;
   const cEventInfo *GetFollowingEvent(void) const;
-  uint64 GetChannelID(void) const;
+  tChannelID GetChannelID(void) const;
   const cEventInfo *GetEvent(unsigned short uEventID, time_t tTime = 0) const;
   const cEventInfo *GetEventAround(time_t tTime) const;
   const cEventInfo *GetEventNumber(int n) const { return Events.Get(n); }
@@ -110,15 +111,15 @@ class cSchedules : public cList<cSchedule> {
   friend class cSIProcessor;
 private:
   const cSchedule *pCurrentSchedule;
-  uint64 uCurrentChannelID;
+  tChannelID currentChannelID;
 protected:
-  const cSchedule *AddChannelID(uint64 channelid);
-  const cSchedule *SetCurrentChannelID(uint64 channelid);
+  const cSchedule *AddChannelID(tChannelID channelid);
+  const cSchedule *SetCurrentChannelID(tChannelID channelid);
   void Cleanup();
 public:
   cSchedules(void);
   ~cSchedules();
-  const cSchedule *GetSchedule(uint64 channelid) const;
+  const cSchedule *GetSchedule(tChannelID channelid) const;
   const cSchedule *GetSchedule(void) const;
   void Dump(FILE *f, const char *Prefix = "") const;
   static bool Read(FILE *f);
@@ -162,7 +163,7 @@ public:
   static void Clear(void);
   void SetStatus(bool On);
   void SetCurrentTransponder(int CurrentSource, int CurrentTransponder);
-  static bool SetCurrentChannelID(uint64 channelid);
+  static bool SetCurrentChannelID(tChannelID channelid);
   static void TriggerDump(void);
   };
 

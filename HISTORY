@@ -1788,3 +1788,18 @@ Video Disk Recorder Revision History
   a very primitive game that shows how a plugin can have its own raw OSD. Especially
   look into cLineGame and see how it implements the Show() function. See also
   the chapter on "User interaction" in PLUGINS.html.
+- Added three new fields to the lines in 'channels.conf': NID, TID and RID. NID and
+  TID are the Network and Transport Stream IDs, respectively. RID is an additional ID
+  that can be used to tell apart channels that would otherwise be indistinguishable.
+  This is typically the case with radio channels, which may have the same NID, TID
+  and SID, but different "radio IDs". This new field is therefore called RID ("radio
+  ID"). Currently NID and TID are not yet used by VDR and should always be 0. The
+  RID is actually used when building the "unique channel ID", so if you have channels
+  in your 'channels.conf' file that cause error messages when loading, you can set
+  the RIDs of these channels to different values.
+  When reading an old 'channels.conf' these new fields will be automatically
+  initialized to 0 and once the file is written back to disk they will be appended
+  to the channel definitions.
+  Thanks to Régis Bossut for pointing out that with some providers the channels can
+  only be distinguished through the RID.
+- The "unique channel ID" now contains an optional 5th part (the RID). See man vdr(5).

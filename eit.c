@@ -16,7 +16,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.c 1.60 2002/11/10 15:50:21 kls Exp $
+ * $Id: eit.c 1.61 2002/11/24 14:37:38 kls Exp $
  ***************************************************************************/
 
 #include "eit.h"
@@ -180,7 +180,7 @@ bool cTDT::SetSystemTime()
 
 // --- cEventInfo ------------------------------------------------------------
 
-cEventInfo::cEventInfo(uint64 channelid, unsigned short eventid)
+cEventInfo::cEventInfo(tChannelID channelid, unsigned short eventid)
 {
    pTitle = NULL;
    pSubtitle = NULL;
@@ -190,7 +190,7 @@ cEventInfo::cEventInfo(uint64 channelid, unsigned short eventid)
    tTime = 0;
    uTableID = 0;
    uEventID = eventid;
-   uChannelID = channelid;
+   channelID = channelid;
    nChannelNumber = 0;
 }
 
@@ -325,15 +325,15 @@ void cEventInfo::SetEventID(unsigned short evid)
    uEventID = evid;
 }
 /**  */
-void cEventInfo::SetChannelID(uint64 channelid)
+void cEventInfo::SetChannelID(tChannelID channelid)
 {
-   uChannelID = channelid;
+   channelID = channelid;
 }
 
 /**  */
-uint64 cEventInfo::GetChannelID() const
+tChannelID cEventInfo::GetChannelID() const
 {
-   return uChannelID;
+   return channelID;
 }
 
 /**  */
@@ -404,13 +404,13 @@ bool cEventInfo::Read(FILE *f, cSchedule *Schedule)
 struct tEpgBugFixStats {
   int hits;
   int n;
-  uint64 channelIDs[MAXEPGBUGFIXCHANS];
+  tChannelID channelIDs[MAXEPGBUGFIXCHANS];
   tEpgBugFixStats(void) { hits = n = 0; }
   };
 
 tEpgBugFixStats EpgBugFixStats[MAXEPGBUGFIXSTATS];
 
-static void EpgBugFixStat(int Number, uint64 ChannelID)
+static void EpgBugFixStat(int Number, tChannelID ChannelID)
 {
   if (0 <= Number && Number < MAXEPGBUGFIXSTATS) {
      tEpgBugFixStats *p = &EpgBugFixStats[Number];
@@ -448,7 +448,7 @@ static void ReportEpgBugFixStats(bool Reset = false)
             char *q = buffer;
             q += snprintf(q, sizeof(buffer) - (q - buffer), "%d\t%d", i, p->hits);
             for (int c = 0; c < p->n; c++) {
-                cChannel *channel = Channels.GetByChannelID(p->channelIDs[c]);
+                cChannel *channel = Channels.GetByChannelID(p->channelIDs[c], true);
                 if (channel) {
                    q += snprintf(q, sizeof(buffer) - (q - buffer), "%s%s", delim, channel->Name());
                    delim = ", ";
@@ -608,10 +608,10 @@ void cEventInfo::FixEpgBugs(void)
 
 // --- cSchedule -------------------------------------------------------------
 
-cSchedule::cSchedule(uint64 channelid)
+cSchedule::cSchedule(tChannelID channelid)
 {
    pPresent = pFollowing = NULL;
-   uChannelID = channelid;
+   channelID = channelid;
 }
 
 
@@ -645,14 +645,14 @@ const cEventInfo *cSchedule::GetFollowingEvent(void) const
   return pe;
 }
 
-void cSchedule::SetChannelID(uint64 channelid)
+void cSchedule::SetChannelID(tChannelID channelid)
 {
-   uChannelID = channelid;
+   channelID = channelid;
 }
 /**  */
-uint64 cSchedule::GetChannelID() const
+tChannelID cSchedule::GetChannelID() const
 {
-   return uChannelID;
+   return channelID;
 }
 /**  */
 const cEventInfo * cSchedule::GetEvent(unsigned short uEventID, time_t tTime) const
@@ -735,10 +735,10 @@ void cSchedule::Cleanup(time_t tTime)
 /**  */
 void cSchedule::Dump(FILE *f, const char *Prefix) const
 {
-   cChannel *channel = Channels.GetByChannelID(uChannelID);
+   cChannel *channel = Channels.GetByChannelID(channelID, true);
    if (channel)
    {
-      fprintf(f, "%sC %s %s\n", Prefix, channel->GetChannelIDStr(), channel->Name());
+      fprintf(f, "%sC %s %s\n", Prefix, channel->GetChannelID().ToString(), channel->Name());
       for (cEventInfo *p = Events.First(); p; p = Events.Next(p))
          p->Dump(f, Prefix);
       fprintf(f, "%sc\n", Prefix);
@@ -756,9 +756,9 @@ bool cSchedule::Read(FILE *f, cSchedules *Schedules)
               if (p)
                  *p = 0; // strips optional channel name
               if (*s) {
-                 uint64 uChannelID = cChannel::StringToChannelID(s);
-                 if (uChannelID) {
-                    cSchedule *p = (cSchedule *)Schedules->AddChannelID(uChannelID);
+                 tChannelID channelID = tChannelID::FromString(s);
+                 if (channelID.Valid()) {
+                    cSchedule *p = (cSchedule *)Schedules->AddChannelID(channelID);
                     if (p) {
                        if (!cEventInfo::Read(f, p))
                           return false;
@@ -785,14 +785,13 @@ bool cSchedule::Read(FILE *f, cSchedules *Schedules)
 cSchedules::cSchedules()
 {
    pCurrentSchedule = NULL;
-   uCurrentChannelID = 0;
 }
 
 cSchedules::~cSchedules()
 {
 }
 /**  */
-const cSchedule *cSchedules::AddChannelID(uint64 channelid)
+const cSchedule *cSchedules::AddChannelID(tChannelID channelid)
 {
   const cSchedule *p = GetSchedule(channelid);
   if (!p) {
@@ -802,11 +801,12 @@ const cSchedule *cSchedules::AddChannelID(uint64 channelid)
   return p;
 }
 /**  */
-const cSchedule *cSchedules::SetCurrentChannelID(uint64 channelid)
+const cSchedule *cSchedules::SetCurrentChannelID(tChannelID channelid)
 {
+  channelid.ClrRid();
   pCurrentSchedule = AddChannelID(channelid);
   if (pCurrentSchedule)
-     uCurrentChannelID = channelid;
+     currentChannelID = channelid;
   return pCurrentSchedule;
 }
 /**  */
@@ -815,10 +815,11 @@ const cSchedule * cSchedules::GetSchedule() const
    return pCurrentSchedule;
 }
 /**  */
-const cSchedule * cSchedules::GetSchedule(uint64 channelid) const
+const cSchedule * cSchedules::GetSchedule(tChannelID channelid) const
 {
    cSchedule *p;
 
+   channelid.ClrRid();
    p = First();
    while (p != NULL)
    {
@@ -905,7 +906,8 @@ int cEIT::ProcessEIT(unsigned char *buffer, int CurrentSource)
       for (VdrProgramInfo = (struct VdrProgramInfo *) VdrProgramInfos->Head; VdrProgramInfo; VdrProgramInfo = (struct VdrProgramInfo *) xSucc (VdrProgramInfo)) {
           //XXX TODO use complete channel ID
           cChannel *channel = Channels.GetByServiceID(CurrentSource, VdrProgramInfo->ServiceID);
-          uint64 channelID = channel ? channel->GetChannelID() : (uint64(CurrentSource) << 48) | VdrProgramInfo->ServiceID;
+          tChannelID channelID = channel ? channel->GetChannelID() : tChannelID(CurrentSource, 0, 0, VdrProgramInfo->ServiceID);
+          channelID.ClrRid();
           //XXX
           pSchedule = (cSchedule *)schedules->GetSchedule(channelID);
           if (!pSchedule) {
@@ -915,7 +917,7 @@ int cEIT::ProcessEIT(unsigned char *buffer, int CurrentSource)
                 break;
              }
           if (VdrProgramInfo->ReferenceServiceID) {
-             rSchedule = (cSchedule *)schedules->GetSchedule((uint64(CurrentSource) << 48) | VdrProgramInfo->ReferenceServiceID);
+             rSchedule = (cSchedule *)schedules->GetSchedule(tChannelID(CurrentSource, 0, 0, VdrProgramInfo->ReferenceServiceID));
              if (!rSchedule)
                 break;
              rEvent = (cEventInfo *)rSchedule->GetEvent((unsigned short)VdrProgramInfo->ReferenceEventID);
@@ -1270,7 +1272,7 @@ void cSIProcessor::SetCurrentTransponder(int CurrentSource, int CurrentTranspond
 }
 
 /** */
-bool cSIProcessor::SetCurrentChannelID(uint64 channelid)
+bool cSIProcessor::SetCurrentChannelID(tChannelID channelid)
 {
   cMutexLock MutexLock(&schedulesMutex);
   return schedules ? schedules->SetCurrentChannelID(channelid) : false;

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.h 1.4 2002/11/10 13:01:23 kls Exp $
+ * $Id: channels.h 1.5 2002/11/24 14:27:51 kls Exp $
  */
 
 #ifndef __CHANNELS_H
@@ -35,6 +35,24 @@ extern const tChannelParameterMap TransmissionValues[];
 extern const tChannelParameterMap GuardValues[];
 extern const tChannelParameterMap HierarchyValues[];
 
+struct tChannelID {
+private:
+  int source;
+  int nid;
+  int tid;
+  int sid;
+  int rid;
+public:
+  tChannelID(void) { source = nid = tid = sid = rid = 0; }
+  tChannelID(int Source, int Nid, int Tid, int Sid, int Rid = 0) { source = Source; nid = Nid; tid = Tid; sid = Sid; rid = Rid; }
+  bool operator== (const tChannelID &arg) const;
+  bool Valid(void) { return source && tid && sid; } // nid and rid are optional
+  tChannelID &ClrRid(void) { rid = 0; return *this; }
+  static tChannelID FromString(const char *s);
+  const char *ToString(void);
+  static const tChannelID InvalidID;
+  };
+
 class cChannel : public cListObject {
   friend class cMenuEditChannel;
 private:
@@ -51,7 +69,10 @@ private:
   int dpid1, dpid2;
   int tpid;
   int ca;
+  int nid;
+  int tid;
   int sid;
+  int rid;
   int number;    // Sequence number assigned on load
   bool groupSep;
   char polarization;
@@ -99,9 +120,7 @@ public:
   bool IsCable(void) { return (source & cSource::st_Mask) == cSource::stCable; }
   bool IsSat(void) { return (source & cSource::st_Mask) == cSource::stSat; }
   bool IsTerr(void) { return (source & cSource::st_Mask) == cSource::stTerr; }
-  uint64 GetChannelID(void) const;
-  const char *GetChannelIDStr(void) const;
-  static uint64 StringToChannelID(const char *s);
+  tChannelID GetChannelID(void) const;
   };
 
 class cChannels : public cConfig<cChannel> {
@@ -116,7 +135,7 @@ public:
   void ReNumber(void);         // Recalculate 'number' based on channel type
   cChannel *GetByNumber(int Number, int SkipGap = 0);
   cChannel *GetByServiceID(int Source, unsigned short ServiceID);
-  cChannel *GetByChannelID(uint64 ChannelID);
+  cChannel *GetByChannelID(tChannelID ChannelID, bool TryWithoutRid = false);
   bool HasUniqueChannelID(cChannel *NewChannel, cChannel *OldChannel = NULL);
   bool SwitchTo(int Number);
   int MaxNumber(void) { return maxNumber; }
