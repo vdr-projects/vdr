@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.180 2005/02/26 10:34:17 kls Exp $
+ * $Id: i18n.c 1.181 2005/02/27 11:36:19 kls Exp $
  *
  * Translations provided by:
  *
@@ -3098,7 +3098,7 @@ const tI18nPhrase Phrases[] = {
     "Video Anzeige-Format",
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Video display format",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -3982,7 +3982,7 @@ const tI18nPhrase Phrases[] = {
     " aäbcdefghijklmnoöpqrstuüvwxyz0123456789-.#~",
     " abcdefghijklmnopqrstuvwxyz0123456789-.#~",
     " aàbcdeéèfghiîjklmnopqrstuùvwxyz0123456789-.#~",
-    " aáàäbcdefghiïjklmnoóòöpqrstuúùüvwxyz0123456789-.#~",
+    " abcdefghijklmnopqrstuvwxyz0123456789-.#~áäàïóöòúüù",
     "",// TODO
     " aàbcçdeéèêfghiîjklmnoôpqrstuùûvwxyz0123456789-.#~",
     "",// TODO
