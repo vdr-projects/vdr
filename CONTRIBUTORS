@@ -157,6 +157,8 @@ Werner Fink <werner@suse.de>
  for helping to debug leftover 'zombie' processes when closing a pipe
  for making the Dolby Digital thread start only if the recording actually
  contains Dolby Digital data
+ for improving thread locking in the ring buffer to avoid possible race conditions
+ under heavy load
 
 Rolf Hakenes <hakenes@hippomi.de>
  for providing 'libdtv' and adapting the EIT mechanisms to it

@@ -1191,7 +1191,7 @@ Video Disk Recorder Revision History
   same name was manually deleted on a system with more than one video directory
   (thanks to Dirk Wiebel for reporting this one).
 
-2002-04-13: Version 1.0.1
+2002-04-19: Version 1.0.1
 
 - Added some DVB-T channels for Berlin (Germany) to channels.conf.terr (thanks to
   Andreas Roedl).
@@ -1204,3 +1204,5 @@ Video Disk Recorder Revision History
   any timers referencing a channel with a number higher than 102 should be
   checked and adapted if necessary (this only applies if you are using the default
   'channels.conf').
+- Improved thread locking in the ring buffer to avoid possible race conditions
+  under heavy load (thanks to Werner Fink).
