@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.59 2002/03/23 16:15:32 kls Exp $
+ * $Id: recording.c 1.60 2002/04/01 10:51:23 kls Exp $
  */
 
 #include "recording.h"
@@ -343,7 +343,7 @@ cRecording::cRecording(const char *FileName)
      time_t now = time(NULL);
      struct tm tm_r;
      struct tm t = *localtime_r(&now, &tm_r); // this initializes the time zone in 't'
-     t.tm_isdst = -1; // makes sure mktime() will determine the correct dst setting
+     t.tm_isdst = -1; // makes sure mktime() will determine the correct DST setting
      if (7 == sscanf(p + 1, DATAFORMAT, &t.tm_year, &t.tm_mon, &t.tm_mday, &t.tm_hour, &t.tm_min, &priority, &lifetime)) {
         t.tm_year -= 1900;
         t.tm_mon--;

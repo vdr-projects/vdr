@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.94 2002/03/31 21:17:24 kls Exp $
+ * $Id: config.c 1.95 2002/04/01 10:54:32 kls Exp $
  */
 
 #include "config.h"
@@ -439,6 +439,7 @@ int cTimer::ParseDay(const char *s, time_t *FirstDay)
                  tm_r.tm_year -= 1900;
                  tm_r.tm_mon--;
                  tm_r.tm_hour = tm_r.tm_min = tm_r.tm_sec = 0;
+                 tm_r.tm_isdst = -1; // makes sure mktime() will determine the correct DST setting
                  *FirstDay = mktime(&tm_r);
                  }
               }
@@ -560,6 +561,7 @@ time_t cTimer::IncDay(time_t t, int Days)
   tm tm = *localtime_r(&t, &tm_r);
   tm.tm_mday += Days; // now tm_mday may be out of its valid range
   int h = tm.tm_hour; // save original hour to compensate for DST change
+  tm.tm_isdst = -1;   // makes sure mktime() will determine the correct DST setting
   t = mktime(&tm);    // normalize all values
   tm.tm_hour = h;     // compensate for DST change
   return mktime(&tm); // calculate final result
@@ -572,6 +574,7 @@ time_t cTimer::SetTime(time_t t, int SecondsFromMidnight)
   tm.tm_hour = SecondsFromMidnight / 3600;
   tm.tm_min = (SecondsFromMidnight % 3600) / 60;
   tm.tm_sec =  SecondsFromMidnight % 60;
+  tm.tm_isdst = -1; // makes sure mktime() will determine the correct DST setting
   return mktime(&tm);
 }
 
