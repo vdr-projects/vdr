@@ -1843,3 +1843,5 @@ Video Disk Recorder Revision History
   newline character (suggested by Gerhard Steiner).
 - Updated 'channels.conf.cable' (thanks to Andreas Kool).
 - Improved handling of repeated remote keys.
+- The RCU now only sets the channel number display when there are no incoming remote
+  control keys, which improves reaction on repeated keys.

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: rcu.h 1.1 2002/09/29 08:56:15 kls Exp $
+ * $Id: rcu.h 1.2 2002/12/07 12:21:25 kls Exp $
  */
 
 #ifndef __RCU_H
@@ -19,6 +19,7 @@ private:
   enum { modeH = 'h', modeB = 'b', modeS = 's' };
   int f;
   unsigned char dp, code, mode;
+  int numberToSend;
   int lastNumber;
   bool receivedCommand;
   bool SendCommand(unsigned char Cmd);
