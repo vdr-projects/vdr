@@ -732,3 +732,5 @@ Video Disk Recorder Revision History
   a menu or a replay session active. Note the additional remarks in INSTALL
   regarding the values of the two parameters given to the shutdown program
   in case of a currently recording timer.
+- Switching through channel groups with the "Left" and "Right" keys now
+  always starts at the group that contains the current channel.

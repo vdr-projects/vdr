@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 1.25 2001/09/01 14:52:48 kls Exp $
+ * $Id: menu.h 1.26 2001/09/08 13:58:46 kls Exp $
  */
 
 #ifndef _MENU_H
@@ -31,14 +31,15 @@ public:
 
 class cDisplayChannel : public cOsdBase {
 private:
-  bool withInfo, group;
+  int group;
+  bool withInfo;
   int lines;
   int lastTime;
   int oldNumber, number;
   void DisplayChannel(const cChannel *Channel);
   void DisplayInfo(void);
 public:
-  cDisplayChannel(int Number, bool Switched, bool Group = false);
+  cDisplayChannel(int Number, bool Switched);
   cDisplayChannel(eKeys FirstKey);
   virtual ~cDisplayChannel();
   virtual eOSState ProcessKey(eKeys Key);

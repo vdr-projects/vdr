@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.73 2001/09/03 15:31:06 kls Exp $
+ * $Id: config.h 1.74 2001/09/08 14:12:30 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -61,9 +61,9 @@ enum eKeys { // "Up" and "Down" must be the first two keys!
 #define kEditCut         k2
 #define kEditTest        k8
 
-#define RAWKEY(k)    ((k) & ~k_Flags)
+#define RAWKEY(k)    (eKeys((k) & ~k_Flags))
 #define ISRAWKEY(k)  ((k) != kNone && ((k) & k_Flags) == 0)
-#define NORMALKEY(k) ((k) & ~k_Repeat)
+#define NORMALKEY(k) (eKeys((k) & ~k_Repeat))
 
 struct tKey {
   eKeys type;
@@ -261,8 +261,6 @@ public:
   };
 
 class cCommands : public cConfig<cCommand> {};
-
-extern int CurrentGroup;
 
 extern cChannels Channels;
 extern cTimers Timers;

@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.71 2001/09/08 12:49:38 kls Exp $
+ * $Id: vdr.c 1.72 2001/09/08 14:34:29 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -406,17 +406,9 @@ int main(int argc, char *argv[])
              case kLeft|k_Repeat:
              case kLeft:
              case kRight|k_Repeat:
-             case kRight: {
-                  int SaveGroup = CurrentGroup;
-                  if (NORMALKEY(key) == kRight)
-                     CurrentGroup = Channels.GetNextGroup(CurrentGroup) ;
-                  else
-                     CurrentGroup = Channels.GetPrevGroup(CurrentGroup < 1 ? 1 : CurrentGroup);
-                  if (CurrentGroup < 0)
-                     CurrentGroup = SaveGroup;
-                  Menu = new cDisplayChannel(CurrentGroup, false, true);
+             case kRight:
+                  Menu = new cDisplayChannel(NORMALKEY(key));
                   break;
-                  }
              // Up/Down Channel Select:
              case kUp|k_Repeat:
              case kUp:

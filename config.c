@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.66 2001/09/08 11:41:12 kls Exp $
+ * $Id: config.c 1.67 2001/09/08 14:12:43 kls Exp $
  */
 
 #include "config.h"
@@ -653,8 +653,6 @@ cKeys Keys;
 cCommands Commands;
 
 // -- cChannels --------------------------------------------------------------
-
-int CurrentGroup = -1;
 
 cChannels Channels;
 

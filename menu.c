@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.115 2001/09/02 15:27:54 kls Exp $
+ * $Id: menu.c 1.116 2001/09/08 14:39:09 kls Exp $
  */
 
 #include "menu.h"
@@ -1920,14 +1920,14 @@ eOSState cMenuMain::ProcessKey(eKeys Key)
 #define DIRECTCHANNELTIMEOUT 1000 //ms
 #define INFOTIMEOUT          5000 //ms
 
-cDisplayChannel::cDisplayChannel(int Number, bool Switched, bool Group)
+cDisplayChannel::cDisplayChannel(int Number, bool Switched)
 :cOsdBase(true)
 {
-  group = Group;
-  withInfo = !group && (!Switched || Setup.ShowInfoOnChSwitch);
+  group = -1;
+  withInfo = !Switched || Setup.ShowInfoOnChSwitch;
   lines = 0;
   oldNumber = number = 0;
-  cChannel *channel = Group ? Channels.Get(Number) : Channels.GetByNumber(Number);
+  cChannel *channel = Channels.GetByNumber(Number);
   Interface->Open(Setup.OSDwidth, Setup.ChannelInfoPos ? 5 : -5);
   if (channel) {
      DisplayChannel(channel);
@@ -1939,6 +1939,7 @@ cDisplayChannel::cDisplayChannel(int Number, bool Switched, bool Group)
 cDisplayChannel::cDisplayChannel(eKeys FirstKey)
 :cOsdBase(true)
 {
+  group = -1;
   oldNumber = cDvbApi::CurrentChannel();
   number = 0;
   lastTime = time_ms();
@@ -2049,6 +2050,32 @@ eOSState cDisplayChannel::ProcessKey(eKeys Key)
                }
             }
          break;
+    case kLeft:
+    case kRight:
+         withInfo = false;
+         if (group < 0) {
+            cChannel *channel = Channels.GetByNumber(cDvbApi::CurrentChannel());
+            if (channel)
+               group = channel->Index();
+            }
+         if (group >= 0) {
+            int SaveGroup = group;
+            if (Key == kRight)
+               group = Channels.GetNextGroup(group) ;
+            else
+               group = Channels.GetPrevGroup(group < 1 ? 1 : group);
+            if (group < 0)
+               group = SaveGroup;
+            cChannel *channel = Channels.Get(group);
+            if (channel) {
+               Interface->Clear();
+               DisplayChannel(channel);
+               if (!channel->groupSep)
+                  group = -1;
+               }
+            }
+         lastTime = time_ms();
+         break;
     case kNone:
          if (number && time_ms() - lastTime > DIRECTCHANNELTIMEOUT) {
             if (number > 0 && !Channels.SwitchTo(number))
@@ -2059,8 +2086,8 @@ eOSState cDisplayChannel::ProcessKey(eKeys Key)
     //TODO
     //XXX case kGreen:  return osEventNow;
     //XXX case kYellow: return osEventNext;
-    case kOk:     if (group)
-                     Channels.SwitchTo(Channels.Get(Channels.GetNextNormal(CurrentGroup))->number);
+    case kOk:     if (group >= 0)
+                     Channels.SwitchTo(Channels.Get(Channels.GetNextNormal(group))->number);
                   return osEnd;
     default:      Interface->PutKey(Key);
                   return osEnd;
