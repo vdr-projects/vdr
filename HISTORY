@@ -774,3 +774,5 @@ Video Disk Recorder Revision History
   set to INVERSION_AUTO, which should work with all channels on Astra).
 - Removing unnecessary double quotes from EPG Subtitle in EPGBugfixLevel >=1.
 - EPG info is now updated if the contents changes but the ID remains the same.
+- Fixed handling SVDRP commands whith more than one blank between the command
+  word and the options.
