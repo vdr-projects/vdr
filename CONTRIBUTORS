@@ -142,3 +142,4 @@ Andreas Vitting <Andreas@huji.de>
 
 Matthias Weingart <matthias@pentax.boerde.de>
  for fixing handling of the volume, mute and power keys when menus are active
+ for fixing the repeat function when using the LIRC remote control

@@ -793,3 +793,4 @@ Video Disk Recorder Revision History
   files from the video directory at the same time.
 - The new setup parameter SplitEditedFiles can be used to control whether or
   not the result of an editing process shall be written into separate files.
+- Fixed handling repeat function when using LIRC (thanks to Matthias Weingart).
