@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.h 1.8 2004/02/22 13:18:14 kls Exp $
+ * $Id: epg.h 1.9 2004/02/22 13:52:46 kls Exp $
  */
 
 #ifndef __EPG_H
@@ -83,8 +83,8 @@ public:
   void Cleanup(time_t Time);
   void Cleanup(void);
   cEvent *AddEvent(cEvent *Event);
-  const cEvent *GetPresentEvent(void) const;
-  const cEvent *GetFollowingEvent(void) const;
+  const cEvent *GetPresentEvent(bool CheckRunningStatus = false) const;
+  const cEvent *GetFollowingEvent(bool CheckRunningStatus = false) const;
   const cEvent *GetEvent(u_int16_t EventID, time_t StartTime = 0) const;
   const cEvent *GetEventAround(time_t Time) const;
   const cEvent *GetEventNumber(int n) const { return events.Get(n); }

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.291 2004/02/22 13:43:55 kls Exp $
+ * $Id: menu.c 1.292 2004/02/22 14:14:55 kls Exp $
  */
 
 #include "menu.h"
@@ -1375,7 +1375,7 @@ void cMenuSchedule::PrepareSchedule(cChannel *Channel)
   if (schedules) {
      const cSchedule *Schedule = schedules->GetSchedule(Channel->GetChannelID());
      if (Schedule) {
-        const cEvent *PresentEvent = Schedule->GetPresentEvent();
+        const cEvent *PresentEvent = Schedule->GetPresentEvent(Channel->Number() == cDevice::CurrentChannel());
         int num = Schedule->NumEvents();
         time_t now = time(NULL) - Setup.EPGLinger * 60;
         for (int a = 0; a < num; a++) {
@@ -2764,7 +2764,7 @@ void cDisplayChannel::DisplayInfo(void)
         if (Schedule) {
            const char *PresentTitle = NULL, *PresentSubtitle = NULL, *FollowingTitle = NULL, *FollowingSubtitle = NULL;
            int Lines = 0;
-           if ((Present = Schedule->GetPresentEvent()) != NULL) {
+           if ((Present = Schedule->GetPresentEvent(true)) != NULL) {
               PresentTitle = Present->Title();
               if (!isempty(PresentTitle))
                  Lines++;
@@ -2772,7 +2772,7 @@ void cDisplayChannel::DisplayInfo(void)
               if (!isempty(PresentSubtitle))
                  Lines++;
               }
-           if ((Following = Schedule->GetFollowingEvent()) != NULL) {
+           if ((Following = Schedule->GetFollowingEvent(true)) != NULL) {
               FollowingTitle = Following->Title();
               if (!isempty(FollowingTitle))
                  Lines++;
