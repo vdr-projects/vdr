@@ -852,6 +852,7 @@ char *siGetDescriptorText (u_char *Buffer, u_int Length)
          if (*Buffer == 0) break;
 
          if ((*Buffer >= ' ' && *Buffer <= '~') ||
+             (*Buffer == '\n') ||
              (*Buffer >= 0xa0 && *Buffer <= 0xff)) *tmp++ = *Buffer;
          if (*Buffer == 0x8A) *tmp++ = '\n';
          if (*Buffer == 0x86 || *Buffer == 0x87) *tmp++ = ' ';
