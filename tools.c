@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.32 2001/04/01 14:13:36 kls Exp $
+ * $Id: tools.c 1.33 2001/04/22 10:31:29 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -120,7 +120,7 @@ const char *AddDirectory(const char *DirName, const char *FileName)
   return buf;
 }
 
-#define DFCMD  "df -m '%s'"
+#define DFCMD  "df -m -P '%s'"
 
 uint FreeDiskSpaceMB(const char *Directory)
 {
@@ -132,7 +132,7 @@ uint FreeDiskSpaceMB(const char *Directory)
   if (p) {
      char *s;
      while ((s = readline(p)) != NULL) {
-           if (*s == '/') {
+           if (strchr(s, '/')) {
               uint available;
               sscanf(s, "%*s %*d %*d %u", &available);
               Free = available;
