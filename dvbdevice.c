@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.28 2002/10/26 10:53:20 kls Exp $
+ * $Id: dvbdevice.c 1.29 2002/10/26 11:11:42 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -772,7 +772,7 @@ int cDvbDevice::NumAudioTracksDevice(void) const
   int n = 0;
   if (aPid1)
      n++;
-  if (aPid2 && aPid1 != aPid2)
+  if (!Ca() && aPid2 && aPid1 != aPid2) // a Ca recording session blocks switching live audio tracks
      n++;
   return n;
 }
