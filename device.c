@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.90 2005/02/12 12:26:49 kls Exp $
+ * $Id: device.c 1.91 2005/02/12 16:29:49 kls Exp $
  */
 
 #include "device.h"
@@ -893,6 +893,7 @@ int cDevice::PlayPesPacket(const uchar *Data, int Length, bool VideoOnly)
                uchar SubStreamIndex = SubStreamId & 0x1F;
 
                // Compatibility mode for old VDR recordings, where 0xBD was only AC3:
+pre_1_3_19_PrivateStreamDeteced:
                if (pre_1_3_19_PrivateStream) {
                   SubStreamId = c;
                   SubStreamType = 0x80;
@@ -927,6 +928,7 @@ int cDevice::PlayPesPacket(const uchar *Data, int Length, bool VideoOnly)
                          dsyslog("switching to pre 1.3.19 Dolby Digital compatibility mode");
                          ClrAvailableTracks();
                          pre_1_3_19_PrivateStream = true;
+                         goto pre_1_3_19_PrivateStreamDeteced;
                          }
                  }
                }
