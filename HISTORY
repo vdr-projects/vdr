@@ -33,9 +33,10 @@ Video Disk Recorder Revision History
 - Channel selection is now blocked when recording or replaying.
 - Improved process handling.
 
-2000-05-01: Version 0.05
+2000-05-27: Version 0.05
 
-- Prepared for support of more than one DVB card.
+- Support for more than one DVB card.
+- Simultaneous record and replay (with two DVB cards).
 - Instant recordings no longer get the name "instant". They now get the name
   of the channel, with a prepended '@' character.
 - Timers that are not given an explicit Name now use the channel name with
@@ -49,3 +50,8 @@ Video Disk Recorder Revision History
   inactivity.
 - If a recording is currently being replayed, the Main menu now contains an
   option to stop replaying.
+- Displaying the recording DVB interface status in the decimal points of the
+  RCU display.
+- Reduced the number of remote control keys. Modified the key assignments for
+  the PC keyboard to better resemble the "up-down-left-right-ok" layout on
+  menu controlling remote control units.
