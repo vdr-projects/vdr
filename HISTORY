@@ -1368,3 +1368,4 @@ Video Disk Recorder Revision History
   of a 'cDvbPlayerControl *' in order to allow additional players to call this function.
   cPlayer and cControl have been given the functions GetIndex() and GetReplayMode() to
   allow access to the player's status.
+- Added cOsd::OpenRaw() to create a raw OSD (needed for displaying SPUs).
