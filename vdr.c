@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.182 2004/06/10 13:22:08 kls Exp $
+ * $Id: vdr.c 1.183 2004/06/12 10:07:17 kls Exp $
  */
 
 #include <getopt.h>
@@ -89,11 +89,19 @@ int main(int argc, char *argv[])
   char LibPthreadVersion[128];
   if (confstr(_CS_GNU_LIBPTHREAD_VERSION, LibPthreadVersion, sizeof(LibPthreadVersion) > 0)) {
      if (strstr(LibPthreadVersion, "NPTL")) {
-        fprintf(stderr, "vdr: please turn off NPTL by setting 'export LD_ASSUME_KERNEL=2.4.1' before starting VDR");
+        fprintf(stderr, "vdr: please turn off NPTL by setting 'export LD_ASSUME_KERNEL=2.4.1' before starting VDR\n");
         return 2;
         }
      }
 #endif
+
+  // Check for UTF-8 and exit if present - asprintf() will fail if it encounters 8 bit ASCII codes
+  char *LangEnv;
+  if ((LangEnv = getenv("LANG"))    != NULL && strcasestr(LangEnv, "utf") ||
+      (LangEnv = getenv("LC_TYPE")) != NULL && strcasestr(LangEnv, "utf")) {
+     fprintf(stderr, "vdr: please turn off UTF-8 before starting VDR\n");
+     return 2;
+     }
 
   // Save terminal settings:
 
