@@ -203,3 +203,7 @@ Video Disk Recorder Revision History
 - The daemon mode (option '-d') now no longer works with REMOTE=KBD (there
   is no stdin in daemon mode, so KBD makes no sense - plus it sometimes
   crashed).
+
+2000-09-21: Version 0.65
+
+- Modified LIRC interface to better handle repeat function (by Carsten Koch).

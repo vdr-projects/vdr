@@ -6,7 +6,7 @@
  *
  * Ported to LIRC by Carsten Koch <Carsten.Koch@icem.de>  2000-06-16.
  *
- * $Id: remote.c 1.13 2000/09/19 17:40:52 kls Exp $
+ * $Id: remote.c 1.14 2000/09/21 16:57:56 kls Exp $
  */
 
 #include "remote.h"
@@ -362,23 +362,32 @@ cRcIoLIRC::~cRcIoLIRC()
 const char *cRcIoLIRC::ReceiveString(void)
 {
   char buf[LIRC_BUFFER_SIZE];
+  int repeat = 1;
+  const int startTime = time_ms();
 
-  while (InputAvailable(true)) {
-        if (read(f, buf, sizeof(buf)) > 21) {
-           const int now = time_ms();
-           int repeat;
-           sscanf(buf, "%*s %x %7s", &repeat, keyName); // '7' in '%7s' is LIRC_KEY_BUF-1!
-           if (repeat == 0) {
-              firstTime = lastTime = now;
-              return keyName;
-              }
-           else if ((now > firstTime + REPEATDELAY) && (now > lastTime + REPEATLIMIT)) {
-              lastTime = now;
-              return keyName;
-              }
+  // Wait up to REPEATLIMIT ms for a new command, skip repetition of last command while waiting.
+  do {
+     if (InputAvailable(false) && (read(f, buf, sizeof(buf)) > 21)) {
+        sscanf(buf, "%*x %x %7s", &repeat, keyName); // '7' in '%7s' is LIRC_KEY_BUF-1!
+        if (repeat == 0) {
+           firstTime = time_ms();
+           return keyName;
            }
         }
-  return NULL;
+     } while (time_ms() < startTime + REPEATLIMIT);
+
+  // No new command encountered while skipping old repetitions - wait for new command.
+  repeat = 1;
+  if (InputAvailable(true) && (read(f, buf, sizeof(buf)) > 21))
+     sscanf(buf, "%*x %x %7s", &repeat, keyName); // '7' in '%7s' is LIRC_KEY_BUF-1!
+
+  if (repeat == 0) {
+     firstTime = time_ms();
+     return keyName;
+     }
+  
+  // Always ignore first repeat, as it often comes in too early.
+  return (repeat == 1) || (time_ms() < firstTime + REPEATDELAY) ? NULL : keyName;
 }
 
 void cRcIoLIRC::Flush(int WaitMs)
@@ -403,7 +412,6 @@ bool cRcIoLIRC::InputAvailable(bool Wait)
 
 bool cRcIoLIRC::GetCommand(unsigned int *Command, unsigned short *)
 {
-  Flush();
   if (Command) {
      const char *cmd = ReceiveString();
      if (cmd) {
