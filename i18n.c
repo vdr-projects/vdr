@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.32 2001/08/17 13:03:15 kls Exp $
+ * $Id: i18n.c 1.33 2001/08/25 12:27:03 kls Exp $
  *
  * Slovenian translations provided by Miha Setina <mihasetina@softhome.net>
  * Italian   translations provided by Alberto Carraro <bertocar@tin.it>
@@ -866,6 +866,15 @@ const tPhrase Phrases[] = {
     "STQQSSD",
     "LMMJVSD",
     "MTOTFLS",
+  },
+  { "MonTueWedThuFriSatSun", // must all be 3 letters!
+    "MonDieMitDonFreSamSon",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
   },
   // Learning keys:
   { "Learning Remote Control Keys",

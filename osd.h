@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.h 1.23 2001/08/02 13:48:34 kls Exp $
+ * $Id: osd.h 1.24 2001/08/25 12:56:46 kls Exp $
  */
 
 #ifndef __OSD_H
@@ -72,7 +72,7 @@ public:
 
 class cOsdMenu : public cOsdBase, public cList<cOsdItem> {
 private:
-  const char *title;
+  char *title;
   int cols[cInterface::MaxCols];
   int first, current, marked;
   cOsdMenu *subMenu;
@@ -94,7 +94,7 @@ protected:
   eOSState AddSubMenu(cOsdMenu *SubMenu);
   bool HasSubMenu(void) { return subMenu; }
   void SetStatus(const char *s);
-  void SetTitle(const char *Title, bool Copy = true);
+  void SetTitle(const char *Title, bool ShowDate = true);
   void SetHelp(const char *Red, const char *Green = NULL, const char *Yellow = NULL, const char *Blue = NULL);
   virtual void Del(int Index);
 public:

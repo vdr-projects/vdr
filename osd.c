@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 1.17 2001/08/02 14:18:17 kls Exp $
+ * $Id: osd.c 1.18 2001/08/25 13:15:16 kls Exp $
  */
 
 #include "osd.h"
@@ -78,7 +78,8 @@ cOsdMenu::cOsdMenu(const char *Title, int c0, int c1, int c2, int c3, int c4)
 {
   hasHotkeys = false;
   visible = false;
-  title = strdup(Title);
+  title = NULL;
+  SetTitle(Title);
   cols[0] = c0;
   cols[1] = c1;
   cols[2] = c2;
@@ -109,10 +110,13 @@ void cOsdMenu::SetStatus(const char *s)
      Interface->Status(status);
 }
 
-void cOsdMenu::SetTitle(const char *Title, bool Copy)
+void cOsdMenu::SetTitle(const char *Title, bool ShowDate)
 {
   delete title;
-  title = Copy ? strdup(Title) : Title;
+  if (ShowDate)
+     asprintf(&title, "%s\t%s", Title, DayDateTime(time(NULL)));
+  else
+     title = strdup(Title);
 }
 
 void cOsdMenu::SetHelp(const char *Red, const char *Green, const char *Yellow, const char *Blue)

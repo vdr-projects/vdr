@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.105 2001/08/19 14:45:31 kls Exp $
+ * $Id: menu.c 1.106 2001/08/25 13:27:26 kls Exp $
  */
 
 #include "menu.h"
@@ -1137,6 +1137,7 @@ cMenuEvent::cMenuEvent(const cEventInfo *EventInfo, bool CanSwitch)
         char *buffer;
         asprintf(&buffer, "%-17.*s\t%.*s  %s - %s", 17, channel->name, 5, eventInfo->GetDate(), eventInfo->GetTimeString(), eventInfo->GetEndTimeString());
         SetTitle(buffer, false);
+        delete buffer;
         int Line = 2;
         cMenuTextItem *item;
         const char *Title = eventInfo->GetTitle();
@@ -1377,7 +1378,8 @@ void cMenuSchedule::PrepareSchedule(cChannel *Channel)
   Clear();
   char *buffer = NULL;
   asprintf(&buffer, tr("Schedule - %s"), Channel->name);
-  SetTitle(buffer, false);
+  SetTitle(buffer);
+  delete buffer;
   if (schedules) {
      const cSchedule *Schedule = Channel->pnr ? schedules->GetSchedule(Channel->pnr) : schedules->GetSchedule();
      int num = Schedule->NumEvents();
@@ -1951,10 +1953,8 @@ void cDisplayChannel::DisplayChannel(const cChannel *Channel)
      snprintf(buffer, BufSize, "%s", Channel ? Channel->name : tr("*** Invalid Channel ***"));
   Interface->Fill(0, 0, Setup.OSDwidth, 1, clrBackground);
   Interface->Write(0, 0, buffer);
-  time_t t = time(NULL);
-  struct tm *now = localtime(&t);
-  snprintf(buffer, BufSize, "%02d:%02d", now->tm_hour, now->tm_min);
-  Interface->Write(-5, 0, buffer);
+  const char *date = DayDateTime();
+  Interface->Write(-strlen(date), 0, date);
 }
 
 void cDisplayChannel::DisplayInfo(void)

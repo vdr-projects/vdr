@@ -663,3 +663,7 @@ Video Disk Recorder Revision History
 - Fixed broken recordings after a driver buffer overflow.
 - Fixed the chirping sound after Pause/Play of a DVD (thanks to Andreas
   Schultz).
+
+2001-08-25: Version 0.93
+
+- The menus and the channel display now show the current date and time.

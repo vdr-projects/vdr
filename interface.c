@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.c 1.40 2001/08/07 16:23:28 kls Exp $
+ * $Id: interface.c 1.41 2001/08/25 13:15:00 kls Exp $
  */
 
 #include "interface.h"
@@ -271,7 +271,7 @@ void cInterface::Title(const char *s)
      unsigned int n = t - s;
      if (n >= sizeof(buffer))
         n = sizeof(buffer) - 1;
-     strn0cpy(buffer, s, n);
+     strn0cpy(buffer, s, n + 1);
      Write(1, 0, buffer, clrBlack, clrCyan);
      t++;
      Write(-(cDvbApi::PrimaryDvbApi->WidthInCells(t) + 1), 0, t, clrBlack, clrCyan);
