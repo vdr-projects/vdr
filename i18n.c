@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.155 2004/05/16 11:53:45 kls Exp $
+ * $Id: i18n.c 1.156 2004/05/22 11:46:35 kls Exp $
  *
  * Translations provided by:
  *
@@ -2319,7 +2319,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Ulkoasu",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -2338,7 +2338,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Teema",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -2357,7 +2357,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Vaakakeskitys",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -2376,7 +2376,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Pystykeskitys",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -2452,7 +2452,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Käytä pieniä kirjasimia",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -2471,7 +2471,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "ei koskaan",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -2490,7 +2490,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "ulkoasun mukaan",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -2509,7 +2509,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "aina",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -4604,7 +4604,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Klassinen VDR",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -4623,7 +4623,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "ST:TNG konsoli",
     "",// TODO
     "",// TODO
     "",// TODO
