@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 1.10 2000/10/28 09:33:47 kls Exp $
+ * $Id: osd.c 1.11 2000/11/01 11:21:51 kls Exp $
  */
 
 #include "osd.h"
@@ -170,7 +170,8 @@ void cOsdMenu::Display(void)
             break;
          }
      }
-  Interface->Status(status);
+  if (!isempty(status))
+     Interface->Status(status);
 }
 
 void cOsdMenu::RefreshCurrent(void)

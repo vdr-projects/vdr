@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.h 1.17 2000/10/29 12:32:12 kls Exp $
+ * $Id: interface.h 1.18 2000/11/01 11:18:23 kls Exp $
  */
 
 #ifndef __INTERFACE_H
@@ -19,6 +19,7 @@ class cInterface {
 public:
   enum { MaxCols = 5 };
 private:
+  int width, height;
   int open;
   int cols[MaxCols];
   eKeys keyFromWait;
@@ -35,11 +36,14 @@ public:
   ~cInterface();
   void Open(int NumCols = MenuColumns, int NumLines = MenuLines);
   void Close(void);
+  int Width(void) { return width; }
+  int Height(void) { return height; }
   eKeys GetKey(bool Wait = true);
   void PutKey(eKeys Key);
   void Clear(void);
   void ClearEol(int x, int y, eDvbColor Color = clrBackground);
   void SetCols(int *c);
+  char *WrapText(const char *Text, int Width, int *Height);
   void Write(int x, int y, const char *s, eDvbColor FgColor = clrWhite, eDvbColor BgColor = clrBackground);
   void WriteText(int x, int y, const char *s, eDvbColor FgColor = clrWhite, eDvbColor BgColor = clrBackground);
   void Title(const char *s);

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbosd.c 1.3 2000/10/07 14:42:48 kls Exp $
+ * $Id: dvbosd.c 1.4 2000/11/01 09:13:32 kls Exp $
  */
 
 #include "dvbosd.h"
@@ -74,6 +74,11 @@ void cBitmap::SetPixel(int x, int y, eDvbColor Color)
            }
         }
      }
+}
+
+int cBitmap::Width(unsigned char c)
+{
+  return font ? font->Width(c) : -1;
 }
 
 void cBitmap::Text(int x, int y, const char *s, eDvbColor ColorFg, eDvbColor ColorBg)

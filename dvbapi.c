@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.33 2000/10/29 10:39:57 kls Exp $
+ * $Id: dvbapi.c 1.34 2000/11/01 09:19:27 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -1596,6 +1596,24 @@ void cDvbApi::Fill(int x, int y, int w, int h, eDvbColor color)
 void cDvbApi::ClrEol(int x, int y, eDvbColor color)
 {
   Fill(x, y, cols - x, 1, color);
+}
+
+int cDvbApi::CellWidth(void)
+{
+#ifdef DEBUG_OSD
+  return 1;
+#else
+  return charWidth;
+#endif
+}
+
+int cDvbApi::Width(unsigned char c)
+{
+#ifdef DEBUG_OSD
+  return 1;
+#else
+  return osd->Width(c);
+#endif
 }
 
 void cDvbApi::Text(int x, int y, const char *s, eDvbColor colorFg, eDvbColor colorBg)

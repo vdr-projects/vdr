@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.h 1.19 2000/10/29 12:11:16 kls Exp $
+ * $Id: dvbapi.h 1.20 2000/11/01 09:18:50 kls Exp $
  */
 
 #ifndef __DVBAPI_H
@@ -122,6 +122,8 @@ public:
   void Clear(void);
   void Fill(int x, int y, int w, int h, eDvbColor color = clrBackground);
   void ClrEol(int x, int y, eDvbColor color = clrBackground);
+  int CellWidth(void);
+  int Width(unsigned char c);
   void Text(int x, int y, const char *s, eDvbColor colorFg = clrWhite, eDvbColor colorBg = clrBackground);
   void Flush(void);
 

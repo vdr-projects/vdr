@@ -4,11 +4,10 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.37 2000/10/29 11:23:33 kls Exp $
+ * $Id: menu.c 1.38 2000/11/01 11:45:05 kls Exp $
  */
 
 #include "menu.h"
-#include <ctype.h>
 #include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -727,7 +726,107 @@ eOSState cMenuChannels::ProcessKey(eKeys Key)
   return state;
 }
 
-// --- cMenuSummary --------------------------------------------------------
+// --- cMenuTextItem ---------------------------------------------------------
+
+class cMenuTextItem : public cOsdItem {
+private:
+  char *text;
+  int x, y, w, h, lines, offset;
+  eDvbColor fgColor, bgColor;
+public:
+  cMenuTextItem(const char *Text, int X, int Y, int W, int H = -1, eDvbColor FgColor = clrWhite, eDvbColor BgColor = clrBackground);
+  ~cMenuTextItem();
+  int Height(void) { return h; }
+  void Clear(void);
+  virtual void Display(int Offset = -1, eDvbColor FgColor = clrWhite, eDvbColor BgColor = clrBackground);
+  bool CanScrollUp(void) { return offset > 0; }
+  bool CanScrollDown(void) { return h + offset < lines; }
+  void ScrollUp(void);
+  void ScrollDown(void);
+  virtual eOSState ProcessKey(eKeys Key);
+  };
+
+cMenuTextItem::cMenuTextItem(const char *Text, int X, int Y, int W, int H, eDvbColor FgColor, eDvbColor BgColor)
+{
+  x = X;
+  y = Y;
+  w = W;
+  h = H;
+  fgColor = FgColor;
+  bgColor = BgColor;
+  offset = 0;
+  text = Interface->WrapText(Text, w - 1, &lines);
+  if (h < 0)
+     h = lines;
+}
+
+cMenuTextItem::~cMenuTextItem()
+{
+  delete text;
+}
+
+void cMenuTextItem::Clear(void)
+{
+  cDvbApi::PrimaryDvbApi->Fill(x, y, w, h, bgColor);
+}
+
+void cMenuTextItem::Display(int Offset, eDvbColor FgColor, eDvbColor BgColor)
+{
+  int l = 0;
+  char *t = text;
+  while (*t) {
+        char *n = strchr(t, '\n');
+        if (l >= offset) {
+           if (n)
+              *n = 0;
+           Interface->Write(x, y + l - offset, t, fgColor, bgColor);
+           if (n)
+              *n = '\n';
+           else
+              break;
+           }
+        if (!n)
+           break;
+        t = n + 1;
+        if (++l >= h + offset)
+           break;
+        }
+  // scroll indicators use inverted color scheme!
+  if (CanScrollUp())   Interface->Write(x + w - 1, y,         "^", bgColor, fgColor);
+  if (CanScrollDown()) Interface->Write(x + w - 1, y + h - 1, "v", bgColor, fgColor);
+}
+
+void cMenuTextItem::ScrollUp(void)
+{
+  if (CanScrollUp()) {
+     Clear();
+     offset--;
+     Display();
+     }
+}
+
+void cMenuTextItem::ScrollDown(void)
+{
+  if (CanScrollDown()) {
+     Clear();
+     offset++;
+     Display();
+     }
+}
+
+eOSState cMenuTextItem::ProcessKey(eKeys Key)
+{
+  switch (Key) {
+    case kUp|k_Repeat:
+    case kUp:            ScrollUp();   break;
+    case kDown|k_Repeat:
+    case kDown:          ScrollDown(); break;
+    default:             return osUnknown;
+    }
+  return osContinue;
+}
+
+// --- cMenuSummary ----------------------------------------------------------
 
 class cMenuSummary : public cOsdMenu {
 public:
@@ -738,29 +837,7 @@ public:
 cMenuSummary::cMenuSummary(const char *Text)
 :cOsdMenu("Summary")
 {
-  while (*Text) {
-        char line[MenuColumns + 1];
-        char *p = line;
-        const char *b = NULL;
-        *p++ = ' ';
-        while (*Text && p - line < MenuColumns - 2) {
-              if (isspace(*Text))
-                 b = Text; // remember the blank
-              if (*Text == '\n')
-                 break;
-              *p++ = *Text++;
-              }
-        if (*Text) {
-           if (b && Text - b > 0) {
-              p -= Text - b;
-              Text = b + 1;
-              }
-           else
-              Text++;
-           }
-        *p = 0;
-        Add(new cOsdItem(line, osBack));
-        }
+  Add(new cMenuTextItem(Text, 1, 2, MenuColumns - 2, MAXOSDITEMS));
 }
 
 eOSState cMenuSummary::ProcessKey(eKeys Key)
@@ -975,84 +1052,55 @@ eOSState cMenuTimers::ProcessKey(eKeys Key)
   return state;
 }
 
-// --- cMenuEventItem --------------------------------------------------------
-
-class cMenuEventItem : public cOsdItem {
-public:
-  cMenuEventItem(const char *Text);
-};
-
-cMenuEventItem::cMenuEventItem(const char *Text)
-:cOsdItem(Text, osBack)
-{
-}
-
 // --- cMenuEvent ------------------------------------------------------------
 
 class cMenuEvent : public cOsdMenu {
 private:
-  void AddParagraph(const char *text);
   const cEventInfo *eventInfo;
 public:
   cMenuEvent(const cEventInfo *EventInfo, bool CanSwitch = false);
+  virtual eOSState ProcessKey(eKeys Key);
 };
 
 cMenuEvent::cMenuEvent(const cEventInfo *EventInfo, bool CanSwitch)
-:cOsdMenu("Event", 1)
+:cOsdMenu("Event")
 {
-  const char *p;
-  char buffer[MenuColumns + 1];
-
   eventInfo = EventInfo;
-
-  cChannel *channel = Channels.GetByServiceID(eventInfo->GetServiceID());
-
-  snprintf(buffer, sizeof(buffer), "\t%-17.*s %.*s  %s - %s", 17, channel->name, 5, eventInfo->GetDate(), eventInfo->GetTimeString(), eventInfo->GetEndTimeString());
-  Add(new cMenuEventItem(buffer));
-  if ((p = eventInfo->GetTitle()) != NULL && *p) {
-     Add(new cMenuEventItem(""));
-     AddParagraph(p);
+  if (eventInfo) {
+     cChannel *channel = Channels.GetByServiceID(eventInfo->GetServiceID());
+     if (channel) {
+        const char *p;
+        char *buffer;
+        asprintf(&buffer, "%-17.*s %.*s  %s - %s", 17, channel->name, 5, eventInfo->GetDate(), eventInfo->GetTimeString(), eventInfo->GetEndTimeString());
+        SetTitle(buffer, false);
+        int Line = 2;
+        cMenuTextItem *item;
+        if (!isempty(p = eventInfo->GetTitle())) {
+           Add(item = new cMenuTextItem(p, 1, Line, MenuColumns - 2, -1, clrCyan));
+           Line += item->Height() + 1;
+           }
+        if (!isempty(p = eventInfo->GetSubtitle())) {
+           Add(item = new cMenuTextItem(p, 1, Line, MenuColumns - 2, -1, clrYellow));
+           Line += item->Height() + 1;
+           }
+        if (!isempty(p = eventInfo->GetExtendedDescription()))
+           Add(new cMenuTextItem(p, 1, Line, MenuColumns - 2, Height() - Line - 2, clrCyan), true);
+        SetHelp("Record", NULL, NULL, CanSwitch ? "Switch" : NULL);
+        }
      }
-  if ((p = eventInfo->GetSubtitle()) != NULL && *p) {
-     Add(new cMenuEventItem(""));
-     AddParagraph(p);
-     }
-  if ((p = eventInfo->GetExtendedDescription()) != NULL && *p) {
-     Add(new cMenuEventItem(""));
-     AddParagraph(p);
-     }
-  SetHelp("Record", NULL, NULL, CanSwitch ? "Switch" : NULL);
 }
 
-void cMenuEvent::AddParagraph(const char *text)
+eOSState cMenuEvent::ProcessKey(eKeys Key)
 {
-  char *ptextsave = strdup(text);
+  eOSState state = cOsdMenu::ProcessKey(Key);
 
-  if (ptextsave) {
-
-     int column = 1;
-     char buffer[MenuColumns + 1];
-     char *pStart = ptextsave;
-     char *pEndText = &ptextsave[strlen(text) - 1];
-
-     while (pStart < pEndText) {
-           char *pEnd;
-           if (strlen(pStart) > (unsigned)(MenuColumns - column - 2))
-              pEnd = &pStart[MenuColumns - column - 2];
-           else
-              pEnd = &pStart[strlen(pStart)];
-               
-           while (*pEnd && *pEnd != ' ' && pEnd > pStart)
-                 pEnd--;
-       
-           *pEnd = 0;
-           sprintf(buffer, "\t%s", pStart);
-           Add(new cMenuEventItem(buffer));
-           pStart = pEnd + 1;
-           }
+  if (state == osUnknown) {
+     switch (Key) {
+       case kOk:     return osBack;
+       default: break;
+       }
      }
-
-  delete ptextsave;
+  return state;
 }
 
 // --- cMenuWhatsOnItem ------------------------------------------------------
@@ -1266,6 +1314,8 @@ eOSState cMenuSchedule::ProcessKey(eKeys Key)
        default:      break;
        }
      }
+  else if (!HasSubMenu())
+     now = next = false;
   return state;
 }
 
