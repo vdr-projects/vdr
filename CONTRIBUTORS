@@ -108,7 +108,8 @@ Helmut Schächner <schaechner@yahoo.com>
  for his support in keeping the Premiere World channels up to date in 'channels.conf'
 
 Andreas Schultz <aschultz@warp10.net>
- for adding support for replaying DVDs
+ for adding support for replaying DVDs (much of this was derived from
+ dvdplayer-0.5 by Matjaz Thaler <matjaz.thaler@guest.arnes.si>)
 
 Aaron Holtzman
  for writing 'ac3dec'
