@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 1.9 2003/03/23 15:18:40 kls Exp $
+ * $Id: ci.c 1.14 2003/04/20 09:52:45 kls Exp $
  */
 
 /* XXX TODO
@@ -625,6 +625,7 @@ public:
   const cCiTransportConnection *Tc(void) { return tc; }
   int SessionId(void) { return sessionId; }
   int ResourceId(void) { return resourceId; }
+  virtual bool HasUserIO(void) { return false; }
   virtual bool Process(int Length = 0, const uint8_t *Data = NULL);
   };
 
@@ -769,7 +770,7 @@ public:
 cCiApplicationInformation::cCiApplicationInformation(int SessionId, cCiTransportConnection *Tc)
 :cCiSession(SessionId, RI_APPLICATION_INFORMATION, Tc)
 {
-  dbgprotocol("New Aplication Information (session id %d)\n", SessionId);
+  dbgprotocol("New Application Information (session id %d)\n", SessionId);
   state = 0;
   creationTime = time(NULL);
   menuString = NULL;
@@ -827,12 +828,17 @@ bool cCiApplicationInformation::EnterMenu(void)
 
 // --- cCiConditionalAccessSupport -------------------------------------------
 
+#define MAXCASYSTEMIDS 16
+
 class cCiConditionalAccessSupport : public cCiSession {
 private:
   int state;
+  int numCaSystemIds;
+  unsigned short caSystemIds[MAXCASYSTEMIDS + 1]; // list is zero terminated!
 public:
   cCiConditionalAccessSupport(int SessionId, cCiTransportConnection *Tc);
   virtual bool Process(int Length = 0, const uint8_t *Data = NULL);
+  const unsigned short *GetCaSystemIds(void) { return caSystemIds; }
   bool SendPMT(cCiCaPmt &CaPmt);
   };
 
@@ -841,6 +847,7 @@ cCiConditionalAccessSupport::cCiConditionalAccessSupport(int SessionId, cCiTrans
 {
   dbgprotocol("New Conditional Access Support (session id %d)\n", SessionId);
   state = 0;
+  caSystemIds[numCaSystemIds = 0] = 0;
 }
 
 bool cCiConditionalAccessSupport::Process(int Length, const uint8_t *Data)
@@ -853,9 +860,16 @@ bool cCiConditionalAccessSupport::Process(int Length, const uint8_t *Data)
             int l = 0;
             const uint8_t *d = GetData(Data, l);
             while (l > 1) {
-                  dbgprotocol(" %04X", ((unsigned int)(*d) << 8) | *(d + 1));
+                  unsigned short id = ((unsigned short)(*d) << 8) | *(d + 1);
+                  dbgprotocol(" %04X", id);
                   d += 2;
                   l -= 2;
+                  if (numCaSystemIds < MAXCASYSTEMIDS) {
+                     caSystemIds[numCaSystemIds++] = id;
+                     caSystemIds[numCaSystemIds] = 0;
+                     }
+                  else
+                     esyslog("ERROR: too many CA system IDs!");
                   }
             dbgprotocol("\n");
             }
@@ -996,6 +1010,7 @@ public:
   cCiMMI(int SessionId, cCiTransportConnection *Tc);
   virtual ~cCiMMI();
   virtual bool Process(int Length = 0, const uint8_t *Data = NULL);
+  virtual bool HasUserIO(void) { return menu || enquiry; }
   cCiMenu *Menu(void);
   cCiEnquiry *Enquiry(void);
   bool SendMenuAnswer(uint8_t Selection);
@@ -1273,7 +1288,8 @@ void cCiCaPmt::AddCaDescriptor(int Length, uint8_t *Data)
 cCiHandler::cCiHandler(int Fd, int NumSlots)
 {
   numSlots = NumSlots;
-  enabled = true;
+  newCaSupport = false;
+  hasUserIO = false;
   for (int i = 0; i < MAX_CI_SESSION; i++)
       sessions[i] = NULL;
   tpl = new cCiTransportLayer(Fd, numSlots);
@@ -1299,12 +1315,14 @@ cCiHandler *cCiHandler::CreateCiHandler(const char *FileName)
            if (Caps.slot_type == CA_CI_LINK)
               return new cCiHandler(fd_ca, NumSlots);
            else
-              esyslog("ERROR: CAM doesn't support link layer interface");
+              isyslog("CAM doesn't support link layer interface");
            }
-        esyslog("ERROR: no CAM slots found");
+        else
+           esyslog("ERROR: no CAM slots found");
         }
      else
         LOG_ERROR_STR(FileName);
+     close(fd_ca);
      }
   return NULL;
 }
@@ -1358,7 +1376,8 @@ cCiSession *cCiHandler::CreateSession(int ResourceId)
             switch (ResourceId) {
               case RI_RESOURCE_MANAGER:           return sessions[i] = new cCiResourceManager(i + 1, tc);
               case RI_APPLICATION_INFORMATION:    return sessions[i] = new cCiApplicationInformation(i + 1, tc);
-              case RI_CONDITIONAL_ACCESS_SUPPORT: return sessions[i] = new cCiConditionalAccessSupport(i + 1, tc);
+              case RI_CONDITIONAL_ACCESS_SUPPORT: newCaSupport = true;
+                                                  return sessions[i] = new cCiConditionalAccessSupport(i + 1, tc);
               case RI_HOST_CONTROL:               break; //XXX
               case RI_DATE_TIME:                  return sessions[i] = new cCiDateTime(i + 1, tc);
               case RI_MMI:                        return sessions[i] = new cCiMMI(i + 1, tc);
@@ -1426,8 +1445,6 @@ int cCiHandler::CloseAllSessions(int Slot)
 
 bool cCiHandler::Process(void)
 {
-  if (!enabled)
-     return false;
   bool result = true;
   cMutexLock MutexLock(&mutex);
   for (int Slot = 0; Slot < numSlots; Slot++) {
@@ -1466,10 +1483,14 @@ bool cCiHandler::Process(void)
          tpl->NewConnection(Slot);
          }
       }
+  bool UserIO = false;
   for (int i = 0; i < MAX_CI_SESSION; i++) {
-      if (sessions[i])
-         sessions[i]->Process();
+      if (sessions[i] && sessions[i]->Process())
+         UserIO |= sessions[i]->HasUserIO();
       }
+  hasUserIO = UserIO;
+  if (newCaSupport)
+     newCaSupport = result = false; // triggers new SetCaPmt at caller!
   return result;
 }
 
@@ -1502,16 +1523,18 @@ cCiEnquiry *cCiHandler::GetEnquiry(void)
   return NULL;
 }
 
-bool cCiHandler::SetCaPmt(cCiCaPmt &CaPmt)
+const unsigned short *cCiHandler::GetCaSystemIds(int Slot)
 {
   cMutexLock MutexLock(&mutex);
-  bool result = false;
-  for (int Slot = 0; Slot < numSlots; Slot++) {
-      cCiConditionalAccessSupport *cas = (cCiConditionalAccessSupport *)GetSessionByResourceId(RI_CONDITIONAL_ACCESS_SUPPORT, Slot);
-      if (cas)
-         result |= cas->SendPMT(CaPmt);
-      }
-  return result;
+  cCiConditionalAccessSupport *cas = (cCiConditionalAccessSupport *)GetSessionByResourceId(RI_CONDITIONAL_ACCESS_SUPPORT, Slot);
+  return cas ? cas->GetCaSystemIds() : NULL;
+}
+
+bool cCiHandler::SetCaPmt(cCiCaPmt &CaPmt, int Slot)
+{
+  cMutexLock MutexLock(&mutex);
+  cCiConditionalAccessSupport *cas = (cCiConditionalAccessSupport *)GetSessionByResourceId(RI_CONDITIONAL_ACCESS_SUPPORT, Slot);
+  return cas && cas->SendPMT(CaPmt);
 }
 
 bool cCiHandler::Reset(int Slot)

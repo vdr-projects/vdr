@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.51 2003/04/12 15:06:11 kls Exp $
+ * $Id: dvbdevice.c 1.54 2003/04/19 14:24:25 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -116,13 +116,14 @@ bool cDvbTuner::IsTunedTo(const cChannel *Channel) const
 void cDvbTuner::Set(const cChannel *Channel, bool Tune)
 {
   cMutexLock MutexLock(&mutex);
-  channel = *Channel;
+  bool CaChange = !(Channel->GetChannelID() == channel.GetChannelID());
   if (Tune)
      tunerStatus = tsSet;
-  else if (tunerStatus == tsCam)
+  else if (tunerStatus == tsCam && CaChange)
      tunerStatus = tsTuned;
-  if (Channel->Ca())
+  if (Channel->Ca() && CaChange)
      startTime = time(NULL);
+  channel = *Channel;
   newSet.Broadcast();
 }
 
@@ -264,27 +265,29 @@ void cDvbTuner::Action(void)
                  }
               }
            if (tunerStatus >= tsLocked) {
-              if (ciHandler && channel.Ca()) {
+              if (ciHandler) {
                  if (ciHandler->Process()) {
                     if (tunerStatus != tsCam) {//XXX TODO update in case the CA descriptors have changed
-                       uchar buffer[2048];
-                       int length = cSIProcessor::GetCaDescriptors(channel.Source(), channel.Frequency(), channel.Sid(), sizeof(buffer), buffer);
-                       if (length > 0) {
-                          cCiCaPmt CaPmt(channel.Sid());
-                          CaPmt.AddCaDescriptor(length, buffer);
-                          if (channel.Vpid())
-                             CaPmt.AddPid(channel.Vpid());
-                          if (channel.Apid1())
-                             CaPmt.AddPid(channel.Apid1());
-                          if (channel.Apid2())
-                             CaPmt.AddPid(channel.Apid2());
-                          if (channel.Dpid1())
-                             CaPmt.AddPid(channel.Dpid1());
-                          if (ciHandler->SetCaPmt(CaPmt)) {
-                             tunerStatus = tsCam;
-                             startTime = 0;
-                             }
-                          }
+                       for (int Slot = 0; Slot < ciHandler->NumSlots(); Slot++) {
+                           uchar buffer[2048];
+                           int length = cSIProcessor::GetCaDescriptors(channel.Source(), channel.Frequency(), channel.Sid(), ciHandler->GetCaSystemIds(Slot), sizeof(buffer), buffer);
+                           if (length > 0) {
+                              cCiCaPmt CaPmt(channel.Sid());
+                              CaPmt.AddCaDescriptor(length, buffer);
+                              if (channel.Vpid())
+                                 CaPmt.AddPid(channel.Vpid());
+                              if (channel.Apid1())
+                                 CaPmt.AddPid(channel.Apid1());
+                              if (channel.Apid2())
+                                 CaPmt.AddPid(channel.Apid2());
+                              if (channel.Dpid1())
+                                 CaPmt.AddPid(channel.Dpid1());
+                              if (ciHandler->SetCaPmt(CaPmt, Slot)) {
+                                 tunerStatus = tsCam;
+                                 startTime = 0;
+                                 }
+                              }
+                           }
                        }
                     }
                  else
@@ -588,7 +591,8 @@ bool cDvbDevice::ProvidesChannel(const cChannel *Channel, int Priority, bool *Ne
            if (!HasPid(Channel->Vpid())) {
 #ifdef DO_MULTIPLE_RECORDINGS
               if (Channel->Ca() > CACONFBASE)
-                 needsDetachReceivers = true;
+                 needsDetachReceivers = !ciHandler // only LL-firmware can do non-live CA channels
+                                        || Ca() != Channel->Ca();
               else if (!IsPrimaryDevice())
                  result = true;
 #ifdef DO_REC_AND_PLAY_ON_PRIMARY_DEVICE
@@ -609,7 +613,7 @@ bool cDvbDevice::ProvidesChannel(const cChannel *Channel, int Priority, bool *Ne
 
 bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
 {
-  bool IsEncrypted = Channel->Ca() > CACONFBASE;
+  bool IsEncrypted = Channel->Ca() > CACONFBASE && !ciHandler; // only LL-firmware can do non-live CA channels
 
   bool DoTune = !dvbTuner->IsTunedTo(Channel);
 
@@ -714,7 +718,7 @@ int cDvbDevice::NumAudioTracksDevice(void) const
   int n = 0;
   if (aPid1)
      n++;
-  if (Ca() <= MAXDEVICES && aPid2 && aPid1 != aPid2) // a Ca recording session blocks switching live audio tracks
+  if (Ca() <= MAXDEVICES && aPid2 && aPid1 != aPid2) // a CA recording session blocks switching live audio tracks
      n++;
   return n;
 }
@@ -746,7 +750,7 @@ bool cDvbDevice::CanReplay(void) const
   if (Receiving())
      return false;
 #endif
-  return cDevice::CanReplay() && Ca() <= MAXDEVICES; // we can only replay if there is no Ca recording going on
+  return cDevice::CanReplay() && (Ca() <= MAXDEVICES || ciHandler); // with non-LL-firmware we can only replay if there is no CA recording going on
 }
 
 bool cDvbDevice::SetPlayMode(ePlayMode PlayMode)
@@ -775,15 +779,11 @@ bool cDvbDevice::SetPlayMode(ePlayMode PlayMode)
          CHECK(ioctl(fd_audio, AUDIO_SET_MUTE, false));
          if (siProcessor)
             siProcessor->SetStatus(true);
-         if (ciHandler)
-            ciHandler->SetEnabled(true);
          break;
     case pmAudioVideo:
     case pmAudioOnlyBlack:
          if (siProcessor)
             siProcessor->SetStatus(false);
-         if (ciHandler)
-            ciHandler->SetEnabled(false);
          CHECK(ioctl(fd_video, VIDEO_SET_BLANK, true));
          CHECK(ioctl(fd_audio, AUDIO_SELECT_SOURCE, AUDIO_SOURCE_MEMORY));
          CHECK(ioctl(fd_audio, AUDIO_SET_AV_SYNC, PlayMode == pmAudioVideo));
@@ -794,8 +794,6 @@ bool cDvbDevice::SetPlayMode(ePlayMode PlayMode)
     case pmAudioOnly:
          if (siProcessor)
             siProcessor->SetStatus(false);
-         if (ciHandler)
-            ciHandler->SetEnabled(false);
          CHECK(ioctl(fd_video, VIDEO_SET_BLANK, true));
          CHECK(ioctl(fd_audio, AUDIO_STOP, true));
          CHECK(ioctl(fd_audio, AUDIO_CLEAR_BUFFER));
@@ -807,8 +805,6 @@ bool cDvbDevice::SetPlayMode(ePlayMode PlayMode)
     case pmExtern_THIS_SHOULD_BE_AVOIDED:
          if (siProcessor)
             siProcessor->SetStatus(false);
-         if (ciHandler)
-            ciHandler->SetEnabled(false);
          close(fd_video);
          close(fd_audio);
          fd_video = fd_audio = -1;

@@ -196,6 +196,7 @@ Andreas Schultz <aschultz@warp10.net>
  for pointing out some unnecessary #includes in eit.c and a problem with
  cMenuRecordings::Del(), which caused warnings with gcc-3.2
  for suggesting a Make.config file
+ for making EIT filtering use masks to reduce the number of filters
 
 Aaron Holtzman
  for writing 'ac3dec'

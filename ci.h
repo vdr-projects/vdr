@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.h 1.4 2003/03/23 15:18:40 kls Exp $
+ * $Id: ci.h 1.7 2003/04/20 09:21:23 kls Exp $
  */
 
 #ifndef __CI_H
@@ -80,7 +80,8 @@ class cCiHandler {
 private:
   cMutex mutex;
   int numSlots;
-  bool enabled;
+  bool newCaSupport;
+  bool hasUserIO;
   cCiSession *sessions[MAX_CI_SESSION];
   cCiTransportLayer *tpl;
   cCiTransportConnection *tc;
@@ -96,12 +97,14 @@ private:
 public:
   ~cCiHandler();
   static cCiHandler *CreateCiHandler(const char *FileName);
-  void SetEnabled(bool Enabled) { enabled = Enabled; }
+  int NumSlots(void) { return numSlots; }
   bool Process(void);
+  bool HasUserIO(void) { return hasUserIO; }
   bool EnterMenu(int Slot);
   cCiMenu *GetMenu(void);
   cCiEnquiry *GetEnquiry(void);
-  bool SetCaPmt(cCiCaPmt &CaPmt);
+  const unsigned short *GetCaSystemIds(int Slot);
+  bool SetCaPmt(cCiCaPmt &CaPmt, int Slot);
   bool Reset(int Slot);
   };
 
