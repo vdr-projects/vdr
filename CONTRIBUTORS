@@ -546,6 +546,8 @@ Steffen Barszus <st_barszus@gmx.de>
  for reporting a bug in switching audio tracks in 'Transfer Mode' on the primary DVB device
  for making the program use the values of VIDEODIR and PLUGINDIR defined in Makefile
  or Makefile.config as defaults
+ for helping to debug a crash when using the --terminal option without having access
+ to the given terminal
 
 Peter Seyringer <e9425234@student.tuwien.ac.at>
  for reporting a bug in saving the polarization parameter of channels that have a
@@ -782,3 +784,18 @@ Peter Waechtler <pwaechtler@mac.com>
 
 Robert Bartl <robert@bartl.priv.at>
  for reporting a hangup in SVDRP when the client disappears without sending QUIT
+
+Sebastian Frei <sebastian@schnapsleichen.de>
+ for his support in keeping 'channels.conf' up-to-date.
+
+Rene Bartsch <ml@bartschnet.de>
+ for reporting a bug in setting the primary device in case none of the devices
+ provides an MPEG decoder
+
+Christoph Hermanns <christoph.hermanns@gmx.de>
+ for reporting a bug in handling the "Red" button in the "Schedules" menu in case
+ there are no events listed for a particular channel
+
+Oskar Signell <oskar@signell.net>
+ for pointing out a problem with setting an editing mark while in "Pause" mode,
+ where replay was not immediately positioned to the marked frame

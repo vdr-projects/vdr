@@ -2348,7 +2348,30 @@ Video Disk Recorder Revision History
   previous behaviour by commenting out the line
   #define VIDEO_STILLPICTURE_WORKS_WITH_VDR_FRAMES
   in VDR/dvbdevice.c.
+  Note that you need driver version 2003-08-23 or later for this to work!
 - Fixed handling extra blanks in plugin command lines.
 - Actually implemented the SVDRP command DELC.
 - Now clearing the player device if there are too many poll timeouts in 'Transfer
   Mode', which avoids buffer overflows and black screens in such cases.
+
+2003-09-07: Version 1.2.5pre2
+
+- Updated VIVA, VIVA Plus, MTV Central and MTV 2 in channels.conf (thanks to
+  Sebastian Frei).
+- Changed "Studio Universal" to "Sci-Fi" in channels.conf.
+- Fixed a crash when using the --terminal option without having access to the
+  given terminal (thanks to Steffen Barszus for helping to debug this one).
+- Added a note about the driver version needed for the still picture fix from
+  version 1.2.5pre1 to work properly (thanks to Oliver Endriss for pointing
+  this out).
+- Fixed setting the primary device in case none of the devices provides an MPEG
+  decoder (thanks to Rene Bartsch for reporting this one).
+- Fixed handling the "Red" button in the "Schedules" menu in case there are no
+  events listed for a particular channel (thanks to Christoph Hermanns for
+  reporting this one).
+- When setting an editing mark while in "Pause" mode, replay now immediately
+  jumps to the marked frame (thanks to Oskar Signell for pointing out this
+  problem).
+- The DVB devices no longer send CA descriptors to the CAM while the EPG scanner
+  is active (sometimes the CAMs got irritated when the device tuned to channels
+  they couldn't handle).

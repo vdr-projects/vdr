@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.269 2003/08/24 14:28:44 kls Exp $
+ * $Id: menu.c 1.271 2003/09/06 10:26:45 kls Exp $
  */
 
 #include "menu.h"
@@ -1250,7 +1250,7 @@ cMenuWhatsOn::cMenuWhatsOn(const cSchedules *Schedules, bool Now, int CurrentCha
 
   currentChannel = CurrentChannelNr;
   free(pArray);
-  SetHelp(tr("Record"), Now ? tr("Next") : tr("Now"), tr("Button$Schedule"), tr("Switch"));
+  SetHelp(Count() ? tr("Record") : NULL, Now ? tr("Next") : tr("Now"), tr("Button$Schedule"), tr("Switch"));
 }
 
 const cEventInfo *cMenuWhatsOn::ScheduleEventInfo(void)
@@ -1358,7 +1358,7 @@ cMenuSchedule::cMenuSchedule(void)
      cMenuWhatsOn::SetCurrentChannel(channel->Number());
      schedules = cSIProcessor::Schedules(mutexLock);
      PrepareSchedule(channel);
-     SetHelp(tr("Record"), tr("Now"), tr("Next"));
+     SetHelp(Count() ? tr("Record") : NULL, tr("Now"), tr("Next"));
      }
 }
 
@@ -1470,7 +1470,7 @@ eOSState cMenuSchedule::ProcessKey(eKeys Key)
            PrepareSchedule(channel);
            if (channel->Number() != cDevice::CurrentChannel()) {
               otherChannel = channel->Number();
-              SetHelp(tr("Record"), tr("Now"), tr("Next"), tr("Switch"));
+              SetHelp(Count() ? tr("Record") : NULL, tr("Now"), tr("Next"), tr("Switch"));
               }
            Display();
            }
@@ -3531,6 +3531,10 @@ void cReplayControl::MarkToggle(void)
      else {
         marks.Add(Current);
         ShowTimed(2);
+        bool Play, Forward;
+        int Speed;
+        if (GetReplayMode(Play, Forward, Speed) && !Play)
+           Goto(Current, true);
         }
      marks.Save();
      }
@@ -3659,7 +3663,6 @@ eOSState cReplayControl::ProcessKey(eKeys Key)
       DoShowMode = false;
       switch (Key) {
         // Editing:
-        //XXX should we do this only when the ProgressDisplay is on???
         case kMarkToggle:      MarkToggle(); break;
         case kMarkJumpBack:    MarkJump(false); break;
         case kMarkJumpForward: MarkJump(true); break;

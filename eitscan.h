@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: eitscan.h 1.3 2003/05/24 13:21:36 kls Exp $
+ * $Id: eitscan.h 1.4 2003/09/06 13:05:51 kls Exp $
  */
 
 #ifndef __EITSCAN_H
@@ -19,6 +19,7 @@ private:
          ScanTimeout = 20
        };
   time_t lastScan, lastActivity;
+  cDevice *currentDevice;
   int currentChannel;
   int lastChannel[MAXDEVICES];
   int numTransponders, *transponders;
@@ -27,6 +28,7 @@ public:
   cEITScanner(void);
   ~cEITScanner();
   bool Active(void) { return currentChannel; }
+  bool UsesDevice(const cDevice *Device) { return currentDevice == Device; }
   void Activity(void);
   void Process(void);
   };

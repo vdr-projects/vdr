@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.166 2003/08/24 11:18:04 kls Exp $
+ * $Id: vdr.c 1.168 2003/09/05 13:14:16 kls Exp $
  */
 
 #include <getopt.h>
@@ -199,6 +199,10 @@ int main(int argc, char *argv[])
           case 's': Shutdown = optarg;
                     break;
           case 't': Terminal = optarg;
+                    if (access(Terminal, R_OK | W_OK) < 0) {
+                       fprintf(stderr, "vdr: can't access terminal: %s\n", Terminal);
+                       return 2;
+                       }
                     break;
           case 'V': DisplayVersion = true;
                     break;
@@ -383,7 +387,7 @@ int main(int argc, char *argv[])
         const char *msg = "no primary device found - using first device!";
         fprintf(stderr, "vdr: %s\n", msg);
         esyslog("ERROR: %s", msg);
-        if (!cDevice::SetPrimaryDevice(0))
+        if (!cDevice::SetPrimaryDevice(1))
            return 2;
         if (!cDevice::PrimaryDevice()) {
            const char *msg = "no primary device found - giving up!";
