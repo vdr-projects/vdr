@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.132 2002/11/03 12:00:00 kls Exp $
+ * $Id: vdr.c 1.133 2002/11/24 10:32:40 kls Exp $
  */
 
 #include <getopt.h>
@@ -550,6 +550,11 @@ int main(int argc, char *argv[])
                             Temp = NULL;
                             Interface->Info(tr("Switching primary DVB..."));
                             cDevice::SetPrimaryDevice(Setup.PrimaryDVB);
+                            break;
+             case osPlugin: DELETENULL(Menu);
+                            Menu = Temp = cMenuMain::PluginOsdObject();
+                            if (Menu)
+                               Menu->Show();
                             break;
              case osBack:
              case osEnd:    if (Interact == Menu)

@@ -13,30 +13,68 @@ separate from the core VDR source, without the need of patching the original
 VDR code (and all the problems of correlating various patches).
 <p>
 This document is divided into two parts, the first one describing the
-<a href="#Part I - The Outside Interface"><i>outside</i> interface</a>
+<a href="#Part I - The External Interface"><i>external</i> interface</a>
 of the plugin system, and the second one describing the
-<a href="#Part II - The Inside Interface"><i>inside</i> interface</a>.
-The <i>outside</i> interface handles everything necessary for a plugin to get hooked into the core
+<a href="#Part II - The Internal Interface"><i>internal</i> interface</a>.
+The <i>external</i> interface handles everything necessary for a plugin to get hooked into the core
 VDR program and present itself to the user.
-The <i>inside</i> interface provides the plugin code access to VDR's internal data
+The <i>internal</i> interface provides the plugin code access to VDR's internal data
 structures and allows it to hook itself into specific areas to perform special actions.
 <p>
-<!--X1.1.12--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
-Important modifications introduced in version 1.1.12 are marked like this.
-<!--X1.1.12--></td></tr></table>
-<!--X1.1.13--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
+<!--X1.1.13--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 Important modifications introduced in version 1.1.13 are marked like this.
 <!--X1.1.13--></td></tr></table>
-<!--X1.1.14--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
+<!--X1.1.14--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
 Important modifications introduced in version 1.1.14 are marked like this.
 <!--X1.1.14--></td></tr></table>
-<!--X1.1.15--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+<!--X1.1.15--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
 Important modifications introduced in version 1.1.15 are marked like this.
 <!--X1.1.15--></td></tr></table>
+<!--X1.1.17--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+Important modifications introduced in version 1.1.17 are marked like this.
+<!--X1.1.17--></td></tr></table>
 
-<a name="Part I - The Outside Interface"><hr><center><h1>Part I - The Outside Interface</h1></center>
+<hr>
+<h1>Table Of Contents</h1>
+<ul>
+<li><a href="#Part I - The External Interface">Part I - The External Interface</a>
+<ul>
+<li><a href="#Quick start">Quick start</a>
+<li><a href="#The name of the plugin">The name of the plugin</a>
+<li><a href="#The plugin directory structure">The plugin directory structure</a>
+<li><a href="#Initializing a new plugin directory">Initializing a new plugin directory</a>
+<li><a href="#The actual implementation">The actual implementation</a>
+<li><a href="#Construction and Destruction">Construction and Destruction</a>
+<li><a href="#Version number">Version number</a>
+<li><a href="#Description">Description</a>
+<li><a href="#Command line arguments">Command line arguments</a>
+<li><a href="#Command line help">Command line help</a>
+<li><a href="#Getting started">Getting started</a>
+<li><a href="#Main menu entry">Main menu entry</a>
+<li><a href="#User interaction">User interaction</a>
+<li><a href="#Housekeeping">Housekeeping</a>
+<li><a href="#Setup parameters">Setup parameters</a>
+<li><a href="#The Setup menu">The Setup menu</a>
+<li><a href="#Configuration files">Configuration files</a>
+<li><a href="#Internationalization">Internationalization</a>
+<li><a href="#Loading plugins into VDR">Loading plugins into VDR</a>
+<li><a href="#Building the distribution package">Building the distribution package</a>
+</ul>
+<li><a href="#Part II - The Internal Interface">Part II - The Internal Interface</a>
+<ul>
+<li><a href="#Status monitor">Status monitor</a>
+<li><a href="#Players">Players</a>
+<li><a href="#Receivers">Receivers</a>
+<li><a href="#The On Screen Display">The On Screen Display</a>
+<li><a href="#Devices">Devices</a>
+<li><a href="#Dolby Digital">Dolby Digital</a>
+<li><a href="#Remote Control">Remote Control</a>
+</ul>
+</ul>
 
-<hr><h2>Quick start</h2>
+<a name="Part I - The External Interface"><hr><center><h1>Part I - The External Interface</h1></center>
+
+<a name="Quick start"><hr><h2>Quick start</h2>
 
 <center><i><b>Can't wait, can't wait!</b></i></center><p>
 
@@ -58,7 +96,7 @@ So, for a quick demonstration of the plugin system, there is a sample plugin cal
 If you enjoyed this brief glimpse into VDR plugin handling, read through the rest of
 this document and eventually write your own VDR plugin.
 
-<hr><h2>The name of the plugin</h2>
+<a name="The name of the plugin"><hr><h2>The name of the plugin</h2>
 
 <center><i><b>Give me some I.D.!</b></i></center><p>
 
@@ -164,7 +202,7 @@ have other plans.
 Add further files and maybe subdirectories to your plugin source directory as
 necessary. Don't forget to adapt the <tt>Makefile</tt> appropriately.
 
-<hr><h2>The actual implementation</h2>
+<a name="The actual implementation"><hr><h2>The actual implementation</h2>
 
 <center><i><b>Use the source, Luke!</b></i></center><p>
 
@@ -231,7 +269,7 @@ and implements a file named <tt>i18n.h</tt>. To make sure it won't clash with VD
 <tt>i18n.h</tt> it uses the macro <tt>_I18N__H</tt> (one underline at the beginning
 and two replacing the dot).
 
-<hr><h2>Construction and Destruction</h2>
+<a name="Construction and Destruction"><hr><h2>Construction and Destruction</h2>
 
 <center><i><b>What goes up, must come down...</b></i></center><p>
 
@@ -256,7 +294,7 @@ take care that any threads the plugin may have created will be stopped.
 Of course, if your plugin doesn't define any member variables that need to be
 initialized (and deleted), you don't need to implement either of these functions.
 
-<hr><h2>Version number</h2>
+<a name="Version number"><hr><h2>Version number</h2>
 
 <center><i><b>Which incarnation is this?</b></i></center><p>
 
@@ -301,7 +339,7 @@ while those with <i>odd</i> release numbers (like <tt>1.1.x</tt>, <tt>1.3.x</tt>
 a version number are not limited to single digits, so a version number of <tt>1.2.15</tt>
 would be acceptable.
 
-<hr><h2>Description</h2>
+<a name="Description"><hr><h2>Description</h2>
 
 <center><i><b>What is it that you do?</b></i></center><p>
 
@@ -325,7 +363,7 @@ virtual const char *Description(void)
 Note the <tt>tr()</tt> around the <tt>DESCRIPTION</tt>, which allows the description
 to be <a href="#Internationalization">internationalized</a>.
 
-<hr><h2>Command line arguments</h2>
+<a name="Command line arguments"><hr><h2>Command line arguments</h2>
 
 <center><i><b>Taking orders</b></i></center><p>
 
@@ -379,7 +417,7 @@ correctly, or <i>false</i> in case of an error. The first plugin that returns
 <i>false</i> from a call to its <tt>ProcessArgs()</tt> function will cause VDR
 to exit.
 
-<hr><h2>Command line help</h2>
+<a name="Command line help"><hr><h2>Command line help</h2>
 
 <center><i><b>Tell me about it...</b></i></center><p>
 
@@ -434,7 +472,7 @@ write a proper error message to the log file. The first plugin that returns
 If the plugin doesn't implement any background functionality or internationalized
 texts, it doesn't need to implement this function.
 
-<hr><h2>Main menu entry</h2>
+<a name="Main menu entry"><hr><h2>Main menu entry</h2>
 
 <center><i><b>Today's special is...</b></i></center><p>
 
@@ -462,25 +500,34 @@ The menu entries of all plugins will be inserted into VDR's main menu right
 after the <i>Recordings</i> item, in the same sequence as they were given
 in the call to VDR.
 
-<hr><h2>User interaction</h2>
+<a name="User interaction"><hr><h2>User interaction</h2>
 
 <center><i><b>It's showtime!</b></i></center><p>
 
 If the user selects the main menu entry of a plugin, VDR calls the function
 
+<!--X1.1.17--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
 <p><table><tr><td bgcolor=#F0F0F0><pre><br>
-virtual cOsdMenu *MainMenuAction(void);
+virtual cOsdObject *MainMenuAction(void);
 </pre></td></tr></table><p>
 
-which can do one of two things:
+which can do one of three things:
 <ul>
 <li>Return a pointer to a <tt>cOsdMenu</tt> object which will be displayed
     as a submenu of the main menu (just like the <i>Recordings</i> menu, for instance).
     That menu can then implement further functionality and, for instance, could
     eventually start a custom player to replay a file other than a VDR recording.
+<li>Return a pointer to a <tt>cOsdObject</tt> object which will be displayed
+    instead of the normal menu. The derived <tt>cOsdObject</tt> can open a
+    <a href="#The On Screen Display">raw OSD</a> from within its <tt>Show()</tt>
+    function (it should not attempt to do so from within its constructor, since
+    at that time the OSD is still in use by the main menu).
+    See the 'osddemo' example that comes with VDR for a demonstration of how this
+    is done.
 <li>Perform a specific action and return <tt>NULL</tt>. In that case the main menu
     will be closed after calling <tt>MainMenuAction()</tt>.
 </ul>
+<!--X1.1.17--></td></tr></table>
 <b>
 It is very important that a call to <tt>MainMenuAction()</tt> returns as soon
 as possible! As long as the program stays inside this function, no other user
@@ -488,7 +535,7 @@ interaction is possible. If a specific action takes longer than a few seconds,
 the plugin should launch a separate thread to do this.
 </b>
 
-<hr><h2>Housekeeping</h2>
+<a name="Housekeeping"><hr><h2>Housekeeping</h2>
 
 <center><i><b>Chores, chores...</b></i></center><p>
 
@@ -644,7 +691,7 @@ You can first assign the temporary values to the global variables and then do th
 your setup parameters and use that one to copy all parameters with one single statement
 (like VDR does with its cSetup class).
 
-<hr><h2>Configuration files</h2>
+<a name="Configuration files"><hr><h2>Configuration files</h2>
 
 <center><i><b>I want my own stuff!</b></i></center><p>
 
@@ -832,9 +879,9 @@ vdr-hello-0.0.1.tgz
 in your source directory, where <tt>hello</tt> will be replaced with your actual
 plugin's name, and <tt>0.0.1</tt> will be your plugin's current version number.
 
-<a name="Part II - The Inside Interface"><hr><center><h1>Part II - The Inside Interface</h1></center>
+<a name="Part II - The Internal Interface"><hr><center><h1>Part II - The Internal Interface</h1></center>
 
-<hr><h2>Status monitor</h2>
+<a name="Status monitor"><hr><h2>Status monitor</h2>
 
 <center><i><b>A piece of the action</b></i></center><p>
 
@@ -907,7 +954,7 @@ See the file <tt>status.h</tt> for detailed information on which status monitor
 member functions are available in <tt>cStatus</tt>. You only need to implement
 the functions you actually want to use.
 
-<hr><h2>Players</h2>
+<a name="Players"><hr><h2>Players</h2>
 
 <center><i><b>Play it again, Sam!</b></i></center><p>
 
@@ -964,7 +1011,7 @@ bool DevicePoll(cPoller &amp;Poller, int TimeoutMs = 0);
 </pre></td></tr></table><p>
 
 to determine whether the device is ready for further data.
-<!--X1.1.13--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
+<!--X1.1.13--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 <p>
 If the player can provide more than a single audio track, it can implement the
 following functions to make them available:
@@ -977,7 +1024,7 @@ virtual void SetAudioTrack(int Index);
 
 <!--X1.1.13--></td></tr></table>
 <p>
-<!--X1.1.15--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+<!--X1.1.15--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
 If there is an additional audio track that has to be replayed with external hardware,
 the player shall call its member function
 
@@ -1085,7 +1132,7 @@ enjoy additional players, since they will be able to control them with actions
 that they already know. If you absolutely want to do things differently, just go
 ahead - it's your show...
 
-<hr><h2>Receivers</h2>
+<a name="Receivers"><hr><h2>Receivers</h2>
 
 <center><i><b>Tapping into the stream...</b></i></center><p>
 
@@ -1139,7 +1186,7 @@ cDevice::PrimaryDevice()-&gt;AttachReceiver(Receiver);
 If the <tt>cReceiver</tt> isn't needed any more, it may simply be <i>deleted</i>
 and will automatically detach itself from the <tt>cDevice</tt>.
 
-<hr><h2>The On Screen Display</h2>
+<a name="The On Screen Display"><hr><h2>The On Screen Display</h2>
 
 <center><i><b>Express yourself</b></i></center><p>
 
@@ -1169,7 +1216,7 @@ to define an actual OSD drawing area (see VDR/osdbase.h for the declarations
 of these functions, and VDR/osd.c to see how VDR opens the OSD and sets up
 its windows and color depths).
 
-<hr><h2>Devices</h2>
+<a name="Devices"><hr><h2>Devices</h2>
 
 <center><i><b>Expanding the possibilities</b></i></center><p>
 
@@ -1205,9 +1252,7 @@ If the new device can receive, it most likely needs to provide a way of
 selecting which channel it shall tune to:
 
 <p><table><tr><td bgcolor=#F0F0F0><pre><br>
-<!--X1.1.12--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 virtual bool ProvidesSource(int Source) const;
-<!--X1.1.12--></td></tr></table>
 virtual bool ProvidesChannel(const cChannel *Channel, int Priority = -1, bool *NeedsDetachReceivers = NULL);
 virtual bool SetChannelDevice(const cChannel *Channel, bool LiveView);
 </pre></td></tr></table><p>
@@ -1215,7 +1260,7 @@ virtual bool SetChannelDevice(const cChannel *Channel, bool LiveView);
 These functions will be called with the desired source or channel and shall return whether
 this device can provide the requested source or channel and whether tuning to it was successful,
 repectively.
-<!--X1.1.13--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
+<!--X1.1.13--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 <p>
 <b>Audio selection</b>
 <p>
@@ -1262,7 +1307,7 @@ The functions to implement replaying capabilites are
 
 <p><table><tr><td bgcolor=#F0F0F0><pre><br>
 virtual bool HasDecoder(void) const;
-<!--X1.1.14--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
+<!--X1.1.14--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
 virtual bool CanReplay(void) const;
 <!--X1.1.14--></td></tr></table>
 virtual bool SetPlayMode(ePlayMode PlayMode);
@@ -1324,8 +1369,8 @@ shut down (delete) all devices when the program terminates. It is therefore
 important that the devices are created on the heap, using the <tt>new</tt>
 operator!
 
-<!--X1.1.15--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
-<hr><h2>Dolby Digital</h2>
+<!--X1.1.15--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
+<a name="Dolby Digital"><hr><h2>Dolby Digital</h2>
 
 <center><i><b>"The stereo effect may only be experienced if stereo equipment is used!"</b></i></center><p>
 
@@ -1369,7 +1414,7 @@ The <tt>Mute()</tt> and <tt>Clear()</tt> functions will be called whenever the a
 be muted, or any buffered data shall be cleared, respectively.
 <!--X1.1.15--></td></tr></table>
 
-<hr><h2>Remote Control</h2>
+<a name="Remote Control"><hr><h2>Remote Control</h2>
 
 <center><i><b>The joy of zapping!</b></i></center><p>
 

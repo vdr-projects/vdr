@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 1.37 2002/11/10 12:30:09 kls Exp $
+ * $Id: osd.c 1.38 2002/11/16 14:20:26 kls Exp $
  */
 
 #include "osd.h"
@@ -316,6 +316,7 @@ eOSState cOsdItem::ProcessKey(eKeys Key)
 
 cOsdMenu::cOsdMenu(const char *Title, int c0, int c1, int c2, int c3, int c4)
 {
+  isMenu = true;
   digit = 0;
   hasHotkeys = false;
   visible = false;

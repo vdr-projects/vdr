@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: plugin.h 1.4 2002/05/13 15:32:14 kls Exp $
+ * $Id: plugin.h 1.5 2002/11/16 14:22:24 kls Exp $
  */
 
 #ifndef __PLUGIN_H
@@ -37,7 +37,7 @@ public:
   virtual void Housekeeping(void);
 
   virtual const char *MainMenuEntry(void);
-  virtual cOsdMenu *MainMenuAction(void);
+  virtual cOsdObject *MainMenuAction(void);
 
   virtual cMenuSetupPage *SetupMenu(void);
   virtual bool SetupParse(const char *Name, const char *Value);

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.224 2002/11/10 16:05:15 kls Exp $
+ * $Id: menu.c 1.225 2002/11/23 14:51:24 kls Exp $
  */
 
 #include "menu.h"
@@ -2176,6 +2176,8 @@ cMenuPluginItem::cMenuPluginItem(const char *Name, int Index)
 #define STOP_RECORDING tr(" Stop recording ")
 #define ON_PRIMARY_INTERFACE tr("on primary interface")
 
+cOsdObject *cMenuMain::pluginOsdObject = NULL;
+
 cMenuMain::cMenuMain(bool Replaying, eOSState State)
 :cOsdMenu("")
 {
@@ -2193,6 +2195,13 @@ cMenuMain::cMenuMain(bool Replaying, eOSState State)
     case osCommands:   AddSubMenu(new cMenuCommands(tr("Commands"), &Commands)); break;
     default: break;
     }
+}
+
+cOsdObject *cMenuMain::PluginOsdObject(void)
+{
+  cOsdObject *o = pluginOsdObject;
+  pluginOsdObject = NULL;
+  return o;
 }
 
 void cMenuMain::Set(void)
@@ -2308,9 +2317,15 @@ eOSState cMenuMain::ProcessKey(eKeys Key)
                          if (item) {
                             cPlugin *p = cPluginManager::GetPlugin(item->PluginIndex());
                             if (p) {
-                               cOsdMenu *menu = p->MainMenuAction();
-                               if (menu)
-                                  return AddSubMenu(menu);
+                               cOsdObject *menu = p->MainMenuAction();
+                               if (menu) {
+                                  if (menu->IsMenu())
+                                     return AddSubMenu((cOsdMenu *)menu);
+                                  else {
+                                     pluginOsdObject = menu;
+                                     return osPlugin;
+                                     }
+                                  }
                                }
                             }
                          state = osEnd;

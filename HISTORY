@@ -1768,7 +1768,7 @@ Video Disk Recorder Revision History
 - Fixed a compiler warning regarding cMenuChannels::Del() and MenuTimers::Del() hiding
   the base class virtual functions.
 
-2002-11-15: Version 1.1.17
+2002-11-24: Version 1.1.17
 
 - Added new entries to 'ca.conf'.
 - Fixed closing unused PID handles (thanks to Stefan Schluenss for reporting this
@@ -1777,3 +1777,14 @@ Video Disk Recorder Revision History
 - Fixed disabling multiple recordings on a single DVB card (comment out the definition
   of the macros DO_REC_AND_PLAY_ON_PRIMARY_DEVICE and DO_MULTIPLE_RECORDINGS in
   dvbdevice.c).
+- Plugins can now have their very own OSD setup in the object they return from
+  a call to cPlugin::MainMenuAction(). In order to implement this, the return type
+  of cPlugin::MainMenuAction() had to be changed from (cOsdMenu *) to (cOsdObject *).
+  So in case you are compiling an existing plugin with this version of VDR and you
+  get an error message, simply change cOsdMenu to cOsdObject in the plugin's source
+  for the MainMenuAction() function.
+  Plugin authors who have so far (ab)used the cControl mechanism to implement their
+  own raw OSD should take a look at the new demo plugin 'osddemo'. It implements
+  a very primitive game that shows how a plugin can have its own raw OSD. Especially
+  look into cLineGame and see how it implements the Show() function. See also
+  the chapter on "User interaction" in PLUGINS.html.
