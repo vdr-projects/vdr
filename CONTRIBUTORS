@@ -719,3 +719,6 @@ Jon Burgess <mplayer@jburgess.uklinux.net>
 
 Thomas Schmidt <thomas.schmidt@in.stud.tu-ilmenau.de>
  for reporting a crash when cancelling a newly created timer
+
+Michael Walle <michael.walle@web.de>
+ for reporting a bug in channel switching after Left/Right has been pressed

@@ -2253,3 +2253,8 @@ Video Disk Recorder Revision History
   channel (thanks to Malcolm Caldwell for reporting this one).
 - Some corrections to the Finnish OSD texts (thanks to Niko Tarnanen and Rolf
   Ahrenberg).
+
+2003-06-12: Version 1.2.2
+
+- Fixed a bug in channel switching after Left/Right has been pressed (thanks to
+  Michael Walle for reporting this one).
