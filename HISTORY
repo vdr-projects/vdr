@@ -2741,3 +2741,5 @@ Video Disk Recorder Revision History
 - Improved performance when paging through very long menu lists.
 - Removed cSchedule::GetEventNumber() and cSchedule::NumEvents(). There is now
   cSchedule::Events() that returns the list of events directly.
+- Avoiding occasional bad responsiveness to user interaction caused by assigning
+  events to timers.
