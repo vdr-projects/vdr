@@ -2456,3 +2456,4 @@ Video Disk Recorder Revision History
 
 - Added cDevice::GetSTC() (suggested by Sven Goethel).
 - Added Asia-Pacific satellites to 'sources.conf' (thanks to Richard Scobie).
+- Added North American satellites to 'sources.conf' (thanks to Luke Jenkins).
