@@ -2845,3 +2845,4 @@ Video Disk Recorder Revision History
 - Implemented a default cRemote::Initialize() that waits 10 seconds for a keypress
   in order to prevent a "hangup" in case, e.g., the LIRC driver is not loaded (thanks
   to Helmut Auer).
+- Updated 'channels.conf.terr' for Hannover (thanks to Peter Waechtler).
