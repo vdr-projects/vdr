@@ -6,3 +6,4 @@ Carsten Koch <Carsten.Koch@icem.de>
 
 Plamen Ganev <pganev@com-it.net>
  for fixing the frequency offset for Hotbird channels
+ for adding the 'xtvrc2vdr' tool (see Tools/xtvrc2vdr)

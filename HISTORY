@@ -68,3 +68,5 @@ Video Disk Recorder Revision History
 - Now clearing the replay buffer in search forward/back, which results in
   faster reaction.
 - The 'Recordings' menu is now listed alphabetically (thanks to Carsten Koch!).
+- The new 'xtvrc2vdr' tool (thanks to Plamen Ganev!) can be used to convert
+  'xtvrc' channel files into 'vdr' format.
