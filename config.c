@@ -1,10 +1,10 @@
 /*
  * config.c: Configuration file handling
  *
- * See the main source file 'osm.c' for copyright information and
+ * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.3 2000/04/15 12:48:00 kls Exp $
+ * $Id: config.c 1.5 2000/04/24 09:44:15 kls Exp $
  */
 
 #include "config.h"
@@ -206,7 +206,6 @@ bool cChannel::Switch(void)
   if (!DvbApi.Recording()) {
      isyslog(LOG_INFO, "switching to channel %d", Index() + 1);
      CurrentChannel = Index();
-     Interface.DisplayChannel(CurrentChannel + 1, name);
      for (int i = 3; --i;) {
          if (DvbApi.SetChannel(frequency, polarization, diseqc, srate, vpid, apid, ca, pnr))
             return true;

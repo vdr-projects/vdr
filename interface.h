@@ -1,10 +1,10 @@
 /*
  * interface.h: Abstract user interface layer
  *
- * See the main source file 'osm.c' for copyright information and
+ * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.h 1.3 2000/03/19 14:03:28 kls Exp $
+ * $Id: interface.h 1.7 2000/04/24 09:44:25 kls Exp $
  */
 
 #ifndef __INTERFACE_H
@@ -19,16 +19,17 @@ public:
 private:
   int open;
   int cols[MaxCols];
-  unsigned int GetCh(void);
+  eKeys keyFromWait;
+  unsigned int GetCh(bool Wait = true);
   void QueryKeys(void);
   void HelpButton(int Index, const char *Text, eDvbColor FgColor, eDvbColor BgColor);
-  eKeys Wait(int Seconds = 1);
+  eKeys Wait(int Seconds = 1, bool KeepChar = false);
 public:
   cInterface(void);
   void Init(void);
-  void Open(void);
+  void Open(int NumCols = MenuColumns, int NumLines = MenuLines);
   void Close(void);
-  eKeys GetKey(void);
+  eKeys GetKey(bool Wait = true);
   void Clear(void);
   void ClearEol(int x, int y, eDvbColor Color = clrBackground);
   void SetCols(int *c);
@@ -41,7 +42,7 @@ public:
   bool Confirm(const char *s);
   void Help(const char *Red, const char *Green = NULL, const char *Yellow = NULL, const char *Blue = NULL);
   void LearnKeys(void);
-  void DisplayChannel(int Number, const char *Name);
+  void DisplayChannel(int Number, const char *Name = NULL);
   };
 
 extern cInterface Interface;

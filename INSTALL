@@ -1,0 +1,96 @@
+Installation of the Video Disk Recorder
+---------------------------------------
+
+Compiling and running the program:
+----------------------------------
+
+Make sure the files from this package are located in a
+directory that is "parallel" to the DVB directory of the
+driver source for the Siemens DVB-S PCI card (refer to
+http://linuxtv.org/dvb/siemens_dvb.html for more information
+about that driver). For example, if the DVB driver was 
+extracted into the directory /home/kls/vdr/DVB, then this
+package should be extracted into /home/kls/vdr/VDR.
+
+This program requires the card driver version 0.04 or higher
+to work properly.
+
+After extracting the package, change into the VDR directory
+and type 'make'. This should produce an executable file
+named 'vdr', which can be run after the DVB driver has been
+installed.
+
+There are two macros you can use to customize the 'vdr' program
+at compile time. Adding "DEBUG_REMOTE=1" to the 'make' call 
+will use the PC's keyboard as input device instead of the "Remote
+Control Unit" (see http://www.cadsoft.de/people/kls/vdr/remote.htm).
+Adding "DEBUG_OSD=1" will use the PC screen (or current window)
+to display texts instead of the DVB card's on-screen display
+interface. These modes are useful when testing new menus if you
+only have a remote connection to the VDR (which, in my case, is
+located in the living room and has neither a monitor nor a keyboard).
+
+The video data directory:
+-------------------------
+
+All recordings are written into directories below "/video". Please
+make sure this directory exists, and that the user who runs the 'vdr'
+program has read and write access to that directory.
+If you prefer a different location for your video files, you can change
+the value of 'BaseDir' in recording.c.
+
+Note that the file system need not be 64-bit proof, since the 'vdr'
+program splits video files into chunks of about 1GB. You should use
+a disk with several gigabytes of free space. One GB can store roughly
+half an hour of video data.
+
+Configuration files:
+--------------------
+
+There are three configuration files that hold information about
+channels, remote control keys and timers. These files are currrently
+assumed to be located in the directory from which the 'vdr' program
+was started (this will become configurable later). The configuration
+files can be edited with any text editor, or will be written by the
+'vdr' program if any changes are made inside the on-screen menus.
+The meaning of the data entries may still vary in future releases,
+so for the moment please look at the source code (config.c) to see
+the meaning of the various fields.
+
+Learning the remote control keys:
+---------------------------------
+
+There is no default 'keys.conf' file, so if you compile the program
+without 'DEBUG_REMOTE=1' you will have to go through a "teach-in"
+session that allows the program to learn your remote control codes.
+It will first attempt to determine the basic data transfer mode and
+timing of your remote control unit, and then will ask you to press one
+key after the other so that it can learn the various key codes. You will
+at least need to provide an "Up" and a "Down" key, so that you can switch
+channels. The rest of the key definitions is optional, but the more keys
+you define, the more you will be able to navigate through the menus and
+control recording/replaying.
+If the program has been built with "DEBUG_REMOTE=1", it will use the
+key configuration file 'keys-pc.conf', so that you won't loose data
+when switching between normal and debug mode.
+
+The default PC key assignments are:
+
+  Up, Down, Left, Right     Crsr keys in numeric block
+  Menu                      '5' in numeric block
+  Ok                        Enter
+  Back                      Backspace
+  0..9                      '0'..'9' in top row
+  Red, Green, Yellow, Blue  'F1'..'F4'
+  Record                    'r'
+  Pause                     'p'
+  Stop                      's'
+  Begin                     'B'
+  SearchForward             'f'
+  SearchBack                'b'
+  SkipForward               'PgDn' in numeric block
+  SkipBack                  'PgUp' in numeric block
+
+If you prefer different key assignments, simply delete the file
+'keys-pc.conf' and restart 'vdr' to get into learning mode.
+

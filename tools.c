@@ -1,16 +1,17 @@
 /*
  * tools.c: Various tools
  *
- * See the main source file 'osm.c' for copyright information and
+ * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.3 2000/04/15 15:10:05 kls Exp $
+ * $Id: tools.c 1.7 2000/04/24 15:01:35 kls Exp $
  */
 
 #define _GNU_SOURCE
 #include "tools.h"
 #include <dirent.h>
 #include <errno.h>
+#include <signal.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
@@ -20,6 +21,17 @@
 #define MaxBuffer 1000
 
 int SysLogLevel = 3;
+
+bool DataAvailable(int filedes)
+{
+  fd_set set;
+  FD_ZERO(&set);
+  FD_SET(filedes, &set);
+  struct timeval timeout;
+  timeout.tv_sec = 0;
+  timeout.tv_usec = 10000;
+  return select(FD_SETSIZE, &set, NULL, NULL, &timeout) > 0 && FD_ISSET(filedes, &set);
+}
 
 void writechar(int filedes, char c)
 {
@@ -40,8 +52,13 @@ char readchar(int filedes)
 
 bool readint(int filedes, int &n)
 {
-  //XXX timeout!!
-  return read(filedes, &n, sizeof(n));
+  return DataAvailable(filedes) && read(filedes, &n, sizeof(n)) == sizeof(n);
+}
+
+void purge(int filedes)
+{
+  while (DataAvailable(filedes))
+        readchar(filedes);
 }
 
 char *readline(FILE *f)
@@ -133,6 +150,41 @@ bool RemoveFileOrDir(const char *FileName)
   else
      esyslog(LOG_ERR, "ERROR: %s: %s", FileName, strerror(errno));
   return false;
+}
+
+bool CheckProcess(pid_t pid)
+{
+  pid_t Pid2Check = pid;
+  int status;
+  pid = waitpid(Pid2Check, &status, WNOHANG);
+  if (pid < 0) {
+     if (errno != ECHILD)
+        LOG_ERROR;
+     return false;
+     }
+  return true;
+}
+
+void KillProcess(pid_t pid, int Timeout)
+{
+  pid_t Pid2Wait4 = pid;
+  for (time_t t0 = time(NULL); time(NULL) - t0 < Timeout; ) {
+      int status;
+      pid_t pid = waitpid(Pid2Wait4, &status, WNOHANG);
+      if (pid < 0) {
+         if (errno != ECHILD)
+            LOG_ERROR;
+         return;
+         }
+      if (pid == Pid2Wait4)
+         return;
+      }
+  esyslog(LOG_ERR, "ERROR: process %d won't end (waited %d seconds) - terminating it...", Pid2Wait4, Timeout);
+  if (kill(Pid2Wait4, SIGTERM) < 0) {
+     esyslog(LOG_ERR, "ERROR: process %d won't terminate (%s) - killing it...", Pid2Wait4, strerror(errno));
+     if (kill(Pid2Wait4, SIGKILL) < 0)
+        esyslog(LOG_ERR, "ERROR: process %d won't die (%s) - giving up", Pid2Wait4, strerror(errno));
+     }
 }
 
 // --- cListObject -----------------------------------------------------------

@@ -1,10 +1,10 @@
 /*
  * osd.h: Abstract On Screen Display layer
  *
- * See the main source file 'osm.c' for copyright information and
+ * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.h 1.2 2000/03/05 11:33:11 kls Exp $
+ * $Id: osd.h 1.4 2000/04/24 09:44:32 kls Exp $
  */
 
 #ifndef __OSD_H
@@ -28,7 +28,7 @@ enum eOSState { osUnknown,
 
 class cOsdItem : public cListObject {
 private:
-  char *text;
+  const char *text;
   int offset;
   eOSState state;
 protected:
@@ -37,8 +37,8 @@ public:
   cOsdItem(eOSState State = osUnknown);
   cOsdItem(char *Text, eOSState State = osUnknown);
   virtual ~cOsdItem();
-  void SetText(char *Text, bool Copy = true);
-  char *Text(void) { return text; }
+  void SetText(const char *Text, bool Copy = true);
+  const char *Text(void) { return text; }
   void Display(int Offset = -1, bool Current = false);
   virtual void Set(void) {}
   virtual eOSState ProcessKey(eKeys Key);

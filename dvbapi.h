@@ -1,10 +1,10 @@
 /*
  * dvbapi.h: Interface to the DVB driver
  *
- * See the main source file 'osm.c' for copyright information and
+ * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.h 1.3 2000/04/15 13:36:10 kls Exp $
+ * $Id: dvbapi.h 1.8 2000/04/24 15:31:07 kls Exp $
  */
 
 #ifndef __DVBAPI_H
@@ -20,6 +20,9 @@ typedef unsigned char __u8;
 #endif
 #include <stdio.h>
 #include "../DVB/driver/dvb.h"
+
+#define MenuLines   15
+#define MenuColumns 40
 
 enum eDvbColor { clrBackground,
 #ifndef DEBUG_OSD
@@ -66,6 +69,14 @@ public:
   void ClrEol(int x, int y, eDvbColor color = clrBackground);
   void Text(int x, int y, const char *s, eDvbColor colorFg = clrWhite, eDvbColor colorBg = clrBackground);
 
+  // Progress Display facilities
+
+private:
+  int lastProgress;
+  char *replayTitle;
+public:
+  bool ShowProgress(bool Initial = false);
+
   // Channel facilities
 
   bool SetChannel(int FrequencyMHz, char Polarization, int Diseqc, int Srate, int Vpid, int Apid, int Ca, int Pnr);
@@ -78,13 +89,13 @@ private:
          dvbFastForward,
          dvbFastRewind,
          dvbSkip,
+         dvbGetIndex,
        };
   bool isMainProcess;
   pid_t pidRecord, pidReplay;
   int fromRecord, toRecord;
   int fromReplay, toReplay;
   void SetReplayMode(int Mode);
-  void KillProcess(pid_t pid);
 public:
   bool Recording(void);
        // Returns true if we are currently recording.
@@ -102,10 +113,11 @@ public:
        // returned.
   void StopRecord(void);
        // Stops the current recording session (if any).
-  bool StartReplay(const char *FileName);
+  bool StartReplay(const char *FileName, const char *Title = NULL);
        // Starts replaying the given file.
        // If there is already a replay session active, it will be stopped
        // and the new file will be played back.
+       // If provided Title will be used in the progress display.
   void StopReplay(void);
        // Stops the current replay session (if any).
   void PauseReplay(void);
@@ -119,6 +131,7 @@ public:
        // The sign of 'Seconds' determines the direction in which to skip.
        // Use a very large negative value to go all the way back to the
        // beginning of the recording.
+  bool GetIndex(int *Current, int *Total = NULL);
   };
   
 #endif //__DVBAPI_H

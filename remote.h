@@ -1,10 +1,10 @@
 /*
  * remote.h: Interface to the Remote Control Unit
  *
- * See the main source file 'osm.c' for copyright information and
+ * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remote.h 1.1 2000/02/19 13:36:48 kls Exp $
+ * $Id: remote.h 1.4 2000/04/24 09:46:00 kls Exp $
  */
 
 #ifndef __REMOTE_H
@@ -19,7 +19,7 @@ private:
   unsigned char dp, code, mode;
   unsigned short address;
   time_t t;
-  int firstTime, lastTime, minDelta;
+  int firstTime, lastTime;
   unsigned int lastCommand;
   bool SendCommand(unsigned char Cmd);
   int ReceiveByte(bool Wait = true);
@@ -29,6 +29,7 @@ public:
   enum { modeH = 'h', modeB = 'b', modeS = 's' };
   cRcIo(char *DeviceName);
   ~cRcIo();
+  bool InputAvailable(bool Wait = false);
   void Flush(int WaitSeconds = 0);
   bool SetCode(unsigned char Code, unsigned short Address);
   bool SetMode(unsigned char Mode);

@@ -1,10 +1,10 @@
 /*
  * menu.h: The actual menu implementations
  *
- * See the main source file 'osm.c' for copyright information and
+ * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 1.2 2000/03/05 10:57:27 kls Exp $
+ * $Id: menu.h 1.5 2000/04/24 15:31:53 kls Exp $
  */
 
 #ifndef _MENU_H
@@ -18,4 +18,13 @@ public:
   virtual eOSState ProcessKey(eKeys Key);
   };
   
+class cReplayDisplay {
+private:
+  bool shown;
+public:
+  cReplayDisplay(void);
+  ~cReplayDisplay();
+  eKeys ProcessKey(eKeys Key);
+  };
+
 #endif //_MENU_H

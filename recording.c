@@ -1,10 +1,10 @@
 /*
  * recording.h: Recording file handling
  *
- * See the main source file 'osm.c' for copyright information and
+ * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.2 2000/04/15 13:29:02 kls Exp $
+ * $Id: recording.c 1.6 2000/04/24 09:45:13 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -104,6 +104,7 @@ void AssertFreeDiskSpace(void)
 
 cRecording::cRecording(const char *Name, time_t Start, int Priority, int LifeTime)
 {
+  titleBuffer = NULL;
   fileName = NULL;
   name = strdup(Name);
   start = Start;
@@ -113,6 +114,7 @@ cRecording::cRecording(const char *Name, time_t Start, int Priority, int LifeTim
 
 cRecording::cRecording(cTimer *Timer)
 {
+  titleBuffer = NULL;
   fileName = NULL;
   name = strdup(Timer->file);
   start = Timer->StartTime();
@@ -122,6 +124,7 @@ cRecording::cRecording(cTimer *Timer)
 
 cRecording::cRecording(const char *FileName)
 {
+  titleBuffer = NULL;
   fileName = strdup(FileName);
   FileName += strlen(BaseDir) + 1;
   char *p = strrchr(FileName, '/');
@@ -144,6 +147,7 @@ cRecording::cRecording(const char *FileName)
 
 cRecording::~cRecording()
 {
+  delete titleBuffer;
   delete fileName;
   delete name;
 }
@@ -155,6 +159,23 @@ const char *cRecording::FileName(void)
      asprintf(&fileName, NAMEFORMAT, BaseDir, name, t->tm_year + 1900, t->tm_mon + 1, t->tm_mday, t->tm_hour, t->tm_min, priority, lifetime);
      }
   return fileName;
+}
+
+const char *cRecording::Title(char Delimiter)
+{
+  delete titleBuffer;
+  titleBuffer = NULL;
+  struct tm *t = localtime(&start);
+  asprintf(&titleBuffer, "%02d.%02d.%04d%c%02d:%02d%c%s",
+                         t->tm_mday,
+                         t->tm_mon + 1,
+                         t->tm_year + 1900,
+                         Delimiter,
+                         t->tm_hour,
+                         t->tm_min,
+                         Delimiter,
+                         name);
+  return titleBuffer;
 }
 
 bool cRecording::Delete(void)
@@ -178,21 +199,6 @@ bool cRecording::Remove(void)
 {
   isyslog(LOG_INFO, "removing recording %s", FileName());
   return RemoveFileOrDir(FileName());
-}
-
-bool cRecording::Record(void)
-{
-  return DvbApi.StartRecord(FileName());
-}
-
-bool cRecording::Play(void)
-{
-  return DvbApi.StartReplay(FileName());
-}
-
-void cRecording::Stop(void)
-{
-  DvbApi.StopRecord();
 }
 
 // --- cRecordings -----------------------------------------------------------

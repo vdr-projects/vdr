@@ -1,5 +1,5 @@
-Video Disk Recorder OSM Revision History
-----------------------------------------
+Video Disk Recorder Revision History
+------------------------------------
 
 2000-02-19: Version 0.01 (Initial revision).
 
@@ -18,3 +18,17 @@ Video Disk Recorder OSM Revision History
   able to store some 18 hours in full quality, so we don't really need that).
 - Termination signals are now caught and the program cleans up before exiting.
 - Support for CICAM.
+
+2000-04-24: Version 0.04
+
+- Changed name from 'osm' to 'vdr' to avoid mixups with the 'oms' program that
+  appears to be in use with DVD replay.
+- Implemented a channel display in the top menu line.
+- Implemented replay progress display (press "Ok" when replaying to bring it up).
+- Implemented direct channel selecting by pressing the numeric keys.
+- Added several 'const' keywords to please stricter compilers.
+- The repeat function for the remote control no longer adapts dynamically
+  to the timing of the RCU (this sometimes caused the repeat function to
+  kick in too early).
+- Channel selection is now blocked when recording or replaying.
+- Improved process handling.

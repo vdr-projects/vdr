@@ -1,10 +1,10 @@
 /*
  * menu.c: The actual menu implementations
  *
- * See the main source file 'osm.c' for copyright information and
+ * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.3 2000/04/15 15:07:36 kls Exp $
+ * $Id: menu.c 1.8 2000/04/24 15:32:11 kls Exp $
  */
 
 #include "menu.h"
@@ -428,7 +428,7 @@ void cMenuEditStrItem::Set(void)
   char buf[1000];
   if (pos >= 0) {
      strncpy(buf, value, pos);
-     char *s = value[pos] != ' ' ? value + pos + 1 : "";
+     const char *s = value[pos] != ' ' ? value + pos + 1 : "";
      snprintf(buf + pos, sizeof(buf) - pos - 2, "[%c]%s", *(value + pos), s);
      SetValue(buf);
      }
@@ -915,16 +915,7 @@ cMenuRecordingItem::cMenuRecordingItem(cRecording *Recording)
 
 void cMenuRecordingItem::Set(void)
 {
-  char *buffer = NULL;
-  struct tm *t = localtime(&recording->start);
-  asprintf(&buffer, "%02d.%02d.%04d\t%02d:%02d\t%s",
-                    t->tm_mday,
-                    t->tm_mon + 1,
-                    t->tm_year + 1900,
-                    t->tm_hour,
-                    t->tm_min,
-                    recording->name);
-  SetText(buffer, false);
+  SetText(recording->Title('\t'));
 }
 
 // --- cMenuRecordings -------------------------------------------------------
@@ -957,7 +948,7 @@ eOSState cMenuRecordings::Play(void)
   cMenuRecordingItem *ri = (cMenuRecordingItem *)Get(Current());
   if (ri) {
 //XXX what if this recording's file is currently in use???
-     if (ri->recording->Play())
+     if (DvbApi.StartReplay(ri->recording->FileName(), ri->recording->Title()))
         return osEnd;
      }
   return osContinue;
@@ -1020,5 +1011,38 @@ eOSState cMenuMain::ProcessKey(eKeys Key)
     default: break;
     }
   return state;
+}
+
+// --- cReplayDisplay --------------------------------------------------------
+
+cReplayDisplay::cReplayDisplay(void)
+{
+  Interface.Open(MenuColumns, -3);
+  shown = DvbApi.ShowProgress(true);
+}
+
+cReplayDisplay::~cReplayDisplay()
+{
+  Interface.Close();
+}
+
+eKeys cReplayDisplay::ProcessKey(eKeys Key)
+{
+  if (!DvbApi.Replaying())
+     return kOk; // will turn off replay display
+  shown = DvbApi.ShowProgress(!shown);
+  switch (Key) {
+    case kBegin:
+    case kPause:
+    case kStop:
+    case kSearchBack:
+    case kSearchForward:
+    case kSkipBack:
+    case kSkipForward:   break; // will be done in main loop
+    case kMenu:          break; // allow direct switching to menu
+    case kOk:            break; // switches off replay display
+    default:             Key = kNone; // ignore anything not explicitly known here
+    }
+  return Key;
 }
 

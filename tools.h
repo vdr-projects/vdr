@@ -1,17 +1,20 @@
 /*
  * tools.h: Various tools
  *
- * See the main source file 'osm.c' for copyright information and
+ * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.3 2000/04/15 15:09:47 kls Exp $
+ * $Id: tools.h 1.7 2000/04/24 15:01:49 kls Exp $
  */
 
 #ifndef __TOOLS_H
 #define __TOOLS_H
 
+#include <errno.h>
 #include <stdio.h>
 #include <syslog.h>
+#include <sys/wait.h>
+#include <sys/types.h>
 
 extern int SysLogLevel;
 
@@ -23,18 +26,23 @@ extern int SysLogLevel;
 #define LOG_ERROR_STR(s)  esyslog(LOG_ERR, "ERROR: %s: %s", s, strerror(errno));
 
 #define SECSINDAY  86400
+#define MAXPROCESSTIMEOUT   3 // seconds
 
 #define DELETENULL(p) (delete (p), p = NULL)
 
+bool DataAvailable(int filedes);
 void writechar(int filedes, char c);
 void writeint(int filedes, int n);
 char readchar(int filedes);
 bool readint(int filedes, int &n);
+void purge(int filedes);
 char *readline(FILE *f);
 int time_ms(void);
 void delay_ms(int ms);
 bool MakeDirs(const char *FileName, bool IsDirectory = false);
 bool RemoveFileOrDir(const char *FileName);
+bool CheckProcess(pid_t pid);
+void KillProcess(pid_t pid, int Timeout = MAXPROCESSTIMEOUT);
 
 class cListObject {
 private:
