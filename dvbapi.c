@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.92 2001/07/28 11:38:21 kls Exp $
+ * $Id: dvbapi.c 1.93 2001/07/28 11:45:04 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -1016,6 +1016,8 @@ void cReplayBuffer::Goto(int Index, bool Still)
 {
   if (index) {
      Clear(true);
+     if (paused)
+        CHECK(ioctl(videoDev, VIDEO_CONTINUE));
      if (++Index <= 0)
         Index = 1; // not '0', to allow GetNextIFrame() below to work!
      uchar FileNumber;

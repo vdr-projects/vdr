@@ -588,3 +588,4 @@ Video Disk Recorder Revision History
   codes '0' (thanks to Markus Lang).
 - Avoiding audio/video distortions in 'Transfer Mode'.
 - Fixed replaying in case there is no index file.
+- Fixed jumping to an editing mark when replay has been paused.
