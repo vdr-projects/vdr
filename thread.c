@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 1.16 2001/10/27 13:23:06 kls Exp $
+ * $Id: thread.c 1.17 2002/02/17 14:47:28 kls Exp $
  */
 
 #include "thread.h"
@@ -277,8 +277,11 @@ bool cPipe::Open(const char *Command, const char *Mode)
         _exit(-1);
         }
      else {
-        for (int i = STDERR_FILENO + 1; i < fd[1 - iopipe]; i++)
-            close(i); //close all dup'ed filedescriptors
+        for (int i = 0; i <= fd[1]; i++) {
+            if (i == STDIN_FILENO || i == STDOUT_FILENO || i == STDERR_FILENO)
+               continue;
+            close(i); // close all dup'ed filedescriptors
+            }
         if (execl("/bin/sh", "sh", "-c", Command, NULL) == -1) {
            LOG_ERROR_STR(Command);
            close(fd[1 - iopipe]);

@@ -143,6 +143,7 @@ Artur Skawina <skawina@geocities.com>
 
 Werner Fink <werner@suse.de>
  for making I/O more robust by handling EINTR
+ for fixing closing all unused file descriptors when opening a pipe
 
 Rolf Hakenes <hakenes@hippomi.de>
  for providing 'libdtv' and adapting the EIT mechanisms to it

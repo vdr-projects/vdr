@@ -1012,3 +1012,5 @@ Video Disk Recorder Revision History
 - When deleting a recording that is currently still being recorded, the related
   timer will now automatically be terminated. If this is a repeating timer, it
   will receive a "First day" setting that skips the timer for this day.
+- Fixed closing all unused file descriptors when opening a pipe (thanks to
+  Werner Fink).
