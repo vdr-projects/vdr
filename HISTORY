@@ -187,3 +187,6 @@ Video Disk Recorder Revision History
   a parameter for a list of all valid key names.
 - The new SVDRP command 'GRAB' (thanks to Guido Fiala!) can be used to grab
   the current frame and save it to a file.
+- The new SVDRP commands 'OVL*' can be used to control video overlays (thanks
+  to Guido Fiala!). This is mainly for use in the 'kvdr' tool (see the 'kvdr'
+  page at http://www.s.netic.de/gfiala).

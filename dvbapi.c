@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.26 2000/09/17 11:53:35 kls Exp $
+ * $Id: dvbapi.c 1.27 2000/09/17 12:45:55 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -1069,6 +1069,11 @@ cDvbApi::cDvbApi(const char *FileName)
   if (videoDev < 0)
      LOG_ERROR;
   cols = rows = 0;
+
+  ovlGeoSet = ovlStat = ovlFbSet = false;
+  ovlBrightness = ovlColour = ovlHue = ovlContrast = 32768;
+  ovlClipCount = 0;
+
 #if defined(DEBUG_OSD) || defined(REMOTE_KBD)
   initscr();
   keypad(stdscr, true);
@@ -1093,6 +1098,7 @@ cDvbApi::~cDvbApi()
      Close();
      Stop();
      StopRecord();
+     OvlO(false); //Overlay off!
      close(videoDev);
      }
 #if defined(DEBUG_OSD) || defined(REMOTE_KBD)
@@ -1274,8 +1280,157 @@ bool cDvbApi::GrabImage(const char *FileName, bool Jpeg, int Quality, int SizeX,
      LOG_ERROR_STR(FileName);
      result |= 1;
      }
+
+  if (ovlStat && ovlGeoSet) {
+     // switch the Overlay on again (gf: why have i to do anything again?)
+     OvlG(ovlSizeX, ovlSizeY, ovlPosX, ovlPosY);
+     }
+  if (ovlFbSet)
+     OvlP(ovlBrightness, ovlColour, ovlHue, ovlContrast);
+
   munmap(mem, msize);
   return result == 0;
+}
+
+bool cDvbApi::OvlF(int SizeX, int SizeY, int FbAddr, int Bpp, int Palette)
+{
+  int result = 0;
+  // get the actual X-Server settings???
+  // plausibility-check problem: can't be verified w/o X-server!!!
+  if (SizeX <= 0 || SizeY <= 0 || FbAddr == 0 || Bpp / 8 > 4 ||
+      Bpp / 8 <= 0 || Palette <= 0 || Palette > 13 || ovlClipCount < 0 ||
+      SizeX > 4096 || SizeY > 4096) {
+     ovlFbSet = ovlGeoSet = false;
+     OvlO(false);
+     return false;
+     }
+  else {
+    dsyslog(LOG_INFO, "OvlF: %d %d %x %d %d", SizeX, SizeY, FbAddr, Bpp, Palette);
+    // this is the problematic part!
+    struct video_buffer vb;
+    result |= ioctl(videoDev, VIDIOCGFBUF, &vb);
+    vb.base = (void*)FbAddr;
+    vb.depth = Bpp;
+    vb.height = SizeY;
+    vb.width = SizeX;
+    vb.bytesperline = ((vb.depth + 1) / 8) * vb.width;
+    //now the real thing: setting the framebuffer
+    result |= ioctl(videoDev, VIDIOCSFBUF, &vb);
+    if (result) {
+       ovlFbSet = ovlGeoSet = false;
+       ovlClipCount = 0;
+       OvlO(false);
+       return false;
+       }
+    else {
+       ovlFbSizeX = SizeX;
+       ovlFbSizeY = SizeY;
+       ovlBpp = Bpp;
+       ovlPalette = Palette;
+       ovlFbSet = true;
+       return true;
+      }
+    }
+}
+
+bool cDvbApi::OvlG(int SizeX, int SizeY, int PosX, int PosY)
+{
+  int result = 0;
+  // get the actual X-Server settings???
+  struct video_capability vc;
+  result |= ioctl(videoDev, VIDIOCGCAP, &vc);
+  if (!ovlFbSet)
+     return false;
+  if (SizeX < vc.minwidth || SizeY < vc.minheight ||
+      SizeX > vc.maxwidth || SizeY>vc.maxheight
+//      || PosX > FbSizeX || PosY > FbSizeY
+//         PosX < -SizeX || PosY < -SizeY ||
+     ) {
+     ovlGeoSet = false;
+     OvlO(false);
+     return false;
+     }
+  else {
+     struct video_window vw;
+     result |= ioctl(videoDev, VIDIOCGWIN,  &vw);
+     vw.x = PosX;
+     vw.y = PosY;
+     vw.width = SizeX;
+     vw.height = SizeY;
+     vw.chromakey = ovlPalette;
+     vw.flags = VIDEO_WINDOW_CHROMAKEY; // VIDEO_WINDOW_INTERLACE; //VIDEO_CLIP_BITMAP;
+     vw.clips = ovlClipRects;
+     vw.clipcount = ovlClipCount;
+     result |= ioctl(videoDev, VIDIOCSWIN, &vw);
+     if (result) {
+        ovlGeoSet = false;
+        ovlClipCount = 0;
+        return false;
+        }
+     else {
+        ovlSizeX = SizeX;
+        ovlSizeY = SizeY;
+        ovlPosX = PosX;
+        ovlPosY = PosY;
+        ovlGeoSet = true;
+        ovlStat = true;
+        return true;
+        }
+     }
+}
+
+bool cDvbApi::OvlC(int ClipCount, CRect *cr)
+{
+  if (ovlGeoSet && ovlFbSet) {
+     for (int i = 0; i < ClipCount; i++) {
+         ovlClipRects[i].x = cr[i].x;
+         ovlClipRects[i].y = cr[i].y;
+         ovlClipRects[i].width = cr[i].width;
+         ovlClipRects[i].height = cr[i].height;
+         ovlClipRects[i].next = &(ovlClipRects[i + 1]);
+         }
+     ovlClipCount = ClipCount;
+     //use it:
+     return OvlG(ovlSizeX, ovlSizeY, ovlPosX, ovlPosY);
+     }
+  return false;
+}
+
+bool cDvbApi::OvlP(__u16 Brightness, __u16 Colour, __u16 Hue, __u16 Contrast)
+{
+  int result = 0;
+  ovlBrightness = Brightness;
+  ovlColour = Colour;
+  ovlHue = Hue;
+  ovlContrast = Contrast;
+  struct video_picture vp;
+  if (!ovlFbSet)
+     return false;
+  result |= ioctl(videoDev, VIDIOCGPICT, &vp);
+  vp.brightness = Brightness;
+  vp.colour = Colour;
+  vp.hue = Hue;
+  vp.contrast = Contrast;
+  vp.depth = ovlBpp;
+  vp.palette = ovlPalette; // gf: is this always ok? VIDEO_PALETTE_RGB565;
+  result |= ioctl(videoDev, VIDIOCSPICT, &vp);
+  return result == 0;
+}
+
+bool cDvbApi::OvlO(bool Value)
+{
+  int result = 0;
+  if (!ovlGeoSet && Value)
+     return false;
+  int one = 1;
+  int zero = 0;
+  result |= ioctl(videoDev, VIDIOCCAPTURE, Value ? &one : &zero);
+  ovlStat = Value;
+  if (result) {
+     ovlStat = false;
+     return false;
+     }
+  return true;
 }
 
 #ifdef DEBUG_OSD
