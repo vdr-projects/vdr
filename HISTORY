@@ -570,7 +570,7 @@ Video Disk Recorder Revision History
 - Fixed handling a channel group separator at the very beginning of the
   'channels.conf' file.
 
-2001-07-27: Version 0.85
+2001-07-29: Version 0.85
 
 - Added Norwegian language texts (thanks to Jørgen Tvedt).
 - Increased the usleep value in cDvbOsd::Cmd() to 5000 in order to work on
@@ -586,3 +586,4 @@ Video Disk Recorder Revision History
 - DiSEqC support can now be generally enabled/disabled in the Setup menu. This
   may be necessary if your multiswitch gets irritated by the default DiSEqC
   codes '0' (thanks to Markus Lang).
+- Avoiding audio/video distortions in 'Transfer Mode'.

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.90 2001/07/27 13:33:56 kls Exp $
+ * $Id: dvbapi.c 1.91 2001/07/28 11:23:59 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -1163,8 +1163,10 @@ void cTransferBuffer::Output(void)
   uchar b[MINVIDEODATA];
   while (Busy()) {
         if (!gotBufferReserve) {
-           if (Available() < MAXFRAMESIZE)
+           if (Available() < MAXFRAMESIZE) {
               usleep(100000); // allow the buffer to collect some reserve
+              continue;
+              }
            else
               gotBufferReserve = true;
            }
@@ -2256,6 +2258,7 @@ bool cDvbApi::SetChannel(int ChannelNumber, int FrequencyMHz, char Polarization,
      if (CaDvbApi) {
         if (!CaDvbApi->Recording()) {
            if (CaDvbApi->SetChannel(ChannelNumber, FrequencyMHz, Polarization, Diseqc, Srate, Vpid, Apid1, Apid2, Dpid1, Dpid2, Tpid, Ca, Pnr)) {
+              usleep(500000); // avoids distortions (apparently switching into replay mode immediately after tuning causes problems)
               SetModeReplay();
               transferringFromDvbApi = CaDvbApi->StartTransfer(fd_video);
               }
