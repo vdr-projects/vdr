@@ -312,7 +312,7 @@ Video Disk Recorder Revision History
   an early state and may still cause some problems, but it appears to work nice
   already.
 
-2001-01-17: Version 0.70
+2001-01-18: Version 0.70
 
 - VDR now requires driver version 0.8.1 or higher.
 - Recordings are now saved in PES mode. Note that you now need to install the
