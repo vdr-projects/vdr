@@ -3152,3 +3152,4 @@ Video Disk Recorder Revision History
 - Fixed a possible crash when pausing live video and the recording was unable
   to start, maybe because there was no lock on the device (thanks to Andreas
   Brugger for reporting this one).
+- Fixed some characters in the iso8859-2 font file (thanks to Dino Ravnic).

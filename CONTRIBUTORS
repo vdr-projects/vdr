@@ -1156,3 +1156,6 @@ Sascha Klek <sklek@gmx.de>
 Andreas Brugger <brougs78@gmx.net>
   for reporting a possible crash when pausing live video and the recording was
   unable to start, maybe because there was no lock on the device
+
+Dino Ravnic <dino.ravnic@fer.hr>
+ for fixing some characters in the iso8859-2 font file
