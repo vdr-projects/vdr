@@ -240,3 +240,4 @@ Video Disk Recorder Revision History
   that file still exists.
 - The "Blue" button in the "Main" menu can now be used to "Resume" a previously
   stopped replay session (suggested by Martin Hammerschmid).
+- The low and high LNB frequencies can now be changed in the "Setup" menu.
