@@ -2602,3 +2602,5 @@ Video Disk Recorder Revision History
 - Excess blanks in channel names read from the SDT are now removed.
 - Fixed wrong parameter settings when scanning NITs for terrestrial transponders
   (thanks to Christian Tramnitz for pointing out this one).
+- Fixed some out of bounds parameter settings when scanning NITs for cable
+  and satellite transponders.

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: nit.c 1.2 2004/01/18 09:49:55 kls Exp $
+ * $Id: nit.c 1.3 2004/01/18 10:09:47 kls Exp $
  */
 
 #include "nit.h"
@@ -46,7 +46,7 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                  int Frequency = BCD2INT(sd->getFrequency()) / 100;
                  static char Polarizations[] = { 'h', 'v', 'l', 'r' };
                  char Polarization = Polarizations[sd->getPolarization()];
-                 static int CodeRates[] = { FEC_NONE, FEC_1_2, FEC_2_3, FEC_3_4, FEC_5_6, FEC_7_8, FEC_NONE, FEC_NONE, FEC_NONE, FEC_NONE, FEC_NONE, FEC_NONE, FEC_NONE, FEC_NONE, FEC_NONE, FEC_NONE };
+                 static int CodeRates[] = { FEC_NONE, FEC_1_2, FEC_2_3, FEC_3_4, FEC_5_6, FEC_7_8, FEC_AUTO, FEC_AUTO, FEC_AUTO, FEC_AUTO, FEC_AUTO, FEC_AUTO, FEC_AUTO, FEC_AUTO, FEC_AUTO, FEC_NONE };
                  int CodeRate = CodeRates[sd->getFecInner()];
                  int SymbolRate = BCD2INT(sd->getSymbolRate()) / 10;
                  bool found = false;
@@ -72,10 +72,10 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                  int Source = cSource::FromData(cSource::stCable);
                  int Frequency = BCD2INT(sd->getFrequency()) / 10;
                  //XXX FEC_outer???
-                 static int CodeRates[] = { FEC_NONE, FEC_1_2, FEC_2_3, FEC_3_4, FEC_5_6, FEC_7_8, FEC_NONE, FEC_NONE, FEC_NONE, FEC_NONE, FEC_NONE, FEC_NONE, FEC_NONE, FEC_NONE, FEC_NONE, FEC_NONE };
+                 static int CodeRates[] = { FEC_NONE, FEC_1_2, FEC_2_3, FEC_3_4, FEC_5_6, FEC_7_8, FEC_AUTO, FEC_AUTO, FEC_AUTO, FEC_AUTO, FEC_AUTO, FEC_AUTO, FEC_AUTO, FEC_AUTO, FEC_AUTO, FEC_NONE };
                  int CodeRate = CodeRates[sd->getFecInner()];
-                 static int Modulations[] = { QPSK, QAM_16, QAM_32, QAM_64, QAM_128, QAM_256 };
-                 int Modulation = Modulations[sd->getModulation()];
+                 static int Modulations[] = { QPSK, QAM_16, QAM_32, QAM_64, QAM_128, QAM_256, QAM_AUTO };
+                 int Modulation = Modulations[min(sd->getModulation(), 6)];
                  int SymbolRate = BCD2INT(sd->getSymbolRate()) / 10;
                  bool found = false;
                  for (cChannel *Channel = Channels.First(); Channel; Channel = Channels.Next(Channel)) {
