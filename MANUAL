@@ -295,7 +295,8 @@ Video Disk Recorder User's Manual
   enter the necessary command definition into 'commands.conf' and implement
   the actual command that will be called. Such a command can typically be a
   shell script or a Perl program. Anything that command writes to stdout will
-  be displayed on a result screen after executing the command. In order to
+  be displayed on a result screen after executing the command. This screen will
+  use a 'fixed' font so that you can generate formatted output. In order to
   avoid error messages going to stderr, command definitions should redirect
   stderr to stdout (see FORMATS).
 

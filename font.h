@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: font.h 1.1 2000/10/01 15:00:35 kls Exp $
+ * $Id: font.h 1.2 2000/11/18 14:51:45 kls Exp $
  */
 
 #ifndef __FONT_H
@@ -12,6 +12,7 @@
 
 enum eDvbFont {
   fontOsd,
+  fontFix,
 /* TODO as soon as we have the font files...
   fontTtxSmall,
   fontTtxLarge,

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbosd.h 1.3 2000/11/05 12:53:31 kls Exp $
+ * $Id: dvbosd.h 1.4 2000/11/18 15:25:25 kls Exp $
  */
 
 #ifndef __DVBOSD_H
@@ -45,6 +45,7 @@ enum eDvbColor {
 class cBitmap {
 private:
   cFont *font;
+  eDvbFont fontType;
 protected:
   int width, height;
   char *bitmap;
@@ -53,7 +54,7 @@ protected:
 public:
   cBitmap(int Width, int Height);
   virtual ~cBitmap();
-  void SetFont(eDvbFont Font);
+  eDvbFont SetFont(eDvbFont Font);
   bool Dirty(void);
   void SetPixel(int x, int y, eDvbColor Color);
   int Width(unsigned char c);

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.c 1.31 2000/11/11 12:13:35 kls Exp $
+ * $Id: interface.c 1.32 2000/11/18 15:28:50 kls Exp $
  */
 
 #include "interface.h"
@@ -134,6 +134,11 @@ void cInterface::SetCols(int *c)
       if (cols[i] == 0)
          break;
       }
+}
+
+eDvbFont cInterface::SetFont(eDvbFont Font)
+{
+  return cDvbApi::PrimaryDvbApi->SetFont(Font);
 }
 
 char *cInterface::WrapText(const char *Text, int Width, int *Height)

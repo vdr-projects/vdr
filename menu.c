@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.50 2000/11/18 14:10:10 kls Exp $
+ * $Id: menu.c 1.51 2000/11/18 15:42:39 kls Exp $
  */
 
 #include "menu.h"
@@ -757,8 +757,9 @@ private:
   char *text;
   int x, y, w, h, lines, offset;
   eDvbColor fgColor, bgColor;
+  eDvbFont font;
 public:
-  cMenuTextItem(const char *Text, int X, int Y, int W, int H = -1, eDvbColor FgColor = clrWhite, eDvbColor BgColor = clrBackground);
+  cMenuTextItem(const char *Text, int X, int Y, int W, int H = -1, eDvbColor FgColor = clrWhite, eDvbColor BgColor = clrBackground, eDvbFont Font = fontOsd);
   ~cMenuTextItem();
   int Height(void) { return h; }
   void Clear(void);
@@ -770,7 +771,7 @@ public:
   virtual eOSState ProcessKey(eKeys Key);
   };
 
-cMenuTextItem::cMenuTextItem(const char *Text, int X, int Y, int W, int H, eDvbColor FgColor, eDvbColor BgColor)
+cMenuTextItem::cMenuTextItem(const char *Text, int X, int Y, int W, int H, eDvbColor FgColor, eDvbColor BgColor, eDvbFont Font)
 {
   x = X;
   y = Y;
@@ -778,8 +779,11 @@ cMenuTextItem::cMenuTextItem(const char *Text, int X, int Y, int W, int H, eDvbC
   h = H;
   fgColor = FgColor;
   bgColor = BgColor;
+  font = Font;
   offset = 0;
+  eDvbFont oldFont = Interface->SetFont(font);
   text = Interface->WrapText(Text, w - 1, &lines);
+  Interface->SetFont(oldFont);
   if (h < 0)
      h = lines;
 }
@@ -798,6 +802,7 @@ void cMenuTextItem::Display(int Offset, eDvbColor FgColor, eDvbColor BgColor)
 {
   int l = 0;
   char *t = text;
+  eDvbFont oldFont = Interface->SetFont(font);
   while (*t) {
         char *n = strchr(t, '\n');
         if (l >= offset) {
@@ -815,6 +820,7 @@ void cMenuTextItem::Display(int Offset, eDvbColor FgColor, eDvbColor BgColor)
         if (++l >= h + offset)
            break;
         }
+  Interface->SetFont(oldFont);
   // scroll indicators use inverted color scheme!
   if (CanScrollUp())   Interface->Write(x + w - 1, y,         "^", bgColor, fgColor);
   if (CanScrollDown()) Interface->Write(x + w - 1, y + h - 1, "v", bgColor, fgColor);
@@ -854,14 +860,14 @@ eOSState cMenuTextItem::ProcessKey(eKeys Key)
 
 class cMenuText : public cOsdMenu {
 public:
-  cMenuText(const char *Title, const char *Text);
+  cMenuText(const char *Title, const char *Text, eDvbFont Font = fontOsd);
   virtual eOSState ProcessKey(eKeys Key);
   };
 
-cMenuText::cMenuText(const char *Title, const char *Text)
+cMenuText::cMenuText(const char *Title, const char *Text, eDvbFont Font)
 :cOsdMenu(Title)
 {
-  Add(new cMenuTextItem(Text, 1, 2, MenuColumns - 2, MAXOSDITEMS));
+  Add(new cMenuTextItem(Text, 1, 2, MenuColumns - 2, MAXOSDITEMS, clrWhite, clrBackground, Font));
 }
 
 eOSState cMenuText::ProcessKey(eKeys Key)
@@ -1596,7 +1602,7 @@ eOSState cMenuCommands::Execute(void)
   if (command) {
      const char *Result = command->Execute();
      if (Result)
-        return AddSubMenu(new cMenuText(command->Title(), Result));
+        return AddSubMenu(new cMenuText(command->Title(), Result, fontFix));
      }
   return osContinue;
 }

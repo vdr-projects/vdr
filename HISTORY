@@ -281,6 +281,7 @@ Video Disk Recorder Revision History
 - There can now be a configuration file named 'commands.conf' that defines
   commands that can be executed through the "Main" menu's "Commands" option
   (see FORMATS for details on how to define these commands).
+- Added a 'fixed' font for use with the output of system commands.
 - The 'Priority' parameter of the timers is now also used to interrupt a low
   priority timer recording if a higher priority timer wants to record.
 - A timer recording on a DVB card with a CAM module will now be interrupted

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.h 1.19 2000/11/01 15:27:23 kls Exp $
+ * $Id: interface.h 1.20 2000/11/18 15:27:59 kls Exp $
  */
 
 #ifndef __INTERFACE_H
@@ -43,6 +43,7 @@ public:
   void Fill(int x, int y, int w, int h, eDvbColor color = clrBackground);
   void Flush(void);
   void SetCols(int *c);
+  eDvbFont SetFont(eDvbFont Font);
   char *WrapText(const char *Text, int Width, int *Height);
   void Write(int x, int y, const char *s, eDvbColor FgColor = clrWhite, eDvbColor BgColor = clrBackground);
   void WriteText(int x, int y, const char *s, eDvbColor FgColor = clrWhite, eDvbColor BgColor = clrBackground);
