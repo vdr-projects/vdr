@@ -1044,6 +1044,7 @@ Philip Lawatsch <philip@lawatsch.at>
 
 Jouni Karvo <kex@netlab.hut.fi>
  for suggesting to make the cOsd constructor 'protected'
+ for fixing checking for the presence of NPTL
 
 Olaf Henkel <olafhenkel@t-online.de>
  for reporting a problem with long event texts in the "Classic VDR" skin
