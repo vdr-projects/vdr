@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.91 2002/03/17 14:24:09 kls Exp $
+ * $Id: config.c 1.96 2002/04/01 11:54:05 kls Exp $
  */
 
 #include "config.h"
@@ -248,6 +248,7 @@ bool cChannel::Parse(const char *s)
         strn0cpy(name, s, MaxChannelName);
         name[strlen(name) - 1] = 0; // strip the '\n'
         groupSep = true;
+        number = 0;
         }
      else
         return false;
@@ -439,6 +440,7 @@ int cTimer::ParseDay(const char *s, time_t *FirstDay)
                  tm_r.tm_year -= 1900;
                  tm_r.tm_mon--;
                  tm_r.tm_hour = tm_r.tm_min = tm_r.tm_sec = 0;
+                 tm_r.tm_isdst = -1; // makes sure mktime() will determine the correct DST setting
                  *FirstDay = mktime(&tm_r);
                  }
               }
@@ -560,6 +562,7 @@ time_t cTimer::IncDay(time_t t, int Days)
   tm tm = *localtime_r(&t, &tm_r);
   tm.tm_mday += Days; // now tm_mday may be out of its valid range
   int h = tm.tm_hour; // save original hour to compensate for DST change
+  tm.tm_isdst = -1;   // makes sure mktime() will determine the correct DST setting
   t = mktime(&tm);    // normalize all values
   tm.tm_hour = h;     // compensate for DST change
   return mktime(&tm); // calculate final result
@@ -572,6 +575,7 @@ time_t cTimer::SetTime(time_t t, int SecondsFromMidnight)
   tm.tm_hour = SecondsFromMidnight / 3600;
   tm.tm_min = (SecondsFromMidnight % 3600) / 60;
   tm.tm_sec =  SecondsFromMidnight % 60;
+  tm.tm_isdst = -1; // makes sure mktime() will determine the correct DST setting
   return mktime(&tm);
 }
 
@@ -602,7 +606,7 @@ bool cTimer::Matches(time_t t)
          if ((!firstday || a >= firstday) && t <= b) {
             startTime = a;
             stopTime = b;
-            if (t >= firstday)
+            if (t >= firstday + SECSINDAY)
                firstday = 0;
             break;
             }
@@ -638,9 +642,9 @@ void cTimer::SetPending(bool Pending)
   pending = Pending;
 }
 
-void cTimer::SkipToday(void)
+void cTimer::Skip(void)
 {
-  firstday = IncDay(SetTime(recording ? StartTime() : time(NULL), 0), 1);
+  firstday = IncDay(SetTime(StartTime(), 0), 1);
 }
 
 // --- cCommand -------------------------------------------------------------
@@ -980,7 +984,7 @@ bool cSetup::ParseCaCaps(const char *Value)
 {
   char *p;
   int d = strtol(Value, &p, 10);
-  if (d > 0 && d < MAXDVBAPI) {
+  if (d > 0 && d <= MAXDVBAPI) {
      d--;
      int i = 0;
      while (p != Value && p && *p) {

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.59 2002/02/17 12:57:23 kls Exp $
+ * $Id: tools.c 1.62 2002/03/31 20:51:06 kls Exp $
  */
 
 #include "tools.h"
@@ -13,6 +13,7 @@
 #include <errno.h>
 #include <stdlib.h>
 #include <sys/time.h>
+#include <sys/vfs.h>
 #include <time.h>
 #include <unistd.h>
 #include "i18n.h"
@@ -33,14 +34,22 @@ ssize_t safe_read(int filedes, void *buffer, size_t size)
 
 ssize_t safe_write(int filedes, const void *buffer, size_t size)
 {
-  for (;;) {
-      ssize_t p = write(filedes, buffer, size);
-      if (p < 0 && errno == EINTR) {
-         dsyslog(LOG_INFO, "EINTR while writing to file handle %d - retrying", filedes);
-         continue;
-         }
-      return p;
-      }
+  ssize_t p = 0;
+  ssize_t written = size;
+  const unsigned char *ptr = (const unsigned char *)buffer;
+  while (size > 0) {
+        p = write(filedes, ptr, size);
+        if (p < 0) {
+           if (errno == EINTR) {
+              dsyslog(LOG_INFO, "EINTR while writing to file handle %d - retrying", filedes);
+              continue;
+              }
+           break;
+           }
+        ptr  += p;
+        size -= p;
+        }
+  return p < 0 ? p : written;
 }
 
 void writechar(int filedes, char c)
@@ -235,34 +244,20 @@ const char *AddDirectory(const char *DirName, const char *FileName)
   return buf;
 }
 
-#define DFCMD  "df -m -P '%s'"
-
 int FreeDiskSpaceMB(const char *Directory, int *UsedMB)
 {
-  //TODO Find a simpler way to determine the amount of free disk space!
   if (UsedMB)
      *UsedMB = 0;
   int Free = 0;
-  char *cmd = NULL;
-  asprintf(&cmd, DFCMD, Directory);
-  FILE *p = popen(cmd, "r");
-  if (p) {
-     char *s;
-     while ((s = readline(p)) != NULL) {
-           if (strchr(s, '/')) {
-              int used, available;
-              sscanf(s, "%*s %*d %d %d", &used, &available);
-              if (UsedMB)
-                 *UsedMB = used;
-              Free = available;
-              break;
-              }
-           }
-     pclose(p);
+  struct statfs statFs;
+  if (statfs(Directory, &statFs) == 0) {
+     int blocksPerMeg = 1024 * 1024 / statFs.f_bsize;
+     if (UsedMB)
+        *UsedMB = (statFs.f_blocks - statFs.f_bfree) / blocksPerMeg;
+     Free = statFs.f_bavail / blocksPerMeg;
      }
   else
-     esyslog(LOG_ERR, "ERROR: can't open pipe for cmd '%s'", cmd);
-  delete cmd;
+     LOG_ERROR_STR(Directory);
   return Free;
 }
 

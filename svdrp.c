@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.34 2002/03/08 17:17:05 kls Exp $
+ * $Id: svdrp.c 1.35 2002/03/23 16:17:39 kls Exp $
  */
 
 #include "svdrp.h"
@@ -340,16 +340,12 @@ bool cSVDRP::Send(const char *s, int length)
 {
   if (length < 0)
      length = strlen(s);
-  int wbytes = safe_write(file, s, length);
-  if (wbytes == length)
-     return true;
-  if (wbytes < 0) {
+  if (safe_write(file, s, length) < 0) {
      LOG_ERROR;
      file.Close();
+     return false;
      }
-  else //XXX while...???
-     esyslog(LOG_ERR, "Wrote %d bytes to client while expecting %d\n", wbytes, length);
-  return false;
+  return true;
 }
 
 void cSVDRP::Reply(int Code, const char *fmt, ...)

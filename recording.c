@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.57 2002/03/16 12:17:44 kls Exp $
+ * $Id: recording.c 1.60 2002/04/01 10:51:23 kls Exp $
  */
 
 #include "recording.h"
@@ -172,7 +172,7 @@ bool cResumeFile::Save(int Index)
   if (fileName) {
      int f = open(fileName, O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
      if (f >= 0) {
-        if (safe_write(f, &Index, sizeof(Index)) != sizeof(Index))
+        if (safe_write(f, &Index, sizeof(Index)) < 0)
            LOG_ERROR_STR(fileName);
         close(f);
         return true;
@@ -324,7 +324,7 @@ cRecording::cRecording(cTimer *Timer, const char *Title, const char *Subtitle, c
      if (isempty(Summary))
         Summary = "";
      if (*Subtitle || *Summary)
-        asprintf(&summary, "%s%s%s", Subtitle, (*Subtitle && *Summary) ? "\n\n" : "", Summary);
+        asprintf(&summary, "%s\n\n%s%s%s", Title, Subtitle, (*Subtitle && *Summary) ? "\n\n" : "", Summary);
      }
 }
 
@@ -343,7 +343,7 @@ cRecording::cRecording(const char *FileName)
      time_t now = time(NULL);
      struct tm tm_r;
      struct tm t = *localtime_r(&now, &tm_r); // this initializes the time zone in 't'
-     t.tm_isdst = -1; // makes sure mktime() will determine the correct dst setting
+     t.tm_isdst = -1; // makes sure mktime() will determine the correct DST setting
      if (7 == sscanf(p + 1, DATAFORMAT, &t.tm_year, &t.tm_mon, &t.tm_mday, &t.tm_hour, &t.tm_min, &priority, &lifetime)) {
         t.tm_year -= 1900;
         t.tm_mon--;

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 1.21 2002/03/10 16:18:06 kls Exp $
+ * $Id: osd.c 1.23 2002/03/29 16:34:03 kls Exp $
  */
 
 #include "osd.h"
@@ -76,6 +76,7 @@ eOSState cOsdItem::ProcessKey(eKeys Key)
 
 cOsdMenu::cOsdMenu(const char *Title, int c0, int c1, int c2, int c3, int c4)
 {
+  digit = 0;
   hasHotkeys = false;
   visible = false;
   title = NULL;
@@ -105,12 +106,15 @@ cOsdMenu::~cOsdMenu()
 const char *cOsdMenu::hk(const char *s)
 {
   static char buffer[32];
-  if (digit < 9) {
-     snprintf(buffer, sizeof(buffer), " %d %s", ++digit, s);
-     return buffer;
+  if (s && hasHotkeys) {
+     if (digit == 0 && '1' <= *s && *s <= '9' && *(s + 1) == ' ')
+        digit = 10; // prevents automatic hotkeys - input already has them
+     if (digit < 9) {
+        snprintf(buffer, sizeof(buffer), " %d %s", ++digit, s);
+        s = buffer;
+        }
      }
-  else
-     return s;
+  return s;
 }
 
 void cOsdMenu::SetHasHotkeys(void)
@@ -288,6 +292,10 @@ void cOsdMenu::PageUp(void)
   first -= MAXOSDITEMS;
   if (first < 0)
      first = current = 0;
+  if (SpecialItem(current)) {
+     current -= (current > 0) ? 1 : -1;
+     first = min(first, current - 1);
+     }
   Display();
   DisplayCurrent(true);
 }
@@ -301,6 +309,10 @@ void cOsdMenu::PageDown(void)
   if (current > Count() - 1) {
      current = Count() - 1;
      first = Count() - MAXOSDITEMS;
+     }
+  if (SpecialItem(current)) {
+     current += (current < Count() - 1) ? 1 : -1;
+     first = max(first, current - MAXOSDITEMS);
      }
   Display();
   DisplayCurrent(true);

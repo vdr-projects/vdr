@@ -1,0 +1,164 @@
+'\" t
+.\" ** The above line should force tbl to be a preprocessor **
+.\" Man page for vdr
+.\"
+.\" Copyright (C) 2002 Klaus Schmidinger
+.\"
+.\" You may distribute under the terms of the GNU General Public
+.\" License as specified in the file COPYING that comes with the
+.\" vdr distribution.
+.\"
+.\" $Id: vdr.1 1.2 2002/03/29 10:10:04 kls Exp $
+.\"
+.TH vdr 1 "29 Mar 2002" "1.0.0" "Video Disk Recorder"
+.SH NAME
+vdr - the Video Disk Recorder
+.SH SYNOPSIS
+.B vdr
+[options]
+.SH DESCRIPTION
+.B vdr
+implements a complete digital Set-Top-Box and Video Recorder.
+It can work with signals received from satellites (DVB-S) as
+well as cable (DVB-C) and terrestrial (DVB-T) signals.
+
+At least one DVB card is required to run \fBvdr\fR, but in order
+to watch one broadcast while recording another, or to start watching
+a recorded programme before the live broadcast has ended (\fBtime shifting\fR),
+two DVB cards are necessary. By default \fBvdr\fR can support up to four
+DVB cards. The primary DVB card (the one your tv set is connected to) has
+to be a "full featured" card, which means it must contain an MPEG decoder
+and provide audio and video signal outputs.
+
+\fBvdr\fR uses the On Screen Display of the DVB card to display its menus.
+It can be controlled by the PC keyboard, a home built "Remote Control Unit"
+(RCU) or the "Linux Infrared Remote Control" (LIRC).
+
+Remote access is possible via the "Simple Video Disk Recorder Protocol" (SVDRP),
+which can be accessed on port 2001, for instance by \fBtelnet\fR.
+.SH OPTIONS
+.TP
+.BI -a\  cmd ,\ --audio= cmd
+Send Dolby Digital audio to stdin of command \fIcmd\fR.
+.TP
+.BI -c\  dir ,\ --config= dir
+Read config files from directory \fIdir\fR
+(default is to read them from the video directory).
+.TP
+.B -d, --daemon
+Run in daemon mode.
+.TP
+.BI -D\  num ,\ --device= num
+Use only the given DVB device (\fInum\fR = 0, 1, 2...).
+There may be several \fB-D\fR options (by default all DVB devices will be used).
+.TP
+.BI -E\  file ,\ --epgfile= file
+Write the EPG data into the given \fIfile\fR
+(default is \fI/video/epg.data\fR).
+Use \fB-E-\fR to disable this.
+If \fIfile\fR is a directory, the file \fIepg.data\fR
+will be created in that directory.
+.TP
+.B -h, --help
+Print a help message and exit.
+.TP
+.BI -l\  level ,\ --log= level
+Set logging to \fIlevel\fR.
+\fB0\fR\ =\ no logging, \fB1\fR\ =\ errors only,
+\fB2\fR\ =\ errors and info, \fB3\fR\ =\ errors, info and debug.
+The default logging level is \fB3\fR.
+.TP
+.B -m, --mute
+Mute audio of the primary DVB device at startup.
+.TP
+.BI -p\  port ,\ --port= port
+Use \fIport\fR for SVDRP. A value of \fB0\fR turns off SVDRP.
+The default SVDRP port is \fB2001\fR.
+You need to edit the file \fIsvdrphosts.conf\fR in order to enable
+access to the SVDRP port.
+.TP
+.BI -r\  cmd ,\ --record= cmd
+Call \fIcmd\fR before and after a recording.
+.TP
+.BI -s\  cmd ,\ --shutdown= cmd
+Call \fIcmd\fR to shutdown the computer.
+.TP
+.BI -t\  tty ,\ --terminal= tty
+Set the controlling terminal.
+.TP
+.BI -v\  dir ,\ --video= dir
+Use \fIdir\fR as video directory.
+The default is \fI/video\fR.
+.TP
+.B -V, --version
+Print version information and exit.
+.TP
+.BI -w\  sec ,\ --watchdog= sec
+Activate the watchdog timer with a timeout of \fIsec\fR seconds.
+A value of \fB0\fR (default) disables the watchdog.
+.SH EXIT STATUS
+.TP
+.B 0
+Successful program execution.
+.TP
+.B 1
+An error has been detected which requires the DVB driver and \fBvdr\fR
+to be re-loaded.
+.SH FILES
+.TP
+.I channels.conf
+Channel configuration.
+.TP
+.I ca.conf
+Conditional access configuration.
+.TP
+.I timers.conf
+Timer configuration.
+.TP
+.I setup.conf
+User definable setup.
+.TP
+.I commands.conf
+User definable commands (executed from the \fBCommands\fR menu).
+.TP
+.I svdrphosts.conf
+SVDRP host configuration, defining which hosts or networks are given
+access to the SVDRP port.
+.TP
+.I marks.vdr
+Contains the editing marks defined for a recording.
+.TP
+.I summary.vdr
+Contains a description of the recording.
+.TP
+.I resume.vdr
+Contains the index into the recording where the last replay session left off.
+.TP
+.I index.vdr
+Contains the file number, offset and type of each frame of the recording.
+.TP
+.I keys.conf
+Contains the key assignments for the remote control.
+.TP
+.I keys-pc.conf
+Contains the key assignments for the PC keyboard (used if the program
+was compiled with DEBUG_OSD=1).
+.TP
+.IR 001.vdr\  ...\  255.vdr
+The actual data files of a recording.
+.TP
+.I epg.data
+Contains all current EPG data. Can be used for external processing and will
+also be read at program startup to have the full EPG data available immediately.
+.SH SEE ALSO
+.BR vdr (5)
+.SH AUTHOR
+Written by Klaus Schmidinger, with contributions from many others.
+See the file \fICONTRIBUTORS\fR in the \fBvdr\fR source distribution.
+.SH REPORTING BUGS
+Report bugs to <vdr-bugs@cadsoft.de>.
+.SH COPYRIGHT
+Copyright \(co 2002 Klaus Schmidinger.
+
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.

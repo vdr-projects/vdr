@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 1.40 2002/03/16 09:51:10 kls Exp $
+ * $Id: menu.h 1.41 2002/03/31 13:53:23 kls Exp $
  */
 
 #ifndef _MENU_H
@@ -116,7 +116,7 @@ private:
   int lastCurrent, lastTotal;
   time_t timeoutShow;
   bool timeSearchActive, timeSearchHide;  
-  int timeSearchHH, timeSearchMM, timeSearchPos;
+  int timeSearchTime, timeSearchPos;
   void TimeSearchDisplay(void);
   void TimeSearchProcess(eKeys Key);
   void TimeSearch(void);

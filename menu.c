@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.172 2002/03/17 14:23:44 kls Exp $
+ * $Id: menu.c 1.180 2002/03/31 21:17:42 kls Exp $
  */
 
 #include "menu.h"
@@ -20,6 +20,8 @@
 #define MENUTIMEOUT     120 // seconds
 #define MAXWAIT4EPGINFO  10 // seconds
 #define MODETIMEOUT       3 // seconds
+
+#define CHNUMWIDTH  (Channels.Count() > 999 ? 5 : 4) // there are people with more than 999 channels...
 
 const char *FileNameChars = " aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ0123456789-.#~^";
 
@@ -780,7 +782,7 @@ public:
   };
 
 cMenuChannels::cMenuChannels(void)
-:cOsdMenu(tr("Channels"), 4)
+:cOsdMenu(tr("Channels"), CHNUMWIDTH)
 {
   //TODO
   int i = 0;
@@ -1186,7 +1188,7 @@ public:
   };
 
 cMenuTimers::cMenuTimers(void)
-:cOsdMenu(tr("Timers"), 2, 4, 10, 6, 6)
+:cOsdMenu(tr("Timers"), 2, CHNUMWIDTH, 10, 6, 6)
 {
   int i = 0;
   cTimer *timer;
@@ -1217,7 +1219,7 @@ eOSState cMenuTimers::OnOff(void)
         timer->active = false;
         }
      else if (timer->active)
-        timer->SkipToday();
+        timer->Skip();
      else
         timer->active = true;
      timer->Matches(); // refresh start and end time
@@ -1412,7 +1414,7 @@ static int CompareEventChannel(const void *p1, const void *p2)
 }
 
 cMenuWhatsOn::cMenuWhatsOn(const cSchedules *Schedules, bool Now, int CurrentChannelNr)
-:cOsdMenu(Now ? tr("What's on now?") : tr("What's on next?"), 4, 7, 6)
+:cOsdMenu(Now ? tr("What's on now?") : tr("What's on next?"), CHNUMWIDTH, 7, 6)
 {
   const cSchedule *Schedule = Schedules->First();
   const cEventInfo **pArray = NULL;
@@ -1854,7 +1856,7 @@ eOSState cMenuRecordings::Del(void)
            if (Interface->Confirm(tr("Timer still recording - really delete?"))) {
               cTimer *timer = rc->Timer();
               if (timer) {
-                 timer->SkipToday();
+                 timer->Skip();
                  cRecordControls::Process(time(NULL));
                  Timers.Save();
                  }
@@ -1935,7 +1937,7 @@ public:
   };
 
 cMenuSetupPage::cMenuSetupPage(void)
-:cOsdMenu("", 30)
+:cOsdMenu("", 33)
 {
   data = Setup;
   osdLanguage = Setup.OSDLanguage;
@@ -1991,7 +1993,7 @@ void cMenuSetupOSD::Set(void)
   Add(new cMenuEditStraItem(tr("Setup.OSD$Language"),               &data.OSDLanguage, NumLanguages, Languages()));
   Add(new cMenuEditIntItem( tr("Setup.OSD$Width"),                  &data.OSDwidth, MINOSDWIDTH, MAXOSDWIDTH));
   Add(new cMenuEditIntItem( tr("Setup.OSD$Height"),                 &data.OSDheight, MINOSDHEIGHT, MAXOSDHEIGHT));
-  Add(new cMenuEditIntItem( tr("Setup.OSD$Message time"),           &data.OSDMessageTime, 1, 60));
+  Add(new cMenuEditIntItem( tr("Setup.OSD$Message time (s)"),       &data.OSDMessageTime, 1, 60));
   Add(new cMenuEditBoolItem(tr("Setup.OSD$Channel info position"),  &data.ChannelInfoPos, tr("bottom"), tr("top")));
   Add(new cMenuEditBoolItem(tr("Setup.OSD$Info on channel switch"), &data.ShowInfoOnChSwitch));
   Add(new cMenuEditBoolItem(tr("Setup.OSD$Scroll pages"),           &data.MenuScrollPage));
@@ -2012,7 +2014,7 @@ void cMenuSetupEPG::Set(void)
 {
   Clear();
   SetupTitle("EPG");
-  Add(new cMenuEditIntItem( tr("Setup.EPG$EPG scan timeout"),          &data.EPGScanTimeout));
+  Add(new cMenuEditIntItem( tr("Setup.EPG$EPG scan timeout (h)"),      &data.EPGScanTimeout));
   Add(new cMenuEditIntItem( tr("Setup.EPG$EPG bugfix level"),          &data.EPGBugfixLevel, 0, MAXEPGBUGFIXLEVEL));
   Add(new cMenuEditBoolItem(tr("Setup.EPG$Set system time"),           &data.SetSystemTime));
   Add(new cMenuEditTranItem(tr("Setup.EPG$Use time from transponder"), &data.TimeTransponder));
@@ -2048,10 +2050,10 @@ void cMenuSetupLNB::Set(void)
 {
   Clear();
   SetupTitle("LNB");
-  Add(new cMenuEditIntItem( tr("Setup.LNB$SLOF"),               &data.LnbSLOF));
-  Add(new cMenuEditIntItem( tr("Setup.LNB$Low LNB frequency"),  &data.LnbFrequLo));
-  Add(new cMenuEditIntItem( tr("Setup.LNB$High LNB frequency"), &data.LnbFrequHi));
-  Add(new cMenuEditBoolItem(tr("Setup.LNB$Use DiSEqC"),         &data.DiSEqC));
+  Add(new cMenuEditIntItem( tr("Setup.LNB$SLOF (MHz)"),               &data.LnbSLOF));
+  Add(new cMenuEditIntItem( tr("Setup.LNB$Low LNB frequency (MHz)"),  &data.LnbFrequLo));
+  Add(new cMenuEditIntItem( tr("Setup.LNB$High LNB frequency (MHz)"), &data.LnbFrequHi));
+  Add(new cMenuEditBoolItem(tr("Setup.LNB$Use DiSEqC"),               &data.DiSEqC));
 }
 
 // --- cMenuSetupCICAM -------------------------------------------------------
@@ -2089,17 +2091,17 @@ void cMenuSetupRecord::Set(void)
 {
   Clear();
   SetupTitle("Recording");
-  Add(new cMenuEditIntItem( tr("Setup.Recording$Margin at start"),        &data.MarginStart));
-  Add(new cMenuEditIntItem( tr("Setup.Recording$Margin at stop"),         &data.MarginStop));
-  Add(new cMenuEditIntItem( tr("Setup.Recording$Primary limit"),          &data.PrimaryLimit, 0, MAXPRIORITY));
-  Add(new cMenuEditIntItem( tr("Setup.Recording$Default priority"),       &data.DefaultPriority, 0, MAXPRIORITY));
-  Add(new cMenuEditIntItem( tr("Setup.Recording$Default lifetime"),       &data.DefaultLifetime, 0, MAXLIFETIME));
-  Add(new cMenuEditBoolItem(tr("Setup.Recording$Use episode name"),       &data.UseSubtitle));
-  Add(new cMenuEditBoolItem(tr("Setup.Recording$Mark instant recording"), &data.MarkInstantRecord));
-  Add(new cMenuEditStrItem( tr("Setup.Recording$Name instant recording"),  data.NameInstantRecord, sizeof(data.NameInstantRecord), FileNameChars));
-  Add(new cMenuEditBoolItem(tr("Setup.Recording$Record Dolby Digital"),   &data.RecordDolbyDigital));
-  Add(new cMenuEditIntItem( tr("Setup.Recording$Max. video file size"),   &data.MaxVideoFileSize, MINVIDEOFILESIZE, MAXVIDEOFILESIZE));
-  Add(new cMenuEditBoolItem(tr("Setup.Recording$Split edited files"),     &data.SplitEditedFiles));
+  Add(new cMenuEditIntItem( tr("Setup.Recording$Margin at start (min)"),     &data.MarginStart));
+  Add(new cMenuEditIntItem( tr("Setup.Recording$Margin at stop (min)"),      &data.MarginStop));
+  Add(new cMenuEditIntItem( tr("Setup.Recording$Primary limit"),             &data.PrimaryLimit, 0, MAXPRIORITY));
+  Add(new cMenuEditIntItem( tr("Setup.Recording$Default priority"),          &data.DefaultPriority, 0, MAXPRIORITY));
+  Add(new cMenuEditIntItem( tr("Setup.Recording$Default lifetime (d)"),      &data.DefaultLifetime, 0, MAXLIFETIME));
+  Add(new cMenuEditBoolItem(tr("Setup.Recording$Use episode name"),          &data.UseSubtitle));
+  Add(new cMenuEditBoolItem(tr("Setup.Recording$Mark instant recording"),    &data.MarkInstantRecord));
+  Add(new cMenuEditStrItem( tr("Setup.Recording$Name instant recording"),     data.NameInstantRecord, sizeof(data.NameInstantRecord), FileNameChars));
+  Add(new cMenuEditBoolItem(tr("Setup.Recording$Record Dolby Digital"),      &data.RecordDolbyDigital));
+  Add(new cMenuEditIntItem( tr("Setup.Recording$Max. video file size (MB)"), &data.MaxVideoFileSize, MINVIDEOFILESIZE, MAXVIDEOFILESIZE));
+  Add(new cMenuEditBoolItem(tr("Setup.Recording$Split edited files"),        &data.SplitEditedFiles));
 }
 
 // --- cMenuSetupReplay ------------------------------------------------------
@@ -2132,9 +2134,9 @@ void cMenuSetupMisc::Set(void)
 {
   Clear();
   SetupTitle("Miscellaneous");
-  Add(new cMenuEditIntItem( tr("Setup.Miscellaneous$Min. event timeout"),   &data.MinEventTimeout));
-  Add(new cMenuEditIntItem( tr("Setup.Miscellaneous$Min. user inactivity"), &data.MinUserInactivity));
-  Add(new cMenuEditIntItem( tr("Setup.Miscellaneous$SVDRP timeout"),        &data.SVDRPTimeout));
+  Add(new cMenuEditIntItem( tr("Setup.Miscellaneous$Min. event timeout (min)"),   &data.MinEventTimeout));
+  Add(new cMenuEditIntItem( tr("Setup.Miscellaneous$Min. user inactivity (min)"), &data.MinUserInactivity));
+  Add(new cMenuEditIntItem( tr("Setup.Miscellaneous$SVDRP timeout (min)"),        &data.SVDRPTimeout));
 }
 
 // --- cMenuSetup ------------------------------------------------------------
@@ -2231,6 +2233,11 @@ eOSState cMenuCommands::Execute(void)
 {
   cCommand *command = Commands.Get(Current());
   if (command) {
+     char *buffer = NULL;
+     asprintf(&buffer, "%s...", command->Title());
+     Interface->Status(buffer);
+     Interface->Flush();
+     delete buffer;
      const char *Result = command->Execute();
      if (Result)
         return AddSubMenu(new cMenuText(command->Title(), Result, fontFix));
@@ -2286,7 +2293,7 @@ void cMenuMain::Set(void)
   int Minutes = int(double(FreeMB) / MB_PER_MINUTE);
   int Hours = Minutes / 60;
   Minutes %= 60;
-  snprintf(buffer, sizeof(buffer), "%s  -  Disk %d%%  -  %2d:%02d %s", tr("VDR"), Percent, Hours, Minutes, tr("free"));
+  snprintf(buffer, sizeof(buffer), "%s  -  %s %d%%  -  %2d:%02d %s", tr("VDR"), tr("Disk"), Percent, Hours, Minutes, tr("free"));
   SetTitle(buffer);
 
   // Basic menu items:
@@ -2310,6 +2317,7 @@ void cMenuMain::Set(void)
      char *buffer = NULL;
      asprintf(&buffer, "%s%s", STOP_RECORDING, ON_PRIMARY_INTERFACE);
      Add(new cOsdItem(buffer, osStopRecord));
+     delete buffer;
      }
 
   const char *s = NULL;
@@ -3100,64 +3108,47 @@ bool cReplayControl::ShowProgress(bool Initial)
 void cReplayControl::TimeSearchDisplay(void)
 {
   char buf[64];
-  int len;
-  
   strcpy(buf, tr("Jump: "));
-  len = strlen(buf);
-  
-  switch (timeSearchPos) {
-    case 1:  sprintf(buf + len, "%01d-:--", timeSearchHH / 10); break;
-    case 2:  sprintf(buf + len, "%02d:--", timeSearchHH); break;
-    case 3:  sprintf(buf + len, "%02d:%01d-", timeSearchHH, timeSearchMM / 10); break;
-    case 4:  sprintf(buf + len, "%02d:%02d", timeSearchHH, timeSearchMM); break;
-    default: sprintf(buf + len, "--:--"); break;
-    }
-
+  int len = strlen(buf);
+  char h10 = '0' + (timeSearchTime >> 24);
+  char h1  = '0' + ((timeSearchTime & 0x00FF0000) >> 16);
+  char m10 = '0' + ((timeSearchTime & 0x0000FF00) >> 8);
+  char m1  = '0' + (timeSearchTime & 0x000000FF);
+  char ch10 = timeSearchPos > 3 ? h10 : '-';
+  char ch1  = timeSearchPos > 2 ? h1  : '-';
+  char cm10 = timeSearchPos > 1 ? m10 : '-';
+  char cm1  = timeSearchPos > 0 ? m1  : '-';
+  sprintf(buf + len, "%c%c:%c%c", ch10, ch1, cm10, cm1);
   DisplayAtBottom(buf);
 }
 
 void cReplayControl::TimeSearchProcess(eKeys Key)
 {
-  int Seconds = timeSearchHH * 3600 + timeSearchMM * 60;
+#define STAY_SECONDS_OFF_END 10
+  int Seconds = (timeSearchTime >> 24) * 36000 + ((timeSearchTime & 0x00FF0000) >> 16) * 3600 + ((timeSearchTime & 0x0000FF00) >> 8) * 600 + (timeSearchTime & 0x000000FF) * 60;
+  int Current = (lastCurrent / FRAMESPERSEC);
+  int Total = (lastTotal / FRAMESPERSEC);
   switch (Key) {
     case k0 ... k9:
-         {
-           int n = Key - k0;
-           int s = (lastTotal / FRAMESPERSEC);
-           int m = s / 60 % 60;
-           int h = s / 3600;
-           switch (timeSearchPos) {
-             case 0: if (n * 10 <= h) {
-                        timeSearchHH = n * 10;
-                        timeSearchPos++;
-                        }
-                     break;
-             case 1: if (timeSearchHH + n <= h) {
-                        timeSearchHH += n;
-                        timeSearchPos++;
-                        }
-                     break;
-             case 2: if (n <= 5 && timeSearchHH * 60 + n * 10 <= h * 60 + m) {
-                        timeSearchMM += n * 10;
-                        timeSearchPos++;
-                        }
-                     break;
-             case 3: if (timeSearchHH * 60 + timeSearchMM + n <= h * 60 + m) {
-                        timeSearchMM += n;
-                        timeSearchPos++;
-                        }
-                     break;
-             }
-           TimeSearchDisplay();
-         }
+         if (timeSearchPos < 4) {
+            timeSearchTime <<= 8;
+            timeSearchTime |= Key - k0;
+            timeSearchPos++;
+            TimeSearchDisplay();
+            }
          break;
     case kLeft:
-    case kRight:
-         dvbApi->SkipSeconds(Seconds * (Key == kRight ? 1 : -1));
+    case kRight: {
+         int dir = (Key == kRight ? 1 : -1);
+         if (dir > 0)
+            Seconds = min(Total - Current - STAY_SECONDS_OFF_END, Seconds);
+         dvbApi->SkipSeconds(Seconds * dir);
          timeSearchActive = false;
+         }
          break;
     case kUp:
     case kDown:
+         Seconds = min(Total - STAY_SECONDS_OFF_END, Seconds);
          dvbApi->Goto(Seconds * FRAMESPERSEC, Key == kDown);
          timeSearchActive = false;
          break;
@@ -3177,7 +3168,7 @@ void cReplayControl::TimeSearchProcess(eKeys Key)
 
 void cReplayControl::TimeSearch(void)
 {
-  timeSearchHH = timeSearchMM = timeSearchPos = 0;
+  timeSearchTime = timeSearchPos = 0;
   timeSearchHide = false;
   if (modeOnly)
      Hide();
@@ -3288,7 +3279,9 @@ eOSState cReplayControl::ProcessKey(eKeys Key)
         ShowMode();
         timeoutShow = 0;
         }
-     else if (!modeOnly)
+     else if (modeOnly)
+        ShowMode();
+     else 
         shown = ShowProgress(!shown) || shown;
      }
   bool DisplayedFrames = displayFrames;

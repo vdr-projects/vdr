@@ -529,7 +529,7 @@ Video Disk Recorder Revision History
 2001-06-26: Version 0.83
 
 - Avoiding "Device or resource busy" error message when setting PIDs.
-- Added Portugese language texts (thanks to Paulo Manuel Martins Lopes).
+- Added Portugese language texts (thanks to Paulo Lopes).
 - Recording and replaying Dolby Digital (AC3) sound.
 - No longer getting stuck when a channel doesn't sync while switching
   with the 'Up' and 'Down' keys.
@@ -1119,3 +1119,54 @@ Video Disk Recorder Revision History
   driver are wrapped into a mechanism that actually performs this action if VDR
   exits. The 'runvdr' script can be used for this purpose.
 - Refined texts of the "Setup" menu.
+
+2002-04-01: Version 1.0.0pre5
+
+- Fixed restoring CICAM setup values for a fourth DVB card (thanks to Klaus Wolf).
+- Completed internationalization of OSD texts (thanks to Hannu Savolainen,
+  Arnold Niessen, Paulo Lopes, Jean-Claude Repetto, Alberto Carraro, Matjaz
+  Thaler and Truls Slevigen).
+- Improved file I/O in case of EINTR, which may occur e.g. with heavy system
+  load (thanks to Werner Fink).
+- Now writing the title of a recording into the 'summary.vdr' file.
+- Workaround for displaying still frames with the unpatched LinuxDVB driver
+  (if anybody ever finds out why the unpatched driver doesn't display VDR's
+  still frames, please let me know).
+- When executing a command from the "Commands" menu, the title of that command
+  is now immediately shown in the status line (followed by "...") to give the
+  user some feedback that the command is being executed, which is especially
+  important if this takes some time.
+- Fixed scrolling the "Channels" menu in case the cursor ends up on a group
+  delimiter (thanks to Bernd Zierath for helping to debug this one).
+- Added manual pages vdr(1) and vdr(5) (which made the FORMATS file obsolete).
+- New command command line option '-V' to display the VDR version.
+- Adjusting column width for channel numbers in case there are more than 999
+  channels.
+- Checking the return value of '...FileRady...' calls in dvbapi.c for better
+  performance under heavy system load.
+- New 'make' target 'install', which copies the manual pages and executables
+  to their appropriate system locations and creates the /video directory if
+  it doesn't exist yet.
+- Automatic hotkey assignment is now suppressed if the first entry in
+  commands.conf starts with a digit in the range '1'...'9', followed by a blank.
+- Fixed a bug in switching back the replay mode display in time shift mode
+  (thanks to Achim Lange for reporting this one).
+- Fixed a bug in the 'First day' timer parameter for timers that record over
+  midnight.
+- Added units to Setup parameters.
+- Changed time entry in the 'Jump' command during replay, so that it is filled
+  up from right to left.
+- Now using statfs() to determine the amount of free disk space, which avoids
+  the use of an external 'df' command (thanks to Ruben Nunez Francisco).
+- Fixed skipping the next hit of a repeating timer (thanks to Rainer Zocholl
+  for reporting this one).
+- Fixed a bug when a timer records over midnight of a day that had a change in
+  Daylight Saving Time.
+- Added Polish language texts (thanks to Michael Rakowski).
+- Fixed a bug in parsing group separators in channels.conf (thanks to Henning
+  Holtschneider for reporting this one).
+- Changed the default 'Ok' key when using the PC keyboard from '5' (in the
+  numeric block) to 'Enter', because the '5' key didn't work on keyboards with
+  the F-keys on top.
+- Fixed a bug in the EPG bugfix mechanism if the extended description is shorter
+  than 3 characters (thanks to Andreas Schultz).

@@ -1,0 +1,56 @@
+# This is a BitKeeper generated patch for the following project:
+# Project Name: Linux VDR
+# This patch format is intended for GNU patch command version 2.5 or higher.
+# This patch includes the following deltas:
+#	           ChangeSet	1.20    -> 1.21   
+#	            config.c	1.4     -> 1.5    
+#	             tools.c	1.2     -> 1.3    
+#
+# The following is the BitKeeper ChangeSet Log
+# --------------------------------------------
+# 02/04/01	aschultz@warp10.net	1.21
+# fix memory management due to MPatrol
+# --------------------------------------------
+#
+diff -Nru a/config.c b/config.c
+--- a/config.c	Mon Apr  1 14:37:48 2002
++++ b/config.c	Mon Apr  1 14:37:48 2002
+@@ -265,7 +265,7 @@
+         sscanf(apidbuf, "%d ,%d ", &apid1, &apid2);
+         if (p)
+            sscanf(p, "%d ,%d ", &dpid1, &dpid2);
+-        delete apidbuf;
++        free(apidbuf);
+         }
+      else
+         return false;
+@@ -277,7 +277,7 @@
+            tpid = 0;
+            }
+         strn0cpy(name, buffer, MaxChannelName);
+-        delete buffer;
++        free(buffer);
+         }
+      else
+         return false;
+diff -Nru a/tools.c b/tools.c
+--- a/tools.c	Mon Apr  1 14:37:48 2002
++++ b/tools.c	Mon Apr  1 14:37:48 2002
+@@ -71,7 +71,7 @@
+         esyslog(LOG_ERR, "ERROR: out of memory");
+      }
+   else {
+-     delete dest;
++     free(dest);
+      dest = NULL;
+      }
+   return dest;
+@@ -230,7 +230,7 @@
+ const char *AddDirectory(const char *DirName, const char *FileName)
+ {
+   static char *buf = NULL;
+-  delete buf;
++  free(buf);
+   asprintf(&buf, "%s/%s", DirName && *DirName ? DirName : ".", FileName);
+   return buf;
+ }

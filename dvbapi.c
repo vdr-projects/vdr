@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.163 2002/03/16 14:20:47 kls Exp $
+ * $Id: dvbapi.c 1.166 2002/03/29 11:32:47 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -98,7 +98,7 @@ class cIndexFile {
 private:
   struct tIndex { int offset; uchar type; uchar number; short reserved; };
   int f;
-  char *fileName, *pFileExt;
+  char *fileName;
   int size, last;
   tIndex *index;
   cResumeFile resumeFile;
@@ -120,7 +120,7 @@ cIndexFile::cIndexFile(const char *FileName, bool Record)
 :resumeFile(FileName)
 {
   f = -1;
-  fileName = pFileExt = NULL;
+  fileName = NULL;
   size = 0;
   last = -1;
   index = NULL;
@@ -128,7 +128,7 @@ cIndexFile::cIndexFile(const char *FileName, bool Record)
      fileName = new char[strlen(FileName) + strlen(INDEXFILESUFFIX) + 1];
      if (fileName) {
         strcpy(fileName, FileName);
-        pFileExt = fileName + strlen(fileName);
+        char *pFileExt = fileName + strlen(fileName);
         strcpy(pFileExt, INDEXFILESUFFIX);
         int delta = 0;
         if (access(fileName, R_OK) == 0) {
@@ -177,8 +177,6 @@ cIndexFile::cIndexFile(const char *FileName, bool Record)
               }
            else
               LOG_ERROR_STR(fileName);
-           delete fileName;
-           fileName = pFileExt = NULL;
            }
         }
      else
@@ -223,14 +221,14 @@ bool cIndexFile::CatchUp(int Index)
                      last = newLast;
                      }
                   else
-                     LOG_ERROR;
+                     LOG_ERROR_STR(fileName);
                   }
                else
                   esyslog(LOG_ERR, "ERROR: can't realloc() index");
                }
             }
          else
-            LOG_ERROR;
+            LOG_ERROR_STR(fileName);
          if (Index >= last)
             sleep(1);
          else
@@ -244,8 +242,8 @@ bool cIndexFile::Write(uchar PictureType, uchar FileNumber, int FileOffset)
 {
   if (f >= 0) {
      tIndex i = { FileOffset, PictureType, FileNumber, 0 };
-     if (safe_write(f, &i, sizeof(i)) != sizeof(i)) {
-        esyslog(LOG_ERR, "ERROR: can't write to index file");
+     if (safe_write(f, &i, sizeof(i)) < 0) {
+        LOG_ERROR_STR(fileName);
         close(f);
         f = -1;
         return false;
@@ -527,23 +525,25 @@ void cRecordBuffer::Input(void)
   time_t t = time(NULL);
   recording = true;
   for (;;) {
-      int r = read(videoDev, b, sizeof(b));
-      if (r > 0) {
-         uchar *p = b;
-         while (r > 0) {
-               int w = Put(p, r);
-               p += w;
-               r -= w;
-               }
-         t = time(NULL);
-         }
-      else if (r < 0) {
-         if (FATALERRNO) {
-            if (errno == EBUFFEROVERFLOW) // this error code is not defined in the library
-               esyslog(LOG_ERR, "ERROR (%s,%d): DVB driver buffer overflow", __FILE__, __LINE__);
-            else {
-               LOG_ERROR;
-               break;
+      if (cFile::FileReady(videoDev, 100)) {
+         int r = read(videoDev, b, sizeof(b));
+         if (r > 0) {
+            uchar *p = b;
+            while (r > 0) {
+                  int w = Put(p, r);
+                  p += w;
+                  r -= w;
+                  }
+            t = time(NULL);
+            }
+         else if (r < 0) {
+            if (FATALERRNO) {
+               if (errno == EBUFFEROVERFLOW) // this error code is not defined in the library
+                  esyslog(LOG_ERR, "ERROR (%s,%d): DVB driver buffer overflow", __FILE__, __LINE__);
+               else {
+                  LOG_ERROR;
+                  break;
+                  }
                }
             }
          }
@@ -552,7 +552,6 @@ void cRecordBuffer::Input(void)
          cThread::EmergencyExit(true);
          t = time(NULL);
          }
-      cFile::FileReady(videoDev, 100);
       if (!recording)
          break;
       }
@@ -579,17 +578,12 @@ void cRecordBuffer::Output(void)
             if (NextFile()) {
                if (index && pictureType != NO_PICTURE)
                   index->Write(pictureType, fileName.Number(), fileSize);
-               while (Result > 0) {
-                     int w = safe_write(recordFile, p, Result);
-                     if (w < 0) {
-                        LOG_ERROR_STR(fileName.Name());
-                        recording = false;
-                        return;
-                        }
-                     p += w;
-                     Result -= w;
-                     fileSize += w;
-                     }
+               if (safe_write(recordFile, p, Result) < 0) {
+                  LOG_ERROR_STR(fileName.Name());
+                  recording = false;
+                  return;
+                  }
+               fileSize += Result;
                }
             else
                break;
@@ -797,16 +791,17 @@ void cPlayBuffer::Output(void)
               const uchar *p = frame->Data();
               int r = frame->Count();
               while (r > 0 && Busy() && !blockOutput) {
-                    cFile::FileReadyForWriting(videoDev, 100);
-                    int w = write(videoDev, p, r);
-                    if (w > 0) {
-                       p += w;
-                       r -= w;
-                       }
-                    else if (w < 0 && FATALERRNO) {
-                       LOG_ERROR;
-                       Stop();
-                       return;
+                    if (cFile::FileReadyForWriting(videoDev, 100)) {
+                       int w = write(videoDev, p, r);
+                       if (w > 0) {
+                          p += w;
+                          r -= w;
+                          }
+                       else if (w < 0 && FATALERRNO) {
+                          LOG_ERROR;
+                          Stop();
+                          return;
+                          }
                        }
                     }
               writeIndex = frame->Index();
@@ -1182,10 +1177,26 @@ void cReplayBuffer::StripAudioPackets(uchar *b, int Length, uchar Except)
 void cReplayBuffer::DisplayFrame(uchar *b, int Length)
 {
   StripAudioPackets(b, Length);
-  videoDisplayStillPicture sp = { (char *)b, Length };
   CHECK(ioctl(audioDev, AUDIO_SET_AV_SYNC, false));
   CHECK(ioctl(audioDev, AUDIO_SET_MUTE, true));
+/* Using the VIDEO_STILLPICTURE ioctl call would be the
+   correct way to display a still frame, but unfortunately this
+   doesn't work with frames from VDR. So let's do pretty much the
+   same here as in DVB/driver/dvb.c's play_iframe() - I have absolutely
+   no idea why it works this way, but doesn't work with VIDEO_STILLPICTURE.
+   If anybody ever finds out what could be changed so that VIDEO_STILLPICTURE
+   could be used, please let me know!
+   kls 2002-03-23
+*/
+//#define VIDEO_STILLPICTURE_WORKS_WITH_VDR_FRAMES
+#ifdef VIDEO_STILLPICTURE_WORKS_WITH_VDR_FRAMES
+  videoDisplayStillPicture sp = { (char *)b, Length };
   CHECK(ioctl(videoDev, VIDEO_STILLPICTURE, &sp));
+#else
+#define MIN_IFRAME 400000
+  for (int i = MIN_IFRAME / Length + 1; i > 0; i--)
+      safe_write(videoDev, b, Length);
+#endif
 }
 
 void cReplayBuffer::Close(void)
@@ -1361,31 +1372,32 @@ void cTransferBuffer::Input(void)
   uchar b[MINVIDEODATA];
   int n = 0;
   while (Busy()) {
-        cFile::FileReady(fromDevice, 100);
-        int r = read(fromDevice, b + n, sizeof(b) - n);
-        if (r > 0) {
-           n += r;
-           int Count = n, Result;
-           const uchar *p = remux.Process(b, Count, Result);
-           if (p) {
-              while (Result > 0 && Busy()) {
-                    int w = Put(p, Result);
-                    p += w;
-                    Result -= w;
+        if (cFile::FileReady(fromDevice, 100)) {
+           int r = read(fromDevice, b + n, sizeof(b) - n);
+           if (r > 0) {
+              n += r;
+              int Count = n, Result;
+              const uchar *p = remux.Process(b, Count, Result);
+              if (p) {
+                 while (Result > 0 && Busy()) {
+                       int w = Put(p, Result);
+                       p += w;
+                       Result -= w;
+                       }
+                 }
+              if (Count > 0) {
+                 n -= Count;
+                 memmove(b, b + Count, n);
+                 }
+              }
+           else if (r < 0) {
+              if (FATALERRNO) {
+                 if (errno == EBUFFEROVERFLOW) // this error code is not defined in the library
+                    esyslog(LOG_ERR, "ERROR (%s,%d): DVB driver buffer overflow", __FILE__, __LINE__);
+                 else {
+                    LOG_ERROR;
+                    break;
                     }
-              }
-           if (Count > 0) {
-              n -= Count;
-              memmove(b, b + Count, n);
-              }
-           }
-        else if (r < 0) {
-           if (FATALERRNO) {
-              if (errno == EBUFFEROVERFLOW) // this error code is not defined in the library
-                 esyslog(LOG_ERR, "ERROR (%s,%d): DVB driver buffer overflow", __FILE__, __LINE__);
-              else {
-                 LOG_ERROR;
-                 break;
                  }
               }
            }
@@ -1541,7 +1553,7 @@ void cCuttingBuffer::Action(void)
                  }
               LastIFrame = 0;
               }
-           if (safe_write(toFile, buffer, Length) != Length) {
+           if (safe_write(toFile, buffer, Length) < 0) {
               error = "safe_write";
               break;
               }
