@@ -1884,3 +1884,5 @@ Video Disk Recorder Revision History
 - Fixed recording overlapping timers on the same channel in case
   DO_REC_AND_PLAY_ON_PRIMARY_DEVICE and/or DO_MULTIPLE_RECORDINGS is not defined
   (thanks to Jaakko Hyvätti).
+- No longer stopping/restarting the DMX when switching audio channels (thanks to
+  Sven Goethel).

@@ -510,3 +510,6 @@ Gerald Berwolf <genka@genka.de>
 
 Thomas Sailer <sailer@scs.ch>
  for pointing out how to set the terminal parameters to read from the keyboard
+
+Sven Goethel <sgoethel@jausoft.com>
+ for making switching audio channels work without stopping/restarting the DMX
