@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.h 1.11 2000/06/24 14:03:57 kls Exp $
+ * $Id: dvbapi.h 1.12 2000/07/30 15:01:01 kls Exp $
  */
 
 #ifndef __DVBAPI_H
@@ -104,9 +104,10 @@ public:
 
 private:
   enum { dvbStop = 1, // let's not have 0 as a command
-         dvbPauseReplay,
-         dvbFastForward,
-         dvbFastRewind,
+         dvbPause,
+         dvbPlay,
+         dvbForward,
+         dvbBackward,
          dvbSkip,
          dvbGetIndex,
        };
@@ -136,13 +137,15 @@ public:
        // If there is already a replay session active, it will be stopped
        // and the new file will be played back.
        // If provided Title will be used in the progress display.
-  void StopReplay(void);
+  void Stop(void);
        // Stops the current replay session (if any).
-  void PauseReplay(void);
+  void Pause(void);
        // Pauses the current replay session, or resumes a paused session.
-  void FastForward(void);
+  void Play(void);
+       // Resumes normal replay mode.
+  void Forward(void);
        // Runs the current replay session forward at a higher speed.
-  void FastRewind(void);
+  void Backward(void);
        // Runs the current replay session backwards at a higher speed.
   void Skip(int Seconds);
        // Skips the given number of seconds in the current replay session.

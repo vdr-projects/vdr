@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.18 2000/07/30 14:34:07 kls Exp $
+ * $Id: dvbapi.c 1.19 2000/07/30 16:14:22 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -1105,7 +1105,7 @@ cDvbApi::~cDvbApi()
 {
   if (videoDev >= 0) {
      Close();
-     StopReplay();
+     Stop();
      StopRecord();
      close(videoDev);
      }
@@ -1403,7 +1403,7 @@ bool cDvbApi::StartRecord(const char *FileName)
      }
   if (videoDev >= 0) {
 
-     StopReplay(); // TODO: remove this if the driver is able to do record and replay at the same time
+     Stop(); // TODO: remove this if the driver is able to do record and replay at the same time
 
      // Check FileName:
 
@@ -1525,7 +1525,7 @@ bool cDvbApi::StartReplay(const char *FileName, const char *Title)
      esyslog(LOG_ERR, "ERROR: StartReplay() called while recording - ignored!");
      return false;
      }
-  StopReplay();
+  Stop();
   if (videoDev >= 0) {
 
      lastProgress = lastTotal = -1;
@@ -1596,65 +1596,69 @@ bool cDvbApi::StartReplay(const char *FileName, const char *Title)
                      }
                   if (FD_ISSET(fromMain, &setIn)) {
                      switch (readchar(fromMain)) {
-                       case dvbStop:        SetReplayMode(VID_PLAY_CLEAR_BUFFER);
-                                            Buffer->Stop(); break;
-                       case dvbPauseReplay: SetReplayMode(Paused ? VID_PLAY_NORMAL : VID_PLAY_PAUSE);
-                                            Paused = !Paused;
-                                            if (FastForward || FastRewind) {
-                                               SetReplayMode(VID_PLAY_CLEAR_BUFFER);
-                                               Buffer->Clear();
-                                               }
-                                            FastForward = FastRewind = false;
+                       case dvbStop:     SetReplayMode(VID_PLAY_CLEAR_BUFFER);
+                                         Buffer->Stop();
+                                         break;
+                       case dvbPause:    SetReplayMode(Paused ? VID_PLAY_NORMAL : VID_PLAY_PAUSE);
+                                         Paused = !Paused;
+                                         if (FastForward || FastRewind) {
+                                            SetReplayMode(VID_PLAY_CLEAR_BUFFER);
+                                            Buffer->Clear();
+                                            }
+                                         FastForward = FastRewind = false;
+                                         Buffer->SetMode(rmPlay);
+                                         break;
+                       case dvbPlay:     if (FastForward || FastRewind || Paused) {
+                                            SetReplayMode(VID_PLAY_CLEAR_BUFFER);
+                                            SetReplayMode(VID_PLAY_NORMAL);
+                                            FastForward = FastRewind = Paused = false;
                                             Buffer->SetMode(rmPlay);
-                                            break;
-                       case dvbFastForward: SetReplayMode(VID_PLAY_CLEAR_BUFFER);
-                                            Buffer->Clear();
-                                            FastForward = !FastForward;
-                                            FastRewind = false;
-                                            if (Paused) {
-                                               Buffer->SetMode(rmPlay);
-                                               Buffer->Read();
-                                               SetReplayMode(FastForward ? VID_PLAY_SLOW_MOTION : VID_PLAY_PAUSE);
-                                               Buffer->Write();
-                                               }
-                                            else {
-                                               SetReplayMode(VID_PLAY_NORMAL);
-                                               Buffer->SetMode(FastForward ? rmFastForward : rmPlay);
-                                               }
-                                            break;
-                       case dvbFastRewind:  SetReplayMode(VID_PLAY_CLEAR_BUFFER);
-                                            Buffer->Clear();
-                                            FastRewind = !FastRewind;
-                                            FastForward = false;
-                                            if (Paused) {
-                                               Buffer->SetMode(FastRewind ? rmSlowRewind : rmPlay);
-                                               Buffer->Read();
-                                               SetReplayMode(FastRewind ? VID_PLAY_NORMAL : VID_PLAY_PAUSE);
-                                               Buffer->Write();
-                                               }
-                                            else {
-                                               SetReplayMode(VID_PLAY_NORMAL);
-                                               Buffer->SetMode(FastRewind ? rmFastRewind : rmPlay);
-                                               }
-                                            break;
-                       case dvbSkip:        {
-                                              int Seconds;
-                                              if (readint(fromMain, Seconds)) {
-                                                 SetReplayMode(VID_PLAY_CLEAR_BUFFER);
-                                                 SetReplayMode(VID_PLAY_NORMAL);
-                                                 FastForward = FastRewind = Paused = false;
-                                                 Buffer->SetMode(rmPlay);
-                                                 Buffer->SkipSeconds(Seconds);
-                                                 }
                                             }
-                                            break;
-                       case dvbGetIndex:    {
-                                              int Current, Total;
-                                              Buffer->GetIndex(Current, Total);
-                                              writeint(toMain, Current);
-                                              writeint(toMain, Total);
+                                         break;
+                       case dvbForward:  SetReplayMode(VID_PLAY_CLEAR_BUFFER);
+                                         Buffer->Clear();
+                                         FastForward = !FastForward;
+                                         FastRewind = false;
+                                         if (Paused) {
+                                            Buffer->SetMode(rmPlay);
+                                            SetReplayMode(FastForward ? VID_PLAY_SLOW_MOTION : VID_PLAY_PAUSE);
                                             }
-                                            break;
+                                         else {
+                                            SetReplayMode(VID_PLAY_NORMAL);
+                                            Buffer->SetMode(FastForward ? rmFastForward : rmPlay);
+                                            }
+                                         break;
+                       case dvbBackward: SetReplayMode(VID_PLAY_CLEAR_BUFFER);
+                                         Buffer->Clear();
+                                         FastRewind = !FastRewind;
+                                         FastForward = false;
+                                         if (Paused) {
+                                            Buffer->SetMode(FastRewind ? rmSlowRewind : rmPlay);
+                                            SetReplayMode(FastRewind ? VID_PLAY_NORMAL : VID_PLAY_PAUSE);
+                                            }
+                                         else {
+                                            SetReplayMode(VID_PLAY_NORMAL);
+                                            Buffer->SetMode(FastRewind ? rmFastRewind : rmPlay);
+                                            }
+                                         break;
+                       case dvbSkip:     {
+                                           int Seconds;
+                                           if (readint(fromMain, Seconds)) {
+                                              SetReplayMode(VID_PLAY_CLEAR_BUFFER);
+                                              SetReplayMode(VID_PLAY_NORMAL);
+                                              FastForward = FastRewind = Paused = false;
+                                              Buffer->SetMode(rmPlay);
+                                              Buffer->SkipSeconds(Seconds);
+                                              }
+                                         }
+                                         break;
+                       case dvbGetIndex: {
+                                           int Current, Total;
+                                           Buffer->GetIndex(Current, Total);
+                                           writeint(toMain, Current);
+                                           writeint(toMain, Total);
+                                         }
+                                         break;
                        }
                      }
                   }
@@ -1680,7 +1684,7 @@ bool cDvbApi::StartReplay(const char *FileName, const char *Title)
   return false;
 }
 
-void cDvbApi::StopReplay(void)
+void cDvbApi::Stop(void)
 {
   if (pidReplay) {
      writechar(toReplay, dvbStop);
@@ -1693,22 +1697,28 @@ void cDvbApi::StopReplay(void)
      }
 }
 
-void cDvbApi::PauseReplay(void)
+void cDvbApi::Pause(void)
 {
   if (pidReplay)
-     writechar(toReplay, dvbPauseReplay);
+     writechar(toReplay, dvbPause);
 }
 
-void cDvbApi::FastForward(void)
+void cDvbApi::Play(void)
 {
   if (pidReplay)
-     writechar(toReplay, dvbFastForward);
+     writechar(toReplay, dvbPlay);
 }
 
-void cDvbApi::FastRewind(void)
+void cDvbApi::Forward(void)
 {
   if (pidReplay)
-     writechar(toReplay, dvbFastRewind);
+     writechar(toReplay, dvbForward);
+}
+
+void cDvbApi::Backward(void)
+{
+  if (pidReplay)
+     writechar(toReplay, dvbBackward);
 }
 
 void cDvbApi::Skip(int Seconds)

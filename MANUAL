@@ -10,7 +10,7 @@ Video Disk Recorder User's Manual
 
   Key     Normal      Main       Channels   Timer      Edit/New      Recordings  Replay
 
-  Up      Ch up       Crsr up    Crsr up    Crsr up    Crsr up       Crsr up     Begin
+  Up      Ch up       Crsr up    Crsr up    Crsr up    Crsr up       Crsr up     Play
   Down    Ch down     Crsr down  Crsr down  Crsr down  Crsr down     Crsr down   Pause
   Left    -           -          -          Disable    Decrement     -           Search back
   Right   -           -          -          Enable     Increment     -           Search forward
@@ -93,8 +93,8 @@ Video Disk Recorder User's Manual
 
   The following keys have the listed meaning in Replay mode:
 
-  - Up      Positions to beginning of the recording and starts playback
-            from there.
+  - Up      Resumes normal replay from any "pause", "forward" or "backward"
+            mode.
   - Down    Halts playback at the current position. Press again to continue
             playback.
   - Blue    Stops playback and stores the current position, so that

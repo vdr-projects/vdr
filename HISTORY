@@ -112,3 +112,7 @@ Video Disk Recorder Revision History
 - New command line option '-l' to set the log level.
 - Times in timers.conf are now always printed with 4 digits (leading '0').
 - Slow forward/back mode (thanks to Guido Fiala!).
+- The "Up" key in replay mode no longer restarts replay at the very beginning,
+  but rather resumes normal replay mode after a "pause", "forward" or "backward"
+  operation. Use the "Skip -60s" function repeatedly to go back to the beginning
+  of the recording.
