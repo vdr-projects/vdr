@@ -8,7 +8,7 @@
  * the Linux DVB driver's 'tuxplayer' example and were rewritten to suit
  * VDR's needs.
  *
- * $Id: remux.c 1.9 2002/05/13 16:31:38 kls Exp $
+ * $Id: remux.c 1.10 2002/08/11 10:53:10 kls Exp $
  */
 
 /* The calling interface of the 'cRemux::Process()' function is defined
@@ -309,7 +309,7 @@ void cTS2PES::instant_repack(const uint8_t *Buf, int Count)
                      if ((flag1 & 0xC0) == 0x80 )
                         mpeg = 2;
                      else {
-                        esyslog("ERROR: can't record MPEG1!");
+                        esyslog("ERROR: error in data stream!");
                         hlength = 0;
                         which = 0;
                         mpeg = 1;

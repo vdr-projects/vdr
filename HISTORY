@@ -1399,3 +1399,5 @@ Video Disk Recorder Revision History
   'make NEWSTRUCT=1' (thanks to Holger Wächtler for some valuable advice).
   By default it currently still uses the old driver.
 - Added some missing #includes (thanks to Martin Hammerschmid).
+- Changed the log error message "can't record MPEG1!" to "error in data stream!",
+  since the mentioning of MPEG1 has irritated many people.
