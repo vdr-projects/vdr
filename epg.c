@@ -7,10 +7,11 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 1.5 2004/02/14 11:00:00 kls Exp $
+ * $Id: epg.c 1.6 2004/02/21 12:21:18 kls Exp $
  */
 
 #include "epg.h"
+#include "libsi/si.h"
 #include <ctype.h>
 #include <time.h>
 
@@ -22,6 +23,7 @@ cEvent::cEvent(tChannelID ChannelID, u_int16_t EventID)
   eventID = EventID;
   tableID = 0;
   version = 0xFF; // actual version numbers are 0..31
+  runningStatus = 0;
   isPresent = isFollowing = false;
   title = NULL;
   shortText = NULL;
@@ -51,6 +53,11 @@ void cEvent::SetTableID(uchar TableID)
 void cEvent::SetVersion(uchar Version)
 {
   version = Version;
+}
+
+void cEvent::SetRunningStatus(int RunningStatus)
+{
+  runningStatus = RunningStatus;
 }
 
 void cEvent::SetIsPresent(bool IsPresent)
@@ -487,6 +494,16 @@ const cEvent *cSchedule::GetEventAround(time_t Time) const
          }
       }
   return pe;
+}
+
+void cSchedule::SetRunningStatus(cEvent *Event, int RunningStatus)
+{
+  for (cEvent *p = events.First(); p; p = events.Next(p)) {
+      if (p == Event)
+         p->SetRunningStatus(RunningStatus);
+      else if (RunningStatus >= SI::RunningStatusPausing && p->RunningStatus() > SI::RunningStatusNotRunning)
+         p->SetRunningStatus(SI::RunningStatusNotRunning);
+      }
 }
 
 bool cSchedule::SetPresentEvent(cEvent *Event)

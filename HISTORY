@@ -2652,7 +2652,7 @@ Video Disk Recorder Revision History
   actual CAM type as reported by the CAM. The 'ca.conf' file has been stripped
   down to the values 0..4.
 
-2004-02-20: Version 1.3.5
+2004-02-21: Version 1.3.5
 
 - Fixed reading the EPG preferred language parameter from 'setup.conf'.
 - Fixed switching to a visible programme in case the current channel has neither
@@ -2675,3 +2675,8 @@ Video Disk Recorder Revision History
   channel won't interrupt an ongoing Transfer mode.
 - Added subtable ID and TSDT handling to 'libsi' (thanks to Marcel Wiesweg).
 - Fixed some Russian OSD texts (thanks to Vyacheslav Dikonov).
+- Added the 'running status' to the EPG events. This might lead to a VPS like
+  function for recording, but unfortunately not all stations handle this flag
+  correctly  - and some (like RTL, for instance) even change the ID of the same
+  event randomly, making it impossible for a timer to be programmed on a ceartain
+  event rather than a specific time. Well, let's see where this leads us...

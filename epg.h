@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.h 1.4 2004/01/09 15:21:05 kls Exp $
+ * $Id: epg.h 1.5 2004/02/21 12:12:05 kls Exp $
  */
 
 #ifndef __EPG_H
@@ -27,6 +27,7 @@ private:
   u_int16_t eventID;     // Event ID of this event
   uchar tableID;         // Table ID this event came from
   uchar version;         // Version number of section this event came from
+  int runningStatus;     // 0=undefined, 1=not running, 2=starts in a few seconds, 3=pausing, 4=running
   //XXX present/following obsolete???
   bool isPresent;        // true if this is the present event running
   bool isFollowing;      // true if this is the next event on this channel
@@ -44,6 +45,7 @@ public:
   u_int16_t EventID(void) const { return eventID; }
   uchar TableID(void) const { return tableID; }
   uchar Version(void) const { return version; }
+  int RunningStatus(void) const { return runningStatus; }
   bool IsPresent(void) const { return isPresent; }
   bool IsFollowing(void) const { return isFollowing; }
   const char *Title(void) const { return title; }
@@ -58,6 +60,7 @@ public:
   void SetEventID(u_int16_t EventID);
   void SetTableID(uchar TableID);
   void SetVersion(uchar Version);
+  void SetRunningStatus(int RunningStatus);
   void SetIsPresent(bool IsPresent);
   void SetIsFollowing(bool IsFollowing);
   void SetTitle(const char *Title);
@@ -82,6 +85,7 @@ private:
 public:
   cSchedule(tChannelID ChannelID);
   tChannelID ChannelID(void) const { return channelID; }
+  void SetRunningStatus(cEvent *Event, int RunningStatus);
   bool SetPresentEvent(cEvent *Event);
   bool SetFollowingEvent(cEvent *Event);
   void ResetVersions(void);
