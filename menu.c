@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.330 2005/01/08 10:15:00 kls Exp $
+ * $Id: menu.c 1.331 2005/01/08 10:46:44 kls Exp $
  */
 
 #include "menu.h"
@@ -2951,6 +2951,7 @@ eOSState cDisplayTracks::ProcessKey(eKeys Key)
   if (track != oldTrack) {
      Show();
      cDevice::PrimaryDevice()->SetCurrentAudioTrack(types[track]);
+     Setup.CurrentDolby = IS_DOLBY_TRACK(types[track]);
      }
   return timeout.TimedOut() ? osEnd : osContinue;
 }

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.71 2005/01/08 10:15:00 kls Exp $
+ * $Id: device.c 1.72 2005/01/08 13:48:19 kls Exp $
  */
 
 #include "device.h"
@@ -541,6 +541,7 @@ eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
 
   if (Result == scrOk) {
      if (LiveView && IsPrimaryDevice()) {
+        currentChannel = Channel->Number();
         // Set the available audio tracks:
         ClrAvailableTracks();
         currentAudioTrack = ttAudioFirst;
@@ -551,16 +552,21 @@ eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
         // Select the preferred audio track:
         eTrackType PreferredTrack = ttAudioFirst;
         int LanguagePreference = -1;
-        for (int i = ttAudioFirst; i <= ttDolbyLast; i++) {
+        int StartCheck = Setup.CurrentDolby ? ttDolbyFirst : ttAudioFirst;
+        int EndCheck = ttDolbyLast;
+        for (int i = StartCheck; i <= EndCheck; i++) {
             const tTrackId *TrackId = GetTrack(eTrackType(i));
             if (TrackId && TrackId->id && I18nIsPreferredLanguage(Setup.AudioLanguages, I18nLanguageIndex(TrackId->language), LanguagePreference))
                PreferredTrack = eTrackType(i);
+            if (Setup.CurrentDolby && i == ttDolbyLast) {
+               i = ttAudioFirst - 1;
+               EndCheck = ttAudioLast;
+               }
             }
         // Make sure we're set to an available audio track:
         const tTrackId *Track = GetTrack(GetCurrentAudioTrack());
         if (!Track || !Track->id || PreferredTrack != GetCurrentAudioTrack())
            SetCurrentAudioTrack(PreferredTrack);
-        currentChannel = Channel->Number();
         }
      cStatus::MsgChannelSwitch(this, Channel->Number()); // only report status if channel switch successfull
      }

@@ -183,7 +183,7 @@ Version 1.2
   selected for at least 3 seconds.
 
   After switching to a different channel the channel number and name, as well
-  as the current time are displayed at the top of the screen. If available, the
+  as the current time are displayed in the OSD. If available, the
   'current/next' information will be displayed below this line. This display
   automatically goes away after about five seconds, or if any key is pressed.
   To bring up the channel display without switching channels you can press
@@ -207,6 +207,12 @@ Version 1.2
 
   The "Audio" menu will automatically disappear after 5 seconds of user inactivity,
   or if any key other than the ones described above is pressed.
+
+  Once a Dolby Digital track has been selected on any channel, further channel
+  switches will first search for a Dolby Digital track of one of the preferred
+  audio languages. If no such track can be found, a normal audio track will
+  be selected. Note that this only works is the broadcasters use actual language
+  codes in their PID data, not things like "dd" or "2ch".
 
 * Switching through channel groups
 
