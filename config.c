@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.16 2000/07/29 19:09:51 kls Exp $
+ * $Id: config.c 1.17 2000/08/06 12:27:38 kls Exp $
  */
 
 #include "config.h"
@@ -472,4 +472,15 @@ cChannels Channels;
 // -- cTimers ----------------------------------------------------------------
 
 cTimers Timers;
+
+cTimer *cTimers::GetTimer(cTimer *Timer)
+{
+  cTimer *ti = (cTimer *)First();
+  while (ti) {
+        if (ti->channel == Timer->channel && ti->day == Timer->day && ti->start == Timer->start && ti->stop == Timer->stop)
+           return ti;
+        ti = (cTimer *)ti->Next();
+        }
+  return NULL;
+}
 

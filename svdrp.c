@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.3 2000/07/29 18:19:49 kls Exp $
+ * $Id: svdrp.c 1.4 2000/08/06 12:52:04 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -145,7 +145,12 @@ const char *HelpPages[] = {
   "    by the LSTC command.",
   "NEWT <settings>\n"
   "    Create a new timer. Settings must be in the same format as returned\n"
-  "    by the LSTT command.",
+  "    by the LSTT command. It is an error if a timer with the same channel,\n"
+  "    day, start and stop time already exists.",
+  "UPDT <settings>\n"
+  "    Updates a timer. Settings must be in the same format as returned\n"
+  "    by the LSTT command. If a timer with the same channel, day, start\n"
+  "    and stop time does not yet exists, it will be created.",
   "QUIT\n"
   "    Exit vdr (SVDRP).\n"
   "    You can also hit Ctrl-D to exit.",
@@ -548,13 +553,48 @@ void cSVDRP::CmdNewt(const char *Option)
   if (*Option) {
      cTimer *timer = new cTimer;
      if (timer->Parse(Option)) {
-        Timers.Add(timer);
-        Timers.Save();
-        isyslog(LOG_INFO, "timer %d added", timer->Index() + 1);
-        Reply(250, "%d %s", timer->Index() + 1, timer->ToText());
+        cTimer *t = Timers.GetTimer(timer);
+        if (!t) {
+           Timers.Add(timer);
+           Timers.Save();
+           isyslog(LOG_INFO, "timer %d added", timer->Index() + 1);
+           Reply(250, "%d %s", timer->Index() + 1, timer->ToText());
+           return;
+           }
+        else
+           Reply(550, "Timer already defined: %d %s", t->Index() + 1, t->ToText());
         }
      else
         Reply(501, "Error in timer settings");
+     delete timer;
+     }
+  else
+     Reply(501, "Missing timer settings");
+}
+
+void cSVDRP::CmdUpdt(const char *Option)
+{
+  if (*Option) {
+     cTimer *timer = new cTimer;
+     if (timer->Parse(Option)) {
+        cTimer *t = Timers.GetTimer(timer);
+        if (t) {
+           t->Parse(Option);
+           delete timer;
+           timer = t;
+           isyslog(LOG_INFO, "timer %d updated", timer->Index() + 1);
+           }
+        else {
+           Timers.Add(timer);
+           isyslog(LOG_INFO, "timer %d added", timer->Index() + 1);
+           }
+        Timers.Save();
+        Reply(250, "%d %s", timer->Index() + 1, timer->ToText());
+        return;
+        }
+     else
+        Reply(501, "Error in timer settings");
+     delete timer;
      }
   else
      Reply(501, "Missing timer settings");
@@ -583,6 +623,7 @@ void cSVDRP::Execute(char *Cmd)
   else if (CMD("MOVT"))  CmdMovt(s);
   else if (CMD("NEWC"))  CmdNewc(s);
   else if (CMD("NEWT"))  CmdNewt(s);
+  else if (CMD("UPDT"))  CmdUpdt(s);
   else if (CMD("QUIT")
        ||  CMD("\x04"))  Close();
   else                   Reply(500, "Command unrecognized: \"%s\"", Cmd);
