@@ -16,7 +16,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.h 1.11 2001/09/22 11:43:21 kls Exp $
+ * $Id: eit.h 1.12 2001/10/28 12:33:10 kls Exp $
  ***************************************************************************/
 
 #ifndef __EIT_H
@@ -29,6 +29,7 @@ class cEventInfo : public cListObject {
   friend class cSchedule;
   friend class cEIT;
 private:
+  unsigned char uTableID;           // Table ID this event came from
   unsigned short uServiceID;        // Service ID of program for that event
   bool bIsFollowing;                // true if this is the next event on this channel
   bool bIsPresent;                  // true if this is the present event running
@@ -40,6 +41,7 @@ private:
   time_t tTime;                     // Start time
   int nChannelNumber;               // the actual channel number from VDR's channel list (used in cMenuSchedule for sorting by channel number)
 protected:
+  void SetTableID(unsigned char tableid);
   void SetFollowing(bool foll);
   void SetPresent(bool pres);
   void SetTitle(const char *string);
@@ -52,6 +54,7 @@ protected:
   cEventInfo(unsigned short serviceid, unsigned short eventid);
 public:
   ~cEventInfo();
+  const unsigned char GetTableID(void) const;
   const char *GetTimeString(void) const;
   const char *GetEndTimeString(void) const;
   const char *GetDate(void) const;
@@ -90,8 +93,8 @@ public:
   const cEventInfo *GetPresentEvent(void) const;
   const cEventInfo *GetFollowingEvent(void) const;
   unsigned short GetServiceID(void) const;
-  const cEventInfo *GetEvent(unsigned short uEventID) const;
-  const cEventInfo *GetEvent(time_t tTime) const;
+  const cEventInfo *GetEvent(unsigned short uEventID, time_t tTime = 0) const;
+  const cEventInfo *GetEventAround(time_t tTime) const;
   const cEventInfo *GetEventNumber(int n) const { return Events.Get(n); }
   int NumEvents(void) const { return Events.Count(); }
   void Dump(FILE *f, const char *Prefix = "") const;

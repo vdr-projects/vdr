@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.135 2001/10/28 10:04:50 kls Exp $
+ * $Id: menu.c 1.136 2001/10/28 12:00:16 kls Exp $
  */
 
 #include "menu.h"
@@ -2170,7 +2170,7 @@ bool cRecordControl::GetEventInfo(void)
         if (Schedules) {
            const cSchedule *Schedule = Schedules->GetSchedule(channel->pnr);
            if (Schedule) {
-              eventInfo = Schedule->GetEvent(Time);
+              eventInfo = Schedule->GetEventAround(Time);
               if (eventInfo) {
                  if (seconds > 0)
                     dsyslog(LOG_INFO, "got EPG info after %d seconds", seconds);

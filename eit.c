@@ -16,7 +16,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.c 1.28 2001/10/19 13:13:25 kls Exp $
+ * $Id: eit.c 1.29 2001/10/28 13:51:22 kls Exp $
  ***************************************************************************/
 
 #include "eit.h"
@@ -189,6 +189,7 @@ cEventInfo::cEventInfo(unsigned short serviceid, unsigned short eventid)
    bIsPresent = bIsFollowing = false;
    lDuration = 0;
    tTime = 0;
+   uTableID = 0;
    uEventID = eventid;
    uServiceID = serviceid;
    nChannelNumber = 0;
@@ -231,6 +232,12 @@ bool cEventInfo::IsFollowing() const
 {
    return bIsFollowing;
 }
+
+void cEventInfo::SetTableID(unsigned char tableid)
+{
+   uTableID = tableid;
+}
+
 /**  */
 void cEventInfo::SetFollowing(bool foll)
 {
@@ -246,6 +253,12 @@ const char * cEventInfo::GetDate() const
 
    return szDate;
 }
+
+const unsigned char cEventInfo::GetTableID(void) const
+{
+   return uTableID;
+}
+
 /**  */
 const char * cEventInfo::GetTimeString() const
 {
@@ -545,21 +558,26 @@ unsigned short cSchedule::GetServiceID() const
    return uServiceID;
 }
 /**  */
-const cEventInfo * cSchedule::GetEvent(unsigned short uEventID) const
+const cEventInfo * cSchedule::GetEvent(unsigned short uEventID, time_t tTime) const
 {
+   // Returns either the event info with the given uEventID or, if that one can't
+   // be found, the one with the given tTime (or NULL if neither can be found)
    cEventInfo *pe = Events.First();
+   cEventInfo *pt = NULL;
    while (pe != NULL)
    {
       if (pe->GetEventID() == uEventID)
          return pe;
+      if (tTime > 0 && pe->GetTime() == tTime) // 'tTime < 0' is apparently used with NVOD channels
+         pt = pe;
 
       pe = Events.Next(pe);
    }
 
-   return NULL;
+   return pt;
 }
 /**  */
-const cEventInfo * cSchedule::GetEvent(time_t tTime) const
+const cEventInfo * cSchedule::GetEventAround(time_t tTime) const
 {
    cEventInfo *pe = Events.First();
    while (pe != NULL)
@@ -759,7 +777,7 @@ int cEIT::ProcessEIT(unsigned char *buffer)
              if (!rEvent)
                 break;
              }
-          pEvent = (cEventInfo *)pSchedule->GetEvent((unsigned short)VdrProgramInfo->EventID);
+          pEvent = (cEventInfo *)pSchedule->GetEvent((unsigned short)VdrProgramInfo->EventID, VdrProgramInfo->StartTime);
           if (!pEvent) {
              // If we don't have that event ID yet, we create a new one.
              // Otherwise we copy the information into the existing event anyway, because the data might have changed.
@@ -767,6 +785,14 @@ int cEIT::ProcessEIT(unsigned char *buffer)
              pEvent = (cEventInfo *)pSchedule->GetEvent((unsigned short)VdrProgramInfo->EventID);
              if (!pEvent)
                 break;
+             pEvent->SetTableID(tid);
+             }
+          else {
+             // We have found an existing event, either through its event ID or its start time.
+             // If the new event comes from a table that belongs to an "other TS" and the existing
+             // one comes from a "actual TS" table, lets skip it.
+             if ((tid == 0x4F || tid == 0x60) && (pEvent->GetTableID() == 0x4E || pEvent->GetTableID() == 0x50))
+                continue;
              }
           if (rEvent) {
              pEvent->SetTitle(rEvent->GetTitle());
@@ -774,6 +800,7 @@ int cEIT::ProcessEIT(unsigned char *buffer)
              pEvent->SetExtendedDescription(rEvent->GetExtendedDescription());
              }
           else {
+             pEvent->SetTableID(tid);
              pEvent->SetTitle(VdrProgramInfo->ShortName);
              pEvent->SetSubtitle(VdrProgramInfo->ShortText);
              pEvent->SetExtendedDescription(VdrProgramInfo->ExtendedName);
