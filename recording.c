@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.80 2003/05/30 13:23:54 kls Exp $
+ * $Id: recording.c 1.81 2003/08/15 15:23:10 kls Exp $
  */
 
 #include "recording.h"
@@ -770,7 +770,7 @@ void cRecordingUserCommand::InvokeCommand(const char *State, const char *Recordi
 #define INDEXFILESUFFIX     "/index.vdr"
 
 // The number of frames to stay off the end in case of time shift:
-#define INDEXSAFETYLIMIT 100 // frames
+#define INDEXSAFETYLIMIT 150 // frames
 
 // The maximum time to wait before giving up while catching up on an index file:
 #define MAXINDEXCATCHUP   8 // seconds

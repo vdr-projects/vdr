@@ -315,6 +315,8 @@ Rainer Zocholl <vdrcontrib@zocki.toppoint.de>
  for suggesting a confirmation prompt when the user presses the "Power" button
  and there is an upcoming timer event
  for reporting a bug in skipping the next hit of a repeating timer
+ for reporting a problem with staying off the end of an ongoing recording while
+ replaying in time shift mode
 
 Oleg Assovski <assen@bitcom.msk.ru>
  for adding EPG scanning for another 4 days
