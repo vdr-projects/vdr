@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: transfer.c 1.11 2003/03/30 12:52:11 kls Exp $
+ * $Id: transfer.c 1.12 2003/05/11 08:48:05 kls Exp $
  */
 
 #include "transfer.h"
@@ -179,13 +179,17 @@ void cTransfer::SetAudioTrack(int Index)
 
 // --- cTransferControl ------------------------------------------------------
 
+cDevice *cTransferControl::receiverDevice = NULL;
+
 cTransferControl::cTransferControl(cDevice *ReceiverDevice, int VPid, int APid1, int APid2, int DPid1, int DPid2)
 :cControl(transfer = new cTransfer(VPid, APid1, APid2, DPid1, DPid2), true)
 {
   ReceiverDevice->AttachReceiver(transfer);
+  receiverDevice = ReceiverDevice;
 }
 
 cTransferControl::~cTransferControl()
 {
+  receiverDevice = NULL;
   delete transfer;
 }

@@ -2118,3 +2118,7 @@ Video Disk Recorder Revision History
 - Implemented the CableDeliverySystemDescriptor in libdtv (thanks to Sven Grothklags)
 - Fixed keeping live video active in case the primary device doesn't have an MPEG
   decoder (thanks to Wolfgang Goeller for reporting this one).
+- Implemented cDevice::ActualDevice(), which returns the actual receiving device in
+  case of 'Transfer Mode', or the primary device otherwise. This may be useful for
+  plugins that want to attach a cReceiver to the device where the current live video
+  is actually coming from.

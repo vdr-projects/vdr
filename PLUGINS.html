@@ -1200,9 +1200,16 @@ a <tt>cDevice</tt>:
 <p><table><tr><td bgcolor=#F0F0F0><pre><br>
 cMyReceiver *Receiver = new cMyReceiver(123);
 
-cDevice::PrimaryDevice()-&gt;AttachReceiver(Receiver);
+<!--X1.1.31--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+cDevice::ActualDevice()-&gt;AttachReceiver(Receiver);
+<!--X1.1.31--></td></tr></table>
 </pre></td></tr></table><p>
 
+Noteh the use of <tt>cDevice::ActualDevice()</tt> here, which makes sure that
+the receiver is attached to the device that actually receives the current live
+video stream (this may be different from the primary device in case of <i>Transfer
+Mode</i>).
+<p>
 If the <tt>cReceiver</tt> isn't needed any more, it may simply be <i>deleted</i>
 and will automatically detach itself from the <tt>cDevice</tt>.
 
