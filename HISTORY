@@ -885,3 +885,5 @@ Video Disk Recorder Revision History
   Deti Fliegl).
 - Removed the 'read incomplete section...' error message in the EIT processor.
 - Fixed channel data for "DW TV" (thanks to Axel Gruber).
+- Added DPID to "PREMIERE MOVIE 1" in channels.conf.cable (thanks to Stephan
+  Schreiber).
