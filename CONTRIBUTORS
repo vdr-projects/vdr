@@ -428,6 +428,8 @@ Oliver Endriss <o.endriss@gmx.de>
  pressing buttons of those that have already been learned
  for making the remote control learn procedure accept key presses only from the
  current remote control
+ for reporting a bug in the EPG scanner, which broke 'Transfer Mode' as soon as
+ it kicked in
 
 Reinhard Walter Buchner <rw.buchner@freenet.de>
  for adding some satellites to 'sources.conf'

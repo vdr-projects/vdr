@@ -1679,3 +1679,5 @@ Video Disk Recorder Revision History
 - Adjusted the INSTALL file to the 1.1.x version.
 - Only accepting key presses from the current remote control when learning (thanks to
   Oliver Endriss).
+- Fixed the EPG scanner, which broke 'Transfer Mode' as soon as it kicked in
+  (thanks to Oliver Endriss for reporting this one).

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 1.25 2002/10/26 11:33:42 kls Exp $
+ * $Id: device.h 1.26 2002/11/01 11:03:56 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -347,7 +347,7 @@ protected:
 public:
   int  Ca(void) const;
        // Returns the ca of the current receiving session(s).
-  bool Receiving(void) const;
+  bool Receiving(bool CheckAny = false) const;
        // Returns true if we are currently receiving.
   bool AttachReceiver(cReceiver *Receiver);
        // Attaches the given receiver to this device.
