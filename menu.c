@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.8 2000/04/24 15:32:11 kls Exp $
+ * $Id: menu.c 1.9 2000/04/29 08:52:54 kls Exp $
  */
 
 #include "menu.h"
@@ -1030,7 +1030,7 @@ eKeys cReplayDisplay::ProcessKey(eKeys Key)
 {
   if (!DvbApi.Replaying())
      return kOk; // will turn off replay display
-  shown = DvbApi.ShowProgress(!shown);
+  shown = DvbApi.ShowProgress(!shown) || shown;
   switch (Key) {
     case kBegin:
     case kPause:
