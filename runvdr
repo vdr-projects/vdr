@@ -10,7 +10,7 @@ while (true) do
 #      (cd $DVBDIR; make reload)
 #      sleep 3
       $VDRCMD
-      if test $? != 1; then exit; fi
+      if test $? -ne 1; then exit; fi
       date
       echo "restarting VDR"
       $KILLPROC $VDRPRG
