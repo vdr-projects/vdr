@@ -3469,3 +3469,5 @@ Video Disk Recorder Revision History
 - Single shot timers are now reliably deleted when they have expired.
 - Fixed setting the colored button help after deleting a recording in case the next
   menu entry is a directory (thanks to Steffen Beyer).
+- Improved falling back to normal recording if the VPS data hasn't been seen for more
+  than 30 seconds.

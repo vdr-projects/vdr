@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 1.26 2005/03/13 13:19:15 kls Exp $
+ * $Id: epg.c 1.27 2005/03/20 12:34:19 kls Exp $
  */
 
 #include "epg.h"
@@ -645,6 +645,7 @@ cSchedule::cSchedule(tChannelID ChannelID)
   channelID = ChannelID;
   hasRunning = false;;
   modified = 0;
+  presentSeen = 0;
 }
 
 cEvent *cSchedule::AddEvent(cEvent *Event)

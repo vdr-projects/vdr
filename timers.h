@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.h 1.16 2005/03/20 10:55:49 kls Exp $
+ * $Id: timers.h 1.17 2005/03/20 12:36:25 kls Exp $
  */
 
 #ifndef __TIMERS_H
@@ -38,6 +38,7 @@ private:
   int lifetime;
   char file[MaxFileName];
   char *summary;
+  const cSchedule *schedule;
   const cEvent *event;
 public:
   cTimer(bool Instant = false, bool Pause = false);
@@ -75,7 +76,7 @@ public:
   bool Expired(void);
   time_t StartTime(void) const;
   time_t StopTime(void) const;
-  void SetEvent(const cEvent *Event);
+  void SetEvent(const cSchedule *Schedule, const cEvent *Event);
   void SetRecording(bool Recording);
   void SetPending(bool Pending);
   void SetInVpsMargin(bool InVpsMargin);

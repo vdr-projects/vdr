@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 1.26 2005/03/20 11:19:36 kls Exp $
+ * $Id: timers.c 1.27 2005/03/20 13:12:07 kls Exp $
  */
 
 #include "timers.h"
@@ -355,7 +355,7 @@ bool cTimer::Matches(time_t t, bool Directly) const
      }
 
   if (HasFlags(tfActive)) {
-     if (HasFlags(tfVps) && !Directly && event && event->Vps() && event->SeenWithin(30)) {
+     if (HasFlags(tfVps) && !Directly && event && event->Vps() && schedule && schedule->PresentSeenWithin(30)) {
         startTime = event->StartTime();
         stopTime = event->EndTime();
         return event->IsRunning(true);
@@ -410,7 +410,7 @@ time_t cTimer::StopTime(void) const
   return stopTime;
 }
 
-void cTimer::SetEvent(const cEvent *Event)
+void cTimer::SetEvent(const cSchedule *Schedule, const cEvent *Event)
 {
   if (event != Event) { //XXX TODO check event data, too???
      if (Event) {
@@ -421,6 +421,7 @@ void cTimer::SetEvent(const cEvent *Event)
         }
      else
         isyslog("timer %d (%d %04d-%04d '%s') set to no event", Index() + 1, Channel()->Number(), start, stop, file);
+     schedule = Event ? Schedule : NULL;
      event = Event;
      }
 }
@@ -603,7 +604,7 @@ void cTimers::SetEvents(void)
                          Event = e;
                          }
                       }
-                  ti->SetEvent(Event);
+                  ti->SetEvent(Schedule, Event);
                   }
                }
             }
