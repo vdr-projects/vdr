@@ -2129,3 +2129,5 @@ Video Disk Recorder Revision History
   dvbplayer.c. Also, the long timeout in WaitForPut caused problems with cReceivers
   that use a ring buffer and didn't immediately return from their Receive() function
   if the buffer runs full (thanks to Sascha Volkenandt for reporting this one).
+- Fixed handling EPG data where the "extended event descriptor" comes before the
+  "short event" or a "time shifted event" (thanks to Jonan Santiago).

@@ -47,7 +47,8 @@ struct LIST *createVdrProgramInfos (unsigned char *siBuffer)
    struct LIST                *Result, *EventList;
    struct Event               *Event;
    struct Descriptor          *Descriptor;
-
+   int GotVdrProgramInfo;
+   
    if (!siBuffer) return (NULL);
 
    if (!(EventList = siParseEIT (siBuffer))) return (NULL);
@@ -57,9 +58,18 @@ struct LIST *createVdrProgramInfos (unsigned char *siBuffer)
    xForeach (EventList, Event)
    {
       VdrProgramInfo = NULL;
-
+      GotVdrProgramInfo = 0;
+      
       xForeach (Event->Descriptors, Descriptor)
       {
+         if (!VdrProgramInfo)
+         {
+            CreateVdrProgramInfo(VdrProgramInfo,
+               Event->EventID, Event->TransportStreamID,
+               Event->ServiceID, Event->StartTime,
+               Event->Duration, Event->Status);
+         }
+         
          switch (Descriptor->Tag)
          {
             case DESCR_SHORT_EVENT:
@@ -67,43 +77,29 @@ struct LIST *createVdrProgramInfos (unsigned char *siBuffer)
                if (!xName(Descriptor) || !xName(Descriptor)[0])
                   break;
 
-               if (!VdrProgramInfo)
-               {
-                  CreateVdrProgramInfo(VdrProgramInfo,
-                     Event->EventID, Event->TransportStreamID,
-                     Event->ServiceID, Event->StartTime,
-                     Event->Duration, Event->Status);
-
-                  VdrProgramInfo->ShortName =
-                     xSetText (xName (Descriptor));
-                  VdrProgramInfo->ShortText =
-                     xSetText (((struct ShortEventDescriptor
-                        *)Descriptor)->Text);
-                  memcpy (VdrProgramInfo->LanguageCode, ((struct
-                     ShortEventDescriptor *)Descriptor)->
-                     LanguageCode, 4);
-               }
-            }
+               VdrProgramInfo->ShortName =
+                  xSetText (xName (Descriptor));
+               VdrProgramInfo->ShortText =
+                  xSetText (((struct ShortEventDescriptor
+                     *)Descriptor)->Text);
+               memcpy (VdrProgramInfo->LanguageCode, ((struct
+                  ShortEventDescriptor *)Descriptor)->
+                  LanguageCode, 4);
+               GotVdrProgramInfo = 1;
+            }      
             break;
 
             case DESCR_TIME_SHIFTED_EVENT:
             {
                struct tm *StartTime;
 
-               if (!VdrProgramInfo)
-               {
-                  CreateVdrProgramInfo(VdrProgramInfo,
-                     Event->EventID, Event->TransportStreamID,
-                     Event->ServiceID, Event->StartTime,
-                     Event->Duration, Event->Status);
-
-                  VdrProgramInfo->ReferenceServiceID =
-                     ((struct TimeShiftedEventDescriptor
-                        *)Descriptor)->ReferenceServiceID;
-                  VdrProgramInfo->ReferenceEventID =
-                     ((struct TimeShiftedEventDescriptor
-                        *)Descriptor)->ReferenceEventID;
-               }
+               VdrProgramInfo->ReferenceServiceID =
+                  ((struct TimeShiftedEventDescriptor
+                     *)Descriptor)->ReferenceServiceID;
+               VdrProgramInfo->ReferenceEventID =
+                  ((struct TimeShiftedEventDescriptor
+                     *)Descriptor)->ReferenceEventID;
+               GotVdrProgramInfo = 1;
             }
             break;
 
@@ -111,20 +107,18 @@ struct LIST *createVdrProgramInfos (unsigned char *siBuffer)
             {
                struct ExtendedEventItem *Item;
 
-               if (VdrProgramInfo)
+               if (xName (Descriptor))
+                  AddToText (xName (Descriptor),
+                     VdrProgramInfo->ExtendedName);
+               xForeach (((struct ExtendedEventDescriptor*)
+                  Descriptor)->Items, Item)
                {
-                  if (xName (Descriptor))
-                     AddToText (xName (Descriptor),
-                        VdrProgramInfo->ExtendedName);
-                  xForeach (((struct ExtendedEventDescriptor*)
-                     Descriptor)->Items, Item)
-                  {
-                     AddItemToText (xName (Item),
-                        VdrProgramInfo->ExtendedText);
-                     AddItemToText (Item->Text,
-                        VdrProgramInfo->ExtendedText);
-                  }
+                  AddItemToText (xName (Item),
+                     VdrProgramInfo->ExtendedText);
+                  AddItemToText (Item->Text,
+                     VdrProgramInfo->ExtendedText);
                }
+               GotVdrProgramInfo = 1;
             }
             break;
 
@@ -132,37 +126,33 @@ struct LIST *createVdrProgramInfos (unsigned char *siBuffer)
             {
                int i, j;
 
-               if (VdrProgramInfo)
+               for (j = 0; j < ((struct ContentDescriptor*)
+                  Descriptor)->Amount; j++)
                {
-                  for (j = 0; j < ((struct ContentDescriptor*)
-                     Descriptor)->Amount; j++)
-                  {
-                     VdrProgramInfo->ContentNibble1 =
-                        GetContentContentNibble1(Descriptor, j);
-                     VdrProgramInfo->ContentNibble2 =
-                        GetContentContentNibble2(Descriptor, j);
-                  }
+                  VdrProgramInfo->ContentNibble1 =
+                     GetContentContentNibble1(Descriptor, j);
+                  VdrProgramInfo->ContentNibble2 =
+                     GetContentContentNibble2(Descriptor, j);
                }
+               GotVdrProgramInfo = 1;
             }
             break;
 
             case DESCR_PARENTAL_RATING:
             {
                struct ParentalRating *Rating;
-
-               if (VdrProgramInfo)
-               {
-                  xForeach (((struct ParentalRatingDescriptor *)
-                              Descriptor)->Ratings, Rating)
-                     if (!strncmp (VdrProgramInfo->LanguageCode,
-                             Rating->LanguageCode, 3))
-                        VdrProgramInfo->Rating = Rating->Rating;
-               }
+               
+               xForeach (((struct ParentalRatingDescriptor *)
+                           Descriptor)->Ratings, Rating)
+                  if (!strncmp (VdrProgramInfo->LanguageCode,
+                          Rating->LanguageCode, 3))
+                     VdrProgramInfo->Rating = Rating->Rating;
+               GotVdrProgramInfo = 1;
             }
             break;
          }
-      }
-      if (VdrProgramInfo) xAddTail (Result, VdrProgramInfo);
+      }      
+      if (GotVdrProgramInfo) xAddTail (Result, VdrProgramInfo);
    }
 
    return (Result);

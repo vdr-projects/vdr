@@ -639,3 +639,7 @@ Carsten Siebholz <c.siebholz@t-online.de>
 Wolfgang Goeller <wgoeller@heraklit.ch>
  for reporting a bug in keeping live video active in case the primary device doesn't
  have an MPEG decoder
+
+Jonan Santiago <jonan-lists-vdr@callisia.com>
+ for fixing handling EPG data where the "extended event descriptor" comes before the
+ "short event" or a "time shifted event"
