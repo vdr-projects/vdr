@@ -835,8 +835,12 @@ Lars Bläser <LBlaeser@hofheim.de>
  for reporting a bug in EPG bugfix statistics which made log entires for undefined
  channels
 
-Niko Tarnanen <niko.tarnanen@hut.fi> and Rolf Ahrenberg <rahrenbe@cc.hut.fi>
+Niko Tarnanen <niko.tarnanen@hut.fi>
  for translating OSD texts to the Finnish language
+
+Rolf Ahrenberg <rahrenbe@cc.hut.fi>
+ for translating OSD texts to the Finnish language
+ for fixing internationalization of the text for "Setup/DVB/Audio language(s)"
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark

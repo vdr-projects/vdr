@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.334 2005/01/09 13:04:49 kls Exp $
+ * $Id: menu.c 1.335 2005/01/14 13:13:58 kls Exp $
  */
 
 #include "menu.h"
@@ -1947,7 +1947,7 @@ void cMenuSetupDVB::Setup(void)
   Add(new cMenuEditStraItem(tr("Setup.DVB$Update channels"),       &data.UpdateChannels, 5, updateChannelsTexts));
   Add(new cMenuEditIntItem( tr("Setup.DVB$Audio languages"),       &numAudioLanguages, 0, I18nNumLanguages));
   for (int i = 0; i < numAudioLanguages; i++)
-     Add(new cMenuEditStraItem(tr("Setup.EPG$Audio language"),     &data.AudioLanguages[i], I18nNumLanguages, I18nLanguages()));
+      Add(new cMenuEditStraItem(tr("Setup.DVB$Audio language"),    &data.AudioLanguages[i], I18nNumLanguages, I18nLanguages()));
 
   SetCurrent(Get(current));
   Display();

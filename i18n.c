@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.169 2005/01/09 12:17:44 kls Exp $
+ * $Id: i18n.c 1.170 2005/01/14 13:16:03 kls Exp $
  *
  * Translations provided by:
  *
@@ -2302,7 +2302,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Äänen kieli ei ole valittavissa!",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -3102,7 +3102,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Käytä Dolby Digital -ääntä",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -3219,6 +3219,48 @@ const tI18nPhrase Phrases[] = {
     "dodaj nove transpondere", // hrv TODO transponderi == odasiljaèi?
     "lisa uued transponderid",
     "tilf. ny transp.",
+  },
+  { "Setup.DVB$Audio languages",  // note the plural
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "Äänen kielet",
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+  },
+  { "Setup.DVB$Audio language",  // note the singular
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "Äänen kieli",
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
   },
   { "Setup.LNB$SLOF (MHz)",
     "SLOF (MHz)",
@@ -4639,7 +4681,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Ääni",
     "",// TODO
     "",// TODO
     "",// TODO
