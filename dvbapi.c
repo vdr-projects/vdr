@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.158 2002/03/08 16:31:23 kls Exp $
+ * $Id: dvbapi.c 1.159 2002/03/09 10:14:07 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -2717,6 +2717,8 @@ void cDvbApi::SetVolume(int Volume, bool Absolute)
      audioMixer_t am;
      am.volume_left = am.volume_right = volume;
      CHECK(ioctl(fd_audio, AUDIO_SET_MIXER, &am));
+     if (volume > 0)
+        mute = false;
      }
 }
 

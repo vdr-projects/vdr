@@ -1080,3 +1080,4 @@ Video Disk Recorder Revision History
   startup (suggested by Mirko Günther).
 - The new SVDRP command VOLU can be used to control the audio volume (suggested
   by Mirko Günther).
+- Fixed resetting 'mute' state when setting the volume to a non-zero value.
