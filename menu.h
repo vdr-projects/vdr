@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 1.31 2001/10/07 15:13:26 kls Exp $
+ * $Id: menu.h 1.32 2001/10/20 11:15:26 kls Exp $
  */
 
 #ifndef _MENU_H
@@ -23,7 +23,7 @@ private:
   int digit;
   const char *hk(const char *s);
 public:
-  cMenuMain(bool Replaying);
+  cMenuMain(bool Replaying, eOSState State = osUnknown);
   virtual eOSState ProcessKey(eKeys Key);
   };
 

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.129 2001/10/20 09:04:28 kls Exp $
+ * $Id: menu.c 1.130 2001/10/20 11:16:56 kls Exp $
  */
 
 #include "menu.h"
@@ -1808,7 +1808,7 @@ eOSState cMenuCommands::ProcessKey(eKeys Key)
 
 #define STOP_RECORDING tr(" Stop recording ")
 
-cMenuMain::cMenuMain(bool Replaying)
+cMenuMain::cMenuMain(bool Replaying, eOSState State)
 :cOsdMenu(tr("Main"))
 {
   digit = 0;
@@ -1844,6 +1844,13 @@ cMenuMain::cMenuMain(bool Replaying)
   Display();
   lastActivity = time(NULL);
   SetHasHotkeys();
+  switch (State) {
+    case osRecordings: AddSubMenu(new cMenuRecordings); break;
+#ifdef DVDSUPPORT
+    case osDVD:        AddSubMenu(new cMenuDVD); break;
+#endif //DVDSUPPORT
+    default: break;
+    }
 }
 
 const char *cMenuMain::hk(const char *s)

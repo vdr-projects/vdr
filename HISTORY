@@ -822,3 +822,5 @@ Video Disk Recorder Revision History
 - Fixed a bug in the replay mode display when pressing the Green or Yellow
   button while in trick mode (thanks to Stefan Huelswitt)
 - Closing all open file descriptors when calling external programs.
+- The menu timeout now also works when pressing the "Back" button during replay
+  to enter the "Recordings" menu.

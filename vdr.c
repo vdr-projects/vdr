@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.85 2001/10/20 10:26:54 kls Exp $
+ * $Id: vdr.c 1.86 2001/10/20 11:18:38 kls Exp $
  */
 
 #include <getopt.h>
@@ -408,7 +408,7 @@ int main(int argc, char *argv[])
                  case osRecordings:
                                 DELETENULL(Menu);
                                 DELETENULL(ReplayControl);
-                                Menu = new cMenuRecordings;
+                                Menu = new cMenuMain(ReplayControl, osRecordings);
                                 break;
                  case osReplay: DELETENULL(Menu);
                                 DELETENULL(ReplayControl);
@@ -417,7 +417,7 @@ int main(int argc, char *argv[])
 #ifdef DVDSUPPORT
                  case osDVD:    DELETENULL(Menu);
                                 DELETENULL(ReplayControl);
-                                Menu = new cMenuDVD;
+                                Menu = new cMenuMain(ReplayControl, osDVD);
                                 break;
 #endif //DVDSUPPORT
                  case osStopReplay:
