@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.215 2002/10/13 08:44:33 kls Exp $
+ * $Id: menu.c 1.216 2002/10/13 09:15:26 kls Exp $
  */
 
 #include "menu.h"
@@ -2093,6 +2093,7 @@ eOSState cMenuCommands::Execute(void)
         const char *Result = command->Execute();
         if (Result)
            return AddSubMenu(new cMenuText(command->Title(), Result, fontFix));
+        return osEnd;
         }
      }
   return osContinue;

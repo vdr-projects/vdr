@@ -1603,3 +1603,5 @@ Video Disk Recorder Revision History
   title, which will result in a confirmation prompt before executing the
   command.
 - Changed a few leftover 'new char[...]' to MALLOC(char, ...).
+- If a command executed from the "Commands" menu doesn't return any output, the
+  OSD will now be closed automatically.
