@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.91 2001/07/28 11:23:59 kls Exp $
+ * $Id: dvbapi.c 1.92 2001/07/28 11:38:21 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -735,7 +735,7 @@ void cReplayBuffer::Input(void)
               r = ReadFrame(replayFile, b, Length, sizeof(b));
               StripAudioPackets(b, r);
               }
-           else {
+           else if (index) {
               lastIndex = -1;
               playIndex = (playIndex >= 0) ? playIndex + 1 : index->Get(fileName.Number(), fileOffset);
               uchar FileNumber;
@@ -745,6 +745,8 @@ void cReplayBuffer::Input(void)
               r = ReadFrame(replayFile, b, Length, sizeof(b));
               StripAudioPackets(b, r, audioTrack);
               }
+           else // allows replay even if the index file is missing
+              r = read(replayFile, b, sizeof(b));
            if (r > 0) {
               uchar *p = b;
               while (r > 0 && Busy() && !blockInput) {

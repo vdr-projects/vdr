@@ -587,3 +587,4 @@ Video Disk Recorder Revision History
   may be necessary if your multiswitch gets irritated by the default DiSEqC
   codes '0' (thanks to Markus Lang).
 - Avoiding audio/video distortions in 'Transfer Mode'.
+- Fixed replaying in case there is no index file.
