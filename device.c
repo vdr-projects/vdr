@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.25 2002/10/06 13:49:38 kls Exp $
+ * $Id: device.c 1.26 2002/10/07 16:21:46 kls Exp $
  */
 
 #include "device.h"
@@ -85,6 +85,15 @@ int cDevice::NextCardIndex(int n)
   else if (n < 0)
      esyslog("ERROR: illegal value in IncCardIndex(%d)", n);
   return nextCardIndex;
+}
+
+int cDevice::DeviceNumber(void) const
+{
+  for (int i = 0; i < numDevices; i++) {
+      if (device[i] == this)
+         return i;
+      }
+  return -1;
 }
 
 void cDevice::MakePrimaryDevice(bool On)
