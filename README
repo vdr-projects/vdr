@@ -4,7 +4,7 @@ Video Disk Recorder ('VDR')
 These files contain the source code of the "Video Disk Recorder",
 which is based on the DVB driver of the LinuxTV project (http://linuxtv.org).
 For details about the "Video Disk Recorder" project please
-refer to http://www.cadsoft.de/people/kls/vdr.
+refer to http://www.cadsoft.de/vdr.
 
 There is also a remote control unit described on those
 Web pages, which can be used within this program.

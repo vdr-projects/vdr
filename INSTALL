@@ -32,7 +32,7 @@ following values 'make' call to activate the respective control mode:
 
   REMOTE=KBD    control via the PC keyboard (default)
   REMOTE=RCU    control via the "Remote Control Unit" receiver
-                (see http://www.cadsoft.de/people/kls/vdr/remote.htm)
+                (see http://www.cadsoft.de/vdr/remote.htm)
   REMOTE=LIRC   control via the "Linux Infrared Remote Control"
                 (see http://www.lirc.org)
   REMOTE=NONE   no remote control (in case only SVDRP shall be used)
