@@ -1282,3 +1282,5 @@ Video Disk Recorder Revision History
   by Stefan Huelswitt).
 - Made the config directory available to plugins (suggested by Stefan Huelswitt).
   See PLUGINS.html, section "Configuration files" for details.
+- Improved the [eid]syslog() macros, so that the LOG_... macros don't need to be
+  given any more.
