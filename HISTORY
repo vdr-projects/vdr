@@ -3449,3 +3449,4 @@ Video Disk Recorder Revision History
 - The setup option "DVB/Video display format" is now only available if "Video format"
   is set to "4:3" (suggested by Mikko Salo).
 - Updated the Russian OSD texts (thanks to Vyacheslav Dikonov).
+- Dropped CA support for the old '-icam' firmware.

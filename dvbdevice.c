@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.124 2005/02/20 13:35:28 kls Exp $
+ * $Id: dvbdevice.c 1.125 2005/03/05 16:12:59 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -757,8 +757,7 @@ bool cDvbDevice::ProvidesChannel(const cChannel *Channel, int Priority, bool *Ne
            if (Channel->Vpid() && !HasPid(Channel->Vpid()) || Channel->Apid(0) && !HasPid(Channel->Apid(0))) {
 #ifdef DO_MULTIPLE_RECORDINGS
               if (Ca() > CACONFBASE || Channel->Ca() > CACONFBASE)
-                 needsDetachReceivers = !ciHandler // only LL-firmware can do non-live CA channels
-                                        || Ca() != Channel->Ca();
+                 needsDetachReceivers = Ca() != Channel->Ca();
               else if (!IsPrimaryDevice())
                  result = true;
 #ifdef DO_REC_AND_PLAY_ON_PRIMARY_DEVICE
@@ -781,27 +780,21 @@ bool cDvbDevice::ProvidesChannel(const cChannel *Channel, int Priority, bool *Ne
 
 bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
 {
-  bool IsEncrypted = Channel->Ca() > CACONFBASE && !ciHandler; // only LL-firmware can do non-live CA channels
-
   bool DoTune = !dvbTuner->IsTunedTo(Channel);
 
   bool TurnOffLivePIDs = HasDecoder()
                          && (DoTune
-                            || IsEncrypted && pidHandles[ptVideo].pid != Channel->Vpid() // CA channels can only be decrypted in "live" mode
                             || !IsPrimaryDevice()
                             || LiveView // for a new live view the old PIDs need to be turned off
                             || pidHandles[ptVideo].pid == Channel->Vpid() // for recording the PIDs must be shifted from DMX_PES_AUDIO/VIDEO to DMX_PES_OTHER
                             );
 
-  bool StartTransferMode = IsPrimaryDevice() && !IsEncrypted && !DoTune
+  bool StartTransferMode = IsPrimaryDevice() && !DoTune
                            && (LiveView && HasPid(Channel->Vpid() ? Channel->Vpid() : Channel->Apid(0)) && (pidHandles[ptVideo].pid != Channel->Vpid() || pidHandles[ptAudio].pid != Channel->Apid(0))// the PID is already set as DMX_PES_OTHER
                               || !LiveView && (pidHandles[ptVideo].pid == Channel->Vpid() || pidHandles[ptAudio].pid == Channel->Apid(0)) // a recording is going to shift the PIDs from DMX_PES_AUDIO/VIDEO to DMX_PES_OTHER
                               );
 
-  bool TurnOnLivePIDs = HasDecoder() && !StartTransferMode
-                        && (IsEncrypted // CA channels can only be decrypted in "live" mode
-                           || LiveView
-                           );
+  bool TurnOnLivePIDs = HasDecoder() && !StartTransferMode && LiveView;
 
 #ifndef DO_MULTIPLE_RECORDINGS
   TurnOffLivePIDs = TurnOnLivePIDs = true;
@@ -919,7 +912,7 @@ bool cDvbDevice::CanReplay(void) const
   if (Receiving())
      return false;
 #endif
-  return cDevice::CanReplay() && (Ca() <= MAXDEVICES || ciHandler); // with non-LL-firmware we can only replay if there is no CA recording going on
+  return cDevice::CanReplay();
 }
 
 bool cDvbDevice::SetPlayMode(ePlayMode PlayMode)
