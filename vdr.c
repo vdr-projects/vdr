@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.156 2003/05/24 11:06:53 kls Exp $
+ * $Id: vdr.c 1.157 2003/05/24 12:11:43 kls Exp $
  */
 
 #include <getopt.h>
@@ -564,7 +564,7 @@ int main(int argc, char *argv[])
                   }
                else
                   cDevice::PrimaryDevice()->SetVolume(NORMALKEY(key) == kVolDn ? -VOLUMEDELTA : VOLUMEDELTA);
-               if (!Interface->IsOpen())
+               if (!Menu && !Interface->IsOpen())
                   Menu = Temp = cDisplayVolume::Create();
                cDisplayVolume::Process(key);
                key = kNone; // nobody else needs to see these keys
