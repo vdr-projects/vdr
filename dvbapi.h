@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.h 1.47 2001/08/25 13:37:00 kls Exp $
+ * $Id: dvbapi.h 1.48 2001/09/08 11:35:25 kls Exp $
  */
 
 #ifndef __DVBAPI_H
@@ -55,6 +55,8 @@ const char *IndexToHMSF(int Index, bool WithFrame = false);
       // Converts the given index to a string, optionally containing the frame number.
 int HMSFToIndex(const char *HMSF);
       // Converts the given string (format: "hh:mm:ss.ff") to an index.
+
+enum eSetChannelResult { scrOk, scrNoTransfer, scrFailed };
 
 class cChannel;
 
@@ -203,7 +205,7 @@ public:
 private:
   int currentChannel;
 public:
-  bool SetChannel(int ChannelNumber, int FrequencyMHz, char Polarization, int Diseqc, int Srate, int Vpid, int Apid1, int Apid2, int Dpid1, int Dpid2, int Tpid, int Ca, int Pnr);
+  eSetChannelResult SetChannel(int ChannelNumber, int FrequencyMHz, char Polarization, int Diseqc, int Srate, int Vpid, int Apid1, int Apid2, int Dpid1, int Dpid2, int Tpid, int Ca, int Pnr);
   static int CurrentChannel(void) { return PrimaryDvbApi ? PrimaryDvbApi->currentChannel : 0; }
   int Channel(void) { return currentChannel; }
 

@@ -716,9 +716,12 @@ Video Disk Recorder Revision History
   That way every recording will store the actual summary data at the time of
   the recording.
 
-2001-09-03: Version 0.95
+2001-09-08: Version 0.95
 
 - Fixed behaviour in case the shutdown didn't take place (there were many
   "next timer event at..." messages in that case).
 - Reduced the default value for MinEventTimeout to 30 minutes.
 - Fixed detecting manual start in shutdown feature.
+- An error message is now displayed in case the Transfer Mode can't be
+  started because the necessary DVB card is currently recording (or there
+  is no DVB card that can access this channel).

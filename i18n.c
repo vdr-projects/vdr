@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.39 2001/09/02 15:17:33 kls Exp $
+ * $Id: i18n.c 1.40 2001/09/08 11:43:28 kls Exp $
  *
  * Slovenian translations provided by Miha Setina <mihasetina@softhome.net>
  * Italian   translations provided by Alberto Carraro <bertocar@tin.it>
@@ -657,6 +657,15 @@ const tPhrase Phrases[] = {
     "Canal bloqueado (a gravar)!",
     "Chaîne verrouillée (enregistrement en cours)!",
     "Kanalen er låst (opptak)!",
+  },
+  { "Can't start Transfer Mode!",
+    "Transfer-Mode kann nicht gestartet werden!",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
   },
   { "Can't start editing process!",
     "Schnitt kann nicht gestartet werden!",

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.65 2001/09/03 16:01:46 kls Exp $
+ * $Id: config.c 1.66 2001/09/08 11:41:12 kls Exp $
  */
 
 #include "config.h"
@@ -303,14 +303,19 @@ bool cChannel::Switch(cDvbApi *DvbApi, bool Log)
         isyslog(LOG_INFO, "switching to channel %d", number);
         }
      for (int i = 3; i--;) {
-         if (DvbApi->SetChannel(number, frequency, polarization, diseqc, srate, vpid, apid1, apid2, dpid1, dpid2, tpid, ca, pnr))
-            return true;
+         switch (DvbApi->SetChannel(number, frequency, polarization, diseqc, srate, vpid, apid1, apid2, dpid1, dpid2, tpid, ca, pnr)) {
+           case scrOk:         return true;
+           case scrNoTransfer: if (Interface)
+                                  Interface->Error(tr("Can't start Transfer Mode!"));
+                               return false;
+           case scrFailed:     break; // loop will retry
+           }
          esyslog(LOG_ERR, "retrying");
          }
      return false;
      }
   if (DvbApi->Recording())
-     Interface->Info(tr("Channel locked (recording)!"));
+     Interface->Error(tr("Channel locked (recording)!"));
   return false;
 }
 

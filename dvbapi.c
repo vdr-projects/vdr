@@ -7,7 +7,7 @@
  * DVD support initially written by Andreas Schultz <aschultz@warp10.net>
  * based on dvdplayer-0.5 by Matjaz Thaler <matjaz.thaler@guest.arnes.si>
  *
- * $Id: dvbapi.c 1.111 2001/09/01 13:27:52 kls Exp $
+ * $Id: dvbapi.c 1.112 2001/09/08 11:36:12 kls Exp $
  */
 
 //#define DVDDEBUG        1
@@ -3031,7 +3031,7 @@ bool cDvbApi::SetPids(bool ForRecording)
          SetDpid2(ForRecording ? dPid2 : 0, DMX_OUT_TS_TAP);
 }
 
-bool cDvbApi::SetChannel(int ChannelNumber, int FrequencyMHz, char Polarization, int Diseqc, int Srate, int Vpid, int Apid1, int Apid2, int Dpid1, int Dpid2, int Tpid, int Ca, int Pnr)
+eSetChannelResult cDvbApi::SetChannel(int ChannelNumber, int FrequencyMHz, char Polarization, int Diseqc, int Srate, int Vpid, int Apid1, int Apid2, int Dpid1, int Dpid2, int Tpid, int Ca, int Pnr)
 {
   // Make sure the siProcessor won't access the device while switching
   cThreadLock ThreadLock(siProcessor);
@@ -3162,21 +3162,21 @@ bool cDvbApi::SetChannel(int ChannelNumber, int FrequencyMHz, char Polarization,
         }
      else {
         esyslog(LOG_ERR, "ERROR: attempt to set channel without DVB-S or DVB-C device");
-        return false;
+        return scrFailed;
         }
 
      if (!ChannelSynced) {
         esyslog(LOG_ERR, "ERROR: channel %d not sync'ed on DVB card %d!", ChannelNumber, CardIndex() + 1);
         if (this == PrimaryDvbApi)
            cThread::RaisePanic();
-        return false;
+        return scrFailed;
         }
 
      // PID settings:
 
      if (!SetPids(false)) {
         esyslog(LOG_ERR, "ERROR: failed to set PIDs for channel %d", ChannelNumber);
-        return false;
+        return scrFailed;
         }
      SetTpid(Tpid, DMX_OUT_DECODER);
      if (fd_audio >= 0)
@@ -3186,19 +3186,21 @@ bool cDvbApi::SetChannel(int ChannelNumber, int FrequencyMHz, char Polarization,
   if (this == PrimaryDvbApi && siProcessor)
      siProcessor->SetCurrentServiceID(Pnr);
 
+  eSetChannelResult Result = scrOk;
+
   // If this DVB card can't receive this channel, let's see if we can
   // use the card that actually can receive it and transfer data from there:
 
   if (NeedsTransferMode) {
      cDvbApi *CaDvbApi = GetDvbApi(Ca, 0);
-     if (CaDvbApi) {
-        if (!CaDvbApi->Recording()) {
-           if (CaDvbApi->SetChannel(ChannelNumber, FrequencyMHz, Polarization, Diseqc, Srate, Vpid, Apid1, Apid2, Dpid1, Dpid2, Tpid, Ca, Pnr)) {
-              SetModeReplay();
-              transferringFromDvbApi = CaDvbApi->StartTransfer(fd_video);
-              }
+     if (CaDvbApi && !CaDvbApi->Recording()) {
+        if ((Result = CaDvbApi->SetChannel(ChannelNumber, FrequencyMHz, Polarization, Diseqc, Srate, Vpid, Apid1, Apid2, Dpid1, Dpid2, Tpid, Ca, Pnr)) == scrOk) {
+           SetModeReplay();
+           transferringFromDvbApi = CaDvbApi->StartTransfer(fd_video);
            }
         }
+     else
+        Result = scrNoTransfer;
      }
 
   if (fd_video >= 0 && fd_audio >= 0) {
@@ -3206,7 +3208,7 @@ bool cDvbApi::SetChannel(int ChannelNumber, int FrequencyMHz, char Polarization,
      CHECK(ioctl(fd_video, VIDEO_SET_BLANK, false));
      }
 
-  return true;
+  return Result;
 }
 
 bool cDvbApi::Transferring(void)
