@@ -16,7 +16,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.c 1.61 2002/11/24 14:37:38 kls Exp $
+ * $Id: eit.c 1.62 2003/01/06 14:10:37 kls Exp $
  ***************************************************************************/
 
 #include "eit.h"
@@ -985,6 +985,68 @@ bool cEIT::IsPresentFollowing()
    return false;
 }
 
+// --- cCaDescriptor ---------------------------------------------------------
+
+class cCaDescriptor : public cListObject {
+  friend class cCaDescriptors;
+private:
+  int source;
+  int transponder;
+  int serviceId;
+  int caSystem;
+  int length;
+  uchar *data;
+public:
+  cCaDescriptor(int Source, int Transponder, int ServiceId, int CaSystem, int Length, uchar *Data);
+  virtual ~cCaDescriptor();
+  int Length(void) const { return length; }
+  const uchar *Data(void) const { return data; }
+  };
+
+cCaDescriptor::cCaDescriptor(int Source, int Transponder, int ServiceId, int CaSystem, int Length, uchar *Data)
+{
+  source = Source;
+  transponder = Transponder;
+  serviceId = ServiceId;
+  caSystem = CaSystem;
+  length = Length;
+  data = MALLOC(uchar, length);
+  memcpy(data, Data, length);
+  /*//XXX just while debugging...
+  char buffer[1024];
+  char *q = buffer;
+  q += sprintf(q, "CAM: %04X %5d %4d", source, transponder, serviceId);
+  for (int i = 0; i < length; i++)
+      q += sprintf(q, " %02X", data[i]);
+  dsyslog(buffer);
+  *///XXX
+}
+
+cCaDescriptor::~cCaDescriptor()
+{
+  free(data);
+}
+
+// --- cCaDescriptors --------------------------------------------------------
+
+class cCaDescriptors : public cList<cCaDescriptor> {
+public:
+  const cCaDescriptor *Get(int Source, int Transponder, int ServiceId, int CaSystem);
+  };
+
+const cCaDescriptor *cCaDescriptors::Get(int Source, int Transponder, int ServiceId, int CaSystem)
+{
+  for (cCaDescriptor *ca = First(); ca; ca = Next(ca)) {
+      if (ca->source == Source && ca->transponder == Transponder && ca->serviceId == ServiceId) {
+         if (CaSystem == -1 || ca->caSystem == CaSystem)
+            return ca;
+         if (CaSystem < 0)
+            CaSystem++;
+         }
+      }
+  return NULL;
+}
+
 // --- cSIProcessor ----------------------------------------------------------
 
 #define MAX_FILTERS 20
@@ -993,6 +1055,8 @@ bool cEIT::IsPresentFollowing()
 int cSIProcessor::numSIProcessors = 0;
 cSchedules *cSIProcessor::schedules = NULL;
 cMutex cSIProcessor::schedulesMutex;
+cCaDescriptors *cSIProcessor::caDescriptors = NULL;
+cMutex cSIProcessor::caDescriptorsMutex;
 const char *cSIProcessor::epgDataFileName = EPGDATAFILENAME;
 time_t cSIProcessor::lastDump = time(NULL);
 
@@ -1003,9 +1067,13 @@ cSIProcessor::cSIProcessor(const char *FileName)
    masterSIProcessor = numSIProcessors == 0; // the first one becomes the 'master'
    currentSource = 0;
    currentTransponder = 0;
+   pmtIndex = 0;
+   pmtPid = 0;
    filters = NULL;
-   if (!numSIProcessors++) // the first one creates it
+   if (!numSIProcessors++) { // the first one creates them
       schedules = new cSchedules;
+      caDescriptors = new cCaDescriptors;
+      }
    filters = (SIP_FILTER *)calloc(MAX_FILTERS, sizeof(SIP_FILTER));
    SetStatus(true);
    Start();
@@ -1019,8 +1087,10 @@ cSIProcessor::~cSIProcessor()
    Cancel(3);
    ShutDownFilters();
    free(filters);
-   if (!--numSIProcessors) // the last one deletes it
+   if (!--numSIProcessors) { // the last one deletes them
       delete schedules;
+      delete caDescriptors;
+      }
    free(fileName);
 }
 
@@ -1075,9 +1145,13 @@ const char *cSIProcessor::GetEpgDataFileName(void)
 
 void cSIProcessor::SetStatus(bool On)
 {
+   LOCK_THREAD;
    ShutDownFilters();
+   pmtIndex = 0;
+   pmtPid = 0;
    if (On)
    {
+      AddFilter(0x00, 0x00);  // PAT
       AddFilter(0x14, 0x70);  // TDT
       AddFilter(0x14, 0x73);  // TOT
       AddFilter(0x12, 0x4e);  // event info, actual TS, present/following
@@ -1089,6 +1163,8 @@ void cSIProcessor::SetStatus(bool On)
    }
 }
 
+#define PMT_SCAN_TIMEOUT  10 // seconds
+
 /** use the vbi device to parse all relevant SI
 information and let the classes corresponding
 to the tables write their information to the disk */
@@ -1097,6 +1173,7 @@ void cSIProcessor::Action()
    dsyslog("EIT processing thread started (pid=%d)%s", getpid(), masterSIProcessor ? " - master" : "");
 
    time_t lastCleanup = time(NULL);
+   time_t lastPmtScan = time(NULL);
 
    active = true;
 
@@ -1162,6 +1239,37 @@ void cSIProcessor::Action()
                      //dsyslog("Received pid 0x%02x with table ID 0x%02x and length of %04d\n", pid, buf[0], seclen);
                      switch (pid)
                      {
+                        case 0x00:
+                           if (buf[0] == 0x00)
+                           {
+                              LOCK_THREAD;
+                              if (pmtPid && time(NULL) - lastPmtScan > PMT_SCAN_TIMEOUT) {
+                                 DelFilter(pmtPid, 0x02);
+                                 pmtPid = 0;
+                                 pmtIndex++;
+                                 lastPmtScan = time(NULL);
+                                 }
+                              if (!pmtPid) {
+                                 cMutexLock MutexLock(&schedulesMutex); // since the xMem... stuff is not thread safe, we need to use a "global" mutex
+                                 struct LIST *pat = siParsePAT(buf);
+                                 if (pat) {
+                                    int Index = 0;
+                                    for (struct Program *prg = (struct Program *)pat->Head; prg; prg = (struct Program *)xSucc(prg)) {
+                                        if (prg->ProgramID) {
+                                           if (Index++ == pmtIndex) {
+                                              pmtPid = prg->NetworkPID;
+                                              AddFilter(pmtPid, 0x02);
+                                              break;
+                                              }
+                                           }
+                                        }
+                                    if (!pmtPid)
+                                       pmtIndex = 0;
+                                    }
+                                 xMemFreeAll(NULL);
+                                 }
+                           }
+                           break;
                         case 0x14:
                            if (buf[0] == 0x70)
                            {
@@ -1188,7 +1296,28 @@ void cSIProcessor::Action()
                               dsyslog("Received stuffing section in EIT\n");
                            break;
 
-                        default:
+                        default: {
+                           LOCK_THREAD;
+                           if (pid == pmtPid && buf[0] == 0x02 && currentSource && currentTransponder) {
+                              cMutexLock MutexLock(&schedulesMutex); // since the xMem... stuff is not thread safe, we need to use a "global" mutex
+                              struct Pid *pi = siParsePMT(buf);
+                              if (pi) {
+                                 for (struct LIST *d = (struct LIST *)pi->Descriptors; d; d = (struct LIST *)xSucc(d)) {
+                                     if (DescriptorTag(d) == DESCR_CA) {
+                                        uchar *Data = ((ConditionalAccessDescriptor *)d)->Data;
+                                        int CaSystem = (Data[2] << 8) | Data[3];
+                                        if (!caDescriptors->Get(currentSource, currentTransponder, pi->ProgramID, CaSystem)) {
+                                           cMutexLock MutexLock(&caDescriptorsMutex);
+                                           caDescriptors->Add(new cCaDescriptor(currentSource, currentTransponder, pi->ProgramID, CaSystem, ((ConditionalAccessDescriptor *)d)->Amount, Data));
+                                           }
+                                        //XXX update???
+                                        }
+                                     }
+                                 }
+                              xMemFreeAll(NULL);
+                              lastPmtScan = 0; // this triggers the next scan
+                              }
+                           }
                            break;
                      }
                   }
@@ -1229,7 +1358,7 @@ bool cSIProcessor::AddFilter(u_char pid, u_char tid)
                filters[a].inuse = true;
             else
             {
-               esyslog("ERROR: can't set filter");
+               esyslog("ERROR: can't set filter (pid=%d, tid=%02X)", pid, tid);
                close(filters[a].handle);
                return false;
             }
@@ -1245,6 +1374,21 @@ bool cSIProcessor::AddFilter(u_char pid, u_char tid)
    }
    esyslog("ERROR: too many filters");
 
+   return false;
+}
+
+bool cSIProcessor::DelFilter(u_char pid, u_char tid)
+{
+   for (int a = 0; a < MAX_FILTERS; a++)
+   {
+      if (filters[a].inuse && filters[a].pid == pid && filters[a].tid == tid)
+      {
+         close(filters[a].handle);
+         // dsyslog("Deregistered filter handle %04x, pid = %02d, tid = %02d", filters[a].handle, filters[a].pid, filters[a].tid);
+         filters[a].inuse = false;
+         return true;
+      }
+   }
    return false;
 }
 
@@ -1282,4 +1426,27 @@ void cSIProcessor::TriggerDump(void)
 {
   cMutexLock MutexLock(&schedulesMutex);
   lastDump = 0;
+}
+
+int cSIProcessor::GetCaDescriptors(int Source, int Transponder, int ServiceId, int BufSize, uchar *Data)
+{
+  if (BufSize > 0 && Data) {
+     cMutexLock MutexLock(&caDescriptorsMutex);
+     int length = 0;
+     for (int i = -1; ; i--) {
+         const cCaDescriptor *d = caDescriptors->Get(Source, Transponder, ServiceId, i);
+         if (d) {
+            if (length + d->Length() <= BufSize) {
+               memcpy(Data + length, d->Data(), d->Length());
+               length += d->Length();
+               }
+            else
+               return -1;
+            }
+         else
+            break;
+         }
+     return length;
+     }
+  return -1;
 }

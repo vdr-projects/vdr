@@ -4,12 +4,13 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 1.51 2002/11/30 15:55:39 kls Exp $
+ * $Id: menu.h 1.52 2003/01/06 10:04:05 kls Exp $
  */
 
 #ifndef __MENU_H
 #define __MENU_H
 
+#include "ci.h"
 #include "device.h"
 #include "osd.h"
 #include "dvbplayer.h"
@@ -57,6 +58,30 @@ public:
   static void Process(eKeys Key);
   eOSState ProcessKey(eKeys Key);
   };
+
+class cMenuCam : public cOsdMenu {
+private:
+  cCiMenu *ciMenu;
+  bool selected;
+  eOSState Select(void);
+public:
+  cMenuCam(cCiMenu *CiMenu);
+  virtual ~cMenuCam();
+  virtual eOSState ProcessKey(eKeys Key);
+  };
+
+class cMenuCamEnquiry : public cOsdMenu {
+private:
+  cCiEnquiry *ciEnquiry;
+  bool replied;
+  eOSState Reply(void);
+public:
+  cMenuCamEnquiry(cCiEnquiry *CiEnquiry);
+  virtual ~cMenuCamEnquiry();
+  virtual eOSState ProcessKey(eKeys Key);
+  };
+
+cOsdObject *CamControl(void);
 
 class cMenuRecordingItem;
 

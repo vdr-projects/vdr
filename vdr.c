@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.139 2002/12/13 14:30:00 kls Exp $
+ * $Id: vdr.c 1.140 2003/01/06 11:14:50 kls Exp $
  */
 
 #include <getopt.h>
@@ -468,6 +468,9 @@ int main(int argc, char *argv[])
                  Timer->SetPending(true);
               }
            }
+        // CAM control:
+        if (!Menu)
+           Menu = CamControl();
         // User Input:
         cOsdObject *Interact = Menu ? Menu : cControl::Control();
         eKeys key = Interface->GetKey(!Interact || !Interact->NeedsFastResponse());
