@@ -586,6 +586,7 @@ Andreas Kool <akool@akool.de>
  for reporting a problem with empty values in setup.conf
  for fixing detecting the /dev/videoN devices for GRAB in case there are others
  before the DVB devices
+ for fixing a possible NULL pointer access in cEITScanner::Process()
 
 Guy Roussin <guy.roussin@teledetection.fr>
  for suggesting not to display channel group delimiters without text

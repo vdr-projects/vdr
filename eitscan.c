@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: eitscan.c 1.16 2004/01/05 09:51:25 kls Exp $
+ * $Id: eitscan.c 1.17 2004/01/10 16:50:51 kls Exp $
  */
 
 #include "eitscan.h"
@@ -116,16 +116,18 @@ void cEITScanner::Process(void)
                          if (Device != cDevice::PrimaryDevice() || (cDevice::NumDevices() == 1 && Setup.EPGScanTimeout && now - lastActivity > Setup.EPGScanTimeout * 3600)) {
                             if (!(Device->Receiving(true) || Device->Replaying())) {
                                cChannel *Channel = ScanData->GetChannel();
-                               //XXX if (Device->ProvidesTransponder(Channel)) {
-                               if ((!Channel->Ca() || Channel->Ca() == Device->DeviceNumber() + 1 || Channel->Ca() >= 0x0100) && Device->ProvidesTransponder(Channel)) { //XXX temporary for the 'sky' plugin
-                                  if (Device == cDevice::PrimaryDevice() && !currentChannel)
-                                     currentChannel = Device->CurrentChannel();
-                                  currentDevice = Device;//XXX see also dvbdevice.c!!!
-                                  Device->SwitchChannel(Channel, false);
-                                  currentDevice = NULL;
-                                  scanList->Del(ScanData);
-                                  ScanData = NULL;
-                                  AnyDeviceSwitched = true;
+                               if (Channel) {
+                                  //XXX if (Device->ProvidesTransponder(Channel)) {
+                                  if ((!Channel->Ca() || Channel->Ca() == Device->DeviceNumber() + 1 || Channel->Ca() >= 0x0100) && Device->ProvidesTransponder(Channel)) { //XXX temporary for the 'sky' plugin
+                                     if (Device == cDevice::PrimaryDevice() && !currentChannel)
+                                        currentChannel = Device->CurrentChannel();
+                                     currentDevice = Device;//XXX see also dvbdevice.c!!!
+                                     Device->SwitchChannel(Channel, false);
+                                     currentDevice = NULL;
+                                     scanList->Del(ScanData);
+                                     ScanData = NULL;
+                                     AnyDeviceSwitched = true;
+                                     }
                                   }
                                }
                             }

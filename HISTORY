@@ -2564,3 +2564,5 @@ Video Disk Recorder Revision History
   to Marcel Wiesweg).
 - In case of incomplete sections an error message is now logged only every 10
   seconds.
+- Fixed a possible NULL pointer access in cEITScanner::Process() (thanks to
+  Andreas Kool).
