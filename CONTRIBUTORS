@@ -1026,6 +1026,7 @@ Drazen Dupor <drazen.dupor@dupor.com>
 
 Prakash K. Cheemplavam <PrakashKC@gmx.de>
  for fixing some issues with gcc 3.4
+ for some minor code cleanups
 
 Miko Wohlgemuth <weak@chello.at>
  for reporting a problem with the OSD alignment in the SPU decoder
