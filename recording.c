@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.22 2000/12/16 14:25:14 kls Exp $
+ * $Id: recording.c 1.23 2001/01/01 14:48:03 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -318,7 +318,7 @@ bool cMark::Save(FILE *f)
 bool cMarks::Load(const char *RecordingFileName)
 {
   const char *MarksFile = AddDirectory(RecordingFileName, MARKSFILESUFFIX);
-  if (cConfig::Load(MarksFile)) {
+  if (cConfig<cMark>::Load(MarksFile)) {
      Sort();
      return true;
      }
@@ -341,7 +341,7 @@ cMark *cMarks::Add(int Position)
 {
   cMark *m = Get(Position);
   if (!m) {
-     cConfig::Add(m = new cMark(Position));
+     cConfig<cMark>::Add(m = new cMark(Position));
      Sort();
      }
   return m;
