@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.148 2002/02/03 15:42:38 kls Exp $
+ * $Id: menu.c 1.149 2002/02/09 14:42:56 kls Exp $
  */
 
 #include "menu.h"
@@ -1944,13 +1944,14 @@ cMenuMain::cMenuMain(bool Replaying, eOSState State)
 
   // Title with disk usage:
 
-#define MB_PER_MINUTE 30 // this is just an estimate!
+#define MB_PER_MINUTE 25.75 // this is just an estimate!
 
   char buffer[40];
   int FreeMB;
   int Percent = VideoDiskSpace(&FreeMB);
-  int Hours = int(double(FreeMB) / MB_PER_MINUTE / 60);
-  int Minutes = (FreeMB / MB_PER_MINUTE) % 60;
+  int Minutes = int(double(FreeMB) / MB_PER_MINUTE);
+  int Hours = Minutes / 60;
+  Minutes %= 60;
   snprintf(buffer, sizeof(buffer), "%s  -  Disk %d%%  -  %2d:%02d %s", tr("Main"), Percent, Hours, Minutes, tr("free"));
   SetTitle(buffer);
 
