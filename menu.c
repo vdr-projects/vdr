@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.141 2001/11/24 13:20:37 kls Exp $
+ * $Id: menu.c 1.142 2002/01/13 16:18:40 kls Exp $
  */
 
 #include "menu.h"
@@ -1712,7 +1712,7 @@ void cMenuSetup::Set(void)
   Add(new cMenuEditIntItem( tr("MarginStart"),        &data.MarginStart));
   Add(new cMenuEditIntItem( tr("MarginStop"),         &data.MarginStop));
   Add(new cMenuEditIntItem( tr("EPGScanTimeout"),     &data.EPGScanTimeout));
-  Add(new cMenuEditIntItem( tr("EPGBugfixLevel"),     &data.EPGBugfixLevel, 0, 3));
+  Add(new cMenuEditIntItem( tr("EPGBugfixLevel"),     &data.EPGBugfixLevel, 0, MAXEPGBUGFIXLEVEL));
   Add(new cMenuEditIntItem( tr("SVDRPTimeout"),       &data.SVDRPTimeout));
   Add(new cMenuEditBoolItem(tr("SortTimers"),         &data.SortTimers));
   Add(new cMenuEditIntItem( tr("PrimaryLimit"),       &data.PrimaryLimit, 0, MAXPRIORITY));

@@ -402,12 +402,7 @@ Video Disk Recorder User's Manual
                              Extended Description)
                          2 = removal of excess whitespace and hyphens, mapping of
                              wrongly used characters
-                         3 = fixing the date in timestamps between 00:00 and 06:00
-                             (use with care - hopefully one day Pro7 and Kabel1
-                             will learn how to read the clock/calender)
-                         Default is '2', which will do all textual fixes, but
-                         leaves out the timestamp fixes, since these might cause
-                         recordings to fail. Use '3' at your own risk.
+                         Default is '2'.
                          Note that after changing the setting of this parameter
                          any EPG data that has already been received will remain
                          in its existing format - only newly received data will
