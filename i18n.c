@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.146 2004/01/25 14:41:02 kls Exp $
+ * $Id: i18n.c 1.147 2004/02/20 13:58:14 kls Exp $
  *
  * Translations provided by:
  *
@@ -835,7 +835,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Сканировать",
   },
   // Confirmations:
   { "Delete channel?",
@@ -4140,7 +4140,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "Ennek a plugin-nak nincs setup-parametere!",
     "Aquest plugin no admet configuraciѓ!",
-    "Модуль расширения не имеет параметров настройки!",
+    "Модуль не имеет параметров настройки!",
    },
   { NULL }
   };

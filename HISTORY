@@ -2674,3 +2674,4 @@ Video Disk Recorder Revision History
 - Fixed handling receivers in the 'sky' plugin, so that a recording on the same
   channel won't interrupt an ongoing Transfer mode.
 - Added subtable ID and TSDT handling to 'libsi' (thanks to Marcel Wiesweg).
+- Fixed some Russian OSD texts (thanks to Vyacheslav Dikonov).
