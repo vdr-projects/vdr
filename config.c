@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.46 2001/06/02 13:57:25 kls Exp $
+ * $Id: config.c 1.47 2001/06/16 14:06:56 kls Exp $
  */
 
 #include "config.h"
@@ -756,6 +756,7 @@ cSetup::cSetup(void)
   PrimaryLimit = 0;
   DefaultPriority = 50;
   DefaultLifetime = 50;
+  VideoFormat = VIDEO_FORMAT_4_3;
   CurrentChannel = -1;
 }
 
@@ -781,6 +782,7 @@ bool cSetup::Parse(char *s)
      else if (!strcasecmp(Name, "PrimaryLimit"))        PrimaryLimit       = atoi(Value);
      else if (!strcasecmp(Name, "DefaultPriority"))     DefaultPriority    = atoi(Value);
      else if (!strcasecmp(Name, "DefaultLifetime"))     DefaultLifetime    = atoi(Value);
+     else if (!strcasecmp(Name, "VideoFormat"))         VideoFormat        = atoi(Value);
      else if (!strcasecmp(Name, "CurrentChannel"))      CurrentChannel     = atoi(Value);
      else
         return false;
@@ -841,6 +843,7 @@ bool cSetup::Save(const char *FileName)
         fprintf(f, "PrimaryLimit       = %d\n", PrimaryLimit);
         fprintf(f, "DefaultPriority    = %d\n", DefaultPriority);
         fprintf(f, "DefaultLifetime    = %d\n", DefaultLifetime);
+        fprintf(f, "VideoFormat        = %d\n", VideoFormat);
         fprintf(f, "CurrentChannel     = %d\n", CurrentChannel);
         f.Close();
         isyslog(LOG_INFO, "saved setup to %s", FileName);

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.73 2001/06/14 14:55:16 kls Exp $
+ * $Id: menu.c 1.74 2001/06/16 14:23:02 kls Exp $
  */
 
 #include "menu.h"
@@ -118,21 +118,24 @@ eOSState cMenuEditIntItem::ProcessKey(eKeys Key)
 
 class cMenuEditBoolItem : public cMenuEditIntItem {
 protected:
+  const char *falseString, *trueString;
   virtual void Set(void);
 public:
-  cMenuEditBoolItem(const char *Name, int *Value);
+  cMenuEditBoolItem(const char *Name, int *Value, const char *FalseString = NULL, const char *TrueString = NULL);
   };
 
-cMenuEditBoolItem::cMenuEditBoolItem(const char *Name, int *Value)
+cMenuEditBoolItem::cMenuEditBoolItem(const char *Name, int *Value, const char *FalseString, const char *TrueString)
 :cMenuEditIntItem(Name, Value, 0, 1)
 {
+  falseString = FalseString ? FalseString : tr("no");
+  trueString = TrueString ? TrueString : tr("yes");
   Set();
 }
 
 void cMenuEditBoolItem::Set(void)
 {
   char buf[16];
-  snprintf(buf, sizeof(buf), "%s", *value ? tr("yes") : tr("no"));
+  snprintf(buf, sizeof(buf), "%s", *value ? trueString : falseString);
   SetValue(buf);
 }
 
@@ -1620,6 +1623,7 @@ void cMenuSetup::Set(void)
   Add(new cMenuEditIntItem( tr("PrimaryLimit"),       &data.PrimaryLimit, 0, MAXPRIORITY));
   Add(new cMenuEditIntItem( tr("DefaultPriority"),    &data.DefaultPriority, 0, MAXPRIORITY));
   Add(new cMenuEditIntItem( tr("DefaultLifetime"),    &data.DefaultLifetime, 0, MAXLIFETIME));
+  Add(new cMenuEditBoolItem(tr("VideoFormat"),        &data.VideoFormat, "4:3", "16:9"));
 }
 
 eOSState cMenuSetup::ProcessKey(eKeys Key)
@@ -1630,6 +1634,7 @@ eOSState cMenuSetup::ProcessKey(eKeys Key)
      switch (Key) {
        case kOk: state = (Setup.PrimaryDVB != data.PrimaryDVB) ? osSwitchDvb : osEnd;
                  cDvbApi::PrimaryDvbApi->SetUseTSTime(data.SetSystemTime);
+                 cDvbApi::PrimaryDvbApi->SetVideoFormat(data.VideoFormat ? VIDEO_FORMAT_16_9 : VIDEO_FORMAT_4_3);
                  Setup = data;
                  Setup.Save();
                  break;

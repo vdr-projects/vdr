@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.h 1.38 2001/06/14 14:54:25 kls Exp $
+ * $Id: dvbapi.h 1.39 2001/06/16 14:21:16 kls Exp $
  */
 
 #ifndef __DVBAPI_H
@@ -172,6 +172,10 @@ public:
   eDvbFont SetFont(eDvbFont Font);
   void Text(int x, int y, const char *s, eDvbColor colorFg = clrWhite, eDvbColor colorBg = clrBackground);
   void Flush(void);
+
+  // Video format facilities:
+
+  void SetVideoFormat(videoFormat_t Format);
 
   // Channel facilities
 

@@ -355,6 +355,15 @@ Video Disk Recorder User's Manual
                          never keep the user from viewing stuff on the primary
                          interface. On systems with only one DVB card, timers
                          with a priority below PrimaryLimit will never execute.
+  
+  DefaultPriority = 50   The default Priority and Lifetime values used when
+  DefaultLifetime = 50   creating a new timer event. A Lifetime value of 99
+                         means that this recording will never be deleted
+                         automatically.
+
+  VideoFormat = 0        The video format (or aspect ratio) of the tv set in use.
+                         0 = 4:3
+                         1 = 16:9
 
 * Executing system commands
 

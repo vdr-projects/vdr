@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.76 2001/06/16 11:36:40 kls Exp $
+ * $Id: dvbapi.c 1.77 2001/06/16 14:23:28 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -1375,6 +1375,10 @@ cDvbApi::cDvbApi(int n)
 
   fd_dvr     = -1;
 
+  // Video format:
+
+  SetVideoFormat(Setup.VideoFormat ? VIDEO_FORMAT_16_9 : VIDEO_FORMAT_4_3);
+
   // We only check the devices that must be present - the others will be checked before accessing them:
 
   if (((fd_qpskfe >= 0 && fd_sec >= 0) || fd_qamfe >= 0) && fd_demuxv >= 0 && fd_demuxa1 >= 0 && fd_demuxa2 >= 0 && fd_demuxt >= 0) {
@@ -2025,6 +2029,12 @@ void cDvbApi::SetModeNormal(bool FromRecording)
            siProcessor->SetStatus(true);
         }
      }
+}
+
+void cDvbApi::SetVideoFormat(videoFormat_t Format)
+{
+  if (fd_video)
+     CHECK(ioctl(fd_video, VIDEO_SET_FORMAT, Format));
 }
 
 bool cDvbApi::SetPid(int fd, dmxPesType_t PesType, dvb_pid_t Pid, dmxOutput_t Output)

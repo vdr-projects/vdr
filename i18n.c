@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.18 2001/06/03 12:57:21 kls Exp $
+ * $Id: i18n.c 1.19 2001/06/16 14:27:10 kls Exp $
  *
  * Slovenian translations provided by Miha Setina <mihasetina@softhome.net>
  * Italian   translations provided by Alberto Carraro <bertocar@tin.it>
@@ -526,6 +526,12 @@ const tPhrase Phrases[] = {
   },
   { "DefaultLifetime",
     "Default Lebensdauer",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+  },
+  { "VideoFormat",
+    "Video Format",
     "", // TODO
     "", // TODO
     "", // TODO

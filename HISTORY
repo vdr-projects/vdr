@@ -531,3 +531,5 @@ Video Disk Recorder Revision History
 - The compile time switch VFAT has been fixed to recognize the ':' character
   in recording names, too.
 - Setting all PIDs to 0x1FFF before switching channel.
+- New setup parameter "VideoFormat" to define the aspect ratio of the tv set
+  in use (4:3 or 16:9).
