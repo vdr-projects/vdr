@@ -2638,3 +2638,7 @@ Video Disk Recorder Revision History
   Schultz). Linked channels are detected and added to 'channels.conf', but
   currently they are not yet presented to the user other than being in the
   normal channel list (this will come later).
+- Preliminary fix for the "Unknown picture type error" (thanks to Sascha
+  Volkenandt for his support in debugging this one). This may slow down switching
+  between channels on different transponders for now, but a better solution will
+  come later.

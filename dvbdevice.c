@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.79 2004/01/25 13:50:21 kls Exp $
+ * $Id: dvbdevice.c 1.80 2004/02/08 11:11:10 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -751,6 +751,11 @@ bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
 
   dvbTuner->Set(Channel, DoTune, !EITScanner.UsesDevice(this)); //XXX 1.3: this is an ugly hack - find a cleaner solution//XXX
 
+  //XXX TODO preliminary fix for the "Unknown picture type" error
+  time_t t0 = time(NULL);
+  while (!dvbTuner->Locked() && time(NULL) - t0 < 5)
+        usleep(100);
+  //XXX
   // PID settings:
 
   if (TurnOnLivePIDs) {
