@@ -1018,3 +1018,5 @@ Video Disk Recorder Revision History
   from the start time of the recording. In order for this to work the 'active'
   parameter of a timer now uses the second bit to indicate that this is an
   "instant" recording (see FORMATS for details).
+- Fixed the SVDRP GRAB command in case the video device can't be opened (thanks
+  to Adrian Stabiszewski).

@@ -212,3 +212,6 @@ Rainer Zocholl <Usenet-372114@zocki.toppoint.de>
 
 Oleg Assovski <assen@bitcom.msk.ru>
  for adding EPG scanning for another 4 days
+
+Adrian Stabiszewski <as@nitegate.de>
+ for fixing the SVDRP GRAB command in case the video device can't be opened

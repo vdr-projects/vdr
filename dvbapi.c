@@ -7,7 +7,7 @@
  * DVD support initially written by Andreas Schultz <aschultz@warp10.net>
  * based on dvdplayer-0.5 by Matjaz Thaler <matjaz.thaler@guest.arnes.si>
  *
- * $Id: dvbapi.c 1.148 2002/02/16 12:55:33 kls Exp $
+ * $Id: dvbapi.c 1.149 2002/02/23 10:40:55 kls Exp $
  */
 
 //#define DVDDEBUG        1
@@ -2741,9 +2741,9 @@ const cSchedules *cDvbApi::Schedules(cThreadLock *ThreadLock) const
 
 bool cDvbApi::GrabImage(const char *FileName, bool Jpeg, int Quality, int SizeX, int SizeY)
 {
-  int result = 0;
-  int videoDev = OstOpen(DEV_VIDEO, CardIndex(), O_RDWR);
+  int videoDev = OstOpen(DEV_VIDEO, CardIndex(), O_RDWR, true);
   if (videoDev >= 0) {
+     int result = 0;
      struct video_mbuf mbuf;
      result |= ioctl(videoDev, VIDIOCGMBUF, &mbuf);
      if (result == 0) {
@@ -2827,8 +2827,9 @@ bool cDvbApi::GrabImage(const char *FileName, bool Jpeg, int Quality, int SizeX,
            result |= 1;
         }
      close(videoDev);
+     return result == 0;
      }
-  return result == 0;
+  return false;
 }
 
 #ifdef DEBUG_OSD
