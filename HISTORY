@@ -1143,3 +1143,5 @@ Video Disk Recorder Revision History
   channels.
 - Checking the return value of '...FileReady...' calls in dvbapi.c for better
   performance under heavy system load.
+- New 'make' target 'install', which copies the manual pages and executables
+  to their appropriate system locations.

@@ -4,12 +4,14 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 1.31 2002/02/24 12:29:54 kls Exp $
+# $Id: Makefile 1.32 2002/03/29 14:20:27 kls Exp $
 
 .DELETE_ON_ERROR:
 
 DVBDIR   = ../DVB
 DTVDIR   = ./libdtv
+MANDIR   = /usr/local/man
+BINDIR   = /usr/local/bin
 
 INCLUDES = -I$(DVBDIR)/ost/include
 
@@ -83,6 +85,13 @@ genfontfile: genfontfile.c
 
 $(DTVLIB) $(DTVDIR)/libdtv.h:
 	make -C $(DTVDIR) all
+
+# Install the files:
+
+install:
+	cp vdr runvdr $(BINDIR)
+	gzip -c vdr.1 > $(MANDIR)/man1/vdr.1.gz
+	gzip -c vdr.5 > $(MANDIR)/man5/vdr.5.gz
 
 # Housekeeping:
 
