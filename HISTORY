@@ -1954,3 +1954,5 @@ Video Disk Recorder Revision History
   in debugging this). It is now possible to insert the CAM in any of the two slots,
   to insert and remove it while VDR is running and even to have two CAMs inserted.
 - Turning SI filtering off and on when switching channels.
+- Timers are now processed even if an OSD menu is open (except for menus that
+  explicitly handle timers).

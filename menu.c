@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.233 2003/02/09 10:46:25 kls Exp $
+ * $Id: menu.c 1.234 2003/02/09 12:55:38 kls Exp $
  */
 
 #include "menu.h"
@@ -837,6 +837,7 @@ private:
   void SetFirstDayItem(void);
 public:
   cMenuEditTimer(int Index, bool New = false);
+  virtual ~cMenuEditTimer();
   virtual eOSState ProcessKey(eKeys Key);
   };
 
@@ -860,6 +861,12 @@ cMenuEditTimer::cMenuEditTimer(int Index, bool New)
      Add(new cMenuEditStrItem( tr("File"),          data.file, sizeof(data.file), tr(FileNameChars)));
      SetFirstDayItem();
      }
+  Timers.IncBeingEdited();
+}
+
+cMenuEditTimer::~cMenuEditTimer()
+{
+  Timers.DecBeingEdited();
 }
 
 void cMenuEditTimer::SetFirstDayItem(void)
@@ -964,6 +971,7 @@ private:
   cTimer *CurrentTimer(void);
 public:
   cMenuTimers(void);
+  virtual ~cMenuTimers();
   virtual eOSState ProcessKey(eKeys Key);
   };
 
@@ -980,6 +988,12 @@ cMenuTimers::cMenuTimers(void)
   if (Setup.SortTimers)
      Sort();
   SetHelp(tr("Edit"), tr("New"), tr("Delete"), Setup.SortTimers ? tr("On/Off") : tr("Mark"));
+  Timers.IncBeingEdited();
+}
+
+cMenuTimers::~cMenuTimers()
+{
+  Timers.DecBeingEdited();
 }
 
 cTimer *cMenuTimers::CurrentTimer(void)

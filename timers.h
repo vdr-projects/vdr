@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.h 1.3 2002/11/24 11:50:56 kls Exp $
+ * $Id: timers.h 1.4 2003/02/09 12:49:45 kls Exp $
  */
 
 #ifndef __TIMERS_H
@@ -80,10 +80,15 @@ public:
   };
 
 class cTimers : public cConfig<cTimer> {
+private:
+  int beingEdited;
 public:
   cTimer *GetTimer(cTimer *Timer);
   cTimer *GetMatch(time_t t);
   cTimer *GetNextActiveTimer(void);
+  int BeingEdited(void) { return beingEdited; }
+  void IncBeingEdited(void) { beingEdited++; }
+  void DecBeingEdited(void) { beingEdited--; }
   };
 
 extern cTimers Timers;

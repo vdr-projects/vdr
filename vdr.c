@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.142 2003/02/09 11:25:38 kls Exp $
+ * $Id: vdr.c 1.143 2003/02/09 13:13:42 kls Exp $
  */
 
 #include <getopt.h>
@@ -459,7 +459,7 @@ int main(int argc, char *argv[])
            LastChannel = cDevice::CurrentChannel();
            }
         // Timers and Recordings:
-        if (!Menu) {
+        if (!Timers.BeingEdited()) {
            time_t Now = time(NULL); // must do both following calls with the exact same time!
            cRecordControls::Process(Now);
            cTimer *Timer = Timers.GetMatch(Now);
