@@ -8,7 +8,7 @@
  *
  * parts of this file are derived from the OMS program.
  *
- * $Id: dvbspu.h 1.7 2005/01/08 09:59:44 kls Exp $
+ * $Id: dvbspu.h 1.8 2005/02/20 11:20:43 kls Exp $
  */
 
 #ifndef __DVBSPU_H
@@ -139,6 +139,7 @@ class cDvbSpuDecoder:public cSpuDecoder {
 
     int setTime(uint32_t pts);
 
+    cSpuDecoder::eScaleMode getScaleMode(void) { return scaleMode; }
     void setScaleMode(cSpuDecoder::eScaleMode ScaleMode);
     void setPalette(uint32_t * pal);
     void setHighlight(uint16_t sx, uint16_t sy, uint16_t ex, uint16_t ey,

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 1.55 2005/02/06 11:43:04 kls Exp $
+ * $Id: device.h 1.57 2005/02/20 14:06:28 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -18,6 +18,7 @@
 #include "ringbuffer.h"
 #include "sdt.h"
 #include "sections.h"
+#include "spu.h"
 #include "thread.h"
 #include "tools.h"
 
@@ -56,17 +57,22 @@ enum eVideoSystem { vsPAL,
                     vsNTSC
                   };
 
+enum eVideoDisplayFormat { vdfPanAndScan,
+                           vdfLetterBox,
+                           vdfCenterCutOut
+                         };
+
 enum eTrackType { ttNone,
                   ttAudio,
                   ttAudioFirst = ttAudio,
                   ttAudioLast  = ttAudioFirst + 31, // MAXAPIDS - 1
                   ttDolby,
                   ttDolbyFirst = ttDolby,
-                  ttDolbyLast  = ttDolbyFirst + 8, // MAXDPIDS - 1
+                  ttDolbyLast  = ttDolbyFirst + 15, // MAXDPIDS - 1
                   /* future...
                   ttSubtitle,
                   ttSubtitleFirst = ttSubtitle,
-                  ttSubtitleLast  = ttSubtitleFirst + 8, // MAXSPIDS - 1
+                  ttSubtitleLast  = ttSubtitleFirst + 7, // MAXSPIDS - 1
                   */
                   ttMaxTrackTypes
                 };
@@ -83,7 +89,6 @@ struct tTrackId {
 class cChannel;
 class cPlayer;
 class cReceiver;
-class cSpuDecoder;
 class cPesAssembler;
 
 /// The cDevice class is the base from which actual devices can be derived.
@@ -301,6 +306,10 @@ public:
 // Video format facilities
 
 public:
+  virtual void SetVideoDisplayFormat(eVideoDisplayFormat VideoDisplayFormat);
+         ///< Sets the video display format to the given one (only useful
+         ///< if this device has an MPEG decoder).
+         ///< A derived class must first call the base class function!
   virtual void SetVideoFormat(bool VideoFormat16_9);
          ///< Sets the output video format to either 16:9 or 4:3 (only useful
          ///< if this device has an MPEG decoder).

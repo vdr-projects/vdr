@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.h 1.25 2005/01/16 13:46:41 kls Exp $
+ * $Id: channels.h 1.26 2005/02/20 14:05:24 kls Exp $
  */
 
 #ifndef __CHANNELS_H
@@ -31,7 +31,7 @@
 #define CHANNELSMOD_USER    2
 
 #define MAXAPIDS 32 // audio
-#define MAXDPIDS  8 // dolby
+#define MAXDPIDS 16 // dolby (AC3 + DTS)
 #define MAXSPIDS  8 // subtitles
 #define MAXCAIDS  8 // conditional access
 

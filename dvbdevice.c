@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.120 2005/02/13 14:26:37 kls Exp $
+ * $Id: dvbdevice.c 1.124 2005/02/20 13:35:28 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -402,7 +402,7 @@ cDvbDevice::cDvbDevice(int n)
 
   // Video format:
 
-  SetVideoFormat(Setup.VideoFormat ? VIDEO_FORMAT_16_9 : VIDEO_FORMAT_4_3);
+  SetVideoFormat(Setup.VideoFormat);
 
   // We only check the devices that must be present - the others will be checked before accessing them://XXX
 
@@ -599,10 +599,35 @@ bool cDvbDevice::GrabImage(const char *FileName, bool Jpeg, int Quality, int Siz
   return false;
 }
 
+void cDvbDevice::SetVideoDisplayFormat(eVideoDisplayFormat VideoDisplayFormat)
+{
+  cDevice::SetVideoDisplayFormat(VideoDisplayFormat);
+  if (HasDecoder()) {
+     if (Setup.VideoFormat) {
+        CHECK(ioctl(fd_video, VIDEO_SET_DISPLAY_FORMAT, VIDEO_CENTER_CUT_OUT));
+        }
+     else {
+        switch (VideoDisplayFormat) {
+          case vdfPanAndScan:
+               CHECK(ioctl(fd_video, VIDEO_SET_DISPLAY_FORMAT, VIDEO_PAN_SCAN));
+               break;
+          case vdfLetterBox:
+               CHECK(ioctl(fd_video, VIDEO_SET_DISPLAY_FORMAT, VIDEO_LETTER_BOX));
+               break;
+          case vdfCenterCutOut:
+               CHECK(ioctl(fd_video, VIDEO_SET_DISPLAY_FORMAT, VIDEO_CENTER_CUT_OUT));
+               break;
+          }
+        }
+     }
+}
+
 void cDvbDevice::SetVideoFormat(bool VideoFormat16_9)
 {
-  if (HasDecoder())
+  if (HasDecoder()) {
      CHECK(ioctl(fd_video, VIDEO_SET_FORMAT, VideoFormat16_9 ? VIDEO_FORMAT_16_9 : VIDEO_FORMAT_4_3));
+     SetVideoDisplayFormat(eVideoDisplayFormat(Setup.VideoDisplayFormat));
+     }
 }
 
 eVideoSystem cDvbDevice::GetVideoSystem(void)
@@ -872,7 +897,7 @@ void cDvbDevice::SetAudioTrackDevice(eTrackType Type)
   const tTrackId *TrackId = GetTrack(Type);
   if (TrackId && TrackId->id) {
      if (IS_AUDIO_TRACK(Type)) {
-        if (pidHandles[ptAudio].pid) {
+        if (pidHandles[ptAudio].pid && pidHandles[ptAudio].pid != TrackId->id) {
            pidHandles[ptAudio].pid = TrackId->id;
            SetPid(&pidHandles[ptAudio], ptAudio, true);
            }

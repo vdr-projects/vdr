@@ -6,7 +6,7 @@
  * This code is distributed under the terms and conditions of the
  * GNU GENERAL PUBLIC LICENSE. See the file COPYING for details.
  *
- * $Id: spu.h 1.3 2005/01/08 09:58:35 kls Exp $
+ * $Id: spu.h 1.4 2005/02/20 11:21:31 kls Exp $
  */
 
 #ifndef __SPU_VDR_H
@@ -21,10 +21,11 @@ class cSpuDecoder {
     typedef enum { eSpuNormal, eSpuLetterBox, eSpuPanAndScan } eScaleMode;
   public:
     //    cSpuDecoder();
-     virtual ~ cSpuDecoder();
+    virtual ~cSpuDecoder();
 
     virtual int setTime(uint32_t pts) = 0;
 
+    virtual cSpuDecoder::eScaleMode getScaleMode(void) = 0;
     virtual void setScaleMode(cSpuDecoder::eScaleMode ScaleMode) = 0;
     virtual void setPalette(uint32_t * pal) = 0;
     virtual void setHighlight(uint16_t sx, uint16_t sy,

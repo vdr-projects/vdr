@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.89 2005/02/05 10:10:30 kls Exp $
+ * $Id: tools.c 1.90 2005/02/19 13:43:03 kls Exp $
  */
 
 #include "tools.h"
@@ -454,8 +454,9 @@ bool SpinUpDisk(const char *FileName)
          int f = open(buf, O_WRONLY | O_CREAT, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
          // O_SYNC doesn't work on all file systems
          if (f >= 0) {
+            if (fdatasync(f) < 0)
+               LOG_ERROR_STR(buf);
             close(f);
-            system("sync");
             remove(buf);
             gettimeofday(&tp2, NULL);
             double seconds = (((long long)tp2.tv_sec * 1000000 + tp2.tv_usec) - ((long long)tp1.tv_sec * 1000000 + tp1.tv_usec)) / 1000000.0;

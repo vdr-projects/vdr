@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.92 2005/02/13 09:51:48 kls Exp $
+ * $Id: device.c 1.99 2005/02/27 13:55:15 kls Exp $
  */
 
 #include "device.h"
@@ -169,7 +169,7 @@ cDevice::cDevice(void)
   player = NULL;
   pesAssembler = new cPesAssembler;
   ClrAvailableTracks();
-  currentAudioTrack = ttAudioFirst;
+  currentAudioTrack = ttNone;
   currentAudioTrackMissingCount = 0;
 
   for (int i = 0; i < MAXRECEIVERS; i++)
@@ -235,6 +235,7 @@ bool cDevice::SetPrimaryDevice(int n)
         primaryDevice->MakePrimaryDevice(false);
      primaryDevice = device[n];
      primaryDevice->MakePrimaryDevice(true);
+     primaryDevice->SetVideoFormat(Setup.VideoFormat);
      return true;
      }
   esyslog("ERROR: invalid primary device number: %d", n + 1);
@@ -325,6 +326,28 @@ void cDevice::Shutdown(void)
 bool cDevice::GrabImage(const char *FileName, bool Jpeg, int Quality, int SizeX, int SizeY)
 {
   return false;
+}
+
+void cDevice::SetVideoDisplayFormat(eVideoDisplayFormat VideoDisplayFormat)
+{
+  cSpuDecoder *spuDecoder = GetSpuDecoder();
+  if (spuDecoder) {
+     if (Setup.VideoFormat)
+        spuDecoder->setScaleMode(cSpuDecoder::eSpuNormal);
+     else {
+        switch (VideoDisplayFormat) {
+               case vdfPanAndScan:
+                    spuDecoder->setScaleMode(cSpuDecoder::eSpuPanAndScan);
+                    break;
+               case vdfLetterBox:
+                    spuDecoder->setScaleMode(cSpuDecoder::eSpuLetterBox);
+                    break;
+               case vdfCenterCutOut:
+                    spuDecoder->setScaleMode(cSpuDecoder::eSpuNormal);
+                    break;
+               }
+        }
+     }
 }
 
 void cDevice::SetVideoFormat(bool VideoFormat16_9)
@@ -578,14 +601,14 @@ eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
         currentChannel = Channel->Number();
         // Set the available audio tracks:
         ClrAvailableTracks();
-        currentAudioTrack = ttAudioFirst;
         for (int i = 0; i < MAXAPIDS; i++)
             SetAvailableTrack(ttAudio, i, Channel->Apid(i), Channel->Alang(i));
         if (Setup.UseDolbyDigital) {
            for (int i = 0; i < MAXDPIDS; i++)
                SetAvailableTrack(ttDolby, i, Channel->Dpid(i), Channel->Dlang(i));
            }
-        EnsureAudioTrack(true);
+        if (!NeedsTransferMode)
+           EnsureAudioTrack(true);
         }
      cStatus::MsgChannelSwitch(this, Channel->Number()); // only report status if channel switch successfull
      }
@@ -680,6 +703,7 @@ void cDevice::ClrAvailableTracks(bool DescriptionsOnly)
      pre_1_3_19_PrivateStream = false;
      SetAudioChannel(0); // fall back to stereo
      currentAudioTrackMissingCount = 0;
+     currentAudioTrack = ttNone;
      }
 }
 
@@ -692,12 +716,14 @@ bool cDevice::SetAvailableTrack(eTrackType Type, int Index, uint16_t Id, const c
         strn0cpy(availableTracks[t].language, Language, sizeof(availableTracks[t].language));
      if (Description)
         strn0cpy(availableTracks[t].description, Description, sizeof(availableTracks[t].description));
-     if (Id)
+     if (Id) {
         availableTracks[t].id = Id; // setting 'id' last to avoid the need for extensive locking
-     if (t == currentAudioTrack)
-        currentAudioTrackMissingCount = 0;
-     else if (!availableTracks[currentAudioTrack].id && currentAudioTrackMissingCount++ > NumAudioTracks() * 10)
-        EnsureAudioTrack();
+        int numAudioTracks = NumAudioTracks();
+        if (!availableTracks[currentAudioTrack].id && numAudioTracks && currentAudioTrackMissingCount++ > numAudioTracks * 10)
+           EnsureAudioTrack();
+        else if (t == currentAudioTrack)
+           currentAudioTrackMissingCount = 0;
+        }
      return true;
      }
   else
@@ -816,7 +842,8 @@ bool cDevice::AttachPlayer(cPlayer *Player)
   if (CanReplay()) {
      if (player)
         Detach(player);
-     ClrAvailableTracks();
+     if (!dynamic_cast<cTransfer *>(Player))
+        ClrAvailableTracks();
      pesAssembler->Reset();
      player = Player;
      SetPlayMode(player->playMode);
@@ -834,6 +861,7 @@ void cDevice::Detach(cPlayer *Player)
      player->device = NULL;
      player = NULL;
      SetPlayMode(pmNone);
+     SetVideoDisplayFormat(eVideoDisplayFormat(Setup.VideoDisplayFormat));
      Audios.ClearAudio();
      }
 }
@@ -894,7 +922,7 @@ int cDevice::PlayPesPacket(const uchar *Data, int Length, bool VideoOnly)
                uchar SubStreamId = Data[PayloadOffset];
                uchar SubStreamType = SubStreamId & 0xF0;
                uchar SubStreamIndex = SubStreamId & 0x1F;
-
+        
                // Compatibility mode for old VDR recordings, where 0xBD was only AC3:
 pre_1_3_19_PrivateStreamDeteced:
                if (pre_1_3_19_PrivateStream) {
@@ -902,7 +930,6 @@ pre_1_3_19_PrivateStreamDeteced:
                   SubStreamType = 0x80;
                   SubStreamIndex = 0;
                   }
-
                switch (SubStreamType) {
                  case 0x20: // SPU
                  case 0x30: // SPU
@@ -1002,7 +1029,7 @@ int cDevice::PlayPes(const uchar *Data, int Length, bool VideoOnly)
   if (i < Length)
      pesAssembler->Put(Data + i, Length - i);
   return Length;
- }
+}
 
 int cDevice::Ca(void) const
 {

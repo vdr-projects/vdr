@@ -588,6 +588,10 @@ Version 1.2
                          from the primary DVB interface, so that the viewer will
                          be disturbed as little as possible.
 
+  Video display format = letterbox
+                         The display format to use for playing wide screen video on
+                         a 4:3 tv set ("pan & scan", "letterbox" or "center cut out").
+
   Video format = 4:3     The video format (or aspect ratio) of the tv set in use
                          (4:3 or 16:9).
 

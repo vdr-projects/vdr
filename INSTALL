@@ -250,7 +250,9 @@ Use "vdr --help" for a list of available command line options.
 Replaying Dolby Digital audio:
 ------------------------------
 
-To replay Dolby Digital audio you need a program that reads the DD data
+If you have a "full featured" DVB card with SPDIF output you can replay
+Dolby Digital audio directly through the DVB card.
+You can also use an external program that reads the DD data
 from stdin and processes it in a way suitable for your audio hardware.
 This program must be given to VDR with the '-a' option, as in
 

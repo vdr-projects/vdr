@@ -274,6 +274,9 @@ Werner Fink <werner@suse.de>
  for pointing out that pesAssembler->Reset() needs to be called between subsequent
  Transfer Modes
  for suggestions that led to the addition of the 'Id' parameter to cAudio::Play().
+ for pointing out that MAXDPIDS needs to be to 16 (8xAC3 + 8xDTS)
+ for reporting a problem with ensuring there is a current audio track in case there
+ is only one track
 
 Rolf Hakenes <hakenes@hippomi.de>
  for providing 'libdtv' and adapting the EIT mechanisms to it
@@ -1147,6 +1150,14 @@ Marco Schlüßler <marco@lordzodiac.de>
  for adding DeviceClrAvailableTracks() and DeviceSetCurrentAudioTrack() to cPlayer
  for reporting a missing 'resultSkipped = 0' in cRemux::Clear()
  for reporting a missing reset of the 'repacker' in cTS2PES::Clear()
+ for avoiding unnecessary calls to SetPid() in cDvbDevice::SetAudioTrackDevice()
+ for pointing out that EnsureAudioTrack() in cDevice::SetChannel() should not be
+ called if a Transfer Mode is started, to avoid setting the audio PID on the primary
+ device
+ for fixing calling cStatus::MsgChannelSwitch() in cDevice::SetChannel()
+ for increasing POLLTIMEOUTS_BEFORE_DEVICECLEAR in transfer.c to 6 to avoid problems
+ with the larger buffer reserve
+ for adding support for setting the video display mode
 
 Jürgen Schmitz <j.schmitz@web.de>
  for reporting a bug in displaying the current channel when switching via the SVDRP
@@ -1268,6 +1279,16 @@ Rolf Groppe <rolf@groppe.de>
 Wolfgang Rohdewald <wolfgang@rohdewald.de>
  for pointing out that primaryDevice = NULL should be done before deleting the devices
  in cDevice::Shutdown()
+ for removing some unneeded code and fixing access to unallocated memory in
+ cEvent::FixEpgBugs()
 
 Chad Flynt <hoochster@sofnet.com>
  for suggestions and experiments regarding the buffer reserve in cTransfer
+
+Chris Warren <dvb@ixalon.net>
+ for pointing out that the call to system("sync") in SpinUpDisk() should be
+ replaced with fsync(f) to avoid problems on NPTL systems
+
+Luca Olivetti <luca@ventoso.org>
+ for making cDevice::AttachPlayer() keep the track language codes and descriptions
+ in Transfer Mode

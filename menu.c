@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.340 2005/02/06 11:33:13 kls Exp $
+ * $Id: menu.c 1.342 2005/02/27 14:09:00 kls Exp $
  */
 
 #include "menu.h"
@@ -1915,6 +1915,7 @@ private:
   int originalNumAudioLanguages;
   int numAudioLanguages;
   void Setup(void);
+  const char *videoDisplayFormatTexts[3];
   const char *updateChannelsTexts[5];
 public:
   cMenuSetupDVB(void);
@@ -1926,6 +1927,9 @@ cMenuSetupDVB::cMenuSetupDVB(void)
   for (numAudioLanguages = 0; numAudioLanguages < I18nNumLanguages && data.AudioLanguages[numAudioLanguages] >= 0; numAudioLanguages++)
       ;
   originalNumAudioLanguages = numAudioLanguages;
+  videoDisplayFormatTexts[0] = tr("pan&scan");
+  videoDisplayFormatTexts[1] = tr("letterbox");
+  videoDisplayFormatTexts[2] = tr("center cut out");
   updateChannelsTexts[0] = tr("no");
   updateChannelsTexts[1] = tr("names only");
   updateChannelsTexts[2] = tr("names and PIDs");
@@ -1943,6 +1947,7 @@ void cMenuSetupDVB::Setup(void)
   Clear();
 
   Add(new cMenuEditIntItem( tr("Setup.DVB$Primary DVB interface"), &data.PrimaryDVB, 1, cDevice::NumDevices()));
+  Add(new cMenuEditStraItem(tr("Setup.DVB$Video display format"),  &data.VideoDisplayFormat, 3, videoDisplayFormatTexts));
   Add(new cMenuEditBoolItem(tr("Setup.DVB$Video format"),          &data.VideoFormat, "4:3", "16:9"));
   Add(new cMenuEditBoolItem(tr("Setup.DVB$Use Dolby Digital"),     &data.UseDolbyDigital));
   Add(new cMenuEditStraItem(tr("Setup.DVB$Update channels"),       &data.UpdateChannels, 5, updateChannelsTexts));
@@ -1957,6 +1962,7 @@ void cMenuSetupDVB::Setup(void)
 eOSState cMenuSetupDVB::ProcessKey(eKeys Key)
 {
   int oldPrimaryDVB = ::Setup.PrimaryDVB;
+  int oldVideoDisplayFormat = ::Setup.VideoDisplayFormat;
   bool oldVideoFormat = ::Setup.VideoFormat;
   int oldnumAudioLanguages = numAudioLanguages;
   eOSState state = cMenuSetupBase::ProcessKey(Key);
@@ -1984,6 +1990,8 @@ eOSState cMenuSetupDVB::ProcessKey(eKeys Key)
   if (state == osBack && Key == kOk) {
      if (::Setup.PrimaryDVB != oldPrimaryDVB)
         state = osSwitchDvb;
+     if (::Setup.VideoDisplayFormat != oldVideoDisplayFormat)
+        cDevice::PrimaryDevice()->SetVideoDisplayFormat(eVideoDisplayFormat(::Setup.VideoDisplayFormat));
      if (::Setup.VideoFormat != oldVideoFormat)
         cDevice::PrimaryDevice()->SetVideoFormat(::Setup.VideoFormat);
      }
@@ -2938,6 +2946,7 @@ eOSState cDisplayTracks::ProcessKey(eKeys Key)
                     timeout.Set(TRACKTIMEOUT);
                     }
          break;
+    case kAudio|k_Repeat:
     case kAudio:
          if (++track >= numTracks)
             track = 0;
