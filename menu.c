@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.39 2000/11/01 15:35:43 kls Exp $
+ * $Id: menu.c 1.40 2000/11/01 15:50:00 kls Exp $
  */
 
 #include "menu.h"
@@ -1201,7 +1201,9 @@ eOSState cMenuWhatsOn::ProcessKey(eKeys Key)
        case kRed:    return Record();
        case kYellow: return osBack;
        case kBlue:   return Switch();
-       case kOk:     return AddSubMenu(new cMenuEvent(((cMenuWhatsOnItem *)Get(Current()))->eventInfo, true));
+       case kOk:     if (Count())
+                        return AddSubMenu(new cMenuEvent(((cMenuWhatsOnItem *)Get(Current()))->eventInfo, true));
+                     break;
        default:      break;
        }
      }
@@ -1311,7 +1313,9 @@ eOSState cMenuSchedule::ProcessKey(eKeys Key)
                      next = !next;
                      return AddSubMenu(new cMenuWhatsOn(schedules, now));
        case kYellow: return AddSubMenu(new cMenuWhatsOn(schedules, false));
-       case kOk:     return AddSubMenu(new cMenuEvent(((cMenuScheduleItem *)Get(Current()))->eventInfo));
+       case kOk:     if (Count())
+                        return AddSubMenu(new cMenuEvent(((cMenuScheduleItem *)Get(Current()))->eventInfo));
+                     break;
        default:      break;
        }
      }
