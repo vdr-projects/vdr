@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.119 2002/08/11 11:32:15 kls Exp $
+ * $Id: vdr.c 1.120 2002/08/16 09:54:03 kls Exp $
  */
 
 #include <getopt.h>
@@ -327,8 +327,7 @@ int main(int argc, char *argv[])
 
   // DVB interfaces:
 
-  if (!cDvbDevice::Initialize())
-     return 2;
+  cDvbDevice::Initialize();
 
   cSIProcessor::Read();
 
@@ -340,6 +339,12 @@ int main(int argc, char *argv[])
   // Primary device:
 
   cDevice::SetPrimaryDevice(Setup.PrimaryDVB);
+  if (!cDevice::PrimaryDevice()) {
+     const char *msg = "no primary device found - giving up!";
+     fprintf(stderr, "vdr: %s\n", msg);
+     esyslog("ERROR: %s", msg);
+     return 2;
+     }
 
   // OSD:
 

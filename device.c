@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.11 2002/08/16 08:52:56 kls Exp $
+ * $Id: device.c 1.12 2002/08/16 09:50:43 kls Exp $
  */
 
 #include "device.h"
@@ -97,7 +97,7 @@ bool cDevice::SetPrimaryDevice(int n)
      primaryDevice->MakePrimaryDevice(true);
      return true;
      }
-  esyslog("invalid device number: %d", n + 1);
+  esyslog("invalid primary device number: %d", n + 1);
   return false;
 }
 

@@ -1393,7 +1393,7 @@ Video Disk Recorder Revision History
 - Changed the cDevice class to allow plugins to implement their own devices (see
   PLUGINS.html for details).
 
-2002-08-15: Version 1.1.7
+2002-08-16: Version 1.1.7
 
 - Adapted VDR to the NEWSTRUCT driver. To use the new driver, compile VDR with
   'make NEWSTRUCT=1' (thanks to Holger Wächtler for some valuable advice).
@@ -1412,3 +1412,6 @@ Video Disk Recorder Revision History
   to Stefan Huelswitt).
 - Improved cCondVar::Wait() and implemented cCondVar::TimedWait() (thanks to
   Stefan Huelswitt).
+- VDR no longer gives up if there is no DVB device. It continues to work if
+  there is at least one device, either a DVB device found by the core VDR code
+  itself, or a device implemented by a plugin.
