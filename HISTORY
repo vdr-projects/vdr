@@ -1932,3 +1932,4 @@ Video Disk Recorder Revision History
   and during recordings, which dramatically reduces CPU load. Thanks to Teemu
   Rantanen for pinpointing the problem with the excessive memmove() calls.
 - Updated 'channels.conf' (thanks to Achim Lange).
+- Added/improved Swedish language texts (thanks to Jan Ekholm).

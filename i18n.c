@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.102 2003/01/26 11:33:50 kls Exp $
+ * $Id: i18n.c 1.103 2003/01/26 11:46:46 kls Exp $
  *
  * Translations provided by:
  *
@@ -18,7 +18,7 @@
  * Polish      Michael Rakowski <mrak@gmx.de>
  * Spanish     Ruben Nunez Francisco <ruben.nunez@tang-it.com>
  * Greek       Dimitrios Dimitrakos <mail@dimitrios.de>
- * Swedish     Tomas Prybil <tomas@prybil.se>
+ * Swedish     Tomas Prybil <tomas@prybil.se> and Jan Ekholm <chakie@infa.abo.fi>
  * Romanian    Paul Lacatus <paul@campina.iiruc.ro>
  * Hungarian   Istvan Koenigsberger <istvnko@hotmail.com> and Guido Josten <guido.josten@t-online.de>
  *
@@ -211,7 +211,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Inspelningskommandon",
     "",// TODO
     "",// TODO
   },
@@ -950,7 +950,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Källa",
     "",//TODO
     "",//TODO
   },
@@ -1126,7 +1126,7 @@ const tI18nPhrase Phrases[] = {
     "Bandwidth",
     "Bandwidth",
     "Bandwidth",
-    "Bandwidth",
+    "Bandbredd",
     "Bandwidth",
     "Bandwidth",
   },
@@ -1496,7 +1496,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Kanalen ej tillgänglig!",
     "",//TODO
     "",//TODO
   },
@@ -1512,7 +1512,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Kanalinställningarna är ej unika!",
     "",//TODO
     "",//TODO
   },
@@ -2042,7 +2042,7 @@ const tI18nPhrase Phrases[] = {
     "Transponder do ustawiania czasu",
     "Transponder para reloj de sistema",
     "Transponder gia sintonismo tis oras",
-    "Använd klockan från fransponder",
+    "Använd klockan från transponder",
     "Preia ceasul din transponder",
     "Idöhöz tartozó Transponder",
   },
@@ -2894,7 +2894,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Spela upp",
     "",// TODO
     "",// TODO
   },
@@ -2910,7 +2910,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Pausa",
     "",// TODO
     "",// TODO
   },
@@ -2926,7 +2926,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Stoppa",
     "",// TODO
     "",// TODO
   },
@@ -2942,7 +2942,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Spela in",
     "",// TODO
     "",// TODO
   },
@@ -2958,7 +2958,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Spola framåt",
     "",// TODO
     "",// TODO
   },
@@ -2974,7 +2974,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Spola bakåt",
     "",// TODO
     "",// TODO
   },
@@ -3006,7 +3006,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Kanal+",
     "",// TODO
     "",// TODO
   },
@@ -3022,7 +3022,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Kanal-",
     "",// TODO
     "",// TODO
   },
@@ -3119,7 +3119,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "av",
     "",// TODO
     "",// TODO
   },

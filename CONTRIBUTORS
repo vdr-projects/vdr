@@ -531,3 +531,6 @@ Teemu Rantanen <tvr@iki.fi>
  with broadcasters that send extremely large PES packets
  for adding TS error checking to remux.c
  for pinpointing a problem with excessive memmove() calls in 'Transfer Mode'
+
+Jan Ekholm <chakie@infa.abo.fi>
+ for adding/improving some Swedish language OSD texts
