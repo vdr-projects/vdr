@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.h 1.49 2001/09/09 14:37:18 kls Exp $
+ * $Id: dvbapi.h 1.50 2001/09/15 13:46:00 kls Exp $
  */
 
 #ifndef __DVBAPI_H
@@ -87,7 +87,7 @@ class cDvbApi {
   friend class cTransferBuffer;
 private:
   int videoDev;
-  int fd_osd, fd_qpskfe, fd_qamfe, fd_sec, fd_dvr, fd_audio, fd_video, fd_demuxa1, fd_demuxa2, fd_demuxd1, fd_demuxd2, fd_demuxv, fd_demuxt;
+  int fd_osd, fd_frontend, fd_sec, fd_dvr, fd_audio, fd_video, fd_demuxa1, fd_demuxa2, fd_demuxd1, fd_demuxd2, fd_demuxv, fd_demuxt;
   int vPid, aPid1, aPid2, dPid1, dPid2;
   bool SetPid(int fd, dmxPesType_t PesType, int Pid, dmxOutput_t Output);
   bool SetVpid(int Vpid, dmxOutput_t Output)  { return SetPid(fd_demuxv,  DMX_PES_VIDEO,    Vpid, Output); }

@@ -27,11 +27,8 @@ You can find 'libdvdread' at
 
   http://www.dtek.chalmers.se/groups/dvd/downloads.html
 
-VDR requires the card driver version 0.9.0 or higher
-to work properly. You need to load the dvb.o module *without* option
-'outstream=0' (previous versions of VDR required this option to have
-the driver supply the data in AV_PES format; as of version 0.70 VDR
-works with PES format).
+VDR requires the card driver version dated 2001-09-14 or higher
+to work properly.
 
 After extracting the package, change into the VDR directory
 and type 'make'. This should produce an executable file

@@ -745,3 +745,5 @@ Video Disk Recorder Revision History
 - The pipe to the Dolby Digital replay command (option '-a') now closes all
   unused file descriptors in the child process to avoid crashing when the
   OSD is used (thanks to Andreas Vitting).
+- Switched to the driver's new tuning API (VDR now requires a driver version
+  dated 2001-09-14 or higher).

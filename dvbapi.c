@@ -7,7 +7,7 @@
  * DVD support initially written by Andreas Schultz <aschultz@warp10.net>
  * based on dvdplayer-0.5 by Matjaz Thaler <matjaz.thaler@guest.arnes.si>
  *
- * $Id: dvbapi.c 1.119 2001/09/15 12:45:19 kls Exp $
+ * $Id: dvbapi.c 1.120 2001/09/15 13:51:27 kls Exp $
  */
 
 //#define DVDDEBUG        1
@@ -40,15 +40,14 @@ extern "C" {
 #include "tools.h"
 #include "videodir.h"
 
-#define DEV_VIDEO      "/dev/video"
-#define DEV_OST_OSD    "/dev/ost/osd"
-#define DEV_OST_QAMFE  "/dev/ost/qamfe"
-#define DEV_OST_QPSKFE "/dev/ost/qpskfe"
-#define DEV_OST_SEC    "/dev/ost/sec"
-#define DEV_OST_DVR    "/dev/ost/dvr"
-#define DEV_OST_DEMUX  "/dev/ost/demux"
-#define DEV_OST_VIDEO  "/dev/ost/video"
-#define DEV_OST_AUDIO  "/dev/ost/audio"
+#define DEV_VIDEO         "/dev/video"
+#define DEV_OST_OSD       "/dev/ost/osd"
+#define DEV_OST_FRONTEND  "/dev/ost/frontend"
+#define DEV_OST_SEC       "/dev/ost/sec"
+#define DEV_OST_DVR       "/dev/ost/dvr"
+#define DEV_OST_DEMUX     "/dev/ost/demux"
+#define DEV_OST_VIDEO     "/dev/ost/video"
+#define DEV_OST_AUDIO     "/dev/ost/audio"
 
 // The size of the array used to buffer video data:
 // (must be larger than MINVIDEODATA - see remux.h)
@@ -2474,9 +2473,8 @@ cDvbApi::cDvbApi(int n)
 
   // Devices that are only present on DVB-C or DVB-S cards:
 
-  fd_qamfe   = OstOpen(DEV_OST_QAMFE,  n, O_RDWR);
-  fd_qpskfe  = OstOpen(DEV_OST_QPSKFE, n, O_RDWR);
-  fd_sec     = OstOpen(DEV_OST_SEC,    n, O_RDWR);
+  fd_frontend = OstOpen(DEV_OST_FRONTEND, n, O_RDWR);
+  fd_sec      = OstOpen(DEV_OST_SEC,      n, O_RDWR);
 
   // Devices that all DVB cards must have:
 
@@ -2507,7 +2505,7 @@ cDvbApi::cDvbApi(int n)
 
   // We only check the devices that must be present - the others will be checked before accessing them:
 
-  if (((fd_qpskfe >= 0 && fd_sec >= 0) || fd_qamfe >= 0) && fd_demuxv >= 0 && fd_demuxa1 >= 0 && fd_demuxa2 >= 0 && fd_demuxd1 >= 0 && fd_demuxd2 >= 0 && fd_demuxt >= 0) {
+  if (fd_frontend >= 0 && fd_demuxv >= 0 && fd_demuxa1 >= 0 && fd_demuxa2 >= 0 && fd_demuxd1 >= 0 && fd_demuxd2 >= 0 && fd_demuxt >= 0) {
      siProcessor = new cSIProcessor(OstName(DEV_OST_DEMUX, n));
      if (!dvbApi[0]) // only the first one shall set the system time
         siProcessor->SetUseTSTime(Setup.SetSystemTime);
@@ -2627,7 +2625,7 @@ bool cDvbApi::Init(void)
   NumDvbApis = 0;
   for (int i = 0; i < MAXDVBAPI; i++) {
       if (useDvbApi == 0 || (useDvbApi & (1 << i)) != 0) {
-         if (Probe(OstName(DEV_OST_QPSKFE, i)) || Probe(OstName(DEV_OST_QAMFE, i)))
+         if (Probe(OstName(DEV_OST_FRONTEND, i)))
             dvbApi[NumDvbApis++] = new cDvbApi(i);
          else
             break;
@@ -3227,7 +3225,7 @@ eSetChannelResult cDvbApi::SetChannel(int ChannelNumber, int FrequencyMHz, char 
 
      bool ChannelSynced = false;
 
-     if (fd_qpskfe >= 0 && fd_sec >= 0) { // DVB-S
+     if (fd_sec >= 0) { // DVB-S
 
         // Frequency offsets:
 
@@ -3243,10 +3241,10 @@ eSetChannelResult cDvbApi::SetChannel(int ChannelNumber, int FrequencyMHz, char 
            tone = SEC_TONE_ON;
            }
 
-        qpskParameters qpsk;
-        qpsk.iFrequency = freq * 1000UL;
-        qpsk.SymbolRate = Srate * 1000UL;
-        qpsk.FEC_inner = FEC_AUTO;
+        FrontendParameters Frontend;
+        Frontend.Frequency = freq * 1000UL;
+        Frontend.u.qpsk.SymbolRate = Srate * 1000UL;
+        Frontend.u.qpsk.FEC_inner = FEC_AUTO;
 
         int volt = (Polarization == 'v' || Polarization == 'V') ? SEC_VOLTAGE_13 : SEC_VOLTAGE_18;
 
@@ -3270,44 +3268,44 @@ eSetChannelResult cDvbApi::SetChannel(int ChannelNumber, int FrequencyMHz, char 
 
         // Tuning:
 
-        CHECK(ioctl(fd_qpskfe, QPSK_TUNE, &qpsk));
+        CHECK(ioctl(fd_frontend, FE_SET_FRONTEND, &Frontend));
 
         // Wait for channel sync:
 
-        if (cFile::FileReady(fd_qpskfe, 5000)) {
-           qpskEvent event;
-           int res = ioctl(fd_qpskfe, QPSK_GET_EVENT, &event);
+        if (cFile::FileReady(fd_frontend, 5000)) {
+           FrontendEvent event;
+           int res = ioctl(fd_frontend, FE_GET_EVENT, &event);
            if (res >= 0)
               ChannelSynced = event.type == FE_COMPLETION_EV;
            else
-              esyslog(LOG_ERR, "ERROR %d in qpsk get event", res);
+              esyslog(LOG_ERR, "ERROR %d in frontend get event", res);
            }
         else
            esyslog(LOG_ERR, "ERROR: timeout while tuning");
         }
-     else if (fd_qamfe >= 0) { // DVB-C
+     else if (fd_frontend >= 0) { // DVB-C
 
         // Frequency and symbol rate:
 
-        qamParameters qam;
-        qam.Frequency = FrequencyMHz * 1000000UL;
-        qam.SymbolRate = Srate * 1000UL;
-        qam.FEC_inner = FEC_AUTO;
-        qam.QAM = QAM_64;
+        FrontendParameters Frontend;
+        Frontend.Frequency = FrequencyMHz * 1000000UL;
+        Frontend.u.qam.SymbolRate = Srate * 1000UL;
+        Frontend.u.qam.FEC_inner = FEC_AUTO;
+        Frontend.u.qam.QAM = QAM_64;
 
         // Tuning:
 
-        CHECK(ioctl(fd_qamfe, QAM_TUNE, &qam));
+        CHECK(ioctl(fd_frontend, FE_SET_FRONTEND, &Frontend));
 
         // Wait for channel sync:
 
-        if (cFile::FileReady(fd_qamfe, 5000)) {
-           qamEvent event;
-           int res = ioctl(fd_qamfe, QAM_GET_EVENT, &event);
+        if (cFile::FileReady(fd_frontend, 5000)) {
+           FrontendEvent event;
+           int res = ioctl(fd_frontend, FE_GET_EVENT, &event);
            if (res >= 0)
               ChannelSynced = event.type == FE_COMPLETION_EV;
            else
-              esyslog(LOG_ERR, "ERROR %d in qam get event", res);
+              esyslog(LOG_ERR, "ERROR %d in frontend get event", res);
            }
         else
            esyslog(LOG_ERR, "ERROR: timeout while tuning");
