@@ -1042,3 +1042,8 @@ Video Disk Recorder Revision History
   inadvertently overwriting an existing VDR directory with a new version.
 - Added a missing error message in SVDRP command LSTC in case the given channel
   can't be found.
+
+2002-02-25: Version 1.0.0pre2
+
+- Fixed a crash in case there is no 'epg.data' at program start (thanks to
+  Andreas Schultz).

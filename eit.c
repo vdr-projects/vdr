@@ -16,7 +16,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.c 1.37 2002/02/23 17:11:19 kls Exp $
+ * $Id: eit.c 1.38 2002/02/25 16:30:42 kls Exp $
  ***************************************************************************/
 
 #include "eit.h"
@@ -1022,6 +1022,8 @@ bool cSIProcessor::Read(FILE *f)
            return false;
            }
         }
+     else
+        return false;
      }
   bool result = cSchedules::Read(f);
   if (OwnFile)
