@@ -1137,3 +1137,6 @@ Uwe Hanke <uhanke@gmx.de>
 
 Mogens Elneff <mogens@elneff.dk>
  for translating OSD texts to the Danish language
+
+Joachim Wilke <vdr@joachim-wilke.de>
+ for reporting missing calls to cStatus::MsgOsdClear() in cSkins::Message()

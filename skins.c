@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skins.c 1.1 2004/05/15 12:34:38 kls Exp $
+ * $Id: skins.c 1.2 2004/11/06 11:25:46 kls Exp $
  */
 
 #include "skins.h"
@@ -186,10 +186,12 @@ eKeys cSkins::Message(eMessageType Type, const char *s, int Seconds)
         }
      else
         cSkinDisplay::Current()->SetMessage(Type, NULL);
+     cStatus::MsgOsdClear();
      }
   else if (!s && displayMessage) {
      delete displayMessage;
      displayMessage = NULL;
+     cStatus::MsgOsdClear();
      }
   return k;
 }
