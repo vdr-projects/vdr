@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.132 2001/10/27 10:20:04 kls Exp $
+ * $Id: menu.c 1.133 2001/10/27 12:03:19 kls Exp $
  */
 
 #include "menu.h"
@@ -2666,15 +2666,17 @@ void cReplayControl::MarkMove(bool Forward)
 
 void cReplayControl::EditCut(void)
 {
-  Hide();
-  if (!cVideoCutter::Active()) {
-     if (!cVideoCutter::Start(fileName))
-        Interface->Error(tr("Can't start editing process!"));
+  if (fileName) {
+     Hide();
+     if (!cVideoCutter::Active()) {
+        if (!cVideoCutter::Start(fileName))
+           Interface->Error(tr("Can't start editing process!"));
+        else
+           Interface->Info(tr("Editing process started"));
+        }
      else
-        Interface->Info(tr("Editing process started"));
+        Interface->Error(tr("Editing process already active!"));
      }
-  else
-     Interface->Error(tr("Editing process already active!"));
 }
 
 void cReplayControl::EditTest(void)

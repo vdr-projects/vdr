@@ -839,3 +839,4 @@ Video Disk Recorder Revision History
   and Setup.ShowReplayMode is enabled.
 - New SVDRP commands LSTR and DELR to list and delete recordings (thanks to
   Thomas Heiligenmann).
+- Fixed a crash when pressing the '2' button while replaying a DVD.
