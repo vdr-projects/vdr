@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 1.27 2004/11/27 10:07:05 kls Exp $
+ * $Id: dvbplayer.c 1.28 2004/12/11 17:02:40 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -194,13 +194,10 @@ private:
   ePlayDirs playDir;
   int trickSpeed;
   int readIndex, writeIndex;
-  bool canToggleAudioTrack;
-  uchar audioTrack;
   cFrame *readFrame;
   cFrame *playFrame;
   void TrickSpeed(int Increment);
   void Empty(void);
-  void StripAudioPackets(uchar *b, int Length, uchar Except = 0x00);
   bool NextFile(uchar FileNumber = 0, int FileOffset = -1);
   int Resume(void);
   bool Save(void);
@@ -220,9 +217,6 @@ public:
   void Goto(int Position, bool Still = false);
   virtual bool GetIndex(int &Current, int &Total, bool SnapToIFrame = false);
   virtual bool GetReplayMode(bool &Play, bool &Forward, int &Speed);
-  virtual int NumAudioTracks(void) const;
-  virtual const char **GetAudioTracks(int *CurrentTrack = NULL) const;
-  virtual void SetAudioTrack(int Index);
   };
 
 #define MAX_VIDEO_SLOWMOTION 63 // max. arg to pass to VIDEO_SLOWMOTION // TODO is this value correct?
@@ -245,8 +239,6 @@ cDvbPlayer::cDvbPlayer(const char *FileName)
   playMode = pmPlay;
   playDir = pdForward;
   trickSpeed = NORMAL_SPEED;
-  canToggleAudioTrack = false;
-  audioTrack = 0xC0;
   readIndex = writeIndex = -1;
   readFrame = NULL;
   playFrame = NULL;
@@ -310,41 +302,6 @@ void cDvbPlayer::Empty(void)
   backTrace->Clear();
   DeviceClear();
   firstPacket = true;
-}
-
-void cDvbPlayer::StripAudioPackets(uchar *b, int Length, uchar Except)
-{
-  if (index) {
-     for (int i = 0; i < Length - 6; i++) {
-         if (b[i] == 0x00 && b[i + 1] == 0x00 && b[i + 2] == 0x01) {
-            uchar c = b[i + 3];
-            int l = b[i + 4] * 256 + b[i + 5] + 6;
-            switch (c) {
-              case 0xBD: // dolby
-                   if (Except)
-                      PlayAudio(&b[i], l);
-                   // continue with deleting the data - otherwise it disturbs DVB replay
-              case 0xC0 ... 0xC1: // audio
-                   if (c == 0xC1)
-                      canToggleAudioTrack = true;
-                   if (!Except || c != Except)
-                      memset(&b[i], 0x00, min(l, Length-i));
-                   break;
-              case 0xE0 ... 0xEF: // video
-                   break;
-              default:
-                   //esyslog("ERROR: unexpected packet id %02X", c);
-                   l = 0;
-              }
-            if (l)
-               i += l - 1; // the loop increments, too!
-            }
-         /*XXX
-         else
-            esyslog("ERROR: broken packet header");
-            XXX*/
-         }
-     }
 }
 
 bool cDvbPlayer::NextFile(uchar FileNumber, int FileOffset)
@@ -413,7 +370,6 @@ void cDvbPlayer::Action(void)
 
   nonBlockingFileReader = new cNonBlockingFileReader;
   int Length = 0;
-  int AudioTrack = 0; // -1 = any, 0 = none, >0 = audioTrack
 
   running = true;
   while (running && (NextFile() || readIndex >= 0 || ringBuffer->Available() || !DeviceFlush(100))) {
@@ -449,9 +405,6 @@ void cDvbPlayer::Action(void)
                           continue;
                           }
                        readIndex = Index;
-                       AudioTrack = 0;
-                       // must clear all audio packets because the buffer is not emptied
-                       // when falling back from "fast forward" to "play" (see above)
                        }
                     else if (index) {
                        uchar FileNumber;
@@ -462,12 +415,9 @@ void cDvbPlayer::Action(void)
                           eof = true;
                           continue;
                           }
-                       AudioTrack = audioTrack;
                        }
-                    else { // allows replay even if the index file is missing
+                    else // allows replay even if the index file is missing
                        Length = MAXFRAMESIZE;
-                       AudioTrack = -1;
-                       }
                     if (Length == -1)
                        Length = MAXFRAMESIZE; // this means we read up to EOF (see cIndex)
                     else if (Length > MAXFRAMESIZE) {
@@ -478,8 +428,6 @@ void cDvbPlayer::Action(void)
                     }
                  int r = nonBlockingFileReader->Read(replayFile, b, Length);
                  if (r > 0) {
-                    if (AudioTrack == 0)
-                       StripAudioPackets(b, r);
                     readFrame = new cFrame(b, -r, ftUnknown, readIndex); // hands over b to the ringBuffer
                     b = NULL;
                     }
@@ -517,15 +465,14 @@ void cDvbPlayer::Action(void)
                  pc = playFrame->Count();
                  if (p) {
                     if (firstPacket) {
+                       PlayPes(NULL, 0);
                        cRemux::SetBrokenLink(p, pc);
                        firstPacket = false;
                        }
-                    if (AudioTrack > 0)
-                       StripAudioPackets(p, pc, AudioTrack);
                     }
                  }
               if (p) {
-                 int w = PlayVideo(p, pc);
+                 int w = PlayPes(p, pc, playMode != pmPlay);
                  if (w > 0) {
                     p += w;
                     pc -= w;
@@ -717,7 +664,6 @@ void cDvbPlayer::Goto(int Index, bool Still)
         if (r > 0) {
            if (playMode == pmPause)
               DevicePlay();
-           StripAudioPackets(b, r);
            DeviceStillPicture(b, r);
            }
         playMode = pmStill;
@@ -755,31 +701,6 @@ bool cDvbPlayer::GetReplayMode(bool &Play, bool &Forward, int &Speed)
   else
      Speed = -1;
   return true;
-}
-
-int cDvbPlayer::NumAudioTracks(void) const
-{
-  return canToggleAudioTrack ? 2 : 1;
-}
-
-const char **cDvbPlayer::GetAudioTracks(int *CurrentTrack) const
-{
-  if (NumAudioTracks()) {
-     if (CurrentTrack)
-        *CurrentTrack = (audioTrack == 0xC0) ? 0 : 1;
-     static const char *audioTracks1[] = { "Audio 1", NULL };
-     static const char *audioTracks2[] = { "Audio 1", "Audio 2", NULL };
-     return NumAudioTracks() > 1 ? audioTracks2 : audioTracks1;
-     }
-  return NULL;
-}
-
-void cDvbPlayer::SetAudioTrack(int Index)
-{
-  if ((audioTrack == 0xC0) != (Index == 0)) {
-     audioTrack = (Index == 1) ? 0xC1 : 0xC0;
-     Empty();
-     }
 }
 
 // --- cDvbPlayerControl -----------------------------------------------------

@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.193 2004/11/06 10:30:30 kls Exp $
+ * $Id: vdr.c 1.194 2004/12/05 13:20:29 kls Exp $
  */
 
 #include <getopt.h>
@@ -532,7 +532,7 @@ int main(int argc, char *argv[])
            static time_t lastTime = 0;
            if (time(NULL) - lastTime > MINCHANNELWAIT) {
               cChannel *Channel = Channels.GetByNumber(cDevice::CurrentChannel());
-              if (Channel && (Channel->Vpid() || Channel->Apid1())) {
+              if (Channel && (Channel->Vpid() || Channel->Apid(0))) {
                  if (!Channels.SwitchTo(cDevice::CurrentChannel()) // try to switch to the original channel...
                      && !(LastTimerChannel > 0 && Channels.SwitchTo(LastTimerChannel)) // ...or the one used by the last timer...
                      && !cDevice::SwitchChannel(1) // ...or the next higher available one...

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.320 2004/11/20 10:49:17 kls Exp $
+ * $Id: menu.c 1.321 2004/12/12 16:07:05 kls Exp $
  */
 
 #include "menu.h"
@@ -2471,15 +2471,8 @@ eOSState cMenuMain::ProcessKey(eKeys Key)
                                 state = replaying ? osContinue : osRecord;
                              break;
                case kGreen:  if (!HadSubMenu) {
-                                int CurrentAudioTrack = -1;
-                                const char **AudioTracks = cDevice::PrimaryDevice()->GetAudioTracks(&CurrentAudioTrack);
-                                if (AudioTracks) {
-                                   const char **at = &AudioTracks[CurrentAudioTrack];
-                                   if (!*++at)
-                                      at = AudioTracks;
-                                   cDevice::PrimaryDevice()->SetAudioTrack(at - AudioTracks);
-                                   state = osEnd;
-                                   }
+                                cDevice::PrimaryDevice()->IncCurrentAudioTrack();
+                                state = osEnd;
                                 }
                              break;
                case kYellow: if (!HadSubMenu)
@@ -2826,7 +2819,7 @@ cRecordControl::cRecordControl(cDevice *Device, cTimer *Timer, bool Pause)
   isyslog("record %s", fileName);
   if (MakeDirs(fileName, true)) {
      const cChannel *ch = timer->Channel();
-     recorder = new cRecorder(fileName, ch->Ca(), timer->Priority(), ch->Vpid(), ch->Apid1(), ch->Apid2(), ch->Dpid1(), ch->Dpid2());
+     recorder = new cRecorder(fileName, ch->Ca(), timer->Priority(), ch->Vpid(), ch->Apid(0), ch->Apid(1), ch->Dpid(0), ch->Dpid(1));
      if (device->AttachReceiver(recorder)) {
         Recording.WriteSummary();
         cStatus::MsgRecording(device, Recording.Name());

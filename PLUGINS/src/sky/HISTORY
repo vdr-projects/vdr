@@ -28,3 +28,7 @@ VDR Plugin 'sky' Revision History
 2004-10-16: Version 0.3.1
 
 - Improved buffer handling.
+
+2004-12-12: Version 0.3.2
+
+- Changed Apid access in cChannel.

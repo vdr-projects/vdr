@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.106 2004/11/27 10:24:47 kls Exp $
+ * $Id: dvbdevice.c 1.107 2004/12/17 14:19:48 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -322,9 +322,9 @@ void cDvbTuner::Action(void)
                      cCiCaPmt CaPmt(channel.Source(), channel.Transponder(), channel.Sid(), ciHandler->GetCaSystemIds(Slot));
                      if (CaPmt.Valid()) {
                         CaPmt.AddPid(channel.Vpid(), 2);
-                        CaPmt.AddPid(channel.Apid1(), 4);
-                        CaPmt.AddPid(channel.Apid2(), 4);
-                        CaPmt.AddPid(channel.Dpid1(), 0);
+                        CaPmt.AddPid(channel.Apid(0), 4);
+                        CaPmt.AddPid(channel.Apid(1), 4);
+                        CaPmt.AddPid(channel.Dpid(0), 0);
                         if (ciHandler->SetCaPmt(CaPmt, Slot)) {
                            tunerStatus = tsCam;
                            startTime = 0;
@@ -352,8 +352,8 @@ cDvbDevice::cDvbDevice(int n)
   dvbTuner = NULL;
   frontendType = fe_type_t(-1); // don't know how else to initialize this - there is no FE_UNKNOWN
   spuDecoder = NULL;
+  digitalAudio = false;
   playMode = pmNone;
-  aPid1 = aPid2 = 0;
 
   // Devices that are present on all card types:
 
@@ -728,7 +728,7 @@ bool cDvbDevice::ProvidesChannel(const cChannel *Channel, int Priority, bool *Ne
      result = hasPriority;
      if (Priority >= 0 && Receiving(true)) {
         if (dvbTuner->IsTunedTo(Channel)) {
-           if (Channel->Vpid() && !HasPid(Channel->Vpid()) || Channel->Apid1() && !HasPid(Channel->Apid1())) {
+           if (Channel->Vpid() && !HasPid(Channel->Vpid()) || Channel->Apid(0) && !HasPid(Channel->Apid(0))) {
 #ifdef DO_MULTIPLE_RECORDINGS
               if (Ca() > CACONFBASE || Channel->Ca() > CACONFBASE)
                  needsDetachReceivers = !ciHandler // only LL-firmware can do non-live CA channels
@@ -801,9 +801,13 @@ bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
   // PID settings:
 
   if (TurnOnLivePIDs) {
-     aPid1 = Channel->Apid1();
-     aPid2 = Channel->Apid2();
-     if (!(AddPid(Channel->Ppid(), ptPcr) && AddPid(Channel->Vpid(), ptVideo) && AddPid(Channel->Apid1(), ptAudio))) {//XXX+ dolby dpid1!!! (if audio plugins are attached)
+     ClrAvailableTracks();
+     for (int i = 0; i < MAXAPIDS; i++) {
+         //XXX do this in cDevice???
+         SetAvailableTrack(ttAudio, i, Channel->Apid(i), Channel->Alang(i));
+         SetAvailableTrack(ttDolby, i, Channel->Dpid(i), Channel->Dlang(i));
+         }
+     if (!(AddPid(Channel->Ppid(), ptPcr) && AddPid(Channel->Vpid(), ptVideo) && AddPid(Channel->Apid(0), ptAudio))) {//XXX+ dolby dpid1!!! (if audio plugins are attached)
         esyslog("ERROR: failed to set PIDs for channel %d on device %d", Channel->Number(), CardIndex() + 1);
         return false;
         }
@@ -815,7 +819,7 @@ bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
      CHECK(ioctl(fd_audio, AUDIO_SET_AV_SYNC, true));
      }
   else if (StartTransferMode)
-     cControl::Launch(new cTransferControl(this, Channel->Vpid(), Channel->Apid1(), Channel->Apid2(), Channel->Dpid1(), Channel->Dpid2()));
+     cControl::Launch(new cTransferControl(this, Channel->Vpid(), Channel->Apid(0), Channel->Apid(1), Channel->Dpid(0), Channel->Dpid(1)));
 
   return true;
 }
@@ -835,34 +839,32 @@ void cDvbDevice::SetVolumeDevice(int Volume)
      }
 }
 
-int cDvbDevice::NumAudioTracksDevice(void) const
+void cDvbDevice::SetDigitalAudioDevice(bool On)
 {
-  int n = 0;
-  if (aPid1)
-     n++;
-  if (Ca() <= MAXDEVICES && aPid2 && aPid1 != aPid2) // a CA recording session blocks switching live audio tracks
-     n++;
-  return n;
-}
-
-const char **cDvbDevice::GetAudioTracksDevice(int *CurrentTrack) const
-{
-  if (NumAudioTracksDevice()) {
-     if (CurrentTrack)
-        *CurrentTrack = (pidHandles[ptAudio].pid == aPid1) ? 0 : 1;
-     static const char *audioTracks1[] = { "Audio 1", NULL };
-     static const char *audioTracks2[] = { "Audio 1", "Audio 2", NULL };
-     return NumAudioTracksDevice() > 1 ? audioTracks2 : audioTracks1;
+  if (digitalAudio != On) {
+     if (digitalAudio)
+        cCondWait::SleepMs(1000); // Wait until any leftover digital data has been flushed
+     SetVolumeDevice(On || IsMute() ? 0 : CurrentVolume());
+     digitalAudio = On;
      }
-  return NULL;
 }
 
-void cDvbDevice::SetAudioTrackDevice(int Index)
+void cDvbDevice::SetAudioTrackDevice(eTrackType Type)
 {
-  if (0 <= Index && Index < NumAudioTracksDevice()) {
-     int Pid = Index ? aPid2 : aPid1;
-     pidHandles[ptAudio].pid = Pid;
-     SetPid(&pidHandles[ptAudio], ptAudio, true);
+  const tTrackId *TrackId = GetTrack(Type);
+  if (TrackId && TrackId->id) {
+     if (IS_AUDIO_TRACK(Type)) {
+        pidHandles[ptAudio].pid = TrackId->id;
+        SetPid(&pidHandles[ptAudio], ptAudio, true);
+        }
+     else if (IS_DOLBY_TRACK(Type)) {
+        // Currently this works only in Transfer Mode
+        cChannel *Channel = Channels.GetByNumber(CurrentChannel());
+        if (Channel) {
+           SetChannelDevice(Channel, false);
+           cControl::Launch(new cTransferControl(this, Channel->Vpid(), Channel->Apid(0), Channel->Apid(1), Channel->Dpid(0), Channel->Dpid(1)));
+           }
+        }
      }
 }
 
@@ -1120,16 +1122,12 @@ bool cDvbDevice::Flush(int TimeoutMs)
 
 int cDvbDevice::PlayVideo(const uchar *Data, int Length)
 {
-  int fd = (playMode == pmAudioOnly || playMode == pmAudioOnlyBlack) ? fd_audio : fd_video;
-  if (fd >= 0)
-     return write(fd, Data, Length);
-  return -1;
+  return write(fd_video, Data, Length);
 }
 
-void cDvbDevice::PlayAudio(const uchar *Data, int Length)
+int cDvbDevice::PlayAudio(const uchar *Data, int Length)
 {
-  //XXX actually this function will only be needed to implement replaying AC3 over the DVB card's S/PDIF
-  cDevice::PlayAudio(Data, Length);
+  return write(fd_audio, Data, Length);
 }
 
 bool cDvbDevice::OpenDvr(void)

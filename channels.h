@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.h 1.22 2004/10/31 12:54:26 kls Exp $
+ * $Id: channels.h 1.23 2004/12/05 13:49:04 kls Exp $
  */
 
 #ifndef __CHANNELS_H
@@ -145,10 +145,10 @@ public:
   int Srate(void) const { return srate; }
   int Vpid(void) const { return vpid; }
   int Ppid(void) const { return ppid; }
-  int Apid1(void) const { return apids[0]; }
-  int Apid2(void) const { return apids[1]; }
-  int Dpid1(void) const { return dpids[0]; }
-  int Dpid2(void) const { return dpids[1]; }
+  int Apid(int i) const { return (0 <= i && i < MAXAPIDS) ? apids[i] : 0; }
+  int Dpid(int i) const { return (0 <= i && i < MAXAPIDS) ? dpids[i] : 0; }
+  const char *Alang(int i) const { return (0 <= i && i < MAXAPIDS) ? alangs[i] : ""; }
+  const char *Dlang(int i) const { return (0 <= i && i < MAXAPIDS) ? dlangs[i] : ""; }
   int Tpid(void) const { return tpid; }
   int Ca(int Index = 0) const { return Index < MAXCAIDS ? caids[Index] : 0; }
   int Nid(void) const { return nid; }

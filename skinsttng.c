@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinsttng.c 1.6 2004/07/18 11:32:42 kls Exp $
+ * $Id: skinsttng.c 1.7 2004/12/05 13:19:59 kls Exp $
  */
 
 // Star Trek: The Next Generation® is a registered trademark of Paramount Pictures
@@ -233,14 +233,14 @@ void cSkinSTTNGDisplayChannel::SetChannel(const cChannel *Channel, int Number)
      x -= bmEncrypted.Width() + d;
      osd->DrawBitmap(x, y0 + (y1 - y0 - bmEncrypted.Height()) / 2, bmEncrypted, Theme.Color(Channel->Ca() ? clrChannelSymbolOn : clrChannelSymbolOff), frameColor);
      x -= bmDolbyDigital.Width() + d;
-     osd->DrawBitmap(x, y0 + (y1 - y0 - bmDolbyDigital.Height()) / 2, bmDolbyDigital, Theme.Color(Channel->Dpid1() ? clrChannelSymbolOn : clrChannelSymbolOff), frameColor);
+     osd->DrawBitmap(x, y0 + (y1 - y0 - bmDolbyDigital.Height()) / 2, bmDolbyDigital, Theme.Color(Channel->Dpid(0) ? clrChannelSymbolOn : clrChannelSymbolOff), frameColor);
      x -= bmAudio.Width() + d;
-     osd->DrawBitmap(x, y0 + (y1 - y0 - bmAudio.Height()) / 2, bmAudio, Theme.Color(Channel->Apid2() ? clrChannelSymbolOn : clrChannelSymbolOff), frameColor);
+     osd->DrawBitmap(x, y0 + (y1 - y0 - bmAudio.Height()) / 2, bmAudio, Theme.Color(Channel->Apid(1) ? clrChannelSymbolOn : clrChannelSymbolOff), frameColor);
      if (Channel->Vpid()) {
         x -= bmTeletext.Width() + d;
         osd->DrawBitmap(x, y0 + (y1 - y0 - bmTeletext.Height()) / 2, bmTeletext, Theme.Color(Channel->Tpid() ? clrChannelSymbolOn : clrChannelSymbolOff), frameColor);
         }
-     else if (Channel->Apid1()) {
+     else if (Channel->Apid(0)) {
         x -= bmRadio.Width() + d;
         osd->DrawBitmap(x, y0 + (y1 - y0 - bmRadio.Height()) / 2, bmRadio, Theme.Color(clrChannelSymbolOn), frameColor);
         }

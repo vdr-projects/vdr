@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: player.h 1.12 2004/06/19 08:53:07 kls Exp $
+ * $Id: player.h 1.13 2004/12/12 11:20:19 kls Exp $
  */
 
 #ifndef __PLAYER_H
@@ -19,6 +19,7 @@ private:
   cDevice *device;
   ePlayMode playMode;
 protected:
+  bool DeviceSetAvailableTrack(eTrackType Type, int Index, uint16_t Id, const char *Language = NULL, uint32_t Flags = 0) { return device ? device->SetAvailableTrack(Type, Index, Id, Language, Flags) : false; }
   bool DevicePoll(cPoller &Poller, int TimeoutMs = 0) { return device ? device->Poll(Poller, TimeoutMs) : false; }
   bool DeviceFlush(int TimeoutMs = 0) { return device ? device->Flush(TimeoutMs) : true; }
   void DeviceTrickSpeed(int Speed) { if (device) device->TrickSpeed(Speed); }
@@ -32,12 +33,10 @@ protected:
        // This function is called right after the cPlayer has been attached to
        // (On == true) or before it gets detached from (On == false) a cDevice.
        // It can be used to do things like starting/stopping a thread.
-  int PlayVideo(const uchar *Data, int Length);
-       // Sends the given Data to the video device and returns the number of
-       // bytes that have actually been accepted by the video device (or a
+  int PlayPes(const uchar *Data, int Length, bool VideoOnly = false);
+       // Sends the given PES Data to the device and returns the number of
+       // bytes that have actually been accepted by the device (or a
        // negative value in case of an error).
-  void PlayAudio(const uchar *Data, int Length);
-       // Plays additional audio streams, like Dolby Digital.
 public:
   cPlayer(ePlayMode PlayMode = pmAudioVideo);
   virtual ~cPlayer();
@@ -51,27 +50,10 @@ public:
        // we are going forward or backward and 'Speed' is -1 if this is normal
        // play/pause mode, 0 if it is single speed fast/slow forward/back mode
        // and >0 if this is multi speed mode.
-  virtual int NumAudioTracks(void) const { return 0; }
-       // Returns the number of audio tracks that are currently available on this
-       // player. The default return value is 0, meaning that this player
-       // doesn't have multiple audio track capabilities. The return value may
-       // change with every call and need not necessarily be the number of list
-       // entries returned by GetAudioTracks(). This function is mainly called to
-       // decide whether there should be an "Audio" button in a menu.
-  virtual const char **GetAudioTracks(int *CurrentTrack = NULL) const { return NULL; }
-       // Returns a list of currently available audio tracks. The last entry in the
-       // list must be NULL. The number of entries does not necessarily have to be
-       // the same as returned by a previous call to NumAudioTracks().
-       // If CurrentTrack is given, it will be set to the index of the current track
-       // in the returned list. Note that the list must not be changed after it has
-       // been returned by a call to GetAudioTracks()! The only time the list may
-       // change is *inside* the GetAudioTracks() function.
-       // By default the return value is NULL and CurrentTrack, if given, will not
-       // have any meaning.
-  virtual void SetAudioTrack(int Index) {}
-       // Sets the current audio track to the given value, which should be within the
-       // range of the list returned by a previous call to GetAudioTracks()
-       // (otherwise nothing will happen).
+  virtual void SetAudioTrack(eTrackType Type, const tTrackId *TrackId) {}
+       // Sets the current audio track to the given value.
+       // This is just a virtual hook for players that need to do special things
+       // in order to switch audio tracks.
   };
 
 class cControl : public cOsdObject {

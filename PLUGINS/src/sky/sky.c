@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: sky.c 1.7 2004/10/16 09:10:06 kls Exp $
+ * $Id: sky.c 1.8 2004/12/12 14:27:33 kls Exp $
  */
 
 #include <sys/socket.h>
@@ -14,7 +14,7 @@
 #include <vdr/plugin.h>
 #include <vdr/sources.h>
 
-static const char *VERSION        = "0.3.1";
+static const char *VERSION        = "0.3.2";
 static const char *DESCRIPTION    = "Sky Digibox interface";
 
 // --- cDigiboxDevice --------------------------------------------------------
@@ -213,7 +213,7 @@ bool cDigiboxDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
      cSkyChannel *SkyChannel = SkyChannels.GetSkyChannel(Channel);
      if (SkyChannel) {
         digiboxChannelNumber = SkyChannel->digiboxChannelNumber;
-        apid = Channel->Apid1();
+        apid = Channel->Apid(0);
         vpid = Channel->Vpid();
         //XXX only when recording??? -> faster channel switching!
         LircSend("SKY"); // makes sure the Digibox is "on"

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.62 2004/10/30 14:53:38 kls Exp $
+ * $Id: device.c 1.63 2004/12/17 13:51:44 kls Exp $
  */
 
 #include "device.h"
@@ -18,6 +18,87 @@
 #include "receiver.h"
 #include "status.h"
 #include "transfer.h"
+
+// --- cPesAssembler ---------------------------------------------------------
+
+class cPesAssembler {
+private:
+  uchar *data;
+  uint32_t tag;
+  int length;
+  int size;
+  bool Realloc(int Size);
+public:
+  cPesAssembler(void);
+  ~cPesAssembler();
+  int ExpectedLength(void) { return data[4] * 256 + data[5] + 6; }
+  int Length(void) { return length; }
+  const uchar *Data(void) { return data; }
+  void Reset(void);
+  void Put(uchar c);
+  void Put(const uchar *Data, int Length);
+  bool IsPes(void);
+  };
+
+cPesAssembler::cPesAssembler(void)
+{
+  data = NULL;
+  size = 0;
+  Reset();
+}
+
+cPesAssembler::~cPesAssembler()
+{
+  free(data);
+}
+
+void cPesAssembler::Reset(void)
+{
+  tag = 0xFFFFFFFF;
+  length = 0;
+}
+
+bool cPesAssembler::Realloc(int Size)
+{
+  if (Size > size) {
+     size = max(Size, 2048);
+     data = (uchar *)realloc(data, size);
+     if (!data) {
+        esyslog("ERROR: can't allocate memory for PES assembler");
+        length = 0;
+        size = 0;
+        return false;
+        }
+     }
+  return true;
+}
+
+void cPesAssembler::Put(uchar c)
+{
+  if (!length) {
+     tag = (tag << 8) | c;
+     if ((tag & 0xFFFFFF00) == 0x00000100) {
+        if (Realloc(4)) {
+           *(uint32_t *)data = htonl(tag);
+           length = 4;
+           }
+        }
+     }
+  else if (Realloc(length + 1))
+     data[length++] = c;
+}
+
+void cPesAssembler::Put(const uchar *Data, int Length)
+{
+  while (!length && Length > 0) {
+        Put(*Data++);
+        Length--;
+        }
+  if (Length && Realloc(length + Length)) {
+     memcpy(data + length, Data, Length);
+     length += Length;
+     }
+}
 
 // --- cDevice ---------------------------------------------------------------
 
@@ -53,6 +134,9 @@ cDevice::cDevice(void)
 
   ciHandler = NULL;
   player = NULL;
+  pesAssembler = new cPesAssembler;
+  ClrAvailableTracks();
+  currentAudioTrack = ttAudioFirst;
 
   for (int i = 0; i < MAXRECEIVERS; i++)
       receiver[i] = NULL;
@@ -74,6 +158,7 @@ cDevice::~cDevice()
   delete patFilter;
   delete eitFilter;
   delete sectionHandler;
+  delete pesAssembler;
 }
 
 void cDevice::SetUseDevice(int n)
@@ -427,7 +512,7 @@ eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
      if (CaDevice && CanReplay()) {
         cStatus::MsgChannelSwitch(this, 0); // only report status if we are actually going to switch the channel
         if (CaDevice->SetChannel(Channel, false) == scrOk) // calling SetChannel() directly, not SwitchChannel()!
-           cControl::Launch(new cTransferControl(CaDevice, Channel->Vpid(), Channel->Apid1(), Channel->Apid2(), Channel->Dpid1(), Channel->Dpid2()));//XXX+
+           cControl::Launch(new cTransferControl(CaDevice, Channel->Vpid(), Channel->Apid(0), Channel->Apid(1), Channel->Dpid(0), Channel->Dpid(1)));
         else
            Result = scrNoTransfer;
         }
@@ -482,17 +567,7 @@ void cDevice::SetVolumeDevice(int Volume)
 {
 }
 
-int cDevice::NumAudioTracksDevice(void) const
-{
-  return 0;
-}
-
-const char **cDevice::GetAudioTracksDevice(int *CurrentTrack) const
-{
-  return NULL;
-}
-
-void cDevice::SetAudioTrackDevice(int Index)
+void cDevice::SetAudioTrackDevice(eTrackType Type)
 {
 }
 
@@ -524,22 +599,72 @@ void cDevice::SetVolume(int Volume, bool Absolute)
      }
 }
 
+void cDevice::ClrAvailableTracks(void)
+{
+  memset(availableTracks, 0, sizeof(availableTracks));
+}
+
+bool cDevice::SetAvailableTrack(eTrackType Type, int Index, uint16_t Id, const char *Language, uint32_t Flags)
+{
+  eTrackType t = eTrackType(Type + Index);
+  if ((Type == ttAudio && IS_AUDIO_TRACK(t)) ||
+      (Type == ttDolby && IS_DOLBY_TRACK(t))) {
+     if (Language)
+        strn0cpy(availableTracks[t].language, Language, sizeof(availableTracks[t].language));
+     availableTracks[t].flags = Flags;
+     availableTracks[t].id = Id; // setting 'id' last to avoid the need for extensive locking
+     return true;
+     }
+  else
+     esyslog("ERROR: SetAvailableTrack called with invalid Type/Index (%d/%d)", Type, Index);
+  return false;
+}
+
+const tTrackId *cDevice::GetTrack(eTrackType Type)
+{
+  return (ttNone < Type && Type < ttMaxTrackTypes) ? &availableTracks[Type] : NULL;
+}
+
 int cDevice::NumAudioTracks(void) const
 {
-  return player ? player->NumAudioTracks() : NumAudioTracksDevice();
+  int n = 0;
+  for (int i = ttAudioFirst; i <= ttDolbyLast; i++) {
+      if (availableTracks[i].id)
+         n++;
+      }
+  return n;
 }
 
-const char **cDevice::GetAudioTracks(int *CurrentTrack) const
+bool cDevice::SetCurrentAudioTrack(eTrackType Type)
 {
-  return player ? player->GetAudioTracks(CurrentTrack) : GetAudioTracksDevice(CurrentTrack);
+  if (ttNone < Type && Type < ttDolbyLast) {
+     if (IS_DOLBY_TRACK(Type))
+        SetDigitalAudioDevice(true);
+     currentAudioTrack = Type;
+     if (player)
+        player->SetAudioTrack(currentAudioTrack, GetTrack(currentAudioTrack));
+     else
+        SetAudioTrackDevice(currentAudioTrack);
+     if (IS_AUDIO_TRACK(Type))
+        SetDigitalAudioDevice(false);
+     return true;
+     }
+  return false;
 }
 
-void cDevice::SetAudioTrack(int Index)
+bool cDevice::IncCurrentAudioTrack(void)
 {
-  if (player)
-     player->SetAudioTrack(Index);
-  else
-     SetAudioTrackDevice(Index);
+  int i = currentAudioTrack + 1;
+  for (;;) {
+      if (i > ttDolbyLast)
+         i = ttAudioFirst;
+      if (i == currentAudioTrack)
+         break;
+      if (availableTracks[i].id)
+         return SetCurrentAudioTrack(eTrackType(i));
+      i++;
+      }
+  return false;
 }
 
 bool cDevice::CanReplay(void) const
@@ -595,6 +720,7 @@ bool cDevice::AttachPlayer(cPlayer *Player)
   if (CanReplay()) {
      if (player)
         Detach(player);
+     ClrAvailableTracks();
      player = Player;
      SetPlayMode(player->playMode);
      player->device = this;
@@ -639,10 +765,104 @@ int cDevice::PlayVideo(const uchar *Data, int Length)
   return -1;
 }
 
-void cDevice::PlayAudio(const uchar *Data, int Length)
+int cDevice::PlayAudio(const uchar *Data, int Length)
 {
-  Audios.PlayAudio(Data, Length);
+  return -1;
 }
+
+int cDevice::PlayPesPacket(const uchar *Data, int Length, bool VideoOnly)
+{
+  bool FirstLoop = true;
+  uchar c = Data[3];
+  const uchar *Start = Data;
+  const uchar *End = Start + Length;
+  while (Start < End) {
+        int d = End - Start;
+        int w = d;
+        switch (c) {
+          case 0xE0 ... 0xEF: // video
+               w = PlayVideo(Start, d);
+               break;
+          case 0xC0 ... 0xDF: // audio
+               SetAvailableTrack(ttAudio, c - 0xC0, c);
+               if (!VideoOnly && c == availableTracks[currentAudioTrack].id)
+                  w = PlayAudio(Start, d);
+               break;
+          case 0xBD: // dolby
+               SetAvailableTrack(ttDolby, 0, c);
+               if (!VideoOnly && c == availableTracks[currentAudioTrack].id) {
+                  w = PlayAudio(Start, d);
+                  if (FirstLoop)
+                     Audios.PlayAudio(Data, Length);
+                  }
+               break;
+          default:
+               ;//esyslog("ERROR: unexpected packet id %02X", c);
+          }
+        if (w > 0)
+           Start += w;
+        else if (w <= 0) {
+           if (Start != Data)
+              esyslog("ERROR: incomplete PES packet write!");
+           return Start == Data ? w : Start - Data;
+           }
+        FirstLoop = false;
+        }
+  return Length;
+}
+
+int cDevice::PlayPes(const uchar *Data, int Length, bool VideoOnly)
+{
+  if (!Data) {
+     pesAssembler->Reset();
+     return 0;
+     }
+  int Result = 0;
+  if (pesAssembler->Length()) {
+     // Make sure we have a complete PES header:
+     while (pesAssembler->Length() < 6 && Length > 0) {
+           pesAssembler->Put(*Data++);
+           Length--;
+           Result++;
+           }
+     if (pesAssembler->Length() < 6)
+        return Result; // Still no complete PES header - wait for more
+     int l = pesAssembler->ExpectedLength();
+     int Rest = min(l - pesAssembler->Length(), Length);
+     pesAssembler->Put(Data, Rest);
+     Data += Rest;
+     Length -= Rest;
+     Result += Rest;
+     if (pesAssembler->Length() < l)
+        return Result; // Still no complete PES packet - wait for more
+     // Now pesAssembler contains one complete PES packet.
+     int w = PlayPesPacket(pesAssembler->Data(), pesAssembler->Length(), VideoOnly);
+     if (w > 0)
+        pesAssembler->Reset();
+     return Result > 0 ? Result : w < 0 ? w : 0;
+     }
+  int i = 0;
+  while (i <= Length - 6) {
+        if (Data[i] == 0x00 && Data[i + 1] == 0x00 && Data[i + 2] == 0x01) {
+           int l = Data[i + 4] * 256 + Data[i + 5] + 6;
+           if (i + l > Length) {
+              // Store incomplete PES packet for later completion:
+              pesAssembler->Put(Data + i, Length - i);
+              return Length;
+              }
+           int w = PlayPesPacket(Data + i, l, VideoOnly);
+           if (w > 0)
+              i += l;
+           else if (w < 0)
+              return i == 0 ? w : i;
+           }
+        else
+           i++;
+        }
+  if (i < Length)
+     pesAssembler->Put(Data + i, Length - i);
+  return Length;
+ }
 
 int cDevice::Ca(void) const
 {

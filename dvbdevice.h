@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.h 1.30 2004/11/07 10:25:16 kls Exp $
+ * $Id: dvbdevice.h 1.31 2004/12/17 14:01:31 kls Exp $
  */
 
 #ifndef __DVBDEVICE_H
@@ -90,15 +90,18 @@ public:
   virtual void SetVideoFormat(bool VideoFormat16_9);
   virtual eVideoSystem GetVideoSystem(void);
 
+// Track facilities
+
+protected:
+  virtual void SetAudioTrackDevice(eTrackType Type);
+
 // Audio facilities
 
 private:
-  int aPid1, aPid2;
+  bool digitalAudio;
 protected:
   virtual void SetVolumeDevice(int Volume);
-  virtual int NumAudioTracksDevice(void) const;
-  virtual const char **GetAudioTracksDevice(int *CurrentTrack = NULL) const;
-  virtual void SetAudioTrackDevice(int Index);
+  virtual void SetDigitalAudioDevice(bool On);
 
 // Player facilities
 
@@ -106,6 +109,8 @@ protected:
   ePlayMode playMode;
   virtual bool CanReplay(void) const;
   virtual bool SetPlayMode(ePlayMode PlayMode);
+  virtual int PlayVideo(const uchar *Data, int Length);
+  virtual int PlayAudio(const uchar *Data, int Length);
 public:
   virtual int64_t GetSTC(void);
   virtual void TrickSpeed(int Speed);
@@ -116,8 +121,6 @@ public:
   virtual void StillPicture(const uchar *Data, int Length);
   virtual bool Poll(cPoller &Poller, int TimeoutMs = 0);
   virtual bool Flush(int TimeoutMs = 0);
-  virtual int PlayVideo(const uchar *Data, int Length);
-  virtual void PlayAudio(const uchar *Data, int Length);
 
 // Receiver facilities
 

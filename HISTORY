@@ -3160,7 +3160,7 @@ Video Disk Recorder Revision History
   right day of week for timers in the future.
 - Some improvements to cPoller (thanks to Marco Schlüßler).
 
-2004-11-27: Version 1.3.18
+2004-12-17: Version 1.3.18
 
 - Removed an unused variable from cTimer::GetWDayFromMDay() (thanks to Wayne Keer
   for reporting this one).
@@ -3171,3 +3171,25 @@ Video Disk Recorder Revision History
   picture mode (thanks to Reinhard Nissl for reporting this one).
 - Fixed a possible race condition in generating the DVB device names (thanks to
   Rainer Zocholl for reporting this one).
+- Changed the way PES packets are played to allow replay of AC3 sound over the
+  full featured DVB cards (partially based on a patch from Werner Fink).
+  + The new function cDevice::PlayPes() is now called with the complete PES data
+    stream and calls PlayVideo() and PlayAudio() as necessary.
+  + cDevice::PlayVideo() is now only called with actual video PES packets.
+  + cDevice::PlayAudio() is now called with the actual audio PES packets, which
+    can be either "normal" audio or AC3 data. You need at least firmware version
+    0x261d to replay AC3 sound over a full featured DVB card. This function now
+    has an 'int' return value.
+  + PlayAudio() of derived cDevice classes shall no longer call the base class
+    function. It shall just play the given data as audio.
+  + cPlayer::PlayVideo() and cPlayer::PlayAudio() are now obsolete and have been
+    replaced with cPlayer::PlayPes().
+  + All StripAudioPackets() functions are now obsolete. The functionality has been
+    moved into cDevice::PlayPes(), where only the video and audio packets that are
+    actually required will be processed.
+  + All audio track handling is now done by cDevice; cTransfer and cDvbPlayer no
+    longer care about audio tracks. cPlayer, however, still has the virtual hooks
+    for audio track handling in order to allow plugins to implement players that
+    have their own idea about this.
+  + cChannel::[AD]pid[12]() have been replaced with cChannel::[AD]pid(int i) to
+    allow access to all available PIDs.

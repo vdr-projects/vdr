@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: transfer.c 1.18 2004/10/23 13:35:08 kls Exp $
+ * $Id: transfer.c 1.19 2004/11/28 11:51:00 kls Exp $
  */
 
 #include "transfer.h"
@@ -20,8 +20,6 @@ cTransfer::cTransfer(int VPid, int APid1, int APid2, int DPid1, int DPid2)
 {
   ringBuffer = new cRingBufferLinear(TRANSFERBUFSIZE, TS_SIZE * 2, true, "Transfer");
   remux = new cRemux(VPid, APid1, APid2, DPid1, DPid2);
-  canToggleAudioTrack = false;
-  audioTrack = 0xC0;
   active = false;
 }
 
@@ -60,8 +58,41 @@ void cTransfer::Action(void)
   int PollTimeouts = 0;
   uchar *p = NULL;
   int Result = 0;
+// XXX Apparently this isn't necessary with the new PES data handling that
+// XXX was intorduced in VDR 1.3.18. If you do need this, enable the following
+// XXX line and send an email to kls@cadsoft.de. If nobody requires this, it
+// XXX will be removed later. kls 2004-12-27
+//#define FW_NEEDS_BUFFER_RESERVE_FOR_AC3
+#ifdef FW_NEEDS_BUFFER_RESERVE_FOR_AC3
+  bool Cleared = false;
+  bool GotBufferReserve = false;
+#endif
   active = true;
   while (active) {
+#ifdef FW_NEEDS_BUFFER_RESERVE_FOR_AC3
+#define HasDolby true
+        if (HasDolby) {
+           if (IsAttached() && !Cleared) {
+              PlayPes(NULL, 0);
+              Cleared = true;
+              }
+           //XXX For dolby we've to fill the buffer because the firmware does
+           //XXX not decode dolby but use a PCM stream for transport, therefore
+           //XXX the firmware has not enough buffer for noiseless skipping early
+           //XXX PCM samples (each dolby frame requires 6144 bytes in PCM and
+           //XXX audio is mostly to early in comparison to video).
+           //XXX To resolve this, the remuxer or PlayPes() should synchronize
+           //XXX audio with the video frames. 2004/09/09 Werner
+           if (!GotBufferReserve) {
+              if (ringBuffer->Available() < 3 * MAXFRAMESIZE / 2) {
+                 cCondWait::SleepMs(20); // allow the buffer to collect some reserve
+                 continue;
+                 }
+              else
+                 GotBufferReserve = true;
+              }
+           }
+#endif
         int Count;
         uchar *b = ringBuffer->Get(Count);
         if (b) {
@@ -80,13 +111,13 @@ void cTransfer::Action(void)
            if (Count)
               ringBuffer->Del(Count);
            }
-        if (!p && (p = remux->Get(Result)) != NULL)
-           StripAudioPackets(p, Result, audioTrack);
+        if (!p)
+           p = remux->Get(Result);
         if (p) {
            cPoller Poller;
            if (DevicePoll(Poller, 100)) {
               PollTimeouts = 0;
-              int w = PlayVideo(p, Result);
+              int w = PlayPes(p, Result);
               if (w > 0) {
                  p += w;
                  Result -= w;
@@ -110,64 +141,6 @@ void cTransfer::Action(void)
            }
         }
   active = false;
-}
-
-void cTransfer::StripAudioPackets(uchar *b, int Length, uchar Except)
-{
-  for (int i = 0; i < Length - 6; i++) {
-      if (b[i] == 0x00 && b[i + 1] == 0x00 && b[i + 2] == 0x01) {
-         uchar c = b[i + 3];
-         int l = b[i + 4] * 256 + b[i + 5] + 6;
-         switch (c) {
-           case 0xBD: // dolby
-                if (Except)
-                   PlayAudio(&b[i], l);
-                // continue with deleting the data - otherwise it disturbs DVB replay
-           case 0xC0 ... 0xC1: // audio
-                if (c == 0xC1)
-                   canToggleAudioTrack = true;
-                if (!Except || c != Except)
-                   memset(&b[i], 0x00, min(l, Length-i));
-                break;
-           case 0xE0 ... 0xEF: // video
-                break;
-           default:
-                //esyslog("ERROR: unexpected packet id %02X", c);
-                l = 0;
-           }
-         if (l)
-            i += l - 1; // the loop increments, too!
-         }
-      /*XXX
-      else
-         esyslog("ERROR: broken packet header");
-         XXX*/
-      }
-}
-
-int cTransfer::NumAudioTracks(void) const
-{
-  return canToggleAudioTrack ? 2 : 1;
-}
-
-const char **cTransfer::GetAudioTracks(int *CurrentTrack) const
-{
-  if (NumAudioTracks()) {
-     if (CurrentTrack)
-        *CurrentTrack = (audioTrack == 0xC0) ? 0 : 1;
-     static const char *audioTracks1[] = { "Audio 1", NULL };
-     static const char *audioTracks2[] = { "Audio 1", "Audio 2", NULL };
-     return NumAudioTracks() > 1 ? audioTracks2 : audioTracks1;
-     }
-  return NULL;
-}
-
-void cTransfer::SetAudioTrack(int Index)
-{
-  if ((audioTrack == 0xC0) != (Index == 0)) {
-     audioTrack = (Index == 1) ? 0xC1 : 0xC0;
-     DeviceClear();
-     }
 }
 
 // --- cTransferControl ------------------------------------------------------
