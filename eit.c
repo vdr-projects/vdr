@@ -8,7 +8,7 @@
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  * Adapted to 'libsi' for VDR 1.3.0 by Marcel Wiesweg <marcel.wiesweg@gmx.de>.
  *
- * $Id: eit.c 1.85 2004/01/09 15:44:43 kls Exp $
+ * $Id: eit.c 1.86 2004/02/08 10:26:54 kls Exp $
  */
 
 #include "eit.h"
@@ -95,6 +95,7 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data)
       SI::Descriptor *d;
       SI::ExtendedEventDescriptors *ExtendedEventDescriptors = NULL;
       SI::ShortEventDescriptor *ShortEventDescriptor = NULL;
+      cLinkChannels *LinkChannels = NULL;
       for (SI::Loop::Iterator it2; (d = SiEitEvent.eventDescriptors.getNext(it2)); ) {
           switch (d->getDescriptorTag()) {
             case SI::ExtendedEventDescriptorTag: {
@@ -138,6 +139,36 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data)
                  pEvent->SetDescription(rEvent->Description());
                  }
                  break;
+            case SI::LinkageDescriptorTag: {
+                 SI::LinkageDescriptor *ld = (SI::LinkageDescriptor *)d;
+                 tChannelID linkID(Source, ld->getOriginalNetworkId(), ld->getTransportStreamId(), ld->getServiceId());
+                 if (ld->getLinkageType() == 0xB0) { // Premiere World
+                    time_t now = time(NULL);
+                    bool hit = SiEitEvent.getStartTime() <= now && now < SiEitEvent.getStartTime() + SiEitEvent.getDuration();
+                    if (hit) {
+                       cChannel *link = Channels.GetByChannelID(linkID);
+                       if (link != channel) { // only link to other channels, not the same one
+                          char linkName[ld->privateData.getLength() + 1];
+                          strn0cpy(linkName, (const char *)ld->privateData.getData(), sizeof(linkName));
+                          //fprintf(stderr, "Linkage %s %4d %4d %5d %5d %5d %5d  %02X  '%s'\n", hit ? "*" : "", channel->Number(), link ? link->Number() : -1, SiEitEvent.getEventId(), ld->getOriginalNetworkId(), ld->getTransportStreamId(), ld->getServiceId(), ld->getLinkageType(), linkName);//XXX
+                          if (link) {
+                             if (Setup.UpdateChannels >= 1)
+                                link->SetName(linkName);
+                             }
+                          else if (Setup.UpdateChannels >= 3) {
+                             link = Channels.NewChannel(channel, linkName, ld->getOriginalNetworkId(), ld->getTransportStreamId(), ld->getServiceId());
+                             //XXX patFilter->Trigger();
+                             }
+                          if (link) {
+                             if (!LinkChannels)
+                                LinkChannels = new cLinkChannels;
+                             LinkChannels->Add(new cLinkChannel(link));
+                             }
+                          }
+                       }
+                    }
+                 }
+                 break;
             default: ;
             }
           delete d;
@@ -167,6 +198,9 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data)
          else if (SiEitEvent.getRunningStatus() == SI::RunningStatusStartsInAFewSeconds)
             pSchedule->SetFollowingEvent(pEvent);
          }
+
+      if (LinkChannels)
+         channel->SetLinkChannels(LinkChannels);
       }
 }
 

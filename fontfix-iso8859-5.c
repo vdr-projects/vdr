@@ -6048,4 +6048,3 @@ cFont::tPixelData FontFix_iso8859_5[][26] = {
      0x00000000,  // 
   },
   };
-  

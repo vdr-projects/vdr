@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.h 1.13 2004/01/25 15:31:16 kls Exp $
+ * $Id: channels.h 1.15 2004/02/08 12:20:22 kls Exp $
  */
 
 #ifndef __CHANNELS_H
@@ -59,11 +59,24 @@ public:
   tChannelID(void) { source = nid = tid = sid = rid = 0; }
   tChannelID(int Source, int Nid, int Tid, int Sid, int Rid = 0) { source = Source; nid = Nid; tid = Tid; sid = Sid; rid = Rid; }
   bool operator== (const tChannelID &arg) const;
-  bool Valid(void) { return tid && sid; } // nid and rid are optional and source may be 0//XXX source may not be 0???
+  bool Valid(void) { return (nid || tid) && sid; } // rid is optional and source may be 0//XXX source may not be 0???
   tChannelID &ClrRid(void) { rid = 0; return *this; }
   static tChannelID FromString(const char *s);
   const char *ToString(void);
   static const tChannelID InvalidID;
+  };
+
+class cChannel;
+
+class cLinkChannel : public cListObject {
+private:
+  cChannel *channel;
+public:
+  cLinkChannel(cChannel *Channel) { channel = Channel; }
+  cChannel *Channel(void) { return channel; }
+  };
+
+class cLinkChannels : public cList<cLinkChannel> {
   };
 
 class cChannel : public cListObject {
@@ -102,11 +115,14 @@ private:
   int hierarchy;
   int __EndData__;
   int modification;
+  cLinkChannels *linkChannels;
+  cChannel *refChannel;
   const char *ParametersToString(void);
   bool StringToParameters(const char *s);
 public:
   cChannel(void);
-  cChannel(const cChannel *Channel);
+  cChannel(const cChannel &Channel);
+  ~cChannel();
   cChannel& operator= (const cChannel &Channel);
   const char *ToText(void);
   bool Parse(const char *s, bool AllowNonUniqueID = false);
@@ -153,6 +169,8 @@ public:
   void SetPids(int Vpid, int Ppid, int *Apids, char ALangs[][4], int *Dpids, char DLangs[][4], int Tpid);
   void SetCaIds(const int *CaIds); // list must be zero-terminated
   void SetCaDescriptors(int Level);
+  void SetLinkChannels(cLinkChannels *LinkChannels);
+  void SetRefChannel(cChannel *RefChannel);
   };
 
 class cChannels : public cRwLock, public cConfig<cChannel> {

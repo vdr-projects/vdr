@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osdbase.h 1.8 2004/01/04 14:22:43 kls Exp $
+ * $Id: osdbase.h 1.9 2004/01/31 10:28:49 kls Exp $
  */
 
 #ifndef __OSDBASE_H
@@ -49,7 +49,7 @@ private:
   bool fetched[MAXNUMCOLORS];
   bool full;
 protected:
-  typedef unsigned char tIndexes[MAXNUMCOLORS];
+  typedef u_char tIndexes[MAXNUMCOLORS];
 public:
   cPalette(int Bpp);
   int Index(eDvbColor Color);
@@ -75,7 +75,7 @@ class cBitmap : public cPalette {
 private:
   const cFont *font;
   eDvbFont fontType;
-  char *bitmap;
+  u_char *bitmap;
   bool clearWithBackground;
 protected:
   int width, height;
@@ -86,7 +86,7 @@ public:
   bool ClearWithBackground(void) { return clearWithBackground; }
   eDvbFont SetFont(eDvbFont Font);
   bool Dirty(int &x1, int &y1, int &x2, int &y2);
-  void SetIndex(int x, int y, char Index);
+  void SetIndex(int x, int y, u_char Index);
   void SetPixel(int x, int y, eDvbColor Color);
   void SetBitmap(int x, int y, const cBitmap &Bitmap);
   int Width(void) { return width; }
@@ -97,7 +97,7 @@ public:
   void Fill(int x1, int y1, int x2, int y2, eDvbColor Color);
   void Clean(void);
   void Clear(void);
-  const char *Data(int x, int y);
+  const u_char *Data(int x, int y);
   };
 
 #define MAXNUMWINDOWS 7 // OSD windows are counted 1...7
@@ -122,7 +122,7 @@ public:
   void Fill(int x1, int y1, int x2, int y2, eDvbColor Color);
   void SetBitmap(int x, int y, const cBitmap &Bitmap);
   void Text(int x, int y, const char *s, eDvbColor ColorFg = clrWhite, eDvbColor ColorBg = clrBackground);
-  const char *Data(int x, int y);
+  const u_char *Data(int x, int y);
   };
 
 typedef int tWindowHandle;

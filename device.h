@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 1.38 2004/01/10 14:15:10 kls Exp $
+ * $Id: device.h 1.39 2004/02/08 15:05:49 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -21,7 +21,6 @@
 #include "tools.h"
 
 #define MAXDEVICES         16 // the maximum number of devices in the system
-#define MAXCACAPS          16 // the maximum number of different CA values per device
 #define MAXPIDHANDLES      16 // the maximum number of different PIDs per device
 #define MAXRECEIVERS       16 // the maximum number of receivers per device
 #define MAXVOLUME         255
@@ -97,16 +96,12 @@ public:
          ///< given Priority.
          ///< See ProvidesChannel() for more information on how
          ///< priorities are handled, and the meaning of NeedsDetachReceivers.
-  static void SetCaCaps(int Index = -1);
-         ///< Sets the CaCaps of the given device according to the Setup data.
-         ///< By default the CaCaps of all devices are set.
   static void Shutdown(void);
          ///< Closes down all devices.
          ///< Must be called at the end of the program.
 private:
   static int nextCardIndex;
   int cardIndex;
-  int caCaps[MAXCACAPS];
 protected:
   cDevice(void);
   virtual ~cDevice();

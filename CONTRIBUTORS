@@ -685,6 +685,7 @@ Sascha Volkenandt <sascha@akv-soft.de>
  for reporting a problem with cReceivers that use a ring buffer and didn't immediately
  return from their Receive() function if the buffer runs full
  for reporting a crash in case there is no DVB hardware present
+ for his support in debugging the the "Unknown picture type error"
 
 Malcolm Caldwell <malcolm.caldwell@ntu.edu.au>
  for modifying LOF handling to allow for C-band reception
@@ -921,3 +922,14 @@ Christian Tramnitz <maillist@tramnitz.com>
  for terrestrial transponders
  for his support in debugging a problem in setting the source type for newly
  detected terrestrial transponders
+
+Jens Rosenboom <me@jayr.de>
+ for fixing the SVDRP command 'STAT DISK' to avoid a 'division by 0' in case
+ the disk is full
+
+Andreas Regel <andreas.regel@gmx.de>
+ for fixing handling bitmap indexes for 256 color mode
+
+Thomas Bergwinkl <Thomas.Bergwinkl@t-online.de>
+ for fixing the validity check for channel IDs, because some providers use TIDs
+ with value 0

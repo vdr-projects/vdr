@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.121 2004/01/25 14:41:10 kls Exp $
+ * $Id: config.c 1.122 2004/02/08 15:04:41 kls Exp $
  */
 
 #include "config.h"
@@ -286,7 +286,6 @@ cSetup::cSetup(void)
   MultiSpeedMode = 0;
   ShowReplayMode = 0;
   ResumeID = 0;
-  memset(CaCaps, sizeof(CaCaps), 0);
   CurrentChannel = -1;
   CurrentVolume = MAXVOLUME;
 }
@@ -348,50 +347,6 @@ bool cSetup::Load(const char *FileName)
             }
          }
      return result;
-     }
-  return false;
-}
-
-void cSetup::StoreCaCaps(const char *Name)
-{
-  cSetupLine *l;
-  while ((l = Get(Name)) != NULL)
-        Del(l);
-  for (int d = 0; d < MAXDEVICES; d++) {
-      char buffer[MAXPARSEBUFFER];
-      char *q = buffer;
-      *buffer = 0;
-      for (int i = 0; i < MAXCACAPS; i++) {
-          if (CaCaps[d][i]) {
-             if (!*buffer)
-                q += snprintf(buffer, sizeof(buffer), "%d", d + 1);
-             q += snprintf(q, sizeof(buffer) - (q - buffer), " %d", CaCaps[d][i]);
-             }
-          }
-      if (*buffer)
-         Store(Name, buffer, NULL, true);
-      }
-}
-
-bool cSetup::ParseCaCaps(const char *Value)
-{
-  char *p;
-  int d = strtol(Value, &p, 10);
-  if (d > 0 && d <= MAXDEVICES) {
-     d--;
-     int i = 0;
-     while (p != Value && p && *p) {
-           if (i < MAXCACAPS) {
-              int c = strtol(p, &p, 10);
-              if (c > 0)
-                 CaCaps[d][i++] = c;
-              else
-                 return false;
-              }
-           else
-              return false;
-           }
-     return true;
      }
   return false;
 }
@@ -473,7 +428,6 @@ bool cSetup::Parse(const char *Name, const char *Value)
   else if (!strcasecmp(Name, "MultiSpeedMode"))      MultiSpeedMode     = atoi(Value);
   else if (!strcasecmp(Name, "ShowReplayMode"))      ShowReplayMode     = atoi(Value);
   else if (!strcasecmp(Name, "ResumeID"))            ResumeID           = atoi(Value);
-  else if (!strcasecmp(Name, "CaCaps"))              return ParseCaCaps(Value);
   else if (!strcasecmp(Name, "CurrentChannel"))      CurrentChannel     = atoi(Value);
   else if (!strcasecmp(Name, "CurrentVolume"))       CurrentVolume      = atoi(Value);
   else
@@ -525,7 +479,6 @@ bool cSetup::Save(void)
   Store("MultiSpeedMode",     MultiSpeedMode);
   Store("ShowReplayMode",     ShowReplayMode);
   Store("ResumeID",           ResumeID);
-  StoreCaCaps("CaCaps");
   Store("CurrentChannel",     CurrentChannel);
   Store("CurrentVolume",      CurrentVolume);
 

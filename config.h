@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.184 2004/01/24 10:03:55 kls Exp $
+ * $Id: config.h 1.186 2004/02/08 15:04:52 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -20,8 +20,8 @@
 #include "i18n.h"
 #include "tools.h"
 
-#define VDRVERSION  "1.3.3"
-#define VDRVERSNUM   10303  // Version * 10000 + Major * 100 + Minor
+#define VDRVERSION  "1.3.4"
+#define VDRVERSNUM   10304  // Version * 10000 + Major * 100 + Minor
 
 #define MAXPRIORITY 99
 #define MAXLIFETIME 99
@@ -194,8 +194,6 @@ public:
 class cSetup : public cConfig<cSetupLine> {
   friend class cPlugin; // needs to be able to call Store()
 private:
-  void StoreCaCaps(const char *Name);
-  bool ParseCaCaps(const char *Value);
   void StoreLanguages(const char *Name, int *Values);
   bool ParseLanguages(const char *Value, int *Values);
   bool Parse(const char *Name, const char *Value);
@@ -242,7 +240,6 @@ public:
   int MultiSpeedMode;
   int ShowReplayMode;
   int ResumeID;
-  int CaCaps[MAXDEVICES][MAXCACAPS];
   int CurrentChannel;
   int CurrentVolume;
   int __EndData__;

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.282 2004/01/24 13:22:04 kls Exp $
+ * $Id: menu.c 1.284 2004/02/08 15:06:42 kls Exp $
  */
 
 #include "menu.h"
@@ -723,7 +723,7 @@ eOSState cMenuChannels::Switch(void)
      return osContinue;
   cChannel *ch = GetChannel(Current());
   if (ch)
-     cDevice::PrimaryDevice()->SwitchChannel(ch, true);
+     return cDevice::PrimaryDevice()->SwitchChannel(ch, true) ? osEnd : osContinue;
   return osEnd;
 }
 
@@ -2216,11 +2216,16 @@ cMenuSetupCICAM::cMenuSetupCICAM(void)
   helpKeys = -1;
   SetSection(tr("CICAM"));
   for (int d = 0; d < cDevice::NumDevices(); d++) {
-      for (int i = 0; i < 2; i++) {
+      cDevice *Device = cDevice::GetDevice(d);
+      cCiHandler *CiHandler = Device->CiHandler();
+      for (int Slot = 0; Slot < 2; Slot++) {
           char buffer[32];
-          int CardIndex = cDevice::GetDevice(d)->CardIndex();
-          snprintf(buffer, sizeof(buffer), "%s%d %d", tr("Setup.CICAM$CICAM DVB"), CardIndex + 1, i + 1);
-          Add(new cMenuEditCaItem(buffer, &data.CaCaps[CardIndex][i]));
+          int CardIndex = Device->CardIndex();
+          const char *CamName = CiHandler ? CiHandler->GetCamName(Slot) : NULL;
+          if (!CamName)
+             CamName = "-";
+          snprintf(buffer, sizeof(buffer), "%s%d %d\t%s", tr("Setup.CICAM$CICAM DVB"), CardIndex + 1, Slot + 1, CamName);
+          Add(new cOsdItem(buffer));
           }
       }
   SetHelpKeys();
@@ -2275,9 +2280,7 @@ eOSState cMenuSetupCICAM::ProcessKey(eKeys Key)
 {
   eOSState state = cMenuSetupBase::ProcessKey(Key);
 
-  if (state == osBack && Key == kOk)
-     cDevice::SetCaCaps();
-  else if (state == osUnknown) {
+  if (state == osUnknown) {
      switch (Key) {
        case kRed:    if (helpKeys == 1)
                         return Menu();

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.52 2004/01/11 13:21:12 kls Exp $
+ * $Id: device.c 1.53 2004/02/08 15:05:11 kls Exp $
  */
 
 #include "device.h"
@@ -56,10 +56,8 @@ cDevice::cDevice(void)
   for (int i = 0; i < MAXRECEIVERS; i++)
       receiver[i] = NULL;
 
-  if (numDevices < MAXDEVICES) {
+  if (numDevices < MAXDEVICES)
      device[numDevices++] = this;
-     SetCaCaps(cardIndex);
-     }
   else
      esyslog("ERROR: too many devices!");
 }
@@ -198,16 +196,6 @@ cDevice *cDevice::GetDevice(const cChannel *Channel, int Priority, bool *NeedsDe
      }
   XXX*/
   return d;
-}
-
-void cDevice::SetCaCaps(int Index)
-{
-  for (int d = 0; d < numDevices; d++) {
-      if (Index < 0 || Index == device[d]->CardIndex()) {
-         for (int i = 0; i < MAXCACAPS; i++)
-             device[d]->caCaps[i] = Setup.CaCaps[device[d]->CardIndex()][i];
-         }
-      }
 }
 
 void cDevice::Shutdown(void)
