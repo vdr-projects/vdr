@@ -418,4 +418,4 @@ Video Disk Recorder Revision History
 
 - Fixed SVDRP commands LSTC and LSTT to make them return an error message if
   no channels or timers are defined.
-
+- Enhanced 'channels.conf.cable' (thanks to Hans-Peter Raschke).
