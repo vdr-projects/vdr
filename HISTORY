@@ -2372,3 +2372,6 @@ Video Disk Recorder Revision History
 - When setting an editing mark while in "Pause" mode, replay now immediately
   jumps to the marked frame (thanks to Oskar Signell for pointing out this
   problem).
+- The DVB devices no longer send CA descriptors to the CAM while the EPG scanner
+  is active (sometimes the CAMs got irritated when the device tuned to channels
+  they couldn't handle).

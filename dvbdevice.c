@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.63 2003/08/30 11:40:41 kls Exp $
+ * $Id: dvbdevice.c 1.64 2003/09/06 13:19:33 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -74,6 +74,7 @@ private:
   cChannel channel;
   const char *diseqcCommands;
   bool active;
+  bool useCa;
   time_t startTime;
   eTunerStatus tunerStatus;
   cMutex mutex;
@@ -84,7 +85,7 @@ public:
   cDvbTuner(int Fd_Frontend, int CardIndex, fe_type_t FrontendType, cCiHandler *CiHandler);
   virtual ~cDvbTuner();
   bool IsTunedTo(const cChannel *Channel) const;
-  void Set(const cChannel *Channel, bool Tune);
+  void Set(const cChannel *Channel, bool Tune, bool UseCa);
   bool Locked(void) { return tunerStatus == tsLocked; }
   };
 
@@ -96,6 +97,7 @@ cDvbTuner::cDvbTuner(int Fd_Frontend, int CardIndex, fe_type_t FrontendType, cCi
   ciHandler = CiHandler;
   diseqcCommands = NULL;
   active = false;
+  useCa = false;
   tunerStatus = tsIdle;
   startTime = time(NULL);
   Start();
@@ -114,7 +116,7 @@ bool cDvbTuner::IsTunedTo(const cChannel *Channel) const
   return tunerStatus != tsIdle && channel.Source() == Channel->Source() && channel.Frequency() == Channel->Frequency();
 }
 
-void cDvbTuner::Set(const cChannel *Channel, bool Tune)
+void cDvbTuner::Set(const cChannel *Channel, bool Tune, bool UseCa)
 {
   cMutexLock MutexLock(&mutex);
   bool CaChange = !(Channel->GetChannelID() == channel.GetChannelID());
@@ -122,6 +124,7 @@ void cDvbTuner::Set(const cChannel *Channel, bool Tune)
      tunerStatus = tsSet;
   else if (tunerStatus == tsCam && CaChange)
      tunerStatus = tsTuned;
+  useCa = UseCa;
   if (Channel->Ca() && CaChange)
      startTime = time(NULL);
   channel = *Channel;
@@ -267,7 +270,7 @@ void cDvbTuner::Action(void)
               }
            if (tunerStatus >= tsLocked) {
               if (ciHandler) {
-                 if (ciHandler->Process()) {
+                 if (ciHandler->Process() && useCa) {
                     if (tunerStatus != tsCam) {//XXX TODO update in case the CA descriptors have changed
                        for (int Slot = 0; Slot < ciHandler->NumSlots(); Slot++) {
                            uchar buffer[2048];
@@ -673,6 +676,7 @@ bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
   StartTransferMode = false;
 #endif
 
+  // XXX 1.3: use the same mechanism as below (!EITScanner.UsesDevice(this))
   if (EITScanner.Active()) {
      StartTransferMode = false;
      TurnOnLivePIDs = false;
@@ -690,7 +694,7 @@ bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
   if (TurnOffLivePIDs)
      TurnOffLiveMode();
 
-  dvbTuner->Set(Channel, DoTune);
+  dvbTuner->Set(Channel, DoTune, !EITScanner.UsesDevice(this)); //XXX 1.3: this is an ugly hack - find a cleaner solution
 
   // PID settings:
 
