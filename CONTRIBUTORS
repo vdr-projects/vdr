@@ -910,3 +910,7 @@ Vyacheslav Dikonov <sdiconov@mail.ru>
 
 Stephan Epstein <s.epstein@vinzenz.com>
  for reporting a wrong 'delta' value in the call to the shutdown script
+
+Christian Tramnitz <maillist@tramnitz.com>
+ for pointing out a problem with wrong parameter settings when scanning NITs
+ for terrestrial transponders

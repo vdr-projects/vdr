@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: nit.c 1.1 2004/01/11 15:42:51 kls Exp $
+ * $Id: nit.c 1.2 2004/01/18 09:49:55 kls Exp $
  */
 
 #include "nit.h"
@@ -99,16 +99,16 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                  SI::TerrestrialDeliverySystemDescriptor *sd = (SI::TerrestrialDeliverySystemDescriptor *)d;
                  int Source = cSource::FromData(cSource::stCable);
                  int Frequency = sd->getFrequency() * 10;
-                 static int Bandwidths[] = { BANDWIDTH_6_MHZ, BANDWIDTH_7_MHZ, BANDWIDTH_8_MHZ, BANDWIDTH_AUTO, BANDWIDTH_AUTO, BANDWIDTH_AUTO, BANDWIDTH_AUTO, BANDWIDTH_AUTO };
+                 static int Bandwidths[] = { BANDWIDTH_8_MHZ, BANDWIDTH_7_MHZ, BANDWIDTH_6_MHZ, BANDWIDTH_AUTO, BANDWIDTH_AUTO, BANDWIDTH_AUTO, BANDWIDTH_AUTO, BANDWIDTH_AUTO };
                  int Bandwidth = Bandwidths[sd->getBandwidth()];
                  static int Constellations[] = { QPSK, QAM_16, QAM_64, QAM_AUTO };
                  int Constellation = Constellations[sd->getConstellation()];
-                 static int Hierarchies[] = { HIERARCHY_NONE, HIERARCHY_1, HIERARCHY_2, HIERARCHY_4 };
+                 static int Hierarchies[] = { HIERARCHY_NONE, HIERARCHY_1, HIERARCHY_2, HIERARCHY_4, HIERARCHY_AUTO, HIERARCHY_AUTO, HIERARCHY_AUTO, HIERARCHY_AUTO };
                  int Hierarchy = Hierarchies[sd->getHierarchy()];
-                 static int CodeRates[] = { FEC_1_2, FEC_2_3, FEC_3_4, FEC_5_6, FEC_7_8, FEC_NONE, FEC_NONE, FEC_NONE };
+                 static int CodeRates[] = { FEC_1_2, FEC_2_3, FEC_3_4, FEC_5_6, FEC_7_8, FEC_AUTO, FEC_AUTO, FEC_AUTO };
                  int CodeRateHP = CodeRates[sd->getCodeRateHP()];
                  int CodeRateLP = CodeRates[sd->getCodeRateLP()];
-                 static int GuardIntervals[] = { GUARD_INTERVAL_1_4, GUARD_INTERVAL_1_8, GUARD_INTERVAL_1_16, GUARD_INTERVAL_1_32 };
+                 static int GuardIntervals[] = { GUARD_INTERVAL_1_32, GUARD_INTERVAL_1_16, GUARD_INTERVAL_1_8, GUARD_INTERVAL_1_4 };
                  int GuardInterval = GuardIntervals[sd->getGuardInterval()];
                  static int TransmissionModes[] = { TRANSMISSION_MODE_2K, TRANSMISSION_MODE_8K, TRANSMISSION_MODE_AUTO, TRANSMISSION_MODE_AUTO };
                  int TransmissionMode = TransmissionModes[sd->getTransmissionMode()];
