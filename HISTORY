@@ -3126,3 +3126,4 @@ Video Disk Recorder Revision History
   unsolved problems when running on NPTL systems.
 - Added missing calls to cStatus::MsgOsdClear() in cSkins::Message() (thanks
   to Joachim Wilke for reporting this one).
+- Fixed the cDvbSpuDecoder (thanks to Marco Schlüßler).

@@ -1073,6 +1073,7 @@ Marco Schlüßler <marco@lordzodiac.de>
  for reporting a problem with initialization of the main program loop variables
  with older compiler versions
  for adding the 'portal name' to cChannels
+ for fixing the cDvbSpuDecoder
 
 Jürgen Schmitz <j.schmitz@web.de>
  for reporting a bug in displaying the current channel when switching via the SVDRP

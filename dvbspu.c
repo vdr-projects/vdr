@@ -8,7 +8,7 @@
  *
  * parts of this file are derived from the OMS program.
  *
- * $Id: dvbspu.c 1.7 2004/05/22 14:02:32 kls Exp $
+ * $Id: dvbspu.c 1.8 2004/11/06 11:50:13 kls Exp $
  */
 
 #include <assert.h>
@@ -319,25 +319,42 @@ int cDvbSpuDecoder::ScaleYres(int value)
         return value;
 }
 
-void cDvbSpuDecoder::DrawBmp(sDvbSpuRect & size, cBitmap * bmp)
+sDvbSpuRect cDvbSpuDecoder::CalcAreaSize(sDvbSpuRect fgsize, cBitmap *fgbmp, sDvbSpuRect bgsize, cBitmap *bgbmp)
 {
-    int x2 = size.x2;
-    while ((x2 - size.x1 + 1) & 0x03)
-          x2++;
-    tArea Area = { size.x1, size.y1, x2, size.y2, 2 };
-    osd->SetAreas(&Area, 1);
-    if (x2 > size.x2)
-       osd->DrawRectangle(size.x2 + 1, size.y1, x2, size.y2, clrTransparent);
-    osd->DrawBitmap(size.x1, size.y1, *bmp);
-    delete bmp;
+    sDvbSpuRect size;
+    if (fgbmp && bgbmp) {
+       size.x1 = min(fgsize.x1, bgsize.x1);
+       size.y1 = min(fgsize.y1, bgsize.y1);
+       size.x2 = max(fgsize.x2, bgsize.x2);
+       size.y2 = max(fgsize.y2, bgsize.y2);
+       }
+    else if (fgbmp) {
+       size.x1 = fgsize.x1;
+       size.y1 = fgsize.y1;
+       size.x2 = fgsize.x2;
+       size.y2 = fgsize.y2;
+       }
+    else if (bgbmp) {
+       size.x1 = bgsize.x1;
+       size.y1 = bgsize.y1;
+       size.x2 = bgsize.x2;
+       size.y2 = bgsize.y2;
+       }
+    else {
+       size.x1 = 0;
+       size.y1 = 0;
+       size.x2 = 0;
+       size.y2 = 0;
+       }
+    return size;
 }
 
 void cDvbSpuDecoder::Draw(void)
 {
-    Hide();
-
-    if (!spubmp)
+    if (!spubmp) {
+        Hide();
         return;
+    }
 
     cBitmap *fg = NULL;
     cBitmap *bg = NULL;
@@ -362,18 +379,28 @@ void cDvbSpuDecoder::Draw(void)
         }
     }
 
-    if (bg || fg) {
-        if (osd == NULL)
-            if ((osd = cOsdProvider::NewOsd(0, 0)) == NULL) {
-                dsyslog("NewOsd failed\n");
-                return;
-            }
+    sDvbSpuRect areaSize = CalcAreaSize(hlsize, fg, bgsize, bg);
 
-        if (fg)
-            DrawBmp(hlsize, fg);
+    if (!fg || !bg || !osd) {
+       Hide();
+       }
+
+    if (bg || fg) {
+        if (osd == NULL) {
+           osd = cOsdProvider::NewOsd(0, 0);
+           int x2 = areaSize.x2;
+           while ((x2 - areaSize.x1 + 1) & 0x03)
+                 x2++;
+           tArea Area = { areaSize.x1, areaSize.y1, x2, areaSize.y2, (fg && bg) ? 4 : 2 };
+           osd->SetAreas(&Area, 1);
+           }
 
         if (bg)
-            DrawBmp(bgsize, bg);
+           osd->DrawBitmap(bgsize.x1, bgsize.y1, *bg);
+        if (fg)
+           osd->DrawBitmap(hlsize.x1, hlsize.y1, *fg);
+        delete fg;
+        delete bg;
 
         osd->Flush();
     }

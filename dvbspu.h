@@ -8,7 +8,7 @@
  *
  * parts of this file are derived from the OMS program.
  *
- * $Id: dvbspu.h 1.5 2004/06/12 12:57:55 kls Exp $
+ * $Id: dvbspu.h 1.6 2004/11/06 11:42:37 kls Exp $
  */
 
 #ifndef __DVBSPU_H
@@ -130,7 +130,7 @@ class cDvbSpuDecoder:public cSpuDecoder {
 
     int ScaleYcoord(int value);
     int ScaleYres(int value);
-    void DrawBmp(sDvbSpuRect & size, cBitmap * bmp);
+    sDvbSpuRect CalcAreaSize(sDvbSpuRect fgsize, cBitmap *fgbmp, sDvbSpuRect bgsize, cBitmap *bgbmp);
 
   public:
     cDvbSpuDecoder();
