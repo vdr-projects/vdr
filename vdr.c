@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.97 2002/02/24 12:55:10 kls Exp $
+ * $Id: vdr.c 1.98 2002/03/03 14:56:03 kls Exp $
  */
 
 #include <getopt.h>
@@ -252,6 +252,7 @@ int main(int argc, char *argv[])
   Timers.Load(AddDirectory(ConfigDirectory, "timers.conf"));
   Commands.Load(AddDirectory(ConfigDirectory, "commands.conf"));
   SVDRPhosts.Load(AddDirectory(ConfigDirectory, "svdrphosts.conf"), true);
+  CaDefinitions.Load(AddDirectory(ConfigDirectory, "ca.conf"), true);
 #if defined(REMOTE_LIRC)
   Keys.SetDummyValues();
 #elif !defined(REMOTE_NONE)

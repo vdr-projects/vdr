@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.101 2002/02/26 17:25:30 kls Exp $
+ * $Id: config.h 1.102 2002/03/03 16:04:43 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -195,6 +195,18 @@ public:
   bool Accepts(in_addr_t Address);
   };
 
+class cCaDefinition : public cListObject {
+private:
+  int number;
+  char *description;
+public:
+  cCaDefinition(void);
+  ~cCaDefinition();
+  bool Parse(const char *s);
+  int Number(void) const { return number; }
+  const char *Description(void) const { return description; }
+  };
+
 template<class T> class cConfig : public cList<T> {
 private:
   char *fileName;
@@ -297,15 +309,23 @@ public:
   bool Acceptable(in_addr_t Address);
   };
 
+class cCaDefinitions : public cConfig<cCaDefinition> {
+public:
+  const cCaDefinition *Get(int Number);
+  };
+
 extern cChannels Channels;
 extern cTimers Timers;
 extern cKeys Keys;
 extern cCommands Commands;
 extern cSVDRPhosts SVDRPhosts;
+extern cCaDefinitions CaDefinitions;
 
 class cSetup {
 private:
   static char *fileName;
+  void PrintCaCaps(FILE *f, const char *Name);
+  bool ParseCaCaps(const char *Value);
   bool Parse(char *s);
 public:
   // Also adjust cMenuSetup (menu.c) when adding parameters here!
@@ -339,6 +359,7 @@ public:
   int MinEventTimeout, MinUserInactivity;
   int MultiSpeedMode;
   int ShowReplayMode;
+  int CaCaps[MAXDVBAPI][MAXCACAPS];
   int CurrentChannel;
   int CurrentVolume;
   cSetup(void);

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.57 2002/02/24 12:54:12 kls Exp $
+ * $Id: i18n.c 1.58 2002/03/03 16:12:00 kls Exp $
  *
  * Slovenian translations provided by Miha Setina <mihasetina@softhome.net>
  * Italian   translations provided by Alberto Carraro <bertocar@tin.it>
@@ -1175,6 +1175,16 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "Näytä toiston tila",
+  },
+  { "CICAM DVB",
+    "CICAM DVB",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
   },
   // The days of the week:
   { "MTWTFSS",

@@ -526,6 +526,14 @@ Video Disk Recorder User's Manual
                          0 = off
                          1 = on
 
+  CaCaps (no default)    Defines the "Conditional Access Capabilities" of a DVB
+                         card. The value consists of the card number, followed by
+                         a list of decryption method values (defined in 'ca.conf').
+                         For instance
+                           CaCaps = 3 101 102
+                         would define that card number 3 is able to decrypt
+                         "Premiere World" and the "ORF".
+
 * Executing system commands
 
   The "Main" menu option "Commands" allows you to execute any system commands
