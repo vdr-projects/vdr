@@ -28,7 +28,7 @@ Guido Fiala <gfiala@s.netic.de>
  now does these things itself)
  for making the replay progress display avoid unnecessary code execution
 
-Robert Schneider <Robert.Schneider@lotus.com>
+Robert Schneider <Robert.Schneider@de.ibm.com>
  for implementing EIT support for displaying the current/next info
  for extending EIT support to implement a complete EPG
 
