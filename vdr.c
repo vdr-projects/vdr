@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.95 2002/02/10 15:12:43 kls Exp $
+ * $Id: vdr.c 1.96 2002/02/23 16:35:36 kls Exp $
  */
 
 #include <getopt.h>
@@ -35,6 +35,7 @@
 #ifdef DVDSUPPORT
 #include "dvd.h"
 #endif //DVDSUPPORT
+#include "eit.h"
 #include "i18n.h"
 #include "interface.h"
 #include "menu.h"
@@ -285,6 +286,8 @@ int main(int argc, char *argv[])
      return 2;
 
   cDvbApi::SetPrimaryDvbApi(Setup.PrimaryDVB);
+
+  cSIProcessor::Read();
 
   Channels.SwitchTo(Setup.CurrentChannel);
   cDvbApi::PrimaryDvbApi->SetVolume(Setup.CurrentVolume, true);

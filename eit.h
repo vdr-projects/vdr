@@ -16,7 +16,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.h 1.14 2002/02/23 13:51:31 kls Exp $
+ * $Id: eit.h 1.15 2002/02/23 15:30:25 kls Exp $
  ***************************************************************************/
 
 #ifndef __EIT_H
@@ -72,6 +72,7 @@ public:
   int GetChannelNumber(void) const { return nChannelNumber; }
   void SetChannelNumber(int ChannelNumber) const { ((cEventInfo *)this)->nChannelNumber = ChannelNumber; } // doesn't modify the EIT data, so it's ok to make it 'const'
   void Dump(FILE *f, const char *Prefix = "") const;
+  static bool Read(FILE *f, cSchedule *Schedule);
   void FixEpgBugs(void);
   };
 
@@ -92,6 +93,7 @@ protected:
   cSchedule(unsigned short servid = 0);
 public:
   ~cSchedule();
+  cEventInfo *AddEvent(cEventInfo *EventInfo);
   const cEventInfo *GetPresentEvent(void) const;
   const cEventInfo *GetFollowingEvent(void) const;
   unsigned short GetServiceID(void) const;
@@ -100,15 +102,17 @@ public:
   const cEventInfo *GetEventNumber(int n) const { return Events.Get(n); }
   int NumEvents(void) const { return Events.Count(); }
   void Dump(FILE *f, const char *Prefix = "") const;
+  static bool Read(FILE *f, cSchedules *Schedules);
   };
 
 class cSchedules : public cList<cSchedule> {
+  friend class cSchedule;
   friend class cSIProcessor;
 private:
   const cSchedule *pCurrentSchedule;
   unsigned short uCurrentServiceID;
 protected:
-  bool SetCurrentServiceID(unsigned short servid);
+  const cSchedule *SetCurrentServiceID(unsigned short servid);
   void Cleanup();
 public:
   cSchedules(void);
@@ -116,6 +120,7 @@ public:
   const cSchedule *GetSchedule(unsigned short servid) const;
   const cSchedule *GetSchedule(void) const;
   void Dump(FILE *f, const char *Prefix = "") const;
+  static bool Read(FILE *f);
 };
 
 typedef struct sip_filter {
@@ -150,6 +155,7 @@ public:
          // Caller must provide a cMutexLock which has to survive the entire
          // time the returned cSchedules is accessed. Once the cSchedules is no
          // longer used, the cMutexLock must be destroyed.
+  static bool Read(FILE *f = NULL);
   void SetStatus(bool On);
   bool SetUseTSTime(bool use);
   bool SetCurrentServiceID(unsigned short servid);

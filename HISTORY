@@ -997,7 +997,7 @@ Video Disk Recorder Revision History
 - If a recording has no episode title, the trailing '~' is no longer shown in
   the progress display.
 
-2002-02-17: Version 1.0.0pre1
+2002-02-23: Version 1.0.0pre1
 
 - Added scanning for EPG data for another 4 days on channels that support this
   (thanks to Oleg Assovski).
@@ -1020,3 +1020,6 @@ Video Disk Recorder Revision History
   "instant" recording (see FORMATS for details).
 - Fixed the SVDRP GRAB command in case the video device can't be opened (thanks
   to Adrian Stabiszewski).
+- At startup the data written into 'epg.data' is now read into the EPG data
+  structures. In order for this to work, the 'E' record has been extended to
+  (optionally) contain the 'table ID' (see FORMATS for details).

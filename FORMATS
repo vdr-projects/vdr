@@ -180,3 +180,37 @@ Video Disk Recorder File Formats
   for audio 2 (if available). Dolby Digital data is stored in packets with
   ids 0xBD.
 
+* epg.data
+
+  This file contains the EPG data in an easily parsable format. The first
+  character of each line defines what kind of data this line contains.
+
+  The following tag characters are defined:
+
+  C <service id> <channel name>
+  E <event id> <start time> <duration> <table id>
+  T <title>
+  S <subtitle>
+  D <description>
+  e
+  c
+
+  Lowercase characters mark the end of a sequence that was started by the
+  corresponding uppercase character. The outer frame consists of a sequence
+  of one or more 'C'...'c' (Channel) entries. Inside these any number of
+  'E'...'e' (Event) entries are allowed. The 'T', 'S' and 'D' entries are
+  optional (although every event should at least have a 'T' entry).
+
+  <service id>   is the "program number" as defined in 'channels.conf'
+  <channel name> is the "name" as in 'channels.conf' (for information only)
+  <start time>   is the time (as a time_t integer) in UTC when this event starts
+  <duration>     is the time (in seconds) that this event will take
+  <table id>     is a hex number that indicates the table this event is contained
+                 in (if this is left empty or 0 this event will not be overwritten
+                 or modified by data that comes from the DVB stream)
+  <title>        is the title of the event
+  <subtitle>     is the subtitle (typically the name of the episode etc.)
+  <description>  is the description of the event
+
+  This file will be read at program startup in order to restore the results of
+  previous EPG scans.

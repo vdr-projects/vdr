@@ -16,7 +16,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.c 1.36 2002/02/23 13:53:53 kls Exp $
+ * $Id: eit.c 1.37 2002/02/23 17:11:19 kls Exp $
  ***************************************************************************/
 
 #include "eit.h"
@@ -341,7 +341,7 @@ unsigned short cEventInfo::GetServiceID() const
 void cEventInfo::Dump(FILE *f, const char *Prefix) const
 {
    if (tTime + lDuration >= time(NULL)) {
-      fprintf(f, "%sE %u %ld %ld\n", Prefix, uEventID, tTime, lDuration);
+      fprintf(f, "%sE %u %ld %ld %X\n", Prefix, uEventID, tTime, lDuration, uTableID);
       if (!isempty(pTitle))
          fprintf(f, "%sT %s\n", Prefix, pTitle);
       if (!isempty(pSubtitle))
@@ -350,6 +350,54 @@ void cEventInfo::Dump(FILE *f, const char *Prefix) const
          fprintf(f, "%sD %s\n", Prefix, pExtendedDescription);
       fprintf(f, "%se\n", Prefix);
       }
+}
+
+bool cEventInfo::Read(FILE *f, cSchedule *Schedule)
+{
+  if (Schedule) {
+     cEventInfo *pEvent = NULL;
+     char *s;
+     while ((s = readline(f)) != NULL) {
+           char *t = skipspace(s + 1);
+           switch (*s) {
+             case 'E': if (!pEvent) {
+                          unsigned int uEventID;
+                          time_t tTime;
+                          long lDuration;
+                          unsigned int uTableID = 0;
+                          int n = sscanf(t, "%u %ld %ld %X", &uEventID, &tTime, &lDuration, &uTableID);
+                          if (n == 3 || n == 4) {
+                             pEvent = (cEventInfo *)Schedule->GetEvent(uEventID, tTime);
+                             if (!pEvent)
+                                pEvent = Schedule->AddEvent(new cEventInfo(Schedule->GetServiceID(), uEventID));
+                             if (pEvent) {
+                                pEvent->SetTableID(uTableID);
+                                pEvent->SetTime(tTime);
+                                pEvent->SetDuration(lDuration);
+                                }
+                             }
+                          }
+                       break;
+             case 'T': if (pEvent)
+                          pEvent->SetTitle(t);
+                       break;
+             case 'S': if (pEvent)
+                          pEvent->SetSubtitle(t);
+                       break;
+             case 'D': if (pEvent)
+                          pEvent->SetExtendedDescription(t);
+                       break;
+             case 'e': pEvent = NULL;
+                       break;
+             case 'c': // to keep things simple we react on 'c' here
+                       return false;
+             default:  esyslog(LOG_ERR, "ERROR: unexpected tag while reading EPG data: %s", s);
+                       return false;
+             }
+           }
+     return true;
+     }
+  return false;
 }
 
 #define MAXEPGBUGFIXSTATS 5
@@ -545,6 +593,13 @@ cSchedule::cSchedule(unsigned short servid)
 cSchedule::~cSchedule()
 {
 }
+
+cEventInfo *cSchedule::AddEvent(cEventInfo *EventInfo)
+{
+  Events.Add(EventInfo);
+  return EventInfo;
+}
+
 /**  */
 const cEventInfo * cSchedule::GetPresentEvent() const
 {
@@ -689,6 +744,31 @@ void cSchedule::Dump(FILE *f, const char *Prefix) const
    }
 }
 
+bool cSchedule::Read(FILE *f, cSchedules *Schedules)
+{
+  if (Schedules) {
+     char *s;
+     while ((s = readline(f)) != NULL) {
+           if (*s == 'C') {
+              unsigned int uServiceID;
+              if (1 == sscanf(s + 1, "%u", &uServiceID)) {
+                 cSchedule *p = (cSchedule *)Schedules->SetCurrentServiceID(uServiceID);
+                 if (p) {
+                    while (cEventInfo::Read(f, p))
+                          ; // loop stops after having read the closing 'c'
+                    }
+                 }
+              }
+           else {
+              esyslog(LOG_ERR, "ERROR: unexpected tag while reading EPG data: %s", s);
+              return false;
+              }
+           }
+     return true;
+     }
+  return false;
+}
+
 // --- cSchedules ------------------------------------------------------------
 
 cSchedules::cSchedules()
@@ -701,7 +781,7 @@ cSchedules::~cSchedules()
 {
 }
 /**  */
-bool cSchedules::SetCurrentServiceID(unsigned short servid)
+const cSchedule *cSchedules::SetCurrentServiceID(unsigned short servid)
 {
    pCurrentSchedule = GetSchedule(servid);
    if (pCurrentSchedule == NULL)
@@ -709,12 +789,12 @@ bool cSchedules::SetCurrentServiceID(unsigned short servid)
       Add(new cSchedule(servid));
       pCurrentSchedule = GetSchedule(servid);
       if (pCurrentSchedule == NULL)
-         return false;
+         return NULL;
    }
 
    uCurrentServiceID = servid;
 
-   return true;
+   return pCurrentSchedule;
 }
 /**  */
 const cSchedule * cSchedules::GetSchedule() const
@@ -755,6 +835,13 @@ void cSchedules::Dump(FILE *f, const char *Prefix) const
 {
    for (cSchedule *p = First(); p; p = Next(p))
       p->Dump(f, Prefix);
+}
+
+/**  */
+bool cSchedules::Read(FILE *f)
+{
+   cMutexLock MutexLock;
+   return cSchedule::Read(f, (cSchedules *)cSIProcessor::Schedules(MutexLock));
 }
 
 // --- cEIT ------------------------------------------------------------------
@@ -822,16 +909,19 @@ int cEIT::ProcessEIT(unsigned char *buffer)
           if (!pEvent) {
              // If we don't have that event ID yet, we create a new one.
              // Otherwise we copy the information into the existing event anyway, because the data might have changed.
-             pSchedule->Events.Add(new cEventInfo(VdrProgramInfo->ServiceID, VdrProgramInfo->EventID));
-             pEvent = (cEventInfo *)pSchedule->GetEvent((unsigned short)VdrProgramInfo->EventID);
+             pEvent = pSchedule->AddEvent(new cEventInfo(VdrProgramInfo->ServiceID, VdrProgramInfo->EventID));
              if (!pEvent)
                 break;
              pEvent->SetTableID(tid);
              }
           else {
              // We have found an existing event, either through its event ID or its start time.
+             // If the existing event has a zero table ID it was defined externally and shall
+             // not be overwritten.
+             if (pEvent->GetTableID() == 0x00)
+                continue;
              // If the new event comes from a table that belongs to an "other TS" and the existing
-             // one comes from a "actual TS" table, lets skip it.
+             // one comes from an "actual TS" table, lets skip it.
              if ((tid == 0x4F || tid == 0x60 || tid == 0x61) && (pEvent->GetTableID() == 0x4E || pEvent->GetTableID() == 0x50 || pEvent->GetTableID() == 0x51))
                 continue;
              }
@@ -918,6 +1008,25 @@ const cSchedules *cSIProcessor::Schedules(cMutexLock &MutexLock)
   if (MutexLock.Lock(&schedulesMutex))
      return schedules;
   return NULL;
+}
+
+bool cSIProcessor::Read(FILE *f)
+{
+  bool OwnFile = f == NULL;
+  if (OwnFile) {
+     const char *FileName = GetEpgDataFileName();
+     if (access(FileName, R_OK) == 0) {
+        dsyslog(LOG_INFO, "reading EPG data from %s", FileName);
+        if ((f = fopen(FileName, "r")) == NULL) {
+           LOG_ERROR;
+           return false;
+           }
+        }
+     }
+  bool result = cSchedules::Read(f);
+  if (OwnFile)
+     fclose(f);
+  return result;
 }
 
 void cSIProcessor::SetEpgDataFileName(const char *FileName)
