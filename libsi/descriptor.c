@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: descriptor.c 1.2 2003/12/13 10:42:05 kls Exp $
+ *   $Id: descriptor.c 1.3 2004/01/12 16:17:20 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -490,6 +490,28 @@ void MultilingualServiceNameDescriptor::Name::Parse() {
    const entry_multilingual_service_name_mid *mid;
    data.setPointerAndOffset<const entry_multilingual_service_name_mid>(mid, offset);
    name.setData(data+offset, mid->service_name_length);
+}
+
+void LinkageDescriptor::Parse() {
+   unsigned int offset=0;
+   data.setPointerAndOffset<const descr_linkage>(s, offset);
+   privateData.assign(data.getData(offset), getLength()-offset);
+}
+
+int LinkageDescriptor::getTransportStreamId() const {
+   return HILO(s->transport_stream_id);
+}
+
+int LinkageDescriptor::getOriginalNetworkId() const {
+   return HILO(s->original_network_id);
+}
+
+int LinkageDescriptor::getServiceId() const {
+   return HILO(s->service_id);
+}
+
+LinkageType LinkageDescriptor::getLinkageType() const {
+   return (LinkageType)s->linkage_type;
 }
 
 void ApplicationSignallingDescriptor::Parse() {

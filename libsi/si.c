@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: si.c 1.4 2004/01/05 11:04:17 kls Exp $
+ *   $Id: si.c 1.5 2004/01/12 22:19:34 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -320,6 +320,9 @@ Descriptor *Descriptor::getDescriptor(CharArray da, DescriptorTagDomain domain) 
          case ApplicationSignallingDescriptorTag:
             d=new ApplicationSignallingDescriptor();
             break;
+         case LinkageDescriptorTag:
+            d=new LinkageDescriptor();
+            break;
 
          //note that it is no problem to implement one
          //of the unimplemented descriptors.
@@ -348,7 +351,6 @@ Descriptor *Descriptor::getDescriptor(CharArray da, DescriptorTagDomain domain) 
          case VBITeletextDescriptorTag:
          case CountryAvailabilityDescriptorTag:
          case MocaicDescriptorTag:
-         case LinkageDescriptorTag:
          case TeletextDescriptorTag:
          case TelephoneDescriptorTag:
          case LocalTimeOffsetDescriptorTag:

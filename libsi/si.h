@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: si.h 1.5 2004/01/09 15:59:53 kls Exp $
+ *   $Id: si.h 1.6 2004/01/12 16:19:11 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -154,6 +154,18 @@ enum RunningStatus { RunningStatusUndefined = 0,
                      RunningStatusRunning = 4
                    };
 
+enum LinkageType { LinkageTypeInformationService = 0x01,
+                   LinkageTypeEPGService = 0x02,
+                   LinkageTypeCaReplacementService = 0x03,
+                   LinkageTypeTSContainingCompleteNetworkBouquetSi = 0x04,
+                   LinkageTypeServiceReplacementService = 0x05,
+                   LinkageTypeDataBroadcastService = 0x06,
+                   LinkageTypeRCSMap = 0x07,
+                   LinkageTypeMobileHandover = 0x08,
+                   LinkageTypeSystemSoftwareUpdateService = 0x09,
+                   LinkageTypeTSContainingSsuBatOrNit = 0x0A
+                 };
+
 /* Some principles:
    - Objects that return references to other objects contained in their data must make sure
      that the returned objects have been parsed.
@@ -167,6 +179,7 @@ public:
    Object(CharArray &d);
    //can only be called once since data is immutable
    void setData(const unsigned char*data, unsigned int size, bool doCopy=true);
+   CharArray getData() { return data; }
    virtual int getLength() = 0;
 protected:
    CharArray data;
@@ -222,9 +235,6 @@ private:
 };
 
 class LoopElement : public Object {
-};
-
-class SubStructure : public LoopElement {
 };
 
 class Descriptor : public LoopElement {

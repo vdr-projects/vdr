@@ -2572,7 +2572,8 @@ Video Disk Recorder Revision History
   branches are tested, cable and terrestrial need to be tested by somebody who
   actually has such equipment.
 
-2004-01-11: Version 1.3.2
+2004-01-12: Version 1.3.2
 
 - Fixed resetting the EPG data versions after changing the preferred languages
   (thanks to Teemu Rantanen for reporting this one and helping to debug it).
+- Added LinkageDescriptor handling to 'libsi' (thanks to Marcel Wiesweg).
