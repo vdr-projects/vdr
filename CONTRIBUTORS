@@ -161,6 +161,7 @@ Stefan Huelswitt <huels@iname.com>
  for fixing handling 'Transfer Mode' on single device systems when recording an
  encrypted channel
  for reporting a problem with timers when channel IDs have a 'source' that is 0
+ for reporting a new/delete malloc/free mismatch in ringbuffer.c
 
 Ulrich Röder <roeder@efr-net.de>
  for pointing out that there are channels that have a symbol rate higher than

@@ -16,7 +16,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.c 1.64 2003/01/26 12:21:15 kls Exp $
+ * $Id: eit.c 1.65 2003/02/02 15:41:03 kls Exp $
  ***************************************************************************/
 
 #include "eit.h"
@@ -1349,7 +1349,7 @@ void cSIProcessor::Action()
 
 /** Add a filter with packet identifier pid and
 table identifer tid */
-bool cSIProcessor::AddFilter(u_char pid, u_char tid)
+bool cSIProcessor::AddFilter(unsigned short pid, u_char tid)
 {
    dmx_sct_filter_params sctFilterParams;
    memset(&sctFilterParams, 0, sizeof(sctFilterParams));
@@ -1390,7 +1390,7 @@ bool cSIProcessor::AddFilter(u_char pid, u_char tid)
    return false;
 }
 
-bool cSIProcessor::DelFilter(u_char pid, u_char tid)
+bool cSIProcessor::DelFilter(unsigned short pid, u_char tid)
 {
    for (int a = 0; a < MAX_FILTERS; a++)
    {

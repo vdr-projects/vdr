@@ -16,7 +16,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.h 1.23 2003/01/04 10:12:54 kls Exp $
+ * $Id: eit.h 1.24 2003/02/02 14:07:39 kls Exp $
  ***************************************************************************/
 
 #ifndef __EIT_H
@@ -127,7 +127,7 @@ public:
 
 typedef struct sip_filter {
 
-  u_char pid;
+  unsigned short pid;
   u_char tid;
   int handle;
   bool inuse;
@@ -155,8 +155,8 @@ private:
   char *fileName;
   bool active;
   void Action(void);
-  bool AddFilter(u_char pid, u_char tid);
-  bool DelFilter(u_char pid, u_char tid);
+  bool AddFilter(unsigned short pid, u_char tid);
+  bool DelFilter(unsigned short pid, u_char tid);
   bool ShutDownFilters(void);
 public:
   cSIProcessor(const char *FileName);
