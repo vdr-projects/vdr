@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: si.c 1.2 2003/12/13 10:42:16 kls Exp $
+ *   $Id: si.c 1.3 2004/01/04 14:26:53 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -225,7 +225,7 @@ void String::decodeText(char *buffer) {
       else if (*from == 0x8A)
          *to++ = '\n';
       else if (*from == 0x86 || *from == 0x87) //&& !(GDT_NAME_DESCRIPTOR & type))
-         *to++ = ' ';
+         *to++ = *from;
       from++;
    }
    *to = '\0';
