@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.262 2003/07/26 16:10:39 kls Exp $
+ * $Id: menu.c 1.263 2003/08/02 13:23:58 kls Exp $
  */
 
 #include "menu.h"
@@ -2993,16 +2993,19 @@ cRecordControl::cRecordControl(cDevice *Device, cTimer *Timer, bool Pause)
      }
 
   cRecordingUserCommand::InvokeCommand(RUC_BEFORERECORDING, fileName);
-  const cChannel *ch = timer->Channel();
-  recorder = new cRecorder(fileName, ch->Ca(), timer->Priority(), ch->Vpid(), ch->Apid1(), ch->Apid2(), ch->Dpid1(), ch->Dpid2());
-  if (device->AttachReceiver(recorder)) {
-     Recording.WriteSummary();
-     cStatus::MsgRecording(device, Recording.Name());
-     if (!Timer && !cReplayControl::LastReplayed()) // an instant recording, maybe from cRecordControls::PauseLiveVideo()
-        cReplayControl::SetRecording(fileName, Recording.Name());
+  isyslog("record %s", fileName);
+  if (MakeDirs(fileName, true)) {
+     const cChannel *ch = timer->Channel();
+     recorder = new cRecorder(fileName, ch->Ca(), timer->Priority(), ch->Vpid(), ch->Apid1(), ch->Apid2(), ch->Dpid1(), ch->Dpid2());
+     if (device->AttachReceiver(recorder)) {
+        Recording.WriteSummary();
+        cStatus::MsgRecording(device, Recording.Name());
+        if (!Timer && !cReplayControl::LastReplayed()) // an instant recording, maybe from cRecordControls::PauseLiveVideo()
+           cReplayControl::SetRecording(fileName, Recording.Name());
+        }
+     else
+        DELETENULL(recorder);
      }
-  else
-     DELETENULL(recorder);
 }
 
 cRecordControl::~cRecordControl()

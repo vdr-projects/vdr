@@ -738,3 +738,7 @@ Thomas Keil <tk@commedia-group.com>
 
 Kenneth Aafløy <ke-aa@frisurf.no>
  for fixing checking CA capabilities with the dvb-kernel driver
+
+Ernst Fürst <ernstfuerst@swissonline.ch>
+ for reporting a crash in case a VFAT file system is used without compiling VDR
+ with VFAT=1
