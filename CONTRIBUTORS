@@ -1064,3 +1064,7 @@ Jörg Knitter <joerg.knitter@gmx.de>
 
 Mike parker <vdr@msatt.freeserve.co.uk>
  for helping to test support for NVOD channels
+
+Dick Streefland <Dick.Streefland@xs4all.nl>
+ for fixing a crash in case the last line in channels.conf is a group separator and
+ that group is selected in the channel display

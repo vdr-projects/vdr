@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.310 2004/08/08 14:19:37 kls Exp $
+ * $Id: menu.c 1.311 2004/08/08 14:29:14 kls Exp $
  */
 
 #include "menu.h"
@@ -2628,8 +2628,11 @@ eOSState cDisplayChannel::ProcessKey(eKeys Key)
     //TODO
     //XXX case kGreen:  return osEventNow;
     //XXX case kYellow: return osEventNext;
-    case kOk:     if (group >= 0)
-                     Channels.SwitchTo(Channels.Get(Channels.GetNextNormal(group))->Number());
+    case kOk:     if (group >= 0) {
+                     cChannel *channel = Channels.Get(Channels.GetNextNormal(group));
+                     if (channel)
+                        Channels.SwitchTo(channel->Number());
+                     }
                   return osEnd;
     default:      if ((Key & (k_Repeat | k_Release)) == 0) {
                      cRemote::Put(Key);

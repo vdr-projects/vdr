@@ -2974,3 +2974,5 @@ Video Disk Recorder Revision History
   (thanks to Andreas Share for pointing this out).
 - Fixed a possible NULL pointer assignment in cMenuText::SetText() (thanks to
   Marco Schlüssler).
+- Fixed a crash in case the last line in channels.conf is a group separator and
+  that group is selected in the channel display (thanks to Dick Streefland).
