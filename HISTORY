@@ -2352,3 +2352,9 @@ Video Disk Recorder Revision History
 - Actually implemented the SVDRP command DELC.
 - Now clearing the player device if there are too many poll timeouts in 'Transfer
   Mode', which avoids buffer overflows and black screens in such cases.
+
+2003-09-05: Version 1.2.5pre2
+
+- Updated VIVA, VIVA Plus, MTV Central and MTV 2 in channels.conf (thanks to
+  Sebastian Frei).
+

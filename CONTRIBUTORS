@@ -782,3 +782,6 @@ Peter Waechtler <pwaechtler@mac.com>
 
 Robert Bartl <robert@bartl.priv.at>
  for reporting a hangup in SVDRP when the client disappears without sending QUIT
+
+Sebastian Frei <sebastian@schnapsleichen.de>
+ for his support in keeping 'channels.conf' up-to-date.
