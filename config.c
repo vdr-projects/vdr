@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.50 2001/07/27 10:43:40 kls Exp $
+ * $Id: config.c 1.51 2001/07/27 11:27:27 kls Exp $
  */
 
 #include "config.h"
@@ -774,6 +774,8 @@ cSetup::cSetup(void)
   DefaultLifetime = 50;
   VideoFormat = VIDEO_FORMAT_4_3;
   ChannelInfoPos = 0;
+  OSDwidth = 52;
+  OSDheight = 18;
   CurrentChannel = -1;
 }
 
@@ -801,6 +803,8 @@ bool cSetup::Parse(char *s)
      else if (!strcasecmp(Name, "DefaultLifetime"))     DefaultLifetime    = atoi(Value);
      else if (!strcasecmp(Name, "VideoFormat"))         VideoFormat        = atoi(Value);
      else if (!strcasecmp(Name, "ChannelInfoPos"))      ChannelInfoPos     = atoi(Value);
+     else if (!strcasecmp(Name, "OSDwidth"))            OSDwidth           = atoi(Value);
+     else if (!strcasecmp(Name, "OSDheight"))           OSDheight          = atoi(Value);
      else if (!strcasecmp(Name, "CurrentChannel"))      CurrentChannel     = atoi(Value);
      else
         return false;
@@ -863,6 +867,8 @@ bool cSetup::Save(const char *FileName)
         fprintf(f, "DefaultLifetime    = %d\n", DefaultLifetime);
         fprintf(f, "VideoFormat        = %d\n", VideoFormat);
         fprintf(f, "ChannelInfoPos     = %d\n", ChannelInfoPos);
+        fprintf(f, "OSDwidth           = %d\n", OSDwidth);
+        fprintf(f, "OSDheight          = %d\n", OSDheight);
         fprintf(f, "CurrentChannel     = %d\n", CurrentChannel);
         f.Close();
         isyslog(LOG_INFO, "saved setup to %s", FileName);

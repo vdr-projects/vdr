@@ -369,6 +369,9 @@ Video Disk Recorder User's Manual
                          0 = bottom
                          1 = top
 
+  OSDwidth  = 52         The width and height of the OSD .
+  OSDheight = 18         The valid ranges are width=40...56, height=12...21.
+
 * Executing system commands
 
   The "Main" menu option "Commands" allows you to execute any system commands

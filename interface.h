@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.h 1.21 2000/12/09 10:48:41 kls Exp $
+ * $Id: interface.h 1.22 2001/07/27 11:38:01 kls Exp $
  */
 
 #ifndef __INTERFACE_H
@@ -32,7 +32,7 @@ private:
 public:
   cInterface(int SVDRPport = 0);
   ~cInterface();
-  void Open(int NumCols = MenuColumns, int NumLines = MenuLines);
+  void Open(int NumCols = 0, int NumLines = 0);
   void Close(void);
   int Width(void) { return width; }
   int Height(void) { return height; }

@@ -582,3 +582,4 @@ Video Disk Recorder Revision History
   Röder).
 - Made the position of the channel display configurable (thanks to Stefan
   Huelswitt).
+- Made the width and height of the OSD configurable (thanks to Stefan Huelswitt).

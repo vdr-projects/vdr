@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.h 1.41 2001/07/22 11:48:15 kls Exp $
+ * $Id: dvbapi.h 1.42 2001/07/27 11:40:38 kls Exp $
  */
 
 #ifndef __DVBAPI_H
@@ -35,9 +35,6 @@
 typedef struct CRect {
   signed short x, y, width, height;
   };
-
-#define MenuLines   18
-#define MenuColumns 52
 
 const char *IndexToHMSF(int Index, bool WithFrame = false);
       // Converts the given index to a string, optionally containing the frame number.

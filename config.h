@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.53 2001/07/27 10:42:30 kls Exp $
+ * $Id: config.h 1.54 2001/07/27 11:28:49 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -25,6 +25,11 @@
 
 #define MAXPRIORITY 99
 #define MAXLIFETIME 99
+
+#define MINOSDWIDTH  40
+#define MAXOSDWIDTH  56
+#define MINOSDHEIGHT 12
+#define MAXOSDHEIGHT 21
 
 enum eKeys { // "Up" and "Down" must be the first two keys!
              kUp,
@@ -278,6 +283,7 @@ public:
   int DefaultPriority, DefaultLifetime;
   int VideoFormat;
   int ChannelInfoPos;
+  int OSDwidth, OSDheight;
   int CurrentChannel;
   cSetup(void);
   bool Load(const char *FileName);

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.24 2001/07/27 10:55:52 kls Exp $
+ * $Id: i18n.c 1.25 2001/07/27 11:30:02 kls Exp $
  *
  * Slovenian translations provided by Miha Setina <mihasetina@softhome.net>
  * Italian   translations provided by Alberto Carraro <bertocar@tin.it>
@@ -796,6 +796,22 @@ const tPhrase Phrases[] = {
   },
   { "ChannelInfoPos",
     "Kanal Info Position",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+  },
+  { "OSDwidth",
+    "OSD Breite",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+  },
+  { "OSDheight",
+    "OSD Höhe",
     "", // TODO
     "", // TODO
     "", // TODO

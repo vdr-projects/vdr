@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.c 1.37 2001/07/22 12:26:28 kls Exp $
+ * $Id: interface.c 1.38 2001/07/27 11:39:53 kls Exp $
  */
 
 #include "interface.h"
@@ -44,8 +44,13 @@ cInterface::~cInterface()
 
 void cInterface::Open(int NumCols, int NumLines)
 {
-  if (!open++)
+  if (!open++) {
+     if (NumCols == 0)
+        NumCols = Setup.OSDwidth;
+     if (NumLines == 0)
+        NumLines = Setup.OSDheight;
      cDvbApi::PrimaryDvbApi->Open(width = NumCols, height = NumLines);
+     }
 }
 
 void cInterface::Close(void)
@@ -289,7 +294,7 @@ void cInterface::Status(const char *s, eDvbColor FgColor, eDvbColor BgColor)
 
 void cInterface::Info(const char *s)
 {
-  Open(MenuColumns, -1);
+  Open(Setup.OSDwidth, -1);
   isyslog(LOG_INFO, "info: %s", s);
   Status(s, clrWhite, clrGreen);
   Wait();
@@ -299,7 +304,7 @@ void cInterface::Info(const char *s)
 
 void cInterface::Error(const char *s)
 {
-  Open(MenuColumns, -1);
+  Open(Setup.OSDwidth, -1);
   esyslog(LOG_ERR, "ERROR: %s", s);
   Status(s, clrWhite, clrRed);
   Wait();

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.88 2001/07/27 10:49:51 kls Exp $
+ * $Id: dvbapi.c 1.89 2001/07/27 11:43:16 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -1847,7 +1847,7 @@ void cDvbApi::SetColor(eDvbColor colorFg, eDvbColor colorBg)
 
 void cDvbApi::Open(int w, int h)
 {
-  int d = (h < 0) ? MenuLines + h : 0;
+  int d = (h < 0) ? Setup.OSDheight + h : 0;
   h = abs(h);
   cols = w;
   rows = h;
@@ -1870,8 +1870,8 @@ void cDvbApi::Open(int w, int h)
   w *= charWidth;
   h *= lineHeight;
   d *= lineHeight;
-  int x = (720 - (MenuColumns - 1) * charWidth) / 2; //TODO PAL vs. NTSC???
-  int y = (576 - MenuLines * lineHeight) / 2 + d;
+  int x = (720 - (Setup.OSDwidth - 1) * charWidth) / 2; //TODO PAL vs. NTSC???
+  int y = (576 - Setup.OSDheight * lineHeight) / 2 + d;
   //XXX
   osd = new cDvbOsd(fd_osd, x, y);
   //XXX TODO this should be transferred to the places where the individual windows are requested (there's too much detailed knowledge here!)
@@ -1882,9 +1882,9 @@ void cDvbApi::Open(int w, int h)
      osd->Create(0,              0, w, h, 4);
      }
   else if (d == 0) { //XXX full menu
-     osd->Create(0,                            0, w,                   lineHeight, 2);
-     osd->Create(0,                   lineHeight, w, (MenuLines - 3) * lineHeight, 2, true, clrBackground, clrCyan, clrWhite, clrBlack);
-     osd->Create(0, (MenuLines - 2) * lineHeight, w,               2 * lineHeight, 4);
+     osd->Create(0,                            0, w,                         lineHeight, 2);
+     osd->Create(0,                   lineHeight, w, (Setup.OSDheight - 3) * lineHeight, 2, true, clrBackground, clrCyan, clrWhite, clrBlack);
+     osd->Create(0, (Setup.OSDheight - 2) * lineHeight, w,               2 * lineHeight, 4);
      }
   else { //XXX progress display
      /*XXX

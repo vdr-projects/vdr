@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.82 2001/07/27 10:54:21 kls Exp $
+ * $Id: menu.c 1.83 2001/07/27 11:51:42 kls Exp $
  */
 
 #include "menu.h"
@@ -874,7 +874,7 @@ public:
 cMenuText::cMenuText(const char *Title, const char *Text, eDvbFont Font)
 :cOsdMenu(Title)
 {
-  Add(new cMenuTextItem(Text, 1, 2, MenuColumns - 2, MAXOSDITEMS, clrWhite, clrBackground, Font));
+  Add(new cMenuTextItem(Text, 1, 2, Setup.OSDwidth - 2, MAXOSDITEMS, clrWhite, clrBackground, Font));
 }
 
 eOSState cMenuText::ProcessKey(eKeys Key)
@@ -1143,20 +1143,20 @@ cMenuEvent::cMenuEvent(const cEventInfo *EventInfo, bool CanSwitch)
         // like all the others? Well, at least like those who actually send the full range
         // of information (like, e.g., 'Sat.1'). Some stations (like 'RTL') don't even
         // bother sending anything but the 'Title'...
-        if (isempty(ExtendedDescription) && !isempty(Subtitle) && strlen(Subtitle) > 2 * MenuColumns) {
+        if (isempty(ExtendedDescription) && !isempty(Subtitle) && int(strlen(Subtitle)) > 2 * Setup.OSDwidth) {
            ExtendedDescription = Subtitle;
            Subtitle = NULL;
            }
         if (!isempty(Title)) {
-           Add(item = new cMenuTextItem(Title, 1, Line, MenuColumns - 2, -1, clrCyan));
+           Add(item = new cMenuTextItem(Title, 1, Line, Setup.OSDwidth - 2, -1, clrCyan));
            Line += item->Height() + 1;
            }
         if (!isempty(Subtitle)) {
-           Add(item = new cMenuTextItem(Subtitle, 1, Line, MenuColumns - 2, -1, clrYellow));
+           Add(item = new cMenuTextItem(Subtitle, 1, Line, Setup.OSDwidth - 2, -1, clrYellow));
            Line += item->Height() + 1;
            }
         if (!isempty(ExtendedDescription))
-           Add(new cMenuTextItem(ExtendedDescription, 1, Line, MenuColumns - 2, Height() - Line - 2, clrCyan), true);
+           Add(new cMenuTextItem(ExtendedDescription, 1, Line, Setup.OSDwidth - 2, Height() - Line - 2, clrCyan), true);
         SetHelp(tr("Record"), NULL, NULL, CanSwitch ? tr("Switch") : NULL);
         }
      }
@@ -1627,6 +1627,8 @@ void cMenuSetup::Set(void)
   Add(new cMenuEditIntItem( tr("DefaultLifetime"),    &data.DefaultLifetime, 0, MAXLIFETIME));
   Add(new cMenuEditBoolItem(tr("VideoFormat"),        &data.VideoFormat, "4:3", "16:9"));
   Add(new cMenuEditBoolItem(tr("ChannelInfoPos"),     &data.ChannelInfoPos, tr("bottom"), tr("top")));
+  Add(new cMenuEditIntItem( tr("OSDwidth"),           &data.OSDwidth, MINOSDWIDTH, MAXOSDWIDTH));
+  Add(new cMenuEditIntItem( tr("OSDheight"),          &data.OSDheight, MINOSDHEIGHT, MAXOSDHEIGHT));
 }
 
 eOSState cMenuSetup::ProcessKey(eKeys Key)
@@ -1803,7 +1805,7 @@ cDisplayChannel::cDisplayChannel(int Number, bool Switched, bool Group)
   lines = 0;
   oldNumber = number = 0;
   cChannel *channel = Group ? Channels.Get(Number) : Channels.GetByNumber(Number);
-  Interface->Open(MenuColumns, Setup.ChannelInfoPos ? 5 : -5);
+  Interface->Open(Setup.OSDwidth, Setup.ChannelInfoPos ? 5 : -5);
   if (channel) {
      DisplayChannel(channel);
      DisplayInfo();
@@ -1817,7 +1819,7 @@ cDisplayChannel::cDisplayChannel(eKeys FirstKey)
   oldNumber = cDvbApi::CurrentChannel();
   number = 0;
   lastTime = time_ms();
-  Interface->Open(MenuColumns, Setup.ChannelInfoPos ? 5 : -5);
+  Interface->Open(Setup.OSDwidth, Setup.ChannelInfoPos ? 5 : -5);
   ProcessKey(FirstKey);
 }
 
@@ -1838,7 +1840,7 @@ void cDisplayChannel::DisplayChannel(const cChannel *Channel)
      snprintf(buffer, BufSize, "%d%s  %s", Channel->number, number ? "-" : "", Channel->name);
   else
      snprintf(buffer, BufSize, "%s", Channel ? Channel->name : tr("*** Invalid Channel ***"));
-  Interface->Fill(0, 0, MenuColumns, 1, clrBackground);
+  Interface->Fill(0, 0, Setup.OSDwidth, 1, clrBackground);
   Interface->Write(0, 0, buffer);
   time_t t = time(NULL);
   struct tm *now = localtime(&t);
@@ -1876,7 +1878,7 @@ void cDisplayChannel::DisplayInfo(void)
            if (Lines > lines) {
               const int t = 6;
               int l = 1;
-              Interface->Fill(0, 1, MenuColumns, Lines, clrBackground);
+              Interface->Fill(0, 1, Setup.OSDwidth, Lines, clrBackground);
               if (!isempty(PresentTitle)) {
                  Interface->Write(0, l, Present->GetTimeString(), clrYellow, clrBackground);
                  Interface->Write(t, l, PresentTitle, clrCyan, clrBackground);
@@ -2177,7 +2179,7 @@ void cReplayControl::ClearLastReplayed(const char *FileName)
 void cReplayControl::Show(void)
 {
   if (!visible) {
-     Interface->Open(MenuColumns, -3);
+     Interface->Open(Setup.OSDwidth, -3);
      needsFastResponse = visible = true;
      shown = ShowProgress(true);
      }
