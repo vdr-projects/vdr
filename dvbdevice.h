@@ -4,16 +4,21 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.h 1.17 2002/11/02 14:32:25 kls Exp $
+ * $Id: dvbdevice.h 1.18 2002/11/03 12:31:15 kls Exp $
  */
 
 #ifndef __DVBDEVICE_H
 #define __DVBDEVICE_H
 
 #include <linux/dvb/frontend.h>
+#include <linux/dvb/version.h>
 #include "device.h"
 #include "dvbspu.h"
 #include "eit.h"
+
+#if DVB_API_VERSION != 3
+#error VDR requires Linux DVB driver API version 3!
+#endif
 
 #define MAXDVBDEVICES  4
 

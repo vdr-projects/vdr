@@ -1716,3 +1716,8 @@ Video Disk Recorder Revision History
   function always has to accept the entire data block immediately and there is
   nothing that could be reasonably done in case an error occurs in one of the
   cAudio objects.
+- Now checking the driver's DVB_API_VERSION in dvbdevice.h. Since VDR now requires
+  a driver dated 2002-11-01 or later the MIN_DVB_DRIVER_VERSION_FOR_TIMESHIFT and
+  DVB_DRIVER_VERSION stuff has been replaced with DO_REC_AND_PLAY_ON_PRIMARY_DEVICE,
+  which can be used to disable simultaneous recording and replaying on the primary
+  DVB device in case there are problems with this.

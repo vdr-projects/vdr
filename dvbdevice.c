@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.33 2002/11/03 11:51:29 kls Exp $
+ * $Id: dvbdevice.c 1.34 2002/11/03 12:31:11 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -31,6 +31,8 @@ extern "C" {
 #include "receiver.h"
 #include "status.h"
 #include "transfer.h"
+
+#define DO_REC_AND_PLAY_ON_PRIMARY_DEVICE 1
 
 #define DEV_VIDEO         "/dev/video"
 #define DEV_DVB_ADAPTER   "/dev/dvb/adapter"
@@ -351,17 +353,10 @@ bool cDvbDevice::ProvidesChannel(const cChannel *Channel, int Priority, bool *Ne
                  }
               else if (!IsPrimaryDevice())
                  result = true;
-              else {
-#define DVB_DRIVER_VERSION 2002090101 //XXX+
-#define MIN_DVB_DRIVER_VERSION_FOR_TIMESHIFT 2002090101
-#ifdef DVB_DRIVER_VERSION
-#if (DVB_DRIVER_VERSION >= MIN_DVB_DRIVER_VERSION_FOR_TIMESHIFT)
-                 result = !IsPrimaryDevice() || Priority >= Setup.PrimaryLimit;
+#ifdef DO_REC_AND_PLAY_ON_PRIMARY_DEVICE
+              else
+                 result = Priority >= Setup.PrimaryLimit;
 #endif
-#else
-#warning "DVB_DRIVER_VERSION not defined - time shift with only one DVB device disabled!"
-#endif
-                 }
               }
            else
               result = !IsPrimaryDevice() || Priority >= Setup.PrimaryLimit;
@@ -386,7 +381,7 @@ static unsigned int FrequencyToHz(unsigned int f)
 
 bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
 {
-#if (DVB_DRIVER_VERSION < MIN_DVB_DRIVER_VERSION_FOR_TIMESHIFT)
+#ifndef DO_REC_AND_PLAY_ON_PRIMARY_DEVICE
   if (HasDecoder())
      LiveView = true;
 #endif
