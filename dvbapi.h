@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.h 1.12 2000/07/30 15:01:01 kls Exp $
+ * $Id: dvbapi.h 1.13 2000/09/03 09:25:53 kls Exp $
  */
 
 #ifndef __DVBAPI_H
@@ -19,7 +19,7 @@ typedef unsigned char __u8;
 #include <ncurses.h>
 #endif
 #include <stdio.h>
-#include "../DVB/driver/dvb.h"
+#include <dvb.h>
 
 #define MenuLines   15
 #define MenuColumns 40

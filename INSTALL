@@ -11,6 +11,9 @@ http://linuxtv.org/dvb/siemens_dvb.html for more information
 about that driver). For example, if the DVB driver was 
 extracted into the directory /home/kls/vdr/DVB, then this
 package should be extracted into /home/kls/vdr/VDR.
+If you have the DVB driver source in a different location
+you will have to change the definition of DVBDIR in the
+Makefile.
 
 This program requires the card driver version 0.05 or higher
 to work properly.

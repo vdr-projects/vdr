@@ -4,14 +4,17 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.17 2000/08/06 12:27:38 kls Exp $
+ * $Id: config.c 1.18 2000/09/03 09:20:22 kls Exp $
  */
 
 #include "config.h"
 #include <ctype.h>
 #include <stdlib.h>
 #include "dvbapi.h"
+#include "eit.h"
 #include "interface.h"
+
+extern cEIT EIT;
 
 // -- cKeys ------------------------------------------------------------------
 
@@ -231,8 +234,10 @@ bool cChannel::Switch(cDvbApi *DvbApi)
      isyslog(LOG_INFO, "switching to channel %d", Index() + 1);
      CurrentChannel = Index();
      for (int i = 3; i--;) {
-         if (DvbApi->SetChannel(frequency, polarization, diseqc, srate, vpid, apid, ca, pnr))
+         if (DvbApi->SetChannel(frequency, polarization, diseqc, srate, vpid, apid, ca, pnr)) {
+            EIT.SetProgramNumber(pnr);
             return true;
+            }
          esyslog(LOG_ERR, "retrying");
          }
      return false;

@@ -123,3 +123,18 @@ Video Disk Recorder Revision History
   doesn't yet exist).
 - New version of the 'epg2timers' tool (with a modified channel list).
 - Bugfix in closing window in DEBUG_OSD mode.
+
+2000-09-03: Version 0.62
+
+- The Makefile now defines DVBDIR to easily point to where the DVB driver
+  source is located.
+- When switching channels the current/next information is now displayed if
+  available (thanks to Robert Schneider). Since there is now more information
+  to read when switching channels, the timeout for displaying it has been
+  increased from 2 to 5 seconds (remember that this info can always be recalled
+  by pressing the "Ok" button).
+  For this feature to work it is necessary that the 'Pnr' parameter in the
+  channel setup ('channels.conf') is set to the proper value. This has been
+  done for some of the channels in the default 'channels.conf'. Some other
+  parameters in the default 'channels.conf' have also been updated, so please
+  make sure your timers still use the correct channels!
