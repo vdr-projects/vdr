@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.197 2005/01/02 14:39:41 kls Exp $
+ * $Id: vdr.c 1.198 2005/01/06 14:36:40 kls Exp $
  */
 
 #include <getopt.h>
@@ -699,6 +699,12 @@ int main(int argc, char *argv[])
                break;
           // Audio track control:
           case kAudio:
+               if (cControl::Control())
+                  cControl::Control()->Hide();
+               if (Temp && !cDisplayTracks::IsOpen()) {
+                  DELETENULL(Menu);
+                  Temp = NULL;
+                  }
                if (!Menu && !cOsd::IsOpen())
                   Menu = Temp = cDisplayTracks::Create();
                else

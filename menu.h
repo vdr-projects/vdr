@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 1.66 2005/01/02 14:38:00 kls Exp $
+ * $Id: menu.h 1.67 2005/01/06 14:29:46 kls Exp $
  */
 
 #ifndef __MENU_H
@@ -87,6 +87,7 @@ private:
   cDisplayTracks(void);
 public:
   virtual ~cDisplayTracks();
+  static bool IsOpen(void) { return currentDisplayTracks != NULL; }
   static cDisplayTracks *Create(void);
   static void Process(eKeys Key);
   eOSState ProcessKey(eKeys Key);
