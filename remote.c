@@ -6,7 +6,7 @@
  *
  * Ported to LIRC by Carsten Koch <Carsten.Koch@icem.de>  2000-06-16.
  *
- * $Id: remote.c 1.25 2001/09/30 11:39:49 kls Exp $
+ * $Id: remote.c 1.26 2002/05/13 16:31:27 kls Exp $
  */
 
 #include "remote.h"
@@ -130,7 +130,7 @@ void cRcIoRCU::Action(void)
     } buffer;
 #pragma pack()
 
-  dsyslog(LOG_INFO, "RCU remote control thread started (pid=%d)", getpid());
+  dsyslog("RCU remote control thread started (pid=%d)", getpid());
 
   int FirstTime = 0;
   unsigned int LastCommand = 0;
@@ -425,7 +425,7 @@ cRcIoLIRC::~cRcIoLIRC()
 
 void cRcIoLIRC::Action(void)
 {
-  dsyslog(LOG_INFO, "LIRC remote control thread started (pid=%d)", getpid());
+  dsyslog("LIRC remote control thread started (pid=%d)", getpid());
 
   int FirstTime = 0;
   int LastTime = 0;

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.61 2002/04/21 14:02:55 kls Exp $
+ * $Id: recording.c 1.62 2002/05/13 16:31:21 kls Exp $
  */
 
 #include "recording.h"
@@ -86,7 +86,7 @@ void AssertFreeDiskSpace(int Priority)
         if (!LockFile.Lock())
            return;
         // Remove the oldest file that has been "deleted":
-        isyslog(LOG_INFO, "low disk space while recording, trying to remove a deleted recording...");
+        isyslog("low disk space while recording, trying to remove a deleted recording...");
         cRecordings Recordings;
         if (Recordings.Load(true)) {
            cRecording *r = Recordings.First();
@@ -102,7 +102,7 @@ void AssertFreeDiskSpace(int Priority)
               }
            }
         // No "deleted" files to remove, so let's see if we can delete a recording:
-        isyslog(LOG_INFO, "...no deleted recording found, trying to delete an old recording...");
+        isyslog("...no deleted recording found, trying to delete an old recording...");
         if (Recordings.Load(false)) {
            cRecording *r = Recordings.First();
            cRecording *r0 = NULL;
@@ -124,7 +124,7 @@ void AssertFreeDiskSpace(int Priority)
               return;
            }
         // Unable to free disk space, but there's nothing we can do about that...
-        isyslog(LOG_INFO, "...no old recording found, giving up");
+        isyslog("...no old recording found, giving up");
         Interface->Confirm(tr("Low disk space!"), 30);
         }
      LastFreeDiskCheck = time(NULL);
@@ -141,7 +141,7 @@ cResumeFile::cResumeFile(const char *FileName)
      strcat(fileName, RESUMEFILESUFFIX);
      }
   else
-     esyslog(LOG_ERR, "ERROR: can't allocate memory for resume file name");
+     esyslog("ERROR: can't allocate memory for resume file name");
 }
 
 cResumeFile::~cResumeFile()
@@ -368,7 +368,7 @@ cRecording::cRecording(const char *FileName)
               if (rbytes >= 0) {
                  summary[rbytes] = 0;
                  if (rbytes != size)
-                    esyslog(LOG_ERR, "%s: expected %d bytes but read %d", SummaryFileName, size, rbytes);
+                    esyslog("%s: expected %d bytes but read %d", SummaryFileName, size, rbytes);
                  }
               else {
                  LOG_ERROR_STR(SummaryFileName);
@@ -378,7 +378,7 @@ cRecording::cRecording(const char *FileName)
 
               }
            else
-              esyslog(LOG_ERR, "can't allocate %d byte of memory for summary file '%s'", size + 1, SummaryFileName);
+              esyslog("can't allocate %d byte of memory for summary file '%s'", size + 1, SummaryFileName);
            close(f);
            }
         else
@@ -556,10 +556,10 @@ bool cRecording::Delete(void)
      strncpy(ext, DELEXT, strlen(ext));
      if (access(NewName, F_OK) == 0) {
         // the new name already exists, so let's remove that one first:
-        isyslog(LOG_INFO, "removing recording %s", NewName);
+        isyslog("removing recording %s", NewName);
         RemoveVideoFile(NewName);
         }
-     isyslog(LOG_INFO, "deleting recording %s", FileName());
+     isyslog("deleting recording %s", FileName());
      result = RenameVideoFile(FileName(), NewName);
      }
   delete NewName;
@@ -570,10 +570,10 @@ bool cRecording::Remove(void)
 {
   // let's do a final safety check here:
   if (!endswith(FileName(), DELEXT)) {
-     esyslog(LOG_ERR, "attempt to remove recording %s", FileName());
+     esyslog("attempt to remove recording %s", FileName());
      return false;
      }
-  isyslog(LOG_INFO, "removing recording %s", FileName());
+  isyslog("removing recording %s", FileName());
   return RemoveVideoFile(FileName());
 }
 
@@ -727,7 +727,7 @@ void cRecordingUserCommand::InvokeCommand(const char *State, const char *Recordi
   if (command) {
      char *cmd;
      asprintf(&cmd, "%s %s \"%s\"", command, State, strescape(RecordingFileName, "\"$"));
-     isyslog(LOG_INFO, "executing '%s'", cmd);
+     isyslog("executing '%s'", cmd);
      SystemExec(cmd);
      delete cmd;
      }

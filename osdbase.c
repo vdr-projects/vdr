@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osdbase.c 1.1 2002/05/10 14:55:53 kls Exp $
+ * $Id: osdbase.c 1.2 2002/05/13 16:30:59 kls Exp $
  */
 
 #include "osdbase.h"
@@ -49,7 +49,7 @@ int cPalette::Index(eDvbColor Color)
             return i;
             }
          }
-     esyslog(LOG_ERR, "ERROR: too many different colors used in palette");
+     esyslog("ERROR: too many different colors used in palette");
      full = true;
      }
   return 0;
@@ -105,10 +105,10 @@ cBitmap::cBitmap(int Width, int Height, int Bpp, bool ClearWithBackground)
         SetFont(fontOsd);
         }
      else
-        esyslog(LOG_ERR, "ERROR: can't allocate bitmap!");
+        esyslog("ERROR: can't allocate bitmap!");
      }
   else
-     esyslog(LOG_ERR, "ERROR: illegal bitmap parameters (%d, %d)!", width, height);
+     esyslog("ERROR: illegal bitmap parameters (%d, %d)!", width, height);
 }
 
 cBitmap::~cBitmap()
@@ -337,7 +337,7 @@ tWindowHandle cOsd::Create(int x, int y, int w, int h, int Bpp, bool ClearWithBa
      if (x >= 0 && y >= 0 && w > 0 && h > 0 && (Bpp == 1 || Bpp == 2 || Bpp == 4 || Bpp == 8)) {
         if ((w & 0x03) != 0) {
            w += 4 - (w & 0x03);
-           esyslog(LOG_ERR, "ERROR: OSD window width must be a multiple of 4 - increasing to %d", w);
+           esyslog("ERROR: OSD window width must be a multiple of 4 - increasing to %d", w);
            }
         cWindow *win = new cWindow(numWindows, x, y, w, h, Bpp, ClearWithBackground, Tiled);
         if (OpenWindow(win)) {
@@ -349,10 +349,10 @@ tWindowHandle cOsd::Create(int x, int y, int w, int h, int Bpp, bool ClearWithBa
            delete win;
         }
      else
-        esyslog(LOG_ERR, "ERROR: illegal OSD parameters");
+        esyslog("ERROR: illegal OSD parameters");
      }
   else
-     esyslog(LOG_ERR, "ERROR: too many OSD windows");
+     esyslog("ERROR: too many OSD windows");
   return -1;
 }
 
@@ -456,7 +456,7 @@ void cOsd::Relocate(tWindowHandle Window, int x, int y, int NewWidth, int NewHei
      if (NewWidth > 0 && NewHeight > 0) {
         if ((NewWidth & 0x03) != 0) {
            NewWidth += 4 - (NewWidth & 0x03);
-           esyslog(LOG_ERR, "ERROR: OSD window width must be a multiple of 4 - increasing to %d", NewWidth);
+           esyslog("ERROR: OSD window width must be a multiple of 4 - increasing to %d", NewWidth);
            }
         CloseWindow(w);
         cWindow *NewWindow = new cWindow(w->Handle(), x, y, NewWidth, NewHeight, w->Bpp(), w->ClearWithBackground(), w->Tiled());

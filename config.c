@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.100 2002/05/11 12:05:22 kls Exp $
+ * $Id: config.c 1.101 2002/05/13 16:28:12 kls Exp $
  */
 
 #include "config.h"
@@ -72,7 +72,7 @@ void cKeys::SetDummyValues(void)
 
 bool cKeys::Load(const char *FileName)
 {
-  isyslog(LOG_INFO, "loading %s", FileName);
+  isyslog("loading %s", FileName);
   bool result = false;
   if (FileName)
      fileName = strdup(FileName);
@@ -105,7 +105,7 @@ bool cKeys::Load(const char *FileName)
                                  }
                               }
                            if (Name) {
-                              esyslog(LOG_ERR, "unknown key in %s, line %d\n", fileName, line);
+                              esyslog("unknown key in %s, line %d\n", fileName, line);
                               result = false;
                               break;
                               }
@@ -113,7 +113,7 @@ bool cKeys::Load(const char *FileName)
                        }
                     continue;
                     }
-                 esyslog(LOG_ERR, "error in %s, line %d\n", fileName, line);
+                 esyslog("error in %s, line %d\n", fileName, line);
                  result = false;
                  break;
                  }
@@ -121,10 +121,10 @@ bool cKeys::Load(const char *FileName)
         fclose(f);
         }
      else
-        esyslog(LOG_ERR, "can't open '%s'\n", fileName);
+        esyslog("can't open '%s'\n", fileName);
      }
   else
-     esyslog(LOG_ERR, "no key configuration file name supplied!\n");
+     esyslog("no key configuration file name supplied!\n");
   return result;
 }
 
@@ -299,7 +299,7 @@ bool cChannel::Switch(cDvbApi *DvbApi, bool Log)
      DvbApi = cDvbApi::PrimaryDvbApi;
   if (!DvbApi->Recording() && !groupSep) {
      if (Log)
-        isyslog(LOG_INFO, "switching to channel %d", number);
+        isyslog("switching to channel %d", number);
      for (int i = 3; i--;) {
          switch (DvbApi->SetChannel(number, frequency, polarization, diseqc, srate, vpid, apid1, apid2, dpid1, dpid2, tpid, ca, pnr)) {
            case scrOk:         return true;
@@ -308,7 +308,7 @@ bool cChannel::Switch(cDvbApi *DvbApi, bool Log)
                                return false;
            case scrFailed:     break; // loop will retry
            }
-         esyslog(LOG_ERR, "retrying");
+         esyslog("retrying");
          }
      return false;
      }
@@ -637,7 +637,7 @@ time_t cTimer::StopTime(void)
 void cTimer::SetRecording(bool Recording)
 {
   recording = Recording;
-  isyslog(LOG_INFO, "timer %d %s", Index() + 1, recording ? "start" : "stop");
+  isyslog("timer %d %s", Index() + 1, recording ? "start" : "stop");
 }
 
 void cTimer::SetPending(bool Pending)
@@ -684,7 +684,7 @@ bool cCommand::Parse(const char *s)
 
 const char *cCommand::Execute(void)
 {
-  dsyslog(LOG_INFO, "executing command '%s'", command);
+  dsyslog("executing command '%s'", command);
   delete result;
   result = NULL;
   FILE *p = popen(command, "r");
@@ -701,7 +701,7 @@ const char *cCommand::Execute(void)
      pclose(p);
      }
   else
-     esyslog(LOG_ERR, "ERROR: can't open pipe for command '%s'", command);
+     esyslog("ERROR: can't open pipe for command '%s'", command);
   return result;
 }
 
@@ -1084,7 +1084,7 @@ bool cSetup::Load(const char *FileName)
                error = true;
             }
          if (error) {
-            esyslog(LOG_ERR, "ERROR: unknown config parameter: %s%s%s = %s", l->Plugin() ? l->Plugin() : "", l->Plugin() ? "." : "", l->Name(), l->Value());
+            esyslog("ERROR: unknown config parameter: %s%s%s = %s", l->Plugin() ? l->Plugin() : "", l->Plugin() ? "." : "", l->Name(), l->Value());
             result = false;
             }
          }
@@ -1225,7 +1225,7 @@ bool cSetup::Save(void)
   Sort();
 
   if (cConfig<cSetupLine>::Save()) {
-     isyslog(LOG_INFO, "saved setup to %s", FileName());
+     isyslog("saved setup to %s", FileName());
      return true;
      }
   return false;

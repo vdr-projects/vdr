@@ -7,7 +7,7 @@
  * Parts of this file were inspired by the 'ringbuffy.c' from the
  * LinuxDVB driver (see linuxtv.org).
  *
- * $Id: ringbuffer.c 1.6 2002/04/19 12:38:44 kls Exp $
+ * $Id: ringbuffer.c 1.7 2002/05/13 16:31:46 kls Exp $
  */
 
 #include "ringbuffer.h"
@@ -52,7 +52,7 @@ cRingBuffer::~cRingBuffer()
   delete inputThread;
   delete outputThread;
   if (statistics)
-     dsyslog(LOG_INFO, "buffer stats: %d (%d%%) used", maxFill, maxFill * 100 / (size - 1));
+     dsyslog("buffer stats: %d (%d%%) used", maxFill, maxFill * 100 / (size - 1));
 }
 
 void cRingBuffer::WaitForPut(void)
@@ -121,11 +121,11 @@ cRingBufferLinear::cRingBufferLinear(int Size, bool Statistics)
   if (Size > 1) { // 'Size - 1' must not be 0!
      buffer = new uchar[Size];
      if (!buffer)
-        esyslog(LOG_ERR, "ERROR: can't allocate ring buffer (size=%d)", Size);
+        esyslog("ERROR: can't allocate ring buffer (size=%d)", Size);
      Clear();
      }
   else
-     esyslog(LOG_ERR, "ERROR: illegal size for ring buffer (%d)", Size);
+     esyslog("ERROR: illegal size for ring buffer (%d)", Size);
 }
 
 cRingBufferLinear::~cRingBufferLinear()
@@ -163,7 +163,7 @@ int cRingBufferLinear::Put(const uchar *Data, int Count)
            maxFill = fill;
            int percent = maxFill * 100 / (Size() - 1);
            if (percent > 75)
-              dsyslog(LOG_INFO, "buffer usage: %d%%", percent);
+              dsyslog("buffer usage: %d%%", percent);
            }
         }
      if (free > 0) {
@@ -228,7 +228,7 @@ cFrame::cFrame(const uchar *Data, int Count, eFrameType Type, int Index)
   if (data)
      memcpy(data, Data, count);
   else
-     esyslog(LOG_ERR, "ERROR: can't allocate frame buffer (count=%d)", count);
+     esyslog("ERROR: can't allocate frame buffer (count=%d)", count);
   next = NULL;
 }
 
@@ -314,7 +314,7 @@ void cRingBufferFrame::Drop(const cFrame *Frame)
            }
         }
      else
-        esyslog(LOG_ERR, "ERROR: attempt to drop wrong frame from ring buffer!");
+        esyslog("ERROR: attempt to drop wrong frame from ring buffer!");
      }
   Unlock();
   EnablePut();

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: videodir.c 1.7 2002/01/27 12:37:26 kls Exp $
+ * $Id: videodir.c 1.8 2002/05/13 16:32:52 kls Exp $
  */
 
 #include "videodir.h"
@@ -108,7 +108,7 @@ int OpenVideoFile(const char *FileName, int Flags)
 
   // Incoming name must be in base video directory:
   if (strstr(FileName, VideoDirectory) != FileName) {
-     esyslog(LOG_ERR, "ERROR: %s not in %s", FileName, VideoDirectory);
+     esyslog("ERROR: %s not in %s", FileName, VideoDirectory);
      errno = ENOENT; // must set 'errno' - any ideas for a better value?
      return -1;
      }

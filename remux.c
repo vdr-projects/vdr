@@ -8,7 +8,7 @@
  * the Linux DVB driver's 'tuxplayer' example and were rewritten to suit
  * VDR's needs.
  *
- * $Id: remux.c 1.8 2002/02/03 16:20:37 kls Exp $
+ * $Id: remux.c 1.9 2002/05/13 16:31:38 kls Exp $
  */
 
 /* The calling interface of the 'cRemux::Process()' function is defined
@@ -154,7 +154,7 @@ cTS2PES::cTS2PES(uint8_t *ResultBuffer, int *ResultCount, int Size, uint8_t Audi
   audioCid = AudioCid;
 
   if (!(buf = new uint8_t[size]))
-     esyslog(LOG_ERR, "Not enough memory for ts_transform");
+     esyslog("Not enough memory for ts_transform");
 
   reset_ipack();
 }
@@ -172,7 +172,7 @@ void cTS2PES::Clear(void)
 void cTS2PES::store(uint8_t *Data, int Count)
 {
   if (*resultCount + Count > RESULTBUFFERSIZE) {
-     esyslog(LOG_ERR, "ERROR: result buffer overflow (%d + %d > %d)", *resultCount, Count, RESULTBUFFERSIZE);
+     esyslog("ERROR: result buffer overflow (%d + %d > %d)", *resultCount, Count, RESULTBUFFERSIZE);
      Count = RESULTBUFFERSIZE - *resultCount;
      }
   memcpy(resultBuffer + *resultCount, Data, Count);
@@ -309,7 +309,7 @@ void cTS2PES::instant_repack(const uint8_t *Buf, int Count)
                      if ((flag1 & 0xC0) == 0x80 )
                         mpeg = 2;
                      else {
-                        esyslog(LOG_INFO, "ERROR: can't record MPEG1!");
+                        esyslog("ERROR: can't record MPEG1!");
                         hlength = 0;
                         which = 0;
                         mpeg = 1;
@@ -525,7 +525,7 @@ XXX*/
         used++;
         }
   if (used)
-     esyslog(LOG_ERR, "ERROR: skipped %d byte to sync on TS packet", used);
+     esyslog("ERROR: skipped %d byte to sync on TS packet", used);
 
   // Convert incoming TS data into multiplexed PES:
 
@@ -570,7 +570,7 @@ XXX*/
 
   if (!synced && skipped >= 0) {
      if (skipped > MAXNONUSEFULDATA) {
-        esyslog(LOG_ERR, "ERROR: no useful data seen within %d byte of video stream", skipped);
+        esyslog("ERROR: no useful data seen within %d byte of video stream", skipped);
         skipped = -1;
         if (exitOnFailure)
            cThread::EmergencyExit(true);
@@ -595,7 +595,7 @@ XXX*/
                         return NULL; // no useful data found, wait for more
                      if (pt != NO_PICTURE) {
                         if (pt < I_FRAME || B_FRAME < pt)
-                           esyslog(LOG_ERR, "ERROR: unknown picture type '%d'", pt);
+                           esyslog("ERROR: unknown picture type '%d'", pt);
                         else if (!synced) {
                            if (pt == I_FRAME) {
                               resultDelivered = i; // will drop everything before this position

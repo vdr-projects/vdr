@@ -16,7 +16,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.c 1.44 2002/04/06 13:58:59 kls Exp $
+ * $Id: eit.c 1.45 2002/05/13 16:35:49 kls Exp $
  ***************************************************************************/
 
 #include "eit.h"
@@ -117,7 +117,7 @@ void cMJD::ConvertToTime()
 
    mjdtime = timegm(&t);
 
-   //isyslog(LOG_INFO, "Time parsed = %s\n", ctime(&mjdtime));
+   //isyslog("Time parsed = %s\n", ctime(&mjdtime));
 }
 
 /**  */
@@ -132,10 +132,10 @@ bool cMJD::SetSystemTime()
 
    if (abs(mjdtime - loctim) > 2)
    {
-      isyslog(LOG_INFO, "System Time = %s (%ld)\n", ctime(&loctim), loctim);
-      isyslog(LOG_INFO, "Local Time  = %s (%ld)\n", ctime(&mjdtime), mjdtime);
+      isyslog("System Time = %s (%ld)\n", ctime(&loctim), loctim);
+      isyslog("Local Time  = %s (%ld)\n", ctime(&mjdtime), mjdtime);
       if (stime(&mjdtime) < 0)
-         esyslog(LOG_ERR, "ERROR while setting system time: %m");
+         esyslog("ERROR while setting system time: %m");
       return true;
    }
 
@@ -391,11 +391,11 @@ bool cEventInfo::Read(FILE *f, cSchedule *Schedule)
                        break;
              case 'c': // to keep things simple we react on 'c' here
                        return true;
-             default:  esyslog(LOG_ERR, "ERROR: unexpected tag while reading EPG data: %s", s);
+             default:  esyslog("ERROR: unexpected tag while reading EPG data: %s", s);
                        return false;
              }
            }
-     esyslog(LOG_ERR, "ERROR: unexpected end of file while reading EPG data");
+     esyslog("ERROR: unexpected end of file while reading EPG data");
      }
   return false;
 }
@@ -436,14 +436,14 @@ static void ReportEpgBugFixStats(bool Reset = false)
          tEpgBugFixStats *p = &EpgBugFixStats[i];
          if (p->hits) {
             if (!GotHits) {
-               dsyslog(LOG_INFO, "=====================");
-               dsyslog(LOG_INFO, "EPG bugfix statistics");
-               dsyslog(LOG_INFO, "=====================");
-               dsyslog(LOG_INFO, "IF SOMEBODY WHO IS IN CHARGE OF THE EPG DATA FOR ONE OF THE LISTED");
-               dsyslog(LOG_INFO, "CHANNELS READS THIS: PLEASE TAKE A LOOK AT THE FUNCTION cEventInfo::FixEpgBugs()");
-               dsyslog(LOG_INFO, "IN VDR/eit.c TO LEARN WHAT'S WRONG WITH YOUR DATA, AND FIX IT!");
-               dsyslog(LOG_INFO, "=====================");
-               dsyslog(LOG_INFO, "Fix\tHits\tChannels");
+               dsyslog("=====================");
+               dsyslog("EPG bugfix statistics");
+               dsyslog("=====================");
+               dsyslog("IF SOMEBODY WHO IS IN CHARGE OF THE EPG DATA FOR ONE OF THE LISTED");
+               dsyslog("CHANNELS READS THIS: PLEASE TAKE A LOOK AT THE FUNCTION cEventInfo::FixEpgBugs()");
+               dsyslog("IN VDR/eit.c TO LEARN WHAT'S WRONG WITH YOUR DATA, AND FIX IT!");
+               dsyslog("=====================");
+               dsyslog("Fix\tHits\tChannels");
                GotHits = true;
                }
             char *q = buffer;
@@ -455,13 +455,13 @@ static void ReportEpgBugFixStats(bool Reset = false)
                    delim = ", ";
                    }
                 }
-            dsyslog(LOG_INFO, "%s", buffer);
+            dsyslog("%s", buffer);
             }
          if (Reset)
             p->hits = p->n = 0;
          }
      if (GotHits)
-        dsyslog(LOG_INFO, "=====================");
+        dsyslog("=====================");
      }
 }
 
@@ -760,7 +760,7 @@ bool cSchedule::Read(FILE *f, cSchedules *Schedules)
                  }
               }
            else {
-              esyslog(LOG_ERR, "ERROR: unexpected tag while reading EPG data: %s", s);
+              esyslog("ERROR: unexpected tag while reading EPG data: %s", s);
               return false;
               }
            }
@@ -1015,7 +1015,7 @@ bool cSIProcessor::Read(FILE *f)
   if (OwnFile) {
      const char *FileName = GetEpgDataFileName();
      if (access(FileName, R_OK) == 0) {
-        dsyslog(LOG_INFO, "reading EPG data from %s", FileName);
+        dsyslog("reading EPG data from %s", FileName);
         if ((f = fopen(FileName, "r")) == NULL) {
            LOG_ERROR;
            return false;
@@ -1065,7 +1065,7 @@ information and let the classes corresponding
 to the tables write their information to the disk */
 void cSIProcessor::Action()
 {
-   dsyslog(LOG_INFO, "EIT processing thread started (pid=%d)%s", getpid(), masterSIProcessor ? " - master" : "");
+   dsyslog("EIT processing thread started (pid=%d)%s", getpid(), masterSIProcessor ? " - master" : "");
 
    time_t lastCleanup = time(NULL);
    time_t lastDump = time(NULL);
@@ -1082,7 +1082,7 @@ void cSIProcessor::Action()
          if (now - lastCleanup > 3600 && ptm->tm_hour == 5)
          {
             cMutexLock MutexLock(&schedulesMutex);
-            isyslog(LOG_INFO, "cleaning up schedules data");
+            isyslog("cleaning up schedules data");
             schedules->Cleanup();
             lastCleanup = now;
             ReportEpgBugFixStats(true);
@@ -1131,7 +1131,7 @@ void cSIProcessor::Action()
                   if (n == seclen)
                   {
                      seclen += 3;
-                     //dsyslog(LOG_INFO, "Received pid 0x%02x with table ID 0x%02x and length of %04d\n", pid, buf[0], seclen);
+                     //dsyslog("Received pid 0x%02x with table ID 0x%02x and length of %04d\n", pid, buf[0], seclen);
                      switch (pid)
                      {
                         case 0x14:
@@ -1145,7 +1145,7 @@ void cSIProcessor::Action()
                            }
                               /*XXX this comes pretty often:
                            else
-                              dsyslog(LOG_INFO, "Time packet was not 0x70 but 0x%02x\n", (int)buf[0]);
+                              dsyslog("Time packet was not 0x70 but 0x%02x\n", (int)buf[0]);
                               XXX*/
                            break;
 
@@ -1157,7 +1157,7 @@ void cSIProcessor::Action()
                               ceit.ProcessEIT(buf);
                            }
                            else
-                              dsyslog(LOG_INFO, "Received stuffing section in EIT\n");
+                              dsyslog("Received stuffing section in EIT\n");
                            break;
 
                         default:
@@ -1166,7 +1166,7 @@ void cSIProcessor::Action()
                   }
                   /*XXX this just fills up the log file - shouldn't we rather try to re-sync?
                   else
-                     dsyslog(LOG_INFO, "read incomplete section - seclen = %d, n = %d", seclen, n);
+                     dsyslog("read incomplete section - seclen = %d, n = %d", seclen, n);
                   XXX*/
                }
             }
@@ -1174,7 +1174,7 @@ void cSIProcessor::Action()
       }
    }
 
-   dsyslog(LOG_INFO, "EIT processing thread ended (pid=%d)%s", getpid(), masterSIProcessor ? " - master" : "");
+   dsyslog("EIT processing thread ended (pid=%d)%s", getpid(), masterSIProcessor ? " - master" : "");
 }
 
 /** Add a filter with packet identifier pid and
@@ -1202,21 +1202,21 @@ bool cSIProcessor::AddFilter(u_char pid, u_char tid)
                filters[a].inuse = true;
             else
             {
-               esyslog(LOG_ERR, "ERROR: can't set filter");
+               esyslog("ERROR: can't set filter");
                close(filters[a].handle);
                return false;
             }
-            // dsyslog(LOG_INFO, "  Registered filter handle %04x, pid = %02d, tid = %02d", filters[a].handle, filters[a].pid, filters[a].tid);
+            // dsyslog("Registered filter handle %04x, pid = %02d, tid = %02d", filters[a].handle, filters[a].pid, filters[a].tid);
          }
          else
          {
-            esyslog(LOG_ERR, "ERROR: can't open filter handle");
+            esyslog("ERROR: can't open filter handle");
             return false;
          }
          return true;
       }
    }
-   esyslog(LOG_ERR, "ERROR: too many filters");
+   esyslog("ERROR: too many filters");
 
    return false;
 }
@@ -1229,7 +1229,7 @@ bool cSIProcessor::ShutDownFilters(void)
       if (filters[a].inuse)
       {
          close(filters[a].handle);
-         // dsyslog(LOG_INFO, "Deregistered filter handle %04x, pid = %02d, tid = %02d", filters[a].handle, filters[a].pid, filters[a].tid);
+         // dsyslog("Deregistered filter handle %04x, pid = %02d, tid = %02d", filters[a].handle, filters[a].pid, filters[a].tid);
          filters[a].inuse = false;
       }
    }

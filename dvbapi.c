@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.174 2002/05/03 15:59:32 kls Exp $
+ * $Id: dvbapi.c 1.175 2002/05/13 16:29:17 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -137,7 +137,7 @@ cIndexFile::cIndexFile(const char *FileName, bool Record)
               delta = buf.st_size % sizeof(tIndex);
               if (delta) {
                  delta = sizeof(tIndex) - delta;
-                 esyslog(LOG_ERR, "ERROR: invalid file size (%ld) in '%s'", buf.st_size, fileName);
+                 esyslog("ERROR: invalid file size (%ld) in '%s'", buf.st_size, fileName);
                  }
               last = (buf.st_size + delta) / sizeof(tIndex) - 1;
               if (!Record && last >= 0) {
@@ -147,7 +147,7 @@ cIndexFile::cIndexFile(const char *FileName, bool Record)
                     f = open(fileName, O_RDONLY);
                     if (f >= 0) {
                        if ((int)safe_read(f, index, buf.st_size) != buf.st_size) {
-                          esyslog(LOG_ERR, "ERROR: can't read from file '%s'", fileName);
+                          esyslog("ERROR: can't read from file '%s'", fileName);
                           delete index;
                           index = NULL;
                           close(f);
@@ -159,18 +159,18 @@ cIndexFile::cIndexFile(const char *FileName, bool Record)
                        LOG_ERROR_STR(fileName);
                     }
                  else
-                    esyslog(LOG_ERR, "ERROR: can't allocate %d bytes for index '%s'", size * sizeof(tIndex), fileName);
+                    esyslog("ERROR: can't allocate %d bytes for index '%s'", size * sizeof(tIndex), fileName);
                  }
               }
            else
               LOG_ERROR;
            }
         else if (!Record)
-           isyslog(LOG_INFO, "missing index file %s", fileName);
+           isyslog("missing index file %s", fileName);
         if (Record) {
            if ((f = open(fileName, O_WRONLY | O_CREAT | O_APPEND, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH)) >= 0) {
               if (delta) {
-                 esyslog(LOG_ERR, "ERROR: padding index file with %d '0' bytes", delta);
+                 esyslog("ERROR: padding index file with %d '0' bytes", delta);
                  while (delta--)
                        writechar(f, 0);
                  }
@@ -180,7 +180,7 @@ cIndexFile::cIndexFile(const char *FileName, bool Record)
            }
         }
      else
-        esyslog(LOG_ERR, "ERROR: can't copy file name '%s'", FileName);
+        esyslog("ERROR: can't copy file name '%s'", FileName);
      }
 }
 
@@ -211,7 +211,7 @@ bool cIndexFile::CatchUp(int Index)
                   int delta = (newLast - last) * sizeof(tIndex);
                   if (lseek(f, offset, SEEK_SET) == offset) {
                      if (safe_read(f, &index[last + 1], delta) != delta) {
-                        esyslog(LOG_ERR, "ERROR: can't read from index");
+                        esyslog("ERROR: can't read from index");
                         delete index;
                         index = NULL;
                         close(f);
@@ -224,7 +224,7 @@ bool cIndexFile::CatchUp(int Index)
                      LOG_ERROR_STR(fileName);
                   }
                else
-                  esyslog(LOG_ERR, "ERROR: can't realloc() index");
+                  esyslog("ERROR: can't realloc() index");
                }
             }
          else
@@ -300,7 +300,7 @@ int cIndexFile::GetNextIFrame(int Index, bool Forward, uchar *FileNumber, int *F
                   if (fn == *FileNumber)
                      *Length = fo - *FileOffset;
                   else {
-                     esyslog(LOG_ERR, "ERROR: 'I' frame at end of file #%d", *FileNumber);
+                     esyslog("ERROR: 'I' frame at end of file #%d", *FileNumber);
                      *Length = -1;
                      }
                   }
@@ -358,7 +358,7 @@ cFileName::cFileName(const char *FileName, bool Record, bool Blocking)
   // Prepare the file name:
   fileName = new char[strlen(FileName) + RECORDFILESUFFIXLEN];
   if (!fileName) {
-     esyslog(LOG_ERR, "ERROR: can't copy file name '%s'", fileName);
+     esyslog("ERROR: can't copy file name '%s'", fileName);
      return;
      }
   strcpy(fileName, FileName);
@@ -377,14 +377,14 @@ int cFileName::Open(void)
   if (file < 0) {
      int BlockingFlag = blocking ? 0 : O_NONBLOCK;
      if (record) {
-        dsyslog(LOG_INFO, "recording to '%s'", fileName);
+        dsyslog("recording to '%s'", fileName);
         file = OpenVideoFile(fileName, O_RDWR | O_CREAT | BlockingFlag);
         if (file < 0)
            LOG_ERROR_STR(fileName);
         }
      else {
         if (access(fileName, R_OK) == 0) {
-           dsyslog(LOG_INFO, "playing '%s'", fileName);
+           dsyslog("playing '%s'", fileName);
            file = open(fileName, O_RDONLY | BlockingFlag);
            if (file < 0)
               LOG_ERROR_STR(fileName);
@@ -429,7 +429,7 @@ int cFileName::SetOffset(int Number, int Offset)
         }
      return file;
      }
-  esyslog(LOG_ERR, "ERROR: max number of files (%d) exceeded", MAXFILESPERRECORDING);
+  esyslog("ERROR: max number of files (%d) exceeded", MAXFILESPERRECORDING);
   return -1;
 }
 
@@ -479,7 +479,7 @@ cRecordBuffer::cRecordBuffer(cDvbApi *DvbApi, const char *FileName, int VPid, in
   // Create the index file:
   index = new cIndexFile(FileName, true);
   if (!index)
-     esyslog(LOG_ERR, "ERROR: can't allocate index");
+     esyslog("ERROR: can't allocate index");
      // let's continue without index, so we'll at least have the recording
   videoDev = dvbApi->SetModeRecord();
   Start();
@@ -498,7 +498,7 @@ bool cRecordBuffer::RunningLowOnDiskSpace(void)
      int Free = FreeDiskSpaceMB(fileName.Name());
      lastDiskSpaceCheck = time(NULL);
      if (Free < MINFREEDISKSPACE) {
-        dsyslog(LOG_INFO, "low disk space (%d MB, limit is %d MB)", Free, MINFREEDISKSPACE);
+        dsyslog("low disk space (%d MB, limit is %d MB)", Free, MINFREEDISKSPACE);
         return true;
         }
      }
@@ -518,7 +518,7 @@ bool cRecordBuffer::NextFile(void)
 
 void cRecordBuffer::Input(void)
 {
-  dsyslog(LOG_INFO, "input thread started (pid=%d)", getpid());
+  dsyslog("input thread started (pid=%d)", getpid());
 
   uchar b[MINVIDEODATA];
   time_t t = time(NULL);
@@ -540,7 +540,7 @@ void cRecordBuffer::Input(void)
          else if (r < 0) {
             if (FATALERRNO) {
                if (errno == EBUFFEROVERFLOW) // this error code is not defined in the library
-                  esyslog(LOG_ERR, "ERROR (%s,%d): DVB driver buffer overflow", __FILE__, __LINE__);
+                  esyslog("ERROR (%s,%d): DVB driver buffer overflow", __FILE__, __LINE__);
                else {
                   LOG_ERROR;
                   break;
@@ -549,7 +549,7 @@ void cRecordBuffer::Input(void)
             }
          }
       if (time(NULL) - t > MAXBROKENTIMEOUT) {
-         esyslog(LOG_ERR, "ERROR: video data stream broken");
+         esyslog("ERROR: video data stream broken");
          cThread::EmergencyExit(true);
          t = time(NULL);
          }
@@ -557,12 +557,12 @@ void cRecordBuffer::Input(void)
          break;
       }
 
-  dsyslog(LOG_INFO, "input thread ended (pid=%d)", getpid());
+  dsyslog("input thread ended (pid=%d)", getpid());
 }
 
 void cRecordBuffer::Output(void)
 {
-  dsyslog(LOG_INFO, "output thread started (pid=%d)", getpid());
+  dsyslog("output thread started (pid=%d)", getpid());
 
   uchar b[MINVIDEODATA];
   int r = 0;
@@ -601,7 +601,7 @@ void cRecordBuffer::Output(void)
       }
   recording = false;
 
-  dsyslog(LOG_INFO, "output thread ended (pid=%d)", getpid());
+  dsyslog("output thread ended (pid=%d)", getpid());
 }
 
 // --- ReadFrame -------------------------------------------------------------
@@ -611,7 +611,7 @@ int ReadFrame(int f, uchar *b, int Length, int Max)
   if (Length == -1)
      Length = Max; // this means we read up to EOF (see cIndex)
   else if (Length > Max) {
-     esyslog(LOG_ERR, "ERROR: frame larger than buffer (%d > %d)", Length, Max);
+     esyslog("ERROR: frame larger than buffer (%d > %d)", Length, Max);
      Length = Max;
      }
   int r = safe_read(f, b, Length);
@@ -751,7 +751,7 @@ void cPlayBuffer::PlayExternalDolby(const uchar *b, int MaxLength)
 {
   if (cDvbApi::AudioCommand()) {
      if (!dolbyDev && !dolbyDev.Open(cDvbApi::AudioCommand(), "w")) {
-        esyslog(LOG_ERR, "ERROR: can't open pipe to audio command '%s'", cDvbApi::AudioCommand());
+        esyslog("ERROR: can't open pipe to audio command '%s'", cDvbApi::AudioCommand());
         return;
         }
      if (b[0] == 0x00 && b[1] == 0x00 && b[2] == 0x01) {
@@ -775,7 +775,7 @@ void cPlayBuffer::PlayExternalDolby(const uchar *b, int MaxLength)
 
 void cPlayBuffer::Output(void)
 {
-  dsyslog(LOG_INFO, "output thread started (pid=%d)", getpid());
+  dsyslog("output thread started (pid=%d)", getpid());
 
   while (Busy()) {
         if (blockOutput) {
@@ -812,7 +812,7 @@ void cPlayBuffer::Output(void)
            }
         }
 
-  dsyslog(LOG_INFO, "output thread ended (pid=%d)", getpid());
+  dsyslog("output thread ended (pid=%d)", getpid());
 }
 
 void cPlayBuffer::putFrame(cFrame *Frame)
@@ -1051,7 +1051,7 @@ cReplayBuffer::cReplayBuffer(cDvbApi *DvbApi, int VideoDev, int AudioDev, const 
   // Create the index file:
   index = new cIndexFile(FileName, false);
   if (!index)
-     esyslog(LOG_ERR, "ERROR: can't allocate index");
+     esyslog("ERROR: can't allocate index");
   else if (!index->Ok()) {
      delete index;
      index = NULL;
@@ -1072,11 +1072,11 @@ cReplayBuffer::~cReplayBuffer()
 
 void cReplayBuffer::Input(void)
 {
-  dsyslog(LOG_INFO, "input thread started (pid=%d)", getpid());
+  dsyslog("input thread started (pid=%d)", getpid());
 
   readIndex = Resume();
   if (readIndex >= 0)
-     isyslog(LOG_INFO, "resuming replay at index %d (%s)", readIndex, IndexToHMSF(readIndex, true));
+     isyslog("resuming replay at index %d (%s)", readIndex, IndexToHMSF(readIndex, true));
 
   uchar b[MAXFRAMESIZE];
   while (Busy() && (blockInput || NextFile())) {
@@ -1134,7 +1134,7 @@ void cReplayBuffer::Input(void)
            usleep(1); // this keeps the CPU load low
         }
 
-  dsyslog(LOG_INFO, "input thread ended (pid=%d)", getpid());
+  dsyslog("input thread ended (pid=%d)", getpid());
 }
 
 void cReplayBuffer::StripAudioPackets(uchar *b, int Length, uchar Except)
@@ -1161,7 +1161,7 @@ void cReplayBuffer::StripAudioPackets(uchar *b, int Length, uchar Except)
               case 0xE0 ... 0xEF: // video
                    break;
               default:
-                   //esyslog(LOG_ERR, "ERROR: unexpected packet id %02X", c);
+                   //esyslog("ERROR: unexpected packet id %02X", c);
                    l = 0;
               }
             if (l)
@@ -1169,7 +1169,7 @@ void cReplayBuffer::StripAudioPackets(uchar *b, int Length, uchar Except)
             }
          /*XXX
          else
-            esyslog(LOG_ERR, "ERROR: broken packet header");
+            esyslog("ERROR: broken packet header");
             XXX*/
          }
      }
@@ -1370,7 +1370,7 @@ void cTransferBuffer::SetAudioPid(int APid)
 
 void cTransferBuffer::Input(void)
 {
-  dsyslog(LOG_INFO, "input thread started (pid=%d)", getpid());
+  dsyslog("input thread started (pid=%d)", getpid());
 
   uchar b[MINVIDEODATA];
   int n = 0;
@@ -1396,7 +1396,7 @@ void cTransferBuffer::Input(void)
            else if (r < 0) {
               if (FATALERRNO) {
                  if (errno == EBUFFEROVERFLOW) // this error code is not defined in the library
-                    esyslog(LOG_ERR, "ERROR (%s,%d): DVB driver buffer overflow", __FILE__, __LINE__);
+                    esyslog("ERROR (%s,%d): DVB driver buffer overflow", __FILE__, __LINE__);
                  else {
                     LOG_ERROR;
                     break;
@@ -1406,12 +1406,12 @@ void cTransferBuffer::Input(void)
            }
         }
 
-  dsyslog(LOG_INFO, "input thread ended (pid=%d)", getpid());
+  dsyslog("input thread ended (pid=%d)", getpid());
 }
 
 void cTransferBuffer::Output(void)
 {
-  dsyslog(LOG_INFO, "output thread started (pid=%d)", getpid());
+  dsyslog("output thread started (pid=%d)", getpid());
 
   uchar b[MINVIDEODATA];
   while (Busy()) {
@@ -1443,7 +1443,7 @@ void cTransferBuffer::Output(void)
            usleep(1); // this keeps the CPU load low
         }
 
-  dsyslog(LOG_INFO, "output thread ended (pid=%d)", getpid());
+  dsyslog("output thread ended (pid=%d)", getpid());
 }
 
 // --- cCuttingBuffer --------------------------------------------------------
@@ -1480,7 +1480,7 @@ cCuttingBuffer::cCuttingBuffer(const char *FromFileName, const char *ToFileName)
      Start();
      }
   else
-     esyslog(LOG_ERR, "no editing marks found for %s", FromFileName);
+     esyslog("no editing marks found for %s", FromFileName);
 }
 
 cCuttingBuffer::~cCuttingBuffer()
@@ -1495,7 +1495,7 @@ cCuttingBuffer::~cCuttingBuffer()
 
 void cCuttingBuffer::Action(void)
 {
-  dsyslog(LOG_INFO, "video cutting thread started (pid=%d)", getpid());
+  dsyslog("video cutting thread started (pid=%d)", getpid());
 
   cMark *Mark = fromMarks.First();
   if (Mark) {
@@ -1596,8 +1596,8 @@ void cCuttingBuffer::Action(void)
            }
      }
   else
-     esyslog(LOG_ERR, "no editing marks found!");
-  dsyslog(LOG_INFO, "end video cutting thread");
+     esyslog("no editing marks found!");
+  dsyslog("end video cutting thread");
 }
 
 // --- cVideoCutter ----------------------------------------------------------
@@ -1644,9 +1644,9 @@ void cVideoCutter::Stop(void)
   cuttingBuffer = NULL;
   if ((Interrupted || Error) && editedVersionName) {
      if (Interrupted)
-        isyslog(LOG_INFO, "editing process has been interrupted");
+        isyslog("editing process has been interrupted");
      if (Error)
-        esyslog(LOG_ERR, "ERROR: '%s' during editing process", Error);
+        esyslog("ERROR: '%s' during editing process", Error);
      RemoveVideoFile(editedVersionName); //XXX what if this file is currently being replayed?
      }
 }
@@ -1755,7 +1755,7 @@ cDvbApi::cDvbApi(int n)
      frontendType = feinfo.type;
      }
   else
-     esyslog(LOG_ERR, "ERROR: can't open video device %d", n);
+     esyslog("ERROR: can't open video device %d", n);
   cols = rows = 0;
 
 #if defined(DEBUG_OSD) || defined(REMOTE_KBD)
@@ -1803,11 +1803,11 @@ bool cDvbApi::SetPrimaryDvbApi(int n)
 {
   n--;
   if (0 <= n && n < NumDvbApis && dvbApi[n]) {
-     isyslog(LOG_INFO, "setting primary DVB to %d", n + 1);
+     isyslog("setting primary DVB to %d", n + 1);
      PrimaryDvbApi = dvbApi[n];
      return true;
      }
-  esyslog(LOG_ERR, "invalid DVB interface: %d", n + 1);
+  esyslog("invalid DVB interface: %d", n + 1);
   return false;
 }
 
@@ -1906,7 +1906,7 @@ int cDvbApi::ProvidesCa(int Ca)
 bool cDvbApi::Probe(const char *FileName)
 {
   if (access(FileName, F_OK) == 0) {
-     dsyslog(LOG_INFO, "probing %s", FileName);
+     dsyslog("probing %s", FileName);
      int f = open(FileName, O_RDONLY);
      if (f >= 0) {
         close(f);
@@ -1933,9 +1933,9 @@ bool cDvbApi::Init(void)
       }
   PrimaryDvbApi = dvbApi[0];
   if (NumDvbApis > 0)
-     isyslog(LOG_INFO, "found %d video device%s", NumDvbApis, NumDvbApis > 1 ? "s" : "");
+     isyslog("found %d video device%s", NumDvbApis, NumDvbApis > 1 ? "s" : "");
   else
-     esyslog(LOG_ERR, "ERROR: no video device found, giving up!");
+     esyslog("ERROR: no video device found, giving up!");
   SetCaCaps();
   return NumDvbApis > 0;
 }
@@ -1990,7 +1990,7 @@ bool cDvbApi::GrabImage(const char *FileName, bool Jpeg, int Quality, int SizeX,
            if (Quality < 0)
               Quality = 255; //XXX is this 'best'???
          
-           isyslog(LOG_INFO, "grabbing to %s (%s %d %d %d)", FileName, Jpeg ? "JPEG" : "PNM", Quality, vm.width, vm.height);
+           isyslog("grabbing to %s (%s %d %d %d)", FileName, Jpeg ? "JPEG" : "PNM", Quality, vm.width, vm.height);
            FILE *f = fopen(FileName, "wb");
            if (f) {
               if (Jpeg) {
@@ -2446,7 +2446,7 @@ eSetChannelResult cDvbApi::SetChannel(int ChannelNumber, int Frequency, char Pol
             }
             break;
        default:
-            esyslog(LOG_ERR, "ERROR: attempt to set channel with unknown DVB frontend type");
+            esyslog("ERROR: attempt to set channel with unknown DVB frontend type");
             return scrFailed;
        }
 
@@ -2461,22 +2461,22 @@ eSetChannelResult cDvbApi::SetChannel(int ChannelNumber, int Frequency, char Pol
         int res = ioctl(fd_frontend, FE_GET_EVENT, &event);
         if (res >= 0) {
            if (event.type != FE_COMPLETION_EV) {
-              esyslog(LOG_ERR, "ERROR: channel %d not sync'ed on DVB card %d!", ChannelNumber, CardIndex() + 1);
+              esyslog("ERROR: channel %d not sync'ed on DVB card %d!", ChannelNumber, CardIndex() + 1);
               if (this == PrimaryDvbApi)
                  cThread::RaisePanic();
               return scrFailed;
               }
            }
         else
-           esyslog(LOG_ERR, "ERROR %d in frontend get event (channel %d, card %d)", res, ChannelNumber, CardIndex() + 1);
+           esyslog("ERROR %d in frontend get event (channel %d, card %d)", res, ChannelNumber, CardIndex() + 1);
         }
      else
-        esyslog(LOG_ERR, "ERROR: timeout while tuning");
+        esyslog("ERROR: timeout while tuning");
 
      // PID settings:
 
      if (!SetPids(false)) {
-        esyslog(LOG_ERR, "ERROR: failed to set PIDs for channel %d", ChannelNumber);
+        esyslog("ERROR: failed to set PIDs for channel %d", ChannelNumber);
         return scrFailed;
         }
      SetTpid(Tpid, DMX_OUT_DECODER);
@@ -2563,7 +2563,7 @@ bool cDvbApi::Replaying(void)
 bool cDvbApi::StartRecord(const char *FileName, int Ca, int Priority)
 {
   if (Recording()) {
-     esyslog(LOG_ERR, "ERROR: StartRecord() called while recording - ignored!");
+     esyslog("ERROR: StartRecord() called while recording - ignored!");
      return false;
      }
 
@@ -2574,10 +2574,10 @@ bool cDvbApi::StartRecord(const char *FileName, int Ca, int Priority)
   // Check FileName:
 
   if (!FileName) {
-     esyslog(LOG_ERR, "ERROR: StartRecord: file name is (null)");
+     esyslog("ERROR: StartRecord: file name is (null)");
      return false;
      }
-  isyslog(LOG_INFO, "record %s", FileName);
+  isyslog("record %s", FileName);
 
   // Create directories if necessary:
 
@@ -2598,7 +2598,7 @@ bool cDvbApi::StartRecord(const char *FileName, int Ca, int Priority)
      return true;
      }
   else
-     esyslog(LOG_ERR, "ERROR: can't allocate recording buffer");
+     esyslog("ERROR: can't allocate recording buffer");
 
   return false;
 }
@@ -2616,7 +2616,7 @@ void cDvbApi::StopRecord(void)
 bool cDvbApi::StartReplay(const char *FileName)
 {
   if (Recording()) {
-     esyslog(LOG_ERR, "ERROR: StartReplay() called while recording - ignored!");
+     esyslog("ERROR: StartReplay() called while recording - ignored!");
      return false;
      }
   StopTransfer();
@@ -2626,10 +2626,10 @@ bool cDvbApi::StartReplay(const char *FileName)
      // Check FileName:
 
      if (!FileName) {
-        esyslog(LOG_ERR, "ERROR: StartReplay: file name is (null)");
+        esyslog("ERROR: StartReplay: file name is (null)");
         return false;
         }
-     isyslog(LOG_INFO, "replay %s", FileName);
+     isyslog("replay %s", FileName);
 
      // Create replay buffer:
 
@@ -2637,7 +2637,7 @@ bool cDvbApi::StartReplay(const char *FileName)
      if (replayBuffer)
         return true;
      else
-        esyslog(LOG_ERR, "ERROR: can't allocate replaying buffer");
+        esyslog("ERROR: can't allocate replaying buffer");
      }
   return false;
 }

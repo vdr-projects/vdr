@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.36 2002/05/10 15:05:57 kls Exp $
+ * $Id: svdrp.c 1.37 2002/05/13 16:32:05 kls Exp $
  */
 
 #include "svdrp.h"
@@ -109,7 +109,7 @@ int cSocket::Accept(void)
            close(newsock);
            newsock = -1;
            }
-        isyslog(LOG_INFO, "connect from %s, port %hd - %s", inet_ntoa(clientname.sin_addr), ntohs(clientname.sin_port), accepted ? "accepted" : "DENIED");
+        isyslog("connect from %s, port %hd - %s", inet_ntoa(clientname.sin_addr), ntohs(clientname.sin_port), accepted ? "accepted" : "DENIED");
         }
      else if (errno != EINTR && errno != EAGAIN)
         LOG_ERROR;
@@ -314,7 +314,7 @@ cSVDRP::cSVDRP(int Port)
   numChars = 0;
   message = NULL;
   lastActivity = 0;
-  isyslog(LOG_INFO, "SVDRP listening on port %d", Port);
+  isyslog("SVDRP listening on port %d", Port);
 }
 
 cSVDRP::~cSVDRP()
@@ -330,7 +330,7 @@ void cSVDRP::Close(bool Timeout)
      char buffer[BUFSIZ];
      gethostname(buffer, sizeof(buffer));
      Reply(221, "%s closing connection%s", buffer, Timeout ? " (timeout)" : "");
-     isyslog(LOG_INFO, "closing SVDRP connection"); //TODO store IP#???
+     isyslog("closing SVDRP connection"); //TODO store IP#???
      file.Close();
      DELETENULL(PUTEhandler);
      }
@@ -375,7 +375,7 @@ void cSVDRP::Reply(int Code, const char *fmt, ...)
         }
      else {
         Reply(451, "Zero return code - looks like a programming error!");
-        esyslog(LOG_ERR, "SVDRP: zero return code!");
+        esyslog("SVDRP: zero return code!");
         }
      }
 }
@@ -473,7 +473,7 @@ void cSVDRP::CmdDELT(const char *Option)
            if (!timer->recording) {
               Timers.Del(timer);
               Timers.Save();
-              isyslog(LOG_INFO, "timer %s deleted", Option);
+              isyslog("timer %s deleted", Option);
               Reply(250, "Timer \"%s\" deleted", Option);
               }
            else
@@ -738,7 +738,7 @@ void cSVDRP::CmdMESG(const char *Option)
   if (*Option) {
      delete message;
      message = strdup(Option);
-     isyslog(LOG_INFO, "SVDRP message: '%s'", message);
+     isyslog("SVDRP message: '%s'", message);
      Reply(250, "Message stored");
      }
   else if (message)
@@ -763,7 +763,7 @@ void cSVDRP::CmdMODC(const char *Option)
               }
            *channel = c;
            Channels.Save();
-           isyslog(LOG_INFO, "channel %d modified", channel->number);
+           isyslog("channel %d modified", channel->number);
            Reply(250, "%d %s", channel->number, channel->ToText());
            }
         else
@@ -796,7 +796,7 @@ void cSVDRP::CmdMODT(const char *Option)
               }
            *timer = t;
            Timers.Save();
-           isyslog(LOG_INFO, "timer %d modified (%s)", timer->Index() + 1, timer->active ? "active" : "inactive");
+           isyslog("timer %d modified (%s)", timer->Index() + 1, timer->active ? "active" : "inactive");
            Reply(250, "%d %s", timer->Index() + 1, timer->ToText());
            }
         else
@@ -829,7 +829,7 @@ void cSVDRP::CmdNEWC(const char *Option)
         Channels.Add(channel);
         Channels.ReNumber();
         Channels.Save();
-        isyslog(LOG_INFO, "channel %d added", channel->number);
+        isyslog("channel %d added", channel->number);
         Reply(250, "%d %s", channel->number, channel->ToText());
         }
      else
@@ -848,7 +848,7 @@ void cSVDRP::CmdNEWT(const char *Option)
         if (!t) {
            Timers.Add(timer);
            Timers.Save();
-           isyslog(LOG_INFO, "timer %d added", timer->Index() + 1);
+           isyslog("timer %d added", timer->Index() + 1);
            Reply(250, "%d %s", timer->Index() + 1, timer->ToText());
            return;
            }
@@ -904,11 +904,11 @@ void cSVDRP::CmdUPDT(const char *Option)
            t->Parse(Option);
            delete timer;
            timer = t;
-           isyslog(LOG_INFO, "timer %d updated", timer->Index() + 1);
+           isyslog("timer %d updated", timer->Index() + 1);
            }
         else {
            Timers.Add(timer);
-           isyslog(LOG_INFO, "timer %d added", timer->Index() + 1);
+           isyslog("timer %d added", timer->Index() + 1);
            }
         Timers.Save();
         Reply(250, "%d %s", timer->Index() + 1, timer->ToText());
@@ -1038,18 +1038,18 @@ void cSVDRP::Process(void)
                  }
               else {
                  Reply(501, "Command line too long");
-                 esyslog(LOG_ERR, "SVDRP: command line too long: '%s'", cmdLine);
+                 esyslog("SVDRP: command line too long: '%s'", cmdLine);
                  numChars = 0;
                  }
               lastActivity = time(NULL);
               }
            else if (r <= 0) {
-              isyslog(LOG_INFO, "lost connection to SVDRP client");
+              isyslog("lost connection to SVDRP client");
               Close();
               }
            }
      if (Setup.SVDRPTimeout && time(NULL) - lastActivity > Setup.SVDRPTimeout) {
-        isyslog(LOG_INFO, "timeout on SVDRP connection");
+        isyslog("timeout on SVDRP connection");
         Close(true);
         }
      }

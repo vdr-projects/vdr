@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.108 2002/05/13 16:09:06 kls Exp $
+ * $Id: vdr.c 1.109 2002/05/13 16:32:49 kls Exp $
  */
 
 #include <getopt.h>
@@ -66,7 +66,7 @@ static void Watchdog(int signum)
 {
   // Something terrible must have happened that prevented the 'alarm()' from
   // being called in time, so let's get out of here:
-  esyslog(LOG_ERR, "PANIC: watchdog timer expired - exiting!");
+  esyslog("PANIC: watchdog timer expired - exiting!");
   exit(1);
 }
 
@@ -269,7 +269,7 @@ int main(int argc, char *argv[])
      pid_t pid = fork();
      if (pid < 0) {
         fprintf(stderr, "%m\n");
-        esyslog(LOG_ERR, "ERROR: %m");
+        esyslog("ERROR: %m");
         return 2;
         }
      if (pid != 0)
@@ -289,7 +289,7 @@ int main(int argc, char *argv[])
      stderr = freopen(Terminal, "w", stderr);
      }
 
-  isyslog(LOG_INFO, "VDR version %s started", VDRVERSION);
+  isyslog("VDR version %s started", VDRVERSION);
 
   // Load plugins:
 
@@ -367,14 +367,14 @@ int main(int argc, char *argv[])
   bool ForceShutdown = false;
 
   if (WatchdogTimeout > 0) {
-     dsyslog(LOG_INFO, "setting watchdog timer to %d seconds", WatchdogTimeout);
+     dsyslog("setting watchdog timer to %d seconds", WatchdogTimeout);
      alarm(WatchdogTimeout); // Initial watchdog timer start
      }
 
   while (!Interrupted) {
         // Handle emergency exits:
         if (cThread::EmergencyExit()) {
-           esyslog(LOG_ERR, "emergency exit requested - shutting down");
+           esyslog("emergency exit requested - shutting down");
            break;
            }
         // Restart the Watchdog timer:
@@ -382,7 +382,7 @@ int main(int argc, char *argv[])
            int LatencyTime = WatchdogTimeout - alarm(WatchdogTimeout);
            if (LatencyTime > MaxLatencyTime) {
               MaxLatencyTime = LatencyTime;
-              dsyslog(LOG_INFO, "max. latency time %d seconds", MaxLatencyTime);
+              dsyslog("max. latency time %d seconds", MaxLatencyTime);
               }
            }
         // Channel display:
@@ -429,7 +429,7 @@ int main(int argc, char *argv[])
                cDisplayVolume::Process(key);
                break;
           // Power off:
-          case kPower: isyslog(LOG_INFO, "Power button pressed");
+          case kPower: isyslog("Power button pressed");
                        DELETENULL(*Interact);
                        if (!Shutdown) {
                           Interface->Error(tr("Can't shutdown - option '-s' not given!"));
@@ -535,7 +535,7 @@ int main(int argc, char *argv[])
                  if (!LastActivity) {
                     if (!timer || Delta > MANUALSTART) {
                        // Apparently the user started VDR manually
-                       dsyslog(LOG_INFO, "assuming manual start of VDR");
+                       dsyslog("assuming manual start of VDR");
                        LastActivity = Now;
                        continue; // don't run into the actual shutdown procedure below
                        }
@@ -553,7 +553,7 @@ int main(int argc, char *argv[])
                  if (!Next || Delta > Setup.MinEventTimeout * 60 || ForceShutdown) {
                     ForceShutdown = false;
                     if (timer)
-                       dsyslog(LOG_INFO, "next timer event at %s", ctime(&Next));
+                       dsyslog("next timer event at %s", ctime(&Next));
                     if (WatchdogTimeout > 0)
                        signal(SIGALRM, SIG_IGN);
                     if (Interface->Confirm(tr("Press any key to cancel shutdown"), UserShutdown ? 5 : SHUTDOWNWAIT, true)) {
@@ -561,7 +561,7 @@ int main(int argc, char *argv[])
                        const char *File = timer ? timer->file : "";
                        char *cmd;
                        asprintf(&cmd, "%s %ld %ld %d \"%s\" %d", Shutdown, Next, Delta, Channel, strescape(File, "\"$"), UserShutdown);
-                       isyslog(LOG_INFO, "executing '%s'", cmd);
+                       isyslog("executing '%s'", cmd);
                        SystemExec(cmd);
                        delete cmd;
                        }
@@ -582,7 +582,7 @@ int main(int argc, char *argv[])
            }
         }
   if (Interrupted)
-     isyslog(LOG_INFO, "caught signal %d", Interrupted);
+     isyslog("caught signal %d", Interrupted);
   cVideoCutter::Stop();
   delete Menu;
   delete ReplayControl;
@@ -593,12 +593,12 @@ int main(int argc, char *argv[])
   Setup.Save();
   cDvbApi::Cleanup();
   if (WatchdogTimeout > 0)
-     dsyslog(LOG_INFO, "max. latency time %d seconds", MaxLatencyTime);
-  isyslog(LOG_INFO, "exiting");
+     dsyslog("max. latency time %d seconds", MaxLatencyTime);
+  isyslog("exiting");
   if (SysLogLevel > 0)
      closelog();
   if (cThread::EmergencyExit()) {
-     esyslog(LOG_ERR, "emergency exit!");
+     esyslog("emergency exit!");
      return 1;
      }
   return 0;

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.115 2002/05/12 09:18:44 kls Exp $
+ * $Id: config.h 1.116 2002/05/13 16:28:16 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -227,7 +227,7 @@ public:
     fileName = strdup(FileName);
     bool result = false;
     if (access(FileName, F_OK) == 0) {
-       isyslog(LOG_INFO, "loading %s", FileName);
+       isyslog("loading %s", FileName);
        FILE *f = fopen(fileName, "r");
        if (f) {
           int line = 0;
@@ -245,7 +245,7 @@ public:
                    if (l->Parse(buffer))
                       Add(l);
                    else {
-                      esyslog(LOG_ERR, "error in %s, line %d\n", fileName, line);
+                      esyslog("error in %s, line %d\n", fileName, line);
                       delete l;
                       result = false;
                       break;
