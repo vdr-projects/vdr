@@ -273,6 +273,7 @@ Werner Fink <werner@suse.de>
  recordings can be triggered in the default branch
  for pointing out that pesAssembler->Reset() needs to be called between subsequent
  Transfer Modes
+ for suggestions that led to the addition of the 'Id' parameter to cAudio::Play().
 
 Rolf Hakenes <hakenes@hippomi.de>
  for providing 'libdtv' and adapting the EIT mechanisms to it
@@ -1136,6 +1137,7 @@ Marco Schlüßler <marco@lordzodiac.de>
  when clearing the transfer buffer to avoid overflows
  for adding CMD_SPU_CHG_COLCON to cDvbSpuDecoder::setTime()
  for suggesting to force a new resync after a call to cRemux::Clear()
+ for suggestions that led to the addition of the 'Id' parameter to cAudio::Play().
 
 Jürgen Schmitz <j.schmitz@web.de>
  for reporting a bug in displaying the current channel when switching via the SVDRP

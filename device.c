@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.89 2005/02/08 13:06:12 kls Exp $
+ * $Id: device.c 1.90 2005/02/12 12:26:49 kls Exp $
  */
 
 #include "device.h"
@@ -908,15 +908,18 @@ int cDevice::PlayPesPacket(const uchar *Data, int Length, bool VideoOnly)
                          SetAvailableTrack(ttDolby, SubStreamIndex, SubStreamId);
                          if (!VideoOnly && SubStreamId == availableTracks[currentAudioTrack].id) {
                             w = PlayAudio(Start, d);
-                            if (FirstLoop && !(SubStreamId & 0x08)) // no DTS
-                               Audios.PlayAudio(Data, Length);
+                            if (FirstLoop)
+                               Audios.PlayAudio(Data, Length, SubStreamId);
                             }
                          }
                       break;
                  case 0xA0: // LPCM
                       SetAvailableTrack(ttAudio, SubStreamIndex, SubStreamId);
-                      if (!VideoOnly && SubStreamId == availableTracks[currentAudioTrack].id)
+                      if (!VideoOnly && SubStreamId == availableTracks[currentAudioTrack].id) {
                          w = PlayAudio(Start, d);
+                         if (FirstLoop)
+                            Audios.PlayAudio(Data, Length, SubStreamId);
+                         }
                       break;
                  default:
                       // Compatibility mode for old VDR recordings, where 0xBD was only AC3:

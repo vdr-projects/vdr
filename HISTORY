@@ -3388,3 +3388,7 @@ Video Disk Recorder Revision History
   Huelswitt).
 - Completed the Danish OSD texts (thanks to Mogens Elneff).
 - Forcing a new resync after a call to cRemux::Clear() (suggested by Marco Schlüßler).
+- The cAudio::Play() function now has an additional parameter 'uchar Id' which tells
+  the function the substream id of the given audio packet, so that a plugin can
+  take the right action for the various kinds if audio data (based on suggestions
+  by Werner Fink and Macro Schlüßler).
