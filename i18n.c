@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.170 2005/01/14 13:16:03 kls Exp $
+ * $Id: i18n.c 1.171 2005/01/14 13:25:35 kls Exp $
  *
  * Translations provided by:
  *
@@ -121,7 +121,7 @@ const tI18nPhrase Phrases[] = {
     "iso8859-1",
     "iso8859-5",
     "iso8859-2",
-    "iso8859-15", // or iso8859-1 as alternative
+    "iso8859-13",
     "iso8859-1",
   },
   // The 3-letter names of the language (this MUST be the third phrase!):
@@ -2312,7 +2312,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Audio kättesaamatu!",
     "",//TODO
   },
   // Setup pages:
@@ -3112,7 +3112,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Dolby Digital kasutamine",
     "",//TODO
   },
   { "Setup.DVB$Update channels",
@@ -4691,7 +4691,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Audio",
     "",// TODO
   },
   // Miscellaneous:
