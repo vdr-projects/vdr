@@ -23,7 +23,7 @@ Video Disk Recorder User's Manual
 * Instant Recording
 
   You can start recording the current channel by pressing the "Record"
-  button. This will create a timer event named "instant" that start
+  button. This will create a timer event named "instant" that starts
   at the current time and records for two hours.
   If you want to modify the recording time you need to edit the timer.
   Stop instant recording by disabling or deleting the timer.
