@@ -18,15 +18,19 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: runvdr 1.5 2001/06/01 16:23:29 kls Exp $
+# $Id: runvdr 1.6 2001/06/09 12:20:04 kls Exp $
 
 DVBDIR="../DVB/driver"
 VDRPRG="./vdr"
 VDRCMD="$VDRPRG -w 60 $*"
 
+LSMOD="`/sbin/lsmod | grep dvbdev | wc -l`"
 KILLPROC="/sbin/killproc -TERM"
 
-(cd $DVBDIR; make insmod)
+# Load driver if it hasn't been loaded already:
+if [ $LSMOD -eq 0 ] ; then
+   (cd $DVBDIR; make insmod)
+   fi
 
 while (true) do
       su -c "$VDRCMD" $VDRUSR

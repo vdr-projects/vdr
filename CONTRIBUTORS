@@ -75,3 +75,7 @@ Jürgen Sauer <jojo@automatix.de>
 
 Benjamin Reichardt <reichard@math.uni-goettingen.de>
  for his help in debugging the transition to the new API
+
+Henning Holtschneider <hh@holtschneider.com>
+ for patching 'runvdr' to check whether the driver is already loaded
+
