@@ -2398,3 +2398,7 @@ Video Disk Recorder Revision History
 - Made cOsdMenu::Display() virtual, which allows plugins to do some additional
   processing after calling the base class function (suggested by Jan Rieger).
 - Updated 'ca.conf' (thanks to Marco Franceschetti).
+
+2003-09-17: Version 1.2.5
+
+- Updated 'channels.conf.cable' (thanks to Stefan Huﬂfeldt).
