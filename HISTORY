@@ -2906,3 +2906,5 @@ Video Disk Recorder Revision History
   UTF-8 before starting VDR.
 - Some changes to the SPU decoder interface (thanks to Sven Goethel).
 - Some improvements in cOsd creation (thanks to some suggestions by Jouni Karvo).
+- Fixed calculating the OSD width and height (thanks to Olaf Henkel for reporting
+  a problem with long event texts in the "Classic VDR" skin).
