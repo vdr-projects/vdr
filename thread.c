@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 1.34 2004/10/24 10:27:47 kls Exp $
+ * $Id: thread.c 1.35 2004/10/24 11:05:56 kls Exp $
  */
 
 #include "thread.h"
@@ -30,6 +30,12 @@ cCondWait::~cCondWait()
 {
   pthread_cond_destroy(&cond);
   pthread_mutex_destroy(&mutex);
+}
+
+void cCondWait::SleepMs(int TimeoutMs)
+{
+  cCondWait w;
+  w.Wait(TimeoutMs);
 }
 
 bool cCondWait::Wait(int TimeoutMs)
@@ -265,7 +271,7 @@ void cThread::Cancel(int WaitSeconds)
         for (time_t t0 = time(NULL) + WaitSeconds; time(NULL) < t0; ) {
             if (!Active())
                return;
-            usleep(10000);
+            cCondWait::SleepMs(10);
             }
         esyslog("ERROR: thread %ld won't end (waited %d seconds) - cancelling it...", childTid, WaitSeconds);
         }
@@ -433,7 +439,7 @@ int cPipe::Close(void)
            else if (ret == pid)
               break;
            i--;
-           usleep(100000);
+           cCondWait::SleepMs(100);
            }
      if (!i) {
         kill(pid, SIGKILL);

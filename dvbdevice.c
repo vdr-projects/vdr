@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.99 2004/10/24 08:50:15 kls Exp $
+ * $Id: dvbdevice.c 1.100 2004/10/24 11:06:37 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -1075,7 +1075,7 @@ void cDvbDevice::StillPicture(const uchar *Data, int Length)
 #define MIN_IFRAME 400000
   for (int i = MIN_IFRAME / Length + 1; i > 0; i--) {
       safe_write(fd_video, Data, Length);
-      usleep(1); // allows the buffer to be displayed in case the progress display is active
+      cCondWait::SleepMs(1); // allows the buffer to be displayed in case the progress display is active
       }
 #endif
 }

@@ -257,6 +257,7 @@ Werner Fink <werner@suse.de>
  for modifying handling of audio packets in cDvbPlayer for better sync with external
  AC3 replay
  for changing thread handling to make it work with NPTL ("Native Posix Thread Library")
+ for suggesting to replace usleep() calls with a pthread_cond_timedwait() based wait
 
 Rolf Hakenes <hakenes@hippomi.de>
  for providing 'libdtv' and adapting the EIT mechanisms to it

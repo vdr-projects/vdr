@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.h 1.23 2004/10/24 10:28:48 kls Exp $
+ * $Id: thread.h 1.24 2004/10/24 11:00:32 kls Exp $
  */
 
 #ifndef __THREAD_H
@@ -22,6 +22,10 @@ private:
 public:
   cCondWait(void);
   ~cCondWait();
+  static void SleepMs(int TimeoutMs);
+       ///< Creates a cCondWait object and uses it to sleep for TimeoutMs
+       ///< milliseconds, immediately giving up the calling thread's time
+       ///< slice and thus avoiding a "busy wait".
   bool Wait(int TimeoutMs = 0);
        ///< Waits at most TimeoutMs milliseconds for a call to Signal(), or
        ///< forever if TimeoutMs is 0.

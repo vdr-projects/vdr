@@ -4,13 +4,14 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: sections.c 1.9 2004/10/16 13:45:02 kls Exp $
+ * $Id: sections.c 1.10 2004/10/24 11:05:12 kls Exp $
  */
 
 #include "sections.h"
 #include <unistd.h>
 #include "channels.h"
 #include "device.h"
+#include "thread.h"
 
 // --- cFilterHandle----------------------------------------------------------
 
@@ -185,7 +186,7 @@ void cSectionHandler::Action(void)
         if (poll(pfd, NumFilters, 1000) > 0) {
            bool DeviceHasLock = device->HasLock();
            if (!DeviceHasLock)
-              usleep(100000);
+              cCondWait::SleepMs(100);
            for (int i = 0; i < NumFilters; i++) {
                if (pfd[i].revents & POLLIN) {
                   cFilterHandle *fh = NULL;
