@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.c 1.46 2002/01/26 11:09:58 kls Exp $
+ * $Id: interface.c 1.47 2002/01/27 16:00:31 kls Exp $
  */
 
 #include "interface.h"
@@ -292,8 +292,12 @@ void cInterface::Status(const char *s, eDvbColor FgColor, eDvbColor BgColor)
 {
   int Line = (abs(height) == 1) ? 0 : -2;
   ClearEol(0, Line, s ? BgColor : clrBackground);
-  if (s)
-     Write(0, Line, s, FgColor, BgColor);
+  if (s) {
+     int x = (Width() - strlen(s)) / 2;
+     if (x < 0)
+        x = 0;
+     Write(x, Line, s, FgColor, BgColor);
+     }
 }
 
 void cInterface::Info(const char *s)
