@@ -1050,6 +1050,7 @@ void siParseDescriptor (struct LIST *Descriptors, u_char *Buffer)
             (sds->west_east_flag ? 1 : -1) *
             (BcdCharToInt (sds->orbital_position1) * 100 +
             BcdCharToInt (sds->orbital_position2)),
+            sds->modulation,
             sds->polarization,
             BcdCharToInt (sds->symbol_rate1) * 10 * 1000 +
             BcdCharToInt (sds->symbol_rate2) * 100 +
@@ -1082,8 +1083,40 @@ void siParseDescriptor (struct LIST *Descriptors, u_char *Buffer)
             BcdCharToInt (cds->symbol_rate1) * 10 * 1000 +
             BcdCharToInt (cds->symbol_rate2) * 100 +
             BcdCharToInt (cds->symbol_rate3),
+            cds->fec_outer,
             cds->fec_inner,
-           cds->modulation
+            cds->modulation
+           );
+         }
+         /* else
+         {
+            fprintf (stderr, "Illegal cds descriptor\n");
+            siDumpDescriptor (Buffer);
+         } */
+      }
+      break;
+
+      case DESCR_TERR_DEL_SYS:
+//         fprintf (stderr, "got descriptor 0x%x\n", GetDescriptorTag(Buffer));
+      {
+         descr_terrestrial_delivery_system_t *tds;
+         tds = (descr_terrestrial_delivery_system_t *) Ptr;
+         if (CheckBcdChar (tds->frequency1) && CheckBcdChar (tds->frequency2) &&
+             CheckBcdChar (tds->frequency3) && CheckBcdChar (tds->frequency4))
+         {
+           CreateTerrestrialDeliverySystemDescriptor (Descriptor,
+            BcdCharToInt (tds->frequency1) * 100 * 1000 * 1000 +
+            BcdCharToInt (tds->frequency2) * 1000 * 1000 +
+            BcdCharToInt (tds->frequency3) * 10 * 1000 +
+            BcdCharToInt (tds->frequency4) * 100,
+            tds->bandwidth,
+            tds->constellation,
+          tds->hierarchy,
+          tds->code_rate_HP,
+          tds->code_rate_LP,
+            tds->guard_interval,
+            tds->transmission_mode,
+            tds->other_frequency_flag
            );
          }
          /* else
@@ -1153,7 +1186,6 @@ void siParseDescriptor (struct LIST *Descriptors, u_char *Buffer)
       case DESCR_VBI_TELETEXT:
       case DESCR_MOSAIC:
       case DESCR_TELEPHONE:
-      case DESCR_TERR_DEL_SYS:
       case DESCR_ML_NW_NAME:
       case DESCR_ML_BQ_NAME:
       case DESCR_ML_SERVICE_NAME:

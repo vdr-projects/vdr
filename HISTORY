@@ -2115,7 +2115,8 @@ Video Disk Recorder Revision History
   the startup of a plugin into an "early" (Initialize()) and "late" (Start()) phase
   (suggested by Andreas Schultz). Plugin authors should please read the section
   about "Getting started" in PLUGINS.html and adapt their code if applicable.
-- Implemented the CableDeliverySystemDescriptor in libdtv (thanks to Sven Grothklags)
+- Implemented the CableDeliverySystemDescriptor and TerrestrialDeliverySystemDescriptor
+  in libdtv (thanks to Sven Grothklags and Andreas Schultz)
 - Fixed keeping live video active in case the primary device doesn't have an MPEG
   decoder (thanks to Wolfgang Goeller for reporting this one).
 - Implemented cDevice::ActualDevice(), which returns the actual receiving device in

@@ -535,6 +535,7 @@ void siDebugDescriptors (char *Prepend, struct LIST *Descriptors)
             printf ("%s   Frequency: %ld\n", Prepend, sds->Frequency);
             printf ("%s   OrbitalPosition: %d\n", Prepend, sds->OrbitalPosition);
             printf ("%s   Polarization: %c\n", Prepend, sds->Polarization);
+            printf ("%s   Modulation: %c\n", Prepend, sds->Modulation);
             printf ("%s   SymbolRate: %ld\n", Prepend, sds->SymbolRate);
             printf ("%s   FEC: %c\n", Prepend, sds->FEC);
          }
@@ -548,8 +549,27 @@ void siDebugDescriptors (char *Prepend, struct LIST *Descriptors)
             printf ("%sDescriptor: Cable Delivery System\n", Prepend);
             printf ("%s   Frequency: %ld\n", Prepend, cds->Frequency);
             printf ("%s   SymbolRate: %ld\n", Prepend, cds->SymbolRate);
-            printf ("%s   FEC: %d\n", Prepend, cds->FEC);
+            printf ("%s   FEC outer: %d\n", Prepend, cds->FECouter);
+            printf ("%s   FEC inner: %d\n", Prepend, cds->FECinner);
             printf ("%s   Modulation: %d\n", Prepend, cds->Modulation);
+         }
+         break;
+
+         case DESCR_TERR_DEL_SYS:
+         {
+            struct TerrestrialDeliverySystemDescriptor *tds =
+                (struct TerrestrialDeliverySystemDescriptor *)Descriptor;
+
+            printf ("%sDescriptor: Terrestrial Delivery System\n", Prepend);
+            printf ("%s   Frequency: %ld\n", Prepend, tds->Frequency);
+            printf ("%s   Bandwidth: %d\n", Prepend, tds->Bandwidth);
+            printf ("%s   Constellation: %d\n", Prepend, tds->Constellation);
+            printf ("%s   Hierarchy: %d\n", Prepend, tds->Hierarchy);
+            printf ("%s   CodeRateHP: %d\n", Prepend, tds->CodeRateHP);
+            printf ("%s   CodeRateLP: %d\n", Prepend, tds->CodeRateLP);
+            printf ("%s   GuardInterval: %d\n", Prepend, tds->GuardInterval);
+            printf ("%s   TransmissionMode: %d\n", Prepend, tds->TransmissionMode);
+            printf ("%s   OtherFrequencyFlag: %d\n", Prepend, tds->OtherFrequencyFlag);
          }
          break;
 
@@ -589,7 +609,6 @@ void siDebugDescriptors (char *Prepend, struct LIST *Descriptors)
          case DESCR_VBI_TELETEXT:
          case DESCR_MOSAIC:
          case DESCR_TELEPHONE:
-         case DESCR_TERR_DEL_SYS:
          case DESCR_ML_NW_NAME:
          case DESCR_ML_BQ_NAME:
          case DESCR_ML_SERVICE_NAME:
