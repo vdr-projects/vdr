@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.10 2000/07/23 13:16:37 kls Exp $
+ * $Id: tools.h 1.12 2000/07/29 10:56:00 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -43,8 +43,10 @@ char *skipspace(char *s);
 int time_ms(void);
 void delay_ms(int ms);
 bool isnumber(const char *s);
+uint FreeDiskSpaceMB(const char *Directory);
+bool DirectoryOk(const char *DirName, bool LogErrors = false);
 bool MakeDirs(const char *FileName, bool IsDirectory = false);
-bool RemoveFileOrDir(const char *FileName);
+bool RemoveFileOrDir(const char *FileName, bool FollowSymlinks = false);
 bool CheckProcess(pid_t pid);
 void KillProcess(pid_t pid, int Timeout = MAXPROCESSTIMEOUT);
 

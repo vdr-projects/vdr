@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.10 2000/07/23 13:16:54 kls Exp $
+ * $Id: tools.c 1.13 2000/07/29 18:41:45 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -145,6 +145,51 @@ bool isnumber(const char *s)
   return true;
 }
 
+#define DFCMD  "df -m %s"
+
+uint FreeDiskSpaceMB(const char *Directory)
+{
+  //TODO Find a simpler way to determine the amount of free disk space!
+  uint Free = 0;
+  char *cmd = NULL;
+  asprintf(&cmd, DFCMD, Directory);
+  FILE *p = popen(cmd, "r");
+  if (p) {
+     char *s;
+     while ((s = readline(p)) != NULL) {
+           if (*s == '/') {
+              uint available;
+              sscanf(s, "%*s %*d %*d %u", &available);
+              Free = available;
+              break;
+              }
+           }
+     pclose(p);
+     }
+  else
+     esyslog(LOG_ERR, "ERROR: can't open pipe for cmd '%s'", cmd);
+  delete cmd;
+  return Free;
+}
+
+bool DirectoryOk(const char *DirName, bool LogErrors)
+{
+  struct stat ds;
+  if (stat(DirName, &ds) == 0) {
+     if (S_ISDIR(ds.st_mode)) {
+        if (access(DirName, R_OK | W_OK | X_OK) == 0)
+           return true;
+        else if (LogErrors)
+           esyslog(LOG_ERR, "ERROR: can't access %s", DirName);
+        }
+     else if (LogErrors)
+        esyslog(LOG_ERR, "ERROR: %s is not a directory", DirName);
+     }
+  else if (LogErrors)
+     LOG_ERROR_STR(DirName);
+  return false;
+}
+
 bool MakeDirs(const char *FileName, bool IsDirectory)
 {
   bool result = true;
@@ -157,7 +202,7 @@ bool MakeDirs(const char *FileName, bool IsDirectory)
            *p = 0;
         struct stat fs;
         if (stat(s, &fs) != 0 || !S_ISDIR(fs.st_mode)) {
-           isyslog(LOG_INFO, "creating directory %s", s);
+           dsyslog(LOG_INFO, "creating directory %s", s);
            if (mkdir(s, S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH) == -1) {
               esyslog(LOG_ERR, "ERROR: %s: %s", s, strerror(errno));
               result = false;
@@ -173,7 +218,7 @@ bool MakeDirs(const char *FileName, bool IsDirectory)
   return result;
 }
 
-bool RemoveFileOrDir(const char *FileName)
+bool RemoveFileOrDir(const char *FileName, bool FollowSymlinks)
 {
   struct stat st;
   if (stat(FileName, &st) == 0) {
@@ -185,23 +230,43 @@ bool RemoveFileOrDir(const char *FileName)
                  if (strcmp(e->d_name, ".") && strcmp(e->d_name, "..")) {
                     char *buffer;
                     asprintf(&buffer, "%s/%s", FileName, e->d_name);
+                    if (FollowSymlinks) {
+                       int size = strlen(buffer) * 2; // should be large enough
+                       char *l = new char[size];
+                       int n = readlink(buffer, l, size);
+                       if (n < 0) {
+                          if (errno != EINVAL)
+                             LOG_ERROR_STR(buffer);
+                          }
+                       else if (n < size) {
+                          l[n] = 0;
+                          dsyslog(LOG_INFO, "removing %s", l);
+                          if (remove(l) < 0)
+                             LOG_ERROR_STR(l);
+                          }
+                       else
+                          esyslog(LOG_ERR, "ERROR: symlink name length (%d) exceeded anticipated buffer size (%d)", n, size);
+                       delete l;
+                       }
+                    dsyslog(LOG_INFO, "removing %s", buffer);
                     if (remove(buffer) < 0)
-                       esyslog(LOG_ERR, "ERROR: %s: %s", buffer, strerror(errno));
+                       LOG_ERROR_STR(buffer);
                     delete buffer;
                     }
                  }
            closedir(d);
            }
         else {
-           esyslog(LOG_ERR, "ERROR: %s: %s", FileName, strerror(errno));
+           LOG_ERROR_STR(FileName);
            return false;
            }
         }
+     dsyslog(LOG_INFO, "removing %s", FileName);
      if (remove(FileName) == 0)
         return true;
      }
   else
-     esyslog(LOG_ERR, "ERROR: %s: %s", FileName, strerror(errno));
+     LOG_ERROR_STR(FileName);
   return false;
 }
 

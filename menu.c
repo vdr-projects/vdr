@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.20 2000/07/24 16:25:53 kls Exp $
+ * $Id: menu.c 1.22 2000/08/06 07:02:52 kls Exp $
  */
 
 #include "menu.h"
@@ -512,7 +512,7 @@ cMenuEditChannel::cMenuEditChannel(int Index)
      Add(new cMenuEditIntItem( "Vpid",         &data.vpid, 0, 10000)); //TODO exact limits???
      Add(new cMenuEditIntItem( "Apid",         &data.apid, 0, 10000)); //TODO exact limits???
      Add(new cMenuEditIntItem( "CA",           &data.ca, 0, cDvbApi::NumDvbApis));
-     Add(new cMenuEditIntItem( "Pnr",          &data.pnr, 0, 10000)); //TODO exact limits???
+     Add(new cMenuEditIntItem( "Pnr",          &data.pnr, 0));
      }
 }
 
@@ -1243,7 +1243,7 @@ cReplayControl::cReplayControl(void)
 cReplayControl::~cReplayControl()
 {
   Hide();
-  dvbApi->StopReplay();
+  dvbApi->Stop();
 }
 
 void cReplayControl::SetRecording(const char *FileName, const char *Title)
@@ -1278,13 +1278,13 @@ eOSState cReplayControl::ProcessKey(eKeys Key)
   if (visible)
      shown = dvbApi->ShowProgress(!shown) || shown;
   switch (Key) {
-    case kUp:      dvbApi->Skip(-INT_MAX); break;
-    case kDown:    dvbApi->PauseReplay(); break;
+    case kUp:      dvbApi->Play(); break;
+    case kDown:    dvbApi->Pause(); break;
     case kBlue:    Hide();
-                   dvbApi->StopReplay();
+                   dvbApi->Stop();
                    return osEnd;
-    case kLeft:    dvbApi->FastRewind(); break;
-    case kRight:   dvbApi->FastForward(); break;
+    case kLeft:    dvbApi->Backward(); break;
+    case kRight:   dvbApi->Forward(); break;
     case kGreen:   dvbApi->Skip(-60); break;
     case kYellow:  dvbApi->Skip(60); break;
     case kMenu:    Hide(); return osMenu; // allow direct switching to menu

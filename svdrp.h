@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: svdrp.h 1.1 2000/07/23 14:49:30 kls Exp $
+ * $Id: svdrp.h 1.2 2000/08/06 12:45:28 kls Exp $
  */
 
 #ifndef __SVDRP_H
@@ -42,6 +42,7 @@ private:
   void CmdMovt(const char *Option);
   void CmdNewc(const char *Option);
   void CmdNewt(const char *Option);
+  void CmdUpdt(const char *Option);
   void Execute(char *Cmd);
 public:
   cSVDRP(int Port);

@@ -49,6 +49,9 @@ If the program shall run as a daemon, use the --daemon option. This
 will completely detach it from the terminal and will continue as a
 background process.
 
+Command line options:
+---------------------
+
 Use "vdr --help" for a list of available command line options.
 
 The video data directory:
@@ -57,13 +60,40 @@ The video data directory:
 All recordings are written into directories below "/video". Please
 make sure this directory exists, and that the user who runs the 'vdr'
 program has read and write access to that directory.
-If you prefer a different location for your video files, you can change
-the value of 'BaseDir' in recording.c.
+If you prefer a different location for your video files, you can use
+the '-v' option to change that.
 
 Note that the file system need not be 64-bit proof, since the 'vdr'
 program splits video files into chunks of about 1GB. You should use
 a disk with several gigabytes of free space. One GB can store roughly
 half an hour of video data.
+
+If you have more than one disk and don't want to combine them to form
+one large logical volume, you can set up several video directories as
+mount points for these disks. All of these directories must have the
+same basic name and must end with a numeric part, which starts at 0 for
+the main directory and has increasing values for the rest of the
+directories. For example
+
+   /video0
+   /video1
+   /video2
+
+would be a setup with three directories. You can use more than one
+numeric digit, and the directories need not be directly under '/':
+
+   /mnt/MyVideos/vdr.00
+   /mnt/MyVideos/vdr.01
+   /mnt/MyVideos/vdr.02
+   ...
+   /mnt/MyVideos/vdr.11
+
+would set up twelve disks (wow, what a machine that would be!).
+
+To use such a multi directory setup, you need to add the '-v' option
+with the name of the basic directory when running 'vdr':
+
+   vdr -v /video0
 
 Configuration files:
 --------------------
@@ -77,6 +107,12 @@ files can be edited with any text editor, or will be written by the
 The meaning of the data entries may still vary in future releases,
 so for the moment please look at the source code (config.c) to see
 the meaning of the various fields.
+
+The files that come with this package contain the author's selections,
+so please make sure you adapt these to your personal taste. Also make sure
+that the channels defined in 'channels.conf' are correct before attempting
+to record anything. Channel parameters may vary and not all of the channels
+listed in the default 'channels.conf' file have been verified by the author.
 
 Learning the remote control keys:
 ---------------------------------

@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.23 2000/07/23 15:36:43 kls Exp $
+ * $Id: vdr.c 1.27 2000/07/29 19:01:57 kls Exp $
  */
 
 #include <getopt.h>
@@ -36,6 +36,7 @@
 #include "recording.h"
 #include "svdrp.h"
 #include "tools.h"
+#include "videodir.h"
 
 #ifdef REMOTE_KBD
 #define KEYS_CONF "keys-pc.conf"
@@ -64,30 +65,51 @@ int main(int argc, char *argv[])
   static struct option long_options[] = {
       { "daemon", no_argument,       NULL, 'd' },
       { "help",   no_argument,       NULL, 'h' },
+      { "log",    required_argument, NULL, 'l' },
       { "port",   required_argument, NULL, 'p' },
+      { "video",  required_argument, NULL, 'v' },
       { 0 }
     };
   
   int c;
   int option_index = 0;
-  while ((c = getopt_long(argc, argv, "dhp:", long_options, &option_index)) != -1) {
+  while ((c = getopt_long(argc, argv, "dhl:p:v:", long_options, &option_index)) != -1) {
         switch (c) {
           case 'd': DaemonMode = true; break;
           case 'h': printf("Usage: vdr [OPTION]\n\n"
-                           "  -h,      --help        display this help and exit\n"
-                           "  -d,      --daemon      run in daemon mode\n"
-                           "  -p PORT, --port=PORT   use PORT for SVDRP ('0' turns off SVDRP)\n"
+                           "  -h,       --help        display this help and exit\n"
+                           "  -d,       --daemon      run in daemon mode\n"
+                           "  -l LEVEL, --log=LEVEL   set log level (default: 3)\n"
+                           "                          0 = no logging, 1 = errors only,\n"
+                           "                          2 = errors and info, 3 = errors, info and debug\n"
+                           "  -p PORT,  --port=PORT   use PORT for SVDRP (default: %d)\n"
+                           "                          0 turns off SVDRP\n"
+                           "  -v DIR,   --video=DIR   use DIR as video directory (default is %s)\n"
                            "\n"
-                           "Report bugs to <vdr-bugs@cadsoft.de>\n"
+                           "Report bugs to <vdr-bugs@cadsoft.de>\n",
+                           DEFAULTSVDRPPORT,
+                           VideoDirectory
                            );
                     return 0;
                     break;
+          case 'l': if (isnumber(optarg)) {
+                       int l = atoi(optarg);
+                       if (0 <= l && l <= 3) {
+                          SysLogLevel = l;
+                          break;
+                          }
+                       }
+                    fprintf(stderr, "vdr: invalid log level: %s\n", optarg);
+                    abort();
+                    break;
           case 'p': if (isnumber(optarg))
-                       SVDRPport = strtol(optarg, NULL, 10);
+                       SVDRPport = atoi(optarg);
                     else {
                        fprintf(stderr, "vdr: invalid port number: %s\n", optarg);
-                       return 1;
+                       abort();
                        }
+                    break;
+          case 'v': VideoDirectory = optarg;
                     break;
           default:  abort();
           }
@@ -95,7 +117,15 @@ int main(int argc, char *argv[])
 
   // Log file:
   
-  openlog("vdr", LOG_PID | LOG_CONS, LOG_USER);
+  if (SysLogLevel > 0)
+     openlog("vdr", LOG_PID | LOG_CONS, LOG_USER);
+
+  // Check the video directory:
+
+  if (!DirectoryOk(VideoDirectory, true)) {
+     fprintf(stderr, "vdr: can't access video directory %s\n", VideoDirectory);
+     abort();
+     }
 
   // Daemon mode:
 
@@ -104,8 +134,8 @@ int main(int argc, char *argv[])
      pid_t pid = fork();
      if (pid < 0) {
         fprintf(stderr, "%s\n", strerror(errno));
-        esyslog(LOG_ERR, strerror(errno));
-        return 1;
+        esyslog(LOG_ERR, "ERROR: %s", strerror(errno));
+        abort();
         }
      if (pid != 0)
         return 0; // initial program immediately returns
@@ -117,12 +147,12 @@ int main(int argc, char *argv[])
      abort();
 #endif
      }
-  isyslog(LOG_INFO, "started");
+  isyslog(LOG_INFO, "VDR version %s started", VDRVERSION);
 
   // DVB interfaces:
 
   if (!cDvbApi::Init())
-     return 1;
+     abort();
 
   // Configuration data:
 
@@ -241,6 +271,7 @@ int main(int argc, char *argv[])
   delete SVDRP;
   cDvbApi::Cleanup();
   isyslog(LOG_INFO, "exiting");
-  closelog();
+  if (SysLogLevel > 0)
+     closelog();
   return 0;
 }

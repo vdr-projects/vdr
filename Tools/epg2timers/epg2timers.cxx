@@ -34,21 +34,46 @@ static const char channel_line[]    = "\t\t\t<tr><td bgcolor=\"#002b64\" align=c
 static const char title_line[]      = "\t\t\t\t<td bgcolor=\"#002b64\" align=left width=100%><span id=\"fb-w10\">";
 static const char summary_line[]    = "\t\t\t<table border=0 cellpadding=10 cellspacing=0 bgcolor=\"white\" width=100%>";
 static const char * const channel_names[] =
-{"RTL", "SAT1", "PRO7", "RTL2", "ARD", "BR3", "HR3", "NDR", "SWF", "WDR", "BR Alpha", "SWR BW", "Phoenix",
- "ZDF", "3sat", "Kinderkanal", "ARTE", "phoenix", "ORF Sat", "ZDF.info", "CNN", "Super RTL", "VOX", "DW TV",
- "Kabel1", "TM3", "DSF", "HOT", "BloombergTV", "Sky News", "KinderNet", "Alice", "n-tv", "Grand Tour.", "TW1",
- "Eins Extra", "Eins Festival", "Eins MuXx", "MDR", "ORB", "B1", "ARD Online-Kanal", "Premiere World Promo",
- "Premiere", "Star Kino", "Cine Action", "Cine Comedy", "Sci Fantasy", "Romantic Movies", "Studio Universal",
- "TV Niepokalanow", "Mosaico", "Andalucia TV", "TVC Internacional", "Nasza TV", "WishLine test", "Pro 7 Austria", 
- "Kabel 1 Schweiz", "Kabel 1 Austria", "Pro 7 Schweiz", "Kiosque", "KTO", "TCM", "Cartoon Network France & Spain", 
- "TVBS Europe", "TVBS Europe", "Travel", "TCM Espania", "MTV Spain", "TCM France", "RTL2 CH",
- "La Cinquieme", "ARTE", "Post Filial TV", "Canal Canaris", "Canal Canaris", "Canal Canaris", "Canal Canaris",
- "AB Sat Passion promo", "AB Channel 1", "Taquilla 0", "CSAT", "Mosaique", "Mosaique 2", "Mosaique 3", "Le Sesame C+", 
- "FEED", "RTM 1", "ESC 1", "TV5 Europe", "TV7 Tunisia", "ARTE", "RAI Uno", "RTP International",
- "Fashion TV", "VideoService", "Beta Research promo", "Canal Canarias", "TVC International", "Fitur", "Astra Info 1", 
- "Astra Info 2", "Astra Vision 1", "Astra Vision 1", "Astra Vision 1", "Astra Vision 1", "Astra Vision 1", 
- "Astra Vision 1", "Astra Vision 1", "RTL Tele Letzebuerg", "Astra Mosaic", "MHP test", "Bloomberg TV Spain", 
- "Video Italia", "AC 3 promo", ""
+{
+"3sat",
+"ARTE",
+"*B1 Berlin",
+"BR3",
+"Bloomberg TV",
+"BR Alpha",
+"CNN",
+"ARD",
+"*DW-tv",
+"Eins Extra",
+"Eins Festival",
+"Eins MuXx",
+"euroNEWS",
+"HR3",
+"Kabel1",
+"Kinderkanal",
+"MDR",
+"MTV",
+"NDR",
+"NTV",
+"ORB",
+"*ORF1",
+"Phoenix",
+"PRO7",
+"RTL",
+"RTL2",
+"SAT1",
+"skynews",
+"SWF",
+"Super RTL",
+"TM3",
+"TW1",
+"VOX",
+"WDR",
+"Theaterkanal",
+"ZDF",
+"ZDF.doku",
+"ZDF.info", 
+""
 };
 static const int month_lengths[12] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
@@ -240,3 +265,4 @@ main()
          read_summary(summary);
    }
 }
+

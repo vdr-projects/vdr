@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.11 2000/07/23 17:17:10 kls Exp $
+ * $Id: config.h 1.14 2000/08/06 12:22:52 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -16,6 +16,8 @@
 #include <time.h>
 #include "dvbapi.h"
 #include "tools.h"
+
+#define VDRVERSION "0.61"
 
 #define MaxBuffer 10000
 
@@ -181,7 +183,11 @@ public:
   };
 
 class cChannels : public cConfig<cChannel> {};
-class cTimers : public cConfig<cTimer> {};
+
+class cTimers : public cConfig<cTimer> {
+public:
+  cTimer *GetTimer(cTimer *Timer);
+  };
 
 extern int CurrentChannel;
 

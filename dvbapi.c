@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.15 2000/07/21 13:18:02 kls Exp $
+ * $Id: dvbapi.c 1.22 2000/08/06 14:06:14 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -17,6 +17,7 @@
 #include <unistd.h>
 #include "interface.h"
 #include "tools.h"
+#include "videodir.h"
 
 #define VIDEODEVICE "/dev/video"
 
@@ -50,8 +51,11 @@
 // 'signed'), so let's use 1GB for absolute safety (the actual file size
 // may be slightly higher because we stop recording only before the next
 // 'I' frame, to have a complete Group Of Pictures):
-#define MAXVIDEOFILESIZE (1024*1024*1024)
+#define MAXVIDEOFILESIZE (1024*1024*1024) // Byte
 #define MAXFILESPERRECORDING 255
+
+#define MINFREEDISKSPACE    (512) // MB
+#define DISKCHECKINTERVAL   100 // seconds
 
 #define INDEXFILESUFFIX     "/index.vdr"
 #define RESUMEFILESUFFIX    "/resume.vdr"
@@ -341,9 +345,8 @@ protected:
   int Free(void) { return ((tail >= head) ? size + head - tail : head - tail) - 1; }
   int Available(void) { return (tail >= head) ? tail - head : size - head + tail; }
   int Readable(void) { return (tail >= head) ? size - tail - (head ? 0 : 1) : head - tail - 1; } // keep a 1 byte gap!
-  int Writeable(void) { return (tail > head) ? tail - head : size - head; }
+  int Writeable(void) { return (tail >= head) ? tail - head : size - head; }
   int Byte(int Offset);
-  bool WaitForOutFile(int Timeout);
 public:
   cRingBuffer(int *InFile, int *OutFile, int Size, int FreeLimit = 0, int AvailLimit = 0);
   virtual ~cRingBuffer();
@@ -402,22 +405,6 @@ void cRingBuffer::Skip(int n)
      if (head > tail)
         head = tail;
      }
-}
-
-bool cRingBuffer::WaitForOutFile(int Timeout)
-{
-  fd_set set;
-  FD_ZERO(&set);
-  FD_SET(*outFile, &set);
-  struct timeval timeout;
-  timeout.tv_sec = 0;
-  timeout.tv_usec = Timeout;
-  if (select(FD_SETSIZE, NULL, &set, NULL, &timeout) > 0) {
-     if (FD_ISSET(*outFile, &set))
-        return true;
-     }
-  esyslog(LOG_ERR, "ERROR: timeout in WaitForOutFile(%d)", Timeout);  
-  return false;
 }
 
 int cRingBuffer::Read(int Max)
@@ -598,6 +585,8 @@ private:
   int recordFile;
   uchar tagAudio, tagVideo;
   bool ok, synced;
+  time_t lastDiskSpaceCheck;
+  bool RunningLowOnDiskSpace(void);
   int Synchronize(void);
   bool NextFile(void);
   virtual int Write(int Max = -1);
@@ -615,6 +604,7 @@ cRecordBuffer::cRecordBuffer(int *InFile, const char *FileName)
   recordFile = -1;
   tagAudio = tagVideo = 0;
   ok = synced = false;
+  lastDiskSpaceCheck = time(NULL);
   if (!fileName)
      return;//XXX find a better way???
   // Find the highest existing file suffix:
@@ -636,7 +626,20 @@ cRecordBuffer::cRecordBuffer(int *InFile, const char *FileName)
 cRecordBuffer::~cRecordBuffer()
 {
   if (recordFile >= 0)
-     close(recordFile);
+     CloseVideoFile(recordFile);
+}
+
+bool cRecordBuffer::RunningLowOnDiskSpace(void)
+{
+  if (time(NULL) > lastDiskSpaceCheck + DISKCHECKINTERVAL) {
+     uint Free = FreeDiskSpaceMB(fileName);
+     lastDiskSpaceCheck = time(NULL);
+     if (Free < MINFREEDISKSPACE) {
+        dsyslog(LOG_INFO, "low disk space (%d MB, limit is %d MB)", Free, MINFREEDISKSPACE);
+        return true;
+        }
+     }
+  return false;
 }
 
 int cRecordBuffer::Synchronize(void)
@@ -714,20 +717,22 @@ int cRecordBuffer::Synchronize(void)
 
 bool cRecordBuffer::NextFile(void)
 {
-  if (recordFile >= 0 && fileSize > MAXVIDEOFILESIZE && pictureType == I_FRAME) {
-     if (close(recordFile) < 0)
-        LOG_ERROR;
-        // don't return 'false', maybe we can still record into the next file
-     recordFile = -1;
-     fileNumber++;
-     if (fileNumber == 0)
-        esyslog(LOG_ERR, "ERROR: max number of files (%d) exceeded", MAXFILESPERRECORDING);
-     fileSize = 0;
+  if (recordFile >= 0 && pictureType == I_FRAME) { // every file shall start with an I_FRAME
+     if (fileSize > MAXVIDEOFILESIZE || RunningLowOnDiskSpace()) {
+        if (CloseVideoFile(recordFile) < 0)
+           LOG_ERROR;
+           // don't return 'false', maybe we can still record into the next file
+        recordFile = -1;
+        fileNumber++;
+        if (fileNumber == 0)
+           esyslog(LOG_ERR, "ERROR: max number of files (%d) exceeded", MAXFILESPERRECORDING);
+        fileSize = 0;
+        }
      }
   if (recordFile < 0) {
      sprintf(pFileNumber, RECORDFILESUFFIX, fileNumber);
      dsyslog(LOG_INFO, "recording to '%s'", fileName);
-     recordFile = open(fileName, O_RDWR | O_CREAT | O_NONBLOCK, S_IRUSR | S_IWUSR);
+     recordFile = OpenVideoFile(fileName, O_RDWR | O_CREAT | O_NONBLOCK);
      if (recordFile < 0) {
         LOG_ERROR;
         return false;
@@ -781,7 +786,7 @@ int cRecordBuffer::WriteWithTimeout(bool EndIfEmpty)
 
 // --- cReplayBuffer ---------------------------------------------------------
 
-enum eReplayMode { rmPlay, rmFastForward, rmFastRewind };
+enum eReplayMode { rmPlay, rmFastForward, rmFastRewind, rmSlowRewind };
 
 class cReplayBuffer : public cFileBuffer {
 private:
@@ -790,6 +795,7 @@ private:
   eReplayMode mode;
   bool skipAudio;
   int lastIndex;
+  int brakeCounter;
   void SkipAudioBlocks(void);
   bool NextFile(uchar FileNumber = 0, int FileOffset = -1);
   void Close(void);
@@ -811,6 +817,7 @@ cReplayBuffer::cReplayBuffer(int *OutFile, const char *FileName)
   fileOffset = 0;
   replayFile = -1;
   mode = rmPlay;
+  brakeCounter = 0;
   skipAudio = false;
   lastIndex = -1;
   if (!fileName)
@@ -841,6 +848,7 @@ void cReplayBuffer::SetMode(eReplayMode Mode)
 {
   mode = Mode;
   skipAudio = Mode != rmPlay;
+  brakeCounter = 0;
   if (mode != rmPlay)
      Clear();
 }
@@ -974,6 +982,10 @@ int cReplayBuffer::Read(int Max = -1)
         if (Index >= 0) {
            uchar FileNumber;
            int FileOffset, Length;
+           if (mode == rmSlowRewind && (brakeCounter++ % 24) != 0) {
+              // show every I_FRAME 24 times in rmSlowRewind mode to achieve roughly the same speed as in slow forward mode
+              Index = index->GetNextIFrame(Index, true, &FileNumber, &FileOffset, &Length); // jump ahead one frame
+              }
            Index = index->GetNextIFrame(Index, mode == rmFastForward, &FileNumber, &FileOffset, &Length);
            if (Index >= 0) {
               if (!NextFile(FileNumber, FileOffset))
@@ -1014,28 +1026,27 @@ int cReplayBuffer::Read(int Max = -1)
 int cReplayBuffer::Write(int Max)
 {
   int Written = 0;
-
-  do {
-     if (skipAudio) {
-        SkipAudioBlocks();
-        Max = GetAvPesLength();
-        }
-     while (Max) {
-           int w = cFileBuffer::Write(Max);
-           if (w >= 0) {
-              fileOffset += w;
-              Written += w;
-              if (Max < 0)
-                 break;
-              Max -= w;
-              }
-           else
-              return w;
-               //XXX??? Why does the buffer get empty here???
-           if (Empty() || !WaitForOutFile(1000000))
-              return Written;
+  int Av = Available();
+  if (skipAudio) {
+     SkipAudioBlocks();
+     Max = GetAvPesLength();
+     fileOffset += Av - Available();
+     }
+  if (Max) {
+     int w;
+     do {
+        w = cFileBuffer::Write(Max);
+        if (w >= 0) {
+           fileOffset += w;
+           Written += w;
+           if (Max < 0)
+              break;
+           Max -= w;
            }
-     } while (skipAudio && Available());
+        else
+           return w;
+        } while (Max > 0); // we MUST write this entire AV_PES block
+     }
   return Written;
 }
 
@@ -1076,7 +1087,7 @@ cDvbApi::~cDvbApi()
 {
   if (videoDev >= 0) {
      Close();
-     StopReplay();
+     Stop();
      StopRecord();
      close(videoDev);
      }
@@ -1119,9 +1130,13 @@ bool cDvbApi::Init(void)
          dsyslog(LOG_INFO, "probing %s", fileName);
          int f = open(fileName, O_RDWR);
          if (f >= 0) {
+            struct video_capability cap;
+            int r = ioctl(f, VIDIOCGCAP, &cap);
             close(f);
-            dvbApi[i] = new cDvbApi(fileName);
-            NumDvbApis++;
+            if (r == 0 && (cap.type & VID_TYPE_DVB)) {
+               dvbApi[i] = new cDvbApi(fileName);
+               NumDvbApis++;
+               }
             }
          else {
             if (errno != ENODEV)
@@ -1136,10 +1151,12 @@ bool cDvbApi::Init(void)
          }
       }
   PrimaryDvbApi = dvbApi[0];
-  if (NumDvbApis > 0)
+  if (NumDvbApis > 0) {
      isyslog(LOG_INFO, "found %d video device%s", NumDvbApis, NumDvbApis > 1 ? "s" : "");
-  else
+     } // need braces because of isyslog-macro
+  else {
      esyslog(LOG_ERR, "ERROR: no video device found, giving up!");
+     }
   return NumDvbApis > 0;
 }
 
@@ -1222,7 +1239,10 @@ void cDvbApi::Open(int w, int h)
 void cDvbApi::Close(void)
 {
 #ifdef DEBUG_OSD
-  delwin(window);
+  if (window) {
+     delwin(window);
+     window = 0;
+     }
 #else
   Cmd(OSD_Close);
 #endif
@@ -1372,7 +1392,7 @@ bool cDvbApi::StartRecord(const char *FileName)
      }
   if (videoDev >= 0) {
 
-     StopReplay(); // TODO: remove this if the driver is able to do record and replay at the same time
+     Stop(); // TODO: remove this if the driver is able to do record and replay at the same time
 
      // Check FileName:
 
@@ -1494,7 +1514,7 @@ bool cDvbApi::StartReplay(const char *FileName, const char *Title)
      esyslog(LOG_ERR, "ERROR: StartReplay() called while recording - ignored!");
      return false;
      }
-  StopReplay();
+  Stop();
   if (videoDev >= 0) {
 
      lastProgress = lastTotal = -1;
@@ -1565,49 +1585,69 @@ bool cDvbApi::StartReplay(const char *FileName, const char *Title)
                      }
                   if (FD_ISSET(fromMain, &setIn)) {
                      switch (readchar(fromMain)) {
-                       case dvbStop:        SetReplayMode(VID_PLAY_CLEAR_BUFFER);
-                                            Buffer->Stop(); break;
-                       case dvbPauseReplay: SetReplayMode(Paused ? VID_PLAY_NORMAL : VID_PLAY_PAUSE);
-                                            Paused = !Paused;
-                                            if (FastForward || FastRewind) {
-                                               SetReplayMode(VID_PLAY_CLEAR_BUFFER);
-                                               Buffer->Clear();
-                                               }
-                                            FastForward = FastRewind = false;
+                       case dvbStop:     SetReplayMode(VID_PLAY_CLEAR_BUFFER);
+                                         Buffer->Stop();
+                                         break;
+                       case dvbPause:    SetReplayMode(Paused ? VID_PLAY_NORMAL : VID_PLAY_PAUSE);
+                                         Paused = !Paused;
+                                         if (FastForward || FastRewind) {
+                                            SetReplayMode(VID_PLAY_CLEAR_BUFFER);
+                                            Buffer->Clear();
+                                            }
+                                         FastForward = FastRewind = false;
+                                         Buffer->SetMode(rmPlay);
+                                         break;
+                       case dvbPlay:     if (FastForward || FastRewind || Paused) {
+                                            SetReplayMode(VID_PLAY_CLEAR_BUFFER);
+                                            SetReplayMode(VID_PLAY_NORMAL);
+                                            FastForward = FastRewind = Paused = false;
                                             Buffer->SetMode(rmPlay);
-                                            break;
-                       case dvbFastForward: SetReplayMode(VID_PLAY_CLEAR_BUFFER);
+                                            }
+                                         break;
+                       case dvbForward:  SetReplayMode(VID_PLAY_CLEAR_BUFFER);
+                                         Buffer->Clear();
+                                         FastForward = !FastForward;
+                                         FastRewind = false;
+                                         if (Paused) {
+                                            Buffer->SetMode(rmPlay);
+                                            SetReplayMode(FastForward ? VID_PLAY_SLOW_MOTION : VID_PLAY_PAUSE);
+                                            }
+                                         else {
                                             SetReplayMode(VID_PLAY_NORMAL);
-                                            FastForward = !FastForward;
-                                            FastRewind = Paused = false;
-                                            Buffer->Clear();
                                             Buffer->SetMode(FastForward ? rmFastForward : rmPlay);
-                                            break;
-                       case dvbFastRewind:  SetReplayMode(VID_PLAY_CLEAR_BUFFER);
+                                            }
+                                         break;
+                       case dvbBackward: SetReplayMode(VID_PLAY_CLEAR_BUFFER);
+                                         Buffer->Clear();
+                                         FastRewind = !FastRewind;
+                                         FastForward = false;
+                                         if (Paused) {
+                                            Buffer->SetMode(FastRewind ? rmSlowRewind : rmPlay);
+                                            SetReplayMode(FastRewind ? VID_PLAY_NORMAL : VID_PLAY_PAUSE);
+                                            }
+                                         else {
                                             SetReplayMode(VID_PLAY_NORMAL);
-                                            FastRewind = !FastRewind;
-                                            FastForward = Paused = false;
-                                            Buffer->Clear();
                                             Buffer->SetMode(FastRewind ? rmFastRewind : rmPlay);
-                                            break;
-                       case dvbSkip:        {
-                                              int Seconds;
-                                              if (readint(fromMain, Seconds)) {
-                                                 SetReplayMode(VID_PLAY_CLEAR_BUFFER);
-                                                 SetReplayMode(VID_PLAY_NORMAL);
-                                                 FastForward = FastRewind = Paused = false;
-                                                 Buffer->SetMode(rmPlay);
-                                                 Buffer->SkipSeconds(Seconds);
-                                                 }
                                             }
-                                            break;
-                       case dvbGetIndex:    {
-                                              int Current, Total;
-                                              Buffer->GetIndex(Current, Total);
-                                              writeint(toMain, Current);
-                                              writeint(toMain, Total);
-                                            }
-                                            break;
+                                         break;
+                       case dvbSkip:     {
+                                           int Seconds;
+                                           if (readint(fromMain, Seconds)) {
+                                              SetReplayMode(VID_PLAY_CLEAR_BUFFER);
+                                              SetReplayMode(VID_PLAY_NORMAL);
+                                              FastForward = FastRewind = Paused = false;
+                                              Buffer->SetMode(rmPlay);
+                                              Buffer->SkipSeconds(Seconds);
+                                              }
+                                         }
+                                         break;
+                       case dvbGetIndex: {
+                                           int Current, Total;
+                                           Buffer->GetIndex(Current, Total);
+                                           writeint(toMain, Current);
+                                           writeint(toMain, Total);
+                                         }
+                                         break;
                        }
                      }
                   }
@@ -1633,7 +1673,7 @@ bool cDvbApi::StartReplay(const char *FileName, const char *Title)
   return false;
 }
 
-void cDvbApi::StopReplay(void)
+void cDvbApi::Stop(void)
 {
   if (pidReplay) {
      writechar(toReplay, dvbStop);
@@ -1646,22 +1686,28 @@ void cDvbApi::StopReplay(void)
      }
 }
 
-void cDvbApi::PauseReplay(void)
+void cDvbApi::Pause(void)
 {
   if (pidReplay)
-     writechar(toReplay, dvbPauseReplay);
+     writechar(toReplay, dvbPause);
 }
 
-void cDvbApi::FastForward(void)
+void cDvbApi::Play(void)
 {
   if (pidReplay)
-     writechar(toReplay, dvbFastForward);
+     writechar(toReplay, dvbPlay);
 }
 
-void cDvbApi::FastRewind(void)
+void cDvbApi::Forward(void)
 {
   if (pidReplay)
-     writechar(toReplay, dvbFastRewind);
+     writechar(toReplay, dvbForward);
+}
+
+void cDvbApi::Backward(void)
+{
+  if (pidReplay)
+     writechar(toReplay, dvbBackward);
 }
 
 void cDvbApi::Skip(int Seconds)

@@ -6,7 +6,7 @@
  *
  * Ported to LIRC by Carsten Koch <Carsten.Koch@icem.de>  2000-06-16.
  *
- * $Id: remote.c 1.10 2000/07/15 16:34:35 kls Exp $
+ * $Id: remote.c 1.11 2000/07/29 16:23:47 kls Exp $
  */
 
 #include "remote.h"
@@ -71,7 +71,11 @@ void cRcIoKBD::Flush(int WaitSeconds)
 bool cRcIoKBD::InputAvailable(bool Wait)
 {
   timeout(Wait ? 1000 : 10);
-  return true;//XXX
+  int ch = getch();
+  if (ch == ERR)
+     return false;
+  ungetch(ch);
+  return true;
 }
 
 bool cRcIoKBD::GetCommand(unsigned int *Command, unsigned short *)

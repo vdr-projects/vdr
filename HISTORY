@@ -99,3 +99,27 @@ Video Disk Recorder Revision History
   pressing "Ok".  The summary field can only be filled in directly by editing
   the 'timers.conf' file with a text editor, or by defining/modifying the timer
   via the SVDRP interface.
+
+2000-08-06: Version 0.61
+
+- When scrolling through a list it now moves a full page up or down when the
+  cursor reaches the top or bottom of the menu (thanks to Heino Goldenstein!).
+- Added missing '#include <sys/stat.h>' to recording.c.
+- The video directory can now be defined with the command line option -v.
+- There can now be more than one video directory (in case you have several
+  disks).
+- Fixed learning key codes for PC keyboard.
+- New command line option '-l' to set the log level.
+- Times in timers.conf are now always printed with 4 digits (leading '0').
+- Slow forward/back mode (thanks to Guido Fiala!).
+- The "Up" key in replay mode no longer restarts replay at the very beginning,
+  but rather resumes normal replay mode after a "pause", "forward" or "backward"
+  operation. Use the "Skip -60s" function repeatedly to go back to the beginning
+  of the recording.
+- Improved reaction on user input in fast/slow forward/back modes.
+- No more upper limit for the value of 'Pnr'.
+- Checking if the video card is really a DVB card.
+- New SVDRP command UPDT to update an existing timer (or add a new one if it
+  doesn't yet exist).
+- New version of the 'epg2timers' tool (with a modified channel list).
+- Bugfix in closing window in DEBUG_OSD mode.
