@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.c 1.8 2000/05/06 15:24:18 kls Exp $
+ * $Id: interface.c 1.9 2000/05/07 09:28:39 kls Exp $
  */
 
 #include "interface.h"
@@ -334,6 +334,13 @@ void cInterface::DisplayChannel(int Number, const char *Name)
         GetKey();
      Close();
      }
+}
+
+void cInterface::DisplayRecording(int Index, bool On)
+{
+#ifndef DEBUG_REMOTE
+  RcIo.SetPoints(1 << Index, On);
+#endif
 }
 
 bool cInterface::Recording(void)

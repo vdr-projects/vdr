@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remote.c 1.6 2000/04/24 09:45:56 kls Exp $
+ * $Id: remote.c 1.7 2000/05/07 09:28:18 kls Exp $
  */
 
 #include "remote.h"
@@ -29,6 +29,7 @@ cRcIo::cRcIo(char *DeviceName)
   t = 0;
   firstTime = lastTime = 0;
   lastCommand = 0;
+  lastNumber = 0;
   if ((f = open(DeviceName, O_RDWR | O_NONBLOCK)) >= 0) {
      struct termios t;
      if (tcgetattr(f, &t) == 0) {
@@ -206,6 +207,7 @@ bool cRcIo::Number(int n, bool Hex)
          n = (n << 4) | ((*d - '0') & 0x0F);
          }
      }
+  lastNumber = n;
   for (int i = 0; i < 4; i++) {
       if (!Digit(i, n))
          return false;
@@ -229,6 +231,15 @@ bool cRcIo::String(char *s)
           }
       }
   return Number(n, true);
+}
+
+void cRcIo::SetPoints(unsigned char Dp, bool On)
+{ 
+  if (On)
+     dp |= Dp;
+  else
+     dp &= ~Dp;
+  Number(lastNumber, true);
 }
 
 bool cRcIo::DetectCode(unsigned char *Code, unsigned short *Address)

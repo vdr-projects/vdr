@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.13 2000/05/01 16:29:46 kls Exp $
+ * $Id: menu.c 1.14 2000/05/06 15:43:57 kls Exp $
  */
 
 #include "menu.h"
@@ -1056,12 +1056,14 @@ cRecordControl::cRecordControl(cDvbApi *DvbApi, cTimer *Timer)
   cChannel::SwitchTo(timer->channel - 1, dvbApi);
   cRecording Recording(timer);
   dvbApi->StartRecord(Recording.FileName());
+  Interface.DisplayRecording(dvbApi->Index(), true);
 }
 
 cRecordControl::~cRecordControl()
 {
   Stop(true);
   delete instantId;
+  Interface.DisplayRecording(dvbApi->Index(), false);
 }
 
 void cRecordControl::Stop(bool KeepInstant)
