@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ringbuffer.h 1.11 2003/05/11 09:48:23 kls Exp $
+ * $Id: ringbuffer.h 1.12 2003/05/12 17:35:10 kls Exp $
  */
 
 #ifndef __RINGBUFFER_H
@@ -16,11 +16,19 @@
 class cRingBuffer {
 private:
   cMutex mutex;
+  cCondVar readyForPut, readyForGet;
+  cMutex putMutex, getMutex;
+  int putTimeout;
+  int getTimeout;
   int size;
 protected:
   int maxFill;//XXX
   int lastPercent;
   bool statistics;//XXX
+  void WaitForPut(void);
+  void WaitForGet(void);
+  void EnablePut(void);
+  void EnableGet(void);
   virtual void Clear(void) = 0;
   virtual int Available(void) = 0;
   int Free(void) { return size - Available() - 1; }
@@ -30,6 +38,7 @@ protected:
 public:
   cRingBuffer(int Size, bool Statistics = false);
   virtual ~cRingBuffer();
+  void SetTimeouts(int PutTimeout, int GetTimeout);
   };
 
 class cRingBufferLinear : public cRingBuffer {

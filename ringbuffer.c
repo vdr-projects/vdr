@@ -7,7 +7,7 @@
  * Parts of this file were inspired by the 'ringbuffy.c' from the
  * LinuxDVB driver (see linuxtv.org).
  *
- * $Id: ringbuffer.c 1.16 2003/05/11 09:47:56 kls Exp $
+ * $Id: ringbuffer.c 1.17 2003/05/12 17:38:11 kls Exp $
  */
 
 #include "ringbuffer.h"
@@ -23,12 +23,49 @@ cRingBuffer::cRingBuffer(int Size, bool Statistics)
   statistics = Statistics;
   maxFill = 0;
   lastPercent = 0;
+  putTimeout = getTimeout = 0;
 }
 
 cRingBuffer::~cRingBuffer()
 {
   if (statistics)
      dsyslog("buffer stats: %d (%d%%) used", maxFill, maxFill * 100 / (size - 1));
+}
+
+void cRingBuffer::WaitForPut(void)
+{
+  if (putTimeout) {
+     putMutex.Lock();
+     readyForPut.TimedWait(putMutex, putTimeout);
+     putMutex.Unlock();
+     }
+}
+
+void cRingBuffer::WaitForGet(void)
+{
+  if (getTimeout) {
+     getMutex.Lock();
+     readyForGet.TimedWait(getMutex, getTimeout);
+     getMutex.Unlock();
+     }
+}
+
+void cRingBuffer::EnablePut(void)
+{
+  if (putTimeout)
+     readyForPut.Broadcast();
+}
+
+void cRingBuffer::EnableGet(void)
+{
+  if (getTimeout)
+     readyForGet.Broadcast();
+}
+
+void cRingBuffer::SetTimeouts(int PutTimeout, int GetTimeout)
+{
+  putTimeout = PutTimeout;
+  getTimeout = GetTimeout;
 }
 
 // --- cRingBufferLinear -----------------------------------------------------
@@ -68,6 +105,8 @@ void cRingBufferLinear::Clear(void)
   head = tail = margin;
   lastGet = -1;
   Unlock();
+  EnablePut();
+  EnableGet();
 }
 
 int cRingBufferLinear::Put(const uchar *Data, int Count)
@@ -109,6 +148,9 @@ int cRingBufferLinear::Put(const uchar *Data, int Count)
      else
         Count = 0;
      Unlock();
+     EnableGet();
+     if (Count == 0)
+        WaitForPut();
      }
   return Count;
 }
@@ -134,6 +176,8 @@ uchar *cRingBufferLinear::Get(int &Count)
      Count = lastGet = cont;
      }
   Unlock();
+  if (!p)
+     WaitForGet();
   return p;
 }
 
@@ -146,6 +190,7 @@ void cRingBufferLinear::Del(int Count)
      if (tail >= Size())
         tail = margin;
      Unlock();
+     EnablePut();
      }
   else
      esyslog("ERROR: invalid Count in cRingBufferLinear::Del: %d", Count);
@@ -196,6 +241,8 @@ void cRingBufferFrame::Clear(void)
   while ((p = Get()) != NULL)
         Drop(p);
   Unlock();
+  EnablePut();
+  EnableGet();
 }
 
 bool cRingBufferFrame::Put(cFrame *Frame)
@@ -212,6 +259,7 @@ bool cRingBufferFrame::Put(cFrame *Frame)
         }
      currentFill += Frame->Count();
      Unlock();
+     EnableGet();
      return true;
      }
   return false;
@@ -249,6 +297,7 @@ void cRingBufferFrame::Drop(cFrame *Frame)
         esyslog("ERROR: attempt to drop wrong frame from ring buffer!");
      }
   Unlock();
+  EnablePut();
 }
 
 int cRingBufferFrame::Available(void)
