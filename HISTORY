@@ -794,7 +794,6 @@ Video Disk Recorder Revision History
 - The new setup parameter SplitEditedFiles can be used to control whether or
   not the result of an editing process shall be written into separate files.
 - Fixed handling repeat function when using LIRC (thanks to Matthias Weingart).
-- Fixed the "system time seen..." message in case of overlapping timers.
 - The shutdown program (defined with the '-s' option) now also gets the channel
   number and recording title of the timer (see INSTALL).
 - New channel data for 'Premiere One', 'Premiere X-Action', 'Fox Kids Türkce'
@@ -819,3 +818,4 @@ Video Disk Recorder Revision History
 - Mapping ` ("backtick") characters in EPG texts to ' (single quote).
 - Fixed timers starting and ending at unexpected times. 'localtime()' was not
   thread safe, now using localtime_r().
+- Removed the "system time seen..." message.

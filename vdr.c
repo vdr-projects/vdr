@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.83 2001/10/07 15:13:48 kls Exp $
+ * $Id: vdr.c 1.84 2001/10/19 13:37:24 kls Exp $
  */
 
 #include <getopt.h>
@@ -359,8 +359,6 @@ int main(int argc, char *argv[])
            cRecordControls::Process(Now);
            cTimer *Timer = Timers.GetMatch(Now);
            if (Timer) {
-              if (!Timer->pending)
-                 dsyslog(LOG_INFO, "system time seen is %s", ctime(&Now));
               if (!cRecordControls::Start(Timer))
                  Timer->SetPending(true);
               }
