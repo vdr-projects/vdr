@@ -2624,3 +2624,5 @@ Video Disk Recorder Revision History
   the first two are used throughout the rest of the program).
 - The audio and Dolby PIDs in 'channels.conf' now can have an optional language
   code (see man vdr(5)). Currently this is only stored and not yet used otherwise.
+- Added a call to cStatus::MsgOsdCurrentItem() to cMenuEditItem::SetValue()
+  (thanks to Martin Hammerschmid).
