@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.316 2004/10/31 10:09:16 kls Exp $
+ * $Id: menu.c 1.317 2004/10/31 12:53:00 kls Exp $
  */
 
 #include "menu.h"
@@ -223,6 +223,7 @@ class cMenuEditChannel : public cOsdMenu {
 private:
   cChannel *channel;
   cChannel data;
+  char name[256];
   void Setup(void);
 public:
   cMenuEditChannel(cChannel *Channel, bool New = false);
@@ -254,7 +255,8 @@ void cMenuEditChannel::Setup(void)
   Clear();
 
   // Parameters for all types of sources:
-  Add(new cMenuEditStrItem( tr("Name"),          data.name, sizeof(data.name), tr(FileNameChars)));
+  strn0cpy(name, data.name, sizeof(name));
+  Add(new cMenuEditStrItem( tr("Name"),          name, sizeof(name), tr(FileNameChars)));
   Add(new cMenuEditSrcItem( tr("Source"),       &data.source));
   Add(new cMenuEditIntItem( tr("Frequency"),    &data.frequency));
   Add(new cMenuEditIntItem( tr("Vpid"),         &data.vpid,  0, 0x1FFF));
@@ -295,6 +297,7 @@ eOSState cMenuEditChannel::ProcessKey(eKeys Key)
   if (state == osUnknown) {
      if (Key == kOk) {
         if (Channels.HasUniqueChannelID(&data, channel)) {
+           data.name = strcpyrealloc(data.name, name);
            if (channel) {
               *channel = data;
               isyslog("edited channel %d %s", channel->Number(), data.ToText());
@@ -629,7 +632,7 @@ eOSState cMenuEditTimer::ProcessKey(eKeys Key)
                           break;
                           }
                        if (!*data.file)
-                          strcpy(data.file, data.Channel()->Name());
+                          strcpy(data.file, data.Channel()->ShortName(true));
                        if (timer) {
                           if (memcmp(timer, &data, sizeof(data)) != 0) {
                              *timer = data;
@@ -918,7 +921,7 @@ cMenuWhatsOnItem::cMenuWhatsOnItem(const cEvent *Event, cChannel *Channel)
   char t = Timers.GetMatch(Event, &TimerMatch) ? (TimerMatch == tmFull) ? 'T' : 't' : ' ';
   char v = event->Vps() && (event->Vps() - event->StartTime()) ? 'V' : ' ';
   char r = event->IsRunning() ? '*' : ' ';
-  asprintf(&buffer, "%d\t%.*s\t%s\t%c%c%c\t%s", channel->Number(), 6, channel->Name(), event->GetTimeString(), t, v, r, event->Title());
+  asprintf(&buffer, "%d\t%.*s\t%s\t%c%c%c\t%s", channel->Number(), 6, channel->ShortName(true), event->GetTimeString(), t, v, r, event->Title());
   SetText(buffer, false);
 }
 

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: sdt.c 1.12 2004/10/16 10:02:23 kls Exp $
+ * $Id: sdt.c 1.13 2004/10/31 12:10:20 kls Exp $
  */
 
 #include "sdt.h"
@@ -58,28 +58,16 @@ void cSdtFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                         {
                         char NameBuf[1024];
                         char ShortNameBuf[1024];
+                        char ProviderNameBuf[1024];
                         sd->serviceName.getText(NameBuf, ShortNameBuf, sizeof(NameBuf), sizeof(ShortNameBuf));
                         char *pn = compactspace(NameBuf);
                         char *ps = compactspace(ShortNameBuf);
-                        if (*NameBuf && *ShortNameBuf && strcmp(NameBuf, ShortNameBuf) != 0) {
-                           ps = ShortNameBuf + strlen(ShortNameBuf);
-                           *ps++ = ',';
-                           strcpy(ps, NameBuf);
-                           pn = ShortNameBuf;
-                           }
-                        if (*pn) {
-                           char ProviderNameBuf[1024];
-                           sd->providerName.getText(ProviderNameBuf, sizeof(ProviderNameBuf));
-                           if (*ProviderNameBuf) {
-                              char *p = pn + strlen(pn);
-                              *p++ = ';';
-                              strcpy(p, ProviderNameBuf);
-                              }
-                           }
+                        sd->providerName.getText(ProviderNameBuf, sizeof(ProviderNameBuf));
+                        char *pp = compactspace(ProviderNameBuf);
                         if (channel) {
                            channel->SetId(sdt.getOriginalNetworkId(), sdt.getTransportStreamId(), SiSdtService.getServiceId());
                            if (Setup.UpdateChannels >= 1)
-                              channel->SetName(pn);
+                              channel->SetName(pn, ps, pp);
                            // Using SiSdtService.getFreeCaMode() is no good, because some
                            // tv stations set this flag even for non-encrypted channels :-(
                            // The special value 0xFFFF was supposed to mean "unknown encryption"
@@ -87,7 +75,7 @@ void cSdtFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                            // channel->SetCa(SiSdtService.getFreeCaMode() ? 0xFFFF : 0);
                            }
                         else if (*pn && Setup.UpdateChannels >= 3) {
-                           channel = Channels.NewChannel(Channel(), pn, sdt.getOriginalNetworkId(), sdt.getTransportStreamId(), SiSdtService.getServiceId());
+                           channel = Channels.NewChannel(Channel(), pn, ps, pp, sdt.getOriginalNetworkId(), sdt.getTransportStreamId(), SiSdtService.getServiceId());
                            patFilter->Trigger();
                            }
                         }
@@ -112,7 +100,7 @@ void cSdtFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                  for (SI::Loop::Iterator it; nrd->serviceLoop.getNext(Service, it); ) {
                      cChannel *link = Channels.GetByChannelID(tChannelID(Source(), Service.getOriginalNetworkId(), Service.getTransportStream(), Service.getServiceId()));
                      if (!link && Setup.UpdateChannels >= 3) {
-                        link = Channels.NewChannel(Channel(), "NVOD", Service.getOriginalNetworkId(), Service.getTransportStream(), Service.getServiceId());
+                        link = Channels.NewChannel(Channel(), "NVOD", "", "", Service.getOriginalNetworkId(), Service.getTransportStream(), Service.getServiceId());
                         patFilter->Trigger();
                         }
                      if (link) {

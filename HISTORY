@@ -3096,3 +3096,10 @@ Video Disk Recorder Revision History
 - Making sure that timers and channels are only saved together, in a consistent
   manner (thanks to Mirko Dölle for reporting a problem with inconsistent
   channel and timer lists).
+- Now handling the channel name, short name and provider separately. cChannel
+  therefore has two new functions, ShortName() and Provider(). ShortName()
+  can be used to display a short version of the name (in case such a version
+  is available). The optional boolean parameter of ShortName() can be set to
+  true to make it return the name, if no short name is available.
+  The sequence of 'name' and 'short name' in the channels.conf file has been
+  swapped (see man vdr(5)).
