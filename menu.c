@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.281 2004/01/17 14:17:00 kls Exp $
+ * $Id: menu.c 1.282 2004/01/24 13:22:04 kls Exp $
  */
 
 #include "menu.h"
@@ -577,10 +577,10 @@ void cMenuEditChannel::Setup(void)
   Add(new cMenuEditIntItem( tr("Frequency"),    &data.frequency));
   Add(new cMenuEditIntItem( tr("Vpid"),         &data.vpid,  0, 0x1FFF));
   Add(new cMenuEditIntItem( tr("Ppid"),         &data.ppid,  0, 0x1FFF));
-  Add(new cMenuEditIntItem( tr("Apid1"),        &data.apid1, 0, 0x1FFF));
-  Add(new cMenuEditIntItem( tr("Apid2"),        &data.apid2, 0, 0x1FFF));
-  Add(new cMenuEditIntItem( tr("Dpid1"),        &data.dpid1, 0, 0x1FFF));
-  Add(new cMenuEditIntItem( tr("Dpid2"),        &data.dpid2, 0, 0x1FFF));
+  Add(new cMenuEditIntItem( tr("Apid1"),        &data.apids[0], 0, 0x1FFF));
+  Add(new cMenuEditIntItem( tr("Apid2"),        &data.apids[1], 0, 0x1FFF));
+  Add(new cMenuEditIntItem( tr("Dpid1"),        &data.dpids[0], 0, 0x1FFF));
+  Add(new cMenuEditIntItem( tr("Dpid2"),        &data.dpids[1], 0, 0x1FFF));
   Add(new cMenuEditIntItem( tr("Tpid"),         &data.tpid,  0, 0x1FFF));
   Add(new cMenuEditCaItem(  tr("CA"),           &data.caids[0], true));//XXX
   Add(new cMenuEditIntItem( tr("Sid"),          &data.sid, 0));

@@ -51,6 +51,7 @@ Martin Hammerschmid <martin@hammerschmid.com>
  for reporting a problem with a missing initialization of 'number' in cChannel
  for implementing a "resume ID" which allows several users to each have their own
  resume.vdr files
+ for adding a call to cStatus::MsgOsdCurrentItem() to cMenuEditItem::SetValue()
 
 Bastian Guse <bastian@nocopy.de>
  for writing the FORMATS entry for timers.conf
@@ -647,6 +648,8 @@ Teemu Rantanen <tvr@iki.fi>
 Jan Ekholm <chakie@infa.abo.fi>
  for adding/improving some Swedish language OSD texts
  for reporting a compiler warning in g++ 3.2.3 regarding cReplayControl::Show()
+ for reporting and helping to debug a problem in frequency handling when setting
+ the CA descriptors in cDvbTuner::Action()
 
 Marcel Wiesweg <marcel.wiesweg@gmx.de>
  for pointing out a problem with high CPU load during replay

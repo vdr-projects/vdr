@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: descriptor.c 1.3 2004/01/12 16:17:20 kls Exp $
+ *   $Id: descriptor.c 1.5 2004/01/24 14:52:41 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -22,6 +22,7 @@ void ShortEventDescriptor::Parse() {
    languageCode[0]=s->lang_code1;
    languageCode[1]=s->lang_code2;
    languageCode[2]=s->lang_code3;
+   languageCode[3]=0;
    name.setDataAndOffset(data+offset, s->event_name_length, offset);
    const descr_short_event_mid *mid;
    data.setPointerAndOffset<const descr_short_event_mid>(mid, offset);
@@ -42,6 +43,7 @@ void ExtendedEventDescriptor::Parse() {
    languageCode[0]=s->lang_code1;
    languageCode[1]=s->lang_code2;
    languageCode[2]=s->lang_code3;
+   languageCode[3]=0;
    itemLoop.setDataAndOffset(data+offset, s->length_of_items, offset);
    const descr_extended_event_mid *mid;
    data.setPointerAndOffset<const descr_extended_event_mid>(mid, offset);
@@ -183,6 +185,7 @@ void ParentalRatingDescriptor::Rating::Parse() {
    languageCode[0]=s->lang_code1;
    languageCode[1]=s->lang_code2;
    languageCode[2]=s->lang_code3;
+   languageCode[3]=0;
 }
 
 int CaDescriptor::getCaType() const {
@@ -398,6 +401,7 @@ void ComponentDescriptor::Parse() {
    languageCode[0]=s->lang_code1;
    languageCode[1]=s->lang_code2;
    languageCode[2]=s->lang_code3;
+   languageCode[3]=0;
    description.setData(data+offset, getLength()-offset);
 }
 
@@ -462,6 +466,7 @@ void MultilingualNameDescriptor::Name::Parse() {
    languageCode[0]=s->lang_code1;
    languageCode[1]=s->lang_code2;
    languageCode[2]=s->lang_code3;
+   languageCode[3]=0;
    name.setData(data+offset, s->text_length);
 }
 
@@ -486,6 +491,7 @@ void MultilingualServiceNameDescriptor::Name::Parse() {
    languageCode[0]=s->lang_code1;
    languageCode[1]=s->lang_code2;
    languageCode[2]=s->lang_code3;
+   languageCode[3]=0;
    providerName.setDataAndOffset(data+offset, s->text_length, offset);
    const entry_multilingual_service_name_mid *mid;
    data.setPointerAndOffset<const entry_multilingual_service_name_mid>(mid, offset);
@@ -512,6 +518,15 @@ int LinkageDescriptor::getServiceId() const {
 
 LinkageType LinkageDescriptor::getLinkageType() const {
    return (LinkageType)s->linkage_type;
+}
+
+void ISO639LanguageDescriptor::Parse() {
+   unsigned int offset=0;
+   data.setPointerAndOffset<const descr_iso_639_language>(s, offset);
+   languageCode[0]=s->lang_code1;
+   languageCode[1]=s->lang_code2;
+   languageCode[2]=s->lang_code3;
+   languageCode[3]=0;
 }
 
 void ApplicationSignallingDescriptor::Parse() {
@@ -582,6 +597,7 @@ void MHP_ApplicationNameDescriptor::NameEntry::Parse() {
    languageCode[0]=s->lang_code1;
    languageCode[1]=s->lang_code2;
    languageCode[2]=s->lang_code3;
+   languageCode[3]=0;
 }
 
 int MHP_TransportProtocolDescriptor::getProtocolId() const {

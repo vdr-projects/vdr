@@ -8,7 +8,7 @@
 .\" License as specified in the file COPYING that comes with the
 .\" vdr distribution.
 .\"
-.\" $Id: vdr.5 1.22 2004/01/05 15:26:33 kls Exp $
+.\" $Id: vdr.5 1.23 2004/01/25 14:44:59 kls Exp $
 .\"
 .TH vdr 5 "1 Jun 2003" "1.2.0" "Video Disk Recorder Files"
 .SH NAME
@@ -117,10 +117,18 @@ plus sign, as in
 .B ...:164+17:...
 .TP
 .B APID
-The audio PID (either one number, or two, separated by a comma).
+The audio PID (either one number, or several, separated by commas).
 If this channel also carries Dolby Digital sound, the Dolby PIDs follow
 the audio PIDs, separated by a semicolon, as in
+
 .B ...:101,102;103,104:...
+
+If certain audio PIDs broadcast in specific languages, the language
+codes for these can be appended to the individual audio or Dolby PID, separated
+by an '=' sign, as in
+
+.B ...:101=deu,102=eng;103=deu,104=eng:...
+
 .TP
 .B TPID
 The teletext PID.

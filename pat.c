@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: pat.c 1.5 2004/01/16 15:43:34 kls Exp $
+ * $Id: pat.c 1.7 2004/01/25 15:12:53 kls Exp $
  */
 
 #include "pat.h"
@@ -109,7 +109,7 @@ bool cCaDescriptors::Is(int Source, int Transponder, int ServiceId)
   return source == Source && transponder == Transponder && serviceId == ServiceId;
 }
 
-bool cCaDescriptors::Is(cCaDescriptors * CaDescriptors)
+bool cCaDescriptors::Is(cCaDescriptors *CaDescriptors)
 {
   return Is(CaDescriptors->source, CaDescriptors->transponder, CaDescriptors->serviceId);
 }
@@ -324,6 +324,8 @@ void cPatFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
         int Ppid = pmt.getPCRPid();
         int Apids[MAXAPIDS] = { 0 };
         int Dpids[MAXAPIDS] = { 0 };
+        char ALangs[MAXAPIDS][4];
+        char DLangs[MAXAPIDS][4];
         int Tpid = 0;
         int NumApids = 0;
         int NumDpids = 0;
@@ -337,28 +339,59 @@ void cPatFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
               case 3: // STREAMTYPE_11172_AUDIO
               case 4: // STREAMTYPE_13818_AUDIO
                       {
-                      if (NumApids < MAXAPIDS)
-                         Apids[NumApids++] = stream.getPid();
+                      if (NumApids < MAXAPIDS) {
+                         Apids[NumApids] = stream.getPid();
+                         *ALangs[NumApids] = 0;
+                         SI::Descriptor *d;
+                         for (SI::Loop::Iterator it; (d = stream.streamDescriptors.getNext(it)); ) {
+                             switch (d->getDescriptorTag()) {
+                               case SI::ISO639LanguageDescriptorTag: {
+                                    SI::ISO639LanguageDescriptor *ld = (SI::ISO639LanguageDescriptor *)d;
+                                    if (*ld->languageCode != '-') { // some use "---" to indicate "none"
+                                       strn0cpy(ALangs[NumApids], I18nNormalizeLanguageCode(ld->languageCode), 4);
+                                       ALangs[NumApids][4] = 0;
+                                       }
+                                    }
+                                    break;
+                               default: ;
+                               }
+                             delete d;
+                             }
+                         NumApids++;
+                         }
                       }
                       break;
               case 5: // STREAMTYPE_13818_PRIVATE
               case 6: // STREAMTYPE_13818_PES_PRIVATE
               //XXX case 8: // STREAMTYPE_13818_DSMCC
                       {
+                      int dpid = 0;
+                      char lang[4] = { 0 };
                       SI::Descriptor *d;
                       for (SI::Loop::Iterator it; (d = stream.streamDescriptors.getNext(it)); ) {
                           switch (d->getDescriptorTag()) {
                             case SI::AC3DescriptorTag:
-                                 if (NumDpids < MAXAPIDS)
-                                    Dpids[NumDpids++] = stream.getPid();
+                                 dpid = stream.getPid();
                                  break;
                             case SI::TeletextDescriptorTag:
                                  Tpid = stream.getPid();
+                                 break;
+                            case SI::ISO639LanguageDescriptorTag: {
+                                 SI::ISO639LanguageDescriptor *ld = (SI::ISO639LanguageDescriptor *)d;
+                                 strn0cpy(lang, I18nNormalizeLanguageCode(ld->languageCode), 4);
+                                 }
                                  break;
                             default: ;
                             }
                           delete d;
                           }
+                      if (dpid) {
+                         if (NumDpids < MAXAPIDS) {
+                            Dpids[NumDpids] = dpid;
+                            strn0cpy(DLangs[NumDpids], lang, 4);
+                            NumDpids++;
+                            }
+                         }
                       }
                       break;
               //default: printf("PID: %5d %5d %2d %3d %3d\n", pmt.getServiceId(), stream.getPid(), stream.getStreamType(), pmt.getVersionNumber(), Channel->Number());//XXX
@@ -369,10 +402,10 @@ void cPatFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                 }
             }
         if (Setup.UpdateChannels >= 2) {
-           Channel->SetPids(Vpid, Vpid ? Ppid : 0, Apids[0], Apids[1], Dpids[0], Dpids[1], Tpid);
+           Channel->SetPids(Vpid, Vpid ? Ppid : 0, Apids, ALangs, Dpids, DLangs, Tpid);
            Channel->SetCaIds(CaDescriptors->CaIds());
-           Channel->SetCaDescriptors(CaDescriptorHandler.AddCaDescriptors(CaDescriptors));
            }
+        Channel->SetCaDescriptors(CaDescriptorHandler.AddCaDescriptors(CaDescriptors));
         }
      lastPmtScan = 0; // this triggers the next scan
      Channels.Unlock();

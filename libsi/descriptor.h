@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: descriptor.h 1.3 2004/01/12 16:17:47 kls Exp $
+ *   $Id: descriptor.h 1.5 2004/01/24 14:52:05 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -20,7 +20,7 @@ namespace SI {
 
 class ShortEventDescriptor : public Descriptor {
 public:
-   char languageCode[3];
+   char languageCode[4];
    String name; //name of the event
    String text; //short description
 protected:
@@ -37,7 +37,7 @@ public:
    protected:
       virtual void Parse();
    };
-   char languageCode[3];
+   char languageCode[4];
    int getDescriptorNumber();
    int getLastDescriptorNumber();
    StructureLoop<Item> itemLoop;
@@ -93,7 +93,7 @@ class ParentalRatingDescriptor : public Descriptor {
 public:
    class Rating : public LoopElement {
    public:
-      char languageCode[3];
+      char languageCode[4];
       int getRating() const;
       virtual int getLength() { return sizeof(parental_rating); }
    protected:
@@ -258,7 +258,7 @@ public:
    int getStreamContent() const;
    int getComponentType() const;
    int getComponentTag() const;
-   char languageCode[3];
+   char languageCode[4];
    String description;
 protected:
    virtual void Parse();
@@ -317,7 +317,7 @@ class MultilingualNameDescriptor : public Descriptor {
 public:
    class Name : public LoopElement {
    public:
-      char languageCode[3];
+      char languageCode[4];
       String name;
       virtual int getLength() { return sizeof(entry_multilingual_name)+name.getLength(); }
    protected:
@@ -374,6 +374,15 @@ private:
    const descr_linkage *s;
 };
 
+class ISO639LanguageDescriptor : public Descriptor {
+public:
+   char languageCode[4];
+protected:
+   virtual void Parse();
+private:
+   const descr_iso_639_language *s;
+};
+
 //a descriptor currently unimplemented in this library
 class UnimplementedDescriptor : public Descriptor {
 protected:
@@ -427,7 +436,7 @@ public:
    class NameEntry : public LoopElement {
    public:
       virtual int getLength() { return sizeof(descr_application_name_entry)+name.getLength(); }
-      char languageCode[3];
+      char languageCode[4];
       String name;
    protected:
       virtual void Parse();

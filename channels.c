@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 1.19 2004/01/11 15:52:32 kls Exp $
+ * $Id: channels.c 1.20 2004/01/25 15:32:08 kls Exp $
  */
 
 #include "channels.h"
@@ -177,10 +177,8 @@ cChannel::cChannel(const cChannel *Channel)
   *name = 0;
   vpid         = 0;
   ppid         = 0;
-  apid1        = 0;
-  apid2        = 0;
-  dpid1        = 0;
-  dpid2        = 0;
+  apids[0]     = 0;
+  dpids[0]     = 0;
   tpid         = 0;
   caids[0]     = 0;
   nid          = 0;
@@ -305,18 +303,62 @@ void cChannel::SetName(const char *Name, bool Log)
      }
 }
 
-void cChannel::SetPids(int Vpid, int Ppid, int Apid1, int Apid2, int Dpid1, int Dpid2, int Tpid)
+static bool IntArraysDiffer(const int *a, const int *b, const char na[][4] = NULL, const char nb[][4] = NULL)
 {
-  //XXX if (vpid != Vpid || ppid != Ppid || apid1 != Apid1 || apid2 != Apid2 || dpid1 != Dpid1 || dpid2 != Dpid2 || tpid != Tpid) {
-  if (vpid != Vpid || ppid != Ppid || apid1 != Apid1 || (Apid2 && apid2 != Apid2) || dpid1 != Dpid1 || dpid2 != Dpid2 || tpid != Tpid) {
-     dsyslog("changing pids of channel %d from %d+%d:%d,%d;%d,%d:%d to %d+%d:%d,%d;%d,%d:%d", Number(), vpid, ppid, apid1, apid2, dpid1, dpid2, tpid, Vpid, Ppid, Apid1, Apid2, Dpid1, Dpid2, Tpid);
+  int i = 0;
+  while (a[i] && b[i]) {
+        if (a[i] != b[i] || na && nb && strcmp(na[i], nb[i]) != 0)
+           return true;
+        i++;
+        }
+  return a[i] != b[i] || a[i] && na && nb && strcmp(na[i], nb[i]) != 0;
+}
+
+static int IntArrayToString(char *s, const int *a, int Base = 10, const char n[][4] = NULL)
+{
+  char *q = s;
+  int i = 0;
+  while (a[i] || i == 0) {
+        q += sprintf(q, Base == 16 ? "%s%X" : "%s%d", i ? "," : "", a[i]);
+        if (n && *n[i])
+           q += sprintf(q, "=%s", n[i]);
+        i++;
+        }
+  *q = 0;
+  return q - s;
+}
+
+void cChannel::SetPids(int Vpid, int Ppid, int *Apids, char ALangs[][4], int *Dpids, char DLangs[][4], int Tpid)
+{
+  bool modified = vpid != Vpid || ppid != Ppid || tpid != Tpid;
+  if (!modified)
+     modified = IntArraysDiffer(apids, Apids, alangs, ALangs) || IntArraysDiffer(dpids, Dpids, dlangs, DLangs);
+  if (modified) {
+     char OldApidsBuf[MAXAPIDS * 2 * 10 + 10]; // 2: Apids and Dpids, 10: 5 digits plus delimiting ',' or ';' plus optional '=cod', +10: paranoia
+     char NewApidsBuf[MAXAPIDS * 2 * 10 + 10];
+     char *q = OldApidsBuf;
+     q += IntArrayToString(q, apids, 10, alangs);
+     if (dpids[0]) {
+        *q++ = ';';
+        q += IntArrayToString(q, dpids, 10, dlangs);
+        }
+     *q = 0;
+     q = NewApidsBuf;
+     q += IntArrayToString(q, Apids, 10, ALangs);
+     if (Dpids[0]) {
+        *q++ = ';';
+        q += IntArrayToString(q, Dpids, 10, DLangs);
+        }
+     *q = 0;
+     dsyslog("changing pids of channel %d from %d+%d:%s:%d to %d+%d:%s:%d", Number(), vpid, ppid, OldApidsBuf, tpid, Vpid, Ppid, NewApidsBuf, Tpid);
      vpid = Vpid;
      ppid = Ppid;
-     apid1 = Apid1;
-     if (Apid2)//XXX should we actually react here?
-     apid2 = Apid2;
-     dpid1 = Dpid1;
-     dpid2 = Dpid2;
+     for (int i = 0; i <= MAXAPIDS; i++) { // <= to copy the terminating 0
+         apids[i] = Apids[i];
+         strn0cpy(alangs[i], ALangs[i], 4);
+         dpids[i] = Dpids[i];
+         strn0cpy(dlangs[i], DLangs[i], 4);
+         }
      tpid = Tpid;
      modification |= CHANNELMOD_PIDS;
      Channels.SetModified();
@@ -327,37 +369,14 @@ void cChannel::SetCaIds(const int *CaIds)
 {
   if (caids[0] && caids[0] <= 0x00FF)
      return; // special values will not be overwritten
-  bool modified = false;
-  for (int i = 0; i < MAXCAIDS; i++) {
-      if (caids[i] != CaIds[i]) {
-         modified = true;
-         break;
-         }
-      if (!caids[i] || !CaIds[i])
-         break;
-      }
-  if (modified) {
+  if (IntArraysDiffer(caids, CaIds)) {
      char OldCaIdsBuf[MAXCAIDS * 5 + 10]; // 5: 4 digits plus delimiting ',', 10: paranoia
      char NewCaIdsBuf[MAXCAIDS * 5 + 10];
-     char *qo = OldCaIdsBuf;
-     char *qn = NewCaIdsBuf;
-     int i;
-     for (i = 0; i < MAXCAIDS; i++) {
-         if (i == 0 || caids[i])
-            qo += snprintf(qo, sizeof(OldCaIdsBuf), "%s%X", i > 0 ? "," : "", caids[i]);
-         if (!caids[i])
-            break;
-         }
-     for (i = 0; i < MAXCAIDS; i++) {
-         if (i == 0 || CaIds[i])
-            qn += snprintf(qn, sizeof(NewCaIdsBuf), "%s%X", i > 0 ? "," : "", CaIds[i]);
-         caids[i] = CaIds[i];
-         if (!CaIds[i])
-            break;
-         }
-     caids[i] = 0;
-     *qo = *qn = 0;
+     IntArrayToString(OldCaIdsBuf, caids, 16);
+     IntArrayToString(NewCaIdsBuf, CaIds, 16);
      dsyslog("changing caids of channel %d from %s to %s", Number(), OldCaIdsBuf, NewCaIdsBuf);
+     for (int i = 0; i <= MAXCAIDS && CaIds[i]; i++) // <= to copy the terminating 0
+         caids[i] = CaIds[i];
      modification |= CHANNELMOD_CA;
      Channels.SetModified();
      }
@@ -460,24 +479,17 @@ const char *cChannel::ToText(cChannel *Channel)
      if (Channel->ppid && Channel->ppid != Channel->vpid)
         q += snprintf(q, sizeof(vpidbuf) - (q - vpidbuf), "+%d", Channel->ppid);
      *q = 0;
-     char apidbuf[MAXAPIDS * 2 * 6 + 10]; // 2: Apids and Dpids, 6: 5 digits plus delimiting ',' or ';', 10: paranoia
+     char apidbuf[MAXAPIDS * 2 * 10 + 10]; // 2: Apids and Dpids, 10: 5 digits plus delimiting ',' or ';' plus optional '=cod', +10: paranoia
      q = apidbuf;
-     q += snprintf(q, sizeof(apidbuf), "%d", Channel->apid1);
-     if (Channel->apid2)
-        q += snprintf(q, sizeof(apidbuf) - (q - apidbuf), ",%d", Channel->apid2);
-     if (Channel->dpid1 || Channel->dpid2)
-        q += snprintf(q, sizeof(apidbuf) - (q - apidbuf), ";%d", Channel->dpid1);
-     if (Channel->dpid2)
-        q += snprintf(q, sizeof(apidbuf) - (q - apidbuf), ",%d", Channel->dpid2);
+     q += IntArrayToString(q, Channel->apids, 10, Channel->alangs);
+     if (Channel->dpids[0]) {
+        *q++ = ';';
+        q += IntArrayToString(q, Channel->dpids, 10, Channel->dlangs);
+        }
      *q = 0;
      char caidbuf[MAXCAIDS * 5 + 10]; // 5: 4 digits plus delimiting ',', 10: paranoia
      q = caidbuf;
-     for (int i = 0; i < MAXCAIDS; i++) {
-         if (i == 0 || Channel->caids[i])
-            q += snprintf(q, sizeof(caidbuf), "%s%X", i > 0 ? "," : "", Channel->caids[i]);
-         if (!Channel->caids[i])
-            break;
-         }
+     q += IntArrayToString(q, Channel->caids, 16);
      *q = 0;
      asprintf(&buffer, "%s:%d:%s:%s:%d:%s:%s:%d:%s:%d:%d:%d:%d\n", s, Channel->frequency, Channel->ParametersToString(), cSource::ToString(Channel->source), Channel->srate, vpidbuf, apidbuf, Channel->tpid, caidbuf, Channel->sid, Channel->nid, Channel->tid, Channel->rid);
      }
@@ -524,9 +536,9 @@ bool cChannel::Parse(const char *s, bool AllowNonUniqueID)
            caids[1] = 0;
            tpid = 0;
            }
-        vpid  = ppid  = 0;
-        apid1 = apid2 = 0;
-        dpid1 = dpid2 = 0;
+        vpid = ppid = 0;
+        apids[0] = 0;
+        dpids[0] = 0;
         ok = false;
         if (parambuf && sourcebuf && vpidbuf && apidbuf) {
            ok = StringToParameters(parambuf) && (source = cSource::FromString(sourcebuf)) >= 0;
@@ -540,12 +552,49 @@ bool cChannel::Parse(const char *s, bool AllowNonUniqueID)
            else
               ppid = vpid;
 
-           p = strchr(apidbuf, ';');
-           if (p)
-              *p++ = 0;
-           sscanf(apidbuf, "%d ,%d ", &apid1, &apid2);
-           if (p)
-              sscanf(p, "%d ,%d ", &dpid1, &dpid2);
+           char *dpidbuf = strchr(apidbuf, ';');
+           if (dpidbuf)
+              *dpidbuf++ = 0;
+           p = apidbuf;
+           char *q;
+           int NumApids = 0;
+           while ((q = strtok(p, ",")) != NULL) {
+                 if (NumApids < MAXAPIDS) {
+                    char *l = strchr(q, '=');
+                    if (l) {
+                       *l++ = 0;
+                       strn0cpy(alangs[NumApids], l, 4);
+                       }
+                    else
+                       *alangs[NumApids] = 0;
+                    apids[NumApids++] = strtol(q, NULL, 10);
+                    }
+                 else
+                    esyslog("ERROR: too many APIDs!"); // no need to set ok to 'false'
+                 p = NULL;
+                 }
+           apids[NumApids] = 0;
+           if (dpidbuf) {
+              char *p = dpidbuf;
+              char *q;
+              int NumDpids = 0;
+              while ((q = strtok(p, ",")) != NULL) {
+                    if (NumDpids < MAXAPIDS) {
+                       char *l = strchr(q, '=');
+                       if (l) {
+                          *l++ = 0;
+                          strn0cpy(dlangs[NumDpids], l, 4);
+                          }
+                       else
+                          *dlangs[NumDpids] = 0;
+                       dpids[NumDpids++] = strtol(q, NULL, 10);
+                       }
+                    else
+                       esyslog("ERROR: too many DPIDs!"); // no need to set ok to 'false'
+                    p = NULL;
+                    }
+              dpids[NumDpids] = 0;
+              }
 
            if (caidbuf) {
               char *p = caidbuf;
