@@ -4,12 +4,15 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.c 1.10 2000/07/15 12:39:20 kls Exp $
+ * $Id: interface.c 1.11 2000/09/03 10:17:21 kls Exp $
  */
 
 #include "interface.h"
 #include <unistd.h>
+#include "eit.h"
 #include "remote.h"
+
+cEIT EIT;
 
 #if defined(REMOTE_RCU)
 cRcIoRCU RcIo("/dev/ttyS1");
@@ -316,7 +319,7 @@ void cInterface::DisplayChannel(int Number, const char *Name)
 {
   RcIo.Number(Number);
   if (Name && !Recording()) {
-     Open(MenuColumns, 1);
+     Open(MenuColumns, EIT.IsValid() ? 5 : 1);
      char buffer[MenuColumns + 1];
      snprintf(buffer, sizeof(buffer), "%d  %s", Number, Name ? Name : "");
      Write(0, 0, buffer);
@@ -324,7 +327,21 @@ void cInterface::DisplayChannel(int Number, const char *Name)
      struct tm *now = localtime(&t);
      snprintf(buffer, sizeof(buffer), "%02d:%02d", now->tm_hour, now->tm_min);
      Write(-5, 0, buffer);
-     if (Wait(2, true) == kOk)
+     if (EIT.IsValid()) { 
+        const int t = 7;
+        int w = MenuColumns - t;
+        Write(0, 1, EIT.GetRunningTime(), clrYellow, clrBackground); 
+        snprintf(buffer, sizeof(buffer), "%.*s", w, EIT.GetRunningTitle()); 
+        Write(t, 1, buffer, clrCyan, clrBackground); 
+        snprintf(buffer, sizeof(buffer), "%.*s", w, EIT.GetRunningSubtitle()); 
+        Write(t, 2, buffer, clrCyan, clrBackground); 
+        Write(0, 3, EIT.GetNextTime(), clrYellow, clrBackground); 
+        snprintf(buffer, sizeof(buffer), "%.*s", w, EIT.GetNextTitle()); 
+        Write(t, 3, buffer, clrCyan, clrBackground); 
+        snprintf(buffer, sizeof(buffer), "%.*s", w, EIT.GetNextSubtitle()); 
+        Write(t, 4, buffer, clrCyan, clrBackground); 
+        }
+     if (Wait(5, true) == kOk)
         GetKey();
      Close();
      }
