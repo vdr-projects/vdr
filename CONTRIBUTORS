@@ -568,6 +568,8 @@ Andreas Kool <akool@akool.de>
  for his help in keeping 'channels.conf.cable' up to date
  for fixing the TS to PES repacker so that it works with MPEG1 streams
  for reporting a problem with empty values in setup.conf
+ for fixing detecting the /dev/videoN devices for GRAB in case there are others
+ before the DVB devices
 
 Guy Roussin <guy.roussin@teledetection.fr>
  for suggesting not to display channel group delimiters without text

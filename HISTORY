@@ -2411,3 +2411,5 @@ Video Disk Recorder Revision History
   to Andreas Trauer).
 - Fixed handling a channels.conf that contains a ":@nnn" line as its last entry
   (thanks to Ralf Klueber).
+- Fixed detecting the /dev/videoN devices for GRAB in case there are others
+  before the DVB devices (thanks to Andreas Kool).
