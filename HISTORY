@@ -3057,3 +3057,5 @@ Video Disk Recorder Revision History
 - Updated Romanian language texts and the iso8859-2 fonts (thanks to Lucian Muresan).
 - Now actually using the iso8859-15 fonts (thanks to Lucian Muresan).
 - Some minor code cleanups (thanks to Prakash K. Cheemplavam).
+- Fixed missing cleanup at program exit in case there is a problem with a plugin
+  (thanks to Mattias Grönlund for pointing this out).

@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.188 2004/10/23 12:40:24 kls Exp $
+ * $Id: vdr.c 1.189 2004/10/23 15:04:52 kls Exp $
  */
 
 #include <getopt.h>
@@ -63,6 +63,8 @@
 #define SHUTDOWNWAIT      300 // seconds to wait in user prompt before automatic shutdown
 #define MANUALSTART       600 // seconds the next timer must be in the future to assume manual start
 #define CHANNELSAVEDELTA  600 // seconds before saving channels.conf after automatic modifications
+
+#define EXIT(v) { ExitCode = (v); goto Exit; }
 
 static int Interrupted = 0;
 
@@ -122,6 +124,7 @@ int main(int argc, char *argv[])
   const char *Terminal = NULL;
   const char *Shutdown = NULL;
   cPluginManager PluginManager(DEFAULTPLUGINDIR);
+  int ExitCode = 0;
 
   static struct option long_options[] = {
       { "audio",    required_argument, NULL, 'a' },
@@ -347,7 +350,7 @@ int main(int argc, char *argv[])
   // Load plugins:
 
   if (!PluginManager.LoadPlugins(true))
-     return 2;
+     EXIT(2);
 
   // Configuration data:
 
@@ -369,7 +372,7 @@ int main(int argc, char *argv[])
         Keys.Load(AddDirectory(ConfigDirectory, "remote.conf")) &&
         KeyMacros.Load(AddDirectory(ConfigDirectory, "keymacros.conf"), true)
         ))
-     return 2;
+     EXIT(2);
 
   cFont::SetCode(I18nCharSets()[Setup.OSDLanguage]);
 
@@ -391,7 +394,7 @@ int main(int argc, char *argv[])
   // Initialize plugins:
 
   if (!PluginManager.InitializePlugins())
-     return 2;
+     EXIT(2);
 
   // Primary device:
 
@@ -414,12 +417,12 @@ int main(int argc, char *argv[])
         fprintf(stderr, "vdr: %s\n", msg);
         esyslog("ERROR: %s", msg);
         if (!cDevice::SetPrimaryDevice(1))
-           return 2;
+           EXIT(2);
         if (!cDevice::PrimaryDevice()) {
            const char *msg = "no primary device found - giving up!";
            fprintf(stderr, "vdr: %s\n", msg);
            esyslog("ERROR: %s", msg);
-           return 2;
+           EXIT(2);
            }
         }
      }
@@ -431,7 +434,7 @@ int main(int argc, char *argv[])
   // Start plugins:
 
   if (!PluginManager.StartPlugins())
-     return 2;
+     EXIT(2);
 
   // Skins:
 
@@ -487,18 +490,18 @@ int main(int argc, char *argv[])
 
   // Main program loop:
 
-  cOsdObject *Menu = NULL;
-  cOsdObject *Temp = NULL;
-  int LastChannel = -1;
-  int LastTimerChannel = -1;
-  int PreviousChannel[2] = { 1, 1 };
-  int PreviousChannelIndex = 0;
-  time_t LastChannelChanged = time(NULL);
-  time_t LastActivity = 0;
-  int MaxLatencyTime = 0;
-  bool ForceShutdown = false;
-  bool UserShutdown = false;
-  bool TimerInVpsMargin = false;
+  static cOsdObject *Menu = NULL;
+  static cOsdObject *Temp = NULL;
+  static int LastChannel = -1;
+  static int LastTimerChannel = -1;
+  static int PreviousChannel[2] = { 1, 1 };
+  static int PreviousChannelIndex = 0;
+  static time_t LastChannelChanged = time(NULL);
+  static time_t LastActivity = 0;
+  static int MaxLatencyTime = 0;
+  static bool ForceShutdown = false;
+  static bool UserShutdown = false;
+  static bool TimerInVpsMargin = false;
 
   while (!Interrupted) {
         // Handle emergency exits:
@@ -887,6 +890,9 @@ int main(int argc, char *argv[])
         }
   if (Interrupted)
      isyslog("caught signal %d", Interrupted);
+
+Exit:
+
   cRecordControls::Shutdown();
   cCutter::Stop();
   delete Menu;
@@ -913,5 +919,5 @@ int main(int argc, char *argv[])
      esyslog("emergency exit!");
      return 1;
      }
-  return 0;
+  return ExitCode;
 }

@@ -1115,3 +1115,7 @@ Stefan Meyknecht <stefan@meyknecht.org>
 Lucian Muresan <lucianm@users.sourceforge.net>
  for updating the Romanian language texts and the iso8859-2 fonts
  for making VDR actually use the iso8859-15 fonts
+
+Mattias Grönlund <Mattias@Gronlund.net>
+ for pointing out a missing cleanup at program exit in case there is a problem
+ with a plugin
