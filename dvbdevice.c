@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.57 2003/05/02 09:12:20 kls Exp $
+ * $Id: dvbdevice.c 1.58 2003/05/02 12:24:04 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -567,6 +567,24 @@ bool cDvbDevice::SetPid(cPidHandle *Handle, int Type, bool On)
   return true;
 }
 
+void cDvbDevice::TurnOffLiveMode(void)
+{
+  // Avoid noise while switching:
+
+  CHECK(ioctl(fd_audio, AUDIO_SET_MUTE, true));
+  CHECK(ioctl(fd_video, VIDEO_SET_BLANK, true));
+  CHECK(ioctl(fd_audio, AUDIO_CLEAR_BUFFER));
+  CHECK(ioctl(fd_video, VIDEO_CLEAR_BUFFER));
+
+  // Turn off live PIDs:
+
+  DelPid(pidHandles[ptAudio].pid);
+  DelPid(pidHandles[ptVideo].pid);
+  DelPid(pidHandles[ptPcr].pid, ptPcr);
+  DelPid(pidHandles[ptTeletext].pid);
+  DelPid(pidHandles[ptDolby].pid);
+}
+
 bool cDvbDevice::ProvidesSource(int Source) const
 {
   int type = Source & cSource::st_Mask;
@@ -649,23 +667,8 @@ bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
 
   // Turn off live PIDs if necessary:
 
-  if (TurnOffLivePIDs) {
-
-     // Avoid noise while switching:
-
-     CHECK(ioctl(fd_audio, AUDIO_SET_MUTE, true));
-     CHECK(ioctl(fd_video, VIDEO_SET_BLANK, true));
-     CHECK(ioctl(fd_audio, AUDIO_CLEAR_BUFFER));
-     CHECK(ioctl(fd_video, VIDEO_CLEAR_BUFFER));
-
-     // Turn off live PIDs:
-
-     DelPid(pidHandles[ptAudio].pid);
-     DelPid(pidHandles[ptVideo].pid);
-     DelPid(pidHandles[ptPcr].pid, ptPcr);
-     DelPid(pidHandles[ptTeletext].pid);
-     DelPid(pidHandles[ptDolby].pid);
-     }
+  if (TurnOffLivePIDs)
+     TurnOffLiveMode();
 
   dvbTuner->Set(Channel, DoTune);
   if (DoTune) {
@@ -783,6 +786,9 @@ bool cDvbDevice::SetPlayMode(ePlayMode PlayMode)
             siProcessor->SetStatus(true);
          break;
     case pmAudioVideo:
+         if (playMode == pmNone)
+            TurnOffLiveMode();
+         // continue with next...
     case pmAudioOnlyBlack:
          if (siProcessor)
             siProcessor->SetStatus(false);

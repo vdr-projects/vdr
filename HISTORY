@@ -2095,3 +2095,6 @@ Video Disk Recorder Revision History
 - Fixed double call to MainMenuAction() of a plugin if invoked via a hotkey (thanks
   to Kai Moeller for reporting this one).
 - Fixed handling dedicated keys.
+- Now turning off live PIDs when replaying. This avoids short spikes from other
+  channels when switching between Transfer Mode channels, and also lets an ongoing
+  replay continue even if a recording is started on the primary card.
