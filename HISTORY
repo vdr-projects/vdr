@@ -3037,7 +3037,7 @@ Video Disk Recorder Revision History
   checking if the channel has a non-zero number.
 - Updated 'channels.conf.terr' for Hannover (thanks to Sven Kreiensen).
 
-2004-10-23: Version 1.3.14
+2004-10-24: Version 1.3.14
 
 - Fixed detecting transponder lock in cDvbTuner (based on a patch from Stefan
   Meyknecht).
@@ -3059,3 +3059,7 @@ Video Disk Recorder Revision History
 - Some minor code cleanups (thanks to Prakash K. Cheemplavam).
 - Fixed missing cleanup at program exit in case there is a problem with a plugin
   (thanks to Mattias Grönlund for pointing this out).
+- Increased the required free buffer space in the resultBuffer of cRemux to
+  2 * IPACKS to avoid a buffer overflow in case a cTS2PES writes one complete
+  packet and then (within processing the same TS packet) wants to write another
+  small packet.

@@ -8,7 +8,7 @@
  * the Linux DVB driver's 'tuxplayer' example and were rewritten to suit
  * VDR's needs.
  *
- * $Id: remux.c 1.20 2004/10/23 12:06:13 kls Exp $
+ * $Id: remux.c 1.21 2004/10/24 09:25:33 kls Exp $
  */
 
 #include "remux.h"
@@ -491,8 +491,8 @@ int cRemux::Put(const uchar *Data, int Count)
          break;
       if (Data[i] != TS_SYNC_BYTE)
          break;
-      if (resultBuffer->Free() < IPACKS)
-         break;
+      if (resultBuffer->Free() < 2 * IPACKS)
+         break; // A cTS2PES might write one full packet and also a small rest
       int pid = GetPid(Data + i + 1);
       if (Data[i + 3] & 0x10) { // got payload
          if      (pid == vPid)              vTS2PES->ts_to_pes(Data + i);
