@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.75 2001/06/23 13:38:54 kls Exp $
+ * $Id: menu.c 1.76 2001/07/12 14:16:43 kls Exp $
  */
 
 #include "menu.h"
@@ -1789,7 +1789,7 @@ eOSState cMenuMain::ProcessKey(eKeys Key)
 
 // --- cDisplayChannel -------------------------------------------------------
 
-#define DIRECTCHANNELTIMEOUT  500 //ms
+#define DIRECTCHANNELTIMEOUT 1000 //ms
 #define INFOTIMEOUT          5000 //ms
 
 cDisplayChannel::cDisplayChannel(int Number, bool Switched, bool Group)
@@ -1832,7 +1832,7 @@ void cDisplayChannel::DisplayChannel(const cChannel *Channel)
   int BufSize = Width() + 1;
   char buffer[BufSize];
   if (Channel && Channel->number)
-     snprintf(buffer, BufSize, "%d  %s", Channel->number, Channel->name);
+     snprintf(buffer, BufSize, "%d%s  %s", Channel->number, number ? "-" : "", Channel->name);
   else
      snprintf(buffer, BufSize, "%s", Channel ? Channel->name : tr("*** Invalid Channel ***"));
   Interface->Fill(0, 0, MenuColumns, 1, clrBackground);
