@@ -764,3 +764,6 @@ Video Disk Recorder Revision History
 - Made VDR compile with libdvdread-0.9.1 (thanks to Andreas Schultz).
   Note that you now _need_ version 0.9.1 of libdvdread to compile VDR with
   DVD support!
+- Several fixes to the replay mode display (thanks to Stefan Huelswitt):
+  no more replay mode display when pressing the "Green" or "Yellow" button
+  (Skip +/-60s);
