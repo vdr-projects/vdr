@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: rcu.c 1.1 2002/09/29 13:16:44 kls Exp $
+ * $Id: rcu.c 1.2 2002/10/06 15:49:03 kls Exp $
  */
 
 #include "rcu.h"
@@ -308,5 +308,5 @@ void cRcuRemote::ChannelSwitch(const cDevice *Device, int ChannelNumber)
 
 void cRcuRemote::Recording(const cDevice *Device, const char *Name)
 {
-  SetPoints(1 << Device->CardIndex(), Device->Receiving()); //XXX CardNumber()!!!
+  SetPoints(1 << Device->DeviceNumber(), Device->Receiving());
 }

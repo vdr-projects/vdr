@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.22 2002/10/06 09:07:45 kls Exp $
+ * $Id: dvbdevice.c 1.24 2002/10/12 11:15:45 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -80,7 +80,11 @@ static int DvbOpen(const char *Name, int n, int Mode, bool ReportError = false)
 
 cDvbDevice::cDvbDevice(int n)
 {
+#ifdef NEWSTRUCT
+  frontendType = fe_type_t(-1); // don't know how else to initialize this - there is no FE_UNKNOWN
+#else
   frontendType = FrontendType(-1); // don't know how else to initialize this - there is no FE_UNKNOWN
+#endif
   siProcessor = NULL;
   spuDecoder = NULL;
   playMode = pmNone;
@@ -125,6 +129,8 @@ cDvbDevice::cDvbDevice(int n)
      }
   else
      esyslog("ERROR: can't open DVB device %d", n);
+
+  aPid1 = aPid2 = 0;
 
   source = -1;
   frequency = -1;
@@ -306,12 +312,20 @@ void cDvbDevice::SetVideoFormat(bool VideoFormat16_9)
 }
 
 //                          ptAudio        ptVideo        ptTeletext        ptDolby        ptOther
+#ifdef NEWSTRUCT
+dmx_pes_type_t PesTypes[] = { DMX_PES_AUDIO, DMX_PES_VIDEO, DMX_PES_TELETEXT, DMX_PES_OTHER, DMX_PES_OTHER };
+#else
 dmxPesType_t PesTypes[] = { DMX_PES_AUDIO, DMX_PES_VIDEO, DMX_PES_TELETEXT, DMX_PES_OTHER, DMX_PES_OTHER };
+#endif
 
 bool cDvbDevice::SetPid(cPidHandle *Handle, int Type, bool On)
 {
   if (Handle->pid) {
+#ifdef NEWSTRUCT
+     dmx_pes_filter_params pesFilterParams;
+#else
      dmxPesFilterParams pesFilterParams;
+#endif
      memset(&pesFilterParams, 0, sizeof(pesFilterParams));
      if (On) {
         if (Handle->handle < 0) {
@@ -322,7 +336,11 @@ bool cDvbDevice::SetPid(cPidHandle *Handle, int Type, bool On)
         pesFilterParams.pid     = Handle->pid;
         pesFilterParams.input   = DMX_IN_FRONTEND;
         pesFilterParams.output  = (Type <= ptTeletext && Handle->used <= 1) ? DMX_OUT_DECODER : DMX_OUT_TS_TAP;
+#ifdef NEWSTRUCT
+        pesFilterParams.pes_type= PesTypes[Type < ptOther ? Type : ptOther];
+#else
         pesFilterParams.pesType = PesTypes[Type < ptOther ? Type : ptOther];
+#endif
         pesFilterParams.flags   = DMX_IMMEDIATE_START;
         if (ioctl(Handle->handle, DMX_SET_PES_FILTER, &pesFilterParams) < 0) {
            LOG_ERROR;
@@ -335,7 +353,11 @@ bool cDvbDevice::SetPid(cPidHandle *Handle, int Type, bool On)
            pesFilterParams.pid     = 0x1FFF;
            pesFilterParams.input   = DMX_IN_FRONTEND;
            pesFilterParams.output  = DMX_OUT_DECODER;
+#ifdef NEWSTRUCT
+           pesFilterParams.pes_type= PesTypes[Type];
+#else
            pesFilterParams.pesType = PesTypes[Type];
+#endif
            pesFilterParams.flags   = DMX_IMMEDIATE_START;
            CHECK(ioctl(Handle->handle, DMX_SET_PES_FILTER, &pesFilterParams));
            close(Handle->handle);
@@ -584,9 +606,9 @@ bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
 
 #ifdef NEWSTRUCT
             Frontend.frequency = frequency * 1000UL;
-            Frontend.inversion = SpectralInversion(Channel->Inversion());
+            Frontend.inversion = fe_spectral_inversion_t(Channel->Inversion());
             Frontend.u.qpsk.symbol_rate = Channel->Srate() * 1000UL;
-            Frontend.u.qpsk.fec_inner = CodeRate(Channel->CoderateH());
+            Frontend.u.qpsk.fec_inner = fe_code_rate_t(Channel->CoderateH());
 #else
             Frontend.Frequency = frequency * 1000UL;
             Frontend.Inversion = SpectralInversion(Channel->Inversion());
@@ -601,10 +623,10 @@ bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
 
 #ifdef NEWSTRUCT
             Frontend.frequency = Channel->Frequency() * 1000000UL;
-            Frontend.inversion = SpectralInversion(Channel->Inversion());
+            Frontend.inversion = fe_spectral_inversion_t(Channel->Inversion());
             Frontend.u.qam.symbol_rate = Channel->Srate() * 1000UL;
-            Frontend.u.qam.fec_inner = CodeRate(Channel->CoderateH());
-            Frontend.u.qam.modulation = Modulation(Channel->Modulation());
+            Frontend.u.qam.fec_inner = fe_code_rate_t(Channel->CoderateH());
+            Frontend.u.qam.modulation = fe_modulation_t(Channel->Modulation());
 #else
             Frontend.Frequency = Channel->Frequency() * 1000000UL;
             Frontend.Inversion = SpectralInversion(Channel->Inversion());
@@ -620,14 +642,14 @@ bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
 
 #ifdef NEWSTRUCT
             Frontend.frequency = Channel->Frequency() * 1000UL;
-            Frontend.inversion = SpectralInversion(Channel->Inversion());
-            Frontend.u.ofdm.bandwidth = BandWidth(Channel->Bandwidth());
-            Frontend.u.ofdm.code_rate_HP = CodeRate(Channel->CoderateH());
-            Frontend.u.ofdm.code_rate_LP = CodeRate(Channel->CoderateL());
-            Frontend.u.ofdm.constellation = Modulation(Channel->Modulation());
-            Frontend.u.ofdm.transmission_mode = TransmitMode(Channel->Transmission());
-            Frontend.u.ofdm.guard_interval = GuardInterval(Channel->Guard());
-            Frontend.u.ofdm.hierarchy_information = Hierarchy(Channel->Hierarchy());
+            Frontend.inversion = fe_spectral_inversion_t(Channel->Inversion());
+            Frontend.u.ofdm.bandwidth = fe_bandwidth_t(Channel->Bandwidth());
+            Frontend.u.ofdm.code_rate_HP = fe_code_rate_t(Channel->CoderateH());
+            Frontend.u.ofdm.code_rate_LP = fe_code_rate_t(Channel->CoderateL());
+            Frontend.u.ofdm.constellation = fe_modulation_t(Channel->Modulation());
+            Frontend.u.ofdm.transmission_mode = fe_transmit_mode_t(Channel->Transmission());
+            Frontend.u.ofdm.guard_interval = fe_guard_interval_t(Channel->Guard());
+            Frontend.u.ofdm.hierarchy_information = fe_hierarchy_t(Channel->Hierarchy());
 #else
             Frontend.Frequency = Channel->Frequency() * 1000UL;
             Frontend.Inversion = SpectralInversion(Channel->Inversion());
@@ -663,7 +685,7 @@ bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
      // Wait for channel lock:
 
 #ifdef NEWSTRUCT
-     FrontendStatus status = FrontendStatus(0);
+     fe_status_t status = fe_status_t(0);
      for (int i = 0; i < 100; i++) {
          CHECK(ioctl(fd_frontend, FE_READ_STATUS, &status));
          if (status & FE_HAS_LOCK)
@@ -702,6 +724,8 @@ bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
   // PID settings:
 
   if (TurnOnLivePIDs) {
+     aPid1 = Channel->Apid1();
+     aPid2 = Channel->Apid2();
      if (!(AddPid(Channel->Apid1(), ptAudio) && AddPid(Channel->Vpid(), ptVideo))) {//XXX+ dolby dpid1!!! (if audio plugins are attached)
         esyslog("ERROR: failed to set PIDs for channel %d on device %d", Channel->Number(), CardIndex() + 1);
         return false;
@@ -726,9 +750,43 @@ bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
 void cDvbDevice::SetVolumeDevice(int Volume)
 {
   if (HasDecoder()) {
+#ifdef NEWSTRUCT
+     audio_mixer_t am;
+#else
      audioMixer_t am;
+#endif
      am.volume_left = am.volume_right = Volume;
      CHECK(ioctl(fd_audio, AUDIO_SET_MIXER, &am));
+     }
+}
+
+int cDvbDevice::NumAudioTracksDevice(void) const
+{
+  int n = 0;
+  if (aPid1)
+     n++;
+  if (aPid2 && aPid1 != aPid2)
+     n++;
+  return n;
+}
+
+const char **cDvbDevice::GetAudioTracksDevice(int *CurrentTrack) const
+{
+  if (NumAudioTracks()) {
+     if (CurrentTrack)
+        *CurrentTrack = (pidHandles[ptAudio].pid == aPid1) ? 0 : 1;
+     static const char *audioTracks1[] = { "Audio 1", NULL };
+     static const char *audioTracks2[] = { "Audio 1", "Audio 2", NULL };
+     return NumAudioTracks() > 1 ? audioTracks2 : audioTracks1;
+     }
+  return NULL;
+}
+
+void cDvbDevice::SetAudioTrackDevice(int Index)
+{
+  if (0 <= Index && Index < NumAudioTracks()) {
+     DelPid(pidHandles[ptAudio].pid);
+     AddPid(Index ? aPid2 : aPid1, ptAudio);
      }
 }
 
@@ -916,7 +974,11 @@ bool cDvbDevice::GetTSPacket(uchar *&Data)
         return true;
         }
      else if (FATALERRNO) {
+#ifdef NEWSTRUCT
+        if (errno == EOVERFLOW)
+#else
         if (errno == EBUFFEROVERFLOW) // this error code is not defined in the library
+#endif
            esyslog("ERROR: DVB driver buffer overflow on device %d", CardIndex() + 1);
         else {
            LOG_ERROR;

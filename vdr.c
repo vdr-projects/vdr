@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.125 2002/10/06 10:25:04 kls Exp $
+ * $Id: vdr.c 1.127 2002/10/13 12:13:19 kls Exp $
  */
 
 #include <getopt.h>
@@ -319,6 +319,7 @@ int main(int argc, char *argv[])
   Channels.Load(AddDirectory(ConfigDirectory, "channels.conf"));
   Timers.Load(AddDirectory(ConfigDirectory, "timers.conf"));
   Commands.Load(AddDirectory(ConfigDirectory, "commands.conf"), true);
+  RecordingCommands.Load(AddDirectory(ConfigDirectory, "reccmds.conf"), true);
   SVDRPhosts.Load(AddDirectory(ConfigDirectory, "svdrphosts.conf"), true);
   CaDefinitions.Load(AddDirectory(ConfigDirectory, "ca.conf"), true);
   Keys.Load(AddDirectory(ConfigDirectory, "remote.conf"));
@@ -634,11 +635,12 @@ int main(int argc, char *argv[])
   cControl::Shutdown();
   delete Interface;
   cOsd::Shutdown();
-  PluginManager.Shutdown(true);
+  Remotes.Clear();
   Setup.CurrentChannel = cDevice::CurrentChannel();
   Setup.CurrentVolume  = cDevice::CurrentVolume();
   Setup.Save();
   cDevice::Shutdown();
+  PluginManager.Shutdown(true);
   if (WatchdogTimeout > 0)
      dsyslog("max. latency time %d seconds", MaxLatencyTime);
   isyslog("exiting");

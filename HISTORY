@@ -1150,7 +1150,7 @@ Video Disk Recorder Revision History
   to their appropriate system locations and creates the /video directory if
   it doesn't exist yet.
 - Automatic hotkey assignment is now suppressed if the first entry in
-  commands.conf starts with a digit in the range '1'...'9', followed by a blank.
+  'commands.conf' starts with a digit in the range '1'...'9', followed by a blank.
 - Fixed a bug in switching back the replay mode display in time shift mode
   (thanks to Achim Lange for reporting this one).
 - Fixed a bug in the "First day" timer parameter for timers that record over
@@ -1579,3 +1579,34 @@ Video Disk Recorder Revision History
 - Updated channels.conf.terr and channels.conf.cable (thanks to Uwe Scheffler).
 - Fixed a bug when pressing the "Blue" button in the main menu without having
   displayed it (thanks to Oliver Endriss for reporting this one).
+
+2002-10-13: Version 1.1.13
+
+- Added cDevice::DeviceNumber() to get the number of a device, not counting any
+  gaps that might be in the index count.
+- Fixed fetching the current/next information to handle cases where the duration
+  of an event is set wrongly and would last beyond the start time of the next
+  event.
+- Adapted type names to the new HEAD version of the driver (which the previous
+  NEWSTRUCT branch has been merged into). Note that to use this driver version
+  you still need to add NEWSTRUCT=1 to the make call when building VDR. You
+  need a HEAD version of the LinuxDVB driver dated 2002-10-11 or later to compile
+  VDR with NEWSTRUCT=1.
+- Fixed radio channels in channels.conf.cable (thanks to Robert Schiele and Uwe
+  Scheffler).
+- Fixed switching the video format in the Setup/DVB menu (thanks to Uwe Scheffler
+  for reporting this one).
+- Reactivated full handling of second audio PID (even in 'Transfer Mode').
+- Fixed a crash when closing down with remote control plugins (thanks to Oliver
+  Endriss helping to debug this one).
+- Commands in the file 'commands.conf' can now have a '?' at the end of their
+  title, which will result in a confirmation prompt before executing the
+  command.
+- Changed a few leftover 'new char[...]' to MALLOC(char, ...).
+- If a command executed from the "Commands" menu doesn't return any output, the
+  OSD will now be closed automatically.
+- The SVDRP command PUTE now triggers an immediate write of the 'epg.data' file
+  (suggested by Gerhard Steiner).
+- The new configuration file 'reccmds.conf' can be used to define commands that
+  shall be executed from the "Recordings" menu; see MANUAL and 'man vdr(5)' for
+  details (suggested by Gerhard Steiner).

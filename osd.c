@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 1.35 2002/08/25 09:18:31 kls Exp $
+ * $Id: osd.c 1.36 2002/10/13 10:31:28 kls Exp $
  */
 
 #include "osd.h"
@@ -623,9 +623,7 @@ eOSState cOsdMenu::ProcessKey(eKeys Key)
         return state;
      }
   switch (Key) {
-    case k1...k9: if (hasHotkeys)
-                     return HotKey(Key);
-                  break;
+    case k1...k9: return hasHotkeys ? HotKey(Key) : osUnknown;
     case kUp|k_Repeat:
     case kUp:   CursorUp();   break;
     case kDown|k_Repeat:

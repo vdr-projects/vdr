@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.68 2002/10/05 13:44:56 kls Exp $
+ * $Id: recording.c 1.69 2002/10/13 09:08:45 kls Exp $
  */
 
 #include "recording.h"
@@ -363,7 +363,7 @@ cRecording::cRecording(const char *FileName)
         t.tm_mon--;
         t.tm_sec = 0;
         start = mktime(&t);
-        name = new char[p - FileName + 1];
+        name = MALLOC(char, p - FileName + 1);
         strncpy(name, FileName, p - FileName);
         name[p - FileName] = 0;
         name = ExchangeChars(name, false);
@@ -511,7 +511,7 @@ const char *cRecording::Title(char Delimiter, bool NewIndicator, int Level)
                  break;
               }
            }
-     titleBuffer = new char[s - p + 3];
+     titleBuffer = MALLOC(char, s - p + 3);
      *titleBuffer = Delimiter;
      *(titleBuffer + 1) = Delimiter;
      strn0cpy(titleBuffer + 2, p, s - p + 1);
@@ -769,7 +769,7 @@ cIndexFile::cIndexFile(const char *FileName, bool Record)
   last = -1;
   index = NULL;
   if (FileName) {
-     fileName = new char[strlen(FileName) + strlen(INDEXFILESUFFIX) + 1];
+     fileName = MALLOC(char, strlen(FileName) + strlen(INDEXFILESUFFIX) + 1);
      if (fileName) {
         strcpy(fileName, FileName);
         char *pFileExt = fileName + strlen(fileName);
@@ -996,7 +996,7 @@ cFileName::cFileName(const char *FileName, bool Record, bool Blocking)
   record = Record;
   blocking = Blocking;
   // Prepare the file name:
-  fileName = new char[strlen(FileName) + RECORDFILESUFFIXLEN];
+  fileName = MALLOC(char, strlen(FileName) + RECORDFILESUFFIXLEN);
   if (!fileName) {
      esyslog("ERROR: can't copy file name '%s'", fileName);
      return;

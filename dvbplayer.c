@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 1.13 2002/09/15 13:33:31 kls Exp $
+ * $Id: dvbplayer.c 1.14 2002/10/12 12:29:31 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -96,6 +96,8 @@ private:
   ePlayDirs playDir;
   int trickSpeed;
   int readIndex, writeIndex;
+  bool canToggleAudioTrack;
+  uchar audioTrack;
   cFrame *readFrame;
   const cFrame *playFrame;
   void TrickSpeed(int Increment);
@@ -120,6 +122,9 @@ public:
   void Goto(int Position, bool Still = false);
   virtual bool GetIndex(int &Current, int &Total, bool SnapToIFrame = false);
   virtual bool GetReplayMode(bool &Play, bool &Forward, int &Speed);
+  virtual int NumAudioTracks(void) const;
+  virtual const char **GetAudioTracks(int *CurrentTrack = NULL) const;
+  virtual void SetAudioTrack(int Index);
   };
 
 #define MAX_VIDEO_SLOWMOTION 63 // max. arg to pass to VIDEO_SLOWMOTION // TODO is this value correct?
@@ -139,6 +144,8 @@ cDvbPlayer::cDvbPlayer(const char *FileName)
   playMode = pmPlay;
   playDir = pdForward;
   trickSpeed = NORMAL_SPEED;
+  canToggleAudioTrack = false;
+  audioTrack = 0xC0;
   readIndex = writeIndex = -1;
   readFrame = NULL;
   playFrame = NULL;
@@ -216,7 +223,7 @@ void cDvbPlayer::StripAudioPackets(uchar *b, int Length, uchar Except)
                    // continue with deleting the data - otherwise it disturbs DVB replay
               case 0xC0 ... 0xC1: // audio
                    if (c == 0xC1)
-                      ;//XXX+ canToggleAudioTrack = true;
+                      canToggleAudioTrack = true;
                    if (!Except || c != Except) {
                       int n = l;
                       for (int j = i; j < Length && n--; j++)
@@ -353,7 +360,7 @@ void cDvbPlayer::Action(void)
                        continue;
                        }
                     r = ReadFrame(replayFile, b, Length, sizeof(b));
-                    StripAudioPackets(b, r, 0xC0); //XXX+ audioTrack
+                    StripAudioPackets(b, r, audioTrack);
                     }
                  else // allows replay even if the index file is missing
                     r = read(replayFile, b, sizeof(b));
@@ -621,6 +628,31 @@ bool cDvbPlayer::GetReplayMode(bool &Play, bool &Forward, int &Speed)
   else
      Speed = -1;
   return true;
+}
+
+int cDvbPlayer::NumAudioTracks(void) const
+{
+  return canToggleAudioTrack ? 2 : 1;
+}
+
+const char **cDvbPlayer::GetAudioTracks(int *CurrentTrack = NULL) const
+{
+  if (NumAudioTracks()) {
+     if (CurrentTrack)
+        *CurrentTrack = (audioTrack == 0xC0) ? 0 : 1;
+     static const char *audioTracks1[] = { "Audio 1", NULL };
+     static const char *audioTracks2[] = { "Audio 1", "Audio 2", NULL };
+     return NumAudioTracks() > 1 ? audioTracks2 : audioTracks1;
+     }
+  return NULL;
+}
+
+void cDvbPlayer::SetAudioTrack(int Index)
+{
+  if ((audioTrack == 0xC0) != (Index == 0)) {
+     audioTrack = (Index == 1) ? 0xC1 : 0xC0;
+     Empty();
+     }
 }
 
 // --- cDvbPlayerControl -----------------------------------------------------

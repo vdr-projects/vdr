@@ -8,7 +8,7 @@
 .\" License as specified in the file COPYING that comes with the
 .\" vdr distribution.
 .\"
-.\" $Id: vdr.5 1.6 2002/10/06 08:56:01 kls Exp $
+.\" $Id: vdr.5 1.8 2002/10/13 12:14:49 kls Exp $
 .\"
 .TH vdr 5 "7 Sep 2002" "1.2.0" "Video Disk Recorder Files"
 .SH NAME
@@ -311,7 +311,6 @@ PC keyboard, RCU for the home-built "Remote Control Unit", or LIRC for the
 "Linux Infrared Remote Control"), \fBkey\fR is the name of the key that is
 defined (like Up, Down, Menu etc.), and \fBcode\fR is a character string that
 this remote control delivers when the given key is pressed.
-
 .SS COMMANDS
 The file \fIcommands.conf\fR contains the definitions of commands that can
 be executed from the \fBvdr\fR main menu's "Commands" option.
@@ -322,7 +321,12 @@ Each line contains one command definition in the following format:
 where \fBtitle\fR is the string that will be displayed in the "Commands" menu,
 and \fBcommand\fR is the actual command string that will be executed when this
 option is selected. The delimiting ':' may be surrounded by any number of
-white space characters.
+white space characters. If \fBtitle\fR ends with the character '?', there will
+be a confirmation prompt before actually executing the command. This can be
+used for commands that might have serious results (like deleting files etc)
+to make sure they are not executed inadvertently.
+
+Everything following (and including) a '#' character is considered to be comment.
 
 By default the menu entries in the "Commands" menu will be numbered '1'...'9'
 to make them selectable by pressing the corresponding number key. If you want
@@ -337,16 +341,25 @@ In order to avoid error messages to the console, every command should have
 
 Examples:
 
-Check for new mail: /usr/local/bin/checkmail 2>&1
+Check for new mail?: /usr/local/bin/checkmail 2>&1
 .br
-CPU status        : /usr/local/bin/cpustatus 2>&1
+CPU status: /usr/local/bin/cpustatus 2>&1
 .br
-Disk space        : df -h | grep '/video' | awk '{ print 100 - $5 "% free"; }'
+Disk space: df -h | grep '/video' | awk '{ print 100 - $5 "% free"; }'
 .br
-Calendar          : date;echo;cal
+Calendar: date;echo;cal
 
 Note that the commands 'checkmail' and 'cpustatus' are only \fBexamples\fR!
 Don't send emails to the author asking where to find these ;-)
+.br
+The '?' at the end of the "Check for new mail?" entry will prompt the user
+whether this command shall really be executed.
+.SS RECORDING COMMANDS
+The file \fIreccmds.conf\fR can be used to define commands that can be applied
+to the currently highlighted recording in the "Recordings" menu. The syntax is
+exactly the same as described for the file \fIcommands.conf\fR. When executing
+a command, the directory name of the recording will be appended to the command
+string, separated by a blank and enclosed in single quotes.
 .SS SVDRP HOSTS
 The file \fIsvdrphosts.conf\fR contains the IP numbers of all hosts that are
 allowed to access the SVDRP port.

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.25 2002/10/06 13:49:38 kls Exp $
+ * $Id: device.c 1.27 2002/10/12 13:24:37 kls Exp $
  */
 
 #include "device.h"
@@ -85,6 +85,15 @@ int cDevice::NextCardIndex(int n)
   else if (n < 0)
      esyslog("ERROR: illegal value in IncCardIndex(%d)", n);
   return nextCardIndex;
+}
+
+int cDevice::DeviceNumber(void) const
+{
+  for (int i = 0; i < numDevices; i++) {
+      if (device[i] == this)
+         return i;
+      }
+  return -1;
 }
 
 void cDevice::MakePrimaryDevice(bool On)
@@ -356,7 +365,7 @@ eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
      if (CaDevice) {
         cStatus::MsgChannelSwitch(this, 0); // only report status if we are actually going to switch the channel
         if (CaDevice->SetChannel(Channel, false) == scrOk) // calling SetChannel() directly, not SwitchChannel()!
-           cControl::Launch(new cTransferControl(CaDevice, Channel->Vpid(), Channel->Apid1(), 0, 0, 0));//XXX+
+           cControl::Launch(new cTransferControl(CaDevice, Channel->Vpid(), Channel->Apid1(), Channel->Apid2(), Channel->Dpid1(), Channel->Dpid2()));//XXX+
         else
            Result = scrNoTransfer;
         }
@@ -389,6 +398,20 @@ void cDevice::SetVolumeDevice(int Volume)
 {
 }
 
+int cDevice::NumAudioTracksDevice(void) const
+{
+  return 0;
+}
+
+const char **cDevice::GetAudioTracksDevice(int *CurrentTrack) const
+{
+  return NULL;
+}
+
+void cDevice::SetAudioTrackDevice(int Index)
+{
+}
+
 bool cDevice::ToggleMute(void)
 {
   int OldVolume = volume;
@@ -405,6 +428,24 @@ void cDevice::SetVolume(int Volume, bool Absolute)
   cStatus::MsgSetVolume(volume, Absolute);
   if (volume > 0)
      mute = false;
+}
+
+int cDevice::NumAudioTracks(void) const
+{
+  return player ? player->NumAudioTracks() : NumAudioTracksDevice();
+}
+
+const char **cDevice::GetAudioTracks(int *CurrentTrack) const
+{
+  return player ? player->GetAudioTracks(CurrentTrack) : GetAudioTracksDevice(CurrentTrack);
+}
+
+void cDevice::SetAudioTrack(int Index)
+{
+  if (player)
+     player->SetAudioTrack(Index);
+  else
+     SetAudioTrackDevice(Index);
 }
 
 bool cDevice::SetPlayMode(ePlayMode PlayMode)

@@ -186,9 +186,10 @@ Aaron Holtzman
 Wolfgang Henselmann-Weiss <Wolfgang_Henselmann@betaresearch.de>
  for fixing calculating the timeout value in cFile::FileReady()
 
-Uwe Scheffler <UweScheffler@t-online.de>
+Uwe Scheffler <linux_dvb@uni.de>
  for his help in keeping 'channels.conf.cable' and 'channels.conf.terr' up to date
  for helping to test new DVB-T handling
+ for reporting a bug in switching the video format in the Setup/DVB menu
 
 Matjaz Thaler <matjaz.thaler@guest.arnes.si>
  for improving AC3 decoding when replaying DVDs
@@ -414,6 +415,7 @@ Oliver Endriss <o.endriss@gmx.de>
  for helping to test and debug the new channel source and DiSEqC handling
  for reporting a bug when pressing the "Blue" button in the main menu without
  having displayed it
+ for helping to debug a crash when closing down with remote control plugins
 
 Reinhard Walter Buchner <rw.buchner@freenet.de>
  for adding some satellites to 'sources.conf'
@@ -423,3 +425,12 @@ Lauri Tischler <lauri.tischler@efore.fi>
 
 Andy Carter <fruit@ukgateway.net>
  for helping to test new DVB-T handling
+
+Robert Schiele <rschiele@uni-mannheim.de>
+ for his help in keeping 'channels.conf.cable' up to date
+
+Gerhard Steiner <steiner@mail.austria.com>
+ for suggesting that the SVDRP command PUTE shall trigger an immediate write of
+ the 'epg.data' file
+ for suggesting the new configuration file 'reccmds.conf' to define commands that
+ shall be executed from the "Recordings" menu

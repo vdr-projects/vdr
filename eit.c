@@ -16,7 +16,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.c 1.54 2002/10/06 10:31:38 kls Exp $
+ * $Id: eit.c 1.57 2002/10/13 09:29:05 kls Exp $
  ***************************************************************************/
 
 #include "eit.h"
@@ -629,50 +629,26 @@ cEventInfo *cSchedule::AddEvent(cEventInfo *EventInfo)
   return EventInfo;
 }
 
-/**  */
-const cEventInfo * cSchedule::GetPresentEvent() const
+const cEventInfo *cSchedule::GetPresentEvent(void) const
 {
-   // checking temporal sanity of present event (kls 2000-11-01)
-   time_t now = time(NULL);
-//XXX   if (pPresent && !(pPresent->GetTime() <= now && now <= pPresent->GetTime() + pPresent->GetDuration()))
-   {
-      cEventInfo *pe = Events.First();
-      while (pe != NULL)
-      {
-         if (pe->GetTime() <= now && now <= pe->GetTime() + pe->GetDuration())
-            return pe;
-         pe = Events.Next(pe);
-      }
-   }
-   return NULL;//XXX
-   return pPresent;
+  return GetEventAround(time(NULL));
 }
-/**  */
-const cEventInfo * cSchedule::GetFollowingEvent() const
+
+const cEventInfo *cSchedule::GetFollowingEvent(void) const
 {
-   // checking temporal sanity of following event (kls 2000-11-01)
-   time_t now = time(NULL);
-   const cEventInfo *pr = GetPresentEvent(); // must have it verified!
-if (pr)//XXX   if (pFollowing && !(pr && pr->GetTime() + pr->GetDuration() <= pFollowing->GetTime()))
-   {
-      int minDt = INT_MAX;
-      cEventInfo *pe = Events.First(), *pf = NULL;
-      while (pe != NULL)
-      {
-         int dt = pe->GetTime() - now;
-         if (dt > 0 && dt < minDt)
-         {
-            minDt = dt;
-            pf = pe;
+  const cEventInfo *pe = NULL;
+  time_t now = time(NULL);
+  time_t delta = INT_MAX;
+  for (cEventInfo *p = Events.First(); p; p = Events.Next(p)) {
+      time_t dt = p->GetTime() - now;
+      if (dt > 0 && dt < delta) {
+         delta = dt;
+         pe = p;
          }
-         pe = Events.Next(pe);
       }
-      return pf;
-   }
-   return NULL;//XXX
-   return pFollowing;
+  return pe;
 }
-/**  */
+
 void cSchedule::SetServiceID(unsigned short servid)
 {
    uServiceID = servid;
@@ -701,21 +677,21 @@ const cEventInfo * cSchedule::GetEvent(unsigned short uEventID, time_t tTime) co
 
    return pt;
 }
-/**  */
-const cEventInfo * cSchedule::GetEventAround(time_t tTime) const
+
+const cEventInfo *cSchedule::GetEventAround(time_t Time) const
 {
-   cEventInfo *pe = Events.First();
-   while (pe != NULL)
-   {
-      if (pe->GetTime() <= tTime && tTime <= pe->GetTime() + pe->GetDuration())
-         return pe;
-
-      pe = Events.Next(pe);
-   }
-
-   return NULL;
+  const cEventInfo *pe = NULL;
+  time_t delta = INT_MAX;
+  for (cEventInfo *p = Events.First(); p; p = Events.Next(p)) {
+      time_t dt = Time - p->GetTime();
+      if (dt >= 0 && dt < delta && p->GetTime() + p->GetDuration() >= Time) {
+         delta = dt;
+         pe = p;
+         }
+      }
+  return pe;
 }
-/**  */
+
 bool cSchedule::SetPresentEvent(cEventInfo *pEvent)
 {
    if (pPresent != NULL)
@@ -1007,6 +983,7 @@ int cSIProcessor::numSIProcessors = 0;
 cSchedules *cSIProcessor::schedules = NULL;
 cMutex cSIProcessor::schedulesMutex;
 const char *cSIProcessor::epgDataFileName = EPGDATAFILENAME;
+time_t cSIProcessor::lastDump = time(NULL);
 
 /**  */
 cSIProcessor::cSIProcessor(const char *FileName)
@@ -1107,7 +1084,6 @@ void cSIProcessor::Action()
    dsyslog("EIT processing thread started (pid=%d)%s", getpid(), masterSIProcessor ? " - master" : "");
 
    time_t lastCleanup = time(NULL);
-   time_t lastDump = time(NULL);
 
    active = true;
 
@@ -1220,7 +1196,11 @@ void cSIProcessor::Action()
 table identifer tid */
 bool cSIProcessor::AddFilter(u_char pid, u_char tid)
 {
+#ifdef NEWSTRUCT
+   dmx_sct_filter_params sctFilterParams;
+#else
    dmxSctFilterParams sctFilterParams;
+#endif
    memset(&sctFilterParams, 0, sizeof(sctFilterParams));
    sctFilterParams.pid = pid;
    sctFilterParams.timeout = 0;
@@ -1286,4 +1266,10 @@ bool cSIProcessor::SetCurrentServiceID(unsigned short servid)
 {
   cMutexLock MutexLock(&schedulesMutex);
   return schedules ? schedules->SetCurrentServiceID(servid) : false;
+}
+
+void cSIProcessor::TriggerDump(void)
+{
+  cMutexLock MutexLock(&schedulesMutex);
+  lastDump = 0;
 }
