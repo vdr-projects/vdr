@@ -7,7 +7,7 @@
  * DVD support initially written by Andreas Schultz <aschultz@warp10.net>
  * based on dvdplayer-0.5 by Matjaz Thaler <matjaz.thaler@guest.arnes.si>
  *
- * $Id: dvbapi.c 1.113 2001/09/09 12:52:41 kls Exp $
+ * $Id: dvbapi.c 1.114 2001/09/09 13:34:41 kls Exp $
  */
 
 //#define DVDDEBUG        1
@@ -628,11 +628,68 @@ int ReadFrame(int f, uchar *b, int Length, int Max)
   return r;
 }
 
+// --- cBackTrace ----------------------------------------------------------
+
+#define AVG_FRAME_SIZE 15000         // an assumption about the average frame size
+#define DVB_BUF_SIZE   (256 * 1024)  // an assumption about the dvb firmware buffer size
+#define BACKTRACE_ENTRIES (DVB_BUF_SIZE / AVG_FRAME_SIZE + 20) // how many entries are needed to backtrace buffer contents
+
+class cBackTrace {
+private:
+  int index[BACKTRACE_ENTRIES];
+  int length[BACKTRACE_ENTRIES];
+  int pos, num;
+public:
+  cBackTrace(void);
+  void Clear(void);
+  void Add(int Index, int Length);
+  int Get(bool Forward);
+  };
+
+cBackTrace::cBackTrace(void)
+{
+  Clear();
+}
+
+void cBackTrace::Clear(void)
+{
+  pos = num = 0;
+}
+
+void cBackTrace::Add(int Index, int Length)
+{
+  index[pos] = Index;
+  length[pos] = Length;
+  if (++pos >= BACKTRACE_ENTRIES)
+     pos = 0;
+  if (num < BACKTRACE_ENTRIES)
+     num++;
+}
+
+int cBackTrace::Get(bool Forward)
+{
+  int p = pos;
+  int n = num;
+  int l = DVB_BUF_SIZE + (Forward ? 0 : 256 * 1024); //XXX (256 * 1024) == DVB_BUF_SIZE ???
+  int i = -1;
+
+  while (n && l > 0) {
+        if (--p < 0)
+           p = BACKTRACE_ENTRIES - 1;
+        i = index[p] - 1;
+        l -= length[p];
+        n--; 
+        }
+  return i;
+}
+
 // --- cPlayBuffer ---------------------------------------------------------
 
 #define MAX_VIDEO_SLOWMOTION 63 // max. arg to pass to VIDEO_SLOWMOTION // TODO is this value correct?
 
 class cPlayBuffer : public cRingBufferFrame {
+private:
+  cBackTrace backTrace;
 protected:
   enum ePlayModes { pmPlay, pmPause, pmSlow, pmFast, pmStill };
   enum ePlayDirs { pdForward, pdBackward };
@@ -729,6 +786,7 @@ void cPlayBuffer::Output(void)
                     }
                  }
            writeIndex = frame->Index();
+           backTrace.Add(frame->Index(), frame->Count());
            Drop(frame);
            }
         }
@@ -766,13 +824,15 @@ void cPlayBuffer::Empty(bool Block)
      while ((blockInput > 1 || blockOutput > 1) && time(NULL) - t0 < 2)
            usleep(1);
      Lock();
-     readIndex = writeIndex;
+     if ((readIndex = backTrace.Get(playDir == pdForward)) < 0)
+        readIndex = writeIndex;
      cRingBufferFrame::Clear();
      CHECK(ioctl(videoDev, VIDEO_CLEAR_BUFFER));
      CHECK(ioctl(audioDev, AUDIO_CLEAR_BUFFER));
      }
   if (!Block) {
      blockInput = blockOutput = 0;
+     backTrace.Clear();
      Unlock();
      }
 }
@@ -830,10 +890,6 @@ void cPlayBuffer::Forward(void)
             TrickSpeed(Setup.MultiSpeedMode ? -1 : -MAX_SPEEDS);
             break;
        case pmFast:
-            //XXX
-            if (playDir == pdForward)
-               readIndex -= 150; // this about compensates for the buffered data, so that we don't get too far ahead
-            //XXX
             if (Setup.MultiSpeedMode)
                TrickSpeed(playDir == pdForward ? 1 : -1);
             else if (playDir == pdForward)

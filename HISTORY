@@ -735,3 +735,5 @@ Video Disk Recorder Revision History
 - Switching through channel groups with the "Left" and "Right" keys now
   always starts at the group that contains the current channel.
 - Implemented "Multi Speed Mode" (thanks to Stefan Huelswitt).
+- Implemented backtracing to hit the right spot after fast forward/rewind
+  (thanks to Stefan Huelswitt).

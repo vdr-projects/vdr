@@ -101,6 +101,7 @@ Stefan Huelswitt <huels@iname.com>
  for making the width and height of the OSD configurable
  for implementing the "Jump" function in replay mode
  for implementing "Multi Speed Mode"
+ for implementing backtracing for fast forward/rewind
 
 Ulrich Röder <dynamite@efr-net.de>
  for pointing out that there are channels that have a symbol rate higher than
