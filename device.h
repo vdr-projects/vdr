@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 1.39 2004/02/08 15:05:49 kls Exp $
+ * $Id: device.h 1.40 2004/02/14 11:29:57 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -435,7 +435,7 @@ public:
 /// from the driver with each call to Read(), thus avoiding the overhead
 /// of getting each TS packet separately from the driver. It also makes
 /// sure the returned data points to a TS packet and automatically
-/// re-synchronizes after broken packet.
+/// re-synchronizes after broken packets.
 
 class cTSBuffer {
 private:
