@@ -6,7 +6,7 @@
  *
  * LIRC support added by Carsten Koch <Carsten.Koch@icem.de>  2000-06-16.
  *
- * $Id: lirc.c 1.1 2002/09/29 13:16:33 kls Exp $
+ * $Id: lirc.c 1.2 2003/04/06 15:39:48 kls Exp $
  */
 
 #include "lirc.h"
@@ -50,12 +50,22 @@ void cLircRemote::Action(void)
   char buf[LIRC_BUFFER_SIZE];
   char LastKeyName[LIRC_KEY_BUF] = "";
   bool repeat = false;
+  int timeout = -1;
 
   for (; f >= 0;) {
 
       LOCK_THREAD;
 
-      if (cFile::FileReady(f, REPEATLIMIT) && safe_read(f, buf, sizeof(buf)) > 21) {
+      bool ready = cFile::FileReady(f, timeout);
+      int ret = ready ? safe_read(f, buf, sizeof(buf)) : -1;
+
+      if (ready) {
+         if (ret <= 21) {
+            esyslog("ERROR: lircd connection lost");
+            close(f);
+            f = -1;
+            break;
+            }
          int count;
          char KeyName[LIRC_KEY_BUF];
          sscanf(buf, "%*x %x %29s", &count, KeyName); // '29' in '%29s' is LIRC_KEY_BUF-1!
@@ -64,11 +74,13 @@ void cLircRemote::Action(void)
             strcpy(LastKeyName, KeyName);
             repeat = false;
             FirstTime = Now;
+            timeout = -1;
             }
          else {
             if (Now - FirstTime < REPEATDELAY)
                continue; // repeat function kicks in after a short delay
             repeat = true;
+            timeout = REPEATDELAY;
             }
          LastTime = Now;
          Put(KeyName, repeat);
@@ -78,6 +90,7 @@ void cLircRemote::Action(void)
             Put(LastKeyName, false, true);
             repeat = false;
             *LastKeyName = 0;
+            timeout = -1;
             }
          }
       }
