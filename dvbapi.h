@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.h 1.56 2001/10/28 15:47:10 kls Exp $
+ * $Id: dvbapi.h 1.57 2001/11/04 11:27:18 kls Exp $
  */
 
 #ifndef __DVBAPI_H
@@ -33,12 +33,6 @@
 #endif //DVDSUPPORT
 #include "eit.h"
 #include "thread.h"
-
-// Overlay facilities
-#define MAXCLIPRECTS 100
-typedef struct CRect {
-  signed short x, y, width, height;
-  };
 
 #define FRAMESPERSEC 25
 
@@ -154,21 +148,6 @@ public:
   // Image Grab facilities
 
   bool GrabImage(const char *FileName, bool Jpeg = true, int Quality = -1, int SizeX = -1, int SizeY = -1);
-
-  // Overlay facilities
-
-private:
-  bool ovlStat, ovlGeoSet, ovlFbSet;
-  int ovlSizeX, ovlSizeY, ovlPosX, ovlPosY, ovlBpp, ovlPalette, ovlClips, ovlClipCount;
-  int ovlFbSizeX, ovlFbSizeY;
-  __u16 ovlBrightness, ovlColour, ovlHue, ovlContrast;
-  struct video_clip ovlClipRects[MAXCLIPRECTS];
-public:
-  bool OvlF(int SizeX, int SizeY, int FbAddr, int Bpp, int Palette);
-  bool OvlG(int SizeX, int SizeY, int PosX, int PosY);
-  bool OvlC(int ClipCount, CRect *Cr);
-  bool OvlP(__u16 Brightness, __u16 Color, __u16 Hue, __u16 Contrast);
-  bool OvlO(bool Value);
 
   // On Screen Display facilities
 

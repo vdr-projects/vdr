@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.26 2001/10/27 11:35:38 kls Exp $
+ * $Id: svdrp.c 1.27 2001/11/04 11:25:05 kls Exp $
  */
 
 #include "svdrp.h"
@@ -27,6 +27,7 @@
 #include <sys/time.h>
 #include <unistd.h>
 #include "config.h"
+#include "dvbapi.h"
 #include "interface.h"
 #include "tools.h"
 
@@ -183,16 +184,6 @@ const char *HelpPages[] = {
   "    zero, this means that the timer is currently recording and has started\n"
   "    at the given time. The first value in the resulting line is the number\n"
   "    of the timer.",
-  "OVLF <sizex> <sizey> <fbaddr> <bpp> <palette>\n"
-  "    Set the size, address depth and palette of the overlay.",
-  "OVLG <sizex> <sizey> <posx> <posy>\n"
-  "    Set the size and position of the overlay.",
-  "OVLC <clipcount> <base16-CRect-array>\n"
-  "    Set the overlay clipping rectangles.",
-  "OVLP <brightness> <colour> <hue> <contrast>\n"
-  "    Set the picture parameters for the overlay.",
-  "OVLO 0 | 1\n"
-  "    Switch the overlay on or off.",
   "UPDT <settings>\n"
   "    Updates a timer. Settings must be in the same format as returned\n"
   "    by the LSTT command. If a timer with the same channel, day, start\n"
@@ -287,7 +278,6 @@ bool cSVDRP::Send(const char *s, int length)
   if (wbytes < 0) {
      LOG_ERROR;
      file.Close();
-     cDvbApi::PrimaryDvbApi->OvlO(false);
      }
   else //XXX while...???
      esyslog(LOG_ERR, "Wrote %d bytes to client while expecting %d\n", wbytes, length);
@@ -829,106 +819,6 @@ void cSVDRP::CmdNEXT(const char *Option)
      Reply(550, "No active timers");
 }
 
-void cSVDRP::CmdOVLF(const char *Option)
-{
-  if (*Option) {
-     int SizeX = 0, SizeY = 0, Bpp = 0, Palette = 0, FbAddr = 0;
-     if (5 == sscanf(Option, "%d %d %x %d %d", &SizeX, &SizeY, &FbAddr, &Bpp, &Palette)) {
-        //somehow_set_overlay_geometry;
-        if (cDvbApi::PrimaryDvbApi->OvlF(SizeX, SizeY, FbAddr, Bpp, Palette))
-           Reply(250, "Overlay framebuffer set");      
-        else
-           Reply(451, "Illegal overlay framebuffer settings");
-        }
-     else
-        Reply(501, "Could not parse overlay framebuffer settings");
-     }
-  else
-     Reply(501, "Missing overlay framebuffer settings");
-}
-
-void cSVDRP::CmdOVLG(const char *Option)
-{
-  if (*Option) {
-     int SizeX = 0, SizeY = 0, PosX = 0, PosY = 0;
-     if (4 == sscanf(Option, "%d %d %d %d", &SizeX, &SizeY, &PosX, &PosY)) {
-        //somehow_set_overlay_geometry;
-        if (cDvbApi::PrimaryDvbApi->OvlG(SizeX, SizeY, PosX, PosY))
-           Reply(250, "Overlay geometry set"); 
-        else
-           Reply(451, "Illegal overlay geometry settings");
-        }
-     else
-        Reply(501, "Could not parse overlay geometry settings");
-     }
-  else
-     Reply(501, "Missing overlay geometry settings");
-}
-
-void cSVDRP::CmdOVLC(const char *Option)
-{
-  if (*Option) {
-     int ClipCount = 0;
-     unsigned char s[2 * MAXCLIPRECTS * sizeof(CRect) + 2];
-     if (2 == sscanf(Option, "%d %s", &ClipCount, s)) {
-        // Base16-decoding of CRect-array:
-        unsigned char *p = (unsigned char*)ovlClipRects;
-        int i = 0, size = sizeof(CRect)*ClipCount;
-        for (int j = 0; i < size; i++) {
-            p[i]  = (s[j++] - 65);
-            p[i] += (s[j++] - 65) << 4;
-            }
-        if (((unsigned)ClipCount == (i / sizeof(CRect))) && (ClipCount >= 0)) {
-           // apply it:
-           if (cDvbApi::PrimaryDvbApi->OvlC(ClipCount, ovlClipRects))
-              Reply(250, "Overlay-Clipping set");
-           else
-              Reply(451, "Illegal overlay clipping settings");
-           return;
-           }
-        }
-     Reply(501, "Error parsing Overlay-Clipping settings");
-     }
-  else
-     Reply(501, "Missing Clipping settings");
-}
-
-void cSVDRP::CmdOVLP(const char *Option)
-{
-  if (*Option) {
-     int Brightness = 0, Colour = 0, Hue = 0, Contrast = 0;
-     if (4 == sscanf(Option, "%d %d %d %d", &Brightness, &Colour, &Hue, &Contrast)) {
-        //somehow_set_overlay_picture_settings;
-        if (cDvbApi::PrimaryDvbApi->OvlP(Brightness, Colour, Hue, Contrast))
-           Reply(250, "Overlay picture settings set"); 
-        else
-           Reply(451, "Illegal overlay picture settings");
-        }
-     else
-        Reply(501, "Could not parse overlay picture settings");
-     }
-  else
-     Reply(501, "Missing overlay picture settings");
-}
-
-void cSVDRP::CmdOVLO(const char *Option)
-{
-  if (*Option) {
-     int Value;
-     if (1 == sscanf(Option, "%d", &Value)) {
-        //somehow_set_overlay_picture_settings;
-        if (cDvbApi::PrimaryDvbApi->OvlO(Value))
-           Reply(250, "Overlay capture set");  
-        else
-           Reply(451, "Error setting overlay capture");
-        }
-     else
-        Reply(501, "Could not parse status");
-     }
-  else
-     Reply(501, "Missing overlay capture status");
-}
-
 void cSVDRP::CmdUPDT(const char *Option)
 {
   if (*Option) {
@@ -989,11 +879,6 @@ void cSVDRP::Execute(char *Cmd)
   else if (CMD("NEWC"))  CmdNEWC(s);
   else if (CMD("NEWT"))  CmdNEWT(s);
   else if (CMD("NEXT"))  CmdNEXT(s);
-  else if (CMD("OVLF"))  CmdOVLF(s);
-  else if (CMD("OVLG"))  CmdOVLG(s);
-  else if (CMD("OVLC"))  CmdOVLC(s);
-  else if (CMD("OVLP"))  CmdOVLP(s);
-  else if (CMD("OVLO"))  CmdOVLO(s);
   else if (CMD("UPDT"))  CmdUPDT(s);
   else if (CMD("QUIT"))  Close();
   else                   Reply(500, "Command unrecognized: \"%s\"", Cmd);

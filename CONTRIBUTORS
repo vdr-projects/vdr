@@ -23,6 +23,8 @@ Guido Fiala <gfiala@s.netic.de>
  for implementing the SVDRP command 'HITK'
  for implementing image grabbing
  for implementing overlay capabilities (see his 'kvdr' tool at http://www.s.netic.de/gfiala)
+ (overlay capabilities have been removed again in VDR 0.98, since kvdr version 0.4
+ now does these things itself)
  for making the replay progress display avoid unnecessary code execution
 
 Robert Schneider <Robert.Schneider@lotus.com>

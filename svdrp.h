@@ -4,13 +4,12 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: svdrp.h 1.12 2001/10/27 11:36:49 kls Exp $
+ * $Id: svdrp.h 1.13 2001/11/04 11:20:46 kls Exp $
  */
 
 #ifndef __SVDRP_H
 #define __SVDRP_H
 
-#include "dvbapi.h"
 #include "recording.h"
 #include "tools.h"
 
@@ -31,7 +30,6 @@ class cSVDRP {
 private:
   cSocket socket;
   cFile file;
-  CRect ovlClipRects[MAXCLIPRECTS];
   cRecordings Recordings;
   uint numChars;
   char cmdLine[MAXPARSEBUFFER];
@@ -59,11 +57,6 @@ private:
   void CmdNEWC(const char *Option);
   void CmdNEWT(const char *Option);
   void CmdNEXT(const char *Option);
-  void CmdOVLF(const char *Option);
-  void CmdOVLG(const char *Option);
-  void CmdOVLC(const char *Option);
-  void CmdOVLP(const char *Option);
-  void CmdOVLO(const char *Option);
   void CmdUPDT(const char *Option);
   void Execute(char *Cmd);
 public:
