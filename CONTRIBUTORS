@@ -179,3 +179,6 @@ Lauri Pesonen <lauri.pesonen@firsthop.com>
 
 Sergei Haller <Sergei.Haller@math.uni-giessen.de>
  for fixing the LastActivity timestamp after a shutdown prompt
+
+Andreas Gebel <andreas@xcapenet.de>
+ for his help in keeping 'channels.conf' up to date

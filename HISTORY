@@ -930,3 +930,7 @@ Video Disk Recorder Revision History
 2002-01-30: Version 0.99pre4
 
 - Fixed handling improperly formatted EIT data (thanks to Rolf Hakenes).
+
+2002-02-01: Version 0.99pre5
+
+- Updated channel settings for 'N24' (thanks to Andreas Gebel).
