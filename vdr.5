@@ -8,7 +8,7 @@
 .\" License as specified in the file COPYING that comes with the
 .\" vdr distribution.
 .\"
-.\" $Id: vdr.5 1.25 2004/02/22 13:18:48 kls Exp $
+.\" $Id: vdr.5 1.26 2004/02/24 12:36:35 kls Exp $
 .\"
 .TH vdr 5 "1 Jun 2003" "1.2.0" "Video Disk Recorder Files"
 .SH NAME
@@ -196,12 +196,17 @@ The fields in a timer definition have the following meaning (from left
 to right):
 .TP
 .B Status
-Defines whether this timer is \fBinactive\fR (0) or \fBactive\fR (1).
-The value 3 is used for instant recordings.
-Values other than these can be used by external programs to mark active timers
-and recognize if the user has modified them. When a user modifes an active
-timer the \fBstatus\fR field will be explicitly set to '1' (or '0', respectively,
-if the user deactivates the timer).
+The individual bits in this field have the following meaning:
+.TS
+tab (@);
+l l.
+\fB1\fR@the timer is active (and will record if it hits)
+\fB2\fR@this is an instant recording timer
+\fB4\fR@this timer uses VPS
+.TE
+Bits other than these can be used by external programs to mark active timers
+and recognize if the user has modified them. When a user modifies an active
+timer, the upper 16 bits of this 32 bit parameter will be explicitly set to 0.
 
 Note: in order to allow future extensibility, external programs using the
 \fBstatus\fR parameter should only use the upper 16 bit of this 32 bit parameter

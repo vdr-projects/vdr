@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.177 2004/02/15 14:29:30 kls Exp $
+ * $Id: vdr.c 1.178 2004/02/29 14:21:22 kls Exp $
  */
 
 #include <getopt.h>
@@ -483,6 +483,7 @@ int main(int argc, char *argv[])
   int MaxLatencyTime = 0;
   bool ForceShutdown = false;
   bool UserShutdown = false;
+  bool TimerInVpsMargin = false;
 
   while (!Interrupted) {
         // Handle emergency exits:
@@ -548,8 +549,15 @@ int main(int argc, char *argv[])
            PreviousChannel[PreviousChannelIndex ^= 1] = LastChannel;
         // Timers and Recordings:
         if (!Timers.BeingEdited()) {
-           time_t Now = time(NULL); // must do both following calls with the exact same time!
+           static time_t LastSetEvents = 0;//XXX trigger by actual EPG data modification???
+           if (!Menu && time(NULL) - LastSetEvents > 5) {
+              Timers.SetEvents();
+              LastSetEvents = time(NULL);
+              }
+           time_t Now = time(NULL); // must do all following calls with the exact same time!
+           // Process ongoing recordings:
            cRecordControls::Process(Now);
+           // Start new recordings:
            cTimer *Timer = Timers.GetMatch(Now);
            if (Timer) {
               if (!cRecordControls::Start(Timer))
@@ -557,6 +565,21 @@ int main(int argc, char *argv[])
               else
                  LastTimerChannel = Timer->Channel()->Number();
               }
+           // Make sure VPS timers "see" their channel early enough:
+           TimerInVpsMargin = false;
+           for (cTimer *Timer = Timers.First(); Timer; Timer = Timers.Next(Timer)) {
+               if (Timer->HasFlags(tfActive | tfVps) && !Timer->Recording() && !Timer->Pending() && Timer->Matches(Now + Setup.VpsMargin, true)) {
+                  if (!Timer->InVpsMargin()) {
+                     Timer->SetInVpsMargin(true);
+                     TimerInVpsMargin = true;
+                     //XXX if not primary device has TP???
+                     LastTimerChannel = Timer->Channel()->Number();
+                     cRecordControls::Start(Timer); // will only switch the device
+                     }
+                  }
+               else
+                  Timer->SetInVpsMargin(false);
+               }
            }
         // CAM control:
         if (!Menu && !Interface->IsOpen())
@@ -758,7 +781,8 @@ int main(int argc, char *argv[])
              }
            }
         if (!Menu) {
-           EITScanner.Process();
+           if (!TimerInVpsMargin)
+              EITScanner.Process();
            if (!cCutter::Active() && cCutter::Ended()) {
               if (cCutter::Error())
                  Interface->Error(tr("Editing process failed!"));

@@ -4,13 +4,14 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 1.9 2004/02/13 15:37:49 kls Exp $
+ * $Id: timers.c 1.10 2004/02/29 14:20:48 kls Exp $
  */
 
 #include "timers.h"
 #include <ctype.h>
 #include "channels.h"
 #include "i18n.h"
+#include "libsi/si.h"
 
 // IMPORTANT NOTE: in the 'sscanf()' calls there is a blank after the '%d'
 // format characters in order to allow any number of blanks after a numeric
@@ -23,8 +24,10 @@ char *cTimer::buffer = NULL;
 cTimer::cTimer(bool Instant, bool Pause)
 {
   startTime = stopTime = 0;
-  recording = pending = false;
-  active = Instant ? taActInst : taInactive;
+  recording = pending = inVpsMargin = false;
+  flags = tfNone;
+  if (Instant)
+     SetFlags(tfActive | tfInstant);
   channel = Channels.GetByNumber(cDevice::CurrentChannel());
   time_t t = time(NULL);
   struct tm tm_r;
@@ -40,6 +43,7 @@ cTimer::cTimer(bool Instant, bool Pause)
   *file = 0;
   firstday = 0;
   summary = NULL;
+  event = NULL;
   if (Instant && channel)
      snprintf(file, sizeof(file), "%s%s", Setup.MarkInstantRecord ? "@" : "", *Setup.NameInstantRecord ? Setup.NameInstantRecord : channel->Name());
 }
@@ -47,12 +51,17 @@ cTimer::cTimer(bool Instant, bool Pause)
 cTimer::cTimer(const cEvent *Event)
 {
   startTime = stopTime = 0;
-  recording = pending = false;
-  active = true;
+  recording = pending = inVpsMargin = false;
+  flags = tfActive;
+  if (Event->Vps() && Setup.UseVps)
+     SetFlags(tfVps);
   channel = Channels.GetByChannelID(Event->ChannelID(), true);
-  time_t tstart = Event->StartTime();
-  time_t tstop = tstart + Event->Duration() + Setup.MarginStop * 60;
-  tstart -= Setup.MarginStart * 60;
+  time_t tstart = (flags & tfVps) ? Event->Vps() : Event->StartTime();
+  time_t tstop = tstart + Event->Duration();
+  if (!(HasFlags(tfVps))) {
+     tstop  += Setup.MarginStop * 60;
+     tstart -= Setup.MarginStart * 60;
+     }
   struct tm tm_r;
   struct tm *time = localtime_r(&tstart, &tm_r);
   day = time->tm_mday;
@@ -69,6 +78,7 @@ cTimer::cTimer(const cEvent *Event)
      strn0cpy(file, Event->Title(), sizeof(file));
   firstday = 0;
   summary = NULL;
+  event = Event;
 }
 
 cTimer::~cTimer()
@@ -81,6 +91,7 @@ cTimer& cTimer::operator= (const cTimer &Timer)
   memcpy(this, &Timer, sizeof(*this));
   if (summary)
      summary = strdup(summary);
+  event = NULL;
   return *this;
 }
 
@@ -97,7 +108,7 @@ const char *cTimer::ToText(bool UseChannelID)
   free(buffer);
   strreplace(file, ':', '|');
   strreplace(summary, '\n', '|');
-  asprintf(&buffer, "%d:%s:%s:%04d:%04d:%d:%d:%s:%s\n", active, UseChannelID ? Channel()->GetChannelID().ToString() : itoa(Channel()->Number()), PrintDay(day, firstday), start, stop, priority, lifetime, file, summary ? summary : "");
+  asprintf(&buffer, "%d:%s:%s:%04d:%04d:%d:%d:%s:%s\n", flags, UseChannelID ? Channel()->GetChannelID().ToString() : itoa(Channel()->Number()), PrintDay(day, firstday), start, stop, priority, lifetime, file, summary ? summary : "");
   strreplace(summary, '|', '\n');
   strreplace(file, '|', ':');
   return buffer;
@@ -205,7 +216,7 @@ bool cTimer::Parse(const char *s)
      s = s2;
      }
   bool result = false;
-  if (8 <= sscanf(s, "%d :%a[^:]:%a[^:]:%d :%d :%d :%d :%a[^:\n]:%a[^\n]", &active, &channelbuffer, &daybuffer, &start, &stop, &priority, &lifetime, &filebuffer, &summary)) {
+  if (8 <= sscanf(s, "%d :%a[^:]:%a[^:]:%d :%d :%d :%d :%a[^:\n]:%a[^\n]", &flags, &channelbuffer, &daybuffer, &start, &stop, &priority, &lifetime, &filebuffer, &summary)) {
      if (summary && !*skipspace(summary)) {
         free(summary);
         summary = NULL;
@@ -290,7 +301,7 @@ char *cTimer::SetFile(const char *File)
   return file;
 }
 
-bool cTimer::Matches(time_t t)
+bool cTimer::Matches(time_t t, bool Directly)
 {
   startTime = stopTime = 0;
   if (t == 0)
@@ -316,9 +327,35 @@ bool cTimer::Matches(time_t t)
       }
   if (!startTime)
      startTime = firstday; // just to have something that's more than a week in the future
-  else if (t > startTime || t > firstday + SECSINDAY + 3600) // +3600 in case of DST change
+  else if (!Directly && (t > startTime || t > firstday + SECSINDAY + 3600)) // +3600 in case of DST change
      firstday = 0;
-  return active && startTime <= t && t < stopTime; // must stop *before* stopTime to allow adjacent timers
+
+  if (HasFlags(tfActive)) {
+     if (HasFlags(tfVps) && !Directly && event && event->Vps()) {
+        startTime = event->StartTime();
+        stopTime = startTime + event->Duration();
+        return event->RunningStatus() > SI::RunningStatusNotRunning;
+        }
+     return startTime <= t && t < stopTime; // must stop *before* stopTime to allow adjacent timers
+     }
+  return false;
+}
+
+int cTimer::Matches(const cEvent *Event)
+{
+  if (channel->GetChannelID() == Event->ChannelID()) {
+     bool UseVps = HasFlags(tfVps) && Event->Vps();
+     time_t t1 = UseVps ? Event->Vps() : Event->StartTime();
+     time_t t2 = t1 + Event->Duration();
+     bool m1 = Matches(t1, true);
+     bool m2 = UseVps ? m1 : Matches(t2, true);
+     startTime = stopTime = 0;
+     if (m1 && m2)
+        return tmFull;
+     if (m1 || m2)
+        return tmPartial;
+     }
+  return tmNone;
 }
 
 time_t cTimer::StartTime(void)
@@ -335,6 +372,19 @@ time_t cTimer::StopTime(void)
   return stopTime;
 }
 
+void cTimer::SetEvent(const cEvent *Event)
+{
+  if (event != Event) { //XXX TODO check event data, too???
+     if (Event) {
+        char vpsbuf[64] = "";
+        if (Event->Vps())
+           sprintf(vpsbuf, "(VPS: %s) ", Event->GetVpsString());
+        isyslog("timer %d (%d %04d-%04d '%s') set to event %s %s-%s %s'%s'", Index() + 1, Channel()->Number(), start, stop, file, Event->GetDateString(), Event->GetTimeString(), Event->GetEndTimeString(), vpsbuf, Event->Title());
+        }
+     event = Event;
+     }
+}
+
 void cTimer::SetRecording(bool Recording)
 {
   recording = Recording;
@@ -346,28 +396,52 @@ void cTimer::SetPending(bool Pending)
   pending = Pending;
 }
 
-void cTimer::SetActive(int Active)
+void cTimer::SetInVpsMargin(bool InVpsMargin)
 {
-  active = Active;
+  if (InVpsMargin && !inVpsMargin)
+     isyslog("timer %d (%d %04d-%04d '%s') entered VPS margin", Index() + 1, Channel()->Number(), start, stop, file);
+  inVpsMargin = InVpsMargin;
+}
+
+void cTimer::SetFlags(int Flags)
+{
+  flags |= Flags;
+}
+
+void cTimer::ClrFlags(int Flags)
+{
+  flags &= ~Flags;
+}
+
+void cTimer::InvFlags(int Flags)
+{
+  flags ^= Flags;
+}
+
+bool cTimer::HasFlags(int Flags)
+{
+  return (flags & Flags) == Flags;
 }
 
 void cTimer::Skip(void)
 {
   firstday = IncDay(SetTime(StartTime(), 0), 1);
+  event = NULL;
 }
 
 void cTimer::OnOff(void)
 {
   if (IsSingleEvent())
-     active = !active;
+     InvFlags(tfActive);
   else if (firstday) {
      firstday = 0;
-     active = false;
+     ClrFlags(tfActive);
      }
-  else if (active)
+  else if (HasFlags(tfActive))
      Skip();
   else
-     active = true;
+     SetFlags(tfActive);
+  event = NULL;
   Matches(); // refresh start and end time
 }
 
@@ -396,12 +470,59 @@ cTimer *cTimers::GetMatch(time_t t)
   return t0;
 }
 
+cTimer *cTimers::GetMatch(const cEvent *Event, int *Match)
+{
+  cTimer *t = NULL;
+  int m = tmNone;
+  for (cTimer *ti = First(); ti; ti = Next(ti)) {
+      int tm = ti->Matches(Event);
+      if (tm > m) {
+         t = ti;
+         m = tm;
+         if (m == tmFull)
+            break;
+         }
+      }
+  if (Match)
+     *Match = m;
+  return t;
+}
+
 cTimer *cTimers::GetNextActiveTimer(void)
 {
   cTimer *t0 = NULL;
   for (cTimer *ti = First(); ti; ti = Next(ti)) {
-      if (ti->Active() && (!t0 || *ti < *t0))
+      if ((ti->HasFlags(tfActive)) && (!t0 || *ti < *t0))
          t0 = ti;
       }
   return t0;
+}
+
+void cTimers::SetEvents(void)
+{
+  cSchedulesLock SchedulesLock;
+  const cSchedules *Schedules = cSchedules::Schedules(SchedulesLock);
+  if (Schedules) {
+     for (cTimer *ti = First(); ti; ti = Next(ti)) {
+         const cSchedule *Schedule = Schedules->GetSchedule(ti->Channel()->GetChannelID());
+         const cEvent *Event = NULL;
+         if (Schedule) {
+            //XXX what if the Schedule doesn't have any VPS???
+            const cEvent *e;
+            int Match = tmNone;
+            int i = 0;
+            while ((e = Schedule->GetEventNumber(i++)) != NULL) {
+                  int m = ti->Matches(e);
+                  if (m > Match) {
+                     Match = m;
+                     Event = e;
+                     if (Match == tmFull)
+                        break;
+                        //XXX what if there's another event with the same VPS time???
+                     }
+                  }
+            }
+         ti->SetEvent(Event);
+         }
+     }
 }

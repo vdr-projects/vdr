@@ -7,11 +7,12 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 1.13 2004/02/22 14:41:37 kls Exp $
+ * $Id: epg.c 1.14 2004/02/29 13:48:34 kls Exp $
  */
 
 #include "epg.h"
 #include "libsi/si.h"
+#include "timers.h"
 #include <ctype.h>
 #include <time.h>
 
@@ -93,6 +94,15 @@ void cEvent::SetDuration(int Duration)
 void cEvent::SetVps(time_t Vps)
 {
   vps = Vps;
+}
+
+bool cEvent::HasTimer(void) const
+{
+  for (cTimer *t = Timers.First(); t; t = Timers.Next(t)) {
+      if (t->Event() == this)
+         return true;
+      }
+  return false;
 }
 
 const char *cEvent::GetDateString(void) const
@@ -545,7 +555,7 @@ void cSchedule::Cleanup(time_t Time)
       Event = events.Get(a);
       if (!Event)
          break;
-      if (Event->StartTime() + Event->Duration() + Setup.EPGLinger * 60 + 3600 < Time) { // adding one hour for safety
+      if (!Event->HasTimer() && Event->StartTime() + Event->Duration() + Setup.EPGLinger * 60 + 3600 < Time) { // adding one hour for safety
          events.Del(Event);
          a--;
          }

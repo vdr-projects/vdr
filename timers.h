@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.h 1.6 2003/12/13 13:04:21 kls Exp $
+ * $Id: timers.h 1.7 2004/02/29 14:18:17 kls Exp $
  */
 
 #ifndef __TIMERS_H
@@ -15,19 +15,21 @@
 #include "epg.h"
 #include "tools.h"
 
-enum eTimerActive { taInactive = 0,
-                    taActive   = 1,
-                    taInstant  = 2,
-                    taActInst  = (taActive | taInstant)
-                  };
+enum eTimerFlags { tfNone      = 0x0000,
+                   tfActive    = 0x0001,
+                   tfInstant   = 0x0002,
+                   tfVps       = 0x0004,
+                   tfAll       = 0xFFFF,
+                 };
+enum eTimerMatch { tmNone, tmPartial, tmFull };
 
 class cTimer : public cListObject {
   friend class cMenuEditTimer;
 private:
   time_t startTime, stopTime;
   static char *buffer;
-  bool recording, pending;
-  int active;
+  bool recording, pending, inVpsMargin;
+  int flags;
   cChannel *channel;
   int day;
   int start;
@@ -37,6 +39,7 @@ private:
   char file[MaxFileName];
   time_t firstday;
   char *summary;
+  const cEvent *event;
 public:
   cTimer(bool Instant = false, bool Pause = false);
   cTimer(const cEvent *Event);
@@ -45,7 +48,8 @@ public:
   virtual bool operator< (const cListObject &ListObject);
   bool Recording(void) { return recording; }
   bool Pending(void) { return pending; }
-  int Active(void) { return active; }
+  bool InVpsMargin(void) { return inVpsMargin; }
+  int Flags(void) { return flags; }
   const cChannel *Channel(void) { return channel; }
   int Day(void) { return day; }
   int Start(void) { return start; }
@@ -56,6 +60,7 @@ public:
   time_t FirstDay(void) { return firstday; }
   const char *Summary(void) { return summary; }
   const char *ToText(bool UseChannelID = false);
+  const cEvent *Event(void) { return event; }
   bool Parse(const char *s);
   bool Save(FILE *f);
   bool IsSingleEvent(void);
@@ -65,12 +70,18 @@ public:
   static time_t IncDay(time_t t, int Days);
   static time_t SetTime(time_t t, int SecondsFromMidnight);
   char *SetFile(const char *File);
-  bool Matches(time_t t = 0);
+  bool Matches(time_t t = 0, bool Directly = false);
+  int Matches(const cEvent *Event);
   time_t StartTime(void);
   time_t StopTime(void);
+  void SetEvent(const cEvent *Event);
   void SetRecording(bool Recording);
   void SetPending(bool Pending);
-  void SetActive(int Active);
+  void SetInVpsMargin(bool InVpsMargin);
+  void SetFlags(int Flags);
+  void ClrFlags(int Flags);
+  void InvFlags(int Flags);
+  bool HasFlags(int Flags);
   void Skip(void);
   void OnOff(void);
   const char *PrintFirstDay(void);
@@ -85,10 +96,12 @@ private:
 public:
   cTimer *GetTimer(cTimer *Timer);
   cTimer *GetMatch(time_t t);
+  cTimer *GetMatch(const cEvent *Event, int *Match = NULL);
   cTimer *GetNextActiveTimer(void);
   int BeingEdited(void) { return beingEdited; }
   void IncBeingEdited(void) { beingEdited++; }
   void DecBeingEdited(void) { beingEdited--; }
+  void SetEvents(void);
   };
 
 extern cTimers Timers;

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.h 1.5 2003/01/12 15:06:23 kls Exp $
+ * $Id: menuitems.h 1.6 2004/02/24 11:55:14 kls Exp $
  */
 
 #ifndef __MENUITEMS_H
@@ -40,6 +40,16 @@ protected:
   virtual void Set(void);
 public:
   cMenuEditBoolItem(const char *Name, int *Value, const char *FalseString = NULL, const char *TrueString = NULL);
+  };
+
+class cMenuEditBitItem : public cMenuEditBoolItem {
+protected:
+  int *value;
+  int bit;
+  int mask;
+  virtual void Set(void);
+public:
+  cMenuEditBitItem(const char *Name, int *Value, int Mask, const char *FalseString = NULL, const char *TrueString = NULL);
   };
 
 class cMenuEditNumItem : public cMenuEditItem {

@@ -138,6 +138,16 @@ Version 1.2
   The "Blue" button can be pressed to switch to the channel with the selected
   programme.
 
+  The following markers in these menus give additional information about the
+  status of the events:
+
+  t  there is a timer defined for this event which covers only part of the event
+  T  there is a timer defined for this event which covers the entire event
+  V  this event has a VPS time that's different than its start time
+  *  this event is currently running (the validity of this marker depends on
+     whether there is currently a DVB card receiving the transponder this channel
+     is on).
+
 * Selecting a Channel
 
   There are four ways to select a channel:
@@ -351,6 +361,14 @@ Version 1.2
              would have a Day setting of "M-W----".
   Start:     The start time of the timer in hh:mm as 24 hour ("military") time.
   Stop:      The stop time of the timer.
+  VPS:       Defines whether the timer shall use VPS (if available). If this
+             option is set to 'yes', the start time must exactly match the
+             programme's VPS time, otherwise nothing will be recorded. If VPS
+             is used, the stop time has no real meaning. However, it must be
+             different than the start time, and should correspond to the actual
+             stop time of the programme, just in case there is no real VPS data
+             available at the time of recording, so VDR has to fall back to
+             normal timer recording.
   Priority:  The Priority (0..99) is used to decide which timer shall be
              started in case there are two or more timers with the exact same
              start time. The first timer in the list with the highest Priority
@@ -584,6 +602,17 @@ Version 1.2
                          control this.
                          no  = don't use the 'Episode name'
                          yes = use it (and create subdirectories)
+
+  Use VPS = 0            Defines whether a timer that is created from an EPG entry
+                         (by pressing the "Record" (red) button in the "Schedules"
+                         or "What's on now/next?" menu) will automatically use VPS
+                         if the event it is created for has a VPS time.
+
+  VPS margin = 120       Defines how many seconds before a VPS controlled timer is
+                         scheduled to start, VDR will make sure that one of the DVB
+                         devices is tuned to the transponder that timer shall record
+                         from. This is necessary for the "Running Status" information
+                         that is broadcast in the EPG data to be seen by VDR.
 
   Mark instant recording = yes
                          Defines whether an "instant recording" (started by

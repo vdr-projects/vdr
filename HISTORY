@@ -2652,7 +2652,7 @@ Video Disk Recorder Revision History
   actual CAM type as reported by the CAM. The 'ca.conf' file has been stripped
   down to the values 0..4.
 
-2004-02-23: Version 1.3.5
+2004-02-29: Version 1.3.5
 
 - Fixed reading the EPG preferred language parameter from 'setup.conf'.
 - Fixed switching to a visible programme in case the current channel has neither
@@ -2680,11 +2680,8 @@ Video Disk Recorder Revision History
   channel won't interrupt an ongoing Transfer Mode.
 - Added subtable ID and TSDT handling to 'libsi' (thanks to Marcel Wiesweg).
 - Fixed some Russian OSD texts (thanks to Vyacheslav Dikonov).
-- Added the 'running status' to the EPG events. This might lead to a VPS like
-  function for recording, but unfortunately not all stations handle this flag
-  correctly  - and some (like RTL, for instance) even change the ID of the same
-  event randomly, making it impossible for a timer to be programmed on a ceartain
-  event rather than a specific time. Well, let's see where this leads us...
+- Added the 'running status' to the EPG events. This is necessary for implementing
+  the VPS function for recording.
 - Removed the obsolete 'present' and 'following' handling from the EPG data.
 - The EPG data is now always kept sorted chronologically in the internal data
   structures. This also means that any EPG data retrieved through the SVRDP
@@ -2698,10 +2695,21 @@ Video Disk Recorder Revision History
   still displayed in the "Schedule" menu (thanks to Jaakko Hyvätti).
 - Added PDCDescriptor handling to 'libsi'.
 - Implemented handling the VPS timestamps (aka "Programme Identification Label")
-  in preparation for full VPS support for timers (provided the tv stations
-  actually broadcast this information). Currently these are just displayed in
-  the event page if they exist and are different than the event's start time.
+  for full VPS support for timers (provided the tv stations actually broadcast
+  this information). The VPS time is displayed in the event info page if it exists
+  and is different than the event's start time.
 - Extended the SVDRP command LSTE to allow limiting the listed data to a given
   channel, the present or following events, or events at a given time (thanks to
   Thomas Heiligenmann).
 - Fixed a typo in libsi/si.h (thanks to Stéphane Esté-Gracias).
+- Timers can now be set to use the VPS information to control recording a programme.
+  The new setup options "Recording/Use VPS" and "Recording/VPS margin", as well as
+  the "VPS" option in the individual timers, can be used to control this feature
+  (see MANUAL for details). 
+  Note that this feature will certainly need a lot of testing before it can be
+  called "safe"!
+- The "Schedule" and "What's on now/next?" menus now have an additional column
+  which displays information on whether there is a timer defined for an event,
+  whether an event has a VPS time that's different than its start time, and
+  whether an event is currently running (see MANUAL under "The "Schedule" Menu"
+  for details).

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.124 2004/02/21 15:05:40 kls Exp $
+ * $Id: config.c 1.125 2004/02/28 11:12:20 kls Exp $
  */
 
 #include "config.h"
@@ -272,6 +272,8 @@ cSetup::cSetup(void)
   PausePriority = 10;
   PauseLifetime = 1;
   UseSubtitle = 1;
+  UseVps = 0;
+  VpsMargin = 120;
   RecordingDirs = 1;
   VideoFormat = 0;
   UpdateChannels = 4;
@@ -417,6 +419,8 @@ bool cSetup::Parse(const char *Name, const char *Value)
   else if (!strcasecmp(Name, "PausePriority"))       PausePriority      = atoi(Value);
   else if (!strcasecmp(Name, "PauseLifetime"))       PauseLifetime      = atoi(Value);
   else if (!strcasecmp(Name, "UseSubtitle"))         UseSubtitle        = atoi(Value);
+  else if (!strcasecmp(Name, "UseVps"))              UseVps             = atoi(Value);
+  else if (!strcasecmp(Name, "VpsMargin"))           VpsMargin          = atoi(Value);
   else if (!strcasecmp(Name, "RecordingDirs"))       RecordingDirs      = atoi(Value);
   else if (!strcasecmp(Name, "VideoFormat"))         VideoFormat        = atoi(Value);
   else if (!strcasecmp(Name, "UpdateChannels"))      UpdateChannels     = atoi(Value);
@@ -469,6 +473,8 @@ bool cSetup::Save(void)
   Store("PausePriority",      PausePriority);
   Store("PauseLifetime",      PauseLifetime);
   Store("UseSubtitle",        UseSubtitle);
+  Store("UseVps",             UseVps);
+  Store("VpsMargin",          VpsMargin);
   Store("RecordingDirs",      RecordingDirs);
   Store("VideoFormat",        VideoFormat);
   Store("UpdateChannels",     UpdateChannels);

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.148 2004/02/21 15:14:36 kls Exp $
+ * $Id: i18n.c 1.149 2004/02/28 11:13:27 kls Exp $
  *
  * Translations provided by:
  *
@@ -1542,6 +1542,24 @@ const tI18nPhrase Phrases[] = {
     "Fi",
     "∫ﬁ›’Ê",
   },
+  { "VPS",
+    "VPS",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+  },
   { "Priority",
     "Priorit‰t",
     "Prioriteta",
@@ -2804,6 +2822,42 @@ const tI18nPhrase Phrases[] = {
     "EpizÛdnÈv felhaszn·l·sa",
     "Utilitzar el nom de l'episodi",
     "≥‡„ﬂﬂÿ‡ﬁ“–‚Ï ‰–Ÿ€Î ﬂﬁ Ìﬂÿ◊ﬁ‘–‹",
+  },
+  { "Setup.Recording$Use VPS",
+    "VPS benutzen",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+  },
+  { "Setup.Recording$VPS margin (s)",
+    "Zeitpuffer bei VPS (s)",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
   },
   { "Setup.Recording$Mark instant recording",
     "Direktaufzeichnung markieren",
