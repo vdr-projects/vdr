@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.247 2003/05/25 12:47:30 kls Exp $
+ * $Id: menu.c 1.248 2003/05/25 13:53:53 kls Exp $
  */
 
 #include "menu.h"
@@ -834,6 +834,7 @@ private:
   cTimer *timer;
   cTimer data;
   int channel;
+  bool deleteIfCancelled;
   cMenuEditDateItem *firstday;
   void SetFirstDayItem(void);
 public:
@@ -847,6 +848,7 @@ cMenuEditTimer::cMenuEditTimer(int Index, bool New)
 {
   firstday = NULL;
   timer = Timers.Get(Index);
+  deleteIfCancelled = New;
   if (timer) {
      data = *timer;
      if (New)
@@ -867,6 +869,12 @@ cMenuEditTimer::cMenuEditTimer(int Index, bool New)
 
 cMenuEditTimer::~cMenuEditTimer()
 {
+  if (timer && deleteIfCancelled) {
+     int Index = timer->Index();
+     Timers.Del(timer);
+     Timers.Save();
+     isyslog("timer %d deleted", Index + 1);
+     }
   Timers.DecBeingEdited();
 }
 
@@ -907,6 +915,7 @@ eOSState cMenuEditTimer::ProcessKey(eKeys Key)
                           Timers.Save();
                           isyslog("timer %d modified (%s)", timer->Index() + 1, timer->active ? "active" : "inactive");
                           }
+                       deleteIfCancelled = false;
                      }
                      return osBack;
        case kRed:
@@ -1081,6 +1090,8 @@ eOSState cMenuTimers::Summary(void)
 
 eOSState cMenuTimers::ProcessKey(eKeys Key)
 {
+  cTimer *ti = HasSubMenu() ? CurrentTimer() : NULL;
+  int TimerNumber = ti ? ti->Index() : -1;
   eOSState state = cOsdMenu::ProcessKey(Key);
 
   if (state == osUnknown) {
@@ -1096,6 +1107,11 @@ eOSState cMenuTimers::ProcessKey(eKeys Key)
                      break;
        default: break;
        }
+     }
+  if (TimerNumber >= 0 && !HasSubMenu() && !Timers.Get(TimerNumber)) {
+     // a newly created timer wasn't confirmed with Ok
+     cOsdMenu::Del(Current());
+     Display();
      }
   return state;
 }
@@ -1263,7 +1279,7 @@ eOSState cMenuWhatsOn::Record(void)
         delete timer;
         timer = t;
         }
-     return AddSubMenu(new cMenuEditTimer(timer->Index(), true));
+     return AddSubMenu(new cMenuEditTimer(timer->Index(), !t));
      }
   return osContinue;
 }
@@ -1397,7 +1413,7 @@ eOSState cMenuSchedule::Record(void)
         delete timer;
         timer = t;
         }
-     return AddSubMenu(new cMenuEditTimer(timer->Index(), true));
+     return AddSubMenu(new cMenuEditTimer(timer->Index(), !t));
      }
   return osContinue;
 }
