@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.8 2000/06/24 15:26:15 kls Exp $
+ * $Id: tools.c 1.9 2000/07/16 14:14:44 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -74,6 +74,18 @@ char *readline(FILE *f)
      return buffer;
      }
   return NULL;
+}
+
+char *strreplace(char *s, char c1, char c2)
+{
+  char *p = s;
+
+  while (*p) {
+        if (*p == c1)
+           *p = c2;
+        p++;
+        }
+  return s;
 }
 
 int time_ms(void)

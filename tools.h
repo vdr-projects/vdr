@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.8 2000/06/24 15:25:00 kls Exp $
+ * $Id: tools.h 1.9 2000/07/16 14:11:34 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -37,6 +37,7 @@ char readchar(int filedes);
 bool readint(int filedes, int &n);
 void purge(int filedes);
 char *readline(FILE *f);
+char *strreplace(char *s, char c1, char c2);
 int time_ms(void);
 void delay_ms(int ms);
 bool MakeDirs(const char *FileName, bool IsDirectory = false);

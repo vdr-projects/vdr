@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.10 2000/07/16 11:47:30 kls Exp $
+ * $Id: config.c 1.11 2000/07/16 14:28:20 kls Exp $
  */
 
 #include "config.h"
@@ -318,7 +318,7 @@ bool cTimer::Parse(char *s)
 {
   char *buffer1 = NULL;
   char *buffer2 = NULL;
-  if (8 == sscanf(s, "%d:%d:%a[^:]:%d:%d:%d:%d:%as", &active, &channel, &buffer1, &start, &stop, &priority, &lifetime, &buffer2)) {
+  if (8 == sscanf(s, "%d:%d:%a[^:]:%d:%d:%d:%d:%a[^:\n]", &active, &channel, &buffer1, &start, &stop, &priority, &lifetime, &buffer2)) {
      day = ParseDay(buffer1);
      strncpy(file, buffer2, MaxFileName - 1);
      file[strlen(buffer2)] = 0;

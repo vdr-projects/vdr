@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.18 2000/07/16 13:42:29 kls Exp $
+ * $Id: menu.c 1.19 2000/07/16 14:52:48 kls Exp $
  */
 
 #include "menu.h"
@@ -16,7 +16,7 @@
 
 #define MENUTIMEOUT 120 // seconds
 
-const char *FileNameChars = "aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ0123456789-.# ";
+const char *FileNameChars = " aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ0123456789-.#^";
 
 // --- cMenuEditItem ---------------------------------------------------------
 
@@ -429,7 +429,7 @@ void cMenuEditStrItem::Set(void)
   char buf[1000];
   if (pos >= 0) {
      strncpy(buf, value, pos);
-     const char *s = value[pos] != ' ' ? value + pos + 1 : "";
+     const char *s = value[pos] != '^' ? value + pos + 1 : "";
      snprintf(buf + pos, sizeof(buf) - pos - 2, "[%c]%s", *(value + pos), s);
      SetValue(buf);
      }
@@ -455,12 +455,12 @@ eOSState cMenuEditStrItem::ProcessKey(eKeys Key)
 {
   switch (Key) {
     case kLeft:  if (pos > 0) {
-                    if (value[pos] == ' ')
+                    if (value[pos] == '^')
                        value[pos] = 0;
                     pos--;
                     }
                  break;
-    case kRight: if (pos < length && value[pos] != ' ') {
+    case kRight: if (pos < length && value[pos] != '^' && (pos < int(strlen(value) - 1) || value[pos] != ' ')) {
                     if (++pos >= int(strlen(value))) {
                        value[pos] = ' ';
                        value[pos + 1] = 0;
@@ -474,7 +474,7 @@ eOSState cMenuEditStrItem::ProcessKey(eKeys Key)
                     return cMenuEditItem::ProcessKey(Key);
                  break;
     case kOk:    if (pos >= 0) {
-                    if (value[pos] == ' ')
+                    if (value[pos] == '^')
                        value[pos] = 0;
                     pos = -1;
                     break;
