@@ -1971,7 +1971,7 @@ Video Disk Recorder Revision History
   reporting this one).
 - Broken CAM connections are now restored automatically.
 
-2003-03-09: Version 1.1.26
+2003-03-16: Version 1.1.26
 
 - Removed signal handling and usleep(5000) from cDvbOsd::Cmd() (apparently this
   is no longer necessary with DVB driver 1.0.0pre2 or later).
@@ -1980,3 +1980,5 @@ Video Disk Recorder Revision History
   startup and uses the first one (if any) that actually has an MPEG decoder.
   That way this will also work automatically if the primary device is implemented
   by a plugin.
+- Fixed a possible deadlock when using the "Blue" button in the "Schedules" menu
+  to switch to an other channel (thanks to Torsten Herz).

@@ -544,3 +544,7 @@ Jan Ekholm <chakie@infa.abo.fi>
 Marcel Wiesweg <marcel.wiesweg@gmx.de>
  for pointing out a problem with high CPU load during replay
  for reporting broken support for raw OSDs of plugins
+
+Torsten Herz <torsten.herz@web.de>
+ for fixing a possible deadlock when using the "Blue" button in the "Schedules" menu
+ to switch to an other channel
