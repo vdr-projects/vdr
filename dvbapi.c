@@ -7,7 +7,7 @@
  * DVD support initially written by Andreas Schultz <aschultz@warp10.net>
  * based on dvdplayer-0.5 by Matjaz Thaler <matjaz.thaler@guest.arnes.si>
  *
- * $Id: dvbapi.c 1.126 2001/09/21 14:14:28 kls Exp $
+ * $Id: dvbapi.c 1.127 2001/09/22 09:24:59 kls Exp $
  */
 
 //#define DVDDEBUG        1
@@ -3252,6 +3252,7 @@ eSetChannelResult cDvbApi::SetChannel(int ChannelNumber, int FrequencyMHz, char 
 
         FrontendParameters Frontend;
         Frontend.Frequency = freq * 1000UL;
+        Frontend.Inversion = INVERSION_AUTO;
         Frontend.u.qpsk.SymbolRate = Srate * 1000UL;
         Frontend.u.qpsk.FEC_inner = FEC_AUTO;
 
@@ -3298,6 +3299,7 @@ eSetChannelResult cDvbApi::SetChannel(int ChannelNumber, int FrequencyMHz, char 
 
         FrontendParameters Frontend;
         Frontend.Frequency = FrequencyMHz * 1000000UL;
+        Frontend.Inversion = INVERSION_AUTO;
         Frontend.u.qam.SymbolRate = Srate * 1000UL;
         Frontend.u.qam.FEC_inner = FEC_AUTO;
         Frontend.u.qam.QAM = QAM_64;

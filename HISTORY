@@ -770,3 +770,5 @@ Video Disk Recorder Revision History
   the progress display is not shown; mode display is shown after progress
   display is closed; pressing "Ok" while the mode display is on brings up
   the progress display; no more unnecessary display of "normal play mode".
+- Supplying the new frontend parameter 'Inversion' (currently it is always
+  set to INVERSION_AUTO, which should work with all channels on Astra).
