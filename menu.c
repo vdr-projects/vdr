@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.166 2002/03/16 10:06:18 kls Exp $
+ * $Id: menu.c 1.167 2002/03/16 11:29:58 kls Exp $
  */
 
 #include "menu.h"
@@ -2991,6 +2991,8 @@ void cReplayControl::DisplayAtBottom(const char *s)
   if (s) {
      int w = dvbApi->WidthInCells(s);
      int d = max(Width() - w, 0) / 2;
+     if (modeOnly) //XXX remove when displaying replay mode differently
+        Interface->Fill(0, -1, Interface->Width(), 1, clrTransparent); //XXX remove when displaying replay mode differently
      Interface->Write(d, -1, s);
      Interface->Flush();
      }
@@ -3010,8 +3012,11 @@ void cReplayControl::ShowMode(void)
            if (NormalPlay)
               return; // no need to do indicate ">" unless there was a different mode displayed before
            // open small display
+           /*XXX change when displaying replay mode differently
            Interface->Open(9, -1);
            Interface->Clear();
+           XXX*/
+           Interface->Open(0, -1); //XXX remove when displaying replay mode differently
            visible = modeOnly = true;
            }
 

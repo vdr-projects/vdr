@@ -1100,3 +1100,4 @@ Video Disk Recorder Revision History
   parameters fits on a single screen - unless the height of the OSD has been
   set to a small value (based on code from Markus Lang).
 - Changed the title of the "Main" menu to "VDR".
+- Fixed displaying a system message while the replay mode is being shown.
