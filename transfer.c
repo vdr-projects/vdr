@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: transfer.c 1.26 2005/02/12 13:51:21 kls Exp $
+ * $Id: transfer.c 1.27 2005/02/12 15:54:06 kls Exp $
  */
 
 #include "transfer.h"
@@ -54,14 +54,21 @@ void cTransfer::Receive(uchar *Data, int Length)
      }
 }
 
+#define FW_NEEDS_BUFFER_RESERVE_FOR_AC3
+#ifdef FW_NEEDS_BUFFER_RESERVE_FOR_AC3
+//XXX This is a very ugly hack to allow cDvbOsd to reduce the buffer
+//XXX requirements in cTransfer if it detects a 4MB full featured DVB card.
+bool DvbCardWith4MBofSDRAM = false;
+#endif
+
 void cTransfer::Action(void)
 {
   int PollTimeouts = 0;
   uchar *p = NULL;
   int Result = 0;
-#define FW_NEEDS_BUFFER_RESERVE_FOR_AC3
 #ifdef FW_NEEDS_BUFFER_RESERVE_FOR_AC3
   bool GotBufferReserve = false;
+  int RequiredBufferReserve = KILOBYTE(DvbCardWith4MBofSDRAM ? 288 : 576);
 #endif
   active = true;
   while (active) {
@@ -74,7 +81,7 @@ void cTransfer::Action(void)
            //XXX audio is mostly to early in comparison to video).
            //XXX To resolve this, the remuxer or PlayPes() should synchronize
            //XXX audio with the video frames. 2004/09/09 Werner
-           if (ringBuffer->Available() < 3 * KILOBYTE(192) / 2) { // used to be MAXFRAMESIZE, but the HDTV value of KILOBYTE(512) is way too much here
+           if (ringBuffer->Available() < RequiredBufferReserve) { // used to be MAXFRAMESIZE, but the HDTV value of KILOBYTE(512) is way too much here
               cCondWait::SleepMs(20); // allow the buffer to collect some reserve
               continue;
               }

@@ -3399,3 +3399,7 @@ Video Disk Recorder Revision History
 - Added DeviceClrAvailableTracks() and DeviceSetCurrentAudioTrack() to cPlayer
   (thanks to Marco Schlüßler).
 - Fixed a typo in detecting UTF-8 (thanks to Reinhard Nissl).
+- Now using twice the buffer reserve in cTransfer if the primary DVB card is an
+  unmodified version with only 2MB of SDRAM, to avoid audio stuttering when
+  playing Dolby Digital over the DVB card (thanks to Christian Jacobsen and Chad
+  Flynt for suggestions and experiments in that area).
