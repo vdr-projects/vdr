@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.31 2000/10/08 16:14:45 kls Exp $
+ * $Id: dvbapi.c 1.32 2000/10/14 08:56:08 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -1104,7 +1104,7 @@ cDvbApi::cDvbApi(const char *FileName)
   nonl();
   cbreak();
   noecho();
-  timeout(1000);
+  timeout(10);
 #endif
 #if defined(DEBUG_OSD)
   memset(&colorPairs, 0, sizeof(colorPairs));
