@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 1.4 2002/10/19 14:46:05 kls Exp $
+ * $Id: channels.c 1.5 2002/10/20 11:50:47 kls Exp $
  */
 
 #include "channels.h"
@@ -449,10 +449,4 @@ bool cChannels::SwitchTo(int Number)
 {
   cChannel *channel = GetByNumber(Number);
   return channel && cDevice::PrimaryDevice()->SwitchChannel(channel, true);
-}
-
-const char *cChannels::GetChannelNameByNumber(int Number)
-{
-  cChannel *channel = GetByNumber(Number);
-  return channel ? channel->Name() : NULL;
 }

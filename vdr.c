@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.127 2002/10/13 12:13:19 kls Exp $
+ * $Id: vdr.c 1.128 2002/10/20 12:09:45 kls Exp $
  */
 
 #include <getopt.h>
@@ -47,6 +47,7 @@
 #include "rcu.h"
 #include "recording.h"
 #include "sources.h"
+#include "timers.h"
 #include "tools.h"
 #include "videodir.h"
 
@@ -603,8 +604,8 @@ int main(int argc, char *argv[])
                     if (WatchdogTimeout > 0)
                        signal(SIGALRM, SIG_IGN);
                     if (Interface->Confirm(tr("Press any key to cancel shutdown"), UserShutdown ? 5 : SHUTDOWNWAIT, true)) {
-                       int Channel = timer ? timer->channel : 0;
-                       const char *File = timer ? timer->file : "";
+                       int Channel = timer ? timer->Channel()->Number() : 0;
+                       const char *File = timer ? timer->File() : "";
                        char *cmd;
                        asprintf(&cmd, "%s %ld %ld %d \"%s\" %d", Shutdown, Next, Delta, Channel, strescape(File, "\"$"), UserShutdown);
                        isyslog("executing '%s'", cmd);

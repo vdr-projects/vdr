@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 1.48 2002/10/04 14:29:14 kls Exp $
+# $Id: Makefile 1.49 2002/10/19 15:46:08 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -36,7 +36,7 @@ OBJS = audio.o channels.o config.o cutter.o device.o diseqc.o dvbdevice.o dvbosd
        dvbplayer.o dvbspu.o eit.o eitscan.o font.o i18n.o interface.o keys.o\
        lirc.o menu.o menuitems.o osdbase.o osd.o player.o plugin.o rcu.o\
        receiver.o recorder.o recording.o remote.o remux.o ringbuffer.o sources.o\
-       spu.o status.o svdrp.o thread.o tools.o transfer.o vdr.o videodir.o
+       spu.o status.o svdrp.o thread.o timers.o tools.o transfer.o vdr.o videodir.o
 
 OSDFONT = -adobe-helvetica-medium-r-normal--23-*-100-100-p-*-iso8859-1
 FIXFONT = -adobe-courier-bold-r-normal--25-*-100-100-m-*-iso8859-1

@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.46 2002/10/19 11:48:02 kls Exp $
+ * $Id: svdrp.c 1.47 2002/10/20 10:24:20 kls Exp $
  */
 
 #include "svdrp.h"
@@ -31,6 +31,7 @@
 #include "device.h"
 #include "keys.h"
 #include "remote.h"
+#include "timers.h"
 #include "tools.h"
 
 // --- cSocket ---------------------------------------------------------------
@@ -487,7 +488,7 @@ void cSVDRP::CmdDELT(const char *Option)
      if (isnumber(Option)) {
         cTimer *timer = Timers.Get(strtol(Option, NULL, 10) - 1);
         if (timer) {
-           if (!timer->recording) {
+           if (!timer->Recording()) {
               Timers.Del(timer);
               Timers.Save();
               isyslog("timer %s deleted", Option);
@@ -806,16 +807,16 @@ void cSVDRP::CmdMODT(const char *Option)
         if (timer) {
            cTimer t = *timer;
            if (strcasecmp(tail, "ON") == 0)
-              t.active = 1;
+              t.SetActive(taActive);
            else if (strcasecmp(tail, "OFF") == 0)
-              t.active = 0;
+              t.SetActive(taInactive);
            else if (!t.Parse(tail)) {
               Reply(501, "Error in timer settings");
               return;
               }
            *timer = t;
            Timers.Save();
-           isyslog("timer %d modified (%s)", timer->Index() + 1, timer->active ? "active" : "inactive");
+           isyslog("timer %d modified (%s)", timer->Index() + 1, timer->Active() ? "active" : "inactive");
            Reply(250, "%d %s", timer->Index() + 1, timer->ToText());
            }
         else

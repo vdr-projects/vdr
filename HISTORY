@@ -1611,7 +1611,7 @@ Video Disk Recorder Revision History
   shall be executed from the "Recordings" menu; see MANUAL and 'man vdr(5)' for
   details (suggested by Gerhard Steiner).
 
-2002-10-19: Version 1.1.14
+2002-10-20: Version 1.1.14
 
 - Fixed some faulty default parameter initializations (thanks to Robert Schiele).
 - Added further satellites to 'sources.conf' (thanks to Reinhard Walter Buchner).
@@ -1624,3 +1624,5 @@ Video Disk Recorder Revision History
   used to create 'gaps' in the channel numbering (see 'man 5 vdr'). BE CAREFUL
   TO UPDATE YOUR 'timers.conf' ACCORDINGLY IF INSERTING THIS NEW FEATURE INTO YOUR
   'channels.conf' FILE!
+- Timers now internally have a pointer to their channel (this is necessary to
+  handle gaps in channel numbers, and in preparation for unique channel ids).

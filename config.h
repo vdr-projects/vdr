@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.136 2002/10/19 11:29:46 kls Exp $
+ * $Id: config.h 1.137 2002/10/19 15:43:31 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -31,57 +31,6 @@
 #define MAXOSDHEIGHT 21
 
 #define MaxFileName 256
-
-enum eTimerActive { taInactive = 0,
-                    taActive   = 1,
-                    taInstant  = 2,
-                    taActInst  = (taActive | taInstant)
-                  };
-
-class cTimer : public cListObject {
-private:
-  time_t startTime, stopTime;
-  static char *buffer;
-  static const char *ToText(cTimer *Timer);
-public:
-  bool recording, pending;
-  int active;
-  int channel;
-  int day;
-  int start;
-  int stop;
-//TODO VPS???
-  int priority;
-  int lifetime;
-  char file[MaxFileName];
-  time_t firstday;
-  char *summary;
-  cTimer(bool Instant = false);
-  cTimer(const cEventInfo *EventInfo);
-  virtual ~cTimer();
-  cTimer& operator= (const cTimer &Timer);
-  virtual bool operator< (const cListObject &ListObject);
-  const char *ToText(void);
-  bool Parse(const char *s);
-  bool Save(FILE *f);
-  bool IsSingleEvent(void);
-  int GetMDay(time_t t);
-  int GetWDay(time_t t);
-  bool DayMatches(time_t t);
-  static time_t IncDay(time_t t, int Days);
-  static time_t SetTime(time_t t, int SecondsFromMidnight);
-  char *SetFile(const char *File);
-  bool Matches(time_t t = 0);
-  time_t StartTime(void);
-  time_t StopTime(void);
-  void SetRecording(bool Recording);
-  void SetPending(bool Pending);
-  void Skip(void);
-  const char *PrintFirstDay(void);
-  static int TimeToInt(int t);
-  static int ParseDay(const char *s, time_t *FirstDay = NULL);
-  static const char *PrintDay(int d, time_t FirstDay = 0);
-  };
 
 class cCommand : public cListObject {
 private:
@@ -203,13 +152,6 @@ public:
   }
   };
 
-class cTimers : public cConfig<cTimer> {
-public:
-  cTimer *GetTimer(cTimer *Timer);
-  cTimer *GetMatch(time_t t);
-  cTimer *GetNextActiveTimer(void);
-  };
-
 class cCommands : public cConfig<cCommand> {};
 
 class cSVDRPhosts : public cConfig<cSVDRPhost> {
@@ -222,7 +164,6 @@ public:
   const cCaDefinition *Get(int Number);
   };
 
-extern cTimers Timers;
 extern cCommands Commands;
 extern cCommands RecordingCommands;
 extern cSVDRPhosts SVDRPhosts;
