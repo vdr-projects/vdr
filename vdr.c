@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.51 2001/02/04 11:51:11 kls Exp $
+ * $Id: vdr.c 1.52 2001/02/04 19:41:24 kls Exp $
  */
 
 #include <getopt.h>
@@ -180,9 +180,9 @@ int main(int argc, char *argv[])
   Channels.Load(AddDirectory(ConfigDirectory, "channels.conf"));
   Timers.Load(AddDirectory(ConfigDirectory, "timers.conf"));
   Commands.Load(AddDirectory(ConfigDirectory, "commands.conf"));
-#ifdef REMOTE_LIRC
+#if defined(REMOTE_LIRC)
   Keys.SetDummyValues();
-#else
+#elif !defined(REMOTE_NONE)
   bool KeysLoaded = Keys.Load(AddDirectory(ConfigDirectory, KEYS_CONF));
 #endif
 
@@ -200,7 +200,7 @@ int main(int argc, char *argv[])
   // User interface:
 
   Interface = new cInterface(SVDRPport);
-#ifndef REMOTE_LIRC
+#if !defined(REMOTE_LIRC) && !defined(REMOTE_NONE)
   if (!KeysLoaded)
      Interface->LearnKeys();
 #endif
