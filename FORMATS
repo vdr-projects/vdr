@@ -32,4 +32,26 @@ Video Disk Recorder File Formats
 
 * timers.conf
 
-  TODO
+  This file contains the timer setup.
+
+  The fields in a timer definition have the following meaning (from left
+  to right):
+
+  - Timer active (0 = inaactive, 1 = active)
+  - Program number of the channel to record
+  - Day of recording, either one or more of
+      M------ = Monday
+      -T----- = Tuesday
+      --W---- = Wednesday
+      ---T--- = Thrusday
+      ----F-- = Friday
+      -----S- = Saturday
+      ------S = Sunday
+    (any combination is possible, for example MTWTF--) or the "day of month" (1..31)
+  - Star time (first two digits for the hour, second two digits for the minutes)
+  - End time (first two digits for the hour, second two digits for the minutes)
+  - Priority (from 00 to 99, 00 = lowest prioity, 99 = highest priority)
+  - Guaranteed lifetime of recording (in days)
+  - Name of timer (will be used to name the recording)
+  - Summary
+

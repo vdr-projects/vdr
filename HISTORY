@@ -215,3 +215,4 @@ Video Disk Recorder Revision History
 - No longer displaying the year in the 'Recordings' menu to save space for the
   title.
 - The 'Recordings' menu now displays a '*' to indicate new recordings.
+- Added the description of the timers.conf file to the FORMATS file.
