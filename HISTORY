@@ -1941,3 +1941,8 @@ Video Disk Recorder Revision History
 - Fixed handling user defined CFLAGS in libdtv/libvdr/Makefile (thanks to Clemens
   Kirchgatterer and Robert Schiele).
 - Fixed skipping unavailable channels in the EPG scanner.
+
+2003-01-26: Version 1.1.23
+
+- Fixed a new/delete malloc/free mismatch in ringbuffer.c (thanks to Stefan
+  Huelswitt for reporting this one).
