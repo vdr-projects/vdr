@@ -1682,3 +1682,4 @@ Video Disk Recorder Revision History
 - Fixed the EPG scanner, which broke 'Transfer Mode' as soon as it kicked in
   (thanks to Oliver Endriss for reporting this one).
 - Fixed handling audio tracks in cDvbDevice.
+- Updated channels.conf.terr (thanks to Uwe Scheffler).
