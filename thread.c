@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 1.14 2001/10/20 10:26:35 kls Exp $
+ * $Id: thread.c 1.15 2001/10/21 12:25:31 kls Exp $
  */
 
 #include "thread.h"
@@ -161,7 +161,7 @@ void cThread::Cancel(int WaitSeconds)
 
 bool cThread::Lock(void)
 {
-  if (!lockingPid || lockingPid != getpid()) {
+  if (getpid() != lockingPid || !locked) {
      Mutex.Lock();
      lockingPid = getpid();
      }

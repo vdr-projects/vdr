@@ -787,7 +787,7 @@ Video Disk Recorder Revision History
 - Made the volume, mute and power keys work when a menu is active, too (thanks
   to Matthias Weingart).
 
-2001-10-20: Version 0.97
+2001-10-21: Version 0.97
 
 - Implemented a lock file to prevent more than one instance of VDR from removing
   files from the video directory at the same time.
@@ -828,3 +828,4 @@ Video Disk Recorder Revision History
   (thanks to Helmut Schächner).
 - Fixed reading timers.conf and channels.conf that contain blanks after numeric
   values.
+- Fixed handling trick modes near the beginning and end of a recording.
