@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.149 2002/02/09 14:42:56 kls Exp $
+ * $Id: menu.c 1.150 2002/02/09 15:25:27 kls Exp $
  */
 
 #include "menu.h"
@@ -2341,7 +2341,7 @@ cRecordControl::~cRecordControl()
 bool cRecordControl::GetEventInfo(void)
 {
   cChannel *channel = Channels.GetByNumber(timer->channel);
-  time_t Time = timer->StartTime() + ((Setup.MarginStart * 2) + 1) * 60;
+  time_t Time = timer->IsSingleEvent() ? timer->StartTime() + ((Setup.MarginStart * 2) + 1) * 60 : timer->StartTime() + (timer->StopTime() - timer->StartTime()) / 2;
   for (int seconds = 0; seconds <= MAXWAIT4EPGINFO; seconds++) {
       {
         cThreadLock ThreadLock;

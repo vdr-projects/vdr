@@ -978,3 +978,6 @@ Video Disk Recorder Revision History
   to 25.75 MB/min.
 - Only reporting the 'EPG bugfix statistics' if there really were any fixes.
 - Added Finnish language texts (thanks to Hannu Savolainen).
+- Reverted to the previous way of searching for the EPG record of the current
+  recording in case of a periodic timer (i.e. taking the one that is in the
+  middle between start and end time).
