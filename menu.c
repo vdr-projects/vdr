@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.252 2003/05/29 11:43:36 kls Exp $
+ * $Id: menu.c 1.253 2003/05/30 09:53:57 kls Exp $
  */
 
 #include "menu.h"
@@ -3141,7 +3141,6 @@ bool cRecordControls::PauseLiveVideo(void)
      sleep(1); // allow device to replay some frames, so we have a picture
      Interface->Close();
      rc->ProcessKey(kPause); // pause, allowing replay mode display
-     sleep(3); // allow recorded file to fill up enough to continue replaying
      return true;
      }
   Interface->Close();

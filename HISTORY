@@ -2209,7 +2209,7 @@ Video Disk Recorder Revision History
 - It is now possible to directly delete a timer that is currently recording
   (thanks to Alexander Damhuis for reporting this one).
 
-2003-05-29: Version 1.2.0pre1
+2003-05-30: Version 1.2.0pre1
 
 - Some corrections to the French OSD texts (thanks to Olivier Jacques).
 - Fixed some missing commas in i18n.c (thanks to Dimitrios Dimitrakos for
@@ -2217,9 +2217,8 @@ Video Disk Recorder Revision History
 - Some corrections to the Finnish OSD texts (thanks to Niko Tarnanen and Rolf
   Ahrenberg).
 - Completed the Italian OSD texts (thanks to Antonio Ospite).
-- Added an additional sleep() after going into "Pause live video" mode to avoid
-  breaking off replay in case the user hits "Play" or "Pause" too soon (thanks
-  to Karim Afifi for reporting ths one).
+- Fixed breaking off replay in case the user hits "Play" or "Pause" too soon after
+  going into "Pause live video" mode (thanks to Karim Afifi for reporting ths one).
 - Some corrections to the Catalanian OSD texts (thanks to Jordi Vilà).
 - Single event timers are now deleted if the recording they are doing is
   deleted before the timer ends.
