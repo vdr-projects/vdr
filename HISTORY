@@ -3035,3 +3035,4 @@ Video Disk Recorder Revision History
   active.
 - Removed the 'Log' parameter from the cChannel::Set... functions. Instead
   checking if the channel has a non-zero number.
+- Updated 'channels.conf.terr' for Hannover (thanks to Sven Kreiensen).
