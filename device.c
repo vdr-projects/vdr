@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.9 2002/08/15 09:59:57 kls Exp $
+ * $Id: device.c 1.10 2002/08/15 10:30:08 kls Exp $
  */
 
 #include "device.h"
@@ -316,9 +316,9 @@ void cDevice::SetVolume(int Volume, bool Absolute)
      mute = false;
 }
 
-int cDevice::SetPlayMode(bool On)
+bool cDevice::SetPlayMode(ePlayMode PlayMode)
 {
-  return -1;
+  return false;
 }
 
 void cDevice::TrickSpeed(int Speed)
@@ -361,7 +361,7 @@ bool cDevice::AttachPlayer(cPlayer *Player)
         Detach(player);
      player = Player;
      player->device = this;
-     SetPlayMode(true);//XXX
+     SetPlayMode(player->playMode);
      player->Activate(true);
      return true;
      }
@@ -374,7 +374,7 @@ void cDevice::Detach(cPlayer *Player)
      player->Activate(false);
      player->device = NULL;
      player = NULL;
-     SetPlayMode(false);
+     SetPlayMode(pmNone);
      }
 }
 

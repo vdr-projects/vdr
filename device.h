@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 1.7 2002/08/15 09:22:13 kls Exp $
+ * $Id: device.h 1.8 2002/08/15 11:09:21 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -25,6 +25,23 @@
 #define PID_MASK_HI      0x1F
 
 enum eSetChannelResult { scrOk, scrNoTransfer, scrFailed };
+
+enum ePlayMode { pmNone,       // audio/video from decoder
+                 pmAudioVideo, // audio/video from player
+                 pmAudioOnly,  // audio only from player, video from decoder
+                 pmExtern_THIS_SHOULD_BE_AVOIDED
+                 // external player (e.g. MPlayer), release the device
+                 // WARNING: USE THIS MODE ONLY AS A LAST RESORT, IF YOU
+                 // ABSOLUTELY, POSITIVELY CAN'T IMPLEMENT YOUR PLAYER
+                 // THE WAY IT IS SUPPOSED TO WORK. FORCING THE DEVICE
+                 // TO RELEASE ITS FILES HANDLES (OR WHATEVER RESOURCES
+                 // IT MAY USE) TO ALLOW AN EXTERNAL PLAYER TO ACCESS
+                 // THEM MEANS THAT SUCH A PLAYER WILL NEED TO HAVE
+                 // DETAILED KNOWLEDGE ABOUT THE INTERNALS OF THE DEVICE
+                 // IN USE. AS A CONSEQUENCE, YOUR PLAYER MAY NOT WORK
+                 // IF A PARTICULAR VDR INSTALLATION USES A DEVICE NOT
+                 // KNOWN TO YOUR PLAYER.
+               };
 
 class cChannel;
 class cPlayer;
@@ -190,11 +207,9 @@ public:
 private:
   cPlayer *player;
 protected:
-  virtual int SetPlayMode(bool On);
-       // Sets the device into play mode (On = true) or normal
-       // viewing mode (On = false). If On is true, it may return a file
-       // handle that a player can use to poll this device when replaying.
-       //XXX TODO should be implemented differently
+  virtual bool SetPlayMode(ePlayMode PlayMode);
+       // Sets the device into the given play mode.
+       // Returns true if the operation was successful.
 public:
   virtual void TrickSpeed(int Speed);
        // Sets the device into a mode where replay is done slower.

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.4 2002/08/15 09:59:33 kls Exp $
+ * $Id: dvbdevice.c 1.5 2002/08/15 11:13:46 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -81,6 +81,7 @@ cDvbDevice::cDvbDevice(int n)
 {
   frontendType = FrontendType(-1); // don't know how else to initialize this - there is no FE_UNKNOWN
   siProcessor = NULL;
+  playMode = pmNone;
 
   // Devices that are present on all card types:
 
@@ -569,32 +570,65 @@ void cDvbDevice::SetVolumeDevice(int Volume)
      }
 }
 
-int cDvbDevice::SetPlayMode(bool On)
+bool cDvbDevice::SetPlayMode(ePlayMode PlayMode)
 {
-  if (On) {
-     if (siProcessor)
-        siProcessor->SetStatus(false);
-     CHECK(ioctl(fd_video, VIDEO_SET_BLANK, true));
-     CHECK(ioctl(fd_audio, AUDIO_SELECT_SOURCE, AUDIO_SOURCE_MEMORY));
-     CHECK(ioctl(fd_audio, AUDIO_SET_AV_SYNC, true));
-     CHECK(ioctl(fd_audio, AUDIO_PLAY));
-     CHECK(ioctl(fd_video, VIDEO_SELECT_SOURCE, VIDEO_SOURCE_MEMORY));
-     CHECK(ioctl(fd_video, VIDEO_PLAY));
-     return fd_video;
+  if (PlayMode != pmExtern_THIS_SHOULD_BE_AVOIDED && fd_video < 0 && fd_audio < 0) {
+     // reopen the devices
+     fd_video = DvbOpen(DEV_DVB_VIDEO,  CardIndex(), O_RDWR | O_NONBLOCK);
+     fd_audio = DvbOpen(DEV_DVB_AUDIO,  CardIndex(), O_RDWR | O_NONBLOCK);
+     SetVideoFormat(Setup.VideoFormat);
      }
-  else {
-     CHECK(ioctl(fd_video, VIDEO_STOP, true));
-     CHECK(ioctl(fd_audio, AUDIO_STOP, true));
-     CHECK(ioctl(fd_video, VIDEO_CLEAR_BUFFER));
-     CHECK(ioctl(fd_audio, AUDIO_CLEAR_BUFFER));
-     CHECK(ioctl(fd_video, VIDEO_SELECT_SOURCE, VIDEO_SOURCE_DEMUX));
-     CHECK(ioctl(fd_audio, AUDIO_SELECT_SOURCE, AUDIO_SOURCE_DEMUX));
-     CHECK(ioctl(fd_audio, AUDIO_SET_AV_SYNC, true));
-     CHECK(ioctl(fd_audio, AUDIO_SET_MUTE, false));
-     if (siProcessor)
-        siProcessor->SetStatus(true);
-     return -1;
-     }
+
+  switch (PlayMode) {
+    case pmNone:
+         if (playMode == pmAudioOnly) {
+            // special "handling" to return from PCM replay
+            CHECK(ioctl(fd_video, VIDEO_SET_BLANK, true));
+            CHECK(ioctl(fd_video, VIDEO_SELECT_SOURCE, VIDEO_SOURCE_MEMORY));
+            CHECK(ioctl(fd_video, VIDEO_PLAY));
+            }
+         CHECK(ioctl(fd_video, VIDEO_STOP, true));
+         CHECK(ioctl(fd_audio, AUDIO_STOP, true));
+         CHECK(ioctl(fd_video, VIDEO_CLEAR_BUFFER));
+         CHECK(ioctl(fd_audio, AUDIO_CLEAR_BUFFER));
+         CHECK(ioctl(fd_video, VIDEO_SELECT_SOURCE, VIDEO_SOURCE_DEMUX));
+         CHECK(ioctl(fd_audio, AUDIO_SELECT_SOURCE, AUDIO_SOURCE_DEMUX));
+         CHECK(ioctl(fd_audio, AUDIO_SET_AV_SYNC, true));
+         CHECK(ioctl(fd_audio, AUDIO_SET_MUTE, false));
+         if (siProcessor)
+            siProcessor->SetStatus(true);
+         break;
+    case pmAudioVideo:
+         if (siProcessor)
+            siProcessor->SetStatus(false);
+         CHECK(ioctl(fd_video, VIDEO_SET_BLANK, true));
+         CHECK(ioctl(fd_audio, AUDIO_SELECT_SOURCE, AUDIO_SOURCE_MEMORY));
+         CHECK(ioctl(fd_audio, AUDIO_SET_AV_SYNC, true));
+         CHECK(ioctl(fd_audio, AUDIO_PLAY));
+         CHECK(ioctl(fd_video, VIDEO_SELECT_SOURCE, VIDEO_SOURCE_MEMORY));
+         CHECK(ioctl(fd_video, VIDEO_PLAY));
+         break;
+    case pmAudioOnly:
+         if (siProcessor)
+            siProcessor->SetStatus(false);
+         CHECK(ioctl(fd_video, VIDEO_SET_BLANK, true));
+         CHECK(ioctl(fd_audio, AUDIO_STOP, true));
+         CHECK(ioctl(fd_audio, AUDIO_CLEAR_BUFFER));
+         CHECK(ioctl(fd_audio, AUDIO_SELECT_SOURCE, AUDIO_SOURCE_MEMORY));
+         CHECK(ioctl(fd_audio, AUDIO_SET_AV_SYNC, false));
+         CHECK(ioctl(fd_audio, AUDIO_PLAY));
+         CHECK(ioctl(fd_video, VIDEO_SET_BLANK, false));
+         break;
+    case pmExtern_THIS_SHOULD_BE_AVOIDED:
+         if (siProcessor)
+            siProcessor->SetStatus(false);
+         close(fd_video);
+         close(fd_audio);
+         fd_video = fd_audio = -1;
+         break;
+    }
+  playMode = PlayMode;
+  return true;
 }
 
 void cDvbDevice::TrickSpeed(int Speed)
@@ -667,8 +701,9 @@ bool cDvbDevice::NeedsData(int Wait)
 
 int cDvbDevice::PlayVideo(const uchar *Data, int Length)
 {
-  if (fd_video >= 0)
-     return write(fd_video, Data, Length);
+  int fd = playMode == pmAudioOnly ? fd_audio : fd_video;
+  if (fd >= 0)
+     return write(fd, Data, Length);
   return -1;
 }
 

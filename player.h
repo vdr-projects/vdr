@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: player.h 1.6 2002/08/15 09:34:08 kls Exp $
+ * $Id: player.h 1.7 2002/08/15 11:10:09 kls Exp $
  */
 
 #ifndef __PLAYER_H
@@ -17,6 +17,7 @@ class cPlayer {
   friend class cDevice;
 private:
   cDevice *device;
+  ePlayMode playMode;
 protected:
   bool DeviceNeedsData(int Wait = 0) { return device ? device->NeedsData(Wait) : false; }
   void DeviceTrickSpeed(int Speed) { if (device) device->TrickSpeed(Speed); }
@@ -27,17 +28,17 @@ protected:
   void DeviceStillPicture(const uchar *Data, int Length) { if (device) device->StillPicture(Data, Length); }
   void Detach(void);
   virtual void Activate(bool On) {}
-               // This function is called right after the cPlayer has been attached to
-               // (On == true) or before it gets detached from (On == false) a cDevice.
-               // It can be used to do things like starting/stopping a thread.
+       // This function is called right after the cPlayer has been attached to
+       // (On == true) or before it gets detached from (On == false) a cDevice.
+       // It can be used to do things like starting/stopping a thread.
   int PlayVideo(const uchar *Data, int Length);
-               // Sends the given Data to the video device and returns the number of
-               // bytes that have actually been accepted by the video device (or a
-               // negative value in case of an error).
+       // Sends the given Data to the video device and returns the number of
+       // bytes that have actually been accepted by the video device (or a
+       // negative value in case of an error).
   int PlayAudio(const uchar *Data, int Length);
                // XXX+ TODO
 public:
-  cPlayer(void);
+  cPlayer(ePlayMode PlayMode = pmAudioVideo);
   virtual ~cPlayer();
   bool IsAttached(void) { return device != NULL; }
   virtual bool GetIndex(int &Current, int &Total, bool SnapToIFrame = false) { return false; }

@@ -1408,3 +1408,5 @@ Video Disk Recorder Revision History
   can now call DeviceNeedsData() to see whether the replay device is ready for
   further data. A derived cDevice class must implement NeedsData() and shall
   check if any of its file handles is ready for data.
+- Implemented several replay modes to allow players that play only audio (thanks
+  to Stefan Huelswitt).
