@@ -599,3 +599,6 @@ Stefan Huﬂfeldt <vdr@marvin.on-luebeck.de>
 Christoph Friederich <christoph.friederich@gmx.de>
  for reporting a bug in deleting the last recording in the "Recordings" menu, which
  started pausing live video
+
+Andreas Brachold <andy03@deltab.de>
+ for his support in keeping 'channels.conf.terr' up to date

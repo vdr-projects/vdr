@@ -2071,3 +2071,4 @@ Video Disk Recorder Revision History
   sequence, which avoids artefacts when cutting (thanks to Stefan Huelswitt).
 - Removed the Mute() call from cDvbDevice::StillPicture() (suggested by Andreas
   Schultz).
+- Updated 'channels.conf.terr' for Berlin (thanks to Andreas Brachold).
