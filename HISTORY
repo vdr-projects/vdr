@@ -1137,3 +1137,4 @@ Video Disk Recorder Revision History
   important if this takes some time.
 - Fixed scrolling the "Channels" menu in case the cursor ends up on a group
   delimiter (thanks to Bernd Zierath for helping to debug this one).
+- Added a manual page vdr(1).
