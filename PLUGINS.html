@@ -20,19 +20,6 @@ The <i>external</i> interface handles everything necessary for a plugin to get h
 VDR program and present itself to the user.
 The <i>internal</i> interface provides the plugin code access to VDR's internal data
 structures and allows it to hook itself into specific areas to perform special actions.
-<p>
-<!--X1.1.17--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
-Important modifications introduced in version 1.1.17 are marked like this.
-<!--X1.1.17--></td></tr></table>
-<!--X1.1.27--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
-Important modifications introduced in version 1.1.27 are marked like this.
-<!--X1.1.27--></td></tr></table>
-<!--X1.1.31--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
-Important modifications introduced in version 1.1.31 are marked like this.
-<!--X1.1.31--></td></tr></table>
-<!--X1.1.32--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
-Important modifications introduced in version 1.1.32 are marked like this.
-<!--X1.1.32--></td></tr></table>
 
 <hr>
 <h1>Table Of Contents</h1>
@@ -284,10 +271,8 @@ The <b>constructor</b> shall initialize any member variables the plugin defines,
 <b>must not access any global structures of VDR</b>.
 It also must not create any threads or other large data structures. These things
 are done in the
-<!--X1.1.31--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
 <a href="#Getting started"><tt>Initialize()</tt></a> or
 <a href="#Getting started"><tt>Start()</tt></a>
-<!--X1.1.31--></td></tr></table>
 function later.
 Constructing a plugin object shall not have any side effects or produce any output,
 since VDR, for instance, has to create the plugin objects in order to get their
@@ -460,26 +445,20 @@ thread of its own), or wants to make use of <a href="#Internationalization">inte
 it needs to implement one of the functions
 
 <p><table><tr><td bgcolor=#F0F0F0><pre><br>
-<!--X1.1.31--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%><pre>
 virtual bool Initialize(void);
-<!--X1.1.31--></pre></td></tr></table>
 virtual bool Start(void);
 </pre></td></tr></table><p>
 
 which are called once for each plugin at program startup.
-<!--X1.1.31--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
-<!--X1.1.32--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
 The difference between these two functions is that <tt>Initialize()</tt> is
 called early at program startup, while <tt>Start()</tt> is called after the primary
 device and user interface has been set up, but before the main program loop is entered.
-<!--X1.1.32--></td></tr></table>
 Inside the <tt>Start()</tt> function of any plugin it is guaranteed that the <tt>Initialize()</tt>
 functions of all plugins have  already been called. For many plugins it probably
 doesn't matter which of these functions they implement, but it may be of importance
 for, e.g., plugins that implement devices. Such plugins should create their cDevice
 derived objects in <tt>Initialize()</tt>, so that other plugins can use them in their
 <tt>Start()</tt> functions.
-<!--X1.1.31--></td></tr></table>
 <p>
 Inside this function the plugin must set up everything necessary to perform
 its task. This may, for instance, be a thread that collects data from the DVB
@@ -529,7 +508,6 @@ in the call to VDR.
 
 If the user selects the main menu entry of a plugin, VDR calls the function
 
-<!--X1.1.17--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 <p><table><tr><td bgcolor=#F0F0F0><pre><br>
 virtual cOsdObject *MainMenuAction(void);
 </pre></td></tr></table><p>
@@ -550,7 +528,6 @@ which can do one of three things:
 <li>Perform a specific action and return <tt>NULL</tt>. In that case the main menu
     will be closed after calling <tt>MainMenuAction()</tt>.
 </ul>
-<!--X1.1.17--></td></tr></table>
 <b>
 It is very important that a call to <tt>MainMenuAction()</tt> returns as soon
 as possible! As long as the program stays inside this function, no other user
@@ -789,6 +766,7 @@ or <a href="#Getting started"><tt>Start()</tt></a> function of the plugin:
 const tI18nPhrase Phrases[] = {
   { "Hello world!",
     "Hallo Welt!",
+    "",// TODO
     "",// TODO
     "",// TODO
     "",// TODO
@@ -1200,9 +1178,7 @@ a <tt>cDevice</tt>:
 <p><table><tr><td bgcolor=#F0F0F0><pre><br>
 cMyReceiver *Receiver = new cMyReceiver(123);
 
-<!--X1.1.31--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
 cDevice::ActualDevice()-&gt;AttachReceiver(Receiver);
-<!--X1.1.31--></td></tr></table>
 </pre></td></tr></table><p>
 
 Noteh the use of <tt>cDevice::ActualDevice()</tt> here, which makes sure that
@@ -1372,7 +1348,6 @@ needed.
 <p>
 <b>Initializing new devices</b>
 <p>
-<!--X1.1.31--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
 A derived cDevice class shall implement a static function
 in which it determines whether the necessary hardware to run this sort of
 device is actually present in this machine (or whatever other prerequisites
@@ -1384,7 +1359,6 @@ A plugin that adds devices to a VDR instance shall call this
 function from its <a href="#Getting started"><tt>Initialize()</tt></a> function
 to make sure other plugins that may need to have access to all available devices
 will see them in their <a href="#Getting started"><tt>Start()</tt></a> function.
-<!--X1.1.31--></td></tr></table>
 <p>
 Nothing needs to be done to shut down the devices. VDR will automatically
 shut down (delete) all devices when the program terminates. It is therefore
@@ -1500,7 +1474,6 @@ the incoming data (by calling your <tt>Action()</tt> function).
 In case you need to do any other setup steps, like opening a file or initializing
 member variables, you should do so before calling <tt>Start()</tt>.
 <p>
-<!--X1.1.27--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
 If your remote control for some reason can't work (maybe because it was unable to
 open some file handle it requires) it can implement the virtual function
 
@@ -1510,7 +1483,6 @@ virtual bool Ready(void);
 
 and have it return <i>false</i>. In that case VDR will not try to learn keys from
 that remote control.
-<!--X1.1.27--></td></tr></table>
 VDR will handle everything necessary to learn the key mappings of your remote
 control. In order to do so, it will first call the virtual function <tt>Initialize()</tt>,
 in which you should take all necessary steps to make sure your remote control
