@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.62 2004/12/26 10:26:09 kls Exp $
+ * $Id: tools.h 1.63 2005/01/04 11:06:36 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -104,9 +104,9 @@ private:
   uint64 begin;
 public:
   cTimeMs(void);
+  static uint64 Now(void);
   void Set(int Ms = 0);
   bool TimedOut(void);
-  uint64 Now(void);
   uint64 Elapsed(void);
   };
 
