@@ -571,7 +571,7 @@ Video Disk Recorder User's Manual
 * Executing system commands
 
   The "VDR" menu option "Commands" allows you to execute any system commands
-  defined in the configuration file 'commands.conf' (see FORMATS for details).
+  defined in the configuration file 'commands.conf' (see vdr(5) for details).
   The "Commands" option will only be present in the "VDR" menu if a valid
   'commands.conf' file containing at least one command definition has been
   found at program start.
@@ -584,7 +584,7 @@ Video Disk Recorder User's Manual
   be displayed on a result screen after executing the command. This screen will
   use a 'fixed' font so that you can generate formatted output. In order to
   avoid error messages going to stderr, command definitions should redirect
-  stderr to stdout (see FORMATS).
+  stderr to stdout (see vdr(5)).
 
   WARNING: THE COMMANDS DEFINED IN 'commands.conf' WILL BE EXECUTED UNDER THE
   =======  SAME USER ID THAT VDR IS RUNNING WITH. BE VERY CAREFUL WHEN

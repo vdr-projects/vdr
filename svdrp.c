@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.35 2002/03/23 16:17:39 kls Exp $
+ * $Id: svdrp.c 1.36 2002/05/10 15:05:57 kls Exp $
  */
 
 #include "svdrp.h"
@@ -240,7 +240,7 @@ const char *HelpPages[] = {
   "    of the timer.",
   "PUTE\n"
   "    Put data into the EPG list. The data entered has to strictly follow the\n"
-  "    format defined in VDR/FORMATS for the 'epg.data' file.  A '.' on a line\n"
+  "    format defined in vdr(5) for the 'epg.data' file.  A '.' on a line\n"
   "    by itself terminates the input and starts processing of the data (all\n"
   "    entered data is buffered until the terminating '.' is seen).",
   "UPDT <settings>\n"
