@@ -6,7 +6,7 @@
  *
  * LIRC support added by Carsten Koch <Carsten.Koch@icem.de>  2000-06-16.
  *
- * $Id: lirc.c 1.2 2003/04/06 15:39:48 kls Exp $
+ * $Id: lirc.c 1.3 2003/04/06 15:45:10 kls Exp $
  */
 
 #include "lirc.h"
@@ -71,6 +71,8 @@ void cLircRemote::Action(void)
          sscanf(buf, "%*x %x %29s", &count, KeyName); // '29' in '%29s' is LIRC_KEY_BUF-1!
          int Now = time_ms();
          if (count == 0) {
+            if (repeat)
+               Put(LastKeyName, false, true);
             strcpy(LastKeyName, KeyName);
             repeat = false;
             FirstTime = Now;
@@ -86,7 +88,7 @@ void cLircRemote::Action(void)
          Put(KeyName, repeat);
          }
       else if (repeat) { // the last one was a repeat, so let's generate a release
-         if (time_ms() - LastTime > REPEATDELAY) {
+         if (time_ms() - LastTime >= REPEATDELAY) {
             Put(LastKeyName, false, true);
             repeat = false;
             *LastKeyName = 0;
