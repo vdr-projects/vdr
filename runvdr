@@ -18,13 +18,13 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: runvdr 1.7 2001/06/24 17:42:19 kls Exp $
+# $Id: runvdr 1.8 2001/07/27 07:35:19 kls Exp $
 
 DVBDIR="../DVB/driver"
 VDRPRG="./vdr"
 VDRCMD="$VDRPRG -w 60 $*"
 
-LSMOD="`/sbin/lsmod | grep dvbdev | wc -l`"
+LSMOD="`/sbin/lsmod | grep -w '^dvb' | wc -l`"
 KILLPROC="/sbin/killproc -TERM"
 
 # Load driver if it hasn't been loaded already:

@@ -570,8 +570,10 @@ Video Disk Recorder Revision History
 - Fixed handling a channel group separator at the very beginning of the
   'channels.conf' file.
 
-2001-07-24: Version 0.85
+2001-07-27: Version 0.85
 
 - Added Norwegian language texts (thanks to Jørgen Tvedt).
 - Increased the usleep value in cDvbOsd::Cmd() to 5000 in order to work on
   systems with the KURT/utime-patch (thanks to Guido Fiala).
+- Changed the check whether the driver is loaded in runvdr to check for the
+  'dvb' module (the last one loaded).
