@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.133 2001/10/27 12:03:19 kls Exp $
+ * $Id: menu.c 1.134 2001/10/27 13:47:12 kls Exp $
  */
 
 #include "menu.h"
@@ -2062,7 +2062,9 @@ eOSState cDisplayChannel::ProcessKey(eKeys Key)
                }
             }
          break;
+    case kLeft|k_Repeat:
     case kLeft:
+    case kRight|k_Repeat:
     case kRight:
          withInfo = false;
          if (group < 0) {
@@ -2072,7 +2074,7 @@ eOSState cDisplayChannel::ProcessKey(eKeys Key)
             }
          if (group >= 0) {
             int SaveGroup = group;
-            if (Key == kRight)
+            if (NORMALKEY(Key) == kRight)
                group = Channels.GetNextGroup(group) ;
             else
                group = Channels.GetPrevGroup(group < 1 ? 1 : group);
@@ -2101,8 +2103,10 @@ eOSState cDisplayChannel::ProcessKey(eKeys Key)
     case kOk:     if (group >= 0)
                      Channels.SwitchTo(Channels.Get(Channels.GetNextNormal(group))->number);
                   return osEnd;
-    default:      Interface->PutKey(Key);
-                  return osEnd;
+    default:      if ((Key & (k_Repeat | k_Release)) == 0) {
+                     Interface->PutKey(Key);
+                     return osEnd;
+                     }
     };
   if (time_ms() - lastTime < INFOTIMEOUT) {
      DisplayInfo();

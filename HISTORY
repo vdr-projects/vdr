@@ -844,3 +844,4 @@ Video Disk Recorder Revision History
   (thanks to Helmut Schächner).
 - Changed the tuning code to use FrontendInfo to detect the type of DVB card.
 - Removed the recursion stuff from cThread (cMutex already does this).
+- Fixed handling the repeat function in the channel display.
