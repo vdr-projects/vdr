@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.37 2001/09/23 13:43:29 kls Exp $
+ * $Id: recording.c 1.38 2001/09/30 10:29:11 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -45,6 +45,10 @@ void RemoveDeletedRecordings(void)
 {
   static time_t LastRemoveCheck = 0;
   if (time(NULL) - LastRemoveCheck > REMOVECHECKDELTA) {
+     // Make sure only one instance of VDR does this:
+     cLockFile LockFile(VideoDirectory);
+     if (!LockFile.Lock())
+        return;
      // Remove the oldest file that has been "deleted":
      cRecordings Recordings;
      if (Recordings.Load(true)) {
@@ -74,6 +78,10 @@ void AssertFreeDiskSpace(int Priority)
   static time_t LastFreeDiskCheck = 0;
   if (time(NULL) - LastFreeDiskCheck > DISKCHECKDELTA) {
      if (!VideoFileSpaceAvailable(MINDISKSPACE)) {
+        // Make sure only one instance of VDR does this:
+        cLockFile LockFile(VideoDirectory);
+        if (!LockFile.Lock())
+           return;
         // Remove the oldest file that has been "deleted":
         cRecordings Recordings;
         if (Recordings.Load(true)) {

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.46 2001/09/22 12:13:40 kls Exp $
+ * $Id: tools.c 1.47 2001/09/30 10:36:40 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -588,6 +588,72 @@ bool cSafeFile::Close(void)
   else
      result = false;
   return result;
+}
+
+// --- cLockFile -------------------------------------------------------------
+
+#define LOCKFILENAME      ".lock-vdr"
+#define LOCKFILESTALETIME 600 // seconds before considering a lock file "stale"
+
+cLockFile::cLockFile(const char *Directory)
+{
+  fileName = NULL;
+  f = -1;
+  if (DirectoryOk(Directory))
+     asprintf(&fileName, "%s/%s", Directory, LOCKFILENAME);
+}
+
+cLockFile::~cLockFile()
+{
+  Unlock();
+  delete fileName;
+}
+
+bool cLockFile::Lock(int WaitSeconds)
+{
+  if (f < 0 && fileName) {
+     time_t Timeout = time(NULL) + WaitSeconds;
+     do {
+        f = open(fileName, O_WRONLY | O_CREAT | O_EXCL, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+        if (f < 0) {
+           if (errno == EEXIST) {
+              struct stat fs;
+              if (stat(fileName, &fs) == 0) {
+                 if (time(NULL) - fs.st_mtime > LOCKFILESTALETIME) {
+                    esyslog(LOG_ERR, "ERROR: removing stale lock file '%s'", fileName);
+                    if (remove(fileName) < 0) {
+                       LOG_ERROR_STR(fileName);
+                       break;
+                       }
+                    continue;
+                    }
+                 }
+              else if (errno != ENOENT) {
+                 LOG_ERROR_STR(fileName);
+                 break;
+                 }
+              }
+           else {
+              LOG_ERROR_STR(fileName);
+              break;
+              }
+           if (WaitSeconds)
+              sleep(1);
+           }
+        } while (f < 0 && time(NULL) < Timeout);
+     }
+  return f >= 0;
+}
+
+void cLockFile::Unlock(void)
+{
+  if (f >= 0) {
+     close(f);
+     remove(fileName);
+     f = -1;
+     }
+  else
+     esyslog(LOG_ERR, "ERROR: attempt to unlock %s without holding a lock!", fileName);
 }
 
 // --- cListObject -----------------------------------------------------------
