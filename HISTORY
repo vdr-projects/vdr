@@ -3113,3 +3113,6 @@ Video Disk Recorder Revision History
   "by provider". While in the "Channels" menu, pressing the '0' key switches
   through these modes.
 - Fixed the buffer size in cRecording::SortName().
+- Now displaying the name of the remote control for which the keys are being
+  learned inside the menu to avoid overwriting the date/time in the 'classic'
+  skin (thanks to Oliver Endriss for reporting this one).
