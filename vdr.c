@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.31 2000/09/15 13:55:39 kls Exp $
+ * $Id: vdr.c 1.32 2000/09/15 15:01:08 kls Exp $
  */
 
 #include <getopt.h>
@@ -60,9 +60,11 @@ int main(int argc, char *argv[])
 #define DEFAULTSVDRPPORT 2001
 
   int SVDRPport = DEFAULTSVDRPPORT;
+  const char *ConfigDirectory = NULL;
   bool DaemonMode = false;
 
   static struct option long_options[] = {
+      { "config", required_argument, NULL, 'c' },
       { "daemon", no_argument,       NULL, 'd' },
       { "help",   no_argument,       NULL, 'h' },
       { "log",    required_argument, NULL, 'l' },
@@ -73,10 +75,14 @@ int main(int argc, char *argv[])
   
   int c;
   int option_index = 0;
-  while ((c = getopt_long(argc, argv, "dhl:p:v:", long_options, &option_index)) != -1) {
+  while ((c = getopt_long(argc, argv, "c:dhl:p:v:", long_options, &option_index)) != -1) {
         switch (c) {
+          case 'c': ConfigDirectory = optarg;
+                    break;
           case 'd': DaemonMode = true; break;
-          case 'h': printf("Usage: vdr [OPTION]\n\n"
+          case 'h': printf("Usage: vdr [OPTION]\n\n"           // for easier orientation, this is column 80|
+                           "  -c DIR,   --config=DIR  read config files from DIR (default is to read them\n"
+                           "                          from the video directory)\n"
                            "  -h,       --help        display this help and exit\n"
                            "  -d,       --daemon      run in daemon mode\n"
                            "  -l LEVEL, --log=LEVEL   set log level (default: 3)\n"
@@ -156,13 +162,16 @@ int main(int argc, char *argv[])
 
   // Configuration data:
 
-  Setup.Load("setup.conf");
-  Channels.Load("channels.conf");
-  Timers.Load("timers.conf");
+  if (!ConfigDirectory)
+     ConfigDirectory = VideoDirectory;
+
+  Setup.Load(AddDirectory(ConfigDirectory, "setup.conf"));
+  Channels.Load(AddDirectory(ConfigDirectory, "channels.conf"));
+  Timers.Load(AddDirectory(ConfigDirectory, "timers.conf"));
 #ifdef REMOTE_LIRC
   Keys.SetDummyValues();
 #else
-  if (!Keys.Load(KEYS_CONF))
+  if (!Keys.Load(AddDirectory(ConfigDirectory, KEYS_CONF)))
      Interface.LearnKeys();
 #endif
   Interface.Init();

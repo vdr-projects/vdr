@@ -102,14 +102,15 @@ Configuration files:
 --------------------
 
 There are three configuration files that hold information about
-channels, remote control keys and timers. These files are currrently
-assumed to be located in the directory from which the 'vdr' program
-was started (this will become configurable later). The configuration
-files can be edited with any text editor, or will be written by the
-'vdr' program if any changes are made inside the on-screen menus.
-The meaning of the data entries may still vary in future releases,
-so for the moment please look at the source code (config.c) to see
-the meaning of the various fields.
+channels, remote control keys and timers. By default these files are
+assumed to be located in the video directory, but a different directory
+can be used with the '-c' option.
+
+The configuration files can be edited with any text editor, or will be written
+by the 'vdr' program if any changes are made inside the on-screen menus.
+The meaning of the data entries may still vary in future releases, so for the
+moment please look at the source code (config.c) to see the meaning of the
+various fields.
 
 The files that come with this package contain the author's selections,
 so please make sure you adapt these to your personal taste. Also make sure

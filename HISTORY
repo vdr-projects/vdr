@@ -173,3 +173,9 @@ Video Disk Recorder Revision History
 - Video files now have the 'group read' bit set.
 - Fixed handling errors in 'readstring()'.
 - Handling SIGPIPE and re-establishing handler after intercepting a signal.
+- The configuration files are now by default read from the video directory.
+  This can be changed by using the new '-c' option. Make sure you copy your
+  current '*.conf' files to your video directory ('/video' by default), or
+  use "-c ." to get the old behaviour of loading the configuration files
+  from the current directory.
+
