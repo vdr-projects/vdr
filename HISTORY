@@ -3429,3 +3429,4 @@ Video Disk Recorder Revision History
 - Increased POLLTIMEOUTS_BEFORE_DEVICECLEAR in transfer.c to 6 to avoid problems
   with the larger buffer reserve (thanks to Marco Schlüßler).
 - Fixed the call to SetVideoFormat() in cDvbDevice::cDvbDevice() (parameter is _bool_).
+- Added support for setting the video display mode (thanks to Marco Schlüßler).

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.93 2005/02/19 12:20:39 kls Exp $
+ * $Id: device.c 1.94 2005/02/20 11:41:03 kls Exp $
  */
 
 #include "device.h"
@@ -235,6 +235,7 @@ bool cDevice::SetPrimaryDevice(int n)
         primaryDevice->MakePrimaryDevice(false);
      primaryDevice = device[n];
      primaryDevice->MakePrimaryDevice(true);
+     primaryDevice->SetVideoFormat(Setup.VideoFormat);
      return true;
      }
   esyslog("ERROR: invalid primary device number: %d", n + 1);
@@ -325,6 +326,28 @@ void cDevice::Shutdown(void)
 bool cDevice::GrabImage(const char *FileName, bool Jpeg, int Quality, int SizeX, int SizeY)
 {
   return false;
+}
+
+void cDevice::SetVideoDisplayFormat(eVideoDisplayFormat VideoDisplayFormat)
+{
+  cSpuDecoder *spuDecoder = GetSpuDecoder();
+  if (spuDecoder) {
+     if (Setup.VideoFormat)
+        spuDecoder->setScaleMode(cSpuDecoder::eSpuNormal);
+     else {
+        switch (VideoDisplayFormat) {
+               case vdfPanAndScan:
+                    spuDecoder->setScaleMode(cSpuDecoder::eSpuPanAndScan);
+                    break;
+               case vdfLetterBox:
+                    spuDecoder->setScaleMode(cSpuDecoder::eSpuLetterBox);
+                    break;
+               case vdfCenterCutOut:
+                    spuDecoder->setScaleMode(cSpuDecoder::eSpuNormal);
+                    break;
+               }
+        }
+     }
 }
 
 void cDevice::SetVideoFormat(bool VideoFormat16_9)
@@ -836,6 +859,7 @@ void cDevice::Detach(cPlayer *Player)
      player->device = NULL;
      player = NULL;
      SetPlayMode(pmNone);
+     SetVideoDisplayFormat(vdfLetterBox);
      Audios.ClearAudio();
      }
 }

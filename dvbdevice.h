@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.h 1.33 2005/02/13 14:14:31 kls Exp $
+ * $Id: dvbdevice.h 1.34 2005/02/20 11:17:07 kls Exp $
  */
 
 #ifndef __DVBDEVICE_H
@@ -87,6 +87,7 @@ public:
 // Video format facilities
 
 public:
+  virtual void SetVideoDisplayFormat(eVideoDisplayFormat VideoDisplayFormat);
   virtual void SetVideoFormat(bool VideoFormat16_9);
   virtual eVideoSystem GetVideoSystem(void);
 

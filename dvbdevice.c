@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.122 2005/02/20 11:05:50 kls Exp $
+ * $Id: dvbdevice.c 1.123 2005/02/20 11:31:39 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -599,10 +599,35 @@ bool cDvbDevice::GrabImage(const char *FileName, bool Jpeg, int Quality, int Siz
   return false;
 }
 
+void cDvbDevice::SetVideoDisplayFormat(eVideoDisplayFormat VideoDisplayFormat)
+{
+  cDevice::SetVideoDisplayFormat(VideoDisplayFormat);
+  if (HasDecoder()) {
+     if (Setup.VideoFormat) {
+        CHECK(ioctl(fd_video, VIDEO_SET_DISPLAY_FORMAT, VIDEO_CENTER_CUT_OUT));
+        }
+     else {
+        switch (VideoDisplayFormat) {
+          case vdfPanAndScan:
+               CHECK(ioctl(fd_video, VIDEO_SET_DISPLAY_FORMAT, VIDEO_PAN_SCAN));
+               break;
+          case vdfLetterBox:
+               CHECK(ioctl(fd_video, VIDEO_SET_DISPLAY_FORMAT, VIDEO_LETTER_BOX));
+               break;
+          case vdfCenterCutOut:
+               CHECK(ioctl(fd_video, VIDEO_SET_DISPLAY_FORMAT, VIDEO_CENTER_CUT_OUT));
+               break;
+          }
+        }
+     }
+}
+
 void cDvbDevice::SetVideoFormat(bool VideoFormat16_9)
 {
-  if (HasDecoder())
+  if (HasDecoder()) {
      CHECK(ioctl(fd_video, VIDEO_SET_FORMAT, VideoFormat16_9 ? VIDEO_FORMAT_16_9 : VIDEO_FORMAT_4_3));
+     SetVideoDisplayFormat(vdfLetterBox);
+     }
 }
 
 eVideoSystem cDvbDevice::GetVideoSystem(void)
