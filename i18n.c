@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.181 2005/02/27 11:36:19 kls Exp $
+ * $Id: i18n.c 1.182 2005/03/05 15:50:37 kls Exp $
  *
  * Translations provided by:
  *
@@ -2310,7 +2310,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Отсутствует звук!",
     "",//TODO
     "Audio kфttesaamatu!",
     "Ingen lyd tilgцngelig!",
@@ -2837,7 +2837,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Показ информации о канале (сек)",
     "",// TODO
     "",// TODO
     "Tid kanalinfo skal vises (s)",
@@ -3047,7 +3047,7 @@ const tI18nPhrase Phrases[] = {
     "Limbi preferate",
     "",// TODO
     "",// TODO
-    "Предпочитаемые языки",
+    "Предпочитаемые языки (телегид)",
     "Preferirani jezici",
     "Eelistatuid keeli",
     "Foretrukne sprog",
@@ -3215,7 +3215,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Включить Dolby Digital",
     "",//TODO
     "Dolby Digital kasutamine",
     "Anvend Dolby Digital",
@@ -3341,7 +3341,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Предпочитаемые языки (звук)",
     "",//TODO
     "",//TODO
     "Audio sprog (ant.)",
@@ -3362,7 +3362,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Выбран",
     "",//TODO
     "",//TODO
     "Audio sprog",
@@ -4794,7 +4794,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Язык",
     "",// TODO
     "Audio",
     "Audio",
