@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 1.12 2002/09/06 14:04:52 kls Exp $
+ * $Id: device.h 1.13 2002/09/08 08:56:46 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -286,12 +286,13 @@ protected:
       // Stream for use in a cReceiver.
   virtual void CloseDvr(void);
       // Shuts down the DVR.
-  virtual int GetTSPacket(uchar *Data);
-      // Gets exactly one TS packet from the DVR of this device and copies it
-      // into the given memory area (which is exactly 188 bytes in size).
-      // Returns the number of bytes copied into Data (which must be 188).
-      // If there is currently no TS packet available, 0 should be returned.
-      // In case of a non recoverable error, returns -1.
+  virtual bool GetTSPacket(uchar *&Data);
+      // Gets exactly one TS packet from the DVR of this device and returns
+      // a pointer to it in Data. Only the first 188 bytes (TS_SIZE) Data
+      // points to are valid and may be accessed. If there is currently no
+      // new data available, Data will be set to NULL. The function returns
+      // false in case of a non recoverable error, otherwise it returns true,
+      // even if Data is NULL.
 public:
   int  Ca(void) { return ca; }
        // Returns the ca of the current receiving session.
@@ -301,6 +302,31 @@ public:
        // Attaches the given receiver to this device.
   void Detach(cReceiver *Receiver);
        // Detaches the given receiver from this device.
+  };
+
+// Derived cDevice classes that can receive channels will have to provide
+// Transport Stream (TS) packets one at a time. cTSBuffer implements a
+// simple buffer that allows the device to read a larger amount of data
+// from the driver with each call to Read(), thus avoiding the overhead
+// of getting each TS packet separately from the driver. It also makes
+// sure the returned data points to a TS packet and automatically
+// re-synchronizes after broken packet.
+
+class cTSBuffer {
+private:
+  int f;
+  int size;
+  int cardIndex;
+  int tsRead;
+  int tsWrite;
+  uchar *buf;
+  bool firstRead;
+  int Used(void) { return tsRead <= tsWrite ? tsWrite - tsRead : size - tsRead + tsWrite; }
+public:
+  cTSBuffer(int File, int Size, int CardIndex);
+  ~cTSBuffer();
+  int Read(void);
+  uchar *Get(void);
   };
 
 #endif //__DEVICE_H

@@ -1206,10 +1206,12 @@ A device that can be used for recording must implement the functions
 virtual bool SetPid(cPidHandle *Handle, int Type, bool On);
 virtual bool OpenDvr(void);
 virtual void CloseDvr(void);
-virtual int GetTSPacket(uchar *Data);
+<!--X1.1.9--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+virtual bool GetTSPacket(uchar *&amp;Data);
+<!--X1.1.9--></td></tr></table>
 </pre></td></tr></table><p>
 
-which allow VDR to set the PIDs that shall be recorded, set up the device fro
+which allow VDR to set the PIDs that shall be recorded, set up the device for
 recording (and shut it down again), and receive the MPEG data stream. The data
 must be delivered in the form of a Transport Stream (TS), which consists of
 packets that are all 188 bytes in size. Each call to <tt>GetTSPacket()</tt>

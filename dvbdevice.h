@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.h 1.8 2002/09/06 14:10:17 kls Exp $
+ * $Id: dvbdevice.h 1.9 2002/09/07 09:06:40 kls Exp $
  */
 
 #ifndef __DVBDEVICE_H
@@ -106,10 +106,12 @@ public:
 
 // Receiver facilities
 
+private:
+  cTSBuffer *tsBuffer;
 protected:
   virtual bool OpenDvr(void);
   virtual void CloseDvr(void);
-  virtual int GetTSPacket(uchar *Data);
+  virtual bool GetTSPacket(uchar *&Data);
   };
 
 #endif //__DVBDEVICE_H

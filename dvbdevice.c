@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.10 2002/09/06 14:09:55 kls Exp $
+ * $Id: dvbdevice.c 1.11 2002/09/07 13:39:49 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -773,6 +773,8 @@ bool cDvbDevice::OpenDvr(void)
 {
   CloseDvr();
   fd_dvr = DvbOpen(DEV_DVB_DVR, CardIndex(), O_RDONLY | O_NONBLOCK, true);
+  if (fd_dvr >= 0)
+     tsBuffer = new cTSBuffer(fd_dvr, MEGABYTE(2), CardIndex() + 1);
   return fd_dvr >= 0;
 }
 
@@ -781,28 +783,28 @@ void cDvbDevice::CloseDvr(void)
   if (fd_dvr >= 0) {
      close(fd_dvr);
      fd_dvr = -1;
+     delete tsBuffer;
+     tsBuffer = NULL;
      }
 }
 
-int cDvbDevice::GetTSPacket(uchar *Data)
+bool cDvbDevice::GetTSPacket(uchar *&Data)
 {
-  if (fd_dvr >= 0) {
-     cPoller Poller(fd_dvr, false);
-     if (Poller.Poll(100)) {
-        int r = read(fd_dvr, Data, TS_SIZE);
-        if (r >= 0)
-           return r;
-        else if (FATALERRNO) {
-           if (errno == EBUFFEROVERFLOW) // this error code is not defined in the library
-              esyslog("ERROR: DVB driver buffer overflow on device %d", CardIndex() + 1);
-           else {
-              LOG_ERROR;
-              return -1;
-              }
+  if (tsBuffer) {
+     int r = tsBuffer->Read();
+     if (r >= 0) {
+        Data = tsBuffer->Get();
+        return true;
+        }
+     else if (FATALERRNO) {
+        if (errno == EBUFFEROVERFLOW) // this error code is not defined in the library
+           esyslog("ERROR: DVB driver buffer overflow on device %d", CardIndex() + 1);
+        else {
+           LOG_ERROR;
+           return false;
            }
         }
-     return 0;
+     return true;
      }
-  else
-     return -1;
+  return false;
 }

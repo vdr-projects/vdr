@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.15 2002/09/06 14:02:19 kls Exp $
+ * $Id: device.c 1.16 2002/09/08 09:03:10 kls Exp $
  */
 
 #include "device.h"
@@ -17,6 +17,8 @@
 #include "receiver.h"
 #include "status.h"
 #include "transfer.h"
+
+// --- cDevice ---------------------------------------------------------------
 
 // The default priority for non-primary devices:
 #define DEFAULTPRIORITY  -2
@@ -520,15 +522,13 @@ void cDevice::Action(void)
   dsyslog("receiver thread started on device %d (pid=%d)", CardIndex() + 1, getpid());
 
   if (OpenDvr()) {
-     uchar b[TS_SIZE];
      time_t t = time(NULL);
      active = true;
      for (; active;) {
          // Read data from the DVR device:
-         int r = GetTSPacket(b);
-         if (r == TS_SIZE) {
-            if (*b == TS_SYNC_BYTE) {
-               // We're locked on to a TS packet
+         uchar *b = NULL;
+         if (GetTSPacket(b)) {
+            if (b) {
                int Pid = (((uint16_t)b[1] & PID_MASK_HI) << 8) | b[2];
                // Distribute the packet to all attached receivers:
                Lock();
@@ -537,12 +537,10 @@ void cDevice::Action(void)
                       receiver[i]->Receive(b, TS_SIZE);
                    }
                Unlock();
+               t = time(NULL);
                }
-            t = time(NULL);
             }
-         else if (r > 0)
-            esyslog("ERROR: got incomplete TS packet (%d bytes) on device %d", r, CardIndex() + 1);//XXX+ TODO do we have to read the rest???
-         else if (r < 0)
+         else
             break;
 
          //XXX+ put this into the recorder??? or give the receiver a flag whether it wants this?
@@ -567,9 +565,9 @@ void cDevice::CloseDvr(void)
 {
 }
 
-int cDevice::GetTSPacket(uchar *Data)
+bool cDevice::GetTSPacket(uchar *&Data)
 {
-  return -1;
+  return false;
 }
 
 bool cDevice::AttachReceiver(cReceiver *Receiver)
@@ -617,4 +615,86 @@ void cDevice::Detach(cReceiver *Receiver)
      active = false;
      Cancel(3);
      }
+}
+
+// --- cTSBuffer -------------------------------------------------------------
+
+cTSBuffer::cTSBuffer(int File, int Size, int CardIndex)
+{
+  f = File;
+  size = Size / TS_SIZE * TS_SIZE;
+  cardIndex = CardIndex;
+  tsRead = tsWrite = 0;
+  buf = (f >= 0 && size >= TS_SIZE) ? MALLOC(uchar, size + TS_SIZE) : NULL;
+  // the '+ TS_SIZE' allocates some extra space for handling packets that got split by a buffer roll-over
+  firstRead = true;
+}
+
+cTSBuffer::~cTSBuffer()
+{
+  free(buf);
+}
+
+int cTSBuffer::Read(void)
+{
+  if (buf) {
+     cPoller Poller(f, false);
+     bool repeat;
+     int total = 0;
+     do {
+        repeat = false;
+        if (firstRead || Used() > TS_SIZE || Poller.Poll(100)) { // only wait if there's not enough data in the buffer
+           firstRead = false;
+           if (tsRead == tsWrite)
+              tsRead = tsWrite = 0; // keep the maximum buffer space available
+           if (tsWrite >= size && tsRead > 0)
+              tsWrite = 0;
+           int free = tsRead <= tsWrite ? size - tsWrite : tsRead - tsWrite - 1;
+           if (free > 0) {
+              int r = read(f, buf + tsWrite, free);
+              if (r > 0) {
+                 total += r;
+                 tsWrite += r;
+                 if (tsWrite >= size && tsRead > 0) {
+                    tsWrite = 0;
+                    repeat = true; // read again after a boundary roll-over
+                    }
+                 }
+              }
+           }
+        } while (repeat);
+     return total;
+     }
+  return -1;
+}
+
+uchar *cTSBuffer::Get(void)
+{
+  if (Used() >= TS_SIZE) {
+     uchar *p = buf + tsRead;
+     if (*p != TS_SYNC_BYTE) {
+        esyslog("ERROR: not sync'ed to TS packet on device %d", cardIndex);
+        int tsMax = tsRead < tsWrite ? tsWrite : size;
+        for (int i = tsRead; i < tsMax; i++) {
+            if (buf[i] == TS_SYNC_BYTE) {
+               esyslog("ERROR: skipped %d bytes to sync on TS packet on device %d", i - tsRead, cardIndex);
+               tsRead = i;
+               return NULL;
+               }
+            }
+        if ((tsRead = tsMax) >= size)
+           tsRead = 0;
+        return NULL;
+        }
+     if (tsRead + TS_SIZE > size) {
+        // the packet rolled over the buffer boundary, so let's fetch the rest from the beginning (which MUST be there, since Used() >= TS_SIZE)
+        int rest = TS_SIZE - (size - tsRead);
+        memcpy(buf + size, buf, rest);
+        tsRead = rest;
+        }
+     else if ((tsRead += TS_SIZE) >= size)
+        tsRead = 0;
+     return p;
+     }
+  return NULL;
 }
