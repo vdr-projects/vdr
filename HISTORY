@@ -3086,3 +3086,4 @@ Video Disk Recorder Revision History
 - No longer explicitly waiting for a tuner lock when switching channels
   (apparently setting "live" PIDs before the tuner is locked doesn't hurt).
   Moved the wait into cDevice::AttachReceiver() instead.
+- Immediately displaying the new channel info when switching channel groups.
