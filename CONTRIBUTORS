@@ -458,6 +458,8 @@ Gerhard Steiner <steiner@mail.austria.com>
  the 'epg.data' file
  for suggesting the new configuration file 'reccmds.conf' to define commands that
  shall be executed from the "Recordings" menu
+ for suggesting to interpret the character '|' in the description texts of EPG
+ records as a newline character
 
 Jaakko Hyvätti <jaakko@hyvatti.iki.fi>
  for translating OSD texts to the Finnish language

@@ -8,9 +8,9 @@
 .\" License as specified in the file COPYING that comes with the
 .\" vdr distribution.
 .\"
-.\" $Id: vdr.5 1.16 2002/12/01 10:34:40 kls Exp $
+.\" $Id: vdr.5 1.17 2002/12/06 14:21:00 kls Exp $
 .\"
-.TH vdr 5 "24 Nov 2002" "1.2.0" "Video Disk Recorder Files"
+.TH vdr 5 "6 Dec 2002" "1.2.0" "Video Disk Recorder Files"
 .SH NAME
 vdr file formats - the Video Disk Recorder Files
 .SH DESCRIPTION
@@ -549,7 +549,7 @@ in (if this is left empty or 0 this event will not be overwritten\
 or modified by data that comes from the DVB stream)
 <title>        @is the title of the event
 <subtitle>     @is the subtitle (typically the name of the episode etc.)
-<description>  @is the description of the event
+<description>  @is the description of the event (any '|' characters will be interpreted as newlines)
 .TE
 
 This file will be read at program startup in order to restore the results of

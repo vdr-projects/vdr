@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.c 1.60 2002/11/01 10:50:38 kls Exp $
+ * $Id: interface.c 1.61 2002/12/06 14:13:16 kls Exp $
  */
 
 #include "interface.h"
@@ -157,6 +157,8 @@ char *cInterface::WrapText(const char *Text, int Width, int *Height)
         t[strlen(t) - 1] = 0; // skips trailing newlines
 
   for (char *p = t; *p; ) {
+      if (*p == '|')
+         *p = '\n';
       if (*p == '\n') {
          Lines++;
          w = 0;
