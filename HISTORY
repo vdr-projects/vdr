@@ -951,7 +951,7 @@ Video Disk Recorder Revision History
 - Changed the [dei]syslog macros in tools.h to use a variable number of args,
   thus making it safe to use them in nested 'if/else' statements.
 - Fixed error handling in establishing an SVDRP connection (thanks to Davide
-  Achilli) for pointing this out).
+  Achilli for pointing out this one).
 - The new configuration file 'svdrphosts.conf' is now used to define which
   hosts may access the SVDRP port (by default only 'localhost' has access).
   See FORMATS for details.
@@ -1188,7 +1188,7 @@ Video Disk Recorder Revision History
 - Now the EPG scan skips channels that have their 'Ca' parameter explicitly set
   to an other DVB card (suggested by Sergei Haller).
 - Fixed a possible hangup when reading a broken epg.data file (thanks to Henning
-  Holtschneider for pointing this one out).
+  Holtschneider for pointing out this one).
 - Fixed a bug in the editing process in case a previously edited file with the
   same name was manually deleted on a system with more than one video directory
   (thanks to Dirk Wiebel for reporting this one).
@@ -1317,3 +1317,5 @@ Video Disk Recorder Revision History
   See PLUGINS.html for details.
 - Moved the cEITScanner out of dvbapi.h/.c, into the new eitscan.h/.c.
 - Added Swedish language texts (thanks to Tomas Prybil).
+- Fixed parsing 'E' records in epg2html.pl (thanks to Matthias Fechner for pointing
+  out this one).
