@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.344 2005/03/19 14:23:43 kls Exp $
+ * $Id: menu.c 1.345 2005/03/19 15:45:19 kls Exp $
  */
 
 #include "menu.h"
@@ -732,13 +732,28 @@ int cMenuTimerItem::Compare(const cListObject &ListObject) const
 
 void cMenuTimerItem::Set(void)
 {
+  cString day, name("");
+  if (timer->WeekDays())
+     day = timer->PrintDay(0, timer->WeekDays());
+  else if (timer->Day() - time(NULL) < 28 * SECSINDAY) {
+     day = itoa(timer->GetMDay(timer->Day()));
+     name = WeekDayName(timer->Day());
+     }
+  else {
+     struct tm tm_r;
+     time_t Day = timer->Day();
+     localtime_r(&Day, &tm_r);
+     char buffer[16];
+     strftime(buffer, sizeof(buffer), "%Y%m%d", &tm_r);
+     day = buffer;
+     }
   char *buffer = NULL;
   asprintf(&buffer, "%c\t%d\t%s%s%s\t%02d:%02d\t%02d:%02d\t%s",
                     !(timer->HasFlags(tfActive)) ? ' ' : timer->FirstDay() ? '!' : timer->Recording() ? '#' : '>',
                     timer->Channel()->Number(),
-                    timer->IsSingleEvent() ? *WeekDayName(timer->StartTime()) : "",
-                    timer->IsSingleEvent() ? " " : "",
-                    *timer->PrintDay(timer->Day(), timer->WeekDays()),
+                    *name,
+                    *name && **name ? " " : "",
+                    *day,
                     timer->Start() / 100,
                     timer->Start() % 100,
                     timer->Stop() / 100,
