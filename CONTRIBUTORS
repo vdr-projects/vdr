@@ -959,3 +959,6 @@ Michael Pennewiß <M.Pennewiss@ARD-Digital.de>
 
 Marcus Mönnig <minibbjd@gmx.de>
  for adding some 3-letter language codes
+
+Pekka Virtanen <pekka.virtanen@sci.fi>
+ for adding language code handling to the subtitling descriptor in 'libsi'

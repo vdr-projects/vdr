@@ -2754,3 +2754,5 @@ Video Disk Recorder Revision History
 - Fixed the help for LSTE and LSTR (was broken in 1.3.6).
 - Improved iso8859-7 fonts (thanks to Dimitrios Dimitrakos).
 - Added some 3-letter language codes (thanks to Marcus Mönnig).
+- Added language code handling to the subtitling descriptor in 'libsi' (thanks to
+  Pekka Virtanen).
