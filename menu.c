@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.270 2003/09/05 13:30:02 kls Exp $
+ * $Id: menu.c 1.271 2003/09/06 10:26:45 kls Exp $
  */
 
 #include "menu.h"
@@ -3531,6 +3531,10 @@ void cReplayControl::MarkToggle(void)
      else {
         marks.Add(Current);
         ShowTimed(2);
+        bool Play, Forward;
+        int Speed;
+        if (GetReplayMode(Play, Forward, Speed) && !Play)
+           Goto(Current, true);
         }
      marks.Save();
      }
@@ -3659,7 +3663,6 @@ eOSState cReplayControl::ProcessKey(eKeys Key)
       DoShowMode = false;
       switch (Key) {
         // Editing:
-        //XXX should we do this only when the ProgressDisplay is on???
         case kMarkToggle:      MarkToggle(); break;
         case kMarkJumpBack:    MarkJump(false); break;
         case kMarkJumpForward: MarkJump(true); break;

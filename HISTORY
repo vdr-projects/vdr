@@ -2369,3 +2369,6 @@ Video Disk Recorder Revision History
 - Fixed handling the "Red" button in the "Schedules" menu in case there are no
   events listed for a particular channel (thanks to Christoph Hermanns for
   reporting this one).
+- When setting an editing mark while in "Pause" mode, replay now immediately
+  jumps to the marked frame (thanks to Oskar Signell for pointing out this
+  problem).
