@@ -171,3 +171,4 @@ Video Disk Recorder Revision History
 2000-09-15: Version 0.64
 
 - Video files now have the 'group read' bit set.
+- Fixed handling errors in 'readstring()'.

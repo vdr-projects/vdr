@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.14 2000/09/09 12:53:34 kls Exp $
+ * $Id: tools.c 1.15 2000/09/15 13:30:24 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -69,7 +69,7 @@ int readstring(int filedes, char *buffer, int size, bool wait = false)
            break; // EOF
         if (n < 0) {
            LOG_ERROR;
-           break;
+           return -1;
            }
         rbytes += n;
         if (rbytes == size)
