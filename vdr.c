@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.80 2001/09/30 11:42:58 kls Exp $
+ * $Id: vdr.c 1.81 2001/09/30 12:13:38 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -502,8 +502,10 @@ int main(int argc, char *argv[])
                     if (WatchdogTimeout > 0)
                        signal(SIGALRM, SIG_IGN);
                     if (Interface->Confirm(tr("Press any key to cancel shutdown"), LastActivity == 1 ? 5 : SHUTDOWNWAIT, true)) {
+                       int Channel = timer ? timer->channel : 0;
+                       const char *File = timer ? timer->file : "";
                        char *cmd;
-                       asprintf(&cmd, "%s %ld %ld", Shutdown, Next, Delta);
+                       asprintf(&cmd, "%s %ld %ld %d '%s'", Shutdown, Next, Delta, Channel, File);
                        isyslog(LOG_INFO, "executing '%s'", cmd);
                        system(cmd);
                        delete cmd;

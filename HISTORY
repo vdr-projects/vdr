@@ -795,3 +795,5 @@ Video Disk Recorder Revision History
   not the result of an editing process shall be written into separate files.
 - Fixed handling repeat function when using LIRC (thanks to Matthias Weingart).
 - Fixed the "system time seen..." message in case of overlapping timers.
+- The shutdown program (defined with the '-s' option) now also gets the channel
+  number and recording title of the timer (see INSTALL).

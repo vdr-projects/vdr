@@ -109,7 +109,7 @@ active, the user has been inactive for at least MinUserInactivity minutes
 and the next timer event is at least MinEventTimeout minutes in the future
 (see the Setup parameters in MANUAL).
 
-The command given in the '-s' option will be called with two parameters.
+The command given in the '-s' option will be called with four parameters.
 The first one is the time (in UTC) of the next timer event (as a time_t
 type number), and the second one is the number of seconds from the current
 time until the next timer event. Your program can choose which one to use
@@ -128,6 +128,12 @@ In that case the program shall not set the hardware for automatic restart
 and only perform the system shutdown. A program that uses the second parameter
 to set the hardware for restart must therefore also check whether the first
 parameter is '0'.
+
+The third parameter contains the number of the channel that will be recorded
+by the next timer (or 0 if no timer is present), and the fourth parameter
+contains the file name of the recording as defined in the timer (or an empty
+string if no timer is present). These can be used by the shutdown program to
+show that information on some display interface etc.
 
 If a timer is currently recording, the parameters will reflect the start
 time of that timer. This means that the first parameter will be a time in
