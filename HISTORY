@@ -578,3 +578,5 @@ Video Disk Recorder Revision History
 - Changed the check whether the driver is loaded in runvdr to check for the
   'dvb' module (the last one loaded).
 - Fixed repeat function with LIRC (thanks to Stefan Huelswitt).
+- Increased the upper limit for the symbol rate to 30000 (thanks to Ulrich
+  Röder).

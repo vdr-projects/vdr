@@ -82,7 +82,7 @@ Henning Holtschneider <hh@holtschneider.com>
 Paulo Manuel Martins Lopes <pmml@netvita.pt>
  for translating the OSD texts to the Portugese language
 
-Markus Lang <markus.lang@nissan-db.de> and Ulrich Röder
+Markus Lang <markus.lang@nissan-db.de> and Ulrich Röder <dynamite@efr-net.de>
  for patching the Diseqc code so that it doesn't send a Diseqc command if
  the Diseqc value for a given channel is '0'
 
@@ -97,3 +97,7 @@ Jørgen Tvedt <pjtvedt@online.no>
 
 Stefan Huelswitt <huels@iname.com>
  for fixing the repeat function with LIRC
+
+Ulrich Röder <dynamite@efr-net.de>
+ for pointing out that there are channels that have a symbol rate higher than
+ 27500.
