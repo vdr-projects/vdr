@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.77 2001/06/16 14:23:28 kls Exp $
+ * $Id: dvbapi.c 1.78 2001/06/16 14:38:07 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -2039,10 +2039,8 @@ void cDvbApi::SetVideoFormat(videoFormat_t Format)
 
 bool cDvbApi::SetPid(int fd, dmxPesType_t PesType, dvb_pid_t Pid, dmxOutput_t Output)
 {
-  if (Pid == 0) {
+  if (Pid == 0x1FFF)
      CHECK(ioctl(fd, DMX_STOP));
-     Pid = 0x1FFF;
-     }
   dmxPesFilterParams pesFilterParams;
   pesFilterParams.pid     = Pid;
   pesFilterParams.input   = DMX_IN_FRONTEND;
@@ -2083,10 +2081,10 @@ bool cDvbApi::SetChannel(int ChannelNumber, int FrequencyMHz, char Polarization,
 
   // Turn off current PIDs:
 
-  SetVpid( 0, DMX_OUT_DECODER);
-  SetApid1(0, DMX_OUT_DECODER);
-  SetApid2(0, DMX_OUT_DECODER);
-  SetTpid( 0, DMX_OUT_DECODER);
+  SetVpid( 0x1FFF, DMX_OUT_DECODER);
+  SetApid1(0x1FFF, DMX_OUT_DECODER);
+  SetApid2(0x1FFF, DMX_OUT_DECODER);
+  SetTpid( 0x1FFF, DMX_OUT_DECODER);
 
   bool ChannelSynced = false;
 
