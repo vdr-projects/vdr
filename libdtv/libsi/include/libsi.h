@@ -4,11 +4,13 @@
 ///                                                        ///
 //////////////////////////////////////////////////////////////
 
-// $Revision: 1.6 $
-// $Date: 2002/01/30 17:04:13 $
+// $Revision: 1.7 $
+// $Date: 2003/04/12 11:27:31 $
 // $Author: hakenes $
 //
-//   (C) 2001 Rolf Hakenes <hakenes@hippomi.de>, under the GNU GPL.
+//   (C) 2001-03 Rolf Hakenes <hakenes@hippomi.de>, under the
+//               GNU GPL with contribution of Oleg Assovski,
+//               www.satmania.com
 //
 // libsi is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -38,9 +40,9 @@
   /* Program Identifier */
 
 #define PID_PAT               0x00           /* Program Association Table */
-#define PID_BAT               0x01           /* Bouquet Association Table */
 #define PID_CAT               0x01           /* Conditional Access Table */
 #define PID_NIT               0x10           /* Network Information Table */
+#define PID_BAT               0x11           /* Bouquet Association Table */
 #define PID_SDT               0x11           /* Service Description Table */
 #define PID_EIT               0x12           /* Event Information Table */
 #define PID_RST               0x13           /* Running Status Table */
@@ -75,12 +77,13 @@
 #define TID_TOT               0x73           /* Time Offset Section */
 #define TID_CA_ECM_0          0x80
 #define TID_CA_ECM_1          0x81
+#define TID_CA_EMM            0x82
 
-#define TID_BAT               0x01           /* Bouquet Association Section */
+#define TID_BAT               0x4A           /* Bouquet Association Section */
 
 #define TID_EIT               0x12           /* Event Information Section */
-#define TID_RST               0x13           /* Running Status Section */
-#define TID_ST                0x14           /* Stuffung Section */
+#define TID_RST               0x71           /* Running Status Section */
+#define TID_ST                0x72           /* Stuffing Section */
                            /* 0xFF */        /* Reserved for future use */
 
   /* Descriptor Identifier */
@@ -159,6 +162,40 @@
 
 #define MAX_SECTION_BUFFER 4096
 
+
+/* NetworkInfo structure (used to store NIT/BAT information) */
+
+struct NetworkInfo {
+   struct NODE          Node;
+   unsigned short       ID; // NetworkID / BouquetID
+   struct LIST         *Descriptors;
+   struct LIST         *TransportStreams;
+};
+
+#define CreateNetworkInfo(ni, id) \
+   do { \
+      xCreateNode (ni, NULL); \
+      (ni)->ID = id; \
+      (ni)->Descriptors = xNewList(NULL); \
+      (ni)->TransportStreams = NULL; \
+   } while(0)
+
+/* TransportStream structure (NIT/BAT TS loop member) */
+
+struct TransportStream {
+   struct NODE          Node;
+   int                  TransportStreamID;
+   unsigned short       OriginalNetworkID;
+   struct LIST         *Descriptors;
+};
+
+#define CreateTransportStream(ts, tsid, onid) \
+   do { \
+      xCreateNode (ts, NULL); \
+      (ts)->TransportStreamID = tsid; \
+      (ts)->OriginalNetworkID = onid; \
+      (ts)->Descriptors = xNewList(NULL); \
+   } while(0)
 
 /* Strukturen zur Aufnahme der SDT und EIT Informationen */
 
@@ -305,6 +342,23 @@ struct PidInfo {
 #define STREAMTYPE_13818_D                      13
 #define STREAMTYPE_13818_AUX                    14
 
+
+struct Tot {
+   time_t               UTC;
+   time_t               Bias;
+   struct LIST         *Descriptors;
+};
+
+#define CreateTot(tot, utc) \
+   do \
+   { \
+      xMemAlloc(sizeof(struct Tot), &tot); \
+      tot->UTC = utc; \
+      tot->Bias = ((utc - time(NULL) + 1800)/3600)*3600; \
+      tot->Descriptors = xNewList(NULL); \
+   } while (0)
+
+
 /* Descriptors */
 
 #define DescriptorTag(x) ((struct Descriptor *)(x))->Tag
@@ -313,29 +367,6 @@ struct Descriptor {
    struct NODE          Node;
    unsigned short       Tag;
 };
-
-
-/* ConditionalAccessDescriptor */
-
-struct ConditionalAccessDescriptor {
-   struct NODE          Node;
-   unsigned short       Tag;
-   unsigned short       Amount;        /* Data */
-   unsigned char       *Data;
-};
-
-#define CreateConditionalAccessDescriptor(descr, amount, data) \
-   do \
-   { \
-      unsigned char *tmpptr; \
-      \
-      xMemAlloc (amount, &tmpptr); \
-      memcpy (tmpptr, data, amount); \
-      xCreateNode (((struct ConditionalAccessDescriptor *)descr), NULL); \
-      ((struct ConditionalAccessDescriptor *)descr)->Tag = DESCR_CA; \
-      ((struct ConditionalAccessDescriptor *)descr)->Amount = amount; \
-      ((struct ConditionalAccessDescriptor *)descr)->Data = tmpptr; \
-   } while (0)
 
 
 /* Iso639LanguageDescriptor */
@@ -434,19 +465,23 @@ struct AncillaryDataDescriptor {
 
 
 /* BouquetNameDescriptor */
+/* 
+   the same used instead of NetworkNameDescriptor because their structures
+   are identical. We pass 'tag' parameter to distinguish between them later
+*/
 
 struct BouquetNameDescriptor {
    struct NODE          Node;    /* Node enthält Namen */
    unsigned short       Tag;
 };
 
-#define CreateBouquetNameDescriptor(descr, text) \
+#define CreateBouquetNameDescriptor(descr, text, tag) \
    do \
    { \
       xCreateNode (((struct BouquetNameDescriptor *)descr), NULL); \
       ((struct NODE *)descr)->Name = text; \
       ((struct NODE *)descr)->HashKey = xHashKey (text); \
-      ((struct BouquetNameDescriptor *)descr)->Tag = DESCR_BOUQUET_NAME; \
+      ((struct BouquetNameDescriptor *)descr)->Tag = tag; \
    } while (0)
 
 
@@ -514,6 +549,33 @@ struct CaIdentifierDescriptor {
       ((struct CaIdentifierDescriptor *)descr)->SystemID[num] = id
 #define GetCaIdentifierID(descr, num) (((struct CaIdentifierDescriptor *)descr)->SystemID[num])
 
+/* CaDescriptor */
+
+struct CaDescriptor {
+   struct NODE          Node;
+   unsigned short       Tag;
+   unsigned short       CA_type;
+   unsigned short       CA_PID;
+   unsigned int         ProviderID;
+   unsigned short       DataLength;
+   unsigned char       *Data;
+};
+
+#define CreateCaDescriptor(descr, typ, capid, len) \
+   do \
+   { \
+      xCreateNode (((struct CaDescriptor *)descr), NULL); \
+      ((struct CaDescriptor *)descr)->Tag = DESCR_CA; \
+      ((struct CaDescriptor *)descr)->CA_type = typ; \
+      ((struct CaDescriptor *)descr)->CA_PID = capid; \
+      ((struct CaDescriptor *)descr)->ProviderID = 0; \
+      ((struct CaDescriptor *)descr)->DataLength = len; \
+      xMemAlloc (len+1, &((struct CaDescriptor *)descr)->Data); \
+   } while (0)
+
+#define SetCaData(descr, num, id) \
+      ((struct CaDescriptor *)descr)->Data[num] = id
+#define GetCaData(descr, num) (((struct CaDescriptor *)descr)->Data[num])
 
 /* StreamIdentifierDescriptor */
 
@@ -968,6 +1030,122 @@ struct SubtitlingItem {
       xAddTail (((struct SubtitlingDescriptor *)desc)->Items, item); \
    } while (0)
 
+/* SatelliteDeliverySystemDescriptor */
+
+struct SatelliteDeliverySystemDescriptor {
+   struct NODE          Node;
+   unsigned short       Tag;
+   long                 Frequency;
+   short                OrbitalPosition;
+   char                 Polarization;
+   long                 SymbolRate;
+   char                 FEC;
+};
+
+#define CreateSatelliteDeliverySystemDescriptor(descr, freq, orb, polar, sr, fec) \
+   do \
+   { \
+      xCreateNode (((struct SatelliteDeliverySystemDescriptor *)descr), NULL); \
+      ((struct SatelliteDeliverySystemDescriptor *)descr)->Tag = DESCR_SAT_DEL_SYS; \
+      ((struct SatelliteDeliverySystemDescriptor *)descr)->Frequency = freq; \
+      ((struct SatelliteDeliverySystemDescriptor *)descr)->OrbitalPosition = orb; \
+      ((struct SatelliteDeliverySystemDescriptor *)descr)->Polarization = polar; \
+      ((struct SatelliteDeliverySystemDescriptor *)descr)->SymbolRate = sr; \
+      ((struct SatelliteDeliverySystemDescriptor *)descr)->FEC = fec; \
+   } while (0)
+
+/* ServiceListDescriptor */
+
+struct ServiceListDescriptor {
+   struct NODE          Node;     
+   unsigned short       Tag;
+   struct LIST         *ServiceList;
+};
+
+#define CreateServiceListDescriptor(descr) \
+   do \
+   { \
+      xCreateNode (((struct ServiceListDescriptor *)descr), NULL); \
+      ((struct ServiceListDescriptor *)descr)->Tag = DESCR_SERVICE_LIST; \
+      ((struct ServiceListDescriptor *)descr)->ServiceList = xNewList(NULL); \
+   } while (0)
+
+struct ServiceListEntry {
+   struct NODE          Node;     
+   int                  ServiceID;
+   unsigned short       ServiceType;
+};
+
+#define AddServiceListEntry(descr, id, typ) \
+   do \
+   { \
+      struct ServiceListEntry *newent; \
+      \
+      xCreateNode (newent, NULL); \
+      newent->ServiceID = id; \
+      newent->ServiceType = typ; \
+      xAddTail (((struct ServiceListDescriptor *)descr)->ServiceList, newent); \
+   } while (0)
+
+/* LocalTimeOffsetDescriptor */
+
+struct LocalTimeOffsetDescriptor {
+   struct NODE          Node;     
+   unsigned short       Tag;
+   struct LIST         *LocalTimeOffsets;
+};
+
+#define CreateLocalTimeOffsetDescriptor(descr) \
+   do \
+   { \
+      xCreateNode (((struct LocalTimeOffsetDescriptor *)descr), NULL); \
+      ((struct LocalTimeOffsetDescriptor *)descr)->Tag = DESCR_LOCAL_TIME_OFF; \
+      ((struct LocalTimeOffsetDescriptor *)descr)->LocalTimeOffsets = xNewList(NULL); \
+   } while (0)
+
+struct LocalTimeOffsetEntry {
+   struct NODE          Node;     
+   char                 CountryCode[4];
+   char                 RegionID;
+   time_t               CurrentOffset;
+   time_t               ChangeTime;
+   time_t               NextOffset;
+};
+
+#define CreateLocalTimeOffsetEntry(newent, code1, code2, code3, reg, co, ct, no) \
+   do \
+   { \
+      xCreateNode (newent, NULL); \
+      newent->CountryCode[0] = code1; \
+      newent->CountryCode[1] = code2; \
+      newent->CountryCode[2] = code3; \
+      newent->CountryCode[3] = '\0'; \
+      newent->RegionID = reg; \
+      newent->CurrentOffset = co; \
+      newent->ChangeTime = ct; \
+      newent->NextOffset = no; \
+   } while (0)
+
+#define AddLocalTimeOffsetEntry(descr, code1, code2, code3, reg, co, ct, no) \
+   do \
+   { \
+      struct LocalTimeOffsetEntry *newent; \
+      \
+      xCreateNode (newent, NULL); \
+      newent->CountryCode[0] = code1; \
+      newent->CountryCode[1] = code2; \
+      newent->CountryCode[2] = code3; \
+      newent->CountryCode[3] = '\0'; \
+      newent->RegionID = reg; \
+      newent->CurrentOffset = co; \
+      newent->ChangeTime = ct; \
+      newent->NextOffset = no; \
+      xAddTail (((struct LocalTimeOffsetDescriptor *)descr)->LocalTimeOffsets, newent); \
+   } while (0)
+
+#define timezonecmp(ptoe,cod,reg) \
+   (strncmp(ptoe->CountryCode, cod, 3) || (ptoe->RegionID != reg))
+
 
 
 /* Prototypes */
@@ -979,13 +1157,17 @@ extern "C" {
 /* si_parser.c */
 
 struct LIST *siParsePAT (u_char *);
+struct LIST *siParseCAT (u_char *);
 struct Pid *siParsePMT (u_char *);
 struct LIST *siParseSDT (u_char *);
+struct LIST *siParseNIT (u_char *);
 struct LIST *siParseEIT (u_char *);
 time_t siParseTDT (u_char *);
+struct Tot *siParseTOT (u_char *);
 void siParseDescriptors (struct LIST *, u_char *, int, u_char);
 void siParseDescriptor (struct LIST *, u_char *);
 char *siGetDescriptorText (u_char *, int);
+char *siGetDescriptorName (u_char *, int);
 u_long crc32 (char *data, int len);
 
 /* si_debug_services.c */
@@ -999,6 +1181,8 @@ void siDebugPids (char *, struct LIST *);
 void siDebugDescriptors (char *, struct LIST *);
 void siDebugEitServices (struct LIST *);
 void siDebugEitEvents (char *, struct LIST *);
+void siDumpDescriptor (void *);
+void siDumpSection (void *);
 
 #ifdef __cplusplus
 }

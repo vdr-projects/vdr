@@ -2020,3 +2020,5 @@ Video Disk Recorder Revision History
 - Implemented a "resume ID" which allows several users to each have their own
   resume.vdr files (thanks to Martin Hammerschmid). This parameter can be set in
   the "Setup/Replay" menu (see MANUAL for details).
+- Now using 'libdtv' version 0.0.5 (thanks to Rolf Hakenes for the new version
+  and Stefan Huelswitt for adapting VDR to it).

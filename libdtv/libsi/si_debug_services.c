@@ -4,11 +4,13 @@
 ///                                                        ///
 //////////////////////////////////////////////////////////////
 
-// $Revision: 1.4 $
-// $Date: 2001/10/07 10:24:46 $
+// $Revision: 1.5 $
+// $Date: 2003/02/04 18:45:35 $
 // $Author: hakenes $
 //
-//   (C) 2001 Rolf Hakenes <hakenes@hippomi.de>, under the GNU GPL.
+//   (C) 2001-03 Rolf Hakenes <hakenes@hippomi.de>, under the
+//               GNU GPL with contribution of Oleg Assovski,
+//               www.satmania.com
 //
 // libsi is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -26,11 +28,13 @@
 // Boston, MA 02111-1307, USA.
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <time.h>
 
 #include "../liblx/liblx.h"
 #include "libsi.h"
+#include "si_tables.h"
 #include "si_debug_services.h"
 
 
@@ -208,6 +212,8 @@ void siDebugPids (char *Prepend, struct LIST *PidList)
       printf ("%s   ProgramID: %d\n", Prepend, Pid->ProgramID);
       printf ("%s   PcrPid: %d\n", Prepend, Pid->PcrPID);
       printf ("%s   PmtVersion: %d\n", Prepend, Pid->PmtVersion);
+      sprintf (NewPrepend, "%s      ", Prepend);
+      siDebugDescriptors (NewPrepend, Pid->Descriptors);
 
       xForeach (Pid->InfoList, PidInfo)
       {
@@ -254,6 +260,11 @@ void siDebugDescriptors (char *Prepend, struct LIST *Descriptors)
                    Identifier & ANCILLARY_DATA_SCALE_FACTOR)
                printf ("Scale Factor Error Check (ScF-CRC) ");
             printf ("\n");
+         break;
+
+         case DESCR_NW_NAME:
+            printf ("%sDescriptor: Network Name\n", Prepend);
+            printf ("%s   Name: %s\n", Prepend, xName (Descriptor));
          break;
 
          case DESCR_BOUQUET_NAME:
@@ -336,10 +347,36 @@ void siDebugDescriptors (char *Prepend, struct LIST *Descriptors)
          case DESCR_CA_IDENT:
             printf ("%sDescriptor: Conditional Access Identity\n", Prepend);
             {
-               int j;
+               int j,k;
                for (j = 0; j < ((struct CaIdentifierDescriptor *)Descriptor)->Amount; j++)
-                  printf ("%s   SystemID: 0x%04x\n", Prepend, GetCaIdentifierID (Descriptor, j));
+               {
+                  printf ("%s   SystemID: 0x%04x", Prepend, GetCaIdentifierID (Descriptor, j));
+                  k = GetCaIdentifierID (Descriptor, j) >> 8;
+                  if (k < 0 || k > MAX_CA_IDENT) printf (" (unknown)\n");
+                  else printf (" (%s)\n", CaIdents[k]);
+               }
             }
+         break;
+
+         case DESCR_CA:
+         {
+            int j,k;
+
+            printf ("%sDescriptor: Conditional Access\n", Prepend);
+            printf ("%s   CA type: 0x%04x", Prepend, (((struct CaDescriptor *)Descriptor)->CA_type));
+            k = (((struct CaDescriptor *)Descriptor)->CA_type) >> 8;
+            if (k < 0 || k > MAX_CA_IDENT) printf (" (unknown)\n");
+            else printf (" (%s)\n", CaIdents[k]);
+            printf ("%s   CA PID: %d\n", Prepend, (((struct CaDescriptor *)Descriptor)->CA_PID));
+            printf ("%s   ProviderID: 0x%04X\n", Prepend, (((struct CaDescriptor *)Descriptor)->ProviderID));
+            if (((struct CaDescriptor *)Descriptor)->DataLength > 0)
+            {
+               printf ("%s   CA data:", Prepend);
+               for (j = 0; j < ((struct CaDescriptor *)Descriptor)->DataLength; j++)
+                  printf (" 0x%02x", GetCaData (Descriptor, j));
+               printf ("\n");
+            }
+         }
          break;
 
          case DESCR_CONTENT:
@@ -489,16 +526,57 @@ void siDebugDescriptors (char *Prepend, struct LIST *Descriptors)
          }
          break;
 
-         case DESCR_NW_NAME:
-         case DESCR_SERVICE_LIST:
-         case DESCR_STUFFING:
          case DESCR_SAT_DEL_SYS:
+         {
+            struct SatelliteDeliverySystemDescriptor *sds =
+                (struct SatelliteDeliverySystemDescriptor *)Descriptor;
+
+            printf ("%sDescriptor: Satellite Delivery System\n", Prepend);
+            printf ("%s   Frequency: %ld\n", Prepend, sds->Frequency);
+            printf ("%s   OrbitalPosition: %d\n", Prepend, sds->OrbitalPosition);
+            printf ("%s   Polarization: %c\n", Prepend, sds->Polarization);
+            printf ("%s   SymbolRate: %ld\n", Prepend, sds->SymbolRate);
+            printf ("%s   FEC: %c\n", Prepend, sds->FEC);
+         }
+         break;
+
+         case DESCR_SERVICE_LIST:
+         {
+            struct ServiceListEntry *Entry;
+
+            printf ("%sDescriptor: Service List\n", Prepend);
+            xForeach (((struct ServiceListDescriptor *)Descriptor)->ServiceList, Entry)
+            {
+               printf ("%s   Entry:\n");
+               printf ("%s      ServiceID: %d\n", Prepend, Entry->ServiceID);
+               printf ("%s      ServiceType: %04x\n", Prepend, Entry->ServiceType);
+            }
+         }
+         break;
+
+         case DESCR_LOCAL_TIME_OFF:
+         {
+            struct LocalTimeOffsetEntry *Offset;
+
+            printf ("%sDescriptor: Local Time Offset\n", Prepend);
+            xForeach (((struct LocalTimeOffsetDescriptor *)Descriptor)->LocalTimeOffsets, Offset)
+            {
+               printf ("%s   Offset:\n");
+               printf ("%s      CountryCode: %s\n", Offset->CountryCode);
+               printf ("%s      RegionID: %c\n", Offset->RegionID);
+               printf ("%s      CurrentOffset: %ld\n", Offset->CurrentOffset);
+               printf ("%s      ChangeTime: %ld\n", Offset->ChangeTime);
+               printf ("%s      NextOffset: %ld\n", Offset->NextOffset);
+            }
+         }
+         break;
+
+         case DESCR_STUFFING:
          case DESCR_CABLE_DEL_SYS:
          case DESCR_VBI_DATA:
          case DESCR_VBI_TELETEXT:
          case DESCR_MOSAIC:
          case DESCR_TELEPHONE:
-         case DESCR_LOCAL_TIME_OFF:
          case DESCR_TERR_DEL_SYS:
          case DESCR_ML_NW_NAME:
          case DESCR_ML_BQ_NAME:
@@ -525,5 +603,41 @@ void siDebugDescriptors (char *Prepend, struct LIST *Descriptors)
       }
    }
    return;
+}
+
+void siDumpDescriptor (void * Descriptor)
+{
+   int Length, i;
+   unsigned char *ptr;
+
+   Length = GetDescriptorLength (Descriptor);
+   for (i = 0, ptr = (char*) Descriptor; i < Length; i++) {
+        if ((i % 8) == 0) 
+           printf ("\n");
+        printf ("0x%02X ", (unsigned int) ptr[i]);
+   }
+   printf ( "\n");
+}
+
+void siDumpSection (void *Section)
+{
+   int Length, i;
+   unsigned char *ptr;
+   char str[9];
+
+   Length = GetSectionLength (Section) + 3;
+   for (i = 0, ptr = (unsigned char*) Section, memset (str, 0, 9); i < Length; i++) {
+        if ((i % 8) == 0) 
+        {
+           printf ("  %s\n", str);
+           memset (str, 0, 8);
+        }
+        printf ("0x%02X ", (unsigned int) ptr[i]);
+        if (ptr[i] < 0x20 || (ptr[i] > 'z' && ptr[i] < ((unsigned char )'À')) )
+           str[i % 8] = '.';
+        else
+           str[i % 8] = ptr[i];
+   }
+   printf ("  %*s\n", (8 - ((abs(i - 1) % 8) ? (abs(i - 1) % 8) : 8)) * 5, str);
 }
 

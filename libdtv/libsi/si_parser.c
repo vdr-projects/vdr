@@ -4,11 +4,13 @@
 ///                                                        ///
 //////////////////////////////////////////////////////////////
 
-// $Revision: 1.6 $
-// $Date: 2002/01/30 17:04:13 $
+// $Revision: 1.8 $
+// $Date: 2003/02/04 18:45:35 $
 // $Author: hakenes $
 //
-//   (C) 2001 Rolf Hakenes <hakenes@hippomi.de>, under the GNU GPL.
+//   (C) 2001-03 Rolf Hakenes <hakenes@hippomi.de>, under the
+//               GNU GPL with contribution of Oleg Assovski,
+//               www.satmania.com
 //
 // libsi is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -52,7 +54,7 @@ struct LIST *siParsePAT (u_char *Buffer)
    Pat = (pat_t *) Buffer; Ptr = Buffer;
 
    if (Pat->table_id != TID_PAT) {
-//      fprintf (stderr, "PAT: wrong TID %d\n", Pat->table_id);
+      // fprintf (stderr, "PAT: wrong TID %d\n", Pat->table_id);
       return NULL;
    }
 
@@ -83,6 +85,43 @@ struct LIST *siParsePAT (u_char *Buffer)
 }
 
 
+struct LIST *siParseCAT (u_char *Buffer) 
+{
+   cat_t               *Cat;
+   u_char              *Ptr;
+   int                  SectionLength;
+   int                  TransportStreamID;
+   int                  CatVersion;
+   struct Descriptor   *Descriptor;
+   struct LIST         *DescriptorList = NULL;
+
+   if (!Buffer) return NULL;
+
+   Cat = (cat_t *) Buffer; Ptr = Buffer;
+
+   if (Cat->table_id != TID_CAT) {
+      // fprintf (stderr, "CAT: wrong TID %d\n", Cat->table_id);
+      return NULL;
+   }
+
+   SectionLength = HILO (Cat->section_length) + 3 - CAT_LEN - 4;
+
+   if (crc32 (Ptr, HILO (Cat->section_length) + 3)) return (NULL);
+
+   CatVersion = Cat->version_number;
+
+   Ptr += CAT_LEN;
+
+   if (SectionLength >= 0)
+   {
+      DescriptorList = xNewList (NULL);
+      siParseDescriptors (DescriptorList, Ptr, SectionLength, Cat->table_id);
+   }
+
+   return (DescriptorList);
+}
+
+
 struct Pid *siParsePMT (u_char *Buffer) 
 {
    pmt_t               *Pmt;
@@ -101,7 +140,7 @@ struct Pid *siParsePMT (u_char *Buffer)
    Pmt = (pmt_t *) Buffer; Ptr = Buffer;
 
    if (Pmt->table_id != TID_PMT) {
-//      fprintf (stderr, "PMT: wrong TID %d\n", Pmt->table_id);
+      // fprintf (stderr, "PMT: wrong TID %d\n", Pmt->table_id);
       return NULL;
    }
 
@@ -147,6 +186,89 @@ struct Pid *siParsePMT (u_char *Buffer)
 }
 
 
+struct LIST *siParseNIT (u_char *Buffer) 
+{
+   nit_t               *Nit;
+   nit_mid_t           *NitMid;
+   nit_ts_t            *TSDesc;
+   u_char              *Ptr;
+   int                  SectionLength, LoopLength, Loop2Length;
+   int                  TransportStreamID;
+   int                  NitVersion;
+   int                  NetworkID;
+   struct TransportStream *TransportStream;
+   struct LIST         *TSList = NULL;
+   struct LIST         *Networks;
+   struct NetworkInfo  *Network;  
+
+   if (!Buffer) return NULL;
+
+   Nit = (nit_t *) Buffer; 
+   Ptr = Buffer;
+
+   if (Nit->table_id != TID_NIT_ACT && Nit->table_id != TID_NIT_OTH && Nit->table_id != TID_BAT) {
+      return NULL;
+   }
+
+   SectionLength = HILO (Nit->section_length) + 3 - NIT_LEN - 4;
+
+   if (crc32 (Ptr, HILO (Nit->section_length) + 3)) return (NULL);
+
+   NitVersion = Nit->version_number;
+   NetworkID = HILO (Nit->network_id);
+   if (NetworkID == 65535)
+      NetworkID = 0;
+   CreateNetworkInfo (Network, NetworkID);
+   Networks = xNewList (NULL);
+   xAddTail (Networks, Network);
+
+   Ptr += NIT_LEN;
+
+   LoopLength = HILO (Nit->network_descriptor_length);
+//   fprintf (stderr, "table 0x%X, SectionLen = %d, LoopLen = %d\n",
+//                              Nit->table_id, SectionLength, LoopLength);
+   if (LoopLength > SectionLength - SDT_DESCR_LEN)
+      return (Networks);
+
+   if (LoopLength <= SectionLength) {
+      if (SectionLength >= 0) siParseDescriptors (Network->Descriptors, Ptr, LoopLength, Nit->table_id);
+      SectionLength -= LoopLength;
+      Ptr += LoopLength;
+      NitMid = (nit_mid_t *) Ptr; 
+      LoopLength = HILO (NitMid->transport_stream_loop_length);
+//      fprintf (stderr, "table 0x%X, TS LoopLen = %d\n",
+//                              Nit->table_id, LoopLength);
+      if ((SectionLength > 0) && (LoopLength <= SectionLength)) {
+         SectionLength -= SIZE_NIT_MID;
+         Ptr += SIZE_NIT_MID;
+         while (LoopLength > 0) {
+            TSDesc = (nit_ts_t *) Ptr;
+            CreateTransportStream (TransportStream, HILO(TSDesc->transport_stream_id), HILO(TSDesc->original_network_id));
+            if (TransportStream->TransportStreamID == 65535)
+               TransportStream->TransportStreamID = 0;
+            if (TransportStream->OriginalNetworkID == 65535)
+               TransportStream->OriginalNetworkID = 0;
+            Loop2Length = HILO (TSDesc->transport_descriptors_length);
+//            fprintf (stderr, "table 0x%X, TSdesc LoopLen  = %d\n",
+//                              Nit->table_id, Loop2Length);
+            Ptr += NIT_TS_LEN;
+            if (Loop2Length <= LoopLength) {
+               if (LoopLength >= 0) siParseDescriptors (TransportStream->Descriptors, Ptr, Loop2Length, Nit->table_id);
+            }
+            if (!Network->TransportStreams)
+               Network->TransportStreams = xNewList (NULL);
+            xAddTail (Network->TransportStreams, TransportStream);
+            LoopLength -= Loop2Length + NIT_TS_LEN;
+            SectionLength -= Loop2Length + NIT_TS_LEN;
+            Ptr += Loop2Length;
+         }
+      }
+   }
+
+   return (Networks);
+}
+
+
 struct LIST *siParseSDT (u_char *Buffer) 
 {
    sdt_t               *Sdt;
@@ -164,7 +286,7 @@ struct LIST *siParseSDT (u_char *Buffer)
    Sdt = (sdt_t *) Buffer; Ptr = Buffer;
 
    if (Sdt->table_id != TID_SDT_ACT && Sdt->table_id != TID_SDT_OTH) {
-//      fprintf (stderr, "SDT: wrong TID %d\n", Sdt->table_id);
+      // fprintf (stderr, "SDT: wrong TID %d\n", Sdt->table_id);
       return NULL;
    }
 
@@ -250,7 +372,7 @@ struct LIST *siParseEIT (u_char *Buffer)
          Eit->table_id <= TID_EIT_ACT_SCH + 0x0F) &&
        !(Eit->table_id >= TID_EIT_OTH_SCH &&
          Eit->table_id <= TID_EIT_OTH_SCH + 0x0F)) {
-//      fprintf (stderr, "EIT: wrong TID %d\n", Eit->table_id);
+      // fprintf (stderr, "EIT: wrong TID %d\n", Eit->table_id);
       return NULL;
    }
 
@@ -331,7 +453,7 @@ time_t siParseTDT (u_char *Buffer)
    Tdt = (tdt_t *) Buffer; Ptr = Buffer;
 
    if (Tdt->table_id != TID_TDT) {
-//      fprintf (stderr, "TDT: wrong TID %d\n", Tdt->table_id);
+      // fprintf (stderr, "TDT: wrong TID %d\n", Tdt->table_id);
       return 0;
    }
 
@@ -344,6 +466,44 @@ time_t siParseTDT (u_char *Buffer)
 }
 
 
+struct Tot *siParseTOT (u_char *Buffer) 
+{
+   tot_t               *Tot;
+   u_char              *Ptr;
+   int                  SectionLength, LoopLength;
+   struct Tot          *table;
+   time_t               CurrentTime;
+
+   if (!Buffer) return NULL;
+
+   Tot = (tot_t *) Buffer;
+   Ptr = Buffer;
+
+   if (Tot->table_id != TID_TOT) {
+      return NULL;
+   }
+
+   if (crc32 (Ptr, HILO (Tot->section_length) + 3)) return (NULL);
+//   SectionLength = HILO (Tot->section_length) + 3 - TOT_LEN - 4;
+
+   CurrentTime = MjdToEpochTime (Tot->utc_mjd) +
+                 BcdTimeToSeconds (Tot->utc_time);
+   LoopLength = HILO (Tot->descriptors_loop_length);
+   if (!LoopLength)
+      return NULL;
+
+   CreateTot (table, CurrentTime);
+
+   Ptr += TOT_LEN;
+
+   siParseDescriptors (table->Descriptors, Ptr, LoopLength, Tot->table_id);
+
+   // fprintf (stderr, "TOT Bias: %d\n", table->Bias);
+   return (table);
+}
+
+static u_char TempTableID = 0;
+
 void siParseDescriptors (struct LIST *Descriptors, u_char *Buffer,
                          int Length, u_char TableID)
 {
@@ -352,6 +512,7 @@ void siParseDescriptors (struct LIST *Descriptors, u_char *Buffer,
 
    DescriptorLength = 0;
    Ptr = Buffer;
+   TempTableID = TableID;
 
    while (DescriptorLength < Length)
    {
@@ -362,15 +523,17 @@ void siParseDescriptors (struct LIST *Descriptors, u_char *Buffer,
          case TID_NIT_ACT: case TID_NIT_OTH:
             switch (GetDescriptorTag(Ptr))
             {
-               case DESCR_NW_NAME:
-               case DESCR_SERVICE_LIST:
-               case DESCR_STUFFING:
                case DESCR_SAT_DEL_SYS:
                case DESCR_CABLE_DEL_SYS:
+               case DESCR_SERVICE_LIST:
+               case DESCR_PRIV_DATA_SPEC:
+//                  fprintf (stderr, "Got descriptor with tag = 0x%X\n", GetDescriptorTag(Ptr));
+//                  siDumpDescriptor (Ptr);
+               case DESCR_NW_NAME:
+               case DESCR_STUFFING:
                case DESCR_LINKAGE:
                case DESCR_TERR_DEL_SYS:
                case DESCR_ML_NW_NAME:
-               case DESCR_PRIV_DATA_SPEC:
                case DESCR_CELL_LIST:
                case DESCR_CELL_FREQ_LINK:
                case DESCR_ANNOUNCEMENT_SUPPORT:
@@ -378,8 +541,7 @@ void siParseDescriptors (struct LIST *Descriptors, u_char *Buffer,
                break;
 
                default:
-               /*   fprintf (stderr, "forbidden descriptor 0x%x in NIT\n",
-                              GetDescriptorTag(Ptr));*/
+                  // fprintf (stderr, "forbidden descriptor 0x%x in NIT\n", GetDescriptorTag(Ptr));
                break;
             }
          break;
@@ -396,12 +558,12 @@ void siParseDescriptors (struct LIST *Descriptors, u_char *Buffer,
                case DESCR_CA_IDENT:
                case DESCR_ML_BQ_NAME:
                case DESCR_PRIV_DATA_SPEC:
+ //                 fprintf (stderr, "Got descriptor with tag = 0x%X\n", GetDescriptorTag(Ptr));
                   siParseDescriptor (Descriptors, Ptr);
                break;
 
                default:
-                  /*fprintf (stderr, "forbidden descriptor 0x%x in BAT\n",
-                              GetDescriptorTag(Ptr));*/
+                  // fprintf (stderr, "forbidden descriptor 0x%x in BAT\n", GetDescriptorTag(Ptr));
                break;
             }
          break;
@@ -426,8 +588,7 @@ void siParseDescriptors (struct LIST *Descriptors, u_char *Buffer,
                break;
 
                default:
-                  /* fprintf (stderr, "forbidden descriptor 0x%x in SDT\n",
-                              GetDescriptorTag(Ptr)); */
+                  // fprintf (stderr, "forbidden descriptor 0x%x in SDT\n", GetDescriptorTag(Ptr));
                break;
             }
          break;
@@ -470,8 +631,7 @@ void siParseDescriptors (struct LIST *Descriptors, u_char *Buffer,
                break;
 
                default:
-                  /*fprintf (stderr, "forbidden descriptor 0x%x in EIT\n",
-                              GetDescriptorTag(Ptr));*/
+                  // fprintf (stderr, "forbidden descriptor 0x%x in EIT\n", GetDescriptorTag(Ptr));
                break;
             }
          break;
@@ -484,8 +644,7 @@ void siParseDescriptors (struct LIST *Descriptors, u_char *Buffer,
                break;
 
                default:
-                  /*fprintf (stderr, "forbidden descriptor 0x%x in TOT\n",
-                              GetDescriptorTag(Ptr));*/
+                  // fprintf (stderr, "forbidden descriptor 0x%x in TOT\n", GetDescriptorTag(Ptr));
                break;
             }
          break;
@@ -522,15 +681,28 @@ void siParseDescriptors (struct LIST *Descriptors, u_char *Buffer,
                break;
 
                default:
-                  /* fprintf (stderr, "forbidden descriptor 0x%x in PMT\n",
-                              GetDescriptorTag(Ptr)); */
+                  // fprintf (stderr, "forbidden descriptor 0x%x in PMT\n", GetDescriptorTag(Ptr));
+               break;
+            }
+         break;
+
+         case TID_CAT:
+            switch (GetDescriptorTag(Ptr))
+            {
+               case DESCR_CA_SYSTEM:
+               case DESCR_CA:
+               case DESCR_CA_IDENT:
+                  siParseDescriptor (Descriptors, Ptr);
+               break;
+
+               default:
+                  // fprintf (stderr, "forbidden descriptor 0x%x in CAT\n", GetDescriptorTag(Ptr));
                break;
             }
          break;
 
          default:
-            fprintf (stderr, "descriptor 0x%x in unsupported table 0x%x\n",
-                         GetDescriptorTag(Ptr), TableID);
+            // fprintf (stderr, "descriptor 0x%x in unsupported table 0x%x\n", GetDescriptorTag(Ptr), TableID);
          break;
       }
       DescriptorLength += GetDescriptorLength (Ptr);
@@ -550,6 +722,7 @@ void siParseDescriptor (struct LIST *Descriptors, u_char *Buffer)
    if (!Descriptors || !Buffer) return;
 
    Ptr = Buffer;
+//   fprintf (stderr, "Got descriptor with tag = 0x%X\n", GetDescriptorTag(Buffer));
 
    switch (GetDescriptorTag(Buffer))
    {
@@ -558,10 +731,12 @@ void siParseDescriptor (struct LIST *Descriptors, u_char *Buffer)
                    CastAncillaryDataDescriptor(Buffer)->ancillary_data_identifier);
       break;
 
+      case DESCR_NW_NAME:
       case DESCR_BOUQUET_NAME:
-         Text = siGetDescriptorText (Buffer + DESCR_BOUQUET_NAME_LEN,
+         Text = siGetDescriptorName (Buffer + DESCR_BOUQUET_NAME_LEN,
                    GetDescriptorLength (Buffer) - DESCR_BOUQUET_NAME_LEN);
-         CreateBouquetNameDescriptor (Descriptor, Text);
+//         fprintf (stderr, "Got descriptor with tag = 0x%X, text = '%s'\n", GetDescriptorTag(Buffer), Text);
+         CreateBouquetNameDescriptor (Descriptor, Text, GetDescriptorTag(Buffer));
       break;
 
       case DESCR_COMPONENT:
@@ -577,9 +752,9 @@ void siParseDescriptor (struct LIST *Descriptors, u_char *Buffer)
       break;
 
       case DESCR_SERVICE:
-         Text = siGetDescriptorText (Buffer + DESCR_SERVICE_LEN,
+         Text = siGetDescriptorName (Buffer + DESCR_SERVICE_LEN,
                    CastServiceDescriptor(Buffer)->provider_name_length);
-         Text2 = siGetDescriptorText (Buffer + DESCR_SERVICE_LEN +
+         Text2 = siGetDescriptorName (Buffer + DESCR_SERVICE_LEN +
                    CastServiceDescriptor(Buffer)->provider_name_length + 1,
                    *((u_char *)(Buffer + DESCR_SERVICE_LEN +
                    CastServiceDescriptor(Buffer)->provider_name_length)));
@@ -598,7 +773,7 @@ void siParseDescriptor (struct LIST *Descriptors, u_char *Buffer)
       break;
 
       case DESCR_SHORT_EVENT:
-         Text = siGetDescriptorText (Buffer + DESCR_SHORT_EVENT_LEN,
+         Text = siGetDescriptorName (Buffer + DESCR_SHORT_EVENT_LEN,
                    CastShortEventDescriptor(Buffer)->event_name_length);
          Text2 = siGetDescriptorText (Buffer + DESCR_SHORT_EVENT_LEN +
                    CastShortEventDescriptor(Buffer)->event_name_length + 1,
@@ -623,6 +798,7 @@ void siParseDescriptor (struct LIST *Descriptors, u_char *Buffer)
                    CastExtendedEventDescriptor(Buffer)->lang_code3, Text);
          Length = CastExtendedEventDescriptor(Buffer)->length_of_items;
          Ptr += DESCR_EXTENDED_EVENT_LEN;
+//         printf ("EEDesc #%d, %s\n", CastExtendedEventDescriptor(Buffer)->descriptor_number, Text);
          while ((Length > 0) && (Length < GetDescriptorLength (Buffer)))
          {
             Text = siGetDescriptorText (Ptr + ITEM_EXTENDED_EVENT_LEN,
@@ -631,6 +807,7 @@ void siParseDescriptor (struct LIST *Descriptors, u_char *Buffer)
                       CastExtendedEventItem(Ptr)->item_description_length + 1,
                       *((u_char *)(Ptr + ITEM_EXTENDED_EVENT_LEN +
                       CastExtendedEventItem(Ptr)->item_description_length)));
+//            printf ("EEItem #%d, %s, %s\n", CastExtendedEventDescriptor(Buffer)->descriptor_number, Text, Text2);
             AddExtendedEventItem (Descriptor, Text2, Text);
             Length -= ITEM_EXTENDED_EVENT_LEN + CastExtendedEventItem(Ptr)->item_description_length +
                       *((u_char *)(Ptr + ITEM_EXTENDED_EVENT_LEN +
@@ -642,13 +819,83 @@ void siParseDescriptor (struct LIST *Descriptors, u_char *Buffer)
       break;
 
       case DESCR_CA_IDENT:
-         CreateCaIdentifierDescriptor (Descriptor,
-                   (GetDescriptorLength(Buffer) - DESCR_CA_IDENTIFIER_LEN) / 2);
          Length = GetDescriptorLength (Buffer) - DESCR_CA_IDENTIFIER_LEN;
+         CreateCaIdentifierDescriptor (Descriptor, Length / 2);
          Ptr += DESCR_CA_IDENTIFIER_LEN; i = 0;
          while (Length > 0)
-            { SetCaIdentifierID(Descriptor, i, *((u_short *) Ptr));
+            { SetCaIdentifierID(Descriptor, i, ((*((u_char *) Ptr)<<8) + *((u_char *) (Ptr+1))));
               Length -= 2; Ptr += 2; i++; }
+      break;
+
+      case DESCR_CA:
+      {
+         struct CaDescriptor *CD;
+
+         Length = GetDescriptorLength (Buffer) - DESCR_CA_LEN;
+         CreateCaDescriptor (Descriptor,
+            HILO(CastCaDescriptor(Buffer)->CA_type),
+            HILO(CastCaDescriptor(Buffer)->CA_PID), Length);
+         Ptr += DESCR_CA_LEN; i = 0;
+         while (Length > 0)
+            { SetCaData(Descriptor, i, *Ptr);
+              Length --; Ptr ++; i++; }
+
+         /*
+          * The following analyses are more or less directly copied from
+          * MultiDec 8.4b Sources. Thanx to Espresso for his great work !!
+          */
+         CD = (struct CaDescriptor *) Descriptor;
+
+         // fprintf (stderr, "TableID: %02x - CA - Type: 0x%04x, PID: %d\n", TempTableID, CD->CA_type, CD->CA_PID);
+        
+         if ((CD->CA_type >> 8) == 0x01) /* SECA */
+         {
+            CD->ProviderID = (GetCaData (CD, 0) << 8) | GetCaData (CD, 1);
+         }
+         else if ((CD->CA_type >> 8) == 0x05) /* Viaccess ? (France Telecom) */
+         {
+            i=0;
+            while (i < CD->DataLength)
+            {
+               if ((GetCaData (CD, i) == 0x14) && (GetCaData (CD, i+1) == 0x03))
+               {
+                  CD->ProviderID = (GetCaData (CD, i+2) << 16) |
+                                   (GetCaData (CD, i+3) << 8) |
+                                   (GetCaData (CD, i+4) & 0xf0);
+                  i = CD->DataLength;
+               }
+               i++;
+            }
+         }
+         if (CD->CA_type==0x0100)  /* SECA 1 */
+         {
+         /*   bptr=MyPtr+19;
+
+            i=19;
+            while ( i+4 < ca_info->len ) {
+               if ( (*bptr&0xE0) == 0xE0 ) {
+                  CA_ECM=(( *bptr&0x1f)<<8)+*(bptr+1);
+                  Prov_Ident = ( *(bptr+2)<<8) | *(bptr+3);
+                  j=0;
+                  while ( j < ProgrammNeu[ProgrammNummer].CA_Anzahl ) {
+                     if (( ProgrammNeu[ProgrammNummer].CA_System[j].CA_Typ == CA_Typ )
+                            && ( ProgrammNeu[ProgrammNummer].CA_System[j].ECM == CA_ECM )) break;
+                     j++;
+                  };
+
+                  if ( j < MAX_CA_SYSTEMS ) {
+                     if ( j >= ProgrammNeu[ProgrammNummer].CA_Anzahl )
+                          ProgrammNeu[ProgrammNummer].CA_Anzahl++;
+                     ProgrammNeu[ProgrammNummer].CA_System[j].CA_Typ =CA_Typ;
+                     ProgrammNeu[ProgrammNummer].CA_System[j].ECM    =CA_ECM ;
+                     ProgrammNeu[ProgrammNummer].CA_System[j].Provider_Id = Prov_Ident;
+                  };
+               }
+               i+=0x0f;
+               bptr+=0x0f;
+            }; */
+         }
+      }
       break;
 
       case DESCR_CONTENT:
@@ -703,12 +950,6 @@ void siParseDescriptor (struct LIST *Descriptors, u_char *Buffer)
          CreateTimeShiftedEventDescriptor (Descriptor,
             HILO (CastTimeShiftedEventDescriptor(Ptr)->reference_service_id),
             HILO (CastTimeShiftedEventDescriptor(Ptr)->reference_event_id));
-      break;
-
-      case DESCR_CA:
-         CreateConditionalAccessDescriptor (Descriptor,
-            *(Ptr + 1) + 2, // we'll need the entire raw data!
-            Ptr);
       break;
 
       case DESCR_ISO_639_LANGUAGE:
@@ -789,6 +1030,80 @@ void siParseDescriptor (struct LIST *Descriptors, u_char *Buffer)
          }
       break;
 
+      case DESCR_SAT_DEL_SYS:
+//         fprintf (stderr, "got descriptor 0x%x\n", GetDescriptorTag(Buffer));
+      {
+         descr_satellite_delivery_system_t *sds;
+         sds = (descr_satellite_delivery_system_t *) Ptr;
+         if (CheckBcdChar (sds->frequency1) && CheckBcdChar (sds->frequency2) &&
+             CheckBcdChar (sds->frequency3) && CheckBcdChar (sds->frequency4) &&
+             CheckBcdChar (sds->orbital_position1) &&
+             CheckBcdChar (sds->orbital_position2) &&
+             CheckBcdChar (sds->symbol_rate1) && CheckBcdChar (sds->symbol_rate1) &&
+             CheckBcdChar (sds->symbol_rate3) && (sds->fec_inner != 0) && (sds->modulation == 1))
+         {
+           CreateSatelliteDeliverySystemDescriptor (Descriptor, 
+            BcdCharToInt (sds->frequency1) * 10 * 1000 * 1000 +
+            BcdCharToInt (sds->frequency2) * 100 * 1000 +
+            BcdCharToInt (sds->frequency3) * 1000 +
+            BcdCharToInt (sds->frequency4) * 10,
+            (sds->west_east_flag ? 1 : -1) *
+            (BcdCharToInt (sds->orbital_position1) * 100 +
+            BcdCharToInt (sds->orbital_position2)),
+            sds->polarization,
+            BcdCharToInt (sds->symbol_rate1) * 10 * 1000 +
+            BcdCharToInt (sds->symbol_rate2) * 100 +
+            BcdCharToInt (sds->symbol_rate3),
+            sds->fec_inner);
+         }
+         /* else
+         {
+            fprintf (stderr, "Illegal sds descriptor\n");
+            siDumpDescriptor (Buffer);
+         } */
+      }
+      break;
+
+      case DESCR_SERVICE_LIST:
+//         fprintf (stderr, "got descriptor 0x%x\n", GetDescriptorTag(Buffer));
+         CreateServiceListDescriptor (Descriptor);
+         Length = GetDescriptorLength (Buffer) - DESCR_SERVICE_LIST_LEN;
+         Ptr += DESCR_SERVICE_LIST_LEN;
+         while (Length > 0)
+         {
+            AddServiceListEntry (Descriptor,
+                   HILO (CastServiceListDescriptorLoop(Ptr)->service_id),
+                   CastServiceListDescriptorLoop(Ptr)->service_type);
+            Length -= DESCR_SERVICE_LIST_LEN;
+            Ptr += DESCR_SERVICE_LIST_LEN;
+         }
+      break;
+
+      case DESCR_LOCAL_TIME_OFF:
+         CreateLocalTimeOffsetDescriptor (Descriptor);
+         Length = GetDescriptorLength (Buffer) - DESCR_LOCAL_TIME_OFFSET_LEN;
+         Ptr += DESCR_LOCAL_TIME_OFFSET_LEN;
+         while (Length > 0)
+         {
+            time_t ct, co, no;
+            ct = MjdToEpochTime (CastLocalTimeOffsetEntry(Ptr)->time_of_change_mjd) +
+                 BcdTimeToSeconds (CastLocalTimeOffsetEntry(Ptr)->time_of_change_time);
+            co = (BcdCharToInt(CastLocalTimeOffsetEntry(Ptr)->local_time_offset_h) * 3600 + 
+                 BcdCharToInt(CastLocalTimeOffsetEntry(Ptr)->local_time_offset_m) * 60) * 
+                 ((CastLocalTimeOffsetEntry(Ptr)->local_time_offset_polarity) ? -1 : 1); 
+            no = (BcdCharToInt(CastLocalTimeOffsetEntry(Ptr)->next_time_offset_h) * 3600 + 
+                 BcdCharToInt(CastLocalTimeOffsetEntry(Ptr)->next_time_offset_m) * 60) * 
+                 ((CastLocalTimeOffsetEntry(Ptr)->local_time_offset_polarity) ? -1 : 1); 
+            AddLocalTimeOffsetEntry (Descriptor,
+                   CastLocalTimeOffsetEntry(Ptr)->country_code1, 
+                   CastLocalTimeOffsetEntry(Ptr)->country_code2, 
+                   CastLocalTimeOffsetEntry(Ptr)->country_code3, 
+                   CastLocalTimeOffsetEntry(Ptr)->country_region_id, co, ct, no); 
+            Length -= LOCAL_TIME_OFFSET_ENTRY_LEN;
+            Ptr += LOCAL_TIME_OFFSET_ENTRY_LEN;
+         }
+      break;
+
       case DESCR_VIDEO_STREAM:
       case DESCR_AUDIO_STREAM:
       case DESCR_HIERARCHY:
@@ -804,15 +1119,11 @@ void siParseDescriptor (struct LIST *Descriptors, u_char *Buffer)
       case DESCR_SMOOTHING_BUFFER:
       case DESCR_STD:
       case DESCR_IBP:
-      case DESCR_NW_NAME:
-      case DESCR_SERVICE_LIST:
-      case DESCR_SAT_DEL_SYS:
       case DESCR_CABLE_DEL_SYS:
       case DESCR_VBI_DATA:
       case DESCR_VBI_TELETEXT:
       case DESCR_MOSAIC:
       case DESCR_TELEPHONE:
-      case DESCR_LOCAL_TIME_OFF:
       case DESCR_TERR_DEL_SYS:
       case DESCR_ML_NW_NAME:
       case DESCR_ML_BQ_NAME:
@@ -833,6 +1144,8 @@ void siParseDescriptor (struct LIST *Descriptors, u_char *Buffer)
       case DESCR_CELL_FREQ_LINK:
       case DESCR_ANNOUNCEMENT_SUPPORT:
       default:
+//         fprintf (stderr, "Unsupported descriptor with tag = 0x%02X\n", GetDescriptorTag(Ptr));
+//         siDumpDescriptor (Buffer);
          /* fprintf (stderr, "unsupported descriptor 0x%x\n",
                               GetDescriptorTag(Buffer)); */
       break;
@@ -845,14 +1158,19 @@ void siParseDescriptor (struct LIST *Descriptors, u_char *Buffer)
 /*
  *  ToDo:  ETSI conformal text definition
  */
-char *siGetDescriptorText (u_char *Buffer, int Length)
+#define GDT_TEXT_DESCRIPTOR 0
+#define GDT_NAME_DESCRIPTOR 1
+char *siGetDescriptorTextHandler (u_char *, int , int );
+
+char *siGetDescriptorTextHandler (u_char *Buffer, int Length, int type)
 {
    char *tmp, *result;
    int i;
 
    if ((Length < 0) || (Length > 4095))
       return (xSetText ("text error"));
-   if (*Buffer == 0x05 || (*Buffer >= 0x20 && *Buffer <= 0xff))
+/* ASSENIZATION: removing coding detection - suppose they are all ANSI */
+   // if (*Buffer == 0x05 || (*Buffer >= 0x20 && *Buffer <= 0xff))
    {
       xMemAlloc (Length+1, &result);
       tmp = result;
@@ -860,15 +1178,16 @@ char *siGetDescriptorText (u_char *Buffer, int Length)
       {
          if (*Buffer == 0) break;
 
-         if ((*Buffer >= ' ' && *Buffer <= '~') ||
+         if ((*Buffer >= ' ' && *Buffer <= '~') || (*Buffer == '\n') ||
              (*Buffer >= 0xa0 && *Buffer <= 0xff)) *tmp++ = *Buffer;
-         if (*Buffer == 0x8A || *Buffer == '\n') *tmp++ = '\n';
+         if (*Buffer == 0x8A) *tmp++ = '\n';
          if (*Buffer == 0x86 || *Buffer == 0x87) *tmp++ = ' ';
+         if ((*Buffer == 0x86 || *Buffer == 0x87) && !(GDT_NAME_DESCRIPTOR & type)) *tmp++ = ' ';
          Buffer++;
       }
       *tmp = '\0';
    }
-   else
+   /* else
    {
       switch (*Buffer)
       {
@@ -881,10 +1200,21 @@ char *siGetDescriptorText (u_char *Buffer, int Length)
          case 0x12: result = xSetText ("Coding according to KSC 5601"); break;
          default: result = xSetText ("Unknown coding"); break;
       }
-   }
+   } */
 
    return (result);
 }
+
+char *siGetDescriptorText (u_char *Buffer, int Length)
+{
+   return siGetDescriptorTextHandler (Buffer, Length, GDT_TEXT_DESCRIPTOR);
+}
+
+char *siGetDescriptorName (u_char *Buffer, int Length)
+{
+   return siGetDescriptorTextHandler (Buffer, Length, GDT_NAME_DESCRIPTOR);
+}
+
 
 // CRC32 lookup table for polynomial 0x04c11db7
 

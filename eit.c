@@ -16,7 +16,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.c 1.67 2003/03/16 11:20:05 kls Exp $
+ * $Id: eit.c 1.68 2003/04/12 11:27:31 kls Exp $
  ***************************************************************************/
 
 #include "eit.h"
@@ -1011,29 +1011,37 @@ private:
   int length;
   uchar *data;
 public:
-  cCaDescriptor(int Source, int Transponder, int ServiceId, int CaSystem, int Length, uchar *Data);
+  cCaDescriptor(int Source, int Transponder, int ServiceId, int CaSystem, int CaPid, int Length, uchar *Data);
   virtual ~cCaDescriptor();
   int Length(void) const { return length; }
   const uchar *Data(void) const { return data; }
   };
 
-cCaDescriptor::cCaDescriptor(int Source, int Transponder, int ServiceId, int CaSystem, int Length, uchar *Data)
+cCaDescriptor::cCaDescriptor(int Source, int Transponder, int ServiceId, int CaSystem, int CaPid, int Length, uchar *Data)
 {
   source = Source;
   transponder = Transponder;
   serviceId = ServiceId;
   caSystem = CaSystem;
-  length = Length;
+  length = Length + 6;
   data = MALLOC(uchar, length);
-  memcpy(data, Data, length);
-  /*//XXX just while debugging...
+  data[0] = DESCR_CA;
+  data[1] = length - 2;
+  data[2] = (caSystem >> 8) & 0xFF;
+  data[3] =  caSystem       & 0xFF;
+  data[4] = ((CaPid   >> 8) & 0xFF) | 0xE0;
+  data[5] =   CaPid         & 0xFF;
+  if (Length)
+     memcpy(&data[6], Data, Length);
+//#define DEBUG_CA_DESCRIPTORS 1
+#ifdef DEBUG_CA_DESCRIPTORS
   char buffer[1024];
   char *q = buffer;
   q += sprintf(q, "CAM: %04X %5d %4d", source, transponder, serviceId);
   for (int i = 0; i < length; i++)
       q += sprintf(q, " %02X", data[i]);
   dsyslog(buffer);
-  *///XXX
+#endif
 }
 
 cCaDescriptor::~cCaDescriptor()
@@ -1312,16 +1320,13 @@ void cSIProcessor::Action()
                            if (pid == pmtPid && buf[0] == 0x02 && currentSource && currentTransponder) {
                               struct Pid *pi = siParsePMT(buf);
                               if (pi) {
-                                 for (struct LIST *d = (struct LIST *)pi->Descriptors; d; d = (struct LIST *)xSucc(d)) {
-                                     if (DescriptorTag(d) == DESCR_CA) {
-                                        uchar *Data = ((ConditionalAccessDescriptor *)d)->Data;
-                                        int CaSystem = (Data[2] << 8) | Data[3];
-                                        if (!caDescriptors->Get(currentSource, currentTransponder, pi->ProgramID, CaSystem)) {
-                                           cMutexLock MutexLock(&caDescriptorsMutex);
-                                           caDescriptors->Add(new cCaDescriptor(currentSource, currentTransponder, pi->ProgramID, CaSystem, ((ConditionalAccessDescriptor *)d)->Amount, Data));
-                                           }
-                                        //XXX update???
-                                        }
+                                 struct Descriptor *d;
+                                 for (d = (struct Descriptor *)pi->Descriptors->Head; d; d = (struct Descriptor *)xSucc(d))
+                                     NewCaDescriptor(d, pi->ProgramID);
+                                 // Also scan the PidInfo list for descriptors - some broadcasts send them only here.
+                                 for (struct PidInfo *p = (struct PidInfo *)pi->InfoList->Head; p; p = (struct PidInfo *)xSucc(p)) {
+                                     for (d = (struct Descriptor *)p->Descriptors->Head; d; d = (struct Descriptor *)xSucc(d))
+                                         NewCaDescriptor(d, pi->ProgramID);
                                      }
                                  }
                               xMemFreeAll(NULL);
@@ -1436,6 +1441,18 @@ void cSIProcessor::TriggerDump(void)
 {
   cMutexLock MutexLock(&schedulesMutex);
   lastDump = 0;
+}
+
+void cSIProcessor::NewCaDescriptor(struct Descriptor *d, int ProgramID)
+{
+  if (DescriptorTag(d) == DESCR_CA) {
+     struct CaDescriptor *cd = (struct CaDescriptor *)d;
+     if (!caDescriptors->Get(currentSource, currentTransponder, ProgramID, cd->CA_type)) {
+        cMutexLock MutexLock(&caDescriptorsMutex);
+        caDescriptors->Add(new cCaDescriptor(currentSource, currentTransponder, ProgramID, cd->CA_type, cd->CA_PID, cd->DataLength, cd->Data));
+        }
+     //XXX update???
+     }
 }
 
 int cSIProcessor::GetCaDescriptors(int Source, int Transponder, int ServiceId, int BufSize, uchar *Data)
