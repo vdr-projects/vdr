@@ -836,3 +836,6 @@ Andreas Trauer <vdr@trauers.homelinux.net>
 
 Markus Hardt <markus.hardt@gmx.net>
  for his help in keeping 'channels.conf.terr' up to date
+
+Thomas Rausch <Thomas.Rausch@gmx.de>
+ for making VDR try to get a timer's channel without RID when loading 'timers.conf'

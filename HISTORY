@@ -2417,3 +2417,5 @@ Video Disk Recorder Revision History
 - Fixed handling rc key learning in case cRemote::Initialize() returns 'false'
   (thanks to Oliver Endriss).
 - Fixed initializing the highlight area in cDvbSpuDecoder (thanks to Sven Goethel).
+- Now trying to get a timer's channel without RID when loading 'timers.conf'
+  (thanks to Thomas Rausch).
