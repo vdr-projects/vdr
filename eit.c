@@ -16,7 +16,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.c 1.25 2001/10/07 13:42:48 kls Exp $
+ * $Id: eit.c 1.26 2001/10/07 14:08:40 kls Exp $
  ***************************************************************************/
 
 #include "eit.h"
@@ -450,6 +450,13 @@ void cEventInfo::FixEpgBugs(void)
               p++;
               }
         }
+
+     // Some channels use the ` ("backtick") character, where a ' (single quote)
+     // would be normally used. Actually, "backticks" in normal text don't make
+     // much sense, so let's replace them:
+     strreplace(pTitle, '`', '\'');
+     strreplace(pSubtitle, '`', '\'');
+     strreplace(pExtendedDescription, '`', '\'');
 
      if (Setup.EPGBugfixLevel <= 2)
         return;

@@ -816,3 +816,4 @@ Video Disk Recorder Revision History
   would otherwise disturb the Title and Subtitle layout in the channel display
   (where these are assumed to be single line texts) and would have to be
   specially handled in the 'epg.data' file and the LSTE command in SVDRP.
+- Mapping ` ("backtick") characters in EPG texts to ' (single quote).

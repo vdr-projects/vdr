@@ -386,7 +386,8 @@ Video Disk Recorder User's Manual
                          0 = no EPG fixing
                          1 = basic fixing of text location (Title, Subtitle and
                              Extended Description)
-                         2 = removal of excess whitespace and hyphens
+                         2 = removal of excess whitespace and hyphens, mapping of
+                             wrongly used characters
                          3 = fixing the date in timestamps between 00:00 and 06:00
                              (use with care - hopefully one day Pro7 and Kabel1
                              will learn how to read the clock/calender)
