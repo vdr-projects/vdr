@@ -1845,3 +1845,9 @@ Video Disk Recorder Revision History
 - Improved handling of repeated remote keys.
 - The RCU now only sets the channel number display when there are no incoming remote
   control keys, which improves reaction on repeated keys.
+- The actual tuning is now done in a separate thread, which makes zapping through the
+  channels a lot faster and no longer gets stuck on channels that don't broadcast.
+  This also makes "Motor-DiSEqC" work (thanks to Reinhard Walter Buchner for his help
+  in testing this). Since switching channels now no longer explicitly waits for a
+  channel lock in the foreground thread, the "panic level" mechanism is no longer
+  used (maybe we don't need it nay more, anyway).
