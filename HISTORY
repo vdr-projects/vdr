@@ -1190,3 +1190,8 @@ Video Disk Recorder Revision History
 - Fixed a bug in the editing process in case a previously edited file with the
   same name was manually deleted on a system with more than one video directory
   (thanks to Dirk Wiebel for reporting this one).
+
+2002-04-12: Version 1.0.1
+
+- Added some DVB-T channels for Berlin (Germany) to channels.conf.terr (thanks to
+  Andreas Roedl).

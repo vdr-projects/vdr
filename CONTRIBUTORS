@@ -280,3 +280,6 @@ Dirk Wiebel <dirk@wiebel.de>
 Gerald Raaf <graaf@attglobal.net>
  for helping to fix the still picture workaround in case the progress display
  is active
+
+Andreas Roedl <flood@flood-net.de>
+ for adding some DVB-T channels for Berlin (Germany) to channels.conf.terr
