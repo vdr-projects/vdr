@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.171 2005/01/14 13:25:35 kls Exp $
+ * $Id: i18n.c 1.172 2005/01/22 10:38:44 kls Exp $
  *
  * Translations provided by:
  *
@@ -1029,7 +1029,7 @@ const tI18nPhrase Phrases[] = {
     "¡‚’‡’‚Ï ◊–ﬂÿ·Ï?",
     "Obrisati snimku?",
     "Kustutan salvestuse?",
-    "Slet optagelse",
+    "Slet optagelse?",
   },
   { "Timer still recording - really delete?",
     "Timer zeichnet auf - trotzdem lˆschen?",
@@ -2313,7 +2313,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "Audio k‰ttesaamatu!",
-    "",//TODO
+    "Ingen lyd tilgÊngelig!",
   },
   // Setup pages:
   { "OSD",
@@ -3113,7 +3113,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "Dolby Digital kasutamine",
-    "",//TODO
+    "Anvend Dolby Digital",
   },
   { "Setup.DVB$Update channels",
     "Kan‰le aktualisieren",
@@ -4692,7 +4692,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "Audio",
-    "",// TODO
+    "Audio",
   },
   // Miscellaneous:
   { "yes",
