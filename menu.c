@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.197 2002/06/16 13:23:51 kls Exp $
+ * $Id: menu.c 1.198 2002/06/22 09:55:58 kls Exp $
  */
 
 #include "menu.h"
@@ -14,6 +14,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "config.h"
+#include "cutter.h"
 #include "eit.h"
 #include "i18n.h"
 #include "menuitems.h"
@@ -2026,10 +2027,8 @@ void cMenuMain::Set(void)
 
   // Editing control:
 
-  /*XXX+
-  if (cVideoCutter::Active())
+  if (cCutter::Active())
      Add(new cOsdItem(tr(" Cancel editing"), osCancelEdit));
-     XXX*/
 
   // Color buttons:
 
@@ -2063,7 +2062,7 @@ eOSState cMenuMain::ProcessKey(eKeys Key)
                           }
                        break;
     case osCancelEdit: if (Interface->Confirm(tr("Cancel editing?"))) {
-                          //XXX+cVideoCutter::Stop();
+                          cCutter::Stop();
                           return osEnd;
                           }
                        break;
@@ -2973,11 +2972,10 @@ void cReplayControl::MarkMove(bool Forward)
 
 void cReplayControl::EditCut(void)
 {
-  /*XXX+
   if (fileName) {
      Hide();
-     if (!cVideoCutter::Active()) {
-        if (!cVideoCutter::Start(fileName))
+     if (!cCutter::Active()) {
+        if (!cCutter::Start(fileName))
            Interface->Error(tr("Can't start editing process!"));
         else
            Interface->Info(tr("Editing process started"));
@@ -2986,7 +2984,6 @@ void cReplayControl::EditCut(void)
         Interface->Error(tr("Editing process already active!"));
      ShowMode();
      }
-     XXX*/
 }
 
 void cReplayControl::EditTest(void)

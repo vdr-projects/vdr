@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 1.40 2002/06/10 16:31:34 kls Exp $
+# $Id: Makefile 1.41 2002/06/22 09:49:29 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -21,7 +21,7 @@ INCLUDES = -I$(DVBDIR)/ost/include
 
 DTVLIB   = $(DTVDIR)/libdtv.a
 
-OBJS = audio.o config.o device.o dvbplayer.o dvbosd.o eit.o eitscan.o font.o i18n.o\
+OBJS = audio.o config.o cutter.o device.o dvbplayer.o dvbosd.o eit.o eitscan.o font.o i18n.o\
        interface.o menu.o menuitems.o osdbase.o osd.o player.o plugin.o receiver.o\
        recorder.o recording.o remote.o remux.o ringbuffer.o status.o svdrp.o thread.o\
        tools.o vdr.o videodir.o

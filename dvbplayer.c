@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 1.1 2002/06/16 10:59:45 kls Exp $
+ * $Id: dvbplayer.c 1.2 2002/06/22 10:11:59 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -12,22 +12,6 @@
 #include "recording.h"
 #include "ringbuffer.h"
 #include "thread.h"
-
-// --- ReadFrame -------------------------------------------------------------
-
-int ReadFrame(int f, uchar *b, int Length, int Max)
-{
-  if (Length == -1)
-     Length = Max; // this means we read up to EOF (see cIndex)
-  else if (Length > Max) {
-     esyslog("ERROR: frame larger than buffer (%d > %d)", Length, Max);
-     Length = Max;
-     }
-  int r = safe_read(f, b, Length);
-  if (r < 0)
-     LOG_ERROR;
-  return r;
-}
 
 // --- cBackTrace ----------------------------------------------------------
 
@@ -90,9 +74,6 @@ int cBackTrace::Get(bool Forward)
 // The size of the array used to buffer video data:
 // (must be larger than MINVIDEODATA - see remux.h)
 #define VIDEOBUFSIZE  MEGABYTE(1)
-
-// The maximum size of a single frame:
-#define MAXFRAMESIZE  KILOBYTE(192)
 
 // The number of frames to back up when resuming an interrupted replay session:
 #define RESUMEBACKUP (10 * FRAMESPERSEC)

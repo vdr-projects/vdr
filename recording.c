@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.63 2002/06/16 11:29:27 kls Exp $
+ * $Id: recording.c 1.64 2002/06/22 10:11:49 kls Exp $
  */
 
 #include "recording.h"
@@ -1056,6 +1056,8 @@ int cFileName::NextFile(void)
   return SetOffset(fileNumber + 1);
 }
 
+// --- Index stuff -----------------------------------------------------------
+
 const char *IndexToHMSF(int Index, bool WithFrame)
 {
   static char buffer[16];
@@ -1080,3 +1082,21 @@ int SecondsToFrames(int Seconds)
 {
   return Seconds * FRAMESPERSEC;
 }
+
+// --- ReadFrame -------------------------------------------------------------
+
+int ReadFrame(int f, uchar *b, int Length, int Max)
+{
+  if (Length == -1)
+     Length = Max; // this means we read up to EOF (see cIndex)
+  else if (Length > Max) {
+     esyslog("ERROR: frame larger than buffer (%d > %d)", Length, Max);
+     Length = Max;
+     }
+  int r = safe_read(f, b, Length);
+  if (r < 0)
+     LOG_ERROR;
+  return r;
+}
+
+

@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.114 2002/06/16 11:30:28 kls Exp $
+ * $Id: vdr.c 1.115 2002/06/22 09:56:12 kls Exp $
  */
 
 #include <getopt.h>
@@ -31,6 +31,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include "config.h"
+#include "cutter.h"
 #include "device.h"
 #include "eitscan.h"
 #include "i18n.h"
@@ -529,16 +530,14 @@ int main(int argc, char *argv[])
           }
         if (!Menu) {
            EITScanner.Process();
-           /*XXX+
-           if (!cVideoCutter::Active() && cVideoCutter::Ended()) {
-              if (cVideoCutter::Error())
+           if (!cCutter::Active() && cCutter::Ended()) {
+              if (cCutter::Error())
                  Interface->Error(tr("Editing process failed!"));
               else
                  Interface->Info(tr("Editing process finished"));
               }
-              XXX*/
            }
-        if (!*Interact && ((!cRecordControls::Active() /*XXX+&& !cVideoCutter::Active()XXX*/) || ForceShutdown)) {
+        if (!*Interact && ((!cRecordControls::Active() && !cCutter::Active()) || ForceShutdown)) {
            time_t Now = time(NULL);
            if (Now - LastActivity > ACTIVITYTIMEOUT) {
               // Shutdown:
@@ -598,7 +597,7 @@ int main(int argc, char *argv[])
   if (Interrupted)
      isyslog("caught signal %d", Interrupted);
   cRecordControls::Shutdown();
-  //XXX+cVideoCutter::Stop();
+  cCutter::Stop();
   delete Menu;
   delete ReplayControl;
   delete Interface;
