@@ -969,3 +969,8 @@ Video Disk Recorder Revision History
   radio recordings. Thanks to Michael Paar.
 - Fixed a problem with the ERR macro defined by ncurses.h (thanks to Artur
   Skawina).
+
+2002-02-05: Version 0.99pre6
+
+- Fixed a bug in moving timers or channels to the last position in the list
+  (thanks to Matthias Schniedermeyer for helping to debug this one).

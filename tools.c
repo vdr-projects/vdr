@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.56 2002/02/03 16:44:08 kls Exp $
+ * $Id: tools.c 1.57 2002/02/05 18:16:52 kls Exp $
  */
 
 #include "tools.h"
@@ -804,8 +804,10 @@ void cListBase::Move(cListObject *From, cListObject *To)
            To->Prev()->Append(From);
         From->Append(To);
         }
-     else
+     else {
         lastObject->Append(From);
+        lastObject = From;
+        }
      if (!From->Prev())
         objects = From;
      }
