@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.54 2001/02/24 16:18:43 kls Exp $
+ * $Id: vdr.c 1.56 2001/04/01 11:16:54 kls Exp $
  */
 
 #include <getopt.h>
@@ -74,6 +74,7 @@ int main(int argc, char *argv[])
   const char *ConfigDirectory = NULL;
   bool DaemonMode = false;
   int WatchdogTimeout = DEFAULTWATCHDOG;
+  char *Terminal = NULL;
 
   static struct option long_options[] = {
       { "config",   required_argument, NULL, 'c' },
@@ -84,12 +85,13 @@ int main(int argc, char *argv[])
       { "port",     required_argument, NULL, 'p' },
       { "video",    required_argument, NULL, 'v' },
       { "watchdog", required_argument, NULL, 'w' },
+      { "terminal", required_argument, NULL, 't' },
       { 0 }
     };
   
   int c;
   int option_index = 0;
-  while ((c = getopt_long(argc, argv, "c:dD:hl:p:v:w:", long_options, &option_index)) != -1) {
+  while ((c = getopt_long(argc, argv, "c:dD:hl:p:v:w:t:", long_options, &option_index)) != -1) {
         switch (c) {
           case 'c': ConfigDirectory = optarg;
                     break;
@@ -102,7 +104,7 @@ int main(int argc, char *argv[])
                           }
                        }
                     fprintf(stderr, "vdr: invalid DVB device number: %s\n", optarg);
-                    abort();
+                    return 2;
                     break;
           case 'h': printf("Usage: vdr [OPTION]\n\n"           // for easier orientation, this is column 80|
                            "  -c DIR,   --config=DIR   read config files from DIR (default is to read them\n"
@@ -117,9 +119,10 @@ int main(int argc, char *argv[])
                            "                           2 = errors and info, 3 = errors, info and debug\n"
                            "  -p PORT,  --port=PORT    use PORT for SVDRP (default: %d)\n"
                            "                           0 turns off SVDRP\n"
-                           "  -v DIR,   --video=DIR    use DIR as video directory (default is %s)\n"
+                           "  -v DIR,   --video=DIR    use DIR as video directory (default: %s)\n"
                            "  -w SEC,   --watchdog=SEC activate the watchdog timer with a timeout of SEC\n"
                            "                           seconds (default: %d); '0' disables the watchdog\n"
+                           "  -t TTY,   --terminal=TTY controlling tty\n"
                            "\n"
                            "Report bugs to <vdr-bugs@cadsoft.de>\n",
                            DEFAULTSVDRPPORT,
@@ -136,14 +139,16 @@ int main(int argc, char *argv[])
                           }
                        }
                     fprintf(stderr, "vdr: invalid log level: %s\n", optarg);
-                    abort();
+                    return 2;
                     break;
           case 'p': if (isnumber(optarg))
                        SVDRPport = atoi(optarg);
                     else {
                        fprintf(stderr, "vdr: invalid port number: %s\n", optarg);
-                       abort();
+                       return 2;
                        }
+                    break;
+          case 't': Terminal = optarg;
                     break;
           case 'v': VideoDirectory = optarg;
                     while (optarg && *optarg && optarg[strlen(optarg) - 1] == '/')
@@ -157,9 +162,9 @@ int main(int argc, char *argv[])
                           }
                        }
                     fprintf(stderr, "vdr: invalid watchdog timeout: %s\n", optarg);
-                    abort();
+                    return 2;
                     break;
-          default:  abort();
+          default:  return 2;
           }
         }
 
@@ -172,7 +177,7 @@ int main(int argc, char *argv[])
 
   if (!DirectoryOk(VideoDirectory, true)) {
      fprintf(stderr, "vdr: can't access video directory %s\n", VideoDirectory);
-     abort();
+     return 2;
      }
 
   // Daemon mode:
@@ -183,7 +188,7 @@ int main(int argc, char *argv[])
      if (pid < 0) {
         fprintf(stderr, "%m\n");
         esyslog(LOG_ERR, "ERROR: %m");
-        abort();
+        return 2;
         }
      if (pid != 0)
         return 0; // initial program immediately returns
@@ -192,9 +197,16 @@ int main(int argc, char *argv[])
      fclose(stderr);
 #else
      fprintf(stderr, "vdr: can't run in daemon mode with DEBUG_OSD or REMOTE_KBD on!\n");
-     abort();
+     return 2;
 #endif
      }
+  else if (Terminal) {
+     // Claim new controlling terminal
+     stdin  = freopen(Terminal, "r", stdin);
+     stdout = freopen(Terminal, "w", stdout);
+     stderr = freopen(Terminal, "w", stderr);
+     }
+
   isyslog(LOG_INFO, "VDR version %s started", VDRVERSION);
 
   // Configuration data:
@@ -215,7 +227,7 @@ int main(int argc, char *argv[])
   // DVB interfaces:
 
   if (!cDvbApi::Init())
-     abort();
+     return 2;
 
   cDvbApi::SetPrimaryDvbApi(Setup.PrimaryDVB);
 

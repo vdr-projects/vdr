@@ -413,3 +413,42 @@ Video Disk Recorder Revision History
   VDR exit in case the main program loop does not respond for more than the
   given number of seconds. This is mainly useful in combination with the new
   'runvdr' script that restarts VDR in case is has exited.
+
+2001-04-01: Version 0.72
+
+- Fixed SVDRP commands LSTC and LSTT to make them return an error message if
+  no channels or timers are defined.
+- Enhanced 'channels.conf.cable' (thanks to Hans-Peter Raschke).
+- Fixed switching to another channel via the EPG while a recording is being
+  replayed.
+- Fixed a memory leak in the EIT processor that happened when the system time
+  was set.
+- Removed some redundant code from the cListBase destructor.
+- Fixed internationalization of some Main menu texts.
+- Updated 'channels.conf' after the recent changes of Premiere World (thanks
+  to Axel Gruber).
+- Redesigned the ring buffer to make it work with two separate threads for
+  input and output (also prepared for using a remultiplexer).
+- Fixed setting system time from transponders.
+- Fixed a segfault in the Schedule menu in case there is no EPG information.
+- The 'runvdr' script now kills any leftover vdr threads before restarting it.
+- Fixed a problem with Daylight Saving Time when displaying the times of
+  recordings.
+- Added Dutch language texts (thanks to Arnold Niessen).
+- The new command line option -t can be used to set the controlling terminal
+  (thanks to Jürgen Sauer). This is especially useful when starting VDR through
+  an entry in /etc/inittab (see INSTALL).
+- Since the CAM module only works if it is installed in the "highest" DVB card,
+  recordings now search for a free DVB card from lowest to highest index (as
+  opposed to the previous "highest to lowest" search) in order to not use the
+  CAM card for FTA recordings unless necessary. This is only important for
+  systems with three or more DVB cards.
+- Added the "statdvb2vdr" tool from Hans-Peter Raschke.
+- Fixed a segfault that sometimes happened when killing VDR.
+- VDR now returns an exit status of '2' in case of an error at startup, instead
+  of terminating with 'abort()' (which caused a core dump).
+- SVDRP now also works with clients that don't do line buffering (like the
+  Windows 'telnet').
+- Empty lines in config files no longer cause error messages.
+- New SVDRP command LSTE to list the EPG data.
+- The SVDRP HELP command now prints the topics in several columns.

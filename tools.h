@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.24 2001/02/11 13:39:40 kls Exp $
+ * $Id: tools.h 1.25 2001/04/01 14:13:42 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -64,7 +64,6 @@ public:
   bool Open(int FileDes);
   void Close(void);
   bool IsOpen(void) { return f >= 0; }
-  int ReadString(char *Buffer, int Size);
   bool Ready(bool Wait = true);
   static bool AnyFileReady(int FileDes = -1, int TimeoutMs = 1000);
   static bool FileReady(int FileDes, int TimeoutMs = 1000);

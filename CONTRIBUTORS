@@ -57,6 +57,16 @@ Dave Chapman <dave@dchapman.com>
 
 Hans-Peter Raschke <Hans-Peter.Raschke@Wintermann-DatenService.de>
  for his support in adapting VDR to DVB-C
+ for adding the 'statdvb2vdr' tool (see Tools/statdvb2vdr)
 
 Peter Hofmann <software@pxh.de>
  for his support in adapting VDR to DVB-C
+
+Axel Gruber <axel@agm.de>
+ for his support in keeping the Premiere World channels up to date in 'channels.conf'
+
+Arnold Niessen <niessen@iae.nl> <arnold.niessen@philips.com>
+ for translating the OSD texts to the Dutch language
+
+Jürgen Sauer <jojo@automatix.de>
+ for implementing the -t option to set the controlling terminal

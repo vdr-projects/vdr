@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.42 2001/02/24 13:19:39 kls Exp $
+ * $Id: config.h 1.44 2001/04/01 14:44:40 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -19,7 +19,7 @@
 #include "eit.h"
 #include "tools.h"
 
-#define VDRVERSION "0.71"
+#define VDRVERSION "0.72"
 
 #define MaxBuffer 10000
 
@@ -184,14 +184,16 @@ public:
           result = true;
           while (fgets(buffer, sizeof(buffer), f) > 0) {
                 line++;
-                T *l = new T;
-                if (l->Parse(buffer))
-                   Add(l);
-                else {
-                   esyslog(LOG_ERR, "error in %s, line %d\n", fileName, line);
-                   delete l;
-                   result = false;
-                   break;
+                if (!isempty(buffer)) {
+                   T *l = new T;
+                   if (l->Parse(buffer))
+                      Add(l);
+                   else {
+                      esyslog(LOG_ERR, "error in %s, line %d\n", fileName, line);
+                      delete l;
+                      result = false;
+                      break;
+                      }
                    }
                 }
           fclose(f);

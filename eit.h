@@ -13,7 +13,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.h 1.4 2000/11/24 14:35:22 kls Exp $
+ * $Id: eit.h 1.6 2001/04/01 15:14:12 kls Exp $
  ***************************************************************************/
 
 #ifndef __EIT_H
@@ -49,7 +49,7 @@ protected:
   bool SetSubtitle(char *string);
   void IncreaseExtendedDescriptorNumber(void);
   cEventInfo(unsigned short serviceid, unsigned short eventid);
-public: 
+public:
   ~cEventInfo();
   const char *GetTimeString(void) const;
   const char *GetEndTimeString(void) const;
@@ -66,7 +66,7 @@ public:
   unsigned short GetServiceID(void) const;
   int GetChannelNumber(void) const { return nChannelNumber; }
   void SetChannelNumber(int ChannelNumber) const { ((cEventInfo *)this)->nChannelNumber = ChannelNumber; } // doesn't modify the EIT data, so it's ok to make it 'const'
-  void Dump(FILE *f) const;
+  void Dump(FILE *f, const char *Prefix = "") const;
   };
 
 class cSchedule : public cListObject  {
@@ -84,7 +84,7 @@ protected:
   void Cleanup(time_t tTime);
   void Cleanup(void);
   cSchedule(unsigned short servid = 0);
-public: 
+public:
   ~cSchedule();
   const cEventInfo *GetPresentEvent(void) const;
   const cEventInfo *GetFollowingEvent(void) const;
@@ -93,7 +93,7 @@ public:
   const cEventInfo *GetEvent(time_t tTime) const;
   const cEventInfo *GetEventNumber(int n) const { return Events.Get(n); }
   int NumEvents(void) const { return Events.Count(); }
-  void Dump(FILE *f) const;
+  void Dump(FILE *f, const char *Prefix = "") const;
   };
 
 class cSchedules : public cList<cSchedule> {
@@ -104,12 +104,12 @@ private:
 protected:
   bool SetCurrentServiceID(unsigned short servid);
   void Cleanup();
-public: 
+public:
   cSchedules(void);
   ~cSchedules();
   const cSchedule *GetSchedule(unsigned short servid) const;
   const cSchedule *GetSchedule(void) const;
-  void Dump(FILE *f) const;
+  void Dump(FILE *f, const char *Prefix = "") const;
 };
 
 typedef struct sip_filter {
@@ -130,9 +130,10 @@ private:
   bool useTStime;
   SIP_FILTER *filters;
   int fsvbi;
+  bool active;
   bool RefreshFilters(void);
   void Action(void);
-public: 
+public:
   cSIProcessor(const char *FileName);
   ~cSIProcessor();
   bool SetUseTSTime(bool use);

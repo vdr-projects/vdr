@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.43 2001/02/24 13:20:18 kls Exp $
+ * $Id: config.c 1.44 2001/04/01 14:32:22 kls Exp $
  */
 
 #include "config.h"
@@ -75,37 +75,39 @@ bool cKeys::Load(const char *FileName)
         result = true;
         while (fgets(buffer, sizeof(buffer), f) > 0) {
               line++;
-              char *Name = buffer;
-              char *p = strpbrk(Name, " \t");
-              if (p) {
-                 *p = 0; // terminates 'Name'
-                 while (*++p && isspace(*p))
-                       ;
-                 if (*p) {
-                    if (strcasecmp(Name, "Code") == 0)
-                       code = *p;
-                    else if (strcasecmp(Name, "Address") == 0)
-                       address = strtol(p, NULL, 16);
-                    else {
-                       for (tKey *k = keys; k->type != kNone; k++) {
-                           if (strcasecmp(Name, k->name) == 0) {
-                              k->code = strtol(p, NULL, 16);
-                              Name = NULL; // to indicate that we found it
+              if (!isempty(buffer)) {
+                 char *Name = buffer;
+                 char *p = strpbrk(Name, " \t");
+                 if (p) {
+                    *p = 0; // terminates 'Name'
+                    while (*++p && isspace(*p))
+                          ;
+                    if (*p) {
+                       if (strcasecmp(Name, "Code") == 0)
+                          code = *p;
+                       else if (strcasecmp(Name, "Address") == 0)
+                          address = strtol(p, NULL, 16);
+                       else {
+                          for (tKey *k = keys; k->type != kNone; k++) {
+                              if (strcasecmp(Name, k->name) == 0) {
+                                 k->code = strtol(p, NULL, 16);
+                                 Name = NULL; // to indicate that we found it
+                                 break;
+                                 }
+                              }
+                           if (Name) {
+                              esyslog(LOG_ERR, "unknown key in %s, line %d\n", fileName, line);
+                              result = false;
                               break;
                               }
                            }
-                        if (Name) {
-                           esyslog(LOG_ERR, "unknown key in %s, line %d\n", fileName, line);
-                           result = false;
-                           break;
-                           }
-                        }
+                       }
+                    continue;
                     }
-                 continue;
+                 esyslog(LOG_ERR, "error in %s, line %d\n", fileName, line);
+                 result = false;
+                 break;
                  }
-              esyslog(LOG_ERR, "error in %s, line %d\n", fileName, line);
-              result = false;
-              break;
               }
         fclose(f);
         }
@@ -782,10 +784,12 @@ bool cSetup::Load(const char *FileName)
      bool result = true;
      while (fgets(buffer, sizeof(buffer), f) > 0) {
            line++;
-           if (*buffer != '#' && !Parse(buffer)) {
-              esyslog(LOG_ERR, "error in %s, line %d\n", fileName, line);
-              result = false;
-              break;
+           if (!isempty(buffer)) {
+              if (*buffer != '#' && !Parse(buffer)) {
+                 esyslog(LOG_ERR, "error in %s, line %d\n", fileName, line);
+                 result = false;
+                 break;
+                 }
               }
            }
      fclose(f);

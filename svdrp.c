@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.14 2001/02/18 14:18:13 kls Exp $
+ * $Id: svdrp.c 1.18 2001/04/01 16:06:54 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -113,7 +113,6 @@ int cSocket::Accept(void)
 
 // --- cSVDRP ----------------------------------------------------------------
 
-#define MAXCMDBUFFER 10000
 #define MAXHELPTOPIC 10
 
 const char *HelpPages[] = {
@@ -138,6 +137,8 @@ const char *HelpPages[] = {
   "    List channels. Without option, all channels are listed. Otherwise\n"
   "    only the given channel is listed. If a name is given, all channels\n"
   "    containing the given string as part of their name are listed.",
+  "LSTE\n"
+  "    List EPG data.",
   "LSTT [ <number> ]\n"
   "    List timers. Without option, all timers are listed. Otherwise\n"
   "    only the given timer is listed.",
@@ -188,6 +189,7 @@ const char *HelpPages[] = {
 /* SVDRP Reply Codes:
 
  214 Help message
+ 215 EPG data record
  220 VDR service ready
  221 VDR service closing transmission channel
  250 Requested VDR action okay, completed
@@ -234,6 +236,7 @@ const char *GetHelpPage(const char *Cmd)
 cSVDRP::cSVDRP(int Port)
 :socket(Port)
 {
+  numChars = 0;
   message = NULL;
   lastActivity = 0;
   isyslog(LOG_INFO, "SVDRP listening on port %d", Port);
@@ -470,13 +473,24 @@ void cSVDRP::CmdHELP(const char *Option)
      Reply(-214, "This is VDR version %s", VDRVERSION);
      Reply(-214, "Topics:");
      const char **hp = HelpPages;
+     int NumPages = 0;
      while (*hp) {
-           //TODO multi-column???
-           const char *topic = GetHelpTopic(*hp);
-           if (topic)
-              Reply(-214, "    %s", topic);
+           NumPages++;
            hp++;
            }
+     const int TopicsPerLine = 5;
+     int x = 0;
+     for (int y = 0; (y * TopicsPerLine + x) < NumPages; y++) {
+         char buffer[TopicsPerLine * (MAXHELPTOPIC + 5)];
+         char *q = buffer;
+         for (x = 0; x < TopicsPerLine && (y * TopicsPerLine + x) < NumPages; x++) {
+             const char *topic = GetHelpTopic(HelpPages[(y * TopicsPerLine + x)]);
+             if (topic)
+                q += sprintf(q, "    %s", topic);
+             }
+         x = 0;
+         Reply(-214, buffer);
+         }
      Reply(-214, "To report bugs in the implementation send email to");
      Reply(-214, "    vdr-bugs@cadsoft.de");
      }
@@ -535,7 +549,7 @@ void cSVDRP::CmdLSTC(const char *Option)
            Reply(250, "%d %s", next->number, next->ToText());
         }
      }
-  else {
+  else if (Channels.MaxNumber() >= 1) {
      for (int i = 1; i <= Channels.MaxNumber(); i++) {
          cChannel *channel = Channels.GetByNumber(i);
         if (channel)
@@ -544,6 +558,27 @@ void cSVDRP::CmdLSTC(const char *Option)
            Reply(501, "Channel \"%d\" not found", i);
          }
      }
+  else
+     Reply(550, "No channels defined");
+}
+
+void cSVDRP::CmdLSTE(const char *Option)
+{
+  cThreadLock ThreadLock;
+  const cSchedules *Schedules = cDvbApi::PrimaryDvbApi->Schedules(&ThreadLock);
+  if (Schedules) {
+     FILE *f = fdopen(file, "w");
+     if (f) {
+        Schedules->Dump(f, "215-");
+        fflush(f);
+        Reply(215, "End of EPG data");
+        // don't 'fclose(f)' here!
+        }
+     else
+        Reply(451, "Can't open file connection");
+     }
+  else
+     Reply(451, "Can't get EPG data");
 }
 
 void cSVDRP::CmdLSTT(const char *Option)
@@ -559,7 +594,7 @@ void cSVDRP::CmdLSTT(const char *Option)
      else
         Reply(501, "Error in timer number \"%s\"", Option);
      }
-  else {
+  else if (Timers.Count()) {
      for (int i = 0; i < Timers.Count(); i++) {
          cTimer *timer = Timers.Get(i);
         if (timer)
@@ -568,6 +603,8 @@ void cSVDRP::CmdLSTT(const char *Option)
            Reply(501, "Timer \"%d\" not found", i + 1);
          }
      }
+  else
+     Reply(550, "No timers defined");
 }
 
 void cSVDRP::CmdMESG(const char *Option)
@@ -838,7 +875,8 @@ void cSVDRP::Execute(char *Cmd)
   char *s = Cmd;
   while (*s && !isspace(*s))
         s++;
-  *s++ = 0;
+  if (*s)
+     *s++ = 0;
   if      (CMD("CHAN"))  CmdCHAN(s);
   else if (CMD("DELC"))  CmdDELC(s);
   else if (CMD("DELT"))  CmdDELT(s);
@@ -846,6 +884,7 @@ void cSVDRP::Execute(char *Cmd)
   else if (CMD("HELP"))  CmdHELP(s);
   else if (CMD("HITK"))  CmdHITK(s);
   else if (CMD("LSTC"))  CmdLSTC(s);
+  else if (CMD("LSTE"))  CmdLSTE(s);
   else if (CMD("LSTT"))  CmdLSTT(s);
   else if (CMD("MESG"))  CmdMESG(s);
   else if (CMD("MODC"))  CmdMODC(s);
@@ -860,8 +899,7 @@ void cSVDRP::Execute(char *Cmd)
   else if (CMD("OVLP"))  CmdOVLP(s);
   else if (CMD("OVLO"))  CmdOVLO(s);
   else if (CMD("UPDT"))  CmdUPDT(s);
-  else if (CMD("QUIT")
-       ||  CMD("\x04"))  Close();
+  else if (CMD("QUIT"))  Close();
   else                   Reply(500, "Command unrecognized: \"%s\"", Cmd);
 }
 
@@ -871,29 +909,55 @@ void cSVDRP::Process(void)
   bool SendGreeting = NewConnection;
 
   if (file.IsOpen() || file.Open(socket.Accept())) {
-     char buffer[MAXCMDBUFFER];
      if (SendGreeting) {
         //TODO how can we get the *full* hostname?
+        char buffer[MAXCMDBUFFER];
         gethostname(buffer, sizeof(buffer));
         time_t now = time(NULL);
         Reply(220, "%s SVDRP VideoDiskRecorder %s; %s", buffer, VDRVERSION, ctime(&now));
         }
      if (NewConnection)
         lastActivity = time(NULL);
-     int rbytes = file.ReadString(buffer, sizeof(buffer) - 1);
-     if (rbytes > 0) {
-        //XXX overflow check???
-        // strip trailing whitespace:
-        while (rbytes > 0 && strchr(" \t\r\n", buffer[rbytes - 1]))
-              buffer[--rbytes] = 0;
-        // make sure the string is terminated:
-        buffer[rbytes] = 0;
-        // showtime!
-        Execute(buffer);
-        lastActivity = time(NULL);
+     if (file.Ready(false)) {
+        unsigned char c;
+        int r = read(file, &c, 1);
+        if (r > 0) {
+           if (c == '\n' || c == 0x00) {
+              // strip trailing whitespace:
+              while (numChars > 0 && strchr(" \t\r\n", cmdLine[numChars - 1]))
+                    cmdLine[--numChars] = 0;
+              // make sure the string is terminated:
+              cmdLine[numChars] = 0;
+              // showtime!
+              Execute(cmdLine);
+              numChars = 0;
+              }
+           else if (c == 0x04 && numChars == 0) {
+              // end of file (only at beginning of line)
+              Close();
+              }
+           else if (c == 0x08 || c == 0x7F) {
+              // backspace or delete (last character)
+              if (numChars > 0)
+                 numChars--;
+              }
+           else if (c <= 0x03 || c == 0x0D || 0xF0 <= c) {
+              // ignore control characters
+              }
+           else if (numChars < sizeof(cmdLine) - 1) {
+              cmdLine[numChars++] = c;
+              cmdLine[numChars] = 0;
+              }
+           else {
+              Reply(501, "Command line too long");
+              esyslog(LOG_ERR, "SVDRP: command line too long: '%s'", cmdLine);
+              numChars = 0;
+              }
+           lastActivity = time(NULL);
+           }
+        else if (r < 0)
+           Close();
         }
-     else if (rbytes < 0)
-        Close();
      else if (Setup.SVDRPTimeout && time(NULL) - lastActivity > Setup.SVDRPTimeout) {
         isyslog(LOG_INFO, "timeout on SVDRP connection");
         Close(true);

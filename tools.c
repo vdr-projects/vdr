@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.30 2001/02/11 14:44:22 kls Exp $
+ * $Id: tools.c 1.32 2001/04/01 14:13:36 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -369,27 +369,6 @@ void cFile::Close(void)
      }
 }
 
-int cFile::ReadString(char *Buffer, int Size)
-{
-  int rbytes = 0;
-  bool wait = true;
-
-  while (Ready(wait)) {
-        int n = read(f, Buffer + rbytes, 1);
-        if (n == 0)
-           break; // EOF
-        if (n < 0) {
-           LOG_ERROR;
-           return -1;
-           }
-        rbytes += n;
-        if (rbytes == Size || Buffer[rbytes - 1] == '\n')
-           break;
-        wait = false;
-        }
-  return rbytes;
-}
-
 bool cFile::Ready(bool Wait)
 {
   return f >= 0 && AnyFileReady(f, Wait ? 1000 : 0);
@@ -519,11 +498,6 @@ cListBase::cListBase(void)
 cListBase::~cListBase()
 {
   Clear();
-  while (objects) {
-        cListObject *object = objects->Next();
-        delete objects;
-        objects = object;
-        }
 }
 
 void cListBase::Add(cListObject *Object) 
