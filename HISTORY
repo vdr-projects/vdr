@@ -206,11 +206,12 @@ Video Disk Recorder Revision History
 
 2000-10-03: Version 0.65
 
-- Modified LIRC interface to better handle repeat function (by Carsten Koch).
+- Modified LIRC interface to better handle repeat function.
 - Faster OSD by first writing into a bitmap and then sending the entire bitmap
   to the DVB driver at once (requires the patch 'dvb.c.071.diff' to be applied
   against the version 0.71 DVB driver file 'dvb.c').
 - When switching channels the channel is now immediately displayed, and the
   current/next information is shown as soon as it becomes available.
 - No longer displaying the year in the 'Recordings' menu to save space for the
-  title (by Carsten Koch).
+  title.
+- The 'Recordings' menu now displays a '*' to indicate new recordings.

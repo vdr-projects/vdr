@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.28 2000/10/03 11:32:41 kls Exp $
+ * $Id: menu.c 1.29 2000/10/03 12:38:03 kls Exp $
  */
 
 #include "menu.h"
@@ -985,7 +985,7 @@ cMenuRecordingItem::cMenuRecordingItem(cRecording *Recording)
 
 void cMenuRecordingItem::Set(void)
 {
-  SetText(recording->Title('\t'));
+  SetText(recording->Title('\t', true));
 }
 
 // --- cMenuRecordings -------------------------------------------------------

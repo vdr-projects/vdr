@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 1.9 2000/07/28 13:53:54 kls Exp $
+ * $Id: recording.h 1.10 2000/10/03 12:27:49 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -31,7 +31,7 @@ public:
   cRecording(const char *FileName);
   ~cRecording();
   const char *FileName(void);
-  const char *Title(char Delimiter = ' ');
+  const char *Title(char Delimiter = ' ', bool NewIndicator = false);
   const char *Summary(void) { return summary; }
   bool WriteSummary(void);
   bool Delete(void);

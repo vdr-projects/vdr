@@ -6,6 +6,7 @@ Carsten Koch <Carsten.Koch@icem.de>
  for implementing the 'Summary' feature
  for adding the 'epg2timers' tool (see Tools/epg2timers)
  for his idea of using multiple disks (and for testing this feature)
+ for implementing the 'new recording' indicator
 
 Plamen Ganev <pganev@com-it.net>
  for fixing the frequency offset for Hotbird channels
