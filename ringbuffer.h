@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ringbuffer.h 1.3 2001/08/02 13:48:42 kls Exp $
+ * $Id: ringbuffer.h 1.4 2001/08/05 11:12:06 kls Exp $
  */
 
 #ifndef __RINGBUFFER_H
@@ -24,25 +24,24 @@ private:
   cRingBufferInputThread *inputThread;
   cRingBufferOutputThread *outputThread;
   cMutex mutex;
-  int size, head, tail;
-  uchar *buffer;
-  int maxFill;
+  cCondVar readyForPut, readyForGet;
+  cMutex putMutex, getMutex;
+  int size;
   bool busy;
-  bool statistics;
 protected:
+  int maxFill;//XXX
+  bool statistics;//XXX
+  void WaitForPut(void);
+  void WaitForGet(void);
+  void EnablePut(void);
+  void EnableGet(void);
+  virtual void Clear(void) = 0;
+  virtual int Available(void) = 0;
+  int Free(void) { return size - Available() - 1; }
   void Lock(void) { mutex.Lock(); }
   void Unlock(void) { mutex.Unlock(); }
-  int Available(void);
-  int Free(void) { return size - Available() - 1; }
+  int Size(void) { return size; }
   bool Busy(void) { return busy; }
-  void Clear(void);
-    // Immediately clears the ring buffer.
-  int Put(const uchar *Data, int Count);
-    // Puts at most Count bytes of Data into the ring buffer.
-    // Returns the number of bytes actually stored.
-  int Get(uchar *Data, int Count);
-    // Gets at most Count bytes of Data from the ring buffer.
-    // Returns the number of bytes actually retrieved.
   virtual void Input(void) = 0;
     // Runs as a separate thread and shall continuously read data from
     // a source and call Put() to store the data in the ring buffer.
@@ -55,6 +54,62 @@ public:
   bool Start(void);
   bool Active(void);
   void Stop(void);
+  };
+
+class cRingBufferLinear : public cRingBuffer {
+private:
+  int head, tail;
+  uchar *buffer;
+protected:
+  virtual int Available(void);
+  virtual void Clear(void);
+    // Immediately clears the ring buffer.
+  int Put(const uchar *Data, int Count);
+    // Puts at most Count bytes of Data into the ring buffer.
+    // Returns the number of bytes actually stored.
+  int Get(uchar *Data, int Count);
+    // Gets at most Count bytes of Data from the ring buffer.
+    // Returns the number of bytes actually retrieved.
+public:
+  cRingBufferLinear(int Size, bool Statistics = false);
+  virtual ~cRingBufferLinear();
+  };
+
+class cFrame {
+  friend class cRingBufferFrame;
+private:
+  cFrame *next;
+  uchar *data;
+  int count;
+  int index;
+public:
+  cFrame(const uchar *Data, int Count, int Index = -1);
+  ~cFrame();
+  const uchar *Data(void) const { return data; }
+  int Count(void) const { return count; }
+  int Index(void) const { return index; }
+  };
+
+class cRingBufferFrame : public cRingBuffer {
+private:
+  cFrame *head;
+  int currentFill;
+  void Delete(const cFrame *Frame);
+protected:
+  virtual int Available(void);
+  virtual void Clear(void);
+    // Immediately clears the ring buffer.
+  bool Put(cFrame *Frame);
+    // Puts the Frame into the ring buffer.
+    // Returns true if this was possible.
+  const cFrame *Get(bool Wait = true);
+    // Gets the next frame from the ring buffer.
+    // The actual data still remains in the buffer until Drop() is called.
+  void Drop(const cFrame *Frame);
+    // Drops the Frame that has just been fetched with Get().
+public:
+  cRingBufferFrame(int Size, bool Statistics = false);
+  virtual ~cRingBufferFrame();
   };
 
 #endif // __RINGBUFFER_H

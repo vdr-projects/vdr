@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.h 1.7 2001/08/02 13:48:48 kls Exp $
+ * $Id: thread.h 1.8 2001/08/05 10:36:47 kls Exp $
  */
 
 #ifndef __THREAD_H
@@ -21,10 +21,10 @@ private:
 public:
   cCondVar(void);
   ~cCondVar();
-  bool Wait(cMutex &_mutex);
-  //bool TimedWait(cMutex &_mutex, unsigned long tmout);
+  bool Wait(cMutex &Mutex);
+  //bool TimedWait(cMutex &Mutex, unsigned long tmout);
   void Broadcast(void);
-  void Signal(void);
+  //void Signal(void);
   };
 
 class cMutex {

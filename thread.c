@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 1.10 2001/08/02 13:48:45 kls Exp $
+ * $Id: thread.c 1.11 2001/08/05 10:36:52 kls Exp $
  */
 
 #include "thread.h"
@@ -26,15 +26,15 @@ cCondVar::~cCondVar()
   pthread_cond_destroy(&cond);
 }
 
-bool cCondVar::Wait(cMutex &_mutex)
+bool cCondVar::Wait(cMutex &Mutex)
 {
-  return pthread_cond_wait(&cond, &_mutex.mutex);
+  return pthread_cond_wait(&cond, &Mutex.mutex);
 }
 
 /*
-bool cCondVar::TimedWait(cMutex &_mutex, unsigned long tmout)
+bool cCondVar::TimedWait(cMutex &Mutex, unsigned long tmout)
 {
-  return pthread_cond_timedwait(&cond, &_mutex.mutex, tmout);
+  return pthread_cond_timedwait(&cond, &Mutex.mutex, tmout);
 }
 */
 
@@ -43,10 +43,12 @@ void cCondVar::Broadcast(void)
   pthread_cond_broadcast(&cond);
 }
 
+/*
 void cCondVar::Signal(void)
 {
   pthread_cond_signal(&cond);
 }
+*/
 
 // --- cMutex ----------------------------------------------------------------
 

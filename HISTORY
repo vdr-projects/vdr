@@ -610,7 +610,7 @@ Video Disk Recorder Revision History
 - Explicitly switching back to the previously active channel after ending a
   replay session (to have it shown correctly in case it was in 'Transfer Mode').
 
-2001-08-03: Version 0.86
+2001-08-05: Version 0.86
 
 - Modified the display of the channel group separators (thanks to Markus Lang
   for this suggestion).
@@ -618,3 +618,4 @@ Video Disk Recorder Revision History
   the 'libdvdread' library to be installed.
 - Fixed replay progress display in case replay is paused while watching an
   ongoing recording.
+- Ringbuffer uses semaphores to signal empty/full conditions.

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.91 2001/08/04 08:08:44 kls Exp $
+ * $Id: menu.c 1.92 2001/08/05 10:33:54 kls Exp $
  */
 
 #include "menu.h"
@@ -2438,11 +2438,10 @@ eOSState cReplayControl::ProcessKey(eKeys Key)
     // Positioning:
     case kUp:      dvbApi->Play(); break;
     case kDown:    dvbApi->Pause(); break;
-    case kLeft:    dvbApi->Backward(); break;
-    case kRight:   dvbApi->Forward(); break;
     case kLeft|k_Release:
+    case kLeft:    dvbApi->Backward(); break;
     case kRight|k_Release:
-                   dvbApi->Play(); break;
+    case kRight:   dvbApi->Forward(); break;
     case kGreen|k_Repeat:
     case kGreen:   dvbApi->SkipSeconds(-60); break;
     case kYellow|k_Repeat:
