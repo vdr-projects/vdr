@@ -4,10 +4,11 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.182 2002/04/06 09:41:59 kls Exp $
+ * $Id: menu.c 1.183 2002/04/13 10:38:03 kls Exp $
  */
 
 #include "menu.h"
+#include <ctype.h>
 #include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -23,7 +24,7 @@
 
 #define CHNUMWIDTH  (Channels.Count() > 999 ? 5 : 4) // there are people with more than 999 channels...
 
-const char *FileNameChars = " aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ0123456789-.#~^";
+const char *FileNameChars = " abcdefghijklmnopqrstuvwxyz0123456789-.#~";
 
 // --- cMenuEditItem ---------------------------------------------------------
 
@@ -515,6 +516,8 @@ private:
   int length;
   const char *allowed;
   int pos;
+  bool insert, newchar, uppercase;
+  void SetHelpKeys(void);
   virtual void Set(void);
   char Inc(char c, bool Up);
 public:
@@ -530,6 +533,8 @@ cMenuEditStrItem::cMenuEditStrItem(const char *Name, char *Value, int Length, co
   length = Length;
   allowed = strdup(Allowed);
   pos = -1;
+  insert = uppercase = false;
+  newchar = true;
   Set();
 }
 
@@ -538,17 +543,50 @@ cMenuEditStrItem::~cMenuEditStrItem()
   delete allowed;
 }
 
+void cMenuEditStrItem::SetHelpKeys(void)
+{
+  if (pos >= 0)
+     Interface->Help(tr("ABC/abc"), tr(insert ? "Overwrite" : "Insert"), tr("Delete"));
+  else
+     Interface->Help(NULL);
+}
+
 void cMenuEditStrItem::Set(void)
 {
   char buf[1000];
+  int max = 30; // this indicates, how many characters fit on the screen
+                // and has to be calculated on the fly (TODO)
+  const char *fmt = insert && newchar ? "[]%c%s" : "[%c]%s";
+
   if (pos >= 0) {
      strncpy(buf, value, pos);
-     const char *s = value[pos] != '^' ? value + pos + 1 : "";
-     snprintf(buf + pos, sizeof(buf) - pos - 2, "[%c]%s", *(value + pos), s);
+     snprintf(buf + pos, sizeof(buf) - pos - 2, fmt, *(value + pos), value + pos + 1);
+     if (int(strlen(buf)) <= max)
+        SetValue(buf);
+     else if (pos + 4 <= max) {
+        buf[max - 1] = '>';
+        buf[max] = 0;
+        SetValue(buf);
+        }
+     else if (buf[pos + 3]) {
+        buf[pos + 4 - max] = '<';
+        buf[pos + 3] = '>';
+        buf[pos + 4] = 0;
+        SetValue(buf + pos + 4 - max);
+        }
+     else {
+        buf[pos + 3 - max] = '<';
+        SetValue(buf + pos + 3 - max);
+        }
+     }
+  else if (int(strlen(value)) <= max)
+     SetValue(value);
+  else {
+     strncpy(buf, value, max - 1);
+     buf[max - 1] = '>';
+     buf[max] = 0;
      SetValue(buf);
      }
-  else
-     SetValue(value);
 }
 
 char cMenuEditStrItem::Inc(char c, bool Up)
@@ -568,34 +606,85 @@ char cMenuEditStrItem::Inc(char c, bool Up)
 eOSState cMenuEditStrItem::ProcessKey(eKeys Key)
 {
   switch (Key) {
-    case kLeft|k_Repeat:
-    case kLeft:  if (pos > 0) {
-                    if (value[pos] == '^')
-                       value[pos] = 0;
-                    pos--;
+    case kRed:   // Switch between upper- and lowercase characters
+                 if (pos >= 0 && (!insert || !newchar)) {
+                    uppercase = !uppercase;
+                    value[pos] = uppercase ? toupper(value[pos]) : tolower(value[pos]);
                     }
                  break;
+    case kGreen: // Toggle insert/overwrite modes
+                 if (pos >= 0) {
+                    insert = !insert;
+                    newchar = true;
+                    }
+                 SetHelpKeys();
+                 break;
+    case kYellow|k_Repeat:
+    case kYellow: // Remove the character at current position; in insert mode it is the character to the right of cursor
+                 if (pos >= 0) {
+                    if (strlen(value) > 1) {
+                       memmove(value + pos, value + pos + 1, strlen(value) - pos);
+                       // reduce position, if we removed the last character
+                       if (pos == int(strlen(value)))
+                          pos--;
+                       }
+                    else if (strlen(value) == 1)
+                       value[0] = ' '; // This is the last character in the string, replace it with a blank
+                    if (isalpha(value[pos]))
+                       uppercase = isupper(value[pos]);
+                    newchar = true;
+                    }
+                 break;
+    case kLeft|k_Repeat:
+    case kLeft:  if (pos > 0) {
+                    if (!insert || newchar)
+                       pos--;
+                    newchar = true;
+                    }
+                 if (!insert && isalpha(value[pos]))
+                    uppercase = isupper(value[pos]);
+                 break;
     case kRight|k_Repeat:
-    case kRight: if (pos < length && value[pos] != '^' && (pos < int(strlen(value) - 1) || value[pos] != ' ')) {
+    case kRight: if (pos < length && pos < int(strlen(value)) ) {
                     if (++pos >= int(strlen(value))) {
-                       value[pos] = ' ';
-                       value[pos + 1] = 0;
+                       if (pos == 0 || value[pos - 1] != ' ') {
+                          value[pos] = ' ';
+                          value[pos + 1] = 0;
+                          }
+                       else
+                          pos--; // allow only blank at the end
                        }
                     }
+                 newchar = true;
+                 if (!insert && isalpha(value[pos]))
+                    uppercase = isupper(value[pos]);
+                 SetHelpKeys();
                  break;
     case kUp|k_Repeat:
     case kUp:
     case kDown|k_Repeat:
-    case kDown:  if (pos >= 0)
-                    value[pos] = Inc(value[pos], NORMALKEY(Key) == kUp);
+    case kDown:  if (pos >= 0) {
+                    if (insert && newchar) {
+                       // create a new character in insert mode
+                       if (int(strlen(value)) < length) {
+                          memmove(value + pos + 1, value + pos, strlen(value) - pos + 1);
+                          value[pos] = ' ';
+                          }
+                       }
+                    if (uppercase) 
+                       value[pos] = toupper(Inc(tolower(value[pos]), NORMALKEY(Key) == kUp));
+                    else
+                       value[pos] =         Inc(        value[pos],  NORMALKEY(Key) == kUp);
+                    newchar = false;
+                    }
                  else
                     return cMenuEditItem::ProcessKey(Key);
                  break;
     case kOk:    if (pos >= 0) {
-                    if (value[pos] == '^')
-                       value[pos] = 0;
                     pos = -1;
+                    newchar = true;
                     stripspace(value);
+                    SetHelpKeys();
                     break;
                     }
                  // run into default

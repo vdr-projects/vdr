@@ -17,9 +17,9 @@ Video Disk Recorder User's Manual
   Ok      Ch display  Select       Switch     Edit       Accept        Play        Progress disp.
   Menu    Menu on     Menu off     Menu off   Menu off   Menu off      Menu off    Menu on
   Back    -           Menu off     VDR menu   VDR menu   Discard       VDR menu    Recordings menu
-  Red     -           Record       Edit       Edit       -             Play        Jump
-  Green   -           Language     New        New        -             Rewind      Skip -60s
-  Yellow  -           -            Delete     Delete     -             Delete      Skip +60s
+  Red     -           Record       Edit       Edit       ABC/abc       Play        Jump
+  Green   -           Language     New        New        Ins/Ovr       Rewind      Skip -60s
+  Yellow  -           -            Delete     Delete     Delete        Delete      Skip +60s
   Blue    -           Stop/Resume  Mark       On/Off(1)  -             Summary     Stop
   0..9    Ch select   -            -          -          Numeric inp.  -           Editing
 
@@ -58,11 +58,9 @@ Video Disk Recorder User's Manual
   by pressing the "Right" button (which puts brackets around the current
   character as in "[R]TL"), selecting the desired character position with
   "Left" and "Right", and changing the character with the "Up" and "Down"
-  keys. "Ok" then confirms the changes. The special character '^' can be used
-  to "cut off" a string at this position. When this character is visible in the
-  brackets (as in abc[^]), the next press to the "Left" or "Ok" button will
-  actually cut off the string. Using "Up" and/or "Down" brings back the
-  original rest of the string (unless you have pressed "Left" or "Ok").
+  keys. "Ok" then confirms the changes. The "Red" key toggles between
+  upper- and lowercase characters, while the "Green" key switches between
+  insert and overwrite mode. The "Yellow" key deletes the current character.
 
   The "Red", "Green", "Yellow" and "Blue" buttons have special meanings
   in various menus and are listed at the bottom of the on-screen-display.

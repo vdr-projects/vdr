@@ -202,6 +202,8 @@ Sergei Haller <Sergei.Haller@math.uni-giessen.de>
  for adding the TPID to Hessen-3 in 'channels.conf'
  for suggesting that the EPG scan should skip channels with their 'Ca' parameter
  explicitly set to an other DVB card
+ for implementing enhanced string editing with upper-/lowercase, insert/overwrite
+ and delete
 
 Andreas Gebel <andreas@xcapenet.de>
  for his help in keeping 'channels.conf' up to date

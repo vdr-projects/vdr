@@ -1195,3 +1195,5 @@ Video Disk Recorder Revision History
 
 - Added some DVB-T channels for Berlin (Germany) to channels.conf.terr (thanks to
   Andreas Roedl).
+- Implemented enhanced string editing with upper-/lowercase, insert/overwrite
+  and delete (thanks to Sergei Haller).

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.79 2002/04/06 09:49:19 kls Exp $
+ * $Id: i18n.c 1.80 2002/04/13 10:42:48 kls Exp $
  *
  * Slovenian  translations provided by Miha Setina <mihasetina@softhome.net> and Matjaz Thaler <matjaz.thaler@guest.arnes.si>
  * Italian    translations provided by Alberto Carraro <bertocar@tin.it>
@@ -466,6 +466,42 @@ const tPhrase Phrases[] = {
     "Avaa",
     "Wyrzucenie",
     "Eyectar",
+  },
+  { "ABC/abc",
+    "ABC/abc",
+    "ABC/abc",
+    "ABC/abc",
+    "ABC/abc",
+    "ABC/abc",
+    "ABC/abc",
+    "ABC/abc",
+    "ABC/abc",
+    "ABC/abc",
+    "ABC/abc",
+  },
+  { "Insert",
+    "Einfügen",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+  },
+  { "Overwrite",
+    "Überschreiben",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
   },
   // Confirmations:
   { "Delete channel?",
