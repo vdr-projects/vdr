@@ -19,10 +19,10 @@ development of VDR.
 
 The author can be contacted at kls@cadsoft.de.
 
-Yet another "set-top-box"?
+Yet another "set-top box"?
 --------------------------
 
-The "set-top-boxes" available from commercial companies all have
+The "set-top boxes" available from commercial companies all have
 one major drawback: they are not "open". This project's goal is
 to build an "open" digital satellite receiver and timer controlled
 video disk recorder, based upon open standards and freely available
@@ -31,6 +31,6 @@ driver software (of course, the hardware still has to be bought).
 The on screen menu system is simple, but shall provide all the
 possibilites necessary to perform timer controlled recording,
 file management and even "on disk editing". The menus
-of commercial set-top-boxes usually are a lot more fancy than
+of commercial set-top boxes usually are a lot more fancy than
 the ones in this system, but here we have the full source code
 and can modify the menus in whatever way desired.
