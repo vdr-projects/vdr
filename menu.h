@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 1.46 2002/09/29 08:16:31 kls Exp $
+ * $Id: menu.h 1.47 2002/10/06 10:35:49 kls Exp $
  */
 
 #ifndef __MENU_H
@@ -68,7 +68,7 @@ private:
   bool Open(bool OpenSubMenus = false);
   eOSState Play(void);
   eOSState Rewind(void);
-  eOSState Del(void);
+  eOSState Delete(void);
   eOSState Summary(void);
 public:
   cMenuRecordings(const char *Base = NULL, int Level = 0, bool OpenSubMenus = false);

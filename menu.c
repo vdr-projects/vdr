@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.210 2002/10/06 09:52:52 kls Exp $
+ * $Id: menu.c 1.211 2002/10/06 10:36:20 kls Exp $
  */
 
 #include "menu.h"
@@ -1605,7 +1605,7 @@ eOSState cMenuRecordings::Rewind(void)
   return osContinue;
 }
 
-eOSState cMenuRecordings::Del(void)
+eOSState cMenuRecordings::Delete(void)
 {
   cMenuRecordingItem *ri = (cMenuRecordingItem *)Get(Current());
   if (ri && !ri->IsDirectory()) {
@@ -1664,7 +1664,7 @@ eOSState cMenuRecordings::ProcessKey(eKeys Key)
        case kOk:
        case kRed:    return Play();
        case kGreen:  return Rewind();
-       case kYellow: return Del();
+       case kYellow: return Delete();
        case kBlue:   return Summary();
        default: break;
        }
