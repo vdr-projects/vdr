@@ -1246,3 +1246,5 @@ Video Disk Recorder Revision History
 2002-05-18: Version 1.0.3
 
 - Updated 'Premiere Sport 2' in channels.conf (thanks to Rudi Hofer).
+- Fixed some function headers to make them compile with gcc 3.x (thanks to
+  Gregoire Favre).

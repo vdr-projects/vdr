@@ -7,7 +7,7 @@
  * Parts of this file were inspired by the 'ringbuffy.c' from the
  * LinuxDVB driver (see linuxtv.org).
  *
- * $Id: ringbuffer.c 1.6 2002/04/19 12:38:44 kls Exp $
+ * $Id: ringbuffer.c 1.6.1.1 2002/05/18 08:45:09 kls Exp $
  */
 
 #include "ringbuffer.h"
@@ -239,7 +239,7 @@ cFrame::~cFrame()
 
 // --- cRingBufferFrame ------------------------------------------------------
 
-cRingBufferFrame::cRingBufferFrame(int Size, bool Statistics = false)
+cRingBufferFrame::cRingBufferFrame(int Size, bool Statistics)
 :cRingBuffer(Size, Statistics)
 {
   head = NULL;

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbosd.c 1.13 2002/04/13 11:34:48 kls Exp $
+ * $Id: dvbosd.c 1.13.1.1 2002/05/18 08:44:46 kls Exp $
  */
 
 #include "dvbosd.h"
@@ -528,7 +528,7 @@ eDvbFont cDvbOsd::SetFont(eDvbFont Font)
   return oldFont;
 }
 
-void cDvbOsd::Text(int x, int y, const char *s, eDvbColor ColorFg = clrWhite, eDvbColor ColorBg = clrBackground, tWindowHandle Window)
+void cDvbOsd::Text(int x, int y, const char *s, eDvbColor ColorFg, eDvbColor ColorBg, tWindowHandle Window)
 {
   cWindow *w = (Window == ALL_TILED_WINDOWS) ? GetWindow(x, y) : GetWindow(Window);
   if (w)
