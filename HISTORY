@@ -2381,3 +2381,5 @@ Video Disk Recorder Revision History
 - Fixed dropping out of replay mode while viewing a recording that is still
   going on (thanks to Oliver Endriss for reporting and helping to debug this
   one).
+- Fixed handling ':' characters in channel names when reading channels.conf
+  (thanks to Reinhard Nissl for reporting this one).
