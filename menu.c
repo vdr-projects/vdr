@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.197 2002/06/16 13:23:51 kls Exp $
+ * $Id: menu.c 1.201 2002/06/23 11:07:19 kls Exp $
  */
 
 #include "menu.h"
@@ -14,6 +14,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "config.h"
+#include "cutter.h"
 #include "eit.h"
 #include "i18n.h"
 #include "menuitems.h"
@@ -1512,7 +1513,6 @@ eOSState cMenuRecordings::ProcessKey(eKeys Key)
        case kGreen:  return Rewind();
        case kYellow: return Del();
        case kBlue:   return Summary();
-       case kMenu:   return osEnd;
        default: break;
        }
      }
@@ -2026,10 +2026,8 @@ void cMenuMain::Set(void)
 
   // Editing control:
 
-  /*XXX+
-  if (cVideoCutter::Active())
+  if (cCutter::Active())
      Add(new cOsdItem(tr(" Cancel editing"), osCancelEdit));
-     XXX*/
 
   // Color buttons:
 
@@ -2063,7 +2061,7 @@ eOSState cMenuMain::ProcessKey(eKeys Key)
                           }
                        break;
     case osCancelEdit: if (Interface->Confirm(tr("Cancel editing?"))) {
-                          //XXX+cVideoCutter::Stop();
+                          cCutter::Stop();
                           return osEnd;
                           }
                        break;
@@ -2081,7 +2079,6 @@ eOSState cMenuMain::ProcessKey(eKeys Key)
                        }
                        break;
     default: switch (Key) {
-               case kMenu:   state = osEnd;    break;
                case kRed:    if (!HasSubMenu())
                                 state = osRecord;
                              break;
@@ -2443,7 +2440,7 @@ cRecordControl::cRecordControl(cDevice *Device, cTimer *Timer)
   cRecordingUserCommand::InvokeCommand(RUC_BEFORERECORDING, fileName);
   cChannel *ch = Channels.GetByNumber(timer->channel);
   recorder = new cRecorder(fileName, ch->ca, timer->priority, ch->vpid, ch->apid1, ch->apid2, ch->dpid1, ch->dpid2);
-  if (device->Attach(recorder)) {
+  if (device->AttachReceiver(recorder)) {
      Recording.WriteSummary();
      cStatus::MsgRecording(device, fileName);
      Interface->DisplayRecording(device->CardIndex(), true);
@@ -2684,18 +2681,14 @@ char *cReplayControl::fileName = NULL;
 char *cReplayControl::title = NULL;
 
 cReplayControl::cReplayControl(void)
+:cDvbPlayerControl(fileName)
 {
   visible = modeOnly = shown = displayFrames = false;
   lastCurrent = lastTotal = -1;
   timeoutShow = 0;
   timeSearchActive = false;
-  if (fileName) {
-     marks.Load(fileName);
-     if (!Start(fileName))
-        Interface->Error(tr("Channel locked (recording)!"));//XXX+
-     else
-        cStatus::MsgReplaying(this, fileName);
-     }
+  marks.Load(fileName);
+  cStatus::MsgReplaying(this, fileName);
 }
 
 cReplayControl::~cReplayControl()
@@ -2973,11 +2966,10 @@ void cReplayControl::MarkMove(bool Forward)
 
 void cReplayControl::EditCut(void)
 {
-  /*XXX+
   if (fileName) {
      Hide();
-     if (!cVideoCutter::Active()) {
-        if (!cVideoCutter::Start(fileName))
+     if (!cCutter::Active()) {
+        if (!cCutter::Start(fileName))
            Interface->Error(tr("Can't start editing process!"));
         else
            Interface->Info(tr("Editing process started"));
@@ -2986,7 +2978,6 @@ void cReplayControl::EditCut(void)
         Interface->Error(tr("Editing process already active!"));
      ShowMode();
      }
-     XXX*/
 }
 
 void cReplayControl::EditTest(void)
@@ -3065,7 +3056,6 @@ eOSState cReplayControl::ProcessKey(eKeys Key)
           displayFrames = DisplayedFrames;
           switch (Key) {
             // Menu control:
-            case kMenu:    Hide(); return osMenu; // allow direct switching to menu
             case kOk:      if (visible && !modeOnly) {
                               Hide();
                               DoShowMode = true;

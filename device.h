@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 1.1 2002/06/09 15:48:32 kls Exp $
+ * $Id: device.h 1.3 2002/06/23 11:50:24 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -172,7 +172,7 @@ public:
        // Returns true if we are currently replaying.
   void StopReplay(void);
        // Stops the current replay session (if any).
-  bool Attach(cPlayer *Player);
+  bool AttachPlayer(cPlayer *Player);
   void Detach(cPlayer *Player);
   virtual int PlayVideo(const uchar *Data, int Length);
   virtual int PlayAudio(const uchar *Data, int Length);
@@ -192,7 +192,7 @@ public:
        // Returns the ca of the current receiving session.
   bool Receiving(void);
        // Returns true if we are currently receiving.
-  bool Attach(cReceiver *Receiver);
+  bool AttachReceiver(cReceiver *Receiver);
   void Detach(cReceiver *Receiver);
   };
 

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.2 2002/06/16 13:23:31 kls Exp $
+ * $Id: device.c 1.5 2002/06/23 12:51:24 kls Exp $
  */
 
 #include "device.h"
@@ -21,6 +21,7 @@ extern "C" {
 #include "player.h"
 #include "receiver.h"
 #include "status.h"
+#include "transfer.h"
 
 #define DEV_VIDEO         "/dev/video"
 #define DEV_OST_OSD       "/dev/ost/osd"
@@ -456,8 +457,7 @@ bool cDevice::SetPid(int fd, dmxPesType_t PesType, int Pid, dmxOutput_t Output)
 
 eSetChannelResult cDevice::SetChannel(int ChannelNumber, int Frequency, char Polarization, int Diseqc, int Srate, int Vpid, int Apid, int Tpid, int Ca, int Pnr)
 {
-  //XXX+StopTransfer();
-  //XXX+StopReplay();
+  StopReplay();
 
   cStatus::MsgChannelSwitch(this, 0);
 
@@ -620,10 +620,8 @@ eSetChannelResult cDevice::SetChannel(int ChannelNumber, int Frequency, char Pol
   if (NeedsTransferMode) {
      cDevice *CaDevice = GetDevice(Ca, 0);
      if (CaDevice && !CaDevice->Receiving()) {
-        if ((Result = CaDevice->SetChannel(ChannelNumber, Frequency, Polarization, Diseqc, Srate, Vpid, Apid, Tpid, Ca, Pnr)) == scrOk) {
-           //XXX+SetModeReplay();
-           //XXX+transferringFromDevice = CaDevice->StartTransfer(fd_video);
-           }
+        if ((Result = CaDevice->SetChannel(ChannelNumber, Frequency, Polarization, Diseqc, Srate, Vpid, Apid, Tpid, Ca, Pnr)) == scrOk)
+           cControl::Launch(new cTransferControl(CaDevice, Vpid, Apid, 0, 0, 0));//XXX+
         }
      else
         Result = scrNoTransfer;
@@ -731,15 +729,10 @@ void cDevice::StillPicture(const uchar *Data, int Length)
 
 bool cDevice::Replaying(void)
 {
-  /*XXX+
-  if (replayBuffer && !replayBuffer->Active())
-     StopReplay();
-  return replayBuffer != NULL;
-  XXX*/
   return player != NULL;
 }
 
-bool cDevice::Attach(cPlayer *Player)
+bool cDevice::AttachPlayer(cPlayer *Player)
 {
   if (Receiving()) {
      esyslog("ERROR: attempt to attach a cPlayer while receiving on device %d - ignored", CardIndex() + 1);
@@ -792,6 +785,8 @@ void cDevice::StopReplay(void)
 {
   if (player) {
      Detach(player);
+     if (IsPrimaryDevice())
+        cControl::Shutdown();
      /*XXX+
      if (IsPrimaryDevice()) {
         // let's explicitly switch the channel back in case it was in Transfer Mode:
@@ -958,7 +953,7 @@ void cDevice::Action(void)
   dsyslog("receiver thread ended on device %d (pid=%d)", CardIndex() + 1, getpid());
 }
 
-bool cDevice::Attach(cReceiver *Receiver)
+bool cDevice::AttachReceiver(cReceiver *Receiver)
 {
   //XXX+ check for same transponder???
   if (!Receiver)

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 1.1 2002/06/16 10:59:45 kls Exp $
+ * $Id: dvbplayer.c 1.4 2002/06/23 10:52:51 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -12,22 +12,6 @@
 #include "recording.h"
 #include "ringbuffer.h"
 #include "thread.h"
-
-// --- ReadFrame -------------------------------------------------------------
-
-int ReadFrame(int f, uchar *b, int Length, int Max)
-{
-  if (Length == -1)
-     Length = Max; // this means we read up to EOF (see cIndex)
-  else if (Length > Max) {
-     esyslog("ERROR: frame larger than buffer (%d > %d)", Length, Max);
-     Length = Max;
-     }
-  int r = safe_read(f, b, Length);
-  if (r < 0)
-     LOG_ERROR;
-  return r;
-}
 
 // --- cBackTrace ----------------------------------------------------------
 
@@ -90,9 +74,6 @@ int cBackTrace::Get(bool Forward)
 // The size of the array used to buffer video data:
 // (must be larger than MINVIDEODATA - see remux.h)
 #define VIDEOBUFSIZE  MEGABYTE(1)
-
-// The maximum size of a single frame:
-#define MAXFRAMESIZE  KILOBYTE(192)
 
 // The number of frames to back up when resuming an interrupted replay session:
 #define RESUMEBACKUP (10 * FRAMESPERSEC)
@@ -644,9 +625,9 @@ bool cDvbPlayer::GetReplayMode(bool &Play, bool &Forward, int &Speed)
 
 // --- cDvbPlayerControl -----------------------------------------------------
 
-cDvbPlayerControl::cDvbPlayerControl(void)
+cDvbPlayerControl::cDvbPlayerControl(const char *FileName)
+:cControl(player = new cDvbPlayer(FileName))
 {
-  player = NULL;
 }
 
 cDvbPlayerControl::~cDvbPlayerControl()
@@ -657,16 +638,6 @@ cDvbPlayerControl::~cDvbPlayerControl()
 bool cDvbPlayerControl::Active(void)
 {
   return player && player->Active();
-}
-
-bool cDvbPlayerControl::Start(const char *FileName)
-{
-  delete player;
-  player = new cDvbPlayer(FileName);
-  if (cDevice::PrimaryDevice()->Attach(player))
-     return true;
-  Stop();
-  return false;
 }
 
 void cDvbPlayerControl::Stop(void)

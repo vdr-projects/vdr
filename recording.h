@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 1.23 2002/06/16 11:29:47 kls Exp $
+ * $Id: recording.h 1.24 2002/06/22 10:09:27 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -107,6 +107,9 @@ public:
 //XXX+
 #define FRAMESPERSEC 25
 
+// The maximum size of a single frame:
+#define MAXFRAMESIZE  KILOBYTE(192)
+
 // The maximum file size is limited by the range that can be covered
 // with 'int'. 4GB might be possible (if the range is considered
 // 'unsigned'), 2GB should be possible (even if the range is considered
@@ -162,5 +165,7 @@ int HMSFToIndex(const char *HMSF);
       // Converts the given string (format: "hh:mm:ss.ff") to an index.
 int SecondsToFrames(int Seconds); //XXX+ ->player???
       // Returns the number of frames corresponding to the given number of seconds.
+
+int ReadFrame(int f, uchar *b, int Length, int Max);
 
 #endif //__RECORDING_H

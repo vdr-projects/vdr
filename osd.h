@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.h 1.31 2002/05/18 14:00:15 kls Exp $
+ * $Id: osd.h 1.32 2002/06/23 09:13:17 kls Exp $
  */
 
 #ifndef __OSD_H
@@ -22,7 +22,6 @@
 #define MAXOSDITEMS (Setup.OSDheight - 4)
 
 enum eOSState { osUnknown,
-                osMenu,
                 osContinue,
                 osSchedule,
                 osChannels,
@@ -115,7 +114,7 @@ public:
   int Width(void) { return Interface->Width(); }
   int Height(void) { return Interface->Height(); }
   bool NeedsFastResponse(void) { return needsFastResponse; }
-  virtual eOSState ProcessKey(eKeys Key) = 0;
+  virtual eOSState ProcessKey(eKeys Key) { return osUnknown; }
 };
 
 class cOsdMenu : public cOsdObject, public cList<cOsdItem> {

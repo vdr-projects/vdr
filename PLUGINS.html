@@ -12,7 +12,7 @@ This interface allows programmers to develop additional functionality for VDR co
 separate from the core VDR source, without the need of patching the original
 VDR code (and all the problems of correlating various patches).
 <p>
-<!--X1.1.3--><table width=100%><tr><td bgcolor=red>&nbsp;</td><td width=100%>
+<!--X1.1.3--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
 This document is divided into two parts, the first one describing the
 <a href="#Part I - The Outside Interface"><i>outside</i> interface</a>
 of the plugin system, and the second one describing the
@@ -23,16 +23,18 @@ The <i>inside</i> interface provides the plugin code access to VDR's internal da
 structures and allows it to hook itself into specific areas to perform special actions.
 <!--X1.1.3--></td></tr></table>
 <p>
-<!--X1.1.1--><table width=100%><tr><td bgcolor=lime>&nbsp;</td><td width=100%>
+<!--X1.1.1--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 Important modifications introduced in version 1.1.1 are marked like this.
 <!--X1.1.1--></td></tr></table>
-<!--X1.1.2--><table width=100%><tr><td bgcolor=cyan>&nbsp;</td><td width=100%>
+<!--X1.1.2--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
 Important modifications introduced in version 1.1.2 are marked like this.
 <!--X1.1.2--></td></tr></table>
-<!--X1.1.3--><table width=100%><tr><td bgcolor=red>&nbsp;</td><td width=100%>
+<!--X1.1.3--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
 Important modifications introduced in version 1.1.3 are marked like this.
 <!--X1.1.3--></td></tr></table>
-<!--<p>TODO: Link to the document about VDR base classes to use when implementing actual functionality (yet to be written).-->
+<!--X1.1.4--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+Important modifications introduced in version 1.1.4 are marked like this.
+<!--X1.1.4--></td></tr></table>
 
 <a name="Part I - The Outside Interface"><hr><center><h1>Part I - The Outside Interface</h1></center>
 
@@ -129,7 +131,7 @@ from the web, it will typically have a name like
 <p>
 and will unpack into a directory named
 <p>
-<!--X1.1.2--><table width=100%><tr><td bgcolor=cyan>&nbsp;</td><td width=100%>
+<!--X1.1.2--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
 <tt>hello-0.0.1</tt>
 <!--X1.1.2--></td></tr></table>
 <p>
@@ -137,7 +139,7 @@ To use the <tt>plugins</tt> and <tt>plugins-clean</tt> targets from the VDR <tt>
 you need to unpack such an archive into the <tt>VDR/PLUGINS/SRC</tt> directory and
 create a symbolic link with the basic plugin name, as in
 
-<!--X1.1.2--><table width=100%><tr><td bgcolor=cyan>&nbsp;</td><td width=100%>
+<!--X1.1.2--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
 <p><table><tr><td bgcolor=#F0F0F0><pre><br>
 ln -s hello-0.0.1 hello
 </pre></td></tr></table><p>
@@ -203,7 +205,7 @@ its memory. You don't need to worry about the details behind all this.
 If your plugin requires additional source files, simply add them to your plugin's
 source directory and adjust the <tt>Makefile</tt> accordingly.
 <p>
-<!--X1.1.1--><table width=100%><tr><td bgcolor=lime>&nbsp;</td><td width=100%>
+<!--X1.1.1--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 Header files usually contain preprocessor statements that prevent the same
 file (or rather its contents, to be precise) from being included more than once, like
 
@@ -422,7 +424,7 @@ If a plugin implements a function that runs in the background (presumably in a
 thread of its own), or wants to make use of <a href="#Internationalization">internationalization</a>,
 it needs to implement the function
 
-<!--X1.1.2--><table width=100%><tr><td bgcolor=cyan>&nbsp;</td><td width=100%>
+<!--X1.1.2--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
 <p><table><tr><td bgcolor=#F0F0F0><pre><br>
 virtual bool Start(void);
 </pre></td></tr></table><p>
@@ -434,7 +436,7 @@ its task. This may, for instance, be a thread that collects data from the DVB
 stream, which is later presented to the user via a function that is available
 from the main menu.
 <p>
-<!--X1.1.2--><table width=100%><tr><td bgcolor=cyan>&nbsp;</td><td width=100%>
+<!--X1.1.2--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
 A return value of <i>false</i> indicates that something has gone wrong and the
 plugin will not be able to perform its task. In that case, the plugin should
 write a proper error message to the log file. The first plugin that returns
@@ -498,7 +500,7 @@ interaction is possible. If a specific action takes longer than a few seconds,
 the plugin should launch a separate thread to do this.
 </b>
 
-<!--X1.1.2--><table width=100%><tr><td bgcolor=cyan>&nbsp;</td><td width=100%>
+<!--X1.1.2--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
 <hr><h2>Housekeeping</h2>
 
 <center><i><b>Chores, chores...</b></i></center><p>
@@ -545,7 +547,7 @@ previously stored in the global setup data (see below). It shall return
 <i>true</i> if the parameter was parsed correctly, <i>false</i> in case of
 an error. If <i>false</i> is returned, an error message will be written to
 the log file (and program execution will continue).
-<!--X1.1.1--><table width=100%><tr><td bgcolor=lime>&nbsp;</td><td width=100%>
+<!--X1.1.1--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 A possible implementation of <tt>SetupParse()</tt> could look like this:
 
 <p><table><tr><td bgcolor=#F0F0F0><pre><br>
@@ -600,7 +602,7 @@ needs setup parameters that are not directly user adjustable. It can use
 <tt>SetupStore()</tt> and <tt>SetupParse()</tt> without presenting these
 parameters to the user.
 
-<!--X1.1.1--><table width=100%><tr><td bgcolor=lime>&nbsp;</td><td width=100%>
+<!--X1.1.1--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 <a name="The Setup menu"><hr><h2>The Setup menu</h2>
 
 <center><i><b>Have it your way!</b></i></center><p>
@@ -660,7 +662,7 @@ your setup parameters and use that one to copy all parameters with one single st
 (like VDR does with its cSetup class).
 <!--X1.1.1--></td></tr></table>
 
-<!--X1.1.2--><table width=100%><tr><td bgcolor=cyan>&nbsp;</td><td width=100%>
+<!--X1.1.2--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
 <hr><h2>Configuration files</h2>
 
 <center><i><b>I want my own stuff!</b></i></center><p>
@@ -736,6 +738,9 @@ The call to this function must be done in the <a href="#Getting started"><tt>Sta
 const tI18nPhrase Phrases[] = {
   { "Hello world!",
     "Hallo Welt!",
+    "",// TODO
+    "",// TODO
+    "",// TODO
     "",// TODO
     "",// TODO
     "",// TODO
@@ -827,7 +832,7 @@ and display their help and/or version information in addition to its own output.
 
 If you want to make your plugin available to other VDR users, you'll need to
 make a package that can be easily distributed.
-<!--X1.1.3--><table width=100%><tr><td bgcolor=red>&nbsp;</td><td width=100%>
+<!--X1.1.3--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
 The <tt>Makefile</tt> that has been created by the call to
 <a href="#Initializing a new plugin directory"><tt>newplugin</tt></a>
 provides the target <tt>dist</tt>, which does this for you.
@@ -849,7 +854,7 @@ vdr-hello-0.0.1.tgz
 in your source directory, where <tt>hello</tt> will be replaced with your actual
 plugin's name, and <tt>0.0.1</tt> will be your plugin's current version number.
 
-<!--X1.1.3--><table width=100%><tr><td bgcolor=red>&nbsp;</td><td width=100%>
+<!--X1.1.3--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
 <a name="Part II - The Inside Interface"><hr><center><h1>Part II - The Inside Interface</h1></center>
 
 <hr><h2>Status monitor</h2>
@@ -925,6 +930,157 @@ See the file <tt>status.h</tt> for detailed information on which status monitor
 member functions are available in <tt>cStatus</tt>. You only need to implement
 the functions you actually want to use.
 <!--X1.1.3--></td></tr></table>
+
+<!--X1.1.4--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+<hr><h2>Players</h2>
+
+<center><i><b>Play it again, Sam!</b></i></center><p>
+
+Implementing a player is a two step process.
+First you need the actual player class, which is derived from the abstract <tt>cPlayer</tt>:
+
+<p><table><tr><td bgcolor=#F0F0F0><pre><br>
+#include &lt;vdr/player.h&gt;
+
+class cMyPlayer : public cPlayer {
+protected:
+  virtual void Activate(bool On);
+public:
+  cMyPlayer(void);
+  virtual ~cMyPlayer();
+  };
+</pre></td></tr></table><p>
+
+What exactly you do in this class is entirely up to you. If you want to run a separate
+thread which, e.g.,  reads data from a file, you can additionally derive your class from
+<tt>cThread</tt> and implement the necessary functionality:
+
+<p><table><tr><td bgcolor=#F0F0F0><pre><br>
+#include &lt;vdr/player.h&gt;
+
+class cMyPlayer : public cPlayer, cThread {
+protected:
+  virtual void Activate(bool On);
+  virtual void Action(void);
+public:
+  cMyPlayer(void);
+  virtual ~cMyPlayer();
+  };
+</pre></td></tr></table><p>
+
+Take a look at the files <tt>player.h</tt> and <tt>dvbplayer.c</tt> to see how VDR implements
+its own player for the VDR recordings.
+<p>
+To play the video data, the player needs to call its member function
+
+<p><table><tr><td bgcolor=#F0F0F0><pre><br>
+int PlayVideo(const uchar *Data, int Length);
+</pre></td></tr></table><p>
+
+where <tt>Data</tt> point to a block of <tt>Length</tt> bytes of a PES data
+stream. There are no prerequisites regarding the length or alignment of an
+individual block of data. The sum of all blocks must simply result in the
+desired video data stream, and it must be delivered fast enough so that the
+DVB device doesn't run out of data.
+<p>
+TODO: PlayAudio()???
+<p>
+The second part needed here is a control object that receives user input from the main
+program loop and reacts on this by telling the player what to do:
+
+<p><table><tr><td bgcolor=#F0F0F0><pre><br>
+#include &lt;vdr/player.h&gt;
+
+class cMyControl : public cControl {
+private:
+  cMyPlayer *player;
+public:
+  cMyControl(void);
+  virtual ~cMyControl();
+  virtual void Hide(void);
+  virtual eOSState ProcessKey(eKeys Key);
+  };
+</pre></td></tr></table><p>
+
+<tt>cMyControl</tt> shall create an object of type <tt>cMyPlayer</tt> and
+hand over a pointer to it to the <tt>cControl</tt> base class, so that it
+can be later attached to the primary DVB device:
+
+<p><table><tr><td bgcolor=#F0F0F0><pre><br>
+cMyControl::cMyControl(void)
+:cControl(player = new cMyPlayer)
+{
+}
+</pre></td></tr></table><p>
+
+<tt>cMyControl</tt> will receive the user's key presses through the <tt>ProcessKey()</tt>
+function. It will get all button presses, except for the volume control buttons
+(<tt>kVolUp</tt>, <tt>kVolDn</tt>, <tt>kMute</tt>), the power button (<tt>kPower</tt>)
+and the menu button (<tt>kMenu</tt>). If the user has not pressed a button for a while
+(which is typically in the area of about one second), <tt>ProcessKey()</tt> will be called
+with <tt>kNone</tt>, so that the <tt>cMyControl</tt> gets a chance to check whether its
+player is still active. Once the player has become inactive (because the user has decided
+to stop it or the DVB device has detached it), <tt>ProcessKey()</tt> must return <tt>osEnd</tt>
+to make the main program loop shut down the player control.
+<p>
+A derived <tt>cControl</tt> <b>must</b> implement the <tt>Hide()</tt> function, in which
+it has to hide itself from the OSD, in case it uses it. <tt>Hide()</tt> may be called at
+any time, and it may be called even if the <tt>cControl</tt> is not visible at the moment.
+The reason for this is that the <tt>Menu</tt> button shall always bring up the main VDR
+menu, so any active <tt>cControl</tt> needs to be hidden when that button is pressed.
+<p>
+Finally, to get things going, a plugin that implements a player (and the surrounding
+infrastructure like displaying a list of playable stuff etc) simply has to call the
+static function <tt>cControl::Launch()</tt> with the player control object, as in
+
+<p><table><tr><td bgcolor=#F0F0F0><pre><br>
+cControl::Launch(new cMyControl);
+</pre></td></tr></table><p>
+
+Ownership of the <tt>MyControl</tt> object is handed over to the VDR core code,
+so the plugin should not keep a pointer to it, because VDR will destroy the object
+whenever it sees fit (for instance because a recording shall start that needs to
+use the primary DVB device, or the user decides to start a different replay).
+<p>
+The <tt>cPlayer</tt> class has a member function
+
+<p><table><tr><td bgcolor=#F0F0F0><pre><br>
+void DeviceStillPicture(const uchar *Data, int Length);
+</pre></td></tr></table><p>
+
+which can be called to display a still picture. VDR uses this function when handling
+its editing marks. A special case of a "player" might use this function to implement
+a "picture viewer". 
+<p>
+For detailed information on how to implement your own player, please take a look
+at VDR's <tt>cDvbPlayer</tt> and <tt>cDvbPlayerControl</tt> classes.
+<p>
+<b>User interface</b>
+<p>
+In order for a new player to nicely "blend in" to the overall VDR appearance it
+is recommended that it implements the same functionality with the same keys as the
+VDR player does (as far as this is possible and makes sense). The main points to
+consider here are
+<ul>
+<li>The <i>Ok</i> button shall bring up some display that indicates what is currently
+    being played, and what the status of this replay session is. As an alternative (for
+    instance with a DVD player) it may display a player specific menu, from which the
+    user can select certain options.
+<li>The <i>Up</i>, <i>Down</i>, <i>Left</i> and <i>Right</i> buttons shall control
+    <i>Play</i>, <i>Pause</i>, <i>Fast Rewind</i> and <i>Fast Forward</i>, respectively
+    (provided that this particular player can implement these functions) if the player
+    is not currently showing any menu. If there is a menu, they shall allow the user
+    to navigate in the menu.
+<li>The <i>Green</i> and <i>Yellow</i> buttons shall skip back- and forward by an
+    amount of time suitable for this player (provided that this particular player can
+    implement these functions).
+<li>The <i>Blue</i> button shall immediately stop the replay session.
+</ul>
+Of course, these are only suggestions which should make it easier for VDR users to
+enjoy additional players, since they will be able to control them with actions
+that they already know. If you absolutely want to do things differently, just go
+ahead - it's your show...
+<!--X1.1.4--></td></tr></table>
 
 </body>
 </html>
