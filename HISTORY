@@ -384,3 +384,5 @@ Video Disk Recorder Revision History
 - The 'Ca' parameter in the default 'channels.conf' has been changed from '2'
   to '3' because the VDR prototype now has 3 DVB cards (and currently the CAM
   module only works if it is inserted into the last DVB card).
+- The "Now", "Next" and "Schedule" menus now remember the current channel and
+  restore the list when switching between them.
