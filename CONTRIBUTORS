@@ -428,6 +428,7 @@ Andy Carter <fruit@ukgateway.net>
 
 Robert Schiele <rschiele@uni-mannheim.de>
  for his help in keeping 'channels.conf.cable' up to date
+ for reporting some faulty default parameter initializations
 
 Gerhard Steiner <steiner@mail.austria.com>
  for suggesting that the SVDRP command PUTE shall trigger an immediate write of

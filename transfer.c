@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: transfer.c 1.4 2002/10/12 13:32:48 kls Exp $
+ * $Id: transfer.c 1.5 2002/10/13 16:08:44 kls Exp $
  */
 
 #include "transfer.h"
@@ -155,7 +155,7 @@ int cTransfer::NumAudioTracks(void) const
   return canToggleAudioTrack ? 2 : 1;
 }
 
-const char **cTransfer::GetAudioTracks(int *CurrentTrack = NULL) const
+const char **cTransfer::GetAudioTracks(int *CurrentTrack) const
 {
   if (NumAudioTracks()) {
      if (CurrentTrack)
