@@ -635,3 +635,8 @@ Video Disk Recorder Revision History
   was too long...).
 - Made the font file generation more stable (thanks to Artur Skawina).
 - Changed the default value for the "DiSEqC" setup parameter to "off".
+- The new command line option '-E' can be used to define where the EPG data
+  shall be written to. This is especially useful if VDR runs in a system
+  that turns off the video disk when it is not used, and therefore needs
+  to write the EPG file to a ramdisk (or turn off writing it alltogether).
+  See 'vdr --help' for details.

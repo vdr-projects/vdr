@@ -13,7 +13,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.c 1.16 2001/05/26 10:58:01 kls Exp $
+ * $Id: eit.c 1.17 2001/08/11 09:31:54 kls Exp $
  ***************************************************************************/
 
 #include "eit.h"
@@ -1099,10 +1099,12 @@ bool cEIT::WriteExtEventDescriptor(unsigned short service, eit_loop_t *eitloop, 
 // --- cSIProcessor ----------------------------------------------------------
 
 #define MAX_FILTERS 20
+#define EPGDATAFILENAME "epg.data"
 
 int cSIProcessor::numSIProcessors = 0;
 cSchedules *cSIProcessor::schedules = NULL;
 cMutex cSIProcessor::schedulesMutex;
+const char *cSIProcessor::epgDataFileName = EPGDATAFILENAME;
 
 /**  */
 cSIProcessor::cSIProcessor(const char *FileName)
@@ -1127,6 +1129,18 @@ cSIProcessor::~cSIProcessor()
    if (!--numSIProcessors) // the last one deletes it
       delete schedules;
    delete fileName;
+}
+
+void cSIProcessor::SetEpgDataFileName(const char *FileName)
+{
+  epgDataFileName = NULL;
+  if (FileName)
+     epgDataFileName = strdup(DirectoryOk(FileName) ? AddDirectory(FileName, EPGDATAFILENAME) : FileName);
+}
+
+const char *cSIProcessor::GetEpgDataFileName(void)
+{
+  return epgDataFileName ? AddDirectory(VideoDirectory, epgDataFileName) : NULL;
 }
 
 void cSIProcessor::SetStatus(bool On)
@@ -1174,16 +1188,18 @@ void cSIProcessor::Action()
             schedulesMutex.Unlock();
             lastCleanup = now;
          }
-         if (now - lastDump > 600)
+         if (epgDataFileName && now - lastDump > 600)
          {
             LOCK_THREAD;
 
             schedulesMutex.Lock();
-            FILE *f = fopen(AddDirectory(VideoDirectory, "epg.data"), "w");
+            FILE *f = fopen(GetEpgDataFileName(), "w");
             if (f) {
                schedules->Dump(f);
                fclose(f);
                }
+            else
+               LOG_ERROR;
             lastDump = now;
             schedulesMutex.Unlock();
          }
