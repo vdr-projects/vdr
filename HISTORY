@@ -1834,3 +1834,5 @@ Video Disk Recorder Revision History
   housekeeping (suggested by Emil Naepflein).
 - Macros in 'keymacros.conf' can now use "@plugin" to directly access the main menu
   function of a given plugin (see man vdr(5) for details).
+- The new plugin 'sky' can be used to integrate a Sky Digibox into the VDR system,
+  using a Kfir MPEG2 encoder card (see PLUGINS/src/sky/README for details).
