@@ -677,9 +677,8 @@ Video Disk Recorder Revision History
   they will be recording. This can be disabled in the "Setup" menu. Note
   that the "Mark" button doesn't work if timers are displayed sorted.
 
-2001-09-02: Version 0.9.4
+2001-09-02: Version 0.94
 
-- Changed version number notation.
 - Implemented automatic shutdown (see INSTALL and MANUAL for details).
 - New SVDRP command NEXT to show the next timer event.
 - The new remote control key "Power" can be used to turn the VDR machine
