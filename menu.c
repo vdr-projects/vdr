@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.35 2000/10/08 15:34:26 kls Exp $
+ * $Id: menu.c 1.36 2000/10/08 16:11:22 kls Exp $
  */
 
 #include "menu.h"
@@ -1087,6 +1087,8 @@ cMenuSetup::cMenuSetup(void)
   Add(new cMenuEditBoolItem("ShowInfoOnChSwitch", &data.ShowInfoOnChSwitch));
   Add(new cMenuEditBoolItem("MenuScrollPage",     &data.MenuScrollPage));
   Add(new cMenuEditBoolItem("MarkInstantRecord",  &data.MarkInstantRecord));
+  Add(new cMenuEditIntItem( "LnbFrequLo",         &data.LnbFrequLo));
+  Add(new cMenuEditIntItem( "LnbFrequHi",         &data.LnbFrequHi));
 }
 
 eOSState cMenuSetup::ProcessKey(eKeys Key)

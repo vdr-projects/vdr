@@ -214,3 +214,5 @@ Video Disk Recorder User's Manual
                          0 = instant recordings will not be marked
                          1 = instant recordings will be marked.
 
+  LnbFrequLo = 9750      The low and high LNB frequencies (in MHz)
+  LnbFrequHi = 10600

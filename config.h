@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.25 2000/10/08 12:39:00 kls Exp $
+ * $Id: config.h 1.26 2000/10/08 16:07:49 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -231,6 +231,8 @@ public:
   int ShowInfoOnChSwitch;
   int MenuScrollPage;
   int MarkInstantRecord;
+  int LnbFrequLo;
+  int LnbFrequHi;
   cSetup(void);
   bool Load(const char *FileName);
   bool Save(const char *FileName = NULL);

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.25 2000/10/08 12:41:59 kls Exp $
+ * $Id: config.c 1.26 2000/10/08 16:10:40 kls Exp $
  */
 
 #include "config.h"
@@ -597,6 +597,8 @@ cSetup::cSetup(void)
   ShowInfoOnChSwitch = 1;
   MenuScrollPage = 1;
   MarkInstantRecord = 1;
+  LnbFrequLo =  9750;
+  LnbFrequHi = 10600;
 }
 
 bool cSetup::Parse(char *s)
@@ -609,6 +611,8 @@ bool cSetup::Parse(char *s)
      else if (!strcasecmp(Name, "ShowInfoOnChSwitch"))  ShowInfoOnChSwitch = atoi(Value);
      else if (!strcasecmp(Name, "MenuScrollPage"))      MenuScrollPage     = atoi(Value);
      else if (!strcasecmp(Name, "MarkInstantRecord"))   MarkInstantRecord  = atoi(Value);
+     else if (!strcasecmp(Name, "LnbFrequLo"))          LnbFrequLo         = atoi(Value);
+     else if (!strcasecmp(Name, "LnbFrequHi"))          LnbFrequHi         = atoi(Value);
      else
         return false;
      return true;
@@ -654,6 +658,8 @@ bool cSetup::Save(const char *FileName)
         fprintf(f, "ShowInfoOnChSwitch = %d\n", ShowInfoOnChSwitch);
         fprintf(f, "MenuScrollPage     = %d\n", MenuScrollPage);
         fprintf(f, "MarkInstantRecord  = %d\n", MarkInstantRecord);
+        fprintf(f, "LnbFrequLo         = %d\n", LnbFrequLo);
+        fprintf(f, "LnbFrequHi         = %d\n", LnbFrequHi);
         fclose(f);
         isyslog(LOG_INFO, "saved setup to %s", FileName);
         return true;
