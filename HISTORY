@@ -810,3 +810,9 @@ Video Disk Recorder Revision History
   are sorted chronologically. Sorting is done according to the setting of the
   current locale, so you may want to make sure LC_COLLATE is set to the desired
   value (see INSTALL).
+- Fixed handling 'newline' characters in EPG texts (thanks to Rolf Hakenes for
+  an improved version of his 'libdtv').
+  Newline characters are always mapped to a single "blank" in VDR, because they
+  would otherwise disturb the Title and Subtitle layout in the channel display
+  (where these are assumed to be single line texts) and would have to be
+  specially handled in the 'epg.data' file and the LSTE command in SVDRP.

@@ -16,7 +16,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.c 1.24 2001/09/22 13:07:21 kls Exp $
+ * $Id: eit.c 1.25 2001/10/07 13:42:48 kls Exp $
  ***************************************************************************/
 
 #include "eit.h"
@@ -337,6 +337,12 @@ void cEventInfo::Dump(FILE *f, const char *Prefix) const
 
 void cEventInfo::FixEpgBugs(void)
 {
+  // VDR can't usefully handle newline characters in the EPG data, so let's
+  // always convert them to blanks (independent of the setting of EPGBugfixLevel):
+  strreplace(pTitle, '\n', ' ');
+  strreplace(pSubtitle, '\n', ' ');
+  strreplace(pExtendedDescription, '\n', ' ');
+
   if (Setup.EPGBugfixLevel == 0)
      return;
 
