@@ -3396,3 +3396,5 @@ Video Disk Recorder Revision History
   is now done when attaching the player to the device (thanks to Marco Schlüßler).
 - Making sure the buffer reserve in cTransfer::Action() is re-established after
   clearing the buffer.
+- Added DeviceClrAvailableTracks() and DeviceSetCurrentAudioTrack() to cPlayer
+  (thanks to Marco Schlüßler).

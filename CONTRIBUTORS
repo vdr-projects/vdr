@@ -1140,6 +1140,7 @@ Marco Schlüßler <marco@lordzodiac.de>
  for suggestions that led to the addition of the 'Id' parameter to cAudio::Play().
  for removing the "Cleared/PlayPes(NULL, 0)" handling from cTransfer::Action(), since
  this is now done when attaching the player to the device
+ for adding DeviceClrAvailableTracks() and DeviceSetCurrentAudioTrack() to cPlayer
 
 Jürgen Schmitz <j.schmitz@web.de>
  for reporting a bug in displaying the current channel when switching via the SVDRP
