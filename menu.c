@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.72 2001/06/02 13:51:28 kls Exp $
+ * $Id: menu.c 1.73 2001/06/14 14:55:16 kls Exp $
  */
 
 #include "menu.h"
@@ -1726,7 +1726,7 @@ cMenuMain::cMenuMain(bool Replaying)
         }
   if (cVideoCutter::Active())
      Add(new cOsdItem(tr(" Cancel editing"), osCancelEdit));
-  SetHelp(tr("Record"), cDvbApi::PrimaryDvbApi->CanToggleAudioPid() ? tr("Language") : NULL, NULL, cReplayControl::LastReplayed() ? tr("Resume") : NULL);
+  SetHelp(tr("Record"), cDvbApi::PrimaryDvbApi->CanToggleAudioTrack() ? tr("Language") : NULL, NULL, cReplayControl::LastReplayed() ? tr("Resume") : NULL);
   Display();
   lastActivity = time(NULL);
   SetHasHotkeys();
@@ -1761,9 +1761,9 @@ eOSState cMenuMain::ProcessKey(eKeys Key)
                case kRed:   if (!HasSubMenu())
                                state = osRecord;
                             break;
-               case kGreen: if (cDvbApi::PrimaryDvbApi->CanToggleAudioPid()) {
+               case kGreen: if (cDvbApi::PrimaryDvbApi->CanToggleAudioTrack()) {
                                Interface->Clear();
-                               cDvbApi::PrimaryDvbApi->ToggleAudioPid();
+                               cDvbApi::PrimaryDvbApi->ToggleAudioTrack();
                                state = osEnd;
                                }
                             break;

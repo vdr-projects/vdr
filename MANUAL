@@ -122,6 +122,8 @@ Video Disk Recorder User's Manual
   to toggle between these. There can be two different audio PIDs per channel,
   assuming that typically a channel broadcasts a country specific language
   plus the movie's original soundtrack.
+  Recordings made form such channels will contain both audio tracks, and when
+  replaying the desired audio track can be selected the same way.
 
 * Switching through channel groups
 

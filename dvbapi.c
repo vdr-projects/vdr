@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.72 2001/06/14 08:19:43 kls Exp $
+ * $Id: dvbapi.c 1.73 2001/06/14 15:10:16 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -451,14 +451,14 @@ protected:
   virtual void Input(void);
   virtual void Output(void);
 public:
-  cRecordBuffer(cDvbApi *DvbApi, const char *FileName, dvb_pid_t VPid, dvb_pid_t APid);
+  cRecordBuffer(cDvbApi *DvbApi, const char *FileName, dvb_pid_t VPid, dvb_pid_t APid1, dvb_pid_t APid2);
   virtual ~cRecordBuffer();
   };
 
-cRecordBuffer::cRecordBuffer(cDvbApi *DvbApi, const char *FileName, dvb_pid_t VPid, dvb_pid_t APid)
+cRecordBuffer::cRecordBuffer(cDvbApi *DvbApi, const char *FileName, dvb_pid_t VPid, dvb_pid_t APid1, dvb_pid_t APid2)
 :cRingBuffer(VIDEOBUFSIZE, true)
 ,fileName(FileName, true)
-,remux(VPid, APid, true)
+,remux(VPid, APid1, APid2, true)
 {
   dvbApi = DvbApi;
   index = NULL;
@@ -608,12 +608,14 @@ private:
   bool eof;
   int blockInput, blockOutput;
   bool paused, fastForward, fastRewind;
-  int lastIndex, stillIndex;
+  int lastIndex, stillIndex, playIndex;
+  bool canToggleAudioTrack;
+  uchar audioTrack;
   bool NextFile(uchar FileNumber = 0, int FileOffset = -1);
   void Clear(bool Block = false);
   void Close(void);
   int ReadFrame(uchar *b, int Length, int Max);
-  void StripAudioPackets(uchar *b, int Length);
+  void StripAudioPackets(uchar *b, int Length, uchar Except = 0x00);
   void DisplayFrame(uchar *b, int Length);
   int Resume(void);
   bool Save(void);
@@ -631,6 +633,8 @@ public:
   void SkipSeconds(int Seconds);
   void Goto(int Position, bool Still = false);
   void GetIndex(int &Current, int &Total, bool SnapToIFrame = false);
+  bool CanToggleAudioTrack(void) { return canToggleAudioTrack; }
+  void ToggleAudioTrack(void);
   };
 
 cReplayBuffer::cReplayBuffer(cDvbApi *DvbApi, int VideoDev, int AudioDev, const char *FileName)
@@ -646,7 +650,9 @@ cReplayBuffer::cReplayBuffer(cDvbApi *DvbApi, int VideoDev, int AudioDev, const 
   eof = false;
   blockInput = blockOutput = false;
   paused = fastForward = fastRewind = false;
-  lastIndex = stillIndex = -1;
+  lastIndex = stillIndex = playIndex = -1;
+  canToggleAudioTrack = false;
+  audioTrack = 0xC0;
   if (!fileName.Name())
      return;
   // Create the index file:
@@ -701,12 +707,19 @@ void cReplayBuffer::Input(void)
                  continue;
                  }
               lastIndex = Index;
+              playIndex = -1;
               r = ReadFrame(b, Length, sizeof(b));
-              StripAudioPackets(b, Length);
+              StripAudioPackets(b, r);
               }
            else {
               lastIndex = -1;
-              r = read(replayFile, b, sizeof(b));
+              playIndex = (playIndex >= 0) ? playIndex + 1 : index->Get(fileName.Number(), fileOffset);
+              uchar FileNumber;
+              int FileOffset, Length;
+              if (!(index->Get(playIndex, &FileNumber, &FileOffset, NULL, &Length) && NextFile(FileNumber, FileOffset)))
+                 break;
+              r = ReadFrame(b, Length, sizeof(b));
+              StripAudioPackets(b, r, audioTrack);
               }
            if (r > 0) {
               uchar *p = b;
@@ -778,17 +791,20 @@ int cReplayBuffer::ReadFrame(uchar *b, int Length, int Max)
   return -1;
 }
 
-void cReplayBuffer::StripAudioPackets(uchar *b, int Length)
+void cReplayBuffer::StripAudioPackets(uchar *b, int Length, uchar Except)
 {
   for (int i = 0; i < Length - 6; i++) {
       if (b[i] == 0x00 && b[i + 1] == 0x00 && b[i + 2] == 0x01) {
-         switch (b[i + 3]) {
+         uchar c = b[i + 3];
+         switch (c) {
            case 0xC0 ... 0xDF: // audio
-                {
-                  int n = b[i + 4] * 256 + b[i + 5];
-                  for (int j = i; j < Length && n--; j++)
-                      b[j] = 0x00;
-                }
+                if (c == 0xC1)
+                   canToggleAudioTrack = true;
+                if (!Except || c != Except) {
+                   int n = b[i + 4] * 256 + b[i + 5];
+                   for (int j = i; j < Length && n--; j++)
+                       b[j] = 0x00;
+                   }
                 break;
            case 0xE0 ... 0xEF: // video
                 i += b[i + 4] * 256 + b[i + 5];
@@ -816,6 +832,7 @@ void cReplayBuffer::Clear(bool Block)
            usleep(1);
      Lock();
      cRingBuffer::Clear();
+     playIndex = -1;
      CHECK(ioctl(videoDev, VIDEO_FREEZE));
      CHECK(ioctl(videoDev, VIDEO_CLEAR_BUFFER));
      CHECK(ioctl(audioDev, AUDIO_CLEAR_BUFFER));
@@ -969,6 +986,7 @@ void cReplayBuffer::Goto(int Index, bool Still)
      Index = index->GetNextIFrame(Index, false, &FileNumber, &FileOffset, &Length);
      if (Index >= 0 && NextFile(FileNumber, FileOffset) && Still) {
         stillIndex = Index;
+        playIndex = -1;
         uchar b[MAXFRAMESIZE];
         int r = ReadFrame(b, Length, sizeof(b));
         if (r > 0)
@@ -977,7 +995,7 @@ void cReplayBuffer::Goto(int Index, bool Still)
         paused = true;
         }
      else
-        stillIndex = -1;
+        stillIndex = playIndex = -1;
      Clear(false);
      }
 }
@@ -1013,6 +1031,14 @@ bool cReplayBuffer::NextFile(uchar FileNumber, int FileOffset)
      }
   eof = false;
   return replayFile >= 0;
+}
+
+void cReplayBuffer::ToggleAudioTrack(void)
+{
+  if (CanToggleAudioTrack()) {
+     audioTrack = (audioTrack == 0xC0) ? 0xC1 : 0xC0;
+     Clear();
+     }
 }
 
 // --- cTransferBuffer -------------------------------------------------------
@@ -1329,33 +1355,34 @@ cDvbApi::cDvbApi(int n)
 
   // Devices that are only present on DVB-C or DVB-S cards:
 
-  fd_qamfe  = OstOpen(DEV_OST_QAMFE,  n, O_RDWR);
-  fd_qpskfe = OstOpen(DEV_OST_QPSKFE, n, O_RDWR);
-  fd_sec    = OstOpen(DEV_OST_SEC,    n, O_RDWR);
+  fd_qamfe   = OstOpen(DEV_OST_QAMFE,  n, O_RDWR);
+  fd_qpskfe  = OstOpen(DEV_OST_QPSKFE, n, O_RDWR);
+  fd_sec     = OstOpen(DEV_OST_SEC,    n, O_RDWR);
 
   // Devices that all DVB cards must have:
 
-  fd_demuxv = OstOpen(DEV_OST_DEMUX,  n, O_RDWR | O_NONBLOCK, true);
-  fd_demuxa = OstOpen(DEV_OST_DEMUX,  n, O_RDWR | O_NONBLOCK, true);
-  fd_demuxt = OstOpen(DEV_OST_DEMUX,  n, O_RDWR | O_NONBLOCK, true);
+  fd_demuxv  = OstOpen(DEV_OST_DEMUX,  n, O_RDWR | O_NONBLOCK, true);
+  fd_demuxa1 = OstOpen(DEV_OST_DEMUX,  n, O_RDWR | O_NONBLOCK, true);
+  fd_demuxa2 = OstOpen(DEV_OST_DEMUX,  n, O_RDWR | O_NONBLOCK, true);
+  fd_demuxt  = OstOpen(DEV_OST_DEMUX,  n, O_RDWR | O_NONBLOCK, true);
 
   // Devices not present on "budget" cards:
 
-  fd_osd    = OstOpen(DEV_OST_OSD,    n, O_RDWR);
-  fd_video  = OstOpen(DEV_OST_VIDEO,  n, O_RDWR | O_NONBLOCK);
-  fd_audio  = OstOpen(DEV_OST_AUDIO,  n, O_RDWR | O_NONBLOCK);
+  fd_osd     = OstOpen(DEV_OST_OSD,    n, O_RDWR);
+  fd_video   = OstOpen(DEV_OST_VIDEO,  n, O_RDWR | O_NONBLOCK);
+  fd_audio   = OstOpen(DEV_OST_AUDIO,  n, O_RDWR | O_NONBLOCK);
 
   // Devices that may not be available, and are not necessary for normal operation:
 
-  videoDev  = OstOpen(DEV_VIDEO,      n, O_RDWR);
+  videoDev   = OstOpen(DEV_VIDEO,      n, O_RDWR);
 
   // Devices that will be dynamically opened and closed when necessary:
 
-  fd_dvr    = -1;
+  fd_dvr     = -1;
 
   // We only check the devices that must be present - the others will be checked before accessing them:
 
-  if (((fd_qpskfe >= 0 && fd_sec >= 0) || fd_qamfe >= 0) && fd_demuxv >= 0 && fd_demuxa >= 0 && fd_demuxt >= 0) {
+  if (((fd_qpskfe >= 0 && fd_sec >= 0) || fd_qamfe >= 0) && fd_demuxv >= 0 && fd_demuxa1 >= 0 && fd_demuxa2 >= 0 && fd_demuxt >= 0) {
      siProcessor = new cSIProcessor(OstName(DEV_OST_DEMUX, n));
      if (!dvbApi[0]) // only the first one shall set the system time
         siProcessor->SetUseTSTime(Setup.SetSystemTime);
@@ -2026,7 +2053,8 @@ bool cDvbApi::SetPid(int fd, dmxPesType_t PesType, dvb_pid_t Pid, dmxOutput_t Ou
 bool cDvbApi::SetPids(bool ForRecording)
 {
   return SetVpid(vPid,  ForRecording ? DMX_OUT_TS_TAP : DMX_OUT_DECODER) &&
-         SetApid(aPid1, ForRecording ? DMX_OUT_TS_TAP : DMX_OUT_DECODER);
+         SetApid1(aPid1, ForRecording ? DMX_OUT_TS_TAP : DMX_OUT_DECODER) &&
+         SetApid2(ForRecording ? aPid2 : 0, DMX_OUT_TS_TAP);
 }
 
 bool cDvbApi::SetChannel(int ChannelNumber, int FrequencyMHz, char Polarization, int Diseqc, int Srate, int Vpid, int Apid1, int Apid2, int Tpid, int Ca, int Pnr)
@@ -2048,9 +2076,10 @@ bool cDvbApi::SetChannel(int ChannelNumber, int FrequencyMHz, char Polarization,
 
   // Turn off current PIDs:
 
-  SetVpid(0, DMX_OUT_DECODER);
-  SetApid(0, DMX_OUT_DECODER);
-  SetTpid(0, DMX_OUT_DECODER);
+  SetVpid( 0, DMX_OUT_DECODER);
+  SetApid1(0, DMX_OUT_DECODER);
+  SetApid2(0, DMX_OUT_DECODER);
+  SetTpid( 0, DMX_OUT_DECODER);
 
   bool ChannelSynced = false;
 
@@ -2110,7 +2139,7 @@ bool cDvbApi::SetChannel(int ChannelNumber, int FrequencyMHz, char Polarization,
            esyslog(LOG_ERR, "ERROR %d in qpsk get event", res);
         }
      else
-        fprintf(stderr, "ERROR: timeout while tuning\n");
+        esyslog(LOG_ERR, "ERROR: timeout while tuning\n");
      }
   else if (fd_qamfe >= 0) { // DVB-C
 
@@ -2137,7 +2166,7 @@ bool cDvbApi::SetChannel(int ChannelNumber, int FrequencyMHz, char Polarization,
            esyslog(LOG_ERR, "ERROR %d in qam get event", res);
         }
      else
-        fprintf(stderr, "ERROR: timeout while tuning\n");
+        esyslog(LOG_ERR, "ERROR: timeout while tuning\n");
      }
   else {
      esyslog(LOG_ERR, "ERROR: attempt to set channel without DVB-S or DVB-C device");
@@ -2185,28 +2214,6 @@ bool cDvbApi::SetChannel(int ChannelNumber, int FrequencyMHz, char Polarization,
      }
 
   return true;
-}
-
-bool cDvbApi::CanToggleAudioPid(void)
-{
-  return aPid1 && aPid2 && aPid1 != aPid2;
-}
-
-bool cDvbApi::ToggleAudioPid(void)
-{
-  if (CanToggleAudioPid()) {
-     int a = aPid2;
-     aPid2 = aPid1;
-     aPid1 = a;
-     if (transferringFromDvbApi)
-        return transferringFromDvbApi->ToggleAudioPid();
-     else {
-        if (transferBuffer)
-           transferBuffer->SetAudioPid(aPid1);
-        return SetPids(transferBuffer != NULL);
-        }
-     }
-  return false;
 }
 
 bool cDvbApi::Transferring(void)
@@ -2278,7 +2285,7 @@ bool cDvbApi::StartRecord(const char *FileName, int Ca, int Priority)
 
   // Create recording buffer:
 
-  recordBuffer = new cRecordBuffer(this, FileName, vPid, aPid1);
+  recordBuffer = new cRecordBuffer(this, FileName, vPid, aPid1, aPid2);
 
   if (recordBuffer) {
      ca = Ca;
@@ -2388,6 +2395,32 @@ void cDvbApi::Goto(int Position, bool Still)
 {
   if (replayBuffer)
      replayBuffer->Goto(Position, Still);
+}
+
+bool cDvbApi::CanToggleAudioTrack(void)
+{
+  return replayBuffer ? replayBuffer->CanToggleAudioTrack() : (aPid1 && aPid2 && aPid1 != aPid2);
+}
+
+bool cDvbApi::ToggleAudioTrack(void)
+{
+  if (replayBuffer) {
+     replayBuffer->ToggleAudioTrack();
+     return true;
+     }
+  else {
+     int a = aPid2;
+     aPid2 = aPid1;
+     aPid1 = a;
+     if (transferringFromDvbApi)
+        return transferringFromDvbApi->ToggleAudioTrack();
+     else {
+        if (transferBuffer)
+           transferBuffer->SetAudioPid(aPid1);
+        return SetPids(transferBuffer != NULL);
+        }
+     }
+  return false;
 }
 
 // --- cEITScanner -----------------------------------------------------------

@@ -510,3 +510,20 @@ Video Disk Recorder Revision History
 
 - Increased timeout until reporting "broken video data stream" when recording.
 - Modified method of turning off PIDs when switching channel.
+- Increased amount of non-useful data received by cRemux before assuming the
+  recording will fail.
+- If there are two audio PIDs defined for a channel, both audio tracks will
+  now be recorded and can be selectively replayed later. See the FORMATS file
+  for details on how these different audio tracks are stored in the recorded
+  files. In order for this to work properly you need to make sure that the
+  StartHWFilter() function in the driver's 'dvb.c' has
+
+  u16 mode=0x0320;
+
+  instead of the default
+
+  u16 mode=0x0820;
+
+  This will create packets for the second audio track that are small enough
+  to multiplex smoothly with the video data.
+

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.h 1.37 2001/06/03 11:51:30 kls Exp $
+ * $Id: dvbapi.h 1.38 2001/06/14 14:54:25 kls Exp $
  */
 
 #ifndef __DVBAPI_H
@@ -66,11 +66,12 @@ class cDvbApi {
   friend class cTransferBuffer;
 private:
   int videoDev;
-  int fd_osd, fd_qpskfe, fd_qamfe, fd_sec, fd_dvr, fd_audio, fd_video, fd_demuxa, fd_demuxv, fd_demuxt;
+  int fd_osd, fd_qpskfe, fd_qamfe, fd_sec, fd_dvr, fd_audio, fd_video, fd_demuxa1, fd_demuxa2, fd_demuxv, fd_demuxt;
   int vPid, aPid1, aPid2;
   bool SetPid(int fd, dmxPesType_t PesType, dvb_pid_t Pid, dmxOutput_t Output);
   bool SetVpid(int Vpid, dmxOutput_t Output) { return SetPid(fd_demuxv, DMX_PES_VIDEO,    Vpid, Output); }
-  bool SetApid(int Apid, dmxOutput_t Output) { return SetPid(fd_demuxa, DMX_PES_AUDIO,    Apid, Output); }
+  bool SetApid1(int Apid, dmxOutput_t Output) { return SetPid(fd_demuxa1, DMX_PES_AUDIO,    Apid, Output); }
+  bool SetApid2(int Apid, dmxOutput_t Output) { return SetPid(fd_demuxa2, DMX_PES_OTHER,    Apid, Output); }
   bool SetTpid(int Tpid, dmxOutput_t Output) { return SetPid(fd_demuxt, DMX_PES_TELETEXT, Tpid, Output); }
   bool SetPids(bool ForRecording);
   cDvbApi(int n);
@@ -180,8 +181,6 @@ public:
   bool SetChannel(int ChannelNumber, int FrequencyMHz, char Polarization, int Diseqc, int Srate, int Vpid, int Apid1, int Apid2, int Tpid, int Ca, int Pnr);
   static int CurrentChannel(void) { return PrimaryDvbApi ? PrimaryDvbApi->currentChannel : 0; }
   int Channel(void) { return currentChannel; }
-  bool CanToggleAudioPid(void);
-  bool ToggleAudioPid(void);
 
   // Transfer facilities
 
@@ -262,6 +261,14 @@ public:
   void Goto(int Index, bool Still = false);
        // Positions to the given index and displays that frame as a still picture
        // if Still is true.
+
+  // Audio track facilities
+
+  bool CanToggleAudioTrack(void);
+       // Returns true if we are currently replaying and this recording has two
+       // audio tracks, or if the current channel has two audio PIDs.
+  bool ToggleAudioTrack(void);
+       // Toggles the audio track if possible.
   };
 
 class cEITScanner {

@@ -8,7 +8,7 @@
  * the Linux DVB driver's 'tuxplayer' example and were rewritten to suit
  * VDR's needs.
  *
- * $Id: remux.c 1.3 2001/06/02 15:39:16 kls Exp $
+ * $Id: remux.c 1.4 2001/06/14 15:30:09 kls Exp $
  */
 
 /* The calling interface of the 'cRemux::Process()' function is defined
@@ -107,6 +107,11 @@
 
 #define IPACKS 2048
 
+// Start codes:
+#define SC_PICTURE 0x00  // "picture header"
+
+#define MAXNONUSEFULDATA (10*1024*1024)
+
 class cTS2PES {
 private:
   int size;
@@ -114,6 +119,7 @@ private:
   int count;
   uint8_t *buf;
   uint8_t cid;
+  uint8_t audioCid;
   int plength;
   uint8_t plen[2];
   uint8_t flag1;
@@ -132,7 +138,7 @@ private:
   void write_ipack(const uint8_t *Data, int Count);
   void instant_repack(const uint8_t *Buf, int Count);
 public:
-  cTS2PES(uint8_t *ResultBuffer, int *ResultCount, int Size);
+  cTS2PES(uint8_t *ResultBuffer, int *ResultCount, int Size, uint8_t AudioCid = 0x00);
   ~cTS2PES();
   void ts_to_pes(const uint8_t *Buf); // don't need count (=188)
   void Clear(void);
@@ -140,11 +146,12 @@ public:
 
 uint8_t cTS2PES::headr[] = { 0x00, 0x00, 0x01 };
 
-cTS2PES::cTS2PES(uint8_t *ResultBuffer, int *ResultCount, int Size)
+cTS2PES::cTS2PES(uint8_t *ResultBuffer, int *ResultCount, int Size, uint8_t AudioCid)
 {
   resultBuffer = ResultBuffer;
   resultCount = ResultCount;
   size = Size;
+  audioCid = AudioCid;
 
   if (!(buf = new uint8_t[size]))
      esyslog(LOG_ERR, "Not enough memory for ts_transform");
@@ -164,7 +171,10 @@ void cTS2PES::Clear(void)
 
 void cTS2PES::store(uint8_t *Data, int Count)
 {
-  //XXX overflow check???
+  if (*resultCount + Count > RESULTBUFFERSIZE) {
+     esyslog(LOG_ERR, "ERROR: result buffer overflow (%d + %d > %d)", *resultCount, Count, RESULTBUFFERSIZE);
+     Count = RESULTBUFFERSIZE - *resultCount;
+     }
   memcpy(resultBuffer + *resultCount, Data, Count);
   *resultCount += Count;
 }
@@ -188,7 +198,7 @@ void cTS2PES::send_ipack(void)
 {
   if (count < 10)
      return;
-  buf[3] = cid;
+  buf[3] = (AUDIO_STREAM_S <= cid && cid <= AUDIO_STREAM_E && audioCid) ? audioCid : cid;
   buf[4] = (uint8_t)(((count - 6) & 0xFF00) >> 8);
   buf[5] = (uint8_t)((count - 6) & 0x00FF);
   store(buf, count);
@@ -409,22 +419,25 @@ void cTS2PES::ts_to_pes(const uint8_t *Buf) // don't need count (=188)
 
 // --- cRemux ----------------------------------------------------------------
 
-cRemux::cRemux(dvb_pid_t VPid, dvb_pid_t APid, bool ExitOnFailure)
+cRemux::cRemux(dvb_pid_t VPid, dvb_pid_t APid1, dvb_pid_t APid2, bool ExitOnFailure)
 {
   vPid = VPid;
-  aPid = APid;
+  aPid1 = APid1;
+  aPid2 = APid2;
   exitOnFailure = ExitOnFailure;
   synced = false;
   skipped = 0;
   resultCount = resultDelivered = 0;
-  vTS2PES = new cTS2PES(resultBuffer, &resultCount, IPACKS);
-  aTS2PES = new cTS2PES(resultBuffer, &resultCount, IPACKS);
+  vTS2PES  =         new cTS2PES(resultBuffer, &resultCount, IPACKS);
+  aTS2PES1 =         new cTS2PES(resultBuffer, &resultCount, IPACKS, 0xC0);
+  aTS2PES2 = aPid2 ? new cTS2PES(resultBuffer, &resultCount, IPACKS, 0xC1) : NULL;
 }
 
 cRemux::~cRemux()
 {
   delete vTS2PES;
-  delete aTS2PES;
+  delete aTS2PES1;
+  delete aTS2PES2;
 }
 
 int cRemux::GetPid(const uchar *Data)
@@ -463,9 +476,9 @@ int cRemux::ScanVideoPacket(const uchar *Data, int Count, int Offset, uchar &Pic
 
 void cRemux::SetAudioPid(int APid)
 {
-  aPid = APid;
+  aPid1 = APid;
   vTS2PES->Clear();
-  aTS2PES->Clear();
+  aTS2PES1->Clear();
   resultCount = resultDelivered = 0;
 }
 
@@ -501,8 +514,10 @@ XXX*/
       if (Data[i + 3] & 0x10) { // got payload
          if (pid == vPid)
             vTS2PES->ts_to_pes(Data + i);
-         else if (pid == aPid)
-            aTS2PES->ts_to_pes(Data + i);
+         else if (pid == aPid1)
+            aTS2PES1->ts_to_pes(Data + i);
+         else if (pid == aPid2 && aTS2PES2)
+            aTS2PES2->ts_to_pes(Data + i);
          }
       used += TS_SIZE;
       if (resultCount > (int)sizeof(resultBuffer) / 2)
@@ -520,7 +535,7 @@ XXX*/
   // Check if we're getting anywhere here:
 
   if (!synced && skipped >= 0) {
-     if (skipped > 1024*1024) {
+     if (skipped > MAXNONUSEFULDATA) {
         esyslog(LOG_ERR, "ERROR: no useful data seen within %d byte of video stream", skipped);
         skipped = -1;
         if (exitOnFailure)
@@ -538,7 +553,7 @@ XXX*/
      for (int i = 0; i < resultCount; i++) {
          if (resultBuffer[i] == 0 && resultBuffer[i + 1] == 0 && resultBuffer[i + 2] == 1) {
             switch (resultBuffer[i + 3]) {
-              case SC_VIDEO:
+              case VIDEO_STREAM_S ... VIDEO_STREAM_E:
                    {
                      uchar pt = NO_PICTURE;
                      int l = ScanVideoPacket(resultBuffer, resultCount, i, pt);
@@ -572,7 +587,7 @@ XXX*/
                         }
                    }
                    break;
-              case SC_AUDIO:
+              case AUDIO_STREAM_S ... AUDIO_STREAM_E:
                    {
                      int l = GetPacketLength(resultBuffer, resultCount, i);
                      if (l < 0)
