@@ -1817,3 +1817,5 @@ Video Disk Recorder Revision History
 
 - Fixed missing initialization of 'number' in cChannel (thanks to Martin Hammerschmid
   for reporting this one).
+- Fixed a misplaced ')' in the fix about the stale lock files (thanks again to
+  Oliver Endriss for pointing this out - it was my fault).
