@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.c 1.33 2000/12/09 11:04:10 kls Exp $
+ * $Id: interface.c 1.34 2001/02/02 14:49:39 kls Exp $
  */
 
 #include "interface.h"
@@ -26,8 +26,10 @@ cInterface::cInterface(int SVDRPport)
   rcIo = new cRcIoRCU("/dev/ttyS1");
 #elif defined(REMOTE_LIRC)
   rcIo = new cRcIoLIRC("/dev/lircd");
-#else
+#elif defined(REMOTE_KBD)
   rcIo = new cRcIoKBD;
+#else
+  rcIo = new cRcIoBase; // acts as a dummy device
 #endif
   rcIo->SetCode(Keys.code, Keys.address);
   if (SVDRPport)
