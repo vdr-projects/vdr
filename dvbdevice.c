@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.51 2003/04/12 15:06:11 kls Exp $
+ * $Id: dvbdevice.c 1.52 2003/04/18 11:35:08 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -264,27 +264,29 @@ void cDvbTuner::Action(void)
                  }
               }
            if (tunerStatus >= tsLocked) {
-              if (ciHandler && channel.Ca()) {
+              if (ciHandler && channel.Ca() > CACONFBASE) {
                  if (ciHandler->Process()) {
                     if (tunerStatus != tsCam) {//XXX TODO update in case the CA descriptors have changed
-                       uchar buffer[2048];
-                       int length = cSIProcessor::GetCaDescriptors(channel.Source(), channel.Frequency(), channel.Sid(), sizeof(buffer), buffer);
-                       if (length > 0) {
-                          cCiCaPmt CaPmt(channel.Sid());
-                          CaPmt.AddCaDescriptor(length, buffer);
-                          if (channel.Vpid())
-                             CaPmt.AddPid(channel.Vpid());
-                          if (channel.Apid1())
-                             CaPmt.AddPid(channel.Apid1());
-                          if (channel.Apid2())
-                             CaPmt.AddPid(channel.Apid2());
-                          if (channel.Dpid1())
-                             CaPmt.AddPid(channel.Dpid1());
-                          if (ciHandler->SetCaPmt(CaPmt)) {
-                             tunerStatus = tsCam;
-                             startTime = 0;
-                             }
-                          }
+                       for (int Slot = 0; Slot < ciHandler->NumSlots(); Slot++) {
+                           uchar buffer[2048];
+                           int length = cSIProcessor::GetCaDescriptors(channel.Source(), channel.Frequency(), channel.Sid(), ciHandler->GetCaSystemIds(Slot), sizeof(buffer), buffer);
+                           if (length > 0) {
+                              cCiCaPmt CaPmt(channel.Sid());
+                              CaPmt.AddCaDescriptor(length, buffer);
+                              if (channel.Vpid())
+                                 CaPmt.AddPid(channel.Vpid());
+                              if (channel.Apid1())
+                                 CaPmt.AddPid(channel.Apid1());
+                              if (channel.Apid2())
+                                 CaPmt.AddPid(channel.Apid2());
+                              if (channel.Dpid1())
+                                 CaPmt.AddPid(channel.Dpid1());
+                              if (ciHandler->SetCaPmt(CaPmt, Slot)) {
+                                 tunerStatus = tsCam;
+                                 startTime = 0;
+                                 }
+                              }
+                           }
                        }
                     }
                  else

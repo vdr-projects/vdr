@@ -2039,3 +2039,5 @@ Video Disk Recorder Revision History
 - Using masks in EIT filtering to reduce the number of filters (thanks to Andreas
   Schultz).
 - Fixed handling Ca descriptors (thanks to Stefan Huelswitt).
+- Now only those Ca descriptors are sent to a CAM that are actually understood
+  by that CAM.

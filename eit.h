@@ -16,7 +16,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.h 1.26 2003/04/13 14:01:24 kls Exp $
+ * $Id: eit.h 1.27 2003/04/18 11:30:42 kls Exp $
  ***************************************************************************/
 
 #ifndef __EIT_H
@@ -168,10 +168,11 @@ public:
          // Caller must provide a cMutexLock which has to survive the entire
          // time the returned cSchedules is accessed. Once the cSchedules is no
          // longer used, the cMutexLock must be destroyed.
-  static int GetCaDescriptors(int Source, int Transponder, int ServiceId, int BufSize, uchar *Data);
+  static int GetCaDescriptors(int Source, int Transponder, int ServiceId, const unsigned short *CaSystemIds, int BufSize, uchar *Data);
          ///< Gets all CA descriptors for a given channel.
          ///< Copies all available CA descriptors for the given Source, Transponder and ServiceId
-         ///< into the provided buffer at Data (at most BufSize bytes).
+         ///< into the provided buffer at Data (at most BufSize bytes). Only those CA descriptors
+         ///< are copied that match one of the given CA system IDs.
          ///< \return Returns the number of bytes copied into Data (0 if no CA descriptors are
          ///< available), or -1 if BufSize was too small to hold all CA descriptors.
   static bool Read(FILE *f = NULL);

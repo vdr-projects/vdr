@@ -16,7 +16,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.c 1.70 2003/04/18 11:29:11 kls Exp $
+ * $Id: eit.c 1.71 2003/04/18 11:30:42 kls Exp $
  ***************************************************************************/
 
 #include "eit.h"
@@ -1059,12 +1059,8 @@ public:
 const cCaDescriptor *cCaDescriptors::Get(int Source, int Transponder, int ServiceId, int CaSystem)
 {
   for (cCaDescriptor *ca = First(); ca; ca = Next(ca)) {
-      if (ca->source == Source && ca->transponder == Transponder && ca->serviceId == ServiceId) {
-         if (CaSystem == -1 || ca->caSystem == CaSystem)
-            return ca;
-         if (CaSystem < 0)
-            CaSystem++;
-         }
+      if (ca->source == Source && ca->transponder == Transponder && ca->serviceId == ServiceId && ca->caSystem == CaSystem)
+         return ca;
       }
   return NULL;
 }
@@ -1452,24 +1448,24 @@ void cSIProcessor::NewCaDescriptor(struct Descriptor *d, int ProgramID)
      }
 }
 
-int cSIProcessor::GetCaDescriptors(int Source, int Transponder, int ServiceId, int BufSize, uchar *Data)
+int cSIProcessor::GetCaDescriptors(int Source, int Transponder, int ServiceId, const unsigned short *CaSystemIds, int BufSize, uchar *Data)
 {
+  if (!CaSystemIds || !*CaSystemIds)
+     return 0;
   if (BufSize > 0 && Data) {
      cMutexLock MutexLock(&caDescriptorsMutex);
      int length = 0;
-     for (int i = -1; ; i--) {
-         const cCaDescriptor *d = caDescriptors->Get(Source, Transponder, ServiceId, i);
-         if (d) {
-            if (length + d->Length() <= BufSize) {
-               memcpy(Data + length, d->Data(), d->Length());
-               length += d->Length();
-               }
-            else
-               return -1;
-            }
-         else
-            break;
-         }
+     do {
+        const cCaDescriptor *d = caDescriptors->Get(Source, Transponder, ServiceId, *CaSystemIds);
+        if (d) {
+           if (length + d->Length() <= BufSize) {
+              memcpy(Data + length, d->Data(), d->Length());
+              length += d->Length();
+              }
+           else
+              return -1;
+           }
+        } while (*++CaSystemIds);
      return length;
      }
   return -1;
