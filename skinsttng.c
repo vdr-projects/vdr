@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinsttng.c 1.2 2004/05/22 13:05:07 kls Exp $
+ * $Id: skinsttng.c 1.3 2004/05/29 09:56:22 kls Exp $
  */
 
 // Star Trek: The Next Generation® is a registered trademark of Paramount Pictures
@@ -324,12 +324,12 @@ cSkinSTTNGDisplayMenu::cSkinSTTNGDisplayMenu(void)
   message = false;
   x0 = 0;
   x1 = lineHeight / 2;
-  x2 = x1 + Roundness;
-  x3 = x2 + Gap;
+  x3 = (x1 + Roundness + Gap + 7) & ~0x07; // must be multiple of 8
+  x2 = x3 - Gap;
   x7 = Setup.OSDWidth;
   x6 = x7 - lineHeight / 2;
-  x5 = x6 - lineHeight / 2;
-  x4 = x5 - Gap;
+  x4 = (x6 - lineHeight / 2 - Gap) & ~0x07; // must be multiple of 8
+  x5 = x4 + Gap;
   y0 = 0;
   y1 = lineHeight;
   y2 = y1 + Roundness;
@@ -345,18 +345,13 @@ cSkinSTTNGDisplayMenu::cSkinSTTNGDisplayMenu(void)
   if (osd->CanHandleAreas(Areas, sizeof(Areas) / sizeof(tArea)) == oeOk)
      osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
   else {
-     tArea Areas[] = { { x0, y0, x7 - 1, y1 - 1, 2 },
-                       { x0, y1, x7 - 1, y6 - 1, 2 },
-                       { x0, y6, x7 - 1, y7 - 1, 4 }
-                     };
-     osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
-     /*TODO
      tArea Areas[] = { { x0, y0, x7 - 1, y3 - 1, 2 },
                        { x0, y3, x3 - 1, y4 - 1, 1 },
-                       { x3, y3, x5 - 1, y4 - 1, 2 },
+                       { x3, y3, x4 - 1, y4 - 1, 2 },
+                       { x4, y3, x7 - 1, y4 - 1, 2 },
                        { x0, y4, x7 - 1, y7 - 1, 4 }
                      };
-     */
+     osd->SetAreas(Areas, sizeof(Areas) / sizeof(tArea));
      }
   osd->DrawRectangle(x0, y0, x7 - 1, y7 - 1, Theme.Color(clrBackground));
   osd->DrawRectangle(x0, y0, x1 - 1, y1 - 1, clrTransparent);

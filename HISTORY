@@ -2851,3 +2851,5 @@ Video Disk Recorder Revision History
 - Fixed setting the title in the replay display of the "Classic VDR" skin in case
   a shorter title is set after a longer one (thanks to Stefan Huelswitt for
   reporting this one).
+- Now using more separate areas in the "ST:TNG Panels" skin to allow a theme to
+  use more independent clrMenu* colors.
