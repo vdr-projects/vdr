@@ -187,6 +187,7 @@ Stefan Huelswitt <huels@iname.com>
  available to plugins, and to add a SetText() function
  for reporting a bug in setting the title in the replay display of the "Classic VDR"
  skin in case a shorter title is set after a longer one
+ for fixing handling of pmAudioOnlyBlack
 
 Ulrich Röder <roeder@efr-net.de>
  for pointing out that there are channels that have a symbol rate higher than
@@ -732,6 +733,8 @@ Sascha Volkenandt <sascha@akv-soft.de>
  some broken graphics tools
  for fixing a memory leak in theme description handling
  for pointing out a "near miss" condition in cCondVar
+ for reporting a bug in cChannel::SetName() in case only the ShortName or Provider
+ has changed
 
 Malcolm Caldwell <malcolm.caldwell@ntu.edu.au>
  for modifying LOF handling to allow for C-band reception
@@ -997,6 +1000,8 @@ Andreas Regel <andreas.regel@gmx.de>
  for fixing handling bitmap indexes for 256 color mode
  for reporting a bug in removing the "scanning recordings..." message in case the
  video directory is empty
+ for pointing out a missing call to cStatus::MsgOsdtatusMessage(NULL) in
+ cSkins::Message()
 
 Thomas Bergwinkl <Thomas.Bergwinkl@t-online.de>
  for fixing the validity check for channel IDs, because some providers use TIDs
@@ -1071,6 +1076,9 @@ Marco Schlüßler <marco@lordzodiac.de>
  for reporting a problem with initialization of the main program loop variables
  with older compiler versions
  for adding the 'portal name' to cChannels
+ for fixing the cDvbSpuDecoder
+ for fixing a short glitch when starting a recording on the primary device while
+ in replay or transfer mode
 
 Jürgen Schmitz <j.schmitz@web.de>
  for reporting a bug in displaying the current channel when switching via the SVDRP
@@ -1132,3 +1140,12 @@ Mattias Grönlund <Mattias@Gronlund.net>
 
 Uwe Hanke <uhanke@gmx.de>
  for fixing some typos in the Makefile's 'font' target
+
+Mogens Elneff <mogens@elneff.dk>
+ for translating OSD texts to the Danish language
+
+Joachim Wilke <vdr@joachim-wilke.de>
+ for reporting missing calls to cStatus::MsgOsdClear() in cSkins::Message()
+
+Sascha Klek <sklek@gmx.de>
+  for reporting a problem with the '0' key in the "Day" item of the "Timers" menu

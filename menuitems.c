@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.c 1.19 2004/06/19 09:45:45 kls Exp $
+ * $Id: menuitems.c 1.20 2004/11/14 16:16:21 kls Exp $
  */
 
 #include "menuitems.h"
@@ -495,7 +495,7 @@ eOSState cMenuEditChanItem::ProcessKey(eKeys Key)
                       }
                  }
                  break;
-    default : return cMenuEditIntItem::ProcessKey(Key);
+    default: return cMenuEditIntItem::ProcessKey(Key);
     }
   return osContinue;
 }
@@ -606,7 +606,33 @@ eOSState cMenuEditDayItem::ProcessKey(eKeys Key)
                     return cMenuEditIntItem::ProcessKey(Key);
                  Set();
                  break;
-    default : return cMenuEditIntItem::ProcessKey(Key);
+    default: {
+               if (d >= 0) {
+                  if (k1 <= Key && Key <= k7) {
+                     int v = *value ^ (1 << (Key - k1));
+                     if ((v & 0xFF) != 0) {
+                        *value = v; // can't let this become all 0
+                        Set();
+                        }
+                     break;
+                     }
+                  }
+               int v = *value;
+               eOSState result = cMenuEditIntItem::ProcessKey(Key);
+               if (result == osContinue && Key == k0) {
+                  if (d >= 0) {
+                     *value = cTimer::GetMDay(time(NULL));
+                     d = -1;
+                     Set();
+                     }
+                  else if (*value == 0 || *value == v) {
+                     d = cTimer::GetWDay(time(NULL));
+                     *value = days[d];
+                     Set();
+                     }
+                  }
+               return result;
+             }
     }
   return osContinue;
 }

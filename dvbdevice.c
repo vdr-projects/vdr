@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.102 2004/10/30 14:53:30 kls Exp $
+ * $Id: dvbdevice.c 1.104 2004/11/07 10:27:19 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -681,14 +681,15 @@ int cDvbDevice::OpenFilter(u_short Pid, u_char Tid, u_char Mask)
   return -1;
 }
 
-void cDvbDevice::TurnOffLiveMode(void)
+void cDvbDevice::TurnOffLiveMode(bool LiveView)
 {
-  // Avoid noise while switching:
-
-  CHECK(ioctl(fd_audio, AUDIO_SET_MUTE, true));
-  CHECK(ioctl(fd_video, VIDEO_SET_BLANK, true));
-  CHECK(ioctl(fd_audio, AUDIO_CLEAR_BUFFER));
-  CHECK(ioctl(fd_video, VIDEO_CLEAR_BUFFER));
+  if (LiveView) {
+     // Avoid noise while switching:
+     CHECK(ioctl(fd_audio, AUDIO_SET_MUTE, true));
+     CHECK(ioctl(fd_video, VIDEO_SET_BLANK, true));
+     CHECK(ioctl(fd_audio, AUDIO_CLEAR_BUFFER));
+     CHECK(ioctl(fd_video, VIDEO_CLEAR_BUFFER));
+     }
 
   // Turn off live PIDs:
 
@@ -781,7 +782,7 @@ bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
   // Turn off live PIDs if necessary:
 
   if (TurnOffLivePIDs)
-     TurnOffLiveMode();
+     TurnOffLiveMode(LiveView);
 
   // Set the tuner:
 
@@ -897,10 +898,9 @@ bool cDvbDevice::SetPlayMode(ePlayMode PlayMode)
          CHECK(ioctl(fd_audio, AUDIO_SET_MUTE, false));
          break;
     case pmAudioVideo:
-         if (playMode == pmNone)
-            TurnOffLiveMode();
-         // continue with next...
     case pmAudioOnlyBlack:
+         if (playMode == pmNone)
+            TurnOffLiveMode(true);
          CHECK(ioctl(fd_video, VIDEO_SET_BLANK, true));
          CHECK(ioctl(fd_audio, AUDIO_SELECT_SOURCE, AUDIO_SOURCE_MEMORY));
          CHECK(ioctl(fd_audio, AUDIO_SET_AV_SYNC, PlayMode == pmAudioVideo));

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 1.30 2004/10/31 12:54:06 kls Exp $
+ * $Id: channels.c 1.31 2004/11/02 18:07:05 kls Exp $
  */
 
 #include "channels.h"
@@ -358,15 +358,23 @@ void cChannel::SetId(int Nid, int Tid, int Sid, int Rid)
 
 void cChannel::SetName(const char *Name, const char *ShortName, const char *Provider)
 {
-  if (!isempty(Name) && strcmp(name, Name) != 0) {
-     if (Number()) {
-        dsyslog("changing name of channel %d from '%s,%s;%s' to '%s,%s;%s'", Number(), name, shortName, provider, Name, ShortName, Provider);
-        modification |= CHANNELMOD_NAME;
-        Channels.SetModified();
+  if (!isempty(Name)) {
+     bool nn = strcmp(name, Name) != 0;
+     bool ns = strcmp(shortName, ShortName) != 0;
+     bool np = strcmp(provider, Provider) != 0;
+     if (nn || ns || np) {
+        if (Number()) {
+           dsyslog("changing name of channel %d from '%s,%s;%s' to '%s,%s;%s'", Number(), name, shortName, provider, Name, ShortName, Provider);
+           modification |= CHANNELMOD_NAME;
+           Channels.SetModified();
+           }
+        if (nn)
+           name = strcpyrealloc(name, Name);
+        if (ns)
+           shortName = strcpyrealloc(shortName, ShortName);
+        if (np)
+           provider = strcpyrealloc(provider, Provider);
         }
-     name = strcpyrealloc(name, Name);
-     shortName = strcpyrealloc(shortName, ShortName);
-     provider = strcpyrealloc(provider, Provider);
      }
 }
 

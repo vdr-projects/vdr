@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 1.21 2004/10/31 16:12:36 kls Exp $
+ * $Id: epg.c 1.22 2004/11/07 10:43:30 kls Exp $
  */
 
 #include "epg.h"
@@ -31,6 +31,7 @@ cEvent::cEvent(tChannelID ChannelID, u_int16_t EventID)
   startTime = 0;
   duration = 0;
   vps = 0;
+  SetSeen();
 }
 
 cEvent::~cEvent()

@@ -359,7 +359,7 @@ Video Disk Recorder Revision History
   the EPG scanner).
 - The EPG scanner now starts with the first channel (it used to start with the
   second channel).
-- Reacitvated setting the PNR.
+- Reactivated setting the PNR.
 - Adapted the frame scanning to the new muxing of the driver.
 - The new compile time option REMOTE=NONE can be used to compile VDR without
   any remote control support (for applications where it shall be controlled
@@ -3116,3 +3116,25 @@ Video Disk Recorder Revision History
 - Now displaying the name of the remote control for which the keys are being
   learned inside the menu to avoid overwriting the date/time in the 'classic'
   skin (thanks to Oliver Endriss for reporting this one).
+
+2004-11-14: Version 1.3.16
+
+- Fixed cChannel::SetName() in case only the ShortName or Provider has changed
+  (thanks to Sascha Volkenandt for reporting this one).
+- Added Danish language texts (thanks to Mogens Elneff).
+- Reactivated the NPTL check at startup because there appear to be still
+  unsolved problems when running on NPTL systems.
+- Added missing calls to cStatus::MsgOsdClear() in cSkins::Message() (thanks
+  to Joachim Wilke for reporting this one, and Andreas Regel for additional
+  input).
+- Fixed the cDvbSpuDecoder (thanks to Marco Schlüßler).
+- Fixed handling of pmAudioOnlyBlack (thanks to Stefan Huelswitt).
+- Fixed a short glitch when starting a recording on the primary device while
+  in replay or transfer mode (thanks to Marco Schlüßler).
+- Added missing initialization of cEvent::seen.
+- Checking PID language codes for ISO 639 compliance to avoid problems with
+  funny characters. Invalid language codes will be stored as "???".
+- The '0' key now toggles the "Day" item in the "Timers" menu between "single
+  shot" and "repeating". The keys '1'...'7' can be used to toggle the individual
+  days ('1' is monday). Thanks to Sascha Klek for reporting a problem with the
+  '0' key in the "Day" item of the "Timers" menu.
