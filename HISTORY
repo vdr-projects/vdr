@@ -1597,3 +1597,5 @@ Video Disk Recorder Revision History
 - Fixed switching the video format in the Setup/DVB menu (thanks to Uwe Scheffler
   for reporting this one).
 - Reactivated full handling of second audio PID (even in 'Transfer Mode').
+- Fixed a crash when closing down with remote control plugins (thanks to Oliver
+  Endriss helping to debug this one).

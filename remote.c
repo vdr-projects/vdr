@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remote.c 1.28 2002/09/29 12:51:26 kls Exp $
+ * $Id: remote.c 1.29 2002/10/12 15:22:08 kls Exp $
  */
 
 #include "remote.h"
@@ -34,8 +34,7 @@ cCondVar cRemote::keyPressed;
 
 cRemote::cRemote(const char *Name)
 {
-  if (Name)
-     name = strdup(Name);
+  name = Name ? strdup(Name) : NULL;
   Remotes.Add(this);
 }
 

@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.125 2002/10/06 10:25:04 kls Exp $
+ * $Id: vdr.c 1.126 2002/10/12 15:22:29 kls Exp $
  */
 
 #include <getopt.h>
@@ -634,11 +634,12 @@ int main(int argc, char *argv[])
   cControl::Shutdown();
   delete Interface;
   cOsd::Shutdown();
-  PluginManager.Shutdown(true);
+  Remotes.Clear();
   Setup.CurrentChannel = cDevice::CurrentChannel();
   Setup.CurrentVolume  = cDevice::CurrentVolume();
   Setup.Save();
   cDevice::Shutdown();
+  PluginManager.Shutdown(true);
   if (WatchdogTimeout > 0)
      dsyslog("max. latency time %d seconds", MaxLatencyTime);
   isyslog("exiting");
