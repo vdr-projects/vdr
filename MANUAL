@@ -442,7 +442,7 @@ Video Disk Recorder User's Manual
                          you may want to use smaller values if you are planning
                          on archiving a recording to CD.
 
-  MinEventTimeout=120    If the command line option '-s' has been set, VDR will
+  MinEventTimeout=30     If the command line option '-s' has been set, VDR will
   MinUserInactivity=120  automatically shutdown the computer if the next timer
                          event is at least MinEventTimeout minutes in the future,
                          and the user has been inactive for at least

@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.68 2001/09/01 14:50:40 kls Exp $
+ * $Id: vdr.c 1.69 2001/09/07 15:37:26 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -50,6 +50,7 @@
 
 #define ACTIVITYTIMEOUT 60 // seconds before starting housekeeping
 #define SHUTDOWNWAIT   300 // seconds to wait in user prompt before automatic shutdown
+#define MANUALSTART    600 // seconds the next timer must be in the future to assume manual start
 
 static int Interrupted = 0;
 
@@ -456,15 +457,19 @@ int main(int argc, char *argv[])
                  cTimer *timer = Timers.GetNextActiveTimer();
                  time_t Next  = timer ? timer->StartTime() : 0;
                  time_t Delta = timer ? Next - Now : 0;
-                 if (timer)
-                    dsyslog(LOG_INFO, "next timer event at %s", ctime(&Next));
-                 if (!Next || Delta > Setup.MinEventTimeout * 60) {
-                    if (!LastActivity) {
+                 if (!LastActivity) {
+                    if (!timer || Delta > MANUALSTART) {
                        // Apparently the user started VDR manually
                        dsyslog(LOG_INFO, "assuming manual start of VDR");
                        LastActivity = Now;
-                       continue; // skip the rest of the housekeeping for now
+                       continue; // don't run into the actual shutdown procedure below
                        }
+                    else
+                       LastActivity = 1;
+                    }
+                 if (!Next || Delta > Setup.MinEventTimeout * 60) {
+                    if (timer)
+                       dsyslog(LOG_INFO, "next timer event at %s", ctime(&Next));
                     if (WatchdogTimeout > 0)
                        signal(SIGALRM, SIG_IGN);
                     if (Interface->Confirm(tr("Press any key to cancel shutdown"), LastActivity == 1 ? 5 : SHUTDOWNWAIT, true)) {

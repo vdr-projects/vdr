@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.64 2001/09/02 15:04:13 kls Exp $
+ * $Id: config.c 1.65 2001/09/03 16:01:46 kls Exp $
  */
 
 #include "config.h"
@@ -807,7 +807,7 @@ cSetup::cSetup(void)
   OSDheight = 18;
   OSDMessageTime = 1;
   MaxVideoFileSize = MAXVIDEOFILESIZE;
-  MinEventTimeout = 120;
+  MinEventTimeout = 30;
   MinUserInactivity = 120;
   CurrentChannel = -1;
 }

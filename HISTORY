@@ -715,3 +715,10 @@ Video Disk Recorder Revision History
   definitions). Use your favourite text editor to delete that information.
   That way every recording will store the actual summary data at the time of
   the recording.
+
+2001-09-03: Version 0.95
+
+- Fixed behaviour in case the shutdown didn't take place (there were many
+  "next timer event at..." messages in that case).
+- Reduced the default value for MinEventTimeout to 30 minutes.
+- Fixed detecting manual start in shutdown feature.
