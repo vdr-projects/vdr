@@ -3398,3 +3398,4 @@ Video Disk Recorder Revision History
   clearing the buffer.
 - Added DeviceClrAvailableTracks() and DeviceSetCurrentAudioTrack() to cPlayer
   (thanks to Marco Schlüßler).
+- Fixed a typo in detecting UTF-8 (thanks to Reinhard Nissl).
