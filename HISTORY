@@ -888,3 +888,4 @@ Video Disk Recorder Revision History
 - Added DPID to "PREMIERE MOVIE 1" in channels.conf.cable (thanks to Stephan
   Schreiber).
 - Prepared the OSD functions for multiple overlapping windows.
+- Removed the check to see whether the system time is running linearly.
