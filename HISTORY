@@ -640,3 +640,5 @@ Video Disk Recorder Revision History
   that turns off the video disk when it is not used, and therefore needs
   to write the EPG file to a ramdisk (or turn off writing it alltogether).
   See 'vdr --help' for details.
+- Making sure the disk is up and running before starting recording (this
+  is important for systems that turn off the video disk when it is not used).

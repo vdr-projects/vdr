@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.26 2001/05/20 08:29:45 kls Exp $
+ * $Id: tools.h 1.27 2001/08/11 09:52:14 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -50,6 +50,7 @@ bool MakeDirs(const char *FileName, bool IsDirectory = false);
 bool RemoveFileOrDir(const char *FileName, bool FollowSymlinks = false);
 bool RemoveEmptyDirectories(const char *DirName, bool RemoveThis = false);
 char *ReadLink(const char *FileName);
+bool SpinUpDisk(const char *FileName);
 
 class cFile {
 private:

@@ -7,7 +7,7 @@
  * DVD support initially written by Andreas Schultz <aschultz@warp10.net>
  * based on dvdplayer-0.5 by Matjaz Thaler <matjaz.thaler@guest.arnes.si>
  *
- * $Id: dvbapi.c 1.103 2001/08/10 14:54:21 kls Exp $
+ * $Id: dvbapi.c 1.104 2001/08/11 10:17:26 kls Exp $
  */
 
 //#define DVDDEBUG        1
@@ -3268,6 +3268,10 @@ bool cDvbApi::StartRecord(const char *FileName, int Ca, int Priority)
 
   if (!MakeDirs(FileName, true))
      return false;
+
+  // Make sure the disk is up and running:
+
+  SpinUpDisk(FileName);
 
   // Create recording buffer:
 
