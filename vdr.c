@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.155 2003/05/16 12:11:45 kls Exp $
+ * $Id: vdr.c 1.156 2003/05/24 11:06:53 kls Exp $
  */
 
 #include <getopt.h>
@@ -323,6 +323,7 @@ int main(int argc, char *argv[])
      stdin  = freopen(Terminal, "r", stdin);
      stdout = freopen(Terminal, "w", stdout);
      stderr = freopen(Terminal, "w", stderr);
+     HasStdin = true;
      }
 
   isyslog("VDR version %s started", VDRVERSION);

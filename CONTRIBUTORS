@@ -475,6 +475,7 @@ Oliver Endriss <o.endriss@gmx.de>
  for reporting a problem with cPlugin::Start() being called after trying to learn
  the remote control keys
  for reporting a bug in reading 'epg.data' for channels with non-zero RID
+ for fixing I/O handling in case an explicit controlling terminal is given
 
 Reinhard Walter Buchner <rw.buchner@freenet.de>
  for adding some satellites to 'sources.conf'

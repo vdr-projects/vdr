@@ -2180,3 +2180,5 @@ Video Disk Recorder Revision History
 - Fixed a memory leak in cNonBlockingFileReader (thanks to Stefan Huelswitt).
 - Completed the French OSD texts (thanks to Gregoire Favre).
 - Completed the Finnish OSD texts (thanks to Niko Tarnanen and Rolf Ahrenberg).
+- Fixed I/O handling in case an explicit controlling terminal is given (thanks
+  to Oliver Endriss).
