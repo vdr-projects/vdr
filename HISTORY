@@ -338,3 +338,5 @@ Video Disk Recorder Revision History
 - Fixed a problem with recordings that have a single quote character in their
   name (this is now mapped to 0x01).
 - Changed the value for Diseqc to '0' in the default 'channels.conf'.
+- Fixed displaying channels and recording status in the RCU's LED display when
+  a recording is interrupted due to higher priority.

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.57 2001/01/07 15:59:56 kls Exp $
+ * $Id: menu.c 1.58 2001/01/13 13:07:43 kls Exp $
  */
 
 #include "menu.h"
@@ -1752,23 +1752,21 @@ cDisplayChannel::~cDisplayChannel()
 
 void cDisplayChannel::DisplayChannel(const cChannel *Channel)
 {
-  if (!Interface->Recording()) {
-     if (Channel && Channel->number)
-        Interface->DisplayChannelNumber(Channel->number);
-     int BufSize = Width() + 1;
-     char buffer[BufSize];
-     if (Channel && Channel->number)
-        snprintf(buffer, BufSize, "%d  %s", Channel->number, Channel->name);
-     else
-        snprintf(buffer, BufSize, "%s", Channel ? Channel->name : tr("*** Invalid Channel ***"));
-     Interface->Fill(0, 0, MenuColumns, 1, clrBackground);
-     Interface->Write(0, 0, buffer);
-     time_t t = time(NULL);
-     struct tm *now = localtime(&t);
-     snprintf(buffer, BufSize, "%02d:%02d", now->tm_hour, now->tm_min);
-     Interface->Write(-5, 0, buffer);
-     Interface->Flush();
-     }
+  if (Channel && Channel->number)
+     Interface->DisplayChannelNumber(Channel->number);
+  int BufSize = Width() + 1;
+  char buffer[BufSize];
+  if (Channel && Channel->number)
+     snprintf(buffer, BufSize, "%d  %s", Channel->number, Channel->name);
+  else
+     snprintf(buffer, BufSize, "%s", Channel ? Channel->name : tr("*** Invalid Channel ***"));
+  Interface->Fill(0, 0, MenuColumns, 1, clrBackground);
+  Interface->Write(0, 0, buffer);
+  time_t t = time(NULL);
+  struct tm *now = localtime(&t);
+  snprintf(buffer, BufSize, "%02d:%02d", now->tm_hour, now->tm_min);
+  Interface->Write(-5, 0, buffer);
+  Interface->Flush();
 }
 
 void cDisplayChannel::DisplayInfo(void)
@@ -1900,7 +1898,6 @@ cRecordControl::~cRecordControl()
 {
   Stop(true);
   delete instantId;
-  Interface->DisplayRecording(dvbApi->Index(), false);
 }
 
 void cRecordControl::Stop(bool KeepInstant)
@@ -1916,6 +1913,7 @@ void cRecordControl::Stop(bool KeepInstant)
         Timers.Save();
         }
      timer = NULL;
+     Interface->DisplayRecording(dvbApi->Index(), false);
      }
 }
 
@@ -1972,7 +1970,7 @@ void cRecordControls::Stop(cDvbApi *DvbApi)
       if (RecordControls[i]) {
          if (RecordControls[i]->Uses(DvbApi)) {
             isyslog(LOG_INFO, "stopping recording on DVB device %d due to higher priority", DvbApi->Index() + 1);
-            RecordControls[i]->Stop();
+            RecordControls[i]->Stop(true);
             }
          }
       }
