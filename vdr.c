@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.39 2000/10/08 14:49:25 kls Exp $
+ * $Id: vdr.c 1.40 2000/10/29 14:00:00 kls Exp $
  */
 
 #include <getopt.h>
@@ -161,10 +161,6 @@ int main(int argc, char *argv[])
   if (!cDvbApi::Init())
      abort();
 
-  // User interface:
-
-  Interface = new cInterface(SVDRPport);
-
   // Configuration data:
 
   if (!ConfigDirectory)
@@ -176,13 +172,20 @@ int main(int argc, char *argv[])
 #ifdef REMOTE_LIRC
   Keys.SetDummyValues();
 #else
-  if (!Keys.Load(AddDirectory(ConfigDirectory, KEYS_CONF)))
-     Interface->LearnKeys();
+  bool KeysLoaded = Keys.Load(AddDirectory(ConfigDirectory, KEYS_CONF));
 #endif
 
   cDvbApi::SetPrimaryDvbApi(Setup.PrimaryDVB);
 
   Channels.SwitchTo(CurrentChannel);
+
+  // User interface:
+
+  Interface = new cInterface(SVDRPport);
+#ifndef REMOTE_LIRC
+  if (!KeysLoaded)
+     Interface->LearnKeys();
+#endif
 
   // Signal handlers:
 
