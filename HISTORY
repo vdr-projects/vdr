@@ -1966,3 +1966,4 @@ Video Disk Recorder Revision History
   into the ring buffer.
 - Resetting the CAM slot in case communication breaks down.
 - Improved keyboard detection (thanks to Werner Fink).
+- Updated 'channels.conf.terr' (thanks to Andy Carter).
