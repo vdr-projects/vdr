@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.86 2004/05/23 10:11:42 kls Exp $
+ * $Id: dvbdevice.c 1.87 2004/06/05 14:35:36 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -101,7 +101,8 @@ cDvbTuner::cDvbTuner(int Fd_Frontend, int CardIndex, fe_type_t FrontendType, cCi
   useCa = false;
   tunerStatus = tsIdle;
   startTime = time(NULL);
-  CHECK(ioctl(fd_frontend, FE_SET_VOLTAGE, SEC_VOLTAGE_13)); // must explicitly turn on LNB power
+  if (frontendType == FE_QPSK)
+     CHECK(ioctl(fd_frontend, FE_SET_VOLTAGE, SEC_VOLTAGE_13)); // must explicitly turn on LNB power
   SetDescription("tuner on device %d", cardIndex + 1);
   Start();
 }

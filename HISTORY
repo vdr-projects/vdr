@@ -2881,3 +2881,5 @@ Video Disk Recorder Revision History
   texts (suggested by Sascha Volkenandt).
 - The cBitmap::SetXpm() function now ignores unused "none" color entries, which
   some broken graphics tools write into XPM files (suggested by Sascha Volkenandt).
+- No longer setting lnb voltage if the frontend is not DVB-S (thanks to Marco
+  Schlüßler).

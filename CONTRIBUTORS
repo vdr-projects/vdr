@@ -1015,3 +1015,4 @@ Wayne Keer <syphir@syphir.sytes.net>
 
 Marco Schlüßler <marco@lordzodiac.de>
  for fixing handling colors in cDvbSpuPalette::yuv2rgb()
+ for fixing setting lnb voltage if the frontend is not DVB-S
