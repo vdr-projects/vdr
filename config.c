@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.77 2002/01/19 16:06:42 kls Exp $
+ * $Id: config.c 1.78 2002/02/01 15:35:23 kls Exp $
  */
 
 #include "config.h"
@@ -551,7 +551,7 @@ bool cTimer::Matches(time_t t)
   if (length < 0)
      length += SECSINDAY;
 
-  int DaysToCheck = IsSingleEvent() ? 31 : 7;
+  int DaysToCheck = IsSingleEvent() ? 61 : 7; // 61 to handle months with 31/30/31
   for (int i = -1; i <= DaysToCheck; i++) {
       time_t t0 = IncDay(t, i);
       if (DayMatches(t0)) {

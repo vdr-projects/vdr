@@ -936,3 +936,5 @@ Video Disk Recorder Revision History
 - Updated channel settings for 'N24' (thanks to Andreas Gebel).
 - Fixed handling hierarchical recordings menu in case of directories starting
   with the same sequence of characters.
+- Fixed handling timers on the 29th, 30th or 31st of a month in case the next
+  month has less than 31 days.
