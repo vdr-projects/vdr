@@ -4,12 +4,13 @@
  * See the main source file 'osm.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.2 2000/03/05 14:58:23 kls Exp $
+ * $Id: config.h 1.3 2000/04/15 12:44:23 kls Exp $
  */
 
 #ifndef __CONFIG_H
 #define __CONFIG_H
 
+#define _GNU_SOURCE
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
@@ -30,6 +31,14 @@ enum eKeys { // "Up" and "Down" must be the first two keys!
              kGreen,
              kYellow,
              kBlue,
+             kRecord,
+             kPause,
+             kStop,
+             kBegin,
+             kSearchForward,
+             kSearchBack,
+             kSkipForward,
+             kSkipBack,
              kNone
            };
 
@@ -64,6 +73,8 @@ public:
   int srate;
   int vpid;
   int apid;
+  int ca;
+  int pnr;
   cChannel(void);
   cChannel(const cChannel *Channel);
   bool Parse(char *s);
@@ -84,11 +95,10 @@ public:
   int start;
   int stop;
 //TODO VPS???
-  char quality;
   int priority;
   int lifetime;
   char file[MaxFileName];
-  cTimer(void);
+  cTimer(bool Instant = false);
   bool Parse(char *s);
   bool Save(FILE *f);
   bool IsSingleEvent(void);
@@ -128,7 +138,7 @@ public:
              if (l->Parse(buffer))
                 Add(l);
              else {
-                fprintf(stderr, "error in %s, line %d\n", fileName, line);
+                esyslog(LOG_ERR, "error in %s, line %d\n", fileName, line);
                 delete l;
                 result = false;
                 break;
@@ -137,7 +147,7 @@ public:
        fclose(f);
        }
     else {
-       fprintf(stderr, "can't open '%s'\n", fileName);
+       esyslog(LOG_ERR, "can't open '%s'\n", fileName);
        result = false;
        }
     return result;
@@ -168,7 +178,6 @@ class cChannels : public cConfig<cChannel> {};
 class cTimers : public cConfig<cTimer> {};
 
 extern int CurrentChannel;
-extern bool ChannelLocked;
 
 extern cChannels Channels;
 extern cTimers Timers;

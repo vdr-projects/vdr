@@ -10,3 +10,11 @@ Video Disk Recorder OSM Revision History
 - Support for "Red", "Green", "Yellow", "Blue" buttons.
 - Channels and Timers can now be added, deleted and moved.
 - Basic record/play file handling support (no actual record/playback yet).
+
+2000-04-15: Version 0.03
+
+- Actual record/replay now works.
+- Dropped the idea of different "recording qualities" (a 36GB harddisk is
+  able to store some 18 hours in full quality, so we don't really need that).
+- Termination signals are now caught and the program cleans up before exiting.
+- Support for CICAM.

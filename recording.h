@@ -4,7 +4,7 @@
  * See the main source file 'osm.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 1.1 2000/03/05 15:57:27 kls Exp $
+ * $Id: recording.h 1.2 2000/04/14 15:12:42 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -15,21 +15,16 @@
 #include "dvbapi.h"
 #include "tools.h"
 
-extern cDvbRecorder *Recorder;
-
 void AssertFreeDiskSpace(void);
 
 class cRecording : public cListObject {
-private:
-  bool AssertRecorder(void);
 public:
   char *name;
   char *fileName;
   time_t start;
-  char quality;
   int priority;
   int lifetime;
-  cRecording(const char *Name, time_t Start, char Quality, int Priority, int LifeTime);
+  cRecording(const char *Name, time_t Start, int Priority, int LifeTime);
   cRecording(cTimer *Timer);
   cRecording(const char *FileName);
   ~cRecording();

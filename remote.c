@@ -4,7 +4,7 @@
  * See the main source file 'osm.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remote.c 1.1 2000/02/19 13:36:48 kls Exp $
+ * $Id: remote.c 1.2 2000/04/15 16:00:51 kls Exp $
  */
 
 #include "remote.h"
@@ -221,7 +221,7 @@ bool cRcIo::String(char *s)
              }
           }
       }
-  return Number(n, mode == modeH);
+  return Number(n, true);
 }
 
 bool cRcIo::DetectCode(unsigned char *Code, unsigned short *Address)
@@ -244,8 +244,11 @@ bool cRcIo::DetectCode(unsigned char *Code, unsigned short *Address)
      String(buf);
      SetCode(*Code, 0);
      unsigned int Command;
-     if (GetCommand(&Command, Address))
+     if (GetCommand(&Command, Address)) {
+        SetMode(modeB);
+        String("----");
         return true;
+        }
      if (*Code < 'D') {
         (*Code)++;
         return false;

@@ -1,0 +1,39 @@
+Video Disk Recorder User's Manual
+---------------------------------
+
+* Selecting a Channel
+
+  You can select a channel either by pressing the "Up" or "Down" key (while
+  no On Screen Menu is displayed), or browsing through the channel list in
+  the menu and pressing "Ok" on the desired channel.
+
+* Instant Recording
+
+  You can start recording the current channel by pressing the "Record"
+  button. This will create a timer event named "instant" that start
+  at the current time and records for two hours.
+  If you want to modify the recording time you need to edit the timer.
+  Stop instant recording by disabling or deleting the timer.
+
+* Replaying a Recording
+
+  All recordings are listed in the "Recordings" menu. Browse through the
+  list with the "Up" and "Down" button and press "Ok" (or the "Red" button)
+  to start playback.
+
+* Replay Control
+
+  - "Begin"   Positions to beginning of the recording and starts playback
+              from there.
+  - "Pause"   Halts playback at the current frame. Press again to continue
+              playback.
+  - "Stop"    Stops playback and stores the current position, so that
+              playback can be resumed later at that point.
+  - "Search"  Runs playback forward or backward at a higher speed. Press
+              again to resume normal speed.
+  - "Skip"    Skips about 60 seconds forward or backward.
+
+* Programming the Timer
+
+  Use the "Timer" menu to maintain your list of timer controlled recordings.
+

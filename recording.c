@@ -4,9 +4,10 @@
  * See the main source file 'osm.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.1 2000/03/05 17:16:22 kls Exp $
+ * $Id: recording.c 1.2 2000/04/15 13:29:02 kls Exp $
  */
 
+#define _GNU_SOURCE
 #include "recording.h"
 #include <errno.h>
 #include <stdio.h>
@@ -16,17 +17,17 @@
 
 #define RECEXT       ".rec"
 #define DELEXT       ".del"
-#define DATAFORMAT   "%4d-%02d-%02d.%02d:%02d.%c.%02d.%02d" RECEXT
+#define DATAFORMAT   "%4d-%02d-%02d.%02d:%02d.%02d.%02d" RECEXT
 #define NAMEFORMAT   "%s/%s/" DATAFORMAT
 
-#define FINDCMD      "find %s -type f -name '%s'"
+#define FINDCMD      "find %s -type d -name '%s'"
 
 #define DFCMD        "df -m %s"
 #define MINDISKSPACE 1024 // MB
 
-const char *BaseDir = "/video";//XXX
+#define DISKCHECKDELTA 300 // seconds between checks for free disk space
 
-cDvbRecorder *Recorder = NULL;
+const char *BaseDir = "/video";
 
 static bool LowDiskSpace(void)
 {
@@ -58,51 +59,54 @@ void AssertFreeDiskSpace(void)
   // With every call to this function we try to actually remove
   // a file, or mark a file for removal ("delete" it), so that
   // it will get removed during the next call.
-  if (Recorder && Recorder->Recording() && LowDiskSpace()) {
-     // Remove the oldest file that has been "deleted":
-     cRecordings Recordings;
-     if (Recordings.Load(true)) {
-        cRecording *r = Recordings.First();
-        cRecording *r0 = r;
-        while (r) {
-              if (r->start < r0->start)
-                 r0 = r;
-              r = Recordings.Next(r);
-              }
-        if (r0 && r0->Remove())
-           return;
-        }
-     // No "deleted" files to remove, so let's see if we can delete a recording:
-     if (Recordings.Load(false)) {
-        cRecording *r = Recordings.First();
-        cRecording *r0 = NULL;
-        while (r) {
-              if ((time(NULL) - r->start) / SECSINDAY > r->lifetime) {
-                 if (r0) {
-                    if (r->priority < r0->priority)
+  static time_t LastFreeDiskCheck = 0;
+  if (time(NULL) - LastFreeDiskCheck > DISKCHECKDELTA) {
+     LastFreeDiskCheck = time(NULL);
+     if (DvbApi.Recording() && LowDiskSpace()) {
+        // Remove the oldest file that has been "deleted":
+        cRecordings Recordings;
+        if (Recordings.Load(true)) {
+           cRecording *r = Recordings.First();
+           cRecording *r0 = r;
+           while (r) {
+                 if (r->start < r0->start)
+                    r0 = r;
+                 r = Recordings.Next(r);
+                 }
+           if (r0 && r0->Remove())
+              return;
+           }
+        // No "deleted" files to remove, so let's see if we can delete a recording:
+        if (Recordings.Load(false)) {
+           cRecording *r = Recordings.First();
+           cRecording *r0 = NULL;
+           while (r) {
+                 if ((time(NULL) - r->start) / SECSINDAY > r->lifetime) {
+                    if (r0) {
+                       if (r->priority < r0->priority)
+                          r0 = r;
+                       }
+                    else
                        r0 = r;
                     }
-                 else
-                    r0 = r;
+                 r = Recordings.Next(r);
                  }
-              r = Recordings.Next(r);
-              }
-        if (r0 && r0->Delete())
-           return;
+           if (r0 && r0->Delete())
+              return;
+           }
+        // Unable to free disk space, but there's nothing we can do about that...
+        esyslog(LOG_ERR, "low disk space, but no recordings to delete");
         }
-     // Unable to free disk space, but there's nothing we can do about that...
-     //TODO maybe a log entry - but make sure it doesn't come too often
      }
 }
 
 // --- cRecording ------------------------------------------------------------
 
-cRecording::cRecording(const char *Name, time_t Start, char Quality, int Priority, int LifeTime)
+cRecording::cRecording(const char *Name, time_t Start, int Priority, int LifeTime)
 {
   fileName = NULL;
   name = strdup(Name);
   start = Start;
-  quality = Quality;
   priority = Priority;
   lifetime = LifeTime;
 }
@@ -112,7 +116,6 @@ cRecording::cRecording(cTimer *Timer)
   fileName = NULL;
   name = strdup(Timer->file);
   start = Timer->StartTime();
-  quality = Timer->quality;
   priority = Timer->priority;
   lifetime = Timer->lifetime;
 }
@@ -127,7 +130,7 @@ cRecording::cRecording(const char *FileName)
   if (p) {
      time_t now = time(NULL);
      struct tm t = *localtime(&now); // this initializes the time zone in 't'
-     if (8 == sscanf(p + 1, DATAFORMAT, &t.tm_year, &t.tm_mon, &t.tm_mday, &t.tm_hour, &t.tm_min, &quality, &priority, &lifetime)) {
+     if (7 == sscanf(p + 1, DATAFORMAT, &t.tm_year, &t.tm_mon, &t.tm_mday, &t.tm_hour, &t.tm_min, &priority, &lifetime)) {
         t.tm_year -= 1900;
         t.tm_mon--;
         t.tm_sec = 0;
@@ -149,7 +152,7 @@ const char *cRecording::FileName(void)
 {
   if (!fileName) {
      struct tm *t = localtime(&start);
-     asprintf(&fileName, NAMEFORMAT, BaseDir, name, t->tm_year + 1900, t->tm_mon + 1, t->tm_mday, t->tm_hour, t->tm_min, quality, priority, lifetime);
+     asprintf(&fileName, NAMEFORMAT, BaseDir, name, t->tm_year + 1900, t->tm_mon + 1, t->tm_mday, t->tm_hour, t->tm_min, priority, lifetime);
      }
   return fileName;
 }
@@ -163,7 +166,7 @@ bool cRecording::Delete(void)
      strncpy(ext, DELEXT, strlen(ext));
      isyslog(LOG_INFO, "deleting recording %s", FileName());
      if (rename(FileName(), NewName) == -1) {
-        esyslog(LOG_ERR, "ERROR: %s", strerror(errno));
+        esyslog(LOG_ERR, "ERROR: %s: %s", FileName(), strerror(errno));
         result = false;
         }
      }
@@ -173,40 +176,23 @@ bool cRecording::Delete(void)
 
 bool cRecording::Remove(void)
 {
-  bool result = true;
   isyslog(LOG_INFO, "removing recording %s", FileName());
-  if (remove(FileName()) == -1) {
-     esyslog(LOG_ERR, "ERROR: %s", strerror(errno));
-     result = false;
-     }
-  return result;
-}
-
-bool cRecording::AssertRecorder(void)
-{
-  if (!Recorder || !Recorder->Recording()) {
-     if (!Recorder)
-        Recorder = new cDvbRecorder;
-     return true;
-     }
-  Interface.Error("Recorder is in use!");
-  return false;
+  return RemoveFileOrDir(FileName());
 }
 
 bool cRecording::Record(void)
 {
-  return AssertRecorder() && Recorder->Record(FileName(), quality);
+  return DvbApi.StartRecord(FileName());
 }
 
 bool cRecording::Play(void)
 {
-  return AssertRecorder() && Recorder->Play(FileName());
+  return DvbApi.StartReplay(FileName());
 }
 
 void cRecording::Stop(void)
 {
-  if (Recorder)
-     Recorder->Stop();
+  DvbApi.StopRecord();
 }
 
 // --- cRecordings -----------------------------------------------------------
