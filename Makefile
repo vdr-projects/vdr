@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 1.17 2000/12/03 15:24:20 kls Exp $
+# $Id: Makefile 1.18 2001/01/13 12:26:43 kls Exp $
 
 DVBDIR   = ../DVB
 
@@ -37,7 +37,7 @@ font: genfontfile fontfix.c fontosd.c
 # Dependencies:
 
 config.o   : config.c config.h dvbapi.h dvbosd.h eit.h font.h i18n.h interface.h remote.h svdrp.h thread.h tools.h
-dvbapi.o   : dvbapi.c config.h dvbapi.h dvbosd.h eit.h font.h interface.h remote.h svdrp.h thread.h tools.h videodir.h
+dvbapi.o   : dvbapi.c config.h dvbapi.h dvbosd.h eit.h font.h interface.h recording.h remote.h svdrp.h thread.h tools.h videodir.h
 dvbosd.o   : dvbosd.c dvbosd.h font.h tools.h
 eit.o      : eit.c config.h dvbapi.h dvbosd.h eit.h font.h thread.h tools.h videodir.h
 font.o     : font.c font.h fontfix.c fontosd.c tools.h
