@@ -1044,6 +1044,7 @@ Andreas Regel <andreas.regel@gmx.de>
  video directory is empty
  for pointing out a missing call to cStatus::MsgOsdtatusMessage(NULL) in
  cSkins::Message()
+ for reporting a problem in handling Transfer Mode for radio channels
 
 Thomas Bergwinkl <Thomas.Bergwinkl@t-online.de>
  for fixing the validity check for channel IDs, because some providers use TIDs

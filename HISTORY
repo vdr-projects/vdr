@@ -3382,3 +3382,5 @@ Video Disk Recorder Revision History
   permanently returns 0 (thanks to Reinhard Nissl and Olaf Titz).
 - Completed the Finnish OSD texts (thanks to Rolf Ahrenberg).
 - Restricted the "setting audio track" log message to automatic changes during replay.
+- Fixed handling Transfer Mode for radio channels (thanks to Andreas Regel for
+  reporting this one).
