@@ -2797,3 +2797,5 @@ Video Disk Recorder Revision History
   in the list) everything freezes and the vdr processes have to be killed with -9
   and the driver needs to be reloaded. Maybe somebody else can find out what's
   going wrong here...
+- Added missing NULL checks when accessing sectionHandler in device.c (thanks to
+  Pekka Virtanen).

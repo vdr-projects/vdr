@@ -962,6 +962,7 @@ Marcus Mönnig <minibbjd@gmx.de>
 
 Pekka Virtanen <pekka.virtanen@sci.fi>
  for adding language code handling to the subtitling descriptor in 'libsi'
+ for adding missing NULL checks when accessing sectionHandler in device.c
 
 John Kennedy <rkennedy@ix.netcom.com>
  for publishing "A Fast Bresenham Algorithm For Drawing Ellipses" (found at
