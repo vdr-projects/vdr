@@ -22,39 +22,37 @@
  *
  */
 
-#ifndef AARONS_TYPES
-#define AARONS_TYPES
-typedef unsigned long long uint_64;
-typedef unsigned int   uint_32;
-typedef unsigned short uint_16;
-typedef unsigned char  uint_8;
+#define AC3_BUFFER_SIZE (6*1024*16)
 
-typedef signed long long sint_64;
-typedef signed int     sint_32;
-typedef signed short   sint_16;
-typedef signed char    sint_8;
+#ifndef __AC3_H__
+#define __AC3_H__
+
+#ifdef __OMS__
+#include <oms/plugin/output_audio.h>
+#else
+//#include "audio_out.h"
 #endif
 
-#define AC3_DOLBY_SURR_ENABLE 0x1
-#define AC3_3DNOW_ENABLE      0x2
-#define AC3_MMX_ENABLE        0x4
-#define AC3_ALTIVEC_ENABLE    0x8
+#include <inttypes.h>
 
-typedef struct ac3_config_s
-{
-	//Bit flags that enable various things
-	uint_32 flags;
-	//Callback that points the decoder to new stream data
-  void   (*fill_buffer_callback)(uint_8 **, uint_8 **);
-	//Number of discrete channels in final output (for downmixing)
-	uint_16 num_output_ch;
-	//Which channel of a dual mono stream to select
-	uint_16 dual_mono_ch_sel;
+#define AC3_DOLBY_SURR_ENABLE	(1<<0)
+#define AC3_ALTIVEC_ENABLE	(1<<1)
+
+typedef struct ac3_config_s {
+	// Bit flags that enable various things
+	uint32_t flags;
+	// Number of discrete channels in final output (for downmixing)
+	uint16_t num_output_ch;
+	// Which channel of a dual mono stream to select
+	uint16_t dual_mono_ch_sel;
 } ac3_config_t;
 
-void ac3_init(ac3_config_t *);
-uint_32 ac3_decode_data(uint_8 *data_start,uint_8 *data_end, int ac3reset, int *input_pointer, int *output_pointer, char *ac3_data);
+void ac3dec_init (void);
 
+#ifdef __OMS__
+size_t ac3dec_decode_data (plugin_output_audio_t *output, uint8_t *data_start, uint8_t *data_end);
+#else
+size_t ac3dec_decode_data (uint8_t *data_start ,uint8_t *data_end, int ac3reset, int *input_pointer, int *output_pointer, char *ac3_data);
+#endif
 
-
-
+#endif

@@ -1,10 +1,7 @@
 /*
- *
- *  downmix.c
+ *  imdct.c
  *    
- *	Copyright (C) Aaron Holtzman - Sept 1999
- *
- *	Originally based on code by Yuqing Deng.
+ *	Copyright (C) Aaron Holtzman - May 1999
  *
  *  This file is part of ac3dec, a free Dolby AC-3 stream decoder.
  *	
@@ -28,401 +25,65 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
+#include <mm_accel.h>
+
 #include "ac3.h"
 #include "ac3_internal.h"
 
-
-#include "decode.h"
-#include "downmix.h"
 #include "debug.h"
+#include "downmix.h"
+#include "downmix_c.h"
+#include "downmix_i386.h"
+#ifdef HAVE_KNI
+#include "downmix_kni.h"
+#endif
+
+void (*downmix_3f_2r_to_2ch)(float *samples, dm_par_t * dm_par);
+void (*downmix_3f_1r_to_2ch)(float *samples, dm_par_t * dm_par);
+void (*downmix_2f_2r_to_2ch)(float *samples, dm_par_t * dm_par);
+void (*downmix_2f_1r_to_2ch)(float *samples, dm_par_t * dm_par);
+void (*downmix_3f_0r_to_2ch)(float *samples, dm_par_t * dm_par);
+void (*stream_sample_2ch_to_s16)(int16_t *s16_samples, float *left, float *right);
+void (*stream_sample_1ch_to_s16)(int16_t *s16_samples, float *center);
 
 
-//Pre-scaled downmix coefficients
-static float cmixlev_lut[4] = { 0.2928, 0.2468, 0.2071, 0.2468 };
-static float smixlev_lut[4] = { 0.2928, 0.2071, 0.0   , 0.2071 };
-
-static void 
-downmix_3f_2r_to_2ch(bsi_t* bsi, stream_samples_t samples,sint_16 *s16_samples)
+void downmix_init()
 {
-	uint_32 j;
-	float right_tmp;
-	float left_tmp;
-	float clev,slev;
-	float *centre = 0, *left = 0, *right = 0, *left_sur = 0, *right_sur = 0;
+#ifdef __i386__
+#ifdef HAVE_KNI
+	uint32_t accel = mm_accel ();
 
-	left      = samples[0];
-	centre    = samples[1];
-	right     = samples[2];
-	left_sur  = samples[3];
-	right_sur = samples[4];
-
-	clev = cmixlev_lut[bsi->cmixlev];
-	slev = smixlev_lut[bsi->surmixlev];
-
-#if defined DOLBY_SURROUND
-	for (j = 0; j < 256; j++) 
+// other dowmixing should go here too
+	if (accel & MM_ACCEL_X86_MMXEXT) {
+		dprintf("Using SSE for downmix\n");
+		downmix_3f_2r_to_2ch = downmix_3f_2r_to_2ch_kni;
+		downmix_2f_2r_to_2ch = downmix_2f_2r_to_2ch_kni;
+		downmix_3f_1r_to_2ch = downmix_3f_1r_to_2ch_kni;
+		downmix_2f_1r_to_2ch = downmix_2f_1r_to_2ch_kni;
+		downmix_3f_0r_to_2ch = downmix_3f_0r_to_2ch_kni;
+		stream_sample_2ch_to_s16 = stream_sample_2ch_to_s16_kni;
+		stream_sample_1ch_to_s16 = stream_sample_1ch_to_s16_kni;
+	} else if (accel & MM_ACCEL_X86_3DNOW) {
+	} else
+#endif
+#endif
 	{
-	        right_tmp = *left_sur++ + *right_sur++;
-		left_tmp  = 1.4142f * *left++  + *centre - right_tmp;
-		right_tmp += 1.4142f * *right++ + *centre++;
-	    
-	        s16_samples[j * 2 ]    = (sint_16) (left_tmp  * 16000.0f);
-	        s16_samples[j * 2 + 1] = (sint_16) (right_tmp * 16000.0f);
-	}
+		downmix_3f_2r_to_2ch = downmix_3f_2r_to_2ch_c;
+		downmix_2f_2r_to_2ch = downmix_2f_2r_to_2ch_c;
+		downmix_3f_1r_to_2ch = downmix_3f_1r_to_2ch_c;
+		downmix_2f_1r_to_2ch = downmix_2f_1r_to_2ch_c;
+		downmix_3f_0r_to_2ch = downmix_3f_0r_to_2ch_c;
+#ifdef __i386__
+#if 1
+		stream_sample_2ch_to_s16 = stream_sample_2ch_to_s16_c;
+		stream_sample_1ch_to_s16 = stream_sample_1ch_to_s16_c;
 #else
-	for (j = 0; j < 256; j++) 
-	{
-		left_tmp = 0.4142f * *left++  + clev * *centre   + slev * *left_sur++;
-		right_tmp= 0.4142f * *right++ + clev * *centre++ + slev * *right_sur++;
-
-		s16_samples[j * 2 ]    = (sint_16) (left_tmp  * 32767.0f);
-		s16_samples[j * 2 + 1] = (sint_16) (right_tmp * 32767.0f);
-	}
+		stream_sample_2ch_to_s16 = stream_sample_2ch_to_s16_i386;
+		stream_sample_1ch_to_s16 = stream_sample_1ch_to_s16_i386;
 #endif
-}
-
-static void
-downmix_2f_2r_to_2ch(bsi_t* bsi, stream_samples_t samples,sint_16 *s16_samples)
-{
-	uint_32 j;
-	float right_tmp;
-	float left_tmp;
-	float slev;
-	float *left = 0, *right = 0, *left_sur = 0, *right_sur = 0;
-
-	left      = samples[0];
-	right     = samples[1];
-	left_sur  = samples[2];
-	right_sur = samples[3];
-
-	slev = smixlev_lut[bsi->surmixlev];
-
-	for (j = 0; j < 256; j++) 
-	{
-		left_tmp = 0.4142f * *left++  + slev * *left_sur++;
-		right_tmp= 0.4142f * *right++ + slev * *right_sur++;
-
-		s16_samples[j * 2 ]    = (sint_16) (left_tmp  * 32767.0f);
-		s16_samples[j * 2 + 1] = (sint_16) (right_tmp * 32767.0f);
-	}
-}
-
-static void
-downmix_3f_1r_to_2ch(bsi_t* bsi, stream_samples_t samples,sint_16 *s16_samples)
-{
-	uint_32 j;
-	float right_tmp;
-	float left_tmp;
-	float clev,slev;
-	float *centre = 0, *left = 0, *right = 0, *sur = 0;
-
-	left      = samples[0];
-	centre    = samples[1];
-	right     = samples[2];
-	//Mono surround
-	sur = samples[3];
-
-	clev = cmixlev_lut[bsi->cmixlev];
-	slev = smixlev_lut[bsi->surmixlev];
-
-	for (j = 0; j < 256; j++) 
-	{
-		left_tmp = 0.4142f * *left++  + clev * *centre++ + slev * *sur;
-		right_tmp= 0.4142f * *right++ + clev * *centre   + slev * *sur++;
-
-		s16_samples[j * 2 ]    = (sint_16) (left_tmp  * 32767.0f);
-		s16_samples[j * 2 + 1] = (sint_16) (right_tmp * 32767.0f);
-	}
-}
-
-
-static void
-downmix_2f_1r_to_2ch(bsi_t* bsi, stream_samples_t samples,sint_16 *s16_samples)
-{
-	uint_32 j;
-	float right_tmp;
-	float left_tmp;
-	float slev;
-	float *left = 0, *right = 0, *sur = 0;
-
-	left      = samples[0];
-	right     = samples[1];
-	//Mono surround
-	sur = samples[2];
-
-	slev = smixlev_lut[bsi->surmixlev];
-
-	for (j = 0; j < 256; j++) 
-	{
-		left_tmp = 0.4142f * *left++  + slev * *sur;
-		right_tmp= 0.4142f * *right++ + slev * *sur++;
-
-		s16_samples[j * 2 ]    = (sint_16) (left_tmp  * 32767.0f);
-		s16_samples[j * 2 + 1] = (sint_16) (right_tmp * 32767.0f);
-	}
-}
-
-static void
-downmix_3f_0r_to_2ch(bsi_t* bsi, stream_samples_t samples,sint_16 *s16_samples)
-{
-	uint_32 j;
-	float right_tmp;
-	float left_tmp;
-	float clev;
-	float *centre = 0, *left = 0, *right = 0;
-
-	left      = samples[0];
-	centre    = samples[1];
-	right     = samples[2];
-
-	clev = cmixlev_lut[bsi->cmixlev];
-
-	for (j = 0; j < 256; j++) 
-	{
-		left_tmp = 0.4142f * *left++  + clev * *centre; 
-		right_tmp= 0.4142f * *right++ + clev * *centre++;   
-
-		s16_samples[j * 2 ]    = (sint_16) (left_tmp  * 32767.0f);
-		s16_samples[j * 2 + 1] = (sint_16) (right_tmp * 32767.0f);
-	}
-}
-				
-static void
-downmix_2f_0r_to_2ch(bsi_t* bsi, stream_samples_t samples,sint_16 *s16_samples)
-{
-	uint_32 j;
-	float *left = 0, *right = 0;
-
-	left      = samples[0];
-	right     = samples[1];
-
-	for (j = 0; j < 256; j++) 
-	{
-		s16_samples[j * 2 ]    = (sint_16) (*left++  * 32767.0f);
-		s16_samples[j * 2 + 1] = (sint_16) (*right++ * 32767.0f);
-	}
-}
-
-static void
-downmix_1f_0r_to_2ch(float *centre,sint_16 *s16_samples)
-{
-	uint_32 j;
-	float tmp;
-
-	//Mono program!
-
-	for (j = 0; j < 256; j++) 
-	{
-		tmp =  32767.0f * 0.7071f * *centre++;
-
-		s16_samples[j * 2 ] = s16_samples[j * 2 + 1] = (sint_16) tmp;
-	}
-}
-
-//
-// Downmix into 2 or 4 channels  (4 ch isn't in quite yet)
-//
-// The downmix function names have the following format
-//
-// downmix_Xf_Yr_to_[2|4]ch[_dolby]
-//
-// where X        = number of front channels
-//       Y        = number of rear channels
-//       [2|4]    = number of output channels
-//       [_dolby] = with or without dolby surround mix
-//
-
-void downmix(bsi_t* bsi, stream_samples_t samples,sint_16 *s16_samples)
-{
-	if(bsi->acmod > 7)
-		dprintf("(downmix) invalid acmod number\n"); 
-
-	//
-	//There are two main cases, with or without Dolby Surround
-	//
-	if(ac3_config.flags & AC3_DOLBY_SURR_ENABLE)
-	{
-		fprintf(stderr,"Dolby Surround Mixes not currently enabled\n");
-		exit(1);
-	}
-
-	//Non-Dolby surround downmixes
-	switch(bsi->acmod)
-	{
-		// 3/2
-		case 7:
-			downmix_3f_2r_to_2ch(bsi,samples,s16_samples);
-		break;
-
-		// 2/2
-		case 6:
-			downmix_2f_2r_to_2ch(bsi,samples,s16_samples);
-		break;
-
-		// 3/1
-		case 5:
-			downmix_3f_1r_to_2ch(bsi,samples,s16_samples);
-		break;
-
-		// 2/1
-		case 4:
-			downmix_2f_1r_to_2ch(bsi,samples,s16_samples);
-		break;
-
-		// 3/0
-		case 3:
-			downmix_3f_0r_to_2ch(bsi,samples,s16_samples);
-		break;
-
-		case 2:
-			downmix_2f_0r_to_2ch(bsi,samples,s16_samples);
-		break;
-
-		// 1/0
-		case 1:
-			downmix_1f_0r_to_2ch(samples[0],s16_samples);
-		break;
-
-		// 1+1
-		case 0:
-			downmix_1f_0r_to_2ch(samples[ac3_config.dual_mono_ch_sel],s16_samples);
-		break;
-	}
-}
-
-
-
-#if 0 
-
-	//the dolby mixes lay here for the time being
-	switch(bsi->acmod)
-	{
-		// 3/2
-		case 7:
-			left      = samples[0];
-			centre    = samples[1];
-			right     = samples[2];
-			left_sur  = samples[3];
-			right_sur = samples[4];
-
-			for (j = 0; j < 256; j++) 
-			{
-				right_tmp = 0.2265f * *left_sur++ + 0.2265f * *right_sur++;
-				left_tmp  = -1 * right_tmp;
-				right_tmp += 0.3204f * *right++ + 0.2265f * *centre;
-				left_tmp  += 0.3204f * *left++  + 0.2265f * *centre++;
-
-				samples[1][j] = right_tmp;
-				samples[0][j] = left_tmp;
-			}
-
-		break;
-
-		// 2/2
-		case 6:
-			left      = samples[0];
-			right     = samples[1];
-			left_sur  = samples[2];
-			right_sur = samples[3];
-
-			for (j = 0; j < 256; j++) 
-			{
-				right_tmp = 0.2265f * *left_sur++ + 0.2265f * *right_sur++;
-				left_tmp  = -1 * right_tmp;
-				right_tmp += 0.3204f * *right++;
-				left_tmp  += 0.3204f * *left++ ;
-
-				samples[1][j] = right_tmp;
-				samples[0][j] = left_tmp;
-			}
-		break;
-
-		// 3/1
-		case 5:
-			left      = samples[0];
-			centre    = samples[1];
-			right     = samples[2];
-			//Mono surround
-			right_sur = samples[3];
-
-			for (j = 0; j < 256; j++) 
-			{
-				right_tmp =  0.2265f * *right_sur++;
-				left_tmp  = -1 * right_tmp;
-				right_tmp += 0.3204f * *right++ + 0.2265f * *centre;
-				left_tmp  += 0.3204f * *left++  + 0.2265f * *centre++;
-
-				samples[1][j] = right_tmp;
-				samples[0][j] = left_tmp;
-			}
-		break;
-
-		// 2/1
-		case 4:
-			left      = samples[0];
-			right     = samples[1];
-			//Mono surround
-			right_sur = samples[2];
-
-			for (j = 0; j < 256; j++) 
-			{
-				right_tmp =  0.2265f * *right_sur++;
-				left_tmp  = -1 * right_tmp;
-				right_tmp += 0.3204f * *right++; 
-				left_tmp  += 0.3204f * *left++;
-
-				samples[1][j] = right_tmp;
-				samples[0][j] = left_tmp;
-			}
-		break;
-
-		// 3/0
-		case 3:
-			left      = samples[0];
-			centre    = samples[1];
-			right     = samples[2];
-
-			for (j = 0; j < 256; j++) 
-			{
-				right_tmp = 0.3204f * *right++ + 0.2265f * *centre;
-				left_tmp  = 0.3204f * *left++  + 0.2265f * *centre++;
-
-				samples[1][j] = right_tmp;
-				samples[0][j] = left_tmp;
-			}
-		break;
-
-		// 2/0
-		case 2:
-		//Do nothing!
-		break;
-
-		// 1/0
-		case 1:
-			//Mono program!
-			right = samples[0];
-
-			for (j = 0; j < 256; j++) 
-			{
-				right_tmp = 0.7071f * *right++;
-
-				samples[1][j] = right_tmp;
-				samples[0][j] = right_tmp;
-			}
-			
-		break;
-
-		// 1+1
-		case 0:
-			//Dual mono, output selected by user
-			right = samples[ac3_config.dual_mono_ch_sel];
-
-			for (j = 0; j < 256; j++) 
-			{
-				right_tmp = 0.7071f * *right++;
-
-				samples[1][j] = right_tmp;
-				samples[0][j] = right_tmp;
-			}
-		break;
+#else
+		stream_sample_2ch_to_s16 = stream_sample_2ch_to_s16_c;
+		stream_sample_1ch_to_s16 = stream_sample_1ch_to_s16_c;
 #endif
+	}
+}

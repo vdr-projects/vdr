@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.95 2001/08/05 16:09:41 kls Exp $
+ * $Id: menu.c 1.103 2001/08/12 12:42:37 kls Exp $
  */
 
 #include "menu.h"
@@ -545,7 +545,7 @@ cMenuEditChannel::cMenuEditChannel(int Index)
      Add(new cMenuEditStrItem( tr("Name"),          data.name, sizeof(data.name), FileNameChars));
      Add(new cMenuEditIntItem( tr("Frequency"),    &data.frequency, 10000, 13000)); //TODO exact limits???
      Add(new cMenuEditChrItem( tr("Polarization"), &data.polarization, "hv"));
-     Add(new cMenuEditIntItem( tr("Diseqc"),       &data.diseqc, 0, 10)); //TODO exact limits???
+     Add(new cMenuEditIntItem( tr("DiSEqC"),       &data.diseqc, 0, 10)); //TODO exact limits???
      Add(new cMenuEditIntItem( tr("Srate"),        &data.srate, 22000, 30000)); //TODO exact limits - toggle???
      Add(new cMenuEditIntItem( tr("Vpid"),         &data.vpid, 0, 0xFFFE));
      Add(new cMenuEditIntItem( tr("Apid1"),        &data.apid1, 0, 0xFFFE));
@@ -1813,10 +1813,10 @@ cMenuMain::cMenuMain(bool Replaying)
         delete buffer;
         }
   if (cVideoCutter::Active())
-     Add(new cOsdItem(hk(tr(" Cancel editing")), osCancelEdit));
+     Add(new cOsdItem(tr(" Cancel editing"), osCancelEdit));
   const char *DVDbutton =
 #ifdef DVDSUPPORT
-                          cDVD::DiscOk() ? tr("Eject DVD") : NULL;
+                          cDVD::DiscOk() ? tr("Eject") : NULL;
 #else
                           NULL;
 #endif //DVDSUPPORT
@@ -2070,14 +2070,15 @@ cRecordControl::cRecordControl(cDvbApi *DvbApi, cTimer *Timer)
      timer = new cTimer(true);
      Timers.Add(timer);
      Timers.Save();
-     asprintf(&instantId, cDvbApi::NumDvbApis > 1 ? "%s - %d" : "%s", Channels.GetChannelNameByNumber(timer->channel), dvbApi->Index() + 1);
+     asprintf(&instantId, cDvbApi::NumDvbApis > 1 ? "%s - %d" : "%s", Channels.GetChannelNameByNumber(timer->channel), dvbApi->CardIndex() + 1);
      }
+  timer->SetPending(true);
   timer->SetRecording(true);
   if (Channels.SwitchTo(timer->channel, dvbApi)) {
      cRecording Recording(timer);
      if (dvbApi->StartRecord(Recording.FileName(), Channels.GetByNumber(timer->channel)->ca, timer->priority))
         Recording.WriteSummary();
-     Interface->DisplayRecording(dvbApi->Index(), true);
+     Interface->DisplayRecording(dvbApi->CardIndex(), true);
      }
   else
      cThread::EmergencyExit(true);
@@ -2102,7 +2103,7 @@ void cRecordControl::Stop(bool KeepInstant)
         Timers.Save();
         }
      timer = NULL;
-     Interface->DisplayRecording(dvbApi->Index(), false);
+     Interface->DisplayRecording(dvbApi->CardIndex(), false);
      }
 }
 
@@ -2134,8 +2135,8 @@ bool cRecordControls::Start(cTimer *Timer)
                }
             }
         }
-     else if (!Timer || Timer->priority >= Setup.PrimaryLimit)
-        esyslog(LOG_ERR, "ERROR: no free DVB device to record channel %d!", ch);
+     else if (!Timer || (Timer->priority >= Setup.PrimaryLimit && !Timer->pending))
+        isyslog(LOG_ERR, "no free DVB device to record channel %d!", ch);
      }
   else
      esyslog(LOG_ERR, "ERROR: channel %d not defined!", ch);
@@ -2158,7 +2159,7 @@ void cRecordControls::Stop(cDvbApi *DvbApi)
   for (int i = 0; i < MAXDVBAPI; i++) {
       if (RecordControls[i]) {
          if (RecordControls[i]->Uses(DvbApi)) {
-            isyslog(LOG_INFO, "stopping recording on DVB device %d due to higher priority", DvbApi->Index() + 1);
+            isyslog(LOG_INFO, "stopping recording on DVB device %d due to higher priority", DvbApi->CardIndex() + 1);
             RecordControls[i]->Stop(true);
             }
          }
@@ -2256,6 +2257,7 @@ cReplayControl::cReplayControl(void)
   visible = shown = displayFrames = false;
   lastCurrent = lastTotal = -1;
   timeoutShow = 0;
+  timeSearchActive = false;
   if (fileName) {
      marks.Load(fileName);
      dvbApi->StartReplay(fileName);
@@ -2305,10 +2307,8 @@ void cReplayControl::ClearLastReplayed(const char *FileName)
 void cReplayControl::Show(int Seconds)
 {
   if (!visible) {
-     Interface->Open(Setup.OSDwidth, -3);
-     needsFastResponse = visible = true;
      shown = ShowProgress(true);
-     if (Seconds > 0)
+     if (shown && Seconds > 0)
         timeoutShow = time(NULL) + Seconds;
      }
 }
@@ -2326,6 +2326,10 @@ bool cReplayControl::ShowProgress(bool Initial)
   int Current, Total;
 
   if (dvbApi->GetIndex(Current, Total) && Total > 0) {
+     if (!visible) {
+        Interface->Open(Setup.OSDwidth, -3);
+        needsFastResponse = visible = true;
+        }
      if (Initial) {
         Interface->Clear();
         if (title)
@@ -2358,11 +2362,104 @@ bool cReplayControl::ShowProgress(bool Initial)
   return false;
 }
 
+void cReplayControl::TimeSearchDisplay(void)
+{
+  char buf[64];
+  int len;
+  
+  strcpy(buf, tr("Jump: "));
+  len = strlen(buf);
+  
+  switch (timeSearchPos) {
+    case 1:  sprintf(buf + len, "%01d-:--", timeSearchHH / 10); break;
+    case 2:  sprintf(buf + len, "%02d:--", timeSearchHH); break;
+    case 3:  sprintf(buf + len, "%02d:%01d-", timeSearchHH, timeSearchMM / 10); break;
+    case 4:  sprintf(buf + len, "%02d:%02d", timeSearchHH, timeSearchMM); break;
+    default: sprintf(buf + len, "--:--"); break;
+    }
+
+  Interface->Write(12, 2, buf);
+}
+
+void cReplayControl::TimeSearchProcess(eKeys Key)
+{
+  int Seconds = timeSearchHH * 3600 + timeSearchMM * 60;
+  switch (Key) {
+    case k0 ... k9:
+         {
+           int n = Key - k0;
+           int s = (lastTotal / FRAMESPERSEC);
+           int m = s / 60 % 60;
+           int h = s / 3600;
+           switch (timeSearchPos) {
+             case 0: if (n * 10 <= h) {
+                        timeSearchHH = n * 10;
+                        timeSearchPos++;
+                        }
+                     break;
+             case 1: if (timeSearchHH + n <= h) {
+                        timeSearchHH += n;
+                        timeSearchPos++;
+                        }
+                     break;
+             case 2: if (n <= 5 && timeSearchHH * 60 + n * 10 <= h * 60 + m) {
+                        timeSearchMM += n * 10;
+                        timeSearchPos++;
+                        }
+                     break;
+             case 3: if (timeSearchHH * 60 + timeSearchMM + n <= h * 60 + m) {
+                        timeSearchMM += n;
+                        timeSearchPos++;
+                        }
+                     break;
+             }
+           TimeSearchDisplay();
+         }
+         break;
+    case kLeft:
+    case kRight:
+         dvbApi->SkipSeconds(Seconds * (Key == kRight ? 1 : -1));
+         timeSearchActive = false;
+         break;
+    case kUp:
+    case kDown:
+         dvbApi->Goto(Seconds * FRAMESPERSEC, Key == kDown);
+         timeSearchActive = false;
+         break;
+    default:
+         timeSearchActive = false;
+         break;
+    }
+
+  if (!timeSearchActive) {
+     if (timeSearchHide)
+        Hide();
+     else
+        Interface->Fill(12, 2, Width() - 22, 1, clrBackground);
+     }
+}
+
+void cReplayControl::TimeSearch(void)
+{
+  timeSearchHH = timeSearchMM = timeSearchPos = 0;
+  timeSearchHide = false;
+  if (!visible) {
+     Show();
+     if (visible)
+        timeSearchHide = true;
+     else
+        return;
+     }
+  TimeSearchDisplay();
+  timeSearchActive = true;
+}
+
 void cReplayControl::MarkToggle(void)
 {
   int Current, Total;
   if (dvbApi->GetIndex(Current, Total, true)) {
      cMark *m = marks.Get(Current);
+     lastCurrent = -1; // triggers redisplay
      if (m)
         marks.Del(m);
      else {
@@ -2454,6 +2551,10 @@ eOSState cReplayControl::ProcessKey(eKeys Key)
      }
   bool DisplayedFrames = displayFrames;
   displayFrames = false;
+  if (timeSearchActive && Key != kNone) {
+     TimeSearchProcess(Key);
+     return osContinue;
+     }
   switch (Key) {
     // Positioning:
     case kUp:      dvbApi->Play(); break;
@@ -2462,6 +2563,7 @@ eOSState cReplayControl::ProcessKey(eKeys Key)
     case kLeft:    dvbApi->Backward(); break;
     case kRight|k_Release:
     case kRight:   dvbApi->Forward(); break;
+    case kRed:     TimeSearch(); break;
     case kGreen|k_Repeat:
     case kGreen:   dvbApi->SkipSeconds(-60); break;
     case kYellow|k_Repeat:
@@ -2496,7 +2598,7 @@ eOSState cReplayControl::ProcessKey(eKeys Key)
       }
     }
   if (DisplayedFrames && !displayFrames)
-     Interface->Fill(0, 2, Width() / 2, 1, clrBackground);
+     Interface->Fill(0, 2, 11, 1, clrBackground);
   return osContinue;
 }
 

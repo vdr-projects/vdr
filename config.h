@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.57 2001/08/06 16:44:38 kls Exp $
+ * $Id: config.h 1.59 2001/08/11 15:28:21 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -19,7 +19,7 @@
 #include "eit.h"
 #include "tools.h"
 
-#define VDRVERSION "0.90"
+#define VDRVERSION "0.91"
 
 #define MaxBuffer 10000
 
@@ -122,7 +122,7 @@ private:
   static const char *ToText(cTimer *Timer);
 public:
   enum { MaxFileName = 256 };
-  bool recording;
+  bool recording, pending;
   int active;
   int channel;
   int day;
@@ -145,6 +145,7 @@ public:
   time_t StartTime(void);
   time_t StopTime(void);
   void SetRecording(bool Recording);
+  void SetPending(bool Pending);
   static cTimer *GetMatch(void);
   static int TimeToInt(int t);
   static time_t Day(time_t t);

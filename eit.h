@@ -13,7 +13,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.h 1.7 2001/05/25 12:56:53 kls Exp $
+ * $Id: eit.h 1.8 2001/08/11 09:06:17 kls Exp $
  ***************************************************************************/
 
 #ifndef __EIT_H
@@ -126,6 +126,7 @@ private:
   static int numSIProcessors;
   static cSchedules *schedules;
   static cMutex schedulesMutex;
+  static const char *epgDataFileName;
   bool masterSIProcessor;
   bool useTStime;
   SIP_FILTER *filters;
@@ -137,6 +138,8 @@ private:
 public:
   cSIProcessor(const char *FileName);
   ~cSIProcessor();
+  static void SetEpgDataFileName(const char *FileName);
+  static const char *GetEpgDataFileName(void);
   void SetStatus(bool On);
   bool SetUseTSTime(bool use);
   bool SetCurrentServiceID(unsigned short servid);

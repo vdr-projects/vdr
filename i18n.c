@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.27 2001/08/02 14:40:16 kls Exp $
+ * $Id: i18n.c 1.31 2001/08/11 13:22:24 kls Exp $
  *
  * Slovenian translations provided by Miha Setina <mihasetina@softhome.net>
  * Italian   translations provided by Alberto Carraro <bertocar@tin.it>
@@ -164,7 +164,7 @@ const tPhrase Phrases[] = {
     "Eventi",
     "Uitzending",
     "Evento",
-    "Evènement",
+    "Evénement",
     "Hendelse"
   },
   { "Summary",
@@ -330,13 +330,13 @@ const tPhrase Phrases[] = {
     "Langue",
     "Språk",
   },
-  { "Eject DVD",
-    "DVD auswerfen",
+  { "Eject",
+    "Auswerfen",
     "", // TODO
     "", // TODO
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Ejection",
     "", // TODO
   },
   // Confirmations:
@@ -413,14 +413,14 @@ const tPhrase Phrases[] = {
     "Polarisation",
     "Polaritet",
   },
-  { "Diseqc",
-    "Diseqc",
-    "Diseqc",
-    "Diseqc",
-    "Diseqc",
-    "Diseqc",
-    "Diseqc",
-    "Diseqc",
+  { "DiSEqC",
+    "DiSEqC",
+    "DiSEqC",
+    "DiSEqC",
+    "DiSEqC",
+    "DiSEqC",
+    "DiSEqC",
+    "DiSEqC",
   },
   { "Srate",
     "Srate",
@@ -428,7 +428,7 @@ const tPhrase Phrases[] = {
     "Srate",
     "Srate",
     "Srate",
-    "Srate",
+    "Fréq. Symbole",
     "Symbolrate",
   },
   { "Vpid",
@@ -437,7 +437,7 @@ const tPhrase Phrases[] = {
     "Vpid",
     "Vpid",
     "Vpid",
-    "Vpid",
+    "PID Vidéo",
     "Video pid",
   },
   { "Apid1",
@@ -446,7 +446,7 @@ const tPhrase Phrases[] = {
     "Apid1",
     "Apid1",
     "Apid1",
-    "Apid1",
+    "PID Audio (1)",
     "Audio pid1",
   },
   { "Apid2",
@@ -455,7 +455,7 @@ const tPhrase Phrases[] = {
     "Apid2",
     "Apid2",
     "Apid2",
-    "Apid2",
+    "PID Audio (2)",
     "Audio pid2",
   },
   { "Dpid1",
@@ -464,7 +464,7 @@ const tPhrase Phrases[] = {
     "Dpid1",
     "Dpid1",
     "Dpid1",
-    "Dpid1",
+    "PID AC3 (1)",
     "AC3 pid1",
   },
   { "Dpid2",
@@ -473,7 +473,7 @@ const tPhrase Phrases[] = {
     "Dpid2",
     "Dpid2",
     "Dpid2",
-    "Dpid2",
+    "PID AC3 (2)",
     "AC3 pid2",
   },
   { "Tpid",
@@ -482,7 +482,7 @@ const tPhrase Phrases[] = {
     "Tpid",
     "Tpid",
     "Tpid",
-    "Tpid",
+    "PID Télétexte",
     "Teletext pid",
   },
   { "CA",
@@ -491,7 +491,7 @@ const tPhrase Phrases[] = {
     "CA",
     "CA",
     "CA",
-    "CA",
+    "Cryptage",
     "Kortleser",
   },
   { "Pnr",
@@ -500,7 +500,7 @@ const tPhrase Phrases[] = {
     "Pnr",
     "Pnr",
     "Pnr",
-    "Pnr",
+    "Num. Progr.",
     "Program Id",
   },
   // Timer parameters:
@@ -710,7 +710,7 @@ const tPhrase Phrases[] = {
     "LnbSLOF",
     "LnbSLOF",
     "LnbSLOF",
-    "LnbSLOF",
+    "Limite de bandes LNB",
     "LO-grensefrekvens",
   },
   { "LnbFrequLo",
@@ -827,6 +827,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "", // TODO
+    "Position infos chaînes",
     "", // TODO
   },
   { "OSDwidth",
@@ -835,6 +836,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "", // TODO
+    "Largeur affichage",
     "", // TODO
   },
   { "OSDheight",
@@ -843,6 +845,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "", // TODO
+    "Hauteur affichage",
     "", // TODO
   },
   // The days of the week:
@@ -1098,10 +1101,20 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "", // TODO
+    "haut",
     "", // TODO
   },
   { "bottom",
     "unten",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "bas",
+    "", // TODO
+  },
+  { "Jump: ", // note the trailing blank
+    "Springen: ",
     "", // TODO
     "", // TODO
     "", // TODO
@@ -1141,7 +1154,7 @@ const tPhrase Phrases[] = {
     "Cambio su card DVB primaria...",
     "Eerste DVB-kaart wordt omgeschakeld...",
     "A mudar placa DVB primaria...",
-    "Changement de carte DVB...",
+    "Changement de carte DVB principale...",
     "Bytter hoved DVB-enhet... ",
   },
   { "Up/Dn for new location - OK to move",

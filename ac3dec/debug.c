@@ -31,18 +31,8 @@ static int debug_level = -1;
 // We could potentially have multiple levels of debug info
 int debug_is_on(void)
 {
-	char *env_var;
-	
-	if(debug_level < 0)
-	{
-	  env_var = getenv("AC3_DEBUG");
-
-		if (env_var)
-		{
-			debug_level = 1;
-		}
-		else
-			debug_level = 0;
+	if(debug_level < 0) {
+		debug_level = getenv ("AC3_DEBUG") ? 1 : 0;
 	}
 	
 	return debug_level;
@@ -52,7 +42,7 @@ int debug_is_on(void)
 #ifndef __GNUC__
 void dprintf(char fmt[],...)
 {
-	int foo = 0;
+	return;
 }
 #endif
 

@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.20 2001/07/22 13:58:48 kls Exp $
+ * $Id: svdrp.c 1.21 2001/08/12 15:10:16 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -264,7 +264,7 @@ bool cSVDRP::Send(const char *s, int length)
 {
   if (length < 0)
      length = strlen(s);
-  int wbytes = write(file, s, length);
+  int wbytes = safe_write(file, s, length);
   if (wbytes == length)
      return true;
   if (wbytes < 0) {
@@ -920,7 +920,7 @@ void cSVDRP::Process(void)
         lastActivity = time(NULL);
      if (file.Ready(false)) {
         unsigned char c;
-        int r = read(file, &c, 1);
+        int r = safe_read(file, &c, 1);
         if (r > 0) {
            if (c == '\n' || c == 0x00) {
               // strip trailing whitespace:

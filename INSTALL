@@ -23,6 +23,9 @@ to activate DVD support. VDR then also needs the package 'libdvdread'
 in order to replay DVDs. This package is expected to be located in the
 directory ../DVD (seen from the VDR directory).  Adjust the definition
 of DVDDIR in the Makefile if necessary.
+You can find 'libdvdread' at
+
+  http://www.dtek.chalmers.se/groups/dvd/downloads.html
 
 VDR requires the card driver version 0.9.0 or higher
 to work properly. You need to load the dvb.o module *without* option
@@ -189,6 +192,14 @@ listed in the default 'channels.conf' file have been verified by the author.
 As a starting point you can copy the 'channels.conf' file that comes with the
 VDR archive into your video directory (or into your config directory,
 respectively, in case you have redirected it with the -c option).
+
+Setting up DiSEqC:
+------------------
+
+If you are using a DVB-S card with a satellite equipment that needs to be
+accessed using DiSEqC, you have to go to the "Setup" menu and set the "DiSEqC"
+parameter to "on". Also check the "DiSEqC" parameters for the various channels
+and set them to the necessary values.
 
 Running VDR with DVB-C (cable):
 -------------------------------

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.35 2001/08/05 12:38:06 kls Exp $
+ * $Id: tools.c 1.39 2001/08/12 15:12:54 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -15,6 +15,7 @@
 #if defined(DEBUG_OSD)
 #include <ncurses.h>
 #endif
+#include <stdlib.h>
 #include <sys/time.h>
 #include <unistd.h>
 
@@ -22,9 +23,33 @@
 
 int SysLogLevel = 3;
 
+ssize_t safe_read(int filedes, void *buffer, size_t size)
+{
+  for (;;) {
+      ssize_t p = read(filedes, buffer, size);
+      if (p < 0 && errno == EINTR) {
+         dsyslog(LOG_INFO, "EINTR while reading from file handle %d - retrying", filedes);
+         continue;
+         }
+      return p;
+      }
+}
+
+ssize_t safe_write(int filedes, const void *buffer, size_t size)
+{
+  for (;;) {
+      ssize_t p = write(filedes, buffer, size);
+      if (p < 0 && errno == EINTR) {
+         dsyslog(LOG_INFO, "EINTR while writing to file handle %d - retrying", filedes);
+         continue;
+         }
+      return p;
+      }
+}
+
 void writechar(int filedes, char c)
 {
-  write(filedes, &c, sizeof(c));
+  safe_write(filedes, &c, sizeof(c));
 }
 
 char *readline(FILE *f)
@@ -310,6 +335,38 @@ char *ReadLink(const char *FileName)
   else
      esyslog(LOG_ERR, "ERROR: symlink's target name too long: %s", FileName);
   return TargetName ? strdup(TargetName) : NULL;
+}
+
+bool SpinUpDisk(const char *FileName)
+{
+  static char *buf = NULL;
+  for (int n = 0; n < 10; n++) {
+      delete buf;
+      if (DirectoryOk(FileName))
+         asprintf(&buf, "%s/vdr-%06d", *FileName ? FileName : ".", n);
+      else
+         asprintf(&buf, "%s.vdr-%06d", FileName, n);
+      if (access(buf, F_OK) != 0) { // the file does not exist
+         timeval tp1, tp2;
+         gettimeofday(&tp1, NULL);
+         int f = open(buf, O_WRONLY | O_CREAT, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+         // O_SYNC doesn't work on all file systems
+         if (f >= 0) {
+            close(f);
+            system("sync");
+            remove(buf);
+            gettimeofday(&tp2, NULL);
+            double seconds = (((long long)tp2.tv_sec * 1000000 + tp2.tv_usec) - ((long long)tp1.tv_sec * 1000000 + tp1.tv_usec)) / 1000000.0;
+            if (seconds > 0.5)
+               dsyslog(LOG_INFO, "SpinUpDisk took %.2f seconds\n", seconds);
+            return true;
+            }
+         else
+            LOG_ERROR_STR(buf);
+         }
+      }
+  esyslog(LOG_ERR, "ERROR: SpinUpDisk failed");
+  return false;
 }
 
 // --- cFile -----------------------------------------------------------------

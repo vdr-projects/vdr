@@ -7,7 +7,7 @@
  * DVD support initially written by Andreas Schultz <aschultz@warp10.net>
  * based on dvdplayer-0.5 by Matjaz Thaler <matjaz.thaler@guest.arnes.si>
  *
- * $Id: dvbapi.c 1.101 2001/08/06 16:24:13 kls Exp $
+ * $Id: dvbapi.c 1.106 2001/08/12 15:09:42 kls Exp $
  */
 
 //#define DVDDEBUG        1
@@ -53,12 +53,9 @@ extern "C" {
 // The size of the array used to buffer video data:
 // (must be larger than MINVIDEODATA - see remux.h)
 #define VIDEOBUFSIZE    (1024*1024)
-#define AC3_BUFFER_SIZE (6*1024*16)
 
 // The maximum size of a single frame:
 #define MAXFRAMESIZE (192*1024)
-
-#define FRAMESPERSEC 25
 
 // The maximum file size is limited by the range that can be covered
 // with 'int'. 4GB might be possible (if the range is considered
@@ -84,6 +81,8 @@ extern "C" {
 #define MAXBROKENTIMEOUT 30 // seconds
 
 #define CHECK(s) { if ((s) < 0) LOG_ERROR; } // used for 'ioctl()' calls
+
+#define FATALERRNO (errno != EAGAIN && errno != EINTR)
 
 typedef unsigned char uchar;
 
@@ -161,7 +160,7 @@ cIndexFile::cIndexFile(const char *FileName, bool Record)
                  if (index) {
                     f = open(fileName, O_RDONLY);
                     if (f >= 0) {
-                       if ((int)read(f, index, buf.st_size) != buf.st_size) {
+                       if ((int)safe_read(f, index, buf.st_size) != buf.st_size) {
                           esyslog(LOG_ERR, "ERROR: can't read from file '%s'", fileName);
                           delete index;
                           index = NULL;
@@ -225,7 +224,7 @@ bool cIndexFile::CatchUp(void)
               int offset = (last + 1) * sizeof(tIndex);
               int delta = (newLast - last) * sizeof(tIndex);
               if (lseek(f, offset, SEEK_SET) == offset) {
-                 if (read(f, &index[last + 1], delta) != delta) {
+                 if (safe_read(f, &index[last + 1], delta) != delta) {
                     esyslog(LOG_ERR, "ERROR: can't read from index");
                     delete index;
                     index = NULL;
@@ -252,7 +251,7 @@ void cIndexFile::Write(uchar PictureType, uchar FileNumber, int FileOffset)
 {
   if (f >= 0) {
      tIndex i = { FileOffset, PictureType, FileNumber, 0 };
-     if (write(f, &i, sizeof(i)) != sizeof(i)) {
+     if (safe_write(f, &i, sizeof(i)) != sizeof(i)) {
         esyslog(LOG_ERR, "ERROR: can't write to index file");
         close(f);
         f = -1;
@@ -545,7 +544,7 @@ void cRecordBuffer::Input(void)
          t = time(NULL);
          }
       else if (r < 0) {
-         if (errno != EAGAIN) {
+         if (FATALERRNO) {
             LOG_ERROR;
             if (errno != EBUFFEROVERFLOW)
                break;
@@ -572,8 +571,9 @@ void cRecordBuffer::Output(void)
   int r = 0;
   for (;;) {
       int g = Get(b + r, sizeof(b) - r);
-      if (g > 0) {
+      if (g > 0)
          r += g;
+      if (r > 0) {
          int Count = r, Result;
          const uchar *p = remux.Process(b, Count, Result, &pictureType);
          if (p) {
@@ -583,7 +583,7 @@ void cRecordBuffer::Output(void)
                if (index && pictureType != NO_PICTURE)
                   index->Write(pictureType, fileName.Number(), fileSize);
                while (Result > 0) {
-                     int w = write(recordFile, p, Result);
+                     int w = safe_write(recordFile, p, Result);
                      if (w < 0) {
                         LOG_ERROR_STR(fileName.Name());
                         recording = false;
@@ -622,7 +622,7 @@ int ReadFrame(int f, uchar *b, int Length, int Max)
      esyslog(LOG_ERR, "ERROR: frame larger than buffer (%d > %d)", Length, Max);
      Length = Max;
      }
-  int r = read(f, b, Length);
+  int r = safe_read(f, b, Length);
   if (r < 0)
      LOG_ERROR;
   return r;
@@ -708,7 +708,7 @@ void cPlayBuffer::Output(void)
                         p += w;
                         r -= w;
                         }
-                     else if (w < 0 && errno != EAGAIN) {
+                     else if (w < 0 && FATALERRNO) {
                         LOG_ERROR;
                         Stop();
                         return;
@@ -925,7 +925,7 @@ void cReplayBuffer::Input(void)
               }
            else if (r == 0)
               eof = true;
-           else if (r < 0 && errno != EAGAIN) {
+           else if (r < 0 && FATALERRNO) {
               LOG_ERROR;
               break;
               }
@@ -1172,7 +1172,6 @@ private:
   int logAudioTrack;
   int maxAudioTrack;
 
-  ac3_config_t ac3_config;
   enum { AC3_STOP, AC3_START, AC3_PLAY } ac3stat;
   uchar *ac3data;
   int ac3inp;
@@ -1231,10 +1230,7 @@ cDVDplayBuffer::cDVDplayBuffer(cDvbApi *DvbApi, int VideoDev, int AudioDev, cDVD
   skipCnt = 0;
   logAudioTrack = 0;
   canToggleAudioTrack = true;//XXX determine from cDVD!
-  ac3_config.num_output_ch = 2;
-  //    ac3_config.flags = /* mm_accel() | */ MM_ACCEL_MLIB;
-  ac3_config.flags = 0;
-  ac3_init(&ac3_config);
+  ac3dec_init();
   data = new uchar[1024 * DVD_VIDEO_LB_LEN];
   ac3data = new uchar[AC3_BUFFER_SIZE];
   ac3inp = ac3outp = 0;
@@ -1823,9 +1819,9 @@ void cDVDplayBuffer::handleAC3(unsigned char *sector, int length)
      }
   else {
      if (ac3stat == AC3_PLAY)
-        ac3_decode_data(sector, sector+length, 0, &ac3inp, &ac3outp, (char *)ac3data);
+        ac3dec_decode_data(sector, sector + length, 0, &ac3inp, &ac3outp, (char *)ac3data);
      else if (ac3stat == AC3_START) {
-        ac3_decode_data(sector, sector+length, 1, &ac3inp, &ac3outp, (char *)ac3data);
+        ac3dec_decode_data(sector, sector + length, 1, &ac3inp, &ac3outp, (char *)ac3data);
         ac3stat = AC3_PLAY;
         }
      }
@@ -2078,7 +2074,7 @@ void cTransferBuffer::Input(void)
               }
            }
         else if (r < 0) {
-           if (errno != EAGAIN) {
+           if (FATALERRNO) {
               LOG_ERROR;
               if (errno != EBUFFEROVERFLOW)
                  break;
@@ -2112,7 +2108,7 @@ void cTransferBuffer::Output(void)
                     p += w;
                     r -= w;
                     }
-                 else if (w < 0 && errno != EAGAIN) {
+                 else if (w < 0 && FATALERRNO) {
                     LOG_ERROR;
                     Stop();
                     return;
@@ -2221,7 +2217,7 @@ void cCuttingBuffer::Action(void)
                  }
               LastIFrame = 0;
               }
-           write(toFile, buffer, Length);
+           safe_write(toFile, buffer, Length);
            toIndex->Write(PictureType, toFileName->Number(), FileSize);
            FileSize += Length;
            if (!LastIFrame)
@@ -2316,6 +2312,7 @@ cDvbApi::cDvbApi(int n)
   transferringFromDvbApi = NULL;
   ca = 0;
   priority = -1;
+  cardIndex = n;
 
   // Devices that are only present on DVB-C or DVB-S cards:
 
@@ -2423,7 +2420,7 @@ cDvbApi *cDvbApi::GetDvbApi(int Ca, int Priority)
   int index = Ca - 1;
   for (int i = 0; i < MAXDVBAPI; i++) {
       if (dvbApi[i]) {
-         if (i == index) { // means we need exactly _this_ device
+         if (dvbApi[i]->CardIndex() == index) { // means we need exactly _this_ device
             d = dvbApi[i];
             break;
             }
@@ -2448,15 +2445,6 @@ cDvbApi *cDvbApi::GetDvbApi(int Ca, int Priority)
           || d->Priority() < Priority // ...or has a lower priority...
           || (!d->Ca() && Ca)))       // ...or doesn't need this card
           ? d : NULL;
-}
-
-int cDvbApi::Index(void)
-{
-  for (int i = 0; i < MAXDVBAPI; i++) {
-      if (dvbApi[i] == this)
-         return i;
-      }
-  return -1;
 }
 
 bool cDvbApi::Probe(const char *FileName)
@@ -2956,7 +2944,7 @@ int cDvbApi::SetModeRecord(void)
   SetPids(true);
   if (fd_dvr >= 0)
      close(fd_dvr);
-  fd_dvr = OstOpen(DEV_OST_DVR, Index(), O_RDONLY | O_NONBLOCK);
+  fd_dvr = OstOpen(DEV_OST_DVR, CardIndex(), O_RDONLY | O_NONBLOCK);
   if (fd_dvr < 0)
      LOG_ERROR;
   return fd_dvr;
@@ -3066,7 +3054,7 @@ bool cDvbApi::SetChannel(int ChannelNumber, int FrequencyMHz, char Polarization,
   // If this card can't receive this channel, we must not actually switch
   // the channel here, because that would irritate the driver when we
   // start replaying in Transfer Mode immediately after switching the channel:
-  bool NeedsTransferMode = (this == PrimaryDvbApi && Ca && Ca != Index() + 1);
+  bool NeedsTransferMode = (this == PrimaryDvbApi && Ca && Ca != CardIndex() + 1);
 
   if (!NeedsTransferMode) {
 
@@ -3281,6 +3269,10 @@ bool cDvbApi::StartRecord(const char *FileName, int Ca, int Priority)
 
   if (!MakeDirs(FileName, true))
      return false;
+
+  // Make sure the disk is up and running:
+
+  SpinUpDisk(FileName);
 
   // Create recording buffer:
 
@@ -3505,7 +3497,7 @@ void cEITScanner::Process(void)
   if (Setup.EPGScanTimeout && Channels.MaxNumber() > 1) {
      time_t now = time(NULL);
      if (now - lastScan > ScanTimeout && now - lastActivity > ActivityTimeout) {
-        for (int i = 0; i < cDvbApi::NumDvbApis; i++) {
+        for (int i = 0; i < MAXDVBAPI; i++) {
             cDvbApi *DvbApi = cDvbApi::GetDvbApi(i + 1, MAXPRIORITY);
             if (DvbApi) {
                if (DvbApi != cDvbApi::PrimaryDvbApi || (cDvbApi::NumDvbApis == 1 && Setup.EPGScanTimeout && now - lastActivity > Setup.EPGScanTimeout * 3600)) {

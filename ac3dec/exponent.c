@@ -28,41 +28,43 @@
 #include "ac3_internal.h"
 
 
-#include "decode.h"
 #include "exponent.h"
 
 
-static void exp_unpack_ch(uint_16 type,uint_16 expstr,uint_16 ngrps,uint_16 initial_exp, 
-		uint_16 exps[], uint_16 *dest);
+static inline void exp_unpack_ch(uint16_t type,uint16_t expstr,uint16_t ngrps,uint16_t initial_exp, uint16_t exps[], uint16_t *dest);
 
-void
-exponent_unpack( bsi_t *bsi, audblk_t *audblk)
+
+/**
+ *
+ **/
+
+void exponent_unpack( bsi_t *bsi, audblk_t *audblk)
 {
-	uint_16 i;
+	uint16_t i;
 
 	for(i=0; i< bsi->nfchans; i++)
-		exp_unpack_ch(UNPACK_FBW, audblk->chexpstr[i], audblk->nchgrps[i], audblk->exps[i][0], 
-				&audblk->exps[i][1], audblk->fbw_exp[i]);
+		exp_unpack_ch(UNPACK_FBW, audblk->chexpstr[i], audblk->nchgrps[i], audblk->exps[i][0], &audblk->exps[i][1], audblk->fbw_exp[i]);
 
 	if(audblk->cplinu)
-		exp_unpack_ch(UNPACK_CPL, audblk->cplexpstr, audblk->ncplgrps, audblk->cplabsexp << 1,	
-				audblk->cplexps, &audblk->cpl_exp[audblk->cplstrtmant]);
+		exp_unpack_ch(UNPACK_CPL, audblk->cplexpstr, audblk->ncplgrps, audblk->cplabsexp << 1, audblk->cplexps, &audblk->cpl_exp[audblk->cplstrtmant]);
 
 	if(bsi->lfeon)
-		exp_unpack_ch(UNPACK_LFE, audblk->lfeexpstr, 2, audblk->lfeexps[0], 
-				&audblk->lfeexps[1], audblk->lfe_exp);
+		exp_unpack_ch(UNPACK_LFE, audblk->lfeexpstr, 2, audblk->lfeexps[0], &audblk->lfeexps[1], audblk->lfe_exp);
 }
 
 
-static void
-exp_unpack_ch(uint_16 type,uint_16 expstr,uint_16 ngrps,uint_16 initial_exp, 
-		uint_16 exps[], uint_16 *dest)
-{
-	uint_16 i,j;
-	sint_16 exp_acc;
-	sint_16 exp_1,exp_2,exp_3;
+/**
+ *
+ **/
 
-	if(expstr == EXP_REUSE)
+static inline void exp_unpack_ch(uint16_t type,uint16_t expstr,uint16_t ngrps,uint16_t initial_exp, 
+		uint16_t exps[], uint16_t *dest)
+{
+	uint16_t i,j;
+	int16_t exp_acc;
+	int16_t exp_1,exp_2,exp_3;
+
+	if (expstr == EXP_REUSE)
 		return;
 
 	/* Handle the initial absolute exponent */
@@ -75,8 +77,7 @@ exp_unpack_ch(uint_16 type,uint_16 expstr,uint_16 ngrps,uint_16 initial_exp,
 		dest[j++] = exp_acc;
 
 	/* Loop through the groups and fill the dest array appropriately */
-	for(i=0; i< ngrps; i++)
-	{
+	for(i=0; i< ngrps; i++) {
 		if(exps[i] > 124)
 			goto error;
 
@@ -86,8 +87,7 @@ exp_unpack_ch(uint_16 type,uint_16 expstr,uint_16 ngrps,uint_16 initial_exp,
 
 		exp_acc += (exp_1 - 2);
 
-		switch(expstr)
-		{
+		switch(expstr) {
 			case EXP_D45:
 				dest[j++] = exp_acc;
 				dest[j++] = exp_acc;
@@ -99,8 +99,7 @@ exp_unpack_ch(uint_16 type,uint_16 expstr,uint_16 ngrps,uint_16 initial_exp,
 
 		exp_acc += (exp_2 - 2);
 
-		switch(expstr)
-		{
+		switch(expstr) {
 			case EXP_D45:
 				dest[j++] = exp_acc;
 				dest[j++] = exp_acc;
@@ -112,8 +111,7 @@ exp_unpack_ch(uint_16 type,uint_16 expstr,uint_16 ngrps,uint_16 initial_exp,
 
 		exp_acc += (exp_3 - 2);
 
-		switch(expstr)
-		{
+		switch(expstr) {
 			case EXP_D45:
 				dest[j++] = exp_acc;
 				dest[j++] = exp_acc;
@@ -125,11 +123,10 @@ exp_unpack_ch(uint_16 type,uint_16 expstr,uint_16 ngrps,uint_16 initial_exp,
 	}	
 
 	return;
-
-			goto error;
 error:
-	if(!error_flag)
-		fprintf(stderr,"** Invalid exponent - skipping frame **\n");
-	error_flag = 1;
+#ifdef DEBUG
+	fprintf (stderr,"** Invalid exponent - skipping frame **\n");
+#endif
+	HANDLE_ERROR ();
 }
 

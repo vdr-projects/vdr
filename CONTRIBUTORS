@@ -99,6 +99,7 @@ Stefan Huelswitt <huels@iname.com>
  for fixing the repeat function with LIRC
  for making the position of the channel display configurable
  for making the width and height of the OSD configurable
+ for implementing the "Jump" function in replay mode
 
 Ulrich Röder <dynamite@efr-net.de>
  for pointing out that there are channels that have a symbol rate higher than
@@ -116,3 +117,15 @@ Aaron Holtzman
 
 Wolfgang Henselmann-Weiss <Wolfgang_Henselmann@betaresearch.de>
  for fixing calculating the timeout value in cFile::FileReady()
+
+Uwe Scheffler <UweScheffler@t-online.de>
+ for his help in keeping 'channels.conf.cable' up to date
+
+Matjaz Thaler <matjaz.thaler@guest.arnes.si>
+ for improving AC3 decoding when replaying DVDs
+
+Artur Skawina <skawina@geocities.com>
+ for improving the font file generation in the Makefile
+
+Werner Fink <werner@suse.de>
+ for making I/O more robust by handling EINTR

@@ -25,4 +25,10 @@
  *
  */
 
-void downmix(bsi_t* bsi, stream_samples_t stream_samples,sint_16 *s16_samples);
+typedef struct dm_par_s {
+	float unit;  
+	float clev;  
+	float slev;          
+} dm_par_t;                                                                     
+
+void downmix_init();

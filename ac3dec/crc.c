@@ -30,7 +30,7 @@
 
 #include "crc.h"
 
-static const uint_16 crc_lut[256] = 
+static const uint16_t crc_lut[256] = 
 {
 	0x0000,0x8005,0x800f,0x000a,0x801b,0x001e,0x0014,0x8011,
 	0x8033,0x0036,0x003c,0x8039,0x0028,0x802d,0x8027,0x0022,
@@ -66,31 +66,31 @@ static const uint_16 crc_lut[256] =
 	0x8213,0x0216,0x021c,0x8219,0x0208,0x820d,0x8207,0x0202
 };
 
-static uint_16 state;
+static uint16_t state;
 
-void
-crc_init(void)
+
+void crc_init(void)
 {
 	state = 0;
 }
 
 
-inline void crc_process_byte(uint_8 data)
+inline void crc_process_byte (uint8_t data)
 {
 	state = crc_lut[data ^ (state>>8)] ^ (state<<8);
 }
 
-void
-crc_process_frame(uint_8 *data,uint_32 num_bytes)
-{
-	uint_32 i;
 
-	for(i=0;i<num_bytes;i++)
-		crc_process_byte(data[i]);
+void crc_process_frame (uint8_t *data,uint32_t num_bytes)
+{
+	uint32_t i;
+
+	for(i=0; i<num_bytes; i++)
+		crc_process_byte (data[i]);
 }
 
-int
-crc_validate(void)
+
+int crc_validate(void)
 {
-	return(state  == 0);
+	return (state == 0);
 }

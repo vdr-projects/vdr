@@ -4,7 +4,9 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 1.24 2001/08/06 16:13:42 kls Exp $
+# $Id: Makefile 1.25 2001/08/10 16:46:45 kls Exp $
+
+.DELETE_ON_ERROR:
 
 DVBDIR   = ../DVB
 DVDDIR   = ../DVD
@@ -82,16 +84,14 @@ vdr: $(OBJS) $(AC3LIB)
 # The font files:
 
 fontfix.c:
-	genfontfile "cFont::tPixelData FontFix" $(FIXFONT) > $@
+	./genfontfile "cFont::tPixelData FontFix" "$(FIXFONT)" > $@
 fontosd.c:
-	genfontfile "cFont::tPixelData FontOsd" $(OSDFONT) > $@
+	./genfontfile "cFont::tPixelData FontOsd" "$(OSDFONT)" > $@
 
 # The font file generator:
 
-genfontfile.o: genfontfile.c
-	gcc -O2 -c $<
-genfontfile: genfontfile.o
-	gcc -o $@ -L/usr/X11R6/lib $< -lX11
+genfontfile: genfontfile.c
+	gcc -o $@ -O2 -L/usr/X11R6/lib $< -lX11
 
 # The ac3dec library:
 
@@ -103,5 +103,7 @@ $(AC3LIB):
 clean:
 	make -C $(AC3DIR) clean
 	-rm -f $(OBJS) vdr genfontfile genfontfile.o core *~
-CLEAN: clean
+fontclean:
 	-rm -f fontfix.c fontosd.c
+CLEAN: clean fontclean
+

@@ -31,7 +31,7 @@
 #include "dither.h"
 
 
-const uint_16 dither_lut[256] = 
+const uint16_t dither_lut[256] = 
 {
  0x0000, 0xa011, 0xe033, 0x4022, 0x6077, 0xc066, 0x8044, 0x2055,
  0xc0ee, 0x60ff, 0x20dd, 0x80cc, 0xa099, 0x0088, 0x40aa, 0xe0bb,
@@ -67,7 +67,7 @@ const uint_16 dither_lut[256] =
  0x8bf4, 0x2be5, 0x6bc7, 0xcbd6, 0xeb83, 0x4b92, 0x0bb0, 0xaba1
 };
 
-uint_16 lfsr_state = 1;
+uint16_t lfsr_state = 1;
 
 //
 // see dither_gen (inline-able) in dither.h
@@ -89,18 +89,17 @@ uint_16 lfsr_state = 1;
  *
  */
 
-uint_16 dither_gen(void)
+uint16_t dither_gen(void)
 {
 	int i;
-	uint_32 state;
+	uint32_t state;
 
 	//explicitly bring the state into a local var as gcc > 3.0?
 	//doesn't know how to optimize out the stores
 	state = lfsr_state;
 
 	//Generate eight pseudo random bits
-	for(i=0;i<8;i++)
-	{
+	for(i=0;i<8;i++) {
 		state <<= 1;	
 
 		if(state & 0x10000)
@@ -109,7 +108,7 @@ uint_16 dither_gen(void)
 
 	lfsr_state = state;
 
-	return (((((sint_32)state<<8)>>8) * (sint_32) (0.707106 * 256.0))>>16);
+	return (((((int32_t)state<<8)>>8) * (int32_t) (0.707106 * 256.0))>>16);
 }
 
 #endif

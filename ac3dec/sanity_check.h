@@ -23,5 +23,5 @@
 
 #define AC3_MAGIC_NUMBER 0xdeadbeef
 
-void sanity_check_init(syncinfo_t *syncinfo, bsi_t *bsi, audblk_t *audblk);
-void sanity_check(syncinfo_t *syncinfo, bsi_t *bsi, audblk_t *audblk);
+void sanity_check_init (syncinfo_t *syncinfo, bsi_t *bsi, audblk_t *audblk);
+int sanity_check (syncinfo_t *syncinfo, bsi_t *bsi, audblk_t *audblk);

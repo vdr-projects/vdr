@@ -83,7 +83,7 @@ Video Disk Recorder Revision History
   with file names that contain blanks, all blanks in recording file names are
   converted to underscores.
 - The polarization can now be given in uppercase or lowercase characters in
-  channels.conf.
+  'channels.conf'.
 - Fixed buffer initialization to work with DVB driver version 0.6.
 - Implemented the "Simple Video Disk Recorder Protocol" (SVDRP) to control
   the VDR over a network connection.
@@ -147,7 +147,7 @@ Video Disk Recorder Revision History
   the OSD to no longer be displayed (thanks to Niels de Carpentier).
 - Added the '-m486' option to the compiler call.
 - If a channel name contains a colon (':') it is now replaced with a '|' in
-  channels.conf.
+  'channels.conf'.
 - Not everybody appears to like the "page scrolling" mechanism introduced by
   Heino Goldenstein in version 0.61, so this is now configurable via the "Setup"
   menu.
@@ -621,3 +621,31 @@ Video Disk Recorder Revision History
 - Ringbuffer uses semaphores to signal empty/full conditions.
 - Fixed calculating the timeout value in cFile::FileReady() (thanks to
   Wolfgang Henselmann-Weiss).
+
+2001-08-12: Version 0.91
+
+- Fixed displaying colored button texts that are too long.
+- Suppressing replay progress display when replaying a DVD.
+- Updated channels.conf.cable (thanks to Uwe Scheffler).
+- Updated French OSD texts (thanks to Jean-Claude Repetto).
+- Improved AC3 decoding when replaying DVDs (thanks to Matjaz Thaler).
+- Fixed handling DVB card indexes when using only one card in a multi-card
+  system.
+- Changed the 'Eject DVD' button text to a simple 'Eject' (the German text
+  was too long...).
+- Made the font file generation more stable (thanks to Artur Skawina).
+- Changed the default value for the "DiSEqC" setup parameter to "off".
+- The new command line option '-E' can be used to define where the EPG data
+  shall be written to. This is especially useful if VDR runs in a system
+  that turns off the video disk when it is not used, and therefore needs
+  to write the EPG file to a ramdisk (or turn off writing it alltogether).
+  See 'vdr --help' for details.
+- Making sure the disk is up and running before starting recording (this
+  is important for systems that turn off the video disk when it is not used).
+- Added the "Jump" function in replay mode (thanks to Stefan Huelswitt).
+  See the description of the "Red" key in MANUAL under "Replay Control" for
+  details.
+- Fixed displaying editing marks when toggling a mark in "pause" mode.
+- If there is no free DVB device to record, the log message will now be given
+  only once.
+- Made I/O more robust by handling EINTR (thanks to Werner Fink).
