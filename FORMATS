@@ -86,9 +86,13 @@ Video Disk Recorder File Formats
 
   Examples:
 
-    Check for new mail: /usr/local/bin/checkmail 2>&1
-    CPU status        : /usr/loval/bin/cpustatus 2>&1
-    Disk space        : df -h | grep '/video' | awk '{ print 100 - $5 "% free"; }'
+   1 Check for new mail: /usr/local/bin/checkmail 2>&1
+   2 CPU status        : /usr/loval/bin/cpustatus 2>&1
+   3 Disk space        : df -h | grep '/video' | awk '{ print 100 - $5 "% free"; }'
+
+  If the first non-blank character of the 'title' is a digit in the range
+  1..9, the command can be selected directly by pressing the respective numerical
+  key on the remote control.
 
 * marks.vdr
 

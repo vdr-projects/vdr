@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 1.14 2001/02/03 14:26:18 kls Exp $
+ * $Id: osd.c 1.15 2001/02/03 15:14:45 kls Exp $
  */
 
 #include "osd.h"
@@ -77,6 +77,7 @@ eOSState cOsdItem::ProcessKey(eKeys Key)
 
 cOsdMenu::cOsdMenu(const char *Title, int c0, int c1, int c2, int c3, int c4)
 {
+  hasHotkeys = false;
   visible = false;
   title = strdup(Title);
   cols[0] = c0;
@@ -290,6 +291,20 @@ void cOsdMenu::Mark(void)
      }
 }
 
+eOSState cOsdMenu::HotKey(eKeys Key)
+{
+  for (cOsdItem *item = First(); item; item = Next(item)) {
+      const char *s = item->Text();
+      if (s && (s = skipspace(s)) != NULL) {
+         if (*s == Key - k1 + '1') {
+            current = item->Index();
+            return ProcessKey(kOk);
+            }
+         }
+      }
+  return osContinue;
+}
+
 eOSState cOsdMenu::AddSubMenu(cOsdMenu *SubMenu)
 {
   delete subMenu;
@@ -319,6 +334,9 @@ eOSState cOsdMenu::ProcessKey(eKeys Key)
         return state;
      }
   switch (Key) {
+    case k1...k9: if (hasHotkeys)
+                     return HotKey(Key);
+                  break;
     case kUp|k_Repeat:
     case kUp:   CursorUp();   break;
     case kDown|k_Repeat:

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.h 1.19 2001/02/03 14:14:23 kls Exp $
+ * $Id: osd.h 1.20 2001/02/03 15:13:59 kls Exp $
  */
 
 #ifndef __OSD_H
@@ -77,6 +77,7 @@ private:
   cOsdMenu *subMenu;
   const char *helpRed, *helpGreen, *helpYellow, *helpBlue;
   const char *status;
+  bool hasHotkeys;
 protected:
   bool visible;
   virtual void Clear(void);
@@ -88,6 +89,7 @@ protected:
   void PageUp(void);
   void PageDown(void);
   void Mark(void);
+  eOSState HotKey(eKeys Key);
   eOSState AddSubMenu(cOsdMenu *SubMenu);
   bool HasSubMenu(void) { return subMenu; }
   void SetStatus(const char *s);
@@ -97,6 +99,7 @@ protected:
 public:
   cOsdMenu(const char *Title, int c0 = 0, int c1 = 0, int c2 = 0, int c3 = 0, int c4 = 0);
   virtual ~cOsdMenu();
+  void SetHasHotkeys(void) { hasHotkeys = true; }
   int Current(void) { return current; }
   void Add(cOsdItem *Item, bool Current = false);
   void Display(void);

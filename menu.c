@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.59 2001/02/03 14:28:42 kls Exp $
+ * $Id: menu.c 1.60 2001/02/03 15:28:49 kls Exp $
  */
 
 #include "menu.h"
@@ -1620,6 +1620,7 @@ cMenuCommands::cMenuCommands(void)
         Add(new cOsdItem(command->Title()));
         i++;
         }
+  SetHasHotkeys();
 }
 
 eOSState cMenuCommands::Execute(void)
@@ -1650,18 +1651,25 @@ eOSState cMenuCommands::ProcessKey(eKeys Key)
 
 #define STOP_RECORDING tr("Stop recording ")
 
+static const char *hk(int n, const char *s)
+{
+  static char buffer[32];
+  snprintf(buffer, sizeof(buffer), " %d %s", n, s);
+  return buffer;
+}
+
 cMenuMain::cMenuMain(bool Replaying)
 :cOsdMenu(tr("Main"))
 {
-  Add(new cOsdItem(tr("Schedule"),   osSchedule));
-  Add(new cOsdItem(tr("Channels"),   osChannels));
-  Add(new cOsdItem(tr("Timers"),     osTimers));
-  Add(new cOsdItem(tr("Recordings"), osRecordings));
-  Add(new cOsdItem(tr("Setup"),      osSetup));
+  Add(new cOsdItem(hk(1, tr("Schedule")),   osSchedule));
+  Add(new cOsdItem(hk(2, tr("Channels")),   osChannels));
+  Add(new cOsdItem(hk(3, tr("Timers")),     osTimers));
+  Add(new cOsdItem(hk(4, tr("Recordings")), osRecordings));
+  Add(new cOsdItem(hk(5, tr("Setup")),      osSetup));
   if (Commands.Count())
-     Add(new cOsdItem(tr("Commands"),  osCommands));
+     Add(new cOsdItem(hk(6, tr("Commands")),  osCommands));
   if (Replaying)
-     Add(new cOsdItem(tr("Stop replaying"), osStopReplay));
+     Add(new cOsdItem(tr(" Stop replaying"), osStopReplay));
   const char *s = NULL;
   while ((s = cRecordControls::GetInstantId(s)) != NULL) {
         char *buffer = NULL;
@@ -1670,10 +1678,11 @@ cMenuMain::cMenuMain(bool Replaying)
         delete buffer;
         }
   if (cVideoCutter::Active())
-     Add(new cOsdItem(tr("Cancel editing"), osCancelEdit));
+     Add(new cOsdItem(tr(" Cancel editing"), osCancelEdit));
   SetHelp(tr("Record"), NULL, NULL, cReplayControl::LastReplayed() ? tr("Resume") : NULL);
   Display();
   lastActivity = time(NULL);
+  SetHasHotkeys();
 }
 
 eOSState cMenuMain::ProcessKey(eKeys Key)
