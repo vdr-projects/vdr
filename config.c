@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.60 2001/08/31 13:46:26 kls Exp $
+ * $Id: config.c 1.61 2001/09/01 10:02:21 kls Exp $
  */
 
 #include "config.h"
@@ -38,6 +38,7 @@ tKey keyTable[] = { // "Up" and "Down" must be the first two keys!
                     { k7,             "7",             0 },
                     { k8,             "8",             0 },
                     { k9,             "9",             0 },
+                    { kPower,         "Power",         0 },
                     { kNone,          "",              0 },
                   };
 

@@ -22,6 +22,7 @@ Video Disk Recorder User's Manual
   Yellow  -           Eject DVD  Delete     Delete     -             Delete      Skip +60s
   Blue    -           Resume     Mark       Mark(1)    -             Summary     Stop
   0..9    Ch select   -          -          -          Numeric inp.  -           Editing
+  Power   Shutdown    -          -          -          -             -           -
 
   (1) The "Mark" button in the "Timers" menu only works if sorting the timers
       has been disabled in the "Setup" menu.

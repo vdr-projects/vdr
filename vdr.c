@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.65 2001/09/01 08:57:11 kls Exp $
+ * $Id: vdr.c 1.66 2001/09/01 11:44:08 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -303,6 +303,7 @@ int main(int argc, char *argv[])
   int PreviousChannel = cDvbApi::CurrentChannel();
   time_t LastActivity = 0;
   int MaxLatencyTime = 0;
+  bool ForceShutdown = false;
 
   if (WatchdogTimeout > 0) {
      dsyslog(LOG_INFO, "setting watchdog timer to %d seconds", WatchdogTimeout);
@@ -427,6 +428,18 @@ int main(int argc, char *argv[])
              case kMenu: Menu = new cMenuMain(ReplayControl); break;
              // Viewing Control:
              case kOk:   LastChannel = -1; break; // forces channel display
+             // Power off:
+             case kPower: isyslog(LOG_INFO, "Power button pressed");
+                          if (!Shutdown) {
+                             Interface->Error(tr("Can't shutdown - option '-s' not given!"));
+                             break;
+                             }
+                          if (cRecordControls::Active()) {
+                             if (Interface->Confirm(tr("Recording - shut down anyway?")))
+                                ForceShutdown = true;
+                             }
+                          LastActivity = 1; // not 0, see below!
+                          break;
              default:    break;
              }
            }
@@ -434,39 +447,40 @@ int main(int argc, char *argv[])
            EITScanner.Process();
            cVideoCutter::Active();
            }
-        if (!*Interact && !cRecordControls::Active()) {
+        if (!*Interact && (!cRecordControls::Active() || ForceShutdown)) {
            time_t Now = time(NULL);
            if (Now - LastActivity > ACTIVITYTIMEOUT) {
               // Shutdown:
-              if (Shutdown && Setup.MinUserInactivity && Now - LastActivity > Setup.MinUserInactivity * 60) {
+              if (Shutdown && (Setup.MinUserInactivity && Now - LastActivity > Setup.MinUserInactivity * 60 || ForceShutdown)) {
+                 ForceShutdown = false;
                  cTimer *timer = Timers.GetNextActiveTimer();
-                 if (timer) {
-                    time_t Next = timer->StartTime();
-                    time_t Delta = Next - Now;
+                 time_t Next  = timer ? timer->StartTime() : 0;
+                 time_t Delta = timer ? Next - Now : 0;
+                 if (timer)
                     dsyslog(LOG_INFO, "next timer event at %s", ctime(&Next));
-                    if (Delta > Setup.MinEventTimeout * 60) {
-                       if (!LastActivity) {
-                          // Apparently the user started VDR manually
-                          dsyslog(LOG_INFO, "assuming manual start of VDR");
-                          LastActivity = Now;
-                          continue;
-                          }
-                       if (WatchdogTimeout > 0)
-                          signal(SIGALRM, SIG_IGN);
-                       if (Interface->Confirm(tr("Press any key to cancel shutdown"), SHUTDOWNWAIT, true)) {
-                          char *cmd;
-                          asprintf(&cmd, "%s %ld %ld", Shutdown, Next, Delta);
-                          isyslog(LOG_INFO, "executing '%s'", cmd);
-                          system(cmd);
-                          delete cmd;
-                          }
-                       else if (WatchdogTimeout > 0) {
-                          alarm(WatchdogTimeout);
-                          if (signal(SIGALRM, Watchdog) == SIG_IGN)
-                             signal(SIGALRM, SIG_IGN);
-                          }
-                       LastActivity = Now; // don't try again too soon
+                 if (!Next || Delta > Setup.MinEventTimeout * 60) {
+                    if (!LastActivity) {
+                       // Apparently the user started VDR manually
+                       dsyslog(LOG_INFO, "assuming manual start of VDR");
+                       LastActivity = Now;
+                       continue; // skip the rest of the housekeeping for now
                        }
+                    if (WatchdogTimeout > 0)
+                       signal(SIGALRM, SIG_IGN);
+                    if (Interface->Confirm(tr("Press any key to cancel shutdown"), LastActivity == 1 ? 5 : SHUTDOWNWAIT, true)) {
+                       char *cmd;
+                       asprintf(&cmd, "%s %ld %ld", Shutdown, Next, Delta);
+                       isyslog(LOG_INFO, "executing '%s'", cmd);
+                       system(cmd);
+                       delete cmd;
+                       }
+                    else if (WatchdogTimeout > 0) {
+                       alarm(WatchdogTimeout);
+                       if (signal(SIGALRM, Watchdog) == SIG_IGN)
+                          signal(SIGALRM, SIG_IGN);
+                       }
+                    LastActivity = Now; // don't try again too soon
+                    continue; // skip the rest of the housekeeping for now
                     }
                  }
               // Disk housekeeping:

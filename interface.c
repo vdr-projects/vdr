@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.c 1.42 2001/09/01 07:30:37 kls Exp $
+ * $Id: interface.c 1.43 2001/09/01 10:33:03 kls Exp $
  */
 
 #include "interface.h"
@@ -356,7 +356,7 @@ void cInterface::QueryKeys(void)
   WriteText(1, 5, tr("Press any key on the RC unit"));
   Flush();
 #ifndef REMOTE_KBD
-  unsigned char Code = 0;
+  unsigned char Code = '0';
   unsigned short Address;
 #endif
   for (;;) {

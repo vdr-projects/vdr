@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.36 2001/08/31 15:37:05 kls Exp $
+ * $Id: i18n.c 1.37 2001/09/01 10:52:35 kls Exp $
  *
  * Slovenian translations provided by Miha Setina <mihasetina@softhome.net>
  * Italian   translations provided by Alberto Carraro <bertocar@tin.it>
@@ -385,6 +385,15 @@ const tPhrase Phrases[] = {
     "Annuler les modifications?",
     "Avbryte redigering",
   },
+  { "Recording - shut down anyway?",
+    "Aufnahme läuft - trotzdem ausschalten?",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+  },
   { "Press any key to cancel shutdown",
     "Taste drücken um Shutdown abzubrechen",
     "", // TODO
@@ -666,6 +675,15 @@ const tPhrase Phrases[] = {
     "Processo de modificacao ja activo!",
     "Montage déjà en cours!",
     "Redigeringsprosessen er allerede aktiv!",
+  },
+  { "Can't shutdown - option '-s' not given!",
+    "Shutdown unmöglich - Option '-s' fehlt!",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
   },
   // Setup parameters:
   { "OSD-Language",
@@ -1138,6 +1156,15 @@ const tPhrase Phrases[] = {
     "Azul",
     "Bleu",
     "Blå",
+  },
+  { "Power",
+    "Ausschalten",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
   },
   // Miscellaneous:
   { "yes",

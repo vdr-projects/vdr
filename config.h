@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.67 2001/09/01 07:15:26 kls Exp $
+ * $Id: config.h 1.68 2001/09/01 10:01:51 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -44,6 +44,7 @@ enum eKeys { // "Up" and "Down" must be the first two keys!
              kYellow,
              kBlue,
              k0, k1, k2, k3, k4, k5, k6, k7, k8, k9,
+             kPower,
              kNone,
              // The following flags are OR'd with the above codes:
              k_Repeat  = 0x8000,

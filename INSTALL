@@ -120,6 +120,12 @@ receives a SIGTERM when the computer is actually shut down. So in case
 the shutdown fails, or the shutdown program for some reason decides not to
 perform a shutdown, VDR will stay up and running.
 
+If there are currently no timers active, both parameters will be '0'.
+In that case the program shall not set the hardware for automatic restart
+and only perform the system shutdown. A program that uses the second parameter
+to set the hardware for restart must therefore also check whether the first
+parameter is '0'.
+
 Before the shutdown program is called, the user will be prompted to inform
 him that the system is about to shut down. If any remote control key is
 pressed while this prompt is visible, the shutdown will be cancelled (and
@@ -139,6 +145,9 @@ Clock so that it wakes up the computer 5 minutes (i.e. 300 seconds) before
 that event. The 'sudo halt' command then shuts down the computer.
 You will have to substitute both commands with whatever applies to your
 particular hard- and software environment.
+
+If the '-s' option is present, the VDR machine can be turned off by pressing
+the "Power" key on the remote control.
 
 Command line options:
 ---------------------
@@ -281,6 +290,7 @@ The default PC key assignments are:
   Back                      'End' in numeric block
   Red, Green, Yellow, Blue  'F1'..'F4'
   0..9                      '0'..'9' in top row
+  Power                     'P'
 
 If you prefer different key assignments, or if the default doesn't work for
 your keyboard, simply delete the file 'keys-pc.conf' and restart 'vdr' to get
