@@ -182,7 +182,8 @@ Video Disk Recorder Revision History
   response time on user actions. As a consequence the EIT data may sometimes
   not be displayed, but this will change later when cEIT runs as a separate
   thread.
-- The new SVDRP command 'HITK' can be used to 'hit' a remote control key.
-  Establish an SVDRP connection and enter HITK without a parameter for a list
-  of all valid key names.
-
+- The new SVDRP command 'HITK' (thanks to Guido Fiala!) can be used to 'hit'
+  a remote control key.  Establish an SVDRP connection and enter HITK without
+  a parameter for a list of all valid key names.
+- The new SVDRP command 'GRAB' (thanks to Guido Fiala!) can be used to grab
+  the current frame and save it to a file.

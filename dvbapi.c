@@ -4,14 +4,18 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.25 2000/09/15 13:23:00 kls Exp $
+ * $Id: dvbapi.c 1.26 2000/09/17 11:53:35 kls Exp $
  */
 
 #include "dvbapi.h"
 #include <errno.h>
 #include <fcntl.h>
+extern "C" {
+#include <jpeglib.h>
+}
 #include <stdlib.h>
 #include <sys/ioctl.h>
+#include <sys/mman.h>
 #include <sys/stat.h>
 #include <sys/time.h>
 #include <unistd.h>
@@ -315,8 +319,8 @@ char *cIndexFile::Str(int Index, bool WithFrame)
   static char buffer[16];
   int f = (Index % FRAMESPERSEC) + 1;
   int s = (Index / FRAMESPERSEC);
-  int m = s / 60 % 60; 
-  int h = s / 3600; 
+  int m = s / 60 % 60;
+  int h = s / 3600;
   s %= 60;
   snprintf(buffer, sizeof(buffer), WithFrame ? "%d:%02d:%02d.%02d" : "%d:%02d:%02d", h, m, s, f);
   return buffer;
@@ -511,7 +515,7 @@ protected:
   char *fileName, *pFileNumber;
   bool stop;
   int GetAvPesLength(void)
-  { 
+  {
     if (Byte(0) == 'A' && Byte(1) == 'V' && Byte(4) == 'U')
        return (Byte(6) << 8) + Byte(7) + AV_PES_HEADER_LEN;
     return 0;
@@ -751,7 +755,7 @@ int cRecordBuffer::Write(int Max)
   if (n) {
      if (stop && pictureType == I_FRAME) {
         ok = false;
-        return -1; // finish the recording before the next 'I' frame       
+        return -1; // finish the recording before the next 'I' frame
         }
      if (NextFile()) {
         if (index && pictureType != NO_PICTURE)
@@ -801,7 +805,7 @@ private:
   void Close(void);
 public:
   cReplayBuffer(int *OutFile, const char *FileName);
-  virtual ~cReplayBuffer();  
+  virtual ~cReplayBuffer();
   virtual int Read(int Max = -1);
   virtual int Write(int Max = -1);
   void SetMode(eReplayMode Mode);
@@ -1067,7 +1071,7 @@ cDvbApi::cDvbApi(const char *FileName)
   cols = rows = 0;
 #if defined(DEBUG_OSD) || defined(REMOTE_KBD)
   initscr();
-  keypad(stdscr, TRUE);
+  keypad(stdscr, true);
   nonl();
   cbreak();
   noecho();
@@ -1076,7 +1080,7 @@ cDvbApi::cDvbApi(const char *FileName)
 #if defined(DEBUG_OSD)
   memset(&colorPairs, 0, sizeof(colorPairs));
   start_color();
-  leaveok(stdscr, TRUE);
+  leaveok(stdscr, true);
   window = NULL;
 #endif
   lastProgress = lastTotal = -1;
@@ -1187,6 +1191,93 @@ void cDvbApi::Cleanup(void)
   PrimaryDvbApi = NULL;
 }
 
+bool cDvbApi::GrabImage(const char *FileName, bool Jpeg, int Quality, int SizeX, int SizeY)
+{
+  int result = 0;
+  // just do this once?
+  struct video_mbuf mbuf;
+  result |= ioctl(videoDev, VIDIOCGMBUF, &mbuf);
+  int msize = mbuf.size;
+  // gf: this needs to be a protected member of cDvbApi! //XXX kls: WHY???
+  unsigned char *mem = (unsigned char *)mmap(0, msize, PROT_READ | PROT_WRITE, MAP_SHARED, videoDev, 0);
+  if (!mem || mem == (unsigned char *)-1)
+     return false;
+  // set up the size and RGB
+  struct video_capability vc;
+  result |= ioctl(videoDev, VIDIOCGCAP, &vc);
+  struct video_mmap vm;
+  vm.frame = 0;
+  if ((SizeX > 0) && (SizeX <= vc.maxwidth) &&
+      (SizeY > 0) && (SizeY <= vc.maxheight)) {
+     vm.width = SizeX;
+     vm.height = SizeY;
+     }
+  else {
+     vm.width = vc.maxwidth;
+     vm.height = vc.maxheight;
+     }
+  vm.format = VIDEO_PALETTE_RGB24;
+  // this needs to be done every time:
+  result |= ioctl(videoDev, VIDIOCMCAPTURE, &vm);
+  result |= ioctl(videoDev, VIDIOCSYNC, &vm.frame);
+  // make RGB out of BGR:
+  int memsize = vm.width * vm.height;
+  unsigned char *mem1 = mem;
+  for (int i = 0; i < memsize; i++) {
+      unsigned char tmp = mem1[2];
+      mem1[2] = mem1[0];
+      mem1[0] = tmp;
+      mem1 += 3;
+      }
+
+  if (Quality < 0)
+     Quality = 255; //XXX is this 'best'???
+
+  isyslog(LOG_INFO, "grabbing to %s (%s %d %d %d)", FileName, Jpeg ? "JPEG" : "PNM", Quality, vm.width, vm.height);
+  FILE *f = fopen(FileName, "wb");
+  if (f) {
+     if (Jpeg) {
+        // write JPEG file:
+        struct jpeg_compress_struct cinfo;
+        struct jpeg_error_mgr jerr;
+        cinfo.err = jpeg_std_error(&jerr);
+        jpeg_create_compress(&cinfo);
+        jpeg_stdio_dest(&cinfo, f);
+        cinfo.image_width = vm.width;
+        cinfo.image_height = vm.height;
+        cinfo.input_components = 3;
+        cinfo.in_color_space = JCS_RGB;
+
+        jpeg_set_defaults(&cinfo);
+        jpeg_set_quality(&cinfo, Quality, true);
+        jpeg_start_compress(&cinfo, true);
+
+        int rs = vm.width * 3;
+        JSAMPROW rp[vm.height];
+        for (int k = 0; k < vm.height; k++)
+            rp[k] = &mem[rs * k];
+        jpeg_write_scanlines(&cinfo, rp, vm.height);
+        jpeg_finish_compress(&cinfo);
+        jpeg_destroy_compress(&cinfo);
+        }
+     else {
+        // write PNM file:
+        if (fprintf(f, "P6\n%d\n%d\n255\n", vm.width, vm.height) < 0 ||
+            fwrite(mem, vm.width * vm.height * 3, 1, f) < 0) {
+           LOG_ERROR_STR(FileName);
+           result |= 1;
+           }
+        }
+     fclose(f);
+     }
+  else {
+     LOG_ERROR_STR(FileName);
+     result |= 1;
+     }
+  munmap(mem, msize);
+  return result == 0;
+}
+
 #ifdef DEBUG_OSD
 void cDvbApi::SetColor(eDvbColor colorFg, eDvbColor colorBg)
 {
@@ -1233,7 +1324,7 @@ void cDvbApi::Open(int w, int h)
   rows = h;
 #ifdef DEBUG_OSD
   window = subwin(stdscr, h, w, d, 0);
-  syncok(window, TRUE);
+  syncok(window, true);
   #define B2C(b) (((b) * 1000) / 255)
   #define SETCOLOR(n, r, g, b, o) init_color(n, B2C(r), B2C(g), B2C(b))
 #else

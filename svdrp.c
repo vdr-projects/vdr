@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.8 2000/09/17 09:24:52 kls Exp $
+ * $Id: svdrp.c 1.9 2000/09/17 11:29:33 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -120,6 +120,10 @@ const char *HelpPages[] = {
   "    Delete channel.",
   "DELT <number>\n"
   "    Delete timer.",
+  "GRAB <filename> [ jpeg | pnm [ <quality> [ <sizex> <sizey> ] ] ]\n"
+  "    Grab the current frame and save it to the given file. Images can\n"
+  "    be stored as JPEG (default) or PNM, at the given quality (default\n"
+  "    is 'maximum', only applies to JPEG) and size (default is full screen).",
   "HELP [ <topic> ]\n"
   "    The HELP command gives help info.",
   "HITK [ <key> ]\n"
@@ -361,6 +365,67 @@ void cSVDRP::CmdDELT(const char *Option)
      }
   else
      Reply(501, "Missing timer number");
+}
+
+void cSVDRP::CmdGRAB(const char *Option)
+{
+  char *FileName = NULL;
+  bool Jpeg = true;
+  int Quality = -1, SizeX = -1, SizeY = -1;
+  if (*Option) {
+     char buf[strlen(Option) + 1];
+     char *p = strcpy(buf, Option);
+     const char *delim = " \t";
+     FileName = strtok(p, delim);
+     if ((p = strtok(NULL, delim)) != NULL) {
+        if (strcasecmp(p, "JPEG") == 0)
+           Jpeg = true;
+        else if (strcasecmp(p, "PNM") == 0)
+           Jpeg = false;
+        else {
+           Reply(501, "Unknown image type \"%s\"", p);
+           return;
+           }
+        }
+     if ((p = strtok(NULL, delim)) != NULL) {
+        if (isnumber(p))
+           Quality = atoi(p);
+        else {
+           Reply(501, "Illegal quality \"%s\"", p);
+           return;
+           }
+        }
+     if ((p = strtok(NULL, delim)) != NULL) {
+        if (isnumber(p))
+           SizeX = atoi(p);
+        else {
+           Reply(501, "Illegal sizex \"%s\"", p);
+           return;
+           }
+        if ((p = strtok(NULL, delim)) != NULL) {
+           if (isnumber(p))
+              SizeY = atoi(p);
+           else {
+              Reply(501, "Illegal sizey \"%s\"", p);
+              return;
+              }
+           }
+        else {
+           Reply(501, "Missing sizey");
+           return;
+           }
+        }
+     if ((p = strtok(NULL, delim)) != NULL) {
+        Reply(501, "Unexpected parameter \"%s\"", p);
+        return;
+        }
+     if (cDvbApi::PrimaryDvbApi->GrabImage(FileName, Jpeg, Quality, SizeX, SizeY))
+        Reply(250, "Grabbed image %s", Option);
+     else
+        Reply(451, "Grab image failed");
+     }
+  else
+     Reply(501, "Missing filename");
 }
 
 void cSVDRP::CmdHELP(const char *Option)
@@ -636,6 +701,7 @@ void cSVDRP::Execute(char *Cmd)
   if      (CMD("CHAN"))  CmdCHAN(s);
   else if (CMD("DELC"))  CmdDELC(s);
   else if (CMD("DELT"))  CmdDELT(s);
+  else if (CMD("GRAB"))  CmdGRAB(s);
   else if (CMD("HELP"))  CmdHELP(s);
   else if (CMD("HITK"))  CmdHITK(s);
   else if (CMD("LSTC"))  CmdLSTC(s);

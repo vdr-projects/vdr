@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.h 1.14 2000/09/10 10:03:29 kls Exp $
+ * $Id: dvbapi.h 1.15 2000/09/17 11:43:10 kls Exp $
  */
 
 #ifndef __DVBAPI_H
@@ -69,6 +69,10 @@ public:
   static void Cleanup(void);
          // Closes down all DVB devices.
          // Must be called at the end of the program.
+
+  // Image Grab facilities
+
+  bool GrabImage(const char *FileName, bool Jpeg = true, int Quality = -1, int SizeX = -1, int SizeY = -1);
 
   // On Screen Display facilities
 

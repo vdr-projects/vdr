@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 1.9 2000/09/10 08:55:45 kls Exp $
+# $Id: Makefile 1.10 2000/09/17 10:19:44 kls Exp $
 
 DVBDIR   = ../DVB
 
@@ -40,7 +40,7 @@ tools.o    : tools.c tools.h
 videodir.o : videodir.c tools.h videodir.h
 
 vdr: $(OBJS)
-	g++ -g -O2 $(OBJS) -lncurses -o vdr
+	g++ -g -O2 $(OBJS) -lncurses -ljpeg -o vdr
 
 clean:
 	-rm $(OBJS) vdr
