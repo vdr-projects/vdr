@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.60 2002/03/22 15:18:58 kls Exp $
+ * $Id: tools.c 1.61 2002/03/23 15:48:08 kls Exp $
  */
 
 #include "tools.h"
@@ -33,7 +33,8 @@ ssize_t safe_read(int filedes, void *buffer, size_t size)
 
 ssize_t safe_write(int filedes, const void *buffer, size_t size)
 {
-  ssize_t p = -1;
+  ssize_t p = 0;
+  ssize_t written = size;
   const unsigned char *ptr = (const unsigned char *)buffer;
   while (size > 0) {
         p = write(filedes, ptr, size);
@@ -47,7 +48,7 @@ ssize_t safe_write(int filedes, const void *buffer, size_t size)
         ptr  += p;
         size -= p;
         }
-  return p;
+  return p < 0 ? p : written;
 }
 
 void writechar(int filedes, char c)
