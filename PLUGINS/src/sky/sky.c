@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: sky.c 1.5 2004/02/15 12:40:22 kls Exp $
+ * $Id: sky.c 1.6 2004/02/15 14:59:46 kls Exp $
  */
 
 #include <sys/socket.h>
@@ -199,7 +199,7 @@ bool cDigiboxDevice::ProvidesChannel(const cChannel *Channel, int Priority, bool
 
   cSkyChannel *SkyChannel = SkyChannels.GetSkyChannel(Channel);
   if (SkyChannel) {
-     if (Receiving()) {
+     if (Receiving(true)) {
         if (digiboxChannelNumber == SkyChannel->digiboxChannelNumber) {
            needsDetachReceivers = false;
            result = true;
@@ -217,7 +217,7 @@ bool cDigiboxDevice::ProvidesChannel(const cChannel *Channel, int Priority, bool
 
 bool cDigiboxDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
 {
-  if (fd_lirc >= 0 && !Receiving()) { // if we are receiving the channel is already set!
+  if (fd_lirc >= 0 && !Receiving(true)) { // if we are receiving the channel is already set!
      cSkyChannel *SkyChannel = SkyChannels.GetSkyChannel(Channel);
      if (SkyChannel) {
         digiboxChannelNumber = SkyChannel->digiboxChannelNumber;

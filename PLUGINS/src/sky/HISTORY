@@ -22,3 +22,5 @@ VDR Plugin 'sky' Revision History
 - Now using the actual channel IDs a derived from the data stream.
 - Switched EPG data retrieval to http://www.bleb.org.
 - Added automatic DST detection to getskyepg.pl.
+- Fixed handling receivers, so that a recording on the same channel
+  won't interrupt an ongoing Transfer mode.

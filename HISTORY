@@ -2671,3 +2671,5 @@ Video Disk Recorder Revision History
   from www.bleb.org.
 - Limited automatic retuning to devices that actually provide the transponder
   (necessary for the 'sky' plugin).
+- Fixed handling receivers in the 'sky' plugin, so that a recording on the same
+  channel won't interrupt an ongoing Transfer mode.
