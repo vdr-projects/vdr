@@ -2831,3 +2831,5 @@ Video Disk Recorder Revision History
   It now also has a SetText() function that can be used to dynamically set the text
   in an already existing cMenuText (both suggested by Stefan Huelswitt).
 - Added play mode pmVideoOnly (thanks to Marcel Wiesweg).
+- Added a missing cStatus::MsgOsdClear() to cDisplayChannel::~cDisplayChannel()
+  (thanks to Oliver Endriss).

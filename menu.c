@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.304 2004/05/23 09:47:14 kls Exp $
+ * $Id: menu.c 1.305 2004/05/23 10:35:04 kls Exp $
  */
 
 #include "menu.h"
@@ -2491,6 +2491,7 @@ cDisplayChannel::cDisplayChannel(eKeys FirstKey)
 cDisplayChannel::~cDisplayChannel()
 {
   delete displayChannel;
+  cStatus::MsgOsdClear();
 }
 
 void cDisplayChannel::DisplayChannel(void)

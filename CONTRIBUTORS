@@ -520,6 +520,7 @@ Oliver Endriss <o.endriss@gmx.de>
  for suggesting to change the default "Lifetime" to 99
  for pointing out that the LNB power needs to be explicitly turned on at startup,
  because newer drivers don't do this any more
+ for adding a missing cStatus::MsgOsdClear() to cDisplayChannel::~cDisplayChannel()
 
 Reinhard Walter Buchner <rw.buchner@freenet.de>
  for adding some satellites to 'sources.conf'
