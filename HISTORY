@@ -831,7 +831,7 @@ Video Disk Recorder Revision History
 - Fixed handling trick modes near the beginning and end of a recording.
 - Pressing the "Back" button while replaying a DVD now leads to the DVD menu.
 
-2001-10-28: Version 0.98
+2001-11-03: Version 0.98
 
 - Completed storing the current audio volume in the setup.conf file (thanks
   to Andy Grobb).
@@ -851,3 +851,6 @@ Video Disk Recorder Revision History
   on an other free DVB card (if one is free at the moment). See MANUAL for
   details.
 - Added some missing teletext PIDs (thanks to Norbert Schmidt).
+- Added PTS to the converted PCM audio when replaying a DVD (thanks to Andreas
+  Schultz). Now the audio and video of a DVD replayed over the DVB card's A/V
+  out should always be in sync.

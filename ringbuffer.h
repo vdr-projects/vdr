@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ringbuffer.h 1.4 2001/08/05 11:12:06 kls Exp $
+ * $Id: ringbuffer.h 1.5 2001/11/03 10:41:33 kls Exp $
  */
 
 #ifndef __RINGBUFFER_H
@@ -75,18 +75,22 @@ public:
   virtual ~cRingBufferLinear();
   };
 
+enum eFrameType { ftUnknown, ftVideo, ftAudio, ftDolby };
+
 class cFrame {
   friend class cRingBufferFrame;
 private:
   cFrame *next;
   uchar *data;
   int count;
+  eFrameType type;
   int index;
 public:
-  cFrame(const uchar *Data, int Count, int Index = -1);
+  cFrame(const uchar *Data, int Count, eFrameType = ftUnknown, int Index = -1);
   ~cFrame();
   const uchar *Data(void) const { return data; }
   int Count(void) const { return count; }
+  eFrameType Type(void) const { return type; }
   int Index(void) const { return index; }
   };
 
