@@ -1025,3 +1025,4 @@ Video Disk Recorder Revision History
   (optionally) contain the 'table ID' (see FORMATS for details).
 - The new SVDRP command PUTE can be used to put EPG data into the EPG list.
   See FORMATS for details about the required data format.
+- Taking the German umlauts 'as is' when compiled with VFAT.

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.53 2002/02/15 22:22:58 kls Exp $
+ * $Id: recording.c 1.54 2002/02/24 11:21:42 kls Exp $
  */
 
 #include "recording.h"
@@ -224,7 +224,12 @@ static char *ExchangeChars(char *s, bool ToFileSystem)
                   case '=':
                   case '0' ... '9':
                   case 'a' ... 'z':
-                  case 'A' ... 'Z': break;
+                  case 'A' ... 'Z':
+                  case 'ä': case 'Ä':
+                  case 'ö': case 'Ö':
+                  case 'ü': case 'Ü':
+                  case 'ß':
+                       break;
                   // characters that can be mapped to other characters:
                   case ' ': *p = '_'; break;
                   case '~': *p = '/'; break;
