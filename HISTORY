@@ -435,3 +435,6 @@ Video Disk Recorder Revision History
 - Fixed a problem with Daylight Saving Time when displaying the times of
   recordings.
 - Added Dutch language texts (thanks to Arnold Niessen).
+- The new command line option -t can be used to set the controlling terminal
+  (thanks to Jürgen Sauer). This is especially useful when starting VDR through
+  an entry in /etc/inittab (see INSTALL).

@@ -71,6 +71,11 @@ If the program shall run as a daemon, use the --daemon option. This
 will completely detach it from the terminal and will continue as a
 background process.
 
+When starting the program through an entry in /etc/inittab, use the --terminal
+option to set the controlling terminal, as in
+
+vdr:123:respawn:/usr/local/bin/vdr --terminal=/dev/tty8 -w 60
+
 Automatic restart in case of hangups:
 -------------------------------------
 

@@ -66,3 +66,6 @@ Axel Gruber <axel@agm.de>
 
 Arnold Niessen <niessen@iae.nl> <arnold.niessen@philips.com>
  for translating the OSD texts to the Dutch language
+
+Jürgen Sauer <jojo@automatix.de>
+ for implementing the -t option to set the controlling terminal
