@@ -2332,6 +2332,7 @@ Video Disk Recorder Revision History
 
 2003-08-30: Version 1.2.5pre1
 
+- Now explicitly handling exit value 0 and 2 in 'runvdr'.
 - Added a missing 'w' to the allowed characters for Finnish and Swedish (thanks
   to Lauri Tischler and Ragnar Sundblad).
 - Added channels for DVB-T Hannover (Germany) to channels.cont.terr (thanks to
