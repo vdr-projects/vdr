@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.84 2003/10/17 14:36:58 kls Exp $
+ * $Id: recording.c 1.84.1.1 2003/10/24 15:49:00 kls Exp $
  */
 
 #include "recording.h"
@@ -681,10 +681,8 @@ bool cMark::Parse(const char *s)
   const char *p = strchr(s, ' ');
   if (p) {
      p = skipspace(p);
-     if (*p) {
+     if (*p)
         comment = strdup(p);
-        comment[strlen(comment) - 1] = 0; // strips trailing newline
-        }
      }
   return true;
 }
