@@ -1309,3 +1309,4 @@ Video Disk Recorder Revision History
 - Added an error message if the directory specified in the '-L' option can't be
   accessed (suggested by Stefan Huelswitt).
 - Rearranged OSD class names to make 'cOsd' available for the main OSD interface.
+- Completely moved OSD handling out of the cDvbApi class, into the new cOsd.

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbosd.c 1.16 2002/05/18 12:39:39 kls Exp $
+ * $Id: dvbosd.c 1.17 2002/05/18 13:39:02 kls Exp $
  */
 
 #include "dvbosd.h"
@@ -13,12 +13,12 @@
 #include <sys/unistd.h>
 #include "tools.h"
 
-cDvbOsd::cDvbOsd(int VideoDev, int x, int y)
+cDvbOsd::cDvbOsd(int OsdDev, int x, int y)
 :cOsdBase(x, y)
 {
-  videoDev = VideoDev;
-  if (videoDev < 0)
-     esyslog("ERROR: illegal video device handle (%d)!", videoDev);
+  osdDev = OsdDev;
+  if (osdDev < 0)
+     esyslog("ERROR: illegal OSD device handle (%d)!", osdDev);
 }
 
 cDvbOsd::~cDvbOsd()
@@ -44,7 +44,7 @@ bool cDvbOsd::SetWindow(cWindow *Window)
 
 void cDvbOsd::Cmd(OSD_Command cmd, int color, int x0, int y0, int x1, int y1, const void *data)
 {
-  if (videoDev >= 0) {
+  if (osdDev >= 0) {
      osd_cmd_t dc;
      dc.cmd   = cmd;
      dc.color = color;
@@ -58,7 +58,7 @@ void cDvbOsd::Cmd(OSD_Command cmd, int color, int x0, int y0, int x1, int y1, co
      sigfillset(&set);
      sigdelset(&set, SIGALRM);
      sigprocmask(SIG_BLOCK, &set, &oldset);
-     ioctl(videoDev, OSD_SEND_CMD, &dc);
+     ioctl(osdDev, OSD_SEND_CMD, &dc);
      if (cmd == OSD_SetBlock) // XXX this is the only command that takes longer
         usleep(5000); // XXX Workaround for a driver bug (cInterface::DisplayChannel() displayed texts at wrong places
                       // XXX and sometimes the OSD was no longer displayed).

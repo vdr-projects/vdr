@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbosd.h 1.12 2002/05/18 12:39:31 kls Exp $
+ * $Id: dvbosd.h 1.13 2002/05/18 13:38:09 kls Exp $
  */
 
 #ifndef __DVBOSD_H
@@ -15,7 +15,7 @@
 
 class cDvbOsd : public cOsdBase {
 private:
-  int videoDev;
+  int osdDev;
   bool SetWindow(cWindow *Window);
   void Cmd(OSD_Command cmd, int color = 0, int x0 = 0, int y0 = 0, int x1 = 0, int y1 = 0, const void *data = NULL);
 protected:
@@ -26,7 +26,7 @@ protected:
   virtual void MoveWindow(cWindow *Window, int x, int y);
   virtual void CloseWindow(cWindow *Window);
 public:
-  cDvbOsd(int VideoDev, int x, int y);
+  cDvbOsd(int OsdDev, int x, int y);
   virtual ~cDvbOsd();
   };
 

@@ -4,16 +4,12 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.h 1.69 2002/04/21 09:49:22 kls Exp $
+ * $Id: dvbapi.h 1.70 2002/05/18 14:03:12 kls Exp $
  */
 
 #ifndef __DVBAPI_H
 #define __DVBAPI_H
 
-#if defined(DEBUG_OSD) || defined(REMOTE_KBD)
-#include <ncurses.h>
-#undef ERR //XXX ncurses defines this - but this clashes with newer system header files
-#endif
 #include <stdlib.h> // FIXME: this is apparently necessary for the ost/... header files
                     // FIXME: shouldn't every header file include ALL the other header
                     // FIXME: files it depends on? The sequence in which header files
@@ -25,10 +21,7 @@
 #include <ost/frontend.h>
 #include <ost/video.h>
 #include <ost/audio.h>
-#include <ost/osd.h>
 #include <stdio.h>
-
-#include "dvbosd.h"
 #include "eit.h"
 #include "thread.h"
 
@@ -76,6 +69,7 @@ public:
   };
 
 class cDvbApi {
+  friend class cOsd;
   friend class cRecordBuffer;
   friend class cReplayBuffer;
   friend class cTransferBuffer;
@@ -83,6 +77,7 @@ private:
   FrontendType frontendType;
   int fd_osd, fd_frontend, fd_sec, fd_dvr, fd_audio, fd_video, fd_demuxa1, fd_demuxa2, fd_demuxd1, fd_demuxd2, fd_demuxv, fd_demuxt;
   int vPid, aPid1, aPid2, dPid1, dPid2;
+  int OsdDeviceHandle(void) { return fd_osd; }
   bool SetPid(int fd, dmxPesType_t PesType, int Pid, dmxOutput_t Output);
   bool SetVpid(int Vpid, dmxOutput_t Output)  { return SetPid(fd_demuxv,  DMX_PES_VIDEO,    Vpid, Output); }
   bool SetApid1(int Apid, dmxOutput_t Output) { return SetPid(fd_demuxa1, DMX_PES_AUDIO,    Apid, Output); }
@@ -109,7 +104,7 @@ public:
   static cDvbApi *PrimaryDvbApi;
   static void SetUseDvbApi(int n);
          // Sets the 'useDvbApi' flag of the given DVB device.
-         // If this function is not called before Init(), all DVB devices
+         // If this function is not called before Initialize(), all DVB devices
          // will be used.
   static bool SetPrimaryDvbApi(int n);
          // Sets the primary DVB device to 'n' (which must be in the range
@@ -137,10 +132,10 @@ public:
          // in caCaps is returned.
   static bool Probe(const char *FileName);
          // Probes for existing DVB devices.
-  static bool Init(void);
+  static bool Initialize(void);
          // Initializes the DVB API.
          // Must be called before accessing any DVB functions.
-  static void Cleanup(void);
+  static void Shutdown(void);
          // Closes down all DVB devices.
          // Must be called at the end of the program.
 
@@ -152,36 +147,6 @@ public:
   // Image Grab facilities
 
   bool GrabImage(const char *FileName, bool Jpeg = true, int Quality = -1, int SizeX = -1, int SizeY = -1);
-
-  // On Screen Display facilities
-
-private:
-  enum { charWidth  = 12, // average character width
-         lineHeight = 27  // smallest text height
-       };
-#ifdef DEBUG_OSD
-  WINDOW *window;
-  enum { MaxColorPairs = 16 };
-  int colorPairs[MaxColorPairs];
-  void SetColor(eDvbColor colorFg, eDvbColor colorBg = clrBackground);
-#else
-  cDvbOsd *osd;
-#endif
-  int cols, rows;
-public:
-  void Open(int w, int h);
-  void Close(void);
-  void Clear(void);
-  void Fill(int x, int y, int w, int h, eDvbColor color = clrBackground);
-  void SetBitmap(int x, int y, const cBitmap &Bitmap);
-  void ClrEol(int x, int y, eDvbColor color = clrBackground);
-  int CellWidth(void);
-  int LineHeight(void);
-  int Width(unsigned char c);
-  int WidthInCells(const char *s);
-  eDvbFont SetFont(eDvbFont Font);
-  void Text(int x, int y, const char *s, eDvbColor colorFg = clrWhite, eDvbColor colorBg = clrBackground);
-  void Flush(void);
 
   // Video format facilities:
 

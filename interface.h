@@ -4,14 +4,14 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.h 1.25 2002/04/19 13:17:15 kls Exp $
+ * $Id: interface.h 1.26 2002/05/18 13:43:20 kls Exp $
  */
 
 #ifndef __INTERFACE_H
 #define __INTERFACE_H
 
 #include "config.h"
-#include "dvbapi.h"
+#include "osdbase.h"
 #include "remote.h"
 #include "svdrp.h"
 

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.193 2002/05/18 12:35:21 kls Exp $
+ * $Id: menu.c 1.194 2002/05/18 13:08:42 kls Exp $
  */
 
 #include "menu.h"
@@ -2354,7 +2354,7 @@ void cDisplayVolume::Show(void)
      Interface->Fill(l, 0, p, 1, clrGreen);
      Interface->Fill(l + p, 0, Width() - l - p, 1, clrWhite);
 #else
-     cVolumeBar VolumeBar(Width() * dvbApi->CellWidth(), dvbApi->LineHeight(), Current, Total, Prompt);
+     cVolumeBar VolumeBar(Width() * cOsd::CellWidth(), cOsd::LineHeight(), Current, Total, Prompt);
      Interface->SetBitmap(0, 0, VolumeBar);
 #endif
      }
@@ -2719,7 +2719,7 @@ void cReplayControl::Hide(void)
 void cReplayControl::DisplayAtBottom(const char *s)
 {
   if (s) {
-     int w = dvbApi->WidthInCells(s);
+     int w = cOsd::WidthInCells(s);
      int d = max(Width() - w, 0) / 2;
      if (modeOnly) //XXX remove when displaying replay mode differently
         Interface->Fill(0, -1, Interface->Width(), 1, clrTransparent); //XXX remove when displaying replay mode differently
@@ -2795,8 +2795,8 @@ bool cReplayControl::ShowProgress(bool Initial)
         Interface->Fill(0, 1, p, 1, clrGreen);
         Interface->Fill(p, 1, Width() - p, 1, clrWhite);
 #else
-        cProgressBar ProgressBar(Width() * dvbApi->CellWidth(), dvbApi->LineHeight(), Current, Total, marks);
-        Interface->SetBitmap(0, dvbApi->LineHeight(), ProgressBar);
+        cProgressBar ProgressBar(Width() * cOsd::CellWidth(), cOsd::LineHeight(), Current, Total, marks);
+        Interface->SetBitmap(0, cOsd::LineHeight(), ProgressBar);
         if (!Initial)
            Interface->Flush();
 #endif

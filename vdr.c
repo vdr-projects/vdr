@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.111 2002/05/18 12:35:34 kls Exp $
+ * $Id: vdr.c 1.112 2002/05/18 14:03:22 kls Exp $
  */
 
 #include <getopt.h>
@@ -36,6 +36,7 @@
 #include "i18n.h"
 #include "interface.h"
 #include "menu.h"
+#include "osd.h"
 #include "plugin.h"
 #include "recording.h"
 #include "tools.h"
@@ -322,7 +323,7 @@ int main(int argc, char *argv[])
 
   // DVB interfaces:
 
-  if (!cDvbApi::Init())
+  if (!cDvbApi::Initialize())
      return 2;
 
   cDvbApi::SetPrimaryDvbApi(Setup.PrimaryDVB);
@@ -333,6 +334,10 @@ int main(int argc, char *argv[])
 
   if (!PluginManager.StartPlugins())
      return 2;
+
+  // OSD:
+
+  cOsd::Initialize();
 
   // Channel:
 
@@ -592,11 +597,12 @@ int main(int argc, char *argv[])
   delete Menu;
   delete ReplayControl;
   delete Interface;
+  cOsd::Shutdown();
   PluginManager.Shutdown(true);
   Setup.CurrentChannel = cDvbApi::CurrentChannel();
   Setup.CurrentVolume  = cDvbApi::CurrentVolume();
   Setup.Save();
-  cDvbApi::Cleanup();
+  cDvbApi::Shutdown();
   if (WatchdogTimeout > 0)
      dsyslog("max. latency time %d seconds", MaxLatencyTime);
   isyslog("exiting");

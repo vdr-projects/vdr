@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.c 1.3 2002/05/18 08:53:59 kls Exp $
+ * $Id: menuitems.c 1.4 2002/05/18 13:09:04 kls Exp $
  */
 
 #include "menuitems.h"
@@ -186,18 +186,18 @@ void cMenuEditStrItem::Set(void)
      strncpy(buf, value, pos);
      snprintf(buf + pos, sizeof(buf) - pos - 2, fmt, *(value + pos), value + pos + 1);
      int width = Interface->Width() - Interface->GetCols()[0];
-     if (cDvbApi::PrimaryDvbApi->WidthInCells(buf) <= width) {
+     if (cOsd::WidthInCells(buf) <= width) {
         // the whole buffer fits on the screen
         SetValue(buf);
         return;
         }
-     width *= cDvbApi::PrimaryDvbApi->CellWidth();
-     width -= cDvbApi::PrimaryDvbApi->Width('>'); // assuming '<' and '>' have the same with
+     width *= cOsd::CellWidth();
+     width -= cOsd::Width('>'); // assuming '<' and '>' have the same with
      int w = 0;
      int i = 0;
      int l = strlen(buf);
      while (i < l && w <= width)
-           w += cDvbApi::PrimaryDvbApi->Width(buf[i++]);
+           w += cOsd::Width(buf[i++]);
      if (i >= pos + 4) {
         // the cursor fits on the screen
         buf[i - 1] = '>';
@@ -214,7 +214,7 @@ void cMenuEditStrItem::Set(void)
      else
         i--;
      while (i >= 0 && w <= width)
-           w += cDvbApi::PrimaryDvbApi->Width(buf[i--]);
+           w += cOsd::Width(buf[i--]);
      buf[++i] = '<';
      SetValue(buf + i);
      }
