@@ -4,7 +4,7 @@
  * See the main source file 'osm.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 1.2 2000/02/27 17:23:07 kls Exp $
+ * $Id: osd.c 1.3 2000/04/23 09:52:39 kls Exp $
  */
 
 #include "osd.h"
@@ -35,7 +35,7 @@ cOsdItem::~cOsdItem()
   delete text;
 }
 
-void cOsdItem::SetText(char *Text, bool Copy)
+void cOsdItem::SetText(const char *Text, bool Copy)
 {
   delete text;
   text = Copy ? strdup(Text) : Text;

@@ -4,7 +4,7 @@
  * See the main source file 'osm.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.4 2000/04/22 13:09:49 kls Exp $
+ * $Id: dvbapi.c 1.5 2000/04/23 15:32:00 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -85,7 +85,7 @@ public:
   int Last(void) { return last; }
   int GetResume(void) { return resume; }
   bool StoreResume(int Index);
-  static char *Str(int Index);
+  static char *Str(int Index, bool WithFrame = false);
   };
 
 cIndexFile::cIndexFile(const char *FileName, bool Record)
@@ -256,7 +256,7 @@ bool cIndexFile::StoreResume(int Index)
   return false;
 }
 
-char *cIndexFile::Str(int Index)
+char *cIndexFile::Str(int Index, bool WithFrame)
 {
   static char buffer[16];
   int f = (Index % FRAMESPERSEC) + 1;
@@ -264,7 +264,7 @@ char *cIndexFile::Str(int Index)
   int m = s / 60 % 60; 
   int h = s / 3600; 
   s %= 60;
-  snprintf(buffer, sizeof(buffer), "%d:%02d:%02d.%02d", h, m, s, f);
+  snprintf(buffer, sizeof(buffer), WithFrame ? "%d:%02d:%02d.%02d" : "%d:%02d:%02d", h, m, s, f);
   return buffer;
 }
 
@@ -752,6 +752,7 @@ public:
   int Resume(void);
   bool Save(void);
   void SkipSeconds(int Seconds);
+  void GetIndex(int &Current, int &Total);
   };
 
 cReplayBuffer::cReplayBuffer(int *OutFile, const char *FileName)
@@ -847,6 +848,16 @@ void cReplayBuffer::SkipSeconds(int Seconds)
            NextFile(FileNumber, FileOffset);
         }
      }
+}
+
+void cReplayBuffer::GetIndex(int &Current, int &Total)
+{
+  if (index) {
+     Current = index->Get(fileNumber, fileOffset);
+     Total = index->Last();
+     }
+  else
+     Current = Total = -1;
 }
 
 void cReplayBuffer::SkipAudioBlocks(void)
@@ -1003,6 +1014,8 @@ cDvbApi::cDvbApi(void)
   leaveok(stdscr, TRUE);
   window = NULL;
 #endif
+  lastProgress = -1;
+  replayTitle = NULL;
 }
 
 cDvbApi::~cDvbApi()
@@ -1018,6 +1031,7 @@ cDvbApi::~cDvbApi()
      endwin();
 #endif
      }
+  delete replayTitle;
 }
 
 #ifdef DEBUG_OSD
@@ -1054,8 +1068,10 @@ void cDvbApi::Cmd(OSD_Command cmd, int color, int x0, int y0, int x1, int y1, co
 }
 #endif
 
-void cDvbApi::Open(int w, int h, int d)
+void cDvbApi::Open(int w, int h)
 {
+  int d = (h < 0) ? MenuLines + h : 0;
+  h = abs(h);
   cols = w;
   rows = h;
 #ifdef DEBUG_OSD
@@ -1081,6 +1097,8 @@ void cDvbApi::Open(int w, int h, int d)
   SETCOLOR(clrCyan,       0x00, 0xFC, 0xFC, 255);
   SETCOLOR(clrMagenta,    0xB0, 0x00, 0xFC, 255);
   SETCOLOR(clrWhite,      0xFC, 0xFC, 0xFC, 255);
+
+  lastProgress = -1;
 }
 
 void cDvbApi::Close(void)
@@ -1088,6 +1106,7 @@ void cDvbApi::Close(void)
 #ifndef DEBUG_OSD
   Cmd(OSD_Close);
 #endif
+  lastProgress = -1;
 }
 
 void cDvbApi::Clear(void)
@@ -1132,6 +1151,50 @@ void cDvbApi::Text(int x, int y, const char *s, eDvbColor colorFg, eDvbColor col
 #else
   Cmd(OSD_Text, (int(colorBg) << 16) | colorFg, x * charWidth, y * lineHeight, 1, 0, s);
 #endif
+}
+
+void cDvbApi::ShowProgress(bool Initial)
+{
+  int Current, Total;
+
+  if (GetIndex(&Current, &Total)) {
+     if (Initial) {
+        if (replayTitle)
+           Text(0, 0, replayTitle);
+        Text(-7, 2, cIndexFile::Str(Total));
+        }
+#ifdef DEBUG_OSD
+     int p = cols * Current / Total;
+     Fill(0, 1, p, 1, clrGreen);
+     Fill(p, 1, cols - p, 1, clrWhite);
+#else
+     int w = cols * charWidth;
+     int p = w * Current / Total;
+     if (p != lastProgress) {
+        int y1 = 1 * lineHeight;
+        int y2 = 2 * lineHeight - 1;
+        int x1, x2;
+        eDvbColor color;
+        if (lastProgress < p) {
+           x1 = lastProgress + 1;
+           x2 = p;
+           if (p >= w)
+              p = w - 1;
+           color = clrGreen;
+           }
+        else {
+           x1 = p + 1;
+           x2 = lastProgress;
+           color = clrWhite;
+           }
+        if (lastProgress < 0)
+           Cmd(OSD_FillBlock, clrWhite, 0, y1, w - 1, y2);
+        Cmd(OSD_FillBlock, color, x1, y1, x2, y2);
+        lastProgress = p;
+        }
+#endif
+     Text(0, 2, cIndexFile::Str(Current));
+     }
 }
 
 bool cDvbApi::SetChannel(int FrequencyMHz, char Polarization, int Diseqc, int Srate, int Vpid, int Apid, int Ca, int Pnr)
@@ -1312,7 +1375,7 @@ void cDvbApi::SetReplayMode(int Mode)
      }
 }
 
-bool cDvbApi::StartReplay(const char *FileName)
+bool cDvbApi::StartReplay(const char *FileName, const char *Title)
 {
   if (Recording()) {
      esyslog(LOG_ERR, "ERROR: StartReplay() called while recording - ignored!");
@@ -1320,6 +1383,13 @@ bool cDvbApi::StartReplay(const char *FileName)
      }
   StopReplay();
   if (videoDev >= 0) {
+
+     lastProgress = -1;
+     delete replayTitle;
+     if (Title) {
+        if ((replayTitle = strdup(Title)) == NULL)
+           esyslog(LOG_ERR, "ERROR: StartReplay: can't copy title '%s'", Title);
+        }
 
      // Check FileName:
 
@@ -1364,7 +1434,7 @@ bool cDvbApi::StartReplay(const char *FileName)
            bool FastRewind = false;
            int ResumeIndex = Buffer->Resume();
            if (ResumeIndex >= 0)
-              isyslog(LOG_INFO, "resuming replay at index %d (%s)", ResumeIndex, cIndexFile::Str(ResumeIndex));
+              isyslog(LOG_INFO, "resuming replay at index %d (%s)", ResumeIndex, cIndexFile::Str(ResumeIndex, true));
            for (;;) {
                if (Buffer->Read() < 0)
                   break;
@@ -1407,6 +1477,12 @@ bool cDvbApi::StartReplay(const char *FileName)
                                                  Buffer->SetMode(rmPlay);
                                                  Buffer->SkipSeconds(Seconds);
                                                  }
+                                            }
+                       case dvbGetIndex:    {
+                                              int Current, Total;
+                                              Buffer->GetIndex(Current, Total);
+                                              writeint(toMain, Current);
+                                              writeint(toMain, Total);
                                             }
                                             break;
                        }
@@ -1471,5 +1547,20 @@ void cDvbApi::Skip(int Seconds)
      writechar(toReplay, dvbSkip);
      writeint(toReplay, Seconds);
      }
+}
+
+bool cDvbApi::GetIndex(int *Current, int *Total)
+{
+  if (pidReplay) {
+     int total;
+     writechar(toReplay, dvbGetIndex);
+     if (readint(fromReplay, *Current) && readint(fromReplay, total)) {
+        if (Total)
+           *Total = total;
+        }
+     else
+        *Current = -1;
+     }
+  return *Current >= 0;
 }
 

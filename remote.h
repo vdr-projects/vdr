@@ -4,7 +4,7 @@
  * See the main source file 'osm.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remote.h 1.2 2000/04/16 13:53:50 kls Exp $
+ * $Id: remote.h 1.3 2000/04/23 14:40:16 kls Exp $
  */
 
 #ifndef __REMOTE_H
@@ -29,6 +29,7 @@ public:
   enum { modeH = 'h', modeB = 'b', modeS = 's' };
   cRcIo(char *DeviceName);
   ~cRcIo();
+  bool InputAvailable(bool Wait = false);
   void Flush(int WaitSeconds = 0);
   bool SetCode(unsigned char Code, unsigned short Address);
   bool SetMode(unsigned char Mode);

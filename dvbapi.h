@@ -4,7 +4,7 @@
  * See the main source file 'osm.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.h 1.4 2000/04/22 13:07:34 kls Exp $
+ * $Id: dvbapi.h 1.5 2000/04/23 10:08:27 kls Exp $
  */
 
 #ifndef __DVBAPI_H
@@ -62,12 +62,20 @@ private:
   int cols, rows;
   void Cmd(OSD_Command cmd, int color = 0, int x0 = 0, int y0 = 0, int x1 = 0, int y1 = 0, const void *data = NULL);
 public:
-  void Open(int w, int h, int d = 0);
+  void Open(int w, int h);
   void Close(void);
   void Clear(void);
   void Fill(int x, int y, int w, int h, eDvbColor color = clrBackground);
   void ClrEol(int x, int y, eDvbColor color = clrBackground);
   void Text(int x, int y, const char *s, eDvbColor colorFg = clrWhite, eDvbColor colorBg = clrBackground);
+
+  // Progress Display facilities
+
+private:
+  int lastProgress;
+  char *replayTitle;
+public:
+  void ShowProgress(bool Initial = false);
 
   // Channel facilities
 
@@ -81,6 +89,7 @@ private:
          dvbFastForward,
          dvbFastRewind,
          dvbSkip,
+         dvbGetIndex,
        };
   bool isMainProcess;
   pid_t pidRecord, pidReplay;
@@ -105,10 +114,11 @@ public:
        // returned.
   void StopRecord(void);
        // Stops the current recording session (if any).
-  bool StartReplay(const char *FileName);
+  bool StartReplay(const char *FileName, const char *Title = NULL);
        // Starts replaying the given file.
        // If there is already a replay session active, it will be stopped
        // and the new file will be played back.
+       // If provided Title will be used in the progress display.
   void StopReplay(void);
        // Stops the current replay session (if any).
   void PauseReplay(void);
@@ -122,6 +132,7 @@ public:
        // The sign of 'Seconds' determines the direction in which to skip.
        // Use a very large negative value to go all the way back to the
        // beginning of the recording.
+  bool GetIndex(int *Current, int *Total = NULL);
   };
   
 #endif //__DVBAPI_H

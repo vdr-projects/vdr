@@ -4,7 +4,7 @@
  * See the main source file 'osm.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.3 2000/04/15 15:10:05 kls Exp $
+ * $Id: tools.c 1.4 2000/04/23 15:30:17 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -40,8 +40,7 @@ char readchar(int filedes)
 
 bool readint(int filedes, int &n)
 {
-  //XXX timeout!!
-  return read(filedes, &n, sizeof(n));
+  return read(filedes, &n, sizeof(n)) == sizeof(n);
 }
 
 char *readline(FILE *f)

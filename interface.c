@@ -4,7 +4,7 @@
  * See the main source file 'osm.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.c 1.4 2000/04/22 13:51:48 kls Exp $
+ * $Id: interface.c 1.5 2000/04/23 15:11:41 kls Exp $
  */
 
 #include "interface.h"
@@ -33,10 +33,10 @@ void cInterface::Init(void)
 #endif
 }
 
-void cInterface::Open(int NumCols, int NumLines, int StartLine)
+void cInterface::Open(int NumCols, int NumLines)
 {
   if (!open++)
-     DvbApi.Open(NumCols, NumLines, StartLine);
+     DvbApi.Open(NumCols, NumLines);
 }
 
 void cInterface::Close(void)
@@ -47,23 +47,28 @@ void cInterface::Close(void)
      DvbApi.Close();
 }
 
-unsigned int cInterface::GetCh(void)
+unsigned int cInterface::GetCh(bool Wait)
 {
 #ifdef DEBUG_REMOTE
+  timeout(Wait ? 1000 :10);
   int c = getch();
   return (c > 0) ? c : 0;
 #else
-//XXX #ifdef DEBUG_OSD
-//XXX   wrefresh(window);//XXX
-//XXX #endif
-  unsigned int Command;
-  return RcIo.GetCommand(&Command) ? Command : 0;
+#ifdef DEBUG_OSD
+  timeout(0);
+  getch(); // just to make 'ncurses' display the window:
+#endif
+  if (Wait || RcIo.InputAvailable()) {
+     unsigned int Command;
+     return RcIo.GetCommand(&Command, NULL) ? Command : 0;
+     }
+  return 0;
 #endif
 }
 
-eKeys cInterface::GetKey(void)
+eKeys cInterface::GetKey(bool Wait)
 {
-  eKeys Key = keyFromWait != kNone ? keyFromWait : Keys.Get(GetCh());
+  eKeys Key = keyFromWait != kNone ? keyFromWait : Keys.Get(GetCh(Wait));
   keyFromWait = kNone;
   return Key;
 }

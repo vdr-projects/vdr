@@ -4,7 +4,7 @@
  * See the main source file 'osm.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.5 2000/04/22 15:21:08 kls Exp $
+ * $Id: menu.c 1.6 2000/04/23 15:38:16 kls Exp $
  */
 
 #include "menu.h"
@@ -915,16 +915,7 @@ cMenuRecordingItem::cMenuRecordingItem(cRecording *Recording)
 
 void cMenuRecordingItem::Set(void)
 {
-  char *buffer = NULL;
-  struct tm *t = localtime(&recording->start);
-  asprintf(&buffer, "%02d.%02d.%04d\t%02d:%02d\t%s",
-                    t->tm_mday,
-                    t->tm_mon + 1,
-                    t->tm_year + 1900,
-                    t->tm_hour,
-                    t->tm_min,
-                    recording->name);
-  SetText(buffer, false);
+  SetText(recording->Title('\t'));
 }
 
 // --- cMenuRecordings -------------------------------------------------------
@@ -957,7 +948,7 @@ eOSState cMenuRecordings::Play(void)
   cMenuRecordingItem *ri = (cMenuRecordingItem *)Get(Current());
   if (ri) {
 //XXX what if this recording's file is currently in use???
-     if (DvbApi.StartReplay(ri->recording->FileName()))
+     if (DvbApi.StartReplay(ri->recording->FileName(), ri->recording->Title()))
         return osEnd;
      }
   return osContinue;
@@ -1020,5 +1011,38 @@ eOSState cMenuMain::ProcessKey(eKeys Key)
     default: break;
     }
   return state;
+}
+
+// --- cReplayDisplay --------------------------------------------------------
+
+cReplayDisplay::cReplayDisplay(void)
+{
+  Interface.Open(MenuColumns, -3);
+  DvbApi.ShowProgress(true);
+}
+
+cReplayDisplay::~cReplayDisplay()
+{
+  Interface.Close();
+}
+
+eKeys cReplayDisplay::ProcessKey(eKeys Key)
+{
+  if (!DvbApi.Replaying())
+     return kOk; // will turn off replay display
+  DvbApi.ShowProgress();
+  switch (Key) {
+    case kBegin:
+    case kPause:
+    case kStop:
+    case kSearchBack:
+    case kSearchForward:
+    case kSkipBack:
+    case kSkipForward:   break; // will be done in main loop
+    case kMenu:          break; // allow direct switching to menu
+    case kOk:            break; // switches off replay display
+    default:             Key = kNone; // ignore anything not explicitly known here
+    }
+  return Key;
 }
 

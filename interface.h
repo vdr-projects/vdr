@@ -4,7 +4,7 @@
  * See the main source file 'osm.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.h 1.5 2000/04/22 13:07:16 kls Exp $
+ * $Id: interface.h 1.6 2000/04/23 14:57:13 kls Exp $
  */
 
 #ifndef __INTERFACE_H
@@ -20,16 +20,16 @@ private:
   int open;
   int cols[MaxCols];
   eKeys keyFromWait;
-  unsigned int GetCh(void);
+  unsigned int GetCh(bool Wait = true);
   void QueryKeys(void);
   void HelpButton(int Index, const char *Text, eDvbColor FgColor, eDvbColor BgColor);
   eKeys Wait(int Seconds = 1, bool KeepChar = false);
 public:
   cInterface(void);
   void Init(void);
-  void Open(int NumCols = MenuColumns, int NumLines = MenuLines, int StartLine = 0);
+  void Open(int NumCols = MenuColumns, int NumLines = MenuLines);
   void Close(void);
-  eKeys GetKey(void);
+  eKeys GetKey(bool Wait = true);
   void Clear(void);
   void ClearEol(int x, int y, eDvbColor Color = clrBackground);
   void SetCols(int *c);

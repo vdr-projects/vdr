@@ -4,7 +4,7 @@
  * See the main source file 'osm.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 1.2 2000/03/05 10:57:27 kls Exp $
+ * $Id: menu.h 1.3 2000/04/23 09:25:33 kls Exp $
  */
 
 #ifndef _MENU_H
@@ -18,4 +18,11 @@ public:
   virtual eOSState ProcessKey(eKeys Key);
   };
   
+class cReplayDisplay {
+public:
+  cReplayDisplay(void);
+  ~cReplayDisplay();
+  eKeys ProcessKey(eKeys Key);
+  };
+
 #endif //_MENU_H

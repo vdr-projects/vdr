@@ -4,7 +4,7 @@
  * See the main source file 'osm.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.3 2000/04/16 15:47:45 kls Exp $
+ * $Id: recording.c 1.4 2000/04/23 09:48:35 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -140,12 +140,14 @@ cRecording::cRecording(const char *FileName)
         name[p - FileName] = 0;
         }
      }
+  titleBuffer = NULL;
 }
 
 cRecording::~cRecording()
 {
   delete fileName;
   delete name;
+  delete titleBuffer;
 }
 
 const char *cRecording::FileName(void)
@@ -155,6 +157,23 @@ const char *cRecording::FileName(void)
      asprintf(&fileName, NAMEFORMAT, BaseDir, name, t->tm_year + 1900, t->tm_mon + 1, t->tm_mday, t->tm_hour, t->tm_min, priority, lifetime);
      }
   return fileName;
+}
+
+const char *cRecording::Title(char Delimiter)
+{
+  delete titleBuffer;
+  titleBuffer = NULL;
+  struct tm *t = localtime(&start);
+  asprintf(&titleBuffer, "%02d.%02d.%04d%c%02d:%02d%c%s",
+                         t->tm_mday,
+                         t->tm_mon + 1,
+                         t->tm_year + 1900,
+                         Delimiter,
+                         t->tm_hour,
+                         t->tm_min,
+                         Delimiter,
+                         name);
+  return titleBuffer;
 }
 
 bool cRecording::Delete(void)

@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: osm.c 1.7 2000/04/22 13:35:37 kls Exp $
+ * $Id: osm.c 1.8 2000/04/23 14:57:57 kls Exp $
  */
 
 #include <signal.h>
@@ -65,6 +65,7 @@ int main(int argc, char *argv[])
   if (signal(SIGTERM, SignalHandler) == SIG_IGN) signal(SIGTERM, SIG_IGN);
 
   cMenuMain *Menu = NULL;
+  cReplayDisplay *ReplayDisplay = NULL;
   cTimer *Timer = NULL;
   int dcTime = 0, dcNumber = 0;
   int LastChannel = -1;
@@ -72,9 +73,11 @@ int main(int argc, char *argv[])
   while (!Interrupted) {
         // Channel display:
         if (CurrentChannel != LastChannel) {
-           cChannel *channel = Channels.Get(CurrentChannel);
-           if (channel)
-              Interface.DisplayChannel(CurrentChannel + 1, channel->name);
+           if (!Menu && !ReplayDisplay) {
+              cChannel *channel = Channels.Get(CurrentChannel);
+              if (channel)
+                 Interface.DisplayChannel(CurrentChannel + 1, channel->name);
+              }
            LastChannel = CurrentChannel;
            }
         // Direct Channel Select (action):
@@ -90,6 +93,7 @@ int main(int argc, char *argv[])
            AssertFreeDiskSpace();
            if (!Timer && (Timer = cTimer::GetMatch()) != NULL) {
               DELETENULL(Menu);
+              DELETENULL(ReplayDisplay);
               // make sure the timer won't be deleted:
               Timer->SetRecording(true);
               // switch to channel:
@@ -114,7 +118,7 @@ int main(int argc, char *argv[])
               }
            }
         // User Input:
-        eKeys key = Interface.GetKey();
+        eKeys key = Interface.GetKey(!ReplayDisplay);
         if (Menu) {
            switch (Menu->ProcessKey(key)) {
              default: if (key != kMenu)
@@ -124,7 +128,7 @@ int main(int argc, char *argv[])
                          break;
              }
            }
-        else {
+        else if (!ReplayDisplay || (key = ReplayDisplay->ProcessKey(key)) != kNone) {
            switch (key) {
              // Direct Channel Select (input):
              case k0: case k1: case k2: case k3: case k4: case k5: case k6: case k7: case k8: case k9:
@@ -145,13 +149,16 @@ int main(int argc, char *argv[])
                                      Interface.Error("Already recording!");
                                   break;
              case kPause:         DvbApi.PauseReplay(); break;
-             case kStop:          DvbApi.StopReplay(); break;
+             case kStop:          DELETENULL(ReplayDisplay);
+                                  DvbApi.StopReplay();
+                                  break;
              case kSearchBack:    DvbApi.FastRewind(); break;
              case kSearchForward: DvbApi.FastForward(); break;
              case kSkipBack:      DvbApi.Skip(-60); break;
              case kSkipForward:   DvbApi.Skip(60); break;
              // Menu Control:
-             case kMenu: Menu = new cMenuMain;
+             case kMenu: DELETENULL(ReplayDisplay);
+                         Menu = new cMenuMain;
                          Menu->Display();
                          break;
              // Up/Down Channel Select:
@@ -164,8 +171,12 @@ int main(int argc, char *argv[])
                          }
                          break;
              // Viewing Control:
-             case kOk:   LastChannel = -1; break; // forces channel display
-                         //TODO if replaying switch to progress display instead
+             case kOk:   if (ReplayDisplay)
+                            DELETENULL(ReplayDisplay);
+                         else if (DvbApi.Replaying())
+                            ReplayDisplay = new cReplayDisplay;
+                         else
+                            LastChannel = -1; break; // forces channel display
              default:    break;
              }
            }

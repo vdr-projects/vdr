@@ -4,7 +4,7 @@
  * See the main source file 'osm.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remote.c 1.4 2000/04/22 15:21:41 kls Exp $
+ * $Id: remote.c 1.5 2000/04/23 14:41:21 kls Exp $
  */
 
 #include "remote.h"
@@ -51,9 +51,8 @@ cRcIo::~cRcIo()
      close(f);
 }
 
-int cRcIo::ReceiveByte(bool Wait)
+bool cRcIo::InputAvailable(bool Wait)
 {
-  // Returns the byte if one was received within a timeout, -1 otherwise
   if (f >= 0) {
      fd_set set;
      struct timeval timeout;
@@ -61,13 +60,19 @@ int cRcIo::ReceiveByte(bool Wait)
      timeout.tv_usec = Wait ? 0 : 10000;
      FD_ZERO(&set);
      FD_SET(f, &set);
-     if (select(FD_SETSIZE, &set, NULL, NULL, &timeout)  > 0) {
-        if (FD_ISSET(f, &set)) {
-           unsigned char b;
-           if (read(f, &b, 1) == 1)
-              return b;
-           }
-        }
+     if (select(FD_SETSIZE, &set, NULL, NULL, &timeout)  > 0)
+        return FD_ISSET(f, &set);
+     }
+  return false;
+}
+
+int cRcIo::ReceiveByte(bool Wait)
+{
+  // Returns the byte if one was received within a timeout, -1 otherwise
+  if (InputAvailable(Wait)) {
+     unsigned char b;
+     if (read(f, &b, 1) == 1)
+        return b;
      }
   return -1;
 }

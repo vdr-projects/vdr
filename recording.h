@@ -4,7 +4,7 @@
  * See the main source file 'osm.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 1.3 2000/04/16 15:44:09 kls Exp $
+ * $Id: recording.h 1.4 2000/04/23 09:50:40 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -17,9 +17,12 @@
 void AssertFreeDiskSpace(void);
 
 class cRecording : public cListObject {
-public:
+  friend class cRecordings;
+private:
+  char *titleBuffer;
   char *name;
   char *fileName;
+public:
   time_t start;
   int priority;
   int lifetime;
@@ -28,6 +31,7 @@ public:
   cRecording(const char *FileName);
   ~cRecording();
   const char *FileName(void);
+  const char *Title(char Delimiter = ' ');
   bool Delete(void);
        // Changes the file name so that it will no longer be visible in the OSM
        // Returns false in case of error
