@@ -7,7 +7,7 @@
  * DVD support initially written by Andreas Schultz <aschultz@warp10.net>
  * based on dvdplayer-0.5 by Matjaz Thaler <matjaz.thaler@guest.arnes.si>
  *
- * $Id: dvbapi.c 1.145 2002/01/26 15:28:41 kls Exp $
+ * $Id: dvbapi.c 1.146 2002/01/26 15:39:48 kls Exp $
  */
 
 //#define DVDDEBUG        1
@@ -507,7 +507,7 @@ cRecordBuffer::~cRecordBuffer()
 bool cRecordBuffer::RunningLowOnDiskSpace(void)
 {
   if (time(NULL) > lastDiskSpaceCheck + DISKCHECKINTERVAL) {
-     uint Free = FreeDiskSpaceMB(fileName.Name());
+     int Free = FreeDiskSpaceMB(fileName.Name());
      lastDiskSpaceCheck = time(NULL);
      if (Free < MINFREEDISKSPACE) {
         dsyslog(LOG_INFO, "low disk space (%d MB, limit is %d MB)", Free, MINFREEDISKSPACE);

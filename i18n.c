@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.48 2002/01/26 15:21:40 kls Exp $
+ * $Id: i18n.c 1.49 2002/01/27 13:11:23 kls Exp $
  *
  * Slovenian translations provided by Miha Setina <mihasetina@softhome.net>
  * Italian   translations provided by Alberto Carraro <bertocar@tin.it>
@@ -1327,6 +1327,14 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "bas",
+    "", // TODO
+  },
+  { "free",
+    "frei",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
     "", // TODO
   },
   { "Jump: ", // note the trailing blank

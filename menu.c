@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.144 2002/01/26 11:09:25 kls Exp $
+ * $Id: menu.c 1.145 2002/01/27 13:09:49 kls Exp $
  */
 
 #include "menu.h"
@@ -15,6 +15,7 @@
 #include "config.h"
 #include "eit.h"
 #include "i18n.h"
+#include "videodir.h"
 
 #define MENUTIMEOUT     120 // seconds
 #define MAXWAIT4EPGINFO  10 // seconds
@@ -1935,6 +1936,18 @@ cMenuMain::cMenuMain(bool Replaying, eOSState State)
 :cOsdMenu(tr("Main"))
 {
   digit = 0;
+
+  // Title with disk usage:
+
+#define MB_PER_MINUTE 30 // this is just an estimate!
+
+  char buffer[40];
+  int FreeMB;
+  int Percent = VideoDiskSpace(&FreeMB);
+  int Hours = int(double(FreeMB) / MB_PER_MINUTE / 60);
+  int Minutes = (FreeMB / MB_PER_MINUTE) % 60;
+  snprintf(buffer, sizeof(buffer), "%s  -  Disk %d%%  -  %2d:%02d %s", tr("Main"), Percent, Hours, Minutes, tr("free"));
+  SetTitle(buffer);
 
   // Basic menu items:
 

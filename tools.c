@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.52 2002/01/26 12:04:32 kls Exp $
+ * $Id: tools.c 1.53 2002/01/27 12:36:23 kls Exp $
  */
 
 #include "tools.h"
@@ -223,10 +223,12 @@ const char *AddDirectory(const char *DirName, const char *FileName)
 
 #define DFCMD  "df -m -P '%s'"
 
-uint FreeDiskSpaceMB(const char *Directory)
+int FreeDiskSpaceMB(const char *Directory, int *UsedMB)
 {
   //TODO Find a simpler way to determine the amount of free disk space!
-  uint Free = 0;
+  if (UsedMB)
+     *UsedMB = 0;
+  int Free = 0;
   char *cmd = NULL;
   asprintf(&cmd, DFCMD, Directory);
   FILE *p = popen(cmd, "r");
@@ -234,8 +236,10 @@ uint FreeDiskSpaceMB(const char *Directory)
      char *s;
      while ((s = readline(p)) != NULL) {
            if (strchr(s, '/')) {
-              uint available;
-              sscanf(s, "%*s %*d %*d %u", &available);
+              int used, available;
+              sscanf(s, "%*s %*d %d %d", &used, &available);
+              if (UsedMB)
+                 *UsedMB = used;
               Free = available;
               break;
               }
