@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.49 2001/01/18 17:03:34 kls Exp $
+ * $Id: dvbapi.c 1.50 2001/01/18 19:53:54 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -844,6 +844,12 @@ int cRecordBuffer::Synchronize(void)
 
   pictureType = NO_PICTURE;
 
+  //XXX remove this once the buffer is handled with two separate threads:
+  if (!synced && Free() < 100000) {
+     dsyslog(LOG_INFO, "unable to synchronize, dropped %d bytes", Available());
+     Clear();
+     return 0;
+     }
   for (int i = 0; Available() > MINVIDEODATA && i < MINVIDEODATA; i++) {
       if (Byte(i) == 0 && Byte(i + 1) == 0 && Byte(i + 2) == 1) {
          switch (Byte(i + 3)) {
@@ -2176,8 +2182,7 @@ bool cDvbApi::SetChannel(int ChannelNumber, int FrequencyMHz, char Polarization,
         freq -= Setup.LnbFrequLo;
      else
         freq -= Setup.LnbFrequHi;
-     front.channel_flags = Ca ? DVB_CHANNEL_CA : DVB_CHANNEL_FTA;
-     front.pnr       = Pnr;
+     front.pnr       = 0;
      front.freq      = freq * 1000000UL;
      front.diseqc    = Diseqc;
      front.srate     = Srate * 1000;

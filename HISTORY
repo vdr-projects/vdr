@@ -347,3 +347,5 @@ Video Disk Recorder Revision History
 - The current channel is now saved in the 'setup.conf' file when VDR is cancelled,
   and will be restored next time it is started (thanks to Deti Fliegl).
 - The EIT scanning thread is now locked when switching channels to avoid problems.
+- Encrypted channels can now be selected even without knowing the PNR (however, it
+  is still necessary for the EPG info).
