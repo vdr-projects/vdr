@@ -409,3 +409,7 @@ Video Disk Recorder Revision History
   that every timer may use the primary interface.
 - The 'active' field of a timer will now be explicitly set to '1' if the user
   modifies an active timer (see FORMATS for details).
+- The new command line option -w can be used to activate a watchdog that makes
+  VDR exit in case the main program loop does not respond for more than the
+  given number of seconds. This is mainly useful in combination with the new
+  'runvdr' script that restarts VDR in case is has exited.

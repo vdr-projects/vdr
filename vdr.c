@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.53 2001/02/11 14:51:44 kls Exp $
+ * $Id: vdr.c 1.54 2001/02/24 16:18:43 kls Exp $
  */
 
 #include <getopt.h>
@@ -55,30 +55,41 @@ static void SignalHandler(int signum)
   signal(signum, SignalHandler);
 }
 
+static void Watchdog(int signum)
+{
+  // Something terrible must have happened that prevented the 'alarm()' from
+  // being called in time, so let's get out of here:
+  esyslog(LOG_ERR, "PANIC: watchdog timer expired - exiting!");
+  exit(1);
+}
+
 int main(int argc, char *argv[])
 {
   // Command line options:
 
 #define DEFAULTSVDRPPORT 2001
+#define DEFAULTWATCHDOG     0 // seconds
 
   int SVDRPport = DEFAULTSVDRPPORT;
   const char *ConfigDirectory = NULL;
   bool DaemonMode = false;
+  int WatchdogTimeout = DEFAULTWATCHDOG;
 
   static struct option long_options[] = {
-      { "config", required_argument, NULL, 'c' },
-      { "daemon", no_argument,       NULL, 'd' },
-      { "device", required_argument, NULL, 'D' },
-      { "help",   no_argument,       NULL, 'h' },
-      { "log",    required_argument, NULL, 'l' },
-      { "port",   required_argument, NULL, 'p' },
-      { "video",  required_argument, NULL, 'v' },
+      { "config",   required_argument, NULL, 'c' },
+      { "daemon",   no_argument,       NULL, 'd' },
+      { "device",   required_argument, NULL, 'D' },
+      { "help",     no_argument,       NULL, 'h' },
+      { "log",      required_argument, NULL, 'l' },
+      { "port",     required_argument, NULL, 'p' },
+      { "video",    required_argument, NULL, 'v' },
+      { "watchdog", required_argument, NULL, 'w' },
       { 0 }
     };
   
   int c;
   int option_index = 0;
-  while ((c = getopt_long(argc, argv, "c:dD:hl:p:v:", long_options, &option_index)) != -1) {
+  while ((c = getopt_long(argc, argv, "c:dD:hl:p:v:w:", long_options, &option_index)) != -1) {
         switch (c) {
           case 'c': ConfigDirectory = optarg;
                     break;
@@ -94,23 +105,26 @@ int main(int argc, char *argv[])
                     abort();
                     break;
           case 'h': printf("Usage: vdr [OPTION]\n\n"           // for easier orientation, this is column 80|
-                           "  -c DIR,   --config=DIR  read config files from DIR (default is to read them\n"
-                           "                          from the video directory)\n"
-                           "  -h,       --help        display this help and exit\n"
-                           "  -d,       --daemon      run in daemon mode\n"
-                           "  -D NUM,   --device=NUM  use only the given DVB device (NUM = 0, 1, 2...)\n"
-                           "                          there may be several -D options (default: all DVB\n"
-                           "                          devices will be used)\n"
-                           "  -l LEVEL, --log=LEVEL   set log level (default: 3)\n"
-                           "                          0 = no logging, 1 = errors only,\n"
-                           "                          2 = errors and info, 3 = errors, info and debug\n"
-                           "  -p PORT,  --port=PORT   use PORT for SVDRP (default: %d)\n"
-                           "                          0 turns off SVDRP\n"
-                           "  -v DIR,   --video=DIR   use DIR as video directory (default is %s)\n"
+                           "  -c DIR,   --config=DIR   read config files from DIR (default is to read them\n"
+                           "                           from the video directory)\n"
+                           "  -h,       --help         display this help and exit\n"
+                           "  -d,       --daemon       run in daemon mode\n"
+                           "  -D NUM,   --device=NUM   use only the given DVB device (NUM = 0, 1, 2...)\n"
+                           "                           there may be several -D options (default: all DVB\n"
+                           "                           devices will be used)\n"
+                           "  -l LEVEL, --log=LEVEL    set log level (default: 3)\n"
+                           "                           0 = no logging, 1 = errors only,\n"
+                           "                           2 = errors and info, 3 = errors, info and debug\n"
+                           "  -p PORT,  --port=PORT    use PORT for SVDRP (default: %d)\n"
+                           "                           0 turns off SVDRP\n"
+                           "  -v DIR,   --video=DIR    use DIR as video directory (default is %s)\n"
+                           "  -w SEC,   --watchdog=SEC activate the watchdog timer with a timeout of SEC\n"
+                           "                           seconds (default: %d); '0' disables the watchdog\n"
                            "\n"
                            "Report bugs to <vdr-bugs@cadsoft.de>\n",
                            DEFAULTSVDRPPORT,
-                           VideoDirectory
+                           VideoDirectory,
+                           DEFAULTWATCHDOG
                            );
                     return 0;
                     break;
@@ -134,6 +148,16 @@ int main(int argc, char *argv[])
           case 'v': VideoDirectory = optarg;
                     while (optarg && *optarg && optarg[strlen(optarg) - 1] == '/')
                           optarg[strlen(optarg) - 1] = 0;
+                    break;
+          case 'w': if (isnumber(optarg)) {
+                       int t = atoi(optarg);
+                       if (t >= 0) {
+                          WatchdogTimeout = t;
+                          break;
+                          }
+                       }
+                    fprintf(stderr, "vdr: invalid watchdog timeout: %s\n", optarg);
+                    abort();
                     break;
           default:  abort();
           }
@@ -213,6 +237,8 @@ int main(int argc, char *argv[])
   if (signal(SIGINT,  SignalHandler) == SIG_IGN) signal(SIGINT,  SIG_IGN);
   if (signal(SIGTERM, SignalHandler) == SIG_IGN) signal(SIGTERM, SIG_IGN);
   if (signal(SIGPIPE, SignalHandler) == SIG_IGN) signal(SIGPIPE, SIG_IGN);
+  if (WatchdogTimeout > 0)
+     if (signal(SIGALRM, Watchdog)   == SIG_IGN) signal(SIGALRM, SIG_IGN);
 
   // Main program loop:
 
@@ -221,8 +247,22 @@ int main(int argc, char *argv[])
   int LastChannel = -1;
   int PreviousChannel = cDvbApi::CurrentChannel();
   time_t LastActivity = time(NULL);
+  int MaxLatencyTime = 0;
+
+  if (WatchdogTimeout > 0) {
+     dsyslog(LOG_INFO, "setting watchdog timer to %d seconds", WatchdogTimeout);
+     alarm(WatchdogTimeout); // Initial watchdog timer start
+     }
 
   while (!Interrupted) {
+        // Restart the Watchdog timer:
+        if (WatchdogTimeout > 0) {
+           int LatencyTime = WatchdogTimeout - alarm(WatchdogTimeout);
+           if (LatencyTime > MaxLatencyTime) {
+              MaxLatencyTime = LatencyTime;
+              dsyslog(LOG_INFO, "max. latency time %d seconds", MaxLatencyTime);
+              }
+           }
         // Channel display:
         if (!EITScanner.Active() && cDvbApi::CurrentChannel() != LastChannel) {
            if (!Menu)
@@ -344,6 +384,8 @@ int main(int argc, char *argv[])
   delete ReplayControl;
   delete Interface;
   cDvbApi::Cleanup();
+  if (WatchdogTimeout > 0)
+     dsyslog(LOG_INFO, "max. latency time %d seconds", MaxLatencyTime);
   isyslog(LOG_INFO, "exiting");
   if (SysLogLevel > 0)
      closelog();
