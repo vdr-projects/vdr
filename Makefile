@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 1.26 2001/08/15 13:56:11 kls Exp $
+# $Id: Makefile 1.27 2001/08/31 13:13:30 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -59,25 +59,12 @@ font: genfontfile fontfix.c fontosd.c
 
 # Dependencies:
 
-config.o    : config.c config.h dvbapi.h dvbosd.h dvd.h eit.h font.h i18n.h interface.h remote.h svdrp.h thread.h tools.h
-dvbapi.o    : dvbapi.c $(AC3DIR)/ac3.h config.h dvbapi.h dvbosd.h dvd.h eit.h font.h recording.h remux.h ringbuffer.h thread.h tools.h videodir.h
-dvbosd.o    : dvbosd.c dvbosd.h font.h tools.h
-dvd.o       : dvd.c dvd.h
-eit.o       : eit.c config.h dvbapi.h dvbosd.h dvd.h eit.h font.h $(DTVDIR)/libdtv.h thread.h tools.h videodir.h
-font.o      : font.c font.h fontfix.c fontosd.c tools.h
-i18n.o      : i18n.c config.h dvbapi.h dvbosd.h dvd.h eit.h font.h i18n.h thread.h tools.h
-interface.o : interface.c config.h dvbapi.h dvbosd.h dvd.h eit.h font.h i18n.h interface.h remote.h svdrp.h thread.h tools.h
-menu.o      : menu.c config.h dvbapi.h dvbosd.h dvd.h eit.h font.h i18n.h interface.h menu.h osd.h recording.h remote.h svdrp.h thread.h tools.h
-osd.o       : osd.c config.h dvbapi.h dvbosd.h dvd.h eit.h font.h i18n.h interface.h osd.h remote.h svdrp.h thread.h tools.h
-recording.o : recording.c config.h dvbapi.h dvbosd.h dvd.h eit.h font.h interface.h recording.h remote.h svdrp.h thread.h tools.h videodir.h
-remote.o    : remote.c config.h dvbapi.h dvbosd.h dvd.h eit.h font.h remote.h thread.h tools.h
-remux.o     : remux.c remux.h thread.h tools.h
-ringbuffer.o: ringbuffer.c ringbuffer.h thread.h tools.h
-svdrp.o     : svdrp.c config.h dvbapi.h dvbosd.h dvd.h eit.h font.h interface.h remote.h svdrp.h thread.h tools.h
-thread.o    : thread.c thread.h tools.h
-tools.o     : tools.c tools.h
-vdr.o       : vdr.c config.h dvbapi.h dvbosd.h dvd.h eit.h font.h i18n.h interface.h menu.h osd.h recording.h remote.h svdrp.h thread.h tools.h videodir.h
-videodir.o  : videodir.c tools.h videodir.h
+MAKEDEP = g++ -MM -MG
+DEPFILE = .dependencies
+$(DEPFILE): Makefile
+	@$(MAKEDEP) $(DEFINES) $(INCLUDES) $(OBJS:%.o=%.c) > $@
+
+include $(DEPFILE)
 
 # The main program:
 
@@ -111,7 +98,7 @@ $(DTVLIB) $(DTVDIR)/libdtv.h:
 clean:
 	make -C $(AC3DIR) clean
 	make -C $(DTVDIR) clean
-	-rm -f $(OBJS) vdr genfontfile genfontfile.o core *~
+	-rm -f $(OBJS) $(DEPFILE) vdr genfontfile genfontfile.o core *~
 fontclean:
 	-rm -f fontfix.c fontosd.c
 CLEAN: clean fontclean
