@@ -835,3 +835,5 @@ Video Disk Recorder Revision History
 
 - Completed storing the current audio volume in the setup.conf file (thanks
   to Andy Grobb).
+- Fixed closing the progress display with the "Back" key when in trick mode
+  and Setup.ShowReplayMode is enabled.

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.131 2001/10/21 14:28:14 kls Exp $
+ * $Id: menu.c 1.132 2001/10/27 10:20:04 kls Exp $
  */
 
 #include "menu.h"
@@ -2365,6 +2365,8 @@ cReplayControl::cReplayControl(void)
 cReplayControl::~cReplayControl()
 {
   Hide();
+  if (Setup.ShowReplayMode)
+     Hide(); // the initial Hide() may have reopened the small mode display window
   dvbApi->StopReplay();
 }
 
