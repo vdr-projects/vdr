@@ -443,3 +443,4 @@ Video Disk Recorder Revision History
   opposed to the previous "highest to lowest" search) in order to not use the
   CAM card for FTA recordings unless necessary. This is only important for
   systems with three or more DVB cards.
+- Added the "statdvb2vdr" tool from Hans-Peter Raschke.
