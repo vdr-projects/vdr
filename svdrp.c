@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.33 2002/02/24 14:16:03 kls Exp $
+ * $Id: svdrp.c 1.34 2002/03/08 17:17:05 kls Exp $
  */
 
 #include "svdrp.h"
@@ -247,6 +247,12 @@ const char *HelpPages[] = {
   "    Updates a timer. Settings must be in the same format as returned\n"
   "    by the LSTT command. If a timer with the same channel, day, start\n"
   "    and stop time does not yet exists, it will be created.",
+  "VOLU [ <number> | + | - | mute ]\n"
+  "    Set the audio volume to the given number (which is limited to the range\n"
+  "    0...255). If the special options '+' or '-' are given, the volume will\n"
+  "    be turned up or down, respectively. The option 'mute' will toggle the\n"
+  "    audio muting. If no option is given, the current audio volume level will\n"
+  "    be returned.",
   "QUIT\n"
   "    Exit vdr (SVDRP).\n"
   "    You can also hit Ctrl-D to exit.",
@@ -920,6 +926,28 @@ void cSVDRP::CmdUPDT(const char *Option)
      Reply(501, "Missing timer settings");
 }
 
+void cSVDRP::CmdVOLU(const char *Option)
+{
+  if (*Option) {
+     if (isnumber(Option))
+        cDvbApi::PrimaryDvbApi->SetVolume(strtol(Option, NULL, 10), true);
+     else if (strcmp(Option, "+") == 0)
+        cDvbApi::PrimaryDvbApi->SetVolume(VOLUMEDELTA);
+     else if (strcmp(Option, "-") == 0)
+        cDvbApi::PrimaryDvbApi->SetVolume(-VOLUMEDELTA);
+     else if (strcasecmp(Option, "MUTE") == 0)
+        cDvbApi::PrimaryDvbApi->ToggleMute();
+     else {
+        Reply(501, "Unknown option: \"%s\"", Option);
+        return;
+        }
+     }
+  if (cDvbApi::PrimaryDvbApi->IsMute())
+     Reply(250, "Audio is mute");
+  else
+     Reply(250, "Audio volume is %d", cDvbApi::CurrentVolume());
+}
+
 #define CMD(c) (strcasecmp(Cmd, c) == 0)
 
 void cSVDRP::Execute(char *Cmd)
@@ -960,8 +988,9 @@ void cSVDRP::Execute(char *Cmd)
   else if (CMD("NEWC"))  CmdNEWC(s);
   else if (CMD("NEWT"))  CmdNEWT(s);
   else if (CMD("NEXT"))  CmdNEXT(s);
-  else if (CMD("UPDT"))  CmdUPDT(s);
   else if (CMD("PUTE"))  CmdPUTE(s);
+  else if (CMD("UPDT"))  CmdUPDT(s);
+  else if (CMD("VOLU"))  CmdVOLU(s);
   else if (CMD("QUIT"))  Close();
   else                   Reply(500, "Command unrecognized: \"%s\"", Cmd);
 }

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.h 1.65 2002/03/08 15:11:50 kls Exp $
+ * $Id: dvbapi.h 1.66 2002/03/08 17:16:31 kls Exp $
  */
 
 #ifndef __DVBAPI_H
@@ -43,7 +43,8 @@
 #define MAXVIDEOFILESIZE 2000 // MB
 #define MINVIDEOFILESIZE  100 // MB
 
-#define MAXVOLUME 255
+#define MAXVOLUME         255
+#define VOLUMEDELTA         5 // used to increase/decrease the volume
 
 const char *IndexToHMSF(int Index, bool WithFrame = false);
       // Converts the given index to a string, optionally containing the frame number.
@@ -307,6 +308,7 @@ private:
   bool mute;
   int volume;
 public:
+  bool IsMute(void) { return mute; }
   void ToggleMute(void);
        // Turns the volume off or on.
   void SetVolume(int Volume, bool Absolute = false);

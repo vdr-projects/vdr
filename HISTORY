@@ -1078,3 +1078,5 @@ Video Disk Recorder Revision History
   is currently being replayed.
 - New command line option '-m' to mute audio of the primary DVB device at
   startup (suggested by Mirko Günther).
+- The new SVDRP command VOLU can be used to control the audio volume (suggested
+  by Mirko Günther).

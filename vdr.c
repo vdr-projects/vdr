@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.99 2002/03/08 16:34:29 kls Exp $
+ * $Id: vdr.c 1.100 2002/03/08 17:14:43 kls Exp $
  */
 
 #include <getopt.h>
@@ -49,8 +49,6 @@
 #define ACTIVITYTIMEOUT 60 // seconds before starting housekeeping
 #define SHUTDOWNWAIT   300 // seconds to wait in user prompt before automatic shutdown
 #define MANUALSTART    600 // seconds the next timer must be in the future to assume manual start
-
-#define VOLUMEDELTA      5 // used to increase/decrease the volume
 
 static int Interrupted = 0;
 
