@@ -1937,3 +1937,4 @@ Video Disk Recorder Revision History
   were mixed up).
 - Fixed handling the LOG_LOCALn parameters in the -l option (thanks to Dimitrios
   Dimitrakos).
+- Changed EIT processing to always read a full section.

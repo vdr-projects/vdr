@@ -16,7 +16,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.c 1.63 2003/01/06 15:05:46 kls Exp $
+ * $Id: eit.c 1.64 2003/01/26 12:21:15 kls Exp $
  ***************************************************************************/
 
 #include "eit.h"
@@ -1240,17 +1240,16 @@ void cSIProcessor::Action()
          {
             if (pfd[a].revents & POLLIN)
             {
-               /* read section */
-               unsigned char buf[4096+1]; // max. allowed size for any EIT section (+1 for safety ;-)
-               if (safe_read(filters[a].handle, buf, 3) == 3)
+               // read section
+               unsigned char buf[4096]; // max. allowed size for any EIT section
+               int r = safe_read(filters[a].handle, buf, sizeof(buf));
+               if (r > 3) // minimum number of bytes necessary to get section length
                {
-                  int seclen = ((buf[1] & 0x0F) << 8) | (buf[2] & 0xFF);
+                  int seclen = ((buf[1] & 0x0F) << 8) | (buf[2] & 0xFF) + 3;
                   int pid = filters[a].pid;
-                  int n = safe_read(filters[a].handle, buf + 3, seclen);
-                  if (n == seclen)
+                  if (seclen == r)
                   {
-                     seclen += 3;
-                     //dsyslog("Received pid 0x%02x with table ID 0x%02x and length of %04d\n", pid, buf[0], seclen);
+                     //dsyslog("Received pid 0x%04X with table ID 0x%02X and length of %4d\n", pid, buf[0], seclen);
                      switch (pid)
                      {
                         case 0x00:
@@ -1335,10 +1334,10 @@ void cSIProcessor::Action()
                            break;
                      }
                   }
-                  /*XXX this just fills up the log file - shouldn't we rather try to re-sync?
+                  /*
                   else
-                     dsyslog("read incomplete section - seclen = %d, n = %d", seclen, n);
-                  XXX*/
+                     dsyslog("read incomplete section - seclen = %d, r = %d", seclen, r);
+                  */
                }
             }
          }
