@@ -3422,3 +3422,5 @@ Video Disk Recorder Revision History
   cEvent::FixEpgBugs() (thanks to Wolfgang Rohdewald).
 - Avoiding unnecessary calls to SetPid() in cDvbDevice::SetAudioTrackDevice()
   (thanks to Marco Schlüßler).
+- Fixed calling cStatus::MsgChannelSwitch() in cDevice::SetChannel() (thanks to
+  Marco Schlüßler).

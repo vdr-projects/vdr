@@ -1148,6 +1148,7 @@ Marco Schlüßler <marco@lordzodiac.de>
  for reporting a missing 'resultSkipped = 0' in cRemux::Clear()
  for reporting a missing reset of the 'repacker' in cTS2PES::Clear()
  for avoiding unnecessary calls to SetPid() in cDvbDevice::SetAudioTrackDevice()
+ for fixing calling cStatus::MsgChannelSwitch() in cDevice::SetChannel()
 
 Jürgen Schmitz <j.schmitz@web.de>
  for reporting a bug in displaying the current channel when switching via the SVDRP

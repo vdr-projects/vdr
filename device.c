@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.92 2005/02/13 09:51:48 kls Exp $
+ * $Id: device.c 1.93 2005/02/19 12:20:39 kls Exp $
  */
 
 #include "device.h"
@@ -571,22 +571,24 @@ eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
      else
         Result = scrFailed;
      Channels.Unlock();
-     }
-
-  if (Result == scrOk) {
-     if (LiveView && IsPrimaryDevice()) {
-        currentChannel = Channel->Number();
-        // Set the available audio tracks:
-        ClrAvailableTracks();
-        currentAudioTrack = ttAudioFirst;
-        for (int i = 0; i < MAXAPIDS; i++)
-            SetAvailableTrack(ttAudio, i, Channel->Apid(i), Channel->Alang(i));
-        if (Setup.UseDolbyDigital) {
-           for (int i = 0; i < MAXDPIDS; i++)
-               SetAvailableTrack(ttDolby, i, Channel->Dpid(i), Channel->Dlang(i));
+     if (Result == scrOk) {
+        if (LiveView && IsPrimaryDevice()) {
+           // Set the available audio tracks:
+           ClrAvailableTracks();
+           currentAudioTrack = ttAudioFirst;
+           for (int i = 0; i < MAXAPIDS; i++)
+                SetAvailableTrack(ttAudio, i, Channel->Apid(i), Channel->Alang(i));
+           if (Setup.UseDolbyDigital) {
+              for (int i = 0; i < MAXDPIDS; i++)
+                  SetAvailableTrack(ttDolby, i, Channel->Dpid(i), Channel->Dlang(i));
+              }
+           EnsureAudioTrack(true);
            }
-        EnsureAudioTrack(true);
         }
+     }
+  if (Result == scrOk) {
+     if (LiveView && IsPrimaryDevice())
+        currentChannel = Channel->Number();
      cStatus::MsgChannelSwitch(this, Channel->Number()); // only report status if channel switch successfull
      }
 
