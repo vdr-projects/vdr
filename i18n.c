@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.134 2003/09/11 13:51:56 kls Exp $
+ * $Id: i18n.c 1.135 2003/10/24 12:45:39 kls Exp $
  *
  * Translations provided by:
  *
@@ -87,6 +87,24 @@ const tI18nPhrase Phrases[] = {
     "Romaneste",
     "Magyar",
     "Català",
+  },
+  // The character set needed for this language (this MUST be the second phrase!):
+  { "iso8859-1",
+    "iso8859-1",
+    "iso8859-1",
+    "iso8859-1",
+    "iso8859-1",
+    "iso8859-1",
+    "iso8859-1",
+    "iso8859-1",
+    "iso8859-1",
+    "iso8859-1",
+    "iso8859-1",
+    "iso8859-1",
+    "iso8859-1",
+    "iso8859-1",
+    "iso8859-1",
+    "iso8859-1",
   },
   // Menu titles:
   { "VDR",
@@ -3823,4 +3841,9 @@ const char *I18nTranslate(const char *s, const char *Plugin)
 const char * const * I18nLanguages(void)
 {
   return &Phrases[0][0];
+}
+
+const char * const * I18nCharSets(void)
+{
+  return &Phrases[1][0];
 }

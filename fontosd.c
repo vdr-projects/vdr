@@ -1,4 +1,4 @@
-cFont::tPixelData FontOsd[][29] = {
+cFont::tPixelData FontOsd_iso8859_1[][29] = {
   {             // 32
      6, 27,
      0x00000000,  // ......

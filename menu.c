@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.273 2003/10/03 14:36:20 kls Exp $
+ * $Id: menu.c 1.274 2003/10/19 15:13:05 kls Exp $
  */
 
 #include "menu.h"
@@ -1985,6 +1985,7 @@ private:
   virtual void Set(void);
 public:
   cMenuSetupOSD(void) { Set(); }
+  virtual ~cMenuSetupOSD() { cFont::SetCode(I18nCharSets()[Setup.OSDLanguage]); }
   virtual eOSState ProcessKey(eKeys Key);
   };
 
@@ -2011,6 +2012,7 @@ eOSState cMenuSetupOSD::ProcessKey(eKeys Key)
   if (data.OSDLanguage != osdLanguage) {
      int OriginalOSDLanguage = Setup.OSDLanguage;
      Setup.OSDLanguage = data.OSDLanguage;
+     cFont::SetCode(I18nCharSets()[Setup.OSDLanguage]);
      Set();
      Display();
      Setup.OSDLanguage = OriginalOSDLanguage;

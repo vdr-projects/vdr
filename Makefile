@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 1.58 2003/08/09 11:09:45 kls Exp $
+# $Id: Makefile 1.59 2003/10/24 12:53:12 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -39,8 +39,9 @@ OBJS = audio.o channels.o ci.o config.o cutter.o device.o diseqc.o dvbdevice.o d
        receiver.o recorder.o recording.o remote.o remux.o ringbuffer.o sources.o\
        spu.o status.o svdrp.o thread.o timers.o tools.o transfer.o vdr.o videodir.o
 
-OSDFONT = -adobe-helvetica-medium-r-normal--23-*-100-100-p-*-iso8859-1
-FIXFONT = -adobe-courier-bold-r-normal--25-*-100-100-m-*-iso8859-1
+FIXFONT_ISO8859_1 = -adobe-courier-bold-r-normal--25-*-100-100-m-*-iso8859-1
+OSDFONT_ISO8859_1 = -adobe-helvetica-medium-r-normal--23-*-100-100-p-*-iso8859-1
+SMLFONT_ISO8859_1 = -adobe-helvetica-medium-r-normal--18-*-100-100-p-*-iso8859-1
 
 ifndef NO_KBD
 DEFINES += -DREMOTE_KBD
@@ -64,7 +65,7 @@ DEFINES += -DVFAT
 endif
 
 all: vdr
-font: genfontfile fontfix.c fontosd.c
+font: genfontfile fontfix.c fontosd.c fontsml.c
 	@echo "font files created."
 
 # Implicit rules:
@@ -89,9 +90,11 @@ vdr: $(OBJS) $(DTVLIB)
 # The font files:
 
 fontfix.c:
-	./genfontfile "cFont::tPixelData FontFix" "$(FIXFONT)" > $@
+	./genfontfile "cFont::tPixelData FontFix_iso8859_1" "$(FIXFONT_ISO8859_1)" > $@
 fontosd.c:
-	./genfontfile "cFont::tPixelData FontOsd" "$(OSDFONT)" > $@
+	./genfontfile "cFont::tPixelData FontOsd_iso8859_1" "$(OSDFONT_ISO8859_1)" > $@
+fontsml.c:
+	./genfontfile "cFont::tPixelData FontSml_iso8859_1" "$(SMLFONT_ISO8859_1)" > $@
 
 # The font file generator:
 
@@ -145,6 +148,6 @@ clean:
 	-rm -rf include
 	-rm -rf srcdoc
 fontclean:
-	-rm -f fontfix.c fontosd.c
+	-rm -f fontfix.c fontosd.c fontsml.c
 CLEAN: clean fontclean
 

@@ -2438,7 +2438,7 @@ Video Disk Recorder Revision History
 
 - Improved cDvbDevice::StillPicture() (thanks to Thomas Heiligenmann).
 
-2003-10-18: Version 1.3.0
+2003-10-24: Version 1.3.0
 
 - Changed thread handling to make it work with NPTL ("Native Posix Thread Library").
   Thanks to Jon Burgess, Andreas Schultz, Werner Fink and Stefan Huelswitt.
@@ -2452,3 +2452,6 @@ Video Disk Recorder Revision History
 - Added "Slovak Link" and "Czech Link" to 'ca.conf' (thanks to Emil Petersky).
 - Mutexes are now created with PTHREAD_MUTEX_ERRORCHECK_NP, which makes the
   'lockingTid' stuff obsolete (thanks to Stefan Huelswitt).
+- Changed font handling to allow language specific character sets.
+- Adopted the small font character set from the "Elchi" patch (originally
+  provided by Alessio Sangalli).

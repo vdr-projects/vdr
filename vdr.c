@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.169 2003/09/14 09:36:54 kls Exp $
+ * $Id: vdr.c 1.170 2003/10/19 15:14:42 kls Exp $
  */
 
 #include <getopt.h>
@@ -357,6 +357,8 @@ int main(int argc, char *argv[])
         KeyMacros.Load(AddDirectory(ConfigDirectory, "keymacros.conf"), true)
         ))
      return 2;
+
+  cFont::SetCode(I18nCharSets()[Setup.OSDLanguage]);
 
   // DVB interfaces:
 

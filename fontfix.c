@@ -1,4 +1,4 @@
-cFont::tPixelData FontFix[][28] = {
+cFont::tPixelData FontFix_iso8859_1[][28] = {
   {             // 32
      15, 26,
      0x00000000,  // ...............
