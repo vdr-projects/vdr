@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.25 2000/07/28 15:55:31 kls Exp $
+ * $Id: vdr.c 1.26 2000/07/29 18:19:12 kls Exp $
  */
 
 #include <getopt.h>
@@ -131,7 +131,7 @@ int main(int argc, char *argv[])
      abort();
 #endif
      }
-  isyslog(LOG_INFO, "started");
+  isyslog(LOG_INFO, "VDR version %s started", VDRVERSION);
 
   // DVB interfaces:
 
