@@ -4,7 +4,7 @@
  * See the main source file 'osm.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remote.c 1.3 2000/04/16 13:54:16 kls Exp $
+ * $Id: remote.c 1.4 2000/04/22 15:21:41 kls Exp $
  */
 
 #include "remote.h"
@@ -211,12 +211,12 @@ bool cRcIo::Number(int n, bool Hex)
 
 bool cRcIo::String(char *s)
 {
-  char *chars = mode == modeH ? "0123456789ABCDEF" : "0123456789-EHLP ";
+  const char *chars = mode == modeH ? "0123456789ABCDEF" : "0123456789-EHLP ";
   int n = 0;
 
   for (int i = 0; *s && i < 4; s++, i++) {
       n <<= 4;
-      for (char *c = chars; *c; c++) {
+      for (const char *c = chars; *c; c++) {
           if (*c == *s) {
              n |= c - chars;
              break;

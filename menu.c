@@ -4,7 +4,7 @@
  * See the main source file 'osm.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.4 2000/04/16 15:45:44 kls Exp $
+ * $Id: menu.c 1.5 2000/04/22 15:21:08 kls Exp $
  */
 
 #include "menu.h"
@@ -428,7 +428,7 @@ void cMenuEditStrItem::Set(void)
   char buf[1000];
   if (pos >= 0) {
      strncpy(buf, value, pos);
-     char *s = value[pos] != ' ' ? value + pos + 1 : "";
+     const char *s = value[pos] != ' ' ? value + pos + 1 : "";
      snprintf(buf + pos, sizeof(buf) - pos - 2, "[%c]%s", *(value + pos), s);
      SetValue(buf);
      }
