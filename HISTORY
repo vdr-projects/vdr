@@ -2866,3 +2866,6 @@ Video Disk Recorder Revision History
 - Fixed handling colors in cDvbSpuPalette::yuv2rgb() (thanks to Marco Schlüßler).
 - Made some functions of cFont virtual to allow implementing dummy fonts for the
   'curses' skin.
+- The new plugin 'skincurses' re-implements the functionality that was previously
+  available by compiling VDR with DEBUG_OSD. Some things may not yet work as they
+  should, but it's a starting point.

@@ -1,0 +1,16 @@
+This is a "plugin" for the Video Disk Recorder (VDR).
+
+Written by:                  Klaus Schmidinger <kls@cadsoft.de>
+
+Project's homepage:          www.cadsoft.de/vdr
+
+Latest version available at: www.cadsoft.de/vdr
+
+See the file COPYING for license information.
+
+Description:
+
+The 'skincurses' plugin implements a VDR skin that works in a
+shell window, using only plain text output. It re-implements
+what used to be available by compiling VDR versions before 1.3.7
+with the DEBUG_OSD macro set.
