@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: descriptor.h 1.3 2004/01/12 16:17:47 kls Exp $
+ *   $Id: descriptor.h 1.4 2004/01/24 14:49:00 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -372,6 +372,15 @@ protected:
    virtual void Parse();
 private:
    const descr_linkage *s;
+};
+
+class ISO639LanguageDescriptor : public Descriptor {
+public:
+   char languageCode[3];
+protected:
+   virtual void Parse();
+private:
+   const descr_iso_639_language *s;
 };
 
 //a descriptor currently unimplemented in this library

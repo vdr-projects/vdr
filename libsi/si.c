@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: si.c 1.5 2004/01/12 22:19:34 kls Exp $
+ *   $Id: si.c 1.6 2004/01/24 14:49:00 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -323,6 +323,9 @@ Descriptor *Descriptor::getDescriptor(CharArray da, DescriptorTagDomain domain) 
          case LinkageDescriptorTag:
             d=new LinkageDescriptor();
             break;
+         case ISO639LanguageDescriptorTag:
+            d=new ISO639LanguageDescriptor();
+            break;
 
          //note that it is no problem to implement one
          //of the unimplemented descriptors.
@@ -335,7 +338,6 @@ Descriptor *Descriptor::getDescriptor(CharArray da, DescriptorTagDomain domain) 
          case DataStreamAlignmentDescriptorTag:
          case TargetBackgroundGridDescriptorTag:
          case VideoWindowDescriptorTag:
-         case ISO639LanguageDescriptorTag:
          case SystemClockDescriptorTag:
          case MultiplexBufferUtilizationDescriptorTag:
          case CopyrightDescriptorTag:

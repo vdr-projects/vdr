@@ -2614,3 +2614,4 @@ Video Disk Recorder Revision History
 2004-01-24: Version 1.3.3
 
 - Completed the Finnish OSD texts (thanks to Rolf Ahrenberg).
+- Added ISO639LanguageDescriptor to 'libsi'.

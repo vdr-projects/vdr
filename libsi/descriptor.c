@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: descriptor.c 1.3 2004/01/12 16:17:20 kls Exp $
+ *   $Id: descriptor.c 1.4 2004/01/24 14:49:00 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -512,6 +512,14 @@ int LinkageDescriptor::getServiceId() const {
 
 LinkageType LinkageDescriptor::getLinkageType() const {
    return (LinkageType)s->linkage_type;
+}
+
+void ISO639LanguageDescriptor::Parse() {
+   unsigned int offset=0;
+   data.setPointerAndOffset<const descr_iso_639_language>(s, offset);
+   languageCode[0]=s->lang_code1;
+   languageCode[1]=s->lang_code2;
+   languageCode[2]=s->lang_code3;
 }
 
 void ApplicationSignallingDescriptor::Parse() {
