@@ -2330,7 +2330,7 @@ Video Disk Recorder Revision History
 - Avoiding an unnecessary stop of an ongoing Transfer Mode when starting a
   recording on the primary device.
 
-2003-08-30: Version 1.2.5pre1
+2003-08-31: Version 1.2.5pre1
 
 - Now explicitly handling exit value 0 and 2 in 'runvdr'.
 - Added a missing 'w' to the allowed characters for Finnish and Swedish (thanks
@@ -2345,3 +2345,4 @@ Video Disk Recorder Revision History
   directly (thanks to Oliver Endriss). This also improves navigating through DVD
   menus with the DVD plugin.
 - Fixed handling extra blanks in plugin command lines.
+- Actually implemented the SVDRP command DELC.

@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.54 2003/08/30 09:35:00 kls Exp $
+ * $Id: svdrp.c 1.55 2003/08/31 11:24:47 kls Exp $
  */
 
 #include "svdrp.h"
@@ -464,8 +464,30 @@ void cSVDRP::CmdCLRE(const char *Option)
 
 void cSVDRP::CmdDELC(const char *Option)
 {
-  //TODO combine this with menu action (timers must be updated)
-  Reply(502, "DELC not yet implemented");
+  if (*Option) {
+     if (isnumber(Option)) {
+        cChannel *channel = Channels.GetByNumber(strtol(Option, NULL, 10));
+        if (channel) {
+           for (cTimer *timer = Timers.First(); timer; timer = Timers.Next(timer)) {
+               if (timer->Channel() == channel) {
+                  Reply(550, "Channel \"%s\" is in use by timer %d", Option, timer->Index() + 1);
+                  return;
+                  }
+               }
+           Channels.Del(channel);
+           Channels.ReNumber();
+           Channels.Save();
+           isyslog("channel %s deleted", Option);
+           Reply(250, "Channel \"%s\" deleted", Option);
+           }
+        else
+           Reply(501, "Channel \"%s\" not defined", Option);
+        }
+     else
+        Reply(501, "Error in channel number \"%s\"", Option);
+     }
+  else
+     Reply(501, "Missing channel number");
 }
 
 void cSVDRP::CmdDELR(const char *Option)
