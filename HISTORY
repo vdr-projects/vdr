@@ -1483,3 +1483,35 @@ Video Disk Recorder Revision History
 
 - Fixed an incomplete initialization of the filter parameters in eit.c (thanks
   to Jeremy Hall).
+- Fixed the 'newplugin' script for use with the NEWSTRUCT driver (thanks to
+  Andreas Schultz for reporting this one). If you have already created a plugin
+  directory and Makefile with 'newplugin', please apply the following patch to it:
+
+  -------------------------------------------------------
+  --- Makefile    2002/06/10 16:24:06     1.4
+  +++ Makefile    2002/09/17 15:36:36     1.5
+  @@ -15,7 +15,12 @@
+ 
+   ### The directory environment:
+ 
+  +ifdef NEWSTRUCT
+  +DVBDIR = ../../../../DVB/include
+  +DEFINES += -DNEWSTRUCT
+  +else
+   DVBDIR = ../../../../DVB/ost/include
+  +endif
+   VDRDIR = ../../..
+   VDRINC = $(VDRDIR)/include
+   LIBDIR = ../../lib
+  @@ -34,7 +39,7 @@
+ 
+   INCLUDES = -I$(VDRINC) -I$(DVBDIR)
+ 
+  -DEFINES = -DPLUGIN_NAME_I18N='"$(PLUGIN)"'
+  +DEFINES += -DPLUGIN_NAME_I18N='"$(PLUGIN)"'
+ 
+   ### The object files (add further files here):
+  -------------------------------------------------------
+
+  This is the diff for the 'setup' example that comes with VDR, so your line
+  numbers may be different.

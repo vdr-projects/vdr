@@ -174,6 +174,7 @@ Andreas Schultz <aschultz@warp10.net>
  OSD capabilities
  for implementing an SPU decoder
  for fixing opening /dev/video in cDvbDevice::GrabImage() in case of NEWSTRUCT driver
+ for reporting a problem with plugin Makefiles and the NEWSTRUCT driver
 
 Aaron Holtzman
  for writing 'ac3dec'
