@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 1.11 2003/04/18 13:48:47 kls Exp $
+ * $Id: ci.c 1.12 2003/04/18 14:16:32 kls Exp $
  */
 
 /* XXX TODO
@@ -1320,6 +1320,7 @@ cCiHandler *cCiHandler::CreateCiHandler(const char *FileName)
         }
      else
         LOG_ERROR_STR(FileName);
+     close(fd_ca);
      }
   return NULL;
 }
