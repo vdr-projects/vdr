@@ -798,7 +798,7 @@ Video Disk Recorder Revision History
 - The shutdown program (defined with the '-s' option) now also gets the channel
   number and recording title of the timer (see INSTALL).
 - New channel data for 'Premiere One', 'Premiere X-Action', 'Fox Kids Türkce'
-  and 'N24' (thanks to Andreas Share, Ulrich Röder and Uwe Scheffler). Note that
-  if you are using the default 'channels.conf' or 'channels.conf.cable' files you
-  may need to check any exiting timers to see whether they still use the correct
-  channel number.
+  and 'N24' (thanks to Andreas Share, Ulrich Röder, Uwe Scheffler and Simon
+  Bauschulte). Note that if you are using the default 'channels.conf' or
+  'channels.conf.cable' files you may need to check any exiting timers to see
+  whether they still use the correct channel number.
