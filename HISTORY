@@ -1254,3 +1254,10 @@ Video Disk Recorder Revision History
   and '-P' used to load plugins. This first step implements the complete "outer"
   shell for plugins. The "inner" access to VDR data structures will follow.
 - The VDR version number is now displayed in the title line of the "Setup" menu.
+
+2002-05-10: Version 1.1.1
+
+- Separated the actual DVB hardware OSD implementation from the abstract OSD
+  interface. 'osdbase.c/.h' now implements the abstract OSD, while 'dvbosd.c/.h'
+  is the actual implementation for the DVB hardware. This is in preparation for
+  allowing additional kinds of OSD hardware implementations.
