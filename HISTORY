@@ -3052,3 +3052,5 @@ Video Disk Recorder Revision History
 - Removed the usleep() call from cDvbPlayer::Action() to make VDR run on NPTL
   systems (thanks to Alfred Zastrow). The NPTL check at startup has also been
   removed.
+- Taking the complete size of available data into account when deciding whether
+  to clear the transfer buffer to avoid overflows (thanks to Reinhard Nissl).

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: transfer.c 1.17 2004/10/16 09:22:58 kls Exp $
+ * $Id: transfer.c 1.18 2004/10/23 13:35:08 kls Exp $
  */
 
 #include "transfer.h"
@@ -65,7 +65,7 @@ void cTransfer::Action(void)
         int Count;
         uchar *b = ringBuffer->Get(Count);
         if (b) {
-           if (Count > TRANSFERBUFSIZE * 2 / 3) {
+           if (ringBuffer->Available() > TRANSFERBUFSIZE * 9 / 10) {
               // If the buffer runs full, we have no chance of ever catching up
               // since the data comes in at the same rate as it goes out (it's "live").
               // So let's clear the buffer instead of suffering from permanent
