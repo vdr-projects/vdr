@@ -3131,3 +3131,4 @@ Video Disk Recorder Revision History
 - Fixed handling of pmAudioOnlyBlack (thanks to Stefan Huelswitt).
 - Fixed a short glitch when starting a recording on the primary device while
   in replay or transfer mode (thanks to Marco Schlüßler).
+- Added missing initialization of cEvent::seen.
