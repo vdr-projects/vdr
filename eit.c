@@ -16,7 +16,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.c 1.26 2001/10/07 14:08:40 kls Exp $
+ * $Id: eit.c 1.27 2001/10/07 14:35:25 kls Exp $
  ***************************************************************************/
 
 #include "eit.h"
@@ -401,7 +401,6 @@ void cEventInfo::FixEpgBugs(void)
            pSubtitle = NULL;
            }
         }
-     }
 
      // Pro7 sometimes repeats the Title in the Subtitle:
      //
@@ -472,6 +471,7 @@ void cEventInfo::FixEpgBugs(void)
         if (t->tm_hour * 3600 + t->tm_min * 60 + t->tm_sec <= 6 * 3600)
            tTime += 24 * 3600;
         }
+     }
 }
 
 // --- cSchedule -------------------------------------------------------------
