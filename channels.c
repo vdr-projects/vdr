@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 1.1 2002/10/05 13:22:28 kls Exp $
+ * $Id: channels.c 1.2 2002/10/06 11:53:45 kls Exp $
  */
 
 #include "channels.h"
@@ -200,7 +200,10 @@ cChannel::cChannel(const cChannel *Channel)
 
 static int PrintParameter(char *p, char Name, int Value)
 {
-  return Value > 0 && Value != 999 ? sprintf(p, "%c%d", Name, Value) : 0;
+  //XXX return Value > 0 && Value != 999 ? sprintf(p, "%c%d", Name, Value) : 0;
+  //XXX let's store 999 for the moment, until we generally switch to the NEWSTRUCT
+  //XXX driver (where the defaults will all be AUTO)
+  return Value > 0 && (Value != 999 || (Name != 'I' && Name != 'C')) ? sprintf(p, "%c%d", Name, Value) : 0;
 }
 
 const char *cChannel::ParametersToString(void)
@@ -229,8 +232,17 @@ static const char *ParseParameter(const char *s, int &Value, const tChannelParam
      errno = 0;
      int n = strtol(s, &p, 10);
      if (!errno && p != s) {
-        Value = MapToDriver(n, Map);
-        if (Value >= 0)
+        //XXX let's tolerate 999 for the moment, until we generally switch to the NEWSTRUCT
+        //XXX driver (where the defaults will all be AUTO)
+        //XXX Value = MapToDriver(n, Map);
+        //XXX if (Value >= 0)
+        //XXX return p;
+        int v = MapToDriver(n, Map);
+        if (v >= 0) {
+           Value = v;
+           return p;
+           }
+        else if (v == 999)
            return p;
         }
      }
