@@ -2307,3 +2307,5 @@ Video Disk Recorder Revision History
 - Fixed freezing replay if a timer starts while in Transfer Mode from the device
   used by the timer, and the timer needs a different transponder (thanks to
   Richard Robson for reporting this one).
+- Fixed toggling channels with the '0' key (thanks to Mirko Günther for reporting
+  this one).

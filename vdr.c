@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.163 2003/08/16 09:15:28 kls Exp $
+ * $Id: vdr.c 1.164 2003/08/16 15:21:35 kls Exp $
  */
 
 #include <getopt.h>
@@ -457,8 +457,8 @@ int main(int argc, char *argv[])
   cOsdObject *Temp = NULL;
   int LastChannel = -1;
   int LastTimerChannel = -1;
-  int PreviousChannel = cDevice::CurrentChannel();
-  int LastLastChannel = PreviousChannel;
+  int PreviousChannel[2] = { 1, 1 };
+  int PreviousChannelIndex = 0;
   time_t LastChannelChanged = time(NULL);
   time_t LastActivity = 0;
   int MaxLatencyTime = 0;
@@ -500,10 +500,8 @@ int main(int argc, char *argv[])
            LastChannel = cDevice::CurrentChannel();
            LastChannelChanged = time(NULL);
            }
-        if (LastLastChannel != LastChannel && time(NULL) - LastChannelChanged >= ZAPTIMEOUT) {
-           PreviousChannel = LastLastChannel;
-           LastLastChannel = LastChannel;
-           }
+        if (time(NULL) - LastChannelChanged >= ZAPTIMEOUT && LastChannel != PreviousChannel[0] && LastChannel != PreviousChannel[1])
+           PreviousChannel[PreviousChannelIndex ^= 1] = LastChannel;
         // Timers and Recordings:
         if (!Timers.BeingEdited()) {
            time_t Now = time(NULL); // must do both following calls with the exact same time!
@@ -682,9 +680,9 @@ int main(int argc, char *argv[])
            switch (key) {
              // Toggle channels:
              case k0: {
-                  int CurrentChannel = cDevice::CurrentChannel();
-                  Channels.SwitchTo(PreviousChannel);
-                  PreviousChannel = CurrentChannel;
+                  if (PreviousChannel[PreviousChannelIndex ^ 1] == LastChannel || LastChannel != PreviousChannel[0] && LastChannel != PreviousChannel[1])
+                     PreviousChannelIndex ^= 1;
+                  Channels.SwitchTo(PreviousChannel[PreviousChannelIndex ^= 1]);
                   break;
                   }
              // Direct Channel Select:
