@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 1.11 2002/08/16 09:16:38 kls Exp $
+ * $Id: dvbplayer.c 1.12 2002/08/24 14:59:35 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -307,7 +307,7 @@ void cDvbPlayer::Action(void)
      isyslog("resuming replay at index %d (%s)", readIndex, IndexToHMSF(readIndex, true));
 
   running = true;
-  while (running && NextFile()) {
+  while (running && (NextFile() || readIndex >= 0 || ringBuffer->Available())) {
         cPoller Poller;
         if (!readFrame)
            Poller.Add(replayFile, false);
@@ -317,7 +317,7 @@ void cDvbPlayer::Action(void)
 
            // Read the next frame from the file:
 
-           if (!readFrame) {
+           if (!readFrame && (replayFile >= 0 || readIndex >= 0)) {
               if (playMode != pmStill) {
                  int r = 0;
                  if (playMode == pmFast || (playMode == pmSlow && playDir == pdBackward)) {
@@ -326,7 +326,7 @@ void cDvbPlayer::Action(void)
                     int Index = index->GetNextIFrame(readIndex, playDir == pdForward, &FileNumber, &FileOffset, &Length, true);
                     if (Index >= 0) {
                        if (!NextFile(FileNumber, FileOffset))
-                          break;
+                          continue;
                        }
                     else {
                        // can't call Play() here, because those functions may only be
@@ -347,8 +347,11 @@ void cDvbPlayer::Action(void)
                     uchar FileNumber;
                     int FileOffset, Length;
                     readIndex++;
-                    if (!(index->Get(readIndex, &FileNumber, &FileOffset, NULL, &Length) && NextFile(FileNumber, FileOffset)))
-                       break;
+                    if (!(index->Get(readIndex, &FileNumber, &FileOffset, NULL, &Length) && NextFile(FileNumber, FileOffset))) {
+                       readIndex = -1;
+                       eof = true;
+                       continue;
+                       }
                     r = ReadFrame(replayFile, b, Length, sizeof(b));
                     }
                  else // allows replay even if the index file is missing
@@ -557,7 +560,7 @@ void cDvbPlayer::SkipSeconds(int Seconds)
         if (Index > 0)
            Index = index->GetNextIFrame(Index, false, NULL, NULL, NULL, true);
         if (Index >= 0)
-           readIndex = writeIndex = Index - 1; // Input() will first increment it!
+           readIndex = writeIndex = Index - 1; // Action() will first increment it!
         }
      Play();
      }

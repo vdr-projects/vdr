@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.66 2002/08/11 11:48:11 kls Exp $
+ * $Id: recording.c 1.67 2002/08/24 14:09:49 kls Exp $
  */
 
 #include "recording.h"
@@ -756,6 +756,9 @@ void cRecordingUserCommand::InvokeCommand(const char *State, const char *Recordi
 // The maximum time to wait before giving up while catching up on an index file:
 #define MAXINDEXCATCHUP   2 // seconds
 
+// The minimum age of an index file for considering it no longer to be written:
+#define MININDEXAGE      10 // seconds
+
 cIndexFile::cIndexFile(const char *FileName, bool Record)
 :resumeFile(FileName)
 {
@@ -838,6 +841,12 @@ bool cIndexFile::CatchUp(int Index)
      for (int i = 0; i <= MAXINDEXCATCHUP && (Index < 0 || Index >= last); i++) {
          struct stat buf;
          if (fstat(f, &buf) == 0) {
+            if (time(NULL) - buf.st_mtime > MININDEXAGE) {
+               // apparently the index file is not being written any more
+               close(f);
+               f = -1;
+               return false;
+               }
             int newLast = buf.st_size / sizeof(tIndex) - 1;
             if (newLast > last) {
                if (size <= newLast) {
@@ -897,7 +906,7 @@ bool cIndexFile::Get(int Index, uchar *FileNumber, int *FileOffset, uchar *Pictu
 {
   if (index) {
      CatchUp(Index);
-     if (Index >= 0 && Index <= last) {
+     if (Index >= 0 && Index < last) {
         *FileNumber = index[Index].number;
         *FileOffset = index[Index].offset;
         if (PictureType)
