@@ -824,3 +824,5 @@ Video Disk Recorder Revision History
 - Closing all open file descriptors when calling external programs.
 - The menu timeout now also works when pressing the "Back" button during replay
   to enter the "Recordings" menu.
+- Updated 'channels.conf' for the "Bundesliga" channels of Premiere World
+  (thanks to Helmut Schächner).
