@@ -781,3 +781,6 @@ Video Disk Recorder Revision History
 - New command line option '-r' to define a command that gets called before and
   after each recording (see INSTALL for details).
 - Implemented a check to see whether the system time is running linearly.
+- Writing the current time (as seen by VDR) into the log file when starting
+  a timer recording (this may help debugging cases where timers don't start
+  at the expected time).
