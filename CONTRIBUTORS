@@ -122,3 +122,6 @@ Uwe Scheffler <UweScheffler@t-online.de>
 
 Matjaz Thaler <matjaz.thaler@guest.arnes.si>
  for improving AC3 decoding when replaying DVDs
+
+Artur Skawina <skawina@geocities.com>
+ for improving the font file generation in the Makefile

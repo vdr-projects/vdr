@@ -633,3 +633,4 @@ Video Disk Recorder Revision History
   system.
 - Changed the 'Eject DVD' button text to a simple 'Eject' (the German text
   was too long...).
+- Made the font file generation more stable (thanks to Artur Skawina).
