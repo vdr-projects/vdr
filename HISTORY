@@ -3380,3 +3380,4 @@ Video Disk Recorder Revision History
   back to live mode if a recording is currently active on the primary device.
 - Fixed a possible freeze in pause mode in case a device's PlayPesPacket() function
   permanently returns 0 (thanks to Reinhard Nissl and Olaf Titz).
+- Completed the Finnish OSD texts (thanks to Rolf Ahrenberg).
