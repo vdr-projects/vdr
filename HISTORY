@@ -2321,3 +2321,5 @@ Video Disk Recorder Revision History
 - Completed the Finnish OSD texts (thanks to Rolf Ahrenberg).
 - Empty values in setup.conf are no longer treated as an error (thanks to Andreas
   Kool for reporting this one).
+- Added a note about the config files of plugins to INSTALL (thanks to Thomas
+  Keil).

@@ -302,8 +302,11 @@ Configuration files:
 There are several configuration files that hold information about
 channels, remote control keys, timers etc. By default these files are
 assumed to be located in the video directory, but a different directory
-can be used with the '-c' option. For starters just copy all *.conf files from
-the VDR directory into your video directory.
+can be used with the '-c' option. Plugins assume their configuration files
+in a subdirectory called "plugins" of this directory.
+
+For starters just copy all *.conf files from the VDR directory into your
+video directory.
 
 The configuration files can be edited with any text editor, or will be written
 by the 'vdr' program if any changes are made inside the on-screen menus.

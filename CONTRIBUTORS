@@ -749,6 +749,7 @@ Thomas Keil <tk@commedia-group.com>
  that a channel only qualifies as "previous" if it has been selected for at least
  3 seconds
  for reporting a bug in handling the color buttons in the "Edit channel" menu
+ for adding a note about the config files of plugins to INSTALL
 
 Kenneth Aafløy <ke-aa@frisurf.no>
  for fixing checking CA capabilities with the dvb-kernel driver
