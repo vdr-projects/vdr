@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.303 2004/05/23 09:39:09 kls Exp $
+ * $Id: menu.c 1.304 2004/05/23 09:47:14 kls Exp $
  */
 
 #include "menu.h"
@@ -502,7 +502,19 @@ eOSState cMenuChannels::ProcessKey(eKeys Key)
 cMenuText::cMenuText(const char *Title, const char *Text, eDvbFont Font)
 :cOsdMenu(Title)
 {
-  text = Text;
+  text = NULL;
+  SetText(Text);
+}
+
+cMenuText::~cMenuText()
+{
+  free(text);
+}
+
+void cMenuText::SetText(const char *Text)
+{
+  free(text);
+  text = strdup(Text);
 }
 
 void cMenuText::Display(void)

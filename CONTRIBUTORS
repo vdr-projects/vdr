@@ -184,7 +184,7 @@ Stefan Huelswitt <huels@iname.com>
  for creating mutexes with PTHREAD_MUTEX_ERRORCHECK_NP, which made the 'lockingTid'
  stuff obsolete
  for suggesting to move the declaration of cMenuText to VDR/menu.h to make it
- available to plugins
+ available to plugins, and to add a SetText() function
 
 Ulrich Röder <roeder@efr-net.de>
  for pointing out that there are channels that have a symbol rate higher than
