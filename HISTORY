@@ -2550,3 +2550,5 @@ Video Disk Recorder Revision History
   control if and how channels will be automatically updated (see MANUAL).
   This has already been part of the 'autopid' patch by Andreas Schultz and has
   now been adopted.
+- Fixed a crash in case there is no DVB hardware present (thanks to Sascha
+  Volkenandt for reporting this one).

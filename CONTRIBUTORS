@@ -672,6 +672,7 @@ Sascha Volkenandt <sascha@akv-soft.de>
  for making the 'epg.data' file being read after all plugins have been started
  for reporting a problem with cReceivers that use a ring buffer and didn't immediately
  return from their Receive() function if the buffer runs full
+ for reporting a crash in case there is no DVB hardware present
 
 Malcolm Caldwell <malcolm.caldwell@ntu.edu.au>
  for modifying LOF handling to allow for C-band reception
