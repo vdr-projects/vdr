@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 1.50 2005/01/06 13:27:42 kls Exp $
+ * $Id: device.h 1.51 2005/01/08 10:15:00 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -319,7 +319,7 @@ protected:
   virtual void SetAudioTrackDevice(eTrackType Type);
        ///< Sets the current audio track to the given value.
 public:
-  void ClrAvailableTracks(void);
+  void ClrAvailableTracks(bool DescriptionsOnly = false);
   bool SetAvailableTrack(eTrackType Type, int Index, uint16_t Id, const char *Language = NULL, const char *Description = NULL, uint32_t Flags = 0);
        ///< Sets the track of the given Type and Index to the given values.
        ///< Type must be one of the basic eTrackType values, like ttAudio or ttDolby.

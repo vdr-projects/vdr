@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.329 2005/01/06 13:27:00 kls Exp $
+ * $Id: menu.c 1.330 2005/01/08 10:15:00 kls Exp $
  */
 
 #include "menu.h"
@@ -2541,6 +2541,40 @@ eOSState cMenuMain::ProcessKey(eKeys Key)
   return state;
 }
 
+// --- SetTrackDescriptions --------------------------------------------------
+
+static void SetTrackDescriptions(void)
+{
+  cDevice::PrimaryDevice()->ClrAvailableTracks(true);
+  cChannel *Channel = Channels.GetByNumber(cDevice::CurrentChannel());
+  if (Channel) {
+     cSchedulesLock SchedulesLock;
+     const cSchedules *Schedules = cSchedules::Schedules(SchedulesLock);
+     if (Schedules) {
+        const cSchedule *Schedule = Schedules->GetSchedule(Channel->GetChannelID());
+        if (Schedule) {
+           const cEvent *Present = Schedule->GetPresentEvent(true);
+           if (Present) {
+              const cComponents *Components = Present->Components();
+              if (Components) {
+                 int indexAudio = 0;
+                 int indexDolby = 0;
+                 for (int i = 0; i < Components->NumComponents(); i++) {
+                     const tComponent *p = Components->Component(i);
+                     if (p->stream == 2) {
+                        if (p->type == 0x05)
+                           cDevice::PrimaryDevice()->SetAvailableTrack(ttDolby, indexDolby++, 0, NULL, p->description);
+                        else
+                           cDevice::PrimaryDevice()->SetAvailableTrack(ttAudio, indexAudio++, 0, NULL, p->description);
+                        }
+                     }
+                 }
+              }
+           }
+        }
+     }
+}
+
 // --- cDisplayChannel -------------------------------------------------------
 
 #define DIRECTCHANNELTIMEOUT 1000 //ms
@@ -2599,6 +2633,7 @@ void cDisplayChannel::DisplayInfo(void)
            const cEvent *Present = Schedule->GetPresentEvent(true);
            const cEvent *Following = Schedule->GetFollowingEvent(true);
            if (Present != lastPresent || Following != lastFollowing) {
+              SetTrackDescriptions();
               displayChannel->SetEvents(Present, Following);
               cStatus::MsgOsdProgramme(Present ? Present->StartTime() : 0, Present ? Present->Title() : NULL, Present ? Present->ShortText() : NULL, Following ? Following->StartTime() : 0, Following ? Following->Title() : NULL, Following ? Following->ShortText() : NULL);
               lastPresent = Present;
@@ -2818,36 +2853,8 @@ cDisplayTracks::cDisplayTracks(void)
 :cOsdObject(true)
 {
   // Get the actual audio track descriptions from the EPG if we're not replaying:
-  if (!cDevice::PrimaryDevice()->Replaying() || cTransferControl::ReceiverDevice()) {
-     cChannel *Channel = Channels.GetByNumber(cDevice::CurrentChannel());
-     if (Channel) {
-        cSchedulesLock SchedulesLock;
-        const cSchedules *Schedules = cSchedules::Schedules(SchedulesLock);
-        if (Schedules) {
-           const cSchedule *Schedule = Schedules->GetSchedule(Channel->GetChannelID());
-           if (Schedule) {
-              const cEvent *Present = Schedule->GetPresentEvent(true);
-              if (Present) {
-                 const cComponents *Components = Present->Components();
-                 if (Components) {
-                    int indexAudio = 0;
-                    int indexDolby = 0;
-                    for (int i = 0; i < Components->NumComponents(); i++) {
-                        const tComponent *p = Components->Component(i);
-                        if (p->stream == 2) {
-                           if (p->type == 0x05)
-                              cDevice::PrimaryDevice()->SetAvailableTrack(ttDolby, indexDolby++, 0, NULL, p->description);
-                           else
-                              cDevice::PrimaryDevice()->SetAvailableTrack(ttAudio, indexAudio++, 0, NULL, p->description);
-                           }
-                        }
-                    }
-                 }
-              }
-           }
-        }
-     }
-
+  if (!cDevice::PrimaryDevice()->Replaying() || cTransferControl::ReceiverDevice())
+     SetTrackDescriptions();
   currentDisplayTracks = this;
   numTracks = track = 0;
   eTrackType CurrentAudioTrack = cDevice::PrimaryDevice()->GetCurrentAudioTrack();

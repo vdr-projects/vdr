@@ -3265,6 +3265,8 @@ Video Disk Recorder Revision History
   used to get notified when the audio track has been switched.
 - Skins need to implement the new cSkinDisplayTrack class to display the audio
   track menu.
+- The ST:TNG skin now displays the current audio track description (if any) at the
+  botton left side.
 - The new setup option "DVB/Audio languages" can be used to control which audio
   language shall be selected in case a channel broadcasts in different languages
   (see MANUAL for details). 

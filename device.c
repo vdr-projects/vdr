@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.70 2005/01/06 16:45:12 kls Exp $
+ * $Id: device.c 1.71 2005/01/08 10:15:00 kls Exp $
  */
 
 #include "device.h"
@@ -644,9 +644,14 @@ void cDevice::SetVolume(int Volume, bool Absolute)
      }
 }
 
-void cDevice::ClrAvailableTracks(void)
+void cDevice::ClrAvailableTracks(bool DescriptionsOnly)
 {
-  memset(availableTracks, 0, sizeof(availableTracks));
+  if (DescriptionsOnly) {
+     for (int i = ttNone; i < ttMaxTrackTypes; i++)
+         *availableTracks[i].description = 0;
+     }
+  else
+     memset(availableTracks, 0, sizeof(availableTracks));
 }
 
 bool cDevice::SetAvailableTrack(eTrackType Type, int Index, uint16_t Id, const char *Language, const char *Description, uint32_t Flags)
