@@ -325,3 +325,6 @@ Ulrich Petri <ulope@gmx.de>
 
 Oliver Lorei <oliverlorei@cityweb.de>
  for his support in keeping the Premiere World channels up to date in 'channels.conf.cable'
+
+Andreas Böttger <fboettger@t-online.de>
+ for reporting a bug in skipping forward in time shift mode near the end of the recording

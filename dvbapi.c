@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.173 2002/04/21 11:55:48 kls Exp $
+ * $Id: dvbapi.c 1.174 2002/05/03 15:59:32 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -279,8 +279,7 @@ bool cIndexFile::Get(int Index, uchar *FileNumber, int *FileOffset, uchar *Pictu
 int cIndexFile::GetNextIFrame(int Index, bool Forward, uchar *FileNumber, int *FileOffset, int *Length, bool StayOffEnd)
 {
   if (index) {
-     if (Forward)
-        CatchUp();
+     CatchUp();
      int d = Forward ? 1 : -1;
      for (;;) {
          Index += d;

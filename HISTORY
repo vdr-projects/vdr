@@ -1236,3 +1236,5 @@ Video Disk Recorder Revision History
 - Updated 'channels.conf.cable' for the new PW settings (thanks to Oliver Lorei
   and Stephan Schreiber). Note that all channels may have moved, so you should
   carefully check any timers you have set!
+- Fixed skipping forward in time shift mode near the end of the recording (thanks
+  to Andreas Böttger for reporting this one).
