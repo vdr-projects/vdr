@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: osm.c 1.8 2000/04/23 14:57:57 kls Exp $
+ * $Id: osm.c 1.9 2000/04/23 15:56:16 kls Exp $
  */
 
 #include <signal.h>
@@ -86,6 +86,7 @@ int main(int argc, char *argv[])
            if (time_ms() - dcTime > DIRECTCHANNELTIMEOUT) {
               cChannel::SwitchTo(dcNumber - 1);
               dcNumber = 0;
+              LastChannel = -1; // in case an invalid channel number was entered!
               }
            }
         // Timer Processing:
