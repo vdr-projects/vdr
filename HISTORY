@@ -2606,3 +2606,5 @@ Video Disk Recorder Revision History
   and satellite transponders.
 - Added 'libsi' include files to the 'include' directory, so that plugins can
   use them (thanks to Marcel Wiesweg).
+- Now only processing NITs that contain the transponder they are actually
+  broadcast on.
