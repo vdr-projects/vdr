@@ -2165,3 +2165,4 @@ Video Disk Recorder Revision History
   this one).
 - Fixed setting the locking pid after a timed wait (thanks to Andreas Schultz).
 - Avoiding spurious section filter settings after a channel switch.
+- Updated 'channels.conf.cable' (thanks to Stefan Huﬂfeldt).
