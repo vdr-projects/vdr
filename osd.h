@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.h 1.43 2004/05/31 14:09:00 kls Exp $
+ * $Id: osd.h 1.44 2004/06/05 11:40:12 kls Exp $
  */
 
 #ifndef __OSD_H
@@ -158,7 +158,8 @@ public:
        ///< Draws the given string at coordinates (x, y) with the given foreground
        ///< and background color and font. If Width and Height are given, the text
        ///< will be drawn into a rectangle with the given size and the given
-       ///< Alignment (default is top-left).
+       ///< Alignment (default is top-left). If ColorBg is clrTransparent, no
+       ///< background pixels will be drawn, which allows drawing "transparent" text.
   void DrawRectangle(int x1, int y1, int x2, int y2, tColor Color);
        ///< Draws a filled rectangle defined by the upper left (x1, y1) and lower right
        ///< (x2, y2) corners with the given Color. If the rectangle covers the entire
@@ -276,7 +277,8 @@ public:
        ///< Draws the given string at coordinates (x, y) with the given foreground
        ///< and background color and font. If Width and Height are given, the text
        ///< will be drawn into a rectangle with the given size and the given
-       ///< Alignment (default is top-left).
+       ///< Alignment (default is top-left). If ColorBg is clrTransparent, no
+       ///< background pixels will be drawn, which allows drawing "transparent" text.
   virtual void DrawRectangle(int x1, int y1, int x2, int y2, tColor Color);
        ///< Draws a filled rectangle defined by the upper left (x1, y1) and lower right
        ///< (x2, y2) corners with the given Color.
