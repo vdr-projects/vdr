@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.177 2002/03/31 10:46:24 kls Exp $
+ * $Id: menu.c 1.178 2002/03/31 13:39:56 kls Exp $
  */
 
 #include "menu.h"
@@ -1937,7 +1937,7 @@ public:
   };
 
 cMenuSetupPage::cMenuSetupPage(void)
-:cOsdMenu("", 30)
+:cOsdMenu("", 33)
 {
   data = Setup;
   osdLanguage = Setup.OSDLanguage;
@@ -1993,7 +1993,7 @@ void cMenuSetupOSD::Set(void)
   Add(new cMenuEditStraItem(tr("Setup.OSD$Language"),               &data.OSDLanguage, NumLanguages, Languages()));
   Add(new cMenuEditIntItem( tr("Setup.OSD$Width"),                  &data.OSDwidth, MINOSDWIDTH, MAXOSDWIDTH));
   Add(new cMenuEditIntItem( tr("Setup.OSD$Height"),                 &data.OSDheight, MINOSDHEIGHT, MAXOSDHEIGHT));
-  Add(new cMenuEditIntItem( tr("Setup.OSD$Message time"),           &data.OSDMessageTime, 1, 60));
+  Add(new cMenuEditIntItem( tr("Setup.OSD$Message time (s)"),       &data.OSDMessageTime, 1, 60));
   Add(new cMenuEditBoolItem(tr("Setup.OSD$Channel info position"),  &data.ChannelInfoPos, tr("bottom"), tr("top")));
   Add(new cMenuEditBoolItem(tr("Setup.OSD$Info on channel switch"), &data.ShowInfoOnChSwitch));
   Add(new cMenuEditBoolItem(tr("Setup.OSD$Scroll pages"),           &data.MenuScrollPage));
@@ -2014,7 +2014,7 @@ void cMenuSetupEPG::Set(void)
 {
   Clear();
   SetupTitle("EPG");
-  Add(new cMenuEditIntItem( tr("Setup.EPG$EPG scan timeout"),          &data.EPGScanTimeout));
+  Add(new cMenuEditIntItem( tr("Setup.EPG$EPG scan timeout (h)"),      &data.EPGScanTimeout));
   Add(new cMenuEditIntItem( tr("Setup.EPG$EPG bugfix level"),          &data.EPGBugfixLevel, 0, MAXEPGBUGFIXLEVEL));
   Add(new cMenuEditBoolItem(tr("Setup.EPG$Set system time"),           &data.SetSystemTime));
   Add(new cMenuEditTranItem(tr("Setup.EPG$Use time from transponder"), &data.TimeTransponder));
@@ -2050,10 +2050,10 @@ void cMenuSetupLNB::Set(void)
 {
   Clear();
   SetupTitle("LNB");
-  Add(new cMenuEditIntItem( tr("Setup.LNB$SLOF"),               &data.LnbSLOF));
-  Add(new cMenuEditIntItem( tr("Setup.LNB$Low LNB frequency"),  &data.LnbFrequLo));
-  Add(new cMenuEditIntItem( tr("Setup.LNB$High LNB frequency"), &data.LnbFrequHi));
-  Add(new cMenuEditBoolItem(tr("Setup.LNB$Use DiSEqC"),         &data.DiSEqC));
+  Add(new cMenuEditIntItem( tr("Setup.LNB$SLOF (MHz)"),               &data.LnbSLOF));
+  Add(new cMenuEditIntItem( tr("Setup.LNB$Low LNB frequency (MHz)"),  &data.LnbFrequLo));
+  Add(new cMenuEditIntItem( tr("Setup.LNB$High LNB frequency (MHz)"), &data.LnbFrequHi));
+  Add(new cMenuEditBoolItem(tr("Setup.LNB$Use DiSEqC"),               &data.DiSEqC));
 }
 
 // --- cMenuSetupCICAM -------------------------------------------------------
@@ -2091,17 +2091,17 @@ void cMenuSetupRecord::Set(void)
 {
   Clear();
   SetupTitle("Recording");
-  Add(new cMenuEditIntItem( tr("Setup.Recording$Margin at start"),        &data.MarginStart));
-  Add(new cMenuEditIntItem( tr("Setup.Recording$Margin at stop"),         &data.MarginStop));
-  Add(new cMenuEditIntItem( tr("Setup.Recording$Primary limit"),          &data.PrimaryLimit, 0, MAXPRIORITY));
-  Add(new cMenuEditIntItem( tr("Setup.Recording$Default priority"),       &data.DefaultPriority, 0, MAXPRIORITY));
-  Add(new cMenuEditIntItem( tr("Setup.Recording$Default lifetime"),       &data.DefaultLifetime, 0, MAXLIFETIME));
-  Add(new cMenuEditBoolItem(tr("Setup.Recording$Use episode name"),       &data.UseSubtitle));
-  Add(new cMenuEditBoolItem(tr("Setup.Recording$Mark instant recording"), &data.MarkInstantRecord));
-  Add(new cMenuEditStrItem( tr("Setup.Recording$Name instant recording"),  data.NameInstantRecord, sizeof(data.NameInstantRecord), FileNameChars));
-  Add(new cMenuEditBoolItem(tr("Setup.Recording$Record Dolby Digital"),   &data.RecordDolbyDigital));
-  Add(new cMenuEditIntItem( tr("Setup.Recording$Max. video file size"),   &data.MaxVideoFileSize, MINVIDEOFILESIZE, MAXVIDEOFILESIZE));
-  Add(new cMenuEditBoolItem(tr("Setup.Recording$Split edited files"),     &data.SplitEditedFiles));
+  Add(new cMenuEditIntItem( tr("Setup.Recording$Margin at start (min)"),     &data.MarginStart));
+  Add(new cMenuEditIntItem( tr("Setup.Recording$Margin at stop (min)"),      &data.MarginStop));
+  Add(new cMenuEditIntItem( tr("Setup.Recording$Primary limit"),             &data.PrimaryLimit, 0, MAXPRIORITY));
+  Add(new cMenuEditIntItem( tr("Setup.Recording$Default priority"),          &data.DefaultPriority, 0, MAXPRIORITY));
+  Add(new cMenuEditIntItem( tr("Setup.Recording$Default lifetime (d)"),      &data.DefaultLifetime, 0, MAXLIFETIME));
+  Add(new cMenuEditBoolItem(tr("Setup.Recording$Use episode name"),          &data.UseSubtitle));
+  Add(new cMenuEditBoolItem(tr("Setup.Recording$Mark instant recording"),    &data.MarkInstantRecord));
+  Add(new cMenuEditStrItem( tr("Setup.Recording$Name instant recording"),     data.NameInstantRecord, sizeof(data.NameInstantRecord), FileNameChars));
+  Add(new cMenuEditBoolItem(tr("Setup.Recording$Record Dolby Digital"),      &data.RecordDolbyDigital));
+  Add(new cMenuEditIntItem( tr("Setup.Recording$Max. video file size (MB)"), &data.MaxVideoFileSize, MINVIDEOFILESIZE, MAXVIDEOFILESIZE));
+  Add(new cMenuEditBoolItem(tr("Setup.Recording$Split edited files"),        &data.SplitEditedFiles));
 }
 
 // --- cMenuSetupReplay ------------------------------------------------------
@@ -2134,9 +2134,9 @@ void cMenuSetupMisc::Set(void)
 {
   Clear();
   SetupTitle("Miscellaneous");
-  Add(new cMenuEditIntItem( tr("Setup.Miscellaneous$Min. event timeout"),   &data.MinEventTimeout));
-  Add(new cMenuEditIntItem( tr("Setup.Miscellaneous$Min. user inactivity"), &data.MinUserInactivity));
-  Add(new cMenuEditIntItem( tr("Setup.Miscellaneous$SVDRP timeout"),        &data.SVDRPTimeout));
+  Add(new cMenuEditIntItem( tr("Setup.Miscellaneous$Min. event timeout (min)"),   &data.MinEventTimeout));
+  Add(new cMenuEditIntItem( tr("Setup.Miscellaneous$Min. user inactivity (min)"), &data.MinUserInactivity));
+  Add(new cMenuEditIntItem( tr("Setup.Miscellaneous$SVDRP timeout (min)"),        &data.SVDRPTimeout));
 }
 
 // --- cMenuSetup ------------------------------------------------------------

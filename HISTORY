@@ -1151,3 +1151,4 @@ Video Disk Recorder Revision History
   (thanks to Achim Lange for reporting this one).
 - Fixed a bug in the 'First day' timer parameter for timers that record over
   midnight.
+- Added units to Setup parameters.
