@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remote.h 1.7 2000/07/15 16:32:43 kls Exp $
+ * $Id: remote.h 1.9 2000/09/19 17:39:36 kls Exp $
  */
 
 #ifndef __REMOTE_H
@@ -12,6 +12,7 @@
 
 #include <stdio.h>
 #include <time.h>
+#include "tools.h"
 
 class cRcIoBase {
 protected:
@@ -28,7 +29,7 @@ public:
   virtual void SetPoints(unsigned char Dp, bool On) {}
   virtual bool String(char *s) { return true; }
   virtual bool DetectCode(unsigned char *Code, unsigned short *Address) { return true; }
-  virtual void Flush(int WaitSeconds = 0) {}
+  virtual void Flush(int WaitMs = 0) {}
   virtual bool InputAvailable(bool Wait = false) = 0;
   virtual bool GetCommand(unsigned int *Command, unsigned short *Address = NULL) = 0;
   };
@@ -36,10 +37,12 @@ public:
 #if defined REMOTE_KBD
 
 class cRcIoKBD : public cRcIoBase {
+private:
+  cFile f;
 public:
   cRcIoKBD(void);
   virtual ~cRcIoKBD();
-  virtual void Flush(int WaitSeconds = 0);
+  virtual void Flush(int WaitMs = 0);
   virtual bool InputAvailable(bool Wait = false);
   virtual bool GetCommand(unsigned int *Command, unsigned short *Address = NULL);
   };
@@ -48,7 +51,7 @@ public:
 
 class cRcIoRCU : public cRcIoBase {
 private:
-  int f;
+  cFile f;
   unsigned char dp, code, mode;
   unsigned short address;
   int lastNumber;
@@ -66,7 +69,7 @@ public:
   virtual void SetPoints(unsigned char Dp, bool On);
   virtual bool String(char *s);
   virtual bool DetectCode(unsigned char *Code, unsigned short *Address);
-  virtual void Flush(int WaitSeconds = 0);
+  virtual void Flush(int WaitMs = 0);
   virtual bool InputAvailable(bool Wait = false);
   virtual bool GetCommand(unsigned int *Command, unsigned short *Address = NULL);
   };
@@ -76,13 +79,13 @@ public:
 class cRcIoLIRC : public cRcIoBase {
 private:
   enum { LIRC_KEY_BUF = 8, LIRC_BUFFER_SIZE = 128 };
-  int f;
+  cFile f;
   char keyName[LIRC_KEY_BUF];
   const char *ReceiveString(void);
 public:
   cRcIoLIRC(char *DeviceName);
   virtual ~cRcIoLIRC();
-  virtual void Flush(int WaitSeconds = 0);
+  virtual void Flush(int WaitMs = 0);
   virtual bool InputAvailable(bool Wait = false);
   virtual bool GetCommand(unsigned int *Command, unsigned short *Address = NULL);
   };

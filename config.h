@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.19 2000/09/10 15:05:08 kls Exp $
+ * $Id: config.h 1.21 2000/09/17 09:08:13 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -17,7 +17,7 @@
 #include "dvbapi.h"
 #include "tools.h"
 
-#define VDRVERSION "0.63"
+#define VDRVERSION "0.64"
 
 #define MaxBuffer 10000
 
@@ -55,6 +55,7 @@ public:
   void SetDummyValues(void);
   bool Load(const char *FileName = NULL);
   bool Save(void);
+  eKeys Translate(const char *Command);
   unsigned int Encode(const char *Command);
   eKeys Get(unsigned int Code);
   void Set(eKeys Key, unsigned int Code);

@@ -16,7 +16,11 @@ you will have to change the definition of DVBDIR in the
 Makefile.
 
 This program requires the card driver version 0.05 or higher
-to work properly.
+to work properly. If you are using driver version 0.7 you need
+to load the dvb.o module with option outstream=0, so your insmod
+statement should read 'insmod dvb.o outstream=0'. This is currently
+necessary because 'vdr' works with AV_PES data and will change
+once it has been modified to work directly with MPEG2.
 
 After extracting the package, change into the VDR directory
 and type 'make'. This should produce an executable file
@@ -48,6 +52,11 @@ port ("Simple Video Disk Recorder Protocol"). By default, it listens
 on port 2001 (use the --port=PORT option to change this). For details
 about the SVDRP syntax see the source file 'svdrp.c'.
 
+WARNING: DUE TO THE OPEN SVDRP PORT THIS PROGRAM MAY CONSTITUTE A
+=======  POTENTIAL SECURITY HAZARD! IF YOU ARE NOT RUNNING VDR IN
+         A CONTROLLED ENVIRONMENT, YOU MAY WANT TO DISABLE SVDRP
+         BY USING '--port=0'!
+
 If the program shall run as a daemon, use the --daemon option. This
 will completely detach it from the terminal and will continue as a
 background process.
@@ -64,7 +73,9 @@ All recordings are written into directories below "/video". Please
 make sure this directory exists, and that the user who runs the 'vdr'
 program has read and write access to that directory.
 If you prefer a different location for your video files, you can use
-the '-v' option to change that.
+the '-v' option to change that. Please make sure that the directory
+name you use with '-v' is a clean and absolute path name (no '..' or
+multiple slashes).
 
 Note that the file system need not be 64-bit proof, since the 'vdr'
 program splits video files into chunks of about 1GB. You should use
@@ -102,14 +113,15 @@ Configuration files:
 --------------------
 
 There are three configuration files that hold information about
-channels, remote control keys and timers. These files are currrently
-assumed to be located in the directory from which the 'vdr' program
-was started (this will become configurable later). The configuration
-files can be edited with any text editor, or will be written by the
-'vdr' program if any changes are made inside the on-screen menus.
-The meaning of the data entries may still vary in future releases,
-so for the moment please look at the source code (config.c) to see
-the meaning of the various fields.
+channels, remote control keys and timers. By default these files are
+assumed to be located in the video directory, but a different directory
+can be used with the '-c' option.
+
+The configuration files can be edited with any text editor, or will be written
+by the 'vdr' program if any changes are made inside the on-screen menus.
+The meaning of the data entries may still vary in future releases, so for the
+moment please look at the source code (config.c) to see the meaning of the
+various fields.
 
 The files that come with this package contain the author's selections,
 so please make sure you adapt these to your personal taste. Also make sure

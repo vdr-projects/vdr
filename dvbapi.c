@@ -4,14 +4,18 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.24 2000/09/10 10:25:09 kls Exp $
+ * $Id: dvbapi.c 1.27 2000/09/17 12:45:55 kls Exp $
  */
 
 #include "dvbapi.h"
 #include <errno.h>
 #include <fcntl.h>
+extern "C" {
+#include <jpeglib.h>
+}
 #include <stdlib.h>
 #include <sys/ioctl.h>
+#include <sys/mman.h>
 #include <sys/stat.h>
 #include <sys/time.h>
 #include <unistd.h>
@@ -139,7 +143,7 @@ cIndexFile::cIndexFile(const char *FileName, bool Record)
               LOG_ERROR;
            }
         if (Record) {
-           if ((f = open(fileName, O_WRONLY | O_CREAT | O_APPEND, S_IRUSR | S_IWUSR)) >= 0) {
+           if ((f = open(fileName, O_WRONLY | O_CREAT | O_APPEND, S_IRUSR | S_IWUSR | S_IRGRP)) >= 0) {
               if (delta) {
                  esyslog(LOG_ERR, "ERROR: padding index file with %d '0' bytes", delta);
                  while (delta--)
@@ -297,7 +301,7 @@ int cIndexFile::Get(uchar FileNumber, int FileOffset)
 bool cIndexFile::StoreResume(int Index)
 {
   if (fileName) {
-     int resumeFile = open(fileName, O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
+     int resumeFile = open(fileName, O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR | S_IRGRP);
      if (resumeFile >= 0) {
         if (write(resumeFile, &Index, sizeof(Index)) != sizeof(Index))
            LOG_ERROR_STR(fileName);
@@ -315,8 +319,8 @@ char *cIndexFile::Str(int Index, bool WithFrame)
   static char buffer[16];
   int f = (Index % FRAMESPERSEC) + 1;
   int s = (Index / FRAMESPERSEC);
-  int m = s / 60 % 60; 
-  int h = s / 3600; 
+  int m = s / 60 % 60;
+  int h = s / 3600;
   s %= 60;
   snprintf(buffer, sizeof(buffer), WithFrame ? "%d:%02d:%02d.%02d" : "%d:%02d:%02d", h, m, s, f);
   return buffer;
@@ -511,7 +515,7 @@ protected:
   char *fileName, *pFileNumber;
   bool stop;
   int GetAvPesLength(void)
-  { 
+  {
     if (Byte(0) == 'A' && Byte(1) == 'V' && Byte(4) == 'U')
        return (Byte(6) << 8) + Byte(7) + AV_PES_HEADER_LEN;
     return 0;
@@ -751,7 +755,7 @@ int cRecordBuffer::Write(int Max)
   if (n) {
      if (stop && pictureType == I_FRAME) {
         ok = false;
-        return -1; // finish the recording before the next 'I' frame       
+        return -1; // finish the recording before the next 'I' frame
         }
      if (NextFile()) {
         if (index && pictureType != NO_PICTURE)
@@ -801,7 +805,7 @@ private:
   void Close(void);
 public:
   cReplayBuffer(int *OutFile, const char *FileName);
-  virtual ~cReplayBuffer();  
+  virtual ~cReplayBuffer();
   virtual int Read(int Max = -1);
   virtual int Write(int Max = -1);
   void SetMode(eReplayMode Mode);
@@ -1065,9 +1069,14 @@ cDvbApi::cDvbApi(const char *FileName)
   if (videoDev < 0)
      LOG_ERROR;
   cols = rows = 0;
+
+  ovlGeoSet = ovlStat = ovlFbSet = false;
+  ovlBrightness = ovlColour = ovlHue = ovlContrast = 32768;
+  ovlClipCount = 0;
+
 #if defined(DEBUG_OSD) || defined(REMOTE_KBD)
   initscr();
-  keypad(stdscr, TRUE);
+  keypad(stdscr, true);
   nonl();
   cbreak();
   noecho();
@@ -1076,7 +1085,7 @@ cDvbApi::cDvbApi(const char *FileName)
 #if defined(DEBUG_OSD)
   memset(&colorPairs, 0, sizeof(colorPairs));
   start_color();
-  leaveok(stdscr, TRUE);
+  leaveok(stdscr, true);
   window = NULL;
 #endif
   lastProgress = lastTotal = -1;
@@ -1089,6 +1098,7 @@ cDvbApi::~cDvbApi()
      Close();
      Stop();
      StopRecord();
+     OvlO(false); //Overlay off!
      close(videoDev);
      }
 #if defined(DEBUG_OSD) || defined(REMOTE_KBD)
@@ -1187,6 +1197,242 @@ void cDvbApi::Cleanup(void)
   PrimaryDvbApi = NULL;
 }
 
+bool cDvbApi::GrabImage(const char *FileName, bool Jpeg, int Quality, int SizeX, int SizeY)
+{
+  int result = 0;
+  // just do this once?
+  struct video_mbuf mbuf;
+  result |= ioctl(videoDev, VIDIOCGMBUF, &mbuf);
+  int msize = mbuf.size;
+  // gf: this needs to be a protected member of cDvbApi! //XXX kls: WHY???
+  unsigned char *mem = (unsigned char *)mmap(0, msize, PROT_READ | PROT_WRITE, MAP_SHARED, videoDev, 0);
+  if (!mem || mem == (unsigned char *)-1)
+     return false;
+  // set up the size and RGB
+  struct video_capability vc;
+  result |= ioctl(videoDev, VIDIOCGCAP, &vc);
+  struct video_mmap vm;
+  vm.frame = 0;
+  if ((SizeX > 0) && (SizeX <= vc.maxwidth) &&
+      (SizeY > 0) && (SizeY <= vc.maxheight)) {
+     vm.width = SizeX;
+     vm.height = SizeY;
+     }
+  else {
+     vm.width = vc.maxwidth;
+     vm.height = vc.maxheight;
+     }
+  vm.format = VIDEO_PALETTE_RGB24;
+  // this needs to be done every time:
+  result |= ioctl(videoDev, VIDIOCMCAPTURE, &vm);
+  result |= ioctl(videoDev, VIDIOCSYNC, &vm.frame);
+  // make RGB out of BGR:
+  int memsize = vm.width * vm.height;
+  unsigned char *mem1 = mem;
+  for (int i = 0; i < memsize; i++) {
+      unsigned char tmp = mem1[2];
+      mem1[2] = mem1[0];
+      mem1[0] = tmp;
+      mem1 += 3;
+      }
+
+  if (Quality < 0)
+     Quality = 255; //XXX is this 'best'???
+
+  isyslog(LOG_INFO, "grabbing to %s (%s %d %d %d)", FileName, Jpeg ? "JPEG" : "PNM", Quality, vm.width, vm.height);
+  FILE *f = fopen(FileName, "wb");
+  if (f) {
+     if (Jpeg) {
+        // write JPEG file:
+        struct jpeg_compress_struct cinfo;
+        struct jpeg_error_mgr jerr;
+        cinfo.err = jpeg_std_error(&jerr);
+        jpeg_create_compress(&cinfo);
+        jpeg_stdio_dest(&cinfo, f);
+        cinfo.image_width = vm.width;
+        cinfo.image_height = vm.height;
+        cinfo.input_components = 3;
+        cinfo.in_color_space = JCS_RGB;
+
+        jpeg_set_defaults(&cinfo);
+        jpeg_set_quality(&cinfo, Quality, true);
+        jpeg_start_compress(&cinfo, true);
+
+        int rs = vm.width * 3;
+        JSAMPROW rp[vm.height];
+        for (int k = 0; k < vm.height; k++)
+            rp[k] = &mem[rs * k];
+        jpeg_write_scanlines(&cinfo, rp, vm.height);
+        jpeg_finish_compress(&cinfo);
+        jpeg_destroy_compress(&cinfo);
+        }
+     else {
+        // write PNM file:
+        if (fprintf(f, "P6\n%d\n%d\n255\n", vm.width, vm.height) < 0 ||
+            fwrite(mem, vm.width * vm.height * 3, 1, f) < 0) {
+           LOG_ERROR_STR(FileName);
+           result |= 1;
+           }
+        }
+     fclose(f);
+     }
+  else {
+     LOG_ERROR_STR(FileName);
+     result |= 1;
+     }
+
+  if (ovlStat && ovlGeoSet) {
+     // switch the Overlay on again (gf: why have i to do anything again?)
+     OvlG(ovlSizeX, ovlSizeY, ovlPosX, ovlPosY);
+     }
+  if (ovlFbSet)
+     OvlP(ovlBrightness, ovlColour, ovlHue, ovlContrast);
+
+  munmap(mem, msize);
+  return result == 0;
+}
+
+bool cDvbApi::OvlF(int SizeX, int SizeY, int FbAddr, int Bpp, int Palette)
+{
+  int result = 0;
+  // get the actual X-Server settings???
+  // plausibility-check problem: can't be verified w/o X-server!!!
+  if (SizeX <= 0 || SizeY <= 0 || FbAddr == 0 || Bpp / 8 > 4 ||
+      Bpp / 8 <= 0 || Palette <= 0 || Palette > 13 || ovlClipCount < 0 ||
+      SizeX > 4096 || SizeY > 4096) {
+     ovlFbSet = ovlGeoSet = false;
+     OvlO(false);
+     return false;
+     }
+  else {
+    dsyslog(LOG_INFO, "OvlF: %d %d %x %d %d", SizeX, SizeY, FbAddr, Bpp, Palette);
+    // this is the problematic part!
+    struct video_buffer vb;
+    result |= ioctl(videoDev, VIDIOCGFBUF, &vb);
+    vb.base = (void*)FbAddr;
+    vb.depth = Bpp;
+    vb.height = SizeY;
+    vb.width = SizeX;
+    vb.bytesperline = ((vb.depth + 1) / 8) * vb.width;
+    //now the real thing: setting the framebuffer
+    result |= ioctl(videoDev, VIDIOCSFBUF, &vb);
+    if (result) {
+       ovlFbSet = ovlGeoSet = false;
+       ovlClipCount = 0;
+       OvlO(false);
+       return false;
+       }
+    else {
+       ovlFbSizeX = SizeX;
+       ovlFbSizeY = SizeY;
+       ovlBpp = Bpp;
+       ovlPalette = Palette;
+       ovlFbSet = true;
+       return true;
+      }
+    }
+}
+
+bool cDvbApi::OvlG(int SizeX, int SizeY, int PosX, int PosY)
+{
+  int result = 0;
+  // get the actual X-Server settings???
+  struct video_capability vc;
+  result |= ioctl(videoDev, VIDIOCGCAP, &vc);
+  if (!ovlFbSet)
+     return false;
+  if (SizeX < vc.minwidth || SizeY < vc.minheight ||
+      SizeX > vc.maxwidth || SizeY>vc.maxheight
+//      || PosX > FbSizeX || PosY > FbSizeY
+//         PosX < -SizeX || PosY < -SizeY ||
+     ) {
+     ovlGeoSet = false;
+     OvlO(false);
+     return false;
+     }
+  else {
+     struct video_window vw;
+     result |= ioctl(videoDev, VIDIOCGWIN,  &vw);
+     vw.x = PosX;
+     vw.y = PosY;
+     vw.width = SizeX;
+     vw.height = SizeY;
+     vw.chromakey = ovlPalette;
+     vw.flags = VIDEO_WINDOW_CHROMAKEY; // VIDEO_WINDOW_INTERLACE; //VIDEO_CLIP_BITMAP;
+     vw.clips = ovlClipRects;
+     vw.clipcount = ovlClipCount;
+     result |= ioctl(videoDev, VIDIOCSWIN, &vw);
+     if (result) {
+        ovlGeoSet = false;
+        ovlClipCount = 0;
+        return false;
+        }
+     else {
+        ovlSizeX = SizeX;
+        ovlSizeY = SizeY;
+        ovlPosX = PosX;
+        ovlPosY = PosY;
+        ovlGeoSet = true;
+        ovlStat = true;
+        return true;
+        }
+     }
+}
+
+bool cDvbApi::OvlC(int ClipCount, CRect *cr)
+{
+  if (ovlGeoSet && ovlFbSet) {
+     for (int i = 0; i < ClipCount; i++) {
+         ovlClipRects[i].x = cr[i].x;
+         ovlClipRects[i].y = cr[i].y;
+         ovlClipRects[i].width = cr[i].width;
+         ovlClipRects[i].height = cr[i].height;
+         ovlClipRects[i].next = &(ovlClipRects[i + 1]);
+         }
+     ovlClipCount = ClipCount;
+     //use it:
+     return OvlG(ovlSizeX, ovlSizeY, ovlPosX, ovlPosY);
+     }
+  return false;
+}
+
+bool cDvbApi::OvlP(__u16 Brightness, __u16 Colour, __u16 Hue, __u16 Contrast)
+{
+  int result = 0;
+  ovlBrightness = Brightness;
+  ovlColour = Colour;
+  ovlHue = Hue;
+  ovlContrast = Contrast;
+  struct video_picture vp;
+  if (!ovlFbSet)
+     return false;
+  result |= ioctl(videoDev, VIDIOCGPICT, &vp);
+  vp.brightness = Brightness;
+  vp.colour = Colour;
+  vp.hue = Hue;
+  vp.contrast = Contrast;
+  vp.depth = ovlBpp;
+  vp.palette = ovlPalette; // gf: is this always ok? VIDEO_PALETTE_RGB565;
+  result |= ioctl(videoDev, VIDIOCSPICT, &vp);
+  return result == 0;
+}
+
+bool cDvbApi::OvlO(bool Value)
+{
+  int result = 0;
+  if (!ovlGeoSet && Value)
+     return false;
+  int one = 1;
+  int zero = 0;
+  result |= ioctl(videoDev, VIDIOCCAPTURE, Value ? &one : &zero);
+  ovlStat = Value;
+  if (result) {
+     ovlStat = false;
+     return false;
+     }
+  return true;
+}
+
 #ifdef DEBUG_OSD
 void cDvbApi::SetColor(eDvbColor colorFg, eDvbColor colorBg)
 {
@@ -1233,7 +1479,7 @@ void cDvbApi::Open(int w, int h)
   rows = h;
 #ifdef DEBUG_OSD
   window = subwin(stdscr, h, w, d, 0);
-  syncok(window, TRUE);
+  syncok(window, true);
   #define B2C(b) (((b) * 1000) / 255)
   #define SETCOLOR(n, r, g, b, o) init_color(n, B2C(r), B2C(g), B2C(b))
 #else

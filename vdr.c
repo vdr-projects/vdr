@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.30 2000/09/10 14:33:09 kls Exp $
+ * $Id: vdr.c 1.35 2000/09/20 16:45:01 kls Exp $
  */
 
 #include <getopt.h>
@@ -34,7 +34,6 @@
 #include "interface.h"
 #include "menu.h"
 #include "recording.h"
-#include "svdrp.h"
 #include "tools.h"
 #include "videodir.h"
 
@@ -46,9 +45,11 @@
 
 static int Interrupted = 0;
 
-void SignalHandler(int signum)
+static void SignalHandler(int signum)
 {
-  Interrupted = signum;
+  if (signum != SIGPIPE)
+     Interrupted = signum;
+  signal(signum, SignalHandler);
 }
 
 int main(int argc, char *argv[])
@@ -58,9 +59,11 @@ int main(int argc, char *argv[])
 #define DEFAULTSVDRPPORT 2001
 
   int SVDRPport = DEFAULTSVDRPPORT;
+  const char *ConfigDirectory = NULL;
   bool DaemonMode = false;
 
   static struct option long_options[] = {
+      { "config", required_argument, NULL, 'c' },
       { "daemon", no_argument,       NULL, 'd' },
       { "help",   no_argument,       NULL, 'h' },
       { "log",    required_argument, NULL, 'l' },
@@ -71,10 +74,14 @@ int main(int argc, char *argv[])
   
   int c;
   int option_index = 0;
-  while ((c = getopt_long(argc, argv, "dhl:p:v:", long_options, &option_index)) != -1) {
+  while ((c = getopt_long(argc, argv, "c:dhl:p:v:", long_options, &option_index)) != -1) {
         switch (c) {
+          case 'c': ConfigDirectory = optarg;
+                    break;
           case 'd': DaemonMode = true; break;
-          case 'h': printf("Usage: vdr [OPTION]\n\n"
+          case 'h': printf("Usage: vdr [OPTION]\n\n"           // for easier orientation, this is column 80|
+                           "  -c DIR,   --config=DIR  read config files from DIR (default is to read them\n"
+                           "                          from the video directory)\n"
                            "  -h,       --help        display this help and exit\n"
                            "  -d,       --daemon      run in daemon mode\n"
                            "  -l LEVEL, --log=LEVEL   set log level (default: 3)\n"
@@ -108,6 +115,8 @@ int main(int argc, char *argv[])
                        }
                     break;
           case 'v': VideoDirectory = optarg;
+                    while (optarg && *optarg && optarg[strlen(optarg) - 1] == '/')
+                          optarg[strlen(optarg) - 1] = 0;
                     break;
           default:  abort();
           }
@@ -128,7 +137,7 @@ int main(int argc, char *argv[])
   // Daemon mode:
 
   if (DaemonMode) {
-#ifndef DEBUG_OSD
+#if !defined(DEBUG_OSD) && !defined(REMOTE_KBD)
      pid_t pid = fork();
      if (pid < 0) {
         fprintf(stderr, "%s\n", strerror(errno));
@@ -141,7 +150,7 @@ int main(int argc, char *argv[])
      fclose(stdout);
      fclose(stderr);
 #else
-     fprintf(stderr, "vdr: can't run in daemon mode with DEBUG_OSD on!\n");
+     fprintf(stderr, "vdr: can't run in daemon mode with DEBUG_OSD or REMOTE_KBD on!\n");
      abort();
 #endif
      }
@@ -154,16 +163,19 @@ int main(int argc, char *argv[])
 
   // Configuration data:
 
-  Setup.Load("setup.conf");
-  Channels.Load("channels.conf");
-  Timers.Load("timers.conf");
+  if (!ConfigDirectory)
+     ConfigDirectory = VideoDirectory;
+
+  Setup.Load(AddDirectory(ConfigDirectory, "setup.conf"));
+  Channels.Load(AddDirectory(ConfigDirectory, "channels.conf"));
+  Timers.Load(AddDirectory(ConfigDirectory, "timers.conf"));
 #ifdef REMOTE_LIRC
   Keys.SetDummyValues();
 #else
-  if (!Keys.Load(KEYS_CONF))
+  if (!Keys.Load(AddDirectory(ConfigDirectory, KEYS_CONF)))
      Interface.LearnKeys();
 #endif
-  Interface.Init();
+  Interface.Init(SVDRPport);
 
   cDvbApi::SetPrimaryDvbApi(Setup.PrimaryDVB);
 
@@ -174,10 +186,10 @@ int main(int argc, char *argv[])
   if (signal(SIGHUP,  SignalHandler) == SIG_IGN) signal(SIGHUP,  SIG_IGN);
   if (signal(SIGINT,  SignalHandler) == SIG_IGN) signal(SIGINT,  SIG_IGN);
   if (signal(SIGTERM, SignalHandler) == SIG_IGN) signal(SIGTERM, SIG_IGN);
+  if (signal(SIGPIPE, SignalHandler) == SIG_IGN) signal(SIGPIPE, SIG_IGN);
 
   // Main program loop:
 
-  cSVDRP *SVDRP = SVDRPport ? new cSVDRP(SVDRPport) : NULL;
   cOsdBase *Menu = NULL;
   cReplayControl *ReplayControl = NULL;
   int LastChannel = -1;
@@ -267,13 +279,11 @@ int main(int argc, char *argv[])
              default:    break;
              }
            }
-        if (SVDRP)
-           SVDRP->Process();//TODO lock menu vs. SVDRP?
         }
   isyslog(LOG_INFO, "caught signal %d", Interrupted);
   delete Menu;
   delete ReplayControl;
-  delete SVDRP;
+  Interface.Cleanup();
   cDvbApi::Cleanup();
   isyslog(LOG_INFO, "exiting");
   if (SysLogLevel > 0)

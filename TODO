@@ -7,5 +7,4 @@ TODO list for the Video Disk Recorder project
   scenes in order to archive them (or, reversely, cut out
   commercial breaks).
 * Implement channel scanning.
-* Better support for encrypted channels.
 * Implement remaining commands in SVDRP.

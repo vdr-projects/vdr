@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.h 1.11 2000/09/10 10:35:46 kls Exp $
+ * $Id: interface.h 1.13 2000/09/18 22:29:31 kls Exp $
  */
 
 #ifndef __INTERFACE_H
@@ -12,6 +12,7 @@
 
 #include "config.h"
 #include "dvbapi.h"
+#include "svdrp.h"
 
 class cInterface {
 public:
@@ -20,16 +21,19 @@ private:
   int open;
   int cols[MaxCols];
   eKeys keyFromWait;
+  cSVDRP *SVDRP;
   unsigned int GetCh(bool Wait = true);
   void QueryKeys(void);
   void HelpButton(int Index, const char *Text, eDvbColor FgColor, eDvbColor BgColor);
   eKeys Wait(int Seconds = 1, bool KeepChar = false);
 public:
   cInterface(void);
-  void Init(void);
+  void Init(int SVDRPport = 0);
+  void Cleanup(void);
   void Open(int NumCols = MenuColumns, int NumLines = MenuLines);
   void Close(void);
   eKeys GetKey(bool Wait = true);
+  void PutKey(eKeys Key);
   void Clear(void);
   void ClearEol(int x, int y, eDvbColor Color = clrBackground);
   void SetCols(int *c);

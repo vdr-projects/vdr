@@ -6,7 +6,7 @@
  *
  * Ported to LIRC by Carsten Koch <Carsten.Koch@icem.de>  2000-06-16.
  *
- * $Id: remote.c 1.11 2000/07/29 16:23:47 kls Exp $
+ * $Id: remote.c 1.13 2000/09/19 17:40:52 kls Exp $
  */
 
 #include "remote.h"
@@ -49,33 +49,29 @@ cRcIoBase::~cRcIoBase()
 
 cRcIoKBD::cRcIoKBD(void)
 {
+  f.Open(0); // stdin
 }
 
 cRcIoKBD::~cRcIoKBD()
 {
 }
 
-void cRcIoKBD::Flush(int WaitSeconds)
+void cRcIoKBD::Flush(int WaitMs)
 {
-  time_t t0 = time(NULL);
+  int t0 = time_ms();
 
   timeout(10);
   for (;;) {
       while (getch() > 0)
-            t0 = time(NULL);
-      if (time(NULL) - t0 >= WaitSeconds)
+            t0 = time_ms();
+      if (time_ms() - t0 >= WaitMs)
          break;
       }
 }
 
 bool cRcIoKBD::InputAvailable(bool Wait)
 {
-  timeout(Wait ? 1000 : 10);
-  int ch = getch();
-  if (ch == ERR)
-     return false;
-  ungetch(ch);
-  return true;
+  return f.Ready(Wait);
 }
 
 bool cRcIoKBD::GetCommand(unsigned int *Command, unsigned short *)
@@ -98,7 +94,7 @@ cRcIoRCU::cRcIoRCU(char *DeviceName)
   code = 0;
   address = 0xFFFF;
   lastNumber = 0;
-  if ((f = open(DeviceName, O_RDWR | O_NONBLOCK)) >= 0) {
+  if (f.Open(DeviceName, O_RDWR | O_NONBLOCK)) {
      struct termios t;
      if (tcgetattr(f, &t) == 0) {
         cfsetspeed(&t, B9600);
@@ -107,17 +103,14 @@ cRcIoRCU::cRcIoRCU(char *DeviceName)
            return;
         }
      LOG_ERROR_STR(DeviceName);
-     close(f);
+     f.Close();
      }
   else
      LOG_ERROR_STR(DeviceName);
-  f = -1;
 }
 
 cRcIoRCU::~cRcIoRCU()
 {
-  if (f >= 0)
-     close(f);
 }
 
 int cRcIoRCU::ReceiveByte(bool Wait)
@@ -135,7 +128,7 @@ int cRcIoRCU::ReceiveByte(bool Wait)
 
 bool cRcIoRCU::SendByteHandshake(unsigned char c)
 {
-  if (f >= 0) {
+  if (f.IsOpen()) {
      int w = write(f, &c, 1);
      if (w == 1) {
         for (int reply = ReceiveByte(); reply >= 0;) {
@@ -179,21 +172,21 @@ bool cRcIoRCU::SetMode(unsigned char Mode)
   return SendCommand(mode);
 }
 
-void cRcIoRCU::Flush(int WaitSeconds)
+void cRcIoRCU::Flush(int WaitMs)
 {
-  time_t t0 = time(NULL);
+  int t0 = time_ms();
 
   for (;;) {
       while (ReceiveByte(false) >= 0)
-            t0 = time(NULL);
-      if (time(NULL) - t0 >= WaitSeconds)
+            t0 = time_ms();
+      if (time_ms() - t0 >= WaitMs)
          break;
       }
 }
 
 bool cRcIoRCU::InputAvailable(bool Wait)
 {
-  return DataAvailable(f, Wait);
+  return f.Ready(Wait);
 }
 
 bool cRcIoRCU::GetCommand(unsigned int *Command, unsigned short *Address)
@@ -349,22 +342,21 @@ cRcIoLIRC::cRcIoLIRC(char *DeviceName)
   struct sockaddr_un addr;
   addr.sun_family = AF_UNIX;
   strcpy(addr.sun_path, DeviceName);
-  f = socket(AF_UNIX, SOCK_STREAM, 0);
-  if (f >= 0) {
-     if (connect(f, (struct sockaddr *)&addr, sizeof(addr)) >= 0)
+  int sock = socket(AF_UNIX, SOCK_STREAM, 0);
+  if (sock >= 0) {
+     if (connect(sock, (struct sockaddr *)&addr, sizeof(addr)) >= 0) {
+        f.Open(sock);
         return;
+        }
      LOG_ERROR_STR(DeviceName);
-     close(f);
+     close(sock);
      }
   else
      LOG_ERROR_STR(DeviceName);
-  f = -1;
 }
 
 cRcIoLIRC::~cRcIoLIRC()
 {
-  if (f >= 0)
-     close(f);
 }
 
 const char *cRcIoLIRC::ReceiveString(void)
@@ -389,24 +381,24 @@ const char *cRcIoLIRC::ReceiveString(void)
   return NULL;
 }
 
-void cRcIoLIRC::Flush(int WaitSeconds)
+void cRcIoLIRC::Flush(int WaitMs)
 {
   char buf[LIRC_BUFFER_SIZE];
-  time_t t0 = time(NULL);
+  int t0 = time_ms();
 
   for (;;) {
       while (InputAvailable(false)) {
             read(f, buf, sizeof(buf));
-            t0 = time(NULL);
+            t0 = time_ms();
             }
-      if (time(NULL) - t0 >= WaitSeconds)
+      if (time_ms() - t0 >= WaitMs)
          break;
       }
 }
 
 bool cRcIoLIRC::InputAvailable(bool Wait)
 {
-  return DataAvailable(f, Wait);
+  return f.Ready(Wait);
 }
 
 bool cRcIoLIRC::GetCommand(unsigned int *Command, unsigned short *)

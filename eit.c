@@ -13,7 +13,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.c 1.1 2000/09/03 10:22:25 kls Exp $
+ * $Id: eit.c 1.3 2000/09/17 15:23:05 kls Exp $
  ***************************************************************************/
 
 #include "eit.h"
@@ -22,7 +22,6 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <time.h>
-#include <sys/poll.h>
 #include <sys/ioctl.h>
 #include <dvb_comcode.h>
 #include "tools.h"
@@ -253,15 +252,12 @@ int cEIT::GetSection(unsigned char *buf, ushort PID, unsigned char sec)
 	int seclen=0;
 	unsigned short handle, pid;
 	unsigned char section, sectionnum=0xff, maxsec=0;
-	struct pollfd pfd;
 		
 	if ((handle = SetBitFilter(PID, (sec<<8)|0x00ff, SECTION_CONTINUOS))==0xffff)
 		return -1;
 		
 	seclen=0;
-	pfd.fd=fsvbi;
-	pfd.events=POLLIN;
-	if (poll(&pfd, 1, 20000)==0)
+	if (!cFile::AnyFileReady(fsvbi, 20000))
 	{
 		//cerr << "Timeout\n";
 		return -1;
@@ -312,13 +308,12 @@ char * cEIT::mjd2string(unsigned short mjd)
 /**  */
 int cEIT::GetEIT()
 {
-	unsigned char buf[1024];
+	unsigned char buf[4096+1]; // max. allowed size for any EIT section (+1 for safety ;-)
 	eit_t *eit;
 	struct eit_loop_struct1 *eitloop;
 	struct eit_short_event_descriptor_struct *eitevt;
-	int seclen;
+	unsigned int seclen;
 	unsigned short handle, pid;
-	struct pollfd pfd;
 	eit_event * pevt = (eit_event *)0;
 	time_t tstart;
 	
@@ -344,9 +339,7 @@ int cEIT::GetEIT()
 	tstart = time(NULL);
 	while ((!evtRunning.bIsValid || !evtNext.bIsValid) && nReceivedEITs < 20 && difftime(time(NULL), tstart) < 4)
 	{
-		pfd.fd=fsvbi;
-		pfd.events=POLLIN;
-		if (poll(&pfd, 1, 5000)==0)
+	        if (!cFile::AnyFileReady(fsvbi, 5000))
 		{
 			//cerr << "Timeout\n";
 			CloseFilter(handle);
@@ -357,6 +350,8 @@ int cEIT::GetEIT()
 		seclen=(buf[6]<<8)|buf[7];
 		pid=(buf[4]<<8)|buf[5];
 	
+                if (seclen >= sizeof(buf))
+                   seclen = sizeof(buf) - 1;
 		read(fsvbi, buf, seclen);
 	
 		if (seclen < (int)(sizeof(eit_t)

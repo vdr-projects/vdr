@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.14 2000/09/09 12:53:34 kls Exp $
+ * $Id: tools.c 1.19 2000/09/19 17:55:09 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -12,30 +12,19 @@
 #include <ctype.h>
 #include <dirent.h>
 #include <errno.h>
+#if defined(DEBUG_OSD)
+#include <ncurses.h>
+#endif
 #include <signal.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/stat.h>
 #include <sys/time.h>
+#include <sys/wait.h>
 #include <unistd.h>
 
 #define MaxBuffer 1000
 
 int SysLogLevel = 3;
-
-bool DataAvailable(int filedes, bool wait)
-{
-  if (filedes >= 0) {
-     fd_set set;
-     FD_ZERO(&set);
-     FD_SET(filedes, &set);
-     struct timeval timeout;
-     timeout.tv_sec = wait ? 1 : 0;
-     timeout.tv_usec = wait ? 0 : 10000;
-     return select(FD_SETSIZE, &set, NULL, NULL, &timeout) > 0 && FD_ISSET(filedes, &set);
-     }
-  return false;
-}
 
 void writechar(int filedes, char c)
 {
@@ -56,32 +45,12 @@ char readchar(int filedes)
 
 bool readint(int filedes, int &n)
 {
-  return DataAvailable(filedes) && read(filedes, &n, sizeof(n)) == sizeof(n);
-}
-
-int readstring(int filedes, char *buffer, int size, bool wait = false)
-{
-  int rbytes = 0;
-
-  while (DataAvailable(filedes, wait)) {
-        int n = read(filedes, buffer + rbytes, size - rbytes);
-        if (n == 0)
-           break; // EOF
-        if (n < 0) {
-           LOG_ERROR;
-           break;
-           }
-        rbytes += n;
-        if (rbytes == size)
-           break;
-        wait = false;
-        }
-  return rbytes;
+  return cFile::AnyFileReady(filedes, 0) && read(filedes, &n, sizeof(n)) == sizeof(n);
 }
 
 void purge(int filedes)
 {
-  while (DataAvailable(filedes))
+  while (cFile::AnyFileReady(filedes, 0))
         readchar(filedes);
 }
 
@@ -151,6 +120,14 @@ bool isnumber(const char *s)
         s++;
         }
   return true;
+}
+
+const char *AddDirectory(const char *DirName, const char *FileName)
+{
+  static char *buf = NULL;
+  delete buf;
+  asprintf(&buf, "%s/%s", DirName && *DirName ? DirName : ".", FileName);
+  return buf;
 }
 
 #define DFCMD  "df -m %s"
@@ -311,6 +288,110 @@ void KillProcess(pid_t pid, int Timeout)
      if (kill(Pid2Wait4, SIGKILL) < 0)
         esyslog(LOG_ERR, "ERROR: process %d won't die (%s) - giving up", Pid2Wait4, strerror(errno));
      }
+}
+
+// --- cFile -----------------------------------------------------------------
+
+bool cFile::files[FD_SETSIZE] = { false };
+int cFile::maxFiles = 0;
+
+cFile::cFile(void)
+{
+  f = -1;
+}
+
+cFile::~cFile()
+{
+  Close();
+}
+
+bool cFile::Open(const char *FileName, int Flags, mode_t Mode)
+{
+  if (!IsOpen())
+     return Open(open(FileName, Flags, Mode));
+  esyslog(LOG_ERR, "ERROR: attempt to re-open %s", FileName);
+  return false;
+}
+
+bool cFile::Open(int FileDes)
+{
+  if (FileDes >= 0) {
+     if (!IsOpen()) {
+        f = FileDes;
+        if (f >= 0) {
+           if (f < FD_SETSIZE) {
+              if (f >= maxFiles)
+                 maxFiles = f + 1;
+              if (!files[f])
+                 files[f] = true;
+              else
+                 esyslog(LOG_ERR, "ERROR: file descriptor %d already in files[]", f);
+              return true;
+              }
+           else
+              esyslog(LOG_ERR, "ERROR: file descriptor %d is larger than FD_SETSIZE (%d)", f, FD_SETSIZE);
+           }
+        }
+     else
+        esyslog(LOG_ERR, "ERROR: attempt to re-open file descriptor %d", FileDes);
+     }
+  return false;
+}
+
+void cFile::Close(void)
+{
+  if (f >= 0) {
+     close(f);
+     files[f] = false;
+     f = -1;
+     }
+}
+
+int cFile::ReadString(char *Buffer, int Size)
+{
+  int rbytes = 0;
+  bool wait = true;
+
+  while (Ready(wait)) {
+        int n = read(f, Buffer + rbytes, 1);
+        if (n == 0)
+           break; // EOF
+        if (n < 0) {
+           LOG_ERROR;
+           return -1;
+           }
+        rbytes += n;
+        if (rbytes == Size || Buffer[rbytes - 1] == '\n')
+           break;
+        wait = false;
+        }
+  return rbytes;
+}
+
+bool cFile::Ready(bool Wait)
+{
+  return f >= 0 && AnyFileReady(f, Wait ? 1000 : 0);
+}
+
+bool cFile::AnyFileReady(int FileDes, int TimeoutMs)
+{
+#ifdef DEBUG_OSD
+  refresh();
+#endif
+  fd_set set;
+  FD_ZERO(&set);
+  for (int i = 0; i < maxFiles; i++) {
+      if (files[i])
+         FD_SET(i, &set);
+      }
+  if (0 <= FileDes && FileDes < FD_SETSIZE && !files[FileDes])
+     FD_SET(FileDes, &set); // in case we come in with an arbitrary descriptor
+  if (TimeoutMs == 0)
+     TimeoutMs = 10; // load gets too heavy with 0
+  struct timeval timeout;
+  timeout.tv_sec  = TimeoutMs / 1000;
+  timeout.tv_usec = (TimeoutMs % 1000) * 1000;
+  return select(FD_SETSIZE, &set, NULL, NULL, &timeout) > 0 && (FileDes < 0 || FD_ISSET(FileDes, &set));
 }
 
 // --- cListObject -----------------------------------------------------------

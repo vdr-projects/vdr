@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.6 2000/09/09 10:51:21 kls Exp $
+ * $Id: svdrp.c 1.10 2000/09/17 13:39:37 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -120,8 +120,15 @@ const char *HelpPages[] = {
   "    Delete channel.",
   "DELT <number>\n"
   "    Delete timer.",
+  "GRAB <filename> [ jpeg | pnm [ <quality> [ <sizex> <sizey> ] ] ]\n"
+  "    Grab the current frame and save it to the given file. Images can\n"
+  "    be stored as JPEG (default) or PNM, at the given quality (default\n"
+  "    is 'maximum', only applies to JPEG) and size (default is full screen).",
   "HELP [ <topic> ]\n"
   "    The HELP command gives help info.",
+  "HITK [ <key> ]\n"
+  "    Hit the given remote control key. Without option a list of all\n"
+  "    valid key names is given.",
   "LSTC [ <number> | <name> ]\n"
   "    List channels. Without option, all channels are listed. Otherwise\n"
   "    only the given channel is listed. If a name is given, all channels\n"
@@ -147,6 +154,16 @@ const char *HelpPages[] = {
   "    Create a new timer. Settings must be in the same format as returned\n"
   "    by the LSTT command. It is an error if a timer with the same channel,\n"
   "    day, start and stop time already exists.",
+  "OVLF <sizex> <sizey> <fbaddr> <bpp> <palette>\n"
+  "    Set the size, address depth and palette of the overlay.",
+  "OVLG <sizex> <sizey> <posx> <posy>\n"
+  "    Set the size and position of the overlay.",
+  "OVLC <clipcount> <base16-CRect-array>\n"
+  "    Set the overlay clipping rectangles.",
+  "OVLP <brightness> <colour> <hue> <contrast>\n"
+  "    Set the picture parameters for the overlay.",
+  "OVLO 0 | 1\n"
+  "    Switch the overlay on or off.",
   "UPDT <settings>\n"
   "    Updates a timer. Settings must be in the same format as returned\n"
   "    by the LSTT command. If a timer with the same channel, day, start\n"
@@ -206,7 +223,6 @@ const char *GetHelpPage(const char *Cmd)
 cSVDRP::cSVDRP(int Port)
 :socket(Port)
 {
-  filedes = -1;
   isyslog(LOG_INFO, "SVDRP listening on port %d", Port);
 }
 
@@ -217,14 +233,13 @@ cSVDRP::~cSVDRP()
 
 void cSVDRP::Close(void)
 {
-  if (filedes >= 0) {
+  if (file.IsOpen()) {
      //TODO how can we get the *full* hostname?
      char buffer[MAXCMDBUFFER];
      gethostname(buffer, sizeof(buffer));
      Reply(221, "%s closing connection", buffer);
      isyslog(LOG_INFO, "closing connection"); //TODO store IP#???
-     close(filedes);
-     filedes = -1;
+     file.Close();
      }
 }
 
@@ -232,11 +247,14 @@ bool cSVDRP::Send(const char *s, int length)
 {
   if (length < 0)
      length = strlen(s);
-  int wbytes = write(filedes, s, length);
+  int wbytes = write(file, s, length);
   if (wbytes == length)
      return true;
-  if (wbytes < 0)
+  if (wbytes < 0) {
      LOG_ERROR;
+     file.Close();
+     cDvbApi::PrimaryDvbApi->OvlO(false);
+     }
   else //XXX while...???
      esyslog(LOG_ERR, "Wrote %d bytes to client while expecting %d\n", wbytes, length);
   return false;
@@ -244,7 +262,7 @@ bool cSVDRP::Send(const char *s, int length)
 
 void cSVDRP::Reply(int Code, const char *fmt, ...)
 {
-  if (filedes >= 0) {
+  if (file.IsOpen()) {
      if (Code != 0) {
         va_list ap;
         va_start(ap, fmt);
@@ -274,7 +292,7 @@ void cSVDRP::Reply(int Code, const char *fmt, ...)
      }
 }
 
-void cSVDRP::CmdChan(const char *Option)
+void cSVDRP::CmdCHAN(const char *Option)
 {
   if (*Option) {
      int n = -1;
@@ -331,13 +349,13 @@ void cSVDRP::CmdChan(const char *Option)
      Reply(550, "Unable to find channel \"%d\"", CurrentChannel);
 }
 
-void cSVDRP::CmdDelc(const char *Option)
+void cSVDRP::CmdDELC(const char *Option)
 {
   //TODO combine this with menu action (timers must be updated)
   Reply(502, "DELC not yet implemented");
 }
 
-void cSVDRP::CmdDelt(const char *Option)
+void cSVDRP::CmdDELT(const char *Option)
 {
   if (*Option) {
      if (isnumber(Option)) {
@@ -362,7 +380,68 @@ void cSVDRP::CmdDelt(const char *Option)
      Reply(501, "Missing timer number");
 }
 
-void cSVDRP::CmdHelp(const char *Option)
+void cSVDRP::CmdGRAB(const char *Option)
+{
+  char *FileName = NULL;
+  bool Jpeg = true;
+  int Quality = -1, SizeX = -1, SizeY = -1;
+  if (*Option) {
+     char buf[strlen(Option) + 1];
+     char *p = strcpy(buf, Option);
+     const char *delim = " \t";
+     FileName = strtok(p, delim);
+     if ((p = strtok(NULL, delim)) != NULL) {
+        if (strcasecmp(p, "JPEG") == 0)
+           Jpeg = true;
+        else if (strcasecmp(p, "PNM") == 0)
+           Jpeg = false;
+        else {
+           Reply(501, "Unknown image type \"%s\"", p);
+           return;
+           }
+        }
+     if ((p = strtok(NULL, delim)) != NULL) {
+        if (isnumber(p))
+           Quality = atoi(p);
+        else {
+           Reply(501, "Illegal quality \"%s\"", p);
+           return;
+           }
+        }
+     if ((p = strtok(NULL, delim)) != NULL) {
+        if (isnumber(p))
+           SizeX = atoi(p);
+        else {
+           Reply(501, "Illegal sizex \"%s\"", p);
+           return;
+           }
+        if ((p = strtok(NULL, delim)) != NULL) {
+           if (isnumber(p))
+              SizeY = atoi(p);
+           else {
+              Reply(501, "Illegal sizey \"%s\"", p);
+              return;
+              }
+           }
+        else {
+           Reply(501, "Missing sizey");
+           return;
+           }
+        }
+     if ((p = strtok(NULL, delim)) != NULL) {
+        Reply(501, "Unexpected parameter \"%s\"", p);
+        return;
+        }
+     if (cDvbApi::PrimaryDvbApi->GrabImage(FileName, Jpeg, Quality, SizeX, SizeY))
+        Reply(250, "Grabbed image %s", Option);
+     else
+        Reply(451, "Grab image failed");
+     }
+  else
+     Reply(501, "Missing filename");
+}
+
+void cSVDRP::CmdHELP(const char *Option)
 {
   if (*Option) {
      const char *hp = GetHelpPage(Option);
@@ -390,7 +469,27 @@ void cSVDRP::CmdHelp(const char *Option)
   Reply(214, "End of HELP info");
 }
 
-void cSVDRP::CmdLstc(const char *Option)
+void cSVDRP::CmdHITK(const char *Option)
+{
+  if (*Option) {
+     eKeys k = Keys.Translate(Option);
+     if (k != kNone) {
+        Interface.PutKey(k);
+        Reply(250, "Key \"%s\" accepted", Option);
+        }
+     else
+        Reply(504, "Unknown key: \"%s\"", Option);
+     }
+  else {
+     Reply(-214, "Valid <key> names for the HITK command:");
+     for (int i = 0; i < kNone; i++) {
+         Reply(-214, "    %s", Keys.keys[i].name);
+         }
+     Reply(214, "End of key list");
+     }
+}
+
+void cSVDRP::CmdLSTC(const char *Option)
 {
   if (*Option) {
      if (isnumber(Option)) {
@@ -433,7 +532,7 @@ void cSVDRP::CmdLstc(const char *Option)
      }
 }
 
-void cSVDRP::CmdLstt(const char *Option)
+void cSVDRP::CmdLSTT(const char *Option)
 {
   if (*Option) {
      if (isnumber(Option)) {
@@ -457,7 +556,7 @@ void cSVDRP::CmdLstt(const char *Option)
      }
 }
 
-void cSVDRP::CmdModc(const char *Option)
+void cSVDRP::CmdMODC(const char *Option)
 {
   if (*Option) {
      char *tail;
@@ -486,7 +585,7 @@ void cSVDRP::CmdModc(const char *Option)
      Reply(501, "Missing channel settings");
 }
 
-void cSVDRP::CmdModt(const char *Option)
+void cSVDRP::CmdMODT(const char *Option)
 {
   if (*Option) {
      char *tail;
@@ -519,19 +618,19 @@ void cSVDRP::CmdModt(const char *Option)
      Reply(501, "Missing timer settings");
 }
 
-void cSVDRP::CmdMovc(const char *Option)
+void cSVDRP::CmdMOVC(const char *Option)
 {
   //TODO combine this with menu action (timers must be updated)
   Reply(502, "MOVC not yet implemented");
 }
 
-void cSVDRP::CmdMovt(const char *Option)
+void cSVDRP::CmdMOVT(const char *Option)
 {
   //TODO combine this with menu action
   Reply(502, "MOVT not yet implemented");
 }
 
-void cSVDRP::CmdNewc(const char *Option)
+void cSVDRP::CmdNEWC(const char *Option)
 {
   if (*Option) {
      cChannel *channel = new cChannel;
@@ -549,7 +648,7 @@ void cSVDRP::CmdNewc(const char *Option)
      Reply(501, "Missing channel settings");
 }
 
-void cSVDRP::CmdNewt(const char *Option)
+void cSVDRP::CmdNEWT(const char *Option)
 {
   if (*Option) {
      cTimer *timer = new cTimer;
@@ -573,7 +672,107 @@ void cSVDRP::CmdNewt(const char *Option)
      Reply(501, "Missing timer settings");
 }
 
-void cSVDRP::CmdUpdt(const char *Option)
+void cSVDRP::CmdOVLF(const char *Option)
+{
+  if (*Option) {
+     int SizeX = 0, SizeY = 0, Bpp = 0, Palette = 0, FbAddr = 0;
+     if (5 == sscanf(Option, "%d %d %x %d %d", &SizeX, &SizeY, &FbAddr, &Bpp, &Palette)) {
+        //somehow_set_overlay_geometry;
+        if (cDvbApi::PrimaryDvbApi->OvlF(SizeX, SizeY, FbAddr, Bpp, Palette))
+           Reply(250, "Overlay framebuffer set");      
+        else
+           Reply(451, "Illegal overlay framebuffer settings");
+        }
+     else
+        Reply(501, "Could not parse overlay framebuffer settings");
+     }
+  else
+     Reply(501, "Missing overlay framebuffer settings");
+}
+
+void cSVDRP::CmdOVLG(const char *Option)
+{
+  if (*Option) {
+     int SizeX = 0, SizeY = 0, PosX = 0, PosY = 0;
+     if (4 == sscanf(Option, "%d %d %d %d", &SizeX, &SizeY, &PosX, &PosY)) {
+        //somehow_set_overlay_geometry;
+        if (cDvbApi::PrimaryDvbApi->OvlG(SizeX, SizeY, PosX, PosY))
+           Reply(250, "Overlay geometry set"); 
+        else
+           Reply(451, "Illegal overlay geometry settings");
+        }
+     else
+        Reply(501, "Could not parse overlay geometry settings");
+     }
+  else
+     Reply(501, "Missing overlay geometry settings");
+}
+
+void cSVDRP::CmdOVLC(const char *Option)
+{
+  if (*Option) {
+     int ClipCount = 0;
+     unsigned char s[2 * MAXCLIPRECTS * sizeof(CRect) + 2];
+     if (2 == sscanf(Option, "%d %s", &ClipCount, s)) {
+        // Base16-decoding of CRect-array:
+        unsigned char *p = (unsigned char*)ovlClipRects;
+        int i = 0, size = sizeof(CRect)*ClipCount;
+        for (int j = 0; i < size; i++) {
+            p[i]  = (s[j++] - 65);
+            p[i] += (s[j++] - 65) << 4;
+            }
+        if (((unsigned)ClipCount == (i / sizeof(CRect))) && (ClipCount >= 0)) {
+           // apply it:
+           if (cDvbApi::PrimaryDvbApi->OvlC(ClipCount, ovlClipRects))
+              Reply(250, "Overlay-Clipping set");
+           else
+              Reply(451, "Illegal overlay clipping settings");
+           return;
+           }
+        }
+     Reply(501, "Error parsing Overlay-Clipping settings");
+     }
+  else
+     Reply(501, "Missing Clipping settings");
+}
+
+void cSVDRP::CmdOVLP(const char *Option)
+{
+  if (*Option) {
+     int Brightness = 0, Colour = 0, Hue = 0, Contrast = 0;
+     if (4 == sscanf(Option, "%d %d %d %d", &Brightness, &Colour, &Hue, &Contrast)) {
+        //somehow_set_overlay_picture_settings;
+        if (cDvbApi::PrimaryDvbApi->OvlP(Brightness, Colour, Hue, Contrast))
+           Reply(250, "Overlay picture settings set"); 
+        else
+           Reply(451, "Illegal overlay picture settings");
+        }
+     else
+        Reply(501, "Could not parse overlay picture settings");
+     }
+  else
+     Reply(501, "Missing overlay picture settings");
+}
+
+void cSVDRP::CmdOVLO(const char *Option)
+{
+  if (*Option) {
+     int Value;
+     if (1 == sscanf(Option, "%d", &Value)) {
+        //somehow_set_overlay_picture_settings;
+        if (cDvbApi::PrimaryDvbApi->OvlO(Value))
+           Reply(250, "Overlay capture set");  
+        else
+           Reply(451, "Error setting overlay capture");
+        }
+     else
+        Reply(501, "Could not parse status");
+     }
+  else
+     Reply(501, "Missing overlay capture status");
+}
+
+void cSVDRP::CmdUPDT(const char *Option)
 {
   if (*Option) {
      cTimer *timer = new cTimer;
@@ -612,19 +811,26 @@ void cSVDRP::Execute(char *Cmd)
   while (*s && !isspace(*s))
         s++;
   *s++ = 0;
-  if      (CMD("CHAN"))  CmdChan(s);
-  else if (CMD("DELC"))  CmdDelc(s);
-  else if (CMD("DELT"))  CmdDelt(s);
-  else if (CMD("HELP"))  CmdHelp(s);
-  else if (CMD("LSTC"))  CmdLstc(s);
-  else if (CMD("LSTT"))  CmdLstt(s);
-  else if (CMD("MODC"))  CmdModc(s);
-  else if (CMD("MODT"))  CmdModt(s);
-  else if (CMD("MOVC"))  CmdMovc(s);
-  else if (CMD("MOVT"))  CmdMovt(s);
-  else if (CMD("NEWC"))  CmdNewc(s);
-  else if (CMD("NEWT"))  CmdNewt(s);
-  else if (CMD("UPDT"))  CmdUpdt(s);
+  if      (CMD("CHAN"))  CmdCHAN(s);
+  else if (CMD("DELC"))  CmdDELC(s);
+  else if (CMD("DELT"))  CmdDELT(s);
+  else if (CMD("GRAB"))  CmdGRAB(s);
+  else if (CMD("HELP"))  CmdHELP(s);
+  else if (CMD("HITK"))  CmdHITK(s);
+  else if (CMD("LSTC"))  CmdLSTC(s);
+  else if (CMD("LSTT"))  CmdLSTT(s);
+  else if (CMD("MODC"))  CmdMODC(s);
+  else if (CMD("MODT"))  CmdMODT(s);
+  else if (CMD("MOVC"))  CmdMOVC(s);
+  else if (CMD("MOVT"))  CmdMOVT(s);
+  else if (CMD("NEWC"))  CmdNEWC(s);
+  else if (CMD("NEWT"))  CmdNEWT(s);
+  else if (CMD("OVLF"))  CmdOVLF(s);
+  else if (CMD("OVLG"))  CmdOVLG(s);
+  else if (CMD("OVLC"))  CmdOVLC(s);
+  else if (CMD("OVLP"))  CmdOVLP(s);
+  else if (CMD("OVLO"))  CmdOVLO(s);
+  else if (CMD("UPDT"))  CmdUPDT(s);
   else if (CMD("QUIT")
        ||  CMD("\x04"))  Close();
   else                   Reply(500, "Command unrecognized: \"%s\"", Cmd);
@@ -632,9 +838,9 @@ void cSVDRP::Execute(char *Cmd)
 
 void cSVDRP::Process(void)
 {
-  bool SendGreeting = filedes < 0;
+  bool SendGreeting = !file.IsOpen();
 
-  if (filedes >= 0 || (filedes = socket.Accept()) >= 0) {
+  if (file.IsOpen() || file.Open(socket.Accept())) {
      char buffer[MAXCMDBUFFER];
      if (SendGreeting) {
         //TODO how can we get the *full* hostname?
@@ -642,7 +848,7 @@ void cSVDRP::Process(void)
         time_t now = time(NULL);
         Reply(220, "%s SVDRP VideoDiskRecorder %s; %s", buffer, VDRVERSION, ctime(&now));
         }
-     int rbytes = readstring(filedes, buffer, sizeof(buffer) - 1);
+     int rbytes = file.ReadString(buffer, sizeof(buffer) - 1);
      if (rbytes > 0) {
         //XXX overflow check???
         // strip trailing whitespace:

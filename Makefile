@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 1.9 2000/09/10 08:55:45 kls Exp $
+# $Id: Makefile 1.11 2000/09/20 17:01:57 kls Exp $
 
 DVBDIR   = ../DVB
 
@@ -26,21 +26,21 @@ endif
 
 all: vdr
 
-config.o   : config.c config.h dvbapi.h eit.h interface.h tools.h
-dvbapi.o   : dvbapi.c config.h dvbapi.h interface.h tools.h videodir.h
-eit.o      : eit.c eit.h
-interface.o: interface.c config.h dvbapi.h eit.h interface.h remote.h tools.h
-menu.o     : menu.c config.h dvbapi.h interface.h menu.h osd.h recording.h tools.h
-osd.o      : osd.c config.h dvbapi.h interface.h osd.h tools.h
-vdr.o      : vdr.c config.h dvbapi.h interface.h menu.h osd.h recording.h svdrp.h tools.h videodir.h
-recording.o: recording.c config.h dvbapi.h interface.h recording.h tools.h videodir.h
-remote.o   : remote.c remote.h tools.h
-svdrp.o    : svdrp.c svdrp.h config.h interface.h tools.h
+config.o   : config.c config.h dvbapi.h eit.h interface.h svdrp.h tools.h
+dvbapi.o   : dvbapi.c config.h dvbapi.h interface.h svdrp.h tools.h videodir.h
+eit.o      : eit.c eit.h tools.h
+interface.o: interface.c config.h dvbapi.h eit.h interface.h remote.h svdrp.h tools.h
+menu.o     : menu.c config.h dvbapi.h interface.h menu.h osd.h recording.h svdrp.h tools.h
+osd.o      : osd.c config.h dvbapi.h interface.h osd.h svdrp.h tools.h
+recording.o: recording.c config.h dvbapi.h interface.h recording.h svdrp.h tools.h videodir.h
+remote.o   : remote.c config.h dvbapi.h remote.h tools.h
+svdrp.o    : svdrp.c config.h dvbapi.h interface.h svdrp.h tools.h
 tools.o    : tools.c tools.h
+vdr.o      : vdr.c config.h dvbapi.h interface.h menu.h osd.h recording.h svdrp.h tools.h videodir.h
 videodir.o : videodir.c tools.h videodir.h
 
 vdr: $(OBJS)
-	g++ -g -O2 $(OBJS) -lncurses -o vdr
+	g++ -g -O2 $(OBJS) -lncurses -ljpeg -o vdr
 
 clean:
 	-rm $(OBJS) vdr
