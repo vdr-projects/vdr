@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.94 2004/10/15 13:07:52 kls Exp $
+ * $Id: dvbdevice.c 1.95 2004/10/16 12:51:56 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -307,6 +307,7 @@ cDvbDevice::cDvbDevice(int n)
   frontendType = fe_type_t(-1); // don't know how else to initialize this - there is no FE_UNKNOWN
   spuDecoder = NULL;
   playMode = pmNone;
+  aPid1 = aPid2 = 0;
 
   // Devices that are present on all card types:
 
@@ -370,8 +371,6 @@ cDvbDevice::cDvbDevice(int n)
      }
   else
      esyslog("ERROR: can't open DVB device %d", n);
-
-  aPid1 = aPid2 = 0;
 
   StartSectionHandler();
 }

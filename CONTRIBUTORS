@@ -1030,6 +1030,8 @@ Michal Dobrzynski <michal_dobrzynski@mac.com>
 Wayne Keer <syphir@syphir.sytes.net>
  for reporting a bug in handling descriptor loops in 'libsi', which had sometimes
  caused invalid CA ids to be added to the channel definitions
+ for pointing out a problem with the initialization of aPid1 and aPid2 in
+ cDvbDevice::cDvbDevice() in case a patch references them
 
 Marco Schlüßler <marco@lordzodiac.de>
  for fixing handling colors in cDvbSpuPalette::yuv2rgb()
