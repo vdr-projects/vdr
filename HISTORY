@@ -2235,7 +2235,7 @@ Video Disk Recorder Revision History
 - Some corrections to the Finnish OSD texts (thanks to Jaakko Hyvätti).
 - Officially released as version 1.2.0.
 
-2003-06-08: Version 1.2.1
+2003-06-09: Version 1.2.1
 
 - Fixed OSD access in case none of the devices provides one (thanks to Axel
   Gruber for reporting this one).

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.126 2003/06/06 15:42:29 kls Exp $
+ * $Id: i18n.c 1.127 2003/06/09 09:45:37 kls Exp $
  *
  * Translations provided by:
  *
@@ -2900,8 +2900,8 @@ const tI18nPhrase Phrases[] = {
     "Pulse 'Menu' para saltarse esta tecla",
     "Pata 'Menou' gia prosperasi aftou tou pliktrou",
     "Tryck 'Meny' för att hoppa över denna knapp.",
-    "A Menü gombot nyomni ennek a gombnak a kihagyásához",
     "",// TODO
+    "A Menü gombot nyomni ennek a gombnak a kihagyásához",
     "Premeu 'Menú' per obviar aquesta tecla",
   },
   { "Phase 3: Saving key codes",
