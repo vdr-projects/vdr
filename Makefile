@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 1.56 2003/01/06 12:28:09 kls Exp $
+# $Id: Makefile 1.57 2003/08/02 14:27:21 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -48,6 +48,9 @@ endif
 DEFINES += -DREMOTE_$(REMOTE)
 
 DEFINES += -D_GNU_SOURCE
+
+DEFINES += -DVIDEODIR=\"$(VIDEODIR)\"
+DEFINES += -DPLUGINDIR=\"$(PLUGINDIR)/lib\"
 
 ifdef DEBUG_OSD
 DEFINES += -DDEBUG_OSD

@@ -534,6 +534,8 @@ Dennis Noordsij <dennis.noordsij@wiral.com>
 
 Steffen Barszus <st_barszus@gmx.de>
  for reporting a bug in switching audio tracks in 'Transfer Mode' on the primary DVB device
+ for making the program use the values of VIDEODIR and PLUGINDIR defined in Makefile
+ or Makefile.config as defaults
 
 Peter Seyringer <e9425234@student.tuwien.ac.at>
  for reporting a bug in saving the polarization parameter of channels that have a

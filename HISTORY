@@ -2279,3 +2279,5 @@ Video Disk Recorder Revision History
   CA recording (thanks to Emil Naepflein).
 - Fixed a possible crash in case a VFAT file system is used without compiling VDR
   with VFAT=1 (thanks to Ernst Fürst for reporting this one).
+- Now the program uses the values of VIDEODIR and PLUGINDIR defined in Makefile
+  or Makefile.config as defaults (thanks to Steffen Barszus).

@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.161 2003/06/15 14:35:05 kls Exp $
+ * $Id: vdr.c 1.162 2003/08/02 14:01:32 kls Exp $
  */
 
 #include <getopt.h>
@@ -93,7 +93,7 @@ int main(int argc, char *argv[])
 
 #define DEFAULTSVDRPPORT 2001
 #define DEFAULTWATCHDOG     0 // seconds
-#define DEFAULTPLUGINDIR "./PLUGINS/lib"
+#define DEFAULTPLUGINDIR PLUGINDIR
 
   int SVDRPport = DEFAULTSVDRPPORT;
   const char *AudioCommand = NULL;
