@@ -985,3 +985,5 @@ Video Disk Recorder Revision History
   Jürgen Schmidt).
 - When the last entry in a "Recordings" menu page is deleted, that page is now
   automatically closed (suggested by Uwe Freese).
+- Changed the default name for instant recordings to "TITLE EPISODE" (avoiding
+  the '-').
