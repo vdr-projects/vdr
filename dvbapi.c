@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.94 2001/07/29 09:00:19 kls Exp $
+ * $Id: dvbapi.c 1.95 2001/07/29 09:49:33 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -65,6 +65,10 @@ extern "C" {
 
 // The number of frames to back up when resuming an interrupted replay session:
 #define RESUMEBACKUP (10 * FRAMESPERSEC)
+
+// The maximum time we wait before assuming that a recorded video data stream
+// is broken:
+#define MAXBROKENTIMEOUT 30 // seconds
 
 #define CHECK(s) { if ((s) < 0) LOG_ERROR; } // used for 'ioctl()' calls
 
@@ -534,7 +538,7 @@ void cRecordBuffer::Input(void)
                break;
             }
          }
-      if (time(NULL) - t > 10) {
+      if (time(NULL) - t > MAXBROKENTIMEOUT) {
          esyslog(LOG_ERR, "ERROR: video data stream broken");
          cThread::EmergencyExit(true);
          t = time(NULL);

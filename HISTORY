@@ -606,3 +606,4 @@ Video Disk Recorder Revision History
   tuning the primary interface (which can't receive this channel, anyway).
   Apparently the driver gets irritated when the channel is switched and a
   replay session is started immediately after that.
+- Increased timeout until reporting "video data stream broken" when recording.
