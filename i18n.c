@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.67 2002/03/22 13:31:01 kls Exp $
+ * $Id: i18n.c 1.68 2002/03/22 13:58:50 kls Exp $
  *
  * Slovenian translations provided by Miha Setina <mihasetina@softhome.net>
  * Italian   translations provided by Alberto Carraro <bertocar@tin.it>
@@ -263,7 +263,7 @@ const tPhrase Phrases[] = {
     "Ein/Aus",
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Aan/Uit",
     "", // TODO
     "Marche/Arr",
     "", // TODO
@@ -293,7 +293,7 @@ const tPhrase Phrases[] = {
     "Anfang",
     "Zacetek",
     "Da inizio",
-    "Spoel terug",
+    "Naar begin",
     "Rebobinar",
     "Retour",
     "Spol tilbake",
@@ -303,7 +303,7 @@ const tPhrase Phrases[] = {
     "Beenden",
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Eindigen",
     "", // TODO
     "", // TODO
     "", // TODO
@@ -333,7 +333,7 @@ const tPhrase Phrases[] = {
     "Öffnen",
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Openen",
     "", // TODO
     "Ouvrir",
     "", // TODO
@@ -393,7 +393,7 @@ const tPhrase Phrases[] = {
     "Auswerfen",
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Eject",
     "", // TODO
     "Ejection",
     "", // TODO
@@ -434,7 +434,7 @@ const tPhrase Phrases[] = {
     "Timer zeichnet auf - trotzdem löschen?",
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Timer neemt nog op - toch verwijderen?"
     "", // TODO
     "Enregistrement en cours - confirmez la suppression",
     "", // TODO
@@ -454,7 +454,7 @@ const tPhrase Phrases[] = {
     "auf dem primären Interface",
     "", // TODO
     "", // TODO
-    "", // TODO
+    "op eerste interface",
     "", // TODO
     "sur la carte principale",
     "", // TODO
@@ -474,7 +474,7 @@ const tPhrase Phrases[] = {
     "Wirklich neu starten?",
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Werkelijk opnieuw starten?",
     "", // TODO
     "", // TODO
     "", // TODO
@@ -484,7 +484,7 @@ const tPhrase Phrases[] = {
     "Aufnahme läuft - trotzdem neu starten?",
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Opname loopt - toch opnieuw starten?",
     "", // TODO
     "", // TODO
     "", // TODO
@@ -494,7 +494,7 @@ const tPhrase Phrases[] = {
     "Aufnahme läuft - trotzdem ausschalten?",
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Opname loopt - toch uitschakelen?",
     "", // TODO
     "Enregistrement en cours - confirmez l'arrêt",
     "", // TODO
@@ -504,7 +504,7 @@ const tPhrase Phrases[] = {
     "Aufnahme in %d Minuten - trotzdem ausschalten?",
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Opname in %d minuten - toch uitschakelen?",
     "", // TODO
     "Enregistrement dans %d minutes - confirmez l'arrêt", // TODO
     "", // TODO
@@ -514,7 +514,7 @@ const tPhrase Phrases[] = {
     "Taste drücken um Shutdown abzubrechen",
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Druk een toets om shutdown af te breken",
     "", // TODO
     "Appuyez sur une touche pour annuler l'arrêt",
     "", // TODO
@@ -736,7 +736,7 @@ const tPhrase Phrases[] = {
     "Erster Tag",
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Eerste dag",
     "", // TODO
     "Premier jour",
     "", // TODO
@@ -777,7 +777,7 @@ const tPhrase Phrases[] = {
     "Fehler beim ansprechen der Aufzeichnung!",
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Fout bij lezen opname!",
     "", // TODO
     "Impossible d'accèder à l'enregistrement",
     "", // TODO
@@ -827,7 +827,7 @@ const tPhrase Phrases[] = {
     "Transfer-Mode kann nicht gestartet werden!",
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Kan Transfer-Mode niet starten",
     "", // TODO
     "Impossible d'utiliser le mode transfert!",
     "", // TODO
@@ -857,7 +857,7 @@ const tPhrase Phrases[] = {
     "Shutdown unmöglich - Option '-s' fehlt!",
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Shutdown onmogelijk - Optie '-s' ontbreekt!",
     "", // TODO
     "Arrêt impossible - option '-s' absente!",
     "", // TODO
@@ -867,7 +867,7 @@ const tPhrase Phrases[] = {
     "Platte beinahe voll!",
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Disk bijna vol!",
     "", // TODO
     "Disque presque plein!",
     "", // TODO
@@ -878,7 +878,7 @@ const tPhrase Phrases[] = {
     "OSD",
     "", // TODO
     "", // TODO
-    "", // TODO
+    "OSD",
     "", // TODO
     "", // TODO
     "", // TODO
@@ -888,7 +888,7 @@ const tPhrase Phrases[] = {
     "EPG",
     "", // TODO
     "", // TODO
-    "", // TODO
+    "EPG",
     "", // TODO
     "", // TODO
     "", // TODO
@@ -898,7 +898,7 @@ const tPhrase Phrases[] = {
     "DVB",
     "", // TODO
     "", // TODO
-    "", // TODO
+    "DVB",
     "", // TODO
     "", // TODO
     "", // TODO
@@ -908,7 +908,7 @@ const tPhrase Phrases[] = {
     "LNB",
     "", // TODO
     "", // TODO
-    "", // TODO
+    "LNB",
     "", // TODO
     "", // TODO
     "", // TODO
@@ -918,7 +918,7 @@ const tPhrase Phrases[] = {
     "CICAM",
     "", // TODO
     "", // TODO
-    "", // TODO
+    "CICAM",
     "", // TODO
     "", // TODO
     "", // TODO
@@ -928,7 +928,7 @@ const tPhrase Phrases[] = {
     "Aufnahme",
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Opname",
     "", // TODO
     "", // TODO
     "", // TODO
@@ -938,7 +938,7 @@ const tPhrase Phrases[] = {
     "Wiedergabe",
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Afspelen",
     "", // TODO
     "", // TODO
     "", // TODO
@@ -948,7 +948,7 @@ const tPhrase Phrases[] = {
     "Sonstiges",
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Overig",
     "", // TODO
     "", // TODO
     "", // TODO
@@ -958,7 +958,7 @@ const tPhrase Phrases[] = {
     "Neustart",
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Herstart",
     "", // TODO
     "", // TODO
     "", // TODO
@@ -979,7 +979,7 @@ const tPhrase Phrases[] = {
     "Breite",
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Breedte",
     "", // TODO
     "Largeur", //TODO (correct?)
     "", // TODO
@@ -989,7 +989,7 @@ const tPhrase Phrases[] = {
     "Höhe",
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Hoogte",
     "", // TODO
     "Hauteur", //TODO (correct?)
     "", // TODO
@@ -999,7 +999,7 @@ const tPhrase Phrases[] = {
     "Anzeigedauer für Nachrichten",
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Nieuwstijd", // TODO (correct?)
     "", // TODO
     "Durée affichage écran",
     "", // TODO
@@ -1009,7 +1009,7 @@ const tPhrase Phrases[] = {
     "Kanal-Info Position",
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Kanaal info positie",
     "", // TODO
     "Position infos chaînes",
     "", // TODO
@@ -1039,7 +1039,7 @@ const tPhrase Phrases[] = {
     "Timer sortieren",
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Timers sorteren",
     "", // TODO
     "Trier les programmations",
     "", // TODO
@@ -1049,7 +1049,7 @@ const tPhrase Phrases[] = {
     "Aufnahme Verzeichnisse",
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Opname directories",
     "", // TODO
     "Dossiers d'enregistrements",
     "", // TODO
@@ -1069,7 +1069,7 @@ const tPhrase Phrases[] = {
     "EPG Fehlerbereinigung",
     "", // TODO
     "", // TODO
-    "", // TODO
+    "EPG foutcorrectieniveau",
     "", // TODO
     "Niveau de correction EPG",
     "", // TODO
@@ -1089,7 +1089,7 @@ const tPhrase Phrases[] = {
     "Transponder für Systemzeit",
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Gebruik transponder tijd voor systeem",
     "", // TODO
     "", // TODO
     "", // TODO
@@ -1109,7 +1109,7 @@ const tPhrase Phrases[] = {
     "Video Format",
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Videoformaat",
     "", // TODO
     "Format vidéo",
     "TV Format",
@@ -1149,7 +1149,7 @@ const tPhrase Phrases[] = {
     "DiSEqC benutzen",
     "DiSEqC", // TODO
     "DiSEqC", // TODO
-    "DiSEqC", // TODO
+    "DiSEqC gebruiken",
     "DiSEqC", // TODO
     "DiSEqC", // TODO
     "DiSEqC", // TODO
@@ -1189,7 +1189,7 @@ const tPhrase Phrases[] = {
     "Primär-Limit",
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Eerste grens",
     "Limite Primario",
     "Première limite",
     "Prioritets grense HovedDVB",
@@ -1199,7 +1199,7 @@ const tPhrase Phrases[] = {
     "Default Priorität",
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Standaard prioriteit",
     "Prioridade por defeito",
     "Priorité par défaut",
     "Normal prioritet (Timer)",
@@ -1209,7 +1209,7 @@ const tPhrase Phrases[] = {
     "Default Lebensdauer",
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Standaard levensduur",
     "Validade por defeito",
     "Durée de vie par défaut",
     "Normal levetid (Timer)",
@@ -1219,7 +1219,7 @@ const tPhrase Phrases[] = {
     "Episodenname verwenden",
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Gebruik episode naam",
     "", // TODO
     "Utiliser les sous-titres", // TODO (episode name!)
     "", // TODO
@@ -1239,7 +1239,7 @@ const tPhrase Phrases[] = {
     "Direktaufzeichnung benennen",
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Naam direkt-opname",
     "", // TODO
     "Noms enregistr. immédiats",
     "", // TODO
@@ -1249,7 +1249,7 @@ const tPhrase Phrases[] = {
     "Dolby Digital Ton aufzeichnen",
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Dolby Digital geluid opnamen",
     "", // TODO
     "Enregistrer en Dolby Digital",
     "", // TODO
@@ -1259,7 +1259,7 @@ const tPhrase Phrases[] = {
     "Max. Video Dateigröße",
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Maximale omvang video file",
     "", // TODO
     "Taille maxi des fichiers",
     "", // TODO
@@ -1269,7 +1269,7 @@ const tPhrase Phrases[] = {
     "Editierte Dateien aufteilen",
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Bewerkte files opdelen",
     "", // TODO
     "Séparer les séquences",
     "", // TODO
@@ -1289,7 +1289,7 @@ const tPhrase Phrases[] = {
     "Wiedergabestatus anzeigen",
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Weergave mode aangeven",
     "", // TODO
     "Affichage mode de lecture",
     "", // TODO
@@ -1300,7 +1300,7 @@ const tPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "", // TODO
-        "", // TODO
+    "", // TODO
     "MinEventTimeout", // Too difficult to translate - read the manual!
     "", // TODO
     "Minimi tapahtuman odotus",
@@ -1309,7 +1309,7 @@ const tPhrase Phrases[] = {
     "Mindest Benutzer-Inaktivität",
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Minimum gebruikers activiteit", // TODO *in*activity!
     "", // TODO
     "Durée minimale d'inactivité",
     "", // TODO
@@ -1340,7 +1340,7 @@ const tPhrase Phrases[] = {
     "MonDieMitDonFreSamSon",
     "", // TODO
     "", // TODO
-    "", // TODO
+    "MaaDinWoeDonVryZatZon",
     "", // TODO
     "LunMarMerJeuVenSamDim",
     "", // TODO
@@ -1602,7 +1602,7 @@ const tPhrase Phrases[] = {
     "Lautstärke+",
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Volume+",
     "", // TODO
     "Volume+",
     "", // TODO
@@ -1612,7 +1612,7 @@ const tPhrase Phrases[] = {
     "Lautstärke-",
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Volume-",
     "", // TODO
     "Volume-",
     "", // TODO
@@ -1622,7 +1622,7 @@ const tPhrase Phrases[] = {
     "Stumm",
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Geluid onderbreken",
     "", // TODO
     "Coupure du son",
     "", // TODO
@@ -1653,7 +1653,7 @@ const tPhrase Phrases[] = {
     "oben",
     "", // TODO
     "", // TODO
-    "", // TODO
+    "boven",
     "", // TODO
     "haut",
     "", // TODO
@@ -1663,7 +1663,7 @@ const tPhrase Phrases[] = {
     "unten",
     "", // TODO
     "", // TODO
-    "", // TODO
+    "onder",
     "", // TODO
     "bas",
     "", // TODO
@@ -1673,7 +1673,7 @@ const tPhrase Phrases[] = {
     "frei",
     "", // TODO
     "", // TODO
-    "", // TODO
+    "vrij",
     "", // TODO
     "restant",
     "", // TODO
@@ -1683,17 +1683,17 @@ const tPhrase Phrases[] = {
     "Springen: ",
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Springen: ",
     "", // TODO
     "Accès direct: ",
     "", // TODO
-    "Hyppää:",
+    "Hyppää: ",
   },
   { "Volume ", // note the trailing blank
     "Lautstärke ",
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Volume ",
     "", // TODO
     "Volume ",
     "", // TODO
@@ -1763,7 +1763,7 @@ const tPhrase Phrases[] = {
     "Schnitt beendet",
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Bewerken is klaar",
     "", // TODO
     "Montage terminé",
     "", // TODO
@@ -1773,17 +1773,17 @@ const tPhrase Phrases[] = {
     "Schnitt gescheitert!",
     "", // TODO
     "", // TODO
+    "Bewerken is mislukt!",
     "", // TODO
+    "Echec du montage!",
     "", // TODO
-    "Echec du montage",
-    "", // TODO
-    "Muokkaus epäonnistui",
+    "Muokkaus epäonnistui!",
   },
   { "scanning recordings...",
     "Aufzeichnungen werden durchsucht...",
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Doorzoeken opnames...",
     "", // TODO
     "Recherche des enregistrements...",
     "", // TODO

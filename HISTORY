@@ -1123,4 +1123,5 @@ Video Disk Recorder Revision History
 2002-03-22: Version 1.0.0pre5
 
 - Fixed restoring CICAM setup values for a fourth DVB card.
-- Completed internationalization of OSD texts (thanks to Hannu Savolainen).
+- Completed internationalization of OSD texts (thanks to Hannu Savolainen,
+  Arnold Niessen).
