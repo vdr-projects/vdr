@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.33 2001/08/12 15:09:59 kls Exp $
+ * $Id: recording.c 1.34 2001/09/01 13:05:56 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -309,6 +309,17 @@ const char *cRecording::Title(char Delimiter, bool NewIndicator)
                          Delimiter,
                          name);
   return titleBuffer;
+}
+
+const char *cRecording::PrefixFileName(char Prefix)
+{
+  const char *p = PrefixVideoFileName(FileName(), Prefix);
+  if (p) {
+     delete fileName;
+     fileName = strdup(p);
+     return fileName;
+     }
+  return NULL;
 }
 
 bool cRecording::WriteSummary(void)

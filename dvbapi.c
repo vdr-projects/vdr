@@ -7,7 +7,7 @@
  * DVD support initially written by Andreas Schultz <aschultz@warp10.net>
  * based on dvdplayer-0.5 by Matjaz Thaler <matjaz.thaler@guest.arnes.si>
  *
- * $Id: dvbapi.c 1.110 2001/08/25 13:52:38 kls Exp $
+ * $Id: dvbapi.c 1.111 2001/09/01 13:27:52 kls Exp $
  */
 
 //#define DVDDEBUG        1
@@ -2256,8 +2256,10 @@ cCuttingBuffer *cVideoCutter::cuttingBuffer = NULL;
 bool cVideoCutter::Start(const char *FileName)
 {
   if (!cuttingBuffer) {
-     const char *EditedVersionName = PrefixVideoFileName(FileName, '%');
+     cRecording Recording(FileName);
+     const char *EditedVersionName = Recording.PrefixFileName('%');
      if (EditedVersionName && RemoveVideoFile(EditedVersionName) && MakeDirs(EditedVersionName, true)) {
+        Recording.WriteSummary();
         cuttingBuffer = new cCuttingBuffer(FileName, EditedVersionName);
         return true;
         }

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 1.14 2001/06/02 10:00:25 kls Exp $
+ * $Id: recording.h 1.15 2001/09/01 12:58:02 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -45,6 +45,7 @@ public:
   const char *FileName(void);
   const char *Title(char Delimiter = ' ', bool NewIndicator = false);
   const char *Summary(void) { return summary; }
+  const char *PrefixFileName(char Prefix);
   bool WriteSummary(void);
   bool Delete(void);
        // Changes the file name so that it will no longer be visible in the "Recordings" menu

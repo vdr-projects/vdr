@@ -687,3 +687,5 @@ Video Disk Recorder Revision History
 - Fixed code for the default "Ok" button on the PC keyboard (was 0x162 on
   the "good old" keyboards (with the F-keys at the left side), while it changed
   to 0x15E on the newer keyboards).
+- When a recording is edited, the summary information (if present) is now
+  also copied.
