@@ -2234,3 +2234,22 @@ Video Disk Recorder Revision History
   (thanks to Jon Burgess for pointing this out).
 - Some corrections to the Finnish OSD texts (thanks to Jaakko Hyvätti).
 - Officially released as version 1.2.0.
+
+2003-06-09: Version 1.2.1
+
+- Fixed OSD access in case none of the devices provides one (thanks to Axel
+  Gruber for reporting this one).
+- Fixed editing channels ('timers.conf' was not written after a channel has
+  been modified, which could result in errors upon the next start of VDR).
+- Fixed a crash when cancelling a newly created timer (thanks to Thomas Schmidt
+  for reporting this one).
+- Completed Hungarian language texts (thanks to Istvan Koenigsberger and Guido
+  Josten).
+- Fixed device handling in the CICAM menu in case a VDR instance was started
+  with a specific device using the -D option (thanks to Gerald Raaf for reporting
+  ths one).
+- Initializing the current channel to '1' to avoid a crash in creating a new
+  timer in case there is no device in the system that can actually receive any
+  channel (thanks to Malcolm Caldwell for reporting this one).
+- Some corrections to the Finnish OSD texts (thanks to Niko Tarnanen and Rolf
+  Ahrenberg).

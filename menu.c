@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.253 2003/05/30 09:53:57 kls Exp $
+ * $Id: menu.c 1.256 2003/06/07 12:31:57 kls Exp $
  */
 
 #include "menu.h"
@@ -615,6 +615,7 @@ eOSState cMenuEditChannel::ProcessKey(eKeys Key)
            if (channel) {
               *channel = data;
               isyslog("edited channel %d %s", channel->Number(), data.ToText());
+              Timers.Save();
               state = osBack;
               }
            else {
@@ -834,21 +835,21 @@ private:
   cTimer *timer;
   cTimer data;
   int channel;
-  bool deleteIfCancelled;
+  bool addIfConfirmed;
   cMenuEditDateItem *firstday;
   void SetFirstDayItem(void);
 public:
-  cMenuEditTimer(int Index, bool New = false);
+  cMenuEditTimer(cTimer *Timer, bool New = false);
   virtual ~cMenuEditTimer();
   virtual eOSState ProcessKey(eKeys Key);
   };
 
-cMenuEditTimer::cMenuEditTimer(int Index, bool New)
+cMenuEditTimer::cMenuEditTimer(cTimer *Timer, bool New)
 :cOsdMenu(tr("Edit timer"), 12)
 {
   firstday = NULL;
-  timer = Timers.Get(Index);
-  deleteIfCancelled = New;
+  timer = Timer;
+  addIfConfirmed = New;
   if (timer) {
      data = *timer;
      if (New)
@@ -869,12 +870,8 @@ cMenuEditTimer::cMenuEditTimer(int Index, bool New)
 
 cMenuEditTimer::~cMenuEditTimer()
 {
-  if (timer && deleteIfCancelled) {
-     int Index = timer->Index();
-     Timers.Del(timer);
-     Timers.Save();
-     isyslog("timer %d deleted", Index + 1);
-     }
+  if (timer && addIfConfirmed)
+     delete timer; // apparently it wasn't confirmed
   Timers.DecBeingEdited();
 }
 
@@ -908,14 +905,18 @@ eOSState cMenuEditTimer::ProcessKey(eKeys Key)
                           }
                        if (!*data.file)
                           strcpy(data.file, data.Channel()->Name());
-                       if (timer && memcmp(timer, &data, sizeof(data)) != 0) {
-                          *timer = data;
-                          if (timer->active)
-                             timer->active = 1; // allows external programs to mark active timers with values > 1 and recognize if the user has modified them
+                       if (timer) {
+                          if (memcmp(timer, &data, sizeof(data)) != 0) {
+                             *timer = data;
+                             if (timer->active)
+                                timer->active = 1; // allows external programs to mark active timers with values > 1 and recognize if the user has modified them
+                             }
+                          if (addIfConfirmed)
+                             Timers.Add(timer);
                           Timers.Save();
-                          isyslog("timer %d modified (%s)", timer->Index() + 1, timer->active ? "active" : "inactive");
+                          isyslog("timer %d %s (%s)", timer->Index() + 1, addIfConfirmed ? "added" : "modified", timer->active ? "active" : "inactive");
+                          addIfConfirmed = false;
                           }
-                       deleteIfCancelled = false;
                      }
                      return osBack;
        case kRed:
@@ -1033,19 +1034,14 @@ eOSState cMenuTimers::Edit(void)
   if (HasSubMenu() || Count() == 0)
      return osContinue;
   isyslog("editing timer %d", CurrentTimer()->Index() + 1);
-  return AddSubMenu(new cMenuEditTimer(CurrentTimer()->Index()));
+  return AddSubMenu(new cMenuEditTimer(CurrentTimer()));
 }
 
 eOSState cMenuTimers::New(void)
 {
   if (HasSubMenu())
      return osContinue;
-  cTimer *timer = new cTimer;
-  Timers.Add(timer);
-  Add(new cMenuTimerItem(timer), true);
-  Timers.Save();
-  isyslog("timer %d added", timer->Index() + 1);
-  return AddSubMenu(new cMenuEditTimer(timer->Index(), true));
+  return AddSubMenu(new cMenuEditTimer(new cTimer, true));
 }
 
 eOSState cMenuTimers::Delete(void)
@@ -1094,8 +1090,7 @@ eOSState cMenuTimers::Summary(void)
 
 eOSState cMenuTimers::ProcessKey(eKeys Key)
 {
-  cTimer *ti = HasSubMenu() ? CurrentTimer() : NULL;
-  int TimerNumber = ti ? ti->Index() : -1;
+  int TimerNumber = HasSubMenu() ? Count() : -1;
   eOSState state = cOsdMenu::ProcessKey(Key);
 
   if (state == osUnknown) {
@@ -1112,9 +1107,9 @@ eOSState cMenuTimers::ProcessKey(eKeys Key)
        default: break;
        }
      }
-  if (TimerNumber >= 0 && !HasSubMenu() && !Timers.Get(TimerNumber)) {
-     // a newly created timer wasn't confirmed with Ok
-     cOsdMenu::Del(Current());
+  if (TimerNumber >= 0 && !HasSubMenu() && Timers.Get(TimerNumber)) {
+     // a newly created timer was confirmed with Ok
+     Add(new cMenuTimerItem(Timers.Get(TimerNumber)), true);
      Display();
      }
   return state;
@@ -1274,16 +1269,11 @@ eOSState cMenuWhatsOn::Record(void)
   if (item) {
      cTimer *timer = new cTimer(item->eventInfo);
      cTimer *t = Timers.GetTimer(timer);
-     if (!t) {
-        Timers.Add(timer);
-        Timers.Save();
-        isyslog("timer %d added", timer->Index() + 1);
-        }
-     else {
+     if (t) {
         delete timer;
         timer = t;
         }
-     return AddSubMenu(new cMenuEditTimer(timer->Index(), !t));
+     return AddSubMenu(new cMenuEditTimer(timer, !t));
      }
   return osContinue;
 }
@@ -1408,16 +1398,11 @@ eOSState cMenuSchedule::Record(void)
   if (item) {
      cTimer *timer = new cTimer(item->eventInfo);
      cTimer *t = Timers.GetTimer(timer);
-     if (!t) {
-        Timers.Add(timer);
-        Timers.Save();
-        isyslog("timer %d added", timer->Index() + 1);
-        }
-     else {
+     if (t) {
         delete timer;
         timer = t;
         }
-     return AddSubMenu(new cMenuEditTimer(timer->Index(), !t));
+     return AddSubMenu(new cMenuEditTimer(timer, !t));
      }
   return osContinue;
 }
@@ -2124,8 +2109,9 @@ cMenuSetupCICAM::cMenuSetupCICAM(void)
   for (int d = 0; d < cDevice::NumDevices(); d++) {
       for (int i = 0; i < 2; i++) {
           char buffer[32];
-          snprintf(buffer, sizeof(buffer), "%s%d %d", tr("Setup.CICAM$CICAM DVB"), d + 1, i + 1);
-          Add(new cMenuEditCaItem(buffer, &data.CaCaps[d][i]));
+          int CardIndex = cDevice::GetDevice(d)->CardIndex();
+          snprintf(buffer, sizeof(buffer), "%s%d %d", tr("Setup.CICAM$CICAM DVB"), CardIndex + 1, i + 1);
+          Add(new cMenuEditCaItem(buffer, &data.CaCaps[CardIndex][i]));
           }
       }
   SetHelpKeys();

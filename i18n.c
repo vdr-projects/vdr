@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.125 2003/06/01 08:49:47 kls Exp $
+ * $Id: i18n.c 1.128 2003/06/09 09:49:29 kls Exp $
  *
  * Translations provided by:
  *
@@ -222,7 +222,7 @@ const tI18nPhrase Phrases[] = {
     "Entoles gia egrafes",
     "Inspelningskommandon",
     "",// TODO
-    "",// TODO
+    "Parancsok a felvett filmekhez",
     "Ordres de gravació",
   },
   { "Edit channel",
@@ -733,7 +733,7 @@ const tI18nPhrase Phrases[] = {
     "Epanafora",
     "Återställ",
     "",//TODO
-    "",//TODO
+    "Reset",
     "Reiniciar",
   },
   // Confirmations:
@@ -932,7 +932,7 @@ const tI18nPhrase Phrases[] = {
     "Pressione qualquer tecla para cancelar",
     "Appuyez sur une touche pour annuler l'arrêt",
     "Trykk en tast for ikke å slå av",
-    "Peru sammutus painamalla jotain näppäintä",
+    "Peru sammutus painamalla mitä tahansa näppäintä",
     "Dowolny przycisk zatrzyma wylaczanie",
     "Pulse una tecla para interrumpir apagar",
     "Piese ena pliktro na akirothei o termatismos",
@@ -1007,7 +1007,7 @@ const tI18nPhrase Phrases[] = {
     "Pigi",
     "Källa",
     "",//TODO
-    "",//TODO
+    "Forrás",
     "Origen",
   },
   { "Srate",
@@ -1587,7 +1587,7 @@ const tI18nPhrase Phrases[] = {
     "To kanali den ine diathesimo",
     "Kanalen ej tillgänglig!",
     "",//TODO
-    "",//TODO
+    "A csatorna nem elérhetö",
     "Canal no disponible!",
   },
   { "Channel settings are not unique!",
@@ -1604,7 +1604,7 @@ const tI18nPhrase Phrases[] = {
     "Oi rithmiseis tou kanaliou simpiptoun me allo!",
     "Kanalinställningarna är ej unika!",
     "",//TODO
-    "",//TODO
+    "A csatornabeállítások nem egyértelmüek",
     "Propietats del canal duplicades!",
   },
   { "Channel locked (recording)!",
@@ -1655,7 +1655,7 @@ const tI18nPhrase Phrases[] = {
     "Den exoun oristei simeia gia epexsergasia",
     "Det finns inga redigeringsmärken",//TODO
     "",//TODO
-    "",//TODO
+    "A vágópont nincs kijelölve",//TODO
     "No hi ha marques d'edició definides",
   },
   { "Can't start editing process!",
@@ -1740,7 +1740,7 @@ const tI18nPhrase Phrases[] = {
     "Den mpori na aniksi to CAM menou!",
     "Det går inte att öppna CAM menyn!",
     "",//TODO
-    "",//TODO
+    "A CAM-Menü nem nyitható",
     "No puc obrir el menú de la CAM!",
   },
   { "Can't reset CAM!",
@@ -1757,7 +1757,7 @@ const tI18nPhrase Phrases[] = {
     "Adinato na gini epanafora sto CAM",
     "Kan inte återställa CAM!",
     "",//TODO
-    "",//TODO
+    "A CAM-Reset nem sikerült",
     "No puc reiniciar la CAM!",
   },
   { "CAM has been reset",
@@ -1774,7 +1774,7 @@ const tI18nPhrase Phrases[] = {
     "Sto CAM egine apanafora",
     "CA modulen har återställts",
     "",//TODO
-    "",//TODO
+    "A CAM vissza lett állítva",
     "CAM reiniciada",
   },
   // Setup pages:
@@ -2405,7 +2405,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "Prioritet för direktinspelning",
     "",// TODO
-    "",// TODO
+    "Szünet prioritás",
     "Prioritat de la pausa",
   },
   { "Setup.Recording$Pause lifetime (d)",
@@ -2422,7 +2422,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "Livstid för direktinspelning (dagar)",
     "",// TODO
-    "",// TODO
+    "Szünet élettartama",
     "Durada de la pausa (d)",
   },
   { "Setup.Recording$Use episode name",
@@ -2592,7 +2592,7 @@ const tI18nPhrase Phrases[] = {
     "Resume ID",// TODO
     "Återuppta ID",
     "Resume ID",// TODO
-    "Resume ID",// TODO
+    "Lejátszás ID",
     "ID de Continuar",
   },
   { "Setup.Miscellaneous$Min. event timeout (min)",
@@ -2696,7 +2696,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     " abcdefghijklmnopqrstuvxyzåäö0123456789-.#~",
     " abcdefghijklmnopqrstuvwxyz0123456789-.#~",
-    " aábcdeéfghijklmnoóöpqrstuúüvwxyz0123456789-.,#~",
+    " aábcdeéfghiíjklmnoóöpqrstuúüvwxyz0123456789-.,#~",
     " aàbcçdeéèfghiíjklmnoòpqrstuúvwxyz0123456789-.,#~_·",
   },
   // Learning keys:
@@ -2742,7 +2742,7 @@ const tI18nPhrase Phrases[] = {
     "Pressione qualquer tecla do telecomando",
     "Appuyer sur une touche de la télécommande",
     "Trykk en av tastene på fjernkontrollen",
-    "Paina jotain kaukosäätimen näppäintä",
+    "Paina mitä tahansa kaukosäätimen näppäintä",
     "Nacisnac klawisz pilota",
     "Pulse una tecla en el telemando",
     "Piese ena pliktro sto tilexiristirio",
@@ -2901,7 +2901,7 @@ const tI18nPhrase Phrases[] = {
     "Pata 'Menou' gia prosperasi aftou tou pliktrou",
     "Tryck 'Meny' för att hoppa över denna knapp.",
     "",// TODO
-    "",// TODO
+    "A Menü gombot nyomni ennek a gombnak a kihagyásához",
     "Premeu 'Menú' per obviar aquesta tecla",
   },
   { "Phase 3: Saving key codes",
@@ -3140,7 +3140,7 @@ const tI18nPhrase Phrases[] = {
     "Anametadosi",
     "Spela upp",
     "",// TODO
-    "",// TODO
+    "Lejátszás",
     "Reproduir",
   },
   { "Pause",
@@ -3157,7 +3157,7 @@ const tI18nPhrase Phrases[] = {
     "Dialima",
     "Pausa",
     "",// TODO
-    "",// TODO
+    "Szünet",
     "Pausa",
   },
   { "Stop",
@@ -3174,7 +3174,7 @@ const tI18nPhrase Phrases[] = {
     "Terma",
     "Stoppa",
     "",// TODO
-    "",// TODO
+    "Stop",
     "Aturar",
   },
   { "Record",
@@ -3191,7 +3191,7 @@ const tI18nPhrase Phrases[] = {
     "Egrafi",
     "Spela in",
     "",// TODO
-    "",// TODO
+    "Felvenni",
     "Gravar",
   },
   { "FastFwd",
@@ -3208,7 +3208,7 @@ const tI18nPhrase Phrases[] = {
     "Girisma mprosta",
     "Snabbspolning framåt",
     "",// TODO
-    "",// TODO
+    "Elöre pörgetni",
     "Endavant ràpidament",
   },
   { "FastRew",
@@ -3225,7 +3225,7 @@ const tI18nPhrase Phrases[] = {
     "Girisma piso",
     "Snabbspolning bakåt",
     "",// TODO
-    "",// TODO
+    "Vissza pörgetni",
     "Enrera ràpidament",
   },
   { "Power",
@@ -3259,7 +3259,7 @@ const tI18nPhrase Phrases[] = {
     "Kanali+",
     "Kanal+",
     "",// TODO
-    "",// TODO
+    "Csatorna+",
     "Canal +",
   },
   { "Channel-",
@@ -3276,7 +3276,7 @@ const tI18nPhrase Phrases[] = {
     "Kanali-",
     "Kanal-",
     "",// TODO
-    "",// TODO
+    "Csatorna-",
     "Canal -",
   },
   { "Volume+",
@@ -3379,7 +3379,7 @@ const tI18nPhrase Phrases[] = {
     "klisto",
     "av",
     "",// TODO
-    "",// TODO
+    "ki",
     "off",
   },
   { "none",
@@ -3396,7 +3396,7 @@ const tI18nPhrase Phrases[] = {
     "kanena",
     "ingen",
     "",// TODO
-    "",// TODO
+    "semmi",
     "cap",
   },
   { "auto",
@@ -3413,7 +3413,7 @@ const tI18nPhrase Phrases[] = {
     "aftomato",
     "automatisk",
     "",// TODO
-    "",// TODO
+    "auto",
     "auto",
   },
   { "top",
@@ -3685,7 +3685,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "Pausar direktinspelningen",
     "",// TODO
-    "",// TODO
+    "Az élö adás megállítva...",
     "Pausa d'emissió en directe...",
   },
   { "This plugin has no setup parameters!",
@@ -3702,7 +3702,7 @@ const tI18nPhrase Phrases[] = {
     "Afto to plugin den exi parametrous",
     "Den här modulen har inga parametrar",
     "",// TODO
-    "",// TODO
+    "Ennek a plugin-nak nincs setup-parametere!",
     "Aquest plugin no admet configuració!",
    },
   { NULL }

@@ -90,6 +90,7 @@ Peter Hofmann <software@pxh.de>
 Axel Gruber <axel@agm.de>
  for his support in keeping the Premiere World channels up to date in 'channels.conf'
  for helping to debug support for Viaccess CAMs
+ for reporting a problem in case none of the devices provides an OSD
 
 Arnold Niessen <niessen@iae.nl> <arnold.niessen@philips.com>
  for translating OSD texts to the Dutch language
@@ -370,6 +371,8 @@ Gerald Raaf <graaf@attglobal.net>
  for helping to fix the still picture workaround in case the progress display
  is active
  for his support in keeping the Premiere World channels up to date in 'channels.conf'
+ for reporting a problem in device handling in the CICAM menu in case a VDR
+ instance was started with a specific device using the -D option
 
 Andreas Roedl <flood@flood-net.de>
  for adding some DVB-T channels for Berlin (Germany) to channels.conf.terr
@@ -617,6 +620,8 @@ Sascha Volkenandt <sascha@akv-soft.de>
 
 Malcolm Caldwell <malcolm.caldwell@ntu.edu.au>
  for modifying LOF handling to allow for C-band reception
+ for reporting a crash in creating a new timer in case there is no device in the
+ system that can actually receive any channel
 
 Ludwig Nussel <ludwig.nussel@web.de>
  for making the LIRC thread avoid high CPU load in case the connection to LIRC gets lost
@@ -711,3 +716,6 @@ Karim Afifi <karim.afifi@free.fr>
 
 Jon Burgess <mplayer@jburgess.uklinux.net>
  for pointing out a problem with NPTL ("Native Posix Thread Library")
+
+Thomas Schmidt <thomas.schmidt@in.stud.tu-ilmenau.de>
+ for reporting a crash when cancelling a newly created timer

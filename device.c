@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.44 2003/05/25 10:57:59 kls Exp $
+ * $Id: device.c 1.45 2003/06/08 09:19:59 kls Exp $
  */
 
 #include "device.h"
@@ -28,7 +28,7 @@
 int cDevice::numDevices = 0;
 int cDevice::useDevice = 0;
 int cDevice::nextCardIndex = 0;
-int cDevice::currentChannel = 0;
+int cDevice::currentChannel = 1;
 cDevice *cDevice::device[MAXDEVICES] = { NULL };
 cDevice *cDevice::primaryDevice = NULL;
 
