@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: svdrp.h 1.13 2001/11/04 11:20:46 kls Exp $
+ * $Id: svdrp.h 1.14 2002/02/24 10:48:21 kls Exp $
  */
 
 #ifndef __SVDRP_H
@@ -26,11 +26,25 @@ public:
   int Accept(void);
   };
 
+class cPUTEhandler {
+private:
+  FILE *f;
+  int status;
+  const char *message;
+public:
+  cPUTEhandler(void);
+  ~cPUTEhandler();
+  bool Process(const char *s);
+  int Status(void) { return status; }
+  const char *Message(void) { return message; }
+  };
+
 class cSVDRP {
 private:
   cSocket socket;
   cFile file;
   cRecordings Recordings;
+  cPUTEhandler *PUTEhandler;
   uint numChars;
   char cmdLine[MAXPARSEBUFFER];
   char *message;
@@ -57,6 +71,7 @@ private:
   void CmdNEWC(const char *Option);
   void CmdNEWT(const char *Option);
   void CmdNEXT(const char *Option);
+  void CmdPUTE(const char *Option);
   void CmdUPDT(const char *Option);
   void Execute(char *Cmd);
 public:
