@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osdbase.h 1.7 2003/10/19 14:32:32 kls Exp $
+ * $Id: osdbase.h 1.8 2004/01/04 15:19:20 kls Exp $
  */
 
 #ifndef __OSDBASE_H
@@ -13,7 +13,7 @@
 #include <stdio.h>
 #include "font.h"
 
-#define MAXNUMCOLORS 16
+#define MAXNUMCOLORS 256
 
 enum eDvbColor {
 #ifdef DEBUG_OSD

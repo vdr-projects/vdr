@@ -2533,3 +2533,4 @@ Video Disk Recorder Revision History
   by evaluating its CA descriptors and comparing them to the CA system ids
   provided by the installed CAM. Only the special values 1-16 are used to assign
   a channel to a particular device.
+- Increased the maximum number of possible OSD colors to 256.
