@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.41 2000/11/01 14:31:32 kls Exp $
+ * $Id: vdr.c 1.42 2000/11/03 15:31:03 kls Exp $
  */
 
 #include <getopt.h>
@@ -156,11 +156,6 @@ int main(int argc, char *argv[])
      }
   isyslog(LOG_INFO, "VDR version %s started", VDRVERSION);
 
-  // DVB interfaces:
-
-  if (!cDvbApi::Init())
-     abort();
-
   // Configuration data:
 
   if (!ConfigDirectory)
@@ -174,6 +169,11 @@ int main(int argc, char *argv[])
 #else
   bool KeysLoaded = Keys.Load(AddDirectory(ConfigDirectory, KEYS_CONF));
 #endif
+
+  // DVB interfaces:
+
+  if (!cDvbApi::Init())
+     abort();
 
   cDvbApi::SetPrimaryDvbApi(Setup.PrimaryDVB);
 
