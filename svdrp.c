@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.50 2002/12/22 14:04:08 kls Exp $
+ * $Id: svdrp.c 1.51 2003/04/27 14:21:07 kls Exp $
  */
 
 #include "svdrp.h"
@@ -33,6 +33,7 @@
 #include "remote.h"
 #include "timers.h"
 #include "tools.h"
+#include "videodir.h"
 
 // --- cSocket ---------------------------------------------------------------
 
@@ -250,6 +251,8 @@ const char *HelpPages[] = {
   "    format defined in vdr(5) for the 'epg.data' file.  A '.' on a line\n"
   "    by itself terminates the input and starts processing of the data (all\n"
   "    entered data is buffered until the terminating '.' is seen).",
+  "STAT disk\n"
+  "    Return information about disk usage (total, free, percent).",
   "UPDT <settings>\n"
   "    Updates a timer. Settings must be in the same format as returned\n"
   "    by the LSTT command. If a timer with the same channel, day, start\n"
@@ -929,6 +932,22 @@ void cSVDRP::CmdPUTE(const char *Option)
      DELETENULL(PUTEhandler);
 }
 
+void cSVDRP::CmdSTAT(const char *Option)
+{
+  if (*Option) {
+     if (strcasecmp(Option, "DISK") == 0) {
+        int FreeMB;
+        int Percent = VideoDiskSpace(&FreeMB);
+        int Total = (FreeMB / (100 - Percent)) * 100;
+        Reply(250, "%dMB %dMB %d%%", Total, FreeMB, Percent);
+        }
+     else
+        Reply(501, "Invalid Option \"%s\"", Option);
+     }
+  else
+     Reply(501, "No option given");
+}
+
 void cSVDRP::CmdUPDT(const char *Option)
 {
   if (*Option) {
@@ -1021,6 +1040,7 @@ void cSVDRP::Execute(char *Cmd)
   else if (CMD("NEWT"))  CmdNEWT(s);
   else if (CMD("NEXT"))  CmdNEXT(s);
   else if (CMD("PUTE"))  CmdPUTE(s);
+  else if (CMD("STAT"))  CmdSTAT(s);
   else if (CMD("UPDT"))  CmdUPDT(s);
   else if (CMD("VOLU"))  CmdVOLU(s);
   else if (CMD("QUIT"))  Close();

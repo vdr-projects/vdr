@@ -2081,3 +2081,5 @@ Video Disk Recorder Revision History
   is started through a user defined key macro (thanks to Andreas Mair for reporting
   this one).
 - Reduced the time to wait for EPG data when starting a recording to 3 seconds.
+- The new SVDRP command STAT can be used to request information about the disk
+  usage (thanks to Thomas Koch).
