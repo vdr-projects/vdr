@@ -1120,7 +1120,7 @@ Video Disk Recorder Revision History
   exits. The 'runvdr' script can be used for this purpose.
 - Refined texts of the "Setup" menu.
 
-2002-03-24: Version 1.0.0pre5
+2002-03-29: Version 1.0.0pre5
 
 - Fixed restoring CICAM setup values for a fourth DVB card.
 - Completed internationalization of OSD texts (thanks to Hannu Savolainen,
@@ -1139,3 +1139,5 @@ Video Disk Recorder Revision History
   delimiter (thanks to Bernd Zierath for helping to debug this one).
 - Added a manual page vdr(1).
 - New command command line option '-V' to display the VDR version.
+- Adjusting column width for channel numbers in case there are more than 999
+  channels.

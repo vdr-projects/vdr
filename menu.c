@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.175 2002/03/23 15:17:14 kls Exp $
+ * $Id: menu.c 1.176 2002/03/29 10:49:22 kls Exp $
  */
 
 #include "menu.h"
@@ -20,6 +20,8 @@
 #define MENUTIMEOUT     120 // seconds
 #define MAXWAIT4EPGINFO  10 // seconds
 #define MODETIMEOUT       3 // seconds
+
+#define CHNUMWIDTH  (Channels.Count() > 999 ? 5 : 4) // there are people with more than 999 channels...
 
 const char *FileNameChars = " aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ0123456789-.#~^";
 
@@ -780,7 +782,7 @@ public:
   };
 
 cMenuChannels::cMenuChannels(void)
-:cOsdMenu(tr("Channels"), 4)
+:cOsdMenu(tr("Channels"), CHNUMWIDTH)
 {
   //TODO
   int i = 0;
@@ -1186,7 +1188,7 @@ public:
   };
 
 cMenuTimers::cMenuTimers(void)
-:cOsdMenu(tr("Timers"), 2, 4, 10, 6, 6)
+:cOsdMenu(tr("Timers"), 2, CHNUMWIDTH, 10, 6, 6)
 {
   int i = 0;
   cTimer *timer;
@@ -1412,7 +1414,7 @@ static int CompareEventChannel(const void *p1, const void *p2)
 }
 
 cMenuWhatsOn::cMenuWhatsOn(const cSchedules *Schedules, bool Now, int CurrentChannelNr)
-:cOsdMenu(Now ? tr("What's on now?") : tr("What's on next?"), 4, 7, 6)
+:cOsdMenu(Now ? tr("What's on now?") : tr("What's on next?"), CHNUMWIDTH, 7, 6)
 {
   const cSchedule *Schedule = Schedules->First();
   const cEventInfo **pArray = NULL;
