@@ -2544,3 +2544,5 @@ Video Disk Recorder Revision History
   (thanks to Martin Holst for reporting this one).
 - Fixed a compiler warning about virtual cConfig::Load() functions (thanks to
   Lauri Tischler for reporting this one).
+- Fixed a warning about character comparison in libsi/si.c (thanks to Lauri
+  Tischler for reporting this one).

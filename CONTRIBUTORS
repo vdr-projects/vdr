@@ -523,6 +523,7 @@ Lauri Tischler <lauri.tischler@efore.fi>
  for reporting a problem in case the original current channel becomes
  unavailable due to a recording on a different transponder
  for reporting a compiler warning about virtual cConfig::Load() functions
+ for reporting a warning about character comparison in libsi/si.c
 
 Andy Carter <fruit@ukgateway.net>
  for helping to test new DVB-T handling
