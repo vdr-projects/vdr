@@ -1009,3 +1009,6 @@ Video Disk Recorder Revision History
   information about the enhanced 'timers.conf' file format, and MANUAL for
   a description of the new item in the "Edit Timer" menu and the enhanced
   functionality of the "Blue" button in the "Timers" menu.
+- When deleting a recording that is currently still being recorded, the related
+  timer will now automatically be terminated. If this is a repeating timer, it
+  will receive a "First day" setting that skips the timer for this day.

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.54 2002/02/17 12:36:19 kls Exp $
+ * $Id: i18n.c 1.55 2002/02/17 14:29:13 kls Exp $
  *
  * Slovenian translations provided by Miha Setina <mihasetina@softhome.net>
  * Italian   translations provided by Alberto Carraro <bertocar@tin.it>
@@ -421,6 +421,16 @@ const tPhrase Phrases[] = {
     "Supprimer l'enregistrement?",
     "Slette opptak?",
     "Poistetaanko nauhoitus?",
+  },
+  { "Timer still recording - really delete?",
+    "Timer zeichnet auf - trotzdem löschen?",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
   },
   { "Stop recording?",
     "Aufzeichnung beenden?",

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.153 2002/02/17 13:00:13 kls Exp $
+ * $Id: menu.c 1.154 2002/02/17 14:00:54 kls Exp $
  */
 
 #include "menu.h"
@@ -1749,26 +1749,33 @@ eOSState cMenuRecordings::Del(void)
 {
   cMenuRecordingItem *ri = (cMenuRecordingItem *)Get(Current());
   if (ri && !ri->IsDirectory()) {
-//XXX what if this recording's file is currently in use???
-//XXX     if (!ti->recording) {
-        if (Interface->Confirm(tr("Delete recording?"))) {
-           cRecording *recording = GetRecording(ri);
-           if (recording) {
-              if (recording->Delete()) {
-                 cReplayControl::ClearLastReplayed(ri->FileName());
-                 cOsdMenu::Del(Current());
-                 Recordings.Del(recording);
-                 Display();
-                 if (!Count())
-                    return osBack;
+     if (Interface->Confirm(tr("Delete recording?"))) {
+        cRecordControl *rc = cRecordControls::GetRecordControl(ri->FileName());
+        if (rc) {
+           if (Interface->Confirm(tr("Timer still recording - really delete?"))) {
+              cTimer *timer = rc->Timer();
+              if (timer) {
+                 timer->SkipToday();
+                 cRecordControls::Process(time(NULL));
                  }
-              else
-                 Interface->Error(tr("Error while deleting recording!"));
               }
+           else
+              return osContinue;
            }
-//XXX        }
-//XXX     else
-//XXX        Interface->Error(tr("Timer is recording!"));
+        cRecording *recording = GetRecording(ri);
+        if (recording) {
+           if (recording->Delete()) {
+              cReplayControl::ClearLastReplayed(ri->FileName());
+              cOsdMenu::Del(Current());
+              Recordings.Del(recording);
+              Display();
+              if (!Count())
+                 return osBack;
+              }
+           else
+              Interface->Error(tr("Error while deleting recording!"));
+           }
+        }
      }
   return osContinue;
 }
@@ -2556,6 +2563,15 @@ const char *cRecordControls::GetInstantId(const char *LastInstantId)
          if (LastInstantId && LastInstantId == RecordControls[i]->InstantId())
             LastInstantId = NULL;
          }
+      }
+  return NULL;
+}
+
+cRecordControl *cRecordControls::GetRecordControl(const char *FileName)
+{
+  for (int i = 0; i < MAXDVBAPI; i++) {
+      if (RecordControls[i] && strcmp(RecordControls[i]->FileName(), FileName) == 0)
+         return RecordControls[i];
       }
   return NULL;
 }
