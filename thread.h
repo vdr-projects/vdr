@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.h 1.17 2003/10/18 12:13:10 kls Exp $
+ * $Id: thread.h 1.18 2003/10/18 12:56:20 kls Exp $
  */
 
 #ifndef __THREAD_H
@@ -32,7 +32,6 @@ class cMutex {
   friend class cCondVar;
 private:
   pthread_mutex_t mutex;
-  pthread_t lockingTid;
   int locked;
 public:
   cMutex(void);

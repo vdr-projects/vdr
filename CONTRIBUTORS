@@ -178,6 +178,8 @@ Stefan Huelswitt <huels@iname.com>
  for fixing a possible access of invalid file handles in cSIProcessor::Action()
  for fixing extracting the ES data in cDvbDevice::StillPicture()
  for changing thread handling to make it work with NPTL ("Native Posix Thread Library")
+ for creating mutexes with PTHREAD_MUTEX_ERRORCHECK_NP, which made the 'lockingTid'
+ stuff obsolete
 
 Ulrich Röder <roeder@efr-net.de>
  for pointing out that there are channels that have a symbol rate higher than

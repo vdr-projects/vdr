@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 1.27 2003/10/18 12:14:55 kls Exp $
+ * $Id: thread.c 1.28 2003/10/18 13:00:04 kls Exp $
  */
 
 #include "thread.h"
@@ -32,7 +32,7 @@ cCondVar::~cCondVar()
 
 void cCondVar::Wait(cMutex &Mutex)
 {
-  if (Mutex.locked && pthread_equal(Mutex.lockingTid, pthread_self())) {
+  if (Mutex.locked) {
      int locked = Mutex.locked;
      Mutex.locked = 0; // have to clear the locked count here, as pthread_cond_wait
                        // does an implizit unlock of the mutex
@@ -45,7 +45,7 @@ bool cCondVar::TimedWait(cMutex &Mutex, int TimeoutMs)
 {
   bool r = true; // true = condition signaled false = timeout
 
-  if (Mutex.locked && pthread_equal(Mutex.lockingTid, pthread_self())) {
+  if (Mutex.locked) {
      struct timeval now;                   // unfortunately timedwait needs the absolute time, not the delta :-(
      if (gettimeofday(&now, NULL) == 0) {  // get current time
         now.tv_usec += TimeoutMs * 1000;   // add the timeout
@@ -63,7 +63,6 @@ bool cCondVar::TimedWait(cMutex &Mutex, int TimeoutMs)
         if (pthread_cond_timedwait(&cond, &Mutex.mutex, &abstime) == ETIMEDOUT)
            r = false;
         Mutex.locked = locked;
-        Mutex.lockingTid = pthread_self();
         }
      }
   return r;
@@ -85,9 +84,9 @@ void cCondVar::Signal(void)
 
 cMutex::cMutex(void)
 {
-  lockingTid = 0;
   locked = 0;
-  pthread_mutex_init(&mutex, NULL);
+  pthread_mutexattr_t attr = { PTHREAD_MUTEX_ERRORCHECK_NP };
+  pthread_mutex_init(&mutex, &attr);
 }
 
 cMutex::~cMutex()
@@ -97,19 +96,14 @@ cMutex::~cMutex()
 
 void cMutex::Lock(void)
 {
-  if (!pthread_equal(lockingTid, pthread_self()) || !locked) {
-     pthread_mutex_lock(&mutex);
-     lockingTid = pthread_self();
-     }
+  pthread_mutex_lock(&mutex);
   locked++;
 }
 
 void cMutex::Unlock(void)
 {
- if (!--locked) {
-    lockingTid = 0;
+ if (!--locked)
     pthread_mutex_unlock(&mutex);
-    }
 }
 
 // --- cThread ---------------------------------------------------------------

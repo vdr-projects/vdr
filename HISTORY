@@ -2446,3 +2446,5 @@ Video Disk Recorder Revision History
   instead of explicit 'dsyslog()' calls inside their Action() function in order
   to support logging the thread ids.
 - Added "Slovak Link" and "Czech Link" to 'ca.conf' (thanks to Emil Petersky).
+- Mutexes are now created with PTHREAD_MUTEX_ERRORCHECK_NP, which makes the
+  'lockingTid' stuff obsolete (thanks to Stefan Huelswitt).
