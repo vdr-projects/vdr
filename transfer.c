@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: transfer.c 1.24 2005/01/16 15:12:58 kls Exp $
+ * $Id: transfer.c 1.25 2005/01/23 14:27:40 kls Exp $
  */
 
 #include "transfer.h"
@@ -100,6 +100,7 @@ void cTransfer::Action(void)
               dsyslog("clearing transfer buffer to avoid overflows");
               ringBuffer->Clear();
               remux->Clear();
+              PlayPes(NULL, 0);
               p = NULL;
               continue;
               }

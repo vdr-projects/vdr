@@ -1114,6 +1114,8 @@ Marco Schlüßler <marco@lordzodiac.de>
  for implementing displaying mandatory subtitles in the SPU decoder
  for pointing out a problem with canceling the LIRC thread
  for a patch that implements substream handling into cDevice::PlayPesPacket()
+ for pointing out that PlayPes(NULL, 0) needs to be called in cTransfer::Action()
+ when clearing the transfer buffer to avoid overflows
 
 Jürgen Schmitz <j.schmitz@web.de>
  for reporting a bug in displaying the current channel when switching via the SVDRP

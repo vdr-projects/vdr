@@ -3330,3 +3330,5 @@ Video Disk Recorder Revision History
   to Marco Schlüßler for a patch that implements substream handling into
   cDevice::PlayPesPacket(), and Reinhard Nissl for adding substream handling to
   cDolbyRepacker).
+- Added PlayPes(NULL, 0) to cTransfer::Action() when clearing the transfer buffer
+  to avoid overflows (thanks to Marco Schlüßler for pointing this out).
