@@ -2941,3 +2941,5 @@ Video Disk Recorder Revision History
 - Removed all error messages from cRecordings::ScanVideoDir() and just skipping
   entries that cause errors in order to avoid failure in case of things like
   broken links etc.
+- The function cTimers::SetEvents() now immediately returns if there is some user
+  input.

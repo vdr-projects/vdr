@@ -4,13 +4,14 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 1.12 2004/03/14 13:27:57 kls Exp $
+ * $Id: timers.c 1.13 2004/07/17 12:46:27 kls Exp $
  */
 
 #include "timers.h"
 #include <ctype.h>
 #include "channels.h"
 #include "i18n.h"
+#include "remote.h"
 
 // IMPORTANT NOTE: in the 'sscanf()' calls there is a blank after the '%d'
 // format characters in order to allow any number of blanks after a numeric
@@ -516,6 +517,8 @@ void cTimers::SetEvents(void)
             //XXX what if the Schedule doesn't have any VPS???
             int Match = tmNone;
             for (const cEvent *e = Schedule->Events()->First(); e; e = Schedule->Events()->Next(e)) {
+                if (cRemote::HasKeys())
+                   return; // react immediately on user input
                 int m = ti->Matches(e);
                 if (m > Match) {
                    Match = m;
