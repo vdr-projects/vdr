@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.345 2005/03/19 15:45:19 kls Exp $
+ * $Id: menu.c 1.346 2005/03/20 11:06:56 kls Exp $
  */
 
 #include "menu.h"
@@ -3067,7 +3067,7 @@ cRecordControl::cRecordControl(cDevice *Device, cTimer *Timer, bool Pause)
 
 cRecordControl::~cRecordControl()
 {
-  Stop(true);
+  Stop();
   free(instantId);
   free(fileName);
 }
@@ -3102,16 +3102,11 @@ bool cRecordControl::GetEvent(void)
   return false;
 }
 
-void cRecordControl::Stop(bool KeepInstant)
+void cRecordControl::Stop(void)
 {
   if (timer) {
      DELETENULL(recorder);
      timer->SetRecording(false);
-     if ((IsInstant() && !KeepInstant) || (timer->IsSingleEvent() && timer->StopTime() <= time(NULL))) {
-        isyslog("deleting timer %d", timer->Index() + 1);
-        Timers.Del(timer);
-        Timers.SetModified();
-        }
      timer = NULL;
      cStatus::MsgRecording(device, NULL);
      cRecordingUserCommand::InvokeCommand(RUC_AFTERRECORDING, fileName);
@@ -3172,8 +3167,16 @@ void cRecordControls::Stop(const char *InstantId)
   for (int i = 0; i < MAXRECORDCONTROLS; i++) {
       if (RecordControls[i]) {
          const char *id = RecordControls[i]->InstantId();
-         if (id && strcmp(id, InstantId) == 0)
+         if (id && strcmp(id, InstantId) == 0) {
+            cTimer *timer = RecordControls[i]->Timer();
             RecordControls[i]->Stop();
+            if (timer) {
+               isyslog("deleting timer %d", timer->Index() + 1);
+               Timers.Del(timer);
+               Timers.SetModified();
+               }
+            break;
+            }
          }
       }
 }
@@ -3184,7 +3187,7 @@ void cRecordControls::Stop(cDevice *Device)
       if (RecordControls[i]) {
          if (RecordControls[i]->Device() == Device) {
             isyslog("stopping recording on DVB device %d due to higher priority", Device->CardIndex() + 1);
-            RecordControls[i]->Stop(true);
+            RecordControls[i]->Stop();
             }
          }
       }
@@ -3261,7 +3264,7 @@ void cRecordControls::ChannelDataModified(cChannel *Channel)
          if (RecordControls[i]->Timer() && RecordControls[i]->Timer()->Channel() == Channel) {
             if (RecordControls[i]->Device()->ProvidesTransponder(Channel)) { // avoids retune on devices that don't really access the transponder
                isyslog("stopping recording due to modification of channel %d", Channel->Number());
-               RecordControls[i]->Stop(true);
+               RecordControls[i]->Stop();
                // This will restart the recording, maybe even from a different
                // device in case conditional access has changed.
                }

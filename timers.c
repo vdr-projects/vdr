@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 1.25 2005/03/19 15:20:58 kls Exp $
+ * $Id: timers.c 1.26 2005/03/20 11:19:36 kls Exp $
  */
 
 #include "timers.h"
@@ -389,6 +389,13 @@ int cTimer::Matches(const cEvent *Event, int *Overlap)
   return tmNone;
 }
 
+#define EXPIRELATENCY 60 // seconds (just in case there's a short glitch in the VPS signal)
+
+bool cTimer::Expired(void)
+{
+  return IsSingleEvent() && !Recording() && StopTime() + EXPIRELATENCY <= time(NULL);
+}
+
 time_t cTimer::StartTime(void) const
 {
   if (!startTime)
@@ -603,4 +610,18 @@ void cTimers::SetEvents(void)
         }
      }
   lastSetEvents = time(NULL);
+}
+
+void cTimers::DeleteExpired(void)
+{
+  cTimer *ti = First();
+  while (ti) {
+        cTimer *next = Next(ti);
+        if (ti->Expired()) {
+           isyslog("deleting timer %d", ti->Index() + 1);
+           Del(ti);
+           SetModified();
+           }
+        ti = next;
+        }
 }

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 1.68 2005/01/08 15:48:57 kls Exp $
+ * $Id: menu.h 1.69 2005/03/20 10:57:29 kls Exp $
  */
 
 #ifndef __MENU_H
@@ -155,8 +155,7 @@ public:
   virtual ~cRecordControl();
   bool Process(time_t t);
   cDevice *Device(void) { return device; }
-  void Stop(bool KeepInstant = false);
-  bool IsInstant(void) { return instantId; }
+  void Stop(void);
   const char *InstantId(void) { return instantId; }
   const char *FileName(void) { return fileName; }
   cTimer *Timer(void) { return timer; }
