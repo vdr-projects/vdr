@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.c 1.7 2000/05/01 10:11:26 kls Exp $
+ * $Id: interface.c 1.8 2000/05/06 15:24:18 kls Exp $
  */
 
 #include "interface.h"
@@ -321,7 +321,7 @@ void cInterface::DisplayChannel(int Number, const char *Name)
 #ifndef DEBUG_REMOTE
   RcIo.Number(Number);
 #endif
-  if (Name) {
+  if (Name && !Recording()) {
      Open(MenuColumns, 1);
      char buffer[MenuColumns + 1];
      snprintf(buffer, sizeof(buffer), "%d  %s", Number, Name ? Name : "");
