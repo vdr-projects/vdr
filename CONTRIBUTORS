@@ -810,3 +810,7 @@ Dirk Essl <de@floydworld.de>
 
 Hans Dingemans <hans.dingemans@tacticalops.nl>
  for translating OSD texts to the Dutch language
+
+Alexander Wetzel <alexander.wetzel@web.de>
+ for suggesting to let VDR start up even if 'keymacros.conf' references a plugin
+ that is currently not loaded

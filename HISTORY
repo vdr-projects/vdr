@@ -2389,3 +2389,5 @@ Video Disk Recorder Revision History
 - Completed Dutch language texts (thanks to Hans Dingemans).
 - Made 'diseqc.conf' a required file only if Setup.DiSEqC is activated (thanks to
   Thomas Schmidt).
+- VDR now starts up even if 'keymacros.conf' references a plugin that is currently
+  not loaded (suggested by Alexander Wetzel).
