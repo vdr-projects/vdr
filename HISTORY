@@ -3390,8 +3390,9 @@ Video Disk Recorder Revision History
 - Forcing a new resync after a call to cRemux::Clear() (suggested by Marco Schlüßler).
 - The cAudio::Play() function now has an additional parameter 'uchar Id' which tells
   the function the substream id of the given audio packet, so that a plugin can
-  take the right action for the various kinds if audio data (based on suggestions
-  by Werner Fink and Macro Schlüßler).
+  take the right action for the various kinds if audio data - which now also includes
+  "normal" audio with ids 0xC0...0xDF (based on suggestions by Werner Fink and Macro
+  Schlüßler).
 - Removed the "Cleared/PlayPes(NULL, 0)" handling from cTransfer::Action(), since this
   is now done when attaching the player to the device (thanks to Marco Schlüßler).
 - Making sure the buffer reserve in cTransfer::Action() is re-established after

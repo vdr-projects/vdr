@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.91 2005/02/12 16:29:49 kls Exp $
+ * $Id: device.c 1.92 2005/02/13 09:51:48 kls Exp $
  */
 
 #include "device.h"
@@ -883,8 +883,11 @@ int cDevice::PlayPesPacket(const uchar *Data, int Length, bool VideoOnly)
                break;
           case 0xC0 ... 0xDF: // audio
                SetAvailableTrack(ttAudio, c - 0xC0, c);
-               if (!VideoOnly && c == availableTracks[currentAudioTrack].id)
+               if (!VideoOnly && c == availableTracks[currentAudioTrack].id) {
                   w = PlayAudio(Start, d);
+                  if (FirstLoop)
+                     Audios.PlayAudio(Data, Length, c);
+                  }
                break;
           case 0xBD: { // private stream 1
                int PayloadOffset = Data[8] + 9;
