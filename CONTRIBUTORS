@@ -890,6 +890,8 @@ Reinhard Nissl <rnissl@gmx.de>
  for reporting a a crash in the time search mechanism
  for taking the complete size of available data into account when deciding whether
  to clear the transfer buffer to avoid overflows
+ for reporting a high CPU load in still picture mode after removing the usleep()
+ call from cDvbPlayer::Action()
 
 Richard Robson <richard_robson@beeb.net>
  for reporting freezing replay if a timer starts while in Transfer Mode from the
