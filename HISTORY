@@ -287,3 +287,5 @@ Video Disk Recorder Revision History
   by a timer that needs to use this specific DVB card to record an encrypted
   channel, if the timer currently occupying this DVB card doesn't need the
   CAM module (and thus can continue recording on a different DVB card).
+- The "Yellow" button in the "What's on now/next?" menus now displays the
+  schedule of the current channel from that menu. 

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.47 2000/11/12 13:03:35 kls Exp $
+ * $Id: menu.c 1.48 2000/11/12 16:46:19 kls Exp $
  */
 
 #include "menu.h"
@@ -1160,10 +1160,14 @@ class cMenuWhatsOn : public cOsdMenu {
 private:
   eOSState Record(void);
   eOSState Switch(void);
+  static const cEventInfo *scheduleEventInfo;
 public:
   cMenuWhatsOn(const cSchedules *Schedules, bool Now);
+  static const cEventInfo *ScheduleEventInfo(void);
   virtual eOSState ProcessKey(eKeys Key);
   };
+
+const cEventInfo *cMenuWhatsOn::scheduleEventInfo = NULL;
 
 static int CompareEventChannel(const void *p1, const void *p2)
 {
@@ -1198,6 +1202,13 @@ cMenuWhatsOn::cMenuWhatsOn(const cSchedules *Schedules, bool Now)
 
   delete pArray;
   SetHelp(tr("Record"), Now ? tr("Next") : tr("Now"), tr("Schedule"), tr("Switch"));
+}
+
+const cEventInfo *cMenuWhatsOn::ScheduleEventInfo(void)
+{
+  const cEventInfo *ei = scheduleEventInfo;
+  scheduleEventInfo = NULL;
+  return ei;
 }
 
 eOSState cMenuWhatsOn::Switch(void)
@@ -1239,7 +1250,12 @@ eOSState cMenuWhatsOn::ProcessKey(eKeys Key)
   if (state == osUnknown) {
      switch (Key) {
        case kRed:    return Record();
-       case kYellow: return osBack;
+       case kYellow: {
+                       cMenuWhatsOnItem *mi = (cMenuWhatsOnItem *)Get(Current());
+                       if (mi)
+                          scheduleEventInfo = mi->eventInfo;
+                     }
+                     return osBack;
        case kBlue:   return Switch();
        case kOk:     if (Count())
                         return AddSubMenu(new cMenuEvent(((cMenuWhatsOnItem *)Get(Current()))->eventInfo, true));
@@ -1274,7 +1290,7 @@ private:
   const cSchedules *schedules;
   bool now, next;
   eOSState Record(void);
-  void PrepareSchedule(void);
+  void PrepareSchedule(cChannel *Channel);
   void PrepareWhatsOnNext(bool On);
 public:
   cMenuSchedule(void);
@@ -1287,10 +1303,8 @@ cMenuSchedule::cMenuSchedule(void)
   now = next = false;
   cChannel *channel = Channels.GetByNumber(cDvbApi::CurrentChannel());
   if (channel) {
-     char *buffer = NULL;
-     asprintf(&buffer, tr("Schedule - %s"), channel->name);
-     SetTitle(buffer, false);
-     PrepareSchedule();
+     schedules = cDvbApi::PrimaryDvbApi->Schedules(&threadLock);
+     PrepareSchedule(channel);
      SetHelp(tr("Record"), tr("Now"), tr("Next"));
      }
 }
@@ -1300,11 +1314,14 @@ static int CompareEventTime(const void *p1, const void *p2)
   return (int)((*(cEventInfo **)p1)->GetTime() - (*(cEventInfo **)p2)->GetTime());
 }
 
-void cMenuSchedule::PrepareSchedule(void)
+void cMenuSchedule::PrepareSchedule(cChannel *Channel)
 {
-  schedules = cDvbApi::PrimaryDvbApi->Schedules(&threadLock);
+  Clear();
+  char *buffer = NULL;
+  asprintf(&buffer, tr("Schedule - %s"), Channel->name);
+  SetTitle(buffer, false);
   if (schedules) {
-     const cSchedule *Schedule = schedules->GetSchedule();
+     const cSchedule *Schedule = Channel->pnr ? schedules->GetSchedule(Channel->pnr) : schedules->GetSchedule();
      int num = Schedule->NumEvents();
      const cEventInfo **pArray = (const cEventInfo **)malloc(num * sizeof(cEventInfo *));
      if (pArray) {
@@ -1366,8 +1383,17 @@ eOSState cMenuSchedule::ProcessKey(eKeys Key)
        default:      break;
        }
      }
-  else if (!HasSubMenu())
+  else if (!HasSubMenu()) {
      now = next = false;
+     const cEventInfo *ei = cMenuWhatsOn::ScheduleEventInfo();
+     if (ei) {
+        cChannel *channel = Channels.GetByServiceID(ei->GetServiceID());
+        if (channel) {
+           PrepareSchedule(channel);
+           Display();
+           }
+        }
+     }
   return state;
 }
 
