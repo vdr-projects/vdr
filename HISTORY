@@ -529,12 +529,12 @@ Video Disk Recorder Revision History
 2001-06-26: Version 0.83
 
 - Avoiding "Device or resource busy" error message when setting PIDs.
-- Added Portugese language texts (Paulo Manuel Martins Lopes).
+- Added Portugese language texts (thanks to Paulo Manuel Martins Lopes).
 - Recording and replaying Dolby Digital (AC3) sound.
 - No longer getting stuck when a channel doesn't sync while switching
   with the 'Up' and 'Down' keys.
 
-2001-07-14: Version 0.84
+2001-07-21: Version 0.84
 
 - Fixed video packet scanning to make it recognize the whole range of
   allowed video packet ids.
@@ -552,3 +552,4 @@ Video Disk Recorder Revision History
   have a second audio PID.
 - Fixed high system load when displaying a still picture in replay.
 - Fixed a hanging SVDRP connection if the client dies without issuing QUIT.
+- Increased the frame buffer size to 192KB.

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.84 2001/07/14 09:23:50 kls Exp $
+ * $Id: dvbapi.c 1.85 2001/07/22 09:33:01 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -43,7 +43,7 @@ extern "C" {
 #define VIDEOBUFSIZE (1024*1024)
 
 // The maximum size of a single frame:
-#define MAXFRAMESIZE (128*1024)
+#define MAXFRAMESIZE (192*1024)
 
 #define FRAMESPERSEC 25
 
