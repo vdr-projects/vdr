@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.h 1.34 2002/08/11 11:42:15 kls Exp $
+ * $Id: osd.h 1.36 2002/11/10 12:28:57 kls Exp $
  */
 
 #ifndef __OSD_H
@@ -107,7 +107,7 @@ public:
   virtual void Display(int Offset = -1, eDvbColor FgColor = clrWhite, eDvbColor BgColor = clrBackground);
   virtual void Set(void) {}
   virtual eOSState ProcessKey(eKeys Key);
-};
+  };
 
 class cOsdObject {
 protected:
@@ -119,7 +119,7 @@ public:
   int Height(void) { return Interface->Height(); }
   bool NeedsFastResponse(void) { return needsFastResponse; }
   virtual eOSState ProcessKey(eKeys Key) { return osUnknown; }
-};
+  };
 
 class cOsdMenu : public cOsdObject, public cList<cOsdItem> {
 private:
@@ -147,6 +147,7 @@ protected:
   void Mark(void);
   eOSState HotKey(eKeys Key);
   eOSState AddSubMenu(cOsdMenu *SubMenu);
+  eOSState CloseSubMenu();
   bool HasSubMenu(void) { return subMenu; }
   void SetStatus(const char *s);
   void SetTitle(const char *Title, bool ShowDate = true);

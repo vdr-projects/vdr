@@ -8,9 +8,9 @@
 .\" License as specified in the file COPYING that comes with the
 .\" vdr distribution.
 .\"
-.\" $Id: vdr.5 1.11 2002/10/27 15:36:44 kls Exp $
+.\" $Id: vdr.5 1.12 2002/11/10 10:10:15 kls Exp $
 .\"
-.TH vdr 5 "7 Oct 2002" "1.2.0" "Video Disk Recorder Files"
+.TH vdr 5 "10 Nov 2002" "1.2.0" "Video Disk Recorder Files"
 .SH NAME
 vdr file formats - the Video Disk Recorder Files
 .SH DESCRIPTION
@@ -120,6 +120,18 @@ l l.
 .TP
 .B SID
 The service ID of this channel.
+.PP
+A particular channel can be uniquely identified by its \fBchannel\ ID\fR,
+which is a string that looks like this:
+
+\fBS19.2E-0-12188-12003\fR
+
+The components of this string are the \fBSource\fR (S19.2E), \fBFrequency\fR
+(12188, MHz) and \fBSID\fR (12003) as defined above. The part that is currently
+\fB0\fR is reserved for future use.
+.br
+The \fBchannel\ ID\fR is used in the \fItimers.conf\fR and \fIepg.data\fR
+files to properly identify the channels.
 .SS TIMERS
 The file \fItimers.conf\fR contains the timer setup.
 Each line contains one timer definition, with individual fields
@@ -143,7 +155,13 @@ Note: in order to allow future extensibility, external programs using the
 and leave the lower 16 bit untouched.
 .TP
 .B Channel
-The number of the channel to record.
+The channel to record from. This is either the channel number as shown in the
+on-screen menus, or a complete channel ID. When reading \fItimers.conf\fR 
+any channel numbers will be mapped to the respective channel ids and when
+the file is written again, there will only be channel ids. Channel numbers
+are accepted as input in order to allow easier creation of timers when
+manually editing \fItimers.conf\fR. Also, when timers are listed via SVDRP
+commands, the channels are given as numbers.
 .TP
 .B Day
 The day when this timer shall record.
@@ -472,7 +490,7 @@ The following tag characters are defined:
 .TS
 tab (@);
 l l.
-\fBC\fR@<service id> <channel name>
+\fBC\fR@<channel id> <channel name>
 \fBE\fR@<event id> <start time> <duration> <table id>
 \fBT\fR@<title>
 \fBS\fR@<subtitle>
@@ -491,8 +509,8 @@ should at least have a \fBT\fR entry).
 .TS
 tab (@);
 l l.
-<service id>   @is the "program number" as defined in 'channels.conf'
-<channel name> @is the "name" as in 'channels.conf' (for information only)
+<channel id>   @is the "channel ID", made up from the parameters defined in 'channels.conf'
+<channel name> @is the "name" as in 'channels.conf' (for information only, may be left out)
 <start time>   @is the time (as a time_t integer) in UTC when this event starts
 <duration>     @is the time (in seconds) that this event will take
 <table id>     @is a hex number that indicates the table this event is contained\

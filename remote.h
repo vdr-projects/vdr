@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remote.h 1.19 2002/11/01 10:48:11 kls Exp $
+ * $Id: remote.h 1.20 2002/11/09 11:07:33 kls Exp $
  */
 
 #ifndef __REMOTE_H
@@ -15,8 +15,6 @@
 #include "keys.h"
 #include "thread.h"
 #include "tools.h"
-
-typedef unsigned long long int uint64;
 
 class cRemote : public cListObject {
 private:

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.99 2002/10/27 14:24:00 kls Exp $
+ * $Id: i18n.c 1.100 2002/11/10 12:32:30 kls Exp $
  *
  * Translations provided by:
  *
@@ -1461,6 +1461,22 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "Kanavaa ei voi katsoa nyt!",
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+  },
+  { "Channel settings are not unique!",
+    "Kanaleinstellungen sind nicht eindeutig!",
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
     "",//TODO
     "",//TODO
     "",//TODO

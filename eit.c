@@ -16,7 +16,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.c 1.59 2002/11/02 12:46:53 kls Exp $
+ * $Id: eit.c 1.60 2002/11/10 15:50:21 kls Exp $
  ***************************************************************************/
 
 #include "eit.h"
@@ -180,7 +180,7 @@ bool cTDT::SetSystemTime()
 
 // --- cEventInfo ------------------------------------------------------------
 
-cEventInfo::cEventInfo(unsigned short serviceid, unsigned short eventid)
+cEventInfo::cEventInfo(uint64 channelid, unsigned short eventid)
 {
    pTitle = NULL;
    pSubtitle = NULL;
@@ -190,7 +190,7 @@ cEventInfo::cEventInfo(unsigned short serviceid, unsigned short eventid)
    tTime = 0;
    uTableID = 0;
    uEventID = eventid;
-   uServiceID = serviceid;
+   uChannelID = channelid;
    nChannelNumber = 0;
 }
 
@@ -325,15 +325,15 @@ void cEventInfo::SetEventID(unsigned short evid)
    uEventID = evid;
 }
 /**  */
-void cEventInfo::SetServiceID(unsigned short servid)
+void cEventInfo::SetChannelID(uint64 channelid)
 {
-   uServiceID = servid;
+   uChannelID = channelid;
 }
 
 /**  */
-unsigned short cEventInfo::GetServiceID() const
+uint64 cEventInfo::GetChannelID() const
 {
-   return uServiceID;
+   return uChannelID;
 }
 
 /**  */
@@ -368,7 +368,7 @@ bool cEventInfo::Read(FILE *f, cSchedule *Schedule)
                           if (n == 3 || n == 4) {
                              pEvent = (cEventInfo *)Schedule->GetEvent(uEventID, tTime);
                              if (!pEvent)
-                                pEvent = Schedule->AddEvent(new cEventInfo(Schedule->GetServiceID(), uEventID));
+                                pEvent = Schedule->AddEvent(new cEventInfo(Schedule->GetChannelID(), uEventID));
                              if (pEvent) {
                                 pEvent->SetTableID(uTableID);
                                 pEvent->SetTime(tTime);
@@ -404,24 +404,24 @@ bool cEventInfo::Read(FILE *f, cSchedule *Schedule)
 struct tEpgBugFixStats {
   int hits;
   int n;
-  unsigned short serviceIDs[MAXEPGBUGFIXCHANS];
+  uint64 channelIDs[MAXEPGBUGFIXCHANS];
   tEpgBugFixStats(void) { hits = n = 0; }
   };
 
 tEpgBugFixStats EpgBugFixStats[MAXEPGBUGFIXSTATS];
 
-static void EpgBugFixStat(int Number, unsigned int ServiceID)
+static void EpgBugFixStat(int Number, uint64 ChannelID)
 {
   if (0 <= Number && Number < MAXEPGBUGFIXSTATS) {
      tEpgBugFixStats *p = &EpgBugFixStats[Number];
      p->hits++;
      int i = 0;
      for (; i < p->n; i++) {
-         if (p->serviceIDs[i] == ServiceID)
+         if (p->channelIDs[i] == ChannelID)
             break;
          }
      if (i == p->n && p->n < MAXEPGBUGFIXCHANS)
-        p->serviceIDs[p->n++] = ServiceID;
+        p->channelIDs[p->n++] = ChannelID;
      }
 }
 
@@ -448,7 +448,7 @@ static void ReportEpgBugFixStats(bool Reset = false)
             char *q = buffer;
             q += snprintf(q, sizeof(buffer) - (q - buffer), "%d\t%d", i, p->hits);
             for (int c = 0; c < p->n; c++) {
-                cChannel *channel = Channels.GetByServiceID(p->serviceIDs[c]);
+                cChannel *channel = Channels.GetByChannelID(p->channelIDs[c]);
                 if (channel) {
                    q += snprintf(q, sizeof(buffer) - (q - buffer), "%s%s", delim, channel->Name());
                    delim = ", ";
@@ -499,7 +499,7 @@ void cEventInfo::FixEpgBugs(void)
               char *s = e ? strdup(e) : NULL;
               free(pSubtitle);
               pSubtitle = s;
-              EpgBugFixStat(0, GetServiceID());
+              EpgBugFixStat(0, GetChannelID());
               // now the fixes #1 and #2 below will handle the rest
               }
            }
@@ -524,7 +524,7 @@ void cEventInfo::FixEpgBugs(void)
               free(pExtendedDescription);
               pSubtitle = s;
               pExtendedDescription = d;
-              EpgBugFixStat(1, GetServiceID());
+              EpgBugFixStat(1, GetChannelID());
               }
            }
         }
@@ -541,7 +541,7 @@ void cEventInfo::FixEpgBugs(void)
            memmove(pSubtitle, pSubtitle + 1, strlen(pSubtitle));
            pExtendedDescription = pSubtitle;
            pSubtitle = NULL;
-           EpgBugFixStat(2, GetServiceID());
+           EpgBugFixStat(2, GetChannelID());
            }
         }
 
@@ -553,7 +553,7 @@ void cEventInfo::FixEpgBugs(void)
      if (pSubtitle && strcmp(pTitle, pSubtitle) == 0) {
         free(pSubtitle);
         pSubtitle = NULL;
-        EpgBugFixStat(3, GetServiceID());
+        EpgBugFixStat(3, GetChannelID());
         }
 
      // ZDF.info puts the Subtitle between double quotes, which is nothing
@@ -569,7 +569,7 @@ void cEventInfo::FixEpgBugs(void)
            char *p = strrchr(pSubtitle, '"');
            if (p)
               *p = 0;
-           EpgBugFixStat(4, GetServiceID());
+           EpgBugFixStat(4, GetChannelID());
            }
         }
 
@@ -590,7 +590,7 @@ void cEventInfo::FixEpgBugs(void)
               if (*p == '-' && *(p + 1) == ' ' && *(p + 2) && islower(*(p - 1)) && islower(*(p + 2))) {
                  if (!startswith(p + 2, "und ")) { // special case in German, as in "Lach- und Sachgeschichten"
                     memmove(p, p + 2, strlen(p + 2) + 1);
-                    EpgBugFixStat(5, GetServiceID());
+                    EpgBugFixStat(5, GetChannelID());
                     }
                  }
               p++;
@@ -608,10 +608,10 @@ void cEventInfo::FixEpgBugs(void)
 
 // --- cSchedule -------------------------------------------------------------
 
-cSchedule::cSchedule(unsigned short servid)
+cSchedule::cSchedule(uint64 channelid)
 {
    pPresent = pFollowing = NULL;
-   uServiceID = servid;
+   uChannelID = channelid;
 }
 
 
@@ -645,14 +645,14 @@ const cEventInfo *cSchedule::GetFollowingEvent(void) const
   return pe;
 }
 
-void cSchedule::SetServiceID(unsigned short servid)
+void cSchedule::SetChannelID(uint64 channelid)
 {
-   uServiceID = servid;
+   uChannelID = channelid;
 }
 /**  */
-unsigned short cSchedule::GetServiceID() const
+uint64 cSchedule::GetChannelID() const
 {
-   return uServiceID;
+   return uChannelID;
 }
 /**  */
 const cEventInfo * cSchedule::GetEvent(unsigned short uEventID, time_t tTime) const
@@ -735,10 +735,10 @@ void cSchedule::Cleanup(time_t tTime)
 /**  */
 void cSchedule::Dump(FILE *f, const char *Prefix) const
 {
-   cChannel *channel = Channels.GetByServiceID(uServiceID);
+   cChannel *channel = Channels.GetByChannelID(uChannelID);
    if (channel)
    {
-      fprintf(f, "%sC %u %s\n", Prefix, uServiceID, channel->Name());
+      fprintf(f, "%sC %s %s\n", Prefix, channel->GetChannelIDStr(), channel->Name());
       for (cEventInfo *p = Events.First(); p; p = Events.Next(p))
          p->Dump(f, Prefix);
       fprintf(f, "%sc\n", Prefix);
@@ -751,12 +751,22 @@ bool cSchedule::Read(FILE *f, cSchedules *Schedules)
      char *s;
      while ((s = readline(f)) != NULL) {
            if (*s == 'C') {
-              unsigned int uServiceID;
-              if (1 == sscanf(s + 1, "%u", &uServiceID)) {
-                 cSchedule *p = (cSchedule *)Schedules->AddServiceID(uServiceID);
-                 if (p) {
-                    if (!cEventInfo::Read(f, p))
-                       return false;
+              s = skipspace(s + 1);
+              char *p = strchr(s, ' ');
+              if (p)
+                 *p = 0; // strips optional channel name
+              if (*s) {
+                 uint64 uChannelID = cChannel::StringToChannelID(s);
+                 if (uChannelID) {
+                    cSchedule *p = (cSchedule *)Schedules->AddChannelID(uChannelID);
+                    if (p) {
+                       if (!cEventInfo::Read(f, p))
+                          return false;
+                       }
+                    }
+                 else {
+                    esyslog("ERROR: illegal channel ID: %s", s);
+                    return false;
                     }
                  }
               }
@@ -775,28 +785,28 @@ bool cSchedule::Read(FILE *f, cSchedules *Schedules)
 cSchedules::cSchedules()
 {
    pCurrentSchedule = NULL;
-   uCurrentServiceID = 0;
+   uCurrentChannelID = 0;
 }
 
 cSchedules::~cSchedules()
 {
 }
 /**  */
-const cSchedule *cSchedules::AddServiceID(unsigned short servid)
+const cSchedule *cSchedules::AddChannelID(uint64 channelid)
 {
-  const cSchedule *p = GetSchedule(servid);
+  const cSchedule *p = GetSchedule(channelid);
   if (!p) {
-     Add(new cSchedule(servid));
-     p = GetSchedule(servid);
+     Add(new cSchedule(channelid));
+     p = GetSchedule(channelid);
      }
   return p;
 }
 /**  */
-const cSchedule *cSchedules::SetCurrentServiceID(unsigned short servid)
+const cSchedule *cSchedules::SetCurrentChannelID(uint64 channelid)
 {
-  pCurrentSchedule = AddServiceID(servid);
+  pCurrentSchedule = AddChannelID(channelid);
   if (pCurrentSchedule)
-     uCurrentServiceID = servid;
+     uCurrentChannelID = channelid;
   return pCurrentSchedule;
 }
 /**  */
@@ -805,14 +815,14 @@ const cSchedule * cSchedules::GetSchedule() const
    return pCurrentSchedule;
 }
 /**  */
-const cSchedule * cSchedules::GetSchedule(unsigned short servid) const
+const cSchedule * cSchedules::GetSchedule(uint64 channelid) const
 {
    cSchedule *p;
 
    p = First();
    while (p != NULL)
    {
-      if (p->GetServiceID() == servid)
+      if (p->GetChannelID() == channelid)
          return p;
       p = Next(p);
    }
@@ -856,7 +866,7 @@ public:
    cEIT(unsigned char *buf, int length, cSchedules *Schedules);
    ~cEIT();
   /**  */
-  int ProcessEIT(unsigned char *buffer);
+  int ProcessEIT(unsigned char *buffer, int CurrentSource);
 
 protected: // Protected methods
   /** returns true if this EIT covers a
@@ -879,7 +889,7 @@ cEIT::~cEIT()
 }
 
 /**  */
-int cEIT::ProcessEIT(unsigned char *buffer)
+int cEIT::ProcessEIT(unsigned char *buffer, int CurrentSource)
 {
    cEventInfo *pEvent, *rEvent = NULL;
    cSchedule *pSchedule, *rSchedule = NULL;
@@ -893,18 +903,19 @@ int cEIT::ProcessEIT(unsigned char *buffer)
 
    if (VdrProgramInfos) {
       for (VdrProgramInfo = (struct VdrProgramInfo *) VdrProgramInfos->Head; VdrProgramInfo; VdrProgramInfo = (struct VdrProgramInfo *) xSucc (VdrProgramInfo)) {
-          // Drop events that belong to an "other TS" and are very long (some stations broadcast bogus data for "other" channels):
-          if (VdrProgramInfo->Duration >= 86400 && (tid == 0x4F || tid == 0x60 || tid == 0x61))
-             continue;
-          pSchedule = (cSchedule *)schedules->GetSchedule(VdrProgramInfo->ServiceID);
+          //XXX TODO use complete channel ID
+          cChannel *channel = Channels.GetByServiceID(CurrentSource, VdrProgramInfo->ServiceID);
+          uint64 channelID = channel ? channel->GetChannelID() : (uint64(CurrentSource) << 48) | VdrProgramInfo->ServiceID;
+          //XXX
+          pSchedule = (cSchedule *)schedules->GetSchedule(channelID);
           if (!pSchedule) {
-             schedules->Add(new cSchedule(VdrProgramInfo->ServiceID));
-             pSchedule = (cSchedule *)schedules->GetSchedule(VdrProgramInfo->ServiceID);
+             schedules->Add(new cSchedule(channelID));
+             pSchedule = (cSchedule *)schedules->GetSchedule(channelID);
              if (!pSchedule)
                 break;
              }
           if (VdrProgramInfo->ReferenceServiceID) {
-             rSchedule = (cSchedule *)schedules->GetSchedule(VdrProgramInfo->ReferenceServiceID);
+             rSchedule = (cSchedule *)schedules->GetSchedule((uint64(CurrentSource) << 48) | VdrProgramInfo->ReferenceServiceID);
              if (!rSchedule)
                 break;
              rEvent = (cEventInfo *)rSchedule->GetEvent((unsigned short)VdrProgramInfo->ReferenceEventID);
@@ -915,7 +926,7 @@ int cEIT::ProcessEIT(unsigned char *buffer)
           if (!pEvent) {
              // If we don't have that event ID yet, we create a new one.
              // Otherwise we copy the information into the existing event anyway, because the data might have changed.
-             pEvent = pSchedule->AddEvent(new cEventInfo(VdrProgramInfo->ServiceID, VdrProgramInfo->EventID));
+             pEvent = pSchedule->AddEvent(new cEventInfo(channelID, VdrProgramInfo->EventID));
              if (!pEvent)
                 break;
              pEvent->SetTableID(tid);
@@ -988,6 +999,8 @@ cSIProcessor::cSIProcessor(const char *FileName)
 {
    fileName = strdup(FileName);
    masterSIProcessor = numSIProcessors == 0; // the first one becomes the 'master'
+   currentSource = 0;
+   currentTransponder = 0;
    filters = NULL;
    if (!numSIProcessors++) // the first one creates it
       schedules = new cSchedules;
@@ -1167,7 +1180,7 @@ void cSIProcessor::Action()
                            {
                               cMutexLock MutexLock(&schedulesMutex);
                               cEIT ceit(buf, seclen, schedules);
-                              ceit.ProcessEIT(buf);
+                              ceit.ProcessEIT(buf, currentSource);
                            }
                            else
                               dsyslog("Received stuffing section in EIT\n");
@@ -1250,16 +1263,17 @@ bool cSIProcessor::ShutDownFilters(void)
 }
 
 /** */
-void cSIProcessor::SetCurrentTransponder(int CurrentTransponder)
+void cSIProcessor::SetCurrentTransponder(int CurrentSource, int CurrentTransponder)
 {
+  currentSource = CurrentSource;
   currentTransponder = CurrentTransponder;
 }
 
 /** */
-bool cSIProcessor::SetCurrentServiceID(unsigned short servid)
+bool cSIProcessor::SetCurrentChannelID(uint64 channelid)
 {
   cMutexLock MutexLock(&schedulesMutex);
-  return schedules ? schedules->SetCurrentServiceID(servid) : false;
+  return schedules ? schedules->SetCurrentChannelID(channelid) : false;
 }
 
 void cSIProcessor::TriggerDump(void)

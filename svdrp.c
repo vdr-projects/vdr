@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.48 2002/10/20 12:45:03 kls Exp $
+ * $Id: svdrp.c 1.49 2002/11/10 12:09:56 kls Exp $
  */
 
 #include "svdrp.h"
@@ -776,15 +776,20 @@ void cSVDRP::CmdMODC(const char *Option)
         tail = skipspace(tail);
         cChannel *channel = Channels.GetByNumber(n);
         if (channel) {
-           cChannel c = *channel;
-           if (!c.Parse(tail)) {
-              Reply(501, "Error in channel settings");
-              return;
+           cChannel ch;
+           if (ch.Parse(tail, true)) {
+              if (Channels.HasUniqueChannelID(&ch, channel)) {
+                 *channel = ch;
+                 Channels.ReNumber();
+                 Channels.Save();
+                 isyslog("modifed channel %d %s", channel->Number(), channel->ToText());
+                 Reply(250, "%d %s", channel->Number(), channel->ToText());
+                 }
+              else
+                 Reply(501, "Channel settings are not unique");
               }
-           *channel = c;
-           Channels.Save();
-           isyslog("channel %d modified", channel->Number());
-           Reply(250, "%d %s", channel->Number(), channel->ToText());
+           else
+              Reply(501, "Error in channel settings");
            }
         else
            Reply(501, "Channel \"%d\" not defined", n);
@@ -844,13 +849,19 @@ void cSVDRP::CmdMOVT(const char *Option)
 void cSVDRP::CmdNEWC(const char *Option)
 {
   if (*Option) {
-     cChannel *channel = new cChannel;
-     if (channel->Parse(Option)) {
-        Channels.Add(channel);
-        Channels.ReNumber();
-        Channels.Save();
-        isyslog("channel %d added", channel->Number());
-        Reply(250, "%d %s", channel->Number(), channel->ToText());
+     cChannel ch;
+     if (ch.Parse(Option, true)) {
+        if (Channels.HasUniqueChannelID(&ch)) {
+           cChannel *channel = new cChannel;
+           *channel = ch;
+           Channels.Add(channel);
+           Channels.ReNumber();
+           Channels.Save();
+           isyslog("new channel %d %s", channel->Number(), channel->ToText());
+           Reply(250, "%d %s", channel->Number(), channel->ToText());
+           }
+        else
+           Reply(501, "Channel settings are not unique");
         }
      else
         Reply(501, "Error in channel settings");
