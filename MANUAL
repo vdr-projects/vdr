@@ -351,6 +351,24 @@ Video Disk Recorder User's Manual
                          A value of '0' completely turns off scanning on both single
                          and multiple card systems.
 
+  EPGBugfixLevel = 2     Some tv stations transmit weirdly formatted EPG data.
+                         VDR attempts to fix these bugs up to the given level:
+                         0 = no EPG fixing
+                         1 = basic fixing of text location (Title, Subtitle and
+                             Extended Description)
+                         2 = removal of excess whitespace and hyphens
+                         3 = fixing the date in timestamps between 00:00 and 06:00
+                             (use with care - hopefully one day Pro7 and Kabel1
+                             will learn how to read the clock/calender)
+                         Default is '2', which will do all textual fixes, but
+                         leaves out the timestamp fixes, since these might cause
+                         recordings to fail. Use '3' at your own risk.
+                         Note that after changing the setting of this parameter
+                         any EPG data that has already been received will remain
+                         in its existing format - only newly received data will
+                         be fixed accordingly. Restart VDR if you want to make sure
+                         all data is fixed.
+
   SVDRPTimeout = 300     The time (in seconds) of inactivity on an open SVDRP
                          connection after which the connection is automatically
                          closed. Default is 300, a value of 0 means no timeout.

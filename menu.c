@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.103 2001/08/12 12:42:37 kls Exp $
+ * $Id: menu.c 1.105 2001/08/19 14:45:31 kls Exp $
  */
 
 #include "menu.h"
@@ -17,6 +17,7 @@
 #include "i18n.h"
 
 #define MENUTIMEOUT 120 // seconds
+#define MAXWAIT4EPGINFO 10 // seconds
 
 const char *FileNameChars = " aAbBcCdDeEfFgGhHiIjJkKlLmMnNoOpPqQrRsStTuUvVwWxXyYzZ0123456789-.#^";
 
@@ -1701,6 +1702,7 @@ void cMenuSetup::Set(void)
   Add(new cMenuEditIntItem( tr("MarginStart"),        &data.MarginStart));
   Add(new cMenuEditIntItem( tr("MarginStop"),         &data.MarginStop));
   Add(new cMenuEditIntItem( tr("EPGScanTimeout"),     &data.EPGScanTimeout));
+  Add(new cMenuEditIntItem( tr("EPGBugfixLevel"),     &data.EPGBugfixLevel, 0, 3));
   Add(new cMenuEditIntItem( tr("SVDRPTimeout"),       &data.SVDRPTimeout));
   Add(new cMenuEditIntItem( tr("PrimaryLimit"),       &data.PrimaryLimit, 0, MAXPRIORITY));
   Add(new cMenuEditIntItem( tr("DefaultPriority"),    &data.DefaultPriority, 0, MAXPRIORITY));
@@ -2062,6 +2064,7 @@ eOSState cDisplayChannel::ProcessKey(eKeys Key)
 
 cRecordControl::cRecordControl(cDvbApi *DvbApi, cTimer *Timer)
 {
+  eventInfo = NULL;
   instantId = NULL;
   dvbApi = DvbApi;
   if (!dvbApi) dvbApi = cDvbApi::PrimaryDvbApi;//XXX
@@ -2075,6 +2078,11 @@ cRecordControl::cRecordControl(cDvbApi *DvbApi, cTimer *Timer)
   timer->SetPending(true);
   timer->SetRecording(true);
   if (Channels.SwitchTo(timer->channel, dvbApi)) {
+     if (GetEventInfo()) {
+        //XXX this is in preparation for storing recordings in subdirectories and giving them the name of the Subtitle
+        dsyslog(LOG_INFO, "Title: '%s' Subtitle: '%s'", eventInfo->GetTitle(), eventInfo->GetSubtitle());//XXX
+        //XXX modify timer's name and summary, mark it as modified (revert later when stopping)
+        }
      cRecording Recording(timer);
      if (dvbApi->StartRecord(Recording.FileName(), Channels.GetByNumber(timer->channel)->ca, timer->priority))
         Recording.WriteSummary();
@@ -2088,6 +2096,34 @@ cRecordControl::~cRecordControl()
 {
   Stop(true);
   delete instantId;
+}
+
+bool cRecordControl::GetEventInfo(void)
+{
+  cChannel *channel = Channels.GetByNumber(timer->channel);
+  time_t Time = timer->StartTime() + (timer->StopTime() - timer->StartTime()) / 2;
+  for (int seconds = 0; seconds <= MAXWAIT4EPGINFO; seconds++) {
+      {
+        cThreadLock ThreadLock;
+        const cSchedules *Schedules = dvbApi->Schedules(&ThreadLock);
+        if (Schedules) {
+           const cSchedule *Schedule = Schedules->GetSchedule(channel->pnr);
+           if (Schedule) {
+              eventInfo = Schedule->GetEvent(Time);
+              if (eventInfo) {
+                 if (seconds > 0)
+                    dsyslog(LOG_INFO, "got EPG info after %d seconds", seconds);
+                 return true;
+                 }
+              }
+           }
+      }
+      if (seconds == 0)
+         dsyslog(LOG_INFO, "waiting for EPG info...");
+      sleep(1);
+      }
+  dsyslog(LOG_INFO, "no EPG info available");
+  return false;
 }
 
 void cRecordControl::Stop(bool KeepInstant)

@@ -8,7 +8,7 @@
  * the Linux DVB driver's 'tuxplayer' example and were rewritten to suit
  * VDR's needs.
  *
- * $Id: remux.c 1.5 2001/06/24 16:37:23 kls Exp $
+ * $Id: remux.c 1.6 2001/08/19 11:52:05 kls Exp $
  */
 
 /* The calling interface of the 'cRemux::Process()' function is defined
@@ -489,6 +489,8 @@ void cRemux::SetAudioPid(int APid)
   resultCount = resultDelivered = 0;
 }
 
+#define TS_SYNC_BYTE 0x47
+
 const uchar *cRemux::Process(const uchar *Data, int &Count, int &Result, uchar *PictureType)
 {
   uchar dummyPictureType;
@@ -511,11 +513,26 @@ XXX*/
      resultDelivered = 0;
      }
 
+  int used = 0;
+
+  // Make sure we are looking at a TS packet:
+
+  while (Count > TS_SIZE) {
+        if (Data[0] == TS_SYNC_BYTE && Data[TS_SIZE] == TS_SYNC_BYTE)
+           break;
+        Data++;
+        Count--;
+        used++;
+        }
+  if (used)
+     esyslog(LOG_ERR, "ERROR: skipped %d byte to sync on TS packet", used);
+
   // Convert incoming TS data into multiplexed PES:
 
-  int used = 0;
   for (int i = 0; i < Count; i += TS_SIZE) {
       if (Count - i < TS_SIZE)
+         break;
+      if (Data[i] != TS_SYNC_BYTE)
          break;
       int pid = GetPid(Data + i + 1);
       if (Data[i + 3] & 0x10) { // got payload

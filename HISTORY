@@ -649,3 +649,17 @@ Video Disk Recorder Revision History
 - If there is no free DVB device to record, the log message will now be given
   only once.
 - Made I/O more robust by handling EINTR (thanks to Werner Fink).
+
+2001-08-18: Version 0.92
+
+- The "channel not sync'ed" log message now also lists the card number.
+- Now using the EIT services from 'libdtv' (thanks to Rolf Hakenes), which
+  provides EPG information for NVOD ("Near Video On Demand") channels.
+- Doing some bug fixing on the EPG data (some tv stations apparently have
+  their own idea on how to fill in the data...). The level up to which EPG
+  bugs are fixed can be controlled with the EPGBugfixLevel parameter in the
+  "Setup" menu (see MANUAL for details, and cEventInfo::FixEpgBugs() in eit.c
+  for the actual implementation).
+- Fixed broken recordings after a driver buffer overflow.
+- Fixed the chirping sound after Pause/Play of a DVD (thanks to Andreas
+  Schultz).

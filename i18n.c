@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.31 2001/08/11 13:22:24 kls Exp $
+ * $Id: i18n.c 1.32 2001/08/17 13:03:15 kls Exp $
  *
  * Slovenian translations provided by Miha Setina <mihasetina@softhome.net>
  * Italian   translations provided by Alberto Carraro <bertocar@tin.it>
@@ -775,6 +775,15 @@ const tPhrase Phrases[] = {
     "Timeout EPG",
     "Temps maxi EPG",
     "Ledig tid før EPG-søk",
+  },
+  { "EPGBugfixLevel",
+    "EPG Fehlerbereinigung",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
   },
   { "SVDRPTimeout",
     "SVDRP Timeout",

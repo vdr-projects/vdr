@@ -7,7 +7,7 @@
  * DVD support initially written by Andreas Schultz <aschultz@warp10.net>
  * based on dvdplayer-0.5 by Matjaz Thaler <matjaz.thaler@guest.arnes.si>
  *
- * $Id: dvbapi.c 1.106 2001/08/12 15:09:42 kls Exp $
+ * $Id: dvbapi.c 1.109 2001/08/19 15:09:48 kls Exp $
  */
 
 //#define DVDDEBUG        1
@@ -545,9 +545,13 @@ void cRecordBuffer::Input(void)
          }
       else if (r < 0) {
          if (FATALERRNO) {
-            LOG_ERROR;
-            if (errno != EBUFFEROVERFLOW)
+            if (errno == EBUFFEROVERFLOW) { // this error code is not defined in the library
+               esyslog(LOG_ERR, "ERROR (%s,%d): DVB driver buffer overflow", __FILE__, __LINE__);
+               }
+            else {
+               LOG_ERROR;
                break;
+               }
             }
          }
       if (time(NULL) - t > MAXBROKENTIMEOUT) {
@@ -752,7 +756,7 @@ void cPlayBuffer::Pause(void)
      Empty(true);
   fastForward = fastRewind = false;
   CHECK(ioctl(videoDev, paused ? VIDEO_FREEZE : VIDEO_CONTINUE));
-  CHECK(ioctl(audioDev, AUDIO_SET_MUTE, paused));
+  //CHECK(ioctl(audioDev, AUDIO_SET_MUTE, paused)); //XXX this caused chirping sound when playing a DVD
   still = false;
   if (empty)
      Empty(false);
@@ -767,7 +771,7 @@ void cPlayBuffer::Play(void)
      still = false;
      CHECK(ioctl(videoDev, paused ? VIDEO_CONTINUE : VIDEO_PLAY));
      CHECK(ioctl(audioDev, AUDIO_SET_AV_SYNC, true));
-     CHECK(ioctl(audioDev, AUDIO_SET_MUTE, false));
+     //CHECK(ioctl(audioDev, AUDIO_SET_MUTE, false)); //XXX this caused chirping sound when playing a DVD
      if (empty)
         Empty(false);
      fastForward = fastRewind = paused = false;
@@ -2075,9 +2079,13 @@ void cTransferBuffer::Input(void)
            }
         else if (r < 0) {
            if (FATALERRNO) {
-              LOG_ERROR;
-              if (errno != EBUFFEROVERFLOW)
+              if (errno == EBUFFEROVERFLOW) { // this error code is not defined in the library
+                 esyslog(LOG_ERR, "ERROR (%s,%d): DVB driver buffer overflow", __FILE__, __LINE__);
+                 }
+              else {
+                 LOG_ERROR;
                  break;
+                 }
               }
            }
         }
@@ -3160,7 +3168,7 @@ bool cDvbApi::SetChannel(int ChannelNumber, int FrequencyMHz, char Polarization,
         }
 
      if (!ChannelSynced) {
-        esyslog(LOG_ERR, "ERROR: channel %d not sync'ed!", ChannelNumber);
+        esyslog(LOG_ERR, "ERROR: channel %d not sync'ed on DVB card %d!", ChannelNumber, CardIndex() + 1);
         if (this == PrimaryDvbApi)
            cThread::RaisePanic();
         return false;

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.54 2001/08/11 15:34:42 kls Exp $
+ * $Id: config.c 1.55 2001/08/17 13:02:01 kls Exp $
  */
 
 #include "config.h"
@@ -774,6 +774,7 @@ cSetup::cSetup(void)
   MarginStart = 2;
   MarginStop = 10;
   EPGScanTimeout = 5;
+  EPGBugfixLevel = 2;
   SVDRPTimeout = 300;
   PrimaryLimit = 0;
   DefaultPriority = 50;
@@ -804,6 +805,7 @@ bool cSetup::Parse(char *s)
      else if (!strcasecmp(Name, "MarginStart"))         MarginStart        = atoi(Value);
      else if (!strcasecmp(Name, "MarginStop"))          MarginStop         = atoi(Value);
      else if (!strcasecmp(Name, "EPGScanTimeout"))      EPGScanTimeout     = atoi(Value);
+     else if (!strcasecmp(Name, "EPGBugfixLevel"))      EPGBugfixLevel     = atoi(Value);
      else if (!strcasecmp(Name, "SVDRPTimeout"))        SVDRPTimeout       = atoi(Value);
      else if (!strcasecmp(Name, "PrimaryLimit"))        PrimaryLimit       = atoi(Value);
      else if (!strcasecmp(Name, "DefaultPriority"))     DefaultPriority    = atoi(Value);
@@ -869,6 +871,7 @@ bool cSetup::Save(const char *FileName)
         fprintf(f, "MarginStart        = %d\n", MarginStart);
         fprintf(f, "MarginStop         = %d\n", MarginStop);
         fprintf(f, "EPGScanTimeout     = %d\n", EPGScanTimeout);
+        fprintf(f, "EPGBugfixLevel     = %d\n", EPGBugfixLevel);
         fprintf(f, "SVDRPTimeout       = %d\n", SVDRPTimeout);
         fprintf(f, "PrimaryLimit       = %d\n", PrimaryLimit);
         fprintf(f, "DefaultPriority    = %d\n", DefaultPriority);

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 1.23 2001/08/11 14:08:50 kls Exp $
+ * $Id: menu.h 1.24 2001/08/18 10:22:43 kls Exp $
  */
 
 #ifndef _MENU_H
@@ -72,7 +72,9 @@ class cRecordControl {
 private:
   cDvbApi *dvbApi;
   cTimer *timer;
+  const cEventInfo *eventInfo;
   char *instantId;
+  bool GetEventInfo(void);
 public:
   cRecordControl(cDvbApi *DvbApi, cTimer *Timer = NULL);
   virtual ~cRecordControl();
