@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.35 2001/09/02 10:25:12 kls Exp $
+ * $Id: recording.c 1.36 2001/09/02 15:09:28 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -204,19 +204,32 @@ char *ExchangeChars(char *s, bool ToFileSystem)
   return s;
 }
 
-cRecording::cRecording(cTimer *Timer)
+cRecording::cRecording(cTimer *Timer, const char *Subtitle, const char *Summary)
 {
   titleBuffer = NULL;
   fileName = NULL;
-  name = strdup(Timer->file);
+  if (Timer->IsSingleEvent() || !Setup.UseSubtitle)
+     name = strdup(Timer->file);
+  else {
+     if (isempty(Subtitle))
+        Subtitle = " ";
+     asprintf(&name, "%s~%s", Timer->file, Subtitle);
+     }
   // substitute characters that would cause problems in file names:
   strreplace(name, '\n', ' ');
-  summary = Timer->summary ? strdup(Timer->summary) : NULL;
-  if (summary)
-     strreplace(summary, '|', '\n');
   start = Timer->StartTime();
   priority = Timer->priority;
   lifetime = Timer->lifetime;
+  // handle summary:
+  summary = !isempty(Timer->summary) ? strdup(Timer->summary) : NULL;
+  if (!summary) {
+     if (isempty(Subtitle))
+        Subtitle = "";
+     if (isempty(Summary))
+        Summary = "";
+     if (*Subtitle || *Summary)
+        asprintf(&summary, "%s%s%s", Subtitle, (*Subtitle && *Summary) ? "\n\n" : "", Summary);
+     }
 }
 
 cRecording::cRecording(const char *FileName)

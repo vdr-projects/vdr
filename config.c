@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.63 2001/09/01 15:17:44 kls Exp $
+ * $Id: config.c 1.64 2001/09/02 15:04:13 kls Exp $
  */
 
 #include "config.h"
@@ -365,21 +365,6 @@ cTimer::cTimer(const cEventInfo *EventInfo)
   if (!isempty(Title))
      strn0cpy(file, EventInfo->GetTitle(), sizeof(file));
   summary = NULL;
-  const char *Subtitle = EventInfo->GetSubtitle();
-  if (isempty(Subtitle))
-     Subtitle = "";
-  const char *Summary = EventInfo->GetExtendedDescription();
-  if (isempty(Summary))
-     Summary = "";
-  if (*Subtitle || *Summary) {
-     asprintf(&summary, "%s%s%s", Subtitle, (*Subtitle && *Summary) ? "\n\n" : "", Summary);
-     char *p = summary;
-     while (*p) {
-           if (*p == '\n')
-              *p = '|';
-           p++;
-           }
-     }
 }
 
 cTimer::~cTimer()
@@ -815,6 +800,7 @@ cSetup::cSetup(void)
   PrimaryLimit = 0;
   DefaultPriority = 50;
   DefaultLifetime = 50;
+  UseSubtitle = 1;
   VideoFormat = VIDEO_FORMAT_4_3;
   ChannelInfoPos = 0;
   OSDwidth = 52;
@@ -851,6 +837,7 @@ bool cSetup::Parse(char *s)
      else if (!strcasecmp(Name, "PrimaryLimit"))        PrimaryLimit       = atoi(Value);
      else if (!strcasecmp(Name, "DefaultPriority"))     DefaultPriority    = atoi(Value);
      else if (!strcasecmp(Name, "DefaultLifetime"))     DefaultLifetime    = atoi(Value);
+     else if (!strcasecmp(Name, "UseSubtitle"))         UseSubtitle        = atoi(Value);
      else if (!strcasecmp(Name, "VideoFormat"))         VideoFormat        = atoi(Value);
      else if (!strcasecmp(Name, "ChannelInfoPos"))      ChannelInfoPos     = atoi(Value);
      else if (!strcasecmp(Name, "OSDwidth"))            OSDwidth           = atoi(Value);
@@ -922,6 +909,7 @@ bool cSetup::Save(const char *FileName)
         fprintf(f, "PrimaryLimit       = %d\n", PrimaryLimit);
         fprintf(f, "DefaultPriority    = %d\n", DefaultPriority);
         fprintf(f, "DefaultLifetime    = %d\n", DefaultLifetime);
+        fprintf(f, "UseSubtitle        = %d\n", UseSubtitle);
         fprintf(f, "VideoFormat        = %d\n", VideoFormat);
         fprintf(f, "ChannelInfoPos     = %d\n", ChannelInfoPos);
         fprintf(f, "OSDwidth           = %d\n", OSDwidth);

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.38 2001/09/01 15:20:45 kls Exp $
+ * $Id: i18n.c 1.39 2001/09/02 15:17:33 kls Exp $
  *
  * Slovenian translations provided by Miha Setina <mihasetina@softhome.net>
  * Italian   translations provided by Alberto Carraro <bertocar@tin.it>
@@ -856,6 +856,15 @@ const tPhrase Phrases[] = {
     "Validade por defeito",
     "Durée de vie par défaut",
     "Normal levetid (Timer)",
+  },
+  { "UseSubtitle",
+    "Subtitle verwenden",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
   },
   { "VideoFormat",
     "Video Format",

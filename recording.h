@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 1.15 2001/09/01 12:58:02 kls Exp $
+ * $Id: recording.h 1.16 2001/09/02 11:35:56 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -39,7 +39,7 @@ public:
   time_t start;
   int priority;
   int lifetime;
-  cRecording(cTimer *Timer);
+  cRecording(cTimer *Timer, const char *Subtitle, const char *Summary);
   cRecording(const char *FileName);
   ~cRecording();
   const char *FileName(void);

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.113 2001/09/02 10:00:40 kls Exp $
+ * $Id: menu.c 1.114 2001/09/02 15:04:41 kls Exp $
  */
 
 #include "menu.h"
@@ -1727,6 +1727,7 @@ void cMenuSetup::Set(void)
   Add(new cMenuEditIntItem( tr("PrimaryLimit"),       &data.PrimaryLimit, 0, MAXPRIORITY));
   Add(new cMenuEditIntItem( tr("DefaultPriority"),    &data.DefaultPriority, 0, MAXPRIORITY));
   Add(new cMenuEditIntItem( tr("DefaultLifetime"),    &data.DefaultLifetime, 0, MAXLIFETIME));
+  Add(new cMenuEditBoolItem(tr("UseSubtitle"),        &data.UseSubtitle));
   Add(new cMenuEditBoolItem(tr("VideoFormat"),        &data.VideoFormat, "4:3", "16:9"));
   Add(new cMenuEditBoolItem(tr("ChannelInfoPos"),     &data.ChannelInfoPos, tr("bottom"), tr("top")));
   Add(new cMenuEditIntItem( tr("OSDwidth"),           &data.OSDwidth, MINOSDWIDTH, MAXOSDWIDTH));
@@ -2100,12 +2101,14 @@ cRecordControl::cRecordControl(cDvbApi *DvbApi, cTimer *Timer)
   timer->SetPending(true);
   timer->SetRecording(true);
   if (Channels.SwitchTo(timer->channel, dvbApi)) {
+     const char *Subtitle = NULL;
+     const char *Summary = NULL;
      if (GetEventInfo()) {
-        //XXX this is in preparation for storing recordings in subdirectories and giving them the name of the Subtitle
-        dsyslog(LOG_INFO, "Title: '%s' Subtitle: '%s'", eventInfo->GetTitle(), eventInfo->GetSubtitle());//XXX
-        //XXX modify timer's name and summary, mark it as modified (revert later when stopping)
+        dsyslog(LOG_INFO, "Title: '%s' Subtitle: '%s'", eventInfo->GetTitle(), eventInfo->GetSubtitle());
+        Subtitle = eventInfo->GetSubtitle();
+        Summary = eventInfo->GetExtendedDescription();
         }
-     cRecording Recording(timer);
+     cRecording Recording(timer, Subtitle, Summary);
      if (dvbApi->StartRecord(Recording.FileName(), Channels.GetByNumber(timer->channel)->ca, timer->priority))
         Recording.WriteSummary();
      Interface->DisplayRecording(dvbApi->CardIndex(), true);

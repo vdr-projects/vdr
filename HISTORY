@@ -701,3 +701,18 @@ Video Disk Recorder Revision History
   been chosen since the file system's directory delimiter '/' may be part of
   a regular programme name (showing the directory hierarchy in the "Recordings"
   menu will follow later).
+- Repeating timers now create recordings that contain the 'Subtitle' information
+  from the EPG data in their file name. Typically (on tv stations that care
+  about their viewers) this contains the episode title of a series. The
+  subtitle is appended to the timer's file name, separated by a '~' character,
+  so that it results in all recordings of this timer being collected in a
+  common subdirectory. You can disable this with the 'UseSubtitle' parameter
+  in the "Setup" menu.
+- The summary information is now taken from the EPG data at the actual time of
+  recording (no longer at the time the timer is created in the "Schedule" menu).
+  If a timer already has summary data, that data will be used. If you have
+  repeating timers in your 'timers.conf', you may want to make sure they do
+  NOT contain any summary information (that's the last field in the timer
+  definitions). Use your favourite text editor to delete that information.
+  That way every recording will store the actual summary data at the time of
+  the recording.
