@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.7 2000/04/30 10:22:13 kls Exp $
+ * $Id: recording.c 1.8 2000/05/13 16:16:56 kls Exp $
  */
 
 #define _GNU_SOURCE
@@ -61,7 +61,6 @@ void AssertFreeDiskSpace(void)
   // it will get removed during the next call.
   static time_t LastFreeDiskCheck = 0;
   if (time(NULL) - LastFreeDiskCheck > DISKCHECKDELTA) {
-     LastFreeDiskCheck = time(NULL);
      if (LowDiskSpace()) {
         // Remove the oldest file that has been "deleted":
         cRecordings Recordings;
@@ -97,6 +96,7 @@ void AssertFreeDiskSpace(void)
         // Unable to free disk space, but there's nothing we can do about that...
         esyslog(LOG_ERR, "low disk space, but no recordings to delete");
         }
+     LastFreeDiskCheck = time(NULL);
      }
 }
 
