@@ -3426,3 +3426,5 @@ Video Disk Recorder Revision History
   Marco Schlüßler).
 - Replaced the call to system("sync") in SpinUpDisk() with fdatasync(f) to avoid
   problems on NPTL systems (thanks to Chris Warren for pointing this out).
+- Increased POLLTIMEOUTS_BEFORE_DEVICECLEAR in transfer.c to 6 to avoid problems
+  with the larger buffer reserve (thanks to Marco Schlüßler).

@@ -4,13 +4,13 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: transfer.c 1.27 2005/02/12 15:54:06 kls Exp $
+ * $Id: transfer.c 1.28 2005/02/19 14:38:55 kls Exp $
  */
 
 #include "transfer.h"
 
 #define TRANSFERBUFSIZE  MEGABYTE(2)
-#define POLLTIMEOUTS_BEFORE_DEVICECLEAR 3
+#define POLLTIMEOUTS_BEFORE_DEVICECLEAR 6
 
 // --- cTransfer -------------------------------------------------------------
 

@@ -1149,6 +1149,8 @@ Marco Schlüßler <marco@lordzodiac.de>
  for reporting a missing reset of the 'repacker' in cTS2PES::Clear()
  for avoiding unnecessary calls to SetPid() in cDvbDevice::SetAudioTrackDevice()
  for fixing calling cStatus::MsgChannelSwitch() in cDevice::SetChannel()
+ for increasing POLLTIMEOUTS_BEFORE_DEVICECLEAR in transfer.c to 6 to avoid problems
+ with the larger buffer reserve
 
 Jürgen Schmitz <j.schmitz@web.de>
  for reporting a bug in displaying the current channel when switching via the SVDRP
