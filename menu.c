@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.44 2000/11/11 09:58:12 kls Exp $
+ * $Id: menu.c 1.45 2000/11/11 12:55:10 kls Exp $
  */
 
 #include "menu.h"
@@ -909,16 +909,21 @@ eOSState cMenuEditTimer::ProcessKey(eKeys Key)
   eOSState state = cOsdMenu::ProcessKey(Key);
 
   if (state == osUnknown) {
-     if (Key == kOk) {
-        if (!*data.file)
-           strcpy(data.file, Channels.GetChannelNameByNumber(data.channel));
-        if (timer && memcmp(timer, &data, sizeof(data)) != 0) {
-           *timer = data;
-           Timers.Save();
-           isyslog(LOG_INFO, "timer %d modified (%s)", timer->Index() + 1, timer->active ? "active" : "inactive");
-           }
-        state = osBack;
-        }
+     switch (Key) {
+       case kOk:     if (!*data.file)
+                        strcpy(data.file, Channels.GetChannelNameByNumber(data.channel));
+                     if (timer && memcmp(timer, &data, sizeof(data)) != 0) {
+                        *timer = data;
+                        Timers.Save();
+                        isyslog(LOG_INFO, "timer %d modified (%s)", timer->Index() + 1, timer->active ? "active" : "inactive");
+                        }
+                     return osBack;
+       case kRed:
+       case kGreen:
+       case kYellow:
+       case kBlue:   return osContinue;
+       default: break;
+       }
      }
   return state;
 }
@@ -1208,9 +1213,16 @@ eOSState cMenuWhatsOn::Record(void)
   cMenuWhatsOnItem *item = (cMenuWhatsOnItem *)Get(Current());
   if (item) {      
      cTimer *timer = new cTimer(item->eventInfo);
-     Timers.Add(timer);
-     Timers.Save();
-     isyslog(LOG_INFO, "timer %d added", timer->Index() + 1);
+     cTimer *t = Timers.GetTimer(timer);
+     if (!t) {
+        Timers.Add(timer);
+        Timers.Save();
+        isyslog(LOG_INFO, "timer %d added", timer->Index() + 1);
+        }
+     else {
+        delete timer;
+        timer = t;
+        }
      return AddSubMenu(new cMenuEditTimer(timer->Index(), true));
      }
   return osContinue;
@@ -1314,9 +1326,16 @@ eOSState cMenuSchedule::Record(void)
   cMenuScheduleItem *item = (cMenuScheduleItem *)Get(Current());
   if (item) {      
      cTimer *timer = new cTimer(item->eventInfo);
-     Timers.Add(timer);
-     Timers.Save();
-     isyslog(LOG_INFO, "timer %d added", timer->Index() + 1);
+     cTimer *t = Timers.GetTimer(timer);
+     if (!t) {
+        Timers.Add(timer);
+        Timers.Save();
+        isyslog(LOG_INFO, "timer %d added", timer->Index() + 1);
+        }
+     else {
+        delete timer;
+        timer = t;
+        }
      return AddSubMenu(new cMenuEditTimer(timer->Index(), true));
      }
   return osContinue;

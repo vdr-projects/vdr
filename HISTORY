@@ -276,3 +276,5 @@ Video Disk Recorder Revision History
   add new languages).
 - Fixed learning keys on the PC keyboard (display oscillated).
 - Fixed a timing problem with OSD refresh and SVDRP.
+- Avoiding multiple definitions of the same timer in the "Schedule" menu (this
+  could happen when pressing the "Red" button while editing the timer).
