@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.23 2002/10/05 15:18:39 kls Exp $
+ * $Id: device.c 1.24 2002/10/06 11:31:52 kls Exp $
  */
 
 #include "device.h"
@@ -293,7 +293,9 @@ bool cDevice::SwitchChannel(const cChannel *Channel, bool LiveView)
   for (int i = 3; i--;) {
       switch (SetChannel(Channel, LiveView)) {
         case scrOk:           return true;
-        case scrNotAvailable: return false;
+        case scrNotAvailable: if (Interface)
+                                 Interface->Error(tr("Channel not available!"));
+                              return false;
         case scrNoTransfer:   if (Interface)
                                  Interface->Error(tr("Can't start Transfer Mode!"));
                               return false;
@@ -311,21 +313,24 @@ bool cDevice::SwitchChannel(int Direction)
   if (Direction) {
      int n = CurrentChannel() + Direction;
      int first = n;
-     for (;;) {
-         cChannel *channel = Channels.GetByNumber(n);
-         if (!channel)
-            break;
-         if (PrimaryDevice()->SwitchChannel(channel, true)) {
-            result = true;
-            break;
-            }
-         n += Direction;
-         }
-     int d = n - first;
-     if (abs(d) == 1)
-        dsyslog("skipped channel %d", first);
-     else if (d)
-        dsyslog("skipped channels %d..%d", first, n - sgn(d));
+     cChannel *channel;
+     while ((channel = Channels.GetByNumber(n)) != NULL) {
+           // try only channels which are currently available
+           if (PrimaryDevice()->ProvidesChannel(channel, Setup.PrimaryLimit) || GetDevice(channel, 0))
+              break;
+           n += Direction;
+           }
+     if (channel) {
+        int d = n - first;
+        if (abs(d) == 1)
+           dsyslog("skipped channel %d", first);
+        else if (d)
+           dsyslog("skipped channels %d..%d", first, n - sgn(d));
+        if (PrimaryDevice()->SwitchChannel(channel, true))
+           result = true;
+        }
+     else if (n != first && Interface)
+        Interface->Error(tr("Channel not available!"));
      }
   return result;
 }

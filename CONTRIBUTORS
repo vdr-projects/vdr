@@ -152,6 +152,7 @@ Stefan Huelswitt <huels@iname.com>
  for making cStatus::MsgChannelSwitch() only be called if a channel is actually going to
  be switched or has actually been switched successfully
  for adding a missing StripAudioPackets() to cDvbPlayer::Action()
+ for improving skipping channels that are (currently) not available
 
 Ulrich Röder <roeder@efr-net.de>
  for pointing out that there are channels that have a symbol rate higher than

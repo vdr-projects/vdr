@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.94 2002/10/06 09:55:08 kls Exp $
+ * $Id: i18n.c 1.95 2002/10/06 11:31:18 kls Exp $
  *
  * Translations provided by:
  *
@@ -1435,6 +1435,22 @@ const tI18nPhrase Phrases[] = {
     "Det finns ingen ledig DVB enhet för inspelning!",
     "Nu mai sunt dispozitive DVB pentru inregistrare!",
     "Nincs szabad DVB kártya a felvételhez!",
+  },
+  { "Channel not available!",
+    "Kanal nicht verfügbar!",
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
   },
   { "Channel locked (recording)!",
     "Kanal blockiert (zeichnet auf)!",

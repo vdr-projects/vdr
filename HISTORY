@@ -1574,3 +1574,5 @@ Video Disk Recorder Revision History
 - Removed some unnecessary #includes from eit.c and changed cMenuRecordings::Del()
   to cMenuRecordings::Delete() to avoid warnings in gcc-3.2 (thanks to Andreas
   Schultz for pointing this out).
+- Improved skipping channels that are (currently) not available (thanks to Stefan
+  Huelswitt).
