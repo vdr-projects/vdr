@@ -4,15 +4,11 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 1.3 2003/02/02 15:49:52 kls Exp $
+ * $Id: ci.c 1.5 2003/02/09 14:47:57 kls Exp $
  */
 
 /* XXX TODO
-- handle slots separately
-- use return values
 - update CA descriptors in case they change
-- dynamically react on CAM insert/remove
-- implement CAM reset (per slot)
 XXX*/
 
 #include "ci.h"
@@ -215,7 +211,7 @@ int cTPDU::Write(int fd)
 
 int cTPDU::Read(int fd)
 {
-  size = read(fd, data, sizeof(data));
+  size = safe_read(fd, data, sizeof(data));
   if (size < 0) {
      esyslog("ERROR: %m");
      size = 0;
@@ -229,15 +225,15 @@ void cTPDU::Dump(bool Outgoing)
 {
   if (DumpTPDUDataTransfer) {
 #define MAX_DUMP 256
-     printf("%s ", Outgoing ? "-->" : "<--");
+     fprintf(stderr, "%s ", Outgoing ? "-->" : "<--");
      for (int i = 0; i < size && i < MAX_DUMP; i++)
-         printf("%02X ", data[i]);
-     printf("%s\n", size >= MAX_DUMP ? "..." : "");
+         fprintf(stderr, "%02X ", data[i]);
+     fprintf(stderr, "%s\n", size >= MAX_DUMP ? "..." : "");
      if (!Outgoing) {
-        printf("   ");
+        fprintf(stderr, "   ");
         for (int i = 0; i < size && i < MAX_DUMP; i++)
-            printf("%2c ", isprint(data[i]) ? data[i] : '.');
-        printf("%s\n", size >= MAX_DUMP ? "..." : "");
+            fprintf(stderr, "%2c ", isprint(data[i]) ? data[i] : '.');
+        fprintf(stderr, "%s\n", size >= MAX_DUMP ? "..." : "");
         }
      }
 }
@@ -288,6 +284,7 @@ private:
 public:
   cCiTransportConnection(void);
   ~cCiTransportConnection();
+  int Slot(void) const { return slot; }
   int SendData(int Length, const uint8_t *Data);
   int RecvData(void);
   const uint8_t *Data(int &Length);
@@ -324,15 +321,15 @@ int cCiTransportConnection::SendTPDU(uint8_t Tag, int Length, const uint8_t *Dat
   return TPDU.Write(fd);
 }
 
+#define CAM_READ_TIMEOUT  3500 // ms
+
 int cCiTransportConnection::RecvTPDU(void)
 {
-  //XXX poll, timeout???
   struct pollfd pfd[1];
   pfd[0].fd = fd;
   pfd[0].events = POLLIN;
   lastResponse = ERROR;
-  if (poll(pfd, 1, 3500/*XXX*/) && (pfd[0].revents & POLLIN))//XXX
-  if (tpdu->Read(fd) == OK && tpdu->Tcid() == tcid) {
+  if (poll(pfd, 1, CAM_READ_TIMEOUT) && (pfd[0].revents & POLLIN) && tpdu->Read(fd) == OK && tpdu->Tcid() == tcid) {
      switch (state) {
        case stIDLE:     break;
        case stCREATION: if (tpdu->Tag() == T_CTC_REPLY) {
@@ -363,6 +360,10 @@ int cCiTransportConnection::RecvTPDU(void)
                         break;
        }
      }
+  else {
+     esyslog("ERROR: CAM: Read failed: slot %d, tcid %d\n", slot, tcid);
+     Init(-1, slot, tcid);
+     }
   return lastResponse;
 }
 
@@ -385,11 +386,8 @@ int cCiTransportConnection::SendData(int Length, const uint8_t *Data)
 
 int cCiTransportConnection::RecvData(void)
 {
-  if (SendTPDU(T_RCV) == OK) {
-     if (RecvTPDU() == OK) {
-        //XXX
-        }
-     }
+  if (SendTPDU(T_RCV) == OK)
+     return RecvTPDU();
   return ERROR;
 }
 
@@ -398,12 +396,26 @@ const uint8_t *cCiTransportConnection::Data(int &Length)
   return tpdu->Data(Length);
 }
 
+#define MAX_CONNECT_RETRIES  20
+
 int cCiTransportConnection::CreateConnection(void)
 {
   if (state == stIDLE) {
      if (SendTPDU(T_CREATE_TC) == OK) {
         state = stCREATION;
-        return OK;
+        if (RecvTPDU() == T_CTC_REPLY)
+           return OK;
+        // the following is a workaround for CAMs that don't quite follow the specs...
+        else {
+           for (int i = 0; i < MAX_CONNECT_RETRIES; i++) {
+               dsyslog("CAM: retrying to establish connection");
+               if (RecvTPDU() == T_CTC_REPLY) {
+                  dsyslog("CAM: connection established");
+                  return OK;
+                  }
+               }
+           return ERROR;
+           }
         }
      }
   return ERROR;
@@ -412,9 +424,8 @@ int cCiTransportConnection::CreateConnection(void)
 int cCiTransportConnection::Poll(void)
 {
   if (state == stACTIVE) {
-     if (SendTPDU(T_DATA_LAST) == OK) {
+     if (SendTPDU(T_DATA_LAST) == OK)
         return RecvTPDU();
-        }
      }
   return ERROR;
 }
@@ -428,11 +439,12 @@ private:
   int fd;
   int numSlots;
   cCiTransportConnection tc[MAX_CI_CONNECT];
-  bool ResetSlot(int Slot);
 public:
   cCiTransportLayer(int Fd, int NumSlots);
-  cCiTransportConnection *NewConnection(void);
-  int Process(void);
+  cCiTransportConnection *NewConnection(int Slot);
+  bool ResetSlot(int Slot);
+  bool ModuleReady(int Slot);
+  cCiTransportConnection *Process(int Slot);
   };
 
 cCiTransportLayer::cCiTransportLayer(int Fd, int NumSlots)
@@ -441,46 +453,28 @@ cCiTransportLayer::cCiTransportLayer(int Fd, int NumSlots)
   numSlots = NumSlots;
   for (int s = 0; s < numSlots; s++)
       ResetSlot(s);
-  for (int i = 0; i < MAX_CI_CONNECT; i++)
-      tc[i].Init(fd, 0/*XXX*/, i + 1);
 }
 
-cCiTransportConnection *cCiTransportLayer::NewConnection(void)
+cCiTransportConnection *cCiTransportLayer::NewConnection(int Slot)
 {
   for (int i = 0; i < MAX_CI_CONNECT; i++) {
       if (tc[i].State() == stIDLE) {
-         if (tc[i].CreateConnection() == OK) {
-            if (tc[i].RecvTPDU() == T_CTC_REPLY)
-               return &tc[i];
-            }
+         dbgprotocol("Creating connection: slot %d, tcid %d\n", Slot, i + 1);
+         tc[i].Init(fd, Slot, i + 1);
+         if (tc[i].CreateConnection() == OK)
+            return &tc[i];
          break;
          }
       }
   return NULL;
 }
 
-#define CA_RESET_TIMEOUT  3 // seconds
-
 bool cCiTransportLayer::ResetSlot(int Slot)
 {
   dbgprotocol("Resetting slot %d...", Slot);
-  ca_slot_info_t sinfo;
-  sinfo.num = Slot;
   if (ioctl(fd, CA_RESET, 1 << Slot) != -1) {
-     time_t t0 = time(NULL);
-     do {
-        if (ioctl(fd, CA_GET_SLOT_INFO, &sinfo) != -1) {
-           ioctl(fd, CA_GET_SLOT_INFO, &sinfo);
-           if ((sinfo.flags & CA_CI_MODULE_READY) != 0) {
-              dbgprotocol("ok.\n");
-              return true;
-              }
-           }
-        else {
-           esyslog("ERROR: can't get info on CAM slot %d: %m", Slot);
-           break;
-           }
-        } while (time(NULL) - t0 < CA_RESET_TIMEOUT);
+     dbgprotocol("ok.\n");
+     return true;
      }
   else
      esyslog("ERROR: can't reset CAM slot %d: %m", Slot);
@@ -488,35 +482,55 @@ bool cCiTransportLayer::ResetSlot(int Slot)
   return false;
 }
 
-int cCiTransportLayer::Process(void)
+bool cCiTransportLayer::ModuleReady(int Slot)
+{
+  ca_slot_info_t sinfo;
+  sinfo.num = Slot;
+  if (ioctl(fd, CA_GET_SLOT_INFO, &sinfo) != -1)
+     return sinfo.flags & CA_CI_MODULE_READY;
+  else
+     esyslog("ERROR: can't get info on CAM slot %d: %m", Slot);
+  return false;
+}
+
+cCiTransportConnection *cCiTransportLayer::Process(int Slot)
 {
   for (int i = 0; i < MAX_CI_CONNECT; i++) {
       cCiTransportConnection *Tc = &tc[i];
-      if (Tc->State() == stACTIVE) {
-         if (!Tc->DataAvailable()) {
-            if (Tc->Poll() != OK)
-               ;//XXX continue;
-            }
-         switch (Tc->LastResponse()) {
-           case T_REQUEST_TC:
-                //XXX
+      if (Tc->Slot() == Slot) {
+         switch (Tc->State()) {
+           case stCREATION:
+           case stACTIVE:
+                if (!Tc->DataAvailable()) {
+                   if (Tc->Poll() != OK)
+                      ;//XXX continue;
+                   }
+                switch (Tc->LastResponse()) {
+                  case T_REQUEST_TC:
+                       //XXX
+                       break;
+                  case T_DATA_MORE:
+                  case T_DATA_LAST:
+                  case T_CTC_REPLY:
+                  case T_SB:
+                       if (Tc->DataAvailable())
+                          Tc->RecvData();
+                       break;
+                  case TIMEOUT:
+                  case ERROR:
+                  default:
+                       //XXX Tc->state = stIDLE;//XXX Init()???
+                       return NULL;
+                       break;
+                  }
+                //XXX this will only work with _one_ transport connection per slot!
+                return Tc;
                 break;
-           case T_DATA_MORE:
-           case T_DATA_LAST:
-           case T_CTC_REPLY:
-           case T_SB:
-                if (Tc->DataAvailable())
-                   Tc->RecvData();
-                break;
-           case TIMEOUT:
-           case ERROR:
-           default:
-                //XXX Tc->state = stIDLE;//XXX Init()???
-                break;
+           default: ;
            }
          }
       }
-  return OK;
+  return NULL;
 }
 
 // -- cCiSession -------------------------------------------------------------
@@ -608,6 +622,7 @@ protected:
 public:
   cCiSession(int SessionId, int ResourceId, cCiTransportConnection *Tc);
   virtual ~cCiSession();
+  const cCiTransportConnection *Tc(void) { return tc; }
   int SessionId(void) { return sessionId; }
   int ResourceId(void) { return resourceId; }
   virtual bool Process(int Length = 0, const uint8_t *Data = NULL);
@@ -1261,9 +1276,7 @@ cCiHandler::cCiHandler(int Fd, int NumSlots)
   for (int i = 0; i < MAX_CI_SESSION; i++)
       sessions[i] = NULL;
   tpl = new cCiTransportLayer(Fd, numSlots);
-  tc = tpl->NewConnection();
-  if (!tc)
-     isyslog("CAM: no CAM detected");
+  tc = NULL;
 }
 
 cCiHandler::~cCiHandler()
@@ -1281,14 +1294,9 @@ cCiHandler *cCiHandler::CreateCiHandler(const char *FileName)
      if (ioctl(fd_ca, CA_GET_CAP, &Caps) == 0) {
         int NumSlots = Caps.slot_num;
         if (NumSlots > 0) {
-           dsyslog("CAM: found %d CAM slots", NumSlots);
-           if (Caps.slot_type == CA_CI_LINK) {
-              cCiHandler *CiHandler = new cCiHandler(fd_ca, NumSlots);
-              // drive the initial data exchange:
-              for (int i = 0; i < 20; i++) //XXX make this dynamic???
-                  CiHandler->Process();
-              return CiHandler;
-              }
+           //XXX dsyslog("CAM: found %d CAM slots", NumSlots); // TODO let's do this only once we can be sure that there _really_ is a CAM adapter!
+           if (Caps.slot_type == CA_CI_LINK)
+              return new cCiHandler(fd_ca, NumSlots);
            else
               esyslog("ERROR: CAM doesn't support link layer interface");
            }
@@ -1320,7 +1328,7 @@ bool cCiHandler::Send(uint8_t Tag, int SessionId, int ResourceId, int Status)
   *(short *)p = htons(SessionId);
   p += 2;
   buffer[1] = p - buffer - 2; // length
-  return tc->SendData(p - buffer, buffer) == OK;
+  return tc && tc->SendData(p - buffer, buffer) == OK;
 }
 
 cCiSession *cCiHandler::GetSessionBySessionId(int SessionId)
@@ -1332,10 +1340,10 @@ cCiSession *cCiHandler::GetSessionBySessionId(int SessionId)
   return NULL;
 }
 
-cCiSession *cCiHandler::GetSessionByResourceId(int ResourceId)
+cCiSession *cCiHandler::GetSessionByResourceId(int ResourceId, int Slot)
 {
   for (int i = 0; i < MAX_CI_SESSION; i++) {
-      if (sessions[i] && sessions[i]->ResourceId() == ResourceId)
+      if (sessions[i] && sessions[i]->Tc()->Slot() == Slot && sessions[i]->ResourceId() == ResourceId)
          return sessions[i];
       }
   return NULL;
@@ -1343,7 +1351,7 @@ cCiSession *cCiHandler::GetSessionByResourceId(int ResourceId)
 
 cCiSession *cCiHandler::CreateSession(int ResourceId)
 {
-  if (!GetSessionByResourceId(ResourceId)) {
+  if (!GetSessionByResourceId(ResourceId, tc->Slot())) {
      for (int i = 0; i < MAX_CI_SESSION; i++) {
          if (!sessions[i]) {
             switch (ResourceId) {
@@ -1403,81 +1411,107 @@ bool cCiHandler::CloseSession(int SessionId)
   return false;
 }
 
-bool cCiHandler::Process(void)
+int cCiHandler::CloseAllSessions(int Slot)
 {
-  if (tc) {
-     cMutexLock MutexLock(&mutex);
-     if (tpl->Process() == OK) {
-        int Length;
-        const uint8_t *Data = tc->Data(Length);
-        if (Data && Length > 1) {
-           switch (*Data) {
-             case ST_SESSION_NUMBER:          if (Length > 4) {
-                                                 int SessionId = ntohs(*(short *)&Data[2]);
-                                                 cCiSession *Session = GetSessionBySessionId(SessionId);
-                                                 if (Session)
-                                                    return Session->Process(Length - 4, Data + 4);
-                                                 else {
-                                                    esyslog("ERROR: unknown session id: %d", SessionId);
-                                                    return false;
-                                                    }
-                                                 }
-                                              break;
-             case ST_OPEN_SESSION_REQUEST:    return OpenSession(Length, Data);
-             case ST_CLOSE_SESSION_REQUEST:   if (Length == 4)
-                                                 return CloseSession(ntohs(*(short *)&Data[2]));
-                                              break;
-             case ST_CREATE_SESSION_RESPONSE: //XXX fall through to default
-             case ST_CLOSE_SESSION_RESPONSE:  //XXX fall through to default
-             default: esyslog("ERROR: unknown session tag: %02X", *Data);
-                      return false;
-             }
-           return true;
-           }
-        for (int i = 0; i < MAX_CI_SESSION; i++) {
-            if (sessions[i])
-               sessions[i]->Process();//XXX retval???
-            }
-        }
-     }
-  return false;
+  int result = 0;
+  for (int i = 0; i < MAX_CI_SESSION; i++) {
+      if (sessions[i] && sessions[i]->Tc()->Slot() == Slot) {
+         CloseSession(sessions[i]->SessionId());
+         result++;
+         }
+      }
+  return result;
 }
 
-bool cCiHandler::EnterMenu(void)
+void cCiHandler::Process(void)
 {
   cMutexLock MutexLock(&mutex);
-  //XXX slots???
-  cCiApplicationInformation *api = (cCiApplicationInformation *)GetSessionByResourceId(RI_APPLICATION_INFORMATION);
+  for (int Slot = 0; Slot < numSlots; Slot++) {
+      tc = tpl->Process(Slot);
+      if (tc) {
+         int Length;
+         const uint8_t *Data = tc->Data(Length);
+         if (Data && Length > 1) {
+            switch (*Data) {
+              case ST_SESSION_NUMBER:          if (Length > 4) {
+                                                  int SessionId = ntohs(*(short *)&Data[2]);
+                                                  cCiSession *Session = GetSessionBySessionId(SessionId);
+                                                  if (Session)
+                                                     Session->Process(Length - 4, Data + 4);
+                                                  else
+                                                     esyslog("ERROR: unknown session id: %d", SessionId);
+                                                  }
+                                               break;
+              case ST_OPEN_SESSION_REQUEST:    OpenSession(Length, Data);
+                                               break;
+              case ST_CLOSE_SESSION_REQUEST:   if (Length == 4)
+                                                  CloseSession(ntohs(*(short *)&Data[2]));
+                                               break;
+              case ST_CREATE_SESSION_RESPONSE: //XXX fall through to default
+              case ST_CLOSE_SESSION_RESPONSE:  //XXX fall through to default
+              default: esyslog("ERROR: unknown session tag: %02X", *Data);
+              }
+            }
+         }
+      else {
+         if (!CloseAllSessions(Slot)) {
+            if (tpl->ModuleReady(Slot)) {
+               dbgprotocol("Module ready in slot %d\n", Slot);
+               tpl->NewConnection(Slot);
+               }
+            }
+         }
+      }
+  for (int i = 0; i < MAX_CI_SESSION; i++) {
+      if (sessions[i])
+         sessions[i]->Process();
+      }
+}
+
+bool cCiHandler::EnterMenu(int Slot)
+{
+  cMutexLock MutexLock(&mutex);
+  cCiApplicationInformation *api = (cCiApplicationInformation *)GetSessionByResourceId(RI_APPLICATION_INFORMATION, Slot);
   return api ? api->EnterMenu() : false;
 }
 
 cCiMenu *cCiHandler::GetMenu(void)
 {
   cMutexLock MutexLock(&mutex);
-  //XXX slots???
-  cCiMMI *mmi = (cCiMMI *)GetSessionByResourceId(RI_MMI);
-  return mmi ? mmi->Menu() : NULL;
+  for (int Slot = 0; Slot < numSlots; Slot++) {
+      cCiMMI *mmi = (cCiMMI *)GetSessionByResourceId(RI_MMI, Slot);
+      if (mmi)
+         return mmi->Menu();
+      }
+  return NULL;
 }
 
 cCiEnquiry *cCiHandler::GetEnquiry(void)
 {
   cMutexLock MutexLock(&mutex);
-  //XXX slots???
-  cCiMMI *mmi = (cCiMMI *)GetSessionByResourceId(RI_MMI);
-  return mmi ? mmi->Enquiry() : NULL;
+  for (int Slot = 0; Slot < numSlots; Slot++) {
+      cCiMMI *mmi = (cCiMMI *)GetSessionByResourceId(RI_MMI, Slot);
+      if (mmi)
+         return mmi->Enquiry();
+      }
+  return NULL;
 }
 
 bool cCiHandler::SetCaPmt(cCiCaPmt &CaPmt)
 {
   cMutexLock MutexLock(&mutex);
-  //XXX slots???
-  cCiConditionalAccessSupport *cas = (cCiConditionalAccessSupport *)GetSessionByResourceId(RI_CONDITIONAL_ACCESS_SUPPORT);
-  return cas ? cas->SendPMT(CaPmt) : false;
+  bool result = false;
+  for (int Slot = 0; Slot < numSlots; Slot++) {
+      cCiConditionalAccessSupport *cas = (cCiConditionalAccessSupport *)GetSessionByResourceId(RI_CONDITIONAL_ACCESS_SUPPORT, Slot);
+      if (cas)
+         result |= cas->SendPMT(CaPmt);
+      }
+  return result;
 }
 
-bool cCiHandler::Reset(void)
+bool cCiHandler::Reset(int Slot)
 {
   cMutexLock MutexLock(&mutex);
-  //XXX slots???
-  return false;//XXX not yet implemented
+  CloseAllSessions(Slot);
+  return tpl->ResetSlot(Slot);
 }

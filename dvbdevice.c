@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.42 2003/02/02 15:31:31 kls Exp $
+ * $Id: dvbdevice.c 1.44 2003/02/09 12:41:14 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -238,6 +238,7 @@ bool cDvbTuner::SetFrontend(void)
 
 void cDvbTuner::Action(void)
 {
+  time_t StartTime = time(NULL);
   dsyslog("tuner thread started on device %d (pid=%d)", cardIndex + 1, getpid());
   active = true;
   while (active) {
@@ -258,24 +259,28 @@ void cDvbTuner::Action(void)
               continue;
               }
            }
-        if (ciHandler && !caSet) {//XXX TODO update in case the CA descriptors have changed
-           uchar buffer[2048];
-           int length = cSIProcessor::GetCaDescriptors(channel.Source(), channel.Frequency(), channel.Sid(), sizeof(buffer), buffer);
-           if (length > 0) {
-              cCiCaPmt CaPmt(channel.Sid());
-              CaPmt.AddCaDescriptor(length, buffer);
-              if (channel.Vpid())
-                 CaPmt.AddPid(channel.Vpid());
-              if (channel.Apid1())
-                 CaPmt.AddPid(channel.Apid1());
-              if (channel.Apid2())
-                 CaPmt.AddPid(channel.Apid2());
-              if (channel.Dpid1())
-                 CaPmt.AddPid(channel.Dpid1());
-              caSet = ciHandler->SetCaPmt(CaPmt);
+        if (ciHandler) {
+           ciHandler->Process();
+           if (!caSet) {//XXX TODO update in case the CA descriptors have changed
+              uchar buffer[2048];
+              int length = cSIProcessor::GetCaDescriptors(channel.Source(), channel.Frequency(), channel.Sid(), sizeof(buffer), buffer);
+              if (length > 0) {
+                 cCiCaPmt CaPmt(channel.Sid());
+                 CaPmt.AddCaDescriptor(length, buffer);
+                 if (channel.Vpid())
+                    CaPmt.AddPid(channel.Vpid());
+                 if (channel.Apid1())
+                    CaPmt.AddPid(channel.Apid1());
+                 if (channel.Apid2())
+                    CaPmt.AddPid(channel.Apid2());
+                 if (channel.Dpid1())
+                    CaPmt.AddPid(channel.Dpid1());
+                 caSet = ciHandler->SetCaPmt(CaPmt);
+                 }
               }
            }
-        newSet.TimedWait(mutex, 1000);
+        // in the beginning we loop more often to let the CAM connection start up fast
+        newSet.TimedWait(mutex, (ciHandler && (time(NULL) - StartTime < 20)) ? 100 : 1000);
         }
   dsyslog("tuner thread ended on device %d (pid=%d)", cardIndex + 1, getpid());
 }
@@ -617,10 +622,12 @@ bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
   StartTransferMode = false;
 #endif
 
-  // Stop setting system time:
+  // Stop SI filtering:
 
-  if (siProcessor)
+  if (siProcessor) {
      siProcessor->SetCurrentTransponder(0, 0);
+     siProcessor->SetStatus(false);
+     }
 
   // Turn off live PIDs if necessary:
 
@@ -669,10 +676,12 @@ bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
   else if (StartTransferMode)
      cControl::Launch(new cTransferControl(this, Channel->Vpid(), Channel->Apid1(), Channel->Apid2(), Channel->Dpid1(), Channel->Dpid2()));
 
-  // Start setting system time:
+  // Start SI filtering:
 
-  if (siProcessor)
+  if (siProcessor) {
      siProcessor->SetCurrentTransponder(Channel->Source(), Channel->Frequency());
+     siProcessor->SetStatus(true);
+     }
 
   return true;
 }

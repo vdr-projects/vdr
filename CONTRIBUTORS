@@ -446,6 +446,7 @@ Oliver Endriss <o.endriss@gmx.de>
 Reinhard Walter Buchner <rw.buchner@freenet.de>
  for adding some satellites to 'sources.conf'
  for his help in testing tuning with "Motor-DiSEqC"
+ for his help in debugging CAM support
 
 Lauri Tischler <lauri.tischler@efore.fi>
  for helping to test and debug the new channel source and DiSEqC handling

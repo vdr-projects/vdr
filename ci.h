@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.h 1.1 2003/01/06 12:31:09 kls Exp $
+ * $Id: ci.h 1.2 2003/02/09 11:44:00 kls Exp $
  */
 
 #ifndef __CI_H
@@ -86,20 +86,21 @@ private:
   int ResourceIdToInt(const uint8_t *Data);
   bool Send(uint8_t Tag, int SessionId, int ResourceId = 0, int Status = -1);
   cCiSession *GetSessionBySessionId(int SessionId);
-  cCiSession *GetSessionByResourceId(int ResourceId);
+  cCiSession *GetSessionByResourceId(int ResourceId, int Slot);
   cCiSession *CreateSession(int ResourceId);
   bool OpenSession(int Length, const uint8_t *Data);
   bool CloseSession(int SessionId);
+  int CloseAllSessions(int Slot);
   cCiHandler(int Fd, int NumSlots);
 public:
   ~cCiHandler();
   static cCiHandler *CreateCiHandler(const char *FileName);
-  bool Process(void);
-  bool EnterMenu(void);
+  void Process(void);
+  bool EnterMenu(int Slot);
   cCiMenu *GetMenu(void);
   cCiEnquiry *GetEnquiry(void);
   bool SetCaPmt(cCiCaPmt &CaPmt);
-  bool Reset(void);
+  bool Reset(int Slot);
   };
 
 #endif //__CI_H
