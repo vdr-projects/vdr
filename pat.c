@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: pat.c 1.5 2004/01/16 15:43:34 kls Exp $
+ * $Id: pat.c 1.6 2004/01/25 14:07:24 kls Exp $
  */
 
 #include "pat.h"
@@ -371,8 +371,8 @@ void cPatFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
         if (Setup.UpdateChannels >= 2) {
            Channel->SetPids(Vpid, Vpid ? Ppid : 0, Apids[0], Apids[1], Dpids[0], Dpids[1], Tpid);
            Channel->SetCaIds(CaDescriptors->CaIds());
-           Channel->SetCaDescriptors(CaDescriptorHandler.AddCaDescriptors(CaDescriptors));
            }
+        Channel->SetCaDescriptors(CaDescriptorHandler.AddCaDescriptors(CaDescriptors));
         }
      lastPmtScan = 0; // this triggers the next scan
      Channels.Unlock();
