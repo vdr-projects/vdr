@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.45 2003/02/16 10:58:59 kls Exp $
+ * $Id: dvbdevice.c 1.46 2003/02/16 15:10:39 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -73,6 +73,7 @@ private:
   cChannel channel;
   const char *diseqcCommands;
   bool active;
+  time_t startTime;
   eTunerStatus tunerStatus;
   cMutex mutex;
   cCondVar newSet;
@@ -95,6 +96,7 @@ cDvbTuner::cDvbTuner(int Fd_Frontend, int CardIndex, fe_type_t FrontendType, cCi
   diseqcCommands = NULL;
   active = false;
   tunerStatus = tsIdle;
+  startTime = time(NULL);
   Start();
 }
 
@@ -118,7 +120,9 @@ void cDvbTuner::Set(const cChannel *Channel, bool Tune)
   if (Tune)
      tunerStatus = tsSet;
   else if (tunerStatus == tsCam)
-     tunerStatus = tsLocked;
+     tunerStatus = tsTuned;
+  if (Channel->Ca())
+     startTime = time(NULL);
   newSet.Broadcast();
 }
 
@@ -237,7 +241,6 @@ bool cDvbTuner::SetFrontend(void)
 
 void cDvbTuner::Action(void)
 {
-  time_t StartTime = time(NULL);
   dsyslog("tuner thread started on device %d (pid=%d)", cardIndex + 1, getpid());
   active = true;
   while (active) {
@@ -276,8 +279,10 @@ void cDvbTuner::Action(void)
                              CaPmt.AddPid(channel.Apid2());
                           if (channel.Dpid1())
                              CaPmt.AddPid(channel.Dpid1());
-                          if (ciHandler->SetCaPmt(CaPmt))
+                          if (ciHandler->SetCaPmt(CaPmt)) {
                              tunerStatus = tsCam;
+                             startTime = 0;
+                             }
                           }
                        }
                     }
@@ -287,7 +292,7 @@ void cDvbTuner::Action(void)
               }
            }
         // in the beginning we loop more often to let the CAM connection start up fast
-        newSet.TimedWait(mutex, (ciHandler && (time(NULL) - StartTime < 20)) ? 100 : 1000);
+        newSet.TimedWait(mutex, (ciHandler && (time(NULL) - startTime < 20)) ? 100 : 1000);
         }
   dsyslog("tuner thread ended on device %d (pid=%d)", cardIndex + 1, getpid());
 }
