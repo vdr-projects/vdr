@@ -1671,7 +1671,7 @@ Video Disk Recorder Revision History
   buttons of those that have already been learned (thanks to Oliver Endriss for
   reporting this one).
 
-2002-11-01: Version 1.1.15
+2002-11-02: Version 1.1.15
 
 - Completely switched to the new CVS HEAD version of the linux-dvb driver.
   The NEWSTRUCT compile time switch is now obsolete. The required driver is now
@@ -1695,3 +1695,5 @@ Video Disk Recorder Revision History
   may want to newly create their plugins' Makefiles with the new version of this
   script, and adapt them to their individual needs (make sure you don't overwrite
   your existing plugin directory - make a backup copy first!).
+- Fixed reading EPG data via the SVDRP command PUTE (it changed the current
+  service ID).

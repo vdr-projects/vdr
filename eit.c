@@ -16,7 +16,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.c 1.58 2002/11/01 10:05:56 kls Exp $
+ * $Id: eit.c 1.59 2002/11/02 12:46:53 kls Exp $
  ***************************************************************************/
 
 #include "eit.h"
@@ -753,7 +753,7 @@ bool cSchedule::Read(FILE *f, cSchedules *Schedules)
            if (*s == 'C') {
               unsigned int uServiceID;
               if (1 == sscanf(s + 1, "%u", &uServiceID)) {
-                 cSchedule *p = (cSchedule *)Schedules->SetCurrentServiceID(uServiceID);
+                 cSchedule *p = (cSchedule *)Schedules->AddServiceID(uServiceID);
                  if (p) {
                     if (!cEventInfo::Read(f, p))
                        return false;
@@ -782,20 +782,22 @@ cSchedules::~cSchedules()
 {
 }
 /**  */
+const cSchedule *cSchedules::AddServiceID(unsigned short servid)
+{
+  const cSchedule *p = GetSchedule(servid);
+  if (!p) {
+     Add(new cSchedule(servid));
+     p = GetSchedule(servid);
+     }
+  return p;
+}
+/**  */
 const cSchedule *cSchedules::SetCurrentServiceID(unsigned short servid)
 {
-   pCurrentSchedule = GetSchedule(servid);
-   if (pCurrentSchedule == NULL)
-   {
-      Add(new cSchedule(servid));
-      pCurrentSchedule = GetSchedule(servid);
-      if (pCurrentSchedule == NULL)
-         return NULL;
-   }
-
-   uCurrentServiceID = servid;
-
-   return pCurrentSchedule;
+  pCurrentSchedule = AddServiceID(servid);
+  if (pCurrentSchedule)
+     uCurrentServiceID = servid;
+  return pCurrentSchedule;
 }
 /**  */
 const cSchedule * cSchedules::GetSchedule() const

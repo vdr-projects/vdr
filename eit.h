@@ -16,7 +16,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.h 1.19 2002/10/13 09:28:06 kls Exp $
+ * $Id: eit.h 1.20 2002/11/02 12:36:36 kls Exp $
  ***************************************************************************/
 
 #ifndef __EIT_H
@@ -112,6 +112,7 @@ private:
   const cSchedule *pCurrentSchedule;
   unsigned short uCurrentServiceID;
 protected:
+  const cSchedule *AddServiceID(unsigned short servid);
   const cSchedule *SetCurrentServiceID(unsigned short servid);
   void Cleanup();
 public:
