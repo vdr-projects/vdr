@@ -3199,3 +3199,5 @@ Video Disk Recorder Revision History
 - Fixed setting 'synced' in cRemux when recording radio channels (thanks to
   Laurence Abbott).
 - Removed the LOCK_THREAD from the LIRC thread (thanks to Ludwig Nussel).
+- Fixed genfontfile.c (sometimes the character width was wrong, and the codes were
+  shifted one too far to the left).
