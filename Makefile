@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 1.73 2004/12/18 13:39:19 kls Exp $
+# $Id: Makefile 1.74 2005/02/13 10:13:45 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -70,6 +70,10 @@ DEFINES += -D_GNU_SOURCE
 
 DEFINES += -DVIDEODIR=\"$(VIDEODIR)\"
 DEFINES += -DPLUGINDIR=\"$(PLUGINLIBDIR)\"
+
+# The version number of VDR (taken from VDR's "config.h"):
+
+VDRVERSION = $(shell grep 'define VDRVERSION ' config.h | awk '{ print $$3 }' | sed -e 's/"//g')
 
 ifdef VFAT
 # for people who want their video directory on a VFAT partition
@@ -166,7 +170,7 @@ plugins: include-dir
 
 plugins-clean:
 	@for i in `ls $(PLUGINDIR)/src | grep -v '[^a-z0-9]'`; do $(MAKE) -C "$(PLUGINDIR)/src/$$i" clean; done
-	@-rm -f $(PLUGINLIBDIR)/*
+	@-rm -f $(PLUGINLIBDIR)/libvdr-*.so.$(VDRVERSION)
 
 # Install the files:
 
@@ -183,7 +187,7 @@ install:
 
 srcdoc:
 	@cp $(DOXYFILE) $(DOXYFILE).tmp
-	@echo PROJECT_NUMBER = `grep VDRVERSION config.h | awk '{ print $$3 }'` >> $(DOXYFILE).tmp
+	@echo PROJECT_NUMBER = $(VDRVERSION) >> $(DOXYFILE).tmp
 	$(DOXYGEN) $(DOXYFILE).tmp
 	@rm $(DOXYFILE).tmp
 

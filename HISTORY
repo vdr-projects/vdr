@@ -3374,7 +3374,7 @@ Video Disk Recorder Revision History
   out).
 - Added MPEG1 replay capability to cPesAssembler (thanks to Stefan Huelswitt).
 
-2005-02-12: Version 1.3.21
+2005-02-13: Version 1.3.21
 
 - Fixed cDvbDevice::SetAudioTrackDevice() to avoid a blank screen after switching
   back to live mode if a recording is currently active on the primary device.
@@ -3406,3 +3406,5 @@ Video Disk Recorder Revision History
   Flynt for suggestions and experiments in that area).
 - Making sure the first audio packet is not dropped when switching to "pre 1.3.19
   Dolby Digital compatibility mode".
+- The 'plugins-clean' target of the Makefile now only deletes the actual plugin
+  library files from this version of VDR (suggested by Andreas Brachold).
