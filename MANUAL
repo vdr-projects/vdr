@@ -482,6 +482,7 @@ Version 1.2
                          be taken. Note that in order to set the system time from
                          the transponder data the option "Set system time" must also
                          be enabled.
+
   Preferred languages = 0
                          Some tv stations broadcast their EPG data in various
                          different languages. This option allows you to define
@@ -495,6 +496,14 @@ Version 1.2
                          languages. If an actual EPG data record is received in
                          different languages, the preferred languages are checked
                          in the given order to decide which one to take.
+
+  Scan                   The "Red" button in the "Setup/EPG" menu can be used to
+                         force an EPG scan on a single DVB card system. If pressed,
+                         and the primary DVB device is currently not recording or
+                         replaying, it will loop through the transponders once and
+                         then switch back to the original channel. Any user activity
+                         during the EPG scan will also stop the scan and bring back
+                         the original channel.
 
   DVB:
 

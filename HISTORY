@@ -2594,3 +2594,5 @@ Video Disk Recorder Revision History
   full name.
 - The EPG scan now scans newly found transponders together with already existing
   ones.
+- The "Red" button in the "Setup/EPG" menu can now be used to force an EPG
+  scan on a single DVB card system (see MANUAL for details).

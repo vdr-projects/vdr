@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.142 2004/01/16 13:48:16 kls Exp $
+ * $Id: i18n.c 1.143 2004/01/17 14:39:38 kls Exp $
  *
  * Translations provided by:
  *
@@ -818,6 +818,24 @@ const tI18nPhrase Phrases[] = {
     "Reset",
     "Reiniciar",
     "Сброс",
+  },
+  { "Scan",
+    "Scan",
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
   },
   // Confirmations:
   { "Delete channel?",

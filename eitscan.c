@@ -4,13 +4,14 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: eitscan.c 1.19 2004/01/17 13:13:47 kls Exp $
+ * $Id: eitscan.c 1.20 2004/01/17 15:38:11 kls Exp $
  */
 
 #include "eitscan.h"
 #include <stdlib.h>
 #include "channels.h"
 #include "dvbdevice.h"
+#include "interface.h"
 
 // --- cScanData -------------------------------------------------------------
 
@@ -106,6 +107,11 @@ void cEITScanner::AddTransponder(cChannel *Channel)
   transponderList->AddTransponder(Channel);
 }
 
+void cEITScanner::ForceScan(void)
+{
+  lastActivity = 0;
+}
+
 void cEITScanner::Activity(void)
 {
   if (currentChannel) {
@@ -142,8 +148,10 @@ void cEITScanner::Process(void)
                                if (Channel) {
                                   //XXX if (Device->ProvidesTransponder(Channel)) {
                                   if ((!Channel->Ca() || Channel->Ca() == Device->DeviceNumber() + 1 || Channel->Ca() >= 0x0100) && Device->ProvidesTransponder(Channel)) { //XXX temporary for the 'sky' plugin
-                                     if (Device == cDevice::PrimaryDevice() && !currentChannel)
+                                     if (Device == cDevice::PrimaryDevice() && !currentChannel) {
                                         currentChannel = Device->CurrentChannel();
+                                        Interface->Info("Starting EPG scan");
+                                        }
                                      currentDevice = Device;//XXX see also dvbdevice.c!!!
                                      Device->SwitchChannel(Channel, false);
                                      currentDevice = NULL;
@@ -166,6 +174,8 @@ void cEITScanner::Process(void)
                if (!scanList->Count()) {
                   delete scanList;
                   scanList = NULL;
+                  if (lastActivity == 0) // this was a triggered scan
+                     Activity();
                   break;
                   }
                }

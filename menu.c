@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.280 2004/01/11 21:37:17 kls Exp $
+ * $Id: menu.c 1.281 2004/01/17 14:17:00 kls Exp $
  */
 
 #include "menu.h"
@@ -16,6 +16,7 @@
 #include "channels.h"
 #include "config.h"
 #include "cutter.h"
+#include "eitscan.h"
 #include "i18n.h"
 #include "menuitems.h"
 #include "plugin.h"
@@ -2044,6 +2045,7 @@ cMenuSetupEPG::cMenuSetupEPG(void)
       ;
   originalNumLanguages = numLanguages;
   SetSection(tr("EPG"));
+  SetHelp(tr("Scan"));
   Setup();
 }
 
@@ -2104,6 +2106,10 @@ eOSState cMenuSetupEPG::ProcessKey(eKeys Key)
             }
         data.EPGLanguages[numLanguages] = -1;
         Setup();
+        }
+     if (Key == kRed) {
+        EITScanner.ForceScan();
+        return osEnd;
         }
      }
   return state;
