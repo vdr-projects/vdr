@@ -2449,6 +2449,8 @@ Video Disk Recorder Revision History
 
 - Fixed handling CAM menus in case the CAM connection fails while the menu
   is being presented (thanks to Thomas v. Keller for reportign this one).
+- Added missing 'const' to some cChannel member functions (thanks to Torsten
+  Herz).
 
 2003-10-24: Version 1.3.0
 
