@@ -3278,3 +3278,5 @@ Video Disk Recorder Revision History
 - Fixed a possible race condition in cDevice::Action() (thanks to Mattias Grönlund).
 - Fixed the default quality value when grabbing a JPEG image (thanks to Patrick
   Gleichmann).
+- Fixed deleting a menu item in case the next item is not selectable (thanks to
+  Dino Ravnic).

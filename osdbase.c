@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osdbase.c 1.14 2004/07/17 13:29:13 kls Exp $
+ * $Id: osdbase.c 1.15 2005/01/07 16:16:41 kls Exp $
  */
 
 #include "osdbase.h"
@@ -149,8 +149,13 @@ void cOsdMenu::SetHelp(const char *Red, const char *Green, const char *Yellow, c
 void cOsdMenu::Del(int Index)
 {
   cList<cOsdItem>::Del(Get(Index));
-  if (current == Count())
-     current--;
+  int count = Count();
+  while (current < count && !SelectableItem(current)) 
+        current++;
+  if (current == count) {
+     while (current > 0 && !SelectableItem(current))  
+           current--;
+     }
   if (Index == first && first > 0)
      first--;
 }
