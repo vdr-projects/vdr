@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.95 2002/02/10 15:12:43 kls Exp $
+ * $Id: vdr.c 1.97 2002/02/24 12:55:10 kls Exp $
  */
 
 #include <getopt.h>
@@ -32,9 +32,7 @@
 #include <unistd.h>
 #include "config.h"
 #include "dvbapi.h"
-#ifdef DVDSUPPORT
-#include "dvd.h"
-#endif //DVDSUPPORT
+#include "eit.h"
 #include "i18n.h"
 #include "interface.h"
 #include "menu.h"
@@ -104,14 +102,13 @@ int main(int argc, char *argv[])
       { "shutdown", required_argument, NULL, 's' },
       { "terminal", required_argument, NULL, 't' },
       { "video",    required_argument, NULL, 'v' },
-      { "dvd",      required_argument, NULL, 'V' },
       { "watchdog", required_argument, NULL, 'w' },
       { NULL }
     };
 
   int c;
   int option_index = 0;
-  while ((c = getopt_long(argc, argv, "a:c:dD:E:hl:p:r:s:t:v:V:w:", long_options, &option_index)) != -1) {
+  while ((c = getopt_long(argc, argv, "a:c:dD:E:hl:p:r:s:t:v:w:", long_options, &option_index)) != -1) {
         switch (c) {
           case 'a': cDvbApi::SetAudioCommand(optarg);
                     break;
@@ -152,7 +149,6 @@ int main(int argc, char *argv[])
                            "  -s CMD,   --shutdown=CMD call CMD to shutdown the computer\n"
                            "  -t TTY,   --terminal=TTY controlling tty\n"
                            "  -v DIR,   --video=DIR    use DIR as video directory (default: %s)\n"
-                           "  -V DEV,   --dvd=DEV      use DEV as the DVD device (default: %s)\n"
                            "  -w SEC,   --watchdog=SEC activate the watchdog timer with a timeout of SEC\n"
                            "                           seconds (default: %d); '0' disables the watchdog\n"
                            "\n"
@@ -160,11 +156,6 @@ int main(int argc, char *argv[])
                            cSIProcessor::GetEpgDataFileName() ? cSIProcessor::GetEpgDataFileName() : "'-'",
                            DEFAULTSVDRPPORT,
                            VideoDirectory,
-#ifdef DVDSUPPORT
-                           cDVD::DeviceName(),
-#else
-                           "no DVD support",
-#endif //DVDSUPPORT
                            DEFAULTWATCHDOG
                            );
                     return 0;
@@ -195,18 +186,6 @@ int main(int argc, char *argv[])
           case 'v': VideoDirectory = optarg;
                     while (optarg && *optarg && optarg[strlen(optarg) - 1] == '/')
                           optarg[strlen(optarg) - 1] = 0;
-                    break;
-          case 'V': 
-#ifdef DVDSUPPORT
-                    cDVD::SetDeviceName(optarg);
-                    if (!cDVD::DriveExists()) {
-                       fprintf(stderr, "vdr: DVD drive not found: %s\n", optarg);
-                       return 2;
-                       }
-#else
-                    fprintf(stderr, "vdr: DVD support has not been compiled in!");
-                    return 2;
-#endif //DVDSUPPORT
                     break;
           case 'w': if (isnumber(optarg)) {
                        int t = atoi(optarg);
@@ -285,6 +264,8 @@ int main(int argc, char *argv[])
      return 2;
 
   cDvbApi::SetPrimaryDvbApi(Setup.PrimaryDVB);
+
+  cSIProcessor::Read();
 
   Channels.SwitchTo(Setup.CurrentChannel);
   cDvbApi::PrimaryDvbApi->SetVolume(Setup.CurrentVolume, true);
@@ -406,12 +387,6 @@ int main(int argc, char *argv[])
                                 DELETENULL(ReplayControl);
                                 ReplayControl = new cReplayControl;
                                 break;
-#ifdef DVDSUPPORT
-                 case osDVD:    DELETENULL(Menu);
-                                DELETENULL(ReplayControl);
-                                Menu = new cMenuMain(ReplayControl, osDVD);
-                                break;
-#endif //DVDSUPPORT
                  case osStopReplay:
                                 DELETENULL(*Interact);
                                 DELETENULL(ReplayControl);

@@ -45,12 +45,16 @@ Video Disk Recorder File Formats
   The fields in a timer definition have the following meaning (from left
   to right):
 
-  - Timer active (0 = inactive, 1 = active)
-    Values larger than '1' can be used by external programs to mark active timers
+  - Timer active (0 = inactive, 1 = active, 3 = instant recording)
+    Values other than these can be used by external programs to mark active timers
     and recognize if the user has modified them. When a user modifes an active
-    timer the 'active' field will be explicitly set to '1'.
+    timer the 'active' field will be explicitly set to '1' (or '0', respectively,
+    if the user deactivates the timer).
+    Note: in order to allow future extensibility, external programs using the
+    'active' parameter should only use the upper 16 bit of this 32 bit parameter
+    and leave the lower 16 bit untouched.
   - Program number of the channel to record
-  - Day of recording, either one or more of
+  - Day of recording (in case of a repeating timer), either one or more of
       M------ = Monday
       -T----- = Tuesday
       --W---- = Wednesday
@@ -61,7 +65,14 @@ Video Disk Recorder File Formats
     (any combination is possible, for example MTWTF--, and the days may be
     indicated by any characters except '-', so for example ABC---- would set
     a timer that records on monday, tuesday and wednesday) or the "day of month"
-    (1..31)
+    (1..31) in case of a single shot timer.
+    The day definition of a repeating timer may be followed by the date when that
+    timer shall hit for the first time. The format for this is @YYYY-MM-DD,
+    so a complete definition could look like this: MTWTF--@2002-02-18. This
+    "first day" feature can be used to disable a repeating timer for a couple
+    of days, or for instance to define a new Mon...Fri timer on wednesday, which
+    actually starts "monday next week". The "first day" date given need not be
+    that of a day when the timer would actually hit.
   - Start time (first two digits for the hour, second two digits for the minutes)
   - End time (first two digits for the hour, second two digits for the minutes)
   - Priority (from 0 to 99, 0 = lowest prioity, 99 = highest priority)
@@ -169,3 +180,37 @@ Video Disk Recorder File Formats
   for audio 2 (if available). Dolby Digital data is stored in packets with
   ids 0xBD.
 
+* epg.data
+
+  This file contains the EPG data in an easily parsable format. The first
+  character of each line defines what kind of data this line contains.
+
+  The following tag characters are defined:
+
+  C <service id> <channel name>
+  E <event id> <start time> <duration> <table id>
+  T <title>
+  S <subtitle>
+  D <description>
+  e
+  c
+
+  Lowercase characters mark the end of a sequence that was started by the
+  corresponding uppercase character. The outer frame consists of a sequence
+  of one or more 'C'...'c' (Channel) entries. Inside these any number of
+  'E'...'e' (Event) entries are allowed. The 'T', 'S' and 'D' entries are
+  optional (although every event should at least have a 'T' entry).
+
+  <service id>   is the "program number" as defined in 'channels.conf'
+  <channel name> is the "name" as in 'channels.conf' (for information only)
+  <start time>   is the time (as a time_t integer) in UTC when this event starts
+  <duration>     is the time (in seconds) that this event will take
+  <table id>     is a hex number that indicates the table this event is contained
+                 in (if this is left empty or 0 this event will not be overwritten
+                 or modified by data that comes from the DVB stream)
+  <title>        is the title of the event
+  <subtitle>     is the subtitle (typically the name of the episode etc.)
+  <description>  is the description of the event
+
+  This file will be read at program startup in order to restore the results of
+  previous EPG scans.

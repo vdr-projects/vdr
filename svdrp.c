@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.30 2002/02/02 15:39:46 kls Exp $
+ * $Id: svdrp.c 1.33 2002/02/24 14:16:03 kls Exp $
  */
 
 #include "svdrp.h"
@@ -118,6 +118,52 @@ int cSocket::Accept(void)
   return -1;
 }
 
+// --- cPUTEhandler ----------------------------------------------------------
+
+cPUTEhandler::cPUTEhandler(void)
+{
+  if ((f = tmpfile()) != NULL) {
+     status = 354;
+     message = "Enter EPG data, end with \".\" on a line by itself";
+     }
+  else {
+     LOG_ERROR;
+     status = 554;
+     message = "Error while opening temporary file";
+     }
+}
+
+cPUTEhandler::~cPUTEhandler()
+{
+  if (f)
+     fclose(f);
+}
+
+bool cPUTEhandler::Process(const char *s)
+{
+  if (f) {
+     if (strcmp(s, ".") != 0) {
+        fputs(s, f);
+        fputc('\n', f);
+        return true;
+        }
+     else {
+        rewind(f);
+        if (cSchedules::Read(f)) {
+           status = 250;
+           message = "EPG data processed";
+           }
+        else {
+           status = 451;
+           message = "Error while processing EPG data";
+           }
+        fclose(f);
+        f = NULL;
+        }
+     }
+  return false;
+}
+
 // --- cSVDRP ----------------------------------------------------------------
 
 #define MAXHELPTOPIC 10
@@ -192,6 +238,11 @@ const char *HelpPages[] = {
   "    zero, this means that the timer is currently recording and has started\n"
   "    at the given time. The first value in the resulting line is the number\n"
   "    of the timer.",
+  "PUTE\n"
+  "    Put data into the EPG list. The data entered has to strictly follow the\n"
+  "    format defined in VDR/FORMATS for the 'epg.data' file.  A '.' on a line\n"
+  "    by itself terminates the input and starts processing of the data (all\n"
+  "    entered data is buffered until the terminating '.' is seen).",
   "UPDT <settings>\n"
   "    Updates a timer. Settings must be in the same format as returned\n"
   "    by the LSTT command. If a timer with the same channel, day, start\n"
@@ -209,6 +260,7 @@ const char *HelpPages[] = {
  220 VDR service ready
  221 VDR service closing transmission channel
  250 Requested VDR action okay, completed
+ 354 Start sending EPG data
  451 Requested action aborted: local error in processing
  500 Syntax error, command unrecognized
  501 Syntax error in parameters or arguments
@@ -252,6 +304,7 @@ const char *GetHelpPage(const char *Cmd)
 cSVDRP::cSVDRP(int Port)
 :socket(Port)
 {
+  PUTEhandler = NULL;
   numChars = 0;
   message = NULL;
   lastActivity = 0;
@@ -273,6 +326,7 @@ void cSVDRP::Close(bool Timeout)
      Reply(221, "%s closing connection%s", buffer, Timeout ? " (timeout)" : "");
      isyslog(LOG_INFO, "closing SVDRP connection"); //TODO store IP#???
      file.Close();
+     DELETENULL(PUTEhandler);
      }
 }
 
@@ -583,6 +637,8 @@ void cSVDRP::CmdLSTC(const char *Option)
               }
         if (next)
            Reply(250, "%d %s", next->number, next->ToText());
+        else
+           Reply(501, "Channel \"%s\" not defined", Option);
         }
      }
   else if (Channels.MaxNumber() >= 1) {
@@ -600,8 +656,8 @@ void cSVDRP::CmdLSTC(const char *Option)
 
 void cSVDRP::CmdLSTE(const char *Option)
 {
-  cThreadLock ThreadLock;
-  const cSchedules *Schedules = cDvbApi::PrimaryDvbApi->Schedules(&ThreadLock);
+  cMutexLock MutexLock;
+  const cSchedules *Schedules = cSIProcessor::Schedules(MutexLock);
   if (Schedules) {
      FILE *f = fdopen(file, "w");
      if (f) {
@@ -827,6 +883,15 @@ void cSVDRP::CmdNEXT(const char *Option)
      Reply(550, "No active timers");
 }
 
+void cSVDRP::CmdPUTE(const char *Option)
+{
+  delete PUTEhandler;
+  PUTEhandler = new cPUTEhandler;
+  Reply(PUTEhandler->Status(), PUTEhandler->Message());
+  if (PUTEhandler->Status() != 354)
+     DELETENULL(PUTEhandler);
+}
+
 void cSVDRP::CmdUPDT(const char *Option)
 {
   if (*Option) {
@@ -859,6 +924,14 @@ void cSVDRP::CmdUPDT(const char *Option)
 
 void cSVDRP::Execute(char *Cmd)
 {
+  // handle PUTE data:
+  if (PUTEhandler) {
+     if (!PUTEhandler->Process(Cmd)) {
+        Reply(PUTEhandler->Status(), PUTEhandler->Message());
+        DELETENULL(PUTEhandler);
+        }
+     return;
+     }
   // skip leading whitespace:
   Cmd = skipspace(Cmd);
   // find the end of the command word:
@@ -888,6 +961,7 @@ void cSVDRP::Execute(char *Cmd)
   else if (CMD("NEWT"))  CmdNEWT(s);
   else if (CMD("NEXT"))  CmdNEXT(s);
   else if (CMD("UPDT"))  CmdUPDT(s);
+  else if (CMD("PUTE"))  CmdPUTE(s);
   else if (CMD("QUIT"))  Close();
   else                   Reply(500, "Command unrecognized: \"%s\"", Cmd);
 }

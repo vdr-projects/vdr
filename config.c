@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.83 2002/02/10 11:39:00 kls Exp $
+ * $Id: config.c 1.87 2002/02/24 11:59:14 kls Exp $
  */
 
 #include "config.h"
@@ -323,7 +323,7 @@ cTimer::cTimer(bool Instant)
 {
   startTime = stopTime = 0;
   recording = pending = false;
-  active = Instant;
+  active = Instant ? taActInst : taInactive;
   cChannel *ch = Channels.GetByNumber(cDvbApi::CurrentChannel());
   channel = ch ? ch->number : 0;
   time_t t = time(NULL);
@@ -338,6 +338,7 @@ cTimer::cTimer(bool Instant)
   priority = Setup.DefaultPriority;
   lifetime = Setup.DefaultLifetime;
   *file = 0;
+  firstday = 0;
   summary = NULL;
   if (Instant && ch)
      snprintf(file, sizeof(file), "%s%s", Setup.MarkInstantRecord ? "@" : "", *Setup.NameInstantRecord ? Setup.NameInstantRecord : ch->name);
@@ -367,6 +368,7 @@ cTimer::cTimer(const cEventInfo *EventInfo)
   const char *Title = EventInfo->GetTitle();
   if (!isempty(Title))
      strn0cpy(file, EventInfo->GetTitle(), sizeof(file));
+  firstday = 0;
   summary = NULL;
 }
 
@@ -395,7 +397,7 @@ const char *cTimer::ToText(cTimer *Timer)
   delete buffer;
   strreplace(Timer->file, ':', '|');
   strreplace(Timer->summary, '\n', '|');
-  asprintf(&buffer, "%d:%d:%s:%04d:%04d:%d:%d:%s:%s\n", Timer->active, Timer->channel, PrintDay(Timer->day), Timer->start, Timer->stop, Timer->priority, Timer->lifetime, Timer->file, Timer->summary ? Timer->summary : "");
+  asprintf(&buffer, "%d:%d:%s:%04d:%04d:%d:%d:%s:%s\n", Timer->active, Timer->channel, PrintDay(Timer->day, Timer->firstday), Timer->start, Timer->stop, Timer->priority, Timer->lifetime, Timer->file, Timer->summary ? Timer->summary : "");
   strreplace(Timer->summary, '|', '\n');
   strreplace(Timer->file, '|', ':');
   return buffer;
@@ -411,19 +413,37 @@ int cTimer::TimeToInt(int t)
   return (t / 100 * 60 + t % 100) * 60;
 }
 
-int cTimer::ParseDay(const char *s)
+int cTimer::ParseDay(const char *s, time_t *FirstDay)
 {
   char *tail;
   int d = strtol(s, &tail, 10);
+  if (FirstDay)
+     *FirstDay = 0;
   if (tail && *tail) {
      d = 0;
      if (tail == s) {
-        if (strlen(s) == 7) {
+        const char *first = strchr(s, '@');
+        int l = first ? first - s : strlen(s);
+        if (l == 7) {
            for (const char *p = s + 6; p >= s; p--) {
-                 d <<= 1;
-                 d |= (*p != '-');
-                 }
+               d <<= 1;
+               d |= (*p != '-');
+               }
            d |= 0x80000000;
+           }
+        if (FirstDay && first) {
+           ++first;
+           if (strlen(first) == 10) {
+              struct tm tm_r;
+              if (3 == sscanf(first, "%d-%d-%d", &tm_r.tm_year, &tm_r.tm_mon, &tm_r.tm_mday)) {
+                 tm_r.tm_year -= 1900;
+                 tm_r.tm_mon--;
+                 tm_r.tm_hour = tm_r.tm_min = tm_r.tm_sec = 0;
+                 *FirstDay = mktime(&tm_r);
+                 }
+              }
+           else
+              d = 0;
            }
         }
      }
@@ -432,22 +452,38 @@ int cTimer::ParseDay(const char *s)
   return d;
 }
 
-const char *cTimer::PrintDay(int d)
+const char *cTimer::PrintDay(int d, time_t FirstDay)
 {
-  static char buffer[8];
+#define DAYBUFFERSIZE 32
+  static char buffer[DAYBUFFERSIZE];
   if ((d & 0x80000000) != 0) {
      char *b = buffer;
      const char *w = tr("MTWTFSS");
-     *b = 0;
      while (*w) {
            *b++ = (d & 1) ? *w : '-';
            d >>= 1;
            w++;
            }
+     if (FirstDay) {
+        struct tm tm_r;
+        localtime_r(&FirstDay, &tm_r);
+        b += strftime(b, DAYBUFFERSIZE - (b - buffer), "@%Y-%m-%d", &tm_r);
+        }
+     *b = 0;
      }
   else
      sprintf(buffer, "%d", d);
   return buffer;
+}
+
+const char *cTimer::PrintFirstDay(void)
+{
+  if (firstday) {
+     const char *s = PrintDay(day, firstday);
+     if (strlen(s) == 18)
+        return s + 8;
+     }
+  return ""; // not NULL, so the caller can always use the result
 }
 
 bool cTimer::Parse(const char *s)
@@ -477,7 +513,7 @@ bool cTimer::Parse(const char *s)
         summary = NULL;
         }
      //TODO add more plausibility checks
-     day = ParseDay(buffer1);
+     day = ParseDay(buffer1, &firstday);
      strn0cpy(file, buffer2, MaxFileName);
      strreplace(file, '|', ':');
      strreplace(summary, '|', '\n');
@@ -563,13 +599,17 @@ bool cTimer::Matches(time_t t)
       if (DayMatches(t0)) {
          time_t a = SetTime(t0, begin);
          time_t b = a + length;
-         if (t <= b) {
+         if ((!firstday || a >= firstday) && t <= b) {
             startTime = a;
             stopTime = b;
+            if (t >= firstday)
+               firstday = 0;
             break;
             }
          }
       }
+  if (!startTime)
+     startTime = firstday; // just to have something that's more than a week in the future
   return active && startTime <= t && t < stopTime; // must stop *before* stopTime to allow adjacent timers
 }
 
@@ -596,6 +636,11 @@ void cTimer::SetRecording(bool Recording)
 void cTimer::SetPending(bool Pending)
 {
   pending = Pending;
+}
+
+void cTimer::SkipToday(void)
+{
+  firstday = IncDay(SetTime(recording ? StartTime() : time(NULL), 0), 1);
 }
 
 // --- cCommand -------------------------------------------------------------
@@ -865,6 +910,7 @@ cSetup::cSetup(void)
   UseSubtitle = 1;
   RecordingDirs = 1;
   VideoFormat = VIDEO_FORMAT_4_3;
+  RecordDolbyDigital = 1;
   ChannelInfoPos = 0;
   OSDwidth = 52;
   OSDheight = 18;
@@ -910,6 +956,7 @@ bool cSetup::Parse(char *s)
         else if (!strcasecmp(Name, "UseSubtitle"))         UseSubtitle        = atoi(Value);
         else if (!strcasecmp(Name, "RecordingDirs"))       RecordingDirs      = atoi(Value);
         else if (!strcasecmp(Name, "VideoFormat"))         VideoFormat        = atoi(Value);
+        else if (!strcasecmp(Name, "RecordDolbyDigital"))  RecordDolbyDigital = atoi(Value);
         else if (!strcasecmp(Name, "ChannelInfoPos"))      ChannelInfoPos     = atoi(Value);
         else if (!strcasecmp(Name, "OSDwidth"))            OSDwidth           = atoi(Value);
         else if (!strcasecmp(Name, "OSDheight"))           OSDheight          = atoi(Value);
@@ -947,7 +994,6 @@ bool cSetup::Load(const char *FileName)
               if (*buffer != '#' && !Parse(buffer)) {
                  esyslog(LOG_ERR, "error in %s, line %d\n", fileName, line);
                  result = false;
-                 break;
                  }
               }
            }
@@ -990,6 +1036,7 @@ bool cSetup::Save(const char *FileName)
         fprintf(f, "UseSubtitle        = %d\n", UseSubtitle);
         fprintf(f, "RecordingDirs      = %d\n", RecordingDirs);
         fprintf(f, "VideoFormat        = %d\n", VideoFormat);
+        fprintf(f, "RecordDolbyDigital = %d\n", RecordDolbyDigital);
         fprintf(f, "ChannelInfoPos     = %d\n", ChannelInfoPos);
         fprintf(f, "OSDwidth           = %d\n", OSDwidth);
         fprintf(f, "OSDheight          = %d\n", OSDheight);

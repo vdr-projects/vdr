@@ -4,17 +4,13 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.57 2002/02/05 18:16:52 kls Exp $
+ * $Id: tools.c 1.59 2002/02/17 12:57:23 kls Exp $
  */
 
 #include "tools.h"
 #include <ctype.h>
 #include <dirent.h>
 #include <errno.h>
-#if defined(DEBUG_OSD)
-#include <ncurses.h>
-#undef ERR //XXX ncurses defines this - but this clashes with newer system header files
-#endif
 #include <stdlib.h>
 #include <sys/time.h>
 #include <time.h>
@@ -466,6 +462,20 @@ bool SpinUpDisk(const char *FileName)
   return false;
 }
 
+const char *WeekDayName(int WeekDay)
+{
+  static char buffer[4];
+  WeekDay = WeekDay == 0 ? 6 : WeekDay - 1; // we start with monday==0!
+  if (0 <= WeekDay && WeekDay <= 6) {
+     const char *day = tr("MonTueWedThuFriSatSun");
+     day += WeekDay * 3;
+     strncpy(buffer, day, 3);
+     return buffer;
+     }
+  else
+     return "???";
+}
+
 const char *DayDateTime(time_t t)
 {
   static char buffer[32];
@@ -473,11 +483,7 @@ const char *DayDateTime(time_t t)
      time(&t);
   struct tm tm_r;
   tm *tm = localtime_r(&t, &tm_r);
-  int weekday = tm->tm_wday == 0 ? 6 : tm->tm_wday - 1; // we start with monday==0!
-  const char *day = tr("MonTueWedThuFriSatSun");
-  day += weekday * 3;
-  strncpy(buffer, day, 3);
-  snprintf(buffer + 3, sizeof(buffer) - 3, " %2d.%02d %02d:%02d", tm->tm_mday, tm->tm_mon + 1, tm->tm_hour, tm->tm_min);
+  snprintf(buffer, sizeof(buffer), "%s %2d.%02d %02d:%02d", WeekDayName(tm->tm_wday), tm->tm_mday, tm->tm_mon + 1, tm->tm_hour, tm->tm_min);
   return buffer;
 }
 
@@ -545,9 +551,6 @@ bool cFile::Ready(bool Wait)
 
 bool cFile::AnyFileReady(int FileDes, int TimeoutMs)
 {
-#ifdef DEBUG_OSD
-  refresh();
-#endif
   fd_set set;
   FD_ZERO(&set);
   for (int i = 0; i < maxFiles; i++) {
@@ -566,9 +569,6 @@ bool cFile::AnyFileReady(int FileDes, int TimeoutMs)
 
 bool cFile::FileReady(int FileDes, int TimeoutMs)
 {
-#ifdef DEBUG_OSD
-  refresh();
-#endif
   fd_set set;
   struct timeval timeout;
   FD_ZERO(&set);
@@ -582,9 +582,6 @@ bool cFile::FileReady(int FileDes, int TimeoutMs)
 
 bool cFile::FileReadyForWriting(int FileDes, int TimeoutMs)
 {
-#ifdef DEBUG_OSD
-  refresh();
-#endif
   fd_set set;
   struct timeval timeout;
   FD_ZERO(&set);

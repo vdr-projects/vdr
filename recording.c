@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.51 2002/02/10 15:41:23 kls Exp $
+ * $Id: recording.c 1.54 2002/02/24 11:21:42 kls Exp $
  */
 
 #include "recording.h"
@@ -122,7 +122,7 @@ void AssertFreeDiskSpace(int Priority)
               return;
            }
         // Unable to free disk space, but there's nothing we can do about that...
-        Interface->Confirm(tr("Low disk space"), 30);
+        Interface->Confirm(tr("Low disk space!"), 30);
         }
      LastFreeDiskCheck = time(NULL);
      }
@@ -203,7 +203,6 @@ static char *ExchangeChars(char *s, bool ToFileSystem)
 {
   char *p = s;
   while (*p) {
-#define VFAT 1
 #ifdef VFAT
         // The VFAT file system can't handle all characters, so we
         // have to take extra efforts to encode/decode them:
@@ -225,7 +224,12 @@ static char *ExchangeChars(char *s, bool ToFileSystem)
                   case '=':
                   case '0' ... '9':
                   case 'a' ... 'z':
-                  case 'A' ... 'Z': break;
+                  case 'A' ... 'Z':
+                  case 'ä': case 'Ä':
+                  case 'ö': case 'Ö':
+                  case 'ü': case 'Ü':
+                  case 'ß':
+                       break;
                   // characters that can be mapped to other characters:
                   case ' ': *p = '_'; break;
                   case '~': *p = '/'; break;

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.h 1.61 2002/02/03 16:43:38 kls Exp $
+ * $Id: dvbapi.h 1.63 2002/02/24 12:38:08 kls Exp $
  */
 
 #ifndef __DVBAPI_H
@@ -29,9 +29,6 @@
 #include <stdio.h>
 
 #include "dvbosd.h"
-#ifdef DVDSUPPORT
-#include "dvd.h"
-#endif //DVDSUPPORT
 #include "eit.h"
 #include "thread.h"
 
@@ -60,9 +57,6 @@ class cChannel;
 class cRecordBuffer;
 class cPlayBuffer;
 class cReplayBuffer;
-#ifdef DVDSUPPORT
-class cDVDplayBuffer;
-#endif //DVDSUPPORT
 class cTransferBuffer;
 class cCuttingBuffer;
 
@@ -83,9 +77,6 @@ public:
 class cDvbApi {
   friend class cRecordBuffer;
   friend class cReplayBuffer;
-#ifdef DVDSUPPORT
-  friend class cDVDplayBuffer;
-#endif //DVDSUPPORT
   friend class cTransferBuffer;
 private:
   FrontendType frontendType;
@@ -143,10 +134,6 @@ public:
 private:
   cSIProcessor *siProcessor;
 public:
-  const cSchedules *Schedules(cThreadLock *ThreadLock) const;
-         // Caller must provide a cThreadLock which has to survive the entire
-         // time the returned cSchedules is accessed. Once the cSchedules is no
-         // longer used, the cThreadLock must be destroyed.
   void SetUseTSTime(bool On) { if (siProcessor) siProcessor->SetUseTSTime(On); }
 
   // Image Grab facilities
@@ -250,10 +237,6 @@ public:
        // Starts replaying the given file.
        // If there is already a replay session active, it will be stopped
        // and the new file will be played back.
-#ifdef DVDSUPPORT
-  bool StartDVDplay(cDVD *dvd, int TitleID);//XXX dvd parameter necessary???
-       // Starts replaying the given TitleID on the DVD.
-#endif //DVDSUPPORT
   void StopReplay(void);
        // Stops the current replay session (if any).
   void Pause(void);

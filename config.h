@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.95 2002/02/10 15:44:40 kls Exp $
+ * $Id: config.h 1.99 2002/02/24 13:39:47 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -19,7 +19,7 @@
 #include "eit.h"
 #include "tools.h"
 
-#define VDRVERSION "0.99"
+#define VDRVERSION "1.0.0pre1"
 
 #define MAXPRIORITY 99
 #define MAXLIFETIME 99
@@ -119,6 +119,12 @@ public:
   bool Switch(cDvbApi *DvbApi = NULL, bool Log = true);
   };
 
+enum eTimerActive { taInactive = 0,
+                    taActive   = 1,
+                    taInstant  = 2,
+                    taActInst  = (taActive | taInstant)
+                  };
+
 class cTimer : public cListObject {
 private:
   time_t startTime, stopTime;
@@ -135,6 +141,7 @@ public:
   int priority;
   int lifetime;
   char file[MaxFileName];
+  time_t firstday;
   char *summary;
   cTimer(bool Instant = false);
   cTimer(const cEventInfo *EventInfo);
@@ -148,17 +155,19 @@ public:
   int GetMDay(time_t t);
   int GetWDay(time_t t);
   bool DayMatches(time_t t);
-  time_t IncDay(time_t t, int Days);
-  time_t SetTime(time_t t, int SecondsFromMidnight);
+  static time_t IncDay(time_t t, int Days);
+  static time_t SetTime(time_t t, int SecondsFromMidnight);
   char *SetFile(const char *File);
   bool Matches(time_t t = 0);
   time_t StartTime(void);
   time_t StopTime(void);
   void SetRecording(bool Recording);
   void SetPending(bool Pending);
+  void SkipToday(void);
+  const char *PrintFirstDay(void);
   static int TimeToInt(int t);
-  static int ParseDay(const char *s);
-  static const char *PrintDay(int d);
+  static int ParseDay(const char *s, time_t *FirstDay = NULL);
+  static const char *PrintDay(int d, time_t FirstDay = 0);
   };
 
 class cCommand : public cListObject {
@@ -321,6 +330,7 @@ public:
   int UseSubtitle;
   int RecordingDirs;
   int VideoFormat;
+  int RecordDolbyDigital;
   int ChannelInfoPos;
   int OSDwidth, OSDheight;
   int OSDMessageTime;

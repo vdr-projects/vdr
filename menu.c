@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.152 2002/02/10 11:52:34 kls Exp $
+ * $Id: menu.c 1.159 2002/02/24 12:55:49 kls Exp $
  */
 
 #include "menu.h"
@@ -252,6 +252,62 @@ eOSState cMenuEditDayItem::ProcessKey(eKeys Key)
     default : return cMenuEditIntItem::ProcessKey(Key);
     }
   return osContinue;
+}
+
+// --- cMenuEditDateItem -----------------------------------------------------
+
+class cMenuEditDateItem : public cMenuEditItem {
+protected:
+  time_t *value;
+  virtual void Set(void);
+public:
+  cMenuEditDateItem(const char *Name, time_t *Value);
+  virtual eOSState ProcessKey(eKeys Key);
+  };
+
+cMenuEditDateItem::cMenuEditDateItem(const char *Name, time_t *Value)
+:cMenuEditItem(Name)
+{
+  value = Value;
+  Set();
+}
+
+void cMenuEditDateItem::Set(void)
+{
+#define DATEBUFFERSIZE 32
+  char buf[DATEBUFFERSIZE];
+  if (*value) {
+     struct tm tm_r;
+     localtime_r(value, &tm_r);
+     strftime(buf, DATEBUFFERSIZE, "%Y-%m-%d ", &tm_r);
+     strcat(buf, WeekDayName(tm_r.tm_wday));
+     }
+  else
+     *buf = 0;
+  SetValue(buf);
+}
+
+eOSState cMenuEditDateItem::ProcessKey(eKeys Key)
+{
+  eOSState state = cMenuEditItem::ProcessKey(Key);
+
+  if (state == osUnknown) {
+     if (NORMALKEY(Key) == kLeft) { // TODO might want to increase the delta if repeated quickly?
+        *value -= SECSINDAY;
+        if (*value < time(NULL))
+           *value = 0;
+        }
+     else if (NORMALKEY(Key) == kRight) {
+        if (!*value)
+           *value = cTimer::SetTime(time(NULL), 0);
+        *value += SECSINDAY;
+        }
+     else
+        return state;
+     Set();
+     state = osContinue;
+     }
+  return state;
 }
 
 // --- cMenuEditTimeItem -----------------------------------------------------
@@ -905,6 +961,8 @@ class cMenuEditTimer : public cOsdMenu {
 private:
   cTimer *timer;
   cTimer data;
+  cMenuEditDateItem *firstday;
+  void SetFirstDayItem(void);
 public:
   cMenuEditTimer(int Index, bool New = false);
   virtual eOSState ProcessKey(eKeys Key);
@@ -913,6 +971,7 @@ public:
 cMenuEditTimer::cMenuEditTimer(int Index, bool New)
 :cOsdMenu(tr("Edit Timer"), 12)
 {
+  firstday = NULL;
   timer = Timers.Get(Index);
   if (timer) {
      data = *timer;
@@ -927,6 +986,21 @@ cMenuEditTimer::cMenuEditTimer(int Index, bool New)
      Add(new cMenuEditIntItem( tr("Priority"),     &data.priority, 0, MAXPRIORITY));
      Add(new cMenuEditIntItem( tr("Lifetime"),     &data.lifetime, 0, MAXLIFETIME));
      Add(new cMenuEditStrItem( tr("File"),          data.file, sizeof(data.file), FileNameChars));
+     SetFirstDayItem();
+     }
+}
+
+void cMenuEditTimer::SetFirstDayItem(void)
+{
+  if (!firstday && !data.IsSingleEvent()) {
+     Add(firstday = new cMenuEditDateItem(tr("First day"), &data.firstday));
+     Display();
+     }
+  else if (firstday && data.IsSingleEvent()) {
+     Del(firstday->Index());
+     firstday = NULL;
+     data.firstday = 0;
+     Display();
      }
 }
 
@@ -953,6 +1027,8 @@ eOSState cMenuEditTimer::ProcessKey(eKeys Key)
        default: break;
        }
      }
+  if (Key != kNone)
+     SetFirstDayItem();
   return state;
 }
 
@@ -983,7 +1059,7 @@ void cMenuTimerItem::Set(void)
 {
   char *buffer = NULL;
   asprintf(&buffer, "%c\t%d\t%s\t%02d:%02d\t%02d:%02d\t%s",
-                    timer->active ? timer->recording ? '#' : '>' : ' ',
+                    !timer->active ? ' ' : timer->firstday ? '!' : timer->recording ? '#' : '>',
                     timer->channel,
                     timer->PrintDay(timer->day),
                     timer->start / 100,
@@ -998,10 +1074,10 @@ void cMenuTimerItem::Set(void)
 
 class cMenuTimers : public cOsdMenu {
 private:
-  eOSState Activate(bool On);
   eOSState Edit(void);
   eOSState New(void);
   eOSState Del(void);
+  eOSState OnOff(void);
   virtual void Move(int From, int To);
   eOSState Summary(void);
   cTimer *CurrentTimer(void);
@@ -1022,7 +1098,7 @@ cMenuTimers::cMenuTimers(void)
         }
   if (Setup.SortTimers)
      Sort();
-  SetHelp(tr("Edit"), tr("New"), tr("Delete"), Setup.SortTimers ? NULL : tr("Mark"));
+  SetHelp(tr("Edit"), tr("New"), tr("Delete"), Setup.SortTimers ? tr("On/Off") : tr("Mark"));
 }
 
 cTimer *cMenuTimers::CurrentTimer(void)
@@ -1031,14 +1107,27 @@ cTimer *cMenuTimers::CurrentTimer(void)
   return item ? item->Timer() : NULL;
 }
 
-eOSState cMenuTimers::Activate(bool On)
+eOSState cMenuTimers::OnOff(void)
 {
   cTimer *timer = CurrentTimer();
-  if (timer && timer->active != On) {
-     timer->active = On;
+  if (timer) {
+     if (timer->IsSingleEvent())
+        timer->active = !timer->active;
+     else if (timer->firstday) {
+        timer->firstday = 0;
+        timer->active = false;
+        }
+     else if (timer->active)
+        timer->SkipToday();
+     else
+        timer->active = true;
+     timer->Matches(); // refresh start and end time
      RefreshCurrent();
      DisplayCurrent(true);
-     isyslog(LOG_INFO, "timer %d %sactivated", timer->Index() + 1, timer->active ? "" : "de");
+     if (timer->firstday)
+        isyslog(LOG_INFO, "timer %d first day set to %s", timer->Index() + 1, timer->PrintFirstDay());
+     else
+        isyslog(LOG_INFO, "timer %d %sactivated", timer->Index() + 1, timer->active ? "" : "de");
      Timers.Save();
      }
   return osContinue;
@@ -1106,27 +1195,17 @@ eOSState cMenuTimers::Summary(void)
 
 eOSState cMenuTimers::ProcessKey(eKeys Key)
 {
-  // Must do these before calling cOsdMenu::ProcessKey() because cOsdMenu
-  // uses them to page up/down:
-  if (!HasSubMenu()) {
-     switch (Key) {
-       case kLeft:
-       case kRight:  return Activate(Key == kRight);
-       default: break;
-       }
-     }
-
   eOSState state = cOsdMenu::ProcessKey(Key);
 
   if (state == osUnknown) {
      switch (Key) {
-       case kLeft:
-       case kRight:  return Activate(Key == kRight);
        case kOk:     return Summary();
        case kRed:    return Edit();
        case kGreen:  return New();
        case kYellow: return Del();
-       case kBlue:   if (!Setup.SortTimers)
+       case kBlue:   if (Setup.SortTimers)
+                        OnOff();
+                     else
                         Mark();
                      break;
        default: break;
@@ -1350,7 +1429,7 @@ cMenuScheduleItem::cMenuScheduleItem(const cEventInfo *EventInfo)
 
 class cMenuSchedule : public cOsdMenu {
 private:
-  cThreadLock threadLock;
+  cMutexLock mutexLock;
   const cSchedules *schedules;
   bool now, next;
   int otherChannel;
@@ -1370,7 +1449,7 @@ cMenuSchedule::cMenuSchedule(void)
   cChannel *channel = Channels.GetByNumber(cDvbApi::CurrentChannel());
   if (channel) {
      cMenuWhatsOn::SetCurrentChannel(channel->number);
-     schedules = cDvbApi::PrimaryDvbApi->Schedules(&threadLock);
+     schedules = cSIProcessor::Schedules(mutexLock);
      PrepareSchedule(channel);
      SetHelp(tr("Record"), tr("Now"), tr("Next"));
      }
@@ -1670,26 +1749,34 @@ eOSState cMenuRecordings::Del(void)
 {
   cMenuRecordingItem *ri = (cMenuRecordingItem *)Get(Current());
   if (ri && !ri->IsDirectory()) {
-//XXX what if this recording's file is currently in use???
-//XXX     if (!ti->recording) {
-        if (Interface->Confirm(tr("Delete recording?"))) {
-           cRecording *recording = GetRecording(ri);
-           if (recording) {
-              if (recording->Delete()) {
-                 cReplayControl::ClearLastReplayed(ri->FileName());
-                 cOsdMenu::Del(Current());
-                 Recordings.Del(recording);
-                 Display();
-                 if (!Count())
-                    return osBack;
+     if (Interface->Confirm(tr("Delete recording?"))) {
+        cRecordControl *rc = cRecordControls::GetRecordControl(ri->FileName());
+        if (rc) {
+           if (Interface->Confirm(tr("Timer still recording - really delete?"))) {
+              cTimer *timer = rc->Timer();
+              if (timer) {
+                 timer->SkipToday();
+                 cRecordControls::Process(time(NULL));
+                 Timers.Save();
                  }
-              else
-                 Interface->Error(tr("Error while deleting recording!"));
               }
+           else
+              return osContinue;
            }
-//XXX        }
-//XXX     else
-//XXX        Interface->Error(tr("Timer is recording!"));
+        cRecording *recording = GetRecording(ri);
+        if (recording) {
+           if (recording->Delete()) {
+              cReplayControl::ClearLastReplayed(ri->FileName());
+              cOsdMenu::Del(Current());
+              Recordings.Del(recording);
+              Display();
+              if (!Count())
+                 return osBack;
+              }
+           else
+              Interface->Error(tr("Error while deleting recording!"));
+           }
+        }
      }
   return osContinue;
 }
@@ -1734,81 +1821,6 @@ eOSState cMenuRecordings::ProcessKey(eKeys Key)
      SetHelpKeys();
   return state;
 }
-
-#ifdef DVDSUPPORT
-// --- cMenuDVDItem ----------------------------------------------------------
-
-class cMenuDVDItem : public cOsdItem {
-  private:
-  int title;
-  int chapters;
-  virtual void Set(void);
-public:
-  cMenuDVDItem(int Title, int Chapters);
-  int Title(void) { return title; }
-  };
-
-cMenuDVDItem::cMenuDVDItem(int Title, int Chapters)
-{
-  title = Title;
-  chapters = Chapters;
-  Set();
-}
-
-void cMenuDVDItem::Set(void)
-{
-  char *buffer = NULL;
-  asprintf(&buffer, " %2d.\tTitle - \t%2d\tChapters", title + 1, chapters);
-  SetText(buffer, false);
-}
-
-// --- cMenuDVD --------------------------------------------------------------
-
-cMenuDVD::cMenuDVD(void)
-:cOsdMenu(tr("DVD"), 5, 8, 3)
-{
-  if ((dvd = cDVD::getDVD())) {
-     dvd->Open();
-     ifo_handle_t *vmg = dvd->openVMG();
-     if (vmg) {
-        int lastTitleID = cReplayControl::LastTitleID();
-        dsyslog(LOG_INFO, "DVD: vmg: %p", vmg);//XXX
-        tt_srpt_t *tt_srpt = vmg->tt_srpt;
-        dsyslog(LOG_INFO, "DVD: tt_srpt: %p", tt_srpt);//XXX
-        for (int i = 0; i < tt_srpt->nr_of_srpts; i++)
-            Add(new cMenuDVDItem(i, tt_srpt->title[i].nr_of_ptts), i == lastTitleID);
-        }
-     }
-  SetHelp(tr("Play"), NULL, NULL, NULL);
-  Display();
-}
-
-eOSState cMenuDVD::Play(void)
-{
-  cMenuDVDItem *ri = (cMenuDVDItem *)Get(Current());
-  if (ri) {
-     cReplayControl::SetDVD(dvd, ri->Title());
-     isyslog(LOG_INFO, "DVD: playing title %d", ri->Title());
-     return osReplay;
-     }
-  return osContinue;
-}
-
-eOSState cMenuDVD::ProcessKey(eKeys Key)
-{
-  eOSState state = cOsdMenu::ProcessKey(Key);
-
-  if (state == osUnknown) {
-     switch (Key) {
-       case kOk:
-       case kRed:    return Play();
-       case kMenu:   return osEnd;
-       default: break;
-       }
-     }
-  return state;
-}
-#endif //DVDSUPPORT
 
 // --- cMenuSetup ------------------------------------------------------------
 
@@ -1857,6 +1869,7 @@ void cMenuSetup::Set(void)
   Add(new cMenuEditBoolItem(tr("UseSubtitle"),        &data.UseSubtitle));
   Add(new cMenuEditBoolItem(tr("RecordingDirs"),      &data.RecordingDirs));
   Add(new cMenuEditBoolItem(tr("VideoFormat"),        &data.VideoFormat, "4:3", "16:9"));
+  Add(new cMenuEditBoolItem(tr("RecordDolbyDigital"), &data.RecordDolbyDigital));
   Add(new cMenuEditBoolItem(tr("ChannelInfoPos"),     &data.ChannelInfoPos, tr("bottom"), tr("top")));
   Add(new cMenuEditIntItem( tr("OSDwidth"),           &data.OSDwidth, MINOSDWIDTH, MAXOSDWIDTH));
   Add(new cMenuEditIntItem( tr("OSDheight"),          &data.OSDheight, MINOSDHEIGHT, MAXOSDHEIGHT));
@@ -1971,10 +1984,6 @@ cMenuMain::cMenuMain(bool Replaying, eOSState State)
   Add(new cOsdItem(hk(tr("Channels")),   osChannels));
   Add(new cOsdItem(hk(tr("Timers")),     osTimers));
   Add(new cOsdItem(hk(tr("Recordings")), osRecordings));
-#ifdef DVDSUPPORT
-  if (cDVD::DriveExists())
-  Add(new cOsdItem(hk(tr("DVD")),        osDVD));
-#endif //DVDSUPPORT
   Add(new cOsdItem(hk(tr("Setup")),      osSetup));
   if (Commands.Count())
      Add(new cOsdItem(hk(tr("Commands")),  osCommands));
@@ -2007,13 +2016,7 @@ cMenuMain::cMenuMain(bool Replaying, eOSState State)
 
   // Color buttons:
 
-  const char *DVDbutton =
-#ifdef DVDSUPPORT
-                          cDVD::DiscOk() ? tr("Eject") : NULL;
-#else
-                          NULL;
-#endif //DVDSUPPORT
-  SetHelp(tr("Record"), cDvbApi::PrimaryDvbApi->CanToggleAudioTrack() ? tr("Language") : NULL, DVDbutton, cReplayControl::LastReplayed() ? tr("Resume") : NULL);
+  SetHelp(tr("Record"), cDvbApi::PrimaryDvbApi->CanToggleAudioTrack() ? tr("Language") : NULL, NULL, cReplayControl::LastReplayed() ? tr("Resume") : NULL);
   Display();
   lastActivity = time(NULL);
   SetHasHotkeys();
@@ -2022,9 +2025,6 @@ cMenuMain::cMenuMain(bool Replaying, eOSState State)
 
   switch (State) {
     case osRecordings: AddSubMenu(new cMenuRecordings(NULL, 0, true)); break;
-#ifdef DVDSUPPORT
-    case osDVD:        AddSubMenu(new cMenuDVD); break;
-#endif //DVDSUPPORT
     default: break;
     }
 }
@@ -2049,9 +2049,6 @@ eOSState cMenuMain::ProcessKey(eKeys Key)
     case osChannels:   return AddSubMenu(new cMenuChannels);
     case osTimers:     return AddSubMenu(new cMenuTimers);
     case osRecordings: return AddSubMenu(new cMenuRecordings);
-#ifdef DVDSUPPORT
-    case osDVD:        return AddSubMenu(new cMenuDVD);
-#endif //DVDSUPPORT
     case osSetup:      return AddSubMenu(new cMenuSetup);
     case osCommands:   return AddSubMenu(new cMenuCommands);
     case osStopRecord: if (Interface->Confirm(tr("Stop recording?"))) {
@@ -2084,23 +2081,6 @@ eOSState cMenuMain::ProcessKey(eKeys Key)
                                    }
                                 }
                              break;
-#ifdef DVDSUPPORT
-               case kYellow: if (!HasSubMenu()) {
-                                if (cDVD::DiscOk()) {
-                                   // We need to stop replaying a DVD before ejecting,
-                                   // otherwise the replay thread crashes. Currently
-                                   // checking LastReplayed() is pretty much the only way
-                                   // of finding out whether we are currently replaying a DVD
-                                   // (i.e. if LastReplayed() returns non-NULL, we are either
-                                   // replaying a normal recording, or nothing at all):
-                                   if (!cReplayControl::LastReplayed())
-                                      cDvbApi::PrimaryDvbApi->StopReplay();
-                                   cDVD::Eject();
-                                   state = osEnd;
-                                   }
-                                }
-                             break;
-#endif //DVDSUPPORT
                case kBlue:   if (!HasSubMenu())
                                 state = osReplay;
                              break;
@@ -2175,8 +2155,8 @@ void cDisplayChannel::DisplayInfo(void)
 {
   if (withInfo) {
      const cEventInfo *Present = NULL, *Following = NULL;
-     cThreadLock ThreadLock;
-     const cSchedules *Schedules = cDvbApi::PrimaryDvbApi->Schedules(&ThreadLock);
+     cMutexLock MutexLock;
+     const cSchedules *Schedules = cSIProcessor::Schedules(MutexLock);
      if (Schedules) {
         const cSchedule *Schedule = Schedules->GetSchedule();
         if (Schedule) {
@@ -2350,14 +2330,16 @@ cRecordControl::~cRecordControl()
   delete fileName;
 }
 
+#define INSTANT_REC_EPG_LOOKAHEAD 300 // seconds to look into the EPG data for an instant recording
+
 bool cRecordControl::GetEventInfo(void)
 {
   cChannel *channel = Channels.GetByNumber(timer->channel);
-  time_t Time = timer->IsSingleEvent() ? timer->StartTime() + ((Setup.MarginStart * 2) + 1) * 60 : timer->StartTime() + (timer->StopTime() - timer->StartTime()) / 2;
+  time_t Time = timer->active == taActInst ? timer->StartTime() + INSTANT_REC_EPG_LOOKAHEAD : timer->StartTime() + (timer->StopTime() - timer->StartTime()) / 2;
   for (int seconds = 0; seconds <= MAXWAIT4EPGINFO; seconds++) {
       {
-        cThreadLock ThreadLock;
-        const cSchedules *Schedules = dvbApi->Schedules(&ThreadLock);
+        cMutexLock MutexLock;
+        const cSchedules *Schedules = cSIProcessor::Schedules(MutexLock);
         if (Schedules) {
            const cSchedule *Schedule = Schedules->GetSchedule(channel->pnr);
            if (Schedule) {
@@ -2481,6 +2463,15 @@ const char *cRecordControls::GetInstantId(const char *LastInstantId)
   return NULL;
 }
 
+cRecordControl *cRecordControls::GetRecordControl(const char *FileName)
+{
+  for (int i = 0; i < MAXDVBAPI; i++) {
+      if (RecordControls[i] && strcmp(RecordControls[i]->FileName(), FileName) == 0)
+         return RecordControls[i];
+      }
+  return NULL;
+}
+
 void cRecordControls::Process(time_t t)
 {
   for (int i = 0; i < MAXDVBAPI; i++) {
@@ -2548,10 +2539,6 @@ void cProgressBar::Mark(int x, bool Start, bool Current)
 
 char *cReplayControl::fileName = NULL;
 char *cReplayControl::title = NULL;
-#ifdef DVDSUPPORT
-cDVD *cReplayControl::dvd = NULL;//XXX
-int  cReplayControl::titleid = 0;//XXX
-#endif //DVDSUPPORT
 
 cReplayControl::cReplayControl(void)
 {
@@ -2565,10 +2552,6 @@ cReplayControl::cReplayControl(void)
      if (!dvbApi->StartReplay(fileName))
         Interface->Error(tr("Channel locked (recording)!"));
      }
-#ifdef DVDSUPPORT
-  else if (dvd)
-     dvbApi->StartDVDplay(dvd, titleid);//XXX
-#endif //DVDSUPPORT
 }
 
 cReplayControl::~cReplayControl()
@@ -2584,20 +2567,6 @@ void cReplayControl::SetRecording(const char *FileName, const char *Title)
   fileName = FileName ? strdup(FileName) : NULL;
   title = Title ? strdup(Title) : NULL;
 }
-
-#ifdef DVDSUPPORT
-void cReplayControl::SetDVD(cDVD *DVD, int Title)//XXX
-{
-  SetRecording(NULL, NULL);
-  dvd = DVD;
-  titleid = Title;
-}
-
-int cReplayControl::LastTitleID(void)
-{
-  return titleid;
-}
-#endif //DVDSUPPORT
 
 const char *cReplayControl::LastReplayed(void)
 {
@@ -2966,7 +2935,7 @@ eOSState cReplayControl::ProcessKey(eKeys Key)
                            else
                               Show();
                            break;
-            case kBack:    return fileName ? osRecordings : osDVD;
+            case kBack:    return osRecordings;
             default:       return osUnknown;
             }
           }

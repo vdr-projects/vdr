@@ -110,6 +110,7 @@ Stefan Huelswitt <huels@iname.com>
  for implementing "Multi Speed Mode"
  for implementing backtracing for fast forward/rewind
  for implementing the replay mode display
+ for fixing a crash when replaying with DEBUG_OSD=1
 
 Ulrich Röder <roeder@efr-net.de>
  for pointing out that there are channels that have a symbol rate higher than
@@ -142,6 +143,7 @@ Artur Skawina <skawina@geocities.com>
 
 Werner Fink <werner@suse.de>
  for making I/O more robust by handling EINTR
+ for fixing closing all unused file descriptors when opening a pipe
 
 Rolf Hakenes <hakenes@hippomi.de>
  for providing 'libdtv' and adapting the EIT mechanisms to it
@@ -182,6 +184,8 @@ Lauri Pesonen <lauri.pesonen@firsthop.com>
 
 Sergei Haller <Sergei.Haller@math.uni-giessen.de>
  for fixing the LastActivity timestamp after a shutdown prompt
+ for fixing the "Low disk space!" message
+ for adding the TPID to Hessen-3 in 'channels.conf'
 
 Andreas Gebel <andreas@xcapenet.de>
  for his help in keeping 'channels.conf' up to date
@@ -205,3 +209,9 @@ Uwe Freese <mail@uwe-freese.de>
 Rainer Zocholl <Usenet-372114@zocki.toppoint.de>
  for suggesting a confirmation prompt when the user presses the "Power" button
  and there is an upcoming timer event
+
+Oleg Assovski <assen@bitcom.msk.ru>
+ for adding EPG scanning for another 4 days
+
+Adrian Stabiszewski <as@nitegate.de>
+ for fixing the SVDRP GRAB command in case the video device can't be opened
