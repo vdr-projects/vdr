@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: themes.c 1.2 2004/05/22 10:30:06 kls Exp $
+ * $Id: themes.c 1.3 2004/06/18 15:05:07 kls Exp $
  */
 
 #include "themes.h"
@@ -114,8 +114,10 @@ bool cTheme::Load(const char *FileName, bool OnlyDescriptions)
                     char *l = strchr(n, '.');
                     if (l)
                        lang = I18nLanguageIndex(++l);
-                    if (lang >= 0)
+                    if (lang >= 0) {
+                       free(descriptions[lang]);
                        descriptions[lang] = strdup(v);
+                       }
                     else
                        error = "invalid language code";
                     }

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 1.54 2004/06/12 13:59:12 kls Exp $
+ * $Id: osd.c 1.55 2004/06/15 20:29:42 kls Exp $
  */
 
 #include "osd.h"
@@ -773,7 +773,7 @@ void cTextScroller::DrawText(void)
 {
   if (osd) {
      for (int i = 0; i < shown; i++)
-          osd->DrawText(left, top + i * font->Height(), textWrapper.GetLine(offset + i), colorFg, colorBg, font, width);
+         osd->DrawText(left, top + i * font->Height(), textWrapper.GetLine(offset + i), colorFg, colorBg, font, width);
      }
 }
 
