@@ -15,7 +15,7 @@ If you have the DVB driver source in a different location
 you will have to change the definition of DVBDIR in the
 Makefile.
 
-This program requires the card driver version 0.8.2 or higher
+This program requires the card driver version 0.9.0 or higher
 to work properly. You need to load the dvb.o module *without* option
 'outstream=0' (previous versions of VDR required this option to have
 the driver supply the data in AV_PES format; as of version 0.70 VDR
