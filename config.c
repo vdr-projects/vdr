@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.88 2002/03/03 16:04:21 kls Exp $
+ * $Id: config.c 1.89 2002/03/08 14:57:08 kls Exp $
  */
 
 #include "config.h"
@@ -962,12 +962,16 @@ cSetup::cSetup(void)
 void cSetup::PrintCaCaps(FILE *f, const char *Name)
 {
   for (int d = 0; d < MAXDVBAPI; d++) {
-      if (CaCaps[d][0]) {
-         fprintf(f, "CaCaps             = %d", d + 1);
-         for (int i = 0; i < MAXCACAPS && CaCaps[d][i]; i++)
+      int written = 0;
+      for (int i = 0; i < MAXCACAPS; i++) {
+          if (CaCaps[d][i]) {
+             if (!written++)
+                fprintf(f, "CaCaps             = %d", d + 1);
              fprintf(f, " %d", CaCaps[d][i]);
+             }
+          }
+      if (written)
          fprintf(f, "\n");
-         }
       }
 }
 

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.155 2002/03/08 14:23:29 kls Exp $
+ * $Id: dvbapi.c 1.156 2002/03/08 15:06:37 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -1870,8 +1870,6 @@ int cDvbApi::ProvidesCa(int Ca)
          else
             others++;
          }
-      else
-         break;
       }
   return result ? result + others : 0;
 }

@@ -1072,3 +1072,4 @@ Video Disk Recorder Revision History
 - Added 'Ca' code 201 for 'Cryptoworks, GOD-DIGITAL' to 'ca.conf' (thanks to
   Bernd Schweikert).
 - Fixed avoiding the primary DVB interface in case Setup.PrimaryLimit is 0.
+- Fixed handling CICAM settings if the first one of a DVB card was FTA.
