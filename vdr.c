@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.168 2003/09/05 13:14:16 kls Exp $
+ * $Id: vdr.c 1.169 2003/09/14 09:36:54 kls Exp $
  */
 
 #include <getopt.h>
@@ -346,7 +346,7 @@ int main(int argc, char *argv[])
 
   Setup.Load(AddDirectory(ConfigDirectory, "setup.conf"));
   if (!(Sources.Load(AddDirectory(ConfigDirectory, "sources.conf"), true, true) &&
-        Diseqcs.Load(AddDirectory(ConfigDirectory, "diseqc.conf"), true, true) &&
+        Diseqcs.Load(AddDirectory(ConfigDirectory, "diseqc.conf"), true, Setup.DiSEqC) &&
         Channels.Load(AddDirectory(ConfigDirectory, "channels.conf"), false, true) &&
         Timers.Load(AddDirectory(ConfigDirectory, "timers.conf")) &&
         Commands.Load(AddDirectory(ConfigDirectory, "commands.conf"), true) &&
