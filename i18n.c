@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.84 2002/05/01 10:30:13 kls Exp $
+ * $Id: i18n.c 1.85 2002/05/01 14:53:55 kls Exp $
  *
  * Slovenian  translations provided by Miha Setina <mihasetina@softhome.net> and Matjaz Thaler <matjaz.thaler@guest.arnes.si>
  * Italian    translations provided by Alberto Carraro <bertocar@tin.it>
@@ -1742,18 +1742,18 @@ const tPhrase Phrases[] = {
     "Tiempo mínimo inactividad (min)",
     "Elaxistos xronos mi energis xrisis se lepta",
   },
-  { "Setup.Miscellaneous$SVDRP timeout (min)",
-    "SVDRP Timeout (min)",
-    "SVDRP Timeout (min)",
-    "Timeout SVDRP (min)",
-    "SVDRP Timeout (min)",
-    "Timeout SVDRP (min)",
-    "Temps maxi SVDRP (min)",
-    "Ubrukt SVDRP-levetid (min)",
-    "SVDRP odotusaika (min)",
-    "Min. brak aktywnosci SVDRP (min)",
-    "SVDRP interrupción (min)",
-    "SVDRP Timeout (lepta)",
+  { "Setup.Miscellaneous$SVDRP timeout (s)",
+    "SVDRP Timeout (s)",
+    "SVDRP Timeout (s)",
+    "Timeout SVDRP (s)",
+    "SVDRP Timeout (s)",
+    "Timeout SVDRP (s)",
+    "Temps maxi SVDRP (s)",
+    "Ubrukt SVDRP-levetid (s)",
+    "SVDRP odotusaika (s)",
+    "Min. brak aktywnosci SVDRP (s)",
+    "SVDRP interrupción (s)",
+    "SVDRP Timeout (s)",
   },
   // The days of the week:
   { "MTWTFSS",

@@ -1226,3 +1226,5 @@ Video Disk Recorder Revision History
 - The default duration of an instant recording has been increased to 3 hours and
   is now configurable in the "Setup/Recording" menu.
 - Added Greek language texts (thanks to Dimitrios Dimitrakos).
+- Fixed the unit of the "SVDRP timeout" setup parameter (thanks to Marcus Kuba
+  for reporting this one).

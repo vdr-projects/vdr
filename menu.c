@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.188 2002/04/26 12:43:32 kls Exp $
+ * $Id: menu.c 1.189 2002/05/01 14:54:10 kls Exp $
  */
 
 #include "menu.h"
@@ -2242,7 +2242,7 @@ void cMenuSetupMisc::Set(void)
   SetupTitle("Miscellaneous");
   Add(new cMenuEditIntItem( tr("Setup.Miscellaneous$Min. event timeout (min)"),   &data.MinEventTimeout));
   Add(new cMenuEditIntItem( tr("Setup.Miscellaneous$Min. user inactivity (min)"), &data.MinUserInactivity));
-  Add(new cMenuEditIntItem( tr("Setup.Miscellaneous$SVDRP timeout (min)"),        &data.SVDRPTimeout));
+  Add(new cMenuEditIntItem( tr("Setup.Miscellaneous$SVDRP timeout (s)"),          &data.SVDRPTimeout));
 }
 
 // --- cMenuSetup ------------------------------------------------------------
