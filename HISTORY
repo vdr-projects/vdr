@@ -172,3 +172,4 @@ Video Disk Recorder Revision History
 
 - Video files now have the 'group read' bit set.
 - Fixed handling errors in 'readstring()'.
+- Handling SIGPIPE and re-establishing handler after intercepting a signal.

@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/people/kls/vdr
  *
- * $Id: vdr.c 1.30 2000/09/10 14:33:09 kls Exp $
+ * $Id: vdr.c 1.31 2000/09/15 13:55:39 kls Exp $
  */
 
 #include <getopt.h>
@@ -46,9 +46,11 @@
 
 static int Interrupted = 0;
 
-void SignalHandler(int signum)
+static void SignalHandler(int signum)
 {
-  Interrupted = signum;
+  if (signum != SIGPIPE)
+     Interrupted = signum;
+  signal(signum, SignalHandler);
 }
 
 int main(int argc, char *argv[])
@@ -174,6 +176,7 @@ int main(int argc, char *argv[])
   if (signal(SIGHUP,  SignalHandler) == SIG_IGN) signal(SIGHUP,  SIG_IGN);
   if (signal(SIGINT,  SignalHandler) == SIG_IGN) signal(SIGINT,  SIG_IGN);
   if (signal(SIGTERM, SignalHandler) == SIG_IGN) signal(SIGTERM, SIG_IGN);
+  if (signal(SIGPIPE, SignalHandler) == SIG_IGN) signal(SIGPIPE, SIG_IGN);
 
   // Main program loop:
 
