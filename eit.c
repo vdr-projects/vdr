@@ -16,7 +16,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.c 1.65 2003/02/02 15:41:03 kls Exp $
+ * $Id: eit.c 1.67 2003/03/16 11:20:05 kls Exp $
  ***************************************************************************/
 
 #include "eit.h"
@@ -607,7 +607,7 @@ void cEventInfo::FixEpgBugs(void)
            free(pExtendedDescription);
            pExtendedDescription = pSubtitle;
            pSubtitle = NULL;
-           EpgBugFixStat(5, GetChannelID());
+           EpgBugFixStat(6, GetChannelID());
            }
         }
 
@@ -1250,12 +1250,13 @@ void cSIProcessor::Action()
                   if (seclen == r)
                   {
                      //dsyslog("Received pid 0x%04X with table ID 0x%02X and length of %4d\n", pid, buf[0], seclen);
+                     cMutexLock MutexLock(&schedulesMutex); // since the xMem... stuff is not thread safe, we need to use a "global" mutex
+                     LOCK_THREAD;
                      switch (pid)
                      {
                         case 0x00:
                            if (buf[0] == 0x00)
                            {
-                              LOCK_THREAD;
                               if (pmtPid && time(NULL) - lastPmtScan > PMT_SCAN_TIMEOUT) {
                                  DelFilter(pmtPid, 0x02);
                                  pmtPid = 0;
@@ -1263,7 +1264,6 @@ void cSIProcessor::Action()
                                  lastPmtScan = time(NULL);
                                  }
                               if (!pmtPid) {
-                                 cMutexLock MutexLock(&schedulesMutex); // since the xMem... stuff is not thread safe, we need to use a "global" mutex
                                  struct LIST *pat = siParsePAT(buf);
                                  if (pat) {
                                     int Index = 0;
@@ -1301,7 +1301,6 @@ void cSIProcessor::Action()
                         case 0x12:
                            if (buf[0] != 0x72)
                            {
-                              cMutexLock MutexLock(&schedulesMutex);
                               cEIT ceit(buf, seclen, schedules);
                               ceit.ProcessEIT(buf, currentSource);
                            }
@@ -1310,9 +1309,7 @@ void cSIProcessor::Action()
                            break;
 
                         default: {
-                           LOCK_THREAD;
                            if (pid == pmtPid && buf[0] == 0x02 && currentSource && currentTransponder) {
-                              cMutexLock MutexLock(&schedulesMutex); // since the xMem... stuff is not thread safe, we need to use a "global" mutex
                               struct Pid *pi = siParsePMT(buf);
                               if (pi) {
                                  for (struct LIST *d = (struct LIST *)pi->Descriptors; d; d = (struct LIST *)xSucc(d)) {

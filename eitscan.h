@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: eitscan.h 1.1 2002/05/20 11:00:05 kls Exp $
+ * $Id: eitscan.h 1.2 2003/03/16 13:20:40 kls Exp $
  */
 
 #ifndef __EITSCAN_H
@@ -19,7 +19,8 @@ private:
          ScanTimeout = 20
        };
   time_t lastScan, lastActivity;
-  int currentChannel, lastChannel;
+  int currentChannel;
+  int lastChannel[MAXDEVICES];
   int numTransponders, *transponders;
   bool TransponderScanned(cChannel *Channel);
 public:

@@ -1959,7 +1959,7 @@ Video Disk Recorder Revision History
 
 2003-02-16: Version 1.1.25
 
-- Fixed high CPU load during replay (thanks Marcel Wiesweg for pointing out this
+- Fixed high CPU load during replay (thanks to Marcel Wiesweg for pointing out this
   one).
 - Fixed margin handling in cRingBufferLinear.
 - Now polling the output device in 'Transfer Mode' and retrying to put packets
@@ -1970,3 +1970,20 @@ Video Disk Recorder Revision History
 - Fixed broken support for raw OSDs of plugins (thanks to Marcel Wiesweg for
   reporting this one).
 - Broken CAM connections are now restored automatically.
+
+2003-03-19: Version 1.1.26
+
+- Removed signal handling and usleep(5000) from cDvbOsd::Cmd() (apparently this
+  is no longer necessary with DVB driver 1.0.0pre2 or later).
+- If the primary device (as defined in setup.conf) doesn't have an MPEG decoder
+  (and thus can't be used as a primary device) VDR now scans all devices at
+  startup and uses the first one (if any) that actually has an MPEG decoder.
+  That way this will also work automatically if the primary device is implemented
+  by a plugin.
+- Fixed a possible deadlock when using the "Blue" button in the "Schedules" menu
+  to switch to an other channel (thanks to Torsten Herz).
+- Fixed the EPG bugfix code number for the MAX_USEFUL_SUBTITLE_LENGTH fix (thanks to
+  Torsten Herz for reporting this one).
+- Modified the EPG scanner to avoid CPU load peaks (thanks to Steffen Becker for
+  reporting this one).
+- Fixed support for Viaccess CAMs (thanks to Axel Gruber for helping to debug this).

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 1.7 2003/02/16 11:20:55 kls Exp $
+ * $Id: ci.c 1.8 2003/03/16 22:32:47 kls Exp $
  */
 
 /* XXX TODO
@@ -1232,7 +1232,7 @@ cCiCaPmt::cCiCaPmt(int ProgramNumber)
   capmt[length++] = CPLM_ONLY;
   capmt[length++] = (ProgramNumber >> 8) & 0xFF;
   capmt[length++] =  ProgramNumber       & 0xFF;
-  capmt[length++] = 0x00; //XXX version_number, current_next_indicator - apparently may be 0x00
+  capmt[length++] = 0x01; // version_number, current_next_indicator - apparently vn doesn't matter, but cni must be 1
   esInfoLengthPos = length;
   capmt[length++] = 0x00; // program_info_length H (at program level)
   capmt[length++] = 0x00; // program_info_length L
