@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.342 2005/02/27 14:09:00 kls Exp $
+ * $Id: menu.c 1.343 2005/03/05 15:43:10 kls Exp $
  */
 
 #include "menu.h"
@@ -1947,8 +1947,9 @@ void cMenuSetupDVB::Setup(void)
   Clear();
 
   Add(new cMenuEditIntItem( tr("Setup.DVB$Primary DVB interface"), &data.PrimaryDVB, 1, cDevice::NumDevices()));
-  Add(new cMenuEditStraItem(tr("Setup.DVB$Video display format"),  &data.VideoDisplayFormat, 3, videoDisplayFormatTexts));
   Add(new cMenuEditBoolItem(tr("Setup.DVB$Video format"),          &data.VideoFormat, "4:3", "16:9"));
+  if (data.VideoFormat == 0)
+     Add(new cMenuEditStraItem(tr("Setup.DVB$Video display format"), &data.VideoDisplayFormat, 3, videoDisplayFormatTexts));
   Add(new cMenuEditBoolItem(tr("Setup.DVB$Use Dolby Digital"),     &data.UseDolbyDigital));
   Add(new cMenuEditStraItem(tr("Setup.DVB$Update channels"),       &data.UpdateChannels, 5, updateChannelsTexts));
   Add(new cMenuEditIntItem( tr("Setup.DVB$Audio languages"),       &numAudioLanguages, 0, I18nNumLanguages));
@@ -1964,10 +1965,12 @@ eOSState cMenuSetupDVB::ProcessKey(eKeys Key)
   int oldPrimaryDVB = ::Setup.PrimaryDVB;
   int oldVideoDisplayFormat = ::Setup.VideoDisplayFormat;
   bool oldVideoFormat = ::Setup.VideoFormat;
+  bool newVideoFormat = data.VideoFormat;
   int oldnumAudioLanguages = numAudioLanguages;
   eOSState state = cMenuSetupBase::ProcessKey(Key);
 
   if (Key != kNone) {
+     bool DoSetup = data.VideoFormat != newVideoFormat;
      if (numAudioLanguages != oldnumAudioLanguages) {
         for (int i = oldnumAudioLanguages; i < numAudioLanguages; i++) {
             data.AudioLanguages[i] = 0;
@@ -1984,8 +1987,10 @@ eOSState cMenuSetupDVB::ProcessKey(eKeys Key)
                 }
             }
         data.AudioLanguages[numAudioLanguages] = -1;
-        Setup();
+        DoSetup = true;
         }
+     if (DoSetup)
+        Setup();
      }
   if (state == osBack && Key == kOk) {
      if (::Setup.PrimaryDVB != oldPrimaryDVB)

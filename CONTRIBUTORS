@@ -1292,3 +1292,7 @@ Chris Warren <dvb@ixalon.net>
 Luca Olivetti <luca@ventoso.org>
  for making cDevice::AttachPlayer() keep the track language codes and descriptions
  in Transfer Mode
+
+Mikko Salo <mikko.salo@ppe.inet.fi>
+ for suggesting to make the setup option "DVB/Video display format" available only
+ if "Video format" is set to "4:3"
