@@ -2459,3 +2459,8 @@ Video Disk Recorder Revision History
 - Added North American satellites to 'sources.conf' (thanks to Luke Jenkins).
 - Fixed getting the list of recordings in case VDR is started from a directory
   where it doesn't have access to (thanks to Dirk Mueller).
+
+2003-11-09: Version 1.2.6pre6
+
+- Fixed handling Priority -1 in cDvbDevice::ProvidesChannel() (thanks to
+  Torsten Herz).
