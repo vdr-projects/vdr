@@ -2346,3 +2346,5 @@ Video Disk Recorder Revision History
   menus with the DVD plugin.
 - Fixed handling extra blanks in plugin command lines.
 - Actually implemented the SVDRP command DELC.
+- Now clearing the player device if there are too many poll timeouts in 'Transfer
+  Mode', which avoids buffer overflows and black screens in such cases.
