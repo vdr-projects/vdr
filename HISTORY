@@ -167,4 +167,7 @@ Video Disk Recorder Revision History
 - When directly selecting a channel by entering the channel number, the digits
   entered so far together with the name of that channel are displayed on the
   OSD (suggested by Martin Hammerschmid).
-  
+
+2000-09-15: Version 0.64
+
+- Video files now have the 'group read' bit set.

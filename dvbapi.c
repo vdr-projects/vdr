@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbapi.c 1.24 2000/09/10 10:25:09 kls Exp $
+ * $Id: dvbapi.c 1.25 2000/09/15 13:23:00 kls Exp $
  */
 
 #include "dvbapi.h"
@@ -139,7 +139,7 @@ cIndexFile::cIndexFile(const char *FileName, bool Record)
               LOG_ERROR;
            }
         if (Record) {
-           if ((f = open(fileName, O_WRONLY | O_CREAT | O_APPEND, S_IRUSR | S_IWUSR)) >= 0) {
+           if ((f = open(fileName, O_WRONLY | O_CREAT | O_APPEND, S_IRUSR | S_IWUSR | S_IRGRP)) >= 0) {
               if (delta) {
                  esyslog(LOG_ERR, "ERROR: padding index file with %d '0' bytes", delta);
                  while (delta--)
@@ -297,7 +297,7 @@ int cIndexFile::Get(uchar FileNumber, int FileOffset)
 bool cIndexFile::StoreResume(int Index)
 {
   if (fileName) {
-     int resumeFile = open(fileName, O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
+     int resumeFile = open(fileName, O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR | S_IRGRP);
      if (resumeFile >= 0) {
         if (write(resumeFile, &Index, sizeof(Index)) != sizeof(Index))
            LOG_ERROR_STR(fileName);
