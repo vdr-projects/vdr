@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.26 2000/09/10 15:06:15 kls Exp $
+ * $Id: menu.c 1.27 2000/09/11 21:13:46 kls Exp $
  */
 
 #include "menu.h"
@@ -1190,7 +1190,7 @@ eOSState cDirectChannelSelect::ProcessKey(eKeys Key)
          if (number >= 0) {
             number = number * 10 + Key - k0;
             cChannel *channel = Channels.GetByNumber(number);
-            char *Name = channel ? channel->name : "*** Invalid Channel ***";
+            const char *Name = channel ? channel->name : "*** Invalid Channel ***";
             int BufSize = MenuColumns + 1;
             char buffer[BufSize];
             snprintf(buffer, BufSize, "%d  %s", number, Name);
