@@ -1827,3 +1827,5 @@ Video Disk Recorder Revision History
 - Removed transponders 10788, 11739 and 12266 from 'channels.conf' (apparently they
   are no longer active).
 - Deactivated some templates in tools.h in case some plugin needs to use the STL.
+- Timers now accept channel IDs even if the 'source' is 0 (thanks to Stefan Huelswitt
+  for reporting this one).
