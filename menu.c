@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.52 2000/11/18 16:30:13 kls Exp $
+ * $Id: menu.c 1.53 2000/11/26 16:15:30 kls Exp $
  */
 
 #include "menu.h"
@@ -1310,7 +1310,9 @@ private:
   cThreadLock threadLock;
   const cSchedules *schedules;
   bool now, next;
+  int otherChannel;
   eOSState Record(void);
+  eOSState Switch(void);
   void PrepareSchedule(cChannel *Channel);
   void PrepareWhatsOnNext(bool On);
 public:
@@ -1322,6 +1324,7 @@ cMenuSchedule::cMenuSchedule(void)
 :cOsdMenu("", 6, 6)
 {
   now = next = false;
+  otherChannel = 0;
   cChannel *channel = Channels.GetByNumber(cDvbApi::CurrentChannel());
   if (channel) {
      schedules = cDvbApi::PrimaryDvbApi->Schedules(&threadLock);
@@ -1383,6 +1386,16 @@ eOSState cMenuSchedule::Record(void)
   return osContinue;
 }
 
+eOSState cMenuSchedule::Switch(void)
+{
+  if (otherChannel) {
+     if (Channels.SwitchTo(otherChannel))
+        return osEnd;
+     }
+  Interface->Error(tr("Can't switch channel!"));
+  return osContinue;
+}
+
 eOSState cMenuSchedule::ProcessKey(eKeys Key)
 {
   eOSState state = cOsdMenu::ProcessKey(Key);
@@ -1398,8 +1411,9 @@ eOSState cMenuSchedule::ProcessKey(eKeys Key)
                      next = !next;
                      return AddSubMenu(new cMenuWhatsOn(schedules, now));
        case kYellow: return AddSubMenu(new cMenuWhatsOn(schedules, false));
+       case kBlue:   return Switch();
        case kOk:     if (Count())
-                        return AddSubMenu(new cMenuEvent(((cMenuScheduleItem *)Get(Current()))->eventInfo));
+                        return AddSubMenu(new cMenuEvent(((cMenuScheduleItem *)Get(Current()))->eventInfo, otherChannel));
                      break;
        default:      break;
        }
@@ -1411,6 +1425,10 @@ eOSState cMenuSchedule::ProcessKey(eKeys Key)
         cChannel *channel = Channels.GetByServiceID(ei->GetServiceID());
         if (channel) {
            PrepareSchedule(channel);
+           if (channel->number != cDvbApi::CurrentChannel()) {
+              otherChannel = channel->number;
+              SetHelp(tr("Record"), tr("Now"), tr("Next"), tr("Switch"));
+              }
            Display();
            }
         }
