@@ -797,7 +797,8 @@ Video Disk Recorder Revision History
 - Fixed the "system time seen..." message in case of overlapping timers.
 - The shutdown program (defined with the '-s' option) now also gets the channel
   number and recording title of the timer (see INSTALL).
-- New channel data for 'Premiere One' and 'Premiere X-Action' (thanks to
-  Andreas Share, Ulrich Röder and Uwe Scheffler). Note that if you are using the
-  default 'channels.conf' or 'channels.conf.cable' files you may need to check
-  any exiting timers to see whether they still use the correct channel number.
+- New channel data for 'Premiere One', 'Premiere X-Action', 'Fox Kids Türkce'
+  and 'N24' (thanks to Andreas Share, Ulrich Röder and Uwe Scheffler). Note that
+  if you are using the default 'channels.conf' or 'channels.conf.cable' files you
+  may need to check any exiting timers to see whether they still use the correct
+  channel number.
