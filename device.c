@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.79 2005/01/25 18:19:30 kls Exp $
+ * $Id: device.c 1.80 2005/01/30 12:52:45 kls Exp $
  */
 
 #include "device.h"
@@ -842,7 +842,7 @@ int cDevice::PlayPesPacket(const uchar *Data, int Length, bool VideoOnly)
           case 0xBD: { // private stream 1
                int PayloadOffset = Data[8] + 9;
                uchar SubStreamId = Data[PayloadOffset];
-               uchar SubStreamType = SubStreamId & 0xE0;
+               uchar SubStreamType = SubStreamId & 0xF0;
                uchar SubStreamIndex = SubStreamId & 0x1F;
 
                // Compatibility mode for old VDR recordings, where 0xBD was only AC3:
@@ -857,6 +857,7 @@ int cDevice::PlayPesPacket(const uchar *Data, int Length, bool VideoOnly)
 
                switch (SubStreamType) {
                  case 0x20: // SPU
+                 case 0x30: // SPU
                       break;
                  case 0x80: // AC3 & DTS
                       if (Setup.UseDolbyDigital) {

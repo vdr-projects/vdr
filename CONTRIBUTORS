@@ -266,6 +266,7 @@ Werner Fink <werner@suse.de>
  overhead in the firmware
  for a patch that was used as a base for implementing a modified PES packet
  handling in order to play AC3 audio over full featured DVB cards
+ for pointing out an error in masking SubStreamType in cDevice::PlayPesPacket()
 
 Rolf Hakenes <hakenes@hippomi.de>
  for providing 'libdtv' and adapting the EIT mechanisms to it

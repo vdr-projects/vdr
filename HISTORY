@@ -3343,3 +3343,5 @@ Video Disk Recorder Revision History
   pointing this out).
 - Fixed a buffer overflow in case a station defines all 32 audio PIDs (thanks to
   Christian Jacobsen for reporting this one).
+- Fixed masking SubStreamType in cDevice::PlayPesPacket() (thanks to Werner Fink
+  for pointing out this one).
