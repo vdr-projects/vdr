@@ -13,7 +13,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- * $Id: eit.c 1.6 2000/11/01 15:51:00 kls Exp $
+ * $Id: eit.c 1.7 2000/11/01 15:53:00 kls Exp $
  ***************************************************************************/
 
 #include "eit.h"
@@ -409,11 +409,42 @@ cSchedule::~cSchedule()
 /**  */
 const cEventInfo * cSchedule::GetPresentEvent() const
 {
+   // checking temporal sanity of present event (kls 2000-11-01)
+   time_t now = time(NULL);
+   if (pPresent && !(pPresent->GetTime() <= now && now <= pPresent->GetTime() + pPresent->GetDuration()))
+   {
+	   cEventInfo *pe = Events.First();
+	   while (pe != NULL)
+	   {
+		   if (pe->GetTime() <= now && now <= pe->GetTime() + pe->GetDuration())
+            return pe;
+         pe = Events.Next(pe);
+	   }
+   }
 	return pPresent;
 }
 /**  */
 const cEventInfo * cSchedule::GetFollowingEvent() const
 {
+   // checking temporal sanity of following event (kls 2000-11-01)
+   time_t now = time(NULL);
+   const cEventInfo *pr = GetPresentEvent(); // must have it verified!
+   if (pFollowing && !(pr && pr->GetTime() + pr->GetDuration() <= pFollowing->GetTime()))
+   {
+      int minDt = INT_MAX;
+      cEventInfo *pe = Events.First(), *pf = NULL;
+      while (pe != NULL)
+      {
+	      int dt = pe->GetTime() - now;
+	      if (dt > 0 && dt < minDt)
+         {
+            minDt = dt;
+            pf = pe;
+         }
+	      pe = Events.Next(pe);
+      }
+      return pf;
+   }
 	return pFollowing;
 }
 /**  */
@@ -911,6 +942,9 @@ bool cEIT::WriteShortEventDescriptor(unsigned short service, eit_loop_t *eitloop
 			return false;
 	}
 
+   /* cSchedule::GetPresentEvent() and cSchedule::GetFollowingEvent() verify
+      the temporal sanity of these events, so calling them here appears to
+      be a bad idea... (kls 2000-11-01)
 	//
 	// if we are working on a present/following info, let's see whether
 	// we already have present/following info for this service and if yes
@@ -928,6 +962,7 @@ bool cEIT::WriteShortEventDescriptor(unsigned short service, eit_loop_t *eitloop
 			if (pEvent->GetEventID() == eventid)
 				return true;
 	}
+   */
 
 	//
 	// let's see whether we have that eventid already
@@ -1064,21 +1099,20 @@ void cSIProcessor::Action()
    unsigned char buf[4096+1]; // max. allowed size for any EIT section (+1 for safety ;-)
 	unsigned int seclen;
 	unsigned int pid;
-   int dayofdelete = -1;
+   time_t lastCleanup = time(NULL);
 	struct pollfd pfd;
 	
 	while(true)
 	{
       time_t now = time(NULL);
       struct tm *ptm = localtime(&now);
-      if (dayofdelete != ptm->tm_yday && ptm->tm_hour == 0 && ptm->tm_min < 5)
+      if (now - lastCleanup > 3600 && ptm->tm_hour == 5)
       {
-         isyslog(LOG_INFO, "Now cleaning up things");
-
          LOCK_THREAD;
 
+         isyslog(LOG_INFO, "Now cleaning up things");
          schedules->Cleanup();
-         dayofdelete = ptm->tm_yday;
+         lastCleanup = now;
       }
 
 		/* wait data become ready from the bitfilter */
