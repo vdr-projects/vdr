@@ -444,6 +444,9 @@ Oliver Endriss <o.endriss@gmx.de>
  for providing examples for 'diseqc.conf'
  for improving deleting stale lock files
  for fixing high CPU load in 'Transfer Mode'
+ for making the "Left" and "Right" buttons set the cursor to the first or last
+ list item even if the list consist only of a single page, like, for instance,
+ the Main menu
 
 Reinhard Walter Buchner <rw.buchner@freenet.de>
  for adding some satellites to 'sources.conf'
