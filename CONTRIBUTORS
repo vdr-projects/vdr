@@ -1313,3 +1313,6 @@ Steffen Beyer <cpunk@reactor.de>
 
 Daniel Thompson <daniel.thompson@st.com>
  for fixing a memory leak in tComponent
+
+Matthias Lötzke <Matthias@Loetzke.de>
+ for adding missing text internationalization for "Starting EPG scan"

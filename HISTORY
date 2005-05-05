@@ -3481,3 +3481,5 @@ Video Disk Recorder Revision History
 - Updated the Danish OSD texts (thanks to Mogens Elneff).
 - Fixed a memory leak in tComponent (thanks to Stefan Huelswitt and Daniel Thompson).
 - Fixed a memory leak in cDvbPlayer (thanks to Stefan Huelswitt).
+- Added missing text internationalization for "Starting EPG scan" (thanks to
+  Matthias Lötzke).
