@@ -194,6 +194,7 @@ Stefan Huelswitt <huels@iname.com>
  for adding MPEG1 replay capability to cPesAssembler
  for fixing handling symbolic links in cRecordings::ScanVideoDir()
  for reporting a memory leak in tComponent
+ for fixing a memory leak in cDvbPlayer
 
 Ulrich Röder <roeder@efr-net.de>
  for pointing out that there are channels that have a symbol rate higher than 27500

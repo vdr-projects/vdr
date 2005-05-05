@@ -3480,3 +3480,4 @@ Video Disk Recorder Revision History
   (thanks to Ville Skyttä).
 - Updated the Danish OSD texts (thanks to Mogens Elneff).
 - Fixed a memory leak in tComponent (thanks to Stefan Huelswitt and Daniel Thompson).
+- Fixed a memory leak in cDvbPlayer (thanks to Stefan Huelswitt).

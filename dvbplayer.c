@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 1.30 2005/01/14 14:00:56 kls Exp $
+ * $Id: dvbplayer.c 1.31 2005/05/05 12:52:40 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -263,6 +263,7 @@ cDvbPlayer::~cDvbPlayer()
 {
   Detach();
   Save();
+  delete readFrame; // might not have been stored in the buffer in Action()
   delete index;
   delete fileName;
   delete backTrace;
@@ -296,6 +297,7 @@ void cDvbPlayer::Empty(void)
      nonBlockingFileReader->Clear();
   if ((readIndex = backTrace->Get(playDir == pdForward)) < 0)
      readIndex = writeIndex;
+  delete readFrame; // might not have been stored in the buffer in Action()
   readFrame = NULL;
   playFrame = NULL;
   ringBuffer->Clear();
