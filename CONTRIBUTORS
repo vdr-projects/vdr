@@ -1303,6 +1303,7 @@ Roman Krenický <free-rtk@gmx.de>
 
 Ville Skyttä <ville.skytta@iki.fi>
  for reporting several compiler warnings in gcc 4.0
+ for including the optional user defined Make.config from the 'libsi' Makefile
 
 Steffen Beyer <cpunk@reactor.de>
  for fixing setting the colored button help after deleting a recording in case the next
