@@ -3479,3 +3479,4 @@ Video Disk Recorder Revision History
 - Now including the optional user defined Make.config from the 'libsi' Makefile
   (thanks to Ville Skyttä).
 - Updated the Danish OSD texts (thanks to Mogens Elneff).
+- Fixed a memory leak in tComponent (thanks to Stefan Huelswitt and Daniel Thompson).

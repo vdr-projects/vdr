@@ -193,6 +193,7 @@ Stefan Huelswitt <huels@iname.com>
  for reporting several memory leaks that were introduced through the use of cString
  for adding MPEG1 replay capability to cPesAssembler
  for fixing handling symbolic links in cRecordings::ScanVideoDir()
+ for reporting a memory leak in tComponent
 
 Ulrich Röder <roeder@efr-net.de>
  for pointing out that there are channels that have a symbol rate higher than 27500
@@ -1308,3 +1309,6 @@ Ville Skyttä <ville.skytta@iki.fi>
 Steffen Beyer <cpunk@reactor.de>
  for fixing setting the colored button help after deleting a recording in case the next
  menu entry is a directory
+
+Daniel Thompson <daniel.thompson@st.com>
+ for fixing a memory leak in tComponent

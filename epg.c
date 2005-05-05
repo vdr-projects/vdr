@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 1.27 2005/03/20 12:34:19 kls Exp $
+ * $Id: epg.c 1.28 2005/05/05 12:37:15 kls Exp $
  */
 
 #include "epg.h"
@@ -29,9 +29,7 @@ bool tComponent::FromString(const char *s)
 {
   unsigned int Stream, Type;
   int n = sscanf(s, "%X %02X %3c %a[^\n]", &Stream, &Type, language, &description);
-  if (n != 4)
-     description = NULL;
-  else if (isempty(description)) {
+  if (n != 4 || isempty(description)) {
      free(description);
      description = NULL;
      }
