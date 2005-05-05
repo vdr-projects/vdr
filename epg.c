@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 1.28 2005/05/05 12:37:15 kls Exp $
+ * $Id: epg.c 1.29 2005/05/05 13:53:19 kls Exp $
  */
 
 #include "epg.h"
@@ -223,7 +223,7 @@ cString cEvent::GetVpsString(void) const
 
 void cEvent::Dump(FILE *f, const char *Prefix) const
 {
-  if (startTime + duration >= time(NULL)) {
+  if (startTime + duration + Setup.EPGLinger * 60 >= time(NULL)) {
      fprintf(f, "%sE %u %ld %d %X\n", Prefix, eventID, startTime, duration, tableID);
      if (!isempty(title))
         fprintf(f, "%sT %s\n", Prefix, title);

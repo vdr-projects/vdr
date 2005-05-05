@@ -3485,3 +3485,5 @@ Video Disk Recorder Revision History
   Matthias Lötzke).
 - Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
 - Fixed handling transparent areas in cDvbSpuBitmap (thanks to Marco Schlüßler).
+- Now also considering the "EPG linger time" when saving the EPG data to file or
+  listing it via LSTE (thanks to Roman Krenický).

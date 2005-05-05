@@ -1303,6 +1303,8 @@ Mikko Salo <mikko.salo@ppe.inet.fi>
 
 Roman Krenický <free-rtk@gmx.de>
  for a patch that was used a a basis for changing a timer's day handling to full date
+ for considering the "EPG linger time" when saving the EPG data to file or listing
+ it via LSTE
 
 Ville Skyttä <ville.skytta@iki.fi>
  for reporting several compiler warnings in gcc 4.0
