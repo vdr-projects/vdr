@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.185 2005/03/12 10:43:16 kls Exp $
+ * $Id: i18n.c 1.186 2005/05/05 11:08:47 kls Exp $
  *
  * Translations provided by:
  *
@@ -3113,7 +3113,7 @@ const tI18nPhrase Phrases[] = {
     "Широкоэкранное изображение",
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Video display format",
   },
   { "pan&scan",
     "pan&scan",
