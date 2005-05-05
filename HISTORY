@@ -3483,3 +3483,4 @@ Video Disk Recorder Revision History
 - Fixed a memory leak in cDvbPlayer (thanks to Stefan Huelswitt).
 - Added missing text internationalization for "Starting EPG scan" (thanks to
   Matthias Lötzke).
+- Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
