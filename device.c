@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.99 2005/02/27 13:55:15 kls Exp $
+ * $Id: device.c 1.100 2005/05/05 14:48:01 kls Exp $
  */
 
 #include "device.h"
@@ -34,7 +34,7 @@ public:
   int ExpectedLength(void) { return PacketSize(data); }
   static int PacketSize(const uchar *data);
   int Length(void) { return length; }
-  const uchar *Data(void) { return data; }
+  const uchar *Data(void) { return data; } // only valid if Length() >= 4
   void Reset(void);
   void Put(uchar c);
   void Put(const uchar *Data, int Length);
@@ -76,7 +76,7 @@ bool cPesAssembler::Realloc(int Size)
 
 void cPesAssembler::Put(uchar c)
 {
-  if (!length) {
+  if (length < 4) {
      tag = (tag << 8) | c;
      if ((tag & 0xFFFFFF00) == 0x00000100) {
         if (Realloc(4)) {
@@ -84,6 +84,8 @@ void cPesAssembler::Put(uchar c)
            length = 4;
            }
         }
+     else if (length < 3)
+        length++;
      }
   else if (Realloc(length + 1))
      data[length++] = c;
@@ -91,7 +93,7 @@ void cPesAssembler::Put(uchar c)
 
 void cPesAssembler::Put(const uchar *Data, int Length)
 {
-  while (!length && Length > 0) {
+  while (length < 4 && Length > 0) {
         Put(*Data++);
         Length--;
         }

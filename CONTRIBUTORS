@@ -938,6 +938,7 @@ Reinhard Nissl <rnissl@gmx.de>
  for fixing a possible freeze in pause mode in case a device's PlayPesPacket()
  function permanently returns 0
  for fixing a typo in detecting UTF-8
+ for fixing handling fragments of less than 3 byte in cPesAssembler
 
 Richard Robson <richard_robson@beeb.net>
  for reporting freezing replay if a timer starts while in Transfer Mode from the
