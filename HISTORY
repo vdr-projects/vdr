@@ -3484,3 +3484,4 @@ Video Disk Recorder Revision History
 - Added missing text internationalization for "Starting EPG scan" (thanks to
   Matthias Lötzke).
 - Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
+- Fixed handling transparent areas in cDvbSpuBitmap (thanks to Marco Schlüßler).

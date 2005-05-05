@@ -8,7 +8,7 @@
  *
  * parts of this file are derived from the OMS program.
  *
- * $Id: dvbspu.c 1.12 2005/02/06 09:54:51 kls Exp $
+ * $Id: dvbspu.c 1.13 2005/05/05 13:19:03 kls Exp $
  */
 
 #include <assert.h>
@@ -143,6 +143,8 @@ bool cDvbSpuBitmap::getMinSize(const aDvbSpuPalDescr paldescr,
     if (ret)
         DEBUG("MinSize: (%d, %d) x (%d, %d)\n",
               size.x1, size.y1, size.x2, size.y2);
+    if (size.x1 > size.x2 || size.y1 > size.y2)
+       return false;
 
     return ret;
 }

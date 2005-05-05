@@ -1160,6 +1160,7 @@ Marco Schlüßler <marco@lordzodiac.de>
  for increasing POLLTIMEOUTS_BEFORE_DEVICECLEAR in transfer.c to 6 to avoid problems
  with the larger buffer reserve
  for adding support for setting the video display mode
+ for fixing handling transparent areas in cDvbSpuBitmap
 
 Jürgen Schmitz <j.schmitz@web.de>
  for reporting a bug in displaying the current channel when switching via the SVDRP
