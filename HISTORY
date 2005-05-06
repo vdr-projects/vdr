@@ -3489,3 +3489,5 @@ Video Disk Recorder Revision History
   listing it via LSTE (thanks to Roman Krenický).
 - Fixed handling fragments of less than 3 byte in cPesAssembler (thanks to
   Reinhard Nissl).
+- Fixed a bug in libsi's SubtitlingDescriptor::getLength() (thanks to Marco
+  Schlüßler).

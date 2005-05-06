@@ -1162,6 +1162,7 @@ Marco Schlüßler <marco@lordzodiac.de>
  with the larger buffer reserve
  for adding support for setting the video display mode
  for fixing handling transparent areas in cDvbSpuBitmap
+ for fixing a bug in libsi's SubtitlingDescriptor::getLength()
 
 Jürgen Schmitz <j.schmitz@web.de>
  for reporting a bug in displaying the current channel when switching via the SVDRP

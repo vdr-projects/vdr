@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: descriptor.h 1.10 2004/06/06 13:51:29 kls Exp $
+ *   $Id: descriptor.h 1.11 2005/05/06 08:57:53 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -289,7 +289,7 @@ public:
       int getSubtitlingType() const;
       int getCompositionPageId() const;
       int getAncillaryPageId() const;
-      virtual int getLength() { return sizeof(item_nvod_reference); }
+      virtual int getLength() { return sizeof(item_subtitling); }
    protected:
       virtual void Parse();
    private:
