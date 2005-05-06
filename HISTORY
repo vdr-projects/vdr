@@ -3494,3 +3494,5 @@ Video Disk Recorder Revision History
 - When reading the channels.conf file, duplicate channels (i.e. ones that have
   the same channel ID) are now automatically deleted and only the first one is
   actually stored.
+- Fixed handling lifetime when deciding whether to delete a recording (thanks to
+  Udo Richter).

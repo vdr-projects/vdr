@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.96 2005/02/12 10:17:47 kls Exp $
+ * $Id: recording.c 1.97 2005/05/06 14:00:23 kls Exp $
  */
 
 #include "recording.h"
@@ -126,7 +126,7 @@ void AssertFreeDiskSpace(int Priority)
            while (r) {
                  if (!r->IsEdited() && r->lifetime < MAXLIFETIME) { // edited recordings and recordings with MAXLIFETIME live forever
                     if ((r->lifetime == 0 && Priority > r->priority) || // the recording has no guaranteed lifetime and the new recording has higher priority
-                        (time(NULL) - r->start) / SECSINDAY > r->lifetime) { // the recording's guaranteed lifetime has expired
+                        (r->lifetime > 0 && (time(NULL) - r->start) / SECSINDAY >= r->lifetime)) { // the recording's guaranteed lifetime has expired
                        if (r0) {
                           if (r->priority < r0->priority || (r->priority == r0->priority && r->start < r0->start))
                              r0 = r; // in any case we delete the one with the lowest priority (or the older one in case of equal priorities)

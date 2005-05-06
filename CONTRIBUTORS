@@ -1207,6 +1207,7 @@ Milos Kapoun <m.kapoun@cra.cz>
 
 Udo Richter <udo_richter@gmx.de>
  for refining the formula for making volume control more linear
+ for fixing handling lifetime when deciding whether to delete a recording
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date
