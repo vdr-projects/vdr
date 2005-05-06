@@ -3491,3 +3491,6 @@ Video Disk Recorder Revision History
   Reinhard Nissl).
 - Fixed a bug in libsi's SubtitlingDescriptor::getLength() (thanks to Marco
   Schlüßler).
+- When reading the channels.conf file, duplicate channels (i.e. ones that have
+  the same channel ID) are now automatically deleted and only the first one is
+  actually stored.

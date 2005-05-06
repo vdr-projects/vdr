@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 1.36 2005/03/19 15:56:38 kls Exp $
+ * $Id: channels.c 1.37 2005/05/06 13:46:57 kls Exp $
  */
 
 #include "channels.h"
@@ -648,7 +648,7 @@ cString cChannel::ToText(void) const
   return ToText(this);
 }
 
-bool cChannel::Parse(const char *s, bool AllowNonUniqueID)
+bool cChannel::Parse(const char *s)
 {
   bool ok = true;
   if (*s == ':') {
@@ -791,10 +791,6 @@ bool cChannel::Parse(const char *s, bool AllowNonUniqueID)
            esyslog("ERROR: channel data results in invalid ID!");
            return false;
            }
-        if (!AllowNonUniqueID && Channels.GetByChannelID(GetChannelID())) {
-           esyslog("ERROR: channel data not unique!");
-           return false;
-           }
         }
      else
         return false;
@@ -817,9 +813,30 @@ cChannels::cChannels(void)
   modified = CHANNELSMOD_NONE;
 }
 
+void cChannels::DeleteDuplicateChannels(void)
+{
+  for (cChannel *channel = First(); channel; channel = Next(channel)) {
+      if (!channel->GroupSep()) {
+         tChannelID ChannelID = channel->GetChannelID();
+         cChannel *other = Next(channel);
+         while (other) {
+               cChannel *d = NULL;
+               if (!other->GroupSep() && other->GetChannelID() == ChannelID)
+                  d = other;
+               other = Next(other);
+               if (d) {
+                  dsyslog("deleting duplicate channel %s", *d->ToText());
+                  Del(d);
+                  }
+               }
+         }
+      }
+}
+
 bool cChannels::Load(const char *FileName, bool AllowComments, bool MustExist)
 {
   if (cConfig<cChannel>::Load(FileName, AllowComments, MustExist)) {
+     DeleteDuplicateChannels();
      ReNumber();
      return true;
      }

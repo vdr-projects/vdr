@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.h 1.26 2005/02/20 14:05:24 kls Exp $
+ * $Id: channels.h 1.27 2005/05/06 13:47:06 kls Exp $
  */
 
 #ifndef __CHANNELS_H
@@ -135,7 +135,7 @@ public:
   ~cChannel();
   cChannel& operator= (const cChannel &Channel);
   cString ToText(void) const;
-  bool Parse(const char *s, bool AllowNonUniqueID = false);
+  bool Parse(const char *s);
   bool Save(FILE *f);
   const char *Name(void) const { return name; }
   const char *ShortName(bool OrName = false) const { return (OrName && isempty(shortName)) ? name : shortName; }
@@ -198,6 +198,7 @@ private:
   int maxNumber;
   int modified;
   int beingEdited;
+  void DeleteDuplicateChannels(void);
 public:
   cChannels(void);
   bool Load(const char *FileName, bool AllowComments = false, bool MustExist = false);

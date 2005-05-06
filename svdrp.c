@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.69 2005/03/20 15:04:00 kls Exp $
+ * $Id: svdrp.c 1.70 2005/05/06 13:47:39 kls Exp $
  */
 
 #include "svdrp.h"
@@ -875,7 +875,7 @@ void cSVDRP::CmdMODC(const char *Option)
         cChannel *channel = Channels.GetByNumber(n);
         if (channel) {
            cChannel ch;
-           if (ch.Parse(tail, true)) {
+           if (ch.Parse(tail)) {
               if (Channels.HasUniqueChannelID(&ch, channel)) {
                  *channel = ch;
                  Channels.ReNumber();
@@ -948,7 +948,7 @@ void cSVDRP::CmdNEWC(const char *Option)
 {
   if (*Option) {
      cChannel ch;
-     if (ch.Parse(Option, true)) {
+     if (ch.Parse(Option)) {
         if (Channels.HasUniqueChannelID(&ch)) {
            cChannel *channel = new cChannel;
            *channel = ch;
