@@ -3496,3 +3496,7 @@ Video Disk Recorder Revision History
   actually stored.
 - Fixed handling lifetime when deciding whether to delete a recording (thanks to
   Udo Richter).
+- Fixed timeout handling in cRwLock::Lock() (thanks to Sascha Volkenandt for reporting
+  this one).
+- Since there are several places in thread.c where a timeout value is calculated,
+  this has been put into a separate function.

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 1.41 2005/01/14 13:59:48 kls Exp $
+ * $Id: thread.c 1.42 2005/05/06 14:39:15 kls Exp $
  */
 
 #include "thread.h"
@@ -16,6 +16,22 @@
 #include <sys/wait.h>
 #include <unistd.h>
 #include "tools.h"
+
+static bool GetAbsTime(struct timespec *Abstime, int MillisecondsFromNow)
+{
+  struct timeval now;
+  if (gettimeofday(&now, NULL) == 0) {           // get current time
+     now.tv_usec += MillisecondsFromNow * 1000;  // add the timeout
+     while (now.tv_usec >= 1000000) {            // take care of an overflow
+           now.tv_sec++;
+           now.tv_usec -= 1000000;
+           }
+     Abstime->tv_sec = now.tv_sec;          // seconds
+     Abstime->tv_nsec = now.tv_usec * 1000; // nano seconds
+     return true;
+     }
+  return false;
+}
 
 // --- cCondWait -------------------------------------------------------------
 
@@ -44,15 +60,8 @@ bool cCondWait::Wait(int TimeoutMs)
   pthread_mutex_lock(&mutex);
   if (!signaled) {
      if (TimeoutMs) {
-        struct timeval now;
-        if (gettimeofday(&now, NULL) == 0) {  // get current time
-           now.tv_usec += TimeoutMs * 1000;   // add the timeout
-           int sec = now.tv_usec / 1000000;
-           now.tv_sec += sec;
-           now.tv_usec -= sec * 1000000;
-           struct timespec abstime;              // build timespec for timedwait
-           abstime.tv_sec = now.tv_sec;          // seconds
-           abstime.tv_nsec = now.tv_usec * 1000; // nano seconds
+        struct timespec abstime;
+        if (GetAbsTime(&abstime, TimeoutMs)) {
            while (!signaled) {
                  if (pthread_cond_timedwait(&cond, &mutex, &abstime) == ETIMEDOUT)
                     break;
@@ -105,17 +114,8 @@ bool cCondVar::TimedWait(cMutex &Mutex, int TimeoutMs)
   bool r = true; // true = condition signaled false = timeout
 
   if (Mutex.locked) {
-     struct timeval now;                   // unfortunately timedwait needs the absolute time, not the delta :-(
-     if (gettimeofday(&now, NULL) == 0) {  // get current time
-        now.tv_usec += TimeoutMs * 1000;   // add the timeout
-        while (now.tv_usec >= 1000000) {   // take care of an overflow
-              now.tv_sec++;
-              now.tv_usec -= 1000000;
-              }
-        struct timespec abstime;              // build timespec for timedwait
-        abstime.tv_sec = now.tv_sec;          // seconds
-        abstime.tv_nsec = now.tv_usec * 1000; // nano seconds
-
+     struct timespec abstime;
+     if (GetAbsTime(&abstime, TimeoutMs)) {
         int locked = Mutex.locked;
         Mutex.locked = 0; // have to clear the locked count here, as pthread_cond_timedwait
                           // does an implizit unlock of the mutex.
@@ -150,8 +150,8 @@ bool cRwLock::Lock(bool Write, int TimeoutMs)
   int Result = 0;
   struct timespec abstime;
   if (TimeoutMs) {
-     abstime.tv_sec = TimeoutMs / 1000;
-     abstime.tv_nsec = (TimeoutMs % 1000) * 1000000;
+     if (!GetAbsTime(&abstime, TimeoutMs))
+        TimeoutMs = 0;
      }
   if (Write)
      Result = TimeoutMs ? pthread_rwlock_timedwrlock(&rwlock, &abstime) : pthread_rwlock_wrlock(&rwlock);

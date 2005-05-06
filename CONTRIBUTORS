@@ -765,6 +765,7 @@ Sascha Volkenandt <sascha@akv-soft.de>
  for reporting a problem when starting replay of a recording that has no Dolby
  Digital audio after switching to a channel that has DD and selecting the DD audio
  track
+ for reporting a bug in timeout handling in cRwLock::Lock()
 
 Malcolm Caldwell <malcolm.caldwell@ntu.edu.au>
  for modifying LOF handling to allow for C-band reception
