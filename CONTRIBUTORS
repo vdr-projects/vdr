@@ -1326,3 +1326,6 @@ Daniel Thompson <daniel.thompson@st.com>
 
 Matthias Lötzke <Matthias@Loetzke.de>
  for adding missing text internationalization for "Starting EPG scan"
+
+Wolfgang Fritz <wolfgang.fritz@gmx.net>
+ for making recordings avoid zero sized video data files

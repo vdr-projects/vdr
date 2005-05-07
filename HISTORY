@@ -3507,3 +3507,4 @@ Video Disk Recorder Revision History
 - No longer retuning or restarting a recording if only the language code of an
   audio or dolby PID changes.
 - Now preferring budget cards when selecting a DVB device for recording.
+- Recordings now avoid zero sized video data files (thanks to Wolfgang Fitz).
