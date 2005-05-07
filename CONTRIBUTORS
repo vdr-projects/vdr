@@ -64,6 +64,8 @@ Matthias Schniedermeyer <ms@citd.de>
  for suggesting the SVDRP command CLRE
  for reporting a bug in handling one-shot timers that were already recording
  and had their start time changed into the future
+ for suggesting to give the timer status a bit that is set when that timer
+ is currently recording
 
 Miha Setina <mihasetina@softhome.net>
  for translating OSD texts to the Slovenian language
