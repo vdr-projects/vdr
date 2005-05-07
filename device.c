@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.100 2005/05/05 14:48:01 kls Exp $
+ * $Id: device.c 1.101 2005/05/07 15:04:17 kls Exp $
  */
 
 #include "device.h"
@@ -270,7 +270,7 @@ cDevice *cDevice::GetDevice(int Index)
 cDevice *cDevice::GetDevice(const cChannel *Channel, int Priority, bool *NeedsDetachReceivers)
 {
   cDevice *d = NULL;
-  int select = 7, pri;
+  int select = 8, pri;
 
   for (int i = 0; i < numDevices; i++) {
       bool ndr;
@@ -279,16 +279,18 @@ cDevice *cDevice::GetDevice(const cChannel *Channel, int Priority, bool *NeedsDe
             pri = 0; // receiving and allows additional receivers
          else if (d && !device[i]->Receiving() && device[i]->ProvidesCa(Channel) < d->ProvidesCa(Channel))
             pri = 1; // free and fewer Ca's
+         else if (!device[i]->Receiving() && !device[i]->HasDecoder())
+            pri = 2; // free and not a full featured card
          else if (!device[i]->Receiving() && !device[i]->IsPrimaryDevice())
-            pri = 2; // free and not the primary device
+            pri = 3; // free and not the primary device
          else if (!device[i]->Receiving())
-            pri = 3; // free
+            pri = 4; // free
          else if (d && device[i]->Priority() < d->Priority())
-            pri = 4; // receiving but priority is lower
+            pri = 5; // receiving but priority is lower
          else if (d && device[i]->Priority() == d->Priority() && device[i]->ProvidesCa(Channel) < d->ProvidesCa(Channel))
-            pri = 5; // receiving with same priority but fewer Ca's
+            pri = 6; // receiving with same priority but fewer Ca's
          else
-            pri = 6; // all others
+            pri = 7; // all others
          if (pri < select) {
             select = pri;
             d = device[i];
