@@ -8,7 +8,7 @@
  *
  * parts of this file are derived from the OMS program.
  *
- * $Id: dvbspu.c 1.13 2005/05/05 13:19:03 kls Exp $
+ * $Id: dvbspu.c 1.14 2005/05/07 11:13:48 kls Exp $
  */
 
 #include <assert.h>
@@ -306,24 +306,6 @@ void cDvbSpuDecoder::clearHighlight(void)
     hlpsize.y2 = -1;
 }
 
-int cDvbSpuDecoder::ScaleYcoord(int value)
-{
-    if (scaleMode == eSpuLetterBox) {
-        int offset = cDevice::PrimaryDevice()->GetVideoSystem() == vsPAL ? 72 : 60;
-        return lround((value * 3.0) / 4.0) + offset;
-        }
-    else
-        return value;
-}
-
-int cDvbSpuDecoder::ScaleYres(int value)
-{
-    if (scaleMode == eSpuLetterBox)
-        return lround((value * 3.0) / 4.0);
-    else
-        return value;
-}
-
 sDvbSpuRect cDvbSpuDecoder::CalcAreaSize(sDvbSpuRect fgsize, cBitmap *fgbmp, sDvbSpuRect bgsize, cBitmap *bgbmp)
 {
     sDvbSpuRect size;
@@ -367,22 +349,15 @@ void cDvbSpuDecoder::Draw(void)
     sDvbSpuRect hlsize;
 
     hlsize.x1 = hlpsize.x1;
-    hlsize.y1 = ScaleYcoord(hlpsize.y1);
+    hlsize.y1 = hlpsize.y1;
     hlsize.x2 = hlpsize.x2;
-    hlsize.y2 = ScaleYcoord(hlpsize.y2);
+    hlsize.y2 = hlpsize.y2;
 
     if (highlight)
         fg = spubmp->getBitmap(hlpDescr, palette, hlsize);
 
-    if (spubmp->getMinSize(palDescr, bgsize)) {
+    if (spubmp->getMinSize(palDescr, bgsize))
         bg = spubmp->getBitmap(palDescr, palette, bgsize);
-        if (scaleMode == eSpuLetterBox) {
-            // the coordinates have to be modified for letterbox
-            int y1 = ScaleYres(bgsize.y1) + bgsize.height();
-            bgsize.y2 = y1 + bgsize.height();
-            bgsize.y1 = y1;
-        }
-    }
 
     sDvbSpuRect areaSize = CalcAreaSize(hlsize, fg, bgsize, bg);
 

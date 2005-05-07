@@ -3502,3 +3502,5 @@ Video Disk Recorder Revision History
   this has been put into a separate function.
 - The timer status now has a new bit that is set when that timer is currently
   recording (suggested by Matthias Schniedermeyer). See man vdr(5) for details.
+- Removed scaling coordinates in letterbox mode from cDvbSpu - the DVD plugin, which
+  was the only one needing this, doesn't need it any more (thanks to Marco Schlüßler).
