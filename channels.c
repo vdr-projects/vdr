@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 1.37 2005/05/06 13:46:57 kls Exp $
+ * $Id: channels.c 1.38 2005/05/07 13:14:32 kls Exp $
  */
 
 #include "channels.h"
@@ -389,15 +389,21 @@ void cChannel::SetPortalName(const char *PortalName)
      }
 }
 
-static bool IntArraysDiffer(const int *a, const int *b, const char na[][4] = NULL, const char nb[][4] = NULL)
+#define STRDIFF 0x01
+#define VALDIFF 0x02
+
+static int IntArraysDiffer(const int *a, const int *b, const char na[][4] = NULL, const char nb[][4] = NULL)
 {
-  int i = 0;
-  while (a[i] && b[i]) {
-        if (a[i] != b[i] || na && nb && strcmp(na[i], nb[i]) != 0)
-           return true;
-        i++;
-        }
-  return a[i] != b[i] || a[i] && na && nb && strcmp(na[i], nb[i]) != 0;
+  int result = 0;
+  for (int i = 0; a[i] || b[i]; i++) {
+      if (a[i] && na && nb && strcmp(na[i], nb[i]) != 0)
+         result |= STRDIFF;
+      if (a[i] != b[i])
+         result |= VALDIFF;
+      if (!a[i] || !b[i])
+         break;
+      }
+  return result;
 }
 
 static int IntArrayToString(char *s, const int *a, int Base = 10, const char n[][4] = NULL)
@@ -418,10 +424,15 @@ static int IntArrayToString(char *s, const int *a, int Base = 10, const char n[]
 
 void cChannel::SetPids(int Vpid, int Ppid, int *Apids, char ALangs[][4], int *Dpids, char DLangs[][4], int Tpid)
 {
-  bool modified = vpid != Vpid || ppid != Ppid || tpid != Tpid;
-  if (!modified)
-     modified = IntArraysDiffer(apids, Apids, alangs, ALangs) || IntArraysDiffer(dpids, Dpids, dlangs, DLangs);
-  if (modified) {
+  int mod = CHANNELMOD_NONE;
+  if (vpid != Vpid || ppid != Ppid || tpid != Tpid)
+     mod |= CHANNELMOD_PIDS;
+  int m = IntArraysDiffer(apids, Apids, alangs, ALangs) | IntArraysDiffer(dpids, Dpids, dlangs, DLangs);
+  if (m & STRDIFF)
+     mod |= CHANNELMOD_LANGS;
+  if (m & VALDIFF)
+     mod |= CHANNELMOD_PIDS;
+  if (mod) {
      char OldApidsBuf[(MAXAPIDS + MAXDPIDS) * 10 + 10]; // 10: 5 digits plus delimiting ',' or ';' plus optional '=cod', +10: paranoia
      char NewApidsBuf[(MAXAPIDS + MAXDPIDS) * 10 + 10];
      char *q = OldApidsBuf;
@@ -450,7 +461,7 @@ void cChannel::SetPids(int Vpid, int Ppid, int *Apids, char ALangs[][4], int *Dp
          strn0cpy(dlangs[i], DLangs[i], 4);
          }
      tpid = Tpid;
-     modification |= CHANNELMOD_PIDS;
+     modification |= mod;
      Channels.SetModified();
      }
 }

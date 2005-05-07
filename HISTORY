@@ -3504,3 +3504,5 @@ Video Disk Recorder Revision History
   recording (suggested by Matthias Schniedermeyer). See man vdr(5) for details.
 - Removed scaling coordinates in letterbox mode from cDvbSpu - the DVD plugin, which
   was the only one needing this, doesn't need it any more (thanks to Marco Schlüßler).
+- No longer retuning or restarting a recording if only the language code of an
+  audio or dolby PID changes.
