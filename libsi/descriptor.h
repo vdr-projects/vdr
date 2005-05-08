@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: descriptor.h 1.11 2005/05/06 08:57:53 kls Exp $
+ *   $Id: descriptor.h 1.12 2005/05/08 14:08:19 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -283,7 +283,7 @@ private:
 
 class SubtitlingDescriptor : public Descriptor {
 public:
-   class Subtitling : public Descriptor {
+   class Subtitling : public LoopElement {
    public:
       char languageCode[4];
       int getSubtitlingType() const;
