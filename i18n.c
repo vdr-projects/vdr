@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.185 2005/03/12 10:43:16 kls Exp $
+ * $Id: i18n.c 1.188 2005/05/05 13:12:54 kls Exp $
  *
  * Translations provided by:
  *
@@ -89,7 +89,7 @@ const tI18nPhrase Phrases[] = {
     "Português",
     "Français",
     "Norsk",
-    "suomi", // this is not a typo - it's really lowercase!
+    "suomi", // Finnish (this is not a typo - it's really lowercase!)
     "Polski",
     "Español",
     "ÅëëçíéêÜ", // Greek
@@ -1334,7 +1334,7 @@ const tI18nPhrase Phrases[] = {
     "PID de Vídeo",
     "PID Vidéo",
     "Vpid",
-    "Kuva PID",
+    "Kuva-PID",
     "Vpid",
     "Vpid",
     "Bßíôåï PID",
@@ -1355,7 +1355,7 @@ const tI18nPhrase Phrases[] = {
     "Ppid",
     "Ppid",
     "Ppid",
-    "Aikatieto PID",
+    "Aikatieto-PID",
     "Ppid",
     "Ppid",
     "Ppid",
@@ -1376,7 +1376,7 @@ const tI18nPhrase Phrases[] = {
     "PID Áudio (1)",
     "PID Audio (1)",
     "Apid1",
-    "Ääni PID1",
+    "Ääni-PID (1)",
     "Apid1",
     "Apid1",
     "Apid1",
@@ -1397,7 +1397,7 @@ const tI18nPhrase Phrases[] = {
     "Apid2",
     "PID Audio (2)",
     "Apid2",
-    "Ääni PID2",
+    "Ääni-PID (2)",
     "Apid2",
     "Apid2",
     "Apid2",
@@ -1418,7 +1418,7 @@ const tI18nPhrase Phrases[] = {
     "PID AC3 (1)",
     "PID AC3 (1)",
     "AC3pid1",
-    "Dolby PID1",
+    "Dolby-PID (1)",
     "Dpid1",
     "Dpid1",
     "Dpid1",
@@ -1439,7 +1439,7 @@ const tI18nPhrase Phrases[] = {
     "PID AC3 (2)",
     "PID AC3 (2)",
     "AC3pid2",
-    "Dolby PID2",
+    "Dolby-PID (2)",
     "Dpid2",
     "Dpid2",
     "Dpid2",
@@ -1460,7 +1460,7 @@ const tI18nPhrase Phrases[] = {
     "PID Teletexto",
     "PID Télétexte",
     "Tekst-TV pid",
-    "Teksti-TV PID",
+    "Teksti-TV-PID",
     "Tpid",
     "Tpid",
     "Tpid",
@@ -1502,7 +1502,7 @@ const tI18nPhrase Phrases[] = {
     "Sid",
     "Sid",
     "Sid",
-    "Palvelu ID",
+    "Palvelu-ID",
     "Sid",
     "Sid",
     "Sid",
@@ -3113,7 +3113,7 @@ const tI18nPhrase Phrases[] = {
     "ÈØàÞÚÞíÚàÐÝÝÞÕ Ø×ÞÑàÐÖÕÝØÕ",
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Video display format",
   },
   { "pan&scan",
     "pan&scan",
@@ -5240,6 +5240,27 @@ const tI18nPhrase Phrases[] = {
     "Zaustavljanje ¾ivog signala...",
     "Saate edastamise peatamine...",
     "Pausere live udsendelse...",
+  },
+  { "Starting EPG scan",
+    "Beginne mit EPG-Scan",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "Ohjelmaoppaan päivitys aloitettu",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
   },
   { "This plugin has no setup parameters!",
     "Dieses Plugin hat keine Setup-Parameter!",

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.h 1.18 2005/03/20 14:47:45 kls Exp $
+ * $Id: timers.h 1.19 2005/05/07 10:36:35 kls Exp $
  */
 
 #ifndef __TIMERS_H
@@ -19,6 +19,7 @@ enum eTimerFlags { tfNone      = 0x0000,
                    tfActive    = 0x0001,
                    tfInstant   = 0x0002,
                    tfVps       = 0x0004,
+                   tfRecording = 0x0008,
                    tfAll       = 0xFFFF,
                  };
 enum eTimerMatch { tmNone, tmPartial, tmFull };

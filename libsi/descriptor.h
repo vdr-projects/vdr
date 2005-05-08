@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: descriptor.h 1.10 2004/06/06 13:51:29 kls Exp $
+ *   $Id: descriptor.h 1.12 2005/05/08 14:08:19 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -283,13 +283,13 @@ private:
 
 class SubtitlingDescriptor : public Descriptor {
 public:
-   class Subtitling : public Descriptor {
+   class Subtitling : public LoopElement {
    public:
       char languageCode[4];
       int getSubtitlingType() const;
       int getCompositionPageId() const;
       int getAncillaryPageId() const;
-      virtual int getLength() { return sizeof(item_nvod_reference); }
+      virtual int getLength() { return sizeof(item_subtitling); }
    protected:
       virtual void Parse();
    private:

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.96 2005/02/12 10:17:47 kls Exp $
+ * $Id: recording.c 1.98 2005/05/07 15:25:15 kls Exp $
  */
 
 #include "recording.h"
@@ -126,7 +126,7 @@ void AssertFreeDiskSpace(int Priority)
            while (r) {
                  if (!r->IsEdited() && r->lifetime < MAXLIFETIME) { // edited recordings and recordings with MAXLIFETIME live forever
                     if ((r->lifetime == 0 && Priority > r->priority) || // the recording has no guaranteed lifetime and the new recording has higher priority
-                        (time(NULL) - r->start) / SECSINDAY > r->lifetime) { // the recording's guaranteed lifetime has expired
+                        (r->lifetime > 0 && (time(NULL) - r->start) / SECSINDAY >= r->lifetime)) { // the recording's guaranteed lifetime has expired
                        if (r0) {
                           if (r->priority < r0->priority || (r->priority == r0->priority && r->start < r0->start))
                              r0 = r; // in any case we delete the one with the lowest priority (or the older one in case of equal priorities)
@@ -1124,8 +1124,21 @@ int cFileName::SetOffset(int Number, int Offset)
      fileNumber = Number;
      sprintf(pFileNumber, RECORDFILESUFFIX, fileNumber);
      if (record) {
-        if (access(fileName, F_OK) == 0) // file exists, let's try next suffix
-           return SetOffset(Number + 1);
+        if (access(fileName, F_OK) == 0) {
+           // files exists, check if it has non-zero size
+           struct stat buf;
+           if (stat(fileName, &buf) == 0) {
+              if (buf.st_size != 0)
+                 return SetOffset(Number + 1); // file exists and has non zero size, let's try next suffix
+              else {
+                 // zero size file, remove it
+                 dsyslog ("cFileName::SetOffset: removing zero-sized file %s\n", fileName);
+                 unlink (fileName);
+                 }
+              }
+           else
+              return SetOffset(Number + 1); // error with fstat - should not happen, just to be on the safe side
+           }
         else if (errno != ENOENT) { // something serious has happened
            LOG_ERROR_STR(fileName);
            return -1;

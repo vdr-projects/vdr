@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 1.30 2005/01/14 14:00:56 kls Exp $
+ * $Id: dvbplayer.c 1.33 2005/05/08 14:52:49 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -263,6 +263,7 @@ cDvbPlayer::~cDvbPlayer()
 {
   Detach();
   Save();
+  delete readFrame; // might not have been stored in the buffer in Action()
   delete index;
   delete fileName;
   delete backTrace;
@@ -296,6 +297,7 @@ void cDvbPlayer::Empty(void)
      nonBlockingFileReader->Clear();
   if ((readIndex = backTrace->Get(playDir == pdForward)) < 0)
      readIndex = writeIndex;
+  delete readFrame; // might not have been stored in the buffer in Action()
   readFrame = NULL;
   playFrame = NULL;
   ringBuffer->Clear();
@@ -370,9 +372,14 @@ void cDvbPlayer::Action(void)
 
   nonBlockingFileReader = new cNonBlockingFileReader;
   int Length = 0;
+  bool Sleep = false;
 
   running = true;
   while (running && (NextFile() || readIndex >= 0 || ringBuffer->Available() || !DeviceFlush(100))) {
+        if (Sleep) {
+           cCondWait::SleepMs(3); // this keeps the CPU load low
+           Sleep = false;
+           }
         cPoller Poller;
         if (DevicePoll(Poller, 100)) {
 
@@ -380,8 +387,8 @@ void cDvbPlayer::Action(void)
 
            // Read the next frame from the file:
 
-           if (!readFrame && (replayFile >= 0 || readIndex >= 0)) {
-              if (playMode != pmStill) {
+           if (playMode != pmStill && playMode != pmPause) {
+              if (!readFrame && (replayFile >= 0 || readIndex >= 0)) {
                  if (!nonBlockingFileReader->Reading()) {
                     if (playMode == pmFast || (playMode == pmSlow && playDir == pdBackward)) {
                        uchar FileNumber;
@@ -438,16 +445,16 @@ void cDvbPlayer::Action(void)
                     break;
                     }
                  }
-              else
-                 cCondWait::SleepMs(3); // this keeps the CPU load low
-              }
 
-           // Store the frame in the buffer:
+              // Store the frame in the buffer:
 
-           if (readFrame) {
-              if (ringBuffer->Put(readFrame))
-                 readFrame = NULL;
+              if (readFrame) {
+                 if (ringBuffer->Put(readFrame))
+                    readFrame = NULL;
+                 }
               }
+           else
+              Sleep = true;
 
            // Get the next frame from the buffer:
 

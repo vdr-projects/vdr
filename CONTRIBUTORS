@@ -64,6 +64,8 @@ Matthias Schniedermeyer <ms@citd.de>
  for suggesting the SVDRP command CLRE
  for reporting a bug in handling one-shot timers that were already recording
  and had their start time changed into the future
+ for suggesting to give the timer status a bit that is set when that timer
+ is currently recording
 
 Miha Setina <mihasetina@softhome.net>
  for translating OSD texts to the Slovenian language
@@ -193,6 +195,8 @@ Stefan Huelswitt <huels@iname.com>
  for reporting several memory leaks that were introduced through the use of cString
  for adding MPEG1 replay capability to cPesAssembler
  for fixing handling symbolic links in cRecordings::ScanVideoDir()
+ for reporting a memory leak in tComponent
+ for fixing a memory leak in cDvbPlayer
 
 Ulrich Röder <roeder@efr-net.de>
  for pointing out that there are channels that have a symbol rate higher than 27500
@@ -763,6 +767,7 @@ Sascha Volkenandt <sascha@akv-soft.de>
  for reporting a problem when starting replay of a recording that has no Dolby
  Digital audio after switching to a channel that has DD and selecting the DD audio
  track
+ for reporting a bug in timeout handling in cRwLock::Lock()
 
 Malcolm Caldwell <malcolm.caldwell@ntu.edu.au>
  for modifying LOF handling to allow for C-band reception
@@ -936,6 +941,8 @@ Reinhard Nissl <rnissl@gmx.de>
  for fixing a possible freeze in pause mode in case a device's PlayPesPacket()
  function permanently returns 0
  for fixing a typo in detecting UTF-8
+ for fixing handling fragments of less than 3 byte in cPesAssembler
+ for some rearrangements in cDvbPlayer::Action() to avoid lockups on NPTL systems
 
 Richard Robson <richard_robson@beeb.net>
  for reporting freezing replay if a timer starts while in Transfer Mode from the
@@ -1158,6 +1165,10 @@ Marco Schlüßler <marco@lordzodiac.de>
  for increasing POLLTIMEOUTS_BEFORE_DEVICECLEAR in transfer.c to 6 to avoid problems
  with the larger buffer reserve
  for adding support for setting the video display mode
+ for fixing handling transparent areas in cDvbSpuBitmap
+ for fixing a bug in libsi's SubtitlingDescriptor::getLength()
+ for removing scaling coordinates in letterbox mode from cDvbSpu
+ for fixing a wrong inheritance in libsi's SubtitlingDescriptor::Subtitling
 
 Jürgen Schmitz <j.schmitz@web.de>
  for reporting a bug in displaying the current channel when switching via the SVDRP
@@ -1202,6 +1213,7 @@ Milos Kapoun <m.kapoun@cra.cz>
 
 Udo Richter <udo_richter@gmx.de>
  for refining the formula for making volume control more linear
+ for fixing handling lifetime when deciding whether to delete a recording
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date
@@ -1300,10 +1312,22 @@ Mikko Salo <mikko.salo@ppe.inet.fi>
 
 Roman Krenický <free-rtk@gmx.de>
  for a patch that was used a a basis for changing a timer's day handling to full date
+ for considering the "EPG linger time" when saving the EPG data to file or listing
+ it via LSTE
 
 Ville Skyttä <ville.skytta@iki.fi>
  for reporting several compiler warnings in gcc 4.0
+ for including the optional user defined Make.config from the 'libsi' Makefile
 
 Steffen Beyer <cpunk@reactor.de>
  for fixing setting the colored button help after deleting a recording in case the next
  menu entry is a directory
+
+Daniel Thompson <daniel.thompson@st.com>
+ for fixing a memory leak in tComponent
+
+Matthias Lötzke <Matthias@Loetzke.de>
+ for adding missing text internationalization for "Starting EPG scan"
+
+Wolfgang Fritz <wolfgang.fritz@gmx.net>
+ for making recordings avoid zero sized video data files

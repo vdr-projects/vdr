@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 1.30 2005/03/20 14:50:37 kls Exp $
+ * $Id: timers.c 1.31 2005/05/07 11:10:56 kls Exp $
  */
 
 #include "timers.h"
@@ -441,6 +441,10 @@ void cTimer::SetEvent(const cSchedule *Schedule, const cEvent *Event)
 void cTimer::SetRecording(bool Recording)
 {
   recording = Recording;
+  if (recording)
+     SetFlags(tfRecording);
+  else
+     ClrFlags(tfRecording);
   isyslog("timer %s %s", *ToDescr(), recording ? "start" : "stop");
 }
 
