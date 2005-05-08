@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 1.31 2005/05/05 12:52:40 kls Exp $
+ * $Id: dvbplayer.c 1.32 2005/05/08 13:51:00 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -382,8 +382,8 @@ void cDvbPlayer::Action(void)
 
            // Read the next frame from the file:
 
-           if (!readFrame && (replayFile >= 0 || readIndex >= 0)) {
-              if (playMode != pmStill) {
+           if (playMode != pmStill && playMode != pmPause) {
+              if (!readFrame && (replayFile >= 0 || readIndex >= 0)) {
                  if (!nonBlockingFileReader->Reading()) {
                     if (playMode == pmFast || (playMode == pmSlow && playDir == pdBackward)) {
                        uchar FileNumber;
@@ -440,16 +440,16 @@ void cDvbPlayer::Action(void)
                     break;
                     }
                  }
-              else
-                 cCondWait::SleepMs(3); // this keeps the CPU load low
-              }
 
-           // Store the frame in the buffer:
+              // Store the frame in the buffer:
 
-           if (readFrame) {
-              if (ringBuffer->Put(readFrame))
-                 readFrame = NULL;
+              if (readFrame) {
+                 if (ringBuffer->Put(readFrame))
+                    readFrame = NULL;
+                 }
               }
+           else
+              cCondWait::SleepMs(3); // this keeps the CPU load low
 
            // Get the next frame from the buffer:
 
