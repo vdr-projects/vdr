@@ -3512,3 +3512,7 @@ Video Disk Recorder Revision History
   (thanks to Reinhard Nissl).
 - Fixed a wrong inheritance in libsi's SubtitlingDescriptor::Subtitling (thanks to
   Marco Schlüßler).
+
+2005-05-14: Version 1.3.25
+
+- Updated the Estonian OSD texts (thanks to Arthur Konovalov).
