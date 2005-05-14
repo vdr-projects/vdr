@@ -3487,7 +3487,7 @@ Video Disk Recorder Revision History
 - Fixed handling transparent areas in cDvbSpuBitmap (thanks to Marco Schlüßler).
 - Now also considering the "EPG linger time" when saving the EPG data to file or
   listing it via LSTE (thanks to Roman Krenický).
-- Fixed handling fragments of less than 3 byte in cPesAssembler (thanks to
+- Fixed handling fragments of less than 4 byte in cPesAssembler (thanks to
   Reinhard Nissl).
 - Fixed a bug in libsi's SubtitlingDescriptor::getLength() (thanks to Marco
   Schlüßler).
