@@ -3522,3 +3522,4 @@ Video Disk Recorder Revision History
 - Added a check for Setup.DiSEqC in cDvbDevice::ProvidesTransponder(), otherwise
   the EPG scan didn't work on systems that don't use DiSEqC (thanks to Michael
   Reinelt for reporting this one).
+- Made the Makefile patch friendlier (thanks to Ludwig Nussel).
