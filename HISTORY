@@ -3519,3 +3519,6 @@ Video Disk Recorder Revision History
 - Some cable providers don't mark short channel names according to the standard,
   but rather go their own way and use "name>short name". VDR now splits at this
   character for cable channels (thanks to Gerhard Steiner for reporting this one).
+- Added a check for Setup.DiSEqC in cDvbDevice::ProvidesTransponder(), otherwise
+  the EPG scan didn't work on systems that don't use DiSEqC (thanks to Michael
+  Reinelt for reporting this one).

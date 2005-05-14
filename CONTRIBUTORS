@@ -1333,3 +1333,6 @@ Matthias Lötzke <Matthias@Loetzke.de>
 
 Wolfgang Fritz <wolfgang.fritz@gmx.net>
  for making recordings avoid zero sized video data files
+
+Michael Reinelt <reinelt@eunet.at>
+ for reporting a problem with the EPG scan on systems that don't use DiSEqC
