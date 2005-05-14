@@ -1064,6 +1064,7 @@ Andreas Regel <andreas.regel@gmx.de>
  for pointing out a missing call to cStatus::MsgOsdtatusMessage(NULL) in
  cSkins::Message()
  for reporting a problem in handling Transfer Mode for radio channels
+ for reporting a problem with messages when a cOsdObject uses the raw OSD
 
 Thomas Bergwinkl <Thomas.Bergwinkl@t-online.de>
  for fixing the validity check for channel IDs, because some providers use TIDs

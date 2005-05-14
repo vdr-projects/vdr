@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.h 1.47 2004/10/16 10:33:44 kls Exp $
+ * $Id: osd.h 1.48 2005/05/14 11:15:55 kls Exp $
  */
 
 #ifndef __OSD_H
@@ -210,7 +210,7 @@ struct tArea {
 class cOsd {
   friend class cOsdProvider;
 private:
-  static bool isOpen;
+  static int isOpen;
   cBitmap *savedRegion;
   cBitmap *bitmaps[MAXOSDAREAS];
   int numBitmaps;
@@ -235,7 +235,7 @@ protected:
 public:
   virtual ~cOsd();
        ///< Shuts down the OSD.
-  static bool IsOpen(void) { return isOpen; }
+  static int IsOpen(void) { return isOpen; }
   int Left(void) { return left; }
   int Top(void) { return top; }
   int Width(void) { return width; }
