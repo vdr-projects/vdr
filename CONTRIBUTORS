@@ -603,6 +603,8 @@ Gerhard Steiner <steiner@mail.austria.com>
  for reporting a problem with newly created timers in case they are not confirmed
  with "Ok"
  for reporting an occasional "Broken pipe" error in SVDRP connections
+ for reporting that some cable channels don't mark short channel names according
+ to the standard
 
 Jaakko Hyvätti <jaakko@hyvatti.iki.fi>
  for translating OSD texts to the Finnish language

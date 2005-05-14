@@ -3516,3 +3516,6 @@ Video Disk Recorder Revision History
 2005-05-14: Version 1.3.25
 
 - Updated the Estonian OSD texts (thanks to Arthur Konovalov).
+- Some cable providers don't mark short channel names according to the standard,
+  but rather go their own way and use "name>short name". VDR now splits at this
+  character for cable channels (thanks to Gerhard Steiner for reporting this one).
