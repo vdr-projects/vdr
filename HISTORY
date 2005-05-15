@@ -3525,3 +3525,4 @@ Video Disk Recorder Revision History
 - Made the Makefile patch friendlier (thanks to Ludwig Nussel).
 - Made cOsd::isOpen an integer counter to avoid problems with messages when a
   cOsdObject uses the raw OSD (thanks to Andreas Regel for reporting this one).
+- Updated the Danish OSD texts (thanks to Mogens Elneff).

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.189 2005/05/14 09:16:34 kls Exp $
+ * $Id: i18n.c 1.190 2005/05/15 09:22:07 kls Exp $
  *
  * Translations provided by:
  *
@@ -5260,7 +5260,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "EPG skaneerimine käivitatud",
-    "",// TODO
+    "Starter EPG skanning",
   },
   { "This plugin has no setup parameters!",
     "Dieses Plugin hat keine Setup-Parameter!",
