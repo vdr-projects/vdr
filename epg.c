@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 1.29 2005/05/05 13:53:19 kls Exp $
+ * $Id: epg.c 1.30 2005/05/16 14:12:00 kls Exp $
  */
 
 #include "epg.h"
@@ -40,11 +40,10 @@ bool tComponent::FromString(const char *s)
 
 // --- cComponents -----------------------------------------------------------
 
-cComponents::cComponents(int NumComponents)
+cComponents::cComponents(void)
 {
-  numComponents = NumComponents;
-  components = MALLOC(tComponent, numComponents);
-  memset(components, 0, sizeof(tComponent) * numComponents);
+  numComponents = 0;
+  components = NULL;
 }
 
 cComponents::~cComponents(void)
@@ -54,24 +53,30 @@ cComponents::~cComponents(void)
   free(components);
 }
 
-bool cComponents::SetComponent(int Index, const char *s)
+void cComponents::Realloc(int Index)
 {
-  if (Index < numComponents)
-     return components[Index].FromString(s);
-  return false;
+  if (Index >= numComponents) {
+     int n = numComponents;
+     numComponents = Index + 1;
+     components = (tComponent *)realloc(components, numComponents * sizeof(tComponent));
+     memset(&components[n], 0, sizeof(tComponent) * (numComponents - n));
+     }
 }
 
-bool cComponents::SetComponent(int Index, uchar Stream, uchar Type, const char *Language, const char *Description)
+void cComponents::SetComponent(int Index, const char *s)
 {
-  if (Index < numComponents) {
-     tComponent *p = &components[Index];
-     p->stream = Stream;
-     p->type = Type;
-     strn0cpy(p->language, Language, sizeof(p->language));
-     p->description = strcpyrealloc(p->description, !isempty(Description) ? Description : NULL);
-     return true;
-     }
-  return false;
+  Realloc(Index);
+  components[Index].FromString(s);
+}
+
+void cComponents::SetComponent(int Index, uchar Stream, uchar Type, const char *Language, const char *Description)
+{
+  Realloc(Index);
+  tComponent *p = &components[Index];
+  p->stream = Stream;
+  p->type = Type;
+  strn0cpy(p->language, Language, sizeof(p->language));
+  p->description = strcpyrealloc(p->description, !isempty(Description) ? Description : NULL);
 }
 
 // --- cEvent ----------------------------------------------------------------
@@ -105,6 +110,11 @@ int cEvent::Compare(const cListObject &ListObject) const
 {
   cEvent *e = (cEvent *)&ListObject;
   return startTime - e->startTime;
+}
+
+void cEvent::SetChannelID(tChannelID ChannelID)
+{
+  channelID = ChannelID;
 }
 
 void cEvent::SetEventID(u_int16_t EventID)
@@ -187,30 +197,17 @@ bool cEvent::IsRunning(bool OrAboutToStart) const
 
 cString cEvent::GetDateString(void) const
 {
-  char buf[32];
-  struct tm tm_r;
-  tm *tm = localtime_r(&startTime, &tm_r);
-  char *p = stpcpy(buf, WeekDayName(tm->tm_wday));
-  *p++ = ' ';
-  strftime(p, sizeof(buf) - (p - buf), "%d.%m.%Y", tm);
-  return buf;
+  return DateString(startTime);
 }
 
 cString cEvent::GetTimeString(void) const
 {
-  char buf[25];
-  struct tm tm_r;
-  strftime(buf, sizeof(buf), "%R", localtime_r(&startTime, &tm_r));
-  return buf;
+  return TimeString(startTime);
 }
 
 cString cEvent::GetEndTimeString(void) const
 {
-  char buf[25];
-  time_t EndTime = startTime + duration;
-  struct tm tm_r;
-  strftime(buf, sizeof(buf), "%R", localtime_r(&EndTime, &tm_r));
-  return buf;
+  return TimeString(startTime + duration);
 }
 
 cString cEvent::GetVpsString(void) const
@@ -221,10 +218,11 @@ cString cEvent::GetVpsString(void) const
   return buf;
 }
 
-void cEvent::Dump(FILE *f, const char *Prefix) const
+void cEvent::Dump(FILE *f, const char *Prefix, bool InfoOnly) const
 {
-  if (startTime + duration + Setup.EPGLinger * 60 >= time(NULL)) {
-     fprintf(f, "%sE %u %ld %d %X\n", Prefix, eventID, startTime, duration, tableID);
+  if (InfoOnly || startTime + duration + Setup.EPGLinger * 60 >= time(NULL)) {
+     if (!InfoOnly)
+        fprintf(f, "%sE %u %ld %d %X\n", Prefix, eventID, startTime, duration, tableID);
      if (!isempty(title))
         fprintf(f, "%sT %s\n", Prefix, title);
      if (!isempty(shortText))
@@ -240,18 +238,40 @@ void cEvent::Dump(FILE *f, const char *Prefix) const
             fprintf(f, "%sX %s\n", Prefix, *p->ToString());
             }
         }
-     if (vps)
+     if (!InfoOnly && vps)
         fprintf(f, "%sV %ld\n", Prefix, vps);
-     fprintf(f, "%se\n", Prefix);
+     if (!InfoOnly)
+        fprintf(f, "%se\n", Prefix);
      }
+}
+
+bool cEvent::Parse(char *s)
+{
+  char *t = skipspace(s + 1);
+  switch (*s) {
+    case 'T': SetTitle(t);
+              break;
+    case 'S': SetShortText(t);
+              break;
+    case 'D': strreplace(t, '|', '\n');
+              SetDescription(t);
+              break;
+    case 'X': if (!components)
+                 components = new cComponents;
+              components->SetComponent(components->NumComponents(), t);
+              break;
+    case 'V': SetVps(atoi(t));
+              break;
+    default:  esyslog("ERROR: unexpected tag while reading EPG data: %s", s);
+              return false;
+    }
+  return true;
 }
 
 bool cEvent::Read(FILE *f, cSchedule *Schedule)
 {
   if (Schedule) {
      cEvent *Event = NULL;
-     int NumComponents = 0;
-     char *ComponentStrings[MAXCOMPONENTS];
      char *s;
      cReadLine ReadLine;
      while ((s = ReadLine.Read(f)) != NULL) {
@@ -273,45 +293,14 @@ bool cEvent::Read(FILE *f, cSchedule *Schedule)
                                 Event->SetDuration(Duration);
                                 }
                              }
-                          NumComponents = 0;
                           }
                        break;
-             case 'T': if (Event)
-                          Event->SetTitle(t);
-                       break;
-             case 'S': if (Event)
-                          Event->SetShortText(t);
-                       break;
-             case 'D': if (Event) {
-                          strreplace(t, '|', '\n');
-                          Event->SetDescription(t);
-                          }
-                       break;
-             case 'X': if (Event) {
-                          if (NumComponents < MAXCOMPONENTS)
-                             ComponentStrings[NumComponents++] = strdup(t);
-                          else
-                             dsyslog("more than %d component descriptors!", MAXCOMPONENTS);
-                          }
-                       break;
-             case 'V': if (Event)
-                          Event->SetVps(atoi(t));
-                       break;
-             case 'e': if (Event && NumComponents > 0) {
-                          cComponents *Components = new cComponents(NumComponents);
-                          for (int i = 0; i < NumComponents; i++) {
-                              if (!Components->SetComponent(i, ComponentStrings[i]))
-                                 esyslog("ERROR: faulty component string in EPG data: '%s'", ComponentStrings[i]);
-                              free(ComponentStrings[i]);
-                              }
-                          Event->SetComponents(Components);
-                          }
-                       Event = NULL;
+             case 'e': Event = NULL;
                        break;
              case 'c': // to keep things simple we react on 'c' here
                        return true;
-             default:  esyslog("ERROR: unexpected tag while reading EPG data: %s", s);
-                       return false;
+             default:  if (Event && !Event->Parse(s))
+                          return false;
              }
            }
      esyslog("ERROR: unexpected end of file while reading EPG data");

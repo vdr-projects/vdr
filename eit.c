@@ -8,7 +8,7 @@
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  * Adapted to 'libsi' for VDR 1.3.0 by Marcel Wiesweg <marcel.wiesweg@gmx.de>.
  *
- * $Id: eit.c 1.103 2005/03/20 12:33:51 kls Exp $
+ * $Id: eit.c 1.104 2005/05/15 10:36:04 kls Exp $
  */
 
 #include "eit.h"
@@ -91,8 +91,7 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data)
       SI::ExtendedEventDescriptors *ExtendedEventDescriptors = NULL;
       SI::ShortEventDescriptor *ShortEventDescriptor = NULL;
       cLinkChannels *LinkChannels = NULL;
-      int NumComponents = 0;
-      SI::ComponentDescriptor *ComponentDescriptors[MAXCOMPONENTS];
+      cComponents *Components = NULL;
       for (SI::Loop::Iterator it2; (d = SiEitEvent.eventDescriptors.getNext(it2)); ) {
           switch (d->getDescriptorTag()) {
             case SI::ExtendedEventDescriptorTag: {
@@ -193,12 +192,10 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data)
                  uchar Stream = cd->getStreamContent();
                  uchar Type = cd->getComponentType();
                  if (1 <= Stream && Stream <= 2 && Type != 0) {
-                    if (NumComponents < MAXCOMPONENTS) {
-                       ComponentDescriptors[NumComponents++] = cd;
-                       d = NULL; // so that it is not deleted
-                       }
-                    else
-                       dsyslog("more than %d component descriptors!", MAXCOMPONENTS);
+                    if (!Components)
+                       Components = new cComponents;
+                    char buffer[256];
+                    Components->SetComponent(Components->NumComponents(), cd->getStreamContent(), cd->getComponentType(), I18nNormalizeLanguageCode(cd->languageCode), cd->description.getText(buffer, sizeof(buffer)));
                     }
                  }
                  break;
@@ -221,18 +218,7 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data)
       delete ExtendedEventDescriptors;
       delete ShortEventDescriptor;
 
-      if (NumComponents > 0) {
-         cComponents *Components = new cComponents(NumComponents);
-         for (int i = 0; i < NumComponents; i++) {
-             char buffer[256];
-             SI::ComponentDescriptor *cd = ComponentDescriptors[i];
-             Components->SetComponent(i, cd->getStreamContent(), cd->getComponentType(), I18nNormalizeLanguageCode(cd->languageCode), cd->description.getText(buffer, sizeof(buffer)));
-             delete cd;
-             }
-         pEvent->SetComponents(Components);
-         }
-      else
-         pEvent->SetComponents(NULL);
+      pEvent->SetComponents(Components);
 
       pEvent->FixEpgBugs();
       if (LinkChannels)

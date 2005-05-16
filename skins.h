@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skins.h 1.7 2005/02/27 14:37:37 kls Exp $
+ * $Id: skins.h 1.8 2005/05/15 14:41:41 kls Exp $
  */
 
 #ifndef __SKINS_H
@@ -150,7 +150,7 @@ public:
        ///< that text if necessary.
   virtual void SetRecording(const cRecording *Recording) = 0;
        ///< Sets the Recording that shall be displayed, using the entire central area
-       ///< of the menu. The Recording's 'summary' shall be displayed using a
+       ///< of the menu. The Recording's 'description' shall be displayed using a
        ///< cTextScroller, and the Scroll() function will be called to drive scrolling
        ///< that text if necessary.
   virtual void SetText(const char *Text, bool FixedFont) = 0;

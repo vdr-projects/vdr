@@ -3513,7 +3513,7 @@ Video Disk Recorder Revision History
 - Fixed a wrong inheritance in libsi's SubtitlingDescriptor::Subtitling (thanks to
   Marco Schlüßler).
 
-2005-05-14: Version 1.3.25
+2005-05-16: Version 1.3.25
 
 - Updated the Estonian OSD texts (thanks to Arthur Konovalov).
 - Some cable providers don't mark short channel names according to the standard,
@@ -3526,3 +3526,21 @@ Video Disk Recorder Revision History
 - Made cOsd::isOpen an integer counter to avoid problems with messages when a
   cOsdObject uses the raw OSD (thanks to Andreas Regel for reporting this one).
 - Updated the Danish OSD texts (thanks to Mogens Elneff).
+- The file 'summary.vdr' has been replaced with 'info.vdr' and now contains the
+  information about a recording, in the same format as the events are stored in
+  'epg.data' (see man vdr(5) for details). Existing summary files can be converted
+  to the new format by running the Perl script 'summary2info.pl', as in
+
+  summary2info.pl /video
+
+  (the parameter given has to be the video directory).
+- The "Summary" button in the "Recordings" menu has been renamed to "Info", and
+  the page it brings up now shows the recording's information, much like the EPG
+  event page. Therefore it now no longer uses the skin's SetText() function, but
+  rather the SetRecording() function. Skin plugins may need to adjust that function
+  accordingly (see skinsttng.c, for instance).
+- The SVDRP command LSTR now lists the recording information in the same tagged
+  format as the LSTE command lists the EPG data.
+- The audio track menu now contains track descriptions when replaying (provided
+  such descriptions were available in the EPG data when the recording was made,
+  and are stored in the info.vdr file).

@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: skincurses.c 1.5 2005/01/09 11:56:26 kls Exp $
+ * $Id: skincurses.c 1.6 2005/05/16 10:45:12 kls Exp $
  */
 
 #include <ncurses.h>
@@ -11,7 +11,7 @@
 #include <vdr/plugin.h>
 #include <vdr/skins.h>
 
-static const char *VERSION        = "0.0.3";
+static const char *VERSION        = "0.0.4";
 static const char *DESCRIPTION    = "A text only skin";
 static const char *MAINMENUENTRY  = NULL;
 
@@ -407,7 +407,30 @@ void cSkinCursesDisplayMenu::SetEvent(const cEvent *Event)
 
 void cSkinCursesDisplayMenu::SetRecording(const cRecording *Recording)
 {
-  SetText(Recording->Summary(), false); //TODO
+  if (!Recording)
+     return;
+  const cRecordingInfo *Info = Recording->Info();
+  int y = 2;
+  cTextScroller ts;
+  char t[32];
+  snprintf(t, sizeof(t), "%s  %s", *DateString(Recording->start), *TimeString(Recording->start));
+  ts.Set(osd, 0, y, OsdWidth, OsdHeight - y - 2, t, &Font, clrYellow, clrBackground);
+  y += ts.Height();
+  y += 1;
+  const char *Title = Info->Title();
+  if (isempty(Title))
+     Title = Recording->Name();
+  ts.Set(osd, 0, y, OsdWidth, OsdHeight - y - 2, Title, &Font, clrCyan, clrBackground);
+  y += ts.Height();
+  if (!isempty(Info->ShortText())) {
+     ts.Set(osd, 0, y, OsdWidth, OsdHeight - y - 2, Info->ShortText(), &Font, clrYellow, clrBackground);
+     y += ts.Height();
+     }
+  y += 1;
+  if (!isempty(Info->Description())) {
+     textScroller.Set(osd, 0, y, OsdWidth - 2, OsdHeight - y - 2, Info->Description(), &Font, clrCyan, clrBackground);
+     SetScrollbar();
+     }
 }
 
 void cSkinCursesDisplayMenu::SetText(const char *Text, bool FixedFont)

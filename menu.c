@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.348 2005/03/20 15:14:51 kls Exp $
+ * $Id: menu.c 1.349 2005/05/16 13:59:03 kls Exp $
  */
 
 #include "menu.h"
@@ -872,7 +872,6 @@ eOSState cMenuTimers::Summary(void)
   cTimer *ti = CurrentTimer();
   if (ti && !isempty(ti->Summary()))
      return AddSubMenu(new cMenuText(tr("Summary"), ti->Summary()));
-     //XXX cSkin::SetRecording()???
   return Edit(); // convenience for people not using the Summary feature ;-)
 }
 
@@ -1297,8 +1296,12 @@ eOSState cMenuCommands::ProcessKey(eKeys Key)
 
   if (state == osUnknown) {
      switch (Key) {
-       case kOk:  return Execute();
-       default:   break;
+       case kRed:
+       case kGreen:
+       case kYellow:
+       case kBlue:   return osContinue;
+       case kOk:     return Execute();
+       default:      break;
        }
      }
   return state;
@@ -1430,6 +1433,63 @@ cOsdObject *CamControl(void)
   return NULL;
 }
 
+// --- cMenuRecording --------------------------------------------------------
+
+class cMenuRecording : public cOsdMenu {
+private:
+  const cRecording *recording;
+public:
+  cMenuRecording(const cRecording *Recording);
+  virtual void Display(void);
+  virtual eOSState ProcessKey(eKeys Key);
+};
+
+cMenuRecording::cMenuRecording(const cRecording *Recording)
+:cOsdMenu(tr("Recording"))
+{
+  recording = Recording;
+  if (recording)
+     SetHelp(tr("Play"), tr("Rewind"));
+}
+
+void cMenuRecording::Display(void)
+{
+  cOsdMenu::Display();
+  DisplayMenu()->SetRecording(recording);
+  cStatus::MsgOsdTextItem(recording->Info()->Description());
+}
+
+eOSState cMenuRecording::ProcessKey(eKeys Key)
+{
+  switch (Key) {
+    case kUp|k_Repeat:
+    case kUp:
+    case kDown|k_Repeat:
+    case kDown:
+    case kLeft|k_Repeat:
+    case kLeft:
+    case kRight|k_Repeat:
+    case kRight:
+                  DisplayMenu()->Scroll(NORMALKEY(Key) == kUp || NORMALKEY(Key) == kLeft, NORMALKEY(Key) == kLeft || NORMALKEY(Key) == kRight);
+                  cStatus::MsgOsdTextItem(NULL, NORMALKEY(Key) == kUp);
+                  return osContinue;
+    default: break;
+    }
+
+  eOSState state = cOsdMenu::ProcessKey(Key);
+
+  if (state == osUnknown) {
+     switch (Key) {
+       case kRed:    Key = kOk; // will play the recording, even if recording commands are defined
+       case kGreen:  cRemote::Put(Key, true);
+                     // continue with osBack to close the info menu and process the key
+       case kOk:     return osBack;
+       default: break;
+       }
+     }
+  return state;
+}
+
 // --- cMenuRecordingItem ----------------------------------------------------
 
 class cMenuRecordingItem : public cOsdItem {
@@ -1530,7 +1590,7 @@ void cMenuRecordings::SetHelpKeys(void)
      else {
         NewHelpKeys = 2;
         cRecording *recording = GetRecording(ri);
-        if (recording && recording->Summary())
+        if (recording && recording->Info()->Title())
            NewHelpKeys = 3;
         }
      }
@@ -1539,7 +1599,7 @@ void cMenuRecordings::SetHelpKeys(void)
        case 0: SetHelp(NULL); break;
        case 1: SetHelp(tr("Open")); break;
        case 2:
-       case 3: SetHelp(RecordingCommands.Count() ? tr("Commands") : tr("Play"), tr("Rewind"), tr("Delete"), NewHelpKeys == 3 ? tr("Summary") : NULL);
+       case 3: SetHelp(RecordingCommands.Count() ? tr("Commands") : tr("Play"), tr("Rewind"), tr("Delete"), NewHelpKeys == 3 ? tr("Info") : NULL);
        }
      helpKeys = NewHelpKeys;
      }
@@ -1644,15 +1704,15 @@ eOSState cMenuRecordings::Delete(void)
   return osContinue;
 }
 
-eOSState cMenuRecordings::Summary(void)
+eOSState cMenuRecordings::Info(void)
 {
   if (HasSubMenu() || Count() == 0)
      return osContinue;
   cMenuRecordingItem *ri = (cMenuRecordingItem *)Get(Current());
   if (ri && !ri->IsDirectory()) {
      cRecording *recording = GetRecording(ri);
-     if (recording && recording->Summary() && *recording->Summary())
-        return AddSubMenu(new cMenuText(tr("Summary"), recording->Summary()));
+     if (recording && recording->Info()->Title())
+        return AddSubMenu(new cMenuRecording(recording));
      }
   return osContinue;
 }
@@ -1689,7 +1749,7 @@ eOSState cMenuRecordings::ProcessKey(eKeys Key)
        case kRed:    return (helpKeys > 1 && RecordingCommands.Count()) ? Commands() : Play();
        case kGreen:  return Rewind();
        case kYellow: return Delete();
-       case kBlue:   return Summary();
+       case kBlue:   return Info();
        case k1...k9: return Commands(Key);
        default: break;
        }
@@ -2568,35 +2628,42 @@ eOSState cMenuMain::ProcessKey(eKeys Key)
 
 // --- SetTrackDescriptions --------------------------------------------------
 
-static void SetTrackDescriptions(void)
+static void SetTrackDescriptions(bool Live)
 {
   cDevice::PrimaryDevice()->ClrAvailableTracks(true);
-  cChannel *Channel = Channels.GetByNumber(cDevice::CurrentChannel());
-  if (Channel) {
-     cSchedulesLock SchedulesLock;
-     const cSchedules *Schedules = cSchedules::Schedules(SchedulesLock);
-     if (Schedules) {
-        const cSchedule *Schedule = Schedules->GetSchedule(Channel->GetChannelID());
-        if (Schedule) {
-           const cEvent *Present = Schedule->GetPresentEvent(true);
-           if (Present) {
-              const cComponents *Components = Present->Components();
-              if (Components) {
-                 int indexAudio = 0;
-                 int indexDolby = 0;
-                 for (int i = 0; i < Components->NumComponents(); i++) {
-                     const tComponent *p = Components->Component(i);
-                     if (p->stream == 2) {
-                        if (p->type == 0x05)
-                           cDevice::PrimaryDevice()->SetAvailableTrack(ttDolby, indexDolby++, 0, NULL, p->description);
-                        else
-                           cDevice::PrimaryDevice()->SetAvailableTrack(ttAudio, indexAudio++, 0, NULL, p->description);
-                        }
-                     }
-                 }
+  const cComponents *Components = NULL;
+  cSchedulesLock SchedulesLock;
+  if (Live) {
+     cChannel *Channel = Channels.GetByNumber(cDevice::CurrentChannel());
+     if (Channel) {
+        const cSchedules *Schedules = cSchedules::Schedules(SchedulesLock);
+        if (Schedules) {
+           const cSchedule *Schedule = Schedules->GetSchedule(Channel->GetChannelID());
+           if (Schedule) {
+              const cEvent *Present = Schedule->GetPresentEvent(true);
+              if (Present)
+                 Components = Present->Components();
               }
            }
         }
+     }
+  else if (cReplayControl::LastReplayed()) {
+     cRecording *Recording = Recordings.GetByName(cReplayControl::LastReplayed());
+     if (Recording)
+        Components = Recording->Info()->Components();
+     }
+  if (Components) {
+     int indexAudio = 0;
+     int indexDolby = 0;
+     for (int i = 0; i < Components->NumComponents(); i++) {
+         const tComponent *p = Components->Component(i);
+         if (p->stream == 2) {
+            if (p->type == 0x05)
+               cDevice::PrimaryDevice()->SetAvailableTrack(ttDolby, indexDolby++, 0, NULL, p->description);
+            else
+               cDevice::PrimaryDevice()->SetAvailableTrack(ttAudio, indexAudio++, 0, NULL, p->description);
+            }
+         }
      }
 }
 
@@ -2657,7 +2724,7 @@ void cDisplayChannel::DisplayInfo(void)
            const cEvent *Present = Schedule->GetPresentEvent(true);
            const cEvent *Following = Schedule->GetFollowingEvent(true);
            if (Present != lastPresent || Following != lastFollowing) {
-              SetTrackDescriptions();
+              SetTrackDescriptions(true);
               displayChannel->SetEvents(Present, Following);
               cStatus::MsgOsdProgramme(Present ? Present->StartTime() : 0, Present ? Present->Title() : NULL, Present ? Present->ShortText() : NULL, Following ? Following->StartTime() : 0, Following ? Following->Title() : NULL, Following ? Following->ShortText() : NULL);
               lastPresent = Present;
@@ -2877,9 +2944,7 @@ cDisplayTracks::cDisplayTracks(void)
 :cOsdObject(true)
 {
   cDevice::PrimaryDevice()->EnsureAudioTrack();
-  // Get the actual audio track descriptions from the EPG if we're not replaying:
-  if (!cDevice::PrimaryDevice()->Replaying() || cTransferControl::ReceiverDevice())
-     SetTrackDescriptions();
+  SetTrackDescriptions(!cDevice::PrimaryDevice()->Replaying() || cTransferControl::ReceiverDevice());
   currentDisplayTracks = this;
   numTracks = track = 0;
   audioChannel = cDevice::PrimaryDevice()->GetAudioChannel();
@@ -2994,6 +3059,11 @@ eOSState cDisplayTracks::ProcessKey(eKeys Key)
 
 cRecordControl::cRecordControl(cDevice *Device, cTimer *Timer, bool Pause)
 {
+  // We're going to manipulate an event here, so we need to prevent
+  // others from modifying any EPG data:
+  cSchedulesLock SchedulesLock;
+  cSchedules::Schedules(SchedulesLock);
+
   event = NULL;
   instantId = NULL;
   fileName = NULL;
@@ -3011,16 +3081,9 @@ cRecordControl::cRecordControl(cDevice *Device, cTimer *Timer, bool Pause)
   timer->SetRecording(true);
   event = timer->Event();
 
-  const char *Title = NULL;
-  const char *Subtitle = NULL;
-  const char *Summary = NULL;
-  if (event || GetEvent()) {
-     Title = event->Title();
-     Subtitle = event->ShortText();
-     Summary = event->Description();
-     dsyslog("Title: '%s' Subtitle: '%s'", Title, Subtitle);
-     }
-  cRecording Recording(timer, Title, Subtitle, Summary);
+  if (event || GetEvent())
+     dsyslog("Title: '%s' Subtitle: '%s'", event->Title(), event->ShortText());
+  cRecording Recording(timer, event);
   fileName = strdup(Recording.FileName());
 
   // crude attempt to avoid duplicate recordings:
@@ -3047,7 +3110,7 @@ cRecordControl::cRecordControl(cDevice *Device, cTimer *Timer, bool Pause)
      const cChannel *ch = timer->Channel();
      recorder = new cRecorder(fileName, ch->Ca(), timer->Priority(), ch->Vpid(), ch->Apids(), ch->Dpids(), ch->Spids());
      if (device->AttachReceiver(recorder)) {
-        Recording.WriteSummary();
+        Recording.WriteInfo();
         cStatus::MsgRecording(device, Recording.Name());
         if (!Timer && !cReplayControl::LastReplayed()) // an instant recording, maybe from cRecordControls::PauseLiveVideo()
            cReplayControl::SetRecording(fileName, Recording.Name());

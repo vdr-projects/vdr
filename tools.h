@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.68 2005/03/20 14:44:24 kls Exp $
+ * $Id: tools.h 1.69 2005/05/16 09:55:19 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -102,6 +102,8 @@ cString WeekDayName(int WeekDay);
 cString WeekDayName(time_t t);
 cString DayDateTime(time_t t = 0);
 cString TimeToString(time_t t);
+cString DateString(time_t t);
+cString TimeString(time_t t);
 
 class cTimeMs {
 private:

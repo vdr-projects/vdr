@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.h 1.21 2005/03/20 12:32:36 kls Exp $
+ * $Id: epg.h 1.22 2005/05/16 14:11:28 kls Exp $
  */
 
 #ifndef __EPG_H
@@ -18,7 +18,6 @@
 #include "tools.h"
 
 #define MAXEPGBUGFIXLEVEL 3
-#define MAXCOMPONENTS 32
 
 enum eDumpMode { dmAll, dmPresent, dmFollowing, dmAtTime };
 
@@ -35,12 +34,13 @@ class cComponents {
 private:
   int numComponents;
   tComponent *components;
+  void Realloc(int Index);
 public:
-  cComponents(int NumComponents);
+  cComponents(void);
   ~cComponents(void);
   int NumComponents(void) const { return numComponents; }
-  bool SetComponent(int Index, const char *s);
-  bool SetComponent(int Index, uchar Stream, uchar Type, const char *Language, const char *Description);
+  void SetComponent(int Index, const char *s);
+  void SetComponent(int Index, uchar Stream, uchar Type, const char *Language, const char *Description);
   tComponent *Component(int Index) const { return (Index < numComponents) ? &components[Index] : NULL; }
   };
 
@@ -56,7 +56,7 @@ private:
   char *title;             // Title of this event
   char *shortText;         // Short description of this event (typically the episode name in case of a series)
   char *description;       // Description of this event
-  cComponents *components; // The stream components of this event (separated by '\n')
+  cComponents *components; // The stream components of this event
   time_t startTime;        // Start time of this event
   int duration;            // Duration of this event in seconds
   time_t vps;              // Video Programming Service timestamp (VPS, aka "Programme Identification Label", PIL)
@@ -86,6 +86,7 @@ public:
   cString GetTimeString(void) const;
   cString GetEndTimeString(void) const;
   cString GetVpsString(void) const;
+  void SetChannelID(tChannelID ChannelID);
   void SetEventID(u_int16_t EventID);
   void SetTableID(uchar TableID);
   void SetVersion(uchar Version);
@@ -98,7 +99,8 @@ public:
   void SetDuration(int Duration);
   void SetVps(time_t Vps);
   void SetSeen(void);
-  void Dump(FILE *f, const char *Prefix = "") const;
+  void Dump(FILE *f, const char *Prefix = "", bool InfoOnly = false) const;
+  bool Parse(char *s);
   static bool Read(FILE *f, cSchedule *Schedule);
   void FixEpgBugs(void);
   };

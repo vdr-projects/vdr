@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.91 2005/03/20 14:44:33 kls Exp $
+ * $Id: tools.c 1.92 2005/05/16 09:55:26 kls Exp $
  */
 
 #include "tools.h"
@@ -569,6 +569,25 @@ cString TimeToString(time_t t)
      return buffer;
      }
   return "???";
+}
+
+cString DateString(time_t t)
+{
+  char buf[32];
+  struct tm tm_r;
+  tm *tm = localtime_r(&t, &tm_r);
+  char *p = stpcpy(buf, WeekDayName(tm->tm_wday));
+  *p++ = ' ';
+  strftime(p, sizeof(buf) - (p - buf), "%d.%m.%Y", tm);
+  return buf;
+}
+
+cString TimeString(time_t t)
+{
+  char buf[25];
+  struct tm tm_r;
+  strftime(buf, sizeof(buf), "%R", localtime_r(&t, &tm_r));
+  return buf;
 }
 
 // --- cReadLine -------------------------------------------------------------

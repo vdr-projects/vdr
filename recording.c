@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.98 2005/05/07 15:25:15 kls Exp $
+ * $Id: recording.c 1.99 2005/05/16 14:19:38 kls Exp $
  */
 
 #include "recording.h"
@@ -45,7 +45,7 @@
 // end of implementation for brain dead systems
 
 #define RESUMEFILESUFFIX  "/resume%s%s.vdr"
-#define SUMMARYFILESUFFIX "/summary.vdr"
+#define INFOFILESUFFIX    "/info.vdr"
 #define MARKSFILESUFFIX   "/marks.vdr"
 
 #define MINDISKSPACE 1024 // MB
@@ -213,6 +213,58 @@ void cResumeFile::Delete(void)
      }
 }
 
+// --- cRecordingInfo --------------------------------------------------------
+
+cRecordingInfo::cRecordingInfo(const cEvent *Event)
+{
+  if (Event) {
+     event = Event;
+     ownEvent = NULL;
+     }
+  else
+     event = ownEvent = new cEvent(tChannelID(), 0);
+}
+
+cRecordingInfo::~cRecordingInfo()
+{
+  delete ownEvent;
+}
+
+bool cRecordingInfo::Read(FILE *f)
+{
+  if (ownEvent) {
+     cReadLine ReadLine;
+     char *s;
+     while ((s = ReadLine.Read(f)) != NULL) {
+           char *t = skipspace(s + 1);
+           switch (*s) {
+             case 'C': {
+                         char *p = strchr(t, ' ');
+                         if (p)
+                            *p = 0; // strips optional channel name
+                         if (*t)
+                            ownEvent->SetChannelID(tChannelID::FromString(t));
+                       }
+                       break;
+             default: if (!ownEvent->Parse(s))
+                         return false;
+                      break;
+             }
+           }
+     return true;
+     }
+  return false;
+}
+
+bool cRecordingInfo::Write(FILE *f, const char *Prefix) const
+{
+  cChannel *channel = Channels.GetByChannelID(event->ChannelID(), true);
+  if (channel)
+     fprintf(f, "%sC %s %s\n", Prefix, *channel->GetChannelID().ToString(), channel->Name());
+  event->Dump(f, Prefix, true);
+  return true;
+}
+
 // --- cRecording ------------------------------------------------------------
 
 #define RESUME_NOT_INITIALIZED (-2)
@@ -308,7 +360,7 @@ static char *ExchangeChars(char *s, bool ToFileSystem)
   return s;
 }
 
-cRecording::cRecording(cTimer *Timer, const char *Title, const char *Subtitle, const char *Summary)
+cRecording::cRecording(cTimer *Timer, const cEvent *Event)
 {
   resume = RESUME_NOT_INITIALIZED;
   titleBuffer = NULL;
@@ -316,7 +368,8 @@ cRecording::cRecording(cTimer *Timer, const char *Title, const char *Subtitle, c
   fileName = NULL;
   name = NULL;
   // set up the actual name:
-  const char *OriginalSubtitle = Subtitle;
+  const char *Title = Event ? Event->Title() : NULL;
+  const char *Subtitle = Event ? Event->ShortText() : NULL;
   char SubtitleBuffer[MAX_SUBTITLE_LENGTH];
   if (isempty(Title))
      Title = Timer->Channel()->Name();
@@ -347,17 +400,13 @@ cRecording::cRecording(cTimer *Timer, const char *Title, const char *Subtitle, c
   start = Timer->StartTime();
   priority = Timer->Priority();
   lifetime = Timer->Lifetime();
-  // handle summary:
-  summary = !isempty(Timer->Summary()) ? strdup(Timer->Summary()) : NULL;
-  if (!summary) {
-     Subtitle = OriginalSubtitle;
-     if (isempty(Subtitle))
-        Subtitle = "";
-     if (isempty(Summary))
-        Summary = "";
-     if (*Subtitle || *Summary)
-        asprintf(&summary, "%s\n\n%s%s%s", Title, Subtitle, (*Subtitle && *Summary) ? "\n\n" : "", Summary);
-     }
+  // handle info:
+  info = new cRecordingInfo(Event);
+  // this is a somewhat ugly hack to get the 'summary' information from the
+  // timer into the recording info, but it saves us from having to actually
+  // copy the entire event data:
+  if (!isempty(Timer->Summary()))
+     ((cEvent *)Event)->SetDescription(Timer->Summary());
 }
 
 cRecording::cRecording(const char *FileName)
@@ -370,7 +419,7 @@ cRecording::cRecording(const char *FileName)
   char *p = strrchr(FileName, '/');
 
   name = NULL;
-  summary = NULL;
+  info = new cRecordingInfo;
   if (p) {
      time_t now = time(NULL);
      struct tm tm_r;
@@ -386,39 +435,17 @@ cRecording::cRecording(const char *FileName)
         name[p - FileName] = 0;
         name = ExchangeChars(name, false);
         }
-     // read an optional summary file:
-     char *SummaryFileName = NULL;
-     asprintf(&SummaryFileName, "%s%s", fileName, SUMMARYFILESUFFIX);
-     int f = open(SummaryFileName, O_RDONLY);
-     if (f >= 0) {
-        struct stat buf;
-        if (fstat(f, &buf) == 0) {
-           int size = buf.st_size;
-           summary = MALLOC(char, size + 1); // +1 for terminating 0
-           if (summary) {
-              int rbytes = safe_read(f, summary, size);
-              if (rbytes >= 0) {
-                 summary[rbytes] = 0;
-                 if (rbytes != size)
-                    esyslog("%s: expected %d bytes but read %d", SummaryFileName, size, rbytes);
-                 }
-              else {
-                 LOG_ERROR_STR(SummaryFileName);
-                 free(summary);
-                 summary = NULL;
-                 }
-
-              }
-           else
-              esyslog("can't allocate %d byte of memory for summary file '%s'", size + 1, SummaryFileName);
-           close(f);
-           }
-        else
-           LOG_ERROR_STR(SummaryFileName);
+     // read an optional info file:
+     char *InfoFileName = NULL;
+     asprintf(&InfoFileName, "%s%s", fileName, INFOFILESUFFIX);
+     FILE *f = fopen(InfoFileName, "r");
+     if (f) {
+        info->Read(f);
+        fclose(f);
         }
      else if (errno != ENOENT)
-        LOG_ERROR_STR(SummaryFileName);
-     free(SummaryFileName);
+        LOG_ERROR_STR(InfoFileName);
+     free(InfoFileName);
      }
 }
 
@@ -428,7 +455,7 @@ cRecording::~cRecording()
   free(sortBuffer);
   free(fileName);
   free(name);
-  free(summary);
+  delete info;
 }
 
 char *cRecording::StripEpisodeName(char *s)
@@ -568,21 +595,18 @@ bool cRecording::IsEdited(void) const
   return *s == '%';
 }
 
-bool cRecording::WriteSummary(void)
+bool cRecording::WriteInfo(void)
 {
-  if (summary) {
-     char *SummaryFileName = NULL;
-     asprintf(&SummaryFileName, "%s%s", fileName, SUMMARYFILESUFFIX);
-     FILE *f = fopen(SummaryFileName, "w");
-     if (f) {
-        if (fputs(summary, f) < 0)
-           LOG_ERROR_STR(SummaryFileName);
-        fclose(f);
-        }
-     else
-        LOG_ERROR_STR(SummaryFileName);
-     free(SummaryFileName);
+  char *InfoFileName = NULL;
+  asprintf(&InfoFileName, "%s%s", fileName, INFOFILESUFFIX);
+  FILE *f = fopen(InfoFileName, "w");
+  if (f) {
+     info->Write(f);
+     fclose(f);
      }
+  else
+     LOG_ERROR_STR(InfoFileName);
+  free(InfoFileName);
   return true;
 }
 

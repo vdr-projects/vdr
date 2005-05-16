@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinclassic.c 1.11 2005/01/09 11:56:29 kls Exp $
+ * $Id: skinclassic.c 1.12 2005/05/16 10:45:07 kls Exp $
  */
 
 #include "skinclassic.h"
@@ -326,7 +326,33 @@ void cSkinClassicDisplayMenu::SetEvent(const cEvent *Event)
 
 void cSkinClassicDisplayMenu::SetRecording(const cRecording *Recording)
 {
-  SetText(Recording->Summary(), false); //TODO
+  if (!Recording)
+     return;
+  const cRecordingInfo *Info = Recording->Info();
+  const cFont *font = cFont::GetFont(fontOsd);
+  int xl = x0 + 10;
+  int y = y2;
+  cTextScroller ts;
+  char t[32];
+  snprintf(t, sizeof(t), "%s  %s", *DateString(Recording->start), *TimeString(Recording->start));
+  ts.Set(osd, xl, y, x1 - xl, y3 - y, t, font, Theme.Color(clrMenuEventTime), Theme.Color(clrBackground));
+  y += ts.Height();
+  y += font->Height();
+  const char *Title = Info->Title();
+  if (isempty(Title))
+     Title = Recording->Name();
+  ts.Set(osd, xl, y, x1 - xl, y3 - y, Title, font, Theme.Color(clrMenuEventTitle), Theme.Color(clrBackground));
+  y += ts.Height();
+  if (!isempty(Info->ShortText())) {
+     const cFont *font = cFont::GetFont(fontSml);
+     ts.Set(osd, xl, y, x1 - xl, y3 - y, Info->ShortText(), font, Theme.Color(clrMenuEventShortText), Theme.Color(clrBackground));
+     y += ts.Height();
+     }
+  y += font->Height();
+  if (!isempty(Info->Description())) {
+     textScroller.Set(osd, xl, y, x1 - xl - 2 * ScrollWidth, y3 - y, Info->Description(), font, Theme.Color(clrMenuEventDescription), Theme.Color(clrBackground));
+     SetScrollbar();
+     }
 }
 
 void cSkinClassicDisplayMenu::SetText(const char *Text, bool FixedFont)

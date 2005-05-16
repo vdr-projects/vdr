@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 1.34 2005/01/16 15:11:31 kls Exp $
+ * $Id: recording.h 1.35 2005/05/16 14:18:43 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -12,6 +12,7 @@
 
 #include <time.h>
 #include "config.h"
+#include "epg.h"
 #include "thread.h"
 #include "timers.h"
 #include "tools.h"
@@ -32,6 +33,21 @@ public:
   void Delete(void);
   };
 
+class cRecordingInfo {
+private:
+  const cEvent *event;
+  cEvent *ownEvent;
+public:
+  cRecordingInfo(const cEvent *Event = NULL);
+  ~cRecordingInfo();
+  const char *Title(void) const { return event->Title(); }
+  const char *ShortText(void) const { return event->ShortText(); }
+  const char *Description(void) const { return event->Description(); }
+  const cComponents *Components(void) const { return event->Components(); }
+  bool Read(FILE *f);
+  bool Write(FILE *f, const char *Prefix = "") const;
+  };
+
 class cRecording : public cListObject {
 private:
   mutable int resume;
@@ -39,7 +55,7 @@ private:
   mutable char *sortBuffer;
   mutable char *fileName;
   mutable char *name;
-  char *summary;
+  cRecordingInfo *info;
   static char *StripEpisodeName(char *s);
   char *SortName(void) const;
   int GetResume(void) const;
@@ -47,19 +63,19 @@ public:
   time_t start;
   int priority;
   int lifetime;
-  cRecording(cTimer *Timer, const char *Title, const char *Subtitle, const char *Summary);
+  cRecording(cTimer *Timer, const cEvent *Event);
   cRecording(const char *FileName);
   ~cRecording();
   virtual int Compare(const cListObject &ListObject) const;
   const char *Name(void) const { return name; }
   const char *FileName(void) const;
   const char *Title(char Delimiter = ' ', bool NewIndicator = false, int Level = -1) const;
-  const char *Summary(void) const { return summary; }
+  const cRecordingInfo *Info(void) const { return info; }
   const char *PrefixFileName(char Prefix);
   int HierarchyLevels(void) const;
   bool IsNew(void) const { return GetResume() <= 0; }
   bool IsEdited(void) const;
-  bool WriteSummary(void);
+  bool WriteInfo(void);
   bool Delete(void);
        // Changes the file name so that it will no longer be visible in the "Recordings" menu
        // Returns false in case of error

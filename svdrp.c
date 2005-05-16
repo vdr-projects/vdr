@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.70 2005/05/06 13:47:39 kls Exp $
+ * $Id: svdrp.c 1.71 2005/05/16 14:20:25 kls Exp $
  */
 
 #include "svdrp.h"
@@ -214,7 +214,7 @@ const char *HelpPages[] = {
   "    events at the given time (which must be in time_t form).",
   "LSTR [ <number> ]\n"
   "    List recordings. Without option, all recordings are listed. Otherwise\n"
-  "    the summary for the given recording is listed.",
+  "    the information for the given recording is listed.",
   "LSTT [ <number> ]\n"
   "    List timers. Without option, all timers are listed. Otherwise\n"
   "    only the given timer is listed.",
@@ -281,7 +281,7 @@ const char *HelpPages[] = {
 /* SVDRP Reply Codes:
 
  214 Help message
- 215 EPG data record
+ 215 EPG or recording data record
  220 VDR service ready
  221 VDR service closing transmission channel
  250 Requested VDR action okay, completed
@@ -800,13 +800,15 @@ void cSVDRP::CmdLSTR(const char *Option)
      if (isnumber(Option)) {
         cRecording *recording = Recordings.Get(strtol(Option, NULL, 10) - 1);
         if (recording) {
-           if (recording->Summary()) {
-              char *summary = strdup(recording->Summary());
-              Reply(250, "%s", strreplace(summary,'\n','|'));
-              free(summary);
+           FILE *f = fdopen(file, "w");
+           if (f) {
+              recording->Info()->Write(f, "215-");
+              fflush(f);
+              Reply(215, "End of recording information");
+              // don't 'fclose(f)' here!
               }
            else
-              Reply(550, "No summary available");
+              Reply(451, "Can't open file connection");
            }
         else
            Reply(550, "Recording \"%s\" not found", Option);
