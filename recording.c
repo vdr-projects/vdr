@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.99 2005/05/16 14:19:38 kls Exp $
+ * $Id: recording.c 1.100 2005/05/16 15:17:22 kls Exp $
  */
 
 #include "recording.h"
@@ -386,6 +386,14 @@ cRecording::cRecording(cTimer *Timer, const cEvent *Event)
      name = strdup(Timer->File());
      name = strreplace(name, TIMERMACRO_TITLE, Title);
      name = strreplace(name, TIMERMACRO_EPISODE, Subtitle);
+     // avoid blanks at the end:
+     int l = strlen(name);
+     while (l-- > 2) {
+           if (name[l] == ' ' && name[l - 1] != '~')
+              name[l] = 0;
+           else
+              break;
+           }
      if (Timer->IsSingleEvent()) {
         Timer->SetFile(name); // this was an instant recording, so let's set the actual data
         Timers.SetModified();

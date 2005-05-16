@@ -3544,3 +3544,4 @@ Video Disk Recorder Revision History
 - The audio track menu now contains track descriptions when replaying (provided
   such descriptions were available in the EPG data when the recording was made,
   and are stored in the info.vdr file).
+- Avoiding extra blanks at the end of names of instant recordings.
