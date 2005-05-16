@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.128 2005/05/14 09:59:17 kls Exp $
+ * $Id: dvbdevice.c 1.129 2005/05/16 15:23:43 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -741,7 +741,7 @@ bool cDvbDevice::ProvidesSource(int Source) const
 
 bool cDvbDevice::ProvidesTransponder(const cChannel *Channel) const
 {
-  return ProvidesSource(Channel->Source()) && ((Channel->Source() & cSource::st_Mask) != cSource::stSat || !Setup.DiSEqC || Diseqcs.Get(Channel->Source(), Channel->Frequency(), Channel->Polarization()));
+  return ProvidesSource(Channel->Source()) && (!cSource::IsSat(Channel->Source()) || !Setup.DiSEqC || Diseqcs.Get(Channel->Source(), Channel->Frequency(), Channel->Polarization()));
 }
 
 bool cDvbDevice::ProvidesChannel(const cChannel *Channel, int Priority, bool *NeedsDetachReceivers) const
