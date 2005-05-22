@@ -3513,7 +3513,7 @@ Video Disk Recorder Revision History
 - Fixed a wrong inheritance in libsi's SubtitlingDescriptor::Subtitling (thanks to
   Marco Schlüßler).
 
-2005-05-16: Version 1.3.25
+2005-05-22: Version 1.3.25
 
 - Updated the Estonian OSD texts (thanks to Arthur Konovalov).
 - Some cable providers don't mark short channel names according to the standard,
@@ -3546,3 +3546,5 @@ Video Disk Recorder Revision History
   such descriptions were available in the EPG data when the recording was made,
   and are stored in the info.vdr file).
 - Avoiding extra blanks at the end of names of instant recordings.
+- Removed converting byte order on big endian systems from cDvbOsd::Flush(),
+  which, according to Johannes Stezenbach and Paavo Hartikainen, is wrong.

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbosd.c 1.26 2005/02/12 15:36:31 kls Exp $
+ * $Id: dvbosd.c 1.27 2005/05/22 10:57:45 kls Exp $
  */
 
 #include "dvbosd.h"
@@ -151,10 +151,6 @@ void cDvbOsd::Flush(void)
             for (int i = 0; i < NumColors; i++) {
                 // convert AARRGGBB to AABBGGRR (the driver expects the colors the wrong way):
                 colors[i] = (Colors[i] & 0xFF000000) | ((Colors[i] & 0x0000FF) << 16) | (Colors[i] & 0x00FF00) | ((Colors[i] & 0xFF0000) >> 16);
-#if __BYTE_ORDER == __BIG_ENDIAN
-                // actually the driver itself should access the bytes according to the current endianness!
-                colors[i] = ((colors[i] & 0xFF) << 24) | ((colors[i] & 0xFF00) << 8) | ((colors[i] & 0xFF0000) >> 8) | ((colors[i] & 0xFF000000) >> 24);
-#endif
                 }
             Colors = colors;
             //TODO end of stuff that should be fixed in the driver
