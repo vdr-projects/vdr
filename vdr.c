@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.203 2005/03/20 10:58:59 kls Exp $
+ * $Id: vdr.c 1.204 2005/05/22 11:20:22 kls Exp $
  */
 
 #include <getopt.h>
@@ -940,9 +940,11 @@ Exit:
   Remotes.Clear();
   Audios.Clear();
   Skins.Clear();
-  Setup.CurrentChannel = cDevice::CurrentChannel();
-  Setup.CurrentVolume  = cDevice::CurrentVolume();
-  Setup.Save();
+  if (ExitCode != 2) {
+     Setup.CurrentChannel = cDevice::CurrentChannel();
+     Setup.CurrentVolume  = cDevice::CurrentVolume();
+     Setup.Save();
+     }
   cDevice::Shutdown();
   PluginManager.Shutdown();
   ReportEpgBugFixStats();

@@ -1174,6 +1174,8 @@ Marco Schlüßler <marco@lordzodiac.de>
  for removing scaling coordinates in letterbox mode from cDvbSpu
  for fixing a wrong inheritance in libsi's SubtitlingDescriptor::Subtitling
  for adding cPlayer::DeviceSetVideoDisplayFormat()
+ for making the setup not being saved in case of a fatal error, to keep the volume
+ level from being set to a wrong value
 
 Jürgen Schmitz <j.schmitz@web.de>
  for reporting a bug in displaying the current channel when switching via the SVDRP

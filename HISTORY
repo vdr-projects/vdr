@@ -3549,3 +3549,5 @@ Video Disk Recorder Revision History
 - Removed converting byte order on big endian systems from cDvbOsd::Flush(),
   which, according to Johannes Stezenbach and Paavo Hartikainen, is wrong.
 - Added cPlayer::DeviceSetVideoDisplayFormat() (thanks to Marco Schlüßler).
+- No longer saving the setup in case of a fatal error, to keep the volume level
+  from being set to a wrong value (thanks to Marco Schlüßler).
