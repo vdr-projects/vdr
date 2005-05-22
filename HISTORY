@@ -3548,3 +3548,4 @@ Video Disk Recorder Revision History
 - Avoiding extra blanks at the end of names of instant recordings.
 - Removed converting byte order on big endian systems from cDvbOsd::Flush(),
   which, according to Johannes Stezenbach and Paavo Hartikainen, is wrong.
+- Added cPlayer::DeviceSetVideoDisplayFormat() (thanks to Marco Schlüßler).
