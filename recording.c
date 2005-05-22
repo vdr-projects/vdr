@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.102 2005/05/22 10:43:10 kls Exp $
+ * $Id: recording.c 1.103 2005/05/22 11:27:28 kls Exp $
  */
 
 #include "recording.h"
@@ -1043,7 +1043,7 @@ bool cIndexFile::CatchUp(int Index)
             LOG_ERROR_STR(fileName);
          if (Index < last - (i ? 2 * INDEXSAFETYLIMIT : 0) || Index > 10 * INDEXSAFETYLIMIT) // keep off the end in case of "Pause live video"
             break;
-         sleep(1);
+         cCondWait::SleepMs(1000);
          }
      }
   return index != NULL;

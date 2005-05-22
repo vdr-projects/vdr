@@ -3551,3 +3551,5 @@ Video Disk Recorder Revision History
 - Added cPlayer::DeviceSetVideoDisplayFormat() (thanks to Marco Schlüßler).
 - No longer saving the setup in case of a fatal error, to keep the volume level
   from being set to a wrong value (thanks to Marco Schlüßler).
+- Fixed a possible hangup when ending a replay session while cIndexFile::CatchUp()
+  is waiting (thanks to Marco Schlüßler).
