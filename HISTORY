@@ -3533,7 +3533,8 @@ Video Disk Recorder Revision History
 
   summary2info.pl /video
 
-  (the parameter given has to be the video directory).
+  (the parameter given has to be the video directory). If there is no 'info.vdr'
+  file for a recording, an attempt is made to read a 'summary.vdr'.
 - The "Summary" button in the "Recordings" menu has been renamed to "Info", and
   the page it brings up now shows the recording's information, much like the EPG
   event page. Therefore it now no longer uses the skin's SetText() function, but

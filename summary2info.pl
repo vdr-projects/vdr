@@ -10,7 +10,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: summary2info.pl 1.1 2005/05/15 16:03:10 kls Exp $
+# $Id: summary2info.pl 1.2 2005/05/22 10:37:47 kls Exp $
 
 $VideoDir = $ARGV[0] || die "please provide the name of the video directory\n";
 
@@ -29,7 +29,7 @@ for $SummaryFile (@SummaryFiles) {
              $data[$line] .= $_;
              }
           else {
-             $line++ unless ($_);
+             $line++;
              }
           }
     close(F);

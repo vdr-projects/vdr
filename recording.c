@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.101 2005/05/22 09:13:26 kls Exp $
+ * $Id: recording.c 1.102 2005/05/22 10:43:10 kls Exp $
  */
 
 #include "recording.h"
@@ -22,6 +22,8 @@
 #include "skins.h"
 #include "tools.h"
 #include "videodir.h"
+
+#define SUMMARYFALLBACK
 
 #define RECEXT       ".rec"
 #define DELEXT       ".del"
@@ -45,6 +47,9 @@
 // end of implementation for brain dead systems
 
 #define RESUMEFILESUFFIX  "/resume%s%s.vdr"
+#ifdef SUMMARYFALLBACK
+#define SUMMARYFILESUFFIX "/summary.vdr"
+#endif
 #define INFOFILESUFFIX    "/info.vdr"
 #define MARKSFILESUFFIX   "/marks.vdr"
 
@@ -230,10 +235,12 @@ cRecordingInfo::~cRecordingInfo()
   delete ownEvent;
 }
 
-void cRecordingInfo::SetTitleAndDescription(const char *Title, const char *Description)
+void cRecordingInfo::SetData(const char *Title, const char *ShortText, const char *Description)
 {
-  if (isempty(event->Title()) && !isempty(Title))
+  if (!isempty(Title))
      ((cEvent *)event)->SetTitle(Title);
+  if (!isempty(ShortText))
+     ((cEvent *)event)->SetShortText(ShortText);
   if (!isempty(Description))
      ((cEvent *)event)->SetDescription(Description);
 }
@@ -422,7 +429,7 @@ cRecording::cRecording(cTimer *Timer, const cEvent *Event)
   // timer into the recording info, but it saves us from having to actually
   // copy the entire event data:
   if (!isempty(Timer->Summary()))
-     info->SetTitleAndDescription(Timer->File(), Timer->Summary());
+     info->SetData(isempty(info->Title()) ? Timer->File() : NULL, NULL, Timer->Summary());
 }
 
 cRecording::cRecording(const char *FileName)
@@ -462,6 +469,46 @@ cRecording::cRecording(const char *FileName)
      else if (errno != ENOENT)
         LOG_ERROR_STR(InfoFileName);
      free(InfoFileName);
+#ifdef SUMMARYFALLBACK
+     // fall back to the old 'summary.vdr' if there was no 'info.vdr':
+     if (isempty(info->Title())) {
+        char *SummaryFileName = NULL;
+        asprintf(&SummaryFileName, "%s%s", fileName, SUMMARYFILESUFFIX);
+        FILE *f = fopen(SummaryFileName, "r");
+        if (f) {
+           int line = 0;
+           char *data[3] = { NULL };
+           cReadLine ReadLine;
+           char *s;
+           while ((s = ReadLine.Read(f)) != NULL && line < 3) {
+                 if (*s) {
+                    if (data[line]) {
+                       int len = strlen(s);
+                       len += strlen(data[line]) + 1;
+                       data[line] = (char *)realloc(data[line], len + 1);
+                       strcat(data[line], "\n");
+                       strcat(data[line], s);
+                       }
+                    else
+                       data[line] = strdup(s);
+                    }
+                 else
+                    line++;
+                 }
+           fclose(f);
+           if (line == 1) {
+              data[2] = data[1];
+              data[1] = NULL;
+              }
+           info->SetData(data[0], data[1], data[2]);
+           for (int i = 0; i < 3; i ++)
+               free(data[i]);
+           }
+        else if (errno != ENOENT)
+           LOG_ERROR_STR(SummaryFileName);
+        free(SummaryFileName);
+        }
+#endif
      }
 }
 
