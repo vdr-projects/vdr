@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 1.35 2005/05/16 14:18:43 kls Exp $
+ * $Id: recording.h 1.36 2005/05/22 09:08:40 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -34,11 +34,13 @@ public:
   };
 
 class cRecordingInfo {
+  friend class cRecording;
 private:
   const cEvent *event;
   cEvent *ownEvent;
-public:
   cRecordingInfo(const cEvent *Event = NULL);
+  void SetTitleAndDescription(const char *Title, const char *Description);
+public:
   ~cRecordingInfo();
   const char *Title(void) const { return event->Title(); }
   const char *ShortText(void) const { return event->ShortText(); }

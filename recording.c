@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.100 2005/05/16 15:17:22 kls Exp $
+ * $Id: recording.c 1.101 2005/05/22 09:13:26 kls Exp $
  */
 
 #include "recording.h"
@@ -230,6 +230,14 @@ cRecordingInfo::~cRecordingInfo()
   delete ownEvent;
 }
 
+void cRecordingInfo::SetTitleAndDescription(const char *Title, const char *Description)
+{
+  if (isempty(event->Title()) && !isempty(Title))
+     ((cEvent *)event)->SetTitle(Title);
+  if (!isempty(Description))
+     ((cEvent *)event)->SetDescription(Description);
+}
+
 bool cRecordingInfo::Read(FILE *f)
 {
   if (ownEvent) {
@@ -414,7 +422,7 @@ cRecording::cRecording(cTimer *Timer, const cEvent *Event)
   // timer into the recording info, but it saves us from having to actually
   // copy the entire event data:
   if (!isempty(Timer->Summary()))
-     ((cEvent *)Event)->SetDescription(Timer->Summary());
+     info->SetTitleAndDescription(Timer->File(), Timer->Summary());
 }
 
 cRecording::cRecording(const char *FileName)
