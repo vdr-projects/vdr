@@ -3559,3 +3559,5 @@ Video Disk Recorder Revision History
   session (thanks to Mirko Dölle).
 - Now dropping EPG events that have a zero start time or duration (thanks to
   Oliver Endriss).
+- No longer stopping Transfer Mode or replay immediately when the Power button
+  is pressed (thanks to Rolf Ahrenberg).

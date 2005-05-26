@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.205 2005/05/26 10:04:58 kls Exp $
+ * $Id: vdr.c 1.206 2005/05/26 10:30:18 kls Exp $
  */
 
 #include <getopt.h>
@@ -744,7 +744,6 @@ int main(int argc, char *argv[])
           // Power off:
           case kPower: isyslog("Power button pressed");
                        DELETENULL(Menu);
-                       cControl::Shutdown();
                        Temp = NULL;
                        if (!Shutdown) {
                           Skins.Message(mtError, tr("Can't shutdown - option '-s' not given!"));
@@ -906,6 +905,7 @@ int main(int argc, char *argv[])
                     if (WatchdogTimeout > 0)
                        signal(SIGALRM, SIG_IGN);
                     if (Interface->Confirm(tr("Press any key to cancel shutdown"), UserShutdown ? 5 : SHUTDOWNWAIT, true)) {
+                       cControl::Shutdown();
                        int Channel = timer ? timer->Channel()->Number() : 0;
                        const char *File = timer ? timer->File() : "";
                        Delta = Next - time(NULL); // compensates for Confirm() timeout

@@ -876,6 +876,7 @@ Niko Tarnanen <niko.tarnanen@hut.fi>
 Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  for translating OSD texts to the Finnish language
  for fixing internationalization of the text for "Setup/DVB/Audio language(s)"
+ for making pressing the Power button not stop Transfer Mode or replay immediately
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark
