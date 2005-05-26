@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.204 2005/05/22 11:20:22 kls Exp $
+ * $Id: vdr.c 1.205 2005/05/26 10:04:58 kls Exp $
  */
 
 #include <getopt.h>
@@ -846,6 +846,14 @@ int main(int argc, char *argv[])
                   break;
              // Viewing Control:
              case kOk:   LastChannel = -1; break; // forces channel display
+             // Instant resume of the last viewed recording:
+             case kPlay:
+                  if (cReplayControl::LastReplayed()) {
+                     cControl::Shutdown();
+                     Temp = NULL;
+                     cControl::Launch(new cReplayControl);
+                     }
+                  break;
              // Key macros:
              case kRed:
              case kGreen:

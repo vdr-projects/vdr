@@ -3555,3 +3555,5 @@ Video Disk Recorder Revision History
   is waiting (thanks to Marco Schlüßler).
 - The SVDRP command DELR no longer deletes recordings that are currently being
   written to by a timer (thanks to Sascha Volkenandt for pointing out this one).
+- Pressing the "Play" key in live viewing mode now resumes a previous replay
+  session (thanks to Mirko Dölle).
