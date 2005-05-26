@@ -3565,3 +3565,4 @@ Video Disk Recorder Revision History
   Andreas Kool for pointing out that 'vdr --version' failed on an UTF-8 system).
 - Made tChannelID::operator==() inline for better performance (thanks to Georg
   Acher).
+- Introduced cListBase::count for better performance (thanks to Georg Acher).

@@ -1360,3 +1360,4 @@ Paavo Hartikainen <pahartik@sci.fi>
 
 Georg Acher <acher@baycom.de>
  for making tChannelID::operator==() inline for better performance
+ for introducing cListBase::count for better performance

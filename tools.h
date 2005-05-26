@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.69 2005/05/16 09:55:19 kls Exp $
+ * $Id: tools.h 1.70 2005/05/26 11:34:01 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -213,6 +213,7 @@ class cListBase {
 protected:
   cListObject *objects, *lastObject;
   cListBase(void);
+  int count;
 public:
   virtual ~cListBase();
   void Add(cListObject *Object, cListObject *After = NULL);
@@ -222,7 +223,7 @@ public:
   void Move(cListObject *From, cListObject *To);
   virtual void Clear(void);
   cListObject *Get(int Index) const;
-  int Count(void) const;
+  int Count(void) const { return count; }
   void Sort(void);
   };
 

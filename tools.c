@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.92 2005/05/16 09:55:26 kls Exp $
+ * $Id: tools.c 1.93 2005/05/26 11:40:14 kls Exp $
  */
 
 #include "tools.h"
@@ -932,6 +932,7 @@ int cListObject::Index(void) const
 cListBase::cListBase(void)
 { 
   objects = lastObject = NULL;
+  count = 0;
 }
 
 cListBase::~cListBase()
@@ -952,6 +953,7 @@ void cListBase::Add(cListObject *Object, cListObject *After)
         objects = Object;
      lastObject = Object;
      }
+  count++;
 }
 
 void cListBase::Ins(cListObject *Object, cListObject *Before)
@@ -967,6 +969,7 @@ void cListBase::Ins(cListObject *Object, cListObject *Before)
         lastObject = Object;
      objects = Object;
      }
+  count++;
 }
 
 void cListBase::Del(cListObject *Object, bool DeleteObject)
@@ -978,6 +981,7 @@ void cListBase::Del(cListObject *Object, bool DeleteObject)
   Object->Unlink();
   if (DeleteObject)
      delete Object;
+  count--;
 }
 
 void cListBase::Move(int From, int To)
@@ -1017,6 +1021,7 @@ void cListBase::Clear(void)
         objects = object;
         }
   objects = lastObject = NULL;
+  count = 0;
 }
 
 cListObject *cListBase::Get(int Index) const
@@ -1027,18 +1032,6 @@ cListObject *cListBase::Get(int Index) const
   while (object && Index-- > 0)
         object = object->Next();
   return object;
-}
-
-int cListBase::Count(void) const
-{
-  int n = 0;
-  cListObject *object = objects;
-
-  while (object) {
-        n++;
-        object = object->Next();
-        }
-  return n;
 }
 
 static int CompareListObjects(const void *a, const void *b)
@@ -1062,6 +1055,7 @@ void cListBase::Sort(void)
   objects = lastObject = NULL;
   for (i = 0; i < n; i++) {
       a[i]->Unlink();
+      count--;
       Add(a[i]);
       }
 }
