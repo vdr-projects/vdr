@@ -3563,3 +3563,5 @@ Video Disk Recorder Revision History
   is pressed (thanks to Rolf Ahrenberg).
 - Moved the NPTL and UTF-8 checks after the version and help output (thanks to
   Andreas Kool for pointing out that 'vdr --version' failed on an UTF-8 system).
+- Made tChannelID::operator==() inline for better performance (thanks to Georg
+  Acher).

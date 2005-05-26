@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 1.38 2005/05/07 13:14:32 kls Exp $
+ * $Id: channels.c 1.39 2005/05/26 11:10:06 kls Exp $
  */
 
 #include "channels.h"
@@ -123,11 +123,6 @@ int MapToDriver(int Value, const tChannelParameterMap *Map)
 // -- tChannelID -------------------------------------------------------------
 
 const tChannelID tChannelID::InvalidID;
-
-bool tChannelID::operator== (const tChannelID &arg) const
-{
-  return source == arg.source && nid == arg.nid && tid == arg.tid && sid == arg.sid && rid == arg.rid;
-}
 
 tChannelID tChannelID::FromString(const char *s)
 {

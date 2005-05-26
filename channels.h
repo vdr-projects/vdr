@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.h 1.29 2005/05/14 09:31:45 kls Exp $
+ * $Id: channels.h 1.30 2005/05/26 11:11:31 kls Exp $
  */
 
 #ifndef __CHANNELS_H
@@ -65,7 +65,7 @@ private:
 public:
   tChannelID(void) { source = nid = tid = sid = rid = 0; }
   tChannelID(int Source, int Nid, int Tid, int Sid, int Rid = 0) { source = Source; nid = Nid; tid = Tid; sid = Sid; rid = Rid; }
-  bool operator== (const tChannelID &arg) const;
+  bool operator== (const tChannelID &arg) const { return source == arg.source && nid == arg.nid && tid == arg.tid && sid == arg.sid && rid == arg.rid; }
   bool Valid(void) { return (nid || tid) && sid; } // rid is optional and source may be 0//XXX source may not be 0???
   tChannelID &ClrRid(void) { rid = 0; return *this; }
   tChannelID &ClrPolarization(void);
