@@ -8,7 +8,7 @@
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  * Adapted to 'libsi' for VDR 1.3.0 by Marcel Wiesweg <marcel.wiesweg@gmx.de>.
  *
- * $Id: eit.c 1.104 2005/05/15 10:36:04 kls Exp $
+ * $Id: eit.c 1.105 2005/05/26 10:25:41 kls Exp $
  */
 
 #include "eit.h"
@@ -48,6 +48,9 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data)
 
   SI::EIT::Event SiEitEvent;
   for (SI::Loop::Iterator it; eventLoop.getNext(SiEitEvent, it); ) {
+      // Drop bogus events.
+      if (SiEitEvent.getStartTime() == 0 || SiEitEvent.getDuration() == 0)
+         continue;
       Empty = false;
       cEvent *pEvent = (cEvent *)pSchedule->GetEvent(SiEitEvent.getEventId(), SiEitEvent.getStartTime());
       if (!pEvent) {

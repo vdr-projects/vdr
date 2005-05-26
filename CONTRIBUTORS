@@ -564,6 +564,7 @@ Oliver Endriss <o.endriss@gmx.de>
  for reporting a problem with the name of the remote control for which the keys are
  being learned overwriting the date/time in the 'classic' skin
  for making cDvbOsd check available OSD memory at runtime
+ for making cEIT::cEIT() drop EPG events that have a zero start time or duration
 
 Reinhard Walter Buchner <rw.buchner@freenet.de>
  for adding some satellites to 'sources.conf'
