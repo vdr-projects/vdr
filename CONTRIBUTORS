@@ -770,6 +770,8 @@ Sascha Volkenandt <sascha@akv-soft.de>
  Digital audio after switching to a channel that has DD and selecting the DD audio
  track
  for reporting a bug in timeout handling in cRwLock::Lock()
+ for pointing out that the SVDRP command DELR deleted recordings that are currently
+ being written to by a timer
 
 Malcolm Caldwell <malcolm.caldwell@ntu.edu.au>
  for modifying LOF handling to allow for C-band reception

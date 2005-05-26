@@ -3513,7 +3513,7 @@ Video Disk Recorder Revision History
 - Fixed a wrong inheritance in libsi's SubtitlingDescriptor::Subtitling (thanks to
   Marco Schlüßler).
 
-2005-05-22: Version 1.3.25
+2005-05-26: Version 1.3.25
 
 - Updated the Estonian OSD texts (thanks to Arthur Konovalov).
 - Some cable providers don't mark short channel names according to the standard,
@@ -3553,3 +3553,5 @@ Video Disk Recorder Revision History
   from being set to a wrong value (thanks to Marco Schlüßler).
 - Fixed a possible hangup when ending a replay session while cIndexFile::CatchUp()
   is waiting (thanks to Marco Schlüßler).
+- The SVDRP command DELR no longer deletes recordings that are currently being
+  written to by a timer (thanks to Sascha Volkenandt for pointing out this one).
