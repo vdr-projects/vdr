@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: util.c 1.4 2004/10/16 09:58:41 kls Exp $
+ *   $Id: util.c 1.5 2005/05/28 14:15:29 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -263,9 +263,10 @@ u_int32_t CRC32::crc_table[256] = {
 u_int32_t CRC32::crc32 (const char *d, int len, u_int32_t crc)
 {
    register int i;
+   const unsigned char *u=(unsigned char*)d; // Saves '& 0xff'
 
    for (i=0; i<len; i++)
-      crc = (crc << 8) ^ crc_table[((crc >> 24) ^ *d++) & 0xff];
+      crc = (crc << 8) ^ crc_table[((crc >> 24) ^ *u++)];
 
    return crc;
 }
