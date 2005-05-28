@@ -1361,3 +1361,4 @@ Paavo Hartikainen <pahartik@sci.fi>
 Georg Acher <acher@baycom.de>
  for making tChannelID::operator==() inline for better performance
  for introducing cListBase::count for better performance
+ for a patch that was used to implement hash tables to speed up cSchedule::GetEvent()

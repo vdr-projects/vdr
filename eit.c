@@ -8,7 +8,7 @@
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  * Adapted to 'libsi' for VDR 1.3.0 by Marcel Wiesweg <marcel.wiesweg@gmx.de>.
  *
- * $Id: eit.c 1.106 2005/05/28 10:07:12 kls Exp $
+ * $Id: eit.c 1.107 2005/05/28 11:35:55 kls Exp $
  */
 
 #include "eit.h"
@@ -52,11 +52,12 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data)
       if (SiEitEvent.getStartTime() == 0 || SiEitEvent.getDuration() == 0)
          continue;
       Empty = false;
+      cEvent *newEvent = NULL;
       cEvent *pEvent = (cEvent *)pSchedule->GetEvent(SiEitEvent.getEventId(), SiEitEvent.getStartTime());
       if (!pEvent) {
          // If we don't have that event yet, we create a new one.
          // Otherwise we copy the information into the existing event anyway, because the data might have changed.
-         pEvent = pSchedule->AddEvent(new cEvent(pSchedule, SiEitEvent.getEventId()));
+         pEvent = newEvent = new cEvent(SiEitEvent.getEventId());
          if (!pEvent)
             continue;
          }
@@ -220,6 +221,9 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data)
          }
       delete ExtendedEventDescriptors;
       delete ShortEventDescriptor;
+
+      if (newEvent)
+         pSchedule->AddEvent(newEvent);
 
       pEvent->SetComponents(Components);
 

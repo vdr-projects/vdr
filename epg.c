@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 1.32 2005/05/28 10:03:39 kls Exp $
+ * $Id: epg.c 1.33 2005/05/28 13:17:20 kls Exp $
  */
 
 #include "epg.h"
@@ -81,9 +81,9 @@ void cComponents::SetComponent(int Index, uchar Stream, uchar Type, const char *
 
 // --- cEvent ----------------------------------------------------------------
 
-cEvent::cEvent(cSchedule *Schedule, u_int16_t EventID)
+cEvent::cEvent(u_int16_t EventID)
 {
-  schedule = Schedule;
+  schedule = NULL;
   eventID = EventID;
   tableID = 0;
   version = 0xFF; // actual version numbers are 0..31
@@ -119,7 +119,13 @@ tChannelID cEvent::ChannelID(void) const
 
 void cEvent::SetEventID(u_int16_t EventID)
 {
-  eventID = EventID;
+  if (eventID != EventID) {
+     if (schedule)
+        schedule->UnhashEvent(this);
+     eventID = EventID;
+     if (schedule)
+        schedule->HashEvent(this);
+     }
 }
 
 void cEvent::SetTableID(uchar TableID)
@@ -163,7 +169,13 @@ void cEvent::SetComponents(cComponents *Components)
 
 void cEvent::SetStartTime(time_t StartTime)
 {
-  startTime = StartTime;
+  if (startTime != StartTime) {
+     if (schedule)
+        schedule->UnhashEvent(this);
+     startTime = StartTime;
+     if (schedule)
+        schedule->HashEvent(this);
+     }
 }
 
 void cEvent::SetDuration(int Duration)
@@ -285,12 +297,15 @@ bool cEvent::Read(FILE *f, cSchedule *Schedule)
                           int n = sscanf(t, "%u %ld %d %X", &EventID, &StartTime, &Duration, &TableID);
                           if (n == 3 || n == 4) {
                              Event = (cEvent *)Schedule->GetEvent(EventID, StartTime);
+                             cEvent *newEvent = NULL;
                              if (!Event)
-                                Event = Schedule->AddEvent(new cEvent(Schedule, EventID));
+                                Event = newEvent = new cEvent(EventID);
                              if (Event) {
                                 Event->SetTableID(TableID);
                                 Event->SetStartTime(StartTime);
                                 Event->SetDuration(Duration);
+                                if (newEvent)
+                                   Schedule->AddEvent(newEvent);
                                 }
                              }
                           }
@@ -638,7 +653,30 @@ cSchedule::cSchedule(tChannelID ChannelID)
 cEvent *cSchedule::AddEvent(cEvent *Event)
 {
   events.Add(Event);
+  Event->schedule = this;
+  HashEvent(Event);
   return Event;
+}
+
+void cSchedule::DelEvent(cEvent *Event)
+{
+  if (Event->schedule == this) {
+     UnhashEvent(Event);
+     events.Del(Event);
+     Event->schedule = NULL;
+     }
+}
+
+void cSchedule::HashEvent(cEvent *Event)
+{
+  eventsHashID.Add(Event, Event->EventID());
+  eventsHashStartTime.Add(Event, Event->StartTime());
+}
+
+void cSchedule::UnhashEvent(cEvent *Event)
+{
+  eventsHashID.Del(Event, Event->EventID());
+  eventsHashStartTime.Del(Event, Event->StartTime());
 }
 
 const cEvent *cSchedule::GetPresentEvent(bool CheckRunningStatus) const
@@ -669,13 +707,9 @@ const cEvent *cSchedule::GetEvent(u_int16_t EventID, time_t StartTime) const
 {
   // Returns either the event info with the given EventID or, if that one can't
   // be found, the one with the given StartTime (or NULL if neither can be found)
-  cEvent *pt = NULL;
-  for (cEvent *pe = events.First(); pe; pe = events.Next(pe)) {
-      if (pe->EventID() == EventID)
-         return pe;
-      if (StartTime > 0 && pe->StartTime() == StartTime) // 'StartTime < 0' is apparently used with NVOD channels
-         pt = pe;
-      }
+  cEvent *pt = eventsHashID.Get(EventID);
+  if (!pt && StartTime > 0) // 'StartTime < 0' is apparently used with NVOD channels
+     pt = eventsHashStartTime.Get(StartTime);
   return pt;
 }
 
@@ -742,7 +776,7 @@ void cSchedule::Cleanup(time_t Time)
       if (!Event)
          break;
       if (!Event->HasTimer() && Event->EndTime() + Setup.EPGLinger * 60 + 3600 < Time) { // adding one hour for safety
-         events.Del(Event);
+         DelEvent(Event);
          a--;
          }
       }

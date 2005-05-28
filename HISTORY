@@ -3568,3 +3568,5 @@ Video Disk Recorder Revision History
 - Introduced cListBase::count for better performance (thanks to Georg Acher).
 - cEvent no longer stores the channelID directly, but rather has a pointer to
   the schedule it is in.
+- Now using hash tables to speed up cSchedule::GetEvent() (partially based on
+  a patch from Georg Acher).

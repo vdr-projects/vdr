@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.93 2005/05/26 11:40:14 kls Exp $
+ * $Id: tools.c 1.94 2005/05/28 11:46:44 kls Exp $
  */
 
 #include "tools.h"
@@ -1060,3 +1060,55 @@ void cListBase::Sort(void)
       }
 }
 
+// --- cHashBase -------------------------------------------------------------
+
+cHashBase::cHashBase(int Size)
+{
+  size = Size;
+  hashTable = (cList<cHashObject>**)calloc(size, sizeof(cList<cHashObject>*));
+}
+
+cHashBase::~cHashBase(void)
+{
+  for (int i = 0; i < size; i++)
+      delete hashTable[i];
+  free(hashTable);
+}
+
+void cHashBase::Add(cListObject *Object, int Id)
+{
+  int hash = hashfn(Id);
+  if (!hashTable[hash])
+     hashTable[hash] = new cList<cHashObject>;
+  hashTable[hash]->Add(new cHashObject(Object, Id));
+}
+
+void cHashBase::Del(cListObject *Object, int Id)
+{
+  cList<cHashObject> *list = hashTable[hashfn(Id)];
+  if (list) {
+     for (cHashObject *hob = list->First(); hob; hob = list->Next(hob)) {
+         if (hob->object == Object) {
+            list->Del(hob);
+            break;
+            }
+         }
+     }
+}
+
+cListObject *cHashBase::Get(int Id) const
+{
+  cList<cHashObject> *list = hashTable[hashfn(Id)];
+  if (list) {
+     for (cHashObject *hob = list->First(); hob; hob = list->Next(hob)) {
+         if (hob->id == Id)
+            return hob->object;
+         }
+     }
+  return NULL;
+}
+
+cList<cHashObject> *cHashBase::GetList(int Id) const
+{
+  return hashTable[hashfn(Id)];
+}

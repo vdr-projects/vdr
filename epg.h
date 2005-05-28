@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.h 1.24 2005/05/28 10:00:12 kls Exp $
+ * $Id: epg.h 1.25 2005/05/28 11:32:36 kls Exp $
  */
 
 #ifndef __EPG_H
@@ -47,6 +47,7 @@ public:
 class cSchedule;
 
 class cEvent : public cListObject {
+  friend class cSchedule;
 private:
   cSchedule *schedule;     // The Schedule this event belongs to
   u_int16_t eventID;       // Event ID of this event
@@ -62,7 +63,7 @@ private:
   time_t vps;              // Video Programming Service timestamp (VPS, aka "Programme Identification Label", PIL)
   time_t seen;             // When this event was last seen in the data stream
 public:
-  cEvent(cSchedule *Schedule, u_int16_t EventID);
+  cEvent(u_int16_t EventID);
   ~cEvent();
   virtual int Compare(const cListObject &ListObject) const;
   tChannelID ChannelID(void) const;
@@ -110,6 +111,8 @@ class cSchedule : public cListObject  {
 private:
   tChannelID channelID;
   cList<cEvent> events;
+  cHash<cEvent> eventsHashID;
+  cHash<cEvent> eventsHashStartTime;
   bool hasRunning;
   time_t modified;
   time_t presentSeen;
@@ -128,6 +131,9 @@ public:
   void Cleanup(time_t Time);
   void Cleanup(void);
   cEvent *AddEvent(cEvent *Event);
+  void DelEvent(cEvent *Event);
+  void cSchedule::HashEvent(cEvent *Event);
+  void cSchedule::UnhashEvent(cEvent *Event);
   const cList<cEvent> *Events(void) const { return &events; }
   const cEvent *GetPresentEvent(bool CheckRunningStatus = false) const;
   const cEvent *GetFollowingEvent(bool CheckRunningStatus = false) const;

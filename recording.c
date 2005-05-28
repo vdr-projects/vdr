@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.105 2005/05/28 10:04:24 kls Exp $
+ * $Id: recording.c 1.106 2005/05/28 11:36:14 kls Exp $
  */
 
 #include "recording.h"
@@ -228,7 +228,7 @@ cRecordingInfo::cRecordingInfo(const cEvent *Event)
      ownEvent = NULL;
      }
   else
-     event = ownEvent = new cEvent(NULL, 0);
+     event = ownEvent = new cEvent(0);
 }
 
 cRecordingInfo::~cRecordingInfo()
