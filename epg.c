@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 1.31 2005/05/28 09:49:04 kls Exp $
+ * $Id: epg.c 1.32 2005/05/28 10:03:39 kls Exp $
  */
 
 #include "epg.h"
@@ -81,9 +81,9 @@ void cComponents::SetComponent(int Index, uchar Stream, uchar Type, const char *
 
 // --- cEvent ----------------------------------------------------------------
 
-cEvent::cEvent(tChannelID ChannelID, u_int16_t EventID)
+cEvent::cEvent(cSchedule *Schedule, u_int16_t EventID)
 {
-  channelID = ChannelID;
+  schedule = Schedule;
   eventID = EventID;
   tableID = 0;
   version = 0xFF; // actual version numbers are 0..31
@@ -110,6 +110,11 @@ int cEvent::Compare(const cListObject &ListObject) const
 {
   cEvent *e = (cEvent *)&ListObject;
   return startTime - e->startTime;
+}
+
+tChannelID cEvent::ChannelID(void) const
+{
+  return schedule ? schedule->ChannelID() : tChannelID();
 }
 
 void cEvent::SetEventID(u_int16_t EventID)
@@ -281,7 +286,7 @@ bool cEvent::Read(FILE *f, cSchedule *Schedule)
                           if (n == 3 || n == 4) {
                              Event = (cEvent *)Schedule->GetEvent(EventID, StartTime);
                              if (!Event)
-                                Event = Schedule->AddEvent(new cEvent(Schedule->ChannelID(), EventID));
+                                Event = Schedule->AddEvent(new cEvent(Schedule, EventID));
                              if (Event) {
                                 Event->SetTableID(TableID);
                                 Event->SetStartTime(StartTime);

@@ -8,7 +8,7 @@
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  * Adapted to 'libsi' for VDR 1.3.0 by Marcel Wiesweg <marcel.wiesweg@gmx.de>.
  *
- * $Id: eit.c 1.105 2005/05/26 10:25:41 kls Exp $
+ * $Id: eit.c 1.106 2005/05/28 10:07:12 kls Exp $
  */
 
 #include "eit.h"
@@ -56,7 +56,7 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data)
       if (!pEvent) {
          // If we don't have that event yet, we create a new one.
          // Otherwise we copy the information into the existing event anyway, because the data might have changed.
-         pEvent = pSchedule->AddEvent(new cEvent(channelID, SiEitEvent.getEventId()));
+         pEvent = pSchedule->AddEvent(new cEvent(pSchedule, SiEitEvent.getEventId()));
          if (!pEvent)
             continue;
          }

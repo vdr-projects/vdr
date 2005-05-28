@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.h 1.23 2005/05/28 09:48:56 kls Exp $
+ * $Id: epg.h 1.24 2005/05/28 10:00:12 kls Exp $
  */
 
 #ifndef __EPG_H
@@ -48,7 +48,7 @@ class cSchedule;
 
 class cEvent : public cListObject {
 private:
-  tChannelID channelID;    // Channel ID of program for this event
+  cSchedule *schedule;     // The Schedule this event belongs to
   u_int16_t eventID;       // Event ID of this event
   uchar tableID;           // Table ID this event came from
   uchar version;           // Version number of section this event came from
@@ -62,10 +62,10 @@ private:
   time_t vps;              // Video Programming Service timestamp (VPS, aka "Programme Identification Label", PIL)
   time_t seen;             // When this event was last seen in the data stream
 public:
-  cEvent(tChannelID ChannelID, u_int16_t EventID);
+  cEvent(cSchedule *Schedule, u_int16_t EventID);
   ~cEvent();
   virtual int Compare(const cListObject &ListObject) const;
-  tChannelID ChannelID(void) const { return channelID; }
+  tChannelID ChannelID(void) const;
   u_int16_t EventID(void) const { return eventID; }
   uchar TableID(void) const { return tableID; }
   uchar Version(void) const { return version; }

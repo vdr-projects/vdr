@@ -3513,7 +3513,7 @@ Video Disk Recorder Revision History
 - Fixed a wrong inheritance in libsi's SubtitlingDescriptor::Subtitling (thanks to
   Marco Schlüßler).
 
-2005-05-26: Version 1.3.25
+2005-05-28: Version 1.3.25
 
 - Updated the Estonian OSD texts (thanks to Arthur Konovalov).
 - Some cable providers don't mark short channel names according to the standard,
@@ -3566,3 +3566,5 @@ Video Disk Recorder Revision History
 - Made tChannelID::operator==() inline for better performance (thanks to Georg
   Acher).
 - Introduced cListBase::count for better performance (thanks to Georg Acher).
+- cEvent no longer stores the channelID directly, but rather has a pointer to
+  the schedule it is in.
