@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 1.40 2005/05/28 09:44:41 kls Exp $
+ * $Id: channels.c 1.41 2005/05/28 13:55:57 kls Exp $
  */
 
 #include "channels.h"
@@ -256,11 +256,6 @@ int cChannel::Transponder(void) const
   if (IsSat())
      tf = Transponder(tf, polarization);
   return tf;
-}
-
-tChannelID cChannel::GetChannelID(void) const
-{
-  return tChannelID(source, nid, (nid || tid) ? tid : Transponder(), sid, rid);
 }
 
 int cChannel::Modification(int Mask)

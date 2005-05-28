@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.h 1.31 2005/05/28 09:47:23 kls Exp $
+ * $Id: channels.h 1.32 2005/05/28 13:57:08 kls Exp $
  */
 
 #ifndef __CHANNELS_H
@@ -179,7 +179,7 @@ public:
   bool IsCable(void) const { return cSource::IsCable(source); }
   bool IsSat(void) const { return cSource::IsSat(source); }
   bool IsTerr(void) const { return cSource::IsTerr(source); }
-  tChannelID GetChannelID(void) const;
+  tChannelID GetChannelID(void) const { return tChannelID(source, nid, (nid || tid) ? tid : Transponder(), sid, rid); }
   int Modification(int Mask = CHANNELMOD_ALL);
   bool SetSatTransponderData(int Source, int Frequency, char Polarization, int Srate, int CoderateH);
   bool SetCableTransponderData(int Source, int Frequency, int Modulation, int Srate, int CoderateH);
