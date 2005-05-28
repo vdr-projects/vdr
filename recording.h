@@ -4,13 +4,14 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 1.37 2005/05/22 10:29:02 kls Exp $
+ * $Id: recording.h 1.38 2005/05/28 09:34:07 kls Exp $
  */
 
 #ifndef __RECORDING_H
 #define __RECORDING_H
 
 #include <time.h>
+#include "channels.h"
 #include "config.h"
 #include "epg.h"
 #include "thread.h"
@@ -36,6 +37,7 @@ public:
 class cRecordingInfo {
   friend class cRecording;
 private:
+  tChannelID channelID;
   const cEvent *event;
   cEvent *ownEvent;
   cRecordingInfo(const cEvent *Event = NULL);

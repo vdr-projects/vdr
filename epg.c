@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 1.30 2005/05/16 14:12:00 kls Exp $
+ * $Id: epg.c 1.31 2005/05/28 09:49:04 kls Exp $
  */
 
 #include "epg.h"
@@ -110,11 +110,6 @@ int cEvent::Compare(const cListObject &ListObject) const
 {
   cEvent *e = (cEvent *)&ListObject;
   return startTime - e->startTime;
-}
-
-void cEvent::SetChannelID(tChannelID ChannelID)
-{
-  channelID = ChannelID;
 }
 
 void cEvent::SetEventID(u_int16_t EventID)

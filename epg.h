@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.h 1.22 2005/05/16 14:11:28 kls Exp $
+ * $Id: epg.h 1.23 2005/05/28 09:48:56 kls Exp $
  */
 
 #ifndef __EPG_H
@@ -86,7 +86,6 @@ public:
   cString GetTimeString(void) const;
   cString GetEndTimeString(void) const;
   cString GetVpsString(void) const;
-  void SetChannelID(tChannelID ChannelID);
   void SetEventID(u_int16_t EventID);
   void SetTableID(uchar TableID);
   void SetVersion(uchar Version);

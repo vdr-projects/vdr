@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.103 2005/05/22 11:27:28 kls Exp $
+ * $Id: recording.c 1.104 2005/05/28 09:53:54 kls Exp $
  */
 
 #include "recording.h"
@@ -224,6 +224,7 @@ cRecordingInfo::cRecordingInfo(const cEvent *Event)
 {
   if (Event) {
      event = Event;
+     channelID = event->ChannelID();
      ownEvent = NULL;
      }
   else
@@ -258,7 +259,7 @@ bool cRecordingInfo::Read(FILE *f)
                          if (p)
                             *p = 0; // strips optional channel name
                          if (*t)
-                            ownEvent->SetChannelID(tChannelID::FromString(t));
+                            channelID = tChannelID::FromString(t);
                        }
                        break;
              default: if (!ownEvent->Parse(s))
@@ -273,9 +274,8 @@ bool cRecordingInfo::Read(FILE *f)
 
 bool cRecordingInfo::Write(FILE *f, const char *Prefix) const
 {
-  cChannel *channel = Channels.GetByChannelID(event->ChannelID(), true);
-  if (channel)
-     fprintf(f, "%sC %s %s\n", Prefix, *channel->GetChannelID().ToString(), channel->Name());
+  if (channelID.Valid())
+     fprintf(f, "%sC %s\n", Prefix, *channelID.ToString());
   event->Dump(f, Prefix, true);
   return true;
 }

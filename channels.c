@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 1.39 2005/05/26 11:10:06 kls Exp $
+ * $Id: channels.c 1.40 2005/05/28 09:44:41 kls Exp $
  */
 
 #include "channels.h"
@@ -141,7 +141,7 @@ tChannelID tChannelID::FromString(const char *s)
   return tChannelID::InvalidID;
 }
 
-cString tChannelID::ToString(void)
+cString tChannelID::ToString(void) const
 {
   char buffer[256];
   snprintf(buffer, sizeof(buffer), rid ? "%s-%d-%d-%d-%d" : "%s-%d-%d-%d", *cSource::ToString(source), nid, tid, sid, rid);
