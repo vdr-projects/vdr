@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 1.41 2005/05/28 13:55:57 kls Exp $
+ * $Id: channels.c 1.42 2005/05/29 10:32:38 kls Exp $
  */
 
 #include "channels.h"
@@ -804,6 +804,22 @@ bool cChannel::Save(FILE *f)
   return fprintf(f, "%s", *ToText()) > 0;
 }
 
+// -- cChannelSorter ---------------------------------------------------------
+
+class cChannelSorter : public cListObject {
+public:
+  cChannel *channel;
+  tChannelID channelID;
+  cChannelSorter(cChannel *Channel) {
+    channel = Channel;
+    channelID = channel->GetChannelID();
+    }
+  virtual int Compare(const cListObject &ListObject) const {
+    cChannelSorter *cs = (cChannelSorter *)&ListObject;
+    return memcmp(&channelID, &cs->channelID, sizeof(channelID));
+    }
+  };
+
 // -- cChannels --------------------------------------------------------------
 
 cChannels Channels;
@@ -816,22 +832,21 @@ cChannels::cChannels(void)
 
 void cChannels::DeleteDuplicateChannels(void)
 {
+  cList<cChannelSorter> ChannelSorter;
   for (cChannel *channel = First(); channel; channel = Next(channel)) {
-      if (!channel->GroupSep()) {
-         tChannelID ChannelID = channel->GetChannelID();
-         cChannel *other = Next(channel);
-         while (other) {
-               cChannel *d = NULL;
-               if (!other->GroupSep() && other->GetChannelID() == ChannelID)
-                  d = other;
-               other = Next(other);
-               if (d) {
-                  dsyslog("deleting duplicate channel %s", *d->ToText());
-                  Del(d);
-                  }
-               }
-         }
+      if (!channel->GroupSep())
+         ChannelSorter.Add(new cChannelSorter(channel));
       }
+  ChannelSorter.Sort();
+  cChannelSorter *cs = ChannelSorter.First();
+  while (cs) {
+        cChannelSorter *next = ChannelSorter.Next(cs);
+        if (next && cs->channelID == next->channelID) {
+           dsyslog("deleting duplicate channel %s", *next->channel->ToText());
+           Del(next->channel);
+           }
+        cs = next;
+        }
 }
 
 bool cChannels::Load(const char *FileName, bool AllowComments, bool MustExist)

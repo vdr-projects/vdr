@@ -3513,7 +3513,7 @@ Video Disk Recorder Revision History
 - Fixed a wrong inheritance in libsi's SubtitlingDescriptor::Subtitling (thanks to
   Marco Schlüßler).
 
-2005-05-28: Version 1.3.25
+2005-05-29: Version 1.3.25
 
 - Updated the Estonian OSD texts (thanks to Arthur Konovalov).
 - Some cable providers don't mark short channel names according to the standard,
@@ -3572,3 +3572,4 @@ Video Disk Recorder Revision History
   a patch from Georg Acher).
 - Avoiding unnecessary calls to getLength() in libsi/si.c, and avoiding the
   '& 0xff' in CRC32::crc32() of libsi/util.c (thanks to Georg Acher).
+- Speeded up deleting duplicate channels.
