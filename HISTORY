@@ -3575,3 +3575,5 @@ Video Disk Recorder Revision History
 - Speeded up deleting duplicate channels.
 - Fixed listing recordings with empty episode names in the LSTR command (thanks
   to Stefan Huelswitt for pointing this out).
+- Added cThread::SetPriority() and using it in cSectionHandler::Action() to
+  reduce the priority of the section handler threads (as suggested by Georg Acher).

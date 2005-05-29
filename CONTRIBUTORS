@@ -1366,3 +1366,4 @@ Georg Acher <acher@baycom.de>
  for a patch that was used to implement hash tables to speed up cSchedule::GetEvent()
  for avoiding unnecessary calls to getLength() in libsi/si.c, and avoiding the
  '& 0xff' in CRC32::crc32() of libsi/util.c
+ for suggesting to reduce the priority of the section handler threads
