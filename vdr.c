@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.203 2005/03/20 10:58:59 kls Exp $
+ * $Id: vdr.c 1.207 2005/05/26 10:45:29 kls Exp $
  */
 
 #include <getopt.h>
@@ -87,25 +87,6 @@ static void Watchdog(int signum)
 
 int main(int argc, char *argv[])
 {
-#ifdef _CS_GNU_LIBPTHREAD_VERSION
-  // Check for NPTL and exit if present - VDR apparently doesn't run well with NPTL:
-  char LibPthreadVersion[128];
-  if (confstr(_CS_GNU_LIBPTHREAD_VERSION, LibPthreadVersion, sizeof(LibPthreadVersion)) > 0) {
-     if (strstr(LibPthreadVersion, "NPTL")) {
-        fprintf(stderr, "vdr: please turn off NPTL by setting 'export LD_ASSUME_KERNEL=2.4.1' before starting VDR\n");
-        return 2;
-        }
-     }
-#endif
-
-  // Check for UTF-8 and exit if present - asprintf() will fail if it encounters 8 bit ASCII codes
-  char *LangEnv;
-  if ((LangEnv = getenv("LANG"))     != NULL && strcasestr(LangEnv, "utf") ||
-      (LangEnv = getenv("LC_CTYPE")) != NULL && strcasestr(LangEnv, "utf")) {
-     fprintf(stderr, "vdr: please turn off UTF-8 before starting VDR\n");
-     return 2;
-     }
-
   // Save terminal settings:
 
   struct termios savedTm;
@@ -319,6 +300,25 @@ int main(int argc, char *argv[])
             }
         }
      return 0;
+     }
+
+#ifdef _CS_GNU_LIBPTHREAD_VERSION
+  // Check for NPTL and exit if present - VDR apparently doesn't run well with NPTL:
+  char LibPthreadVersion[128];
+  if (confstr(_CS_GNU_LIBPTHREAD_VERSION, LibPthreadVersion, sizeof(LibPthreadVersion)) > 0) {
+     if (strstr(LibPthreadVersion, "NPTL")) {
+        fprintf(stderr, "vdr: please turn off NPTL by setting 'export LD_ASSUME_KERNEL=2.4.1' before starting VDR\n");
+        return 2;
+        }
+     }
+#endif
+
+  // Check for UTF-8 and exit if present - asprintf() will fail if it encounters 8 bit ASCII codes
+  char *LangEnv;
+  if ((LangEnv = getenv("LANG"))     != NULL && strcasestr(LangEnv, "utf") ||
+      (LangEnv = getenv("LC_CTYPE")) != NULL && strcasestr(LangEnv, "utf")) {
+     fprintf(stderr, "vdr: please turn off UTF-8 before starting VDR\n");
+     return 2;
      }
 
   // Log file:
@@ -744,7 +744,6 @@ int main(int argc, char *argv[])
           // Power off:
           case kPower: isyslog("Power button pressed");
                        DELETENULL(Menu);
-                       cControl::Shutdown();
                        Temp = NULL;
                        if (!Shutdown) {
                           Skins.Message(mtError, tr("Can't shutdown - option '-s' not given!"));
@@ -846,6 +845,14 @@ int main(int argc, char *argv[])
                   break;
              // Viewing Control:
              case kOk:   LastChannel = -1; break; // forces channel display
+             // Instant resume of the last viewed recording:
+             case kPlay:
+                  if (cReplayControl::LastReplayed()) {
+                     cControl::Shutdown();
+                     Temp = NULL;
+                     cControl::Launch(new cReplayControl);
+                     }
+                  break;
              // Key macros:
              case kRed:
              case kGreen:
@@ -898,6 +905,7 @@ int main(int argc, char *argv[])
                     if (WatchdogTimeout > 0)
                        signal(SIGALRM, SIG_IGN);
                     if (Interface->Confirm(tr("Press any key to cancel shutdown"), UserShutdown ? 5 : SHUTDOWNWAIT, true)) {
+                       cControl::Shutdown();
                        int Channel = timer ? timer->Channel()->Number() : 0;
                        const char *File = timer ? timer->File() : "";
                        Delta = Next - time(NULL); // compensates for Confirm() timeout
@@ -940,9 +948,11 @@ Exit:
   Remotes.Clear();
   Audios.Clear();
   Skins.Clear();
-  Setup.CurrentChannel = cDevice::CurrentChannel();
-  Setup.CurrentVolume  = cDevice::CurrentVolume();
-  Setup.Save();
+  if (ExitCode != 2) {
+     Setup.CurrentChannel = cDevice::CurrentChannel();
+     Setup.CurrentVolume  = cDevice::CurrentVolume();
+     Setup.Save();
+     }
   cDevice::Shutdown();
   PluginManager.Shutdown();
   ReportEpgBugFixStats();

@@ -3487,7 +3487,7 @@ Video Disk Recorder Revision History
 - Fixed handling transparent areas in cDvbSpuBitmap (thanks to Marco Schlüßler).
 - Now also considering the "EPG linger time" when saving the EPG data to file or
   listing it via LSTE (thanks to Roman Krenický).
-- Fixed handling fragments of less than 3 byte in cPesAssembler (thanks to
+- Fixed handling fragments of less than 4 byte in cPesAssembler (thanks to
   Reinhard Nissl).
 - Fixed a bug in libsi's SubtitlingDescriptor::getLength() (thanks to Marco
   Schlüßler).
@@ -3512,3 +3512,68 @@ Video Disk Recorder Revision History
   (thanks to Reinhard Nissl).
 - Fixed a wrong inheritance in libsi's SubtitlingDescriptor::Subtitling (thanks to
   Marco Schlüßler).
+
+2005-05-29: Version 1.3.25
+
+- Updated the Estonian OSD texts (thanks to Arthur Konovalov).
+- Some cable providers don't mark short channel names according to the standard,
+  but rather go their own way and use "name>short name". VDR now splits at this
+  character for cable channels (thanks to Gerhard Steiner for reporting this one).
+- Added a check for Setup.DiSEqC in cDvbDevice::ProvidesTransponder(), otherwise
+  the EPG scan didn't work on systems that don't use DiSEqC (thanks to Michael
+  Reinelt for reporting this one).
+- Made the Makefile patch friendlier (thanks to Ludwig Nussel).
+- Made cOsd::isOpen an integer counter to avoid problems with messages when a
+  cOsdObject uses the raw OSD (thanks to Andreas Regel for reporting this one).
+- Updated the Danish OSD texts (thanks to Mogens Elneff).
+- The file 'summary.vdr' has been replaced with 'info.vdr' and now contains the
+  information about a recording, in the same format as the events are stored in
+  'epg.data' (see man vdr(5) for details). Existing summary files can be converted
+  to the new format by running the Perl script 'summary2info.pl', as in
+
+  summary2info.pl /video
+
+  (the parameter given has to be the video directory). If there is no 'info.vdr'
+  file for a recording, an attempt is made to read a 'summary.vdr'.
+- The "Summary" button in the "Recordings" menu has been renamed to "Info", and
+  the page it brings up now shows the recording's information, much like the EPG
+  event page. Therefore it now no longer uses the skin's SetText() function, but
+  rather the SetRecording() function. Skin plugins may need to adjust that function
+  accordingly (see skinsttng.c, for instance).
+- The SVDRP command LSTR now lists the recording information in the same tagged
+  format as the LSTE command lists the EPG data.
+- The audio track menu now contains track descriptions when replaying (provided
+  such descriptions were available in the EPG data when the recording was made,
+  and are stored in the info.vdr file).
+- Avoiding extra blanks at the end of names of instant recordings.
+- Removed converting byte order on big endian systems from cDvbOsd::Flush(),
+  which, according to Johannes Stezenbach and Paavo Hartikainen, is wrong.
+- Added cPlayer::DeviceSetVideoDisplayFormat() (thanks to Marco Schlüßler).
+- No longer saving the setup in case of a fatal error, to keep the volume level
+  from being set to a wrong value (thanks to Marco Schlüßler).
+- Fixed a possible hangup when ending a replay session while cIndexFile::CatchUp()
+  is waiting (thanks to Marco Schlüßler).
+- The SVDRP command DELR no longer deletes recordings that are currently being
+  written to by a timer (thanks to Sascha Volkenandt for pointing out this one).
+- Pressing the "Play" key in live viewing mode now resumes a previous replay
+  session (thanks to Mirko Dölle).
+- Now dropping EPG events that have a zero start time or duration (thanks to
+  Oliver Endriss).
+- No longer stopping Transfer Mode or replay immediately when the Power button
+  is pressed (thanks to Rolf Ahrenberg).
+- Moved the NPTL and UTF-8 checks after the version and help output (thanks to
+  Andreas Kool for pointing out that 'vdr --version' failed on an UTF-8 system).
+- Made tChannelID::operator==() inline for better performance (thanks to Georg
+  Acher).
+- Introduced cListBase::count for better performance (thanks to Georg Acher).
+- cEvent no longer stores the channelID directly, but rather has a pointer to
+  the schedule it is in.
+- Now using hash tables to speed up cSchedule::GetEvent() (partially based on
+  a patch from Georg Acher).
+- Avoiding unnecessary calls to getLength() in libsi/si.c, and avoiding the
+  '& 0xff' in CRC32::crc32() of libsi/util.c (thanks to Georg Acher).
+- Speeded up deleting duplicate channels.
+- Fixed listing recordings with empty episode names in the LSTR command (thanks
+  to Stefan Huelswitt for pointing this out).
+- Added cThread::SetPriority() and using it in cSectionHandler::Action() to
+  reduce the priority of the section handler threads (as suggested by Georg Acher).

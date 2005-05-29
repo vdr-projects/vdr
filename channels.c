@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 1.38 2005/05/07 13:14:32 kls Exp $
+ * $Id: channels.c 1.42 2005/05/29 10:32:38 kls Exp $
  */
 
 #include "channels.h"
@@ -124,11 +124,6 @@ int MapToDriver(int Value, const tChannelParameterMap *Map)
 
 const tChannelID tChannelID::InvalidID;
 
-bool tChannelID::operator== (const tChannelID &arg) const
-{
-  return source == arg.source && nid == arg.nid && tid == arg.tid && sid == arg.sid && rid == arg.rid;
-}
-
 tChannelID tChannelID::FromString(const char *s)
 {
   char *sourcebuf = NULL;
@@ -146,7 +141,7 @@ tChannelID tChannelID::FromString(const char *s)
   return tChannelID::InvalidID;
 }
 
-cString tChannelID::ToString(void)
+cString tChannelID::ToString(void) const
 {
   char buffer[256];
   snprintf(buffer, sizeof(buffer), rid ? "%s-%d-%d-%d-%d" : "%s-%d-%d-%d", *cSource::ToString(source), nid, tid, sid, rid);
@@ -261,11 +256,6 @@ int cChannel::Transponder(void) const
   if (IsSat())
      tf = Transponder(tf, polarization);
   return tf;
-}
-
-tChannelID cChannel::GetChannelID(void) const
-{
-  return tChannelID(source, nid, (nid || tid) ? tid : Transponder(), sid, rid);
 }
 
 int cChannel::Modification(int Mask)
@@ -814,6 +804,22 @@ bool cChannel::Save(FILE *f)
   return fprintf(f, "%s", *ToText()) > 0;
 }
 
+// -- cChannelSorter ---------------------------------------------------------
+
+class cChannelSorter : public cListObject {
+public:
+  cChannel *channel;
+  tChannelID channelID;
+  cChannelSorter(cChannel *Channel) {
+    channel = Channel;
+    channelID = channel->GetChannelID();
+    }
+  virtual int Compare(const cListObject &ListObject) const {
+    cChannelSorter *cs = (cChannelSorter *)&ListObject;
+    return memcmp(&channelID, &cs->channelID, sizeof(channelID));
+    }
+  };
+
 // -- cChannels --------------------------------------------------------------
 
 cChannels Channels;
@@ -826,22 +832,21 @@ cChannels::cChannels(void)
 
 void cChannels::DeleteDuplicateChannels(void)
 {
+  cList<cChannelSorter> ChannelSorter;
   for (cChannel *channel = First(); channel; channel = Next(channel)) {
-      if (!channel->GroupSep()) {
-         tChannelID ChannelID = channel->GetChannelID();
-         cChannel *other = Next(channel);
-         while (other) {
-               cChannel *d = NULL;
-               if (!other->GroupSep() && other->GetChannelID() == ChannelID)
-                  d = other;
-               other = Next(other);
-               if (d) {
-                  dsyslog("deleting duplicate channel %s", *d->ToText());
-                  Del(d);
-                  }
-               }
-         }
+      if (!channel->GroupSep())
+         ChannelSorter.Add(new cChannelSorter(channel));
       }
+  ChannelSorter.Sort();
+  cChannelSorter *cs = ChannelSorter.First();
+  while (cs) {
+        cChannelSorter *next = ChannelSorter.Next(cs);
+        if (next && cs->channelID == next->channelID) {
+           dsyslog("deleting duplicate channel %s", *next->channel->ToText());
+           Del(next->channel);
+           }
+        cs = next;
+        }
 }
 
 bool cChannels::Load(const char *FileName, bool AllowComments, bool MustExist)

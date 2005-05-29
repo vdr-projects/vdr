@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.h 1.21 2005/03/20 12:32:36 kls Exp $
+ * $Id: epg.h 1.25 2005/05/28 11:32:36 kls Exp $
  */
 
 #ifndef __EPG_H
@@ -18,7 +18,6 @@
 #include "tools.h"
 
 #define MAXEPGBUGFIXLEVEL 3
-#define MAXCOMPONENTS 32
 
 enum eDumpMode { dmAll, dmPresent, dmFollowing, dmAtTime };
 
@@ -35,20 +34,22 @@ class cComponents {
 private:
   int numComponents;
   tComponent *components;
+  void Realloc(int Index);
 public:
-  cComponents(int NumComponents);
+  cComponents(void);
   ~cComponents(void);
   int NumComponents(void) const { return numComponents; }
-  bool SetComponent(int Index, const char *s);
-  bool SetComponent(int Index, uchar Stream, uchar Type, const char *Language, const char *Description);
+  void SetComponent(int Index, const char *s);
+  void SetComponent(int Index, uchar Stream, uchar Type, const char *Language, const char *Description);
   tComponent *Component(int Index) const { return (Index < numComponents) ? &components[Index] : NULL; }
   };
 
 class cSchedule;
 
 class cEvent : public cListObject {
+  friend class cSchedule;
 private:
-  tChannelID channelID;    // Channel ID of program for this event
+  cSchedule *schedule;     // The Schedule this event belongs to
   u_int16_t eventID;       // Event ID of this event
   uchar tableID;           // Table ID this event came from
   uchar version;           // Version number of section this event came from
@@ -56,16 +57,16 @@ private:
   char *title;             // Title of this event
   char *shortText;         // Short description of this event (typically the episode name in case of a series)
   char *description;       // Description of this event
-  cComponents *components; // The stream components of this event (separated by '\n')
+  cComponents *components; // The stream components of this event
   time_t startTime;        // Start time of this event
   int duration;            // Duration of this event in seconds
   time_t vps;              // Video Programming Service timestamp (VPS, aka "Programme Identification Label", PIL)
   time_t seen;             // When this event was last seen in the data stream
 public:
-  cEvent(tChannelID ChannelID, u_int16_t EventID);
+  cEvent(u_int16_t EventID);
   ~cEvent();
   virtual int Compare(const cListObject &ListObject) const;
-  tChannelID ChannelID(void) const { return channelID; }
+  tChannelID ChannelID(void) const;
   u_int16_t EventID(void) const { return eventID; }
   uchar TableID(void) const { return tableID; }
   uchar Version(void) const { return version; }
@@ -98,7 +99,8 @@ public:
   void SetDuration(int Duration);
   void SetVps(time_t Vps);
   void SetSeen(void);
-  void Dump(FILE *f, const char *Prefix = "") const;
+  void Dump(FILE *f, const char *Prefix = "", bool InfoOnly = false) const;
+  bool Parse(char *s);
   static bool Read(FILE *f, cSchedule *Schedule);
   void FixEpgBugs(void);
   };
@@ -109,6 +111,8 @@ class cSchedule : public cListObject  {
 private:
   tChannelID channelID;
   cList<cEvent> events;
+  cHash<cEvent> eventsHashID;
+  cHash<cEvent> eventsHashStartTime;
   bool hasRunning;
   time_t modified;
   time_t presentSeen;
@@ -127,6 +131,9 @@ public:
   void Cleanup(time_t Time);
   void Cleanup(void);
   cEvent *AddEvent(cEvent *Event);
+  void DelEvent(cEvent *Event);
+  void cSchedule::HashEvent(cEvent *Event);
+  void cSchedule::UnhashEvent(cEvent *Event);
   const cList<cEvent> *Events(void) const { return &events; }
   const cEvent *GetPresentEvent(bool CheckRunningStatus = false) const;
   const cEvent *GetFollowingEvent(bool CheckRunningStatus = false) const;

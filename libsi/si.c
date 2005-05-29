@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: si.c 1.13 2004/10/16 15:12:57 kls Exp $
+ *   $Id: si.c 1.14 2005/05/28 14:11:16 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -114,9 +114,10 @@ Descriptor *DescriptorLoop::getNext(Iterator &it) {
 
 Descriptor *DescriptorLoop::getNext(Iterator &it, DescriptorTag tag, bool returnUnimplemetedDescriptor) {
    Descriptor *d=0;
-   if (isValid() && it.i<getLength()) {
+   int len;
+   if (isValid() && it.i<(len=getLength())) {
       const unsigned char *p=data.getData(it.i);
-      const unsigned char *end=p+getLength()-it.i;
+      const unsigned char *end=p+len-it.i;
       while (p < end) {
          if (Descriptor::getDescriptorTag(p) == tag) {
             d=createDescriptor(it.i, returnUnimplemetedDescriptor);
@@ -132,9 +133,10 @@ Descriptor *DescriptorLoop::getNext(Iterator &it, DescriptorTag tag, bool return
 
 Descriptor *DescriptorLoop::getNext(Iterator &it, DescriptorTag *tags, int arrayLength, bool returnUnimplementedDescriptor) {
    Descriptor *d=0;
-   if (isValid() && it.i<getLength()) {
+   int len;
+   if (isValid() && it.i<(len=getLength())) {
       const unsigned char *p=data.getData(it.i);
-      const unsigned char *end=p+getLength()-it.i;
+      const unsigned char *end=p+len-it.i;
       while (p < end) {
          for (int u=0; u<arrayLength;u++)
             if (Descriptor::getDescriptorTag(p) == tags[u]) {
@@ -211,15 +213,17 @@ bool DescriptorGroup::isComplete() {
 }
 
 char *String::getText() {
-   if (getLength() < 0 || getLength() >4095)
+   int len=getLength();
+   if (len < 0 || len > 4095)
       return strdup("text error"); // caller will delete it!
-   char *data=new char(getLength()+1);
-   decodeText(data, getLength()+1);
+   char *data=new char(len+1);
+   decodeText(data, len+1);
    return data;
 }
 
 char *String::getText(char *buffer, int size) {
-   if (getLength() < 0 || getLength() >= size) {
+   int len=getLength();
+   if (len < 0 || len >= size) {
       strncpy(buffer, "text error", size);
       buffer[size-1] = 0;
       return buffer;
@@ -230,7 +234,8 @@ char *String::getText(char *buffer, int size) {
 
 //taken from VDR, Copyright Klaus Schmidinger <kls@cadsoft.de>
 char *String::getText(char *buffer, char *shortVersion, int sizeBuffer, int sizeShortVersion) {
-   if (getLength() < 0 || getLength() >= sizeBuffer) {
+   int len=getLength();
+   if (len < 0 || len >= sizeBuffer) {
       strncpy(buffer, "text error", sizeBuffer);
       buffer[sizeBuffer-1] = 0;
       *shortVersion = 0;
@@ -254,7 +259,8 @@ void String::decodeText(char *buffer, int size) {
    if (*from == 0x10)
       from += 3; // skips code table info
 
-   for (int i = 0; i < getLength(); i++) {
+   int len=getLength();
+   for (int i = 0; i < len; i++) {
       if (*from == 0)
          break;
       if (    ((' ' <= *from) && (*from <= '~'))
@@ -281,9 +287,8 @@ void String::decodeText(char *buffer, char *shortVersion, int sizeBuffer, int si
    if (*from == 0x10)
       from += 3; // skips code table info
 
-   for (int i = 0; i < getLength(); i++) {
-      if (*from == 0)
-         break;
+   int len=getLength();
+   for (int i = 0; i < len; i++) {
       if (    ((' ' <= *from) && (*from <= '~'))
            || (*from == '\n')
            || (0xA0 <= *from)
@@ -299,6 +304,8 @@ void String::decodeText(char *buffer, char *shortVersion, int sizeBuffer, int si
          IsShortName++;
       else if (*from == 0x87)
          IsShortName--;
+      else if (*from == 0)
+         break;
       from++;
       if (to - buffer >= sizeBuffer - 1 || toShort - shortVersion >= sizeShortVersion - 1)
          break;

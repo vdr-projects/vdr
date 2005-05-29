@@ -13,3 +13,7 @@ VDR Plugin 'skincurses' Revision History
 
 - Made several functions threadsafe.
 - New audio track display.
+
+2005-05-16: Version 0.0.4
+
+- New "recording info" display.

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.h 1.28 2005/05/07 13:07:09 kls Exp $
+ * $Id: channels.h 1.32 2005/05/28 13:57:08 kls Exp $
  */
 
 #ifndef __CHANNELS_H
@@ -65,12 +65,12 @@ private:
 public:
   tChannelID(void) { source = nid = tid = sid = rid = 0; }
   tChannelID(int Source, int Nid, int Tid, int Sid, int Rid = 0) { source = Source; nid = Nid; tid = Tid; sid = Sid; rid = Rid; }
-  bool operator== (const tChannelID &arg) const;
-  bool Valid(void) { return (nid || tid) && sid; } // rid is optional and source may be 0//XXX source may not be 0???
+  bool operator== (const tChannelID &arg) const { return source == arg.source && nid == arg.nid && tid == arg.tid && sid == arg.sid && rid == arg.rid; }
+  bool Valid(void) const { return (nid || tid) && sid; } // rid is optional and source may be 0//XXX source may not be 0???
   tChannelID &ClrRid(void) { rid = 0; return *this; }
   tChannelID &ClrPolarization(void);
   static tChannelID FromString(const char *s);
-  cString ToString(void);
+  cString ToString(void) const;
   static const tChannelID InvalidID;
   };
 
@@ -176,10 +176,10 @@ public:
   int Transmission(void) const { return transmission; }
   int Guard(void) const { return guard; }
   int Hierarchy(void) const { return hierarchy; }
-  bool IsCable(void) const { return (source & cSource::st_Mask) == cSource::stCable; }
-  bool IsSat(void) const { return (source & cSource::st_Mask) == cSource::stSat; }
-  bool IsTerr(void) const { return (source & cSource::st_Mask) == cSource::stTerr; }
-  tChannelID GetChannelID(void) const;
+  bool IsCable(void) const { return cSource::IsCable(source); }
+  bool IsSat(void) const { return cSource::IsSat(source); }
+  bool IsTerr(void) const { return cSource::IsTerr(source); }
+  tChannelID GetChannelID(void) const { return tChannelID(source, nid, (nid || tid) ? tid : Transponder(), sid, rid); }
   int Modification(int Mask = CHANNELMOD_ALL);
   bool SetSatTransponderData(int Source, int Frequency, char Polarization, int Srate, int CoderateH);
   bool SetCableTransponderData(int Source, int Frequency, int Modulation, int Srate, int CoderateH);

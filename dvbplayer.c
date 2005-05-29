@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 1.33 2005/05/08 14:52:49 kls Exp $
+ * $Id: dvbplayer.c 1.34 2005/05/22 11:26:51 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -355,7 +355,7 @@ void cDvbPlayer::Activate(bool On)
      }
   else if (active) {
      running = false;
-     Cancel(3);
+     Cancel(9);
      active = false;
      }
 }

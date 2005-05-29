@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 1.42 2005/05/06 14:39:15 kls Exp $
+ * $Id: thread.c 1.43 2005/05/29 11:40:30 kls Exp $
  */
 
 #include "thread.h"
@@ -206,6 +206,12 @@ cThread::cThread(const char *Description)
 cThread::~cThread()
 {
   free(description);
+}
+
+void cThread::SetPriority(int Priority)
+{
+  if (setpriority(PRIO_PROCESS, 0, Priority) < 0)
+     LOG_ERROR;
 }
 
 void cThread::SetDescription(const char *Description, ...)

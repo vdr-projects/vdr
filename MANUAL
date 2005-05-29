@@ -23,7 +23,7 @@ Version 1.2
   Red     -           Record       Edit       Edit       ABC/abc       Play/Commands(2)  Jump             -
   Green   -           Audio        New        New        Ins/Ovr       Rewind            Skip -60s        -
   Yellow  -           Pause live   Delete     Delete     Delete        Delete            Skip +60s        -
-  Blue    -           Stop/Resume  Mark       On/Off(1)  -             Summary           Stop             -
+  Blue    -           Stop/Resume  Mark       On/Off(1)  -             Info              Stop             -
   0..9    Ch select   -            Sort(3)    Day(4)     Numeric inp.  Exec cmd(2)       Editing          -
 
   In a numerical input field (like the response to a CAM enquiry) the keys 0..9

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinsttng.c 1.13 2005/02/27 14:45:19 kls Exp $
+ * $Id: skinsttng.c 1.14 2005/05/16 10:44:58 kls Exp $
  */
 
 // Star Trek: The Next Generation® is a registered trademark of Paramount Pictures
@@ -576,7 +576,39 @@ void cSkinSTTNGDisplayMenu::SetEvent(const cEvent *Event)
 
 void cSkinSTTNGDisplayMenu::SetRecording(const cRecording *Recording)
 {
-  SetText(Recording->Summary(), false); //XXX
+  if (!Recording)
+     return;
+  const cRecordingInfo *Info = Recording->Info();
+  const cFont *font = cFont::GetFont(fontOsd);
+  int xl = x3 + 5;
+  int y = y3;
+  cTextScroller ts;
+  char t[32];
+  snprintf(t, sizeof(t), "%s  %s", *DateString(Recording->start), *TimeString(Recording->start));
+  ts.Set(osd, xl, y, x4 - xl, y4 - y, t, font, Theme.Color(clrMenuEventTime), Theme.Color(clrBackground));
+  y += ts.Height();
+  y += font->Height();
+  const char *Title = Info->Title();
+  if (isempty(Title))
+     Title = Recording->Name();
+  ts.Set(osd, xl, y, x4 - xl, y4 - y, Title, font, Theme.Color(clrMenuEventTitle), Theme.Color(clrBackground));
+  y += ts.Height();
+  if (!isempty(Info->ShortText())) {
+     const cFont *font = cFont::GetFont(fontSml);
+     ts.Set(osd, xl, y, x4 - xl, y4 - y, Info->ShortText(), font, Theme.Color(clrMenuEventShortText), Theme.Color(clrBackground));
+     y += ts.Height();
+     }
+  y += font->Height();
+  if (!isempty(Info->Description())) {
+     int yt = y;
+     int yb = y4 - Roundness;
+     textScroller.Set(osd, xl, yt, x4 - xl, yb - yt, Info->Description(), font, Theme.Color(clrMenuEventDescription), Theme.Color(clrBackground));
+     yb = yt + textScroller.Height();
+     osd->DrawEllipse  (x1, yt - Roundness, x2, yt,             frameColor, -3);
+     osd->DrawRectangle(x1, yt,             x2, yb,             frameColor);
+     osd->DrawEllipse  (x1, yb,             x2, yb + Roundness, frameColor, -2);
+     SetScrollbar();
+     }
 }
 
 void cSkinSTTNGDisplayMenu::SetText(const char *Text, bool FixedFont)

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.68 2005/03/20 14:44:24 kls Exp $
+ * $Id: tools.h 1.72 2005/05/29 10:24:54 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -102,6 +102,8 @@ cString WeekDayName(int WeekDay);
 cString WeekDayName(time_t t);
 cString DayDateTime(time_t t = 0);
 cString TimeToString(time_t t);
+cString DateString(time_t t);
+cString TimeString(time_t t);
 
 class cTimeMs {
 private:
@@ -211,6 +213,7 @@ class cListBase {
 protected:
   cListObject *objects, *lastObject;
   cListBase(void);
+  int count;
 public:
   virtual ~cListBase();
   void Add(cListObject *Object, cListObject *After = NULL);
@@ -220,7 +223,7 @@ public:
   void Move(cListObject *From, cListObject *To);
   virtual void Clear(void);
   cListObject *Get(int Index) const;
-  int Count(void) const;
+  int Count(void) const { return count; }
   void Sort(void);
   };
 
@@ -232,5 +235,37 @@ public:
   T *Prev(const T *object) const { return (T *)object->cListObject::Prev(); } // need to call cListObject's members to
   T *Next(const T *object) const { return (T *)object->cListObject::Next(); } // avoid ambiguities in case of a "list of lists"
   };
+
+class cHashObject : public cListObject {
+  friend class cHashBase;
+private:
+  unsigned int id;
+  cListObject *object;
+public:
+  cHashObject(cListObject *Object, unsigned int Id) { object = Object; id = Id; }
+  };
+
+class cHashBase {
+private:
+  cList<cHashObject> **hashTable;
+  int size;
+  unsigned int hashfn(unsigned int Id) const { return Id % size; }
+protected:
+  cHashBase(int Size);
+public:
+  virtual ~cHashBase();
+  void Add(cListObject *Object, unsigned int Id);
+  void Del(cListObject *Object, unsigned int Id);
+  cListObject *Get(unsigned int Id) const;
+  cList<cHashObject> *GetList(unsigned int Id) const;
+  };
+
+#define HASHSIZE 512
+
+template<class T> class cHash : public cHashBase {
+public:
+  cHash(int Size = HASHSIZE) : cHashBase(Size) {}
+  T *Get(unsigned int Id) const { return (T *)cHashBase::Get(Id); }
+};
 
 #endif //__TOOLS_H

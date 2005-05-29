@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 1.74 2005/02/13 10:13:45 kls Exp $
+# $Id: Makefile 1.75 2005/05/14 10:32:13 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -12,12 +12,14 @@ CC       ?= gcc
 CFLAGS   ?= -O2
 
 CXX      ?= g++
-CXXFLAGS ?= -g -O2 -Wall -Woverloaded-virtual
+CXXFLAGS ?= -fPIC -g -O2 -Wall -Woverloaded-virtual
 
 DVBDIR   = ../DVB
 LSIDIR   = ./libsi
 MANDIR   = /usr/local/man
 BINDIR   = /usr/local/bin
+LIBS     = -ljpeg -lpthread -ldl
+INCLUDES =
 
 PLUGINDIR= ./PLUGINS
 PLUGINLIBDIR= $(PLUGINDIR)/lib
@@ -29,7 +31,7 @@ DOXYFILE = Doxyfile
 
 -include Make.config
 
-INCLUDES = -I$(DVBDIR)/include
+INCLUDES += -I$(DVBDIR)/include
 
 SILIB    = $(LSIDIR)/libsi.a
 
@@ -106,7 +108,7 @@ $(DEPFILE): Makefile
 # The main program:
 
 vdr: $(OBJS) $(SILIB)
-	$(CXX) $(CXXFLAGS) -rdynamic $(OBJS) $(NCURSESLIB) -ljpeg -lpthread -ldl $(LIBDIRS) $(SILIB) -o vdr
+	$(CXX) $(CXXFLAGS) -rdynamic $(OBJS) $(NCURSESLIB) $(LIBS) $(LIBDIRS) $(SILIB) -o vdr
 
 # The font files:
 

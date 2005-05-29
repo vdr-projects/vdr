@@ -197,6 +197,8 @@ Stefan Huelswitt <huels@iname.com>
  for fixing handling symbolic links in cRecordings::ScanVideoDir()
  for reporting a memory leak in tComponent
  for fixing a memory leak in cDvbPlayer
+ for pointing out that recordings with empty episode names were not listed correctly
+ in the LSTR command
 
 Ulrich Röder <roeder@efr-net.de>
  for pointing out that there are channels that have a symbol rate higher than 27500
@@ -408,6 +410,7 @@ Mirko Dölle <mdoelle@linux-user.de>
  change in Daylight Saving Time
  for suggesting to avoid the external 'find' command to scan the video directory
  for reporting a problem with inconsistent channel and timer lists
+ for making the "Play" key in live viewing mode resume a previous replay session
 
 Michael Rakowski <mrak@gmx.de>
  for translating OSD texts to the Polish language
@@ -563,6 +566,7 @@ Oliver Endriss <o.endriss@gmx.de>
  for reporting a problem with the name of the remote control for which the keys are
  being learned overwriting the date/time in the 'classic' skin
  for making cDvbOsd check available OSD memory at runtime
+ for making cEIT::cEIT() drop EPG events that have a zero start time or duration
 
 Reinhard Walter Buchner <rw.buchner@freenet.de>
  for adding some satellites to 'sources.conf'
@@ -603,6 +607,8 @@ Gerhard Steiner <steiner@mail.austria.com>
  for reporting a problem with newly created timers in case they are not confirmed
  with "Ok"
  for reporting an occasional "Broken pipe" error in SVDRP connections
+ for reporting that some cable channels don't mark short channel names according
+ to the standard
 
 Jaakko Hyvätti <jaakko@hyvatti.iki.fi>
  for translating OSD texts to the Finnish language
@@ -642,6 +648,7 @@ Andreas Kool <akool@akool.de>
  for fixing detecting the /dev/videoN devices for GRAB in case there are others
  before the DVB devices
  for fixing a possible NULL pointer access in cEITScanner::Process()
+ for pointing out that 'vdr --version' failed on an UTF-8 system
 
 Guy Roussin <guy.roussin@teledetection.fr>
  for suggesting not to display channel group delimiters without text
@@ -768,6 +775,8 @@ Sascha Volkenandt <sascha@akv-soft.de>
  Digital audio after switching to a channel that has DD and selecting the DD audio
  track
  for reporting a bug in timeout handling in cRwLock::Lock()
+ for pointing out that the SVDRP command DELR deleted recordings that are currently
+ being written to by a timer
 
 Malcolm Caldwell <malcolm.caldwell@ntu.edu.au>
  for modifying LOF handling to allow for C-band reception
@@ -786,6 +795,7 @@ Ludwig Nussel <ludwig.nussel@web.de>
  for adding some checks when canceling a thread and removing the usleep() in
  cThread::Start()
  for removing the LOCK_THREAD from the LIRC thread
+ for making the Makefile patch friendlier
 
 Thomas Koch <tom@harhar.net>
  for his support in keeping the Premiere World channels up to date in 'channels.conf'
@@ -869,6 +879,7 @@ Niko Tarnanen <niko.tarnanen@hut.fi>
 Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  for translating OSD texts to the Finnish language
  for fixing internationalization of the text for "Setup/DVB/Audio language(s)"
+ for making pressing the Power button not stop Transfer Mode or replay immediately
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark
@@ -941,7 +952,7 @@ Reinhard Nissl <rnissl@gmx.de>
  for fixing a possible freeze in pause mode in case a device's PlayPesPacket()
  function permanently returns 0
  for fixing a typo in detecting UTF-8
- for fixing handling fragments of less than 3 byte in cPesAssembler
+ for fixing handling fragments of less than 4 byte in cPesAssembler
  for some rearrangements in cDvbPlayer::Action() to avoid lockups on NPTL systems
 
 Richard Robson <richard_robson@beeb.net>
@@ -1061,6 +1072,7 @@ Andreas Regel <andreas.regel@gmx.de>
  for pointing out a missing call to cStatus::MsgOsdtatusMessage(NULL) in
  cSkins::Message()
  for reporting a problem in handling Transfer Mode for radio channels
+ for reporting a problem with messages when a cOsdObject uses the raw OSD
 
 Thomas Bergwinkl <Thomas.Bergwinkl@t-online.de>
  for fixing the validity check for channel IDs, because some providers use TIDs
@@ -1169,6 +1181,11 @@ Marco Schlüßler <marco@lordzodiac.de>
  for fixing a bug in libsi's SubtitlingDescriptor::getLength()
  for removing scaling coordinates in letterbox mode from cDvbSpu
  for fixing a wrong inheritance in libsi's SubtitlingDescriptor::Subtitling
+ for adding cPlayer::DeviceSetVideoDisplayFormat()
+ for making the setup not being saved in case of a fatal error, to keep the volume
+ level from being set to a wrong value
+ for fixing a possible hangup when ending a replay session while cIndexFile::CatchUp()
+ is waiting
 
 Jürgen Schmitz <j.schmitz@web.de>
  for reporting a bug in displaying the current channel when switching via the SVDRP
@@ -1331,3 +1348,22 @@ Matthias Lötzke <Matthias@Loetzke.de>
 
 Wolfgang Fritz <wolfgang.fritz@gmx.net>
  for making recordings avoid zero sized video data files
+
+Michael Reinelt <reinelt@eunet.at>
+ for reporting a problem with the EPG scan on systems that don't use DiSEqC
+
+Johannes Stezenbach <js@linuxtv.org>
+ for pointing out that the byte swap for big endian systems in cDvbOsd::Flush()
+ is wrong
+
+Paavo Hartikainen <pahartik@sci.fi>
+ for verifying that the byte swap for big endian systems in cDvbOsd::Flush() was
+ wrong
+
+Georg Acher <acher@baycom.de>
+ for making tChannelID::operator==() inline for better performance
+ for introducing cListBase::count for better performance
+ for a patch that was used to implement hash tables to speed up cSchedule::GetEvent()
+ for avoiding unnecessary calls to getLength() in libsi/si.c, and avoiding the
+ '& 0xff' in CRC32::crc32() of libsi/util.c
+ for suggesting to reduce the priority of the section handler threads

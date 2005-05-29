@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 1.59 2004/12/19 12:27:38 kls Exp $
+ * $Id: osd.c 1.60 2005/05/14 11:16:30 kls Exp $
  */
 
 #include "osd.h"
@@ -574,7 +574,7 @@ const tIndex *cBitmap::Data(int x, int y)
 
 // --- cOsd ------------------------------------------------------------------
 
-bool cOsd::isOpen = false;
+int cOsd::isOpen = 0;
 
 cOsd::cOsd(int Left, int Top)
 {
@@ -585,7 +585,7 @@ cOsd::cOsd(int Left, int Top)
   left = Left;
   top = Top;
   width = height = 0;
-  isOpen = true;
+  isOpen++;
 }
 
 cOsd::~cOsd()
@@ -593,7 +593,7 @@ cOsd::~cOsd()
   for (int i = 0; i < numBitmaps; i++)
       delete bitmaps[i];
   delete savedRegion;
-  isOpen = false;
+  isOpen--;
 }
 
 cBitmap *cOsd::GetBitmap(int Area)

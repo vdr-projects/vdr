@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: sdt.c 1.13 2004/10/31 12:10:20 kls Exp $
+ * $Id: sdt.c 1.14 2005/05/14 09:39:46 kls Exp $
  */
 
 #include "sdt.h"
@@ -62,6 +62,15 @@ void cSdtFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                         sd->serviceName.getText(NameBuf, ShortNameBuf, sizeof(NameBuf), sizeof(ShortNameBuf));
                         char *pn = compactspace(NameBuf);
                         char *ps = compactspace(ShortNameBuf);
+                        if (!*ps && cSource::IsCable(Source())) {
+                           // Some cable providers don't mark short channel names according to the
+                           // standard, but rather go their own way and use "name>short name":
+                           char *p = strchr(pn, '>');
+                           if (p && p > pn) {
+                              *p++ = 0;
+                              strcpy(ShortNameBuf, p);
+                              }
+                           }
                         sd->providerName.getText(ProviderNameBuf, sizeof(ProviderNameBuf));
                         char *pp = compactspace(ProviderNameBuf);
                         if (channel) {

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.h 1.27 2005/01/14 14:02:14 kls Exp $
+ * $Id: thread.h 1.28 2005/05/29 11:31:24 kls Exp $
  */
 
 #ifndef __THREAD_H
@@ -82,6 +82,7 @@ private:
   static bool emergencyExitRequested;
   static void *StartThread(cThread *Thread);
 protected:
+  void SetPriority(int Priority);
   void Lock(void) { mutex.Lock(); }
   void Unlock(void) { mutex.Unlock(); }
   virtual void Action(void) = 0;

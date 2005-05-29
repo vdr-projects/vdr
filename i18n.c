@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.188 2005/05/05 13:12:54 kls Exp $
+ * $Id: i18n.c 1.191 2005/05/15 14:37:59 kls Exp $
  *
  * Translations provided by:
  *
@@ -398,6 +398,27 @@ const tI18nPhrase Phrases[] = {
     "Sadr¾aj",
     "Kokkuvõte",
     "Omtale",
+  },
+  { "Info",
+    "Info",
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
   },
   { "Schedule - %s",
     "Programm - %s",
@@ -3112,7 +3133,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "ÈØàŞÚŞíÚàĞİİŞÕ Ø×ŞÑàĞÖÕİØÕ",
     "",//TODO
-    "",//TODO
+    "Video kuvamise formaat",
     "Video display format",
   },
   { "pan&scan",
@@ -3343,7 +3364,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "¿àÕÔßŞçØâĞÕÜëÕ ï×ëÚØ (×ÒãÚ)",
     "",//TODO
-    "",//TODO
+    "Audio keeled",
     "Audio sprog (ant.)",
   },
   { "Setup.DVB$Audio language",  // note the singular
@@ -3364,7 +3385,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "²ëÑàĞİ",
     "",//TODO
-    "",//TODO
+    "Audio keel",
     "Audio sprog",
   },
   { "Setup.LNB$SLOF (MHz)",
@@ -4039,7 +4060,7 @@ const tI18nPhrase Phrases[] = {
     "Fase 1: Detectant el tipus de receptor",
     "ÈĞÓ 1: ¾ßàÕÔÕÛÕİØÕ âØßĞ ÚŞÔĞ ßãÛìâĞ",
     "Faza 1: detektiranje kôda daljinskog upravljaèa.",
-    "Aste 1: Koodeerimissüsteemi tuvastamine",
+    "Aste 1: Kodeerimissüsteemi tuvastamine",
     "Fase 1: Detekterer fjernbetjenings-kodetype",
   },
   { "Press any key on the RC unit",
@@ -4081,7 +4102,7 @@ const tI18nPhrase Phrases[] = {
     "Codi detectat!",
     "¾ÑİĞàãÖÕİ ÚŞÔ ßãÛìâĞ!",
     "Kôd daljinskog upravljaèa je prepoznat!",
-    "Koodeerimissüsteem tuvastatud!",
+    "Kodeerimissüsteem tuvastatud!",
     "Fjernbetjenings-kodetype fundet!",
   },
   { "Do not press any key...",
@@ -5049,7 +5070,7 @@ const tI18nPhrase Phrases[] = {
     " Aturar la reproducció",
     " ¿àÕÚàĞâØâì ÒŞáßàŞØ×ÒÕÔÕİØÕ",
     " Prekini reprodukciju",
-    " Lõpeta kordus",
+    " Lõpeta taasesitamine",
     " Stop afspilning",
   },
   { " Stop recording ", // note the leading and trailing blanks!
@@ -5259,8 +5280,8 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
-    "",// TODO
+    "EPG skaneerimine käivitatud",
+    "Starter EPG skanning",
   },
   { "This plugin has no setup parameters!",
     "Dieses Plugin hat keine Setup-Parameter!",

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: cutter.c 1.7 2004/06/13 16:04:08 kls Exp $
+ * $Id: cutter.c 1.8 2005/05/15 14:21:08 kls Exp $
  */
 
 #include "cutter.h"
@@ -204,7 +204,7 @@ bool cCutter::Start(const char *FileName)
         free(s);
         // XXX
         editedVersionName = strdup(evn);
-        Recording.WriteSummary();
+        Recording.WriteInfo();
         Recordings.AddByName(editedVersionName);
         cuttingThread = new cCuttingThread(FileName, editedVersionName);
         return true;
