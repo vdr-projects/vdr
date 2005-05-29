@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.94 2005/05/28 11:46:44 kls Exp $
+ * $Id: tools.c 1.95 2005/05/29 10:18:26 kls Exp $
  */
 
 #include "tools.h"
@@ -1075,15 +1075,15 @@ cHashBase::~cHashBase(void)
   free(hashTable);
 }
 
-void cHashBase::Add(cListObject *Object, int Id)
+void cHashBase::Add(cListObject *Object, unsigned int Id)
 {
-  int hash = hashfn(Id);
+  unsigned int hash = hashfn(Id);
   if (!hashTable[hash])
      hashTable[hash] = new cList<cHashObject>;
   hashTable[hash]->Add(new cHashObject(Object, Id));
 }
 
-void cHashBase::Del(cListObject *Object, int Id)
+void cHashBase::Del(cListObject *Object, unsigned int Id)
 {
   cList<cHashObject> *list = hashTable[hashfn(Id)];
   if (list) {
@@ -1096,7 +1096,7 @@ void cHashBase::Del(cListObject *Object, int Id)
      }
 }
 
-cListObject *cHashBase::Get(int Id) const
+cListObject *cHashBase::Get(unsigned int Id) const
 {
   cList<cHashObject> *list = hashTable[hashfn(Id)];
   if (list) {
@@ -1108,7 +1108,7 @@ cListObject *cHashBase::Get(int Id) const
   return NULL;
 }
 
-cList<cHashObject> *cHashBase::GetList(int Id) const
+cList<cHashObject> *cHashBase::GetList(unsigned int Id) const
 {
   return hashTable[hashfn(Id)];
 }

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.71 2005/05/28 11:24:49 kls Exp $
+ * $Id: tools.h 1.72 2005/05/29 10:24:54 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -239,25 +239,25 @@ public:
 class cHashObject : public cListObject {
   friend class cHashBase;
 private:
-  int id;
+  unsigned int id;
   cListObject *object;
 public:
-  cHashObject(cListObject *Object, int Id) { object = Object; id = Id; }
+  cHashObject(cListObject *Object, unsigned int Id) { object = Object; id = Id; }
   };
 
 class cHashBase {
 private:
   cList<cHashObject> **hashTable;
   int size;
-  int hashfn(int Id) const { return Id % size; }
+  unsigned int hashfn(unsigned int Id) const { return Id % size; }
 protected:
   cHashBase(int Size);
 public:
   virtual ~cHashBase();
-  void Add(cListObject *Object, int Id);
-  void Del(cListObject *Object, int Id);
-  cListObject *Get(int Id) const;
-  cList<cHashObject> *GetList(int Id) const;
+  void Add(cListObject *Object, unsigned int Id);
+  void Del(cListObject *Object, unsigned int Id);
+  cListObject *Get(unsigned int Id) const;
+  cList<cHashObject> *GetList(unsigned int Id) const;
   };
 
 #define HASHSIZE 512
@@ -265,7 +265,7 @@ public:
 template<class T> class cHash : public cHashBase {
 public:
   cHash(int Size = HASHSIZE) : cHashBase(Size) {}
-  T *Get(int Id) const { return (T *)cHashBase::Get(Id); }
+  T *Get(unsigned int Id) const { return (T *)cHashBase::Get(Id); }
 };
 
 #endif //__TOOLS_H
