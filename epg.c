@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 1.33 2005/05/28 13:17:20 kls Exp $
+ * $Id: epg.c 1.34 2005/05/29 10:26:54 kls Exp $
  */
 
 #include "epg.h"
@@ -670,13 +670,15 @@ void cSchedule::DelEvent(cEvent *Event)
 void cSchedule::HashEvent(cEvent *Event)
 {
   eventsHashID.Add(Event, Event->EventID());
-  eventsHashStartTime.Add(Event, Event->StartTime());
+  if (Event->StartTime() > 0) // 'StartTime < 0' is apparently used with NVOD channels
+     eventsHashStartTime.Add(Event, Event->StartTime());
 }
 
 void cSchedule::UnhashEvent(cEvent *Event)
 {
   eventsHashID.Del(Event, Event->EventID());
-  eventsHashStartTime.Del(Event, Event->StartTime());
+  if (Event->StartTime() > 0) // 'StartTime < 0' is apparently used with NVOD channels
+     eventsHashStartTime.Del(Event, Event->StartTime());
 }
 
 const cEvent *cSchedule::GetPresentEvent(bool CheckRunningStatus) const
