@@ -197,6 +197,8 @@ Stefan Huelswitt <huels@iname.com>
  for fixing handling symbolic links in cRecordings::ScanVideoDir()
  for reporting a memory leak in tComponent
  for fixing a memory leak in cDvbPlayer
+ for pointing out that recordings with empty episode names were not listed correctly
+ in the LSTR command
 
 Ulrich Röder <roeder@efr-net.de>
  for pointing out that there are channels that have a symbol rate higher than 27500

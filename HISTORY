@@ -3573,3 +3573,5 @@ Video Disk Recorder Revision History
 - Avoiding unnecessary calls to getLength() in libsi/si.c, and avoiding the
   '& 0xff' in CRC32::crc32() of libsi/util.c (thanks to Georg Acher).
 - Speeded up deleting duplicate channels.
+- Fixed listing recordings with empty episode names in the LSTR command (thanks
+  to Stefan Huelswitt for pointing this out).

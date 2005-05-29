@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.106 2005/05/28 11:36:14 kls Exp $
+ * $Id: recording.c 1.107 2005/05/29 11:16:57 kls Exp $
  */
 
 #include "recording.h"
@@ -603,7 +603,8 @@ const char *cRecording::Title(char Delimiter, bool NewIndicator, int Level) cons
                             Delimiter,
                             s);
      // let's not display a trailing '~':
-     stripspace(titleBuffer);
+     if (!NewIndicator)
+        stripspace(titleBuffer);
      s = &titleBuffer[strlen(titleBuffer) - 1];
      if (*s == '~')
         *s = 0;
