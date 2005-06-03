@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.192 2005/06/03 12:37:47 kls Exp $
+ * $Id: i18n.c 1.193 2005/06/03 12:41:41 kls Exp $
  *
  * Translations provided by:
  *
@@ -386,7 +386,7 @@ const tI18nPhrase Phrases[] = {
     "Resumo",
     "Rιsumι",
     "Sammendrag",
-    "Tiedot",
+    "Yhteenveto",
     "Zawartosc",
     "Resϊmen",
     "Περιεχόμενο",
@@ -407,7 +407,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Tiedot",
     "",//TODO
     "",//TODO
     "",//TODO
