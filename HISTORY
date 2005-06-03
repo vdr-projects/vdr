@@ -3577,3 +3577,7 @@ Video Disk Recorder Revision History
   to Stefan Huelswitt for pointing this out).
 - Added cThread::SetPriority() and using it in cSectionHandler::Action() to
   reduce the priority of the section handler threads (as suggested by Georg Acher).
+
+2005-06-03: Version 1.3.26
+
+- Updated the Estonian OSD texts (thanks to Arthur Konovalov).

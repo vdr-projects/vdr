@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.191 2005/05/15 14:37:59 kls Exp $
+ * $Id: i18n.c 1.192 2005/06/03 12:37:47 kls Exp $
  *
  * Translations provided by:
  *
@@ -417,7 +417,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Info",
     "",//TODO
   },
   { "Schedule - %s",
@@ -964,7 +964,7 @@ const tI18nPhrase Phrases[] = {
     "Reiniciar",
     "Сброс",
     "Reset",
-    "Reset",
+    "Nullimine",
     "Nulstille",
   },
   { "Scan",
@@ -2734,7 +2734,7 @@ const tI18nPhrase Phrases[] = {
     "Durada dels missatges (s)",
     "Длительность показа сообщений (сек)",
     "Vrijeme prikaza poruka (s)",
-    "Kanaliteate esitusaeg (s)",
+    "Teate esitusaeg (s)",
     "Tid beskeder skal vises (s)",
   },
   { "Setup.OSD$Use small font",
@@ -2860,7 +2860,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "Показ информации о канале (сек)",
     "",// TODO
-    "",// TODO
+    "Kanaliteate esitusaeg (s)",
     "Tid kanalinfo skal vises (s)",
   },
   { "Setup.OSD$Info on channel switch",
@@ -2881,7 +2881,7 @@ const tI18nPhrase Phrases[] = {
     "Informaciѓ del canvi de canal",
     "Показывать информацию о канале",
     "Informacije kod promjene kanala",
-    "Nфita kanaliteadet",
+    "Kanaliteate nфitamine",
     "Info ved kanalskift",
   },
   { "Setup.OSD$Scroll pages",
@@ -2944,7 +2944,7 @@ const tI18nPhrase Phrases[] = {
     "Gravacions en subcarpetes",
     "Каталоги хранения записей",
     "Imenik za snimke",
-    "Salvesta kausta nime",
+    "Kausta nime salvestamine",
     "Optagelser i foldere",
   },
   { "Setup.EPG$EPG scan timeout (h)",
@@ -3658,7 +3658,7 @@ const tI18nPhrase Phrases[] = {
     "Utilitzar el nom de l'episodi",
     "Группировать файлы по эпизодам",
     "Koristi ime epizode",
-    "Kasuta episoodi nime",
+    "Episoodi nime kasutamine",
     "Anvend udsendelsesnavn",
   },
   { "Setup.Recording$Use VPS",
@@ -3679,7 +3679,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "Использовать сигналы VPS",
     "Koristi VPS",
-    "Kasuta VPS-i",
+    "VPS-i kasutamine",
     "Anvend VPS",
   },
   { "Setup.Recording$VPS margin (s)",
@@ -3721,7 +3721,7 @@ const tI18nPhrase Phrases[] = {
     "Marcar gravaciѓ instantрnia",
     "Отмечать сделанные вручную записи",
     "Oznaшi direktno snimanje",
-    "Mфrgista otsesalvestusi",
+    "Otsesalvestuse mфrgistamine",
     "Markщr direkte optagelse",
   },
   { "Setup.Recording$Name instant recording",
@@ -3805,7 +3805,7 @@ const tI18nPhrase Phrases[] = {
     "Separar arxius",
     "Делить отредактированные файлы",
     "Podijeli ure№ene datoteke",
-    "Tќkelda redigeeritud faile",
+    "Redigeeritud failide tќkeldamine",
     "Opdel redigerede filer",
   },
   { "Setup.Replay$Multi speed mode",
