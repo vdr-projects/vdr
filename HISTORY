@@ -3585,3 +3585,5 @@ Video Disk Recorder Revision History
 - Fixed handling 'summary.vdr' files with more than two empty lines (thanks to
   Christian Jacobsen for reporting this one).
 - Improved resetting CAM connections (thanks to Marco Schlüßler).
+- Implemented cVideoRepacker in remux.c to make sure every PES packet contains
+  only data from one frame (thanks to Reinhard Nissl).
