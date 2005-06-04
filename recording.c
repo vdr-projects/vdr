@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.107 2005/05/29 11:16:57 kls Exp $
+ * $Id: recording.c 1.108 2005/06/04 11:31:24 kls Exp $
  */
 
 #include "recording.h"
@@ -480,8 +480,8 @@ cRecording::cRecording(const char *FileName)
            char *data[3] = { NULL };
            cReadLine ReadLine;
            char *s;
-           while ((s = ReadLine.Read(f)) != NULL && line < 3) {
-                 if (*s) {
+           while ((s = ReadLine.Read(f)) != NULL) {
+                 if (*s || line > 1) {
                     if (data[line]) {
                        int len = strlen(s);
                        len += strlen(data[line]) + 1;

@@ -828,6 +828,7 @@ Christian Jacobsen <christian.jacobsen@stageholding.de>
  for reporting a problem in handling the '-E' options in version 1.3.18
  for reporting a problem in case a station defines all 32 audio PIDs
  for suggestions and experiments regarding the buffer reserve in cTransfer
+ for reporting a problem with 'summary.vdr' files with more than two empty lines
 
 Andreas Mair <Andreas.Mair@linogate.com>
  for reporting a short display of the main menu if a plugin displays its own OSD and
