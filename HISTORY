@@ -3578,9 +3578,10 @@ Video Disk Recorder Revision History
 - Added cThread::SetPriority() and using it in cSectionHandler::Action() to
   reduce the priority of the section handler threads (as suggested by Georg Acher).
 
-2005-06-03: Version 1.3.26
+2005-06-04: Version 1.3.26
 
 - Updated the Estonian OSD texts (thanks to Arthur Konovalov).
 - Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
 - Fixed handling 'summary.vdr' files with more than two empty lines (thanks to
   Christian Jacobsen for reporting this one).
+- Improved resetting CAM connections (thanks to Marco Schlüßler).
