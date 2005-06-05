@@ -3593,3 +3593,5 @@ Video Disk Recorder Revision History
   for the bitstreamout plugin (thanks to Werner Fink).
 - Added the year (two digits) to recording dates in LSTR, and thus also in menus
   (suggested by Jan Ekholm).
+- Fixed the call to Channels.Unlock() in cEITScanner::Process() (thanks to
+  Reinhard Nissl).

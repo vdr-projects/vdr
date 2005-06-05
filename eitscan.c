@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: eitscan.c 1.24 2005/05/05 13:05:00 kls Exp $
+ * $Id: eitscan.c 1.25 2005/06/05 14:43:29 kls Exp $
  */
 
 #include "eitscan.h"
@@ -181,9 +181,9 @@ void cEITScanner::Process(void)
                   break;
                   }
                }
+           Channels.Unlock();
            }
         lastScan = time(NULL);
-        Channels.Unlock();
         }
      }
 }

@@ -960,6 +960,7 @@ Reinhard Nissl <rnissl@gmx.de>
  for some rearrangements in cDvbPlayer::Action() to avoid lockups on NPTL systems
  for implementing cVideoRepacker in remux.c to make sure every PES packet contains
  only data from one frame
+ for fixing the call to Channels.Unlock() in cEITScanner::Process()
 
 Richard Robson <richard_robson@beeb.net>
  for reporting freezing replay if a timer starts while in Transfer Mode from the
