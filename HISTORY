@@ -3589,3 +3589,5 @@ Video Disk Recorder Revision History
   only data from one frame (thanks to Reinhard Nissl).
 - EPG events without a title now display "No title" instead of "(null)" (thanks
   to Rolf Ahrenberg).
+- A device can now detach all receivers for a given PID, as is necessary, e.g.,
+  for the bitstreamout plugin (thanks to Werner Fink).

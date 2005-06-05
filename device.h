@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 1.57 2005/02/20 14:06:28 kls Exp $
+ * $Id: device.h 1.58 2005/06/05 12:56:08 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -500,6 +500,8 @@ public:
        ///< Attaches the given receiver to this device.
   void Detach(cReceiver *Receiver);
        ///< Detaches the given receiver from this device.
+  void DetachAll(int Pid);
+       ///< Detaches all receivers from this device for this pid.
   };
 
 /// Derived cDevice classes that can receive channels will have to provide

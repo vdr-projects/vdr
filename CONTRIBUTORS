@@ -283,6 +283,7 @@ Werner Fink <werner@suse.de>
  for pointing out that MAXDPIDS needs to be to 16 (8xAC3 + 8xDTS)
  for reporting a problem with ensuring there is a current audio track in case there
  is only one track
+ for enabling a device to detach all receivers for a given PID
 
 Rolf Hakenes <hakenes@hippomi.de>
  for providing 'libdtv' and adapting the EIT mechanisms to it

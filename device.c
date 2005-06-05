@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.101 2005/05/07 15:04:17 kls Exp $
+ * $Id: device.c 1.102 2005/06/05 13:28:03 kls Exp $
  */
 
 #include "device.h"
@@ -397,6 +397,8 @@ bool cDevice::AddPid(int Pid, ePidType PidType)
            PRINTPIDS("A");
            if (!SetPid(&pidHandles[n], n, true)) {
               esyslog("ERROR: can't set PID %d on device %d", Pid, CardIndex() + 1);
+              if (PidType <= ptTeletext)
+                 DetachAll(Pid);
               DelPid(Pid, PidType);
               return false;
               }
@@ -422,6 +424,8 @@ bool cDevice::AddPid(int Pid, ePidType PidType)
         PRINTPIDS("C");
         if (!SetPid(&pidHandles[n], n, true)) {
            esyslog("ERROR: can't set PID %d on device %d", Pid, CardIndex() + 1);
+           if (PidType <= ptTeletext)
+              DetachAll(Pid);
            DelPid(Pid, PidType);
            return false;
            }
@@ -1208,6 +1212,18 @@ void cDevice::Detach(cReceiver *Receiver)
   if (!receiversLeft) {
      active = false;
      Cancel(3);
+     }
+}
+
+void cDevice::DetachAll(int Pid)
+{
+  if (Pid) {
+     cMutexLock MutexLock(&mutexReceiver);
+     for (int i = 0; i < MAXRECEIVERS; i++) {
+         cReceiver *Receiver = receiver[i];
+         if (Receiver && Receiver->WantsPid(Pid))
+            Detach(Receiver);
+         }
      }
 }
 
