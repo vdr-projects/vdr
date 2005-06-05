@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.193 2005/06/03 12:41:41 kls Exp $
+ * $Id: i18n.c 1.194 2005/06/05 11:59:09 kls Exp $
  *
  * Translations provided by:
  *
@@ -5345,6 +5345,27 @@ const tI18nPhrase Phrases[] = {
     "ST:TNG Konzole",
     "ST:TNG konsool",
     "ST:TNG konsol",
+  },
+  { "No title",
+    "Kein Titel",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "Ei esitystä",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
   },
   { NULL }
   };

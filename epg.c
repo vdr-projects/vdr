@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 1.34 2005/05/29 10:26:54 kls Exp $
+ * $Id: epg.c 1.35 2005/06/05 12:17:15 kls Exp $
  */
 
 #include "epg.h"
@@ -323,7 +323,7 @@ bool cEvent::Read(FILE *f, cSchedule *Schedule)
   return false;
 }
 
-#define MAXEPGBUGFIXSTATS 12
+#define MAXEPGBUGFIXSTATS 13
 #define MAXEPGBUGFIXCHANS 100
 struct tEpgBugFixStats {
   int hits;
@@ -637,6 +637,11 @@ void cEvent::FixEpgBugs(void)
               }
             }
         }
+     }
+  else {
+     // we don't want any "(null)" titles
+     title = strcpyrealloc(title, tr("No title"));
+     EpgBugFixStat(12, ChannelID());
      }
 }
 
