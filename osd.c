@@ -4,12 +4,11 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 1.60 2005/05/14 11:16:30 kls Exp $
+ * $Id: osd.c 1.61 2005/06/11 14:31:36 kls Exp $
  */
 
 #include "osd.h"
 #include <math.h>
-#include <signal.h>
 #include <stdlib.h>
 #include <sys/ioctl.h>
 #include <sys/stat.h>

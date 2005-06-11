@@ -3598,3 +3598,4 @@ Video Disk Recorder Revision History
 - Fixed handling timers with a day given as MTWTF--@6, i.e. a repeating timer with
   first day not as full date, but just day of month (thanks to Henrik Niehaus for
   reporting this one).
+- Removed an unnecessary #include from osd.c (thanks to Wolfgang Rohdewald).

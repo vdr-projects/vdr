@@ -1319,6 +1319,7 @@ Wolfgang Rohdewald <wolfgang@rohdewald.de>
  for removing some unneeded code and fixing access to unallocated memory in
  cEvent::FixEpgBugs()
  for adding a missing cMutexLock to cRemote::HasKeys()
+ for removing an unnecessary #include from osd.c
 
 Chad Flynt <hoochster@sofnet.com>
  for suggestions and experiments regarding the buffer reserve in cTransfer
