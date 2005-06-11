@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 1.31 2005/05/07 11:10:56 kls Exp $
+ * $Id: timers.c 1.32 2005/06/11 14:19:58 kls Exp $
  */
 
 #include "timers.h"
@@ -159,7 +159,7 @@ bool cTimer::ParseDay(const char *s, time_t &Day, int &WeekDays)
      else {
         // handle "day of month" for compatibility with older versions:
         char *tail = NULL;
-        int day = strtol(s, &tail, 10);
+        int day = strtol(d, &tail, 10);
         if (tail && *tail || day < 1 || day > 31)
            return false;
         time_t t = time(NULL);

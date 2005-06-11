@@ -1375,3 +1375,7 @@ Georg Acher <acher@baycom.de>
  for avoiding unnecessary calls to getLength() in libsi/si.c, and avoiding the
  '& 0xff' in CRC32::crc32() of libsi/util.c
  for suggesting to reduce the priority of the section handler threads
+
+Henrik Niehaus <henrik.niehaus@gmx.de>
+ for reporting a problem with timers with a day given as MTWTF--@6, i.e. a repeating
+ timer with first day not as full date, but just day of month
