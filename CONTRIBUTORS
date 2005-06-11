@@ -1327,6 +1327,8 @@ Chad Flynt <hoochster@sofnet.com>
 Chris Warren <dvb@ixalon.net>
  for pointing out that the call to system("sync") in SpinUpDisk() should be
  replaced with fsync(f) to avoid problems on NPTL systems
+ for fixing dropping EPG events that have a zero start time or duration, in case it's
+ an NVOD event
 
 Luca Olivetti <luca@ventoso.org>
  for making cDevice::AttachPlayer() keep the track language codes and descriptions

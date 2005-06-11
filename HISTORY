@@ -3599,3 +3599,5 @@ Video Disk Recorder Revision History
   first day not as full date, but just day of month (thanks to Henrik Niehaus for
   reporting this one).
 - Removed an unnecessary #include from osd.c (thanks to Wolfgang Rohdewald).
+- Fixed dropping EPG events that have a zero start time or duration, in case it's
+  an NVOD event (thanks to Chris Warren).
