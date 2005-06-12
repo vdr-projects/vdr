@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osdbase.c 1.15 2005/01/07 16:16:41 kls Exp $
+ * $Id: osdbase.c 1.16 2005/06/12 09:55:56 kls Exp $
  */
 
 #include "osdbase.h"
@@ -258,7 +258,8 @@ void cOsdMenu::CursorUp(void)
 {
   if (current > 0) {
      int tmpCurrent = current;
-     while (--tmpCurrent >= 0 && !SelectableItem(tmpCurrent));
+     while (--tmpCurrent >= 0 && !SelectableItem(tmpCurrent))
+           ;
      if (tmpCurrent < 0)
         return;
      if (tmpCurrent >= first)
@@ -282,7 +283,8 @@ void cOsdMenu::CursorDown(void)
 
   if (current < last) {
      int tmpCurrent = current;
-     while (++tmpCurrent <= last && !SelectableItem(tmpCurrent));
+     while (++tmpCurrent <= last && !SelectableItem(tmpCurrent))
+           ;
      if (tmpCurrent > last)
         return;
      if (tmpCurrent <= lastOnScreen)
@@ -306,33 +308,62 @@ void cOsdMenu::CursorDown(void)
 
 void cOsdMenu::PageUp(void)
 {
+  int oldCurrent = current;
+  int oldFirst = first;
   current -= displayMenuItems;
   first -= displayMenuItems;
+  int last = Count() - 1;
+  if (current < 0)
+     current = 0;
   if (first < 0)
-     first = current = 0;
-  if (!SelectableItem(current)) {
-     current -= (current > 0) ? 1 : -1;
-     first = min(first, current - 1);
+     first = 0;
+  int tmpCurrent = current;
+  while (!SelectableItem(tmpCurrent) && --tmpCurrent >= 0)
+        ;
+  if (tmpCurrent < 0) {
+     tmpCurrent = current;
+     while (++tmpCurrent <= last && !SelectableItem(tmpCurrent))
+           ;
      }
-  Display();
-  DisplayCurrent(true);
+  current = tmpCurrent <= last ? tmpCurrent : -1;
+  if (current >= 0) {
+     if (current < first)
+        first = current;
+     else if (current - first >= displayMenuItems)
+        first = current - displayMenuItems + 1;
+     }
+  if (current != oldCurrent || first != oldFirst) {
+     Display();
+     DisplayCurrent(true);
+     }
 }
 
 void cOsdMenu::PageDown(void) 
 {
+  int oldCurrent = current;
+  int oldFirst = first;
   current += displayMenuItems;
   first += displayMenuItems;
-  int count = Count();
-  if (current > count - 1) {
-     current = count - 1;
-     first = max(0, count - displayMenuItems);
+  int last = Count() - 1;
+  int tmpCurrent = current;
+  while (!SelectableItem(tmpCurrent) && ++tmpCurrent <= last)
+        ;
+  if (tmpCurrent > last) {
+     tmpCurrent = current;
+     while (--tmpCurrent >= 0 && !SelectableItem(tmpCurrent))
+           ;
      }
-  if (!SelectableItem(current)) {
-     current += (current < count - 1) ? 1 : -1;
-     first = max(first, current - displayMenuItems);
+  current = tmpCurrent > 0 ? tmpCurrent : -1;
+  if (current >= 0) {
+     if (current < first)
+        first = current;
+     else if (current - first >= displayMenuItems)
+        first = current - displayMenuItems + 1;
      }
-  Display();
-  DisplayCurrent(true);
+  if (current != oldCurrent || first != oldFirst) {
+     Display();
+     DisplayCurrent(true);
+     }
 }
 
 void cOsdMenu::Mark(void)
