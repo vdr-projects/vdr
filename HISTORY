@@ -3604,3 +3604,5 @@ Video Disk Recorder Revision History
 - Fixed handling page up/down in menu lists in case there are several non selectable
   items in a row (thanks to Udo Richter for reporting this one).
 - Added cOsdMenu::SetCols() to allow adjusting the menu columns.
+- Modified cEITScanner::Process() so that it works on systems with only budget cards
+  or a mix of DVB-S, DVB-C or DVB-T cards.

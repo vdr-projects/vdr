@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 1.58 2005/06/05 12:56:08 kls Exp $
+ * $Id: device.h 1.59 2005/06/12 13:35:47 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -186,6 +186,9 @@ public:
          ///< Returns true if this device can provide the given source.
   virtual bool ProvidesTransponder(const cChannel *Channel) const;
          ///< XXX -> PLUGINS.html!
+  virtual bool ProvidesTransponderExclusively(const cChannel *Channel) const;
+         ///< Returns true if this is the only device that is able to provide
+         ///< the given channel's transponder.
   virtual bool ProvidesChannel(const cChannel *Channel, int Priority = -1, bool *NeedsDetachReceivers = NULL) const;
          ///< Returns true if this device can provide the given channel.
          ///< In case the device has cReceivers attached to it or it is the primary

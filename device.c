@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.102 2005/06/05 13:28:03 kls Exp $
+ * $Id: device.c 1.103 2005/06/12 13:39:11 kls Exp $
  */
 
 #include "device.h"
@@ -503,6 +503,15 @@ bool cDevice::ProvidesSource(int Source) const
 bool cDevice::ProvidesTransponder(const cChannel *Channel) const
 {
   return false;
+}
+
+bool cDevice::ProvidesTransponderExclusively(const cChannel *Channel) const
+{
+  for (int i = 0; i < numDevices; i++) {
+      if (device[i] && device[i] != this && device[i]->ProvidesTransponder(Channel))
+         return false;
+      }
+  return true;
 }
 
 bool cDevice::ProvidesChannel(const cChannel *Channel, int Priority, bool *NeedsDetachReceivers) const

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: eitscan.c 1.25 2005/06/05 14:43:29 kls Exp $
+ * $Id: eitscan.c 1.26 2005/06/12 14:09:45 kls Exp $
  */
 
 #include "eitscan.h"
@@ -12,6 +12,7 @@
 #include "channels.h"
 #include "dvbdevice.h"
 #include "skins.h"
+#include "transfer.h"
 
 // --- cScanData -------------------------------------------------------------
 
@@ -139,48 +140,44 @@ void cEITScanner::Process(void)
                  transponderList = NULL;
                  }
               }
-           for (bool AnyDeviceSwitched = false; !AnyDeviceSwitched; ) {
-               cScanData *ScanData = NULL;
-               for (int i = 0; i < cDevice::NumDevices(); i++) {
-                   if (ScanData || (ScanData = scanList->First()) != NULL) {
-                      cDevice *Device = cDevice::GetDevice(i);
-                      if (Device) {
-                         if (Device != cDevice::PrimaryDevice() || (cDevice::NumDevices() == 1 && Setup.EPGScanTimeout && now - lastActivity > Setup.EPGScanTimeout * 3600)) {
-                            if (!(Device->Receiving(true) || Device->Replaying())) {
-                               const cChannel *Channel = ScanData->GetChannel();
-                               if (Channel) {
-                                  if ((!Channel->Ca() || Channel->Ca() == Device->DeviceNumber() + 1 || Channel->Ca() >= 0x0100) && Device->ProvidesTransponder(Channel)) {
-                                     if (Device == cDevice::PrimaryDevice() && !currentChannel) {
+           bool AnyDeviceSwitched = false;
+           for (int i = 0; i < cDevice::NumDevices(); i++) {
+               cDevice *Device = cDevice::GetDevice(i);
+               if (Device) {
+                  for (cScanData *ScanData = scanList->First(); ScanData; ScanData = scanList->Next(ScanData)) {
+                      const cChannel *Channel = ScanData->GetChannel();
+                      if (Channel) {
+                         if (!Channel->Ca() || Channel->Ca() == Device->DeviceNumber() + 1 || Channel->Ca() >= 0x0100) {
+                            if (Device->ProvidesTransponder(Channel)) {
+                               if (!Device->Receiving()) {
+                                  if (Device != cDevice::ActualDevice() || (Device->ProvidesTransponderExclusively(Channel) && Setup.EPGScanTimeout && now - lastActivity > Setup.EPGScanTimeout * 3600)) {
+                                     if (Device == cDevice::ActualDevice() && !currentChannel) {
+                                        if (cTransferControl::ReceiverDevice())
+                                           cDevice::PrimaryDevice()->StopReplay(); // stop transfer mode
                                         currentChannel = Device->CurrentChannel();
                                         Skins.Message(mtInfo, tr("Starting EPG scan"));
                                         }
                                      currentDevice = Device;//XXX see also dvbdevice.c!!!
+                                     //dsyslog("EIT scan: device %d  source  %-8s tp %5d", Device->DeviceNumber() + 1, *cSource::ToString(Channel->Source()), Channel->Transponder());
                                      Device->SwitchChannel(Channel, false);
                                      currentDevice = NULL;
                                      scanList->Del(ScanData);
-                                     ScanData = NULL;
                                      AnyDeviceSwitched = true;
+                                     break;
                                      }
                                   }
                                }
                             }
                          }
                       }
-                   else
-                      break;
-                   }
-               if (ScanData && !AnyDeviceSwitched) {
-                  scanList->Del(ScanData);
-                  ScanData = NULL;
-                  }
-               if (!scanList->Count()) {
-                  delete scanList;
-                  scanList = NULL;
-                  if (lastActivity == 0) // this was a triggered scan
-                     Activity();
-                  break;
                   }
                }
+           if (!scanList->Count() || !AnyDeviceSwitched) {
+              delete scanList;
+              scanList = NULL;
+              if (lastActivity == 0) // this was a triggered scan
+                 Activity();
+              }
            Channels.Unlock();
            }
         lastScan = time(NULL);
