@@ -8,7 +8,7 @@
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  * Adapted to 'libsi' for VDR 1.3.0 by Marcel Wiesweg <marcel.wiesweg@gmx.de>.
  *
- * $Id: eit.c 1.107 2005/05/28 11:35:55 kls Exp $
+ * $Id: eit.c 1.108 2005/06/11 15:31:21 kls Exp $
  */
 
 #include "eit.h"
@@ -48,8 +48,8 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data)
 
   SI::EIT::Event SiEitEvent;
   for (SI::Loop::Iterator it; eventLoop.getNext(SiEitEvent, it); ) {
-      // Drop bogus events.
-      if (SiEitEvent.getStartTime() == 0 || SiEitEvent.getDuration() == 0)
+      // Drop bogus events - but keep NVOD reference events, where all bits of the start time field are set to 1, resulting in a negative number.
+      if (SiEitEvent.getStartTime() == 0 || SiEitEvent.getStartTime() > 0 && SiEitEvent.getDuration() == 0)
          continue;
       Empty = false;
       cEvent *newEvent = NULL;

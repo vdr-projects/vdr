@@ -3577,3 +3577,38 @@ Video Disk Recorder Revision History
   to Stefan Huelswitt for pointing this out).
 - Added cThread::SetPriority() and using it in cSectionHandler::Action() to
   reduce the priority of the section handler threads (as suggested by Georg Acher).
+
+2005-06-12: Version 1.3.26
+
+- Updated the Estonian OSD texts (thanks to Arthur Konovalov).
+- Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
+- Fixed handling 'summary.vdr' files with more than two empty lines (thanks to
+  Christian Jacobsen for reporting this one).
+- Improved resetting CAM connections (thanks to Marco Schlüßler).
+- Implemented cVideoRepacker in remux.c to make sure every PES packet contains
+  only data from one frame (thanks to Reinhard Nissl).
+  NOTE: currently this doesn't work with MPEG1, so if you use MPEG1 you may want
+  to change line 1158 in remux.c to
+
+  ts2pes[numTracks++] = new cTS2PES(VPid, resultBuffer, IPACKS);
+
+  as it was before.
+- EPG events without a title now display "No title" instead of "(null)" (thanks
+  to Rolf Ahrenberg).
+- A device can now detach all receivers for a given PID, as is necessary, e.g.,
+  for the bitstreamout plugin (thanks to Werner Fink).
+- Added the year (two digits) to recording dates in LSTR, and thus also in menus
+  (suggested by Jan Ekholm).
+- Fixed the call to Channels.Unlock() in cEITScanner::Process() (thanks to
+  Reinhard Nissl).
+- Fixed handling timers with a day given as MTWTF--@6, i.e. a repeating timer with
+  first day not as full date, but just day of month (thanks to Henrik Niehaus for
+  reporting this one).
+- Removed an unnecessary #include from osd.c (thanks to Wolfgang Rohdewald).
+- Fixed dropping EPG events that have a zero start time or duration, in case it's
+  an NVOD event (thanks to Chris Warren).
+- Fixed handling page up/down in menu lists in case there are several non selectable
+  items in a row (thanks to Udo Richter for reporting this one).
+- Added cOsdMenu::SetCols() to allow adjusting the menu columns.
+- Modified cEITScanner::Process() so that it works on systems with only budget cards
+  or a mix of DVB-S, DVB-C or DVB-T cards.

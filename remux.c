@@ -11,7 +11,7 @@
  * The cDolbyRepacker code was originally written by Reinhard Nissl <rnissl@gmx.de>,
  * and adapted to the VDR coding style by Klaus.Schmidinger@cadsoft.de.
  *
- * $Id: remux.c 1.33 2005/03/20 13:18:15 kls Exp $
+ * $Id: remux.c 1.34 2005/06/04 14:49:25 kls Exp $
  */
 
 #include "remux.h"
@@ -32,9 +32,362 @@ public:
   virtual void Reset(void) {}
   virtual int Put(cRingBufferLinear *ResultBuffer, const uchar *Data, int Count) = 0;
   virtual int BreakAt(const uchar *Data, int Count) = 0;
+  virtual int QuerySnoopSize(void) { return 0; }
   void SetMaxPacketSize(int MaxPacketSize) { maxPacketSize = MaxPacketSize; }
   void SetSubStreamId(uint8_t SubStreamId) { subStreamId = SubStreamId; }
   };
+
+// --- cVideoRepacker --------------------------------------------------------
+
+class cVideoRepacker : public cRepacker {
+private:
+  int skippedBytes;
+  int packetTodo;
+  uchar fragmentData[6 + 65535 + 3];
+  int fragmentLen;
+  uchar pesHeader[6 + 3 + 255 + 3];
+  int pesHeaderLen;
+  uchar pesHeaderBackup[6 + 3 + 255];
+  int pesHeaderBackupLen;
+  uint32_t scanner;
+  enum eState {
+    syncing,
+    findPicture,
+    scanPicture
+    } state;
+  uint32_t localScanner;
+  int localStart;
+  bool PushOutPacket(cRingBufferLinear *ResultBuffer, const uchar *Data, int Count);
+public:
+  cVideoRepacker(void);
+  virtual void Reset(void);
+  virtual int Put(cRingBufferLinear *ResultBuffer, const uchar *Data, int Count);
+  virtual int BreakAt(const uchar *Data, int Count);
+  virtual int QuerySnoopSize() { return 4; }
+  };
+
+cVideoRepacker::cVideoRepacker(void)
+{
+  Reset();
+}
+
+void cVideoRepacker::Reset(void)
+{
+  skippedBytes = 0;
+  packetTodo = maxPacketSize - 6 - 3;
+  fragmentLen = 0;
+  pesHeaderLen = 0;
+  pesHeaderBackupLen = 0;
+  scanner = 0xFFFFFFFF;
+  state = syncing;
+  localStart = -1;
+}
+
+bool cVideoRepacker::PushOutPacket(cRingBufferLinear *ResultBuffer, const uchar *Data, int Count)
+{
+  // enter packet length into PES header ...
+  if (fragmentLen > 0) { // ... which is contained in the fragment buffer
+     // determine PES packet payload
+     int PacketLen = fragmentLen + Count - 6;
+     fragmentData[ 4 ] = PacketLen >> 8;
+     fragmentData[ 5 ] = PacketLen & 0xFF;
+     // amount of data to put into result buffer: a negative Count value means
+     // to strip off any partially contained start code.
+     int Bite = fragmentLen + (Count >= 0 ? 0 : Count);
+     // put data into result buffer
+     int n = ResultBuffer->Put(fragmentData, Bite);
+     if (n != Bite) {
+        Reset();
+        return false;
+        }
+     fragmentLen = 0;
+     }
+  else if (pesHeaderLen > 0) { // ... which is contained in the PES header buffer
+     int PacketLen = pesHeaderLen + Count - 6;
+     pesHeader[ 4 ] = PacketLen >> 8;
+     pesHeader[ 5 ] = PacketLen & 0xFF;
+     // amount of data to put into result buffer: a negative Count value means
+     // to strip off any partially contained start code.
+     int Bite = pesHeaderLen + (Count >= 0 ? 0 : Count);
+     // put data into result buffer
+     int n = ResultBuffer->Put(pesHeader, Bite);
+     if (n != Bite) {
+        Reset();
+        return false;
+        }
+     pesHeaderLen = 0;
+     }
+  // append further payload
+  if (Count > 0) {
+     // amount of data to put into result buffer
+     int Bite = Count;
+     // put data into result buffer
+     int n = ResultBuffer->Put(Data, Bite);
+     if (n != Bite) {
+        Reset();
+        return false;
+        }
+     }
+  // we did it ;-)
+  return true;
+}
+
+int cVideoRepacker::Put(cRingBufferLinear *ResultBuffer, const uchar *Data, int Count)
+{
+  // reset local scanner
+  localStart = -1;
+ 
+  // check for MPEG 2
+  if ((Data[6] & 0xC0) != 0x80)
+     return 0;
+
+  // backup PES header
+  if (Data[6] != 0x80 || Data[7] != 0x00 || Data[8] != 0x00) {
+     pesHeaderBackupLen = 6 + 3 + Data[8];
+     memcpy(pesHeaderBackup, Data, pesHeaderBackupLen);
+     }
+
+  // skip PES header
+  int done = 6 + 3 + Data[8];
+  int todo = Count - done;
+  const uchar *data = Data + done;
+  // remember start of the data
+  const uchar *payload = data;
+
+  while (todo > 0) {
+        // collect number of skipped bytes while syncing
+        if (state <= syncing)
+           skippedBytes++;
+        // did we reach a start code?
+        scanner <<= 8;
+        if (scanner != 0x00000100)
+           scanner |= *data;
+        else {
+           scanner |= *data;
+
+           // which kind of start code have we got?
+           switch (*data) {
+             case 0xB9 ... 0xFF: // system start codes
+                  esyslog("cVideoRepacker: found system start code: stream seems to be scrambled or not demultiplexed");
+                  Reset();
+                  break;
+             case 0xB0 ... 0xB1: // reserved start codes
+             case 0xB6:
+                  esyslog("cVideoRepacker: found reserved start code: stream seems to be scrambled");
+                  Reset();
+                  break;
+             case 0xB4: // sequence error code
+                  isyslog("cVideoRepacker: found sequence error code: stream seems to be damaged");
+             case 0xB2: // user data start code
+             case 0xB5: // extension start code
+                  break;
+             case 0xB7: // sequence end code
+             case 0xB3: // sequence header code
+             case 0xB8: // group start code
+             case 0x00: // picture start code
+                  if (state == scanPicture) {
+                     // the above start codes indicate that the current picture is done. So
+                     // push out the packet to start a new packet for the next picuture. If
+                     // the byte count get's negative then the current buffer ends in a
+                     // partitial start code that must be stripped off, as it shall be put
+                     // in the next packet.
+                     if (!PushOutPacket(ResultBuffer, payload, data - 3 - payload))
+                        return done - 3;
+                     // go on with syncing to the next picture
+                     state = syncing;
+                     }
+                  if (state == syncing) {
+                     // report that syncing dropped some bytes
+                     if (skippedBytes > 4)
+                        esyslog("cVideoRepacker: skipped %d bytes to sync on next picture", skippedBytes - 4);
+                     skippedBytes = 0;
+                     // if there is a PES header available, then use it ...
+                     if (pesHeaderBackupLen > 0) {
+                        // ISO 13818-1 says:
+                        // In the case of video, if a PTS is present in a PES packet header
+                        // it shall refer to the access unit containing the first picture start
+                        // code that commences in this PES packet. A picture start code commences
+                        // in PES packet if the first byte of the picture start code is present
+                        // in the PES packet.
+                        memcpy(pesHeader, pesHeaderBackup, pesHeaderBackupLen);
+                        pesHeaderLen = pesHeaderBackupLen;
+                        pesHeaderBackupLen = 0;
+                        }
+                     else {
+                        // ... otherwise create a continuation PES header
+                        pesHeaderLen = 0;
+                        pesHeader[pesHeaderLen++] = 0x00;
+                        pesHeader[pesHeaderLen++] = 0x00;
+                        pesHeader[pesHeaderLen++] = 0x01;
+                        pesHeader[pesHeaderLen++] = Data[3]; // video stream ID
+                        pesHeader[pesHeaderLen++] = 0x00; // length still unknown
+                        pesHeader[pesHeaderLen++] = 0x00; // length still unknown
+                        pesHeader[pesHeaderLen++] = 0x80;
+                        pesHeader[pesHeaderLen++] = 0x00;
+                        pesHeader[pesHeaderLen++] = 0x00;
+                        }
+                     // append the first three bytes of the start code
+                     pesHeader[pesHeaderLen++] = 0x00;
+                     pesHeader[pesHeaderLen++] = 0x00;
+                     pesHeader[pesHeaderLen++] = 0x01;
+                     // the next packet's payload will begin with the fourth byte of
+                     // the start code (= the actual code)
+                     payload = data;
+                     // as there is no length information available, assume the
+                     // maximum we can hold in one PES packet
+                     packetTodo = maxPacketSize - pesHeaderLen;
+                     // go on with finding the picture data
+                     ((int &)state)++;
+                     }
+                  break;
+             case 0x01 ... 0xAF: // slice start codes
+                  if (state == findPicture) {
+                     // go on with scanning the picture data
+                     ((int &)state)++;
+                     }
+                  break;
+             }
+           }
+        data++;
+        done++;
+        todo--;
+        // do we have to start a new packet as there is no more space left?
+        if (--packetTodo <= 0) {
+           // we connot start a new packet here if the current might end in a start
+           // code and this start code shall possibly be put in the next packet. So
+           // overfill the current packet until we can safely detect that we won't
+           // break a start code into pieces:
+           //
+           // A) the last four bytes were a start code.
+           // B) the current byte introduces a start code.
+           // C) the last three bytes begin a start code.
+           //
+           // Todo : Data                          : Rule : Result
+           // -----:-------------------------------:------:-------
+           //      : XX 00 00 00 01 YY|YY YY YY YY :      :
+           //    0 :                ^^|            : A    : push
+           // -----:-------------------------------:------:-------
+           //      : XX XX 00 00 00 01|YY YY YY YY :      :
+           //    0 :                ^^|            : B    : wait
+           //   -1 :                  |^^          : A    : push
+           // -----:-------------------------------:------:-------
+           //      : XX XX XX 00 00 00|01 YY YY YY :      :
+           //    0 :                ^^|            : C    : wait
+           //   -1 :                  |^^          : B    : wait
+           //   -2 :                  |   ^^       : A    : push
+           // -----:-------------------------------:------:-------
+           //      : XX XX XX XX 00 00|00 01 YY YY :      :
+           //    0 :                ^^|            : C    : wait
+           //   -1 :                  |^^          : C    : wait
+           //   -2 :                  |   ^^       : B    : wait
+           //   -3 :                  |      ^^    : A    : push
+           // -----:-------------------------------:------:-------
+           //      : XX XX XX XX XX 00|00 00 01 YY :      :
+           //    0 :                ^^|            : C    : wait
+           //   -1 :                  |^^          : C    : wait
+           //   -2 :                  |   ^^       :      : push
+           // -----:-------------------------------:------:-------
+           bool A = ((scanner & 0xFFFFFF00) == 0x00000100);
+           bool B = ((scanner &   0xFFFFFF) ==   0x000001);
+           bool C = ((scanner &       0xFF) ==       0x00) && (packetTodo >= -1);
+           if (A || (!B && !C)) {
+              // actually we cannot push out an overfull packet. So we'll have to
+              // adjust the byte count and payload start as necessary. If the byte
+              // count get's negative we'll have to append the excess from fragment's
+              // tail to the next PES header.
+              int bite = data + packetTodo - payload;
+              const uchar *excessData = fragmentData + fragmentLen + bite;
+              // a negative byte count means to drop some bytes from the current
+              // fragment's tail, to not exceed the maximum packet size.
+              if (!PushOutPacket(ResultBuffer, payload, bite))
+                 return done;
+              // create a continuation PES header
+              pesHeaderLen = 0;
+              pesHeader[pesHeaderLen++] = 0x00;
+              pesHeader[pesHeaderLen++] = 0x00;
+              pesHeader[pesHeaderLen++] = 0x01;
+              pesHeader[pesHeaderLen++] = Data[3]; // video stream ID
+              pesHeader[pesHeaderLen++] = 0x00; // length still unknown
+              pesHeader[pesHeaderLen++] = 0x00; // length still unknown
+              pesHeader[pesHeaderLen++] = 0x80;
+              pesHeader[pesHeaderLen++] = 0x00;
+              pesHeader[pesHeaderLen++] = 0x00;
+              // copy any excess data
+              while (bite++ < 0) {
+                    // append the excess data here
+                    pesHeader[pesHeaderLen++] = *excessData++;
+                    packetTodo++;
+                    }
+              // the next packet's payload will begin here
+              payload = data + packetTodo;
+              // as there is no length information available, assume the
+              // maximum we can hold in one PES packet
+              packetTodo += maxPacketSize - pesHeaderLen;
+              }
+           }
+        }
+  // the packet is done. Now store any remaining data into fragment buffer
+  // if we are no longer syncing.
+  if (state != syncing) {
+     // append the PES header ...
+     int bite = pesHeaderLen;
+     pesHeaderLen = 0;
+     if (bite > 0) {
+        memcpy(fragmentData + fragmentLen, pesHeader, bite);
+        fragmentLen += bite;
+        }
+     // append payload. It may contain part of a start code at it's end,
+     // which will be removed when the next packet gets processed.
+     bite = data - payload;
+     if (bite > 0) {
+        memcpy(fragmentData + fragmentLen, payload, bite);
+        fragmentLen += bite;
+        }
+     }
+  // we've eaten the whole packet ;-)
+  return Count;
+}
+
+int cVideoRepacker::BreakAt(const uchar *Data, int Count)
+{
+  // enough data for test?
+  if (Count < 6 + 3)
+     return -1;
+  // check for MPEG 2
+  if ((Data[6] & 0xC0) != 0x80)
+     return -1;
+  int headerLen = Data[8] + 6 + 3;
+  // enough data for test?
+  if (Count < headerLen)
+     return -1;
+  // just detect end of picture
+  if (state == scanPicture) {
+     // setup local scanner
+     if (localStart < 0) {
+        localScanner = scanner;
+        localStart = 0;
+        }
+     // start where we've stopped at the last run
+     const uchar *data = Data + headerLen + localStart;
+     const uchar *limit = Data + Count;
+     // scan data
+     while (data < limit) {
+           localStart++;
+           localScanner <<= 8;
+           localScanner |= *data++;
+           // check start codes which follow picture data
+           switch (localScanner) {
+             case 0x00000100: // picture start code
+             case 0x000001B8: // group start code
+             case 0x000001B3: // sequence header code
+             case 0x000001B7: // sequence end code
+                  return data - Data;
+             }
+           }
+     }
+  // just fill up packet and append next start code
+  return headerLen + packetTodo + 4;
+}
 
 // --- cDolbyRepacker --------------------------------------------------------
 
@@ -462,6 +815,7 @@ cTS2PES::cTS2PES(int Pid, cRingBufferLinear *ResultBuffer, int Size, uint8_t Aud
   if (repacker) {
      repacker->SetMaxPacketSize(size);
      repacker->SetSubStreamId(subStreamId);
+     size += repacker->QuerySnoopSize();
      }
 
   tsErrors = 0;
@@ -801,7 +1155,7 @@ cRemux::cRemux(int VPid, const int *APids, const int *DPids, const int *SPids, b
   resultBuffer = new cRingBufferLinear(RESULTBUFFERSIZE, IPACKS, false, "Result");
   resultBuffer->SetTimeouts(0, 100);
   if (VPid)
-     ts2pes[numTracks++] = new cTS2PES(VPid, resultBuffer, IPACKS);
+     ts2pes[numTracks++] = new cTS2PES(VPid, resultBuffer, IPACKS, 0x00, 0x00, new cVideoRepacker);
   if (APids) {
      int n = 0;
      while (*APids && numTracks < MAXTRACKS && n < MAXAPIDS)

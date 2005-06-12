@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 1.23 2004/07/17 14:30:17 kls Exp $
+ * $Id: ci.c 1.24 2005/06/04 11:57:05 kls Exp $
  */
 
 #include "ci.h"
@@ -287,6 +287,7 @@ public:
   int RecvData(void);
   const uint8_t *Data(int &Length);
   //XXX Close()
+  void Reset(void);
   };
 
 cCiTransportConnection::cCiTransportConnection(void)
@@ -428,6 +429,11 @@ int cCiTransportConnection::Poll(void)
   return ERROR;
 }
 
+void cCiTransportConnection::Reset(void)
+{
+  Init(-1, 0, 0);
+}
+
 // --- cCiTransportLayer -----------------------------------------------------
 
 #define MAX_CI_CONNECT  16 // maximum possible value is 254
@@ -440,7 +446,7 @@ private:
 public:
   cCiTransportLayer(int Fd, int NumSlots);
   cCiTransportConnection *NewConnection(int Slot);
-  bool ResetSlot(int Slot);
+  bool ResetSlot(int Slot, bool Wait = false);
   bool ModuleReady(int Slot);
   cCiTransportConnection *Process(int Slot);
   };
@@ -451,6 +457,7 @@ cCiTransportLayer::cCiTransportLayer(int Fd, int NumSlots)
   numSlots = NumSlots;
   for (int s = 0; s < numSlots; s++)
       ResetSlot(s);
+  cCondWait::SleepMs(2000);
 }
 
 cCiTransportConnection *cCiTransportLayer::NewConnection(int Slot)
@@ -467,10 +474,16 @@ cCiTransportConnection *cCiTransportLayer::NewConnection(int Slot)
   return NULL;
 }
 
-bool cCiTransportLayer::ResetSlot(int Slot)
+bool cCiTransportLayer::ResetSlot(int Slot, bool Wait)
 {
+  for (int i = 0; i < MAX_CI_CONNECT; i++) {
+      if (tc[i].State() != stIDLE && tc[i].Slot() == Slot)
+         tc[i].Reset();
+      }
   dbgprotocol("Resetting slot %d...", Slot);
   if (ioctl(fd, CA_RESET, 1 << Slot) != -1) {
+     if (Wait)
+        cCondWait::SleepMs(2000);
      dbgprotocol("ok.\n");
      return true;
      }
@@ -1602,5 +1615,5 @@ bool cCiHandler::Reset(int Slot)
 {
   cMutexLock MutexLock(&mutex);
   CloseAllSessions(Slot);
-  return tpl->ResetSlot(Slot);
+  return tpl->ResetSlot(Slot, true);
 }

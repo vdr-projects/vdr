@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.107 2005/05/29 11:16:57 kls Exp $
+ * $Id: recording.c 1.109 2005/06/05 14:11:45 kls Exp $
  */
 
 #include "recording.h"
@@ -480,8 +480,8 @@ cRecording::cRecording(const char *FileName)
            char *data[3] = { NULL };
            cReadLine ReadLine;
            char *s;
-           while ((s = ReadLine.Read(f)) != NULL && line < 3) {
-                 if (*s) {
+           while ((s = ReadLine.Read(f)) != NULL) {
+                 if (*s || line > 1) {
                     if (data[line]) {
                        int len = strlen(s);
                        len += strlen(data[line]) + 1;
@@ -593,9 +593,10 @@ const char *cRecording::Title(char Delimiter, bool NewIndicator, int Level) cons
         s++;
      else
         s = name;
-     asprintf(&titleBuffer, "%02d.%02d%c%02d:%02d%c%c%s",
+     asprintf(&titleBuffer, "%02d.%02d.%02d%c%02d:%02d%c%c%s",
                             t->tm_mday,
                             t->tm_mon + 1,
+                            t->tm_year % 100,
                             Delimiter,
                             t->tm_hour,
                             t->tm_min,

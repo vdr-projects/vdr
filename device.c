@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.101 2005/05/07 15:04:17 kls Exp $
+ * $Id: device.c 1.103 2005/06/12 13:39:11 kls Exp $
  */
 
 #include "device.h"
@@ -397,6 +397,8 @@ bool cDevice::AddPid(int Pid, ePidType PidType)
            PRINTPIDS("A");
            if (!SetPid(&pidHandles[n], n, true)) {
               esyslog("ERROR: can't set PID %d on device %d", Pid, CardIndex() + 1);
+              if (PidType <= ptTeletext)
+                 DetachAll(Pid);
               DelPid(Pid, PidType);
               return false;
               }
@@ -422,6 +424,8 @@ bool cDevice::AddPid(int Pid, ePidType PidType)
         PRINTPIDS("C");
         if (!SetPid(&pidHandles[n], n, true)) {
            esyslog("ERROR: can't set PID %d on device %d", Pid, CardIndex() + 1);
+           if (PidType <= ptTeletext)
+              DetachAll(Pid);
            DelPid(Pid, PidType);
            return false;
            }
@@ -499,6 +503,15 @@ bool cDevice::ProvidesSource(int Source) const
 bool cDevice::ProvidesTransponder(const cChannel *Channel) const
 {
   return false;
+}
+
+bool cDevice::ProvidesTransponderExclusively(const cChannel *Channel) const
+{
+  for (int i = 0; i < numDevices; i++) {
+      if (device[i] && device[i] != this && device[i]->ProvidesTransponder(Channel))
+         return false;
+      }
+  return true;
 }
 
 bool cDevice::ProvidesChannel(const cChannel *Channel, int Priority, bool *NeedsDetachReceivers) const
@@ -1208,6 +1221,18 @@ void cDevice::Detach(cReceiver *Receiver)
   if (!receiversLeft) {
      active = false;
      Cancel(3);
+     }
+}
+
+void cDevice::DetachAll(int Pid)
+{
+  if (Pid) {
+     cMutexLock MutexLock(&mutexReceiver);
+     for (int i = 0; i < MAXRECEIVERS; i++) {
+         cReceiver *Receiver = receiver[i];
+         if (Receiver && Receiver->WantsPid(Pid))
+            Detach(Receiver);
+         }
      }
 }
 

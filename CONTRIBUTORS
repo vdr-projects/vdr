@@ -283,6 +283,7 @@ Werner Fink <werner@suse.de>
  for pointing out that MAXDPIDS needs to be to 16 (8xAC3 + 8xDTS)
  for reporting a problem with ensuring there is a current audio track in case there
  is only one track
+ for enabling a device to detach all receivers for a given PID
 
 Rolf Hakenes <hakenes@hippomi.de>
  for providing 'libdtv' and adapting the EIT mechanisms to it
@@ -713,6 +714,7 @@ Jan Ekholm <chakie@infa.abo.fi>
  for reporting a compiler warning in g++ 3.2.3 regarding cReplayControl::Show()
  for reporting and helping to debug a problem in frequency handling when setting
  the CA descriptors in cDvbTuner::Action()
+ for suggesting to add the year to recording dates in LSTR
 
 Marcel Wiesweg <marcel.wiesweg@gmx.de>
  for pointing out a problem with high CPU load during replay
@@ -828,6 +830,7 @@ Christian Jacobsen <christian.jacobsen@stageholding.de>
  for reporting a problem in handling the '-E' options in version 1.3.18
  for reporting a problem in case a station defines all 32 audio PIDs
  for suggestions and experiments regarding the buffer reserve in cTransfer
+ for reporting a problem with 'summary.vdr' files with more than two empty lines
 
 Andreas Mair <Andreas.Mair@linogate.com>
  for reporting a short display of the main menu if a plugin displays its own OSD and
@@ -880,6 +883,7 @@ Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  for translating OSD texts to the Finnish language
  for fixing internationalization of the text for "Setup/DVB/Audio language(s)"
  for making pressing the Power button not stop Transfer Mode or replay immediately
+ for making EPG events without a title display "No title" instead of "(null)"
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark
@@ -954,6 +958,9 @@ Reinhard Nissl <rnissl@gmx.de>
  for fixing a typo in detecting UTF-8
  for fixing handling fragments of less than 4 byte in cPesAssembler
  for some rearrangements in cDvbPlayer::Action() to avoid lockups on NPTL systems
+ for implementing cVideoRepacker in remux.c to make sure every PES packet contains
+ only data from one frame
+ for fixing the call to Channels.Unlock() in cEITScanner::Process()
 
 Richard Robson <richard_robson@beeb.net>
  for reporting freezing replay if a timer starts while in Transfer Mode from the
@@ -1186,6 +1193,7 @@ Marco Schlüßler <marco@lordzodiac.de>
  level from being set to a wrong value
  for fixing a possible hangup when ending a replay session while cIndexFile::CatchUp()
  is waiting
+ for improving resetting CAM connections
 
 Jürgen Schmitz <j.schmitz@web.de>
  for reporting a bug in displaying the current channel when switching via the SVDRP
@@ -1231,6 +1239,8 @@ Milos Kapoun <m.kapoun@cra.cz>
 Udo Richter <udo_richter@gmx.de>
  for refining the formula for making volume control more linear
  for fixing handling lifetime when deciding whether to delete a recording
+ for reporting a problem in handling page up/down in menu lists in case there are
+ several non selectable items in a row
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date
@@ -1311,6 +1321,7 @@ Wolfgang Rohdewald <wolfgang@rohdewald.de>
  for removing some unneeded code and fixing access to unallocated memory in
  cEvent::FixEpgBugs()
  for adding a missing cMutexLock to cRemote::HasKeys()
+ for removing an unnecessary #include from osd.c
 
 Chad Flynt <hoochster@sofnet.com>
  for suggestions and experiments regarding the buffer reserve in cTransfer
@@ -1318,6 +1329,8 @@ Chad Flynt <hoochster@sofnet.com>
 Chris Warren <dvb@ixalon.net>
  for pointing out that the call to system("sync") in SpinUpDisk() should be
  replaced with fsync(f) to avoid problems on NPTL systems
+ for fixing dropping EPG events that have a zero start time or duration, in case it's
+ an NVOD event
 
 Luca Olivetti <luca@ventoso.org>
  for making cDevice::AttachPlayer() keep the track language codes and descriptions
@@ -1367,3 +1380,7 @@ Georg Acher <acher@baycom.de>
  for avoiding unnecessary calls to getLength() in libsi/si.c, and avoiding the
  '& 0xff' in CRC32::crc32() of libsi/util.c
  for suggesting to reduce the priority of the section handler threads
+
+Henrik Niehaus <henrik.niehaus@gmx.de>
+ for reporting a problem with timers with a day given as MTWTF--@6, i.e. a repeating
+ timer with first day not as full date, but just day of month

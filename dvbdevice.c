@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.129 2005/05/16 15:23:43 kls Exp $
+ * $Id: dvbdevice.c 1.130 2005/06/05 13:05:55 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -654,8 +654,10 @@ bool cDvbDevice::SetPid(cPidHandle *Handle, int Type, bool On)
      if (On) {
         if (Handle->handle < 0) {
            Handle->handle = DvbOpen(DEV_DVB_DEMUX, CardIndex(), O_RDWR | O_NONBLOCK, true);
-           if (Handle->handle < 0)
+           if (Handle->handle < 0) {
+              LOG_ERROR;
               return false;
+              }
            }
         pesFilterParams.pid     = Handle->pid;
         pesFilterParams.input   = DMX_IN_FRONTEND;
@@ -722,6 +724,10 @@ void cDvbDevice::TurnOffLiveMode(bool LiveView)
 
   // Turn off live PIDs:
 
+  DetachAll(pidHandles[ptAudio].pid);
+  DetachAll(pidHandles[ptVideo].pid);
+  DetachAll(pidHandles[ptPcr].pid);
+  DetachAll(pidHandles[ptTeletext].pid);
   DelPid(pidHandles[ptAudio].pid);
   DelPid(pidHandles[ptVideo].pid);
   DelPid(pidHandles[ptPcr].pid, ptPcr);
@@ -891,6 +897,7 @@ void cDvbDevice::SetAudioTrackDevice(eTrackType Type)
   if (TrackId && TrackId->id) {
      if (IS_AUDIO_TRACK(Type)) {
         if (pidHandles[ptAudio].pid && pidHandles[ptAudio].pid != TrackId->id) {
+           DetachAll(pidHandles[ptAudio].pid);
            pidHandles[ptAudio].pid = TrackId->id;
            SetPid(&pidHandles[ptAudio], ptAudio, true);
            }
