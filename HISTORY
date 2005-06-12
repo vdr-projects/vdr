@@ -3587,6 +3587,12 @@ Video Disk Recorder Revision History
 - Improved resetting CAM connections (thanks to Marco Schlüßler).
 - Implemented cVideoRepacker in remux.c to make sure every PES packet contains
   only data from one frame (thanks to Reinhard Nissl).
+  NOTE: currently this doesn't work with MPEG1, so if you use MPEG1 you may want
+  to change line 1158 in remux.c to
+
+  ts2pes[numTracks++] = new cTS2PES(VPid, resultBuffer, IPACKS);
+
+  as it was before.
 - EPG events without a title now display "No title" instead of "(null)" (thanks
   to Rolf Ahrenberg).
 - A device can now detach all receivers for a given PID, as is necessary, e.g.,
