@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osdbase.c 1.16 2005/06/12 09:55:56 kls Exp $
+ * $Id: osdbase.c 1.17 2005/06/12 10:44:22 kls Exp $
  */
 
 #include "osdbase.h"
@@ -74,11 +74,7 @@ cOsdMenu::cOsdMenu(const char *Title, int c0, int c1, int c2, int c3, int c4)
   hasHotkeys = false;
   title = NULL;
   SetTitle(Title);
-  cols[0] = c0;
-  cols[1] = c1;
-  cols[2] = c2;
-  cols[3] = c3;
-  cols[4] = c4;
+  SetCols(c0, c1, c2, c3, c4);
   first = 0;
   current = marked = -1;
   subMenu = NULL;
@@ -114,6 +110,15 @@ const char *cOsdMenu::hk(const char *s)
         }
      }
   return s;
+}
+
+void cOsdMenu::SetCols(int c0, int c1, int c2, int c3, int c4)
+{
+  cols[0] = c0;
+  cols[1] = c1;
+  cols[2] = c2;
+  cols[3] = c3;
+  cols[4] = c4;
 }
 
 void cOsdMenu::SetHasHotkeys(void)
