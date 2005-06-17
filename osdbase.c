@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osdbase.c 1.18 2005/06/17 14:22:34 kls Exp $
+ * $Id: osdbase.c 1.19 2005/06/17 15:35:27 kls Exp $
  */
 
 #include "osdbase.h"
@@ -271,9 +271,7 @@ void cOsdMenu::CursorUp(void)
         DisplayCurrent(false);
      current = tmpCurrent;
      if (current < first) {
-        first = first > displayMenuItems - 1 ? first - (displayMenuItems - 1) : 0;
-        if (Setup.MenuScrollPage)
-           current = !SelectableItem(first) ? first + 1 : first;
+        first = Setup.MenuScrollPage ? max(0, current - displayMenuItems + 1) : current;
         Display();
         }
      else
@@ -284,9 +282,8 @@ void cOsdMenu::CursorUp(void)
 void cOsdMenu::CursorDown(void)
 {
   int last = Count() - 1;
-  int lastOnScreen = first + displayMenuItems - 1;
-
   if (current < last) {
+     int lastOnScreen = first + displayMenuItems - 1;
      int tmpCurrent = current;
      while (++tmpCurrent <= last && !SelectableItem(tmpCurrent))
            ;
@@ -296,14 +293,9 @@ void cOsdMenu::CursorDown(void)
         DisplayCurrent(false);
      current = tmpCurrent;
      if (current > lastOnScreen) {
-        first += displayMenuItems - 1;
-        lastOnScreen = first + displayMenuItems - 1;
-        if (lastOnScreen > last) {
-           first = last - (displayMenuItems - 1);
-           lastOnScreen = last;
-           }
-        if (Setup.MenuScrollPage)
-           current = !SelectableItem(lastOnScreen) ? lastOnScreen - 1 : lastOnScreen;
+        first = Setup.MenuScrollPage ? current : max(0, current - displayMenuItems + 1);
+        if (first + displayMenuItems > last)
+           first = max(0, last - displayMenuItems + 1);
         Display();
         }
      else
