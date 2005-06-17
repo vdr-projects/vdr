@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osdbase.c 1.17 2005/06/12 10:44:22 kls Exp $
+ * $Id: osdbase.c 1.18 2005/06/17 14:22:34 kls Exp $
  */
 
 #include "osdbase.h"
@@ -350,6 +350,10 @@ void cOsdMenu::PageDown(void)
   current += displayMenuItems;
   first += displayMenuItems;
   int last = Count() - 1;
+  if (current > last)
+     current = last;
+  if (first + displayMenuItems > last)
+     first = max(0, last - displayMenuItems + 1);
   int tmpCurrent = current;
   while (!SelectableItem(tmpCurrent) && ++tmpCurrent <= last)
         ;

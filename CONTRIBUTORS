@@ -1241,6 +1241,7 @@ Udo Richter <udo_richter@gmx.de>
  for fixing handling lifetime when deciding whether to delete a recording
  for reporting a problem in handling page up/down in menu lists in case there are
  several non selectable items in a row
+ for fixing handling 'page down' after it was broken in version 1.3.26
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date
