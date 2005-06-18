@@ -3622,3 +3622,5 @@ Video Disk Recorder Revision History
   in menu lists (based on a suggestion by Patrick Gleichmann).
 - Removed the NPTL check at startup, since several users have reported that VDR
   now runs fine with NPTL.
+- Fixed handling VPS timers, so that they only record if the event they are assigned
+  to actually has the given VPS time.

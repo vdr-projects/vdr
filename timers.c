@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 1.32 2005/06/11 14:19:58 kls Exp $
+ * $Id: timers.c 1.33 2005/06/18 12:49:55 kls Exp $
  */
 
 #include "timers.h"
@@ -363,6 +363,8 @@ bool cTimer::Matches(time_t t, bool Directly) const
 
   if (HasFlags(tfActive)) {
      if (HasFlags(tfVps) && !Directly && event && event->Vps() && schedule && schedule->PresentSeenWithin(30)) {
+        if (startTime != event->Vps())
+           return false;
         startTime = event->StartTime();
         stopTime = event->EndTime();
         return event->IsRunning(true);
@@ -384,15 +386,17 @@ int cTimer::Matches(const cEvent *Event, int *Overlap) const
   if (HasFlags(tfActive) && channel->GetChannelID() == Event->ChannelID()) {
      bool UseVps = HasFlags(tfVps) && Event->Vps();
      Matches(UseVps ? Event->Vps() : Event->StartTime(), true);
-     int overlap;
+     int overlap = 0;
      if (UseVps)
         overlap = (startTime == Event->Vps()) ? FULLMATCH + (Event->IsRunning() ? 200 : 100) : 0;
-     else if (startTime <= Event->StartTime() && Event->EndTime() <= stopTime)
-        overlap = FULLMATCH;
-     else if (stopTime <= Event->StartTime() || Event->EndTime() <= startTime)
-        overlap = 0;
-     else
-        overlap = (min(stopTime, Event->EndTime()) - max(startTime, Event->StartTime())) * FULLMATCH / max(Event->Duration(), 1);
+     if (!overlap) {
+        if (startTime <= Event->StartTime() && Event->EndTime() <= stopTime)
+           overlap = FULLMATCH;
+        else if (stopTime <= Event->StartTime() || Event->EndTime() <= startTime)
+           overlap = 0;
+        else
+           overlap = (min(stopTime, Event->EndTime()) - max(startTime, Event->StartTime())) * FULLMATCH / max(Event->Duration(), 1);
+        }
      startTime = stopTime = 0;
      if (Overlap)
         *Overlap = overlap;
