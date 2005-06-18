@@ -3620,3 +3620,5 @@ Video Disk Recorder Revision History
 - Modified page scrolling behaviour (based on a suggestion by Patrick Gleichmann).
 - The new setup option "OSD/Scroll wraps" can be used to activate wrapping around
   in menu lists (based on a suggestion by Patrick Gleichmann).
+- Removed the NPTL check at startup, since several users have reported that VDR
+  now runs fine with NPTL.
