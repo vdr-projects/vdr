@@ -1298,6 +1298,7 @@ Laurence Abbott <laz@club-burniston.co.uk>
 Patrick Gleichmann <patrick@feedface.com>
  for fixing the default quality value when grabbing a JPEG image
  for suggestiong a modified page scrolling behaviour
+ for suggesting wrapping around in menu lists
 
 Achim Tuffentsammer <a.tuffentsammer@web.de>
  for reporting a crash in case a plugin needs to issue an error message before the

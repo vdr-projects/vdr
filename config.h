@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.220 2005/06/12 15:06:19 kls Exp $
+ * $Id: config.h 1.221 2005/06/18 10:29:25 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -211,6 +211,7 @@ public:
   int PrimaryDVB;
   int ShowInfoOnChSwitch;
   int MenuScrollPage;
+  int MenuScrollWrap;
   int MarkInstantRecord;
   char NameInstantRecord[MaxFileName];
   int InstantRecordTime;

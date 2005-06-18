@@ -3613,8 +3613,10 @@ Video Disk Recorder Revision History
 - Modified cEITScanner::Process() so that it works on systems with only budget cards
   or a mix of DVB-S, DVB-C or DVB-T cards.
 
-2005-06-17: Version 1.3.27
+2005-06-18: Version 1.3.27
 
 - Fixed handling 'page down', which was broken in version 1.3.26 (thanks to Udo
   Richter).
 - Modified page scrolling behaviour (based on a suggestion by Patrick Gleichmann).
+- The new setup option "OSD/Scroll wraps" can be used to activate wrapping around
+  in menu lists (based on a suggestion by Patrick Gleichmann).
