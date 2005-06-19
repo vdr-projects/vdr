@@ -11,7 +11,7 @@
  * The cDolbyRepacker code was originally written by Reinhard Nissl <rnissl@gmx.de>,
  * and adapted to the VDR coding style by Klaus.Schmidinger@cadsoft.de.
  *
- * $Id: remux.c 1.34 2005/06/04 14:49:25 kls Exp $
+ * $Id: remux.c 1.35 2005/06/19 10:17:00 kls Exp $
  */
 
 #include "remux.h"
@@ -1155,7 +1155,12 @@ cRemux::cRemux(int VPid, const int *APids, const int *DPids, const int *SPids, b
   resultBuffer = new cRingBufferLinear(RESULTBUFFERSIZE, IPACKS, false, "Result");
   resultBuffer->SetTimeouts(0, 100);
   if (VPid)
+//#define TEST_cVideoRepacker
+#ifdef TEST_cVideoRepacker
      ts2pes[numTracks++] = new cTS2PES(VPid, resultBuffer, IPACKS, 0x00, 0x00, new cVideoRepacker);
+#else
+     ts2pes[numTracks++] = new cTS2PES(VPid, resultBuffer, IPACKS);
+#endif
   if (APids) {
      int n = 0;
      while (*APids && numTracks < MAXTRACKS && n < MAXAPIDS)
