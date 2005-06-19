@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.207 2005/05/26 10:45:29 kls Exp $
+ * $Id: vdr.c 1.208 2005/06/18 11:19:07 kls Exp $
  */
 
 #include <getopt.h>
@@ -301,17 +301,6 @@ int main(int argc, char *argv[])
         }
      return 0;
      }
-
-#ifdef _CS_GNU_LIBPTHREAD_VERSION
-  // Check for NPTL and exit if present - VDR apparently doesn't run well with NPTL:
-  char LibPthreadVersion[128];
-  if (confstr(_CS_GNU_LIBPTHREAD_VERSION, LibPthreadVersion, sizeof(LibPthreadVersion)) > 0) {
-     if (strstr(LibPthreadVersion, "NPTL")) {
-        fprintf(stderr, "vdr: please turn off NPTL by setting 'export LD_ASSUME_KERNEL=2.4.1' before starting VDR\n");
-        return 2;
-        }
-     }
-#endif
 
   // Check for UTF-8 and exit if present - asprintf() will fail if it encounters 8 bit ASCII codes
   char *LangEnv;

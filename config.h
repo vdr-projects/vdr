@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.219 2005/06/03 12:39:16 kls Exp $
+ * $Id: config.h 1.221 2005/06/18 10:29:25 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -20,8 +20,8 @@
 #include "i18n.h"
 #include "tools.h"
 
-#define VDRVERSION  "1.3.26"
-#define VDRVERSNUM   10326  // Version * 10000 + Major * 100 + Minor
+#define VDRVERSION  "1.3.27"
+#define VDRVERSNUM   10327  // Version * 10000 + Major * 100 + Minor
 
 #define MAXPRIORITY 99
 #define MAXLIFETIME 99
@@ -211,6 +211,7 @@ public:
   int PrimaryDVB;
   int ShowInfoOnChSwitch;
   int MenuScrollPage;
+  int MenuScrollWrap;
   int MarkInstantRecord;
   char NameInstantRecord[MaxFileName];
   int InstantRecordTime;

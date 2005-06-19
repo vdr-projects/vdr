@@ -495,11 +495,18 @@ Version 1.2
 
   Scroll pages = yes     no  = when pressing the "Down" ("Up") key while the cursor
                                is on the last (first) line of a list page, the
-                               list is advanced by a full page and the cursor will
-                               be at the top (bottom) of that page
-                         yes = dto., but the cursor remains at the bottom (top) of
-                               the page (this mode allows for faster scrolling
-                               through long lists).
+                               list is scrolled down (up) a single line and the cursor will
+                               remain at the bottom (top) of that page
+                         yes = the list is scrolled down (up) a full page and the cursor
+                               will be at the top (bottom) of that page (this mode allows
+                               for faster scrolling through long lists).
+
+  Scroll wraps = no      no  = when the end (beginning) of a list is reached while
+                               moving the cursor through it, the cursor stays at the
+                               last (first) line of the list
+                         yes = the cursor "wraps around" and moves from the last
+                               (first) line of the list directly to the first (last)
+                               one.
 
   Sort timers = yes      Turns sorting the timers in the "Timers" menu on/off.
                          Timers are sorted by ascending start times, with the

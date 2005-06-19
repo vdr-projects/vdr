@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.130 2005/06/05 13:05:55 kls Exp $
+ * $Id: dvbdevice.c 1.131 2005/06/19 11:00:43 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -742,7 +742,6 @@ bool cDvbDevice::ProvidesSource(int Source) const
       || type == cSource::stCable && frontendType == FE_QAM
       || type == cSource::stSat   && frontendType == FE_QPSK
       || type == cSource::stTerr  && frontendType == FE_OFDM;
-  return true;
 }
 
 bool cDvbDevice::ProvidesTransponder(const cChannel *Channel) const

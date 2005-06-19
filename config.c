@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.133 2005/02/20 12:52:59 kls Exp $
+ * $Id: config.c 1.134 2005/06/18 10:30:02 kls Exp $
  */
 
 #include "config.h"
@@ -250,6 +250,7 @@ cSetup::cSetup(void)
   PrimaryDVB = 1;
   ShowInfoOnChSwitch = 1;
   MenuScrollPage = 1;
+  MenuScrollWrap = 0;
   MarkInstantRecord = 1;
   strcpy(NameInstantRecord, "TITLE EPISODE");
   InstantRecordTime = 180;
@@ -407,6 +408,7 @@ bool cSetup::Parse(const char *Name, const char *Value)
   else if (!strcasecmp(Name, "PrimaryDVB"))          PrimaryDVB         = atoi(Value);
   else if (!strcasecmp(Name, "ShowInfoOnChSwitch"))  ShowInfoOnChSwitch = atoi(Value);
   else if (!strcasecmp(Name, "MenuScrollPage"))      MenuScrollPage     = atoi(Value);
+  else if (!strcasecmp(Name, "MenuScrollWrap"))      MenuScrollWrap     = atoi(Value);
   else if (!strcasecmp(Name, "MarkInstantRecord"))   MarkInstantRecord  = atoi(Value);
   else if (!strcasecmp(Name, "NameInstantRecord"))   strn0cpy(NameInstantRecord, Value, MaxFileName);
   else if (!strcasecmp(Name, "InstantRecordTime"))   InstantRecordTime  = atoi(Value);
@@ -470,7 +472,7 @@ bool cSetup::Save(void)
   Store("OSDTheme",           OSDTheme);
   Store("PrimaryDVB",         PrimaryDVB);
   Store("ShowInfoOnChSwitch", ShowInfoOnChSwitch);
-  Store("MenuScrollPage",     MenuScrollPage);
+  Store("MenuScrollWrap",     MenuScrollWrap);
   Store("MarkInstantRecord",  MarkInstantRecord);
   Store("NameInstantRecord",  NameInstantRecord);
   Store("InstantRecordTime",  InstantRecordTime);

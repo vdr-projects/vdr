@@ -1080,6 +1080,7 @@ Andreas Regel <andreas.regel@gmx.de>
  cSkins::Message()
  for reporting a problem in handling Transfer Mode for radio channels
  for reporting a problem with messages when a cOsdObject uses the raw OSD
+ for implementing palette replace mode in the OSD bitmaps
 
 Thomas Bergwinkl <Thomas.Bergwinkl@t-online.de>
  for fixing the validity check for channel IDs, because some providers use TIDs
@@ -1241,6 +1242,7 @@ Udo Richter <udo_richter@gmx.de>
  for fixing handling lifetime when deciding whether to delete a recording
  for reporting a problem in handling page up/down in menu lists in case there are
  several non selectable items in a row
+ for fixing handling 'page down' after it was broken in version 1.3.26
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date
@@ -1296,6 +1298,8 @@ Laurence Abbott <laz@club-burniston.co.uk>
 
 Patrick Gleichmann <patrick@feedface.com>
  for fixing the default quality value when grabbing a JPEG image
+ for suggestiong a modified page scrolling behaviour
+ for suggesting wrapping around in menu lists
 
 Achim Tuffentsammer <a.tuffentsammer@web.de>
  for reporting a crash in case a plugin needs to issue an error message before the
