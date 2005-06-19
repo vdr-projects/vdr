@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.h 1.48 2005/05/14 11:15:55 kls Exp $
+ * $Id: osd.h 1.49 2005/06/19 10:35:25 kls Exp $
  */
 
 #ifndef __OSD_H
@@ -84,6 +84,9 @@ public:
         ///< palette. If either of ColorFg or ColorBg is not zero, the first color
         ///< in Palette will be taken as ColorBg, and the second color will become
         ///< ColorFg.
+  void Replace(const cPalette &Palette);
+        ///< Replaces the colors of this palette with the colors from the given
+        ///< palette.
   };
 
 enum eTextAlignment { taCenter  = 0x00,
@@ -153,7 +156,7 @@ public:
        ///< Sets the pixel at the given coordinates to the given Color, which is
        ///< a full 32 bit ARGB value.
        ///< If the coordinates are outside the bitmap area, no pixel will be set.
-  void DrawBitmap(int x, int y, const cBitmap &Bitmap, tColor ColorFg = 0, tColor ColorBg = 0);
+  void DrawBitmap(int x, int y, const cBitmap &Bitmap, tColor ColorFg = 0, tColor ColorBg = 0, bool ReplacePalette = false);
        ///< Sets the pixels in this bitmap with the data from the given
        ///< Bitmap, putting the upper left corner of the Bitmap at (x, y).
        ///< If ColorFg or ColorBg is given, the first palette entry of the Bitmap
@@ -274,7 +277,7 @@ public:
        ///< If the OSD area has been divided into separate sub-areas, and the
        ///< given coordinates don't fall into any of these sub-areas, no pixel will
        ///< be set.
-  virtual void DrawBitmap(int x, int y, const cBitmap &Bitmap, tColor ColorFg = 0, tColor ColorBg = 0);
+  virtual void DrawBitmap(int x, int y, const cBitmap &Bitmap, tColor ColorFg = 0, tColor ColorBg = 0, bool ReplacePalette = false);
        ///< Sets the pixels in the OSD with the data from the given
        ///< Bitmap, putting the upper left corner of the Bitmap at (x, y).
        ///< If ColorFg or ColorBg is given, the first palette entry of the Bitmap

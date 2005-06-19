@@ -1080,6 +1080,7 @@ Andreas Regel <andreas.regel@gmx.de>
  cSkins::Message()
  for reporting a problem in handling Transfer Mode for radio channels
  for reporting a problem with messages when a cOsdObject uses the raw OSD
+ for implementing palette replace mode in the OSD bitmaps
 
 Thomas Bergwinkl <Thomas.Bergwinkl@t-online.de>
  for fixing the validity check for channel IDs, because some providers use TIDs

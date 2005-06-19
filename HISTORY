@@ -3630,3 +3630,6 @@ Video Disk Recorder Revision History
   //#define TEST_cVideoRepacker
 
   in remux.c.
+- When drawing a bitmap to the OSD, the existing palette of the target can now be
+  replaced with the new one instead of adding the new entries (thanks to Andreas
+  Regel).
