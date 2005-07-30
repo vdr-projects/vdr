@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 1.59 2005/06/12 13:35:47 kls Exp $
+ * $Id: device.h 1.60 2005/07/30 09:31:53 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -444,8 +444,7 @@ public:
        ///< Returns true if the device itself or any of the file handles in
        ///< Poller is ready for further action.
        ///< If TimeoutMs is not zero, the device will wait up to the given number
-       ///< of milleseconds before returning in case there is no immediate
-       ///< need for data.
+       ///< of milleseconds before returning in case it can't accept any data.
   virtual bool Flush(int TimeoutMs = 0);
        ///< Returns true if the device's output buffers are empty, i. e. any
        ///< data which was bufferd so far has been processed.
