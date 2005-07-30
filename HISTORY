@@ -3643,3 +3643,6 @@ Video Disk Recorder Revision History
 - cDvbPlayer::Goto() now appends a Sequence End Code to get the image shown
   immediately with softdevices (thanks to Reinhard Nissl).
 - Reactivated cVideoRepacker in remux.c after some fixes (thanks to Reinhard Nissl).
+- Removed the fix for handling VPS timers, so that they only record if the event
+  they are assigned to actually has the given VPS time. This has caused repeating
+  VPS timers to stop recording prematurely.
