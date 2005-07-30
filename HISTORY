@@ -3642,3 +3642,4 @@ Video Disk Recorder Revision History
 - Updated Croatian language texts (thanks to Drazen Dupor).
 - cDvbPlayer::Goto() now appends a Sequence End Code to get the image shown
   immediately with softdevices (thanks to Reinhard Nissl).
+- Reactivated cVideoRepacker in remux.c after some fixes (thanks to Reinhard Nissl).

@@ -11,7 +11,7 @@
  * The cDolbyRepacker code was originally written by Reinhard Nissl <rnissl@gmx.de>,
  * and adapted to the VDR coding style by Klaus.Schmidinger@cadsoft.de.
  *
- * $Id: remux.c 1.35 2005/06/19 10:17:00 kls Exp $
+ * $Id: remux.c 1.36 2005/07/30 10:23:00 kls Exp $
  */
 
 #include "remux.h"
@@ -26,16 +26,91 @@ class cRepacker {
 protected:
   int maxPacketSize;
   uint8_t subStreamId;
+  static void DroppedData(const char *Reason, int Count) { esyslog("%s (dropped %d bytes)", Reason, Count); }
+  static int Put(cRingBufferLinear *ResultBuffer, const uchar *Data, int Count)
+  {
+    int n = ResultBuffer->Put(Data, Count);
+    if (n != Count)
+       esyslog("ERROR: result buffer overflow, dropped %d out of %d byte", Count - n, Count);
+    return n;
+  }
+  static int AnalyzePesHeader(const uchar *Data, int Count, int &PesPayloadOffset, bool *ContinuationHeader = 0);
 public:
   cRepacker(void) { maxPacketSize = 6 + 65535; subStreamId = 0; }
   virtual ~cRepacker() {}
   virtual void Reset(void) {}
-  virtual int Put(cRingBufferLinear *ResultBuffer, const uchar *Data, int Count) = 0;
+  virtual void Repack(cRingBufferLinear *ResultBuffer, const uchar *Data, int Count) = 0;
   virtual int BreakAt(const uchar *Data, int Count) = 0;
   virtual int QuerySnoopSize(void) { return 0; }
   void SetMaxPacketSize(int MaxPacketSize) { maxPacketSize = MaxPacketSize; }
   void SetSubStreamId(uint8_t SubStreamId) { subStreamId = SubStreamId; }
   };
+
+int cRepacker::AnalyzePesHeader(const uchar *Data, int Count, int &PesPayloadOffset, bool *ContinuationHeader)
+{
+  if (Count < 7)
+     return -1; // too short
+
+  if ((Data[6] & 0xC0) == 0x80) { // MPEG 2
+     if (Count < 9)
+        return -1; // too short
+
+     PesPayloadOffset = 6 + 3 + Data[8];
+     if (Count < PesPayloadOffset)
+        return -1; // too short
+
+     if (ContinuationHeader)
+        *ContinuationHeader = ((Data[6] == 0x80) && !Data[7] && !Data[8]);
+
+     return 2; // MPEG 2
+     }
+
+  // check for MPEG 1 ...
+  PesPayloadOffset = 6;
+
+  // skip up to 16 stuffing bytes
+  for (int i = 0; i < 16; i++) {
+      if (Data[PesPayloadOffset] != 0xFF)
+         break;
+
+      if (Count <= ++PesPayloadOffset)
+         return -1; // too short
+      }
+
+  // skip STD_buffer_scale/size
+  if ((Data[PesPayloadOffset] & 0xC0) == 0x40) {
+     PesPayloadOffset += 2;
+
+     if (Count <= PesPayloadOffset)
+        return -1; // too short
+     }
+
+  if (ContinuationHeader)
+     *ContinuationHeader = false;
+
+  if ((Data[PesPayloadOffset] & 0xF0) == 0x20) {
+     // skip PTS only
+     PesPayloadOffset += 5;
+     }
+  else if ((Data[PesPayloadOffset] & 0xF0) == 0x30) {
+     // skip PTS and DTS
+     PesPayloadOffset += 10;
+     }
+  else if (Data[PesPayloadOffset] == 0x0F) {
+     // continuation header
+     PesPayloadOffset++;
+
+     if (ContinuationHeader)
+        *ContinuationHeader = true;
+     }
+  else
+     return 0; // unknown
+
+  if (Count < PesPayloadOffset)
+     return -1; // too short
+
+  return 1; // MPEG 1
+}
 
 // --- cVideoRepacker --------------------------------------------------------
 
@@ -61,7 +136,7 @@ private:
 public:
   cVideoRepacker(void);
   virtual void Reset(void);
-  virtual int Put(cRingBufferLinear *ResultBuffer, const uchar *Data, int Count);
+  virtual void Repack(cRingBufferLinear *ResultBuffer, const uchar *Data, int Count);
   virtual int BreakAt(const uchar *Data, int Count);
   virtual int QuerySnoopSize() { return 4; }
   };
@@ -95,7 +170,7 @@ bool cVideoRepacker::PushOutPacket(cRingBufferLinear *ResultBuffer, const uchar 
      // to strip off any partially contained start code.
      int Bite = fragmentLen + (Count >= 0 ? 0 : Count);
      // put data into result buffer
-     int n = ResultBuffer->Put(fragmentData, Bite);
+     int n = Put(ResultBuffer, fragmentData, Bite);
      if (n != Bite) {
         Reset();
         return false;
@@ -110,7 +185,7 @@ bool cVideoRepacker::PushOutPacket(cRingBufferLinear *ResultBuffer, const uchar 
      // to strip off any partially contained start code.
      int Bite = pesHeaderLen + (Count >= 0 ? 0 : Count);
      // put data into result buffer
-     int n = ResultBuffer->Put(pesHeader, Bite);
+     int n = Put(ResultBuffer, pesHeader, Bite);
      if (n != Bite) {
         Reset();
         return false;
@@ -122,7 +197,7 @@ bool cVideoRepacker::PushOutPacket(cRingBufferLinear *ResultBuffer, const uchar 
      // amount of data to put into result buffer
      int Bite = Count;
      // put data into result buffer
-     int n = ResultBuffer->Put(Data, Bite);
+     int n = Put(ResultBuffer, Data, Bite);
      if (n != Bite) {
         Reset();
         return false;
@@ -132,23 +207,29 @@ bool cVideoRepacker::PushOutPacket(cRingBufferLinear *ResultBuffer, const uchar 
   return true;
 }
 
-int cVideoRepacker::Put(cRingBufferLinear *ResultBuffer, const uchar *Data, int Count)
+void cVideoRepacker::Repack(cRingBufferLinear *ResultBuffer, const uchar *Data, int Count)
 {
+  // synchronisation is detected some bytes after frame start.
+  const int SkippedBytesLimit = 4;
+
   // reset local scanner
   localStart = -1;
- 
-  // check for MPEG 2
-  if ((Data[6] & 0xC0) != 0x80)
-     return 0;
 
-  // backup PES header
-  if (Data[6] != 0x80 || Data[7] != 0x00 || Data[8] != 0x00) {
-     pesHeaderBackupLen = 6 + 3 + Data[8];
-     memcpy(pesHeaderBackup, Data, pesHeaderBackupLen);
+  int pesPayloadOffset = 0;
+  bool continuationHeader = false;
+  int mpegLevel = AnalyzePesHeader(Data, Count, pesPayloadOffset, &continuationHeader);
+  if (mpegLevel <= 0) {
+     DroppedData("cVideoRepacker: no valid PES packet header found", Count);
+     return;
      }
+  if (!continuationHeader) {
+    // backup PES header
+    pesHeaderBackupLen = pesPayloadOffset;
+    memcpy(pesHeaderBackup, Data, pesHeaderBackupLen);
+    }
 
   // skip PES header
-  int done = 6 + 3 + Data[8];
+  int done = pesPayloadOffset;
   int todo = Count - done;
   const uchar *data = Data + done;
   // remember start of the data
@@ -191,15 +272,17 @@ int cVideoRepacker::Put(cRingBufferLinear *ResultBuffer, const uchar *Data, int 
                      // the byte count get's negative then the current buffer ends in a
                      // partitial start code that must be stripped off, as it shall be put
                      // in the next packet.
-                     if (!PushOutPacket(ResultBuffer, payload, data - 3 - payload))
-                        return done - 3;
+                     if (!PushOutPacket(ResultBuffer, payload, data - 3 - payload)) {
+                        DroppedData("cVideoRepacker: result buffer overflow", Count - (done - 3));
+                        return;
+                        }
                      // go on with syncing to the next picture
                      state = syncing;
                      }
                   if (state == syncing) {
                      // report that syncing dropped some bytes
-                     if (skippedBytes > 4)
-                        esyslog("cVideoRepacker: skipped %d bytes to sync on next picture", skippedBytes - 4);
+                     if (skippedBytes > SkippedBytesLimit)
+                        esyslog("cVideoRepacker: skipped %d bytes to sync on next picture", skippedBytes - SkippedBytesLimit);
                      skippedBytes = 0;
                      // if there is a PES header available, then use it ...
                      if (pesHeaderBackupLen > 0) {
@@ -222,9 +305,14 @@ int cVideoRepacker::Put(cRingBufferLinear *ResultBuffer, const uchar *Data, int 
                         pesHeader[pesHeaderLen++] = Data[3]; // video stream ID
                         pesHeader[pesHeaderLen++] = 0x00; // length still unknown
                         pesHeader[pesHeaderLen++] = 0x00; // length still unknown
-                        pesHeader[pesHeaderLen++] = 0x80;
-                        pesHeader[pesHeaderLen++] = 0x00;
-                        pesHeader[pesHeaderLen++] = 0x00;
+
+                        if (mpegLevel == 2) {
+                           pesHeader[pesHeaderLen++] = 0x80;
+                           pesHeader[pesHeaderLen++] = 0x00;
+                           pesHeader[pesHeaderLen++] = 0x00;
+                           }
+                        else
+                           pesHeader[pesHeaderLen++] = 0x0F;
                         }
                      // append the first three bytes of the start code
                      pesHeader[pesHeaderLen++] = 0x00;
@@ -299,8 +387,10 @@ int cVideoRepacker::Put(cRingBufferLinear *ResultBuffer, const uchar *Data, int 
               const uchar *excessData = fragmentData + fragmentLen + bite;
               // a negative byte count means to drop some bytes from the current
               // fragment's tail, to not exceed the maximum packet size.
-              if (!PushOutPacket(ResultBuffer, payload, bite))
-                 return done;
+              if (!PushOutPacket(ResultBuffer, payload, bite)) {
+                 DroppedData("cVideoRepacker: result buffer overflow", Count - done);
+                 return;
+                 }
               // create a continuation PES header
               pesHeaderLen = 0;
               pesHeader[pesHeaderLen++] = 0x00;
@@ -309,9 +399,15 @@ int cVideoRepacker::Put(cRingBufferLinear *ResultBuffer, const uchar *Data, int 
               pesHeader[pesHeaderLen++] = Data[3]; // video stream ID
               pesHeader[pesHeaderLen++] = 0x00; // length still unknown
               pesHeader[pesHeaderLen++] = 0x00; // length still unknown
-              pesHeader[pesHeaderLen++] = 0x80;
-              pesHeader[pesHeaderLen++] = 0x00;
-              pesHeader[pesHeaderLen++] = 0x00;
+
+              if (mpegLevel == 2) {
+                 pesHeader[pesHeaderLen++] = 0x80;
+                 pesHeader[pesHeaderLen++] = 0x00;
+                 pesHeader[pesHeaderLen++] = 0x00;
+                 }
+              else
+                 pesHeader[pesHeaderLen++] = 0x0F;
+
               // copy any excess data
               while (bite++ < 0) {
                     // append the excess data here
@@ -344,22 +440,20 @@ int cVideoRepacker::Put(cRingBufferLinear *ResultBuffer, const uchar *Data, int 
         fragmentLen += bite;
         }
      }
-  // we've eaten the whole packet ;-)
-  return Count;
+  // report that syncing dropped some bytes
+  if (skippedBytes > SkippedBytesLimit) {
+     esyslog("cVideoRepacker: skipped %d bytes while syncing on next picture", skippedBytes - SkippedBytesLimit);
+     skippedBytes = SkippedBytesLimit;
+     }
 }
 
 int cVideoRepacker::BreakAt(const uchar *Data, int Count)
 {
-  // enough data for test?
-  if (Count < 6 + 3)
-     return -1;
-  // check for MPEG 2
-  if ((Data[6] & 0xC0) != 0x80)
-     return -1;
-  int headerLen = Data[8] + 6 + 3;
-  // enough data for test?
-  if (Count < headerLen)
-     return -1;
+  int PesPayloadOffset = 0;
+
+  if (AnalyzePesHeader(Data, Count, PesPayloadOffset) <= 0)
+     return -1; // not enough data for test
+
   // just detect end of picture
   if (state == scanPicture) {
      // setup local scanner
@@ -368,7 +462,7 @@ int cVideoRepacker::BreakAt(const uchar *Data, int Count)
         localStart = 0;
         }
      // start where we've stopped at the last run
-     const uchar *data = Data + headerLen + localStart;
+     const uchar *data = Data + PesPayloadOffset + localStart;
      const uchar *limit = Data + Count;
      // scan data
      while (data < limit) {
@@ -386,7 +480,7 @@ int cVideoRepacker::BreakAt(const uchar *Data, int Count)
            }
      }
   // just fill up packet and append next start code
-  return headerLen + packetTodo + 4;
+  return PesPayloadOffset + packetTodo + 4;
 }
 
 // --- cDolbyRepacker --------------------------------------------------------
@@ -412,6 +506,7 @@ private:
     get_length,
     output_packet
     } state;
+  int skippedBytes;
   void ResetPesHeader(bool ContinuationFrame = false);
   void AppendSubStreamID(bool ContinuationFrame = false);
   bool FinishRemainder(cRingBufferLinear *ResultBuffer, const uchar *const Data, const int Todo, int &Done, int &Bite);
@@ -419,7 +514,7 @@ private:
 public:
   cDolbyRepacker(void);
   virtual void Reset(void);
-  virtual int Put(cRingBufferLinear *ResultBuffer, const uchar *Data, int Count);
+  virtual void Repack(cRingBufferLinear *ResultBuffer, const uchar *Data, int Count);
   virtual int BreakAt(const uchar *Data, int Count);
   };
 
@@ -490,6 +585,7 @@ void cDolbyRepacker::Reset(void)
   fragmentLen = 0;
   fragmentTodo = 0;
   pesHeaderBackupLen = 0;
+  skippedBytes = 0;
 }
 
 bool cDolbyRepacker::FinishRemainder(cRingBufferLinear *ResultBuffer, const uchar *const Data, const int Todo, int &Done, int &Bite)
@@ -499,7 +595,7 @@ bool cDolbyRepacker::FinishRemainder(cRingBufferLinear *ResultBuffer, const ucha
      // output a previous fragment first
      if (fragmentLen > 0) {
         Bite = fragmentLen;
-        int n = ResultBuffer->Put(fragmentData, Bite);
+        int n = Put(ResultBuffer, fragmentData, Bite);
         if (Bite != n) {
            Reset();
            return false;
@@ -507,7 +603,7 @@ bool cDolbyRepacker::FinishRemainder(cRingBufferLinear *ResultBuffer, const ucha
         fragmentLen = 0;
         }
      Bite = fragmentTodo;
-     int n = ResultBuffer->Put(Data, Bite);
+     int n = Put(ResultBuffer, Data, Bite);
      if (Bite != n) {
         Reset();
         Done += n;
@@ -543,13 +639,13 @@ bool cDolbyRepacker::StartNewPacket(cRingBufferLinear *ResultBuffer, const uchar
   Bite = pesHeaderLen;
   // enough data available to put PES packet into buffer?
   if (packetLen - pesHeaderLen <= Todo) {
-     int n = ResultBuffer->Put(pesHeader, Bite);
+     int n = Put(ResultBuffer, pesHeader, Bite);
      if (Bite != n) {
         Reset();
         return false;
         }
      Bite = packetLen - pesHeaderLen;
-     n = ResultBuffer->Put(Data, Bite);
+     n = Put(ResultBuffer, Data, Bite);
      if (Bite != n) {
         Reset();
         Done += n;
@@ -582,11 +678,16 @@ bool cDolbyRepacker::StartNewPacket(cRingBufferLinear *ResultBuffer, const uchar
   return true;
 }
 
-int cDolbyRepacker::Put(cRingBufferLinear *ResultBuffer, const uchar *Data, int Count)
+void cDolbyRepacker::Repack(cRingBufferLinear *ResultBuffer, const uchar *Data, int Count)
 {
+  // synchronisation is detected some bytes after frame start.
+  const int SkippedBytesLimit = 4;
+
   // check for MPEG 2
-  if ((Data[6] & 0xC0) != 0x80)
-     return 0;
+  if ((Data[6] & 0xC0) != 0x80) {
+     DroppedData("cDolbyRepacker: MPEG 2 PES header expected", Count);
+     return;
+     }
 
   // backup PES header
   if (Data[6] != 0x80 || Data[7] != 0x00 || Data[8] != 0x00) {
@@ -616,6 +717,7 @@ int cDolbyRepacker::Put(cRingBufferLinear *ResultBuffer, const uchar *Data, int 
                data++;
                done++;
                todo--;
+               skippedBytes++; // collect number of skipped bytes while syncing
                continue;
           case find_77:
                if (*data != 0x77) {
@@ -625,18 +727,21 @@ int cDolbyRepacker::Put(cRingBufferLinear *ResultBuffer, const uchar *Data, int 
                data++;
                done++;
                todo--;
+               skippedBytes++; // collect number of skipped bytes while syncing
                ++(int &)state;
                continue;
           case store_chk1:
                chk1 = *data++;
                done++;
                todo--;
+               skippedBytes++; // collect number of skipped bytes while syncing
                ++(int &)state;
                continue;
           case store_chk2:
                chk2 = *data++;
                done++;
                todo--;
+               skippedBytes++; // collect number of skipped bytes while syncing
                ++(int &)state;
                continue;
           case get_length:
@@ -664,6 +769,10 @@ int cDolbyRepacker::Put(cRingBufferLinear *ResultBuffer, const uchar *Data, int 
                   state = find_0b;
                   continue;
                   }
+               // report that syncing dropped some bytes
+               if (skippedBytes > SkippedBytesLimit)
+                  esyslog("cDolbyRepacker: skipped %d bytes to sync on next AC3 frame", skippedBytes - SkippedBytesLimit);
+               skippedBytes = 0;
                // append read data to header for common output processing
                pesHeader[pesHeaderLen++] = 0x0B;
                pesHeader[pesHeaderLen++] = 0x77;
@@ -676,13 +785,17 @@ int cDolbyRepacker::Put(cRingBufferLinear *ResultBuffer, const uchar *Data, int 
                int bite = 0;
                // finish remainder of ac3 frame?
                if (fragmentTodo > 0) {
-                  if (!FinishRemainder(ResultBuffer, data, todo, done, bite))
-                     return done;
+                  if (!FinishRemainder(ResultBuffer, data, todo, done, bite)) {
+                     DroppedData("cDolbyRepacker: result buffer overflow", Count - done);
+                     return;
+                     }
                   }
                else {
                   // start a new packet
-                  if (!StartNewPacket(ResultBuffer, data, todo, done, bite))
-                     return done;
+                  if (!StartNewPacket(ResultBuffer, data, todo, done, bite)) {
+                     DroppedData("cDolbyRepacker: result buffer overflow", Count - done);
+                     return;
+                     }
                   // prepare for next (continuation) packet
                   ResetPesHeader(state == output_packet);
                   }
@@ -693,7 +806,11 @@ int cDolbyRepacker::Put(cRingBufferLinear *ResultBuffer, const uchar *Data, int 
                }
           }
         }
-  return Count;
+  // report that syncing dropped some bytes
+  if (skippedBytes > SkippedBytesLimit) {
+     esyslog("cDolbyRepacker: skipped %d bytes while syncing on next AC3 frame", skippedBytes - 4);
+     skippedBytes = SkippedBytesLimit;
+     }
 }
 
 int cDolbyRepacker::BreakAt(const uchar *Data, int Count)
@@ -845,9 +962,13 @@ void cTS2PES::Clear(void)
 
 void cTS2PES::store(uint8_t *Data, int Count)
 {
-  int n = repacker ? repacker->Put(resultBuffer, Data, Count) : resultBuffer->Put(Data, Count);
-  if (n != Count)
-     esyslog("ERROR: result buffer overflow, dropped %d out of %d byte", Count - n, Count);
+  if (repacker)
+     repacker->Repack(resultBuffer, Data, Count);
+  else {
+     int n = resultBuffer->Put(Data, Count);
+     if (n != Count)
+        esyslog("ERROR: result buffer overflow, dropped %d out of %d byte", Count - n, Count);
+     }
 }
 
 void cTS2PES::reset_ipack(void)
@@ -867,7 +988,7 @@ void cTS2PES::reset_ipack(void)
 
 void cTS2PES::send_ipack(void)
 {
-  if (count < 10)
+  if (count <= ((mpeg == 2) ? 9 : 7)) // skip empty packets
      return;
   buf[3] = (AUDIO_STREAM_S <= cid && cid <= AUDIO_STREAM_E && audioCid) ? audioCid : cid;
   buf[4] = (uint8_t)(((count - 6) & 0xFF00) >> 8);
@@ -1155,7 +1276,7 @@ cRemux::cRemux(int VPid, const int *APids, const int *DPids, const int *SPids, b
   resultBuffer = new cRingBufferLinear(RESULTBUFFERSIZE, IPACKS, false, "Result");
   resultBuffer->SetTimeouts(0, 100);
   if (VPid)
-//#define TEST_cVideoRepacker
+#define TEST_cVideoRepacker
 #ifdef TEST_cVideoRepacker
      ts2pes[numTracks++] = new cTS2PES(VPid, resultBuffer, IPACKS, 0x00, 0x00, new cVideoRepacker);
 #else
