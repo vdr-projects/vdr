@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 1.35 2005/07/30 09:20:08 kls Exp $
+ * $Id: dvbplayer.c 1.36 2005/07/30 10:00:24 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -668,11 +668,34 @@ void cDvbPlayer::Goto(int Index, bool Still)
      int FileOffset, Length;
      Index = index->GetNextIFrame(Index, false, &FileNumber, &FileOffset, &Length);
      if (Index >= 0 && NextFile(FileNumber, FileOffset) && Still) {
-        uchar b[MAXFRAMESIZE];
+        uchar b[MAXFRAMESIZE + 4 + 5 + 4];
         int r = ReadFrame(replayFile, b, Length, sizeof(b));
         if (r > 0) {
            if (playMode == pmPause)
               DevicePlay();
+           // append sequence end code to get the image shown immediately with softdevices
+           if (r > 6) { // should be always true
+              b[r++] = 0x00;
+              b[r++] = 0x00;
+              b[r++] = 0x01;
+              b[r++] = b[3];
+              if (b[6] & 0x80) { // MPEG 2
+                 b[r++] = 0x00;
+                 b[r++] = 0x07;
+                 b[r++] = 0x80;
+                 b[r++] = 0x00;
+                 b[r++] = 0x00;
+                 }
+              else { // MPEG 1
+                 b[r++] = 0x00;
+                 b[r++] = 0x05;
+                 b[r++] = 0x0F;
+                 }
+              b[r++] = 0x00;
+              b[r++] = 0x00;
+              b[r++] = 0x01;
+              b[r++] = 0xB7;
+              }
            DeviceStillPicture(b, r);
            }
         playMode = pmStill;

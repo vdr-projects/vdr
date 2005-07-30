@@ -3640,3 +3640,5 @@ Video Disk Recorder Revision History
   device, which avoids a busy loop on very fast machines (thanks to Martin Wache).
 - Modified the description of cDevice::Poll() to avoid misunderstandings.
 - Updated Croatian language texts (thanks to Drazen Dupor).
+- cDvbPlayer::Goto() now appends a Sequence End Code to get the image shown
+  immediately with softdevices (thanks to Reinhard Nissl).
