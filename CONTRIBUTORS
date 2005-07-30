@@ -1287,6 +1287,7 @@ Olaf Titz <olaf@bigred.inka.de>
  for fixing some typos in the Makefile's 'font' target
  for reporting a problem and some advice in fixing a possible freeze in pause mode
  in case a device's PlayPesPacket() function permanently returns 0
+ for reporting excess memory consumption due to duplicate components in EPG events
 
 Darren Salt <linux@youmustbejoking.demon.co.uk>
  for pointing out that the '-' and 'ö' characters need to be escaped in the man

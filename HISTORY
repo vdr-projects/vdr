@@ -3646,3 +3646,5 @@ Video Disk Recorder Revision History
 - Removed the fix for handling VPS timers, so that they only record if the event
   they are assigned to actually has the given VPS time. This has caused repeating
   VPS timers to stop recording prematurely.
+- Avoiding duplicate components in EPG events when reading epg.data or in the
+  PUTE SVDRP command (thanks to Olaf Titz for reporting this one).
