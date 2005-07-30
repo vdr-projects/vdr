@@ -3639,3 +3639,4 @@ Video Disk Recorder Revision History
 - Added a sleep in cDvbPlayer::Action() in case there is no data to send to the
   device, which avoids a busy loop on very fast machines (thanks to Martin Wache).
 - Modified the description of cDevice::Poll() to avoid misunderstandings.
+- Updated Croatian language texts (thanks to Drazen Dupor).
