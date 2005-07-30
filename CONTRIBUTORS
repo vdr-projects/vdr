@@ -1388,3 +1388,7 @@ Georg Acher <acher@baycom.de>
 Henrik Niehaus <henrik.niehaus@gmx.de>
  for reporting a problem with timers with a day given as MTWTF--@6, i.e. a repeating
  timer with first day not as full date, but just day of month
+
+Martin Wache <M.Wache@gmx.net>
+ for adding a sleep in cDvbPlayer::Action() in case there is no data to send to the
+ device, which avoids a busy loop on very fast machines
