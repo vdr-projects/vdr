@@ -1271,12 +1271,14 @@ Joachim Wilke <vdr@joachim-wilke.de>
  for reporting missing calls to cStatus::MsgOsdClear() in cSkins::Message()
 
 Sascha Klek <sklek@gmx.de>
-  for reporting a problem with the '0' key in the "Day" item of the "Timers" menu
+ for reporting a problem with the '0' key in the "Day" item of the "Timers" menu
 
 Andreas Brugger <brougs78@gmx.net>
-  for reporting a possible crash when pausing live video and the recording was
-  unable to start, maybe because there was no lock on the device
-  for reporting the missing Euro sign in iso8859-1
+ for reporting a possible crash when pausing live video and the recording was
+ unable to start, maybe because there was no lock on the device
+ for reporting the missing Euro sign in iso8859-1
+ for reporting a problem with making changes to timers through SVDRP while they
+ are being edited via the menu
 
 Dino Ravnic <dino.ravnic@fer.hr>
  for fixing some characters in the iso8859-2 font file

@@ -3650,3 +3650,6 @@ Video Disk Recorder Revision History
   PUTE SVDRP command (thanks to Olaf Titz for reporting this one).
 - Added the command line options '--lirc', '--rcu' and '--no-kbd' to allow setting
   the remote control at runtime (based on a patch by Darren Salt).
+- Now checking whether timers or channels are currently being edited via the menu
+  before making changes through SVDRP (thanks to Andreas Brugger for reporting a
+  problem with this).
