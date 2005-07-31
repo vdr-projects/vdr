@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 1.75 2005/05/14 10:32:13 kls Exp $
+# $Id: Makefile 1.76 2005/07/31 11:20:20 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -65,8 +65,14 @@ SMLFONT_ISO8859_15 = -adobe-helvetica-medium-r-normal--18-*-100-100-p-*-iso8859-
 ifndef NO_KBD
 DEFINES += -DREMOTE_KBD
 endif
-
+ifdef REMOTE
 DEFINES += -DREMOTE_$(REMOTE)
+endif
+
+LIRC_DEVICE ?= /dev/lircd
+RCU_DEVICE  ?= /dev/ttyS1
+
+DEFINES += -DLIRC_DEVICE=\"$(LIRC_DEVICE)\" -DRCU_DEVICE=\"$(RCU_DEVICE)\"
 
 DEFINES += -D_GNU_SOURCE
 

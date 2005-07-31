@@ -6,7 +6,7 @@
  *
  * LIRC support added by Carsten Koch <Carsten.Koch@icem.de>  2000-06-16.
  *
- * $Id: lirc.c 1.10 2005/01/14 14:18:42 kls Exp $
+ * $Id: lirc.c 1.11 2005/07/31 10:18:09 kls Exp $
  */
 
 #include "lirc.h"
@@ -18,7 +18,7 @@
 #define REPEATDELAY 350 // ms
 #define KEYPRESSDELAY 150 // ms
 
-cLircRemote::cLircRemote(char *DeviceName)
+cLircRemote::cLircRemote(const char *DeviceName)
 :cRemote("LIRC")
 ,cThread("LIRC remote control")
 {

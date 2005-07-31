@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: rcu.c 1.8 2004/12/19 18:06:00 kls Exp $
+ * $Id: rcu.c 1.9 2005/07/31 10:17:45 kls Exp $
  */
 
 #include "rcu.h"
@@ -16,7 +16,7 @@
 #define REPEATLIMIT  20 // ms
 #define REPEATDELAY 350 // ms
 
-cRcuRemote::cRcuRemote(char *DeviceName)
+cRcuRemote::cRcuRemote(const char *DeviceName)
 :cRemote("RCU")
 ,cThread("RCU remote control")
 {

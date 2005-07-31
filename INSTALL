@@ -45,17 +45,23 @@ installed.
 IMPORTANT: See "Configuration files" below for information on how
 =========  to set up the configuration files at the proper location!
 
-By default the 'vdr' program can be controlled via the PC keyboard. If you have
-an infrared remote control unit you can define the REMOTE macro to one of the
-following values in the 'make' call to activate the respective control mode:
+By default the 'vdr' program can be controlled via the PC keyboard.
+If you want to disable control via the keyboard, you can add NO_KBD=1
+to the 'make' call, or use the '--no-kbd' option at runtime.
+
+If you have an infrared remote control unit you can define the REMOTE macro
+to one of the following values in the 'make' call to make the respective control
+the default:
 
   REMOTE=RCU    control via the "Remote Control Unit" receiver
                 (see http://www.cadsoft.de/vdr/remote.htm)
   REMOTE=LIRC   control via the "Linux Infrared Remote Control"
                 (see http://www.lirc.org)
 
-If you want to disable control via the PC keyboard, you can add NO_KBD=1
-to the 'make' call.
+Alternatively you can use the '--rcu' or '--lirc' options at runtime.
+These options accept an optional path to the remote control device,
+which's defaults can be set via the RCU_DEVICE and LIRC_DEVICE macros,
+respectively.
 
 If your video directory will be on a VFAT partition, add the compile
 time switch
