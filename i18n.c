@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.196 2005/07/30 09:42:32 kls Exp $
+ * $Id: i18n.c 1.197 2005/08/06 16:09:44 kls Exp $
  *
  * Translations provided by:
  *
@@ -2892,7 +2892,7 @@ const tI18nPhrase Phrases[] = {
     "Scroll da p·gina no menu",
     "Scrolling par pages",
     "Rask rulling i menyer",
-    "Valikkosivujen pikaselaus",
+    "Valikoiden vieritys sivuttain",
     "Przesuwac stronami",
     "Desplazar p·gina entera",
     " ﬂÎÈÛÁ ÛÂÎﬂ‰·Ú",
@@ -2913,7 +2913,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Valikoiden vieritys ymp‰ri",
     "",// TODO
     "",// TODO
     "",// TODO

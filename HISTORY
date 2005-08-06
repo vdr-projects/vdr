@@ -3659,3 +3659,4 @@ Video Disk Recorder Revision History
   a problem with it).
 - Fixed an out-of-bounds memory access with audio language ids (thanks to
   Matthias Lenk for reporting, and Udo Richter for suggesting a fix).
+- Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
