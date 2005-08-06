@@ -1248,6 +1248,7 @@ Udo Richter <udo_richter@gmx.de>
  for reporting a problem in handling page up/down in menu lists in case there are
  several non selectable items in a row
  for fixing handling 'page down' after it was broken in version 1.3.26
+ for suggesting a fix for an out-of-bounds memory access with audio language ids
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date
@@ -1402,3 +1403,6 @@ Henrik Niehaus <henrik.niehaus@gmx.de>
 Martin Wache <M.Wache@gmx.net>
  for adding a sleep in cDvbPlayer::Action() in case there is no data to send to the
  device, which avoids a busy loop on very fast machines
+
+Matthias Lenk <matthias.lenk@amd.com>
+ for reporting an out-of-bounds memory access with audio language ids

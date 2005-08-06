@@ -3657,3 +3657,5 @@ Video Disk Recorder Revision History
   umask settings (thanks to Andreas Brachold).
 - Fixed the cChannel copy constructor (thanks to Marcel Wiesweg for pointing out
   a problem with it).
+- Fixed an out-of-bounds memory access with audio language ids (thanks to
+  Matthias Lenk for reporting, and Udo Richter for suggesting a fix).

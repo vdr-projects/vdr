@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 1.43 2005/08/06 12:06:37 kls Exp $
+ * $Id: channels.c 1.44 2005/08/06 12:22:41 kls Exp $
  */
 
 #include "channels.h"
@@ -446,14 +446,16 @@ void cChannel::SetPids(int Vpid, int Ppid, int *Apids, char ALangs[][4], int *Dp
      dsyslog("changing pids of channel %d from %d+%d:%s:%d to %d+%d:%s:%d", Number(), vpid, ppid, OldApidsBuf, tpid, Vpid, Ppid, NewApidsBuf, Tpid);
      vpid = Vpid;
      ppid = Ppid;
-     for (int i = 0; i <= MAXAPIDS; i++) { // <= to copy the terminating 0
+     for (int i = 0; i < MAXAPIDS; i++) {
          apids[i] = Apids[i];
          strn0cpy(alangs[i], ALangs[i], 4);
          }
-     for (int i = 0; i <= MAXDPIDS; i++) { // <= to copy the terminating 0
+     apids[MAXAPIDS] = 0;
+     for (int i = 0; i < MAXDPIDS; i++) {
          dpids[i] = Dpids[i];
          strn0cpy(dlangs[i], DLangs[i], 4);
          }
+     dpids[MAXDPIDS] = 0;
      tpid = Tpid;
      modification |= mod;
      Channels.SetModified();
