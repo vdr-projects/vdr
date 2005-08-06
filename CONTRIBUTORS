@@ -817,6 +817,8 @@ Andreas Brachold <vdr04@deltab.de>
  for generating file dependencies
  for suggesting that the 'plugins-clean' target of the Makefile should only delete
  the actual plugin library files from this version of VDR
+ for making files and directories created with rights according to the shell's
+ umask settings
 
 Manuel Hartl <icecep@gmx.net>
  for suggesting to extend the logging info when starting/stopping timers
