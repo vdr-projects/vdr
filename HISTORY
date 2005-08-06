@@ -3655,3 +3655,5 @@ Video Disk Recorder Revision History
   problem with this).
 - Files and directories are now created with rights according to the shell's
   umask settings (thanks to Andreas Brachold).
+- Fixed the cChannel copy constructor (thanks to Marcel Wiesweg for pointing out
+  a problem with it).

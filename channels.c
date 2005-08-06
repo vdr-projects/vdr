@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 1.42 2005/05/29 10:32:38 kls Exp $
+ * $Id: channels.c 1.43 2005/08/06 12:06:37 kls Exp $
  */
 
 #include "channels.h"
@@ -179,27 +179,13 @@ cChannel::cChannel(void)
 
 cChannel::cChannel(const cChannel &Channel)
 {
-  name = strdup("");
-  shortName = strdup("");
-  provider = strdup("");
-  portalName = strdup("");
-  *this = Channel;
-  vpid         = 0;
-  ppid         = 0;
-  apids[0]     = 0;
-  dpids[0]     = 0;
-  spids[0]     = 0;
-  tpid         = 0;
-  caids[0]     = 0;
-  nid          = 0;
-  tid          = 0;
-  sid          = 0;
-  rid          = 0;
-  number       = 0;
-  groupSep     = false;
-  modification = CHANNELMOD_NONE;
+  name = NULL;
+  shortName = NULL;
+  provider = NULL;
+  portalName = NULL;
   linkChannels = NULL;
   refChannel   = NULL;
+  *this = Channel;
 }
 
 cChannel::~cChannel()
@@ -263,6 +249,24 @@ int cChannel::Modification(int Mask)
   int Result = modification & Mask;
   modification = CHANNELMOD_NONE;
   return Result;
+}
+
+void cChannel::CopyTransponderData(const cChannel *Channel)
+{
+  if (Channel) {
+     frequency    = Channel->frequency;
+     source       = Channel->source;
+     srate        = Channel->srate;
+     polarization = Channel->polarization;
+     inversion    = Channel->inversion;
+     bandwidth    = Channel->bandwidth;
+     coderateH    = Channel->coderateH;
+     coderateL    = Channel->coderateL;
+     modulation   = Channel->modulation;
+     transmission = Channel->transmission;
+     guard        = Channel->guard;
+     hierarchy    = Channel->hierarchy;
+     }
 }
 
 bool cChannel::SetSatTransponderData(int Source, int Frequency, char Polarization, int Srate, int CoderateH)
@@ -977,7 +981,8 @@ cChannel *cChannels::NewChannel(const cChannel *Transponder, const char *Name, c
 {
   if (Transponder) {
      dsyslog("creating new channel '%s,%s;%s' on %s transponder %d with id %d-%d-%d-%d", Name, ShortName, Provider, *cSource::ToString(Transponder->Source()), Transponder->Transponder(), Nid, Tid, Sid, Rid);
-     cChannel *NewChannel = new cChannel(*Transponder);
+     cChannel *NewChannel = new cChannel;
+     NewChannel->CopyTransponderData(Transponder);
      NewChannel->SetId(Nid, Tid, Sid, Rid);
      NewChannel->SetName(Name, ShortName, Provider);
      Add(NewChannel);
