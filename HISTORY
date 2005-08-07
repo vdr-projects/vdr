@@ -3670,3 +3670,4 @@ Video Disk Recorder Revision History
 - Fixed cDvbSpuBitmap::putPixel() (thanks to Reinhard Nissl).
 - Fixed setting system time to avoid time jumps in case of faulty data (thanks
   to Andreas Böttger).
+- Fixed a memory leak in the SVDRP command LSTE (thanks to Stefan Huelswitt).

@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.73 2005/07/31 14:31:45 kls Exp $
+ * $Id: svdrp.c 1.74 2005/08/07 14:20:41 kls Exp $
  */
 
 #include "svdrp.h"
@@ -209,7 +209,7 @@ const char *HelpPages[] = {
   "    containing the given string as part of their name are listed.",
   "LSTE [ <channel> ] [ now | next | at <time> ]\n"
   "    List EPG data. Without any parameters all data of all channels is\n"
-  "    listed. If a channel is given (either by number of by channel ID),\n"
+  "    listed. If a channel is given (either by number or by channel ID),\n"
   "    only data for that channel is listed. 'now', 'next', or 'at <time>'\n"
   "    restricts the returned data to present events, following events, or\n"
   "    events at the given time (which must be in time_t form).",
@@ -790,18 +790,25 @@ void cSVDRP::CmdLSTE(const char *Option)
               p = strtok_r(NULL, delim, &strtok_next);
               }
         }
-     FILE *f = fdopen(file, "w");
-     if (f) {
-        if (Schedule)
-           Schedule->Dump(f, "215-", DumpMode, AtTime);
-        else
-           Schedules->Dump(f, "215-", DumpMode, AtTime);
-        fflush(f);
-        Reply(215, "End of EPG data");
-        // don't 'fclose(f)' here!
+     int fd = dup(file);
+     if (fd) {
+        FILE *f = fdopen(fd, "w");
+        if (f) {
+           if (Schedule)
+              Schedule->Dump(f, "215-", DumpMode, AtTime);
+           else
+              Schedules->Dump(f, "215-", DumpMode, AtTime);
+           fflush(f);
+           Reply(215, "End of EPG data");
+           fclose(f);
+           }
+        else {
+           Reply(451, "Can't open file connection");
+           close(fd);
+           }
         }
      else
-        Reply(451, "Can't open file connection");
+        Reply(451, "Can't dup stream descriptor");
      }
   else
      Reply(451, "Can't get EPG data");
