@@ -1406,3 +1406,6 @@ Martin Wache <M.Wache@gmx.net>
 
 Matthias Lenk <matthias.lenk@amd.com>
  for reporting an out-of-bounds memory access with audio language ids
+
+Frank Krömmelbein <kroemmelbein@gmx.de>
+ for adding missing storing of the MenuScrollPage parameter
