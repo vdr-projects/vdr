@@ -3668,3 +3668,5 @@ Video Disk Recorder Revision History
   a forced EPG scan works even if EPG scan timeout is set to 0 (thanks to
   Bernhard Stegmaier for reporting a problem with this).
 - Fixed cDvbSpuBitmap::putPixel() (thanks to Reinhard Nissl).
+- Fixed setting system time to avoid time jumps in case of faulty data (thanks
+  to Andreas Böttger).
