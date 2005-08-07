@@ -1410,3 +1410,7 @@ Matthias Lenk <matthias.lenk@amd.com>
 
 Frank Krömmelbein <kroemmelbein@gmx.de>
  for adding missing storing of the MenuScrollPage parameter
+
+Bernhard Stegmaier <bernhard.stegmaier@in.tum.de>
+ for reporting a problem in cEITScanner::Process() with forced EPG scans if EPG
+ scan timeout is set to 0

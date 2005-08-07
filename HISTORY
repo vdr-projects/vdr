@@ -3663,3 +3663,7 @@ Video Disk Recorder Revision History
 - Added missing storing of the MenuScrollPage parameter (thanks to Frank Krömmelbein).
 - Added cRemux::SetTimeouts() for better use of cRemux in a single thread (thanks
   to Udo Richter for reporting a problem with this).
+- Modified cEITScanner::Process() so that it uses the primary device if it is
+  replaying and is the only device that provides the given transponder, and that
+  a forced EPG scan works even if EPG scan timeout is set to 0 (thanks to
+  Bernhard Stegmaier for reporting a problem with this).
