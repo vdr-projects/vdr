@@ -1249,6 +1249,7 @@ Udo Richter <udo_richter@gmx.de>
  several non selectable items in a row
  for fixing handling 'page down' after it was broken in version 1.3.26
  for suggesting a fix for an out-of-bounds memory access with audio language ids
+ for reporting a problem with cRemux in a single thread
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date

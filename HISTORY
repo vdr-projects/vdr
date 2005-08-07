@@ -3661,3 +3661,5 @@ Video Disk Recorder Revision History
   Matthias Lenk for reporting, and Udo Richter for suggesting a fix).
 - Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
 - Added missing storing of the MenuScrollPage parameter (thanks to Frank Krömmelbein).
+- Added cRemux::SetTimeouts() for better use of cRemux in a single thread (thanks
+  to Udo Richter for reporting a problem with this).
