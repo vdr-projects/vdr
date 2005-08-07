@@ -3667,3 +3667,4 @@ Video Disk Recorder Revision History
   replaying and is the only device that provides the given transponder, and that
   a forced EPG scan works even if EPG scan timeout is set to 0 (thanks to
   Bernhard Stegmaier for reporting a problem with this).
+- Fixed cDvbSpuBitmap::putPixel() (thanks to Reinhard Nissl).

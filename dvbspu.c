@@ -8,7 +8,7 @@
  *
  * parts of this file are derived from the OMS program.
  *
- * $Id: dvbspu.c 1.14 2005/05/07 11:13:48 kls Exp $
+ * $Id: dvbspu.c 1.15 2005/08/07 12:06:32 kls Exp $
  */
 
 #include <assert.h>
@@ -155,7 +155,7 @@ void cDvbSpuBitmap::putPixel(int xp, int yp, int len, uint8_t colorid)
     setMin(minsize[colorid].x1, xp);
     setMin(minsize[colorid].y1, yp);
     setMax(minsize[colorid].x2, xp + len - 1);
-    setMax(minsize[colorid].y2, yp + len - 1);
+    setMax(minsize[colorid].y2, yp);
 }
 
 static uint8_t getBits(uint8_t * &data, uint8_t & bitf)
