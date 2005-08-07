@@ -3633,3 +3633,41 @@ Video Disk Recorder Revision History
 - When drawing a bitmap to the OSD, the existing palette of the target can now be
   replaced with the new one instead of adding the new entries (thanks to Andreas
   Regel).
+
+2005-08-07: Version 1.3.28
+
+- Added a sleep in cDvbPlayer::Action() in case there is no data to send to the
+  device, which avoids a busy loop on very fast machines (thanks to Martin Wache).
+- Modified the description of cDevice::Poll() to avoid misunderstandings.
+- Updated Croatian language texts (thanks to Drazen Dupor).
+- cDvbPlayer::Goto() now appends a Sequence End Code to get the image shown
+  immediately with softdevices (thanks to Reinhard Nissl).
+- Reactivated cVideoRepacker in remux.c after some fixes (thanks to Reinhard Nissl).
+- Removed the fix for handling VPS timers, so that they only record if the event
+  they are assigned to actually has the given VPS time. This has caused repeating
+  VPS timers to stop recording prematurely.
+- Avoiding duplicate components in EPG events when reading epg.data or in the
+  PUTE SVDRP command (thanks to Olaf Titz for reporting this one).
+- Added the command line options '--lirc', '--rcu' and '--no-kbd' to allow setting
+  the remote control at runtime (based on a patch by Darren Salt).
+- Now checking whether timers or channels are currently being edited via the menu
+  before making changes through SVDRP (thanks to Andreas Brugger for reporting a
+  problem with this).
+- Files and directories are now created with rights according to the shell's
+  umask settings (thanks to Andreas Brachold).
+- Fixed the cChannel copy constructor (thanks to Marcel Wiesweg for pointing out
+  a problem with it).
+- Fixed an out-of-bounds memory access with audio language ids (thanks to
+  Matthias Lenk for reporting, and Udo Richter for suggesting a fix).
+- Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
+- Added missing storing of the MenuScrollPage parameter (thanks to Frank Krömmelbein).
+- Added cRemux::SetTimeouts() for better use of cRemux in a single thread (thanks
+  to Udo Richter for reporting a problem with this).
+- Modified cEITScanner::Process() so that it uses the primary device if it is
+  replaying and is the only device that provides the given transponder, and that
+  a forced EPG scan works even if EPG scan timeout is set to 0 (thanks to
+  Bernhard Stegmaier for reporting a problem with this).
+- Fixed cDvbSpuBitmap::putPixel() (thanks to Reinhard Nissl).
+- Fixed setting system time to avoid time jumps in case of faulty data (thanks
+  to Andreas Böttger).
+- Fixed a memory leak in the SVDRP command LSTE (thanks to Stefan Huelswitt).

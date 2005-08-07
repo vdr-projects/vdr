@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: eitscan.c 1.26 2005/06/12 14:09:45 kls Exp $
+ * $Id: eitscan.c 1.27 2005/08/07 11:29:54 kls Exp $
  */
 
 #include "eitscan.h"
@@ -127,7 +127,7 @@ void cEITScanner::Activity(void)
 
 void cEITScanner::Process(void)
 {
-  if (Setup.EPGScanTimeout && Channels.MaxNumber() > 1) {
+  if ((Setup.EPGScanTimeout || !lastActivity) && Channels.MaxNumber() > 1) { // !lastActivity means a scan was forced
      time_t now = time(NULL);
      if (now - lastScan > ScanTimeout && now - lastActivity > ActivityTimeout) {
         if (Channels.Lock(false, 10)) {
@@ -150,8 +150,9 @@ void cEITScanner::Process(void)
                          if (!Channel->Ca() || Channel->Ca() == Device->DeviceNumber() + 1 || Channel->Ca() >= 0x0100) {
                             if (Device->ProvidesTransponder(Channel)) {
                                if (!Device->Receiving()) {
-                                  if (Device != cDevice::ActualDevice() || (Device->ProvidesTransponderExclusively(Channel) && Setup.EPGScanTimeout && now - lastActivity > Setup.EPGScanTimeout * 3600)) {
-                                     if (Device == cDevice::ActualDevice() && !currentChannel) {
+                                  bool IsPrimaryDeviceReplaying = Device == cDevice::PrimaryDevice() && Device->Replaying();
+                                  if (Device != cDevice::ActualDevice() || (Device->ProvidesTransponderExclusively(Channel) && (IsPrimaryDeviceReplaying || now - lastActivity > Setup.EPGScanTimeout * 3600))) {
+                                     if (!IsPrimaryDeviceReplaying && Device == cDevice::ActualDevice() && !currentChannel) {
                                         if (cTransferControl::ReceiverDevice())
                                            cDevice::PrimaryDevice()->StopReplay(); // stop transfer mode
                                         currentChannel = Device->CurrentChannel();

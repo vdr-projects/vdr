@@ -199,6 +199,7 @@ Stefan Huelswitt <huels@iname.com>
  for fixing a memory leak in cDvbPlayer
  for pointing out that recordings with empty episode names were not listed correctly
  in the LSTR command
+ for fixing a memory leak in the SVDRP command LSTE
 
 Ulrich Röder <roeder@efr-net.de>
  for pointing out that there are channels that have a symbol rate higher than 27500
@@ -469,6 +470,7 @@ Oliver Lorei <oliverlorei@cityweb.de>
 
 Andreas Böttger <fboettger@t-online.de>
  for reporting a bug in skipping forward in time shift mode near the end of the recording
+ for fixing setting system time to avoid time jumps in case of faulty data
 
 Onno Kreuzinger <ok@solutas.net>
  for reporting leftover references to the file FORMATS in MANUAL and svdrp.c
@@ -731,6 +733,7 @@ Marcel Wiesweg <marcel.wiesweg@gmx.de>
  for adding a few missing initializations
  for adding play mode pmVideoOnly
  for fixing a possible crash with inconsistent SI data
+ for pointing out a problem with the cChannel copy constructor
 
 Torsten Herz <torsten.herz@web.de>
  for fixing a possible deadlock when using the "Blue" button in the "Schedules" menu
@@ -817,6 +820,8 @@ Andreas Brachold <vdr04@deltab.de>
  for generating file dependencies
  for suggesting that the 'plugins-clean' target of the Makefile should only delete
  the actual plugin library files from this version of VDR
+ for making files and directories created with rights according to the shell's
+ umask settings
 
 Manuel Hartl <icecep@gmx.net>
  for suggesting to extend the logging info when starting/stopping timers
@@ -961,6 +966,9 @@ Reinhard Nissl <rnissl@gmx.de>
  for implementing cVideoRepacker in remux.c to make sure every PES packet contains
  only data from one frame
  for fixing the call to Channels.Unlock() in cEITScanner::Process()
+ for making cDvbPlayer::Goto() append a Sequence End Code to get the image shown
+ immediately with softdevices
+ for fixing cDvbSpuBitmap::putPixel()
 
 Richard Robson <richard_robson@beeb.net>
  for reporting freezing replay if a timer starts while in Transfer Mode from the
@@ -1243,6 +1251,8 @@ Udo Richter <udo_richter@gmx.de>
  for reporting a problem in handling page up/down in menu lists in case there are
  several non selectable items in a row
  for fixing handling 'page down' after it was broken in version 1.3.26
+ for suggesting a fix for an out-of-bounds memory access with audio language ids
+ for reporting a problem with cRemux in a single thread
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date
@@ -1269,12 +1279,14 @@ Joachim Wilke <vdr@joachim-wilke.de>
  for reporting missing calls to cStatus::MsgOsdClear() in cSkins::Message()
 
 Sascha Klek <sklek@gmx.de>
-  for reporting a problem with the '0' key in the "Day" item of the "Timers" menu
+ for reporting a problem with the '0' key in the "Day" item of the "Timers" menu
 
 Andreas Brugger <brougs78@gmx.net>
-  for reporting a possible crash when pausing live video and the recording was
-  unable to start, maybe because there was no lock on the device
-  for reporting the missing Euro sign in iso8859-1
+ for reporting a possible crash when pausing live video and the recording was
+ unable to start, maybe because there was no lock on the device
+ for reporting the missing Euro sign in iso8859-1
+ for reporting a problem with making changes to timers through SVDRP while they
+ are being edited via the menu
 
 Dino Ravnic <dino.ravnic@fer.hr>
  for fixing some characters in the iso8859-2 font file
@@ -1285,10 +1297,13 @@ Olaf Titz <olaf@bigred.inka.de>
  for fixing some typos in the Makefile's 'font' target
  for reporting a problem and some advice in fixing a possible freeze in pause mode
  in case a device's PlayPesPacket() function permanently returns 0
+ for reporting excess memory consumption due to duplicate components in EPG events
 
 Darren Salt <linux@youmustbejoking.demon.co.uk>
  for pointing out that the '-' and 'ö' characters need to be escaped in the man
  pages
+ for a patch that was used to add the command line options '--lirc', '--rcu' and
+ '--no-kbd'
 
 Sean Carlos <seanc@libero.it>
  for translating OSD texts to the Italian language
@@ -1388,3 +1403,17 @@ Georg Acher <acher@baycom.de>
 Henrik Niehaus <henrik.niehaus@gmx.de>
  for reporting a problem with timers with a day given as MTWTF--@6, i.e. a repeating
  timer with first day not as full date, but just day of month
+
+Martin Wache <M.Wache@gmx.net>
+ for adding a sleep in cDvbPlayer::Action() in case there is no data to send to the
+ device, which avoids a busy loop on very fast machines
+
+Matthias Lenk <matthias.lenk@amd.com>
+ for reporting an out-of-bounds memory access with audio language ids
+
+Frank Krömmelbein <kroemmelbein@gmx.de>
+ for adding missing storing of the MenuScrollPage parameter
+
+Bernhard Stegmaier <bernhard.stegmaier@in.tum.de>
+ for reporting a problem in cEITScanner::Process() with forced EPG scans if EPG
+ scan timeout is set to 0

@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.72 2005/05/26 09:59:09 kls Exp $
+ * $Id: svdrp.c 1.74 2005/08/07 14:20:41 kls Exp $
  */
 
 #include "svdrp.h"
@@ -209,7 +209,7 @@ const char *HelpPages[] = {
   "    containing the given string as part of their name are listed.",
   "LSTE [ <channel> ] [ now | next | at <time> ]\n"
   "    List EPG data. Without any parameters all data of all channels is\n"
-  "    listed. If a channel is given (either by number of by channel ID),\n"
+  "    listed. If a channel is given (either by number or by channel ID),\n"
   "    only data for that channel is listed. 'now', 'next', or 'at <time>'\n"
   "    restricts the returned data to present events, following events, or\n"
   "    events at the given time (which must be in time_t form).",
@@ -476,22 +476,26 @@ void cSVDRP::CmdDELC(const char *Option)
 {
   if (*Option) {
      if (isnumber(Option)) {
-        cChannel *channel = Channels.GetByNumber(strtol(Option, NULL, 10));
-        if (channel) {
-           for (cTimer *timer = Timers.First(); timer; timer = Timers.Next(timer)) {
-               if (timer->Channel() == channel) {
-                  Reply(550, "Channel \"%s\" is in use by timer %d", Option, timer->Index() + 1);
-                  return;
+        if (!Channels.BeingEdited()) {
+           cChannel *channel = Channels.GetByNumber(strtol(Option, NULL, 10));
+           if (channel) {
+              for (cTimer *timer = Timers.First(); timer; timer = Timers.Next(timer)) {
+                  if (timer->Channel() == channel) {
+                     Reply(550, "Channel \"%s\" is in use by timer %d", Option, timer->Index() + 1);
+                     return;
+                     }
                   }
-               }
-           Channels.Del(channel);
-           Channels.ReNumber();
-           Channels.SetModified(true);
-           isyslog("channel %s deleted", Option);
-           Reply(250, "Channel \"%s\" deleted", Option);
+              Channels.Del(channel);
+              Channels.ReNumber();
+              Channels.SetModified(true);
+              isyslog("channel %s deleted", Option);
+              Reply(250, "Channel \"%s\" deleted", Option);
+              }
+           else
+              Reply(501, "Channel \"%s\" not defined", Option);
            }
         else
-           Reply(501, "Channel \"%s\" not defined", Option);
+           Reply(550, "Channels are being edited - try again later");
         }
      else
         Reply(501, "Error in channel number \"%s\"", Option);
@@ -532,19 +536,23 @@ void cSVDRP::CmdDELT(const char *Option)
 {
   if (*Option) {
      if (isnumber(Option)) {
-        cTimer *timer = Timers.Get(strtol(Option, NULL, 10) - 1);
-        if (timer) {
-           if (!timer->Recording()) {
-              isyslog("deleting timer %s", *timer->ToDescr());
-              Timers.Del(timer);
-              Timers.SetModified();
-              Reply(250, "Timer \"%s\" deleted", Option);
+        if (!Timers.BeingEdited()) {
+           cTimer *timer = Timers.Get(strtol(Option, NULL, 10) - 1);
+           if (timer) {
+              if (!timer->Recording()) {
+                 isyslog("deleting timer %s", *timer->ToDescr());
+                 Timers.Del(timer);
+                 Timers.SetModified();
+                 Reply(250, "Timer \"%s\" deleted", Option);
+                 }
+              else
+                 Reply(550, "Timer \"%s\" is recording", Option);
               }
            else
-              Reply(550, "Timer \"%s\" is recording", Option);
+              Reply(501, "Timer \"%s\" not defined", Option);
            }
         else
-           Reply(501, "Timer \"%s\" not defined", Option);
+           Reply(550, "Timers are being edited - try again later");
         }
      else
         Reply(501, "Error in timer number \"%s\"", Option);
@@ -782,18 +790,25 @@ void cSVDRP::CmdLSTE(const char *Option)
               p = strtok_r(NULL, delim, &strtok_next);
               }
         }
-     FILE *f = fdopen(file, "w");
-     if (f) {
-        if (Schedule)
-           Schedule->Dump(f, "215-", DumpMode, AtTime);
-        else
-           Schedules->Dump(f, "215-", DumpMode, AtTime);
-        fflush(f);
-        Reply(215, "End of EPG data");
-        // don't 'fclose(f)' here!
+     int fd = dup(file);
+     if (fd) {
+        FILE *f = fdopen(fd, "w");
+        if (f) {
+           if (Schedule)
+              Schedule->Dump(f, "215-", DumpMode, AtTime);
+           else
+              Schedules->Dump(f, "215-", DumpMode, AtTime);
+           fflush(f);
+           Reply(215, "End of EPG data");
+           fclose(f);
+           }
+        else {
+           Reply(451, "Can't open file connection");
+           close(fd);
+           }
         }
      else
-        Reply(451, "Can't open file connection");
+        Reply(451, "Can't dup stream descriptor");
      }
   else
      Reply(451, "Can't get EPG data");
@@ -880,25 +895,29 @@ void cSVDRP::CmdMODC(const char *Option)
      int n = strtol(Option, &tail, 10);
      if (tail && tail != Option) {
         tail = skipspace(tail);
-        cChannel *channel = Channels.GetByNumber(n);
-        if (channel) {
-           cChannel ch;
-           if (ch.Parse(tail)) {
-              if (Channels.HasUniqueChannelID(&ch, channel)) {
-                 *channel = ch;
-                 Channels.ReNumber();
-                 Channels.SetModified(true);
-                 isyslog("modifed channel %d %s", channel->Number(), *channel->ToText());
-                 Reply(250, "%d %s", channel->Number(), *channel->ToText());
+        if (!Channels.BeingEdited()) {
+           cChannel *channel = Channels.GetByNumber(n);
+           if (channel) {
+              cChannel ch;
+              if (ch.Parse(tail)) {
+                 if (Channels.HasUniqueChannelID(&ch, channel)) {
+                    *channel = ch;
+                    Channels.ReNumber();
+                    Channels.SetModified(true);
+                    isyslog("modifed channel %d %s", channel->Number(), *channel->ToText());
+                    Reply(250, "%d %s", channel->Number(), *channel->ToText());
+                    }
+                 else
+                    Reply(501, "Channel settings are not unique");
                  }
               else
-                 Reply(501, "Channel settings are not unique");
+                 Reply(501, "Error in channel settings");
               }
            else
-              Reply(501, "Error in channel settings");
+              Reply(501, "Channel \"%d\" not defined", n);
            }
         else
-           Reply(501, "Channel \"%d\" not defined", n);
+           Reply(550, "Channels are being edited - try again later");
         }
      else
         Reply(501, "Error in channel number");
@@ -914,24 +933,28 @@ void cSVDRP::CmdMODT(const char *Option)
      int n = strtol(Option, &tail, 10);
      if (tail && tail != Option) {
         tail = skipspace(tail);
-        cTimer *timer = Timers.Get(n - 1);
-        if (timer) {
-           cTimer t = *timer;
-           if (strcasecmp(tail, "ON") == 0)
-              t.SetFlags(tfActive);
-           else if (strcasecmp(tail, "OFF") == 0)
-              t.ClrFlags(tfActive);
-           else if (!t.Parse(tail)) {
-              Reply(501, "Error in timer settings");
-              return;
+        if (!Timers.BeingEdited()) {
+           cTimer *timer = Timers.Get(n - 1);
+           if (timer) {
+              cTimer t = *timer;
+              if (strcasecmp(tail, "ON") == 0)
+                 t.SetFlags(tfActive);
+              else if (strcasecmp(tail, "OFF") == 0)
+                 t.ClrFlags(tfActive);
+              else if (!t.Parse(tail)) {
+                 Reply(501, "Error in timer settings");
+                 return;
+                 }
+              *timer = t;
+              Timers.SetModified();
+              isyslog("timer %s modified (%s)", *timer->ToDescr(), timer->HasFlags(tfActive) ? "active" : "inactive");
+              Reply(250, "%d %s", timer->Index() + 1, *timer->ToText());
               }
-           *timer = t;
-           Timers.SetModified();
-           isyslog("timer %s modified (%s)", *timer->ToDescr(), timer->HasFlags(tfActive) ? "active" : "inactive");
-           Reply(250, "%d %s", timer->Index() + 1, *timer->ToText());
+           else
+              Reply(501, "Timer \"%d\" not defined", n);
            }
         else
-           Reply(501, "Timer \"%d\" not defined", n);
+           Reply(550, "Timers are being edited - try again later");
         }
      else
         Reply(501, "Error in timer number");
@@ -1054,20 +1077,24 @@ void cSVDRP::CmdUPDT(const char *Option)
   if (*Option) {
      cTimer *timer = new cTimer;
      if (timer->Parse(Option)) {
-        cTimer *t = Timers.GetTimer(timer);
-        if (t) {
-           t->Parse(Option);
-           delete timer;
-           timer = t;
-           isyslog("timer %s updated", *timer->ToDescr());
+        if (!Timers.BeingEdited()) {
+           cTimer *t = Timers.GetTimer(timer);
+           if (t) {
+              t->Parse(Option);
+              delete timer;
+              timer = t;
+              isyslog("timer %s updated", *timer->ToDescr());
+              }
+           else {
+              Timers.Add(timer);
+              isyslog("timer %s added", *timer->ToDescr());
+              }
+           Timers.SetModified();
+           Reply(250, "%d %s", timer->Index() + 1, *timer->ToText());
+           return;
            }
-        else {
-           Timers.Add(timer);
-           isyslog("timer %s added", *timer->ToDescr());
-           }
-        Timers.SetModified();
-        Reply(250, "%d %s", timer->Index() + 1, *timer->ToText());
-        return;
+        else
+           Reply(550, "Timers are being edited - try again later");
         }
      else
         Reply(501, "Error in timer settings");

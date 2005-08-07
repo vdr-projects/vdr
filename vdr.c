@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.208 2005/06/18 11:19:07 kls Exp $
+ * $Id: vdr.c 1.209 2005/07/31 11:25:16 kls Exp $
  */
 
 #include <getopt.h>
@@ -115,6 +115,19 @@ int main(int argc, char *argv[])
   int WatchdogTimeout = DEFAULTWATCHDOG;
   const char *Terminal = NULL;
   const char *Shutdown = NULL;
+
+  bool UseKbd = true;
+  const char *LircDevice = NULL;
+  const char *RcuDevice = NULL;
+#if !defined(REMOTE_KBD)
+  UseKbd = false;
+#endif
+#if defined(REMOTE_LIRC)
+  LircDevice = LIRC_DEVICE;
+#elif defined(REMOTE_RCU)
+  RcuDevice = RCU_DEVICE;
+#endif
+
   cPluginManager PluginManager(DEFAULTPLUGINDIR);
   int ExitCode = 0;
 
@@ -126,10 +139,13 @@ int main(int argc, char *argv[])
       { "epgfile",  required_argument, NULL, 'E' },
       { "help",     no_argument,       NULL, 'h' },
       { "lib",      required_argument, NULL, 'L' },
+      { "lirc",     optional_argument, NULL, 'l' | 0x100 },
       { "log",      required_argument, NULL, 'l' },
       { "mute",     no_argument,       NULL, 'm' },
+      { "no-kbd",   no_argument,       NULL, 'n' | 0x100 },
       { "plugin",   required_argument, NULL, 'P' },
       { "port",     required_argument, NULL, 'p' },
+      { "rcu",      optional_argument, NULL, 'r' | 0x100 },
       { "record",   required_argument, NULL, 'r' },
       { "shutdown", required_argument, NULL, 's' },
       { "terminal", required_argument, NULL, 't' },
@@ -194,7 +210,13 @@ int main(int argc, char *argv[])
                        return 2;
                        }
                     break;
+          case 'l' | 0x100:
+                    LircDevice = optarg ? : LIRC_DEVICE;
+                    break;
           case 'm': MuteAudio = true;
+                    break;
+          case 'n' | 0x100:
+                    UseKbd = false;
                     break;
           case 'p': if (isnumber(optarg))
                        SVDRPport = atoi(optarg);
@@ -204,6 +226,9 @@ int main(int argc, char *argv[])
                        }
                     break;
           case 'P': PluginManager.AddPlugin(optarg);
+                    break;
+          case 'r' | 0x100:
+                    RcuDevice = optarg ? : RCU_DEVICE;
                     break;
           case 'r': cRecordingUserCommand::SetCommand(optarg);
                     break;
@@ -261,10 +286,15 @@ int main(int argc, char *argv[])
                "                           if logging should be done to LOG_LOCALn instead of\n"
                "                           LOG_USER, add '.n' to LEVEL, as in 3.7 (n=0..7)\n"
                "  -L DIR,   --lib=DIR      search for plugins in DIR (default is %s)\n"
+               "            --lirc[=PATH]  use a LIRC remote control device, attached to PATH\n"
+               "                           (default: %s)\n"
                "  -m,       --mute         mute audio of the primary DVB device at startup\n"
+               "            --no-kbd       don't use the keyboard as an input device\n"
                "  -p PORT,  --port=PORT    use PORT for SVDRP (default: %d)\n"
                "                           0 turns off SVDRP\n"
                "  -P OPT,   --plugin=OPT   load a plugin defined by the given options\n"
+               "            --rcu[=PATH]   use a remote control device, attached to PATH\n"
+               "                           (default: %s)\n"
                "  -r CMD,   --record=CMD   call CMD before and after a recording\n"
                "  -s CMD,   --shutdown=CMD call CMD to shutdown the computer\n"
                "  -t TTY,   --terminal=TTY controlling tty\n"
@@ -275,7 +305,9 @@ int main(int argc, char *argv[])
                "\n",
                DEFAULTEPGDATAFILENAME,
                DEFAULTPLUGINDIR,
+               LIRC_DEVICE,
                DEFAULTSVDRPPORT,
+               RCU_DEVICE,
                VideoDirectory,
                DEFAULTWATCHDOG
                );
@@ -470,15 +502,12 @@ int main(int argc, char *argv[])
   cThemes::Load(Skins.Current()->Name(), Setup.OSDTheme, Skins.Current()->Theme());
 
   // Remote Controls:
-#if defined(REMOTE_RCU)
-  new cRcuRemote("/dev/ttyS1");
-#elif defined(REMOTE_LIRC)
-  new cLircRemote("/dev/lircd");
-#endif
-#if defined(REMOTE_KBD)
-  if (!DaemonMode && HasStdin)
+  if (RcuDevice)
+     new cRcuRemote(RcuDevice);
+  if (LircDevice)
+     new cLircRemote(LircDevice);
+  if (!DaemonMode && HasStdin && UseKbd)
      new cKbdRemote;
-#endif
   Interface->LearnKeys();
 
   // External audio:

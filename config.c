@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.134 2005/06/18 10:30:02 kls Exp $
+ * $Id: config.c 1.135 2005/08/07 09:03:00 kls Exp $
  */
 
 #include "config.h"
@@ -472,6 +472,7 @@ bool cSetup::Save(void)
   Store("OSDTheme",           OSDTheme);
   Store("PrimaryDVB",         PrimaryDVB);
   Store("ShowInfoOnChSwitch", ShowInfoOnChSwitch);
+  Store("MenuScrollPage",     MenuScrollPage);
   Store("MenuScrollWrap",     MenuScrollWrap);
   Store("MarkInstantRecord",  MarkInstantRecord);
   Store("NameInstantRecord",  NameInstantRecord);

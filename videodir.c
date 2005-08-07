@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: videodir.c 1.11 2004/12/26 11:52:12 kls Exp $
+ * $Id: videodir.c 1.12 2005/08/06 09:53:21 kls Exp $
  */
 
 #include "videodir.h"
@@ -137,7 +137,7 @@ int OpenVideoFile(const char *FileName, int Flags)
            }
         }
      }
-  int Result = open(ActualFileName, Flags, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+  int Result = open(ActualFileName, Flags, DEFFILEMODE);
   if (ActualFileName != FileName)
      free((char *)ActualFileName);
   return Result;

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.195 2005/06/18 10:42:31 kls Exp $
+ * $Id: i18n.c 1.197 2005/08/06 16:09:44 kls Exp $
  *
  * Translations provided by:
  *
@@ -416,7 +416,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Info",
     "Info",
     "",//TODO
   },
@@ -2332,7 +2332,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "Отсутствует звук!",
-    "",//TODO
+    "Audio nedostupan",
     "Audio kфttesaamatu!",
     "Ingen lyd tilgцngelig!",
   },
@@ -2859,7 +2859,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "Показ информации о канале (сек)",
-    "",// TODO
+    "Vrijeme prikaza informacije o programu (s)",
     "Kanaliteate esitusaeg (s)",
     "Tid kanalinfo skal vises (s)",
   },
@@ -2892,7 +2892,7 @@ const tI18nPhrase Phrases[] = {
     "Scroll da pсgina no menu",
     "Scrolling par pages",
     "Rask rulling i menyer",
-    "Valikkosivujen pikaselaus",
+    "Valikoiden vieritys sivuttain",
     "Przesuwac stronami",
     "Desplazar pсgina entera",
     "Ъпыщѓч ѓхыпфсђ",
@@ -2913,6 +2913,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
+    "Valikoiden vieritys ympфri",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -2921,8 +2922,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
-    "",// TODO
+    "S kraja skoшi na poшetak",
     "",// TODO
     "",// TODO
   },
@@ -3153,7 +3153,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "Широкоэкранное изображение",
-    "",//TODO
+    "Format video prikaza",
     "Video kuvamise formaat",
     "Video display format",
   },
@@ -3258,7 +3258,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "Включить Dolby Digital",
-    "",//TODO
+    "Koristi Dolby Digital",
     "Dolby Digital kasutamine",
     "Anvend Dolby Digital",
   },
@@ -3384,7 +3384,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "Предпочитаемые языки (звук)",
-    "",//TODO
+    "Audio jezici",
     "Audio keeled",
     "Audio sprog (ant.)",
   },
@@ -3405,7 +3405,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "Выбран",
-    "",//TODO
+    "Audio jezik",
     "Audio keel",
     "Audio sprog",
   },
@@ -3909,7 +3909,7 @@ const tI18nPhrase Phrases[] = {
     "Min. esemщny szќnet (min)",
     "Temps mэnim en pausa (min)",
     "Мин. время ожидания события (мин)",
-    "Najmanje vrijeme pauze",
+    "Minimalno vrijeme pauze",
     "Min. sќndmuse kestus (min)",
     "Mindste hцndelsespause (min)",
   },
@@ -3930,7 +3930,7 @@ const tI18nPhrase Phrases[] = {
     "Min. kezelщsi aktivitсs (min)",
     "Temps mэnim d'inactivitat (min)",
     "Мин. время ожидания ввода (мин)",
-    "Najmanje vrijeme neaktivnosti (min)",
+    "Minimalno vrijeme neaktivnosti (min)",
     "Min. kasutaja tegevusetus (min)",
     "Min. bruger inaktivitet (min)",
   },
@@ -5300,7 +5300,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Poшinjem EPG-scan",
     "EPG skaneerimine kфivitatud",
     "Starter EPG skanning",
   },
@@ -5384,7 +5384,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Bez titla",
     "",// TODO
     "",// TODO
   },

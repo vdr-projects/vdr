@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.95 2005/05/29 10:18:26 kls Exp $
+ * $Id: tools.c 1.96 2005/08/06 09:53:21 kls Exp $
  */
 
 #include "tools.h"
@@ -308,7 +308,7 @@ bool MakeDirs(const char *FileName, bool IsDirectory)
         struct stat fs;
         if (stat(s, &fs) != 0 || !S_ISDIR(fs.st_mode)) {
            dsyslog("creating directory %s", s);
-           if (mkdir(s, S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH) == -1) {
+           if (mkdir(s, ACCESSPERMS) == -1) {
               LOG_ERROR_STR(s);
               result = false;
               break;
@@ -451,7 +451,7 @@ bool SpinUpDisk(const char *FileName)
       if (access(buf, F_OK) != 0) { // the file does not exist
          timeval tp1, tp2;
          gettimeofday(&tp1, NULL);
-         int f = open(buf, O_WRONLY | O_CREAT, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+         int f = open(buf, O_WRONLY | O_CREAT, DEFFILEMODE);
          // O_SYNC doesn't work on all file systems
          if (f >= 0) {
             if (fdatasync(f) < 0)
@@ -843,7 +843,7 @@ bool cLockFile::Lock(int WaitSeconds)
   if (f < 0 && fileName) {
      time_t Timeout = time(NULL) + WaitSeconds;
      do {
-        f = open(fileName, O_WRONLY | O_CREAT | O_EXCL, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+        f = open(fileName, O_WRONLY | O_CREAT | O_EXCL, DEFFILEMODE);
         if (f < 0) {
            if (errno == EEXIST) {
               struct stat fs;

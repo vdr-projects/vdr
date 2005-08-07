@@ -8,7 +8,7 @@
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  * Adapted to 'libsi' for VDR 1.3.0 by Marcel Wiesweg <marcel.wiesweg@gmx.de>.
  *
- * $Id: eit.c 1.108 2005/06/11 15:31:21 kls Exp $
+ * $Id: eit.c 1.109 2005/08/07 13:52:29 kls Exp $
  */
 
 #include "eit.h"
@@ -252,11 +252,13 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data)
 class cTDT : public SI::TDT {
 private:
   static cMutex mutex;
+  static int lastDiff;
 public:
   cTDT(const u_char *Data);
   };
 
 cMutex cTDT::mutex;
+int cTDT::lastDiff = 0;
 
 cTDT::cTDT(const u_char *Data)
 :SI::TDT(Data, false)
@@ -266,12 +268,16 @@ cTDT::cTDT(const u_char *Data)
   time_t sattim = getTime();
   time_t loctim = time(NULL);
 
-  if (abs(sattim - loctim) > 2) {
+  int diff = abs(sattim - loctim);
+  if (diff > 2) {
      mutex.Lock();
-     isyslog("System Time = %s (%ld)\n", *TimeToString(loctim), loctim);
-     isyslog("Local Time  = %s (%ld)\n", *TimeToString(sattim), sattim);
-     if (stime(&sattim) < 0)
-        esyslog("ERROR while setting system time: %m");
+     if (abs(diff - lastDiff) < 3) {
+        isyslog("System Time = %s (%ld)\n", *TimeToString(loctim), loctim);
+        isyslog("Local Time  = %s (%ld)\n", *TimeToString(sattim), sattim);
+        if (stime(&sattim) < 0)
+           esyslog("ERROR while setting system time: %m");
+        }
+     lastDiff = diff;
      mutex.Unlock();
      }
 }

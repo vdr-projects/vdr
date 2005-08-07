@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.72 2005/05/29 10:24:54 kls Exp $
+ * $Id: tools.h 1.73 2005/08/06 09:53:21 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -158,7 +158,7 @@ public:
   cFile(void);
   ~cFile();
   operator int () { return f; }
-  bool Open(const char *FileName, int Flags, mode_t Mode = S_IRUSR | S_IWUSR | S_IRGRP);
+  bool Open(const char *FileName, int Flags, mode_t Mode = DEFFILEMODE);
   bool Open(int FileDes);
   void Close(void);
   bool IsOpen(void) { return f >= 0; }

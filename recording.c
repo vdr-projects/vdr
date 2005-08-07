@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.109 2005/06/05 14:11:45 kls Exp $
+ * $Id: recording.c 1.110 2005/08/06 09:53:21 kls Exp $
  */
 
 #include "recording.h"
@@ -199,7 +199,7 @@ int cResumeFile::Read(void)
 bool cResumeFile::Save(int Index)
 {
   if (fileName) {
-     int f = open(fileName, O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+     int f = open(fileName, O_WRONLY | O_CREAT | O_TRUNC, DEFFILEMODE);
      if (f >= 0) {
         if (safe_write(f, &Index, sizeof(Index)) < 0)
            LOG_ERROR_STR(fileName);
@@ -974,7 +974,7 @@ cIndexFile::cIndexFile(const char *FileName, bool Record)
         else if (!Record)
            isyslog("missing index file %s", fileName);
         if (Record) {
-           if ((f = open(fileName, O_WRONLY | O_CREAT | O_APPEND, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH)) >= 0) {
+           if ((f = open(fileName, O_WRONLY | O_CREAT | O_APPEND, DEFFILEMODE)) >= 0) {
               if (delta) {
                  esyslog("ERROR: padding index file with %d '0' bytes", delta);
                  while (delta--)
