@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: cutter.c 1.8 2005/05/15 14:21:08 kls Exp $
+ * $Id: cutter.c 1.9 2005/08/13 11:49:02 kls Exp $
  */
 
 #include "cutter.h"
@@ -18,7 +18,6 @@
 class cCuttingThread : public cThread {
 private:
   const char *error;
-  bool active;
   int fromFile, toFile;
   cFileName *fromFileName, *toFileName;
   cIndexFile *fromIndex, *toIndex;
@@ -35,7 +34,6 @@ cCuttingThread::cCuttingThread(const char *FromFileName, const char *ToFileName)
 :cThread("video cutting")
 {
   error = NULL;
-  active = false;
   fromFile = toFile = -1;
   fromFileName = toFileName = NULL;
   fromIndex = toIndex = NULL;
@@ -53,7 +51,6 @@ cCuttingThread::cCuttingThread(const char *FromFileName, const char *ToFileName)
 
 cCuttingThread::~cCuttingThread()
 {
-  active = false;
   Cancel(3);
   delete fromFileName;
   delete toFileName;
@@ -67,7 +64,8 @@ void cCuttingThread::Action(void)
   if (Mark) {
      fromFile = fromFileName->Open();
      toFile = toFileName->Open();
-     active = fromFile >= 0 && toFile >= 0;
+     if (fromFile < 0 || toFile < 0)
+        return;
      int Index = Mark->position;
      Mark = fromMarks.Next(Mark);
      int FileSize = 0;
@@ -78,7 +76,7 @@ void cCuttingThread::Action(void)
      uchar buffer[MAXFRAMESIZE];
      bool LastMark = false;
      bool cutIn = true;
-     while (active) {
+     while (Active()) {
            uchar FileNumber;
            int FileOffset, Length;
            uchar PictureType;
@@ -215,7 +213,7 @@ bool cCutter::Start(const char *FileName)
 
 void cCutter::Stop(void)
 {
-  bool Interrupted = cuttingThread && cuttingThread->Active();
+  bool Interrupted = cuttingThread && cuttingThread->Running();
   const char *Error = cuttingThread ? cuttingThread->Error() : NULL;
   delete cuttingThread;
   cuttingThread = NULL;
@@ -232,7 +230,7 @@ void cCutter::Stop(void)
 bool cCutter::Active(void)
 {
   if (cuttingThread) {
-     if (cuttingThread->Active())
+     if (cuttingThread->Running())
         return true;
      error = cuttingThread->Error();
      Stop();

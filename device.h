@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 1.60 2005/07/30 09:31:53 kls Exp $
+ * $Id: device.h 1.61 2005/08/13 11:44:13 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -233,7 +233,6 @@ public:
 // PID handle facilities
 
 private:
-  bool active;
   virtual void Action(void);
 protected:
   enum ePidType { ptAudio, ptVideo, ptPcr, ptTeletext, ptDolby, ptOther };
@@ -518,7 +517,6 @@ class cTSBuffer : public cThread {
 private:
   int f;
   int cardIndex;
-  bool active;
   bool delivered;
   cRingBufferLinear *ringBuffer;
   virtual void Action(void);

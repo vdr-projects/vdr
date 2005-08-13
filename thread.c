@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 1.43 2005/05/29 11:40:30 kls Exp $
+ * $Id: thread.c 1.44 2005/08/13 11:22:37 kls Exp $
  */
 
 #include "thread.h"
@@ -197,7 +197,7 @@ bool cThread::emergencyExitRequested = false;
 
 cThread::cThread(const char *Description)
 {
-  running = false;
+  running = active = false;
   childTid = 0;
   description = NULL;
   SetDescription(Description);
@@ -205,6 +205,7 @@ cThread::cThread(const char *Description)
 
 cThread::~cThread()
 {
+  Cancel(); // just in case the derived class didn't call it
   free(description);
 }
 
@@ -233,6 +234,7 @@ void *cThread::StartThread(cThread *Thread)
   Thread->Action();
   if (Thread->description)
      dsyslog("%s thread ended (pid=%d, tid=%ld)", Thread->description, getpid(), pthread_self());
+  Thread->active = false;
   Thread->running = false;
   return NULL;
 }
@@ -240,21 +242,21 @@ void *cThread::StartThread(cThread *Thread)
 bool cThread::Start(void)
 {
   if (!running) {
-     running = true;
+     running = active = true;
      if (pthread_create(&childTid, NULL, (void *(*) (void *))&StartThread, (void *)this) == 0) {
         pthread_detach(childTid); // auto-reap
         pthread_setschedparam(childTid, SCHED_RR, 0);
         }
      else {
         LOG_ERROR;
-        running = false;
+        running = active = false;
         return false;
         }
      }
   return true;
 }
 
-bool cThread::Active(void)
+bool cThread::Running(void)
 {
   if (running) {
      //
@@ -271,7 +273,7 @@ bool cThread::Active(void)
         if (err != ESRCH)
            LOG_ERROR;
         childTid = 0;
-        running = false;
+        running = active = false;
         }
      else
         return true;
@@ -281,10 +283,11 @@ bool cThread::Active(void)
 
 void cThread::Cancel(int WaitSeconds)
 {
+  active = false;
   if (running) {
      if (WaitSeconds > 0) {
         for (time_t t0 = time(NULL) + WaitSeconds; time(NULL) < t0; ) {
-            if (!Active())
+            if (!Running())
                return;
             cCondWait::SleepMs(10);
             }

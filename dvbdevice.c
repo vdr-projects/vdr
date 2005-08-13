@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.131 2005/06/19 11:00:43 kls Exp $
+ * $Id: dvbdevice.c 1.132 2005/08/13 11:40:46 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -76,7 +76,6 @@ private:
   cCiHandler *ciHandler;
   cChannel channel;
   const char *diseqcCommands;
-  bool active;
   bool useCa;
   time_t startTime;
   eTunerStatus tunerStatus;
@@ -101,7 +100,6 @@ cDvbTuner::cDvbTuner(int Fd_Frontend, int CardIndex, fe_type_t FrontendType, cCi
   frontendType = FrontendType;
   ciHandler = CiHandler;
   diseqcCommands = NULL;
-  active = false;
   useCa = false;
   tunerStatus = tsIdle;
   startTime = time(NULL);
@@ -113,7 +111,6 @@ cDvbTuner::cDvbTuner(int Fd_Frontend, int CardIndex, fe_type_t FrontendType, cCi
 
 cDvbTuner::~cDvbTuner()
 {
-  active = false;
   tunerStatus = tsIdle;
   newSet.Signal();
   Cancel(3);
@@ -294,8 +291,7 @@ bool cDvbTuner::SetFrontend(void)
 void cDvbTuner::Action(void)
 {
   dvb_frontend_event event;
-  active = true;
-  while (active) {
+  while (Active()) {
         Lock();
         if (tunerStatus == tsSet) {
            while (GetFrontendEvent(event))

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remote.c 1.42 2005/03/20 13:25:31 kls Exp $
+ * $Id: remote.c 1.43 2005/08/13 11:28:35 kls Exp $
  */
 
 #include "remote.h"
@@ -213,7 +213,6 @@ cKbdRemote::cKbdRemote(void)
 :cRemote("KBD")
 ,cThread("KBD remote control")
 {
-  active = false;
   tcgetattr(STDIN_FILENO, &savedTm);
   struct termios tm;
   if (tcgetattr(STDIN_FILENO, &tm) == 0) {
@@ -230,7 +229,6 @@ cKbdRemote::cKbdRemote(void)
 cKbdRemote::~cKbdRemote()
 {
   kbdAvailable = false;
-  active = false;
   Cancel(3);
   tcsetattr(STDIN_FILENO, TCSANOW, &savedTm);
 }
@@ -261,12 +259,11 @@ int cKbdRemote::MapCodeToFunc(uint64 Code)
 void cKbdRemote::Action(void)
 {
   cPoller Poller(STDIN_FILENO);
-  active = true;
-  while (active) {
+  while (Active()) {
         if (Poller.Poll(100)) {
            uint64 Command = 0;
            uint i = 0;
-           while (active && i < sizeof(Command)) {
+           while (Active() && i < sizeof(Command)) {
                  uchar ch;
                  int r = read(STDIN_FILENO, &ch, 1);
                  if (r == 1) {

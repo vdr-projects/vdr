@@ -3671,3 +3671,12 @@ Video Disk Recorder Revision History
 - Fixed setting system time to avoid time jumps in case of faulty data (thanks
   to Andreas Böttger).
 - Fixed a memory leak in the SVDRP command LSTE (thanks to Stefan Huelswitt).
+
+2005-08-13: Version 1.3.29
+
+- Fixed a race condition in cTransfer (thanks to Klaus ??? for reporting this one).
+  In doing so, the 'active' variables used by the actual derived cThread classes
+  have been replaced by the cThread::Active() function. The previous functionality
+  of cThread::Active() has been moved into the new cThread::Running().
+  Plugin authors may want to check their derived cThread classes and replace any 'active'
+  variables the same way as, for instance, done in transfer.c.

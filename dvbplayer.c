@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 1.36 2005/07/30 10:00:24 kls Exp $
+ * $Id: dvbplayer.c 1.37 2005/08/13 12:27:17 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -79,7 +79,6 @@ private:
   int wanted;
   int length;
   bool hasData;
-  bool active;
   cCondWait newSet;
 protected:
   void Action(void);
@@ -98,13 +97,11 @@ cNonBlockingFileReader::cNonBlockingFileReader(void)
   buffer = NULL;
   wanted = length = 0;
   hasData = false;
-  active = false;
   Start();
 }
 
 cNonBlockingFileReader::~cNonBlockingFileReader()
 {
-  active = false;
   newSet.Signal();
   Cancel(3);
   free(buffer);
@@ -147,8 +144,7 @@ int cNonBlockingFileReader::Read(int FileHandle, uchar *Buffer, int Length)
 
 void cNonBlockingFileReader::Action(void)
 {
-  active = true;
-  while (active) {
+  while (Active()) {
         Lock();
         if (!hasData && f >= 0 && buffer) {
            int r = safe_read(f, buffer + length, wanted - length);
@@ -187,8 +183,6 @@ private:
   cIndexFile *index;
   int replayFile;
   bool eof;
-  bool active;
-  bool running;
   bool firstPacket;
   ePlayModes playMode;
   ePlayDirs playDir;
@@ -207,7 +201,7 @@ protected:
 public:
   cDvbPlayer(const char *FileName);
   virtual ~cDvbPlayer();
-  bool Active(void) { return active; }
+  bool Active(void) { return cThread::Active(); }
   void Pause(void);
   void Play(void);
   void Forward(void);
@@ -233,8 +227,6 @@ cDvbPlayer::cDvbPlayer(const char *FileName)
   backTrace = NULL;
   index = NULL;
   eof = false;
-  active = true;
-  running = false;
   firstPacket = true;
   playMode = pmPlay;
   playDir = pdForward;
@@ -353,11 +345,8 @@ void cDvbPlayer::Activate(bool On)
      if (replayFile >= 0)
         Start();
      }
-  else if (active) {
-     running = false;
+  else
      Cancel(9);
-     active = false;
-     }
 }
 
 void cDvbPlayer::Action(void)
@@ -374,8 +363,7 @@ void cDvbPlayer::Action(void)
   int Length = 0;
   bool Sleep = false;
 
-  running = true;
-  while (running && (NextFile() || readIndex >= 0 || ringBuffer->Available() || !DeviceFlush(100))) {
+  while (Active() && (NextFile() || readIndex >= 0 || ringBuffer->Available() || !DeviceFlush(100))) {
         if (Sleep) {
            cCondWait::SleepMs(3); // this keeps the CPU load low
            Sleep = false;
@@ -501,7 +489,6 @@ void cDvbPlayer::Action(void)
               Sleep = true;
            }
         }
-  active = running = false;
 
   cNonBlockingFileReader *nbfr = nonBlockingFileReader;
   nonBlockingFileReader = NULL;

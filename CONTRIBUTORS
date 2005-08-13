@@ -1417,3 +1417,6 @@ Frank Krömmelbein <kroemmelbein@gmx.de>
 Bernhard Stegmaier <bernhard.stegmaier@in.tum.de>
  for reporting a problem in cEITScanner::Process() with forced EPG scans if EPG
  scan timeout is set to 0
+
+Klaus ??? <klaus@reel-multimedia.com>
+ for reporting a race condition in cTransfer.

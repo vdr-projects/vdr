@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.103 2005/06/12 13:39:11 kls Exp $
+ * $Id: device.c 1.104 2005/08/13 11:44:06 kls Exp $
  */
 
 #include "device.h"
@@ -155,8 +155,6 @@ cDevice::cDevice(void)
   SetDescription("receiver on device %d", CardIndex() + 1);
 
   SetVideoFormat(Setup.VideoFormat);
-
-  active = false;
 
   mute = false;
   volume = Setup.CurrentVolume;
@@ -1126,25 +1124,25 @@ bool cDevice::Receiving(bool CheckAny) const
 
 void cDevice::Action(void)
 {
-  if (active && OpenDvr()) {
-     for (; active;) {
-         // Read data from the DVR device:
-         uchar *b = NULL;
-         if (GetTSPacket(b)) {
-            if (b) {
-               int Pid = (((uint16_t)b[1] & PID_MASK_HI) << 8) | b[2];
-               // Distribute the packet to all attached receivers:
-               Lock();
-               for (int i = 0; i < MAXRECEIVERS; i++) {
-                   if (receiver[i] && receiver[i]->WantsPid(Pid))
-                      receiver[i]->Receive(b, TS_SIZE);
-                   }
-               Unlock();
-               }
-            }
-         else
-            break;
-         }
+  if (Active() && OpenDvr()) {
+     while (Active()) {
+           // Read data from the DVR device:
+           uchar *b = NULL;
+           if (GetTSPacket(b)) {
+              if (b) {
+                 int Pid = (((uint16_t)b[1] & PID_MASK_HI) << 8) | b[2];
+                 // Distribute the packet to all attached receivers:
+                 Lock();
+                 for (int i = 0; i < MAXRECEIVERS; i++) {
+                     if (receiver[i] && receiver[i]->WantsPid(Pid))
+                        receiver[i]->Receive(b, TS_SIZE);
+                     }
+                 Unlock();
+                 }
+              }
+           else
+              break;
+           }
      CloseDvr();
      }
 }
@@ -1188,10 +1186,8 @@ bool cDevice::AttachReceiver(cReceiver *Receiver)
          Receiver->device = this;
          receiver[i] = Receiver;
          Unlock();
-         if (!active) {
-            active = true;
+         if (!Active())
             Start();
-            }
          return true;
          }
       }
@@ -1218,10 +1214,8 @@ void cDevice::Detach(cReceiver *Receiver)
       else if (receiver[i])
          receiversLeft = true;
       }
-  if (!receiversLeft) {
-     active = false;
+  if (!receiversLeft)
      Cancel(3);
-     }
 }
 
 void cDevice::DetachAll(int Pid)
@@ -1246,13 +1240,11 @@ cTSBuffer::cTSBuffer(int File, int Size, int CardIndex)
   delivered = false;
   ringBuffer = new cRingBufferLinear(Size, TS_SIZE, true, "TS");
   ringBuffer->SetTimeouts(100, 100);
-  active = true;
   Start();
 }
 
 cTSBuffer::~cTSBuffer()
 {
-  active = false;
   Cancel(3);
   delete ringBuffer;
 }
@@ -1262,20 +1254,20 @@ void cTSBuffer::Action(void)
   if (ringBuffer) {
      bool firstRead = true;
      cPoller Poller(f);
-     for (; active;) {
-         if (firstRead || Poller.Poll(100)) {
-            firstRead = false;
-            int r = ringBuffer->Read(f);
-            if (r < 0 && FATALERRNO) {
-               if (errno == EOVERFLOW)
-                  esyslog("ERROR: driver buffer overflow on device %d", cardIndex);
-               else {
-                  LOG_ERROR;
-                  break;
-                  }
-               }
-            }
-         }
+     while (Active()) {
+           if (firstRead || Poller.Poll(100)) {
+              firstRead = false;
+              int r = ringBuffer->Read(f);
+              if (r < 0 && FATALERRNO) {
+                 if (errno == EOVERFLOW)
+                    esyslog("ERROR: driver buffer overflow on device %d", cardIndex);
+                 else {
+                    LOG_ERROR;
+                    break;
+                    }
+                 }
+              }
+           }
      }
 }
 
