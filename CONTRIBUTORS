@@ -520,6 +520,7 @@ Helmut Auer <vdr@helmutauer.de>
  for fixing a frequency/transponder handling mixup when setting the time from the
  DVB data stream
  for implementing a default cRemote::Initialize()
+ for suggesting to increase the default value for 'Min. user inactivity' to 300 minutes
 
 Jeremy Hall <jhall@UU.NET>
  for fixing an incomplete initialization of the filter parameters in eit.c

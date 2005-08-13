@@ -3681,3 +3681,5 @@ Video Disk Recorder Revision History
   Plugin authors may want to check their derived cThread classes and replace any 'active'
   variables the same way as, for instance, done in transfer.c.
 - Fixed handling EPG data for time shifted events (thanks to Marco Schlüßler).
+- Increased the default value for 'Min. user inactivity' to 300 minutes (suggested
+  by Helmut Auer).
