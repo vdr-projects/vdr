@@ -3680,3 +3680,4 @@ Video Disk Recorder Revision History
   of cThread::Active() has been moved into the new cThread::Running().
   Plugin authors may want to check their derived cThread classes and replace any 'active'
   variables the same way as, for instance, done in transfer.c.
+- Fixed handling EPG data for time shifted events (thanks to Marco Schlüßler).

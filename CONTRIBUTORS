@@ -1203,6 +1203,7 @@ Marco Schlüßler <marco@lordzodiac.de>
  for fixing a possible hangup when ending a replay session while cIndexFile::CatchUp()
  is waiting
  for improving resetting CAM connections
+ for fixing handling EPG data for time shifted events
 
 Jürgen Schmitz <j.schmitz@web.de>
  for reporting a bug in displaying the current channel when switching via the SVDRP
