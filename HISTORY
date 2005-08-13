@@ -3683,3 +3683,6 @@ Video Disk Recorder Revision History
 - Fixed handling EPG data for time shifted events (thanks to Marco Schlüßler).
 - Increased the default value for 'Min. user inactivity' to 300 minutes (suggested
   by Helmut Auer).
+- Now storing the channel id in the info.vdr file even if there is no EPG info
+  available (thanks to Andreas Brachold for reporting that there are empty info.vdr
+  files created in that case).
