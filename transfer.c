@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: transfer.c 1.29 2005/08/13 11:19:46 kls Exp $
+ * $Id: transfer.c 1.30 2005/08/14 10:55:03 kls Exp $
  */
 
 #include "transfer.h"
@@ -41,9 +41,9 @@ void cTransfer::Activate(bool On)
 
 void cTransfer::Receive(uchar *Data, int Length)
 {
-  if (IsAttached() && Active()) {
+  if (IsAttached() && Running()) {
      int p = ringBuffer->Put(Data, Length);
-     if (p != Length && Active())
+     if (p != Length && Running())
         ringBuffer->ReportOverflow(Length - p);
      return;
      }
@@ -65,7 +65,7 @@ void cTransfer::Action(void)
   bool GotBufferReserve = false;
   int RequiredBufferReserve = KILOBYTE(DvbCardWith4MBofSDRAM ? 288 : 576);
 #endif
-  while (Active()) {
+  while (Running()) {
 #ifdef FW_NEEDS_BUFFER_RESERVE_FOR_AC3
         if (needsBufferReserve && !GotBufferReserve) {
            //XXX For dolby we've to fill the buffer because the firmware does

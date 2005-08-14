@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: cutter.c 1.9 2005/08/13 11:49:02 kls Exp $
+ * $Id: cutter.c 1.10 2005/08/14 10:51:54 kls Exp $
  */
 
 #include "cutter.h"
@@ -76,7 +76,7 @@ void cCuttingThread::Action(void)
      uchar buffer[MAXFRAMESIZE];
      bool LastMark = false;
      bool cutIn = true;
-     while (Active()) {
+     while (Running()) {
            uchar FileNumber;
            int FileOffset, Length;
            uchar PictureType;
@@ -213,7 +213,7 @@ bool cCutter::Start(const char *FileName)
 
 void cCutter::Stop(void)
 {
-  bool Interrupted = cuttingThread && cuttingThread->Running();
+  bool Interrupted = cuttingThread && cuttingThread->Active();
   const char *Error = cuttingThread ? cuttingThread->Error() : NULL;
   delete cuttingThread;
   cuttingThread = NULL;
@@ -230,7 +230,7 @@ void cCutter::Stop(void)
 bool cCutter::Active(void)
 {
   if (cuttingThread) {
-     if (cuttingThread->Running())
+     if (cuttingThread->Active())
         return true;
      error = cuttingThread->Error();
      Stop();

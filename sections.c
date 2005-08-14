@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: sections.c 1.12 2005/08/13 11:25:04 kls Exp $
+ * $Id: sections.c 1.13 2005/08/14 10:54:39 kls Exp $
  */
 
 #include "sections.h"
@@ -165,7 +165,7 @@ void cSectionHandler::SetStatus(bool On)
 void cSectionHandler::Action(void)
 {
   SetPriority(19);
-  while (Active()) {
+  while (Running()) {
 
         Lock();
         if (waitForLock)

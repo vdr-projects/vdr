@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remote.c 1.43 2005/08/13 11:28:35 kls Exp $
+ * $Id: remote.c 1.44 2005/08/14 10:53:55 kls Exp $
  */
 
 #include "remote.h"
@@ -259,11 +259,11 @@ int cKbdRemote::MapCodeToFunc(uint64 Code)
 void cKbdRemote::Action(void)
 {
   cPoller Poller(STDIN_FILENO);
-  while (Active()) {
+  while (Running()) {
         if (Poller.Poll(100)) {
            uint64 Command = 0;
            uint i = 0;
-           while (Active() && i < sizeof(Command)) {
+           while (Running() && i < sizeof(Command)) {
                  uchar ch;
                  int r = read(STDIN_FILENO, &ch, 1);
                  if (r == 1) {

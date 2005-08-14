@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.132 2005/08/13 11:40:46 kls Exp $
+ * $Id: dvbdevice.c 1.133 2005/08/14 10:52:26 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -291,7 +291,7 @@ bool cDvbTuner::SetFrontend(void)
 void cDvbTuner::Action(void)
 {
   dvb_frontend_event event;
-  while (Active()) {
+  while (Running()) {
         Lock();
         if (tunerStatus == tsSet) {
            while (GetFrontendEvent(event))

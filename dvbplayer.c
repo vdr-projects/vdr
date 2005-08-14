@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 1.37 2005/08/13 12:27:17 kls Exp $
+ * $Id: dvbplayer.c 1.38 2005/08/14 10:52:45 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -144,7 +144,7 @@ int cNonBlockingFileReader::Read(int FileHandle, uchar *Buffer, int Length)
 
 void cNonBlockingFileReader::Action(void)
 {
-  while (Active()) {
+  while (Running()) {
         Lock();
         if (!hasData && f >= 0 && buffer) {
            int r = safe_read(f, buffer + length, wanted - length);
@@ -201,7 +201,7 @@ protected:
 public:
   cDvbPlayer(const char *FileName);
   virtual ~cDvbPlayer();
-  bool Active(void) { return cThread::Active(); }
+  bool Active(void) { return cThread::Running(); }
   void Pause(void);
   void Play(void);
   void Forward(void);
@@ -363,7 +363,7 @@ void cDvbPlayer::Action(void)
   int Length = 0;
   bool Sleep = false;
 
-  while (Active() && (NextFile() || readIndex >= 0 || ringBuffer->Available() || !DeviceFlush(100))) {
+  while (Running() && (NextFile() || readIndex >= 0 || ringBuffer->Available() || !DeviceFlush(100))) {
         if (Sleep) {
            cCondWait::SleepMs(3); // this keeps the CPU load low
            Sleep = false;

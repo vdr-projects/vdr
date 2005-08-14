@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recorder.c 1.14 2005/08/13 11:33:35 kls Exp $
+ * $Id: recorder.c 1.15 2005/08/14 10:53:28 kls Exp $
  */
 
 #include <stdarg.h>
@@ -93,11 +93,11 @@ bool cFileWriter::NextFile(void)
 void cFileWriter::Action(void)
 {
   time_t t = time(NULL);
-  while (Active()) {
+  while (Running()) {
         int Count;
         uchar *p = remux->Get(Count, &pictureType);
         if (p) {
-           if (!Active() && pictureType == I_FRAME) // finish the recording before the next 'I' frame
+           if (!Running() && pictureType == I_FRAME) // finish the recording before the next 'I' frame
               break;
            if (NextFile()) {
               if (index && pictureType != NO_PICTURE)
@@ -155,16 +155,16 @@ void cRecorder::Activate(bool On)
 
 void cRecorder::Receive(uchar *Data, int Length)
 {
-  if (Active()) {
+  if (Running()) {
      int p = ringBuffer->Put(Data, Length);
-     if (p != Length && Active())
+     if (p != Length && Running())
         ringBuffer->ReportOverflow(Length - p);
      }
 }
 
 void cRecorder::Action(void)
 {
-  while (Active()) {
+  while (Running()) {
         int r;
         uchar *b = ringBuffer->Get(r);
         if (b) {

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.104 2005/08/13 11:44:06 kls Exp $
+ * $Id: device.c 1.105 2005/08/14 10:52:08 kls Exp $
  */
 
 #include "device.h"
@@ -1124,8 +1124,8 @@ bool cDevice::Receiving(bool CheckAny) const
 
 void cDevice::Action(void)
 {
-  if (Active() && OpenDvr()) {
-     while (Active()) {
+  if (Running() && OpenDvr()) {
+     while (Running()) {
            // Read data from the DVR device:
            uchar *b = NULL;
            if (GetTSPacket(b)) {
@@ -1186,7 +1186,7 @@ bool cDevice::AttachReceiver(cReceiver *Receiver)
          Receiver->device = this;
          receiver[i] = Receiver;
          Unlock();
-         if (!Active())
+         if (!Running())
             Start();
          return true;
          }
@@ -1254,7 +1254,7 @@ void cTSBuffer::Action(void)
   if (ringBuffer) {
      bool firstRead = true;
      cPoller Poller(f);
-     while (Active()) {
+     while (Running()) {
            if (firstRead || Poller.Poll(100)) {
               firstRead = false;
               int r = ringBuffer->Read(f);

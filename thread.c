@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 1.44 2005/08/13 11:22:37 kls Exp $
+ * $Id: thread.c 1.45 2005/08/14 11:15:42 kls Exp $
  */
 
 #include "thread.h"
@@ -197,7 +197,7 @@ bool cThread::emergencyExitRequested = false;
 
 cThread::cThread(const char *Description)
 {
-  running = active = false;
+  active = running = false;
   childTid = 0;
   description = NULL;
   SetDescription(Description);
@@ -234,31 +234,31 @@ void *cThread::StartThread(cThread *Thread)
   Thread->Action();
   if (Thread->description)
      dsyslog("%s thread ended (pid=%d, tid=%ld)", Thread->description, getpid(), pthread_self());
-  Thread->active = false;
   Thread->running = false;
+  Thread->active = false;
   return NULL;
 }
 
 bool cThread::Start(void)
 {
-  if (!running) {
-     running = active = true;
+  if (!active) {
+     active = running = true;
      if (pthread_create(&childTid, NULL, (void *(*) (void *))&StartThread, (void *)this) == 0) {
         pthread_detach(childTid); // auto-reap
         pthread_setschedparam(childTid, SCHED_RR, 0);
         }
      else {
         LOG_ERROR;
-        running = active = false;
+        active = running = false;
         return false;
         }
      }
   return true;
 }
 
-bool cThread::Running(void)
+bool cThread::Active(void)
 {
-  if (running) {
+  if (active) {
      //
      // Single UNIX Spec v2 says:
      //
@@ -273,7 +273,7 @@ bool cThread::Running(void)
         if (err != ESRCH)
            LOG_ERROR;
         childTid = 0;
-        running = active = false;
+        active = running = false;
         }
      else
         return true;
@@ -283,11 +283,11 @@ bool cThread::Running(void)
 
 void cThread::Cancel(int WaitSeconds)
 {
-  active = false;
-  if (running) {
+  running = false;
+  if (active) {
      if (WaitSeconds > 0) {
         for (time_t t0 = time(NULL) + WaitSeconds; time(NULL) < t0; ) {
-            if (!Running())
+            if (!Active())
                return;
             cCondWait::SleepMs(10);
             }
@@ -295,7 +295,7 @@ void cThread::Cancel(int WaitSeconds)
         }
      pthread_cancel(childTid);
      childTid = 0;
-     running = false;
+     active = false;
      }
 }
 
