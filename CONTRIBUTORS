@@ -1425,3 +1425,7 @@ Bernhard Stegmaier <bernhard.stegmaier@in.tum.de>
 
 Klaus ??? <klaus@reel-multimedia.com>
  for reporting a race condition in cTransfer.
+
+Thomas Günther <tom1@toms-cafe.de>
+ for fixing handling the frame number display if '7' is pressed before the first
+ editing mark, or '9' after the last one

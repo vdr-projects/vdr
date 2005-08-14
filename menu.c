@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.352 2005/08/14 12:02:08 kls Exp $
+ * $Id: menu.c 1.353 2005/08/14 12:57:48 kls Exp $
  */
 
 #include "menu.h"
@@ -3596,10 +3596,11 @@ void cReplayControl::MarkJump(bool Forward)
      int Current, Total;
      if (GetIndex(Current, Total)) {
         cMark *m = Forward ? marks.GetNext(Current) : marks.GetPrev(Current);
-        if (m)
+        if (m) {
            Goto(m->position, true);
+           displayFrames = true;
+           }
         }
-     displayFrames = true;
      }
 }
 
