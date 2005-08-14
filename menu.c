@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.354 2005/08/14 15:00:11 kls Exp $
+ * $Id: menu.c 1.355 2005/08/14 15:14:29 kls Exp $
  */
 
 #include "menu.h"
@@ -2854,6 +2854,8 @@ eOSState cDisplayChannel::ProcessKey(eKeys Key)
                      Refresh();
                      break;
                      }
+                  else if (number > 0 && channel)
+                     Channels.SwitchTo(number);
                   return osEnd;
     default:      if ((Key & (k_Repeat | k_Release)) == 0) {
                      cRemote::Put(Key);
