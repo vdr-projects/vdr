@@ -3689,3 +3689,6 @@ Video Disk Recorder Revision History
 - Changed the title of the recording info menu (thanks to Rolf Ahrenberg).
 - Fixed handling the frame number display if '7' is pressed before the first editing
   mark, or '9' after the last one (thanks to Thomas Günther).
+- Now discarding any previous numerical input to switch channels if Up, Down, Channel+,
+  Channel-, Left or Right is pressed (thanks to Wolfgang Rohdewald for reporting a
+  problem with this).

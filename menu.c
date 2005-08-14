@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.353 2005/08/14 12:57:48 kls Exp $
+ * $Id: menu.c 1.354 2005/08/14 15:00:11 kls Exp $
  */
 
 #include "menu.h"
@@ -2789,6 +2789,7 @@ eOSState cDisplayChannel::ProcessKey(eKeys Key)
     case kRight|k_Repeat:
     case kRight:
          withInfo = false;
+         number = 0;
          if (group < 0) {
             cChannel *channel = Channels.GetByNumber(cDevice::CurrentChannel());
             if (channel)
@@ -2824,6 +2825,7 @@ eOSState cDisplayChannel::ProcessKey(eKeys Key)
     case kChanDn:
          withInfo = true;
          group = -1;
+         number = 0;
          Refresh();
          break;
     case kNone:

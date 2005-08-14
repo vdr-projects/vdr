@@ -1347,6 +1347,8 @@ Wolfgang Rohdewald <wolfgang@rohdewald.de>
  cEvent::FixEpgBugs()
  for adding a missing cMutexLock to cRemote::HasKeys()
  for removing an unnecessary #include from osd.c
+ for reporting a problem with with numerical input to switch channels if Up, Down,
+ Channel+ or Channel- is pressed
 
 Chad Flynt <hoochster@sofnet.com>
  for suggestions and experiments regarding the buffer reserve in cTransfer
