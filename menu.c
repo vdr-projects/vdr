@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.351 2005/06/18 10:31:52 kls Exp $
+ * $Id: menu.c 1.352 2005/08/14 12:02:08 kls Exp $
  */
 
 #include "menu.h"
@@ -1445,7 +1445,7 @@ public:
 };
 
 cMenuRecording::cMenuRecording(const cRecording *Recording)
-:cOsdMenu(tr("Recording"))
+:cOsdMenu(tr("Recording info"))
 {
   recording = Recording;
   if (recording)

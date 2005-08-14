@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.197 2005/08/06 16:09:44 kls Exp $
+ * $Id: i18n.c 1.198 2005/08/14 12:03:47 kls Exp $
  *
  * Translations provided by:
  *
@@ -251,6 +251,27 @@ const tI18nPhrase Phrases[] = {
     "Snimke",
     "Salvestused",
     "Optagelser",
+  },
+  { "Recording info",
+    "Aufzeichnung",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "Tallenteen tiedot",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
   },
   { "Setup",
     "Einstellungen",

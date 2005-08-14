@@ -3686,3 +3686,4 @@ Video Disk Recorder Revision History
   available (thanks to Andreas Brachold for reporting that there are empty info.vdr
   files created in that case).
 - Added some 'mkdir -p' to the Makefile's 'install' target.
+- Changed the title of the recording info menu (thanks to Rolf Ahrenberg).
