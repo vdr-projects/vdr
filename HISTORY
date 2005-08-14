@@ -3685,3 +3685,4 @@ Video Disk Recorder Revision History
 - Now storing the channel id in the info.vdr file even if there is no EPG info
   available (thanks to Andreas Brachold for reporting that there are empty info.vdr
   files created in that case).
+- Added some 'mkdir -p' to the Makefile's 'install' target.
