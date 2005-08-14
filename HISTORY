@@ -3685,7 +3685,7 @@ Video Disk Recorder Revision History
 - Now storing the channel id in the info.vdr file even if there is no EPG info
   available (thanks to Andreas Brachold for reporting that there are empty info.vdr
   files created in that case).
-- Added some 'mkdir -p' to the Makefile's 'install' target.
+- Added some 'mkdir -p' to the Makefile's 'install' target (thanks to Wayne Keer).
 - Changed the title of the recording info menu (thanks to Rolf Ahrenberg).
 - Fixed handling the frame number display if '7' is pressed before the first editing
   mark, or '9' after the last one (thanks to Thomas Günther).
