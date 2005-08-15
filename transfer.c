@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: transfer.c 1.28 2005/02/19 14:38:55 kls Exp $
+ * $Id: transfer.c 1.30 2005/08/14 10:55:03 kls Exp $
  */
 
 #include "transfer.h"
@@ -21,7 +21,6 @@ cTransfer::cTransfer(int VPid, const int *APids, const int *DPids, const int *SP
   ringBuffer = new cRingBufferLinear(TRANSFERBUFSIZE, TS_SIZE * 2, true, "Transfer");
   remux = new cRemux(VPid, APids, Setup.UseDolbyDigital ? DPids : NULL, SPids);
   needsBufferReserve = Setup.UseDolbyDigital && VPid != 0 && DPids && DPids[0] != 0;
-  active = false;
 }
 
 cTransfer::~cTransfer()
@@ -34,21 +33,17 @@ cTransfer::~cTransfer()
 
 void cTransfer::Activate(bool On)
 {
-  if (On) {
-     if (!active)
-        Start();
-     }
-  else if (active) {
-     active = false;
+  if (On)
+     Start();
+  else
      Cancel(3);
-     }
 }
 
 void cTransfer::Receive(uchar *Data, int Length)
 {
-  if (IsAttached() && active) {
+  if (IsAttached() && Running()) {
      int p = ringBuffer->Put(Data, Length);
-     if (p != Length && active)
+     if (p != Length && Running())
         ringBuffer->ReportOverflow(Length - p);
      return;
      }
@@ -70,8 +65,7 @@ void cTransfer::Action(void)
   bool GotBufferReserve = false;
   int RequiredBufferReserve = KILOBYTE(DvbCardWith4MBofSDRAM ? 288 : 576);
 #endif
-  active = true;
-  while (active) {
+  while (Running()) {
 #ifdef FW_NEEDS_BUFFER_RESERVE_FOR_AC3
         if (needsBufferReserve && !GotBufferReserve) {
            //XXX For dolby we've to fill the buffer because the firmware does
@@ -145,7 +139,6 @@ void cTransfer::Action(void)
               }
            }
         }
-  active = false;
 }
 
 // --- cTransferControl ------------------------------------------------------

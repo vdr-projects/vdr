@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.135 2005/08/07 09:03:00 kls Exp $
+ * $Id: config.c 1.136 2005/08/13 13:47:08 kls Exp $
  */
 
 #include "config.h"
@@ -295,7 +295,7 @@ cSetup::cSetup(void)
   MaxVideoFileSize = MAXVIDEOFILESIZE;
   SplitEditedFiles = 0;
   MinEventTimeout = 30;
-  MinUserInactivity = 120;
+  MinUserInactivity = 300;
   MultiSpeedMode = 0;
   ShowReplayMode = 0;
   ResumeID = 0;

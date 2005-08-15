@@ -520,6 +520,7 @@ Helmut Auer <vdr@helmutauer.de>
  for fixing a frequency/transponder handling mixup when setting the time from the
  DVB data stream
  for implementing a default cRemote::Initialize()
+ for suggesting to increase the default value for 'Min. user inactivity' to 300 minutes
 
 Jeremy Hall <jhall@UU.NET>
  for fixing an incomplete initialization of the filter parameters in eit.c
@@ -570,6 +571,8 @@ Oliver Endriss <o.endriss@gmx.de>
  being learned overwriting the date/time in the 'classic' skin
  for making cDvbOsd check available OSD memory at runtime
  for making cEIT::cEIT() drop EPG events that have a zero start time or duration
+ for reporting an unnecessary OSD draw operation caused by the audio track description
+ display in the ST:TNG skin's channel display
 
 Reinhard Walter Buchner <rw.buchner@freenet.de>
  for adding some satellites to 'sources.conf'
@@ -822,6 +825,8 @@ Andreas Brachold <vdr04@deltab.de>
  the actual plugin library files from this version of VDR
  for making files and directories created with rights according to the shell's
  umask settings
+ for reporting that there are empty info.vdr files created if there is no EPG
+ info available
 
 Manuel Hartl <icecep@gmx.net>
  for suggesting to extend the logging info when starting/stopping timers
@@ -889,6 +894,7 @@ Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  for fixing internationalization of the text for "Setup/DVB/Audio language(s)"
  for making pressing the Power button not stop Transfer Mode or replay immediately
  for making EPG events without a title display "No title" instead of "(null)"
+ for changing the title of the recording info menu
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark
@@ -1143,6 +1149,7 @@ Wayne Keer <syphir@syphir.sytes.net>
  mtError
  for reporting an unused variable from cTimer::GetWDayFromMDay()
  for reporting a spelling error in 'canceling'
+ for adding some 'mkdir -p' to the Makefile's 'install' target
 
 Marco Schlüßler <marco@lordzodiac.de>
  for fixing handling colors in cDvbSpuPalette::yuv2rgb()
@@ -1203,6 +1210,7 @@ Marco Schlüßler <marco@lordzodiac.de>
  for fixing a possible hangup when ending a replay session while cIndexFile::CatchUp()
  is waiting
  for improving resetting CAM connections
+ for fixing handling EPG data for time shifted events
 
 Jürgen Schmitz <j.schmitz@web.de>
  for reporting a bug in displaying the current channel when switching via the SVDRP
@@ -1341,6 +1349,8 @@ Wolfgang Rohdewald <wolfgang@rohdewald.de>
  cEvent::FixEpgBugs()
  for adding a missing cMutexLock to cRemote::HasKeys()
  for removing an unnecessary #include from osd.c
+ for reporting a problem with with numerical input to switch channels if Up, Down,
+ Channel+ or Channel- is pressed
 
 Chad Flynt <hoochster@sofnet.com>
  for suggestions and experiments regarding the buffer reserve in cTransfer
@@ -1417,3 +1427,10 @@ Frank Krömmelbein <kroemmelbein@gmx.de>
 Bernhard Stegmaier <bernhard.stegmaier@in.tum.de>
  for reporting a problem in cEITScanner::Process() with forced EPG scans if EPG
  scan timeout is set to 0
+
+Klaus ??? <klaus@reel-multimedia.com>
+ for reporting a race condition in cTransfer.
+
+Thomas Günther <tom1@toms-cafe.de>
+ for fixing handling the frame number display if '7' is pressed before the first
+ editing mark, or '9' after the last one

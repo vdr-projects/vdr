@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.351 2005/06/18 10:31:52 kls Exp $
+ * $Id: menu.c 1.355 2005/08/14 15:14:29 kls Exp $
  */
 
 #include "menu.h"
@@ -1445,7 +1445,7 @@ public:
 };
 
 cMenuRecording::cMenuRecording(const cRecording *Recording)
-:cOsdMenu(tr("Recording"))
+:cOsdMenu(tr("Recording info"))
 {
   recording = Recording;
   if (recording)
@@ -2789,6 +2789,7 @@ eOSState cDisplayChannel::ProcessKey(eKeys Key)
     case kRight|k_Repeat:
     case kRight:
          withInfo = false;
+         number = 0;
          if (group < 0) {
             cChannel *channel = Channels.GetByNumber(cDevice::CurrentChannel());
             if (channel)
@@ -2824,6 +2825,7 @@ eOSState cDisplayChannel::ProcessKey(eKeys Key)
     case kChanDn:
          withInfo = true;
          group = -1;
+         number = 0;
          Refresh();
          break;
     case kNone:
@@ -2852,6 +2854,8 @@ eOSState cDisplayChannel::ProcessKey(eKeys Key)
                      Refresh();
                      break;
                      }
+                  else if (number > 0 && channel)
+                     Channels.SwitchTo(number);
                   return osEnd;
     default:      if ((Key & (k_Repeat | k_Release)) == 0) {
                      cRemote::Put(Key);
@@ -3596,10 +3600,11 @@ void cReplayControl::MarkJump(bool Forward)
      int Current, Total;
      if (GetIndex(Current, Total)) {
         cMark *m = Forward ? marks.GetNext(Current) : marks.GetPrev(Current);
-        if (m)
+        if (m) {
            Goto(m->position, true);
+           displayFrames = true;
+           }
         }
-     displayFrames = true;
      }
 }
 

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recorder.h 1.3 2005/01/15 16:35:53 kls Exp $
+ * $Id: recorder.h 1.4 2005/08/13 11:31:18 kls Exp $
  */
 
 #ifndef __RECORDER_H
@@ -23,7 +23,6 @@ private:
   cRingBufferLinear *ringBuffer;
   cRemux *remux;
   cFileWriter *writer;
-  bool active;
 protected:
   virtual void Activate(bool On);
   virtual void Receive(uchar *Data, int Length);

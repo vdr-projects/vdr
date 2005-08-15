@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 1.76 2005/07/31 11:20:20 kls Exp $
+# $Id: Makefile 1.77 2005/08/14 11:42:20 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -183,11 +183,16 @@ plugins-clean:
 # Install the files:
 
 install:
+	@mkdir -p $(BINDIR)
 	@cp vdr runvdr $(BINDIR)
+	@mkdir -p $(BINDIR)/$(PLUGINLIBDIR)
+	@cp $(PLUGINLIBDIR)/* $(BINDIR)/$(PLUGINLIBDIR)
+	@mkdir -p $(MANDIR)/man1
+	@mkdir -p $(MANDIR)/man5
 	@gzip -c vdr.1 > $(MANDIR)/man1/vdr.1.gz
 	@gzip -c vdr.5 > $(MANDIR)/man5/vdr.5.gz
 	@if [ ! -d $(VIDEODIR) ]; then\
-            mkdir $(VIDEODIR);\
+            mkdir -p $(VIDEODIR);\
             cp *.conf $(VIDEODIR);\
             fi
 

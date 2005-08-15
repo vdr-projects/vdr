@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: sections.c 1.11 2005/05/29 11:43:17 kls Exp $
+ * $Id: sections.c 1.13 2005/08/14 10:54:39 kls Exp $
  */
 
 #include "sections.h"
@@ -44,7 +44,6 @@ cSectionHandler::cSectionHandler(cDevice *Device)
 {
   shp = new cSectionHandlerPrivate;
   device = Device;
-  active = false;
   statusCount = 0;
   on = false;
   waitForLock = false;
@@ -54,7 +53,6 @@ cSectionHandler::cSectionHandler(cDevice *Device)
 
 cSectionHandler::~cSectionHandler()
 {
-  active = false;
   Cancel(3);
   cFilter *fi;
   while ((fi = filters.First()) != NULL)
@@ -166,9 +164,8 @@ void cSectionHandler::SetStatus(bool On)
 
 void cSectionHandler::Action(void)
 {
-  active = true;
   SetPriority(19);
-  while (active) {
+  while (Running()) {
 
         Lock();
         if (waitForLock)

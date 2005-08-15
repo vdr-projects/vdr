@@ -6,7 +6,7 @@
  *
  * LIRC support added by Carsten Koch <Carsten.Koch@icem.de>  2000-06-16.
  *
- * $Id: lirc.c 1.11 2005/07/31 10:18:09 kls Exp $
+ * $Id: lirc.c 1.12 2005/08/15 12:28:10 kls Exp $
  */
 
 #include "lirc.h"
@@ -61,48 +61,48 @@ void cLircRemote::Action(void)
   bool repeat = false;
   int timeout = -1;
 
-  for (; f >= 0;) {
+  while (Running() && f >= 0) {
 
-      bool ready = cFile::FileReady(f, timeout);
-      int ret = ready ? safe_read(f, buf, sizeof(buf)) : -1;
+        bool ready = cFile::FileReady(f, timeout);
+        int ret = ready ? safe_read(f, buf, sizeof(buf)) : -1;
 
-      if (ready && ret <= 0 ) {
-         esyslog("ERROR: lircd connection lost");
-         close(f);
-         f = -1;
-         break;
-         }
+        if (ready && ret <= 0 ) {
+           esyslog("ERROR: lircd connection lost");
+           close(f);
+           f = -1;
+           break;
+           }
 
-      if (ready && ret > 21) {
-         int count;
-         char KeyName[LIRC_KEY_BUF];
-         sscanf(buf, "%*x %x %29s", &count, KeyName); // '29' in '%29s' is LIRC_KEY_BUF-1!
-         if (count == 0) {
-            if (strcmp(KeyName, LastKeyName) == 0 && FirstTime.Elapsed() < KEYPRESSDELAY)
-               continue; // skip keys coming in too fast
-            if (repeat)
-               Put(LastKeyName, false, true);
-            strcpy(LastKeyName, KeyName);
-            repeat = false;
-            FirstTime.Set();
-            timeout = -1;
-            }
-         else {
-            if (FirstTime.Elapsed() < REPEATDELAY)
-               continue; // repeat function kicks in after a short delay
-            repeat = true;
-            timeout = REPEATDELAY;
-            }
-         LastTime.Set();
-         Put(KeyName, repeat);
-         }
-      else if (repeat) { // the last one was a repeat, so let's generate a release
-         if (LastTime.Elapsed() >= REPEATDELAY) {
-            Put(LastKeyName, false, true);
-            repeat = false;
-            *LastKeyName = 0;
-            timeout = -1;
-            }
-         }
-      }
+        if (ready && ret > 21) {
+           int count;
+           char KeyName[LIRC_KEY_BUF];
+           sscanf(buf, "%*x %x %29s", &count, KeyName); // '29' in '%29s' is LIRC_KEY_BUF-1!
+           if (count == 0) {
+              if (strcmp(KeyName, LastKeyName) == 0 && FirstTime.Elapsed() < KEYPRESSDELAY)
+                 continue; // skip keys coming in too fast
+              if (repeat)
+                 Put(LastKeyName, false, true);
+              strcpy(LastKeyName, KeyName);
+              repeat = false;
+              FirstTime.Set();
+              timeout = -1;
+              }
+           else {
+              if (FirstTime.Elapsed() < REPEATDELAY)
+                 continue; // repeat function kicks in after a short delay
+              repeat = true;
+              timeout = REPEATDELAY;
+              }
+           LastTime.Set();
+           Put(KeyName, repeat);
+           }
+        else if (repeat) { // the last one was a repeat, so let's generate a release
+           if (LastTime.Elapsed() >= REPEATDELAY) {
+              Put(LastKeyName, false, true);
+              repeat = false;
+              *LastKeyName = 0;
+              timeout = -1;
+              }
+           }
+        }
 }

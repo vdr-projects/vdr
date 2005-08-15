@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: transfer.h 1.9 2005/01/15 16:39:39 kls Exp $
+ * $Id: transfer.h 1.10 2005/08/13 10:16:02 kls Exp $
  */
 
 #ifndef __TRANSFER_H
@@ -21,7 +21,6 @@ private:
   cRingBufferLinear *ringBuffer;
   cRemux *remux;
   bool needsBufferReserve;
-  bool active;
 protected:
   virtual void Activate(bool On);
   virtual void Receive(uchar *Data, int Length);

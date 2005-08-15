@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.h 1.28 2005/05/29 11:31:24 kls Exp $
+ * $Id: thread.h 1.30 2005/08/14 11:21:48 kls Exp $
  */
 
 #ifndef __THREAD_H
@@ -75,6 +75,7 @@ public:
 class cThread {
   friend class cThreadLock;
 private:
+  bool active;
   bool running;
   pthread_t childTid;
   cMutex mutex;
@@ -86,13 +87,30 @@ protected:
   void Lock(void) { mutex.Lock(); }
   void Unlock(void) { mutex.Unlock(); }
   virtual void Action(void) = 0;
+       ///< A derived cThread class must implement the code it wants to
+       ///< execute as a separate thread in this function. If this is
+       ///< a loop, it must check Running() repeatedly to see whether
+       ///< it's time to stop.
+  bool Running(void) { return running; }
+       ///< Returns false if a derived cThread object shall leave its Action()
+       ///< function.
   void Cancel(int WaitSeconds = 0);
+       ///< Cancels the thread by first setting 'running' to false, so that
+       ///< the Action() loop can finish in an orderly fashion and then waiting
+       ///< up to WaitSeconds seconds for the thread to actually end. If the
+       ///< thread doesn't end by itself, it is killed.
 public:
   cThread(const char *Description = NULL);
+       ///< Creates a new thread.
+       ///< If Description is present, a log file entry will be made when
+       ///< the thread starts and stops. The Start() function must be called 
+       ///< to actually start the thread.
   virtual ~cThread();
   void SetDescription(const char *Description, ...);
   bool Start(void);
+       ///< Actually starts the thread.
   bool Active(void);
+       ///< Checks whether the thread is still alive.
   static bool EmergencyExit(bool Request = false);
   };
 

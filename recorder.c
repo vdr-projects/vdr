@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recorder.c 1.13 2005/01/16 12:53:17 kls Exp $
+ * $Id: recorder.c 1.15 2005/08/14 10:53:28 kls Exp $
  */
 
 #include <stdarg.h>
@@ -29,7 +29,6 @@ private:
   uchar pictureType;
   int fileSize;
   int recordFile;
-  bool active;
   time_t lastDiskSpaceCheck;
   bool RunningLowOnDiskSpace(void);
   bool NextFile(void);
@@ -43,7 +42,6 @@ public:
 cFileWriter::cFileWriter(const char *FileName, cRemux *Remux)
 :cThread("file writer")
 {
-  active = false;
   fileName = NULL;
   remux = Remux;
   index = NULL;
@@ -63,7 +61,6 @@ cFileWriter::cFileWriter(const char *FileName, cRemux *Remux)
 
 cFileWriter::~cFileWriter()
 {
-  active = false;
   Cancel(3);
   delete index;
   delete fileName;
@@ -96,13 +93,11 @@ bool cFileWriter::NextFile(void)
 void cFileWriter::Action(void)
 {
   time_t t = time(NULL);
-  active = true;
-  while (active) {
+  while (Running()) {
         int Count;
         uchar *p = remux->Get(Count, &pictureType);
         if (p) {
-           //XXX+ active??? see old version (Busy)
-           if (!active && pictureType == I_FRAME) // finish the recording before the next 'I' frame
+           if (!Running() && pictureType == I_FRAME) // finish the recording before the next 'I' frame
               break;
            if (NextFile()) {
               if (index && pictureType != NO_PICTURE)
@@ -124,15 +119,12 @@ void cFileWriter::Action(void)
            t = time(NULL);
            }
         }
-  active = false;
 }
 
 cRecorder::cRecorder(const char *FileName, int Ca, int Priority, int VPid, const int *APids, const int *DPids, const int *SPids)
 :cReceiver(Ca, Priority, VPid, APids, Setup.UseDolbyDigital ? DPids : NULL, SPids)
 ,cThread("recording")
 {
-  active = false;
-
   // Make sure the disk is up and running:
 
   SpinUpDisk(FileName);
@@ -157,25 +149,22 @@ void cRecorder::Activate(bool On)
      writer->Start();
      Start();
      }
-  else if (active) {
-     active = false;
+  else
      Cancel(3);
-     }
 }
 
 void cRecorder::Receive(uchar *Data, int Length)
 {
-  if (active) {
+  if (Running()) {
      int p = ringBuffer->Put(Data, Length);
-     if (p != Length && active)
+     if (p != Length && Running())
         ringBuffer->ReportOverflow(Length - p);
      }
 }
 
 void cRecorder::Action(void)
 {
-  active = true;
-  while (active) {
+  while (Running()) {
         int r;
         uchar *b = ringBuffer->Get(r);
         if (b) {

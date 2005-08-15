@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.110 2005/08/06 09:53:21 kls Exp $
+ * $Id: recording.c 1.111 2005/08/13 14:00:48 kls Exp $
  */
 
 #include "recording.h"
@@ -220,11 +220,11 @@ void cResumeFile::Delete(void)
 
 // --- cRecordingInfo --------------------------------------------------------
 
-cRecordingInfo::cRecordingInfo(const cEvent *Event)
+cRecordingInfo::cRecordingInfo(tChannelID ChannelID, const cEvent *Event)
 {
+  channelID = ChannelID;
   if (Event) {
      event = Event;
-     channelID = event->ChannelID();
      ownEvent = NULL;
      }
   else
@@ -424,7 +424,7 @@ cRecording::cRecording(cTimer *Timer, const cEvent *Event)
   priority = Timer->Priority();
   lifetime = Timer->Lifetime();
   // handle info:
-  info = new cRecordingInfo(Event);
+  info = new cRecordingInfo(Timer->Channel()->GetChannelID(), Event);
   // this is a somewhat ugly hack to get the 'summary' information from the
   // timer into the recording info, but it saves us from having to actually
   // copy the entire event data:

@@ -746,7 +746,7 @@ Version 1.2
   Miscellaneous:
 
   Min. event timeout = 30
-  Min. user inactivity = 120
+  Min. user inactivity = 300
                          If the command line option '-s' has been set, VDR will
                          automatically shutdown the computer if the next timer
                          event is at least MinEventTimeout minutes in the future,

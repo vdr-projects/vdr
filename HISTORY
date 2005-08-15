@@ -3671,3 +3671,31 @@ Video Disk Recorder Revision History
 - Fixed setting system time to avoid time jumps in case of faulty data (thanks
   to Andreas Böttger).
 - Fixed a memory leak in the SVDRP command LSTE (thanks to Stefan Huelswitt).
+
+2005-08-15: Version 1.3.29
+
+- Fixed a race condition in cTransfer (thanks to Klaus ??? for reporting this one).
+  In doing so, the 'active' variables used by the actual derived cThread classes
+  have been replaced by the cThread::Running() function.
+  Plugin authors may want to check their derived cThread classes and replace any 'active'
+  variables the same way as, for instance, done in transfer.c.
+- Fixed handling EPG data for time shifted events (thanks to Marco Schlüßler).
+- Increased the default value for 'Min. user inactivity' to 300 minutes (suggested
+  by Helmut Auer).
+- Now storing the channel id in the info.vdr file even if there is no EPG info
+  available (thanks to Andreas Brachold for reporting that there are empty info.vdr
+  files created in that case).
+- Added some 'mkdir -p' to the Makefile's 'install' target (thanks to Wayne Keer).
+- Changed the title of the recording info menu (thanks to Rolf Ahrenberg).
+- Fixed handling the frame number display if '7' is pressed before the first editing
+  mark, or '9' after the last one (thanks to Thomas Günther).
+- Now discarding any previous numerical input to switch channels if Up, Down, Channel+,
+  Channel-, Left or Right is pressed (thanks to Wolfgang Rohdewald for reporting a
+  problem with this).
+- Pressing Ok while entering a channel number now immediately switches to that
+  channel, without waiting for further input.
+- Avoiding unnecessary OSD draw operations caused by the audio track description
+  display in the ST:TNG skin's channel display (thanks to Oliver Endriss for reporting
+  this).
+- Removed the VIDEO_STILLPICTURE_WORKS_WITH_VDR_FRAMES stuff from
+  cDvbDevice::StillPicture(), since apparently the VIDEO_STILLPICTURE call works.
