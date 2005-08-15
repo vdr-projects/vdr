@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: rcu.c 1.9 2005/07/31 10:17:45 kls Exp $
+ * $Id: rcu.c 1.10 2005/08/15 12:30:21 kls Exp $
  */
 
 #include "rcu.h"
@@ -98,60 +98,59 @@ void cRcuRemote::Action(void)
   uint64 LastCommand = 0;
   bool repeat = false;
 
-  //XXX
-  for (; f >= 0;) {
+  while (Running() && f >= 0) {
 
-      LOCK_THREAD;
+        LOCK_THREAD;
 
-      if (ReceiveByte(REPEATLIMIT) == 'X') {
-         for (int i = 0; i < 6; i++) {
-             int b = ReceiveByte();
-             if (b >= 0) {
-                buffer.raw[i] = b;
-                if (i == 5) {
-                   unsigned short Address = ntohs(buffer.data.address); // the PIC sends bytes in "network order"
-                   uint64         Command = ntohl(buffer.data.command);
-                   if (code == 'B' && Address == 0x0000 && Command == 0x00004000)
-                      // Well, well, if it isn't the "d-box"...
-                      // This remote control sends the above command before and after
-                      // each keypress - let's just drop this:
-                      break;
-                   Command |= uint64(Address) << 32;
-                   if (Command != LastCommand) {
-                      LastCommand = Command;
-                      repeat = false;
-                      FirstTime.Set();
-                      }
-                   else {
-                      if (FirstTime.Elapsed() < REPEATDELAY)
-                         break; // repeat function kicks in after a short delay
-                      repeat = true;
-                      }
-                   Put(Command, repeat);
-                   receivedCommand = true;
-                   }
-                }
-             else
-                break;
-             }
-         }
-      else if (repeat) { // the last one was a repeat, so let's generate a release
-         Put(LastCommand, false, true);
-         repeat = false;
-         LastCommand = 0;
-         }
-      else {
-         LastCommand = 0;
-         if (numberToSend >= 0) {
-            Number(numberToSend);
-            numberToSend = -1;
-            }
-         }
-      if (code && time(NULL) - LastCodeRefresh > 60) {
-         SendCommand(code); // in case the PIC listens to the wrong code
-         LastCodeRefresh = time(NULL);
-         }
-      }
+        if (ReceiveByte(REPEATLIMIT) == 'X') {
+           for (int i = 0; i < 6; i++) {
+               int b = ReceiveByte();
+               if (b >= 0) {
+                  buffer.raw[i] = b;
+                  if (i == 5) {
+                     unsigned short Address = ntohs(buffer.data.address); // the PIC sends bytes in "network order"
+                     uint64         Command = ntohl(buffer.data.command);
+                     if (code == 'B' && Address == 0x0000 && Command == 0x00004000)
+                        // Well, well, if it isn't the "d-box"...
+                        // This remote control sends the above command before and after
+                        // each keypress - let's just drop this:
+                        break;
+                     Command |= uint64(Address) << 32;
+                     if (Command != LastCommand) {
+                        LastCommand = Command;
+                        repeat = false;
+                        FirstTime.Set();
+                        }
+                     else {
+                        if (FirstTime.Elapsed() < REPEATDELAY)
+                           break; // repeat function kicks in after a short delay
+                        repeat = true;
+                        }
+                     Put(Command, repeat);
+                     receivedCommand = true;
+                     }
+                  }
+               else
+                  break;
+               }
+           }
+        else if (repeat) { // the last one was a repeat, so let's generate a release
+           Put(LastCommand, false, true);
+           repeat = false;
+           LastCommand = 0;
+           }
+        else {
+           LastCommand = 0;
+           if (numberToSend >= 0) {
+              Number(numberToSend);
+              numberToSend = -1;
+              }
+           }
+        if (code && time(NULL) - LastCodeRefresh > 60) {
+           SendCommand(code); // in case the PIC listens to the wrong code
+           LastCodeRefresh = time(NULL);
+           }
+        }
 }
 
 int cRcuRemote::ReceiveByte(int TimeoutMs)
