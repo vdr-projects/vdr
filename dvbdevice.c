@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.133 2005/08/14 10:52:26 kls Exp $
+ * $Id: dvbdevice.c 1.134 2005/08/15 14:05:23 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -1052,22 +1052,6 @@ void cDvbDevice::Mute(void)
 
 void cDvbDevice::StillPicture(const uchar *Data, int Length)
 {
-/* Using the VIDEO_STILLPICTURE ioctl call would be the
-   correct way to display a still frame, but unfortunately this
-   doesn't work with frames from VDR. So let's do pretty much the
-   same here as in DVB/driver/dvb.c's play_iframe() - I have absolutely
-   no idea why it works this way, but doesn't work with VIDEO_STILLPICTURE.
-   If anybody ever finds out what could be changed so that VIDEO_STILLPICTURE
-   could be used, please let me know!
-   kls 2002-03-23
-   2003-08-30: apparently the driver can't handle PES data, so Oliver Endriss
-               <o.endriss@gmx.de> has changed this to strip all PES headers
-               and send pure ES data to the driver. Seems to work just fine!
-               Let's drop the VIDEO_STILLPICTURE_WORKS_WITH_VDR_FRAMES stuff
-               once this has proven to work in all cases.
-*/
-#define VIDEO_STILLPICTURE_WORKS_WITH_VDR_FRAMES
-#ifdef VIDEO_STILLPICTURE_WORKS_WITH_VDR_FRAMES
   if (Data[0] == 0x00 && Data[1] == 0x00 && Data[2] == 0x01 && (Data[3] & 0xF0) == 0xE0) {
      // PES data
      char *buf = MALLOC(char, Length);
@@ -1139,13 +1123,6 @@ void cDvbDevice::StillPicture(const uchar *Data, int Length)
      video_still_picture sp = { (char *)Data, Length };
      CHECK(ioctl(fd_video, VIDEO_STILLPICTURE, &sp));
      }
-#else
-#define MIN_IFRAME 400000
-  for (int i = MIN_IFRAME / Length + 1; i > 0; i--) {
-      safe_write(fd_video, Data, Length);
-      cCondWait::SleepMs(3); // allows the buffer to be displayed in case the progress display is active
-      }
-#endif
 }
 
 bool cDvbDevice::Poll(cPoller &Poller, int TimeoutMs)

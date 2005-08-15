@@ -3697,3 +3697,5 @@ Video Disk Recorder Revision History
 - Avoiding unnecessary OSD draw operations caused by the audio track description
   display in the ST:TNG skin's channel display (thanks to Oliver Endriss for reporting
   this).
+- Removed the VIDEO_STILLPICTURE_WORKS_WITH_VDR_FRAMES stuff from
+  cDvbDevice::StillPicture(), since apparently the VIDEO_STILLPICTURE call works.
