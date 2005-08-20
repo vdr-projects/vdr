@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.209 2005/07/31 11:25:16 kls Exp $
+ * $Id: vdr.c 1.210 2005/08/20 11:24:42 kls Exp $
  */
 
 #include <getopt.h>
@@ -63,6 +63,8 @@
 #define SHUTDOWNWAIT      300 // seconds to wait in user prompt before automatic shutdown
 #define MANUALSTART       600 // seconds the next timer must be in the future to assume manual start
 #define CHANNELSAVEDELTA  600 // seconds before saving channels.conf after automatic modifications
+#define LASTCAMMENUTIMEOUT  3 // seconds to run the main loop 'fast' after a CAM menu has been closed
+                              // in order to react on a possible new CAM menu as soon as possible
 
 #define EXIT(v) { ExitCode = (v); goto Exit; }
 
@@ -389,6 +391,7 @@ int main(int argc, char *argv[])
   int PreviousChannelIndex = 0;
   time_t LastChannelChanged = time(NULL);
   time_t LastActivity = 0;
+  time_t LastCamMenu = 0;
   int MaxLatencyTime = 0;
   bool ForceShutdown = false;
   bool UserShutdown = false;
@@ -660,11 +663,16 @@ int main(int argc, char *argv[])
         if (!Menu && Recordings.NeedsUpdate())
            Recordings.Load();
         // CAM control:
-        if (!Menu && !cOsd::IsOpen())
+        if (!Menu && !cOsd::IsOpen()) {
            Menu = CamControl();
+           if (Menu)
+              LastCamMenu = 0;
+           else if (!LastCamMenu)
+              LastCamMenu = time(NULL);
+           }
         // User Input:
         cOsdObject *Interact = Menu ? Menu : cControl::Control();
-        eKeys key = Interface->GetKey(!Interact || !Interact->NeedsFastResponse());
+        eKeys key = Interface->GetKey((!Interact || !Interact->NeedsFastResponse()) && time(NULL) - LastCamMenu > LASTCAMMENUTIMEOUT);
         if (NORMALKEY(key) != kNone) {
            EITScanner.Activity();
            LastActivity = time(NULL);
