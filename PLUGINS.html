@@ -1539,15 +1539,6 @@ must be delivered in the form of a Transport Stream (TS), which consists of
 packets that are all 188 bytes in size. Each call to <tt>GetTSPacket()</tt>
 must deliver exactly one such packet (if one is currently available).
 <p>
-If this device allows receiving several different data streams, it can
-implement
-
-<p><table><tr><td bgcolor=#F0F0F0><pre>
-virtual bool CanBeReUsed(int Frequency, int Vpid);
-</pre></td></tr></table><p>
-
-to indicate this to VDR.
-<p>
 <b>Replaying</b>
 <p>
 The functions to implement replaying capabilites are
