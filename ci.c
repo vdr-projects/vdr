@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 1.24 2005/06/04 11:57:05 kls Exp $
+ * $Id: ci.c 1.25 2005/08/20 12:16:23 kls Exp $
  */
 
 #include "ci.h"
@@ -1134,6 +1134,19 @@ bool cCiMMI::Process(int Length, const uint8_t *Data)
                // I really wonder why there is no text length field here...
                enquiry->text = CopyString(l, d);
                }
+            }
+            break;
+       case AOT_CLOSE_MMI: {
+            int id = -1;
+            int delay = -1;
+            int l = 0;
+            const uint8_t *d = GetData(Data, l);
+            if (l > 0) {
+               id = *d++;
+               if (l > 1)
+                  delay = *d;
+               }
+            dbgprotocol("%d: <== Close MMI  id = %02X  delay = %d\n", SessionId(), id, delay);
             }
             break;
        default: esyslog("ERROR: CI MMI: unknown tag %06X", Tag);
