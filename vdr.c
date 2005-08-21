@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.210 2005/08/20 11:24:42 kls Exp $
+ * $Id: vdr.c 1.211 2005/08/21 08:47:06 kls Exp $
  */
 
 #include <getopt.h>
@@ -65,6 +65,7 @@
 #define CHANNELSAVEDELTA  600 // seconds before saving channels.conf after automatic modifications
 #define LASTCAMMENUTIMEOUT  3 // seconds to run the main loop 'fast' after a CAM menu has been closed
                               // in order to react on a possible new CAM menu as soon as possible
+#define DEVICEREADYTIMEOUT 30 // seconds to wait until all devices are ready
 
 #define EXIT(v) { ExitCode = (v); goto Exit; }
 
@@ -520,6 +521,8 @@ int main(int argc, char *argv[])
 
   // Channel:
 
+  if (!cDevice::WaitForAllDevicesReady(DEVICEREADYTIMEOUT))
+     dsyslog("not all devices ready after %d seconds", DEVICEREADYTIMEOUT);
   Channels.SwitchTo(Setup.CurrentChannel);
   if (MuteAudio)
      cDevice::PrimaryDevice()->ToggleMute();

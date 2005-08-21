@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.134 2005/08/15 14:05:23 kls Exp $
+ * $Id: dvbdevice.c 1.135 2005/08/20 15:22:36 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -476,6 +476,15 @@ void cDvbDevice::MakePrimaryDevice(bool On)
 bool cDvbDevice::HasDecoder(void) const
 {
   return fd_video >= 0 && fd_audio >= 0;
+}
+
+bool cDvbDevice::Ready(void)
+{
+  if (ciHandler) {
+     ciHandler->Process();
+     return ciHandler->Ready();
+     }
+  return true;
 }
 
 int cDvbDevice::ProvidesCa(const cChannel *Channel) const

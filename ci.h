@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.h 1.13 2004/02/08 14:36:23 kls Exp $
+ * $Id: ci.h 1.14 2005/08/20 14:56:11 kls Exp $
  */
 
 #ifndef __CI_H
@@ -77,6 +77,7 @@ public:
   };
 
 #define MAX_CI_SESSION  16 //XXX
+#define MAX_CI_SLOT     16
 
 class cCiSession;
 class cCiTransportLayer;
@@ -89,6 +90,7 @@ private:
   int numSlots;
   bool newCaSupport;
   bool hasUserIO;
+  bool moduleReady[MAX_CI_SLOT];
   cCiSession *sessions[MAX_CI_SESSION];
   cCiTransportLayer *tpl;
   cCiTransportConnection *tc;
@@ -105,6 +107,7 @@ public:
   ~cCiHandler();
   static cCiHandler *CreateCiHandler(const char *FileName);
   int NumSlots(void) { return numSlots; }
+  bool Ready(void);
   bool Process(void);
   bool HasUserIO(void) { return hasUserIO; }
   bool EnterMenu(int Slot);

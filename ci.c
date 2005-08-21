@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 1.25 2005/08/20 12:16:23 kls Exp $
+ * $Id: ci.c 1.26 2005/08/20 15:27:35 kls Exp $
  */
 
 #include "ci.h"
@@ -1354,6 +1354,8 @@ cCiHandler::cCiHandler(int Fd, int NumSlots)
   hasUserIO = false;
   for (int i = 0; i < MAX_CI_SESSION; i++)
       sessions[i] = NULL;
+  for (int i = 0; i < MAX_CI_SLOT; i++)
+      moduleReady[i] = false;
   tpl = new cCiTransportLayer(Fd, numSlots);
   tc = NULL;
 }
@@ -1506,6 +1508,19 @@ int cCiHandler::CloseAllSessions(int Slot)
   return result;
 }
 
+bool cCiHandler::Ready(void)
+{
+  cMutexLock MutexLock(&mutex);
+  for (int Slot = 0; Slot < numSlots; Slot++) {
+      if (moduleReady[Slot]) {
+         cCiConditionalAccessSupport *cas = (cCiConditionalAccessSupport *)GetSessionByResourceId(RI_CONDITIONAL_ACCESS_SUPPORT, Slot);
+         if (!cas || !*cas->GetCaSystemIds())
+            return false;
+         }
+      }
+  return true;
+}
+
 bool cCiHandler::Process(void)
 {
   bool result = true;
@@ -1543,6 +1558,7 @@ bool cCiHandler::Process(void)
          }
       else if (tpl->ModuleReady(Slot)) {
          dbgprotocol("Module ready in slot %d\n", Slot);
+         moduleReady[Slot] = true;
          tpl->NewConnection(Slot);
          }
       }
