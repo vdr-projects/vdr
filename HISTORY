@@ -3709,3 +3709,4 @@ Video Disk Recorder Revision History
   all CAMs initialized and ready to decrypt, so that no more "channel not
   available" happens if VDR is started with the current channel being an encrypted
   one, or a timer on such a channel hits right after starting VDR.
+- Fixed cVideoRepacker to better handle errors in data (thanks to Reinhard Nissl).
