@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.135 2005/08/20 15:22:36 kls Exp $
+ * $Id: dvbdevice.c 1.136 2005/08/21 09:17:20 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -81,7 +81,7 @@ private:
   eTunerStatus tunerStatus;
   cMutex mutex;
   cCondVar locked;
-  cCondWait newSet;
+  cCondVar newSet;
   bool GetFrontendEvent(dvb_frontend_event &Event, int TimeoutMs = 0);
   bool SetFrontend(void);
   virtual void Action(void);
@@ -112,7 +112,8 @@ cDvbTuner::cDvbTuner(int Fd_Frontend, int CardIndex, fe_type_t FrontendType, cCi
 cDvbTuner::~cDvbTuner()
 {
   tunerStatus = tsIdle;
-  newSet.Signal();
+  newSet.Broadcast();
+  locked.Broadcast();
   Cancel(3);
 }
 
@@ -123,7 +124,7 @@ bool cDvbTuner::IsTunedTo(const cChannel *Channel) const
 
 void cDvbTuner::Set(const cChannel *Channel, bool Tune, bool UseCa)
 {
-  Lock();
+  cMutexLock MutexLock(&mutex);
   if (Tune)
      tunerStatus = tsSet;
   else if (tunerStatus == tsCam)
@@ -132,12 +133,15 @@ void cDvbTuner::Set(const cChannel *Channel, bool Tune, bool UseCa)
   if (Channel->Ca() && tunerStatus != tsCam)
      startTime = time(NULL);
   channel = *Channel;
-  Unlock();
-  newSet.Signal();
+  newSet.Broadcast();
 }
 
 bool cDvbTuner::Locked(int TimeoutMs)
 {
+  bool isLocked = (tunerStatus >= tsLocked);
+  if (isLocked || !TimeoutMs)
+     return isLocked;
+
   cMutexLock MutexLock(&mutex);
   if (TimeoutMs && tunerStatus < tsLocked)
      locked.TimedWait(mutex, TimeoutMs);
@@ -292,25 +296,33 @@ void cDvbTuner::Action(void)
 {
   dvb_frontend_event event;
   while (Running()) {
-        Lock();
-        if (tunerStatus == tsSet) {
-           while (GetFrontendEvent(event))
-                 ; // discard stale events
-           tunerStatus = SetFrontend() ? tsTuned : tsIdle;
-           }
-        if (tunerStatus != tsIdle) {
-           while (GetFrontendEvent(event, 10)) {
-                 if (event.status & FE_REINIT) {
-                    tunerStatus = tsSet;
-                    esyslog("ERROR: frontend %d was reinitialized - re-tuning", cardIndex);
-                    }
-                 if (event.status & FE_HAS_LOCK) {
-                    cMutexLock MutexLock(&mutex);
-                    tunerStatus = tsLocked;
-                    locked.Broadcast();
-                    }
-                 }
-           }
+        bool hasEvent = GetFrontendEvent(event, 1);
+
+        cMutexLock MutexLock(&mutex);
+        switch (tunerStatus) {
+          case tsIdle:
+               break;
+          case tsSet:
+               if (hasEvent)
+                  continue;
+               tunerStatus = SetFrontend() ? tsTuned : tsIdle;
+               continue;
+          case tsTuned:
+          case tsLocked:
+          case tsCam:
+               if (hasEvent) {
+                  if (event.status & FE_REINIT) {
+                     tunerStatus = tsSet;
+                     esyslog("ERROR: frontend %d was reinitialized - re-tuning", cardIndex);
+                     }
+                  if (event.status & FE_HAS_LOCK) {
+                     tunerStatus = tsLocked;
+                     locked.Broadcast();
+                     }
+                  continue;
+                  }
+          }
+
         if (ciHandler) {
            if (ciHandler->Process() && useCa) {
               if (tunerStatus == tsLocked) {
@@ -332,10 +344,9 @@ void cDvbTuner::Action(void)
            else if (tunerStatus > tsLocked)
               tunerStatus = tsLocked;
            }
-        Unlock();
         // in the beginning we loop more often to let the CAM connection start up fast
         if (tunerStatus != tsTuned)
-           newSet.Wait((ciHandler && (time(NULL) - startTime < 20)) ? 100 : 1000);
+           newSet.TimedWait(mutex, (ciHandler && (time(NULL) - startTime < 20)) ? 100 : 1000);
         }
 }
 
