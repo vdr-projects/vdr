@@ -4,11 +4,10 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 1.26 2005/08/20 15:27:35 kls Exp $
+ * $Id: ci.c 1.27 2005/08/21 14:10:27 kls Exp $
  */
 
 #include "ci.h"
-#include <asm/unaligned.h>
 #include <ctype.h>
 #include <linux/dvb/ca.h>
 #include <malloc.h>

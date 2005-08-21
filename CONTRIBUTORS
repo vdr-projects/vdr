@@ -1436,3 +1436,7 @@ Klaus Heppenheimer <klaus@reel-multimedia.com>
 Thomas Günther <tom1@toms-cafe.de>
  for fixing handling the frame number display if '7' is pressed before the first
  editing mark, or '9' after the last one
+
+David Woodhouse <dwmw2@infradead.org>
+ for his help in replacing the get/put_unaligned() macros from asm/unaligned.h with
+ own inline functions to avoid problems on platforms that don't provide these

@@ -3713,3 +3713,6 @@ Video Disk Recorder Revision History
 - Fixed cDvbTuner to avoid lockups on NPTL systems (thanks to Marcel Wiesweg).
 - Added 'Service' functions to the plugin interface (thanks to Udo Richter).
   See PLUGINS.html, section "Custom services" for details.
+- Replaced the get/put_unaligned() macros from <asm/unaligned.h> with own inline
+  functions to avoid problems on platforms that don't provide these (thanks to
+  David Woodhouse for his help).

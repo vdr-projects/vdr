@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.73 2005/08/06 09:53:21 kls Exp $
+ * $Id: tools.h 1.74 2005/08/21 14:06:38 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -56,6 +56,21 @@ template<class T> inline void swap(T &a, T &b) { T t = a; a = b; b = t; }
 
 #define BCDCHARTOINT(x) (10 * ((x & 0xF0) >> 4) + (x & 0xF))
 int BCD2INT(int x);
+
+// Unfortunately there are no platform independent macros for unaligned
+// access. so we do it this way:
+
+template<class T> inline T get_unaligned(T *p)
+{
+  struct s { T v; } __attribute__((packed));
+  return ((s *)p)->v;
+}
+
+template<class T> inline void put_unaligned(unsigned int v, T* p)
+{
+  struct s { T v; } __attribute__((packed));
+  ((s *)p)->v = v;
+}
 
 class cString {
 private:
