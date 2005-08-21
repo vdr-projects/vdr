@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.198 2005/08/14 12:03:47 kls Exp $
+ * $Id: i18n.c 1.199 2005/08/21 16:17:13 kls Exp $
  *
  * Translations provided by:
  *
@@ -3389,7 +3389,7 @@ const tI18nPhrase Phrases[] = {
     "tilf. ny transp.",
   },
   { "Setup.DVB$Audio languages",  // note the plural
-    "",//TODO
+    "Audio Sprachen",
     "",//TODO
     "",//TODO
     "Audio talen",
@@ -3410,7 +3410,7 @@ const tI18nPhrase Phrases[] = {
     "Audio sprog (ant.)",
   },
   { "Setup.DVB$Audio language",  // note the singular
-    "",//TODO
+    "Audio Sprache",
     "",//TODO
     "",//TODO
     "Audio taal",
