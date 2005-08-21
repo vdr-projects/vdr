@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 1.61 2005/08/13 11:44:13 kls Exp $
+ * $Id: device.h 1.62 2005/08/21 08:52:20 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -102,6 +102,12 @@ private:
 public:
   static int NumDevices(void) { return numDevices; }
          ///< Returns the total number of devices.
+  static bool WaitForAllDevicesReady(int Timeout = 0);
+         ///< Waits until all devices have become ready, or the given Timeout
+         ///< (seconds) has expired. While waiting, the Ready() function of each
+         ///< device is called in turn, until they all return true.
+         ///< \return True if all devices have become ready within the given
+         ///< timeout.
   static void SetUseDevice(int n);
          ///< Sets the 'useDevice' flag of the given device.
          ///< If this function is not called before initializing, all devices
@@ -136,6 +142,11 @@ private:
 protected:
   cDevice(void);
   virtual ~cDevice();
+  virtual bool Ready(void);
+         ///< Returns true if this device is ready. Devices with conditional
+         ///< access hardware may need some time until they are up and running.
+         ///< This function is called in a loop at startup until all devices
+         ///< are ready (see WaitForAllDevicesReady()).
   static int NextCardIndex(int n = 0);
          ///< Calculates the next card index.
          ///< Each device in a given machine must have a unique card index, which

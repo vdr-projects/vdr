@@ -11,7 +11,7 @@
  * The cDolbyRepacker code was originally written by Reinhard Nissl <rnissl@gmx.de>,
  * and adapted to the VDR coding style by Klaus.Schmidinger@cadsoft.de.
  *
- * $Id: remux.c 1.36 2005/07/30 10:23:00 kls Exp $
+ * $Id: remux.c 1.37 2005/08/21 08:58:58 kls Exp $
  */
 
 #include "remux.h"
@@ -171,11 +171,9 @@ bool cVideoRepacker::PushOutPacket(cRingBufferLinear *ResultBuffer, const uchar 
      int Bite = fragmentLen + (Count >= 0 ? 0 : Count);
      // put data into result buffer
      int n = Put(ResultBuffer, fragmentData, Bite);
-     if (n != Bite) {
-        Reset();
-        return false;
-        }
      fragmentLen = 0;
+     if (n != Bite)
+        return false;
      }
   else if (pesHeaderLen > 0) { // ... which is contained in the PES header buffer
      int PacketLen = pesHeaderLen + Count - 6;
@@ -186,11 +184,9 @@ bool cVideoRepacker::PushOutPacket(cRingBufferLinear *ResultBuffer, const uchar 
      int Bite = pesHeaderLen + (Count >= 0 ? 0 : Count);
      // put data into result buffer
      int n = Put(ResultBuffer, pesHeader, Bite);
-     if (n != Bite) {
-        Reset();
-        return false;
-        }
      pesHeaderLen = 0;
+     if (n != Bite)
+        return false;
      }
   // append further payload
   if (Count > 0) {
@@ -198,10 +194,8 @@ bool cVideoRepacker::PushOutPacket(cRingBufferLinear *ResultBuffer, const uchar 
      int Bite = Count;
      // put data into result buffer
      int n = Put(ResultBuffer, Data, Bite);
-     if (n != Bite) {
-        Reset();
+     if (n != Bite)
         return false;
-        }
      }
   // we did it ;-)
   return true;
@@ -250,12 +244,10 @@ void cVideoRepacker::Repack(cRingBufferLinear *ResultBuffer, const uchar *Data, 
            switch (*data) {
              case 0xB9 ... 0xFF: // system start codes
                   esyslog("cVideoRepacker: found system start code: stream seems to be scrambled or not demultiplexed");
-                  Reset();
                   break;
              case 0xB0 ... 0xB1: // reserved start codes
              case 0xB6:
                   esyslog("cVideoRepacker: found reserved start code: stream seems to be scrambled");
-                  Reset();
                   break;
              case 0xB4: // sequence error code
                   isyslog("cVideoRepacker: found sequence error code: stream seems to be damaged");

@@ -737,6 +737,7 @@ Marcel Wiesweg <marcel.wiesweg@gmx.de>
  for adding play mode pmVideoOnly
  for fixing a possible crash with inconsistent SI data
  for pointing out a problem with the cChannel copy constructor
+ for fixing cDvbTuner to avoid lockups on NPTL systems
 
 Torsten Herz <torsten.herz@web.de>
  for fixing a possible deadlock when using the "Blue" button in the "Schedules" menu
@@ -1261,6 +1262,7 @@ Udo Richter <udo_richter@gmx.de>
  for fixing handling 'page down' after it was broken in version 1.3.26
  for suggesting a fix for an out-of-bounds memory access with audio language ids
  for reporting a problem with cRemux in a single thread
+ for adding 'Service' functions to the plugin interface
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date
@@ -1428,9 +1430,13 @@ Bernhard Stegmaier <bernhard.stegmaier@in.tum.de>
  for reporting a problem in cEITScanner::Process() with forced EPG scans if EPG
  scan timeout is set to 0
 
-Klaus ??? <klaus@reel-multimedia.com>
+Klaus Heppenheimer <klaus@reel-multimedia.com>
  for reporting a race condition in cTransfer.
 
 Thomas Günther <tom1@toms-cafe.de>
  for fixing handling the frame number display if '7' is pressed before the first
  editing mark, or '9' after the last one
+
+David Woodhouse <dwmw2@infradead.org>
+ for his help in replacing the get/put_unaligned() macros from asm/unaligned.h with
+ own inline functions to avoid problems on platforms that don't provide these

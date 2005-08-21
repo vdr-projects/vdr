@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: plugin.c 1.13 2005/01/30 14:05:20 kls Exp $
+ * $Id: plugin.c 1.14 2005/08/21 09:35:28 kls Exp $
  */
 
 #include "plugin.h"
@@ -97,6 +97,11 @@ void cPlugin::SetupStore(const char *Name, const char *Value)
 void cPlugin::SetupStore(const char *Name, int Value)
 {
   Setup.Store(Name, Value, this->Name());
+}
+
+bool cPlugin::Service(const char *Id, void *Data)
+{
+  return false;
 }
 
 void cPlugin::RegisterI18n(const tI18nPhrase * const Phrases)
@@ -370,6 +375,31 @@ cPlugin *cPluginManager::GetPlugin(const char *Name)
          }
      }
   return NULL;
+}
+
+cPlugin *cPluginManager::CallFirstService(const char *Id, void *Data)
+{
+  if (pluginManager) {
+     for (cDll *dll = pluginManager->dlls.First(); dll; dll = pluginManager->dlls.Next(dll)) {
+         cPlugin *p = dll->Plugin();
+         if (p && p->Service(Id, Data))
+            return p;
+         }
+     }
+  return NULL;
+}
+
+bool cPluginManager::CallAllServices(const char *Id, void *Data)
+{
+  bool found=false;
+  if (pluginManager) {
+     for (cDll *dll = pluginManager->dlls.First(); dll; dll = pluginManager->dlls.Next(dll)) {
+         cPlugin *p = dll->Plugin();
+         if (p && p->Service(Id, Data))
+            found = true;
+         }
+     }
+  return found;
 }
 
 void cPluginManager::StopPlugins(void)

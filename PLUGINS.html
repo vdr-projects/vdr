@@ -9,23 +9,23 @@
 <center><b>Version 1.3</b></center>
 <p>
 <center>
-Copyright &copy; 2004 Klaus Schmidinger<br>
+Copyright &copy; 2005 Klaus Schmidinger<br>
 <a href="mailto:kls@cadsoft.de">kls@cadsoft.de</a><br>
 <a href="http://www.cadsoft.de/vdr">www.cadsoft.de/vdr</a>
 </center>
 <p>
-<!--X1.3.18--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
-Important modifications introduced in version 1.3.18 are marked like this.
-<!--X1.3.18--></td></tr></table>
-<!--X1.3.19--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
+<!--X1.3.19--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 Important modifications introduced in version 1.3.19 are marked like this.
 <!--X1.3.19--></td></tr></table>
-<!--X1.3.20--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
+<!--X1.3.20--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
 Important modifications introduced in version 1.3.20 are marked like this.
 <!--X1.3.20--></td></tr></table>
-<!--X1.3.21--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+<!--X1.3.21--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
 Important modifications introduced in version 1.3.21 are marked like this.
 <!--X1.3.21--></td></tr></table>
+<!--X1.3.30--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+Important modifications introduced in version 1.3.30 are marked like this.
+<!--X1.3.30--></td></tr></table>
 <p>
 VDR provides an easy to use plugin interface that allows additional functionality
 to be added to the program by implementing a dynamically loadable library file.
@@ -58,7 +58,7 @@ structures and allows it to hook itself into specific areas to perform special a
 <li><a href="#Command line arguments">Command line arguments</a>
 <li><a href="#Command line help">Command line help</a>
 <li><a href="#Getting started">Getting started</a>
-<!--X1.3.20--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
+<!--X1.3.20--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
 <li><a href="#Shutting down">Shutting down</a>
 <!--X1.3.20--></td></tr></table>
 <li><a href="#Main menu entry">Main menu entry</a>
@@ -68,6 +68,9 @@ structures and allows it to hook itself into specific areas to perform special a
 <li><a href="#The Setup menu">The Setup menu</a>
 <li><a href="#Configuration files">Configuration files</a>
 <li><a href="#Internationalization">Internationalization</a>
+<!--X1.3.30--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+<li><a href="#Custom services">Custom services</a>
+<!--X1.3.30--></td></tr></table>
 <li><a href="#Loading plugins into VDR">Loading plugins into VDR</a>
 <li><a href="#Building the distribution package">Building the distribution package</a>
 </ul>
@@ -81,7 +84,7 @@ structures and allows it to hook itself into specific areas to perform special a
 <li><a href="#Skins">Skins</a>
 <li><a href="#Themes">Themes</a>
 <li><a href="#Devices">Devices</a>
-<!--X1.3.21--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+<!--X1.3.21--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
 <li><a href="#Audio">Audio</a>
 <!--X1.3.21--></td></tr></table>
 <li><a href="#Remote Control">Remote Control</a>
@@ -308,7 +311,7 @@ since VDR, for instance, has to create the plugin objects in order to get their
 command line help - and after that immediately destroys them again.
 <p>
 The <b>destructor</b> has to clean up any data created by the plugin.
-<!--X1.3.20--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
+<!--X1.3.20--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
 Any threads the plugin may have created shall be stopped in the
 <a href="#Shutting down"><tt>Stop()</tt></a> function.
 <!--X1.3.20--></td></tr></table>
@@ -506,7 +509,7 @@ VDR to exit.
 If the plugin doesn't implement any background functionality or internationalized
 texts, it doesn't need to implement either of these functions.
 
-<!--X1.3.20--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
+<!--X1.3.20--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
 <a name="Shutting down"><hr><h2>Shutting down</h2>
 
 <center><i><b>Stop it, right there!</b></i></center><p>
@@ -866,6 +869,77 @@ Texts are first searched for in the <i>Phrases</i> registered for this plugin (i
 and then in the global VDR texts. So a plugin can make use of texts defined by the
 core VDR code.
 
+<!--X1.3.30--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+<a name="Custom services"><hr><h2>Custom services</h2>
+
+<center><i><b>What can I do for you?</b></i></center><p>
+
+In some situations, two plugins may want to communicate directly, talking about things
+that VDR doesn't handle itself. For example, a plugin may want to use features
+that some other plugin offers, or it may want to inform other plugins about important
+things it does. To receive requests or messages, a plugin can implement the
+following function:
+
+<p><table><tr><td bgcolor=#F0F0F0><pre>
+virtual bool Service(const char *Id, void *Data = NULL);
+</pre></td></tr></table><p>
+
+<tt>Id</tt> is a unique identification string that identifies the service protocol.
+To avoid collisions, the string should contain a service name, the plugin name (unless
+the service is not related to a single plugin) and a protocol version number.
+<tt>Data</tt> points to a custom data structure. For each id string
+there should be a specification that describes the format of the data
+structure, and any change to the format should  be reflected by a change
+of the id string.
+<p>
+The function shall return <i>true</i> for any service id string it handles, and <i>false</i>
+otherwise. The plugins have to agreee in which situations the service
+may be called, for example whether the service may be called from every thread, or
+just from the main thread. A possible implementation could look like this:
+
+<p><table><tr><td bgcolor=#F0F0F0><pre>
+struct Hello_SetGreetingTime_v1_0 {
+  int NewGreetingTime;
+  };
+
+bool cPluginHello::Service(const char *Id, void *Data)
+{
+  if (strcmp(Id, "Hello-SetGreetingTime-v1.0") == 0) {
+     if (Data == NULL)
+        return true;
+     GreetingTime = ((Hello_SetGreetingTime_v1_0*)Data)-&gt;NewGreetingTime;
+     return true;
+     }
+  return false;
+}
+</pre></td></tr></table><p>
+
+Plugins should expect to be called with <tt>Data</tt> set to <tt>NULL</tt> and may use
+this as a 'service supported' check without performing any actions.
+<p>
+To send messages to, or request services from a specific plugin, one plugin can directly
+call another plugin's service function:
+
+<p><table><tr><td bgcolor=#F0F0F0><pre>
+Hello_SetGreetingTime_v1_0 hellodata;
+hellodata.NewGreetingTime = 3;
+cPlugin *Plugin = cPluginManager::GetPlugin("hello");
+if (Plugin)
+   Plugin-&gt;Service("Hello-SetGreetingTime-v1.0", &gt;hellodata);
+</pre></td></tr></table><p>
+
+To send messages to, or request services from some plugin that offers the protocol, a
+plugin can call the function <tt>cPluginManager::CallFirstService()</tt>. This function
+will send the request to all plugins until one plugin handles it.
+The function returns a pointer to the plugin that handled the request, or <tt>NULL</tt>
+if no plugin handled it.
+<p>
+To send a messages to all plugins, a plugin can call the function
+<tt>cPluginManager::CallAllServices()</tt>. This function returns <tt>true</tt> if
+any plugin handled the request, or <tt>false</tt> if no plugin handled the request.
+
+<!--X1.3.30--></td></tr></table>
+
 <a name="Loading plugins into VDR"><hr><h2>Loading plugins into VDR</h2>
 
 <center><i><b>Saddling up!</b></i></center><p>
@@ -1046,7 +1120,6 @@ public:
 Take a look at the files <tt>player.h</tt> and <tt>dvbplayer.c</tt> to see how VDR implements
 its own player for the VDR recordings.
 <p>
-<!--X1.3.18--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 To play the actual data, the player needs to call its member function
 
 <p><table><tr><td bgcolor=#F0F0F0><pre>
@@ -1060,7 +1133,6 @@ is attached to. There are no prerequisites regarding the length or alignment of 
 individual block of data. The sum of all blocks must simply result in the
 desired data stream, and it must be delivered fast enough so that the
 DVB device doesn't run out of data.
-<!--X1.3.18--></td></tr></table>
 To avoid busy loops the player should call its member function
 
 <p><table><tr><td bgcolor=#F0F0F0><pre>
@@ -1069,7 +1141,6 @@ bool DevicePoll(cPoller &amp;Poller, int TimeoutMs = 0);
 
 to determine whether the device is ready for further data.
 <p>
-<!--X1.3.18--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 By default all audio track handling is done by the device a player is
 attached to.
 If the player can provide more than a single audio track, and has special
@@ -1088,7 +1159,6 @@ bool DeviceSetAvailableTrack(eTrackType Type, int Index, uint16_t Id, const char
 </pre></td></tr></table><p>
 
 See <tt>device.h</tt> for details about the parameters for track handling.
-<!--X1.3.18--></td></tr></table>
 <p>
 The second part needed here is a control object that receives user input from the main
 program loop and reacts on this by telling the player what to do:
@@ -1206,7 +1276,7 @@ public:
   };
 
 cMyReceiver::cMyReceiver(int Pid)
-<!--X1.3.19--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
+<!--X1.3.19--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 :cReceiver(0, -1, Pid)
 <!--X1.3.19--></td></tr></table>
 {
@@ -1384,9 +1454,7 @@ public:
   virtual cSkinDisplayMenu *DisplayMenu(void);
   virtual cSkinDisplayReplay *DisplayReplay(bool ModeOnly);
   virtual cSkinDisplayVolume *DisplayVolume(void);
-<!--X1.3.18--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
   virtual cSkinDisplayMessage *DisplayTrack(int NumTracks, const char * const *Tracks);
-<!--X1.3.18--></td></tr></table>
   virtual cSkinDisplayMessage *DisplayMessage(void);
   };
 </pre></td></tr></table><p>
@@ -1513,13 +1581,11 @@ repectively.
 If the device can provide more than a single audio track, it can implement the
 following function to make them available:
 
-<!--X1.3.18--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 <p><table><tr><td bgcolor=#F0F0F0><pre>
 virtual void SetAudioTrackDevice(eTrackType Type);
 virtual int GetAudioChannelDevice(void);
 virtual void SetAudioChannelDevice(int AudioChannel);
 </pre></td></tr></table><p>
-<!--X1.3.18--></td></tr></table>
 
 <p>
 <b>Recording</b>
@@ -1538,15 +1604,6 @@ recording (and shut it down again), and receive the MPEG data stream. The data
 must be delivered in the form of a Transport Stream (TS), which consists of
 packets that are all 188 bytes in size. Each call to <tt>GetTSPacket()</tt>
 must deliver exactly one such packet (if one is currently available).
-<p>
-If this device allows receiving several different data streams, it can
-implement
-
-<p><table><tr><td bgcolor=#F0F0F0><pre>
-virtual bool CanBeReUsed(int Frequency, int Vpid);
-</pre></td></tr></table><p>
-
-to indicate this to VDR.
 <p>
 <b>Replaying</b>
 <p>
@@ -1678,7 +1735,7 @@ private:
   virtual void Action(void);
 public:
   cMyAudio(void);
-<!--X1.3.21--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+<!--X1.3.21--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
   virtual void Play(const uchar *Data, int Length, uchar Id);
 <!--X1.3.21--></td></tr></table>
   virtual void Mute(bool On);

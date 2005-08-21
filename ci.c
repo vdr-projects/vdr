@@ -4,11 +4,10 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 1.24 2005/06/04 11:57:05 kls Exp $
+ * $Id: ci.c 1.27 2005/08/21 14:10:27 kls Exp $
  */
 
 #include "ci.h"
-#include <asm/unaligned.h>
 #include <ctype.h>
 #include <linux/dvb/ca.h>
 #include <malloc.h>
@@ -1136,6 +1135,19 @@ bool cCiMMI::Process(int Length, const uint8_t *Data)
                }
             }
             break;
+       case AOT_CLOSE_MMI: {
+            int id = -1;
+            int delay = -1;
+            int l = 0;
+            const uint8_t *d = GetData(Data, l);
+            if (l > 0) {
+               id = *d++;
+               if (l > 1)
+                  delay = *d;
+               }
+            dbgprotocol("%d: <== Close MMI  id = %02X  delay = %d\n", SessionId(), id, delay);
+            }
+            break;
        default: esyslog("ERROR: CI MMI: unknown tag %06X", Tag);
                 return false;
        }
@@ -1341,6 +1353,8 @@ cCiHandler::cCiHandler(int Fd, int NumSlots)
   hasUserIO = false;
   for (int i = 0; i < MAX_CI_SESSION; i++)
       sessions[i] = NULL;
+  for (int i = 0; i < MAX_CI_SLOT; i++)
+      moduleReady[i] = false;
   tpl = new cCiTransportLayer(Fd, numSlots);
   tc = NULL;
 }
@@ -1493,6 +1507,19 @@ int cCiHandler::CloseAllSessions(int Slot)
   return result;
 }
 
+bool cCiHandler::Ready(void)
+{
+  cMutexLock MutexLock(&mutex);
+  for (int Slot = 0; Slot < numSlots; Slot++) {
+      if (moduleReady[Slot]) {
+         cCiConditionalAccessSupport *cas = (cCiConditionalAccessSupport *)GetSessionByResourceId(RI_CONDITIONAL_ACCESS_SUPPORT, Slot);
+         if (!cas || !*cas->GetCaSystemIds())
+            return false;
+         }
+      }
+  return true;
+}
+
 bool cCiHandler::Process(void)
 {
   bool result = true;
@@ -1530,6 +1557,7 @@ bool cCiHandler::Process(void)
          }
       else if (tpl->ModuleReady(Slot)) {
          dbgprotocol("Module ready in slot %d\n", Slot);
+         moduleReady[Slot] = true;
          tpl->NewConnection(Slot);
          }
       }

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.h 1.34 2005/02/20 11:17:07 kls Exp $
+ * $Id: dvbdevice.h 1.35 2005/08/20 15:20:15 kls Exp $
  */
 
 #ifndef __DVBDEVICE_H
@@ -42,6 +42,7 @@ protected:
 public:
   cDvbDevice(int n);
   virtual ~cDvbDevice();
+  virtual bool Ready(void);
   virtual int ProvidesCa(const cChannel *Channel) const;
   virtual bool HasDecoder(void) const;
 

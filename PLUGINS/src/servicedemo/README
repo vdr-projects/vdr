@@ -1,0 +1,16 @@
+This is a "plugin" for the Video Disk Recorder (VDR).
+
+Written by:                  Udo Richter <udo_richter@gmx.de>
+
+Project's homepage:          www.cadsoft.de/vdr
+
+Latest version available at: www.cadsoft.de/vdr
+
+See the file COPYING for license information.
+
+Description:
+
+Demonstration of how plugins can communicate with each other.
+
+Run VDR with '-Psvcsvr -Psvccli' and select the main menu
+option "Service demo" to run the demo.

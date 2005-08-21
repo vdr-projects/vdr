@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.105 2005/08/14 10:52:08 kls Exp $
+ * $Id: device.c 1.106 2005/08/21 08:56:49 kls Exp $
  */
 
 #include "device.h"
@@ -193,6 +193,20 @@ cDevice::~cDevice()
   delete eitFilter;
   delete sectionHandler;
   delete pesAssembler;
+}
+
+bool cDevice::WaitForAllDevicesReady(int Timeout)
+{
+  for (time_t t0 = time(NULL); time(NULL) - t0 < Timeout; ) {
+      bool ready = true;
+      for (int i = 0; i < numDevices; i++) {
+          if (device[i] && !device[i]->Ready())
+             ready = false;
+          }
+      if (ready)
+         return true;
+      }
+  return false;
 }
 
 void cDevice::SetUseDevice(int n)
@@ -1101,6 +1115,11 @@ int cDevice::CanShift(int Ca, int Priority, int UsedCards) const
      ShiftLevel = 0; // no shifting necessary, this device can do the job
   return ShiftLevel;
   XXX*/
+}
+
+bool cDevice::Ready(void)
+{
+  return true;
 }
 
 int cDevice::ProvidesCa(const cChannel *Channel) const
