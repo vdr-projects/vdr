@@ -887,14 +887,13 @@ virtual bool Service(const char *Id, void *Data = NULL);
 <tt>Id</tt> is a unique identification string that identifies the service protocol.
 To avoid collisions, the string should contain a service name, the plugin name (unless
 the service is not related to a single plugin) and a protocol version number.
-<tt>Data</tt> points to a custom data structure or is <tt>NULL</tt> to detect whether
-the plugin supports this service. For each id string there should be a specification
-that describes the format of the data structure, and any change to the format should 
-be reflected by a change of the id string.
+<tt>Data</tt> points to a custom data structure. For each id string
+there should be a specification that describes the format of the data
+structure, and any change to the format should  be reflected by a change
+of the id string.
 <p>
 The function shall return <i>true</i> for any service id string it handles, and <i>false</i>
-otherwise. The function shall not perform any actions as long as <tt>Data</tt> is
-<tt>NULL</tt>. The plugins have to agreee in which situations the service
+otherwise. The plugins have to agreee in which situations the service
 may be called, for example whether the service may be called from every thread, or
 just from the main thread. A possible implementation could look like this:
 
@@ -915,6 +914,8 @@ bool cPluginHello::Service(const char *Id, void *Data)
 }
 </pre></td></tr></table><p>
 
+Plugins should expect to be called with <tt>Data</tt> set to <tt>NULL</tt> and may use
+this as a 'service supported' check without performing any actions.
 <p>
 To send messages to, or request services from a specific plugin, one plugin can directly
 call another plugin's service function:
