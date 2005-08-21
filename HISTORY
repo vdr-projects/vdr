@@ -3711,3 +3711,5 @@ Video Disk Recorder Revision History
   one, or a timer on such a channel hits right after starting VDR.
 - Fixed cVideoRepacker to better handle errors in data (thanks to Reinhard Nissl).
 - Fixed cDvbTuner to avoid lockups on NPTL systems (thanks to Marcel Wiesweg).
+- Added 'Service' functions to the plugin interface (thanks to Udo Richter).
+  See PLUGINS.html, section "Custom services" for details.
