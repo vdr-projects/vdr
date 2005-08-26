@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: eitscan.c 1.27 2005/08/07 11:29:54 kls Exp $
+ * $Id: eitscan.c 1.28 2005/08/26 15:37:06 kls Exp $
  */
 
 #include "eitscan.h"
@@ -150,7 +150,7 @@ void cEITScanner::Process(void)
                          if (!Channel->Ca() || Channel->Ca() == Device->DeviceNumber() + 1 || Channel->Ca() >= 0x0100) {
                             if (Device->ProvidesTransponder(Channel)) {
                                if (!Device->Receiving()) {
-                                  bool IsPrimaryDeviceReplaying = Device == cDevice::PrimaryDevice() && Device->Replaying();
+                                  bool IsPrimaryDeviceReplaying = Device == cDevice::PrimaryDevice() && Device->Replaying() && cTransferControl::ReceiverDevice() != cDevice::PrimaryDevice();
                                   if (Device != cDevice::ActualDevice() || (Device->ProvidesTransponderExclusively(Channel) && (IsPrimaryDeviceReplaying || now - lastActivity > Setup.EPGScanTimeout * 3600))) {
                                      if (!IsPrimaryDeviceReplaying && Device == cDevice::ActualDevice() && !currentChannel) {
                                         if (cTransferControl::ReceiverDevice())

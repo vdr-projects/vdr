@@ -1442,3 +1442,7 @@ Thomas Günther <tom1@toms-cafe.de>
 David Woodhouse <dwmw2@infradead.org>
  for his help in replacing the get/put_unaligned() macros from asm/unaligned.h with
  own inline functions to avoid problems on platforms that don't provide these
+
+Marcus Hilbrich <s4440288@mail.inf.tu-dresden.de>
+ for a bug report that lead to fixing the EPG scan, so that it doesn't use the
+ primary device if that is currently in Transfer-Mode from itself
