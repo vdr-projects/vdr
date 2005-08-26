@@ -3722,3 +3722,6 @@ Video Disk Recorder Revision History
 - Added missing German OSD texts for 'Audio language'.
 - The Setup/CICAM menu now only contains the devices that actually have a CI and
   dynamically detects the number of slots a CI provides.
+- Implemented cAudioRepacker for better handling of audio PES packets (thanks to
+  Reinhard Nissl).
+

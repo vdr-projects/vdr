@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.h 1.14 2005/08/07 10:28:07 kls Exp $
+ * $Id: remux.h 1.15 2005/08/26 13:22:19 kls Exp $
  */
 
 #ifndef __REMUX_H
@@ -14,6 +14,15 @@
 #include <linux/dvb/dmx.h>
 #include "ringbuffer.h"
 #include "tools.h"
+
+enum ePesHeader {
+  phNeedMoreData = -1,
+  phInvalid = 0,
+  phMPEG1 = 1,
+  phMPEG2 = 2
+  };
+
+ePesHeader AnalyzePesHeader(const uchar *Data, int Count, int &PesPayloadOffset, bool *ContinuationHeader = NULL);
 
 // Picture types:
 #define NO_PICTURE 0
