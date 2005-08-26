@@ -3726,3 +3726,4 @@ Video Disk Recorder Revision History
   Reinhard Nissl).
 - Modified handling of audio packets for radio channels in remux.c (thanks to
   Reinhard Nissl).
+- Updated the Danish OSD texts (thanks to Mogens Elneff).

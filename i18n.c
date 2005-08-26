@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.199 2005/08/21 16:17:13 kls Exp $
+ * $Id: i18n.c 1.200 2005/08/26 13:39:07 kls Exp $
  *
  * Translations provided by:
  *
@@ -271,7 +271,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Optagelses info",
   },
   { "Setup",
     "Einstellungen",
@@ -2924,7 +2924,7 @@ const tI18nPhrase Phrases[] = {
     "Прокрутка страниц меню",
     "Listaj po stranicama",
     "Lehekќlje kerimine",
-    "Rul sider",
+    "Scroll sidevis",
   },
   { "Setup.OSD$Scroll wraps",
     "Rundum scrollen",
@@ -2945,7 +2945,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "S kraja skoшi na poшetak",
     "",// TODO
-    "",// TODO
+    "Scroll rundt",
   },
   { "Setup.OSD$Sort timers",
     "Timer sortieren",
@@ -5407,7 +5407,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "Bez titla",
     "",// TODO
-    "",// TODO
+    "Ingen titel",
   },
   { NULL }
   };
