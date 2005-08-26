@@ -977,6 +977,7 @@ Reinhard Nissl <rnissl@gmx.de>
  immediately with softdevices
  for fixing cDvbSpuBitmap::putPixel()
  for implementing cAudioRepacker in remux.c
+ for modifying handling of audio packets for radio channels in remux.c
 
 Richard Robson <richard_robson@beeb.net>
  for reporting freezing replay if a timer starts while in Transfer Mode from the

@@ -11,7 +11,7 @@
  * The cDolbyRepacker code was originally written by Reinhard Nissl <rnissl@gmx.de>,
  * and adapted to the VDR coding style by Klaus.Schmidinger@cadsoft.de.
  *
- * $Id: remux.c 1.38 2005/08/26 13:34:07 kls Exp $
+ * $Id: remux.c 1.39 2005/08/26 13:35:53 kls Exp $
  */
 
 #include "remux.h"
@@ -1817,19 +1817,6 @@ uchar *cRemux::Get(int &Count, uchar *PictureType)
   return resultBuffer->Get(Count);
 #endif
 
-  // Special VPID case to enable recording radio channels:
-
-  if (isRadio) {
-     // XXX actually '0' should be enough, but '1' must be used with encrypted channels (driver bug?)
-     // XXX also allowing 0x1FFF to not break Michael Paar's original patch,
-     // XXX but it would probably be best to only use '0'
-     // Force syncing of radio channels to avoid "no useful data" error
-     synced = true;
-     if (PictureType)
-        *PictureType = I_FRAME;
-     return resultBuffer->Get(Count);
-     }
-
   // Check for frame borders:
 
   if (PictureType)
@@ -1874,6 +1861,18 @@ uchar *cRemux::Get(int &Count, uchar *PictureType)
                l = GetPacketLength(data, resultCount, i);
                if (l < 0)
                   return resultData;
+               if (isRadio) {
+                  if (!synced) {
+                     if (PictureType)
+                        *PictureType = I_FRAME;
+                     resultSkipped = i; // will drop everything before this position
+                     synced = true;
+                     }
+                  else if (Count)
+                     return resultData;
+                  else if (PictureType)
+                     *PictureType = I_FRAME;
+                  }
                }
             if (synced) {
                if (!Count)

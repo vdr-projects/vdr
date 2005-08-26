@@ -3724,4 +3724,5 @@ Video Disk Recorder Revision History
   dynamically detects the number of slots a CI provides.
 - Implemented cAudioRepacker for better handling of audio PES packets (thanks to
   Reinhard Nissl).
-
+- Modified handling of audio packets for radio channels in remux.c (thanks to
+  Reinhard Nissl).
