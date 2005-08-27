@@ -3734,3 +3734,5 @@ Video Disk Recorder Revision History
   trouble than it fixed.
 - Fixed detecting short channel names for "Kabel Deutschland", who uses a comma
   as delimiter (thanks to Marco Schlüßler).
+- Moved cMenuEditTimer and cMenuEvent to menu.h so that plugins can use it (suggested
+  by Thomas Günther).

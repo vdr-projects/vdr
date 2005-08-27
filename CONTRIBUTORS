@@ -1439,6 +1439,8 @@ Klaus Heppenheimer <klaus@reel-multimedia.com>
 Thomas Günther <tom1@toms-cafe.de>
  for fixing handling the frame number display if '7' is pressed before the first
  editing mark, or '9' after the last one
+ for suggesting to move cMenuEditTimer and cMenuEvent to menu.h so that plugins
+ can use it
 
 David Woodhouse <dwmw2@infradead.org>
  for his help in replacing the get/put_unaligned() macros from asm/unaligned.h with

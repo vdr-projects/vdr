@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.356 2005/08/26 12:49:26 kls Exp $
+ * $Id: menu.c 1.357 2005/08/27 09:37:23 kls Exp $
  */
 
 #include "menu.h"
@@ -19,7 +19,6 @@
 #include "eitscan.h"
 #include "i18n.h"
 #include "interface.h"
-#include "menuitems.h"
 #include "plugin.h"
 #include "recording.h"
 #include "remote.h"
@@ -605,20 +604,6 @@ eOSState cMenuText::ProcessKey(eKeys Key)
 
 // --- cMenuEditTimer --------------------------------------------------------
 
-class cMenuEditTimer : public cOsdMenu {
-private:
-  cTimer *timer;
-  cTimer data;
-  int channel;
-  bool addIfConfirmed;
-  cMenuEditDateItem *firstday;
-  void SetFirstDayItem(void);
-public:
-  cMenuEditTimer(cTimer *Timer, bool New = false);
-  virtual ~cMenuEditTimer();
-  virtual eOSState ProcessKey(eKeys Key);
-  };
-
 cMenuEditTimer::cMenuEditTimer(cTimer *Timer, bool New)
 :cOsdMenu(tr("Edit timer"), 12)
 {
@@ -903,15 +888,6 @@ eOSState cMenuTimers::ProcessKey(eKeys Key)
 }
 
 // --- cMenuEvent ------------------------------------------------------------
-
-class cMenuEvent : public cOsdMenu {
-private:
-  const cEvent *event;
-public:
-  cMenuEvent(const cEvent *Event, bool CanSwitch = false);
-  virtual void Display(void);
-  virtual eOSState ProcessKey(eKeys Key);
-};
 
 cMenuEvent::cMenuEvent(const cEvent *Event, bool CanSwitch)
 :cOsdMenu(tr("Event"))
