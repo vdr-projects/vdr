@@ -3732,3 +3732,5 @@ Video Disk Recorder Revision History
   report that lead to this).
 - Removed the TUNER_LOCK_TIMEOUT in cDevice::AttachReceiver() since it caused more
   trouble than it fixed.
+- Fixed detecting short channel names for "Kabel Deutschland", who uses a comma
+  as delimiter (thanks to Marco Schlüßler).
