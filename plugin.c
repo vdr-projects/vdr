@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: plugin.c 1.14 2005/08/21 09:35:28 kls Exp $
+ * $Id: plugin.c 1.15 2005/08/27 16:13:24 kls Exp $
  */
 
 #include "plugin.h"
@@ -102,6 +102,16 @@ void cPlugin::SetupStore(const char *Name, int Value)
 bool cPlugin::Service(const char *Id, void *Data)
 {
   return false;
+}
+
+const char **cPlugin::SVDRPHelpPages(void)
+{
+  return NULL;
+}
+
+cString cPlugin::SVDRPCommand(const char *Command, const char *Option, int &ReplyCode)
+{
+  return NULL;
 }
 
 void cPlugin::RegisterI18n(const tI18nPhrase * const Phrases)

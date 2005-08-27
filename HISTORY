@@ -3736,3 +3736,8 @@ Video Disk Recorder Revision History
   as delimiter (thanks to Marco Schlüßler).
 - Moved cMenuEditTimer and cMenuEvent to menu.h so that plugins can use it (suggested
   by Thomas Günther).
+- The new static function cString::sprintf() can be used to easily create a formatted
+  string.
+- Plugins can now implement their own SVDRP commands (based on a patch from Hardy
+  Flor). See PLUGINS.html, section "SVDRP commands" for details. The SVDRP commands
+  of a plugin are accessed through the new SVDRP command PLUG.

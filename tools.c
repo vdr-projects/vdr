@@ -4,13 +4,14 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.96 2005/08/06 09:53:21 kls Exp $
+ * $Id: tools.c 1.97 2005/08/27 14:43:55 kls Exp $
  */
 
 #include "tools.h"
 #include <ctype.h>
 #include <dirent.h>
 #include <errno.h>
+#include <stdarg.h>
 #include <stdlib.h>
 #include <sys/time.h>
 #include <sys/vfs.h>
@@ -528,6 +529,15 @@ cString &cString::operator=(const cString &String)
 {
   s = String.s ? strdup(String.s) : NULL;
   return *this;
+}
+
+cString cString::sprintf(const char *fmt, ...)
+{
+  va_list ap;
+  va_start(ap, fmt);
+  char *buffer;
+  vasprintf(&buffer, fmt, ap);
+  return cString(buffer, true);
 }
 
 cString WeekDayName(int WeekDay)

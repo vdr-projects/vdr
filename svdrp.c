@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.74 2005/08/07 14:20:41 kls Exp $
+ * $Id: svdrp.c 1.75 2005/08/27 16:18:32 kls Exp $
  */
 
 #include "svdrp.h"
@@ -32,6 +32,7 @@
 #include "eitscan.h"
 #include "keys.h"
 #include "menu.h"
+#include "plugin.h"
 #include "remote.h"
 #include "timers.h"
 #include "tools.h"
@@ -253,6 +254,12 @@ const char *HelpPages[] = {
   "    zero, this means that the timer is currently recording and has started\n"
   "    at the given time. The first value in the resulting line is the number\n"
   "    of the timer.",
+  "PLUG <name> [ <command> [ <options> ]]\n"
+  "    Send a command to a plugin.\n"
+  "    The PLUG command without any parameters lists all plugins.\n"
+  "    If only a name is given, all commands known to that plugin are listed.\n"
+  "    If a command is given (optionally followed by parameters), that command\n"
+  "    is sent to the plugin, and the result will be displayed.",
   "PUTE\n"
   "    Put data into the EPG list. The data entered has to strictly follow the\n"
   "    format defined in vdr(5) for the 'epg.data' file.  A '.' on a line\n"
@@ -294,6 +301,8 @@ const char *HelpPages[] = {
  504 Command parameter not implemented
  550 Requested action not taken
  554 Transaction failed
+ 900 Default plugin reply code
+ 901..999 Plugin specific reply codes
 
 */
 
@@ -315,15 +324,16 @@ const char *GetHelpTopic(const char *HelpPage)
   return NULL;
 }
 
-const char *GetHelpPage(const char *Cmd)
+const char *GetHelpPage(const char *Cmd, const char **p)
 {
-  const char **p = HelpPages;
-  while (*p) {
-        const char *t = GetHelpTopic(*p);
-        if (strcasecmp(Cmd, t) == 0)
-           return *p;
-        p++;
-        }
+  if (p) {
+     while (*p) {
+           const char *t = GetHelpTopic(*p);
+           if (strcasecmp(Cmd, t) == 0)
+              return *p;
+           p++;
+           }
+     }
   return NULL;
 }
 
@@ -376,14 +386,14 @@ void cSVDRP::Reply(int Code, const char *fmt, ...)
         va_start(ap, fmt);
         char *buffer;
         vasprintf(&buffer, fmt, ap);
-        char *nl = strchr(buffer, '\n');
-        if (Code > 0 && nl && *(nl + 1)) // trailing newlines don't count!
-           Code = -Code;
-        char number[16];
-        sprintf(number, "%03d%c", abs(Code), Code < 0 ? '-' : ' ');
         const char *s = buffer;
         while (s && *s) {
               const char *n = strchr(s, '\n');
+              char cont = ' ';
+              if (Code < 0 || n && *(n + 1)) // trailing newlines don't count!
+                 cont = '-';
+              char number[16];
+              sprintf(number, "%03d%c", abs(Code), cont);
               if (!(Send(number) && Send(s, n ? n - s : -1) && Send("\r\n"))) {
                  Close();
                  break;
@@ -398,6 +408,32 @@ void cSVDRP::Reply(int Code, const char *fmt, ...)
         esyslog("SVDRP: zero return code!");
         }
      }
+}
+
+void cSVDRP::PrintHelpTopics(const char **hp)
+{
+  int NumPages = 0;
+  if (hp) {
+     while (*hp) {
+           NumPages++;
+           hp++;
+           }
+     hp -= NumPages;
+     }
+  const int TopicsPerLine = 5;
+  int x = 0;
+  for (int y = 0; (y * TopicsPerLine + x) < NumPages; y++) {
+      char buffer[TopicsPerLine * MAXHELPTOPIC + 5];
+      char *q = buffer;
+      q += sprintf(q, "    ");
+      for (x = 0; x < TopicsPerLine && (y * TopicsPerLine + x) < NumPages; x++) {
+          const char *topic = GetHelpTopic(hp[(y * TopicsPerLine + x)]);
+          if (topic)
+             q += sprintf(q, "%*s", -MAXHELPTOPIC, topic);
+          }
+      x = 0;
+      Reply(-214, buffer);
+      }
 }
 
 void cSVDRP::CmdCHAN(const char *Option)
@@ -626,7 +662,7 @@ void cSVDRP::CmdGRAB(const char *Option)
 void cSVDRP::CmdHELP(const char *Option)
 {
   if (*Option) {
-     const char *hp = GetHelpPage(Option);
+     const char *hp = GetHelpPage(Option, HelpPages);
      if (hp)
         Reply(214, hp);
      else {
@@ -637,24 +673,13 @@ void cSVDRP::CmdHELP(const char *Option)
   else {
      Reply(-214, "This is VDR version %s", VDRVERSION);
      Reply(-214, "Topics:");
-     const char **hp = HelpPages;
-     int NumPages = 0;
-     while (*hp) {
-           NumPages++;
-           hp++;
-           }
-     const int TopicsPerLine = 5;
-     int x = 0;
-     for (int y = 0; (y * TopicsPerLine + x) < NumPages; y++) {
-         char buffer[TopicsPerLine * (MAXHELPTOPIC + 5)];
-         char *q = buffer;
-         for (x = 0; x < TopicsPerLine && (y * TopicsPerLine + x) < NumPages; x++) {
-             const char *topic = GetHelpTopic(HelpPages[(y * TopicsPerLine + x)]);
-             if (topic)
-                q += sprintf(q, "    %s", topic);
-             }
-         x = 0;
-         Reply(-214, buffer);
+     PrintHelpTopics(HelpPages);
+     cPlugin *plugin;
+     for (int i = 0; (plugin = cPluginManager::GetPlugin(i)) != NULL; i++) {
+         const char **hp = plugin->SVDRPHelpPages();
+         if (hp)
+            Reply(-214, "Plugin %s v%s - %s", plugin->Name(), plugin->Version(), plugin->Description());
+         PrintHelpTopics(hp);
          }
      Reply(-214, "To report bugs in the implementation send email to");
      Reply(-214, "    vdr-bugs@cadsoft.de");
@@ -1042,6 +1067,71 @@ void cSVDRP::CmdNEXT(const char *Option)
      Reply(550, "No active timers");
 }
 
+void cSVDRP::CmdPLUG(const char *Option)
+{
+  if (*Option) {
+     char *opt = strdup(Option);
+     char *name = skipspace(opt);
+     char *option = name;
+     while (*option && !isspace(*option))
+        option++;
+     char c = *option;
+     *option = 0;
+     cPlugin *plugin = cPluginManager::GetPlugin(name);
+     if (plugin) {
+        if (c)
+           option = skipspace(++option);
+        char *cmd = option;
+        while (*option && !isspace(*option))
+              option++;
+        if (*option) {
+           *option++ = 0;
+           option = skipspace(option);
+           }
+        if (!*cmd || strcasecmp(cmd, "HELP") == 0) {
+           if (*cmd && *option) {
+              const char *hp = GetHelpPage(option, plugin->SVDRPHelpPages());
+              if (hp) {
+                 Reply(-214, hp);
+                 Reply(214, "End of HELP info");
+                 }
+              else
+                 Reply(504, "HELP topic \"%s\" for plugin \"%s\" unknown", option, plugin->Name());
+              }
+           else {
+              Reply(-214, "Plugin %s v%s - %s", plugin->Name(), plugin->Version(), plugin->Description());
+              const char **hp = plugin->SVDRPHelpPages();
+              if (hp) {
+                 Reply(-214, "SVDRP commands:");
+                 PrintHelpTopics(hp);
+                 Reply(214, "End of HELP info");
+                 }
+              else
+                 Reply(214, "This plugin has no SVDRP commands");
+              }
+           }
+        else {
+           int ReplyCode = 900;
+           cString s = plugin->SVDRPCommand(cmd, option, ReplyCode);
+           if (s)
+              Reply(abs(ReplyCode), *s);
+           else
+              Reply(500, "Command unrecognized: \"%s\"", cmd);
+           }
+        }
+     else
+        Reply(550, "Plugin \"%s\" not found (use PLUG for a list of plugins)", name);
+     free(opt);
+     }
+  else {
+     Reply(-214, "Available plugins:");
+     cPlugin *plugin;
+     for (int i = 0; (plugin = cPluginManager::GetPlugin(i)) != NULL; i++)
+         Reply(-214, "%s v%s - %s", plugin->Name(), plugin->Version(), plugin->Description());
+     Reply(214, "End of plugin list");
+     }
+}
+
 void cSVDRP::CmdPUTE(const char *Option)
 {
   delete PUTEhandler;
@@ -1167,6 +1257,7 @@ void cSVDRP::Execute(char *Cmd)
   else if (CMD("NEWC"))  CmdNEWC(s);
   else if (CMD("NEWT"))  CmdNEWT(s);
   else if (CMD("NEXT"))  CmdNEXT(s);
+  else if (CMD("PLUG"))  CmdPLUG(s);
   else if (CMD("PUTE"))  CmdPUTE(s);
   else if (CMD("SCAN"))  CmdSCAN(s);
   else if (CMD("STAT"))  CmdSTAT(s);

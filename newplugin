@@ -12,7 +12,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: newplugin 1.19 2005/08/21 09:32:08 kls Exp $
+# $Id: newplugin 1.20 2005/08/27 16:13:29 kls Exp $
 
 $PLUGIN_NAME = $ARGV[0] || die "Usage: newplugin <name>\n";
 
@@ -171,6 +171,8 @@ public:
   virtual cMenuSetupPage *SetupMenu(void);
   virtual bool SetupParse(const char *Name, const char *Value);
   virtual bool Service(const char *Id, void *Data = NULL);
+  virtual const char **SVDRPHelpPages(void);
+  virtual cString SVDRPCommand(const char *Command, const char *Option, int &ReplyCode);
   };
 
 cPlugin${PLUGIN_CLASS}::cPlugin$PLUGIN_CLASS(void)
@@ -241,6 +243,18 @@ bool cPlugin${PLUGIN_CLASS}::Service(const char *Id, void *Data)
 {
   // Handle custom service requests from other plugins
   return false;
+}
+
+const char **cPlugin${PLUGIN_CLASS}::SVDRPHelpPages(vo<F3>id)
+{
+  // Return help text for SVDRP commands this plugin implements
+  return NULL;
+}
+
+const char *cPlugin${PLUGIN_CLASS}::SVDRPCommand(const char *Command, const char *Option, int &ReplyCode)
+{
+  // Process SVDRP commands this plugin implements
+  return NULL;
 }
 
 VDRPLUGINCREATOR(cPlugin$PLUGIN_CLASS); // Don't touch this!

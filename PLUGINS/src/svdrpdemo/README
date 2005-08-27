@@ -1,0 +1,13 @@
+This is a "plugin" for the Video Disk Recorder (VDR).
+
+Written by:                  Klaus Schmidinger <Klaus.Schmidinger@cadsoft.de>
+
+Project's homepage:          http://www.cadsoft.de/vdr
+
+Latest version available at: http://www.cadsoft.de/vdr
+
+See the file COPYING for license information.
+
+Description:
+
+This plugin shows how to add SVDRP support to a plugin.

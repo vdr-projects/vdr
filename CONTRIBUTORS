@@ -1449,3 +1449,6 @@ David Woodhouse <dwmw2@infradead.org>
 Marcus Hilbrich <s4440288@mail.inf.tu-dresden.de>
  for a bug report that lead to fixing the EPG scan, so that it doesn't use the
  primary device if that is currently in Transfer-Mode from itself
+
+Hardy Flor <HFlor@web.de>
+ for a patch that was used as a base to implement SVDRP commands for plugins
