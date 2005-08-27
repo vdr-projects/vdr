@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.106 2005/08/21 08:56:49 kls Exp $
+ * $Id: device.c 1.107 2005/08/27 09:01:09 kls Exp $
  */
 
 #include "device.h"
@@ -139,7 +139,6 @@ int cPesAssembler::PacketSize(const uchar *data)
 
 // The default priority for non-primary devices:
 #define DEFAULTPRIORITY  -1
-#define TUNER_LOCK_TIMEOUT 5000 // ms
 
 int cDevice::numDevices = 0;
 int cDevice::useDevice = 0;
@@ -1186,10 +1185,6 @@ bool cDevice::AttachReceiver(cReceiver *Receiver)
      return false;
   if (Receiver->device == this)
      return true;
-  if (!HasLock(TUNER_LOCK_TIMEOUT)) {
-     esyslog("ERROR: device %d has no lock, can't attach receiver!", CardIndex() + 1);
-     return false;
-     }
   cMutexLock MutexLock(&mutexReceiver);
   for (int i = 0; i < MAXRECEIVERS; i++) {
       if (!receiver[i]) {
