@@ -11,7 +11,7 @@
  * The cDolbyRepacker code was originally written by Reinhard Nissl <rnissl@gmx.de>,
  * and adapted to the VDR coding style by Klaus.Schmidinger@cadsoft.de.
  *
- * $Id: remux.c 1.39 2005/08/26 13:35:53 kls Exp $
+ * $Id: remux.c 1.40 2005/08/27 09:03:56 kls Exp $
  */
 
 #include "remux.h"
@@ -1503,9 +1503,10 @@ void cTS2PES::instant_repack(const uint8_t *Buf, int Count)
                      if (mpeg1_stuffing == 0) { // first stuffing iteration: determine MPEG level
                         if ((flag1 & 0xC0) == 0x80)
                            mpeg = 2;
-                        else
+                        else {
                            mpeg = 1;
                            mpeg1_required = 7;
+                           }
                         }
                      if (mpeg == 1) {
                         if (flag1 == 0xFF) { // MPEG1 stuffing
