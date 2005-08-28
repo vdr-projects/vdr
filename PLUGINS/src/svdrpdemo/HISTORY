@@ -4,3 +4,7 @@ VDR Plugin 'svdrpdemo' Revision History
 2005-08-27: Version 0.0.1
 
 - Initial revision.
+
+2005-08-28: Version 0.0.2
+
+- Removed unused MAINMENUENTRY.

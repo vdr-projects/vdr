@@ -1267,6 +1267,7 @@ Udo Richter <udo_richter@gmx.de>
  for suggesting a fix for an out-of-bounds memory access with audio language ids
  for reporting a problem with cRemux in a single thread
  for adding 'Service' functions to the plugin interface
+ for reporting an unused MAINMENUENTRY in svdrpdemo.c
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date
