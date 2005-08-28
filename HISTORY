@@ -3742,3 +3742,5 @@ Video Disk Recorder Revision History
   Flor). See PLUGINS.html, section "SVDRP commands" for details. The SVDRP commands
   of a plugin are accessed through the new SVDRP command PLUG.
   See PLUGINS/src/svdrpdemo for an example of how to use this feature.
+- The new SVDRP command PLAY can be used to start replaying a recording (thanks to
+  Hardy Flor).

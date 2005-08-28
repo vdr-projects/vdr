@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.75 2005/08/27 16:18:32 kls Exp $
+ * $Id: svdrp.c 1.76 2005/08/28 10:32:15 kls Exp $
  */
 
 #include "svdrp.h"
@@ -254,6 +254,16 @@ const char *HelpPages[] = {
   "    zero, this means that the timer is currently recording and has started\n"
   "    at the given time. The first value in the resulting line is the number\n"
   "    of the timer.",
+  "PLAY <number> [ begin | <position> ]\n"
+  "    Play the recording with the given number. Before a recording can be\n"
+  "    played, an LSTR command must have been executed in order to retrieve\n"
+  "    the recording numbers.\n"
+  "    The keyword 'begin' plays the recording from its very beginning, while\n"
+  "    a <position> (given as hh:mm:ss[.ff] or framenumber) starts at that\n"
+  "    position. If neither 'begin' nor a <position> are given, replay is resumed\n"
+  "    at the position where any previous replay was stopped, or from the beginning\n"
+  "    by default. To control or stop the replay session, use the usual remote\n"
+  "    control keypresses via the HITK command.",
   "PLUG <name> [ <command> [ <options> ]]\n"
   "    Send a command to a plugin.\n"
   "    The PLUG command without any parameters lists all plugins.\n"
@@ -1067,6 +1077,55 @@ void cSVDRP::CmdNEXT(const char *Option)
      Reply(550, "No active timers");
 }
 
+void cSVDRP::CmdPLAY(const char *Option)
+{
+  if (*Option) {
+     char *opt = strdup(Option);
+     char *num = skipspace(opt);
+     char *option = num;
+     while (*option && !isspace(*option))
+           option++;
+     char c = *option;
+     *option = 0;
+     if (isnumber(num)) {
+        cRecording *recording = Recordings.Get(strtol(num, NULL, 10) - 1);
+        if (recording) {
+           if (c)
+              option = skipspace(++option);
+           cReplayControl::SetRecording(NULL, NULL);
+           cControl::Shutdown();
+           if (*option) {
+              int pos = 0;
+              if (strcasecmp(option, "BEGIN") != 0) {
+                 int h, m = 0, s = 0, f = 1;
+                 int x = sscanf(option, "%d:%d:%d.%d", &h, &m, &s, &f);
+                 if (x == 1)
+                    pos = h;
+                 else if (x >= 3)
+                    pos = (h * 3600 + m * 60 + s) * FRAMESPERSEC + f - 1;
+                 }
+              cResumeFile resume(recording->FileName());
+              if (pos <= 0)
+                 resume.Delete();
+              else
+                 resume.Save(pos);
+              }
+           cReplayControl::SetRecording(recording->FileName(), recording->Title());
+           cControl::Launch(new cReplayControl);
+           cControl::Attach();
+           Reply(250, "Playing recording \"%s\" [%s]", num, recording->Title());
+           }
+        else
+           Reply(550, "Recording \"%s\" not found%s", num, Recordings.Count() ? "" : " (use LSTR before playing)");
+        }
+     else
+        Reply(501, "Error in recording number \"%s\"", num);
+     free(opt);
+     }
+  else
+     Reply(501, "Missing recording number");
+}
+
 void cSVDRP::CmdPLUG(const char *Option)
 {
   if (*Option) {
@@ -1257,6 +1316,7 @@ void cSVDRP::Execute(char *Cmd)
   else if (CMD("NEWC"))  CmdNEWC(s);
   else if (CMD("NEWT"))  CmdNEWT(s);
   else if (CMD("NEXT"))  CmdNEXT(s);
+  else if (CMD("PLAY"))  CmdPLAY(s);
   else if (CMD("PLUG"))  CmdPLUG(s);
   else if (CMD("PUTE"))  CmdPUTE(s);
   else if (CMD("SCAN"))  CmdSCAN(s);
