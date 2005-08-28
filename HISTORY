@@ -3717,7 +3717,7 @@ Video Disk Recorder Revision History
   functions to avoid problems on platforms that don't provide these (thanks to
   David Woodhouse for his help).
 
-2005-08-27: Version 1.3.31
+2005-08-28: Version 1.3.31
 
 - Added missing German OSD texts for 'Audio language'.
 - The Setup/CICAM menu now only contains the devices that actually have a CI and
@@ -3741,3 +3741,4 @@ Video Disk Recorder Revision History
 - Plugins can now implement their own SVDRP commands (based on a patch from Hardy
   Flor). See PLUGINS.html, section "SVDRP commands" for details. The SVDRP commands
   of a plugin are accessed through the new SVDRP command PLUG.
+  See PLUGINS/src/svdrpdemo for an example of how to use this feature.
