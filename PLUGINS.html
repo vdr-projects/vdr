@@ -14,18 +14,18 @@ Copyright &copy; 2005 Klaus Schmidinger<br>
 <a href="http://www.cadsoft.de/vdr">www.cadsoft.de/vdr</a>
 </center>
 <p>
-<!--X1.3.19--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
-Important modifications introduced in version 1.3.19 are marked like this.
-<!--X1.3.19--></td></tr></table>
-<!--X1.3.20--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
+<!--X1.3.20--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 Important modifications introduced in version 1.3.20 are marked like this.
 <!--X1.3.20--></td></tr></table>
-<!--X1.3.21--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
+<!--X1.3.21--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
 Important modifications introduced in version 1.3.21 are marked like this.
 <!--X1.3.21--></td></tr></table>
-<!--X1.3.30--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+<!--X1.3.30--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
 Important modifications introduced in version 1.3.30 are marked like this.
 <!--X1.3.30--></td></tr></table>
+<!--X1.3.31--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+Important modifications introduced in version 1.3.31 are marked like this.
+<!--X1.3.31--></td></tr></table>
 <p>
 VDR provides an easy to use plugin interface that allows additional functionality
 to be added to the program by implementing a dynamically loadable library file.
@@ -58,7 +58,7 @@ structures and allows it to hook itself into specific areas to perform special a
 <li><a href="#Command line arguments">Command line arguments</a>
 <li><a href="#Command line help">Command line help</a>
 <li><a href="#Getting started">Getting started</a>
-<!--X1.3.20--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
+<!--X1.3.20--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 <li><a href="#Shutting down">Shutting down</a>
 <!--X1.3.20--></td></tr></table>
 <li><a href="#Main menu entry">Main menu entry</a>
@@ -68,9 +68,12 @@ structures and allows it to hook itself into specific areas to perform special a
 <li><a href="#The Setup menu">The Setup menu</a>
 <li><a href="#Configuration files">Configuration files</a>
 <li><a href="#Internationalization">Internationalization</a>
-<!--X1.3.30--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+<!--X1.3.30--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
 <li><a href="#Custom services">Custom services</a>
 <!--X1.3.30--></td></tr></table>
+<!--X1.3.31--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+<li><a href="#SVDRP commands">SVDRP commands</a>
+<!--X1.3.31--></td></tr></table>
 <li><a href="#Loading plugins into VDR">Loading plugins into VDR</a>
 <li><a href="#Building the distribution package">Building the distribution package</a>
 </ul>
@@ -84,7 +87,7 @@ structures and allows it to hook itself into specific areas to perform special a
 <li><a href="#Skins">Skins</a>
 <li><a href="#Themes">Themes</a>
 <li><a href="#Devices">Devices</a>
-<!--X1.3.21--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
+<!--X1.3.21--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
 <li><a href="#Audio">Audio</a>
 <!--X1.3.21--></td></tr></table>
 <li><a href="#Remote Control">Remote Control</a>
@@ -311,7 +314,7 @@ since VDR, for instance, has to create the plugin objects in order to get their
 command line help - and after that immediately destroys them again.
 <p>
 The <b>destructor</b> has to clean up any data created by the plugin.
-<!--X1.3.20--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
+<!--X1.3.20--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 Any threads the plugin may have created shall be stopped in the
 <a href="#Shutting down"><tt>Stop()</tt></a> function.
 <!--X1.3.20--></td></tr></table>
@@ -509,7 +512,7 @@ VDR to exit.
 If the plugin doesn't implement any background functionality or internationalized
 texts, it doesn't need to implement either of these functions.
 
-<!--X1.3.20--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
+<!--X1.3.20--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 <a name="Shutting down"><hr><h2>Shutting down</h2>
 
 <center><i><b>Stop it, right there!</b></i></center><p>
@@ -869,7 +872,7 @@ Texts are first searched for in the <i>Phrases</i> registered for this plugin (i
 and then in the global VDR texts. So a plugin can make use of texts defined by the
 core VDR code.
 
-<!--X1.3.30--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+<!--X1.3.30--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
 <a name="Custom services"><hr><h2>Custom services</h2>
 
 <center><i><b>What can I do for you?</b></i></center><p>
@@ -934,11 +937,105 @@ will send the request to all plugins until one plugin handles it.
 The function returns a pointer to the plugin that handled the request, or <tt>NULL</tt>
 if no plugin handled it.
 <p>
-To send a messages to all plugins, a plugin can call the function
+To send a message to all plugins, a plugin can call the function
 <tt>cPluginManager::CallAllServices()</tt>. This function returns <tt>true</tt> if
 any plugin handled the request, or <tt>false</tt> if no plugin handled the request.
 
 <!--X1.3.30--></td></tr></table>
+
+<!--X1.3.31--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+<a name="SVDRP commands"><hr><h2>SVDRP commands</h2>
+
+<center><i><b>Infinite Diversity in Infinite Combinations</b></i></center><p>
+
+A plugin can implement its own SVDRP commands through the two functions
+
+<p><table><tr><td bgcolor=#F0F0F0><pre>
+virtual const char **SVDRPHelpPages(void);
+virtual cString SVDRPCommand(const char *Cmd, const char *Option, int &ReplyCode);
+</pre></td></tr></table><p>
+
+The <tt>SVDRPHelpPages()</tt> function must return a pointer to a list of help
+strings for all of the plugin's SVDRP commands, like this
+
+<p><table><tr><td bgcolor=#F0F0F0><pre>
+const char **cPluginSvdrpdemo::SVDRPHelpPages(void)
+{
+  static const char *HelpPages[] = {
+    "DATE\n"
+    "    Print the current date.",
+    "TIME [ raw ]\n"
+    "    Print the current time.\n"
+    "    If the optional keyword 'raw' is given, the result will be the\n"
+    "    raw time_t data.",
+    NULL
+    };
+  return HelpPages;
+}
+</pre></td></tr></table><p>
+
+Note that the first line of each entry contains the actual command and its
+parameters, while the following lines explain what the command does and what
+the parameters (if any) mean. All lines of the explanation shall be indented
+by exactly 4 blanks (no tabs), and none of them shall be longer than 79 characters
+(to avoid messy output on 80 character wide terminals). The last entry in the
+list must be NULL.
+<p>
+The command names <tt>HELP</tt> and <tt>MAIN</tt> are reserverd and cannot
+be used by a plugin.
+<p>
+The actual processing of SVDRP commands for a plugin is done in its
+<tt>SVDRPCommand()</tt> function.
+Here's an example of such a function, which implements the commands advertised in
+the above help texts:
+
+<p><table><tr><td bgcolor=#F0F0F0><pre>
+cString cPluginSvdrpdemo::SVDRPCommand(const char *Command, const char *Option, int &ReplyCode)
+{
+  if (strcasecmp(Command, "DATE") == 0) {
+     // we use the default reply code here
+     return DateString(time(NULL));
+     }
+  else if (strcasecmp(Command, "TIME") == 0) {
+     ReplyCode = 901;
+     if (*Option) {
+        if (strcasecmp(Option, "RAW") == 0)
+           return cString::sprintf("%ld\nThis is the number of seconds since the epoch\n"
+                                   "and a demo of a multi-line reply", time(NULL));
+        else {
+           ReplyCode = 504;
+           return cString::sprintf("Unknown option: \"%s\"", Option);
+           }
+        }
+     return TimeString(time(NULL));
+     }
+  return NULL;
+}
+</pre></td></tr></table><p>
+
+The command is given to this function in the <tt>Command</tt> parameter, and any optional parameters
+are given in the <tt>Option</tt> string. <tt>Command</tt> always points to an actual, non-empty string, while
+<tt>Option</tt> may point to an empty string (it is never NULL, though).
+<p>
+If a plugin doesn't implement the given command, it shall return NULL, and VDR will
+automatically issue a proper error message. If it encounters an unknown or invalid
+option, it shall set the <tt>ReplyCode</tt> to one of the codes defined in <tt>VDR/svdrp.c</tt>
+and return a proper error message.
+<p>
+The default <tt>ReplyCode</tt> is 900, and if the plugin doesn't care about reply
+codes, it doesn't have to set it to anything else (unless there is an error, of
+course). The codes in the range 901..999 are reserved for plugins that want
+to use special reply codes. Any plugin can use any of these values and doesn't
+have to coordinate this with any other plugin, since the caller knows which
+plugin was called, and will therefore process the values according to the
+particular plugin's definitions.
+<p>
+The returned string may consist of several lines, separated by the newline character
+('<tt>\n</tt>'). Each of these lines will be preceeded with the <tt>ReplyCode</tt>
+when presenting them to the caller, and the continuation character ('<tt>-</tt>')
+will be set for all but the last one.
+
+<!--X1.3.31--></td></tr></table>
 
 <a name="Loading plugins into VDR"><hr><h2>Loading plugins into VDR</h2>
 
@@ -1276,9 +1373,7 @@ public:
   };
 
 cMyReceiver::cMyReceiver(int Pid)
-<!--X1.3.19--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 :cReceiver(0, -1, Pid)
-<!--X1.3.19--></td></tr></table>
 {
 }
 
@@ -1735,7 +1830,7 @@ private:
   virtual void Action(void);
 public:
   cMyAudio(void);
-<!--X1.3.21--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
+<!--X1.3.21--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
   virtual void Play(const uchar *Data, int Length, uchar Id);
 <!--X1.3.21--></td></tr></table>
   virtual void Mute(bool On);

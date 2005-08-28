@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: plugin.h 1.9 2005/08/21 09:32:08 kls Exp $
+ * $Id: plugin.h 1.10 2005/08/27 16:13:17 kls Exp $
  */
 
 #ifndef __PLUGIN_H
@@ -51,6 +51,8 @@ public:
   void RegisterI18n(const tI18nPhrase * const Phrases);
 
   virtual bool Service(const char *Id, void *Data = NULL);
+  virtual const char **SVDRPHelpPages(void);
+  virtual cString SVDRPCommand(const char *Command, const char *Option, int &ReplyCode);
 
   static void SetConfigDirectory(const char *Dir);
   static const char *ConfigDirectory(const char *PluginName = NULL);

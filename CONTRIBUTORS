@@ -976,6 +976,8 @@ Reinhard Nissl <rnissl@gmx.de>
  for making cDvbPlayer::Goto() append a Sequence End Code to get the image shown
  immediately with softdevices
  for fixing cDvbSpuBitmap::putPixel()
+ for implementing cAudioRepacker in remux.c
+ for modifying handling of audio packets for radio channels in remux.c
 
 Richard Robson <richard_robson@beeb.net>
  for reporting freezing replay if a timer starts while in Transfer Mode from the
@@ -1212,6 +1214,7 @@ Marco Schlüßler <marco@lordzodiac.de>
  is waiting
  for improving resetting CAM connections
  for fixing handling EPG data for time shifted events
+ for fixing detecting short channel names for "Kabel Deutschland"
 
 Jürgen Schmitz <j.schmitz@web.de>
  for reporting a bug in displaying the current channel when switching via the SVDRP
@@ -1436,7 +1439,20 @@ Klaus Heppenheimer <klaus@reel-multimedia.com>
 Thomas Günther <tom1@toms-cafe.de>
  for fixing handling the frame number display if '7' is pressed before the first
  editing mark, or '9' after the last one
+ for suggesting to move cMenuEditTimer and cMenuEvent to menu.h so that plugins
+ can use it
 
 David Woodhouse <dwmw2@infradead.org>
  for his help in replacing the get/put_unaligned() macros from asm/unaligned.h with
  own inline functions to avoid problems on platforms that don't provide these
+
+Marcus Hilbrich <s4440288@mail.inf.tu-dresden.de>
+ for a bug report that lead to fixing the EPG scan, so that it doesn't use the
+ primary device if that is currently in Transfer-Mode from itself
+
+Hardy Flor <HFlor@web.de>
+ for a patch that was used as a base to implement SVDRP commands for plugins
+ for implementing the SVDRP command PLAY
+
+Harald Milz <hm@seneca.muc.de>
+ for his CUTR patch, which was used as a base to implement the SVDRP command EDIT

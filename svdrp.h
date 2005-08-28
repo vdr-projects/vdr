@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: svdrp.h 1.20 2004/01/17 13:30:52 kls Exp $
+ * $Id: svdrp.h 1.23 2005/08/28 14:10:32 kls Exp $
  */
 
 #ifndef __SVDRP_H
@@ -52,11 +52,13 @@ private:
   void Close(bool Timeout = false);
   bool Send(const char *s, int length = -1);
   void Reply(int Code, const char *fmt, ...);
+  void PrintHelpTopics(const char **hp);
   void CmdCHAN(const char *Option);
   void CmdCLRE(const char *Option);
   void CmdDELC(const char *Option);
   void CmdDELR(const char *Option);
   void CmdDELT(const char *Option);
+  void CmdEDIT(const char *Option);
   void CmdGRAB(const char *Option);
   void CmdHELP(const char *Option);
   void CmdHITK(const char *Option);
@@ -72,6 +74,8 @@ private:
   void CmdNEWC(const char *Option);
   void CmdNEWT(const char *Option);
   void CmdNEXT(const char *Option);
+  void CmdPLAY(const char *Option);
+  void CmdPLUG(const char *Option);
   void CmdPUTE(const char *Option);
   void CmdSCAN(const char *Option);
   void CmdSTAT(const char *Option);

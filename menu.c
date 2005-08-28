@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.355 2005/08/14 15:14:29 kls Exp $
+ * $Id: menu.c 1.357 2005/08/27 09:37:23 kls Exp $
  */
 
 #include "menu.h"
@@ -19,7 +19,6 @@
 #include "eitscan.h"
 #include "i18n.h"
 #include "interface.h"
-#include "menuitems.h"
 #include "plugin.h"
 #include "recording.h"
 #include "remote.h"
@@ -605,20 +604,6 @@ eOSState cMenuText::ProcessKey(eKeys Key)
 
 // --- cMenuEditTimer --------------------------------------------------------
 
-class cMenuEditTimer : public cOsdMenu {
-private:
-  cTimer *timer;
-  cTimer data;
-  int channel;
-  bool addIfConfirmed;
-  cMenuEditDateItem *firstday;
-  void SetFirstDayItem(void);
-public:
-  cMenuEditTimer(cTimer *Timer, bool New = false);
-  virtual ~cMenuEditTimer();
-  virtual eOSState ProcessKey(eKeys Key);
-  };
-
 cMenuEditTimer::cMenuEditTimer(cTimer *Timer, bool New)
 :cOsdMenu(tr("Edit timer"), 12)
 {
@@ -903,15 +888,6 @@ eOSState cMenuTimers::ProcessKey(eKeys Key)
 }
 
 // --- cMenuEvent ------------------------------------------------------------
-
-class cMenuEvent : public cOsdMenu {
-private:
-  const cEvent *event;
-public:
-  cMenuEvent(const cEvent *Event, bool CanSwitch = false);
-  virtual void Display(void);
-  virtual eOSState ProcessKey(eKeys Key);
-};
 
 cMenuEvent::cMenuEvent(const cEvent *Event, bool CanSwitch)
 :cOsdMenu(tr("Event"))
@@ -2122,11 +2098,28 @@ eOSState cMenuSetupLNB::ProcessKey(eKeys Key)
 
 // --- cMenuSetupCICAM -------------------------------------------------------
 
+class cMenuSetupCICAMItem : public cOsdItem {
+private:
+  cCiHandler *ciHandler;
+  int slot;
+public:
+  cMenuSetupCICAMItem(int Device, cCiHandler *CiHandler, int Slot);
+  cCiHandler *CiHandler(void) { return ciHandler; }
+  int Slot(void) { return slot; }
+  };
+
+cMenuSetupCICAMItem::cMenuSetupCICAMItem(int Device, cCiHandler *CiHandler, int Slot)
+{
+  ciHandler = CiHandler;
+  slot = Slot;
+  char buffer[32];
+  const char *CamName = CiHandler->GetCamName(slot);
+  snprintf(buffer, sizeof(buffer), "%s%d %d\t%s", tr("Setup.CICAM$CICAM DVB"), Device + 1, slot + 1, CamName ? CamName : "-");
+  SetText(buffer);
+}
+
 class cMenuSetupCICAM : public cMenuSetupBase {
 private:
-  int helpKeys;
-  void SetHelpKeys(void);
-  cCiHandler *GetCurrentCiHandler(int *Slot = NULL);
   eOSState Menu(void);
   eOSState Reset(void);
 public:
@@ -2136,66 +2129,43 @@ public:
 
 cMenuSetupCICAM::cMenuSetupCICAM(void)
 {
-  helpKeys = -1;
   SetSection(tr("CICAM"));
   for (int d = 0; d < cDevice::NumDevices(); d++) {
       cDevice *Device = cDevice::GetDevice(d);
-      cCiHandler *CiHandler = Device->CiHandler();
-      for (int Slot = 0; Slot < 2; Slot++) {
-          char buffer[32];
-          int CardIndex = Device->CardIndex();
-          const char *CamName = CiHandler ? CiHandler->GetCamName(Slot) : NULL;
-          if (!CamName)
-             CamName = "-";
-          snprintf(buffer, sizeof(buffer), "%s%d %d\t%s", tr("Setup.CICAM$CICAM DVB"), CardIndex + 1, Slot + 1, CamName);
-          Add(new cOsdItem(buffer));
-          }
+      if (Device) {
+         cCiHandler *CiHandler = Device->CiHandler();
+         if (CiHandler) {
+            for (int Slot = 0; Slot < CiHandler->NumSlots(); Slot++)
+                Add(new cMenuSetupCICAMItem(Device->CardIndex(), CiHandler, Slot));
+            }
+         }
       }
-  SetHelpKeys();
-}
-
-cCiHandler *cMenuSetupCICAM::GetCurrentCiHandler(int *Slot)
-{
-  cDevice *Device = cDevice::GetDevice(Current() / 2);
-  if (Slot)
-     *Slot = Current() % 2;
-  return Device ? Device->CiHandler() : NULL;
-}
-
-void cMenuSetupCICAM::SetHelpKeys(void)
-{
-  int NewHelpKeys = helpKeys;
-  NewHelpKeys = GetCurrentCiHandler() ? 1 : 0;
-  if (NewHelpKeys != helpKeys) {
-     switch (NewHelpKeys) {
-       case 0: SetHelp(NULL); break;
-       case 1: SetHelp(tr("Menu"), tr("Reset"));
-       }
-     helpKeys = NewHelpKeys;
-     }
+  SetHelp(tr("Menu"), tr("Reset"));
 }
 
 eOSState cMenuSetupCICAM::Menu(void)
 {
-  int Slot = 0;
-  cCiHandler *CiHandler = GetCurrentCiHandler(&Slot);
-  if (CiHandler && CiHandler->EnterMenu(Slot))
-     return osEnd; // the CAM menu will be executed explicitly from the main loop
-  else
-     Skins.Message(mtError, tr("Can't open CAM menu!"));
+  cMenuSetupCICAMItem *item = (cMenuSetupCICAMItem *)Get(Current());
+  if (item) {
+     if (item->CiHandler()->EnterMenu(item->Slot()))
+        return osEnd; // the CAM menu will be executed explicitly from the main loop
+     else
+        Skins.Message(mtError, tr("Can't open CAM menu!"));
+     }
   return osContinue;
 }
 
 eOSState cMenuSetupCICAM::Reset(void)
 {
-  int Slot = 0;
-  cCiHandler *CiHandler = GetCurrentCiHandler(&Slot);
-  if (CiHandler && CiHandler->Reset(Slot)) {
-     Skins.Message(mtInfo, tr("CAM has been reset"));
-     return osEnd;
+  cMenuSetupCICAMItem *item = (cMenuSetupCICAMItem *)Get(Current());
+  if (item) {
+     if (item->CiHandler()->Reset(item->Slot())) {
+        Skins.Message(mtInfo, tr("CAM has been reset"));
+        return osEnd;
+        }
+     else
+        Skins.Message(mtError, tr("Can't reset CAM!"));
      }
-  else
-     Skins.Message(mtError, tr("Can't reset CAM!"));
   return osContinue;
 }
 
@@ -2205,17 +2175,11 @@ eOSState cMenuSetupCICAM::ProcessKey(eKeys Key)
 
   if (state == osUnknown) {
      switch (Key) {
-       case kRed:    if (helpKeys == 1)
-                        return Menu();
-                     break;
-       case kGreen:  if (helpKeys == 1)
-                        return Reset();
-                     break;
+       case kRed:    return Menu();
+       case kGreen:  return Reset();
        default: break;
        }
      }
-  if (Key != kNone)
-     SetHelpKeys();
   return state;
 }
 

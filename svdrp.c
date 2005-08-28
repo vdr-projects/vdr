@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.74 2005/08/07 14:20:41 kls Exp $
+ * $Id: svdrp.c 1.77 2005/08/28 14:12:00 kls Exp $
  */
 
 #include "svdrp.h"
@@ -28,10 +28,12 @@
 #include <unistd.h>
 #include "channels.h"
 #include "config.h"
+#include "cutter.h"
 #include "device.h"
 #include "eitscan.h"
 #include "keys.h"
 #include "menu.h"
+#include "plugin.h"
 #include "remote.h"
 #include "timers.h"
 #include "tools.h"
@@ -194,6 +196,10 @@ const char *HelpPages[] = {
   "    RECORDING - BE SURE YOU KNOW WHAT YOU ARE DOING!",
   "DELT <number>\n"
   "    Delete timer.",
+  "EDIT <number>\n"
+  "    Edit the recording with the given number. Before a recording can be\n"
+  "    edited, an LSTR command must have been executed in order to retrieve\n"
+  "    the recording numbers.",
   "GRAB <filename> [ jpeg | pnm [ <quality> [ <sizex> <sizey> ] ] ]\n"
   "    Grab the current frame and save it to the given file. Images can\n"
   "    be stored as JPEG (default) or PNM, at the given quality (default\n"
@@ -253,6 +259,22 @@ const char *HelpPages[] = {
   "    zero, this means that the timer is currently recording and has started\n"
   "    at the given time. The first value in the resulting line is the number\n"
   "    of the timer.",
+  "PLAY <number> [ begin | <position> ]\n"
+  "    Play the recording with the given number. Before a recording can be\n"
+  "    played, an LSTR command must have been executed in order to retrieve\n"
+  "    the recording numbers.\n"
+  "    The keyword 'begin' plays the recording from its very beginning, while\n"
+  "    a <position> (given as hh:mm:ss[.ff] or framenumber) starts at that\n"
+  "    position. If neither 'begin' nor a <position> are given, replay is resumed\n"
+  "    at the position where any previous replay was stopped, or from the beginning\n"
+  "    by default. To control or stop the replay session, use the usual remote\n"
+  "    control keypresses via the HITK command.",
+  "PLUG <name> [ <command> [ <options> ]]\n"
+  "    Send a command to a plugin.\n"
+  "    The PLUG command without any parameters lists all plugins.\n"
+  "    If only a name is given, all commands known to that plugin are listed.\n"
+  "    If a command is given (optionally followed by parameters), that command\n"
+  "    is sent to the plugin, and the result will be displayed.",
   "PUTE\n"
   "    Put data into the EPG list. The data entered has to strictly follow the\n"
   "    format defined in vdr(5) for the 'epg.data' file.  A '.' on a line\n"
@@ -294,6 +316,8 @@ const char *HelpPages[] = {
  504 Command parameter not implemented
  550 Requested action not taken
  554 Transaction failed
+ 900 Default plugin reply code
+ 901..999 Plugin specific reply codes
 
 */
 
@@ -315,15 +339,16 @@ const char *GetHelpTopic(const char *HelpPage)
   return NULL;
 }
 
-const char *GetHelpPage(const char *Cmd)
+const char *GetHelpPage(const char *Cmd, const char **p)
 {
-  const char **p = HelpPages;
-  while (*p) {
-        const char *t = GetHelpTopic(*p);
-        if (strcasecmp(Cmd, t) == 0)
-           return *p;
-        p++;
-        }
+  if (p) {
+     while (*p) {
+           const char *t = GetHelpTopic(*p);
+           if (strcasecmp(Cmd, t) == 0)
+              return *p;
+           p++;
+           }
+     }
   return NULL;
 }
 
@@ -376,14 +401,14 @@ void cSVDRP::Reply(int Code, const char *fmt, ...)
         va_start(ap, fmt);
         char *buffer;
         vasprintf(&buffer, fmt, ap);
-        char *nl = strchr(buffer, '\n');
-        if (Code > 0 && nl && *(nl + 1)) // trailing newlines don't count!
-           Code = -Code;
-        char number[16];
-        sprintf(number, "%03d%c", abs(Code), Code < 0 ? '-' : ' ');
         const char *s = buffer;
         while (s && *s) {
               const char *n = strchr(s, '\n');
+              char cont = ' ';
+              if (Code < 0 || n && *(n + 1)) // trailing newlines don't count!
+                 cont = '-';
+              char number[16];
+              sprintf(number, "%03d%c", abs(Code), cont);
               if (!(Send(number) && Send(s, n ? n - s : -1) && Send("\r\n"))) {
                  Close();
                  break;
@@ -398,6 +423,32 @@ void cSVDRP::Reply(int Code, const char *fmt, ...)
         esyslog("SVDRP: zero return code!");
         }
      }
+}
+
+void cSVDRP::PrintHelpTopics(const char **hp)
+{
+  int NumPages = 0;
+  if (hp) {
+     while (*hp) {
+           NumPages++;
+           hp++;
+           }
+     hp -= NumPages;
+     }
+  const int TopicsPerLine = 5;
+  int x = 0;
+  for (int y = 0; (y * TopicsPerLine + x) < NumPages; y++) {
+      char buffer[TopicsPerLine * MAXHELPTOPIC + 5];
+      char *q = buffer;
+      q += sprintf(q, "    ");
+      for (x = 0; x < TopicsPerLine && (y * TopicsPerLine + x) < NumPages; x++) {
+          const char *topic = GetHelpTopic(hp[(y * TopicsPerLine + x)]);
+          if (topic)
+             q += sprintf(q, "%*s", -MAXHELPTOPIC, topic);
+          }
+      x = 0;
+      Reply(-214, buffer);
+      }
 }
 
 void cSVDRP::CmdCHAN(const char *Option)
@@ -561,6 +612,36 @@ void cSVDRP::CmdDELT(const char *Option)
      Reply(501, "Missing timer number");
 }
 
+void cSVDRP::CmdEDIT(const char *Option)
+{
+  if (*Option) {
+     if (isnumber(Option)) {
+        cRecording *recording = Recordings.Get(strtol(Option, NULL, 10) - 1);
+        if (recording) {
+           cMarks Marks;
+           if (Marks.Load(recording->FileName()) && Marks.Count()) {
+              if (!cCutter::Active()) {
+                 if (cCutter::Start(recording->FileName()))
+                    Reply(250, "Editing recording \"%s\" [%s]", Option, recording->Title());
+                 else
+                    Reply(554, "Can't start editing process");
+                 }
+              else
+                 Reply(554, "Editing process already active");
+              }
+           else
+              Reply(554, "No editing marks defined");
+           }
+        else
+           Reply(550, "Recording \"%s\" not found%s", Option, Recordings.Count() ? "" : " (use LSTR before editing)");
+        }
+     else
+        Reply(501, "Error in recording number \"%s\"", Option);
+     }
+  else
+     Reply(501, "Missing recording number");
+}
+
 void cSVDRP::CmdGRAB(const char *Option)
 {
   char *FileName = NULL;
@@ -626,7 +707,7 @@ void cSVDRP::CmdGRAB(const char *Option)
 void cSVDRP::CmdHELP(const char *Option)
 {
   if (*Option) {
-     const char *hp = GetHelpPage(Option);
+     const char *hp = GetHelpPage(Option, HelpPages);
      if (hp)
         Reply(214, hp);
      else {
@@ -637,24 +718,13 @@ void cSVDRP::CmdHELP(const char *Option)
   else {
      Reply(-214, "This is VDR version %s", VDRVERSION);
      Reply(-214, "Topics:");
-     const char **hp = HelpPages;
-     int NumPages = 0;
-     while (*hp) {
-           NumPages++;
-           hp++;
-           }
-     const int TopicsPerLine = 5;
-     int x = 0;
-     for (int y = 0; (y * TopicsPerLine + x) < NumPages; y++) {
-         char buffer[TopicsPerLine * (MAXHELPTOPIC + 5)];
-         char *q = buffer;
-         for (x = 0; x < TopicsPerLine && (y * TopicsPerLine + x) < NumPages; x++) {
-             const char *topic = GetHelpTopic(HelpPages[(y * TopicsPerLine + x)]);
-             if (topic)
-                q += sprintf(q, "    %s", topic);
-             }
-         x = 0;
-         Reply(-214, buffer);
+     PrintHelpTopics(HelpPages);
+     cPlugin *plugin;
+     for (int i = 0; (plugin = cPluginManager::GetPlugin(i)) != NULL; i++) {
+         const char **hp = plugin->SVDRPHelpPages();
+         if (hp)
+            Reply(-214, "Plugin %s v%s - %s", plugin->Name(), plugin->Version(), plugin->Description());
+         PrintHelpTopics(hp);
          }
      Reply(-214, "To report bugs in the implementation send email to");
      Reply(-214, "    vdr-bugs@cadsoft.de");
@@ -1042,6 +1112,120 @@ void cSVDRP::CmdNEXT(const char *Option)
      Reply(550, "No active timers");
 }
 
+void cSVDRP::CmdPLAY(const char *Option)
+{
+  if (*Option) {
+     char *opt = strdup(Option);
+     char *num = skipspace(opt);
+     char *option = num;
+     while (*option && !isspace(*option))
+           option++;
+     char c = *option;
+     *option = 0;
+     if (isnumber(num)) {
+        cRecording *recording = Recordings.Get(strtol(num, NULL, 10) - 1);
+        if (recording) {
+           if (c)
+              option = skipspace(++option);
+           cReplayControl::SetRecording(NULL, NULL);
+           cControl::Shutdown();
+           if (*option) {
+              int pos = 0;
+              if (strcasecmp(option, "BEGIN") != 0) {
+                 int h, m = 0, s = 0, f = 1;
+                 int x = sscanf(option, "%d:%d:%d.%d", &h, &m, &s, &f);
+                 if (x == 1)
+                    pos = h;
+                 else if (x >= 3)
+                    pos = (h * 3600 + m * 60 + s) * FRAMESPERSEC + f - 1;
+                 }
+              cResumeFile resume(recording->FileName());
+              if (pos <= 0)
+                 resume.Delete();
+              else
+                 resume.Save(pos);
+              }
+           cReplayControl::SetRecording(recording->FileName(), recording->Title());
+           cControl::Launch(new cReplayControl);
+           cControl::Attach();
+           Reply(250, "Playing recording \"%s\" [%s]", num, recording->Title());
+           }
+        else
+           Reply(550, "Recording \"%s\" not found%s", num, Recordings.Count() ? "" : " (use LSTR before playing)");
+        }
+     else
+        Reply(501, "Error in recording number \"%s\"", num);
+     free(opt);
+     }
+  else
+     Reply(501, "Missing recording number");
+}
+
+void cSVDRP::CmdPLUG(const char *Option)
+{
+  if (*Option) {
+     char *opt = strdup(Option);
+     char *name = skipspace(opt);
+     char *option = name;
+     while (*option && !isspace(*option))
+        option++;
+     char c = *option;
+     *option = 0;
+     cPlugin *plugin = cPluginManager::GetPlugin(name);
+     if (plugin) {
+        if (c)
+           option = skipspace(++option);
+        char *cmd = option;
+        while (*option && !isspace(*option))
+              option++;
+        if (*option) {
+           *option++ = 0;
+           option = skipspace(option);
+           }
+        if (!*cmd || strcasecmp(cmd, "HELP") == 0) {
+           if (*cmd && *option) {
+              const char *hp = GetHelpPage(option, plugin->SVDRPHelpPages());
+              if (hp) {
+                 Reply(-214, hp);
+                 Reply(214, "End of HELP info");
+                 }
+              else
+                 Reply(504, "HELP topic \"%s\" for plugin \"%s\" unknown", option, plugin->Name());
+              }
+           else {
+              Reply(-214, "Plugin %s v%s - %s", plugin->Name(), plugin->Version(), plugin->Description());
+              const char **hp = plugin->SVDRPHelpPages();
+              if (hp) {
+                 Reply(-214, "SVDRP commands:");
+                 PrintHelpTopics(hp);
+                 Reply(214, "End of HELP info");
+                 }
+              else
+                 Reply(214, "This plugin has no SVDRP commands");
+              }
+           }
+        else {
+           int ReplyCode = 900;
+           cString s = plugin->SVDRPCommand(cmd, option, ReplyCode);
+           if (s)
+              Reply(abs(ReplyCode), *s);
+           else
+              Reply(500, "Command unrecognized: \"%s\"", cmd);
+           }
+        }
+     else
+        Reply(550, "Plugin \"%s\" not found (use PLUG for a list of plugins)", name);
+     free(opt);
+     }
+  else {
+     Reply(-214, "Available plugins:");
+     cPlugin *plugin;
+     for (int i = 0; (plugin = cPluginManager::GetPlugin(i)) != NULL; i++)
+         Reply(-214, "%s v%s - %s", plugin->Name(), plugin->Version(), plugin->Description());
+     Reply(214, "End of plugin list");
+     }
+}
+
 void cSVDRP::CmdPUTE(const char *Option)
 {
   delete PUTEhandler;
@@ -1152,6 +1336,7 @@ void cSVDRP::Execute(char *Cmd)
   else if (CMD("DELC"))  CmdDELC(s);
   else if (CMD("DELR"))  CmdDELR(s);
   else if (CMD("DELT"))  CmdDELT(s);
+  else if (CMD("EDIT"))  CmdEDIT(s);
   else if (CMD("GRAB"))  CmdGRAB(s);
   else if (CMD("HELP"))  CmdHELP(s);
   else if (CMD("HITK"))  CmdHITK(s);
@@ -1167,6 +1352,8 @@ void cSVDRP::Execute(char *Cmd)
   else if (CMD("NEWC"))  CmdNEWC(s);
   else if (CMD("NEWT"))  CmdNEWT(s);
   else if (CMD("NEXT"))  CmdNEXT(s);
+  else if (CMD("PLAY"))  CmdPLAY(s);
+  else if (CMD("PLUG"))  CmdPLUG(s);
   else if (CMD("PUTE"))  CmdPUTE(s);
   else if (CMD("SCAN"))  CmdSCAN(s);
   else if (CMD("STAT"))  CmdSTAT(s);

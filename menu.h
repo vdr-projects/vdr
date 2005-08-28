@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 1.70 2005/05/15 14:34:54 kls Exp $
+ * $Id: menu.h 1.71 2005/08/27 09:37:33 kls Exp $
  */
 
 #ifndef __MENU_H
@@ -15,6 +15,7 @@
 #include "epg.h"
 #include "osdbase.h"
 #include "dvbplayer.h"
+#include "menuitems.h"
 #include "recorder.h"
 #include "skins.h"
 
@@ -25,6 +26,29 @@ public:
   cMenuText(const char *Title, const char *Text, eDvbFont Font = fontOsd);
   virtual ~cMenuText();
   void SetText(const char *Text);
+  virtual void Display(void);
+  virtual eOSState ProcessKey(eKeys Key);
+  };
+
+class cMenuEditTimer : public cOsdMenu {
+private:
+  cTimer *timer;
+  cTimer data;
+  int channel;
+  bool addIfConfirmed;
+  cMenuEditDateItem *firstday;
+  void SetFirstDayItem(void);
+public:
+  cMenuEditTimer(cTimer *Timer, bool New = false);
+  virtual ~cMenuEditTimer();
+  virtual eOSState ProcessKey(eKeys Key);
+  };
+
+class cMenuEvent : public cOsdMenu {
+private:
+  const cEvent *event;
+public:
+  cMenuEvent(const cEvent *Event, bool CanSwitch = false);
   virtual void Display(void);
   virtual eOSState ProcessKey(eKeys Key);
   };

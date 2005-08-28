@@ -3716,3 +3716,33 @@ Video Disk Recorder Revision History
 - Replaced the get/put_unaligned() macros from <asm/unaligned.h> with own inline
   functions to avoid problems on platforms that don't provide these (thanks to
   David Woodhouse for his help).
+
+2005-08-28: Version 1.3.31
+
+- Added missing German OSD texts for 'Audio language'.
+- The Setup/CICAM menu now only contains the devices that actually have a CI and
+  dynamically detects the number of slots a CI provides.
+- Implemented cAudioRepacker for better handling of audio PES packets (thanks to
+  Reinhard Nissl).
+- Modified handling of audio packets for radio channels in remux.c (thanks to
+  Reinhard Nissl).
+- Updated the Danish OSD texts (thanks to Mogens Elneff).
+- Fixed the EPG scan, so that it doesn't use the primary device if that is
+  currently in Transfer-Mode from itself (thanks to Marcus Hilbrich for a bug
+  report that lead to this).
+- Removed the TUNER_LOCK_TIMEOUT in cDevice::AttachReceiver() since it caused more
+  trouble than it fixed.
+- Fixed detecting short channel names for "Kabel Deutschland", who uses a comma
+  as delimiter (thanks to Marco Schlüßler).
+- Moved cMenuEditTimer and cMenuEvent to menu.h so that plugins can use it (suggested
+  by Thomas Günther).
+- The new static function cString::sprintf() can be used to easily create a formatted
+  string.
+- Plugins can now implement their own SVDRP commands (based on a patch from Hardy
+  Flor). See PLUGINS.html, section "SVDRP commands" for details. The SVDRP commands
+  of a plugin are accessed through the new SVDRP command PLUG.
+  See PLUGINS/src/svdrpdemo for an example of how to use this feature.
+- The new SVDRP command PLAY can be used to start replaying a recording (thanks to
+  Hardy Flor).
+- The new SVDRP command EDIT can be used to start the editing process of a recording
+  (based on the CUTR patch by Harald Milz).
