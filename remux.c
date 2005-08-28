@@ -11,7 +11,7 @@
  * The cRepacker family's code was originally written by Reinhard Nissl <rnissl@gmx.de>,
  * and adapted to the VDR coding style by Klaus.Schmidinger@cadsoft.de.
  *
- * $Id: remux.c 1.43 2005/08/28 21:03:35 kls Exp $
+ * $Id: remux.c 1.44 2005/08/28 21:24:34 kls Exp $
  */
 
 #include "remux.h"
@@ -142,7 +142,7 @@ void cCommonRepacker::Reset(void)
 {
   cRepacker::Reset();
   skippedBytes = 0;
-  packetTodo = maxPacketSize - 6 - 3;
+  packetTodo = 0;
   fragmentLen = 0;
   pesHeaderLen = 0;
   pesHeaderBackupLen = 0;
@@ -361,7 +361,7 @@ void cVideoRepacker::Repack(cRingBufferLinear *ResultBuffer, const uchar *Data, 
         done++;
         todo--;
         // do we have to start a new packet as there is no more space left?
-        if (--packetTodo <= 0) {
+        if (state != syncing && --packetTodo <= 0) {
            // we connot start a new packet here if the current might end in a start
            // code and this start code shall possibly be put in the next packet. So
            // overfill the current packet until we can safely detect that we won't
@@ -468,6 +468,9 @@ void cVideoRepacker::Repack(cRingBufferLinear *ResultBuffer, const uchar *Data, 
 
 int cVideoRepacker::BreakAt(const uchar *Data, int Count)
 {
+  if (initiallySyncing)
+     return -1; // fill the packet buffer completely until we have synced once
+
   int PesPayloadOffset = 0;
 
   if (AnalyzePesHeader(Data, Count, PesPayloadOffset) <= phInvalid)
@@ -726,7 +729,7 @@ void cAudioRepacker::Repack(cRingBufferLinear *ResultBuffer, const uchar *Data, 
         done++;
         todo--;
         // do we have to start a new packet as there is no more space left?
-        if (--packetTodo <= 0) {
+        if (state != syncing && --packetTodo <= 0) {
            // We connot start a new packet here if the current might end in an audio
            // frame header and this header shall possibly be put in the next packet. So
            // overfill the current packet until we can safely detect that we won't
@@ -830,6 +833,9 @@ void cAudioRepacker::Repack(cRingBufferLinear *ResultBuffer, const uchar *Data, 
 
 int cAudioRepacker::BreakAt(const uchar *Data, int Count)
 {
+  if (initiallySyncing)
+     return -1; // fill the packet buffer completely until we have synced once
+
   int PesPayloadOffset = 0;
 
   ePesHeader MpegLevel = AnalyzePesHeader(Data, Count, PesPayloadOffset);
@@ -1183,6 +1189,8 @@ void cDolbyRepacker::Repack(cRingBufferLinear *ResultBuffer, const uchar *Data, 
 
 int cDolbyRepacker::BreakAt(const uchar *Data, int Count)
 {
+  if (initiallySyncing)
+     return -1; // fill the packet buffer completely until we have synced once
   // enough data for test?
   if (Count < 6 + 3)
      return -1;

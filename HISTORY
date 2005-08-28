@@ -3753,3 +3753,4 @@ Video Disk Recorder Revision History
 - Removed unused MAINMENUENTRY from svdrpdemo.c (thanks to Udo Richter for reporting
   this one).
 - Fixed appending sequence end code in cDvbPlayer::Goto() (thanks to Reinhard Nissl).
+- Fixed syncing in cRepacker (thanks to Reinhard Nissl).
