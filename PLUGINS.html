@@ -981,6 +981,9 @@ by exactly 4 blanks (no tabs), and none of them shall be longer than 79 characte
 (to avoid messy output on 80 character wide terminals). The last entry in the
 list must be NULL.
 <p>
+The command names <tt>HELP</tt> and <tt>MAIN</tt> are reserverd and cannot
+be used by a plugin.
+<p>
 The actual processing of SVDRP commands for a plugin is done in its
 <tt>SVDRPCommand()</tt> function.
 Here's an example of such a function, which implements the commands advertised in
