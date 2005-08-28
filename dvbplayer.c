@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 1.38 2005/08/14 10:52:45 kls Exp $
+ * $Id: dvbplayer.c 1.39 2005/08/28 21:14:04 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -661,7 +661,7 @@ void cDvbPlayer::Goto(int Index, bool Still)
            if (playMode == pmPause)
               DevicePlay();
            // append sequence end code to get the image shown immediately with softdevices
-           if (r > 6) { // should be always true
+           if (r > 6 && (b[3] & 0xF0) == 0xE0) { // make sure to append it only to a video packet
               b[r++] = 0x00;
               b[r++] = 0x00;
               b[r++] = 0x01;

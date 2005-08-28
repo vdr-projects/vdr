@@ -3752,3 +3752,4 @@ Video Disk Recorder Revision History
 - Added some missing braces in remux.c (thanks to Wayne Keer for reporting this one).
 - Removed unused MAINMENUENTRY from svdrpdemo.c (thanks to Udo Richter for reporting
   this one).
+- Fixed appending sequence end code in cDvbPlayer::Goto() (thanks to Reinhard Nissl).
