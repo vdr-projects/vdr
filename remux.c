@@ -11,7 +11,7 @@
  * The cRepacker family's code was originally written by Reinhard Nissl <rnissl@gmx.de>,
  * and adapted to the VDR coding style by Klaus.Schmidinger@cadsoft.de.
  *
- * $Id: remux.c 1.44 2005/08/28 21:24:34 kls Exp $
+ * $Id: remux.c 1.45 2005/08/28 21:44:51 kls Exp $
  */
 
 #include "remux.h"
@@ -1265,7 +1265,7 @@ private:
   int count;
   uint8_t *buf;
   uint8_t cid;
-  uint8_t audioCid;
+  uint8_t rewriteCid;
   uint8_t subStreamId;
   int plength;
   uint8_t plen[2];
@@ -1289,7 +1289,7 @@ private:
   void write_ipack(const uint8_t *Data, int Count);
   void instant_repack(const uint8_t *Buf, int Count);
 public:
-  cTS2PES(int Pid, cRingBufferLinear *ResultBuffer, int Size, uint8_t AudioCid = 0x00, uint8_t SubStreamId = 0x00, cRepacker *Repacker = NULL);
+  cTS2PES(int Pid, cRingBufferLinear *ResultBuffer, int Size, uint8_t RewriteCid = 0x00, uint8_t SubStreamId = 0x00, cRepacker *Repacker = NULL);
   ~cTS2PES();
   int Pid(void) { return pid; }
   void ts_to_pes(const uint8_t *Buf); // don't need count (=188)
@@ -1298,12 +1298,12 @@ public:
 
 uint8_t cTS2PES::headr[] = { 0x00, 0x00, 0x01 };
 
-cTS2PES::cTS2PES(int Pid, cRingBufferLinear *ResultBuffer, int Size, uint8_t AudioCid, uint8_t SubStreamId, cRepacker *Repacker)
+cTS2PES::cTS2PES(int Pid, cRingBufferLinear *ResultBuffer, int Size, uint8_t RewriteCid, uint8_t SubStreamId, cRepacker *Repacker)
 {
   pid = Pid;
   resultBuffer = ResultBuffer;
   size = Size;
-  audioCid = AudioCid;
+  rewriteCid = RewriteCid;
   subStreamId = SubStreamId;
   repacker = Repacker;
   if (repacker) {
@@ -1365,7 +1365,7 @@ void cTS2PES::send_ipack(void)
 {
   if (count <= ((mpeg == 2) ? 9 : 7)) // skip empty packets
      return;
-  buf[3] = (AUDIO_STREAM_S <= cid && cid <= AUDIO_STREAM_E && audioCid) ? audioCid : cid;
+  buf[3] = rewriteCid ? rewriteCid : cid;
   buf[4] = (uint8_t)(((count - 6) & 0xFF00) >> 8);
   buf[5] = (uint8_t)((count - 6) & 0x00FF);
   store(buf, count);
@@ -1681,9 +1681,9 @@ cRemux::cRemux(int VPid, const int *APids, const int *DPids, const int *SPids, b
   if (VPid)
 #define TEST_cVideoRepacker
 #ifdef TEST_cVideoRepacker
-     ts2pes[numTracks++] = new cTS2PES(VPid, resultBuffer, IPACKS, 0x00, 0x00, new cVideoRepacker);
+     ts2pes[numTracks++] = new cTS2PES(VPid, resultBuffer, IPACKS, 0xE0, 0x00, new cVideoRepacker);
 #else
-     ts2pes[numTracks++] = new cTS2PES(VPid, resultBuffer, IPACKS);
+     ts2pes[numTracks++] = new cTS2PES(VPid, resultBuffer, IPACKS, 0xE0);
 #endif
   if (APids) {
      int n = 0;

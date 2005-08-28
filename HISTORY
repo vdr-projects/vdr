@@ -3754,3 +3754,5 @@ Video Disk Recorder Revision History
   this one).
 - Fixed appending sequence end code in cDvbPlayer::Goto() (thanks to Reinhard Nissl).
 - Fixed syncing in cRepacker (thanks to Reinhard Nissl).
+- Now always using stream id 0xE0 for the video stream, to avoid problems with
+  post processing tools that choke on different ids (suggested by Reinhard Nissl).
