@@ -1153,6 +1153,7 @@ Wayne Keer <syphir@syphir.sytes.net>
  for reporting an unused variable from cTimer::GetWDayFromMDay()
  for reporting a spelling error in 'canceling'
  for adding some 'mkdir -p' to the Makefile's 'install' target
+ for reporting some missing braces in remux.c
 
 Marco Schlüßler <marco@lordzodiac.de>
  for fixing handling colors in cDvbSpuPalette::yuv2rgb()

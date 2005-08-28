@@ -11,7 +11,7 @@
  * The cRepacker family's code was originally written by Reinhard Nissl <rnissl@gmx.de>,
  * and adapted to the VDR coding style by Klaus.Schmidinger@cadsoft.de.
  *
- * $Id: remux.c 1.42 2005/08/28 11:46:44 kls Exp $
+ * $Id: remux.c 1.43 2005/08/28 21:03:35 kls Exp $
  */
 
 #include "remux.h"
@@ -522,18 +522,16 @@ public:
   };
 
 int cAudioRepacker::bitRates[2][3][16] = { // all values are specified as kbits/s
-  // MPEG 1, Layer I
-  0,  32,  64,  96, 128, 160, 192, 224, 256, 288, 320, 352, 384, 416, 448, -1,
-  // MPEG 1, Layer II
-  0,  32,  48,  56,  64,  80,  96, 112, 128, 160, 192, 224, 256, 320, 384, -1,
-  // MPEG 1, Layer III
-  0,  32,  40,  48,  56,  64,  80,  96, 112, 128, 160, 192, 224, 256, 320, -1,
-  // MPEG 2, Layer I
-  0,  32,  48,  56,  64,  80,  96, 112, 128, 144, 160, 176, 192, 224, 256, -1,
-  // MPEG 2, Layer II/III
-  0,   8,  16,  24,  32,  40,  48,  56,  64,  80,  96, 112, 128, 144, 160, -1,
-  // MPEG 2, Layer II/III
-  0,   8,  16,  24,  32,  40,  48,  56,  64,  80,  96, 112, 128, 144, 160, -1
+  {
+    { 0,  32,  64,  96, 128, 160, 192, 224, 256, 288, 320, 352, 384, 416, 448, -1 }, // MPEG 1, Layer I
+    { 0,  32,  48,  56,  64,  80,  96, 112, 128, 160, 192, 224, 256, 320, 384, -1 }, // MPEG 1, Layer II
+    { 0,  32,  40,  48,  56,  64,  80,  96, 112, 128, 160, 192, 224, 256, 320, -1 }  // MPEG 1, Layer III
+  },
+  {
+    { 0,  32,  48,  56,  64,  80,  96, 112, 128, 144, 160, 176, 192, 224, 256, -1 }, // MPEG 2, Layer I
+    { 0,   8,  16,  24,  32,  40,  48,  56,  64,  80,  96, 112, 128, 144, 160, -1 }, // MPEG 2, Layer II/III
+    { 0,   8,  16,  24,  32,  40,  48,  56,  64,  80,  96, 112, 128, 144, 160, -1 }  // MPEG 2, Layer II/III
+  }
   };
 
 cAudioRepacker::cAudioRepacker(void)
@@ -589,17 +587,13 @@ bool cAudioRepacker::IsValidAudioHeader(uint32_t Header, bool Mpeg2, int *FrameS
         *FrameSize = 0;
      else {
         static int samplingFrequencies[2][4] = { // all values are specified in Hz
-          // MPEG 1
-          44100, 48000, 32000, -1,
-          // MPEG 2
-          22050, 24000, 16000, -1
+          { 44100, 48000, 32000, -1 }, // MPEG 1
+          { 22050, 24000, 16000, -1 }  // MPEG 2
           };
 
         static int slots_per_frame[2][3] = {
-          // MPEG 1, Layer I, II, III
-          12, 144, 144,
-          // MPEG 2, Layer I, II, III
-          12, 144,  72
+          { 12, 144, 144 }, // MPEG 1, Layer I, II, III
+          { 12, 144,  72 }  // MPEG 2, Layer I, II, III
           };
 
         int mpegIndex = 1 - id;
