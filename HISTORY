@@ -3744,3 +3744,5 @@ Video Disk Recorder Revision History
   See PLUGINS/src/svdrpdemo for an example of how to use this feature.
 - The new SVDRP command PLAY can be used to start replaying a recording (thanks to
   Hardy Flor).
+- The new SVDRP command EDIT can be used to start the editing process of a recording
+  (based on the CUTR patch by Harald Milz).

@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.76 2005/08/28 10:32:15 kls Exp $
+ * $Id: svdrp.c 1.77 2005/08/28 14:12:00 kls Exp $
  */
 
 #include "svdrp.h"
@@ -28,6 +28,7 @@
 #include <unistd.h>
 #include "channels.h"
 #include "config.h"
+#include "cutter.h"
 #include "device.h"
 #include "eitscan.h"
 #include "keys.h"
@@ -195,6 +196,10 @@ const char *HelpPages[] = {
   "    RECORDING - BE SURE YOU KNOW WHAT YOU ARE DOING!",
   "DELT <number>\n"
   "    Delete timer.",
+  "EDIT <number>\n"
+  "    Edit the recording with the given number. Before a recording can be\n"
+  "    edited, an LSTR command must have been executed in order to retrieve\n"
+  "    the recording numbers.",
   "GRAB <filename> [ jpeg | pnm [ <quality> [ <sizex> <sizey> ] ] ]\n"
   "    Grab the current frame and save it to the given file. Images can\n"
   "    be stored as JPEG (default) or PNM, at the given quality (default\n"
@@ -605,6 +610,36 @@ void cSVDRP::CmdDELT(const char *Option)
      }
   else
      Reply(501, "Missing timer number");
+}
+
+void cSVDRP::CmdEDIT(const char *Option)
+{
+  if (*Option) {
+     if (isnumber(Option)) {
+        cRecording *recording = Recordings.Get(strtol(Option, NULL, 10) - 1);
+        if (recording) {
+           cMarks Marks;
+           if (Marks.Load(recording->FileName()) && Marks.Count()) {
+              if (!cCutter::Active()) {
+                 if (cCutter::Start(recording->FileName()))
+                    Reply(250, "Editing recording \"%s\" [%s]", Option, recording->Title());
+                 else
+                    Reply(554, "Can't start editing process");
+                 }
+              else
+                 Reply(554, "Editing process already active");
+              }
+           else
+              Reply(554, "No editing marks defined");
+           }
+        else
+           Reply(550, "Recording \"%s\" not found%s", Option, Recordings.Count() ? "" : " (use LSTR before editing)");
+        }
+     else
+        Reply(501, "Error in recording number \"%s\"", Option);
+     }
+  else
+     Reply(501, "Missing recording number");
 }
 
 void cSVDRP::CmdGRAB(const char *Option)
@@ -1301,6 +1336,7 @@ void cSVDRP::Execute(char *Cmd)
   else if (CMD("DELC"))  CmdDELC(s);
   else if (CMD("DELR"))  CmdDELR(s);
   else if (CMD("DELT"))  CmdDELT(s);
+  else if (CMD("EDIT"))  CmdEDIT(s);
   else if (CMD("GRAB"))  CmdGRAB(s);
   else if (CMD("HELP"))  CmdHELP(s);
   else if (CMD("HITK"))  CmdHITK(s);
