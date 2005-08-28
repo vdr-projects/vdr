@@ -8,10 +8,10 @@
  * the Linux DVB driver's 'tuxplayer' example and were rewritten to suit
  * VDR's needs.
  *
- * The cDolbyRepacker code was originally written by Reinhard Nissl <rnissl@gmx.de>,
+ * The cRepacker family's code was originally written by Reinhard Nissl <rnissl@gmx.de>,
  * and adapted to the VDR coding style by Klaus.Schmidinger@cadsoft.de.
  *
- * $Id: remux.c 1.41 2005/08/28 11:23:23 kls Exp $
+ * $Id: remux.c 1.42 2005/08/28 11:46:44 kls Exp $
  */
 
 #include "remux.h"
