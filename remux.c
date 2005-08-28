@@ -11,7 +11,7 @@
  * The cDolbyRepacker code was originally written by Reinhard Nissl <rnissl@gmx.de>,
  * and adapted to the VDR coding style by Klaus.Schmidinger@cadsoft.de.
  *
- * $Id: remux.c 1.40 2005/08/27 09:03:56 kls Exp $
+ * $Id: remux.c 1.41 2005/08/28 11:23:23 kls Exp $
  */
 
 #include "remux.h"
@@ -90,14 +90,15 @@ ePesHeader AnalyzePesHeader(const uchar *Data, int Count, int &PesPayloadOffset,
 
 class cRepacker {
 protected:
+  bool initiallySyncing;
   int maxPacketSize;
   uint8_t subStreamId;
   static void DroppedData(const char *Reason, int Count) { esyslog("%s (dropped %d bytes)", Reason, Count); }
 public:
   static int Put(cRingBufferLinear *ResultBuffer, const uchar *Data, int Count, int CapacityNeeded);
-  cRepacker(void) { maxPacketSize = 6 + 65535; subStreamId = 0; }
+  cRepacker(void) { initiallySyncing = true; maxPacketSize = 6 + 65535; subStreamId = 0; }
   virtual ~cRepacker() {}
-  virtual void Reset(void) {}
+  virtual void Reset(void) { /* initiallySyncing = true; */ }
   virtual void Repack(cRingBufferLinear *ResultBuffer, const uchar *Data, int Count) = 0;
   virtual int BreakAt(const uchar *Data, int Count) = 0;
   virtual int QuerySnoopSize(void) { return 0; }
@@ -139,6 +140,7 @@ protected:
 
 void cCommonRepacker::Reset(void)
 {
+  cRepacker::Reset();
   skippedBytes = 0;
   packetTodo = maxPacketSize - 6 - 3;
   fragmentLen = 0;
@@ -293,16 +295,14 @@ void cVideoRepacker::Repack(cRingBufferLinear *ResultBuffer, const uchar *Data, 
                      // the byte count get's negative then the current buffer ends in a
                      // partitial start code that must be stripped off, as it shall be put
                      // in the next packet.
-                     if (!PushOutPacket(ResultBuffer, payload, data - 3 - payload)) {
-                        DroppedData("cVideoRepacker: result buffer overflow", Count - (done - 3));
-                        return;
-                        }
+                     PushOutPacket(ResultBuffer, payload, data - 3 - payload);
                      // go on with syncing to the next picture
                      state = syncing;
                      }
                   if (state == syncing) {
-                     // report that syncing dropped some bytes
-                     if (skippedBytes > SkippedBytesLimit)
+                     if (initiallySyncing) // omit report for the typical initial case
+                        initiallySyncing = false;
+                     else if (skippedBytes > SkippedBytesLimit) // report that syncing dropped some bytes
                         esyslog("cVideoRepacker: skipped %d bytes to sync on next picture", skippedBytes - SkippedBytesLimit);
                      skippedBytes = 0;
                      // if there is a PES header available, then use it ...
@@ -408,10 +408,7 @@ void cVideoRepacker::Repack(cRingBufferLinear *ResultBuffer, const uchar *Data, 
               const uchar *excessData = fragmentData + fragmentLen + bite;
               // a negative byte count means to drop some bytes from the current
               // fragment's tail, to not exceed the maximum packet size.
-              if (!PushOutPacket(ResultBuffer, payload, bite)) {
-                 DroppedData("cVideoRepacker: result buffer overflow", Count - done);
-                 return;
-                 }
+              PushOutPacket(ResultBuffer, payload, bite);
               // create a continuation PES header
               pesHeaderLen = 0;
               pesHeader[pesHeaderLen++] = 0x00;
@@ -463,7 +460,8 @@ void cVideoRepacker::Repack(cRingBufferLinear *ResultBuffer, const uchar *Data, 
      }
   // report that syncing dropped some bytes
   if (skippedBytes > SkippedBytesLimit) {
-     esyslog("cVideoRepacker: skipped %d bytes while syncing on next picture", skippedBytes - SkippedBytesLimit);
+     if (!initiallySyncing) // omit report for the typical initial case
+        esyslog("cVideoRepacker: skipped %d bytes while syncing on next picture", skippedBytes - SkippedBytesLimit);
      skippedBytes = SkippedBytesLimit;
      }
 }
@@ -508,14 +506,14 @@ int cVideoRepacker::BreakAt(const uchar *Data, int Count)
 
 class cAudioRepacker : public cCommonRepacker {
 private:
-  static int bitRates[];
+  static int bitRates[2][3][16];
   enum eState {
     syncing,
     scanFrame
     } state;
   int frameTodo;
   int frameSize;
-  bool IsValidAudioHeader(uint32_t Header, int *FrameSize = NULL);
+  static bool IsValidAudioHeader(uint32_t Header, bool Mpeg2, int *FrameSize = NULL);
 public:
   cAudioRepacker(void);
   virtual void Reset(void);
@@ -523,13 +521,19 @@ public:
   virtual int BreakAt(const uchar *Data, int Count);
   };
 
-int cAudioRepacker::bitRates[] = { // all values are specified as kbits/s
-  // Layer I
+int cAudioRepacker::bitRates[2][3][16] = { // all values are specified as kbits/s
+  // MPEG 1, Layer I
   0,  32,  64,  96, 128, 160, 192, 224, 256, 288, 320, 352, 384, 416, 448, -1,
-  // Layer II
+  // MPEG 1, Layer II
   0,  32,  48,  56,  64,  80,  96, 112, 128, 160, 192, 224, 256, 320, 384, -1,
-  // Layer III
-  0,  32,  40,  48,  56,  64,  80,  96, 112, 128, 160, 192, 224, 256, 320, -1
+  // MPEG 1, Layer III
+  0,  32,  40,  48,  56,  64,  80,  96, 112, 128, 160, 192, 224, 256, 320, -1,
+  // MPEG 2, Layer I
+  0,  32,  48,  56,  64,  80,  96, 112, 128, 144, 160, 176, 192, 224, 256, -1,
+  // MPEG 2, Layer II/III
+  0,   8,  16,  24,  32,  40,  48,  56,  64,  80,  96, 112, 128, 144, 160, -1,
+  // MPEG 2, Layer II/III
+  0,   8,  16,  24,  32,  40,  48,  56,  64,  80,  96, 112, 128, 144, 160, -1
   };
 
 cAudioRepacker::cAudioRepacker(void)
@@ -546,7 +550,7 @@ void cAudioRepacker::Reset(void)
   frameSize = 0;
 }
 
-bool cAudioRepacker::IsValidAudioHeader(uint32_t Header, int *FrameSize)
+bool cAudioRepacker::IsValidAudioHeader(uint32_t Header, bool Mpeg2, int *FrameSize)
 {
   int syncword           = (Header & 0xFFF00000) >> 20;
   int id                 = (Header & 0x00080000) >> 19;
@@ -565,7 +569,7 @@ bool cAudioRepacker::IsValidAudioHeader(uint32_t Header, int *FrameSize)
   if (syncword != 0xFFF)
      return false;
 
-  if (id == 0) // reserved
+  if (id == 0 && !Mpeg2) // reserved in MPEG 1
      return false;
 
   if (layer == 0) // reserved
@@ -584,16 +588,32 @@ bool cAudioRepacker::IsValidAudioHeader(uint32_t Header, int *FrameSize)
      if (bitrate_index == 0)
         *FrameSize = 0;
      else {
-        static int samplingFrequencies[] = { 44100, 48000, 32000 }; // Hz
+        static int samplingFrequencies[2][4] = { // all values are specified in Hz
+          // MPEG 1
+          44100, 48000, 32000, -1,
+          // MPEG 2
+          22050, 24000, 16000, -1
+          };
 
-        int br = 1000 * bitRates[ (3 - layer) * 0x10 + bitrate_index ]; // bits/s
-        int sf = samplingFrequencies[sampling_frequency];
+        static int slots_per_frame[2][3] = {
+          // MPEG 1, Layer I, II, III
+          12, 144, 144,
+          // MPEG 2, Layer I, II, III
+          12, 144,  72
+          };
 
-        bool layerI = (layer == 3);
+        int mpegIndex = 1 - id;
+        int layerIndex = 3 - layer;
 
-        int N = (layerI ? 12 : 144) * br / sf; // slots
+        // Layer I (i. e., layerIndex == 0) has a larger slot size
+        int slotSize = (layerIndex == 0) ? 4 : 1; // bytes
 
-        *FrameSize = (N + padding_bit) * (layerI ? 4 : 1); // bytes
+        int br = 1000 * bitRates[mpegIndex][layerIndex][bitrate_index]; // bits/s
+        int sf = samplingFrequencies[mpegIndex][sampling_frequency];
+
+        int N = slots_per_frame[mpegIndex][layerIndex] * br / sf; // slots
+
+        *FrameSize = (N + padding_bit) * slotSize; // bytes
         }
      }
 
@@ -632,29 +652,35 @@ void cAudioRepacker::Repack(cRingBufferLinear *ResultBuffer, const uchar *Data, 
         // collect number of skipped bytes while syncing
         if (state <= syncing)
            skippedBytes++;
-        else if (frameTodo > 0)
+        else if (frameTodo > 0) {
            frameTodo--;
+           if (frameTodo == 0 && state == scanFrame) {
+              // the current audio frame is is done now. So push out the packet to
+              // start a new packet for the next audio frame.
+              PushOutPacket(ResultBuffer, payload, data - payload);
+              // go on with syncing to the next audio frame
+              state = syncing;
+              }
+           }
         // did we reach an audio frame header?
         scanner <<= 8;
         scanner |= *data;
         if ((scanner & 0xFFF00000) == 0xFFF00000) {
-           if (frameTodo <= 0 && IsValidAudioHeader(scanner, &frameSize)) {
+           if (frameTodo <= 0 && IsValidAudioHeader(scanner, mpegLevel == phMPEG2, &frameSize)) {
               if (state == scanFrame) {
                  // As a new audio frame starts here, the previous one is done. So push
                  // out the packet to start a new packet for the next audio frame. If
                  // the byte count gets negative then the current buffer ends in a
                  // partitial audio frame header that must be stripped off, as it shall
                  // be put in the next packet.
-                 if (!PushOutPacket(ResultBuffer, payload, data - 3 - payload)) {
-                    DroppedData("cAudioRepacker: result buffer overflow", Count - (done - 3));
-                    return;
-                    }
+                 PushOutPacket(ResultBuffer, payload, data - 3 - payload);
                  // go on with syncing to the next audio frame
                  state = syncing;
                  }
               if (state == syncing) {
-                 // report that syncing dropped some bytes
-                 if (skippedBytes > SkippedBytesLimit)
+                 if (initiallySyncing) // omit report for the typical initial case
+                    initiallySyncing = false;
+                 else if (skippedBytes > SkippedBytesLimit) // report that syncing dropped some bytes
                     esyslog("cAudioRepacker: skipped %d bytes to sync on next audio frame", skippedBytes - SkippedBytesLimit);
                  skippedBytes = 0;
                  // if there is a PES header available, then use it ...
@@ -693,11 +719,10 @@ void cAudioRepacker::Repack(cRingBufferLinear *ResultBuffer, const uchar *Data, 
                  // the next packet's payload will begin with the fourth byte of
                  // the audio frame header (= the actual byte)
                  payload = data;
-                 // as there is no length information available, assume the
                  // maximum we can hold in one PES packet
                  packetTodo = maxPacketSize - pesHeaderLen;
-                 // setup expected audio frame size to omit false audio header detection
-                 frameTodo = frameSize;
+                 // expected remainder of audio frame: so far we have read 3 bytes from the frame header 
+                 frameTodo = frameSize - 3;
                  // go on with collecting the frame's data
                  ((int &)state)++;
                  }
@@ -751,10 +776,7 @@ void cAudioRepacker::Repack(cRingBufferLinear *ResultBuffer, const uchar *Data, 
               const uchar *excessData = fragmentData + fragmentLen + bite;
               // A negative byte count means to drop some bytes from the current
               // fragment's tail, to not exceed the maximum packet size.
-              if (!PushOutPacket(ResultBuffer, payload, bite)) {
-                 DroppedData("cAudioRepacker: result buffer overflow", Count - done);
-                 return;
-                 }
+              PushOutPacket(ResultBuffer, payload, bite);
               // create a continuation PES header
               pesHeaderLen = 0;
               pesHeader[pesHeaderLen++] = 0x00;
@@ -806,7 +828,8 @@ void cAudioRepacker::Repack(cRingBufferLinear *ResultBuffer, const uchar *Data, 
      }
   // report that syncing dropped some bytes
   if (skippedBytes > SkippedBytesLimit) {
-     esyslog("cAudioRepacker: skipped %d bytes while syncing on next audio frame", skippedBytes - SkippedBytesLimit);
+     if (!initiallySyncing) // omit report for the typical initial case
+        esyslog("cAudioRepacker: skipped %d bytes while syncing on next audio frame", skippedBytes - SkippedBytesLimit);
      skippedBytes = SkippedBytesLimit;
      }
 }
@@ -815,7 +838,8 @@ int cAudioRepacker::BreakAt(const uchar *Data, int Count)
 {
   int PesPayloadOffset = 0;
 
-  if (AnalyzePesHeader(Data, Count, PesPayloadOffset) <= phInvalid)
+  ePesHeader MpegLevel = AnalyzePesHeader(Data, Count, PesPayloadOffset);
+  if (MpegLevel <= phInvalid)
      return -1; // not enough data for test
 
   // determine amount of data to fill up packet and to append next audio frame header
@@ -845,7 +869,7 @@ int cAudioRepacker::BreakAt(const uchar *Data, int Count)
            localScanner <<= 8;
            localScanner |= *data++;
            // check whether the next audio frame follows
-           if ((localScanner & 0xFFF00000) == 0xFFF00000 && IsValidAudioHeader(localScanner))
+           if (((localScanner & 0xFFF00000) == 0xFFF00000) && IsValidAudioHeader(localScanner, MpegLevel == phMPEG2))
               return data - Data;
            }
      }
@@ -879,8 +903,8 @@ private:
   int skippedBytes;
   void ResetPesHeader(bool ContinuationFrame = false);
   void AppendSubStreamID(bool ContinuationFrame = false);
-  bool FinishRemainder(cRingBufferLinear *ResultBuffer, const uchar *const Data, const int Todo, int &Done, int &Bite);
-  bool StartNewPacket(cRingBufferLinear *ResultBuffer, const uchar *const Data, const int Todo, int &Done, int &Bite);
+  bool FinishRemainder(cRingBufferLinear *ResultBuffer, const uchar *const Data, const int Todo, int &Bite);
+  bool StartNewPacket(cRingBufferLinear *ResultBuffer, const uchar *const Data, const int Todo, int &Bite);
 public:
   cDolbyRepacker(void);
   virtual void Reset(void);
@@ -947,6 +971,7 @@ void cDolbyRepacker::ResetPesHeader(bool ContinuationFrame)
 
 void cDolbyRepacker::Reset(void)
 {
+  cRepacker::Reset();
   ResetPesHeader();
   state = find_0b;
   ac3todo = 0;
@@ -958,26 +983,24 @@ void cDolbyRepacker::Reset(void)
   skippedBytes = 0;
 }
 
-bool cDolbyRepacker::FinishRemainder(cRingBufferLinear *ResultBuffer, const uchar *const Data, const int Todo, int &Done, int &Bite)
+bool cDolbyRepacker::FinishRemainder(cRingBufferLinear *ResultBuffer, const uchar *const Data, const int Todo, int &Bite)
 {
+  bool success = true;
   // enough data available to put PES packet into buffer?
   if (fragmentTodo <= Todo) {
      // output a previous fragment first
      if (fragmentLen > 0) {
         Bite = fragmentLen;
         int n = Put(ResultBuffer, fragmentData, Bite, fragmentLen + fragmentTodo);
-        if (Bite != n) {
-           Reset();
-           return false;
-           }
+        if (Bite != n)
+           success = false;
         fragmentLen = 0;
         }
      Bite = fragmentTodo;
-     int n = Put(ResultBuffer, Data, Bite, Bite);
-     if (Bite != n) {
-        Reset();
-        Done += n;
-        return false;
+     if (success) {
+        int n = Put(ResultBuffer, Data, Bite, Bite);
+        if (Bite != n)
+           success = false;
         }
      fragmentTodo = 0;
      // ac3 frame completely processed?
@@ -987,19 +1010,16 @@ bool cDolbyRepacker::FinishRemainder(cRingBufferLinear *ResultBuffer, const ucha
   else {
      // copy the fragment into separate buffer for later processing
      Bite = Todo;
-     if (fragmentLen + Bite > (int)sizeof(fragmentData)) {
-        Reset();
-        return false;
-        }
      memcpy(fragmentData + fragmentLen, Data, Bite);
      fragmentLen += Bite;
      fragmentTodo -= Bite;
      }
-  return true;
+  return success;
 }
 
-bool cDolbyRepacker::StartNewPacket(cRingBufferLinear *ResultBuffer, const uchar *const Data, const int Todo, int &Done, int &Bite)
+bool cDolbyRepacker::StartNewPacket(cRingBufferLinear *ResultBuffer, const uchar *const Data, const int Todo, int &Bite)
 {
+  bool success = true;
   int packetLen = pesHeaderLen + ac3todo;
   // limit packet to maximum size
   if (packetLen > maxPacketSize)
@@ -1010,16 +1030,13 @@ bool cDolbyRepacker::StartNewPacket(cRingBufferLinear *ResultBuffer, const uchar
   // enough data available to put PES packet into buffer?
   if (packetLen - pesHeaderLen <= Todo) {
      int n = Put(ResultBuffer, pesHeader, Bite, packetLen);
-     if (Bite != n) {
-        Reset();
-        return false;
-        }
+     if (Bite != n)
+        success = false;
      Bite = packetLen - pesHeaderLen;
-     n = Put(ResultBuffer, Data, Bite, Bite);
-     if (Bite != n) {
-        Reset();
-        Done += n;
-        return false;
+     if (success) {
+        n = Put(ResultBuffer, Data, Bite, Bite);
+        if (Bite != n)
+           success = false;
         }
      // ac3 frame completely processed?
      if (Bite >= ac3todo)
@@ -1028,24 +1045,16 @@ bool cDolbyRepacker::StartNewPacket(cRingBufferLinear *ResultBuffer, const uchar
   else {
      fragmentTodo = packetLen;
      // copy the pesheader into separate buffer for later processing
-     if (fragmentLen + Bite > (int)sizeof(fragmentData)) {
-        Reset();
-        return false;
-        }
      memcpy(fragmentData + fragmentLen, pesHeader, Bite);
      fragmentLen += Bite;
      fragmentTodo -= Bite;
      // copy the fragment into separate buffer for later processing
      Bite = Todo;
-     if (fragmentLen + Bite > (int)sizeof(fragmentData)) {
-        Reset();
-        return false;
-        }
      memcpy(fragmentData + fragmentLen, Data, Bite);
      fragmentLen += Bite;
      fragmentTodo -= Bite;
      }
-  return true;
+  return success;
 }
 
 void cDolbyRepacker::Repack(cRingBufferLinear *ResultBuffer, const uchar *Data, int Count)
@@ -1139,8 +1148,9 @@ void cDolbyRepacker::Repack(cRingBufferLinear *ResultBuffer, const uchar *Data, 
                   state = find_0b;
                   continue;
                   }
-               // report that syncing dropped some bytes
-               if (skippedBytes > SkippedBytesLimit)
+               if (initiallySyncing) // omit report for the typical initial case
+                  initiallySyncing = false;
+               else if (skippedBytes > SkippedBytesLimit) // report that syncing dropped some bytes
                   esyslog("cDolbyRepacker: skipped %d bytes to sync on next AC3 frame", skippedBytes - SkippedBytesLimit);
                skippedBytes = 0;
                // append read data to header for common output processing
@@ -1154,18 +1164,11 @@ void cDolbyRepacker::Repack(cRingBufferLinear *ResultBuffer, const uchar *Data, 
           case output_packet: {
                int bite = 0;
                // finish remainder of ac3 frame?
-               if (fragmentTodo > 0) {
-                  if (!FinishRemainder(ResultBuffer, data, todo, done, bite)) {
-                     DroppedData("cDolbyRepacker: result buffer overflow", Count - done);
-                     return;
-                     }
-                  }
+               if (fragmentTodo > 0)
+                  FinishRemainder(ResultBuffer, data, todo, bite);
                else {
                   // start a new packet
-                  if (!StartNewPacket(ResultBuffer, data, todo, done, bite)) {
-                     DroppedData("cDolbyRepacker: result buffer overflow", Count - done);
-                     return;
-                     }
+                  StartNewPacket(ResultBuffer, data, todo, bite);
                   // prepare for next (continuation) packet
                   ResetPesHeader(state == output_packet);
                   }
@@ -1178,7 +1181,8 @@ void cDolbyRepacker::Repack(cRingBufferLinear *ResultBuffer, const uchar *Data, 
         }
   // report that syncing dropped some bytes
   if (skippedBytes > SkippedBytesLimit) {
-     esyslog("cDolbyRepacker: skipped %d bytes while syncing on next AC3 frame", skippedBytes - 4);
+     if (!initiallySyncing) // omit report for the typical initial case
+        esyslog("cDolbyRepacker: skipped %d bytes while syncing on next AC3 frame", skippedBytes - 4);
      skippedBytes = SkippedBytesLimit;
      }
 }
