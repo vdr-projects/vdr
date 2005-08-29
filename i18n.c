@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.200 2005/08/26 13:39:07 kls Exp $
+ * $Id: i18n.c 1.201 2005/08/29 15:31:34 kls Exp $
  *
  * Translations provided by:
  *
@@ -2944,7 +2944,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "S kraja skoèi na poèetak",
-    "",// TODO
+    "Ridade kerimine",
     "Scroll rundt",
   },
   { "Setup.OSD$Sort timers",
