@@ -3757,3 +3757,5 @@ Video Disk Recorder Revision History
 - Now always using stream id 0xE0 for the video stream, to avoid problems with
   post processing tools that choke on different ids (suggested by Reinhard Nissl).
 - Updated the Estonian OSD texts (thanks to Arthur Konovalov).
+- Fixed cDvbPlayer::SkipFrames() to properly handle radio recordings (thanks to
+  Reinhard Nissl).
