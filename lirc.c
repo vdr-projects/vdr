@@ -6,7 +6,7 @@
  *
  * LIRC support added by Carsten Koch <Carsten.Koch@icem.de>  2000-06-16.
  *
- * $Id: lirc.c 1.12 2005/08/15 12:28:10 kls Exp $
+ * $Id: lirc.c 1.13 2005/09/02 12:51:35 kls Exp $
  */
 
 #include "lirc.h"
@@ -76,7 +76,10 @@ void cLircRemote::Action(void)
         if (ready && ret > 21) {
            int count;
            char KeyName[LIRC_KEY_BUF];
-           sscanf(buf, "%*x %x %29s", &count, KeyName); // '29' in '%29s' is LIRC_KEY_BUF-1!
+           if (sscanf(buf, "%*x %x %29s", &count, KeyName) != 2) { // '29' in '%29s' is LIRC_KEY_BUF-1!
+              esyslog("ERROR: unparseable lirc command: %s", buf);
+              continue;
+              }
            if (count == 0) {
               if (strcmp(KeyName, LastKeyName) == 0 && FirstTime.Elapsed() < KEYPRESSDELAY)
                  continue; // skip keys coming in too fast

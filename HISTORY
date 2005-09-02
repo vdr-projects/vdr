@@ -3762,3 +3762,4 @@ Video Disk Recorder Revision History
 - Updated the Swedish OSD texts (thanks to Tomas Prybil).
 - Updated the Slovenian OSD texts (thanks to Matjaz Thaler).
 - Updated the Danish OSD texts (thanks to Mogens Elneff).
+- Made LIRC command parsing more robust (thanks to Ville Skyttä).
