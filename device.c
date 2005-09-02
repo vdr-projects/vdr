@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.107 2005/08/27 09:01:09 kls Exp $
+ * $Id: device.c 1.108 2005/09/02 13:52:31 kls Exp $
  */
 
 #include "device.h"
@@ -1185,6 +1185,15 @@ bool cDevice::AttachReceiver(cReceiver *Receiver)
      return false;
   if (Receiver->device == this)
      return true;
+// activate the following line if you need it - actually the driver should be fixed!
+//#define WAIT_FOR_TUNER_LOCK
+#ifdef WAIT_FOR_TUNER_LOCK
+#define TUNER_LOCK_TIMEOUT 5000 // ms
+  if (!HasLock(TUNER_LOCK_TIMEOUT)) {
+     esyslog("ERROR: device %d has no lock, can't attach receiver!", CardIndex() + 1);
+     return false;
+     }
+#endif
   cMutexLock MutexLock(&mutexReceiver);
   for (int i = 0; i < MAXRECEIVERS; i++) {
       if (!receiver[i]) {

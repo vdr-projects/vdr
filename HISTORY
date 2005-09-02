@@ -3765,3 +3765,7 @@ Video Disk Recorder Revision History
 - Made LIRC command parsing more robust (thanks to Ville Skyttä).
 - Introduced a separate 'plugins-install' target in the Makefile (thanks to Daniel
   Thompson).
+- Re-introduced the code that waits for a tuner lock in VDR/device.c, since
+  apparently some users actually need it. It's not active by default, you'll have
+  to define the WAIT_FOR_TUNER_LOCK macro in that file if you need it (suggested
+  by Malcolm Caldwell).
