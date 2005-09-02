@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.203 2005/09/02 12:39:52 kls Exp $
+ * $Id: i18n.c 1.204 2005/09/02 12:44:09 kls Exp $
  *
  * Translations provided by:
  *
@@ -439,7 +439,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "Info",
     "Info",
-    "",//TODO
+    "Info",
   },
   { "Schedule - %s",
     "Programm - %s",
@@ -481,7 +481,7 @@ const tI18nPhrase Phrases[] = {
     "¡’ŸÁ–· “ Ì‰ÿ‡’:",
     "©to je trenutno na programu?",
     "Hetkel eetris",
-    "Hvilket program vises nu?",
+    "Hvad vises nu?",
   },
   { "What's on next?",
     "Was l‰uft als n‰chstes?",
@@ -502,7 +502,7 @@ const tI18nPhrase Phrases[] = {
     "¥–€’’ “ ﬂ‡ﬁ”‡–‹‹’:",
     "©to slijedi?",
     "J‰rgmisena eetris",
-    "Hvilket nÊste program vises?",
+    "Hvad vises som det nÊste?",
   },
   // Button texts (should not be more than 10 characters!):
   { "Edit",
