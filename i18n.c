@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.202 2005/09/02 12:25:38 kls Exp $
+ * $Id: i18n.c 1.203 2005/09/02 12:39:52 kls Exp $
  *
  * Translations provided by:
  *
@@ -105,7 +105,7 @@ const tI18nPhrase Phrases[] = {
   // The character set needed for this language (this MUST be the second phrase!):
   { "iso8859-15",
     "iso8859-15",
-    "iso8859-1",
+    "iso8859-2",
     "iso8859-1",
     "iso8859-1",
     "iso8859-1",
@@ -127,7 +127,7 @@ const tI18nPhrase Phrases[] = {
   // The 3-letter names of the language (this MUST be the third phrase!):
   { "eng,dos",
     "deu,ger",
-    "slv",
+    "slv,slo",
     "ita",
     "dut,nla,nld",
     "por",
@@ -254,7 +254,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Recording info",
     "Aufzeichnung",
-    "",// TODO
+    "Podatki o snemanju",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -422,7 +422,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Info",
     "Info",
-    "",//TODO
+    "Info",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -549,7 +549,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Delete",
     "Löschen",
-    "Izbrisi",
+    "Izbri¹i",
     "Cancella",
     "Verwijder",
     "Apagar",
@@ -570,7 +570,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Mark",
     "Markieren",
-    "Oznaci",
+    "Oznaèi",
     "Marca",
     "Verplaats",
     "Marcar",
@@ -654,7 +654,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Rewind",
     "Anfang",
-    "Na zacetek",
+    "Na zaèetek",
     "Da inizio",
     "Naar begin",
     "Rebobinar",
@@ -864,7 +864,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Eject",
     "Auswerfen",
-    "Izvrzi",
+    "Izvr¾i",
     "Eject",
     "Eject",
     "Ejectar",
@@ -927,7 +927,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Overwrite",
     "Überschreiben",
-    "Prepisi",
+    "Prepi¹i",
     "Sovrascrivi",
     "Overschrijven",
     "",// TODO
@@ -990,7 +990,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Scan",
     "Scan",
-    "",//TODO
+    "I¹èi",
     "Scansione",
     "Scan",
     "",//TODO
@@ -1012,7 +1012,7 @@ const tI18nPhrase Phrases[] = {
   // Confirmations:
   { "Delete channel?",
     "Kanal löschen?",
-    "Izbrisi kanal?",
+    "Izbri¹i kanal?",
     "Cancello il canale?",
     "Kanaal verwijderen?",
     "Apagar o canal?",
@@ -1033,7 +1033,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Delete timer?",
     "Timer löschen?",
-    "Izbrisi termin?",
+    "Izbri¹i termin?",
     "Cancello il timer?",
     "Timer verwijderen?",
     "Apagar o timer?",
@@ -1054,7 +1054,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Delete recording?",
     "Aufzeichnung löschen?",
-    "Izbrisi posnetek?",
+    "Izbri¹i posnetek?",
     "Cancello la registrazione?",
     "Opname verwijderen?",
     "Apagar a gravação?",
@@ -1075,7 +1075,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Timer still recording - really delete?",
     "Timer zeichnet auf - trotzdem löschen?",
-    "Snemanje po terminu - zares izbrisi?",
+    "Snemanje po terminu - zares izbri¹i?",
     "Timer in registrazione - cancello?",
     "Timer neemt nog op - toch verwijderen?",
     "Timer activo - têm a certeza que quer apagar?",
@@ -1096,7 +1096,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Stop recording?",
     "Aufzeichnung beenden?",
-    "Koncaj snemanje?",
+    "Prekini snemanje?",
     "Fermo la registrazione?",
     "Opname stoppen?",
     "Parar Gravação?",
@@ -1138,7 +1138,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Cancel editing?",
     "Schneiden abbrechen?",
-    "Zelite prekiniti urejanje?",
+    "®elite prekiniti urejanje?",
     "Annullo la modifica?",
     "Bewerken afbreken?",
     "Cancelar Modificações?",
@@ -1222,7 +1222,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Recording in %d minutes, shut down anyway?",
     "Aufnahme in %d Minuten - trotzdem ausschalten?",
-    "Snemanje cez %d minut, zares izklopi?",
+    "Snemanje èez %d minut, zares izklopi?",
     "Registrazione fra %d minuti - spengo comunque?",
     "Opname in %d minuten - toch uitschakelen?",
     "Em gravação dentro de %d minutos - quer mesmo desligar?",
@@ -1265,7 +1265,7 @@ const tI18nPhrase Phrases[] = {
   // Channel parameters:
   { "Name",
     "Name",
-    "Naziv",
+    "Ime",
     "Nome",
     "Naam",
     "Nome",
@@ -1580,7 +1580,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Bandwidth",
     "Bandwidth",
-    "Pasovna sirina",
+    "Pasovna ¹irina",
     "Bandwidth",
     "Bandwidth",
     "Bandwidth",
@@ -1685,7 +1685,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Guard",
     "Guard",
-    "Zascita",
+    "Za¹èita",
     "Guard",
     "Guard",
     "Guard",
@@ -1749,7 +1749,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Channel",
     "Kanal",
-    "Kanal",
+    "Program",
     "Canale",
     "Kanaal",
     "Canal",
@@ -1791,7 +1791,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Start",
     "Anfang",
-    "Zacetek",
+    "Zaèetek",
     "Inizio",
     "Begin",
     "Inicio",
@@ -1833,7 +1833,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "VPS",
     "VPS",
-    "",// TODO
+    "VPS",
     "VPS",
     "VPS",
     "",// TODO
@@ -1939,7 +1939,7 @@ const tI18nPhrase Phrases[] = {
   // Error messages:
   { "Channel is being used by a timer!",
     "Kanal wird von einem Timer benutzt!",
-    "Kanal uporablja termin za snemanje!",
+    "Kanal je zavzet s terminom za snemanje!",
     "Canale occupato da un timer!",
     "Kanaal wordt gebruikt door een timer!",
     "Canal a ser utilizador por um timer!",
@@ -2086,7 +2086,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Channel not available!",
     "Kanal nicht verfügbar!",
-    "Kanal ni razpolozljiv!",
+    "Kanal ni razpolo¾ljiv!",
     "Canale non disponibile!",
     "Kanaal niet beschikbaar",
     "",//TODO
@@ -2149,7 +2149,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Can't start Transfer Mode!",
     "Transfer-Mode kann nicht gestartet werden!",
-    "Ne morem zaceti z prenosnim nacinom",
+    "Ne morem zaèeti s prenosnim naèinom",
     "Impossibile iniziare la modalita' di trasferimento!",
     "Kan Transfer-Mode niet starten",
     "Impossível iniciar modo de transferência!",
@@ -2170,7 +2170,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "No editing marks defined!",
     "Keine Schnittmarken gesetzt!",
-    "Nobena tocka ni definirana!",
+    "Nobena prekinitvena toèka ni definirana!",
     "Nessun marcatore di modifica definito!",
     "Geen bewerkingsmarkeringen gedefinieerd!",
     "",//TODO
@@ -2191,7 +2191,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Can't start editing process!",
     "Schnitt kann nicht gestartet werden!",
-    "Ne morem zaceti urejanja!",
+    "Ne morem zaèeti urejanja!",
     "Impossibile iniziare processo di modifica!",
     "Kan niet beginnen met bewerken!",
     "Não pode iniciar a modificação!",
@@ -2212,7 +2212,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Editing process already active!",
     "Schnitt bereits aktiv!",
-    "Urejanje je ze aktivno!",
+    "Urejanje je ¾e aktivno!",
     "Processo di modifica gia` attivo!",
     "Bewerken is al actief!",
     "Processo de modificação já activo!",
@@ -2254,7 +2254,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Low disk space!",
     "Platte beinahe voll!",
-    "Zmanjkuje prostora na disku",
+    "Premalo prostora na disku!",
     "Poco spazio su disco!",
     "Disk bijna vol!",
     "Espaço em disco reduzido!",
@@ -2338,7 +2338,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "No audio available!",
     "Kein Audio verfügbar!",
-    "",//TODO
+    "Zvok ni dosegljiv",
     "",//TODO
     "Geen audio beschikbaar!",
     "",//TODO
@@ -2613,7 +2613,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Setup.OSD$Skin",
     "Oberfläche",
-    "",// TODO
+    "Preobleka",
     "Superficie Skin",
     "Skin",
     "",// TODO
@@ -2634,7 +2634,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Setup.OSD$Theme",
     "Thema",
-    "",// TODO
+    "Tema",
     "Tema",
     "Thema",
     "",// TODO
@@ -2655,7 +2655,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Setup.OSD$Left",
     "Links",
-    "",// TODO
+    "Levo",
     "Sinistra",
     "Links",
     "",// TODO
@@ -2676,7 +2676,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Setup.OSD$Top",
     "Oben",
-    "",// TODO
+    "Zgoraj",
     "Cima",
     "Boven",
     "",// TODO
@@ -2697,7 +2697,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Setup.OSD$Width",
     "Breite",
-    "Sirina",
+    "©irina",
     "Larghezza OSD",
     "Breedte",
     "Largura",
@@ -2718,7 +2718,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Setup.OSD$Height",
     "Höhe",
-    "Visina",
+    "Vi¹ina",
     "Altezza OSD",
     "Hoogte",
     "Altura",
@@ -2739,7 +2739,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Setup.OSD$Message time (s)",
     "Anzeigedauer für Nachrichten (s)",
-    "Cas sporocila (s)",
+    "Èas prikaza sporoèila (s)",
     "Tempo del messaggio (s)",
     "Weergave duur van berichten (s)",
     "Mostrar contador (s)",
@@ -2760,7 +2760,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Setup.OSD$Use small font",
     "Kleine Schrift benutzen",
-    "",// TODO
+    "Uporabi male èrke",
     "Utilizzare caratteri piccoli",
     "Klein lettertype gebruiken",
     "",// TODO
@@ -2781,7 +2781,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "never",
     "nie",
-    "",// TODO
+    "nikoli",
     "mai",
     "nooit",
     "",// TODO
@@ -2802,7 +2802,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "skin dependent",
     "je nach Oberfläche",
-    "",// TODO
+    "odvisno od preobleke",
     "in base alla superficie",
     "skin afhankelijk",
     "",// TODO
@@ -2823,7 +2823,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "always",
     "immer",
-    "",// TODO
+    "vedno",
     "sempre",
     "altijd",
     "",// TODO
@@ -2865,7 +2865,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Setup.OSD$Channel info time (s)",
     "Anzeigedauer für Kanal-Info (s)",
-    "",// TODO
+    "Èas prikaza podatka o programu (s)",
     "",// TODO
     "Duur tonen kanaal-informatie (s)",
     "",// TODO
@@ -2886,7 +2886,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Setup.OSD$Info on channel switch",
     "Info beim Kanalwechsel",
-    "Pokazi naziv kanala",
+    "Poka¾i naziv kanala",
     "Mostra info al cambio canale",
     "Kanaal info tonen",
     "Mostrar info ao mudar de Canal",
@@ -2928,7 +2928,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Setup.OSD$Scroll wraps",
     "Rundum scrollen",
-    "",// TODO
+    "Iz konca skoèi na zaèetek",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -2991,7 +2991,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Setup.EPG$EPG scan timeout (h)",
     "Zeit bis EPG Scan (h)",
-    "Cas do EPG pregleda (h)",
+    "Èas do EPG pregleda (h)",
     "Timeout scansione aggiornamento EPG (ore)",
     "EPG-scan Timeout (h)",
     "Expirou o EPG (h)",
@@ -3033,7 +3033,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Setup.EPG$EPG linger time (min)",
     "Alte EPG-Daten anzeigen (min)",// TODO
-    "",// TODO
+    "Prika¾i stare EPG podatke (min)",
     "Visualizzazione dati vecchi (min)",
     "Oude EPG data tonen (min)",
     "",// TODO
@@ -3054,7 +3054,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Setup.EPG$Set system time",
     "Systemzeit stellen",
-    "Nastavi sistemski cas",
+    "Nastavi sistemski èas",
     "Settaggio orario automatico",
     "Systeem klok instellen",
     "Ajustar relógio do sistema",
@@ -3075,7 +3075,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Setup.EPG$Use time from transponder",
     "Transponder für Systemzeit",
-    "Transponder za nastavitev casa",
+    "Transponder za nastavitev èasa",
     "Utilizza orario da transponder",
     "Gebruik transponder tijd voor systeem",
     "Usar relógio do transponder",
@@ -3096,7 +3096,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Setup.EPG$Preferred languages", // note the plural
     "Bevorzugte Sprachen",
-    "",// TODO
+    "Prednostni jeziki",
     "Lingue preferite",
     "Voorkeurstalen",
     "",// TODO
@@ -3117,7 +3117,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Setup.EPG$Preferred language", // note the singular
     "Bevorzugte Sprache",
-    "",// TODO
+    "Prednostni jezik",
     "Lingua preferita",
     "Voorkeurstaal",
     "",// TODO
@@ -3159,7 +3159,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Setup.DVB$Video display format",
     "Video Anzeige-Format",
-    "",//TODO
+    "Format video prikaza",
     "",//TODO
     "Video display format",
     "",//TODO
@@ -3264,7 +3264,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Setup.DVB$Use Dolby Digital",
     "Dolby Digital Ton benutzen",
-    "",//TODO
+    "Uporabljaj Dolby Digital",
     "",//TODO
     "Dolby Digital gebruiken",
     "",//TODO
@@ -3285,7 +3285,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Setup.DVB$Update channels",
     "Kanäle aktualisieren",
-    "",// TODO
+    "Posodobi kanale",
     "Aggiornare i canali",
     "Kanalen actualiseren",
     "",// TODO
@@ -3306,7 +3306,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "names only",
     "nur Namen",
-    "",// TODO
+    "samo imena",
     "solo nomi",
     "alleen namen",
     "",// TODO
@@ -3327,7 +3327,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "names and PIDs",
     "Namen und PIDs",
-    "",// TODO
+    "imena in PIDe",
     "nomi e PIDs",
     "namen en PIDs",
     "",// TODO
@@ -3348,7 +3348,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "add new channels",
     "neue Kanäle hinzufügen",
-    "",// TODO
+    "dodaj nove programe",
     "aggiungere canali nuovi",
     "nieuwe kanalen toevoegen",
     "",// TODO
@@ -3369,7 +3369,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "add new transponders",
     "neue Transponder hinzufügen",
-    "",// TODO
+    "dodaj nove oddajnike",
     "aggiungere transponder nuovi",
     "nieuwe transponders toevoegen",
     "",// TODO
@@ -3390,7 +3390,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Setup.DVB$Audio languages",  // note the plural
     "Audio Sprachen",
-    "",//TODO
+    "Jeziki za zvok",
     "",//TODO
     "Audio talen",
     "",//TODO
@@ -3411,7 +3411,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Setup.DVB$Audio language",  // note the singular
     "Audio Sprache",
-    "",//TODO
+    "Jezik za zvok",
     "",//TODO
     "Audio taal",
     "",//TODO
@@ -3537,7 +3537,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Setup.Recording$Margin at start (min)",
     "Zeitpuffer bei Anfang (min)",
-    "Premor pred zacetkom (min)",
+    "Premik zaèetka snemanja (min)",
     "Margine iniziale (min)",
     "Tijd marge begin (min)",
     "Margem inicial (min)",
@@ -3558,7 +3558,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Setup.Recording$Margin at stop (min)",
     "Zeitpuffer bei Ende (min)",
-    "Premor za koncem (min)",
+    "Zamik konca snemanja (min)",
     "Margine finale (min)",
     "Tijd marge eind (min)",
     "Margem final (min)",
@@ -3579,7 +3579,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Setup.Recording$Primary limit",
     "Primär-Limit",
-    "Osnovna meja",
+    "Primarna meja",
     "Limite primario",
     "Eerste grens",
     "Limite Primário",
@@ -3600,7 +3600,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Setup.Recording$Default priority",
     "Default Priorität",
-    "Osnovna prioriteta",
+    "Privzeta prioriteta",
     "Priorita' predefinita",
     "Standaard prioriteit",
     "Prioridade por defeito",
@@ -3621,7 +3621,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Setup.Recording$Default lifetime (d)",
     "Default Lebensdauer (d)",
-    "Osnovni zivljenski cas (d)",
+    "Privzeti ¾ivljenski èas (d)",
     "Durata predefinita (gg)",
     "Standaard levensduur (d)",
     "Validade por defeito (d)",
@@ -3663,7 +3663,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Setup.Recording$Pause lifetime (d)",
     "Pause Lebensdauer (d)",
-    "Cas pavze (d)",
+    "Èas pavze (d)",
     "Durata pausa (gg)",
     "Pauze levensduur (d)",
     "",// TODO
@@ -3705,7 +3705,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Setup.Recording$Use VPS",
     "VPS benutzen",
-    "",// TODO
+    "Uporabi VPS",
     "Utilizzare VPS",
     "VPS gebruiken",
     "",// TODO
@@ -3726,7 +3726,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Setup.Recording$VPS margin (s)",
     "Zeitpuffer bei VPS (s)",
-    "",// TODO
+    "Èasovna rezerva pri VPS (s)",
     "Margine VPS",
     "Marge VPS (s)",
     "",// TODO
@@ -3747,7 +3747,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Setup.Recording$Mark instant recording",
     "Direktaufzeichnung markieren",
-    "Oznaci direktno snemanje",
+    "Oznaèi direktno snemanje",
     "Marca la registrazione",
     "Direkte opnamen markeren",
     "Marca de gravação rápida",
@@ -3789,7 +3789,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Setup.Recording$Instant rec. time (min)",
     "Dauer der Direktaufzeichnung (min)",
-    "Cas direktnega snemanja (min)",
+    "Èas direktnega snemanja (min)",
     "Tempo registrazione istantanea (min)",
     "Duur van de directe opname (min)",
     "",//TODO
@@ -3810,7 +3810,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Setup.Recording$Max. video file size (MB)",
     "Max. Video Dateigröße (MB)",
-    "Najvecja velikost datoteke (MB)",
+    "Najveèja velikost datoteke (MB)",
     "Dimensione massima file video (MB)",
     "Maximale omvang video file (MB)",
     "Tamanho máximo dos ficheiros (MB)",
@@ -3852,7 +3852,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Setup.Replay$Multi speed mode",
     "MultiSpeed Modus",
-    "Rezim z vec hitrostmi",
+    "Re¾im z veè hitrostmi",
     "Modalita' multispeed",
     "Multi-speed mode",
     "Modo de multi-speed",
@@ -3873,7 +3873,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Setup.Replay$Show replay mode",
     "Wiedergabestatus anzeigen",
-    "Prikazi rezim predvajanja",
+    "Prika¾i re¾im predvajanja",
     "Modalita' di visualizz su replay",
     "Weergave mode aangeven",
     "Mostrar modo de replay",
@@ -3894,7 +3894,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Setup.Replay$Resume ID",
     "Wiedergabe ID",
-    "Predvajalni ID",
+    "ID za predvajanje",
     "ID Ripresa",
     "Hervattings ID",
     "Resume ID",// TODO
@@ -3915,7 +3915,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Setup.Miscellaneous$Min. event timeout (min)",
     "Mindest Event Pause (min)",
-    "Najmanjsi cas dogodka (min)",
+    "Najmanj¹i èas dogodka (min)",
     "Spegnimento: controllo prossimo evento (m)",
     "Minimale event time-out (min)",
     "Período mínimo de pausa (min)",
@@ -3936,7 +3936,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Setup.Miscellaneous$Min. user inactivity (min)",
     "Mindest Benutzer-Inaktivität (min)",
-    "Najmanjsi cas neaktivnosti (min)",
+    "Najmanj¹i èas neaktivnosti (min)",
     "Spegnimento: tempo minimo di inattività (m)",
     "Minimum gebruikers inactiviteit (min)",
     "Período mínimo de inactividade (min)",
@@ -3957,7 +3957,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Setup.Miscellaneous$SVDRP timeout (s)",
     "SVDRP Timeout (s)",
-    "SVDRP cas neaktivnosti (s)",
+    "SVDRP èas neaktivnosti (s)",
     "Timeout SVDRP (s)",
     "SVDRP Timeout (s)",
     "Timeout SVDRP (s)",
@@ -3978,7 +3978,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Setup.Miscellaneous$Zap timeout (s)",
     "Zap Timeout (s)",
-    "",// TODO
+    "Èas ugla¹evanja (s)",
     "Timeout Zapping",
     "Zap timeout (s)",
     "",// TODO
@@ -4043,7 +4043,7 @@ const tI18nPhrase Phrases[] = {
   // The allowed characters in strings:
   { " abcdefghijklmnopqrstuvwxyz0123456789-.#~",
     " aäbcdefghijklmnoöpqrstuüvwxyz0123456789-.#~",
-    " abcdefghijklmnopqrstuvwxyz0123456789-.#~",
+    " abcèdefghijklmnopqrs¹tuvwxyz¾0123456789-.#~",
     " aàbcdeéèfghiîjklmnopqrstuùvwxyz0123456789-.#~",
     " abcdefghijklmnopqrstuvwxyz0123456789-.#~áäàïóöòúüù",
     "",// TODO
@@ -4065,7 +4065,7 @@ const tI18nPhrase Phrases[] = {
   // Learning keys:
   { "Learning Remote Control Keys",
     "Fernbedienungs-Codes lernen",
-    "Ucenje kod upravljalca",
+    "Uèenje kod upravljalca",
     "Apprendimento tasti unita` remota",
     "Leren toetsen afstandsbediening",
     "Aprender as teclas do telecomando",
@@ -4170,7 +4170,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Phase 2: Learning specific key codes",
     "Phase 2: Einzelne Tastencodes lernen",
-    "Faza 2: Ucenje posebnih kod",
+    "Faza 2: Uèenje posebnih kod",
     "Fase 2: Codici specifici dei tasti",
     "Fase 2: Leren specifieke toets-codes",
     "Fase 2: A aprender códigos especificos",
@@ -4507,7 +4507,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Red",
     "Rot",
-    "Rdeca",
+    "Rdeèa",
     "Rosso",
     "Rood",
     "Vermelho",
@@ -4738,7 +4738,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Channel+",
     "Kanal+",
-    "Kanal+",
+    "Program+",
     "Canale +",
     "Kanaal+",
     "",// TODO
@@ -4759,7 +4759,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Channel-",
     "Kanal-",
-    "Kanal-",
+    "Program-",
     "Canale -",
     "Kanaal-",
     "",// TODO
@@ -4843,7 +4843,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Audio",
     "Audio",
-    "",// TODO
+    "Zvok",
     "",// TODO
     "Audio",
     "",// TODO
@@ -5054,7 +5054,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Jump: ", // note the trailing blank
     "Springen: ",
-    "Skoci: ",
+    "Skoèi: ",
     "Vai a: ",
     "Springen: ",
     "Saltar: ",
@@ -5096,7 +5096,7 @@ const tI18nPhrase Phrases[] = {
   },
   { " Stop replaying", // note the leading blank!
     " Wiedergabe beenden",
-    " Prekini ponavljanje",
+    " Prekini predvajanje",
     " Interrompi riproduzione",
     " Stop afspelen",
     " Parar reprodução",
@@ -5159,7 +5159,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Switching primary DVB...",
     "Primäres Interface wird umgeschaltet...",
-    "Preklapljanje primarne naprave...",
+    "Preklapljanje primarne DVB naprave...",
     "Cambio su card DVB primaria...",
     "Eerste DVB-kaart wordt omgeschakeld...",
     "A mudar interface DVB primário...",
@@ -5201,7 +5201,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Editing process started",
     "Schnitt gestartet",
-    "Urejanje se je zacelo",
+    "Urejanje se je zaèelo",
     "Processo di modifica iniziato",
     "Bewerken is gestart",
     "Processo de modificação iniciado",
@@ -5222,7 +5222,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Editing process finished",
     "Schnitt beendet",
-    "Proces urejanja je koncan",
+    "Proces urejanja je konèan",
     "Processo di modifica terminato",
     "Bewerken is klaar",
     "Processo de modificação terminado",
@@ -5243,7 +5243,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Editing process failed!",
     "Schnitt gescheitert!",
-    "Napaka pri procesu urejenja!",
+    "Napaka pri procesu urejanja!",
     "Processo di modifica fallito!",
     "Bewerken is mislukt!",
     "Falha no processo de modificação",
@@ -5285,7 +5285,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Pausing live video...",
     "Live-Signal wird angehalten...",
-    "Ustavljanje predvajanja v zivo...",
+    "Ustavljanje predvajanja v ¾ivo...",
     "Pausa del canale in visione...",
     "Pauzeren live uitzending...",
     "",// TODO
@@ -5306,7 +5306,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Starting EPG scan",
     "Beginne mit EPG-Scan",
-    "",// TODO
+    "Prièenjam EPG-scan",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -5348,7 +5348,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "Classic VDR",
     "Klassischer VDR",
-    "",// TODO
+    "Klasièni VDR",
     "VDR Classico",
     "VDR Klassiek",
     "",// TODO
@@ -5369,7 +5369,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "ST:TNG Panels",
     "ST:TNG Konsolen",
-    "",// TODO
+    "ST:TNG Konsola",
     "Consolles ST:TNG",
     "ST:TNG Consoles",
     "",// TODO
@@ -5390,7 +5390,7 @@ const tI18nPhrase Phrases[] = {
   },
   { "No title",
     "Kein Titel",
-    "",// TODO
+    "Brez naziva",
     "",// TODO
     "",// TODO
     "",// TODO

@@ -3760,3 +3760,4 @@ Video Disk Recorder Revision History
 - Fixed cDvbPlayer::SkipFrames() to properly handle radio recordings (thanks to
   Reinhard Nissl).
 - Updated the Swedish OSD texts (thanks to Tomas Prybil).
+- Updated the Slovenian OSD texts (thanks to Matjaz Thaler).
