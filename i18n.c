@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.201 2005/08/29 15:31:34 kls Exp $
+ * $Id: i18n.c 1.202 2005/09/02 12:25:38 kls Exp $
  *
  * Translations provided by:
  *
@@ -264,7 +264,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Inspelning",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -432,7 +432,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Info",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -474,7 +474,7 @@ const tI18nPhrase Phrases[] = {
     "Program biezacy",
     "¿Qué hay ahora?",
     "Ôñİ÷ïí ğñüãñáììá",
-    "Vilket program sänds nu?",
+    "Vad sänds nu?",
     "Ce emisiuni sunt acum?",
     "Mi megy most?",
     "Què fan ara?",
@@ -1359,7 +1359,7 @@ const tI18nPhrase Phrases[] = {
     "Srate",
     "Srate",
     "Srate",
-    "Symbolrate",
+    "Srate",
     "Ratã simboluri",
     "Srate",
     "Srate",
@@ -1380,7 +1380,7 @@ const tI18nPhrase Phrases[] = {
     "Vpid",
     "Vpid",
     "Bßíôåï PID",
-    "Video PID",
+    "VPID",
     "PID Video",
     "Vpid",
     "PID Vídeo",
@@ -1422,7 +1422,7 @@ const tI18nPhrase Phrases[] = {
     "Apid1",
     "Apid1",
     "Apid1",
-    "Audio PID1",
+    "APID1",
     "PID Audio (1)",
     "Apid1",
     "PID Àudio (1)",
@@ -1443,7 +1443,7 @@ const tI18nPhrase Phrases[] = {
     "Apid2",
     "Apid2",
     "Apid2",
-    "Audio PID2",
+    "APID2",
     "PID Audio (2)",
     "Apid2",
     "PID Àudio (2)",
@@ -1464,7 +1464,7 @@ const tI18nPhrase Phrases[] = {
     "Dpid1",
     "Dpid1",
     "Dpid1",
-    "Dpid1",
+    "DPID1",
     "PID AC3 (1)",
     "Dpid1",
     "PID AC3 (1)",
@@ -1485,7 +1485,7 @@ const tI18nPhrase Phrases[] = {
     "Dpid2",
     "Dpid2",
     "Dpid2",
-    "Dpid2",
+    "DPID2",
     "PID AC3 (2)",
     "Dpid2",
     "PID AC3 (2)",
@@ -1506,7 +1506,7 @@ const tI18nPhrase Phrases[] = {
     "Tpid",
     "Tpid",
     "Tpid",
-    "Teletext PID",
+    "TPID",
     "PID Teletext",
     "Tpid",
     "PID Teletext",
@@ -2096,7 +2096,7 @@ const tI18nPhrase Phrases[] = {
     "Kanal jest niedostepny!",
     "!Canal no disponible!",
     "Ôï êáíÜëç äİí åßíáé äéáèİóéìï!",
-    "Kanalen ej tillgänglig!",
+    "Kanalen är inte tillgänglig!",
     "Canal indisponibil",
     "A csatorna nem elérhetö",
     "Canal no disponible!",
@@ -2391,7 +2391,7 @@ const tI18nPhrase Phrases[] = {
     "EPG",
     "Guía de Programación",
     "Ïäçãüò ğñïãñÜììáôïò",
-    "Elektronisk programguide",
+    "EPG",
     "EPG",
     "EPG",
     "Guia de Programes",
@@ -2938,7 +2938,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Rulla texten",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -3043,7 +3043,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "Visa gammal info (min)",
+    "Visa gammal information (min)",
     "Date EPG expirate cel mult (min)",
     "",// TODO
     "",// TODO
@@ -3169,7 +3169,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "Format för Video display",
+    "Format för video display",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -3337,7 +3337,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "namn och PIDdar",
+    "namn och PID",
     "nume si PID-uri",
     "",// TODO
     "",// TODO
@@ -3883,7 +3883,7 @@ const tI18nPhrase Phrases[] = {
     "Wyswietlac status odtwarzania",
     "Mostrar modo de replay",
     "¸íäåéîç êáôÜóôáóçò áíáìåôÜäïóçò",
-    "Visa uppspelnings läge",
+    "Visa uppspelningsläge",
     "Afiºeazã redarea",
     "Lejátszás feltüntetése",
     "Mostrar mode de reproducció",
@@ -3946,7 +3946,7 @@ const tI18nPhrase Phrases[] = {
     "Min. brak aktywnosci uzytkownika (min)",
     "Tiempo mínimo inactividad (min)",
     "ÅëÜ÷éóôïò ÷ñüíïò áíáìïíŞò (ëåğôÜ)",
-    "Minsta anändar-inaktivitet (min)",
+    "Minsta användar-inaktivitet (min)",
     "Durata minimã de inactivitate (min)",
     "Min. kezelési aktivitás (min)",
     "Temps mínim d'inactivitat (min)",
@@ -3967,7 +3967,7 @@ const tI18nPhrase Phrases[] = {
     "Min. brak aktywnosci SVDRP (s)",
     "SVDRP Timeout (s)",
     "SVDRP äéáêïğŞ (ä)",
-    "SVDRP Timeout (d)",
+    "SVDRP Timeout (s)",
     "Timeout SVDRP (sec)",
     "SVDRP Timeout (s)",
     "SVDRP Timeout (s)",
@@ -4096,7 +4096,7 @@ const tI18nPhrase Phrases[] = {
     "Faza 1: Detekcja typu kodu",
     "Fase 1: Detectando tipo de receptor",
     "ÖÜóç 1: Áíß÷íåõóç êşäéêá RC",
-    "Steg1: identifiering av RC kod",
+    "Steg1: identifiering av kod",
     "Faza 1: Detecşia tipului telecomenzii",
     "Elsö lépés: távirányító kódjának meghatározása",
     "Fase 1: Detectant el tipus de receptor",
@@ -4138,7 +4138,7 @@ const tI18nPhrase Phrases[] = {
     "Kod pilota zostal poznany!",
     "¡Código detectado!",
     "Âñİèçêå êşäéêáò RC!",
-    "RC koden detekterad!",
+    "Koden detekterad!",
     "S-a detectat tipul telecomenzii!",
     "Távirányító kódja felismerve!",
     "Codi detectat!",
@@ -4180,7 +4180,7 @@ const tI18nPhrase Phrases[] = {
     "Faza 2: Nauka pojedynczych klawiszy",
     "Fase 2: Aprendiendo códigos específicos",
     "Öáóç 2: ÅêìÜèçóç ìåìïíïìİíùí ğëŞêôñùí",
-    "Fas 2: Inlärning av specifika knapp koder",
+    "Fas 2: Inlärning av specifika knapp-koder",
     "Faza 2: Învãşarea codurilor anumitor taste",
     "Második lépés: az egyes gombok betanítása",
     "Fase 2: Aprenentantge de les funcions",
@@ -4285,7 +4285,7 @@ const tI18nPhrase Phrases[] = {
     "(Nacisnac 'Dol' by zakonczyc)",
     "(Pulse 'Abajo' para terminar programación teclas)",
     "(Ğßåóå 'êÜôù' ãéÜ ôåñìáôéóìü äçëşóåùí ğëŞêôñùí)",
-    "(Tryck 'Ner' för att avsluta knapp definition)",
+    "(Tryck 'Ner' för att avsluta inlärningen)",
     "(Apãsaşi 'Jos' pentru terminare)",
     "('Le' megnyomása a befejezéshez)",
     "(Premeu 'Avall' per finalitzar l'aprenentatge)",
@@ -4306,7 +4306,7 @@ const tI18nPhrase Phrases[] = {
     "(Nacisnac 'Menu' by ominac klawisz)",
     "Pulse 'Menu' para saltarse esta tecla",
     "ĞÜôá 'ìåíïı' ãéá ğñïóğİñáóç áõôïı ôïı ğëŞêôñïõ",
-    "Tryck 'Meny' för att hoppa över denna knapp.",
+    "(Tryck 'Meny' för att hoppa över knappen.)",
     "Apãsaşi 'Meniu' pentru a sãri peste aceastã tastã",
     "A Menü gombot nyomni ennek a gombnak a kihagyásához",
     "Premeu 'Menú' per obviar aquesta tecla",
@@ -4348,7 +4348,7 @@ const tI18nPhrase Phrases[] = {
     "'Gora' zapamietuje, 'Dol' przerywa",
     "Pulse 'Arriba' para guardar, 'Abajo' para anular",
     "'ĞÜíù' áğïèßêåõóç, 'ÊÜôù' áêıñùóç",
-    "Tryck 'Upp' för att spara, 'Ner' för att avsluta",
+    "Tryck 'Upp' för att spara eller 'Ner' för att avsluta.",
     "Apãsaşi 'Sus' pentru salvare, 'Jos' pentru anulare",
     "'Fel' mentés, 'Le´ mégse",
     "Premeu 'Amunt' per guardar, 'Avall' per anul·lar",
@@ -5190,7 +5190,7 @@ const tI18nPhrase Phrases[] = {
     "Gora/Dol na nowa pozycje - Ok zmienia",
     "Arriba/Abajo para el nuevo lugar - OK para mover",
     "ĞÜíù/ÊÜôù ãéÜ íİá èİóç. ÌåôÜ ÏÊ",
-    "Upp/Ner för ny plats - OK för att flytta",
+    "Upp/Ner för nya platsen - därefter OK för att flytta",
     "Sus/Jos pentru noua locaşie - OK pentru a muta",
     "Fel/Le egy uj opcióért - aztán OK",
     "Amunt/Avall per una nova localització - OK per moure",
@@ -5211,7 +5211,7 @@ const tI18nPhrase Phrases[] = {
     "Uruchomiony proces montazu",
     "Proceso modificación iniciado",
     "Áñ÷Ş åğåîåñãáóßáò",
-    "Redigering startad",
+    "Redigeringen startar",
     "Montajul înregistrãrii a început",
     "Vágás elindítva",
     "Procés d'edició iniciat",
@@ -5316,7 +5316,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Påbörjar EPG skanning",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -5379,7 +5379,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "ST:TNG konsol",
+    "ST:TNG konsoll",
     "Cons. ST:TNG",
     "",// TODO
     "",// TODO
@@ -5400,7 +5400,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "ingen titel",
     "",// TODO
     "",// TODO
     "",// TODO

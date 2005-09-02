@@ -3747,7 +3747,7 @@ Video Disk Recorder Revision History
 - The new SVDRP command EDIT can be used to start the editing process of a recording
   (based on the CUTR patch by Harald Milz).
 
-2005-08-29: Version 1.3.32
+2005-09-02: Version 1.3.32
 
 - Added some missing braces in remux.c (thanks to Wayne Keer for reporting this one).
 - Removed unused MAINMENUENTRY from svdrpdemo.c (thanks to Udo Richter for reporting
@@ -3759,3 +3759,4 @@ Video Disk Recorder Revision History
 - Updated the Estonian OSD texts (thanks to Arthur Konovalov).
 - Fixed cDvbPlayer::SkipFrames() to properly handle radio recordings (thanks to
   Reinhard Nissl).
+- Updated the Swedish OSD texts (thanks to Tomas Prybil).
