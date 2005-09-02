@@ -3763,3 +3763,5 @@ Video Disk Recorder Revision History
 - Updated the Slovenian OSD texts (thanks to Matjaz Thaler).
 - Updated the Danish OSD texts (thanks to Mogens Elneff).
 - Made LIRC command parsing more robust (thanks to Ville Skyttä).
+- Introduced a separate 'plugins-install' target in the Makefile (thanks to Daniel
+  Thompson).
