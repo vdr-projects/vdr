@@ -23,18 +23,21 @@ mode you want.
 Compiling and running the program:
 ----------------------------------
 
-Make sure the files from this package are located in a
-directory that is "parallel" to the DVB directory of the
-driver source for the Siemens DVB-S PCI card (refer to
-http://linuxtv.org/dvb/siemens_dvb.html for more information
-about that driver). For example, if the DVB driver was 
-extracted into the directory /home/kls/vdr/DVB, then this
-package should be extracted into /home/kls/vdr/VDR.
+VDR requires the Linux-DVB driver header files to compile.
+As of kernel 2.6 these are part of the official Linux kernel
+distribution, and VDR's Makefile will automatically locate
+them. If you are using kernel 2.4 or earlier, you should
+install the files from this package in a directory that is
+"parallel" to the DVB directory of the driver source (refer to
+http://linuxtv.org for more information about that driver).
+For example, if the DVB driver was extracted into the directory
+/home/kls/vdr/DVB, then this package should be extracted into
+/home/kls/vdr/VDR.
 If you have the DVB driver source in a different location
-you will have to change the definition of DVBDIR in the
-Makefile (see the file Make.config.template).
+you can rename the file Make.config.template to Make.config and
+adjust the definition of DVBDIR in that file.
 
-VDR requires the Linux-DVB card driver version dated 2003-08-23 or higher
+VDR requires the Linux-DVB driver version dated 2003-08-23 or higher
 to work properly.
 
 After extracting the package, change into the VDR directory

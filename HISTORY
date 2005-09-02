@@ -3769,3 +3769,5 @@ Video Disk Recorder Revision History
   apparently some users actually need it. It's not active by default, you'll have
   to define the WAIT_FOR_TUNER_LOCK macro in that file if you need it (suggested
   by Malcolm Caldwell).
+- Adjusted the Makefile to the dvb-kernel driver on kernel 2.6 and up (thanks to
+  Lauri Tischler).

@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 1.78 2005/09/02 13:37:51 kls Exp $
+# $Id: Makefile 1.79 2005/09/02 14:23:38 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -14,7 +14,16 @@ CFLAGS   ?= -O2
 CXX      ?= g++
 CXXFLAGS ?= -fPIC -g -O2 -Wall -Woverloaded-virtual
 
-DVBDIR   = ../DVB
+LINUX_VERSION := $(shell uname -r | cut -c-3)
+LINUX         := $(shell uname -r)
+DVBDIR        := /lib/modules/$(LINUX)/build
+ifeq ($(LINUX_VERSION), 2.4)
+   DVBDIR = ../DVB
+endif
+ifeq ($(LINUX_VERSION), 2.2)
+   DVBDIR = ../DVB
+endif
+
 LSIDIR   = ./libsi
 MANDIR   = /usr/local/man
 BINDIR   = /usr/local/bin

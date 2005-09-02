@@ -588,6 +588,7 @@ Lauri Tischler <lauri.tischler@efore.fi>
  unavailable due to a recording on a different transponder
  for reporting a compiler warning about virtual cConfig::Load() functions
  for reporting a warning about character comparison in libsi/si.c
+ for adjusting the Makefile to the dvb-kernel driver on kernel 2.6 and up
 
 Andy Carter <fruit@ukgateway.net>
  for helping to test new DVB-T handling
