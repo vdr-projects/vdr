@@ -3783,3 +3783,9 @@ Video Disk Recorder Revision History
   the static function cRemote::CallPlugin().
 - The SVDRP command PLUG now has a new option 'main' which can be used to initiate
   a call to the main menu function of a plugin (using part of a patch by Hardy Flor).
+- The new command line option '--vfat' can be used to make VDR encode special
+  characters in recording file names, even if it wasn't compiled with VFAT=1
+  (suggested by Peter Bieringer). The compile time option VFAT still exists and
+  creates a VDR that always behaves as if it were called with '--vfat'.
+- Replaced the ':' delimiter between hour and minute in recording file names with
+  a '.' under Linux, too. Existing recordings with ':' as delimiter will still work.

@@ -71,7 +71,8 @@ time switch
 
   VFAT=1
 
-to the 'make' command.
+to the 'make' command. Alternatively, you can call VDR with the command
+line option '--vfat'.
 
 When running, the 'vdr' program writes status information into the
 system log file (/var/log/messages). You may want to watch these

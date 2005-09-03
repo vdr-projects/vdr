@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.214 2005/09/03 12:35:29 kls Exp $
+ * $Id: vdr.c 1.215 2005/09/03 13:21:32 kls Exp $
  */
 
 #include <getopt.h>
@@ -131,6 +131,9 @@ int main(int argc, char *argv[])
 #elif defined(REMOTE_RCU)
   RcuDevice = RCU_DEVICE;
 #endif
+#if defined(VFAT)
+  VfatFileSystem = true;
+#endif
 
   cPluginManager PluginManager(DEFAULTPLUGINDIR);
   int ExitCode = 0;
@@ -154,6 +157,7 @@ int main(int argc, char *argv[])
       { "shutdown", required_argument, NULL, 's' },
       { "terminal", required_argument, NULL, 't' },
       { "version",  no_argument,       NULL, 'V' },
+      { "vfat",     no_argument,       NULL, 'v' | 0x100 },
       { "video",    required_argument, NULL, 'v' },
       { "watchdog", required_argument, NULL, 'w' },
       { NULL }
@@ -246,6 +250,9 @@ int main(int argc, char *argv[])
                     break;
           case 'V': DisplayVersion = true;
                     break;
+          case 'v' | 0x100:
+                    VfatFileSystem = true;
+                    break;
           case 'v': VideoDirectory = optarg;
                     while (optarg && *optarg && optarg[strlen(optarg) - 1] == '/')
                           optarg[strlen(optarg) - 1] = 0;
@@ -304,6 +311,8 @@ int main(int argc, char *argv[])
                "  -t TTY,   --terminal=TTY controlling tty\n"
                "  -v DIR,   --video=DIR    use DIR as video directory (default: %s)\n"
                "  -V,       --version      print version information and exit\n"
+               "            --vfat         encode special characters in recording names to\n"
+               "                           avoid problems with VFAT file systems\n"
                "  -w SEC,   --watchdog=SEC activate the watchdog timer with a timeout of SEC\n"
                "                           seconds (default: %d); '0' disables the watchdog\n"
                "\n",
