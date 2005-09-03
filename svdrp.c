@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.79 2005/09/03 12:46:57 kls Exp $
+ * $Id: svdrp.c 1.80 2005/09/03 14:09:02 kls Exp $
  */
 
 #include "svdrp.h"
@@ -1039,8 +1039,51 @@ void cSVDRP::CmdMODT(const char *Option)
 
 void cSVDRP::CmdMOVC(const char *Option)
 {
-  //TODO combine this with menu action (timers must be updated)
-  Reply(502, "MOVC not yet implemented");
+  if (*Option) {
+     if (!Channels.BeingEdited() && !Timers.BeingEdited()) {
+        char *tail;
+        int From = strtol(Option, &tail, 10);
+        if (tail && tail != Option) {
+           tail = skipspace(tail);
+           if (tail && tail != Option) {
+              int To = strtol(tail, NULL, 10);
+              int CurrentChannelNr = cDevice::CurrentChannel();
+              cChannel *CurrentChannel = Channels.GetByNumber(CurrentChannelNr);
+              cChannel *FromChannel = Channels.GetByNumber(From);
+              if (FromChannel) {
+                 cChannel *ToChannel = Channels.GetByNumber(To);
+                 if (ToChannel) {
+                    int FromNumber = FromChannel->Number();
+                    int ToNumber = ToChannel->Number();
+                    if (FromNumber != ToNumber) {
+                       Channels.Move(FromChannel, ToChannel);
+                       Channels.ReNumber();
+                       Channels.SetModified(true);
+                       if (CurrentChannel && CurrentChannel->Number() != CurrentChannelNr)
+                          Channels.SwitchTo(CurrentChannel->Number());
+                       isyslog("channel %d moved to %d", FromNumber, ToNumber);
+                       Reply(250,"Channel \"%d\" moved to \"%d\"", From, To);
+                       }
+                    else
+                       Reply(501, "Can't move channel to same postion");
+                    }
+                 else
+                    Reply(501, "Channel \"%d\" not defined", To);
+                 }
+              else
+                 Reply(501, "Channel \"%d\" not defined", From);
+              }
+           else
+              Reply(501, "Error in channel number");
+           }
+        else
+           Reply(501, "Error in channel number");
+        }
+     else
+        Reply(550, "Channels or timers are being edited - try again later");
+     }
+  else
+     Reply(501, "Missing channel number");
 }
 
 void cSVDRP::CmdMOVT(const char *Option)
