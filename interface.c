@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.c 1.68 2004/11/01 14:23:28 kls Exp $
+ * $Id: interface.c 1.69 2005/09/03 09:07:23 kls Exp $
  */
 
 #include "interface.h"
@@ -56,7 +56,7 @@ eKeys cInterface::Wait(int Seconds, bool KeepChar)
   time_t timeout = time(NULL) + Seconds;
   for (;;) {
       Key = GetKey();
-      if ((Key != kNone && (RAWKEY(Key) != kOk || RAWKEY(Key) == Key)) || time(NULL) > timeout || interrupted)
+      if (ISRAWKEY(Key) || time(NULL) > timeout || interrupted)
          break;
       }
   if (KeepChar && ISRAWKEY(Key))
