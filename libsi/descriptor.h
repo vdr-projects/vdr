@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: descriptor.h 1.12 2005/05/08 14:08:19 kls Exp $
+ *   $Id: descriptor.h 1.13 2005/09/03 15:17:35 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -392,7 +392,18 @@ private:
 
 class ISO639LanguageDescriptor : public Descriptor {
 public:
-   char languageCode[4];
+   char languageCode[4]; //for backwards compatibility
+   class Language : public LoopElement {
+   public:
+      virtual int getLength() { return sizeof(descr_iso_639_language_loop); }
+      char languageCode[4];
+      AudioType getAudioType();
+   protected:
+      virtual void Parse();
+   private:
+      const descr_iso_639_language_loop *s;
+   };
+   StructureLoop<Language> languageLoop;
 protected:
    virtual void Parse();
 private:

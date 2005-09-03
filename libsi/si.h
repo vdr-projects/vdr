@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: si.h 1.11 2004/10/16 09:58:10 kls Exp $
+ *   $Id: si.h 1.12 2005/09/03 15:19:00 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -165,6 +165,12 @@ enum LinkageType { LinkageTypeInformationService = 0x01,
                    LinkageTypeSystemSoftwareUpdateService = 0x09,
                    LinkageTypeTSContainingSsuBatOrNit = 0x0A
                  };
+
+enum AudioType { AudioTypeUndefined = 0x00,
+                 AudioTypeCleanEffects = 0x01,
+                 AudioTypeHearingImpaired = 0x02,
+                 AudioTypeVisualImpairedCommentary = 0x03
+               };
 
 /* Some principles:
    - Objects that return references to other objects contained in their data must make sure

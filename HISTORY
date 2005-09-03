@@ -3790,3 +3790,5 @@ Video Disk Recorder Revision History
 - Replaced the ':' delimiter between hour and minute in recording file names with
   a '.' under Linux, too. Existing recordings with ':' as delimiter will still work.
 - Implemented the SVDRP command MOVC (thanks to Andreas Brachold).
+- Added support for multiple audio language codes in ISO639LanguageDescriptors to
+  'libsi' (thanks to Marcel Wiesweg).

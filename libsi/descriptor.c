@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: descriptor.c 1.14 2004/10/16 09:51:05 kls Exp $
+ *   $Id: descriptor.c 1.15 2005/09/03 15:16:49 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -655,12 +655,30 @@ LinkageType LinkageDescriptor::getLinkageType() const {
 }
 
 void ISO639LanguageDescriptor::Parse() {
-   unsigned int offset=0;
-   data.setPointerAndOffset<const descr_iso_639_language>(s, offset);
+   languageLoop.setData(data+sizeof(descr_iso_639_language), getLength()-sizeof(descr_iso_639_language));
+   
+   //all this is for backwards compatibility only
+   Loop::Iterator it;
+   Language first;
+   if (languageLoop.getNext(first, it)) {
+      languageCode[0]=first.languageCode[0];
+      languageCode[1]=first.languageCode[1];
+      languageCode[2]=first.languageCode[2];
+      languageCode[3]=0;
+   } else
+      languageCode[0]=0;
+}
+
+void ISO639LanguageDescriptor::Language::Parse() {
+   s=data.getData<const descr_iso_639_language_loop>();
    languageCode[0]=s->lang_code1;
    languageCode[1]=s->lang_code2;
    languageCode[2]=s->lang_code3;
    languageCode[3]=0;
+}
+
+AudioType ISO639LanguageDescriptor::Language::getAudioType() {
+   return (AudioType)s->audio_type;
 }
 
 void PDCDescriptor::Parse() {

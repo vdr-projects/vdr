@@ -10,7 +10,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: headers.h 1.4 2004/02/22 11:12:46 kls Exp $
+ *   $Id: headers.h 1.5 2005/09/03 15:18:16 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -821,9 +821,13 @@ struct descr_ca {
 struct descr_iso_639_language {
    u_char descriptor_tag                         :8;
    u_char descriptor_length                      :8;
+};
+
+struct descr_iso_639_language_loop {
    u_char lang_code1                             :8;
    u_char lang_code2                             :8;
    u_char lang_code3                             :8;
+   u_char audio_type                             :8;
 };
 
 /* 0x13 carousel_identifier_descriptor */
