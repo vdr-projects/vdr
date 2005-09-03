@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.213 2005/09/03 11:50:28 kls Exp $
+ * $Id: vdr.c 1.214 2005/09/03 12:35:29 kls Exp $
  */
 
 #include <getopt.h>
@@ -724,6 +724,8 @@ int main(int argc, char *argv[])
                         ((cOsdMenu*)Menu)->Display();
                      }
                   }
+               else
+                  esyslog("ERROR: unknown plugin '%s'", cRemote::GetPlugin());
                key = kNone; // nobody else needs to see these keys
                }
                break;

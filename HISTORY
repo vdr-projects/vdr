@@ -3779,3 +3779,5 @@ Video Disk Recorder Revision History
   SVDRP).
 - The menu timeout handling is now done centrally in the main program loop.
 - Added missing help for the 'help' keyword in the SVDRP command PLUG.
+- The main menu function of a plugin can now be called programmatically through
+  the static function cRemote::CallPlugin().

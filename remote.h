@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remote.h 1.30 2005/08/13 11:28:10 kls Exp $
+ * $Id: remote.h 1.31 2005/09/03 12:28:42 kls Exp $
  */
 
 #ifndef __REMOTE_H
@@ -44,6 +44,10 @@ public:
   static void Clear(void);
   static bool Put(eKeys Key, bool AtFront = false);
   static bool PutMacro(eKeys Key);
+  static void CallPlugin(const char *Plugin);
+      ///< Initiates calling the given plugin's main menu function.
+      ///< The Plugin parameter is the name of the plugin, and must be
+      ///< a static string.
   static const char *GetPlugin(void) { return plugin; }
   static bool HasKeys(void);
   static eKeys Get(int WaitMs = 1000, char **UnknownCode = NULL);
