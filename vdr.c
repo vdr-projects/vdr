@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.211 2005/08/21 08:47:06 kls Exp $
+ * $Id: vdr.c 1.212 2005/09/03 11:26:27 kls Exp $
  */
 
 #include <getopt.h>
@@ -695,7 +695,7 @@ int main(int argc, char *argv[])
                Menu = new cMenuMain(cControl::Control());
                Temp = NULL;
                break;
-          #define DirectMainFunction(function...)\
+          #define DirectMainFunction(function)\
             DELETENULL(Menu);\
             if (cControl::Control())\
                cControl::Control()->Hide();\
@@ -709,7 +709,23 @@ int main(int argc, char *argv[])
           case kSetup:      DirectMainFunction(osSetup); break;
           case kCommands:   DirectMainFunction(osCommands); break;
           case kUser1 ... kUser9: cRemote::PutMacro(key); key = kNone; break;
-          case k_Plugin:    DirectMainFunction(osPlugin, cRemote::GetPlugin()); break;
+          case k_Plugin: {
+               DELETENULL(Menu);
+               Temp = NULL;
+               if (cControl::Control())
+                  cControl::Control()->Hide();
+               cPlugin *plugin = cPluginManager::GetPlugin(cRemote::GetPlugin());
+               if (plugin) {
+                  Menu = Temp = plugin->MainMenuAction();
+                  if (Menu) {
+                     Menu->Show();
+                     if (Menu->IsMenu())
+                        ((cOsdMenu*)Menu)->Display();
+                     }
+                  }
+               key = kNone; // nobody else needs to see these keys
+               }
+               break;
           // Channel up/down:
           case kChanUp|k_Repeat:
           case kChanUp:

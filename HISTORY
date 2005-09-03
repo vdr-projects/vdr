@@ -3773,3 +3773,7 @@ Video Disk Recorder Revision History
   Lauri Tischler).
 - Repeat keys are now ignored when waiting for a keypress to cancel an operation
   (thanks to Marko Mäkelä).
+- The main menu function of a plugin can now be activated through a key macro of
+  the form "@plugin" even if that plugin doesn't have a main menu entry (using
+  part of a patch by Hardy Flor, which originally implemented calling plugins from
+  SVDRP).

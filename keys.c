@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: keys.c 1.7 2004/12/27 11:08:34 kls Exp $
+ * $Id: keys.c 1.8 2005/09/03 11:28:34 kls Exp $
  */
 
 #include "keys.h"
@@ -210,7 +210,6 @@ bool cKeyMacro::Parse(char *s)
                  }
               macro[n++] = k_Plugin;
               if (n < MAXKEYSINMACRO) {
-                 macro[n] = kOk;
                  plugin = strdup(p + 1);
                  if (!cPluginManager::GetPlugin(plugin)) {
                     esyslog("ERROR: unknown plugin '%s'", plugin);
