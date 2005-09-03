@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.78 2005/09/03 12:17:35 kls Exp $
+ * $Id: svdrp.c 1.79 2005/09/03 12:46:57 kls Exp $
  */
 
 #include "svdrp.h"
@@ -269,7 +269,7 @@ const char *HelpPages[] = {
   "    at the position where any previous replay was stopped, or from the beginning\n"
   "    by default. To control or stop the replay session, use the usual remote\n"
   "    control keypresses via the HITK command.",
-  "PLUG <name> [ help ] [ <command> [ <options> ]]\n"
+  "PLUG <name> [ help | main ] [ <command> [ <options> ]]\n"
   "    Send a command to a plugin.\n"
   "    The PLUG command without any parameters lists all plugins.\n"
   "    If only a name is given, all commands known to that plugin are listed.\n"
@@ -277,7 +277,8 @@ const char *HelpPages[] = {
   "    is sent to the plugin, and the result will be displayed.\n"
   "    The keyword 'help' lists all the SVDRP commands known to the named plugin.\n"
   "    If 'help' is followed by a command, the detailed help for that command is\n"
-  "    given.",
+  "    given. The keyword 'main' initiates a call to the main menu function of the\n"
+  "    given plugin.\n",
   "PUTE\n"
   "    Put data into the EPG list. The data entered has to strictly follow the\n"
   "    format defined in vdr(5) for the 'epg.data' file.  A '.' on a line\n"
@@ -1206,6 +1207,10 @@ void cSVDRP::CmdPLUG(const char *Option)
               else
                  Reply(214, "This plugin has no SVDRP commands");
               }
+           }
+        else if (strcasecmp(cmd, "MAIN") == 0) {
+           cRemote::CallPlugin(plugin->Name());
+           Reply(250, "Initiated call to main menu function of plugin \"%s\"", plugin->Name());
            }
         else {
            int ReplyCode = 900;

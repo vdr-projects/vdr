@@ -3781,3 +3781,5 @@ Video Disk Recorder Revision History
 - Added missing help for the 'help' keyword in the SVDRP command PLUG.
 - The main menu function of a plugin can now be called programmatically through
   the static function cRemote::CallPlugin().
+- The SVDRP command PLUG now has a new option 'main' which can be used to initiate
+  a call to the main menu function of a plugin (using part of a patch by Hardy Flor).
