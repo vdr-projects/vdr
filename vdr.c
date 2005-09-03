@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.212 2005/09/03 11:26:27 kls Exp $
+ * $Id: vdr.c 1.213 2005/09/03 11:50:28 kls Exp $
  */
 
 #include <getopt.h>
@@ -66,6 +66,7 @@
 #define LASTCAMMENUTIMEOUT  3 // seconds to run the main loop 'fast' after a CAM menu has been closed
                               // in order to react on a possible new CAM menu as soon as possible
 #define DEVICEREADYTIMEOUT 30 // seconds to wait until all devices are ready
+#define MENUTIMEOUT       120 // seconds of user inactivity after which an OSD display is closed
 
 #define EXIT(v) { ExitCode = (v); goto Exit; }
 
@@ -806,8 +807,12 @@ int main(int argc, char *argv[])
         Interact = Menu ? Menu : cControl::Control(); // might have been closed in the mean time
         if (Interact) {
            eOSState state = Interact->ProcessKey(key);
-           if (state == osUnknown && ISMODELESSKEY(key) && cControl::Control() && Interact != cControl::Control())
-              state = cControl::Control()->ProcessKey(key);
+           if (state == osUnknown) {
+              if (ISMODELESSKEY(key) && cControl::Control() && Interact != cControl::Control())
+                 state = cControl::Control()->ProcessKey(key);
+              else if (time(NULL) - LastActivity > MENUTIMEOUT)
+                 state = osEnd;
+              }
            switch (state) {
              case osPause:  DELETENULL(Menu);
                             cControl::Shutdown(); // just in case

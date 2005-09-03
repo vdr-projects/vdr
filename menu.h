@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 1.72 2005/09/03 10:33:17 kls Exp $
+ * $Id: menu.h 1.73 2005/09/03 11:41:41 kls Exp $
  */
 
 #ifndef __MENU_H
@@ -55,7 +55,6 @@ public:
 
 class cMenuMain : public cOsdMenu {
 private:
-  time_t lastActivity;
   bool replaying;
   static cOsdObject *pluginOsdObject;
   void Set(void);
@@ -120,7 +119,6 @@ public:
 class cMenuCam : public cOsdMenu {
 private:
   cCiMenu *ciMenu;
-  time_t lastActivity;
   bool selected;
   eOSState Select(void);
 public:
@@ -132,7 +130,6 @@ public:
 class cMenuCamEnquiry : public cOsdMenu {
 private:
   cCiEnquiry *ciEnquiry;
-  time_t lastActivity;
   char *input;
   bool replied;
   eOSState Reply(void);

@@ -3777,3 +3777,4 @@ Video Disk Recorder Revision History
   the form "@plugin" even if that plugin doesn't have a main menu entry (using
   part of a patch by Hardy Flor, which originally implemented calling plugins from
   SVDRP).
+- The menu timeout handling is now done centrally in the main program loop.
