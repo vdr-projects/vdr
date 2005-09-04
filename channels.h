@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.h 1.33 2005/08/06 11:23:32 kls Exp $
+ * $Id: channels.h 1.34 2005/09/04 10:17:12 kls Exp $
  */
 
 #ifndef __CHANNELS_H
@@ -35,6 +35,9 @@
 #define MAXDPIDS 16 // dolby (AC3 + DTS)
 #define MAXSPIDS  8 // subtitles
 #define MAXCAIDS  8 // conditional access
+
+#define MAXLANGCODE1 4 // a 3 letter language code, zero terminated
+#define MAXLANGCODE2 8 // up to two 3 letter language codes, separated by '+' and zero terminated
 
 struct tChannelParameterMap {
   int userValue;
@@ -102,11 +105,11 @@ private:
   int vpid;
   int ppid;
   int apids[MAXAPIDS + 1]; // list is zero-terminated
-  char alangs[MAXAPIDS][4];
+  char alangs[MAXAPIDS][MAXLANGCODE2];
   int dpids[MAXDPIDS + 1]; // list is zero-terminated
-  char dlangs[MAXDPIDS][4];
+  char dlangs[MAXDPIDS][MAXLANGCODE2];
   int spids[MAXSPIDS + 1]; // list is zero-terminated
-  char slangs[MAXSPIDS][4];
+  char slangs[MAXSPIDS][MAXLANGCODE2];
   int tpid;
   int caids[MAXCAIDS + 1]; // list is zero-terminated
   int nid;
@@ -188,7 +191,7 @@ public:
   void SetId(int Nid, int Tid, int Sid, int Rid = 0);
   void SetName(const char *Name, const char *ShortName, const char *Provider);
   void SetPortalName(const char *PortalName);
-  void SetPids(int Vpid, int Ppid, int *Apids, char ALangs[][4], int *Dpids, char DLangs[][4], int Tpid);
+  void SetPids(int Vpid, int Ppid, int *Apids, char ALangs[][MAXLANGCODE2], int *Dpids, char DLangs[][MAXLANGCODE2], int Tpid);
   void SetCaIds(const int *CaIds); // list must be zero-terminated
   void SetCaDescriptors(int Level);
   void SetLinkChannels(cLinkChannels *LinkChannels);

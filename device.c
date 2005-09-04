@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.108 2005/09/02 13:52:31 kls Exp $
+ * $Id: device.c 1.109 2005/09/04 14:28:16 kls Exp $
  */
 
 #include "device.h"
@@ -795,13 +795,17 @@ void cDevice::EnsureAudioTrack(bool Force)
 {
   if (Force || !availableTracks[currentAudioTrack].id) {
      eTrackType PreferredTrack = ttAudioFirst;
+     int PreferredAudioChannel = 0;
      int LanguagePreference = -1;
      int StartCheck = Setup.CurrentDolby ? ttDolbyFirst : ttAudioFirst;
      int EndCheck = ttDolbyLast;
      for (int i = StartCheck; i <= EndCheck; i++) {
          const tTrackId *TrackId = GetTrack(eTrackType(i));
-         if (TrackId && TrackId->id && I18nIsPreferredLanguage(Setup.AudioLanguages, I18nLanguageIndex(TrackId->language), LanguagePreference))
+         int pos = 0;
+         if (TrackId && TrackId->id && I18nIsPreferredLanguage(Setup.AudioLanguages, TrackId->language, LanguagePreference, &pos)) {
             PreferredTrack = eTrackType(i);
+            PreferredAudioChannel = pos;
+            }
          if (Setup.CurrentDolby && i == ttDolbyLast) {
             i = ttAudioFirst - 1;
             EndCheck = ttAudioLast;
@@ -811,8 +815,9 @@ void cDevice::EnsureAudioTrack(bool Force)
      const tTrackId *Track = GetTrack(GetCurrentAudioTrack());
      if (Force || !Track || !Track->id || PreferredTrack != GetCurrentAudioTrack()) {
         if (!Force) // only log this for automatic changes
-           dsyslog("setting audio track to %d", PreferredTrack);
+           dsyslog("setting audio track to %d (%d)", PreferredTrack, PreferredAudioChannel);
         SetCurrentAudioTrack(PreferredTrack);
+        SetAudioChannel(PreferredAudioChannel);
         }
      }
 }

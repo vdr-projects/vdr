@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.226 2005/08/28 21:19:26 kls Exp $
+ * $Id: config.h 1.227 2005/09/04 10:49:24 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -16,7 +16,6 @@
 #include <string.h>
 #include <time.h>
 #include <unistd.h>
-#include "device.h"
 #include "i18n.h"
 #include "tools.h"
 

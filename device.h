@@ -4,12 +4,13 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 1.62 2005/08/21 08:52:20 kls Exp $
+ * $Id: device.h 1.63 2005/09/04 10:50:36 kls Exp $
  */
 
 #ifndef __DEVICE_H
 #define __DEVICE_H
 
+#include "channels.h"
 #include "ci.h"
 #include "eit.h"
 #include "filter.h"
@@ -81,12 +82,11 @@ enum eTrackType { ttNone,
 #define IS_DOLBY_TRACK(t) (ttDolbyFirst <= (t) && (t) <= ttDolbyLast)
 
 struct tTrackId {
-  uint16_t id;          // The PES packet id or the PID.
-  char language[8];     // something like either "eng" or "deu/eng"
-  char description[32]; // something like "Dolby Digital 5.1"
+  uint16_t id;                  // The PES packet id or the PID.
+  char language[MAXLANGCODE2];  // something like either "eng" or "deu+eng"
+  char description[32];         // something like "Dolby Digital 5.1"
   };
 
-class cChannel;
 class cPlayer;
 class cReceiver;
 class cPesAssembler;

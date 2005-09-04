@@ -4,12 +4,13 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 1.34 2005/07/30 13:03:51 kls Exp $
+ * $Id: timers.c 1.35 2005/09/04 10:53:21 kls Exp $
  */
 
 #include "timers.h"
 #include <ctype.h>
 #include "channels.h"
+#include "device.h"
 #include "i18n.h"
 #include "remote.h"
 

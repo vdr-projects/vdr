@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.204 2005/09/02 12:44:09 kls Exp $
+ * $Id: i18n.c 1.205 2005/09/04 14:28:07 kls Exp $
  *
  * Translations provided by:
  *
@@ -5500,7 +5500,7 @@ const char * const * I18nCharSets(void)
   return &Phrases[1][0];
 }
 
-const char * I18nLanguageCode(int Index)
+const char *I18nLanguageCode(int Index)
 {
   return 0 <= Index && Index < I18nNumLanguages ? Phrases[2][Index] : NULL;
 }
@@ -5508,8 +5508,17 @@ const char * I18nLanguageCode(int Index)
 int I18nLanguageIndex(const char *Code)
 {
   for (int i = 0; i < I18nNumLanguages; i++) {
-      if (strcasestr(Phrases[2][i], Code))
-         return i;
+      const char *s = Phrases[2][i];
+      while (*s) {
+            int l = 0;
+            for ( ; l < 3 && Code[l]; l++) {
+                if (s[l] != tolower(Code[l]))
+                   break;
+                }
+            if (l == 3)
+               return i;
+            s++;
+            }
       }
   //dsyslog("unknown language code: '%s'", Code);
   return -1;
@@ -5527,19 +5536,31 @@ const char *I18nNormalizeLanguageCode(const char *Code)
   return n >= 0 ? I18nLanguageCode(n) : Code;
 }
 
-bool I18nIsPreferredLanguage(int *PreferredLanguages, int LanguageIndex, int &OldPreference)
+bool I18nIsPreferredLanguage(int *PreferredLanguages, const char *LanguageCode, int &OldPreference, int *Position)
 {
+  if (Position)
+     *Position = 0;
+Retry:
+  int LanguageIndex = I18nLanguageIndex(LanguageCode);
   for (int i = 0; i < I18nNumLanguages; i++) {
       if (PreferredLanguages[i] < 0)
          break; // the language is not a preferred one
       if (PreferredLanguages[i] == LanguageIndex) {
          if (OldPreference < 0 || i < OldPreference) {
             OldPreference = i;
+            if (Position && !*Position && strchr(LanguageCode, '+'))
+               (*Position)++;
             return true;
             }
          break;
          }
       }
+  if ((LanguageCode = strchr(LanguageCode, '+')) != NULL) {
+     LanguageCode++;
+     if (Position)
+        (*Position)++;
+     goto Retry;
+     }
   if (OldPreference < 0) {
      OldPreference = I18nNumLanguages; // higher than the maximum possible value
      return true; // if we don't find a preferred one, we take the first one

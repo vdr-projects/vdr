@@ -4,12 +4,13 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.136 2005/08/13 13:47:08 kls Exp $
+ * $Id: config.c 1.137 2005/09/04 10:49:38 kls Exp $
  */
 
 #include "config.h"
 #include <ctype.h>
 #include <stdlib.h>
+#include "device.h"
 #include "i18n.h"
 #include "interface.h"
 #include "plugin.h"
