@@ -11,7 +11,7 @@
  * The cRepacker family's code was originally written by Reinhard Nissl <rnissl@gmx.de>,
  * and adapted to the VDR coding style by Klaus.Schmidinger@cadsoft.de.
  *
- * $Id: remux.c 1.45 2005/08/28 21:44:51 kls Exp $
+ * $Id: remux.c 1.46 2005/09/04 15:15:14 kls Exp $
  */
 
 #include "remux.h"
@@ -98,7 +98,7 @@ public:
   static int Put(cRingBufferLinear *ResultBuffer, const uchar *Data, int Count, int CapacityNeeded);
   cRepacker(void) { initiallySyncing = true; maxPacketSize = 6 + 65535; subStreamId = 0; }
   virtual ~cRepacker() {}
-  virtual void Reset(void) { /* initiallySyncing = true; */ }
+  virtual void Reset(void) { initiallySyncing = true; }
   virtual void Repack(cRingBufferLinear *ResultBuffer, const uchar *Data, int Count) = 0;
   virtual int BreakAt(const uchar *Data, int Count) = 0;
   virtual int QuerySnoopSize(void) { return 0; }
@@ -516,9 +516,10 @@ private:
     } state;
   int frameTodo;
   int frameSize;
+  int cid;
   static bool IsValidAudioHeader(uint32_t Header, bool Mpeg2, int *FrameSize = NULL);
 public:
-  cAudioRepacker(void);
+  cAudioRepacker(int Cid);
   virtual void Reset(void);
   virtual void Repack(cRingBufferLinear *ResultBuffer, const uchar *Data, int Count);
   virtual int BreakAt(const uchar *Data, int Count);
@@ -537,8 +538,9 @@ int cAudioRepacker::bitRates[2][3][16] = { // all values are specified as kbits/
   }
   };
 
-cAudioRepacker::cAudioRepacker(void)
+cAudioRepacker::cAudioRepacker(int Cid)
 {
+  cid = Cid;
   Reset();
 }
 
@@ -649,21 +651,11 @@ void cAudioRepacker::Repack(cRingBufferLinear *ResultBuffer, const uchar *Data, 
         // collect number of skipped bytes while syncing
         if (state <= syncing)
            skippedBytes++;
-        else if (frameTodo > 0) {
-           frameTodo--;
-           if (frameTodo == 0 && state == scanFrame) {
-              // the current audio frame is is done now. So push out the packet to
-              // start a new packet for the next audio frame.
-              PushOutPacket(ResultBuffer, payload, data - payload);
-              // go on with syncing to the next audio frame
-              state = syncing;
-              }
-           }
         // did we reach an audio frame header?
         scanner <<= 8;
         scanner |= *data;
         if ((scanner & 0xFFF00000) == 0xFFF00000) {
-           if (frameTodo <= 0 && IsValidAudioHeader(scanner, mpegLevel == phMPEG2, &frameSize)) {
+           if (frameTodo <= 0 && (frameSize == 0 || skippedBytes >= 4) && IsValidAudioHeader(scanner, mpegLevel == phMPEG2, &frameSize)) {
               if (state == scanFrame) {
                  // As a new audio frame starts here, the previous one is done. So push
                  // out the packet to start a new packet for the next audio frame. If
@@ -678,7 +670,7 @@ void cAudioRepacker::Repack(cRingBufferLinear *ResultBuffer, const uchar *Data, 
                  if (initiallySyncing) // omit report for the typical initial case
                     initiallySyncing = false;
                  else if (skippedBytes > SkippedBytesLimit) // report that syncing dropped some bytes
-                    esyslog("cAudioRepacker: skipped %d bytes to sync on next audio frame", skippedBytes - SkippedBytesLimit);
+                    esyslog("cAudioRepacker(0x%02X): skipped %d bytes to sync on next audio frame", cid, skippedBytes - SkippedBytesLimit);
                  skippedBytes = 0;
                  // if there is a PES header available, then use it ...
                  if (pesHeaderBackupLen > 0) {
@@ -728,6 +720,16 @@ void cAudioRepacker::Repack(cRingBufferLinear *ResultBuffer, const uchar *Data, 
         data++;
         done++;
         todo--;
+        // do we have to start a new packet as the current is done?
+        if (frameTodo > 0) {
+           if (--frameTodo == 0) {
+              // the current audio frame is is done now. So push out the packet to
+              // start a new packet for the next audio frame.
+              PushOutPacket(ResultBuffer, payload, data - payload);
+              // go on with syncing to the next audio frame
+              state = syncing;
+              }
+           }
         // do we have to start a new packet as there is no more space left?
         if (state != syncing && --packetTodo <= 0) {
            // We connot start a new packet here if the current might end in an audio
@@ -826,7 +828,7 @@ void cAudioRepacker::Repack(cRingBufferLinear *ResultBuffer, const uchar *Data, 
   // report that syncing dropped some bytes
   if (skippedBytes > SkippedBytesLimit) {
      if (!initiallySyncing) // omit report for the typical initial case
-        esyslog("cAudioRepacker: skipped %d bytes while syncing on next audio frame", skippedBytes - SkippedBytesLimit);
+        esyslog("cAudioRepacker(0x%02X): skipped %d bytes while syncing on next audio frame", cid, skippedBytes - SkippedBytesLimit);
      skippedBytes = SkippedBytesLimit;
      }
 }
@@ -1687,13 +1689,15 @@ cRemux::cRemux(int VPid, const int *APids, const int *DPids, const int *SPids, b
 #endif
   if (APids) {
      int n = 0;
-     while (*APids && numTracks < MAXTRACKS && n < MAXAPIDS)
+     while (*APids && numTracks < MAXTRACKS && n < MAXAPIDS) {
 #define TEST_cAudioRepacker
 #ifdef TEST_cAudioRepacker
-           ts2pes[numTracks++] = new cTS2PES(*APids++, resultBuffer, IPACKS, 0xC0 + n++, 0x00, new cAudioRepacker);
+           ts2pes[numTracks++] = new cTS2PES(*APids++, resultBuffer, IPACKS, 0xC0 + n, 0x00, new cAudioRepacker(0xC0 + n));
+           n++;
 #else
            ts2pes[numTracks++] = new cTS2PES(*APids++, resultBuffer, IPACKS, 0xC0 + n++);
 #endif
+           }
      }
   if (DPids) {
      int n = 0;
