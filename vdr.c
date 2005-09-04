@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.215 2005/09/03 13:21:32 kls Exp $
+ * $Id: vdr.c 1.216 2005/09/04 08:57:15 kls Exp $
  */
 
 #include <getopt.h>
@@ -818,8 +818,8 @@ int main(int argc, char *argv[])
         Interact = Menu ? Menu : cControl::Control(); // might have been closed in the mean time
         if (Interact) {
            eOSState state = Interact->ProcessKey(key);
-           if (state == osUnknown) {
-              if (ISMODELESSKEY(key) && cControl::Control() && Interact != cControl::Control())
+           if (state == osUnknown && Interact != cControl::Control()) {
+              if (ISMODELESSKEY(key) && cControl::Control())
                  state = cControl::Control()->ProcessKey(key);
               else if (time(NULL) - LastActivity > MENUTIMEOUT)
                  state = osEnd;
