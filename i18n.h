@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.h 1.15 2005/09/04 14:37:01 kls Exp $
+ * $Id: i18n.h 1.16 2005/09/09 14:50:35 kls Exp $
  */
 
 #ifndef __I18N_H
@@ -29,6 +29,15 @@ const char *I18nNormalizeLanguageCode(const char *Code);
    ///< If no normalized language code can be found, the given Code is returned.
    ///< Make sure at most 3 characters are copied when using it!
 bool I18nIsPreferredLanguage(int *PreferredLanguages, const char *LanguageCode, int &OldPreference, int *Position = NULL);
+   ///< Checks the given LanguageCode (which may be something like "eng" or "eng+deu")
+   ///< against the PreferredLanguages and returns true if one is found that has an index
+   ///< smaller than OldPreference (which should be initialized to -1 before the first
+   ///< call to this function in a sequence of checks). If LanguageCode is not any of
+   ///< the PreferredLanguages, and OldPreference is less than zero, OldPreference will
+   ///< be set to a value higher than the highest language index.  If Position is given,
+   ///< it will return 0 if this was a single language code (like "eng"), 1 if it was
+   ///< the first of two language codes (like "eng" out of "eng+deu") and 2 if it was
+   ///< the second one (like "deu" out of ""eng+deu").
 
 #ifdef PLUGIN_NAME_I18N
 #define tr(s)  I18nTranslate(s, PLUGIN_NAME_I18N)

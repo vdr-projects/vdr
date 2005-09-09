@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.205 2005/09/04 14:28:07 kls Exp $
+ * $Id: i18n.c 1.206 2005/09/09 14:35:53 kls Exp $
  *
  * Translations provided by:
  *
@@ -5538,32 +5538,31 @@ const char *I18nNormalizeLanguageCode(const char *Code)
 
 bool I18nIsPreferredLanguage(int *PreferredLanguages, const char *LanguageCode, int &OldPreference, int *Position)
 {
-  if (Position)
-     *Position = 0;
-Retry:
-  int LanguageIndex = I18nLanguageIndex(LanguageCode);
-  for (int i = 0; i < I18nNumLanguages; i++) {
-      if (PreferredLanguages[i] < 0)
-         break; // the language is not a preferred one
-      if (PreferredLanguages[i] == LanguageIndex) {
-         if (OldPreference < 0 || i < OldPreference) {
-            OldPreference = i;
-            if (Position && !*Position && strchr(LanguageCode, '+'))
-               (*Position)++;
-            return true;
+  int pos = 1;
+  while (LanguageCode) {
+        int LanguageIndex = I18nLanguageIndex(LanguageCode);
+        for (int i = 0; i < I18nNumLanguages; i++) {
+            if (PreferredLanguages[i] < 0)
+               break; // the language is not a preferred one
+            if (PreferredLanguages[i] == LanguageIndex) {
+               if (OldPreference < 0 || i < OldPreference) {
+                  OldPreference = i;
+                  if (Position)
+                     *Position = pos;
+                  break;
+                  }
+               }
             }
-         break;
-         }
-      }
-  if ((LanguageCode = strchr(LanguageCode, '+')) != NULL) {
-     LanguageCode++;
-     if (Position)
-        (*Position)++;
-     goto Retry;
-     }
+        if ((LanguageCode = strchr(LanguageCode, '+')) != NULL) {
+           LanguageCode++;
+           pos++;
+           }
+        else if (pos == 1 && Position)
+           *Position = 0;
+        }
   if (OldPreference < 0) {
      OldPreference = I18nNumLanguages; // higher than the maximum possible value
      return true; // if we don't find a preferred one, we take the first one
      }
-  return false;
+  return OldPreference >= 0;
 }
