@@ -3800,3 +3800,5 @@ Video Disk Recorder Revision History
 - Fixed some typos in MANUAL (thanks to Ville Skyttä).
 - Fixed the default value for "Setup/EPG bugfix level" (thanks to Ville Skyttä for
   reporting this one).
+- Fixed defining timers that only differ in the day of week (thanks to Patrick
+  Rother for reporting this one).
