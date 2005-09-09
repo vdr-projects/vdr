@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.206 2005/09/09 14:35:53 kls Exp $
+ * $Id: i18n.c 1.207 2005/09/09 15:14:16 kls Exp $
  *
  * Translations provided by:
  *
@@ -66,7 +66,7 @@
  *    it included in the next version of VDR.
  *
  * In case an English phrase is used in more than one context (and might need
- * different translations in other languages) it can be preceeded with an
+ * different translations in other languages) it can be preceded with an
  * arbitrary string to describe its context, separated from the actual phrase
  * by a '$' character (see for instance "Button$Stop" vs. "Stop").
  * Of course this means that no English phrase may contain the '$' character!

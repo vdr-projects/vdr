@@ -1114,7 +1114,7 @@ Video Disk Recorder Revision History
   Please check if your system provides 'killall' - if it doesn't, please change
   this back in 'runvdr' and report this (thanks to Achim Lange).
 - The "Commands" menu now automatically assigns number keys as hotkeys to the
-  commands. If you have preceeded your commands with digits you may want to
+  commands. If you have preceded your commands with digits you may want to
   remove these from your 'commands.conf' file.
 - The new Setup item "Restart" can be used to force a complete restart of VDR,
   including reloading the driver. Note that this can only work if VDR and the
