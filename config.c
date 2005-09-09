@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.137 2005/09/04 10:49:38 kls Exp $
+ * $Id: config.c 1.138 2005/09/09 15:08:59 kls Exp $
  */
 
 #include "config.h"
@@ -267,7 +267,7 @@ cSetup::cSetup(void)
   AudioLanguages[0] = -1;
   EPGLanguages[0] = -1;
   EPGScanTimeout = 5;
-  EPGBugfixLevel = 2;
+  EPGBugfixLevel = 3;
   EPGLinger = 0;
   SVDRPTimeout = 300;
   ZapTimeout = 3;

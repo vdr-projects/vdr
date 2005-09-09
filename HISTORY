@@ -3798,3 +3798,5 @@ Video Disk Recorder Revision History
   languages in the two stereo channels, the audio channel is now properly set when
   switching to such a channel (thanks to Mogens Elneff for his help in testing this).
 - Fixed some typos in MANUAL (thanks to Ville Skyttä).
+- Fixed the default value for "Setup/EPG bugfix level" (thanks to Ville Skyttä for
+  reporting this one).

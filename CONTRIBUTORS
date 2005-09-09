@@ -1395,6 +1395,7 @@ Ville Skyttä <ville.skytta@iki.fi>
  for including the optional user defined Make.config from the 'libsi' Makefile
  for making LIRC command parsing more robust
  for fixing some typos in MANUAL
+ for reporting that the default value for "Setup/EPG bugfix level" was wrong
 
 Steffen Beyer <cpunk@reactor.de>
  for fixing setting the colored button help after deleting a recording in case the next
