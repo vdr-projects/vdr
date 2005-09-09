@@ -77,7 +77,7 @@ Version 1.2
       "by name" and "by provider".
   (4) In the "Timers" menu, when on the "Day" item, the '0' key toggles between
       a single shot and a repeating timer. If "Day" indicates a repeating timer,
-      the keys '1'...'7' can be used to toggle the individual days ('1' is monday).
+      the keys '1'...'7' can be used to toggle the individual days ('1' is Monday).
 
 * Navigating through the On Screen Menus
 
@@ -342,7 +342,7 @@ Version 1.2
   mark, and a triangle at the bottom means that this is an "end" mark.
   The cutting process will save all video data between "start" and "end" marks
   into a new file (the original recording remains untouched). The new file will
-  have the same name as the original recording, preceeded with a '%' character
+  have the same name as the original recording, preceded with a '%' character
   (imagine the '%' somehow looking like a pair of scissors ;-). Red bars in the
   progress display indicate which video sequences will be saved by the cutting
   process.
@@ -376,7 +376,7 @@ Version 1.2
   The parameters in the "Edit Timer" menu have the following meanings:
 
   Active:    Defines whether the timer will be processed (set it to 'no' to
-             temporarily desable a timer).
+             temporarily disable a timer).
   Channel:   The channel to be recorded (as defined in the "Channels" list).
              Any changes made in the "Channels" list (like renaming or
              reordering channels) will be automatically reflected in the
@@ -386,11 +386,11 @@ Version 1.2
              timer that hits once and is deleted after it ends.
              Another option here are "repeating timers" which are defined
              by listing the days of the week on which they shall record.
-             For example, a timer that shall record every monday and wednesday
+             For example, a timer that shall record every Monday and Wednesday
              would have a Day setting of "M-W----".
              The '0' key toggles between a single shot and a repeating timer.
              If "Day" indicates a repeating timer, the keys '1'...'7' can be
-             used to toggle the individual days ('1' is monday).
+             used to toggle the individual days ('1' is Monday).
              You can also switch to a set of predefined repeating timer settings
              by pressing the "Left" key when the day is the present day. To return
              to the single shot mode just press "Right" until a date is displayed.
@@ -545,7 +545,7 @@ Version 1.2
   Set system time = no   Defines whether the system time will be set according to
                          the time received from the DVB data stream.
                          Note that this works only if VDR is running under a user
-                         id that has permisson to set the system time. You also
+                         id that has permission to set the system time. You also
                          need to set the option "Use time from transponder" to a
                          channel that you trust to transmit a reliable time base
                          (not all channels seem to have access to a correct time
