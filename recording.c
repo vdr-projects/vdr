@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.112 2005/09/03 13:16:57 kls Exp $
+ * $Id: recording.c 1.113 2005/09/10 12:36:48 kls Exp $
  */
 
 #include "recording.h"
@@ -495,6 +495,20 @@ cRecording::cRecording(const char *FileName)
            if (line == 1) {
               data[2] = data[1];
               data[1] = NULL;
+              }
+           else if (line == 2) {
+              // if line 1 is too long, it can't be the short text,
+              // so assume the short text is missing and concatenate
+              // line 1 and line 2 to be the long text:
+              int len = strlen(data[1]);
+              if (len > 80) { 
+                 data[1] = (char *)realloc(data[1], len + 1 + strlen(data[2]) + 1);
+                 strcat(data[1], "\n");
+                 strcat(data[1], data[2]);
+                 free(data[2]);
+                 data[2] = data[1];
+                 data[1] = NULL;
+                 }
               }
            info->SetData(data[0], data[1], data[2]);
            for (int i = 0; i < 3; i ++)
