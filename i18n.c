@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.207 2005/09/09 15:14:16 kls Exp $
+ * $Id: i18n.c 1.208 2005/09/10 10:20:48 kls Exp $
  *
  * Translations provided by:
  *
@@ -5539,6 +5539,7 @@ const char *I18nNormalizeLanguageCode(const char *Code)
 bool I18nIsPreferredLanguage(int *PreferredLanguages, const char *LanguageCode, int &OldPreference, int *Position)
 {
   int pos = 1;
+  bool found = false;
   while (LanguageCode) {
         int LanguageIndex = I18nLanguageIndex(LanguageCode);
         for (int i = 0; i < I18nNumLanguages; i++) {
@@ -5549,6 +5550,7 @@ bool I18nIsPreferredLanguage(int *PreferredLanguages, const char *LanguageCode, 
                   OldPreference = i;
                   if (Position)
                      *Position = pos;
+                  found = true;
                   break;
                   }
                }
@@ -5564,5 +5566,5 @@ bool I18nIsPreferredLanguage(int *PreferredLanguages, const char *LanguageCode, 
      OldPreference = I18nNumLanguages; // higher than the maximum possible value
      return true; // if we don't find a preferred one, we take the first one
      }
-  return OldPreference >= 0;
+  return found;
 }
