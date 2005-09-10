@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 1.63 2005/09/04 10:50:36 kls Exp $
+ * $Id: device.h 1.64 2005/09/10 11:54:02 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -266,7 +266,7 @@ protected:
          ///< On indicates whether the PID shall be added or deleted.
          ///< Handle->handle can be used by the device to store information it
          ///< needs to receive this PID (for instance a file handle).
-         ///< Handle->used indicated how many receivers are using this PID.
+         ///< Handle->used indicates how many receivers are using this PID.
          ///< Type indicates some special types of PIDs, which the device may
          ///< need to set in a specific way.
 
