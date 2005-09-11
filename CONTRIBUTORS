@@ -13,6 +13,7 @@ Carsten Koch <Carsten.Koch@icem.de>
  for suggesting that the "Back" button in replay mode should bring up the "Recordings" menu
  for fixing the watchdog timer if the program hangs in OSD activities
  for his support in keeping the Premiere World channels up to date in 'channels.conf'
+ for fixing converting summary.vdr files that would result in a very long 'short text'
 
 Plamen Ganev <pganev@com-it.net>
  for fixing the frequency offset for Hotbird channels
@@ -588,6 +589,7 @@ Lauri Tischler <lauri.tischler@efore.fi>
  unavailable due to a recording on a different transponder
  for reporting a compiler warning about virtual cConfig::Load() functions
  for reporting a warning about character comparison in libsi/si.c
+ for adjusting the Makefile to the dvb-kernel driver on kernel 2.6 and up
 
 Andy Carter <fruit@ukgateway.net>
  for helping to test new DVB-T handling
@@ -791,6 +793,7 @@ Malcolm Caldwell <malcolm.caldwell@ntu.edu.au>
  for modifying LOF handling to allow for C-band reception
  for reporting a crash in creating a new timer in case there is no device in the
  system that can actually receive any channel
+ for suggesting to re-introduced the code that waits for a tuner lock in VDR/device.c
 
 Ludwig Nussel <ludwig.nussel@web.de>
  for making the LIRC thread avoid high CPU load in case the connection to LIRC gets lost
@@ -828,6 +831,7 @@ Andreas Brachold <vdr04@deltab.de>
  umask settings
  for reporting that there are empty info.vdr files created if there is no EPG
  info available
+ for implementing the SVDRP command MOVC
 
 Manuel Hartl <icecep@gmx.net>
  for suggesting to extend the logging info when starting/stopping timers
@@ -908,6 +912,7 @@ Hermann Gausterer <mrq1@gmx.net>
 
 Peter Bieringer <pb@bieringer.de>
  for reporting a problem with duplicate recordings with the same file name
+ for suggesting to implement the command line option '--vfat'
 
 Alexander Damhuis <ad@phonedation.de>
  for reporting problems when deleting a timer that is currently recording
@@ -978,6 +983,9 @@ Reinhard Nissl <rnissl@gmx.de>
  for fixing cDvbSpuBitmap::putPixel()
  for implementing cAudioRepacker in remux.c
  for modifying handling of audio packets for radio channels in remux.c
+ for suggesting to always use stream id 0xE0 for the video stream, to avoid problems
+ with post processing tools that choke on different ids
+ for fixing cDvbPlayer::SkipFrames() to properly handle radio recordings
 
 Richard Robson <richard_robson@beeb.net>
  for reporting freezing replay if a timer starts while in Transfer Mode from the
@@ -1153,6 +1161,7 @@ Wayne Keer <syphir@syphir.sytes.net>
  for reporting an unused variable from cTimer::GetWDayFromMDay()
  for reporting a spelling error in 'canceling'
  for adding some 'mkdir -p' to the Makefile's 'install' target
+ for reporting some missing braces in remux.c
 
 Marco Schlüßler <marco@lordzodiac.de>
  for fixing handling colors in cDvbSpuPalette::yuv2rgb()
@@ -1266,6 +1275,7 @@ Udo Richter <udo_richter@gmx.de>
  for suggesting a fix for an out-of-bounds memory access with audio language ids
  for reporting a problem with cRemux in a single thread
  for adding 'Service' functions to the plugin interface
+ for reporting an unused MAINMENUENTRY in svdrpdemo.c
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date
@@ -1287,6 +1297,8 @@ Uwe Hanke <uhanke@gmx.de>
 
 Mogens Elneff <mogens@elneff.dk>
  for translating OSD texts to the Danish language
+ for his help in testing automatically selecting the proper audio channel when
+ switching to a channel with two different languages on the same PID
 
 Joachim Wilke <vdr@joachim-wilke.de>
  for reporting missing calls to cStatus::MsgOsdClear() in cSkins::Message()
@@ -1382,6 +1394,9 @@ Roman Krenický <free-rtk@gmx.de>
 Ville Skyttä <ville.skytta@iki.fi>
  for reporting several compiler warnings in gcc 4.0
  for including the optional user defined Make.config from the 'libsi' Makefile
+ for making LIRC command parsing more robust
+ for fixing some typos in MANUAL
+ for reporting that the default value for "Setup/EPG bugfix level" was wrong
 
 Steffen Beyer <cpunk@reactor.de>
  for fixing setting the colored button help after deleting a recording in case the next
@@ -1389,6 +1404,7 @@ Steffen Beyer <cpunk@reactor.de>
 
 Daniel Thompson <daniel.thompson@st.com>
  for fixing a memory leak in tComponent
+ for introducing a separate 'plugins-install' target in the Makefile
 
 Matthias Lötzke <Matthias@Loetzke.de>
  for adding missing text internationalization for "Starting EPG scan"
@@ -1414,6 +1430,7 @@ Georg Acher <acher@baycom.de>
  for avoiding unnecessary calls to getLength() in libsi/si.c, and avoiding the
  '& 0xff' in CRC32::crc32() of libsi/util.c
  for suggesting to reduce the priority of the section handler threads
+ for a patch that was used to implement a hash for the channels
 
 Henrik Niehaus <henrik.niehaus@gmx.de>
  for reporting a problem with timers with a day given as MTWTF--@6, i.e. a repeating
@@ -1456,3 +1473,9 @@ Hardy Flor <HFlor@web.de>
 
 Harald Milz <hm@seneca.muc.de>
  for his CUTR patch, which was used as a base to implement the SVDRP command EDIT
+
+Marko Mäkelä <marko.makela@hut.fi>
+ for making repeat keys be ignored when waiting for a keypress to cancel an operation
+
+Patrick Rother <krd-vdr@gulu.net>
+ for reporting a bug in defining timers that only differ in the day of week

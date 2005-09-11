@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: pat.c 1.13 2005/08/06 12:23:51 kls Exp $
+ * $Id: pat.c 1.14 2005/09/04 14:32:39 kls Exp $
  */
 
 #include "pat.h"
@@ -326,8 +326,8 @@ void cPatFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
         int Ppid = pmt.getPCRPid();
         int Apids[MAXAPIDS + 1] = { 0 }; // these lists are zero-terminated
         int Dpids[MAXDPIDS + 1] = { 0 };
-        char ALangs[MAXAPIDS][4] = { "" };
-        char DLangs[MAXDPIDS][4] = { "" };
+        char ALangs[MAXAPIDS][MAXLANGCODE2] = { "" };
+        char DLangs[MAXDPIDS][MAXLANGCODE2] = { "" };
         int Tpid = 0;
         int NumApids = 0;
         int NumDpids = 0;
@@ -347,10 +347,19 @@ void cPatFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                              switch (d->getDescriptorTag()) {
                                case SI::ISO639LanguageDescriptorTag: {
                                     SI::ISO639LanguageDescriptor *ld = (SI::ISO639LanguageDescriptor *)d;
-                                    if (*ld->languageCode != '-') { // some use "---" to indicate "none"
-                                       strn0cpy(ALangs[NumApids], I18nNormalizeLanguageCode(ld->languageCode), 4);
-                                       ALangs[NumApids][4] = 0;
-                                       }
+                                    SI::ISO639LanguageDescriptor::Language l;
+                                    char *s = ALangs[NumApids];
+                                    int n = 0;
+                                    for (SI::Loop::Iterator it; ld->languageLoop.getNext(l, it); ) {
+                                        if (*ld->languageCode != '-') { // some use "---" to indicate "none"
+                                           if (n > 0)
+                                              *s++ = '+';
+                                           strn0cpy(s, I18nNormalizeLanguageCode(l.languageCode), MAXLANGCODE1);
+                                           s += strlen(s);
+                                           if (n++ > 1)
+                                              break;
+                                           }
+                                        }
                                     }
                                     break;
                                default: ;
@@ -366,7 +375,7 @@ void cPatFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
               //XXX case 8: // STREAMTYPE_13818_DSMCC
                       {
                       int dpid = 0;
-                      char lang[4] = { 0 };
+                      char lang[MAXLANGCODE1] = { 0 };
                       SI::Descriptor *d;
                       for (SI::Loop::Iterator it; (d = stream.streamDescriptors.getNext(it)); ) {
                           switch (d->getDescriptorTag()) {
@@ -378,7 +387,7 @@ void cPatFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                                  break;
                             case SI::ISO639LanguageDescriptorTag: {
                                  SI::ISO639LanguageDescriptor *ld = (SI::ISO639LanguageDescriptor *)d;
-                                 strn0cpy(lang, I18nNormalizeLanguageCode(ld->languageCode), 4);
+                                 strn0cpy(lang, I18nNormalizeLanguageCode(ld->languageCode), MAXLANGCODE1);
                                  }
                                  break;
                             default: ;
@@ -388,7 +397,7 @@ void cPatFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                       if (dpid) {
                          if (NumDpids < MAXDPIDS) {
                             Dpids[NumDpids] = dpid;
-                            strn0cpy(DLangs[NumDpids], lang, 4);
+                            strn0cpy(DLangs[NumDpids], lang, MAXLANGCODE1);
                             NumDpids++;
                             }
                          }

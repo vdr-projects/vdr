@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 1.38 2005/08/14 10:52:45 kls Exp $
+ * $Id: dvbplayer.c 1.40 2005/08/29 15:43:30 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -621,7 +621,10 @@ int cDvbPlayer::SkipFrames(int Frames)
      int Current, Total;
      GetIndex(Current, Total, true);
      int OldCurrent = Current;
-     Current = index->GetNextIFrame(Current + Frames, Frames > 0);
+     // As GetNextIFrame() increments/decrements at least once, the 
+     // destination frame (= Current + Frames) must be adjusted by
+     // -1/+1 respectively.
+     Current = index->GetNextIFrame(Current + Frames + (Frames > 0 ? -1 : 1), Frames > 0);
      return Current >= 0 ? Current : OldCurrent;
      }
   return -1;
@@ -661,7 +664,7 @@ void cDvbPlayer::Goto(int Index, bool Still)
            if (playMode == pmPause)
               DevicePlay();
            // append sequence end code to get the image shown immediately with softdevices
-           if (r > 6) { // should be always true
+           if (r > 6 && (b[3] & 0xF0) == 0xE0) { // make sure to append it only to a video packet
               b[r++] = 0x00;
               b[r++] = 0x00;
               b[r++] = 0x01;

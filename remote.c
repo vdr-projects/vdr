@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remote.c 1.44 2005/08/14 10:53:55 kls Exp $
+ * $Id: remote.c 1.45 2005/09/03 12:29:48 kls Exp $
  */
 
 #include "remote.h"
@@ -141,6 +141,12 @@ bool cRemote::Put(const char *Code, bool Repeat, bool Release)
      keyPressed.Broadcast();
      }
   return false;
+}
+
+void cRemote::CallPlugin(const char *Plugin)
+{
+  plugin = Plugin;
+  Put(k_Plugin);
 }
 
 bool cRemote::HasKeys(void)

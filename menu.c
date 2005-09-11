@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.357 2005/08/27 09:37:23 kls Exp $
+ * $Id: menu.c 1.359 2005/09/03 11:42:27 kls Exp $
  */
 
 #include "menu.h"
@@ -29,7 +29,6 @@
 #include "transfer.h"
 #include "videodir.h"
 
-#define MENUTIMEOUT     120 // seconds
 #define MAXWAIT4EPGINFO   3 // seconds
 #define MODETIMEOUT       3 // seconds
 
@@ -1300,7 +1299,6 @@ cMenuCam::cMenuCam(cCiMenu *CiMenu)
   Add(new cOsdItem(ciMenu->BottomText()));
   Display();
   dsyslog("CAM: Menu - %s", ciMenu->TitleText());
-  lastActivity = time(NULL);
 }
 
 cMenuCam::~cMenuCam()
@@ -1329,10 +1327,6 @@ eOSState cMenuCam::ProcessKey(eKeys Key)
        default: break;
        }
      }
-  if (Key != kNone)
-     lastActivity = time(NULL);
-  else if (time(NULL) - lastActivity > MENUTIMEOUT)
-     state = osEnd;
   return state;
 }
 
@@ -1350,7 +1344,6 @@ cMenuCamEnquiry::cMenuCamEnquiry(cCiEnquiry *CiEnquiry)
   SetTitle(ciEnquiry->Text() ? ciEnquiry->Text() : "CAM");
   Add(new cMenuEditNumItem("Input", input, Length, ciEnquiry->Blind()));
   Display();
-  lastActivity = time(NULL);
 }
 
 cMenuCamEnquiry::~cMenuCamEnquiry()
@@ -1379,10 +1372,6 @@ eOSState cMenuCamEnquiry::ProcessKey(eKeys Key)
        default: break;
        }
      }
-  if (Key != kNone)
-     lastActivity = time(NULL);
-  else if (time(NULL) - lastActivity > MENUTIMEOUT)
-     state = osEnd;
   return state;
 }
 
@@ -2402,11 +2391,11 @@ cMenuPluginItem::cMenuPluginItem(const char *Name, int Index)
 
 cOsdObject *cMenuMain::pluginOsdObject = NULL;
 
-cMenuMain::cMenuMain(bool Replaying, eOSState State, const char *Plugin)
+cMenuMain::cMenuMain(bool Replaying, eOSState State)
 :cOsdMenu("")
 {
   replaying = Replaying;
-  Set(Plugin);
+  Set();
 
   // Initial submenus:
 
@@ -2417,7 +2406,6 @@ cMenuMain::cMenuMain(bool Replaying, eOSState State, const char *Plugin)
     case osRecordings: AddSubMenu(new cMenuRecordings(NULL, 0, true)); break;
     case osSetup:      AddSubMenu(new cMenuSetup); break;
     case osCommands:   AddSubMenu(new cMenuCommands(tr("Commands"), &Commands)); break;
-    case osPlugin:     break; // the actual work is done in Set()
     default: break;
     }
 }
@@ -2429,7 +2417,7 @@ cOsdObject *cMenuMain::PluginOsdObject(void)
   return o;
 }
 
-void cMenuMain::Set(const char *Plugin)
+void cMenuMain::Set(void)
 {
   Clear();
   //XXX //SetTitle("VDR"); // this is done below, including disk usage
@@ -2463,7 +2451,7 @@ void cMenuMain::Set(const char *Plugin)
       if (p) {
          const char *item = p->MainMenuEntry();
          if (item)
-            Add(new cMenuPluginItem(hk(item), i), Plugin && strcmp(Plugin, p->Name()) == 0);
+            Add(new cMenuPluginItem(hk(item), i));
          }
       else
          break;
@@ -2506,7 +2494,6 @@ void cMenuMain::Set(const char *Plugin)
 
   SetHelp(!replaying ? tr("Record") : NULL, tr("Audio"), replaying ? NULL : tr("Pause"), replaying ? tr("Button$Stop") : cReplayControl::LastReplayed() ? tr("Resume") : NULL);
   Display();
-  lastActivity = time(NULL);
 }
 
 eOSState cMenuMain::ProcessKey(eKeys Key)
@@ -2579,15 +2566,12 @@ eOSState cMenuMain::ProcessKey(eKeys Key)
                }
     }
   if (Key != kNone) {
-     lastActivity = time(NULL);
      if (Setup.OSDLanguage != osdLanguage) {
         Set();
         if (!HasSubMenu())
            Display();
         }
      }
-  else if (time(NULL) - lastActivity > MENUTIMEOUT)
-     state = osEnd;
   return state;
 }
 

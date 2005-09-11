@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.97 2005/08/27 14:43:55 kls Exp $
+ * $Id: tools.c 1.98 2005/09/11 13:11:05 kls Exp $
  */
 
 #include "tools.h"
@@ -1080,8 +1080,7 @@ cHashBase::cHashBase(int Size)
 
 cHashBase::~cHashBase(void)
 {
-  for (int i = 0; i < size; i++)
-      delete hashTable[i];
+  Clear();
   free(hashTable);
 }
 
@@ -1104,6 +1103,14 @@ void cHashBase::Del(cListObject *Object, unsigned int Id)
             }
          }
      }
+}
+
+void cHashBase::Clear(void)
+{
+  for (int i = 0; i < size; i++) {
+      delete hashTable[i];
+      hashTable[i] = NULL;
+      }
 }
 
 cListObject *cHashBase::Get(unsigned int Id) const

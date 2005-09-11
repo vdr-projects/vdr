@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.h 1.33 2005/08/06 11:23:32 kls Exp $
+ * $Id: channels.h 1.35 2005/09/11 11:17:19 kls Exp $
  */
 
 #ifndef __CHANNELS_H
@@ -35,6 +35,9 @@
 #define MAXDPIDS 16 // dolby (AC3 + DTS)
 #define MAXSPIDS  8 // subtitles
 #define MAXCAIDS  8 // conditional access
+
+#define MAXLANGCODE1 4 // a 3 letter language code, zero terminated
+#define MAXLANGCODE2 8 // up to two 3 letter language codes, separated by '+' and zero terminated
 
 struct tChannelParameterMap {
   int userValue;
@@ -69,6 +72,11 @@ public:
   bool Valid(void) const { return (nid || tid) && sid; } // rid is optional and source may be 0//XXX source may not be 0???
   tChannelID &ClrRid(void) { rid = 0; return *this; }
   tChannelID &ClrPolarization(void);
+  int Source(void) { return source; }
+  int Nid(void) { return nid; }
+  int Tid(void) { return tid; }
+  int Sid(void) { return sid; }
+  int Rid(void) { return rid; }
   static tChannelID FromString(const char *s);
   cString ToString(void) const;
   static const tChannelID InvalidID;
@@ -102,11 +110,11 @@ private:
   int vpid;
   int ppid;
   int apids[MAXAPIDS + 1]; // list is zero-terminated
-  char alangs[MAXAPIDS][4];
+  char alangs[MAXAPIDS][MAXLANGCODE2];
   int dpids[MAXDPIDS + 1]; // list is zero-terminated
-  char dlangs[MAXDPIDS][4];
+  char dlangs[MAXDPIDS][MAXLANGCODE2];
   int spids[MAXSPIDS + 1]; // list is zero-terminated
-  char slangs[MAXSPIDS][4];
+  char slangs[MAXSPIDS][MAXLANGCODE2];
   int tpid;
   int caids[MAXCAIDS + 1]; // list is zero-terminated
   int nid;
@@ -188,7 +196,7 @@ public:
   void SetId(int Nid, int Tid, int Sid, int Rid = 0);
   void SetName(const char *Name, const char *ShortName, const char *Provider);
   void SetPortalName(const char *PortalName);
-  void SetPids(int Vpid, int Ppid, int *Apids, char ALangs[][4], int *Dpids, char DLangs[][4], int Tpid);
+  void SetPids(int Vpid, int Ppid, int *Apids, char ALangs[][MAXLANGCODE2], int *Dpids, char DLangs[][MAXLANGCODE2], int Tpid);
   void SetCaIds(const int *CaIds); // list must be zero-terminated
   void SetCaDescriptors(int Level);
   void SetLinkChannels(cLinkChannels *LinkChannels);
@@ -200,10 +208,13 @@ private:
   int maxNumber;
   int modified;
   int beingEdited;
+  cHash<cChannel> channelsHashSid;
   void DeleteDuplicateChannels(void);
 public:
   cChannels(void);
   bool Load(const char *FileName, bool AllowComments = false, bool MustExist = false);
+  void HashChannel(cChannel *Channel);
+  void UnhashChannel(cChannel *Channel);
   int GetNextGroup(int Idx);   // Get next channel group
   int GetPrevGroup(int Idx);   // Get previous channel group
   int GetNextNormal(int Idx);  // Get next normal channel (not group)

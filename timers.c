@@ -4,12 +4,13 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 1.34 2005/07/30 13:03:51 kls Exp $
+ * $Id: timers.c 1.36 2005/09/09 15:22:33 kls Exp $
  */
 
 #include "timers.h"
 #include <ctype.h>
 #include "channels.h"
+#include "device.h"
 #include "i18n.h"
 #include "remote.h"
 
@@ -518,7 +519,10 @@ cTimers::cTimers(void)
 cTimer *cTimers::GetTimer(cTimer *Timer)
 {
   for (cTimer *ti = First(); ti; ti = Next(ti)) {
-      if (ti->Channel() == Timer->Channel() && ti->Day() == Timer->Day() && ti->Start() == Timer->Start() && ti->Stop() == Timer->Stop())
+      if (ti->Channel() == Timer->Channel() &&
+          (ti->WeekDays() && ti->WeekDays() == Timer->WeekDays() || !ti->WeekDays() && ti->Day() == Timer->Day()) &&
+          ti->Start() == Timer->Start() &&
+          ti->Stop() == Timer->Stop())
          return ti;
       }
   return NULL;

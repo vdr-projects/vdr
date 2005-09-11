@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.75 2005/08/27 14:40:08 kls Exp $
+ * $Id: tools.h 1.76 2005/09/11 13:04:03 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -259,6 +259,7 @@ private:
   cListObject *object;
 public:
   cHashObject(cListObject *Object, unsigned int Id) { object = Object; id = Id; }
+  cListObject *Object(void) { return object; }
   };
 
 class cHashBase {
@@ -272,6 +273,7 @@ public:
   virtual ~cHashBase();
   void Add(cListObject *Object, unsigned int Id);
   void Del(cListObject *Object, unsigned int Id);
+  void Clear(void);
   cListObject *Get(unsigned int Id) const;
   cList<cHashObject> *GetList(unsigned int Id) const;
   };

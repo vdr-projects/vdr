@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.211 2005/08/21 08:47:06 kls Exp $
+ * $Id: vdr.c 1.216 2005/09/04 08:57:15 kls Exp $
  */
 
 #include <getopt.h>
@@ -66,6 +66,7 @@
 #define LASTCAMMENUTIMEOUT  3 // seconds to run the main loop 'fast' after a CAM menu has been closed
                               // in order to react on a possible new CAM menu as soon as possible
 #define DEVICEREADYTIMEOUT 30 // seconds to wait until all devices are ready
+#define MENUTIMEOUT       120 // seconds of user inactivity after which an OSD display is closed
 
 #define EXIT(v) { ExitCode = (v); goto Exit; }
 
@@ -130,6 +131,9 @@ int main(int argc, char *argv[])
 #elif defined(REMOTE_RCU)
   RcuDevice = RCU_DEVICE;
 #endif
+#if defined(VFAT)
+  VfatFileSystem = true;
+#endif
 
   cPluginManager PluginManager(DEFAULTPLUGINDIR);
   int ExitCode = 0;
@@ -153,6 +157,7 @@ int main(int argc, char *argv[])
       { "shutdown", required_argument, NULL, 's' },
       { "terminal", required_argument, NULL, 't' },
       { "version",  no_argument,       NULL, 'V' },
+      { "vfat",     no_argument,       NULL, 'v' | 0x100 },
       { "video",    required_argument, NULL, 'v' },
       { "watchdog", required_argument, NULL, 'w' },
       { NULL }
@@ -245,6 +250,9 @@ int main(int argc, char *argv[])
                     break;
           case 'V': DisplayVersion = true;
                     break;
+          case 'v' | 0x100:
+                    VfatFileSystem = true;
+                    break;
           case 'v': VideoDirectory = optarg;
                     while (optarg && *optarg && optarg[strlen(optarg) - 1] == '/')
                           optarg[strlen(optarg) - 1] = 0;
@@ -303,6 +311,8 @@ int main(int argc, char *argv[])
                "  -t TTY,   --terminal=TTY controlling tty\n"
                "  -v DIR,   --video=DIR    use DIR as video directory (default: %s)\n"
                "  -V,       --version      print version information and exit\n"
+               "            --vfat         encode special characters in recording names to\n"
+               "                           avoid problems with VFAT file systems\n"
                "  -w SEC,   --watchdog=SEC activate the watchdog timer with a timeout of SEC\n"
                "                           seconds (default: %d); '0' disables the watchdog\n"
                "\n",
@@ -695,7 +705,7 @@ int main(int argc, char *argv[])
                Menu = new cMenuMain(cControl::Control());
                Temp = NULL;
                break;
-          #define DirectMainFunction(function...)\
+          #define DirectMainFunction(function)\
             DELETENULL(Menu);\
             if (cControl::Control())\
                cControl::Control()->Hide();\
@@ -709,7 +719,25 @@ int main(int argc, char *argv[])
           case kSetup:      DirectMainFunction(osSetup); break;
           case kCommands:   DirectMainFunction(osCommands); break;
           case kUser1 ... kUser9: cRemote::PutMacro(key); key = kNone; break;
-          case k_Plugin:    DirectMainFunction(osPlugin, cRemote::GetPlugin()); break;
+          case k_Plugin: {
+               DELETENULL(Menu);
+               Temp = NULL;
+               if (cControl::Control())
+                  cControl::Control()->Hide();
+               cPlugin *plugin = cPluginManager::GetPlugin(cRemote::GetPlugin());
+               if (plugin) {
+                  Menu = Temp = plugin->MainMenuAction();
+                  if (Menu) {
+                     Menu->Show();
+                     if (Menu->IsMenu())
+                        ((cOsdMenu*)Menu)->Display();
+                     }
+                  }
+               else
+                  esyslog("ERROR: unknown plugin '%s'", cRemote::GetPlugin());
+               key = kNone; // nobody else needs to see these keys
+               }
+               break;
           // Channel up/down:
           case kChanUp|k_Repeat:
           case kChanUp:
@@ -790,8 +818,12 @@ int main(int argc, char *argv[])
         Interact = Menu ? Menu : cControl::Control(); // might have been closed in the mean time
         if (Interact) {
            eOSState state = Interact->ProcessKey(key);
-           if (state == osUnknown && ISMODELESSKEY(key) && cControl::Control() && Interact != cControl::Control())
-              state = cControl::Control()->ProcessKey(key);
+           if (state == osUnknown && Interact != cControl::Control()) {
+              if (ISMODELESSKEY(key) && cControl::Control())
+                 state = cControl::Control()->ProcessKey(key);
+              else if (time(NULL) - LastActivity > MENUTIMEOUT)
+                 state = osEnd;
+              }
            switch (state) {
              case osPause:  DELETENULL(Menu);
                             cControl::Shutdown(); // just in case

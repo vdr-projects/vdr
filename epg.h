@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.h 1.25 2005/05/28 11:32:36 kls Exp $
+ * $Id: epg.h 1.26 2005/09/11 12:54:30 kls Exp $
  */
 
 #ifndef __EPG_H
@@ -132,8 +132,8 @@ public:
   void Cleanup(void);
   cEvent *AddEvent(cEvent *Event);
   void DelEvent(cEvent *Event);
-  void cSchedule::HashEvent(cEvent *Event);
-  void cSchedule::UnhashEvent(cEvent *Event);
+  void HashEvent(cEvent *Event);
+  void UnhashEvent(cEvent *Event);
   const cList<cEvent> *Events(void) const { return &events; }
   const cEvent *GetPresentEvent(bool CheckRunningStatus = false) const;
   const cEvent *GetFollowingEvent(bool CheckRunningStatus = false) const;

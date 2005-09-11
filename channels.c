@@ -4,12 +4,13 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 1.44 2005/08/06 12:22:41 kls Exp $
+ * $Id: channels.c 1.46 2005/09/11 14:22:24 kls Exp $
  */
 
 #include "channels.h"
 #include <linux/dvb/frontend.h>
 #include <ctype.h>
+#include "device.h"
 
 // IMPORTANT NOTE: in the 'sscanf()' calls there is a blank after the '%d'
 // format characters in order to allow any number of blanks after a numeric
@@ -341,11 +342,14 @@ void cChannel::SetId(int Nid, int Tid, int Sid, int Rid)
         dsyslog("changing id of channel %d from %d-%d-%d-%d to %d-%d-%d-%d", Number(), nid, tid, sid, rid, Nid, Tid, Sid, Rid);
         modification |= CHANNELMOD_ID;
         Channels.SetModified();
+        Channels.UnhashChannel(this);
         }
      nid = Nid;
      tid = Tid;
      sid = Sid;
      rid = Rid;
+     if (Number())
+        Channels.HashChannel(this);
      }
 }
 
@@ -386,7 +390,7 @@ void cChannel::SetPortalName(const char *PortalName)
 #define STRDIFF 0x01
 #define VALDIFF 0x02
 
-static int IntArraysDiffer(const int *a, const int *b, const char na[][4] = NULL, const char nb[][4] = NULL)
+static int IntArraysDiffer(const int *a, const int *b, const char na[][MAXLANGCODE2] = NULL, const char nb[][MAXLANGCODE2] = NULL)
 {
   int result = 0;
   for (int i = 0; a[i] || b[i]; i++) {
@@ -400,7 +404,7 @@ static int IntArraysDiffer(const int *a, const int *b, const char na[][4] = NULL
   return result;
 }
 
-static int IntArrayToString(char *s, const int *a, int Base = 10, const char n[][4] = NULL)
+static int IntArrayToString(char *s, const int *a, int Base = 10, const char n[][MAXLANGCODE2] = NULL)
 {
   char *q = s;
   int i = 0;
@@ -416,7 +420,7 @@ static int IntArrayToString(char *s, const int *a, int Base = 10, const char n[]
   return q - s;
 }
 
-void cChannel::SetPids(int Vpid, int Ppid, int *Apids, char ALangs[][4], int *Dpids, char DLangs[][4], int Tpid)
+void cChannel::SetPids(int Vpid, int Ppid, int *Apids, char ALangs[][MAXLANGCODE2], int *Dpids, char DLangs[][MAXLANGCODE2], int Tpid)
 {
   int mod = CHANNELMOD_NONE;
   if (vpid != Vpid || ppid != Ppid || tpid != Tpid)
@@ -427,8 +431,9 @@ void cChannel::SetPids(int Vpid, int Ppid, int *Apids, char ALangs[][4], int *Dp
   if (m & VALDIFF)
      mod |= CHANNELMOD_PIDS;
   if (mod) {
-     char OldApidsBuf[(MAXAPIDS + MAXDPIDS) * 10 + 10]; // 10: 5 digits plus delimiting ',' or ';' plus optional '=cod', +10: paranoia
-     char NewApidsBuf[(MAXAPIDS + MAXDPIDS) * 10 + 10];
+     const int BufferSize = (MAXAPIDS + MAXDPIDS) * (5 + 1 + MAXLANGCODE2) + 10; // 5 digits plus delimiting ',' or ';' plus optional '=cod+cod', +10: paranoia
+     char OldApidsBuf[BufferSize];
+     char NewApidsBuf[BufferSize];
      char *q = OldApidsBuf;
      q += IntArrayToString(q, apids, 10, alangs);
      if (dpids[0]) {
@@ -448,12 +453,12 @@ void cChannel::SetPids(int Vpid, int Ppid, int *Apids, char ALangs[][4], int *Dp
      ppid = Ppid;
      for (int i = 0; i < MAXAPIDS; i++) {
          apids[i] = Apids[i];
-         strn0cpy(alangs[i], ALangs[i], 4);
+         strn0cpy(alangs[i], ALangs[i], MAXLANGCODE2);
          }
      apids[MAXAPIDS] = 0;
      for (int i = 0; i < MAXDPIDS; i++) {
          dpids[i] = Dpids[i];
-         strn0cpy(dlangs[i], DLangs[i], 4);
+         strn0cpy(dlangs[i], DLangs[i], MAXLANGCODE2);
          }
      dpids[MAXDPIDS] = 0;
      tpid = Tpid;
@@ -633,7 +638,8 @@ cString cChannel::ToText(const cChannel *Channel)
      if (Channel->ppid && Channel->ppid != Channel->vpid)
         q += snprintf(q, sizeof(vpidbuf) - (q - vpidbuf), "+%d", Channel->ppid);
      *q = 0;
-     char apidbuf[(MAXAPIDS + MAXDPIDS) * 10 + 10]; // 10: 5 digits plus delimiting ',' or ';' plus optional '=cod', +10: paranoia
+     const int BufferSize = (MAXAPIDS + MAXDPIDS) * (5 + 1 + MAXLANGCODE2) + 10; // 5 digits plus delimiting ',' or ';' plus optional '=cod+cod', +10: paranoia
+     char apidbuf[BufferSize];
      q = apidbuf;
      q += IntArrayToString(q, Channel->apids, 10, Channel->alangs);
      if (Channel->dpids[0]) {
@@ -722,7 +728,7 @@ bool cChannel::Parse(const char *s)
                     char *l = strchr(q, '=');
                     if (l) {
                        *l++ = 0;
-                       strn0cpy(alangs[NumApids], l, 4);
+                       strn0cpy(alangs[NumApids], l, MAXLANGCODE2);
                        }
                     else
                        *alangs[NumApids] = 0;
@@ -743,7 +749,7 @@ bool cChannel::Parse(const char *s)
                        char *l = strchr(q, '=');
                        if (l) {
                           *l++ = 0;
-                          strn0cpy(dlangs[NumDpids], l, 4);
+                          strn0cpy(dlangs[NumDpids], l, MAXLANGCODE2);
                           }
                        else
                           *dlangs[NumDpids] = 0;
@@ -865,6 +871,16 @@ bool cChannels::Load(const char *FileName, bool AllowComments, bool MustExist)
   return false;
 }
 
+void cChannels::HashChannel(cChannel *Channel)
+{
+  channelsHashSid.Add(Channel, Channel->Sid());
+}
+
+void cChannels::UnhashChannel(cChannel *Channel)
+{
+  channelsHashSid.Del(Channel, Channel->Sid());
+}
+
 int cChannels::GetNextGroup(int Idx)
 {
   cChannel *channel = Get(++Idx);
@@ -891,6 +907,7 @@ int cChannels::GetNextNormal(int Idx)
 
 void cChannels::ReNumber( void )
 {
+  channelsHashSid.Clear();
   int Number = 1;
   for (cChannel *channel = First(); channel; channel = Next(channel)) {
       if (channel->GroupSep()) {
@@ -898,6 +915,7 @@ void cChannels::ReNumber( void )
             Number = channel->Number();
          }
       else {
+         HashChannel(channel);
          maxNumber = Number;
          channel->SetNumber(Number++);
          }
@@ -921,32 +939,43 @@ cChannel *cChannels::GetByNumber(int Number, int SkipGap)
 
 cChannel *cChannels::GetByServiceID(int Source, int Transponder, unsigned short ServiceID)
 {
-  for (cChannel *channel = First(); channel; channel = Next(channel)) {
-      if (!channel->GroupSep() && channel->Source() == Source && ISTRANSPONDER(channel->Transponder(), Transponder) && channel->Sid() == ServiceID)
-         return channel;
-      }
+  cList<cHashObject> *list = channelsHashSid.GetList(ServiceID);
+  if (list) {
+     for (cHashObject *hobj = list->First(); hobj; hobj = list->Next(hobj)) {
+         cChannel *channel = (cChannel *)hobj->Object();
+         if (channel->Sid() == ServiceID && channel->Source() == Source && ISTRANSPONDER(channel->Transponder(), Transponder))
+            return channel;
+         }
+     }
   return NULL;
 }
 
 cChannel *cChannels::GetByChannelID(tChannelID ChannelID, bool TryWithoutRid, bool TryWithoutPolarization)
 {
-  for (cChannel *channel = First(); channel; channel = Next(channel)) {
-      if (!channel->GroupSep() && channel->GetChannelID() == ChannelID)
-         return channel;
-      }
-  if (TryWithoutRid) {
-     ChannelID.ClrRid();
-     for (cChannel *channel = First(); channel; channel = Next(channel)) {
-         if (!channel->GroupSep() && channel->GetChannelID().ClrRid() == ChannelID)
+  int sid = ChannelID.Sid();
+  cList<cHashObject> *list = channelsHashSid.GetList(sid);
+  if (list) {
+     for (cHashObject *hobj = list->First(); hobj; hobj = list->Next(hobj)) {
+         cChannel *channel = (cChannel *)hobj->Object();
+         if (channel->Sid() == sid && channel->GetChannelID() == ChannelID)
             return channel;
          }
-     }
-  if (TryWithoutPolarization) {
-     ChannelID.ClrPolarization();
-     for (cChannel *channel = First(); channel; channel = Next(channel)) {
-         if (!channel->GroupSep() && channel->GetChannelID().ClrPolarization() == ChannelID)
-            return channel;
-         }
+     if (TryWithoutRid) {
+        ChannelID.ClrRid();
+        for (cHashObject *hobj = list->First(); hobj; hobj = list->Next(hobj)) {
+            cChannel *channel = (cChannel *)hobj->Object();
+            if (channel->Sid() == sid && channel->GetChannelID().ClrRid() == ChannelID)
+               return channel;
+            }
+        }
+     if (TryWithoutPolarization) {
+        ChannelID.ClrPolarization();
+        for (cHashObject *hobj = list->First(); hobj; hobj = list->Next(hobj)) {
+            cChannel *channel = (cChannel *)hobj->Object();
+            if (channel->Sid() == sid && channel->GetChannelID().ClrPolarization() == ChannelID)
+               return channel;
+            }
+        }
      }
   return NULL;
 }

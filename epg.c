@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 1.36 2005/07/30 14:44:54 kls Exp $
+ * $Id: epg.c 1.37 2005/09/09 15:14:11 kls Exp $
  */
 
 #include "epg.h"
@@ -471,7 +471,7 @@ void cEvent::FixEpgBugs(void)
            }
         }
 
-     // Some channels put the Description into the ShortText (preceeded
+     // Some channels put the Description into the ShortText (preceded
      // by a blank) if there is no actual ShortText and the Description
      // is short enough:
      //

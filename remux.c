@@ -11,7 +11,7 @@
  * The cRepacker family's code was originally written by Reinhard Nissl <rnissl@gmx.de>,
  * and adapted to the VDR coding style by Klaus.Schmidinger@cadsoft.de.
  *
- * $Id: remux.c 1.42 2005/08/28 11:46:44 kls Exp $
+ * $Id: remux.c 1.47 2005/09/11 13:26:50 kls Exp $
  */
 
 #include "remux.h"
@@ -98,7 +98,7 @@ public:
   static int Put(cRingBufferLinear *ResultBuffer, const uchar *Data, int Count, int CapacityNeeded);
   cRepacker(void) { initiallySyncing = true; maxPacketSize = 6 + 65535; subStreamId = 0; }
   virtual ~cRepacker() {}
-  virtual void Reset(void) { /* initiallySyncing = true; */ }
+  virtual void Reset(void) { initiallySyncing = true; }
   virtual void Repack(cRingBufferLinear *ResultBuffer, const uchar *Data, int Count) = 0;
   virtual int BreakAt(const uchar *Data, int Count) = 0;
   virtual int QuerySnoopSize(void) { return 0; }
@@ -142,7 +142,7 @@ void cCommonRepacker::Reset(void)
 {
   cRepacker::Reset();
   skippedBytes = 0;
-  packetTodo = maxPacketSize - 6 - 3;
+  packetTodo = 0;
   fragmentLen = 0;
   pesHeaderLen = 0;
   pesHeaderBackupLen = 0;
@@ -161,8 +161,10 @@ bool cCommonRepacker::PushOutPacket(cRingBufferLinear *ResultBuffer, const uchar
      int PesPayloadOffset = 0;
      if (AnalyzePesHeader(fragmentData, fragmentLen, PesPayloadOffset) <= phInvalid)
         esyslog("cCommonRepacker: invalid PES packet encountered in fragment buffer!");
-     else if (6 + PacketLen <= PesPayloadOffset)
+     else if (6 + PacketLen <= PesPayloadOffset) {
+        fragmentLen = 0;
         return true; // skip empty packet
+        }
      // amount of data to put into result buffer: a negative Count value means
      // to strip off any partially contained start code.
      int Bite = fragmentLen + (Count >= 0 ? 0 : Count);
@@ -180,8 +182,10 @@ bool cCommonRepacker::PushOutPacket(cRingBufferLinear *ResultBuffer, const uchar
      int PesPayloadOffset = 0;
      if (AnalyzePesHeader(pesHeader, pesHeaderLen, PesPayloadOffset) <= phInvalid)
         esyslog("cCommonRepacker: invalid PES packet encountered in header buffer!");
-     else if (6 + PacketLen <= PesPayloadOffset)
+     else if (6 + PacketLen <= PesPayloadOffset) {
+        pesHeaderLen = 0;
         return true; // skip empty packet
+        }
      // amount of data to put into result buffer: a negative Count value means
      // to strip off any partially contained start code.
      int Bite = pesHeaderLen + (Count >= 0 ? 0 : Count);
@@ -361,7 +365,7 @@ void cVideoRepacker::Repack(cRingBufferLinear *ResultBuffer, const uchar *Data, 
         done++;
         todo--;
         // do we have to start a new packet as there is no more space left?
-        if (--packetTodo <= 0) {
+        if (state != syncing && --packetTodo <= 0) {
            // we connot start a new packet here if the current might end in a start
            // code and this start code shall possibly be put in the next packet. So
            // overfill the current packet until we can safely detect that we won't
@@ -468,6 +472,9 @@ void cVideoRepacker::Repack(cRingBufferLinear *ResultBuffer, const uchar *Data, 
 
 int cVideoRepacker::BreakAt(const uchar *Data, int Count)
 {
+  if (initiallySyncing)
+     return -1; // fill the packet buffer completely until we have synced once
+
   int PesPayloadOffset = 0;
 
   if (AnalyzePesHeader(Data, Count, PesPayloadOffset) <= phInvalid)
@@ -513,31 +520,31 @@ private:
     } state;
   int frameTodo;
   int frameSize;
+  int cid;
   static bool IsValidAudioHeader(uint32_t Header, bool Mpeg2, int *FrameSize = NULL);
 public:
-  cAudioRepacker(void);
+  cAudioRepacker(int Cid);
   virtual void Reset(void);
   virtual void Repack(cRingBufferLinear *ResultBuffer, const uchar *Data, int Count);
   virtual int BreakAt(const uchar *Data, int Count);
   };
 
 int cAudioRepacker::bitRates[2][3][16] = { // all values are specified as kbits/s
-  // MPEG 1, Layer I
-  0,  32,  64,  96, 128, 160, 192, 224, 256, 288, 320, 352, 384, 416, 448, -1,
-  // MPEG 1, Layer II
-  0,  32,  48,  56,  64,  80,  96, 112, 128, 160, 192, 224, 256, 320, 384, -1,
-  // MPEG 1, Layer III
-  0,  32,  40,  48,  56,  64,  80,  96, 112, 128, 160, 192, 224, 256, 320, -1,
-  // MPEG 2, Layer I
-  0,  32,  48,  56,  64,  80,  96, 112, 128, 144, 160, 176, 192, 224, 256, -1,
-  // MPEG 2, Layer II/III
-  0,   8,  16,  24,  32,  40,  48,  56,  64,  80,  96, 112, 128, 144, 160, -1,
-  // MPEG 2, Layer II/III
-  0,   8,  16,  24,  32,  40,  48,  56,  64,  80,  96, 112, 128, 144, 160, -1
+  {
+    { 0,  32,  64,  96, 128, 160, 192, 224, 256, 288, 320, 352, 384, 416, 448, -1 }, // MPEG 1, Layer I
+    { 0,  32,  48,  56,  64,  80,  96, 112, 128, 160, 192, 224, 256, 320, 384, -1 }, // MPEG 1, Layer II
+    { 0,  32,  40,  48,  56,  64,  80,  96, 112, 128, 160, 192, 224, 256, 320, -1 }  // MPEG 1, Layer III
+  },
+  {
+    { 0,  32,  48,  56,  64,  80,  96, 112, 128, 144, 160, 176, 192, 224, 256, -1 }, // MPEG 2, Layer I
+    { 0,   8,  16,  24,  32,  40,  48,  56,  64,  80,  96, 112, 128, 144, 160, -1 }, // MPEG 2, Layer II/III
+    { 0,   8,  16,  24,  32,  40,  48,  56,  64,  80,  96, 112, 128, 144, 160, -1 }  // MPEG 2, Layer II/III
+  }
   };
 
-cAudioRepacker::cAudioRepacker(void)
+cAudioRepacker::cAudioRepacker(int Cid)
 {
+  cid = Cid;
   Reset();
 }
 
@@ -589,17 +596,13 @@ bool cAudioRepacker::IsValidAudioHeader(uint32_t Header, bool Mpeg2, int *FrameS
         *FrameSize = 0;
      else {
         static int samplingFrequencies[2][4] = { // all values are specified in Hz
-          // MPEG 1
-          44100, 48000, 32000, -1,
-          // MPEG 2
-          22050, 24000, 16000, -1
+          { 44100, 48000, 32000, -1 }, // MPEG 1
+          { 22050, 24000, 16000, -1 }  // MPEG 2
           };
 
         static int slots_per_frame[2][3] = {
-          // MPEG 1, Layer I, II, III
-          12, 144, 144,
-          // MPEG 2, Layer I, II, III
-          12, 144,  72
+          { 12, 144, 144 }, // MPEG 1, Layer I, II, III
+          { 12, 144,  72 }  // MPEG 2, Layer I, II, III
           };
 
         int mpegIndex = 1 - id;
@@ -652,21 +655,11 @@ void cAudioRepacker::Repack(cRingBufferLinear *ResultBuffer, const uchar *Data, 
         // collect number of skipped bytes while syncing
         if (state <= syncing)
            skippedBytes++;
-        else if (frameTodo > 0) {
-           frameTodo--;
-           if (frameTodo == 0 && state == scanFrame) {
-              // the current audio frame is is done now. So push out the packet to
-              // start a new packet for the next audio frame.
-              PushOutPacket(ResultBuffer, payload, data - payload);
-              // go on with syncing to the next audio frame
-              state = syncing;
-              }
-           }
         // did we reach an audio frame header?
         scanner <<= 8;
         scanner |= *data;
         if ((scanner & 0xFFF00000) == 0xFFF00000) {
-           if (frameTodo <= 0 && IsValidAudioHeader(scanner, mpegLevel == phMPEG2, &frameSize)) {
+           if (frameTodo <= 0 && (frameSize == 0 || skippedBytes >= 4) && IsValidAudioHeader(scanner, mpegLevel == phMPEG2, &frameSize)) {
               if (state == scanFrame) {
                  // As a new audio frame starts here, the previous one is done. So push
                  // out the packet to start a new packet for the next audio frame. If
@@ -681,7 +674,7 @@ void cAudioRepacker::Repack(cRingBufferLinear *ResultBuffer, const uchar *Data, 
                  if (initiallySyncing) // omit report for the typical initial case
                     initiallySyncing = false;
                  else if (skippedBytes > SkippedBytesLimit) // report that syncing dropped some bytes
-                    esyslog("cAudioRepacker: skipped %d bytes to sync on next audio frame", skippedBytes - SkippedBytesLimit);
+                    esyslog("cAudioRepacker(0x%02X): skipped %d bytes to sync on next audio frame", cid, skippedBytes - SkippedBytesLimit);
                  skippedBytes = 0;
                  // if there is a PES header available, then use it ...
                  if (pesHeaderBackupLen > 0) {
@@ -731,8 +724,18 @@ void cAudioRepacker::Repack(cRingBufferLinear *ResultBuffer, const uchar *Data, 
         data++;
         done++;
         todo--;
+        // do we have to start a new packet as the current is done?
+        if (frameTodo > 0) {
+           if (--frameTodo == 0) {
+              // the current audio frame is is done now. So push out the packet to
+              // start a new packet for the next audio frame.
+              PushOutPacket(ResultBuffer, payload, data - payload);
+              // go on with syncing to the next audio frame
+              state = syncing;
+              }
+           }
         // do we have to start a new packet as there is no more space left?
-        if (--packetTodo <= 0) {
+        if (state != syncing && --packetTodo <= 0) {
            // We connot start a new packet here if the current might end in an audio
            // frame header and this header shall possibly be put in the next packet. So
            // overfill the current packet until we can safely detect that we won't
@@ -829,13 +832,16 @@ void cAudioRepacker::Repack(cRingBufferLinear *ResultBuffer, const uchar *Data, 
   // report that syncing dropped some bytes
   if (skippedBytes > SkippedBytesLimit) {
      if (!initiallySyncing) // omit report for the typical initial case
-        esyslog("cAudioRepacker: skipped %d bytes while syncing on next audio frame", skippedBytes - SkippedBytesLimit);
+        esyslog("cAudioRepacker(0x%02X): skipped %d bytes while syncing on next audio frame", cid, skippedBytes - SkippedBytesLimit);
      skippedBytes = SkippedBytesLimit;
      }
 }
 
 int cAudioRepacker::BreakAt(const uchar *Data, int Count)
 {
+  if (initiallySyncing)
+     return -1; // fill the packet buffer completely until we have synced once
+
   int PesPayloadOffset = 0;
 
   ePesHeader MpegLevel = AnalyzePesHeader(Data, Count, PesPayloadOffset);
@@ -1189,6 +1195,8 @@ void cDolbyRepacker::Repack(cRingBufferLinear *ResultBuffer, const uchar *Data, 
 
 int cDolbyRepacker::BreakAt(const uchar *Data, int Count)
 {
+  if (initiallySyncing)
+     return -1; // fill the packet buffer completely until we have synced once
   // enough data for test?
   if (Count < 6 + 3)
      return -1;
@@ -1263,7 +1271,7 @@ private:
   int count;
   uint8_t *buf;
   uint8_t cid;
-  uint8_t audioCid;
+  uint8_t rewriteCid;
   uint8_t subStreamId;
   int plength;
   uint8_t plen[2];
@@ -1287,7 +1295,7 @@ private:
   void write_ipack(const uint8_t *Data, int Count);
   void instant_repack(const uint8_t *Buf, int Count);
 public:
-  cTS2PES(int Pid, cRingBufferLinear *ResultBuffer, int Size, uint8_t AudioCid = 0x00, uint8_t SubStreamId = 0x00, cRepacker *Repacker = NULL);
+  cTS2PES(int Pid, cRingBufferLinear *ResultBuffer, int Size, uint8_t RewriteCid = 0x00, uint8_t SubStreamId = 0x00, cRepacker *Repacker = NULL);
   ~cTS2PES();
   int Pid(void) { return pid; }
   void ts_to_pes(const uint8_t *Buf); // don't need count (=188)
@@ -1296,12 +1304,12 @@ public:
 
 uint8_t cTS2PES::headr[] = { 0x00, 0x00, 0x01 };
 
-cTS2PES::cTS2PES(int Pid, cRingBufferLinear *ResultBuffer, int Size, uint8_t AudioCid, uint8_t SubStreamId, cRepacker *Repacker)
+cTS2PES::cTS2PES(int Pid, cRingBufferLinear *ResultBuffer, int Size, uint8_t RewriteCid, uint8_t SubStreamId, cRepacker *Repacker)
 {
   pid = Pid;
   resultBuffer = ResultBuffer;
   size = Size;
-  audioCid = AudioCid;
+  rewriteCid = RewriteCid;
   subStreamId = SubStreamId;
   repacker = Repacker;
   if (repacker) {
@@ -1363,7 +1371,7 @@ void cTS2PES::send_ipack(void)
 {
   if (count <= ((mpeg == 2) ? 9 : 7)) // skip empty packets
      return;
-  buf[3] = (AUDIO_STREAM_S <= cid && cid <= AUDIO_STREAM_E && audioCid) ? audioCid : cid;
+  buf[3] = rewriteCid ? rewriteCid : cid;
   buf[4] = (uint8_t)(((count - 6) & 0xFF00) >> 8);
   buf[5] = (uint8_t)((count - 6) & 0x00FF);
   store(buf, count);
@@ -1679,19 +1687,21 @@ cRemux::cRemux(int VPid, const int *APids, const int *DPids, const int *SPids, b
   if (VPid)
 #define TEST_cVideoRepacker
 #ifdef TEST_cVideoRepacker
-     ts2pes[numTracks++] = new cTS2PES(VPid, resultBuffer, IPACKS, 0x00, 0x00, new cVideoRepacker);
+     ts2pes[numTracks++] = new cTS2PES(VPid, resultBuffer, IPACKS, 0xE0, 0x00, new cVideoRepacker);
 #else
-     ts2pes[numTracks++] = new cTS2PES(VPid, resultBuffer, IPACKS);
+     ts2pes[numTracks++] = new cTS2PES(VPid, resultBuffer, IPACKS, 0xE0);
 #endif
   if (APids) {
      int n = 0;
-     while (*APids && numTracks < MAXTRACKS && n < MAXAPIDS)
+     while (*APids && numTracks < MAXTRACKS && n < MAXAPIDS) {
 #define TEST_cAudioRepacker
 #ifdef TEST_cAudioRepacker
-           ts2pes[numTracks++] = new cTS2PES(*APids++, resultBuffer, IPACKS, 0xC0 + n++, 0x00, new cAudioRepacker);
+           ts2pes[numTracks++] = new cTS2PES(*APids++, resultBuffer, IPACKS, 0xC0 + n, 0x00, new cAudioRepacker(0xC0 + n));
+           n++;
 #else
            ts2pes[numTracks++] = new cTS2PES(*APids++, resultBuffer, IPACKS, 0xC0 + n++);
 #endif
+           }
      }
   if (DPids) {
      int n = 0;

@@ -8,7 +8,7 @@
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  * Adapted to 'libsi' for VDR 1.3.0 by Marcel Wiesweg <marcel.wiesweg@gmx.de>.
  *
- * $Id: eit.c 1.110 2005/08/13 13:27:34 kls Exp $
+ * $Id: eit.c 1.111 2005/09/04 11:36:30 kls Exp $
  */
 
 #include "eit.h"
@@ -99,7 +99,7 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data)
           switch (d->getDescriptorTag()) {
             case SI::ExtendedEventDescriptorTag: {
                  SI::ExtendedEventDescriptor *eed = (SI::ExtendedEventDescriptor *)d;
-                 if (I18nIsPreferredLanguage(Setup.EPGLanguages, I18nLanguageIndex(eed->languageCode), LanguagePreferenceExt) || !ExtendedEventDescriptors) {
+                 if (I18nIsPreferredLanguage(Setup.EPGLanguages, eed->languageCode, LanguagePreferenceExt) || !ExtendedEventDescriptors) {
                     delete ExtendedEventDescriptors;
                     ExtendedEventDescriptors = new SI::ExtendedEventDescriptors;
                     UseExtendedEventDescriptor = true;
@@ -114,7 +114,7 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data)
                  break;
             case SI::ShortEventDescriptorTag: {
                  SI::ShortEventDescriptor *sed = (SI::ShortEventDescriptor *)d;
-                 if (I18nIsPreferredLanguage(Setup.EPGLanguages, I18nLanguageIndex(sed->languageCode), LanguagePreferenceShort) || !ShortEventDescriptor) {
+                 if (I18nIsPreferredLanguage(Setup.EPGLanguages, sed->languageCode, LanguagePreferenceShort) || !ShortEventDescriptor) {
                     delete ShortEventDescriptor;
                     ShortEventDescriptor = sed;
                     d = NULL; // so that it is not deleted

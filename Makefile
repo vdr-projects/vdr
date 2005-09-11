@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 1.77 2005/08/14 11:42:20 kls Exp $
+# $Id: Makefile 1.79 2005/09/02 14:23:38 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -14,7 +14,16 @@ CFLAGS   ?= -O2
 CXX      ?= g++
 CXXFLAGS ?= -fPIC -g -O2 -Wall -Woverloaded-virtual
 
-DVBDIR   = ../DVB
+LINUX_VERSION := $(shell uname -r | cut -c-3)
+LINUX         := $(shell uname -r)
+DVBDIR        := /lib/modules/$(LINUX)/build
+ifeq ($(LINUX_VERSION), 2.4)
+   DVBDIR = ../DVB
+endif
+ifeq ($(LINUX_VERSION), 2.2)
+   DVBDIR = ../DVB
+endif
+
 LSIDIR   = ./libsi
 MANDIR   = /usr/local/man
 BINDIR   = /usr/local/bin
@@ -185,8 +194,6 @@ plugins-clean:
 install:
 	@mkdir -p $(BINDIR)
 	@cp vdr runvdr $(BINDIR)
-	@mkdir -p $(BINDIR)/$(PLUGINLIBDIR)
-	@cp $(PLUGINLIBDIR)/* $(BINDIR)/$(PLUGINLIBDIR)
 	@mkdir -p $(MANDIR)/man1
 	@mkdir -p $(MANDIR)/man5
 	@gzip -c vdr.1 > $(MANDIR)/man1/vdr.1.gz
@@ -195,6 +202,10 @@ install:
             mkdir -p $(VIDEODIR);\
             cp *.conf $(VIDEODIR);\
             fi
+
+plugins-install:
+	@mkdir -p $(BINDIR)/$(PLUGINLIBDIR)
+	@cp $(PLUGINLIBDIR)/* $(BINDIR)/$(PLUGINLIBDIR)
 
 # Source documentation:
 

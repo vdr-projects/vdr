@@ -1114,7 +1114,7 @@ Video Disk Recorder Revision History
   Please check if your system provides 'killall' - if it doesn't, please change
   this back in 'runvdr' and report this (thanks to Achim Lange).
 - The "Commands" menu now automatically assigns number keys as hotkeys to the
-  commands. If you have preceeded your commands with digits you may want to
+  commands. If you have preceded your commands with digits you may want to
   remove these from your 'commands.conf' file.
 - The new Setup item "Restart" can be used to force a complete restart of VDR,
   including reloading the driver. Note that this can only work if VDR and the
@@ -3746,3 +3746,63 @@ Video Disk Recorder Revision History
   Hardy Flor).
 - The new SVDRP command EDIT can be used to start the editing process of a recording
   (based on the CUTR patch by Harald Milz).
+
+2005-09-11: Version 1.3.32
+
+- Added some missing braces in remux.c (thanks to Wayne Keer for reporting this one).
+- Removed unused MAINMENUENTRY from svdrpdemo.c (thanks to Udo Richter for reporting
+  this one).
+- Fixed appending sequence end code in cDvbPlayer::Goto() (thanks to Reinhard Nissl).
+- Fixed syncing in cRepacker (thanks to Reinhard Nissl).
+- Now always using stream id 0xE0 for the video stream, to avoid problems with
+  post processing tools that choke on different ids (suggested by Reinhard Nissl).
+- Updated the Estonian OSD texts (thanks to Arthur Konovalov).
+- Fixed cDvbPlayer::SkipFrames() to properly handle radio recordings (thanks to
+  Reinhard Nissl).
+- Updated the Swedish OSD texts (thanks to Tomas Prybil).
+- Updated the Slovenian OSD texts (thanks to Matjaz Thaler).
+- Updated the Danish OSD texts (thanks to Mogens Elneff).
+- Made LIRC command parsing more robust (thanks to Ville Skyttä).
+- Introduced a separate 'plugins-install' target in the Makefile (thanks to Daniel
+  Thompson).
+- Re-introduced the code that waits for a tuner lock in VDR/device.c, since
+  apparently some users actually need it. It's not active by default, you'll have
+  to define the WAIT_FOR_TUNER_LOCK macro in that file if you need it (suggested
+  by Malcolm Caldwell).
+- Adjusted the Makefile to the dvb-kernel driver on kernel 2.6 and up (thanks to
+  Lauri Tischler).
+- Repeat keys are now ignored when waiting for a keypress to cancel an operation
+  (thanks to Marko Mäkelä).
+- The main menu function of a plugin can now be activated through a key macro of
+  the form "@plugin" even if that plugin doesn't have a main menu entry (using
+  part of a patch by Hardy Flor, which originally implemented calling plugins from
+  SVDRP).
+- The menu timeout handling is now done centrally in the main program loop.
+- Added missing help for the 'help' keyword in the SVDRP command PLUG.
+- The main menu function of a plugin can now be called programmatically through
+  the static function cRemote::CallPlugin().
+- The SVDRP command PLUG now has a new option 'main' which can be used to initiate
+  a call to the main menu function of a plugin (using part of a patch by Hardy Flor).
+- The new command line option '--vfat' can be used to make VDR encode special
+  characters in recording file names, even if it wasn't compiled with VFAT=1
+  (suggested by Peter Bieringer). The compile time option VFAT still exists and
+  creates a VDR that always behaves as if it were called with '--vfat'.
+- Replaced the ':' delimiter between hour and minute in recording file names with
+  a '.' under Linux, too. Existing recordings with ':' as delimiter will still work.
+- Implemented the SVDRP command MOVC (thanks to Andreas Brachold).
+- Added support for multiple audio language codes in ISO639LanguageDescriptors to
+  'libsi' (thanks to Marcel Wiesweg).
+- Changed the audio PID language codes to hold up to two 3 letter codes, separated
+  by '+', to store separate languages broadcast in two channel audio mode.
+- If the preferred audio language is broadcast on a PID that has two different
+  languages in the two stereo channels, the audio channel is now properly set when
+  switching to such a channel (thanks to Mogens Elneff for his help in testing this).
+- Fixed some typos in MANUAL (thanks to Ville Skyttä).
+- Fixed the default value for "Setup/EPG bugfix level" (thanks to Ville Skyttä for
+  reporting this one).
+- Fixed defining timers that only differ in the day of week (thanks to Patrick
+  Rother for reporting this one).
+- Fixed converting summary.vdr files that would result in a very long 'short text'
+  (thanks to Carsten Koch).
+- Implemented a hash for the channels to reduce the system load in the EIT scanning
+  thread (based on a patch by Georg Acher).

@@ -4,14 +4,16 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: eitscan.h 1.8 2004/01/17 15:36:24 kls Exp $
+ * $Id: eitscan.h 1.9 2005/09/04 10:51:35 kls Exp $
  */
 
 #ifndef __EITSCAN_H
 #define __EITSCAN_H
 
 #include <time.h>
+#include "channels.h"
 #include "config.h"
+#include "device.h"
 
 class cScanList;
 class cTransponderList;

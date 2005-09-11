@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.111 2005/08/13 14:00:48 kls Exp $
+ * $Id: recording.c 1.113 2005/09/10 12:36:48 kls Exp $
  */
 
 #include "recording.h"
@@ -36,15 +36,8 @@
 #define DATAFORMAT   "%4d-%02d-%02d.%02d:%02d.%02d.%02d" RECEXT
 #define NAMEFORMAT   "%s/%s/" DATAFORMAT
 */
-// start of implementation for brain dead systems
 #define DATAFORMAT   "%4d-%02d-%02d.%02d%*c%02d.%02d.%02d" RECEXT
-#ifdef VFAT
-#define nameFORMAT   "%4d-%02d-%02d.%02d.%02d.%02d.%02d" RECEXT
-#else
-#define nameFORMAT   "%4d-%02d-%02d.%02d:%02d.%02d.%02d" RECEXT
-#endif
-#define NAMEFORMAT   "%s/%s/" nameFORMAT
-// end of implementation for brain dead systems
+#define NAMEFORMAT   "%s/%s/" "%4d-%02d-%02d.%02d.%02d.%02d.%02d" RECEXT
 
 #define RESUMEFILESUFFIX  "/resume%s%s.vdr"
 #ifdef SUMMARYFALLBACK
@@ -64,6 +57,8 @@
 #define TIMERMACRO_EPISODE  "EPISODE"
 
 #define MAX_SUBTITLE_LENGTH  40
+
+bool VfatFileSystem = false;
 
 void RemoveDeletedRecordings(void)
 {
@@ -297,79 +292,80 @@ static char *ExchangeChars(char *s, bool ToFileSystem)
 {
   char *p = s;
   while (*p) {
-#ifdef VFAT
-        // The VFAT file system can't handle all characters, so we
-        // have to take extra efforts to encode/decode them:
-        if (ToFileSystem) {
-           switch (*p) {
-                  // characters that can be used "as is":
-                  case '!':
-                  case '@':
-                  case '$':
-                  case '%':
-                  case '&':
-                  case '(':
-                  case ')':
-                  case '+':
-                  case ',':
-                  case '-':
-                  case ';':
-                  case '=':
-                  case '0' ... '9':
-                  case 'a' ... 'z':
-                  case 'A' ... 'Z':
-                  case 'ä': case 'Ä':
-                  case 'ö': case 'Ö':
-                  case 'ü': case 'Ü':
-                  case 'ß':
-                       break;
-                  // characters that can be mapped to other characters:
-                  case ' ': *p = '_'; break;
-                  case '~': *p = '/'; break;
-                  // characters that have to be encoded:
-                  default:
-                    if (*p != '.' || !*(p + 1) || *(p + 1) == '~') { // Windows can't handle '.' at the end of directory names
-                       int l = p - s;
-                       s = (char *)realloc(s, strlen(s) + 10);
-                       p = s + l;
-                       char buf[4];
-                       sprintf(buf, "#%02X", (unsigned char)*p);
-                       memmove(p + 2, p, strlen(p) + 1);
-                       strncpy(p, buf, 3);
-                       p += 2;
-                       }
-                  }
+        if (VfatFileSystem) {
+           // The VFAT file system can't handle all characters, so we
+           // have to take extra efforts to encode/decode them:
+           if (ToFileSystem) {
+              switch (*p) {
+                     // characters that can be used "as is":
+                     case '!':
+                     case '@':
+                     case '$':
+                     case '%':
+                     case '&':
+                     case '(':
+                     case ')':
+                     case '+':
+                     case ',':
+                     case '-':
+                     case ';':
+                     case '=':
+                     case '0' ... '9':
+                     case 'a' ... 'z':
+                     case 'A' ... 'Z':
+                     case 'ä': case 'Ä':
+                     case 'ö': case 'Ö':
+                     case 'ü': case 'Ü':
+                     case 'ß':
+                          break;
+                     // characters that can be mapped to other characters:
+                     case ' ': *p = '_'; break;
+                     case '~': *p = '/'; break;
+                     // characters that have to be encoded:
+                     default:
+                       if (*p != '.' || !*(p + 1) || *(p + 1) == '~') { // Windows can't handle '.' at the end of directory names
+                          int l = p - s;
+                          s = (char *)realloc(s, strlen(s) + 10);
+                          p = s + l;
+                          char buf[4];
+                          sprintf(buf, "#%02X", (unsigned char)*p);
+                          memmove(p + 2, p, strlen(p) + 1);
+                          strncpy(p, buf, 3);
+                          p += 2;
+                          }
+                     }
+              }
+           else {
+              switch (*p) {
+                // mapped characters:
+                case '_': *p = ' '; break;
+                case '/': *p = '~'; break;
+                // encodes characters:
+                case '#': {
+                     if (strlen(p) > 2) {
+                        char buf[3];
+                        sprintf(buf, "%c%c", *(p + 1), *(p + 2));
+                        unsigned char c = strtol(buf, NULL, 16);
+                        *p = c;
+                        memmove(p + 1, p + 3, strlen(p) - 2);
+                        }
+                     }
+                     break;
+                // backwards compatibility:
+                case '\x01': *p = '\''; break;
+                case '\x02': *p = '/';  break;
+                case '\x03': *p = ':';  break;
+                }
+              }
            }
         else {
-           switch (*p) {
-             // mapped characters:
-             case '_': *p = ' '; break;
-             case '/': *p = '~'; break;
-             // encodes characters:
-             case '#': {
-                  if (strlen(p) > 2) {
-                     char buf[3];
-                     sprintf(buf, "%c%c", *(p + 1), *(p + 2));
-                     unsigned char c = strtol(buf, NULL, 16);
-                     *p = c;
-                     memmove(p + 1, p + 3, strlen(p) - 2);
-                     }
-                  }
+           for (struct tCharExchange *ce = CharExchange; ce->a && ce->b; ce++) {
+               if (*p == (ToFileSystem ? ce->a : ce->b)) {
+                  *p = ToFileSystem ? ce->b : ce->a;
                   break;
-             // backwards compatibility:
-             case '\x01': *p = '\''; break;
-             case '\x02': *p = '/';  break;
-             case '\x03': *p = ':';  break;
-             }
-           }
-#else
-        for (struct tCharExchange *ce = CharExchange; ce->a && ce->b; ce++) {
-            if (*p == (ToFileSystem ? ce->a : ce->b)) {
-               *p = ToFileSystem ? ce->b : ce->a;
-               break;
+                  }
                }
-            }
-#endif
+           }
         p++;
         }
   return s;
@@ -499,6 +495,20 @@ cRecording::cRecording(const char *FileName)
            if (line == 1) {
               data[2] = data[1];
               data[1] = NULL;
+              }
+           else if (line == 2) {
+              // if line 1 is too long, it can't be the short text,
+              // so assume the short text is missing and concatenate
+              // line 1 and line 2 to be the long text:
+              int len = strlen(data[1]);
+              if (len > 80) { 
+                 data[1] = (char *)realloc(data[1], len + 1 + strlen(data[2]) + 1);
+                 strcat(data[1], "\n");
+                 strcat(data[1], data[2]);
+                 free(data[2]);
+                 data[2] = data[1];
+                 data[1] = NULL;
+                 }
               }
            info->SetData(data[0], data[1], data[2]);
            for (int i = 0; i < 3; i ++)
