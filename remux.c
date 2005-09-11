@@ -11,7 +11,7 @@
  * The cRepacker family's code was originally written by Reinhard Nissl <rnissl@gmx.de>,
  * and adapted to the VDR coding style by Klaus.Schmidinger@cadsoft.de.
  *
- * $Id: remux.c 1.46 2005/09/04 15:15:14 kls Exp $
+ * $Id: remux.c 1.47 2005/09/11 11:00:00 kls Exp $
  */
 
 #include "remux.h"
@@ -161,8 +161,10 @@ bool cCommonRepacker::PushOutPacket(cRingBufferLinear *ResultBuffer, const uchar
      int PesPayloadOffset = 0;
      if (AnalyzePesHeader(fragmentData, fragmentLen, PesPayloadOffset) <= phInvalid)
         esyslog("cCommonRepacker: invalid PES packet encountered in fragment buffer!");
-     else if (6 + PacketLen <= PesPayloadOffset)
+     else if (6 + PacketLen <= PesPayloadOffset) {
+        fragmentLen = 0;
         return true; // skip empty packet
+        }
      // amount of data to put into result buffer: a negative Count value means
      // to strip off any partially contained start code.
      int Bite = fragmentLen + (Count >= 0 ? 0 : Count);
@@ -180,8 +182,10 @@ bool cCommonRepacker::PushOutPacket(cRingBufferLinear *ResultBuffer, const uchar
      int PesPayloadOffset = 0;
      if (AnalyzePesHeader(pesHeader, pesHeaderLen, PesPayloadOffset) <= phInvalid)
         esyslog("cCommonRepacker: invalid PES packet encountered in header buffer!");
-     else if (6 + PacketLen <= PesPayloadOffset)
+     else if (6 + PacketLen <= PesPayloadOffset) {
+        pesHeaderLen = 0;
         return true; // skip empty packet
+        }
      // amount of data to put into result buffer: a negative Count value means
      // to strip off any partially contained start code.
      int Bite = pesHeaderLen + (Count >= 0 ? 0 : Count);
