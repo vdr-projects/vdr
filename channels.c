@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 1.45 2005/09/04 10:49:12 kls Exp $
+ * $Id: channels.c 1.46 2005/09/11 11:17:19 kls Exp $
  */
 
 #include "channels.h"
@@ -342,11 +342,14 @@ void cChannel::SetId(int Nid, int Tid, int Sid, int Rid)
         dsyslog("changing id of channel %d from %d-%d-%d-%d to %d-%d-%d-%d", Number(), nid, tid, sid, rid, Nid, Tid, Sid, Rid);
         modification |= CHANNELMOD_ID;
         Channels.SetModified();
+        Channels.UnhashChannel(this);
         }
      nid = Nid;
      tid = Tid;
      sid = Sid;
      rid = Rid;
+     if (Number())
+        Channels.HashChannel(this);
      }
 }
 
@@ -868,6 +871,16 @@ bool cChannels::Load(const char *FileName, bool AllowComments, bool MustExist)
   return false;
 }
 
+void cChannels::HashChannel(cChannel *Channel)
+{
+  channelsHashSid.Add(Channel, Channel->Sid());
+}
+
+void cChannels::UnhashChannel(cChannel *Channel)
+{
+  channelsHashSid.Del(Channel, Channel->Sid());
+}
+
 int cChannels::GetNextGroup(int Idx)
 {
   cChannel *channel = Get(++Idx);
@@ -894,6 +907,7 @@ int cChannels::GetNextNormal(int Idx)
 
 void cChannels::ReNumber( void )
 {
+  channelsHashSid.Clear();
   int Number = 1;
   for (cChannel *channel = First(); channel; channel = Next(channel)) {
       if (channel->GroupSep()) {
@@ -901,6 +915,7 @@ void cChannels::ReNumber( void )
             Number = channel->Number();
          }
       else {
+         HashChannel(channel);
          maxNumber = Number;
          channel->SetNumber(Number++);
          }
@@ -924,32 +939,43 @@ cChannel *cChannels::GetByNumber(int Number, int SkipGap)
 
 cChannel *cChannels::GetByServiceID(int Source, int Transponder, unsigned short ServiceID)
 {
-  for (cChannel *channel = First(); channel; channel = Next(channel)) {
-      if (!channel->GroupSep() && channel->Source() == Source && ISTRANSPONDER(channel->Transponder(), Transponder) && channel->Sid() == ServiceID)
-         return channel;
-      }
+  cList<cHashObject> *list = channelsHashSid.GetList(ServiceID);
+  if (list) {
+     for (cHashObject *hobj = list->First(); hobj; hobj = list->Next(hobj)) {
+         cChannel *channel = (cChannel *)hobj->Object();
+         if (channel->Sid() == ServiceID && channel->Source() == Source && ISTRANSPONDER(channel->Transponder(), Transponder))
+            return channel;
+         }
+     }
   return NULL;
 }
 
 cChannel *cChannels::GetByChannelID(tChannelID ChannelID, bool TryWithoutRid, bool TryWithoutPolarization)
 {
-  for (cChannel *channel = First(); channel; channel = Next(channel)) {
-      if (!channel->GroupSep() && channel->GetChannelID() == ChannelID)
-         return channel;
-      }
-  if (TryWithoutRid) {
-     ChannelID.ClrRid();
-     for (cChannel *channel = First(); channel; channel = Next(channel)) {
-         if (!channel->GroupSep() && channel->GetChannelID().ClrRid() == ChannelID)
+  int sid = ChannelID.Sid();
+  cList<cHashObject> *list = channelsHashSid.GetList(sid);
+  if (list) {
+     for (cHashObject *hobj = list->First(); hobj; hobj = list->Next(hobj)) {
+         cChannel *channel = (cChannel *)hobj->Object();
+         if (channel->Sid() == sid && channel->GetChannelID() == ChannelID)
             return channel;
          }
-     }
-  if (TryWithoutPolarization) {
-     ChannelID.ClrPolarization();
-     for (cChannel *channel = First(); channel; channel = Next(channel)) {
-         if (!channel->GroupSep() && channel->GetChannelID().ClrPolarization() == ChannelID)
-            return channel;
-         }
+     if (TryWithoutRid) {
+        ChannelID.ClrRid();
+        for (cHashObject *hobj = list->First(); hobj; hobj = list->Next(hobj)) {
+            cChannel *channel = (cChannel *)hobj->Object();
+            if (channel->Sid() == sid && channel->GetChannelID().ClrRid() == ChannelID)
+               return channel;
+            }
+        }
+     if (TryWithoutPolarization) {
+        ChannelID.ClrPolarization();
+        for (cHashObject *hobj = list->First(); hobj; hobj = list->Next(hobj)) {
+            cChannel *channel = (cChannel *)hobj->Object();
+            if (channel->Sid() == sid && channel->GetChannelID().ClrPolarization() == ChannelID)
+               return channel;
+            }
+        }
      }
   return NULL;
 }

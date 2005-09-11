@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.h 1.34 2005/09/04 10:17:12 kls Exp $
+ * $Id: channels.h 1.35 2005/09/11 11:17:19 kls Exp $
  */
 
 #ifndef __CHANNELS_H
@@ -72,6 +72,11 @@ public:
   bool Valid(void) const { return (nid || tid) && sid; } // rid is optional and source may be 0//XXX source may not be 0???
   tChannelID &ClrRid(void) { rid = 0; return *this; }
   tChannelID &ClrPolarization(void);
+  int Source(void) { return source; }
+  int Nid(void) { return nid; }
+  int Tid(void) { return tid; }
+  int Sid(void) { return sid; }
+  int Rid(void) { return rid; }
   static tChannelID FromString(const char *s);
   cString ToString(void) const;
   static const tChannelID InvalidID;
@@ -203,10 +208,13 @@ private:
   int maxNumber;
   int modified;
   int beingEdited;
+  cHash<cChannel> channelsHashSid;
   void DeleteDuplicateChannels(void);
 public:
   cChannels(void);
   bool Load(const char *FileName, bool AllowComments = false, bool MustExist = false);
+  void HashChannel(cChannel *Channel);
+  void UnhashChannel(cChannel *Channel);
   int GetNextGroup(int Idx);   // Get next channel group
   int GetPrevGroup(int Idx);   // Get previous channel group
   int GetNextNormal(int Idx);  // Get next normal channel (not group)
