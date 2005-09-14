@@ -1479,3 +1479,6 @@ Marko Mäkelä <marko.makela@hut.fi>
 
 Patrick Rother <krd-vdr@gulu.net>
  for reporting a bug in defining timers that only differ in the day of week
+
+Alexander Rieger <Alexander.Rieger@inka.de>
+ for fixing two errors in 'newplugin'

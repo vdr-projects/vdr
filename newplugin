@@ -12,7 +12,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: newplugin 1.20 2005/08/27 16:13:29 kls Exp $
+# $Id: newplugin 1.21 2005/09/14 16:02:06 kls Exp $
 
 $PLUGIN_NAME = $ARGV[0] || die "Usage: newplugin <name>\n";
 
@@ -245,13 +245,13 @@ bool cPlugin${PLUGIN_CLASS}::Service(const char *Id, void *Data)
   return false;
 }
 
-const char **cPlugin${PLUGIN_CLASS}::SVDRPHelpPages(vo<F3>id)
+const char **cPlugin${PLUGIN_CLASS}::SVDRPHelpPages(void)
 {
   // Return help text for SVDRP commands this plugin implements
   return NULL;
 }
 
-const char *cPlugin${PLUGIN_CLASS}::SVDRPCommand(const char *Command, const char *Option, int &ReplyCode)
+cString cPlugin${PLUGIN_CLASS}::SVDRPCommand(const char *Command, const char *Option, int &ReplyCode)
 {
   // Process SVDRP commands this plugin implements
   return NULL;
