@@ -1483,3 +1483,4 @@ Patrick Rother <krd-vdr@gulu.net>
 
 Alexander Rieger <Alexander.Rieger@inka.de>
  for fixing two errors in 'newplugin'
+ for fixing handling color buttons in cMenuEditStrItem

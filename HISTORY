@@ -3811,3 +3811,4 @@ Video Disk Recorder Revision History
 
 - Fixed two errors in 'newplugin' (thanks to Alexander Rieger).
 - Fixed converting arbitrarily formatted summary.vdr files (thanks to Thomas Günther).
+- Fixed handling color buttons in cMenuEditStrItem (thanks to Alexander Rieger).
