@@ -3819,3 +3819,5 @@ Video Disk Recorder Revision History
   for reporting this one).
 - Fixed handling key macros with keys after @plugin (thanks to Rolf Ahrenberg for
   reporting this one).
+- Fixed error handling in cCiTransportConnection::RecvTPDU() (thanks to Georg Acher
+  for reporting this one).

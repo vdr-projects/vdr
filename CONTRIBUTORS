@@ -1434,6 +1434,7 @@ Georg Acher <acher@baycom.de>
  '& 0xff' in CRC32::crc32() of libsi/util.c
  for suggesting to reduce the priority of the section handler threads
  for a patch that was used to implement a hash for the channels
+ for reporting a problem with error handling in cCiTransportConnection::RecvTPDU()
 
 Henrik Niehaus <henrik.niehaus@gmx.de>
  for reporting a problem with timers with a day given as MTWTF--@6, i.e. a repeating
