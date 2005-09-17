@@ -3817,3 +3817,5 @@ Video Disk Recorder Revision History
   no guarantee that this really works under all circumstances.
 - Added a missing include statement to the 'sky' plugin (thanks to Alfred Zastrow
   for reporting this one).
+- Fixed handling key macros with keys after @plugin (thanks to Rolf Ahrenberg for
+  reporting this one).

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: keys.c 1.8 2005/09/03 11:28:34 kls Exp $
+ * $Id: keys.c 1.9 2005/09/17 11:27:40 kls Exp $
  */
 
 #include "keys.h"
@@ -208,7 +208,7 @@ bool cKeyMacro::Parse(char *s)
                  esyslog("ERROR: @plugin can't be first in macro");
                  return false;
                  }
-              macro[n++] = k_Plugin;
+              macro[n] = k_Plugin;
               if (n < MAXKEYSINMACRO) {
                  plugin = strdup(p + 1);
                  if (!cPluginManager::GetPlugin(plugin)) {
