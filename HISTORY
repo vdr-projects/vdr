@@ -3807,6 +3807,7 @@ Video Disk Recorder Revision History
 - Implemented a hash for the channels to reduce the system load in the EIT scanning
   thread (based on a patch by Georg Acher).
 
-2005-09-14: Version 1.3.33
+2005-09-17: Version 1.3.33
 
 - Fixed two errors in 'newplugin' (thanks to Alexander Rieger).
+- Fixed converting arbitrarily formatted summary.vdr files (thanks to Thomas Günther).

@@ -10,7 +10,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: summary2info.pl 1.4 2005/09/10 12:40:40 kls Exp $
+# $Id: summary2info.pl 1.5 2005/09/17 09:20:31 kls Exp $
 
 $VideoDir = $ARGV[0] || die "please provide the name of the video directory\n";
 
@@ -33,11 +33,11 @@ for $SummaryFile (@SummaryFiles) {
              }
           }
     close(F);
-    if ($line == 1) {
+    if (!$data[2]) {
        $data[2] = $data[1];
        $data[1] = "";
        }
-    elsif ($line == 2) {
+    elsif ($data[1] && $data[2]) {
        # if line 1 is too long, it can't be the short text,
        # so assume the short text is missing and concatenate
        # line 1 and line 2 to be the long text:
