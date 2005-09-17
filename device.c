@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.109 2005/09/04 14:28:16 kls Exp $
+ * $Id: device.c 1.110 2005/09/17 14:29:44 kls Exp $
  */
 
 #include "device.h"
@@ -310,22 +310,6 @@ cDevice *cDevice::GetDevice(const cChannel *Channel, int Priority, bool *NeedsDe
             }
          }
       }
-
-  /*XXX+ too complex with multiple recordings per device
-  if (!d && Ca > MAXDEVICES) {
-     // We didn't find one the easy way, so now we have to try harder:
-     int ShiftLevel = -1;
-     for (int i = 0; i < numDevices; i++) {
-         if (Provides[i]) { // this device is basicly able to do the job, but for some reason we didn't get it above
-            int sl = device[i]->CanShift(Ca, Priority); // asks this device to shift its job to another device
-            if (sl >= 0 && (ShiftLevel < 0 || sl < ShiftLevel)) {
-               d = device[i]; // found one that can be shifted with the fewest number of subsequent shifts
-               ShiftLevel = sl;
-               }
-            }
-         }
-     }
-  XXX*/
   return d;
 }
 
@@ -1082,43 +1066,6 @@ int cDevice::Priority(void) const
          priority = max(receiver[i]->priority, priority);
       }
   return priority;
-}
-
-int cDevice::CanShift(int Ca, int Priority, int UsedCards) const
-{
-  return -1;//XXX+ too complex with multiple recordings per device
-  /*XXX
-  // Test whether a receiver on this device can be shifted to another one
-  // in order to perform a new receiving with the given Ca and Priority on this device:
-  int ShiftLevel = -1; // default means this device can't be shifted
-  if (UsedCards & (1 << CardIndex()) != 0)
-     return ShiftLevel; // otherwise we would get into a loop
-  if (Receiving()) {
-     if (ProvidesCa(Ca) // this device provides the requested Ca
-        && (Ca != this->Ca() // the requested Ca is different from the one currently used...
-           || Priority > this->Priority())) { // ...or the request comes from a higher priority
-        cDevice *d = NULL;
-        int Provides[MAXDEVICES];
-        UsedCards |= (1 << CardIndex());
-        for (int i = 0; i < numDevices; i++) {
-            if ((Provides[i] = device[i]->ProvidesCa(this->Ca())) != 0) { // this device is basicly able to do the job
-               if (device[i] != this) { // it is not _this_ device
-                  int sl = device[i]->CanShift(this->Ca(), Priority, UsedCards); // this is the original Priority!
-                  if (sl >= 0 && (ShiftLevel < 0 || sl < ShiftLevel)) {
-                     d = device[i];
-                     ShiftLevel = sl;
-                     }
-                  }
-               }
-            }
-        if (ShiftLevel >= 0)
-           ShiftLevel++; // adds the device's own shift
-        }
-     }
-  else if (Priority > this->Priority())
-     ShiftLevel = 0; // no shifting necessary, this device can do the job
-  return ShiftLevel;
-  XXX*/
 }
 
 bool cDevice::Ready(void)

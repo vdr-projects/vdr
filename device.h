@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 1.64 2005/09/10 11:54:02 kls Exp $
+ * $Id: device.h 1.65 2005/09/17 14:29:28 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -485,7 +485,6 @@ public:
 private:
   cMutex mutexReceiver;
   cReceiver *receiver[MAXRECEIVERS];
-  int CanShift(int Ca, int Priority, int UsedCards = 0) const;
 protected:
   int Priority(void) const;
       ///< Returns the priority of the current receiving session (0..MAXPRIORITY),

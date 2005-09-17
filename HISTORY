@@ -3821,3 +3821,4 @@ Video Disk Recorder Revision History
   reporting this one).
 - Fixed error handling in cCiTransportConnection::RecvTPDU() (thanks to Georg Acher
   for reporting this one).
+- Removed obsolete 'shift' code in device.[hc].
