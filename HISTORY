@@ -3815,3 +3815,5 @@ Video Disk Recorder Revision History
 - Added cChannel::LinkChannels() and cChannel::RefChannel() (suggested by Helmut Auer).
   Note that VDR itself doesn't actually use the linked channels, yet, so there is
   no guarantee that this really works under all circumstances.
+- Added a missing include statement to the 'sky' plugin (thanks to Alfred Zastrow
+  for reporting this one).

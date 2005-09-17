@@ -881,6 +881,7 @@ Alfred Zastrow <vdr@zastrow4u.de>
  for reporting a bug in handling menu status messages when the list contents is scrolled
  for reporting that without the usleep() call in cDvbPlayer::Action() VDR runs on NPTL
  systems
+ for reporting a missing include statement in the 'sky' plugin
 
 Matthias Raus <matthias-raus@web.de>
  for reporting a problem with starting the editing process if no marks have been set
