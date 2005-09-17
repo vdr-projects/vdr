@@ -522,6 +522,7 @@ Helmut Auer <vdr@helmutauer.de>
  DVB data stream
  for implementing a default cRemote::Initialize()
  for suggesting to increase the default value for 'Min. user inactivity' to 300 minutes
+ for suggesting to add cChannel::LinkChannels() and cChannel::RefChannel()
 
 Jeremy Hall <jhall@UU.NET>
  for fixing an incomplete initialization of the filter parameters in eit.c
