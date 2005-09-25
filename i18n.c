@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.209 2005/09/25 11:49:11 kls Exp $
+ * $Id: i18n.c 1.210 2005/09/25 11:57:04 kls Exp $
  *
  * Translations provided by:
  *
@@ -268,7 +268,7 @@ const tI18nPhrase Phrases[] = {
     "Detaliile înregistrãrii",
     "",// TODO
     "",// TODO
-    "",// TODO
+    "¸İäŞ Ş ×ĞßØáØ",
     "",// TODO
     "",// TODO
     "Optagelses info",
@@ -436,7 +436,7 @@ const tI18nPhrase Phrases[] = {
     "Info",
     "",//TODO
     "",//TODO
-    "",//TODO
+    "¸İäŞ",
     "Info",
     "Info",
     "Info",
@@ -2942,7 +2942,7 @@ const tI18nPhrase Phrases[] = {
     "Derulare circularã",
     "",// TODO
     "",// TODO
-    "",// TODO
+    "ÆØÚÛØçÕáÚĞï ßàŞÚàãâÚĞ",
     "S kraja skoèi na poèetak",
     "Ridade kerimine",
     "Scroll rundt",
@@ -4079,7 +4079,7 @@ const tI18nPhrase Phrases[] = {
     "Învãşare taste telecomandã",
     "Távirányító betanítása",
     "Aprenent les tecles del comandament a distància",
-    "²ÒŞÔ ÚŞÔŞÒ ÚİŞßŞÚ ßãÛìâĞ",
+    "¾ÑãçÕİØÕ ßãÛìâĞ",
     "Uèenje kôda daljinskog upravljaèa",
     "Kaugjuhtimispuldi õpetamine",
     "Lærer fjernbetjeningstaster",
@@ -5320,7 +5320,7 @@ const tI18nPhrase Phrases[] = {
     "Pornesc achizişia EPG",
     "",// TODO
     "",// TODO
-    "",// TODO
+    "½ĞçØİĞî EPG-áÚĞİØàŞÒĞİØÕ",
     "Poèinjem EPG-scan",
     "EPG skaneerimine käivitatud",
     "Starter EPG skanning",
@@ -5404,7 +5404,7 @@ const tI18nPhrase Phrases[] = {
     "Fãrã titlu",
     "",// TODO
     "",// TODO
-    "",// TODO
+    "±Õ× İĞ×ÒĞİØï",
     "Bez titla",
     "",// TODO
     "Ingen titel",
