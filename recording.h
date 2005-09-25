@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 1.42 2005/09/25 11:31:28 kls Exp $
+ * $Id: recording.h 1.43 2005/09/25 13:47:07 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -93,6 +93,7 @@ public:
 
 class cRecordings : public cList<cRecording>, public cThread {
 private:
+  char *updateFileName;
   bool deleted;
   time_t lastUpdate;
   int state;
@@ -113,7 +114,10 @@ public:
        ///< function returns only after the update has completed.
        ///< Returns true if Wait is true and there is anyting in the list
        ///< of recordings, false otherwise.
-  void TriggerUpdate(void) { lastUpdate = 0; }
+  void TouchUpdate(void);
+       ///< Touches the '.update' file in the video directory, so that other
+       ///< instances of VDR that access the same video directory can be triggered
+       ///< to update their recordings list.
   bool NeedsUpdate(void);
   void ChangeState(void) { state++; }
   bool StateChanged(int &State);

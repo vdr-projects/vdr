@@ -3845,3 +3845,6 @@ Video Disk Recorder Revision History
   Thomas Günther).
 - Updated the Romanian OSD texts (thanks to Lucian Muresan).
 - Updated the Russian OSD texts (thanks to Oleg ???).
+- The '.update' file in the video directory is now touched when a recording is
+  added or deleted, so that other VDR instances can update their lists (thanks to
+  Alexander Rieger).

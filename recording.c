@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.117 2005/09/25 12:28:40 kls Exp $
+ * $Id: recording.c 1.118 2005/09/25 13:45:13 kls Exp $
  */
 
 #include "recording.h"
@@ -746,6 +746,7 @@ cRecordings Recordings;
 cRecordings::cRecordings(bool Deleted)
 :cThread("video directory scanner")
 {
+  updateFileName = strdup(AddDirectory(VideoDirectory, ".update"));
   deleted = Deleted;
   lastUpdate = 0;
   state = 0;
@@ -754,6 +755,7 @@ cRecordings::cRecordings(bool Deleted)
 cRecordings::~cRecordings()
 {
   Cancel(3);
+  free(updateFileName);
 }
 
 void cRecordings::Action(void)
@@ -821,9 +823,15 @@ bool cRecordings::StateChanged(int &State)
   return Result;
 }
 
+void cRecordings::TouchUpdate(void)
+{
+  TouchFile(updateFileName);
+  lastUpdate = time(NULL); // make sure we don't tigger ourselves
+}
+
 bool cRecordings::NeedsUpdate(void)
 {
-  return lastUpdate < LastModifiedTime(AddDirectory(VideoDirectory, ".update"));
+  return lastUpdate < LastModifiedTime(updateFileName);
 }
 
 bool cRecordings::Update(bool Wait)
@@ -854,6 +862,7 @@ void cRecordings::AddByName(const char *FileName)
      recording = new cRecording(FileName);
      Add(recording);
      ChangeState();
+     TouchUpdate();
      }
 }
 
@@ -864,6 +873,7 @@ void cRecordings::DelByName(const char *FileName)
   if (recording) {
      Del(recording);
      ChangeState();
+     TouchUpdate();
      }
 }
 

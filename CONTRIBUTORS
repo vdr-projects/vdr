@@ -1491,3 +1491,5 @@ Patrick Rother <krd-vdr@gulu.net>
 Alexander Rieger <Alexander.Rieger@inka.de>
  for fixing two errors in 'newplugin'
  for fixing handling color buttons in cMenuEditStrItem
+ for making the '.update' file in the video directory be touched when a recording is
+ added or deleted, so that other VDR instances can update their lists

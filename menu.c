@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.361 2005/09/25 11:30:55 kls Exp $
+ * $Id: menu.c 1.362 2005/09/25 13:37:21 kls Exp $
  */
 
 #include "menu.h"
@@ -1670,8 +1670,8 @@ eOSState cMenuRecordings::Delete(void)
         if (recording) {
            if (recording->Delete()) {
               cReplayControl::ClearLastReplayed(ri->FileName());
+              Recordings.DelByName(ri->FileName());
               cOsdMenu::Del(Current());
-              Recordings.Del(recording);
               SetHelpKeys();
               Display();
               if (!Count())
