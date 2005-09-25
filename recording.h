@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 1.43 2005/09/25 13:47:07 kls Exp $
+ * $Id: recording.h 1.44 2005/09/25 14:30:13 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -226,5 +226,11 @@ int SecondsToFrames(int Seconds); //XXX+ ->player???
       // Returns the number of frames corresponding to the given number of seconds.
 
 int ReadFrame(int f, uchar *b, int Length, int Max);
+
+char *ExchangeChars(char *s, bool ToFileSystem);
+      // Exchanges the characters in the given string to or from a file system
+      // specific representation (depending on ToFileSystem). The given string will
+      // be modified and may be reallocated if more space is needed. The return
+      // value points to the resulting string, which may be different from s.
 
 #endif //__RECORDING_H

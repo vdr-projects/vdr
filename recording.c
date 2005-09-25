@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.118 2005/09/25 13:45:13 kls Exp $
+ * $Id: recording.c 1.119 2005/09/25 14:29:49 kls Exp $
  */
 
 #include "recording.h"
@@ -306,7 +306,7 @@ tCharExchange CharExchange[] = {
   { 0, 0 }
   };
 
-static char *ExchangeChars(char *s, bool ToFileSystem)
+char *ExchangeChars(char *s, bool ToFileSystem)
 {
   char *p = s;
   while (*p) {

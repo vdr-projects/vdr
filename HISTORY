@@ -3848,3 +3848,4 @@ Video Disk Recorder Revision History
 - The '.update' file in the video directory is now touched when a recording is
   added or deleted, so that other VDR instances can update their lists (thanks to
   Alexander Rieger).
+- Made the function ExchangeChars() public (suggested by Lucian Muresan).
