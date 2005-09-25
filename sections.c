@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: sections.c 1.13 2005/08/14 10:54:39 kls Exp $
+ * $Id: sections.c 1.14 2005/09/18 11:30:29 kls Exp $
  */
 
 #include "sections.h"
@@ -40,7 +40,7 @@ public:
 // --- cSectionHandler -------------------------------------------------------
 
 cSectionHandler::cSectionHandler(cDevice *Device)
-:cThread("Section handler")
+:cThread("section handler")
 {
   shp = new cSectionHandlerPrivate;
   device = Device;

@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.216 2005/09/04 08:57:15 kls Exp $
+ * $Id: vdr.c 1.217 2005/09/24 13:27:26 kls Exp $
  */
 
 #include <getopt.h>
@@ -437,6 +437,10 @@ int main(int argc, char *argv[])
 
   cFont::SetCode(I18nCharSets()[Setup.OSDLanguage]);
 
+  // Recordings:
+
+  Recordings.Update();
+
   // EPG data:
 
   if (EpgDataFileName) {
@@ -538,10 +542,6 @@ int main(int argc, char *argv[])
      cDevice::PrimaryDevice()->ToggleMute();
   else
      cDevice::PrimaryDevice()->SetVolume(Setup.CurrentVolume, true);
-
-  // Recordings:
-
-  Recordings.Load();
 
   // Signal handlers:
 
@@ -674,7 +674,7 @@ int main(int argc, char *argv[])
                }
            }
         if (!Menu && Recordings.NeedsUpdate())
-           Recordings.Load();
+           Recordings.Update();
         // CAM control:
         if (!Menu && !cOsd::IsOpen()) {
            Menu = CamControl();

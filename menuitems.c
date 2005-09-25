@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.c 1.22 2005/03/19 15:33:34 kls Exp $
+ * $Id: menuitems.c 1.23 2005/09/17 09:36:31 kls Exp $
  */
 
 #include "menuitems.h"
@@ -322,10 +322,14 @@ eOSState cMenuEditStrItem::ProcessKey(eKeys Key)
 {
   switch (Key) {
     case kRed:   // Switch between upper- and lowercase characters
-                 if (pos >= 0 && (!insert || !newchar)) {
-                    uppercase = !uppercase;
-                    value[pos] = uppercase ? toupper(value[pos]) : tolower(value[pos]);
+                 if (pos >= 0) {
+                    if (!insert || !newchar) {
+                       uppercase = !uppercase;
+                       value[pos] = uppercase ? toupper(value[pos]) : tolower(value[pos]);
+                       }
                     }
+                 else
+                    return osUnknown;
                  break;
     case kGreen: // Toggle insert/overwrite modes
                  if (pos >= 0) {
@@ -333,6 +337,8 @@ eOSState cMenuEditStrItem::ProcessKey(eKeys Key)
                     newchar = true;
                     SetHelpKeys();
                     }
+                 else
+                    return osUnknown;
                  break;
     case kYellow|k_Repeat:
     case kYellow: // Remove the character at current position; in insert mode it is the character to the right of cursor
@@ -350,6 +356,15 @@ eOSState cMenuEditStrItem::ProcessKey(eKeys Key)
                        uppercase = isupper(value[pos]);
                     newchar = true;
                     }
+                 else
+                    return osUnknown;
+                 break;
+    case kBlue|k_Repeat:
+    case kBlue:  // consume the key only if in edit-mode
+                 if (pos >= 0)
+                    ;
+                 else
+                    return osUnknown;
                  break;
     case kLeft|k_Repeat:
     case kLeft:  if (pos > 0) {

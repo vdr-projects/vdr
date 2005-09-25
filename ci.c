@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 1.27 2005/08/21 14:10:27 kls Exp $
+ * $Id: ci.c 1.28 2005/09/17 11:43:08 kls Exp $
  */
 
 #include "ci.h"
@@ -358,8 +358,8 @@ int cCiTransportConnection::RecvTPDU(void)
                         break;
        }
      }
-  else {
-     esyslog("ERROR: CAM: Read failed: slot %d, tcid %d\n", slot, tcid);
+  else if (FATALERRNO) {
+     esyslog("ERROR: CAM: Read failed: slot %d, tcid %d - %m\n", slot, tcid);
      Init(-1, slot, tcid);
      }
   return lastResponse;

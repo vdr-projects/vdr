@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.208 2005/09/10 10:20:48 kls Exp $
+ * $Id: i18n.c 1.210 2005/09/25 11:57:04 kls Exp $
  *
  * Translations provided by:
  *
@@ -265,10 +265,10 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "Inspelning",
+    "Detaliile юnregistrуrii",
     "",// TODO
     "",// TODO
-    "",// TODO
-    "",// TODO
+    "Инфо о записи",
     "",// TODO
     "",// TODO
     "Optagelses info",
@@ -328,7 +328,7 @@ const tI18nPhrase Phrases[] = {
     "гrdenes de grabaciѓn",
     "Хэєяынђ ущм хууёсінђ",
     "Inspelningskommandon",
-    "Comenzi юnregistrare",
+    "Comenzi pentru юnregistrуri",
     "Parancsok a felvett filmekhez",
     "Ordres de gravaciѓ",
     "Команды записи",
@@ -433,10 +433,10 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "Info",
+    "Info",
     "",//TODO
     "",//TODO
-    "",//TODO
-    "",//TODO
+    "Инфо",
     "Info",
     "Info",
     "Info",
@@ -2349,7 +2349,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "Ljud saknas!"
-    "",//TODO
+    "LipseКte sunetul!",
     "",//TODO
     "",//TODO
     "Отсутствует звук!",
@@ -2876,7 +2876,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "Kanal information (s)",
-    "",// TODO
+    "Durata afiКуrii info-canal (s)",
     "",// TODO
     "",// TODO
     "Показ информации о канале (сек)",
@@ -2939,10 +2939,10 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "Rulla texten",
+    "Derulare circularу",
     "",// TODO
     "",// TODO
-    "",// TODO
-    "",// TODO
+    "Циклическая прокрутка",
     "S kraja skoшi na poшetak",
     "Ridade kerimine",
     "Scroll rundt",
@@ -3170,7 +3170,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "Format fіr video display",
-    "",//TODO
+    "Formatul redуrii video",
     "",//TODO
     "",//TODO
     "Широкоэкранное изображение",
@@ -3275,7 +3275,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "Anvфnd Dolby Digital",
-    "",//TODO
+    "Sunet Dolby Digital",
     "",//TODO
     "",//TODO
     "Включить Dolby Digital",
@@ -3401,7 +3401,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "Antal ljudsprхk",
-    "",//TODO
+    "Limbi sunet",
     "",//TODO
     "",//TODO
     "Предпочитаемые языки (звук)",
@@ -3422,7 +3422,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "Ljudsprхk",
-    "",//TODO
+    "Limba sunetului",
     "",//TODO
     "",//TODO
     "Выбран",
@@ -4079,7 +4079,7 @@ const tI18nPhrase Phrases[] = {
     "Юnvуўare taste telecomandу",
     "Tсvirсnyэtѓ betanэtсsa",
     "Aprenent les tecles del comandament a distрncia",
-    "Ввод кодов кнопок пульта",
+    "Обучение пульта",
     "Uшenje kєda daljinskog upravljaшa",
     "Kaugjuhtimispuldi ѕpetamine",
     "Lцrer fjernbetjeningstaster",
@@ -4854,7 +4854,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "Ljud",
-    "",// TODO
+    "Sunet",
     "",// TODO
     "",// TODO
     "Язык",
@@ -5317,10 +5317,10 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "Pхbіrjar EPG skanning",
+    "Pornesc achiziўia EPG",
     "",// TODO
     "",// TODO
-    "",// TODO
-    "",// TODO
+    "Начинаю EPG-сканирование",
     "Poшinjem EPG-scan",
     "EPG skaneerimine kфivitatud",
     "Starter EPG skanning",
@@ -5401,10 +5401,10 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "ingen titel",
+    "Fуrу titlu",
     "",// TODO
     "",// TODO
-    "",// TODO
-    "",// TODO
+    "Без названия",
     "Bez titla",
     "",// TODO
     "Ingen titel",

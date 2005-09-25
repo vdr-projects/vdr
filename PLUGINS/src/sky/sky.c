@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: sky.c 1.11 2004/12/26 12:45:22 kls Exp $
+ * $Id: sky.c 1.12 2005/09/17 10:39:35 kls Exp $
  */
 
 #include <sys/socket.h>
@@ -11,10 +11,11 @@
 #include <sys/time.h>
 #include <sys/un.h>
 #include <unistd.h>
+#include <vdr/device.h>
 #include <vdr/plugin.h>
 #include <vdr/sources.h>
 
-static const char *VERSION        = "0.3.3";
+static const char *VERSION        = "0.3.4";
 static const char *DESCRIPTION    = "Sky Digibox interface";
 
 // --- cDigiboxDevice --------------------------------------------------------

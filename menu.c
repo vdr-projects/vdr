@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.359 2005/09/03 11:42:27 kls Exp $
+ * $Id: menu.c 1.362 2005/09/25 13:37:21 kls Exp $
  */
 
 #include "menu.h"
@@ -1506,35 +1506,12 @@ cMenuRecordings::cMenuRecordings(const char *Base, int Level, bool OpenSubMenus)
 {
   base = Base ? strdup(Base) : NULL;
   level = Setup.RecordingDirs ? Level : -1;
+  Recordings.StateChanged(recordingsState); // just to get the current state
   Display(); // this keeps the higher level menus from showing up briefly when pressing 'Back' during replay
-  const char *LastReplayed = cReplayControl::LastReplayed();
-  cMenuRecordingItem *LastItem = NULL;
-  char *LastItemText = NULL;
-  if (!Base)
-     Recordings.Sort();
-  for (cRecording *recording = Recordings.First(); recording; recording = Recordings.Next(recording)) {
-      if (!Base || (strstr(recording->Name(), Base) == recording->Name() && recording->Name()[strlen(Base)] == '~')) {
-         cMenuRecordingItem *Item = new cMenuRecordingItem(recording, level);
-         if (*Item->Text() && (!LastItem || strcmp(Item->Text(), LastItemText) != 0)) {
-            Add(Item);
-            LastItem = Item;
-            free(LastItemText);
-            LastItemText = strdup(LastItem->Text()); // must use a copy because of the counters!
-            }
-         else
-            delete Item;
-         if (LastItem) {
-            if (LastReplayed && strcmp(LastReplayed, recording->FileName()) == 0)
-               SetCurrent(LastItem);
-            if (LastItem->IsDirectory())
-               LastItem->IncrementCounter(recording->IsNew());
-            }
-         }
-      }
-  free(LastItemText);
+  Set();
   if (Current() < 0)
      SetCurrent(First());
-  else if (OpenSubMenus && Open(true))
+  else if (OpenSubMenus && cReplayControl::LastReplayed() && Open(true))
      return;
   SetHelpKeys();
 }
@@ -1568,6 +1545,45 @@ void cMenuRecordings::SetHelpKeys(void)
        }
      helpKeys = NewHelpKeys;
      }
+}
+
+void cMenuRecordings::Set(bool Refresh)
+{
+  const char *CurrentRecording = cReplayControl::LastReplayed();
+  cMenuRecordingItem *LastItem = NULL;
+  char *LastItemText = NULL;
+  cThreadLock RecordingsLock(&Recordings);
+  if (Refresh) {
+     cMenuRecordingItem *ri = (cMenuRecordingItem *)Get(Current());
+     if (ri) {
+        cRecording *Recording = GetRecording(ri);
+        if (Recording)
+           CurrentRecording = Recording->FileName();
+        }
+     }
+  Clear();
+  Recordings.Sort();
+  for (cRecording *recording = Recordings.First(); recording; recording = Recordings.Next(recording)) {
+      if (!base || (strstr(recording->Name(), base) == recording->Name() && recording->Name()[strlen(base)] == '~')) {
+         cMenuRecordingItem *Item = new cMenuRecordingItem(recording, level);
+         if (*Item->Text() && (!LastItem || strcmp(Item->Text(), LastItemText) != 0)) {
+            Add(Item);
+            LastItem = Item;
+            free(LastItemText);
+            LastItemText = strdup(LastItem->Text()); // must use a copy because of the counters!
+            }
+         else
+            delete Item;
+         if (LastItem) {
+            if (CurrentRecording && strcmp(CurrentRecording, recording->FileName()) == 0)
+               SetCurrent(LastItem);
+            if (LastItem->IsDirectory())
+               LastItem->IncrementCounter(recording->IsNew());
+            }
+         }
+      }
+  free(LastItemText);
+  Display();
 }
 
 cRecording *cMenuRecordings::GetRecording(cMenuRecordingItem *Item)
@@ -1654,8 +1670,8 @@ eOSState cMenuRecordings::Delete(void)
         if (recording) {
            if (recording->Delete()) {
               cReplayControl::ClearLastReplayed(ri->FileName());
+              Recordings.DelByName(ri->FileName());
               cOsdMenu::Del(Current());
-              Recordings.Del(recording);
               SetHelpKeys();
               Display();
               if (!Count())
@@ -1716,6 +1732,9 @@ eOSState cMenuRecordings::ProcessKey(eKeys Key)
        case kYellow: return Delete();
        case kBlue:   return Info();
        case k1...k9: return Commands(Key);
+       case kNone:   if (Recordings.StateChanged(recordingsState))
+                        Set(true);
+                     break;
        default: break;
        }
      }
@@ -2202,6 +2221,8 @@ cMenuSetupRecord::cMenuSetupRecord(void)
 // --- cMenuSetupReplay ------------------------------------------------------
 
 class cMenuSetupReplay : public cMenuSetupBase {
+protected:
+  virtual void Store(void);
 public:
   cMenuSetupReplay(void);
   };
@@ -2212,6 +2233,13 @@ cMenuSetupReplay::cMenuSetupReplay(void)
   Add(new cMenuEditBoolItem(tr("Setup.Replay$Multi speed mode"), &data.MultiSpeedMode));
   Add(new cMenuEditBoolItem(tr("Setup.Replay$Show replay mode"), &data.ShowReplayMode));
   Add(new cMenuEditIntItem(tr("Setup.Replay$Resume ID"), &data.ResumeID, 0, 99));
+}
+
+void cMenuSetupReplay::Store(void)
+{
+  if (Setup.ResumeID != data.ResumeID)
+     Recordings.ResetResume();
+  cMenuSetupBase::Store();
 }
 
 // --- cMenuSetupMisc --------------------------------------------------------
@@ -2597,6 +2625,7 @@ static void SetTrackDescriptions(bool Live)
         }
      }
   else if (cReplayControl::LastReplayed()) {
+     cThreadLock RecordingsLock(&Recordings);
      cRecording *Recording = Recordings.GetByName(cReplayControl::LastReplayed());
      if (Recording)
         Components = Recording->Info()->Components();

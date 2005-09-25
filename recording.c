@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.113 2005/09/10 12:36:48 kls Exp $
+ * $Id: recording.c 1.119 2005/09/25 14:29:49 kls Exp $
  */
 
 #include "recording.h"
@@ -60,17 +60,23 @@
 
 bool VfatFileSystem = false;
 
+static cRecordings DeletedRecordings(true);
+
 void RemoveDeletedRecordings(void)
 {
   static time_t LastRemoveCheck = 0;
-  if (time(NULL) - LastRemoveCheck > REMOVECHECKDELTA) {
+  if (LastRemoveCheck == 0) {
+     DeletedRecordings.Update();
+     LastRemoveCheck = time(NULL) - REMOVECHECKDELTA * 9 / 10;
+     }
+  else if (time(NULL) - LastRemoveCheck > REMOVECHECKDELTA) {
      // Make sure only one instance of VDR does this:
      cLockFile LockFile(VideoDirectory);
      if (!LockFile.Lock())
         return;
      // Remove the oldest file that has been "deleted":
-     cRecordings DeletedRecordings(true);
-     if (DeletedRecordings.Load()) {
+     cThreadLock DeletedRecordingsLock(&DeletedRecordings);
+     if (DeletedRecordings.Count()) {
         cRecording *r = DeletedRecordings.First();
         cRecording *r0 = r;
         while (r) {
@@ -80,11 +86,14 @@ void RemoveDeletedRecordings(void)
               }
         if (r0 && time(NULL) - r0->start > DELETEDLIFETIME * 3600) {
            r0->Remove();
+           DeletedRecordings.Del(r0);
            RemoveEmptyVideoDirectories();
            LastRemoveCheck += REMOVELATENCY;
            return;
            }
         }
+     else
+        DeletedRecordings.Update();
      LastRemoveCheck = time(NULL);
      }
 }
@@ -104,8 +113,8 @@ void AssertFreeDiskSpace(int Priority)
            return;
         // Remove the oldest file that has been "deleted":
         isyslog("low disk space while recording, trying to remove a deleted recording...");
-        cRecordings DeletedRecordings(true);
-        if (DeletedRecordings.Load()) {
+        cThreadLock DeletedRecordingsLock(&DeletedRecordings);
+        if (DeletedRecordings.Count()) {
            cRecording *r = DeletedRecordings.First();
            cRecording *r0 = r;
            while (r) {
@@ -114,13 +123,20 @@ void AssertFreeDiskSpace(int Priority)
                  r = DeletedRecordings.Next(r);
                  }
            if (r0 && r0->Remove()) {
+              DeletedRecordings.Del(r0);
               LastFreeDiskCheck += REMOVELATENCY / Factor;
               return;
               }
            }
+        // DeletedRecordings was empty, so to be absolutely sure there are no
+        // deleted recordings we need to double check:
+        DeletedRecordings.Update(true);
+        if (DeletedRecordings.Count())
+           return; // the next call will actually remove it
         // No "deleted" files to remove, so let's see if we can delete a recording:
         isyslog("...no deleted recording found, trying to delete an old recording...");
-        if (Recordings.Load()) {
+        cThreadLock RecordingsLock(&Recordings);
+        if (Recordings.Count()) {
            cRecording *r = Recordings.First();
            cRecording *r0 = NULL;
            while (r) {
@@ -199,6 +215,7 @@ bool cResumeFile::Save(int Index)
         if (safe_write(f, &Index, sizeof(Index)) < 0)
            LOG_ERROR_STR(fileName);
         close(f);
+        Recordings.ResetResume(fileName);
         return true;
         }
      }
@@ -210,6 +227,7 @@ void cResumeFile::Delete(void)
   if (fileName) {
      if (remove(fileName) < 0 && errno != ENOENT)
         LOG_ERROR_STR(fileName);
+     Recordings.ResetResume(fileName);
      }
 }
 
@@ -288,7 +306,7 @@ tCharExchange CharExchange[] = {
   { 0, 0 }
   };
 
-static char *ExchangeChars(char *s, bool ToFileSystem)
+char *ExchangeChars(char *s, bool ToFileSystem)
 {
   char *p = s;
   while (*p) {
@@ -454,6 +472,7 @@ cRecording::cRecording(const char *FileName)
         name[p - FileName] = 0;
         name = ExchangeChars(name, false);
         }
+     GetResume();
      // read an optional info file:
      char *InfoFileName = NULL;
      asprintf(&InfoFileName, "%s%s", fileName, INFOFILESUFFIX);
@@ -492,11 +511,11 @@ cRecording::cRecording(const char *FileName)
                     line++;
                  }
            fclose(f);
-           if (line == 1) {
+           if (!data[2]) {
               data[2] = data[1];
               data[1] = NULL;
               }
-           else if (line == 2) {
+           else if (data[1] && data[2]) {
               // if line 1 is too long, it can't be the short text,
               // so assume the short text is missing and concatenate
               // line 1 and line 2 to be the long text:
@@ -715,21 +734,50 @@ bool cRecording::Remove(void)
   return RemoveVideoFile(FileName());
 }
 
+void cRecording::ResetResume(void) const
+{
+  resume = RESUME_NOT_INITIALIZED;
+}
+
 // --- cRecordings -----------------------------------------------------------
 
 cRecordings Recordings;
 
 cRecordings::cRecordings(bool Deleted)
+:cThread("video directory scanner")
 {
+  updateFileName = strdup(AddDirectory(VideoDirectory, ".update"));
   deleted = Deleted;
   lastUpdate = 0;
+  state = 0;
 }
 
-void cRecordings::ScanVideoDir(const char *DirName)
+cRecordings::~cRecordings()
+{
+  Cancel(3);
+  free(updateFileName);
+}
+
+void cRecordings::Action(void)
+{
+  Refresh();
+}
+
+void cRecordings::Refresh(bool Foreground)
+{
+  lastUpdate = time(NULL); // doing this first to make sure we don't miss anything
+  Lock();
+  Clear();
+  ChangeState();
+  Unlock();
+  ScanVideoDir(VideoDirectory, Foreground);
+}
+
+void cRecordings::ScanVideoDir(const char *DirName, bool Foreground)
 {
   cReadDir d(DirName);
   struct dirent *e;
-  while ((e = d.Next()) != NULL) {
+  while ((Foreground || Running()) && (e = d.Next()) != NULL) {
         if (strcmp(e->d_name, ".") && strcmp(e->d_name, "..")) {
            char *buffer;
            asprintf(&buffer, "%s/%s", DirName, e->d_name);
@@ -749,13 +797,17 @@ void cRecordings::ScanVideoDir(const char *DirName)
               if (S_ISDIR(st.st_mode)) {
                  if (endswith(buffer, deleted ? DELEXT : RECEXT)) {
                     cRecording *r = new cRecording(buffer);
-                    if (r->Name())
+                    if (r->Name()) {
+                       Lock();
                        Add(r);
+                       ChangeState();
+                       Unlock();
+                       }
                     else
                        delete r;
                     }
                  else
-                    ScanVideoDir(buffer);
+                    ScanVideoDir(buffer, Foreground);
                  }
               }
            free(buffer);
@@ -763,18 +815,34 @@ void cRecordings::ScanVideoDir(const char *DirName)
         }
 }
 
-bool cRecordings::NeedsUpdate(void)
+bool cRecordings::StateChanged(int &State)
 {
-  return lastUpdate <= LastModifiedTime(AddDirectory(VideoDirectory, ".update"));
+  int NewState = state;
+  bool Result = State != NewState;
+  State = state;
+  return Result;
 }
 
-bool cRecordings::Load(void)
+void cRecordings::TouchUpdate(void)
 {
-  lastUpdate = time(NULL); // doing this first to make sure we don't miss anything
-  Clear();
-  ScanVideoDir(VideoDirectory);
-  Sort();
-  return Count() > 0;
+  TouchFile(updateFileName);
+  lastUpdate = time(NULL); // make sure we don't tigger ourselves
+}
+
+bool cRecordings::NeedsUpdate(void)
+{
+  return lastUpdate < LastModifiedTime(updateFileName);
+}
+
+bool cRecordings::Update(bool Wait)
+{
+  if (Wait) {
+     Refresh(true);
+     return Count() > 0;
+     }
+  else
+     Start();
+  return false;
 }
 
 cRecording *cRecordings::GetByName(const char *FileName)
@@ -788,18 +856,35 @@ cRecording *cRecordings::GetByName(const char *FileName)
 
 void cRecordings::AddByName(const char *FileName)
 {
+  LOCK_THREAD;
   cRecording *recording = GetByName(FileName);
   if (!recording) {
      recording = new cRecording(FileName);
      Add(recording);
+     ChangeState();
+     TouchUpdate();
      }
 }
 
 void cRecordings::DelByName(const char *FileName)
 {
+  LOCK_THREAD;
   cRecording *recording = GetByName(FileName);
-  if (recording)
+  if (recording) {
      Del(recording);
+     ChangeState();
+     TouchUpdate();
+     }
+}
+
+void cRecordings::ResetResume(const char *ResumeFileName)
+{
+  LOCK_THREAD;
+  for (cRecording *recording = First(); recording; recording = Next(recording)) {
+      if (!ResumeFileName || strncmp(ResumeFileName, recording->FileName(), strlen(recording->FileName())) == 0)
+         recording->ResetResume();
+      }
+  ChangeState();
 }
 
 // --- cMark -----------------------------------------------------------------

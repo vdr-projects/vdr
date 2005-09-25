@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.98 2005/09/11 13:11:05 kls Exp $
+ * $Id: tools.c 1.99 2005/09/25 12:56:06 kls Exp $
  */
 
 #include "tools.h"
@@ -17,6 +17,7 @@
 #include <sys/vfs.h>
 #include <time.h>
 #include <unistd.h>
+#include <utime.h>
 #include "i18n.h"
 
 int SysLogLevel = 3;
@@ -473,6 +474,12 @@ bool SpinUpDisk(const char *FileName)
   free(buf);
   esyslog("ERROR: SpinUpDisk failed");
   return false;
+}
+
+void TouchFile(const char *FileName)
+{
+  if (utime(FileName, NULL) == -1 && errno != ENOENT)
+     LOG_ERROR_STR(FileName);
 }
 
 time_t LastModifiedTime(const char *FileName)

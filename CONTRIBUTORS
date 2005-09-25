@@ -14,6 +14,8 @@ Carsten Koch <Carsten.Koch@icem.de>
  for fixing the watchdog timer if the program hangs in OSD activities
  for his support in keeping the Premiere World channels up to date in 'channels.conf'
  for fixing converting summary.vdr files that would result in a very long 'short text'
+ for his help in testing and debugging reading the list of recordings in a
+ separate thread
 
 Plamen Ganev <pganev@com-it.net>
  for fixing the frequency offset for Hotbird channels
@@ -522,6 +524,7 @@ Helmut Auer <vdr@helmutauer.de>
  DVB data stream
  for implementing a default cRemote::Initialize()
  for suggesting to increase the default value for 'Min. user inactivity' to 300 minutes
+ for suggesting to add cChannel::LinkChannels() and cChannel::RefChannel()
 
 Jeremy Hall <jhall@UU.NET>
  for fixing an incomplete initialization of the filter parameters in eit.c
@@ -880,6 +883,7 @@ Alfred Zastrow <vdr@zastrow4u.de>
  for reporting a bug in handling menu status messages when the list contents is scrolled
  for reporting that without the usleep() call in cDvbPlayer::Action() VDR runs on NPTL
  systems
+ for reporting a missing include statement in the 'sky' plugin
 
 Matthias Raus <matthias-raus@web.de>
  for reporting a problem with starting the editing process if no marks have been set
@@ -900,6 +904,7 @@ Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  for making pressing the Power button not stop Transfer Mode or replay immediately
  for making EPG events without a title display "No title" instead of "(null)"
  for changing the title of the recording info menu
+ for reporting a bug in handling key macros with keys after @plugin
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark
@@ -1286,6 +1291,7 @@ Stefan Meyknecht <stefan@meyknecht.org>
 Lucian Muresan <lucianm@users.sourceforge.net>
  for updating the Romanian language texts and the iso8859-2 fonts
  for making VDR actually use the iso8859-15 fonts
+ for suggesting to make the function ExchangeChars()
 
 Mattias Grönlund <Mattias@Gronlund.net>
  for pointing out a missing cleanup at program exit in case there is a problem
@@ -1431,6 +1437,7 @@ Georg Acher <acher@baycom.de>
  '& 0xff' in CRC32::crc32() of libsi/util.c
  for suggesting to reduce the priority of the section handler threads
  for a patch that was used to implement a hash for the channels
+ for reporting a problem with error handling in cCiTransportConnection::RecvTPDU()
 
 Henrik Niehaus <henrik.niehaus@gmx.de>
  for reporting a problem with timers with a day given as MTWTF--@6, i.e. a repeating
@@ -1458,6 +1465,8 @@ Thomas Günther <tom1@toms-cafe.de>
  editing mark, or '9' after the last one
  for suggesting to move cMenuEditTimer and cMenuEvent to menu.h so that plugins
  can use it
+ for fixing converting arbitrarily formatted summary.vdr files
+ for making the 'new' indicator in the Recordings menu kept up-to-date
 
 David Woodhouse <dwmw2@infradead.org>
  for his help in replacing the get/put_unaligned() macros from asm/unaligned.h with
@@ -1479,3 +1488,9 @@ Marko Mäkelä <marko.makela@hut.fi>
 
 Patrick Rother <krd-vdr@gulu.net>
  for reporting a bug in defining timers that only differ in the day of week
+
+Alexander Rieger <Alexander.Rieger@inka.de>
+ for fixing two errors in 'newplugin'
+ for fixing handling color buttons in cMenuEditStrItem
+ for making the '.update' file in the video directory be touched when a recording is
+ added or deleted, so that other VDR instances can update their lists
