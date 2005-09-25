@@ -14,6 +14,8 @@ Carsten Koch <Carsten.Koch@icem.de>
  for fixing the watchdog timer if the program hangs in OSD activities
  for his support in keeping the Premiere World channels up to date in 'channels.conf'
  for fixing converting summary.vdr files that would result in a very long 'short text'
+ for his help in testing and debugging reading the list of recordings in a
+ separate thread
 
 Plamen Ganev <pganev@com-it.net>
  for fixing the frequency offset for Hotbird channels

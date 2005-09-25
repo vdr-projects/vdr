@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 1.40 2005/09/03 13:04:41 kls Exp $
+ * $Id: recording.h 1.41 2005/09/25 10:07:40 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -71,7 +71,7 @@ public:
   int lifetime;
   cRecording(cTimer *Timer, const cEvent *Event);
   cRecording(const char *FileName);
-  ~cRecording();
+  virtual ~cRecording();
   virtual int Compare(const cListObject &ListObject) const;
   const char *Name(void) const { return name; }
   const char *FileName(void) const;
@@ -90,16 +90,32 @@ public:
        // Returns false in case of error
   };
 
-class cRecordings : public cList<cRecording> {
+class cRecordings : public cList<cRecording>, public cThread {
 private:
   bool deleted;
   time_t lastUpdate;
-  void ScanVideoDir(const char *DirName);
+  int state;
+  void Refresh(bool Foreground = false);
+  void ScanVideoDir(const char *DirName, bool Foreground = false);
+protected:
+  void Action(void);
 public:
   cRecordings(bool Deleted = false);
-  bool Load(void);
+  virtual ~cRecordings();
+  bool Load(void) { return Update(true); }
+       ///< Loads the current list of recordings and returns true if there
+       ///< is anything in it (for compatibility with older plugins - use
+       ///< Update(true) instead).
+  bool Update(bool Wait = false);
+       ///< Triggers an update of the list of recordings, which will run
+       ///< as a separate thread if Wait is false. If Wait is true, the
+       ///< function returns only after the update has completed.
+       ///< Returns true if Wait is true and there is anyting in the list
+       ///< of recordings, false otherwise.
   void TriggerUpdate(void) { lastUpdate = 0; }
   bool NeedsUpdate(void);
+  void ChangeState(void) { state++; }
+  bool StateChanged(int &State);
   cRecording *GetByName(const char *FileName);
   void AddByName(const char *FileName);
   void DelByName(const char *FileName);
@@ -112,7 +128,7 @@ public:
   int position;
   char *comment;
   cMark(int Position = 0, const char *Comment = NULL);
-  ~cMark();
+  virtual ~cMark();
   cString ToText(void);
   bool Parse(const char *s);
   bool Save(FILE *f);

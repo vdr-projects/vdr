@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.81 2005/09/18 10:50:08 kls Exp $
+ * $Id: svdrp.c 1.82 2005/09/25 10:36:59 kls Exp $
  */
 
 #include "svdrp.h"
@@ -890,7 +890,7 @@ void cSVDRP::CmdLSTE(const char *Option)
 
 void cSVDRP::CmdLSTR(const char *Option)
 {
-  bool recordings = Recordings.Load();
+  bool recordings = Recordings.Update(true);
   if (*Option) {
      if (isnumber(Option)) {
         cRecording *recording = Recordings.Get(strtol(Option, NULL, 10) - 1);
