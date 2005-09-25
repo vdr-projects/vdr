@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 1.41 2005/09/25 10:07:40 kls Exp $
+ * $Id: recording.h 1.42 2005/09/25 11:31:28 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -79,6 +79,7 @@ public:
   const cRecordingInfo *Info(void) const { return info; }
   const char *PrefixFileName(char Prefix);
   int HierarchyLevels(void) const;
+  void ResetResume(void) const;
   bool IsNew(void) const { return GetResume() <= 0; }
   bool IsEdited(void) const;
   bool WriteInfo(void);
@@ -116,6 +117,7 @@ public:
   bool NeedsUpdate(void);
   void ChangeState(void) { state++; }
   bool StateChanged(int &State);
+  void ResetResume(const char *ResumeFileName = NULL);
   cRecording *GetByName(const char *FileName);
   void AddByName(const char *FileName);
   void DelByName(const char *FileName);

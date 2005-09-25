@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.115 2005/09/25 10:40:31 kls Exp $
+ * $Id: recording.c 1.116 2005/09/25 11:31:52 kls Exp $
  */
 
 #include "recording.h"
@@ -215,6 +215,7 @@ bool cResumeFile::Save(int Index)
         if (safe_write(f, &Index, sizeof(Index)) < 0)
            LOG_ERROR_STR(fileName);
         close(f);
+        Recordings.ResetResume(fileName);
         return true;
         }
      }
@@ -226,6 +227,7 @@ void cResumeFile::Delete(void)
   if (fileName) {
      if (remove(fileName) < 0 && errno != ENOENT)
         LOG_ERROR_STR(fileName);
+     Recordings.ResetResume(fileName);
      }
 }
 
@@ -732,6 +734,11 @@ bool cRecording::Remove(void)
   return RemoveVideoFile(FileName());
 }
 
+void cRecording::ResetResume(void) const
+{
+  resume = RESUME_NOT_INITIALIZED;
+}
+
 // --- cRecordings -----------------------------------------------------------
 
 cRecordings Recordings;
@@ -858,6 +865,14 @@ void cRecordings::DelByName(const char *FileName)
      Del(recording);
      ChangeState();
      }
+}
+
+void cRecordings::ResetResume(const char *ResumeFileName)
+{
+  for (cRecording *recording = First(); recording; recording = Next(recording)) {
+      if (!ResumeFileName || strncmp(ResumeFileName, recording->FileName(), strlen(recording->FileName())) == 0)
+         recording->ResetResume();
+      }
 }
 
 // --- cMark -----------------------------------------------------------------

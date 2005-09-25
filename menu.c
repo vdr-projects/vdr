@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.360 2005/09/25 09:45:01 kls Exp $
+ * $Id: menu.c 1.361 2005/09/25 11:30:55 kls Exp $
  */
 
 #include "menu.h"
@@ -2221,6 +2221,8 @@ cMenuSetupRecord::cMenuSetupRecord(void)
 // --- cMenuSetupReplay ------------------------------------------------------
 
 class cMenuSetupReplay : public cMenuSetupBase {
+protected:
+  virtual void Store(void);
 public:
   cMenuSetupReplay(void);
   };
@@ -2231,6 +2233,13 @@ cMenuSetupReplay::cMenuSetupReplay(void)
   Add(new cMenuEditBoolItem(tr("Setup.Replay$Multi speed mode"), &data.MultiSpeedMode));
   Add(new cMenuEditBoolItem(tr("Setup.Replay$Show replay mode"), &data.ShowReplayMode));
   Add(new cMenuEditIntItem(tr("Setup.Replay$Resume ID"), &data.ResumeID, 0, 99));
+}
+
+void cMenuSetupReplay::Store(void)
+{
+  if (Setup.ResumeID != data.ResumeID)
+     Recordings.ResetResume();
+  cMenuSetupBase::Store();
 }
 
 // --- cMenuSetupMisc --------------------------------------------------------

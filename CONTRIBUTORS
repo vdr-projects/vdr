@@ -1465,6 +1465,7 @@ Thomas Günther <tom1@toms-cafe.de>
  for suggesting to move cMenuEditTimer and cMenuEvent to menu.h so that plugins
  can use it
  for fixing converting arbitrarily formatted summary.vdr files
+ for making the 'new' indicator in the Recordings menu kept up-to-date
 
 David Woodhouse <dwmw2@infradead.org>
  for his help in replacing the get/put_unaligned() macros from asm/unaligned.h with

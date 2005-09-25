@@ -3841,3 +3841,5 @@ Video Disk Recorder Revision History
 
   into the respective code block. Thanks to Carsten Koch for his help in testing
   and debugging this.
+- The 'new' indicator in the Recordings menu is now kept up-to-date (thanks to
+  Thomas Günther).
