@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.116 2005/09/25 11:31:52 kls Exp $
+ * $Id: recording.c 1.117 2005/09/25 12:28:40 kls Exp $
  */
 
 #include "recording.h"
@@ -869,10 +869,12 @@ void cRecordings::DelByName(const char *FileName)
 
 void cRecordings::ResetResume(const char *ResumeFileName)
 {
+  LOCK_THREAD;
   for (cRecording *recording = First(); recording; recording = Next(recording)) {
       if (!ResumeFileName || strncmp(ResumeFileName, recording->FileName(), strlen(recording->FileName())) == 0)
          recording->ResetResume();
       }
+  ChangeState();
 }
 
 // --- cMark -----------------------------------------------------------------
