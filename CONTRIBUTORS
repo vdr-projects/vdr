@@ -918,6 +918,7 @@ Hermann Gausterer <mrq1@gmx.net>
 Peter Bieringer <pb@bieringer.de>
  for reporting a problem with duplicate recordings with the same file name
  for suggesting to implement the command line option '--vfat'
+ for reporting a leftover 'summary.vdr' in vdr.5
 
 Alexander Damhuis <ad@phonedation.de>
  for reporting problems when deleting a timer that is currently recording
