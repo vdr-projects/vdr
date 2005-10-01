@@ -3860,3 +3860,5 @@ Video Disk Recorder Revision History
   from a subfolder.
 - Fixed handling the '.update' file in case the video directory is not at the default
   location (reported by Jon Burgess).
+- Fixed a crash in cConfig::Load() when compiling on the PPC (thanks to Sascha
+  Volkenandt).

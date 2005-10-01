@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.229 2005/09/26 21:40:16 kls Exp $
+ * $Id: config.h 1.230 2005/10/01 10:41:33 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -91,7 +91,7 @@ public:
   const char *FileName(void) { return fileName; }
   bool Load(const char *FileName = NULL, bool AllowComments = false, bool MustExist = false)
   {
-    Clear();
+    cConfig<T>::Clear();
     if (FileName) {
        free(fileName);
        fileName = strdup(FileName);
