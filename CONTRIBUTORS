@@ -1233,6 +1233,7 @@ Marco Schlüßler <marco@lordzodiac.de>
  for improving resetting CAM connections
  for fixing handling EPG data for time shifted events
  for fixing detecting short channel names for "Kabel Deutschland"
+ for reporting that the FATALERRNO macro needs to check for a non-zero errno value
 
 Jürgen Schmitz <j.schmitz@web.de>
  for reporting a bug in displaying the current channel when switching via the SVDRP

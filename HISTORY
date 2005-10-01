@@ -3862,3 +3862,5 @@ Video Disk Recorder Revision History
   location (reported by Jon Burgess).
 - Fixed a crash in cConfig::Load() when compiling on the PPC (thanks to Sascha
   Volkenandt).
+- Fixed the FATALERRNO macro to check for a non-zero errno value (reported by Marco
+  Schlüßler).
