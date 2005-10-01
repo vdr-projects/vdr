@@ -17,3 +17,7 @@ VDR Plugin 'skincurses' Revision History
 2005-05-16: Version 0.0.4
 
 - New "recording info" display.
+
+2005-10-01:
+
+- Added a note about using this skin to the README file.
