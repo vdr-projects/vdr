@@ -1282,6 +1282,8 @@ Udo Richter <udo_richter@gmx.de>
  for reporting a problem with cRemux in a single thread
  for adding 'Service' functions to the plugin interface
  for reporting an unused MAINMENUENTRY in svdrpdemo.c
+ for reporting a bug in opening recording folders in case the last replayed recording
+ no longer exists
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date

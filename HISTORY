@@ -3850,7 +3850,9 @@ Video Disk Recorder Revision History
   Alexander Rieger).
 - Made the function ExchangeChars() public (suggested by Lucian Muresan).
 
-2005-09-26: Version 1.3.34
+2005-10-01: Version 1.3.34
 
 - Fixed a leftover 'summary.vdr' in vdr.5 (thanks to Peter Bieringer for reporting
   this one).
+- Fixed opening recording folders in case the last replayed recording no longer
+  exists (reported by Udo Richter).

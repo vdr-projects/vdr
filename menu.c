@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.362 2005/09/25 13:37:21 kls Exp $
+ * $Id: menu.c 1.363 2005/10/01 10:09:35 kls Exp $
  */
 
 #include "menu.h"
@@ -1513,6 +1513,7 @@ cMenuRecordings::cMenuRecordings(const char *Base, int Level, bool OpenSubMenus)
      SetCurrent(First());
   else if (OpenSubMenus && cReplayControl::LastReplayed() && Open(true))
      return;
+  Display();
   SetHelpKeys();
 }
 
@@ -1583,7 +1584,8 @@ void cMenuRecordings::Set(bool Refresh)
          }
       }
   free(LastItemText);
-  Display();
+  if (Refresh)
+     Display();
 }
 
 cRecording *cMenuRecordings::GetRecording(cMenuRecordingItem *Item)
