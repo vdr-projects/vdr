@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.363 2005/10/01 10:09:35 kls Exp $
+ * $Id: menu.c 1.364 2005/10/01 10:12:32 kls Exp $
  */
 
 #include "menu.h"
@@ -1557,7 +1557,7 @@ void cMenuRecordings::Set(bool Refresh)
   if (Refresh) {
      cMenuRecordingItem *ri = (cMenuRecordingItem *)Get(Current());
      if (ri) {
-        cRecording *Recording = GetRecording(ri);
+        cRecording *Recording = Recordings.GetByName(ri->FileName());
         if (Recording)
            CurrentRecording = Recording->FileName();
         }

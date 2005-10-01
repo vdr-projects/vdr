@@ -3856,3 +3856,5 @@ Video Disk Recorder Revision History
   this one).
 - Fixed opening recording folders in case the last replayed recording no longer
   exists (reported by Udo Richter).
+- Fixed an unjustified "Error while accessing recording!" after deleting a recording
+  from a subfolder.
