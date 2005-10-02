@@ -3868,3 +3868,4 @@ Video Disk Recorder Revision History
   Richter).
 - Fixed setting current menu item if the first one is non-selectable.
 - cOsdItem::cOsdItem() now has a 'Selectable' parameter.
+- Improved displaying 'sub-title' and 'bottom text' in the CAM menu.

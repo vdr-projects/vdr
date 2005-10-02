@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.364 2005/10/01 10:12:32 kls Exp $
+ * $Id: menu.c 1.365 2005/10/02 09:59:30 kls Exp $
  */
 
 #include "menu.h"
@@ -1287,18 +1287,28 @@ eOSState cMenuCommands::ProcessKey(eKeys Key)
 cMenuCam::cMenuCam(cCiMenu *CiMenu)
 :cOsdMenu("")
 {
+  dsyslog("CAM: Menu ------------------");
   ciMenu = CiMenu;
   selected = false;
+  offset = 0;
   if (ciMenu->Selectable())
      SetHasHotkeys();
-  SetTitle(ciMenu->TitleText() ? ciMenu->TitleText() : "CAM");
-  for (int i = 0; i < ciMenu->NumEntries(); i++)
+  SetTitle(*ciMenu->TitleText() ? ciMenu->TitleText() : "CAM");
+  dsyslog("CAM: %s", ciMenu->TitleText());
+  if (*ciMenu->SubTitleText()) {
+     Add(new cOsdItem(ciMenu->SubTitleText(), osUnknown, false));
+     offset = 1;
+     dsyslog("CAM: %s", ciMenu->SubTitleText());
+     }
+  for (int i = 0; i < ciMenu->NumEntries(); i++) {
       Add(new cOsdItem(hk(ciMenu->Entry(i))));
-  //XXX implement a clean way of displaying this:
-  Add(new cOsdItem(ciMenu->SubTitleText()));
-  Add(new cOsdItem(ciMenu->BottomText()));
+      dsyslog("CAM: %s", ciMenu->Entry(i));
+      }
+  if (*ciMenu->BottomText()) {
+     Add(new cOsdItem(ciMenu->BottomText(), osUnknown, false));
+     dsyslog("CAM: %s", ciMenu->BottomText());
+     }
   Display();
-  dsyslog("CAM: Menu - %s", ciMenu->TitleText());
 }
 
 cMenuCam::~cMenuCam()
@@ -1311,7 +1321,8 @@ cMenuCam::~cMenuCam()
 eOSState cMenuCam::Select(void)
 {
   if (ciMenu->Selectable()) {
-     ciMenu->Select(Current());
+     ciMenu->Select(Current() - offset);
+     dsyslog("CAM: select %d", Current() - offset);
      selected = true;
      }
   return osEnd;
