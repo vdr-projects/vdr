@@ -3850,7 +3850,7 @@ Video Disk Recorder Revision History
   Alexander Rieger).
 - Made the function ExchangeChars() public (suggested by Lucian Muresan).
 
-2005-10-01: Version 1.3.34
+2005-10-02: Version 1.3.34
 
 - Fixed a leftover 'summary.vdr' in vdr.5 (thanks to Peter Bieringer for reporting
   this one).
@@ -3864,3 +3864,5 @@ Video Disk Recorder Revision History
   Volkenandt).
 - Fixed the FATALERRNO macro to check for a non-zero errno value (reported by Marco
   Schlüßler).
+- Added a check against MAXOSDAREAS in cOsd::CanHandleAreas() (reported by Udo
+  Richter).

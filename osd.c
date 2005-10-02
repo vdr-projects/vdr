@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 1.62 2005/06/19 10:43:04 kls Exp $
+ * $Id: osd.c 1.63 2005/10/02 08:47:13 kls Exp $
  */
 
 #include "osd.h"
@@ -618,6 +618,8 @@ cBitmap *cOsd::GetBitmap(int Area)
 
 eOsdError cOsd::CanHandleAreas(const tArea *Areas, int NumAreas)
 {
+  if (NumAreas > MAXOSDAREAS)
+     return oeTooManyAreas;
   eOsdError Result = oeOk;
   for (int i = 0; i < NumAreas; i++) {
       if (Areas[i].x1 > Areas[i].x2 || Areas[i].y1 > Areas[i].y2 || Areas[i].x1 < 0 || Areas[i].y1 < 0)

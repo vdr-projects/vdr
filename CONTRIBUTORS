@@ -1288,6 +1288,7 @@ Udo Richter <udo_richter@gmx.de>
  for reporting an unused MAINMENUENTRY in svdrpdemo.c
  for reporting a bug in opening recording folders in case the last replayed recording
  no longer exists
+ for reporting a missing check against MAXOSDAREAS in cOsd::CanHandleAreas()
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date
