@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.367 2005/10/02 12:56:19 kls Exp $
+ * $Id: menu.c 1.368 2005/10/02 13:20:41 kls Exp $
  */
 
 #include "menu.h"
@@ -1314,7 +1314,7 @@ cMenuCam::cMenuCam(cCiMenu *CiMenu)
 cMenuCam::~cMenuCam()
 {
   if (!selected)
-     ciMenu->Cancel();
+     ciMenu->Abort();
   delete ciMenu;
 }
 
@@ -1323,8 +1323,10 @@ eOSState cMenuCam::Select(void)
   if (ciMenu->Selectable()) {
      ciMenu->Select(Current() - offset);
      dsyslog("CAM: select %d", Current() - offset);
-     selected = true;
      }
+  else
+     ciMenu->Cancel();
+  selected = true;
   return osEnd;
 }
 
@@ -1338,8 +1340,13 @@ eOSState cMenuCam::ProcessKey(eKeys Key)
        default: break;
        }
      }
+  else if (state == osBack) {
+     ciMenu->Cancel();
+     selected = true;
+     return osEnd;
+     }
   if (ciMenu->HasUpdate()) {
-     selected = true; // just to not call ciMenu->Cancel()
+     selected = true;
      return osEnd;
      }
   return state;

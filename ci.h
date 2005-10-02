@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.h 1.15 2005/10/02 12:51:22 kls Exp $
+ * $Id: ci.h 1.16 2005/10/02 13:20:41 kls Exp $
  */
 
 #ifndef __CI_H
@@ -40,6 +40,7 @@ public:
   bool Selectable(void) { return selectable; }
   bool Select(int Index);
   bool Cancel(void);
+  bool Abort(void);
   bool HasUpdate(void);
   };
 

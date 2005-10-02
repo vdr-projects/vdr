@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 1.30 2005/10/02 13:10:28 kls Exp $
+ * $Id: ci.c 1.31 2005/10/02 13:20:41 kls Exp $
  */
 
 #include "ci.h"
@@ -1032,6 +1032,7 @@ public:
   cCiEnquiry *Enquiry(bool Clear = false);
   bool SendMenuAnswer(uint8_t Selection);
   bool SendAnswer(const char *Text);
+  bool SendCloseMMI(void);
   };
 
 cCiMMI::cCiMMI(int SessionId, cCiTransportConnection *Tc)
@@ -1204,6 +1205,14 @@ bool cCiMMI::SendAnswer(const char *Text)
   return true;
 }
 
+bool cCiMMI::SendCloseMMI(void)
+{
+  dbgprotocol("%d: ==> Close MMI\n", SessionId());
+  SendData(AOT_CLOSE_MMI, 0);
+  //XXX return value of all SendData() calls???
+  return true;
+}
+
 // --- cCiMenu ---------------------------------------------------------------
 
 cCiMenu::cCiMenu(cCiMMI *MMI, bool Selectable)
@@ -1251,6 +1260,11 @@ bool cCiMenu::Select(int Index)
 bool cCiMenu::Cancel(void)
 {
   return Select(-1);
+}
+
+bool cCiMenu::Abort(void)
+{
+  return mmi->SendCloseMMI();
 }
 
 // --- cCiEnquiry ------------------------------------------------------------
