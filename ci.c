@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 1.28 2005/09/17 11:43:08 kls Exp $
+ * $Id: ci.c 1.29 2005/10/02 12:51:42 kls Exp $
  */
 
 #include "ci.h"
@@ -1227,6 +1227,11 @@ bool cCiMenu::AddEntry(char *s)
      return true;
      }
   return false;
+}
+
+bool cCiMenu::HasUpdate(void)
+{
+  return mmi->HasUserIO();
 }
 
 bool cCiMenu::Select(int Index)

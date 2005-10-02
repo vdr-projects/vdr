@@ -3871,3 +3871,5 @@ Video Disk Recorder Revision History
 - Improved displaying 'sub-title' and 'bottom text' in the CAM menu.
 - Added status message "Resetting CAM..." for an immediate feedback when the CAM
   reset has been triggered.
+- The CAM menu now automatically updates itself in case of a progress display (as
+  used, for instance, when updating the firmware via satellite).
