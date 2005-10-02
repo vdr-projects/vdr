@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osdbase.c 1.21 2005/10/02 09:23:10 kls Exp $
+ * $Id: osdbase.c 1.22 2005/10/02 15:00:40 kls Exp $
  */
 
 #include "osdbase.h"
@@ -213,8 +213,9 @@ void cOsdMenu::Display(void)
      int i = first;
      int n = 0;
      for (cOsdItem *item = Get(first); item; item = Next(item)) {
-         displayMenu->SetItem(item->Text(), i - first, i == current, item->Selectable());
-         if (i == current)
+         bool CurrentSelectable = (i == current) && item->Selectable();
+         displayMenu->SetItem(item->Text(), i - first, CurrentSelectable, item->Selectable());
+         if (CurrentSelectable)
             cStatus::MsgOsdCurrentItem(item->Text());
          if (++n == displayMenuItems)
             break;

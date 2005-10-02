@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.370 2005/10/02 14:50:44 kls Exp $
+ * $Id: menu.c 1.371 2005/10/02 14:53:48 kls Exp $
  */
 
 #include "menu.h"
@@ -1302,7 +1302,7 @@ cMenuCam::cMenuCam(cCiMenu *CiMenu)
      dsyslog("CAM: '%s'", ciMenu->SubTitleText());
      }
   for (int i = 0; i < ciMenu->NumEntries(); i++) {
-      Add(new cOsdItem(hk(ciMenu->Entry(i))));
+      Add(new cOsdItem(hk(ciMenu->Entry(i)), osUnknown, ciMenu->Selectable()));
       dsyslog("CAM: '%s'", ciMenu->Entry(i));
       }
   if (*ciMenu->BottomText()) {

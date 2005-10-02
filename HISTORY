@@ -3881,3 +3881,4 @@ Video Disk Recorder Revision History
 - Added status message "Opening CAM menu..." for an immediate feedback when the CAM
   menu has been requested.
 - Speeded up initial opening of the CAM menu.
+- Fixed handling of menus with no selectable items.
