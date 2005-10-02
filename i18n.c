@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.210 2005/09/25 11:57:04 kls Exp $
+ * $Id: i18n.c 1.211 2005/10/02 10:17:41 kls Exp $
  *
  * Translations provided by:
  *
@@ -2294,6 +2294,27 @@ const tI18nPhrase Phrases[] = {
     "Ei saa avada CAM menüüd!",
     "Kan ikke åbne CAM menuen!",
   },
+  { "Resetting CAM...",
+    "CAM wird zurückgesetzt...",
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+  },
   { "Can't reset CAM!",
     "CAM-Reset fehlgeschlagen!",
     "Ne morem resetirati CAM-a",
@@ -2316,23 +2337,23 @@ const tI18nPhrase Phrases[] = {
     "Kan ikke nulstille CAM!",
   },
   { "CAM has been reset",
-    "CAM wurde zurückgesetzt!",
-    "CAM je resetiran!",
-    "Modulo CAM reimpostato!",
-    "CAM is herstart!",
+    "CAM wurde zurückgesetzt",
+    "CAM je resetiran",
+    "Modulo CAM reimpostato",
+    "CAM is herstart",
     "",//TODO
     "La CAM a été réinitialisée",
     "",//TODO
     "Salausmoduuli alustettu",
-    "CAM-Reset wykonany!",
+    "CAM-Reset wykonany",
     "CAM reiniciada",
     "Óôï CAM İãéíå åğáíáöïñÜ",
     "CA modulen har återställts",
     "CAM-ul a fost resetat",
     "A CAM vissza lett állítva",
     "CAM reiniciada",
-    "CAM-ÜŞÔãÛì ßÕàÕ×ĞßãéÕİ!",
-    "CAM je resetiran!",
+    "CAM-ÜŞÔãÛì ßÕàÕ×ĞßãéÕİ",
+    "CAM je resetiran",
     "CAM mooduli taaskäivitus tehtud",
     "CAM er blevet nulstillet",
   },

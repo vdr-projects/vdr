@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.365 2005/10/02 09:59:30 kls Exp $
+ * $Id: menu.c 1.366 2005/10/02 10:08:57 kls Exp $
  */
 
 #include "menu.h"
@@ -2180,6 +2180,7 @@ eOSState cMenuSetupCICAM::Reset(void)
 {
   cMenuSetupCICAMItem *item = (cMenuSetupCICAMItem *)Get(Current());
   if (item) {
+     Skins.Message(mtWarning, tr("Resetting CAM..."));
      if (item->CiHandler()->Reset(item->Slot())) {
         Skins.Message(mtInfo, tr("CAM has been reset"));
         return osEnd;
