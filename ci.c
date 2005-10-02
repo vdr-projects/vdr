@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 1.32 2005/10/02 14:10:51 kls Exp $
+ * $Id: ci.c 1.33 2005/10/02 15:06:07 kls Exp $
  */
 
 #include "ci.h"
@@ -94,7 +94,7 @@ static char *CopyString(int Length, const uint8_t *Data)
 {
   // Some CAMs send funny characters at the beginning of strings.
   // Let's just skip them:
-  while (Length > 0 && (*Data == 0x05 || *Data == 0x96 || *Data == 0x97)) {
+  while (Length > 0 && (*Data == ' ' || *Data == 0x05 || *Data == 0x96 || *Data == 0x97)) {
         Length--;
         Data++;
         }
