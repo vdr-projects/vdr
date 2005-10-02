@@ -3866,3 +3866,5 @@ Video Disk Recorder Revision History
   Schlüßler).
 - Added a check against MAXOSDAREAS in cOsd::CanHandleAreas() (reported by Udo
   Richter).
+- Fixed setting current menu item if the first one is non-selectable.
+- cOsdItem::cOsdItem() now has a 'Selectable' parameter.
