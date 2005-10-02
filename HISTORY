@@ -3873,3 +3873,4 @@ Video Disk Recorder Revision History
   reset has been triggered.
 - The CAM menu now automatically updates itself in case of a progress display (as
   used, for instance, when updating the firmware via satellite).
+- Now skipping some funny characters sent by some CAMs at the beginning of strings.

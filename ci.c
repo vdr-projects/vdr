@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 1.29 2005/10/02 12:51:42 kls Exp $
+ * $Id: ci.c 1.30 2005/10/02 13:10:28 kls Exp $
  */
 
 #include "ci.h"
@@ -92,6 +92,12 @@ static char *CopyString(int Length, const uint8_t *Data)
 ///< Copies the string at Data.
 ///< \return Returns a pointer to a newly allocated string.
 {
+  // Some CAMs send funny characters at the beginning of strings.
+  // Let's just skip them:
+  while (Length > 0 && (*Data == 0x05 || *Data == 0x96 || *Data == 0x97)) {
+        Length--;
+        Data++;
+        }
   char *s = MALLOC(char, Length + 1);
   strncpy(s, (char *)Data, Length);
   s[Length] = 0;
