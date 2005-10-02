@@ -3878,3 +3878,6 @@ Video Disk Recorder Revision History
   a sub menu.
 - Reduced MAX_CONNECT_RETRIES in ci.c to 2 (waiting too long made the whole thing
   appear hanging).
+- Added status message "Opening CAM menu..." for an immediate feedback when the CAM
+  menu has been requested.
+- Speeded up initial opening of the CAM menu.

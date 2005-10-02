@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.211 2005/10/02 10:17:41 kls Exp $
+ * $Id: i18n.c 1.212 2005/10/02 14:36:11 kls Exp $
  *
  * Translations provided by:
  *
@@ -2272,6 +2272,27 @@ const tI18nPhrase Phrases[] = {
     "Nedovoljno prostora na disku",
     "Kõvaketas peaaegu täis!",
     "Kun lidt diskplads tilbage!",
+  },
+  { "Opening CAM menu...",
+    "CAM-Menü wird geöffnet...",
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
   },
   { "Can't open CAM menu!",
     "CAM-Menü kann nicht geöffnet werden!",

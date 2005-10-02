@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.368 2005/10/02 13:20:41 kls Exp $
+ * $Id: menu.c 1.369 2005/10/02 14:38:27 kls Exp $
  */
 
 #include "menu.h"
@@ -34,6 +34,7 @@
 
 #define MAXRECORDCONTROLS (MAXDEVICES * MAXRECEIVERS)
 #define MAXINSTANTRECTIME (24 * 60 - 1) // 23:59 hours
+#define MAXWAITFORCAMMENU 4 // seconds to wait for the CAM menu to open
 
 #define CHNUMWIDTH  (numdigits(Channels.MaxNumber()) + 1)
 
@@ -2179,8 +2180,13 @@ eOSState cMenuSetupCICAM::Menu(void)
 {
   cMenuSetupCICAMItem *item = (cMenuSetupCICAMItem *)Get(Current());
   if (item) {
-     if (item->CiHandler()->EnterMenu(item->Slot()))
+     if (item->CiHandler()->EnterMenu(item->Slot())) {
+        Skins.Message(mtWarning, tr("Opening CAM menu..."));
+        time_t t = time(NULL);
+        while (time(NULL) - t < MAXWAITFORCAMMENU && !item->CiHandler()->HasUserIO())
+              item->CiHandler()->Process();
         return osEnd; // the CAM menu will be executed explicitly from the main loop
+        }
      else
         Skins.Message(mtError, tr("Can't open CAM menu!"));
      }
