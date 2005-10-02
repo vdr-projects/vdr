@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 1.31 2005/10/02 13:20:41 kls Exp $
+ * $Id: ci.c 1.32 2005/10/02 14:10:51 kls Exp $
  */
 
 #include "ci.h"
@@ -400,7 +400,7 @@ const uint8_t *cCiTransportConnection::Data(int &Length)
   return tpdu->Data(Length);
 }
 
-#define MAX_CONNECT_RETRIES  20
+#define MAX_CONNECT_RETRIES  2
 
 int cCiTransportConnection::CreateConnection(void)
 {

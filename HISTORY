@@ -3876,3 +3876,5 @@ Video Disk Recorder Revision History
 - Now skipping some funny characters sent by some CAMs at the beginning of strings.
 - The CAM menu is now completely closed when pressing the Menu key while inside
   a sub menu.
+- Reduced MAX_CONNECT_RETRIES in ci.c to 2 (waiting too long made the whole thing
+  appear hanging).
