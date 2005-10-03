@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.78 2005/09/25 12:54:58 kls Exp $
+ * $Id: tools.h 1.79 2005/10/01 12:43:31 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -45,7 +45,7 @@ extern int SysLogLevel;
 #define DELETENULL(p) (delete (p), p = NULL)
 
 #define CHECK(s) { if ((s) < 0) LOG_ERROR; } // used for 'ioctl()' calls
-#define FATALERRNO (errno != EAGAIN && errno != EINTR)
+#define FATALERRNO (errno && errno != EAGAIN && errno != EINTR)
 
 #ifndef __STL_CONFIG_H // in case some plugin needs to use the STL
 template<class T> inline T min(T a, T b) { return a <= b ? a : b; }

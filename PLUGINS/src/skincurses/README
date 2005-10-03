@@ -14,3 +14,11 @@ The 'skincurses' plugin implements a VDR skin that works in a
 shell window, using only plain text output. It re-implements
 what used to be available by compiling VDR versions before 1.3.7
 with the DEBUG_OSD macro set.
+
+To activate this skin you can either select it in the Setup/OSD
+menu, or put the line
+
+OSDSkin = curses
+
+into your 'setup.conf' file before starting VDR. Make sure this
+is the only OSDSkin line in that file.

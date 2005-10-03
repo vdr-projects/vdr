@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.210 2005/09/25 11:57:04 kls Exp $
+ * $Id: i18n.c 1.213 2005/10/03 12:27:15 kls Exp $
  *
  * Translations provided by:
  *
@@ -2273,6 +2273,27 @@ const tI18nPhrase Phrases[] = {
     "Kõvaketas peaaegu täis!",
     "Kun lidt diskplads tilbage!",
   },
+  { "Opening CAM menu...",
+    "CAM-Menü wird geöffnet...",
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+  },
   { "Can't open CAM menu!",
     "CAM-Menü kann nicht geöffnet werden!",
     "Ne morem odpreti CAM menija!",
@@ -2293,6 +2314,27 @@ const tI18nPhrase Phrases[] = {
     "Ne mogu otvoriti CAM izbor!",
     "Ei saa avada CAM menüüd!",
     "Kan ikke åbne CAM menuen!",
+  },
+  { "Resetting CAM...",
+    "CAM wird zurückgesetzt...",
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
   },
   { "Can't reset CAM!",
     "CAM-Reset fehlgeschlagen!",
@@ -2316,25 +2358,46 @@ const tI18nPhrase Phrases[] = {
     "Kan ikke nulstille CAM!",
   },
   { "CAM has been reset",
-    "CAM wurde zurückgesetzt!",
-    "CAM je resetiran!",
-    "Modulo CAM reimpostato!",
-    "CAM is herstart!",
+    "CAM wurde zurückgesetzt",
+    "CAM je resetiran",
+    "Modulo CAM reimpostato",
+    "CAM is herstart",
     "",//TODO
     "La CAM a été réinitialisée",
     "",//TODO
     "Salausmoduuli alustettu",
-    "CAM-Reset wykonany!",
+    "CAM-Reset wykonany",
     "CAM reiniciada",
     "Óôï CAM Ýãéíå åðáíáöïñÜ",
     "CA modulen har återställts",
     "CAM-ul a fost resetat",
     "A CAM vissza lett állítva",
     "CAM reiniciada",
-    "CAM-ÜÞÔãÛì ßÕàÕ×ÐßãéÕÝ!",
-    "CAM je resetiran!",
+    "CAM-ÜÞÔãÛì ßÕàÕ×ÐßãéÕÝ",
+    "CAM je resetiran",
     "CAM mooduli taaskäivitus tehtud",
     "CAM er blevet nulstillet",
+  },
+  { "Please enter %d digits!",
+    "Bitte geben Sie %d Ziffern ein!",
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
   },
   { "No audio available!",
     "Kein Audio verfügbar!",

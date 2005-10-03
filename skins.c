@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skins.c 1.4 2005/01/14 13:07:19 kls Exp $
+ * $Id: skins.c 1.5 2005/10/02 10:12:10 kls Exp $
  */
 
 #include "skins.h"
@@ -169,8 +169,9 @@ bool cSkins::SetCurrent(const char *Name)
 eKeys cSkins::Message(eMessageType Type, const char *s, int Seconds)
 {
   switch (Type) {
-    case mtInfo:  isyslog("info: %s", s); break;
-    case mtError: esyslog("ERROR: %s", s); break;
+    case mtInfo:    isyslog("info: %s", s); break;
+    case mtWarning: isyslog("warning: %s", s); break;
+    case mtError:   esyslog("ERROR: %s", s); break;
     default: ;
     }
   if (!Current())

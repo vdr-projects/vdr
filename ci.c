@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 1.28 2005/09/17 11:43:08 kls Exp $
+ * $Id: ci.c 1.36 2005/10/03 12:58:22 kls Exp $
  */
 
 #include "ci.h"
@@ -92,9 +92,17 @@ static char *CopyString(int Length, const uint8_t *Data)
 ///< Copies the string at Data.
 ///< \return Returns a pointer to a newly allocated string.
 {
+  // Some CAMs send funny characters at the beginning of strings.
+  // Let's just skip them:
+  while (Length > 0 && (*Data == ' ' || *Data == 0x05 || *Data == 0x96 || *Data == 0x97)) {
+        Length--;
+        Data++;
+        }
   char *s = MALLOC(char, Length + 1);
   strncpy(s, (char *)Data, Length);
   s[Length] = 0;
+  // The character 0x8A is used as newline, so let's put a real '\n' in there:
+  strreplace(s, 0x8A, '\n');
   return s;
 }
 
@@ -394,7 +402,7 @@ const uint8_t *cCiTransportConnection::Data(int &Length)
   return tpdu->Data(Length);
 }
 
-#define MAX_CONNECT_RETRIES  20
+#define MAX_CONNECT_RETRIES  2
 
 int cCiTransportConnection::CreateConnection(void)
 {
@@ -1026,6 +1034,7 @@ public:
   cCiEnquiry *Enquiry(bool Clear = false);
   bool SendMenuAnswer(uint8_t Selection);
   bool SendAnswer(const char *Text);
+  bool SendCloseMMI(void);
   };
 
 cCiMMI::cCiMMI(int SessionId, cCiTransportConnection *Tc)
@@ -1198,6 +1207,14 @@ bool cCiMMI::SendAnswer(const char *Text)
   return true;
 }
 
+bool cCiMMI::SendCloseMMI(void)
+{
+  dbgprotocol("%d: ==> Close MMI\n", SessionId());
+  SendData(AOT_CLOSE_MMI, 0);
+  //XXX return value of all SendData() calls???
+  return true;
+}
+
 // --- cCiMenu ---------------------------------------------------------------
 
 cCiMenu::cCiMenu(cCiMMI *MMI, bool Selectable)
@@ -1229,6 +1246,12 @@ bool cCiMenu::AddEntry(char *s)
   return false;
 }
 
+bool cCiMenu::HasUpdate(void)
+{
+  // If the mmi is gone, the menu shall be closed, which also qualifies as 'update'.
+  return !mmi || mmi->HasUserIO();
+}
+
 bool cCiMenu::Select(int Index)
 {
   cMutexLock MutexLock(&mutex);
@@ -1240,6 +1263,11 @@ bool cCiMenu::Select(int Index)
 bool cCiMenu::Cancel(void)
 {
   return Select(-1);
+}
+
+bool cCiMenu::Abort(void)
+{
+  return mmi && mmi->SendCloseMMI();
 }
 
 // --- cCiEnquiry ------------------------------------------------------------
@@ -1269,6 +1297,11 @@ bool cCiEnquiry::Reply(const char *s)
 bool cCiEnquiry::Cancel(void)
 {
   return Reply(NULL);
+}
+
+bool cCiEnquiry::Abort(void)
+{
+  return mmi && mmi->SendCloseMMI();
 }
 
 // --- cCiCaPmt --------------------------------------------------------------

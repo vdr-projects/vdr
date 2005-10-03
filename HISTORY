@@ -45,7 +45,7 @@ Video Disk Recorder Revision History
   a prepended '@' character.
 - If an instant recording is currently active, the "Main" menu now contains
   an option to stop that recording.
-- Timers are now only processed when the Menu is not active. So after editing
+- Timers are now only processed when the menu is not active. So after editing
   a timer the effect will take place only after the menu has been closed.
   In order to avoid missing a timer event by inadvertently leaving the menu
   open, the menu will be closed automatically after about two minutes of
@@ -3849,3 +3849,39 @@ Video Disk Recorder Revision History
   added or deleted, so that other VDR instances can update their lists (thanks to
   Alexander Rieger).
 - Made the function ExchangeChars() public (suggested by Lucian Muresan).
+
+2005-10-03: Version 1.3.34
+
+- Fixed a leftover 'summary.vdr' in vdr.5 (thanks to Peter Bieringer for reporting
+  this one).
+- Fixed opening recording folders in case the last replayed recording no longer
+  exists (reported by Udo Richter).
+- Fixed an unjustified "Error while accessing recording!" after deleting a recording
+  from a subfolder.
+- Fixed handling the '.update' file in case the video directory is not at the default
+  location (reported by Jon Burgess).
+- Fixed a crash in cConfig::Load() when compiling on the PPC (thanks to Sascha
+  Volkenandt).
+- Fixed the FATALERRNO macro to check for a non-zero errno value (reported by Marco
+  Schlüßler).
+- Added a check against MAXOSDAREAS in cOsd::CanHandleAreas() (reported by Udo
+  Richter).
+- Fixed setting current menu item if the first one is non-selectable.
+- cOsdItem::cOsdItem() now has a 'Selectable' parameter.
+- Improved displaying 'sub-title' and 'bottom text' in the CAM menu.
+- Added status message "Resetting CAM..." for an immediate feedback when the CAM
+  reset has been triggered.
+- The CAM menu now automatically updates itself in case of a progress display (as
+  used, for instance, when updating the firmware via satellite).
+- Now skipping some funny characters sent by some CAMs at the beginning of strings.
+- The CAM menu is now completely closed when pressing the Menu key while inside
+  a sub menu.
+- Reduced MAX_CONNECT_RETRIES in ci.c to 2 (waiting too long made the whole thing
+  appear hanging).
+- Added status message "Opening CAM menu..." for an immediate feedback when the CAM
+  menu has been requested.
+- Speeded up initial opening of the CAM menu.
+- Fixed handling of menus with no selectable items.
+- The character 0x8A in CAM menu strings is now mapped to a real newline.
+- The 'sub-title' and 'bottom text' in the CAM menu can now consist of several lines.
+- Improved the CAM enquiry menu.

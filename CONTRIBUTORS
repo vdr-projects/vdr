@@ -791,6 +791,7 @@ Sascha Volkenandt <sascha@akv-soft.de>
  for reporting a bug in timeout handling in cRwLock::Lock()
  for pointing out that the SVDRP command DELR deleted recordings that are currently
  being written to by a timer
+ for fixing a crash in cConfig::Load() when compiling on the PPC
 
 Malcolm Caldwell <malcolm.caldwell@ntu.edu.au>
  for modifying LOF handling to allow for C-band reception
@@ -918,6 +919,7 @@ Hermann Gausterer <mrq1@gmx.net>
 Peter Bieringer <pb@bieringer.de>
  for reporting a problem with duplicate recordings with the same file name
  for suggesting to implement the command line option '--vfat'
+ for reporting a leftover 'summary.vdr' in vdr.5
 
 Alexander Damhuis <ad@phonedation.de>
  for reporting problems when deleting a timer that is currently recording
@@ -933,6 +935,8 @@ Jon Burgess <mplayer@jburgess.uklinux.net>
  for pointing out a problem with NPTL ("Native Posix Thread Library")
  for changing thread handling to make it work with NPTL ("Native Posix Thread Library")
  for fixing a memory leak in thread handling when using NPTL
+ for reporting a bug in handling the '.update' file in case the video directory is
+ not at the default location
 
 Thomas Schmidt <thomas.schmidt@in.stud.tu-ilmenau.de>
  for reporting a crash when canceling a newly created timer
@@ -1229,6 +1233,7 @@ Marco Schlüßler <marco@lordzodiac.de>
  for improving resetting CAM connections
  for fixing handling EPG data for time shifted events
  for fixing detecting short channel names for "Kabel Deutschland"
+ for reporting that the FATALERRNO macro needs to check for a non-zero errno value
 
 Jürgen Schmitz <j.schmitz@web.de>
  for reporting a bug in displaying the current channel when switching via the SVDRP
@@ -1281,6 +1286,9 @@ Udo Richter <udo_richter@gmx.de>
  for reporting a problem with cRemux in a single thread
  for adding 'Service' functions to the plugin interface
  for reporting an unused MAINMENUENTRY in svdrpdemo.c
+ for reporting a bug in opening recording folders in case the last replayed recording
+ no longer exists
+ for reporting a missing check against MAXOSDAREAS in cOsd::CanHandleAreas()
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date

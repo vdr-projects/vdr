@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osdbase.h 1.11 2005/06/12 10:46:34 kls Exp $
+ * $Id: osdbase.h 1.12 2005/10/02 09:18:20 kls Exp $
  */
 
 #ifndef __OSDBASE_H
@@ -56,7 +56,7 @@ protected:
   bool fresh;
 public:
   cOsdItem(eOSState State = osUnknown);
-  cOsdItem(const char *Text, eOSState State = osUnknown);
+  cOsdItem(const char *Text, eOSState State = osUnknown, bool Selectable = true);
   virtual ~cOsdItem();
   bool Selectable(void) { return selectable; }
   void SetText(const char *Text, bool Copy = true);

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.362 2005/09/25 13:37:21 kls Exp $
+ * $Id: menu.c 1.374 2005/10/03 12:53:51 kls Exp $
  */
 
 #include "menu.h"
@@ -34,6 +34,7 @@
 
 #define MAXRECORDCONTROLS (MAXDEVICES * MAXRECEIVERS)
 #define MAXINSTANTRECTIME (24 * 60 - 1) // 23:59 hours
+#define MAXWAITFORCAMMENU 4 // seconds to wait for the CAM menu to open
 
 #define CHNUMWIDTH  (numdigits(Channels.MaxNumber()) + 1)
 
@@ -1287,33 +1288,59 @@ eOSState cMenuCommands::ProcessKey(eKeys Key)
 cMenuCam::cMenuCam(cCiMenu *CiMenu)
 :cOsdMenu("")
 {
+  dsyslog("CAM: Menu ------------------");
   ciMenu = CiMenu;
   selected = false;
+  offset = 0;
   if (ciMenu->Selectable())
      SetHasHotkeys();
-  SetTitle(ciMenu->TitleText() ? ciMenu->TitleText() : "CAM");
-  for (int i = 0; i < ciMenu->NumEntries(); i++)
-      Add(new cOsdItem(hk(ciMenu->Entry(i))));
-  //XXX implement a clean way of displaying this:
-  Add(new cOsdItem(ciMenu->SubTitleText()));
-  Add(new cOsdItem(ciMenu->BottomText()));
+  SetTitle(*ciMenu->TitleText() ? ciMenu->TitleText() : "CAM");
+  dsyslog("CAM: '%s'", ciMenu->TitleText());
+  if (*ciMenu->SubTitleText()) {
+     dsyslog("CAM: '%s'", ciMenu->SubTitleText());
+     AddMultiLineItem(ciMenu->SubTitleText());
+     offset = Count();
+     }
+  for (int i = 0; i < ciMenu->NumEntries(); i++) {
+      Add(new cOsdItem(hk(ciMenu->Entry(i)), osUnknown, ciMenu->Selectable()));
+      dsyslog("CAM: '%s'", ciMenu->Entry(i));
+      }
+  if (*ciMenu->BottomText()) {
+     AddMultiLineItem(ciMenu->BottomText());
+     dsyslog("CAM: '%s'", ciMenu->BottomText());
+     }
   Display();
-  dsyslog("CAM: Menu - %s", ciMenu->TitleText());
 }
 
 cMenuCam::~cMenuCam()
 {
   if (!selected)
-     ciMenu->Cancel();
+     ciMenu->Abort();
   delete ciMenu;
+}
+
+void cMenuCam::AddMultiLineItem(const char *s)
+{
+  while (s && *s) {
+        const char *p = strchr(s, '\n');
+        int l = p ? p - s : strlen(s);
+        cOsdItem *item = new cOsdItem;
+        item->SetSelectable(false);
+        item->SetText(strndup(s, l), false);
+        Add(item);
+        s = p ? p + 1 : p;
+        }
 }
 
 eOSState cMenuCam::Select(void)
 {
   if (ciMenu->Selectable()) {
-     ciMenu->Select(Current());
-     selected = true;
+     ciMenu->Select(Current() - offset);
+     dsyslog("CAM: select %d", Current() - offset);
      }
+  else
+     ciMenu->Cancel();
+  selected = true;
   return osEnd;
 }
 
@@ -1327,36 +1354,51 @@ eOSState cMenuCam::ProcessKey(eKeys Key)
        default: break;
        }
      }
+  else if (state == osBack) {
+     ciMenu->Cancel();
+     selected = true;
+     return osEnd;
+     }
+  if (ciMenu->HasUpdate()) {
+     selected = true;
+     return osEnd;
+     }
   return state;
 }
 
 // --- cMenuCamEnquiry -------------------------------------------------------
 
-//XXX this is just quick and dirty - make this a separate display object
 cMenuCamEnquiry::cMenuCamEnquiry(cCiEnquiry *CiEnquiry)
-:cOsdMenu("", 10)
+:cOsdMenu("", 1)
 {
   ciEnquiry = CiEnquiry;
   int Length = ciEnquiry->ExpectedLength();
   input = MALLOC(char, Length + 1);
   *input = 0;
   replied = false;
-  SetTitle(ciEnquiry->Text() ? ciEnquiry->Text() : "CAM");
-  Add(new cMenuEditNumItem("Input", input, Length, ciEnquiry->Blind()));
+  SetTitle("CAM");
+  Add(new cOsdItem(ciEnquiry->Text(), osUnknown, false));
+  Add(new cOsdItem("", osUnknown, false));
+  Add(new cMenuEditNumItem("", input, Length, ciEnquiry->Blind()));
   Display();
 }
 
 cMenuCamEnquiry::~cMenuCamEnquiry()
 {
   if (!replied)
-     ciEnquiry->Cancel();
+     ciEnquiry->Abort();
   free(input);
   delete ciEnquiry;
 }
 
 eOSState cMenuCamEnquiry::Reply(void)
 {
-  //XXX check length???
+  if (ciEnquiry->ExpectedLength() < 0xFF && int(strlen(input)) != ciEnquiry->ExpectedLength()) {
+     char buffer[64];
+     snprintf(buffer, sizeof(buffer), tr("Please enter %d digits!"), ciEnquiry->ExpectedLength());
+     Skins.Message(mtError, buffer);
+     return osContinue;
+     }
   ciEnquiry->Reply(input);
   replied = true;
   return osEnd;
@@ -1371,6 +1413,11 @@ eOSState cMenuCamEnquiry::ProcessKey(eKeys Key)
        case kOk:     return Reply();
        default: break;
        }
+     }
+  else if (state == osBack) {
+     ciEnquiry->Cancel();
+     replied = true;
+     return osEnd;
      }
   return state;
 }
@@ -1513,6 +1560,7 @@ cMenuRecordings::cMenuRecordings(const char *Base, int Level, bool OpenSubMenus)
      SetCurrent(First());
   else if (OpenSubMenus && cReplayControl::LastReplayed() && Open(true))
      return;
+  Display();
   SetHelpKeys();
 }
 
@@ -1556,7 +1604,7 @@ void cMenuRecordings::Set(bool Refresh)
   if (Refresh) {
      cMenuRecordingItem *ri = (cMenuRecordingItem *)Get(Current());
      if (ri) {
-        cRecording *Recording = GetRecording(ri);
+        cRecording *Recording = Recordings.GetByName(ri->FileName());
         if (Recording)
            CurrentRecording = Recording->FileName();
         }
@@ -1583,7 +1631,8 @@ void cMenuRecordings::Set(bool Refresh)
          }
       }
   free(LastItemText);
-  Display();
+  if (Refresh)
+     Display();
 }
 
 cRecording *cMenuRecordings::GetRecording(cMenuRecordingItem *Item)
@@ -2155,8 +2204,13 @@ eOSState cMenuSetupCICAM::Menu(void)
 {
   cMenuSetupCICAMItem *item = (cMenuSetupCICAMItem *)Get(Current());
   if (item) {
-     if (item->CiHandler()->EnterMenu(item->Slot()))
+     if (item->CiHandler()->EnterMenu(item->Slot())) {
+        Skins.Message(mtWarning, tr("Opening CAM menu..."));
+        time_t t = time(NULL);
+        while (time(NULL) - t < MAXWAITFORCAMMENU && !item->CiHandler()->HasUserIO())
+              item->CiHandler()->Process();
         return osEnd; // the CAM menu will be executed explicitly from the main loop
+        }
      else
         Skins.Message(mtError, tr("Can't open CAM menu!"));
      }
@@ -2167,6 +2221,7 @@ eOSState cMenuSetupCICAM::Reset(void)
 {
   cMenuSetupCICAMItem *item = (cMenuSetupCICAMItem *)Get(Current());
   if (item) {
+     Skins.Message(mtWarning, tr("Resetting CAM..."));
      if (item->CiHandler()->Reset(item->Slot())) {
         Skins.Message(mtInfo, tr("CAM has been reset"));
         return osEnd;
