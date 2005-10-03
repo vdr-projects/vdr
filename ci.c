@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 1.35 2005/10/03 12:48:13 kls Exp $
+ * $Id: ci.c 1.36 2005/10/03 12:58:22 kls Exp $
  */
 
 #include "ci.h"
@@ -1267,7 +1267,7 @@ bool cCiMenu::Cancel(void)
 
 bool cCiMenu::Abort(void)
 {
-  return mmi->SendCloseMMI();
+  return mmi && mmi->SendCloseMMI();
 }
 
 // --- cCiEnquiry ------------------------------------------------------------
@@ -1297,6 +1297,11 @@ bool cCiEnquiry::Reply(const char *s)
 bool cCiEnquiry::Cancel(void)
 {
   return Reply(NULL);
+}
+
+bool cCiEnquiry::Abort(void)
+{
+  return mmi && mmi->SendCloseMMI();
 }
 
 // --- cCiCaPmt --------------------------------------------------------------

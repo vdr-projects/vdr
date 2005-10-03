@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.373 2005/10/03 12:24:34 kls Exp $
+ * $Id: menu.c 1.374 2005/10/03 12:53:51 kls Exp $
  */
 
 #include "menu.h"
@@ -1386,7 +1386,7 @@ cMenuCamEnquiry::cMenuCamEnquiry(cCiEnquiry *CiEnquiry)
 cMenuCamEnquiry::~cMenuCamEnquiry()
 {
   if (!replied)
-     ciEnquiry->Cancel();
+     ciEnquiry->Abort();
   free(input);
   delete ciEnquiry;
 }
@@ -1413,6 +1413,11 @@ eOSState cMenuCamEnquiry::ProcessKey(eKeys Key)
        case kOk:     return Reply();
        default: break;
        }
+     }
+  else if (state == osBack) {
+     ciEnquiry->Cancel();
+     replied = true;
+     return osEnd;
      }
   return state;
 }

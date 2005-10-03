@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.h 1.16 2005/10/02 13:20:41 kls Exp $
+ * $Id: ci.h 1.17 2005/10/03 12:49:52 kls Exp $
  */
 
 #ifndef __CI_H
@@ -60,6 +60,7 @@ public:
   int ExpectedLength(void) { return expectedLength; }
   bool Reply(const char *s);
   bool Cancel(void);
+  bool Abort(void);
   };
 
 class cCiCaPmt {
