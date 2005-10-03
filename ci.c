@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 1.34 2005/10/03 10:32:51 kls Exp $
+ * $Id: ci.c 1.35 2005/10/03 12:48:13 kls Exp $
  */
 
 #include "ci.h"
@@ -1248,7 +1248,8 @@ bool cCiMenu::AddEntry(char *s)
 
 bool cCiMenu::HasUpdate(void)
 {
-  return mmi->HasUserIO();
+  // If the mmi is gone, the menu shall be closed, which also qualifies as 'update'.
+  return !mmi || mmi->HasUserIO();
 }
 
 bool cCiMenu::Select(int Index)
