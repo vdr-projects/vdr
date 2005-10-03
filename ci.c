@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 1.33 2005/10/02 15:06:07 kls Exp $
+ * $Id: ci.c 1.34 2005/10/03 10:32:51 kls Exp $
  */
 
 #include "ci.h"
@@ -101,6 +101,8 @@ static char *CopyString(int Length, const uint8_t *Data)
   char *s = MALLOC(char, Length + 1);
   strncpy(s, (char *)Data, Length);
   s[Length] = 0;
+  // The character 0x8A is used as newline, so let's put a real '\n' in there:
+  strreplace(s, 0x8A, '\n');
   return s;
 }
 

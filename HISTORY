@@ -3850,7 +3850,7 @@ Video Disk Recorder Revision History
   Alexander Rieger).
 - Made the function ExchangeChars() public (suggested by Lucian Muresan).
 
-2005-10-02: Version 1.3.34
+2005-10-03: Version 1.3.34
 
 - Fixed a leftover 'summary.vdr' in vdr.5 (thanks to Peter Bieringer for reporting
   this one).
@@ -3882,3 +3882,4 @@ Video Disk Recorder Revision History
   menu has been requested.
 - Speeded up initial opening of the CAM menu.
 - Fixed handling of menus with no selectable items.
+- The character 0x8A in CAM menu strings is now mapped to a real newline.
