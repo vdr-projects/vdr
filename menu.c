@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.372 2005/10/03 10:41:26 kls Exp $
+ * $Id: menu.c 1.373 2005/10/03 12:24:34 kls Exp $
  */
 
 #include "menu.h"
@@ -1368,17 +1368,18 @@ eOSState cMenuCam::ProcessKey(eKeys Key)
 
 // --- cMenuCamEnquiry -------------------------------------------------------
 
-//XXX this is just quick and dirty - make this a separate display object
 cMenuCamEnquiry::cMenuCamEnquiry(cCiEnquiry *CiEnquiry)
-:cOsdMenu("", 10)
+:cOsdMenu("", 1)
 {
   ciEnquiry = CiEnquiry;
   int Length = ciEnquiry->ExpectedLength();
   input = MALLOC(char, Length + 1);
   *input = 0;
   replied = false;
-  SetTitle(ciEnquiry->Text() ? ciEnquiry->Text() : "CAM");
-  Add(new cMenuEditNumItem("Input", input, Length, ciEnquiry->Blind()));
+  SetTitle("CAM");
+  Add(new cOsdItem(ciEnquiry->Text(), osUnknown, false));
+  Add(new cOsdItem("", osUnknown, false));
+  Add(new cMenuEditNumItem("", input, Length, ciEnquiry->Blind()));
   Display();
 }
 
@@ -1392,7 +1393,12 @@ cMenuCamEnquiry::~cMenuCamEnquiry()
 
 eOSState cMenuCamEnquiry::Reply(void)
 {
-  //XXX check length???
+  if (ciEnquiry->ExpectedLength() < 0xFF && int(strlen(input)) != ciEnquiry->ExpectedLength()) {
+     char buffer[64];
+     snprintf(buffer, sizeof(buffer), tr("Please enter %d digits!"), ciEnquiry->ExpectedLength());
+     Skins.Message(mtError, buffer);
+     return osContinue;
+     }
   ciEnquiry->Reply(input);
   replied = true;
   return osEnd;

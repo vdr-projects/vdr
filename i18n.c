@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.212 2005/10/02 14:36:11 kls Exp $
+ * $Id: i18n.c 1.213 2005/10/03 12:27:15 kls Exp $
  *
  * Translations provided by:
  *
@@ -2377,6 +2377,27 @@ const tI18nPhrase Phrases[] = {
     "CAM je resetiran",
     "CAM mooduli taaskäivitus tehtud",
     "CAM er blevet nulstillet",
+  },
+  { "Please enter %d digits!",
+    "Bitte geben Sie %d Ziffern ein!",
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
   },
   { "No audio available!",
     "Kein Audio verfügbar!",
