@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.371 2005/10/02 14:53:48 kls Exp $
+ * $Id: menu.c 1.372 2005/10/03 10:41:26 kls Exp $
  */
 
 #include "menu.h"
@@ -1297,16 +1297,16 @@ cMenuCam::cMenuCam(cCiMenu *CiMenu)
   SetTitle(*ciMenu->TitleText() ? ciMenu->TitleText() : "CAM");
   dsyslog("CAM: '%s'", ciMenu->TitleText());
   if (*ciMenu->SubTitleText()) {
-     Add(new cOsdItem(ciMenu->SubTitleText(), osUnknown, false));
-     offset = 1;
      dsyslog("CAM: '%s'", ciMenu->SubTitleText());
+     AddMultiLineItem(ciMenu->SubTitleText());
+     offset = Count();
      }
   for (int i = 0; i < ciMenu->NumEntries(); i++) {
       Add(new cOsdItem(hk(ciMenu->Entry(i)), osUnknown, ciMenu->Selectable()));
       dsyslog("CAM: '%s'", ciMenu->Entry(i));
       }
   if (*ciMenu->BottomText()) {
-     Add(new cOsdItem(ciMenu->BottomText(), osUnknown, false));
+     AddMultiLineItem(ciMenu->BottomText());
      dsyslog("CAM: '%s'", ciMenu->BottomText());
      }
   Display();
@@ -1317,6 +1317,19 @@ cMenuCam::~cMenuCam()
   if (!selected)
      ciMenu->Abort();
   delete ciMenu;
+}
+
+void cMenuCam::AddMultiLineItem(const char *s)
+{
+  while (s && *s) {
+        const char *p = strchr(s, '\n');
+        int l = p ? p - s : strlen(s);
+        cOsdItem *item = new cOsdItem;
+        item->SetSelectable(false);
+        item->SetText(strndup(s, l), false);
+        Add(item);
+        s = p ? p + 1 : p;
+        }
 }
 
 eOSState cMenuCam::Select(void)

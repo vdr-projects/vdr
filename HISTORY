@@ -3883,3 +3883,4 @@ Video Disk Recorder Revision History
 - Speeded up initial opening of the CAM menu.
 - Fixed handling of menus with no selectable items.
 - The character 0x8A in CAM menu strings is now mapped to a real newline.
+- The 'sub-title' and 'bottom text' in the CAM menu can now consist of several lines.

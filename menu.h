@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 1.75 2005/10/02 09:59:30 kls Exp $
+ * $Id: menu.h 1.76 2005/10/03 10:39:08 kls Exp $
  */
 
 #ifndef __MENU_H
@@ -121,6 +121,7 @@ private:
   cCiMenu *ciMenu;
   bool selected;
   int offset;
+  void AddMultiLineItem(const char *s);
   eOSState Select(void);
 public:
   cMenuCam(cCiMenu *CiMenu);
