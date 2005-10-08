@@ -1502,3 +1502,6 @@ Alexander Rieger <Alexander.Rieger@inka.de>
  for fixing handling color buttons in cMenuEditStrItem
  for making the '.update' file in the video directory be touched when a recording is
  added or deleted, so that other VDR instances can update their lists
+
+Philip Prindeville <philipp_subx@redfish-solutions.com>
+ for updates to 'sources.conf'
