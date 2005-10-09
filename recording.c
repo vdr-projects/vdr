@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.120 2005/10/01 10:29:02 kls Exp $
+ * $Id: recording.c 1.121 2005/10/09 13:09:51 kls Exp $
  */
 
 #include "recording.h"
@@ -264,7 +264,9 @@ bool cRecordingInfo::Read(FILE *f)
   if (ownEvent) {
      cReadLine ReadLine;
      char *s;
+     int line = 0;
      while ((s = ReadLine.Read(f)) != NULL) {
+           ++line;
            char *t = skipspace(s + 1);
            switch (*s) {
              case 'C': {
@@ -275,8 +277,10 @@ bool cRecordingInfo::Read(FILE *f)
                             channelID = tChannelID::FromString(t);
                        }
                        break;
-             default: if (!ownEvent->Parse(s))
+             default: if (!ownEvent->Parse(s)) {
+                         esyslog("ERROR: EPG data problem in line %d", line);
                          return false;
+                         }
                       break;
              }
            }
@@ -478,7 +482,8 @@ cRecording::cRecording(const char *FileName)
      asprintf(&InfoFileName, "%s%s", fileName, INFOFILESUFFIX);
      FILE *f = fopen(InfoFileName, "r");
      if (f) {
-        info->Read(f);
+        if (!info->Read(f))
+           esyslog("ERROR: EPG data problem in file %s", InfoFileName);
         fclose(f);
         }
      else if (errno != ENOENT)

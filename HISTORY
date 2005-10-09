@@ -3899,3 +3899,5 @@ Video Disk Recorder Revision History
   to Darren Salt).
 - Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
 - Fixed a leftover 'summary.vdr' in vdr.1 (reported by Christoph Hermanns).
+- Added more error messages and line numbers when reading EPG data and info.vdr
+  (thanks to Peter Bieringer).

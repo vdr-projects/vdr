@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 1.37 2005/09/09 15:14:11 kls Exp $
+ * $Id: epg.c 1.38 2005/10/09 12:57:55 kls Exp $
  */
 
 #include "epg.h"
@@ -285,8 +285,10 @@ bool cEvent::Read(FILE *f, cSchedule *Schedule)
   if (Schedule) {
      cEvent *Event = NULL;
      char *s;
+     int line = 0;
      cReadLine ReadLine;
      while ((s = ReadLine.Read(f)) != NULL) {
+           line++;
            char *t = skipspace(s + 1);
            switch (*s) {
              case 'E': if (!Event) {
@@ -316,8 +318,10 @@ bool cEvent::Read(FILE *f, cSchedule *Schedule)
                        break;
              case 'c': // to keep things simple we react on 'c' here
                        return true;
-             default:  if (Event && !Event->Parse(s))
+             default:  if (Event && !Event->Parse(s)) {
+                          esyslog("ERROR: EPG data problem in line %d", line);
                           return false;
+                          }
              }
            }
      esyslog("ERROR: unexpected end of file while reading EPG data");
