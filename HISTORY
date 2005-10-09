@@ -3893,3 +3893,5 @@ Video Disk Recorder Revision History
   Enrico Scholz).
 - Fixed a possible endless loop in a menu with no selectable items if
   Setup.MenuScrollWrap is true (thanks to Enrico Scholz).
+- Making sure no item is displayed as "current" if Up, Down, Left or Right is
+  pressed in a menu with no selectable items.

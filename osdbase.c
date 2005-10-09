@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osdbase.c 1.23 2005/10/09 10:42:35 kls Exp $
+ * $Id: osdbase.c 1.24 2005/10/09 10:56:26 kls Exp $
  */
 
 #include "osdbase.h"
@@ -242,8 +242,8 @@ void cOsdMenu::DisplayCurrent(bool Current)
 {
   cOsdItem *item = Get(current);
   if (item) {
-     displayMenu->SetItem(item->Text(), current - first, Current, item->Selectable());
-     if (Current)
+     displayMenu->SetItem(item->Text(), current - first, Current && item->Selectable(), item->Selectable());
+     if (Current && item->Selectable())
         cStatus::MsgOsdCurrentItem(item->Text());
      if (!Current)
         item->SetFresh(true); // leaving the current item resets 'fresh'
