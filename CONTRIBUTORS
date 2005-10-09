@@ -1505,3 +1505,6 @@ Alexander Rieger <Alexander.Rieger@inka.de>
 
 Philip Prindeville <philipp_subx@redfish-solutions.com>
  for updates to 'sources.conf'
+
+Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de>
+ for making VDR use use daemon() instead of fork() to run in daemon mode
