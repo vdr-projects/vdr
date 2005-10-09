@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.79 2005/10/01 12:43:31 kls Exp $
+ * $Id: tools.h 1.80 2005/10/09 11:13:06 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -81,7 +81,7 @@ public:
   operator const char * () const { return s; } // for use in (const char *) context
   const char * operator*() const { return s; } // for use in (const void *) context (printf() etc.)
   cString &operator=(const cString &String);
-  static cString sprintf(const char *fmt, ...);
+  static cString sprintf(const char *fmt, ...) __attribute__ ((format (printf, 1, 2)));
   };
 
 ssize_t safe_read(int filedes, void *buffer, size_t size);

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.h 1.30 2005/08/14 11:21:48 kls Exp $
+ * $Id: thread.h 1.31 2005/10/09 11:12:32 kls Exp $
  */
 
 #ifndef __THREAD_H
@@ -106,7 +106,7 @@ public:
        ///< the thread starts and stops. The Start() function must be called 
        ///< to actually start the thread.
   virtual ~cThread();
-  void SetDescription(const char *Description, ...);
+  void SetDescription(const char *Description, ...) __attribute__ ((format (printf, 2, 3)));
   bool Start(void);
        ///< Actually starts the thread.
   bool Active(void);
