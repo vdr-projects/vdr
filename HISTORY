@@ -3889,4 +3889,7 @@ Video Disk Recorder Revision History
 2005-10-09: Version 1.3.35
 
 - Updated 'sources.conf' (thanks to Philip Prindeville).
-- Now using daemon() instead of fork() to run VDR in daemon mode (thanks to Enrico Scholz).
+- Now using daemon() instead of fork() to run VDR in daemon mode (thanks to
+  Enrico Scholz).
+- Fixed a possible endless loop in a menu with no selectable items if
+  Setup.MenuScrollWrap is true (thanks to Enrico Scholz).

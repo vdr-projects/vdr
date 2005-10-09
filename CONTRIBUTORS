@@ -1508,3 +1508,6 @@ Philip Prindeville <philipp_subx@redfish-solutions.com>
 
 Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de>
  for making VDR use use daemon() instead of fork() to run in daemon mode
+ for fixing a possible endless loop in a menu with no selectable items if
+ Setup.MenuScrollWrap
+  is true (thanks to Enrico Scholz).
