@@ -3898,3 +3898,4 @@ Video Disk Recorder Revision History
 - Added '__attribute__' to functions that use printf() like parameters (thanks
   to Darren Salt).
 - Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
+- Fixed a leftover 'summary.vdr' in vdr.1 (reported by Christoph Hermanns).

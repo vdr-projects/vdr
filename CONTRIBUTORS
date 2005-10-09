@@ -1024,6 +1024,7 @@ Rene Bartsch <ml@bartschnet.de>
 Christoph Hermanns <christoph.hermanns@gmx.de>
  for reporting a bug in handling the "Red" button in the "Schedules" menu in case
  there are no events listed for a particular channel
+ for reporting a leftover 'summary.vdr' in vdr.1
 
 Oskar Signell <oskar@signell.net>
  for pointing out a problem with setting an editing mark while in "Pause" mode,
