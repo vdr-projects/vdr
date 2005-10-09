@@ -3897,3 +3897,4 @@ Video Disk Recorder Revision History
   pressed in a menu with no selectable items.
 - Added '__attribute__' to functions that use printf() like parameters (thanks
   to Darren Salt).
+- Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).

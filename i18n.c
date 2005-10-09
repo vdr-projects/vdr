@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.213 2005/10/03 12:27:15 kls Exp $
+ * $Id: i18n.c 1.214 2005/10/09 11:22:03 kls Exp $
  *
  * Translations provided by:
  *
@@ -218,7 +218,7 @@ const tI18nPhrase Phrases[] = {
     "Timers",
     "Programmation",
     "Timere",
-    "Ajastin",
+    "Ajastimet",
     "Timery",
     "Timer",
     "Χρονοδιακόπτης",
@@ -323,7 +323,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "Commandes d'enregistrement",
     "",// TODO
-    "Tallennuskomennot",
+    "Tallennekomennot",
     "Rozkazy Nagran",
     "Σrdenes de grabaciσn",
     "Εντολές γιά εγγραφές",
@@ -975,7 +975,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "Rιinitialisation",
     "",//TODO
-    "Alusta",
+    "Nollaa",
     "Reset",
     "Reiniciar",
     "Επαναφορά",
@@ -1081,7 +1081,7 @@ const tI18nPhrase Phrases[] = {
     "Timer activo - tκm a certeza que quer apagar?",
     "Enregistrement en cours - confirmez la suppression",
     "Timer gjψr opptak - vil du slette likevel?",
-    "Ajastettu tallennus kδynnissδ - keskeytetδδnkφ?",
+    "Ajastettu tallennus kδynnissδ - poistetaanko silti?",
     "Nagrywanie w trakcie - napewno usunac?",
     "ΏTimer activo - de verdad eliminarlo?",
     "Χρονοδιακόπτης σέ εξέλιξη - Διαγραφή σίγουρα?",
@@ -1123,7 +1123,7 @@ const tI18nPhrase Phrases[] = {
     "no interface primαrio",
     "sur la carte primaire",
     "pε fψrste enhet",
-    "pδδvastaanottimella",
+    "ensisijaisella sovittimella",
     "na pierwszym interfejsie",
     "en interface primario",
     "στήν κύρια κάρτα",
@@ -1397,7 +1397,7 @@ const tI18nPhrase Phrases[] = {
     "Ppid",
     "Ppid",
     "Ppid",
-    "Aikatieto-PID",
+    "PCR-PID",
     "Ppid",
     "Ppid",
     "Ppid",
@@ -1523,7 +1523,7 @@ const tI18nPhrase Phrases[] = {
     "Encriptaηγo",
     "Cryptage",
     "Kortleser",
-    "Salaus",
+    "Salaus (CA)",
     "CA",
     "CA",
     "CA",
@@ -1607,7 +1607,7 @@ const tI18nPhrase Phrases[] = {
     "CoderateH",
     "CoderateH",
     "CoderateH",
-    "Ylδsuojaustaso",
+    "Suojaustaso (HP)",
     "CoderateH",
     "CoderateH",
     "CoderateH",
@@ -1628,7 +1628,7 @@ const tI18nPhrase Phrases[] = {
     "CoderateL",
     "CoderateL",
     "CoderateL",
-    "Alasuojaustaso",
+    "Suojaustaso (LP)",
     "CoderateL",
     "CoderateL",
     "CoderateL",
@@ -1670,7 +1670,7 @@ const tI18nPhrase Phrases[] = {
     "Transmission",
     "Transmission",
     "Transmission",
-    "Lδhetystila",
+    "Transmissio",
     "Transmisja",
     "Transmission",
     "Transmission",
@@ -2071,7 +2071,7 @@ const tI18nPhrase Phrases[] = {
     "Nenhuma placa DVB disponivel para gravar!",
     "Pas de carte DVB disponible pour l'enregistrement!",
     "Ingen ledige DVB enheter for opptak!",
-    "Ei vapaata vastaanotinta tallennukselle!",
+    "Ei vapaata DVB-viritintδ tallennukselle!",
     "Brak wolnej karty DVB do nagrywania!",
     "‘No hay dispositivo DVB disponible para grabar!",
     "Ανεπάρκεια DVB Κάρτας γιά εγγραφή!",
@@ -2281,7 +2281,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Avataan CA-moduulin valikkoa...",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -2302,7 +2302,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "Impossible d'ouvrir le menu CAM!",
     "",//TODO
-    "Salausmoduulin valikko ei saatavilla",
+    "CA-moduulin valikko ei saatavilla",
     "CAM-Menu niedostepne!",
     "‘No pudeo acceder al menϊ de la CAM!",
     "Αδύνατη η πρόσβαση στό CAM μενού!",
@@ -2323,7 +2323,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "CA-moduuli palautetaan alkutilaan...",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -2344,7 +2344,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "Impossible de rιinitialiser la CAM!",
     "",//TODO
-    "Salausmoduulin alustus epδonnistui!",
+    "CA-moduulin palautus alkutilaan epδonnistui!",
     "Nieudany CAM-Reset!",
     "‘No puedo reiniciar la CAM!",
     "Αδύνατο να γίνει επαναφορά στό CAM",
@@ -2365,7 +2365,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "La CAM a ιtι rιinitialisιe",
     "",//TODO
-    "Salausmoduuli alustettu",
+    "CA-moduuli palautettu alkutilaan",
     "CAM-Reset wykonany",
     "CAM reiniciada",
     "Στο CAM έγινε επαναφορά",
@@ -2386,7 +2386,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Syφtδ %d numeroa!",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -2513,7 +2513,7 @@ const tI18nPhrase Phrases[] = {
     "CICAM",
     "Accθs conditionnel",
     "CICAM",
-    "CI-moduuli",
+    "CICAM",
     "CICAM",
     "CICAM",
     "CICAM",
@@ -3039,7 +3039,7 @@ const tI18nPhrase Phrases[] = {
     "Directorias de gravaηγo",
     "Dossiers d'enregistrements",
     "Kataloger til opptak",
-    "Tallennehakemistot",
+    "Nδytδ tallennehakemistot",
     "Wykaz nagran",
     "Gracaciones en directorios",
     "Φάκελοι εγγραφών",
@@ -3123,7 +3123,7 @@ const tI18nPhrase Phrases[] = {
     "Ajustar relσgio do sistema",
     "Ajuster l'heure du systθme",
     "Juster system-klokken",
-    "Aseta kellonaika",
+    "Tahdista kellonaika",
     "Ustawianie czasu",
     "Ajustar reloj de sistema",
     "Συντονισμός ώρας υπολογιστή",
@@ -3207,7 +3207,7 @@ const tI18nPhrase Phrases[] = {
     "Interface DVB primαrio",
     "Carte DVB primaire",
     "Hoved DVB-enhet",
-    "Pδδvastaanotin",
+    "Ensisijainen DVB-sovitin",
     "Pierwotny interfejs DVB",
     "Primer interface DVB",
     "Κύρια DVB κάρτα",
@@ -3417,7 +3417,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "Ajouter les nouvelles chaξnes",
     "",// TODO
-    "lisδδ uudet kanavat",
+    "uudet kanavat",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -3438,7 +3438,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "Ajouter les nouveaux transpondeurs",
     "",// TODO
-    "lisδδ uudet transponderit",
+    "uudet transponderit",
     "",// TODO
     "",// TODO
     "",// TODO
@@ -3501,7 +3501,7 @@ const tI18nPhrase Phrases[] = {
     "Limite de bandas LNB (MHz)",
     "Limite de bandes LNB (MHz)",
     "LO-grensefrekvens (MHz)",
-    "LNB rajataajuus (MHz)",
+    "LNB-rajataajuus (MHz)",
     "SLOF (MHz)",
     "SLOF (MHz)",
     "SLOF (MHz)",
@@ -3522,7 +3522,7 @@ const tI18nPhrase Phrases[] = {
     "Frequκncia base LNB (MHz)",
     "Frιquence basse LNB (MHz)",
     "LO-frekvens i lavbεndet (MHz)",
-    "LNB alempi taajuus (MHz)",
+    "LNB-alataajuus (MHz)",
     "Dolna czestotliwosc LNB (MHz)",
     "Frecuencia baja LNB (MHz)",
     "Κάτω LNB-Συχνότητα (MHz)",
@@ -3543,7 +3543,7 @@ const tI18nPhrase Phrases[] = {
     "Frequκncia alta LNB (MHz)",
     "Frιquence haute LNB (MHz)",
     "LO-frekvens i hψybεndet (MHz)",
-    "LNB ylempi taajuus (MHz)",
+    "LNB-ylδtaajuus (MHz)",
     "Gorna czestotliwosc LNB (MHz)",
     "Frecuencia alta LNB (MHz)",
     "’νω LNB-Συχνότητα (MHz)",
@@ -3564,7 +3564,7 @@ const tI18nPhrase Phrases[] = {
     "Utilizar DiSEqC",
     "Utiliser le DiSEqC",
     "Bruk DiSEqC",
-    "DiSEqC kδytφssδ",
+    "Kδytδ DiSEqC-kytkintδ",
     "Uzywac DiSEqC",
     "Utilizar DiSEqC",
     "Ενεργοποίηση DiSEqC",
@@ -3585,7 +3585,7 @@ const tI18nPhrase Phrases[] = {
     "CICAM DVB",
     "Accθs conditionnel",
     "CICAM DVB",
-    "CI-moduuli DVB",
+    "CICAM DVB",
     "CICAM DVB",
     "CICAM DVB",
     "CICAM DVB",
@@ -3648,7 +3648,7 @@ const tI18nPhrase Phrases[] = {
     "Limite Primαrio",
     "Limite primaire",
     "Prioritetsgrense HovedDVB",
-    "Pδδvastaanottimen prioriteetti",
+    "Ensisijaisen sovittimen prioriteettiraja",
     "Pierwotny limit",
     "Lνmite primario",
     "Προτεύον όριο",
@@ -3921,7 +3921,7 @@ const tI18nPhrase Phrases[] = {
     "Modo de multi-speed",
     "Mode multi-vitesses",
     "Multispeed modus",
-    "Moninopeustila",
+    "Kδytδ toiston moninopeustilaa",
     "Tryb wielopredkosciowy",
     "Modo multi-velocidad",
     "Μεθοδος πολλαπλής ταχύτητας",
@@ -4026,7 +4026,7 @@ const tI18nPhrase Phrases[] = {
     "Timeout SVDRP (s)",
     "Temps maxi SVDRP (s)",
     "Ubrukt SVDRP-levetid (s)",
-    "SVDRP odotusaika (s)",
+    "SVDRP-komennon odotusaika (s)",
     "Min. brak aktywnosci SVDRP (s)",
     "SVDRP Timeout (s)",
     "SVDRP διακοπή (δ)",
@@ -5228,7 +5228,7 @@ const tI18nPhrase Phrases[] = {
     "A mudar interface DVB primαrio...",
     "Changement de carte DVB primaire...",
     "Bytter fψrste DVB-enhet...",
-    "Vaihdetaan pδδvastaanottimelle...",
+    "Vaihdetaan ensisijaista DVB-sovitinta...",
     "Pierwszy interfejs DVB przelacza...",
     "Cambio al interface DVB primario...",
     "Η κύρια DVB κάρτα αλλάζει...",
