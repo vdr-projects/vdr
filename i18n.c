@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.214 2005/10/09 11:22:03 kls Exp $
+ * $Id: i18n.c 1.215 2005/10/14 13:16:16 kls Exp $
  *
  * Translations provided by:
  *
@@ -2292,7 +2292,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Åbner CAM menu...",
   },
   { "Can't open CAM menu!",
     "CAM-Menü kann nicht geöffnet werden!",
@@ -2334,7 +2334,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Nulstiller CAM...",
   },
   { "Can't reset CAM!",
     "CAM-Reset fehlgeschlagen!",
@@ -2397,7 +2397,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Indtast venligst %d cifre!",
   },
   { "No audio available!",
     "Kein Audio verfügbar!",
