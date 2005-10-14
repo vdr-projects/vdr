@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.215 2005/10/14 13:16:16 kls Exp $
+ * $Id: i18n.c 1.216 2005/10/14 13:20:57 kls Exp $
  *
  * Translations provided by:
  *
@@ -270,7 +270,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "¸ÝäÞ Þ ×ÐßØáØ",
     "",// TODO
-    "",// TODO
+    "Salvestuse info",
     "Optagelses info",
   },
   { "Setup",
@@ -2291,7 +2291,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "CAM-menüü avamine...",
     "Åbner CAM menu...",
   },
   { "Can't open CAM menu!",
@@ -2333,7 +2333,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "CAM mooduli taaskäivitus...",
     "Nulstiller CAM...",
   },
   { "Can't reset CAM!",
@@ -2396,7 +2396,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Palun sisesta %d numbrit!",
     "Indtast venligst %d cifre!",
   },
   { "No audio available!",
@@ -5469,7 +5469,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "±Õ× ÝÐ×ÒÐÝØï",
     "Bez titla",
-    "",// TODO
+    "Pealkiri puudub",
     "Ingen titel",
   },
   { NULL }
