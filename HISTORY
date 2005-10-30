@@ -3907,3 +3907,4 @@ Video Disk Recorder Revision History
   by Marco Schlüßler).
 - Fixed lock handling in CAM communication to avoid problems with multiple CAMs
   per device or CAMs with more than one smart card.
+- Updated the Greek OSD texts (thanks to Dimitrios Dimitrakos).
