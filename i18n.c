@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.217 2005/10/30 13:23:51 kls Exp $
+ * $Id: i18n.c 1.218 2005/10/30 13:37:57 kls Exp $
  *
  * Translations provided by:
  *
@@ -12,7 +12,7 @@
  * Italian     Alberto Carraro <bertocar@tin.it>, Antonio Ospite <ospite@studenti.unina.it>, Sean Carlos <seanc@libero.it>
  * Dutch       Arnold Niessen <niessen@iae.nl> <arnold.niessen@philips.com>, Hans Dingemans <hans.dingemans@tacticalops.nl>
  * Portuguese  Paulo Lopes <pmml@netvita.pt>
- * French      Jean-Claude Repetto <jc@repetto.org>, Olivier Jacques <jacquesolivier@hotmail.com>, Gregoire Favre <greg@magma.unil.ch>
+ * French      Jean-Claude Repetto <jc@repetto.org>, Olivier Jacques <jacquesolivier@hotmail.com>, Gregoire Favre <greg@magma.unil.ch>, Nicolas Huillard <nhuillard@e-dition.fr>
  * Norwegian   Jørgen Tvedt <pjtvedt@online.no>, Truls Slevigen <truls@slevigen.no>
  * Finnish     Hannu Savolainen <hannu@opensound.com>, Jaakko Hyvätti <jaakko@hyvatti.iki.fi>, Niko Tarnanen <niko.tarnanen@hut.fi>, Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  * Polish      Michael Rakowski <mrak@gmx.de>
@@ -258,7 +258,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Infos sur l'enregistrement",
     "",// TODO
     "Tallenteen tiedot",
     "",// TODO
@@ -426,7 +426,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Info",
     "",//TODO
     "Tiedot",
     "",//TODO
@@ -910,7 +910,7 @@ const tI18nPhrase Phrases[] = {
     "Inserisci",
     "Invoegen",
     "",// TODO
-    "Insért",
+    "Insérer",
     "",// TODO
     "Lisää",
     "Wstawiac",
@@ -2869,7 +2869,7 @@ const tI18nPhrase Phrases[] = {
     "in base alla superficie",
     "skin afhankelijk",
     "",// TODO
-    "Dépend du skin",
+    "dépend du skin",
     "",// TODO
     "ulkoasun mukaan",
     "",// TODO
@@ -2974,7 +2974,7 @@ const tI18nPhrase Phrases[] = {
     "Scorri pagina nel menu",
     "Scrollen per pagina",
     "Scroll da página no menu",
-    "Scrolling par pages",
+    "Défilement par pages",
     "Rask rulling i menyer",
     "Valikoiden vieritys sivuttain",
     "Przesuwac stronami",
@@ -2995,7 +2995,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Défilement rotatif",
     "",// TODO
     "Valikoiden vieritys ympäri",
     "",// TODO
@@ -3100,7 +3100,7 @@ const tI18nPhrase Phrases[] = {
     "Visualizzazione dati vecchi (min)",
     "Oude EPG data tonen (min)",
     "",// TODO
-    "Montrer l'EPG plus vieux de m min",
+    "Montrer l'EPG périmé (min)",
     "",// TODO
     "Vanha tieto näkyy (min)",
     "",// TODO
@@ -3226,7 +3226,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "Video display format",
     "",//TODO
-    "",//TODO
+    "Format d'affichage",
     "",//TODO
     "Näyttömuoto",
     "",//TODO
@@ -3373,7 +3373,7 @@ const tI18nPhrase Phrases[] = {
     "solo nomi",
     "alleen namen",
     "",// TODO
-    "Seulement les noms",
+    "noms uniquement",
     "",// TODO
     "vain nimet",
     "",// TODO
@@ -3394,7 +3394,7 @@ const tI18nPhrase Phrases[] = {
     "nomi e PIDs",
     "namen en PIDs",
     "",// TODO
-    "Noms et PIDs",
+    "noms et PIDs",
     "",// TODO
     "nimet ja PID:it",
     "",// TODO
@@ -3415,7 +3415,7 @@ const tI18nPhrase Phrases[] = {
     "aggiungere canali nuovi",
     "nieuwe kanalen toevoegen",
     "",// TODO
-    "Ajouter les nouvelles chaînes",
+    "ajouter chaînes",
     "",// TODO
     "uudet kanavat",
     "",// TODO
@@ -3436,7 +3436,7 @@ const tI18nPhrase Phrases[] = {
     "aggiungere transponder nuovi",
     "nieuwe transponders toevoegen",
     "",// TODO
-    "Ajouter les nouveaux transpondeurs",
+    "ajouter transpondeurs",
     "",// TODO
     "uudet transponderit",
     "",// TODO
@@ -3457,7 +3457,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "Audio talen",
     "",//TODO
-    "",//TODO
+    "Langues audio",
     "",//TODO
     "Äänen kielet",
     "",//TODO
@@ -3478,7 +3478,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "Audio taal",
     "",//TODO
-    "",//TODO
+    "Langue audio",
     "",//TODO
     "Äänen kieli",
     "",//TODO
@@ -4045,7 +4045,7 @@ const tI18nPhrase Phrases[] = {
     "Timeout Zapping",
     "Zap timeout (s)",
     "",// TODO
-    "Prise en compte dernière chaîne (s)",
+    "Prise en compte chaîne (s)",
     "",// TODO
     "Kanavavalinnan odotusaika (s)",
     "",// TODO
@@ -5373,7 +5373,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Mise à jour du guide des programmes",
     "",// TODO
     "Ohjelmaoppaan päivitys aloitettu",
     "",// TODO
@@ -5415,7 +5415,7 @@ const tI18nPhrase Phrases[] = {
     "VDR Classico",
     "VDR Klassiek",
     "",// TODO
-    "",// TODO
+    "VDR Classique",// TODO
     "",// TODO
     "Klassinen VDR",
     "",// TODO
@@ -5436,7 +5436,7 @@ const tI18nPhrase Phrases[] = {
     "Consolles ST:TNG",
     "ST:TNG Consoles",
     "",// TODO
-    "",// TODO
+    "Consoles ST:TNG",
     "",// TODO
     "ST:TNG konsoli",
     "",// TODO
@@ -5457,7 +5457,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Sans titre",
     "",// TODO
     "Ei esitystä",
     "",// TODO
