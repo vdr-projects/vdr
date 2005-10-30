@@ -3909,3 +3909,4 @@ Video Disk Recorder Revision History
   per device or CAMs with more than one smart card.
 - Updated the Greek OSD texts (thanks to Dimitrios Dimitrakos).
 - Updated the French OSD texts (thanks to Nicolas Huillard).
+- Fixed the cFilter example in PLUGINS.html (reported by Patrick Fischer).

@@ -1447,7 +1447,7 @@ An instance of such a filter needs to be attached to the device from
 which it shall receive data, as in
 
 <p><table><tr><td bgcolor=#F0F0F0><pre>
-cMyFilter Filter;
+cMyFilter *Filter = new cMyFilter();
 
 cDevice::ActualDevice()-&gt;AttachFilter(Filter);
 </pre></td></tr></table><p>
