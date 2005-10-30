@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 1.36 2005/10/03 12:58:22 kls Exp $
+ * $Id: ci.c 1.37 2005/10/30 10:24:38 kls Exp $
  */
 
 #include "ci.h"
@@ -1267,6 +1267,7 @@ bool cCiMenu::Cancel(void)
 
 bool cCiMenu::Abort(void)
 {
+  cMutexLock MutexLock(&mutex);
   return mmi && mmi->SendCloseMMI();
 }
 
@@ -1301,6 +1302,7 @@ bool cCiEnquiry::Cancel(void)
 
 bool cCiEnquiry::Abort(void)
 {
+  cMutexLock MutexLock(&mutex);
   return mmi && mmi->SendCloseMMI();
 }
 
