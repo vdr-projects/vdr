@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.217 2005/09/24 13:27:26 kls Exp $
+ * $Id: vdr.c 1.218 2005/10/09 10:01:45 kls Exp $
  */
 
 #include <getopt.h>
@@ -370,17 +370,11 @@ int main(int argc, char *argv[])
   // Daemon mode:
 
   if (DaemonMode) {
-     pid_t pid = fork();
-     if (pid < 0) {
+     if (daemon(1, 0) == -1) {
         fprintf(stderr, "%m\n");
         esyslog("ERROR: %m");
         return 2;
         }
-     if (pid != 0)
-        return 0; // initial program immediately returns
-     fclose(stdin);
-     fclose(stdout);
-     fclose(stderr);
      }
   else if (Terminal) {
      // Claim new controlling terminal

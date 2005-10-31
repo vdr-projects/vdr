@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.213 2005/10/03 12:27:15 kls Exp $
+ * $Id: i18n.c 1.218 2005/10/30 13:37:57 kls Exp $
  *
  * Translations provided by:
  *
@@ -12,7 +12,7 @@
  * Italian     Alberto Carraro <bertocar@tin.it>, Antonio Ospite <ospite@studenti.unina.it>, Sean Carlos <seanc@libero.it>
  * Dutch       Arnold Niessen <niessen@iae.nl> <arnold.niessen@philips.com>, Hans Dingemans <hans.dingemans@tacticalops.nl>
  * Portuguese  Paulo Lopes <pmml@netvita.pt>
- * French      Jean-Claude Repetto <jc@repetto.org>, Olivier Jacques <jacquesolivier@hotmail.com>, Gregoire Favre <greg@magma.unil.ch>
+ * French      Jean-Claude Repetto <jc@repetto.org>, Olivier Jacques <jacquesolivier@hotmail.com>, Gregoire Favre <greg@magma.unil.ch>, Nicolas Huillard <nhuillard@e-dition.fr>
  * Norwegian   Jψrgen Tvedt <pjtvedt@online.no>, Truls Slevigen <truls@slevigen.no>
  * Finnish     Hannu Savolainen <hannu@opensound.com>, Jaakko Hyvδtti <jaakko@hyvatti.iki.fi>, Niko Tarnanen <niko.tarnanen@hut.fi>, Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  * Polish      Michael Rakowski <mrak@gmx.de>
@@ -218,7 +218,7 @@ const tI18nPhrase Phrases[] = {
     "Timers",
     "Programmation",
     "Timere",
-    "Ajastin",
+    "Ajastimet",
     "Timery",
     "Timer",
     "Χρονοδιακόπτης",
@@ -258,19 +258,19 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Infos sur l'enregistrement",
     "",// TODO
     "Tallenteen tiedot",
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Εγγραφή",
     "Inspelning",
     "Detaliile ξnregistrγrii",
     "",// TODO
     "",// TODO
     "Έέδή ή ΧΠίΨαΨ",
     "",// TODO
-    "",// TODO
+    "Salvestuse info",
     "Optagelses info",
   },
   { "Setup",
@@ -323,7 +323,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "Commandes d'enregistrement",
     "",// TODO
-    "Tallennuskomennot",
+    "Tallennekomennot",
     "Rozkazy Nagran",
     "Σrdenes de grabaciσn",
     "Εντολές γιά εγγραφές",
@@ -426,12 +426,12 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Info",
     "",//TODO
     "Tiedot",
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Πληροφορίες",
     "Info",
     "Info",
     "",//TODO
@@ -537,7 +537,7 @@ const tI18nPhrase Phrases[] = {
     "Uusi",
     "Nowy",
     "Nuevo",
-    "Νέο",
+    "Nέο",
     "Ny",
     "Nou",
     "Ϊj",
@@ -910,7 +910,7 @@ const tI18nPhrase Phrases[] = {
     "Inserisci",
     "Invoegen",
     "",// TODO
-    "Insιrt",
+    "Insιrer",
     "",// TODO
     "Lisδδ",
     "Wstawiac",
@@ -975,7 +975,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "Rιinitialisation",
     "",//TODO
-    "Alusta",
+    "Nollaa",
     "Reset",
     "Reiniciar",
     "Επαναφορά",
@@ -999,7 +999,7 @@ const tI18nPhrase Phrases[] = {
     "Pδivitδ",
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Σάρωση",
     "Skanna",
     "Cγutare canale",
     "",//TODO
@@ -1081,7 +1081,7 @@ const tI18nPhrase Phrases[] = {
     "Timer activo - tκm a certeza que quer apagar?",
     "Enregistrement en cours - confirmez la suppression",
     "Timer gjψr opptak - vil du slette likevel?",
-    "Ajastettu tallennus kδynnissδ - keskeytetδδnkφ?",
+    "Ajastettu tallennus kδynnissδ - poistetaanko silti?",
     "Nagrywanie w trakcie - napewno usunac?",
     "ΏTimer activo - de verdad eliminarlo?",
     "Χρονοδιακόπτης σέ εξέλιξη - Διαγραφή σίγουρα?",
@@ -1123,7 +1123,7 @@ const tI18nPhrase Phrases[] = {
     "no interface primαrio",
     "sur la carte primaire",
     "pε fψrste enhet",
-    "pδδvastaanottimella",
+    "ensisijaisella sovittimella",
     "na pierwszym interfejsie",
     "en interface primario",
     "στήν κύρια κάρτα",
@@ -1231,7 +1231,7 @@ const tI18nPhrase Phrases[] = {
     "Tallennus alkaa %d min kuluttua - sammutetaanko?",
     "Nagrywanie za %d minut - mimo to wylaczyc?",
     "Grabando en %d minutos, Ώde verdad apagar?",
-    "Αναμένεται εγγραφή σέ %d λεπτά - Τελικά να τερματιστει?",
+    "Αναμένεται εγγραφή σέ %d λεπτά - Τελικά να τερματιστεί?",
     "Inspelning startar om %d minuter, vill du avsluta?",
     "Ξnregistrez peste %d minute - ξnchid, totuΊi?",
     "Felvιtel %d perc mulva kezdφdik - mιgis kikapcsolni?",
@@ -1397,7 +1397,7 @@ const tI18nPhrase Phrases[] = {
     "Ppid",
     "Ppid",
     "Ppid",
-    "Aikatieto-PID",
+    "PCR-PID",
     "Ppid",
     "Ppid",
     "Ppid",
@@ -1523,7 +1523,7 @@ const tI18nPhrase Phrases[] = {
     "Encriptaηγo",
     "Cryptage",
     "Kortleser",
-    "Salaus",
+    "Salaus (CA)",
     "CA",
     "CA",
     "CA",
@@ -1607,7 +1607,7 @@ const tI18nPhrase Phrases[] = {
     "CoderateH",
     "CoderateH",
     "CoderateH",
-    "Ylδsuojaustaso",
+    "Suojaustaso (HP)",
     "CoderateH",
     "CoderateH",
     "CoderateH",
@@ -1628,7 +1628,7 @@ const tI18nPhrase Phrases[] = {
     "CoderateL",
     "CoderateL",
     "CoderateL",
-    "Alasuojaustaso",
+    "Suojaustaso (LP)",
     "CoderateL",
     "CoderateL",
     "CoderateL",
@@ -1670,7 +1670,7 @@ const tI18nPhrase Phrases[] = {
     "Transmission",
     "Transmission",
     "Transmission",
-    "Lδhetystila",
+    "Transmissio",
     "Transmisja",
     "Transmission",
     "Transmission",
@@ -1715,7 +1715,7 @@ const tI18nPhrase Phrases[] = {
     "Hierarkia",
     "Hierachia",
     "Hierarchy",
-    "Hierarchy",
+    "Ιεραρχεία",
     "Hierarchy",
     "Ierarhie",
     "Hierarchy",
@@ -1842,7 +1842,7 @@ const tI18nPhrase Phrases[] = {
     "VPS",
     "",// TODO
     "",// TODO
-    "",// TODO
+    "VPS",
     "VPS",
     "VPS",
     "",// TODO
@@ -2071,7 +2071,7 @@ const tI18nPhrase Phrases[] = {
     "Nenhuma placa DVB disponivel para gravar!",
     "Pas de carte DVB disponible pour l'enregistrement!",
     "Ingen ledige DVB enheter for opptak!",
-    "Ei vapaata vastaanotinta tallennukselle!",
+    "Ei vapaata DVB-viritintδ tallennukselle!",
     "Brak wolnej karty DVB do nagrywania!",
     "‘No hay dispositivo DVB disponible para grabar!",
     "Ανεπάρκεια DVB Κάρτας γιά εγγραφή!",
@@ -2281,18 +2281,18 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
+    "Avataan CA-moduulin valikkoa...",
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "Είσοδος CAM Μενού",
     "",//TODO
     "",//TODO
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
-    "",//TODO
-    "",//TODO
-    "",//TODO
-    "",//TODO
-    "",//TODO
-    "",//TODO
+    "CAM-menόό avamine...",
+    "Εbner CAM menu...",
   },
   { "Can't open CAM menu!",
     "CAM-Menό kann nicht geφffnet werden!",
@@ -2302,7 +2302,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "Impossible d'ouvrir le menu CAM!",
     "",//TODO
-    "Salausmoduulin valikko ei saatavilla",
+    "CA-moduulin valikko ei saatavilla",
     "CAM-Menu niedostepne!",
     "‘No pudeo acceder al menϊ de la CAM!",
     "Αδύνατη η πρόσβαση στό CAM μενού!",
@@ -2323,18 +2323,18 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
+    "CA-moduuli palautetaan alkutilaan...",
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "Επαναφορά CAM",
     "",//TODO
     "",//TODO
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
-    "",//TODO
-    "",//TODO
-    "",//TODO
-    "",//TODO
-    "",//TODO
-    "",//TODO
+    "CAM mooduli taaskδivitus...",
+    "Nulstiller CAM...",
   },
   { "Can't reset CAM!",
     "CAM-Reset fehlgeschlagen!",
@@ -2344,7 +2344,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "Impossible de rιinitialiser la CAM!",
     "",//TODO
-    "Salausmoduulin alustus epδonnistui!",
+    "CA-moduulin palautus alkutilaan epδonnistui!",
     "Nieudany CAM-Reset!",
     "‘No puedo reiniciar la CAM!",
     "Αδύνατο να γίνει επαναφορά στό CAM",
@@ -2365,7 +2365,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "La CAM a ιtι rιinitialisιe",
     "",//TODO
-    "Salausmoduuli alustettu",
+    "CA-moduuli palautettu alkutilaan",
     "CAM-Reset wykonany",
     "CAM reiniciada",
     "Στο CAM έγινε επαναφορά",
@@ -2386,18 +2386,18 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
+    "Syφtδ %d numeroa!",
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "Παρακαλό πληκτρολογήσετε %d νούμερα",
     "",//TODO
     "",//TODO
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
-    "",//TODO
-    "",//TODO
-    "",//TODO
-    "",//TODO
-    "",//TODO
-    "",//TODO
+    "Palun sisesta %d numbrit!",
+    "Indtast venligst %d cifre!",
   },
   { "No audio available!",
     "Kein Audio verfόgbar!",
@@ -2410,7 +2410,7 @@ const tI18nPhrase Phrases[] = {
     "Δδnen kieli ei ole valittavissa!",
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Ανεπάρκεια ήχου",
     "Ljud saknas!"
     "LipseΊte sunetul!",
     "",//TODO
@@ -2513,7 +2513,7 @@ const tI18nPhrase Phrases[] = {
     "CICAM",
     "Accθs conditionnel",
     "CICAM",
-    "CI-moduuli",
+    "CICAM",
     "CICAM",
     "CICAM",
     "CICAM",
@@ -2685,7 +2685,7 @@ const tI18nPhrase Phrases[] = {
     "Ulkoasu",
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Επιφάνεια",
     "Skin",
     "Skin",
     "",// TODO
@@ -2706,7 +2706,7 @@ const tI18nPhrase Phrases[] = {
     "Teema",
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Θέμα",
     "Tema",
     "Temγ",
     "",// TODO
@@ -2727,7 +2727,7 @@ const tI18nPhrase Phrases[] = {
     "Vaakakeskitys",
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Αριστερά",
     "Vδnster",
     "Stβnga",
     "",// TODO
@@ -2748,7 +2748,7 @@ const tI18nPhrase Phrases[] = {
     "Pystykeskitys",
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Επάνω",
     "Φvre",
     "Sus",
     "",// TODO
@@ -2832,7 +2832,7 @@ const tI18nPhrase Phrases[] = {
     "Kδytδ pieniδ kirjasimia",
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Χρισημοποίηση μικρόν γραμματοσειρών",
     "Anvδnd liten font",
     "Utilizare fonturi mici",
     "",// TODO
@@ -2853,7 +2853,7 @@ const tI18nPhrase Phrases[] = {
     "ei koskaan",
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Ποτέ"
     "aldrig",
     "niciodatγ",
     "",// TODO
@@ -2869,12 +2869,12 @@ const tI18nPhrase Phrases[] = {
     "in base alla superficie",
     "skin afhankelijk",
     "",// TODO
-    "Dιpend du skin",
+    "dιpend du skin",
     "",// TODO
     "ulkoasun mukaan",
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Εξαρτάτε από τήν επιφάνεια",
     "skin beroende",
     "dep. de skin",
     "",// TODO
@@ -2895,7 +2895,7 @@ const tI18nPhrase Phrases[] = {
     "aina",
     "",// TODO
     "",// TODO
-    "",// TODO
+    "πάντα",
     "alltid",
     "ξntotdeauna",
     "",// TODO
@@ -2937,7 +2937,7 @@ const tI18nPhrase Phrases[] = {
     "Kanavatiedon esitysaika (s)",
     "",// TODO
     "",// TODO
-    "",// TODO
+    "χρόνος ένδεικσης πληροφορίων καναλιού σε (δ)",
     "Kanal information (s)",
     "Durata afiΊγrii info-canal (s)",
     "",// TODO
@@ -2974,7 +2974,7 @@ const tI18nPhrase Phrases[] = {
     "Scorri pagina nel menu",
     "Scrollen per pagina",
     "Scroll da pαgina no menu",
-    "Scrolling par pages",
+    "Dιfilement par pages",
     "Rask rulling i menyer",
     "Valikoiden vieritys sivuttain",
     "Przesuwac stronami",
@@ -2995,12 +2995,12 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Dιfilement rotatif",
     "",// TODO
     "Valikoiden vieritys ympδri",
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Κίλιση γύρω-γύρω",
     "Rulla texten",
     "Derulare circularγ",
     "",// TODO
@@ -3039,7 +3039,7 @@ const tI18nPhrase Phrases[] = {
     "Directorias de gravaηγo",
     "Dossiers d'enregistrements",
     "Kataloger til opptak",
-    "Tallennehakemistot",
+    "Nδytδ tallennehakemistot",
     "Wykaz nagran",
     "Gracaciones en directorios",
     "Φάκελοι εγγραφών",
@@ -3100,12 +3100,12 @@ const tI18nPhrase Phrases[] = {
     "Visualizzazione dati vecchi (min)",
     "Oude EPG data tonen (min)",
     "",// TODO
-    "Montrer l'EPG plus vieux de m min",
+    "Montrer l'EPG pιrimι (min)",
     "",// TODO
     "Vanha tieto nδkyy (min)",
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Ένδεικση ξεπερασμένον πληροφοριών (λεπτά)",
     "Visa gammal information (min)",
     "Date EPG expirate cel mult (min)",
     "",// TODO
@@ -3123,7 +3123,7 @@ const tI18nPhrase Phrases[] = {
     "Ajustar relσgio do sistema",
     "Ajuster l'heure du systθme",
     "Juster system-klokken",
-    "Aseta kellonaika",
+    "Tahdista kellonaika",
     "Ustawianie czasu",
     "Ajustar reloj de sistema",
     "Συντονισμός ώρας υπολογιστή",
@@ -3168,7 +3168,7 @@ const tI18nPhrase Phrases[] = {
     "Suosikkikielet",
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Προτινόμενες γλώσες",
     "Φnskade sprεk",
     "Limbi preferate",
     "",// TODO
@@ -3189,7 +3189,7 @@ const tI18nPhrase Phrases[] = {
     "Suosikkikieli",
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Προτινόμενη γλώσα",
     "Φnskat sprεk",
     "Limba preferatγ",
     "",// TODO
@@ -3207,7 +3207,7 @@ const tI18nPhrase Phrases[] = {
     "Interface DVB primαrio",
     "Carte DVB primaire",
     "Hoved DVB-enhet",
-    "Pδδvastaanotin",
+    "Ensisijainen DVB-sovitin",
     "Pierwotny interfejs DVB",
     "Primer interface DVB",
     "Κύρια DVB κάρτα",
@@ -3226,12 +3226,12 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "Video display format",
     "",//TODO
-    "",//TODO
+    "Format d'affichage",
     "",//TODO
     "Nδyttφmuoto",
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Μορφή ένδεικσης Βίντεο",
     "Format fφr video display",
     "Formatul redγrii video",
     "",//TODO
@@ -3315,7 +3315,7 @@ const tI18nPhrase Phrases[] = {
     "Kuvasuhde",
     "Format telewizyjny",
     "Formato Vνdeo",
-    "Σχήμα οθόνης",
+    "Μορφή οθόνης",
     "Video format",
     "Format video",
     "Video formαtum",
@@ -3336,7 +3336,7 @@ const tI18nPhrase Phrases[] = {
     "Kδytδ Dolby Digital -δδntδ",
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Χρησιμοποίηση ήχου Dolby Digital",
     "Anvδnd Dolby Digital",
     "Sunet Dolby Digital",
     "",//TODO
@@ -3357,7 +3357,7 @@ const tI18nPhrase Phrases[] = {
     "Pδivitδ kanavat",
     "",// TODO
     "",// TODO
-    "",// TODO
+    "ανανέοση καναλιών",
     "Uppdatera kanaler",
     "Actualizare canale",
     "",// TODO
@@ -3373,12 +3373,12 @@ const tI18nPhrase Phrases[] = {
     "solo nomi",
     "alleen namen",
     "",// TODO
-    "Seulement les noms",
+    "noms uniquement",
     "",// TODO
     "vain nimet",
     "",// TODO
     "",// TODO
-    "",// TODO
+    "μόνο όνομα",
     "bara namn",
     "doar numele",
     "",// TODO
@@ -3394,12 +3394,12 @@ const tI18nPhrase Phrases[] = {
     "nomi e PIDs",
     "namen en PIDs",
     "",// TODO
-    "Noms et PIDs",
+    "noms et PIDs",
     "",// TODO
     "nimet ja PID:it",
     "",// TODO
     "",// TODO
-    "",// TODO
+    "όνομα καί PID",
     "namn och PID",
     "nume si PID-uri",
     "",// TODO
@@ -3415,12 +3415,12 @@ const tI18nPhrase Phrases[] = {
     "aggiungere canali nuovi",
     "nieuwe kanalen toevoegen",
     "",// TODO
-    "Ajouter les nouvelles chaξnes",
+    "ajouter chaξnes",
     "",// TODO
-    "lisδδ uudet kanavat",
+    "uudet kanavat",
     "",// TODO
     "",// TODO
-    "",// TODO
+    "προσθήκη νέον καναλιών",
     "lδgg till nya kanaler",
     "adγugare canale noi",
     "",// TODO
@@ -3436,12 +3436,12 @@ const tI18nPhrase Phrases[] = {
     "aggiungere transponder nuovi",
     "nieuwe transponders toevoegen",
     "",// TODO
-    "Ajouter les nouveaux transpondeurs",
+    "ajouter transpondeurs",
     "",// TODO
-    "lisδδ uudet transponderit",
+    "uudet transponderit",
     "",// TODO
     "",// TODO
-    "",// TODO
+    "προσθήκη νέον transponder",
     "lδgg till nya transponders",
     "adγugare transpondere noi",
     "",// TODO
@@ -3457,12 +3457,12 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "Audio talen",
     "",//TODO
-    "",//TODO
+    "Langues audio",
     "",//TODO
     "Δδnen kielet",
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Γλώσες ήχου",
     "Antal ljudsprεk",
     "Limbi sunet",
     "",//TODO
@@ -3478,12 +3478,12 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "Audio taal",
     "",//TODO
-    "",//TODO
+    "Langue audio",
     "",//TODO
     "Δδnen kieli",
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Γλώσα ήχου",
     "Ljudsprεk",
     "Limba sunetului",
     "",//TODO
@@ -3501,7 +3501,7 @@ const tI18nPhrase Phrases[] = {
     "Limite de bandas LNB (MHz)",
     "Limite de bandes LNB (MHz)",
     "LO-grensefrekvens (MHz)",
-    "LNB rajataajuus (MHz)",
+    "LNB-rajataajuus (MHz)",
     "SLOF (MHz)",
     "SLOF (MHz)",
     "SLOF (MHz)",
@@ -3522,7 +3522,7 @@ const tI18nPhrase Phrases[] = {
     "Frequκncia base LNB (MHz)",
     "Frιquence basse LNB (MHz)",
     "LO-frekvens i lavbεndet (MHz)",
-    "LNB alempi taajuus (MHz)",
+    "LNB-alataajuus (MHz)",
     "Dolna czestotliwosc LNB (MHz)",
     "Frecuencia baja LNB (MHz)",
     "Κάτω LNB-Συχνότητα (MHz)",
@@ -3543,7 +3543,7 @@ const tI18nPhrase Phrases[] = {
     "Frequκncia alta LNB (MHz)",
     "Frιquence haute LNB (MHz)",
     "LO-frekvens i hψybεndet (MHz)",
-    "LNB ylempi taajuus (MHz)",
+    "LNB-ylδtaajuus (MHz)",
     "Gorna czestotliwosc LNB (MHz)",
     "Frecuencia alta LNB (MHz)",
     "’νω LNB-Συχνότητα (MHz)",
@@ -3564,7 +3564,7 @@ const tI18nPhrase Phrases[] = {
     "Utilizar DiSEqC",
     "Utiliser le DiSEqC",
     "Bruk DiSEqC",
-    "DiSEqC kδytφssδ",
+    "Kδytδ DiSEqC-kytkintδ",
     "Uzywac DiSEqC",
     "Utilizar DiSEqC",
     "Ενεργοποίηση DiSEqC",
@@ -3585,7 +3585,7 @@ const tI18nPhrase Phrases[] = {
     "CICAM DVB",
     "Accθs conditionnel",
     "CICAM DVB",
-    "CI-moduuli DVB",
+    "CICAM DVB",
     "CICAM DVB",
     "CICAM DVB",
     "CICAM DVB",
@@ -3648,7 +3648,7 @@ const tI18nPhrase Phrases[] = {
     "Limite Primαrio",
     "Limite primaire",
     "Prioritetsgrense HovedDVB",
-    "Pδδvastaanottimen prioriteetti",
+    "Ensisijaisen sovittimen prioriteettiraja",
     "Pierwotny limit",
     "Lνmite primario",
     "Προτεύον όριο",
@@ -3777,7 +3777,7 @@ const tI18nPhrase Phrases[] = {
     "Kδytδ VPS-toimintoa",
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Χρήση VPS",
     "Anvδnd VPS",
     "Utilizeazγ VPS",
     "",// TODO
@@ -3798,7 +3798,7 @@ const tI18nPhrase Phrases[] = {
     "VPS-toiminnon aloitusmarginaali (s)",
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Περιθόριο VPS (δ)",
     "VPS marginal (s)",
     "Marjγ de timp la utilizare VPS (s)",
     "",// TODO
@@ -3921,7 +3921,7 @@ const tI18nPhrase Phrases[] = {
     "Modo de multi-speed",
     "Mode multi-vitesses",
     "Multispeed modus",
-    "Moninopeustila",
+    "Kδytδ toiston moninopeustilaa",
     "Tryb wielopredkosciowy",
     "Modo multi-velocidad",
     "Μεθοδος πολλαπλής ταχύτητας",
@@ -4026,7 +4026,7 @@ const tI18nPhrase Phrases[] = {
     "Timeout SVDRP (s)",
     "Temps maxi SVDRP (s)",
     "Ubrukt SVDRP-levetid (s)",
-    "SVDRP odotusaika (s)",
+    "SVDRP-komennon odotusaika (s)",
     "Min. brak aktywnosci SVDRP (s)",
     "SVDRP Timeout (s)",
     "SVDRP διακοπή (δ)",
@@ -4045,7 +4045,7 @@ const tI18nPhrase Phrases[] = {
     "Timeout Zapping",
     "Zap timeout (s)",
     "",// TODO
-    "Prise en compte derniθre chaξne (s)",
+    "Prise en compte chaξne (s)",
     "",// TODO
     "Kanavavalinnan odotusaika (s)",
     "",// TODO
@@ -4915,7 +4915,7 @@ const tI18nPhrase Phrases[] = {
     "Δδni",
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Ήχος",
     "Ljud",
     "Sunet",
     "",// TODO
@@ -5228,7 +5228,7 @@ const tI18nPhrase Phrases[] = {
     "A mudar interface DVB primαrio...",
     "Changement de carte DVB primaire...",
     "Bytter fψrste DVB-enhet...",
-    "Vaihdetaan pδδvastaanottimelle...",
+    "Vaihdetaan ensisijaista DVB-sovitinta...",
     "Pierwszy interfejs DVB przelacza...",
     "Cambio al interface DVB primario...",
     "Η κύρια DVB κάρτα αλλάζει...",
@@ -5373,12 +5373,12 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Mise ΰ jour du guide des programmes",
     "",// TODO
     "Ohjelmaoppaan pδivitys aloitettu",
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Αρχή σάρωση EPG",
     "Pεbφrjar EPG skanning",
     "Pornesc achiziώia EPG",
     "",// TODO
@@ -5415,12 +5415,12 @@ const tI18nPhrase Phrases[] = {
     "VDR Classico",
     "VDR Klassiek",
     "",// TODO
-    "",// TODO
+    "VDR Classique",// TODO
     "",// TODO
     "Klassinen VDR",
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Κλασικό VDR",
     "Klassisk VDR",
     "VDR clasic",
     "",// TODO
@@ -5436,12 +5436,12 @@ const tI18nPhrase Phrases[] = {
     "Consolles ST:TNG",
     "ST:TNG Consoles",
     "",// TODO
-    "",// TODO
+    "Consoles ST:TNG",
     "",// TODO
     "ST:TNG konsoli",
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Μορφές ST:TNG",
     "ST:TNG konsoll",
     "Cons. ST:TNG",
     "",// TODO
@@ -5457,19 +5457,19 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Sans titre",
     "",// TODO
     "Ei esitystδ",
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Οχι τίτλο",
     "ingen titel",
     "Fγrγ titlu",
     "",// TODO
     "",// TODO
     "±ΥΧ έΠΧÒΠέΨο",
     "Bez titla",
-    "",// TODO
+    "Pealkiri puudub",
     "Ingen titel",
   },
   { NULL }

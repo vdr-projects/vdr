@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.120 2005/10/01 10:29:02 kls Exp $
+ * $Id: recording.c 1.122 2005/10/31 12:27:58 kls Exp $
  */
 
 #include "recording.h"
@@ -264,7 +264,9 @@ bool cRecordingInfo::Read(FILE *f)
   if (ownEvent) {
      cReadLine ReadLine;
      char *s;
+     int line = 0;
      while ((s = ReadLine.Read(f)) != NULL) {
+           ++line;
            char *t = skipspace(s + 1);
            switch (*s) {
              case 'C': {
@@ -275,8 +277,10 @@ bool cRecordingInfo::Read(FILE *f)
                             channelID = tChannelID::FromString(t);
                        }
                        break;
-             default: if (!ownEvent->Parse(s))
+             default: if (!ownEvent->Parse(s)) {
+                         esyslog("ERROR: EPG data problem in line %d", line);
                          return false;
+                         }
                       break;
              }
            }
@@ -478,7 +482,8 @@ cRecording::cRecording(const char *FileName)
      asprintf(&InfoFileName, "%s%s", fileName, INFOFILESUFFIX);
      FILE *f = fopen(InfoFileName, "r");
      if (f) {
-        info->Read(f);
+        if (!info->Read(f))
+           esyslog("ERROR: EPG data problem in file %s", InfoFileName);
         fclose(f);
         }
      else if (errno != ENOENT)
@@ -1253,7 +1258,7 @@ int cIndexFile::Get(uchar FileNumber, int FileOffset)
 
 cFileName::cFileName(const char *FileName, bool Record, bool Blocking)
 {
-  file = -1;
+  file = NULL;
   fileNumber = 0;
   record = Record;
   blocking = Blocking;
@@ -1274,21 +1279,21 @@ cFileName::~cFileName()
   free(fileName);
 }
 
-int cFileName::Open(void)
+cUnbufferedFile *cFileName::Open(void)
 {
-  if (file < 0) {
+  if (!file) {
      int BlockingFlag = blocking ? 0 : O_NONBLOCK;
      if (record) {
         dsyslog("recording to '%s'", fileName);
         file = OpenVideoFile(fileName, O_RDWR | O_CREAT | BlockingFlag);
-        if (file < 0)
+        if (!file)
            LOG_ERROR_STR(fileName);
         }
      else {
         if (access(fileName, R_OK) == 0) {
            dsyslog("playing '%s'", fileName);
-           file = open(fileName, O_RDONLY | BlockingFlag);
-           if (file < 0)
+           file = cUnbufferedFile::Create(fileName, O_RDONLY | BlockingFlag);
+           if (!file)
               LOG_ERROR_STR(fileName);
            }
         else if (errno != ENOENT)
@@ -1300,14 +1305,14 @@ int cFileName::Open(void)
 
 void cFileName::Close(void)
 {
-  if (file >= 0) {
-     if ((record && CloseVideoFile(file) < 0) || (!record && close(file) < 0))
+  if (file) {
+     if ((record && CloseVideoFile(file) < 0) || (!record && file->Close() < 0))
         LOG_ERROR_STR(fileName);
-     file = -1;
+     file = NULL;
      }
 }
 
-int cFileName::SetOffset(int Number, int Offset)
+cUnbufferedFile *cFileName::SetOffset(int Number, int Offset)
 {
   if (fileNumber != Number)
      Close();
@@ -1332,23 +1337,23 @@ int cFileName::SetOffset(int Number, int Offset)
            }
         else if (errno != ENOENT) { // something serious has happened
            LOG_ERROR_STR(fileName);
-           return -1;
+           return NULL;
            }
         // found a non existing file suffix
         }
      if (Open() >= 0) {
-        if (!record && Offset >= 0 && lseek(file, Offset, SEEK_SET) != Offset) {
+        if (!record && Offset >= 0 && file->Seek(Offset, SEEK_SET) != Offset) {
            LOG_ERROR_STR(fileName);
-           return -1;
+           return NULL;
            }
         }
      return file;
      }
   esyslog("ERROR: max number of files (%d) exceeded", MAXFILESPERRECORDING);
-  return -1;
+  return NULL;
 }
 
-int cFileName::NextFile(void)
+cUnbufferedFile *cFileName::NextFile(void)
 {
   return SetOffset(fileNumber + 1);
 }
@@ -1382,7 +1387,7 @@ int SecondsToFrames(int Seconds)
 
 // --- ReadFrame -------------------------------------------------------------
 
-int ReadFrame(int f, uchar *b, int Length, int Max)
+int ReadFrame(cUnbufferedFile *f, uchar *b, int Length, int Max)
 {
   if (Length == -1)
      Length = Max; // this means we read up to EOF (see cIndex)
@@ -1390,10 +1395,8 @@ int ReadFrame(int f, uchar *b, int Length, int Max)
      esyslog("ERROR: frame larger than buffer (%d > %d)", Length, Max);
      Length = Max;
      }
-  int r = safe_read(f, b, Length);
+  int r = f->Read(b, Length);
   if (r < 0)
      LOG_ERROR;
   return r;
 }
-
-

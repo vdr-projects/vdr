@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.374 2005/10/03 12:53:51 kls Exp $
+ * $Id: menu.c 1.375 2005/10/09 11:22:03 kls Exp $
  */
 
 #include "menu.h"
@@ -230,7 +230,7 @@ public:
   };
 
 cMenuEditChannel::cMenuEditChannel(cChannel *Channel, bool New)
-:cOsdMenu(tr("Edit channel"), 14)
+:cOsdMenu(tr("Edit channel"), 16)
 {
   channel = Channel;
   if (channel) {

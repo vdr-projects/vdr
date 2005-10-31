@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osdbase.c 1.22 2005/10/02 15:00:40 kls Exp $
+ * $Id: osdbase.c 1.24 2005/10/09 10:56:26 kls Exp $
  */
 
 #include "osdbase.h"
@@ -242,8 +242,8 @@ void cOsdMenu::DisplayCurrent(bool Current)
 {
   cOsdItem *item = Get(current);
   if (item) {
-     displayMenu->SetItem(item->Text(), current - first, Current, item->Selectable());
-     if (Current)
+     displayMenu->SetItem(item->Text(), current - first, Current && item->Selectable(), item->Selectable());
+     if (Current && item->Selectable())
         cStatus::MsgOsdCurrentItem(item->Text());
      if (!Current)
         item->SetFresh(true); // leaving the current item resets 'fresh'
@@ -268,14 +268,16 @@ void cOsdMenu::CursorUp(void)
   int tmpCurrent = current;
   int lastOnScreen = first + displayMenuItems - 1;
   int last = Count() - 1;
+  if (last < 0)
+     return;
   while (--tmpCurrent != current) {
         if (tmpCurrent < 0) {
            if (Setup.MenuScrollWrap)
-              tmpCurrent = last;
+              tmpCurrent = last + 1;
            else
               return;
            }
-        if (SelectableItem(tmpCurrent))
+        else if (SelectableItem(tmpCurrent))
            break;
         }
   if (first <= tmpCurrent && tmpCurrent <= lastOnScreen)
@@ -298,14 +300,16 @@ void cOsdMenu::CursorDown(void)
   int tmpCurrent = current;
   int lastOnScreen = first + displayMenuItems - 1;
   int last = Count() - 1;
+  if (last < 0)
+     return;
   while (++tmpCurrent != current) {
         if (tmpCurrent > last) {
            if (Setup.MenuScrollWrap)
-              tmpCurrent = 0;
+              tmpCurrent = -1;
            else
               return;
            }
-        if (SelectableItem(tmpCurrent))
+        else if (SelectableItem(tmpCurrent))
            break;
         }
   if (first <= tmpCurrent && tmpCurrent <= lastOnScreen)

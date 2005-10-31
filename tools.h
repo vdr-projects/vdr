@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.79 2005/10/01 12:43:31 kls Exp $
+ * $Id: tools.h 1.81 2005/10/31 12:54:36 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -81,7 +81,7 @@ public:
   operator const char * () const { return s; } // for use in (const char *) context
   const char * operator*() const { return s; } // for use in (const void *) context (printf() etc.)
   cString &operator=(const cString &String);
-  static cString sprintf(const char *fmt, ...);
+  static cString sprintf(const char *fmt, ...) __attribute__ ((format (printf, 1, 2)));
   };
 
 ssize_t safe_read(int filedes, void *buffer, size_t size);
@@ -196,6 +196,27 @@ public:
   operator FILE* () { return f; }
   bool Open(void);
   bool Close(void);
+  };
+
+/// cUnbufferedFile is used for large files that are mainly written or read
+/// in a streaming manner, and thus should not be cached.
+
+class cUnbufferedFile {
+private:
+  int fd;
+  off_t begin;
+  off_t end;
+  off_t ahead;
+  ssize_t written;
+public:
+  cUnbufferedFile(void);
+  ~cUnbufferedFile();
+  int Open(const char *FileName, int Flags, mode_t Mode = DEFFILEMODE);
+  int Close(void);
+  off_t Seek(off_t Offset, int Whence);
+  ssize_t Read(void *Data, size_t Size);
+  ssize_t Write(const void *Data, size_t Size);
+  static cUnbufferedFile *Create(const char *FileName, int Flags, mode_t Mode = DEFFILEMODE);
   };
 
 class cLockFile {

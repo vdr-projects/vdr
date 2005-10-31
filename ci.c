@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 1.36 2005/10/03 12:58:22 kls Exp $
+ * $Id: ci.c 1.38 2005/10/30 13:04:10 kls Exp $
  */
 
 #include "ci.h"
@@ -156,7 +156,7 @@ public:
   uint8_t Status(void);
   int Write(int fd);
   int Read(int fd);
-  void Dump(bool Outgoing);
+  void Dump(int fd, bool Outgoing);
   };
 
 cTPDU::cTPDU(uint8_t Slot, uint8_t Tcid, uint8_t Tag, int Length, const uint8_t *Data)
@@ -207,9 +207,9 @@ cTPDU::cTPDU(uint8_t Slot, uint8_t Tcid, uint8_t Tag, int Length, const uint8_t 
 
 int cTPDU::Write(int fd)
 {
-  Dump(true);
+  Dump(fd, true);
   if (size)
-     return write(fd, data, size) == size ? OK : ERROR;
+     return safe_write(fd, data, size) == size ? OK : ERROR;
   esyslog("ERROR: attemp to write TPDU with zero size");
   return ERROR;
 }
@@ -222,20 +222,20 @@ int cTPDU::Read(int fd)
      size = 0;
      return ERROR;
      }
-  Dump(false);
+  Dump(fd, false);
   return OK;
 }
 
-void cTPDU::Dump(bool Outgoing)
+void cTPDU::Dump(int fd, bool Outgoing)
 {
   if (DumpTPDUDataTransfer) {
 #define MAX_DUMP 256
-     fprintf(stderr, "%s ", Outgoing ? "-->" : "<--");
+     fprintf(stderr, "%2d %s ", fd, Outgoing ? "-->" : "<--");
      for (int i = 0; i < size && i < MAX_DUMP; i++)
          fprintf(stderr, "%02X ", data[i]);
      fprintf(stderr, "%s\n", size >= MAX_DUMP ? "..." : "");
      if (!Outgoing) {
-        fprintf(stderr, "   ");
+        fprintf(stderr, "      ");
         for (int i = 0; i < size && i < MAX_DUMP; i++)
             fprintf(stderr, "%2c ", isprint(data[i]) ? data[i] : '.');
         fprintf(stderr, "%s\n", size >= MAX_DUMP ? "..." : "");
@@ -1048,12 +1048,12 @@ cCiMMI::cCiMMI(int SessionId, cCiTransportConnection *Tc)
 cCiMMI::~cCiMMI()
 {
   if (fetchedMenu) {
-     cMutexLock MutexLock(&fetchedMenu->mutex);
+     cMutexLock MutexLock(fetchedMenu->mutex);
      fetchedMenu->mmi = NULL;
      }
   delete menu;
   if (fetchedEnquiry) {
-     cMutexLock MutexLock(&fetchedEnquiry->mutex);
+     cMutexLock MutexLock(fetchedEnquiry->mutex);
      fetchedEnquiry->mmi = NULL;
      }
   delete enquiry;
@@ -1227,7 +1227,7 @@ cCiMenu::cCiMenu(cCiMMI *MMI, bool Selectable)
 
 cCiMenu::~cCiMenu()
 {
-  cMutexLock MutexLock(&mutex);
+  cMutexLock MutexLock(mutex);
   if (mmi)
      mmi->Menu(true);
   free(titleText);
@@ -1254,7 +1254,8 @@ bool cCiMenu::HasUpdate(void)
 
 bool cCiMenu::Select(int Index)
 {
-  cMutexLock MutexLock(&mutex);
+  cMutexLock MutexLock(mutex);
+  dbgprotocol("%d: ==> Select %d\n", mmi ? mmi->SessionId() : -1, Index);
   if (mmi && -1 <= Index && Index < numEntries)
      return mmi->SendMenuAnswer(Index + 1);
   return false;
@@ -1267,6 +1268,7 @@ bool cCiMenu::Cancel(void)
 
 bool cCiMenu::Abort(void)
 {
+  cMutexLock MutexLock(mutex);
   return mmi && mmi->SendCloseMMI();
 }
 
@@ -1282,7 +1284,7 @@ cCiEnquiry::cCiEnquiry(cCiMMI *MMI)
 
 cCiEnquiry::~cCiEnquiry()
 {
-  cMutexLock MutexLock(&mutex);
+  cMutexLock MutexLock(mutex);
   if (mmi)
      mmi->Enquiry(true);
   free(text);
@@ -1290,7 +1292,7 @@ cCiEnquiry::~cCiEnquiry()
 
 bool cCiEnquiry::Reply(const char *s)
 {
-  cMutexLock MutexLock(&mutex);
+  cMutexLock MutexLock(mutex);
   return mmi ? mmi->SendAnswer(s) : false;
 }
 
@@ -1301,6 +1303,7 @@ bool cCiEnquiry::Cancel(void)
 
 bool cCiEnquiry::Abort(void)
 {
+  cMutexLock MutexLock(mutex);
   return mmi && mmi->SendCloseMMI();
 }
 
@@ -1617,8 +1620,12 @@ cCiMenu *cCiHandler::GetMenu(void)
   cMutexLock MutexLock(&mutex);
   for (int Slot = 0; Slot < numSlots; Slot++) {
       cCiMMI *mmi = (cCiMMI *)GetSessionByResourceId(RI_MMI, Slot);
-      if (mmi)
-         return mmi->Menu();
+      if (mmi) {
+         cCiMenu *Menu = mmi->Menu();
+         if (Menu)
+            Menu->mutex = &mutex;
+         return Menu;
+         }
       }
   return NULL;
 }
@@ -1628,8 +1635,12 @@ cCiEnquiry *cCiHandler::GetEnquiry(void)
   cMutexLock MutexLock(&mutex);
   for (int Slot = 0; Slot < numSlots; Slot++) {
       cCiMMI *mmi = (cCiMMI *)GetSessionByResourceId(RI_MMI, Slot);
-      if (mmi)
-         return mmi->Enquiry();
+      if (mmi) {
+         cCiEnquiry *Enquiry = mmi->Enquiry();
+         if (Enquiry)
+            Enquiry->mutex = &mutex;
+         return Enquiry;
+         }
       }
   return NULL;
 }

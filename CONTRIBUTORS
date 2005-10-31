@@ -920,6 +920,7 @@ Peter Bieringer <pb@bieringer.de>
  for reporting a problem with duplicate recordings with the same file name
  for suggesting to implement the command line option '--vfat'
  for reporting a leftover 'summary.vdr' in vdr.5
+ for adding more error messages and line numbers when reading EPG data and info.vdr
 
 Alexander Damhuis <ad@phonedation.de>
  for reporting problems when deleting a timer that is currently recording
@@ -1024,6 +1025,7 @@ Rene Bartsch <ml@bartschnet.de>
 Christoph Hermanns <christoph.hermanns@gmx.de>
  for reporting a bug in handling the "Red" button in the "Schedules" menu in case
  there are no events listed for a particular channel
+ for reporting a leftover 'summary.vdr' in vdr.1
 
 Oskar Signell <oskar@signell.net>
  for pointing out a problem with setting an editing mark while in "Pause" mode,
@@ -1234,6 +1236,7 @@ Marco Schlüßler <marco@lordzodiac.de>
  for fixing handling EPG data for time shifted events
  for fixing detecting short channel names for "Kabel Deutschland"
  for reporting that the FATALERRNO macro needs to check for a non-zero errno value
+ for reporting missing mutex locks in cCiMenu::Abort() and cCiEnquiry::Abort()
 
 Jürgen Schmitz <j.schmitz@web.de>
  for reporting a bug in displaying the current channel when switching via the SVDRP
@@ -1343,6 +1346,7 @@ Darren Salt <linux@youmustbejoking.demon.co.uk>
  pages
  for a patch that was used to add the command line options '--lirc', '--rcu' and
  '--no-kbd'
+ for adding '__attribute__' to functions that use printf() like parameters
 
 Sean Carlos <seanc@libero.it>
  for translating OSD texts to the Italian language
@@ -1502,3 +1506,20 @@ Alexander Rieger <Alexander.Rieger@inka.de>
  for fixing handling color buttons in cMenuEditStrItem
  for making the '.update' file in the video directory be touched when a recording is
  added or deleted, so that other VDR instances can update their lists
+
+Philip Prindeville <philipp_subx@redfish-solutions.com>
+ for updates to 'sources.conf'
+
+Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de>
+ for making VDR use use daemon() instead of fork() to run in daemon mode
+ for fixing a possible endless loop in a menu with no selectable items if
+ Setup.MenuScrollWrap is true (thanks to Enrico Scholz).
+
+Nicolas Huillard <nhuillard@e-dition.fr>
+ for translating OSD texts to the French language
+
+Patrick Fischer <patrick_fischer@gmx.de>
+ for reporting an error in the cFilter example in PLUGINS.html
+
+Ralf Müller <ralf@bj-ig.de>
+ for a patch that was used to implement cUnbufferedFile

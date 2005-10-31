@@ -3885,3 +3885,30 @@ Video Disk Recorder Revision History
 - The character 0x8A in CAM menu strings is now mapped to a real newline.
 - The 'sub-title' and 'bottom text' in the CAM menu can now consist of several lines.
 - Improved the CAM enquiry menu.
+
+2005-10-31: Version 1.3.35
+
+- Updated 'sources.conf' (thanks to Philip Prindeville).
+- Now using daemon() instead of fork() to run VDR in daemon mode (thanks to
+  Enrico Scholz).
+- Fixed a possible endless loop in a menu with no selectable items if
+  Setup.MenuScrollWrap is true (thanks to Enrico Scholz).
+- Making sure no item is displayed as "current" if Up, Down, Left or Right is
+  pressed in a menu with no selectable items.
+- Added '__attribute__' to functions that use printf() like parameters (thanks
+  to Darren Salt).
+- Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
+- Fixed a leftover 'summary.vdr' in vdr.1 (reported by Christoph Hermanns).
+- Added more error messages and line numbers when reading EPG data and info.vdr
+  (thanks to Peter Bieringer).
+- Updated the Danish OSD texts (thanks to Mogens Elneff).
+- Updated the Estonian OSD texts (thanks to Arthur Konovalov).
+- Added missing mutex locks to cCiMenu::Abort() and cCiEnquiry::Abort() (reported
+  by Marco Schlüßler).
+- Fixed lock handling in CAM communication to avoid problems with multiple CAMs
+  per device or CAMs with more than one smart card.
+- Updated the Greek OSD texts (thanks to Dimitrios Dimitrakos).
+- Updated the French OSD texts (thanks to Nicolas Huillard).
+- Fixed the cFilter example in PLUGINS.html (reported by Patrick Fischer).
+- The new class cUnbufferedFile is used for the recording files to avoid
+  trashing the file system cache (based on a patch by Ralf Müller).
