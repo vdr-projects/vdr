@@ -1520,3 +1520,6 @@ Nicolas Huillard <nhuillard@e-dition.fr>
 
 Patrick Fischer <patrick_fischer@gmx.de>
  for reporting an error in the cFilter example in PLUGINS.html
+
+Ralf Müller <ralf@bj-ig.de>
+ for a patch that was used to implement cUnbufferedFile

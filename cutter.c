@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: cutter.c 1.10 2005/08/14 10:51:54 kls Exp $
+ * $Id: cutter.c 1.11 2005/10/31 12:26:44 kls Exp $
  */
 
 #include "cutter.h"
@@ -18,7 +18,7 @@
 class cCuttingThread : public cThread {
 private:
   const char *error;
-  int fromFile, toFile;
+  cUnbufferedFile *fromFile, *toFile;
   cFileName *fromFileName, *toFileName;
   cIndexFile *fromIndex, *toIndex;
   cMarks fromMarks, toMarks;
@@ -34,7 +34,7 @@ cCuttingThread::cCuttingThread(const char *FromFileName, const char *ToFileName)
 :cThread("video cutting")
 {
   error = NULL;
-  fromFile = toFile = -1;
+  fromFile = toFile = NULL;
   fromFileName = toFileName = NULL;
   fromIndex = toIndex = NULL;
   if (fromMarks.Load(FromFileName) && fromMarks.Count()) {
@@ -64,7 +64,7 @@ void cCuttingThread::Action(void)
   if (Mark) {
      fromFile = fromFileName->Open();
      toFile = toFileName->Open();
-     if (fromFile < 0 || toFile < 0)
+     if (!fromFile || !toFile)
         return;
      int Index = Mark->position;
      Mark = fromMarks.Next(Mark);
@@ -92,7 +92,7 @@ void cCuttingThread::Action(void)
                  fromFile = fromFileName->SetOffset(FileNumber, FileOffset);
                  CurrentFileNumber = FileNumber;
                  }
-              if (fromFile >= 0) {
+              if (fromFile) {
                  int len = ReadFrame(fromFile, buffer,  Length, sizeof(buffer));
                  if (len < 0) {
                     error = "ReadFrame";
@@ -131,7 +131,7 @@ void cCuttingThread::Action(void)
                  cutIn = false;
                  }
               }
-           if (safe_write(toFile, buffer, Length) < 0) {
+           if (toFile->Write(buffer, Length) < 0) {
               error = "safe_write";
               break;
               }

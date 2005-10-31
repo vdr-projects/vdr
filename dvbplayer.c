@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 1.40 2005/08/29 15:43:30 kls Exp $
+ * $Id: dvbplayer.c 1.41 2005/10/31 12:33:48 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -74,7 +74,7 @@ int cBackTrace::Get(bool Forward)
 
 class cNonBlockingFileReader : public cThread {
 private:
-  int f;
+  cUnbufferedFile *f;
   uchar *buffer;
   int wanted;
   int length;
@@ -86,14 +86,14 @@ public:
   cNonBlockingFileReader(void);
   ~cNonBlockingFileReader();
   void Clear(void);
-  int Read(int FileHandle, uchar *Buffer, int Length);
+  int Read(cUnbufferedFile *File, uchar *Buffer, int Length);
   bool Reading(void) { return buffer; }
   };
 
 cNonBlockingFileReader::cNonBlockingFileReader(void)
 :cThread("non blocking file reader")
 {
-  f = -1;
+  f = NULL;
   buffer = NULL;
   wanted = length = 0;
   hasData = false;
@@ -110,7 +110,7 @@ cNonBlockingFileReader::~cNonBlockingFileReader()
 void cNonBlockingFileReader::Clear(void)
 {
   Lock();
-  f = -1;
+  f = NULL;
   free(buffer);
   buffer = NULL;
   wanted = length = 0;
@@ -119,7 +119,7 @@ void cNonBlockingFileReader::Clear(void)
   newSet.Signal();
 }
 
-int cNonBlockingFileReader::Read(int FileHandle, uchar *Buffer, int Length)
+int cNonBlockingFileReader::Read(cUnbufferedFile *File, uchar *Buffer, int Length)
 {
   if (hasData && buffer) {
      if (buffer != Buffer) {
@@ -131,7 +131,7 @@ int cNonBlockingFileReader::Read(int FileHandle, uchar *Buffer, int Length)
      return length;
      }
   if (!buffer) {
-     f = FileHandle;
+     f = File;
      buffer = Buffer;
      wanted = Length;
      length = 0;
@@ -146,8 +146,8 @@ void cNonBlockingFileReader::Action(void)
 {
   while (Running()) {
         Lock();
-        if (!hasData && f >= 0 && buffer) {
-           int r = safe_read(f, buffer + length, wanted - length);
+        if (!hasData && f && buffer) {
+           int r = f->Read(buffer + length, wanted - length);
            if (r >= 0) {
               length += r;
               if (!r || length == wanted) // r == 0 means EOF
@@ -181,7 +181,7 @@ private:
   cBackTrace *backTrace;
   cFileName *fileName;
   cIndexFile *index;
-  int replayFile;
+  cUnbufferedFile *replayFile;
   bool eof;
   bool firstPacket;
   ePlayModes playMode;
@@ -237,7 +237,7 @@ cDvbPlayer::cDvbPlayer(const char *FileName)
   isyslog("replay %s", FileName);
   fileName = new cFileName(FileName, false);
   replayFile = fileName->Open();
-  if (replayFile < 0)
+  if (!replayFile)
      return;
   ringBuffer = new cRingBufferFrame(PLAYERBUFSIZE);
   // Create the index file:
@@ -302,10 +302,10 @@ bool cDvbPlayer::NextFile(uchar FileNumber, int FileOffset)
 {
   if (FileNumber > 0)
      replayFile = fileName->SetOffset(FileNumber, FileOffset);
-  else if (replayFile >= 0 && eof)
+  else if (replayFile && eof)
      replayFile = fileName->NextFile();
   eof = false;
-  return replayFile >= 0;
+  return replayFile != NULL;
 }
 
 int cDvbPlayer::Resume(void)
@@ -342,7 +342,7 @@ bool cDvbPlayer::Save(void)
 void cDvbPlayer::Activate(bool On)
 {
   if (On) {
-     if (replayFile >= 0)
+     if (replayFile)
         Start();
      }
   else
@@ -376,7 +376,7 @@ void cDvbPlayer::Action(void)
            // Read the next frame from the file:
 
            if (playMode != pmStill && playMode != pmPause) {
-              if (!readFrame && (replayFile >= 0 || readIndex >= 0)) {
+              if (!readFrame && (replayFile || readIndex >= 0)) {
                  if (!nonBlockingFileReader->Reading()) {
                     if (playMode == pmFast || (playMode == pmSlow && playDir == pdBackward)) {
                        uchar FileNumber;

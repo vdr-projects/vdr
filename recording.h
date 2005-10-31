@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 1.45 2005/10/01 10:24:41 kls Exp $
+ * $Id: recording.h 1.46 2005/10/31 12:27:12 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -203,7 +203,7 @@ public:
 
 class cFileName {
 private:
-  int file;
+  cUnbufferedFile *file;
   int fileNumber;
   char *fileName, *pFileNumber;
   bool record;
@@ -213,10 +213,10 @@ public:
   ~cFileName();
   const char *Name(void) { return fileName; }
   int Number(void) { return fileNumber; }
-  int Open(void);
+  cUnbufferedFile *Open(void);
   void Close(void);
-  int SetOffset(int Number, int Offset = 0);
-  int NextFile(void);
+  cUnbufferedFile *SetOffset(int Number, int Offset = 0);
+  cUnbufferedFile *NextFile(void);
   };
 
 cString IndexToHMSF(int Index, bool WithFrame = false);
@@ -226,7 +226,7 @@ int HMSFToIndex(const char *HMSF);
 int SecondsToFrames(int Seconds); //XXX+ ->player???
       // Returns the number of frames corresponding to the given number of seconds.
 
-int ReadFrame(int f, uchar *b, int Length, int Max);
+int ReadFrame(cUnbufferedFile *f, uchar *b, int Length, int Max);
 
 char *ExchangeChars(char *s, bool ToFileSystem);
       // Exchanges the characters in the given string to or from a file system

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: videodir.h 1.5 2004/12/26 11:52:56 kls Exp $
+ * $Id: videodir.h 1.6 2005/10/31 11:50:23 kls Exp $
  */
 
 #ifndef __VIDEODIR_H
@@ -15,8 +15,8 @@
 
 extern const char *VideoDirectory;
 
-int OpenVideoFile(const char *FileName, int Flags);
-int CloseVideoFile(int FileHandle);
+cUnbufferedFile *OpenVideoFile(const char *FileName, int Flags);
+int CloseVideoFile(cUnbufferedFile *File);
 bool RenameVideoFile(const char *OldName, const char *NewName);
 bool RemoveVideoFile(const char *FileName);
 bool VideoFileSpaceAvailable(int SizeMB);

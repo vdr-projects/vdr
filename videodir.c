@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: videodir.c 1.12 2005/08/06 09:53:21 kls Exp $
+ * $Id: videodir.c 1.13 2005/10/31 12:07:41 kls Exp $
  */
 
 #include "videodir.h"
@@ -102,7 +102,7 @@ const char *cVideoDirectory::Adjust(const char *FileName)
   return NULL;
 }
 
-int OpenVideoFile(const char *FileName, int Flags)
+cUnbufferedFile *OpenVideoFile(const char *FileName, int Flags)
 {
   const char *ActualFileName = FileName;
 
@@ -110,7 +110,7 @@ int OpenVideoFile(const char *FileName, int Flags)
   if (strstr(FileName, VideoDirectory) != FileName) {
      esyslog("ERROR: %s not in %s", FileName, VideoDirectory);
      errno = ENOENT; // must set 'errno' - any ideas for a better value?
-     return -1;
+     return NULL;
      }
   // Are we going to create a new file?
   if ((Flags & O_CREAT) != 0) {
@@ -128,25 +128,26 @@ int OpenVideoFile(const char *FileName, int Flags)
         if (Dir.Stored()) {
            ActualFileName = Dir.Adjust(FileName);
            if (!MakeDirs(ActualFileName, false))
-              return -1; // errno has been set by MakeDirs()
+              return NULL; // errno has been set by MakeDirs()
            if (symlink(ActualFileName, FileName) < 0) {
               LOG_ERROR_STR(FileName);
-              return -1;
+              return NULL;
               }
            ActualFileName = strdup(ActualFileName); // must survive Dir!
            }
         }
      }
-  int Result = open(ActualFileName, Flags, DEFFILEMODE);
+  cUnbufferedFile *File = cUnbufferedFile::Create(ActualFileName, Flags, DEFFILEMODE);
   if (ActualFileName != FileName)
      free((char *)ActualFileName);
-  return Result;
+  return File;
 }
 
-int CloseVideoFile(int FileHandle)
+int CloseVideoFile(cUnbufferedFile *File)
 {
-  // just in case we ever decide to do something special when closing the file!
-  return close(FileHandle);
+  int Result = File->Close();
+  delete File;
+  return Result;
 }
 
 bool RenameVideoFile(const char *OldName, const char *NewName)

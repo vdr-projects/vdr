@@ -3886,7 +3886,7 @@ Video Disk Recorder Revision History
 - The 'sub-title' and 'bottom text' in the CAM menu can now consist of several lines.
 - Improved the CAM enquiry menu.
 
-2005-10-30: Version 1.3.35
+2005-10-31: Version 1.3.35
 
 - Updated 'sources.conf' (thanks to Philip Prindeville).
 - Now using daemon() instead of fork() to run VDR in daemon mode (thanks to
@@ -3910,3 +3910,5 @@ Video Disk Recorder Revision History
 - Updated the Greek OSD texts (thanks to Dimitrios Dimitrakos).
 - Updated the French OSD texts (thanks to Nicolas Huillard).
 - Fixed the cFilter example in PLUGINS.html (reported by Patrick Fischer).
+- The new class cUnbufferedFile is used for the recording files to avoid
+  trashing the file system cache (based on a patch by Ralf Müller).

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.99 2005/09/25 12:56:06 kls Exp $
+ * $Id: tools.c 1.100 2005/10/31 12:56:15 kls Exp $
  */
 
 #include "tools.h"
@@ -834,6 +834,129 @@ bool cSafeFile::Close(void)
   else
      result = false;
   return result;
+}
+
+// --- cUnbufferedFile -------------------------------------------------------
+
+#define READ_AHEAD MEGABYTE(2)
+#define WRITE_BUFFER MEGABYTE(10)
+
+cUnbufferedFile::cUnbufferedFile(void)
+{
+  fd = -1;
+}
+
+cUnbufferedFile::~cUnbufferedFile()
+{
+  Close();
+}
+
+int cUnbufferedFile::Open(const char *FileName, int Flags, mode_t Mode)
+{
+  Close();
+  fd = open(FileName, Flags, Mode);
+  begin = end = ahead = -1;
+  written = 0;
+  return fd;
+}
+
+int cUnbufferedFile::Close(void)
+{
+  if (fd >= 0) {
+     if (ahead > end)
+        end = ahead;
+     if (begin >= 0 && end > begin) {
+        //dsyslog("close buffer: %d (flush: %d bytes, %ld-%ld)", fd, written, begin, end);
+        if (written)
+           fdatasync(fd);
+        posix_fadvise(fd, begin, end - begin, POSIX_FADV_DONTNEED);
+        }
+     begin = end = ahead = -1;
+     written = 0;
+     }
+  int OldFd = fd;
+  fd = -1;
+  return close(OldFd);
+}
+
+off_t cUnbufferedFile::Seek(off_t Offset, int Whence)
+{
+  if (fd >= 0)
+     return lseek(fd, Offset, Whence);
+  return -1;
+}
+
+ssize_t cUnbufferedFile::Read(void *Data, size_t Size)
+{
+  if (fd >= 0) {
+     off_t pos = lseek(fd, 0, SEEK_CUR);
+     // jump forward - adjust end position
+     if (pos > end)
+        end = pos;
+     // after adjusting end - don't clear more than previously requested
+     if (end > ahead)
+        end = ahead;
+     // jump backward - drop read ahead of previous run
+     if (pos < begin)
+        end = ahead;
+     if (begin >= 0 && end > begin)
+        posix_fadvise(fd, begin - KILOBYTE(200), end - begin + KILOBYTE(200), POSIX_FADV_DONTNEED);//XXX macros/parameters???
+     begin = pos;
+     ssize_t bytesRead = safe_read(fd, Data, Size);
+     if (bytesRead > 0) {
+        pos += bytesRead;
+        end = pos;
+        // this seems to trigger a non blocking read - this
+        // may or may not have been finished when we will be called next time.
+        // If it is not finished we can't release the not yet filled buffers.
+        // So this is commented out till we find a better solution.
+        //posix_fadvise(fd, pos, READ_AHEAD, POSIX_FADV_WILLNEED);
+        ahead = pos + READ_AHEAD;
+        }
+     else
+        end = pos;
+     return bytesRead;
+     }
+  return -1;
+}
+
+ssize_t cUnbufferedFile::Write(const void *Data, size_t Size)
+{
+  if (fd >=0) {
+     off_t pos = lseek(fd, 0, SEEK_CUR);
+     ssize_t bytesWritten = safe_write(fd, Data, Size);
+     if (bytesWritten >= 0) {
+        written += bytesWritten;
+        if (begin >= 0) {
+           if (pos < begin)
+              begin = pos;
+           }
+        else
+           begin = pos;
+        if (pos + bytesWritten > end)
+           end = pos + bytesWritten;
+        if (written > WRITE_BUFFER) {
+           //dsyslog("flush buffer: %d (%d bytes, %ld-%ld)", fd, written, begin, end);
+           fdatasync(fd);
+           if (begin >= 0 && end > begin)
+              posix_fadvise(fd, begin, end - begin, POSIX_FADV_DONTNEED);
+           begin = end = -1;
+           written = 0;
+           }
+        }
+     return bytesWritten;
+     }
+  return -1;
+}
+
+cUnbufferedFile *cUnbufferedFile::Create(const char *FileName, int Flags, mode_t Mode)
+{
+  cUnbufferedFile *File = new cUnbufferedFile;
+  if (File->Open(FileName, Flags, Mode) < 0) {
+     delete File;
+     File = NULL;
+     }
+  return File;
 }
 
 // --- cLockFile -------------------------------------------------------------

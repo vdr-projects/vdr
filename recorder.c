@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recorder.c 1.15 2005/08/14 10:53:28 kls Exp $
+ * $Id: recorder.c 1.16 2005/10/31 12:35:29 kls Exp $
  */
 
 #include <stdarg.h>
@@ -28,7 +28,7 @@ private:
   cIndexFile *index;
   uchar pictureType;
   int fileSize;
-  int recordFile;
+  cUnbufferedFile *recordFile;
   time_t lastDiskSpaceCheck;
   bool RunningLowOnDiskSpace(void);
   bool NextFile(void);
@@ -50,7 +50,7 @@ cFileWriter::cFileWriter(const char *FileName, cRemux *Remux)
   lastDiskSpaceCheck = time(NULL);
   fileName = new cFileName(FileName, true);
   recordFile = fileName->Open();
-  if (recordFile < 0)
+  if (!recordFile)
      return;
   // Create the index file:
   index = new cIndexFile(FileName, true);
@@ -81,13 +81,13 @@ bool cFileWriter::RunningLowOnDiskSpace(void)
 
 bool cFileWriter::NextFile(void)
 {
-  if (recordFile >= 0 && pictureType == I_FRAME) { // every file shall start with an I_FRAME
+  if (recordFile && pictureType == I_FRAME) { // every file shall start with an I_FRAME
      if (fileSize > MEGABYTE(Setup.MaxVideoFileSize) || RunningLowOnDiskSpace()) {
         recordFile = fileName->NextFile();
         fileSize = 0;
         }
      }
-  return recordFile >= 0;
+  return recordFile != NULL;
 }
 
 void cFileWriter::Action(void)
@@ -102,7 +102,7 @@ void cFileWriter::Action(void)
            if (NextFile()) {
               if (index && pictureType != NO_PICTURE)
                  index->Write(pictureType, fileName->Number(), fileSize);
-              if (safe_write(recordFile, p, Count) < 0) {
+              if (recordFile->Write(p, Count) < 0) {
                  LOG_ERROR_STR(fileName->Name());
                  break;
                  }
