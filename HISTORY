@@ -3922,3 +3922,4 @@ Video Disk Recorder Revision History
 - Removed '\n' from several syslog() calls (reported by Sascha Volkenandt).
 - Fixed missing '&' in the SetAreas() example in PLUGINS.html (reported by
   Sascha Volkenandt).
+- Fixed a memory leak in cString::operator=() (reported by Sascha Volkenandt).
