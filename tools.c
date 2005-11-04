@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.100 2005/10/31 12:56:15 kls Exp $
+ * $Id: tools.c 1.101 2005/11/04 14:20:04 kls Exp $
  */
 
 #include "tools.h"
@@ -463,7 +463,7 @@ bool SpinUpDisk(const char *FileName)
             gettimeofday(&tp2, NULL);
             double seconds = (((long long)tp2.tv_sec * 1000000 + tp2.tv_usec) - ((long long)tp1.tv_sec * 1000000 + tp1.tv_usec)) / 1000000.0;
             if (seconds > 0.5)
-               dsyslog("SpinUpDisk took %.2f seconds\n", seconds);
+               dsyslog("SpinUpDisk took %.2f seconds", seconds);
             free(buf);
             return true;
             }

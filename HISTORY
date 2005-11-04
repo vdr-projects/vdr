@@ -3919,3 +3919,4 @@ Video Disk Recorder Revision History
   all the way until the end of the recording (thanks to Joachim Wilke).
 - A menu is no longer automatically closed when a replay ends (reported by
   Marko Mäkelä).
+- Removed '\n' from several syslog() calls (reported by Sascha Volkenandt).

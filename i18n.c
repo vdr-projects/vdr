@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.218 2005/10/30 13:37:57 kls Exp $
+ * $Id: i18n.c 1.219 2005/11/04 14:19:25 kls Exp $
  *
  * Translations provided by:
  *
@@ -5547,7 +5547,7 @@ const char *I18nTranslate(const char *s, const char *Plugin)
              }
          p = Phrases;
          }
-     esyslog("%s%sno translation found for '%s' in language %d (%s)\n", Plugin ? Plugin : "", Plugin ? ": " : "", s, Setup.OSDLanguage, Phrases[0][Setup.OSDLanguage]);
+     esyslog("%s%sno translation found for '%s' in language %d (%s)", Plugin ? Plugin : "", Plugin ? ": " : "", s, Setup.OSDLanguage, Phrases[0][Setup.OSDLanguage]);
      }
   const char *p = strchr(s, '$');
   return p ? p + 1 : s;

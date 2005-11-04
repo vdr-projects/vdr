@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.232 2005/11/04 13:17:42 kls Exp $
+ * $Id: config.h 1.233 2005/11/04 14:18:59 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -118,7 +118,7 @@ public:
                    if (l->Parse(buffer))
                       Add(l);
                    else {
-                      esyslog("ERROR: error in %s, line %d\n", fileName, line);
+                      esyslog("ERROR: error in %s, line %d", fileName, line);
                       delete l;
                       result = false;
                       break;
