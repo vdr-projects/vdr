@@ -3917,3 +3917,5 @@ Video Disk Recorder Revision History
 
 - Fixed a NULL pointer access with the cUnbufferedFile when a replay session runs
   all the way until the end of the recording (thanks to Joachim Wilke).
+- A menu is no longer automatically closed when a replay ends (reported by
+  Marko Mäkelä).
