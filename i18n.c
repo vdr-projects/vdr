@@ -4,13 +4,13 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.219 2005/11/04 14:19:25 kls Exp $
+ * $Id: i18n.c 1.220 2005/11/04 14:36:27 kls Exp $
  *
  * Translations provided by:
  *
  * Slovenian   Miha Setina <mihasetina@softhome.net>, Matjaz Thaler <matjaz.thaler@guest.arnes.si>
  * Italian     Alberto Carraro <bertocar@tin.it>, Antonio Ospite <ospite@studenti.unina.it>, Sean Carlos <seanc@libero.it>
- * Dutch       Arnold Niessen <niessen@iae.nl> <arnold.niessen@philips.com>, Hans Dingemans <hans.dingemans@tacticalops.nl>
+ * Dutch       Arnold Niessen <niessen@iae.nl> <arnold.niessen@philips.com>, Hans Dingemans <hans.dingemans@tacticalops.nl>, Maarten Wisse <Maarten.Wisse@urz.uni-hd.de>
  * Portuguese  Paulo Lopes <pmml@netvita.pt>
  * French      Jean-Claude Repetto <jc@repetto.org>, Olivier Jacques <jacquesolivier@hotmail.com>, Gregoire Favre <greg@magma.unil.ch>, Nicolas Huillard <nhuillard@e-dition.fr>
  * Norwegian   Jørgen Tvedt <pjtvedt@online.no>, Truls Slevigen <truls@slevigen.no>
@@ -107,7 +107,7 @@ const tI18nPhrase Phrases[] = {
     "iso8859-15",
     "iso8859-2",
     "iso8859-1",
-    "iso8859-1",
+    "iso8859-15",
     "iso8859-1",
     "iso8859-1",
     "iso8859-1",
@@ -256,7 +256,7 @@ const tI18nPhrase Phrases[] = {
     "Aufzeichnung",
     "Podatki o snemanju",
     "",// TODO
-    "",// TODO
+    "Opname info",
     "",// TODO
     "Infos sur l'enregistrement",
     "",// TODO
@@ -424,7 +424,7 @@ const tI18nPhrase Phrases[] = {
     "Info",
     "Info",
     "",//TODO
-    "",//TODO
+    "Info",
     "",//TODO
     "Info",
     "",//TODO
@@ -2277,7 +2277,7 @@ const tI18nPhrase Phrases[] = {
     "CAM-Menü wird geöffnet...",
     "",//TODO
     "",//TODO
-    "",//TODO
+    "CAM-menu wordt geopend...",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -2319,7 +2319,7 @@ const tI18nPhrase Phrases[] = {
     "CAM wird zurückgesetzt...",
     "",//TODO
     "",//TODO
-    "",//TODO
+    "CAM wordt herstart...",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -2382,7 +2382,7 @@ const tI18nPhrase Phrases[] = {
     "Bitte geben Sie %d Ziffern ein!",
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Vul %d cijfers in!",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -2993,7 +2993,7 @@ const tI18nPhrase Phrases[] = {
     "Rundum scrollen",
     "Iz konca skoèi na zaèetek",
     "",// TODO
-    "",// TODO
+    "Rondom scrollen",
     "",// TODO
     "Défilement rotatif",
     "",// TODO
@@ -3224,7 +3224,7 @@ const tI18nPhrase Phrases[] = {
     "Video Anzeige-Format",
     "Format video prikaza",
     "",//TODO
-    "Video display format",
+    "Video display formaat",
     "",//TODO
     "Format d'affichage",
     "",//TODO
@@ -5371,7 +5371,7 @@ const tI18nPhrase Phrases[] = {
     "Beginne mit EPG-Scan",
     "Prièenjam EPG-scan",
     "",// TODO
-    "",// TODO
+    "Bezig met starten EPG scan",
     "",// TODO
     "Mise à jour du guide des programmes",
     "",// TODO
@@ -5455,7 +5455,7 @@ const tI18nPhrase Phrases[] = {
     "Kein Titel",
     "Brez naziva",
     "",// TODO
-    "",// TODO
+    "Geen titel",
     "",// TODO
     "Sans titre",
     "",// TODO
