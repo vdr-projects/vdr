@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.81 2005/10/31 12:54:36 kls Exp $
+ * $Id: tools.h 1.82 2005/11/04 17:05:35 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -135,8 +135,11 @@ public:
 
 class cReadLine {
 private:
-  char buffer[MAXPARSEBUFFER];
+  size_t size;
+  char *buffer;
 public:
+  cReadLine(void);
+  ~cReadLine();
   char *Read(FILE *f);
   };
 

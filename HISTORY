@@ -3924,3 +3924,8 @@ Video Disk Recorder Revision History
   Sascha Volkenandt).
 - Fixed a memory leak in cString::operator=() (reported by Sascha Volkenandt).
 - Updated the Dutch OSD texts (thanks to Maarten Wisse).
+- cReadLine now dynamically allocates its buffer, so that it can handle lines
+  of any length.
+- Changed cConfig::Load() to use cReadLine instead of a fixed buffer (thanks
+  to Andreas Mair for reporting a problem with extremely long summary fields
+  in timers).

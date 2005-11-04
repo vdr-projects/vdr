@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.102 2005/11/04 14:26:39 kls Exp $
+ * $Id: tools.c 1.103 2005/11/04 16:33:18 kls Exp $
  */
 
 #include "tools.h"
@@ -610,12 +610,24 @@ cString TimeString(time_t t)
 
 // --- cReadLine -------------------------------------------------------------
 
+cReadLine::cReadLine(void)
+{
+  size = 0;
+  buffer = NULL;
+}
+
+cReadLine::~cReadLine()
+{
+  free(buffer);
+}
+
 char *cReadLine::Read(FILE *f)
 {
-  if (fgets(buffer, sizeof(buffer), f) > 0) {
-     int l = strlen(buffer) - 1;
-     if (l >= 0 && buffer[l] == '\n')
-        buffer[l] = 0;
+  int n = getline(&buffer, &size, f);
+  if (n > 0) {
+     n--;
+     if (buffer[n] == '\n')
+        buffer[n] = 0;
      return buffer;
      }
   return NULL;

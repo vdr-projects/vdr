@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.233 2005/11/04 14:18:59 kls Exp $
+ * $Id: config.h 1.234 2005/11/04 15:55:05 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -102,20 +102,21 @@ public:
        isyslog("loading %s", fileName);
        FILE *f = fopen(fileName, "r");
        if (f) {
+          char *s;
           int line = 0;
-          char buffer[MAXPARSEBUFFER];
+          cReadLine ReadLine;
           result = true;
-          while (fgets(buffer, sizeof(buffer), f) > 0) {
+          while ((s = ReadLine.Read(f)) != NULL) {
                 line++;
                 if (allowComments) {
-                   char *p = strchr(buffer, '#');
+                   char *p = strchr(s, '#');
                    if (p)
                       *p = 0;
                    }
-                stripspace(buffer);
-                if (!isempty(buffer)) {
+                stripspace(s);
+                if (!isempty(s)) {
                    T *l = new T;
-                   if (l->Parse(buffer))
+                   if (l->Parse(s))
                       Add(l);
                    else {
                       esyslog("ERROR: error in %s, line %d", fileName, line);
