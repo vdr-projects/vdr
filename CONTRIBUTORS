@@ -793,6 +793,7 @@ Sascha Volkenandt <sascha@akv-soft.de>
  being written to by a timer
  for fixing a crash in cConfig::Load() when compiling on the PPC
  for reporting '\n' in an esyslog() call in osd.c
+ for reporting missing '&' in the SetAreas() example in PLUGINS.html
 
 Malcolm Caldwell <malcolm.caldwell@ntu.edu.au>
  for modifying LOF handling to allow for C-band reception

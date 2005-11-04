@@ -3920,3 +3920,5 @@ Video Disk Recorder Revision History
 - A menu is no longer automatically closed when a replay ends (reported by
   Marko Mäkelä).
 - Removed '\n' from several syslog() calls (reported by Sascha Volkenandt).
+- Fixed missing '&' in the SetAreas() example in PLUGINS.html (reported by
+  Sascha Volkenandt).

@@ -1476,7 +1476,7 @@ yet, so you need to at least call the function
 
 <p><table><tr><td bgcolor=#F0F0F0><pre>
 tArea Area = { 0, 0, 100, 100, 4 };
-MyOsd-&gt;SetAreas(Area, 1);
+MyOsd-&gt;SetAreas(&amp;Area, 1);
 </pre></td></tr></table><p>
 
 to define an actual OSD drawing area (see VDR/osd.h for the declarations
@@ -1496,7 +1496,7 @@ sub-areas with different color depths and separate color palettes, as in
 <p><table><tr><td bgcolor=#F0F0F0><pre>
 tArea Area = { 0, 0, 99, 99, 4 };
 if (osd-&gt;CanHandleAreas(Area, 1) == oeOk)
-   osd-&gt;SetAreas(Area, 1);
+   osd-&gt;SetAreas(&amp;Area, 1);
 else {
    tArea Areas[] = { { 0,  0, 99, 19, 2 },
                      { 0, 20, 99, 79, 2 },
