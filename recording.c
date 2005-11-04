@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.122 2005/10/31 12:27:58 kls Exp $
+ * $Id: recording.c 1.123 2005/11/04 13:17:20 kls Exp $
  */
 
 #include "recording.h"
@@ -1342,7 +1342,7 @@ cUnbufferedFile *cFileName::SetOffset(int Number, int Offset)
         // found a non existing file suffix
         }
      if (Open() >= 0) {
-        if (!record && Offset >= 0 && file->Seek(Offset, SEEK_SET) != Offset) {
+        if (!record && Offset >= 0 && file && file->Seek(Offset, SEEK_SET) != Offset) {
            LOG_ERROR_STR(fileName);
            return NULL;
            }

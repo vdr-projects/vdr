@@ -3912,3 +3912,8 @@ Video Disk Recorder Revision History
 - Fixed the cFilter example in PLUGINS.html (reported by Patrick Fischer).
 - The new class cUnbufferedFile is used for the recording files to avoid
   trashing the file system cache (based on a patch by Ralf Müller).
+
+2005-11-04: Version 1.3.36
+
+- Fixed a NULL pointer access with the cUnbufferedFile when a replay session runs
+  all the way until the end of the recording (thanks to Joachim Wilke).
