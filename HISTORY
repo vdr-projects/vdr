@@ -3913,7 +3913,7 @@ Video Disk Recorder Revision History
 - The new class cUnbufferedFile is used for the recording files to avoid
   trashing the file system cache (based on a patch by Ralf Müller).
 
-2005-11-04: Version 1.3.36
+2005-11-05: Version 1.3.36
 
 - Fixed a NULL pointer access with the cUnbufferedFile when a replay session runs
   all the way until the end of the recording (thanks to Joachim Wilke).
@@ -3929,3 +3929,7 @@ Video Disk Recorder Revision History
 - Changed cConfig::Load() to use cReadLine instead of a fixed buffer (thanks
   to Andreas Mair for reporting a problem with extremely long summary fields
   in timers).
+- cSVDRP now dynamically allocates its command buffer in order to handle
+  commands of any length. The MAXPARSEBUFFER macros is now obsolete and has
+  been removed. If a plugin has used that macro, it should either define
+  a buffer size of its own, or use cReadLine when reading files.

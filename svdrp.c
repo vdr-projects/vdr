@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.82 2005/09/25 10:36:59 kls Exp $
+ * $Id: svdrp.c 1.83 2005/11/05 11:21:38 kls Exp $
  */
 
 #include "svdrp.h"
@@ -361,6 +361,8 @@ cSVDRP::cSVDRP(int Port)
 {
   PUTEhandler = NULL;
   numChars = 0;
+  length = BUFSIZ;
+  cmdLine = MALLOC(char, length);
   message = NULL;
   lastActivity = 0;
   isyslog("SVDRP listening on port %d", Port);
@@ -370,6 +372,7 @@ cSVDRP::~cSVDRP()
 {
   Close();
   free(message);
+  free(cmdLine);
 }
 
 void cSVDRP::Close(bool Timeout)
@@ -1442,6 +1445,11 @@ bool cSVDRP::Process(void)
                  // showtime!
                  Execute(cmdLine);
                  numChars = 0;
+                 if (length > BUFSIZ) {
+                    free(cmdLine); // let's not tie up too much memory
+                    length = BUFSIZ;
+                    cmdLine = MALLOC(char, length);
+                    }
                  }
               else if (c == 0x04 && numChars == 0) {
                  // end of file (only at beginning of line)
@@ -1455,14 +1463,13 @@ bool cSVDRP::Process(void)
               else if (c <= 0x03 || c == 0x0D) {
                  // ignore control characters
                  }
-              else if (numChars < sizeof(cmdLine) - 1) {
+              else {
+                 if (numChars >= length - 1) {
+                    length += BUFSIZ;
+                    cmdLine = (char *)realloc(cmdLine, length);
+                    }
                  cmdLine[numChars++] = c;
                  cmdLine[numChars] = 0;
-                 }
-              else {
-                 Reply(501, "Command line too long");
-                 esyslog("SVDRP: command line too long: '%s'", cmdLine);
-                 numChars = 0;
                  }
               lastActivity = time(NULL);
               }
