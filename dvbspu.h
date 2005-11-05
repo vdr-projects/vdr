@@ -8,7 +8,7 @@
  *
  * parts of this file are derived from the OMS program.
  *
- * $Id: dvbspu.h 1.9 2005/05/07 11:14:03 kls Exp $
+ * $Id: dvbspu.h 1.10 2005/11/05 12:08:47 kls Exp $
  */
 
 #ifndef __DVBSPU_H
@@ -91,7 +91,8 @@ class cDvbSpuBitmap {
 
 class cDvbSpuDecoder:public cSpuDecoder {
   private:
-    cOsd * osd;
+    cOsd *osd;
+    cMutex mutex;
 
     // processing state
     uint8_t *spu;

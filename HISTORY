@@ -3933,3 +3933,4 @@ Video Disk Recorder Revision History
   commands of any length. The MAXPARSEBUFFER macros is now obsolete and has
   been removed. If a plugin has used that macro, it should either define
   a buffer size of its own, or use cReadLine when reading files.
+- Fixed a race condition in the SPU decoder (thanks to Marco Schlüßler).
