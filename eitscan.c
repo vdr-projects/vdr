@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: eitscan.c 1.28 2005/08/26 15:37:06 kls Exp $
+ * $Id: eitscan.c 1.29 2005/11/05 15:24:36 kls Exp $
  */
 
 #include "eitscan.h"
@@ -150,13 +150,14 @@ void cEITScanner::Process(void)
                          if (!Channel->Ca() || Channel->Ca() == Device->DeviceNumber() + 1 || Channel->Ca() >= 0x0100) {
                             if (Device->ProvidesTransponder(Channel)) {
                                if (!Device->Receiving()) {
-                                  bool IsPrimaryDeviceReplaying = Device == cDevice::PrimaryDevice() && Device->Replaying() && cTransferControl::ReceiverDevice() != cDevice::PrimaryDevice();
-                                  if (Device != cDevice::ActualDevice() || (Device->ProvidesTransponderExclusively(Channel) && (IsPrimaryDeviceReplaying || now - lastActivity > Setup.EPGScanTimeout * 3600))) {
-                                     if (!IsPrimaryDeviceReplaying && Device == cDevice::ActualDevice() && !currentChannel) {
-                                        if (cTransferControl::ReceiverDevice())
+                                  bool MaySwitchTransponder = Device->MaySwitchTransponder();
+                                  if (MaySwitchTransponder || Device->ProvidesTransponderExclusively(Channel) && now - lastActivity > Setup.EPGScanTimeout * 3600) {
+                                     if (!MaySwitchTransponder) {
+                                        if (Device == cDevice::ActualDevice() && !currentChannel) {
                                            cDevice::PrimaryDevice()->StopReplay(); // stop transfer mode
-                                        currentChannel = Device->CurrentChannel();
-                                        Skins.Message(mtInfo, tr("Starting EPG scan"));
+                                           currentChannel = Device->CurrentChannel();
+                                           Skins.Message(mtInfo, tr("Starting EPG scan"));
+                                           }
                                         }
                                      currentDevice = Device;//XXX see also dvbdevice.c!!!
                                      //dsyslog("EIT scan: device %d  source  %-8s tp %5d", Device->DeviceNumber() + 1, *cSource::ToString(Channel->Source()), Channel->Transponder());

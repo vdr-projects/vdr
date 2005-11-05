@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.110 2005/09/17 14:29:44 kls Exp $
+ * $Id: device.c 1.111 2005/11/05 15:23:58 kls Exp $
  */
 
 #include "device.h"
@@ -512,6 +512,11 @@ bool cDevice::ProvidesTransponderExclusively(const cChannel *Channel) const
 bool cDevice::ProvidesChannel(const cChannel *Channel, int Priority, bool *NeedsDetachReceivers) const
 {
   return false;
+}
+
+bool cDevice::MaySwitchTransponder(void)
+{
+  return !Receiving(true) && !(pidHandles[ptAudio].pid || pidHandles[ptVideo].pid || pidHandles[ptDolby].pid);
 }
 
 bool cDevice::SwitchChannel(const cChannel *Channel, bool LiveView)

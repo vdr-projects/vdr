@@ -3934,3 +3934,5 @@ Video Disk Recorder Revision History
   been removed. If a plugin has used that macro, it should either define
   a buffer size of its own, or use cReadLine when reading files.
 - Fixed a race condition in the SPU decoder (thanks to Marco Schlüßler).
+- The EPG scan no longer disturbs players that have also set live PIDs
+  (reported by Stefan Huelswitt).
