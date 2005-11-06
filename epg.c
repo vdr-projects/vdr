@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 1.38 2005/10/09 12:57:55 kls Exp $
+ * $Id: epg.c 1.39 2005/11/06 10:31:58 kls Exp $
  */
 
 #include "epg.h"
@@ -424,32 +424,6 @@ void cEvent::FixEpgBugs(void)
   // Some TV stations apparently have their own idea about how to fill in the
   // EPG data. Let's fix their bugs as good as we can:
   if (title) {
-
-     // Some channels put too much information into the ShortText and leave the
-     // Description empty:
-     //
-     // Title
-     // (NAT, Year Min')[ ["ShortText". ]Description]
-     //
-     if (shortText && !description) {
-        if (*shortText == '(') {
-           char *e = strchr(shortText + 1, ')');
-           if (e) {
-              if (*(e + 1)) {
-                 if (*++e == ' ')
-                    if (*(e + 1) == '"')
-                       e++;
-                 }
-              else
-                 e = NULL;
-              char *s = e ? strdup(e) : NULL;
-              free(shortText);
-              shortText = s;
-              EpgBugFixStat(0, ChannelID());
-              // now the fixes #1 and #2 below will handle the rest
-              }
-           }
-        }
 
      // Some channels put the ShortText in quotes and use either the ShortText
      // or the Description field, depending on how long the string is:

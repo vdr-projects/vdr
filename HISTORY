@@ -3938,3 +3938,4 @@ Video Disk Recorder Revision History
   (reported by Stefan Huelswitt).
 - Fixed setting the help key display in the Recordings menu in case of several
   layers of subdirectories.
+- Removed EPG bugfix #0, because it removed actually important data.
