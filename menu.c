@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.375 2005/10/09 11:22:03 kls Exp $
+ * $Id: menu.c 1.376 2005/11/05 17:29:22 kls Exp $
  */
 
 #include "menu.h"
@@ -1546,14 +1546,13 @@ void cMenuRecordingItem::IncrementCounter(bool New)
 
 // --- cMenuRecordings -------------------------------------------------------
 
-int cMenuRecordings::helpKeys = -1;
-
 cMenuRecordings::cMenuRecordings(const char *Base, int Level, bool OpenSubMenus)
 :cOsdMenu(Base ? Base : tr("Recordings"), 8, 6)
 {
   base = Base ? strdup(Base) : NULL;
   level = Setup.RecordingDirs ? Level : -1;
   Recordings.StateChanged(recordingsState); // just to get the current state
+  helpKeys = -1;
   Display(); // this keeps the higher level menus from showing up briefly when pressing 'Back' during replay
   Set();
   if (Current() < 0)
@@ -1573,7 +1572,7 @@ cMenuRecordings::~cMenuRecordings()
 void cMenuRecordings::SetHelpKeys(void)
 {
   cMenuRecordingItem *ri = (cMenuRecordingItem *)Get(Current());
-  int NewHelpKeys = helpKeys;
+  int NewHelpKeys = 0;
   if (ri) {
      if (ri->IsDirectory())
         NewHelpKeys = 1;

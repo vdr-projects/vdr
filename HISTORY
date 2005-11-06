@@ -3913,7 +3913,7 @@ Video Disk Recorder Revision History
 - The new class cUnbufferedFile is used for the recording files to avoid
   trashing the file system cache (based on a patch by Ralf Müller).
 
-2005-11-05: Version 1.3.36
+2005-11-06: Version 1.3.36
 
 - Fixed a NULL pointer access with the cUnbufferedFile when a replay session runs
   all the way until the end of the recording (thanks to Joachim Wilke).
@@ -3936,3 +3936,5 @@ Video Disk Recorder Revision History
 - Fixed a race condition in the SPU decoder (thanks to Marco Schlüßler).
 - The EPG scan no longer disturbs players that have also set live PIDs
   (reported by Stefan Huelswitt).
+- Fixed setting the help key display in the Recordings menu in case of several
+  layers of subdirectories.
