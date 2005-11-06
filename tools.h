@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.81 2005/10/31 12:54:36 kls Exp $
+ * $Id: tools.h 1.83 2005/11/05 10:54:39 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -37,8 +37,6 @@ extern int SysLogLevel;
 
 #define KILOBYTE(n) ((n) * 1024)
 #define MEGABYTE(n) ((n) * 1024 * 1024)
-
-#define MAXPARSEBUFFER KILOBYTE(10)
 
 #define MALLOC(type, size)  (type *)malloc(sizeof(type) * (size))
 
@@ -135,8 +133,11 @@ public:
 
 class cReadLine {
 private:
-  char buffer[MAXPARSEBUFFER];
+  size_t size;
+  char *buffer;
 public:
+  cReadLine(void);
+  ~cReadLine();
   char *Read(FILE *f);
   };
 

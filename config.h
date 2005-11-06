@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.231 2005/10/08 08:48:38 kls Exp $
+ * $Id: config.h 1.234 2005/11/04 15:55:05 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -19,8 +19,8 @@
 #include "i18n.h"
 #include "tools.h"
 
-#define VDRVERSION  "1.3.35"
-#define VDRVERSNUM   10335  // Version * 10000 + Major * 100 + Minor
+#define VDRVERSION  "1.3.36"
+#define VDRVERSNUM   10336  // Version * 10000 + Major * 100 + Minor
 
 #define MAXPRIORITY 99
 #define MAXLIFETIME 99
@@ -102,23 +102,24 @@ public:
        isyslog("loading %s", fileName);
        FILE *f = fopen(fileName, "r");
        if (f) {
+          char *s;
           int line = 0;
-          char buffer[MAXPARSEBUFFER];
+          cReadLine ReadLine;
           result = true;
-          while (fgets(buffer, sizeof(buffer), f) > 0) {
+          while ((s = ReadLine.Read(f)) != NULL) {
                 line++;
                 if (allowComments) {
-                   char *p = strchr(buffer, '#');
+                   char *p = strchr(s, '#');
                    if (p)
                       *p = 0;
                    }
-                stripspace(buffer);
-                if (!isempty(buffer)) {
+                stripspace(s);
+                if (!isempty(s)) {
                    T *l = new T;
-                   if (l->Parse(buffer))
+                   if (l->Parse(s))
                       Add(l);
                    else {
-                      esyslog("ERROR: error in %s, line %d\n", fileName, line);
+                      esyslog("ERROR: error in %s, line %d", fileName, line);
                       delete l;
                       result = false;
                       break;

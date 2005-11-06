@@ -8,7 +8,7 @@
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  * Adapted to 'libsi' for VDR 1.3.0 by Marcel Wiesweg <marcel.wiesweg@gmx.de>.
  *
- * $Id: eit.c 1.111 2005/09/04 11:36:30 kls Exp $
+ * $Id: eit.c 1.112 2005/11/04 14:19:16 kls Exp $
  */
 
 #include "eit.h"
@@ -271,8 +271,8 @@ cTDT::cTDT(const u_char *Data)
   if (diff > 2) {
      mutex.Lock();
      if (abs(diff - lastDiff) < 3) {
-        isyslog("System Time = %s (%ld)\n", *TimeToString(loctim), loctim);
-        isyslog("Local Time  = %s (%ld)\n", *TimeToString(sattim), sattim);
+        isyslog("System Time = %s (%ld)", *TimeToString(loctim), loctim);
+        isyslog("Local Time  = %s (%ld)", *TimeToString(sattim), sattim);
         if (stime(&sattim) < 0)
            esyslog("ERROR while setting system time: %m");
         }

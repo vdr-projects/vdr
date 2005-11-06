@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 1.65 2005/09/17 14:29:28 kls Exp $
+ * $Id: device.h 1.66 2005/11/05 15:25:41 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -215,6 +215,9 @@ public:
          ///< function itself actually returns true.
          ///< The default implementation always returns false, so a derived cDevice
          ///< class that can provide channels must implement this function.
+  virtual bool MaySwitchTransponder(void);
+         ///< Returns true if it is ok to switch the transponder on this device,
+         ///< without disturbing any other activities.
   bool SwitchChannel(const cChannel *Channel, bool LiveView);
          ///< Switches the device to the given Channel, initiating transfer mode
          ///< if necessary.

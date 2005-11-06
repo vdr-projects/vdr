@@ -203,6 +203,8 @@ Stefan Huelswitt <huels@iname.com>
  for pointing out that recordings with empty episode names were not listed correctly
  in the LSTR command
  for fixing a memory leak in the SVDRP command LSTE
+ for reporting a problem with the EPG scan disturbing players that have also set
+ live PIDs
 
 Ulrich Röder <roeder@efr-net.de>
  for pointing out that there are channels that have a symbol rate higher than 27500
@@ -792,6 +794,9 @@ Sascha Volkenandt <sascha@akv-soft.de>
  for pointing out that the SVDRP command DELR deleted recordings that are currently
  being written to by a timer
  for fixing a crash in cConfig::Load() when compiling on the PPC
+ for reporting '\n' in an esyslog() call in osd.c
+ for reporting missing '&' in the SetAreas() example in PLUGINS.html
+ for reporting a memory leak in cString::operator=()
 
 Malcolm Caldwell <malcolm.caldwell@ntu.edu.au>
  for modifying LOF handling to allow for C-band reception
@@ -854,6 +859,7 @@ Christian Jacobsen <christian.jacobsen@stageholding.de>
 Andreas Mair <Andreas.Mair@linogate.com>
  for reporting a short display of the main menu if a plugin displays its own OSD and
  is started through a user defined key macro
+ for reporting a problem with extremely long summary fields in timers
 
 Olivier Jacques <jacquesolivier@hotmail.com>)
  for translating OSD texts to the French language
@@ -1237,6 +1243,7 @@ Marco Schlüßler <marco@lordzodiac.de>
  for fixing detecting short channel names for "Kabel Deutschland"
  for reporting that the FATALERRNO macro needs to check for a non-zero errno value
  for reporting missing mutex locks in cCiMenu::Abort() and cCiEnquiry::Abort()
+ for fixing a race condition in the SPU decoder
 
 Jürgen Schmitz <j.schmitz@web.de>
  for reporting a bug in displaying the current channel when switching via the SVDRP
@@ -1319,6 +1326,8 @@ Mogens Elneff <mogens@elneff.dk>
 
 Joachim Wilke <vdr@joachim-wilke.de>
  for reporting missing calls to cStatus::MsgOsdClear() in cSkins::Message()
+ for fixing a NULL pointer access with the cUnbufferedFile when a replay session
+ runs all the way until the end of the recording
 
 Sascha Klek <sklek@gmx.de>
  for reporting a problem with the '0' key in the "Day" item of the "Timers" menu
@@ -1497,6 +1506,7 @@ Harald Milz <hm@seneca.muc.de>
 
 Marko Mäkelä <marko.makela@hut.fi>
  for making repeat keys be ignored when waiting for a keypress to cancel an operation
+ for reporting that a menu was automatically closed when a replay ends
 
 Patrick Rother <krd-vdr@gulu.net>
  for reporting a bug in defining timers that only differ in the day of week
@@ -1523,3 +1533,6 @@ Patrick Fischer <patrick_fischer@gmx.de>
 
 Ralf Müller <ralf@bj-ig.de>
  for a patch that was used to implement cUnbufferedFile
+
+Maarten Wisse <Maarten.Wisse@urz.uni-hd.de>
+ for translating OSD texts to the Dutch language

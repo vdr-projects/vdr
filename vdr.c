@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.218 2005/10/09 10:01:45 kls Exp $
+ * $Id: vdr.c 1.219 2005/11/04 13:48:39 kls Exp $
  */
 
 #include <getopt.h>
@@ -813,8 +813,14 @@ int main(int argc, char *argv[])
         if (Interact) {
            eOSState state = Interact->ProcessKey(key);
            if (state == osUnknown && Interact != cControl::Control()) {
-              if (ISMODELESSKEY(key) && cControl::Control())
+              if (ISMODELESSKEY(key) && cControl::Control()) {
                  state = cControl::Control()->ProcessKey(key);
+                 if (state == osEnd) {
+                    // let's not close a menu when replay ends:
+                    cControl::Shutdown();
+                    continue;
+                    }
+                 }
               else if (time(NULL) - LastActivity > MENUTIMEOUT)
                  state = osEnd;
               }

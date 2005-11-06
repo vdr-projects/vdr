@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.100 2005/10/31 12:56:15 kls Exp $
+ * $Id: tools.c 1.103 2005/11/04 16:33:18 kls Exp $
  */
 
 #include "tools.h"
@@ -463,7 +463,7 @@ bool SpinUpDisk(const char *FileName)
             gettimeofday(&tp2, NULL);
             double seconds = (((long long)tp2.tv_sec * 1000000 + tp2.tv_usec) - ((long long)tp1.tv_sec * 1000000 + tp1.tv_usec)) / 1000000.0;
             if (seconds > 0.5)
-               dsyslog("SpinUpDisk took %.2f seconds\n", seconds);
+               dsyslog("SpinUpDisk took %.2f seconds", seconds);
             free(buf);
             return true;
             }
@@ -534,6 +534,7 @@ cString::~cString()
 
 cString &cString::operator=(const cString &String)
 {
+  free(s);
   s = String.s ? strdup(String.s) : NULL;
   return *this;
 }
@@ -609,12 +610,24 @@ cString TimeString(time_t t)
 
 // --- cReadLine -------------------------------------------------------------
 
+cReadLine::cReadLine(void)
+{
+  size = 0;
+  buffer = NULL;
+}
+
+cReadLine::~cReadLine()
+{
+  free(buffer);
+}
+
 char *cReadLine::Read(FILE *f)
 {
-  if (fgets(buffer, sizeof(buffer), f) > 0) {
-     int l = strlen(buffer) - 1;
-     if (l >= 0 && buffer[l] == '\n')
-        buffer[l] = 0;
+  int n = getline(&buffer, &size, f);
+  if (n > 0) {
+     n--;
+     if (buffer[n] == '\n')
+        buffer[n] = 0;
      return buffer;
      }
   return NULL;

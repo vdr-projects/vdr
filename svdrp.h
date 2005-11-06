@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: svdrp.h 1.24 2005/10/09 11:11:59 kls Exp $
+ * $Id: svdrp.h 1.25 2005/11/05 10:54:22 kls Exp $
  */
 
 #ifndef __SVDRP_H
@@ -45,8 +45,9 @@ private:
   cFile file;
   cRecordings Recordings;
   cPUTEhandler *PUTEhandler;
-  uint numChars;
-  char cmdLine[MAXPARSEBUFFER];
+  int numChars;
+  int length;
+  char *cmdLine;
   char *message;
   time_t lastActivity;
   void Close(bool Timeout = false);

@@ -2386,7 +2386,7 @@ Video Disk Recorder Revision History
 - Fixed the URL to the 'Doxygen' tool in INSTALL (thanks to Dirk Essl).
 - Removed the obsolete chapter "Stopping a recording on the primary DVB interface"
   from MANUAL.
-- Completed dutch language texts (thanks to Hans Dingemans).
+- Completed Dutch language texts (thanks to Hans Dingemans).
 - Made 'diseqc.conf' a required file only if Setup.DiSEqC is activated (thanks to
   Thomas Schmidt).
 - VDR now starts up even if 'keymacros.conf' references a plugin that is currently
@@ -3434,7 +3434,7 @@ Video Disk Recorder Revision History
 - The new setup option "DVB/Video display format" can be used to define which display
   format to use for playing wide screen video on a 4:3 tv set.
 - Changed MAXDPIDS to 16 (8xAC3 + 8xDTS) (thanks to Werner Fink for pointing this out).
-- Completed dutch language texts (thanks to Hans Dingemans).
+- Completed Dutch language texts (thanks to Hans Dingemans).
 - Added 'smi' to the Finnish language codes (thanks to Rolf Ahrenberg).
 - Fixed ensuring there is a current audio track in case there is only one track
   (thanks to Werner Fink for reporting this one).
@@ -3912,3 +3912,30 @@ Video Disk Recorder Revision History
 - Fixed the cFilter example in PLUGINS.html (reported by Patrick Fischer).
 - The new class cUnbufferedFile is used for the recording files to avoid
   trashing the file system cache (based on a patch by Ralf Müller).
+
+2005-11-06: Version 1.3.36
+
+- Fixed a NULL pointer access with the cUnbufferedFile when a replay session runs
+  all the way until the end of the recording (thanks to Joachim Wilke).
+- A menu is no longer automatically closed when a replay ends (reported by
+  Marko Mäkelä).
+- Removed '\n' from several syslog() calls (reported by Sascha Volkenandt).
+- Fixed missing '&' in the SetAreas() example in PLUGINS.html (reported by
+  Sascha Volkenandt).
+- Fixed a memory leak in cString::operator=() (reported by Sascha Volkenandt).
+- Updated the Dutch OSD texts (thanks to Maarten Wisse).
+- cReadLine now dynamically allocates its buffer, so that it can handle lines
+  of any length.
+- Changed cConfig::Load() to use cReadLine instead of a fixed buffer (thanks
+  to Andreas Mair for reporting a problem with extremely long summary fields
+  in timers).
+- cSVDRP now dynamically allocates its command buffer in order to handle
+  commands of any length. The MAXPARSEBUFFER macros is now obsolete and has
+  been removed. If a plugin has used that macro, it should either define
+  a buffer size of its own, or use cReadLine when reading files.
+- Fixed a race condition in the SPU decoder (thanks to Marco Schlüßler).
+- The EPG scan no longer disturbs players that have also set live PIDs
+  (reported by Stefan Huelswitt).
+- Fixed setting the help key display in the Recordings menu in case of several
+  layers of subdirectories.
+- Removed EPG bugfix #0, because it removed actually important data.

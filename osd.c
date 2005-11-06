@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 1.63 2005/10/02 08:47:13 kls Exp $
+ * $Id: osd.c 1.64 2005/11/04 14:19:31 kls Exp $
  */
 
 #include "osd.h"
@@ -649,7 +649,7 @@ eOsdError cOsd::SetAreas(const tArea *Areas, int NumAreas)
         }
      }
   if (Result != oeOk)
-     esyslog("ERROR: cOsd::SetAreas returned %d\n", Result);
+     esyslog("ERROR: cOsd::SetAreas returned %d", Result);
   return Result;
 }
 

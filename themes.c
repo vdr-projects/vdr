@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: themes.c 1.5 2004/12/24 17:00:41 kls Exp $
+ * $Id: themes.c 1.6 2005/11/04 14:19:54 kls Exp $
  */
 
 #include "themes.h"
@@ -152,7 +152,7 @@ bool cTheme::Load(const char *FileName, bool OnlyDescriptions)
               }
            }
      if (!result)
-        esyslog("ERROR: error in %s, line %d%s%s\n", FileName, line, error ? ": " : "", error ? error : "");
+        esyslog("ERROR: error in %s, line %d%s%s", FileName, line, error ? ": " : "", error ? error : "");
      fclose(f);
      }
   else

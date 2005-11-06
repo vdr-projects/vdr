@@ -8,7 +8,7 @@
  *
  * parts of this file are derived from the OMS program.
  *
- * $Id: dvbspu.c 1.15 2005/08/07 12:06:32 kls Exp $
+ * $Id: dvbspu.c 1.17 2005/11/05 12:08:15 kls Exp $
  */
 
 #include <assert.h>
@@ -338,6 +338,7 @@ sDvbSpuRect cDvbSpuDecoder::CalcAreaSize(sDvbSpuRect fgsize, cBitmap *fgbmp, sDv
 
 void cDvbSpuDecoder::Draw(void)
 {
+    cMutexLock MutexLock(&mutex);
     if (!spubmp) {
         Hide();
         return;
@@ -390,6 +391,7 @@ void cDvbSpuDecoder::Draw(void)
 
 void cDvbSpuDecoder::Hide(void)
 {
+    cMutexLock MutexLock(&mutex);
     delete osd;
     osd = NULL;
 }
@@ -501,7 +503,7 @@ int cDvbSpuDecoder::setTime(uint32_t pts)
                     break;
 
                 default:
-                    esyslog("invalid sequence in control header (%.2x)\n",
+                    esyslog("invalid sequence in control header (%.2x)",
                             spu[i]);
                     assert(0);
                     i++;
