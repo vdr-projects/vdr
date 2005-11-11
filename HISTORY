@@ -3947,3 +3947,8 @@ Video Disk Recorder Revision History
   repeating timer (thanks to Marco Schlüßler).
 - No longer removing superfluous hyphens in EPG data - would become too
   language dependent to handle all kinds of exceptions.
+- Modified switching to Dolby Digital audio in live mode, if the driver
+  and firmware can handle live DD without the need of a Transfer Mode (thanks
+  to Werner Fink). Live DD mode requires a full featured DVB card and a
+  LinuxDVB driver with firmware version 0x2622 or higher. Older versions will
+  use Transfer Mode just like before.

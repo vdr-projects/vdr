@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.136 2005/08/21 09:17:20 kls Exp $
+ * $Id: dvbdevice.c 1.137 2005/11/11 14:53:52 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -659,6 +659,11 @@ eVideoSystem cDvbDevice::GetVideoSystem(void)
   return VideoSystem;
 }
 
+bool cDvbDevice::SetAudioBypass(bool On)
+{
+  return ioctl(fd_audio, AUDIO_SET_BYPASS_MODE, On) == 0;
+}
+
 //                            ptAudio        ptVideo        ptPcr        ptTeletext        ptDolby        ptOther
 dmx_pes_type_t PesTypes[] = { DMX_PES_AUDIO, DMX_PES_VIDEO, DMX_PES_PCR, DMX_PES_TELETEXT, DMX_PES_OTHER, DMX_PES_OTHER };
 
@@ -841,6 +846,7 @@ bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
   // PID settings:
 
   if (TurnOnLivePIDs) {
+     SetAudioBypass(false);
      if (!(AddPid(Channel->Ppid(), ptPcr) && AddPid(Channel->Vpid(), ptVideo) && AddPid(Channel->Apid(0), ptAudio))) {
         esyslog("ERROR: failed to set PIDs for channel %d on device %d", Channel->Number(), CardIndex() + 1);
         return false;
@@ -910,7 +916,8 @@ void cDvbDevice::SetAudioTrackDevice(eTrackType Type)
 {
   const tTrackId *TrackId = GetTrack(Type);
   if (TrackId && TrackId->id) {
-     if (IS_AUDIO_TRACK(Type)) {
+     SetAudioBypass(false);
+     if (IS_AUDIO_TRACK(Type) || (IS_DOLBY_TRACK(Type) && SetAudioBypass(true))) {
         if (pidHandles[ptAudio].pid && pidHandles[ptAudio].pid != TrackId->id) {
            DetachAll(pidHandles[ptAudio].pid);
            pidHandles[ptAudio].pid = TrackId->id;

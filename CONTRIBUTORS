@@ -290,6 +290,8 @@ Werner Fink <werner@suse.de>
  for reporting a problem with ensuring there is a current audio track in case there
  is only one track
  for enabling a device to detach all receivers for a given PID
+ for modifying switching to Dolby Digital audio in live mode, if the driver
+ and firmware can handle live DD without the need of a Transfer Mode
 
 Rolf Hakenes <hakenes@hippomi.de>
  for providing 'libdtv' and adapting the EIT mechanisms to it
