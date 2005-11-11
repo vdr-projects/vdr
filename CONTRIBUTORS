@@ -1245,6 +1245,8 @@ Marco Schlüßler <marco@lordzodiac.de>
  for reporting that the FATALERRNO macro needs to check for a non-zero errno value
  for reporting missing mutex locks in cCiMenu::Abort() and cCiEnquiry::Abort()
  for fixing a race condition in the SPU decoder
+ for fixing initializing the day index when editing the weekday parameter of a
+ repeating timer
 
 Jürgen Schmitz <j.schmitz@web.de>
  for reporting a bug in displaying the current channel when switching via the SVDRP

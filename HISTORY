@@ -3943,3 +3943,5 @@ Video Disk Recorder Revision History
 2005-11-11: Version 1.3.37
 
 - Added compiler options "-fPIC -g" to all plugins (thanks to Rolf Ahrenberg).
+- Fixed initializing the day index when editing the weekday parameter of a
+  repeating timer (thanks to Marco Schlüßler).
