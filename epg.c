@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 1.39 2005/11/06 10:31:58 kls Exp $
+ * $Id: epg.c 1.40 2005/11/11 13:37:43 kls Exp $
  */
 
 #include "epg.h"
@@ -503,19 +503,6 @@ void cEvent::FixEpgBugs(void)
      title = compactspace(title);
      shortText = compactspace(shortText);
      description = compactspace(description);
-     // Remove superfluous hyphens:
-     if (description) {
-        char *p = description;
-        while (*p && *(p + 1) && *(p + 2)) {
-              if (*p == '-' && *(p + 1) == ' ' && p != description && islower(*(p - 1)) && islower(*(p + 2))) {
-                 if (!startswith(p + 2, "und ")) { // special case in German, as in "Lach- und Sachgeschichten"
-                    memmove(p, p + 2, strlen(p + 2) + 1);
-                    EpgBugFixStat(5, ChannelID());
-                    }
-                 }
-              p++;
-              }
-        }
 
 #define MAX_USEFUL_EPISODE_LENGTH 40
      // Some channels put a whole lot of information in the ShortText and leave

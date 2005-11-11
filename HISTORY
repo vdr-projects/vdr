@@ -3945,3 +3945,5 @@ Video Disk Recorder Revision History
 - Added compiler options "-fPIC -g" to all plugins (thanks to Rolf Ahrenberg).
 - Fixed initializing the day index when editing the weekday parameter of a
   repeating timer (thanks to Marco Schlüßler).
+- No longer removing superfluous hyphens in EPG data - would become too
+  language dependent to handle all kinds of exceptions.
