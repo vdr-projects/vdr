@@ -3828,14 +3828,8 @@ Video Disk Recorder Revision History
   startup if there are a great many of recordings, or the disk(s) have to spin up.
   If the Recordings menu is opened while the list of recordings is still being read,
   the menu will be updated accordingly.
-  Plugins that access the global Recordings variable should lock the thread, either
-  by calling
-
-    Recordings.Lock();
-    ...
-    Recordings.Unlock();
-
-  or by putting something like
+  Plugins that access the global Recordings variable should lock the thread
+  by putting something like
 
     cThreadLock RecordingsLock(&Recordings);
 
