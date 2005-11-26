@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 1.39 2005/11/04 14:18:52 kls Exp $
+ * $Id: ci.c 1.40 2005/11/26 13:36:51 kls Exp $
  */
 
 #include "ci.h"
@@ -845,9 +845,117 @@ bool cCiApplicationInformation::EnterMenu(void)
   return false;
 }
 
+// --- cCiCaPmt --------------------------------------------------------------
+
+// Ca Pmt List Management:
+
+#define CPLM_MORE    0x00
+#define CPLM_FIRST   0x01
+#define CPLM_LAST    0x02
+#define CPLM_ONLY    0x03
+#define CPLM_ADD     0x04
+#define CPLM_UPDATE  0x05
+
+// Ca Pmt Cmd Ids:
+
+#define CPCI_OK_DESCRAMBLING  0x01
+#define CPCI_OK_MMI           0x02
+#define CPCI_QUERY            0x03
+#define CPCI_NOT_SELECTED     0x04
+
+class cCiCaPmt : public cListObject {
+  friend class cCiConditionalAccessSupport;
+private:
+  uint8_t cmdId;
+  int length;
+  int esInfoLengthPos;
+  uint8_t capmt[2048]; ///< XXX is there a specified maximum?
+  int caDescriptorsLength;
+  uint8_t caDescriptors[2048];
+  bool streamFlag;
+  void AddCaDescriptors(int Length, const uint8_t *Data);
+public:
+  cCiCaPmt(uint8_t CmdId, int Source, int Transponder, int ProgramNumber, const unsigned short *CaSystemIds);
+  void SetListManagement(uint8_t ListManagement);
+  bool Valid(void);
+  void AddPid(int Pid, uint8_t StreamType);
+  };
+
+cCiCaPmt::cCiCaPmt(uint8_t CmdId, int Source, int Transponder, int ProgramNumber, const unsigned short *CaSystemIds)
+{
+  cmdId = CmdId;
+  caDescriptorsLength = GetCaDescriptors(Source, Transponder, ProgramNumber, CaSystemIds, sizeof(caDescriptors), caDescriptors, streamFlag);
+  length = 0;
+  capmt[length++] = CPLM_ONLY;
+  capmt[length++] = (ProgramNumber >> 8) & 0xFF;
+  capmt[length++] =  ProgramNumber       & 0xFF;
+  capmt[length++] = 0x01; // version_number, current_next_indicator - apparently vn doesn't matter, but cni must be 1
+  esInfoLengthPos = length;
+  capmt[length++] = 0x00; // program_info_length H (at program level)
+  capmt[length++] = 0x00; // program_info_length L
+  if (!streamFlag)
+     AddCaDescriptors(caDescriptorsLength, caDescriptors);
+}
+
+void cCiCaPmt::SetListManagement(uint8_t ListManagement)
+{
+  capmt[0] = ListManagement;
+}
+
+bool cCiCaPmt::Valid(void)
+{
+  return caDescriptorsLength > 0;
+}
+
+void cCiCaPmt::AddPid(int Pid, uint8_t StreamType)
+{
+  if (Pid) {
+     //XXX buffer overflow check???
+     capmt[length++] = StreamType;
+     capmt[length++] = (Pid >> 8) & 0xFF;
+     capmt[length++] =  Pid       & 0xFF;
+     esInfoLengthPos = length;
+     capmt[length++] = 0x00; // ES_info_length H (at ES level)
+     capmt[length++] = 0x00; // ES_info_length L
+     if (streamFlag)
+        AddCaDescriptors(caDescriptorsLength, caDescriptors);
+     }
+}
+
+void cCiCaPmt::AddCaDescriptors(int Length, const uint8_t *Data)
+{
+  if (esInfoLengthPos) {
+     if (length + Length < int(sizeof(capmt))) {
+        capmt[length++] = cmdId;
+        memcpy(capmt + length, Data, Length);
+        length += Length;
+        int l = length - esInfoLengthPos - 2;
+        capmt[esInfoLengthPos]     = (l >> 8) & 0xFF;
+        capmt[esInfoLengthPos + 1] =  l       & 0xFF;
+        }
+     else
+        esyslog("ERROR: buffer overflow in CA descriptor");
+     esInfoLengthPos = 0;
+     }
+  else
+     esyslog("ERROR: adding CA descriptor without Pid!");
+}
+
 // --- cCiConditionalAccessSupport -------------------------------------------
 
 #define MAXCASYSTEMIDS 16
+
+// CA Enable Ids:
+
+#define CAEI_POSSIBLE                  0x01
+#define CAEI_POSSIBLE_COND_PURCHASE    0x02
+#define CAEI_POSSIBLE_COND_TECHNICAL   0x03
+#define CAEI_NOT_POSSIBLE_ENTITLEMENT  0x71
+#define CAEI_NOT_POSSIBLE_TECHNICAL    0x73
+
+#define CA_ENABLE_FLAG                 0x80
+
+#define CA_ENABLE(x) (((x) & CA_ENABLE_FLAG) ? (x) & ~CA_ENABLE_FLAG : 0)
 
 class cCiConditionalAccessSupport : public cCiSession {
 private:
@@ -858,14 +966,15 @@ public:
   cCiConditionalAccessSupport(int SessionId, cCiTransportConnection *Tc);
   virtual bool Process(int Length = 0, const uint8_t *Data = NULL);
   const unsigned short *GetCaSystemIds(void) { return caSystemIds; }
-  bool SendPMT(cCiCaPmt &CaPmt);
+  bool SendPMT(cCiCaPmt *CaPmt);
+  bool ReceivedReply(bool CanDescramble = false);
   };
 
 cCiConditionalAccessSupport::cCiConditionalAccessSupport(int SessionId, cCiTransportConnection *Tc)
 :cCiSession(SessionId, RI_CONDITIONAL_ACCESS_SUPPORT, Tc)
 {
   dbgprotocol("New Conditional Access Support (session id %d)\n", SessionId);
-  state = 0;
+  state = 0; // inactive
   caSystemIds[numCaSystemIds = 0] = 0;
 }
 
@@ -892,7 +1001,58 @@ bool cCiConditionalAccessSupport::Process(int Length, const uint8_t *Data)
                   }
             dbgprotocol("\n");
             }
-            state = 2;
+            state = 2; // got ca info
+            break;
+       case AOT_CA_PMT_REPLY: {
+            dbgprotocol("%d: <== Ca Pmt Reply", SessionId());
+            state = 4; // got ca pmt reply
+            int l = 0;
+            const uint8_t *d = GetData(Data, l);
+            if (l > 1) {
+               unsigned short pnr = ((unsigned short)(*d) << 8) | *(d + 1);
+               dbgprotocol(" %d", pnr);
+               d += 2;
+               l -= 2;
+               if (l > 0) {
+                  dbgprotocol(" %02X", *d);
+                  d += 1;
+                  l -= 1;
+                  if (l > 0) {
+                     if (l % 3 == 0 && l > 1) {
+                        // The EN50221 standard defines that the next byte is supposed
+                        // to be the CA_enable value at programme level. However, there are
+                        // CAMs (for instance the AlphaCrypt with firmware <= 3.05) that
+                        // insert a two byte length field here.
+                        // This is a workaround to skip this length field:
+                        unsigned short len = ((unsigned short)(*d) << 8) | *(d + 1);
+                        if (len == l - 2) {
+                           d += 2;
+                           l -= 2;
+                           }
+                        }
+                     unsigned char caepl = *d;
+                     dbgprotocol(" %02X", caepl);
+                     d += 1;
+                     l -= 1;
+                     bool ok = true;
+                     if (l <= 2)
+                        ok = CA_ENABLE(caepl) == CAEI_POSSIBLE;
+                     while (l > 2) {
+                           unsigned short pid = ((unsigned short)(*d) << 8) | *(d + 1);
+                           unsigned char caees = *(d + 2);
+                           dbgprotocol(" %d=%02X", pid, caees);
+                           d += 3;
+                           l -= 3;
+                           if (CA_ENABLE(caees) != CAEI_POSSIBLE)
+                              ok = false;
+                           }
+                     if (ok)
+                        state = 5; // descrambling possible
+                     }
+                  }
+               }
+            dbgprotocol("\n");
+            }
             break;
        default: esyslog("ERROR: CI conditional access support: unknown tag %06X", Tag);
                 return false;
@@ -901,18 +1061,25 @@ bool cCiConditionalAccessSupport::Process(int Length, const uint8_t *Data)
   else if (state == 0) {
      dbgprotocol("%d: ==> Ca Info Enq\n", SessionId());
      SendData(AOT_CA_INFO_ENQ);
-     state = 1;
+     state = 1; // enquired ca info
      }
   return true;
 }
 
-bool cCiConditionalAccessSupport::SendPMT(cCiCaPmt &CaPmt)
+bool cCiConditionalAccessSupport::SendPMT(cCiCaPmt *CaPmt)
 {
-  if (state == 2) {
-     SendData(AOT_CA_PMT, CaPmt.length, CaPmt.capmt);
+  if (CaPmt && state >= 2) {
+     dbgprotocol("%d: ==> Ca Pmt\n", SessionId());
+     SendData(AOT_CA_PMT, CaPmt->length, CaPmt->capmt);
+     state = 3; // sent ca pmt
      return true;
      }
   return false;
+}
+
+bool cCiConditionalAccessSupport::ReceivedReply(bool CanDescramble)
+{
+  return state >= (CanDescramble ? 5 : 4);
 }
 
 // --- cCiDateTime -----------------------------------------------------------
@@ -1307,78 +1474,6 @@ bool cCiEnquiry::Abort(void)
   return mmi && mmi->SendCloseMMI();
 }
 
-// --- cCiCaPmt --------------------------------------------------------------
-
-// Ca Pmt List Management:
-
-#define CPLM_MORE    0x00
-#define CPLM_FIRST   0x01
-#define CPLM_LAST    0x02
-#define CPLM_ONLY    0x03
-#define CPLM_ADD     0x04
-#define CPLM_UPDATE  0x05
-
-// Ca Pmt Cmd Ids:
-
-#define CPCI_OK_DESCRAMBLING  0x01
-#define CPCI_OK_MMI           0x02
-#define CPCI_QUERY            0x03
-#define CPCI_NOT_SELECTED     0x04
-
-cCiCaPmt::cCiCaPmt(int Source, int Transponder, int ProgramNumber, const unsigned short *CaSystemIds)
-{
-  caDescriptorsLength = GetCaDescriptors(Source, Transponder, ProgramNumber, CaSystemIds, sizeof(caDescriptors), caDescriptors, streamFlag);
-  length = 0;
-  capmt[length++] = CPLM_ONLY;
-  capmt[length++] = (ProgramNumber >> 8) & 0xFF;
-  capmt[length++] =  ProgramNumber       & 0xFF;
-  capmt[length++] = 0x01; // version_number, current_next_indicator - apparently vn doesn't matter, but cni must be 1
-  esInfoLengthPos = length;
-  capmt[length++] = 0x00; // program_info_length H (at program level)
-  capmt[length++] = 0x00; // program_info_length L
-  if (!streamFlag)
-     AddCaDescriptors(caDescriptorsLength, caDescriptors);
-}
-
-bool cCiCaPmt::Valid(void)
-{
-  return caDescriptorsLength > 0;
-}
-
-void cCiCaPmt::AddPid(int Pid, uint8_t StreamType)
-{
-  if (Pid) {
-     //XXX buffer overflow check???
-     capmt[length++] = StreamType;
-     capmt[length++] = (Pid >> 8) & 0xFF;
-     capmt[length++] =  Pid       & 0xFF;
-     esInfoLengthPos = length;
-     capmt[length++] = 0x00; // ES_info_length H (at ES level)
-     capmt[length++] = 0x00; // ES_info_length L
-     if (streamFlag)
-        AddCaDescriptors(caDescriptorsLength, caDescriptors);
-     }
-}
-
-void cCiCaPmt::AddCaDescriptors(int Length, const uint8_t *Data)
-{
-  if (esInfoLengthPos) {
-     if (length + Length < int(sizeof(capmt))) {
-        capmt[length++] = CPCI_OK_DESCRAMBLING;
-        memcpy(capmt + length, Data, Length);
-        length += Length;
-        int l = length - esInfoLengthPos - 2;
-        capmt[esInfoLengthPos]     = (l >> 8) & 0xFF;
-        capmt[esInfoLengthPos + 1] =  l       & 0xFF;
-        }
-     else
-        esyslog("ERROR: buffer overflow in CA descriptor");
-     esInfoLengthPos = 0;
-     }
-  else
-     esyslog("ERROR: adding CA descriptor without Pid!");
-}
-
 // -- cCiHandler -------------------------------------------------------------
 
 cCiHandler::cCiHandler(int Fd, int NumSlots)
@@ -1393,6 +1488,7 @@ cCiHandler::cCiHandler(int Fd, int NumSlots)
       moduleReady[i] = false;
   tpl = new cCiTransportLayer(Fd, numSlots);
   tc = NULL;
+  source = transponder = 0;
 }
 
 cCiHandler::~cCiHandler()
@@ -1556,56 +1652,96 @@ bool cCiHandler::Ready(void)
   return true;
 }
 
-bool cCiHandler::Process(void)
+bool cCiHandler::Process(int Slot)
 {
   bool result = true;
   cMutexLock MutexLock(&mutex);
-  for (int Slot = 0; Slot < numSlots; Slot++) {
-      tc = tpl->Process(Slot);
-      if (tc) {
-         int Length;
-         const uint8_t *Data = tc->Data(Length);
-         if (Data && Length > 1) {
-            switch (*Data) {
-              case ST_SESSION_NUMBER:          if (Length > 4) {
-                                                  int SessionId = ntohs(get_unaligned((uint16_t *)&Data[2]));
-                                                  cCiSession *Session = GetSessionBySessionId(SessionId);
-                                                  if (Session)
-                                                     Session->Process(Length - 4, Data + 4);
-                                                  else
-                                                     esyslog("ERROR: unknown session id: %d", SessionId);
-                                                  }
-                                               break;
-              case ST_OPEN_SESSION_REQUEST:    OpenSession(Length, Data);
-                                               break;
-              case ST_CLOSE_SESSION_REQUEST:   if (Length == 4)
-                                                  CloseSession(ntohs(get_unaligned((uint16_t *)&Data[2])));
-                                               break;
-              case ST_CREATE_SESSION_RESPONSE: //XXX fall through to default
-              case ST_CLOSE_SESSION_RESPONSE:  //XXX fall through to default
-              default: esyslog("ERROR: unknown session tag: %02X", *Data);
-              }
+  for (int slot = 0; slot < numSlots; slot++) {
+      if (Slot < 0 || slot == Slot) {
+         tc = tpl->Process(slot);
+         if (tc) {
+            int Length;
+            const uint8_t *Data = tc->Data(Length);
+            if (Data && Length > 1) {
+               switch (*Data) {
+                 case ST_SESSION_NUMBER:          if (Length > 4) {
+                                                     int SessionId = ntohs(get_unaligned((uint16_t *)&Data[2]));
+                                                     cCiSession *Session = GetSessionBySessionId(SessionId);
+                                                     if (Session)
+                                                        Session->Process(Length - 4, Data + 4);
+                                                     else
+                                                        esyslog("ERROR: unknown session id: %d", SessionId);
+                                                     }
+                                                  break;
+                 case ST_OPEN_SESSION_REQUEST:    OpenSession(Length, Data);
+                                                  break;
+                 case ST_CLOSE_SESSION_REQUEST:   if (Length == 4)
+                                                     CloseSession(ntohs(get_unaligned((uint16_t *)&Data[2])));
+                                                  break;
+                 case ST_CREATE_SESSION_RESPONSE: //XXX fall through to default
+                 case ST_CLOSE_SESSION_RESPONSE:  //XXX fall through to default
+                 default: esyslog("ERROR: unknown session tag: %02X", *Data);
+                 }
+               }
+            }
+         else if (CloseAllSessions(slot)) {
+            tpl->ResetSlot(slot);
+            result = false;
+            }
+         else if (tpl->ModuleReady(slot)) {
+            dbgprotocol("Module ready in slot %d\n", slot);
+            moduleReady[slot] = true;
+            tpl->NewConnection(slot);
             }
          }
-      else if (CloseAllSessions(Slot)) {
-         tpl->ResetSlot(Slot);
-         result = false;
-         }
-      else if (tpl->ModuleReady(Slot)) {
-         dbgprotocol("Module ready in slot %d\n", Slot);
-         moduleReady[Slot] = true;
-         tpl->NewConnection(Slot);
-         }
       }
+  SendCaPmt();
   bool UserIO = false;
   for (int i = 0; i < MAX_CI_SESSION; i++) {
       if (sessions[i] && sessions[i]->Process())
          UserIO |= sessions[i]->HasUserIO();
       }
   hasUserIO = UserIO;
-  if (newCaSupport)
-     newCaSupport = result = false; // triggers new SetCaPmt at caller!
   return result;
+}
+
+void cCiHandler::SendCaPmt(void)
+{
+  cMutexLock MutexLock(&mutex);
+  if (newCaSupport) {
+     newCaSupport = false;
+     for (int Slot = 0; Slot < numSlots; Slot++) {
+         cCiConditionalAccessSupport *cas = (cCiConditionalAccessSupport *)GetSessionByResourceId(RI_CONDITIONAL_ACCESS_SUPPORT, Slot);
+         if (cas) {
+            // build the list of CA_PMT data:
+            cList<cCiCaPmt> CaPmtList;
+            for (cCiCaProgramData *p = caProgramList.First(); p; p = caProgramList.Next(p)) {
+                bool Active = false;
+                cCiCaPmt *CaPmt = new cCiCaPmt(CPCI_OK_DESCRAMBLING, source, transponder, p->programNumber, GetCaSystemIds(Slot));
+                if (CaPmt->Valid()) {
+                   for (cCiCaPidData *q = p->pidList.First(); q; q = p->pidList.Next(q)) {
+                       if (q->active) {
+                          CaPmt->AddPid(q->pid, q->streamType);
+                          Active = true;
+                          }
+                       }
+                   }
+                if (Active)
+                   CaPmtList.Add(CaPmt);
+                else
+                   delete CaPmt;
+                }
+            // send the CA_PMT data:
+            uint8_t ListManagement = CaPmtList.Count() > 1 ? CPLM_FIRST : CPLM_ONLY;
+            for (cCiCaPmt *CaPmt = CaPmtList.First(); CaPmt; CaPmt = CaPmtList.Next(CaPmt)) {
+                CaPmt->SetListManagement(ListManagement);
+                if (!cas->SendPMT(CaPmt))
+                   newCaSupport = true;
+                ListManagement = CaPmt->Next() && CaPmt->Next()->Next() ? CPLM_MORE : CPLM_LAST;
+                }
+            }
+         }
+     }
 }
 
 bool cCiHandler::EnterMenu(int Slot)
@@ -1676,11 +1812,89 @@ bool cCiHandler::ProvidesCa(const unsigned short *CaSystemIds)
   return false;
 }
 
-bool cCiHandler::SetCaPmt(cCiCaPmt &CaPmt, int Slot)
+void cCiHandler::SetSource(int Source, int Transponder)
 {
   cMutexLock MutexLock(&mutex);
-  cCiConditionalAccessSupport *cas = (cCiConditionalAccessSupport *)GetSessionByResourceId(RI_CONDITIONAL_ACCESS_SUPPORT, Slot);
-  return cas && cas->SendPMT(CaPmt);
+  if (source != Source || transponder != Transponder) {
+     //XXX if there are active entries, send an empty CA_PMT
+     caProgramList.Clear();
+     }
+  source = Source;
+  transponder = Transponder;
+}
+
+void cCiHandler::AddPid(int ProgramNumber, int Pid, int StreamType)
+{
+  cMutexLock MutexLock(&mutex);
+  cCiCaProgramData *ProgramData = NULL;
+  for (cCiCaProgramData *p = caProgramList.First(); p; p = caProgramList.Next(p)) {
+      if (p->programNumber == ProgramNumber) {
+         ProgramData = p;
+         for (cCiCaPidData *q = p->pidList.First(); q; q = p->pidList.Next(q)) {
+             if (q->pid == Pid)
+                return;
+             }
+         }
+      }
+  if (!ProgramData)
+     caProgramList.Add(ProgramData = new cCiCaProgramData(ProgramNumber));
+  ProgramData->pidList.Add(new cCiCaPidData(Pid, StreamType));
+}
+
+void cCiHandler::SetPid(int Pid, bool Active)
+{
+  cMutexLock MutexLock(&mutex);
+  for (cCiCaProgramData *p = caProgramList.First(); p; p = caProgramList.Next(p)) {
+      for (cCiCaPidData *q = p->pidList.First(); q; q = p->pidList.Next(q)) {
+          if (q->pid == Pid) {
+             q->active = Active;
+             return;
+             }
+         }
+      }
+}
+
+bool cCiHandler::CanDecrypt(int ProgramNumber)
+{
+  cMutexLock MutexLock(&mutex);
+  for (int Slot = 0; Slot < numSlots; Slot++) {
+      cCiConditionalAccessSupport *cas = (cCiConditionalAccessSupport *)GetSessionByResourceId(RI_CONDITIONAL_ACCESS_SUPPORT, Slot);
+      if (cas) {
+         for (cCiCaProgramData *p = caProgramList.First(); p; p = caProgramList.Next(p)) {
+             if (p->programNumber == ProgramNumber) {
+                cCiCaPmt CaPmt(CPCI_QUERY, source, transponder, p->programNumber, GetCaSystemIds(Slot));//XXX???
+                if (CaPmt.Valid()) {
+                   for (cCiCaPidData *q = p->pidList.First(); q; q = p->pidList.Next(q)) {
+//XXX                       if (q->active)
+                          CaPmt.AddPid(q->pid, q->streamType);
+                       }
+                   }
+                if (!cas->SendPMT(&CaPmt))
+                   return false;//XXX
+                //XXX
+                time_t timeout = time(NULL) + 3;//XXX
+                while (time(NULL) <= timeout) {
+                      Process(Slot);
+                      cas = (cCiConditionalAccessSupport *)GetSessionByResourceId(RI_CONDITIONAL_ACCESS_SUPPORT, Slot);
+                      if (!cas)
+                         return false;//XXX
+                      if (cas->ReceivedReply(true))
+                         return true;
+                      //XXX remember if a slot doesn't receive a reply
+                      }
+                break;
+                }
+             }
+         }
+      }
+  return false;
+}
+
+void cCiHandler::StartDecrypting(void)
+{
+  cMutexLock MutexLock(&mutex);
+  newCaSupport = true;
+  SendCaPmt();
 }
 
 bool cCiHandler::Reset(int Slot)

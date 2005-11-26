@@ -3934,7 +3934,7 @@ Video Disk Recorder Revision History
   layers of subdirectories.
 - Removed EPG bugfix #0, because it removed actually important data.
 
-2005-11-11: Version 1.3.37
+2005-11-26: Version 1.3.37
 
 - Added compiler options "-fPIC -g" to all plugins (thanks to Rolf Ahrenberg).
 - Fixed initializing the day index when editing the weekday parameter of a
@@ -3946,3 +3946,10 @@ Video Disk Recorder Revision History
   to Werner Fink). Live DD mode requires a full featured DVB card and a
   LinuxDVB driver with firmware version 0x2622 or higher. Older versions will
   use Transfer Mode just like before.
+- Implemented handling of the "CA PMT Reply" for CAMs (thanks to Marco
+  Schlüßler for figuring out some obscure length bytes in the CA PMT Reply
+  data of AlphaCrypt CAMs).
+- Some preparations for being able to record several encrypted channels from
+  the same transponder at the same time (or record and view different encrypted
+  channels), provided the CAM in use can handle this. This is work in progress
+  and isn't actively used, yet.

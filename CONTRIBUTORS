@@ -1249,6 +1249,7 @@ Marco Schlüßler <marco@lordzodiac.de>
  for fixing a race condition in the SPU decoder
  for fixing initializing the day index when editing the weekday parameter of a
  repeating timer
+ for figuring out some obscure length bytes the the CA PMT Reply data of AlphaCrypt CAMs
 
 Jürgen Schmitz <j.schmitz@web.de>
  for reporting a bug in displaying the current channel when switching via the SVDRP

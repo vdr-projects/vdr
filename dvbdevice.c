@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.137 2005/11/11 14:53:52 kls Exp $
+ * $Id: dvbdevice.c 1.138 2005/11/26 13:23:11 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -35,6 +35,7 @@ extern "C" {
 
 #define DO_REC_AND_PLAY_ON_PRIMARY_DEVICE 1
 #define DO_MULTIPLE_RECORDINGS 1
+//#define DO_MULTIPLE_CA_CHANNELS
 
 #define DEV_VIDEO         "/dev/video"
 #define DEV_DVB_ADAPTER   "/dev/dvb/adapter"
@@ -69,15 +70,13 @@ static int DvbOpen(const char *Name, int n, int Mode, bool ReportError = false)
 
 class cDvbTuner : public cThread {
 private:
-  enum eTunerStatus { tsIdle, tsSet, tsTuned, tsLocked, tsCam };
+  enum eTunerStatus { tsIdle, tsSet, tsTuned, tsLocked };
   int fd_frontend;
   int cardIndex;
   fe_type_t frontendType;
   cCiHandler *ciHandler;
   cChannel channel;
   const char *diseqcCommands;
-  bool useCa;
-  time_t startTime;
   eTunerStatus tunerStatus;
   cMutex mutex;
   cCondVar locked;
@@ -89,7 +88,7 @@ public:
   cDvbTuner(int Fd_Frontend, int CardIndex, fe_type_t FrontendType, cCiHandler *CiHandler);
   virtual ~cDvbTuner();
   bool IsTunedTo(const cChannel *Channel) const;
-  void Set(const cChannel *Channel, bool Tune, bool UseCa);
+  void Set(const cChannel *Channel, bool Tune);
   bool Locked(int TimeoutMs = 0);
   };
 
@@ -100,9 +99,7 @@ cDvbTuner::cDvbTuner(int Fd_Frontend, int CardIndex, fe_type_t FrontendType, cCi
   frontendType = FrontendType;
   ciHandler = CiHandler;
   diseqcCommands = NULL;
-  useCa = false;
   tunerStatus = tsIdle;
-  startTime = time(NULL);
   if (frontendType == FE_QPSK)
      CHECK(ioctl(fd_frontend, FE_SET_VOLTAGE, SEC_VOLTAGE_13)); // must explicitly turn on LNB power
   SetDescription("tuner on device %d", cardIndex + 1);
@@ -122,16 +119,11 @@ bool cDvbTuner::IsTunedTo(const cChannel *Channel) const
   return tunerStatus != tsIdle && channel.Source() == Channel->Source() && channel.Transponder() == Channel->Transponder();
 }
 
-void cDvbTuner::Set(const cChannel *Channel, bool Tune, bool UseCa)
+void cDvbTuner::Set(const cChannel *Channel, bool Tune)
 {
   cMutexLock MutexLock(&mutex);
   if (Tune)
      tunerStatus = tsSet;
-  else if (tunerStatus == tsCam)
-     tunerStatus = tsLocked;
-  useCa = UseCa;
-  if (Channel->Ca() && tunerStatus != tsCam)
-     startTime = time(NULL);
   channel = *Channel;
   newSet.Broadcast();
 }
@@ -309,7 +301,6 @@ void cDvbTuner::Action(void)
                continue;
           case tsTuned:
           case tsLocked:
-          case tsCam:
                if (hasEvent) {
                   if (event.status & FE_REINIT) {
                      tunerStatus = tsSet;
@@ -323,30 +314,10 @@ void cDvbTuner::Action(void)
                   }
           }
 
-        if (ciHandler) {
-           if (ciHandler->Process() && useCa) {
-              if (tunerStatus == tsLocked) {
-                 for (int Slot = 0; Slot < ciHandler->NumSlots(); Slot++) {
-                     cCiCaPmt CaPmt(channel.Source(), channel.Transponder(), channel.Sid(), ciHandler->GetCaSystemIds(Slot));
-                     if (CaPmt.Valid()) {
-                        CaPmt.AddPid(channel.Vpid(), 2);
-                        CaPmt.AddPid(channel.Apid(0), 4);
-                        CaPmt.AddPid(channel.Apid(1), 4);
-                        CaPmt.AddPid(channel.Dpid(0), 0);
-                        if (ciHandler->SetCaPmt(CaPmt, Slot)) {
-                           tunerStatus = tsCam;
-                           startTime = 0;
-                           }
-                        }
-                     }
-                 }
-              }
-           else if (tunerStatus > tsLocked)
-              tunerStatus = tsLocked;
-           }
-        // in the beginning we loop more often to let the CAM connection start up fast
+        if (ciHandler)
+           ciHandler->Process();
         if (tunerStatus != tsTuned)
-           newSet.TimedWait(mutex, (ciHandler && (time(NULL) - startTime < 20)) ? 100 : 1000);
+           newSet.TimedWait(mutex, 1000);
         }
 }
 
@@ -782,9 +753,12 @@ bool cDvbDevice::ProvidesChannel(const cChannel *Channel, int Priority, bool *Ne
         if (dvbTuner->IsTunedTo(Channel)) {
            if (Channel->Vpid() && !HasPid(Channel->Vpid()) || Channel->Apid(0) && !HasPid(Channel->Apid(0))) {
 #ifdef DO_MULTIPLE_RECORDINGS
+#ifndef DO_MULTIPLE_CA_CHANNELS
               if (Ca() > CACONFBASE || Channel->Ca() > CACONFBASE)
                  needsDetachReceivers = Ca() != Channel->Ca();
-              else if (!IsPrimaryDevice())
+              else
+#endif
+              if (!IsPrimaryDevice())
                  result = true;
 #ifdef DO_REC_AND_PLAY_ON_PRIMARY_DEVICE
               else
@@ -834,13 +808,13 @@ bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
 
   // Set the tuner:
 
-  dvbTuner->Set(Channel, DoTune, !EITScanner.UsesDevice(this)); //XXX 1.3: this is an ugly hack - find a cleaner solution//XXX
+  dvbTuner->Set(Channel, DoTune);
 
   // If this channel switch was requested by the EITScanner we don't wait for
   // a lock and don't set any live PIDs (the EITScanner will wait for the lock
   // by itself before setting any filters):
 
-  if (EITScanner.UsesDevice(this))
+  if (EITScanner.UsesDevice(this)) //XXX
      return true;
 
   // PID settings:
