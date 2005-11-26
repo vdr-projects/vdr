@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: skincurses.c 1.6 2005/05/16 10:45:12 kls Exp $
+ * $Id: skincurses.c 1.7 2005/11/26 13:52:39 kls Exp $
  */
 
 #include <ncurses.h>
@@ -11,7 +11,7 @@
 #include <vdr/plugin.h>
 #include <vdr/skins.h>
 
-static const char *VERSION        = "0.0.4";
+static const char *VERSION        = "0.0.5";
 static const char *DESCRIPTION    = "A text only skin";
 static const char *MAINMENUENTRY  = NULL;
 
@@ -500,7 +500,7 @@ void cSkinCursesDisplayReplay::SetMode(bool Play, bool Forward, int Speed)
 
 void cSkinCursesDisplayReplay::SetProgress(int Current, int Total)
 {
-  int p = OsdWidth * Current / Total;
+  int p = Total > 0 ? OsdWidth * Current / Total : 0;
   osd->DrawRectangle(0, 1, p, 1, clrGreen);
   osd->DrawRectangle(p, 1, OsdWidth, 1, clrWhite);
 }

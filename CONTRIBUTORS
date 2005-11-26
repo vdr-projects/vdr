@@ -205,6 +205,8 @@ Stefan Huelswitt <huels@iname.com>
  for fixing a memory leak in the SVDRP command LSTE
  for reporting a problem with the EPG scan disturbing players that have also set
  live PIDs
+ for reporting a problem in SetProgress() of the 'skincurses' plugin in case Total
+ is 0
 
 Ulrich Röder <roeder@efr-net.de>
  for pointing out that there are channels that have a symbol rate higher than 27500

@@ -3953,3 +3953,5 @@ Video Disk Recorder Revision History
   the same transponder at the same time (or record and view different encrypted
   channels), provided the CAM in use can handle this. This is work in progress
   and isn't actively used, yet.
+- Fixed SetProgress() in the 'skincurses' plugin in case Total is 0 (reported
+  by Stefan Huelswitt).
