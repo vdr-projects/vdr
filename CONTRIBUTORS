@@ -1544,3 +1544,6 @@ Ralf Müller <ralf@bj-ig.de>
 
 Maarten Wisse <Maarten.Wisse@urz.uni-hd.de>
  for translating OSD texts to the Dutch language
+
+Holger Brunn <holger.brunn@stud.uni-karlsruhe.de>
+ for adding a copy constructor to cString and fixing its assignment operator

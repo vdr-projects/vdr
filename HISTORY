@@ -3955,3 +3955,5 @@ Video Disk Recorder Revision History
   and isn't actively used, yet.
 - Fixed SetProgress() in the 'skincurses' plugin in case Total is 0 (reported
   by Stefan Huelswitt).
+- Added a copy constructor to cString and fixed its assignment operator
+  (thanks to Holger Brunn).
