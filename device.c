@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.111 2005/11/05 15:23:58 kls Exp $
+ * $Id: device.c 1.112 2005/11/26 12:56:09 kls Exp $
  */
 
 #include "device.h"
@@ -397,6 +397,8 @@ bool cDevice::AddPid(int Pid, ePidType PidType)
               DelPid(Pid, PidType);
               return false;
               }
+           if (ciHandler)
+              ciHandler->SetPid(Pid, true);
            }
         PRINTPIDS("a");
         return true;
@@ -424,6 +426,8 @@ bool cDevice::AddPid(int Pid, ePidType PidType)
            DelPid(Pid, PidType);
            return false;
            }
+        if (ciHandler)
+           ciHandler->SetPid(Pid, true);
         }
      }
   return true;
@@ -450,6 +454,8 @@ void cDevice::DelPid(int Pid, ePidType PidType)
            if (pidHandles[n].used == 0) {
               pidHandles[n].handle = -1;
               pidHandles[n].pid = 0;
+              if (ciHandler)
+                 ciHandler->SetPid(Pid, false);
               }
            }
         PRINTPIDS("E");
@@ -601,12 +607,34 @@ eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
         sectionHandler->SetStatus(false);
         sectionHandler->SetChannel(NULL);
         }
+     // Tell the ciHandler about the channel switch and add all PIDs of this
+     // channel to it, for possible later decryption:
+     if (ciHandler) {
+        ciHandler->SetSource(Channel->Source(), Channel->Transponder());
+// Men at work - please stand clear! ;-)
+#ifdef XXX_DO_MULTIPLE_CA_CHANNELS
+        if (Channel->Ca() > CACONFBASE) {
+#endif
+           ciHandler->AddPid(Channel->Sid(), Channel->Vpid(), 2);
+           for (const int *Apid = Channel->Apids(); *Apid; Apid++)
+               ciHandler->AddPid(Channel->Sid(), *Apid, 4);
+           for (const int *Dpid = Channel->Dpids(); *Dpid; Dpid++)
+               ciHandler->AddPid(Channel->Sid(), *Dpid, 0);
+#ifdef XXX_DO_MULTIPLE_CA_CHANNELS
+           bool CanDecrypt = ciHandler->CanDecrypt(Channel->Sid());//XXX
+           dsyslog("CanDecrypt %d %d %d %s", CardIndex() + 1, CanDecrypt, Channel->Number(), Channel->Name());//XXX
+           }
+#endif
+        }
      if (SetChannelDevice(Channel, LiveView)) {
         // Start section handling:
         if (sectionHandler) {
            sectionHandler->SetChannel(Channel);
            sectionHandler->SetStatus(true);
            }
+        // Start decrypting any PIDs the might have been set in SetChannelDevice():
+        if (ciHandler)
+           ciHandler->StartDecrypting();
         }
      else
         Result = scrFailed;
@@ -1168,6 +1196,8 @@ bool cDevice::AttachReceiver(cReceiver *Receiver)
          Unlock();
          if (!Running())
             Start();
+         if (ciHandler)
+            ciHandler->StartDecrypting();
          return true;
          }
       }
@@ -1194,6 +1224,8 @@ void cDevice::Detach(cReceiver *Receiver)
       else if (receiver[i])
          receiversLeft = true;
       }
+  if (ciHandler)
+     ciHandler->StartDecrypting();
   if (!receiversLeft)
      Cancel(3);
 }

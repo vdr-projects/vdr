@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.c 1.69 2005/09/03 09:07:23 kls Exp $
+ * $Id: interface.c 1.70 2005/11/27 15:31:06 kls Exp $
  */
 
 #include "interface.h"
@@ -36,13 +36,6 @@ eKeys cInterface::GetKey(bool Wait)
   if (SVDRP) {
      if (SVDRP->Process())
         Wait = false;
-     if (!Skins.IsOpen()) {
-        char *message = SVDRP->GetMessage();
-        if (message) {
-           Skins.Message(mtInfo, message);
-           free(message);
-           }
-        }
      }
   return cRemote::Get(Wait ? 1000 : 10);
 }

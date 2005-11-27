@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 1.45 2005/08/14 11:15:42 kls Exp $
+ * $Id: thread.c 1.46 2005/11/27 15:15:53 kls Exp $
  */
 
 #include "thread.h"
@@ -193,6 +193,7 @@ void cMutex::Unlock(void)
 
 // --- cThread ---------------------------------------------------------------
 
+tThreadId cThread::mainThreadId = cThread::ThreadId();
 bool cThread::emergencyExitRequested = false;
 
 cThread::cThread(const char *Description)

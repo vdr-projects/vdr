@@ -3828,14 +3828,8 @@ Video Disk Recorder Revision History
   startup if there are a great many of recordings, or the disk(s) have to spin up.
   If the Recordings menu is opened while the list of recordings is still being read,
   the menu will be updated accordingly.
-  Plugins that access the global Recordings variable should lock the thread, either
-  by calling
-
-    Recordings.Lock();
-    ...
-    Recordings.Unlock();
-
-  or by putting something like
+  Plugins that access the global Recordings variable should lock the thread
+  by putting something like
 
     cThreadLock RecordingsLock(&Recordings);
 
@@ -3930,7 +3924,7 @@ Video Disk Recorder Revision History
   to Andreas Mair for reporting a problem with extremely long summary fields
   in timers).
 - cSVDRP now dynamically allocates its command buffer in order to handle
-  commands of any length. The MAXPARSEBUFFER macros is now obsolete and has
+  commands of any length. The MAXPARSEBUFFER macro is now obsolete and has
   been removed. If a plugin has used that macro, it should either define
   a buffer size of its own, or use cReadLine when reading files.
 - Fixed a race condition in the SPU decoder (thanks to Marco Schlüßler).
@@ -3939,3 +3933,32 @@ Video Disk Recorder Revision History
 - Fixed setting the help key display in the Recordings menu in case of several
   layers of subdirectories.
 - Removed EPG bugfix #0, because it removed actually important data.
+
+2005-11-27: Version 1.3.37
+
+- Added compiler options "-fPIC -g" to all plugins (thanks to Rolf Ahrenberg).
+- Fixed initializing the day index when editing the weekday parameter of a
+  repeating timer (thanks to Marco Schlüßler).
+- No longer removing superfluous hyphens in EPG data - would become too
+  language dependent to handle all kinds of exceptions.
+- Modified switching to Dolby Digital audio in live mode, if the driver
+  and firmware can handle live DD without the need of a Transfer Mode (thanks
+  to Werner Fink). Live DD mode requires a full featured DVB card and a
+  LinuxDVB driver with firmware version 0x2622 or higher. Older versions will
+  use Transfer Mode just like before.
+- Implemented handling of the "CA PMT Reply" for CAMs (thanks to Marco
+  Schlüßler for figuring out some obscure length bytes in the CA PMT Reply
+  data of AlphaCrypt CAMs).
+- Some preparations for being able to record several encrypted channels from
+  the same transponder at the same time (or record and view different encrypted
+  channels), provided the CAM in use can handle this. This is work in progress
+  and isn't actively used, yet.
+- Fixed SetProgress() in the 'skincurses' plugin in case Total is 0 (reported
+  by Stefan Huelswitt).
+- Added a copy constructor to cString and fixed its assignment operator
+  (thanks to Holger Brunn).
+- The new function Skins.QueueMessage() can be called from a background thread
+  to queue a message for display. See VDR/skins.h for details.
+- The SVDRP command MESG uses the new message queueing facility, so MESG
+  commands may now be executed at any time, and the message will be displayed
+  (no more "pending message").

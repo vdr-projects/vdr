@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skins.h 1.8 2005/05/15 14:41:41 kls Exp $
+ * $Id: skins.h 1.9 2005/11/27 15:41:44 kls Exp $
  */
 
 #ifndef __SKINS_H
@@ -16,6 +16,7 @@
 #include "osd.h"
 #include "recording.h"
 #include "themes.h"
+#include "thread.h"
 #include "tools.h"
 
 enum eMessageType { mtStatus = 0, mtInfo, mtWarning, mtError }; // will be used to calculate color offsets!
@@ -298,6 +299,7 @@ class cSkins : public cList<cSkin> {
 private:
   cSkin *current;
   cSkinDisplayMessage *displayMessage;
+  cMutex queueMessageMutex;
 public:
   cSkins(void);
   ~cSkins();
@@ -312,6 +314,35 @@ public:
        ///< Displays the given message, either through a currently visible
        ///< display object that is capable of doing so, or by creating a
        ///< temporary cSkinDisplayMessage object.
+       ///< The return value is the key pressed by the user. If no user input
+       ///< has been received within Seconds (the default value of 0 results
+       ///< in the ///< value defined for "Message time" in the setup), kNone
+       ///< will be returned.
+  int QueueMessage(eMessageType Type, const char *s, int Seconds = 0, int Timeout = 0);
+       ///< Like Message(), but this function may be called from a background
+       ///< thread. The given message is put into a queue and the main program
+       ///< loop will display it as soon as this is suitable. If Timeout is 0,
+       ///< QueueMessage() returns immediately and the return value will be kNone.
+       ///< If a positive Timeout is given, the thread will wait at most the given
+       ///< number of seconds for the message to be actually displayed (note that
+       ///< the user may currently be doing something that doesn't allow for
+       ///< queued messages to be displayed immediately). If the timeout expires
+       ///< and the message hasn't been displayed yet, the return value is -1
+       ///< and the message will be removed from the queue without being displayed.
+       ///< Positive values of Timeout are only allowed for background threads.
+       ///< If QueueMessage() is called from the foreground thread with a Timeout
+       ///< greater than 0, the call is ignored and nothing is displayed.
+       ///< Queued messages will be displayed in the sequence they have been
+       ///< put into the queue, so messages from different threads may appear
+       ///< mingled. If a particular thread queues a message with a Timeout of
+       ///< -1, and the previous message from the same thread also had a Timeout
+       ///< of -1, only the last message will be displayed. This can be used for
+       ///< progress displays, where only the most recent message is actually
+       ///< important.
+       ///< Type may only be mtInfo, mtWarning or mtError. A call with mtStatus
+       ///< will be ignored, as will be one with an empty message.
+  void ProcessQueuedMessages(void);
+       ///< Processes the first queued message, if any.
   void Flush(void);
        ///< Flushes the currently active cSkinDisplay, if any.
   };

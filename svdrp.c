@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.83 2005/11/05 11:21:38 kls Exp $
+ * $Id: svdrp.c 1.84 2005/11/27 15:29:28 kls Exp $
  */
 
 #include "svdrp.h"
@@ -35,6 +35,7 @@
 #include "menu.h"
 #include "plugin.h"
 #include "remote.h"
+#include "skins.h"
 #include "timers.h"
 #include "tools.h"
 #include "videodir.h"
@@ -225,12 +226,9 @@ const char *HelpPages[] = {
   "LSTT [ <number> ]\n"
   "    List timers. Without option, all timers are listed. Otherwise\n"
   "    only the given timer is listed.",
-  "MESG [ <message> ]\n"
-  "    Displays the given message on the OSD. If message is omitted, the\n"
-  "    currently pending message (if any) will be returned. The message\n"
-  "    will be displayed for a few seconds as soon as the OSD has become\n"
-  "    idle. If a new MESG command is entered while the previous message\n"
-  "    has not yet been displayed, the old message will be overwritten.",
+  "MESG <message>\n"
+  "    Displays the given message on the OSD. The message will be queued\n"
+  "    and displayed whenever this is suitable.\n",
   "MODC <number> <settings>\n"
   "    Modify a channel. Settings must be in the same format as returned\n"
   "    by the LSTC command.",
@@ -363,7 +361,6 @@ cSVDRP::cSVDRP(int Port)
   numChars = 0;
   length = BUFSIZ;
   cmdLine = MALLOC(char, length);
-  message = NULL;
   lastActivity = 0;
   isyslog("SVDRP listening on port %d", Port);
 }
@@ -371,7 +368,6 @@ cSVDRP::cSVDRP(int Port)
 cSVDRP::~cSVDRP()
 {
   Close();
-  free(message);
   free(cmdLine);
 }
 
@@ -954,15 +950,12 @@ void cSVDRP::CmdLSTT(const char *Option)
 void cSVDRP::CmdMESG(const char *Option)
 {
   if (*Option) {
-     free(message);
-     message = strdup(Option);
-     isyslog("SVDRP message: '%s'", message);
-     Reply(250, "Message stored");
+     isyslog("SVDRP message: '%s'", Option);
+     Skins.QueueMessage(mtInfo, Option);
+     Reply(250, "Message queued");
      }
-  else if (message)
-     Reply(250, "%s", message);
   else
-     Reply(550, "No pending message");
+     Reply(501, "Missing message");
 }
 
 void cSVDRP::CmdMODC(const char *Option)
@@ -1487,13 +1480,6 @@ bool cSVDRP::Process(void)
      return true;
      }
   return false;
-}
-
-char *cSVDRP::GetMessage(void)
-{
-  char *s = message;
-  message = NULL;
-  return s;
 }
 
 //TODO more than one connection???

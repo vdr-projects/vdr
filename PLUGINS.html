@@ -14,18 +14,18 @@ Copyright &copy; 2005 Klaus Schmidinger<br>
 <a href="http://www.cadsoft.de/vdr">www.cadsoft.de/vdr</a>
 </center>
 <p>
-<!--X1.3.20--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
-Important modifications introduced in version 1.3.20 are marked like this.
-<!--X1.3.20--></td></tr></table>
-<!--X1.3.21--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
+<!--X1.3.21--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 Important modifications introduced in version 1.3.21 are marked like this.
 <!--X1.3.21--></td></tr></table>
-<!--X1.3.30--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
+<!--X1.3.30--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
 Important modifications introduced in version 1.3.30 are marked like this.
 <!--X1.3.30--></td></tr></table>
-<!--X1.3.31--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+<!--X1.3.31--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
 Important modifications introduced in version 1.3.31 are marked like this.
 <!--X1.3.31--></td></tr></table>
+<!--X1.3.37--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+Important modifications introduced in version 1.3.37 are marked like this.
+<!--X1.3.37--></td></tr></table>
 <p>
 VDR provides an easy to use plugin interface that allows additional functionality
 to be added to the program by implementing a dynamically loadable library file.
@@ -58,9 +58,7 @@ structures and allows it to hook itself into specific areas to perform special a
 <li><a href="#Command line arguments">Command line arguments</a>
 <li><a href="#Command line help">Command line help</a>
 <li><a href="#Getting started">Getting started</a>
-<!--X1.3.20--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 <li><a href="#Shutting down">Shutting down</a>
-<!--X1.3.20--></td></tr></table>
 <li><a href="#Main menu entry">Main menu entry</a>
 <li><a href="#User interaction">User interaction</a>
 <li><a href="#Housekeeping">Housekeeping</a>
@@ -68,10 +66,10 @@ structures and allows it to hook itself into specific areas to perform special a
 <li><a href="#The Setup menu">The Setup menu</a>
 <li><a href="#Configuration files">Configuration files</a>
 <li><a href="#Internationalization">Internationalization</a>
-<!--X1.3.30--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
+<!--X1.3.30--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
 <li><a href="#Custom services">Custom services</a>
 <!--X1.3.30--></td></tr></table>
-<!--X1.3.31--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+<!--X1.3.31--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
 <li><a href="#SVDRP commands">SVDRP commands</a>
 <!--X1.3.31--></td></tr></table>
 <li><a href="#Loading plugins into VDR">Loading plugins into VDR</a>
@@ -87,7 +85,7 @@ structures and allows it to hook itself into specific areas to perform special a
 <li><a href="#Skins">Skins</a>
 <li><a href="#Themes">Themes</a>
 <li><a href="#Devices">Devices</a>
-<!--X1.3.21--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
+<!--X1.3.21--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 <li><a href="#Audio">Audio</a>
 <!--X1.3.21--></td></tr></table>
 <li><a href="#Remote Control">Remote Control</a>
@@ -314,10 +312,8 @@ since VDR, for instance, has to create the plugin objects in order to get their
 command line help - and after that immediately destroys them again.
 <p>
 The <b>destructor</b> has to clean up any data created by the plugin.
-<!--X1.3.20--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 Any threads the plugin may have created shall be stopped in the
 <a href="#Shutting down"><tt>Stop()</tt></a> function.
-<!--X1.3.20--></td></tr></table>
 <p>
 Of course, if your plugin doesn't define any member variables that need to be
 initialized (and deleted), you don't need to implement either of these functions.
@@ -512,7 +508,6 @@ VDR to exit.
 If the plugin doesn't implement any background functionality or internationalized
 texts, it doesn't need to implement either of these functions.
 
-<!--X1.3.20--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
 <a name="Shutting down"><hr><h2>Shutting down</h2>
 
 <center><i><b>Stop it, right there!</b></i></center><p>
@@ -529,7 +524,6 @@ The <tt>Stop()</tt> function will only be called if a previous call to the
 <a href="#Getting started"><tt>Start()</tt></a> function of that plugin has
 returned <i>true</i>. The <tt>Stop()</tt> functions are called in the reverse order
 as the <a href="#Getting started"><tt>Start()</tt></a> functions were called.
-<!--X1.3.20--></td></tr></table>
 
 <a name="Main menu entry"><hr><h2>Main menu entry</h2>
 
@@ -872,7 +866,7 @@ Texts are first searched for in the <i>Phrases</i> registered for this plugin (i
 and then in the global VDR texts. So a plugin can make use of texts defined by the
 core VDR code.
 
-<!--X1.3.30--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
+<!--X1.3.30--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
 <a name="Custom services"><hr><h2>Custom services</h2>
 
 <center><i><b>What can I do for you?</b></i></center><p>
@@ -943,7 +937,7 @@ any plugin handled the request, or <tt>false</tt> if no plugin handled the reque
 
 <!--X1.3.30--></td></tr></table>
 
-<!--X1.3.31--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+<!--X1.3.31--><table width=100%><tr><td bgcolor=#AA0000>&nbsp;</td><td width=100%>
 <a name="SVDRP commands"><hr><h2>SVDRP commands</h2>
 
 <center><i><b>Infinite Diversity in Infinite Combinations</b></i></center><p>
@@ -1521,6 +1515,22 @@ with the full required resolution. Only if this fails shall it use alternate
 areas. Drawing areas are always rectangular and may not overlap (but do not need
 to be adjacent).
 
+<!--X1.3.37--><table width=100%><tr><td bgcolor=#FF0000>&nbsp;</td><td width=100%>
+<p>
+Directly accessing the OSD is only allowed from the foreground thread, which
+restricts this to a <tt>cOsdObject</tt> returned from the plugin's <tt>MainMenuAction()</tt>
+function, or any of the skin classes a plugin might implement.
+<p>
+If a plugin runs a separate thread and wants to issue a message directly from
+within that tread, it can call
+
+<p><table><tr><td bgcolor=#F0F0F0><pre>
+int cSkins::QueueMessage(eMessageType Type, const char *s, int Seconds = 0, int Timeout = 0);
+</pre></td></tr></table><p>
+
+to queue that message for display. See <tt>VDR/skins.h</tt> for details.
+<!--X1.3.37--></td></tr></table>
+
 <a name="Skins"><hr><h2>Skins</h2>
 
 <center><i><b>The emperor's new clothes</b></i></center><p>
@@ -1830,7 +1840,7 @@ private:
   virtual void Action(void);
 public:
   cMyAudio(void);
-<!--X1.3.21--><table width=100%><tr><td bgcolor=#00AA00>&nbsp;</td><td width=100%>
+<!--X1.3.21--><table width=100%><tr><td bgcolor=#0000AA>&nbsp;</td><td width=100%>
   virtual void Play(const uchar *Data, int Length, uchar Id);
 <!--X1.3.21--></td></tr></table>
   virtual void Mute(bool On);

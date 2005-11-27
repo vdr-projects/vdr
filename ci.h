@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.h 1.18 2005/10/30 12:31:14 kls Exp $
+ * $Id: ci.h 1.19 2005/11/26 13:37:42 kls Exp $
  */
 
 #ifndef __CI_H
@@ -13,6 +13,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include "thread.h"
+#include "tools.h"
 
 class cCiMMI;
 
@@ -65,24 +66,31 @@ public:
   bool Abort(void);
   };
 
-class cCiCaPmt {
-  friend class cCiConditionalAccessSupport;
-private:
-  int length;
-  int esInfoLengthPos;
-  uint8_t capmt[2048]; ///< XXX is there a specified maximum?
-  int caDescriptorsLength;
-  uint8_t caDescriptors[2048];
-  bool streamFlag;
-  void AddCaDescriptors(int Length, const uint8_t *Data);
-public:
-  cCiCaPmt(int Source, int Transponder, int ProgramNumber, const unsigned short *CaSystemIds);
-  bool Valid(void);
-  void AddPid(int Pid, uint8_t StreamType);
-  };
-
 #define MAX_CI_SESSION  16 //XXX
 #define MAX_CI_SLOT     16
+
+class cCiCaPidData : public cListObject {
+public:
+  bool active;
+  int pid;
+  int streamType;
+  cCiCaPidData(int Pid, int StreamType)
+  {
+    active = false;
+    pid = Pid;
+    streamType = StreamType;
+  }
+  };
+
+class cCiCaProgramData : public cListObject {
+public:
+  int programNumber;
+  cList<cCiCaPidData> pidList;
+  cCiCaProgramData(int ProgramNumber)
+  {
+    programNumber = ProgramNumber;
+  }
+  };
 
 class cCiSession;
 class cCiTransportLayer;
@@ -99,6 +107,9 @@ private:
   cCiSession *sessions[MAX_CI_SESSION];
   cCiTransportLayer *tpl;
   cCiTransportConnection *tc;
+  int source;
+  int transponder;
+  cList<cCiCaProgramData> caProgramList;
   int ResourceIdToInt(const uint8_t *Data);
   bool Send(uint8_t Tag, int SessionId, int ResourceId = 0, int Status = -1);
   cCiSession *GetSessionBySessionId(int SessionId);
@@ -108,12 +119,15 @@ private:
   bool CloseSession(int SessionId);
   int CloseAllSessions(int Slot);
   cCiHandler(int Fd, int NumSlots);
+  void SendCaPmt(void);
 public:
   ~cCiHandler();
   static cCiHandler *CreateCiHandler(const char *FileName);
   int NumSlots(void) { return numSlots; }
   bool Ready(void);
-  bool Process(void);
+  bool Process(int Slot = -1);
+       ///< Processes the given Slot. If Slot is -1, all slots are processed.
+       ///< Returns false in case of an error.
   bool HasUserIO(void) { return hasUserIO; }
   bool EnterMenu(int Slot);
   cCiMenu *GetMenu(void);
@@ -121,7 +135,24 @@ public:
   const char *GetCamName(int Slot);
   const unsigned short *GetCaSystemIds(int Slot);
   bool ProvidesCa(const unsigned short *CaSystemIds); //XXX Slot???
-  bool SetCaPmt(cCiCaPmt &CaPmt, int Slot);
+  void SetSource(int Source, int Transponder);
+       ///< Sets the Source and Transponder of the device this cCiHandler is
+       ///< currently tuned to. If Source or Transponder are different than
+       ///< what was given in a previous call to SetSource(), any previously
+       ///< added PIDs will be cleared.
+  void AddPid(int ProgramNumber, int Pid, int StreamType);
+       ///< Adds the given PID information to the list of PIDs. A later call
+       ///< to SetPid() will (de)activate one of these entries.
+  void SetPid(int Pid, bool Active);
+       ///< Sets the given Pid (which has previously been added through a
+       ///< call to AddPid()) to Active. If Active is true, a later call to
+       ///< StartDecrypting() will send the full list of currently active CA_PMT
+       ///< entries to the CAM, including this one.
+  bool CanDecrypt(int ProgramNumber);
+       ///< XXX
+  void StartDecrypting(void);
+       ///< Triggers sending all currently active CA_PMT entries to the CAM,
+       ///< so that it will start decrypting.
   bool Reset(int Slot);
   };
 

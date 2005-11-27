@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.h 1.35 2005/08/20 15:20:15 kls Exp $
+ * $Id: dvbdevice.h 1.36 2005/11/11 14:51:38 kls Exp $
  */
 
 #ifndef __DVBDEVICE_H
@@ -69,6 +69,8 @@ public:
 
 // PID handle facilities
 
+private:
+  bool SetAudioBypass(bool On);
 protected:
   virtual bool SetPid(cPidHandle *Handle, int Type, bool On);
 

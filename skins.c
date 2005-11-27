@@ -4,13 +4,49 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skins.c 1.5 2005/10/02 10:12:10 kls Exp $
+ * $Id: skins.c 1.6 2005/11/27 15:52:25 kls Exp $
  */
 
 #include "skins.h"
 #include "interface.h"
 #include "status.h"
-#include "tools.h"
+
+// --- cSkinQueuedMessage ----------------------------------------------------
+
+class cSkinQueuedMessage : public cListObject {
+  friend class cSkins;
+private:
+  eMessageType type;
+  char *message;
+  int seconds;
+  int timeout;
+  tThreadId threadId;
+  eKeys key;
+  int state;
+  cMutex mutex;
+  cCondVar condVar;
+public:
+  cSkinQueuedMessage(eMessageType Type, const char *s, int Seconds, int Timeout);
+  virtual ~cSkinQueuedMessage();
+  };
+
+cSkinQueuedMessage::cSkinQueuedMessage(eMessageType Type, const char *s, int Seconds, int Timeout)
+{
+  type = Type;
+  message = s ? strdup(s) : NULL;
+  seconds = Seconds;
+  timeout = Timeout;
+  threadId = cThread::ThreadId();
+  key = kNone;
+  state = 0; // waiting
+}
+
+cSkinQueuedMessage::~cSkinQueuedMessage()
+{
+  free(message);
+}
+
+cList<cSkinQueuedMessage> SkinQueuedMessages;
 
 // --- cSkinDisplay ----------------------------------------------------------
 
@@ -200,6 +236,95 @@ eKeys cSkins::Message(eMessageType Type, const char *s, int Seconds)
      cStatus::MsgOsdClear();
      }
   return k;
+}
+
+int cSkins::QueueMessage(eMessageType Type, const char *s, int Seconds, int Timeout)
+{
+  if (Type == mtStatus) {
+     dsyslog("cSkins::QueueMessage() called with mtStatus - ignored!");
+     return kNone;
+     }
+  if (isempty(s)) {
+     dsyslog("cSkins::QueueMessage() called with empty message - ignored!");
+     return kNone;
+     }
+  int k = kNone;
+  if (Timeout > 0) {
+     if (cThread::IsMainThread()) {
+        dsyslog("cSkins::QueueMessage() called from main thread with Timeout = %d - ignored!", Timeout);
+        return k;
+        }
+     cSkinQueuedMessage *m = new cSkinQueuedMessage(Type, s, Seconds, Timeout);
+     queueMessageMutex.Lock();
+     SkinQueuedMessages.Add(m);
+     m->mutex.Lock();
+     queueMessageMutex.Unlock();
+     if (m->condVar.TimedWait(m->mutex, Timeout * 1000))
+        k = m->key;
+     else
+        k = -1; // timeout, nothing has been displayed
+     m->state = 2; // done
+     m->mutex.Unlock();
+     }
+  else {
+     queueMessageMutex.Lock();
+     // Check if there is a waiting message w/o timeout for this thread:
+     if (Timeout == -1) {
+        for (cSkinQueuedMessage *m = SkinQueuedMessages.Last(); m; m = SkinQueuedMessages.Prev(m)) {
+            if (m->threadId == cThread::ThreadId()) {
+               if (m->state == 0 && m->timeout == -1)
+                  m->state = 2; // done
+               break;
+               }
+            }
+         }
+     // Add the new message:
+     SkinQueuedMessages.Add(new cSkinQueuedMessage(Type, s, Seconds, Timeout));
+     queueMessageMutex.Unlock();
+     }
+  return k;
+}
+
+void cSkins::ProcessQueuedMessages(void)
+{
+  if (!cThread::IsMainThread()) {
+     dsyslog("cSkins::ProcessQueuedMessages() called from background thread - ignored!");
+     return;
+     }
+  cSkinQueuedMessage *msg = NULL;
+  // Get the first waiting message:
+  queueMessageMutex.Lock();
+  for (cSkinQueuedMessage *m = SkinQueuedMessages.First(); m; m = SkinQueuedMessages.Next(m)) {
+      if (m->state == 0) { // waiting
+         m->state = 1; // active
+         msg = m;
+         break;
+         }
+      }
+  queueMessageMutex.Unlock();
+  // Display the message:
+  if (msg) {
+     msg->mutex.Lock();
+     if (msg->state == 1) { // might have changed since we got it
+        msg->key = Skins.Message(msg->type, msg->message, msg->seconds);
+        if (msg->timeout == 0)
+           msg->state = 2; // done
+        else
+           msg->condVar.Broadcast();
+        }
+     msg->mutex.Unlock();
+     }
+  // Remove done messages from the queue:
+  queueMessageMutex.Lock();
+  for (;;) {
+      cSkinQueuedMessage *m = SkinQueuedMessages.First();
+      if (m && m->state == 2) { // done
+         SkinQueuedMessages.Del(m);
+         }
+      else
+         break;
+      } 
+  queueMessageMutex.Unlock();
 }
 
 void cSkins::Flush(void)

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.c 1.23 2005/09/17 09:36:31 kls Exp $
+ * $Id: menuitems.c 1.24 2005/11/12 12:22:10 kls Exp $
  */
 
 #include "menuitems.h"
@@ -578,8 +578,16 @@ cMenuEditDateItem::cMenuEditDateItem(const char *Name, time_t *Value, int *WeekD
   value = Value;
   weekdays = WeekDays;
   oldvalue = 0;
-  dayindex = 0;
+  dayindex = weekdays ? FindDayIndex(*weekdays) : 0;
   Set();
+}
+
+int cMenuEditDateItem::FindDayIndex(int WeekDays)
+{
+  for (unsigned int i = 0; i < sizeof(days) / sizeof(int); i++)
+      if (WeekDays == days[i])
+         return i;
+  return 0;
 }
 
 void cMenuEditDateItem::Set(void)

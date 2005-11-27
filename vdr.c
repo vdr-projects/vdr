@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.219 2005/11/04 13:48:39 kls Exp $
+ * $Id: vdr.c 1.220 2005/11/27 15:56:18 kls Exp $
  */
 
 #include <getopt.h>
@@ -677,6 +677,9 @@ int main(int argc, char *argv[])
            else if (!LastCamMenu)
               LastCamMenu = time(NULL);
            }
+        // Queued messages:
+        if (!Skins.IsOpen())
+           Skins.ProcessQueuedMessages();
         // User Input:
         cOsdObject *Interact = Menu ? Menu : cControl::Control();
         eKeys key = Interface->GetKey((!Interact || !Interact->NeedsFastResponse()) && time(NULL) - LastCamMenu > LASTCAMMENUTIMEOUT);

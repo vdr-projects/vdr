@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.103 2005/11/04 16:33:18 kls Exp $
+ * $Id: tools.c 1.104 2005/11/26 14:12:31 kls Exp $
  */
 
 #include "tools.h"
@@ -527,6 +527,11 @@ cString::cString(const char *S, bool TakePointer)
   s = TakePointer ? (char *)S : S ? strdup(S) : NULL;
 }
 
+cString::cString(const cString &String)
+{
+  s = String.s ? strdup(String.s) : NULL;
+}
+
 cString::~cString()
 {
   free(s);
@@ -534,6 +539,8 @@ cString::~cString()
 
 cString &cString::operator=(const cString &String)
 {
+  if (this == &String)
+     return *this;
   free(s);
   s = String.s ? strdup(String.s) : NULL;
   return *this;
