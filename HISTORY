@@ -3934,7 +3934,7 @@ Video Disk Recorder Revision History
   layers of subdirectories.
 - Removed EPG bugfix #0, because it removed actually important data.
 
-2005-11-26: Version 1.3.37
+2005-11-27: Version 1.3.37
 
 - Added compiler options "-fPIC -g" to all plugins (thanks to Rolf Ahrenberg).
 - Fixed initializing the day index when editing the weekday parameter of a
@@ -3957,3 +3957,8 @@ Video Disk Recorder Revision History
   by Stefan Huelswitt).
 - Added a copy constructor to cString and fixed its assignment operator
   (thanks to Holger Brunn).
+- The new function Skins.QueueMessage() can be called from a background thread
+  to queue a message for display. See VDR/skins.h for details.
+- The SVDRP command MESG uses the new message queueing facility, so MESG
+  commands may now be executed at any time, and the message will be displayed
+  (no more "pending message").
