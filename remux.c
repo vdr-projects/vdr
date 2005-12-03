@@ -11,7 +11,7 @@
  * The cRepacker family's code was originally written by Reinhard Nissl <rnissl@gmx.de>,
  * and adapted to the VDR coding style by Klaus.Schmidinger@cadsoft.de.
  *
- * $Id: remux.c 1.47 2005/09/11 11:00:00 kls Exp $
+ * $Id: remux.c 1.48 2005/12/03 12:06:23 kls Exp $
  */
 
 #include "remux.h"
@@ -1650,7 +1650,7 @@ void cTS2PES::ts_to_pes(const uint8_t *Buf) // don't need count (=188)
      }
 
   if (Buf[1] & PAY_START) {
-     if (plength == MMAX_PLENGTH - 6 && found > 6) {
+     if (found > 6) {
         plength = found - 6;
         found = 0;
         send_ipack();
