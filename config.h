@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.235 2005/11/11 13:22:02 kls Exp $
+ * $Id: config.h 1.236 2005/12/03 11:50:08 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -19,8 +19,8 @@
 #include "i18n.h"
 #include "tools.h"
 
-#define VDRVERSION  "1.3.37"
-#define VDRVERSNUM   10337  // Version * 10000 + Major * 100 + Minor
+#define VDRVERSION  "1.3.38"
+#define VDRVERSNUM   10338  // Version * 10000 + Major * 100 + Minor
 
 #define MAXPRIORITY 99
 #define MAXLIFETIME 99

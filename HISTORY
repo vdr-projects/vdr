@@ -3962,3 +3962,8 @@ Video Disk Recorder Revision History
 - The SVDRP command MESG uses the new message queueing facility, so MESG
   commands may now be executed at any time, and the message will be displayed
   (no more "pending message").
+
+2005-12-03: Version 1.3.38
+
+- Fixed handling second audio and Dolby Digital PIDs for encrypted channels
+  (was broken in version 1.3.37).

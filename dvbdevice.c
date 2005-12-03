@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.138 2005/11/26 13:23:11 kls Exp $
+ * $Id: dvbdevice.c 1.139 2005/11/29 17:18:04 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -824,6 +824,11 @@ bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
      if (!(AddPid(Channel->Ppid(), ptPcr) && AddPid(Channel->Vpid(), ptVideo) && AddPid(Channel->Apid(0), ptAudio))) {
         esyslog("ERROR: failed to set PIDs for channel %d on device %d", Channel->Number(), CardIndex() + 1);
         return false;
+        }
+     //XXX quick workaround for additional live audio PIDs:
+     if (ciHandler) {
+        ciHandler->SetPid(Channel->Apid(1), true);
+        ciHandler->SetPid(Channel->Dpid(0), true);
         }
      if (IsPrimaryDevice())
         AddPid(Channel->Tpid(), ptTeletext);
