@@ -3971,3 +3971,4 @@ Video Disk Recorder Revision History
   Reinhard Nissl).
 - Now checking the channel's symbol rate in order to avoid problems on full
   featured DVB cards with symbol rates below 10000.
+- Limited the frequency of log messages from the cRepackers.
