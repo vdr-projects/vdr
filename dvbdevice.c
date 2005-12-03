@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.139 2005/11/29 17:18:04 kls Exp $
+ * $Id: dvbdevice.c 1.140 2005/12/03 13:36:08 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -738,6 +738,8 @@ bool cDvbDevice::ProvidesSource(int Source) const
 
 bool cDvbDevice::ProvidesTransponder(const cChannel *Channel) const
 {
+  if (HasDecoder() && Channel->Srate() < 10000)
+     return false;
   return ProvidesSource(Channel->Source()) && (!cSource::IsSat(Channel->Source()) || !Setup.DiSEqC || Diseqcs.Get(Channel->Source(), Channel->Frequency(), Channel->Polarization()));
 }
 
@@ -747,7 +749,7 @@ bool cDvbDevice::ProvidesChannel(const cChannel *Channel, int Priority, bool *Ne
   bool hasPriority = Priority < 0 || Priority > this->Priority();
   bool needsDetachReceivers = false;
 
-  if (ProvidesSource(Channel->Source()) && ProvidesCa(Channel)) {
+  if (ProvidesSource(Channel->Source()) && ProvidesTransponder(Channel) && ProvidesCa(Channel)) {
      result = hasPriority;
      if (Priority >= 0 && Receiving(true)) {
         if (dvbTuner->IsTunedTo(Channel)) {
