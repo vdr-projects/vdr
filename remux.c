@@ -11,7 +11,7 @@
  * The cRepacker family's code was originally written by Reinhard Nissl <rnissl@gmx.de>,
  * and adapted to the VDR coding style by Klaus.Schmidinger@cadsoft.de.
  *
- * $Id: remux.c 1.49 2005/12/03 14:33:10 kls Exp $
+ * $Id: remux.c 1.50 2005/12/04 13:56:50 kls Exp $
  */
 
 #include "remux.h"
@@ -123,7 +123,7 @@ cRepacker::cRepacker(void)
 
 bool cRepacker::LogAllowed(void)
 {
-  bool Allowed = time(NULL) - lastLog > 10;
+  bool Allowed = time(NULL) - lastLog >= MIN_LOG_INTERVAL;
   lastLog = time(NULL);
   if (Allowed) {
      if (suppressedLogMessages) {
