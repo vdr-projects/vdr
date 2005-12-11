@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.h 1.32 2005/11/27 15:16:50 kls Exp $
+ * $Id: thread.h 1.33 2005/12/11 12:04:56 kls Exp $
  */
 
 #ifndef __THREAD_H
@@ -72,7 +72,7 @@ public:
   void Unlock(void);
   };
 
-typedef pthread_t tThreadId;
+typedef pid_t tThreadId;
 
 class cThread {
   friend class cThreadLock;
@@ -115,7 +115,7 @@ public:
   bool Active(void);
        ///< Checks whether the thread is still alive.
   static bool EmergencyExit(bool Request = false);
-  static tThreadId ThreadId(void) { return pthread_self(); }
+  static tThreadId ThreadId(void);
   static tThreadId IsMainThread(void) { return ThreadId() == mainThreadId; }
   };
 

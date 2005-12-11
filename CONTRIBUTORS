@@ -1454,6 +1454,8 @@ Michael Reinelt <reinelt@eunet.at>
 Johannes Stezenbach <js@linuxtv.org>
  for pointing out that the byte swap for big endian systems in cDvbOsd::Flush()
  is wrong
+ for suggesting to use gettid() syscall to get a thread's pid, so that we get a
+ useful value on NPTL systems
 
 Paavo Hartikainen <pahartik@sci.fi>
  for verifying that the byte swap for big endian systems in cDvbOsd::Flush() was

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 1.46 2005/11/27 15:15:53 kls Exp $
+ * $Id: thread.c 1.47 2005/12/11 12:09:24 kls Exp $
  */
 
 #include "thread.h"
@@ -12,6 +12,7 @@
 #include <malloc.h>
 #include <stdarg.h>
 #include <sys/resource.h>
+#include <sys/syscall.h>
 #include <sys/time.h>
 #include <sys/wait.h>
 #include <unistd.h>
@@ -231,10 +232,10 @@ void cThread::SetDescription(const char *Description, ...)
 void *cThread::StartThread(cThread *Thread)
 {
   if (Thread->description)
-     dsyslog("%s thread started (pid=%d, tid=%ld)", Thread->description, getpid(), pthread_self());
+     dsyslog("%s thread started (pid=%d, tid=%d)", Thread->description, getpid(), ThreadId());
   Thread->Action();
   if (Thread->description)
-     dsyslog("%s thread ended (pid=%d, tid=%ld)", Thread->description, getpid(), pthread_self());
+     dsyslog("%s thread ended (pid=%d, tid=%d)", Thread->description, getpid(), ThreadId());
   Thread->running = false;
   Thread->active = false;
   return NULL;
@@ -306,6 +307,13 @@ bool cThread::EmergencyExit(bool Request)
      return emergencyExitRequested;
   esyslog("initiating emergency exit");
   return emergencyExitRequested = true; // yes, it's an assignment, not a comparison!
+}
+
+_syscall0(pid_t, gettid)
+
+tThreadId cThread::ThreadId(void)
+{
+  return gettid();
 }
 
 // --- cMutexLock ------------------------------------------------------------

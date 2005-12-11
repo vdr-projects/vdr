@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ringbuffer.h 1.16 2004/10/15 13:50:46 kls Exp $
+ * $Id: ringbuffer.h 1.17 2005/12/10 10:54:51 kls Exp $
  */
 
 #ifndef __RINGBUFFER_H
@@ -23,7 +23,7 @@ private:
   int overflowCount;
   int overflowBytes;
 protected:
-  pthread_t getThreadTid;
+  tThreadId getThreadTid;
   int maxFill;//XXX
   int lastPercent;
   bool statistics;//XXX
