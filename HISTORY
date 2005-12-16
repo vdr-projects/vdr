@@ -3963,7 +3963,7 @@ Video Disk Recorder Revision History
   commands may now be executed at any time, and the message will be displayed
   (no more "pending message").
 
-2005-12-11: Version 1.3.38
+2005-12-16: Version 1.3.38
 
 - Fixed handling second audio and Dolby Digital PIDs for encrypted channels
   (was broken in version 1.3.37).
@@ -3974,3 +3974,5 @@ Video Disk Recorder Revision History
 - Limited the frequency of log messages from the cRepackers.
 - Now using the gettid() syscall to get a thread's pid, so that we get a
   useful value on NPTL systems (suggested by Johannes Stezenbach).
+- Fixed the RCU remote control handling to avoid problems with NPTL (thanks
+  to Andreas Share for reporting a lockup with the RCU on NPTL systems).

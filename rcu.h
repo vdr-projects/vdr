@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: rcu.h 1.4 2005/07/31 10:18:00 kls Exp $
+ * $Id: rcu.h 1.5 2005/12/16 14:21:20 kls Exp $
  */
 
 #ifndef __RCU_H
@@ -19,19 +19,19 @@ private:
   enum { modeH = 'h', modeB = 'b', modeS = 's' };
   int f;
   unsigned char dp, code, mode;
-  int numberToSend;
-  int lastNumber;
+  int number;
+  unsigned int data;
   bool receivedCommand;
   bool SendCommand(unsigned char Cmd);
   int ReceiveByte(int TimeoutMs = 0);
   bool SendByteHandshake(unsigned char c);
   bool SendByte(unsigned char c);
-  bool Digit(int n, int v);
-  bool SetCode(unsigned char Code);
-  bool SetMode(unsigned char Mode);
-  bool Number(int n, bool Hex = false);
+  bool SendData(unsigned int n);
+  void SetCode(unsigned char Code);
+  void SetMode(unsigned char Mode);
+  void SetNumber(int n, bool Hex = false);
   void SetPoints(unsigned char Dp, bool On);
-  bool String(char *s);
+  void SetString(char *s);
   bool DetectCode(unsigned char *Code);
   virtual void Action(void);
   virtual void ChannelSwitch(const cDevice *Device, int ChannelNumber);

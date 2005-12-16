@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: rcu.c 1.10 2005/08/15 12:30:21 kls Exp $
+ * $Id: rcu.c 1.11 2005/12/16 14:43:37 kls Exp $
  */
 
 #include "rcu.h"
@@ -23,8 +23,8 @@ cRcuRemote::cRcuRemote(const char *DeviceName)
   dp = 0;
   mode = modeB;
   code = 0;
-  numberToSend = -1;
-  lastNumber = 0;
+  number = 0;
+  data = 0;
   receivedCommand = false;
   if ((f = open(DeviceName, O_RDWR | O_NONBLOCK)) >= 0) {
      struct termios t;
@@ -32,7 +32,7 @@ cRcuRemote::cRcuRemote(const char *DeviceName)
         cfsetspeed(&t, B9600);
         cfmakeraw(&t);
         if (tcsetattr(f, TCSAFLUSH, &t) == 0) {
-           Number(0);//XXX 8888???
+           SetNumber(8888);
            const char *Setup = GetSetup();
            if (Setup) {
               code = *Setup;
@@ -95,13 +95,12 @@ void cRcuRemote::Action(void)
 
   time_t LastCodeRefresh = 0;
   cTimeMs FirstTime;
+  unsigned char LastCode = 0, LastMode = 0;
   uint64 LastCommand = 0;
+  unsigned int LastData = 0;
   bool repeat = false;
 
   while (Running() && f >= 0) {
-
-        LOCK_THREAD;
-
         if (ReceiveByte(REPEATLIMIT) == 'X') {
            for (int i = 0; i < 6; i++) {
                int b = ReceiveByte();
@@ -140,11 +139,22 @@ void cRcuRemote::Action(void)
            LastCommand = 0;
            }
         else {
-           LastCommand = 0;
-           if (numberToSend >= 0) {
-              Number(numberToSend);
-              numberToSend = -1;
+           unsigned int d = data;
+           if (d != LastData) {
+              SendData(d);
+              LastData = d;
               }
+           unsigned char c = code;
+           if (c != LastCode) {
+              SendCommand(c);
+              LastCode = c;
+              }
+           unsigned char m = mode;
+           if (m != LastMode) {
+              SendCommand(m);
+              LastMode = m;
+              }
+           LastCommand = 0;
            }
         if (code && time(NULL) - LastCodeRefresh > 60) {
            SendCommand(code); // in case the PIC listens to the wrong code
@@ -192,8 +202,6 @@ bool cRcuRemote::SendByteHandshake(unsigned char c)
 
 bool cRcuRemote::SendByte(unsigned char c)
 {
-  LOCK_THREAD;
-
   for (int retry = 5; retry--;) {
       if (SendByteHandshake(c))
          return true;
@@ -201,16 +209,24 @@ bool cRcuRemote::SendByte(unsigned char c)
   return false;
 }
 
-bool cRcuRemote::SetCode(unsigned char Code)
+bool cRcuRemote::SendData(unsigned int n)
 {
-  code = Code;
-  return SendCommand(code);
+  for (int i = 0; i < 4; i++) {
+      if (!SendByte(n & 0x7F))
+         return false;
+      n >>= 8;
+      }
+  return SendCommand(mode);
 }
 
-bool cRcuRemote::SetMode(unsigned char Mode)
+void cRcuRemote::SetCode(unsigned char Code)
+{
+  code = Code;
+}
+
+void cRcuRemote::SetMode(unsigned char Mode)
 {
   mode = Mode;
-  return SendCommand(mode);
 }
 
 bool cRcuRemote::SendCommand(unsigned char Cmd)
@@ -218,15 +234,9 @@ bool cRcuRemote::SendCommand(unsigned char Cmd)
   return SendByte(Cmd | 0x80);
 }
 
-bool cRcuRemote::Digit(int n, int v)
-{ 
-  return SendByte(((n & 0x03) << 5) | (v & 0x0F) | (((dp >> n) & 0x01) << 4));
-}
-
-bool cRcuRemote::Number(int n, bool Hex)
+void cRcuRemote::SetNumber(int n, bool Hex)
 {
-  LOCK_THREAD;
-
+  number = n;
   if (!Hex) {
      char buf[8];
      sprintf(buf, "%4d", n & 0xFFFF);
@@ -237,19 +247,17 @@ bool cRcuRemote::Number(int n, bool Hex)
          n = (n << 4) | ((*d - '0') & 0x0F);
          }
      }
-  lastNumber = n;
+  unsigned int m = 0;
   for (int i = 0; i < 4; i++) {
-      if (!Digit(i, n))
-         return false;
+      m <<= 8;
+      m |= ((i & 0x03) << 5) | (n & 0x0F) | (((dp >> i) & 0x01) << 4);
       n >>= 4;
       }
-  return SendCommand(mode);
+  data = m;
 }
 
-bool cRcuRemote::String(char *s)
+void cRcuRemote::SetString(char *s)
 {
-  LOCK_THREAD;
-
   const char *chars = mode == modeH ? "0123456789ABCDEF" : "0123456789-EHLP ";
   int n = 0;
 
@@ -262,7 +270,7 @@ bool cRcuRemote::String(char *s)
              }
           }
       }
-  return Number(n, true);
+  SetNumber(n, true);
 }
 
 void cRcuRemote::SetPoints(unsigned char Dp, bool On)
@@ -271,7 +279,7 @@ void cRcuRemote::SetPoints(unsigned char Dp, bool On)
      dp |= Dp;
   else
      dp &= ~Dp;
-  Number(lastNumber, true);
+  SetNumber(number);
 }
 
 bool cRcuRemote::DetectCode(unsigned char *Code)
@@ -291,12 +299,12 @@ bool cRcuRemote::DetectCode(unsigned char *Code)
      SetMode(modeH);
      char buf[5];
      sprintf(buf, "C0D%c", *Code);
-     String(buf);
+     SetString(buf);
      SetCode(*Code);
      cCondWait::SleepMs(2 * REPEATDELAY);
      if (receivedCommand) {
         SetMode(modeB);
-        String("----");
+        SetString("----");
         return true;
         }
      if (*Code < 'D') {
@@ -310,10 +318,8 @@ bool cRcuRemote::DetectCode(unsigned char *Code)
 
 void cRcuRemote::ChannelSwitch(const cDevice *Device, int ChannelNumber)
 {
-  if (ChannelNumber && Device->IsPrimaryDevice()) {
-     LOCK_THREAD;
-     numberToSend = cDevice::CurrentChannel();
-     }
+  if (ChannelNumber && Device->IsPrimaryDevice())
+     SetNumber(cDevice::CurrentChannel());
 }
 
 void cRcuRemote::Recording(const cDevice *Device, const char *Name)
