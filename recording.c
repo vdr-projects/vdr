@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.125 2005/12/17 13:30:50 kls Exp $
+ * $Id: recording.c 1.126 2005/12/18 12:06:36 kls Exp $
  */
 
 #include "recording.h"
@@ -48,8 +48,8 @@
 
 #define MINDISKSPACE 1024 // MB
 
-#define DELETEDLIFETIME     1 // hours after which a deleted recording will be actually removed
-#define REMOVECHECKDELTA 3600 // seconds between checks for removing deleted files
+#define REMOVECHECKDELTA   60 // seconds between checks for removing deleted files
+#define DELETEDLIFETIME  3600 // seconds after which a deleted recording will be actually removed
 #define DISKCHECKDELTA    100 // seconds between checks for free disk space
 #define REMOVELATENCY      10 // seconds to wait until next check after removing a file
 
@@ -65,35 +65,19 @@ cRecordings DeletedRecordings(true);
 void RemoveDeletedRecordings(void)
 {
   static time_t LastRemoveCheck = 0;
-  if (LastRemoveCheck == 0) {
-     DeletedRecordings.Update();
-     LastRemoveCheck = time(NULL) - REMOVECHECKDELTA * 9 / 10;
-     }
-  else if (time(NULL) - LastRemoveCheck > REMOVECHECKDELTA) {
-     // Make sure only one instance of VDR does this:
-     cLockFile LockFile(VideoDirectory);
-     if (!LockFile.Lock())
-        return;
-     // Remove the oldest file that has been "deleted":
+  if (time(NULL) - LastRemoveCheck > REMOVECHECKDELTA) {
      cThreadLock DeletedRecordingsLock(&DeletedRecordings);
-     if (DeletedRecordings.Count()) {
-        cRecording *r = DeletedRecordings.First();
-        cRecording *r0 = r;
-        while (r) {
-              if (r->start < r0->start)
-                 r0 = r;
-              r = DeletedRecordings.Next(r);
-              }
-        if (r0 && time(NULL) - r0->start > DELETEDLIFETIME * 3600) {
-           r0->Remove();
-           DeletedRecordings.Del(r0);
-           RemoveEmptyVideoDirectories();
-           LastRemoveCheck += REMOVELATENCY;
-           return;
-           }
-        }
-     else
-        DeletedRecordings.Update();
+     for (cRecording *r = DeletedRecordings.First(); r; r = DeletedRecordings.Next(r)) {
+         if (r->deleted && time(NULL) - r->deleted > DELETEDLIFETIME) {
+            // Make sure only one instance of VDR does this:
+            cLockFile LockFile(VideoDirectory);
+            if (LockFile.Lock()) {
+               r->Remove();
+               DeletedRecordings.Del(r);
+               RemoveEmptyVideoDirectories();
+               }
+            }
+         }
      LastRemoveCheck = time(NULL);
      }
 }
@@ -401,6 +385,7 @@ cRecording::cRecording(cTimer *Timer, const cEvent *Event)
   fileName = NULL;
   name = NULL;
   fileSizeMB = -1; // unknown
+  deleted = 0;
   // set up the actual name:
   const char *Title = Event ? Event->Title() : NULL;
   const char *Subtitle = Event ? Event->ShortText() : NULL;
@@ -455,6 +440,7 @@ cRecording::cRecording(const char *FileName)
 {
   resume = RESUME_NOT_INITIALIZED;
   fileSizeMB = -1; // unknown
+  deleted = 0;
   titleBuffer = NULL;
   sortBuffer = NULL;
   fileName = strdup(FileName);
@@ -816,8 +802,10 @@ void cRecordings::ScanVideoDir(const char *DirName, bool Foreground)
                        Add(r);
                        ChangeState();
                        Unlock();
-                       if (deleted)
+                       if (deleted) {
                           r->fileSizeMB = DirSizeMB(buffer);
+                          r->deleted = time(NULL);
+                          }
                        }
                     else
                        delete r;
@@ -893,6 +881,7 @@ void cRecordings::DelByName(const char *FileName)
      if (ext) {
         strncpy(ext, DELEXT, strlen(ext));
         recording->fileSizeMB = DirSizeMB(recording->FileName());
+        recording->deleted = time(NULL);
         DeletedRecordings.Add(recording);
         }
      else

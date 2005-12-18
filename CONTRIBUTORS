@@ -16,6 +16,8 @@ Carsten Koch <Carsten.Koch@icem.de>
  for fixing converting summary.vdr files that would result in a very long 'short text'
  for his help in testing and debugging reading the list of recordings in a
  separate thread
+ for reporting some unnecessary disk access when checking if there are deleted
+ recordings that need to be removed
 
 Plamen Ganev <pganev@com-it.net>
  for fixing the frequency offset for Hotbird channels

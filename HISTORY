@@ -3979,3 +3979,8 @@ Video Disk Recorder Revision History
 - When displaying the amount of free disk space, the space consumed by
   recordings that have been "deleted" but not yet actually "removed" is now
   taken into account (suggested by Christian Vogt).
+- Now avoiding unnecessary disk access when checking if there are deleted
+  recordings that need to be removed (reported by Carsten Koch).
+- Fixed handling the DELETEDLIFETIME when removing deleted recordings. Now
+  a deleted recording is retained at least DELETEDLIFETIME seconds before
+  actually removing it (unless a new recording requires the disk space).
