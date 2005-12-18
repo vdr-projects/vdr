@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.128 2005/12/18 13:09:47 kls Exp $
+ * $Id: recording.c 1.129 2005/12/18 13:38:30 kls Exp $
  */
 
 #include "recording.h"
@@ -67,16 +67,20 @@ void RemoveDeletedRecordings(void)
   static time_t LastRemoveCheck = 0;
   if (time(NULL) - LastRemoveCheck > REMOVECHECKDELTA) {
      cThreadLock DeletedRecordingsLock(&DeletedRecordings);
-     for (cRecording *r = DeletedRecordings.First(); r; r = DeletedRecordings.Next(r)) {
+     for (cRecording *r = DeletedRecordings.First(); r; ) {
          if (r->deleted && time(NULL) - r->deleted > DELETEDLIFETIME) {
             // Make sure only one instance of VDR does this:
             cLockFile LockFile(VideoDirectory);
             if (LockFile.Lock()) {
+               cRecording *next = DeletedRecordings.Next(r);
                r->Remove();
                DeletedRecordings.Del(r);
+               r = next;
                RemoveEmptyVideoDirectories();
+               continue;
                }
             }
+         r = DeletedRecordings.Next(r);
          }
      LastRemoveCheck = time(NULL);
      }
