@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.127 2005/12/18 12:37:10 kls Exp $
+ * $Id: recording.c 1.128 2005/12/18 13:09:47 kls Exp $
  */
 
 #include "recording.h"
@@ -84,6 +84,8 @@ void RemoveDeletedRecordings(void)
 
 void AssertFreeDiskSpace(int Priority)
 {
+  static cMutex Mutex;
+  cMutexLock MutexLock(&Mutex);
   // With every call to this function we try to actually remove
   // a file, or mark a file for removal ("delete" it), so that
   // it will get removed during the next call.

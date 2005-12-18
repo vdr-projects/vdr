@@ -3987,3 +3987,5 @@ Video Disk Recorder Revision History
 - Fixed a possible crash when displaying the "Low disk space!" message from
   a background thread (thanks to Christof Steininger).
 - Fixed handling OSD areas that have invalid sizes (thanks to Marco Schlüßler).
+- Added a mutex to AssertFreeDiskSpace() to make sure calls from foreground
+  and background threads won't interfere.
