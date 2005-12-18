@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.h 1.49 2005/06/19 10:35:25 kls Exp $
+ * $Id: osd.h 1.50 2005/12/18 12:56:21 kls Exp $
  */
 
 #ifndef __OSD_H
@@ -37,6 +37,7 @@ enum eOsdError { oeOk,
                  oeAreasOverlap,
                  oeWrongAlignment,
                  oeOutOfMemory,
+                 oeWrongAreaSize,
                  oeUnknown,
                };
 

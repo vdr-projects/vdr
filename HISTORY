@@ -3986,3 +3986,4 @@ Video Disk Recorder Revision History
   actually removing it (unless a new recording requires the disk space).
 - Fixed a possible crash when displaying the "Low disk space!" message from
   a background thread (thanks to Christof Steininger).
+- Fixed handling OSD areas that have invalid sizes (thanks to Marco Schlüßler).
