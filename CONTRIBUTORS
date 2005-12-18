@@ -1551,3 +1551,7 @@ Maarten Wisse <Maarten.Wisse@urz.uni-hd.de>
 
 Holger Brunn <holger.brunn@stud.uni-karlsruhe.de>
  for adding a copy constructor to cString and fixing its assignment operator
+
+Christian Vogt <c.v@nexgo.de>
+ for suggesting to take deleted recordings into account when displaying the
+ amount of free disk space

@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.220 2005/11/27 15:56:18 kls Exp $
+ * $Id: vdr.c 1.221 2005/12/18 10:33:37 kls Exp $
  */
 
 #include <getopt.h>
@@ -434,6 +434,7 @@ int main(int argc, char *argv[])
   // Recordings:
 
   Recordings.Update();
+  DeletedRecordings.Update();
 
   // EPG data:
 
@@ -667,8 +668,10 @@ int main(int argc, char *argv[])
                   TimerInVpsMargin = true;
                }
            }
-        if (!Menu && Recordings.NeedsUpdate())
+        if (!Menu && Recordings.NeedsUpdate()) {
            Recordings.Update();
+           DeletedRecordings.Update();
+           }
         // CAM control:
         if (!Menu && !cOsd::IsOpen()) {
            Menu = CamControl();

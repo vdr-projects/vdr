@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.84 2005/11/26 14:03:47 kls Exp $
+ * $Id: tools.h 1.85 2005/12/17 11:09:37 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -110,6 +110,7 @@ bool DirectoryOk(const char *DirName, bool LogErrors = false);
 bool MakeDirs(const char *FileName, bool IsDirectory = false);
 bool RemoveFileOrDir(const char *FileName, bool FollowSymlinks = false);
 bool RemoveEmptyDirectories(const char *DirName, bool RemoveThis = false);
+int DirSizeMB(const char *DirName); ///< returns the total size of the files in the given directory, or -1 in case of an error
 char *ReadLink(const char *FileName); ///< returns a new string allocated on the heap, which the caller must delete (or NULL in case of an error)
 bool SpinUpDisk(const char *FileName);
 void TouchFile(const char *FileName);

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.104 2005/11/26 14:12:31 kls Exp $
+ * $Id: tools.c 1.105 2005/12/18 10:33:04 kls Exp $
  */
 
 #include "tools.h"
@@ -419,6 +419,42 @@ bool RemoveEmptyDirectories(const char *DirName, bool RemoveThis)
   else
      LOG_ERROR_STR(DirName);
   return false;
+}
+
+int DirSizeMB(const char *DirName)
+{
+  cReadDir d(DirName);
+  if (d.Ok()) {
+     int size = 0;
+     struct dirent *e;
+     while (size >= 0 && (e = d.Next()) != NULL) {
+           if (strcmp(e->d_name, ".") && strcmp(e->d_name, "..")) {
+              char *buffer;
+              asprintf(&buffer, "%s/%s", DirName, e->d_name);
+              struct stat st;
+              if (stat(buffer, &st) == 0) {
+                 if (S_ISDIR(st.st_mode)) {
+                    int n = DirSizeMB(buffer);
+                    if (n >= 0)
+                       size += n;
+                    else
+                       size = -1;
+                    }
+                 else
+                    size += st.st_size / MEGABYTE(1);
+                 }
+              else {
+                 LOG_ERROR_STR(buffer);
+                 size = -1;
+                 }
+              free(buffer);
+              }
+           }
+     return size;
+     }
+  else
+     LOG_ERROR_STR(DirName);
+  return -1;
 }
 
 char *ReadLink(const char *FileName)

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.124 2005/11/04 14:19:44 kls Exp $
+ * $Id: recording.c 1.125 2005/12/17 13:30:50 kls Exp $
  */
 
 #include "recording.h"
@@ -60,7 +60,7 @@
 
 bool VfatFileSystem = false;
 
-static cRecordings DeletedRecordings(true);
+cRecordings DeletedRecordings(true);
 
 void RemoveDeletedRecordings(void)
 {
@@ -400,6 +400,7 @@ cRecording::cRecording(cTimer *Timer, const cEvent *Event)
   sortBuffer = NULL;
   fileName = NULL;
   name = NULL;
+  fileSizeMB = -1; // unknown
   // set up the actual name:
   const char *Title = Event ? Event->Title() : NULL;
   const char *Subtitle = Event ? Event->ShortText() : NULL;
@@ -453,6 +454,7 @@ cRecording::cRecording(cTimer *Timer, const cEvent *Event)
 cRecording::cRecording(const char *FileName)
 {
   resume = RESUME_NOT_INITIALIZED;
+  fileSizeMB = -1; // unknown
   titleBuffer = NULL;
   sortBuffer = NULL;
   fileName = strdup(FileName);
@@ -714,7 +716,7 @@ bool cRecording::Delete(void)
   bool result = true;
   char *NewName = strdup(FileName());
   char *ext = strrchr(NewName, '.');
-  if (strcmp(ext, RECEXT) == 0) {
+  if (ext && strcmp(ext, RECEXT) == 0) {
      strncpy(ext, DELEXT, strlen(ext));
      if (access(NewName, F_OK) == 0) {
         // the new name already exists, so let's remove that one first:
@@ -814,6 +816,8 @@ void cRecordings::ScanVideoDir(const char *DirName, bool Foreground)
                        Add(r);
                        ChangeState();
                        Unlock();
+                       if (deleted)
+                          r->fileSizeMB = DirSizeMB(buffer);
                        }
                     else
                        delete r;
@@ -883,10 +887,30 @@ void cRecordings::DelByName(const char *FileName)
   LOCK_THREAD;
   cRecording *recording = GetByName(FileName);
   if (recording) {
-     Del(recording);
+     cThreadLock DeletedRecordingsLock(&DeletedRecordings);
+     Del(recording, false);
+     char *ext = strrchr(recording->FileName(), '.');
+     if (ext) {
+        strncpy(ext, DELEXT, strlen(ext));
+        recording->fileSizeMB = DirSizeMB(recording->FileName());
+        DeletedRecordings.Add(recording);
+        }
+     else
+        delete recording;
      ChangeState();
      TouchUpdate();
      }
+}
+
+int cRecordings::TotalFileSizeMB(void)
+{
+  int size = 0;
+  LOCK_THREAD;
+  for (cRecording *recording = First(); recording; recording = Next(recording)) {
+      if (recording->fileSizeMB > 0)
+         size += recording->fileSizeMB;
+      }
+  return size;
 }
 
 void cRecordings::ResetResume(const char *ResumeFileName)
