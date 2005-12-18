@@ -1557,3 +1557,7 @@ Holger Brunn <holger.brunn@stud.uni-karlsruhe.de>
 Christian Vogt <c.v@nexgo.de>
  for suggesting to take deleted recordings into account when displaying the
  amount of free disk space
+
+Christof Steininger <christof.steininger@t-online.de>
+ for fixing a possible crash when displaying the "Low disk space!" message from
+ a background thread

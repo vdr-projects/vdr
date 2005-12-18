@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.126 2005/12/18 12:06:36 kls Exp $
+ * $Id: recording.c 1.127 2005/12/18 12:37:10 kls Exp $
  */
 
 #include "recording.h"
@@ -144,7 +144,7 @@ void AssertFreeDiskSpace(int Priority)
            }
         // Unable to free disk space, but there's nothing we can do about that...
         isyslog("...no old recording found, giving up");
-        Interface->Confirm(tr("Low disk space!"), 30);
+        Skins.QueueMessage(mtWarning, tr("Low disk space!"), 5, -1);
         }
      LastFreeDiskCheck = time(NULL);
      }

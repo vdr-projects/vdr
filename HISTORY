@@ -3984,3 +3984,5 @@ Video Disk Recorder Revision History
 - Fixed handling the DELETEDLIFETIME when removing deleted recordings. Now
   a deleted recording is retained at least DELETEDLIFETIME seconds before
   actually removing it (unless a new recording requires the disk space).
+- Fixed a possible crash when displaying the "Low disk space!" message from
+  a background thread (thanks to Christof Steininger).
