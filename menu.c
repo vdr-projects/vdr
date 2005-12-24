@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.376 2005/11/05 17:29:22 kls Exp $
+ * $Id: menu.c 1.377 2005/12/24 15:50:01 kls Exp $
  */
 
 #include "menu.h"
@@ -31,6 +31,7 @@
 
 #define MAXWAIT4EPGINFO   3 // seconds
 #define MODETIMEOUT       3 // seconds
+#define DISKSPACECHEK     5 // seconds between disk space checks in the main menu
 
 #define MAXRECORDCONTROLS (MAXDEVICES * MAXRECEIVERS)
 #define MAXINSTANTRECTIME (24 * 60 - 1) // 23:59 hours
@@ -2473,10 +2474,16 @@ cMenuPluginItem::cMenuPluginItem(const char *Name, int Index)
 
 cOsdObject *cMenuMain::pluginOsdObject = NULL;
 
-cMenuMain::cMenuMain(bool Replaying, eOSState State)
+cMenuMain::cMenuMain(eOSState State)
 :cOsdMenu("")
 {
-  replaying = Replaying;
+  lastDiskSpaceCheck = 0;
+  lastFreeMB = 0;
+  replaying = false;
+  stopReplayItem = NULL;
+  cancelEditingItem = NULL;
+  stopRecordingItem = NULL;
+  recordControlsState = 0;
   Set();
 
   // Initial submenus:
@@ -2502,22 +2509,8 @@ cOsdObject *cMenuMain::PluginOsdObject(void)
 void cMenuMain::Set(void)
 {
   Clear();
-  //XXX //SetTitle("VDR"); // this is done below, including disk usage
+  SetTitle("VDR");
   SetHasHotkeys();
-
-  // Title with disk usage:
-
-#define MB_PER_MINUTE 25.75 // this is just an estimate!
-
-  char buffer[40];
-  int FreeMB;
-  int Percent = VideoDiskSpace(&FreeMB);
-  int Minutes = int(double(FreeMB) / MB_PER_MINUTE);
-  int Hours = Minutes / 60;
-  Minutes %= 60;
-  snprintf(buffer, sizeof(buffer), "%s  -  %s %d%%  -  %2d:%02d %s", tr("VDR"), tr("Disk"), Percent, Hours, Minutes, tr("free"));
-  //XXX -> skin function!!!
-  SetTitle(buffer);
 
   // Basic menu items:
 
@@ -2545,11 +2538,6 @@ void cMenuMain::Set(void)
   if (Commands.Count())
      Add(new cOsdItem(hk(tr("Commands")),  osCommands));
 
-  // Replay control:
-
-  if (replaying)
-     Add(new cOsdItem(tr(" Stop replaying"), osStopReplay));
-
   // Record control:
 
   if (cRecordControls::StopPrimary()) {
@@ -2559,23 +2547,82 @@ void cMenuMain::Set(void)
      free(buffer);
      }
 
-  const char *s = NULL;
-  while ((s = cRecordControls::GetInstantId(s)) != NULL) {
-        char *buffer = NULL;
-        asprintf(&buffer, "%s%s", STOP_RECORDING, s);
-        Add(new cOsdItem(buffer, osStopRecord));
-        free(buffer);
+  Update(true);
+
+  Display();
+}
+
+#define MB_PER_MINUTE 25.75 // this is just an estimate!
+
+bool cMenuMain::Update(bool Force)
+{
+  bool result = false;
+
+  // Title with disk usage:
+  if (Force || time(NULL) - lastDiskSpaceCheck > DISKSPACECHEK) {
+     int FreeMB;
+     int Percent = VideoDiskSpace(&FreeMB);
+     if (Force || FreeMB != lastFreeMB) {
+        int Minutes = int(double(FreeMB) / MB_PER_MINUTE);
+        int Hours = Minutes / 60;
+        Minutes %= 60;
+        char buffer[40];
+        snprintf(buffer, sizeof(buffer), "%s  -  %s %d%%  -  %2d:%02d %s", tr("VDR"), tr("Disk"), Percent, Hours, Minutes, tr("free"));
+        //XXX -> skin function!!!
+        SetTitle(buffer);
+        result = true;
         }
+     lastDiskSpaceCheck = time(NULL);
+     }
+
+  bool NewReplaying = cControl::Control() != NULL;
+  if (Force || NewReplaying != replaying) {
+     replaying = NewReplaying;
+     // Replay control:
+     if (replaying && !stopReplayItem)
+        Add(stopReplayItem = new cOsdItem(tr(" Stop replaying"), osStopReplay));
+     else if (stopReplayItem && !replaying) {
+        Del(stopReplayItem->Index());
+        stopReplayItem = NULL;
+        }
+     // Color buttons:
+     SetHelp(!replaying ? tr("Record") : NULL, tr("Audio"), replaying ? NULL : tr("Pause"), replaying ? tr("Button$Stop") : cReplayControl::LastReplayed() ? tr("Resume") : NULL);
+     result = true;
+     }
 
   // Editing control:
+  bool CutterActive = cCutter::Active();
+  if (CutterActive && !cancelEditingItem) {
+     Add(cancelEditingItem = new cOsdItem(tr(" Cancel editing"), osCancelEdit));
+     result = true;
+     }
+  else if (cancelEditingItem && !CutterActive) {
+     Del(cancelEditingItem->Index());
+     cancelEditingItem = NULL;
+     result = true;
+     }
 
-  if (cCutter::Active())
-     Add(new cOsdItem(tr(" Cancel editing"), osCancelEdit));
+  // Record control:
+  if (cRecordControls::StateChanged(recordControlsState)) {
+     while (stopRecordingItem) {
+           cOsdItem *it = Next(stopRecordingItem);
+           Del(stopRecordingItem->Index());
+           stopRecordingItem = it;
+           }
+     const char *s = NULL;
+     while ((s = cRecordControls::GetInstantId(s)) != NULL) {
+           char *buffer = NULL;
+           asprintf(&buffer, "%s%s", STOP_RECORDING, s);
+           cOsdItem *item = new cOsdItem(osStopRecord);
+           item->SetText(buffer, false);
+           Add(item);
+           if (!stopRecordingItem)
+              stopRecordingItem = item;
+           }
+     result = true;
+     }
 
-  // Color buttons:
-
-  SetHelp(!replaying ? tr("Record") : NULL, tr("Audio"), replaying ? NULL : tr("Pause"), replaying ? tr("Button$Stop") : cReplayControl::LastReplayed() ? tr("Resume") : NULL);
-  Display();
+  return result;
 }
 
 eOSState cMenuMain::ProcessKey(eKeys Key)
@@ -2647,6 +2694,8 @@ eOSState cMenuMain::ProcessKey(eKeys Key)
                default:      break;
                }
     }
+  if (!HasSubMenu() && Update())
+     Display();
   if (Key != kNone) {
      if (Setup.OSDLanguage != osdLanguage) {
         Set();
@@ -3222,9 +3271,11 @@ bool cRecordControl::Process(time_t t)
 // --- cRecordControls -------------------------------------------------------
 
 cRecordControl *cRecordControls::RecordControls[MAXRECORDCONTROLS] = { NULL };
+int cRecordControls::state = 0;
 
 bool cRecordControls::Start(cTimer *Timer, bool Pause)
 {
+  ChangeState();
   int ch = Timer ? Timer->Channel()->Number() : cDevice::CurrentChannel();
   cChannel *channel = Channels.GetByNumber(ch);
 
@@ -3262,6 +3313,7 @@ bool cRecordControls::Start(cTimer *Timer, bool Pause)
 
 void cRecordControls::Stop(const char *InstantId)
 {
+  ChangeState();
   for (int i = 0; i < MAXRECORDCONTROLS; i++) {
       if (RecordControls[i]) {
          const char *id = RecordControls[i]->InstantId();
@@ -3281,6 +3333,7 @@ void cRecordControls::Stop(const char *InstantId)
 
 void cRecordControls::Stop(cDevice *Device)
 {
+  ChangeState();
   for (int i = 0; i < MAXRECORDCONTROLS; i++) {
       if (RecordControls[i]) {
          if (RecordControls[i]->Device() == Device) {
@@ -3349,8 +3402,10 @@ void cRecordControls::Process(time_t t)
 {
   for (int i = 0; i < MAXRECORDCONTROLS; i++) {
       if (RecordControls[i]) {
-         if (!RecordControls[i]->Process(t))
+         if (!RecordControls[i]->Process(t)) {
             DELETENULL(RecordControls[i]);
+            ChangeState();
+            }
          }
       }
 }
@@ -3365,6 +3420,7 @@ void cRecordControls::ChannelDataModified(cChannel *Channel)
                RecordControls[i]->Stop();
                // This will restart the recording, maybe even from a different
                // device in case conditional access has changed.
+               ChangeState();
                }
             }
          }
@@ -3384,6 +3440,15 @@ void cRecordControls::Shutdown(void)
 {
   for (int i = 0; i < MAXRECORDCONTROLS; i++)
       DELETENULL(RecordControls[i]);
+  ChangeState();
+}
+
+bool cRecordControls::StateChanged(int &State)
+{
+  int NewState = state;
+  bool Result = State != NewState;
+  State = state;
+  return Result;
 }
 
 // --- cReplayControl --------------------------------------------------------

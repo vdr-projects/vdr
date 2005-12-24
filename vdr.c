@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.221 2005/12/18 10:33:37 kls Exp $
+ * $Id: vdr.c 1.222 2005/12/18 14:38:30 kls Exp $
  */
 
 #include <getopt.h>
@@ -702,14 +702,14 @@ int main(int argc, char *argv[])
                   }
                if (cControl::Control())
                   cControl::Control()->Hide();
-               Menu = new cMenuMain(cControl::Control());
+               Menu = new cMenuMain;
                Temp = NULL;
                break;
           #define DirectMainFunction(function)\
             DELETENULL(Menu);\
             if (cControl::Control())\
                cControl::Control()->Hide();\
-            Menu = new cMenuMain(cControl::Control(), function);\
+            Menu = new cMenuMain(function);\
             Temp = NULL;\
             key = kNone; // nobody else needs to see this key
           case kSchedule:   DirectMainFunction(osSchedule); break;
@@ -848,7 +848,7 @@ int main(int argc, char *argv[])
                             DELETENULL(Menu);
                             cControl::Shutdown();
                             Temp = NULL;
-                            Menu = new cMenuMain(false, osRecordings);
+                            Menu = new cMenuMain(osRecordings);
                             break;
              case osReplay: DELETENULL(Menu);
                             cControl::Shutdown();

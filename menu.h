@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 1.77 2005/11/05 17:26:09 kls Exp $
+ * $Id: menu.h 1.78 2005/12/24 15:44:56 kls Exp $
  */
 
 #ifndef __MENU_H
@@ -55,11 +55,18 @@ public:
 
 class cMenuMain : public cOsdMenu {
 private:
+  time_t lastDiskSpaceCheck;
+  int lastFreeMB;
   bool replaying;
+  cOsdItem *stopReplayItem;
+  cOsdItem *cancelEditingItem;
+  cOsdItem *stopRecordingItem;
+  int recordControlsState;
   static cOsdObject *pluginOsdObject;
   void Set(void);
+  bool Update(bool Force = false);
 public:
-  cMenuMain(bool Replaying, eOSState State = osUnknown);
+  cMenuMain(eOSState State = osUnknown);
   virtual eOSState ProcessKey(eKeys Key);
   static cOsdObject *PluginOsdObject(void);
   };
@@ -189,6 +196,7 @@ public:
 class cRecordControls {
 private:
   static cRecordControl *RecordControls[];
+  static int state;
 public:
   static bool Start(cTimer *Timer = NULL, bool Pause = false);
   static void Stop(const char *InstantId);
@@ -201,6 +209,8 @@ public:
   static void ChannelDataModified(cChannel *Channel);
   static bool Active(void);
   static void Shutdown(void);
+  static void ChangeState(void) { state++; }
+  static bool StateChanged(int &State);
   };
 
 class cReplayControl : public cDvbPlayerControl {
