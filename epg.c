@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 1.40 2005/11/11 13:37:43 kls Exp $
+ * $Id: epg.c 1.41 2005/12/25 11:11:17 kls Exp $
  */
 
 #include "epg.h"
@@ -234,7 +234,7 @@ void cEvent::Dump(FILE *f, const char *Prefix, bool InfoOnly) const
 {
   if (InfoOnly || startTime + duration + Setup.EPGLinger * 60 >= time(NULL)) {
      if (!InfoOnly)
-        fprintf(f, "%sE %u %ld %d %X\n", Prefix, eventID, startTime, duration, tableID);
+        fprintf(f, "%sE %u %ld %d %X %X\n", Prefix, eventID, startTime, duration, tableID, version);
      if (!isempty(title))
         fprintf(f, "%sT %s\n", Prefix, title);
      if (!isempty(shortText))
@@ -296,8 +296,9 @@ bool cEvent::Read(FILE *f, cSchedule *Schedule)
                           time_t StartTime;
                           int Duration;
                           unsigned int TableID = 0;
-                          int n = sscanf(t, "%u %ld %d %X", &EventID, &StartTime, &Duration, &TableID);
-                          if (n == 3 || n == 4) {
+                          unsigned int Version = 0xFF;
+                          int n = sscanf(t, "%u %ld %d %X %X", &EventID, &StartTime, &Duration, &TableID, &Version);
+                          if (n >= 3 && n <= 5) {
                              Event = (cEvent *)Schedule->GetEvent(EventID, StartTime);
                              cEvent *newEvent = NULL;
                              if (Event)
@@ -306,6 +307,7 @@ bool cEvent::Read(FILE *f, cSchedule *Schedule)
                                 Event = newEvent = new cEvent(EventID);
                              if (Event) {
                                 Event->SetTableID(TableID);
+                                Event->SetVersion(Version);
                                 Event->SetStartTime(StartTime);
                                 Event->SetDuration(Duration);
                                 if (newEvent)

@@ -1562,3 +1562,6 @@ Christian Vogt <c.v@nexgo.de>
 Christof Steininger <christof.steininger@t-online.de>
  for fixing a possible crash when displaying the "Low disk space!" message from
  a background thread
+
+Kendy Kutzner <kutzner@ira.uka.de>
+ for making the version number of EPG events be stored in the epg.data file
