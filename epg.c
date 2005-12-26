@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 1.44 2005/12/26 15:09:03 kls Exp $
+ * $Id: epg.c 1.45 2005/12/26 15:10:27 kls Exp $
  */
 
 #include "epg.h"
@@ -890,7 +890,7 @@ void cSchedules::Cleanup(bool Force)
   time_t now = time(NULL);
   struct tm tm_r;
   struct tm *ptm = localtime_r(&now, &tm_r);
-  if (now - lastCleanup > 3600 && ptm->tm_hour == 5) {
+  if (now - lastCleanup > 3600) {
      isyslog("cleaning up schedules data");
      cSchedulesLock SchedulesLock(true, 1000);
      cSchedules *s = (cSchedules *)Schedules(SchedulesLock);
@@ -899,7 +899,8 @@ void cSchedules::Cleanup(bool Force)
             p->Cleanup(now);
         }
      lastCleanup = now;
-     ReportEpgBugFixStats(true);
+     if (ptm->tm_hour == 5)
+        ReportEpgBugFixStats(true);
      }
   if (epgDataFileName && now - lastDump > 600) {
      cSafeFile f(epgDataFileName);

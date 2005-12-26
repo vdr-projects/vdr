@@ -3997,3 +3997,4 @@ Video Disk Recorder Revision History
   now automatically deleted.
 - Removed an invalid access to Event->schedule in cSchedule::DelEvent().
 - Modified cSchedule::Cleanup() (events are always sorted by time).
+- Schedules are now cleaned up once every hour (not only at 05:00).
