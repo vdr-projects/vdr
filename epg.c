@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 1.42 2005/12/26 14:44:03 kls Exp $
+ * $Id: epg.c 1.43 2005/12/26 14:47:55 kls Exp $
  */
 
 #include "epg.h"
@@ -637,7 +637,6 @@ void cSchedule::DelEvent(cEvent *Event)
   if (Event->schedule == this) {
      UnhashEvent(Event);
      events.Del(Event);
-     Event->schedule = NULL;
      }
 }
 
