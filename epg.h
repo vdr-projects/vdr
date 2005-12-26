@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.h 1.26 2005/09/11 12:54:30 kls Exp $
+ * $Id: epg.h 1.27 2005/12/26 11:59:44 kls Exp $
  */
 
 #ifndef __EPG_H
@@ -128,6 +128,7 @@ public:
   void ClrRunningStatus(cChannel *Channel = NULL);
   void ResetVersions(void);
   void Sort(void);
+  void DropOutdated(time_t SegmentStart, time_t SegmentEnd, uchar TableID, uchar Version);
   void Cleanup(time_t Time);
   void Cleanup(void);
   cEvent *AddEvent(cEvent *Event);

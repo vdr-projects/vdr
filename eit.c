@@ -8,7 +8,7 @@
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  * Adapted to 'libsi' for VDR 1.3.0 by Marcel Wiesweg <marcel.wiesweg@gmx.de>.
  *
- * $Id: eit.c 1.112 2005/11/04 14:19:16 kls Exp $
+ * $Id: eit.c 1.113 2005/12/26 11:50:09 kls Exp $
  */
 
 #include "eit.h"
@@ -43,6 +43,8 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data)
 
   bool Empty = true;
   bool Modified = false;
+  time_t SegmentStart = 0;
+  time_t SegmentEnd = 0;
 
   SI::EIT::Event SiEitEvent;
   for (SI::Loop::Iterator it; eventLoop.getNext(SiEitEvent, it); ) {
@@ -50,6 +52,9 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data)
       if (SiEitEvent.getStartTime() == 0 || SiEitEvent.getStartTime() > 0 && SiEitEvent.getDuration() == 0)
          continue;
       Empty = false;
+      if (!SegmentStart)
+         SegmentStart = SiEitEvent.getStartTime();
+      SegmentEnd = SiEitEvent.getStartTime() + SiEitEvent.getDuration();
       cEvent *newEvent = NULL;
       cEvent *rEvent = NULL;
       cEvent *pEvent = (cEvent *)pSchedule->GetEvent(SiEitEvent.getEventId(), SiEitEvent.getStartTime());
@@ -242,6 +247,7 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data)
      pSchedule->SetPresentSeen();
   if (Modified) {
      pSchedule->Sort();
+     pSchedule->DropOutdated(SegmentStart, SegmentEnd, Tid, getVersionNumber());
      Schedules->SetModified(pSchedule);
      }
 }

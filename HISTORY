@@ -3963,7 +3963,7 @@ Video Disk Recorder Revision History
   commands may now be executed at any time, and the message will be displayed
   (no more "pending message").
 
-2005-12-25: Version 1.3.38
+2005-12-26: Version 1.3.38
 
 - Fixed handling second audio and Dolby Digital PIDs for encrypted channels
   (was broken in version 1.3.37).
@@ -3993,3 +3993,5 @@ Video Disk Recorder Revision History
   recording or replay stops, etc.
 - The version number of EPG events is now also stored in the epg.data file
   (thanks to Kendy Kutzner).
+- EPG events that are no longer in the currently broadcasted data stream are
+  now automatically deleted.

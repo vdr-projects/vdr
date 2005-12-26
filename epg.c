@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 1.41 2005/12/25 11:11:17 kls Exp $
+ * $Id: epg.c 1.42 2005/12/26 14:44:03 kls Exp $
  */
 
 #include "epg.h"
@@ -737,6 +737,27 @@ void cSchedule::ResetVersions(void)
 void cSchedule::Sort(void)
 {
   events.Sort();
+}
+
+void cSchedule::DropOutdated(time_t SegmentStart, time_t SegmentEnd, uchar TableID, uchar Version)
+{
+  if (SegmentStart > 0 && SegmentEnd > 0) {
+     for (cEvent *p = events.First(); p; p = events.Next(p)) {
+         if (!(p->EndTime() <= SegmentStart || p->StartTime() >= SegmentEnd)) {
+            // The event overlaps with the given time segment.
+            if (p->TableID() > TableID || p->TableID() == TableID && p->Version() != Version) {
+               // The segment overwrites all events from tables with higher ids, and
+               // within the same table id all events must have the same version.
+               // We can't delete the event right here because a timer might have
+               // a pointer to it, so let's set its id and start time to 0 to have it
+               // "phased out":
+               UnhashEvent(p);
+               p->eventID = 0;
+               p->startTime = 0;
+               }
+            }
+         }
+     }
 }
 
 void cSchedule::Cleanup(void)
