@@ -3996,3 +3996,4 @@ Video Disk Recorder Revision History
 - EPG events that are no longer in the currently broadcasted data stream are
   now automatically deleted.
 - Removed an invalid access to Event->schedule in cSchedule::DelEvent().
+- Modified cSchedule::Cleanup() (events are always sorted by time).
