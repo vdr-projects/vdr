@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 1.36 2005/09/09 15:22:33 kls Exp $
+ * $Id: timers.c 1.37 2005/12/27 14:33:14 kls Exp $
  */
 
 #include "timers.h"
@@ -363,7 +363,7 @@ bool cTimer::Matches(time_t t, bool Directly) const
      }
 
   if (HasFlags(tfActive)) {
-     if (HasFlags(tfVps) && !Directly && event && event->Vps() && schedule && schedule->PresentSeenWithin(30)) {
+     if (HasFlags(tfVps) && !Directly && event && event->Vps() && event->Schedule() && event->Schedule()->PresentSeenWithin(30)) {
         startTime = event->StartTime();
         stopTime = event->EndTime();
         return event->IsRunning(true);
@@ -425,7 +425,7 @@ time_t cTimer::StopTime(void) const
   return stopTime;
 }
 
-void cTimer::SetEvent(const cSchedule *Schedule, const cEvent *Event)
+void cTimer::SetEvent(const cEvent *Event)
 {
   if (event != Event) { //XXX TODO check event data, too???
      if (Event) {
@@ -436,7 +436,6 @@ void cTimer::SetEvent(const cSchedule *Schedule, const cEvent *Event)
         }
      else
         isyslog("timer %s set to no event", *ToDescr());
-     schedule = Event ? Schedule : NULL;
      event = Event;
      }
 }
@@ -629,7 +628,7 @@ void cTimers::SetEvents(void)
                       }
                   if (Event && Event->EndTime() < now - EXPIRELATENCY && !Event->IsRunning())
                      Event = NULL;
-                  ti->SetEvent(Schedule, Event);
+                  ti->SetEvent(Event);
                   }
                }
             }

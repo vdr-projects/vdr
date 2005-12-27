@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.h 1.27 2005/12/26 11:59:44 kls Exp $
+ * $Id: epg.h 1.28 2005/12/27 14:31:24 kls Exp $
  */
 
 #ifndef __EPG_H
@@ -67,6 +67,7 @@ public:
   ~cEvent();
   virtual int Compare(const cListObject &ListObject) const;
   tChannelID ChannelID(void) const;
+  const cSchedule *Schedule(void) const { return schedule; }
   u_int16_t EventID(void) const { return eventID; }
   uchar TableID(void) const { return tableID; }
   uchar Version(void) const { return version; }
