@@ -3963,7 +3963,7 @@ Video Disk Recorder Revision History
   commands may now be executed at any time, and the message will be displayed
   (no more "pending message").
 
-2005-12-26: Version 1.3.38
+2005-12-27: Version 1.3.38
 
 - Fixed handling second audio and Dolby Digital PIDs for encrypted channels
   (was broken in version 1.3.37).
@@ -3998,3 +3998,5 @@ Video Disk Recorder Revision History
 - Removed an invalid access to Event->schedule in cSchedule::DelEvent().
 - Modified cSchedule::Cleanup() (events are always sorted by time).
 - Schedules are now cleaned up once every hour (not only at 05:00).
+- The "Schedules" and "What's on now/next?" menus are now updated if a timer
+  is set or modified.

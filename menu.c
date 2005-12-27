@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.378 2005/12/26 15:44:27 kls Exp $
+ * $Id: menu.c 1.379 2005/12/27 11:23:30 kls Exp $
  */
 
 #include "menu.h"
@@ -940,26 +940,45 @@ eOSState cMenuEvent::ProcessKey(eKeys Key)
   return state;
 }
 
-// --- cMenuWhatsOnItem ------------------------------------------------------
+// --- cMenuScheduleItem -----------------------------------------------------
 
-class cMenuWhatsOnItem : public cOsdItem {
+class cMenuScheduleItem : public cOsdItem {
 public:
   const cEvent *event;
   const cChannel *channel;
-  cMenuWhatsOnItem(const cEvent *Event, cChannel *Channel);
+  int timerMatch;
+  cMenuScheduleItem(const cEvent *Event, cChannel *Channel = NULL);
+  bool Update(bool Force = false);
 };
 
-cMenuWhatsOnItem::cMenuWhatsOnItem(const cEvent *Event, cChannel *Channel)
+cMenuScheduleItem::cMenuScheduleItem(const cEvent *Event, cChannel *Channel)
 {
   event = Event;
   channel = Channel;
-  char *buffer = NULL;
-  int TimerMatch;
-  char t = Timers.GetMatch(Event, &TimerMatch) ? (TimerMatch == tmFull) ? 'T' : 't' : ' ';
-  char v = event->Vps() && (event->Vps() - event->StartTime()) ? 'V' : ' ';
-  char r = event->IsRunning() ? '*' : ' ';
-  asprintf(&buffer, "%d\t%.*s\t%s\t%c%c%c\t%s", channel->Number(), 6, channel->ShortName(true), *event->GetTimeString(), t, v, r, event->Title());
-  SetText(buffer, false);
+  timerMatch = tmNone;
+  Update(true);
+}
+
+static char *TimerMatchChars = " tT";
+
+bool cMenuScheduleItem::Update(bool Force)
+{
+  bool result = false;
+  int OldTimerMatch = timerMatch;
+  Timers.GetMatch(event, &timerMatch);
+  if (Force || timerMatch != OldTimerMatch) {
+     char *buffer = NULL;
+     char t = TimerMatchChars[timerMatch];
+     char v = event->Vps() && (event->Vps() - event->StartTime()) ? 'V' : ' ';
+     char r = event->IsRunning() ? '*' : ' ';
+     if (channel)
+        asprintf(&buffer, "%d\t%.*s\t%s\t%c%c%c\t%s", channel->Number(), 6, channel->ShortName(true), *event->GetTimeString(), t, v, r, event->Title());
+     else
+        asprintf(&buffer, "%.*s\t%s\t%c%c%c\t%s", 6, *event->GetDateString(), *event->GetTimeString(), t, v, r, event->Title());
+     SetText(buffer, false);
+     result = true;
+     }
+  return result;
 }
 
 // --- cMenuWhatsOn ----------------------------------------------------------
@@ -970,6 +989,7 @@ private:
   eOSState Switch(void);
   static int currentChannel;
   static const cEvent *scheduleEvent;
+  bool Update(void);
 public:
   cMenuWhatsOn(const cSchedules *Schedules, bool Now, int CurrentChannelNr);
   static int CurrentChannel(void) { return currentChannel; }
@@ -990,12 +1010,22 @@ cMenuWhatsOn::cMenuWhatsOn(const cSchedules *Schedules, bool Now, int CurrentCha
          if (Schedule) {
             const cEvent *Event = Now ? Schedule->GetPresentEvent() : Schedule->GetFollowingEvent();
             if (Event)
-               Add(new cMenuWhatsOnItem(Event, Channel), Channel->Number() == CurrentChannelNr);
+               Add(new cMenuScheduleItem(Event, Channel), Channel->Number() == CurrentChannelNr);
             }
          }
       }
   currentChannel = CurrentChannelNr;
   SetHelp(Count() ? tr("Record") : NULL, Now ? tr("Next") : tr("Now"), tr("Button$Schedule"), tr("Switch"));
+}
+
+bool cMenuWhatsOn::Update(void)
+{
+  bool result = false;
+  for (cOsdItem *item = First(); item; item = Next(item)) {
+      if (((cMenuScheduleItem *)item)->Update())
+         result = true;
+      }
+  return result;
 }
 
 const cEvent *cMenuWhatsOn::ScheduleEvent(void)
@@ -1007,7 +1037,7 @@ const cEvent *cMenuWhatsOn::ScheduleEvent(void)
 
 eOSState cMenuWhatsOn::Switch(void)
 {
-  cMenuWhatsOnItem *item = (cMenuWhatsOnItem *)Get(Current());
+  cMenuScheduleItem *item = (cMenuScheduleItem *)Get(Current());
   if (item) {
      cChannel *channel = Channels.GetByChannelID(item->event->ChannelID(), true);
      if (channel && cDevice::PrimaryDevice()->SwitchChannel(channel, true))
@@ -1019,7 +1049,7 @@ eOSState cMenuWhatsOn::Switch(void)
 
 eOSState cMenuWhatsOn::Record(void)
 {
-  cMenuWhatsOnItem *item = (cMenuWhatsOnItem *)Get(Current());
+  cMenuScheduleItem *item = (cMenuScheduleItem *)Get(Current());
   if (item) {
      cTimer *timer = new cTimer(item->event);
      cTimer *t = Timers.GetTimer(timer);
@@ -1034,6 +1064,7 @@ eOSState cMenuWhatsOn::Record(void)
 
 eOSState cMenuWhatsOn::ProcessKey(eKeys Key)
 {
+  bool HadSubMenu = HasSubMenu();
   eOSState state = cOsdMenu::ProcessKey(Key);
 
   if (state == osUnknown) {
@@ -1043,7 +1074,7 @@ eOSState cMenuWhatsOn::ProcessKey(eKeys Key)
        case kYellow: state = osBack;
                      // continue with kGreen
        case kGreen:  {
-                       cMenuWhatsOnItem *mi = (cMenuWhatsOnItem *)Get(Current());
+                       cMenuScheduleItem *mi = (cMenuScheduleItem *)Get(Current());
                        if (mi) {
                           scheduleEvent = mi->event;
                           currentChannel = mi->channel->Number();
@@ -1052,32 +1083,14 @@ eOSState cMenuWhatsOn::ProcessKey(eKeys Key)
                      break;
        case kBlue:   return Switch();
        case kOk:     if (Count())
-                        return AddSubMenu(new cMenuEvent(((cMenuWhatsOnItem *)Get(Current()))->event, true));
+                        return AddSubMenu(new cMenuEvent(((cMenuScheduleItem *)Get(Current()))->event, true));
                      break;
        default:      break;
        }
      }
+  else if (HadSubMenu && !HasSubMenu() && Update())
+     Display();
   return state;
-}
-
-// --- cMenuScheduleItem -----------------------------------------------------
-
-class cMenuScheduleItem : public cOsdItem {
-public:
-  const cEvent *event;
-  cMenuScheduleItem(const cEvent *Event);
-};
-
-cMenuScheduleItem::cMenuScheduleItem(const cEvent *Event)
-{
-  event = Event;
-  char *buffer = NULL;
-  int TimerMatch;
-  char t = Timers.GetMatch(Event, &TimerMatch) ? (TimerMatch == tmFull) ? 'T' : 't' : ' ';
-  char v = event->Vps() && (event->Vps() - event->StartTime()) ? 'V' : ' ';
-  char r = event->IsRunning() ? '*' : ' ';
-  asprintf(&buffer, "%.*s\t%s\t%c%c%c\t%s", 6, *event->GetDateString(), *event->GetTimeString(), t, v, r, event->Title());
-  SetText(buffer, false);
 }
 
 // --- cMenuSchedule ---------------------------------------------------------
@@ -1091,6 +1104,7 @@ private:
   eOSState Record(void);
   eOSState Switch(void);
   void PrepareSchedule(cChannel *Channel);
+  bool Update(void);
 public:
   cMenuSchedule(void);
   virtual ~cMenuSchedule();
@@ -1136,6 +1150,16 @@ void cMenuSchedule::PrepareSchedule(cChannel *Channel)
      }
 }
 
+bool cMenuSchedule::Update(void)
+{
+  bool result = false;
+  for (cOsdItem *item = First(); item; item = Next(item)) {
+      if (((cMenuScheduleItem *)item)->Update())
+         result = true;
+      }
+  return result;
+}
+
 eOSState cMenuSchedule::Record(void)
 {
   cMenuScheduleItem *item = (cMenuScheduleItem *)Get(Current());
@@ -1163,6 +1187,7 @@ eOSState cMenuSchedule::Switch(void)
 
 eOSState cMenuSchedule::ProcessKey(eKeys Key)
 {
+  bool HadSubMenu = HasSubMenu();
   eOSState state = cOsdMenu::ProcessKey(Key);
 
   if (state == osUnknown) {
@@ -1210,6 +1235,8 @@ eOSState cMenuSchedule::ProcessKey(eKeys Key)
            Display();
            }
         }
+     else if (HadSubMenu && Update())
+        Display();
      }
   return state;
 }
