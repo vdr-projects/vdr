@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.379 2005/12/27 11:23:30 kls Exp $
+ * $Id: menu.c 1.380 2005/12/27 14:54:47 kls Exp $
  */
 
 #include "menu.h"
@@ -898,7 +898,9 @@ cMenuEvent::cMenuEvent(const cEvent *Event, bool CanSwitch)
      cChannel *channel = Channels.GetByChannelID(event->ChannelID(), true);
      if (channel) {
         SetTitle(channel->Name());
-        SetHelp(tr("Record"), NULL, NULL, CanSwitch ? tr("Switch") : NULL);
+        int TimerMatch = tmNone;
+        Timers.GetMatch(event, &TimerMatch);
+        SetHelp(TimerMatch == tmFull ? tr("Timer") : tr("Record"), NULL, NULL, CanSwitch ? tr("Switch") : NULL);
         }
      }
 }
@@ -985,11 +987,14 @@ bool cMenuScheduleItem::Update(bool Force)
 
 class cMenuWhatsOn : public cOsdMenu {
 private:
+  bool now;
+  int helpKeys;
   eOSState Record(void);
   eOSState Switch(void);
   static int currentChannel;
   static const cEvent *scheduleEvent;
   bool Update(void);
+  void SetHelpKeys(void);
 public:
   cMenuWhatsOn(const cSchedules *Schedules, bool Now, int CurrentChannelNr);
   static int CurrentChannel(void) { return currentChannel; }
@@ -1004,6 +1009,8 @@ const cEvent *cMenuWhatsOn::scheduleEvent = NULL;
 cMenuWhatsOn::cMenuWhatsOn(const cSchedules *Schedules, bool Now, int CurrentChannelNr)
 :cOsdMenu(Now ? tr("What's on now?") : tr("What's on next?"), CHNUMWIDTH, 7, 6, 4)
 {
+  now = Now;
+  helpKeys = -1;
   for (cChannel *Channel = Channels.First(); Channel; Channel = Channels.Next(Channel)) {
       if (!Channel->GroupSep()) {
          const cSchedule *Schedule = Schedules->GetSchedule(Channel->GetChannelID());
@@ -1015,7 +1022,7 @@ cMenuWhatsOn::cMenuWhatsOn(const cSchedules *Schedules, bool Now, int CurrentCha
          }
       }
   currentChannel = CurrentChannelNr;
-  SetHelp(Count() ? tr("Record") : NULL, Now ? tr("Next") : tr("Now"), tr("Button$Schedule"), tr("Switch"));
+  SetHelpKeys();
 }
 
 bool cMenuWhatsOn::Update(void)
@@ -1026,6 +1033,23 @@ bool cMenuWhatsOn::Update(void)
          result = true;
       }
   return result;
+}
+
+void cMenuWhatsOn::SetHelpKeys(void)
+{
+  cMenuScheduleItem *item = (cMenuScheduleItem *)Get(Current());
+  int NewHelpKeys = 0;
+  if (item) {
+     if (item->timerMatch == tmFull)
+        NewHelpKeys = 2;
+     else
+        NewHelpKeys = 1;
+     }
+  if (NewHelpKeys != helpKeys) {
+     const char *Red[] = { NULL, tr("Record"), tr("Timer") };
+     SetHelp(Red[NewHelpKeys], now ? tr("Next") : tr("Now"), tr("Button$Schedule"), tr("Switch"));
+     helpKeys = NewHelpKeys;
+     }
 }
 
 const cEvent *cMenuWhatsOn::ScheduleEvent(void)
@@ -1056,8 +1080,19 @@ eOSState cMenuWhatsOn::Record(void)
      if (t) {
         delete timer;
         timer = t;
+        return AddSubMenu(new cMenuEditTimer(timer));
         }
-     return AddSubMenu(new cMenuEditTimer(timer, !t));
+     else {   
+        Timers.Add(timer);
+        timer->Matches();
+        Timers.SetModified();
+        isyslog("timer %s added (active)", *timer->ToDescr());
+        if (HasSubMenu())
+           CloseSubMenu();
+        if (Update())
+           Display();
+        SetHelpKeys();
+        }
      }
   return osContinue;
 }
@@ -1088,8 +1123,12 @@ eOSState cMenuWhatsOn::ProcessKey(eKeys Key)
        default:      break;
        }
      }
-  else if (HadSubMenu && !HasSubMenu() && Update())
-     Display();
+  else if (!HasSubMenu()) {
+     if (HadSubMenu && Update())
+        Display();
+     if (Key != kNone)
+        SetHelpKeys();
+     }
   return state;
 }
 
@@ -1101,10 +1140,12 @@ private:
   const cSchedules *schedules;
   bool now, next;
   int otherChannel;
+  int helpKeys;
   eOSState Record(void);
   eOSState Switch(void);
   void PrepareSchedule(cChannel *Channel);
   bool Update(void);
+  void SetHelpKeys(void);
 public:
   cMenuSchedule(void);
   virtual ~cMenuSchedule();
@@ -1116,12 +1157,13 @@ cMenuSchedule::cMenuSchedule(void)
 {
   now = next = false;
   otherChannel = 0;
+  helpKeys = -1;
   cChannel *channel = Channels.GetByNumber(cDevice::CurrentChannel());
   if (channel) {
      cMenuWhatsOn::SetCurrentChannel(channel->Number());
      schedules = cSchedules::Schedules(schedulesLock);
      PrepareSchedule(channel);
-     SetHelp(Count() ? tr("Record") : NULL, tr("Now"), tr("Next"));
+     SetHelpKeys();
      }
 }
 
@@ -1160,6 +1202,23 @@ bool cMenuSchedule::Update(void)
   return result;
 }
 
+void cMenuSchedule::SetHelpKeys(void)
+{
+  cMenuScheduleItem *item = (cMenuScheduleItem *)Get(Current());
+  int NewHelpKeys = 0;
+  if (item) {
+     if (item->timerMatch == tmFull)
+        NewHelpKeys = 2;
+     else
+        NewHelpKeys = 1;
+     }
+  if (NewHelpKeys != helpKeys) {
+     const char *Red[] = { NULL, tr("Record"), tr("Timer") };
+     SetHelp(Red[NewHelpKeys], tr("Now"), tr("Next"));
+     helpKeys = NewHelpKeys;
+     }
+}
+
 eOSState cMenuSchedule::Record(void)
 {
   cMenuScheduleItem *item = (cMenuScheduleItem *)Get(Current());
@@ -1169,8 +1228,19 @@ eOSState cMenuSchedule::Record(void)
      if (t) {
         delete timer;
         timer = t;
+        return AddSubMenu(new cMenuEditTimer(timer));
         }
-     return AddSubMenu(new cMenuEditTimer(timer, !t));
+     else {   
+        Timers.Add(timer);
+        timer->Matches();
+        Timers.SetModified();
+        isyslog("timer %s added (active)", *timer->ToDescr());
+        if (HasSubMenu())
+           CloseSubMenu();
+        if (Update())
+           Display();
+        SetHelpKeys();
+        }
      }
   return osContinue;
 }
@@ -1237,6 +1307,8 @@ eOSState cMenuSchedule::ProcessKey(eKeys Key)
         }
      else if (HadSubMenu && Update())
         Display();
+     if (Key != kNone)
+        SetHelpKeys();
      }
   return state;
 }

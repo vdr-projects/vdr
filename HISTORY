@@ -3998,7 +3998,11 @@ Video Disk Recorder Revision History
 - Removed an invalid access to Event->schedule in cSchedule::DelEvent().
 - Modified cSchedule::Cleanup() (events are always sorted by time).
 - Schedules are now cleaned up once every hour (not only at 05:00).
-- The "Schedules" and "What's on now/next?" menus are now updated if a timer
+- The "Schedule" and "What's on now/next?" menus are now updated if a timer
   is set or modified.
 - cTimer no longer has its own 'schedule' member, it rather uses that of the
   event it has been set to.
+- The "Red" button in the "Schedule", "What's on now/next?" and "Event" menus
+  now immediately creates a timer for the selected event and marks it with 'T'.
+  If the event is already marked with 'T', the "Red" button opens the "Edit
+  timer" menu for that timer.

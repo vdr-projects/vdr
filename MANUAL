@@ -141,14 +141,17 @@ Version 1.2
   "Schedule" menu of the current channel in the list.
 
   The "Red" button allows you to instantly program a timer to record the
-  selected programme. You will get into the "Edit Timer" menu in which
-  everything has already been filled in, and you can make any modifications
+  selected programme. After pressing this button, the current event will
+  be marked with 'T', and the function of the "Red" button will change from
+  "Record" to "Timer". Pressing "Red" on an event marked with 'T' will open
+  the "Edit timer" menu for this timer, where you can make any modifications
   you may want to apply. Note that the Start and Stop time are offset by the
   MarginStart and MarginStop parameters (see Setup) in order to make sure the
   entire programme is recorded in case it doesn't exactly adhere to its
   published start/stop times. Of course, no guarantee can be given that the
   default margin values will be sufficient, so in case this recording is
-  really important you may want to add an extra margin ;-)
+  really important you may want to add an extra margin ;-). VPS recordings
+  will use the exact Start (or VPS) and Stop times as given in the event.
 
   The "Blue" button can be pressed to switch to the channel with the selected
   programme.
@@ -373,7 +376,7 @@ Version 1.2
 * Programming the Timer
 
   Use the "Timer" menu to maintain your list of timer controlled recordings.
-  The parameters in the "Edit Timer" menu have the following meanings:
+  The parameters in the "Edit timer" menu have the following meanings:
 
   Active:    Defines whether the timer will be processed (set it to 'no' to
              temporarily disable a timer).
