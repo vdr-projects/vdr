@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.380 2005/12/27 14:54:47 kls Exp $
+ * $Id: menu.c 1.381 2005/12/28 11:35:33 kls Exp $
  */
 
 #include "menu.h"
@@ -1075,6 +1075,12 @@ eOSState cMenuWhatsOn::Record(void)
 {
   cMenuScheduleItem *item = (cMenuScheduleItem *)Get(Current());
   if (item) {
+     if (item->timerMatch == tmFull) {
+        int tm = tmNone;
+        cTimer *timer = Timers.GetMatch(item->event, &tm);
+        if (timer)
+           return AddSubMenu(new cMenuEditTimer(timer));
+        }
      cTimer *timer = new cTimer(item->event);
      cTimer *t = Timers.GetTimer(timer);
      if (t) {
@@ -1223,6 +1229,12 @@ eOSState cMenuSchedule::Record(void)
 {
   cMenuScheduleItem *item = (cMenuScheduleItem *)Get(Current());
   if (item) {
+     if (item->timerMatch == tmFull) {
+        int tm = tmNone;
+        cTimer *timer = Timers.GetMatch(item->event, &tm);
+        if (timer)
+           return AddSubMenu(new cMenuEditTimer(timer));
+        }
      cTimer *timer = new cTimer(item->event);
      cTimer *t = Timers.GetTimer(timer);
      if (t) {
