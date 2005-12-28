@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 1.78 2005/12/24 15:44:56 kls Exp $
+ * $Id: menu.h 1.79 2005/12/28 12:32:51 kls Exp $
  */
 
 #ifndef __MENU_H
@@ -201,7 +201,6 @@ public:
   static bool Start(cTimer *Timer = NULL, bool Pause = false);
   static void Stop(const char *InstantId);
   static void Stop(cDevice *Device);
-  static bool StopPrimary(bool DoIt = false);
   static bool PauseLiveVideo(void);
   static const char *GetInstantId(const char *LastInstantId);
   static cRecordControl *GetRecordControl(const char *FileName);

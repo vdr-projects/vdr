@@ -4005,3 +4005,4 @@ Video Disk Recorder Revision History
   If the event is already marked with 'T', the "Red" button opens the "Edit
   timer" menu for that timer.
 - Removing deleted recordings is now done in a separate thread.
+- Dropped the unused "stop recording on primary interface" stuff.

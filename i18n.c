@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.220 2005/11/04 14:36:27 kls Exp $
+ * $Id: i18n.c 1.221 2005/12/28 12:35:20 kls Exp $
  *
  * Translations provided by:
  *
@@ -1114,27 +1114,6 @@ const tI18nPhrase Phrases[] = {
     "Zaustaviti snimanje?",
     "Lõpetan salvestamise?",
     "Stop optagelse?",
-  },
-  { "on primary interface",
-    "auf dem primären Interface",
-    "na primarni napravi",
-    "su interfaccia primaria",
-    "op eerste interface",
-    "no interface primário",
-    "sur la carte primaire",
-    "på første enhet",
-    "ensisijaisella sovittimella",
-    "na pierwszym interfejsie",
-    "en interface primario",
-    "óôŞí êıñéá êÜñôá",
-    "från den första enheten?",
-    "pe prima interfaşã",
-    "az elsö kártyán",
-    "a la interfície primària",
-    "İĞ ŞáİŞÒİŞÜ ãáâàŞÙáâÒÕ",
-    "na primarnom ureğaju",
-    "peavastuvõtjal",
-    "på primær enhed",
   },
   { "Cancel editing?",
     "Schneiden abbrechen?",

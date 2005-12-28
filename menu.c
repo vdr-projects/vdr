@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.381 2005/12/28 11:35:33 kls Exp $
+ * $Id: menu.c 1.382 2005/12/28 12:35:54 kls Exp $
  */
 
 #include "menu.h"
@@ -2581,7 +2581,6 @@ cMenuPluginItem::cMenuPluginItem(const char *Name, int Index)
 // --- cMenuMain -------------------------------------------------------------
 
 #define STOP_RECORDING tr(" Stop recording ")
-#define ON_PRIMARY_INTERFACE tr("on primary interface")
 
 cOsdObject *cMenuMain::pluginOsdObject = NULL;
 
@@ -2648,15 +2647,6 @@ void cMenuMain::Set(void)
   Add(new cOsdItem(hk(tr("Setup")),      osSetup));
   if (Commands.Count())
      Add(new cOsdItem(hk(tr("Commands")),  osCommands));
-
-  // Record control:
-
-  if (cRecordControls::StopPrimary()) {
-     char *buffer = NULL;
-     asprintf(&buffer, "%s%s", STOP_RECORDING, ON_PRIMARY_INTERFACE);
-     Add(new cOsdItem(buffer, osStopRecord));
-     free(buffer);
-     }
 
   Update(true);
 
@@ -2753,11 +2743,7 @@ eOSState cMenuMain::ProcessKey(eKeys Key)
     case osStopRecord: if (Interface->Confirm(tr("Stop recording?"))) {
                           cOsdItem *item = Get(Current());
                           if (item) {
-                             const char *s = item->Text() + strlen(STOP_RECORDING);
-                             if (strcmp(s, ON_PRIMARY_INTERFACE) == 0)
-                                cRecordControls::StopPrimary(true);
-                             else
-                                cRecordControls::Stop(item->Text() + strlen(STOP_RECORDING));
+                             cRecordControls::Stop(item->Text() + strlen(STOP_RECORDING));
                              return osEnd;
                              }
                           }
@@ -3453,20 +3439,6 @@ void cRecordControls::Stop(cDevice *Device)
             }
          }
       }
-}
-
-bool cRecordControls::StopPrimary(bool DoIt)
-{
-  if (cDevice::PrimaryDevice()->Receiving()) {
-     //XXX+ disabled for the moment - might become obsolete with DVB_DRIVER_VERSION >= 2002090101
-     cDevice *device = NULL;//XXX cDevice::GetDevice(cDevice::PrimaryDevice()->Ca(), 0);
-     if (device) {
-        if (DoIt)
-           Stop(cDevice::PrimaryDevice());
-        return true;
-        }
-     }
-  return false;
 }
 
 bool cRecordControls::PauseLiveVideo(void)
