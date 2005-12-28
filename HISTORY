@@ -3963,7 +3963,7 @@ Video Disk Recorder Revision History
   commands may now be executed at any time, and the message will be displayed
   (no more "pending message").
 
-2005-12-27: Version 1.3.38
+2005-12-28: Version 1.3.38
 
 - Fixed handling second audio and Dolby Digital PIDs for encrypted channels
   (was broken in version 1.3.37).
@@ -4006,3 +4006,4 @@ Video Disk Recorder Revision History
   now immediately creates a timer for the selected event and marks it with 'T'.
   If the event is already marked with 'T', the "Red" button opens the "Edit
   timer" menu for that timer.
+- Removing deleted recordings is now done in a separate thread.

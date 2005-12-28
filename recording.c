@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.129 2005/12/18 13:38:30 kls Exp $
+ * $Id: recording.c 1.130 2005/12/28 12:19:16 kls Exp $
  */
 
 #include "recording.h"
@@ -62,26 +62,57 @@ bool VfatFileSystem = false;
 
 cRecordings DeletedRecordings(true);
 
+// --- cRemoveDeletedRecordingsThread ----------------------------------------
+
+class cRemoveDeletedRecordingsThread : public cThread {
+protected:
+  virtual void Action(void);
+public:
+  cRemoveDeletedRecordingsThread(void);
+  };
+
+cRemoveDeletedRecordingsThread::cRemoveDeletedRecordingsThread(void)
+:cThread("remove deleted recordings")
+{
+}
+
+void cRemoveDeletedRecordingsThread::Action(void)
+{
+  // Make sure only one instance of VDR does this:
+  cLockFile LockFile(VideoDirectory);
+  if (LockFile.Lock()) {
+     cThreadLock DeletedRecordingsLock(&DeletedRecordings);
+     for (cRecording *r = DeletedRecordings.First(); r; ) {
+         if (r->deleted && time(NULL) - r->deleted > DELETEDLIFETIME) {
+            cRecording *next = DeletedRecordings.Next(r);
+            r->Remove();
+            DeletedRecordings.Del(r);
+            r = next;
+            RemoveEmptyVideoDirectories();
+            continue;
+            }
+         r = DeletedRecordings.Next(r);
+         }
+     }
+}
+
+static cRemoveDeletedRecordingsThread RemoveDeletedRecordingsThread;
+
+// ---
+
 void RemoveDeletedRecordings(void)
 {
   static time_t LastRemoveCheck = 0;
   if (time(NULL) - LastRemoveCheck > REMOVECHECKDELTA) {
-     cThreadLock DeletedRecordingsLock(&DeletedRecordings);
-     for (cRecording *r = DeletedRecordings.First(); r; ) {
-         if (r->deleted && time(NULL) - r->deleted > DELETEDLIFETIME) {
-            // Make sure only one instance of VDR does this:
-            cLockFile LockFile(VideoDirectory);
-            if (LockFile.Lock()) {
-               cRecording *next = DeletedRecordings.Next(r);
-               r->Remove();
-               DeletedRecordings.Del(r);
-               r = next;
-               RemoveEmptyVideoDirectories();
-               continue;
+     if (!RemoveDeletedRecordingsThread.Active()) {
+        cThreadLock DeletedRecordingsLock(&DeletedRecordings);
+        for (cRecording *r = DeletedRecordings.First(); r; r = DeletedRecordings.Next(r)) {
+            if (r->deleted && time(NULL) - r->deleted > DELETEDLIFETIME) {
+               RemoveDeletedRecordingsThread.Start();
+               break;
                }
             }
-         r = DeletedRecordings.Next(r);
-         }
+        }
      LastRemoveCheck = time(NULL);
      }
 }
