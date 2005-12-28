@@ -3969,8 +3969,6 @@ Video Disk Recorder Revision History
   (was broken in version 1.3.37).
 - Improved TS/PES conversion to better handle lost TS packets (thanks to
   Reinhard Nissl).
-- Now checking the channel's symbol rate in order to avoid problems on full
-  featured DVB cards with symbol rates below 10000.
 - Limited the frequency of log messages from the cRepackers.
 - Now using the gettid() syscall to get a thread's pid, so that we get a
   useful value on NPTL systems (suggested by Johannes Stezenbach).
