@@ -4008,3 +4008,7 @@ Video Disk Recorder Revision History
 - Dropped the unused "stop recording on primary interface" stuff.
 - Converting a grabbed image to JPEG is now done with the new function
   RgbToJpeg() (see tools.h).
+- The SVDRP command GRAB now determines the image type (JPEG or PNM) from the
+  extension (".jpg", ".jpeg" or ".pnm") of the given file name. The explicit
+  'jpeg' or 'pnm' parameter is still accepted for backward compatibility, but
+  has no meaning any more.

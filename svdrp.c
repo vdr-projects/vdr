@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.84 2005/11/27 15:29:28 kls Exp $
+ * $Id: svdrp.c 1.85 2005/12/29 12:17:27 kls Exp $
  */
 
 #include "svdrp.h"
@@ -201,10 +201,12 @@ const char *HelpPages[] = {
   "    Edit the recording with the given number. Before a recording can be\n"
   "    edited, an LSTR command must have been executed in order to retrieve\n"
   "    the recording numbers.",
-  "GRAB <filename> [ jpeg | pnm [ <quality> [ <sizex> <sizey> ] ] ]\n"
+  "GRAB <filename> [ <quality> [ <sizex> <sizey> ] ]\n"
   "    Grab the current frame and save it to the given file. Images can\n"
-  "    be stored as JPEG (default) or PNM, at the given quality (default\n"
-  "    is 'maximum', only applies to JPEG) and size (default is full screen).",
+  "    be stored as JPEG or PNM, depending on the given file name extension.\n"
+  "    The quality of the grabbed image (only applies to JPEG) can be in the\n"
+  "    range 0..100, where 100 means \"best\". The size parameters define the\n"
+  "    size of the resulting image (default is full screen).",
   "HELP [ <topic> ]\n"
   "    The HELP command gives help info.",
   "HITK [ <key> ]\n"
@@ -656,22 +658,33 @@ void cSVDRP::CmdGRAB(const char *Option)
      const char *delim = " \t";
      char *strtok_next;
      FileName = strtok_r(p, delim, &strtok_next);
-     if ((p = strtok_r(NULL, delim, &strtok_next)) != NULL) {
-        if (strcasecmp(p, "JPEG") == 0)
+     char *Extension = strrchr(FileName, '.');
+     if (Extension) {
+        if (strcasecmp(Extension, ".jpg") == 0 || strcasecmp(Extension, ".jpeg") == 0)
            Jpeg = true;
-        else if (strcasecmp(p, "PNM") == 0)
+        else if (strcasecmp(Extension, ".pnm") == 0)
            Jpeg = false;
         else {
-           Reply(501, "Unknown image type \"%s\"", p);
+           Reply(501, "Unknown image type \"%s\"", Extension + 1);
            return;
            }
         }
+     else {
+        Reply(501, "Missing filename extension in \"%s\"", FileName);
+        return;
+        }
      if ((p = strtok_r(NULL, delim, &strtok_next)) != NULL) {
-        if (isnumber(p))
-           Quality = atoi(p);
-        else {
-           Reply(501, "Illegal quality \"%s\"", p);
-           return;
+        if (strcasecmp(p, "JPEG") == 0 || strcasecmp(p, "PNM") == 0) {
+           // tolerate for backward compatibility
+           p = strtok_r(NULL, delim, &strtok_next);
+           }
+        if (p) {
+           if (isnumber(p))
+              Quality = atoi(p);
+           else {
+              Reply(501, "Illegal quality \"%s\"", p);
+              return;
+              }
            }
         }
      if ((p = strtok_r(NULL, delim, &strtok_next)) != NULL) {
