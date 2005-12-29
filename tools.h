@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.86 2005/12/29 11:09:43 kls Exp $
+ * $Id: tools.h 1.87 2005/12/29 15:48:46 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -130,6 +130,29 @@ uchar *RgbToJpeg(uchar *Mem, int Width, int Height, int &Size, int Quality = 100
     ///< resulting image, where 100 is "best". The caller takes ownership of
     ///< the result and has to delete it once it is no longer needed.
     ///< The result may be NULL in case of an error.
+
+class cBase64Encoder {
+private:
+  const uchar *data;
+  int length;
+  int maxResult;
+  int i;
+  char *result;
+  static const char *b64;
+public:
+  cBase64Encoder(const uchar *Data, int Length, int MaxResult = 64);
+      ///< Sets up a new base 64 encoder for the given Data, with the given Length.
+      ///< Data will not be copied and must be valid for the entire lifetime of the
+      ///< encoder. MaxResult defines the maximum number of characters in any
+      ///< result line. The resulting lines may be shorter than MaxResult in case
+      ///< its value is not a multiple of 4.
+  ~cBase64Encoder();
+  const char *NextLine(void);
+      ///< Returns the next line of encoded data (terminated by '\0'), or NULL if
+      ///< there is no more encoded data. The caller must call NextLine() and process
+      ///< each returned line until NULL is returned, in order to get the entire
+      ///< data encoded.
+  };
 
 class cTimeMs {
 private:

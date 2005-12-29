@@ -4017,3 +4017,5 @@ Video Disk Recorder Revision History
   function cDevice::GrabImageFile() can be used to write the grabbed image
   directly to a file. Plugins that used the old version of cDevice::GrabImage()
   need to be adapted to the new interface.
+- The new class cBase64Encoder (see tools.h) can be used to encode data in
+  base64 (thanks to Bob Withers for publishing his Base64 class).
