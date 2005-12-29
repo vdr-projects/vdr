@@ -4,13 +4,20 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.105 2005/12/18 10:33:04 kls Exp $
+ * $Id: tools.c 1.106 2005/12/29 11:20:28 kls Exp $
  */
 
 #include "tools.h"
 #include <ctype.h>
 #include <dirent.h>
 #include <errno.h>
+extern "C" {
+#ifdef boolean
+#define HAVE_BOOLEAN
+#endif
+#include <jpeglib.h>
+#undef boolean
+}
 #include <stdarg.h>
 #include <stdlib.h>
 #include <sys/time.h>
@@ -649,6 +656,93 @@ cString TimeString(time_t t)
   struct tm tm_r;
   strftime(buf, sizeof(buf), "%R", localtime_r(&t, &tm_r));
   return buf;
+}
+
+// --- RgbToJpeg -------------------------------------------------------------
+
+#define JPEGCOMPRESSMEM 500000
+
+struct tJpegCompressData {
+  int size;
+  uchar *mem;
+  };
+
+static void JpegCompressInitDestination(j_compress_ptr cinfo)
+{
+  tJpegCompressData *jcd = (tJpegCompressData *)cinfo->client_data;
+  if (jcd) {
+     cinfo->dest->free_in_buffer = jcd->size = JPEGCOMPRESSMEM;
+     cinfo->dest->next_output_byte = jcd->mem = MALLOC(uchar, jcd->size);
+     }
+}
+
+static boolean JpegCompressEmptyOutputBuffer(j_compress_ptr cinfo)
+{
+  tJpegCompressData *jcd = (tJpegCompressData *)cinfo->client_data;
+  if (jcd) {
+     int Used = jcd->size;
+     jcd->size += JPEGCOMPRESSMEM;
+     jcd->mem = (uchar *)realloc(jcd->mem, jcd->size);
+     if (jcd->mem) {
+        cinfo->dest->next_output_byte = jcd->mem + Used;
+        cinfo->dest->free_in_buffer = jcd->size - Used;
+        return TRUE;
+        }
+     }
+  return FALSE;
+}
+
+static void JpegCompressTermDestination(j_compress_ptr cinfo)
+{
+  tJpegCompressData *jcd = (tJpegCompressData *)cinfo->client_data;
+  if (jcd) {
+     int Used = cinfo->dest->next_output_byte - jcd->mem;
+     if (Used < jcd->size) {
+        jcd->size = Used;
+        jcd->mem = (uchar *)realloc(jcd->mem, jcd->size);
+        }
+     }
+}
+
+uchar *RgbToJpeg(uchar *Mem, int Width, int Height, int &Size, int Quality)
+{
+  if (Quality < 0)
+     Quality = 0;
+  else if (Quality > 100)
+     Quality = 100;
+  
+  jpeg_destination_mgr jdm;
+
+  jdm.init_destination = JpegCompressInitDestination;
+  jdm.empty_output_buffer = JpegCompressEmptyOutputBuffer;
+  jdm.term_destination = JpegCompressTermDestination;
+
+  struct jpeg_compress_struct cinfo;
+  struct jpeg_error_mgr jerr;
+  cinfo.err = jpeg_std_error(&jerr);
+  jpeg_create_compress(&cinfo);
+  cinfo.dest = &jdm;
+  tJpegCompressData jcd;
+  cinfo.client_data = &jcd;
+  cinfo.image_width = Width;
+  cinfo.image_height = Height;
+  cinfo.input_components = 3;
+  cinfo.in_color_space = JCS_RGB;
+
+  jpeg_set_defaults(&cinfo);
+  jpeg_set_quality(&cinfo, Quality, true);
+  jpeg_start_compress(&cinfo, true);
+
+  int rs = Width * 3;
+  JSAMPROW rp[Height];
+  for (int k = 0; k < Height; k++)
+      rp[k] = &Mem[rs * k];
+  jpeg_write_scanlines(&cinfo, rp, Height);
+  jpeg_finish_compress(&cinfo);
+  jpeg_destroy_compress(&cinfo);
+
+  Size = jcd.size;
+  return jcd.mem;
 }
 
 // --- cReadLine -------------------------------------------------------------

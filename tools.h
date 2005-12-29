@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.85 2005/12/17 11:09:37 kls Exp $
+ * $Id: tools.h 1.86 2005/12/29 11:09:43 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -121,6 +121,15 @@ cString DayDateTime(time_t t = 0);
 cString TimeToString(time_t t);
 cString DateString(time_t t);
 cString TimeString(time_t t);
+uchar *RgbToJpeg(uchar *Mem, int Width, int Height, int &Size, int Quality = 100);
+    ///< Converts the given Memory to a JPEG image and returns a pointer
+    ///< to the resulting image. Mem must point to a data block of exactly
+    ///< (Width * Height) triplets of RGB image data bytes. Upon return, Size
+    ///< will hold the number of bytes of the resulting JPEG data.
+    ///< Quality can be in the range 0..100 and controls the quality of the
+    ///< resulting image, where 100 is "best". The caller takes ownership of
+    ///< the result and has to delete it once it is no longer needed.
+    ///< The result may be NULL in case of an error.
 
 class cTimeMs {
 private:

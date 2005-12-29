@@ -4,18 +4,11 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.141 2005/12/28 12:28:05 kls Exp $
+ * $Id: dvbdevice.c 1.142 2005/12/29 11:24:02 kls Exp $
  */
 
 #include "dvbdevice.h"
 #include <errno.h>
-extern "C" {
-#ifdef boolean
-#define HAVE_BOOLEAN
-#endif
-#include <jpeglib.h>
-#undef boolean
-}
 #include <limits.h>
 #include <linux/videodev.h>
 #include <linux/dvb/audio.h>
@@ -539,27 +532,19 @@ bool cDvbDevice::GrabImage(const char *FileName, bool Jpeg, int Quality, int Siz
            if (f) {
               if (Jpeg) {
                  // write JPEG file:
-                 struct jpeg_compress_struct cinfo;
-                 struct jpeg_error_mgr jerr;
-                 cinfo.err = jpeg_std_error(&jerr);
-                 jpeg_create_compress(&cinfo);
-                 jpeg_stdio_dest(&cinfo, f);
-                 cinfo.image_width = vm.width;
-                 cinfo.image_height = vm.height;
-                 cinfo.input_components = 3;
-                 cinfo.in_color_space = JCS_RGB;
-
-                 jpeg_set_defaults(&cinfo);
-                 jpeg_set_quality(&cinfo, Quality, true);
-                 jpeg_start_compress(&cinfo, true);
-
-                 int rs = vm.width * 3;
-                 JSAMPROW rp[vm.height];
-                 for (int k = 0; k < vm.height; k++)
-                     rp[k] = &mem[rs * k];
-                 jpeg_write_scanlines(&cinfo, rp, vm.height);
-                 jpeg_finish_compress(&cinfo);
-                 jpeg_destroy_compress(&cinfo);
+                 int JpegImageSize;
+                 uchar *JpegImage = RgbToJpeg(mem, vm.width, vm.height, JpegImageSize, Quality);
+                 if (JpegImage) {
+                    if (fwrite(JpegImage, JpegImageSize, 1, f) != 1) {
+                       LOG_ERROR_STR(FileName);
+                       result |= 1;
+                       }
+                    delete JpegImage;
+                    }
+                 else {
+                    esyslog("ERROR: failed to convert image to JPEG");
+                    result |= 1;
+                    }
                  }
               else {
                  // write PNM file:
