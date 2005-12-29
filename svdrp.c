@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.85 2005/12/29 12:17:27 kls Exp $
+ * $Id: svdrp.c 1.86 2005/12/29 13:33:43 kls Exp $
  */
 
 #include "svdrp.h"
@@ -711,7 +711,7 @@ void cSVDRP::CmdGRAB(const char *Option)
         Reply(501, "Unexpected parameter \"%s\"", p);
         return;
         }
-     if (cDevice::PrimaryDevice()->GrabImage(FileName, Jpeg, Quality, SizeX, SizeY))
+     if (cDevice::PrimaryDevice()->GrabImageFile(FileName, Jpeg, Quality, SizeX, SizeY))
         Reply(250, "Grabbed image %s", Option);
      else
         Reply(451, "Grab image failed");

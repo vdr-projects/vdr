@@ -4012,3 +4012,8 @@ Video Disk Recorder Revision History
   extension (".jpg", ".jpeg" or ".pnm") of the given file name. The explicit
   'jpeg' or 'pnm' parameter is still accepted for backward compatibility, but
   has no meaning any more.
+- The function cDevice::GrabImage() no longer writes the grabbed image to a
+  file, but rather returns a pointer to the image in memory. The wrapper
+  function cDevice::GrabImageFile() can be used to write the grabbed image
+  directly to a file. Plugins that used the old version of cDevice::GrabImage()
+  need to be adapted to the new interface.

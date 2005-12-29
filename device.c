@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.112 2005/11/26 12:56:09 kls Exp $
+ * $Id: device.c 1.113 2005/12/29 14:51:41 kls Exp $
  */
 
 #include "device.h"
@@ -322,9 +322,36 @@ void cDevice::Shutdown(void)
       }
 }
 
-bool cDevice::GrabImage(const char *FileName, bool Jpeg, int Quality, int SizeX, int SizeY)
+uchar *cDevice::GrabImage(int &Size, bool Jpeg, int Quality, int SizeX, int SizeY)
 {
-  return false;
+  return NULL;
+}
+
+bool cDevice::GrabImageFile(const char *FileName, bool Jpeg, int Quality, int SizeX, int SizeY)
+{
+  int result = 0;
+  FILE *f = fopen(FileName, "wb");
+  if (f) {
+     int ImageSize;
+     uchar *Image = GrabImage(ImageSize, Jpeg, Quality, SizeX, SizeY);
+     if (Image) {
+        if (fwrite(Image, ImageSize, 1, f) == 1)
+           isyslog("grabbed image to %s", FileName);
+        else {
+           LOG_ERROR_STR(FileName);
+           result |= 1;
+           }
+        free(Image);
+        }
+     else
+        result |= 1;
+     fclose(f);
+     }
+  else {
+     LOG_ERROR_STR(FileName);
+     result |= 1;
+     }
+  return result == 0;
 }
 
 void cDevice::SetVideoDisplayFormat(eVideoDisplayFormat VideoDisplayFormat)

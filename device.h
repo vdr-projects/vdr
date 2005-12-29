@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 1.66 2005/11/05 15:25:41 kls Exp $
+ * $Id: device.h 1.67 2005/12/29 14:51:59 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -305,11 +305,9 @@ public:
 // Image Grab facilities
 
 public:
-  virtual bool GrabImage(const char *FileName, bool Jpeg = true, int Quality = -1, int SizeX = -1, int SizeY = -1);
-         ///< Capture a single frame as an image.
-         ///< Grabs the currently visible screen image into the given file, with the
-         ///< given parameters.
-         ///< \param FileName The name of the file to write. Should include the proper extension.
+  virtual uchar *GrabImage(int &Size, bool Jpeg = true, int Quality = -1, int SizeX = -1, int SizeY = -1);
+         ///< Grabs the currently visible screen image.
+         ///< \param Size The size of the returned data block.
          ///< \param Jpeg If true will write a JPEG file. Otherwise a PNM file will be written.
          ///< \param Quality The compression factor for JPEG. 1 will create a very blocky
          ///<        and small image, 70..80 will yield reasonable quality images while keeping the
@@ -317,7 +315,13 @@ public:
          ///<        but very high quality image.
          ///< \param SizeX The number of horizontal pixels in the frame (default is the current screen width).
          ///< \param SizeY The number of vertical pixels in the frame (default is the current screen height).
-         ///< \return True if all went well. */
+         ///< \return A pointer to the grabbed image data, or NULL in case of an error.
+         ///< The caller takes ownership of the returned memory and must free() it once it isn't needed any more.
+  bool GrabImageFile(const char *FileName, bool Jpeg = true, int Quality = -1, int SizeX = -1, int SizeY = -1);
+         ///< Calls GrabImage() and stores the resulting image in a file with the given name.
+         ///< \return True if all went well.
+         ///< The caller is responsible for making sure that the given file name
+         ///< doesn't lead to overwriting any important other file.
 
 // Video format facilities
 

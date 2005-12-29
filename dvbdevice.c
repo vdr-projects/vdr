@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.142 2005/12/29 11:24:02 kls Exp $
+ * $Id: dvbdevice.c 1.143 2005/12/29 13:49:09 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -480,95 +480,84 @@ cSpuDecoder *cDvbDevice::GetSpuDecoder(void)
   return spuDecoder;
 }
 
-bool cDvbDevice::GrabImage(const char *FileName, bool Jpeg, int Quality, int SizeX, int SizeY)
+uchar *cDvbDevice::GrabImage(int &Size, bool Jpeg, int Quality, int SizeX, int SizeY)
 {
   if (devVideoIndex < 0)
-     return false;
+     return NULL;
   char buffer[PATH_MAX];
   snprintf(buffer, sizeof(buffer), "%s%d", DEV_VIDEO, devVideoIndex);
   int videoDev = open(buffer, O_RDWR);
-  if (videoDev < 0)
-     LOG_ERROR_STR(buffer);
   if (videoDev >= 0) {
-     int result = 0;
+     uchar *result = NULL;
      struct video_mbuf mbuf;
-     result |= ioctl(videoDev, VIDIOCGMBUF, &mbuf);
-     if (result == 0) {
+     if (ioctl(videoDev, VIDIOCGMBUF, &mbuf) == 0) {
         int msize = mbuf.size;
         unsigned char *mem = (unsigned char *)mmap(0, msize, PROT_READ | PROT_WRITE, MAP_SHARED, videoDev, 0);
         if (mem && mem != (unsigned char *)-1) {
            // set up the size and RGB
            struct video_capability vc;
-           result |= ioctl(videoDev, VIDIOCGCAP, &vc);
-           struct video_mmap vm;
-           vm.frame = 0;
-           if ((SizeX > 0) && (SizeX <= vc.maxwidth) &&
-               (SizeY > 0) && (SizeY <= vc.maxheight)) {
-              vm.width = SizeX;
-              vm.height = SizeY;
-              }
-           else {
-              vm.width = vc.maxwidth;
-              vm.height = vc.maxheight;
-              }
-           vm.format = VIDEO_PALETTE_RGB24;
-           result |= ioctl(videoDev, VIDIOCMCAPTURE, &vm);
-           result |= ioctl(videoDev, VIDIOCSYNC, &vm.frame);
-           // make RGB out of BGR:
-           int memsize = vm.width * vm.height;
-           unsigned char *mem1 = mem;
-           for (int i = 0; i < memsize; i++) {
-               unsigned char tmp = mem1[2];
-               mem1[2] = mem1[0];
-               mem1[0] = tmp;
-               mem1 += 3;
-               }
-
-           if (Quality < 0)
-              Quality = 100;
-
-           isyslog("grabbing to %s (%s %d %d %d)", FileName, Jpeg ? "JPEG" : "PNM", Quality, vm.width, vm.height);
-           FILE *f = fopen(FileName, "wb");
-           if (f) {
-              if (Jpeg) {
-                 // write JPEG file:
-                 int JpegImageSize;
-                 uchar *JpegImage = RgbToJpeg(mem, vm.width, vm.height, JpegImageSize, Quality);
-                 if (JpegImage) {
-                    if (fwrite(JpegImage, JpegImageSize, 1, f) != 1) {
-                       LOG_ERROR_STR(FileName);
-                       result |= 1;
-                       }
-                    delete JpegImage;
-                    }
-                 else {
-                    esyslog("ERROR: failed to convert image to JPEG");
-                    result |= 1;
-                    }
+           if (ioctl(videoDev, VIDIOCGCAP, &vc) == 0) {
+              struct video_mmap vm;
+              vm.frame = 0;
+              if ((SizeX > 0) && (SizeX <= vc.maxwidth) &&
+                  (SizeY > 0) && (SizeY <= vc.maxheight)) {
+                 vm.width = SizeX;
+                 vm.height = SizeY;
                  }
               else {
-                 // write PNM file:
-                 if (fprintf(f, "P6\n%d\n%d\n255\n", vm.width, vm.height) < 0 ||
-                     fwrite(mem, vm.width * vm.height * 3, 1, f) != 1) {
-                    LOG_ERROR_STR(FileName);
-                    result |= 1;
+                 vm.width = vc.maxwidth;
+                 vm.height = vc.maxheight;
+                 }
+              vm.format = VIDEO_PALETTE_RGB24;
+              if (ioctl(videoDev, VIDIOCMCAPTURE, &vm) == 0 && ioctl(videoDev, VIDIOCSYNC, &vm.frame) == 0) {
+                 // make RGB out of BGR:
+                 int memsize = vm.width * vm.height;
+                 unsigned char *mem1 = mem;
+                 for (int i = 0; i < memsize; i++) {
+                     unsigned char tmp = mem1[2];
+                     mem1[2] = mem1[0];
+                     mem1[0] = tmp;
+                     mem1 += 3;
+                     }
+
+                 if (Quality < 0)
+                    Quality = 100;
+
+                 isyslog("grabbing to %s %d %d %d", Jpeg ? "JPEG" : "PNM", Quality, vm.width, vm.height);
+                 if (Jpeg) {
+                    // convert to JPEG:
+                    result = RgbToJpeg(mem, vm.width, vm.height, Size, Quality);
+                    if (!result)
+                       esyslog("ERROR: failed to convert image to JPEG");
+                    }
+                 else {
+                    // convert to PNM:
+                    char buf[32];
+                    snprintf(buf, sizeof(buf), "P6\n%d\n%d\n255\n", vm.width, vm.height);
+                    int l = strlen(buf);
+                    int bytes = memsize * 3;
+                    Size = l + bytes;
+                    result = MALLOC(uchar, Size);
+                    if (result) {
+                       memcpy(result, buf, l);
+                       memcpy(result + l, mem, bytes);
+                       }
+                    else
+                       esyslog("ERROR: failed to convert image to PNM");
                     }
                  }
-              fclose(f);
-              }
-           else {
-              LOG_ERROR_STR(FileName);
-              result |= 1;
               }
            munmap(mem, msize);
            }
         else
-           result |= 1;
+           esyslog("ERROR: failed to memmap video device");
         }
      close(videoDev);
-     return result == 0;
+     return result;
      }
-  return false;
+  else
+     LOG_ERROR_STR(buffer);
+  return NULL;
 }
 
 void cDvbDevice::SetVideoDisplayFormat(eVideoDisplayFormat VideoDisplayFormat)
