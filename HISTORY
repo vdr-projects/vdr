@@ -4037,3 +4037,4 @@ Video Disk Recorder Revision History
     ".." or symlinks (suggested by Darren Salt).
   + Grabbing to files is limited to the directory given in the the command
     line option '-g'. By default grabbing to files is not allowed any more.
+- Updated the Greek OSD texts (thanks to Dimitrios Dimitrakos).
