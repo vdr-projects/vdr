@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.88 2005/12/30 15:11:16 kls Exp $
+ * $Id: svdrp.c 1.89 2005/12/30 15:42:29 kls Exp $
  */
 
 #include "svdrp.h"
@@ -695,7 +695,7 @@ void cSVDRP::CmdGRAB(const char *Option)
            if (isnumber(p))
               Quality = atoi(p);
            else {
-              Reply(501, "Illegal quality \"%s\"", p);
+              Reply(501, "Invalid quality \"%s\"", p);
               return;
               }
            }
@@ -705,14 +705,14 @@ void cSVDRP::CmdGRAB(const char *Option)
         if (isnumber(p))
            SizeX = atoi(p);
         else {
-           Reply(501, "Illegal sizex \"%s\"", p);
+           Reply(501, "Invalid sizex \"%s\"", p);
            return;
            }
         if ((p = strtok_r(NULL, delim, &strtok_next)) != NULL) {
            if (isnumber(p))
               SizeY = atoi(p);
            else {
-              Reply(501, "Illegal sizey \"%s\"", p);
+              Reply(501, "Invalid sizey \"%s\"", p);
               return;
               }
            }
@@ -738,7 +738,7 @@ void cSVDRP::CmdGRAB(const char *Option)
            *slash = '/';
            if (!r) {
               LOG_ERROR_STR(FileName);
-              Reply(501, "Illegal file name \"%s\"", FileName);
+              Reply(501, "Invalid file name \"%s\"", FileName);
               free(s);
               return;
               }
@@ -746,7 +746,7 @@ void cSVDRP::CmdGRAB(const char *Option)
            FileName = RealFileName;
            free(s);
            if (strncmp(FileName, grabImageDir, strlen(grabImageDir)) != 0) {
-              Reply(501, "Illegal file name \"%s\"", FileName);
+              Reply(501, "Invalid file name \"%s\"", FileName);
               return;
               }
            }

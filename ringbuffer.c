@@ -7,7 +7,7 @@
  * Parts of this file were inspired by the 'ringbuffy.c' from the
  * LinuxDVB driver (see linuxtv.org).
  *
- * $Id: ringbuffer.c 1.22 2005/12/10 10:55:26 kls Exp $
+ * $Id: ringbuffer.c 1.23 2005/12/30 15:42:08 kls Exp $
  */
 
 #include "ringbuffer.h"
@@ -165,10 +165,10 @@ cRingBufferLinear::cRingBufferLinear(int Size, int Margin, bool Statistics, cons
         Clear();
         }
      else
-        esyslog("ERROR: illegal margin for ring buffer (%d > %d)", Margin, Size / 2);
+        esyslog("ERROR: invalid margin for ring buffer (%d > %d)", Margin, Size / 2);
      }
   else
-     esyslog("ERROR: illegal size for ring buffer (%d)", Size);
+     esyslog("ERROR: invalid size for ring buffer (%d)", Size);
 #ifdef DEBUGRINGBUFFERS
   lastHead = head;
   lastTail = tail;

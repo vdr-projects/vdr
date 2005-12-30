@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbosd.c 1.28 2005/12/18 12:56:55 kls Exp $
+ * $Id: dvbosd.c 1.29 2005/12/30 15:41:54 kls Exp $
  */
 
 #include "dvbosd.h"
@@ -39,7 +39,7 @@ cDvbOsd::cDvbOsd(int Left, int Top, int OsdDev)
   osdDev = OsdDev;
   shown = false;
   if (osdDev < 0)
-     esyslog("ERROR: illegal OSD device handle (%d)!", osdDev);
+     esyslog("ERROR: invalid OSD device handle (%d)!", osdDev);
   else {
      osdMem = MAXOSDMEMORY;
 #ifdef OSD_CAP_MEMSIZE

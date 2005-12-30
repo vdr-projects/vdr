@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 1.46 2005/12/27 10:26:38 kls Exp $
+ * $Id: epg.c 1.47 2005/12/30 15:41:59 kls Exp $
  */
 
 #include "epg.h"
@@ -834,7 +834,7 @@ bool cSchedule::Read(FILE *f, cSchedules *Schedules)
                        }
                     }
                  else {
-                    esyslog("ERROR: illegal channel ID: %s", s);
+                    esyslog("ERROR: invalid channel ID: %s", s);
                     return false;
                     }
                  }

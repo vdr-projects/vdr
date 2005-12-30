@@ -4038,3 +4038,5 @@ Video Disk Recorder Revision History
   + Grabbing to files is limited to the directory given in the the command
     line option '-g'. By default grabbing to files is not allowed any more.
 - Updated the Greek OSD texts (thanks to Dimitrios Dimitrakos).
+- Changed all "illegal" to "invalid" in error messages (there's nothing "illegal"
+  in VDR ;-).

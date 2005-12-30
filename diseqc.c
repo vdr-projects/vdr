@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: diseqc.c 1.4 2005/01/09 13:05:11 kls Exp $
+ * $Id: diseqc.c 1.5 2005/12/30 15:41:48 kls Exp $
  */
 
 #include "diseqc.h"
@@ -65,7 +65,7 @@ char *cDiseqc::Wait(char *s)
         cCondWait::SleepMs(n);
      return p;
      }
-  esyslog("ERROR: illegal value for wait time in '%s'", s - 1);
+  esyslog("ERROR: invalid value for wait time in '%s'", s - 1);
   return NULL;
 }
 
@@ -85,7 +85,7 @@ char *cDiseqc::Codes(char *s)
                  t = skipspace(p);
                  }
               else {
-                 esyslog("ERROR: illegal code at '%s'", t);
+                 esyslog("ERROR: invalid code at '%s'", t);
                  return NULL;
                  }
               }

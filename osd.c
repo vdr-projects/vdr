@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 1.64 2005/11/04 14:19:31 kls Exp $
+ * $Id: osd.c 1.65 2005/12/30 15:42:04 kls Exp $
  */
 
 #include "osd.h"
@@ -145,7 +145,7 @@ void cBitmap::SetSize(int Width, int Height)
         esyslog("ERROR: can't allocate bitmap!");
      }
   else
-     esyslog("ERROR: illegal bitmap parameters (%d, %d)!", width, height);
+     esyslog("ERROR: invalid bitmap parameters (%d, %d)!", width, height);
 }
 
 bool cBitmap::Contains(int x, int y) const

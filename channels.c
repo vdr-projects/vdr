@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 1.46 2005/09/11 11:17:19 kls Exp $
+ * $Id: channels.c 1.47 2005/12/30 15:41:24 kls Exp $
  */
 
 #include "channels.h"
@@ -586,7 +586,7 @@ static const char *ParseParameter(const char *s, int &Value, const tChannelParam
            return p;
         }
      }
-  esyslog("ERROR: illegal value for parameter '%c'", *(s - 1));
+  esyslog("ERROR: invalid value for parameter '%c'", *(s - 1));
   return NULL;
 }
 
