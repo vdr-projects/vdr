@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.87 2005/12/30 10:27:23 kls Exp $
+ * $Id: svdrp.c 1.88 2005/12/30 15:11:16 kls Exp $
  */
 
 #include "svdrp.h"
@@ -361,6 +361,8 @@ const char *GetHelpPage(const char *Cmd, const char **p)
   return NULL;
 }
 
+char *cSVDRP::grabImageDir = NULL;
+
 cSVDRP::cSVDRP(int Port)
 :socket(Port)
 {
@@ -663,6 +665,7 @@ void cSVDRP::CmdGRAB(const char *Option)
      const char *delim = " \t";
      char *strtok_next;
      FileName = strtok_r(p, delim, &strtok_next);
+     // image type:
      char *Extension = strrchr(FileName, '.');
      if (Extension) {
         if (strcasecmp(Extension, ".jpg") == 0 || strcasecmp(Extension, ".jpeg") == 0)
@@ -682,6 +685,7 @@ void cSVDRP::CmdGRAB(const char *Option)
         Reply(501, "Missing filename extension in \"%s\"", FileName);
         return;
         }
+     // image quality (and obsolete type):
      if ((p = strtok_r(NULL, delim, &strtok_next)) != NULL) {
         if (strcasecmp(p, "JPEG") == 0 || strcasecmp(p, "PNM") == 0) {
            // tolerate for backward compatibility
@@ -696,6 +700,7 @@ void cSVDRP::CmdGRAB(const char *Option)
               }
            }
         }
+     // image size:
      if ((p = strtok_r(NULL, delim, &strtok_next)) != NULL) {
         if (isnumber(p))
            SizeX = atoi(p);
@@ -720,19 +725,52 @@ void cSVDRP::CmdGRAB(const char *Option)
         Reply(501, "Unexpected parameter \"%s\"", p);
         return;
         }
+     // canonicalize the file name:
+     char RealFileName[PATH_MAX];
+     if (FileName) {
+        if (grabImageDir) {
+           char *s;
+           asprintf(&s, "%s/%s", grabImageDir, FileName);
+           FileName = s;
+           char *slash = strrchr(FileName, '/'); // there definitely is one
+           *slash = 0;
+           char *r = realpath(FileName, RealFileName);
+           *slash = '/';
+           if (!r) {
+              LOG_ERROR_STR(FileName);
+              Reply(501, "Illegal file name \"%s\"", FileName);
+              free(s);
+              return;
+              }
+           strcat(RealFileName, slash);
+           FileName = RealFileName;
+           free(s);
+           if (strncmp(FileName, grabImageDir, strlen(grabImageDir)) != 0) {
+              Reply(501, "Illegal file name \"%s\"", FileName);
+              return;
+              }
+           }
+        else {
+           Reply(550, "Grabbing to file not allowed (use \"GRAB -\" instead)");
+           return;
+           }
+        }
+     // actual grabbing:
      int ImageSize;
      uchar *Image = cDevice::PrimaryDevice()->GrabImage(ImageSize, Jpeg, Quality, SizeX, SizeY);
      if (Image) {
         if (FileName) {
-           FILE *f = fopen(FileName, "wb");
-           if (f) {
-              if (fwrite(Image, ImageSize, 1, f) == 1)
+           int fd = open(FileName, O_WRONLY | O_CREAT | O_NOFOLLOW | O_TRUNC, DEFFILEMODE);
+           if (fd >= 0) {
+              if (safe_write(fd, Image, ImageSize) == ImageSize) {
+                 isyslog("grabbed image to %s", FileName);
                  Reply(250, "Grabbed image %s", Option);
+                 }
               else {
                  LOG_ERROR_STR(FileName);
                  Reply(451, "Can't write to '%s'", FileName);
                  }
-              fclose(f);
+              close(fd);
               }
            else {
               LOG_ERROR_STR(FileName);
@@ -1528,6 +1566,12 @@ bool cSVDRP::Process(void)
      return true;
      }
   return false;
+}
+
+void cSVDRP::SetGrabImageDir(const char *GrabImageDir)
+{
+  free(grabImageDir);
+  grabImageDir = GrabImageDir ? strdup(GrabImageDir) : NULL;
 }
 
 //TODO more than one connection???

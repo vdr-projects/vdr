@@ -8,7 +8,7 @@
 .\" License as specified in the file COPYING that comes with the
 .\" vdr distribution.
 .\"
-.\" $Id: vdr.1 1.15 2005/10/09 12:31:03 kls Exp $
+.\" $Id: vdr.1 1.16 2005/12/30 15:09:01 kls Exp $
 .\"
 .TH vdr 1 "19 Dec 2004" "1.3.18" "Video Disk Recorder"
 .SH NAME
@@ -58,6 +58,13 @@ Write the EPG data into the given \fIfile\fR
 Use \fB\-E\-\fR to disable this.
 If \fIfile\fR is a directory, the file \fIepg.data\fR
 will be created in that directory.
+.TP
+.BI \-g,\ \-\-grab= dir
+Write images from the SVDRP command GRAB into the
+given directory \fIdir\fR. \fIdir\fR must be the full path name of an
+existing directory, without any "..", double '/'
+or symlinks. By default, or if \fB\-g\-\fR is given,
+grabbing images to disk is disabled.
 .TP
 .B \-h, \-\-help
 Print a help message and exit.

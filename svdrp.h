@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: svdrp.h 1.26 2005/11/27 15:26:42 kls Exp $
+ * $Id: svdrp.h 1.27 2005/12/30 14:46:38 kls Exp $
  */
 
 #ifndef __SVDRP_H
@@ -49,6 +49,7 @@ private:
   int length;
   char *cmdLine;
   time_t lastActivity;
+  static char *grabImageDir;
   void Close(bool Timeout = false);
   bool Send(const char *s, int length = -1);
   void Reply(int Code, const char *fmt, ...) __attribute__ ((format (printf, 3, 4)));
@@ -87,6 +88,7 @@ public:
   ~cSVDRP();
   bool HasConnection(void) { return file.IsOpen(); }
   bool Process(void);
+  static void SetGrabImageDir(const char *GrabImageDir);
   };
 
 #endif //__SVDRP_H

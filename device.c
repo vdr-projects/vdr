@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.113 2005/12/29 14:51:41 kls Exp $
+ * $Id: device.c 1.114 2005/12/30 13:48:29 kls Exp $
  */
 
 #include "device.h"
@@ -330,12 +330,12 @@ uchar *cDevice::GrabImage(int &Size, bool Jpeg, int Quality, int SizeX, int Size
 bool cDevice::GrabImageFile(const char *FileName, bool Jpeg, int Quality, int SizeX, int SizeY)
 {
   int result = 0;
-  FILE *f = fopen(FileName, "wb");
-  if (f) {
+  int fd = open(FileName, O_WRONLY | O_CREAT | O_NOFOLLOW | O_TRUNC, DEFFILEMODE);
+  if (fd >= 0) {
      int ImageSize;
      uchar *Image = GrabImage(ImageSize, Jpeg, Quality, SizeX, SizeY);
      if (Image) {
-        if (fwrite(Image, ImageSize, 1, f) == 1)
+        if (safe_write(fd, Image, ImageSize) == ImageSize)
            isyslog("grabbed image to %s", FileName);
         else {
            LOG_ERROR_STR(FileName);
@@ -345,7 +345,7 @@ bool cDevice::GrabImageFile(const char *FileName, bool Jpeg, int Quality, int Si
         }
      else
         result |= 1;
-     fclose(f);
+     close(fd);
      }
   else {
      LOG_ERROR_STR(FileName);

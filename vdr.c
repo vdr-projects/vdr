@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.222 2005/12/18 14:38:30 kls Exp $
+ * $Id: vdr.c 1.223 2005/12/30 15:07:47 kls Exp $
  */
 
 #include <getopt.h>
@@ -144,6 +144,7 @@ int main(int argc, char *argv[])
       { "daemon",   no_argument,       NULL, 'd' },
       { "device",   required_argument, NULL, 'D' },
       { "epgfile",  required_argument, NULL, 'E' },
+      { "grab",     required_argument, NULL, 'g' },
       { "help",     no_argument,       NULL, 'h' },
       { "lib",      required_argument, NULL, 'L' },
       { "lirc",     optional_argument, NULL, 'l' | 0x100 },
@@ -164,7 +165,7 @@ int main(int argc, char *argv[])
     };
 
   int c;
-  while ((c = getopt_long(argc, argv, "a:c:dD:E:hl:L:mp:P:r:s:t:v:Vw:", long_options, NULL)) != -1) {
+  while ((c = getopt_long(argc, argv, "a:c:dD:E:g:hl:L:mp:P:r:s:t:v:Vw:", long_options, NULL)) != -1) {
         switch (c) {
           case 'a': AudioCommand = optarg;
                     break;
@@ -182,6 +183,8 @@ int main(int argc, char *argv[])
                     return 2;
                     break;
           case 'E': EpgDataFileName = (*optarg != '-' ? optarg : NULL);
+                    break;
+          case 'g': cSVDRP::SetGrabImageDir(*optarg != '-' ? optarg : NULL);
                     break;
           case 'h': DisplayHelp = true;
                     break;
@@ -290,6 +293,10 @@ int main(int argc, char *argv[])
                "                           '-E-' disables this\n"
                "                           if FILE is a directory, the default EPG file will be\n"
                "                           created in that directory\n"
+               "  -g DIR    --grab=DIR     write images from the SVDRP command GRAB into the\n"
+               "                           given DIR; DIR must be the full path name of an\n"
+               "                           existing directory, without any \"..\", double '/'\n"
+               "                           or symlinks (default: none, same as -g-)\n"
                "  -h,       --help         print this help and exit\n"
                "  -l LEVEL, --log=LEVEL    set log level (default: 3)\n"
                "                           0 = no logging, 1 = errors only,\n"

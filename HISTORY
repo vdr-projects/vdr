@@ -3963,7 +3963,7 @@ Video Disk Recorder Revision History
   commands may now be executed at any time, and the message will be displayed
   (no more "pending message").
 
-2005-12-29: Version 1.3.38
+2005-12-30: Version 1.3.38
 
 - Fixed handling second audio and Dolby Digital PIDs for encrypted channels
   (was broken in version 1.3.37).
@@ -4023,3 +4023,17 @@ Video Disk Recorder Revision History
   (encoded in base64) if the given file name consists of only the file
   extension (".jpg", ".jpeg" or ".pnm"), or if only "-" is given as file
   name (based on a suggestion from Darren Salt).
+- The new command line option '-g' must be given if the SVDRP command GRAB
+  shall be allowed to write image files to disk. The parameter to this option
+  must be the full path name of an existing directory, without any "..", double
+  '/' or symlinks. By default, or if "-g- is given, grabbing to files is
+  not allowed any more because of potential security risks.
+- Modified the way the SVDRP command GRAB writes the grabbed image to a file
+  to avoid a security hole (CAN-2005-0071, reported by Javier Fernández-Sanguino
+  Peña):
+  + The file handle is now opened in a way that it won't follow symbolic links
+    (suggested by Darren Salt).
+  + The given file name is now canonicalized, so that it won't contain any
+    ".." or symlinks (suggested by Darren Salt).
+  + Grabbing to files is limited to the directory given in the the command
+    line option '-g'. By default grabbing to files is not allowed any more.
