@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.87 2005/12/29 15:48:46 kls Exp $
+ * $Id: tools.h 1.88 2005/12/30 11:27:23 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -142,8 +142,8 @@ private:
 public:
   cBase64Encoder(const uchar *Data, int Length, int MaxResult = 64);
       ///< Sets up a new base 64 encoder for the given Data, with the given Length.
-      ///< Data will not be copied and must be valid for the entire lifetime of the
-      ///< encoder. MaxResult defines the maximum number of characters in any
+      ///< Data will not be copied and must be valid as long as NextLine() will be
+      ///< called. MaxResult defines the maximum number of characters in any
       ///< result line. The resulting lines may be shorter than MaxResult in case
       ///< its value is not a multiple of 4.
   ~cBase64Encoder();
@@ -151,7 +151,8 @@ public:
       ///< Returns the next line of encoded data (terminated by '\0'), or NULL if
       ///< there is no more encoded data. The caller must call NextLine() and process
       ///< each returned line until NULL is returned, in order to get the entire
-      ///< data encoded.
+      ///< data encoded. The returned data is only valid until the next time NextLine()
+      ///< is called, or until the object is destroyed.
   };
 
 class cTimeMs {
