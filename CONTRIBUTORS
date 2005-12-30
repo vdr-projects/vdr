@@ -1369,6 +1369,7 @@ Darren Salt <linux@youmustbejoking.demon.co.uk>
  for a patch that was used to add the command line options '--lirc', '--rcu' and
  '--no-kbd'
  for adding '__attribute__' to functions that use printf() like parameters
+ for suggesting to write grabbed images to the SVDRP connection encoded in base64
 
 Sean Carlos <seanc@libero.it>
  for translating OSD texts to the Italian language

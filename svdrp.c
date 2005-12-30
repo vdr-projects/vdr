@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.86 2005/12/29 13:33:43 kls Exp $
+ * $Id: svdrp.c 1.87 2005/12/30 10:27:23 kls Exp $
  */
 
 #include "svdrp.h"
@@ -204,9 +204,13 @@ const char *HelpPages[] = {
   "GRAB <filename> [ <quality> [ <sizex> <sizey> ] ]\n"
   "    Grab the current frame and save it to the given file. Images can\n"
   "    be stored as JPEG or PNM, depending on the given file name extension.\n"
-  "    The quality of the grabbed image (only applies to JPEG) can be in the\n"
-  "    range 0..100, where 100 means \"best\". The size parameters define the\n"
-  "    size of the resulting image (default is full screen).",
+  "    The quality of the grabbed image can be in the range 0..100, where 100\n"
+  "    (the default) means \"best\" (only applies to JPEG). The size parameters\n"
+  "    define the size of the resulting image (default is full screen).\n"
+  "    If the file name is just an extension (.jpg, .jpeg or .pnm) the image\n"
+  "    data will be sent to the SVDRP connection encoded in base64. The same\n"
+  "    happens if '-' (a minus sign) is given as file name, in which case the\n"
+  "    image format defaults to JPEG.",
   "HELP [ <topic> ]\n"
   "    The HELP command gives help info.",
   "HITK [ <key> ]\n"
@@ -309,6 +313,7 @@ const char *HelpPages[] = {
 
  214 Help message
  215 EPG or recording data record
+ 216 Image grab data (base 64)
  220 VDR service ready
  221 VDR service closing transmission channel
  250 Requested VDR action okay, completed
@@ -668,7 +673,11 @@ void cSVDRP::CmdGRAB(const char *Option)
            Reply(501, "Unknown image type \"%s\"", Extension + 1);
            return;
            }
+        if (Extension == FileName)
+           FileName = NULL;
         }
+     else if (strcmp(FileName, "-") == 0)
+        FileName = NULL;
      else {
         Reply(501, "Missing filename extension in \"%s\"", FileName);
         return;
@@ -711,8 +720,34 @@ void cSVDRP::CmdGRAB(const char *Option)
         Reply(501, "Unexpected parameter \"%s\"", p);
         return;
         }
-     if (cDevice::PrimaryDevice()->GrabImageFile(FileName, Jpeg, Quality, SizeX, SizeY))
-        Reply(250, "Grabbed image %s", Option);
+     int ImageSize;
+     uchar *Image = cDevice::PrimaryDevice()->GrabImage(ImageSize, Jpeg, Quality, SizeX, SizeY);
+     if (Image) {
+        if (FileName) {
+           FILE *f = fopen(FileName, "wb");
+           if (f) {
+              if (fwrite(Image, ImageSize, 1, f) == 1)
+                 Reply(250, "Grabbed image %s", Option);
+              else {
+                 LOG_ERROR_STR(FileName);
+                 Reply(451, "Can't write to '%s'", FileName);
+                 }
+              fclose(f);
+              }
+           else {
+              LOG_ERROR_STR(FileName);
+              Reply(451, "Can't open '%s'", FileName);
+              }
+           }
+        else {
+           cBase64Encoder Base64(Image, ImageSize);
+           const char *s;
+           while ((s = Base64.NextLine()) != NULL)
+                 Reply(-216, s);
+           Reply(216, "Grabbed image %s", Option);
+           }
+        free(Image);
+        }
      else
         Reply(451, "Grab image failed");
      }

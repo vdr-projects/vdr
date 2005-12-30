@@ -4019,3 +4019,7 @@ Video Disk Recorder Revision History
   need to be adapted to the new interface.
 - The new class cBase64Encoder (see tools.h) can be used to encode data in
   base64 (thanks to Bob Withers for publishing his Base64 class).
+- The SVDRP command GRAB now writes the image data to the SVDRP connection
+  (encoded in base64) if the given file name consists of only the file
+  extension (".jpg", ".jpeg" or ".pnm"), or if only "-" is given as file
+  name (based on a suggestion from Darren Salt).
