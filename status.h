@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: status.h 1.8 2005/01/09 11:50:21 kls Exp $
+ * $Id: status.h 1.9 2005/12/31 15:15:25 kls Exp $
  */
 
 #ifndef __STATUS_H
@@ -24,15 +24,17 @@ protected:
                // Indicates a channel switch on the given DVB device.
                // If ChannelNumber is 0, this is before the channel is being switched,
                // otherwise ChannelNumber is the number of the channel that has been switched to.
-  virtual void Recording(const cDevice *Device, const char *Name) {}
-               // The given DVB device has started recording Name. Name is the name of the
-               // recording, without any directory path.
-               // If Name is NULL, the recording has ended. 
-  virtual void Replaying(const cControl *Control, const char *Name) {}
-               // The given player control has started replaying Name. Name is the name of the
-               // recording, without any directory path. In case of a player that can't provide
+  virtual void Recording(const cDevice *Device, const char *Name, const char *FileName, bool On) {}
+               // The given DVB device has started (On = true) or stopped (On = false) recording Name.
+               // Name is the name of the recording, without any directory path. The full file name
+               // of the recording is given in FileName, which may be NULL in case there is no
+               // actual file involved. If On is false, Name may be NULL.
+  virtual void Replaying(const cControl *Control, const char *Name, const char *FileName, bool On) {}
+               // The given player control has started (On = true) or stopped (On = false) replaying Name.
+               // Name is the name of the recording, without any directory path. In case of a player that can't provide
                // a name, Name can be a string that identifies the player type (like, e.g., "DVD").
-               // If Name is NULL, the replay has ended. 
+               // The full file name of the recording is given in FileName, which may be NULL in case there is no
+               // actual file involved. If On is false, Name may be NULL.
   virtual void SetVolume(int Volume, bool Absolute) {}
                // The volume has been set to the given value, either
                // absolutely or relative to the current volume.
@@ -70,8 +72,8 @@ public:
   virtual ~cStatus();
   // These functions are called whenever the related status information changes:
   static void MsgChannelSwitch(const cDevice *Device, int ChannelNumber);
-  static void MsgRecording(const cDevice *Device, const char *Name);
-  static void MsgReplaying(const cControl *Control, const char *Name);
+  static void MsgRecording(const cDevice *Device, const char *Name, const char *FileName, bool On);
+  static void MsgReplaying(const cControl *Control, const char *Name, const char *FileName, bool On);
   static void MsgSetVolume(int Volume, bool Absolute);
   static void MsgSetAudioTrack(int Index, const char * const *Tracks);
   static void MsgSetAudioChannel(int AudioChannel);

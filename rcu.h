@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: rcu.h 1.5 2005/12/16 14:21:20 kls Exp $
+ * $Id: rcu.h 1.6 2005/12/31 15:09:25 kls Exp $
  */
 
 #ifndef __RCU_H
@@ -35,7 +35,7 @@ private:
   bool DetectCode(unsigned char *Code);
   virtual void Action(void);
   virtual void ChannelSwitch(const cDevice *Device, int ChannelNumber);
-  virtual void Recording(const cDevice *Device, const char *Name);
+  virtual void Recording(const cDevice *Device, const char *Name, const char *FileName, bool On);
 public:
   cRcuRemote(const char *DeviceName);
   virtual ~cRcuRemote();

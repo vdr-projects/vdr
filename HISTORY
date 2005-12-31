@@ -4047,3 +4047,7 @@ Video Disk Recorder Revision History
   longer run as user 'root' (unless you explicitly start it with '-u root',
   but this is not recommended!). The 'runvdr' script has been changed to
   use the '-u' option.
+- Changed the API of the functions cStatus::Recording() and cStatus::Replaying(),
+  so that they can provide the full file name of the recording. Plugins that use
+  these (or the related cStatus::Msg...() functions) need to be adapted
+  (suggested by Andreas Brugger).

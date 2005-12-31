@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: rcu.c 1.11 2005/12/16 14:43:37 kls Exp $
+ * $Id: rcu.c 1.12 2005/12/31 15:09:32 kls Exp $
  */
 
 #include "rcu.h"
@@ -322,7 +322,7 @@ void cRcuRemote::ChannelSwitch(const cDevice *Device, int ChannelNumber)
      SetNumber(cDevice::CurrentChannel());
 }
 
-void cRcuRemote::Recording(const cDevice *Device, const char *Name)
+void cRcuRemote::Recording(const cDevice *Device, const char *Name, const char *FileName, bool On)
 {
   SetPoints(1 << Device->DeviceNumber(), Device->Receiving());
 }

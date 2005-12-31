@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: status.c 1.7 2005/01/09 11:51:04 kls Exp $
+ * $Id: status.c 1.8 2005/12/31 15:10:10 kls Exp $
  */
 
 #include "status.h"
@@ -29,16 +29,16 @@ void cStatus::MsgChannelSwitch(const cDevice *Device, int ChannelNumber)
       sm->ChannelSwitch(Device, ChannelNumber);
 }
 
-void cStatus::MsgRecording(const cDevice *Device, const char *Name)
+void cStatus::MsgRecording(const cDevice *Device, const char *Name, const char *FileName, bool On)
 {
   for (cStatus *sm = statusMonitors.First(); sm; sm = statusMonitors.Next(sm))
-      sm->Recording(Device, Name);
+      sm->Recording(Device, Name, FileName, On);
 }
 
-void cStatus::MsgReplaying(const cControl *Control, const char *Name)
+void cStatus::MsgReplaying(const cControl *Control, const char *Name, const char *FileName, bool On)
 {
   for (cStatus *sm = statusMonitors.First(); sm; sm = statusMonitors.Next(sm))
-      sm->Replaying(Control, Name);
+      sm->Replaying(Control, Name, FileName, On);
 }
 
 void cStatus::MsgSetVolume(int Volume, bool Absolute)
