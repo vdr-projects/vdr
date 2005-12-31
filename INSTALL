@@ -132,6 +132,19 @@ call to the VDR program, be sure to NOT use the '-d' option! Otherwise
 VDR will go into 'deamon' mode and the initial program call will return
 immediately!
 
+Setting the system time:
+------------------------
+
+If you want VDR to set the system time according to the data received
+from the transponder, you need to start VDR as user 'root'. VDR will
+then only keep the capability to set the system time, and set its
+user id to a lesser privileged one ('vdr' by default, can be set
+to a different value with the '-u' option).
+You also need to enable the "EPG/Set system time" option in VDR's
+Setup menu, and select a transponder from which you want to receive
+the time in "Use time from transponder". Make sure you select a transponder
+that has a reliable clock - some transponders are quite off.
+
 Automatic shutdown:
 -------------------
 

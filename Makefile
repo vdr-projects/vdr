@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 1.79 2005/09/02 14:23:38 kls Exp $
+# $Id: Makefile 1.80 2005/12/31 10:14:33 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -27,7 +27,7 @@ endif
 LSIDIR   = ./libsi
 MANDIR   = /usr/local/man
 BINDIR   = /usr/local/bin
-LIBS     = -ljpeg -lpthread -ldl
+LIBS     = -ljpeg -lpthread -ldl -lcap
 INCLUDES =
 
 PLUGINDIR= ./PLUGINS

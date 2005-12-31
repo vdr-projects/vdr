@@ -22,13 +22,17 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.223 2005/12/30 15:07:47 kls Exp $
+ * $Id: vdr.c 1.224 2005/12/31 13:30:11 kls Exp $
  */
 
 #include <getopt.h>
+#include <grp.h>
 #include <locale.h>
+#include <pwd.h>
 #include <signal.h>
 #include <stdlib.h>
+#include <sys/capability.h>
+#include <sys/prctl.h>
 #include <termios.h>
 #include <unistd.h>
 #include "audio.h"
@@ -72,6 +76,57 @@
 
 static int Interrupted = 0;
 
+static bool SetUser(const char *UserName)
+{
+  if (UserName) {
+     struct passwd *user = getpwnam(UserName);
+     if (!user) {
+        fprintf(stderr, "vdr: unknown user: '%s'\n", UserName);
+        return false;
+        }
+     if (setgid(user->pw_gid) < 0) {
+        fprintf(stderr, "vdr: cannot set group id %u: %s\n", (unsigned int)user->pw_gid, strerror(errno));
+        return false;
+        }
+     if (initgroups(user->pw_name, user->pw_gid) < 0) {
+        fprintf(stderr, "vdr: cannot set supplemental group ids for user %s: %s\n", user->pw_name, strerror(errno));
+        return false;
+        }
+     if (setuid(user->pw_uid) < 0) {
+        fprintf(stderr, "vdr: cannot set user id %u: %s\n", (unsigned int)user->pw_uid, strerror(errno));
+        return false;
+        }
+     }
+  return true;
+}
+
+static bool SetCapSysTime(void)
+{
+  // drop all capabilities except cap_sys_time
+  cap_t caps = cap_from_text("= cap_sys_time=ep");
+  if (!caps) {
+     fprintf(stderr, "vdr: cap_from_text failed: %s\n", strerror(errno));
+     return false;
+     }
+  if (cap_set_proc(caps) == -1) {
+     fprintf(stderr, "vdr: cap_set_proc failed: %s\n", strerror(errno));
+     cap_free(caps);
+     return false;
+     }
+  cap_free(caps);
+  return true;
+}
+
+static bool SetKeepCaps(bool On)
+{
+  // set keeping capabilities during setuid() on/off
+  if (prctl(PR_SET_KEEPCAPS, On ? 1 : 0, 0, 0, 0) != 0) {
+     fprintf(stderr, "vdr: prctl failed\n");
+     return false;
+     }
+  return true;
+}
+
 static void SignalHandler(int signum)
 {
   if (signum != SIGPIPE) {
@@ -102,11 +157,14 @@ int main(int argc, char *argv[])
 
   // Command line options:
 
+#define DEFAULTVDRUSER   "vdr"
 #define DEFAULTSVDRPPORT 2001
 #define DEFAULTWATCHDOG     0 // seconds
 #define DEFAULTPLUGINDIR PLUGINDIR
 #define DEFAULTEPGDATAFILENAME "epg.data"
 
+  bool StartedAsRoot = false;
+  const char *VdrUser = DEFAULTVDRUSER;
   int SVDRPport = DEFAULTSVDRPPORT;
   const char *AudioCommand = NULL;
   const char *ConfigDirectory = NULL;
@@ -157,6 +215,7 @@ int main(int argc, char *argv[])
       { "record",   required_argument, NULL, 'r' },
       { "shutdown", required_argument, NULL, 's' },
       { "terminal", required_argument, NULL, 't' },
+      { "user",     required_argument, NULL, 'u' },
       { "version",  no_argument,       NULL, 'V' },
       { "vfat",     no_argument,       NULL, 'v' | 0x100 },
       { "video",    required_argument, NULL, 'v' },
@@ -165,7 +224,7 @@ int main(int argc, char *argv[])
     };
 
   int c;
-  while ((c = getopt_long(argc, argv, "a:c:dD:E:g:hl:L:mp:P:r:s:t:v:Vw:", long_options, NULL)) != -1) {
+  while ((c = getopt_long(argc, argv, "a:c:dD:E:g:hl:L:mp:P:r:s:t:u:v:Vw:", long_options, NULL)) != -1) {
         switch (c) {
           case 'a': AudioCommand = optarg;
                     break;
@@ -251,6 +310,9 @@ int main(int argc, char *argv[])
                        return 2;
                        }
                     break;
+          case 'u': if (*optarg)
+                       VdrUser = optarg;
+                    break;
           case 'V': DisplayVersion = true;
                     break;
           case 'v' | 0x100:
@@ -273,6 +335,20 @@ int main(int argc, char *argv[])
           }
         }
 
+  // Set user id in case we were started as root:
+
+  if (getuid() == 0) {
+     StartedAsRoot = true;
+     if (!SetKeepCaps(true))
+        return 2;
+     if (!SetUser(VdrUser))
+        return 2;
+     if (!SetKeepCaps(false))
+        return 2;
+     if (!SetCapSysTime())
+        return 2;
+     }
+
   // Help and version info:
 
   if (DisplayHelp || DisplayVersion) {
@@ -288,12 +364,12 @@ int main(int argc, char *argv[])
                "  -D NUM,   --device=NUM   use only the given DVB device (NUM = 0, 1, 2...)\n"
                "                           there may be several -D options (default: all DVB\n"
                "                           devices will be used)\n"
-               "  -E FILE   --epgfile=FILE write the EPG data into the given FILE (default is\n"
+               "  -E FILE,  --epgfile=FILE write the EPG data into the given FILE (default is\n"
                "                           '%s' in the video directory)\n"
                "                           '-E-' disables this\n"
                "                           if FILE is a directory, the default EPG file will be\n"
                "                           created in that directory\n"
-               "  -g DIR    --grab=DIR     write images from the SVDRP command GRAB into the\n"
+               "  -g DIR,   --grab=DIR     write images from the SVDRP command GRAB into the\n"
                "                           given DIR; DIR must be the full path name of an\n"
                "                           existing directory, without any \"..\", double '/'\n"
                "                           or symlinks (default: none, same as -g-)\n"
@@ -316,6 +392,8 @@ int main(int argc, char *argv[])
                "  -r CMD,   --record=CMD   call CMD before and after a recording\n"
                "  -s CMD,   --shutdown=CMD call CMD to shutdown the computer\n"
                "  -t TTY,   --terminal=TTY controlling tty\n"
+               "  -u USER,  --user=USER    run as user USER (default: %s); only applicable\n"
+               "                           if started as root\n"
                "  -v DIR,   --video=DIR    use DIR as video directory (default: %s)\n"
                "  -V,       --version      print version information and exit\n"
                "            --vfat         encode special characters in recording names to\n"
@@ -328,6 +406,7 @@ int main(int argc, char *argv[])
                LIRC_DEVICE,
                DEFAULTSVDRPPORT,
                RCU_DEVICE,
+               DEFAULTVDRUSER,
                VideoDirectory,
                DEFAULTWATCHDOG
                );
@@ -378,7 +457,7 @@ int main(int argc, char *argv[])
 
   if (DaemonMode) {
      if (daemon(1, 0) == -1) {
-        fprintf(stderr, "%m\n");
+        fprintf(stderr, "vdr: %m\n");
         esyslog("ERROR: %m");
         return 2;
         }
@@ -392,6 +471,8 @@ int main(int argc, char *argv[])
      }
 
   isyslog("VDR version %s started", VDRVERSION);
+  if (StartedAsRoot)
+     isyslog("switched to user '%s'", VdrUser);
 
   // Main program loop variables - need to be here to have them initialized before any EXIT():
 

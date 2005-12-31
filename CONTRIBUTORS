@@ -824,6 +824,7 @@ Ludwig Nussel <ludwig.nussel@web.de>
  cThread::Start()
  for removing the LOCK_THREAD from the LIRC thread
  for making the Makefile patch friendlier
+ for a patch that was used for implementing setting the user id
 
 Thomas Koch <tom@harhar.net>
  for his support in keeping the Premiere World channels up to date in 'channels.conf'

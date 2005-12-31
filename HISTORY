@@ -3963,7 +3963,7 @@ Video Disk Recorder Revision History
   commands may now be executed at any time, and the message will be displayed
   (no more "pending message").
 
-2005-12-30: Version 1.3.38
+2005-12-31: Version 1.3.38
 
 - Fixed handling second audio and Dolby Digital PIDs for encrypted channels
   (was broken in version 1.3.37).
@@ -4040,3 +4040,10 @@ Video Disk Recorder Revision History
 - Updated the Greek OSD texts (thanks to Dimitrios Dimitrakos).
 - Changed all "illegal" to "invalid" in error messages (there's nothing "illegal"
   in VDR ;-).
+- When started as user 'root' VDR now switches to a lesser privileged user id,
+  keeping the capability to set the system time (based on a patch from Ludwig
+  Nussel). By default the user id 'vdr' is used, which can be changed through
+  the new command line option '-u'. Note that for security reasons VDR will no
+  longer run as user 'root' (unless you explicitly start it with '-u root',
+  but this is not recommended!). The 'runvdr' script has been changed to
+  use the '-u' option.

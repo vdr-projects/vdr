@@ -7,7 +7,7 @@
 #
 # Set the environment variable VDRUSR to the user id you
 # want VDR to run with. If VDRUSR is not set, VDR will run
-# as 'root', which is not necessarily advisable.
+# as user 'vdr'.
 #
 # Since this script loads the DVB driver, it must be started
 # as user 'root'.
@@ -18,11 +18,11 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: runvdr 1.14 2004/11/21 11:30:00 kls Exp $
+# $Id: runvdr 1.15 2005/12/31 13:30:11 kls Exp $
 
 DVBDIR="../DVB/driver"
 VDRPRG="./vdr"
-VDRCMD="$VDRPRG -w 60 $*"
+VDRCMD="$VDRPRG -u $VDRUSR -w 60 $*"
 
 LSMOD="`/sbin/lsmod | grep -w '^dvb' | wc -l`"
 KILL="/usr/bin/killall -q -TERM"
@@ -33,7 +33,7 @@ if [ $LSMOD -eq 0 ] ; then
    fi
 
 while (true) do
-      su $VDRUSR -c "$VDRCMD"
+      $VDRCMD
       if test $? -eq 0 -o $? -eq 2; then exit; fi
       date
       echo "restarting VDR"
