@@ -1582,3 +1582,7 @@ Bob Withers <bwit@pobox.com>
 Javier Fernández-Sanguino Peña <jfs@computer.org>
  for reporting a security hole in the way the SVDRP command GRAB writes the
  image file
+
+Jürgen Schneider <ivory7@gmx.de>
+ for a patch that was used as a base to fix handling multi byte key sequences
+ in cKbdRemote

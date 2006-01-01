@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remote.h 1.31 2005/09/03 12:28:42 kls Exp $
+ * $Id: remote.h 1.32 2006/01/01 14:00:50 kls Exp $
  */
 
 #ifndef __REMOTE_H
@@ -89,6 +89,8 @@ private:
   static bool rawMode;
   struct termios savedTm;
   virtual void Action(void);
+  int ReadKey(void);
+  uint64 ReadKeySequence(void);
   int MapCodeToFunc(uint64 Code);
 public:
   cKbdRemote(void);

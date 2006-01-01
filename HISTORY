@@ -4053,3 +4053,5 @@ Video Disk Recorder Revision History
   (suggested by Andreas Brugger).
 - The DVB devices now retune (and, if applicable, resend the DiSEqC data) if
   the lock is lost (based on a patch from Reinhard Nissl).
+- Fixed handling multi byte key sequences in cKbdRemote (based on a patch from
+  Jürgen Schneider).
