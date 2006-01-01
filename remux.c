@@ -11,7 +11,7 @@
  * The cRepacker family's code was originally written by Reinhard Nissl <rnissl@gmx.de>,
  * and adapted to the VDR coding style by Klaus.Schmidinger@cadsoft.de.
  *
- * $Id: remux.c 1.50 2005/12/04 13:56:50 kls Exp $
+ * $Id: remux.c 1.51 2006/01/01 14:58:53 kls Exp $
  */
 
 #include "remux.h"
@@ -246,7 +246,8 @@ private:
     syncing,
     findPicture,
     scanPicture
-    } state;
+    };
+  int state;
 public:
   cVideoRepacker(void);
   virtual void Reset(void);
@@ -380,13 +381,13 @@ void cVideoRepacker::Repack(cRingBufferLinear *ResultBuffer, const uchar *Data, 
                      // maximum we can hold in one PES packet
                      packetTodo = maxPacketSize - pesHeaderLen;
                      // go on with finding the picture data
-                     ((int &)state)++;
+                     state++;
                      }
                   break;
              case 0x01 ... 0xAF: // slice start codes
                   if (state == findPicture) {
                      // go on with scanning the picture data
-                     ((int &)state)++;
+                     state++;
                      }
                   break;
              }
@@ -547,7 +548,8 @@ private:
   enum eState {
     syncing,
     scanFrame
-    } state;
+    };
+  int state;
   int frameTodo;
   int frameSize;
   int cid;
@@ -747,7 +749,7 @@ void cAudioRepacker::Repack(cRingBufferLinear *ResultBuffer, const uchar *Data, 
                  // expected remainder of audio frame: so far we have read 3 bytes from the frame header 
                  frameTodo = frameSize - 3;
                  // go on with collecting the frame's data
-                 ((int &)state)++;
+                 state++;
                  }
               }
            }
@@ -928,14 +930,15 @@ private:
   uchar chk1;
   uchar chk2;
   int ac3todo;
-  enum {
+  enum eState {
     find_0b,
     find_77,
     store_chk1,
     store_chk2,
     get_length,
     output_packet
-    } state;
+    };
+  int state;
   int skippedBytes;
   void ResetPesHeader(bool ContinuationFrame = false);
   void AppendSubStreamID(bool ContinuationFrame = false);
@@ -1120,7 +1123,7 @@ void cDolbyRepacker::Repack(cRingBufferLinear *ResultBuffer, const uchar *Data, 
         switch (state) {
           case find_0b:
                if (*data == 0x0B) {
-                  ++(int &)state;
+                  state++;
                   // copy header information once for later use
                   if (pesHeaderBackupLen > 0) {
                      pesHeaderLen = pesHeaderBackupLen;
@@ -1143,21 +1146,21 @@ void cDolbyRepacker::Repack(cRingBufferLinear *ResultBuffer, const uchar *Data, 
                done++;
                todo--;
                skippedBytes++; // collect number of skipped bytes while syncing
-               ++(int &)state;
+               state++;
                continue;
           case store_chk1:
                chk1 = *data++;
                done++;
                todo--;
                skippedBytes++; // collect number of skipped bytes while syncing
-               ++(int &)state;
+               state++;
                continue;
           case store_chk2:
                chk2 = *data++;
                done++;
                todo--;
                skippedBytes++; // collect number of skipped bytes while syncing
-               ++(int &)state;
+               state++;
                continue;
           case get_length:
                ac3todo = 2 * frameSizes[*data];
@@ -1195,7 +1198,7 @@ void cDolbyRepacker::Repack(cRingBufferLinear *ResultBuffer, const uchar *Data, 
                pesHeader[pesHeaderLen++] = chk1;
                pesHeader[pesHeaderLen++] = chk2;
                ac3todo -= 4;
-               ++(int &)state;
+               state++;
                // fall through to output
           case output_packet: {
                int bite = 0;

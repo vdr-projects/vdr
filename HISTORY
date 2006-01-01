@@ -4060,3 +4060,5 @@ Video Disk Recorder Revision History
 - Made the static cControl functions thread safe (thanks to Patrick Fischer).
 - Fixed initializing pthread_mutexattr_t and pthread_rwlockattr_t to avoid
   warnings with g++ 4.1.0 (thanks to Ville Skyttä).
+- Fixed incrementing the 'state' variables in the repacker classes in remux.c
+  to avoid warnings with g++ 4.1.0 (reported by Ville Skyttä).
