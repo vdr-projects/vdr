@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: player.h 1.17 2005/05/22 11:07:42 kls Exp $
+ * $Id: player.h 1.18 2006/01/01 14:43:10 kls Exp $
  */
 
 #ifndef __PLAYER_H
@@ -62,6 +62,7 @@ public:
 class cControl : public cOsdObject {
 private:
   static cControl *control;
+  static cMutex mutex;
   bool attached;
   bool hidden;
 protected:
