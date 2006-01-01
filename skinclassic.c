@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinclassic.c 1.12 2005/05/16 10:45:07 kls Exp $
+ * $Id: skinclassic.c 1.13 2006/01/01 14:37:58 kls Exp $
  */
 
 #include "skinclassic.h"
@@ -378,7 +378,6 @@ private:
   int x0, x1;
   int y0, y1, y2, y3;
   int lastCurrentWidth;
-  bool message;
 public:
   cSkinClassicDisplayReplay(bool ModeOnly);
   virtual ~cSkinClassicDisplayReplay();
@@ -397,7 +396,6 @@ cSkinClassicDisplayReplay::cSkinClassicDisplayReplay(bool ModeOnly)
   const cFont *font = cFont::GetFont(fontOsd);
   int lineHeight = font->Height();
   lastCurrentWidth = 0;
-  message = false;
   x0 = 0;
   x1 = Setup.OSDWidth;
   y0 = 0;
@@ -467,12 +465,9 @@ void cSkinClassicDisplayReplay::SetMessage(eMessageType Type, const char *Text)
   if (Text) {
      osd->SaveRegion(x0, y2, x1 - 1, y3 - 1);
      osd->DrawText(x0, y2, Text, Theme.Color(clrMessageStatusFg + 2 * Type), Theme.Color(clrMessageStatusBg + 2 * Type), font, x1 - x0, y3 - y2, taCenter);
-     message = true;
      }
-  else {
+  else
      osd->RestoreRegion();
-     message = false;
-     }
 }
 
 void cSkinClassicDisplayReplay::Flush(void)

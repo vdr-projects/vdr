@@ -1260,6 +1260,7 @@ Marco Schlüßler <marco@lordzodiac.de>
  repeating timer
  for figuring out some obscure length bytes the the CA PMT Reply data of AlphaCrypt CAMs
  for fixing handling OSD areas that have invalid sizes
+ for removing unused variables in skinclassic.c and skinsttng.c
 
 Jürgen Schmitz <j.schmitz@web.de>
  for reporting a bug in displaying the current channel when switching via the SVDRP
