@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.h 1.20 2005/12/27 14:27:26 kls Exp $
+ * $Id: timers.h 1.21 2006/01/01 15:41:26 kls Exp $
  */
 
 #ifndef __TIMERS_H
@@ -41,7 +41,7 @@ private:
   char *summary;
   const cEvent *event;
 public:
-  cTimer(bool Instant = false, bool Pause = false);
+  cTimer(bool Instant = false, bool Pause = false, cChannel *Channel = NULL);
   cTimer(const cEvent *Event);
   virtual ~cTimer();
   cTimer& operator= (const cTimer &Timer);

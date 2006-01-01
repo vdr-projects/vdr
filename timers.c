@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 1.37 2005/12/27 14:33:14 kls Exp $
+ * $Id: timers.c 1.38 2006/01/01 15:41:46 kls Exp $
  */
 
 #include "timers.h"
@@ -20,14 +20,14 @@
 
 // -- cTimer -----------------------------------------------------------------
 
-cTimer::cTimer(bool Instant, bool Pause)
+cTimer::cTimer(bool Instant, bool Pause, cChannel *Channel)
 {
   startTime = stopTime = 0;
   recording = pending = inVpsMargin = false;
   flags = tfNone;
   if (Instant)
      SetFlags(tfActive | tfInstant);
-  channel = Channels.GetByNumber(cDevice::CurrentChannel());
+  channel = Channel ? Channel : Channels.GetByNumber(cDevice::CurrentChannel());
   time_t t = time(NULL);
   struct tm tm_r;
   struct tm *now = localtime_r(&t, &tm_r);
