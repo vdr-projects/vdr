@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.143 2005/12/29 13:49:09 kls Exp $
+ * $Id: dvbdevice.c 1.144 2006/01/01 12:03:31 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -40,6 +40,13 @@
 #define DEV_DVB_AUDIO     "audio"
 #define DEV_DVB_CA        "ca"
 
+#define DVBS_TUNE_TIMEOUT  1000 //ms
+#define DVBS_LOCK_TIMEOUT  1000 //ms
+#define DVBC_TUNE_TIMEOUT  1000 //ms
+#define DVBC_LOCK_TIMEOUT  1000 //ms
+#define DVBT_TUNE_TIMEOUT  1000 //ms
+#define DVBT_LOCK_TIMEOUT  1000 //ms
+
 class cDvbName {
 private:
   char buffer[PATH_MAX];
@@ -66,6 +73,8 @@ private:
   enum eTunerStatus { tsIdle, tsSet, tsTuned, tsLocked };
   int fd_frontend;
   int cardIndex;
+  int tuneTimeout;
+  int lockTimeout;
   fe_type_t frontendType;
   cCiHandler *ciHandler;
   cChannel channel;
@@ -238,6 +247,9 @@ bool cDvbTuner::SetFrontend(void)
          Frontend.inversion = fe_spectral_inversion_t(channel.Inversion());
          Frontend.u.qpsk.symbol_rate = channel.Srate() * 1000UL;
          Frontend.u.qpsk.fec_inner = fe_code_rate_t(channel.CoderateH());
+
+         tuneTimeout = DVBS_TUNE_TIMEOUT;
+         lockTimeout = DVBS_LOCK_TIMEOUT;
          }
          break;
     case FE_QAM: { // DVB-C
@@ -249,6 +261,9 @@ bool cDvbTuner::SetFrontend(void)
          Frontend.u.qam.symbol_rate = channel.Srate() * 1000UL;
          Frontend.u.qam.fec_inner = fe_code_rate_t(channel.CoderateH());
          Frontend.u.qam.modulation = fe_modulation_t(channel.Modulation());
+
+         tuneTimeout = DVBC_TUNE_TIMEOUT;
+         lockTimeout = DVBC_LOCK_TIMEOUT;
          }
          break;
     case FE_OFDM: { // DVB-T
@@ -264,6 +279,9 @@ bool cDvbTuner::SetFrontend(void)
          Frontend.u.ofdm.transmission_mode = fe_transmit_mode_t(channel.Transmission());
          Frontend.u.ofdm.guard_interval = fe_guard_interval_t(channel.Guard());
          Frontend.u.ofdm.hierarchy_information = fe_hierarchy_t(channel.Hierarchy());
+
+         tuneTimeout = DVBT_TUNE_TIMEOUT;
+         lockTimeout = DVBT_LOCK_TIMEOUT;
          }
          break;
     default:
@@ -279,6 +297,9 @@ bool cDvbTuner::SetFrontend(void)
 
 void cDvbTuner::Action(void)
 {
+  cTimeMs Timer;
+  bool LostLock = false;
+  time_t LastTimeoutReport = 0;
   dvb_frontend_event event;
   while (Running()) {
         bool hasEvent = GetFrontendEvent(event, 1);
@@ -291,17 +312,39 @@ void cDvbTuner::Action(void)
                if (hasEvent)
                   continue;
                tunerStatus = SetFrontend() ? tsTuned : tsIdle;
+               Timer.Set(tuneTimeout);
                continue;
           case tsTuned:
+               if (Timer.TimedOut()) {
+                  tunerStatus = tsSet;
+                  diseqcCommands = NULL;
+                  if (time(NULL) - LastTimeoutReport > 60) { // let's not get too many of these
+                     esyslog("ERROR: frontend %d timed out while tuning", cardIndex);
+                     LastTimeoutReport = time(NULL);
+                     }
+                  continue;
+                  }
           case tsLocked:
                if (hasEvent) {
                   if (event.status & FE_REINIT) {
                      tunerStatus = tsSet;
-                     esyslog("ERROR: frontend %d was reinitialized - re-tuning", cardIndex);
+                     diseqcCommands = NULL;
+                     esyslog("ERROR: frontend %d was reinitialized", cardIndex);
                      }
-                  if (event.status & FE_HAS_LOCK) {
+                  else if (event.status & FE_HAS_LOCK) {
+                     if (LostLock) {
+                        esyslog("frontend %d regained lock", cardIndex);
+                        LostLock = false;
+                        LastTimeoutReport = 0;
+                        }
                      tunerStatus = tsLocked;
                      locked.Broadcast();
+                     }
+                  else if (tunerStatus == tsLocked) {
+                     LostLock = true;
+                     esyslog("ERROR: frontend %d lost lock", cardIndex);
+                     tunerStatus = tsTuned;
+                     Timer.Set(lockTimeout);
                      }
                   continue;
                   }

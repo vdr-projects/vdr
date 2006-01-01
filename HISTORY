@@ -3963,7 +3963,7 @@ Video Disk Recorder Revision History
   commands may now be executed at any time, and the message will be displayed
   (no more "pending message").
 
-2005-12-31: Version 1.3.38
+2006-01-01: Version 1.3.38
 
 - Fixed handling second audio and Dolby Digital PIDs for encrypted channels
   (was broken in version 1.3.37).
@@ -4051,3 +4051,5 @@ Video Disk Recorder Revision History
   so that they can provide the full file name of the recording. Plugins that use
   these (or the related cStatus::Msg...() functions) need to be adapted
   (suggested by Andreas Brugger).
+- The DVB devices now retune (and, if applicable, resend the DiSEqC data) if
+  the lock is lost (based on a patch from Reinhard Nissl).

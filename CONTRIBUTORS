@@ -1012,6 +1012,8 @@ Reinhard Nissl <rnissl@gmx.de>
  with post processing tools that choke on different ids
  for fixing cDvbPlayer::SkipFrames() to properly handle radio recordings
  for improving TS/PES conversion to better handle lost TS packets
+ for suggesting to make the DVB devices retune (and, if applicable, resend the
+ DiSEqC data) if the lock is lost
 
 Richard Robson <richard_robson@beeb.net>
  for reporting freezing replay if a timer starts while in Transfer Mode from the
