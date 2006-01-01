@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 1.47 2005/12/11 12:09:24 kls Exp $
+ * $Id: thread.c 1.48 2006/01/01 14:50:44 kls Exp $
  */
 
 #include "thread.h"
@@ -137,7 +137,9 @@ void cCondVar::Broadcast(void)
 
 cRwLock::cRwLock(bool PreferWriter)
 {
-  pthread_rwlockattr_t attr = { PreferWriter ? PTHREAD_RWLOCK_PREFER_WRITER_NP : PTHREAD_RWLOCK_PREFER_READER_NP };
+  pthread_rwlockattr_t attr;
+  pthread_rwlockattr_init(&attr);
+  pthread_rwlockattr_setkind_np(&attr, PreferWriter ? PTHREAD_RWLOCK_PREFER_WRITER_NP : PTHREAD_RWLOCK_PREFER_READER_NP);
   pthread_rwlock_init(&rwlock, &attr);
 }
 
@@ -171,7 +173,9 @@ void cRwLock::Unlock(void)
 cMutex::cMutex(void)
 {
   locked = 0;
-  pthread_mutexattr_t attr = { PTHREAD_MUTEX_ERRORCHECK_NP };
+  pthread_mutexattr_t attr;
+  pthread_mutexattr_init(&attr);
+  pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_ERRORCHECK_NP);
   pthread_mutex_init(&mutex, &attr);
 }
 

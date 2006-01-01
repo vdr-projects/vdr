@@ -4058,3 +4058,5 @@ Video Disk Recorder Revision History
 - Removed unused variables in skinclassic.c and skinsttng.c (thanks to Marco
   Schlüßler).
 - Made the static cControl functions thread safe (thanks to Patrick Fischer).
+- Fixed initializing pthread_mutexattr_t and pthread_rwlockattr_t to avoid
+  warnings with g++ 4.1.0 (thanks to Ville Skyttä).
