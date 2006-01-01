@@ -4062,3 +4062,4 @@ Video Disk Recorder Revision History
   warnings with g++ 4.1.0 (thanks to Ville Skyttä).
 - Fixed incrementing the 'state' variables in the repacker classes in remux.c
   to avoid warnings with g++ 4.1.0 (reported by Ville Skyttä).
+- The Makefile now reports a summary of failed plugins (thanks to Udo Richter).

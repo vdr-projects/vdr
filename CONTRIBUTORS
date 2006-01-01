@@ -1316,6 +1316,7 @@ Udo Richter <udo_richter@gmx.de>
  for reporting a bug in opening recording folders in case the last replayed recording
  no longer exists
  for reporting a missing check against MAXOSDAREAS in cOsd::CanHandleAreas()
+ for making the Makefile report a summary of failed plugins
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date
