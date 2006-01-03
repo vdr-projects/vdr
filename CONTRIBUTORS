@@ -1582,6 +1582,7 @@ Christof Steininger <christof.steininger@t-online.de>
 
 Kendy Kutzner <kutzner@ira.uka.de>
  for making the version number of EPG events be stored in the epg.data file
+ for suggesting to add cTimer::SetPriority() to set a timer's priority
 
 Bob Withers <bwit@pobox.com>
  for publishing a Base64 encoder at http://www.ruffboy.com/download.htm

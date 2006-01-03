@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 1.38 2006/01/01 15:41:46 kls Exp $
+ * $Id: timers.c 1.39 2006/01/03 11:45:19 kls Exp $
  */
 
 #include "timers.h"
@@ -460,6 +460,11 @@ void cTimer::SetInVpsMargin(bool InVpsMargin)
   if (InVpsMargin && !inVpsMargin)
      isyslog("timer %s entered VPS margin", *ToDescr());
   inVpsMargin = InVpsMargin;
+}
+
+void cTimer::SetPriority(int Priority)
+{
+  priority = Priority; 
 }
 
 void cTimer::SetFlags(int Flags)
