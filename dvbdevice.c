@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.144 2006/01/01 12:03:31 kls Exp $
+ * $Id: dvbdevice.c 1.145 2006/01/03 10:42:47 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -40,12 +40,12 @@
 #define DEV_DVB_AUDIO     "audio"
 #define DEV_DVB_CA        "ca"
 
-#define DVBS_TUNE_TIMEOUT  1000 //ms
-#define DVBS_LOCK_TIMEOUT  1000 //ms
-#define DVBC_TUNE_TIMEOUT  1000 //ms
-#define DVBC_LOCK_TIMEOUT  1000 //ms
-#define DVBT_TUNE_TIMEOUT  1000 //ms
-#define DVBT_LOCK_TIMEOUT  1000 //ms
+#define DVBS_TUNE_TIMEOUT  2000 //ms
+#define DVBS_LOCK_TIMEOUT  2000 //ms
+#define DVBC_TUNE_TIMEOUT  5000 //ms
+#define DVBC_LOCK_TIMEOUT  2000 //ms
+#define DVBT_TUNE_TIMEOUT  9000 //ms
+#define DVBT_LOCK_TIMEOUT  2000 //ms
 
 class cDvbName {
 private:
@@ -75,6 +75,7 @@ private:
   int cardIndex;
   int tuneTimeout;
   int lockTimeout;
+  time_t lastTimeoutReport;
   fe_type_t frontendType;
   cCiHandler *ciHandler;
   cChannel channel;
@@ -100,6 +101,9 @@ cDvbTuner::cDvbTuner(int Fd_Frontend, int CardIndex, fe_type_t FrontendType, cCi
   cardIndex = CardIndex;
   frontendType = FrontendType;
   ciHandler = CiHandler;
+  tuneTimeout = 0;
+  lockTimeout = 0;
+  lastTimeoutReport = 0;
   diseqcCommands = NULL;
   tunerStatus = tsIdle;
   if (frontendType == FE_QPSK)
@@ -127,6 +131,7 @@ void cDvbTuner::Set(const cChannel *Channel, bool Tune)
   if (Tune)
      tunerStatus = tsSet;
   channel = *Channel;
+  lastTimeoutReport = 0;
   newSet.Broadcast();
 }
 
@@ -299,7 +304,6 @@ void cDvbTuner::Action(void)
 {
   cTimeMs Timer;
   bool LostLock = false;
-  time_t LastTimeoutReport = 0;
   dvb_frontend_event event;
   while (Running()) {
         bool hasEvent = GetFrontendEvent(event, 1);
@@ -318,9 +322,9 @@ void cDvbTuner::Action(void)
                if (Timer.TimedOut()) {
                   tunerStatus = tsSet;
                   diseqcCommands = NULL;
-                  if (time(NULL) - LastTimeoutReport > 60) { // let's not get too many of these
+                  if (time(NULL) - lastTimeoutReport > 60) { // let's not get too many of these
                      esyslog("ERROR: frontend %d timed out while tuning", cardIndex);
-                     LastTimeoutReport = time(NULL);
+                     lastTimeoutReport = time(NULL);
                      }
                   continue;
                   }
@@ -330,21 +334,23 @@ void cDvbTuner::Action(void)
                      tunerStatus = tsSet;
                      diseqcCommands = NULL;
                      esyslog("ERROR: frontend %d was reinitialized", cardIndex);
+                     lastTimeoutReport = 0;
                      }
                   else if (event.status & FE_HAS_LOCK) {
                      if (LostLock) {
                         esyslog("frontend %d regained lock", cardIndex);
                         LostLock = false;
-                        LastTimeoutReport = 0;
                         }
                      tunerStatus = tsLocked;
                      locked.Broadcast();
+                     lastTimeoutReport = 0;
                      }
                   else if (tunerStatus == tsLocked) {
                      LostLock = true;
                      esyslog("ERROR: frontend %d lost lock", cardIndex);
                      tunerStatus = tsTuned;
                      Timer.Set(lockTimeout);
+                     lastTimeoutReport = 0;
                      }
                   continue;
                   }
