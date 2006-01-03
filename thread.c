@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 1.48 2006/01/01 14:50:44 kls Exp $
+ * $Id: thread.c 1.49 2006/01/03 10:15:54 kls Exp $
  */
 
 #include "thread.h"
@@ -198,7 +198,7 @@ void cMutex::Unlock(void)
 
 // --- cThread ---------------------------------------------------------------
 
-tThreadId cThread::mainThreadId = cThread::ThreadId();
+tThreadId cThread::mainThreadId = 0;
 bool cThread::emergencyExitRequested = false;
 
 cThread::cThread(const char *Description)
@@ -318,6 +318,14 @@ _syscall0(pid_t, gettid)
 tThreadId cThread::ThreadId(void)
 {
   return gettid();
+}
+
+void cThread::SetMainThreadId(void)
+{
+  if (mainThreadId == 0)
+     mainThreadId = ThreadId();
+  else
+     esyslog("ERROR: attempt to set main thread id to %d while it already is %d", ThreadId(), mainThreadId);
 }
 
 // --- cMutexLock ------------------------------------------------------------

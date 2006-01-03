@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.h 1.33 2005/12/11 12:04:56 kls Exp $
+ * $Id: thread.h 1.34 2006/01/03 10:10:32 kls Exp $
  */
 
 #ifndef __THREAD_H
@@ -117,6 +117,7 @@ public:
   static bool EmergencyExit(bool Request = false);
   static tThreadId ThreadId(void);
   static tThreadId IsMainThread(void) { return ThreadId() == mainThreadId; }
+  static void SetMainThreadId(void);
   };
 
 // cMutexLock can be used to easily set a lock on mutex and make absolutely

@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.224 2005/12/31 13:30:11 kls Exp $
+ * $Id: vdr.c 1.225 2006/01/03 10:20:41 kls Exp $
  */
 
 #include <getopt.h>
@@ -473,6 +473,9 @@ int main(int argc, char *argv[])
   isyslog("VDR version %s started", VDRVERSION);
   if (StartedAsRoot)
      isyslog("switched to user '%s'", VdrUser);
+  if (DaemonMode)
+     dsyslog("running as daemon (tid=%d)", cThread::ThreadId());
+  cThread::SetMainThreadId();
 
   // Main program loop variables - need to be here to have them initialized before any EXIT():
 
