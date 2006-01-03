@@ -4066,3 +4066,4 @@ Video Disk Recorder Revision History
 - The cTimer constructor can now take an optional cChannel (suggested by
   Patrick Fischer).
 - Fixed setting the main thread id if VDR is running as a daemon.
+- Fixed handling TS packets in cTS2PES (thanks to Reinhard Nissl).

@@ -11,7 +11,7 @@
  * The cRepacker family's code was originally written by Reinhard Nissl <rnissl@gmx.de>,
  * and adapted to the VDR coding style by Klaus.Schmidinger@cadsoft.de.
  *
- * $Id: remux.c 1.51 2006/01/01 14:58:53 kls Exp $
+ * $Id: remux.c 1.52 2006/01/03 10:55:45 kls Exp $
  */
 
 #include "remux.h"
@@ -1281,9 +1281,10 @@ int cDolbyRepacker::BreakAt(const uchar *Data, int Count)
 #define CONT_CNT_MASK  0x0F
 
 // Flags:
+#define PAY_LOAD       0x10
+#define ADAPT_FIELD    0x20
 #define PAY_START      0x40
 #define TS_ERROR       0x80
-#define ADAPT_FIELD    0x20
 
 #define MAX_PLENGTH  0xFFFF          // the maximum PES packet length (theoretically)
 #define MMAX_PLENGTH (64*MAX_PLENGTH) // some stations send PES packets that are extremely large, e.g. DVB-T in Finland or HDTV 1920x1080
@@ -1668,7 +1669,11 @@ void cTS2PES::ts_to_pes(const uint8_t *Buf) // don't need count (=188)
 
   if (Buf[1] & TS_ERROR)
      tsErrors++;
-  if ((Buf[3] ^ ccCounter) & CONT_CNT_MASK) {
+
+  if (!(Buf[3] & (ADAPT_FIELD | PAY_LOAD)))
+     return; // discard TS packet with adaption_field_control set to '00'.
+
+  if ((Buf[3] & PAY_LOAD) && ((Buf[3] ^ ccCounter) & CONT_CNT_MASK)) {
      // This should check duplicates and packets which do not increase the counter.
      // But as the errors usually come in bursts this should be enough to
      // show you there is something wrong with signal quality.
@@ -1684,11 +1689,13 @@ void cTS2PES::ts_to_pes(const uint8_t *Buf) // don't need count (=188)
 
   if (Buf[1] & PAY_START) {
      if (found > 6) {
+        if (plength != MMAX_PLENGTH - 6 && plength != found - 6)
+           dsyslog("PES packet shortened to %d bytes (expected: %d bytes)", found, plength + 6);
         plength = found - 6;
-        found = 0;
         send_ipack();
         reset_ipack();
         }
+     found = 0;
      }
 
   uint8_t off = 0;
@@ -1699,7 +1706,8 @@ void cTS2PES::ts_to_pes(const uint8_t *Buf) // don't need count (=188)
         return;
      }
 
-  instant_repack(Buf + 4 + off, TS_SIZE - 4 - off);
+  if (Buf[3] & PAY_LOAD)
+     instant_repack(Buf + 4 + off, TS_SIZE - 4 - off);
 }
 
 // --- cRemux ----------------------------------------------------------------
