@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.130 2005/12/28 12:19:16 kls Exp $
+ * $Id: recording.c 1.131 2006/01/03 11:36:12 kls Exp $
  */
 
 #include "recording.h"
@@ -49,7 +49,7 @@
 #define MINDISKSPACE 1024 // MB
 
 #define REMOVECHECKDELTA   60 // seconds between checks for removing deleted files
-#define DELETEDLIFETIME  3600 // seconds after which a deleted recording will be actually removed
+#define DELETEDLIFETIME   300 // seconds after which a deleted recording will be actually removed
 #define DISKCHECKDELTA    100 // seconds between checks for free disk space
 #define REMOVELATENCY      10 // seconds to wait until next check after removing a file
 
