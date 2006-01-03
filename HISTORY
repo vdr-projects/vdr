@@ -4072,3 +4072,4 @@ Video Disk Recorder Revision History
 - Fixed setting the main thread id if VDR is running as a daemon.
 - Fixed handling TS packets in cTS2PES (thanks to Reinhard Nissl).
 - Added cTimer::SetPriority() to set a timer's priority (suggested by Kendy Kutzner).
+- Added cMenuEditStrItem::InEditMode() (suggested by Christian Wieninger).

@@ -1596,3 +1596,6 @@ Javier Fernández-Sanguino Peña <jfs@computer.org>
 Jürgen Schneider <ivory7@gmx.de>
  for a patch that was used as a base to fix handling multi byte key sequences
  in cKbdRemote
+
+Christian Wieninger <cwieninger@gmx.de>
+ for suggesting to add cMenuEditStrItem::InEditMode()

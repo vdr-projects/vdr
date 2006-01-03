@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.c 1.24 2005/11/11 13:26:00 kls Exp $
+ * $Id: menuitems.c 1.25 2006/01/03 12:47:39 kls Exp $
  */
 
 #include "menuitems.h"
@@ -253,7 +253,7 @@ cMenuEditStrItem::~cMenuEditStrItem()
 
 void cMenuEditStrItem::SetHelpKeys(void)
 {
-  if (pos >= 0)
+  if (InEditMode())
      cSkinDisplay::Current()->SetButtons(tr("ABC/abc"), tr(insert ? "Overwrite" : "Insert"), tr("Delete"));
   else
      cSkinDisplay::Current()->SetButtons(NULL);
@@ -264,7 +264,7 @@ void cMenuEditStrItem::Set(void)
   char buf[1000];
   const char *fmt = insert && newchar ? "[]%c%s" : "[%c]%s";
 
-  if (pos >= 0) {
+  if (InEditMode()) {
      const cFont *font = cFont::GetFont(fontOsd);
      strncpy(buf, value, pos);
      snprintf(buf + pos, sizeof(buf) - pos - 2, fmt, *(value + pos), value + pos + 1);
@@ -322,7 +322,7 @@ eOSState cMenuEditStrItem::ProcessKey(eKeys Key)
 {
   switch (Key) {
     case kRed:   // Switch between upper- and lowercase characters
-                 if (pos >= 0) {
+                 if (InEditMode()) {
                     if (!insert || !newchar) {
                        uppercase = !uppercase;
                        value[pos] = uppercase ? toupper(value[pos]) : tolower(value[pos]);
@@ -332,7 +332,7 @@ eOSState cMenuEditStrItem::ProcessKey(eKeys Key)
                     return osUnknown;
                  break;
     case kGreen: // Toggle insert/overwrite modes
-                 if (pos >= 0) {
+                 if (InEditMode()) {
                     insert = !insert;
                     newchar = true;
                     SetHelpKeys();
@@ -342,7 +342,7 @@ eOSState cMenuEditStrItem::ProcessKey(eKeys Key)
                  break;
     case kYellow|k_Repeat:
     case kYellow: // Remove the character at current position; in insert mode it is the character to the right of cursor
-                 if (pos >= 0) {
+                 if (InEditMode()) {
                     if (strlen(value) > 1) {
                        if (!insert || pos < int(strlen(value)) - 1)
                           memmove(value + pos, value + pos + 1, strlen(value) - pos);
@@ -361,7 +361,7 @@ eOSState cMenuEditStrItem::ProcessKey(eKeys Key)
                  break;
     case kBlue|k_Repeat:
     case kBlue:  // consume the key only if in edit-mode
-                 if (pos >= 0)
+                 if (InEditMode())
                     ;
                  else
                     return osUnknown;
@@ -395,7 +395,7 @@ eOSState cMenuEditStrItem::ProcessKey(eKeys Key)
     case kUp|k_Repeat:
     case kUp:
     case kDown|k_Repeat:
-    case kDown:  if (pos >= 0) {
+    case kDown:  if (InEditMode()) {
                     if (insert && newchar) {
                        // create a new character in insert mode
                        if (int(strlen(value)) < length - 1) {
@@ -412,7 +412,7 @@ eOSState cMenuEditStrItem::ProcessKey(eKeys Key)
                  else
                     return cMenuEditItem::ProcessKey(Key);
                  break;
-    case kOk:    if (pos >= 0) {
+    case kOk:    if (InEditMode()) {
                     pos = -1;
                     newchar = true;
                     stripspace(value);
@@ -420,7 +420,7 @@ eOSState cMenuEditStrItem::ProcessKey(eKeys Key)
                     break;
                     }
                  // run into default
-    default:     if (pos >= 0 && BASICKEY(Key) == kKbd) {
+    default:     if (InEditMode() && BASICKEY(Key) == kKbd) {
                     int c = KEYKBD(Key);
                     if (c <= 0xFF) {
                        const char *p = strchr(allowed, tolower(c));

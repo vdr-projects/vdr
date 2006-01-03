@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.h 1.12 2005/11/11 13:26:51 kls Exp $
+ * $Id: menuitems.h 1.13 2006/01/03 12:45:38 kls Exp $
  */
 
 #ifndef __MENUITEMS_H
@@ -85,6 +85,8 @@ private:
   void SetHelpKeys(void);
   virtual void Set(void);
   char Inc(char c, bool Up);
+protected:
+  bool InEditMode(void) { return pos >= 0; }
 public:
   cMenuEditStrItem(const char *Name, char *Value, int Length, const char *Allowed);
   ~cMenuEditStrItem();
