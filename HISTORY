@@ -4027,6 +4027,10 @@ Video Disk Recorder Revision History
   (encoded in base64) if the given file name consists of only the file
   extension (".jpg", ".jpeg" or ".pnm"), or if only "-" is given as file
   name (based on a suggestion from Darren Salt).
+  A simple way of viewing a grabbed image on a remote host is:
+
+  svdrpsend.pl -d <hostname> 'grab -' | sed -n -e 's/^216-//p' -e '1ibegin-base64 644 -' -e '$a====' | uudecode | display
+
 - The new command line option '-g' must be given if the SVDRP command GRAB
   shall be allowed to write image files to disk. The parameter to this option
   must be the full path name of an existing directory, without any "..", double
