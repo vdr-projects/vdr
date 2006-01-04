@@ -4088,3 +4088,5 @@ Video Disk Recorder Revision History
 - A message is now given when an instant recording is started (suggested by
   Helmut Auer). Actually the code was already there, just commented out - don't
   remember why it wasn't active...
+- Removed an obsolete "Summary" text from i18n.c and preceded all key definition
+  texts with "Key$" to avoid duplicates (reported by Lucian Muresan).
