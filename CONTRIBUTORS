@@ -520,8 +520,9 @@ Christian Rienecker <C.Rienecker@gmx.net>
 Joerg Riechardt <J.Riechardt@gmx.de>
  for filling in some missing teletext PIDs
 
-Holger Wächtler <holger@convergence.de>
+Holger Wächtler <holger@qanu.de>
  for some valuable advice during adapting to the NEWSTRUCT driver
+ for suggesting to use FE_READ_STATUS to read the current frontend status
 
 Jürgen Zimmermann <jnzimmer@informatik.uni-kl.de>
  for adding some missing #includes to files in libdtv for gcc 3.2

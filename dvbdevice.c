@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.145 2006/01/03 10:42:47 kls Exp $
+ * $Id: dvbdevice.c 1.146 2006/01/04 11:47:36 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -84,7 +84,7 @@ private:
   cMutex mutex;
   cCondVar locked;
   cCondVar newSet;
-  bool GetFrontendEvent(dvb_frontend_event &Event, int TimeoutMs = 0);
+  bool GetFrontendStatus(fe_status_t &Status, int TimeoutMs = 0);
   bool SetFrontend(void);
   virtual void Action(void);
 public:
@@ -147,26 +147,20 @@ bool cDvbTuner::Locked(int TimeoutMs)
   return tunerStatus >= tsLocked;
 }
 
-bool cDvbTuner::GetFrontendEvent(dvb_frontend_event &Event, int TimeoutMs)
+bool cDvbTuner::GetFrontendStatus(fe_status_t &Status, int TimeoutMs)
 {
   if (TimeoutMs) {
-     struct pollfd pfd;
-     pfd.fd = fd_frontend;
-     pfd.events = POLLIN | POLLPRI;
-     do {
-        int stat = poll(&pfd, 1, TimeoutMs);
-        if (stat == 1)
-           break;
-        if (stat < 0) {
-           if (errno == EINTR)
-              continue;
-           esyslog("ERROR: frontend %d poll failed: %m", cardIndex);
-           }
+     cPoller Poller(fd_frontend);
+     if (Poller.Poll(TimeoutMs)) {
+        // just to clear the event queue - we'll read the actual status below
+        dvb_frontend_event Event;
+        CHECK(ioctl(fd_frontend, FE_GET_EVENT, &Event));
+        }
+     else
         return false;
-        } while (0);
      }
   do {
-     int stat = ioctl(fd_frontend, FE_GET_EVENT, &Event);
+     int stat = ioctl(fd_frontend, FE_READ_STATUS, &Status);
      if (stat == 0)
         return true;
      if (stat < 0) {
@@ -304,17 +298,16 @@ void cDvbTuner::Action(void)
 {
   cTimeMs Timer;
   bool LostLock = false;
-  dvb_frontend_event event;
+  fe_status_t Status = (fe_status_t)0;
   while (Running()) {
-        bool hasEvent = GetFrontendEvent(event, 1);
-
+        fe_status_t NewStatus;
+        if (GetFrontendStatus(NewStatus, 10))
+           Status = NewStatus;
         cMutexLock MutexLock(&mutex);
         switch (tunerStatus) {
           case tsIdle:
                break;
           case tsSet:
-               if (hasEvent)
-                  continue;
                tunerStatus = SetFrontend() ? tsTuned : tsIdle;
                Timer.Set(tuneTimeout);
                continue;
@@ -329,29 +322,28 @@ void cDvbTuner::Action(void)
                   continue;
                   }
           case tsLocked:
-               if (hasEvent) {
-                  if (event.status & FE_REINIT) {
-                     tunerStatus = tsSet;
-                     diseqcCommands = NULL;
-                     esyslog("ERROR: frontend %d was reinitialized", cardIndex);
-                     lastTimeoutReport = 0;
+               if (Status & FE_REINIT) {
+                  tunerStatus = tsSet;
+                  diseqcCommands = NULL;
+                  esyslog("ERROR: frontend %d was reinitialized", cardIndex);
+                  lastTimeoutReport = 0;
+                  continue;
+                  }
+               else if (Status & FE_HAS_LOCK) {
+                  if (LostLock) {
+                     esyslog("frontend %d regained lock", cardIndex);
+                     LostLock = false;
                      }
-                  else if (event.status & FE_HAS_LOCK) {
-                     if (LostLock) {
-                        esyslog("frontend %d regained lock", cardIndex);
-                        LostLock = false;
-                        }
-                     tunerStatus = tsLocked;
-                     locked.Broadcast();
-                     lastTimeoutReport = 0;
-                     }
-                  else if (tunerStatus == tsLocked) {
-                     LostLock = true;
-                     esyslog("ERROR: frontend %d lost lock", cardIndex);
-                     tunerStatus = tsTuned;
-                     Timer.Set(lockTimeout);
-                     lastTimeoutReport = 0;
-                     }
+                  tunerStatus = tsLocked;
+                  locked.Broadcast();
+                  lastTimeoutReport = 0;
+                  }
+               else if (tunerStatus == tsLocked) {
+                  LostLock = true;
+                  esyslog("ERROR: frontend %d lost lock", cardIndex);
+                  tunerStatus = tsTuned;
+                  Timer.Set(lockTimeout);
+                  lastTimeoutReport = 0;
                   continue;
                   }
           }
