@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 1.49 2006/01/03 10:15:54 kls Exp $
+ * $Id: thread.c 1.50 2006/01/04 15:01:22 kls Exp $
  */
 
 #include "thread.h"
@@ -205,6 +205,7 @@ cThread::cThread(const char *Description)
 {
   active = running = false;
   childTid = 0;
+  childThreadId = 0;
   description = NULL;
   SetDescription(Description);
 }
@@ -235,11 +236,12 @@ void cThread::SetDescription(const char *Description, ...)
 
 void *cThread::StartThread(cThread *Thread)
 {
+  Thread->childThreadId = ThreadId();
   if (Thread->description)
-     dsyslog("%s thread started (pid=%d, tid=%d)", Thread->description, getpid(), ThreadId());
+     dsyslog("%s thread started (pid=%d, tid=%d)", Thread->description, getpid(), Thread->childThreadId);
   Thread->Action();
   if (Thread->description)
-     dsyslog("%s thread ended (pid=%d, tid=%d)", Thread->description, getpid(), ThreadId());
+     dsyslog("%s thread ended (pid=%d, tid=%d)", Thread->description, getpid(), Thread->childThreadId);
   Thread->running = false;
   Thread->active = false;
   return NULL;
@@ -297,7 +299,7 @@ void cThread::Cancel(int WaitSeconds)
                return;
             cCondWait::SleepMs(10);
             }
-        esyslog("ERROR: thread %ld won't end (waited %d seconds) - canceling it...", childTid, WaitSeconds);
+        esyslog("ERROR: thread %d won't end (waited %d seconds) - canceling it...", childThreadId, WaitSeconds);
         }
      pthread_cancel(childTid);
      childTid = 0;

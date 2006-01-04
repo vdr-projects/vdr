@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.h 1.34 2006/01/03 10:10:32 kls Exp $
+ * $Id: thread.h 1.35 2006/01/04 14:58:16 kls Exp $
  */
 
 #ifndef __THREAD_H
@@ -80,6 +80,7 @@ private:
   bool active;
   bool running;
   pthread_t childTid;
+  tThreadId childThreadId;
   cMutex mutex;
   char *description;
   static tThreadId mainThreadId;
