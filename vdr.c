@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.225 2006/01/03 10:20:41 kls Exp $
+ * $Id: vdr.c 1.226 2006/01/04 13:01:13 kls Exp $
  */
 
 #include <getopt.h>
@@ -480,7 +480,6 @@ int main(int argc, char *argv[])
   // Main program loop variables - need to be here to have them initialized before any EXIT():
 
   cOsdObject *Menu = NULL;
-  cOsdObject *Temp = NULL;
   int LastChannel = -1;
   int LastTimerChannel = -1;
   int PreviousChannel[2] = { 1, 1 };
@@ -718,7 +717,7 @@ int main(int argc, char *argv[])
         // Channel display:
         if (!EITScanner.Active() && cDevice::CurrentChannel() != LastChannel) {
            if (!Menu)
-              Menu = Temp = new cDisplayChannel(cDevice::CurrentChannel(), LastChannel > 0);
+              Menu = new cDisplayChannel(cDevice::CurrentChannel(), LastChannel > 0);
            LastChannel = cDevice::CurrentChannel();
            LastChannelChanged = time(NULL);
            }
@@ -786,22 +785,18 @@ int main(int argc, char *argv[])
           // Menu control:
           case kMenu:
                key = kNone; // nobody else needs to see this key
-               if (Menu) {
+               if (Menu)
                   DELETENULL(Menu);
-                  if (!Temp)
-                     break;
-                  }
-               if (cControl::Control())
+               else if (cControl::Control() && cOsd::IsOpen())
                   cControl::Control()->Hide();
-               Menu = new cMenuMain;
-               Temp = NULL;
+               else
+                  Menu = new cMenuMain;
                break;
           #define DirectMainFunction(function)\
             DELETENULL(Menu);\
             if (cControl::Control())\
                cControl::Control()->Hide();\
             Menu = new cMenuMain(function);\
-            Temp = NULL;\
             key = kNone; // nobody else needs to see this key
           case kSchedule:   DirectMainFunction(osSchedule); break;
           case kChannels:   DirectMainFunction(osChannels); break;
@@ -812,12 +807,11 @@ int main(int argc, char *argv[])
           case kUser1 ... kUser9: cRemote::PutMacro(key); key = kNone; break;
           case k_Plugin: {
                DELETENULL(Menu);
-               Temp = NULL;
                if (cControl::Control())
                   cControl::Control()->Hide();
                cPlugin *plugin = cPluginManager::GetPlugin(cRemote::GetPlugin());
                if (plugin) {
-                  Menu = Temp = plugin->MainMenuAction();
+                  Menu = plugin->MainMenuAction();
                   if (Menu) {
                      Menu->Show();
                      if (Menu->IsMenu())
@@ -851,7 +845,7 @@ int main(int argc, char *argv[])
                else
                   cDevice::PrimaryDevice()->SetVolume(NORMALKEY(key) == kVolDn ? -VOLUMEDELTA : VOLUMEDELTA);
                if (!Menu && !cOsd::IsOpen())
-                  Menu = Temp = cDisplayVolume::Create();
+                  Menu = cDisplayVolume::Create();
                cDisplayVolume::Process(key);
                key = kNone; // nobody else needs to see these keys
                break;
@@ -859,12 +853,10 @@ int main(int argc, char *argv[])
           case kAudio:
                if (cControl::Control())
                   cControl::Control()->Hide();
-               if (Temp && !cDisplayTracks::IsOpen()) {
+               if (!cDisplayTracks::IsOpen()) {
                   DELETENULL(Menu);
-                  Temp = NULL;
+                  Menu = cDisplayTracks::Create();
                   }
-               if (!Menu && !cOsd::IsOpen())
-                  Menu = Temp = cDisplayTracks::Create();
                else
                   cDisplayTracks::Process(key);
                key = kNone;
@@ -873,7 +865,6 @@ int main(int argc, char *argv[])
           case kPause:
                if (!cControl::Control()) {
                   DELETENULL(Menu);
-                  Temp = NULL;
                   if (!cRecordControls::PauseLiveVideo())
                      Skins.Message(mtError, tr("No free DVB device to record!"));
                   key = kNone; // nobody else needs to see this key
@@ -892,7 +883,6 @@ int main(int argc, char *argv[])
           // Power off:
           case kPower: isyslog("Power button pressed");
                        DELETENULL(Menu);
-                       Temp = NULL;
                        if (!Shutdown) {
                           Skins.Message(mtError, tr("Can't shutdown - option '-s' not given!"));
                           break;
@@ -924,12 +914,10 @@ int main(int argc, char *argv[])
            switch (state) {
              case osPause:  DELETENULL(Menu);
                             cControl::Shutdown(); // just in case
-                            Temp = NULL;
                             if (!cRecordControls::PauseLiveVideo())
                                Skins.Message(mtError, tr("No free DVB device to record!"));
                             break;
              case osRecord: DELETENULL(Menu);
-                            Temp = NULL;
                             if (cRecordControls::Start())
                                ;//XXX Skins.Message(mtInfo, tr("Recording"));
                             else
@@ -938,28 +926,24 @@ int main(int argc, char *argv[])
              case osRecordings:
                             DELETENULL(Menu);
                             cControl::Shutdown();
-                            Temp = NULL;
                             Menu = new cMenuMain(osRecordings);
                             break;
              case osReplay: DELETENULL(Menu);
                             cControl::Shutdown();
-                            Temp = NULL;
                             cControl::Launch(new cReplayControl);
                             break;
              case osStopReplay:
                             DELETENULL(Menu);
                             cControl::Shutdown();
-                            Temp = NULL;
                             break;
              case osSwitchDvb:
                             DELETENULL(Menu);
                             cControl::Shutdown();
-                            Temp = NULL;
                             Skins.Message(mtInfo, tr("Switching primary DVB..."));
                             cDevice::SetPrimaryDevice(Setup.PrimaryDVB);
                             break;
              case osPlugin: DELETENULL(Menu);
-                            Menu = Temp = cMenuMain::PluginOsdObject();
+                            Menu = cMenuMain::PluginOsdObject();
                             if (Menu)
                                Menu->Show();
                             break;
@@ -968,7 +952,6 @@ int main(int argc, char *argv[])
                                DELETENULL(Menu);
                             else
                                cControl::Shutdown();
-                            Temp = NULL;
                             break;
              default:       ;
              }
@@ -1007,7 +990,6 @@ int main(int argc, char *argv[])
              case kPlay:
                   if (cReplayControl::LastReplayed()) {
                      cControl::Shutdown();
-                     Temp = NULL;
                      cControl::Launch(new cReplayControl);
                      }
                   break;

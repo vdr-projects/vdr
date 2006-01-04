@@ -4079,3 +4079,7 @@ Video Disk Recorder Revision History
 - Added cMenuEditStrItem::InEditMode() (suggested by Christian Wieninger).
 - Now using FE_READ_STATUS to read the current frontend status (suggested by
   Holger Wächtler).
+- The "Menu" key now behaves consistently. If there is anything on the OSD, it
+  is closed when the "Menu" key is pressed, and if there is nothing on the OSD,
+  the "Menu" key opens the main menu (suggested by Luca Olivetti).
+

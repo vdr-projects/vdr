@@ -1433,6 +1433,7 @@ Chris Warren <dvb@ixalon.net>
 Luca Olivetti <luca@ventoso.org>
  for making cDevice::AttachPlayer() keep the track language codes and descriptions
  in Transfer Mode
+ for suggesting to make the "Menu" key behave consistently
 
 Mikko Salo <mikko.salo@ppe.inet.fi>
  for suggesting to make the setup option "DVB/Video display format" available only
