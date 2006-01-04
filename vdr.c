@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.226 2006/01/04 13:01:13 kls Exp $
+ * $Id: vdr.c 1.227 2006/01/04 15:09:07 kls Exp $
  */
 
 #include <getopt.h>
@@ -919,7 +919,7 @@ int main(int argc, char *argv[])
                             break;
              case osRecord: DELETENULL(Menu);
                             if (cRecordControls::Start())
-                               ;//XXX Skins.Message(mtInfo, tr("Recording"));
+                               Skins.Message(mtInfo, tr("Recording started"));
                             else
                                Skins.Message(mtError, tr("No free DVB device to record!"));
                             break;

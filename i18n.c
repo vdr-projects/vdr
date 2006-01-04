@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.223 2006/01/04 14:41:50 kls Exp $
+ * $Id: i18n.c 1.224 2006/01/04 15:14:10 kls Exp $
  *
  * Translations provided by:
  *
@@ -5325,7 +5325,7 @@ const tI18nPhrase Phrases[] = {
     "Redigeerimine ebaõnnestus",
     "Redigeringsproces fejlede!",
   },
-  { "scanning recordings...",
+  { "scanning recordings...",//XXX obsolete
     "Aufzeichnungen werden durchsucht...",
     "iskanje posnetkov...",
     "scansione registrazioni...",
@@ -5345,6 +5345,27 @@ const tI18nPhrase Phrases[] = {
     "pretra¾ivanje snimljenog...",
     "salvestuste skaneerimine...",
     "skanner optagelser...",
+  },
+  { "Recording started",
+    "Aufzeichnung gestartet",
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
   },
   { "Pausing live video...",
     "Live-Signal wird angehalten...",

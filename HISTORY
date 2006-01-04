@@ -4085,3 +4085,6 @@ Video Disk Recorder Revision History
 - The new option "Setup/OSD/Timeout requested channel info" can be used to turn
   off the automatic timeout of the channel display in case it was invoked by
   a press of the "Ok" key (suggested by Thiemo Gehrke).
+- A message is now given when an instant recording is started (suggested by
+  Helmut Auer). Actually the code was already there, just commented out - don't
+  remember why it wasn't active...

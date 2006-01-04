@@ -535,6 +535,7 @@ Helmut Auer <vdr@helmutauer.de>
  for implementing a default cRemote::Initialize()
  for suggesting to increase the default value for 'Min. user inactivity' to 300 minutes
  for suggesting to add cChannel::LinkChannels() and cChannel::RefChannel()
+ for suggesting to give a message when an instant recording is started
 
 Jeremy Hall <jhall@UU.NET>
  for fixing an incomplete initialization of the filter parameters in eit.c
