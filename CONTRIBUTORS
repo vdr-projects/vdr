@@ -1601,3 +1601,7 @@ Jürgen Schneider <ivory7@gmx.de>
 
 Christian Wieninger <cwieninger@gmx.de>
  for suggesting to add cMenuEditStrItem::InEditMode()
+
+Thiemo Gehrke <tgehrke@reel-multimedia.com>
+ for suggesting to add a setup option to turn off the automatic timeout of the
+ channel display in case it was invoked by a press of the "Ok" key

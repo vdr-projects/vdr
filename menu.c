@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.383 2005/12/31 15:08:19 kls Exp $
+ * $Id: menu.c 1.384 2006/01/04 14:42:13 kls Exp $
  */
 
 #include "menu.h"
@@ -1988,6 +1988,7 @@ void cMenuSetupOSD::Set(void)
   Add(new cMenuEditBoolItem(tr("Setup.OSD$Channel info position"),  &data.ChannelInfoPos, tr("bottom"), tr("top")));
   Add(new cMenuEditIntItem( tr("Setup.OSD$Channel info time (s)"),  &data.ChannelInfoTime, 1, 60));
   Add(new cMenuEditBoolItem(tr("Setup.OSD$Info on channel switch"), &data.ShowInfoOnChSwitch));
+  Add(new cMenuEditBoolItem(tr("Setup.OSD$Timeout requested channel info"), &data.TimeoutRequChInfo));
   Add(new cMenuEditBoolItem(tr("Setup.OSD$Scroll pages"),           &data.MenuScrollPage));
   Add(new cMenuEditBoolItem(tr("Setup.OSD$Scroll wraps"),           &data.MenuScrollWrap));
   Add(new cMenuEditBoolItem(tr("Setup.OSD$Sort timers"),            &data.SortTimers));
@@ -2856,6 +2857,7 @@ cDisplayChannel::cDisplayChannel(int Number, bool Switched)
   withInfo = !Switched || Setup.ShowInfoOnChSwitch;
   displayChannel = Skins.Current()->DisplayChannel(withInfo);
   number = 0;
+  timeout = Switched || Setup.TimeoutRequChInfo;
   channel = Channels.GetByNumber(Number);
   lastPresent = lastFollowing = NULL;
   if (channel) {
@@ -3039,7 +3041,7 @@ eOSState cDisplayChannel::ProcessKey(eKeys Key)
                      return osEnd;
                      }
     };
-  if (lastTime.Elapsed() < (uint64)(Setup.ChannelInfoTime * 1000)) {
+  if (!timeout || lastTime.Elapsed() < (uint64)(Setup.ChannelInfoTime * 1000)) {
      if (!number && group < 0 && channel && channel->Number() != cDevice::CurrentChannel())
         Refresh(); // makes sure a channel switch through the SVDRP CHAN command is displayed
      DisplayInfo();

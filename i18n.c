@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.222 2005/12/30 15:30:59 kls Exp $
+ * $Id: i18n.c 1.223 2006/01/04 14:41:50 kls Exp $
  *
  * Translations provided by:
  *
@@ -2946,6 +2946,27 @@ const tI18nPhrase Phrases[] = {
     "Informacije kod promjene kanala",
     "Kanaliteate n‰itamine",
     "Info ved kanalskift",
+  },
+  { "Setup.OSD$Timeout requested channel info",
+    "Angeforderte Kanalinfo schlieﬂen",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
   },
   { "Setup.OSD$Scroll pages",
     "Seitenweise scrollen",

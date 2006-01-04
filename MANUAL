@@ -496,6 +496,10 @@ Version 1.2
                          always displayed when pressing the "Ok" button in
                          normal viewing mode.
 
+  Timeout requested channel info = yes
+                         Turns the automatic timeout of the channel display (when
+                         invoked by a press of the "Ok" key) on or off.
+
   Scroll pages = yes     no  = when pressing the "Down" ("Up") key while the cursor
                                is on the last (first) line of a list page, the
                                list is scrolled down (up) a single line and the cursor will

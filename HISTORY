@@ -4082,4 +4082,6 @@ Video Disk Recorder Revision History
 - The "Menu" key now behaves consistently. If there is anything on the OSD, it
   is closed when the "Menu" key is pressed, and if there is nothing on the OSD,
   the "Menu" key opens the main menu (suggested by Luca Olivetti).
-
+- The new option "Setup/OSD/Timeout requested channel info" can be used to turn
+  off the automatic timeout of the channel display in case it was invoked by
+  a press of the "Ok" key (suggested by Thiemo Gehrke).

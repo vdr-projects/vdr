@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.236 2005/12/03 11:50:08 kls Exp $
+ * $Id: config.h 1.237 2006/01/04 13:41:59 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -210,6 +210,7 @@ public:
   char OSDTheme[MaxThemeName];
   int PrimaryDVB;
   int ShowInfoOnChSwitch;
+  int TimeoutRequChInfo;
   int MenuScrollPage;
   int MenuScrollWrap;
   int MarkInstantRecord;
