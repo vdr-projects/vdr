@@ -1607,3 +1607,6 @@ Christian Wieninger <cwieninger@gmx.de>
 Thiemo Gehrke <tgehrke@reel-multimedia.com>
  for suggesting to add a setup option to turn off the automatic timeout of the
  channel display in case it was invoked by a press of the "Ok" key
+
+Gavin Hamill <gdh@acentral.co.uk>
+ for reporting a missing #include "thread.h" in dvbspu.c

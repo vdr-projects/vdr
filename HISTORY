@@ -4090,3 +4090,4 @@ Video Disk Recorder Revision History
   remember why it wasn't active...
 - Removed an obsolete "Summary" text from i18n.c and preceded all key definition
   texts with "Key$" to avoid duplicates (reported by Lucian Muresan).
+- Added missing #include "thread.h" to dvbspu.c (reported by Gavin Hamill).

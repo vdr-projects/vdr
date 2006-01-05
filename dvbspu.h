@@ -8,16 +8,16 @@
  *
  * parts of this file are derived from the OMS program.
  *
- * $Id: dvbspu.h 1.10 2005/11/05 12:08:47 kls Exp $
+ * $Id: dvbspu.h 1.11 2006/01/05 10:18:31 kls Exp $
  */
 
 #ifndef __DVBSPU_H
 #define __DVBSPU_H
 
 #include <inttypes.h>
-
 #include "osd.h"
 #include "spu.h"
+#include "thread.h"
 
 typedef struct sDvbSpuPalDescr {
     uint8_t index;
