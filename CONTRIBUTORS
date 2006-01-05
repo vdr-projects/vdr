@@ -1610,3 +1610,7 @@ Thiemo Gehrke <tgehrke@reel-multimedia.com>
 
 Gavin Hamill <gdh@acentral.co.uk>
  for reporting a missing #include "thread.h" in dvbspu.c
+
+Petri Hintukainen <Petri.Hintukainen@hut.fi>
+ for suggesting to disable the use of "fadvise" in cUnbufferedFile because there
+ have been several reports that it causes more problems than it solves

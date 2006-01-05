@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.107 2005/12/29 16:02:37 kls Exp $
+ * $Id: tools.c 1.108 2006/01/05 10:41:18 kls Exp $
  */
 
 #include "tools.h"
@@ -1040,6 +1040,8 @@ bool cSafeFile::Close(void)
 
 // --- cUnbufferedFile -------------------------------------------------------
 
+//#define USE_FADVISE
+
 #define READ_AHEAD MEGABYTE(2)
 #define WRITE_BUFFER MEGABYTE(10)
 
@@ -1064,6 +1066,7 @@ int cUnbufferedFile::Open(const char *FileName, int Flags, mode_t Mode)
 
 int cUnbufferedFile::Close(void)
 {
+#ifdef USE_FADVISE
   if (fd >= 0) {
      if (ahead > end)
         end = ahead;
@@ -1076,6 +1079,7 @@ int cUnbufferedFile::Close(void)
      begin = end = ahead = -1;
      written = 0;
      }
+#endif
   int OldFd = fd;
   fd = -1;
   return close(OldFd);
@@ -1091,6 +1095,7 @@ off_t cUnbufferedFile::Seek(off_t Offset, int Whence)
 ssize_t cUnbufferedFile::Read(void *Data, size_t Size)
 {
   if (fd >= 0) {
+#ifdef USE_FADVISE
      off_t pos = lseek(fd, 0, SEEK_CUR);
      // jump forward - adjust end position
      if (pos > end)
@@ -1104,7 +1109,9 @@ ssize_t cUnbufferedFile::Read(void *Data, size_t Size)
      if (begin >= 0 && end > begin)
         posix_fadvise(fd, begin - KILOBYTE(200), end - begin + KILOBYTE(200), POSIX_FADV_DONTNEED);//XXX macros/parameters???
      begin = pos;
+#endif
      ssize_t bytesRead = safe_read(fd, Data, Size);
+#ifdef USE_FADVISE
      if (bytesRead > 0) {
         pos += bytesRead;
         end = pos;
@@ -1117,6 +1124,7 @@ ssize_t cUnbufferedFile::Read(void *Data, size_t Size)
         }
      else
         end = pos;
+#endif
      return bytesRead;
      }
   return -1;
@@ -1125,8 +1133,11 @@ ssize_t cUnbufferedFile::Read(void *Data, size_t Size)
 ssize_t cUnbufferedFile::Write(const void *Data, size_t Size)
 {
   if (fd >=0) {
+#ifdef USE_FADVISE
      off_t pos = lseek(fd, 0, SEEK_CUR);
+#endif
      ssize_t bytesWritten = safe_write(fd, Data, Size);
+#ifdef USE_FADVISE
      if (bytesWritten >= 0) {
         written += bytesWritten;
         if (begin >= 0) {
@@ -1146,6 +1157,7 @@ ssize_t cUnbufferedFile::Write(const void *Data, size_t Size)
            written = 0;
            }
         }
+#endif
      return bytesWritten;
      }
   return -1;
