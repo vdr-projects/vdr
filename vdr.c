@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.227 2006/01/04 15:09:07 kls Exp $
+ * $Id: vdr.c 1.228 2006/01/05 13:54:04 kls Exp $
  */
 
 #include <getopt.h>
@@ -480,7 +480,7 @@ int main(int argc, char *argv[])
   // Main program loop variables - need to be here to have them initialized before any EXIT():
 
   cOsdObject *Menu = NULL;
-  int LastChannel = -1;
+  int LastChannel = 0;
   int LastTimerChannel = -1;
   int PreviousChannel[2] = { 1, 1 };
   int PreviousChannelIndex = 0;
@@ -717,7 +717,7 @@ int main(int argc, char *argv[])
         // Channel display:
         if (!EITScanner.Active() && cDevice::CurrentChannel() != LastChannel) {
            if (!Menu)
-              Menu = new cDisplayChannel(cDevice::CurrentChannel(), LastChannel > 0);
+              Menu = new cDisplayChannel(cDevice::CurrentChannel(), LastChannel >= 0);
            LastChannel = cDevice::CurrentChannel();
            LastChannelChanged = time(NULL);
            }
