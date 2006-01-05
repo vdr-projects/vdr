@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.146 2006/01/04 11:47:36 kls Exp $
+ * $Id: dvbdevice.c 1.147 2006/01/05 15:30:06 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -152,12 +152,10 @@ bool cDvbTuner::GetFrontendStatus(fe_status_t &Status, int TimeoutMs)
   if (TimeoutMs) {
      cPoller Poller(fd_frontend);
      if (Poller.Poll(TimeoutMs)) {
-        // just to clear the event queue - we'll read the actual status below
         dvb_frontend_event Event;
-        CHECK(ioctl(fd_frontend, FE_GET_EVENT, &Event));
+        while (ioctl(fd_frontend, FE_GET_EVENT, &Event) == 0)
+              ; // just to clear the event queue - we'll read the actual status below
         }
-     else
-        return false;
      }
   do {
      int stat = ioctl(fd_frontend, FE_READ_STATUS, &Status);
@@ -316,7 +314,7 @@ void cDvbTuner::Action(void)
                   tunerStatus = tsSet;
                   diseqcCommands = NULL;
                   if (time(NULL) - lastTimeoutReport > 60) { // let's not get too many of these
-                     esyslog("ERROR: frontend %d timed out while tuning", cardIndex);
+                     esyslog("ERROR: frontend %d timed out while tuning to channel %d, tp %d", cardIndex, channel.Number(), channel.Transponder());
                      lastTimeoutReport = time(NULL);
                      }
                   continue;
@@ -331,7 +329,7 @@ void cDvbTuner::Action(void)
                   }
                else if (Status & FE_HAS_LOCK) {
                   if (LostLock) {
-                     esyslog("frontend %d regained lock", cardIndex);
+                     esyslog("frontend %d regained lock on channel %d, tp %d", cardIndex, channel.Number(), channel.Transponder());
                      LostLock = false;
                      }
                   tunerStatus = tsLocked;
@@ -340,7 +338,7 @@ void cDvbTuner::Action(void)
                   }
                else if (tunerStatus == tsLocked) {
                   LostLock = true;
-                  esyslog("ERROR: frontend %d lost lock", cardIndex);
+                  esyslog("ERROR: frontend %d lost lock on channel %d, tp %d", cardIndex, channel.Number(), channel.Transponder());
                   tunerStatus = tsTuned;
                   Timer.Set(lockTimeout);
                   lastTimeoutReport = 0;
