@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.228 2006/01/05 13:54:04 kls Exp $
+ * $Id: vdr.c 1.229 2006/01/05 15:35:06 kls Exp $
  */
 
 #include <getopt.h>
@@ -812,11 +812,8 @@ int main(int argc, char *argv[])
                cPlugin *plugin = cPluginManager::GetPlugin(cRemote::GetPlugin());
                if (plugin) {
                   Menu = plugin->MainMenuAction();
-                  if (Menu) {
+                  if (Menu)
                      Menu->Show();
-                     if (Menu->IsMenu())
-                        ((cOsdMenu*)Menu)->Display();
-                     }
                   }
                else
                   esyslog("ERROR: unknown plugin '%s'", cRemote::GetPlugin());

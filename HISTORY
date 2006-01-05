@@ -4102,3 +4102,5 @@ Video Disk Recorder Revision History
   details).
 - The "Mark/Move" function in the "Channels" menu now also works in the non-numeric
   sort modes.
+- The default cOsdObject::Show() now automatically calls cOsdMenu::Display() if
+  this is a menu.

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osdbase.c 1.26 2006/01/05 13:26:00 kls Exp $
+ * $Id: osdbase.c 1.27 2006/01/05 15:35:06 kls Exp $
  */
 
 #include "osdbase.h"
@@ -57,6 +57,14 @@ void cOsdItem::SetFresh(bool Fresh)
 eOSState cOsdItem::ProcessKey(eKeys Key)
 {
   return Key == kOk ? state : osUnknown;
+}
+
+// --- cOsdObject ------------------------------------------------------------
+
+void cOsdObject::Show(void)
+{
+  if (isMenu)
+     ((cOsdMenu *)this)->Display();
 }
 
 // --- cOsdMenu --------------------------------------------------------------
