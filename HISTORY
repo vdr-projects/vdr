@@ -4100,3 +4100,5 @@ Video Disk Recorder Revision History
 - In the "Channels" menu the numeric keys now position the cursor to the channel
   with the given number (see MANUAL, section "Remote Control Keys", note (3) for
   details).
+- The "Mark/Move" function in the "Channels" menu now also works in the non-numeric
+  sort modes.

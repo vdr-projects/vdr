@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.385 2006/01/05 13:26:37 kls Exp $
+ * $Id: menu.c 1.386 2006/01/05 14:02:45 kls Exp $
  */
 
 #include "menu.h"
@@ -434,7 +434,7 @@ void cMenuChannels::Setup(void)
   if (cMenuChannelItem::SortMode() != cMenuChannelItem::csmNumber)
      Sort();
   SetCurrent(currentItem);
-  SetHelp(tr("Edit"), tr("New"), tr("Delete"), cMenuChannelItem::SortMode() == cMenuChannelItem::csmNumber ? tr("Mark") : NULL);
+  SetHelp(tr("Edit"), tr("New"), tr("Delete"), tr("Mark"));
   Display();
 }
 
@@ -567,7 +567,7 @@ eOSState cMenuChannels::ProcessKey(eKeys Key)
               case kRed:    return Edit();
               case kGreen:  return New();
               case kYellow: return Delete();
-              case kBlue:   if (!HasSubMenu() && cMenuChannelItem::SortMode() == cMenuChannelItem::csmNumber)
+              case kBlue:   if (!HasSubMenu())
                                Mark();
                             break;
               default: break;
