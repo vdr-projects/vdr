@@ -4096,3 +4096,4 @@ Video Disk Recorder Revision History
   Petri Hintukainen). If you want to use "fadvise", you can activate the line
   //#define USE_FADVISE
   in tools.c.
+- Removed unused 'offset' member from cOsdItem.

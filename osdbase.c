@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osdbase.c 1.24 2005/10/09 10:56:26 kls Exp $
+ * $Id: osdbase.c 1.25 2006/01/05 12:42:00 kls Exp $
  */
 
 #include "osdbase.h"
@@ -19,7 +19,6 @@
 cOsdItem::cOsdItem(eOSState State)
 {
   text = NULL;
-  offset = -1;
   state = State;
   selectable = true;
   fresh = true;
@@ -28,7 +27,6 @@ cOsdItem::cOsdItem(eOSState State)
 cOsdItem::cOsdItem(const char *Text, eOSState State, bool Selectable)
 {
   text = NULL;
-  offset = -1;
   state = State;
   selectable = Selectable;
   fresh = true;

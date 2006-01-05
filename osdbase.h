@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osdbase.h 1.12 2005/10/02 09:18:20 kls Exp $
+ * $Id: osdbase.h 1.13 2006/01/05 12:42:11 kls Exp $
  */
 
 #ifndef __OSDBASE_H
@@ -49,7 +49,6 @@ enum eOSState { osUnknown,
 class cOsdItem : public cListObject {
 private:
   char *text;
-  int offset;
   eOSState state;
   bool selectable;
 protected:
