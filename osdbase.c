@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osdbase.c 1.25 2006/01/05 12:42:00 kls Exp $
+ * $Id: osdbase.c 1.26 2006/01/05 13:26:00 kls Exp $
  */
 
 #include "osdbase.h"
@@ -250,6 +250,8 @@ void cOsdMenu::DisplayCurrent(bool Current)
 
 void cOsdMenu::Clear(void)
 {
+  if (marked >= 0)
+     SetStatus(NULL);
   first = 0;
   current = marked = -1;
   cList<cOsdItem>::Clear();
@@ -453,6 +455,7 @@ eOSState cOsdMenu::ProcessKey(eKeys Key)
         }
      }
   switch (Key) {
+    case k0:      return osUnknown;
     case k1...k9: return hasHotkeys ? HotKey(Key) : osUnknown;
     case kUp|k_Repeat:
     case kUp:   CursorUp();   break;

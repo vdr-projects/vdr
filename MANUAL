@@ -74,7 +74,12 @@ Version 1.2
       to "mark" a timer for moving.
   (2) See "Processing Recordings" below.
   (3) In the "Channels" menu the '0' key switches the sort mode through "by number",
-      "by name" and "by provider".
+      "by name" and "by provider". Other numeric input positions the cursor to
+      the channel with the number entered so far. If there is no channel with that
+      number, nothing happens. While entering a channel number, the '0' key will
+      be treated as part of that number, not as a sort mode toggle. If no numeric
+      key has been pressed for more than one second, the number is reset and '0'
+      functions as sort mode toggle again.
   (4) In the "Timers" menu, when on the "Day" item, the '0' key toggles between
       a single shot and a repeating timer. If "Day" indicates a repeating timer,
       the keys '1'...'7' can be used to toggle the individual days ('1' is Monday).

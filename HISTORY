@@ -4097,3 +4097,6 @@ Video Disk Recorder Revision History
   //#define USE_FADVISE
   in tools.c.
 - Removed unused 'offset' member from cOsdItem.
+- In the "Channels" menu the numeric keys now position the cursor to the channel
+  with the given number (see MANUAL, section "Remote Control Keys", note (3) for
+  details).

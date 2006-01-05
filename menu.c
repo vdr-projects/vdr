@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.384 2006/01/04 14:42:13 kls Exp $
+ * $Id: menu.c 1.385 2006/01/05 13:26:37 kls Exp $
  */
 
 #include "menu.h"
@@ -381,12 +381,17 @@ void cMenuChannelItem::Set(void)
 
 // --- cMenuChannels ---------------------------------------------------------
 
+#define CHANNELNUMBERTIMEOUT 1000 //ms
+
 class cMenuChannels : public cOsdMenu {
 private:
+  int number;
+  cTimeMs numberTimer;
   void Setup(void);
   cChannel *GetChannel(int Index);
   void Propagate(void);
 protected:
+  eOSState Number(eKeys Key);
   eOSState Switch(void);
   eOSState Edit(void);
   eOSState New(void);
@@ -401,6 +406,7 @@ public:
 cMenuChannels::cMenuChannels(void)
 :cOsdMenu(tr("Channels"), CHNUMWIDTH)
 {
+  number = 0;
   Setup();
   Channels.IncBeingEdited();
 }
@@ -445,6 +451,30 @@ void cMenuChannels::Propagate(void)
       ci->Set();
   Display();
   Channels.SetModified(true);
+}
+
+eOSState cMenuChannels::Number(eKeys Key)
+{
+  if (HasSubMenu())
+     return osContinue;
+  if (numberTimer.TimedOut())
+     number = 0;
+  if (!number && Key == k0) {
+     cMenuChannelItem::IncSortMode();
+     Setup();
+     }
+  else {
+     number = number * 10 + Key - k0;
+     for (cMenuChannelItem *ci = (cMenuChannelItem *)First(); ci; ci = (cMenuChannelItem *)ci->Next()) {
+         if (!ci->Channel()->GroupSep() && ci->Channel()->Number() == number) {
+            SetCurrent(ci);
+            Display();
+            break;
+            }
+         }
+     numberTimer.Set(CHANNELNUMBERTIMEOUT);
+     }
+  return osContinue;
 }
 
 eOSState cMenuChannels::Switch(void)
@@ -531,9 +561,8 @@ eOSState cMenuChannels::ProcessKey(eKeys Key)
     default:
          if (state == osUnknown) {
             switch (Key) {
-              case k0:      cMenuChannelItem::IncSortMode();
-                            Setup();
-                            break;
+              case k0 ... k9:
+                            return Number(Key);
               case kOk:     return Switch();
               case kRed:    return Edit();
               case kGreen:  return New();
