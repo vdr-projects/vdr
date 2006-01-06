@@ -4113,3 +4113,6 @@ Video Disk Recorder Revision History
   displayed will close the OSD. In order to assign this new key to an existing
   remote control setup, the remote.conf file needs to be deleted and VDR has
   to be restarted to go through the process of learning the remote control keys.
+- Any cReceivers still attached to a cDevice when that device switches to a
+  different transponder are now automatically detached (suggested by Patrick
+  Fischer).

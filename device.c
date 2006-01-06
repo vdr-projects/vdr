@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.116 2006/01/06 12:56:44 kls Exp $
+ * $Id: device.c 1.117 2006/01/06 13:50:00 kls Exp $
  */
 
 #include "device.h"
@@ -604,10 +604,14 @@ eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
   if (LiveView)
      StopReplay();
 
+  // If this card is switched to an other transponder, any receivers still
+  // attached to it ineed to be automatically detached:
+  bool NeedsDetachReceivers = false;
+
   // If this card can't receive this channel, we must not actually switch
   // the channel here, because that would irritate the driver when we
   // start replaying in Transfer Mode immediately after switching the channel:
-  bool NeedsTransferMode = (LiveView && IsPrimaryDevice() && !ProvidesChannel(Channel, Setup.PrimaryLimit));
+  bool NeedsTransferMode = (LiveView && IsPrimaryDevice() && !ProvidesChannel(Channel, Setup.PrimaryLimit, &NeedsDetachReceivers));
 
   eSetChannelResult Result = scrOk;
 
@@ -615,11 +619,14 @@ eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
   // use the card that actually can receive it and transfer data from there:
 
   if (NeedsTransferMode) {
-     cDevice *CaDevice = GetDevice(Channel, 0);
+     cDevice *CaDevice = GetDevice(Channel, 0, &NeedsDetachReceivers);
      if (CaDevice && CanReplay()) {
         cStatus::MsgChannelSwitch(this, 0); // only report status if we are actually going to switch the channel
-        if (CaDevice->SetChannel(Channel, false) == scrOk) // calling SetChannel() directly, not SwitchChannel()!
+        if (CaDevice->SetChannel(Channel, false) == scrOk) { // calling SetChannel() directly, not SwitchChannel()!
+           if (NeedsDetachReceivers)
+              CaDevice->DetachAllReceivers();
            cControl::Launch(new cTransferControl(CaDevice, Channel->Vpid(), Channel->Apids(), Channel->Dpids(), Channel->Spids()));
+           }
         else
            Result = scrNoTransfer;
         }
@@ -653,6 +660,8 @@ eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
            }
 #endif
         }
+     if (NeedsDetachReceivers)
+        DetachAllReceivers();
      if (SetChannelDevice(Channel, LiveView)) {
         // Start section handling:
         if (sectionHandler) {
@@ -1267,6 +1276,15 @@ void cDevice::DetachAll(int Pid)
             Detach(Receiver);
          }
      }
+}
+
+void cDevice::DetachAllReceivers(void)
+{
+  cMutexLock MutexLock(&mutexReceiver);
+  for (int i = 0; i < MAXRECEIVERS; i++) {
+      if (receiver[i])
+         Detach(receiver[i]);
+      }
 }
 
 // --- cTSBuffer -------------------------------------------------------------
