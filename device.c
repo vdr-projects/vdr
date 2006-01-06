@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.115 2005/12/30 15:41:42 kls Exp $
+ * $Id: device.c 1.116 2006/01/06 12:56:44 kls Exp $
  */
 
 #include "device.h"
@@ -659,7 +659,7 @@ eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
            sectionHandler->SetChannel(Channel);
            sectionHandler->SetStatus(true);
            }
-        // Start decrypting any PIDs the might have been set in SetChannelDevice():
+        // Start decrypting any PIDs that might have been set in SetChannelDevice():
         if (ciHandler)
            ciHandler->StartDecrypting();
         }
