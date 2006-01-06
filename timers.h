@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.h 1.22 2006/01/03 11:45:26 kls Exp $
+ * $Id: timers.h 1.23 2006/01/06 14:13:17 kls Exp $
  */
 
 #ifndef __TIMERS_H
@@ -29,7 +29,7 @@ class cTimer : public cListObject {
 private:
   mutable time_t startTime, stopTime;
   bool recording, pending, inVpsMargin;
-  int flags;
+  uint flags;
   cChannel *channel;
   mutable time_t day; ///< midnight of the day this timer shall hit, or of the first day it shall hit in case of a repeating timer
   int weekdays;       ///< bitmask, lowest bits: SSFTWTM  (the 'M' is the LSB)
@@ -49,7 +49,7 @@ public:
   bool Recording(void) const { return recording; }
   bool Pending(void) const { return pending; }
   bool InVpsMargin(void) const { return inVpsMargin; }
-  int Flags(void) const { return flags; }
+  uint Flags(void) const { return flags; }
   const cChannel *Channel(void) const { return channel; }
   time_t Day(void) const { return day; }
   int WeekDays(void) const { return weekdays; }
@@ -82,10 +82,10 @@ public:
   void SetPending(bool Pending);
   void SetInVpsMargin(bool InVpsMargin);
   void SetPriority(int Priority);
-  void SetFlags(int Flags);
-  void ClrFlags(int Flags);
-  void InvFlags(int Flags);
-  bool HasFlags(int Flags) const;
+  void SetFlags(uint Flags);
+  void ClrFlags(uint Flags);
+  void InvFlags(uint Flags);
+  bool HasFlags(uint Flags) const;
   void Skip(void);
   void OnOff(void);
   cString PrintFirstDay(void) const;

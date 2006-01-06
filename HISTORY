@@ -4116,3 +4116,5 @@ Video Disk Recorder Revision History
 - Any cReceivers still attached to a cDevice when that device switches to a
   different transponder are now automatically detached (suggested by Patrick
   Fischer).
+- The "flags" of a timer are now handled as an unsigned integer value. In order
+  to do this, the interface of cMenuEditBitItem also had to be changed.

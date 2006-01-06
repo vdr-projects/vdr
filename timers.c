@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 1.39 2006/01/03 11:45:19 kls Exp $
+ * $Id: timers.c 1.40 2006/01/06 14:14:59 kls Exp $
  */
 
 #include "timers.h"
@@ -110,7 +110,7 @@ cString cTimer::ToText(bool UseChannelID)
   char *buffer;
   strreplace(file, ':', '|');
   strreplace(summary, '\n', '|');
-  asprintf(&buffer, "%d:%s:%s:%04d:%04d:%d:%d:%s:%s\n", flags, UseChannelID ? *Channel()->GetChannelID().ToString() : *itoa(Channel()->Number()), *PrintDay(day, weekdays), start, stop, priority, lifetime, file, summary ? summary : "");
+  asprintf(&buffer, "%u:%s:%s:%04d:%04d:%d:%d:%s:%s\n", flags, UseChannelID ? *Channel()->GetChannelID().ToString() : *itoa(Channel()->Number()), *PrintDay(day, weekdays), start, stop, priority, lifetime, file, summary ? summary : "");
   strreplace(summary, '|', '\n');
   strreplace(file, '|', ':');
   return cString(buffer, true);
@@ -244,7 +244,7 @@ bool cTimer::Parse(const char *s)
      s = s2;
      }
   bool result = false;
-  if (8 <= sscanf(s, "%d :%a[^:]:%a[^:]:%d :%d :%d :%d :%a[^:\n]:%a[^\n]", &flags, &channelbuffer, &daybuffer, &start, &stop, &priority, &lifetime, &filebuffer, &summary)) {
+  if (8 <= sscanf(s, "%u :%a[^:]:%a[^:]:%d :%d :%d :%d :%a[^:\n]:%a[^\n]", &flags, &channelbuffer, &daybuffer, &start, &stop, &priority, &lifetime, &filebuffer, &summary)) {
      if (summary && !*skipspace(summary)) {
         free(summary);
         summary = NULL;
@@ -467,22 +467,22 @@ void cTimer::SetPriority(int Priority)
   priority = Priority; 
 }
 
-void cTimer::SetFlags(int Flags)
+void cTimer::SetFlags(uint Flags)
 {
   flags |= Flags;
 }
 
-void cTimer::ClrFlags(int Flags)
+void cTimer::ClrFlags(uint Flags)
 {
   flags &= ~Flags;
 }
 
-void cTimer::InvFlags(int Flags)
+void cTimer::InvFlags(uint Flags)
 {
   flags ^= Flags;
 }
 
-bool cTimer::HasFlags(int Flags) const
+bool cTimer::HasFlags(uint Flags) const
 {
   return (flags & Flags) == Flags;
 }
