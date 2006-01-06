@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.226 2006/01/05 15:39:56 kls Exp $
+ * $Id: i18n.c 1.227 2006/01/06 16:03:41 kls Exp $
  *
  * Translations provided by:
  *
@@ -4083,26 +4083,48 @@ const tI18nPhrase Phrases[] = {
     "ManTirOnsTorFreLørSøn",
   },
   // The allowed characters in strings:
-  { " abcdefghijklmnopqrstuvwxyz0123456789-.#~",
-    " aäbcdefghijklmnoöpqrstuüvwxyz0123456789-.#~",
-    " abcèdefghijklmnopqrs¹tuvwxyz¾0123456789-.#~",
-    " aàbcdeéèfghiîjklmnopqrstuùvwxyz0123456789-.#~",
-    " abcdefghijklmnopqrstuvwxyz0123456789-.#~áäàïóöòúüù",
+  { " abcdefghijklmnopqrstuvwxyz0123456789-.#~,/_@",
+    " aäbcdefghijklmnoöpqrstuüvwxyz0123456789-.#~,/_@",
+    " abcèdefghijklmnopqrs¹tuvwxyz¾0123456789-.#~,/_@",
+    " aàbcdeéèfghiîjklmnopqrstuùvwxyz0123456789-.#~,/_@",
+    " abcdefghijklmnopqrstuvwxyz0123456789-.#~,/_@áäàïóöòúüù",
     "",// TODO
-    " aàbcçdeéèêfghiîjklmnoôpqrstuùûvwxyz0123456789-.#~",
+    " aàbcçdeéèêfghiîjklmnoôpqrstuùûvwxyz0123456789-.#~,/_@",
     "",// TODO
-    " abcdefghijklmnopqrstuvwxyzåäö0123456789-.#~",
-    " abcdefghijklmnopqrstuvwxyz0123456789-.#~",
-    " aábcdeéfghiíjklmnñoópqrstuúvwxyz0123456789-.#~",
-    " áÜâãäåİæçŞèéßêëìíîïüğñóòôõıö÷øùş0123456789-.#~abcdefghijklmnopqrstuvwxyz",
-    " abcdefghijklmnopqrstuvwxyzåäö0123456789-.#~",
-    " aãâbcdefghiîjklmnopqrsºtşuvwxyz0123456789-.#~",
-    " aábcdeéfghiíjklmnoóöpqrstuúüvwxyz0123456789-.,#~",
-    " aàbcçdeéèfghiíjklmnoòpqrstuúvwxyz0123456789-.,#~_·",
-    " abcdefghijklmnopqrstuvwxyzĞÑÒÓÔÕñÖ×ØÙÚÛÜİŞßàáâãäåæçèéêëìîï0123456789-.#~",
-    " abcèædğefghijklmnopqrs¹tuvwxyz¾0123456789-.#~", // hrv
-    " abcdefghijklmnopqrsğzştuvwõäöüxyå0123456789-.#~",
-    " abcdefghijklmnopqrstuvwxyzæøå0123456789-.#~",
+    " abcdefghijklmnopqrstuvwxyzåäö0123456789-.#~,/_@",
+    " abcdefghijklmnopqrstuvwxyz0123456789-.#~,/_@",
+    " aábcdeéfghiíjklmnñoópqrstuúvwxyz0123456789-.#~,/_@",
+    " áÜâãäåİæçŞèéßêëìíîïüğñóòôõıö÷øùş0123456789-.#~,/_@abcdefghijklmnopqrstuvwxyz",
+    " abcdefghijklmnopqrstuvwxyzåäö0123456789-.#~,/_@",
+    " aãâbcdefghiîjklmnopqrsºtşuvwxyz0123456789-.#~,/_@",
+    " aábcdeéfghiíjklmnoóöpqrstuúüvwxyz0123456789-.,#~,/_@",
+    " aàbcçdeéèfghiíjklmnoòpqrstuúvwxyz0123456789-.,#~,/_@·",
+    " abcdefghijklmnopqrstuvwxyzĞÑÒÓÔÕñÖ×ØÙÚÛÜİŞßàáâãäåæçèéêëìîï0123456789-.#~,/_@",
+    " abcèædğefghijklmnopqrs¹tuvwxyz¾0123456789-.#~,/_@", // hrv
+    " abcdefghijklmnopqrsğzştuvwõäöüxyå0123456789-.#~,/_@",
+    " abcdefghijklmnopqrstuvwxyzæøå0123456789-.#~,/_@",
+  },
+  // The character maps for entering letters via the numeric keys:
+  { " 0\t-.#~,/_@1\tabc2\tdef3\tghi4\tjkl5\tmno6\tpqrs7\ttuv8\twxyz9",
+    " 0\t-.#~,/_@1\tabcä2\tdef3\tghi4\tjkl5\tmnoö6\tpqrs7\ttuvü8\twxyz9",
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
   },
   // Learning keys:
   { "Learning Remote Control Keys",

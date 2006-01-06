@@ -4118,3 +4118,6 @@ Video Disk Recorder Revision History
   Fischer).
 - The "flags" of a timer are now handled as an unsigned integer value. In order
   to do this, the interface of cMenuEditBitItem also had to be changed.
+- In string entry fields (like, e.g., the file name of a recording) the characters
+  can now be entered by pressing the numeric keys, the same way as on a
+  telephone keypad (based on the "Easy Input" patch from Marcel Schaeben).

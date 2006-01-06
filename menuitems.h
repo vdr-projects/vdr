@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.h 1.14 2006/01/06 14:19:12 kls Exp $
+ * $Id: menuitems.h 1.15 2006/01/06 15:16:25 kls Exp $
  */
 
 #ifndef __MENUITEMS_H
@@ -82,6 +82,9 @@ private:
   char *allowed;
   int pos;
   bool insert, newchar, uppercase;
+  const char *charMap;
+  const char *currentChar;
+  eKeys lastKey;
   void SetHelpKeys(void);
   virtual void Set(void);
   char Inc(char c, bool Up);

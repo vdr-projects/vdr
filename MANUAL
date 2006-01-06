@@ -30,6 +30,10 @@ Version 1.2
   are used to enter the data, and the Left key can be used to delete the last
   entered digit.
 
+  In a text input field (like, e.g., the file name of a recording) the characters
+  can be entered by pressing the numeric keys, the same way as on a telephone
+  keypad.
+
   If your remote control provides additional keys, they can be used for the
   following functions:
 

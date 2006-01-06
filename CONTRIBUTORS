@@ -1616,3 +1616,6 @@ Gavin Hamill <gdh@acentral.co.uk>
 Petri Hintukainen <Petri.Hintukainen@hut.fi>
  for suggesting to disable the use of "fadvise" in cUnbufferedFile because there
  have been several reports that it causes more problems than it solves
+
+Marcel Schaeben <mts280@gmx.de>
+ for his "Easy Input" patch

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.c 1.26 2006/01/06 14:19:06 kls Exp $
+ * $Id: menuitems.c 1.27 2006/01/06 16:26:05 kls Exp $
  */
 
 #include "menuitems.h"
@@ -15,7 +15,7 @@
 #include "skins.h"
 #include "status.h"
 
-const char *FileNameChars = " abcdefghijklmnopqrstuvwxyz0123456789-.#~";
+const char *FileNameChars = " abcdefghijklmnopqrstuvwxyz0123456789-.#~,/_@";
 
 // --- cMenuEditItem ---------------------------------------------------------
 
@@ -243,6 +243,9 @@ cMenuEditStrItem::cMenuEditStrItem(const char *Name, char *Value, int Length, co
   pos = -1;
   insert = uppercase = false;
   newchar = true;
+  charMap = tr(" 0\t-.#~,/_@1\tabc2\tdef3\tghi4\tjkl5\tmno6\tpqrs7\ttuv8\twxyz9");
+  currentChar = NULL;
+  lastKey = kNone;
   Set();
 }
 
@@ -320,6 +323,9 @@ char cMenuEditStrItem::Inc(char c, bool Up)
 
 eOSState cMenuEditStrItem::ProcessKey(eKeys Key)
 {
+  bool SameKey = Key == lastKey;
+  if (Key != kNone)
+     lastKey = Key;
   switch (Key) {
     case kRed:   // Switch between upper- and lowercase characters
                  if (InEditMode()) {
@@ -411,6 +417,38 @@ eOSState cMenuEditStrItem::ProcessKey(eKeys Key)
                     }
                  else
                     return cMenuEditItem::ProcessKey(Key);
+                 break;
+    case k0 ... k9: {
+                 if (!SameKey)
+                    currentChar = NULL;
+                 if (InEditMode()) {
+                    if (insert && newchar) {
+                       // create a new character in insert mode
+                       if (int(strlen(value)) < length - 1) {
+                          memmove(value + pos + 1, value + pos, strlen(value) - pos + 1);
+                          value[pos] = ' ';
+                          }
+                       }
+                    if (!currentChar || !*currentChar || *currentChar == '\t') {
+                       // find the beginning of the character map entry for Key
+                       int n = Key - k0;
+                       currentChar = charMap;
+                       while (n > 0 && *currentChar) {
+                             if (*currentChar++ == '\t')
+                                n--;
+                             }
+                       }
+                    if (*currentChar && *currentChar != '\t') {
+                       value[pos] = *currentChar;
+                       if (uppercase)
+                          value[pos] = toupper(value[pos]);
+                       currentChar++;
+                       }
+                    newchar = false;
+                    }
+                 else
+                    return cMenuEditItem::ProcessKey(Key);
+                 }
                  break;
     case kOk:    if (InEditMode()) {
                     pos = -1;
