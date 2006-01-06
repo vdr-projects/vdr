@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 1.80 2006/01/04 13:47:00 kls Exp $
+ * $Id: menu.h 1.81 2006/01/06 11:30:38 kls Exp $
  */
 
 #ifndef __MENU_H
@@ -240,6 +240,7 @@ private:
 public:
   cReplayControl(void);
   virtual ~cReplayControl();
+  virtual cOsdObject *GetInfo(void);
   virtual eOSState ProcessKey(eKeys Key);
   virtual void Show(void);
   virtual void Hide(void);

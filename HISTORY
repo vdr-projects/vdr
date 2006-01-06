@@ -4104,3 +4104,12 @@ Video Disk Recorder Revision History
   sort modes.
 - The default cOsdObject::Show() now automatically calls cOsdMenu::Display() if
   this is a menu.
+- The new "Info" key brings up information on the currently viewed programme
+  or recording. For a live programme this is the same as "Schedule/Ok", i.e. the
+  description of the current EPG event. For a recording this is the same as shown
+  by the "Info" button in the "Recordings" menu. Plugins that implement players
+  can overwrite their cControl::GetInfo() function to show their own info (see
+  PLUGINS.html for details). Pressing the "Info" key again while the info is
+  displayed will close the OSD. In order to assign this new key to an existing
+  remote control setup, the remote.conf file needs to be deleted and VDR has
+  to be restarted to go through the process of learning the remote control keys.

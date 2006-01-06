@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: player.h 1.18 2006/01/01 14:43:10 kls Exp $
+ * $Id: player.h 1.19 2006/01/06 11:29:27 kls Exp $
  */
 
 #ifndef __PLAYER_H
@@ -71,6 +71,7 @@ public:
   cControl(cPlayer *Player, bool Hidden = false);
   virtual ~cControl();
   virtual void Hide(void) = 0;
+  virtual cOsdObject *GetInfo(void);
   bool GetIndex(int &Current, int &Total, bool SnapToIFrame = false) { return player->GetIndex(Current, Total, SnapToIFrame); }
   bool GetReplayMode(bool &Play, bool &Forward, int &Speed) { return player->GetReplayMode(Play, Forward, Speed); }
   static void Launch(cControl *Control);

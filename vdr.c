@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.229 2006/01/05 15:35:06 kls Exp $
+ * $Id: vdr.c 1.230 2006/01/06 12:47:16 kls Exp $
  */
 
 #include <getopt.h>
@@ -491,6 +491,7 @@ int main(int argc, char *argv[])
   bool ForceShutdown = false;
   bool UserShutdown = false;
   bool TimerInVpsMargin = false;
+  bool IsInfoMenu = false;
 
   // Load plugins:
 
@@ -646,6 +647,8 @@ int main(int argc, char *argv[])
 
   // Main program loop:
 
+#define DELETE_MENU ((IsInfoMenu &= (Menu == NULL)), delete Menu, Menu = NULL)
+
   while (!Interrupted) {
         // Handle emergency exits:
         if (cThread::EmergencyExit()) {
@@ -786,14 +789,35 @@ int main(int argc, char *argv[])
           case kMenu:
                key = kNone; // nobody else needs to see this key
                if (Menu)
-                  DELETENULL(Menu);
+                  DELETE_MENU;
                else if (cControl::Control() && cOsd::IsOpen())
                   cControl::Control()->Hide();
                else
                   Menu = new cMenuMain;
                break;
+          // Info:
+          case kInfo: {
+               bool WasInfoMenu = IsInfoMenu;
+               DELETE_MENU;
+               if (!WasInfoMenu) {
+                  IsInfoMenu = true;
+                  if (cControl::Control()) {
+                     cControl::Control()->Hide();
+                     Menu = cControl::Control()->GetInfo();
+                     if (Menu)
+                        Menu->Show();
+                     else
+                        IsInfoMenu = false;
+                     }
+                  else {
+                     cRemote::Put(kOk, true);
+                     cRemote::Put(kSchedule, true);
+                     }
+                  }
+               }
+               break;
           #define DirectMainFunction(function)\
-            DELETENULL(Menu);\
+            DELETE_MENU;\
             if (cControl::Control())\
                cControl::Control()->Hide();\
             Menu = new cMenuMain(function);\
@@ -806,7 +830,7 @@ int main(int argc, char *argv[])
           case kCommands:   DirectMainFunction(osCommands); break;
           case kUser1 ... kUser9: cRemote::PutMacro(key); key = kNone; break;
           case k_Plugin: {
-               DELETENULL(Menu);
+               DELETE_MENU;
                if (cControl::Control())
                   cControl::Control()->Hide();
                cPlugin *plugin = cPluginManager::GetPlugin(cRemote::GetPlugin());
@@ -851,7 +875,7 @@ int main(int argc, char *argv[])
                if (cControl::Control())
                   cControl::Control()->Hide();
                if (!cDisplayTracks::IsOpen()) {
-                  DELETENULL(Menu);
+                  DELETE_MENU;
                   Menu = cDisplayTracks::Create();
                   }
                else
@@ -861,7 +885,7 @@ int main(int argc, char *argv[])
           // Pausing live video:
           case kPause:
                if (!cControl::Control()) {
-                  DELETENULL(Menu);
+                  DELETE_MENU;
                   if (!cRecordControls::PauseLiveVideo())
                      Skins.Message(mtError, tr("No free DVB device to record!"));
                   key = kNone; // nobody else needs to see this key
@@ -879,7 +903,7 @@ int main(int argc, char *argv[])
                break;
           // Power off:
           case kPower: isyslog("Power button pressed");
-                       DELETENULL(Menu);
+                       DELETE_MENU;
                        if (!Shutdown) {
                           Skins.Message(mtError, tr("Can't shutdown - option '-s' not given!"));
                           break;
@@ -909,44 +933,44 @@ int main(int argc, char *argv[])
                  state = osEnd;
               }
            switch (state) {
-             case osPause:  DELETENULL(Menu);
+             case osPause:  DELETE_MENU;
                             cControl::Shutdown(); // just in case
                             if (!cRecordControls::PauseLiveVideo())
                                Skins.Message(mtError, tr("No free DVB device to record!"));
                             break;
-             case osRecord: DELETENULL(Menu);
+             case osRecord: DELETE_MENU;
                             if (cRecordControls::Start())
                                Skins.Message(mtInfo, tr("Recording started"));
                             else
                                Skins.Message(mtError, tr("No free DVB device to record!"));
                             break;
              case osRecordings:
-                            DELETENULL(Menu);
+                            DELETE_MENU;
                             cControl::Shutdown();
                             Menu = new cMenuMain(osRecordings);
                             break;
-             case osReplay: DELETENULL(Menu);
+             case osReplay: DELETE_MENU;
                             cControl::Shutdown();
                             cControl::Launch(new cReplayControl);
                             break;
              case osStopReplay:
-                            DELETENULL(Menu);
+                            DELETE_MENU;
                             cControl::Shutdown();
                             break;
              case osSwitchDvb:
-                            DELETENULL(Menu);
+                            DELETE_MENU;
                             cControl::Shutdown();
                             Skins.Message(mtInfo, tr("Switching primary DVB..."));
                             cDevice::SetPrimaryDevice(Setup.PrimaryDVB);
                             break;
-             case osPlugin: DELETENULL(Menu);
+             case osPlugin: DELETE_MENU;
                             Menu = cMenuMain::PluginOsdObject();
                             if (Menu)
                                Menu->Show();
                             break;
              case osBack:
              case osEnd:    if (Interact == Menu)
-                               DELETENULL(Menu);
+                               DELETE_MENU;
                             else
                                cControl::Shutdown();
                             break;
