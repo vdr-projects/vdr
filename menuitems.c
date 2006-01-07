@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.c 1.28 2006/01/07 11:20:55 kls Exp $
+ * $Id: menuitems.c 1.29 2006/01/07 15:37:03 kls Exp $
  */
 
 #include "menuitems.h"
@@ -257,7 +257,7 @@ cMenuEditStrItem::~cMenuEditStrItem()
 void cMenuEditStrItem::SetHelpKeys(void)
 {
   if (InEditMode())
-     cSkinDisplay::Current()->SetButtons(tr("ABC/abc"), tr(insert ? "Overwrite" : "Insert"), tr("Delete"));
+     cSkinDisplay::Current()->SetButtons(tr("Button$ABC/abc"), tr(insert ? "Button$Overwrite" : "Button$Insert"), tr("Button$Delete"));
   else
      cSkinDisplay::Current()->SetButtons(NULL);
 }

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.388 2006/01/07 13:51:09 kls Exp $
+ * $Id: menu.c 1.389 2006/01/07 15:38:16 kls Exp $
  */
 
 #include "menu.h"
@@ -421,7 +421,7 @@ void cMenuChannels::Setup(void)
   if (cMenuChannelItem::SortMode() != cMenuChannelItem::csmNumber)
      Sort();
   SetCurrent(currentItem);
-  SetHelp(tr("Edit"), tr("New"), tr("Delete"), tr("Mark"));
+  SetHelp(tr("Button$Edit"), tr("Button$New"), tr("Button$Delete"), tr("Button$Mark"));
   Display();
 }
 
@@ -788,7 +788,7 @@ cMenuTimers::cMenuTimers(void)
       Add(new cMenuTimerItem(timer));
   if (Setup.SortTimers)
      Sort();
-  SetHelp(tr("Edit"), tr("New"), tr("Delete"), Setup.SortTimers ? tr("On/Off") : tr("Mark"));
+  SetHelp(tr("Button$Edit"), tr("Button$New"), tr("Button$Delete"), Setup.SortTimers ? tr("Button$On/Off") : tr("Button$Mark"));
   Timers.IncBeingEdited();
 }
 
@@ -916,7 +916,7 @@ cMenuEvent::cMenuEvent(const cEvent *Event, bool CanSwitch)
         SetTitle(channel->Name());
         int TimerMatch = tmNone;
         Timers.GetMatch(event, &TimerMatch);
-        SetHelp(TimerMatch == tmFull ? tr("Timer") : tr("Record"), NULL, NULL, CanSwitch ? tr("Switch") : NULL);
+        SetHelp(TimerMatch == tmFull ? tr("Timer") : tr("Button$Record"), NULL, NULL, CanSwitch ? tr("Button$Switch") : NULL);
         }
      }
 }
@@ -1062,8 +1062,8 @@ void cMenuWhatsOn::SetHelpKeys(void)
         NewHelpKeys = 1;
      }
   if (NewHelpKeys != helpKeys) {
-     const char *Red[] = { NULL, tr("Record"), tr("Timer") };
-     SetHelp(Red[NewHelpKeys], now ? tr("Next") : tr("Now"), tr("Button$Schedule"), tr("Switch"));
+     const char *Red[] = { NULL, tr("Button$Record"), tr("Timer") };
+     SetHelp(Red[NewHelpKeys], now ? tr("Button$Next") : tr("Button$Now"), tr("Button$Schedule"), tr("Button$Switch"));
      helpKeys = NewHelpKeys;
      }
 }
@@ -1235,8 +1235,8 @@ void cMenuSchedule::SetHelpKeys(void)
         NewHelpKeys = 1;
      }
   if (NewHelpKeys != helpKeys) {
-     const char *Red[] = { NULL, tr("Record"), tr("Timer") };
-     SetHelp(Red[NewHelpKeys], tr("Now"), tr("Next"));
+     const char *Red[] = { NULL, tr("Button$Record"), tr("Timer") };
+     SetHelp(Red[NewHelpKeys], tr("Button$Now"), tr("Button$Next"));
      helpKeys = NewHelpKeys;
      }
 }
@@ -1328,7 +1328,7 @@ eOSState cMenuSchedule::ProcessKey(eKeys Key)
            PrepareSchedule(channel);
            if (channel->Number() != cDevice::CurrentChannel()) {
               otherChannel = channel->Number();
-              SetHelp(Count() ? tr("Record") : NULL, tr("Now"), tr("Next"), tr("Switch"));
+              SetHelp(Count() ? tr("Button$Record") : NULL, tr("Button$Now"), tr("Button$Next"), tr("Button$Switch"));
               }
            Display();
            }
@@ -1589,7 +1589,7 @@ cMenuRecording::cMenuRecording(const cRecording *Recording)
 {
   recording = Recording;
   if (recording)
-     SetHelp(tr("Play"), tr("Rewind"));
+     SetHelp(tr("Button$Play"), tr("Button$Rewind"));
 }
 
 void cMenuRecording::Display(void)
@@ -1714,9 +1714,9 @@ void cMenuRecordings::SetHelpKeys(void)
   if (NewHelpKeys != helpKeys) {
      switch (NewHelpKeys) {
        case 0: SetHelp(NULL); break;
-       case 1: SetHelp(tr("Open")); break;
+       case 1: SetHelp(tr("Button$Open")); break;
        case 2:
-       case 3: SetHelp(RecordingCommands.Count() ? tr("Commands") : tr("Play"), tr("Rewind"), tr("Delete"), NewHelpKeys == 3 ? tr("Info") : NULL);
+       case 3: SetHelp(RecordingCommands.Count() ? tr("Commands") : tr("Button$Play"), tr("Button$Rewind"), tr("Button$Delete"), NewHelpKeys == 3 ? tr("Info") : NULL);
        }
      helpKeys = NewHelpKeys;
      }
@@ -2072,7 +2072,7 @@ cMenuSetupEPG::cMenuSetupEPG(void)
       ;
   originalNumLanguages = numLanguages;
   SetSection(tr("EPG"));
-  SetHelp(tr("Scan"));
+  SetHelp(tr("Button$Scan"));
   Setup();
 }
 
@@ -2325,7 +2325,7 @@ cMenuSetupCICAM::cMenuSetupCICAM(void)
             }
          }
       }
-  SetHelp(tr("Menu"), tr("Reset"));
+  SetHelp(tr("Button$Menu"), tr("Button$Reset"));
 }
 
 eOSState cMenuSetupCICAM::Menu(void)
@@ -2704,7 +2704,7 @@ bool cMenuMain::Update(bool Force)
         stopReplayItem = NULL;
         }
      // Color buttons:
-     SetHelp(!replaying ? tr("Record") : NULL, tr("Audio"), replaying ? NULL : tr("Pause"), replaying ? tr("Button$Stop") : cReplayControl::LastReplayed() ? tr("Resume") : NULL);
+     SetHelp(!replaying ? tr("Button$Record") : NULL, tr("Button$Audio"), replaying ? NULL : tr("Button$Pause"), replaying ? tr("Button$Stop") : cReplayControl::LastReplayed() ? tr("Button$Resume") : NULL);
      result = true;
      }
 
@@ -3160,7 +3160,7 @@ cDisplayTracks::cDisplayTracks(void)
          }
       }
   timeout.Set(TRACKTIMEOUT);
-  displayTracks = Skins.Current()->DisplayTracks(tr("Audio"), numTracks, descriptions);
+  displayTracks = Skins.Current()->DisplayTracks(tr("Button$Audio"), numTracks, descriptions);
   Show();
 }
 

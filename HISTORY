@@ -4090,6 +4090,8 @@ Video Disk Recorder Revision History
   remember why it wasn't active...
 - Removed an obsolete "Summary" text from i18n.c and preceded all key definition
   texts with "Key$" to avoid duplicates (reported by Lucian Muresan).
+- Preceded all button texts with "Button$".
+- Removed obsolete "Eject" and "Language" texts.
 - Added missing #include "thread.h" to dvbspu.c (reported by Gavin Hamill).
 - Disabled the use of "fadvise" in cUnbufferedFile because there have been
   several reports that it causes more problems than it solves (suggested by
