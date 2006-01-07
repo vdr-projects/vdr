@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.h 1.20 2005/12/03 11:59:05 kls Exp $
+ * $Id: ci.h 1.21 2006/01/07 15:03:05 kls Exp $
  */
 
 #ifndef __CI_H
@@ -127,6 +127,8 @@ public:
        ///< Creates a new cCiHandler for the given CA device.
   int NumSlots(void) { return numSlots; }
        ///< Returns the number of CAM slots provided by this CA device.
+  int NumCams(void);
+       ///< Returns the number of actual CAMs inserted into this CA device.
   bool Ready(void);
        ///< Returns true if all CAMs in this CA device are ready.
   bool Process(int Slot = -1);

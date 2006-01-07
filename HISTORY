@@ -4126,3 +4126,4 @@ Video Disk Recorder Revision History
   Andreas Böttger).
 - The file 'ca.conf' is obsolete and has been removed.
 - Revised all descriptions regarding CICAM.
+- Adapted c(Dvb)Device::ProvidesCa() to the dynamic CA handling.

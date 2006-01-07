@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.118 2006/01/07 14:09:17 kls Exp $
+ * $Id: device.c 1.119 2006/01/07 14:50:45 kls Exp $
  */
 
 #include "device.h"
@@ -302,7 +302,7 @@ cDevice *cDevice::GetDevice(const cChannel *Channel, int Priority, bool *NeedsDe
             pri = 6; // receiving with same priority but fewer Ca's
          else
             pri = 7; // all others
-         if (pri < select) {
+         if (pri <= select) {
             select = pri;
             d = device[i];
             if (NeedsDetachReceivers)
@@ -1147,7 +1147,7 @@ int cDevice::ProvidesCa(const cChannel *Channel) const
   int Ca = Channel->Ca();
   if (Ca == CardIndex() + 1)
      return 1; // exactly _this_ card was requested
-  if (Ca && Ca <= MAXDEVICES)
+  if (Ca && Ca <= CA_DVB_MAX)
      return 0; // a specific card was requested, but not _this_ one
   return !Ca; // by default every card can provide FTA
 }

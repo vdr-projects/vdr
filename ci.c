@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 1.41 2005/12/30 15:41:38 kls Exp $
+ * $Id: ci.c 1.42 2006/01/07 15:07:16 kls Exp $
  */
 
 #include "ci.h"
@@ -1636,6 +1636,15 @@ int cCiHandler::CloseAllSessions(int Slot)
          result++;
          }
       }
+  return result;
+}
+
+int cCiHandler::NumCams(void)
+{
+  int result = 0;
+  for (int i = 0; i < MAX_CI_SLOT; i++)
+      if (moduleReady[i])
+         result++;
   return result;
 }
 

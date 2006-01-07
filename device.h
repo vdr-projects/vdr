@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 1.68 2006/01/06 13:20:25 kls Exp $
+ * $Id: device.h 1.69 2006/01/07 14:50:45 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -170,14 +170,16 @@ public:
          ///< Returns the card index of this device (0 ... MAXDEVICES - 1).
   int DeviceNumber(void) const;
          ///< Returns the number of this device (0 ... MAXDEVICES - 1).
-  virtual int ProvidesCa(const cChannel *Channel) const;//XXX PLUGINS.html!!!
-         //XXX describe changed functionality!!!
-         ///< Checks whether this device provides the given value in its
-         ///< caCaps. Returns 0 if the value is not provided, 1 if only this
-         ///< value is provided, and > 1 if this and other values are provided.
-         ///< If the given value is equal to the number of this device,
-         ///< 1 is returned. If it is 0 (FTA), 1 plus the number of other values
-         ///< in caCaps is returned.
+  virtual int ProvidesCa(const cChannel *Channel) const;
+         ///< Checks whether this device provides the conditional access
+         ///< facilities to decrypt the given Channel.
+         ///< Returns 0 if the Channel can't be decrypted, 1 if this is a
+         ///< Free To Air channel or only exactly this device can decrypt it,
+         ///< and > 1 if this device can decrypt the Channel.
+         ///< If the result is greater than 1 and the device has more than one
+         ///< CAM, the value will be increased by the number of CAMs, which
+         ///< allows to select the device with the smallest number of CAMs
+         ///< in order to preserve resources for other recordings.
   virtual bool HasDecoder(void) const;
          ///< Tells whether this device has an MPEG decoder.
 

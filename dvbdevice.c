@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.148 2006/01/07 14:05:59 kls Exp $
+ * $Id: dvbdevice.c 1.149 2006/01/07 15:15:01 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -503,13 +503,21 @@ bool cDvbDevice::Ready(void)
 
 int cDvbDevice::ProvidesCa(const cChannel *Channel) const
 {
-  if (Channel->Ca() >= CA_ENCRYPTED_MIN && ciHandler) {
-     unsigned short ids[MAXCAIDS + 1];
-     for (int i = 0; i <= MAXCAIDS; i++) // '<=' copies the terminating 0!
-         ids[i] = Channel->Ca(i);
-     return ciHandler->ProvidesCa(ids);
+  int NumCams = 0;
+  if (ciHandler) {
+     NumCams = ciHandler->NumCams();
+     if (Channel->Ca() >= CA_ENCRYPTED_MIN) {
+        unsigned short ids[MAXCAIDS + 1];
+        for (int i = 0; i <= MAXCAIDS; i++) // '<=' copies the terminating 0!
+            ids[i] = Channel->Ca(i);
+        if (ciHandler->ProvidesCa(ids))
+           return NumCams + 1;
+        }
      }
-  return cDevice::ProvidesCa(Channel);
+  int result = cDevice::ProvidesCa(Channel);
+  if (result > 0)
+     result += NumCams;
+  return result;
 }
 
 cSpuDecoder *cDvbDevice::GetSpuDecoder(void)
