@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.c 1.27 2006/01/06 16:26:05 kls Exp $
+ * $Id: menuitems.c 1.28 2006/01/07 11:20:55 kls Exp $
  */
 
 #include "menuitems.h"
@@ -705,6 +705,7 @@ eOSState cMenuEditDateItem::ProcessKey(eKeys Key)
               }
            else {
               *weekdays = days[cTimer::GetWDay(*value)];
+              dayindex = FindDayIndex(*weekdays);
               oldvalue = *value;
               *value = 0;
               }

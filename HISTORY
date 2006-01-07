@@ -3963,7 +3963,7 @@ Video Disk Recorder Revision History
   commands may now be executed at any time, and the message will be displayed
   (no more "pending message").
 
-2006-01-05: Version 1.3.38
+2006-01-07: Version 1.3.38
 
 - Fixed handling second audio and Dolby Digital PIDs for encrypted channels
   (was broken in version 1.3.37).
@@ -4121,3 +4121,6 @@ Video Disk Recorder Revision History
 - In string entry fields (like, e.g., the file name of a recording) the characters
   can now be entered by pressing the numeric keys, the same way as on a
   telephone keypad (based on the "Easy Input" patch from Marcel Schaeben).
+- Fixed the "Day" field of the "Edit timer" menu when pressing '0' to switch
+  from "single shot" to "weekly", followed by the "Right" key (reported by
+  Andreas Böttger).
