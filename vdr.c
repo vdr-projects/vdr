@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.230 2006/01/06 12:47:16 kls Exp $
+ * $Id: vdr.c 1.231 2006/01/07 12:27:45 kls Exp $
  */
 
 #include <getopt.h>
@@ -514,7 +514,6 @@ int main(int argc, char *argv[])
         Commands.Load(AddDirectory(ConfigDirectory, "commands.conf"), true) &&
         RecordingCommands.Load(AddDirectory(ConfigDirectory, "reccmds.conf"), true) &&
         SVDRPhosts.Load(AddDirectory(ConfigDirectory, "svdrphosts.conf"), true) &&
-        CaDefinitions.Load(AddDirectory(ConfigDirectory, "ca.conf"), true) &&
         Keys.Load(AddDirectory(ConfigDirectory, "remote.conf")) &&
         KeyMacros.Load(AddDirectory(ConfigDirectory, "keymacros.conf"), true)
         ))

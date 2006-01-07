@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.387 2006/01/06 11:44:25 kls Exp $
+ * $Id: menu.c 1.388 2006/01/07 13:51:09 kls Exp $
  */
 
 #include "menu.h"
@@ -42,28 +42,25 @@
 // --- cMenuEditCaItem -------------------------------------------------------
 
 class cMenuEditCaItem : public cMenuEditIntItem {
-private:
-  const cCaDefinition *ca;
-  bool allowCardNr;
 protected:
   virtual void Set(void);
 public:
-  cMenuEditCaItem(const char *Name, int *Value, bool AllowCardNr = false);
+  cMenuEditCaItem(const char *Name, int *Value);
   eOSState ProcessKey(eKeys Key);
   };
 
-cMenuEditCaItem::cMenuEditCaItem(const char *Name, int *Value, bool AllowCardNr)
+cMenuEditCaItem::cMenuEditCaItem(const char *Name, int *Value)
 :cMenuEditIntItem(Name, Value, 0)
 {
-  ca = CaDefinitions.Get(*Value);
-  allowCardNr = AllowCardNr;
   Set();
 }
 
 void cMenuEditCaItem::Set(void)
 {
-  if (ca)
-     SetValue(ca->Description());
+  if (*value == CA_FTA)
+     SetValue(tr("Free To Air"));
+  else if (*value >= CA_ENCRYPTED_MIN)
+     SetValue(tr("encrypted"));
   else
      cMenuEditIntItem::Set();
 }
@@ -73,18 +70,8 @@ eOSState cMenuEditCaItem::ProcessKey(eKeys Key)
   eOSState state = cMenuEditItem::ProcessKey(Key);
 
   if (state == osUnknown) {
-     if (NORMALKEY(Key) == kLeft) { // TODO might want to increase the delta if repeated quickly?
-        if (ca && ca->Prev()) {
-           ca = (cCaDefinition *)ca->Prev();
-           *value = ca->Number();
-           }
-        }
-     else if (NORMALKEY(Key) == kRight) {
-        if (ca && ca->Next() && (allowCardNr || ((cCaDefinition *)ca->Next())->Number() > MAXDEVICES)) {
-           ca = (cCaDefinition *)ca->Next();
-           *value = ca->Number();
-           }
-        }
+     if (NORMALKEY(Key) == kLeft && *value >= CA_ENCRYPTED_MIN)
+        *value = CA_FTA;
      else
         return cMenuEditIntItem::ProcessKey(Key);
      Set();
@@ -266,7 +253,7 @@ void cMenuEditChannel::Setup(void)
   Add(new cMenuEditIntItem( tr("Dpid1"),        &data.dpids[0], 0, 0x1FFF));
   Add(new cMenuEditIntItem( tr("Dpid2"),        &data.dpids[1], 0, 0x1FFF));
   Add(new cMenuEditIntItem( tr("Tpid"),         &data.tpid,  0, 0x1FFF));
-  Add(new cMenuEditCaItem(  tr("CA"),           &data.caids[0], true));//XXX
+  Add(new cMenuEditCaItem(  tr("CA"),           &data.caids[0]));
   Add(new cMenuEditIntItem( tr("Sid"),          &data.sid, 1, 0xFFFF));
   /* XXX not yet used
   Add(new cMenuEditIntItem( tr("Nid"),          &data.nid, 0));

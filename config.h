@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.237 2006/01/04 13:41:59 kls Exp $
+ * $Id: config.h 1.238 2006/01/07 12:57:42 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -59,20 +59,6 @@ public:
   cSVDRPhost(void);
   bool Parse(const char *s);
   bool Accepts(in_addr_t Address);
-  };
-
-#define CACONFBASE 100
-
-class cCaDefinition : public cListObject {
-private:
-  int number;
-  char *description;
-public:
-  cCaDefinition(void);
-  ~cCaDefinition();
-  bool Parse(const char *s);
-  int Number(void) const { return number; }
-  const char *Description(void) const { return description; }
   };
 
 template<class T> class cConfig : public cList<T> {
@@ -166,15 +152,9 @@ public:
   bool Acceptable(in_addr_t Address);
   };
 
-class cCaDefinitions : public cConfig<cCaDefinition> {
-public:
-  const cCaDefinition *Get(int Number);
-  };
-
 extern cCommands Commands;
 extern cCommands RecordingCommands;
 extern cSVDRPhosts SVDRPhosts;
-extern cCaDefinitions CaDefinitions;
 
 class cSetupLine : public cListObject {
 private:

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.117 2006/01/06 13:50:00 kls Exp $
+ * $Id: device.c 1.118 2006/01/07 14:09:17 kls Exp $
  */
 
 #include "device.h"
@@ -647,7 +647,7 @@ eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
         ciHandler->SetSource(Channel->Source(), Channel->Transponder());
 // Men at work - please stand clear! ;-)
 #ifdef XXX_DO_MULTIPLE_CA_CHANNELS
-        if (Channel->Ca() > CACONFBASE) {
+        if (Channel->Ca() >= CA_ENCRYPTED_MIN) {
 #endif
            ciHandler->AddPid(Channel->Sid(), Channel->Vpid(), 2);
            for (const int *Apid = Channel->Apids(); *Apid; Apid++)

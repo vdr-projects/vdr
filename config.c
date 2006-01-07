@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.139 2006/01/04 14:37:54 kls Exp $
+ * $Id: config.c 1.140 2006/01/07 12:28:49 kls Exp $
  */
 
 #include "config.h"
@@ -120,24 +120,6 @@ bool cSVDRPhost::Accepts(in_addr_t Address)
   return (Address & mask) == addr.s_addr;
 }
 
-// -- cCaDefinition ----------------------------------------------------------
-
-cCaDefinition::cCaDefinition(void)
-{
-  number = 0;
-  description = NULL;
-}
-
-cCaDefinition::~cCaDefinition()
-{
-  free(description);
-}
-
-bool cCaDefinition::Parse(const char *s)
-{
-  return 2 == sscanf(s, "%d %a[^\n]", &number, &description) && description && *description;
-}
-
 // -- cCommands --------------------------------------------------------------
 
 cCommands Commands;
@@ -156,21 +138,6 @@ bool cSVDRPhosts::Acceptable(in_addr_t Address)
         h = (cSVDRPhost *)h->Next();
         }
   return false;
-}
-
-// -- cCaDefinitions ---------------------------------------------------------
-
-cCaDefinitions CaDefinitions;
-
-const cCaDefinition *cCaDefinitions::Get(int Number)
-{
-  cCaDefinition *p = First();
-  while (p) {
-        if (p->Number() == Number)
-           return p;
-        p = (cCaDefinition *)p->Next();
-        }
-  return NULL;
 }
 
 // -- cSetupLine -------------------------------------------------------------

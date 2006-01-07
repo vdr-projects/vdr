@@ -656,17 +656,11 @@ Version 1.2
 
   CICAM:
 
-  CICAM DVBn m           Defines the "Conditional Access" capabilities of the DVB
-                         card 'n'. Each DVB card can provide up to two CICAM
-                         methods ('m' = [1, 2]).
-
-                         In the 'setup.conf' file the value consists of the card
-                         number, followed by a list of decryption method values
-                         (defined in 'ca.conf').
-                         For instance
-                           CaCaps = 3 101 102
-                         would define that card number 3 is able to decrypt
-                         "Premiere World" and the "ORF".
+  CICAM DVBn m           Shows the CAMs that each device contains, where 'n' is
+                         the number of the device, and 'm' is the number of the
+                         Common Interface slot of that device. The "Red" key
+                         can be pressed to enter the CAM menu, and the "Green" key
+                         triggers a reset of the selected CAM.
 
   Recording:
 

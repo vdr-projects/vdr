@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.227 2006/01/06 16:03:41 kls Exp $
+ * $Id: i18n.c 1.228 2006/01/07 12:50:33 kls Exp $
  *
  * Translations provided by:
  *
@@ -1493,6 +1493,48 @@ const tI18nPhrase Phrases[] = {
     "Kodiranje (CA)",
     "CA",
     "CA",
+  },
+  { "Free To Air",
+    "frei empfangbar",
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+  },
+  { "encrypted",
+    "verschlüsselt",
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
   },
   { "Sid",
     "Sid",

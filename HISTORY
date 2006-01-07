@@ -4124,3 +4124,5 @@ Video Disk Recorder Revision History
 - Fixed the "Day" field of the "Edit timer" menu when pressing '0' to switch
   from "single shot" to "weekly", followed by the "Right" key (reported by
   Andreas Böttger).
+- The file 'ca.conf' is obsolete and has been removed.
+- Revised all descriptions regarding CICAM.

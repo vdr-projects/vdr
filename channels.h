@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.h 1.36 2005/09/17 09:59:14 kls Exp $
+ * $Id: channels.h 1.37 2006/01/07 13:00:43 kls Exp $
  */
 
 #ifndef __CHANNELS_H
@@ -38,6 +38,14 @@
 
 #define MAXLANGCODE1 4 // a 3 letter language code, zero terminated
 #define MAXLANGCODE2 8 // up to two 3 letter language codes, separated by '+' and zero terminated
+
+#define CA_FTA           0x0000
+#define CA_DVB_MIN       0x0001
+#define CA_DVB_MAX       0x000F
+#define CA_USER_MIN      0x0010
+#define CA_USER_MAX      0x00FF
+#define CA_ENCRYPTED_MIN 0x0100
+#define CA_ENCRYPTED_MAX 0xFFFF
 
 struct tChannelParameterMap {
   int userValue;

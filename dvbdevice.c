@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.147 2006/01/05 15:30:06 kls Exp $
+ * $Id: dvbdevice.c 1.148 2006/01/07 14:05:59 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -503,7 +503,7 @@ bool cDvbDevice::Ready(void)
 
 int cDvbDevice::ProvidesCa(const cChannel *Channel) const
 {
-  if (Channel->Ca() >= 0x0100 && ciHandler) {
+  if (Channel->Ca() >= CA_ENCRYPTED_MIN && ciHandler) {
      unsigned short ids[MAXCAIDS + 1];
      for (int i = 0; i <= MAXCAIDS; i++) // '<=' copies the terminating 0!
          ids[i] = Channel->Ca(i);
@@ -767,7 +767,7 @@ bool cDvbDevice::ProvidesChannel(const cChannel *Channel, int Priority, bool *Ne
            if (Channel->Vpid() && !HasPid(Channel->Vpid()) || Channel->Apid(0) && !HasPid(Channel->Apid(0))) {
 #ifdef DO_MULTIPLE_RECORDINGS
 #ifndef DO_MULTIPLE_CA_CHANNELS
-              if (Ca() > CACONFBASE || Channel->Ca() > CACONFBASE)
+              if (Ca() >= CA_ENCRYPTED_MIN || Channel->Ca() >= CA_ENCRYPTED_MIN)
                  needsDetachReceivers = Ca() != Channel->Ca();
               else
 #endif
