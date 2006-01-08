@@ -4140,3 +4140,4 @@ Video Disk Recorder Revision History
 - The SVDRP command LSTT now accepts the new option 'id' to have the channels
   of the timers listed with their unique channel ids instead of their numbers
   (suggested by Matthias Schniedermeyer).
+- Added a missing #include <linux/unistd.h> to thread.c (thanks to Ville Skyttä).

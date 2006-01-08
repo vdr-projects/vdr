@@ -1461,6 +1461,7 @@ Ville Skyttä <ville.skytta@iki.fi>
  warnings with g++ 4.1.0
  for reporting warnings with g++ 4.1.0 regarding incrementing the 'state' variables
  in the repacker classes in remux.c
+ for adding a missing #include <linux/unistd.h> to thread.c
 
 Steffen Beyer <cpunk@reactor.de>
  for fixing setting the colored button help after deleting a recording in case the next
