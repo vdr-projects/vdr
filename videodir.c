@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: videodir.c 1.13 2005/10/31 12:07:41 kls Exp $
+ * $Id: videodir.c 1.14 2005/12/18 10:33:20 kls Exp $
  */
 
 #include "videodir.h"
@@ -16,6 +16,7 @@
 #include <string.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include "recording.h"
 #include "tools.h"
 
 const char *VideoDirectory = VIDEODIR;
@@ -185,12 +186,17 @@ bool VideoFileSpaceAvailable(int SizeMB)
 int VideoDiskSpace(int *FreeMB, int *UsedMB)
 {
   int free = 0, used = 0;
+  int deleted = DeletedRecordings.TotalFileSizeMB();
   cVideoDirectory Dir;
   do {
      int u;
      free += Dir.FreeMB(&u);
      used += u;
      } while (Dir.Next());
+  if (deleted > used)
+     deleted = used; // let's not get beyond 100%
+  free += deleted;
+  used -= deleted;
   if (FreeMB)
      *FreeMB = free;
   if (UsedMB)

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osdbase.c 1.24 2005/10/09 10:56:26 kls Exp $
+ * $Id: osdbase.c 1.28 2006/01/08 11:40:02 kls Exp $
  */
 
 #include "osdbase.h"
@@ -19,7 +19,6 @@
 cOsdItem::cOsdItem(eOSState State)
 {
   text = NULL;
-  offset = -1;
   state = State;
   selectable = true;
   fresh = true;
@@ -28,7 +27,6 @@ cOsdItem::cOsdItem(eOSState State)
 cOsdItem::cOsdItem(const char *Text, eOSState State, bool Selectable)
 {
   text = NULL;
-  offset = -1;
   state = State;
   selectable = Selectable;
   fresh = true;
@@ -59,6 +57,14 @@ void cOsdItem::SetFresh(bool Fresh)
 eOSState cOsdItem::ProcessKey(eKeys Key)
 {
   return Key == kOk ? state : osUnknown;
+}
+
+// --- cOsdObject ------------------------------------------------------------
+
+void cOsdObject::Show(void)
+{
+  if (isMenu)
+     ((cOsdMenu *)this)->Display();
 }
 
 // --- cOsdMenu --------------------------------------------------------------
@@ -155,10 +161,10 @@ void cOsdMenu::Del(int Index)
 {
   cList<cOsdItem>::Del(Get(Index));
   int count = Count();
-  while (current < count && !SelectableItem(current)) 
+  while (current < count && !SelectableItem(current))
         current++;
   if (current == count) {
-     while (current > 0 && !SelectableItem(current))  
+     while (current > 0 && !SelectableItem(current))
            current--;
      }
   if (Index == first && first > 0)
@@ -252,6 +258,8 @@ void cOsdMenu::DisplayCurrent(bool Current)
 
 void cOsdMenu::Clear(void)
 {
+  if (marked >= 0)
+     SetStatus(NULL);
   first = 0;
   current = marked = -1;
   cList<cOsdItem>::Clear();
@@ -363,7 +371,7 @@ void cOsdMenu::PageUp(void)
      CursorUp();
 }
 
-void cOsdMenu::PageDown(void) 
+void cOsdMenu::PageDown(void)
 {
   int oldCurrent = current;
   int oldFirst = first;
@@ -455,6 +463,7 @@ eOSState cOsdMenu::ProcessKey(eKeys Key)
         }
      }
   switch (Key) {
+    case k0:      return osUnknown;
     case k1...k9: return hasHotkeys ? HotKey(Key) : osUnknown;
     case kUp|k_Repeat:
     case kUp:   CursorUp();   break;

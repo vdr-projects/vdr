@@ -4,18 +4,11 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.138 2005/11/26 13:23:11 kls Exp $
+ * $Id: dvbdevice.c 1.149 2006/01/07 15:15:01 kls Exp $
  */
 
 #include "dvbdevice.h"
 #include <errno.h>
-extern "C" {
-#ifdef boolean
-#define HAVE_BOOLEAN
-#endif
-#include <jpeglib.h>
-#undef boolean
-}
 #include <limits.h>
 #include <linux/videodev.h>
 #include <linux/dvb/audio.h>
@@ -47,6 +40,13 @@ extern "C" {
 #define DEV_DVB_AUDIO     "audio"
 #define DEV_DVB_CA        "ca"
 
+#define DVBS_TUNE_TIMEOUT  2000 //ms
+#define DVBS_LOCK_TIMEOUT  2000 //ms
+#define DVBC_TUNE_TIMEOUT  5000 //ms
+#define DVBC_LOCK_TIMEOUT  2000 //ms
+#define DVBT_TUNE_TIMEOUT  9000 //ms
+#define DVBT_LOCK_TIMEOUT  2000 //ms
+
 class cDvbName {
 private:
   char buffer[PATH_MAX];
@@ -73,6 +73,9 @@ private:
   enum eTunerStatus { tsIdle, tsSet, tsTuned, tsLocked };
   int fd_frontend;
   int cardIndex;
+  int tuneTimeout;
+  int lockTimeout;
+  time_t lastTimeoutReport;
   fe_type_t frontendType;
   cCiHandler *ciHandler;
   cChannel channel;
@@ -81,7 +84,7 @@ private:
   cMutex mutex;
   cCondVar locked;
   cCondVar newSet;
-  bool GetFrontendEvent(dvb_frontend_event &Event, int TimeoutMs = 0);
+  bool GetFrontendStatus(fe_status_t &Status, int TimeoutMs = 0);
   bool SetFrontend(void);
   virtual void Action(void);
 public:
@@ -98,6 +101,9 @@ cDvbTuner::cDvbTuner(int Fd_Frontend, int CardIndex, fe_type_t FrontendType, cCi
   cardIndex = CardIndex;
   frontendType = FrontendType;
   ciHandler = CiHandler;
+  tuneTimeout = 0;
+  lockTimeout = 0;
+  lastTimeoutReport = 0;
   diseqcCommands = NULL;
   tunerStatus = tsIdle;
   if (frontendType == FE_QPSK)
@@ -125,6 +131,7 @@ void cDvbTuner::Set(const cChannel *Channel, bool Tune)
   if (Tune)
      tunerStatus = tsSet;
   channel = *Channel;
+  lastTimeoutReport = 0;
   newSet.Broadcast();
 }
 
@@ -140,26 +147,18 @@ bool cDvbTuner::Locked(int TimeoutMs)
   return tunerStatus >= tsLocked;
 }
 
-bool cDvbTuner::GetFrontendEvent(dvb_frontend_event &Event, int TimeoutMs)
+bool cDvbTuner::GetFrontendStatus(fe_status_t &Status, int TimeoutMs)
 {
   if (TimeoutMs) {
-     struct pollfd pfd;
-     pfd.fd = fd_frontend;
-     pfd.events = POLLIN | POLLPRI;
-     do {
-        int stat = poll(&pfd, 1, TimeoutMs);
-        if (stat == 1)
-           break;
-        if (stat < 0) {
-           if (errno == EINTR)
-              continue;
-           esyslog("ERROR: frontend %d poll failed: %m", cardIndex);
-           }
-        return false;
-        } while (0);
+     cPoller Poller(fd_frontend);
+     if (Poller.Poll(TimeoutMs)) {
+        dvb_frontend_event Event;
+        while (ioctl(fd_frontend, FE_GET_EVENT, &Event) == 0)
+              ; // just to clear the event queue - we'll read the actual status below
+        }
      }
   do {
-     int stat = ioctl(fd_frontend, FE_GET_EVENT, &Event);
+     int stat = ioctl(fd_frontend, FE_READ_STATUS, &Status);
      if (stat == 0)
         return true;
      if (stat < 0) {
@@ -245,6 +244,9 @@ bool cDvbTuner::SetFrontend(void)
          Frontend.inversion = fe_spectral_inversion_t(channel.Inversion());
          Frontend.u.qpsk.symbol_rate = channel.Srate() * 1000UL;
          Frontend.u.qpsk.fec_inner = fe_code_rate_t(channel.CoderateH());
+
+         tuneTimeout = DVBS_TUNE_TIMEOUT;
+         lockTimeout = DVBS_LOCK_TIMEOUT;
          }
          break;
     case FE_QAM: { // DVB-C
@@ -256,6 +258,9 @@ bool cDvbTuner::SetFrontend(void)
          Frontend.u.qam.symbol_rate = channel.Srate() * 1000UL;
          Frontend.u.qam.fec_inner = fe_code_rate_t(channel.CoderateH());
          Frontend.u.qam.modulation = fe_modulation_t(channel.Modulation());
+
+         tuneTimeout = DVBC_TUNE_TIMEOUT;
+         lockTimeout = DVBC_LOCK_TIMEOUT;
          }
          break;
     case FE_OFDM: { // DVB-T
@@ -271,6 +276,9 @@ bool cDvbTuner::SetFrontend(void)
          Frontend.u.ofdm.transmission_mode = fe_transmit_mode_t(channel.Transmission());
          Frontend.u.ofdm.guard_interval = fe_guard_interval_t(channel.Guard());
          Frontend.u.ofdm.hierarchy_information = fe_hierarchy_t(channel.Hierarchy());
+
+         tuneTimeout = DVBT_TUNE_TIMEOUT;
+         lockTimeout = DVBT_LOCK_TIMEOUT;
          }
          break;
     default:
@@ -286,30 +294,54 @@ bool cDvbTuner::SetFrontend(void)
 
 void cDvbTuner::Action(void)
 {
-  dvb_frontend_event event;
+  cTimeMs Timer;
+  bool LostLock = false;
+  fe_status_t Status = (fe_status_t)0;
   while (Running()) {
-        bool hasEvent = GetFrontendEvent(event, 1);
-
+        fe_status_t NewStatus;
+        if (GetFrontendStatus(NewStatus, 10))
+           Status = NewStatus;
         cMutexLock MutexLock(&mutex);
         switch (tunerStatus) {
           case tsIdle:
                break;
           case tsSet:
-               if (hasEvent)
-                  continue;
                tunerStatus = SetFrontend() ? tsTuned : tsIdle;
+               Timer.Set(tuneTimeout);
                continue;
           case tsTuned:
+               if (Timer.TimedOut()) {
+                  tunerStatus = tsSet;
+                  diseqcCommands = NULL;
+                  if (time(NULL) - lastTimeoutReport > 60) { // let's not get too many of these
+                     esyslog("ERROR: frontend %d timed out while tuning to channel %d, tp %d", cardIndex, channel.Number(), channel.Transponder());
+                     lastTimeoutReport = time(NULL);
+                     }
+                  continue;
+                  }
           case tsLocked:
-               if (hasEvent) {
-                  if (event.status & FE_REINIT) {
-                     tunerStatus = tsSet;
-                     esyslog("ERROR: frontend %d was reinitialized - re-tuning", cardIndex);
+               if (Status & FE_REINIT) {
+                  tunerStatus = tsSet;
+                  diseqcCommands = NULL;
+                  esyslog("ERROR: frontend %d was reinitialized", cardIndex);
+                  lastTimeoutReport = 0;
+                  continue;
+                  }
+               else if (Status & FE_HAS_LOCK) {
+                  if (LostLock) {
+                     esyslog("frontend %d regained lock on channel %d, tp %d", cardIndex, channel.Number(), channel.Transponder());
+                     LostLock = false;
                      }
-                  if (event.status & FE_HAS_LOCK) {
-                     tunerStatus = tsLocked;
-                     locked.Broadcast();
-                     }
+                  tunerStatus = tsLocked;
+                  locked.Broadcast();
+                  lastTimeoutReport = 0;
+                  }
+               else if (tunerStatus == tsLocked) {
+                  LostLock = true;
+                  esyslog("ERROR: frontend %d lost lock on channel %d, tp %d", cardIndex, channel.Number(), channel.Transponder());
+                  tunerStatus = tsTuned;
+                  Timer.Set(lockTimeout);
+                  lastTimeoutReport = 0;
                   continue;
                   }
           }
@@ -471,13 +503,21 @@ bool cDvbDevice::Ready(void)
 
 int cDvbDevice::ProvidesCa(const cChannel *Channel) const
 {
-  if (Channel->Ca() >= 0x0100 && ciHandler) {
-     unsigned short ids[MAXCAIDS + 1];
-     for (int i = 0; i <= MAXCAIDS; i++) // '<=' copies the terminating 0!
-         ids[i] = Channel->Ca(i);
-     return ciHandler->ProvidesCa(ids);
+  int NumCams = 0;
+  if (ciHandler) {
+     NumCams = ciHandler->NumCams();
+     if (Channel->Ca() >= CA_ENCRYPTED_MIN) {
+        unsigned short ids[MAXCAIDS + 1];
+        for (int i = 0; i <= MAXCAIDS; i++) // '<=' copies the terminating 0!
+            ids[i] = Channel->Ca(i);
+        if (ciHandler->ProvidesCa(ids))
+           return NumCams + 1;
+        }
      }
-  return cDevice::ProvidesCa(Channel);
+  int result = cDevice::ProvidesCa(Channel);
+  if (result > 0)
+     result += NumCams;
+  return result;
 }
 
 cSpuDecoder *cDvbDevice::GetSpuDecoder(void)
@@ -487,103 +527,84 @@ cSpuDecoder *cDvbDevice::GetSpuDecoder(void)
   return spuDecoder;
 }
 
-bool cDvbDevice::GrabImage(const char *FileName, bool Jpeg, int Quality, int SizeX, int SizeY)
+uchar *cDvbDevice::GrabImage(int &Size, bool Jpeg, int Quality, int SizeX, int SizeY)
 {
   if (devVideoIndex < 0)
-     return false;
+     return NULL;
   char buffer[PATH_MAX];
   snprintf(buffer, sizeof(buffer), "%s%d", DEV_VIDEO, devVideoIndex);
   int videoDev = open(buffer, O_RDWR);
-  if (videoDev < 0)
-     LOG_ERROR_STR(buffer);
   if (videoDev >= 0) {
-     int result = 0;
+     uchar *result = NULL;
      struct video_mbuf mbuf;
-     result |= ioctl(videoDev, VIDIOCGMBUF, &mbuf);
-     if (result == 0) {
+     if (ioctl(videoDev, VIDIOCGMBUF, &mbuf) == 0) {
         int msize = mbuf.size;
         unsigned char *mem = (unsigned char *)mmap(0, msize, PROT_READ | PROT_WRITE, MAP_SHARED, videoDev, 0);
         if (mem && mem != (unsigned char *)-1) {
            // set up the size and RGB
            struct video_capability vc;
-           result |= ioctl(videoDev, VIDIOCGCAP, &vc);
-           struct video_mmap vm;
-           vm.frame = 0;
-           if ((SizeX > 0) && (SizeX <= vc.maxwidth) &&
-               (SizeY > 0) && (SizeY <= vc.maxheight)) {
-              vm.width = SizeX;
-              vm.height = SizeY;
-              }
-           else {
-              vm.width = vc.maxwidth;
-              vm.height = vc.maxheight;
-              }
-           vm.format = VIDEO_PALETTE_RGB24;
-           result |= ioctl(videoDev, VIDIOCMCAPTURE, &vm);
-           result |= ioctl(videoDev, VIDIOCSYNC, &vm.frame);
-           // make RGB out of BGR:
-           int memsize = vm.width * vm.height;
-           unsigned char *mem1 = mem;
-           for (int i = 0; i < memsize; i++) {
-               unsigned char tmp = mem1[2];
-               mem1[2] = mem1[0];
-               mem1[0] = tmp;
-               mem1 += 3;
-               }
-
-           if (Quality < 0)
-              Quality = 100;
-
-           isyslog("grabbing to %s (%s %d %d %d)", FileName, Jpeg ? "JPEG" : "PNM", Quality, vm.width, vm.height);
-           FILE *f = fopen(FileName, "wb");
-           if (f) {
-              if (Jpeg) {
-                 // write JPEG file:
-                 struct jpeg_compress_struct cinfo;
-                 struct jpeg_error_mgr jerr;
-                 cinfo.err = jpeg_std_error(&jerr);
-                 jpeg_create_compress(&cinfo);
-                 jpeg_stdio_dest(&cinfo, f);
-                 cinfo.image_width = vm.width;
-                 cinfo.image_height = vm.height;
-                 cinfo.input_components = 3;
-                 cinfo.in_color_space = JCS_RGB;
-
-                 jpeg_set_defaults(&cinfo);
-                 jpeg_set_quality(&cinfo, Quality, true);
-                 jpeg_start_compress(&cinfo, true);
-
-                 int rs = vm.width * 3;
-                 JSAMPROW rp[vm.height];
-                 for (int k = 0; k < vm.height; k++)
-                     rp[k] = &mem[rs * k];
-                 jpeg_write_scanlines(&cinfo, rp, vm.height);
-                 jpeg_finish_compress(&cinfo);
-                 jpeg_destroy_compress(&cinfo);
+           if (ioctl(videoDev, VIDIOCGCAP, &vc) == 0) {
+              struct video_mmap vm;
+              vm.frame = 0;
+              if ((SizeX > 0) && (SizeX <= vc.maxwidth) &&
+                  (SizeY > 0) && (SizeY <= vc.maxheight)) {
+                 vm.width = SizeX;
+                 vm.height = SizeY;
                  }
               else {
-                 // write PNM file:
-                 if (fprintf(f, "P6\n%d\n%d\n255\n", vm.width, vm.height) < 0 ||
-                     fwrite(mem, vm.width * vm.height * 3, 1, f) != 1) {
-                    LOG_ERROR_STR(FileName);
-                    result |= 1;
+                 vm.width = vc.maxwidth;
+                 vm.height = vc.maxheight;
+                 }
+              vm.format = VIDEO_PALETTE_RGB24;
+              if (ioctl(videoDev, VIDIOCMCAPTURE, &vm) == 0 && ioctl(videoDev, VIDIOCSYNC, &vm.frame) == 0) {
+                 // make RGB out of BGR:
+                 int memsize = vm.width * vm.height;
+                 unsigned char *mem1 = mem;
+                 for (int i = 0; i < memsize; i++) {
+                     unsigned char tmp = mem1[2];
+                     mem1[2] = mem1[0];
+                     mem1[0] = tmp;
+                     mem1 += 3;
+                     }
+
+                 if (Quality < 0)
+                    Quality = 100;
+
+                 isyslog("grabbing to %s %d %d %d", Jpeg ? "JPEG" : "PNM", Quality, vm.width, vm.height);
+                 if (Jpeg) {
+                    // convert to JPEG:
+                    result = RgbToJpeg(mem, vm.width, vm.height, Size, Quality);
+                    if (!result)
+                       esyslog("ERROR: failed to convert image to JPEG");
+                    }
+                 else {
+                    // convert to PNM:
+                    char buf[32];
+                    snprintf(buf, sizeof(buf), "P6\n%d\n%d\n255\n", vm.width, vm.height);
+                    int l = strlen(buf);
+                    int bytes = memsize * 3;
+                    Size = l + bytes;
+                    result = MALLOC(uchar, Size);
+                    if (result) {
+                       memcpy(result, buf, l);
+                       memcpy(result + l, mem, bytes);
+                       }
+                    else
+                       esyslog("ERROR: failed to convert image to PNM");
                     }
                  }
-              fclose(f);
-              }
-           else {
-              LOG_ERROR_STR(FileName);
-              result |= 1;
               }
            munmap(mem, msize);
            }
         else
-           result |= 1;
+           esyslog("ERROR: failed to memmap video device");
         }
      close(videoDev);
-     return result == 0;
+     return result;
      }
-  return false;
+  else
+     LOG_ERROR_STR(buffer);
+  return NULL;
 }
 
 void cDvbDevice::SetVideoDisplayFormat(eVideoDisplayFormat VideoDisplayFormat)
@@ -754,7 +775,7 @@ bool cDvbDevice::ProvidesChannel(const cChannel *Channel, int Priority, bool *Ne
            if (Channel->Vpid() && !HasPid(Channel->Vpid()) || Channel->Apid(0) && !HasPid(Channel->Apid(0))) {
 #ifdef DO_MULTIPLE_RECORDINGS
 #ifndef DO_MULTIPLE_CA_CHANNELS
-              if (Ca() > CACONFBASE || Channel->Ca() > CACONFBASE)
+              if (Ca() >= CA_ENCRYPTED_MIN || Channel->Ca() >= CA_ENCRYPTED_MIN)
                  needsDetachReceivers = Ca() != Channel->Ca();
               else
 #endif
@@ -824,6 +845,11 @@ bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
      if (!(AddPid(Channel->Ppid(), ptPcr) && AddPid(Channel->Vpid(), ptVideo) && AddPid(Channel->Apid(0), ptAudio))) {
         esyslog("ERROR: failed to set PIDs for channel %d on device %d", Channel->Number(), CardIndex() + 1);
         return false;
+        }
+     //XXX quick workaround for additional live audio PIDs:
+     if (ciHandler) {
+        ciHandler->SetPid(Channel->Apid(1), true);
+        ciHandler->SetPid(Channel->Dpid(0), true);
         }
      if (IsPrimaryDevice())
         AddPid(Channel->Tpid(), ptTeletext);

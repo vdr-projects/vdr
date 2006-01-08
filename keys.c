@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: keys.c 1.9 2005/09/17 11:27:40 kls Exp $
+ * $Id: keys.c 1.10 2006/01/05 15:39:26 kls Exp $
  */
 
 #include "keys.h"
@@ -32,6 +32,7 @@ static tKey keyTable[] = { // "Up" and "Down" must be the first two keys!
                     { k7,             "7"          },
                     { k8,             "8"          },
                     { k9,             "9"          },
+                    { kInfo,          "Info"       },
                     { kPlay,          "Play"       },
                     { kPause,         "Pause"      },
                     { kStop,          "Stop"       },

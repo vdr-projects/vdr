@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.h 1.32 2005/11/27 15:16:50 kls Exp $
+ * $Id: thread.h 1.36 2006/01/08 11:40:23 kls Exp $
  */
 
 #ifndef __THREAD_H
@@ -72,7 +72,7 @@ public:
   void Unlock(void);
   };
 
-typedef pthread_t tThreadId;
+typedef pid_t tThreadId;
 
 class cThread {
   friend class cThreadLock;
@@ -80,6 +80,7 @@ private:
   bool active;
   bool running;
   pthread_t childTid;
+  tThreadId childThreadId;
   cMutex mutex;
   char *description;
   static tThreadId mainThreadId;
@@ -106,7 +107,7 @@ public:
   cThread(const char *Description = NULL);
        ///< Creates a new thread.
        ///< If Description is present, a log file entry will be made when
-       ///< the thread starts and stops. The Start() function must be called 
+       ///< the thread starts and stops. The Start() function must be called
        ///< to actually start the thread.
   virtual ~cThread();
   void SetDescription(const char *Description, ...) __attribute__ ((format (printf, 2, 3)));
@@ -115,8 +116,9 @@ public:
   bool Active(void);
        ///< Checks whether the thread is still alive.
   static bool EmergencyExit(bool Request = false);
-  static tThreadId ThreadId(void) { return pthread_self(); }
+  static tThreadId ThreadId(void);
   static tThreadId IsMainThread(void) { return ThreadId() == mainThreadId; }
+  static void SetMainThreadId(void);
   };
 
 // cMutexLock can be used to easily set a lock on mutex and make absolutely

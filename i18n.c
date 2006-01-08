@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.220 2005/11/04 14:36:27 kls Exp $
+ * $Id: i18n.c 1.230 2006/01/08 11:56:31 kls Exp $
  *
  * Translations provided by:
  *
@@ -221,7 +221,7 @@ const tI18nPhrase Phrases[] = {
     "Ajastimet",
     "Timery",
     "Timer",
-    "×ñïíïäéáêüğôçò",
+    "×ñïíïğñïãñáììáôéóìïß",
     "Timers",
     "Timer-e",
     "Felvétel beprogramozása",
@@ -263,7 +263,7 @@ const tI18nPhrase Phrases[] = {
     "Tallenteen tiedot",
     "",// TODO
     "",// TODO
-    "ÅããñáöŞ",
+    "Ğëçñïöïñßåò EããñáöŞò",
     "Inspelning",
     "Detaliile înregistrãrii",
     "",// TODO
@@ -347,7 +347,7 @@ const tI18nPhrase Phrases[] = {
     "Muokkaa kanavaa",
     "Ustawienie kanalu",
     "Modificar canal",
-    "Ğñïóáñìïãİò Êáíáëéïı",
+    "Ôñïğïğïßçóç Êáíáëéïı",
     "Ändra kanal",
     "Modificare canal",
     "Csatornák beállítása",
@@ -368,7 +368,7 @@ const tI18nPhrase Phrases[] = {
     "Muokkaa ajastinta",
     "Ustawienie timerow",
     "Modificar timer",
-    "ĞñïóáñìïãŞ ÷ñïíïäéáêüğôç",
+    "Ôñïğïğïßçóç ÷ñïíïğñïãñáììáôéóìïı",
     "Ändra timer",
     "Modificare timer",
     "Felvétel beprogramozásának megváltoztatása",
@@ -398,27 +398,6 @@ const tI18nPhrase Phrases[] = {
     "Emisija",
     "Sündmus",
     "Udsendelse",
-  },
-  { "Summary",
-    "Inhalt",
-    "Vsebina",
-    "Sommario",
-    "Inhoud",
-    "Resumo",
-    "Résumé",
-    "Sammendrag",
-    "Yhteenveto",
-    "Zawartosc",
-    "Resúmen",
-    "Ğåñéå÷üìåíï",
-    "Sammanfattning",
-    "Detalii",
-    "Tartalom",
-    "Sinopsi",
-    "¾ßØáĞİØÕ",
-    "Sadr¾aj",
-    "Kokkuvõte",
-    "Omtale",
   },
   { "Info",
     "Info",
@@ -504,8 +483,29 @@ const tI18nPhrase Phrases[] = {
     "Järgmisena eetris",
     "Hvad vises som det næste?",
   },
+  { "Summary",
+    "Inhalt",
+    "Vsebina",
+    "Sommario",
+    "Inhoud",
+    "Resumo",
+    "Résumé",
+    "Sammendrag",
+    "Yhteenveto",
+    "Zawartosc",
+    "Resumen",
+    "Ğåñéå÷üìåíï",
+    "Sammanfattning",
+    "Cuprins",
+    "Tartalom",
+    "Resum",
+    "¾ßØáĞİØÕ",
+    "Sadr¾aj",
+    "Kokkuvõte",
+    "Omtale",
+  },
   // Button texts (should not be more than 10 characters!):
-  { "Edit",
+  { "Button$Edit",
     "Editieren",
     "Uredi",
     "Modifica",
@@ -526,7 +526,7 @@ const tI18nPhrase Phrases[] = {
     "Muuda",
     "Rediger",
   },
-  { "New",
+  { "Button$New",
     "Neu",
     "Novo",
     "Nuovo",
@@ -547,7 +547,7 @@ const tI18nPhrase Phrases[] = {
     "Uus",
     "Ny",
   },
-  { "Delete",
+  { "Button$Delete",
     "Löschen",
     "Izbri¹i",
     "Cancella",
@@ -568,7 +568,7 @@ const tI18nPhrase Phrases[] = {
     "Kustuta",
     "Slet",
   },
-  { "Mark",
+  { "Button$Mark",
     "Markieren",
     "Oznaèi",
     "Marca",
@@ -589,7 +589,7 @@ const tI18nPhrase Phrases[] = {
     "Siirda",
     "Markér",
   },
-  { "On/Off",
+  { "Button$On/Off",
     "Ein/Aus",
     "Vklop/Izklop",
     "On/Off",
@@ -610,7 +610,7 @@ const tI18nPhrase Phrases[] = {
     "Sees/Väljas",
     "Til/Fra",
   },
-  { "Record",
+  { "Button$Record",
     "Aufnehmen",
     "Posnemi",
     "Registra",
@@ -631,7 +631,7 @@ const tI18nPhrase Phrases[] = {
     "Salvesta",
     "Optag",
   },
-  { "Play",
+  { "Button$Play",
     "Wiedergabe",
     "Predvajaj",
     "Riproduci",
@@ -642,7 +642,7 @@ const tI18nPhrase Phrases[] = {
     "Toista",
     "Odtwarzac",
     "Play",
-    "ÁíáìåôÜäïóç",
+    "ÁíáğáñáãùãŞ",
     "Spela upp",
     "Redare",
     "Lejátszani",
@@ -652,7 +652,28 @@ const tI18nPhrase Phrases[] = {
     "Start",
     "Afspil",
   },
-  { "Rewind",
+  { "Button$Pause",
+    "Pause",
+    "Pavza",
+    "Pausa",
+    "Pauze",
+    "",// TODO
+    "Pause",
+    "",// TODO
+    "Tauko",
+    "Przerwa",
+    "Pausa",
+    "Ğáıóç",
+    "Pausa",
+    "Pauzã",
+    "Szünet",
+    "Pausa",
+    "¿Ğã×Ğ",
+    "Pauza",
+    "Paus",
+    "Pause",
+  },
+  { "Button$Rewind",
     "Anfang",
     "Na zaèetek",
     "Da inizio",
@@ -663,7 +684,7 @@ const tI18nPhrase Phrases[] = {
     "Alkuun",
     "Poczatek",
     "Rebobinar",
-    "Áñ÷Ş",
+    "ÌåôáöïñÜ óôçí Áñ÷Ş",
     "Återspolning",
     "Înapoi",
     "Vissza az elejére",
@@ -694,7 +715,7 @@ const tI18nPhrase Phrases[] = {
     "Stopp",
     "Stop",
   },
-  { "Resume",
+  { "Button$Resume",
     "Weiter",
     "Nadaljuj",
     "Riprendi",
@@ -705,7 +726,7 @@ const tI18nPhrase Phrases[] = {
     "Jatka",
     "Dalej",
     "Continuar",
-    "Óõíİ÷åéá",
+    "ÅğáíáöïñÜ",
     "Fortsätt",
     "Revenire",
     "Tovább",
@@ -715,28 +736,7 @@ const tI18nPhrase Phrases[] = {
     "Jätka",
     "Fortsæt",
   },
-  { "Summary",
-    "Inhalt",
-    "Vsebina",
-    "Sommario",
-    "Inhoud",
-    "Resumo",
-    "Résumé",
-    "Sammendrag",
-    "Yhteenveto",
-    "Zawartosc",
-    "Resumen",
-    "Ğåñéå÷üìåíï",
-    "Sammanfattning",
-    "Cuprins",
-    "Tartalom",
-    "Resum",
-    "¾ßØáĞİØÕ",
-    "Sadr¾aj",
-    "Kokkuvõte",
-    "Omtale",
-  },
-  { "Open",
+  { "Button$Open",
     "Öffnen",
     "Odpri",
     "Apri",
@@ -747,7 +747,7 @@ const tI18nPhrase Phrases[] = {
     "Avaa",
     "Otworzyc",
     "Abrir",
-    "¢íïéãìá",
+    "Áíïéãìá",
     "Öppna",
     "Deschide",
     "Kinyitni",
@@ -757,7 +757,7 @@ const tI18nPhrase Phrases[] = {
     "Ava",
     "Åbn",
   },
-  { "Switch",
+  { "Button$Switch",
     "Umschalten",
     "Preklopi",
     "Cambia",
@@ -778,7 +778,7 @@ const tI18nPhrase Phrases[] = {
     "Vali",
     "Skift",
   },
-  { "Now",
+  { "Button$Now",
     "Jetzt",
     "Sedaj",
     "Adesso",
@@ -799,7 +799,7 @@ const tI18nPhrase Phrases[] = {
     "Nüüd",
     "Nu",
   },
-  { "Next",
+  { "Button$Next",
     "Nächste",
     "Sledi",
     "Prossimo",
@@ -841,49 +841,7 @@ const tI18nPhrase Phrases[] = {
     "Kava",
     "Program",
   },
-  { "Language",
-    "Sprache",
-    "Jezik",
-    "Linguaggio",
-    "Taal",
-    "Linguagem",
-    "Langue",
-    "Språk",
-    "Kieli",
-    "Jezyk",
-    "Idioma",
-    "Ãëşóóá",
-    "Språk",
-    "Limba",
-    "Nyelv",
-    "Idioma",
-    "Ï×ëÚ",
-    "Jezik",
-    "Keel",
-    "Sprog",
-  },
-  { "Eject",
-    "Auswerfen",
-    "Izvr¾i",
-    "Eject",
-    "Eject",
-    "Ejectar",
-    "Ejection",
-    "Eject",
-    "Avaa",
-    "Wyrzucenie",
-    "Expulsar",
-    "ÅîáãùãŞ",
-    "Mata ut",
-    "Ejecteazã",
-    "Kidobni",
-    "Expulsar",
-    "¸×ÒÛÕçì",
-    "Izbaci",
-    "Ava",
-    "Skub ud",
-  },
-  { "ABC/abc",
+  { "Button$ABC/abc",
     "ABC/abc",
     "ABC/abc",
     "ABC/abc",
@@ -904,7 +862,7 @@ const tI18nPhrase Phrases[] = {
     "ABC/abc",
     "ABC/abc",
   },
-  { "Insert",
+  { "Button$Insert",
     "Einfügen",
     "Vstavi",
     "Inserisci",
@@ -925,7 +883,7 @@ const tI18nPhrase Phrases[] = {
     "Lisa (INS)",
     "Indsæt",
   },
-  { "Overwrite",
+  { "Button$Overwrite",
     "Überschreiben",
     "Prepi¹i",
     "Sovrascrivi",
@@ -946,7 +904,7 @@ const tI18nPhrase Phrases[] = {
     "Asenda (OVR)",
     "Overskriv",
   },
-  { "Menu",
+  { "Button$Menu",
     "Menü",
     "Meni",
     "Menù",
@@ -967,7 +925,7 @@ const tI18nPhrase Phrases[] = {
     "Menüü",
     "Menu",
   },
-  { "Reset",
+  { "Button$Reset",
     "Reset",
     "Reset",
     "Reset",
@@ -988,7 +946,7 @@ const tI18nPhrase Phrases[] = {
     "Nullimine",
     "Nulstille",
   },
-  { "Scan",
+  { "Button$Scan",
     "Scan",
     "I¹èi",
     "Scansione",
@@ -1008,6 +966,27 @@ const tI18nPhrase Phrases[] = {
     "Pretra¾i",
     "Uuenda",
     "Skan",
+  },
+  { "Button$Audio",
+    "Audio",
+    "Zvok",
+    "",// TODO
+    "Audio",
+    "",// TODO
+    "Audio",
+    "",// TODO
+    "Ääni",
+    "",// TODO
+    "",// TODO
+    "¹÷ïò",
+    "Ljud",
+    "Sunet",
+    "",// TODO
+    "",// TODO
+    "Ï×ëÚ",
+    "",// TODO
+    "Audio",
+    "Audio",
   },
   // Confirmations:
   { "Delete channel?",
@@ -1042,7 +1021,7 @@ const tI18nPhrase Phrases[] = {
     "Poistetaanko ajastin?",
     "Usunac timer?",
     "¿Eliminar timer?",
-    "ÄéáãñáöŞ ÷ñïíïäéáêüğôç?",
+    "ÄéáãñáöŞ ÷ñïíïğñïãñáììáôéóìïı;?",
     "Ta bort timern?",
     "ªterg timer-ul?",
     "Felvétel beprogramozásának törlése?",
@@ -1063,7 +1042,7 @@ const tI18nPhrase Phrases[] = {
     "Poistetaanko tallenne?",
     "Usunac nagranie?",
     "¿Eliminar grabacion?",
-    "ÄéáãñáöŞ áñ÷åßïõ?",
+    "ÄéáãñáöŞ åããñáöŞò?",
     "Ta bort inspelningen?",
     "ªterg înregistrarea?",
     "Felvétel törlése?",
@@ -1084,7 +1063,7 @@ const tI18nPhrase Phrases[] = {
     "Ajastettu tallennus käynnissä - poistetaanko silti?",
     "Nagrywanie w trakcie - napewno usunac?",
     "¿Timer activo - de verdad eliminarlo?",
-    "×ñïíïäéáêüğôçò óİ åîİëéîç - ÄéáãñáöŞ óßãïõñá?",
+    "×ñïíïğñïãñáììáôéóìüò óİ åîİëéîç - ÄéáãñáöŞ óßãïõñá?",
     "Timerstyrd inspelning pågår - Avbryta ändå?",
     "Timer-ul tocmai înregistreazã - ºterg, totuºi?",
     "Felvétel folyamatban van - mégis törölni?",
@@ -1114,27 +1093,6 @@ const tI18nPhrase Phrases[] = {
     "Zaustaviti snimanje?",
     "Lõpetan salvestamise?",
     "Stop optagelse?",
-  },
-  { "on primary interface",
-    "auf dem primären Interface",
-    "na primarni napravi",
-    "su interfaccia primaria",
-    "op eerste interface",
-    "no interface primário",
-    "sur la carte primaire",
-    "på første enhet",
-    "ensisijaisella sovittimella",
-    "na pierwszym interfejsie",
-    "en interface primario",
-    "óôŞí êıñéá êÜñôá",
-    "från den första enheten?",
-    "pe prima interfaşã",
-    "az elsö kártyán",
-    "a la interfície primària",
-    "İĞ ŞáİŞÒİŞÜ ãáâàŞÙáâÒÕ",
-    "na primarnom ureğaju",
-    "peavastuvõtjal",
-    "på primær enhed",
   },
   { "Cancel editing?",
     "Schneiden abbrechen?",
@@ -1337,7 +1295,7 @@ const tI18nPhrase Phrases[] = {
     "Lähde",
     "Zrodlo",
     "",//TODO
-    "Äéåñåıíçóç",
+    "ĞçãŞ",
     "Källa",
     "Sursã",
     "Forrás",
@@ -1536,6 +1494,48 @@ const tI18nPhrase Phrases[] = {
     "CA",
     "CA",
   },
+  { "Free To Air",
+    "frei empfangbar",
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+  },
+  { "encrypted",
+    "verschlüsselt",
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+  },
   { "Sid",
     "Sid",
     "Sid",
@@ -1568,7 +1568,7 @@ const tI18nPhrase Phrases[] = {
     "Inversio",
     "Inversion",
     "Inversion",
-    "Inversion",
+    "ÁíôéóôñïöŞ",
     "Inversion",
     "Inversiune",
     "Inversion",
@@ -1589,7 +1589,7 @@ const tI18nPhrase Phrases[] = {
     "Kaistanleveys",
     "Szerokosc pasma",
     "Bandwidth",
-    "Bandwidth",
+    "Åıñïò Óõ÷íïôŞôùí",
     "Bandbredd",
     "Lãrgime de bandã",
     "Bandwidth",
@@ -1610,7 +1610,7 @@ const tI18nPhrase Phrases[] = {
     "Suojaustaso (HP)",
     "CoderateH",
     "CoderateH",
-    "CoderateH",
+    "Ñõèìüò Êşäéêá H",
     "CoderateH",
     "CoderateH",
     "CoderateH",
@@ -1631,7 +1631,7 @@ const tI18nPhrase Phrases[] = {
     "Suojaustaso (LP)",
     "CoderateL",
     "CoderateL",
-    "CoderateL",
+    "Ñõèìüò Êşäéêá L",
     "CoderateL",
     "CoderateL",
     "CoderateL",
@@ -1652,7 +1652,7 @@ const tI18nPhrase Phrases[] = {
     "Modulaatio",
     "Modulacja",
     "Modulation",
-    "Modulation",
+    "Äéáìüñöùóç",
     "Modulation",
     "Modulaşie",
     "Modulation",
@@ -1673,7 +1673,7 @@ const tI18nPhrase Phrases[] = {
     "Transmissio",
     "Transmisja",
     "Transmission",
-    "Transmission",
+    "ÌåôÜäïóç",
     "Transmission",
     "Transmisiune",
     "Transmission",
@@ -1694,7 +1694,7 @@ const tI18nPhrase Phrases[] = {
     "Suojaväli",
     "Guard",
     "Guard",
-    "Guard",
+    "Ğñïóôáóßá",
     "Guard",
     "Guard",
     "Guard",
@@ -1948,7 +1948,7 @@ const tI18nPhrase Phrases[] = {
     "Kanava on ajastimen käytössä!",
     "Kanal jest zajety przez timer nagran",
     "¡Canal está ocupado por un timer!",
-    "Ôï êáíÜëç ÷ñéóéìïğïéåßôáé áğü ÷ñïíïäéáêüğôç!",
+    "Ôï êáíÜëç ÷ñéóéìïğïéåßôáé áğü ÷ñïíïğñïãñáììáôéóìü!",
     "Kanalen används av en timer!",
     "Canalul este utilizat de un timer!",
     "Csatornát más használja!",
@@ -2053,7 +2053,7 @@ const tI18nPhrase Phrases[] = {
     "*** Virheellinen kanavavalinta! ***",
     "*** Niewazny kanal ***",
     "*** Canal inválido ***",
-    "*** ¢êõñï êáíÜëç ***",
+    "*** Áêõñï êáíÜëç ***",
     "*** Felaktig kanal ***",
     "*** Canal invalid ***",
     "*** Érvénytelen csatorna ***",
@@ -2347,7 +2347,7 @@ const tI18nPhrase Phrases[] = {
     "CA-moduulin palautus alkutilaan epäonnistui!",
     "Nieudany CAM-Reset!",
     "¡No puedo reiniciar la CAM!",
-    "Áäıíáôï íá ãßíåé åğáíáöïñÜ óôü CAM",
+    "Áäıíáôç ç åğáíáöïñÜ óôü CAM",
     "Kan inte återställa CAM!",
     "Nu pot reseta CAM",
     "A CAM-Reset nem sikerült",
@@ -2368,7 +2368,7 @@ const tI18nPhrase Phrases[] = {
     "CA-moduuli palautettu alkutilaan",
     "CAM-Reset wykonany",
     "CAM reiniciada",
-    "Óôï CAM İãéíå åğáíáöïñÜ",
+    "¸ãéíå åğáíáöïñÜ óôï CAM",
     "CA modulen har återställts",
     "CAM-ul a fost resetat",
     "A CAM vissza lett állítva",
@@ -2410,7 +2410,7 @@ const tI18nPhrase Phrases[] = {
     "Äänen kieli ei ole valittavissa!",
     "",//TODO
     "",//TODO
-    "ÁíåğÜñêåéá Ş÷ïõ",
+    "Ìç äéáèİóéìïò Ş÷ïò",
     "Ljud saknas!"
     "Lipseºte sunetul!",
     "",//TODO
@@ -2453,7 +2453,7 @@ const tI18nPhrase Phrases[] = {
     "Ohjelmaopas",
     "EPG",
     "Guía de Programación",
-    "Ïäçãüò ğñïãñÜììáôïò",
+    "Çëåêôñïíéêüò ïäçãüò ğñïãñÜììáôïò",
     "EPG",
     "EPG",
     "EPG",
@@ -2558,7 +2558,7 @@ const tI18nPhrase Phrases[] = {
     "Toisto",
     "Odtwarzanie",
     "Opciones de Reproducción",
-    "ÁíáìåôÜäïóç",
+    "ÁíáğáñáãùãŞ",
     "Uppspelning",
     "Redare",
     "Lejátszás",
@@ -2600,7 +2600,7 @@ const tI18nPhrase Phrases[] = {
     "Laajennokset",
     "Plugins",
     "Plugins",
-    "Âßóìáôá",
+    "ÅğåêôÜóåéò",
     "Moduler",
     "Plugin-uri",
     "Plugins",
@@ -2621,7 +2621,7 @@ const tI18nPhrase Phrases[] = {
     "Laajennos",
     "Plugin",
     "Plugin",
-    "Âßóìá",
+    "Åğİêôáóç",
     "Modul",
     "Plugin (modul adişional)",
     "Plugin",
@@ -2968,6 +2968,27 @@ const tI18nPhrase Phrases[] = {
     "Kanaliteate näitamine",
     "Info ved kanalskift",
   },
+  { "Setup.OSD$Timeout requested channel info",
+    "Angeforderte Kanalinfo schließen",
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+    "", // TODO
+  },
   { "Setup.OSD$Scroll pages",
     "Seitenweise scrollen",
     "Drsni meni",
@@ -2979,7 +3000,7 @@ const tI18nPhrase Phrases[] = {
     "Valikoiden vieritys sivuttain",
     "Przesuwac stronami",
     "Desplazar página entera",
-    "Êßëéóç óåëßäáò",
+    "Êıëéóç óåëßäáò",
     "Bläddra sidor",
     "Deruleazã pagini",
     "Oldalanként léptetmi",
@@ -3000,7 +3021,7 @@ const tI18nPhrase Phrases[] = {
     "Valikoiden vieritys ympäri",
     "",// TODO
     "",// TODO
-    "Êßëéóç ãıñù-ãıñù",
+    "Êıëéóç ãıñù-ãıñù",
     "Rulla texten",
     "Derulare circularã",
     "",// TODO
@@ -3021,7 +3042,7 @@ const tI18nPhrase Phrases[] = {
     "Järjestä ajastimet",
     "Sortowanie timerow",
     "Ordenar timers",
-    "ÏñãÜíùóç ğñïãñáìáôéóìİíùí",
+    "ÏñãÜíùóç ÷ñïíïğñïãñáììáôéóìşí",
     "Sortera timers",
     "Sortare timer-e",
     "A beprogramozott felvételek elrendezése",
@@ -3063,7 +3084,7 @@ const tI18nPhrase Phrases[] = {
     "Ohjelmaoppaan taustapäivitys (h)",
     "Czas do skanu EPG (h)",
     "Tiempo hasta exploración EPG (h)",
-    "×ñüíïò ìİ÷ñé åîİôáóç EPG óå şñåò",
+    "×ñüíïò äéÜñêåéáò åîİôáóçò EPG óå şñåò",
     "EPG sökning timeout",
     "Interval achizişie EPG (h)",
     "Fennmaradt idö az EPG-g (h)",
@@ -3084,7 +3105,7 @@ const tI18nPhrase Phrases[] = {
     "Ohjelmaoppaan korjaustaso",
     "Poziom bledow EPG",
     "Nivel para arreglar EPG",
-    "Âáèìüò äéüñèïóçò ïäçãïı EPG",
+    "Âáèìüò äéüñèùóçò ïäçãïı EPG",
     "Nivå för EPG bugfix",
     "Nivel corecşie EPG",
     "EPG hibaelhárítás",
@@ -3105,7 +3126,7 @@ const tI18nPhrase Phrases[] = {
     "Vanha tieto näkyy (min)",
     "",// TODO
     "",// TODO
-    "¸íäåéêóç îåğåñáóìİíïí ğëçñïöïñéşí (ëåğôÜ)",
+    "¸íäåéîç îåğåñáóìİíùí ğëçñïöïñéşí (ëåğôÜ)",
     "Visa gammal information (min)",
     "Date EPG expirate cel mult (min)",
     "",// TODO
@@ -3168,7 +3189,7 @@ const tI18nPhrase Phrases[] = {
     "Suosikkikielet",
     "",// TODO
     "",// TODO
-    "Ğñïôéíüìåíåò ãëşóåò",
+    "Ğñïôåéíüìåíåò ãëşóóåò",
     "Önskade språk",
     "Limbi preferate",
     "",// TODO
@@ -3189,7 +3210,7 @@ const tI18nPhrase Phrases[] = {
     "Suosikkikieli",
     "",// TODO
     "",// TODO
-    "Ğñïôéíüìåíç ãëşóá",
+    "Ğñïôåéíüìåíç ãëşóóá",
     "Önskat språk",
     "Limba preferatã",
     "",// TODO
@@ -3231,7 +3252,7 @@ const tI18nPhrase Phrases[] = {
     "Näyttömuoto",
     "",//TODO
     "",//TODO
-    "ÌïñöŞ İíäåéêóçò Âßíôåï",
+    "ÌïñöŞ áğåéêüíéóçò Âßíôåï",
     "Format för video display",
     "Formatul redãrii video",
     "",//TODO
@@ -3336,7 +3357,7 @@ const tI18nPhrase Phrases[] = {
     "Käytä Dolby Digital -ääntä",
     "",//TODO
     "",//TODO
-    "×ñçóéìïğïßçóç Ş÷ïõ Dolby Digital",
+    "×ñŞóç Ş÷ïõ Dolby Digital",
     "Använd Dolby Digital",
     "Sunet Dolby Digital",
     "",//TODO
@@ -3357,7 +3378,7 @@ const tI18nPhrase Phrases[] = {
     "Päivitä kanavat",
     "",// TODO
     "",// TODO
-    "áíáíİïóç êáíáëéşí",
+    "Åíçìİñùóç êáíáëéşí",
     "Uppdatera kanaler",
     "Actualizare canale",
     "",// TODO
@@ -3378,7 +3399,7 @@ const tI18nPhrase Phrases[] = {
     "vain nimet",
     "",// TODO
     "",// TODO
-    "ìüíï üíïìá",
+    "ìüíï ïíüìáôá",
     "bara namn",
     "doar numele",
     "",// TODO
@@ -3399,7 +3420,7 @@ const tI18nPhrase Phrases[] = {
     "nimet ja PID:it",
     "",// TODO
     "",// TODO
-    "üíïìá êáß PID",
+    "Ïíüìáôá êáß PIDs",
     "namn och PID",
     "nume si PID-uri",
     "",// TODO
@@ -3420,7 +3441,7 @@ const tI18nPhrase Phrases[] = {
     "uudet kanavat",
     "",// TODO
     "",// TODO
-    "ğñïóèŞêç íİïí êáíáëéşí",
+    "ğñïóèŞêç íİùí êáíáëéşí",
     "lägg till nya kanaler",
     "adãugare canale noi",
     "",// TODO
@@ -3441,7 +3462,7 @@ const tI18nPhrase Phrases[] = {
     "uudet transponderit",
     "",// TODO
     "",// TODO
-    "ğñïóèŞêç íİïí transponder",
+    "ğñïóèŞêç íİïõ áíáìåôáäüôç",
     "lägg till nya transponders",
     "adãugare transpondere noi",
     "",// TODO
@@ -3462,7 +3483,7 @@ const tI18nPhrase Phrases[] = {
     "Äänen kielet",
     "",//TODO
     "",//TODO
-    "Ãëşóåò Ş÷ïõ",
+    "Ãëşóóåò Ş÷ïõ",
     "Antal ljudspråk",
     "Limbi sunet",
     "",//TODO
@@ -3483,7 +3504,7 @@ const tI18nPhrase Phrases[] = {
     "Äänen kieli",
     "",//TODO
     "",//TODO
-    "Ãëşóá Ş÷ïõ",
+    "Ãëşóóá Ş÷ïõ",
     "Ljudspråk",
     "Limba sunetului",
     "",//TODO
@@ -3609,7 +3630,7 @@ const tI18nPhrase Phrases[] = {
     "Aloitusmarginaali (min)",
     "Poczatkowy czas buforowy (min)",
     "Comenzar grabación antes (min)",
-    "Ğñüóèåôïò ÷ñüíïò ğñßí áñ÷Ş (ëåğôÜ)",
+    "Ğñüóèåôïò ÷ñüíïò óôçí áñ÷Ş (ëåğôÜ)",
     "Marginal för start (min)",
     "Marjã la pornire (min)",
     "Idöeltolódás a kezdésnél (min)",
@@ -3672,7 +3693,7 @@ const tI18nPhrase Phrases[] = {
     "Tallenteen oletusprioriteetti",
     "Priorytet pierwotny",
     "Prioridad predefinida",
-    "Ğñïôåñáéüôçôá",
+    "Ğñïêáèïñéóìİíç ğñïôåñáéüôçôá",
     "Normal prioritet",
     "Prioritate implicitã",
     "Default priority",
@@ -3798,7 +3819,7 @@ const tI18nPhrase Phrases[] = {
     "VPS-toiminnon aloitusmarginaali (s)",
     "",// TODO
     "",// TODO
-    "Ğåñéèüñéï VPS (ä)",
+    "Ğåñéèşñéï VPS (ä)",
     "VPS marginal (s)",
     "Marjã de timp la utilizare VPS (s)",
     "",// TODO
@@ -4104,26 +4125,48 @@ const tI18nPhrase Phrases[] = {
     "ManTirOnsTorFreLørSøn",
   },
   // The allowed characters in strings:
-  { " abcdefghijklmnopqrstuvwxyz0123456789-.#~",
-    " aäbcdefghijklmnoöpqrstuüvwxyz0123456789-.#~",
-    " abcèdefghijklmnopqrs¹tuvwxyz¾0123456789-.#~",
-    " aàbcdeéèfghiîjklmnopqrstuùvwxyz0123456789-.#~",
-    " abcdefghijklmnopqrstuvwxyz0123456789-.#~áäàïóöòúüù",
+  { " abcdefghijklmnopqrstuvwxyz0123456789-.#~,/_@",
+    " aäbcdefghijklmnoöpqrstuüvwxyz0123456789-.#~,/_@",
+    " abcèdefghijklmnopqrs¹tuvwxyz¾0123456789-.#~,/_@",
+    " aàbcdeéèfghiîjklmnopqrstuùvwxyz0123456789-.#~,/_@",
+    " abcdefghijklmnopqrstuvwxyz0123456789-.#~,/_@áäàïóöòúüù",
     "",// TODO
-    " aàbcçdeéèêfghiîjklmnoôpqrstuùûvwxyz0123456789-.#~",
+    " aàbcçdeéèêfghiîjklmnoôpqrstuùûvwxyz0123456789-.#~,/_@",
     "",// TODO
-    " abcdefghijklmnopqrstuvwxyzåäö0123456789-.#~",
-    " abcdefghijklmnopqrstuvwxyz0123456789-.#~",
-    " aábcdeéfghiíjklmnñoópqrstuúvwxyz0123456789-.#~",
-    " áÜâãäåİæçŞèéßêëìíîïüğñóòôõıö÷øùş0123456789-.#~abcdefghijklmnopqrstuvwxyz",
-    " abcdefghijklmnopqrstuvwxyzåäö0123456789-.#~",
-    " aãâbcdefghiîjklmnopqrsºtşuvwxyz0123456789-.#~",
-    " aábcdeéfghiíjklmnoóöpqrstuúüvwxyz0123456789-.,#~",
-    " aàbcçdeéèfghiíjklmnoòpqrstuúvwxyz0123456789-.,#~_·",
-    " abcdefghijklmnopqrstuvwxyzĞÑÒÓÔÕñÖ×ØÙÚÛÜİŞßàáâãäåæçèéêëìîï0123456789-.#~",
-    " abcèædğefghijklmnopqrs¹tuvwxyz¾0123456789-.#~", // hrv
-    " abcdefghijklmnopqrsğzştuvwõäöüxyå0123456789-.#~",
-    " abcdefghijklmnopqrstuvwxyzæøå0123456789-.#~",
+    " abcdefghijklmnopqrstuvwxyzåäö0123456789-.#~,/_@",
+    " abcdefghijklmnopqrstuvwxyz0123456789-.#~,/_@",
+    " aábcdeéfghiíjklmnñoópqrstuúvwxyz0123456789-.#~,/_@",
+    " áÜâãäåİæçŞèéßêëìíîïüğñóòôõıö÷øùş0123456789-.#~,/_@abcdefghijklmnopqrstuvwxyz",
+    " abcdefghijklmnopqrstuvwxyzåäö0123456789-.#~,/_@",
+    " aãâbcdefghiîjklmnopqrsºtşuvwxyz0123456789-.#~,/_@",
+    " aábcdeéfghiíjklmnoóöpqrstuúüvwxyz0123456789-.,#~,/_@",
+    " aàbcçdeéèfghiíjklmnoòpqrstuúvwxyz0123456789-.,#~,/_@·",
+    " abcdefghijklmnopqrstuvwxyzĞÑÒÓÔÕñÖ×ØÙÚÛÜİŞßàáâãäåæçèéêëìîï0123456789-.#~,/_@",
+    " abcèædğefghijklmnopqrs¹tuvwxyz¾0123456789-.#~,/_@", // hrv
+    " abcdefghijklmnopqrsğzştuvwõäöüxyå0123456789-.#~,/_@",
+    " abcdefghijklmnopqrstuvwxyzæøå0123456789-.#~,/_@",
+  },
+  // The character maps for entering letters via the numeric keys:
+  { " 0\t-.#~,/_@1\tabc2\tdef3\tghi4\tjkl5\tmno6\tpqrs7\ttuv8\twxyz9",
+    " 0\t-.#~,/_@1\tabcä2\tdef3\tghi4\tjkl5\tmnoö6\tpqrs7\ttuvü8\twxyz9",
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
   },
   // Learning keys:
   { "Learning Remote Control Keys",
@@ -4221,7 +4264,7 @@ const tI18nPhrase Phrases[] = {
     "Älä paina kaukosäätimen näppäimiä...",
     "Nie naciskac klawiszy...",
     "No pulse ninguna tecla...",
-    "ÌŞí ğéİæåéò ğëŞêôñá...",
+    "ÌŞí ğáôÜò ğëŞêôñá...",
     "Tryck inte på någon knapp...",
     "Nu apãsaşi nici o tastã...",
     "Ne nyomjon meg gombot...",
@@ -4368,7 +4411,7 @@ const tI18nPhrase Phrases[] = {
     "näppäimen puuttuessa paina 'Valikko'",
     "(Nacisnac 'Menu' by ominac klawisz)",
     "Pulse 'Menu' para saltarse esta tecla",
-    "ĞÜôá 'ìåíïı' ãéá ğñïóğİñáóç áõôïı ôïı ğëŞêôñïõ",
+    "Ğßåóå 'ìåíïı' ãéá ğñïóğİñáóç áõôïı ôïı ğëŞêôñïõ",
     "(Tryck 'Meny' för att hoppa över knappen.)",
     "Apãsaşi 'Meniu' pentru a sãri peste aceastã tastã",
     "A Menü gombot nyomni ennek a gombnak a kihagyásához",
@@ -4389,7 +4432,7 @@ const tI18nPhrase Phrases[] = {
     "Vaihe 3: Näppäinkoodien tallentaminen",
     "Faza 3: Zapamietac Kod",
     "Fase 3: Guardar códigos de teclas",
-    "Öáóç 3: Áğïèßêåõóç êùäéêşí",
+    "Öáóç 3: ÁğïèŞêåõóç êùäéêşí",
     "Fas 3: Spara knappkoder",
     "Faza 3: Salvarea codurilor de taste",
     "Harmadik lépés: kód mentése",
@@ -4410,7 +4453,7 @@ const tI18nPhrase Phrases[] = {
     "Paina 'Ylös' tallentaaksesi ja 'Alas' peruuttaaksesi",
     "'Gora' zapamietuje, 'Dol' przerywa",
     "Pulse 'Arriba' para guardar, 'Abajo' para anular",
-    "'ĞÜíù' áğïèßêåõóç, 'ÊÜôù' áêıñùóç",
+    "Ğßåóå 'ĞÜíù' ãéá áğïèŞêåõóç, 'ÊÜôù' ãéá áêıñùóç",
     "Tryck 'Upp' för att spara eller 'Ner' för att avsluta.",
     "Apãsaşi 'Sus' pentru salvare, 'Jos' pentru anulare",
     "'Fel' mentés, 'Le´ mégse",
@@ -4421,7 +4464,7 @@ const tI18nPhrase Phrases[] = {
     "Tryk 'Op' for at gemme, 'Ned' for at annullere",
   },
   // Key names:
-  { "Up",
+  { "Key$Up",
     "Auf",
     "Gor",
     "Su",
@@ -4442,7 +4485,7 @@ const tI18nPhrase Phrases[] = {
     "Üles",
     "Op",
   },
-  { "Down",
+  { "Key$Down",
     "Ab",
     "Dol",
     "Giù",
@@ -4463,7 +4506,7 @@ const tI18nPhrase Phrases[] = {
     "Alla",
     "Ned",
   },
-  { "Menu",
+  { "Key$Menu",
     "Menü",
     "Meni",
     "Menù",
@@ -4484,7 +4527,7 @@ const tI18nPhrase Phrases[] = {
     "Menüü",
     "Menu",
   },
-  { "Ok",
+  { "Key$Ok",
     "Ok",
     "Ok",
     "Ok",
@@ -4505,7 +4548,7 @@ const tI18nPhrase Phrases[] = {
     "Ok",
     "Ok",
   },
-  { "Back",
+  { "Key$Back",
     "Zurück",
     "Nazaj",
     "Indietro",
@@ -4526,7 +4569,7 @@ const tI18nPhrase Phrases[] = {
     "Tagasi",
     "Tilbage",
   },
-  { "Left",
+  { "Key$Left",
     "Links",
     "Levo",
     "Sinistra",
@@ -4547,7 +4590,7 @@ const tI18nPhrase Phrases[] = {
     "Vasakule",
     "Venstre",
   },
-  { "Right",
+  { "Key$Right",
     "Rechts",
     "Desno",
     "Destra",
@@ -4568,7 +4611,7 @@ const tI18nPhrase Phrases[] = {
     "Paremale",
     "Højre",
   },
-  { "Red",
+  { "Key$Red",
     "Rot",
     "Rdeèa",
     "Rosso",
@@ -4589,7 +4632,7 @@ const tI18nPhrase Phrases[] = {
     "Punane",
     "Rød",
   },
-  { "Green",
+  { "Key$Green",
     "Grün",
     "Zelena",
     "Verde",
@@ -4610,7 +4653,7 @@ const tI18nPhrase Phrases[] = {
     "Roheline",
     "Grøn",
   },
-  { "Yellow",
+  { "Key$Yellow",
     "Gelb",
     "Rumena",
     "Giallo",
@@ -4631,7 +4674,7 @@ const tI18nPhrase Phrases[] = {
     "Kollane",
     "Gul",
   },
-  { "Blue",
+  { "Key$Blue",
     "Blau",
     "Modra",
     "Blu",
@@ -4652,7 +4695,28 @@ const tI18nPhrase Phrases[] = {
     "Sinine",
     "Blå",
   },
-  { "Play",
+  { "Key$Info",
+    "Info",
+    "Info",
+    "",//TODO
+    "Info",
+    "",//TODO
+    "Info",
+    "",//TODO
+    "Tiedot",
+    "",//TODO
+    "",//TODO
+    "Ğëçñïöïñßåò",
+    "Info",
+    "Info",
+    "",//TODO
+    "",//TODO
+    "¸İäŞ",
+    "Info",
+    "Info",
+    "Info",
+  },
+  { "Key$Play",
     "Wiedergabe",
     "Predvajaj",
     "Riproduci",
@@ -4663,7 +4727,7 @@ const tI18nPhrase Phrases[] = {
     "Toista",
     "Odtworzenie",
     "Reproducir",
-    "AíáìåôÜäïóç",
+    "ÁíáğáñáãùãŞ",
     "Spela upp",
     "Redare",
     "Lejátszás",
@@ -4673,7 +4737,7 @@ const tI18nPhrase Phrases[] = {
     "Start",
     "Afspil",
   },
-  { "Pause",
+  { "Key$Pause",
     "Pause",
     "Pavza",
     "Pausa",
@@ -4684,7 +4748,7 @@ const tI18nPhrase Phrases[] = {
     "Tauko",
     "Przerwa",
     "Pausa",
-    "ÄéÜëåéììá",
+    "Ğáıóç",
     "Pausa",
     "Pauzã",
     "Szünet",
@@ -4694,7 +4758,7 @@ const tI18nPhrase Phrases[] = {
     "Paus",
     "Pause",
   },
-  { "Stop",
+  { "Key$Stop",
     "Stop",
     "Ustavi",
     "Stop",
@@ -4715,7 +4779,7 @@ const tI18nPhrase Phrases[] = {
     "Stopp",
     "Stop",
   },
-  { "Record",
+  { "Key$Record",
     "Aufnehmen",
     "Snemaj",
     "Registra",
@@ -4736,7 +4800,7 @@ const tI18nPhrase Phrases[] = {
     "Salvestamine",
     "Optag",
   },
-  { "FastFwd",
+  { "Key$FastFwd",
     "Vorlauf",
     "Hitro naprej",
     "Avanti Veloce",
@@ -4747,7 +4811,7 @@ const tI18nPhrase Phrases[] = {
     "Pikakelaus >>",
     "Naprzod",
     "Adelante rápido",
-    "Ğñïüèéóç åìğñüò",
+    "Ğñïşèçóç åìğñüò",
     "Snabbspolning framåt",
     "Derulare înainte",
     "Elöre pörgetni",
@@ -4757,7 +4821,7 @@ const tI18nPhrase Phrases[] = {
     "Edasikerimine",
     "Spol fremad",
   },
-  { "FastRew",
+  { "Key$FastRew",
     "Rücklauf",
     "Hitro nazaj",
     "Indietro Veloce",
@@ -4768,7 +4832,7 @@ const tI18nPhrase Phrases[] = {
     "Pikakelaus <<",
     "Wstecz",
     "Atrás rápido",
-    "Ğñïüèéóç ğßóù",
+    "Ğñïşèçóç ğßóù",
     "Snabbspolning bakåt",
     "Derulare înapoi",
     "Vissza pörgetni",
@@ -4778,7 +4842,7 @@ const tI18nPhrase Phrases[] = {
     "Tagasikerimine",
     "Spol tilbage",
   },
-  { "Power",
+  { "Key$Power",
     "Ausschalten",
     "Izklop",
     "Power",
@@ -4799,7 +4863,7 @@ const tI18nPhrase Phrases[] = {
     "Toide",
     "Sluk",
   },
-  { "Channel+",
+  { "Key$Channel+",
     "Kanal+",
     "Program+",
     "Canale +",
@@ -4820,7 +4884,7 @@ const tI18nPhrase Phrases[] = {
     "Kanal+",
     "Kanal+",
   },
-  { "Channel-",
+  { "Key$Channel-",
     "Kanal-",
     "Program-",
     "Canale -",
@@ -4831,7 +4895,7 @@ const tI18nPhrase Phrases[] = {
     "Kanava -",
     "Kanal-",
     "Canal -",
-    "ÊáíÜëç-",
+    "ÊáíÜëé-",
     "Kanal-",
     "Canal-",
     "Csatorna-",
@@ -4841,7 +4905,7 @@ const tI18nPhrase Phrases[] = {
     "Kanal-",
     "Kanal-",
   },
-  { "Volume+",
+  { "Key$Volume+",
     "Lautstärke+",
     "Glasnost+",
     "Volume +",
@@ -4862,7 +4926,7 @@ const tI18nPhrase Phrases[] = {
     "Helitugevus+",
     "Lydstyrke+",
   },
-  { "Volume-",
+  { "Key$Volume-",
     "Lautstärke-",
     "Glasnost-",
     "Volume -",
@@ -4883,7 +4947,7 @@ const tI18nPhrase Phrases[] = {
     "Helitugevus-",
     "Lydstyrke-",
   },
-  { "Mute",
+  { "Key$Mute",
     "Stumm",
     "Izklop zvoka",
     "Mute",
@@ -4904,7 +4968,7 @@ const tI18nPhrase Phrases[] = {
     "Hääletu",
     "Sluk lyd",
   },
-  { "Audio",
+  { "Key$Audio",
     "Audio",
     "Zvok",
     "",// TODO
@@ -5105,7 +5169,7 @@ const tI18nPhrase Phrases[] = {
     "vapaana",
     "pozostalo",
     "libre",
-    "Êåíü",
+    "Åëåıèåñïò",
     "ledigt",
     "liber",
     "szabad",
@@ -5168,7 +5232,7 @@ const tI18nPhrase Phrases[] = {
     " Lopeta toisto",
     " Zatrzymac odtwarzanie",
     " Parar reprodución",
-    " Ôİëïò áíáìåôÜäïóçò",
+    " Ôİëïò áíáğáñáãùãŞò",
     " Avsluta uppspelning",
     " Opreºte redarea",
     " Lejátszást befejzni",
@@ -5273,7 +5337,7 @@ const tI18nPhrase Phrases[] = {
     "Muokkaus aloitettu",
     "Uruchomiony proces montazu",
     "Proceso modificación iniciado",
-    "Áñ÷Ş åğåîåñãáóßáò",
+    "Áñ÷éóå ç åğåîåñãáóßá",
     "Redigeringen startar",
     "Montajul înregistrãrii a început",
     "Vágás elindítva",
@@ -5325,26 +5389,26 @@ const tI18nPhrase Phrases[] = {
     "Redigeerimine ebaõnnestus",
     "Redigeringsproces fejlede!",
   },
-  { "scanning recordings...",
-    "Aufzeichnungen werden durchsucht...",
-    "iskanje posnetkov...",
-    "scansione registrazioni...",
-    "Doorzoeken opnames...",
-    "A pesquisar gravações...",
-    "Recherche des enregistrements...",
-    "Går igjennom opptakene...",
-    "haetaan tallenteita...",
-    "Skan nagran...",
-    "buscando grabaciones...",
-    "Åîİôáóç åããñáöşí...",
-    "Söker igenom inspelningarna...",
-    "Caut înregistrãri...",
-    "Felvett adások böngészése...",
-    "cercant gravacions...",
-    "ÁÚĞİØàŞÒĞİØÕ ×ĞßØáÕÙ...",
-    "pretra¾ivanje snimljenog...",
-    "salvestuste skaneerimine...",
-    "skanner optagelser...",
+  { "Recording started",
+    "Aufzeichnung gestartet",
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
   },
   { "Pausing live video...",
     "Live-Signal wird angehalten...",
@@ -5357,7 +5421,7 @@ const tI18nPhrase Phrases[] = {
     "Pysäytetään lähetys...",
     "Zatrzymany program biezacy...",
     "Emisión en directo parada...",
-    "ÄéÜëåéììá æùíôáíïı óŞìáôïò",
+    "ĞÜãùìá æùíôáíïı óŞìáôïò",
     "Pausar direktinspelningen",
     "Trec în pauzã emisiunea transmisã...",
     "Az élö adás megállítva...",
@@ -5399,7 +5463,7 @@ const tI18nPhrase Phrases[] = {
     "Tällä laajennoksella ei ole asetuksia!",
     "Ten plugin niema parametrow!",
     "Este plugin no admite configuración",
-    "Áõôü ôï âßóìá äåí İ÷åé ğáñÜìåôñïõò",
+    "ÁõôŞ ç åğİêôáóç äåí İ÷åé ğáñÜìåôñïõò!",
     "Den här modulen har inga parametrar",
     "Acest plugin nu se configureazã!",
     "Ennek a plugin-nak nincs setup-parametere!",
@@ -5462,7 +5526,7 @@ const tI18nPhrase Phrases[] = {
     "Ei esitystä",
     "",// TODO
     "",// TODO
-    "Ï÷é ôßôëï",
+    "×ùñßò Ôßôëï",
     "ingen titel",
     "Fãrã titlu",
     "",// TODO

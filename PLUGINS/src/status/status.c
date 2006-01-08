@@ -3,13 +3,13 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: status.c 1.7 2002/12/13 15:01:53 kls Exp $
+ * $Id: status.c 1.8 2005/12/31 15:19:45 kls Exp $
  */
 
 #include <vdr/plugin.h>
 #include <vdr/status.h>
 
-static const char *VERSION        = "0.1.0";
+static const char *VERSION        = "0.2.0";
 static const char *DESCRIPTION    = "Status monitor test";
 static const char *MAINMENUENTRY  = NULL;
 
@@ -18,8 +18,8 @@ static const char *MAINMENUENTRY  = NULL;
 class cStatusTest : public cStatus {
 protected:
   virtual void ChannelSwitch(const cDevice *Device, int ChannelNumber);
-  virtual void Recording(const cDevice *Device, const char *Name);
-  virtual void Replaying(const cControl *Control, const char *Name);
+  virtual void Recording(const cDevice *Device, const char *Name, const char *FileName, bool On);
+  virtual void Replaying(const cControl *Control, const char *Name, const char *FileName, bool On);
   virtual void SetVolume(int Volume, bool Absolute);
   virtual void OsdClear(void);
   virtual void OsdTitle(const char *Title);
@@ -36,14 +36,14 @@ void cStatusTest::ChannelSwitch(const cDevice *Device, int ChannelNumber)
   dsyslog("status: cStatusTest::ChannelSwitch  %d %d", Device->CardIndex(), ChannelNumber);
 }
 
-void cStatusTest::Recording(const cDevice *Device, const char *Name)
+void cStatusTest::Recording(const cDevice *Device, const char *Name, const char *FileName, bool On)
 {
-  dsyslog("status: cStatusTest::Recording  %d %s", Device->CardIndex(), Name);
+  dsyslog("status: cStatusTest::Recording  %d %s %s %d", Device->CardIndex(), Name, FileName, On);
 }
 
-void cStatusTest::Replaying(const cControl *Control, const char *Name)
+void cStatusTest::Replaying(const cControl *Control, const char *Name, const char *FileName, bool On)
 {
-  dsyslog("status: cStatusTest::Replaying  %s", Name);
+  dsyslog("status: cStatusTest::Replaying  %s %s %d", Name, FileName, On);
 }
 
 void cStatusTest::SetVolume(int Volume, bool Absolute)

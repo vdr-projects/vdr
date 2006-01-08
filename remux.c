@@ -11,7 +11,7 @@
  * The cRepacker family's code was originally written by Reinhard Nissl <rnissl@gmx.de>,
  * and adapted to the VDR coding style by Klaus.Schmidinger@cadsoft.de.
  *
- * $Id: remux.c 1.47 2005/09/11 13:26:50 kls Exp $
+ * $Id: remux.c 1.53 2006/01/08 11:40:16 kls Exp $
  */
 
 #include "remux.h"
@@ -88,15 +88,21 @@ ePesHeader AnalyzePesHeader(const uchar *Data, int Count, int &PesPayloadOffset,
 
 // --- cRepacker -------------------------------------------------------------
 
+#define MIN_LOG_INTERVAL 10 // min. # of seconds between two consecutive log messages of a cRepacker
+#define LOG(a...) (LogAllowed() && (esyslog(a), true))
+
 class cRepacker {
 protected:
   bool initiallySyncing;
   int maxPacketSize;
   uint8_t subStreamId;
-  static void DroppedData(const char *Reason, int Count) { esyslog("%s (dropped %d bytes)", Reason, Count); }
+  time_t lastLog;
+  int suppressedLogMessages;
+  bool LogAllowed(void);
+  void DroppedData(const char *Reason, int Count) { LOG("%s (dropped %d bytes)", Reason, Count); }
 public:
   static int Put(cRingBufferLinear *ResultBuffer, const uchar *Data, int Count, int CapacityNeeded);
-  cRepacker(void) { initiallySyncing = true; maxPacketSize = 6 + 65535; subStreamId = 0; }
+  cRepacker(void);
   virtual ~cRepacker() {}
   virtual void Reset(void) { initiallySyncing = true; }
   virtual void Repack(cRingBufferLinear *ResultBuffer, const uchar *Data, int Count) = 0;
@@ -105,6 +111,30 @@ public:
   void SetMaxPacketSize(int MaxPacketSize) { maxPacketSize = MaxPacketSize; }
   void SetSubStreamId(uint8_t SubStreamId) { subStreamId = SubStreamId; }
   };
+
+cRepacker::cRepacker(void)
+{
+  initiallySyncing = true;
+  maxPacketSize = 6 + 65535;
+  subStreamId = 0;
+  suppressedLogMessages = 0;;
+  lastLog = 0;
+}
+
+bool cRepacker::LogAllowed(void)
+{
+  bool Allowed = time(NULL) - lastLog >= MIN_LOG_INTERVAL;
+  lastLog = time(NULL);
+  if (Allowed) {
+     if (suppressedLogMessages) {
+        esyslog("%d cRepacker messages suppressed", suppressedLogMessages);
+        suppressedLogMessages = 0;
+        }
+     }
+  else
+     suppressedLogMessages++;
+  return Allowed;
+}
 
 int cRepacker::Put(cRingBufferLinear *ResultBuffer, const uchar *Data, int Count, int CapacityNeeded)
 {
@@ -160,7 +190,7 @@ bool cCommonRepacker::PushOutPacket(cRingBufferLinear *ResultBuffer, const uchar
      // just skip packets with no payload
      int PesPayloadOffset = 0;
      if (AnalyzePesHeader(fragmentData, fragmentLen, PesPayloadOffset) <= phInvalid)
-        esyslog("cCommonRepacker: invalid PES packet encountered in fragment buffer!");
+        LOG("cCommonRepacker: invalid PES packet encountered in fragment buffer!");
      else if (6 + PacketLen <= PesPayloadOffset) {
         fragmentLen = 0;
         return true; // skip empty packet
@@ -181,7 +211,7 @@ bool cCommonRepacker::PushOutPacket(cRingBufferLinear *ResultBuffer, const uchar
      // just skip packets with no payload
      int PesPayloadOffset = 0;
      if (AnalyzePesHeader(pesHeader, pesHeaderLen, PesPayloadOffset) <= phInvalid)
-        esyslog("cCommonRepacker: invalid PES packet encountered in header buffer!");
+        LOG("cCommonRepacker: invalid PES packet encountered in header buffer!");
      else if (6 + PacketLen <= PesPayloadOffset) {
         pesHeaderLen = 0;
         return true; // skip empty packet
@@ -216,7 +246,8 @@ private:
     syncing,
     findPicture,
     scanPicture
-    } state;
+    };
+  int state;
 public:
   cVideoRepacker(void);
   virtual void Reset(void);
@@ -278,14 +309,14 @@ void cVideoRepacker::Repack(cRingBufferLinear *ResultBuffer, const uchar *Data, 
            // which kind of start code have we got?
            switch (*data) {
              case 0xB9 ... 0xFF: // system start codes
-                  esyslog("cVideoRepacker: found system start code: stream seems to be scrambled or not demultiplexed");
+                  LOG("cVideoRepacker: found system start code: stream seems to be scrambled or not demultiplexed");
                   break;
              case 0xB0 ... 0xB1: // reserved start codes
              case 0xB6:
-                  esyslog("cVideoRepacker: found reserved start code: stream seems to be scrambled");
+                  LOG("cVideoRepacker: found reserved start code: stream seems to be scrambled");
                   break;
              case 0xB4: // sequence error code
-                  isyslog("cVideoRepacker: found sequence error code: stream seems to be damaged");
+                  LOG("cVideoRepacker: found sequence error code: stream seems to be damaged");
              case 0xB2: // user data start code
              case 0xB5: // extension start code
                   break;
@@ -307,7 +338,7 @@ void cVideoRepacker::Repack(cRingBufferLinear *ResultBuffer, const uchar *Data, 
                      if (initiallySyncing) // omit report for the typical initial case
                         initiallySyncing = false;
                      else if (skippedBytes > SkippedBytesLimit) // report that syncing dropped some bytes
-                        esyslog("cVideoRepacker: skipped %d bytes to sync on next picture", skippedBytes - SkippedBytesLimit);
+                        LOG("cVideoRepacker: skipped %d bytes to sync on next picture", skippedBytes - SkippedBytesLimit);
                      skippedBytes = 0;
                      // if there is a PES header available, then use it ...
                      if (pesHeaderBackupLen > 0) {
@@ -350,13 +381,13 @@ void cVideoRepacker::Repack(cRingBufferLinear *ResultBuffer, const uchar *Data, 
                      // maximum we can hold in one PES packet
                      packetTodo = maxPacketSize - pesHeaderLen;
                      // go on with finding the picture data
-                     ((int &)state)++;
+                     state++;
                      }
                   break;
              case 0x01 ... 0xAF: // slice start codes
                   if (state == findPicture) {
                      // go on with scanning the picture data
-                     ((int &)state)++;
+                     state++;
                      }
                   break;
              }
@@ -465,7 +496,7 @@ void cVideoRepacker::Repack(cRingBufferLinear *ResultBuffer, const uchar *Data, 
   // report that syncing dropped some bytes
   if (skippedBytes > SkippedBytesLimit) {
      if (!initiallySyncing) // omit report for the typical initial case
-        esyslog("cVideoRepacker: skipped %d bytes while syncing on next picture", skippedBytes - SkippedBytesLimit);
+        LOG("cVideoRepacker: skipped %d bytes while syncing on next picture", skippedBytes - SkippedBytesLimit);
      skippedBytes = SkippedBytesLimit;
      }
 }
@@ -517,7 +548,8 @@ private:
   enum eState {
     syncing,
     scanFrame
-    } state;
+    };
+  int state;
   int frameTodo;
   int frameSize;
   int cid;
@@ -674,7 +706,7 @@ void cAudioRepacker::Repack(cRingBufferLinear *ResultBuffer, const uchar *Data, 
                  if (initiallySyncing) // omit report for the typical initial case
                     initiallySyncing = false;
                  else if (skippedBytes > SkippedBytesLimit) // report that syncing dropped some bytes
-                    esyslog("cAudioRepacker(0x%02X): skipped %d bytes to sync on next audio frame", cid, skippedBytes - SkippedBytesLimit);
+                    LOG("cAudioRepacker(0x%02X): skipped %d bytes to sync on next audio frame", cid, skippedBytes - SkippedBytesLimit);
                  skippedBytes = 0;
                  // if there is a PES header available, then use it ...
                  if (pesHeaderBackupLen > 0) {
@@ -714,10 +746,10 @@ void cAudioRepacker::Repack(cRingBufferLinear *ResultBuffer, const uchar *Data, 
                  payload = data;
                  // maximum we can hold in one PES packet
                  packetTodo = maxPacketSize - pesHeaderLen;
-                 // expected remainder of audio frame: so far we have read 3 bytes from the frame header 
+                 // expected remainder of audio frame: so far we have read 3 bytes from the frame header
                  frameTodo = frameSize - 3;
                  // go on with collecting the frame's data
-                 ((int &)state)++;
+                 state++;
                  }
               }
            }
@@ -832,7 +864,7 @@ void cAudioRepacker::Repack(cRingBufferLinear *ResultBuffer, const uchar *Data, 
   // report that syncing dropped some bytes
   if (skippedBytes > SkippedBytesLimit) {
      if (!initiallySyncing) // omit report for the typical initial case
-        esyslog("cAudioRepacker(0x%02X): skipped %d bytes while syncing on next audio frame", cid, skippedBytes - SkippedBytesLimit);
+        LOG("cAudioRepacker(0x%02X): skipped %d bytes while syncing on next audio frame", cid, skippedBytes - SkippedBytesLimit);
      skippedBytes = SkippedBytesLimit;
      }
 }
@@ -898,14 +930,15 @@ private:
   uchar chk1;
   uchar chk2;
   int ac3todo;
-  enum {
+  enum eState {
     find_0b,
     find_77,
     store_chk1,
     store_chk2,
     get_length,
     output_packet
-    } state;
+    };
+  int state;
   int skippedBytes;
   void ResetPesHeader(bool ContinuationFrame = false);
   void AppendSubStreamID(bool ContinuationFrame = false);
@@ -1090,7 +1123,7 @@ void cDolbyRepacker::Repack(cRingBufferLinear *ResultBuffer, const uchar *Data, 
         switch (state) {
           case find_0b:
                if (*data == 0x0B) {
-                  ++(int &)state;
+                  state++;
                   // copy header information once for later use
                   if (pesHeaderBackupLen > 0) {
                      pesHeaderLen = pesHeaderBackupLen;
@@ -1113,21 +1146,21 @@ void cDolbyRepacker::Repack(cRingBufferLinear *ResultBuffer, const uchar *Data, 
                done++;
                todo--;
                skippedBytes++; // collect number of skipped bytes while syncing
-               ++(int &)state;
+               state++;
                continue;
           case store_chk1:
                chk1 = *data++;
                done++;
                todo--;
                skippedBytes++; // collect number of skipped bytes while syncing
-               ++(int &)state;
+               state++;
                continue;
           case store_chk2:
                chk2 = *data++;
                done++;
                todo--;
                skippedBytes++; // collect number of skipped bytes while syncing
-               ++(int &)state;
+               state++;
                continue;
           case get_length:
                ac3todo = 2 * frameSizes[*data];
@@ -1157,7 +1190,7 @@ void cDolbyRepacker::Repack(cRingBufferLinear *ResultBuffer, const uchar *Data, 
                if (initiallySyncing) // omit report for the typical initial case
                   initiallySyncing = false;
                else if (skippedBytes > SkippedBytesLimit) // report that syncing dropped some bytes
-                  esyslog("cDolbyRepacker: skipped %d bytes to sync on next AC3 frame", skippedBytes - SkippedBytesLimit);
+                  LOG("cDolbyRepacker: skipped %d bytes to sync on next AC3 frame", skippedBytes - SkippedBytesLimit);
                skippedBytes = 0;
                // append read data to header for common output processing
                pesHeader[pesHeaderLen++] = 0x0B;
@@ -1165,7 +1198,7 @@ void cDolbyRepacker::Repack(cRingBufferLinear *ResultBuffer, const uchar *Data, 
                pesHeader[pesHeaderLen++] = chk1;
                pesHeader[pesHeaderLen++] = chk2;
                ac3todo -= 4;
-               ++(int &)state;
+               state++;
                // fall through to output
           case output_packet: {
                int bite = 0;
@@ -1188,7 +1221,7 @@ void cDolbyRepacker::Repack(cRingBufferLinear *ResultBuffer, const uchar *Data, 
   // report that syncing dropped some bytes
   if (skippedBytes > SkippedBytesLimit) {
      if (!initiallySyncing) // omit report for the typical initial case
-        esyslog("cDolbyRepacker: skipped %d bytes while syncing on next AC3 frame", skippedBytes - 4);
+        LOG("cDolbyRepacker: skipped %d bytes while syncing on next AC3 frame", skippedBytes - 4);
      skippedBytes = SkippedBytesLimit;
      }
 }
@@ -1248,9 +1281,10 @@ int cDolbyRepacker::BreakAt(const uchar *Data, int Count)
 #define CONT_CNT_MASK  0x0F
 
 // Flags:
+#define PAY_LOAD       0x10
+#define ADAPT_FIELD    0x20
 #define PAY_START      0x40
 #define TS_ERROR       0x80
-#define ADAPT_FIELD    0x20
 
 #define MAX_PLENGTH  0xFFFF          // the maximum PES packet length (theoretically)
 #define MMAX_PLENGTH (64*MAX_PLENGTH) // some stations send PES packets that are extremely large, e.g. DVB-T in Finland or HDTV 1920x1080
@@ -1635,7 +1669,11 @@ void cTS2PES::ts_to_pes(const uint8_t *Buf) // don't need count (=188)
 
   if (Buf[1] & TS_ERROR)
      tsErrors++;
-  if ((Buf[3] ^ ccCounter) & CONT_CNT_MASK) {
+
+  if (!(Buf[3] & (ADAPT_FIELD | PAY_LOAD)))
+     return; // discard TS packet with adaption_field_control set to '00'.
+
+  if ((Buf[3] & PAY_LOAD) && ((Buf[3] ^ ccCounter) & CONT_CNT_MASK)) {
      // This should check duplicates and packets which do not increase the counter.
      // But as the errors usually come in bursts this should be enough to
      // show you there is something wrong with signal quality.
@@ -1650,12 +1688,14 @@ void cTS2PES::ts_to_pes(const uint8_t *Buf) // don't need count (=188)
      }
 
   if (Buf[1] & PAY_START) {
-     if (plength == MMAX_PLENGTH - 6 && found > 6) {
+     if (found > 6) {
+        if (plength != MMAX_PLENGTH - 6 && plength != found - 6)
+           dsyslog("PES packet shortened to %d bytes (expected: %d bytes)", found, plength + 6);
         plength = found - 6;
-        found = 0;
         send_ipack();
         reset_ipack();
         }
+     found = 0;
      }
 
   uint8_t off = 0;
@@ -1666,7 +1706,8 @@ void cTS2PES::ts_to_pes(const uint8_t *Buf) // don't need count (=188)
         return;
      }
 
-  instant_repack(Buf + 4 + off, TS_SIZE - 4 - off);
+  if (Buf[3] & PAY_LOAD)
+     instant_repack(Buf + 4 + off, TS_SIZE - 4 - off);
 }
 
 // --- cRemux ----------------------------------------------------------------

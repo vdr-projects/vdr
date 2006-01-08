@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.84 2005/11/27 15:29:28 kls Exp $
+ * $Id: svdrp.c 1.89 2005/12/30 15:42:29 kls Exp $
  */
 
 #include "svdrp.h"
@@ -201,10 +201,16 @@ const char *HelpPages[] = {
   "    Edit the recording with the given number. Before a recording can be\n"
   "    edited, an LSTR command must have been executed in order to retrieve\n"
   "    the recording numbers.",
-  "GRAB <filename> [ jpeg | pnm [ <quality> [ <sizex> <sizey> ] ] ]\n"
+  "GRAB <filename> [ <quality> [ <sizex> <sizey> ] ]\n"
   "    Grab the current frame and save it to the given file. Images can\n"
-  "    be stored as JPEG (default) or PNM, at the given quality (default\n"
-  "    is 'maximum', only applies to JPEG) and size (default is full screen).",
+  "    be stored as JPEG or PNM, depending on the given file name extension.\n"
+  "    The quality of the grabbed image can be in the range 0..100, where 100\n"
+  "    (the default) means \"best\" (only applies to JPEG). The size parameters\n"
+  "    define the size of the resulting image (default is full screen).\n"
+  "    If the file name is just an extension (.jpg, .jpeg or .pnm) the image\n"
+  "    data will be sent to the SVDRP connection encoded in base64. The same\n"
+  "    happens if '-' (a minus sign) is given as file name, in which case the\n"
+  "    image format defaults to JPEG.",
   "HELP [ <topic> ]\n"
   "    The HELP command gives help info.",
   "HITK [ <key> ]\n"
@@ -307,6 +313,7 @@ const char *HelpPages[] = {
 
  214 Help message
  215 EPG or recording data record
+ 216 Image grab data (base 64)
  220 VDR service ready
  221 VDR service closing transmission channel
  250 Requested VDR action okay, completed
@@ -353,6 +360,8 @@ const char *GetHelpPage(const char *Cmd, const char **p)
      }
   return NULL;
 }
+
+char *cSVDRP::grabImageDir = NULL;
 
 cSVDRP::cSVDRP(int Port)
 :socket(Port)
@@ -656,36 +665,54 @@ void cSVDRP::CmdGRAB(const char *Option)
      const char *delim = " \t";
      char *strtok_next;
      FileName = strtok_r(p, delim, &strtok_next);
-     if ((p = strtok_r(NULL, delim, &strtok_next)) != NULL) {
-        if (strcasecmp(p, "JPEG") == 0)
+     // image type:
+     char *Extension = strrchr(FileName, '.');
+     if (Extension) {
+        if (strcasecmp(Extension, ".jpg") == 0 || strcasecmp(Extension, ".jpeg") == 0)
            Jpeg = true;
-        else if (strcasecmp(p, "PNM") == 0)
+        else if (strcasecmp(Extension, ".pnm") == 0)
            Jpeg = false;
         else {
-           Reply(501, "Unknown image type \"%s\"", p);
+           Reply(501, "Unknown image type \"%s\"", Extension + 1);
            return;
            }
+        if (Extension == FileName)
+           FileName = NULL;
         }
+     else if (strcmp(FileName, "-") == 0)
+        FileName = NULL;
+     else {
+        Reply(501, "Missing filename extension in \"%s\"", FileName);
+        return;
+        }
+     // image quality (and obsolete type):
      if ((p = strtok_r(NULL, delim, &strtok_next)) != NULL) {
-        if (isnumber(p))
-           Quality = atoi(p);
-        else {
-           Reply(501, "Illegal quality \"%s\"", p);
-           return;
+        if (strcasecmp(p, "JPEG") == 0 || strcasecmp(p, "PNM") == 0) {
+           // tolerate for backward compatibility
+           p = strtok_r(NULL, delim, &strtok_next);
+           }
+        if (p) {
+           if (isnumber(p))
+              Quality = atoi(p);
+           else {
+              Reply(501, "Invalid quality \"%s\"", p);
+              return;
+              }
            }
         }
+     // image size:
      if ((p = strtok_r(NULL, delim, &strtok_next)) != NULL) {
         if (isnumber(p))
            SizeX = atoi(p);
         else {
-           Reply(501, "Illegal sizex \"%s\"", p);
+           Reply(501, "Invalid sizex \"%s\"", p);
            return;
            }
         if ((p = strtok_r(NULL, delim, &strtok_next)) != NULL) {
            if (isnumber(p))
               SizeY = atoi(p);
            else {
-              Reply(501, "Illegal sizey \"%s\"", p);
+              Reply(501, "Invalid sizey \"%s\"", p);
               return;
               }
            }
@@ -698,8 +725,67 @@ void cSVDRP::CmdGRAB(const char *Option)
         Reply(501, "Unexpected parameter \"%s\"", p);
         return;
         }
-     if (cDevice::PrimaryDevice()->GrabImage(FileName, Jpeg, Quality, SizeX, SizeY))
-        Reply(250, "Grabbed image %s", Option);
+     // canonicalize the file name:
+     char RealFileName[PATH_MAX];
+     if (FileName) {
+        if (grabImageDir) {
+           char *s;
+           asprintf(&s, "%s/%s", grabImageDir, FileName);
+           FileName = s;
+           char *slash = strrchr(FileName, '/'); // there definitely is one
+           *slash = 0;
+           char *r = realpath(FileName, RealFileName);
+           *slash = '/';
+           if (!r) {
+              LOG_ERROR_STR(FileName);
+              Reply(501, "Invalid file name \"%s\"", FileName);
+              free(s);
+              return;
+              }
+           strcat(RealFileName, slash);
+           FileName = RealFileName;
+           free(s);
+           if (strncmp(FileName, grabImageDir, strlen(grabImageDir)) != 0) {
+              Reply(501, "Invalid file name \"%s\"", FileName);
+              return;
+              }
+           }
+        else {
+           Reply(550, "Grabbing to file not allowed (use \"GRAB -\" instead)");
+           return;
+           }
+        }
+     // actual grabbing:
+     int ImageSize;
+     uchar *Image = cDevice::PrimaryDevice()->GrabImage(ImageSize, Jpeg, Quality, SizeX, SizeY);
+     if (Image) {
+        if (FileName) {
+           int fd = open(FileName, O_WRONLY | O_CREAT | O_NOFOLLOW | O_TRUNC, DEFFILEMODE);
+           if (fd >= 0) {
+              if (safe_write(fd, Image, ImageSize) == ImageSize) {
+                 isyslog("grabbed image to %s", FileName);
+                 Reply(250, "Grabbed image %s", Option);
+                 }
+              else {
+                 LOG_ERROR_STR(FileName);
+                 Reply(451, "Can't write to '%s'", FileName);
+                 }
+              close(fd);
+              }
+           else {
+              LOG_ERROR_STR(FileName);
+              Reply(451, "Can't open '%s'", FileName);
+              }
+           }
+        else {
+           cBase64Encoder Base64(Image, ImageSize);
+           const char *s;
+           while ((s = Base64.NextLine()) != NULL)
+                 Reply(-216, s);
+           Reply(216, "Grabbed image %s", Option);
+           }
+        free(Image);
+        }
      else
         Reply(451, "Grab image failed");
      }
@@ -1480,6 +1566,12 @@ bool cSVDRP::Process(void)
      return true;
      }
   return false;
+}
+
+void cSVDRP::SetGrabImageDir(const char *GrabImageDir)
+{
+  free(grabImageDir);
+  grabImageDir = GrabImageDir ? strdup(GrabImageDir) : NULL;
 }
 
 //TODO more than one connection???

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.84 2005/11/26 14:03:47 kls Exp $
+ * $Id: tools.h 1.89 2006/01/08 11:40:37 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -110,6 +110,7 @@ bool DirectoryOk(const char *DirName, bool LogErrors = false);
 bool MakeDirs(const char *FileName, bool IsDirectory = false);
 bool RemoveFileOrDir(const char *FileName, bool FollowSymlinks = false);
 bool RemoveEmptyDirectories(const char *DirName, bool RemoveThis = false);
+int DirSizeMB(const char *DirName); ///< returns the total size of the files in the given directory, or -1 in case of an error
 char *ReadLink(const char *FileName); ///< returns a new string allocated on the heap, which the caller must delete (or NULL in case of an error)
 bool SpinUpDisk(const char *FileName);
 void TouchFile(const char *FileName);
@@ -120,6 +121,39 @@ cString DayDateTime(time_t t = 0);
 cString TimeToString(time_t t);
 cString DateString(time_t t);
 cString TimeString(time_t t);
+uchar *RgbToJpeg(uchar *Mem, int Width, int Height, int &Size, int Quality = 100);
+    ///< Converts the given Memory to a JPEG image and returns a pointer
+    ///< to the resulting image. Mem must point to a data block of exactly
+    ///< (Width * Height) triplets of RGB image data bytes. Upon return, Size
+    ///< will hold the number of bytes of the resulting JPEG data.
+    ///< Quality can be in the range 0..100 and controls the quality of the
+    ///< resulting image, where 100 is "best". The caller takes ownership of
+    ///< the result and has to delete it once it is no longer needed.
+    ///< The result may be NULL in case of an error.
+
+class cBase64Encoder {
+private:
+  const uchar *data;
+  int length;
+  int maxResult;
+  int i;
+  char *result;
+  static const char *b64;
+public:
+  cBase64Encoder(const uchar *Data, int Length, int MaxResult = 64);
+      ///< Sets up a new base 64 encoder for the given Data, with the given Length.
+      ///< Data will not be copied and must be valid as long as NextLine() will be
+      ///< called. MaxResult defines the maximum number of characters in any
+      ///< result line. The resulting lines may be shorter than MaxResult in case
+      ///< its value is not a multiple of 4.
+  ~cBase64Encoder();
+  const char *NextLine(void);
+      ///< Returns the next line of encoded data (terminated by '\0'), or NULL if
+      ///< there is no more encoded data. The caller must call NextLine() and process
+      ///< each returned line until NULL is returned, in order to get the entire
+      ///< data encoded. The returned data is only valid until the next time NextLine()
+      ///< is called, or until the object is destroyed.
+  };
 
 class cTimeMs {
 private:
@@ -152,7 +186,7 @@ public:
   bool Add(int FileHandle, bool Out);
   bool Poll(int TimeoutMs = 0);
   };
-  
+
 class cReadDir {
 private:
   DIR *directory;

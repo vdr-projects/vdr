@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.h 1.12 2005/11/11 13:26:51 kls Exp $
+ * $Id: menuitems.h 1.15 2006/01/06 15:16:25 kls Exp $
  */
 
 #ifndef __MENUITEMS_H
@@ -44,12 +44,12 @@ public:
 
 class cMenuEditBitItem : public cMenuEditBoolItem {
 protected:
-  int *value;
+  uint *value;
+  uint mask;
   int bit;
-  int mask;
   virtual void Set(void);
 public:
-  cMenuEditBitItem(const char *Name, int *Value, int Mask, const char *FalseString = NULL, const char *TrueString = NULL);
+  cMenuEditBitItem(const char *Name, uint *Value, uint Mask, const char *FalseString = NULL, const char *TrueString = NULL);
   };
 
 class cMenuEditNumItem : public cMenuEditItem {
@@ -82,9 +82,14 @@ private:
   char *allowed;
   int pos;
   bool insert, newchar, uppercase;
+  const char *charMap;
+  const char *currentChar;
+  eKeys lastKey;
   void SetHelpKeys(void);
   virtual void Set(void);
   char Inc(char c, bool Up);
+protected:
+  bool InEditMode(void) { return pos >= 0; }
 public:
   cMenuEditStrItem(const char *Name, char *Value, int Length, const char *Allowed);
   ~cMenuEditStrItem();

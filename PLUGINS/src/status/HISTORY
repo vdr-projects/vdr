@@ -31,3 +31,7 @@ VDR Plugin 'status' Revision History
 2002-12-13: Version 0.1.0
 
 - Changed setting of CXX and CXXFLAGS variables in Makefile.
+
+2005-12-31: Version 0.2.0
+
+- API change in cStatus.

@@ -1,7 +1,7 @@
 /*
  * vdr.c: Video Disk Recorder main program
  *
- * Copyright (C) 2000, 2003 Klaus Schmidinger
+ * Copyright (C) 2000, 2003, 2006 Klaus Schmidinger
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -22,13 +22,17 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.220 2005/11/27 15:56:18 kls Exp $
+ * $Id: vdr.c 1.233 2006/01/08 11:49:03 kls Exp $
  */
 
 #include <getopt.h>
+#include <grp.h>
 #include <locale.h>
+#include <pwd.h>
 #include <signal.h>
 #include <stdlib.h>
+#include <sys/capability.h>
+#include <sys/prctl.h>
 #include <termios.h>
 #include <unistd.h>
 #include "audio.h"
@@ -72,6 +76,57 @@
 
 static int Interrupted = 0;
 
+static bool SetUser(const char *UserName)
+{
+  if (UserName) {
+     struct passwd *user = getpwnam(UserName);
+     if (!user) {
+        fprintf(stderr, "vdr: unknown user: '%s'\n", UserName);
+        return false;
+        }
+     if (setgid(user->pw_gid) < 0) {
+        fprintf(stderr, "vdr: cannot set group id %u: %s\n", (unsigned int)user->pw_gid, strerror(errno));
+        return false;
+        }
+     if (initgroups(user->pw_name, user->pw_gid) < 0) {
+        fprintf(stderr, "vdr: cannot set supplemental group ids for user %s: %s\n", user->pw_name, strerror(errno));
+        return false;
+        }
+     if (setuid(user->pw_uid) < 0) {
+        fprintf(stderr, "vdr: cannot set user id %u: %s\n", (unsigned int)user->pw_uid, strerror(errno));
+        return false;
+        }
+     }
+  return true;
+}
+
+static bool SetCapSysTime(void)
+{
+  // drop all capabilities except cap_sys_time
+  cap_t caps = cap_from_text("= cap_sys_time=ep");
+  if (!caps) {
+     fprintf(stderr, "vdr: cap_from_text failed: %s\n", strerror(errno));
+     return false;
+     }
+  if (cap_set_proc(caps) == -1) {
+     fprintf(stderr, "vdr: cap_set_proc failed: %s\n", strerror(errno));
+     cap_free(caps);
+     return false;
+     }
+  cap_free(caps);
+  return true;
+}
+
+static bool SetKeepCaps(bool On)
+{
+  // set keeping capabilities during setuid() on/off
+  if (prctl(PR_SET_KEEPCAPS, On ? 1 : 0, 0, 0, 0) != 0) {
+     fprintf(stderr, "vdr: prctl failed\n");
+     return false;
+     }
+  return true;
+}
+
 static void SignalHandler(int signum)
 {
   if (signum != SIGPIPE) {
@@ -102,11 +157,14 @@ int main(int argc, char *argv[])
 
   // Command line options:
 
+#define DEFAULTVDRUSER   "vdr"
 #define DEFAULTSVDRPPORT 2001
 #define DEFAULTWATCHDOG     0 // seconds
 #define DEFAULTPLUGINDIR PLUGINDIR
 #define DEFAULTEPGDATAFILENAME "epg.data"
 
+  bool StartedAsRoot = false;
+  const char *VdrUser = DEFAULTVDRUSER;
   int SVDRPport = DEFAULTSVDRPPORT;
   const char *AudioCommand = NULL;
   const char *ConfigDirectory = NULL;
@@ -144,6 +202,7 @@ int main(int argc, char *argv[])
       { "daemon",   no_argument,       NULL, 'd' },
       { "device",   required_argument, NULL, 'D' },
       { "epgfile",  required_argument, NULL, 'E' },
+      { "grab",     required_argument, NULL, 'g' },
       { "help",     no_argument,       NULL, 'h' },
       { "lib",      required_argument, NULL, 'L' },
       { "lirc",     optional_argument, NULL, 'l' | 0x100 },
@@ -156,6 +215,7 @@ int main(int argc, char *argv[])
       { "record",   required_argument, NULL, 'r' },
       { "shutdown", required_argument, NULL, 's' },
       { "terminal", required_argument, NULL, 't' },
+      { "user",     required_argument, NULL, 'u' },
       { "version",  no_argument,       NULL, 'V' },
       { "vfat",     no_argument,       NULL, 'v' | 0x100 },
       { "video",    required_argument, NULL, 'v' },
@@ -164,7 +224,7 @@ int main(int argc, char *argv[])
     };
 
   int c;
-  while ((c = getopt_long(argc, argv, "a:c:dD:E:hl:L:mp:P:r:s:t:v:Vw:", long_options, NULL)) != -1) {
+  while ((c = getopt_long(argc, argv, "a:c:dD:E:g:hl:L:mp:P:r:s:t:u:v:Vw:", long_options, NULL)) != -1) {
         switch (c) {
           case 'a': AudioCommand = optarg;
                     break;
@@ -182,6 +242,8 @@ int main(int argc, char *argv[])
                     return 2;
                     break;
           case 'E': EpgDataFileName = (*optarg != '-' ? optarg : NULL);
+                    break;
+          case 'g': cSVDRP::SetGrabImageDir(*optarg != '-' ? optarg : NULL);
                     break;
           case 'h': DisplayHelp = true;
                     break;
@@ -248,6 +310,9 @@ int main(int argc, char *argv[])
                        return 2;
                        }
                     break;
+          case 'u': if (*optarg)
+                       VdrUser = optarg;
+                    break;
           case 'V': DisplayVersion = true;
                     break;
           case 'v' | 0x100:
@@ -270,6 +335,20 @@ int main(int argc, char *argv[])
           }
         }
 
+  // Set user id in case we were started as root:
+
+  if (getuid() == 0) {
+     StartedAsRoot = true;
+     if (!SetKeepCaps(true))
+        return 2;
+     if (!SetUser(VdrUser))
+        return 2;
+     if (!SetKeepCaps(false))
+        return 2;
+     if (!SetCapSysTime())
+        return 2;
+     }
+
   // Help and version info:
 
   if (DisplayHelp || DisplayVersion) {
@@ -285,11 +364,15 @@ int main(int argc, char *argv[])
                "  -D NUM,   --device=NUM   use only the given DVB device (NUM = 0, 1, 2...)\n"
                "                           there may be several -D options (default: all DVB\n"
                "                           devices will be used)\n"
-               "  -E FILE   --epgfile=FILE write the EPG data into the given FILE (default is\n"
+               "  -E FILE,  --epgfile=FILE write the EPG data into the given FILE (default is\n"
                "                           '%s' in the video directory)\n"
                "                           '-E-' disables this\n"
                "                           if FILE is a directory, the default EPG file will be\n"
                "                           created in that directory\n"
+               "  -g DIR,   --grab=DIR     write images from the SVDRP command GRAB into the\n"
+               "                           given DIR; DIR must be the full path name of an\n"
+               "                           existing directory, without any \"..\", double '/'\n"
+               "                           or symlinks (default: none, same as -g-)\n"
                "  -h,       --help         print this help and exit\n"
                "  -l LEVEL, --log=LEVEL    set log level (default: 3)\n"
                "                           0 = no logging, 1 = errors only,\n"
@@ -309,6 +392,8 @@ int main(int argc, char *argv[])
                "  -r CMD,   --record=CMD   call CMD before and after a recording\n"
                "  -s CMD,   --shutdown=CMD call CMD to shutdown the computer\n"
                "  -t TTY,   --terminal=TTY controlling tty\n"
+               "  -u USER,  --user=USER    run as user USER (default: %s); only applicable\n"
+               "                           if started as root\n"
                "  -v DIR,   --video=DIR    use DIR as video directory (default: %s)\n"
                "  -V,       --version      print version information and exit\n"
                "            --vfat         encode special characters in recording names to\n"
@@ -321,6 +406,7 @@ int main(int argc, char *argv[])
                LIRC_DEVICE,
                DEFAULTSVDRPPORT,
                RCU_DEVICE,
+               DEFAULTVDRUSER,
                VideoDirectory,
                DEFAULTWATCHDOG
                );
@@ -371,7 +457,7 @@ int main(int argc, char *argv[])
 
   if (DaemonMode) {
      if (daemon(1, 0) == -1) {
-        fprintf(stderr, "%m\n");
+        fprintf(stderr, "vdr: %m\n");
         esyslog("ERROR: %m");
         return 2;
         }
@@ -385,12 +471,16 @@ int main(int argc, char *argv[])
      }
 
   isyslog("VDR version %s started", VDRVERSION);
+  if (StartedAsRoot)
+     isyslog("switched to user '%s'", VdrUser);
+  if (DaemonMode)
+     dsyslog("running as daemon (tid=%d)", cThread::ThreadId());
+  cThread::SetMainThreadId();
 
   // Main program loop variables - need to be here to have them initialized before any EXIT():
 
   cOsdObject *Menu = NULL;
-  cOsdObject *Temp = NULL;
-  int LastChannel = -1;
+  int LastChannel = 0;
   int LastTimerChannel = -1;
   int PreviousChannel[2] = { 1, 1 };
   int PreviousChannelIndex = 0;
@@ -401,6 +491,7 @@ int main(int argc, char *argv[])
   bool ForceShutdown = false;
   bool UserShutdown = false;
   bool TimerInVpsMargin = false;
+  bool IsInfoMenu = false;
 
   // Load plugins:
 
@@ -423,7 +514,6 @@ int main(int argc, char *argv[])
         Commands.Load(AddDirectory(ConfigDirectory, "commands.conf"), true) &&
         RecordingCommands.Load(AddDirectory(ConfigDirectory, "reccmds.conf"), true) &&
         SVDRPhosts.Load(AddDirectory(ConfigDirectory, "svdrphosts.conf"), true) &&
-        CaDefinitions.Load(AddDirectory(ConfigDirectory, "ca.conf"), true) &&
         Keys.Load(AddDirectory(ConfigDirectory, "remote.conf")) &&
         KeyMacros.Load(AddDirectory(ConfigDirectory, "keymacros.conf"), true)
         ))
@@ -434,6 +524,7 @@ int main(int argc, char *argv[])
   // Recordings:
 
   Recordings.Update();
+  DeletedRecordings.Update();
 
   // EPG data:
 
@@ -555,6 +646,8 @@ int main(int argc, char *argv[])
 
   // Main program loop:
 
+#define DELETE_MENU ((IsInfoMenu &= (Menu == NULL)), delete Menu, Menu = NULL)
+
   while (!Interrupted) {
         // Handle emergency exits:
         if (cThread::EmergencyExit()) {
@@ -576,8 +669,8 @@ int main(int argc, char *argv[])
                      && !(LastTimerChannel > 0 && Channels.SwitchTo(LastTimerChannel)) // ...or the one used by the last timer...
                      && !cDevice::SwitchChannel(1) // ...or the next higher available one...
                      && !cDevice::SwitchChannel(-1)) // ...or the next lower available one
-                    ; 
-                 }   
+                    ;
+                 }
               lastTime = time(NULL); // don't do this too often
               LastTimerChannel = -1;
               }
@@ -626,7 +719,7 @@ int main(int argc, char *argv[])
         // Channel display:
         if (!EITScanner.Active() && cDevice::CurrentChannel() != LastChannel) {
            if (!Menu)
-              Menu = Temp = new cDisplayChannel(cDevice::CurrentChannel(), LastChannel > 0);
+              Menu = new cDisplayChannel(cDevice::CurrentChannel(), LastChannel >= 0);
            LastChannel = cDevice::CurrentChannel();
            LastChannelChanged = time(NULL);
            }
@@ -667,8 +760,10 @@ int main(int argc, char *argv[])
                   TimerInVpsMargin = true;
                }
            }
-        if (!Menu && Recordings.NeedsUpdate())
+        if (!Menu && Recordings.NeedsUpdate()) {
            Recordings.Update();
+           DeletedRecordings.Update();
+           }
         // CAM control:
         if (!Menu && !cOsd::IsOpen()) {
            Menu = CamControl();
@@ -692,22 +787,39 @@ int main(int argc, char *argv[])
           // Menu control:
           case kMenu:
                key = kNone; // nobody else needs to see this key
-               if (Menu) {
-                  DELETENULL(Menu);
-                  if (!Temp)
-                     break;
-                  }
-               if (cControl::Control())
+               if (Menu)
+                  DELETE_MENU;
+               else if (cControl::Control() && cOsd::IsOpen())
                   cControl::Control()->Hide();
-               Menu = new cMenuMain(cControl::Control());
-               Temp = NULL;
+               else
+                  Menu = new cMenuMain;
+               break;
+          // Info:
+          case kInfo: {
+               bool WasInfoMenu = IsInfoMenu;
+               DELETE_MENU;
+               if (!WasInfoMenu) {
+                  IsInfoMenu = true;
+                  if (cControl::Control()) {
+                     cControl::Control()->Hide();
+                     Menu = cControl::Control()->GetInfo();
+                     if (Menu)
+                        Menu->Show();
+                     else
+                        IsInfoMenu = false;
+                     }
+                  else {
+                     cRemote::Put(kOk, true);
+                     cRemote::Put(kSchedule, true);
+                     }
+                  }
+               }
                break;
           #define DirectMainFunction(function)\
-            DELETENULL(Menu);\
+            DELETE_MENU;\
             if (cControl::Control())\
                cControl::Control()->Hide();\
-            Menu = new cMenuMain(cControl::Control(), function);\
-            Temp = NULL;\
+            Menu = new cMenuMain(function);\
             key = kNone; // nobody else needs to see this key
           case kSchedule:   DirectMainFunction(osSchedule); break;
           case kChannels:   DirectMainFunction(osChannels); break;
@@ -717,18 +829,14 @@ int main(int argc, char *argv[])
           case kCommands:   DirectMainFunction(osCommands); break;
           case kUser1 ... kUser9: cRemote::PutMacro(key); key = kNone; break;
           case k_Plugin: {
-               DELETENULL(Menu);
-               Temp = NULL;
+               DELETE_MENU;
                if (cControl::Control())
                   cControl::Control()->Hide();
                cPlugin *plugin = cPluginManager::GetPlugin(cRemote::GetPlugin());
                if (plugin) {
-                  Menu = Temp = plugin->MainMenuAction();
-                  if (Menu) {
+                  Menu = plugin->MainMenuAction();
+                  if (Menu)
                      Menu->Show();
-                     if (Menu->IsMenu())
-                        ((cOsdMenu*)Menu)->Display();
-                     }
                   }
                else
                   esyslog("ERROR: unknown plugin '%s'", cRemote::GetPlugin());
@@ -757,7 +865,7 @@ int main(int argc, char *argv[])
                else
                   cDevice::PrimaryDevice()->SetVolume(NORMALKEY(key) == kVolDn ? -VOLUMEDELTA : VOLUMEDELTA);
                if (!Menu && !cOsd::IsOpen())
-                  Menu = Temp = cDisplayVolume::Create();
+                  Menu = cDisplayVolume::Create();
                cDisplayVolume::Process(key);
                key = kNone; // nobody else needs to see these keys
                break;
@@ -765,12 +873,10 @@ int main(int argc, char *argv[])
           case kAudio:
                if (cControl::Control())
                   cControl::Control()->Hide();
-               if (Temp && !cDisplayTracks::IsOpen()) {
-                  DELETENULL(Menu);
-                  Temp = NULL;
+               if (!cDisplayTracks::IsOpen()) {
+                  DELETE_MENU;
+                  Menu = cDisplayTracks::Create();
                   }
-               if (!Menu && !cOsd::IsOpen())
-                  Menu = Temp = cDisplayTracks::Create();
                else
                   cDisplayTracks::Process(key);
                key = kNone;
@@ -778,8 +884,7 @@ int main(int argc, char *argv[])
           // Pausing live video:
           case kPause:
                if (!cControl::Control()) {
-                  DELETENULL(Menu);
-                  Temp = NULL;
+                  DELETE_MENU;
                   if (!cRecordControls::PauseLiveVideo())
                      Skins.Message(mtError, tr("No free DVB device to record!"));
                   key = kNone; // nobody else needs to see this key
@@ -797,8 +902,7 @@ int main(int argc, char *argv[])
                break;
           // Power off:
           case kPower: isyslog("Power button pressed");
-                       DELETENULL(Menu);
-                       Temp = NULL;
+                       DELETE_MENU;
                        if (!Shutdown) {
                           Skins.Message(mtError, tr("Can't shutdown - option '-s' not given!"));
                           break;
@@ -828,53 +932,46 @@ int main(int argc, char *argv[])
                  state = osEnd;
               }
            switch (state) {
-             case osPause:  DELETENULL(Menu);
+             case osPause:  DELETE_MENU;
                             cControl::Shutdown(); // just in case
-                            Temp = NULL;
                             if (!cRecordControls::PauseLiveVideo())
                                Skins.Message(mtError, tr("No free DVB device to record!"));
                             break;
-             case osRecord: DELETENULL(Menu);
-                            Temp = NULL;
+             case osRecord: DELETE_MENU;
                             if (cRecordControls::Start())
-                               ;//XXX Skins.Message(mtInfo, tr("Recording"));
+                               Skins.Message(mtInfo, tr("Recording started"));
                             else
                                Skins.Message(mtError, tr("No free DVB device to record!"));
                             break;
              case osRecordings:
-                            DELETENULL(Menu);
+                            DELETE_MENU;
                             cControl::Shutdown();
-                            Temp = NULL;
-                            Menu = new cMenuMain(false, osRecordings);
+                            Menu = new cMenuMain(osRecordings);
                             break;
-             case osReplay: DELETENULL(Menu);
+             case osReplay: DELETE_MENU;
                             cControl::Shutdown();
-                            Temp = NULL;
                             cControl::Launch(new cReplayControl);
                             break;
              case osStopReplay:
-                            DELETENULL(Menu);
+                            DELETE_MENU;
                             cControl::Shutdown();
-                            Temp = NULL;
                             break;
              case osSwitchDvb:
-                            DELETENULL(Menu);
+                            DELETE_MENU;
                             cControl::Shutdown();
-                            Temp = NULL;
                             Skins.Message(mtInfo, tr("Switching primary DVB..."));
                             cDevice::SetPrimaryDevice(Setup.PrimaryDVB);
                             break;
-             case osPlugin: DELETENULL(Menu);
-                            Menu = Temp = cMenuMain::PluginOsdObject();
+             case osPlugin: DELETE_MENU;
+                            Menu = cMenuMain::PluginOsdObject();
                             if (Menu)
                                Menu->Show();
                             break;
              case osBack:
              case osEnd:    if (Interact == Menu)
-                               DELETENULL(Menu);
+                               DELETE_MENU;
                             else
                                cControl::Shutdown();
-                            Temp = NULL;
                             break;
              default:       ;
              }
@@ -913,7 +1010,6 @@ int main(int argc, char *argv[])
              case kPlay:
                   if (cReplayControl::LastReplayed()) {
                      cControl::Shutdown();
-                     Temp = NULL;
                      cControl::Launch(new cReplayControl);
                      }
                   break;

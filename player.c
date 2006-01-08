@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: player.c 1.9 2004/12/12 11:21:07 kls Exp $
+ * $Id: player.c 1.11 2006/01/06 11:30:07 kls Exp $
  */
 
 #include "player.h"
@@ -40,6 +40,7 @@ void cPlayer::Detach(void)
 // --- cControl --------------------------------------------------------------
 
 cControl *cControl::control = NULL;
+cMutex cControl::mutex;
 
 cControl::cControl(cPlayer *Player, bool Hidden)
 {
@@ -54,19 +55,27 @@ cControl::~cControl()
      control = NULL;
 }
 
+cOsdObject *cControl::GetInfo(void)
+{
+  return NULL;
+}
+
 cControl *cControl::Control(void)
 {
+  cMutexLock MutexLock(&mutex);
   return (control && !control->hidden) ? control : NULL;
 }
 
 void cControl::Launch(cControl *Control)
 {
+  cMutexLock MutexLock(&mutex);
   delete control;
   control = Control;
 }
 
 void cControl::Attach(void)
 {
+  cMutexLock MutexLock(&mutex);
   if (control && !control->attached && control->player && !control->player->IsAttached()) {
      if (cDevice::PrimaryDevice()->AttachPlayer(control->player))
         control->attached = true;
@@ -79,6 +88,7 @@ void cControl::Attach(void)
 
 void cControl::Shutdown(void)
 {
+  cMutexLock MutexLock(&mutex);
   cControl *c = control; // avoids recursions
   control = NULL;
   delete c;

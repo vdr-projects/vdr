@@ -8,16 +8,15 @@
  *
  * parts of this file are derived from the OMS program.
  *
- * $Id: dvbspu.c 1.17 2005/11/05 12:08:15 kls Exp $
+ * $Id: dvbspu.c 1.19 2006/01/08 11:39:46 kls Exp $
  */
 
+#include "dvbspu.h"
 #include <assert.h>
 #include <string.h>
 #include <inttypes.h>
 #include <math.h>
-
 #include "device.h"
-#include "dvbspu.h"
 
 /*
  * cDvbSpubitmap:
@@ -28,7 +27,7 @@
  * Inputs:
  *  - a SPU rle encoded image on creation, which will be decoded into
  *    the full screen indexed bitmap
- *  
+ *
  * Output:
  *  - a minimal sized cDvbSpuBitmap a given palette, the indexed bitmap
  *    will be scanned to get the smallest possible resulting bitmap considering
@@ -436,7 +435,7 @@ int cDvbSpuDecoder::setTime(uint32_t pts)
 
             prev_DCSQ_offset = DCSQ_offset;
             DCSQ_offset = spuU32(i);
-            DEBUG("offs = %d, DCSQ = %d, prev_DCSQ = %d\n", 
+            DEBUG("offs = %d, DCSQ = %d, prev_DCSQ = %d\n",
                            i, DCSQ_offset, prev_DCSQ_offset);
             i += 2;
 

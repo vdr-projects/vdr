@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.124 2005/11/04 14:19:44 kls Exp $
+ * $Id: recording.c 1.132 2006/01/08 11:40:13 kls Exp $
  */
 
 #include "recording.h"
@@ -48,8 +48,8 @@
 
 #define MINDISKSPACE 1024 // MB
 
-#define DELETEDLIFETIME     1 // hours after which a deleted recording will be actually removed
-#define REMOVECHECKDELTA 3600 // seconds between checks for removing deleted files
+#define REMOVECHECKDELTA   60 // seconds between checks for removing deleted files
+#define DELETEDLIFETIME   300 // seconds after which a deleted recording will be actually removed
 #define DISKCHECKDELTA    100 // seconds between checks for free disk space
 #define REMOVELATENCY      10 // seconds to wait until next check after removing a file
 
@@ -60,46 +60,67 @@
 
 bool VfatFileSystem = false;
 
-static cRecordings DeletedRecordings(true);
+cRecordings DeletedRecordings(true);
+
+// --- cRemoveDeletedRecordingsThread ----------------------------------------
+
+class cRemoveDeletedRecordingsThread : public cThread {
+protected:
+  virtual void Action(void);
+public:
+  cRemoveDeletedRecordingsThread(void);
+  };
+
+cRemoveDeletedRecordingsThread::cRemoveDeletedRecordingsThread(void)
+:cThread("remove deleted recordings")
+{
+}
+
+void cRemoveDeletedRecordingsThread::Action(void)
+{
+  // Make sure only one instance of VDR does this:
+  cLockFile LockFile(VideoDirectory);
+  if (LockFile.Lock()) {
+     cThreadLock DeletedRecordingsLock(&DeletedRecordings);
+     for (cRecording *r = DeletedRecordings.First(); r; ) {
+         if (r->deleted && time(NULL) - r->deleted > DELETEDLIFETIME) {
+            cRecording *next = DeletedRecordings.Next(r);
+            r->Remove();
+            DeletedRecordings.Del(r);
+            r = next;
+            RemoveEmptyVideoDirectories();
+            continue;
+            }
+         r = DeletedRecordings.Next(r);
+         }
+     }
+}
+
+static cRemoveDeletedRecordingsThread RemoveDeletedRecordingsThread;
+
+// ---
 
 void RemoveDeletedRecordings(void)
 {
   static time_t LastRemoveCheck = 0;
-  if (LastRemoveCheck == 0) {
-     DeletedRecordings.Update();
-     LastRemoveCheck = time(NULL) - REMOVECHECKDELTA * 9 / 10;
-     }
-  else if (time(NULL) - LastRemoveCheck > REMOVECHECKDELTA) {
-     // Make sure only one instance of VDR does this:
-     cLockFile LockFile(VideoDirectory);
-     if (!LockFile.Lock())
-        return;
-     // Remove the oldest file that has been "deleted":
-     cThreadLock DeletedRecordingsLock(&DeletedRecordings);
-     if (DeletedRecordings.Count()) {
-        cRecording *r = DeletedRecordings.First();
-        cRecording *r0 = r;
-        while (r) {
-              if (r->start < r0->start)
-                 r0 = r;
-              r = DeletedRecordings.Next(r);
-              }
-        if (r0 && time(NULL) - r0->start > DELETEDLIFETIME * 3600) {
-           r0->Remove();
-           DeletedRecordings.Del(r0);
-           RemoveEmptyVideoDirectories();
-           LastRemoveCheck += REMOVELATENCY;
-           return;
-           }
+  if (time(NULL) - LastRemoveCheck > REMOVECHECKDELTA) {
+     if (!RemoveDeletedRecordingsThread.Active()) {
+        cThreadLock DeletedRecordingsLock(&DeletedRecordings);
+        for (cRecording *r = DeletedRecordings.First(); r; r = DeletedRecordings.Next(r)) {
+            if (r->deleted && time(NULL) - r->deleted > DELETEDLIFETIME) {
+               RemoveDeletedRecordingsThread.Start();
+               break;
+               }
+            }
         }
-     else
-        DeletedRecordings.Update();
      LastRemoveCheck = time(NULL);
      }
 }
 
 void AssertFreeDiskSpace(int Priority)
 {
+  static cMutex Mutex;
+  cMutexLock MutexLock(&Mutex);
   // With every call to this function we try to actually remove
   // a file, or mark a file for removal ("delete" it), so that
   // it will get removed during the next call.
@@ -160,7 +181,7 @@ void AssertFreeDiskSpace(int Priority)
            }
         // Unable to free disk space, but there's nothing we can do about that...
         isyslog("...no old recording found, giving up");
-        Interface->Confirm(tr("Low disk space!"), 30);
+        Skins.QueueMessage(mtWarning, tr("Low disk space!"), 5, -1);
         }
      LastFreeDiskCheck = time(NULL);
      }
@@ -400,6 +421,8 @@ cRecording::cRecording(cTimer *Timer, const cEvent *Event)
   sortBuffer = NULL;
   fileName = NULL;
   name = NULL;
+  fileSizeMB = -1; // unknown
+  deleted = 0;
   // set up the actual name:
   const char *Title = Event ? Event->Title() : NULL;
   const char *Subtitle = Event ? Event->ShortText() : NULL;
@@ -453,6 +476,8 @@ cRecording::cRecording(cTimer *Timer, const cEvent *Event)
 cRecording::cRecording(const char *FileName)
 {
   resume = RESUME_NOT_INITIALIZED;
+  fileSizeMB = -1; // unknown
+  deleted = 0;
   titleBuffer = NULL;
   sortBuffer = NULL;
   fileName = strdup(FileName);
@@ -525,7 +550,7 @@ cRecording::cRecording(const char *FileName)
               // so assume the short text is missing and concatenate
               // line 1 and line 2 to be the long text:
               int len = strlen(data[1]);
-              if (len > 80) { 
+              if (len > 80) {
                  data[1] = (char *)realloc(data[1], len + 1 + strlen(data[2]) + 1);
                  strcat(data[1], "\n");
                  strcat(data[1], data[2]);
@@ -714,7 +739,7 @@ bool cRecording::Delete(void)
   bool result = true;
   char *NewName = strdup(FileName());
   char *ext = strrchr(NewName, '.');
-  if (strcmp(ext, RECEXT) == 0) {
+  if (ext && strcmp(ext, RECEXT) == 0) {
      strncpy(ext, DELEXT, strlen(ext));
      if (access(NewName, F_OK) == 0) {
         // the new name already exists, so let's remove that one first:
@@ -814,6 +839,10 @@ void cRecordings::ScanVideoDir(const char *DirName, bool Foreground)
                        Add(r);
                        ChangeState();
                        Unlock();
+                       if (deleted) {
+                          r->fileSizeMB = DirSizeMB(buffer);
+                          r->deleted = time(NULL);
+                          }
                        }
                     else
                        delete r;
@@ -883,10 +912,31 @@ void cRecordings::DelByName(const char *FileName)
   LOCK_THREAD;
   cRecording *recording = GetByName(FileName);
   if (recording) {
-     Del(recording);
+     cThreadLock DeletedRecordingsLock(&DeletedRecordings);
+     Del(recording, false);
+     char *ext = strrchr(recording->FileName(), '.');
+     if (ext) {
+        strncpy(ext, DELEXT, strlen(ext));
+        recording->fileSizeMB = DirSizeMB(recording->FileName());
+        recording->deleted = time(NULL);
+        DeletedRecordings.Add(recording);
+        }
+     else
+        delete recording;
      ChangeState();
      TouchUpdate();
      }
+}
+
+int cRecordings::TotalFileSizeMB(void)
+{
+  int size = 0;
+  LOCK_THREAD;
+  for (cRecording *recording = First(); recording; recording = Next(recording)) {
+      if (recording->fileSizeMB > 0)
+         size += recording->fileSizeMB;
+      }
+  return size;
 }
 
 void cRecordings::ResetResume(const char *ResumeFileName)

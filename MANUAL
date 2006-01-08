@@ -1,7 +1,7 @@
 Video Disk Recorder User's Manual
 ---------------------------------
 
-Version 1.2
+Version 1.3
 -----------
 
 * Remote Control Keys
@@ -18,7 +18,7 @@ Version 1.2
   Left    Prev group  -            Page up    Page up    Decrement     Page up           Search back      Sel. channel
   Right   Next group  -            Page down  Page down  Increment     Page down         Search forward   Sel. channel
   Ok      Ch display  Select       Switch     Edit       Accept        Play              Progress disp.   Switch & Close
-  Menu    Menu on     Menu off     Menu off   Menu off   Menu off      Menu off          Menu on          Menu on
+  Menu    Menu on     Menu off     Menu off   Menu off   Menu off      Menu off          Menu off         Menu off
   Back    -           Menu off     VDR menu   VDR menu   Discard       VDR menu          Recordings menu  Close
   Red     -           Record       Edit       Edit       ABC/abc       Play/Commands(2)  Jump             -
   Green   -           Audio        New        New        Ins/Ovr       Rewind            Skip -60s        -
@@ -30,9 +30,14 @@ Version 1.2
   are used to enter the data, and the Left key can be used to delete the last
   entered digit.
 
+  In a text input field (like, e.g., the file name of a recording) the characters
+  can be entered by pressing the numeric keys, the same way as on a telephone
+  keypad.
+
   If your remote control provides additional keys, they can be used for the
   following functions:
 
+  Info        display information on the currently viewed programme or recording
   Play        resume normal replay
   Pause       pause replay or live video
   Stop        stop replay
@@ -74,7 +79,12 @@ Version 1.2
       to "mark" a timer for moving.
   (2) See "Processing Recordings" below.
   (3) In the "Channels" menu the '0' key switches the sort mode through "by number",
-      "by name" and "by provider".
+      "by name" and "by provider". Other numeric input positions the cursor to
+      the channel with the number entered so far. If there is no channel with that
+      number, nothing happens. While entering a channel number, the '0' key will
+      be treated as part of that number, not as a sort mode toggle. If no numeric
+      key has been pressed for more than one second, the number is reset and '0'
+      functions as sort mode toggle again.
   (4) In the "Timers" menu, when on the "Day" item, the '0' key toggles between
       a single shot and a repeating timer. If "Day" indicates a repeating timer,
       the keys '1'...'7' can be used to toggle the individual days ('1' is Monday).
@@ -141,14 +151,17 @@ Version 1.2
   "Schedule" menu of the current channel in the list.
 
   The "Red" button allows you to instantly program a timer to record the
-  selected programme. You will get into the "Edit Timer" menu in which
-  everything has already been filled in, and you can make any modifications
+  selected programme. After pressing this button, the current event will
+  be marked with 'T', and the function of the "Red" button will change from
+  "Record" to "Timer". Pressing "Red" on an event marked with 'T' will open
+  the "Edit timer" menu for this timer, where you can make any modifications
   you may want to apply. Note that the Start and Stop time are offset by the
   MarginStart and MarginStop parameters (see Setup) in order to make sure the
   entire programme is recorded in case it doesn't exactly adhere to its
   published start/stop times. Of course, no guarantee can be given that the
   default margin values will be sufficient, so in case this recording is
-  really important you may want to add an extra margin ;-)
+  really important you may want to add an extra margin ;-). VPS recordings
+  will use the exact Start (or VPS) and Stop times as given in the event.
 
   The "Blue" button can be pressed to switch to the channel with the selected
   programme.
@@ -373,7 +386,7 @@ Version 1.2
 * Programming the Timer
 
   Use the "Timer" menu to maintain your list of timer controlled recordings.
-  The parameters in the "Edit Timer" menu have the following meanings:
+  The parameters in the "Edit timer" menu have the following meanings:
 
   Active:    Defines whether the timer will be processed (set it to 'no' to
              temporarily disable a timer).
@@ -492,6 +505,10 @@ Version 1.2
                          or off when switching the channel. The information is
                          always displayed when pressing the "Ok" button in
                          normal viewing mode.
+
+  Timeout requested channel info = yes
+                         Turns the automatic timeout of the channel display (when
+                         invoked by a press of the "Ok" key) on or off.
 
   Scroll pages = yes     no  = when pressing the "Down" ("Up") key while the cursor
                                is on the last (first) line of a list page, the
@@ -639,17 +656,11 @@ Version 1.2
 
   CICAM:
 
-  CICAM DVBn m           Defines the "Conditional Access" capabilities of the DVB
-                         card 'n'. Each DVB card can provide up to two CICAM
-                         methods ('m' = [1, 2]).
-
-                         In the 'setup.conf' file the value consists of the card
-                         number, followed by a list of decryption method values
-                         (defined in 'ca.conf').
-                         For instance
-                           CaCaps = 3 101 102
-                         would define that card number 3 is able to decrypt
-                         "Premiere World" and the "ORF".
+  CICAM DVBn m           Shows the CAMs that each device contains, where 'n' is
+                         the number of the device, and 'm' is the number of the
+                         Common Interface slot of that device. The "Red" key
+                         can be pressed to enter the CAM menu, and the "Green" key
+                         triggers a reset of the selected CAM.
 
   Recording:
 

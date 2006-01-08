@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 1.46 2005/11/27 15:15:53 kls Exp $
+ * $Id: thread.c 1.50 2006/01/04 15:01:22 kls Exp $
  */
 
 #include "thread.h"
@@ -12,6 +12,7 @@
 #include <malloc.h>
 #include <stdarg.h>
 #include <sys/resource.h>
+#include <sys/syscall.h>
 #include <sys/time.h>
 #include <sys/wait.h>
 #include <unistd.h>
@@ -136,7 +137,9 @@ void cCondVar::Broadcast(void)
 
 cRwLock::cRwLock(bool PreferWriter)
 {
-  pthread_rwlockattr_t attr = { PreferWriter ? PTHREAD_RWLOCK_PREFER_WRITER_NP : PTHREAD_RWLOCK_PREFER_READER_NP };
+  pthread_rwlockattr_t attr;
+  pthread_rwlockattr_init(&attr);
+  pthread_rwlockattr_setkind_np(&attr, PreferWriter ? PTHREAD_RWLOCK_PREFER_WRITER_NP : PTHREAD_RWLOCK_PREFER_READER_NP);
   pthread_rwlock_init(&rwlock, &attr);
 }
 
@@ -170,7 +173,9 @@ void cRwLock::Unlock(void)
 cMutex::cMutex(void)
 {
   locked = 0;
-  pthread_mutexattr_t attr = { PTHREAD_MUTEX_ERRORCHECK_NP };
+  pthread_mutexattr_t attr;
+  pthread_mutexattr_init(&attr);
+  pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_ERRORCHECK_NP);
   pthread_mutex_init(&mutex, &attr);
 }
 
@@ -193,13 +198,14 @@ void cMutex::Unlock(void)
 
 // --- cThread ---------------------------------------------------------------
 
-tThreadId cThread::mainThreadId = cThread::ThreadId();
+tThreadId cThread::mainThreadId = 0;
 bool cThread::emergencyExitRequested = false;
 
 cThread::cThread(const char *Description)
 {
   active = running = false;
   childTid = 0;
+  childThreadId = 0;
   description = NULL;
   SetDescription(Description);
 }
@@ -230,11 +236,12 @@ void cThread::SetDescription(const char *Description, ...)
 
 void *cThread::StartThread(cThread *Thread)
 {
+  Thread->childThreadId = ThreadId();
   if (Thread->description)
-     dsyslog("%s thread started (pid=%d, tid=%ld)", Thread->description, getpid(), pthread_self());
+     dsyslog("%s thread started (pid=%d, tid=%d)", Thread->description, getpid(), Thread->childThreadId);
   Thread->Action();
   if (Thread->description)
-     dsyslog("%s thread ended (pid=%d, tid=%ld)", Thread->description, getpid(), pthread_self());
+     dsyslog("%s thread ended (pid=%d, tid=%d)", Thread->description, getpid(), Thread->childThreadId);
   Thread->running = false;
   Thread->active = false;
   return NULL;
@@ -292,7 +299,7 @@ void cThread::Cancel(int WaitSeconds)
                return;
             cCondWait::SleepMs(10);
             }
-        esyslog("ERROR: thread %ld won't end (waited %d seconds) - canceling it...", childTid, WaitSeconds);
+        esyslog("ERROR: thread %d won't end (waited %d seconds) - canceling it...", childThreadId, WaitSeconds);
         }
      pthread_cancel(childTid);
      childTid = 0;
@@ -306,6 +313,21 @@ bool cThread::EmergencyExit(bool Request)
      return emergencyExitRequested;
   esyslog("initiating emergency exit");
   return emergencyExitRequested = true; // yes, it's an assignment, not a comparison!
+}
+
+_syscall0(pid_t, gettid)
+
+tThreadId cThread::ThreadId(void)
+{
+  return gettid();
+}
+
+void cThread::SetMainThreadId(void)
+{
+  if (mainThreadId == 0)
+     mainThreadId = ThreadId();
+  else
+     esyslog("ERROR: attempt to set main thread id to %d while it already is %d", ThreadId(), mainThreadId);
 }
 
 // --- cMutexLock ------------------------------------------------------------

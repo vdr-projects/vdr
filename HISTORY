@@ -1491,9 +1491,9 @@ Video Disk Recorder Revision History
   --- Makefile    2002/06/10 16:24:06     1.4
   +++ Makefile    2002/09/17 15:36:36     1.5
   @@ -15,7 +15,12 @@
- 
+
    ### The directory environment:
- 
+
   +ifdef NEWSTRUCT
   +DVBDIR = ../../../../DVB/include
   +DEFINES += -DNEWSTRUCT
@@ -1504,12 +1504,12 @@ Video Disk Recorder Revision History
    VDRINC = $(VDRDIR)/include
    LIBDIR = ../../lib
   @@ -34,7 +39,7 @@
- 
+
    INCLUDES = -I$(VDRINC) -I$(DVBDIR)
- 
+
   -DEFINES = -DPLUGIN_NAME_I18N='"$(PLUGIN)"'
   +DEFINES += -DPLUGIN_NAME_I18N='"$(PLUGIN)"'
- 
+
    ### The object files (add further files here):
   -------------------------------------------------------
 
@@ -2705,7 +2705,7 @@ Video Disk Recorder Revision History
 - Timers can now be set to use the VPS information to control recording a programme.
   The new setup options "Recording/Use VPS" and "Recording/VPS margin", as well as
   the "VPS" option in the individual timers, can be used to control this feature
-  (see MANUAL for details). 
+  (see MANUAL for details).
   Note that this feature will certainly need a lot of testing before it can be
   called "safe"!
 - The "Schedule" and "What's on now/next?" menus now have an additional column
@@ -3270,7 +3270,7 @@ Video Disk Recorder Revision History
   botton left side.
 - The new setup option "DVB/Audio languages" can be used to control which audio
   language shall be selected in case a channel broadcasts in different languages
-  (see MANUAL for details). 
+  (see MANUAL for details).
 - The "Left" and "Right" keys in the "Audio" menu can be used to switch between
   the left and right stereo channels in case there are different audio tracks
   in these channels (see MANUAL for details).
@@ -3962,3 +3962,175 @@ Video Disk Recorder Revision History
 - The SVDRP command MESG uses the new message queueing facility, so MESG
   commands may now be executed at any time, and the message will be displayed
   (no more "pending message").
+
+2006-01-08: Version 1.3.38
+
+- Fixed handling second audio and Dolby Digital PIDs for encrypted channels
+  (was broken in version 1.3.37).
+- Improved TS/PES conversion to better handle lost TS packets (thanks to
+  Reinhard Nissl).
+- Limited the frequency of log messages from the cRepackers.
+- Now using the gettid() syscall to get a thread's pid, so that we get a
+  useful value on NPTL systems (suggested by Johannes Stezenbach).
+- Fixed the RCU remote control handling to avoid problems with NPTL (thanks
+  to Andreas Share for reporting a lockup with the RCU on NPTL systems).
+- When displaying the amount of free disk space, the space consumed by
+  recordings that have been "deleted" but not yet actually "removed" is now
+  taken into account (suggested by Christian Vogt).
+- Now avoiding unnecessary disk access when checking if there are deleted
+  recordings that need to be removed (reported by Carsten Koch).
+- Fixed handling the DELETEDLIFETIME when removing deleted recordings. Now
+  a deleted recording is retained at least DELETEDLIFETIME seconds before
+  actually removing it.
+  The value of DELETEDLIFETIME has been changed to 300. So after (possibly
+  inadvertently) deleting a recording, there will be at least 5 minutes
+  in which it can be recovered (unless a new recording immediately requires
+  the disk space). The count starts again at 0 every time VDR is started.
+- Fixed a possible crash when displaying the "Low disk space!" message from
+  a background thread (thanks to Christof Steininger).
+- Fixed handling OSD areas that have invalid sizes (thanks to Marco Schlüßler).
+- Added a mutex to AssertFreeDiskSpace() to make sure calls from foreground
+  and background threads won't interfere.
+- The main menu now dynamically updates its contents in case an instant
+  recording or replay stops, etc.
+- The version number of EPG events is now also stored in the epg.data file
+  (thanks to Kendy Kutzner).
+- EPG events that are no longer in the currently broadcasted data stream are
+  now automatically deleted.
+- Removed an invalid access to Event->schedule in cSchedule::DelEvent().
+- Modified cSchedule::Cleanup() (events are always sorted by time).
+- Schedules are now cleaned up once every hour (not only at 05:00).
+- The "Schedule" and "What's on now/next?" menus are now updated if a timer
+  is set or modified.
+- cTimer no longer has its own 'schedule' member, it rather uses that of the
+  event it has been set to.
+- The "Red" button in the "Schedule", "What's on now/next?" and "Event" menus
+  now immediately creates a timer for the selected event and marks it with 'T'.
+  If the event is already marked with 'T', the "Red" button opens the "Edit
+  timer" menu for that timer.
+- Removing deleted recordings is now done in a separate thread.
+- Dropped the unused "stop recording on primary interface" stuff.
+- Converting a grabbed image to JPEG is now done with the new function
+  RgbToJpeg() (see tools.h).
+- The SVDRP command GRAB now determines the image type (JPEG or PNM) from the
+  extension (".jpg", ".jpeg" or ".pnm") of the given file name. The explicit
+  'jpeg' or 'pnm' parameter is still accepted for backward compatibility, but
+  has no meaning any more.
+- The function cDevice::GrabImage() no longer writes the grabbed image to a
+  file, but rather returns a pointer to the image in memory. The wrapper
+  function cDevice::GrabImageFile() can be used to write the grabbed image
+  directly to a file. Plugins that used the old version of cDevice::GrabImage()
+  need to be adapted to the new interface.
+- The new class cBase64Encoder (see tools.h) can be used to encode data in
+  base64 (thanks to Bob Withers for publishing his Base64 class).
+- The SVDRP command GRAB now writes the image data to the SVDRP connection
+  (encoded in base64) if the given file name consists of only the file
+  extension (".jpg", ".jpeg" or ".pnm"), or if only "-" is given as file
+  name (based on a suggestion from Darren Salt).
+  A simple way of viewing a grabbed image on a remote host is:
+
+  svdrpsend.pl -d <hostname> 'grab -' | sed -n -e 's/^216-//p' -e '1ibegin-base64 644 -' -e '$a====' | uudecode | display
+
+- The new command line option '-g' must be given if the SVDRP command GRAB
+  shall be allowed to write image files to disk. The parameter to this option
+  must be the full path name of an existing directory, without any "..", double
+  '/' or symlinks. By default, or if "-g- is given, grabbing to files is
+  not allowed any more because of potential security risks.
+- Modified the way the SVDRP command GRAB writes the grabbed image to a file
+  to avoid a security hole (CAN-2005-0071, reported by Javier Fernández-Sanguino
+  Peña):
+  + The file handle is now opened in a way that it won't follow symbolic links
+    (suggested by Darren Salt).
+  + The given file name is now canonicalized, so that it won't contain any
+    ".." or symlinks (suggested by Darren Salt).
+  + Grabbing to files is limited to the directory given in the the command
+    line option '-g'. By default grabbing to files is not allowed any more.
+- Updated the Greek OSD texts (thanks to Dimitrios Dimitrakos).
+- Changed all "illegal" to "invalid" in error messages (there's nothing "illegal"
+  in VDR ;-).
+- When started as user 'root' VDR now switches to a lesser privileged user id,
+  keeping the capability to set the system time (based on a patch from Ludwig
+  Nussel). By default the user id 'vdr' is used, which can be changed through
+  the new command line option '-u'. Note that for security reasons VDR will no
+  longer run as user 'root' (unless you explicitly start it with '-u root',
+  but this is not recommended!). The 'runvdr' script has been changed to
+  use the '-u' option.
+- Changed the API of the functions cStatus::Recording() and cStatus::Replaying(),
+  so that they can provide the full file name of the recording. Plugins that use
+  these (or the related cStatus::Msg...() functions) need to be adapted
+  (suggested by Andreas Brugger).
+- The DVB devices now retune (and, if applicable, resend the DiSEqC data) if
+  the lock is lost (based on a patch from Reinhard Nissl).
+- Fixed handling multi byte key sequences in cKbdRemote (based on a patch from
+  Jürgen Schneider).
+- Removed unused variables in skinclassic.c and skinsttng.c (thanks to Marco
+  Schlüßler).
+- Made the static cControl functions thread safe (thanks to Patrick Fischer).
+- Fixed initializing pthread_mutexattr_t and pthread_rwlockattr_t to avoid
+  warnings with g++ 4.1.0 (thanks to Ville Skyttä).
+- Fixed incrementing the 'state' variables in the repacker classes in remux.c
+  to avoid warnings with g++ 4.1.0 (reported by Ville Skyttä).
+- The Makefile now reports a summary of failed plugins (thanks to Udo Richter).
+- The cTimer constructor can now take an optional cChannel (suggested by
+  Patrick Fischer).
+- Fixed setting the main thread id if VDR is running as a daemon.
+- Fixed handling TS packets in cTS2PES (thanks to Reinhard Nissl).
+- Added cTimer::SetPriority() to set a timer's priority (suggested by Kendy Kutzner).
+- Added cMenuEditStrItem::InEditMode() (suggested by Christian Wieninger).
+- Now using FE_READ_STATUS to read the current frontend status (suggested by
+  Holger Wächtler).
+- The "Menu" key now behaves consistently. If there is anything on the OSD, it
+  is closed when the "Menu" key is pressed, and if there is nothing on the OSD,
+  the "Menu" key opens the main menu (suggested by Luca Olivetti).
+- The new option "Setup/OSD/Timeout requested channel info" can be used to turn
+  off the automatic timeout of the channel display in case it was invoked by
+  a press of the "Ok" key (suggested by Thiemo Gehrke).
+- A message is now given when an instant recording is started (suggested by
+  Helmut Auer). Actually the code was already there, just commented out - don't
+  remember why it wasn't active...
+- Removed an obsolete "Summary" text from i18n.c and preceded all key definition
+  texts with "Key$" to avoid duplicates (reported by Lucian Muresan).
+- Preceded all button texts with "Button$".
+- Removed obsolete "Eject", "Language" and "scanning recordings..." texts.
+- Added missing #include "thread.h" to dvbspu.c (reported by Gavin Hamill).
+- Disabled the use of "fadvise" in cUnbufferedFile because there have been
+  several reports that it causes more problems than it solves (suggested by
+  Petri Hintukainen). If you want to use "fadvise", you can activate the line
+  //#define USE_FADVISE
+  in tools.c.
+- Removed unused 'offset' member from cOsdItem.
+- In the "Channels" menu the numeric keys now position the cursor to the channel
+  with the given number (see MANUAL, section "Remote Control Keys", note (3) for
+  details).
+- The "Mark/Move" function in the "Channels" menu now also works in the non-numeric
+  sort modes.
+- The default cOsdObject::Show() now automatically calls cOsdMenu::Display() if
+  this is a menu.
+- The new "Info" key brings up information on the currently viewed programme
+  or recording. For a live programme this is the same as "Schedule/Ok", i.e. the
+  description of the current EPG event. For a recording this is the same as shown
+  by the "Info" button in the "Recordings" menu. Plugins that implement players
+  can overwrite their cControl::GetInfo() function to show their own info (see
+  PLUGINS.html for details). Pressing the "Info" key again while the info is
+  displayed will close the OSD. In order to assign this new key to an existing
+  remote control setup, the remote.conf file needs to be deleted and VDR has
+  to be restarted to go through the process of learning the remote control keys.
+- Any cReceivers still attached to a cDevice when that device switches to a
+  different transponder are now automatically detached (suggested by Patrick
+  Fischer).
+- The "flags" of a timer are now handled as an unsigned integer value. In order
+  to do this, the interface of cMenuEditBitItem also had to be changed.
+- In string entry fields (like, e.g., the file name of a recording) the characters
+  can now be entered by pressing the numeric keys, the same way as on a
+  telephone keypad (based on the "Easy Input" patch from Marcel Schaeben).
+- Fixed the "Day" field of the "Edit timer" menu when pressing '0' to switch
+  from "single shot" to "weekly", followed by the "Right" key (reported by
+  Andreas Böttger).
+- The file 'ca.conf' is obsolete and has been removed.
+- Revised all descriptions regarding CICAM.
+- Adapted c(Dvb)Device::ProvidesCa() to the dynamic CA handling.
+- Added a mutex to synchronize cDevice::PlayPesPacket() and SetCurrentAudioTrack()
+  (thanks to Reinhard Nissl).
+- Added a SleepMs() in cRecorder::Action() to avoid a busy loop (thanks to Ingo
+  Schneider).
+- Cleaned up some trailing white space.

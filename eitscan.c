@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: eitscan.c 1.29 2005/11/05 15:24:36 kls Exp $
+ * $Id: eitscan.c 1.30 2006/01/07 14:10:17 kls Exp $
  */
 
 #include "eitscan.h"
@@ -147,7 +147,7 @@ void cEITScanner::Process(void)
                   for (cScanData *ScanData = scanList->First(); ScanData; ScanData = scanList->Next(ScanData)) {
                       const cChannel *Channel = ScanData->GetChannel();
                       if (Channel) {
-                         if (!Channel->Ca() || Channel->Ca() == Device->DeviceNumber() + 1 || Channel->Ca() >= 0x0100) {
+                         if (!Channel->Ca() || Channel->Ca() == Device->DeviceNumber() + 1 || Channel->Ca() >= CA_ENCRYPTED_MIN) {
                             if (Device->ProvidesTransponder(Channel)) {
                                if (!Device->Receiving()) {
                                   bool MaySwitchTransponder = Device->MaySwitchTransponder();

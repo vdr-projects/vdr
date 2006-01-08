@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 1.46 2005/10/31 12:27:12 kls Exp $
+ * $Id: recording.h 1.48 2005/12/18 11:26:51 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -55,12 +55,14 @@ public:
   };
 
 class cRecording : public cListObject {
+  friend class cRecordings;
 private:
   mutable int resume;
   mutable char *titleBuffer;
   mutable char *sortBuffer;
   mutable char *fileName;
   mutable char *name;
+  mutable int fileSizeMB;
   cRecordingInfo *info;
   static char *StripEpisodeName(char *s);
   char *SortName(void) const;
@@ -69,6 +71,7 @@ public:
   time_t start;
   int priority;
   int lifetime;
+  time_t deleted;
   cRecording(cTimer *Timer, const cEvent *Event);
   cRecording(const char *FileName);
   virtual ~cRecording();
@@ -126,9 +129,11 @@ public:
   cRecording *GetByName(const char *FileName);
   void AddByName(const char *FileName);
   void DelByName(const char *FileName);
+  int TotalFileSizeMB(void); ///< Only for deleted recordings!
   };
 
 extern cRecordings Recordings;
+extern cRecordings DeletedRecordings;
 
 class cMark : public cListObject {
 public:

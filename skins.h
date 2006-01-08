@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skins.h 1.9 2005/11/27 15:41:44 kls Exp $
+ * $Id: skins.h 1.10 2006/01/08 11:40:21 kls Exp $
  */
 
 #ifndef __SKINS_H
@@ -197,7 +197,7 @@ public:
        ///< take care that it is erased from the display when a Current string
        ///< _with_ ".ff" is followed by one without it.
   virtual void SetTotal(const char *Total) = 0;
-       ///< Sets the total length of the recording, as a user readable 
+       ///< Sets the total length of the recording, as a user readable
        ///< string if the form "h:mm:ss".
   virtual void SetJump(const char *Jump) = 0;
        ///< Sets the prompt that allows the user to enter a jump point.

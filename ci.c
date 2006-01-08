@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 1.40 2005/11/26 13:36:51 kls Exp $
+ * $Id: ci.c 1.42 2006/01/07 15:07:16 kls Exp $
  */
 
 #include "ci.h"
@@ -185,7 +185,7 @@ cTPDU::cTPDU(uint8_t Slot, uint8_t Tcid, uint8_t Tag, int Length, const uint8_t 
             size = 6;
             }
          else
-            esyslog("ERROR: illegal data length for TPDU tag 0x%02X: %d", Tag, Length);
+            esyslog("ERROR: invalid data length for TPDU tag 0x%02X: %d", Tag, Length);
          break;
     case T_DATA_LAST:
     case T_DATA_MORE:
@@ -198,7 +198,7 @@ cTPDU::cTPDU(uint8_t Slot, uint8_t Tcid, uint8_t Tag, int Length, const uint8_t 
             size = Length + (p - data);
             }
          else
-            esyslog("ERROR: illegal data length for TPDU tag 0x%02X: %d", Tag, Length);
+            esyslog("ERROR: invalid data length for TPDU tag 0x%02X: %d", Tag, Length);
          break;
     default:
          esyslog("ERROR: unknown TPDU tag: 0x%02X", Tag);
@@ -1636,6 +1636,15 @@ int cCiHandler::CloseAllSessions(int Slot)
          result++;
          }
       }
+  return result;
+}
+
+int cCiHandler::NumCams(void)
+{
+  int result = 0;
+  for (int i = 0; i < MAX_CI_SLOT; i++)
+      if (moduleReady[i])
+         result++;
   return result;
 }
 

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 1.36 2005/09/09 15:22:33 kls Exp $
+ * $Id: timers.c 1.41 2006/01/08 11:40:29 kls Exp $
  */
 
 #include "timers.h"
@@ -20,14 +20,14 @@
 
 // -- cTimer -----------------------------------------------------------------
 
-cTimer::cTimer(bool Instant, bool Pause)
+cTimer::cTimer(bool Instant, bool Pause, cChannel *Channel)
 {
   startTime = stopTime = 0;
   recording = pending = inVpsMargin = false;
   flags = tfNone;
   if (Instant)
      SetFlags(tfActive | tfInstant);
-  channel = Channels.GetByNumber(cDevice::CurrentChannel());
+  channel = Channel ? Channel : Channels.GetByNumber(cDevice::CurrentChannel());
   time_t t = time(NULL);
   struct tm tm_r;
   struct tm *now = localtime_r(&t, &tm_r);
@@ -110,7 +110,7 @@ cString cTimer::ToText(bool UseChannelID)
   char *buffer;
   strreplace(file, ':', '|');
   strreplace(summary, '\n', '|');
-  asprintf(&buffer, "%d:%s:%s:%04d:%04d:%d:%d:%s:%s\n", flags, UseChannelID ? *Channel()->GetChannelID().ToString() : *itoa(Channel()->Number()), *PrintDay(day, weekdays), start, stop, priority, lifetime, file, summary ? summary : "");
+  asprintf(&buffer, "%u:%s:%s:%04d:%04d:%d:%d:%s:%s\n", flags, UseChannelID ? *Channel()->GetChannelID().ToString() : *itoa(Channel()->Number()), *PrintDay(day, weekdays), start, stop, priority, lifetime, file, summary ? summary : "");
   strreplace(summary, '|', '\n');
   strreplace(file, '|', ':');
   return cString(buffer, true);
@@ -244,7 +244,7 @@ bool cTimer::Parse(const char *s)
      s = s2;
      }
   bool result = false;
-  if (8 <= sscanf(s, "%d :%a[^:]:%a[^:]:%d :%d :%d :%d :%a[^:\n]:%a[^\n]", &flags, &channelbuffer, &daybuffer, &start, &stop, &priority, &lifetime, &filebuffer, &summary)) {
+  if (8 <= sscanf(s, "%u :%a[^:]:%a[^:]:%d :%d :%d :%d :%a[^:\n]:%a[^\n]", &flags, &channelbuffer, &daybuffer, &start, &stop, &priority, &lifetime, &filebuffer, &summary)) {
      if (summary && !*skipspace(summary)) {
         free(summary);
         summary = NULL;
@@ -363,7 +363,7 @@ bool cTimer::Matches(time_t t, bool Directly) const
      }
 
   if (HasFlags(tfActive)) {
-     if (HasFlags(tfVps) && !Directly && event && event->Vps() && schedule && schedule->PresentSeenWithin(30)) {
+     if (HasFlags(tfVps) && !Directly && event && event->Vps() && event->Schedule() && event->Schedule()->PresentSeenWithin(30)) {
         startTime = event->StartTime();
         stopTime = event->EndTime();
         return event->IsRunning(true);
@@ -425,7 +425,7 @@ time_t cTimer::StopTime(void) const
   return stopTime;
 }
 
-void cTimer::SetEvent(const cSchedule *Schedule, const cEvent *Event)
+void cTimer::SetEvent(const cEvent *Event)
 {
   if (event != Event) { //XXX TODO check event data, too???
      if (Event) {
@@ -436,7 +436,6 @@ void cTimer::SetEvent(const cSchedule *Schedule, const cEvent *Event)
         }
      else
         isyslog("timer %s set to no event", *ToDescr());
-     schedule = Event ? Schedule : NULL;
      event = Event;
      }
 }
@@ -463,22 +462,27 @@ void cTimer::SetInVpsMargin(bool InVpsMargin)
   inVpsMargin = InVpsMargin;
 }
 
-void cTimer::SetFlags(int Flags)
+void cTimer::SetPriority(int Priority)
+{
+  priority = Priority;
+}
+
+void cTimer::SetFlags(uint Flags)
 {
   flags |= Flags;
 }
 
-void cTimer::ClrFlags(int Flags)
+void cTimer::ClrFlags(uint Flags)
 {
   flags &= ~Flags;
 }
 
-void cTimer::InvFlags(int Flags)
+void cTimer::InvFlags(uint Flags)
 {
   flags ^= Flags;
 }
 
-bool cTimer::HasFlags(int Flags) const
+bool cTimer::HasFlags(uint Flags) const
 {
   return (flags & Flags) == Flags;
 }
@@ -616,7 +620,7 @@ void cTimers::SetEvents(void)
                             distance = e->EndTime() - now;
                          if (Event && overlap == Overlap) {
                             if (Overlap > FULLMATCH) { // this means VPS
-                               if (abs(Distance) < abs(distance)) 
+                               if (abs(Distance) < abs(distance))
                                   break; // we've already found the closest VPS event
                                }
                             else if (e->Duration() <= Event->Duration())
@@ -629,7 +633,7 @@ void cTimers::SetEvents(void)
                       }
                   if (Event && Event->EndTime() < now - EXPIRELATENCY && !Event->IsRunning())
                      Event = NULL;
-                  ti->SetEvent(Schedule, Event);
+                  ti->SetEvent(Event);
                   }
                }
             }

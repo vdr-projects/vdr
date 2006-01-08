@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.h 1.19 2005/11/26 13:37:42 kls Exp $
+ * $Id: ci.h 1.21 2006/01/07 15:03:05 kls Exp $
  */
 
 #ifndef __CI_H
@@ -112,6 +112,7 @@ private:
   cList<cCiCaProgramData> caProgramList;
   int ResourceIdToInt(const uint8_t *Data);
   bool Send(uint8_t Tag, int SessionId, int ResourceId = 0, int Status = -1);
+  const unsigned short *GetCaSystemIds(int Slot);
   cCiSession *GetSessionBySessionId(int SessionId);
   cCiSession *GetSessionByResourceId(int ResourceId, int Slot);
   cCiSession *CreateSession(int ResourceId);
@@ -123,18 +124,35 @@ private:
 public:
   ~cCiHandler();
   static cCiHandler *CreateCiHandler(const char *FileName);
+       ///< Creates a new cCiHandler for the given CA device.
   int NumSlots(void) { return numSlots; }
+       ///< Returns the number of CAM slots provided by this CA device.
+  int NumCams(void);
+       ///< Returns the number of actual CAMs inserted into this CA device.
   bool Ready(void);
+       ///< Returns true if all CAMs in this CA device are ready.
   bool Process(int Slot = -1);
        ///< Processes the given Slot. If Slot is -1, all slots are processed.
        ///< Returns false in case of an error.
   bool HasUserIO(void) { return hasUserIO; }
+       ///< Returns true if there is a pending user interaction, which shall
+       ///< be retrieved via GetMenu() or GetEnquiry().
   bool EnterMenu(int Slot);
+       ///< Requests the CAM in the given Slot to start its menu.
   cCiMenu *GetMenu(void);
+       ///< Gets a pending menu, or NULL if there is no menu.
   cCiEnquiry *GetEnquiry(void);
+       ///< Gets a pending enquiry, or NULL if there is no enquiry.
   const char *GetCamName(int Slot);
-  const unsigned short *GetCaSystemIds(int Slot);
+       ///< Returns the name of the CAM in the given Slot, or NULL if there
+       ///< is no CAM in that slot.
   bool ProvidesCa(const unsigned short *CaSystemIds); //XXX Slot???
+       ///< Returns true if any of the CAMs can provide one of the given
+       ///< CaSystemIds. This doesn't necessarily mean that it will be
+       ///< possible to actually decrypt such a programme, since CAMs
+       ///< usually advertise several CA system ids, while the actual
+       ///< decryption is controlled by the smart card inserted into
+       ///< the CAM.
   void SetSource(int Source, int Transponder);
        ///< Sets the Source and Transponder of the device this cCiHandler is
        ///< currently tuned to. If Source or Transponder are different than
@@ -145,11 +163,14 @@ public:
        ///< to SetPid() will (de)activate one of these entries.
   void SetPid(int Pid, bool Active);
        ///< Sets the given Pid (which has previously been added through a
-       ///< call to AddPid()) to Active. If Active is true, a later call to
-       ///< StartDecrypting() will send the full list of currently active CA_PMT
-       ///< entries to the CAM, including this one.
+       ///< call to AddPid()) to Active. A later call to StartDecrypting() will
+       ///< send the full list of currently active CA_PMT entries to the CAM.
   bool CanDecrypt(int ProgramNumber);
        ///< XXX
+       ///< Returns true if there is a CAM in this CA device that is able
+       ///< to decrypt the programme with the given ProgramNumber. The PIDs
+       ///< for this ProgramNumber must have been set through previous calls
+       ///< to SetPid().
   void StartDecrypting(void);
        ///< Triggers sending all currently active CA_PMT entries to the CAM,
        ///< so that it will start decrypting.

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbosd.c 1.27 2005/05/22 10:57:45 kls Exp $
+ * $Id: dvbosd.c 1.29 2005/12/30 15:41:54 kls Exp $
  */
 
 #include "dvbosd.h"
@@ -39,7 +39,7 @@ cDvbOsd::cDvbOsd(int Left, int Top, int OsdDev)
   osdDev = OsdDev;
   shown = false;
   if (osdDev < 0)
-     esyslog("ERROR: illegal OSD device handle (%d)!", osdDev);
+     esyslog("ERROR: invalid OSD device handle (%d)!", osdDev);
   else {
      osdMem = MAXOSDMEMORY;
 #ifdef OSD_CAP_MEMSIZE
@@ -88,6 +88,8 @@ eOsdError cDvbOsd::CanHandleAreas(const tArea *Areas, int NumAreas)
             return oeBppNotSupported;
          if ((Areas[i].Width() & (8 / Areas[i].bpp - 1)) != 0)
             return oeWrongAlignment;
+         if (Areas[i].Width() < 1 || Areas[i].Height() < 1 || Areas[i].Width() > 720 || Areas[i].Height() > 576)
+            return oeWrongAreaSize;
          TotalMemory += Areas[i].Width() * Areas[i].Height() / (8 / Areas[i].bpp);
          }
      if (TotalMemory > osdMem)

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.c 1.24 2005/11/12 12:22:10 kls Exp $
+ * $Id: menuitems.c 1.29 2006/01/07 15:37:03 kls Exp $
  */
 
 #include "menuitems.h"
@@ -15,7 +15,7 @@
 #include "skins.h"
 #include "status.h"
 
-const char *FileNameChars = " abcdefghijklmnopqrstuvwxyz0123456789-.#~";
+const char *FileNameChars = " abcdefghijklmnopqrstuvwxyz0123456789-.#~,/_@";
 
 // --- cMenuEditItem ---------------------------------------------------------
 
@@ -116,7 +116,7 @@ void cMenuEditBoolItem::Set(void)
 
 // --- cMenuEditBitItem ------------------------------------------------------
 
-cMenuEditBitItem::cMenuEditBitItem(const char *Name, int *Value, int Mask, const char *FalseString, const char *TrueString)
+cMenuEditBitItem::cMenuEditBitItem(const char *Name, uint *Value, uint Mask, const char *FalseString, const char *TrueString)
 :cMenuEditBoolItem(Name, &bit, FalseString, TrueString)
 {
   value = Value;
@@ -243,6 +243,9 @@ cMenuEditStrItem::cMenuEditStrItem(const char *Name, char *Value, int Length, co
   pos = -1;
   insert = uppercase = false;
   newchar = true;
+  charMap = tr(" 0\t-.#~,/_@1\tabc2\tdef3\tghi4\tjkl5\tmno6\tpqrs7\ttuv8\twxyz9");
+  currentChar = NULL;
+  lastKey = kNone;
   Set();
 }
 
@@ -253,8 +256,8 @@ cMenuEditStrItem::~cMenuEditStrItem()
 
 void cMenuEditStrItem::SetHelpKeys(void)
 {
-  if (pos >= 0)
-     cSkinDisplay::Current()->SetButtons(tr("ABC/abc"), tr(insert ? "Overwrite" : "Insert"), tr("Delete"));
+  if (InEditMode())
+     cSkinDisplay::Current()->SetButtons(tr("Button$ABC/abc"), tr(insert ? "Button$Overwrite" : "Button$Insert"), tr("Button$Delete"));
   else
      cSkinDisplay::Current()->SetButtons(NULL);
 }
@@ -264,7 +267,7 @@ void cMenuEditStrItem::Set(void)
   char buf[1000];
   const char *fmt = insert && newchar ? "[]%c%s" : "[%c]%s";
 
-  if (pos >= 0) {
+  if (InEditMode()) {
      const cFont *font = cFont::GetFont(fontOsd);
      strncpy(buf, value, pos);
      snprintf(buf + pos, sizeof(buf) - pos - 2, fmt, *(value + pos), value + pos + 1);
@@ -320,9 +323,12 @@ char cMenuEditStrItem::Inc(char c, bool Up)
 
 eOSState cMenuEditStrItem::ProcessKey(eKeys Key)
 {
+  bool SameKey = Key == lastKey;
+  if (Key != kNone)
+     lastKey = Key;
   switch (Key) {
     case kRed:   // Switch between upper- and lowercase characters
-                 if (pos >= 0) {
+                 if (InEditMode()) {
                     if (!insert || !newchar) {
                        uppercase = !uppercase;
                        value[pos] = uppercase ? toupper(value[pos]) : tolower(value[pos]);
@@ -332,7 +338,7 @@ eOSState cMenuEditStrItem::ProcessKey(eKeys Key)
                     return osUnknown;
                  break;
     case kGreen: // Toggle insert/overwrite modes
-                 if (pos >= 0) {
+                 if (InEditMode()) {
                     insert = !insert;
                     newchar = true;
                     SetHelpKeys();
@@ -342,7 +348,7 @@ eOSState cMenuEditStrItem::ProcessKey(eKeys Key)
                  break;
     case kYellow|k_Repeat:
     case kYellow: // Remove the character at current position; in insert mode it is the character to the right of cursor
-                 if (pos >= 0) {
+                 if (InEditMode()) {
                     if (strlen(value) > 1) {
                        if (!insert || pos < int(strlen(value)) - 1)
                           memmove(value + pos, value + pos + 1, strlen(value) - pos);
@@ -361,7 +367,7 @@ eOSState cMenuEditStrItem::ProcessKey(eKeys Key)
                  break;
     case kBlue|k_Repeat:
     case kBlue:  // consume the key only if in edit-mode
-                 if (pos >= 0)
+                 if (InEditMode())
                     ;
                  else
                     return osUnknown;
@@ -395,7 +401,7 @@ eOSState cMenuEditStrItem::ProcessKey(eKeys Key)
     case kUp|k_Repeat:
     case kUp:
     case kDown|k_Repeat:
-    case kDown:  if (pos >= 0) {
+    case kDown:  if (InEditMode()) {
                     if (insert && newchar) {
                        // create a new character in insert mode
                        if (int(strlen(value)) < length - 1) {
@@ -412,7 +418,39 @@ eOSState cMenuEditStrItem::ProcessKey(eKeys Key)
                  else
                     return cMenuEditItem::ProcessKey(Key);
                  break;
-    case kOk:    if (pos >= 0) {
+    case k0 ... k9: {
+                 if (!SameKey)
+                    currentChar = NULL;
+                 if (InEditMode()) {
+                    if (insert && newchar) {
+                       // create a new character in insert mode
+                       if (int(strlen(value)) < length - 1) {
+                          memmove(value + pos + 1, value + pos, strlen(value) - pos + 1);
+                          value[pos] = ' ';
+                          }
+                       }
+                    if (!currentChar || !*currentChar || *currentChar == '\t') {
+                       // find the beginning of the character map entry for Key
+                       int n = Key - k0;
+                       currentChar = charMap;
+                       while (n > 0 && *currentChar) {
+                             if (*currentChar++ == '\t')
+                                n--;
+                             }
+                       }
+                    if (*currentChar && *currentChar != '\t') {
+                       value[pos] = *currentChar;
+                       if (uppercase)
+                          value[pos] = toupper(value[pos]);
+                       currentChar++;
+                       }
+                    newchar = false;
+                    }
+                 else
+                    return cMenuEditItem::ProcessKey(Key);
+                 }
+                 break;
+    case kOk:    if (InEditMode()) {
                     pos = -1;
                     newchar = true;
                     stripspace(value);
@@ -420,7 +458,7 @@ eOSState cMenuEditStrItem::ProcessKey(eKeys Key)
                     break;
                     }
                  // run into default
-    default:     if (pos >= 0 && BASICKEY(Key) == kKbd) {
+    default:     if (InEditMode() && BASICKEY(Key) == kKbd) {
                     int c = KEYKBD(Key);
                     if (c <= 0xFF) {
                        const char *p = strchr(allowed, tolower(c));
@@ -667,6 +705,7 @@ eOSState cMenuEditDateItem::ProcessKey(eKeys Key)
               }
            else {
               *weekdays = days[cTimer::GetWDay(*value)];
+              dayindex = FindDayIndex(*weekdays);
               oldvalue = *value;
               *value = 0;
               }

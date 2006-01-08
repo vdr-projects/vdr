@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remote.c 1.45 2005/09/03 12:29:48 kls Exp $
+ * $Id: remote.c 1.46 2006/01/01 14:21:07 kls Exp $
  */
 
 #include "remote.h"
@@ -262,43 +262,72 @@ int cKbdRemote::MapCodeToFunc(uint64 Code)
   return (Code <= 0xFF) ? Code : kfNone;
 }
 
-void cKbdRemote::Action(void)
+int cKbdRemote::ReadKey(void)
 {
   cPoller Poller(STDIN_FILENO);
+  if (Poller.Poll(50)) {
+     uchar ch = 0;
+     int r = safe_read(STDIN_FILENO, &ch, 1);
+     if (r == 1)
+        return ch;
+     if (r < 0)
+        LOG_ERROR_STR("cKbdRemote");
+     }
+  return -1;
+}
+
+uint64 cKbdRemote::ReadKeySequence(void)
+{
+  uint64 k = 0;
+  int key1;
+
+  if ((key1 = ReadKey()) >= 0) {
+     k = key1;
+     if (key1 == 0x1B) {
+         // Start of escape sequence
+         if ((key1 = ReadKey()) >= 0) {
+            k <<= 8;
+            k |= key1 & 0xFF;
+            switch (key1) {
+              case 0x4F: // 3-byte sequence
+                   if ((key1 = ReadKey()) >= 0) {
+                      k <<= 8;
+                      k |= key1 & 0xFF;
+                      }
+                   break;
+              case 0x5B: // 3- or more-byte sequence
+                   if ((key1 = ReadKey()) >= 0) {
+                      k <<= 8;
+                      k |= key1 & 0xFF;
+                      switch (key1) {
+                        case 0x31 ... 0x3F: // more-byte sequence
+                             while (key1 != 0x7E) {
+                                   k <<= 8;
+                                   k |= key1 & 0xFF;
+                                   if ((key1 = ReadKey()) < 0)
+                                      break; // Sequence ends here
+                                   }
+                             break;
+                        }
+                      }
+                   break;
+              }
+            }
+        }
+     }
+  return k;
+}
+
+void cKbdRemote::Action(void)
+{
   while (Running()) {
-        if (Poller.Poll(100)) {
-           uint64 Command = 0;
-           uint i = 0;
-           while (Running() && i < sizeof(Command)) {
-                 uchar ch;
-                 int r = read(STDIN_FILENO, &ch, 1);
-                 if (r == 1) {
-                    Command <<= 8;
-                    Command |= ch;
-                    i++;
-                    }
-                 else if (r == 0) {
-                    // don't know why, but sometimes special keys that start with
-                    // 0x1B ('ESC') cause a short gap between the 0x1B and the rest
-                    // of their codes, so we'll need to wait some 100ms to see if
-                    // there is more coming up - or whether this really is the 'ESC'
-                    // key (if somebody knows how to clean this up, please let me know):
-                    if (Command == 0x1B && Poller.Poll(100))
-                       continue;
-                    if (Command) {
-                       if (rawMode || !Put(Command)) {
-                          int func = MapCodeToFunc(Command);
-                          if (func)
-                             Put(KBDKEY(func));
-                          }
-                       }
-                    break;
-                    }
-                 else {
-                    LOG_ERROR;
-                    break;
-                    }
-                 }
+        uint64 Command = ReadKeySequence();
+        if (Command) {
+           if (rawMode || !Put(Command)) {
+              int func = MapCodeToFunc(Command);
+              if (func)
+                 Put(KBDKEY(func));
+              }
            }
         }
 }

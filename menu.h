@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 1.77 2005/11/05 17:26:09 kls Exp $
+ * $Id: menu.h 1.81 2006/01/06 11:30:38 kls Exp $
  */
 
 #ifndef __MENU_H
@@ -55,11 +55,18 @@ public:
 
 class cMenuMain : public cOsdMenu {
 private:
+  time_t lastDiskSpaceCheck;
+  int lastFreeMB;
   bool replaying;
+  cOsdItem *stopReplayItem;
+  cOsdItem *cancelEditingItem;
+  cOsdItem *stopRecordingItem;
+  int recordControlsState;
   static cOsdObject *pluginOsdObject;
   void Set(void);
+  bool Update(bool Force = false);
 public:
-  cMenuMain(bool Replaying, eOSState State = osUnknown);
+  cMenuMain(eOSState State = osUnknown);
   virtual eOSState ProcessKey(eKeys Key);
   static cOsdObject *PluginOsdObject(void);
   };
@@ -71,6 +78,7 @@ private:
   bool withInfo;
   cTimeMs lastTime;
   int number;
+  bool timeout;
   cChannel *channel;
   const cEvent *lastPresent;
   const cEvent *lastFollowing;
@@ -189,11 +197,11 @@ public:
 class cRecordControls {
 private:
   static cRecordControl *RecordControls[];
+  static int state;
 public:
   static bool Start(cTimer *Timer = NULL, bool Pause = false);
   static void Stop(const char *InstantId);
   static void Stop(cDevice *Device);
-  static bool StopPrimary(bool DoIt = false);
   static bool PauseLiveVideo(void);
   static const char *GetInstantId(const char *LastInstantId);
   static cRecordControl *GetRecordControl(const char *FileName);
@@ -201,6 +209,8 @@ public:
   static void ChannelDataModified(cChannel *Channel);
   static bool Active(void);
   static void Shutdown(void);
+  static void ChangeState(void) { state++; }
+  static bool StateChanged(int &State);
   };
 
 class cReplayControl : public cDvbPlayerControl {
@@ -230,6 +240,7 @@ private:
 public:
   cReplayControl(void);
   virtual ~cReplayControl();
+  virtual cOsdObject *GetInfo(void);
   virtual eOSState ProcessKey(eKeys Key);
   virtual void Show(void);
   virtual void Hide(void);

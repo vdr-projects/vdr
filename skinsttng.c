@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinsttng.c 1.15 2005/08/15 11:14:59 kls Exp $
+ * $Id: skinsttng.c 1.16 2006/01/01 14:38:14 kls Exp $
  */
 
 // Star Trek: The Next Generation® is a registered trademark of Paramount Pictures
@@ -643,7 +643,6 @@ private:
   int y0, y1, y2, y3, y4, y5, y6, y7;
   tColor frameColor;
   int lastCurrentWidth;
-  bool message;
 public:
   cSkinSTTNGDisplayReplay(bool ModeOnly);
   virtual ~cSkinSTTNGDisplayReplay();
@@ -666,7 +665,6 @@ cSkinSTTNGDisplayReplay::cSkinSTTNGDisplayReplay(bool ModeOnly)
   int lineHeight = font->Height();
   frameColor = Theme.Color(clrReplayFrame);
   lastCurrentWidth = 0;
-  message = false;
   cBitmap bm(play_xpm);
   x0 = 0;
   x1 = max(SymbolWidth, bm.Width());
@@ -772,12 +770,9 @@ void cSkinSTTNGDisplayReplay::SetMessage(eMessageType Type, const char *Text)
      osd->SaveRegion(x2, y6, x4 - 1, y7 - 1);
      osd->DrawRectangle(x2, y6, x3 - 1, y7 - 1, Theme.Color(clrBackground));
      osd->DrawText(x3, y6, Text, Theme.Color(clrMessageStatusFg + 2 * Type), Theme.Color(clrMessageStatusBg + 2 * Type), font, x4 - x3, 0, taCenter);
-     message = true;
      }
-  else {
+  else
      osd->RestoreRegion();
-     message = false;
-     }
 }
 
 void cSkinSTTNGDisplayReplay::Flush(void)

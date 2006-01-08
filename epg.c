@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 1.40 2005/11/11 13:37:43 kls Exp $
+ * $Id: epg.c 1.47 2005/12/30 15:41:59 kls Exp $
  */
 
 #include "epg.h"
@@ -234,7 +234,7 @@ void cEvent::Dump(FILE *f, const char *Prefix, bool InfoOnly) const
 {
   if (InfoOnly || startTime + duration + Setup.EPGLinger * 60 >= time(NULL)) {
      if (!InfoOnly)
-        fprintf(f, "%sE %u %ld %d %X\n", Prefix, eventID, startTime, duration, tableID);
+        fprintf(f, "%sE %u %ld %d %X %X\n", Prefix, eventID, startTime, duration, tableID, version);
      if (!isempty(title))
         fprintf(f, "%sT %s\n", Prefix, title);
      if (!isempty(shortText))
@@ -296,8 +296,9 @@ bool cEvent::Read(FILE *f, cSchedule *Schedule)
                           time_t StartTime;
                           int Duration;
                           unsigned int TableID = 0;
-                          int n = sscanf(t, "%u %ld %d %X", &EventID, &StartTime, &Duration, &TableID);
-                          if (n == 3 || n == 4) {
+                          unsigned int Version = 0xFF;
+                          int n = sscanf(t, "%u %ld %d %X %X", &EventID, &StartTime, &Duration, &TableID, &Version);
+                          if (n >= 3 && n <= 5) {
                              Event = (cEvent *)Schedule->GetEvent(EventID, StartTime);
                              cEvent *newEvent = NULL;
                              if (Event)
@@ -306,6 +307,7 @@ bool cEvent::Read(FILE *f, cSchedule *Schedule)
                                 Event = newEvent = new cEvent(EventID);
                              if (Event) {
                                 Event->SetTableID(TableID);
+                                Event->SetVersion(Version);
                                 Event->SetStartTime(StartTime);
                                 Event->SetDuration(Duration);
                                 if (newEvent)
@@ -635,7 +637,6 @@ void cSchedule::DelEvent(cEvent *Event)
   if (Event->schedule == this) {
      UnhashEvent(Event);
      events.Del(Event);
-     Event->schedule = NULL;
      }
 }
 
@@ -737,6 +738,31 @@ void cSchedule::Sort(void)
   events.Sort();
 }
 
+void cSchedule::DropOutdated(time_t SegmentStart, time_t SegmentEnd, uchar TableID, uchar Version)
+{
+  if (SegmentStart > 0 && SegmentEnd > 0) {
+     for (cEvent *p = events.First(); p; p = events.Next(p)) {
+         if (p->EndTime() > SegmentStart) {
+            if (p->StartTime() < SegmentEnd) {
+               // The event overlaps with the given time segment.
+               if (p->TableID() > TableID || p->TableID() == TableID && p->Version() != Version) {
+                  // The segment overwrites all events from tables with higher ids, and
+                  // within the same table id all events must have the same version.
+                  // We can't delete the event right here because a timer might have
+                  // a pointer to it, so let's set its id and start time to 0 to have it
+                  // "phased out":
+                  UnhashEvent(p);
+                  p->eventID = 0;
+                  p->startTime = 0;
+                  }
+               }
+            else
+               break;
+            }
+         }
+     }
+}
+
 void cSchedule::Cleanup(void)
 {
   Cleanup(time(NULL));
@@ -745,15 +771,12 @@ void cSchedule::Cleanup(void)
 void cSchedule::Cleanup(time_t Time)
 {
   cEvent *Event;
-  for (int a = 0; true ; a++) {
-      Event = events.Get(a);
-      if (!Event)
-         break;
-      if (!Event->HasTimer() && Event->EndTime() + Setup.EPGLinger * 60 + 3600 < Time) { // adding one hour for safety
-         DelEvent(Event);
-         a--;
-         }
-      }
+  while ((Event = events.First()) != NULL) {
+        if (!Event->HasTimer() && Event->EndTime() + Setup.EPGLinger * 60 + 3600 < Time) // adding one hour for safety
+           DelEvent(Event);
+        else
+           break;
+        }
 }
 
 void cSchedule::Dump(FILE *f, const char *Prefix, eDumpMode DumpMode, time_t AtTime) const
@@ -811,7 +834,7 @@ bool cSchedule::Read(FILE *f, cSchedules *Schedules)
                        }
                     }
                  else {
-                    esyslog("ERROR: illegal channel ID: %s", s);
+                    esyslog("ERROR: invalid channel ID: %s", s);
                     return false;
                     }
                  }
@@ -871,7 +894,7 @@ void cSchedules::Cleanup(bool Force)
   time_t now = time(NULL);
   struct tm tm_r;
   struct tm *ptm = localtime_r(&now, &tm_r);
-  if (now - lastCleanup > 3600 && ptm->tm_hour == 5) {
+  if (now - lastCleanup > 3600) {
      isyslog("cleaning up schedules data");
      cSchedulesLock SchedulesLock(true, 1000);
      cSchedules *s = (cSchedules *)Schedules(SchedulesLock);
@@ -880,7 +903,8 @@ void cSchedules::Cleanup(bool Force)
             p->Cleanup(now);
         }
      lastCleanup = now;
-     ReportEpgBugFixStats(true);
+     if (ptm->tm_hour == 5)
+        ReportEpgBugFixStats(true);
      }
   if (epgDataFileName && now - lastDump > 600) {
      cSafeFile f(epgDataFileName);

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 1.138 2005/09/09 15:08:59 kls Exp $
+ * $Id: config.c 1.140 2006/01/07 12:28:49 kls Exp $
  */
 
 #include "config.h"
@@ -120,24 +120,6 @@ bool cSVDRPhost::Accepts(in_addr_t Address)
   return (Address & mask) == addr.s_addr;
 }
 
-// -- cCaDefinition ----------------------------------------------------------
-
-cCaDefinition::cCaDefinition(void)
-{
-  number = 0;
-  description = NULL;
-}
-
-cCaDefinition::~cCaDefinition()
-{
-  free(description);
-}
-
-bool cCaDefinition::Parse(const char *s)
-{
-  return 2 == sscanf(s, "%d %a[^\n]", &number, &description) && description && *description;
-}
-
 // -- cCommands --------------------------------------------------------------
 
 cCommands Commands;
@@ -156,21 +138,6 @@ bool cSVDRPhosts::Acceptable(in_addr_t Address)
         h = (cSVDRPhost *)h->Next();
         }
   return false;
-}
-
-// -- cCaDefinitions ---------------------------------------------------------
-
-cCaDefinitions CaDefinitions;
-
-const cCaDefinition *cCaDefinitions::Get(int Number)
-{
-  cCaDefinition *p = First();
-  while (p) {
-        if (p->Number() == Number)
-           return p;
-        p = (cCaDefinition *)p->Next();
-        }
-  return NULL;
 }
 
 // -- cSetupLine -------------------------------------------------------------
@@ -250,6 +217,7 @@ cSetup::cSetup(void)
   strcpy(OSDTheme, "default");
   PrimaryDVB = 1;
   ShowInfoOnChSwitch = 1;
+  TimeoutRequChInfo = 1;
   MenuScrollPage = 1;
   MenuScrollWrap = 0;
   MarkInstantRecord = 1;
@@ -408,6 +376,7 @@ bool cSetup::Parse(const char *Name, const char *Value)
   else if (!strcasecmp(Name, "OSDTheme"))            strn0cpy(OSDTheme, Value, MaxThemeName);
   else if (!strcasecmp(Name, "PrimaryDVB"))          PrimaryDVB         = atoi(Value);
   else if (!strcasecmp(Name, "ShowInfoOnChSwitch"))  ShowInfoOnChSwitch = atoi(Value);
+  else if (!strcasecmp(Name, "TimeoutRequChInfo"))   TimeoutRequChInfo  = atoi(Value);
   else if (!strcasecmp(Name, "MenuScrollPage"))      MenuScrollPage     = atoi(Value);
   else if (!strcasecmp(Name, "MenuScrollWrap"))      MenuScrollWrap     = atoi(Value);
   else if (!strcasecmp(Name, "MarkInstantRecord"))   MarkInstantRecord  = atoi(Value);
@@ -473,6 +442,7 @@ bool cSetup::Save(void)
   Store("OSDTheme",           OSDTheme);
   Store("PrimaryDVB",         PrimaryDVB);
   Store("ShowInfoOnChSwitch", ShowInfoOnChSwitch);
+  Store("TimeoutRequChInfo",  TimeoutRequChInfo);
   Store("MenuScrollPage",     MenuScrollPage);
   Store("MenuScrollWrap",     MenuScrollWrap);
   Store("MarkInstantRecord",  MarkInstantRecord);

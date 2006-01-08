@@ -4,13 +4,20 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.104 2005/11/26 14:12:31 kls Exp $
+ * $Id: tools.c 1.109 2006/01/08 11:40:35 kls Exp $
  */
 
 #include "tools.h"
 #include <ctype.h>
 #include <dirent.h>
 #include <errno.h>
+extern "C" {
+#ifdef boolean
+#define HAVE_BOOLEAN
+#endif
+#include <jpeglib.h>
+#undef boolean
+}
 #include <stdarg.h>
 #include <stdlib.h>
 #include <sys/time.h>
@@ -421,6 +428,42 @@ bool RemoveEmptyDirectories(const char *DirName, bool RemoveThis)
   return false;
 }
 
+int DirSizeMB(const char *DirName)
+{
+  cReadDir d(DirName);
+  if (d.Ok()) {
+     int size = 0;
+     struct dirent *e;
+     while (size >= 0 && (e = d.Next()) != NULL) {
+           if (strcmp(e->d_name, ".") && strcmp(e->d_name, "..")) {
+              char *buffer;
+              asprintf(&buffer, "%s/%s", DirName, e->d_name);
+              struct stat st;
+              if (stat(buffer, &st) == 0) {
+                 if (S_ISDIR(st.st_mode)) {
+                    int n = DirSizeMB(buffer);
+                    if (n >= 0)
+                       size += n;
+                    else
+                       size = -1;
+                    }
+                 else
+                    size += st.st_size / MEGABYTE(1);
+                 }
+              else {
+                 LOG_ERROR_STR(buffer);
+                 size = -1;
+                 }
+              free(buffer);
+              }
+           }
+     return size;
+     }
+  else
+     LOG_ERROR_STR(DirName);
+  return -1;
+}
+
 char *ReadLink(const char *FileName)
 {
   char RealName[PATH_MAX];
@@ -613,6 +656,145 @@ cString TimeString(time_t t)
   struct tm tm_r;
   strftime(buf, sizeof(buf), "%R", localtime_r(&t, &tm_r));
   return buf;
+}
+
+// --- RgbToJpeg -------------------------------------------------------------
+
+#define JPEGCOMPRESSMEM 500000
+
+struct tJpegCompressData {
+  int size;
+  uchar *mem;
+  };
+
+static void JpegCompressInitDestination(j_compress_ptr cinfo)
+{
+  tJpegCompressData *jcd = (tJpegCompressData *)cinfo->client_data;
+  if (jcd) {
+     cinfo->dest->free_in_buffer = jcd->size = JPEGCOMPRESSMEM;
+     cinfo->dest->next_output_byte = jcd->mem = MALLOC(uchar, jcd->size);
+     }
+}
+
+static boolean JpegCompressEmptyOutputBuffer(j_compress_ptr cinfo)
+{
+  tJpegCompressData *jcd = (tJpegCompressData *)cinfo->client_data;
+  if (jcd) {
+     int Used = jcd->size;
+     jcd->size += JPEGCOMPRESSMEM;
+     jcd->mem = (uchar *)realloc(jcd->mem, jcd->size);
+     if (jcd->mem) {
+        cinfo->dest->next_output_byte = jcd->mem + Used;
+        cinfo->dest->free_in_buffer = jcd->size - Used;
+        return TRUE;
+        }
+     }
+  return FALSE;
+}
+
+static void JpegCompressTermDestination(j_compress_ptr cinfo)
+{
+  tJpegCompressData *jcd = (tJpegCompressData *)cinfo->client_data;
+  if (jcd) {
+     int Used = cinfo->dest->next_output_byte - jcd->mem;
+     if (Used < jcd->size) {
+        jcd->size = Used;
+        jcd->mem = (uchar *)realloc(jcd->mem, jcd->size);
+        }
+     }
+}
+
+uchar *RgbToJpeg(uchar *Mem, int Width, int Height, int &Size, int Quality)
+{
+  if (Quality < 0)
+     Quality = 0;
+  else if (Quality > 100)
+     Quality = 100;
+
+  jpeg_destination_mgr jdm;
+
+  jdm.init_destination = JpegCompressInitDestination;
+  jdm.empty_output_buffer = JpegCompressEmptyOutputBuffer;
+  jdm.term_destination = JpegCompressTermDestination;
+
+  struct jpeg_compress_struct cinfo;
+  struct jpeg_error_mgr jerr;
+  cinfo.err = jpeg_std_error(&jerr);
+  jpeg_create_compress(&cinfo);
+  cinfo.dest = &jdm;
+  tJpegCompressData jcd;
+  cinfo.client_data = &jcd;
+  cinfo.image_width = Width;
+  cinfo.image_height = Height;
+  cinfo.input_components = 3;
+  cinfo.in_color_space = JCS_RGB;
+
+  jpeg_set_defaults(&cinfo);
+  jpeg_set_quality(&cinfo, Quality, true);
+  jpeg_start_compress(&cinfo, true);
+
+  int rs = Width * 3;
+  JSAMPROW rp[Height];
+  for (int k = 0; k < Height; k++)
+      rp[k] = &Mem[rs * k];
+  jpeg_write_scanlines(&cinfo, rp, Height);
+  jpeg_finish_compress(&cinfo);
+  jpeg_destroy_compress(&cinfo);
+
+  Size = jcd.size;
+  return jcd.mem;
+}
+
+// --- cBase64Encoder --------------------------------------------------------
+
+const char *cBase64Encoder::b64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+
+cBase64Encoder::cBase64Encoder(const uchar *Data, int Length, int MaxResult)
+{
+  data = Data;
+  length = Length;
+  maxResult = MaxResult;
+  i = 0;
+  result = MALLOC(char, maxResult + 1);
+}
+
+cBase64Encoder::~cBase64Encoder()
+{
+  free(result);
+}
+
+const char *cBase64Encoder::NextLine(void)
+{
+  int r = 0;
+  while (i < length && r < maxResult - 3) {
+        result[r++] = b64[(data[i] >> 2) & 0x3F];
+        char c = (data[i] << 4) & 0x3F;
+        if (++i < length)
+           c |= (data[i] >> 4) & 0x0F;
+        result[r++] = b64[c];
+        if (i < length) {
+           c = (data[i] << 2) & 0x3F;
+           if (++i < length)
+              c |= (data[i] >> 6) & 0x03;
+           result[r++] = b64[c];
+           }
+        else {
+           i++;
+           result[r++] = '=';
+           }
+        if (i < length) {
+           c = data[i] & 0x3F;
+           result[r++] = b64[c];
+           }
+        else
+           result[r++] = '=';
+        i++;
+        }
+  if (r > 0) {
+     result[r] = 0;
+     return result;
+     }
+  return NULL;
 }
 
 // --- cReadLine -------------------------------------------------------------
@@ -858,6 +1040,8 @@ bool cSafeFile::Close(void)
 
 // --- cUnbufferedFile -------------------------------------------------------
 
+//#define USE_FADVISE
+
 #define READ_AHEAD MEGABYTE(2)
 #define WRITE_BUFFER MEGABYTE(10)
 
@@ -882,6 +1066,7 @@ int cUnbufferedFile::Open(const char *FileName, int Flags, mode_t Mode)
 
 int cUnbufferedFile::Close(void)
 {
+#ifdef USE_FADVISE
   if (fd >= 0) {
      if (ahead > end)
         end = ahead;
@@ -894,6 +1079,7 @@ int cUnbufferedFile::Close(void)
      begin = end = ahead = -1;
      written = 0;
      }
+#endif
   int OldFd = fd;
   fd = -1;
   return close(OldFd);
@@ -909,6 +1095,7 @@ off_t cUnbufferedFile::Seek(off_t Offset, int Whence)
 ssize_t cUnbufferedFile::Read(void *Data, size_t Size)
 {
   if (fd >= 0) {
+#ifdef USE_FADVISE
      off_t pos = lseek(fd, 0, SEEK_CUR);
      // jump forward - adjust end position
      if (pos > end)
@@ -922,7 +1109,9 @@ ssize_t cUnbufferedFile::Read(void *Data, size_t Size)
      if (begin >= 0 && end > begin)
         posix_fadvise(fd, begin - KILOBYTE(200), end - begin + KILOBYTE(200), POSIX_FADV_DONTNEED);//XXX macros/parameters???
      begin = pos;
+#endif
      ssize_t bytesRead = safe_read(fd, Data, Size);
+#ifdef USE_FADVISE
      if (bytesRead > 0) {
         pos += bytesRead;
         end = pos;
@@ -935,6 +1124,7 @@ ssize_t cUnbufferedFile::Read(void *Data, size_t Size)
         }
      else
         end = pos;
+#endif
      return bytesRead;
      }
   return -1;
@@ -943,8 +1133,11 @@ ssize_t cUnbufferedFile::Read(void *Data, size_t Size)
 ssize_t cUnbufferedFile::Write(const void *Data, size_t Size)
 {
   if (fd >=0) {
+#ifdef USE_FADVISE
      off_t pos = lseek(fd, 0, SEEK_CUR);
+#endif
      ssize_t bytesWritten = safe_write(fd, Data, Size);
+#ifdef USE_FADVISE
      if (bytesWritten >= 0) {
         written += bytesWritten;
         if (begin >= 0) {
@@ -964,6 +1157,7 @@ ssize_t cUnbufferedFile::Write(const void *Data, size_t Size)
            written = 0;
            }
         }
+#endif
      return bytesWritten;
      }
   return -1;
@@ -1090,7 +1284,7 @@ int cListObject::Index(void) const
 // --- cListBase -------------------------------------------------------------
 
 cListBase::cListBase(void)
-{ 
+{
   objects = lastObject = NULL;
   count = 0;
 }
@@ -1101,7 +1295,7 @@ cListBase::~cListBase()
 }
 
 void cListBase::Add(cListObject *Object, cListObject *After)
-{ 
+{
   if (After && After != lastObject) {
      After->Next()->Insert(Object);
      After->Append(Object);
@@ -1117,7 +1311,7 @@ void cListBase::Add(cListObject *Object, cListObject *After)
 }
 
 void cListBase::Ins(cListObject *Object, cListObject *Before)
-{ 
+{
   if (Before && Before != objects) {
      Before->Prev()->Append(Object);
      Before->Insert(Object);

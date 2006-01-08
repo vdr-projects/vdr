@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.112 2005/11/26 12:56:09 kls Exp $
+ * $Id: device.c 1.121 2006/01/08 11:39:37 kls Exp $
  */
 
 #include "device.h"
@@ -222,7 +222,7 @@ int cDevice::NextCardIndex(int n)
         esyslog("ERROR: nextCardIndex too big (%d)", nextCardIndex);
      }
   else if (n < 0)
-     esyslog("ERROR: illegal value in IncCardIndex(%d)", n);
+     esyslog("ERROR: invalid value in IncCardIndex(%d)", n);
   return nextCardIndex;
 }
 
@@ -302,7 +302,7 @@ cDevice *cDevice::GetDevice(const cChannel *Channel, int Priority, bool *NeedsDe
             pri = 6; // receiving with same priority but fewer Ca's
          else
             pri = 7; // all others
-         if (pri < select) {
+         if (pri <= select) {
             select = pri;
             d = device[i];
             if (NeedsDetachReceivers)
@@ -322,9 +322,36 @@ void cDevice::Shutdown(void)
       }
 }
 
-bool cDevice::GrabImage(const char *FileName, bool Jpeg, int Quality, int SizeX, int SizeY)
+uchar *cDevice::GrabImage(int &Size, bool Jpeg, int Quality, int SizeX, int SizeY)
 {
-  return false;
+  return NULL;
+}
+
+bool cDevice::GrabImageFile(const char *FileName, bool Jpeg, int Quality, int SizeX, int SizeY)
+{
+  int result = 0;
+  int fd = open(FileName, O_WRONLY | O_CREAT | O_NOFOLLOW | O_TRUNC, DEFFILEMODE);
+  if (fd >= 0) {
+     int ImageSize;
+     uchar *Image = GrabImage(ImageSize, Jpeg, Quality, SizeX, SizeY);
+     if (Image) {
+        if (safe_write(fd, Image, ImageSize) == ImageSize)
+           isyslog("grabbed image to %s", FileName);
+        else {
+           LOG_ERROR_STR(FileName);
+           result |= 1;
+           }
+        free(Image);
+        }
+     else
+        result |= 1;
+     close(fd);
+     }
+  else {
+     LOG_ERROR_STR(FileName);
+     result |= 1;
+     }
+  return result == 0;
 }
 
 void cDevice::SetVideoDisplayFormat(eVideoDisplayFormat VideoDisplayFormat)
@@ -577,10 +604,14 @@ eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
   if (LiveView)
      StopReplay();
 
+  // If this card is switched to an other transponder, any receivers still
+  // attached to it ineed to be automatically detached:
+  bool NeedsDetachReceivers = false;
+
   // If this card can't receive this channel, we must not actually switch
   // the channel here, because that would irritate the driver when we
   // start replaying in Transfer Mode immediately after switching the channel:
-  bool NeedsTransferMode = (LiveView && IsPrimaryDevice() && !ProvidesChannel(Channel, Setup.PrimaryLimit));
+  bool NeedsTransferMode = (LiveView && IsPrimaryDevice() && !ProvidesChannel(Channel, Setup.PrimaryLimit, &NeedsDetachReceivers));
 
   eSetChannelResult Result = scrOk;
 
@@ -588,11 +619,14 @@ eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
   // use the card that actually can receive it and transfer data from there:
 
   if (NeedsTransferMode) {
-     cDevice *CaDevice = GetDevice(Channel, 0);
+     cDevice *CaDevice = GetDevice(Channel, 0, &NeedsDetachReceivers);
      if (CaDevice && CanReplay()) {
         cStatus::MsgChannelSwitch(this, 0); // only report status if we are actually going to switch the channel
-        if (CaDevice->SetChannel(Channel, false) == scrOk) // calling SetChannel() directly, not SwitchChannel()!
+        if (CaDevice->SetChannel(Channel, false) == scrOk) { // calling SetChannel() directly, not SwitchChannel()!
+           if (NeedsDetachReceivers)
+              CaDevice->DetachAllReceivers();
            cControl::Launch(new cTransferControl(CaDevice, Channel->Vpid(), Channel->Apids(), Channel->Dpids(), Channel->Spids()));
+           }
         else
            Result = scrNoTransfer;
         }
@@ -613,7 +647,7 @@ eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
         ciHandler->SetSource(Channel->Source(), Channel->Transponder());
 // Men at work - please stand clear! ;-)
 #ifdef XXX_DO_MULTIPLE_CA_CHANNELS
-        if (Channel->Ca() > CACONFBASE) {
+        if (Channel->Ca() >= CA_ENCRYPTED_MIN) {
 #endif
            ciHandler->AddPid(Channel->Sid(), Channel->Vpid(), 2);
            for (const int *Apid = Channel->Apids(); *Apid; Apid++)
@@ -626,13 +660,15 @@ eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
            }
 #endif
         }
+     if (NeedsDetachReceivers)
+        DetachAllReceivers();
      if (SetChannelDevice(Channel, LiveView)) {
         // Start section handling:
         if (sectionHandler) {
            sectionHandler->SetChannel(Channel);
            sectionHandler->SetStatus(true);
            }
-        // Start decrypting any PIDs the might have been set in SetChannelDevice():
+        // Start decrypting any PIDs that might have been set in SetChannelDevice():
         if (ciHandler)
            ciHandler->StartDecrypting();
         }
@@ -794,6 +830,7 @@ int cDevice::NumAudioTracks(void) const
 bool cDevice::SetCurrentAudioTrack(eTrackType Type)
 {
   if (ttNone < Type && Type < ttDolbyLast) {
+     cMutexLock MutexLock(&mutexCurrentAudioTrack);
      if (IS_DOLBY_TRACK(Type))
         SetDigitalAudioDevice(true);
      currentAudioTrack = Type;
@@ -947,6 +984,7 @@ int cDevice::PlayAudio(const uchar *Data, int Length)
 
 int cDevice::PlayPesPacket(const uchar *Data, int Length, bool VideoOnly)
 {
+  cMutexLock MutexLock(&mutexCurrentAudioTrack);
   bool FirstLoop = true;
   uchar c = Data[3];
   const uchar *Start = Data;
@@ -972,7 +1010,7 @@ int cDevice::PlayPesPacket(const uchar *Data, int Length, bool VideoOnly)
                uchar SubStreamId = Data[PayloadOffset];
                uchar SubStreamType = SubStreamId & 0xF0;
                uchar SubStreamIndex = SubStreamId & 0x1F;
-        
+
                // Compatibility mode for old VDR recordings, where 0xBD was only AC3:
 pre_1_3_19_PrivateStreamDeteced:
                if (pre_1_3_19_PrivateStream) {
@@ -1111,7 +1149,7 @@ int cDevice::ProvidesCa(const cChannel *Channel) const
   int Ca = Channel->Ca();
   if (Ca == CardIndex() + 1)
      return 1; // exactly _this_ card was requested
-  if (Ca && Ca <= MAXDEVICES)
+  if (Ca && Ca <= CA_DVB_MAX)
      return 0; // a specific card was requested, but not _this_ one
   return !Ca; // by default every card can provide FTA
 }
@@ -1240,6 +1278,15 @@ void cDevice::DetachAll(int Pid)
             Detach(Receiver);
          }
      }
+}
+
+void cDevice::DetachAllReceivers(void)
+{
+  cMutexLock MutexLock(&mutexReceiver);
+  for (int i = 0; i < MAXRECEIVERS; i++) {
+      if (receiver[i])
+         Detach(receiver[i]);
+      }
 }
 
 // --- cTSBuffer -------------------------------------------------------------
