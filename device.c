@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.119 2006/01/07 14:50:45 kls Exp $
+ * $Id: device.c 1.120 2006/01/08 10:11:42 kls Exp $
  */
 
 #include "device.h"
@@ -830,6 +830,7 @@ int cDevice::NumAudioTracks(void) const
 bool cDevice::SetCurrentAudioTrack(eTrackType Type)
 {
   if (ttNone < Type && Type < ttDolbyLast) {
+     cMutexLock MutexLock(&mutexCurrentAudioTrack);
      if (IS_DOLBY_TRACK(Type))
         SetDigitalAudioDevice(true);
      currentAudioTrack = Type;
@@ -983,6 +984,7 @@ int cDevice::PlayAudio(const uchar *Data, int Length)
 
 int cDevice::PlayPesPacket(const uchar *Data, int Length, bool VideoOnly)
 {
+  cMutexLock MutexLock(&mutexCurrentAudioTrack);
   bool FirstLoop = true;
   uchar c = Data[3];
   const uchar *Start = Data;

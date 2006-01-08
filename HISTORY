@@ -3963,7 +3963,7 @@ Video Disk Recorder Revision History
   commands may now be executed at any time, and the message will be displayed
   (no more "pending message").
 
-2006-01-07: Version 1.3.38
+2006-01-08: Version 1.3.38
 
 - Fixed handling second audio and Dolby Digital PIDs for encrypted channels
   (was broken in version 1.3.37).
@@ -4129,3 +4129,5 @@ Video Disk Recorder Revision History
 - The file 'ca.conf' is obsolete and has been removed.
 - Revised all descriptions regarding CICAM.
 - Adapted c(Dvb)Device::ProvidesCa() to the dynamic CA handling.
+- Added a mutex to synchronize cDevice::PlayPesPacket() and SetCurrentAudioTrack()
+  (thanks to Reinhard Nissl).

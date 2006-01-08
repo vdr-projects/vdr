@@ -1019,6 +1019,7 @@ Reinhard Nissl <rnissl@gmx.de>
  for suggesting to make the DVB devices retune (and, if applicable, resend the
  DiSEqC data) if the lock is lost
  for fixing handling TS packets in cTS2PES
+ for adding a mutex to synchronize cDevice::PlayPesPacket() and SetCurrentAudioTrack()
 
 Richard Robson <richard_robson@beeb.net>
  for reporting freezing replay if a timer starts while in Transfer Mode from the

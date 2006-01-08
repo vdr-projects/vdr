@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 1.69 2006/01/07 14:50:45 kls Exp $
+ * $Id: device.h 1.70 2006/01/08 10:10:26 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -344,6 +344,7 @@ public:
 private:
   tTrackId availableTracks[ttMaxTrackTypes];
   eTrackType currentAudioTrack;
+  cMutex mutexCurrentAudioTrack;
   int currentAudioTrackMissingCount;
   bool pre_1_3_19_PrivateStream;
 protected:
