@@ -8,7 +8,7 @@
 #
 # See the README file for copyright information and how to reach the author.
 #
-# $Id: getskyepg.pl 1.3 2004/02/15 13:35:52 kls Exp $
+# $Id: getskyepg.pl 1.4 2006/01/08 10:21:32 kls Exp $
 
 use Getopt::Std;
 use Time::Local;
@@ -151,7 +151,7 @@ sub GetEpgData
              $gmt[1] = $m; # minutes
              $gmt[2] = $h; # hours
              $time = timegm(@gmt) + ($day - 1) * $SecsInDay + ($h < 12 ? $dt : 0);
-             # comensate for DST:
+             # compensate for DST:
              $time += $DST if (localtime($time))[8];
              # create EPG data:
              if ($Time) {
