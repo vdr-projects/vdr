@@ -4143,3 +4143,7 @@ Video Disk Recorder Revision History
 - Added a missing #include <linux/unistd.h> to thread.c (thanks to Ville Skyttä).
 - Fixed the "plugins-clean" and "plugins-install" targets in the Makefile (thanks
   to Andreas Brachold).
+- Fixed handling "more than 3 byte" key sequences in cKbdRemote::ReadKeySequence()
+  (thanks to Peter Bieringer). If you are using the PC keyboard as remote control
+  input you may need to make VDR newly learn the keys by removing the remote.conf
+  file.

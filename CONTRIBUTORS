@@ -943,6 +943,7 @@ Peter Bieringer <pb@bieringer.de>
  for suggesting to implement the command line option '--vfat'
  for reporting a leftover 'summary.vdr' in vdr.5
  for adding more error messages and line numbers when reading EPG data and info.vdr
+ for fixing handling "more than 3 byte" key sequences in cKbdRemote::ReadKeySequence()
 
 Alexander Damhuis <ad@phonedation.de>
  for reporting problems when deleting a timer that is currently recording
