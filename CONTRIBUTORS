@@ -855,6 +855,7 @@ Andreas Brachold <vdr04@deltab.de>
  for reporting that there are empty info.vdr files created if there is no EPG
  info available
  for implementing the SVDRP command MOVC
+ for fixing the "plugins-clean" and "plugins-install" targets in the Makefile
 
 Manuel Hartl <icecep@gmx.net>
  for suggesting to extend the logging info when starting/stopping timers

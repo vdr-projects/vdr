@@ -4141,3 +4141,5 @@ Video Disk Recorder Revision History
   of the timers listed with their unique channel ids instead of their numbers
   (suggested by Matthias Schniedermeyer).
 - Added a missing #include <linux/unistd.h> to thread.c (thanks to Ville Skyttä).
+- Fixed the "plugins-clean" and "plugins-install" targets in the Makefile (thanks
+  to Andreas Brachold).
