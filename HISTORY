@@ -4134,3 +4134,9 @@ Video Disk Recorder Revision History
 - Added a SleepMs() in cRecorder::Action() to avoid a busy loop (thanks to Ingo
   Schneider).
 - Cleaned up some trailing white space.
+
+2006-01-08: Version 1.3.39
+
+- The SVDRP command LSTT now accepts the new option 'id' to have the channels
+  of the timers listed with their unique channel ids instead of their numbers
+  (suggested by Matthias Schniedermeyer).
