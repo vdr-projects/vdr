@@ -1622,3 +1622,6 @@ Petri Hintukainen <Petri.Hintukainen@hut.fi>
 
 Marcel Schaeben <mts280@gmx.de>
  for his "Easy Input" patch
+
+Ingo Schneider <mail@ingo-schneider.de>
+ for adding a SleepMs() in cRecorder::Action() to avoid a busy loop

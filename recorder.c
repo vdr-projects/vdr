@@ -4,13 +4,13 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recorder.c 1.16 2005/10/31 12:35:29 kls Exp $
+ * $Id: recorder.c 1.17 2006/01/08 11:01:25 kls Exp $
  */
 
+#include "recorder.h"
 #include <stdarg.h>
 #include <stdio.h>
 #include <unistd.h>
-#include "recorder.h"
 
 #define RECORDERBUFSIZE  MEGABYTE(5)
 
@@ -171,6 +171,8 @@ void cRecorder::Action(void)
            int Count = remux->Put(b, r);
            if (Count)
               ringBuffer->Del(Count);
+           else
+              cCondWait::SleepMs(100); // avoid busy loop when resultBuffer is full in cRemux::Put()
            }
         }
 }

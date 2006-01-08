@@ -4131,3 +4131,5 @@ Video Disk Recorder Revision History
 - Adapted c(Dvb)Device::ProvidesCa() to the dynamic CA handling.
 - Added a mutex to synchronize cDevice::PlayPesPacket() and SetCurrentAudioTrack()
   (thanks to Reinhard Nissl).
+- Added a SleepMs() in cRecorder::Action() to avoid a busy loop (thanks to Ingo
+  Schneider).
