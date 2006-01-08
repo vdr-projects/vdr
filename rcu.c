@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: rcu.c 1.12 2005/12/31 15:09:32 kls Exp $
+ * $Id: rcu.c 1.13 2006/01/08 11:40:09 kls Exp $
  */
 
 #include "rcu.h"
@@ -230,7 +230,7 @@ void cRcuRemote::SetMode(unsigned char Mode)
 }
 
 bool cRcuRemote::SendCommand(unsigned char Cmd)
-{ 
+{
   return SendByte(Cmd | 0x80);
 }
 
@@ -274,7 +274,7 @@ void cRcuRemote::SetString(char *s)
 }
 
 void cRcuRemote::SetPoints(unsigned char Dp, bool On)
-{ 
+{
   if (On)
      dp |= Dp;
   else

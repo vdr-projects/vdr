@@ -11,7 +11,7 @@
  * The cRepacker family's code was originally written by Reinhard Nissl <rnissl@gmx.de>,
  * and adapted to the VDR coding style by Klaus.Schmidinger@cadsoft.de.
  *
- * $Id: remux.c 1.52 2006/01/03 10:55:45 kls Exp $
+ * $Id: remux.c 1.53 2006/01/08 11:40:16 kls Exp $
  */
 
 #include "remux.h"
@@ -746,7 +746,7 @@ void cAudioRepacker::Repack(cRingBufferLinear *ResultBuffer, const uchar *Data, 
                  payload = data;
                  // maximum we can hold in one PES packet
                  packetTodo = maxPacketSize - pesHeaderLen;
-                 // expected remainder of audio frame: so far we have read 3 bytes from the frame header 
+                 // expected remainder of audio frame: so far we have read 3 bytes from the frame header
                  frameTodo = frameSize - 3;
                  // go on with collecting the frame's data
                  state++;

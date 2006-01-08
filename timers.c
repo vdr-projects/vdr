@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 1.40 2006/01/06 14:14:59 kls Exp $
+ * $Id: timers.c 1.41 2006/01/08 11:40:29 kls Exp $
  */
 
 #include "timers.h"
@@ -464,7 +464,7 @@ void cTimer::SetInVpsMargin(bool InVpsMargin)
 
 void cTimer::SetPriority(int Priority)
 {
-  priority = Priority; 
+  priority = Priority;
 }
 
 void cTimer::SetFlags(uint Flags)
@@ -620,7 +620,7 @@ void cTimers::SetEvents(void)
                             distance = e->EndTime() - now;
                          if (Event && overlap == Overlap) {
                             if (Overlap > FULLMATCH) { // this means VPS
-                               if (abs(Distance) < abs(distance)) 
+                               if (abs(Distance) < abs(distance))
                                   break; // we've already found the closest VPS event
                                }
                             else if (e->Duration() <= Event->Duration())

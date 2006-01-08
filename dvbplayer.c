@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 1.41 2005/10/31 12:33:48 kls Exp $
+ * $Id: dvbplayer.c 1.42 2006/01/08 11:39:41 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -621,7 +621,7 @@ int cDvbPlayer::SkipFrames(int Frames)
      int Current, Total;
      GetIndex(Current, Total, true);
      int OldCurrent = Current;
-     // As GetNextIFrame() increments/decrements at least once, the 
+     // As GetNextIFrame() increments/decrements at least once, the
      // destination frame (= Current + Frames) must be adjusted by
      // -1/+1 respectively.
      Current = index->GetNextIFrame(Current + Frames + (Frames > 0 ? -1 : 1), Frames > 0);

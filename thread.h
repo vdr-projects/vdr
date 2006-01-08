@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.h 1.35 2006/01/04 14:58:16 kls Exp $
+ * $Id: thread.h 1.36 2006/01/08 11:40:23 kls Exp $
  */
 
 #ifndef __THREAD_H
@@ -107,7 +107,7 @@ public:
   cThread(const char *Description = NULL);
        ///< Creates a new thread.
        ///< If Description is present, a log file entry will be made when
-       ///< the thread starts and stops. The Start() function must be called 
+       ///< the thread starts and stops. The Start() function must be called
        ///< to actually start the thread.
   virtual ~cThread();
   void SetDescription(const char *Description, ...) __attribute__ ((format (printf, 2, 3)));

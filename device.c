@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 1.120 2006/01/08 10:11:42 kls Exp $
+ * $Id: device.c 1.121 2006/01/08 11:39:37 kls Exp $
  */
 
 #include "device.h"
@@ -1010,7 +1010,7 @@ int cDevice::PlayPesPacket(const uchar *Data, int Length, bool VideoOnly)
                uchar SubStreamId = Data[PayloadOffset];
                uchar SubStreamType = SubStreamId & 0xF0;
                uchar SubStreamIndex = SubStreamId & 0x1F;
-        
+
                // Compatibility mode for old VDR recordings, where 0xBD was only AC3:
 pre_1_3_19_PrivateStreamDeteced:
                if (pre_1_3_19_PrivateStream) {

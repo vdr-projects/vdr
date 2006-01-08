@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.389 2006/01/07 15:38:16 kls Exp $
+ * $Id: menu.c 1.390 2006/01/08 11:39:57 kls Exp $
  */
 
 #include "menu.h"
@@ -1104,7 +1104,7 @@ eOSState cMenuWhatsOn::Record(void)
         timer = t;
         return AddSubMenu(new cMenuEditTimer(timer));
         }
-     else {   
+     else {
         Timers.Add(timer);
         timer->Matches();
         Timers.SetModified();
@@ -1258,7 +1258,7 @@ eOSState cMenuSchedule::Record(void)
         timer = t;
         return AddSubMenu(new cMenuEditTimer(timer));
         }
-     else {   
+     else {
         Timers.Add(timer);
         timer->Matches();
         Timers.SetModified();
@@ -2047,7 +2047,7 @@ eOSState cMenuSetupOSD::ProcessKey(eKeys Key)
            themeIndex = d ? themes.GetThemeIndex(d) : 0;
         free(d);
         }
-     
+
      Set();
      Setup.OSDLanguage = OriginalOSDLanguage;
      }

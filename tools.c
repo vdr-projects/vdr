@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.108 2006/01/05 10:41:18 kls Exp $
+ * $Id: tools.c 1.109 2006/01/08 11:40:35 kls Exp $
  */
 
 #include "tools.h"
@@ -710,7 +710,7 @@ uchar *RgbToJpeg(uchar *Mem, int Width, int Height, int &Size, int Quality)
      Quality = 0;
   else if (Quality > 100)
      Quality = 100;
-  
+
   jpeg_destination_mgr jdm;
 
   jdm.init_destination = JpegCompressInitDestination;
@@ -1284,7 +1284,7 @@ int cListObject::Index(void) const
 // --- cListBase -------------------------------------------------------------
 
 cListBase::cListBase(void)
-{ 
+{
   objects = lastObject = NULL;
   count = 0;
 }
@@ -1295,7 +1295,7 @@ cListBase::~cListBase()
 }
 
 void cListBase::Add(cListObject *Object, cListObject *After)
-{ 
+{
   if (After && After != lastObject) {
      After->Next()->Insert(Object);
      After->Append(Object);
@@ -1311,7 +1311,7 @@ void cListBase::Add(cListObject *Object, cListObject *After)
 }
 
 void cListBase::Ins(cListObject *Object, cListObject *Before)
-{ 
+{
   if (Before && Before != objects) {
      Before->Prev()->Append(Object);
      Before->Insert(Object);

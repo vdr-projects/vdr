@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osdbase.c 1.27 2006/01/05 15:35:06 kls Exp $
+ * $Id: osdbase.c 1.28 2006/01/08 11:40:02 kls Exp $
  */
 
 #include "osdbase.h"
@@ -161,10 +161,10 @@ void cOsdMenu::Del(int Index)
 {
   cList<cOsdItem>::Del(Get(Index));
   int count = Count();
-  while (current < count && !SelectableItem(current)) 
+  while (current < count && !SelectableItem(current))
         current++;
   if (current == count) {
-     while (current > 0 && !SelectableItem(current))  
+     while (current > 0 && !SelectableItem(current))
            current--;
      }
   if (Index == first && first > 0)
@@ -371,7 +371,7 @@ void cOsdMenu::PageUp(void)
      CursorUp();
 }
 
-void cOsdMenu::PageDown(void) 
+void cOsdMenu::PageDown(void)
 {
   int oldCurrent = current;
   int oldFirst = first;

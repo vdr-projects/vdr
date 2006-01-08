@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.88 2005/12/30 11:27:23 kls Exp $
+ * $Id: tools.h 1.89 2006/01/08 11:40:37 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -186,7 +186,7 @@ public:
   bool Add(int FileHandle, bool Out);
   bool Poll(int TimeoutMs = 0);
   };
-  
+
 class cReadDir {
 private:
   DIR *directory;

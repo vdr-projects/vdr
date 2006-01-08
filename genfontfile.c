@@ -154,9 +154,9 @@ SuckGlyphsFromServer(Display * dpy, Font font)
     character.byte2 = (i + fontinfo->min_char_or_byte2) & 255;
     character.byte1 = (i + fontinfo->min_char_or_byte2) >> 8;
 
-    /* XXX we could use XDrawImageString16 which would also paint the backing 
+    /* XXX we could use XDrawImageString16 which would also paint the backing
 
-       rectangle but X server bugs in some scalable font rasterizers makes it 
+       rectangle but X server bugs in some scalable font rasterizers makes it
 
        more effective to do XFillRectangles to clear the pixmap and
        XDrawImage16 for the text.  */

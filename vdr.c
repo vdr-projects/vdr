@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.231 2006/01/07 12:27:45 kls Exp $
+ * $Id: vdr.c 1.232 2006/01/08 11:40:41 kls Exp $
  */
 
 #include <getopt.h>
@@ -669,8 +669,8 @@ int main(int argc, char *argv[])
                      && !(LastTimerChannel > 0 && Channels.SwitchTo(LastTimerChannel)) // ...or the one used by the last timer...
                      && !cDevice::SwitchChannel(1) // ...or the next higher available one...
                      && !cDevice::SwitchChannel(-1)) // ...or the next lower available one
-                    ; 
-                 }   
+                    ;
+                 }
               lastTime = time(NULL); // don't do this too often
               LastTimerChannel = -1;
               }

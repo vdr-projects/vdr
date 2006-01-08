@@ -1491,9 +1491,9 @@ Video Disk Recorder Revision History
   --- Makefile    2002/06/10 16:24:06     1.4
   +++ Makefile    2002/09/17 15:36:36     1.5
   @@ -15,7 +15,12 @@
- 
+
    ### The directory environment:
- 
+
   +ifdef NEWSTRUCT
   +DVBDIR = ../../../../DVB/include
   +DEFINES += -DNEWSTRUCT
@@ -1504,12 +1504,12 @@ Video Disk Recorder Revision History
    VDRINC = $(VDRDIR)/include
    LIBDIR = ../../lib
   @@ -34,7 +39,7 @@
- 
+
    INCLUDES = -I$(VDRINC) -I$(DVBDIR)
- 
+
   -DEFINES = -DPLUGIN_NAME_I18N='"$(PLUGIN)"'
   +DEFINES += -DPLUGIN_NAME_I18N='"$(PLUGIN)"'
- 
+
    ### The object files (add further files here):
   -------------------------------------------------------
 
@@ -2705,7 +2705,7 @@ Video Disk Recorder Revision History
 - Timers can now be set to use the VPS information to control recording a programme.
   The new setup options "Recording/Use VPS" and "Recording/VPS margin", as well as
   the "VPS" option in the individual timers, can be used to control this feature
-  (see MANUAL for details). 
+  (see MANUAL for details).
   Note that this feature will certainly need a lot of testing before it can be
   called "safe"!
 - The "Schedule" and "What's on now/next?" menus now have an additional column
@@ -3270,7 +3270,7 @@ Video Disk Recorder Revision History
   botton left side.
 - The new setup option "DVB/Audio languages" can be used to control which audio
   language shall be selected in case a channel broadcasts in different languages
-  (see MANUAL for details). 
+  (see MANUAL for details).
 - The "Left" and "Right" keys in the "Audio" menu can be used to switch between
   the left and right stereo channels in case there are different audio tracks
   in these channels (see MANUAL for details).
@@ -4133,3 +4133,4 @@ Video Disk Recorder Revision History
   (thanks to Reinhard Nissl).
 - Added a SleepMs() in cRecorder::Action() to avoid a busy loop (thanks to Ingo
   Schneider).
+- Cleaned up some trailing white space.

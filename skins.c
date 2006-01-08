@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skins.c 1.6 2005/11/27 15:52:25 kls Exp $
+ * $Id: skins.c 1.7 2006/01/08 11:40:18 kls Exp $
  */
 
 #include "skins.h"
@@ -323,7 +323,7 @@ void cSkins::ProcessQueuedMessages(void)
          }
       else
          break;
-      } 
+      }
   queueMessageMutex.Unlock();
 }
 
