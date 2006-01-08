@@ -1,7 +1,7 @@
 /*
  * vdr.c: Video Disk Recorder main program
  *
- * Copyright (C) 2000, 2003 Klaus Schmidinger
+ * Copyright (C) 2000, 2003, 2006 Klaus Schmidinger
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.232 2006/01/08 11:40:41 kls Exp $
+ * $Id: vdr.c 1.233 2006/01/08 11:49:03 kls Exp $
  */
 
 #include <getopt.h>
