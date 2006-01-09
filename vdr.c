@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.233 2006/01/08 11:49:03 kls Exp $
+ * $Id: vdr.c 1.234 2006/01/09 16:44:15 kls Exp $
  */
 
 #include <getopt.h>
@@ -339,14 +339,16 @@ int main(int argc, char *argv[])
 
   if (getuid() == 0) {
      StartedAsRoot = true;
-     if (!SetKeepCaps(true))
-        return 2;
-     if (!SetUser(VdrUser))
-        return 2;
-     if (!SetKeepCaps(false))
-        return 2;
-     if (!SetCapSysTime())
-        return 2;
+     if (strcmp(VdrUser, "root")) {
+        if (!SetKeepCaps(true))
+           return 2;
+        if (!SetUser(VdrUser))
+           return 2;
+        if (!SetKeepCaps(false))
+           return 2;
+        if (!SetCapSysTime())
+           return 2;
+        }
      }
 
   // Help and version info:
