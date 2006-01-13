@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 1.82 2006/01/08 16:12:26 kls Exp $
+# $Id: Makefile 1.83 2006/01/13 16:04:56 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -76,6 +76,9 @@ DEFINES += -DREMOTE_KBD
 endif
 ifdef REMOTE
 DEFINES += -DREMOTE_$(REMOTE)
+endif
+ifdef VDR_USER
+DEFINES += -DVDR_USER=\"$(VDR_USER)\"
 endif
 
 LIRC_DEVICE ?= /dev/lircd

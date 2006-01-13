@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.235 2006/01/13 15:33:54 kls Exp $
+ * $Id: vdr.c 1.236 2006/01/13 16:16:32 kls Exp $
  */
 
 #include <getopt.h>
@@ -157,14 +157,13 @@ int main(int argc, char *argv[])
 
   // Command line options:
 
-#define DEFAULTVDRUSER   "vdr"
 #define DEFAULTSVDRPPORT 2001
 #define DEFAULTWATCHDOG     0 // seconds
 #define DEFAULTPLUGINDIR PLUGINDIR
 #define DEFAULTEPGDATAFILENAME "epg.data"
 
   bool StartedAsRoot = false;
-  const char *VdrUser = DEFAULTVDRUSER;
+  const char *VdrUser = NULL;
   int SVDRPport = DEFAULTSVDRPPORT;
   const char *AudioCommand = NULL;
   const char *ConfigDirectory = NULL;
@@ -191,6 +190,9 @@ int main(int argc, char *argv[])
 #endif
 #if defined(VFAT)
   VfatFileSystem = true;
+#endif
+#if defined(VDR_USER)
+  VdrUser = VDR_USER;
 #endif
 
   cPluginManager PluginManager(DEFAULTPLUGINDIR);
@@ -337,7 +339,7 @@ int main(int argc, char *argv[])
 
   // Set user id in case we were started as root:
 
-  if (getuid() == 0) {
+  if (VdrUser && getuid() == 0) {
      StartedAsRoot = true;
      if (strcmp(VdrUser, "root")) {
         if (!SetKeepCaps(true))
@@ -394,8 +396,8 @@ int main(int argc, char *argv[])
                "  -r CMD,   --record=CMD   call CMD before and after a recording\n"
                "  -s CMD,   --shutdown=CMD call CMD to shutdown the computer\n"
                "  -t TTY,   --terminal=TTY controlling tty\n"
-               "  -u USER,  --user=USER    run as user USER (default: %s); only applicable\n"
-               "                           if started as root\n"
+               "  -u USER,  --user=USER    run as user USER; only applicable if started as\n"
+               "                           root\n"
                "  -v DIR,   --video=DIR    use DIR as video directory (default: %s)\n"
                "  -V,       --version      print version information and exit\n"
                "            --vfat         encode special characters in recording names to\n"
@@ -408,7 +410,6 @@ int main(int argc, char *argv[])
                LIRC_DEVICE,
                DEFAULTSVDRPPORT,
                RCU_DEVICE,
-               DEFAULTVDRUSER,
                VideoDirectory,
                DEFAULTWATCHDOG
                );
@@ -473,7 +474,7 @@ int main(int argc, char *argv[])
      }
 
   isyslog("VDR version %s started", VDRVERSION);
-  if (StartedAsRoot)
+  if (StartedAsRoot && VdrUser)
      isyslog("switched to user '%s'", VdrUser);
   if (DaemonMode)
      dsyslog("running as daemon (tid=%d)", cThread::ThreadId());

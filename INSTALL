@@ -136,10 +136,10 @@ Setting the system time:
 ------------------------
 
 If you want VDR to set the system time according to the data received
-from the transponder, you need to start VDR as user 'root'. VDR will
-then only keep the capability to set the system time, and set its
-user id to a lesser privileged one ('vdr' by default, can be set
-to a different value with the '-u' option).
+from the transponder, you need to start VDR as user 'root'. For security
+reasons you should then use the '-u' option to define a lesser privileged
+user id under which VDR should actually run. It will then only keep the
+capability to set the system time, and set its user id to the given one.
 You also need to enable the "EPG/Set system time" option in VDR's
 Setup menu, and select a transponder from which you want to receive
 the time in "Use time from transponder". Make sure you select a transponder

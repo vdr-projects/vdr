@@ -4155,3 +4155,8 @@ Video Disk Recorder Revision History
 - Making the "Menu" key behave consistently has not been well received by several
   users, so the new option "Setup/OSD/Menu button closes" can be used to get the
   old behavior back (which also is the default value of this option).
+- Dropped the default vdr user. The program now always runs under the user id
+  it was started from, unless the '-u' option is given and it was started from
+  the 'root' user. If you want to have a default vdr user, you can activate and
+  adjust the "VDR_USER = vdr" line in your Make.config file (from the original
+  patch by Ludwig Nussel).
