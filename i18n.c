@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.231 2006/01/13 14:57:06 kls Exp $
+ * $Id: i18n.c 1.232 2006/01/13 15:02:41 kls Exp $
  *
  * Translations provided by:
  *
@@ -2281,7 +2281,7 @@ const tI18nPhrase Phrases[] = {
     "Espaηo em disco reduzido!",
     "Disque presque plein!",
     "Lite ledig diskplass!",
-    "Kovalevy lδhes tδynnδ!",
+    "Tallennustila loppumassa!",
     "Dysk wkrotce pelny!",
     "‘Disco casi lleno",
     "Ο σκληρός κοντεύει νά γεμίσει!",
@@ -2976,7 +2976,7 @@ const tI18nPhrase Phrases[] = {
     "Mostrar info ao mudar de Canal",
     "Affichage progr. en cours",
     "Info ved kanalskifte",
-    "Nδytδ kanavatieto",
+    "Nδytδ kanavatieto vaihdettaessa",
     "Informacja przy zmianie kanalu",
     "Informaciσn para cambio de canal",
     "Πληροφορίες στήν αλλαγή καναλιού",
@@ -2997,7 +2997,7 @@ const tI18nPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Sulje kanavatieto pyydettδessδ",
     "", // TODO
     "", // TODO
     "", // TODO
@@ -4176,7 +4176,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    " 0\t-.#~,/_@1\tabcδε2\tdef3\tghi4\tjkl5\tmnoφ6\tpqrs7\ttuv8\twxyz9",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -5418,7 +5418,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Tallennus aloitettu",
     "",//TODO
     "",//TODO
     "",//TODO

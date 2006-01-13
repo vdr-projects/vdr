@@ -4151,3 +4151,4 @@ Video Disk Recorder Revision History
   all SetCaps() and SetUser() calls when it is started as 'root' and "-u root"
   is given.
 - Added missing i18n entry for the "Timer" button (thanks to Ville Skyttä)
+- Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
