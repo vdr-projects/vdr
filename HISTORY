@@ -4135,7 +4135,7 @@ Video Disk Recorder Revision History
   Schneider).
 - Cleaned up some trailing white space.
 
-2006-01-09: Version 1.3.39
+2006-01-13: Version 1.3.39
 
 - The SVDRP command LSTT now accepts the new option 'id' to have the channels
   of the timers listed with their unique channel ids instead of their numbers
@@ -4150,3 +4150,4 @@ Video Disk Recorder Revision History
 - To avoid problems with access rights when VDR shall run as 'root' it now skips
   all SetCaps() and SetUser() calls when it is started as 'root' and "-u root"
   is given.
+- Added missing i18n entry for the "Timer" button (thanks to Ville Skyttä)

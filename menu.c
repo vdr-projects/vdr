@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.390 2006/01/08 11:39:57 kls Exp $
+ * $Id: menu.c 1.391 2006/01/13 14:56:00 kls Exp $
  */
 
 #include "menu.h"
@@ -916,7 +916,7 @@ cMenuEvent::cMenuEvent(const cEvent *Event, bool CanSwitch)
         SetTitle(channel->Name());
         int TimerMatch = tmNone;
         Timers.GetMatch(event, &TimerMatch);
-        SetHelp(TimerMatch == tmFull ? tr("Timer") : tr("Button$Record"), NULL, NULL, CanSwitch ? tr("Button$Switch") : NULL);
+        SetHelp(TimerMatch == tmFull ? tr("Button$Timer") : tr("Button$Record"), NULL, NULL, CanSwitch ? tr("Button$Switch") : NULL);
         }
      }
 }
