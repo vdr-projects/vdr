@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.233 2006/01/13 15:38:17 kls Exp $
+ * $Id: i18n.c 1.234 2006/01/13 16:24:07 kls Exp $
  *
  * Translations provided by:
  *
@@ -1221,7 +1221,7 @@ const tI18nPhrase Phrases[] = {
     "Optagelse om %d minutter - sluk alligevel?",
   },
   { "Press any key to cancel shutdown",
-    "Taste drücken um Shutdown abzubrechen",
+    "Taste drücken, um Shutdown abzubrechen",
     "Pritisni katerikoli gumb za preklic izklopa",
     "Un tasto per annullare lo spegnimento",
     "Druk een toets om shutdown af te breken",
