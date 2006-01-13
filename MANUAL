@@ -525,6 +525,13 @@ Version 1.3
                                (first) line of the list directly to the first (last)
                                one.
 
+  Menu button closes = no
+                         If set to "yes", pressing the "Menu" button while there is
+                         anything displayed on the OSD will close the OSD. If set
+                         to "no", the "Menu" button will open the main menu after
+                         closing a temporary display, like, for instance, the channel
+                         display.
+
   Sort timers = yes      Turns sorting the timers in the "Timers" menu on/off.
                          Timers are sorted by ascending start times, with the
                          first one being the next timer that will start.

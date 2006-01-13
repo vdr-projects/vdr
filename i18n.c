@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.232 2006/01/13 15:02:41 kls Exp $
+ * $Id: i18n.c 1.233 2006/01/13 15:38:17 kls Exp $
  *
  * Translations provided by:
  *
@@ -3051,6 +3051,27 @@ const tI18nPhrase Phrases[] = {
     "S kraja skoèi na poèetak",
     "Ridade kerimine",
     "Scroll rundt",
+  },
+  { "Setup.OSD$Menu button closes",
+    "Menu-Taste schließt",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
   },
   { "Setup.OSD$Sort timers",
     "Timer sortieren",

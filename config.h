@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 1.239 2006/01/08 13:08:42 kls Exp $
+ * $Id: config.h 1.240 2006/01/13 15:17:19 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -193,6 +193,7 @@ public:
   int TimeoutRequChInfo;
   int MenuScrollPage;
   int MenuScrollWrap;
+  int MenuButtonCloses;
   int MarkInstantRecord;
   char NameInstantRecord[MaxFileName];
   int InstantRecordTime;

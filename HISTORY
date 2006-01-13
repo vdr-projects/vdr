@@ -4152,3 +4152,6 @@ Video Disk Recorder Revision History
   is given.
 - Added missing i18n entry for the "Timer" button (thanks to Ville Skyttä)
 - Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
+- Making the "Menu" key behave consistently has not been well received by several
+  users, so the new option "Setup/OSD/Menu button closes" can be used to get the
+  old behavior back (which also is the default value of this option).

@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.234 2006/01/09 16:44:15 kls Exp $
+ * $Id: vdr.c 1.235 2006/01/13 15:33:54 kls Exp $
  */
 
 #include <getopt.h>
@@ -787,14 +787,17 @@ int main(int argc, char *argv[])
         // Keys that must work independent of any interactive mode:
         switch (key) {
           // Menu control:
-          case kMenu:
+          case kMenu: {
                key = kNone; // nobody else needs to see this key
+               bool WasOpen = Interact != NULL;
+               bool WasMenu = Interact && Interact->IsMenu();
                if (Menu)
                   DELETE_MENU;
                else if (cControl::Control() && cOsd::IsOpen())
                   cControl::Control()->Hide();
-               else
+               if (!WasOpen || !WasMenu && !Setup.MenuButtonCloses)
                   Menu = new cMenuMain;
+               }
                break;
           // Info:
           case kInfo: {
