@@ -4029,7 +4029,7 @@ Video Disk Recorder Revision History
   name (based on a suggestion from Darren Salt).
   A simple way of viewing a grabbed image on a remote host is:
 
-  svdrpsend.pl -d <hostname> 'grab -' | sed -n -e 's/^216-//p' -e '1ibegin-base64 644 -' -e '$a====' | uudecode | display
+  svdrpsend.pl -d <hostname> 'grab -' | sed -n -e 's/^216-//p' -e '1ibegin-base64 644 -' -e '$a====' | uudecode | display -
 
 - The new command line option '-g' must be given if the SVDRP command GRAB
   shall be allowed to write image files to disk. The parameter to this option
@@ -4168,3 +4168,5 @@ Video Disk Recorder Revision History
 - Added a note about "modprobe capability" to INSTALL (suggested by Patrick Cernko).
 - Fixed canonicalizing the file name in the SVDRP command GRAB to allow full path
   names (thanks to Stefan Huelswitt).
+- Added a missing '-' to the example for viewing a grabbed image on a remote host
+  (reported by Philippe Gramoullé).

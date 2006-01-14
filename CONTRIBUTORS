@@ -1638,3 +1638,7 @@ Ingo Schneider <mail@ingo-schneider.de>
 
 Patrick Cernko <errror@errror.org>
  for suggesting to add a note about "modprobe capability" to INSTALL
+
+Philippe Gramoullé <philippe@gramoulle.com>
+ for reporting a a missing '-' in the example for viewing a grabbed image on a remote
+ host
