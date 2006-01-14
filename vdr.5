@@ -8,7 +8,7 @@
 .\" License as specified in the file COPYING that comes with the
 .\" vdr distribution.
 .\"
-.\" $Id: vdr.5 1.46 2006/01/14 10:51:48 kls Exp $
+.\" $Id: vdr.5 1.47 2006/01/14 10:57:37 kls Exp $
 .\"
 .TH vdr 5 "08 Jan 2006" "1.3.38" "Video Disk Recorder Files"
 .SH NAME
@@ -412,12 +412,10 @@ and can be one of \fIUp\fR, \fIDown\fR, \fIOk\fR, \fIBack\fR, \fILeft\fR,
 or \fIUser1\fR...\fIUser9\fR. The rest of the line consists of a set of
 keys, which will be executed just as if they had been pressed in the given
 sequence. The optional \fB@plugin\fR can be used to automatically select
-the given plugin from the main menu (provided that plugin has a main menu
-entry). \fBplugin\fR is the name of the plugin, exactly as given in the \-P
-option when starting VDR. There can be only one \fB@plugin\fR per key macro,
-and it implicitly adds an \fIOk\fR key to the macro definition (in order to
-actually select the plugins main menu entry), which counts against the total
-number of keys in the macro. For instance
+the given plugin.
+\fBplugin\fR is the name of the plugin, exactly as given in the \-P
+option when starting VDR. There can be only one \fB@plugin\fR per key macro.
+For instance
 
 \fBUser1 @abc Down Down Ok\fR
 
