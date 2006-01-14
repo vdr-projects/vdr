@@ -859,6 +859,8 @@ Andreas Brachold <vdr04@deltab.de>
  info available
  for implementing the SVDRP command MOVC
  for fixing the "plugins-clean" and "plugins-install" targets in the Makefile
+ for suggesting to make the log messages regarding lost lock of devices "info"
+ instead of "error"
 
 Manuel Hartl <icecep@gmx.net>
  for suggesting to extend the logging info when starting/stopping timers

@@ -4172,3 +4172,5 @@ Video Disk Recorder Revision History
   (reported by Philippe Gramoullé).
 - Made the "What's on now/next?" menus a lot faster by storing a pointer to each
   channel's schedule in the cChannel data.
+- Made the log messages regarding lost lock of devices "info" instead of "error"
+  (suggested by Andreas Brachold).
