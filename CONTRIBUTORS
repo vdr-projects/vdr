@@ -211,6 +211,8 @@ Stefan Huelswitt <huels@iname.com>
  live PIDs
  for reporting a problem in SetProgress() of the 'skincurses' plugin in case Total
  is 0
+ for fixing canonicalizing the file name in the SVDRP command GRAB to allow full
+ path names
 
 Ulrich Röder <roeder@efr-net.de>
  for pointing out that there are channels that have a symbol rate higher than 27500

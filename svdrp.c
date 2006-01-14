@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.90 2006/01/08 13:31:00 kls Exp $
+ * $Id: svdrp.c 1.91 2006/01/14 11:42:52 kls Exp $
  */
 
 #include "svdrp.h"
@@ -731,10 +731,13 @@ void cSVDRP::CmdGRAB(const char *Option)
      char RealFileName[PATH_MAX];
      if (FileName) {
         if (grabImageDir) {
-           char *s;
-           asprintf(&s, "%s/%s", grabImageDir, FileName);
-           FileName = s;
-           char *slash = strrchr(FileName, '/'); // there definitely is one
+           char *s = 0;
+           char *slash = strrchr(FileName, '/');
+           if (!slash) {
+              asprintf(&s, "%s/%s", grabImageDir, FileName);
+              FileName = s;
+              }
+           slash = strrchr(FileName, '/'); // there definitely is one
            *slash = 0;
            char *r = realpath(FileName, RealFileName);
            *slash = '/';

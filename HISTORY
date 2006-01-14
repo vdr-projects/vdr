@@ -4166,3 +4166,5 @@ Video Disk Recorder Revision History
 - Removed the now obsolete "ca.conf" section from vdr.1 (thanks to Ville Skyttä).
 - Added missing description of L and R circular polarization to 'diseqc.conf'.
 - Added a note about "modprobe capability" to INSTALL (suggested by Patrick Cernko).
+- Fixed canonicalizing the file name in the SVDRP command GRAB to allow full path
+  names (thanks to Stefan Huelswitt).
