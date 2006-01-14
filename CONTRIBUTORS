@@ -213,6 +213,8 @@ Stefan Huelswitt <huels@iname.com>
  is 0
  for fixing canonicalizing the file name in the SVDRP command GRAB to allow full
  path names
+ for suggesting that the SVDRP command GRAB should allow file names without extension
+ again
 
 Ulrich Röder <roeder@efr-net.de>
  for pointing out that there are channels that have a symbol rate higher than 27500

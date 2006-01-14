@@ -4174,3 +4174,5 @@ Video Disk Recorder Revision History
   channel's schedule in the cChannel data.
 - Made the log messages regarding lost lock of devices "info" instead of "error"
   (suggested by Andreas Brachold).
+- The SVDRP command GRAB allows file names without extension again (suggested by
+  Stefan Huelswitt).

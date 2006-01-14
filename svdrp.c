@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.92 2006/01/14 14:55:52 kls Exp $
+ * $Id: svdrp.c 1.93 2006/01/14 16:08:20 kls Exp $
  */
 
 #include "svdrp.h"
@@ -683,10 +683,6 @@ void cSVDRP::CmdGRAB(const char *Option)
         }
      else if (strcmp(FileName, "-") == 0)
         FileName = NULL;
-     else {
-        Reply(501, "Missing filename extension in \"%s\"", FileName);
-        return;
-        }
      // image quality (and obsolete type):
      if ((p = strtok_r(NULL, delim, &strtok_next)) != NULL) {
         if (strcasecmp(p, "JPEG") == 0 || strcasecmp(p, "PNM") == 0) {
