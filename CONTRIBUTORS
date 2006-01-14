@@ -427,6 +427,7 @@ Mirko Dölle <mdoelle@linux-user.de>
  for suggesting to avoid the external 'find' command to scan the video directory
  for reporting a problem with inconsistent channel and timer lists
  for making the "Play" key in live viewing mode resume a previous replay session
+ for suggesting to allow defining key macros for all non-modeless keys
 
 Michael Rakowski <mrak@gmx.de>
  for translating OSD texts to the Polish language

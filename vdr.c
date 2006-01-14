@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.236 2006/01/13 16:16:32 kls Exp $
+ * $Id: vdr.c 1.237 2006/01/14 10:20:50 kls Exp $
  */
 
 #include <getopt.h>
@@ -984,6 +984,10 @@ int main(int argc, char *argv[])
            }
         else {
            // Key functions in "normal" viewing mode:
+           if (KeyMacros.Get(key)) {
+              cRemote::PutMacro(key);
+              key = kNone;
+              }
            switch (key) {
              // Toggle channels:
              case k0: {
@@ -1019,11 +1023,6 @@ int main(int argc, char *argv[])
                      cControl::Launch(new cReplayControl);
                      }
                   break;
-             // Key macros:
-             case kRed:
-             case kGreen:
-             case kYellow:
-             case kBlue: cRemote::PutMacro(key); break;
              default:    break;
              }
            }
