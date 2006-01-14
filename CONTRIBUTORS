@@ -1466,6 +1466,7 @@ Ville Skyttä <ville.skytta@iki.fi>
  in the repacker classes in remux.c
  for adding a missing #include <linux/unistd.h> to thread.c
  for adding missing i18n entry for the "Timer" button
+ for removing the obsolete "ca.conf" section from vdr.1
 
 Steffen Beyer <cpunk@reactor.de>
  for fixing setting the colored button help after deleting a recording in case the next
