@@ -4164,3 +4164,4 @@ Video Disk Recorder Revision History
 - Adjusted the "KEY MACROS" section of vdr.5 to the new plugin calling mechanism
   introduced in version 1.3.32.
 - Removed the now obsolete "ca.conf" section from vdr.1 (thanks to Ville Skyttä).
+- Added missing description of L and R circular polarization to 'diseqc.conf'.
