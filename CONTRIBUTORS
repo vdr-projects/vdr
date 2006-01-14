@@ -1633,3 +1633,6 @@ Marcel Schaeben <mts280@gmx.de>
 
 Ingo Schneider <mail@ingo-schneider.de>
  for adding a SleepMs() in cRecorder::Action() to avoid a busy loop
+
+Patrick Cernko <errror@errror.org>
+ for suggesting to add a note about "modprobe capability" to INSTALL

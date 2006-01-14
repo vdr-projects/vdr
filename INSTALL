@@ -40,6 +40,12 @@ adjust the definition of DVBDIR in that file.
 VDR requires the Linux-DVB driver version dated 2003-08-23 or higher
 to work properly.
 
+You will also need to install the "libjpeg" and "libcap" libraries,
+as well as their "devel" packages to get the necessary header files
+for compiling VDR. If the "capability" module is not compiled into
+your kernel, you may need to do "modprobe capability" before running
+VDR.
+
 After extracting the package, change into the VDR directory
 and type 'make'. This should produce an executable file
 named 'vdr', which can be run after the DVB driver has been
