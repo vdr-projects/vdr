@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.h 1.28 2005/12/27 14:31:24 kls Exp $
+ * $Id: epg.h 1.29 2006/01/14 15:45:24 kls Exp $
  */
 
 #ifndef __EPG_H
@@ -179,6 +179,7 @@ public:
   static bool Read(FILE *f = NULL);
   cSchedule *AddSchedule(tChannelID ChannelID);
   const cSchedule *GetSchedule(tChannelID ChannelID) const;
+  const cSchedule *GetSchedule(const cChannel *Channel, bool AddIfMissing = false) const;
   };
 
 void ReportEpgBugFixStats(bool Reset = false);

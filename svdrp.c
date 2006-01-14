@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.91 2006/01/14 11:42:52 kls Exp $
+ * $Id: svdrp.c 1.92 2006/01/14 14:55:52 kls Exp $
  */
 
 #include "svdrp.h"
@@ -936,7 +936,7 @@ void cSVDRP::CmdLSTE(const char *Option)
                  else
                     Channel = Channels.GetByChannelID(tChannelID::FromString(Option));
                  if (Channel) {
-                    Schedule = Schedules->GetSchedule(Channel->GetChannelID());
+                    Schedule = Schedules->GetSchedule(Channel);
                     if (!Schedule) {
                        Reply(550, "No schedule found");
                        return;

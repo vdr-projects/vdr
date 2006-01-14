@@ -4170,3 +4170,5 @@ Video Disk Recorder Revision History
   names (thanks to Stefan Huelswitt).
 - Added a missing '-' to the example for viewing a grabbed image on a remote host
   (reported by Philippe Gramoullé).
+- Made the "What's on now/next?" menus a lot faster by storing a pointer to each
+  channel's schedule in the cChannel data.

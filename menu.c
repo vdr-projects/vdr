@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.392 2006/01/13 15:17:53 kls Exp $
+ * $Id: menu.c 1.393 2006/01/14 14:53:43 kls Exp $
  */
 
 #include "menu.h"
@@ -1029,7 +1029,7 @@ cMenuWhatsOn::cMenuWhatsOn(const cSchedules *Schedules, bool Now, int CurrentCha
   helpKeys = -1;
   for (cChannel *Channel = Channels.First(); Channel; Channel = Channels.Next(Channel)) {
       if (!Channel->GroupSep()) {
-         const cSchedule *Schedule = Schedules->GetSchedule(Channel->GetChannelID());
+         const cSchedule *Schedule = Schedules->GetSchedule(Channel);
          if (Schedule) {
             const cEvent *Event = Now ? Schedule->GetPresentEvent() : Schedule->GetFollowingEvent();
             if (Event)
@@ -1202,7 +1202,7 @@ void cMenuSchedule::PrepareSchedule(cChannel *Channel)
   SetTitle(buffer);
   free(buffer);
   if (schedules) {
-     const cSchedule *Schedule = schedules->GetSchedule(Channel->GetChannelID());
+     const cSchedule *Schedule = schedules->GetSchedule(Channel);
      if (Schedule) {
         const cEvent *PresentEvent = Schedule->GetPresentEvent(Channel->Number() == cDevice::CurrentChannel());
         time_t now = time(NULL) - Setup.EPGLinger * 60;
@@ -2833,7 +2833,7 @@ static void SetTrackDescriptions(bool Live)
      if (Channel) {
         const cSchedules *Schedules = cSchedules::Schedules(SchedulesLock);
         if (Schedules) {
-           const cSchedule *Schedule = Schedules->GetSchedule(Channel->GetChannelID());
+           const cSchedule *Schedule = Schedules->GetSchedule(Channel);
            if (Schedule) {
               const cEvent *Present = Schedule->GetPresentEvent(true);
               if (Present)
@@ -2916,7 +2916,7 @@ void cDisplayChannel::DisplayInfo(void)
      cSchedulesLock SchedulesLock;
      const cSchedules *Schedules = cSchedules::Schedules(SchedulesLock);
      if (Schedules) {
-        const cSchedule *Schedule = Schedules->GetSchedule(channel->GetChannelID());
+        const cSchedule *Schedule = Schedules->GetSchedule(channel);
         if (Schedule) {
            const cEvent *Present = Schedule->GetPresentEvent(true);
            const cEvent *Following = Schedule->GetFollowingEvent(true);
@@ -3346,7 +3346,7 @@ bool cRecordControl::GetEvent(void)
         cSchedulesLock SchedulesLock;
         const cSchedules *Schedules = cSchedules::Schedules(SchedulesLock);
         if (Schedules) {
-           const cSchedule *Schedule = Schedules->GetSchedule(channel->GetChannelID());
+           const cSchedule *Schedule = Schedules->GetSchedule(channel);
            if (Schedule) {
               event = Schedule->GetEventAround(Time);
               if (event) {
