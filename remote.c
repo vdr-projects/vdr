@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remote.c 1.47 2006/01/08 17:13:18 kls Exp $
+ * $Id: remote.c 1.48 2006/01/15 15:00:00 kls Exp $
  */
 
 #include "remote.h"
@@ -301,6 +301,7 @@ uint64 cKbdRemote::ReadKeySequence(void)
                       k |= key1 & 0xFF;
                       switch (key1) {
                         case 0x31 ... 0x3F: // more-byte sequence
+                        case 0x5B: // strange, may apparently occur
                              do {
                                 if ((key1 = ReadKey()) < 0)
                                    break; // Sequence ends here
