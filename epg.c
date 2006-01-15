@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 1.48 2006/01/14 15:46:50 kls Exp $
+ * $Id: epg.c 1.49 2006/01/15 13:58:30 kls Exp $
  */
 
 #include "epg.h"
@@ -247,6 +247,8 @@ void cEvent::Dump(FILE *f, const char *Prefix, bool InfoOnly) const
      if (components) {
         for (int i = 0; i < components->NumComponents(); i++) {
             tComponent *p = components->Component(i);
+            if (!Setup.UseDolbyDigital && p->stream == 0x02 && p->type == 0x05)
+               continue;
             fprintf(f, "%sX %s\n", Prefix, *p->ToString());
             }
         }

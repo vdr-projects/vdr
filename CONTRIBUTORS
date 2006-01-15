@@ -1646,3 +1646,7 @@ Patrick Cernko <errror@errror.org>
 Philippe Gramoullé <philippe@gramoulle.com>
  for reporting a a missing '-' in the example for viewing a grabbed image on a remote
  host
+
+André Weidemann <Andre.Weidemann@web.de>
+ for suggesting to only write Dolby Digital tracks into the 'info.vdr' file of a
+ recording if Setup.UseDolbyDigital is true

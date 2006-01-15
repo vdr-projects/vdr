@@ -4183,3 +4183,5 @@ Video Disk Recorder Revision History
   "All events on all channels" page may take a while.
 - The status markers in the "Schedule" menu are now only updated if a submenu is
   closed in which a timer has been modified, which speeds up closing submenus.
+- Now only writing Dolby Digital tracks into the 'info.vdr' file of a recording
+  if Setup.UseDolbyDigital is true (suggested by André Weidemann).
