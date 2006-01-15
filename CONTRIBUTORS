@@ -1659,3 +1659,7 @@ Jürgen Schilling <juergen_schilling@web.de>
 Jesus Bravo Alvarez <jba@pobox.com>
  for reporting a second place where a message should be given when an instant
  recording is started
+
+Francois-Xavier Kowalski <francois-xavier.kowalski@hp.com>
+ for suggesting how to modify logging so that even on NPTL systems each line in
+ the log file shows the individual thread's pid

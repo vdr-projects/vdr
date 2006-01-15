@@ -4194,3 +4194,5 @@ Video Disk Recorder Revision History
 
 - Fixed a second place where a message should be given when an instant recording
   is started (reported by Jesus Bravo Alvarez).
+- Modified logging so that even on NPTL systems each line in the log file shows
+  the individual thread's pid (based on a suggestion from Francois-Xavier Kowalski).

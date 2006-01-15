@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.239 2006/01/15 16:01:32 kls Exp $
+ * $Id: vdr.c 1.240 2006/01/15 16:23:21 kls Exp $
  */
 
 #include <getopt.h>
@@ -447,7 +447,7 @@ int main(int argc, char *argv[])
   // Log file:
 
   if (SysLogLevel > 0)
-     openlog("vdr", LOG_PID | LOG_CONS, SysLogTarget);
+     openlog("vdr", LOG_CONS, SysLogTarget); // LOG_PID doesn't work as expected under NPTL
 
   // Check the video directory:
 
