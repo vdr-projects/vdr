@@ -4181,3 +4181,5 @@ Video Disk Recorder Revision History
   This can be used to find reruns of a given show, or the episodes of a series.
   Note that if there are many channels in your channels.conf, displaying the
   "All events on all channels" page may take a while.
+- The status markers in the "Schedule" menu are now only updated if a submenu is
+  closed in which a timer has been modified, which speeds up closing submenus.

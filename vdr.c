@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.237 2006/01/14 10:20:50 kls Exp $
+ * $Id: vdr.c 1.238 2006/01/15 13:31:57 kls Exp $
  */
 
 #include <getopt.h>
@@ -690,9 +690,10 @@ int main(int argc, char *argv[])
         if (!Channels.BeingEdited() && !Timers.BeingEdited()) {
            int modified = Channels.Modified();
            static time_t ChannelSaveTimeout = 0;
+           static int TimerState = 0;
            // Channels and timers need to be stored in a consistent manner,
            // therefore if one of them is changed, we save both.
-           if (modified == CHANNELSMOD_USER || Timers.Modified())
+           if (modified == CHANNELSMOD_USER || Timers.Modified(TimerState))
               ChannelSaveTimeout = 1; // triggers an immediate save
            else if (modified && !ChannelSaveTimeout)
               ChannelSaveTimeout = time(NULL) + CHANNELSAVEDELTA;

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.394 2006/01/15 12:46:07 kls Exp $
+ * $Id: menu.c 1.395 2006/01/15 13:35:05 kls Exp $
  */
 
 #include "menu.h"
@@ -1030,6 +1030,7 @@ class cMenuWhatsOn : public cOsdMenu {
 private:
   bool now;
   int helpKeys;
+  int timerState;
   eOSState Record(void);
   eOSState Switch(void);
   static int currentChannel;
@@ -1052,6 +1053,8 @@ cMenuWhatsOn::cMenuWhatsOn(const cSchedules *Schedules, bool Now, int CurrentCha
 {
   now = Now;
   helpKeys = -1;
+  timerState = 0;
+  Timers.Modified(timerState);
   for (cChannel *Channel = Channels.First(); Channel; Channel = Channels.Next(Channel)) {
       if (!Channel->GroupSep()) {
          const cSchedule *Schedule = Schedules->GetSchedule(Channel);
@@ -1069,10 +1072,12 @@ cMenuWhatsOn::cMenuWhatsOn(const cSchedules *Schedules, bool Now, int CurrentCha
 bool cMenuWhatsOn::Update(void)
 {
   bool result = false;
-  for (cOsdItem *item = First(); item; item = Next(item)) {
-      if (((cMenuScheduleItem *)item)->Update())
-         result = true;
-      }
+  if (Timers.Modified(timerState)) {
+     for (cOsdItem *item = First(); item; item = Next(item)) {
+         if (((cMenuScheduleItem *)item)->Update())
+            result = true;
+         }
+     }
   return result;
 }
 
@@ -1188,6 +1193,7 @@ private:
   bool now, next;
   int otherChannel;
   int helpKeys;
+  int timerState;
   eOSState Number(void);
   eOSState Record(void);
   eOSState Switch(void);
@@ -1209,6 +1215,8 @@ cMenuSchedule::cMenuSchedule(void)
   now = next = false;
   otherChannel = 0;
   helpKeys = -1;
+  timerState = 0;
+  Timers.Modified(timerState);
   cMenuScheduleItem::SetSortMode(cMenuScheduleItem::ssmAllThis);
   cChannel *channel = Channels.GetByNumber(cDevice::CurrentChannel());
   if (channel) {
@@ -1306,10 +1314,12 @@ void cMenuSchedule::PrepareScheduleAllAll(const cEvent *Event, const cChannel *C
 bool cMenuSchedule::Update(void)
 {
   bool result = false;
-  for (cOsdItem *item = First(); item; item = Next(item)) {
-      if (((cMenuScheduleItem *)item)->Update())
-         result = true;
-      }
+  if (Timers.Modified(timerState)) {
+     for (cOsdItem *item = First(); item; item = Next(item)) {
+         if (((cMenuScheduleItem *)item)->Update())
+            result = true;
+         }
+     }
   return result;
 }
 
