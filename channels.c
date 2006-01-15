@@ -4,13 +4,14 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 1.47 2005/12/30 15:41:24 kls Exp $
+ * $Id: channels.c 1.48 2006/01/14 15:51:02 kls Exp $
  */
 
 #include "channels.h"
 #include <linux/dvb/frontend.h>
 #include <ctype.h>
 #include "device.h"
+#include "epg.h"
 
 // IMPORTANT NOTE: in the 'sscanf()' calls there is a blank after the '%d'
 // format characters in order to allow any number of blanks after a numeric
@@ -174,6 +175,7 @@ cChannel::cChannel(void)
   guard        = GUARD_INTERVAL_AUTO;
   hierarchy    = HIERARCHY_AUTO;
   modification = CHANNELMOD_NONE;
+  schedule     = NULL;
   linkChannels = NULL;
   refChannel   = NULL;
 }
@@ -184,6 +186,7 @@ cChannel::cChannel(const cChannel &Channel)
   shortName = NULL;
   provider = NULL;
   portalName = NULL;
+  schedule     = NULL;
   linkChannels = NULL;
   refChannel   = NULL;
   *this = Channel;
@@ -293,6 +296,7 @@ bool cChannel::SetSatTransponderData(int Source, int Frequency, char Polarizatio
      srate = Srate;
      coderateH = CoderateH;
      modulation = QPSK;
+     schedule = NULL;
      }
   return true;
 }
@@ -310,6 +314,7 @@ bool cChannel::SetCableTransponderData(int Source, int Frequency, int Modulation
      modulation = Modulation;
      srate = Srate;
      coderateH = CoderateH;
+     schedule = NULL;
      }
   return true;
 }
@@ -331,6 +336,7 @@ bool cChannel::SetTerrTransponderData(int Source, int Frequency, int Bandwidth, 
      coderateL = CoderateL;
      guard = Guard;
      transmission = Transmission;
+     schedule = NULL;
      }
   return true;
 }
@@ -350,6 +356,7 @@ void cChannel::SetId(int Nid, int Tid, int Sid, int Rid)
      rid = Rid;
      if (Number())
         Channels.HashChannel(this);
+     schedule = NULL;
      }
 }
 

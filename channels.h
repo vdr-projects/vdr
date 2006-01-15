@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.h 1.37 2006/01/07 13:00:43 kls Exp $
+ * $Id: channels.h 1.38 2006/01/14 15:51:26 kls Exp $
  */
 
 #ifndef __CHANNELS_H
@@ -103,7 +103,10 @@ public:
 class cLinkChannels : public cList<cLinkChannel> {
   };
 
+class cSchedule;
+
 class cChannel : public cListObject {
+  friend class cSchedules;
   friend class cMenuEditChannel;
 private:
   static cString ToText(const cChannel *Channel);
@@ -142,6 +145,7 @@ private:
   int hierarchy;
   int __EndData__;
   int modification;
+  mutable const cSchedule *schedule;
   cLinkChannels *linkChannels;
   cChannel *refChannel;
   cString ParametersToString(void) const;

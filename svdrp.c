@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 1.89 2005/12/30 15:42:29 kls Exp $
+ * $Id: svdrp.c 1.93 2006/01/14 16:08:20 kls Exp $
  */
 
 #include "svdrp.h"
@@ -229,9 +229,11 @@ const char *HelpPages[] = {
   "LSTR [ <number> ]\n"
   "    List recordings. Without option, all recordings are listed. Otherwise\n"
   "    the information for the given recording is listed.",
-  "LSTT [ <number> ]\n"
+  "LSTT [ <number> ] [ id ]\n"
   "    List timers. Without option, all timers are listed. Otherwise\n"
-  "    only the given timer is listed.",
+  "    only the given timer is listed. If the keyword 'id' is given, the\n"
+  "    channels will be listed with their unique channel ids instead of\n"
+  "    their numbers.",
   "MESG <message>\n"
   "    Displays the given message on the OSD. The message will be queued\n"
   "    and displayed whenever this is suitable.\n",
@@ -681,10 +683,6 @@ void cSVDRP::CmdGRAB(const char *Option)
         }
      else if (strcmp(FileName, "-") == 0)
         FileName = NULL;
-     else {
-        Reply(501, "Missing filename extension in \"%s\"", FileName);
-        return;
-        }
      // image quality (and obsolete type):
      if ((p = strtok_r(NULL, delim, &strtok_next)) != NULL) {
         if (strcasecmp(p, "JPEG") == 0 || strcasecmp(p, "PNM") == 0) {
@@ -729,10 +727,13 @@ void cSVDRP::CmdGRAB(const char *Option)
      char RealFileName[PATH_MAX];
      if (FileName) {
         if (grabImageDir) {
-           char *s;
-           asprintf(&s, "%s/%s", grabImageDir, FileName);
-           FileName = s;
-           char *slash = strrchr(FileName, '/'); // there definitely is one
+           char *s = 0;
+           char *slash = strrchr(FileName, '/');
+           if (!slash) {
+              asprintf(&s, "%s/%s", grabImageDir, FileName);
+              FileName = s;
+              }
+           slash = strrchr(FileName, '/'); // there definitely is one
            *slash = 0;
            char *r = realpath(FileName, RealFileName);
            *slash = '/';
@@ -931,7 +932,7 @@ void cSVDRP::CmdLSTE(const char *Option)
                  else
                     Channel = Channels.GetByChannelID(tChannelID::FromString(Option));
                  if (Channel) {
-                    Schedule = Schedules->GetSchedule(Channel->GetChannelID());
+                    Schedule = Schedules->GetSchedule(Channel);
                     if (!Schedule) {
                        Reply(550, "No schedule found");
                        return;
@@ -1009,22 +1010,38 @@ void cSVDRP::CmdLSTR(const char *Option)
 
 void cSVDRP::CmdLSTT(const char *Option)
 {
+  int Number = 0;
+  bool Id = false;
   if (*Option) {
-     if (isnumber(Option)) {
-        cTimer *timer = Timers.Get(strtol(Option, NULL, 10) - 1);
-        if (timer)
-           Reply(250, "%d %s", timer->Index() + 1, *timer->ToText());
-        else
-           Reply(501, "Timer \"%s\" not defined", Option);
-        }
+     char buf[strlen(Option) + 1];
+     strcpy(buf, Option);
+     const char *delim = " \t";
+     char *strtok_next;
+     char *p = strtok_r(buf, delim, &strtok_next);
+     while (p) {
+           if (isnumber(p))
+              Number = strtol(p, NULL, 10);
+           else if (strcasecmp(p, "ID") == 0)
+              Id = true;
+           else {
+              Reply(501, "Unknown option: \"%s\"", p);
+              return;
+              }
+           p = strtok_r(NULL, delim, &strtok_next);
+           }
+     }
+  if (Number) {
+     cTimer *timer = Timers.Get(Number - 1);
+     if (timer)
+        Reply(250, "%d %s", timer->Index() + 1, *timer->ToText(Id));
      else
-        Reply(501, "Error in timer number \"%s\"", Option);
+        Reply(501, "Timer \"%s\" not defined", Option);
      }
   else if (Timers.Count()) {
      for (int i = 0; i < Timers.Count(); i++) {
          cTimer *timer = Timers.Get(i);
         if (timer)
-           Reply(i < Timers.Count() - 1 ? -250 : 250, "%d %s", timer->Index() + 1, *timer->ToText());
+           Reply(i < Timers.Count() - 1 ? -250 : 250, "%d %s", timer->Index() + 1, *timer->ToText(Id));
         else
            Reply(501, "Timer \"%d\" not found", i + 1);
          }

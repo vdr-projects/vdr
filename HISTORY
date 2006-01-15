@@ -4029,7 +4029,7 @@ Video Disk Recorder Revision History
   name (based on a suggestion from Darren Salt).
   A simple way of viewing a grabbed image on a remote host is:
 
-  svdrpsend.pl -d <hostname> 'grab -' | sed -n -e 's/^216-//p' -e '1ibegin-base64 644 -' -e '$a====' | uudecode | display
+  svdrpsend.pl -d <hostname> 'grab -' | sed -n -e 's/^216-//p' -e '1ibegin-base64 644 -' -e '$a====' | uudecode | display -
 
 - The new command line option '-g' must be given if the SVDRP command GRAB
   shall be allowed to write image files to disk. The parameter to this option
@@ -4134,3 +4134,58 @@ Video Disk Recorder Revision History
 - Added a SleepMs() in cRecorder::Action() to avoid a busy loop (thanks to Ingo
   Schneider).
 - Cleaned up some trailing white space.
+
+2006-01-15: Version 1.3.39
+
+- The SVDRP command LSTT now accepts the new option 'id' to have the channels
+  of the timers listed with their unique channel ids instead of their numbers
+  (suggested by Matthias Schniedermeyer).
+- Added a missing #include <linux/unistd.h> to thread.c (thanks to Ville Skyttä).
+- Fixed the "plugins-clean" and "plugins-install" targets in the Makefile (thanks
+  to Andreas Brachold).
+- Fixed handling "more than 3 byte" key sequences in cKbdRemote::ReadKeySequence()
+  (thanks to Peter Bieringer). If you are using the PC keyboard as remote control
+  input you may need to make VDR newly learn the keys by removing the remote.conf
+  file.
+- To avoid problems with access rights when VDR shall run as 'root' it now skips
+  all SetCaps() and SetUser() calls when it is started as 'root' and "-u root"
+  is given.
+- Added missing i18n entry for the "Timer" button (thanks to Ville Skyttä)
+- Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
+- Making the "Menu" key behave consistently has not been well received by several
+  users, so the new option "Setup/OSD/Menu button closes" can be used to get the
+  old behavior back (which also is the default value of this option).
+- Dropped the default vdr user. The program now always runs under the user id
+  it was started from, unless the '-u' option is given and it was started from
+  the 'root' user. If you want to have a default vdr user, you can activate and
+  adjust the "VDR_USER = vdr" line in your Make.config file (from the original
+  patch by Ludwig Nussel).
+- Key macros can now be defined for all non-modeless keys (suggested by Mirko Dölle).
+- Adjusted the "KEY MACROS" section of vdr.5 to the new plugin calling mechanism
+  introduced in version 1.3.32.
+- Removed the now obsolete "ca.conf" section from vdr.1 (thanks to Ville Skyttä).
+- Added missing description of L and R circular polarization to 'diseqc.conf'.
+- Added a note about "modprobe capability" to INSTALL (suggested by Patrick Cernko).
+- Fixed canonicalizing the file name in the SVDRP command GRAB to allow full path
+  names (thanks to Stefan Huelswitt).
+- Added a missing '-' to the example for viewing a grabbed image on a remote host
+  (reported by Philippe Gramoullé).
+- Made the "What's on now/next?" menus a lot faster by storing a pointer to each
+  channel's schedule in the cChannel data.
+- Made the log messages regarding lost lock of devices "info" instead of "error"
+  (suggested by Andreas Brachold).
+- The SVDRP command GRAB allows file names without extension again (suggested by
+  Stefan Huelswitt).
+- Pressing '0' in the "Schedule" menu now rotates through displaying "This event on
+  this channel", "This event on all channels" and "All events on all channels".
+  This can be used to find reruns of a given show, or the episodes of a series.
+  Note that if there are many channels in your channels.conf, displaying the
+  "All events on all channels" page may take a while.
+- The status markers in the "Schedule" menu are now only updated if a submenu is
+  closed in which a timer has been modified, which speeds up closing submenus.
+- Now only writing Dolby Digital tracks into the 'info.vdr' file of a recording
+  if Setup.UseDolbyDigital is true (suggested by André Weidemann).
+- Added a leading '0' to the day in the DayDateTime() function (thanks to Rolf
+  Ahrenberg).
+- No longer displaying color buttons in the recording info menu if it has been
+  invoked from a player (reported by Jürgen Schilling).

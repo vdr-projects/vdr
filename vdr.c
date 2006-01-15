@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.233 2006/01/08 11:49:03 kls Exp $
+ * $Id: vdr.c 1.238 2006/01/15 13:31:57 kls Exp $
  */
 
 #include <getopt.h>
@@ -157,14 +157,13 @@ int main(int argc, char *argv[])
 
   // Command line options:
 
-#define DEFAULTVDRUSER   "vdr"
 #define DEFAULTSVDRPPORT 2001
 #define DEFAULTWATCHDOG     0 // seconds
 #define DEFAULTPLUGINDIR PLUGINDIR
 #define DEFAULTEPGDATAFILENAME "epg.data"
 
   bool StartedAsRoot = false;
-  const char *VdrUser = DEFAULTVDRUSER;
+  const char *VdrUser = NULL;
   int SVDRPport = DEFAULTSVDRPPORT;
   const char *AudioCommand = NULL;
   const char *ConfigDirectory = NULL;
@@ -191,6 +190,9 @@ int main(int argc, char *argv[])
 #endif
 #if defined(VFAT)
   VfatFileSystem = true;
+#endif
+#if defined(VDR_USER)
+  VdrUser = VDR_USER;
 #endif
 
   cPluginManager PluginManager(DEFAULTPLUGINDIR);
@@ -337,16 +339,18 @@ int main(int argc, char *argv[])
 
   // Set user id in case we were started as root:
 
-  if (getuid() == 0) {
+  if (VdrUser && getuid() == 0) {
      StartedAsRoot = true;
-     if (!SetKeepCaps(true))
-        return 2;
-     if (!SetUser(VdrUser))
-        return 2;
-     if (!SetKeepCaps(false))
-        return 2;
-     if (!SetCapSysTime())
-        return 2;
+     if (strcmp(VdrUser, "root")) {
+        if (!SetKeepCaps(true))
+           return 2;
+        if (!SetUser(VdrUser))
+           return 2;
+        if (!SetKeepCaps(false))
+           return 2;
+        if (!SetCapSysTime())
+           return 2;
+        }
      }
 
   // Help and version info:
@@ -392,8 +396,8 @@ int main(int argc, char *argv[])
                "  -r CMD,   --record=CMD   call CMD before and after a recording\n"
                "  -s CMD,   --shutdown=CMD call CMD to shutdown the computer\n"
                "  -t TTY,   --terminal=TTY controlling tty\n"
-               "  -u USER,  --user=USER    run as user USER (default: %s); only applicable\n"
-               "                           if started as root\n"
+               "  -u USER,  --user=USER    run as user USER; only applicable if started as\n"
+               "                           root\n"
                "  -v DIR,   --video=DIR    use DIR as video directory (default: %s)\n"
                "  -V,       --version      print version information and exit\n"
                "            --vfat         encode special characters in recording names to\n"
@@ -406,7 +410,6 @@ int main(int argc, char *argv[])
                LIRC_DEVICE,
                DEFAULTSVDRPPORT,
                RCU_DEVICE,
-               DEFAULTVDRUSER,
                VideoDirectory,
                DEFAULTWATCHDOG
                );
@@ -471,7 +474,7 @@ int main(int argc, char *argv[])
      }
 
   isyslog("VDR version %s started", VDRVERSION);
-  if (StartedAsRoot)
+  if (StartedAsRoot && VdrUser)
      isyslog("switched to user '%s'", VdrUser);
   if (DaemonMode)
      dsyslog("running as daemon (tid=%d)", cThread::ThreadId());
@@ -687,9 +690,10 @@ int main(int argc, char *argv[])
         if (!Channels.BeingEdited() && !Timers.BeingEdited()) {
            int modified = Channels.Modified();
            static time_t ChannelSaveTimeout = 0;
+           static int TimerState = 0;
            // Channels and timers need to be stored in a consistent manner,
            // therefore if one of them is changed, we save both.
-           if (modified == CHANNELSMOD_USER || Timers.Modified())
+           if (modified == CHANNELSMOD_USER || Timers.Modified(TimerState))
               ChannelSaveTimeout = 1; // triggers an immediate save
            else if (modified && !ChannelSaveTimeout)
               ChannelSaveTimeout = time(NULL) + CHANNELSAVEDELTA;
@@ -785,14 +789,17 @@ int main(int argc, char *argv[])
         // Keys that must work independent of any interactive mode:
         switch (key) {
           // Menu control:
-          case kMenu:
+          case kMenu: {
                key = kNone; // nobody else needs to see this key
+               bool WasOpen = Interact != NULL;
+               bool WasMenu = Interact && Interact->IsMenu();
                if (Menu)
                   DELETE_MENU;
                else if (cControl::Control() && cOsd::IsOpen())
                   cControl::Control()->Hide();
-               else
+               if (!WasOpen || !WasMenu && !Setup.MenuButtonCloses)
                   Menu = new cMenuMain;
+               }
                break;
           // Info:
           case kInfo: {
@@ -978,6 +985,10 @@ int main(int argc, char *argv[])
            }
         else {
            // Key functions in "normal" viewing mode:
+           if (KeyMacros.Get(key)) {
+              cRemote::PutMacro(key);
+              key = kNone;
+              }
            switch (key) {
              // Toggle channels:
              case k0: {
@@ -1013,11 +1024,6 @@ int main(int argc, char *argv[])
                      cControl::Launch(new cReplayControl);
                      }
                   break;
-             // Key macros:
-             case kRed:
-             case kGreen:
-             case kYellow:
-             case kBlue: cRemote::PutMacro(key); break;
              default:    break;
              }
            }

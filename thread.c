@@ -4,11 +4,12 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 1.50 2006/01/04 15:01:22 kls Exp $
+ * $Id: thread.c 1.51 2006/01/08 16:03:56 kls Exp $
  */
 
 #include "thread.h"
 #include <errno.h>
+#include <linux/unistd.h>
 #include <malloc.h>
 #include <stdarg.h>
 #include <sys/resource.h>

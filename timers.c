@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 1.41 2006/01/08 11:40:29 kls Exp $
+ * $Id: timers.c 1.43 2006/01/15 13:31:11 kls Exp $
  */
 
 #include "timers.h"
@@ -515,7 +515,7 @@ cTimers Timers;
 
 cTimers::cTimers(void)
 {
-  modified = false;
+  state = 0;
   beingEdited = 0;;
   lastSetEvents = 0;
 }
@@ -574,13 +574,13 @@ cTimer *cTimers::GetNextActiveTimer(void)
 
 void cTimers::SetModified(void)
 {
-  modified = true;
+  state++;
 }
 
-bool cTimers::Modified(void)
+bool cTimers::Modified(int &State)
 {
-  bool Result = modified;
-  modified = false;
+  bool Result = state != State;
+  State = state;
   return Result;
 }
 
@@ -596,7 +596,7 @@ void cTimers::SetEvents(void)
   if (Schedules) {
      if (!lastSetEvents || Schedules->Modified() >= lastSetEvents) {
         for (cTimer *ti = First(); ti; ti = Next(ti)) {
-            const cSchedule *Schedule = Schedules->GetSchedule(ti->Channel()->GetChannelID());
+            const cSchedule *Schedule = Schedules->GetSchedule(ti->Channel());
             if (Schedule) {
                if (!lastSetEvents || Schedule->Modified() >= lastSetEvents) {
                   const cEvent *Event = NULL;

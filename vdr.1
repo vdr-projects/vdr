@@ -8,7 +8,7 @@
 .\" License as specified in the file COPYING that comes with the
 .\" vdr distribution.
 .\"
-.\" $Id: vdr.1 1.20 2006/01/08 11:51:36 kls Exp $
+.\" $Id: vdr.1 1.22 2006/01/14 11:09:08 kls Exp $
 .\"
 .TH vdr 1 "08 Jan 2006" "1.3.38" "Video Disk Recorder"
 .SH NAME
@@ -132,8 +132,8 @@ Set the controlling terminal.
 Run as user \fIuser\fR in case vdr was started as user 'root'.
 Starting vdr as 'root' is necessary if the system time shall
 be set from the transponder data, but for security reasons
-during normal operation vdr switches to a lesser privileged
-user id. By default the user 'vdr' is used.
+vdr can switch to a lesser privileged user id during normal
+operation.
 .TP
 .BI \-v\  dir ,\ \-\-video= dir
 Use \fIdir\fR as video directory.
@@ -160,9 +160,6 @@ An non-recoverable error has been detected, \fBvdr\fR has given up.
 .TP
 .I channels.conf
 Channel configuration.
-.TP
-.I ca.conf
-Conditional access configuration.
 .TP
 .I timers.conf
 Timer configuration.

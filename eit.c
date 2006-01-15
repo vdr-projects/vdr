@@ -8,7 +8,7 @@
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  * Adapted to 'libsi' for VDR 1.3.0 by Marcel Wiesweg <marcel.wiesweg@gmx.de>.
  *
- * $Id: eit.c 1.113 2005/12/26 11:50:09 kls Exp $
+ * $Id: eit.c 1.114 2006/01/14 15:41:21 kls Exp $
  */
 
 #include "eit.h"
@@ -35,11 +35,7 @@ cEIT::cEIT(cSchedules *Schedules, int Source, u_char Tid, const u_char *Data)
   if (!channel)
      return; // only collect data for known channels
 
-  cSchedule *pSchedule = (cSchedule *)Schedules->GetSchedule(channelID);
-  if (!pSchedule) {
-     pSchedule = new cSchedule(channelID);
-     Schedules->Add(pSchedule);
-     }
+  cSchedule *pSchedule = (cSchedule *)Schedules->GetSchedule(channel, true);
 
   bool Empty = true;
   bool Modified = false;

@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 1.81 2006/01/01 15:12:05 kls Exp $
+# $Id: Makefile 1.83 2006/01/13 16:04:56 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -76,6 +76,9 @@ DEFINES += -DREMOTE_KBD
 endif
 ifdef REMOTE
 DEFINES += -DREMOTE_$(REMOTE)
+endif
+ifdef VDR_USER
+DEFINES += -DVDR_USER=\"$(VDR_USER)\"
 endif
 
 LIRC_DEVICE ?= /dev/lircd
@@ -192,7 +195,7 @@ plugins: include-dir
 
 plugins-clean:
 	@for i in `ls $(PLUGINDIR)/src | grep -v '[^a-z0-9]'`; do $(MAKE) -C "$(PLUGINDIR)/src/$$i" clean; done
-	@-rm -f $(PLUGINLIBDIR)/libvdr-*.so.$(VDRVERSION)
+	@-rm -f $(PLUGINDIR)/lib/libvdr-*.so.$(VDRVERSION)
 
 # Install the files:
 
@@ -209,8 +212,8 @@ install:
             fi
 
 plugins-install:
-	@mkdir -p $(BINDIR)/$(PLUGINLIBDIR)
-	@cp $(PLUGINLIBDIR)/* $(BINDIR)/$(PLUGINLIBDIR)
+	@mkdir -p $(PLUGINLIBDIR)
+	@cp $(PLUGINDIR)/lib/libvdr-*.so.$(VDRVERSION) $(PLUGINLIBDIR)
 
 # Source documentation:
 

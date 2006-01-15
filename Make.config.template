@@ -6,7 +6,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Make.config.template 1.6 2005/09/02 14:24:31 kls Exp $
+# $Id: Make.config.template 1.7 2006/01/13 16:06:11 kls Exp $
 
 ### The C compiler and options:
 
@@ -30,3 +30,6 @@ VIDEODIR = /video
 
 LIRC_DEVICE = /dev/lircd
 RCU_DEVICE  = /dev/ttyS1
+
+## Define if you want vdr to not run as root
+#VDR_USER = vdr

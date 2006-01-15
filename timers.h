@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.h 1.23 2006/01/06 14:13:17 kls Exp $
+ * $Id: timers.h 1.24 2006/01/15 13:29:44 kls Exp $
  */
 
 #ifndef __TIMERS_H
@@ -96,7 +96,7 @@ public:
 
 class cTimers : public cConfig<cTimer> {
 private:
-  bool modified;
+  int state;
   int beingEdited;
   time_t lastSetEvents;
 public:
@@ -109,9 +109,10 @@ public:
   void IncBeingEdited(void) { beingEdited++; }
   void DecBeingEdited(void) { if (!--beingEdited) lastSetEvents = 0; }
   void SetModified(void);
-  bool Modified(void);
-      ///< Returns true if any of the timers have been modified.
-      ///< Calling this function resets the 'modified' flag to false.
+  bool Modified(int &State);
+      ///< Returns true if any of the timers have been modified, which
+      ///< is detected by State being different than the internal state.
+      ///< Upon return the internal state will be stored in State.
   void SetEvents(void);
   void DeleteExpired(void);
   };

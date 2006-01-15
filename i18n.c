@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.230 2006/01/08 11:56:31 kls Exp $
+ * $Id: i18n.c 1.235 2006/01/15 12:22:15 kls Exp $
  *
  * Translations provided by:
  *
@@ -441,6 +441,69 @@ const tI18nPhrase Phrases[] = {
     "Programm - %s",
     "Program - %s",
   },
+  { "This event - %s",
+    "Diese Sendung - %s",
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+  },
+  { "This event - all channels",
+    "Diese Sendung - alle Kanäle",
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+  },
+  { "All events - all channels",
+    "Alle Sendungen - alle Kanäle",
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+  },
   { "What's on now?",
     "Was läuft jetzt?",
     "Kaj je na sporedu?",
@@ -609,6 +672,27 @@ const tI18nPhrase Phrases[] = {
     "De-/Aktiviraj",
     "Sees/Väljas",
     "Til/Fra",
+  },
+  { "Timer",
+    "Timer",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "Ajastin",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
   },
   { "Button$Record",
     "Aufnehmen",
@@ -1200,7 +1284,7 @@ const tI18nPhrase Phrases[] = {
     "Optagelse om %d minutter - sluk alligevel?",
   },
   { "Press any key to cancel shutdown",
-    "Taste drücken um Shutdown abzubrechen",
+    "Taste drücken, um Shutdown abzubrechen",
     "Pritisni katerikoli gumb za preklic izklopa",
     "Un tasto per annullare lo spegnimento",
     "Druk een toets om shutdown af te breken",
@@ -2260,7 +2344,7 @@ const tI18nPhrase Phrases[] = {
     "Espaço em disco reduzido!",
     "Disque presque plein!",
     "Lite ledig diskplass!",
-    "Kovalevy lähes täynnä!",
+    "Tallennustila loppumassa!",
     "Dysk wkrotce pelny!",
     "¡Disco casi lleno",
     "Ï óêëçñüò êïíôåýåé íÜ ãåìßóåé!",
@@ -2955,7 +3039,7 @@ const tI18nPhrase Phrases[] = {
     "Mostrar info ao mudar de Canal",
     "Affichage progr. en cours",
     "Info ved kanalskifte",
-    "Näytä kanavatieto",
+    "Näytä kanavatieto vaihdettaessa",
     "Informacja przy zmianie kanalu",
     "Información para cambio de canal",
     "Ðëçñïöïñßåò óôÞí áëëáãÞ êáíáëéïý",
@@ -2976,7 +3060,7 @@ const tI18nPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Sulje kanavatieto pyydettäessä",
     "", // TODO
     "", // TODO
     "", // TODO
@@ -3030,6 +3114,27 @@ const tI18nPhrase Phrases[] = {
     "S kraja skoèi na poèetak",
     "Ridade kerimine",
     "Scroll rundt",
+  },
+  { "Setup.OSD$Menu button closes",
+    "Menu-Taste schließt",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "",// TODO
   },
   { "Setup.OSD$Sort timers",
     "Timer sortieren",
@@ -4155,7 +4260,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    " 0\t-.#~,/_@1\tabcäå2\tdef3\tghi4\tjkl5\tmnoö6\tpqrs7\ttuv8\twxyz9",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -5397,7 +5502,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Tallennus aloitettu",
     "",//TODO
     "",//TODO
     "",//TODO

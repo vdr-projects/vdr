@@ -40,6 +40,12 @@ adjust the definition of DVBDIR in that file.
 VDR requires the Linux-DVB driver version dated 2003-08-23 or higher
 to work properly.
 
+You will also need to install the "libjpeg" and "libcap" libraries,
+as well as their "devel" packages to get the necessary header files
+for compiling VDR. If the "capability" module is not compiled into
+your kernel, you may need to do "modprobe capability" before running
+VDR.
+
 After extracting the package, change into the VDR directory
 and type 'make'. This should produce an executable file
 named 'vdr', which can be run after the DVB driver has been
@@ -136,10 +142,10 @@ Setting the system time:
 ------------------------
 
 If you want VDR to set the system time according to the data received
-from the transponder, you need to start VDR as user 'root'. VDR will
-then only keep the capability to set the system time, and set its
-user id to a lesser privileged one ('vdr' by default, can be set
-to a different value with the '-u' option).
+from the transponder, you need to start VDR as user 'root'. For security
+reasons you should then use the '-u' option to define a lesser privileged
+user id under which VDR should actually run. It will then only keep the
+capability to set the system time, and set its user id to the given one.
 You also need to enable the "EPG/Set system time" option in VDR's
 Setup menu, and select a transponder from which you want to receive
 the time in "Use time from transponder". Make sure you select a transponder

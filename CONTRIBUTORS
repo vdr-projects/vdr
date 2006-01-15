@@ -71,6 +71,8 @@ Matthias Schniedermeyer <ms@citd.de>
  and had their start time changed into the future
  for suggesting to give the timer status a bit that is set when that timer
  is currently recording
+ for suggesting to make the SVDRP command LSTT optionally list the channels
+ of the timers with their unique channel ids instead of their numbers
 
 Miha Setina <mihasetina@softhome.net>
  for translating OSD texts to the Slovenian language
@@ -209,6 +211,10 @@ Stefan Huelswitt <huels@iname.com>
  live PIDs
  for reporting a problem in SetProgress() of the 'skincurses' plugin in case Total
  is 0
+ for fixing canonicalizing the file name in the SVDRP command GRAB to allow full
+ path names
+ for suggesting that the SVDRP command GRAB should allow file names without extension
+ again
 
 Ulrich Röder <roeder@efr-net.de>
  for pointing out that there are channels that have a symbol rate higher than 27500
@@ -425,6 +431,7 @@ Mirko Dölle <mdoelle@linux-user.de>
  for suggesting to avoid the external 'find' command to scan the video directory
  for reporting a problem with inconsistent channel and timer lists
  for making the "Play" key in live viewing mode resume a previous replay session
+ for suggesting to allow defining key macros for all non-modeless keys
 
 Michael Rakowski <mrak@gmx.de>
  for translating OSD texts to the Polish language
@@ -853,6 +860,9 @@ Andreas Brachold <vdr04@deltab.de>
  for reporting that there are empty info.vdr files created if there is no EPG
  info available
  for implementing the SVDRP command MOVC
+ for fixing the "plugins-clean" and "plugins-install" targets in the Makefile
+ for suggesting to make the log messages regarding lost lock of devices "info"
+ instead of "error"
 
 Manuel Hartl <icecep@gmx.net>
  for suggesting to extend the logging info when starting/stopping timers
@@ -925,6 +935,7 @@ Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  for changing the title of the recording info menu
  for reporting a bug in handling key macros with keys after @plugin
  for adding compiler options "-fPIC -g" to all plugins
+ for adding a leading '0' to the day in the DayDateTime() function
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark
@@ -940,6 +951,7 @@ Peter Bieringer <pb@bieringer.de>
  for suggesting to implement the command line option '--vfat'
  for reporting a leftover 'summary.vdr' in vdr.5
  for adding more error messages and line numbers when reading EPG data and info.vdr
+ for fixing handling "more than 3 byte" key sequences in cKbdRemote::ReadKeySequence()
 
 Alexander Damhuis <ad@phonedation.de>
  for reporting problems when deleting a timer that is currently recording
@@ -1459,6 +1471,9 @@ Ville Skyttä <ville.skytta@iki.fi>
  warnings with g++ 4.1.0
  for reporting warnings with g++ 4.1.0 regarding incrementing the 'state' variables
  in the repacker classes in remux.c
+ for adding a missing #include <linux/unistd.h> to thread.c
+ for adding missing i18n entry for the "Timer" button
+ for removing the obsolete "ca.conf" section from vdr.1
 
 Steffen Beyer <cpunk@reactor.de>
  for fixing setting the colored button help after deleting a recording in case the next
@@ -1625,3 +1640,18 @@ Marcel Schaeben <mts280@gmx.de>
 
 Ingo Schneider <mail@ingo-schneider.de>
  for adding a SleepMs() in cRecorder::Action() to avoid a busy loop
+
+Patrick Cernko <errror@errror.org>
+ for suggesting to add a note about "modprobe capability" to INSTALL
+
+Philippe Gramoullé <philippe@gramoulle.com>
+ for reporting a a missing '-' in the example for viewing a grabbed image on a remote
+ host
+
+André Weidemann <Andre.Weidemann@web.de>
+ for suggesting to only write Dolby Digital tracks into the 'info.vdr' file of a
+ recording if Setup.UseDolbyDigital is true
+
+Jürgen Schilling <juergen_schilling@web.de>
+ for reporting that color buttons were displayed in the recording info menu if it
+ has been invoked from a player
