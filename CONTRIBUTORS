@@ -1655,3 +1655,7 @@ André Weidemann <Andre.Weidemann@web.de>
 Jürgen Schilling <juergen_schilling@web.de>
  for reporting that color buttons were displayed in the recording info menu if it
  has been invoked from a player
+
+Jesus Bravo Alvarez <jba@pobox.com>
+ for reporting a second place where a message should be given when an instant
+ recording is started
