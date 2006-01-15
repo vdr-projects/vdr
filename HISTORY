@@ -4187,3 +4187,5 @@ Video Disk Recorder Revision History
   if Setup.UseDolbyDigital is true (suggested by André Weidemann).
 - Added a leading '0' to the day in the DayDateTime() function (thanks to Rolf
   Ahrenberg).
+- No longer displaying color buttons in the recording info menu if it has been
+  invoked from a player (reported by Jürgen Schilling).

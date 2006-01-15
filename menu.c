@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.395 2006/01/15 13:35:05 kls Exp $
+ * $Id: menu.c 1.396 2006/01/15 15:02:36 kls Exp $
  */
 
 #include "menu.h"
@@ -1702,17 +1702,19 @@ cOsdObject *CamControl(void)
 class cMenuRecording : public cOsdMenu {
 private:
   const cRecording *recording;
+  bool withButtons;
 public:
-  cMenuRecording(const cRecording *Recording);
+  cMenuRecording(const cRecording *Recording, bool WithButtons = false);
   virtual void Display(void);
   virtual eOSState ProcessKey(eKeys Key);
 };
 
-cMenuRecording::cMenuRecording(const cRecording *Recording)
+cMenuRecording::cMenuRecording(const cRecording *Recording, bool WithButtons)
 :cOsdMenu(tr("Recording info"))
 {
   recording = Recording;
-  if (recording)
+  withButtons = WithButtons;
+  if (withButtons)
      SetHelp(tr("Button$Play"), tr("Button$Rewind"));
 }
 
@@ -1744,8 +1746,11 @@ eOSState cMenuRecording::ProcessKey(eKeys Key)
 
   if (state == osUnknown) {
      switch (Key) {
-       case kRed:    Key = kOk; // will play the recording, even if recording commands are defined
-       case kGreen:  cRemote::Put(Key, true);
+       case kRed:    if (withButtons)
+                        Key = kOk; // will play the recording, even if recording commands are defined
+       case kGreen:  if (!withButtons)
+                        break;
+                     cRemote::Put(Key, true);
                      // continue with osBack to close the info menu and process the key
        case kOk:     return osBack;
        default: break;
@@ -1993,7 +1998,7 @@ eOSState cMenuRecordings::Info(void)
   if (ri && !ri->IsDirectory()) {
      cRecording *recording = GetRecording(ri);
      if (recording && recording->Info()->Title())
-        return AddSubMenu(new cMenuRecording(recording));
+        return AddSubMenu(new cMenuRecording(recording, true));
      }
   return osContinue;
 }
@@ -3993,7 +3998,7 @@ cOsdObject *cReplayControl::GetInfo(void)
 {
   cRecording *Recording = Recordings.GetByName(cReplayControl::LastReplayed());
   if (Recording)
-     return new cMenuRecording(Recording);
+     return new cMenuRecording(Recording, false);
   return NULL;
 }
 

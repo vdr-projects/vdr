@@ -1651,3 +1651,7 @@ Philippe Gramoullé <philippe@gramoulle.com>
 André Weidemann <Andre.Weidemann@web.de>
  for suggesting to only write Dolby Digital tracks into the 'info.vdr' file of a
  recording if Setup.UseDolbyDigital is true
+
+Jürgen Schilling <juergen_schilling@web.de>
+ for reporting that color buttons were displayed in the recording info menu if it
+ has been invoked from a player
