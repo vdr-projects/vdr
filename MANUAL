@@ -177,6 +177,12 @@ Version 1.3
      whether there is currently a DVB card receiving the transponder this channel
      is on).
 
+  Pressing '0' in the "Schedule" menu rotates through displaying "This event on
+  this channel", "This event on all channels" and "All events on all channels".
+  This can be used to find reruns of a given show, or the episodes of a series.
+  Note that if there are many channels in your channels.conf, displaying the
+  "All events on all channels" page may take a while.
+
 * Selecting a Channel
 
   There are four ways to select a channel:

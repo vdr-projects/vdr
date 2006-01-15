@@ -4135,7 +4135,7 @@ Video Disk Recorder Revision History
   Schneider).
 - Cleaned up some trailing white space.
 
-2006-01-14: Version 1.3.39
+2006-01-15: Version 1.3.39
 
 - The SVDRP command LSTT now accepts the new option 'id' to have the channels
   of the timers listed with their unique channel ids instead of their numbers
@@ -4176,3 +4176,8 @@ Video Disk Recorder Revision History
   (suggested by Andreas Brachold).
 - The SVDRP command GRAB allows file names without extension again (suggested by
   Stefan Huelswitt).
+- Pressing '0' in the "Schedule" menu now rotates through displaying "This event on
+  this channel", "This event on all channels" and "All events on all channels".
+  This can be used to find reruns of a given show, or the episodes of a series.
+  Note that if there are many channels in your channels.conf, displaying the
+  "All events on all channels" page may take a while.
