@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 1.49 2006/01/15 13:58:30 kls Exp $
+ * $Id: epg.c 1.50 2006/01/20 13:42:38 kls Exp $
  */
 
 #include "epg.h"
@@ -935,7 +935,10 @@ bool cSchedules::ClearAll(void)
   cSchedulesLock SchedulesLock(true, 1000);
   cSchedules *s = (cSchedules *)Schedules(SchedulesLock);
   if (s) {
-     s->Clear();
+     for (cTimer *Timer = Timers.First(); Timer; Timer = Timers.Next(Timer))
+         Timer->SetEvent(NULL);
+     for (cSchedule *Schedule = s->First(); Schedule; Schedule = s->Next(Schedule))
+         Schedule->Cleanup(INT_MAX);
      return true;
      }
   return false;

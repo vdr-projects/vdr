@@ -1667,3 +1667,6 @@ Francois-Xavier Kowalski <francois-xavier.kowalski@hp.com>
 Franz Gangkofer <Franz.Gangkofer@cadsoft.de>
  for reporting a problem with @plugin in keymacros.conf in case the named plugin
  is not loaded
+
+Malte Schröder <MalteSch@gmx.de>
+ for reporting a crash after executing the SVDRP command CLRE

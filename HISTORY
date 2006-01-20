@@ -4198,3 +4198,5 @@ Video Disk Recorder Revision History
   the individual thread's pid (based on a suggestion from Francois-Xavier Kowalski).
 - Fixed a problem with @plugin in keymacros.conf in case the named plugin is not
   loaded (reported by Franz Gangkofer).
+- Fixed a crash after executing the SVDRP command CLRE, caused by dangling 'schedule'
+  pointers from cChannel objects (reported by Malte Schröder).
