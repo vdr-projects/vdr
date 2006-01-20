@@ -4205,3 +4205,4 @@ Video Disk Recorder Revision History
 - Fixed a crash in the Schedule menu with events that have no title (reported by
   Rolf Ahrenberg). cEvent::FixEpgBugs() now assigns a "No title" string to events
   that have no title.
+- Updated the Estonian OSD texts (thanks to Arthur Konovalov).

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.236 2006/01/20 13:54:55 kls Exp $
+ * $Id: i18n.c 1.237 2006/01/20 14:33:39 kls Exp $
  *
  * Translations provided by:
  *
@@ -186,7 +186,7 @@ const tI18nPhrase Phrases[] = {
     "Guia de Programació",
     "ÂÕÛÕÓØÔ",
     "Raspored",
-    "Kava",
+    "Ajakava",
     "Programoversigt",
   },
   { "Channels",
@@ -438,7 +438,7 @@ const tI18nPhrase Phrases[] = {
     "Guia de Programació - %s",
     "¿àŞÓàĞÜÜĞ - %s",
     "Raspored - %s",
-    "Programm - %s",
+    "Ajakava - %s",
     "Program - %s",
   },
   { "This event - %s",
@@ -459,7 +459,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "See sündmus - %s",
     "",//TODO
   },
   { "This event - all channels",
@@ -480,7 +480,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "See sündmus - kõik kanalid",
     "",//TODO
   },
   { "All events - all channels",
@@ -501,7 +501,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Kõik sündmused - kõik kanalid",
     "",//TODO
   },
   { "What's on now?",
@@ -564,7 +564,7 @@ const tI18nPhrase Phrases[] = {
     "Resum",
     "¾ßØáĞİØÕ",
     "Sadr¾aj",
-    "Kokkuvõte",
+    "Ülevaade",
     "Omtale",
   },
   // Button texts (should not be more than 10 characters!):
@@ -670,7 +670,7 @@ const tI18nPhrase Phrases[] = {
     "On/Off",
     "²ÚÛ/²ëÚÛ",
     "De-/Aktiviraj",
-    "Sees/Väljas",
+    "On/Off",
     "Til/Fra",
   },
   { "Timer",
@@ -691,7 +691,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Taimer",
     "",// TODO
   },
   { "Button$Record",
@@ -901,7 +901,7 @@ const tI18nPhrase Phrases[] = {
     "Següent",
     "´ĞÛÕÕ",
     "Slijedi",
-    "Järgmine",
+    "Tulekul",
     "Næste",
   },
   { "Button$Schedule",
@@ -922,7 +922,7 @@ const tI18nPhrase Phrases[] = {
     "Programar",
     "¿àŞÓàĞÜÜĞ",
     "Raspored",
-    "Kava",
+    "Ajakava",
     "Program",
   },
   { "Button$ABC/abc",
@@ -1596,7 +1596,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "FTA",
     "",//TODO
   },
   { "encrypted",
@@ -1617,7 +1617,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "krüptitud",
     "",//TODO
   },
   { "Sid",
@@ -2081,7 +2081,7 @@ const tI18nPhrase Phrases[] = {
     "El temporitzador està gravant!",
     "¸Ôñâ ×ĞßØáì ßŞ âĞÙÜÕàã!",
     "Snimanje po definiranom terminu!",
-    "Taimeri salvestamine!",
+    "Taimeriga salvestamine aktiivne!",
     "Timer optager nu!",
   },
   { "Error while accessing recording!",
@@ -2312,7 +2312,7 @@ const tI18nPhrase Phrases[] = {
     "Procés d'edició iniciat anteriorment!",
     "¿àŞæÕáá ÒØÔÕŞÜŞİâĞÖĞ ãÖÕ ×ĞßãéÕİ!",
     "Ureğivanje je veæ aktivirano!",
-    "Redigeerimine on juba aktiivne!",
+    "Redigeerimine juba aktiivne!",
     "Redigeringsproces er allerede aktiv!",
   },
   { "Can't shutdown - option '-s' not given!",
@@ -2354,7 +2354,7 @@ const tI18nPhrase Phrases[] = {
     "Disc gairebé ple!",
     "½ÕÔŞáâĞâŞçİŞ ÜÕáâĞ İĞ ÔØáÚÕ!",
     "Nedovoljno prostora na disku",
-    "Kõvaketas peaaegu täis!",
+    "Kõvaketas täis!",
     "Kun lidt diskplads tilbage!",
   },
   { "Opening CAM menu...",
@@ -3028,7 +3028,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "¿ŞÚĞ× ØİäŞàÜĞæØØ Ş ÚĞİĞÛÕ (áÕÚ)",
     "Vrijeme prikaza informacije o programu (s)",
-    "Kanaliteate esitusaeg (s)",
+    "Kanaliinfo esitusaeg (s)",
     "Tid kanalinfo skal vises (s)",
   },
   { "Setup.OSD$Info on channel switch",
@@ -3049,7 +3049,7 @@ const tI18nPhrase Phrases[] = {
     "Informació del canvi de canal",
     "¿ŞÚĞ×ëÒĞâì ØİäŞàÜĞæØî Ş ÚĞİĞÛÕ",
     "Informacije kod promjene kanala",
-    "Kanaliteate näitamine",
+    "Kanaliinfo näitamine",
     "Info ved kanalskift",
   },
   { "Setup.OSD$Timeout requested channel info",
@@ -3070,7 +3070,7 @@ const tI18nPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "", // TODO
-    "", // TODO
+    "Kanaliinfo kuvamise ajapiirang",
     "", // TODO
   },
   { "Setup.OSD$Scroll pages",
@@ -3133,7 +3133,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Sulgemine Menüü klahviga",
     "",// TODO
   },
   { "Setup.OSD$Sort timers",
@@ -3532,7 +3532,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "İĞ×ÒĞİØï Ø PIDë",
     "imena i identifikatore (PIDs)",
-    "nimed ja PID-id",
+    "nimi ja PID-id",
     "navne og PIDs",
   },
   { "add new channels",
@@ -3784,7 +3784,7 @@ const tI18nPhrase Phrases[] = {
     "Límit primari",
     "¼Øİ. ßàØŞàØâÕâ ×ĞåÒĞâĞ Şáİ. ãáâàŞÙáâÒĞ",
     "Standardno ogranièenje",
-    "Esmase seadme prioriteet",
+    "Esmane prioriteet",
     "Primær grænse",
   },
   { "Setup.Recording$Default priority",
@@ -4270,7 +4270,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    " 0\t-.#~,/_@1\tabcäå2\tdef3\tghi4\tjkl5\tmnoõö6\tpqrsğ7\ttuvü8\twxyzş9",
     "",//TODO
   },
   // Learning keys:
@@ -5470,7 +5470,7 @@ const tI18nPhrase Phrases[] = {
     "Procés d'edició finalitzat",
     "¼ŞİâĞÖ ŞÚŞİçÕİ",
     "Rezanje zavr¹eno",
-    "Redigeerimine on lõpetatud",
+    "Redigeerimine lõpetatud",
     "Redigeringsproces afsluttet",
   },
   { "Editing process failed!",
@@ -5512,7 +5512,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Salvestamine algas",
     "",//TODO
   },
   { "Pausing live video...",
