@@ -1671,3 +1671,6 @@ Franz Gangkofer <Franz.Gangkofer@cadsoft.de>
 
 Malte Schröder <MalteSch@gmx.de>
  for reporting a crash after executing the SVDRP command CLRE
+
+Markus Hahn <mhahn@reel-multimedia.com>
+ for suggesting to only start recordings if there is at least 300MB free disk space

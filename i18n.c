@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.237 2006/01/20 14:33:39 kls Exp $
+ * $Id: i18n.c 1.238 2006/01/20 16:30:00 kls Exp $
  *
  * Translations provided by:
  *
@@ -2335,6 +2335,27 @@ const tI18nPhrase Phrases[] = {
     "Ga¹enje nemoguæe - nedostaje opcija '-s'!",
     "Väljalülitamine ebaõnnestus - '-s' parameeter puudub!",
     "Kan ikke slukke - parameter '-s' ikke angivet!",
+  },
+  { "Not enough disk space to start recording!",
+    "Nicht genügend Plattenplatz für Aufnahme!",
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
+    "",//TODO
   },
   { "Low disk space!",
     "Platte beinahe voll!",

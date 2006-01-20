@@ -4206,3 +4206,5 @@ Video Disk Recorder Revision History
   Rolf Ahrenberg). cEvent::FixEpgBugs() now assigns a "No title" string to events
   that have no title.
 - Updated the Estonian OSD texts (thanks to Arthur Konovalov).
+- Recordings are now only started if there is at least 300MB free disk space
+  (suggested by Markus Hahn).

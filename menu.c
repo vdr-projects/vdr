@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.396 2006/01/15 15:02:36 kls Exp $
+ * $Id: menu.c 1.397 2006/01/20 16:28:18 kls Exp $
  */
 
 #include "menu.h"
@@ -36,6 +36,8 @@
 #define MAXRECORDCONTROLS (MAXDEVICES * MAXRECEIVERS)
 #define MAXINSTANTRECTIME (24 * 60 - 1) // 23:59 hours
 #define MAXWAITFORCAMMENU 4 // seconds to wait for the CAM menu to open
+#define MINFREEDISK       300 // minimum free disk space required to start recording
+#define NODISKSPACEDELTA  300 // seconds between "Not enough disk space to start recording!" messages
 
 #define CHNUMWIDTH  (numdigits(Channels.MaxNumber()) + 1)
 
@@ -3520,6 +3522,19 @@ int cRecordControls::state = 0;
 
 bool cRecordControls::Start(cTimer *Timer, bool Pause)
 {
+  static time_t LastNoDiskSpaceMessage = 0;
+  int FreeMB = 0;
+  VideoDiskSpace(&FreeMB);
+  if (FreeMB < MINFREEDISK) {
+     if (!Timer || time(NULL) - LastNoDiskSpaceMessage > NODISKSPACEDELTA) {
+        isyslog("not enough disk space to start recording%s%s", Timer ? " timer " : "", Timer ? *Timer->ToDescr() : "");
+        Skins.Message(mtWarning, tr("Not enough disk space to start recording!"));
+        LastNoDiskSpaceMessage = time(NULL);
+        }
+     return false;
+     }
+  LastNoDiskSpaceMessage = 0;
+
   ChangeState();
   int ch = Timer ? Timer->Channel()->Number() : cDevice::CurrentChannel();
   cChannel *channel = Channels.GetByNumber(ch);
@@ -3548,8 +3563,10 @@ bool cRecordControls::Start(cTimer *Timer, bool Pause)
                }
            }
         }
-     else if (!Timer || (Timer->Priority() >= Setup.PrimaryLimit && !Timer->Pending()))
+     else if (!Timer || (Timer->Priority() >= Setup.PrimaryLimit && !Timer->Pending())) {
         isyslog("no free DVB device to record channel %d!", ch);
+        Skins.Message(mtError, tr("No free DVB device to record!"));
+        }
      }
   else
      esyslog("ERROR: channel %d not defined!", ch);
