@@ -4202,3 +4202,6 @@ Video Disk Recorder Revision History
   pointers from cChannel objects (reported by Malte Schröder).
 - Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
 - Improved NULL checking in strreplace().
+- Fixed a crash in the Schedule menu with events that have no title (reported by
+  Rolf Ahrenberg). cEvent::FixEpgBugs() now assigns a "No title" string to events
+  that have no title.

@@ -936,6 +936,7 @@ Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  for reporting a bug in handling key macros with keys after @plugin
  for adding compiler options "-fPIC -g" to all plugins
  for adding a leading '0' to the day in the DayDateTime() function
+ for reporting a crash in the Schedule menu with events that have no title
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark
