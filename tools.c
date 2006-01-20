@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.111 2006/01/15 16:42:37 kls Exp $
+ * $Id: tools.c 1.112 2006/01/20 14:01:28 kls Exp $
  */
 
 #include "tools.h"
@@ -138,13 +138,14 @@ char *strn0cpy(char *dest, const char *src, size_t n)
 
 char *strreplace(char *s, char c1, char c2)
 {
-  char *p = s;
-
-  while (p && *p) {
-        if (*p == c1)
-           *p = c2;
-        p++;
-        }
+  if (s) {
+     char *p = s;
+     while (*p) {
+           if (*p == c1)
+              *p = c2;
+           p++;
+           }
+     }
   return s;
 }
 

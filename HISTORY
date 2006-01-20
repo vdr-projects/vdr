@@ -4201,3 +4201,4 @@ Video Disk Recorder Revision History
 - Fixed a crash after executing the SVDRP command CLRE, caused by dangling 'schedule'
   pointers from cChannel objects (reported by Malte Schröder).
 - Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
+- Improved NULL checking in strreplace().
