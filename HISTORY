@@ -4190,9 +4190,11 @@ Video Disk Recorder Revision History
 - No longer displaying color buttons in the recording info menu if it has been
   invoked from a player (reported by Jürgen Schilling).
 
-2006-01-15: Version 1.3.40
+2006-01-20: Version 1.3.40
 
 - Fixed a second place where a message should be given when an instant recording
   is started (reported by Jesus Bravo Alvarez).
 - Modified logging so that even on NPTL systems each line in the log file shows
   the individual thread's pid (based on a suggestion from Francois-Xavier Kowalski).
+- Fixed a problem with @plugin in keymacros.conf in case the named plugin is not
+  loaded (reported by Franz Gangkofer).

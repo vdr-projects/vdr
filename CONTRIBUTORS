@@ -1663,3 +1663,7 @@ Jesus Bravo Alvarez <jba@pobox.com>
 Francois-Xavier Kowalski <francois-xavier.kowalski@hp.com>
  for suggesting how to modify logging so that even on NPTL systems each line in
  the log file shows the individual thread's pid
+
+Franz Gangkofer <Franz.Gangkofer@cadsoft.de>
+ for reporting a problem with @plugin in keymacros.conf in case the named plugin
+ is not loaded

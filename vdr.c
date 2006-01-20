@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.240 2006/01/15 16:23:21 kls Exp $
+ * $Id: vdr.c 1.241 2006/01/16 17:05:49 kls Exp $
  */
 
 #include <getopt.h>
@@ -985,7 +985,7 @@ int main(int argc, char *argv[])
            }
         else {
            // Key functions in "normal" viewing mode:
-           if (KeyMacros.Get(key)) {
+           if (key != kNone && KeyMacros.Get(key)) {
               cRemote::PutMacro(key);
               key = kNone;
               }
