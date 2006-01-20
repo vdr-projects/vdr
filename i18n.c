@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.235 2006/01/15 12:22:15 kls Exp $
+ * $Id: i18n.c 1.236 2006/01/20 13:54:55 kls Exp $
  *
  * Translations provided by:
  *
@@ -449,7 +449,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Tämä tapahtuma - %s",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -470,7 +470,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Tämä tapahtuma - kaikki kanavat",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -491,7 +491,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Kaikki tapahtumat - kaikki kanavat",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -1586,7 +1586,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "vapaa",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -1607,7 +1607,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "salattu",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -3123,7 +3123,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "",// TODO
-    "",// TODO
+    "Sulje valikkonäppäimellä",
     "",// TODO
     "",// TODO
     "",// TODO
