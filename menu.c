@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.397 2006/01/20 16:28:18 kls Exp $
+ * $Id: menu.c 1.398 2006/01/20 17:19:46 kls Exp $
  */
 
 #include "menu.h"
@@ -3524,6 +3524,8 @@ bool cRecordControls::Start(cTimer *Timer, bool Pause)
 {
   static time_t LastNoDiskSpaceMessage = 0;
   int FreeMB = 0;
+  if (Timer)
+     AssertFreeDiskSpace(Timer->Priority(), true);
   VideoDiskSpace(&FreeMB);
   if (FreeMB < MINFREEDISK) {
      if (!Timer || time(NULL) - LastNoDiskSpaceMessage > NODISKSPACEDELTA) {

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 1.48 2005/12/18 11:26:51 kls Exp $
+ * $Id: recording.h 1.49 2006/01/20 17:18:28 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -21,9 +21,11 @@
 extern bool VfatFileSystem;
 
 void RemoveDeletedRecordings(void);
-void AssertFreeDiskSpace(int Priority = 0);
+void AssertFreeDiskSpace(int Priority = 0, bool Force = false);
      ///< The special Priority value -1 means that we shall get rid of any
      ///< deleted recordings faster than normal (because we're cutting).
+     ///< If Force is true, the check will be done even if the timeout
+     ///< hasn't expired yet.
 
 class cResumeFile {
 private:
