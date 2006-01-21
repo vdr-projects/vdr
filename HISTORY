@@ -4210,3 +4210,5 @@ Video Disk Recorder Revision History
   (suggested by Markus Hahn).
 - When entering text via the numeric keys, the cursor now automatically advances
   (based on a patch from Rolf Ahrenberg).
+- Updated the Polish OSD texts and the fontosd-iso8859-2.c file (thanks to Jaroslaw
+  Swierczynski).
