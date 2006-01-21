@@ -4208,3 +4208,5 @@ Video Disk Recorder Revision History
 - Updated the Estonian OSD texts (thanks to Arthur Konovalov).
 - Recordings are now only started if there is at least 300MB free disk space
   (suggested by Markus Hahn).
+- When entering text via the numeric keys, the cursor now automatically advances
+  (based on a patch from Rolf Ahrenberg).

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.c 1.29 2006/01/07 15:37:03 kls Exp $
+ * $Id: menuitems.c 1.30 2006/01/21 12:27:14 kls Exp $
  */
 
 #include "menuitems.h"
@@ -14,6 +14,8 @@
 #include "remote.h"
 #include "skins.h"
 #include "status.h"
+
+#define AUTO_ADVANCE_TIMEOUT  1500 // ms before auto advance when entering characters via numeric keys
 
 const char *FileNameChars = " abcdefghijklmnopqrstuvwxyz0123456789-.#~,/_@";
 
@@ -262,6 +264,23 @@ void cMenuEditStrItem::SetHelpKeys(void)
      cSkinDisplay::Current()->SetButtons(NULL);
 }
 
+void cMenuEditStrItem::AdvancePos(void)
+{
+  if (pos < length - 2 && pos < int(strlen(value)) ) {
+     if (++pos >= int(strlen(value))) {
+        if (pos >= 2 && value[pos - 1] == ' ' && value[pos - 2] == ' ')
+           pos--; // allow only two blanks at the end
+        else {
+           value[pos] = ' ';
+           value[pos + 1] = 0;
+           }
+        }
+     }
+  newchar = true;
+  if (!insert && isalpha(value[pos]))
+     uppercase = isupper(value[pos]);
+}
+
 void cMenuEditStrItem::Set(void)
 {
   char buf[1000];
@@ -326,6 +345,13 @@ eOSState cMenuEditStrItem::ProcessKey(eKeys Key)
   bool SameKey = Key == lastKey;
   if (Key != kNone)
      lastKey = Key;
+  else if (!newchar && autoAdvanceTimeout.TimedOut()) {
+     AdvancePos();
+     newchar = true;
+     currentChar = NULL;
+     Set();
+     return osContinue;
+     }
   switch (Key) {
     case kRed:   // Switch between upper- and lowercase characters
                  if (InEditMode()) {
@@ -382,19 +408,7 @@ eOSState cMenuEditStrItem::ProcessKey(eKeys Key)
                     uppercase = isupper(value[pos]);
                  break;
     case kRight|k_Repeat:
-    case kRight: if (pos < length - 2 && pos < int(strlen(value)) ) {
-                    if (++pos >= int(strlen(value))) {
-                       if (pos >= 2 && value[pos - 1] == ' ' && value[pos - 2] == ' ')
-                          pos--; // allow only two blanks at the end
-                       else {
-                          value[pos] = ' ';
-                          value[pos + 1] = 0;
-                          }
-                       }
-                    }
-                 newchar = true;
-                 if (!insert && isalpha(value[pos]))
-                    uppercase = isupper(value[pos]);
+    case kRight: AdvancePos();
                  if (pos == 0)
                     SetHelpKeys();
                  break;
@@ -413,15 +427,19 @@ eOSState cMenuEditStrItem::ProcessKey(eKeys Key)
                        value[pos] = toupper(Inc(tolower(value[pos]), NORMALKEY(Key) == kUp));
                     else
                        value[pos] =         Inc(        value[pos],  NORMALKEY(Key) == kUp);
-                    newchar = false;
+                    newchar = true;
                     }
                  else
                     return cMenuEditItem::ProcessKey(Key);
                  break;
+    case k0|k_Repeat ... k9|k_Repeat:
     case k0 ... k9: {
-                 if (!SameKey)
-                    currentChar = NULL;
                  if (InEditMode()) {
+                    if (!SameKey) {
+                       if (!newchar)
+                          AdvancePos();
+                       currentChar = NULL;
+                       }
                     if (insert && newchar) {
                        // create a new character in insert mode
                        if (int(strlen(value)) < length - 1) {
@@ -445,6 +463,7 @@ eOSState cMenuEditStrItem::ProcessKey(eKeys Key)
                        currentChar++;
                        }
                     newchar = false;
+                    autoAdvanceTimeout.Set(AUTO_ADVANCE_TIMEOUT);
                     }
                  else
                     return cMenuEditItem::ProcessKey(Key);
