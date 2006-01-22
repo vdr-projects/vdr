@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: transfer.c 1.30 2005/08/14 10:55:03 kls Exp $
+ * $Id: transfer.c 1.31 2006/01/21 14:13:16 kls Exp $
  */
 
 #include "transfer.h"
@@ -63,6 +63,7 @@ void cTransfer::Action(void)
   int Result = 0;
 #ifdef FW_NEEDS_BUFFER_RESERVE_FOR_AC3
   bool GotBufferReserve = false;
+  GotBufferReserve = true; //XXX remove this line if you absolutely need the buffer reserve
   int RequiredBufferReserve = KILOBYTE(DvbCardWith4MBofSDRAM ? 288 : 576);
 #endif
   while (Running()) {

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 1.110 2006/01/15 14:31:45 kls Exp $
+ * $Id: tools.c 1.112 2006/01/20 14:01:28 kls Exp $
  */
 
 #include "tools.h"
@@ -26,8 +26,21 @@ extern "C" {
 #include <unistd.h>
 #include <utime.h>
 #include "i18n.h"
+#include "thread.h"
 
 int SysLogLevel = 3;
+
+#define MAXSYSLOGBUF 256
+
+void syslog_with_tid(int priority, const char *format, ...)
+{
+  va_list ap;
+  char fmt[MAXSYSLOGBUF];
+  snprintf(fmt, sizeof(fmt), "[%d] %s", cThread::ThreadId(), format);
+  va_start(ap, format);
+  vsyslog(priority, fmt, ap);
+  va_end(ap); 
+}
 
 int BCD2INT(int x)
 {
@@ -125,13 +138,14 @@ char *strn0cpy(char *dest, const char *src, size_t n)
 
 char *strreplace(char *s, char c1, char c2)
 {
-  char *p = s;
-
-  while (p && *p) {
-        if (*p == c1)
-           *p = c2;
-        p++;
-        }
+  if (s) {
+     char *p = s;
+     while (*p) {
+           if (*p == c1)
+              *p = c2;
+           p++;
+           }
+     }
   return s;
 }
 

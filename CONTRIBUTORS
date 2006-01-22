@@ -936,6 +936,9 @@ Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  for reporting a bug in handling key macros with keys after @plugin
  for adding compiler options "-fPIC -g" to all plugins
  for adding a leading '0' to the day in the DayDateTime() function
+ for reporting a crash in the Schedule menu with events that have no title
+ for a patch that was used to implement automatic cursor advance when entering text
+ via the numeric keys
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark
@@ -1154,11 +1157,14 @@ Andreas Regel <andreas.regel@gmx.de>
  for reporting a problem with messages when a cOsdObject uses the raw OSD
  for implementing palette replace mode in the OSD bitmaps
 
-Thomas Bergwinkl <Thomas.Bergwinkl@t-online.de>
+Thomas Bergwinkl <Thomas.Bergwinkl@vr-web.de>
  for fixing the validity check for channel IDs, because some providers use TIDs
  with value 0
  for pointing out that transponder handling didn't work with satellites that provide
  two transponders on the same frequency, with different polarization
+ for fixing detecting if there can be any useful further input when entering channel
+ numbers
+ for fixing handling the '0' key for switching between the last two channels
 
 Stéphane Esté-Gracias <sestegra@free.fr>
  for fixing a typo in libsi/si.h
@@ -1655,3 +1661,25 @@ André Weidemann <Andre.Weidemann@web.de>
 Jürgen Schilling <juergen_schilling@web.de>
  for reporting that color buttons were displayed in the recording info menu if it
  has been invoked from a player
+
+Jesus Bravo Alvarez <jba@pobox.com>
+ for reporting a second place where a message should be given when an instant
+ recording is started
+ for updating the Spanish OSD texts
+
+Francois-Xavier Kowalski <francois-xavier.kowalski@hp.com>
+ for suggesting how to modify logging so that even on NPTL systems each line in
+ the log file shows the individual thread's pid
+
+Franz Gangkofer <Franz.Gangkofer@cadsoft.de>
+ for reporting a problem with @plugin in keymacros.conf in case the named plugin
+ is not loaded
+
+Malte Schröder <MalteSch@gmx.de>
+ for reporting a crash after executing the SVDRP command CLRE
+
+Markus Hahn <mhahn@reel-multimedia.com>
+ for suggesting to only start recordings if there is at least 300MB free disk space
+
+Jaroslaw Swierczynski <swiergot@gmail.com>
+ for updating the Polish OSD texts and the fontosd-iso8859-2.c file

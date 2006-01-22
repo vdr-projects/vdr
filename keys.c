@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: keys.c 1.10 2006/01/05 15:39:26 kls Exp $
+ * $Id: keys.c 1.11 2006/01/16 17:01:25 kls Exp $
  */
 
 #include "keys.h"
@@ -250,9 +250,11 @@ cKeyMacros KeyMacros;
 
 const cKeyMacro *cKeyMacros::Get(eKeys Key)
 {
-  for (cKeyMacro *k = First(); k; k = Next(k)) {
-      if (*k->Macro() == Key)
-         return k;
-      }
+  if (Key != kNone) {
+     for (cKeyMacro *k = First(); k; k = Next(k)) {
+         if (*k->Macro() == Key)
+            return k;
+         }
+     }
   return NULL;
 }

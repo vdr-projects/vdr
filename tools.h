@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.89 2006/01/08 11:40:37 kls Exp $
+ * $Id: tools.h 1.90 2006/01/15 16:19:56 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -26,9 +26,9 @@ typedef unsigned long long int uint64;
 
 extern int SysLogLevel;
 
-#define esyslog(a...) void( (SysLogLevel > 0) ? syslog(LOG_ERR,   a) : void() )
-#define isyslog(a...) void( (SysLogLevel > 1) ? syslog(LOG_INFO,  a) : void() )
-#define dsyslog(a...) void( (SysLogLevel > 2) ? syslog(LOG_DEBUG, a) : void() )
+#define esyslog(a...) void( (SysLogLevel > 0) ? syslog_with_tid(LOG_ERR,   a) : void() )
+#define isyslog(a...) void( (SysLogLevel > 1) ? syslog_with_tid(LOG_INFO,  a) : void() )
+#define dsyslog(a...) void( (SysLogLevel > 2) ? syslog_with_tid(LOG_DEBUG, a) : void() )
 
 #define LOG_ERROR         esyslog("ERROR (%s,%d): %m", __FILE__, __LINE__)
 #define LOG_ERROR_STR(s)  esyslog("ERROR: %s: %m", s)
@@ -51,6 +51,8 @@ template<class T> inline T max(T a, T b) { return a >= b ? a : b; }
 template<class T> inline int sgn(T a) { return a < 0 ? -1 : a > 0 ? 1 : 0; }
 template<class T> inline void swap(T &a, T &b) { T t = a; a = b; b = t; }
 #endif
+
+void syslog_with_tid(int priority, const char *format, ...);
 
 #define BCDCHARTOINT(x) (10 * ((x & 0xF0) >> 4) + (x & 0xF))
 int BCD2INT(int x);

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 1.132 2006/01/08 11:40:13 kls Exp $
+ * $Id: recording.c 1.133 2006/01/20 17:18:59 kls Exp $
  */
 
 #include "recording.h"
@@ -117,7 +117,7 @@ void RemoveDeletedRecordings(void)
      }
 }
 
-void AssertFreeDiskSpace(int Priority)
+void AssertFreeDiskSpace(int Priority, bool Force)
 {
   static cMutex Mutex;
   cMutexLock MutexLock(&Mutex);
@@ -126,7 +126,7 @@ void AssertFreeDiskSpace(int Priority)
   // it will get removed during the next call.
   static time_t LastFreeDiskCheck = 0;
   int Factor = (Priority == -1) ? 10 : 1;
-  if (time(NULL) - LastFreeDiskCheck > DISKCHECKDELTA / Factor) {
+  if (Force || time(NULL) - LastFreeDiskCheck > DISKCHECKDELTA / Factor) {
      if (!VideoFileSpaceAvailable(MINDISKSPACE)) {
         // Make sure only one instance of VDR does this:
         cLockFile LockFile(VideoDirectory);

@@ -4189,3 +4189,41 @@ Video Disk Recorder Revision History
   Ahrenberg).
 - No longer displaying color buttons in the recording info menu if it has been
   invoked from a player (reported by Jürgen Schilling).
+
+2006-01-22: Version 1.3.40
+
+- Fixed a second place where a message should be given when an instant recording
+  is started (reported by Jesus Bravo Alvarez).
+- Modified logging so that even on NPTL systems each line in the log file shows
+  the individual thread's pid (based on a suggestion from Francois-Xavier Kowalski).
+- Fixed a problem with @plugin in keymacros.conf in case the named plugin is not
+  loaded (reported by Franz Gangkofer).
+- Fixed a crash after executing the SVDRP command CLRE, caused by dangling 'schedule'
+  pointers from cChannel objects (reported by Malte Schröder).
+- Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
+- Improved NULL checking in strreplace().
+- Fixed a crash in the Schedule menu with events that have no title (reported by
+  Rolf Ahrenberg). cEvent::FixEpgBugs() now assigns a "No title" string to events
+  that have no title.
+- Updated the Estonian OSD texts (thanks to Arthur Konovalov).
+- Recordings are now only started if there is at least 300MB free disk space
+  (suggested by Markus Hahn).
+- When entering text via the numeric keys, the cursor now automatically advances
+  (based on a patch from Rolf Ahrenberg).
+- Updated the Polish OSD texts and the fontosd-iso8859-2.c file (thanks to Jaroslaw
+  Swierczynski).
+- Disabled the "buffer reserve" in Transfer Mode. Last chance to complain if you
+  really need it - it will be completely removed in the next version. If you are
+  experiencing problems with a/v running out of sync, try the latest driver and
+  firmware (if you are using a full featured DVB card).
+- Switching channels with the Up/Down or Channel+/Channel- keys now works a lot
+  faster when the repeat function kicks in, by not actually switching the
+  channel every time, but rather only displaying the channel info and doing
+  the final switch when the key is released.
+- The channel display is now updated _before_ the channel is switched.
+- Added a missing initialization of 'timeout' in the cDisplayChannel constructor.
+- Fixed detecting if there can be any useful further input when entering channel
+  numbers (thanks to Thomas Bergwinkl).
+- Updated the Spanish OSD texts (thanks to Jesus Bravo Alvarez).
+- Fixed handling the '0' key for switching between the last two channels (thanks
+  to Thomas Bergwinkl).

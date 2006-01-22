@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 1.49 2006/01/15 13:58:30 kls Exp $
+ * $Id: epg.c 1.51 2006/01/20 14:09:48 kls Exp $
  */
 
 #include "epg.h"
@@ -422,197 +422,196 @@ void cEvent::FixEpgBugs(void)
   strreplace(description, '\x86', ' ');
   strreplace(description, '\x87', ' ');
 
+  if (!title) {
+     // we don't want any "(null)" titles
+     title = strcpyrealloc(title, tr("No title"));
+     EpgBugFixStat(12, ChannelID());
+     }
+
   if (Setup.EPGBugfixLevel == 0)
      return;
 
   // Some TV stations apparently have their own idea about how to fill in the
   // EPG data. Let's fix their bugs as good as we can:
-  if (title) {
 
-     // Some channels put the ShortText in quotes and use either the ShortText
-     // or the Description field, depending on how long the string is:
-     //
-     // Title
-     // "ShortText". Description
-     //
-     if ((shortText == NULL) != (description == NULL)) {
-        char *p = shortText ? shortText : description;
-        if (*p == '"') {
-           const char *delim = "\".";
-           char *e = strstr(p + 1, delim);
-           if (e) {
-              *e = 0;
-              char *s = strdup(p + 1);
-              char *d = strdup(e + strlen(delim));
-              free(shortText);
-              free(description);
-              shortText = s;
-              description = d;
-              EpgBugFixStat(1, ChannelID());
-              }
-           }
-        }
-
-     // Some channels put the Description into the ShortText (preceded
-     // by a blank) if there is no actual ShortText and the Description
-     // is short enough:
-     //
-     // Title
-     //  Description
-     //
-     if (shortText && !description) {
-        if (*shortText == ' ') {
-           memmove(shortText, shortText + 1, strlen(shortText));
-           description = shortText;
-           shortText = NULL;
-           EpgBugFixStat(2, ChannelID());
-           }
-        }
-
-     // Sometimes they repeat the Title in the ShortText:
-     //
-     // Title
-     // Title
-     //
-     if (shortText && strcmp(title, shortText) == 0) {
-        free(shortText);
-        shortText = NULL;
-        EpgBugFixStat(3, ChannelID());
-        }
-
-     // Some channels put the ShortText between double quotes, which is nothing
-     // but annoying (some even put a '.' after the closing '"'):
-     //
-     // Title
-     // "ShortText"[.]
-     //
-     if (shortText && *shortText == '"') {
-        int l = strlen(shortText);
-        if (l > 2 && (shortText[l - 1] == '"' || (shortText[l - 1] == '.' && shortText[l - 2] == '"'))) {
-           memmove(shortText, shortText + 1, l);
-           char *p = strrchr(shortText, '"');
-           if (p)
-              *p = 0;
-           EpgBugFixStat(4, ChannelID());
-           }
-        }
-
-     if (Setup.EPGBugfixLevel <= 1)
-        return;
-
-     // Some channels apparently try to do some formatting in the texts,
-     // which is a bad idea because they have no way of knowing the width
-     // of the window that will actually display the text.
-     // Remove excess whitespace:
-     title = compactspace(title);
-     shortText = compactspace(shortText);
-     description = compactspace(description);
-
-#define MAX_USEFUL_EPISODE_LENGTH 40
-     // Some channels put a whole lot of information in the ShortText and leave
-     // the Description totally empty. So if the ShortText length exceeds
-     // MAX_USEFUL_EPISODE_LENGTH, let's put this into the Description
-     // instead:
-     if (!isempty(shortText) && isempty(description)) {
-        if (strlen(shortText) > MAX_USEFUL_EPISODE_LENGTH) {
-           free(description);
-           description = shortText;
-           shortText = NULL;
-           EpgBugFixStat(6, ChannelID());
-           }
-        }
-
-     // Some channels put the same information into ShortText and Description.
-     // In that case we delete one of them:
-     if (shortText && description && strcmp(shortText, description) == 0) {
-        if (strlen(shortText) > MAX_USEFUL_EPISODE_LENGTH) {
+  // Some channels put the ShortText in quotes and use either the ShortText
+  // or the Description field, depending on how long the string is:
+  //
+  // Title
+  // "ShortText". Description
+  //
+  if ((shortText == NULL) != (description == NULL)) {
+     char *p = shortText ? shortText : description;
+     if (*p == '"') {
+        const char *delim = "\".";
+        char *e = strstr(p + 1, delim);
+        if (e) {
+           *e = 0;
+           char *s = strdup(p + 1);
+           char *d = strdup(e + strlen(delim));
            free(shortText);
-           shortText = NULL;
-           }
-        else {
            free(description);
-           description = NULL;
+           shortText = s;
+           description = d;
+           EpgBugFixStat(1, ChannelID());
            }
-        EpgBugFixStat(7, ChannelID());
-        }
-
-     // Some channels use the ` ("backtick") character, where a ' (single quote)
-     // would be normally used. Actually, "backticks" in normal text don't make
-     // much sense, so let's replace them:
-     strreplace(title, '`', '\'');
-     strreplace(shortText, '`', '\'');
-     strreplace(description, '`', '\'');
-
-     if (Setup.EPGBugfixLevel <= 2)
-        return;
-
-     // The stream components have a "description" field which some channels
-     // apparently have no idea of how to set correctly:
-     if (components) {
-        for (int i = 0; i < components->NumComponents(); i++) {
-            tComponent *p = components->Component(i);
-            switch (p->stream) {
-              case 0x01: { // video
-                   if (p->description) {
-                      if (strcasecmp(p->description, "Video") == 0 ||
-                           strcasecmp(p->description, "Bildformat") == 0) {
-                         // Yes, we know it's video - that's what the 'stream' code
-                         // is for! But _which_ video is it?
-                         free(p->description);
-                         p->description = NULL;
-                         EpgBugFixStat(8, ChannelID());
-                         }
-                      }
-                   if (!p->description) {
-                      switch (p->type) {
-                        case 0x01:
-                        case 0x05: p->description = strdup("4:3"); break;
-                        case 0x02:
-                        case 0x03:
-                        case 0x06:
-                        case 0x07: p->description = strdup("16:9"); break;
-                        case 0x04:
-                        case 0x08: p->description = strdup(">16:9"); break;
-                        case 0x09:
-                        case 0x0D: p->description = strdup("HD 4:3"); break;
-                        case 0x0A:
-                        case 0x0B:
-                        case 0x0E:
-                        case 0x0F: p->description = strdup("HD 16:9"); break;
-                        case 0x0C:
-                        case 0x10: p->description = strdup("HD >16:9"); break;
-                        }
-                      EpgBugFixStat(9, ChannelID());
-                      }
-                   }
-                   break;
-              case 0x02: { // audio
-                   if (p->description) {
-                      if (strcasecmp(p->description, "Audio") == 0) {
-                         // Yes, we know it's audio - that's what the 'stream' code
-                         // is for! But _which_ audio is it?
-                         free(p->description);
-                         p->description = NULL;
-                         EpgBugFixStat(10, ChannelID());
-                         }
-                      }
-                   if (!p->description) {
-                      switch (p->type) {
-                        case 0x05: p->description = strdup("Dolby Digital"); break;
-                        // all others will just display the language
-                        }
-                      EpgBugFixStat(11, ChannelID());
-                      }
-                   }
-                   break;
-              }
-            }
         }
      }
-  else {
-     // we don't want any "(null)" titles
-     title = strcpyrealloc(title, tr("No title"));
-     EpgBugFixStat(12, ChannelID());
+
+  // Some channels put the Description into the ShortText (preceded
+  // by a blank) if there is no actual ShortText and the Description
+  // is short enough:
+  //
+  // Title
+  //  Description
+  //
+  if (shortText && !description) {
+     if (*shortText == ' ') {
+        memmove(shortText, shortText + 1, strlen(shortText));
+        description = shortText;
+        shortText = NULL;
+        EpgBugFixStat(2, ChannelID());
+        }
+     }
+
+  // Sometimes they repeat the Title in the ShortText:
+  //
+  // Title
+  // Title
+  //
+  if (shortText && strcmp(title, shortText) == 0) {
+     free(shortText);
+     shortText = NULL;
+     EpgBugFixStat(3, ChannelID());
+     }
+
+  // Some channels put the ShortText between double quotes, which is nothing
+  // but annoying (some even put a '.' after the closing '"'):
+  //
+  // Title
+  // "ShortText"[.]
+  //
+  if (shortText && *shortText == '"') {
+     int l = strlen(shortText);
+     if (l > 2 && (shortText[l - 1] == '"' || (shortText[l - 1] == '.' && shortText[l - 2] == '"'))) {
+        memmove(shortText, shortText + 1, l);
+        char *p = strrchr(shortText, '"');
+        if (p)
+           *p = 0;
+        EpgBugFixStat(4, ChannelID());
+        }
+     }
+
+  if (Setup.EPGBugfixLevel <= 1)
+     return;
+
+  // Some channels apparently try to do some formatting in the texts,
+  // which is a bad idea because they have no way of knowing the width
+  // of the window that will actually display the text.
+  // Remove excess whitespace:
+  title = compactspace(title);
+  shortText = compactspace(shortText);
+  description = compactspace(description);
+
+#define MAX_USEFUL_EPISODE_LENGTH 40
+  // Some channels put a whole lot of information in the ShortText and leave
+  // the Description totally empty. So if the ShortText length exceeds
+  // MAX_USEFUL_EPISODE_LENGTH, let's put this into the Description
+  // instead:
+  if (!isempty(shortText) && isempty(description)) {
+     if (strlen(shortText) > MAX_USEFUL_EPISODE_LENGTH) {
+        free(description);
+        description = shortText;
+        shortText = NULL;
+        EpgBugFixStat(6, ChannelID());
+        }
+     }
+
+  // Some channels put the same information into ShortText and Description.
+  // In that case we delete one of them:
+  if (shortText && description && strcmp(shortText, description) == 0) {
+     if (strlen(shortText) > MAX_USEFUL_EPISODE_LENGTH) {
+        free(shortText);
+        shortText = NULL;
+        }
+     else {
+        free(description);
+        description = NULL;
+        }
+     EpgBugFixStat(7, ChannelID());
+     }
+
+  // Some channels use the ` ("backtick") character, where a ' (single quote)
+  // would be normally used. Actually, "backticks" in normal text don't make
+  // much sense, so let's replace them:
+  strreplace(title, '`', '\'');
+  strreplace(shortText, '`', '\'');
+  strreplace(description, '`', '\'');
+
+  if (Setup.EPGBugfixLevel <= 2)
+     return;
+
+  // The stream components have a "description" field which some channels
+  // apparently have no idea of how to set correctly:
+  if (components) {
+     for (int i = 0; i < components->NumComponents(); i++) {
+         tComponent *p = components->Component(i);
+         switch (p->stream) {
+           case 0x01: { // video
+                if (p->description) {
+                   if (strcasecmp(p->description, "Video") == 0 ||
+                        strcasecmp(p->description, "Bildformat") == 0) {
+                      // Yes, we know it's video - that's what the 'stream' code
+                      // is for! But _which_ video is it?
+                      free(p->description);
+                      p->description = NULL;
+                      EpgBugFixStat(8, ChannelID());
+                      }
+                   }
+                if (!p->description) {
+                   switch (p->type) {
+                     case 0x01:
+                     case 0x05: p->description = strdup("4:3"); break;
+                     case 0x02:
+                     case 0x03:
+                     case 0x06:
+                     case 0x07: p->description = strdup("16:9"); break;
+                     case 0x04:
+                     case 0x08: p->description = strdup(">16:9"); break;
+                     case 0x09:
+                     case 0x0D: p->description = strdup("HD 4:3"); break;
+                     case 0x0A:
+                     case 0x0B:
+                     case 0x0E:
+                     case 0x0F: p->description = strdup("HD 16:9"); break;
+                     case 0x0C:
+                     case 0x10: p->description = strdup("HD >16:9"); break;
+                     }
+                   EpgBugFixStat(9, ChannelID());
+                   }
+                }
+                break;
+           case 0x02: { // audio
+                if (p->description) {
+                   if (strcasecmp(p->description, "Audio") == 0) {
+                      // Yes, we know it's audio - that's what the 'stream' code
+                      // is for! But _which_ audio is it?
+                      free(p->description);
+                      p->description = NULL;
+                      EpgBugFixStat(10, ChannelID());
+                      }
+                   }
+                if (!p->description) {
+                   switch (p->type) {
+                     case 0x05: p->description = strdup("Dolby Digital"); break;
+                     // all others will just display the language
+                     }
+                   EpgBugFixStat(11, ChannelID());
+                   }
+                }
+                break;
+           }
+         }
      }
 }
 
@@ -935,7 +934,10 @@ bool cSchedules::ClearAll(void)
   cSchedulesLock SchedulesLock(true, 1000);
   cSchedules *s = (cSchedules *)Schedules(SchedulesLock);
   if (s) {
-     s->Clear();
+     for (cTimer *Timer = Timers.First(); Timer; Timer = Timers.Next(Timer))
+         Timer->SetEvent(NULL);
+     for (cSchedule *Schedule = s->First(); Schedule; Schedule = s->Next(Schedule))
+         Schedule->Cleanup(INT_MAX);
      return true;
      }
   return false;

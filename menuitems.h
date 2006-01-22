@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.h 1.15 2006/01/06 15:16:25 kls Exp $
+ * $Id: menuitems.h 1.16 2006/01/21 10:45:55 kls Exp $
  */
 
 #ifndef __MENUITEMS_H
@@ -85,7 +85,9 @@ private:
   const char *charMap;
   const char *currentChar;
   eKeys lastKey;
+  cTimeMs autoAdvanceTimeout;
   void SetHelpKeys(void);
+  void AdvancePos(void);
   virtual void Set(void);
   char Inc(char c, bool Up);
 protected:

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.396 2006/01/15 15:02:36 kls Exp $
+ * $Id: menu.c 1.403 2006/01/22 16:06:39 kls Exp $
  */
 
 #include "menu.h"
@@ -36,6 +36,8 @@
 #define MAXRECORDCONTROLS (MAXDEVICES * MAXRECEIVERS)
 #define MAXINSTANTRECTIME (24 * 60 - 1) // 23:59 hours
 #define MAXWAITFORCAMMENU 4 // seconds to wait for the CAM menu to open
+#define MINFREEDISK       300 // minimum free disk space required to start recording
+#define NODISKSPACEDELTA  300 // seconds between "Not enough disk space to start recording!" messages
 
 #define CHNUMWIDTH  (numdigits(Channels.MaxNumber()) + 1)
 
@@ -2996,9 +2998,12 @@ static void SetTrackDescriptions(bool Live)
 
 #define DIRECTCHANNELTIMEOUT 1000 //ms
 
+cDisplayChannel *cDisplayChannel::currentDisplayChannel = NULL;
+
 cDisplayChannel::cDisplayChannel(int Number, bool Switched)
 :cOsdObject(true)
 {
+  currentDisplayChannel = this;
   group = -1;
   withInfo = !Switched || Setup.ShowInfoOnChSwitch;
   displayChannel = Skins.Current()->DisplayChannel(withInfo);
@@ -3017,12 +3022,15 @@ cDisplayChannel::cDisplayChannel(int Number, bool Switched)
 cDisplayChannel::cDisplayChannel(eKeys FirstKey)
 :cOsdObject(true)
 {
+  currentDisplayChannel = this;
   group = -1;
   number = 0;
+  timeout = true;
   lastPresent = lastFollowing = NULL;
   lastTime.Set();
   withInfo = Setup.ShowInfoOnChSwitch;
   displayChannel = Skins.Current()->DisplayChannel(withInfo);
+  channel = Channels.GetByNumber(cDevice::CurrentChannel());
   ProcessKey(FirstKey);
 }
 
@@ -3030,6 +3038,7 @@ cDisplayChannel::~cDisplayChannel()
 {
   delete displayChannel;
   cStatus::MsgOsdClear();
+  currentDisplayChannel = NULL;
 }
 
 void cDisplayChannel::DisplayChannel(void)
@@ -3063,14 +3072,27 @@ void cDisplayChannel::DisplayInfo(void)
 
 void cDisplayChannel::Refresh(void)
 {
-  channel = Channels.GetByNumber(cDevice::CurrentChannel());
   DisplayChannel();
   displayChannel->SetEvents(NULL, NULL);
-  lastTime.Set();
+}
+
+cChannel *cDisplayChannel::NextAvailableChannel(cChannel *Channel, int Direction)
+{
+  if (Direction) {
+     while (Channel) {
+           Channel = Direction > 0 ? Channels.Next(Channel) : Channels.Prev(Channel);
+           if (Channel && !Channel->GroupSep() && cDevice::GetDevice(Channel, 0))
+              return Channel;
+           }
+     }
+  return NULL;
 }
 
 eOSState cDisplayChannel::ProcessKey(eKeys Key)
 {
+  cChannel *NewChannel = NULL;
+  if (Key != kNone)
+     lastTime.Set();
   switch (Key) {
     case k0:
          if (number == 0) {
@@ -3081,31 +3103,32 @@ eOSState cDisplayChannel::ProcessKey(eKeys Key)
     case k1 ... k9:
          if (number >= 0) {
             number = number * 10 + Key - k0;
-            if (number > 0) {
-               channel = Channels.GetByNumber(number);
-               displayChannel->SetEvents(NULL, NULL);
-               withInfo = false;
-               DisplayChannel();
-               lastTime.Set();
-               // Lets see if there can be any useful further input:
-               int n = channel ? number * 10 : 0;
-               cChannel *ch = channel;
-               while (ch && (ch = Channels.Next(ch)) != NULL) {
-                     if (!ch->GroupSep()) {
-                        if (n <= ch->Number() && ch->Number() <= n + 9) {
-                           n = 0;
-                           break;
-                           }
-                        if (ch->Number() > n)
-                           n *= 10;
+            channel = Channels.GetByNumber(number);
+            displayChannel->SetEvents(NULL, NULL);
+            withInfo = false;
+            DisplayChannel();
+            // Lets see if there can be any useful further input:
+            int n = channel ? number * 10 : 0;
+            int m = 10;
+            cChannel *ch = channel;
+            while (ch && (ch = Channels.Next(ch)) != NULL) {
+                  if (!ch->GroupSep()) {
+                     if (n <= ch->Number() && ch->Number() < n + m) {
+                        n = 0;
+                        break;
+                        }
+                     if (ch->Number() > n) {
+                        n *= 10;
+                        m *= 10;
                         }
                      }
-               if (n > 0) {
-                  // This channel is the only one that fits the input, so let's take it right away:
-                  displayChannel->Flush(); // makes sure the user sees his last input
-                  Channels.SwitchTo(number);
-                  return osEnd;
                   }
+            if (n > 0) {
+               // This channel is the only one that fits the input, so let's take it right away:
+               displayChannel->Flush(); // makes sure the user sees his last input
+               NewChannel = channel;
+               withInfo = true;
+               number = 0;
                }
             }
          break;
@@ -3136,18 +3159,27 @@ eOSState cDisplayChannel::ProcessKey(eKeys Key)
                   group = -1;
                }
             }
-         lastTime.Set();
          break;
     case kUp|k_Repeat:
     case kUp:
     case kDown|k_Repeat:
     case kDown:
-         cDevice::SwitchChannel(NORMALKEY(Key) == kUp ? 1 : -1);
-         // no break here
     case kChanUp|k_Repeat:
     case kChanUp:
     case kChanDn|k_Repeat:
-    case kChanDn:
+    case kChanDn: {
+         eKeys k = NORMALKEY(Key);
+         cChannel *ch = NextAvailableChannel(channel, (k == kUp || k == kChanUp) ? 1 : -1);
+         if (ch)
+            channel = ch;
+         }
+         // no break here
+    case kUp|k_Release:
+    case kDown|k_Release:
+    case kChanUp|k_Release:
+    case kChanDn|k_Release:
+         if (!(Key & k_Repeat) && channel)
+            NewChannel = channel;
          withInfo = true;
          group = -1;
          number = 0;
@@ -3155,43 +3187,57 @@ eOSState cDisplayChannel::ProcessKey(eKeys Key)
          break;
     case kNone:
          if (number && lastTime.Elapsed() > DIRECTCHANNELTIMEOUT) {
-            if (Channels.GetByNumber(number))
-               Channels.SwitchTo(number);
-            else {
-               number = 0;
-               channel = NULL;
-               DisplayChannel();
-               lastTime.Set();
-               return osContinue;
-               }
-            return osEnd;
+            channel = Channels.GetByNumber(number);
+            if (channel)
+               NewChannel = channel;
+            withInfo = true;
+            number = 0;
+            Refresh();
+            lastTime.Set();
             }
          break;
     //TODO
     //XXX case kGreen:  return osEventNow;
     //XXX case kYellow: return osEventNext;
-    case kOk:     if (group >= 0) {
-                     channel = Channels.Get(Channels.GetNextNormal(group));
-                     if (channel)
-                        Channels.SwitchTo(channel->Number());
-                     withInfo = true;
-                     group = -1;
-                     Refresh();
-                     break;
-                     }
-                  else if (number > 0 && channel)
-                     Channels.SwitchTo(number);
-                  return osEnd;
-    default:      if ((Key & (k_Repeat | k_Release)) == 0) {
-                     cRemote::Put(Key);
-                     return osEnd;
-                     }
+    case kOk:
+         if (group >= 0) {
+            channel = Channels.Get(Channels.GetNextNormal(group));
+            if (channel)
+               NewChannel = channel;
+            withInfo = true;
+            group = -1;
+            Refresh();
+            }
+         else if (number > 0) {
+            channel = Channels.GetByNumber(number);
+            if (channel)
+               NewChannel = channel;
+            withInfo = true;
+            number = 0;
+            Refresh();
+            }
+         else
+            return osEnd;
+         break;
+    default:
+         if ((Key & (k_Repeat | k_Release)) == 0) {
+            cRemote::Put(Key);
+            return osEnd;
+            }
     };
   if (!timeout || lastTime.Elapsed() < (uint64)(Setup.ChannelInfoTime * 1000)) {
-     if (!number && group < 0 && channel && channel->Number() != cDevice::CurrentChannel())
-        Refresh(); // makes sure a channel switch through the SVDRP CHAN command is displayed
+     if (Key == kNone && !number && group < 0 && !NewChannel && channel && channel->Number() != cDevice::CurrentChannel()) {
+        // makes sure a channel switch through the SVDRP CHAN command is displayed
+        channel = Channels.GetByNumber(cDevice::CurrentChannel());
+        Refresh();
+        lastTime.Set();
+        }
      DisplayInfo();
      displayChannel->Flush();
+     if (NewChannel) {
+        Channels.SwitchTo(NewChannel->Number());
+        channel = NewChannel;
+        }
      return osContinue;
      }
   return osEnd;
@@ -3520,6 +3566,23 @@ int cRecordControls::state = 0;
 
 bool cRecordControls::Start(cTimer *Timer, bool Pause)
 {
+  static time_t LastNoDiskSpaceMessage = 0;
+  int FreeMB = 0;
+  if (Timer) {
+     AssertFreeDiskSpace(Timer->Priority(), !Timer->Pending());
+     Timer->SetPending(true);
+     }
+  VideoDiskSpace(&FreeMB);
+  if (FreeMB < MINFREEDISK) {
+     if (!Timer || time(NULL) - LastNoDiskSpaceMessage > NODISKSPACEDELTA) {
+        isyslog("not enough disk space to start recording%s%s", Timer ? " timer " : "", Timer ? *Timer->ToDescr() : "");
+        Skins.Message(mtWarning, tr("Not enough disk space to start recording!"));
+        LastNoDiskSpaceMessage = time(NULL);
+        }
+     return false;
+     }
+  LastNoDiskSpaceMessage = 0;
+
   ChangeState();
   int ch = Timer ? Timer->Channel()->Number() : cDevice::CurrentChannel();
   cChannel *channel = Channels.GetByNumber(ch);
@@ -3548,8 +3611,10 @@ bool cRecordControls::Start(cTimer *Timer, bool Pause)
                }
            }
         }
-     else if (!Timer || (Timer->Priority() >= Setup.PrimaryLimit && !Timer->Pending()))
+     else if (!Timer || (Timer->Priority() >= Setup.PrimaryLimit && !Timer->Pending())) {
         isyslog("no free DVB device to record channel %d!", ch);
+        Skins.Message(mtError, tr("No free DVB device to record!"));
+        }
      }
   else
      esyslog("ERROR: channel %d not defined!", ch);

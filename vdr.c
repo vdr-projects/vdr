@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.238 2006/01/15 13:31:57 kls Exp $
+ * $Id: vdr.c 1.244 2006/01/22 15:59:13 kls Exp $
  */
 
 #include <getopt.h>
@@ -447,7 +447,7 @@ int main(int argc, char *argv[])
   // Log file:
 
   if (SysLogLevel > 0)
-     openlog("vdr", LOG_PID | LOG_CONS, SysLogTarget);
+     openlog("vdr", LOG_CONS, SysLogTarget); // LOG_PID doesn't work as expected under NPTL
 
   // Check the video directory:
 
@@ -727,7 +727,7 @@ int main(int argc, char *argv[])
            LastChannel = cDevice::CurrentChannel();
            LastChannelChanged = time(NULL);
            }
-        if (time(NULL) - LastChannelChanged >= Setup.ZapTimeout && LastChannel != PreviousChannel[0] && LastChannel != PreviousChannel[1])
+        if (time(NULL) - LastChannelChanged >= Setup.ZapTimeout && LastChannel != PreviousChannel[PreviousChannelIndex])
            PreviousChannel[PreviousChannelIndex ^= 1] = LastChannel;
         // Timers and Recordings:
         if (!Timers.BeingEdited()) {
@@ -822,6 +822,7 @@ int main(int argc, char *argv[])
                   }
                }
                break;
+          // Direct main menu functions:
           #define DirectMainFunction(function)\
             DELETE_MENU;\
             if (cControl::Control())\
@@ -855,7 +856,15 @@ int main(int argc, char *argv[])
           case kChanUp:
           case kChanDn|k_Repeat:
           case kChanDn:
-               cDevice::SwitchChannel(NORMALKEY(key) == kChanUp ? 1 : -1);
+               if (!Interact)
+                  Menu = new cDisplayChannel(NORMALKEY(key));
+               else if (cDisplayChannel::IsOpen()) {
+                  Interact->ProcessKey(key);
+                  continue;
+                  }
+               else
+                  cDevice::SwitchChannel(NORMALKEY(key) == kChanUp ? 1 : -1);
+               key = kNone; // nobody else needs to see these keys
                break;
           // Volume control:
           case kVolUp|k_Repeat:
@@ -901,9 +910,7 @@ int main(int argc, char *argv[])
           case kRecord:
                if (!cControl::Control()) {
                   if (cRecordControls::Start())
-                     ;//XXX Skins.Message(mtInfo, tr("Recording"));
-                  else
-                     Skins.Message(mtError, tr("No free DVB device to record!"));
+                     Skins.Message(mtInfo, tr("Recording started"));
                   key = kNone; // nobody else needs to see this key
                   }
                break;
@@ -947,8 +954,6 @@ int main(int argc, char *argv[])
              case osRecord: DELETE_MENU;
                             if (cRecordControls::Start())
                                Skins.Message(mtInfo, tr("Recording started"));
-                            else
-                               Skins.Message(mtError, tr("No free DVB device to record!"));
                             break;
              case osRecordings:
                             DELETE_MENU;
@@ -985,7 +990,7 @@ int main(int argc, char *argv[])
            }
         else {
            // Key functions in "normal" viewing mode:
-           if (KeyMacros.Get(key)) {
+           if (key != kNone && KeyMacros.Get(key)) {
               cRemote::PutMacro(key);
               key = kNone;
               }
@@ -999,21 +1004,17 @@ int main(int argc, char *argv[])
                   }
              // Direct Channel Select:
              case k1 ... k9:
-                  Menu = new cDisplayChannel(key);
-                  break;
              // Left/Right rotates trough channel groups:
              case kLeft|k_Repeat:
              case kLeft:
              case kRight|k_Repeat:
              case kRight:
-                  Menu = new cDisplayChannel(NORMALKEY(key));
-                  break;
              // Up/Down Channel Select:
              case kUp|k_Repeat:
              case kUp:
              case kDown|k_Repeat:
              case kDown:
-                  cDevice::SwitchChannel(NORMALKEY(key) == kUp ? 1 : -1);
+                  Menu = new cDisplayChannel(NORMALKEY(key));
                   break;
              // Viewing Control:
              case kOk:   LastChannel = -1; break; // forces channel display
