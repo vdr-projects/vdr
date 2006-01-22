@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 1.81 2006/01/06 11:30:38 kls Exp $
+ * $Id: menu.h 1.82 2006/01/22 14:24:31 kls Exp $
  */
 
 #ifndef __MENU_H
@@ -82,14 +82,17 @@ private:
   cChannel *channel;
   const cEvent *lastPresent;
   const cEvent *lastFollowing;
+  static cDisplayChannel *currentDisplayChannel;
   void DisplayChannel(void);
   void DisplayInfo(void);
   void Refresh(void);
+  cChannel *NextAvailableChannel(cChannel *Channel, int Direction);
 public:
   cDisplayChannel(int Number, bool Switched);
   cDisplayChannel(eKeys FirstKey);
   virtual ~cDisplayChannel();
   virtual eOSState ProcessKey(eKeys Key);
+  static bool IsOpen(void) { return currentDisplayChannel != NULL; }
   };
 
 class cDisplayVolume : public cOsdObject {

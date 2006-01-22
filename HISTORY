@@ -4190,7 +4190,7 @@ Video Disk Recorder Revision History
 - No longer displaying color buttons in the recording info menu if it has been
   invoked from a player (reported by Jürgen Schilling).
 
-2006-01-21: Version 1.3.40
+2006-01-22: Version 1.3.40
 
 - Fixed a second place where a message should be given when an instant recording
   is started (reported by Jesus Bravo Alvarez).
@@ -4216,3 +4216,9 @@ Video Disk Recorder Revision History
   really need it - it will be completely removed in the next version. If you are
   experiencing problems with a/v running out of sync, try the latest driver and
   firmware (if you are using a full featured DVB card).
+- Switching channels with the Up/Down or Channel+/Channel- keys now works a lot
+  faster when the repeat function kicks in, by not actually switching the
+  channel every time, but rather only displaying the channel info and doing
+  the final switch when the key is released.
+- The channel display is now updated _before_ the channel is switched.
+- Added a missing initialization of 'timeout' in the cDisplayChannel constructor.
