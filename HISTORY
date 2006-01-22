@@ -4224,3 +4224,4 @@ Video Disk Recorder Revision History
 - Added a missing initialization of 'timeout' in the cDisplayChannel constructor.
 - Fixed detecting if there can be any useful further input when entering channel
   numbers (thanks to Thomas Bergwinkl).
+- Updated the Spanish OSD texts (thanks to Jesus Bravo Alvarez).

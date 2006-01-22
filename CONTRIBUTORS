@@ -1664,6 +1664,7 @@ Jürgen Schilling <juergen_schilling@web.de>
 Jesus Bravo Alvarez <jba@pobox.com>
  for reporting a second place where a message should be given when an instant
  recording is started
+ for updating the Spanish OSD texts
 
 Francois-Xavier Kowalski <francois-xavier.kowalski@hp.com>
  for suggesting how to modify logging so that even on NPTL systems each line in
