@@ -4222,3 +4222,5 @@ Video Disk Recorder Revision History
   the final switch when the key is released.
 - The channel display is now updated _before_ the channel is switched.
 - Added a missing initialization of 'timeout' in the cDisplayChannel constructor.
+- Fixed detecting if there can be any useful further input when entering channel
+  numbers (thanks to Thomas Bergwinkl).

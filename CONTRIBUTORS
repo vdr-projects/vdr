@@ -1157,11 +1157,13 @@ Andreas Regel <andreas.regel@gmx.de>
  for reporting a problem with messages when a cOsdObject uses the raw OSD
  for implementing palette replace mode in the OSD bitmaps
 
-Thomas Bergwinkl <Thomas.Bergwinkl@t-online.de>
+Thomas Bergwinkl <Thomas.Bergwinkl@vr-web.de>
  for fixing the validity check for channel IDs, because some providers use TIDs
  with value 0
  for pointing out that transponder handling didn't work with satellites that provide
  two transponders on the same frequency, with different polarization
+ for fixing detecting if there can be any useful further input when entering channel
+ numbers
 
 Stéphane Esté-Gracias <sestegra@free.fr>
  for fixing a typo in libsi/si.h
