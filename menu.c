@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.401 2006/01/22 14:30:00 kls Exp $
+ * $Id: menu.c 1.402 2006/01/22 14:49:54 kls Exp $
  */
 
 #include "menu.h"
@@ -3016,6 +3016,7 @@ cDisplayChannel::cDisplayChannel(int Number, bool Switched)
      DisplayInfo();
      displayChannel->Flush();
      }
+  lastTime.Set();
 }
 
 cDisplayChannel::cDisplayChannel(eKeys FirstKey)
@@ -3026,6 +3027,7 @@ cDisplayChannel::cDisplayChannel(eKeys FirstKey)
   number = 0;
   timeout = true;
   lastPresent = lastFollowing = NULL;
+  lastTime.Set();
   withInfo = Setup.ShowInfoOnChSwitch;
   displayChannel = Skins.Current()->DisplayChannel(withInfo);
   channel = Channels.GetByNumber(cDevice::CurrentChannel());
