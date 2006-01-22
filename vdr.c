@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.243 2006/01/22 13:32:41 kls Exp $
+ * $Id: vdr.c 1.244 2006/01/22 16:10:13 kls Exp $
  */
 
 #include <getopt.h>
@@ -727,7 +727,7 @@ int main(int argc, char *argv[])
            LastChannel = cDevice::CurrentChannel();
            LastChannelChanged = time(NULL);
            }
-        if (time(NULL) - LastChannelChanged >= Setup.ZapTimeout && LastChannel != PreviousChannel[0] && LastChannel != PreviousChannel[1])
+        if (time(NULL) - LastChannelChanged >= Setup.ZapTimeout && LastChannel != PreviousChannel[PreviousChannelIndex])
            PreviousChannel[PreviousChannelIndex ^= 1] = LastChannel;
         // Timers and Recordings:
         if (!Timers.BeingEdited()) {

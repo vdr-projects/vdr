@@ -4225,3 +4225,5 @@ Video Disk Recorder Revision History
 - Fixed detecting if there can be any useful further input when entering channel
   numbers (thanks to Thomas Bergwinkl).
 - Updated the Spanish OSD texts (thanks to Jesus Bravo Alvarez).
+- Fixed handling the '0' key for switching between the last two channels (thanks
+  to Thomas Bergwinkl).
