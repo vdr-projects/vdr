@@ -1323,6 +1323,7 @@ Kimmo Tykkala <tykkala@iki.fi>
 
 Arthur Konovalov <kasjas@hot.ee>
  for translating OSD texts to the Estonian language
+ for fixing a missing ',' in the Greek OSD texts
 
 Milos Kapoun <m.kapoun@cra.cz>
  for suggesting to skip code table info in SI data

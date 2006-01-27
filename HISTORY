@@ -4237,3 +4237,4 @@ Video Disk Recorder Revision History
 - Fixed a crash when pressing '0' in the "Schedule" menu on a channel that doesn't
   have any EPG data (reported ny Alexander Hans).
 - Updated the Danish OSD texts (thanks to Mogens Elneff).
+- Fixed a missing ',' in the Greek OSD texts (thanks to Arthur Konovalov).
