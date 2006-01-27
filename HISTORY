@@ -4239,3 +4239,5 @@ Video Disk Recorder Revision History
 - Updated the Danish OSD texts (thanks to Mogens Elneff).
 - Fixed a missing ',' in the Greek OSD texts (thanks to Arthur Konovalov).
 - Updated the Estonian OSD texts (thanks to Arthur Konovalov).
+- Fixed handling the tfRecording flag when reading timers (bug reported by Andreas
+  Mair).
