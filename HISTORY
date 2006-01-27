@@ -4227,3 +4227,8 @@ Video Disk Recorder Revision History
 - Updated the Spanish OSD texts (thanks to Jesus Bravo Alvarez).
 - Fixed handling the '0' key for switching between the last two channels (thanks
   to Thomas Bergwinkl).
+
+2006-01-27: Version 1.3.41
+
+- EPG events from epg.data or SVDRP's PUTE command now have their Title set to
+  "No Title" if none was set.

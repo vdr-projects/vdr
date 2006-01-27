@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 1.51 2006/01/20 14:09:48 kls Exp $
+ * $Id: epg.c 1.52 2006/01/27 13:42:10 kls Exp $
  */
 
 #include "epg.h"
@@ -318,7 +318,9 @@ bool cEvent::Read(FILE *f, cSchedule *Schedule)
                              }
                           }
                        break;
-             case 'e': Event = NULL;
+             case 'e': if (!Event->Title())
+                          Event->SetTitle(tr("No title"));
+                       Event = NULL;
                        break;
              case 'c': // to keep things simple we react on 'c' here
                        return true;
