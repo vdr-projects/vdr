@@ -4241,3 +4241,5 @@ Video Disk Recorder Revision History
 - Updated the Estonian OSD texts (thanks to Arthur Konovalov).
 - Fixed handling the tfRecording flag when reading timers (bug reported by Andreas
   Mair).
+- Now checking whether the channel exists before setting the PMT filter in
+  cPatFilter::Process() (thanks to Thomas Bergwinkl).

@@ -1167,6 +1167,8 @@ Thomas Bergwinkl <Thomas.Bergwinkl@vr-web.de>
  for fixing detecting if there can be any useful further input when entering channel
  numbers
  for fixing handling the '0' key for switching between the last two channels
+ for making cPatFilter::Process() check whether the channel exists before setting
+ the PMT filter
 
 Stéphane Esté-Gracias <sestegra@free.fr>
  for fixing a typo in libsi/si.h
