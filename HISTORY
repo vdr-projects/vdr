@@ -4232,3 +4232,5 @@ Video Disk Recorder Revision History
 
 - EPG events from epg.data or SVDRP's PUTE command now have their Title set to
   "No Title" if none was set.
+- Fixed checking toFile in cCuttingThread::Action() (found in a larger patch from
+  Artur Skawina).

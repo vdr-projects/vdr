@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: cutter.c 1.11 2005/10/31 12:26:44 kls Exp $
+ * $Id: cutter.c 1.12 2006/01/27 13:45:00 kls Exp $
  */
 
 #include "cutter.h"
@@ -118,7 +118,7 @@ void cCuttingThread::Action(void)
                  break;
               if (FileSize > MEGABYTE(Setup.MaxVideoFileSize)) {
                  toFile = toFileName->NextFile();
-                 if (toFile < 0) {
+                 if (!toFile) {
                     error = "toFile 1";
                     break;
                     }
@@ -158,7 +158,7 @@ void cCuttingThread::Action(void)
                  cutIn = true;
                  if (Setup.SplitEditedFiles) {
                     toFile = toFileName->NextFile();
-                    if (toFile < 0) {
+                    if (!toFile) {
                        error = "toFile 2";
                        break;
                        }

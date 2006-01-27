@@ -269,6 +269,7 @@ Matjaz Thaler <matjaz.thaler@guest.arnes.si>
 Artur Skawina <skawina@geocities.com>
  for improving the font file generation in the Makefile
  for pointing out a problem with the ERR macro defined by ncurses.h
+ for a patch that contained a fix for checking toFile in cCuttingThread::Action()
 
 Werner Fink <werner@suse.de>
  for making I/O more robust by handling EINTR
