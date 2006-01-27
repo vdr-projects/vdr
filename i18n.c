@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.242 2006/01/27 14:21:28 kls Exp $
+ * $Id: i18n.c 1.243 2006/01/27 14:25:09 kls Exp $
  *
  * Translations provided by:
  *
@@ -2354,7 +2354,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Ebapiisavalt kettaruumi salvestamise alustamiseks!",
     "For lidt harddisk plads til optagelse!",
   },
   { "Low disk space!",
@@ -3616,7 +3616,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "Предпочитаемые языки (звук)",
     "Audio jezici",
-    "Audio keeled",
+    "Audio keeli",
     "Audio sprog (ant.)",
   },
   { "Setup.DVB$Audio language",  // note the singular
