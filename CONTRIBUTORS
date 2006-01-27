@@ -1684,3 +1684,7 @@ Markus Hahn <mhahn@reel-multimedia.com>
 
 Jaroslaw Swierczynski <swiergot@gmail.com>
  for updating the Polish OSD texts and the fontosd-iso8859-2.c file
+
+Alexander Hans <cleditor@arcor.de>
+ fpr reporting a crash when pressing '0' in the "Schedule" menu on a channel that
+ doesn't have any EPG data 

@@ -4234,3 +4234,5 @@ Video Disk Recorder Revision History
   "No Title" if none was set.
 - Fixed checking toFile in cCuttingThread::Action() (found in a larger patch from
   Artur Skawina).
+- Fixed a crash when pressing '0' in the "Schedule" menu on a channel that doesn't
+  have any EPG data (reported ny Alexander Hans).

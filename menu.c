@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.403 2006/01/22 16:06:39 kls Exp $
+ * $Id: menu.c 1.404 2006/01/27 14:04:34 kls Exp $
  */
 
 #include "menu.h"
@@ -1352,6 +1352,8 @@ eOSState cMenuSchedule::Number(void)
      Event = CurrentItem->event;
      Channel = Channels.GetByChannelID(Event->ChannelID(), true);
      }
+  else
+     Channel = Channels.GetByNumber(cDevice::CurrentChannel());
   switch (cMenuScheduleItem::SortMode()) {
     case cMenuScheduleItem::ssmAllThis:  PrepareScheduleAllThis(Event, Channel); break;
     case cMenuScheduleItem::ssmThisThis: PrepareScheduleThisThis(Event, Channel); break;
