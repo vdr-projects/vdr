@@ -4243,3 +4243,5 @@ Video Disk Recorder Revision History
   Mair).
 - Now checking whether the channel exists before setting the PMT filter in
   cPatFilter::Process() (thanks to Thomas Bergwinkl).
+- Now trying to reestablish the connection to the LIRC daemon in case it breaks
+  (thanks to Ville Skyttä).
