@@ -1346,6 +1346,8 @@ Udo Richter <udo_richter@gmx.de>
  no longer exists
  for reporting a missing check against MAXOSDAREAS in cOsd::CanHandleAreas()
  for making the Makefile report a summary of failed plugins
+ for reporting  a problem with the new handling of k_Repeat keypresses in channel
+ switching
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date
