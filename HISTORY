@@ -4253,3 +4253,4 @@ Video Disk Recorder Revision History
   handling of k_Repeat keypresses in channel switching reported by Udo Richter).
 - Removed the "buffer reserve" in Transfer Mode - it's no longer necessary with
   recent driver/firmware versions.
+- The epg.data file is now written when VDR exits (suggested by Daniel Karsubka).

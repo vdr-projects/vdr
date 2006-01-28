@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.244 2006/01/22 16:10:13 kls Exp $
+ * $Id: vdr.c 1.245 2006/01/28 14:38:30 kls Exp $
  */
 
 #include <getopt.h>
@@ -1122,6 +1122,7 @@ Exit:
      }
   cDevice::Shutdown();
   PluginManager.Shutdown();
+  cSchedules::Cleanup(true);
   ReportEpgBugFixStats();
   if (WatchdogTimeout > 0)
      dsyslog("max. latency time %d seconds", MaxLatencyTime);
