@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 1.44 2006/01/27 15:35:17 kls Exp $
+ * $Id: timers.c 1.45 2006/01/28 15:09:05 kls Exp $
  */
 
 #include "timers.h"
@@ -567,7 +567,7 @@ cTimer *cTimers::GetNextActiveTimer(void)
 {
   cTimer *t0 = NULL;
   for (cTimer *ti = First(); ti; ti = Next(ti)) {
-      if ((ti->HasFlags(tfActive)) && (!t0 || ti->Compare(*t0) < 0))
+      if ((ti->HasFlags(tfActive)) && (!t0 || ti->StopTime() > time(NULL) && ti->Compare(*t0) < 0))
          t0 = ti;
       }
   return t0;

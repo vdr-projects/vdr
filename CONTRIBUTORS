@@ -941,6 +941,7 @@ Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  for reporting a crash in the Schedule menu with events that have no title
  for a patch that was used to implement automatic cursor advance when entering text
  via the numeric keys
+ for reporting a problem with expired timers when shutting down via the Power key
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark
