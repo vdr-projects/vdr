@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 1.51 2006/01/08 16:03:56 kls Exp $
+ * $Id: thread.c 1.52 2006/01/28 11:34:35 kls Exp $
  */
 
 #include "thread.h"
@@ -105,7 +105,7 @@ void cCondVar::Wait(cMutex &Mutex)
   if (Mutex.locked) {
      int locked = Mutex.locked;
      Mutex.locked = 0; // have to clear the locked count here, as pthread_cond_wait
-                       // does an implizit unlock of the mutex
+                       // does an implicit unlock of the mutex
      pthread_cond_wait(&cond, &Mutex.mutex);
      Mutex.locked = locked;
      }
@@ -113,14 +113,14 @@ void cCondVar::Wait(cMutex &Mutex)
 
 bool cCondVar::TimedWait(cMutex &Mutex, int TimeoutMs)
 {
-  bool r = true; // true = condition signaled false = timeout
+  bool r = true; // true = condition signaled, false = timeout
 
   if (Mutex.locked) {
      struct timespec abstime;
      if (GetAbsTime(&abstime, TimeoutMs)) {
         int locked = Mutex.locked;
         Mutex.locked = 0; // have to clear the locked count here, as pthread_cond_timedwait
-                          // does an implizit unlock of the mutex.
+                          // does an implicit unlock of the mutex.
         if (pthread_cond_timedwait(&cond, &Mutex.mutex, &abstime) == ETIMEDOUT)
            r = false;
         Mutex.locked = locked;
