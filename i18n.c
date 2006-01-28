@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.243 2006/01/27 14:25:09 kls Exp $
+ * $Id: i18n.c 1.244 2006/01/28 10:38:33 kls Exp $
  *
  * Translations provided by:
  *
@@ -2344,7 +2344,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
+    "Tallennustilan puute est‰‰ tallennuksen!",
     "",//TODO
     "",//TODO
     "",//TODO

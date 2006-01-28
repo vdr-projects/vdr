@@ -4245,3 +4245,4 @@ Video Disk Recorder Revision History
   cPatFilter::Process() (thanks to Thomas Bergwinkl).
 - Now trying to reestablish the connection to the LIRC daemon in case it breaks
   (thanks to Ville Skyttä).
+- Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
