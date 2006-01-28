@@ -4254,3 +4254,4 @@ Video Disk Recorder Revision History
 - Removed the "buffer reserve" in Transfer Mode - it's no longer necessary with
   recent driver/firmware versions.
 - The epg.data file is now written when VDR exits (suggested by Daniel Karsubka).
+- There is now a log message when VDR writes the epg.data file.
