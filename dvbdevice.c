@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 1.150 2006/01/14 15:57:36 kls Exp $
+ * $Id: dvbdevice.c 1.151 2006/01/28 15:37:01 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -40,9 +40,9 @@
 #define DEV_DVB_AUDIO     "audio"
 #define DEV_DVB_CA        "ca"
 
-#define DVBS_TUNE_TIMEOUT  2000 //ms
+#define DVBS_TUNE_TIMEOUT  9000 //ms
 #define DVBS_LOCK_TIMEOUT  2000 //ms
-#define DVBC_TUNE_TIMEOUT  5000 //ms
+#define DVBC_TUNE_TIMEOUT  9000 //ms
 #define DVBC_LOCK_TIMEOUT  2000 //ms
 #define DVBT_TUNE_TIMEOUT  9000 //ms
 #define DVBT_LOCK_TIMEOUT  2000 //ms
