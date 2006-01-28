@@ -4228,7 +4228,7 @@ Video Disk Recorder Revision History
 - Fixed handling the '0' key for switching between the last two channels (thanks
   to Thomas Bergwinkl).
 
-2006-01-27: Version 1.3.41
+2006-01-28: Version 1.3.41
 
 - EPG events from epg.data or SVDRP's PUTE command now have their Title set to
   "No Title" if none was set.
@@ -4246,3 +4246,5 @@ Video Disk Recorder Revision History
 - Now trying to reestablish the connection to the LIRC daemon in case it breaks
   (thanks to Ville Skyttä).
 - Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
+- Fixed channel switching with the Down (Up) key in case the current channel is
+  already the first (last) in the list (reported by Frank Krömmelbein).

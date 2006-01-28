@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.404 2006/01/27 14:04:34 kls Exp $
+ * $Id: menu.c 1.405 2006/01/28 12:37:02 kls Exp $
  */
 
 #include "menu.h"
@@ -3174,13 +3174,15 @@ eOSState cDisplayChannel::ProcessKey(eKeys Key)
          cChannel *ch = NextAvailableChannel(channel, (k == kUp || k == kChanUp) ? 1 : -1);
          if (ch)
             channel = ch;
+         else if (channel && channel->Number() != cDevice::CurrentChannel())
+            Key = k; // immediately switches channel when hitting the beginning/end of the channel list with k_Repeat
          }
          // no break here
     case kUp|k_Release:
     case kDown|k_Release:
     case kChanUp|k_Release:
     case kChanDn|k_Release:
-         if (!(Key & k_Repeat) && channel)
+         if (!(Key & k_Repeat) && channel && channel->Number() != cDevice::CurrentChannel())
             NewChannel = channel;
          withInfo = true;
          group = -1;

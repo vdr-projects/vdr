@@ -1538,6 +1538,8 @@ Matthias Lenk <matthias.lenk@amd.com>
 
 Frank Krömmelbein <kroemmelbein@gmx.de>
  for adding missing storing of the MenuScrollPage parameter
+ for reporting a problem with channel switching with the Down (Up) key in case the
+ current channel is already the first (last) in the list
 
 Bernhard Stegmaier <bernhard.stegmaier@in.tum.de>
  for reporting a problem in cEITScanner::Process() with forced EPG scans if EPG
