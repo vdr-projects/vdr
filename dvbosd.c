@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbosd.c 1.29 2005/12/30 15:41:54 kls Exp $
+ * $Id: dvbosd.c 1.30 2006/01/28 14:24:04 kls Exp $
  */
 
 #include "dvbosd.h"
@@ -48,13 +48,6 @@ cDvbOsd::cDvbOsd(int Left, int Top, int OsdDev)
      cap.cmd = OSD_CAP_MEMSIZE;
      if (ioctl(osdDev, OSD_GET_CAPABILITY, &cap) == 0)
         osdMem = cap.val;
-     #define FW_NEEDS_BUFFER_RESERVE_FOR_AC3
-     #ifdef FW_NEEDS_BUFFER_RESERVE_FOR_AC3
-     //XXX This is a very ugly hack to allow cDvbOsd to reduce the buffer
-     //XXX requirements in cTransfer if it detects a 4MB full featured DVB card.
-     extern bool DvbCardWith4MBofSDRAM;
-     DvbCardWith4MBofSDRAM = osdMem >= 1000000;
-     #endif
 #endif
      // must clear all windows here to avoid flashing effects - doesn't work if done
      // in Flush() only for the windows that are actually used...

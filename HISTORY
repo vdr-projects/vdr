@@ -4251,3 +4251,5 @@ Video Disk Recorder Revision History
 - Increased the timeout in cInterface::GetKey() to avoid problems with remote
   controls that don't deliver "repeat" keypresses very fast (problem with the new
   handling of k_Repeat keypresses in channel switching reported by Udo Richter).
+- Removed the "buffer reserve" in Transfer Mode - it's no longer necessary with
+  recent driver/firmware versions.
