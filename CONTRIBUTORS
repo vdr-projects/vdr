@@ -547,6 +547,7 @@ Helmut Auer <vdr@helmutauer.de>
  for suggesting to add cChannel::LinkChannels() and cChannel::RefChannel()
  for suggesting to give a message when an instant recording is started
  fpr suggesting to retry a shutdown after a while
+ for separating the 'install' target into several individual targets
 
 Jeremy Hall <jhall@UU.NET>
  for fixing an incomplete initialization of the filter parameters in eit.c
