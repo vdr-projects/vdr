@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.405 2006/01/28 12:37:02 kls Exp $
+ * $Id: menu.c 1.406 2006/01/29 11:13:51 kls Exp $
  */
 
 #include "menu.h"
@@ -2956,13 +2956,13 @@ eOSState cMenuMain::ProcessKey(eKeys Key)
 
 // --- SetTrackDescriptions --------------------------------------------------
 
-static void SetTrackDescriptions(bool Live)
+static void SetTrackDescriptions(int LiveChannel)
 {
   cDevice::PrimaryDevice()->ClrAvailableTracks(true);
   const cComponents *Components = NULL;
   cSchedulesLock SchedulesLock;
-  if (Live) {
-     cChannel *Channel = Channels.GetByNumber(cDevice::CurrentChannel());
+  if (LiveChannel) {
+     cChannel *Channel = Channels.GetByNumber(LiveChannel);
      if (Channel) {
         const cSchedules *Schedules = cSchedules::Schedules(SchedulesLock);
         if (Schedules) {
@@ -3061,7 +3061,7 @@ void cDisplayChannel::DisplayInfo(void)
            const cEvent *Present = Schedule->GetPresentEvent(true);
            const cEvent *Following = Schedule->GetFollowingEvent(true);
            if (Present != lastPresent || Following != lastFollowing) {
-              SetTrackDescriptions(true);
+              SetTrackDescriptions(channel->Number());
               displayChannel->SetEvents(Present, Following);
               cStatus::MsgOsdProgramme(Present ? Present->StartTime() : 0, Present ? Present->Title() : NULL, Present ? Present->ShortText() : NULL, Following ? Following->StartTime() : 0, Following ? Following->Title() : NULL, Following ? Following->ShortText() : NULL);
               lastPresent = Present;
@@ -3239,7 +3239,9 @@ eOSState cDisplayChannel::ProcessKey(eKeys Key)
      DisplayInfo();
      displayChannel->Flush();
      if (NewChannel) {
+        SetTrackDescriptions(NewChannel->Number()); // to make them immediately visible in the channel display
         Channels.SwitchTo(NewChannel->Number());
+        SetTrackDescriptions(NewChannel->Number()); // switching the channel has cleared them
         channel = NewChannel;
         }
      return osContinue;
@@ -3324,7 +3326,7 @@ cDisplayTracks::cDisplayTracks(void)
 :cOsdObject(true)
 {
   cDevice::PrimaryDevice()->EnsureAudioTrack();
-  SetTrackDescriptions(!cDevice::PrimaryDevice()->Replaying() || cTransferControl::ReceiverDevice());
+  SetTrackDescriptions(!cDevice::PrimaryDevice()->Replaying() || cTransferControl::ReceiverDevice() ? cDevice::CurrentChannel() : 0);
   currentDisplayTracks = this;
   numTracks = track = 0;
   audioChannel = cDevice::PrimaryDevice()->GetAudioChannel();
