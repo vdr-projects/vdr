@@ -4248,9 +4248,6 @@ Video Disk Recorder Revision History
 - Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
 - Fixed channel switching with the Down (Up) key in case the current channel is
   already the first (last) in the list (reported by Frank Krömmelbein).
-- Increased the timeout in cInterface::GetKey() to avoid problems with remote
-  controls that don't deliver "repeat" keypresses very fast (problem with the new
-  handling of k_Repeat keypresses in channel switching reported by Udo Richter).
 - Removed the "buffer reserve" in Transfer Mode - it's no longer necessary with
   recent driver/firmware versions.
 - The epg.data file is now written when VDR exits (suggested by Daniel Karsubka).
@@ -4263,3 +4260,6 @@ Video Disk Recorder Revision History
 - When reading epg.data (or data from PUTE), the version number of events with
   table IDs smaller than 0x50 is now ignored because otherwise the current
   running status would not be set after a restart of VDR.
+- Implemented a timeout for remote controls that don't deliver "repeat" keypresses
+  very fast (based on a suggestion by Luca Olivetti; problem with the new handling
+  of k_Repeat keypresses in channel switching reported by Udo Richter).

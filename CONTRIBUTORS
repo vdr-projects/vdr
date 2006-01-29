@@ -1347,7 +1347,7 @@ Udo Richter <udo_richter@gmx.de>
  no longer exists
  for reporting a missing check against MAXOSDAREAS in cOsd::CanHandleAreas()
  for making the Makefile report a summary of failed plugins
- for reporting  a problem with the new handling of k_Repeat keypresses in channel
+ for reporting a problem with the new handling of k_Repeat keypresses in channel
  switching
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
@@ -1465,6 +1465,8 @@ Luca Olivetti <luca@ventoso.org>
  for making cDevice::AttachPlayer() keep the track language codes and descriptions
  in Transfer Mode
  for suggesting to make the "Menu" key behave consistently
+ for suggesting to implement a timeout for remote controls that don't deliver
+ "repeat" keypresses very fast
 
 Mikko Salo <mikko.salo@ppe.inet.fi>
  for suggesting to make the setup option "DVB/Video display format" available only
