@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 1.54 2006/01/29 11:27:43 kls Exp $
+ * $Id: epg.c 1.55 2006/01/29 13:00:26 kls Exp $
  */
 
 #include "epg.h"
@@ -911,7 +911,6 @@ void cSchedules::Cleanup(bool Force)
         ReportEpgBugFixStats(true);
      }
   if (epgDataFileName && now - lastDump > 600) {
-     isyslog("writing EPG data to %s", epgDataFileName);
      cSafeFile f(epgDataFileName);
      if (f.Open()) {
         Dump(f);

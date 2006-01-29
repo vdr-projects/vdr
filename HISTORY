@@ -4251,7 +4251,6 @@ Video Disk Recorder Revision History
 - Removed the "buffer reserve" in Transfer Mode - it's no longer necessary with
   recent driver/firmware versions.
 - The epg.data file is now written when VDR exits (suggested by Daniel Karsubka).
-- There is now a log message when VDR writes the epg.data file.
 - Fixed cTimers::GetNextActiveTimer() so that it won't return an expired timer
   (reported by Rolf Ahrenberg).
 - Changed DVBS_TUNE_TIMEOUT and DVBC_TUNE_TIMEOUT to 9000ms to avoid problems with
