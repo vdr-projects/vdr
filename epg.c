@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 1.53 2006/01/28 14:45:24 kls Exp $
+ * $Id: epg.c 1.54 2006/01/29 11:27:43 kls Exp $
  */
 
 #include "epg.h"
@@ -309,7 +309,8 @@ bool cEvent::Read(FILE *f, cSchedule *Schedule)
                                 Event = newEvent = new cEvent(EventID);
                              if (Event) {
                                 Event->SetTableID(TableID);
-                                Event->SetVersion(Version);
+                                if (TableID >= 0x50) // makes sure the running status flag is set from the actual data stream
+                                   Event->SetVersion(Version);
                                 Event->SetStartTime(StartTime);
                                 Event->SetDuration(Duration);
                                 if (newEvent)

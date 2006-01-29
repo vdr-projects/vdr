@@ -4260,3 +4260,6 @@ Video Disk Recorder Revision History
 - Changed DVBS_TUNE_TIMEOUT and DVBC_TUNE_TIMEOUT to 9000ms to avoid problems with
   channels that have low symbol rates (reported by Suur Karu).
 - Fixed displaying the current audio track in the channel display.
+- When reading epg.data (or data from PUTE), the version number of events with
+  table IDs smaller than 0x50 is now ignored because otherwise the current
+  running status would not be set after a restart of VDR.
