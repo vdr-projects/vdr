@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.h 1.29 2006/01/14 15:45:24 kls Exp $
+ * $Id: epg.h 1.30 2006/01/29 14:03:13 kls Exp $
  */
 
 #ifndef __EPG_H
@@ -137,8 +137,8 @@ public:
   void HashEvent(cEvent *Event);
   void UnhashEvent(cEvent *Event);
   const cList<cEvent> *Events(void) const { return &events; }
-  const cEvent *GetPresentEvent(bool CheckRunningStatus = false) const;
-  const cEvent *GetFollowingEvent(bool CheckRunningStatus = false) const;
+  const cEvent *GetPresentEvent(void) const;
+  const cEvent *GetFollowingEvent(void) const;
   const cEvent *GetEvent(u_int16_t EventID, time_t StartTime = 0) const;
   const cEvent *GetEventAround(time_t Time) const;
   void Dump(FILE *f, const char *Prefix = "", eDumpMode DumpMode = dmAll, time_t AtTime = 0) const;

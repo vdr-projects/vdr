@@ -4262,3 +4262,5 @@ Video Disk Recorder Revision History
 - Implemented a timeout for remote controls that don't deliver "repeat" keypresses
   very fast (based on a suggestion by Luca Olivetti; problem with the new handling
   of k_Repeat keypresses in channel switching reported by Udo Richter).
+- When looking for the present or following EPG event, the running status is now
+  always taken into account.

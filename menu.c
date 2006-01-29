@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.406 2006/01/29 11:13:51 kls Exp $
+ * $Id: menu.c 1.407 2006/01/29 14:04:37 kls Exp $
  */
 
 #include "menu.h"
@@ -1245,7 +1245,7 @@ void cMenuSchedule::PrepareScheduleAllThis(const cEvent *Event, const cChannel *
   if (schedules && Channel) {
      const cSchedule *Schedule = schedules->GetSchedule(Channel);
      if (Schedule) {
-        const cEvent *PresentEvent = Event ? Event : Schedule->GetPresentEvent(Channel->Number() == cDevice::CurrentChannel());
+        const cEvent *PresentEvent = Event ? Event : Schedule->GetPresentEvent();
         time_t now = time(NULL) - Setup.EPGLinger * 60;
         for (const cEvent *ev = Schedule->Events()->First(); ev; ev = Schedule->Events()->Next(ev)) {
             if (ev->EndTime() > now || ev == PresentEvent)
@@ -2968,7 +2968,7 @@ static void SetTrackDescriptions(int LiveChannel)
         if (Schedules) {
            const cSchedule *Schedule = Schedules->GetSchedule(Channel);
            if (Schedule) {
-              const cEvent *Present = Schedule->GetPresentEvent(true);
+              const cEvent *Present = Schedule->GetPresentEvent();
               if (Present)
                  Components = Present->Components();
               }
@@ -3058,8 +3058,8 @@ void cDisplayChannel::DisplayInfo(void)
      if (Schedules) {
         const cSchedule *Schedule = Schedules->GetSchedule(channel);
         if (Schedule) {
-           const cEvent *Present = Schedule->GetPresentEvent(true);
-           const cEvent *Following = Schedule->GetFollowingEvent(true);
+           const cEvent *Present = Schedule->GetPresentEvent();
+           const cEvent *Following = Schedule->GetFollowingEvent();
            if (Present != lastPresent || Following != lastFollowing) {
               SetTrackDescriptions(channel->Number());
               displayChannel->SetEvents(Present, Following);
