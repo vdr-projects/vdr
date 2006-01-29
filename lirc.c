@@ -6,35 +6,28 @@
  *
  * LIRC support added by Carsten Koch <Carsten.Koch@icem.de>  2000-06-16.
  *
- * $Id: lirc.c 1.13 2005/09/02 12:51:35 kls Exp $
+ * $Id: lirc.c 1.14 2006/01/27 15:59:47 kls Exp $
  */
 
 #include "lirc.h"
 #include <netinet/in.h>
 #include <sys/socket.h>
-#include <sys/un.h>
 
 #define REPEATLIMIT  20 // ms
 #define REPEATDELAY 350 // ms
 #define KEYPRESSDELAY 150 // ms
+#define RECONNECTDELAY 3000 // ms
 
 cLircRemote::cLircRemote(const char *DeviceName)
 :cRemote("LIRC")
 ,cThread("LIRC remote control")
 {
-  struct sockaddr_un addr;
   addr.sun_family = AF_UNIX;
   strcpy(addr.sun_path, DeviceName);
-  if ((f = socket(AF_UNIX, SOCK_STREAM, 0)) >= 0) {
-     if (connect(f, (struct sockaddr *)&addr, sizeof(addr)) >= 0) {
-        Start();
-        return;
-        }
-     LOG_ERROR_STR(DeviceName);
-     close(f);
+  if (Connect()) {
+     Start();
+     return;
      }
-  else
-     LOG_ERROR_STR(DeviceName);
   f = -1;
 }
 
@@ -45,6 +38,20 @@ cLircRemote::~cLircRemote()
   Cancel();
   if (fh >= 0)
      close(fh);
+}
+
+bool cLircRemote::Connect(void)
+{
+  if ((f = socket(AF_UNIX, SOCK_STREAM, 0)) >= 0) {
+     if (connect(f, (struct sockaddr *)&addr, sizeof(addr)) >= 0)
+        return true;
+     LOG_ERROR_STR(addr.sun_path);
+     close(f);
+     f = -1;
+     }
+  else
+     LOG_ERROR_STR(addr.sun_path);
+  return false;
 }
 
 bool cLircRemote::Ready(void)
@@ -67,10 +74,16 @@ void cLircRemote::Action(void)
         int ret = ready ? safe_read(f, buf, sizeof(buf)) : -1;
 
         if (ready && ret <= 0 ) {
-           esyslog("ERROR: lircd connection lost");
+           esyslog("ERROR: lircd connection broken, trying to reconnect every %.1f seconds", float(RECONNECTDELAY) / 1000);
            close(f);
            f = -1;
-           break;
+           while (Running() && f < 0) {
+                 cCondWait::SleepMs(RECONNECTDELAY);
+                 if (Connect()) {
+                    isyslog("reconnected to lircd");
+                    break;
+                    }
+                 }
            }
 
         if (ready && ret > 21) {

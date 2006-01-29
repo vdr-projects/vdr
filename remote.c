@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remote.c 1.48 2006/01/15 15:17:40 kls Exp $
+ * $Id: remote.c 1.49 2006/01/29 14:43:07 kls Exp $
  */
 
 #include "remote.h"
@@ -18,11 +18,13 @@
 
 // --- cRemote ---------------------------------------------------------------
 
-#define INITTIMEOUT 10000 // ms
+#define INITTIMEOUT   10000 // ms
+#define REPEATTIMEOUT  1000 // ms
 
 eKeys cRemote::keys[MaxKeys];
 int cRemote::in = 0;
 int cRemote::out = 0;
+cTimeMs cRemote::repeatTimeout;
 cRemote *cRemote::learning = NULL;
 char *cRemote::unknownCode = NULL;
 cMutex cRemote::mutex;
@@ -163,9 +165,11 @@ eKeys cRemote::Get(int WaitMs, char **UnknownCode)
          eKeys k = keys[out];
          if (++out >= MaxKeys)
             out = 0;
+         if ((k & k_Repeat) != 0)
+            repeatTimeout.Set(REPEATTIMEOUT);
          return k;
          }
-      else if (!WaitMs || !keyPressed.TimedWait(mutex, WaitMs)) {
+      else if (!WaitMs || !keyPressed.TimedWait(mutex, WaitMs) && repeatTimeout.TimedOut()) {
          if (learning && UnknownCode) {
             *UnknownCode = unknownCode;
             unknownCode = NULL;

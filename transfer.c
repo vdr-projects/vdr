@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: transfer.c 1.31 2006/01/21 14:13:16 kls Exp $
+ * $Id: transfer.c 1.32 2006/01/28 14:23:38 kls Exp $
  */
 
 #include "transfer.h"
@@ -49,41 +49,12 @@ void cTransfer::Receive(uchar *Data, int Length)
      }
 }
 
-#define FW_NEEDS_BUFFER_RESERVE_FOR_AC3
-#ifdef FW_NEEDS_BUFFER_RESERVE_FOR_AC3
-//XXX This is a very ugly hack to allow cDvbOsd to reduce the buffer
-//XXX requirements in cTransfer if it detects a 4MB full featured DVB card.
-bool DvbCardWith4MBofSDRAM = false;
-#endif
-
 void cTransfer::Action(void)
 {
   int PollTimeouts = 0;
   uchar *p = NULL;
   int Result = 0;
-#ifdef FW_NEEDS_BUFFER_RESERVE_FOR_AC3
-  bool GotBufferReserve = false;
-  GotBufferReserve = true; //XXX remove this line if you absolutely need the buffer reserve
-  int RequiredBufferReserve = KILOBYTE(DvbCardWith4MBofSDRAM ? 288 : 576);
-#endif
   while (Running()) {
-#ifdef FW_NEEDS_BUFFER_RESERVE_FOR_AC3
-        if (needsBufferReserve && !GotBufferReserve) {
-           //XXX For dolby we've to fill the buffer because the firmware does
-           //XXX not decode dolby but use a PCM stream for transport, therefore
-           //XXX the firmware has not enough buffer for noiseless skipping early
-           //XXX PCM samples (each dolby frame requires 6144 bytes in PCM and
-           //XXX audio is mostly to early in comparison to video).
-           //XXX To resolve this, the remuxer or PlayPes() should synchronize
-           //XXX audio with the video frames. 2004/09/09 Werner
-           if (ringBuffer->Available() < RequiredBufferReserve) { // used to be MAXFRAMESIZE, but the HDTV value of KILOBYTE(512) is way too much here
-              cCondWait::SleepMs(20); // allow the buffer to collect some reserve
-              continue;
-              }
-           else
-              GotBufferReserve = true;
-           }
-#endif
         int Count;
         uchar *b = ringBuffer->Get(Count);
         if (b) {
@@ -98,9 +69,6 @@ void cTransfer::Action(void)
               remux->Clear();
               PlayPes(NULL, 0);
               p = NULL;
-#ifdef FW_NEEDS_BUFFER_RESERVE_FOR_AC3
-              GotBufferReserve = false;
-#endif
               continue;
               }
            Count = remux->Put(b, Count);
@@ -133,9 +101,6 @@ void cTransfer::Action(void)
                  remux->Clear();
                  PlayPes(NULL, 0);
                  p = NULL;
-#ifdef FW_NEEDS_BUFFER_RESERVE_FOR_AC3
-                 GotBufferReserve = false;
-#endif
                  }
               }
            }

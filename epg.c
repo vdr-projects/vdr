@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 1.51 2006/01/20 14:09:48 kls Exp $
+ * $Id: epg.c 1.57 2006/01/29 14:17:33 kls Exp $
  */
 
 #include "epg.h"
@@ -15,6 +15,8 @@
 #include "timers.h"
 #include <ctype.h>
 #include <time.h>
+
+#define RUNNINGSTATUSTIMEOUT 30 // seconds before the running status is considered unknown
 
 // --- tComponent ------------------------------------------------------------
 
@@ -204,7 +206,7 @@ bool cEvent::HasTimer(void) const
 
 bool cEvent::IsRunning(bool OrAboutToStart) const
 {
-  return runningStatus >= (OrAboutToStart ? SI::RunningStatusStartsInAFewSeconds : SI::RunningStatusPausing);
+  return SeenWithin(RUNNINGSTATUSTIMEOUT) && runningStatus >= (OrAboutToStart ? SI::RunningStatusStartsInAFewSeconds : SI::RunningStatusPausing);
 }
 
 cString cEvent::GetDateString(void) const
@@ -309,7 +311,8 @@ bool cEvent::Read(FILE *f, cSchedule *Schedule)
                                 Event = newEvent = new cEvent(EventID);
                              if (Event) {
                                 Event->SetTableID(TableID);
-                                Event->SetVersion(Version);
+                                if (TableID >= 0x50) // makes sure the running status flag is set from the actual data stream
+                                   Event->SetVersion(Version);
                                 Event->SetStartTime(StartTime);
                                 Event->SetDuration(Duration);
                                 if (newEvent)
@@ -318,7 +321,9 @@ bool cEvent::Read(FILE *f, cSchedule *Schedule)
                              }
                           }
                        break;
-             case 'e': Event = NULL;
+             case 'e': if (!Event->Title())
+                          Event->SetTitle(tr("No title"));
+                       Event = NULL;
                        break;
              case 'c': // to keep things simple we react on 'c' here
                        return true;
@@ -655,25 +660,22 @@ void cSchedule::UnhashEvent(cEvent *Event)
      eventsHashStartTime.Del(Event, Event->StartTime());
 }
 
-const cEvent *cSchedule::GetPresentEvent(bool CheckRunningStatus) const
+const cEvent *cSchedule::GetPresentEvent(void) const
 {
   const cEvent *pe = NULL;
   time_t now = time(NULL);
   for (cEvent *p = events.First(); p; p = events.Next(p)) {
-      if (p->StartTime() <= now && now < p->EndTime()) {
+      if (p->StartTime() <= now && now < p->EndTime())
          pe = p;
-         if (!CheckRunningStatus)
-            break;
-         }
-      if (CheckRunningStatus && p->SeenWithin(30) && p->RunningStatus() >= SI::RunningStatusPausing)
+      if (p->SeenWithin(RUNNINGSTATUSTIMEOUT) && p->RunningStatus() >= SI::RunningStatusPausing)
          return p;
       }
   return pe;
 }
 
-const cEvent *cSchedule::GetFollowingEvent(bool CheckRunningStatus) const
+const cEvent *cSchedule::GetFollowingEvent(void) const
 {
-  const cEvent *p = GetPresentEvent(CheckRunningStatus);
+  const cEvent *p = GetPresentEvent();
   if (p)
      p = events.Next(p);
   return p;
@@ -975,6 +977,11 @@ bool cSchedules::Read(FILE *f)
      bool result = cSchedule::Read(f, s);
      if (OwnFile)
         fclose(f);
+     if (result) {
+        // Initialize the channels' schedule pointers, so that the first WhatsOn menu will come up faster:
+        for (cChannel *Channel = Channels.First(); Channel; Channel = Channels.Next(Channel))
+            s->GetSchedule(Channel);
+        }
      return result;
      }
   return false;

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 1.43 2006/01/15 13:31:11 kls Exp $
+ * $Id: timers.c 1.45 2006/01/28 15:09:05 kls Exp $
  */
 
 #include "timers.h"
@@ -245,6 +245,7 @@ bool cTimer::Parse(const char *s)
      }
   bool result = false;
   if (8 <= sscanf(s, "%u :%a[^:]:%a[^:]:%d :%d :%d :%d :%a[^:\n]:%a[^\n]", &flags, &channelbuffer, &daybuffer, &start, &stop, &priority, &lifetime, &filebuffer, &summary)) {
+     ClrFlags(tfRecording);
      if (summary && !*skipspace(summary)) {
         free(summary);
         summary = NULL;
@@ -566,7 +567,7 @@ cTimer *cTimers::GetNextActiveTimer(void)
 {
   cTimer *t0 = NULL;
   for (cTimer *ti = First(); ti; ti = Next(ti)) {
-      if ((ti->HasFlags(tfActive)) && (!t0 || ti->Compare(*t0) < 0))
+      if ((ti->HasFlags(tfActive)) && (!t0 || ti->StopTime() > time(NULL) && ti->Compare(*t0) < 0))
          t0 = ti;
       }
   return t0;

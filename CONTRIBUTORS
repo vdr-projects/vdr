@@ -269,6 +269,7 @@ Matjaz Thaler <matjaz.thaler@guest.arnes.si>
 Artur Skawina <skawina@geocities.com>
  for improving the font file generation in the Makefile
  for pointing out a problem with the ERR macro defined by ncurses.h
+ for a patch that contained a fix for checking toFile in cCuttingThread::Action()
 
 Werner Fink <werner@suse.de>
  for making I/O more robust by handling EINTR
@@ -545,6 +546,8 @@ Helmut Auer <vdr@helmutauer.de>
  for suggesting to increase the default value for 'Min. user inactivity' to 300 minutes
  for suggesting to add cChannel::LinkChannels() and cChannel::RefChannel()
  for suggesting to give a message when an instant recording is started
+ fpr suggesting to retry a shutdown after a while
+ for separating the 'install' target into several individual targets
 
 Jeremy Hall <jhall@UU.NET>
  for fixing an incomplete initialization of the filter parameters in eit.c
@@ -882,6 +885,7 @@ Andreas Mair <Andreas.Mair@linogate.com>
  for reporting a short display of the main menu if a plugin displays its own OSD and
  is started through a user defined key macro
  for reporting a problem with extremely long summary fields in timers
+ for reporting a bug in handling the tfRecording flag when reading timers
 
 Olivier Jacques <jacquesolivier@hotmail.com>)
  for translating OSD texts to the French language
@@ -939,6 +943,7 @@ Rolf Ahrenberg <rahrenbe@cc.hut.fi>
  for reporting a crash in the Schedule menu with events that have no title
  for a patch that was used to implement automatic cursor advance when entering text
  via the numeric keys
+ for reporting a problem with expired timers when shutting down via the Power key
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark
@@ -1165,6 +1170,8 @@ Thomas Bergwinkl <Thomas.Bergwinkl@vr-web.de>
  for fixing detecting if there can be any useful further input when entering channel
  numbers
  for fixing handling the '0' key for switching between the last two channels
+ for making cPatFilter::Process() check whether the channel exists before setting
+ the PMT filter
 
 Stéphane Esté-Gracias <sestegra@free.fr>
  for fixing a typo in libsi/si.h
@@ -1322,6 +1329,7 @@ Kimmo Tykkala <tykkala@iki.fi>
 
 Arthur Konovalov <kasjas@hot.ee>
  for translating OSD texts to the Estonian language
+ for fixing a missing ',' in the Greek OSD texts
 
 Milos Kapoun <m.kapoun@cra.cz>
  for suggesting to skip code table info in SI data
@@ -1341,6 +1349,8 @@ Udo Richter <udo_richter@gmx.de>
  no longer exists
  for reporting a missing check against MAXOSDAREAS in cOsd::CanHandleAreas()
  for making the Makefile report a summary of failed plugins
+ for reporting a problem with the new handling of k_Repeat keypresses in channel
+ switching
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date
@@ -1457,6 +1467,8 @@ Luca Olivetti <luca@ventoso.org>
  for making cDevice::AttachPlayer() keep the track language codes and descriptions
  in Transfer Mode
  for suggesting to make the "Menu" key behave consistently
+ for suggesting to implement a timeout for remote controls that don't deliver
+ "repeat" keypresses very fast
 
 Mikko Salo <mikko.salo@ppe.inet.fi>
  for suggesting to make the setup option "DVB/Video display format" available only
@@ -1480,6 +1492,8 @@ Ville Skyttä <ville.skytta@iki.fi>
  for adding a missing #include <linux/unistd.h> to thread.c
  for adding missing i18n entry for the "Timer" button
  for removing the obsolete "ca.conf" section from vdr.1
+ for making the cLircRemote try to reestablish the connection to the LIRC daemon
+ in case it breaks
 
 Steffen Beyer <cpunk@reactor.de>
  for fixing setting the colored button help after deleting a recording in case the next
@@ -1531,6 +1545,8 @@ Matthias Lenk <matthias.lenk@amd.com>
 
 Frank Krömmelbein <kroemmelbein@gmx.de>
  for adding missing storing of the MenuScrollPage parameter
+ for reporting a problem with channel switching with the Down (Up) key in case the
+ current channel is already the first (last) in the list
 
 Bernhard Stegmaier <bernhard.stegmaier@in.tum.de>
  for reporting a problem in cEITScanner::Process() with forced EPG scans if EPG
@@ -1683,3 +1699,14 @@ Markus Hahn <mhahn@reel-multimedia.com>
 
 Jaroslaw Swierczynski <swiergot@gmail.com>
  for updating the Polish OSD texts and the fontosd-iso8859-2.c file
+
+Alexander Hans <cleditor@arcor.de>
+ fpr reporting a crash when pressing '0' in the "Schedule" menu on a channel that
+ doesn't have any EPG data 
+
+Daniel Karsubka <dkar@gmx.de>
+ for suggesting to write the epg.data file when VDR exits
+
+Suur Karu <suurkaru@fastmail.fm>
+ for reporting a problem with the tuning timeout for channels that have low symbol
+ rates

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: pat.c 1.14 2005/09/04 14:32:39 kls Exp $
+ * $Id: pat.c 1.15 2006/01/27 15:48:29 kls Exp $
  */
 
 #include "pat.h"
@@ -287,7 +287,7 @@ void cPatFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
            int Index = 0;
            for (SI::Loop::Iterator it; pat.associationLoop.getNext(assoc, it); ) {
                if (!assoc.isNITPid()) {
-                  if (Index++ == pmtIndex) {
+                  if (Index++ >= pmtIndex && Channels.GetByServiceID(Source(), Transponder(), assoc.getServiceId())) {
                      pmtPid = assoc.getPid();
                      Add(pmtPid, 0x02);
                      break;

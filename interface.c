@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: interface.c 1.71 2006/01/04 15:44:19 kls Exp $
+ * $Id: interface.c 1.73 2006/01/29 12:35:50 kls Exp $
  */
 
 #include "interface.h"

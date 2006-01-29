@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remote.h 1.32 2006/01/01 14:00:50 kls Exp $
+ * $Id: remote.h 1.33 2006/01/29 12:27:08 kls Exp $
  */
 
 #ifndef __REMOTE_H
@@ -23,6 +23,7 @@ private:
   static eKeys keys[MaxKeys];
   static int in;
   static int out;
+  static cTimeMs repeatTimeout;
   static cRemote *learning;
   static char *unknownCode;
   static cMutex mutex;

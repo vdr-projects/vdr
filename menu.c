@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.403 2006/01/22 16:06:39 kls Exp $
+ * $Id: menu.c 1.407 2006/01/29 14:04:37 kls Exp $
  */
 
 #include "menu.h"
@@ -1245,7 +1245,7 @@ void cMenuSchedule::PrepareScheduleAllThis(const cEvent *Event, const cChannel *
   if (schedules && Channel) {
      const cSchedule *Schedule = schedules->GetSchedule(Channel);
      if (Schedule) {
-        const cEvent *PresentEvent = Event ? Event : Schedule->GetPresentEvent(Channel->Number() == cDevice::CurrentChannel());
+        const cEvent *PresentEvent = Event ? Event : Schedule->GetPresentEvent();
         time_t now = time(NULL) - Setup.EPGLinger * 60;
         for (const cEvent *ev = Schedule->Events()->First(); ev; ev = Schedule->Events()->Next(ev)) {
             if (ev->EndTime() > now || ev == PresentEvent)
@@ -1352,6 +1352,8 @@ eOSState cMenuSchedule::Number(void)
      Event = CurrentItem->event;
      Channel = Channels.GetByChannelID(Event->ChannelID(), true);
      }
+  else
+     Channel = Channels.GetByNumber(cDevice::CurrentChannel());
   switch (cMenuScheduleItem::SortMode()) {
     case cMenuScheduleItem::ssmAllThis:  PrepareScheduleAllThis(Event, Channel); break;
     case cMenuScheduleItem::ssmThisThis: PrepareScheduleThisThis(Event, Channel); break;
@@ -2954,19 +2956,19 @@ eOSState cMenuMain::ProcessKey(eKeys Key)
 
 // --- SetTrackDescriptions --------------------------------------------------
 
-static void SetTrackDescriptions(bool Live)
+static void SetTrackDescriptions(int LiveChannel)
 {
   cDevice::PrimaryDevice()->ClrAvailableTracks(true);
   const cComponents *Components = NULL;
   cSchedulesLock SchedulesLock;
-  if (Live) {
-     cChannel *Channel = Channels.GetByNumber(cDevice::CurrentChannel());
+  if (LiveChannel) {
+     cChannel *Channel = Channels.GetByNumber(LiveChannel);
      if (Channel) {
         const cSchedules *Schedules = cSchedules::Schedules(SchedulesLock);
         if (Schedules) {
            const cSchedule *Schedule = Schedules->GetSchedule(Channel);
            if (Schedule) {
-              const cEvent *Present = Schedule->GetPresentEvent(true);
+              const cEvent *Present = Schedule->GetPresentEvent();
               if (Present)
                  Components = Present->Components();
               }
@@ -3056,10 +3058,10 @@ void cDisplayChannel::DisplayInfo(void)
      if (Schedules) {
         const cSchedule *Schedule = Schedules->GetSchedule(channel);
         if (Schedule) {
-           const cEvent *Present = Schedule->GetPresentEvent(true);
-           const cEvent *Following = Schedule->GetFollowingEvent(true);
+           const cEvent *Present = Schedule->GetPresentEvent();
+           const cEvent *Following = Schedule->GetFollowingEvent();
            if (Present != lastPresent || Following != lastFollowing) {
-              SetTrackDescriptions(true);
+              SetTrackDescriptions(channel->Number());
               displayChannel->SetEvents(Present, Following);
               cStatus::MsgOsdProgramme(Present ? Present->StartTime() : 0, Present ? Present->Title() : NULL, Present ? Present->ShortText() : NULL, Following ? Following->StartTime() : 0, Following ? Following->Title() : NULL, Following ? Following->ShortText() : NULL);
               lastPresent = Present;
@@ -3172,13 +3174,15 @@ eOSState cDisplayChannel::ProcessKey(eKeys Key)
          cChannel *ch = NextAvailableChannel(channel, (k == kUp || k == kChanUp) ? 1 : -1);
          if (ch)
             channel = ch;
+         else if (channel && channel->Number() != cDevice::CurrentChannel())
+            Key = k; // immediately switches channel when hitting the beginning/end of the channel list with k_Repeat
          }
          // no break here
     case kUp|k_Release:
     case kDown|k_Release:
     case kChanUp|k_Release:
     case kChanDn|k_Release:
-         if (!(Key & k_Repeat) && channel)
+         if (!(Key & k_Repeat) && channel && channel->Number() != cDevice::CurrentChannel())
             NewChannel = channel;
          withInfo = true;
          group = -1;
@@ -3235,7 +3239,9 @@ eOSState cDisplayChannel::ProcessKey(eKeys Key)
      DisplayInfo();
      displayChannel->Flush();
      if (NewChannel) {
+        SetTrackDescriptions(NewChannel->Number()); // to make them immediately visible in the channel display
         Channels.SwitchTo(NewChannel->Number());
+        SetTrackDescriptions(NewChannel->Number()); // switching the channel has cleared them
         channel = NewChannel;
         }
      return osContinue;
@@ -3320,7 +3326,7 @@ cDisplayTracks::cDisplayTracks(void)
 :cOsdObject(true)
 {
   cDevice::PrimaryDevice()->EnsureAudioTrack();
-  SetTrackDescriptions(!cDevice::PrimaryDevice()->Replaying() || cTransferControl::ReceiverDevice());
+  SetTrackDescriptions(!cDevice::PrimaryDevice()->Replaying() || cTransferControl::ReceiverDevice() ? cDevice::CurrentChannel() : 0);
   currentDisplayTracks = this;
   numTracks = track = 0;
   audioChannel = cDevice::PrimaryDevice()->GetAudioChannel();

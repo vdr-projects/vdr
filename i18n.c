@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.240 2006/01/22 15:55:28 kls Exp $
+ * $Id: i18n.c 1.244 2006/01/28 10:38:33 kls Exp $
  *
  * Translations provided by:
  *
@@ -460,7 +460,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "See sündmus - %s",
-    "",//TODO
+    "Denne udsendelse - %s",
   },
   { "This event - all channels",
     "Diese Sendung - alle Kanäle",
@@ -481,7 +481,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "See sündmus - kõik kanalid",
-    "",//TODO
+    "Denne udsendelse - alle kanaler",
   },
   { "All events - all channels",
     "Alle Sendungen - alle Kanäle",
@@ -502,7 +502,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "Kõik sündmused - kõik kanalid",
-    "",//TODO
+    "Alle udsendelser - alle kanaler",
   },
   { "What's on now?",
     "Was läuft jetzt?",
@@ -692,7 +692,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "Taimer",
-    "",// TODO
+    "Timer",
   },
   { "Button$Record",
     "Aufnehmen",
@@ -1597,7 +1597,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "FTA",
-    "",//TODO
+    "Free To Air",
   },
   { "encrypted",
     "verschlüsselt",
@@ -1618,7 +1618,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "krüptitud",
-    "",//TODO
+    "kodet",
   },
   { "Sid",
     "Sid",
@@ -2344,6 +2344,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
+    "Tallennustilan puute estää tallennuksen!",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -2353,9 +2354,8 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "",//TODO
-    "",//TODO
-    "",//TODO
-    "",//TODO
+    "Ebapiisavalt kettaruumi salvestamise alustamiseks!",
+    "For lidt harddisk plads til optagelse!",
   },
   { "Low disk space!",
     "Platte beinahe voll!",
@@ -2958,7 +2958,7 @@ const tI18nPhrase Phrases[] = {
     "ei koskaan",
     "nigdy",
     "nunca",
-    "ÐïôÝ"
+    "ÐïôÝ",
     "aldrig",
     "niciodatã",
     "",// TODO
@@ -3092,7 +3092,7 @@ const tI18nPhrase Phrases[] = {
     "", // TODO
     "", // TODO
     "Kanaliinfo kuvamise ajapiirang",
-    "", // TODO
+    "Timeout ved anmodet kanal info",
   },
   { "Setup.OSD$Scroll pages",
     "Seitenweise scrollen",
@@ -3155,7 +3155,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "Sulgemine Menüü klahviga",
-    "",// TODO
+    "Menu taste lukker",
   },
   { "Setup.OSD$Sort timers",
     "Timer sortieren",
@@ -3616,7 +3616,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "¿àÕÔßÞçØâÐÕÜëÕ ï×ëÚØ (×ÒãÚ)",
     "Audio jezici",
-    "Audio keeled",
+    "Audio keeli",
     "Audio sprog (ant.)",
   },
   { "Setup.DVB$Audio language",  // note the singular
@@ -4292,7 +4292,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     " 0\t-.#~,/_@1\tabcäå2\tdef3\tghi4\tjkl5\tmnoõö6\tpqrsð7\ttuvü8\twxyzþ9",
-    "",//TODO
+    " 0\t-.#~,/_@1\tabcæå2\tdef3\tghi4\tjkl5\tmnoø6\tpqrs7\ttuv8\twxyz9",
   },
   // Learning keys:
   { "Learning Remote Control Keys",
@@ -5534,7 +5534,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "Salvestamine algas",
-    "",//TODO
+    "Optagelse startet",
   },
   { "Pausing live video...",
     "Live-Signal wird angehalten...",

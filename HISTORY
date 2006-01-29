@@ -4227,3 +4227,46 @@ Video Disk Recorder Revision History
 - Updated the Spanish OSD texts (thanks to Jesus Bravo Alvarez).
 - Fixed handling the '0' key for switching between the last two channels (thanks
   to Thomas Bergwinkl).
+
+2006-01-29: Version 1.3.41
+
+- EPG events from epg.data or SVDRP's PUTE command now have their Title set to
+  "No Title" if none was set.
+- Fixed checking toFile in cCuttingThread::Action() (found in a larger patch from
+  Artur Skawina).
+- Fixed a crash when pressing '0' in the "Schedule" menu on a channel that doesn't
+  have any EPG data (reported ny Alexander Hans).
+- Updated the Danish OSD texts (thanks to Mogens Elneff).
+- Fixed a missing ',' in the Greek OSD texts (thanks to Arthur Konovalov).
+- Updated the Estonian OSD texts (thanks to Arthur Konovalov).
+- Fixed handling the tfRecording flag when reading timers (bug reported by Andreas
+  Mair).
+- Now checking whether the channel exists before setting the PMT filter in
+  cPatFilter::Process() (thanks to Thomas Bergwinkl).
+- Now trying to reestablish the connection to the LIRC daemon in case it breaks
+  (thanks to Ville Skyttä).
+- Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
+- Fixed channel switching with the Down (Up) key in case the current channel is
+  already the first (last) in the list (reported by Frank Krömmelbein).
+- Removed the "buffer reserve" in Transfer Mode - it's no longer necessary with
+  recent driver/firmware versions.
+- The epg.data file is now written when VDR exits (suggested by Daniel Karsubka).
+- Fixed cTimers::GetNextActiveTimer() so that it won't return an expired timer
+  (reported by Rolf Ahrenberg).
+- Changed DVBS_TUNE_TIMEOUT and DVBC_TUNE_TIMEOUT to 9000ms to avoid problems with
+  channels that have low symbol rates (reported by Suur Karu).
+- Fixed displaying the current audio track in the channel display.
+- When reading epg.data (or data from PUTE), the version number of events with
+  table IDs smaller than 0x50 is now ignored because otherwise the current
+  running status would not be set after a restart of VDR.
+- Implemented a timeout for remote controls that don't deliver "repeat" keypresses
+  very fast (based on a suggestion by Luca Olivetti; problem with the new handling
+  of k_Repeat keypresses in channel switching reported by Udo Richter).
+- When looking for the present or following EPG event, the running status is now
+  always taken into account.
+- Now initializing the channels' schedule pointers when reading the epg.data file,
+  so that the first WhatsOn menu will come up faster.
+- If a shutdown is requested, but the shutdown script doesn't actually halt the
+  system, it is now tried again after 5 minutes (suggested by Helmut Auer).
+- Separated the 'install' target into several individual targets; renamed the
+  'plugins-install' target to 'install-plugins' (thanks to Helmut Auer).
