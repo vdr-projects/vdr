@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.245 2006/01/28 14:38:30 kls Exp $
+ * $Id: vdr.c 1.246 2006/01/29 14:35:31 kls Exp $
  */
 
 #include <getopt.h>
@@ -71,6 +71,7 @@
                               // in order to react on a possible new CAM menu as soon as possible
 #define DEVICEREADYTIMEOUT 30 // seconds to wait until all devices are ready
 #define MENUTIMEOUT       120 // seconds of user inactivity after which an OSD display is closed
+#define SHUTDOWNRETRY     300 // seconds before trying again to shut down
 
 #define EXIT(v) { ExitCode = (v); goto Exit; }
 
@@ -1087,7 +1088,7 @@ int main(int argc, char *argv[])
                        if (signal(SIGALRM, Watchdog) == SIG_IGN)
                           signal(SIGALRM, SIG_IGN);
                        }
-                    LastActivity = time(NULL); // don't try again too soon
+                    LastActivity = time(NULL) - Setup.MinUserInactivity * 60 + SHUTDOWNRETRY; // try again later
                     UserShutdown = false;
                     continue; // skip the rest of the housekeeping for now
                     }
