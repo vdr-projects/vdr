@@ -4270,3 +4270,8 @@ Video Disk Recorder Revision History
   system, it is now tried again after 5 minutes (suggested by Helmut Auer).
 - Separated the 'install' target into several individual targets; renamed the
   'plugins-install' target to 'install-plugins' (thanks to Helmut Auer).
+
+2006-01-29: Version 1.3.42
+
+- Removed leftover 'needsBufferReserve' variable from cTransfer (thanks to Marco
+  Schlüßler).
