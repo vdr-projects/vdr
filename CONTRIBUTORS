@@ -215,6 +215,7 @@ Stefan Huelswitt <huels@iname.com>
  path names
  for suggesting that the SVDRP command GRAB should allow file names without extension
  again
+ for reporting a problem with channel up/down switching on single card systems
 
 Ulrich Röder <roeder@efr-net.de>
  for pointing out that there are channels that have a symbol rate higher than 27500
