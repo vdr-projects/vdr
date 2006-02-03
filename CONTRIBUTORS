@@ -1711,3 +1711,6 @@ Daniel Karsubka <dkar@gmx.de>
 Suur Karu <suurkaru@fastmail.fm>
  for reporting a problem with the tuning timeout for channels that have low symbol
  rates
+
+Ronny Kornexl <ronny.kornexl@online.de>
+ for reporting a problem with setting "No title" for broken event data

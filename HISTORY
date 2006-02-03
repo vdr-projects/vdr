@@ -4271,7 +4271,8 @@ Video Disk Recorder Revision History
 - Separated the 'install' target into several individual targets; renamed the
   'plugins-install' target to 'install-plugins' (thanks to Helmut Auer).
 
-2006-01-29: Version 1.3.42
+2006-02-03: Version 1.3.42
 
 - Removed leftover 'needsBufferReserve' variable from cTransfer (thanks to Marco
   Schlüßler).
+- Fixed setting "No title" for broken event data (reported by Ronny Kornexl).
