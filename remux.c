@@ -11,7 +11,7 @@
  * The cRepacker family's code was originally written by Reinhard Nissl <rnissl@gmx.de>,
  * and adapted to the VDR coding style by Klaus.Schmidinger@cadsoft.de.
  *
- * $Id: remux.c 1.53 2006/01/08 11:40:16 kls Exp $
+ * $Id: remux.c 1.54 2006/02/03 16:19:02 kls Exp $
  */
 
 #include "remux.h"
@@ -248,6 +248,14 @@ private:
     scanPicture
     };
   int state;
+  void HandleStartCode(const uchar *const Data, cRingBufferLinear *const ResultBuffer, const uchar *&Payload, const uchar StreamID, const ePesHeader MpegLevel);
+  inline bool ScanDataForStartCodeSlow(const uchar *const Data);
+  inline bool ScanDataForStartCodeFast(const uchar *&Data, const uchar *Limit);
+  inline bool ScanDataForStartCode(const uchar *&Data, int &Done, int &Todo);
+  inline void AdjustCounters(const int Delta, int &Done, int &Todo);
+  inline bool ScanForEndOfPictureSlow(const uchar *&Data);
+  inline bool ScanForEndOfPictureFast(const uchar *&Data, const uchar *Limit);
+  inline bool ScanForEndOfPicture(const uchar *&Data, const uchar *Limit);
 public:
   cVideoRepacker(void);
   virtual void Reset(void);
@@ -265,6 +273,162 @@ void cVideoRepacker::Reset(void)
   cCommonRepacker::Reset();
   scanner = 0xFFFFFFFF;
   state = syncing;
+}
+
+void cVideoRepacker::HandleStartCode(const uchar *const Data, cRingBufferLinear *const ResultBuffer, const uchar *&Payload, const uchar StreamID, const ePesHeader MpegLevel)
+{
+  // synchronisation is detected some bytes after frame start.
+  const int SkippedBytesLimit = 4;
+
+  // which kind of start code have we got?
+  switch (*Data) {
+    case 0xB9 ... 0xFF: // system start codes
+         LOG("cVideoRepacker: found system start code: stream seems to be scrambled or not demultiplexed");
+         break;
+    case 0xB0 ... 0xB1: // reserved start codes
+    case 0xB6:
+         LOG("cVideoRepacker: found reserved start code: stream seems to be scrambled");
+         break;
+    case 0xB4: // sequence error code
+         LOG("cVideoRepacker: found sequence error code: stream seems to be damaged");
+    case 0xB2: // user data start code
+    case 0xB5: // extension start code
+         break;
+    case 0xB7: // sequence end code
+    case 0xB3: // sequence header code
+    case 0xB8: // group start code
+    case 0x00: // picture start code
+         if (state == scanPicture) {
+            // the above start codes indicate that the current picture is done. So
+            // push out the packet to start a new packet for the next picuture. If
+            // the byte count get's negative then the current buffer ends in a
+            // partitial start code that must be stripped off, as it shall be put
+            // in the next packet.
+            PushOutPacket(ResultBuffer, Payload, Data - 3 - Payload);
+            // go on with syncing to the next picture
+            state = syncing;
+            }
+         if (state == syncing) {
+            if (initiallySyncing) // omit report for the typical initial case
+               initiallySyncing = false;
+            else if (skippedBytes > SkippedBytesLimit) // report that syncing dropped some bytes
+               LOG("cVideoRepacker: skipped %d bytes to sync on next picture", skippedBytes - SkippedBytesLimit);
+            skippedBytes = 0;
+            // if there is a PES header available, then use it ...
+            if (pesHeaderBackupLen > 0) {
+               // ISO 13818-1 says:
+               // In the case of video, if a PTS is present in a PES packet header
+               // it shall refer to the access unit containing the first picture start
+               // code that commences in this PES packet. A picture start code commences
+               // in PES packet if the first byte of the picture start code is present
+               // in the PES packet.
+               memcpy(pesHeader, pesHeaderBackup, pesHeaderBackupLen);
+               pesHeaderLen = pesHeaderBackupLen;
+               pesHeaderBackupLen = 0;
+               }
+            else {
+               // ... otherwise create a continuation PES header
+               pesHeaderLen = 0;
+               pesHeader[pesHeaderLen++] = 0x00;
+               pesHeader[pesHeaderLen++] = 0x00;
+               pesHeader[pesHeaderLen++] = 0x01;
+               pesHeader[pesHeaderLen++] = StreamID; // video stream ID
+               pesHeader[pesHeaderLen++] = 0x00; // length still unknown
+               pesHeader[pesHeaderLen++] = 0x00; // length still unknown
+
+               if (MpegLevel == phMPEG2) {
+                  pesHeader[pesHeaderLen++] = 0x80;
+                  pesHeader[pesHeaderLen++] = 0x00;
+                  pesHeader[pesHeaderLen++] = 0x00;
+                  }
+               else
+                  pesHeader[pesHeaderLen++] = 0x0F;
+               }
+            // append the first three bytes of the start code
+            pesHeader[pesHeaderLen++] = 0x00;
+            pesHeader[pesHeaderLen++] = 0x00;
+            pesHeader[pesHeaderLen++] = 0x01;
+            // the next packet's payload will begin with the fourth byte of
+            // the start code (= the actual code)
+            Payload = Data;
+            // as there is no length information available, assume the
+            // maximum we can hold in one PES packet
+            packetTodo = maxPacketSize - pesHeaderLen;
+            // go on with finding the picture data
+            state++;
+            }
+         break;
+    case 0x01 ... 0xAF: // slice start codes
+         if (state == findPicture) {
+            // go on with scanning the picture data
+            state++;
+            }
+         break;
+    }
+}
+
+bool cVideoRepacker::ScanDataForStartCodeSlow(const uchar *const Data)
+{
+  scanner <<= 8;
+  bool FoundStartCode = (scanner == 0x00000100);
+  scanner |= *Data;
+  return FoundStartCode;
+}
+
+bool cVideoRepacker::ScanDataForStartCodeFast(const uchar *&Data, const uchar *Limit)
+{
+  Limit--;
+
+  while (Data < Limit && (Data = (const uchar *)memchr(Data, 0x01, Limit - Data))) {
+        if (Data[-2] || Data[-1])
+           Data += 3;
+        else {
+           scanner = 0x00000100 | *++Data;
+           return true;
+           }
+        }
+
+  Data = Limit;
+  unsigned long *Scanner = (unsigned long *)(Data - 3);
+  scanner = ntohl(*Scanner);
+  return false;
+}
+
+bool cVideoRepacker::ScanDataForStartCode(const uchar *&Data, int &Done, int &Todo)
+{
+  const uchar *const DataOrig = Data;
+  const int MinDataSize = 4;
+
+  if (Todo < MinDataSize || (state != syncing && packetTodo < MinDataSize))
+     return ScanDataForStartCodeSlow(Data);
+
+  int Limit = Todo;
+  if (state != syncing && Limit > packetTodo)
+     Limit = packetTodo;
+
+  if (ScanDataForStartCodeSlow(Data))
+     return true;
+
+  if (ScanDataForStartCodeSlow(++Data)) {
+     AdjustCounters(1, Done, Todo);
+     return true;
+     }
+  ++Data;
+
+  bool FoundStartCode = ScanDataForStartCodeFast(Data, DataOrig + Limit);
+  AdjustCounters(Data - DataOrig, Done, Todo);
+  return FoundStartCode;
+}
+
+void cVideoRepacker::AdjustCounters(const int Delta, int &Done, int &Todo)
+{
+  Done += Delta;
+  Todo -= Delta;
+
+  if (state <= syncing)
+     skippedBytes += Delta;
+  else
+     packetTodo -= Delta;
 }
 
 void cVideoRepacker::Repack(cRingBufferLinear *ResultBuffer, const uchar *Data, int Count)
@@ -300,98 +464,9 @@ void cVideoRepacker::Repack(cRingBufferLinear *ResultBuffer, const uchar *Data, 
         if (state <= syncing)
            skippedBytes++;
         // did we reach a start code?
-        scanner <<= 8;
-        if (scanner != 0x00000100)
-           scanner |= *data;
-        else {
-           scanner |= *data;
-
-           // which kind of start code have we got?
-           switch (*data) {
-             case 0xB9 ... 0xFF: // system start codes
-                  LOG("cVideoRepacker: found system start code: stream seems to be scrambled or not demultiplexed");
-                  break;
-             case 0xB0 ... 0xB1: // reserved start codes
-             case 0xB6:
-                  LOG("cVideoRepacker: found reserved start code: stream seems to be scrambled");
-                  break;
-             case 0xB4: // sequence error code
-                  LOG("cVideoRepacker: found sequence error code: stream seems to be damaged");
-             case 0xB2: // user data start code
-             case 0xB5: // extension start code
-                  break;
-             case 0xB7: // sequence end code
-             case 0xB3: // sequence header code
-             case 0xB8: // group start code
-             case 0x00: // picture start code
-                  if (state == scanPicture) {
-                     // the above start codes indicate that the current picture is done. So
-                     // push out the packet to start a new packet for the next picuture. If
-                     // the byte count get's negative then the current buffer ends in a
-                     // partitial start code that must be stripped off, as it shall be put
-                     // in the next packet.
-                     PushOutPacket(ResultBuffer, payload, data - 3 - payload);
-                     // go on with syncing to the next picture
-                     state = syncing;
-                     }
-                  if (state == syncing) {
-                     if (initiallySyncing) // omit report for the typical initial case
-                        initiallySyncing = false;
-                     else if (skippedBytes > SkippedBytesLimit) // report that syncing dropped some bytes
-                        LOG("cVideoRepacker: skipped %d bytes to sync on next picture", skippedBytes - SkippedBytesLimit);
-                     skippedBytes = 0;
-                     // if there is a PES header available, then use it ...
-                     if (pesHeaderBackupLen > 0) {
-                        // ISO 13818-1 says:
-                        // In the case of video, if a PTS is present in a PES packet header
-                        // it shall refer to the access unit containing the first picture start
-                        // code that commences in this PES packet. A picture start code commences
-                        // in PES packet if the first byte of the picture start code is present
-                        // in the PES packet.
-                        memcpy(pesHeader, pesHeaderBackup, pesHeaderBackupLen);
-                        pesHeaderLen = pesHeaderBackupLen;
-                        pesHeaderBackupLen = 0;
-                        }
-                     else {
-                        // ... otherwise create a continuation PES header
-                        pesHeaderLen = 0;
-                        pesHeader[pesHeaderLen++] = 0x00;
-                        pesHeader[pesHeaderLen++] = 0x00;
-                        pesHeader[pesHeaderLen++] = 0x01;
-                        pesHeader[pesHeaderLen++] = Data[3]; // video stream ID
-                        pesHeader[pesHeaderLen++] = 0x00; // length still unknown
-                        pesHeader[pesHeaderLen++] = 0x00; // length still unknown
-
-                        if (mpegLevel == phMPEG2) {
-                           pesHeader[pesHeaderLen++] = 0x80;
-                           pesHeader[pesHeaderLen++] = 0x00;
-                           pesHeader[pesHeaderLen++] = 0x00;
-                           }
-                        else
-                           pesHeader[pesHeaderLen++] = 0x0F;
-                        }
-                     // append the first three bytes of the start code
-                     pesHeader[pesHeaderLen++] = 0x00;
-                     pesHeader[pesHeaderLen++] = 0x00;
-                     pesHeader[pesHeaderLen++] = 0x01;
-                     // the next packet's payload will begin with the fourth byte of
-                     // the start code (= the actual code)
-                     payload = data;
-                     // as there is no length information available, assume the
-                     // maximum we can hold in one PES packet
-                     packetTodo = maxPacketSize - pesHeaderLen;
-                     // go on with finding the picture data
-                     state++;
-                     }
-                  break;
-             case 0x01 ... 0xAF: // slice start codes
-                  if (state == findPicture) {
-                     // go on with scanning the picture data
-                     state++;
-                     }
-                  break;
-             }
-           }
+        if (ScanDataForStartCode(data, done, todo))
+           HandleStartCode(data, ResultBuffer, payload, Data[3], mpegLevel);
+        // move on
         data++;
         done++;
         todo--;
@@ -501,6 +576,79 @@ void cVideoRepacker::Repack(cRingBufferLinear *ResultBuffer, const uchar *Data, 
      }
 }
 
+bool cVideoRepacker::ScanForEndOfPictureSlow(const uchar *&Data)
+{
+  localScanner <<= 8;
+  localScanner |= *Data++;
+  // check start codes which follow picture data
+  switch (localScanner) {
+    case 0x00000100: // picture start code
+    case 0x000001B8: // group start code
+    case 0x000001B3: // sequence header code
+    case 0x000001B7: // sequence end code
+         return true;
+    }
+  return false;
+}
+
+bool cVideoRepacker::ScanForEndOfPictureFast(const uchar *&Data, const uchar *Limit)
+{
+  Limit--;
+
+  while (Data < Limit && (Data = (const uchar *)memchr(Data, 0x01, Limit - Data))) {
+        if (Data[-2] || Data[-1])
+           Data += 3;
+        else {
+           localScanner = 0x00000100 | *++Data;
+           // check start codes which follow picture data
+           switch (localScanner) {
+             case 0x00000100: // picture start code
+             case 0x000001B8: // group start code
+             case 0x000001B3: // sequence header code
+             case 0x000001B7: // sequence end code
+                  Data++;
+                  return true;
+             default:
+                  Data += 3;
+             }
+           }
+        }
+
+  Data = Limit + 1;
+  unsigned long *LocalScanner = (unsigned long *)(Data - 4);
+  localScanner = ntohl(*LocalScanner);
+  return false;
+}
+
+bool cVideoRepacker::ScanForEndOfPicture(const uchar *&Data, const uchar *Limit)
+{
+  const uchar *const DataOrig = Data;
+  const int MinDataSize = 4;
+  bool FoundEndOfPicture;
+
+  if (Limit - Data <= MinDataSize) {
+     FoundEndOfPicture = false;
+     while (Data < Limit) {
+           if (ScanForEndOfPictureSlow(Data)) {
+              FoundEndOfPicture = true;
+              break;
+              }
+           }
+     }
+  else {
+     FoundEndOfPicture = true;
+     if (!ScanForEndOfPictureSlow(Data)) {
+        if (!ScanForEndOfPictureSlow(Data)) {
+           if (!ScanForEndOfPictureFast(Data, Limit))
+              FoundEndOfPicture = false;
+           }
+        }
+     }
+
+  localStart += (Data - DataOrig);
+  return FoundEndOfPicture;
+}
+
 int cVideoRepacker::BreakAt(const uchar *Data, int Count)
 {
   if (initiallySyncing)
@@ -522,19 +670,8 @@ int cVideoRepacker::BreakAt(const uchar *Data, int Count)
      const uchar *data = Data + PesPayloadOffset + localStart;
      const uchar *limit = Data + Count;
      // scan data
-     while (data < limit) {
-           localStart++;
-           localScanner <<= 8;
-           localScanner |= *data++;
-           // check start codes which follow picture data
-           switch (localScanner) {
-             case 0x00000100: // picture start code
-             case 0x000001B8: // group start code
-             case 0x000001B3: // sequence header code
-             case 0x000001B7: // sequence end code
-                  return data - Data;
-             }
-           }
+     if (ScanForEndOfPicture(data, limit))
+        return data - Data;
      }
   // just fill up packet and append next start code
   return PesPayloadOffset + packetTodo + 4;

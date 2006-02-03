@@ -4280,3 +4280,4 @@ Video Disk Recorder Revision History
   Huelswitt).
 - Fixed handling "pending" timers that blocked others that actually could record
   (reported by Thomas Koch).
+- Speeded up cVideoRepacker (thanks to Reinhard Nissl).
