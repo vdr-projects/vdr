@@ -844,6 +844,8 @@ Ludwig Nussel <ludwig.nussel@web.de>
 Thomas Koch <tom@harhar.net>
  for his support in keeping the Premiere World channels up to date in 'channels.conf'
  for implementing the SVDRP command STAT
+ for reporting a problem with "pending" timers that blocked others that actually
+ could record
 
 Stefan Huﬂfeldt <vdr@marvin.on-luebeck.de>
  for his help in keeping 'channels.conf.cable' up to date

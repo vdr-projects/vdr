@@ -4278,3 +4278,5 @@ Video Disk Recorder Revision History
 - Fixed setting "No title" for broken event data (reported by Ronny Kornexl).
 - Fixed channel up/down switching on single card systems (reported by Stefan
   Huelswitt).
+- Fixed handling "pending" timers that blocked others that actually could record
+  (reported by Thomas Koch).

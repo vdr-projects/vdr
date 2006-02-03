@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 1.45 2006/01/28 15:09:05 kls Exp $
+ * $Id: timers.c 1.46 2006/02/03 15:20:14 kls Exp $
  */
 
 #include "timers.h"
@@ -535,13 +535,22 @@ cTimer *cTimers::GetTimer(cTimer *Timer)
 
 cTimer *cTimers::GetMatch(time_t t)
 {
+  static int LastPending = -1;
   cTimer *t0 = NULL;
   for (cTimer *ti = First(); ti; ti = Next(ti)) {
       if (!ti->Recording() && ti->Matches(t)) {
+         if (ti->Pending()) {
+            if (ti->Index() > LastPending)
+               LastPending = ti->Index();
+            else
+               continue;
+            }
          if (!t0 || ti->Priority() > t0->Priority())
             t0 = ti;
          }
       }
+  if (!t0)
+     LastPending = -1;
   return t0;
 }
 
