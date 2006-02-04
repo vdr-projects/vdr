@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 1.91 2006/02/04 13:58:01 kls Exp $
+ * $Id: tools.h 1.92 2006/02/04 14:21:08 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -251,13 +251,13 @@ private:
   size_t readahead;
   size_t written;
   size_t totwritten;
+  int FadviseDrop(off_t Offset, off_t Len);
 public:
   cUnbufferedFile(void);
   ~cUnbufferedFile();
   int Open(const char *FileName, int Flags, mode_t Mode = DEFFILEMODE);
   int Close(void);
   void SetReadAhead(size_t ra);
-  int FadviseDrop(off_t Offset, off_t Len);
   off_t Seek(off_t Offset, int Whence);
   ssize_t Read(void *Data, size_t Size);
   ssize_t Write(const void *Data, size_t Size);
