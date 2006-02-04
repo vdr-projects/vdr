@@ -4271,7 +4271,7 @@ Video Disk Recorder Revision History
 - Separated the 'install' target into several individual targets; renamed the
   'plugins-install' target to 'install-plugins' (thanks to Helmut Auer).
 
-2006-02-03: Version 1.3.42
+2006-02-04: Version 1.3.42
 
 - Removed leftover 'needsBufferReserve' variable from cTransfer (thanks to Marco
   Schlüßler).
@@ -4281,3 +4281,5 @@ Video Disk Recorder Revision History
 - Fixed handling "pending" timers that blocked others that actually could record
   (reported by Thomas Koch).
 - Speeded up cVideoRepacker (thanks to Reinhard Nissl).
+- Added an 'Id' parameter to cDevice::PlayAudio() to allow plugins to easier
+  process the audio data (thanks to Marco Schlüßler).

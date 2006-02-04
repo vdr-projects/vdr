@@ -1296,6 +1296,8 @@ Marco Schlüßler <marco@lordzodiac.de>
  for fixing handling OSD areas that have invalid sizes
  for removing unused variables in skinclassic.c and skinsttng.c
  for removing leftover 'needsBufferReserve' variable from cTransfer
+ for adding an 'Id' parameter to cDevice::PlayAudio() to allow plugins to easier
+ process the audio data
 
 Jürgen Schmitz <j.schmitz@web.de>
  for reporting a bug in displaying the current channel when switching via the SVDRP
