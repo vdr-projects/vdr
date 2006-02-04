@@ -4293,3 +4293,6 @@ Video Disk Recorder Revision History
   (reported by Udo Richter).
 - Fixed handling the "Setup/OSD/Menu button closes" option when set to 'yes' in
   case a replay is active (thanks to Udo Richter).
+- Improved cUnbufferedFile; USE_FADVISE is now defined in tools.c by default, so
+  if you don't want to use "fadvise" you need to comment out that line (thanks to
+  Artur Skawina).

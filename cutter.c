@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: cutter.c 1.12 2006/01/27 13:45:00 kls Exp $
+ * $Id: cutter.c 1.13 2006/02/04 13:40:20 kls Exp $
  */
 
 #include "cutter.h"
@@ -66,6 +66,8 @@ void cCuttingThread::Action(void)
      toFile = toFileName->Open();
      if (!fromFile || !toFile)
         return;
+     fromFile->SetReadAhead(MEGABYTE(20));
+     toFile->SetReadAhead(MEGABYTE(20));
      int Index = Mark->position;
      Mark = fromMarks.Next(Mark);
      int FileSize = 0;
@@ -90,6 +92,7 @@ void cCuttingThread::Action(void)
            if (fromIndex->Get(Index++, &FileNumber, &FileOffset, &PictureType, &Length)) {
               if (FileNumber != CurrentFileNumber) {
                  fromFile = fromFileName->SetOffset(FileNumber, FileOffset);
+                 fromFile->SetReadAhead(MEGABYTE(20));
                  CurrentFileNumber = FileNumber;
                  }
               if (fromFile) {
@@ -122,6 +125,7 @@ void cCuttingThread::Action(void)
                     error = "toFile 1";
                     break;
                     }
+                 toFile->SetReadAhead(MEGABYTE(20));
                  FileSize = 0;
                  }
               LastIFrame = 0;
@@ -162,6 +166,7 @@ void cCuttingThread::Action(void)
                        error = "toFile 2";
                        break;
                        }
+                    toFile->SetReadAhead(MEGABYTE(20));
                     FileSize = 0;
                     }
                  }
