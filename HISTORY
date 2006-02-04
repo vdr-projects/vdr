@@ -4300,3 +4300,6 @@ Video Disk Recorder Revision History
 - cDevice::Transferring() can now be used to determine whether the (primary)
   device is currently playing in Transfer Mode (based on a suggestion by
   Reinhard Nissl).
+- The 'runvdr' script no longer uses the $VDRUSR environment variable to set
+  the user id under which 'vdr' shall run. Just add the '-u username' option
+  when you call 'runvdr'.

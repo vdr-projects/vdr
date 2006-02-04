@@ -136,7 +136,8 @@ watchdog timer to restart the program in case something happens that
 causes a program hangup. If you change the command line options for the
 call to the VDR program, be sure to NOT use the '-d' option! Otherwise
 VDR will go into 'deamon' mode and the initial program call will return
-immediately!
+immediately! 'runvdr' needs to be started as user 'root'. Use the '-u'
+option to run the actual 'vdr' program under a different user id.
 
 Setting the system time:
 ------------------------
