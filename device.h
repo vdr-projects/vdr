@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 1.71 2006/02/04 10:22:54 kls Exp $
+ * $Id: device.h 1.72 2006/02/04 14:22:08 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -484,6 +484,8 @@ public:
        ///< guaranteed to always receive complete PES packets.
   bool Replaying(void) const;
        ///< Returns true if we are currently replaying.
+  bool Transferring(void) const;
+       ///< Returns true if we are currently in Transfer Mode.
   void StopReplay(void);
        ///< Stops the current replay session (if any).
   bool AttachPlayer(cPlayer *Player);

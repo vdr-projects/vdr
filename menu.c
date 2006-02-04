@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 1.408 2006/02/03 13:24:53 kls Exp $
+ * $Id: menu.c 1.409 2006/02/04 14:47:27 kls Exp $
  */
 
 #include "menu.h"
@@ -3326,7 +3326,7 @@ cDisplayTracks::cDisplayTracks(void)
 :cOsdObject(true)
 {
   cDevice::PrimaryDevice()->EnsureAudioTrack();
-  SetTrackDescriptions(!cDevice::PrimaryDevice()->Replaying() || cTransferControl::ReceiverDevice() ? cDevice::CurrentChannel() : 0);
+  SetTrackDescriptions(!cDevice::PrimaryDevice()->Replaying() || cDevice::PrimaryDevice()->Transferring() ? cDevice::CurrentChannel() : 0);
   currentDisplayTracks = this;
   numTracks = track = 0;
   audioChannel = cDevice::PrimaryDevice()->GetAudioChannel();

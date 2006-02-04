@@ -4297,3 +4297,6 @@ Video Disk Recorder Revision History
   if you don't want to use "fadvise" you need to comment out that line (thanks to
   Artur Skawina).
 - Fixed a missing ',' in the Swedish OSD texts (thanks to Arthur Konovalov).
+- cDevice::Transferring() can now be used to determine whether the (primary)
+  device is currently playing in Transfer Mode (based on a suggestion by
+  Reinhard Nissl).
