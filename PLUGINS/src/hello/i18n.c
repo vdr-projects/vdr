@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: i18n.c 1.4 2004/01/16 13:28:23 kls Exp $
+ * $Id: i18n.c 1.5 2006/02/04 10:51:41 kls Exp $
  */
 
 #include "i18n.h"
@@ -26,6 +26,10 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "Привет!",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "Ahoj",
   },
   { "Hello world!",
     "Hallo Welt!",
@@ -44,6 +48,10 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "Здравствуй мир!",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "Ahoj svьte!",
   },
   { "Howdy folks!",
     "Tach zusammen!",
@@ -62,6 +70,10 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "Как поживаете?",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "Nazdar vespolek!",
   },
   { "A friendly greeting",
     "Ein freundlicher Gruп",
@@ -80,6 +92,10 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "Дружеское приветствие",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "Pјсtelsk§ pozdrav",
   },
   { "Greeting time (s)",
     "Dauer des Gruпes (s)",
@@ -98,6 +114,10 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "Продолжительность приветствия",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "Шas pozdravu (s)",
   },
   { "Use alternate greeting",
     "Alternativen Gruп verwenden",
@@ -116,6 +136,10 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "Альтернативное приветствие",
+    "",// TODO
+    "",// TODO
+    "",// TODO
+    "PouОэt alternativnэ pozdrav",
   },
   { NULL }
   };

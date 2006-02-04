@@ -4283,3 +4283,8 @@ Video Disk Recorder Revision History
 - Speeded up cVideoRepacker (thanks to Reinhard Nissl).
 - Added an 'Id' parameter to cDevice::PlayAudio() to allow plugins to easier
   process the audio data (thanks to Marco Schlüßler).
+- Added Czech language texts (thanks to Bárta Vladimír).
+  Plugin authors may want to add the new entries to their I18N texts and contact
+  the translators to have their texts translated. Note that there are now 21
+  different OSD languages, so please make sure you have 21 versions for each of
+  your texts.
