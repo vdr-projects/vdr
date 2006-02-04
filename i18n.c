@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.245 2006/02/04 10:50:48 kls Exp $
+ * $Id: i18n.c 1.246 2006/02/04 11:00:52 kls Exp $
  *
  * Translations provided by:
  *
@@ -711,7 +711,7 @@ const tI18nPhrase Phrases[] = {
     "",// TODO
     "",// TODO
     "Ajastin",
-    "Timer",// TODO
+    "Timer",
     "Programa",
     "",// TODO
     "",// TODO
@@ -1662,7 +1662,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "en abierto",
     "",//TODO
-    "Otwarta transmisja",
+    "otwarty przekaz",
     "",//TODO
     "",//TODO
     "",//TODO
@@ -2453,7 +2453,7 @@ const tI18nPhrase Phrases[] = {
     "",//TODO
     "",//TODO
     "Tallennustilan puute est‰‰ tallennuksen!",
-    "",//TODO
+    "Brak miejsca na dysku do nagrywania!",
     "",//TODO
     "",//TODO
     "",//TODO
