@@ -1359,6 +1359,8 @@ Udo Richter <udo_richter@gmx.de>
  switching
  for reporting a problem with auto advance in string entry fields when pressing
  Up/Down in insert mode
+ for fixing handling the "Setup/OSD/Menu button closes" option when set to 'yes' in
+ case a replay is active
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date

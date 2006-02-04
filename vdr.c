@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.cadsoft.de/vdr
  *
- * $Id: vdr.c 1.246 2006/01/29 14:35:31 kls Exp $
+ * $Id: vdr.c 1.247 2006/02/04 12:57:03 kls Exp $
  */
 
 #include <getopt.h>
@@ -796,8 +796,12 @@ int main(int argc, char *argv[])
                bool WasMenu = Interact && Interact->IsMenu();
                if (Menu)
                   DELETE_MENU;
-               else if (cControl::Control() && cOsd::IsOpen())
-                  cControl::Control()->Hide();
+               else if (cControl::Control()) {
+                  if (cOsd::IsOpen())
+                     cControl::Control()->Hide();
+                  else
+                     WasOpen = false;
+                  }
                if (!WasOpen || !WasMenu && !Setup.MenuButtonCloses)
                   Menu = new cMenuMain;
                }

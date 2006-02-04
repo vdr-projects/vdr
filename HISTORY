@@ -4291,3 +4291,5 @@ Video Disk Recorder Revision History
 - Updated the Polish OSD texts (thanks to Jaroslaw Swierczynski).
 - Fixed auto advance in string entry fields when pressing Up/Down in insert mode
   (reported by Udo Richter).
+- Fixed handling the "Setup/OSD/Menu button closes" option when set to 'yes' in
+  case a replay is active (thanks to Udo Richter).
