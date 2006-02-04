@@ -4296,3 +4296,4 @@ Video Disk Recorder Revision History
 - Improved cUnbufferedFile; USE_FADVISE is now defined in tools.c by default, so
   if you don't want to use "fadvise" you need to comment out that line (thanks to
   Artur Skawina).
+- Fixed a missing ',' in the Swedish OSD texts (thanks to Arthur Konovalov).

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 1.246 2006/02/04 11:00:52 kls Exp $
+ * $Id: i18n.c 1.247 2006/02/04 14:17:54 kls Exp $
  *
  * Translations provided by:
  *
@@ -2632,7 +2632,7 @@ const tI18nPhrase Phrases[] = {
     "D¼wiêk nie jest dostêpny!",
     "¡No hay audio disponible!",
     "Ìç äéáèİóéìïò Ş÷ïò",
-    "Ljud saknas!"
+    "Ljud saknas!",
     "Lipseºte sunetul!",
     "",//TODO
     "",//TODO
