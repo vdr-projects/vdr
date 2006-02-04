@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.c 1.30 2006/01/21 12:27:14 kls Exp $
+ * $Id: menuitems.c 1.31 2006/02/04 12:47:08 kls Exp $
  */
 
 #include "menuitems.h"
@@ -345,7 +345,7 @@ eOSState cMenuEditStrItem::ProcessKey(eKeys Key)
   bool SameKey = Key == lastKey;
   if (Key != kNone)
      lastKey = Key;
-  else if (!newchar && autoAdvanceTimeout.TimedOut()) {
+  else if (!newchar && k0 <= NORMALKEY(lastKey) && NORMALKEY(lastKey) <= k9 && autoAdvanceTimeout.TimedOut()) {
      AdvancePos();
      newchar = true;
      currentChar = NULL;
@@ -427,7 +427,7 @@ eOSState cMenuEditStrItem::ProcessKey(eKeys Key)
                        value[pos] = toupper(Inc(tolower(value[pos]), NORMALKEY(Key) == kUp));
                     else
                        value[pos] =         Inc(        value[pos],  NORMALKEY(Key) == kUp);
-                    newchar = true;
+                    newchar = false;
                     }
                  else
                     return cMenuEditItem::ProcessKey(Key);

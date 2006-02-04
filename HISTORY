@@ -4289,3 +4289,5 @@ Video Disk Recorder Revision History
   different OSD languages, so please make sure you have 21 versions for each of
   your texts.
 - Updated the Polish OSD texts (thanks to Jaroslaw Swierczynski).
+- Fixed auto advance in string entry fields when pressing Up/Down in insert mode
+  (reported by Udo Richter).

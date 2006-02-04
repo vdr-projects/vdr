@@ -1357,6 +1357,8 @@ Udo Richter <udo_richter@gmx.de>
  for making the Makefile report a summary of failed plugins
  for reporting a problem with the new handling of k_Repeat keypresses in channel
  switching
+ for reporting a problem with auto advance in string entry fields when pressing
+ Up/Down in insert mode
 
 Sven Kreiensen <svenk@kammer.uni-hannover.de>
  for his help in keeping 'channels.conf.terr' up to date
